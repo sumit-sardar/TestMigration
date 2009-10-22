@@ -2,13 +2,7 @@
 <project-modules id="moduleCoreId" project-version="1.5.0">
     <wb-module deploy-name="platform">
         <wb-resource deploy-path="/" source-path="/EarContent"/>
-        <dependent-module archiveName="dep-weblib-webutils.jar" deploy-path="/" handle="module:/resource/dep-weblib-webutils/dep-weblib-webutils">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <dependent-module archiveName="dep-testadmin-ctrl.jar" deploy-path="/" handle="module:/resource/dep-testadmin-ctrl/dep-testadmin-ctrl">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module archiveName="dep-weblib-taglib.jar" deploy-path="/" handle="module:/resource/dep-weblib-taglib/dep-weblib-taglib">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module deploy-path="/" handle="module:/resource/platform-weblib/platform-weblib">

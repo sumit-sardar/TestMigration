@@ -3,15 +3,13 @@
 	<name>platform</name>
 	<comment></comment>
 	<projects>
-		<project>dep-weblib-webutils</project>
-		<project>dep-testadmin-ctrl</project>
-		<project>dep-weblib-taglib</project>
-		<project>platform-weblib</project>
-		<project>dep-usermgmt-ctrl</project>
 		<project>dep-base-ctrl</project>
+		<project>dep-licensing-ctrl</project>
 		<project>dep-orgmgmt-ctrl</project>
 		<project>dep-studentmgmt-ctrl</project>
-		<project>dep-licensing-ctrl</project>
+		<project>dep-testadmin-ctrl</project>
+		<project>dep-usermgmt-ctrl</project>
+		<project>platform-weblib</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
