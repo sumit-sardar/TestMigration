@@ -2,12 +2,6 @@
 <application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:application="http://java.sun.com/xml/ns/javaee/application_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd" id="Application_ID" version="5">
   <module>
     <web>
-      <web-uri>platform-webservices.war</web-uri>
-      <context-root>platform-webservices</context-root>
-    </web>
-  </module>
-  <module>
-    <web>
       <web-uri>platform-weblib.war</web-uri>
       <context-root>platform-weblib</context-root>
     </web>
