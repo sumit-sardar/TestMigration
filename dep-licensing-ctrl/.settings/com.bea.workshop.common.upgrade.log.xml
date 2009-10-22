@@ -1,0 +1,251 @@
+<upgrade-log>
+  <entry time="2009-09-17 15:06:26 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080711173356" class="com.bea.workshop.wls.core.upgrade.internal.AppLibrariesContainerUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.controls.core" pluginVersion="1.1.100.200807251738" class="com.bea.workshop.controls.core.upgrade.ControlFactoryPathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080711173356" class="com.bea.workshop.wls.core.upgrade.internal.J2EELibrariesValidatorUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.controls.core" pluginVersion="1.1.100.200807251738" class="com.bea.workshop.controls.core.internal.ControlsUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080711173356" class="com.bea.workshop.wls.core.upgrade.internal.WlsFacetsUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.informant" pluginVersion="1.0.100.200807251731" class="com.bea.workshop.common.informant.upgrade.InformantUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080711173356" class="com.bea.workshop.wls.core.upgrade.internal.WlsRuntimeNameProjectUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080711173356" class="com.bea.workshop.wls.core.upgrade.internal.WlsRuntimeClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.controls.core" pluginVersion="1.1.100.200807251738" class="com.bea.workshop.controls.core.upgrade.WlsControlsFacetsUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080711173356" class="com.bea.workshop.wls.core.upgrade.internal.J2EELibraryContainerUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.xmlbeans.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.xmlbeans.core.upgrade.XMLBeansFacetsUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.xmlbeans.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.xmlbeans.core.upgrade.XmlBeansContainerUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080711173356" class="com.bea.workshop.wls.core.upgrade.internal.WlsCommonsLoggingBridgeFacetLibInstallRecordUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080711173356" class="com.bea.workshop.wls.core.upgrade.internal.WlsCommonsLoggingBridgeFacetUpgradeParticipants$J2EELibraryRefUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.controls.core" pluginVersion="1.1.100.200807251738" class="com.bea.workshop.controls.core.upgrade.WeblogicControlsFacetLibInstallRecordUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.controls.core" pluginVersion="1.1.100.200807251738" class="com.bea.workshop.controls.core.upgrade.BeehiveControlsFacetLibInstallRecordUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:06:27 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.controls.core" pluginVersion="1.1.100.200807251738" class="com.bea.workshop.controls.core.upgrade.ControlsFacetUpgradeParticipants$J2EELibraryRefUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-17 15:27:31 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-18 05:26:32 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-18 07:00:12 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-18 09:52:57 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-18 10:00:08 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-18 11:13:05 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-22 05:39:56 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-22 10:09:36 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-23 06:02:35 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-23 10:44:59 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-23 12:10:28 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-23 15:07:00 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-24 04:30:29 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-24 06:39:37 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-24 09:53:26 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-24 10:39:44 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-24 10:50:33 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-24 11:48:16 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-24 12:39:54 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-25 04:33:22 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-25 05:15:04 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-25 07:32:02 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-25 08:49:52 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-25 09:52:18 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-29 04:51:19 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-29 09:56:55 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-29 11:17:10 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-30 04:57:01 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-30 10:02:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-30 10:18:12 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-09-30 14:29:46 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-01 04:44:03 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-01 09:34:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-01 09:46:14 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-01 10:55:59 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-02 06:39:29 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-05 05:07:10 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-05 13:29:52 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-06 14:09:16 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-07 05:05:57 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-08 04:52:01 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-08 07:39:17 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-08 12:35:49 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-08 13:42:28 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-08 13:48:26 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-08 13:55:43 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-09 04:41:55 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-12 04:42:30 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-12 09:49:16 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-12 10:00:05 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-12 12:52:36 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-12 13:03:07 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-12 14:17:24 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-13 05:22:33 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-13 07:46:19 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-13 09:15:18 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 05:09:09 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 09:30:50 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-15 07:01:19 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-15 11:23:08 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-16 04:34:30 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-16 11:54:00 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-21 19:22:30 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-21 19:33:11 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-22 00:00:11 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+</upgrade-log>

@@ -1,0 +1,9 @@
+com.ctb.bean
+com.ctb.bean.request
+com.ctb.bean.testAdmin
+com.ctb.control.validation
+com.ctb.exception
+com.ctb.exception.request
+com.ctb.exception.validation
+com.ctb.util
+com.ctb.util.request
