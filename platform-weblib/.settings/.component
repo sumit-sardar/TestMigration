@@ -6,10 +6,7 @@
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/.apt_src"/>
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/build/assembly/.src"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/.apt_generated"/>
-<dependent-module deploy-path="/" handle="module:/resource/dep-weblib-taglib/dep-weblib-taglib">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
-        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/dep-weblib-taglib/dep-weblib-taglib">
+<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/dep-weblib-taglib/dep-weblib-taglib">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/dep-weblib-webutils/dep-weblib-webutils">
