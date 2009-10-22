@@ -1,0 +1,74 @@
+<upgrade-log>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080911001459" class="com.bea.workshop.wls.core.upgrade.internal.WlsRuntimeNameProjectUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080911001459" class="com.bea.workshop.wls.core.upgrade.internal.WlsRuntimeClasspathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080911001459" class="com.bea.workshop.wls.core.upgrade.internal.J2EELibraryContainerUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080911001459" class="com.bea.workshop.wls.core.upgrade.internal.J2EELibrariesPrefsUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.controls.core" pluginVersion="1.1.100.200807251738" class="com.bea.workshop.controls.core.upgrade.WlsControlsFacetsUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.controls.core" pluginVersion="1.1.100.200807251738" class="com.bea.workshop.controls.core.internal.ControlsUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080911001459" class="com.bea.workshop.wls.core.upgrade.internal.J2EELibrariesValidatorUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.informant" pluginVersion="1.0.100.200807251731" class="com.bea.workshop.common.informant.upgrade.InformantUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.xmlbeans.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.xmlbeans.core.upgrade.XMLBeansFacetsUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.netui.core" pluginVersion="1.0.100.200807251738" class="com.bea.workshop.netui.core.upgrade.NetuiFactoryPathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080911001459" class="com.bea.workshop.wls.core.upgrade.internal.WlsFacetsUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.netui.core" pluginVersion="1.0.100.200807251738" class="com.bea.workshop.netui.core.internal.NetUiUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.xmlbeans.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.xmlbeans.core.upgrade.XmlBeansContainerUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.controls.core" pluginVersion="1.1.100.200807251738" class="com.bea.workshop.controls.core.upgrade.ControlFactoryPathUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.netui.project.core" pluginVersion="1.0.100.CR377467" class="com.bea.workshop.netui.project.core.upgrade.JstlFacetLibInstallRecordUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.netui.project.core" pluginVersion="1.0.100.CR377467" class="com.bea.workshop.netui.project.core.upgrade.StrutsFacetLibInstallRecordUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.netui.project.core" pluginVersion="1.0.100.CR377467" class="com.bea.workshop.netui.project.core.upgrade.NetuiFacetLibInstallRecordUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:42 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.netui.project.core" pluginVersion="1.0.100.CR377467" class="com.bea.workshop.netui.project.core.upgrade.NetuiFacetUpgradeParticipants$J2EELibraryRefUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:43 UTC">
+    <upgrade-participant pluginId="com.m7.nitrox.jwebapp" pluginVersion="3.5.100.200807251738" class="com.m7.wide.jwebapp.project.upgrade.internal.AppXRayProjectUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:43 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.netui.project.core" pluginVersion="1.0.100.CR377467" class="com.bea.workshop.netui.project.core.upgrade.JstlFacetUpgradeParticipants$J2EELibraryRefUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:43 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.controls.core" pluginVersion="1.1.100.200807251738" class="com.bea.workshop.controls.core.upgrade.BeehiveControlsFacetLibInstallRecordUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:43 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080911001459" class="com.bea.workshop.wls.core.upgrade.internal.WlsCommonsLoggingBridgeFacetLibInstallRecordUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-14 23:51:43 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.controls.core" pluginVersion="1.1.100.200807251738" class="com.bea.workshop.controls.core.upgrade.WeblogicControlsFacetLibInstallRecordUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-22 00:00:11 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
+</upgrade-log>

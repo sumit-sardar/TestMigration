@@ -1,0 +1,287 @@
+/**
+ * legacy.css
+ */
+
+a {
+    color: #00f;
+}
+
+a:hover {
+    color: #00f;
+}
+
+body {
+    background-color: #000;
+    margin: 0px;
+    padding: 0px;
+    scroll: yes;
+}
+
+
+h1 { 
+    color: #369;
+    font-family: Helvetica, Arial, Sans-Serif;
+    font-weight: bold;
+    font-size: 20px;
+    margin: 0px 0px 5px 0px;
+}
+
+h2 { 
+    color: #663;
+    font-family: Helvetica, Arial, Sans-Serif;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0px 0px 5px 0px;
+}
+
+
+h3 {
+    border-color: #999;
+    border-style: solid;
+    border-width: 1px 0px 0px 0px;
+    color: #000;
+    font-family: Helvetica, Arial, Sans-Serif;
+    font-weight: bold;
+    font-size: 14px;
+    margin: 0px 0px 5px 0px;
+    padding-top: 3px;
+}
+
+h4 {
+    color: #000;
+    font-family: Helvetica, Arial, Sans-Serif;
+    font-weight: bold;
+    font-size: 12px;
+    margin: 0px 0px 5px 0px;
+}
+
+p {
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    margin: 0px 0px 15px 0px;
+}
+
+
+
+
+.alignLeft {
+    text-align: left;
+}
+
+.alignRight {
+    text-align: right;
+}
+
+.floatLeft {
+    float: left;
+}
+
+.floatRight {
+    float: right;
+}
+
+.discrete {
+    color: #999;
+    font-style: italic;
+}
+
+
+/******************************************************************************/
+
+.legacyBodyLayout {
+    border-collapse: collapse;
+    border-style: none;
+    border-width: 0px;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+}
+
+#legacyBody {
+    background-color: #fff;
+    padding: 20px;
+    vertical-align: top;
+}
+
+
+
+
+
+
+/******************************************************************************/
+
+#legacyHeader {
+    border-collapse: collapse;
+    border-style: none;
+    border-width: 0px;
+    width: 100%;
+}
+
+#legacyHeader td {
+    background-color: #fff;
+    color: #996;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    margin: 0px;
+    padding: 0px;
+}
+
+#legacyHeader a {
+    color: #996;
+    text-decoration: none;
+}
+
+#legacyHeader td.welcome {
+    background-color: #ffc;
+    border-color: #cc9;
+    border-style: solid;
+    border-width: 0px 0px 1px 0px;
+    margin: 0px;
+    padding: 0px 0px 0px 3px;
+}
+
+#legacyHeader a.logout {
+    color: #369;
+    text-decoration: underline;
+}
+
+#legacyHeader a.logout:hover {
+    color: #060;
+    text-decoration: underline;
+}
+
+/******************************************************************************/
+
+#legacyNav {
+    background-color: #666666;
+    color: #fff;
+    margin: 0px;
+    padding: 0px 0px 4px 0px;
+}
+
+
+.legacyNavLayout {
+    border-collapse: collapse;
+    border-style: none;
+    border-width: 0px;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+}
+
+.legacyNavLayout td {
+    background-color: #000;
+    color: #fff;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 14px;
+    padding: 0px 20px 0px 0px;
+}
+
+.legacyNavLinks {
+    background-color: #000;
+    border-collapse: collapse;
+    border-style: none;
+    border-width: 0px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.legacyNavLinks td {
+    padding: 3px;
+}
+
+.legacyNavLinks td.currentNav {
+    background-color: #666666;
+    color: #fc0;
+}
+
+.legacyNavLinks td a { 
+    color: #fff;
+    text-decoration: none;
+}
+
+.legacyNavLinks td a:hover { 
+    color: #fff;
+    text-decoration: underline;
+}
+
+
+
+/******************************************************************************/
+
+#legacySideNav {
+    background-color: #ffc;
+    color: #cc9;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    line-height: 16px;
+    margin: 0px;
+    padding: 0px;
+    width: 164px;
+    vertical-align: top;
+}
+
+#legacySideNav h1 {
+    background-color: #cc9;
+    color: #369;
+    font-size: 11px;
+    font-weight: bold;
+    margin: 0px 0px 2px 0px;
+    padding: 2px 0px 2px 22px;
+}
+
+#legacySideNav ul {
+    list-style-type: square;
+    list-style-position: outside;
+    margin: 0px 0px 10px 22px;
+    padding: 0px;
+}
+
+#legacySideNav a {
+    color: #369;
+    text-decoration: none;
+}
+
+#legacySideNav a:hover {
+    color: #060;
+    text-decoration: underline;
+}
+
+
+
+/******************************************************************************/
+
+
+
+#legacyFooter {
+    background-color: #cc9;
+    color: #666666;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 10px;
+    line-height: 16px;
+    padding: 5px;
+}
+
+#legacyFooter span {
+    padding-right: 10px;
+}
+
+#legacyFooter a {
+    color: #663;
+    text-decoration: underline;
+}
+
+#legacyFooter a:hover {
+    text-decoration: underline;
+}
+
+span.navleft-unclickable {
+    vertical-align: top;
+    background-color: #ffc; /* yellow background of side menu */
+    line-height: 16px;
+    color: #336 ; /* needed to color the bullets */
+}
+
+

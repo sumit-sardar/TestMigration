@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: dep-weblib-webutils.jar  
+ dep-weblib-taglib.jar
+
