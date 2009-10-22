@@ -20,7 +20,7 @@ public class ShowHideSectionTag extends WidgetsBaseTag
     private String sectionTitle = "";
     private String sectionVisible = "";
     
-    
+    private String expression = "";
     
     public void setSectionId( String sectionId ) {
         this.sectionId = sectionId;
@@ -48,12 +48,18 @@ public class ShowHideSectionTag extends WidgetsBaseTag
             JspWriter out = pageContext.getOut();
             TagLibUtils tlu = new TagLibUtils( (HttpServletRequest) pageContext.getRequest(), this, this.pageContext );
             
-            String expression = this.sectionVisible;
-            Boolean visible = (Boolean) tlu.performResolveVariable( expression );
+            this.expression = this.sectionVisible;
+            Boolean visible;
             
-            expression = "{" + this.sectionVisible + "}";
+            if (isOldStyle(this.sectionVisible)) {            
+            	visible = (Boolean) tlu.resolveVariable( this.sectionVisible );
+            }
+            else {
+            	visible = (Boolean) tlu.performResolveVariable( this.sectionVisible );
+                this.expression = addBrackets(this.sectionVisible);
+            }
             
-            out.print( hiddenElement(expression, visible) );
+            out.print( hiddenElement(this.expression, visible) );
             
             String hideSectionId = this.sectionId + "_hide";            
             String showSectionId = this.sectionId + "_show";     
@@ -187,9 +193,7 @@ public class ShowHideSectionTag extends WidgetsBaseTag
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         String contextPath = request.getContextPath();
         
-        String expression = "{" + this.sectionVisible + "}";
-        
-        String js = "showSection('" + this.sectionId + "', '" + expression + "');";            
+        String js = "showSection('" + this.sectionId + "', '" + this.expression + "');";            
         String anchor = "<a href=\"#\" onclick=\"" + js + " return false;\">";
         String img = "<img src=\"" + contextPath + "/" + IMG_COLLAPSE + "\" border=\"0\" >";
         String str = (anchor +  img + "</a>");            
@@ -201,9 +205,7 @@ public class ShowHideSectionTag extends WidgetsBaseTag
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         String contextPath = request.getContextPath();
         
-        String expression = "{" + this.sectionVisible + "}";
-        
-        String js = "hideSection('" + this.sectionId + "', '" + expression + "');";
+        String js = "hideSection('" + this.sectionId + "', '" + this.expression + "');";
         String anchor = "<a href=\"#\" onclick=\"" + js + " return false;\">";
         String img = "<img src=\"" + contextPath + "/" + IMG_EXPAND + "\" border=\"0\" >";
         String str = (anchor +  img + "</a>");            

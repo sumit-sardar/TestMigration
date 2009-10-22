@@ -39,8 +39,21 @@ public class TablePathListTag extends WidgetsBaseTag
             JspWriter out = pageContext.getOut();
             TagLibUtils tlu = new TagLibUtils( (HttpServletRequest) pageContext.getRequest(), this, this.pageContext );
         
-            String currentLabel = (String) tlu.performResolveVariable( this.labelDataSource );
-            Integer currentValue = (Integer) tlu.performResolveVariable( this.valueDataSource );
+            String currentLabel;
+            Integer currentValue;
+            String labelDS = this.labelDataSource;
+            String valueDS = this.valueDataSource;
+
+            if (isOldStyle(this.labelDataSource)) {            
+            	currentLabel = (String) tlu.resolveVariable( this.labelDataSource );
+            	currentValue = (Integer) tlu.resolveVariable( this.valueDataSource );
+            }
+            else {
+            	currentLabel = (String) tlu.performResolveVariable( this.labelDataSource );
+            	currentValue = (Integer) tlu.performResolveVariable( this.valueDataSource );        
+            	labelDS = addBrackets(this.labelDataSource);
+            	valueDS = addBrackets(this.valueDataSource);
+            }
             
             List pathListEntries = (List)tlu.performResolveVariable( pathList );
             
@@ -48,9 +61,6 @@ public class TablePathListTag extends WidgetsBaseTag
                 throw new JspException("pathList attribute not defined!");
             }
         
-            String labelDS = "{" + this.labelDataSource + "}";
-            String valueDS = "{" + this.valueDataSource + "}";
-            
             out.print( hiddenElement( labelDS, currentLabel) );
             out.print( hiddenElement( valueDS, currentValue) );
             out.print( "<div class=\"" + STYLE_CLASS + "\" >");

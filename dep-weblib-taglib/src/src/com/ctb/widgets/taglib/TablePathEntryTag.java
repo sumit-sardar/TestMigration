@@ -45,8 +45,17 @@ public class TablePathEntryTag extends WidgetsBaseTag
             String hasLink = (String) tlu.resolveVariable( shownAsLink ); 
             String js = "";
             
-            String labelDS = "{" + this.dstLabelDataSource + "}";
-            String valueDS = "{" + this.dstValueDataSource + "}";
+            String labelDS;
+            String valueDS;
+            
+            if (isOldStyle(this.dstLabelDataSource)) {            
+                labelDS = this.dstLabelDataSource;
+                valueDS = this.dstValueDataSource;
+            }
+            else {
+                labelDS = addBrackets(this.dstLabelDataSource);
+                valueDS = addBrackets(this.dstValueDataSource);            	
+            }
             
             js += "setElementValue('" + labelDS + "', '" + tlu.escapeVariable(srcLabel) + "'); ";
             js += "setElementValueAndSubmit('" + valueDS + "', '" + srcValue.toString() + "'); ";

@@ -25,9 +25,16 @@ public class TableNoResultsTag extends WidgetsBaseTag
         
         try {
             TagLibUtils tlu = new TagLibUtils( (HttpServletRequest) pageContext.getRequest(), this, this.pageContext );
-            List dataList = (List)tlu.performResolveVariable( this.dataSource );
             
-            //List dataList = (List)pageContext.getRequest().getAttribute( this.dataSource );
+            List dataList;
+            
+            if (isOldStyle(this.dataSource)) {            
+            	dataList = (List)tlu.resolveVariable( this.dataSource );
+            }
+            else {
+            	dataList = (List)tlu.performResolveVariable( this.dataSource );            	
+            }
+
             if( (dataList != null) && (dataList.size() == 0) ) {
             	results = this.EVAL_BODY_INCLUDE;
             } 

@@ -57,16 +57,18 @@ public class CollapsibleSectionTag extends WidgetsBaseTag
             JspWriter out = pageContext.getOut();
             TagLibUtils tlu = new TagLibUtils( (HttpServletRequest) pageContext.getRequest(), this, this.pageContext );
             
-            String visibleStr = (String) tlu.resolveVariable( this.getSectionVisible() );
-            
-            this.visible = Boolean.TRUE;
-            if (visibleStr == null) {
-                this.visible = Boolean.TRUE;
-                this.sectionVisible = Boolean.TRUE.toString();
+            String visibleStr;
+            if (isOldStyle(this.sectionVisible)) {            
+            	visibleStr = (String) tlu.resolveVariable( this.sectionVisible );
             }
             else {
+            	visibleStr = (String) tlu.performResolveVariable( this.sectionVisible );   
+            	this.sectionVisible = addBrackets(this.sectionVisible);
+            }
+            
+            this.visible = Boolean.TRUE;
+            if (visibleStr != null) {
             	this.visible = new Boolean(visibleStr);
-                this.sectionVisible = this.visible.toString();
             }
             
             if (this.visible == null)

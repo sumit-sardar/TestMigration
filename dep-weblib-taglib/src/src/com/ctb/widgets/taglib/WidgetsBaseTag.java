@@ -66,7 +66,17 @@ public class WidgetsBaseTag extends javax.servlet.jsp.tagext.TagSupport
         return "</table>";    
     }
     
+    protected boolean isOldStyle(String src) {
+        if ((src.indexOf("{") == 0) && (src.indexOf("}") == (src.length() - 1))) {
+        	return true;
+        }
+        return false;    
+    }
 
+    protected String addBrackets(String src) {
+    	String dest = "{" + src + "}";
+        return dest;    
+    }
 
 
     /**

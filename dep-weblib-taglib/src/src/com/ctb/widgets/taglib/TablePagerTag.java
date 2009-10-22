@@ -90,8 +90,17 @@ public class TablePagerTag extends WidgetsBaseTag
             JspWriter out = pageContext.getOut();
             TagLibUtils tlu = new TagLibUtils( (HttpServletRequest) pageContext.getRequest(), this, this.pageContext );
 
-            Integer pageRequested = (Integer) tlu.performResolveVariable( this.getDataSource() );
-
+            String expression = this.getDataSource();
+            Integer pageRequested;
+            
+            if (isOldStyle(this.getDataSource())) {            
+            	pageRequested= (Integer) tlu.resolveVariable( this.getDataSource() );
+            }
+            else {
+            	pageRequested= (Integer) tlu.performResolveVariable( this.getDataSource() );     
+            	expression = addBrackets(this.getDataSource());            	
+            }
+            
             PagerSummary pagerSummary = (PagerSummary)tlu.performResolveVariable( this.getSummary() );
 
             if( pageRequested == null ) {
@@ -101,7 +110,6 @@ public class TablePagerTag extends WidgetsBaseTag
                 throw new JspException("summary attribute not defined!");
             }
 
-            String expression = "{" + this.getDataSource() + "}";
             
             // Write out hidden element if only one page.
             if( pagerSummary.getTotalPages().intValue() <= 1 ) {
@@ -175,7 +183,7 @@ public class TablePagerTag extends WidgetsBaseTag
         nextPage  = (currentPage >= totalPages) ? currentPage : currentPage + 1;
         lastPage  = totalPages;
 
-        String expression = "{" + this.getDataSource() + "}";
+        String expression = addBrackets(this.getDataSource());            	
         
         if( currentPage <= firstPage ) {
             html += buttonElement(null, firstButton, STYLE_CLASS_BUTTON, null, null, null, null, true) + " ";
@@ -226,7 +234,7 @@ public class TablePagerTag extends WidgetsBaseTag
         if( pagerSummary.getCurrentPage() != null ) {
             String inputField;
 
-            String expression = "{" + this.getDataSource() + "}";
+            String expression = addBrackets(this.getDataSource());            	
             
             if( pagerSummary.getTotalPages().intValue() > 1 ) {
                 inputField = textElement( expression, pagerSummary.getCurrentPage(), STYLE_CLASS_INPUT_FIELD, null, null, null, js, false );

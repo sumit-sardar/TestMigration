@@ -35,14 +35,20 @@ public class TableTabGroupTag extends WidgetsBaseTag
         try {
             TagLibUtils tlu = new TagLibUtils( (HttpServletRequest) pageContext.getRequest(), this, this.pageContext );
             
-            String expression = this.getDataSource();
-            String dataSourceValue = (String) tlu.performResolveVariable( expression );
+            String dataSource = this.getDataSource();
+            String dataSourceValue;
+
+            if (isOldStyle(dataSource)) {            
+            	dataSourceValue = (String) tlu.resolveVariable( dataSource );
+            }
+            else {
+            	dataSourceValue = (String) tlu.performResolveVariable( dataSource );
+            	dataSource = addBrackets(this.getDataSource());
+            }
             
             JspWriter out = pageContext.getOut();
-
-            expression = "{" + this.getDataSource() + "}";
             
-            out.print( hiddenElement( expression, dataSourceValue ) );
+            out.print( hiddenElement( dataSource, dataSourceValue ) );
             out.print( startTable( this.STYLE_CLASS ) );
             out.print( startTableRow( this.STYLE_CLASS ) );
         } catch( IOException ioe ) {

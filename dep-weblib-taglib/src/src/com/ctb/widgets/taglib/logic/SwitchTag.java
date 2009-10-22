@@ -1,12 +1,13 @@
 package com.ctb.widgets.taglib.logic; 
 
+import com.ctb.widgets.taglib.WidgetsBaseTag;
 import com.ctb.widgets.taglib.utils.TagLibUtils;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-public class SwitchTag extends javax.servlet.jsp.tagext.TagSupport
+public class SwitchTag extends WidgetsBaseTag
 { 
 
     private String dataSource;
@@ -30,7 +31,12 @@ public class SwitchTag extends javax.servlet.jsp.tagext.TagSupport
 
         try {
             TagLibUtils tlu = new TagLibUtils( (HttpServletRequest) pageContext.getRequest(), this, this.pageContext );
-            this.dataSourceValue = (String) tlu.performResolveVariable( dataSource );
+            if (isOldStyle(this.dataSource)) {            
+            	this.dataSourceValue = (String) tlu.resolveVariable( this.dataSource );
+            }
+            else {
+            	this.dataSourceValue = (String) tlu.performResolveVariable( this.dataSource );            	
+            }
             
         } catch( JspException jspe) {
             System.err.println("JspException caught within doStartTag of SwitchTag handler!");

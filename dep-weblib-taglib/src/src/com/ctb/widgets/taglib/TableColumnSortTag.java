@@ -43,9 +43,18 @@ public class TableColumnSortTag extends WidgetsBaseTag
             String expressionOBDS = parentTag.getOrderByDataSource();
             
             this.currentColumnSort = new ColumnSortEntry();
-            this.currentColumnSort.setValue( (String) tlu.performResolveVariable(expressionCDS) );
-            this.currentColumnSort.setOrderBy( (String) tlu.performResolveVariable(expressionOBDS) );
-
+            
+            if (isOldStyle(expressionCDS)) {            
+            	this.currentColumnSort.setValue( (String) tlu.resolveVariable(expressionCDS) );
+            	this.currentColumnSort.setOrderBy( (String) tlu.resolveVariable(expressionOBDS) );
+            }
+            else {
+            	this.currentColumnSort.setValue( (String) tlu.performResolveVariable(expressionCDS) );
+            	this.currentColumnSort.setOrderBy( (String) tlu.performResolveVariable(expressionOBDS) );            	
+                expressionCDS = addBrackets(parentTag.getColumnDataSource());
+                expressionOBDS = addBrackets(parentTag.getOrderByDataSource());
+            }
+            
             // change the sort order and style when this is the current sort
             String newOrderByValue = ColumnSortEntry.ASCENDING;
             String style = this.STYLE_CLASS_NOT_SORTED;
@@ -59,8 +68,6 @@ public class TableColumnSortTag extends WidgetsBaseTag
 
             }
 
-            expressionCDS = "{" + parentTag.getColumnDataSource() + "}";
-            expressionOBDS = "{" + parentTag.getOrderByDataSource() + "}";
             
             String js = "";
             js += "setElementValue('" + expressionCDS + "', '" + this.value + "');";

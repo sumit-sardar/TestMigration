@@ -22,18 +22,25 @@ public class TableTabTag extends WidgetsBaseTag
         this.value = value;
     }
     
-    
-    
+        
     public int doStartTag() {
         
         try {
             TagLibUtils tlu = new TagLibUtils( (HttpServletRequest) pageContext.getRequest(), this, this.pageContext );
             TableTabGroupTag ttg = (TableTabGroupTag) this.getParent();
-            String ttgDataSource = ttg.getDataSource();
-            String ttgDataSourceValue = (String) tlu.performResolveVariable( ttgDataSource );
+            String dataSource = ttg.getDataSource();
+            
+            String dataSourceValue;
+            if (isOldStyle(dataSource)) {            
+            	dataSourceValue = (String) tlu.resolveVariable( dataSource );
+            }
+            else {
+            	dataSourceValue = (String) tlu.performResolveVariable( dataSource );
+            	dataSource = addBrackets(ttg.getDataSource());
+            }
 
             JspWriter out = pageContext.getOut();
-            if( this.value.equalsIgnoreCase( ttgDataSourceValue ) ) {
+            if( this.value.equalsIgnoreCase( dataSourceValue ) ) {
                 this.tabState = this.STYLE_CURRENT;
             } else {
                 this.tabState = this.STYLE_NOT_CURRENT;
@@ -49,12 +56,10 @@ public class TableTabTag extends WidgetsBaseTag
 
             out.print( startTableHeader(this.tabState) );    
             
-            ttgDataSource = "{" + ttgDataSource + "}";
-            
             if (ttg.getAnchorName() != null)                                
-                out.print( "<a href=\"#\" onclick=\"setElementValueAndSubmitWithAnchor('" + ttgDataSource + "', '" + this.value + "', '" + ttg.getAnchorName() +  "'); return false;\">" );
+                out.print( "<a href=\"#\" onclick=\"setElementValueAndSubmitWithAnchor('" + dataSource + "', '" + this.value + "', '" + ttg.getAnchorName() +  "'); return false;\">" );
             else
-                out.print( "<a href=\"#\" onclick=\"setElementValueAndSubmit('" + ttgDataSource + "', '" + this.value + "'); return false;\">" );
+                out.print( "<a href=\"#\" onclick=\"setElementValueAndSubmit('" + dataSource + "', '" + this.value + "'); return false;\">" );
         } catch( IOException ioe ) {
             System.err.println("IOException caught within doStartTag of TableTab handler!");
             System.err.println(ioe);

@@ -45,13 +45,21 @@ public class TableColumnSortGroupTag extends WidgetsBaseTag
             
             String expressionCDS = this.getColumnDataSource();
             String expressionOBDS = this.getOrderByDataSource();
+            String columnValue;
+            String orderByValue;
             
-            String columnValue = (String) tlu.performResolveVariable( expressionCDS );
-            String orderByValue = (String) tlu.performResolveVariable( expressionOBDS );
+            if (isOldStyle(expressionCDS)) {            
+            	columnValue = (String) tlu.resolveVariable( expressionCDS );
+            	orderByValue = (String) tlu.resolveVariable( expressionOBDS );
+            }
+            else {
+            	columnValue = (String) tlu.performResolveVariable( expressionCDS );
+            	orderByValue = (String) tlu.performResolveVariable( expressionOBDS );            	
+                expressionCDS = addBrackets(this.getColumnDataSource());
+                expressionOBDS = addBrackets(this.getOrderByDataSource());
+            }
+            
             JspWriter out = pageContext.getOut();
-
-            expressionCDS = "{" + this.getColumnDataSource() + "}";
-            expressionOBDS = "{" + this.getOrderByDataSource() + "}";
             
             out.print( hiddenElement( expressionCDS, columnValue ) );
             out.print( hiddenElement( expressionOBDS, orderByValue ) );
