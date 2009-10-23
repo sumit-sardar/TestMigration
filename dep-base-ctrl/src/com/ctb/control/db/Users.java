@@ -1,21 +1,22 @@
 package com.ctb.control.db; 
 
 //import com.bea.control.*;
+import java.sql.SQLException;
+import java.util.Date;
+
+import org.apache.beehive.controls.api.bean.ControlExtension;
+import org.apache.beehive.controls.api.bean.ControlInterface;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 import org.apache.beehive.controls.system.jdbc.JdbcControlChecker;
-//import com.bea.control.JdbcControl;
-import com.ctb.bean.testAdmin.Customer;
+
 import com.ctb.bean.testAdmin.CustomerEmail;
 import com.ctb.bean.testAdmin.FindUser;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
 import com.ctb.bean.testAdmin.PasswordHistory;
-import com.ctb.bean.testAdmin.User;
-import com.ctb.bean.testAdmin.Role; 
-import java.sql.SQLException; 
+import com.ctb.bean.testAdmin.Role;
 import com.ctb.bean.testAdmin.TimeZones;
-import java.util.Date;
-import org.apache.beehive.controls.api.bean.ControlExtension;
-import org.apache.beehive.controls.api.bean.ControlInterface;
+import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.UserRole;
 
 /** 
  * Defines a new database control. 
@@ -900,4 +901,50 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "update dex.dex_user_password d  set d.user_password_old = (select dd.user_password_new  \t\t\t\t\t\t\t  from dex.dex_user_password dd  \t\t\t\t\t\t\t  where dd.user_id = {userId}),  \t\td.user_password_new = {newPassword}  where d.user_id = {userId}")
     void updateDexPassword(Integer userId, String newPassword) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
+     * insert into
+     *         user_role (
+     *     		user_id,
+     *          role_id,
+     *     		org_node_id,
+     *     		activation_status,
+     *     		created_by,
+     *     		created_date_time
+     *           ) values (
+     *     		{userId},
+     *          {role.roleId},
+     *     		{orgNodeId},
+     *     		'AC',
+     *     		{role.createdBy},
+     *     		{role.createdDateTime}
+     *     	   )::
+     */
+    @JdbcControl.SQL(statement = "insert into  user_role (  \t\tuser_id,  role_id,  \t\torg_node_id,  \t\tactivation_status,  \t\tcreated_by,  \t\tcreated_date_time  ) values (  \t\t{userId},  {role.roleId},  \t\t{orgNodeId},  \t\t'AC',  \t\t{role.createdBy},  \t\t{role.createdDateTime}  \t  )")
+    void createUserRole(Long userId, Role role, Long orgNodeId) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
+     * update user_role
+     * set activation_status = 'IN',
+     * updated_by = {updatedBy},
+     * updated_date_time = {updatedDateTime}
+     * where user_id = {userId}
+     * ::
+     */
+    @JdbcControl.SQL(statement = "update user_role set activation_status = 'IN', updated_by = {updatedBy}, updated_date_time = {updatedDateTime} where user_id = {userId}")
+    void inactivateUserRoles(Integer userId, Integer updatedBy, Date updatedDateTime) throws SQLException;
+
+
+    /**
+     * @jc:sql statement::
+     * select ur.user_id as userId,
+     * ur.role_id as roleId,
+     * ur.org_node_id as orgNodeId
+     * from user_role ur
+     * where ur.user_id = (select u.user_id from users u where u.user_name = {userName}) ::
+     */
+    @JdbcControl.SQL(statement = "select ur.user_id as userId, ur.role_id as roleId, ur.org_node_id as orgNodeId from user_role ur where ur.user_id = (select u.user_id from users u where u.user_name = {userName}) ")
+    UserRole[] getUserRoles(String userName) throws SQLException;
 }

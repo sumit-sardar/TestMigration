@@ -98,7 +98,7 @@
                 sourcepath="${java.sourcepath}"
                 srcdir="${.java.src.dir}"
                 includes="${.java.src.include}"
-                excludes="${.java.src.exclude}"
+                excludes="**/Users.java"
                 destdir="${.java.src.output}"
                 preprocessdir="${apt.src.output.dir}"
                 classpathref="java.classpath"
@@ -106,6 +106,24 @@
                 options="${apt.options}"
                 compile="false"
                 memoryMaximumSize="1024m"/>
+            	<delete>
+					<fileset dir="${workspace}">
+					    <include name="**/.apt_generated/com/ctb/control/db/UsersBean.java"/>
+					</fileset>
+				</delete>
+            	<apt
+	                sourcepath="${java.sourcepath}"
+	                srcdir="${.java.src.dir}"
+	                includes="**/Users.java"
+	                destdir="${.java.src.output}"
+	                preprocessdir="${apt.src.output.dir}"
+	                classpathref="java.classpath"
+	                factorypathref="apt.factory.path"
+	                options="${apt.options}"
+	                compile="false"
+            		nowarn="true"
+            		failonerror="true"
+	                memoryMaximumSize="1024m"/>
             </then>
           </if>
         </for-each-java-src-path>
