@@ -926,7 +926,7 @@ public class UserManagementImpl implements UserManagement, Serializable
             //Update Selected User Role
              
             if (!loginUser.getUserName().equals(user.getUserName())) {
-                users.deleteUserRolesForUser(user);
+            	userRoles.deleteUserRolesForUser(user);
                 if (user.getRole() != null && user.getRole().getRoleId() != null) {
                     for (int i = 0; i < organizationNodes.length; i++) {
                         Role rl = user.getRole();
@@ -1034,7 +1034,7 @@ public class UserManagementImpl implements UserManagement, Serializable
             //Update Selected User Role
             
             if (!loginUserName.equals(user.getUserName())) {
-                users.deleteUserRolesForUser(user);
+            	userRoles.deleteUserRolesForUser(user);
                 if (user.getRole() != null && user.getRole().getRoleId() != null) {
                     for (int i = 0; i < organizationNodes.length; i++) {
                         Role rl = user.getRole();

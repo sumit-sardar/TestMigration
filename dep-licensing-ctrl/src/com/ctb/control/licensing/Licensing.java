@@ -1,9 +1,9 @@
 package com.ctb.control.licensing; 
 
 
-import com.bea.control.annotations.TransactionAttribute;
-import com.bea.control.annotations.TransactionAttributeType;
 import org.apache.beehive.controls.api.bean.ControlInterface;
+
+import com.ctb.exception.CTBBusinessException;
 
 @ControlInterface()
 public interface Licensing 

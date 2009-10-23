@@ -7,7 +7,6 @@
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/weblogic-controls-10.0/exact/10.0"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="lib" path="/dep-base-ctrl/dep-base-ctrl.jar"/>
-	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/platform"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Oracle WebLogic Server v10.3 JRE"/>
 	<classpathentry kind="src" path=".apt_generated">
 		<attributes>

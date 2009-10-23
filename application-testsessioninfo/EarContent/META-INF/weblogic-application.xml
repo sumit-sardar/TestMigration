@@ -8,12 +8,6 @@
     <param-value>UTF-8</param-value>
   </application-param>
     <library-ref>
-        <library-name>sb-transport-control-10.0</library-name>
-        <specification-version>10.0</specification-version>
-        <implementation-version>10.0</implementation-version>
-        <exact-match>false</exact-match>
-    </library-ref>
-    <library-ref>
         <library-name>beehive-controls-1.0.1-10.0</library-name>
         <specification-version>1.0</specification-version>
         <exact-match>true</exact-match>

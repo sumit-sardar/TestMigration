@@ -6,5 +6,6 @@
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/struts-1.2/exact/1.2"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/beehive-netui-1.0.1-10.0/exact/1.0"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Oracle WebLogic Server v10.3 JRE"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/platform"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

@@ -1,21 +1,20 @@
 package com.ctb.control.db;
 
 //import com.bea.control.*;
+import java.sql.SQLException;
+import java.util.Date;
+
+import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
-import org.apache.beehive.controls.system.jdbc.JdbcControlChecker;
-//import com.bea.control.JdbcControl;
+
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerEmail;
 import com.ctb.bean.testAdmin.FindUser;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
 import com.ctb.bean.testAdmin.PasswordHistory;
-import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.Role;
-import java.sql.SQLException;
 import com.ctb.bean.testAdmin.TimeZones;
-import java.util.Date;
-import org.apache.beehive.controls.api.bean.ControlExtension;
-import org.apache.beehive.controls.api.bean.ControlInterface;
+import com.ctb.bean.testAdmin.User;
 
 /** 
  * Defines a new database control. 

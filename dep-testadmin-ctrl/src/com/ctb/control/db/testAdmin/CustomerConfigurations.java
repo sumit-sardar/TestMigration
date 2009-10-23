@@ -1,12 +1,13 @@
 package com.ctb.control.db.testAdmin; 
 
-import com.bea.control.*; 
-import com.bea.control.JdbcControl;
+import java.sql.SQLException;
+
+import org.apache.beehive.controls.api.bean.ControlExtension;
+import org.apache.beehive.controls.system.jdbc.JdbcControl;
+
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.OrganizationNode;
-import java.sql.SQLException; 
-import org.apache.beehive.controls.api.bean.ControlExtension;
 
 /** 
  * Defines a new database control. 

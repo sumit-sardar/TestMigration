@@ -1,10 +1,11 @@
 package com.ctb.control.db.testAdmin; 
 
-import com.bea.control.*;
-import com.bea.control.JdbcControl;
-import com.ctb.bean.request.testAdmin.FormAssignmentCount;
-import java.sql.SQLException; 
+import java.sql.SQLException;
+
 import org.apache.beehive.controls.api.bean.ControlExtension;
+import org.apache.beehive.controls.system.jdbc.JdbcControl;
+
+import com.ctb.bean.request.testAdmin.FormAssignmentCount;
 
 /** 
  * Defines a new database control. 

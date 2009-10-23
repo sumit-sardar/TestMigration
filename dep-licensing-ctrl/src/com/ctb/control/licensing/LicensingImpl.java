@@ -1,20 +1,20 @@
 package com.ctb.control.licensing; 
 
-import com.bea.control.*;
+import java.io.Serializable;
+import java.sql.SQLException;
+
+import org.apache.beehive.controls.api.bean.ControlImplementation;
+
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
 import com.ctb.bean.testAdmin.TestProduct;
-import com.ctb.control.db.Product;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.licensing.LicenseCreationException;
 import com.ctb.exception.licensing.LicenseUpdationException;
-import com.ctb.exception.validation.ValidationException;
 import com.ctb.exception.licensing.OrgLicenseDataNotFoundException;
+import com.ctb.exception.validation.ValidationException;
 import com.ctb.util.licensing.CTBConstants;
-import java.io.Serializable;
-import java.sql.SQLException;
-import org.apache.beehive.controls.api.bean.ControlImplementation;
 
 
 /**

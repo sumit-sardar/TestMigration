@@ -2,16 +2,14 @@
 package com.ctb.control.studentManagement;
 
 
-import com.bea.control.annotations.TransactionAttribute;
-import com.bea.control.annotations.TransactionAttributeType;
 import org.apache.beehive.controls.api.bean.ControlInterface;
+
+import com.ctb.exception.CTBBusinessException;
 
 /** 
  *
  * @author John_Wang
  */ 
-
-
 @ControlInterface()
 public interface StudentManagement 
 { 

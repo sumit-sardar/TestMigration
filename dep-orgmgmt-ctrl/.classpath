@@ -6,7 +6,6 @@
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/beehive-controls-1.0.1-10.0/exact/1.0"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/weblogic-controls-10.0/exact/10.0"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
-	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/platform"/>
 	<classpathentry kind="lib" path="/dep-base-ctrl/dep-base-ctrl.jar"/>
 	<classpathentry kind="lib" path="/dep-studentmgmt-ctrl/dep-studentmgmt-ctrl.jar"/>
 	<classpathentry kind="lib" path="/dep-usermgmt-ctrl/dep-usermgmt-ctrl.jar"/>
@@ -17,5 +16,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="com.bea.workshop.xmlbeans.lib/version_2_3"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/platform"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

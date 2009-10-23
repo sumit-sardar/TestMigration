@@ -28,5 +28,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="com.bea.workshop.xmlbeans.lib/version_2_3"/>
+	<classpathentry kind="lib" path="/dep-weblib-webutils/dep-weblib-webutils.jar"/>
+	<classpathentry kind="lib" path="/dep-weblib-taglib/dep-weblib-taglib.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
