@@ -28,12 +28,23 @@ public class TableFilterTag extends WidgetsBaseTag
         try {
             TagLibUtils tlu = new TagLibUtils( (HttpServletRequest) pageContext.getRequest(), this, this.pageContext );
             
-            String filterVisibleStr = (String) tlu.resolveVariable( this.getDataSource() );
-            Boolean filterVisible = new Boolean(filterVisibleStr);
+            Boolean filterVisible = Boolean.TRUE;
+            String filterVisibleStr;
+            String expression = this.getDataSource();
+            
+            if (isOldStyle(this.getDataSource())) {                        
+            	filterVisibleStr = (String) tlu.resolveVariable( this.getDataSource() );
+                filterVisible = new Boolean(filterVisibleStr);
+            }
+            else {
+            	filterVisible = (Boolean) tlu.performResolveVariable( this.getDataSource() );            	
+            	expression = addBrackets(this.getDataSource());
+            }
+            
             
             JspWriter out = pageContext.getOut();
 
-            String divId = this.DIV_PREFIX + this.dataSource;
+            String divId = this.DIV_PREFIX + expression;
             String divStyle;
             
             if( filterVisible.booleanValue() )
@@ -42,7 +53,7 @@ public class TableFilterTag extends WidgetsBaseTag
                 divStyle = "display: none; ";
 
 
-            out.print( hiddenElement(this.dataSource, filterVisible) );
+            out.print( hiddenElement(expression, filterVisible) );
             out.print( "<div id=\"" + divId + "\" style=\"" + divStyle + "\" >" );
         } catch( IOException ioe ) {
             System.err.println("IOException caught within doStartTag of TableFilterTag handler!");

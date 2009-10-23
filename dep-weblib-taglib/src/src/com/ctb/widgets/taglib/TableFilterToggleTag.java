@@ -31,22 +31,32 @@ public class TableFilterToggleTag extends WidgetsBaseTag
         try {
             TagLibUtils tlu = new TagLibUtils( (HttpServletRequest) pageContext.getRequest(), this, this.pageContext );
             
-            String filterVisibleStr = (String) tlu.resolveVariable( this.getDataSource() );
-            Boolean filterVisible = new Boolean(filterVisibleStr);
+            Boolean filterVisible = Boolean.TRUE;
+            String filterVisibleStr;
+            String expression = this.getDataSource();
+            
+            if (isOldStyle(this.getDataSource())) {                        
+            	filterVisibleStr = (String) tlu.resolveVariable( this.getDataSource() );
+                filterVisible = new Boolean(filterVisibleStr);
+            }
+            else {
+            	filterVisible = (Boolean) tlu.performResolveVariable( this.getDataSource() );            	
+            	expression = addBrackets(this.getDataSource());
+            }
             
             String showFilter = (String) tlu.resolveVariable(this.RESOURCE_BUTTON_SHOW);
             String hideFilter = (String) tlu.resolveVariable(this.RESOURCE_BUTTON_HIDE);
             JspWriter out = pageContext.getOut();
 
-            String divId = TableFilterTag.DIV_PREFIX + this.dataSource;
+            String divId = TableFilterTag.DIV_PREFIX + expression;
 
             String js = "";
             js += "if( this.value=='" + hideFilter + "' ) { ";
-            js += "  setElementValue('" + this.dataSource + "', false); ";
+            js += "  setElementValue('" + expression + "', false); ";
             js += "  hideElementById('" + divId + "'); ";
             js += "  this.value='" + showFilter + "'; ";
             js += "} else { ";
-            js += "  setElementValue('" + this.dataSource + "', true); ";
+            js += "  setElementValue('" + expression + "', true); ";
             js += "  showElementById('" + divId + "'); ";
             js += "  this.value = '" + hideFilter + "'; ";
             js += "}";
@@ -59,7 +69,7 @@ public class TableFilterToggleTag extends WidgetsBaseTag
             }
 
 
-            out.print( buttonElement( this.dataSource, buttonText, this.STYLE_CLASS_BUTTON, null, null, js, null, false) );
+            out.print( buttonElement( expression, buttonText, this.STYLE_CLASS_BUTTON, null, null, js, null, false) );
 
         } catch( IOException ioe ) {
             System.err.println("IOException caught within doStartTag of TableFilterToggleTag handler!");
