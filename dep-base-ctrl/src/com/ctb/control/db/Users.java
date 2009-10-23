@@ -1,22 +1,21 @@
-package com.ctb.control.db; 
+package com.ctb.control.db;
 
 //import com.bea.control.*;
-import java.sql.SQLException;
-import java.util.Date;
-
-import org.apache.beehive.controls.api.bean.ControlExtension;
-import org.apache.beehive.controls.api.bean.ControlInterface;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 import org.apache.beehive.controls.system.jdbc.JdbcControlChecker;
-
+//import com.bea.control.JdbcControl;
+import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerEmail;
 import com.ctb.bean.testAdmin.FindUser;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
 import com.ctb.bean.testAdmin.PasswordHistory;
-import com.ctb.bean.testAdmin.Role;
-import com.ctb.bean.testAdmin.TimeZones;
 import com.ctb.bean.testAdmin.User;
-import com.ctb.bean.testAdmin.UserRole;
+import com.ctb.bean.testAdmin.Role;
+import java.sql.SQLException;
+import com.ctb.bean.testAdmin.TimeZones;
+import java.util.Date;
+import org.apache.beehive.controls.api.bean.ControlExtension;
+import org.apache.beehive.controls.api.bean.ControlInterface;
 
 /** 
  * Defines a new database control. 
@@ -31,21 +30,11 @@ import com.ctb.bean.testAdmin.UserRole;
  */ 
 @ControlExtension()
 @JdbcControl.ConnectionDataSource(jndiName = "oasDataSource")
-@ControlInterface( checker = JdbcControlChecker.class )
-
 public interface Users extends JdbcControl
-{ 
+{
     /**
      * @jc:sql statement::
-     * delete from user_role
-     * where user_id = {user.userId}::
-     */
-    @JdbcControl.SQL(statement = "delete from user_role where user_id = {user.userId}")
-    void deleteUserRolesForUser(User user) throws SQLException;
-    
-    /**
-     * @jc:sql statement::
-     * select 
+     * select
      * 	   decode(count(ona.org_node_id), 0, 'false', 'true') as visible
      * from
      * 	org_node_ancestor ona,
@@ -63,10 +52,10 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select  \t  decode(count(ona.org_node_id), 0, 'false', 'true') as visible from \torg_node_ancestor ona, \tuser_role urole, \tusers, \tuser_role orole, \tusers ousers where \t users.user_name = {userName} \t and urole.user_id = users.user_id \t and ona.ancestor_org_node_id = urole.org_node_id \t and ona.org_node_id = orole.org_node_id \t and orole.user_id = ousers.user_id \t and ousers.user_name = {otherName}")
     String checkVisibility(String userName, String otherName) throws SQLException;
-    
+
     /**
      * @jc:sql statement::
-     * select 
+     * select
      *      count(distinct usr.user_id)
      * from
      *      users usr,
@@ -84,10 +73,10 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select  count(distinct usr.user_id) from  users usr,  user_role onu,  org_node_ancestor ona,  user_role urole,  users where  usr.user_id = {userId}  and onu.user_id = usr.user_id  and ona.org_node_id = onu.org_node_id  and urole.org_node_id = ona.ancestor_org_node_id  and users.user_id = urole.user_id  and users.user_name = {userName}")
     Integer isUserEditableByUser(String userName, Integer userId) throws SQLException;
-    
+
     /**
      * @jc:sql statement::
-     * select 
+     * select
      *      count(distinct usr.user_id)
      * from
      *      users usr,
@@ -111,7 +100,7 @@ public interface Users extends JdbcControl
     @JdbcControl.SQL(statement = "select  count(distinct usr.user_id) from  users usr,  user_role onu,  org_node_ancestor ona,  user_role urole,  users,  test_admin admin where  usr.user_id = {userId}  and onu.user_id = usr.user_id  and ona.org_node_id = onu.org_node_id  and onu.activation_status = 'AC'  and urole.org_node_id = ona.ancestor_org_node_id  and urole.activation_status = 'AC'  and users.user_id = urole.user_id  and users.user_name = {userName}  and admin.test_admin_id = {testAdminId}")
     Integer isUserEditableByUserForAdmin(String userName, Integer userId, Integer testAdminId) throws SQLException;
 
-    
+
     /**
      * @jc:sql statement::
      * select distinct
@@ -158,10 +147,10 @@ public interface Users extends JdbcControl
     @JdbcControl.SQL(statement = "select distinct  users.user_id as userId,  users.user_name as userName,  users.display_user_name as displayUserName,  users.password,  users.first_name as firstName,  users.middle_name as middleName,  users.last_name as lastName,  users.preferred_name as preferredName,  users.prefix,  users.suffix,  users.time_zone as timeZone,  users.email,  users.password_hint_question_id as passwordHintQuestionId,  users.password_expiration_date as passwordExpirationDate,  users.password_hint_answer as passwordHintAnswer,  users.address_id as addressId,  users.active_session as activeSession,  users.reset_password as resetPassword,  users.last_login_date_time as lastLoginDateTime,  users.ext_pin1 as extPin1,  users.ext_pin2 as extPin2,  users.ext_pin3 as extPin3,  users.ext_school_id as extSchoolId,  users.created_by as createdBy,  users.created_date_time as CreatedDateTime,  users.updated_by as updatedBy,  users.updated_date_time as updatedDateTime,  users.activation_status as activationStatus,  users.data_import_history_id as dataImportHistoryId,  users.display_new_message as displayNewMessage from  user_role urole,  users where  urole.user_id = users.user_id  and urole.org_node_id = {orgNodeId}  and users.activation_status = 'AC'  and urole.activation_status = 'AC'",
                      arrayMaxLength = 100000)
     User [] getUsersForOrgNode(Integer orgNodeId) throws SQLException;
-    
+
     /**
      * @jc:sql statement::
-     * select 
+     * select
      *      users.user_id as userId,
      *      users.user_name as userName,
      *      users.display_user_name as displayUserName,
@@ -207,10 +196,10 @@ public interface Users extends JdbcControl
     @JdbcControl.SQL(statement = "select  users.user_id as userId,  users.user_name as userName,  users.display_user_name as displayUserName,  users.password,  users.first_name as firstName,  users.middle_name as middleName,  users.last_name as lastName,  users.preferred_name as preferredName,  users.prefix,  users.suffix,  users.time_zone as timeZone,  users.email,  users.password_hint_question_id as passwordHintQuestionId,  users.password_expiration_date as passwordExpirationDate,  users.password_hint_answer as passwordHintAnswer,  users.address_id as addressId,  users.active_session as activeSession,  users.reset_password as resetPassword,  users.last_login_date_time as lastLoginDateTime,  users.ext_pin1 as extPin1,  users.ext_pin2 as extPin2,  users.ext_pin3 as extPin3,  users.ext_school_id as extSchoolId,  users.created_by as createdBy,  users.created_date_time as CreatedDateTime,  users.updated_by as updatedBy,  users.updated_date_time as updatedDateTime,  users.activation_status as activationStatus,  users.data_import_history_id as dataImportHistoryId,  users.display_new_message as displayNewMessage from  test_admin_user_role taur,  users where  taur.user_id = users.user_id  and taur.test_admin_id = {testAdminId}  and users.activation_status = 'AC' order by  users.last_name,  users.first_name",
                      arrayMaxLength = 100000)
     User [] getProctorUsersForAdmin(Integer testAdminId) throws SQLException;
-    
+
     /**
      * @jc:sql statement::
-     * select 
+     * select
      *      users.user_id as userId,
      *      users.user_name as userName,
      *      users.display_user_name as displayUserName,
@@ -251,7 +240,7 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select  users.user_id as userId,  users.user_name as userName,  users.display_user_name as displayUserName,  users.password,  users.first_name as firstName,  users.middle_name as middleName,  users.last_name as lastName,  users.preferred_name as preferredName,  users.prefix,  users.suffix,  users.time_zone as timeZone,  users.email,  users.password_hint_question_id as passwordHintQuestionId,  phq.password_hint_question as passwordHintQuestion,  users.password_expiration_date as passwordExpirationDate,  users.password_hint_answer as passwordHintAnswer,  users.address_id as addressId,  users.active_session as activeSession,  users.reset_password as resetPassword,  users.last_login_date_time as lastLoginDateTime,  users.ext_pin1 as extPin1,  users.ext_pin2 as extPin2,  users.ext_pin3 as extPin3,  users.ext_school_id as extSchoolId,  users.created_by as createdBy,  users.created_date_time as CreatedDateTime,  users.updated_by as updatedBy,  users.updated_date_time as updatedDateTime,  users.activation_status as activationStatus,  users.data_import_history_id as dataImportHistoryId,  users.display_new_message as displayNewMessage from  users, password_hint_question phq where  phq.password_hint_question_id (+) = users.password_hint_question_id  and users.user_name = {userName}  and users.activation_status = 'AC'")
     User getUserDetails(String userName) throws SQLException;
-    
+
     /**
      * @jc:sql statement::
      * select distinct
@@ -274,21 +263,21 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select distinct  customer.customer_id as customerId,  customer.customer_name as customerName,  customer.override_hide_accommodations as hideAccommodations,  customer.import_student_editable as importStudentEditable,  customer.demographic_visible as demographicVisible from  users,  user_role urole,  org_node node,  customer where  node.org_node_id = urole.org_node_id  and urole.user_id = users.user_id  and customer.customer_id = node.customer_id  and urole.activation_status = 'AC'  and users.user_name = {userName}")
     Customer getCustomer(String userName) throws SQLException;
-    
+
     /**
      * @jc:sql statement::
      * select user_id from users where user_name = {userName}::
      */
     @JdbcControl.SQL(statement = "select user_id from users where user_name = {userName}")
     Integer getUserIdForName(String userName) throws SQLException;
-    
+
     /**
      * @jc:sql statement::
-     * select 
+     * select
      *      max(node.customer_id)
-     * from 
+     * from
      *      users, org_node node, user_role urole
-     * where 
+     * where
      *      users.user_name = {userName}
      *      and urole.user_id = users.user_id
      *      and node.org_node_id = urole.org_node_id
@@ -296,14 +285,14 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select  max(node.customer_id) from  users, org_node node, user_role urole where  users.user_name = {userName}  and urole.user_id = users.user_id  and node.org_node_id = urole.org_node_id  and urole.activation_status = 'AC'")
     Integer getCustomerIdForName(String userName) throws SQLException;
-    
+
     /**
      * @jc:sql statement::
-     * select 
-     *      max(urole.org_node_id) 
-     * from 
+     * select
+     *      max(urole.org_node_id)
+     * from
      *      users, user_role urole
-     * where 
+     * where
      *      users.user_name = {userName}
      *      and urole.activation_status = 'AC'
      *      and urole.user_id = users.user_id::
@@ -342,7 +331,7 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select tz.time_zone as timeZone, INITCAP(tz.time_zone_desc) as timeZoneDesc from time_zone_code tz")
     TimeZones[] getTimeZones() throws SQLException;
-   
+
     /**
      * @jc:sql statement::
      * insert into
@@ -403,7 +392,7 @@ public interface Users extends JdbcControl
 
     /**
      * @jc:sql statement::
-     * select seq_user_id.nextval 
+     * select seq_user_id.nextval
      * from dual ::
      */
     @JdbcControl.SQL(statement = "select seq_user_id.nextval  from dual ")
@@ -489,7 +478,7 @@ public interface Users extends JdbcControl
 
     /**
      * @jc:sql statement::
-     * SELECT phq.password_hint_question_id passwordHintQuestionId, 
+     * SELECT phq.password_hint_question_id passwordHintQuestionId,
      * phq.password_hint_question passwordHintQuestion
      * FROM password_hint_question phq
      * where phq.activation_status = 'AC'::
@@ -499,14 +488,14 @@ public interface Users extends JdbcControl
 
     /**
      * @jc:sql statement::
-     * update users set 
+     * update users set
      * password = {user.password},
      * password_expiration_date = {user.passwordExpirationDate},
      * reset_password = {user.resetPassword},
      * display_new_message = {user.displayNewMessage},
      * last_login_date_time = null,
      * updated_by = (select u.user_id from users u  where u.user_name = {userName}),
-     * updated_date_time = {updatedDate} 
+     * updated_date_time = {updatedDate}
      * where user_name = {user.userName}::
      */
     @JdbcControl.SQL(statement = "update users set  password = {user.password}, password_expiration_date = {user.passwordExpirationDate}, reset_password = {user.resetPassword}, display_new_message = {user.displayNewMessage}, last_login_date_time = null, updated_by = (select u.user_id from users u  where u.user_name = {userName}), updated_date_time = {updatedDate}  where user_name = {user.userName}")
@@ -514,7 +503,7 @@ public interface Users extends JdbcControl
 
     /**
      * @jc:sql statement::
-     * update users set 
+     * update users set
      * password = {user.password},
      * password_expiration_date = {user.passwordExpirationDate},
      * password_hint_answer = {user.passwordHintAnswer},
@@ -522,7 +511,7 @@ public interface Users extends JdbcControl
      * reset_password = {user.resetPassword},
      * display_new_message = {user.displayNewMessage},
      * updated_by = (select u.user_id from users u  where u.user_name = {userName}),
-     * updated_date_time = {updatedDate} 
+     * updated_date_time = {updatedDate}
      * where user_name = {user.userName}::
      */
     @JdbcControl.SQL(statement = "update users set  password = {user.password}, password_expiration_date = {user.passwordExpirationDate}, password_hint_answer = {user.passwordHintAnswer}, password_hint_question_id = {user.passwordHintQuestionId}, reset_password = {user.resetPassword}, display_new_message = {user.displayNewMessage}, updated_by = (select u.user_id from users u  where u.user_name = {userName}), updated_date_time = {updatedDate}  where user_name = {user.userName}")
@@ -530,11 +519,11 @@ public interface Users extends JdbcControl
 
     /**
      * @jc:sql statement::
-     * select 
+     * select
      * passHist.user_id as userId,
      * passHist.password as password,
      * passHist.created_date_time as createdDate
-     * from password_history passHist 
+     * from password_history passHist
      * where passHist.User_Id = (select u.user_id from users u  where u.user_name = {selectedUserName})::
      */
     @JdbcControl.SQL(statement = "select  passHist.user_id as userId, passHist.password as password, passHist.created_date_time as createdDate from password_history passHist  where passHist.User_Id = (select u.user_id from users u  where u.user_name = {selectedUserName})")
@@ -542,19 +531,19 @@ public interface Users extends JdbcControl
 
     /**
      * @jc:sql statement::
-     * delete 
+     * delete
      * from
-     * password_history passHist 
-     * where passHist.user_id = (select u.user_id from users u where u.user_name = {selectedUserName}) 
-     * and 
+     * password_history passHist
+     * where passHist.user_id = (select u.user_id from users u where u.user_name = {selectedUserName})
+     * and
      * passHist.password = {password}::
     */
     @JdbcControl.SQL(statement = "delete  from password_history passHist  where passHist.user_id = (select u.user_id from users u where u.user_name = {selectedUserName})  and  passHist.password = {password}")
     void deletePasswordHistory(String selectedUserName, String password);
-   
+
     /**
      * @jc:sql statement::
-     * insert into 
+     * insert into
      *      password_history (
      *      user_id,
      *      password,
@@ -568,7 +557,7 @@ public interface Users extends JdbcControl
     @JdbcControl.SQL(statement = "insert into  password_history (  user_id,  password,  created_date_time  ) values (  (select u.user_id from users  u where u.user_name = {selectedUserName}),  {passHistDetail.password},  {passHistDetail.createdDate}  )")
     void addPasswordHistory(String selectedUserName, PasswordHistory passHistDetail) throws SQLException;
 
-    
+
 
     /**
      * @jc:sql statement::
@@ -581,11 +570,11 @@ public interface Users extends JdbcControl
 
     /**
      * @jc:sql statement::
-     * select 
-     *    decode (count(passHist.password), 0 ,0,1) 
+     * select
+     *    decode (count(passHist.password), 0 ,0,1)
      *    from password_history passHist
-     *    where passHist.user_id = (select u.user_id from users u.user_name = {selectedUserName}) 
-     *    and 
+     *    where passHist.user_id = (select u.user_id from users u.user_name = {selectedUserName})
+     *    and
      *    passHist.password = {newPassword}::
      */
   //  boolean isRepeatedPassword(String selectedUserName, String newPassword) throws SQLException;
@@ -596,10 +585,10 @@ public interface Users extends JdbcControl
      * u.user_name as userName,
      * u.first_name as firstName,
      * u.middle_name as middleName,
-     * u.last_name as lastName, 
+     * u.last_name as lastName,
      * concat(concat(u.last_name, ', '), concat(u.first_name, concat(' ', u.MIDDLE_NAME))) as displayUserName,
      * u.email as email,
-     * r2.role_id as roleId, 
+     * r2.role_id as roleId,
      * INITCAP(r2.role_name) as roleName
      * FROM users u,
      * users u1,
@@ -630,7 +619,7 @@ public interface Users extends JdbcControl
 
     /**
      * @jc:sql statement::
-     * select decode (count(itemSet.item_set_id),0,0,1) result 
+     * select decode (count(itemSet.item_set_id),0,0,1) result
      *    from item_set itemSet where
      *    itemSet.Activation_Status = 'AC'
      *    and (itemSet.Created_By = {userId}
@@ -638,11 +627,11 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select decode (count(itemSet.item_set_id),0,0,1) result  from item_set itemSet where  itemSet.Activation_Status = 'AC'  and (itemSet.Created_By = {userId}  or itemSet.Updated_By = {userId})")
     boolean hasUserCreatedTest(Integer userId) throws SQLException;
-    
+
     /**
      * @jc:sql statement::
-     * select decode (count(i.item_id),0,0,1) 
-     * from item i 
+     * select decode (count(i.item_id),0,0,1)
+     * from item i
      * where created_by = {userId}::
      */
     @JdbcControl.SQL(statement = "select decode (count(i.item_id),0,0,1)  from item i  where created_by = {userId}")
@@ -651,15 +640,15 @@ public interface Users extends JdbcControl
     /**
      * @jc:sql statement::
      * select
-     *       decode(count(testAdmin.test_admin_id),0,0,1) 
-     * from test_admin testAdmin 
+     *       decode(count(testAdmin.test_admin_id),0,0,1)
+     * from test_admin testAdmin
      * where testAdmin.created_By = {createdBy}
      * and testAdmin.activation_status = 'AC'
      * ::
      */
     @JdbcControl.SQL(statement = "select  decode(count(testAdmin.test_admin_id),0,0,1)  from test_admin testAdmin  where testAdmin.created_By = {createdBy} and testAdmin.activation_status = 'AC'")
     boolean isTestAdmin(Integer createdBy) throws SQLException;
-    
+
     /**
      * @jc:sql statement::
      * select decode (count(testAdminUserRole.User_Id),0,0,1)
@@ -668,7 +657,7 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select decode (count(testAdminUserRole.User_Id),0,0,1)  from test_admin_user_role testAdminUserRole  where testAdminUserRole.user_id = {selectedUserId}")
     boolean isTestProctor(Integer selectedUserId) throws SQLException;
-    
+
     /**
      * @jc:sql statement::
      *  SELECT DISTINCT {sql: selectClause}
@@ -695,14 +684,14 @@ public interface Users extends JdbcControl
      *  AND u.activation_status = 'AC'
      *  AND ur2.role_id = r2.role_id
      *  {sql: whereClause}::
-     */      
+     */
     @JdbcControl.SQL(statement = "SELECT DISTINCT {sql: selectClause} FROM users u, users u1, user_role ur1, user_role ur2, role r2, org_node_ancestor ona, org_node node1, org_node node2 WHERE u1.user_name = {userName} AND ur1.user_id = u1.user_id AND ur1.activation_status = 'AC' AND ur1.org_node_id = node1.org_node_id AND node1.activation_status = 'AC' AND ur1.org_node_id = ona.ancestor_org_node_id AND ona.number_of_levels >= 0 AND ona.org_node_id = ur2.org_node_id AND ur2.org_node_id = node2.org_node_id And node2.activation_status = 'AC' AND ur2.activation_status = 'AC' AND ur2.user_id = u.user_id AND u.activation_status = 'AC' AND ur2.role_id = r2.role_id {sql: whereClause}")
     String [] findUserSuggestions(String userName, String selectClause, String whereClause) throws SQLException;
 
     /**
      * @jc:sql statement::
-     * select count(user_name) 
-     *  from users 
+     * select count(user_name)
+     *  from users
      *  where user_name like {formatedUserName} ESCAPE '\'
      *  or user_name = {userName}::
      */
@@ -743,7 +732,7 @@ public interface Users extends JdbcControl
      * where
      *      u.user_id = ur.user_id
      *    and ur.org_node_id = node.org_node_id
-     *    and ur.role_id = r.role_id  
+     *    and ur.role_id = r.role_id
      *    and node.activation_status= 'AC'
      *    and u.activation_status= 'AC'
      *    and ur.activation_status = 'AC'
@@ -755,8 +744,8 @@ public interface Users extends JdbcControl
     @JdbcControl.SQL(statement = "select distinct  u.user_id as userId,  u.user_name as userName,  u.first_name as firstName,  u.middle_name as middleName,  u.last_name as lastName, \t  concat(concat(u.last_name, ', '), concat(u.first_name, concat(' ', u.MIDDLE_NAME))) as displayUserName, \t  u.email as email,  INITCAP(r.role_name) as roleName,  r.role_id as roleId,  u.ext_pin1 as extPin1,  u.ext_pin2 as extPin2,  u.address_id as addressId from  users u,  user_role ur,  role r,  org_node node where  u.user_id = ur.user_id  and ur.org_node_id = node.org_node_id  and ur.role_id = r.role_id  and node.activation_status= 'AC'  and u.activation_status= 'AC'  and ur.activation_status = 'AC'  and ur.org_node_id in  (select distinct ona.org_node_id  from org_node_ancestor ona where {sql:fn in(ona.ancestor_org_node_id,{orgNodeId})}  )",
                      arrayMaxLength = 100000)
     FindUser[] getUsersAtOrBelowNodes(String orgNodeId) throws SQLException;
-    
-    
+
+
     /**
      * @jc:sql statement::
      * select distinct
@@ -780,7 +769,7 @@ public interface Users extends JdbcControl
      * where
      *      u.user_id = ur.user_id
      *    and ur.org_node_id = node.org_node_id
-     *    and ur.role_id = r.role_id  
+     *    and ur.role_id = r.role_id
      *    and node.activation_status= 'AC'
      *    and u.activation_status= 'AC'
      *    and ur.activation_status = 'AC'
@@ -790,7 +779,7 @@ public interface Users extends JdbcControl
      *    array-max-length="all"
      *    {sql:fn in(ona.ancestor_org_node_id,{orgNodeId})})  {sql: searchCriteria}
      */
-    
+
     @JdbcControl.SQL(statement = "select distinct  u.user_id as userId,  u.user_name as userName,  u.first_name as firstName,  u.middle_name as middleName,  u.last_name as lastName, \t  concat(concat(u.last_name, ', '), concat(u.first_name, concat(' ', u.MIDDLE_NAME))) as displayUserName, \t  u.email as email,  INITCAP(r.role_name) as roleName,  r.role_id as roleId,  u.ext_pin1 as extPin1,  u.ext_pin2 as extPin2,  u.address_id as addressId from  users u,  user_role ur,  role r,  org_node node where  u.user_id = ur.user_id  and ur.org_node_id = node.org_node_id  and ur.role_id = r.role_id  and node.activation_status= 'AC'  and u.activation_status= 'AC'  and ur.activation_status = 'AC'  and ur.org_node_id in  (select distinct ona.org_node_id  from org_node_ancestor ona where {sql: searchCriteriaTemp} {sql: searchCriteria})",
                      arrayMaxLength = 10000)
     FindUser[] getUsersAtOrBelowNodesForActManager(String searchCriteriaTemp, String searchCriteria) throws SQLException;
@@ -803,7 +792,7 @@ public interface Users extends JdbcControl
      * , c.subject as subject
      * , c.email_body as emailBody
      * from customer_email_config c
-     * where c.customer_id = (select distinct node.customer_id 
+     * where c.customer_id = (select distinct node.customer_id
      *                          from users u
      *                          , user_role role
      *                          , org_node node
@@ -823,7 +812,7 @@ public interface Users extends JdbcControl
      * , c.subject as subject
      * , c.email_body as emailBody
      * from customer_email_config c
-     * where c.customer_id = (select distinct node.customer_id 
+     * where c.customer_id = (select distinct node.customer_id
      *                          from org_node node
      *                          where node.org_node_id = {orgNodeId})
      * and c.email_type = {emailType}::
@@ -834,7 +823,7 @@ public interface Users extends JdbcControl
 
     /**
      * @jc:sql statement::
-     * select 
+     * select
      *      users.user_id as userId
      * from
      *      users
@@ -846,9 +835,9 @@ public interface Users extends JdbcControl
 
     /**
      * @jc:sql statement::
-     * select    
-     *   decode( count(cc.customer_id),0,0,1) 
-     *                                                                                   
+     * select
+     *   decode( count(cc.customer_id),0,0,1)
+     *
      *       from customer_configuration cc
      *      where cc.customer_id = {customerId}
      *      and cc.customer_configuration_name = {customerConfigurationName}::
@@ -856,7 +845,7 @@ public interface Users extends JdbcControl
     @JdbcControl.SQL(statement = "select  decode( count(cc.customer_id),0,0,1)  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name = {customerConfigurationName}")
     boolean isDexCustomer(String customerConfigurationName, Integer customerId) throws SQLException;
 
-   
+
 
     /**
      * @jc:sql statement="select lpad(dex.dex_user_sequence.nextval,4,0) from dual"
@@ -866,8 +855,8 @@ public interface Users extends JdbcControl
 
     /**
      * @jc:sql statement::
-     * select    
-     *   decode( count(u.user_id),0,0,1) 
+     * select
+     *   decode( count(u.user_id),0,0,1)
      * from users u
      * where u.user_name = {userName}
      * ::
@@ -883,7 +872,7 @@ public interface Users extends JdbcControl
      *    user_password_new)
      * values (
      *    {userId},
-     *    {userName}, 
+     *    {userName},
      *    {newPassword}
      *   )::
      */
@@ -893,58 +882,12 @@ public interface Users extends JdbcControl
     /**
      * @jc:sql statement::
      *  update dex.dex_user_password d
-     *     set d.user_password_old = (select dd.user_password_new 
-     * 							   from dex.dex_user_password dd 
-     * 							   where dd.user_id = {userId}), 
+     *     set d.user_password_old = (select dd.user_password_new
+     * 							   from dex.dex_user_password dd
+     * 							   where dd.user_id = {userId}),
      * 		d.user_password_new = {newPassword}
      *   where d.user_id = {userId}::
      */
     @JdbcControl.SQL(statement = "update dex.dex_user_password d  set d.user_password_old = (select dd.user_password_new  \t\t\t\t\t\t\t  from dex.dex_user_password dd  \t\t\t\t\t\t\t  where dd.user_id = {userId}),  \t\td.user_password_new = {newPassword}  where d.user_id = {userId}")
     void updateDexPassword(Integer userId, String newPassword) throws SQLException;
-    
-    /**
-     * @jc:sql statement::
-     * insert into
-     *         user_role (
-     *     		user_id,
-     *          role_id,
-     *     		org_node_id,
-     *     		activation_status,
-     *     		created_by,
-     *     		created_date_time
-     *           ) values (
-     *     		{userId},
-     *          {role.roleId},
-     *     		{orgNodeId},
-     *     		'AC',
-     *     		{role.createdBy},
-     *     		{role.createdDateTime}
-     *     	   )::
-     */
-    @JdbcControl.SQL(statement = "insert into  user_role (  \t\tuser_id,  role_id,  \t\torg_node_id,  \t\tactivation_status,  \t\tcreated_by,  \t\tcreated_date_time  ) values (  \t\t{userId},  {role.roleId},  \t\t{orgNodeId},  \t\t'AC',  \t\t{role.createdBy},  \t\t{role.createdDateTime}  \t  )")
-    void createUserRole(Long userId, Role role, Long orgNodeId) throws SQLException;
-    
-    /**
-     * @jc:sql statement::
-     * update user_role
-     * set activation_status = 'IN',
-     * updated_by = {updatedBy},
-     * updated_date_time = {updatedDateTime}
-     * where user_id = {userId}
-     * ::
-     */
-    @JdbcControl.SQL(statement = "update user_role set activation_status = 'IN', updated_by = {updatedBy}, updated_date_time = {updatedDateTime} where user_id = {userId}")
-    void inactivateUserRoles(Integer userId, Integer updatedBy, Date updatedDateTime) throws SQLException;
-
-
-    /**
-     * @jc:sql statement::
-     * select ur.user_id as userId,
-     * ur.role_id as roleId,
-     * ur.org_node_id as orgNodeId
-     * from user_role ur
-     * where ur.user_id = (select u.user_id from users u where u.user_name = {userName}) ::
-     */
-    @JdbcControl.SQL(statement = "select ur.user_id as userId, ur.role_id as roleId, ur.org_node_id as orgNodeId from user_role ur where ur.user_id = (select u.user_id from users u where u.user_name = {userName}) ")
-    UserRole[] getUserRoles(String userName) throws SQLException;
 }
