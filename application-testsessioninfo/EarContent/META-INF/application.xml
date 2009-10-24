@@ -4,7 +4,7 @@
 	<module id="WebModule_1256248050577">
 		<web>
 			<web-uri>web-testsessioninfo.war</web-uri>
-			<context-root>web-testsessioninfo</context-root>
+			<context-root>TestSessionInfoWeb</context-root>
 		</web>
 	</module>
 </application>
