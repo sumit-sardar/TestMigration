@@ -2,7 +2,6 @@
 <project-modules id="moduleCoreId" project-version="1.5.0">
 <wb-module deploy-name="dep-studentmgmt-ctrl">
 <wb-resource deploy-path="/" source-path="/src"/>
-<wb-resource deploy-path="/" source-path="/.apt_src"/>
-        <wb-resource deploy-path="/" source-path="/.apt_generated"/>
+<wb-resource deploy-path="/" source-path="/.apt_generated"/>
 </wb-module>
 </project-modules>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src/src"/>
-	<classpathentry kind="src" path=".apt_src"/>
 	<classpathentry kind="lib" path="C:/bea10/modules/javax.servlet_1.0.0.0_2-5.jar"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/struts-1.2/exact/1.2"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/beehive-netui-1.0.1-10.0/exact/1.0"/>

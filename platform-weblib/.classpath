@@ -10,7 +10,6 @@
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/beehive-netui-1.0.1-10.0/exact/1.0"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="lib" path="/dep-weblib-webutils/dep-weblib-webutils.jar"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/platform"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/beehive-controls-1.0.1-10.0/exact/1.0"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/weblogic-controls-10.0/exact/10.0"/>
@@ -20,6 +19,6 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/dep-weblib-taglib/dep-weblib-taglib.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

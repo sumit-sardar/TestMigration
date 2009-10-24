@@ -3,7 +3,6 @@
     <wb-module deploy-name="web-testsessioninfo">
         <wb-resource deploy-path="/" source-path="/WebContent"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/.apt_src"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/.apt_generated"/>
         <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/dep-weblib-webutils/dep-weblib-webutils">
             <dependency-type>uses</dependency-type>
