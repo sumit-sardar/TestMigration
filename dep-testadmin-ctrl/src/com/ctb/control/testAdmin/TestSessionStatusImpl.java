@@ -473,12 +473,9 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
            Integer [] prodId = message.getFrameworkProductForUser(userName);
            //System.out.println("getBroadcastMessages productId" + prodId[0].intValue());
            Integer pageSize = null;
-           String qString="message.product_id in ";
-           //System.out.println("qString" + qString);
-           
-           qString = qString + "("+SQLutils.convertArraytoString(prodId)+")";
+           String qString = SQLutils.convertArraytoString(prodId);
            //System.out.println("qString====>"+qString);
-           bmd.setBroadcastMessages(message.getProductSpecificBroadcastMsg(prodId), null);
+           bmd.setBroadcastMessages(message.getProductSpecificBroadcastMsg(qString), null);
            return bmd;
         } catch (SQLException se) {
             TestAdminDataNotFoundException tae = new TestAdminDataNotFoundException("TestSessionStatusImpl: getBroadcastMessages: " + se.getMessage());
