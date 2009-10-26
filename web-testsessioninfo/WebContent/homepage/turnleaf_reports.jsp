@@ -1,6 +1,4 @@
 <%@ page import="java.io.*, java.util.*"%>
-<%@ taglib uri="netui-tags-databinding.tld" prefix="netui-compat-data"%>
-<%@ taglib uri="netui-tags-html.tld" prefix="netui-compat"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="ctb-web.tld" prefix="ctbweb"%>

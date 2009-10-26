@@ -1,8 +1,5 @@
 <%@ page import="java.io.*, java.util.*"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
-<%@ taglib uri="netui-tags-databinding.tld" prefix="netui-compat-data"%>
-<%@ taglib uri="netui-tags-html.tld" prefix="netui-compat"%>
-<%@ taglib uri="netui-tags-template.tld" prefix="netui-compat-template"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
@@ -20,10 +17,12 @@
 <input type="hidden" id="subtestId" name="subtestId" value="<netui:content value="${actionForm.subtestId}"/>"/>
 <input type="hidden" id="status"   name="status"   value="<netui:content value="${actionForm.status}"/>"/>
 
-<netui-compat-template:visible visibility="{request.formIsClean}" negate="true">
-    <p><ctb:message title="{bundle.web['common.message.form.invalidCharacters']}" style="alertMessage"></ctb:message></p>
-</netui-compat-template:visible>
 <netui-data:getData resultId="allowExport" value="${requestScope.allowExport}"/>
+<netui-data:getData resultId="formIsClean" value="${requestScope.formIsClean}"/>
+
+<c:if test="${(formIsClean != null) && (! formIsClean)}">
+    <p><ctb:message title="{bundle.web['common.message.form.invalidCharacters']}" style="alertMessage"></ctb:message></p>
+</c:if>
 
 <a name="programStatusAnchor"><!-- programStatusAnchor --></a>    
 
@@ -34,7 +33,7 @@
 <table class="sortable">
     <tr class="sortable">
         <td class="sortableControls" colspan="5">
-            <ctb:tableFilter dataSource="${actionForm.filterVisible}" >
+            <ctb:tableFilter dataSource="actionForm.filterVisible" >
                 <table class="tableFilter">
                 <tr class="tableFilter">
                     <td class="tableFilter alignLeft" colspan="6"><netui:content value="${bundle.web['manageProgram.filter.title']}"/></td>
@@ -75,7 +74,7 @@
             <table class="tableFilter">
             <tr class="tableFilter">
                 <td class="tableFilter">
-                    <ctb:tableFilterToggle dataSource="${actionForm.filterVisible}" />&nbsp;
+                    <ctb:tableFilterToggle dataSource="actionForm.filterVisible" />&nbsp;
                     <c:if test="${allowExport}">
                         <netui:button tagId="exportToExcel" type="submit" value="${bundle.web['common.button.exportToExcel']}" action="exportToExcel"/>
                     </c:if>

@@ -1,7 +1,4 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
-<%@ taglib uri="netui-tags-databinding.tld" prefix="netui-compat-data"%>
-<%@ taglib uri="netui-tags-html.tld" prefix="netui-compat"%>
-<%@ taglib uri="netui-tags-template.tld" prefix="netui-compat-template"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
@@ -123,17 +120,18 @@
     <netui-data:getData resultId="isShowToggleForCustomerFlag" value="${pageFlow.setCustomerFlagToogleButton}"/>
     <netui-data:getData resultId="isSubtestValidationAllowed" value="${pageFlow.subtestValidationAllowed}"/>
     <netui-data:getData resultId="showStudentReportButton" value="${pageFlow.showStudentReportButton}"/>
+	<netui-data:getData resultId="formIsClean" value="${requestScope.formIsClean}"/>
 
-<netui-compat-template:visible visibility="{request.formIsClean}" negate="true">
+<c:if test="${(formIsClean != null) && (! formIsClean)}">
     <p><ctb:message title="${bundle.web['common.message.form.invalidCharacters']}" style="alertMessage"></ctb:message></p>
-</netui-compat-template:visible>
+</c:if>
 
 <a name="tableAnchor"><!-- tableAnchor --></a>    
 
 <table class="sortable">
     <tr class="sortable">
         <td class="sortableControls" colspan="9">
-            <ctb:tableFilter dataSource="${actionForm.filterVisible}">
+            <ctb:tableFilter dataSource="actionForm.filterVisible">
                 <table class="tableFilter">
                 <tr class="tableFilter">
                     <td class="tableFilter alignLeft" colspan="6"><netui:content value="${bundle.web['viewMonitorStatus.filter.title']}"/></td>
@@ -174,7 +172,7 @@
             <table class="tableFilter">
             <tr class="tableFilter">
                 <td class="tableFilter">
-                    <ctb:tableFilterToggle dataSource="${actionForm.filterVisible}" />&nbsp;
+                    <ctb:tableFilterToggle dataSource="actionForm.filterVisible" />&nbsp;
                 <c:if test="${isSubtestValidationAllowed}">                     
                     <netui:button styleClass="button" tagId="viewDetails" value="${bundle.web['common.button.viewDetails']}" type="submit" onClick="setElementValue('{actionForm.currentAction}', 'validationDetails');" disabled="${requestScope.disableToogleButton}"/>&nbsp;                                 
                 </c:if>
