@@ -1,6 +1,8 @@
 package global;
 
 import org.apache.beehive.netui.pageflow.*;
+import org.apache.beehive.netui.pageflow.annotations.Jpf;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -12,12 +14,15 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import org.apache.beehive.netui.pageflow.annotations.Jpf;
+
 import weblogic.jndi.Environment;
-import weblogic.management.Helper;
-import weblogic.management.MBeanHome;
+import weblogic.management.commo.Config;
+import weblogic.management.commo.CommoMBeanServer;
 import weblogic.management.configuration.DomainMBean;
 import weblogic.management.security.authentication.UserLockoutManagerMBean;
+import weblogic.security.SimpleCallbackHandler;
+import weblogic.security.service.UserLockoutManager;
+
 
 /**
  * The Global page flow is used to define actions which can be invoked by any other
@@ -193,11 +198,11 @@ public class Global extends GlobalApp
             Context jndiContext = env.getInitialContext();
 
             // retrieve user lockout manager
-            //CommoMBeanServer svr = Config.getMBeanServer();
-            //System.out.println("server name: " + svr.getServerName());
-            //UserLockoutManagerMBean mgr = (UserLockoutManagerMBean)svr.getMBean(new ObjectName("Security:Name=myrealmUserLockoutManager"));
-            //System.out.println("mgr: " + mgr);
-            //lockout = mgr.isLockedOut(username);
+            CommoMBeanServer svr = Config.getMBeanServer();
+            System.out.println("server name: " + svr.getServerName());
+            UserLockoutManagerMBean mgr = (UserLockoutManagerMBean)svr.getMBean(new ObjectName("Security:Name=myrealmUserLockoutManager"));
+            System.out.println("mgr: " + mgr);
+            lockout = mgr.isLockedOut(username);
 
             /*
             System.out.println("LoginAttemptsWhileLockedTotalCount: " + mgr.getLoginAttemptsWhileLockedTotalCount());
