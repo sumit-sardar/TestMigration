@@ -3,6 +3,7 @@
 	<name>application-testsessioninfo</name>
 	<comment></comment>
 	<projects>
+		<project>dep-download-mgr</project>
 		<project>web-testsessioninfo</project>
 	</projects>
 	<buildSpec>
