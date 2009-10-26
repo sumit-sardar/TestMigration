@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Class-Path: APP-INF/lib/weblogic-jdbc-control.jar 
+ dep-weblib-webutils.jar 
+ dep-weblib-taglib.jar 
+ dep-usermgmt-ctrl.jar 
+ dep-base-ctrl.jar
+
