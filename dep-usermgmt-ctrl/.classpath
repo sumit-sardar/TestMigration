@@ -13,5 +13,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="com.bea.workshop.xmlbeans.lib/version_2_3"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/application-usermgmt"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

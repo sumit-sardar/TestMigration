@@ -8,5 +8,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Oracle WebLogic Server v10.3 JRE"/>
 	<classpathentry kind="con" path="com.bea.workshop.xmlbeans.lib/version_2_3"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/platform"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/application-usermgmt"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
