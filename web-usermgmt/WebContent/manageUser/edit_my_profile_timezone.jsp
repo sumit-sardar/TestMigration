@@ -83,7 +83,7 @@
 <!-- collapsible sections -->
 <a name="moduleUserProfile"><!-- moduleUserProfile --></a>    
 <p>
-    <ctb:showHideSection sectionId="moduleUserProfile" sectionTitle="User Information" sectionVisible="{actionForm.byUserProfileVisible}">
+    <ctb:showHideSection sectionId="moduleUserProfile" sectionTitle="User Information" sectionVisible="actionForm.byUserProfileVisible">
         <jsp:include page="/manageUser/edit_my_profile_info.jsp" />
     </ctb:showHideSection>
 </p>
@@ -91,7 +91,7 @@
 
 <a name="moduleUserContact"><!-- moduleUserContact --></a>    
 <p>
-    <ctb:showHideSection sectionId="moduleUserContact" sectionTitle="Contact Information" sectionVisible="{actionForm.byUserContactVisible}">
+    <ctb:showHideSection sectionId="moduleUserContact" sectionTitle="Contact Information" sectionVisible="actionForm.byUserContactVisible">
         <jsp:include page="/manageUser/add_edit_user_by_contact.jsp" />
     </ctb:showHideSection>
 </p>

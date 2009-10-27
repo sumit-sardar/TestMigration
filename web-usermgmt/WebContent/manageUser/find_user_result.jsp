@@ -28,7 +28,7 @@
     <netui-data:repeaterHeader>
     
     <tr class="sortable">
-        <ctb:tableSortColumnGroup columnDataSource="{actionForm.userSortColumn}" orderByDataSource="{actionForm.userSortOrderBy}" anchorName="userSearchResult">
+        <ctb:tableSortColumnGroup columnDataSource="actionForm.userSortColumn" orderByDataSource="actionForm.userSortOrderBy" anchorName="userSearchResult">
             <th class="sortable alignCenter" nowrap>&nbsp;<netui:content value="${bundle.web['common.column.select']}"/>&nbsp;</th>                
             <th class="sortable alignLeft" width="25%" nowrap><ctb:tableSortColumn value="DisplayUserName">User Name</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="UserName">Login ID</ctb:tableSortColumn></th>
@@ -69,7 +69,7 @@
     
         <tr class="sortable">
             <td class="sortableControls" colspan="7">
-                <ctb:tablePager dataSource="{actionForm.userPageRequested}" summary="{userPagerSummary}" objectLabel="{bundle.oas['object.users']}" foundLabel="Found" id="userSearchResult" anchorName="userSearchResult"/>
+                <ctb:tablePager dataSource="actionForm.userPageRequested" summary="request.userPagerSummary" objectLabel="${bundle.oas['object.users']}" foundLabel="Found" id="userSearchResult" anchorName="userSearchResult"/>
             </td>
         </tr>         
             

@@ -66,7 +66,7 @@ template_find_user.jsp
 
 
 <!-- tabs -->      
-<ctb:tableTabGroup dataSource="{actionForm.selectedTab}">
+<ctb:tableTabGroup dataSource="actionForm.selectedTab">
     <ctb:tableTab value="moduleUserProfile"><netui:content value="User Profile"/></ctb:tableTab>
     <ctb:tableTab value="moduleHierarchy"><netui:content value="Organization"/></ctb:tableTab>
 </ctb:tableTabGroup>
@@ -74,7 +74,7 @@ template_find_user.jsp
 
 
 <!-- include pages -->      
-<ctb:switch dataSource="{actionForm.selectedTab}">
+<ctb:switch dataSource="actionForm.selectedTab">
     <ctb:case value="moduleUserProfile">
         <jsp:include page="/manageUser/find_user_by_profile.jsp" />
     </ctb:case>

@@ -110,7 +110,7 @@
 
     <tr class="sortable">
         <td class="sortableControls" colspan="2">
-            <ctb:tablePathList valueDataSource="{actionForm.orgNodeId}" labelDataSource="{actionForm.orgNodeName}" pathList="{orgNodePath}" />
+            <ctb:tablePathList valueDataSource="actionForm.orgNodeId" labelDataSource="actionForm.orgNodeName" pathList="request.orgNodePath" />
         </td>
     </tr>
 
@@ -118,7 +118,7 @@
     <netui-data:repeaterHeader>
     
     <tr class="sortable">
-        <ctb:tableSortColumnGroup columnDataSource="{actionForm.orgSortColumn}" orderByDataSource="{actionForm.orgSortOrderBy}" >
+        <ctb:tableSortColumnGroup columnDataSource="actionForm.orgSortColumn" orderByDataSource="actionForm.orgSortOrderBy" >
             <th class="sortable alignCenter" width="5%">&nbsp;<netui:content value="${bundle.web['common.column.select']}"/>&nbsp;</th>                
             <th class="sortable alignLeft" width="*"><ctb:tableSortColumn value="OrgNodeName"><netui:content value="${requestScope.orgCategoryName}"/></ctb:tableSortColumn></th>
         </ctb:tableSortColumnGroup>
@@ -163,7 +163,7 @@
     
         <tr class="sortable">
             <td class="sortableControls" colspan="2">
-                <ctb:tablePager dataSource="{actionForm.orgPageRequested}" summary="{orgPagerSummary}" objectLabel="{bundle.oas['object.organizations']}" id="tablePathListAnchor" anchorName="tablePathListAnchor"/>
+                <ctb:tablePager dataSource="actionForm.orgPageRequested" summary="request.orgPagerSummary" objectLabel="${bundle.oas['object.organizations']}" id="tablePathListAnchor" anchorName="tablePathListAnchor"/>
             </td>
         </tr>         
             
