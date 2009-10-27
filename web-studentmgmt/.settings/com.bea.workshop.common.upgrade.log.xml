@@ -1,0 +1,5 @@
+<upgrade-log>
+  <entry time="2009-10-27 23:19:40 UTC">
+    <upgrade-participant pluginId="com.m7.nitrox.jwebapp" pluginVersion="3.5.100.200807251738" class="com.m7.wide.jwebapp.project.upgrade.internal.StudioProjectUpgradeParticipant"/>
+  </entry>
+</upgrade-log>
