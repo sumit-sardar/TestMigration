@@ -131,7 +131,7 @@ public class ManageUserController extends PageFlowController
 
     private HashMap currentOrgNodesInPathList = null;
     public List selectedOrgNodes = null;
-    public Integer[] currentOrgNodeIds = null;
+    private Integer[] currentOrgNodeIds = null;
     
     // option list
     public LinkedHashMap roleOptions = null;
@@ -140,7 +140,7 @@ public class ManageUserController extends PageFlowController
     public LinkedHashMap stateOptions = null;
     
     //Temporary list to store searched/added userProfiles
-    public List userList = new ArrayList(0);
+    private List userList = new ArrayList(0);
     
     // title, messages
     public String pageTitle = null;
@@ -167,6 +167,25 @@ public class ManageUserController extends PageFlowController
     
     /*Changed for DEx defect # 57562 & 57563*/
     private boolean isLoginWithoutTimezone = false;
+    
+    
+    
+    public List getUserList() {
+		return userList;
+	}
+
+	public void setUserList(List userList) {
+		this.userList = userList;
+	}
+	
+	public Integer[] getCurrentOrgNodeIds() {
+		return currentOrgNodeIds;
+	}
+
+	public void setCurrentOrgNodeIds(Integer[] currentOrgNodeIds) {
+		this.currentOrgNodeIds = currentOrgNodeIds;
+	}
+	
       
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** begin controller ************* //////////////////////////////
