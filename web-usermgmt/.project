@@ -3,10 +3,10 @@
 	<name>web-usermgmt</name>
 	<comment></comment>
 	<projects>
-		<project>dep-base-ctrl</project>
-		<project>dep-usermgmt-ctrl</project>
-		<project>dep-weblib-taglib</project>
 		<project>dep-weblib-webutils</project>
+		<project>dep-weblib-taglib</project>
+		<project>dep-usermgmt-ctrl</project>
+		<project>dep-base-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

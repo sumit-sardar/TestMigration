@@ -7,6 +7,7 @@
     may also need to be specified unless WL_HOME environment variable is defined.
     The workshop.home property may also need to be specified unless WORKSHOP_HOME
     environment variable is defined.
+  	
   </description>
   
   <target name="init.env" unless="init.env.executed">
