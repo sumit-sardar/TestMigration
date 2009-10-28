@@ -74,6 +74,26 @@
     </attribute>
   </tag>
   <tag>
+    <name>pathListTableContainer</name>
+    <tag-class>com.ctb.widgets.taglib.table2.ComplexTableContainerTag</tag-class>
+    <body-content>JSP</body-content>
+    <attribute>
+      <name>pageRequestedDataSource</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>columnSortDataSource</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+      <name>columnOrderByDataSource</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  <tag>
     <name>groupTableContainer</name>
     <tag-class>com.ctb.widgets.taglib.table2.GroupTableContainerTag</tag-class>
     <body-content>JSP</body-content>
