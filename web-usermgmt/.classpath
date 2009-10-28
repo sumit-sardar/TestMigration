@@ -4,7 +4,6 @@
 	<classpathentry kind="src" path=".apt_src"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/application-usermgmt"/>
-	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/struts-1.1/exact/1.1"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/beehive-netui-resources-1.0.1-10.0/exact/1.0/"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/jstl/exact/1.1"/>
 	<classpathentry exported="true" kind="con" path="com.bea.workshop.wls.j2eelib/wls-commonslogging-bridge/exact/1.0"/>
@@ -15,5 +14,6 @@
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="src" path="build/assembly/.src"/>
 	<classpathentry exported="true" kind="con" path="com.bea.workshop.wls.j2eelib/beehive-controls-1.0.1-10.0/exact/1.0"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/struts-1.1/exact/1.1"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
