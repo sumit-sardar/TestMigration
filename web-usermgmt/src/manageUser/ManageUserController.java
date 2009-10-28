@@ -399,6 +399,8 @@ public class ManageUserController extends PageFlowController
 
         this.navPath.addCurrentAction(ACTION_FIND_USER);
         
+        setFormInfoOnRequest(form);
+        
         return new Forward("success");
     }
 
@@ -982,7 +984,7 @@ public class ManageUserController extends PageFlowController
 
         this.navPath.addCurrentAction(ACTION_EDIT_USER);
         this.helpLink = "/help/index.html#editing_or_deleting_users.htm";
-
+        
         return new Forward("success", form);
     }
 
@@ -1001,6 +1003,9 @@ public class ManageUserController extends PageFlowController
     protected Forward addEditUser(ManageUserForm form)
     {      
         String stringAction = form.getStringAction();
+
+        setFormInfoOnRequest(form);
+        
         return new Forward(stringAction, form);
     }
 
@@ -1629,7 +1634,24 @@ public class ManageUserController extends PageFlowController
         
         this.pageTitle = buildPageTitle(ACTION_VIEW_USER, form); 
         
+        setFormInfoOnRequest(form);
+        
         return new Forward("success", form);                                                                                                                                                                                                    
+    }
+
+    private void setFormInfoOnRequest(ManageUserForm form) {
+
+        this.getRequest().setAttribute("messageType", form.getMessage().getType());
+        this.getRequest().setAttribute("messageTitle", form.getMessage().getTitle());
+        this.getRequest().setAttribute("messageContent", form.getMessage().getContent());
+        
+    	
+        this.getRequest().setAttribute("firstName", form.getUserProfile().getFirstName());       
+        this.getRequest().setAttribute("middleName", form.getUserProfile().getMiddleName());       
+        this.getRequest().setAttribute("lastName", form.getUserProfile().getLastName());       
+    	
+        //////////////////// NEED TO CONTINUE TO ADD MORE INFO HERE /////////////////////////
+        
     }
 
     /**
