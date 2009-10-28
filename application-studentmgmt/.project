@@ -3,10 +3,6 @@
 	<name>application-studentmgmt</name>
 	<comment></comment>
 	<projects>
-		<project>dep-base-ctrl</project>
-		<project>dep-studentmgmt-ctrl</project>
-		<project>dep-weblib-taglib</project>
-		<project>dep-weblib-webutils</project>
 		<project>web-studentmgmt</project>
 	</projects>
 	<buildSpec>

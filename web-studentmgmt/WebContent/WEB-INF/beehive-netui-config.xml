@@ -3,13 +3,39 @@
 <netui-config xmlns="http://beehive.apache.org/netui/2004/server/config">
 
     <expression-languages>
-        <default-language>netuiel</default-language>
+        <default-language>compat-netuiel</default-language>
         <expression-language>
             <name>netuiel</name>
             <factory-class>org.apache.beehive.netui.script.el.ExpressionEvaluatorImpl$NetUIELEngineFactory</factory-class>
         </expression-language>
+        <expression-language>
+            <name>compat-netuiel</name>
+            <factory-class>com.bea.wlw.netui.script.el.ExpressionEvaluatorImpl$NetUIELEngineFactory</factory-class>
+        </expression-language>
     </expression-languages>
 
+    <pageflow-config>
+        <throw-session-expired-exception>false</throw-session-expired-exception>
+        <multipart-handler>memory</multipart-handler>
+        <prevent-cache>inDevMode</prevent-cache>
+    </pageflow-config>
+    
+    <jsp-tag-config>
+        <id-javascript>legacy</id-javascript>
+    </jsp-tag-config>
+    
+    <url-config>
+        <url-encode-urls>false</url-encode-urls>
+        <html-amp-entity>false</html-amp-entity>
+    </url-config>
+    
+    <iterator-factories>
+        <iterator-factory>
+            <name>rowset</name>
+            <factory-class>com.bea.wlw.netui.util.iterator.RowSetIterator$RowSetIteratorPlant</factory-class>
+        </iterator-factory>
+    </iterator-factories>
+    
     <request-interceptors>
         <global>
             <request-interceptor>
