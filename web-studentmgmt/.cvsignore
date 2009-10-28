@@ -1,3 +1,4 @@
 build
 .staging
+.apt_src
 *.war
