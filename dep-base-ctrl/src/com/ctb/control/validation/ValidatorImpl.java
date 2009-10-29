@@ -223,14 +223,14 @@ public class ValidatorImpl implements Validator, Serializable
 				String otherName = (String) operand;
 				
 				//Programmatic Transaction
-				UserTransaction userTrans= getTransaction();
-				userTrans.begin();
+				//UserTransaction userTrans= getTransaction();
+				//userTrans.begin();
 				
 				if(!"true".equals(user.checkVisibility(userName, otherName)))
 
 					throw new ValidationException("ValidatorImpl: validateUser: failed validation for user: " + operator + " on: " + operand);;
 					//Close Transaction
-				closeTransaction(userTrans);   
+				//closeTransaction(userTrans);   
 			}
 			//policy.checkPolicy(userName, action);
 		} catch (Exception e) {
