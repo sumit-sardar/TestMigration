@@ -74,12 +74,12 @@
             <tr>
                 <td class="infotablelabels">Username:</td>
                 <td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0"></td>
-                <td class="inputtext"><input type="text" id="j_username" name="j_username" value="tai_dev" maxlength="32" style="width: 180px" /></td>
+                <td class="inputtext"><input type="text" id="j_username" name="j_username" value="<%= username %>" maxlength="32" style="width: 180px" /></td>
             </tr>
             <tr>
                 <td class="infotablelabels">Password:</td>
                 <td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0"></td>
-                <td class="inputtext"><input type="password" id="j_password" name="j_password" value="tai009"  maxlength="32" style="width: 180px" /></td>
+                <td class="inputtext"><input type="password" id="j_password" name="j_password" value=""  maxlength="32" style="width: 180px" /></td>
             </tr>
             <tr>
                 <td>&nbsp;</td>
