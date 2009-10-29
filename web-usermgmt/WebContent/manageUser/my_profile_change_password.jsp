@@ -38,8 +38,8 @@
 
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.userProfile.userPassword.oldPassword}" />
 
-<netui:hidden dataSource="actionForm.actionElement"/> 
-<netui:hidden dataSource="actionForm.currentAction"/>
+<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/> 
+<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
 <netui:hidden dataSource="actionForm.selectedUserName"/>
 
 

@@ -53,7 +53,7 @@
             </c:if>
         </td>        
         <td class="sortable alignLeft">     
-            <ctb:tablePathEntry srcLabelDataSource="{container.item.name}" srcValueDataSource="{container.item.id}" dstLabelDataSource="{actionForm.orgNodeName}" dstValueDataSource="{actionForm.orgNodeId}" shownAsLink="{container.item.hasChildren}"/>
+            <ctb:tablePathEntry srcLabelDataSource="${container.item.name}" srcValueDataSource="${container.item.id}" dstLabelDataSource="{actionForm.orgNodeName}" dstValueDataSource="{actionForm.orgNodeId}" shownAsLink="${container.item.hasChildren}"/>
         </td>
         <td class="sortable alignCenter">
             <netui:span value="${container.item.studentCount}"/>

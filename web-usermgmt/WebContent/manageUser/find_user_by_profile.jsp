@@ -34,9 +34,9 @@
         <td class="tableFilter" width="200"><netui:textBox tagId="loginId" dataSource="actionForm.userProfile.loginId" style="width:180px" tabindex="3" maxlength="32"/></td>
         <td class="tableFilter" width="100" align="right">&nbsp;</td>
         <td class="tableFilter" width="*">
-            <netui:button styleClass="button" value="Search" type="submit" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'applySearch', 'userProfileResult');" tabindex="6"/>
+            <netui:button styleClass="button" value="Search" type="submit" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'applySearch', 'userProfileResult');" tabindex="6"/>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <netui:button styleClass="button" value="Clear All" type="submit" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'clearSearch');" tabindex="7"/>&nbsp;
+            <netui:button styleClass="button" value="Clear All" type="submit" onClick="setElementValueAndSubmit('currentAction', 'clearSearch');" tabindex="7"/>&nbsp;
         </td>
     </tr>
 </table>    

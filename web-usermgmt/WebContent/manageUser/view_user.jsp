@@ -34,8 +34,8 @@
 <!-- start form -->
 <netui:form action="viewUser">
 
-<netui:hidden tagId="{actionForm.actionElement}" dataSource="actionForm.actionElement"/> 
-<netui:hidden tagId="{actionForm.currentAction}" dataSource="actionForm.currentAction"/>
+<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/> 
+<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
 <netui:hidden dataSource="actionForm.selectedUserName"/>
 <netui:hidden dataSource="actionForm.selectedOrgNodeName"/> 
 <netui:hidden dataSource="actionForm.selectedTab"/> 

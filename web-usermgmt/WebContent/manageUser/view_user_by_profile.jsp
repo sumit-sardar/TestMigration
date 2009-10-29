@@ -16,19 +16,19 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="First Name:"/></td>
-        <td class="transparent"><netui:label value="${firstName}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.firstName}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Middle Name:"/></td>
-        <td class="transparent"><netui:label value="${middleName}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.middleName}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Last Name:"/></td>
-        <td class="transparent"><netui:label value="${lastName}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.lastName}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Login ID:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.loginId}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.loginId}"/></td>
     </tr>
     <%--CR Dex --%>
     <tr class="transparent">
@@ -56,20 +56,20 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Email:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.email}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.email}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Time Zone:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.timeZoneDesc}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.timeZoneDesc}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Role:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.roleInitCap}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.roleInitCap}"/></td>
     </tr>
      <%--CR Dex --%>
     <tr class="transparent">
         <td class="transparent" width="100" nowrap><netui:content value="External User Id:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.extPin1}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.extPin1}"/></td>
     </tr>
     
 </table>

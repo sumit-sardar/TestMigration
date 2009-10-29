@@ -48,11 +48,9 @@ template_find_user.jsp
 
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.userProfile.firstName}" />
 
-<input type="hidden" name="{actionForm.actionElement}" id="{actionForm.actionElement}" value="{actionForm.actionElement}" />
-<input type="hidden" id="{actionForm.currentAction}" name="{actionForm.currentAction}" value="{actionForm.currentAction}">
 
-
-
+<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/>
+<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
 <netui:hidden dataSource="actionForm.orgMaxPage"/> 
 <netui:hidden dataSource="actionForm.userMaxPage"/> 
 <netui:hidden dataSource="actionForm.selectedOrgNodeName"/> 
@@ -71,7 +69,7 @@ template_find_user.jsp
 
 
 <!-- include pages -->      
-<ctb:switch dataSource="actionForm.selectedTab">
+<ctb:switch dataSource="${actionForm.selectedTab}"> 
     <ctb:case value="moduleUserProfile">
         <jsp:include page="/manageUser/find_user_by_profile.jsp" />
     </ctb:case>

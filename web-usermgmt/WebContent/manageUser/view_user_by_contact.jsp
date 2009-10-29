@@ -19,23 +19,23 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Address Line 1:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.userContact.addressLine1}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.userContact.addressLine1}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Address Line 2:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.userContact.addressLine2}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.userContact.addressLine2}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="City:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.userContact.city}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.userContact.city}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="State:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.userContact.stateDesc}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.userContact.stateDesc}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Zip:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.userContact.zipCode}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.userContact.zipCode}"/></td>
     </tr>
 </table>
 </td>
@@ -47,15 +47,15 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Primary Phone:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.userContact.primaryPhone}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.userContact.primaryPhone}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Secondary Phone:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.userContact.secondaryPhone}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.userContact.secondaryPhone}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Fax Number:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.userContact.faxNumber}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.userContact.faxNumber}"/></td>
     </tr>
 </table>
 </td>

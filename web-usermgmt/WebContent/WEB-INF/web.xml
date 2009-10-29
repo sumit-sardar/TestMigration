@@ -91,7 +91,7 @@
     <security-constraint>
         <display-name/>
         <web-resource-collection>
-            <web-resource-name>UserManagementWeb</web-resource-name>
+            <web-resource-name>web-usermgmt</web-resource-name>
             <description>Protect any resources within the following Page Flow.</description>
             <url-pattern>/manageUser/*</url-pattern>
             <http-method>POST</http-method>

@@ -35,13 +35,13 @@
         <li><span class="navleft-unclickable">Add User</span></li>
     </c:if>
     <c:if test="${ !requestScope.isAddUser }">    
-        <li><a href="/UserManagementWeb/manageUser/beginAddUser.do" onclick="return verifyExitAddUser();" ><span>Add User</span></a></li>
+        <li><a href="/web-usermgmt/manageUser/beginAddUser.do" onclick="return verifyExitAddUser();" ><span>Add User</span></a></li>
     </c:if>
     <c:if test="${ requestScope.isFindUser }">
         <li><span class="navleft-unclickable">Find User</span></li>
     </c:if>
     <c:if test="${ !requestScope.isFindUser }">    
-        <li><a href="/UserManagementWeb/manageUser/beginFindUser.do" onclick="return verifyExitAddUser();" ><span>Find User</span></a></li>
+        <li><a href="/web-usermgmt/manageUser/beginFindUser.do" onclick="return verifyExitAddUser();" ><span>Find User</span></a></li>
     </c:if>
 </ul>
 </ctb:auth>

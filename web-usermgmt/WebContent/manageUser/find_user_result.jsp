@@ -15,11 +15,11 @@
 
     <tr class="sortable">
         <td class="sortableControls" colspan="12" height="30">&nbsp;
-            <netui:button tagId="View" type="submit" value="View" onClick="setElementValue('{actionForm.currentAction}', 'viewUser');" disabled="${requestScope.disableViewButton}"/>              
-            <netui:button tagId="Edit" type="submit" value=" Edit " onClick="setElementValue('{actionForm.currentAction}', 'editUser');" disabled="${requestScope.disableEditButton}"/>
+            <netui:button tagId="View" type="submit" value="View" onClick="setElementValue('currentAction', 'viewUser');" disabled="${requestScope.disableViewButton}"/>              
+            <netui:button tagId="Edit" type="submit" value=" Edit " onClick="setElementValue('currentAction', 'editUser');" disabled="${requestScope.disableEditButton}"/>
             <netui:button tagId="Delete" type="submit" value="Delete" onClick="return verifyDeleteUser();" disabled="${requestScope.disableDeleteButton}"/>             
             <%--<netui:button tagId="changePassword" type="submit" value="Change Password" onClick="setElementValue('{actionForm.currentAction}', 'changePassword');" disabled="{request.disableChangePasswordButton}"/>--%>
-            <netui:button tagId="changePassword" type="submit" value="Change Password" onClick="setElementValue('{actionForm.currentAction}', 'changePassword');" disabled="${requestScope.disableChangePasswordButton}"/>
+            <netui:button tagId="changePassword" type="submit" value="Change Password" onClick="setElementValue('currentAction', 'changePassword');" disabled="${requestScope.disableChangePasswordButton}"/>
         </td>
     </tr>
         

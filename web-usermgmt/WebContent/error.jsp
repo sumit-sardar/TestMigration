@@ -13,7 +13,7 @@
     <netui-template:section name="bodySection">
 
         <br/>
-        <ctb:message title="{bundle.oas['system.error.title']}" style="errorMessage">
+        <ctb:message title="${bundle.oas['system.error.title']}" style="errorMessage">
           <netui:span value="${bundle.oas['system.error.message']}"/>
         </ctb:message>
     

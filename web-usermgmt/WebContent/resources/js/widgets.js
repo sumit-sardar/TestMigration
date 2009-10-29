@@ -45,7 +45,7 @@ function setElementValue(elementId, value, submitForm) {
     if( element ) {
         element.value = value;
 
-        var actionElement = document.getElementById('{actionForm.actionElement}');
+        var actionElement = document.getElementById('actionElement');
        
         if( actionElement ) {
             actionElement.value = elementId;
@@ -72,7 +72,7 @@ function setElementValueAndSubmitWithAnchor(elementId, value, anchorName) {
     if( element ) {
         element.value = value;
 
-        var actionElement = document.getElementById('{actionForm.actionElement}');
+        var actionElement = document.getElementById('actionElement');
         
         if( actionElement ) {
             actionElement.value = elementId;
@@ -111,7 +111,7 @@ function constrainNumericKeyEvent( e, element, id, anchorName ) {
     var results = false;
     
     if ( keyId == 13 ) {
-        var actionElement = document.getElementById('{actionForm.actionElement}');
+        var actionElement = document.getElementById('actionElement');
         if( actionElement ) {
             if ( id != null )
                 actionElement.value = "EnterKeyInvoked_" + id;
@@ -143,7 +143,7 @@ function constrainNumericKeyEvent( e, element, id, anchorName ) {
 }
 
 function buttonGoInvoked( id, anchorName ) {
-    var actionElement = document.getElementById('{actionForm.actionElement}');
+    var actionElement = document.getElementById('actionElement');
     if( actionElement ) {
         if (id != null)
             actionElement.value = "ButtonGoInvoked_" + id;

@@ -36,7 +36,7 @@
     </tr>
     <tr class="transparent">
         <td class="transparent alignRight" width="110"><netui:content value="Login ID:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.loginId}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.loginId}"/></td>
     </tr>
     <%--CR Dex --%>
     <tr class="transparent">
@@ -81,13 +81,13 @@
         <!--netui:label value="{actionForm.userProfile.role}"/-->
         <!--netui-data:getData resultId="userRole" value="{actionForm.userProfile.role}" /-->
         <%--String role = (String)request.getSession().getAttribute("userRole");--%>
-        <netui:label value="${actionForm.userProfile.role}"/>
+        <netui:label value="${userProfileData.role}"/>
         </td>
     </tr>
     <%--CR Dex --%>
     <tr class="transparent">
         <td class="transparent alignRight" width="110" nowrap><netui:content value="External User Id:"/></td>
-        <td class="transparent"><netui:label value="${actionForm.userProfile.extPin1}"/></td>
+        <td class="transparent"><netui:label value="${userProfileData.extPin1}"/></td>
     </tr>
 </table>
 </td>

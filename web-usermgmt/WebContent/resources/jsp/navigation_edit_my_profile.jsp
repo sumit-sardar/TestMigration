@@ -15,7 +15,7 @@
                 <td><a href="/TestSessionInfoWeb/homepage/viewReports.do" onclick="return verifyExitAddUser();" >reports |</a></td>
                 </c:if>
                 <c:if test="${ requestScope.isMyProfile }"><td class="currentNav">my profile</td></c:if>
-                <c:if test="${ !requestScope.isMyProfile}"><td><a href="/UserManagementWeb/manageUser/beginMyProfile.do" onclick="return verifyExitAddUser();" >my profile</a></td></c:if>
+                <c:if test="${ !requestScope.isMyProfile}"><td><a href="/web-usermgmt/manageUser/beginMyProfile.do" onclick="return verifyExitAddUser();" >my profile</a></td></c:if>
                 <ctb:auth roles="Administrator">
                     <td>| <a href="/OrganizationManagementWeb/administration/begin.do" onclick="return verifyExitAddUser();">system administration</a></td>
                 </ctb:auth>

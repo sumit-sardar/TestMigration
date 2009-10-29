@@ -615,6 +615,7 @@ public class ManageUserController extends PageFlowController
         try
         {
             UserProfileInformation userProfile = setUserProfileToForm(form);
+            
         }
         catch (CTBBusinessException businessException)
         {
@@ -648,6 +649,7 @@ public class ManageUserController extends PageFlowController
         try
         {
             UserProfileInformation userProfile = setUserProfileToForm(form);
+           
         }
         catch (CTBBusinessException businessException)
         {
@@ -827,6 +829,7 @@ public class ManageUserController extends PageFlowController
             form.setMessage(Message.CHANGE_PASSWORD_TITLE, msg, Message.ERROR);
         }
          
+         setFormInfoOnRequest(form);
         return new Forward(forwardName, form);
     }    
 
@@ -1339,6 +1342,7 @@ public class ManageUserController extends PageFlowController
         try
         {
             userProfile = setUserProfileToForm(form); 
+            setFormInfoOnRequest(form);
         }
         catch (CTBBusinessException be)
         {
@@ -1375,7 +1379,8 @@ public class ManageUserController extends PageFlowController
         UserProfileInformation userProfile = null;
         try
         {
-            userProfile = setUserProfileToForm(this.savedForm); 
+            userProfile = setUserProfileToForm(this.savedForm);
+            setFormInfoOnRequest(this.savedForm);
         }
         catch (CTBBusinessException be)
         {
@@ -1405,7 +1410,7 @@ public class ManageUserController extends PageFlowController
             this.getRequest().setAttribute("fromFindUsers", new Boolean(true));
         }
         this.getRequest().setAttribute("isMyProfile", Boolean.TRUE);
-       
+        
         return new Forward("success", form);                                                                                                                                                                                                    
     }
 
@@ -1493,6 +1498,8 @@ public class ManageUserController extends PageFlowController
         
         form.resetValuesForAction(actionElement, ACTION_EDIT_USER);        
         this.getRequest().setAttribute("isMyProfile", Boolean.TRUE);
+        
+        setFormInfoOnRequest(form);
         
         /*Changed for DEx defect # 57562 & 57563*/
         if (this.isLoginWithoutTimezone)
@@ -1640,14 +1647,17 @@ public class ManageUserController extends PageFlowController
 
     private void setFormInfoOnRequest(ManageUserForm form) {
 
-        this.getRequest().setAttribute("messageType", form.getMessage().getType());
+        /*this.getRequest().setAttribute("messageType", form.getMessage().getType());
         this.getRequest().setAttribute("messageTitle", form.getMessage().getTitle());
-        this.getRequest().setAttribute("messageContent", form.getMessage().getContent());
+        this.getRequest().setAttribute("messageContent", form.getMessage().getContent());*/
         
     	
-        this.getRequest().setAttribute("firstName", form.getUserProfile().getFirstName());       
+        /*this.getRequest().setAttribute("firstName", form.getUserProfile().getFirstName());       
         this.getRequest().setAttribute("middleName", form.getUserProfile().getMiddleName());       
-        this.getRequest().setAttribute("lastName", form.getUserProfile().getLastName());       
+        this.getRequest().setAttribute("lastName", form.getUserProfile().getLastName());   */  
+    	
+    	this.getRequest().setAttribute("pageMessage", form.getMessage());
+    	this.getRequest().setAttribute("userProfileData", form.getUserProfile());
     	
         //////////////////// NEED TO CONTINUE TO ADD MORE INFO HERE /////////////////////////
         
@@ -1894,6 +1904,7 @@ public class ManageUserController extends PageFlowController
         }
         
         this.savedForm.setActionElement(ACTION_CURRENT_ELEMENT);
+        setFormInfoOnRequest(this.savedForm);
         return new Forward("success", form);
     }
 
