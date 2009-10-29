@@ -1,0 +1,1297 @@
+/**
+ * widgets.css
+ */
+
+.alignCenter {
+    text-align: center;
+}
+
+.alignLeft {
+    text-align: left;
+}
+
+.alignRight {
+    text-align: right;
+}
+
+.asterisk {
+    color: #336699;
+}
+
+.spacer {
+    width: 3px;
+}
+
+
+
+.radioColumn {
+    width: 50px;
+}
+
+.checkboxColumn {
+    width: 50px;
+}
+
+
+
+/** TOOLTIP *******************************************************************/
+
+#toolTip {
+    background-color: #ffc;
+    border-color: #000;
+    border-style: solid;
+    border-width: 1px;
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-weight: normal;
+    visibility: hidden;
+    padding: 3px;
+    position: absolute;
+
+    top: 100px;
+    left: 100px;
+    width: 250px;
+
+}
+
+
+
+/** FORM ELEMENTS *************************************************************/
+
+/* prototype */
+.auxButton {
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: bold;
+}
+/*************/
+
+.button {
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+}
+
+.checkBox {
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    padding-right: 20px;
+}
+
+.formValue {
+    background-color: #ccc;
+    color: #666666;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    width: 200px;
+}
+
+.passwordField {
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    width: 200px;
+}
+
+.radioButton {
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    padding-right: 20px;
+}
+
+.selectOption {
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    width: 180px;
+}
+
+.text {
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+}
+
+
+.textArea {
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    width: 200px;
+}
+
+.textField {
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    width: 200px;
+}
+
+.textFieldDate {
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    width: 75px;
+}
+
+/*  deprecated */
+.pagingField {
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    text-align: center;
+    width: 24px;
+}
+
+
+.spacer {
+    width: 3px;
+}
+
+
+
+
+/** TRANSPARENT TABLE *********************************************************/
+
+table.transparent {
+    border-collapse: collapse; 
+    border-style: none;
+    color: #000;
+}
+
+tr.transparent {
+}
+ 
+th.transparent {
+    border-style: none;
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 5px;
+    vertical-align: middle;
+}
+
+td.transparent {
+    border-style: none;
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+    vertical-align: middle;
+}
+
+td.transparent-label {
+    border-style: none;
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    vertical-align: middle;
+}
+
+td.transparent img {
+    vertical-align: top;
+}
+
+td.transparent-top {
+    border-style: none;
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+    vertical-align: top;
+}
+
+td.transparent-top img {
+    vertical-align: top;
+}
+
+td.transparent-small {
+    border-style: none;
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 0px 5px 0px 0px;
+}
+
+td.transparent-control {
+    border-style: none;
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 0px;
+    vertical-align: top;
+}
+
+/** GROUPING TABLE ************************************************************/
+
+
+table.grouping {
+    border-collapse: collapse; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+}
+
+tr.grouping {
+}
+
+th.grouping {
+    background-color: #ffc; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 5px; 
+    text-align: left; 
+}
+
+td.grouping {
+    background-color: #fff; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px; 
+    text-align: left; 
+}
+
+
+
+/** SIMPLE TABLE **************************************************************/
+
+table.simple {    
+    border-collapse: collapse; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    width: 100%;
+}
+
+tr.simple { 
+}
+
+th.simple { 
+    background-color: #ffc; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 5px; 
+} 
+
+td.simple { 
+    background-color: #fff; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px; 
+} 
+
+td.simple a {
+    color: #00f;
+    text-decoration: underline;
+}
+
+td.simple a:hover {
+    color: #00f;
+    text-decoration: underline;
+}
+
+td.simpleControls {
+    background-color: #cc9;
+    color: #333;
+    font-size: 11px;
+    padding: 0px;
+}
+
+hr.simpleControls {
+    border-color: #663;
+    border-width: 1px 0px 0px 0px;
+    border-style: solid;
+    height: 1px;
+    margin: 0px 5px 0px 5px;
+}
+
+
+
+
+/** SORTABLE TABLE **************************************************************/
+
+table.sortable {    
+    border-collapse: collapse; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    width: 100%;
+}
+
+tr.sortable { 
+}
+
+th.sortable { 
+    background-color: #ffc; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 0px; 
+} 
+
+
+th.sortable .notCurrentSort {
+    padding: 5px; 
+}
+
+th.sortable .notCurrentSort a {
+    color: #000;
+    text-decoration: none;
+}
+
+th.sortable .notCurrentSort a:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+th.sortable .currentSort { 
+    background-color: #900;
+    color: #fff;
+    padding: 5px; 
+}
+
+th.sortable .currentSort a {
+    color: #fff;
+    text-decoration: none;
+}
+
+th.sortable .currentSort a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+td.sortable { 
+    background-color: #fff; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px; 
+} 
+
+td.sortableControls {
+    background-color: #cc9;
+    color: #333;
+    font-size: 11px;
+    padding: 0px;
+}
+
+hr.sortableControls {
+    border-color: #663;
+    border-width: 1px 0px 0px 0px;
+    border-style: solid;
+    height: 1px;
+    margin: 0px 5px 0px 5px;
+}
+
+td.sortable a {
+    color: #00f;
+    text-decoration: underline;
+}
+
+td.sortable a:hover {
+    color: #00f;
+    text-decoration: underline;
+}
+
+
+
+
+
+/** COMPLEX TABLE *************************************************************/
+
+
+table.tableTabs {    
+    border-collapse: collapse; 
+    border-style: none;
+}
+
+th.tableTabs {
+    background-color: #fff;
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px 0px 0px 0px; 
+    /* color: #d5cc99; */
+    color: #663;
+    font-family: Helvetica, Arial, Sans Serif;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 16px;
+    text-align: center;
+    padding: 0px 20px 0px 20px;
+}
+
+th.tableTabs a, th.tableTabs a:hover {
+    color: #663;
+    text-decoration: none;
+}
+
+th.tableTabsCurrent {
+    background-color: #ffc;
+    /* background-color: #cc9; */
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px 0px 0px 0px; 
+    /* color: #663; */
+    color: #000;
+    font-family: Helvetica, Arial, Sans Serif;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: 16px;
+    text-align: center;
+    padding: 0px 20px 0px 20px;
+}
+
+th.tableTabsCurrent a, th.tableTabsCurrent a:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+td.tableTabs {
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 0px 0px 0px 0px; 
+    padding: 0px;
+}
+
+td.tableTabsCurrent {
+    background-color: #ffc;
+    /* background-color: #cc9; */
+    color: #663;
+    padding: 0px;
+}
+
+
+
+
+table.tablePaging {    
+    border-collapse: collapse; 
+    border-style: none;
+    width: 100%;
+}
+
+th.tablePaging {
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+    vertical-align: middle;
+}
+
+td.tablePaging {
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+    vertical-align: middle;
+}
+
+td.tablePagingLeftSide {
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+    text-align: left;
+    width: 33%;
+    vertical-align: middle;
+}
+
+td.tablePagingLeftSide .button {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+
+td.tablePagingMiddle {
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+    text-align: center;
+    width: 33%;
+    vertical-align: middle;
+}
+
+td.tablePagingRightSide {
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+    text-align: right;
+    width: 33%;
+    vertical-align: middle;
+}
+
+td.tablePagingRightSide .button {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+
+
+
+table.tableFilter {    
+    border-collapse: collapse; 
+    border-style: none;
+}
+
+tr.tableFilter {    
+}
+
+th.tableFilter {    
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+}
+
+td.tableFilter {    
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+}
+
+
+
+
+
+.pathList {
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 5px;
+}
+
+.pathList a {
+    color: #00f;
+    font-weight: normal;
+}
+
+.pathList a:hover {
+    color: #00f;
+    font-weight: normal;
+}
+
+
+/** SIMPLEFORM TABLE **************************************************************/
+
+table.simpleForm {    
+    border-collapse: collapse; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    width: 100%;
+}
+
+tr.simpleForm { 
+}
+
+td.simpleForm { 
+    background-color: #fff; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+} 
+
+td.simpleFormNarrow { 
+    background-color: #fff; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 1px 5px 1px 5px;
+    height: 25px;
+} 
+
+td.simpleFormTitle {
+    background-color: #cc9;
+    color: #333;
+    border-style: none; 
+    border-width: 0px; 
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 5px;     
+}
+
+td.simpleFormNoBorder { 
+    background-color: #fff; 
+    border-style: none; 
+    border-width: 0px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 1px;
+} 
+
+
+
+
+/** COLLAPSIBLE TABLE **************************************************************/
+
+table.Collapsible {    
+    border-collapse: collapse; 
+    border-style: none; 
+    border-width: 0px; 
+    width: 100%;
+    padding: 0px 0px 0px 0px;
+}
+
+tr.Collapsible { 
+}
+
+td.Collapsible { 
+    background-color: #fff; 
+    border-style: none; 
+    border-width: 0px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 0px 0px 0px 0px;
+    height: 25px;
+} 
+
+td.CollapsibleHeader { 
+    background-color: #cc9; 
+    border-style: solid; 
+    border-width: 0px; 
+    border-color: #996; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 0px 0px 0px 0px;
+    height: 25px;
+} 
+
+td.CollapsibleBody { 
+    border-style: none; 
+    border-width: 0px; 
+    border-color: #996; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 0px 0px 0px 0px;
+    height: 25px;
+} 
+
+td.CollapsibleText { 
+    background-color: #fff; 
+    border-width: 1px; 
+    border-style: solid; 
+    border-color: #996; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+    height: 25px;
+} 
+
+td.CollapsibleHeaderYellow { 
+    background-color: #ffc; 
+    border-style: solid; 
+    border-width: 0px; 
+    border-color: #996; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 0px 0px 0px 0px;
+    height: 25px;
+} 
+
+
+td.CollapsibleTextNoBorder { 
+    background-color: #fff; 
+    border-width: 0px; 
+    border-style: none; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+    height: 25px;
+    vertical-align: top;
+} 
+
+
+
+/** MESSAGING *************************************************************/
+
+.informationMessage {
+    background-color: #ffc;
+    border-color: #000;
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px;
+}
+
+.informationMessage table {
+    border-collapse: collapse; 
+    border-style: none;
+}
+
+.informationMessage tr {
+}
+
+.informationMessage th {
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 3px 10px 3px 3px;
+    vertical-align: top;
+    text-align: left;
+}
+
+.informationMessage td {
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 3px 10px 3px 3px;
+}
+
+
+
+.alertMessage {
+    background-color: #ffc;
+    border-color: #000;
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px;
+}
+
+.alertMessage table {
+    border-collapse: collapse; 
+    border-style: none;
+}
+
+.alertMessage tr {
+}
+
+.alertMessage th {
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 3px 10px 3px 3px;
+    vertical-align: top;
+    text-align: left;
+}
+
+.alertMessage td {
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 3px 10px 3px 3px;
+}
+
+
+.errorMessage {
+    background-color: #ffc;
+    border-color: #000;
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px;
+}
+
+.errorMessage table {
+    border-collapse: collapse; 
+    border-style: none;
+}
+
+.errorMessage tr {
+}
+
+.errorMessage th {
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 3px 10px 3px 3px;
+    vertical-align: top;
+    text-align: left;
+}
+
+.errorMessage td {
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 3px 10px 3px 3px;
+}
+
+
+
+
+.tableMessage {
+    border-style: none;
+    padding: 5px;
+}
+
+.tableMessage table {
+    border-collapse: collapse; 
+    border-style: none;
+}
+
+.tableMessage tr {
+}
+
+.tableMessage th {
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 3px 10px 3px 3px;
+    vertical-align: top;
+    text-align: left;
+}
+
+.tableMessage td {
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 3px 10px 3px 3px;
+}
+
+
+
+
+
+
+
+
+
+
+
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+/******************************************************************************/
+
+
+div.c {
+}
+
+table.c {
+    border-collapse: collapse; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    width: 100%;
+}
+
+table.c th {
+    background-color: #ffc; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 5px; 
+}
+
+table.c th.notCurrentSort {
+    padding: 5px;
+}
+
+table.c th.notCurrentSort a, table.c th.currentSort a:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+table.c th.currentSort {
+    background-color: #900;
+    color: #fff;
+    padding: 5px; 
+}
+
+table.c th.currentSort a, table.c th.currentSort a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+table.c td {
+    background-color: #fff; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px; 
+}
+
+table.c td.controls {
+    background-color: #cc9;
+    color: #333;
+    font-size: 11px;
+    padding: 5px;
+}
+
+table.c td.controls hr {
+    border-color: #663;
+    border-width: 1px 0px 0px 0px;
+    border-style: solid;
+    height: 1px;
+}
+
+table.c table.filter { 
+    border-collapse: collapse; 
+    border-style: none;
+    border-width: 0px;
+}
+
+table.c table.filter td {
+    background-color: #cc9;
+    border-style: none;
+    border-width: 0px;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;    
+}
+
+
+
+table.c table.pager {
+    border-collapse: collapse; 
+    border-style: none; 
+    width: 100%;
+}
+
+table.c table.pager th {
+    background-color: #cc9;
+    border-style: none;
+    padding: 0px; 
+}
+
+table.c table.pager td.alignLeft {
+    background-color: #cc9;
+    border-style: none; 
+    padding: 0px; 
+    width: 33%;
+}
+
+table.c table.pager td.alignCenter {
+    background-color: #cc9;
+    border-style: none; 
+    padding: 0px; 
+    width: 33%;
+}
+
+table.c table.pager td.alignRight {
+    background-color: #cc9;
+    border-style: none; 
+    padding: 0px; 
+    width: 33%;
+}
+
+table.c table.pager .button {
+    padding-left:  5px;
+    padding-right: 5px;
+}
+
+table.c table.pager .textField {
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    text-align: center;
+    width: 24px;
+}
+
+
+
+
+
+div.p {
+}
+
+table.p {
+    border-collapse: collapse; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    width: 100%;
+}
+
+table.p th {
+    background-color: #ffc; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 5px; 
+}
+
+table.p th.notCurrentSort {
+    padding: 5px;
+}
+
+table.p th.notCurrentSort a, table.p th.currentSort a:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+table.p th.currentSort {
+    background-color: #900;
+    color: #fff;
+    padding: 5px; 
+}
+
+table.p th.currentSort a, table.p th.currentSort a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+table.p td {
+    background-color: #fff; 
+    border-color: #996; 
+    border-style: solid; 
+    border-width: 1px; 
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px; 
+}
+
+table.p td.controls {
+    background-color: #cc9;
+    color: #333;
+    font-size: 11px;
+    padding: 5px;
+}
+
+table.p td.controls hr {
+    border-color: #663;
+    border-width: 1px 0px 0px 0px;
+    border-style: solid;
+    height: 1px;
+}
+
+table.p td.controls .pathList {
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 0px;
+}
+
+table.p td.controls .pathList a {
+    color: #00f;
+    font-weight: normal;
+}
+
+table.p td.controls .pathList a:hover {
+    color: #00f;
+    font-weight: normal;
+}
+
+
+
+table.p table.pager {
+    border-collapse: collapse; 
+    border-style: none; 
+    width: 100%;
+}
+
+table.p table.pager th {
+    background-color: #cc9;
+    border-style: none;
+    padding: 0px; 
+}
+
+table.p table.pager td.alignLeft {
+    background-color: #cc9;
+    border-style: none; 
+    padding: 0px; 
+    width: 33%;
+}
+
+table.p table.pager td.alignCenter {
+    background-color: #cc9;
+    border-style: none; 
+    padding: 0px; 
+    width: 33%;
+}
+
+table.p table.pager td.alignRight {
+    background-color: #cc9;
+    border-style: none; 
+    padding: 0px; 
+    width: 33%;
+}
+
+table.p table.pager .button {
+    padding-left:  5px;
+    padding-right: 5px;
+}
+
+table.p table.pager .textField {
+    color: #000;
+    font-family: Arial, Verdana, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    text-align: center;
+    width: 24px;
+}
+
+
+
+
+
+
+
+
+
+
+
+/** DEBUGGING *****************************************************************/
+
+.debugger {
+    font-family: Arial, Helvetica, Sans Serif;
+    font-style: normal;
+    font-weight: normal;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.debugger table {
+    border-collapse: collapse; 
+    border-color: #369;
+    border-style: solid;
+    border-width: 1px;
+}
+
+.debugger tr {
+}
+
+.debugger th {
+    background-color: #69c;
+    color: #fff;
+    font-size: 11px;
+    text-align: left;
+    padding: 3px;
+}
+
+.debugger td {
+    font-size: 11px;
+    text-align: left;
+    padding: 3px;
+}
+
