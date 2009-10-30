@@ -16,7 +16,6 @@
 </ul>
 </ctb:auth>
 
-
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
 <h1>Students</h1>
 <ul>

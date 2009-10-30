@@ -8,7 +8,6 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
-
 <table class="sortable">
 
     <tr class="sortable">

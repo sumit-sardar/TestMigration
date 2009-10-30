@@ -8,7 +8,7 @@
     <table class="legacyNavLayout">
     <tr>
         <td>
-            <table class="legacyNavLinks floatLeft">
+           <table class="legacyNavLinks floatLeft">
             <tr>
                 <td><netui:anchor action="homepage" onclick="return verifyExitAddUser();">home |</netui:anchor></td>
                 <c:if test="${sessionScope.userHasReports}">                
@@ -20,7 +20,7 @@
                     <td>| <a href="/OrganizationManagementWeb/administration/begin.do" onclick="return verifyExitAddUser();">system administration</a></td>
                 </ctb:auth>
             </tr>
-            </table>
+           </table>
         </td>
         <td>
             <table class="legacyNavLinks floatRight">

@@ -3,7 +3,6 @@
  * @author: Tai Truong
  */
 
-
 var req;
 var autoSuggestControl;
 var sTextboxValue;

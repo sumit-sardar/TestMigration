@@ -11,7 +11,6 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
-
 <%            
     List selectedOrgNodes = (List)request.getAttribute("selectedOrgNodes"); 
     List orgNodesForSelector = (List)request.getAttribute("orgNodesForSelector");             
