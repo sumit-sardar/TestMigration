@@ -30,7 +30,7 @@
     <netui-data:repeaterHeader>
     
     <tr class="sortable">
-        <ctb:tableSortColumnGroup columnDataSource="{actionForm.studentSortColumn}" orderByDataSource="{actionForm.studentSortOrderBy}" anchorName="studentSearchResult">
+        <ctb:tableSortColumnGroup columnDataSource="actionForm.studentSortColumn" orderByDataSource="actionForm.studentSortOrderBy" anchorName="studentSearchResult">
             <th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['common.column.select']}"/></th>                
             <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="30%" nowrap>&nbsp;&nbsp;Organization</th>

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
-<%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
+<%@ taglib uri="/WEB-INF/ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
  
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
@@ -18,7 +18,7 @@
 
     <tr class="sortable">
         <td class="sortableControls" colspan="3">
-            <ctb:tablePathList valueDataSource="{actionForm.orgNodeId}" labelDataSource="{actionForm.orgNodeName}" pathList="{orgNodePath}" />
+            <ctb:tablePathList valueDataSource="actionForm.orgNodeId" labelDataSource="actionForm.orgNodeName" pathList="request.orgNodePath" />
         </td>
     </tr>
 
@@ -26,7 +26,7 @@
     <netui-data:repeaterHeader>
     
     <tr class="sortable">
-        <ctb:tableSortColumnGroup columnDataSource="{actionForm.orgSortColumn}" orderByDataSource="{actionForm.orgSortOrderBy}" >
+        <ctb:tableSortColumnGroup columnDataSource="actionForm.orgSortColumn" orderByDataSource="actionForm.orgSortOrderBy" >
             <th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['common.column.select']}"/></th>                
             <th class="sortable alignLeft" width="75%" nowrap><ctb:tableSortColumn value="OrgNodeName"><netui:content value="${requestScope.orgCategoryName}"/></ctb:tableSortColumn></th>
             <th class="sortable alignCenter" width="20%" nowrap><netui:content value="Students At & Below"/></th>
@@ -48,12 +48,12 @@
             </c:if>
             <c:if test="${isSelectable == 'true'}">                            
                 <netui:radioButtonGroup dataSource="actionForm.selectedOrgNodeId">
-                    &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="setElementValueAndSubmitWithAnchor('actionElement', '${actionForm.actionElement}', 'studentSearchResult');">&nbsp;</netui:radioButtonOption>                
+                    &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="setElementValueAndSubmitWithAnchor('actionElement', 'actionElement', 'studentSearchResult');">&nbsp;</netui:radioButtonOption>                
                 </netui:radioButtonGroup>
             </c:if>
         </td>        
         <td class="sortable alignLeft">     
-            <ctb:tablePathEntry srcLabelDataSource="{container.item.name}" srcValueDataSource="{container.item.id}" dstLabelDataSource="{actionForm.orgNodeName}" dstValueDataSource="{actionForm.orgNodeId}" shownAsLink="{container.item.hasChildren}"/>
+            <ctb:tablePathEntry srcLabelDataSource="${container.item.name}" srcValueDataSource="${container.item.id}" dstLabelDataSource="actionForm.orgNodeName" dstValueDataSource="actionForm.orgNodeId" shownAsLink="${container.item.hasChildren}"/>
         </td>
         <td class="sortable alignCenter">
             <netui:span value="${container.item.studentCount}"/>

@@ -3,9 +3,6 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="netui-tags-template.tld" prefix="netui-compat-template"%>
-<%@ taglib uri="netui-tags-databinding.tld" prefix="netui-compat-data"%>
-<%@ taglib uri="netui-tags-html.tld" prefix="netui-compat"%>
  
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
@@ -30,7 +27,7 @@
         <td class="tableFilter" width="*">
             <netui:select optionsDataSource="${pageFlow.gradeOptions}" dataSource="actionForm.studentProfile.grade" size="1" style="width:155px" tabindex="6"/>
             
-            <!--<netui-compat:select optionsDataSource="{pageFlow.gradeOptions}" dataSource="studentProfile.grade" size="1" style="width:155px" tabindex="6"/>-->
+            
         </td>
     </tr>
     <tr class="tableFilter">
@@ -39,7 +36,7 @@
         <td class="tableFilter" width="100" align="right">Gender:</td>
         <td class="tableFilter" width="*">
              <netui:select optionsDataSource="${pageFlow.genderOptions}" dataSource="actionForm.studentProfile.gender" size="1" style="width:155px" tabindex="7"/>
-           <!-- <netui-compat:select optionsDataSource="{pageFlow.genderOptions}" dataSource="studentProfile.gender" size="1" style="width:155px" tabindex="7"/>-->
+           
         </td>
     </tr>
     <tr class="tableFilter">

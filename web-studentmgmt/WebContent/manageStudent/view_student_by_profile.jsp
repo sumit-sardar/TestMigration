@@ -3,7 +3,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="netui-tags-html.tld" prefix="netui-compat"%>
+
  
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
@@ -19,23 +19,23 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent" width="80"><netui:content value="First Name:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.studentProfile.firstName}"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.firstName}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="80"><netui:content value="Middle Name:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.studentProfile.middleName}"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.middleName}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="80"><netui:content value="Last Name:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.studentProfile.lastName}"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.lastName}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="80"><netui:content value="Login ID:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.studentProfile.userName}"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.userName}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="80"><netui:content value="Date of Birth:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.studentProfile.birthdateString}"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.birthdateString}"/></td>
     </tr>
 </table>
 
@@ -50,15 +50,15 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent" width="80"><netui:content value="Grade:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.studentProfile.grade}"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.grade}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="80"><netui:content value="Gender:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.studentProfile.gender}"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.gender}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="80"><netui:content value="Student ID:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.studentProfile.studentNumber}"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.studentNumber}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent-top" width="80"><netui:content value="Organization:"/></td>
