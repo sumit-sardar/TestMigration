@@ -87,7 +87,6 @@ public class RegistrationController extends PageFlowController
     @Control()
     private com.ctb.control.licensing.Licensing licensing;
 
-
     private static final String ACTION_DEFAULT          = "defaultAction";
     private static final String ACTION_FIND_STUDENT     = "findStudentAction";
     private static final String ACTION_ADD_STUDENT      = "addStudentAction";
