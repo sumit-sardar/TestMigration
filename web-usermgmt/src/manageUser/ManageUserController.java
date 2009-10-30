@@ -62,7 +62,6 @@ import utils.UserPathListUtils;
 import utils.UserSearchUtils;
 import utils.WebUtils;
 
-
 /**
  * @jpf:controller
 **/
