@@ -62,7 +62,6 @@ public class ManageStudentController extends PageFlowController
 {
 	static final long serialVersionUID = 1L;
 
-
 	/**
 	 * @common:control
 	 */
