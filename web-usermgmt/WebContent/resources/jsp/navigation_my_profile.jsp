@@ -15,7 +15,7 @@
                 <td><a href="/TestSessionInfoWeb/homepage/viewReports.do" >reports |</a></td>
                 </c:if>
                 <c:if test="${ requestScope.isMyProfile }"><td class="currentNav">my profile</td></c:if>
-                <c:if test="${ !requestScope.isMyProfile}"><td><a href="/web-usermgmt/manageUser/beginMyProfile.do" >my profile</a></td></c:if>
+                <c:if test="${ !requestScope.isMyProfile}"><td><a href="/UserManagementWeb/manageUser/beginMyProfile.do" >my profile</a></td></c:if>
                 <ctb:auth roles="Administrator">
                     <td>| <a href="/OrganizationManagementWeb/administration/begin.do">system administration</a></td>
                 </ctb:auth>

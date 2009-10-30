@@ -135,7 +135,7 @@ UserSuggestions.prototype.getXmlHttpRequestObject = function()
  */
 function createAutoSuggestControl(controlId) 
 {
-    var url = "/web-usermgmt/manageUser/findSuggestions.do";    
+    var url = "/UserManagementWeb/manageUser/findSuggestions.do";    
     var element = document.getElementById(controlId);
     element.setAttribute("autocomplete", "off");
 
