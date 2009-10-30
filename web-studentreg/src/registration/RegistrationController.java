@@ -62,7 +62,7 @@ import utils.MessageResourceBundle;
   
 /**
  * @jpf:controller
- *  */
+**/
 @Jpf.Controller()
 public class RegistrationController extends PageFlowController
 {
