@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<annotation-manifest xmlns="http://www.bea.com/2004/03/wlw/external-config/">
+  <annotated-class>
+    <annotated-class-name>manageUpload.UploadDownloadManagementControl</annotated-class-name>
+    <component-type>Control Extension (JCX)</component-type>
+    <annotation>
+      <annotation-class-name>com.bea.control.ServiceControl$Location</annotation-class-name>
+      <array-member>
+        <member-name>urls</member-name>
+        <member-value>http://localhost:7001/OrganizationManagementWebService/UploadDownloadManagementTest.jws</member-value>
+      </array-member>
+    </annotation>
+  </annotated-class>
+  <annotated-class>
+    <annotated-class-name>manageUpload.UploadService</annotated-class-name>
+    <component-type>Control Extension (JCX)</component-type>
+    <annotation>
+      <annotation-class-name>com.bea.control.ServiceControl$Location</annotation-class-name>
+      <array-member>
+        <member-name>urls</member-name>
+        <member-value>http://localhost:7001/OrganizationManagementWebService/UploadDownloadManagementTest.jws</member-value>
+      </array-member>
+    </annotation>
+  </annotated-class>
+  <annotation-definition>
+    <annotation-class-name>com.bea.control.ServiceControl$Location</annotation-class-name>
+    <allowed-on-declaration>true</allowed-on-declaration>
+    <member-definition>
+      <member-name>urls</member-name>
+      <is-array>true</is-array>
+      <is-required>false</is-required>
+      <simple-type-definition>
+        <base-type>STRING</base-type>
+      </simple-type-definition>
+    </member-definition>
+  </annotation-definition>
+  <version/>
+</annotation-manifest>
