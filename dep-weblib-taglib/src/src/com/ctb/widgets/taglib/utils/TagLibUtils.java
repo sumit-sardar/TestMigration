@@ -20,8 +20,6 @@ public class TagLibUtils
     private Tag tag;
     private PageContext pageContext;
     
-    
-    
     public TagLibUtils(HttpServletRequest request, Tag tag, PageContext pageContext) throws JspException {
         Enumeration enumVar = request.getAttributeNames();
         String attributeName;
@@ -45,8 +43,7 @@ public class TagLibUtils
     	
     	NetUIReadVariableResolver vr = new NetUIReadVariableResolver(this.pageContext.getVariableResolver());
     	
-        Object result;
-
+        Object result = null;
         try {
             result = ParseUtils.evaluate(variable, vr);
         } catch(Exception e) {
@@ -59,15 +56,14 @@ public class TagLibUtils
     
 
     public String escapeVariable(String variable) {
-        String escaped;
-        
-        escaped = variable.replaceAll("\\'", "\\\\'");
-        
+
+    	String escaped = variable.replaceAll("\\'", "\\\\'");      
         return escaped;
     }
 
     public Object performResolveVariable(String variable) {
-        Object result = null;
+
+    	Object result = null;
 
         if ((variable.indexOf("actionForm") == 0) || (variable.indexOf("{actionForm") == 0) || (variable.indexOf("${actionForm") == 0))
         	result = actionFormResolveVariable(variable);    		
@@ -81,7 +77,14 @@ public class TagLibUtils
     }
      
    public Object actionFormResolveVariable(String variable) {
-
+	   if ( isSimpleObject(variable) ) 
+		   return actionFormResolveSimple(variable);
+	   else 
+		   return actionFormResolveComplex(variable);
+   }
+   
+   public Object actionFormResolveSimple(String variable) {
+	   
 	   String varName;
        if (variable.indexOf("actionForm") == 0)
     	   varName = variable.substring("actionForm.".length(), variable.length());
@@ -91,9 +94,7 @@ public class TagLibUtils
        else
     	   varName = variable.substring("${actionForm.".length(), variable.length()-1);
        
-	   String firstchar = varName.substring(0, 1).toUpperCase();
-	   String theRest = varName.substring(1, varName.length());
-	   varName = firstchar + theRest;
+       varName = firstLetterUpper(varName);
 
        	Method [] methods = this.actionForm.getClass().getMethods();
         
@@ -107,7 +108,6 @@ public class TagLibUtils
             	if (methodName.indexOf(varName) > 0) {
 					try {
 						Object formval = (Object) methods[i].invoke(this.actionForm, null);
-
 		            	return formval;
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -119,6 +119,50 @@ public class TagLibUtils
         return null;
     }
 
+   public Object actionFormResolveComplex(String variable) {
+	   
+	   int lastIndex = variable.lastIndexOf(".");	   
+	   String objectName = variable.substring("actionForm.".length(), lastIndex);
+	   objectName = firstLetterUpper(objectName);
+	   
+	   Object complexObj = null;	   
+       Method [] methods = this.actionForm.getClass().getMethods();        
+       for (int i=0 ; i<methods.length ; i++) {        	
+            String methodName = methods[i].getName();
+            if ( methodName.indexOf(objectName) > 0 ) { 
+				try {
+					complexObj = (Object) methods[i].invoke(this.actionForm, null);
+		           	break;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+           	}
+       }
+
+	   String varName = variable.substring("actionForm.".length() + objectName.length() + 1, variable.length());
+	   varName = firstLetterUpper(varName);
+	   	   
+       	methods = complexObj.getClass().getMethods();        
+        for (int i=0 ; i<methods.length ; i++) {
+        	
+            String methodName = methods[i].getName();
+            if ( methods[i].getParameterTypes().length == 0 && 
+            	 methodName.startsWith("get") && 
+                 methods[i].getReturnType() != null ) {
+            	
+            	if (methodName.indexOf(varName) > 0) {
+					try {
+						Object formval = (Object) methods[i].invoke(complexObj, null);
+		            	return formval;
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+            	}            	
+            }
+        }
+        return null;
+    }
+   
    public Object requestResolveVariable(String variable) {
 
 	   String varName;
@@ -128,6 +172,18 @@ public class TagLibUtils
     	   varName = variable.substring("requestScope.".length(), variable.length());
 	   
        return pageContext.getRequest().getAttribute( varName );
+   }
+   
+   private boolean isSimpleObject(String variable) {
+		int firstIndex = variable.indexOf(".");
+		int lastIndex = variable.lastIndexOf(".");
+		return (firstIndex == lastIndex);
+   }
+
+   private String firstLetterUpper(String src) {
+	   String firstLetter = src.substring(0, 1).toUpperCase();
+	   String theRest = src.substring(1, src.length());
+	   return (firstLetter + theRest);
    }
    
 } 
