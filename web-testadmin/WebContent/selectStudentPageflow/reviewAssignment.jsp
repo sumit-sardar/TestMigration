@@ -114,7 +114,7 @@
     <netui-data:repeaterHeader>
     
     <tr class="sortable">
-        <ctb:tableSortColumnGroup columnDataSource="{actionForm.studentStatePathList.sortColumn}" orderByDataSource="{actionForm.studentStatePathList.sortOrderBy}" anchorName="tableAnchor">
+        <ctb:tableSortColumnGroup columnDataSource="actionForm.studentStatePathList.sortColumn" orderByDataSource="actionForm.studentStatePathList.sortOrderBy" anchorName="tableAnchor">
             <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="LastName"><netui:span value="Last Name"/></ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="FirstName"><netui:span value="First Name"/></ctb:tableSortColumn></th>
             <th class="sortable alignCenter" width="10%" nowrap><ctb:tableSortColumn value="MiddleName"><netui:span value="M.I"/></ctb:tableSortColumn></th>            

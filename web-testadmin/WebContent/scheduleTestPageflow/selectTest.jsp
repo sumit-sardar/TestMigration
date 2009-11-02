@@ -295,7 +295,7 @@
 <netui-data:repeaterHeader>
 
 <tr class="sortable">
-    <ctb:tableSortColumnGroup columnDataSource="{actionForm.testStatePathList.sortColumn}" orderByDataSource="{actionForm.testStatePathList.sortOrderBy}" >
+    <ctb:tableSortColumnGroup columnDataSource="actionForm.testStatePathList.sortColumn" orderByDataSource="actionForm.testStatePathList.sortOrderBy" >
         <th class="sortable alignCenter" nowrap><netui:span value="${bundle.web['common.column.select']}"/></th>                
         <th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="ItemSetName"><netui:span value="${bundle.web['common.column.testName']}"/></ctb:tableSortColumn></th>
         

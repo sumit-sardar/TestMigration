@@ -130,7 +130,7 @@
     <netui-data:repeaterHeader>
     
     <tr class="sortable">
-        <ctb:tableSortColumnGroup columnDataSource="{actionForm.orgStatePathList.sortColumn}" orderByDataSource="{actionForm.orgStatePathList.sortOrderBy}" anchorName="pathListAnchor">
+        <ctb:tableSortColumnGroup columnDataSource="actionForm.orgStatePathList.sortColumn" orderByDataSource="actionForm.orgStatePathList.sortOrderBy" anchorName="pathListAnchor">
             <th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['common.column.select']}"/></th>                
             <th class="sortable alignLeft" width="65%" nowrap><ctb:tableSortColumn value="OrgNodeName"><netui:content value="${requestScope.orgCategoryName}"/></ctb:tableSortColumn></th>
             <th class="sortable alignRight" width="*" nowrap><ctb:tableSortColumn value="UserCount"><netui:content value="Available Proctors At & Below"/></ctb:tableSortColumn></th>
@@ -206,7 +206,7 @@
     <netui-data:repeaterHeader>
     
     <tr class="sortable">
-        <ctb:tableSortColumnGroup columnDataSource="{actionForm.proctorStatePathList.sortColumn}" orderByDataSource="{actionForm.proctorStatePathList.sortOrderBy}" anchorName="proctorTableAnchor">
+        <ctb:tableSortColumnGroup columnDataSource="actionForm.proctorStatePathList.sortColumn" orderByDataSource="actionForm.proctorStatePathList.sortOrderBy" anchorName="proctorTableAnchor">
             <th class="sortable alignCenter" nowrap><netui:span value="${bundle.web['common.column.select']}"/></th>                
             <th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="LastName"><netui:span value="Last Name"/></ctb:tableSortColumn></th>
             <th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="FirstName"><netui:span value="First Name"/></ctb:tableSortColumn></th>
