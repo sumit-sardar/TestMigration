@@ -338,7 +338,7 @@ public class RegistrationController extends PageFlowController
         }
         //End License user stories Agile task 
          
-                        
+        setFormInfoOnRequest(form);                
         return new Forward("success", form);
     }
 
@@ -793,7 +793,8 @@ public class RegistrationController extends PageFlowController
         this.getRequest().setAttribute("hideBackButton", new Boolean(this.returnFromCongratulation));
        
         this.getRequest().setAttribute("isLocatorTest", new Boolean(this.isLocatorTest));
-
+        
+        setFormInfoOnRequest(form);
         return new Forward("success", form);
     }
 
@@ -1287,6 +1288,10 @@ public class RegistrationController extends PageFlowController
                         
         this.getRequest().setAttribute("selectedSubtestList", this.selectedSubtests);
         
+        //To remove netui-compat
+        
+        setFormInfoOnRequest(form);
+        
         return new Forward("success", form);
     }
 
@@ -1426,6 +1431,15 @@ public class RegistrationController extends PageFlowController
         
         return msData;
     }
+    
+    /*
+	 * set form Value in request
+	 */
+	private void setFormInfoOnRequest(RegistrationForm form ) {
+
+
+		this.getRequest().setAttribute("pageMessage", form.getMessage());
+	}
     
     
     
