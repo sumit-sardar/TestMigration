@@ -707,7 +707,7 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
      */
     public RosterElementData getRosterForTestSession(String userName, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
     {
-        validator.validateAdmin(userName, testAdminId, "testAdmin.getRosterElementsForTestSession");
+     //   validator.validateAdmin(userName, testAdminId, "testAdmin.getRosterElementsForTestSession");
         try {
             RosterElementData red = new RosterElementData();
             Integer pageSize = null;
