@@ -1,8 +1,5 @@
 <%@ page import="java.io.*, java.util.*"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
-<%@ taglib uri="netui-tags-databinding.tld" prefix="netui-compat-data"%>
-<%@ taglib uri="netui-tags-html.tld" prefix="netui-compat"%>
-<%@ taglib uri="netui-tags-template.tld" prefix="netui-compat-template"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
@@ -17,7 +14,7 @@
 <!--Change MQC defect  55837 -->
 
 <%String templatePage = "/resources/jsp/template.jsp";%>
-<ctb:switch dataSource="{pageFlow.action}">
+<ctb:switch dataSource="${pageFlow.action}">
 	<ctb:case value="edit">
 		<% templatePage="/resources/jsp/editTemplate.jsp";%>
 	</ctb:case>
@@ -90,7 +87,7 @@
 			<netui-data:getData resultId="licensebarColor" value="${pageFlow.licenseBarColor}" />
 
 
-			<ctb:switch dataSource="{actionForm.action}">
+			<ctb:switch dataSource="${actionForm.action}">
 
 
 
