@@ -334,10 +334,8 @@ public class HomePageController extends PageFlowController
         {
             be.printStackTrace();
         }
-
-        this.reportManager = new ReportManager();
     }
-     
+      
     private void prepareSessionSelection(List sessionList, HomePageForm form, String sessionDisableType)
     {
         String sessionId = null;

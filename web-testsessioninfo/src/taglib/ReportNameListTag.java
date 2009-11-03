@@ -26,7 +26,7 @@ public class ReportNameListTag extends CTBTag
 	            
 	public int doStartTag() throws JspException {
 		try { 
-            if (this.reportList.size() > 0)            
+            if ((this.reportList != null) && (this.reportList.size() > 0))            
                 displayContent();
             else
                 displayMessage();
