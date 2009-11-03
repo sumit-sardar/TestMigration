@@ -14,7 +14,7 @@
 
 <!-- Change for MQC defect  55837 -->
 <%String templatePage = "/resources/jsp/template.jsp";%>
-<ctb:switch dataSource="{pageFlow.action}">
+<ctb:switch dataSource="${pageFlow.action}">
     <ctb:case value="edit">
         <% templatePage="/resources/jsp/editTemplate.jsp";%>
     </ctb:case>
@@ -34,7 +34,7 @@
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 <netui:form action="selectProctor" onSubmit="this.action = addAnchor(this.action, 'proctorTableAnchor'); return true;">
-<ctb:switch dataSource="{actionForm.action}">
+<ctb:switch dataSource="${actionForm.action}">
 <ctb:case value="schedule">
     <h1><netui:span value="${bundle.web['selectproctors.title.schedule']}"/></h1>
 </ctb:case>    
