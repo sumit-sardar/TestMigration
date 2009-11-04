@@ -182,7 +182,7 @@ public class ManageUploadController extends PageFlowController
             form.setCurrentAction(ACTION_APPLY_SEARCH);
             return new Forward("viewUploads", form);        
         }
-        
+        setFormInfoOnRequest(form);
         return new Forward("success", form);
     }
 
@@ -732,6 +732,10 @@ public class ManageUploadController extends PageFlowController
         }
         
         return "False";
+    }
+    
+    private void setFormInfoOnRequest(ManageUploadForm form) {
+    	this.getRequest().setAttribute("pageMessage", form.getMessage());
     }
     
     private class UploadThread extends Thread {

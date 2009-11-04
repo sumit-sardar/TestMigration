@@ -682,7 +682,7 @@ public class ManageOrganizationController extends PageFlowController
         }
         
         adjustLayerSelection(form);
-        
+        setFormInfoOnRequest(form);
         return new Forward("success", form);
         
     }
@@ -918,7 +918,7 @@ public class ManageOrganizationController extends PageFlowController
         handleAddEditOrganization(form, globalApp.ACTION_ADD_ORGANIZATION); 
         this.pageTitle = buildPageTitle(globalApp.ACTION_ADD_ORGANIZATION, form); 
         this.getRequest().setAttribute("isAddOrganization",Boolean.TRUE); 
-
+        setFormInfoOnRequest(form);
         return new Forward("success", form);
     }
 
@@ -1049,7 +1049,6 @@ public class ManageOrganizationController extends PageFlowController
             }
             else
             {
-                
                 return new Forward("errorEdit", form);
                 
             }
@@ -1058,7 +1057,7 @@ public class ManageOrganizationController extends PageFlowController
         form.setActionElement(globalApp.ACTION_DEFAULT);   
         form.setCurrentAction(globalApp.ACTION_DEFAULT);
         this.globalApp.navPath.reset(globalApp.ACTION_VIEW_ORGANIZATION);
-        
+        setFormInfoOnRequest(form);
         return new Forward("success", form);
     }
 
@@ -1426,7 +1425,7 @@ public class ManageOrganizationController extends PageFlowController
              
         this.globalApp.navPath.restoreOrgNavInfo(action, this.savedForm);
         this.isFromAddEdit = false;
-                    
+        setFormInfoOnRequest(this.savedForm);            
         return new Forward(action, this.savedForm);
     }
     
@@ -2177,6 +2176,10 @@ public class ManageOrganizationController extends PageFlowController
          
         return invalidParent; 
     } 
+    
+    private void setFormInfoOnRequest(ManageOrganizationForm form) {
+    	this.getRequest().setAttribute("pageMessage", form.getMessage());
+    }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////

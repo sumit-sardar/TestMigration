@@ -21,11 +21,11 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent alignRight" width="110"><netui:content value="Customer Name:"/></td>
-        <td class="transparent"><netui:span value="${actionForm.customerProfile.name}"/></td>
+        <td class="transparent"><netui:label value="${customerProfileData.name}"/></td>
     </tr>   
     <tr class="transparent">
         <td class="transparent alignRight" width="110"><netui:content value="Product Name:"/></td>
-        <td class="transparent" nowrap><netui:span value="${actionForm.licenseNode.productName}"/></td>
+        <td class="transparent" nowrap><netui:label value="${licneseNodeData.productName}"/></td>
     </tr>    
 </table>
 </td>
@@ -41,7 +41,7 @@
     </tr>
     <tr class="transparent">
         <td class="transparent alignRight" width="150"><netui:content value="Scheduled:"/></td>
-        <td class="transparent" nowrap><netui:span value="${actionForm.licenseNode.reserved}"/></td>
+        <td class="transparent" nowrap><netui:label value="${licneseNodeData.reserved}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent alignRight" width="150" nowrap><netui:content value="Consumed:"/></td>

@@ -686,6 +686,10 @@ public class ManageLicenseController extends PageFlowController
         }
         
     }
+
+	public String[] getProductNameOptions() {
+		return productNameOptions;
+	}
   
 
        

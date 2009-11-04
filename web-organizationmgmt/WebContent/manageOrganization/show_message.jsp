@@ -5,12 +5,12 @@
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 
 
-<netui-data:getData resultId="messageType" value="${actionForm.message.type}"/>
+<netui-data:getData resultId="messageType" value="${pageMessage.type}"/>
 <c:if test="${messageType != null}">     
 <p>
     <% String style = (String)pageContext.getAttribute("messageType"); %> 
-    <ctb:message title="{actionForm.message.title}" style="<%= style %>" >
-          <netui:content value="${actionForm.message.content}"/>
+    <ctb:message title="${pageMessage.title}" style="<%= style %>" >
+          <netui:content value="${pageMessage.content}"/>
     </ctb:message>
 </p>
 </c:if> 

@@ -121,6 +121,7 @@ public class ManageDownloadController extends PageFlowController
                 if (userFileRow.length > CTBConstants.MAX_EXCEL_SIZE) {
                    
                     form.setMessage(Message.DOWNLOAD_TITLE, Message.DOWNLOAD_ERROR_MSG, Message.ERROR);
+                    setFormInfoOnRequest(form);
                     return new Forward("error",form);
                     
                 }
@@ -137,6 +138,7 @@ public class ManageDownloadController extends PageFlowController
                 if (studentFileRow.length > CTBConstants.MAX_EXCEL_SIZE) {
                     
                     form.setMessage(Message.DOWNLOAD_TITLE, Message.DOWNLOAD_ERROR_MSG, Message.ERROR);
+                    setFormInfoOnRequest(form);
                     return new Forward("error",form);
                     
                 }
@@ -146,6 +148,8 @@ public class ManageDownloadController extends PageFlowController
                         (studentFile, this.userName, userManagement);
                 
             }
+            
+        setFormInfoOnRequest(form);
             
         HttpServletResponse resp = this.getResponse();        
         String bodypart = "attachment; filename=\"" + fileName + "\" ";
@@ -170,9 +174,14 @@ public class ManageDownloadController extends PageFlowController
             e.printStackTrace();
             String msg = MessageResourceBundle.getMessage(e.getMessage());
             form.setMessage(Message.DOWNLOAD_TITLE, msg, Message.ERROR);
+            //setFormInfoOnRequest(form);
         }
         
         return null;
+    }
+    
+    private void setFormInfoOnRequest(ManageDownloadForm form) {
+    	this.getRequest().setAttribute("pageMessage", form.getMessage());
     }
 
      /**

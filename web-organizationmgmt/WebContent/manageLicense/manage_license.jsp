@@ -44,7 +44,7 @@
 <tr class="transparent">
     <td class="transparent">Product:</td>
     <td class="transparent">
-        <netui:select dataSource="pageFlow.productName" optionsDataSource="${pageFlow.productNameOptions}" size="1" multiple="false" onChange="setElementValueAndSubmit('${actionForm.currentAction}', 'changeProduct');">
+        <netui:select dataSource="pageFlow.productName" optionsDataSource="${pageFlow.productNameOptions}" size="1" multiple="false" onChange="setElementValueAndSubmit('currentAction', 'changeProduct');">
         </netui:select>
     </td>
 </tr>
@@ -83,8 +83,8 @@
     <netui-data:repeaterItem>
     
     <tr class="sortable">
-        <td class="sortable alignLeft">                
-            <ctb:tablePathEntry srcLabelDataSource="{container.item.name}" srcValueDataSource="{container.item.id}" dstLabelDataSource="{actionForm.orgNodeName}" dstValueDataSource="{actionForm.orgNodeId}" shownAsLink="{container.item.hasChildren}"/>
+        <td class="sortable alignLeft">  
+            <ctb:tablePathEntry srcLabelDataSource="${container.item.name}" srcValueDataSource="${container.item.id}" dstLabelDataSource="actionForm.orgNodeName" dstValueDataSource="actionForm.orgNodeId" shownAsLink="${container.item.hasChildren}"/>
             <netui-data:getData resultId="orgNodeName" value="${container.item.name}"/>
         </td>
         <td class="sortable alignCenter">

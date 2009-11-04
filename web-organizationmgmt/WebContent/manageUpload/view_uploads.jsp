@@ -87,7 +87,7 @@
  <c:if test="${searchResultEmpty != null}"> 
         <tr class ="sortable">    
             <td class ="sortable" colspan="6">
-                <ctb:message title="{bundle.web['viewupload.nofile.title']}" style="tableMessage" >
+                <ctb:message title="${bundle.web['viewupload.nofile.title']}" style="tableMessage" >
                     <netui:content value="${bundle.web['viewupload.nofile.message']}"/>
                 </ctb:message>
             </td>

@@ -4,7 +4,6 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="netui-tags-html.tld" prefix="netui-compat"%>
 <%@ taglib uri="netui-tags-databinding.tld" prefix="netui-compat-data"%>
 
 
@@ -13,13 +12,13 @@
         <td valign="top">
          <table class="transparent">
             <tr class="transparent">
-            <netui-compat-data:getData resultId="currentAction" value="{actionForm.currentAction}"/>
+            <netui-compat-data:getData resultId="currentAction" value= "{actionForm.currentAction}" />
                 <td class="transparent alignRight" width="130" valign="top" nowrap><span class="asterisk">*</span>&nbsp;Customer Type:</td>
               <c:if test="${currentAction == 'defaultAction'}">
                 <td class="transparent"><netui:select optionsDataSource="${pageFlow.customerOptions}" dataSource="actionForm.customerProfile.customerTypeId" size="1" style="width:200px" defaultValue="${actionForm.customerProfile.customerTypeId}"/></td>        
               </c:if>
               <c:if test="${currentAction == 'editCustomer'}"> 
-                <td class="transparent"><netui-compat:label value="{actionForm.customerProfile.customerType}"/></td>
+                <td class="transparent"><netui:label value="${customerProfileData.customerType}"/></td>
               </c:if> 
             </tr>
             <tr class="transparent">

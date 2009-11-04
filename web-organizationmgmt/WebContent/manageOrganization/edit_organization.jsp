@@ -1,8 +1,5 @@
 <%@ page import="java.io.*, java.util.*"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
-<%@ taglib uri="netui-tags-databinding.tld" prefix="netui-compat-data"%>
-<%@ taglib uri="netui-tags-html.tld" prefix="netui-compat"%>
-<%@ taglib uri="netui-tags-template.tld" prefix="netui-compat-template"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="ctb-web.tld" prefix="ctbweb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -46,8 +43,8 @@
 <netui:form action="editOrganization">
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.selectedOrgName}" />
 
-<netui:hidden dataSource="actionForm.actionElement"/> 
-<netui:hidden dataSource="actionForm.currentAction"/>
+<netui:hidden tagid="actionElement" dataSource="actionForm.actionElement"/> 
+<netui:hidden tagid="currentAction" dataSource="actionForm.currentAction"/>
 <netui:hidden dataSource="actionForm.selectedOrgChildNodeId"/>
 <netui:hidden dataSource="actionForm.selectedOrgNodeName"/>
 <netui:hidden dataSource="actionForm.previousParentId"/>
@@ -152,12 +149,12 @@
                 %> 
                 <input type="hidden" id="<%=orgNodeId%>" name="<%=orgNodeId%>" value="<%=orgNodeName%>">
                 <netui:radioButtonGroup dataSource="actionForm.selectedOrgNodeId">
-                    &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="updateOrgNodeSelection(this);setElementValueAndSubmitWithAnchor('{actionForm.actionElement}', '${actionForm.actionElement}', 'userSearchResult');">&nbsp;</netui:radioButtonOption>                
+                    &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="updateOrgNodeSelection(this);setElementValueAndSubmitWithAnchor('actionElement', '${actionForm.actionElement}', 'userSearchResult');">&nbsp;</netui:radioButtonOption>                
                 </netui:radioButtonGroup>                
             </c:if>
         </td>        
         <td class="sortable alignLeft">     
-            <ctb:tablePathEntry srcLabelDataSource="{container.item.name}" srcValueDataSource="{container.item.id}" dstLabelDataSource="{actionForm.orgNodeName}" dstValueDataSource="{actionForm.orgNodeId}" shownAsLink="{container.item.hasChildren}"/>
+            <ctb:tablePathEntry srcLabelDataSource="${container.item.name}" srcValueDataSource="${container.item.id}" dstLabelDataSource="actionForm.orgNodeName" dstValueDataSource="actionForm.orgNodeId" shownAsLink="${container.item.hasChildren}"/>
         </td>
     </tr>
     

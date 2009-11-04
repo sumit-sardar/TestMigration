@@ -3,7 +3,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="netui-tags-html.tld" prefix="netui-compat"%>
+
  
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
@@ -19,19 +19,19 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent" width="100" nowrap><netui:content value="Customer Type:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.customerProfile.customerType}"/></td>
+        <td class="transparent"><netui:label value="${customerProfileData.customerType}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100" nowrap><netui:content value="Customer Name:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.customerProfile.name}"/></td>
+        <td class="transparent"><netui:label value="${customerProfileData.name}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100" nowrap><netui:content value="Customer ID:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.customerProfile.code}"/></td>
+        <td class="transparent"><netui:label value="${customerProfileData.code}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100" nowrap><netui:content value="State:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.customerProfile.state}"/></td>
+        <td class="transparent"><netui:label value="${customerProfileData.state}"/></td>
     </tr>
 </table>
 </td>
@@ -44,23 +44,23 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent" width="180" nowrap><netui:content value="CTB Contact:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.customerProfile.ctbContact}"/></td>
+        <td class="transparent"><netui:label value="${customerProfileData.ctbContact}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="180" nowrap><netui:content value="CTB Contact Email:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.customerProfile.ctbContactEmail}"/></td>
+        <td class="transparent"><netui:label value="${customerProfileData.ctbContactEmail}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="180" nowrap><netui:content value="Customer Contact:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.customerProfile.customerContact}"/></td>
+        <td class="transparent"><netui:label value="${customerProfileData.customerContact}"/></td>
     </tr>
      <tr class="transparent">
         <td class="transparent" width="180" nowrap><netui:content value="Customer Contact Email:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.customerProfile.customerContactEmail}"/></td>
+        <td class="transparent"><netui:label value="${customerProfileData.customerContactEmail}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="180" nowrap><netui:content value="Customer Contact Phone:"/></td>
-        <td class="transparent"><netui-compat:label value="{actionForm.customerProfile.conatctPhone}"/></td>
+        <td class="transparent"><netui:label value="${customerProfileData.conatctPhone}"/></td>
     </tr>
 </table>
 </td>

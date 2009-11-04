@@ -27,8 +27,8 @@
 <netui:form action="viewOrganization">
 
 
-<netui:hidden dataSource="actionForm.actionElement"/> 
-<netui:hidden dataSource="actionForm.currentAction"/>
+<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/> 
+<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
 <netui:hidden dataSource="actionForm.selectedOrgChildNodeId"/>
 <netui:hidden dataSource="actionForm.selectedOrgNodeId"/>
 <netui:hidden dataSource="actionForm.orgMaxPage"/>
@@ -59,12 +59,12 @@
 </p>
 
 
-<netui-data:getData resultId="messageType" value="${actionForm.message.type}"/>
+<netui-data:getData resultId="messageType" value="${pageMessage.type}"/>
 <c:if test="${messageType != null}">     
 <p>
     <% String style = (String)pageContext.getAttribute("messageType"); %> 
-    <ctb:message title="{actionForm.message.title}" style="<%= style %>" >
-          <netui:content value="${actionForm.message.content}"/>
+    <ctb:message title="${pageMessage.title}" style="<%= style %>" >
+          <netui:content value="${pageMessage.content}"/>
     </ctb:message>
 </p>
 </c:if> 
