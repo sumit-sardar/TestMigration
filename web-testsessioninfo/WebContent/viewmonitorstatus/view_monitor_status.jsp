@@ -114,7 +114,6 @@
     <netui:hidden dataSource="actionForm.actionElement"/>
     <netui:hidden dataSource="actionForm.currentAction"/>
     <netui:hidden dataSource="actionForm.maxPage"/>
-    <netui:hidden dataSource="actionForm.filterVisible"/>
     
 <h2><netui:content value="${bundle.web['viewMonitorStatus.testRoster.title']}"/></h2>
     <netui-data:getData resultId="isShowToggleForCustomerFlag" value="${pageFlow.setCustomerFlagToogleButton}"/>
@@ -162,8 +161,8 @@
                 </tr>
                 <tr class="tableFilter">
                     <td class="tableFilter alignRight" colspan="6">
-                        <netui:button styleClass="button" value="${bundle.widgets['button.apply']}" type="submit" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'applyFilters', 'tableAnchor');"/>&nbsp;
-                        <netui:button styleClass="button" value="${bundle.widgets['button.clearAll']}" type="submit" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'clearFilters', 'tableAnchor');"/>&nbsp;
+                        <netui:button styleClass="button" value="${bundle.widgets['button.apply']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'applyFilters', 'tableAnchor');"/>&nbsp;
+                        <netui:button styleClass="button" value="${bundle.widgets['button.clearAll']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'clearFilters', 'tableAnchor');"/>&nbsp;
                     </td>                        
                 </tr>
                 </table>
