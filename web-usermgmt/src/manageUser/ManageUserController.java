@@ -1,6 +1,5 @@
 package manageUser;
 
-
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import com.ctb.bean.request.FilterParams;
