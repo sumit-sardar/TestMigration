@@ -125,12 +125,12 @@
         </user-data-constraint>
     </security-constraint>
     <login-config>
-        <auth-method>Basic</auth-method>
+        <auth-method>FORM</auth-method>
         <realm-name>OAS</realm-name>
-        <!-- <form-login-config>
+        <form-login-config>
             <form-login-page>/../TestSessionInfoWeb/login.jsp</form-login-page>
             <form-error-page>/../TestSessionInfoWeb/loginError.do</form-error-page>
-        </form-login-config> -->
+        </form-login-config>
     </login-config>
     <security-role>
         <description>A root user</description>
