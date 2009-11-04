@@ -324,7 +324,7 @@ public class ManageCustomerController extends PageFlowController
             return new Forward("error");
                 
         }
-        
+        setFormInfoOnRequest(form);
         return new Forward("success");
     }
 
@@ -394,7 +394,8 @@ public class ManageCustomerController extends PageFlowController
         
         handleAddEdit(form);
         this.pageTitle = buildPageTitle(globalApp.ACTION_ADD_CUSTOMER, form);
-        this.getRequest().setAttribute("isAddCustomer", Boolean.TRUE);          
+        this.getRequest().setAttribute("isAddCustomer", Boolean.TRUE);  
+        setFormInfoOnRequest(form);
         return new Forward("success", form);
     }
 
@@ -464,6 +465,7 @@ public class ManageCustomerController extends PageFlowController
         form.setCurrentAction(globalApp.ACTION_EDIT_CUSTOMER);
         form.setActionElement(globalApp.ACTION_EDIT_CUSTOMER);
         form.setSelectedCustomerId(this.savedForm.getSelectedCustomerId());
+        setFormInfoOnRequest(form);
         return new Forward("success", form);
     }
 
@@ -517,7 +519,7 @@ public class ManageCustomerController extends PageFlowController
     {
         getRequest().setAttribute("levelList", this.frameWork);
         this.pageTitle = buildPageTitle(globalApp.ACTION_ADD_FRAMEWORK, form);
-                
+        setFormInfoOnRequest(form);        
         return new Forward("success", form);
     }
 
@@ -715,7 +717,7 @@ public class ManageCustomerController extends PageFlowController
         this.pageTitle = buildPageTitle(globalApp.ACTION_EDIT_FRAMEWORK, form);
         form.setCurrentAction(globalApp.ACTION_EDIT_FRAMEWORK);
         form.setActionElement(globalApp.ACTION_EDIT_FRAMEWORK);
-
+        setFormInfoOnRequest(form);
         return new Forward("success", form);
     }
 
@@ -966,7 +968,7 @@ public class ManageCustomerController extends PageFlowController
         
         }
         //Added for LM12
-        this.savedForm.setEnableLicense(form.getEnableLicense());            
+        this.savedForm.setEnableLicense(form.getEnableLicense()); 
         return new Forward(action, this.savedForm);
     }
     
@@ -1193,7 +1195,7 @@ public class ManageCustomerController extends PageFlowController
             this.globalApp.navPath.setReturnActions(globalApp.ACTION_VIEW_CUSTOMER, globalApp.ACTION_FIND_CUSTOMER);
         
         }
-                
+        setFormInfoOnRequest(form);    
         return new Forward("success");
     }
    
@@ -1213,6 +1215,7 @@ public class ManageCustomerController extends PageFlowController
         if (!validInfo)
         {           
                 //validation failed
+        	setFormInfoOnRequest(form);
             return new Forward("success", form);
         }
          
@@ -1236,6 +1239,7 @@ public class ManageCustomerController extends PageFlowController
             form.setMessage(title, msg, Message.ERROR);
                  
         }
+        setFormInfoOnRequest(form);
         return new Forward("success", form);
     }
 
@@ -1309,7 +1313,7 @@ public class ManageCustomerController extends PageFlowController
         form.setCurrentAction(globalApp.ACTION_DEFAULT);
         this.getRequest().setAttribute("viewOnly", Boolean.TRUE);       
         this.pageTitle = buildPageTitle(globalApp.ACTION_VIEW_CUSTOMER, form); 
-                
+        setFormInfoOnRequest(form);        
         return new Forward("success", form);
     }
     
@@ -1372,6 +1376,7 @@ public class ManageCustomerController extends PageFlowController
         
         setLicenseNodeToForm(form);
         this.globalApp.navPath.addCurrentAction(globalApp.ACTION_ADD_EDIT_LICENSE);
+        setFormInfoOnRequest(form);
         return new Forward("success", form);
     }
 
@@ -1983,6 +1988,12 @@ public class ManageCustomerController extends PageFlowController
         }
         
         return true;
+    }
+    
+    private void setFormInfoOnRequest(ManageCustomerForm form) {
+    	this.getRequest().setAttribute("pageMessage", form.getMessage());
+    	this.getRequest().setAttribute("customerProfileData", form.getCustomerProfile());
+    	this.getRequest().setAttribute("licneseNodeData" , form.getLicenseNode());
     }
 
 

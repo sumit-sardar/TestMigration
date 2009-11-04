@@ -152,7 +152,7 @@ function handleEnterKey(elementId, value) {
 function verifyDeleteOrganization(){
     var ret = confirm("Click 'OK' to delete this Organization member.");    
     if (ret == true) {
-        setElementValue('{actionForm.currentAction}', 'deleteOrganization')    
+        setElementValue('currentAction', 'deleteOrganization')    
         return true;
     }
     return false;    
