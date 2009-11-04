@@ -1,13 +1,25 @@
 /**
  * js_web.js
  */
+ 
+function getSafeElement( elementId ) {
+	var element = document.getElementById(elementId);
+	if (element == null) {
+		var elements = document.getElementsByName(elementId);
+		if (elements != null) {
+			element = elements[0];
+		}
+	}
+	return element;
+}
+ 
 function submitToAction(toAction, subtestId, status) {
     document.body.style.cursor = 'wait';
     
-    var actionElement = document.getElementById('{actionForm.actionElement}');
+    var actionElement = getSafeElement('{actionForm.actionElement}');
     actionElement.value = subtestId;
     
-    var currentAction = document.getElementById('{actionForm.currentAction}');
+    var currentAction = getSafeElement('{actionForm.currentAction}');
     currentAction.value = status;
     
     actionElement.form.action = toAction;
@@ -404,7 +416,7 @@ function enableDeselectAllTestButton(elementId)
         }
     }
     
-    var element = document.getElementById(elementId);    
+    var element = getSafeElement(elementId);    
     if( element != null) {
         if (count == 0)
             element.setAttribute("disabled", "true");            
@@ -414,6 +426,6 @@ function enableDeselectAllTestButton(elementId)
     
 }
 function enableValidationButtons() {
-    document.getElementById("toggleSubtestValidation").removeAttribute("disabled");      
-    document.getElementById("toggleSubtestCustom").removeAttribute("disabled");      
+    getSafeElement("toggleSubtestValidation").removeAttribute("disabled");      
+    getSafeElement("toggleSubtestCustom").removeAttribute("disabled");      
 }    

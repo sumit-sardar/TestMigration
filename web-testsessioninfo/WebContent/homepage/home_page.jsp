@@ -148,12 +148,12 @@
                 <td class="sortable alignCenter">
                     <c:if test="${enableUserRegisterStudent}">                
                     <netui:radioButtonGroup dataSource="actionForm.userSessionId">
-                        &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById(getNetuiTagName('userSessionViewStatus')); enableElementById(getNetuiTagName('userSessionEdit')); enableButton(this.alt,getNetuiTagName('userRegisterStudent'));">&nbsp;</netui:radioButtonOption> <!-- Changes for RegisterAnotherStudent Button -->
+                        &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById('userSessionViewStatus'); enableElementById('userSessionEdit'); enableButton(this.alt,'userRegisterStudent');">&nbsp;</netui:radioButtonOption> <!-- Changes for RegisterAnotherStudent Button -->
                     </netui:radioButtonGroup>
                     </c:if>
                     <c:if test="${! enableUserRegisterStudent}">                
                     <netui:radioButtonGroup dataSource="actionForm.userSessionId">
-                        &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" onClick="enableElementById(getNetuiTagName('userSessionViewStatus')); enableElementById(getNetuiTagName('userSessionEdit')); ">&nbsp;</netui:radioButtonOption>
+                        &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" onClick="enableElementById('userSessionViewStatus'); enableElementById('userSessionEdit'); ">&nbsp;</netui:radioButtonOption>
                     </netui:radioButtonGroup>
                     </c:if>
                 </td>
@@ -270,12 +270,12 @@
             <td class="sortable alignCenter">
                 <c:if test="${enableProctorRegisterStudent}">                            
                 <netui:radioButtonGroup dataSource="actionForm.proctorSessionId">
-                    &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById(getNetuiTagName('proctorSessionViewStatus')); enableElementById(getNetuiTagName('proctorSessionEdit')); enableButton(this.alt,getNetuiTagName('proctorRegisterStudent'));">&nbsp;</netui:radioButtonOption>
+                    &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById('proctorSessionViewStatus'); enableElementById('proctorSessionEdit'); enableButton(this.alt,'proctorRegisterStudent');">&nbsp;</netui:radioButtonOption>
                 </netui:radioButtonGroup>
                 </c:if>
                 <c:if test="${! enableProctorRegisterStudent}">                            
                 <netui:radioButtonGroup dataSource="actionForm.proctorSessionId">
-                    &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" onClick="enableElementById(getNetuiTagName('proctorSessionViewStatus')); enableElementById(getNetuiTagName('proctorSessionEdit'));">&nbsp;</netui:radioButtonOption>
+                    &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" onClick="enableElementById('proctorSessionViewStatus'); enableElementById('proctorSessionEdit');">&nbsp;</netui:radioButtonOption>
                 </netui:radioButtonGroup>
                 </c:if>
             </td>

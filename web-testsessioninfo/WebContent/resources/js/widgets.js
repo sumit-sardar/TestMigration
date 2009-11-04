@@ -6,13 +6,12 @@ function doHourglass()
     document.body.style.cursor = 'wait';
 }
  
- 
 function showElementById( elementId ) {
-    document.getElementById(elementId).style.display = "block";
+    getSafeElement(elementId).style.display = "block";
 }
 
 function hideElementById( elementId ) {
-    document.getElementById(elementId).style.display = "none";
+    getSafeElement(elementId).style.display = "none";
 }
 
 function showSection( sectionId, sectionVisible ) {
@@ -40,12 +39,13 @@ function setElementValue(elementId, value) {
 }
 
 function setElementValue(elementId, value, submitForm) {
-    var element = document.getElementById(elementId);
+
+    var element = getSafeElement(elementId);
 
     if( element ) {
         element.value = value;
 
-        var actionElement = document.getElementById('{actionForm.actionElement}');
+        var actionElement = getSafeElement('{actionForm.actionElement}');
         if( actionElement ) {
             actionElement.value = elementId;
         }
@@ -65,12 +65,12 @@ function setElementValueAndSubmit(elementId, value) {
 }
 
 function setElementValueAndSubmitWithAnchor(elementId, value, anchorName) {
-    var element = document.getElementById(elementId);
+    var element = getSafeElement(elementId);
 
     if( element ) {
         element.value = value;
 
-        var actionElement = document.getElementById('{actionForm.actionElement}');
+        var actionElement = getSafeElement('{actionForm.actionElement}');
         if( actionElement ) {
             actionElement.value = elementId;
         }
@@ -93,7 +93,7 @@ function setElementValueAndSubmitWithAnchor(elementId, value, anchorName) {
 
 
 function enableElementById(elementId) {
-    var element = document.getElementById(elementId);
+    var element = getSafeElement(elementId);
     
     if( element != null) {
         element.removeAttribute("disabled");      
@@ -101,7 +101,7 @@ function enableElementById(elementId) {
 }
 
 function disableElementById(elementId) {
-    var element = document.getElementById(elementId);
+    var element = getSafeElement(elementId);
     
     if( element != null) {
         element.setAttribute('disabled', 'true');      
@@ -110,7 +110,8 @@ function disableElementById(elementId) {
 
 
 function enableButton(tokens, elementId) {   
-    var element = document.getElementById(elementId);    
+    var element = getSafeElement(elementId);    
+    
     if( tokens != null && tokens.indexOf('T')== 0) 
          element.removeAttribute("disabled");   
    else
@@ -126,7 +127,7 @@ function constrainNumericKeyEvent( e, element, id, anchorName ) {
     var results = false;
     
     if ( keyId == 13 ) {
-        var actionElement = document.getElementById('{actionForm.actionElement}');
+        var actionElement = getSafeElement('{actionForm.actionElement}');
         if( actionElement ) {
             if ( id != null )
                 actionElement.value = "EnterKeyInvoked_" + id;
@@ -158,7 +159,7 @@ function constrainNumericKeyEvent( e, element, id, anchorName ) {
 }
 
 function buttonGoInvoked( id, anchorName ) {
-    var actionElement = document.getElementById('{actionForm.actionElement}');
+    var actionElement = getSafeElement('{actionForm.actionElement}');
     if( actionElement ) {
         if (id != null)
             actionElement.value = "ButtonGoInvoked_" + id;
