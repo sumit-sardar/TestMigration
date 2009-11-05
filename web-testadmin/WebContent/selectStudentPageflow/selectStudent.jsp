@@ -324,7 +324,7 @@
                 &nbsp;<netui:radioButtonOption value="${container.item.id}"
 												onClick="setElementValueAndSubmit('actionElement', 'actionElement');">&nbsp;</netui:radioButtonOption>
 										</netui:radioButtonGroup></td>
-										<td class="sortable alignLeft"><ctb:switch dataSource="{container.item.clickable}">
+										<td class="sortable alignLeft"><ctb:switch dataSource="${container.item.clickable}">
 											<ctb:case value="true">
 												<ctb:tablePathEntry srcLabelDataSource="${container.item.name}" srcValueDataSource="${container.item.id}"
 													dstLabelDataSource="actionForm.orgNodeName" dstValueDataSource="actionForm.orgNodeId" />
@@ -349,7 +349,7 @@
 							</netui-data:repeater>
 							<ctb:tableNoResults dataSource="request.orgNodes">
 								<tr class="sortable">
-									<td class="sortable" colspan="4"><ctb:message title="{bundle.web['common.message.title.noOrganizations']}"
+									<td class="sortable" colspan="4"><ctb:message title="${bundle.web['common.message.title.noOrganizations']}"
 										style="tableMessage">
 										<netui:content value="${bundle.web['selectstudents.organizations.messageInfo']}" />
 									</ctb:message></td>
@@ -437,7 +437,7 @@
 							</netui-data:repeaterHeader>
 							<netui-data:repeaterItem>
 								<tr class="sortable">
-									<td class="sortable alignCenter"><ctb:switch dataSource="{container.item.status.editable}">
+									<td class="sortable alignCenter"><ctb:switch dataSource="${container.item.status.editable}">
 										<ctb:case value="T">
 											<netui:checkBoxGroup dataSource="actionForm.selectedStudentOrgList">
                         &nbsp;<netui:checkBoxOption value="${container.item.extElmId}">&nbsp;</netui:checkBoxOption>
@@ -464,12 +464,12 @@
 											value="${container.item.status.code}" /></a>
 									</c:if></td>
 									<c:if test="${sessionScope.supportAccommodations}">
-										<td class="sortable alignCenter"><ctb:switch dataSource="{container.item.calculator}">
+										<td class="sortable alignCenter"><ctb:switch dataSource="${container.item.calculator}">
 											<ctb:case value="T">
 												<netui:image src="/TestAdministrationWeb/resources/images/check.gif" width="20" height="20" />
 											</ctb:case>
 										</ctb:switch></td>
-										<td class="sortable alignCenter"><ctb:switch dataSource="{container.item.hasColorFontAccommodations}">
+										<td class="sortable alignCenter"><ctb:switch dataSource="${container.item.hasColorFontAccommodations}">
 											<ctb:case value="true">
 												<netui:image src="/TestAdministrationWeb/resources/images/check.gif" width="20" height="20" />
 											</ctb:case>
@@ -506,7 +506,7 @@
 						</netui-data:repeater>
 						<ctb:tableNoResults dataSource="request.studentNodes">
 							<tr class="sortable">
-								<td class="sortable" colspan="12"><ctb:message title="{bundle.web['common.message.title.noStudents']}"
+								<td class="sortable" colspan="12"><ctb:message title="${bundle.web['common.message.title.noStudents']}"
 									style="tableMessage">
 									<netui:content value="${bundle.web['selectstudents.students.messageInfo']}" />
 								</ctb:message></td>

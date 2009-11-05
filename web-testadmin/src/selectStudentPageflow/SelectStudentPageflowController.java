@@ -244,7 +244,7 @@ public class SelectStudentPageflowController extends PageFlowController
         }
         
         String currentAction = ACTION_DEFAULT;
-        if (actionElement != null && actionElement.equals("{actionForm.currentAction}"))
+        if (actionElement != null && actionElement.equals("currentAction"))
         {
             currentAction = form.getCurrentAction();  
         }   
@@ -501,8 +501,12 @@ public class SelectStudentPageflowController extends PageFlowController
         getAvailableLicense(form);
         this.getSession().setAttribute("displayLicenseBar",
                     new Boolean(licenseflag));
-         
+        setFormInfoOnRequest(form);
         return new Forward("success", form);
+    }
+    
+    private void setFormInfoOnRequest(ScheduleTestController.ScheduleTestForm form) {
+    	this.getRequest().setAttribute("pageMessage", form.getMessage());
     }
 
     private String initFirstOrgNode(List orgNodes, ScheduleTestController.ScheduleTestForm form)
@@ -921,7 +925,7 @@ public class SelectStudentPageflowController extends PageFlowController
 
         String currentAction = ACTION_DEFAULT;
         String actionElement = form.getActionElement();
-        if (actionElement != null && actionElement.equals("{actionForm.currentAction}"))
+        if (actionElement != null && actionElement.equals("currentAction"))
         {
             currentAction = form.getCurrentAction();  
         }   

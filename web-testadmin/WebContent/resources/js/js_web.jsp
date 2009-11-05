@@ -48,7 +48,7 @@ function handleEnterKey(elementId, value) {
         var element = document.getElementById(elementId);
         if(element) {
             element.value = value;
-            var actionElement = document.getElementById('{actionForm.actionElement}');
+            var actionElement = document.getElementById('actionElement');
             if(actionElement) {
                 actionElement.value = elementId;
             }
@@ -98,14 +98,14 @@ function verifyEndTest(){
 function verifyRemoveAllStudents(anchorName){
     answer = confirm("Are you sure you want to remove all students? \nClick 'OK' to remove or click 'Cancel' to continue to schedule test.");
     if (answer)
-        setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'removeAllStudents', anchorName);
+        setElementValueAndSubmitWithAnchor('currentAction', 'removeAllStudents', anchorName);
     return answer;
 }
 
 function verifyRemoveAllProctors(anchorName){
     answer = confirm("Are you sure you want to remove all proctors? \nClick 'OK' to remove or click 'Cancel' to continue to schedule test.");
     if (answer)
-        setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'removeAllProctors', anchorName);
+        setElementValueAndSubmitWithAnchor('currentAction', 'removeAllProctors', anchorName);
     return answer;
 }
 

@@ -803,8 +803,23 @@ public class ScheduleTestController extends PageFlowController
         
         this.getRequest().setAttribute("hasMultipleSubtests", new Boolean(hasMultipleSubtests));
 
-        form.setActionElement(ACTION_DEFAULT);                        
+        form.setActionElement(ACTION_DEFAULT);   
+        setFormInfoOnRequest(form);
         return new Forward("selectTest", form);
+        
+    }
+    
+    private void setFormInfoOnRequest(ScheduleTestForm form) {
+
+        
+    	this.getRequest().setAttribute("pageMessage", form.getMessage());
+    	this.getRequest().setAttribute("scheduledTestSessionData", form.getTestAdmin());
+    	this.getRequest().setAttribute("isTestSessionBreak", form.getHasBreak());
+    	this.getRequest().setAttribute("autoLocatorDisplay",form.getAutoLocatorDisplay());
+    	this.getRequest().setAttribute("autoLocator",form.getAutoLocator());
+    	this.getRequest().setAttribute("testRosterFilter",form.getTestRosterFilter());
+    	this.getRequest().setAttribute("subtestValidationMessage",form.getSubtestValidationMessage());
+    	this.getRequest().setAttribute("formData",form);
         
     }
     
@@ -1876,6 +1891,7 @@ public class ScheduleTestController extends PageFlowController
                
         form.setActionElement(ACTION_DEFAULT);  
         System.out.println("selectSettings last" + form.getCreatorOrgNodeId());
+        setFormInfoOnRequest(form);
         return new Forward("selectSettings", form);
     }
 
@@ -2193,7 +2209,7 @@ public class ScheduleTestController extends PageFlowController
             
             getAvailableLicense(form.getTestAdmin().getProductId(), form);
         }    
-        
+        setFormInfoOnRequest(form);
         return new Forward("success", form);
     }
     
@@ -5048,7 +5064,7 @@ public class ScheduleTestController extends PageFlowController
         else
             studentInformationMessage = MessageResourceBundle.getMessage("SelectSettings.Students.ChangeFormInfo2");
         
-        if (actionElement != null && actionElement.equals("{actionForm.currentAction}")) {
+        if (actionElement != null && actionElement.equals("currentAction")) {
             if (currentAction.equals("applyFilters")) {
                 applyFilters(form);
             }
@@ -5436,6 +5452,18 @@ public class ScheduleTestController extends PageFlowController
 
 	public String[] getNameOptions() {
 		return nameOptions;
+	}
+
+	public String getLicenseBarColor() {
+		return licenseBarColor;
+	}
+
+	public String[] getAccommodationTypeOptions() {
+		return accommodationTypeOptions;
+	}
+
+	public String[] getSelectedAccommodationsOptions() {
+		return selectedAccommodationsOptions;
 	}
 	
 	

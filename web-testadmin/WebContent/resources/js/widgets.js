@@ -66,19 +66,21 @@ function setElementValueAndSubmit(elementId, value) {
 
 function setElementValueAndSubmitWithAnchor(elementId, value, anchorName) {
     var element = document.getElementById(elementId);
-
+	//alert(element);
     if( element ) {
         element.value = value;
-
+		//alert("element..." + element.value);
         var actionElement = document.getElementById('actionElement');
         if( actionElement ) {
             actionElement.value = elementId;
+            //alert("actionElement.value..." + actionElement.value);
         }
 
         if ((anchorName != null) && (anchorName != "null")) {            
             var index = element.form.action.indexOf("#");
             if (index == -1) {                
                 element.form.action += ("#" + anchorName); 
+                //alert("element..." + element.form.action);
             }
         }
         

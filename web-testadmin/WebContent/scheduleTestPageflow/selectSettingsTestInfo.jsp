@@ -11,28 +11,28 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
 <netui-data:getData resultId="action" value="${pageFlow.action}"/>
-<netui-data:getData resultId="hasBreak" value="${actionForm.hasBreak}"/>
+<netui-data:getData resultId="hasBreak" value="${requestScope.isTestSessionBreak}"/>
 <netui-data:getData resultId="isRandomize" value="${actionForm.testAdmin.isRandomize}"/>
-
+<netui-data:getData resultId="autoLocatorDisplay" value="${requestScope.autoLocatorDisplay}"/>
 <netui-data:getData resultId="showAccommodations" value="${actionForm.testRosterFilter.showAccommodations}"/>
 <netui-data:getData resultId="hasStudentLoggedIn" value="${pageFlow.condition.hasStudentLoggedIn}"/>
 <netui-data:getData resultId="testSessionExpired" value="${pageFlow.condition.testSessionExpired}"/>
 <netui-data:getData resultId="isCopyTest" value="${pageFlow.condition.isCopyTest}"/>
 <netui-data:getData resultId="showLevelOrGrade" value="${pageFlow.showLevelOrGrade}"/>
-<netui-compat-data:getData resultId="autoLocator" value="{actionForm.autoLocator}"/>
+<netui-data:getData resultId="autoLocator" value="${requestScope.autoLocator}"/>
 
   
-<netui-compat-data:getData resultId="studentCount" value="{request.studentCount}"/>
-<netui-compat-data:getData resultId="isFormEditable" value="{request.isFormEditable}"/>
-<netui-compat-data:getData resultId="displayFormList" value="{request.displayFormList}"/>
-<netui-compat-data:getData resultId="showSelectOrganization" value="{request.showSelectOrganization}"/>
-<netui-compat-data:getData resultId="productType" value="{request.productType}"/>
-<netui-compat-data:getData resultId="isTabeProduct" value="{request.isTabeProduct}"/>
-<netui-compat-data:getData resultId="isTabeBatterySurveyProduct" value="{request.isTabeBatterySurveyProduct}"/>
-<netui-compat-data:getData resultId="isTabeLocatorProduct" value="{request.isTabeLocatorProduct}"/>
-<netui-compat-data:getData resultId="showLocatorSubtest" value="{request.showLocatorSubtest}"/>
-<netui-compat-data:getData resultId="tabeWithSingleSubtest" value="{request.tabeWithSingleSubtest}"/>
-<netui-compat-data:getData resultId="overrideStartDate" value="{request.overrideStartDate}"/>
+<netui-data:getData resultId="studentCount" value="${requestScope.studentCount}"/>
+<netui-data:getData resultId="isFormEditable" value="${requestScope.isFormEditable}"/>
+<netui-data:getData resultId="displayFormList" value="${requestScope.displayFormList}"/>
+<netui-data:getData resultId="showSelectOrganization" value="${requestScope.showSelectOrganization}"/>
+<netui-data:getData resultId="productType" value="${requestScope.productType}"/>
+<netui-data:getData resultId="isTabeProduct" value="${requestScope.isTabeProduct}"/>
+<netui-data:getData resultId="isTabeBatterySurveyProduct" value="${requestScope.isTabeBatterySurveyProduct}"/>
+<netui-data:getData resultId="isTabeLocatorProduct" value="${requestScope.isTabeLocatorProduct}"/>
+<netui-data:getData resultId="showLocatorSubtest" value="${requestScope.showLocatorSubtest}"/>
+<netui-data:getData resultId="tabeWithSingleSubtest" value="${requestScope.tabeWithSingleSubtest}"/>
+<netui-data:getData resultId="overrideStartDate" value="${requestScope.overrideStartDate}"/>
 
 
 <!--change for license-->
@@ -40,7 +40,7 @@
 <netui-data:getData resultId="licenseConfig" value="${sessionScope.disableAvailableBarTestSeesion}"/>
 <netui-data:getData resultId="licenseAdminConfig" value="${sessionScope.disableAvailableBarSubtest}"/>
 <netui-data:getData resultId="displayLicenseBar" value="${sessionScope.displayLicenseBar}"/>
-<netui-data:getData resultId="licensebarColor" value="{pageFlow.licenseBarColor}"/>
+<netui-data:getData resultId="licensebarColor" value="${pageFlow.licenseBarColor}"/>
 
 <netui:hidden dataSource="actionForm.creatorOrgNodeId"/>  
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -66,7 +66,7 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent" width="250"><netui:span value="${bundle.web['selectsettings.label.testName']}"/></td>
-        <td class="transparent"><div class="formValueLarge"><netui-compat:label value="{actionForm.testAdmin.testName}" styleClass="formValueLarge"/></div></td>
+        <td class="transparent"><div class="formValueLarge"><netui:label value="${scheduledTestSessionData.testName}" styleClass="formValueLarge"/></div></td>
     </tr>
      
     
@@ -74,13 +74,13 @@
     <c:if test="${showLevelOrGrade == 'level'}"> 
         <tr class="transparent">
             <td class="transparent" width="250"><netui:span value="${bundle.web['selectsettings.label.level']}"/></td>
-            <td class="transparent"><div class="formValueLarge"><netui-compat:label value="{actionForm.testAdmin.level}" styleClass="formValueLarge"/></div></td>
+            <td class="transparent"><div class="formValueLarge"><netui:label value="${scheduledTestSessionData.level}" styleClass="formValueLarge"/></div></td>
         </tr>
     </c:if>        
     <c:if test="${showLevelOrGrade == 'grade'}"> 
         <tr class="transparent">
             <td class="transparent" width="250"><netui:span value="${bundle.web['selectsettings.label.grade']}"/></td>
-            <td class="transparent"><div class="formValueLarge"><netui-compat:label value="{actionForm.testAdmin.level}" styleClass="formValueLarge"/></div></td>
+            <td class="transparent"><div class="formValueLarge"><netui:label value="${scheduledTestSessionData.level}" styleClass="formValueLarge"/></div></td>
         </tr>
     </c:if>        
 </c:if>        
@@ -89,7 +89,7 @@
     <c:if test="${action=='view'}">    
     <tr class="transparent">
         <td class="transparent" width="250"><netui:span value="${bundle.web['selectsettings.label.testSessionId']}"/></td>
-        <td class="transparent"><div class="formValueLarge"><netui-compat:label value="{pageFlow.testSessionId}" styleClass="formValueLarge"/></div></td>
+        <td class="transparent"><div class="formValueLarge"><netui:label value="${pageFlow.testSessionId}" styleClass="formValueLarge"/></div></td>
     </tr>
     </c:if>
     
@@ -97,7 +97,7 @@
     <c:if test="${! hasMultipleSubtests}"> 
         <tr class="transparent">
             <td class="transparent" width="250"><netui:span value="${bundle.web['selectsettings.label.testAccessCode']}"/></td>
-            <td class="transparent"><div class="formValueLarge"><netui-compat:label value="{actionForm.testAdmin.accessCode}" styleClass="formValueLarge"/></div></td>
+            <td class="transparent"><div class="formValueLarge"><netui:label value="${scheduledTestSessionData.accessCode}" styleClass="formValueLarge"/></div></td>
         </tr>
     </c:if>
 </c:if>
@@ -105,11 +105,11 @@
     
     
 <c:if test="${isTabeProduct}"> 
-      
+      <% out.println("hasBreak" + pageContext.getAttribute("hasBreak") );%>
     <c:if test="${productType != 'tabeLocatorProductType'}">                     
         <tr class="transparent">
             <td class="transparent" width="250"><netui:span value="Locator Test"/></td>
-            <td class="transparent"><div class="formValueLarge"><netui-compat:label value="{actionForm.autoLocatorDisplay}" styleClass="formValueLarge"/></div></td>
+            <td class="transparent"><div class="formValueLarge"><netui:span value="${autoLocatorDisplay}" styleClass="formValueLarge"/></div></td>
         </tr>
     </c:if>
 </c:if>
@@ -131,7 +131,7 @@
         <c:if test="${! hasBreak}"> 
             <tr class="transparent">
                 <td class="transparent" width="250"><netui:span value="${bundle.web['selectsettings.label.testAccessCode']}"/></td>
-                <td class="transparent"><div class="formValueLarge"><netui-compat:label value="${actionForm.testAdmin.accessCode}" styleClass="formValueLarge"/></div></td>
+                <td class="transparent"><div class="formValueLarge"><netui:label value="${scheduledTestSessionData.accessCode}" styleClass="formValueLarge"/></div></td>
             </tr>    
         </c:if>
 </c:if>
@@ -142,7 +142,7 @@
 <c:if test="${isTabeLocatorProduct}"> 
         <tr class="transparent">
             <td class="transparent" width="250"><netui:span value="${bundle.web['selectsettings.label.testAccessCode']}"/></td>
-            <td class="transparent"><div class="formValueLarge"><netui-compat:label value="{actionForm.testAdmin.accessCode}" styleClass="formValueLarge"/></div></td>
+            <td class="transparent"><div class="formValueLarge"><netui:label value="${scheduledTestSessionData.accessCode}" styleClass="formValueLarge"/></div></td>
         </tr>    
 </c:if>
         
@@ -161,18 +161,18 @@
         <c:if test="${! hasBreak}"> 
             <tr class="transparent">
                 <td class="transparent" width="250"><netui:span value="${bundle.web['selectsettings.label.testAccessCode']}"/></td>
-                <td class="transparent"><div class="formValueLarge"><netui-compat:label value="{actionForm.testAdmin.accessCode}" styleClass="formValueLarge"/></div></td>
+                <td class="transparent"><div class="formValueLarge"><netui:label value="${scheduledTestSessionData.accessCode}" styleClass="formValueLarge"/></div></td>
             </tr>    
         </c:if>
 </c:if>
 <!-- Add logic for RD -->
-    <netui-compat-data:getData resultId="randomDistractorValue" value="{actionForm.testAdmin.isRandomize}"/>       
+    <netui-data:getData resultId="randomDistractorValue" value="${scheduledTestSessionData.isRandomize}"/>       
 <c:if test="${randomDistractorValue != null && randomDistractorValue != '' }">    
           <tr class="transparent">
                 <td class="transparent"  width="250" nowrap>
                     <netui:span value="${bundle.web['selecttest.rdOptions.message1']}"/>
                 </td>
-                <td class="transparent"><div class="formValueLarge"><netui-compat:label value="{actionForm.testAdmin.displayRandomize}" styleClass="formValueLarge"/></div></td> 
+                <td class="transparent"><div class="formValueLarge"><netui:label value="${scheduledTestSessionData.displayRandomize}" styleClass="formValueLarge"/></div></td> 
                
 </c:if> 
           
@@ -234,10 +234,10 @@
             </c:if>                  
                 </tr>
                 <tr class="sortable">
-                    <td class="sortable alignLeft" width="*"><netui-compat:label value="{pageFlow.locatorSubtest.subtestName}" defaultValue="&nbsp;"/></td>
-                    <td class="sortable alignLeft" width="100"><netui-compat:label value="{pageFlow.locatorSubtest.duration}" defaultValue="&nbsp;"/></td>
+                    <td class="sortable alignLeft" width="*"><netui:label value="${pageFlow.locatorSubtest.subtestName}" defaultValue="&nbsp;"/></td>
+                    <td class="sortable alignLeft" width="100"><netui:label value="${pageFlow.locatorSubtest.duration}" defaultValue="&nbsp;"/></td>
             <c:if test="${hasBreak}"> 
-                    <td class="sortable alignCenter" width="120"><netui-compat:label value="{pageFlow.locatorSubtest.testAccessCode}" defaultValue="&nbsp;"/></td>
+                    <td class="sortable alignCenter" width="120"><netui:label value="${pageFlow.locatorSubtest.testAccessCode}" defaultValue="&nbsp;"/></td>
             </c:if>                  
                 </tr>
             </table>
@@ -312,7 +312,7 @@
         <td class="transparent" style="vertical-align: top"><span class="asterisk">*</span>&nbsp;<netui:span value="${bundle.web['selectsettings.label.testSessionName']}"/></td>
         <td class="transparent" colspan="3">
         <c:if test="${action=='view'}">    
-            <div class="formValueLarge"><netui-compat:label value="{actionForm.testAdmin.sessionName}" styleClass="formValueLarge"/></div>
+            <div class="formValueLarge"><netui:label value="${scheduledTestSessionData.sessionName}" styleClass="formValueLarge"/></div>
             <netui:hidden dataSource="actionForm.testAdmin.sessionName"/>   
         </c:if>    
         <c:if test="${action=='schedule'}">    
@@ -342,7 +342,7 @@
         <td class="transparent" style="vertical-align: top"><span class="asterisk">*</span>&nbsp;<netui:span value="${bundle.web['selectsettings.label.startDate']}"/></td>
         <td class="transparent">
         <c:if test="${action=='view'}">    
-            <div class="formValue"><netui-compat:label value="{actionForm.startDate}" styleClass="formValue"/></div>
+            <div class="formValue"><netui:label value="${formData.startDate}" styleClass="formValue"/></div>
             <netui:hidden dataSource="actionForm.startDate"/>   
         </c:if>    
         <c:if test="${action=='schedule'}">    
@@ -353,7 +353,7 @@
             <ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator, Coordinator">
                 <c:if test="${!hasStudentLoggedIn && !testSessionExpired}">
                     <netui:textBox tagId="startDate" dataSource="actionForm.startDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
-                    <a href="#" onclick="showCalendar(document.getElementById('startDate'), document.getElementById('overrideStartDate'); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
+                    <a href="#" onclick="showCalendar(document.getElementById('startDate'), document.getElementById('overrideStartDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
                 </c:if>    
                 <c:if test="${hasStudentLoggedIn || testSessionExpired}">
                     <div class="formValue"><netui:span value="${actionForm.startDate}" styleClass="formValue"/></div>
@@ -372,7 +372,7 @@
         <td class="transparent" style="vertical-align: top"><span class="asterisk">*</span>&nbsp;<netui:span value="${bundle.web['selectsettings.label.endDate']}"/></td>
         <td class="transparent">
         <c:if test="${action=='view'}">    
-            <div class="formValue"><netui-compat:label value="{actionForm.endDate}" styleClass="formValue"/></div>
+            <div class="formValue"><netui:label value="${formData.endDate}" styleClass="formValue"/></div>
             <netui:hidden dataSource="actionForm.endDate"/>   
         </c:if>    
         <c:if test="${action=='schedule'}">    
@@ -398,7 +398,7 @@
         <td class="transparent" style="vertical-align: top"><span class="asterisk">*</span>&nbsp;<netui:span value="${bundle.web['selectsettings.label.startTime']}"/></td>
         <td class="transparent">
         <c:if test="${action=='view'}">    
-            <div class="formValue"><netui-compat:label value="{actionForm.startTime}" styleClass="formValue"/></div>
+            <div class="formValue"><netui:label value="${formData.startTime}" styleClass="formValue"/></div>
             <netui:hidden dataSource="actionForm.startTime"/>   
         </c:if>    
         <c:if test="${action=='schedule'}">    
@@ -426,7 +426,7 @@
         <td class="transparent" style="vertical-align: top"><span class="asterisk">*</span>&nbsp;<netui:span value="${bundle.web['selectsettings.label.endTime']}"/></td>
         <td class="transparent">
         <c:if test="${action=='view'}">    
-            <div class="formValue"><netui-compat:label value="{actionForm.endTime}" styleClass="formValue"/></div>
+            <div class="formValue"><netui:label value="${formData.endTime}" styleClass="formValue"/></div>
             <netui:hidden dataSource="actionForm.endTime"/>   
         </c:if>    
         <c:if test="${action=='schedule'}">    
@@ -456,7 +456,7 @@
         <td class="transparent" style="vertical-align: top"><netui:span value="${bundle.web['selectsettings.label.timeZone']}"/></td>
         <td class="transparent" colspan="3">
         <c:if test="${action=='view'}">    
-            <div class="formValue"><netui-compat:label value="{actionForm.testAdmin.timeZone}" styleClass="formValue"/></div>
+            <div class="formValue"><netui:label value="${scheduledTestSessionData.timeZone}" styleClass="formValue"/></div>
             <netui:hidden dataSource="actionForm.testAdmin.timeZone"/>   
         </c:if>    
         <c:if test="${action=='schedule'}">    
@@ -492,7 +492,7 @@
         <c:if test="${action=='view'}"> 
             <netui-data:getData resultId="hideTestLocation" value="${requestScope.hideTestLocation}"/>
             <c:if test="${!hideTestLocation}">            
-                <div class="formValue"><netui-compat:label value="{actionForm.testAdmin.location}" styleClass="formValue"/></div>
+                <div class="formValue"><netui:label value="${scheduledTestSessionData.location}" styleClass="formValue"/></div>
                 <netui:hidden dataSource="actionForm.testAdmin.location"/>   
             </c:if>    
         </c:if>    
@@ -524,7 +524,7 @@
         <td class="transparent" colspan="4">
         <netui:span value="${bundle.web['selectsettings.label.selectOrganization']}"/>
         <br/>
-        <div class="formValue"><netui-compat:label value="{actionForm.creatorOrgNodeName}" styleClass="formValue"/></div>
+        <div class="formValue"><netui:label value="${formData.creatorOrgNodeName}" styleClass="formValue"/></div>
         </td>
     </tr>
     <netui:hidden dataSource="actionForm.creatorOrgNodeId"/>   

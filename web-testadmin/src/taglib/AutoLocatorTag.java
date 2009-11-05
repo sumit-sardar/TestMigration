@@ -72,7 +72,7 @@ public class AutoLocatorTag extends CTBTag
 
 			displayRowStart("sortable");                            
 				displayCellStart("sortable alignCenter", "60");
-                    String onClick = "setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'autoLocator', 'autoLocator');";                
+                    String onClick = "setElementValueAndSubmitWithAnchor('currentAction', 'autoLocator', 'autoLocator');";                
                     writeToPage(checkBoxForm("{actionForm.autoLocator}", "autoLocator", 
                                              this.checked.booleanValue(), this.checkboxDisabled.booleanValue(), onClick));                    
 				displayCellEnd();

@@ -25,8 +25,8 @@
 
 <netui:form action="reviewAssignment" onSubmit="this.action+='#studentTableAnchor'; return true;">
 
-<netui:hidden dataSource="actionForm.actionElement"/>
-<netui:hidden dataSource="actionForm.currentAction"/>
+<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/>
+<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
 <netui:hidden dataSource="actionForm.selectedOrgNodeName"/>
 <netui:hidden dataSource="actionForm.testAdmin.testName"/>
 <netui:hidden dataSource="actionForm.testAdmin.sessionName"/>
@@ -73,7 +73,7 @@
 <!-- ********************************************************************************************************************* -->
 <!-- Change Assignment -->
 <!-- ********************************************************************************************************************* -->
-<ctb:switch dataSource="{actionForm.action}">
+<ctb:switch dataSource="${actionForm.action}">
 <ctb:case value="schedule">
     <c:if test="${isCopyTest}">        
         <h1><netui:span value="${bundle.web['selectstudents.title.copy']}"/></h1>
@@ -143,10 +143,10 @@
             
     </netui-data:repeaterFooter>
 </netui-data:repeater>
-    <ctb:tableNoResults dataSource="pageFlow.dupStudentList">
+    <ctb:tableNoResults dataSource="{pageFlow.dupStudentList}">
         <tr class="sortable">
             <td class="sortable" colspan="5">
-                <ctb:message title="{bundle.web['common.message.title.noStudents']}" style="tableMessage">
+                <ctb:message title="${bundle.web['common.message.title.noStudents']}" style="tableMessage">
                     <netui:content value="${bundle.web['selectstudents.students.messageInfo']}"/>
                 </ctb:message>
             </td>

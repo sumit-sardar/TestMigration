@@ -52,14 +52,14 @@
 <netui-data:getData resultId="licenseConfig" value="${sessionScope.disableAvailableBarTestSeesion}"/>
 <netui-data:getData resultId="licenseAdminConfig" value="${sessionScope.disableAvailableBarSubtest}"/>
 <netui-data:getData resultId="displayLicenseBar" value="${sessionScope.displayLicenseBar}"/>
-<netui-compat-data:getData resultId="licensebarColor" value="{pageFlow.licenseBarColor}"/>
+<netui-data:getData resultId="licensebarColor" value="${pageFlow.licenseBarColor}"/>
 <netui:hidden dataSource="actionForm.licenseAvailable"/>
 <netui:hidden dataSource="actionForm.licensePercentage"/>
 <netui:span value="${actionForm.licenseAvailable}"/> 
 <netui:hidden dataSource="actionForm.testAdmin.productId"/>
 <!-- Non TABE -->
 <c:if test="${! isTabeProduct}"> 
-	<ctb:switch dataSource="{pageFlow.action}">
+	<ctb:switch dataSource="${pageFlow.action}">
 	  <!--change for licnese-->
 	  <%!String color = "red";%>
 	  <c:if test="${licensebarColor =='RED'}"> 
@@ -125,7 +125,7 @@
 
 <!-- TABE -->
 <c:if test="${isTabeProduct}"> 
-	<ctb:switch dataSource="{pageFlow.action}">
+	<ctb:switch dataSource="${pageFlow.action}">
 	<!--change for licnese-->
 	 <%!String color1 = "red";%>
 	  <c:if test="${licensebarColor =='RED'}"> 
@@ -214,7 +214,7 @@
 
 <netui-data:getData resultId="informationMessage" value="${requestScope.informationMessage}"/>
 <netui-data:getData resultId="errorMessage" value="${requestScope.errorMessage}"/>
-<netui-data:getData resultId="subtestWarningMessage" value="${actionForm.subtestValidationMessage}"/>
+<netui-data:getData resultId="subtestWarningMessage" value="${requestScope.subtestValidationMessage}"/>
 
 <c:if test="${errorMessage!=null}">
 <ctb:message title="" style="errorMessage">
@@ -283,7 +283,7 @@
     <netui-data:repeaterItem>
     <tr class="sortable">
         <td class="sortable alignCenter">        
-        <ctb:switch dataSource="{container.item.status.editable}">
+        <ctb:switch dataSource="${container.item.status.editable}">
             <ctb:case value="T">        
                 <netui:radioButtonGroup dataSource="actionForm.selectedStudentId">
                     &nbsp;<netui:radioButtonOption value="${container.item.studentId}" onClick="enableElementById('modifyTest'); setFocus('modifyTest');">&nbsp;</netui:radioButtonOption>                
@@ -311,7 +311,7 @@
             <%
                 String toolTipMsg = (String)pageContext.getAttribute("accommodations");
             %>
-            <ctb:switch dataSource="{container.item.hasAccommodations}">
+            <ctb:switch dataSource="${container.item.hasAccommodations}">
                 <ctb:case value="true">
                 <a href="#" style="text-decoration: none" title="<%= toolTipMsg %>" onclick="return false;">Yes</a>
                 </ctb:case>
@@ -375,7 +375,7 @@
             </netui:radioButtonGroup>
         </td>        
         <td class="sortable alignLeft">
-            <ctb:switch dataSource="{container.item.hasChildren}">
+            <ctb:switch dataSource="${container.item.hasChildren}">
                 <ctb:case value="true"><ctb:tablePathEntry srcLabelDataSource="${container.item.name}" srcValueDataSource="${container.item.id}" dstLabelDataSource="actionForm.orgNodeName" dstValueDataSource="actionForm.orgNodeId" /></ctb:case>
                 <ctb:case value="false"><netui:span value="${container.item.name}"/></ctb:case>
             </ctb:switch>                
@@ -399,7 +399,7 @@
     <ctb:tableNoResults dataSource="request.orgNodes">
         <tr class="sortable">
             <td class="sortable" colspan="4">
-                <ctb:message title="{bundle.web['printoptions.organizations.messageTitle']}" style="tableMessage">
+                <ctb:message title="${bundle.web['printoptions.organizations.messageTitle']}" style="tableMessage">
                     <netui:content value="${bundle.web['printoptions.organizations.messageInfo']}"/>
                 </ctb:message>
             </td>

@@ -1,8 +1,5 @@
 <%@ page import="java.io.*, java.util.*"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
-<%@ taglib uri="netui-tags-databinding.tld" prefix="netui-compat-data"%>
-<%@ taglib uri="netui-tags-html.tld" prefix="netui-compat"%>
-<%@ taglib uri="netui-tags-template.tld" prefix="netui-compat-template"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
@@ -44,8 +41,8 @@
 <netui:form action="selectTest">
 
 
-<netui-compat-data:getData resultId="hasBreak" value="{actionForm.hasBreak}"/>
-<netui-compat-data:getData resultId="showCancel" value="{pageFlow.condition.showCancelOnFirstPage}"/>
+<netui-data:getData resultId="hasBreak" value="${actionForm.hasBreak}"/>
+<netui-data:getData resultId="showCancel" value="${pageFlow.condition.showCancelOnFirstPage}"/>
 <netui-data:getData resultId="hideTestOptions" value="${requestScope.hideTestOptions}"/>
 <netui-data:getData resultId="hideProductNameDropDown" value="${requestScope.hideProductNameDropDown}"/>
 <netui-data:getData resultId="hideLevelDropDown" value="${requestScope.hideLevelDropDown}"/>
@@ -55,12 +52,10 @@
 
 <netui-data:getData resultId="productType" value="${requestScope.productType}"/>
 <!--Change For License-->
-<netui-compat-data:getData  resultId="licenseConfig" value="{session.disableAvailableBarTestSeesion}"/>
-<netui-compat-data:getData  resultId="licenseAdminConfig" value="{session.disableAvailableBarSubtest}"/>
 
-<netui-compat-data:getData  resultId="displayLicenseBar" value="{session.displayLicenseBar}"/>
+<netui-data:getData  resultId="displayLicenseBar" value="${sessionScope.displayLicenseBar}"/>
 
-<netui-compat-data:getData  resultId="licensebarColor" value="{pageFlow.licenseBarColor}"/>
+<netui-data:getData  resultId="licensebarColor" value="${pageFlow.licenseBarColor}"/>
 
 <netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/>
 <netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
@@ -75,7 +70,8 @@
 <netui:hidden dataSource="actionForm.endTime"/>   
 <netui:hidden dataSource="actionForm.formOperand"/>  
 <netui:hidden dataSource="actionForm.formAssigned"/>  
-<netui:hidden dataSource="actionForm.action"/>  
+<netui:hidden dataSource="actionForm.action"/>
+<netui:hidden dataSource="actionForm.hasBreak"/>
 <netui:hidden dataSource="actionForm.creatorOrgNodeId"/>  
 <netui:hidden dataSource="actionForm.creatorOrgNodeName"/>   
 
@@ -92,8 +88,7 @@
 <netui-data:getData resultId="errorMessage" value="${requestScope.errorMessage}"/>
 <netui:hidden dataSource="actionForm.testAdmin.productId"/>
 
-<netui-compat-data:getData resultId="autoLocator" value="{actionForm.autoLocator}"/>
-
+<netui-data:getData resultId="autoLocator" value="${actionForm.autoLocator}"/>
 
 
 
@@ -356,7 +351,7 @@
 <ctb:tableNoResults dataSource="{pageFlow.testList}">
     <tr class="sortable">
         <td class="sortable" colspan="5">
-            <ctb:message title="{bundle.web['common.message.title.noTests']}" style="tableMessage">
+            <ctb:message title="${bundle.web['common.message.title.noTests']}" style="tableMessage">
                 <netui:content value="${bundle.web['selecttest.tests.noTestsMessage']}"/>
             </ctb:message>
         </td>
@@ -403,7 +398,8 @@
         </p>   
         <p>
         <netui:content value="${bundle.web['selecttest.subtestOptions.message2']}"/>
-        <br/>   
+        <br/>  
+        <% out.println("before radion button hasBreak" + pageContext.getAttribute("hasBreak") );%> 
         <netui:radioButtonGroup dataSource="actionForm.hasBreak">
             <netui:radioButtonOption value="false" onClick="submit()"><netui:span value="${bundle.web['selecttest.label.no']}"/></netui:radioButtonOption>
             <c:if test="${!hasBreak}"> 
@@ -412,8 +408,9 @@
             </c:if>   
             <br/>
             
-            <netui:radioButtonOption value="true" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'changeHasBreakToYes', 'subtestDetailsAnchor');"><netui:span value="${bundle.web['selecttest.label.yes']}"/></netui:radioButtonOption>
+            <netui:radioButtonOption value="true" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'changeHasBreakToYes', 'subtestDetailsAnchor');"><netui:span value="${bundle.web['selecttest.label.yes']}"/></netui:radioButtonOption>
             <c:if test="${hasBreak}"> 
+            <% out.println("after radion button hasBreak" + pageContext.getAttribute("hasBreak") );%> 
             <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<netui:span value="${bundle.web['selecttest.subtestOptions.message4']}"/>
             <netui:hidden dataSource="actionForm.testAdmin.accessCode"/>   
             </c:if>   
@@ -554,7 +551,7 @@
         </tr>
         <tr class="sortable"> 
             <td class="sortable alignCenter" width="60">
-                <netui:checkBox dataSource="actionForm.autoLocator" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'toogleAutoLocator', 'subtestDetailsAnchor');"/>
+                <netui:checkBox dataSource="actionForm.autoLocator" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'toogleAutoLocator', 'subtestDetailsAnchor');"/>
             </td>
             
             <td class="sortable alignLeft" width="*"><netui:label value="${pageFlow.locatorSubtest.subtestName}" defaultValue="&nbsp;"/></td>

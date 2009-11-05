@@ -17,7 +17,7 @@
 <!--Change MQC defect  55837 -->
 
 <%String templatePage = "/resources/jsp/template.jsp";%>
-<ctb:switch dataSource="{pageFlow.action}">
+<ctb:switch dataSource="${pageFlow.action}">
     <ctb:case value="edit">
         <% templatePage="/resources/jsp/editTemplate.jsp";%>
     </ctb:case>

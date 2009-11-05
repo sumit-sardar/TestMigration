@@ -1,5 +1,4 @@
 <%@ page import="java.io.*, java.util.*"%>
-<%@ taglib uri="netui-tags-databinding.tld" prefix="netui-compat-data"%>
 <%@ taglib uri="netui-tags-html.tld" prefix="netui-compat"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -13,19 +12,20 @@
 
 <netui-data:getData resultId="action" value="${pageFlow.action}"/>
 <netui-data:getData resultId="hasBreak" value="${actionForm.hasBreak}"/>
-<netui-compat-data:getData resultId="studentCount" value="{request.studentCount}"/>
-<netui-compat-data:getData resultId="showAccommodations" value="{actionForm.testRosterFilter.showAccommodations}"/>
-<netui-compat-data:getData resultId="isFormEditable" value="{request.isFormEditable}"/>
-<netui-data:getData resultId="displayFormList" value="${request.displayFormList}"/>
+<netui-data:getData resultId="studentCount" value="${requestScope.studentCount}"/>
+<netui-data:getData resultId="showAccommodations" value="${requestScope.testRosterFilter.showAccommodations}"/>
+<netui-data:getData resultId="isFormEditable" value="${requestScope.isFormEditable}"/>
+<netui-data:getData resultId="displayFormList" value="${requestScope.displayFormList}"/>
 <netui-data:getData resultId="hasStudentLoggedIn" value="${pageFlow.condition.hasStudentLoggedIn}"/>
-<netui-compat-data:getData resultId="testSessionExpired" value="{pageFlow.condition.testSessionExpired}"/>
+<netui-data:getData resultId="testSessionExpired" value="${pageFlow.condition.testSessionExpired}"/>
 <netui-data:getData resultId="showFormAssignment" value="${requestScope.showFormAssignment}"/>
 
-<netui-compat-data:getData resultId="isTabeProduct" value="{request.isTabeProduct}"/>
-<netui-compat-data:getData resultId="productType" value="{request.productType}"/>
+<netui-data:getData resultId="isTabeProduct" value="${requestScope.isTabeProduct}"/>
+<netui-data:getData resultId="productType" value="${requestScope.productType}"/>
 <netui:hidden dataSource="actionForm.creatorOrgNodeId"/>  
 <a name="studentTableAnchor"><!-- studentTableAnchor --></a>    
 <h3><netui:span value="${bundle.web['selectsettings.students.title']}"/></h3>
+
 
 <c:if test="${! isTabeProduct}">                 
 <p>    
@@ -105,9 +105,9 @@
         <netui:span value="${bundle.web['selectsettings.students.message1']}"/>
         <br/>
         <netui:radioButtonGroup dataSource="actionForm.formOperand">
-            <netui:radioButtonOption value="roundrobin" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'roundrobin', 'studentTableAnchor');"><netui:span value="${bundle.web['selectsettings.students.form.option1']}"/></netui:radioButtonOption>
+            <netui:radioButtonOption value="roundrobin" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'roundrobin', 'studentTableAnchor');"><netui:span value="${bundle.web['selectsettings.students.form.option1']}"/></netui:radioButtonOption>
             <br/>                 
-            <netui:radioButtonOption value="samesame" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'samesame', 'studentTableAnchor');"><netui:span value="${bundle.web['selectsettings.students.form.option2']}"/></netui:radioButtonOption>
+            <netui:radioButtonOption value="samesame" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'samesame', 'studentTableAnchor');"><netui:span value="${bundle.web['selectsettings.students.form.option2']}"/></netui:radioButtonOption>
             <br/>
             <c:if test="${displayFormList}">                 
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                
@@ -118,7 +118,7 @@
             <c:if test="${!displayFormList}">                 
                 <netui:hidden dataSource="actionForm.formAssigned"/>   
             </c:if>               
-            <netui:radioButtonOption value="manual" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'manual', 'studentTableAnchor');"><netui:span value="${bundle.web['selectsettings.students.form.option3']}"/></netui:radioButtonOption>
+            <netui:radioButtonOption value="manual" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'manual', 'studentTableAnchor');"><netui:span value="${bundle.web['selectsettings.students.form.option3']}"/></netui:radioButtonOption>
         </netui:radioButtonGroup>
     </c:if>    
 </c:if>
@@ -172,7 +172,7 @@
 <!-- solution for Deferred defect no 49942-->
 <c:if test="${studentCount==0 && action!='view' && testSessionExpired }">
 <p>  
-<ctb:message title="{bundle.web['common.message.noStudents.title']}" style="informationMessage">
+<ctb:message title="${bundle.web['common.message.noStudents.title']}" style="informationMessage">
    
 </ctb:message>
 </p>
@@ -180,7 +180,7 @@
 
 <c:if test="${studentCount==0 && action!='view' && !testSessionExpired }">
 <p>  
-<ctb:message title="{bundle.web['common.message.noStudents.title']}" style="informationMessage">
+<ctb:message title="${bundle.web['common.message.noStudents.title']}" style="informationMessage">
     <netui:content value="${bundle.web['common.message.noStudents.message']}"/>
 </ctb:message>
 </p>
@@ -191,7 +191,6 @@
 </c:if>
     
 <c:if test="${studentCount>0}">
-
 <netui-compat-template:visible visibility="{request.formIsClean}" negate="true">
     <p><ctb:message title="{bundle.web['common.message.form.invalidCharacters']}" style="alertMessage"></ctb:message></p>
 </netui-compat-template:visible>
@@ -199,7 +198,7 @@
 <table class="sortable">
     <tr class="sortable">
         <td class="sortableControls" colspan="7">
-            <ctb:tableFilter dataSource="{actionForm.filterVisible}">
+            <ctb:tableFilter dataSource="actionForm.filterVisible">
                 <table class="tableFilter">
                 <tr class="tableFilter">
                     <td class="tableFilter alignLeft" colspan="6"><netui:content value="${bundle.web['selectsettings.students.filter.title']}"/></td>
@@ -207,15 +206,15 @@
                 <tr class="tableFilter">
                     <td class="tableFilter alignLeft"><netui:content value="${bundle.web['common.column.lastName']}"/>:</td>
                     <td class="tableFilter alignLeft"><netui:select optionsDataSource="${pageFlow.nameOptions}" dataSource="actionForm.testRosterFilter.lastNameFilterType" size="1" defaultValue="${actionForm.testRosterFilter.lastNameFilterType}" style="width:100px"/></td>
-                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testRosterFilter.lastName" onKeyPress="return handleEnterKey('${actionForm.currentAction}', 'applyFilters');"/></td>                    
+                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testRosterFilter.lastName" onKeyPress="return handleEnterKey('currentAction', 'applyFilters');"/></td>                    
                     <td class="tableFilter alignLeft"><netui:content value="${bundle.web['common.column.organization']}"/>:</td>
                     <td class="tableFilter alignLeft"><netui:select optionsDataSource="${pageFlow.nameOptions}" dataSource="actionForm.testRosterFilter.organizationFilterType" size="1" defaultValue="${actionForm.testRosterFilter.organizationFilterType}" style="width:100px"/></td>
-                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testRosterFilter.organization" onKeyPress="return handleEnterKey('${actionForm.currentAction}', 'applyFilters');"/></td>                    
+                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testRosterFilter.organization" onKeyPress="return handleEnterKey('currentAction', 'applyFilters');"/></td>                    
                 </tr>
                 <tr class="tableFilter">
                     <td class="tableFilter alignLeft"><netui:content value="${bundle.web['common.column.firstName']}"/>:</td>
                     <td class="tableFilter alignLeft"><netui:select optionsDataSource="${pageFlow.nameOptions}" dataSource="actionForm.testRosterFilter.firstNameFilterType" size="1" defaultValue="${actionForm.testRosterFilter.firstNameFilterType}" style="width:100px"/></td>
-                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testRosterFilter.firstName" onKeyPress="return handleEnterKey('${actionForm.currentAction}', 'applyFilters');"/></td>                    
+                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testRosterFilter.firstName" onKeyPress="return handleEnterKey('currentAction', 'applyFilters');"/></td>                    
 <c:if test="${isTabeProduct}">                                         
                     <td class="tableFilter alignLeft">&nbsp;</td>
                     <td class="tableFilter alignLeft">&nbsp;</td>
@@ -229,14 +228,14 @@
 <c:if test="${sessionScope.supportAccommodations}">                                
                 <tr class="tableFilter">
                     <td class="tableFilter alignLeft"><netui:content value="${bundle.web['common.column.accommodations']}"/>:</td>
-                    <td class="tableFilter alignLeft" colspan="2"><netui-compat:select optionsDataSource="{pageFlow.accommodationTypeOptions}" dataSource="{actionForm.testRosterFilter.accommodationFilterType}" size="1" defaultValue="{actionForm.testRosterFilter.accommodationFilterType}" onChange="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'changeAccommodation', 'studentTableAnchor');" style="width:270px"/></td>
+                    <td class="tableFilter alignLeft" colspan="2"><netui:select optionsDataSource="${pageFlow.accommodationTypeOptions}" dataSource="actionForm.testRosterFilter.accommodationFilterType" size="1" defaultValue="${actionForm.testRosterFilter.accommodationFilterType}" onChange="setElementValueAndSubmitWithAnchor('currentAction', 'changeAccommodation', 'studentTableAnchor');" style="width:270px"/></td>
                     <td class="tableFilter alignLeft" colspan="2">&nbsp;</td>
                 </tr>
                 <tr class="tableFilter">
                     <td class="tableFilter alignLeft">&nbsp;</td>
                     <td class="tableFilter alignLeft" colspan="2">
                     <c:if test="${showAccommodations}"> 
-                        <netui-compat:select optionsDataSource="{pageFlow.selectedAccommodationsOptions}" dataSource="{actionForm.testRosterFilter.selectedAccommodations}" size="4" multiple="true" defaultValue="{actionForm.testRosterFilter.selectedAccommodations}" onClick="enableElementById('applyFilter');" style="width:270px"/><br/><br/>
+                        <netui:select optionsDataSource="${pageFlow.selectedAccommodationsOptions}" dataSource="actionForm.testRosterFilter.selectedAccommodations" size="4" multiple="true" defaultValue="${actionForm.testRosterFilter.selectedAccommodations}" onClick="enableElementById('applyFilter');" style="width:270px"/><br/><br/>
                         <netui:span value="${bundle.web['selectstudents.accommodations.info']}"/>
                     </c:if>
                     </td>
@@ -245,8 +244,8 @@
 </c:if>                
                 <tr class="tableFilter">
                     <td class="tableFilter alignRight" colspan="6">
-                        <netui:button tagId="applyFilter" value="${bundle.widgets['button.apply']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'applyFilters', 'studentTableAnchor');" disabled="${requestScope.disableApply}"/>&nbsp;                        
-                        <netui:button tagId="clearFilter" value="${bundle.widgets['button.clearAll']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'clearFilters', 'studentTableAnchor');"/>&nbsp;
+                        <netui:button tagId="applyFilter" value="${bundle.widgets['button.apply']}" type="button" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'applyFilters', 'studentTableAnchor');" disabled="${requestScope.disableApply}"/>&nbsp;                        
+                        <netui:button tagId="clearFilter" value="${bundle.widgets['button.clearAll']}" type="button" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'clearFilters', 'studentTableAnchor');"/>&nbsp;
                     </td>                        
                 </tr>
                 </table>
@@ -255,9 +254,9 @@
             <table class="tableFilter">
             <tr class="tableFilter">
                 <td class="tableFilter">
-                    <ctb:tableFilterToggle dataSource="{actionForm.filterVisible}" />&nbsp;
+                    <ctb:tableFilterToggle dataSource="actionForm.filterVisible" />&nbsp;
                     <c:if test="${action != 'view'}">     
-                        <netui:button type="button" tagId="removeSelectedStudents" value="${bundle.web['common.button.removeSelectedStudents']}" onClick="setElementValueAndSubmitWithAnchor('${actionForm.currentAction}', 'removeSelectedStudents', 'studentTableAnchor');" disabled="${requestScope.disableRemoveSelectedStudents}"/>              
+                        <netui:button type="button" tagId="removeSelectedStudents" value="${bundle.web['common.button.removeSelectedStudents']}" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'removeSelectedStudents', 'studentTableAnchor');" disabled="${requestScope.disableRemoveSelectedStudents}"/>              
                         <netui:button type="submit" value="${bundle.web['common.button.removeAllStudents']}" onClick="return verifyRemoveAllStudents('studentTableAnchor');"/>              
                     </c:if>
                 </td>
@@ -371,7 +370,7 @@
 <ctb:tableNoResults dataSource="{pageFlow.studentNodes}">
     <tr class="sortable">
         <td class="sortable" colspan="7">
-            <ctb:message title="{bundle.web['common.message.title.noStudents']}" style="tableMessage">
+            <ctb:message title="${bundle.web['common.message.title.noStudents']}" style="tableMessage">
                 <netui:content value="${bundle.web['selectsettings.students.noStudentMessageInfo']}"/>
             </ctb:message>
         </td>
@@ -451,12 +450,12 @@
         <td class="sortableControls" colspan="3">
         &nbsp;
         <c:if test="${action=='schedule'}">
-            <netui:button type="button" tagId="removeSelectedProctors" value="${bundle.web['common.button.removeSelectedProctors']}" onClick="setElementValueAndSubmitWithAnchor('${actionForm.currentAction}', 'removeSelectedProctors', 'proctorTableAnchor');" disabled="${requestScope.disableRemoveSelectedProctors}"/>              
+            <netui:button type="button" tagId="removeSelectedProctors" value="${bundle.web['common.button.removeSelectedProctors']}" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'removeSelectedProctors', 'proctorTableAnchor');" disabled="${requestScope.disableRemoveSelectedProctors}"/>              
             <netui:button type="submit" value="${bundle.web['common.button.removeAllProctors']}" onClick="return verifyRemoveAllProctors('proctorTableAnchor');"/>              
         </c:if>
         <c:if test="${action=='edit' && !testSessionExpired}">    
             <ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator, Coordinator">
-                <netui:button type="button" tagId="removeSelectedProctors" value="${bundle.web['common.button.removeSelectedProctors']}" onClick="setElementValueAndSubmitWithAnchor('${actionForm.currentAction}', 'removeSelectedProctors', 'proctorTableAnchor');" disabled="${requestScope.disableRemoveSelectedProctors}"/>              
+                <netui:button type="button" tagId="removeSelectedProctors" value="${bundle.web['common.button.removeSelectedProctors']}" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'removeSelectedProctors', 'proctorTableAnchor');" disabled="${requestScope.disableRemoveSelectedProctors}"/>              
                 <netui:button type="submit" value="${bundle.web['common.button.removeAllProctors']}" onClick="return verifyRemoveAllProctors('proctorTableAnchor');"/>              
             </ctb:auth>    
         </c:if>

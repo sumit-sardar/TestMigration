@@ -143,7 +143,7 @@ public class SelectProctorPageflowController extends PageFlowController
         form.resetValuesForAction(actionElement);
         
         String currentAction = ACTION_DEFAULT;
-        if (actionElement!= null && actionElement.equals("{actionForm.currentAction}")) {
+        if (actionElement!= null && actionElement.equals("currentAction")) {
             currentAction = form.getCurrentAction();  
         } 
         
