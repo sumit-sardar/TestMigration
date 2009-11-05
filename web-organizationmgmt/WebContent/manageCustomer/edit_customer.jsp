@@ -63,7 +63,10 @@
 <a name="moduleCustomerProfile"><!-- moduleCustomerProfile --></a>    
 <p>
     <ctb:showHideSection sectionId="moduleCustomerProfile" sectionTitle="Profile Information" sectionVisible="actionForm.byCustomerProfileVisible">
-        <jsp:include page="/manageCustomer/add_customer_profile.jsp" />
+        <jsp:include page="/manageCustomer/add_customer_profile.jsp">
+        
+        	<jsp:param name="currentAction" value="${actionForm.currentAction}" />
+        </jsp:include>
     </ctb:showHideSection>
 </p>
 

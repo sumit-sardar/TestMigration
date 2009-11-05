@@ -61,7 +61,7 @@
         <td class="transparent alignRight" width="110"><span class="asterisk">*</span>&nbsp;<netui:content value="Role:"/></td>
         <c:if test="${ isAddAdministrator }">   
              <td class="transparent">
-               <netui:span value="${actionForm.userProfile.role}"/>
+               <netui:label value="${userProfileData.role}"/>
                <netui:hidden dataSource="actionForm.userProfile.roleId"/>               
             </td> 
         </c:if>
