@@ -40,7 +40,7 @@
         <div class="formValue"><netui:span value="${requestScope.totalStudents}" styleClass="formValue"/></div>
     </td>
 </tr>
-<ctb:switch dataSource="${request.hasBreak}">
+<ctb:switch dataSource="request.hasBreak">
 <ctb:case value="false">
 <tr class="transparent">
     <td class="transparent">
@@ -64,7 +64,7 @@
 </c:if>      
 </table><br/>
 
-<ctb:switch dataSource="${request.hasBreak}">
+<ctb:switch dataSource="request.hasBreak">
 <ctb:case value="multiAccesscodes">
 <table class="sortable">
 <netui-data:repeater dataSource="requestScope.subtestList">

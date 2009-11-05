@@ -65,10 +65,10 @@ public class TagLibUtils
 
     	Object result = null;
 
-        if ((variable.indexOf("actionForm") == 0) || (variable.indexOf("{actionForm") == 0) || (variable.indexOf("${actionForm") == 0))
+    	if ( fromActionForm(variable) ) 
         	result = actionFormResolveVariable(variable);    		
     	else
-        if ((variable.indexOf("request") == 0) || (variable.indexOf("requestScope") == 0))
+        if ( fromRequest(variable) ) 
         	result = requestResolveVariable(variable);    		
         else
       	   	result = resolveVariable(variable);    
@@ -86,10 +86,10 @@ public class TagLibUtils
    public Object actionFormResolveSimple(String variable) {
 	   
 	   String varName;
-       if (variable.indexOf("actionForm") == 0)
+       if (variable.indexOf("actionForm.") == 0)
     	   varName = variable.substring("actionForm.".length(), variable.length());
        else
-       if (variable.indexOf("{actionForm") == 0)
+       if (variable.indexOf("{actionForm.") == 0)
     	   varName = variable.substring("{actionForm.".length(), variable.length()-1);
        else
     	   varName = variable.substring("${actionForm.".length(), variable.length()-1);
@@ -166,17 +166,47 @@ public class TagLibUtils
    public Object requestResolveVariable(String variable) {
 
 	   String varName;
-       if (variable.indexOf("request") == 0) 
+       if (variable.indexOf("request.") == 0) 
     	   varName = variable.substring("request.".length(), variable.length());
        else 
+       if (variable.indexOf("{request.") == 0) 
+    	   varName = variable.substring("{request.".length(), variable.length());
+       else 
+       if (variable.indexOf("${request.") == 0) 
+    	   varName = variable.substring("${request.".length(), variable.length());
+       else 
+       if (variable.indexOf("requestScope.") == 0) 
     	   varName = variable.substring("requestScope.".length(), variable.length());
+       else 
+       if (variable.indexOf("{requestScope.") == 0) 
+    	   varName = variable.substring("{requestScope.".length(), variable.length());
+       else 
+       if (variable.indexOf("${requestScope.") == 0) 
+    	   varName = variable.substring("${requestScope.".length(), variable.length());
+       else 
+    	   varName = "";
 	   
        return pageContext.getRequest().getAttribute( varName );
    }
+
+   private boolean fromActionForm(String src) {
+	   if ((src.indexOf("actionForm.") == 0) || (src.indexOf("{actionForm.") == 0) || (src.indexOf("${actionForm.") == 0))
+		   return true;
+	   else
+		   return false;
+   }
+
+   private boolean fromRequest(String src) {
+	   if ((src.indexOf("request.") == 0) || (src.indexOf("{request.") == 0) || (src.indexOf("${request.") == 0) ||
+		   (src.indexOf("requestScope.") == 0) || (src.indexOf("{requestScope.") == 0) || (src.indexOf("${requestScope.") == 0))
+		   return true;
+	   else
+		   return false;
+   }
    
-   private boolean isSimpleObject(String variable) {
-		int firstIndex = variable.indexOf(".");
-		int lastIndex = variable.lastIndexOf(".");
+   private boolean isSimpleObject(String src) {
+		int firstIndex = src.indexOf(".");
+		int lastIndex = src.lastIndexOf(".");
 		return (firstIndex == lastIndex);
    }
 
