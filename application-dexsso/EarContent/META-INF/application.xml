@@ -4,7 +4,7 @@
 	<module id="WebModule_1257468677936">
 		<web>
 			<web-uri>web-dexsso.war</web-uri>
-			<context-root>web-dexsso</context-root>
+			<context-root>DExSSOWeb</context-root>
 		</web>
 	</module>
 </application>
