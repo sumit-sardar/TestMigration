@@ -1,0 +1,11 @@
+<upgrade-log>
+  <entry time="2009-10-20 13:44:32 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080711173356" class="com.bea.workshop.wls.core.upgrade.internal.WlsFacetsUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-20 13:44:32 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080711173356" class="com.bea.workshop.wls.core.upgrade.internal.WlsRuntimeNameProjectUpgradeParticipant"/>
+  </entry>
+  <entry time="2009-10-20 13:44:32 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.wls.core" pluginVersion="1.2.4.20080711173356" class="com.bea.workshop.wls.core.upgrade.internal.J2EELibrariesValidatorUpgradeParticipant"/>
+  </entry>
+</upgrade-log>
