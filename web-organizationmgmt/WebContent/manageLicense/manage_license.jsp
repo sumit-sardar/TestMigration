@@ -23,8 +23,8 @@
 <!-- start form -->
 <netui:form action="manageLicense">
 
-<netui:hidden dataSource="actionForm.actionElement"/> 
-<netui:hidden dataSource="actionForm.currentAction"/>
+<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/> 
+<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
 
 <netui:hidden dataSource="actionForm.orgMaxPage"/> 
 
