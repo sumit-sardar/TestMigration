@@ -147,14 +147,14 @@
                     <netui:button styleClass="button" 
                     			  tagId="sessionViewStatus" 
                     			  value="${bundle.widgets['button.viewStatus']}" 
-                    			  type="submit" 
+                    			  type="button" 
                     			  onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'sessionViewStatus');" 
                     			  disabled="true" />
                     
                     <netui:button styleClass="button" 
                     			  tagId="sessionEdit" 
                     			  value="${bundle.widgets['button.edit']}" 
-                    			  type="submit" 
+                    			  type="button" 
                     			  onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'sessionEdit');" 
                     			  disabled="true" />
                     			  
@@ -162,7 +162,7 @@
                     <netui:button styleClass="button" 
                     			  tagId="registerStudent" 
                     			  value="${bundle.widgets['button.registerStudent']}" 
-                    			  type="submit" 
+                    			  type="button" 
                     			  onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'registerStudent');" 
                     			  disabled="true"/>
                 </c:if>
