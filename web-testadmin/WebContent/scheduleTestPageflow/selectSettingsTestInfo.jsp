@@ -105,7 +105,6 @@
     
     
 <c:if test="${isTabeProduct}"> 
-      <% out.println("hasBreak" + pageContext.getAttribute("hasBreak") );%>
     <c:if test="${productType != 'tabeLocatorProductType'}">                     
         <tr class="transparent">
             <td class="transparent" width="250"><netui:span value="Locator Test"/></td>
@@ -326,12 +325,12 @@
                     <br/><netui:span style="color:#666666;" value="${bundle.web['selectsettings.options.message1']}"/> 
                 </c:if>    
                 <c:if test="${testSessionExpired || hasStudentLoggedIn}">
-                    <div class="formValueLarge"><netui:span value="${actionForm.testAdmin.sessionName}" styleClass="formValueLarge"/></div>
+                    <div class="formValueLarge"><netui:label value="${scheduledTestSessionData.sessionName}" styleClass="formValueLarge"/></div>
                     <netui:hidden dataSource="actionForm.testAdmin.sessionName"/>   
                 </c:if>    
             </ctb:auth>                
             <ctb:auth roles="Proctor">
-                <div class="formValueLarge"><netui:span value="${actionForm.testAdmin.sessionName}" styleClass="formValueLarge"/></div>
+                <div class="formValueLarge"><netui:label value="${scheduledTestSessionData.sessionName}" styleClass="formValueLarge"/></div>
                 <netui:hidden dataSource="actionForm.testAdmin.sessionName"/>   
             </ctb:auth>                
         </c:if> 
@@ -356,12 +355,12 @@
                     <a href="#" onclick="showCalendar(document.getElementById('startDate'), document.getElementById('overrideStartDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
                 </c:if>    
                 <c:if test="${hasStudentLoggedIn || testSessionExpired}">
-                    <div class="formValue"><netui:span value="${actionForm.startDate}" styleClass="formValue"/></div>
+                    <div class="formValue"><netui:label value="${formData.startDate}" styleClass="formValue"/></div>
                     <netui:hidden dataSource="actionForm.startDate"/>   
                 </c:if>    
             </ctb:auth>                
             <ctb:auth roles="Proctor">
-                <div class="formValue"><netui:span value="${actionForm.startDate}" styleClass="formValue"/></div>
+                <div class="formValue"><netui:label value="${formData.startDate}" styleClass="formValue"/></div>
                 <netui:hidden dataSource="actionForm.startDate"/>   
             </ctb:auth>                
         </c:if> 
@@ -385,7 +384,7 @@
                 <a href="#" onclick="showCalendar(document.getElementById('endDate'), document.getElementById('overrideStartDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
             </ctb:auth>                
             <ctb:auth roles="Proctor">
-                <div class="formValue"><netui:span value="${actionForm.endDate}" styleClass="formValue"/></div>
+                <div class="formValue"><netui:label value="${formData.endDate}" styleClass="formValue"/></div>
                 <netui:hidden dataSource="actionForm.endDate"/>   
             </ctb:auth>                
         </c:if>
@@ -412,12 +411,12 @@
                     </netui:select>
                 </c:if>    
                 <c:if test="${testSessionExpired}">
-                    <div class="formValue"><netui:span value="${actionForm.startTime}" styleClass="formValue"/></div>
+                    <div class="formValue"><netui:label value="${formData.startTime}" styleClass="formValue"/></div>
                     <netui:hidden dataSource="actionForm.startTime"/>   
                 </c:if>    
             </ctb:auth>                
             <ctb:auth roles="Proctor">
-                <div class="formValue"><netui:span value="${actionForm.startTime}" styleClass="formValue"/></div>
+                <div class="formValue"><netui:label value="${formData.startTime}" styleClass="formValue"/></div>
                 <netui:hidden dataSource="actionForm.startTime"/>   
             </ctb:auth>                
         </c:if>  
@@ -440,12 +439,12 @@
                     </netui:select>
                 </c:if>    
                 <c:if test="${testSessionExpired}">
-                    <div class="formValue"><netui:span value="${actionForm.endTime}" styleClass="formValue"/></div>
+                    <div class="formValue"><netui:label value="${formData.endTime}" styleClass="formValue"/></div>
                     <netui:hidden dataSource="actionForm.endTime"/>   
                 </c:if>    
             </ctb:auth>                
             <ctb:auth roles="Proctor">
-                <div class="formValue"><netui:span value="${actionForm.endTime}" styleClass="formValue"/></div>
+                <div class="formValue"><netui:label value="${formData.endTime}" styleClass="formValue"/></div>
                 <netui:hidden dataSource="actionForm.endTime"/>   
             </ctb:auth>                
         </c:if>   
@@ -470,12 +469,12 @@
                     </netui:select>
                 </c:if>    
                 <c:if test="${testSessionExpired}">
-                    <div class="formValue"><netui:span value="${actionForm.testAdmin.timeZone}" styleClass="formValue"/></div>
+                    <div class="formValue"><netui:label value="${scheduledTestSessionData.timeZone}" styleClass="formValue"/></div>
                     <netui:hidden dataSource="actionForm.testAdmin.timeZone"/>   
                 </c:if>    
             </ctb:auth>                
             <ctb:auth roles="Proctor">
-                <div class="formValue"><netui:span value="${actionForm.testAdmin.timeZone}" styleClass="formValue"/></div>
+                <div class="formValue"><netui:label value="${scheduledTestSessionData.timeZone}" styleClass="formValue"/></div>
                 <netui:hidden dataSource="actionForm.testAdmin.timeZone"/>   
             </ctb:auth>                
         </c:if>   
@@ -507,12 +506,12 @@
                     <br/><netui:span value="(Computer Lab, Room 101)" style="color:#666666;"/>
                 </c:if>    
                 <c:if test="${testSessionExpired}">
-                    <div class="formValue"><netui:span value="${actionForm.testAdmin.location}" styleClass="formValue"/></div>
+                    <div class="formValue"><netui:label value="${scheduledTestSessionData.location}" styleClass="formValue"/></div>
                     <netui:hidden dataSource="actionForm.testAdmin.location"/>   
                 </c:if>    
             </ctb:auth>                
             <ctb:auth roles="Proctor">
-                <div class="formValue"><netui:span value="${actionForm.testAdmin.location}" styleClass="formValue"/></div>
+                <div class="formValue"><netui:label value="${scheduledTestSessionData.location}" styleClass="formValue"/></div>
                 <netui:hidden dataSource="actionForm.testAdmin.location"/>   
             </ctb:auth>                
         </c:if>    
@@ -545,7 +544,7 @@
             <td class="transparent" colspan="4">
             <netui:span value="${bundle.web['selectsettings.label.selectOrganization']}"/>
             <br/>
-            <div class="formValue"><netui:span value="${actionForm.creatorOrgNodeName}" styleClass="formValue"/></div>
+            <div class="formValue"><netui:label value="${formData.creatorOrgNodeName}" styleClass="formValue"/></div>
             </td>
         </tr>
         <netui:hidden dataSource="actionForm.creatorOrgNodeId"/>   

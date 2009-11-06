@@ -226,10 +226,6 @@ public class SelectStudentPageflowController extends PageFlowController
     protected Forward selectStudent(ScheduleTestController.ScheduleTestForm form)
     {
         form.validateValues();
-    	//License
-       // ScheduleTestController parentPageFlow = (ScheduleTestController)PageFlowUtils.getNestingPageFlow(getRequest());
-        //this.licenseBarColor = parentPageFlow.licenseBarColor;
-        System.out.println("no parentpageflow");
         if (form.getSelectedGrade() == null)
         {                
             form.setSelectedGrade(this.selectedGrade);

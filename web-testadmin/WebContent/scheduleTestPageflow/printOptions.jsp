@@ -242,9 +242,9 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent" nowrap><netui:span value="${bundle.web['printoptions.label.testName']}"/></td>
-        <td class="transparent" ><div class="formValueMedium"><netui:span value="${actionForm.testAdmin.testName}" styleClass="formValueMedium"/></div></td>
+        <td class="transparent" ><div class="formValueMedium"><netui:label value="${scheduledTestSessionData.testName}" styleClass="formValueMedium"/></div></td>
         <td class="transparent" nowrap><netui:span value="${bundle.web['printoptions.label.testSessionName']}"/></td>
-        <td class="transparent" ><div class="formValueMedium"><netui:span value="${actionForm.testAdmin.sessionName}" styleClass="formValueMedium"/></div></td>
+        <td class="transparent" ><div class="formValueMedium"><netui:label value="${scheduledTestSessionData.sessionName}" styleClass="formValueMedium"/></div></td>
 	</tr>
 </table>
 

@@ -2496,6 +2496,7 @@ public class UploadProcess extends BatchProcessor.Process
                 logicalErrorList.add(CTBConstants.EMAIL);
                 logicalErrorList.add(CTBConstants.REQUIREDFIELD_TIME_ZONE);
                 logicalErrorList.add(CTBConstants.REQUIREDFIELD_ROLE);
+                logicalErrorList.add(CTBConstants.EXT_PIN1);
                 logicalErrorList.add(CTBConstants.ADDRESS_LINE_1);
                 logicalErrorList.add(CTBConstants.ADDRESS_LINE_2);
                 logicalErrorList.add(CTBConstants.CITY);

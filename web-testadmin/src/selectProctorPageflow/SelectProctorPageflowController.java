@@ -510,5 +510,9 @@ public class SelectProctorPageflowController extends PageFlowController
         }
         return categoryName;
     }
+
+	public String getAction() {
+		return action;
+	}
     
 }

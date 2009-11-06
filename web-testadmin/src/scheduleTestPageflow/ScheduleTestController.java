@@ -1012,7 +1012,6 @@ public class ScheduleTestController extends PageFlowController
                                                       path = "logout.do"))
     protected Forward selectSettings(ScheduleTestForm form)
     {
-        System.out.println("selectSettings first" + form.getCreatorOrgNodeId());
     	String actionElement = form.getActionElement();
         form.resetValuesForAction(actionElement);
         FormFieldValidator.validateFilterForm(form, getRequest());
@@ -1890,7 +1889,6 @@ public class ScheduleTestController extends PageFlowController
         }
                
         form.setActionElement(ACTION_DEFAULT);  
-        System.out.println("selectSettings last" + form.getCreatorOrgNodeId());
         setFormInfoOnRequest(form);
         return new Forward("selectSettings", form);
     }
@@ -2535,7 +2533,6 @@ public class ScheduleTestController extends PageFlowController
                                                       path = "selectSettings.do"))
     protected Forward goToPrintOptions(ScheduleTestForm form)
     {
-    	System.out.println("goToPrintOptions first" + form.getCreatorOrgNodeId());
     	form.validateValues();
         form.resetStudentSortPage();
         
@@ -2577,7 +2574,6 @@ public class ScheduleTestController extends PageFlowController
 
     private Integer createSaveTest(ScheduleTestForm form) throws CTBBusinessException
     {   
-    	System.out.println("createSaveTest first" + form.getCreatorOrgNodeId());
         String sessionName = form.getTestAdmin().getSessionName().trim();
         if (! WebUtils.validString(sessionName))
         {
@@ -2838,7 +2834,6 @@ public class ScheduleTestController extends PageFlowController
     })
     protected Forward gotoSelectStudentPageflow(ScheduleTestForm form)
     {
-        System.out.println("gotoSelectStudentPageflow" + "in Add Student");
     	this.addedStudentsCount = 0;
         if (this.selectedStudents != null)
             this.addedStudentsCount = this.selectedStudents.size();

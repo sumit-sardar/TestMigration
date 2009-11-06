@@ -399,7 +399,6 @@
         <p>
         <netui:content value="${bundle.web['selecttest.subtestOptions.message2']}"/>
         <br/>  
-        <% out.println("before radion button hasBreak" + pageContext.getAttribute("hasBreak") );%> 
         <netui:radioButtonGroup dataSource="actionForm.hasBreak">
             <netui:radioButtonOption value="false" onClick="submit()"><netui:span value="${bundle.web['selecttest.label.no']}"/></netui:radioButtonOption>
             <c:if test="${!hasBreak}"> 
@@ -410,7 +409,6 @@
             
             <netui:radioButtonOption value="true" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'changeHasBreakToYes', 'subtestDetailsAnchor');"><netui:span value="${bundle.web['selecttest.label.yes']}"/></netui:radioButtonOption>
             <c:if test="${hasBreak}"> 
-            <% out.println("after radion button hasBreak" + pageContext.getAttribute("hasBreak") );%> 
             <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<netui:span value="${bundle.web['selecttest.subtestOptions.message4']}"/>
             <netui:hidden dataSource="actionForm.testAdmin.accessCode"/>   
             </c:if>   
