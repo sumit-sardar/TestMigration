@@ -44,7 +44,7 @@
         <td class="tableFilter" width="200"><netui:textBox tagId="lastName" dataSource="actionForm.studentProfile.lastName" tabindex="4"/></td>
         <td class="tableFilter" width="100" align="right">&nbsp;</td>
         <td class="tableFilter" width="*">
-            <netui:button styleClass="button" value="Search" type="submit" onClick="setElementValue('currentAction', 'applySearch', 'studentProfileResult');" tabindex="8"/>
+            <netui:button styleClass="button" value="Search" type="submit" onClick="setElementValue('currentAction', 'applySearch');" tabindex="8"/>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <netui:button styleClass="button" value="Clear All" type="button" onClick="setElementValueAndSubmit('currentAction', 'clearSearch');" tabindex="9"/>&nbsp;
         </td>
