@@ -18,10 +18,7 @@
         <filter-name>NoCacheFilter</filter-name>
         <url-pattern>/manageStudent/*</url-pattern>
     </filter-mapping>
-    <!--<filter-mapping>
-        <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/previewer/SpeechServlet*</url-pattern>
-    </filter-mapping>-->
+   
     <servlet>
         <description/>
         <servlet-name>action</servlet-name>
@@ -48,7 +45,7 @@
         </init-param>
         <load-on-startup>2</load-on-startup>
     </servlet>
-    <!--<servlet>
+    <servlet>
         <description/>
         <servlet-name>speech</servlet-name>
         <servlet-class>com.ctb.tdc.web.servlet.SpeechServlet</servlet-class>
@@ -56,7 +53,7 @@
     <servlet-mapping>
         <servlet-name>speech</servlet-name>
         <url-pattern>/previewer/SpeechServlet.do</url-pattern>
-    </servlet-mapping>-->
+    </servlet-mapping>
     <session-config>
         <session-timeout>20</session-timeout>
     </session-config>
