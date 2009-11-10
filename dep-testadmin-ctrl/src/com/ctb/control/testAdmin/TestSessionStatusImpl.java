@@ -473,7 +473,12 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
            Integer [] prodId = message.getFrameworkProductForUser(userName);
            //System.out.println("getBroadcastMessages productId" + prodId[0].intValue());
            Integer pageSize = null;
-           String qString = SQLutils.convertArraytoString(prodId);
+           String qString = "''";
+           
+           if (prodId != null && prodId.length > 0 ){
+        	   qString = SQLutils.convertArraytoString(prodId);
+           }
+          
            //System.out.println("qString====>"+qString);
            bmd.setBroadcastMessages(message.getProductSpecificBroadcastMsg(qString), null);
            return bmd;
@@ -707,7 +712,7 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
      */
     public RosterElementData getRosterForTestSession(String userName, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
     {
-     //   validator.validateAdmin(userName, testAdminId, "testAdmin.getRosterElementsForTestSession");
+        validator.validateAdmin(userName, testAdminId, "testAdmin.getRosterElementsForTestSession");
         try {
             RosterElementData red = new RosterElementData();
             Integer pageSize = null;
