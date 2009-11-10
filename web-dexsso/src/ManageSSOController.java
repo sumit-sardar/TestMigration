@@ -37,7 +37,7 @@ public class ManageSSOController extends PageFlowController
         	this.getResponse().addCookie(cookie);
         	this.getResponse().setHeader("Set-Cookie", "TAS_SESSIONID=00000000000000000000;path=" + this.getRequest().getContextPath() + "lm_defect" );
      		
-        	String tokenValue = this.getRequest().getParameter("token");
+     /*   	String tokenValue = this.getRequest().getParameter("token");
         	tokenValue = URLDecoder.decode(tokenValue,"UTF-8");
             //Base 64
         	BASE64Encoder base64 =  new BASE64Encoder();
@@ -45,7 +45,7 @@ public class ManageSSOController extends PageFlowController
             Cookie encodeCookie = new Cookie( "DExPerimeterAtnToken", tokenValue);
         	cookie.setMaxAge( -42000 );
         	this.getResponse().addCookie(encodeCookie);
-           
+      */     
     	} catch (Exception e) {
     		
     		e.printStackTrace();
