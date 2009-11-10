@@ -245,7 +245,7 @@ public class ManageUserController extends PageFlowController
         form.setSelectedUserName(null);
         form.setSelectedTab(MODULE_USER_PROFILE);        
         clearMessage(form);
-            
+        
         this.searchApplied = false;
             
         initRoleOptions(ACTION_FIND_USER);
@@ -1865,7 +1865,8 @@ public class ManageUserController extends PageFlowController
         {                            
             return new Forward(action);
         }
-        
+        // in previous action the value will be set in form
+        setFormInfoOnRequest(this.savedForm);
         return new Forward(action, this.savedForm);
     }
 
