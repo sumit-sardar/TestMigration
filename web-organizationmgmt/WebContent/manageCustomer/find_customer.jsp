@@ -61,7 +61,7 @@
         <td class="tableFilter" width="200"><netui:textBox tagId="code" dataSource="actionForm.customerProfile.code" style="width:180px" tabindex="2" maxlength="32"/></td>
         <td class="tableFilter" width="100" align="right">&nbsp;</td>
         <td class="tableFilter" width="*">
-            <netui:button styleClass="button" value="Search" type="button" onClick="setElementValueAndSubmitWithAnchor('currentAction', 'applySearch', 'customerProfileResult');" tabindex="4"/>
+            <netui:button styleClass="button" value="Search" type="submit" onClick="setElementValue('currentAction', 'applySearch');" tabindex="4"/>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <netui:button styleClass="button" value="Clear All" type="button" onClick="setElementValueAndSubmit('currentAction', 'clearSearch');" tabindex="5"/>&nbsp;
         </td>
