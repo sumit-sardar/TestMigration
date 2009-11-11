@@ -45,7 +45,6 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
  */
 
 
-
 @ControlImplementation()
 public class CustomerManagementImpl implements CustomerManagement, Serializable
 { 
