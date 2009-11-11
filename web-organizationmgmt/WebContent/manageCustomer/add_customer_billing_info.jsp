@@ -5,7 +5,6 @@
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-
 <table class="simple">
     <tr class="transparent">
         <td valign="top">
