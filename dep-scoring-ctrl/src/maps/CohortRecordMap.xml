@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="StsCohortDimRecord">
+    <select id="findStsCohortDimByCustomerAndNameAndCreatedBy" parameterClass="com.ctb.lexington.db.data.CohortData" resultClass="com.ctb.lexington.db.data.CohortData">
+        SELECT
+            COHORT_DIM_ID as cohortDimId,
+            CUSTOMER as customer,
+            COHORT_NAME as cohortName,
+            COHORT_DESCRIPTION as cohortDesc,
+            COHORT_EXPECTED_GRAD_YEAR as cohortExpectedGradYear,
+            CREATED_BY as createdBy,
+            CREATED_DATE as createdDate
+        FROM
+            STS_COHORT_DIM
+        WHERE
+                CUSTOMER = #customer:VARCHAR#
+            AND COHORT_NAME = #cohortName:VARCHAR#
+            AND CREATED_BY = #createdBy:VARCHAR#
+    </select>
+
+    <insert id="insertStsCohortDim" parameterClass="com.ctb.lexington.db.data.CohortData">
+        INSERT INTO
+            STS_COHORT_DIM
+            (
+            CUSTOMER,
+            COHORT_NAME,
+            COHORT_DESCRIPTION,
+            COHORT_EXPECTED_GRAD_YEAR,
+            CREATED_BY,
+            CREATED_DATE
+            )
+        VALUES
+            (
+            #customer:VARCHAR#,
+            #cohortName:VARCHAR#,
+            #cohortDesc:VARCHAR#,
+            #cohortExpectedGradYear:VARCHAR#,
+            #createdBy:VARCHAR#,
+            #createdDate:TIMESTAMP#
+            )
+    </insert>
+
+    <update id="updateStsCohortDim" parameterClass="com.ctb.lexington.db.data.CohortData">
+        UPDATE
+            STS_COHORT_DIM
+        SET
+            COHORT_DIM_ID = #cohortDimId:NUMERIC#,
+            CUSTOMER = #customer:VARCHAR#,
+            COHORT_NAME = #cohortName:VARCHAR#,
+            COHORT_DESCRIPTION = #cohortDesc:VARCHAR#,
+            COHORT_EXPECTED_GRAD_YEAR = #cohortExpectedGradYear:VARCHAR#,
+            CREATED_BY = #createdBy:VARCHAR#,
+            CREATED_DATE = #createdDate:TIMESTAMP#
+        WHERE
+            COHORT_DIM_ID = #cohortDimId:NUMERIC#
+    </update>
+
+    <delete id="deleteStsCohortDim" parameterClass="com.ctb.lexington.db.data.CohortData">
+        DELETE FROM
+            STS_COHORT_DIM
+        WHERE
+            COHORT_DIM_ID = #cohortDimId:NUMERIC#
+    </delete>
+</sqlMap>

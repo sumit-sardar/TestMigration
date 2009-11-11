@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="StudentItemScoreDetails">
+    <select id="findStudentItemScore" parameterClass="com.ctb.lexington.db.data.StudentItemScoreDetails" resultClass="com.ctb.lexington.db.data.StudentItemScoreDetails">
+        SELECT
+            STUDENT_TEST_HISTORY_ID as studentTestHistoryId,
+            ITEM_ID as itemId,
+            ITEM_RESPONSE_ID as itemResponseId,
+            TEST_ITEM_SET_ID as testItemSetId,
+            TEST_ITEM_SET_NAME as testItemSetName,
+            TEST_ITEM_NUM as testItemNum,
+            REPORT_ITEM_SET_ID as reportItemSetId,
+            REPORT_ITEM_SET_NAME as reportItemSetName,
+            RESPONSE as response,
+            ITEM_ELAPSED_TIME as itemElapsedTime,
+            CREATED_DATE_TIME as createdDateTime,
+            CORRECT_ANSWER as correctAnswer,
+            CORRECT_ANSWER_ID as correctAnswerId,
+            DETAIL_REPORT_ITEM_SET_ID as detailReportItemSetId,
+            DETAIL_REPORT_ITEM_SET_NAME as detailReportItemSetName,
+            POINTS as points,
+            ITEM_TYPE as itemType,
+            MIN_POINTS as minPoints,
+            MAX_POINTS as maxPoints,
+            CONDITION_CODE_ID as conditionCodeId,
+            COMMENTS as comments
+        FROM
+            STUDENT_ITEM_SCORE
+        WHERE
+                STUDENT_TEST_HISTORY_ID = #studentTestHistoryId:NUMERIC#
+            AND ITEM_ID = #itemId:VARCHAR#
+    </select>
+
+    <select id="findStudentItemScoreByStudentTestHistoryId" parameterClass="com.ctb.lexington.db.data.StudentItemScoreDetails" resultClass="com.ctb.lexington.db.data.StudentItemScoreDetails">
+        SELECT
+            STUDENT_TEST_HISTORY_ID as studentTestHistoryId,
+            ITEM_ID as itemId,
+            ITEM_RESPONSE_ID as itemResponseId,
+            TEST_ITEM_SET_ID as testItemSetId,
+            TEST_ITEM_SET_NAME as testItemSetName,
+            TEST_ITEM_NUM as testItemNum,
+            REPORT_ITEM_SET_ID as reportItemSetId,
+            REPORT_ITEM_SET_NAME as reportItemSetName,
+            RESPONSE as response,
+            ITEM_ELAPSED_TIME as itemElapsedTime,
+            CREATED_DATE_TIME as createdDateTime,
+            CORRECT_ANSWER as correctAnswer,
+            CORRECT_ANSWER_ID as correctAnswerId,
+            DETAIL_REPORT_ITEM_SET_ID as detailReportItemSetId,
+            DETAIL_REPORT_ITEM_SET_NAME as detailReportItemSetName,
+            POINTS as points,
+            ITEM_TYPE as itemType,
+            MIN_POINTS as minPoints,
+            MAX_POINTS as maxPoints,
+            CONDITION_CODE_ID as conditionCodeId,
+            COMMENTS as comments
+        FROM
+            STUDENT_ITEM_SCORE
+        WHERE
+            STUDENT_TEST_HISTORY_ID = #studentTestHistoryId:NUMERIC#
+    </select>
+
+    <insert id="insertStudentItemScore" parameterClass="com.ctb.lexington.db.data.StudentItemScoreDetails">
+        INSERT INTO
+            STUDENT_ITEM_SCORE
+            (
+            STUDENT_TEST_HISTORY_ID,
+            ITEM_ID,
+            ITEM_RESPONSE_ID,
+            TEST_ITEM_SET_ID,
+            TEST_ITEM_SET_NAME,
+            TEST_ITEM_NUM,
+            REPORT_ITEM_SET_ID,
+            REPORT_ITEM_SET_NAME,
+            RESPONSE,
+            ITEM_ELAPSED_TIME,
+            CREATED_DATE_TIME,
+            CORRECT_ANSWER,
+            CORRECT_ANSWER_ID,
+            DETAIL_REPORT_ITEM_SET_ID,
+            DETAIL_REPORT_ITEM_SET_NAME,
+            POINTS,
+            ITEM_TYPE,
+            MIN_POINTS,
+            MAX_POINTS,
+            CONDITION_CODE_ID,
+            COMMENTS
+            )
+        VALUES
+            (
+            #studentTestHistoryId:NUMERIC#,
+            #itemId:VARCHAR#,
+            #itemResponseId:NUMERIC#,
+            #testItemSetId:NUMERIC#,
+            #testItemSetName:VARCHAR#,
+            #testItemNum:NUMERIC#,
+            #reportItemSetId:NUMERIC#,
+            #reportItemSetName:VARCHAR#,
+            #response:VARCHAR#,
+            #itemElapsedTime:NUMERIC#,
+            #createdDateTime:TIMESTAMP#,
+            #correctAnswer:VARCHAR#,
+            #correctAnswerId:VARCHAR#,
+            #detailReportItemSetId:NUMERIC#,
+            #detailReportItemSetName:VARCHAR#,
+            #points:NUMERIC#,
+            #itemType:VARCHAR#,
+            #minPoints:NUMERIC#,
+            #maxPoints:NUMERIC#,
+            #conditionCodeId:NUMERIC#,
+            #comments:VARCHAR#
+            )
+    </insert>
+
+    <update id="updateStudentItemScore" parameterClass="com.ctb.lexington.db.data.StudentItemScoreDetails">
+        UPDATE
+            STUDENT_ITEM_SCORE
+        SET
+            ITEM_RESPONSE_ID = #itemResponseId:NUMERIC#,
+            TEST_ITEM_SET_ID = #testItemSetId:NUMERIC#,
+            TEST_ITEM_SET_NAME = #testItemSetName:VARCHAR#,
+            TEST_ITEM_NUM = #testItemNum:NUMERIC#,
+            REPORT_ITEM_SET_ID = #reportItemSetId:NUMERIC#,
+            REPORT_ITEM_SET_NAME = #reportItemSetName:VARCHAR#,
+            RESPONSE = #response:VARCHAR#,
+            ITEM_ELAPSED_TIME = #itemElapsedTime:NUMERIC#,
+            CREATED_DATE_TIME = #createdDateTime:TIMESTAMP#,
+            CORRECT_ANSWER = #correctAnswer:VARCHAR#,
+            CORRECT_ANSWER_ID = #correctAnswerId:VARCHAR#,
+            DETAIL_REPORT_ITEM_SET_ID = #detailReportItemSetId:NUMERIC#,
+            DETAIL_REPORT_ITEM_SET_NAME = #detailReportItemSetName:VARCHAR#,
+            POINTS = #points:NUMERIC#,
+            ITEM_TYPE = #itemType:VARCHAR#,
+            MIN_POINTS = #minPoints:NUMERIC#,
+            MAX_POINTS = #maxPoints:NUMERIC#,
+            CONDITION_CODE_ID = #conditionCodeId:NUMERIC#,
+            COMMENTS = #comments:VARCHAR#
+        WHERE
+                STUDENT_TEST_HISTORY_ID = #studentTestHistoryId:NUMERIC#
+            AND ITEM_ID = #itemId:VARCHAR#
+    </update>
+
+    <delete id="deleteStudentItemScore" parameterClass="java.lang.Long">
+        DELETE FROM
+            STUDENT_ITEM_SCORE
+        WHERE
+                STUDENT_TEST_HISTORY_ID = #studentTestHistoryId:NUMERIC#
+    </delete>
+</sqlMap>

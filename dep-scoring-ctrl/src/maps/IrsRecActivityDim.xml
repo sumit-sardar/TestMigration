@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="IrsRecActivityDim">
+
+<select id="findByRecActivityId" parameterClass="com.ctb.lexington.db.irsdata.IrsRecActivityDimData" resultClass="com.ctb.lexington.db.irsdata.IrsRecActivityDimData">
+SELECT 
+        REC_ACTIVITYID as recActivityid,
+        NAME as name        
+FROM
+        REC_ACTIVITY_DIM  
+WHERE 
+        REC_ACTIVITYID = #recActivityid:NUMERIC#
+</select> 
+
+<insert id="insertRecActivityDim" parameterClass="com.ctb.lexington.db.irsdata.IrsRecActivityDimData">
+
+        INSERT INTO
+            REC_ACTIVITY_DIM
+                (
+                REC_ACTIVITYID,
+                NAME
+                )
+        VALUES
+                (
+                #recActivityid:NUMERIC#,
+                #name:VARCHAR#
+                )        
+</insert>
+<update id="updateRecActivityDim" parameterClass="com.ctb.lexington.db.irsdata.IrsRecActivityDimData">
+       
+        UPDATE
+                REC_ACTIVITY_DIM
+        SET
+            NAME = #name:VARCHAR#
+            
+        WHERE
+            REC_ACTIVITYID = #recActivityid:NUMERIC#
+</update>
+<delete id="deleteRecActivityDim" parameterClass="java.lang.Long">
+
+	DELETE FROM
+			REC_ACTIVITY_DIM
+	WHERE	
+			REC_ACTIVITYID = #recActivityid:NUMERIC#
+</delete>
+</sqlMap>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="IrsSecObjDim">
+
+<select id="findBySecObjID" parameterClass="com.ctb.lexington.db.irsdata.IrsSecObjDimData" resultClass="com.ctb.lexington.db.irsdata.IrsSecObjDimData">
+SELECT 
+        SEC_OBJID as secObjid,
+        NAME as name,        
+        SEC_OBJ_INDEX as secObjIndex,
+        SEC_OBJ_TYPE as secObjType,
+        NUM_ITEMS as numItems,
+        POINTS_POSSIBLE as pointsPossible,
+        NATIONAL_AVERAGE as nationalAverage,
+        PRIM_OBJID as primObjid,
+        assessmentid as assessmentid
+FROM
+        SEC_OBJ_DIM
+  
+WHERE 
+        SEC_OBJID = #secObjid:NUMERIC#
+</select>
+ 
+ <insert id="insertSecObjDim" parameterClass="com.ctb.lexington.db.irsdata.IrsSecObjDimData">
+
+    INSERT INTO
+        SEC_OBJ_DIM
+                (
+                SEC_OBJID,
+                NAME,
+                SEC_OBJ_INDEX,
+                SEC_OBJ_TYPE,
+                NUM_ITEMS,
+                POINTS_POSSIBLE,
+                NATIONAL_AVERAGE,
+                PRIM_OBJID,
+                assessmentid
+                )
+        VALUES
+                (
+                #secObjid:NUMERIC#,
+                #name:VARCHAR#,
+                #secObjIndex:NUMERIC#,
+                #secObjType:VARCHAR#,
+                #numItems:NUMERIC#,
+                #pointsPossible:NUMERIC#,
+                #nationalAverage:NUMERIC#,
+                #primObjid:NUMERIC#,
+                #assessmentid:NUMERIC#
+                )        
+</insert>
+<update id="updateSecObjDim" parameterClass="com.ctb.lexington.db.irsdata.IrsSecObjDimData">
+       
+        UPDATE
+                SEC_OBJ_DIM
+        SET
+            NAME = #name:VARCHAR#,
+            SEC_OBJ_INDEX = #secObjIndex:NUMERIC#,
+            SEC_OBJ_TYPE = #secObjType:VARCHAR#,
+            NUM_ITEMS = #numItems:NUMERIC#,
+            POINTS_POSSIBLE = #pointsPossible:NUMERIC#,
+            NATIONAL_AVERAGE =  #nationalAverage:NUMERIC#,
+            PRIM_OBJID =   #primObjid:NUMERIC#,
+            assessmentid = #assessmentid:NUMERIC#
+        WHERE
+            SEC_OBJID = #secObjid:NUMERIC#
+</update>
+<delete id="deleteSecObjDim" parameterClass="java.lang.Long">
+
+	DELETE FROM
+			SEC_OBJ_DIM
+	WHERE	
+			 SEC_OBJID = #secObjid:NUMERIC#
+</delete>
+</sqlMap>

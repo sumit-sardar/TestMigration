@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="StudentSubtestScoresDetails">
+    <select id="findStudentSubtestScores" parameterClass="com.ctb.lexington.db.data.StudentSubtestScoresDetails" resultClass="com.ctb.lexington.db.data.StudentSubtestScoresDetails">
+        SELECT
+            ITEM_SET_ID as itemSetId,
+            STUDENT_TEST_HISTORY_ID as studentTestHistoryId,
+            ITEM_SET_NAME as itemSetName,
+            SCORE_TYPE_CODE as scoreTypeCode,
+            SCORE_VALUE as scoreValue
+        FROM
+            STUDENT_SUBTEST_SCORES
+        WHERE
+            STUDENT_TEST_HISTORY_ID = #studentTestHistoryId:NUMERIC#
+        AND ITEM_SET_ID = #itemSetId:NUMERIC#
+    </select>
+
+    <select id="findStudentSubtestScoresByStudentTestHistoryId" parameterClass="com.ctb.lexington.db.data.StudentSubtestScoresDetails" resultClass="com.ctb.lexington.db.data.StudentSubtestScoresDetails">
+        SELECT
+            ITEM_SET_ID as itemSetId,
+            STUDENT_TEST_HISTORY_ID as studentTestHistoryId,
+            ITEM_SET_NAME as itemSetName,
+            SCORE_TYPE_CODE as scoreTypeCode,
+            SCORE_VALUE as scoreValue
+        FROM
+            STUDENT_SUBTEST_SCORES
+        WHERE
+            STUDENT_TEST_HISTORY_ID = #studentTestHistoryId:NUMERIC#
+    </select>
+
+    <insert id="insertStudentSubtestScores" parameterClass="com.ctb.lexington.db.data.StudentSubtestScoresDetails">
+        INSERT INTO
+            STUDENT_SUBTEST_SCORES
+            (
+            ITEM_SET_ID,
+            STUDENT_TEST_HISTORY_ID,
+            ITEM_SET_NAME,
+            SCORE_TYPE_CODE,
+            SCORE_VALUE
+            )
+        VALUES
+            (
+            #itemSetId:NUMERIC#,
+            #studentTestHistoryId:NUMERIC#,
+            #itemSetName:VARCHAR#,
+            #scoreTypeCode:VARCHAR#,
+            #scoreValue:NUMERIC#
+            )
+    </insert>
+
+    <update id="updateStudentSubtestScores" parameterClass="com.ctb.lexington.db.data.StudentSubtestScoresDetails">
+        UPDATE
+            STUDENT_SUBTEST_SCORES
+        SET
+            ITEM_SET_NAME = #itemSetName:VARCHAR#,
+            SCORE_TYPE_CODE = #scoreTypeCode:VARCHAR#,
+            SCORE_VALUE = #scoreValue:NUMERIC#
+        WHERE
+                STUDENT_TEST_HISTORY_ID = #studentTestHistoryId:NUMERIC#
+            AND ITEM_SET_ID = #itemSetId:NUMERIC#
+    </update>
+
+    <delete id="deleteStudentSubtestScores" parameterClass="com.ctb.lexington.db.data.StudentSubtestScoresDetails">
+        DELETE FROM
+            STUDENT_SUBTEST_SCORES
+        WHERE
+                STUDENT_TEST_HISTORY_ID = #studentTestHistoryId:NUMERIC#
+            AND ITEM_SET_ID = #itemSetId:NUMERIC#
+    </delete>
+</sqlMap>

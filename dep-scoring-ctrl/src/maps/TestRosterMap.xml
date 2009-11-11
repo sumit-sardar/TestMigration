@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="TestRosterRecord">
+
+    <select id="findTestRoster" parameterClass="java.lang.Long" resultClass="com.ctb.lexington.db.data.TestRosterRecord">
+        SELECT
+            TEST_ROSTER.TEST_ROSTER_ID as testRosterId,
+            TEST_ROSTER.CAPTURE_METHOD as captureMethod,
+            TEST_ROSTER.TEST_COMPLETION_STATUS as testCompletionStatus,
+            TEST_ROSTER.SCORING_STATUS as scoringStatus,
+            TEST_ROSTER.COMPLETION_DATE_TIME as completionTime,
+            PROGRAM.NORMS_GROUP as normGroup,
+            TEST_ADMIN.AGE_CATEGORY as ageCategory,
+            TEST_ROSTER.VALIDATION_STATUS as validationStatus
+        FROM
+            TEST_ROSTER,
+            TEST_ADMIN,
+            PROGRAM
+        WHERE
+        	TEST_ADMIN.TEST_ADMIN_ID = TEST_ROSTER.TEST_ADMIN_ID
+            AND TEST_ADMIN.PROGRAM_ID = PROGRAM.PROGRAM_ID
+            AND TEST_ROSTER.TEST_ROSTER_ID = #value:NUMERIC#
+    </select>
+
+    <update id="updateRosterScoringStatus" parameterClass="com.ctb.lexington.db.data.TestRosterRecord">
+        UPDATE
+            TEST_ROSTER
+        SET
+            SCORING_STATUS = #scoringStatus:VARCHAR#
+        WHERE
+             TEST_ROSTER_ID = #testRosterId:NUMERIC#
+    </update>
+    
+    <update id="updateRosterTestCompletionStatus" parameterClass="com.ctb.lexington.db.data.TestRosterRecord">
+        UPDATE
+            TEST_ROSTER
+        SET
+            TEST_COMPLETION_STATUS = #testCompletionStatus:VARCHAR#,
+            COMPLETION_DATE_TIME = #completionTime:TIMESTAMP#
+        WHERE
+             TEST_ROSTER_ID = #testRosterId:NUMERIC#
+    </update>
+
+</sqlMap>

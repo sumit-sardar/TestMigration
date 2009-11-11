@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="ConditionCodeRecord">
+    <select id="findConditionCode" parameterClass="com.ctb.lexington.data.ConditionCodeVO" resultClass="com.ctb.lexington.data.ConditionCodeVO">
+        SELECT
+            CONDITION_CODE_ID as conditionCodeId,
+            CONDITION_CODE as conditionCode,
+            CONDITION_CODE_LABEL as conditionCodeLabel,
+            CONDITION_CODE_DESC as conditionCodeDesc,
+            ATTEMPTED as attempted
+        FROM
+            CONDITION_CODE
+        WHERE
+            CONDITION_CODE_ID = #conditionCodeId:NUMERIC#
+    </select>
+
+    <select id="findAll" resultClass="com.ctb.lexington.data.ConditionCodeVO">
+        SELECT
+            CONDITION_CODE_ID as conditionCodeId,
+            CONDITION_CODE as conditionCode,
+            CONDITION_CODE_LABEL as conditionCodeLabel,
+            CONDITION_CODE_DESC as conditionCodeDesc,
+            ATTEMPTED as attempted
+        FROM
+            CONDITION_CODE
+    </select>
+</sqlMap>

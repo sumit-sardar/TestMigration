@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="IrsPrimObjDim">
+
+<select id="findByPrimObjID" parameterClass="com.ctb.lexington.db.irsdata.IrsPrimObjDimData" resultClass="com.ctb.lexington.db.irsdata.IrsPrimObjDimData">
+SELECT 
+        PRIM_OBJID as primObjid,
+        NAME as name,        
+        PRIM_OBJ_INDEX as primObjIndex,
+        PRIM_OBJ_TYPE as primObjType,
+        NUM_ITEMS as numItems,
+        POINTS_POSSIBLE as pointsPossible,
+        CONTENT_AREAID as contentAreaid,
+        assessmentid as assessmentid
+FROM
+        PRIM_OBJ_DIM  
+WHERE 
+        PRIM_OBJID = #primObjid:NUMERIC#
+</select>
+ 
+ <insert id="insertPrimObjDim" parameterClass="com.ctb.lexington.db.irsdata.IrsPrimObjDimData">
+
+    INSERT INTO
+        PRIM_OBJ_DIM
+                (
+                PRIM_OBJID,
+                NAME,
+                PRIM_OBJ_INDEX,
+                PRIM_OBJ_TYPE,
+                NUM_ITEMS,
+                POINTS_POSSIBLE,
+                CONTENT_AREAID,
+                assessmentid
+                )
+        VALUES
+                (
+                #primObjid:NUMERIC#,
+                #name:VARCHAR#,
+                #primObjIndex:NUMERIC#,
+                #primObjType:VARCHAR#,
+                #numItems:NUMERIC#,
+                #pointsPossible:NUMERIC#,
+                #contentAreaid:NUMERIC#,
+                #assessmentid:NUMERIC#
+                )        
+</insert>
+<update id="updatePrimObjDim" parameterClass="com.ctb.lexington.db.irsdata.IrsPrimObjDimData">
+       
+        UPDATE
+                PRIM_OBJ_DIM
+        SET
+            NAME = #name:VARCHAR#,
+            PRIM_OBJ_INDEX = #primObjIndex:NUMERIC#,
+            PRIM_OBJ_TYPE = #primObjType:VARCHAR#,
+            NUM_ITEMS = #numItems:NUMERIC#,
+            POINTS_POSSIBLE = #pointsPossible:NUMERIC#,
+            CONTENT_AREAID =   #contentAreaid:NUMERIC#,
+            assessmentid = #assessmentid:NUMERIC#
+        WHERE
+            PRIM_OBJID = #primObjid:NUMERIC#
+</update>
+<delete id="deletePrimObjDim" parameterClass="java.lang.Long">
+
+	DELETE FROM
+			PRIM_OBJ_DIM
+	WHERE	
+			 PRIM_OBJID = #primObjid:NUMERIC#
+</delete>
+</sqlMap>

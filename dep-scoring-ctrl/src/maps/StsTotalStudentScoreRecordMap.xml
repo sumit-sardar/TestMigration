@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="StsTotalStudentScoreRecord">
+    <select id="findStsTotalStudentScoreByUniqueKey" parameterClass="com.ctb.lexington.db.data.StsTotalStudentScoreDetail" resultClass="com.ctb.lexington.db.data.StsTotalStudentScoreDetail">
+        SELECT
+            ADMIN_DIM_ID as adminDimId,
+            STUDENT_DIM_ID as studentDimId,
+            STUDENT_DIM_VERSION_ID as studentDimVersionId,
+            SCALE_SCORE as scaleScore,
+            GRADE_EQUIVALENT as gradeEquivalent,
+            NATIONAL_STANINE as nationalStanine,
+            NATIONAL_PERCENTILE as nationalPercentile,
+            ORG_NODE_DIM_ID as orgNodeDimId,
+            ORG_NODE_DIM_VERSION_ID as orgNodeDimVersionId,
+            TEST_DIM_ID as testDimId,
+            NUMBER_ATTEMPTED as numberAttempted,
+            NORMAL_CURVE_EQUIVALENT as normalCurveEquivalent,
+            PERCENT_OBJECTIVE_MASTERY as percentObjectiveMastery,
+            TEACHER_NAME as teacherName,
+            STUDENT_GRADE_LEVEL as studentGradeLevel,
+            NORM_GROUP as normGroup,
+            NORM_YEAR as normYear,
+            TYPE as type,
+            PREDICTED_GED as averageGedPredictedScore,
+            RECOMMENDED_ACTIVITY as recommendedActivity,
+            LITERACY_LEVEL_VALUE as literacyLevelValue,
+            LITERACY_LEVEL_DESCRIPTION as literacyLevelDescription,
+            POINTS_OBTAINED as pointsObtained,
+            POINTS_ATTEMPTED as pointsAttempted,
+            POINTS_POSSIBLE as pointsPossible,
+            VALID_SCORE as validScore
+        FROM
+            STS_TOTAL_STUDENT_SCORE
+        WHERE
+            TYPE = #type#
+        AND STUDENT_DIM_ID = #studentDimId#
+        AND ADMIN_DIM_ID = #adminDimId#
+    </select>
+
+    <insert id="insertStsTotalStudentScore" parameterClass="com.ctb.lexington.db.data.StsTotalStudentScoreDetail">
+        INSERT INTO
+            STS_TOTAL_STUDENT_SCORE
+            (
+            ADMIN_DIM_ID,
+            STUDENT_DIM_ID,
+            STUDENT_DIM_VERSION_ID,
+            SCALE_SCORE,
+            GRADE_EQUIVALENT,
+            NATIONAL_STANINE,
+            NATIONAL_PERCENTILE,
+            ORG_NODE_DIM_ID,
+            ORG_NODE_DIM_VERSION_ID,
+            TEST_DIM_ID,
+            NUMBER_ATTEMPTED,
+            NORMAL_CURVE_EQUIVALENT,
+            PERCENT_OBJECTIVE_MASTERY,
+            TEACHER_NAME,
+            STUDENT_GRADE_LEVEL,
+            NORM_GROUP,
+            NORM_YEAR,
+            TYPE,
+            PREDICTED_GED,
+            RECOMMENDED_ACTIVITY,
+            LITERACY_LEVEL_VALUE,
+            LITERACY_LEVEL_DESCRIPTION,
+            POINTS_OBTAINED,
+            POINTS_ATTEMPTED,
+            POINTS_POSSIBLE,
+            VALID_SCORE
+            )
+        VALUES
+            (
+            #adminDimId:NUMERIC#,
+            #studentDimId:NUMERIC#,
+            #studentDimVersionId:NUMERIC#,
+            #scaleScore:NUMERIC#,
+            #gradeEquivalent:VARCHAR#,
+            #nationalStanine:NUMERIC#,
+            #nationalPercentile:NUMERIC#,
+            #orgNodeDimId:NUMERIC#,
+            #orgNodeDimVersionId:NUMERIC#,
+            #testDimId:NUMERIC#,
+            #numberAttempted:NUMERIC#,
+            #normalCurveEquivalent:NUMERIC#,
+            #percentObjectiveMastery:NUMERIC#,
+            #teacherName:VARCHAR#,
+            #studentGradeLevel:VARCHAR#,
+            #normGroup:VARCHAR#,
+            #normYear:VARCHAR#,
+            #type:VARCHAR#,
+            #averageGedPredictedScore:NUMERIC#,
+            #recommendedActivity:VARCHAR#,
+            #literacyLevelValue:NUMERIC#,
+            #literacyLevelDescription:VARCHAR#,
+            #pointsObtained:NUMERIC#,
+            #pointsAttempted:NUMERIC#,
+            #pointsPossible:NUMERIC#,
+            #validScore:VARCHAR#
+            )
+    </insert>
+
+    <update id="updateStsTotalStudentScore" parameterClass="com.ctb.lexington.db.data.StsTotalStudentScoreDetail">
+        UPDATE
+            STS_TOTAL_STUDENT_SCORE
+        SET
+            SCALE_SCORE = #scaleScore:NUMERIC#,
+            GRADE_EQUIVALENT = #gradeEquivalent:VARCHAR#,
+            NATIONAL_STANINE = #nationalStanine:NUMERIC#,
+            NATIONAL_PERCENTILE = #nationalPercentile:NUMERIC#,
+            STUDENT_DIM_VERSION_ID = #studentDimVersionId:NUMERIC#,
+            ORG_NODE_DIM_ID = #orgNodeDimId:NUMERIC#,
+            ORG_NODE_DIM_VERSION_ID = #orgNodeDimVersionId:NUMERIC#,
+            TEST_DIM_ID = #testDimId:NUMERIC#,
+            NUMBER_ATTEMPTED = #numberAttempted:NUMERIC#,
+            NORMAL_CURVE_EQUIVALENT = #normalCurveEquivalent:NUMERIC#,
+            PERCENT_OBJECTIVE_MASTERY = #percentObjectiveMastery:NUMERIC#,
+            TEACHER_NAME = #teacherName:VARCHAR#,
+            STUDENT_GRADE_LEVEL = #studentGradeLevel:VARCHAR#,
+            NORM_GROUP = #normGroup:VARCHAR#,
+            NORM_YEAR = #normYear:VARCHAR#,
+            PREDICTED_GED = #averageGedPredictedScore:NUMERIC#,
+            RECOMMENDED_ACTIVITY = #recommendedActivity:VARCHAR#,
+            LITERACY_LEVEL_VALUE = #literacyLevelValue:NUMERIC#,
+            LITERACY_LEVEL_DESCRIPTION = #literacyLevelDescription:VARCHAR#,
+            POINTS_OBTAINED = #pointsObtained:NUMERIC#,
+            POINTS_ATTEMPTED = #pointsAttempted:NUMERIC#,
+            POINTS_POSSIBLE = #pointsPossible:NUMERIC#,
+            VALID_SCORE = #validScore:VARCHAR#
+        WHERE
+            TYPE = #type#
+        AND STUDENT_DIM_ID = #studentDimId#
+        AND ADMIN_DIM_ID = #adminDimId#
+    </update>
+</sqlMap>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+    <sqlMap resource="maps/ConditionCodeRecordMap.xml" />
+    <sqlMap resource="maps/DatapointRecordMap.xml" />
+    <sqlMap resource="maps/ItemRecordMap.xml" />
+    <sqlMap resource="maps/ItemResponseVOMap.xml" />
+    <sqlMap resource="maps/ItemSetRecordMap.xml" />
+    <sqlMap resource="maps/ObjectiveRecordMap.xml" />
+    <sqlMap resource="maps/ScorableItemRecordMap.xml" />
+    <sqlMap resource="maps/ScoreLookupRecordMap.xml" />
+    <sqlMap resource="maps/StsTestRecordMap.xml" />
+    <sqlMap resource="maps/StsTestResultFactRecordMap.xml" />
+    <sqlMap resource="maps/StsTotalStudentScoreRecordMap.xml" />
+    <sqlMap resource="maps/StudentDataMap.xml" />
+    <sqlMap resource="maps/StudentItemScoreRecordMap.xml" />
+    <sqlMap resource="maps/StudentPredictedScoresRecordMap.xml"/>
+    <sqlMap resource="maps/StudentItemSetStatusRecordMap.xml"/>
+    <sqlMap resource="maps/StudentResearchDataRecordMap.xml" />
+    <sqlMap resource="maps/StudentScoreSummaryRecordMap.xml" />
+    <sqlMap resource="maps/StudentSubtestScoresRecordMap.xml" />
+    <sqlMap resource="maps/StudentTestHistoryRecordMap.xml" />
+    <sqlMap resource="maps/TestRosterMap.xml" />
+    <sqlMap resource="maps/StudentItemResponseRecordMap.xml" />
+    <sqlMap resource="maps/IrsAssessmentDimMap.xml"/>   
+    <sqlMap resource="maps/IrsProductDim.xml"/>
+    <sqlMap resource="maps/IrsLevelDim.xml"/>
+    <sqlMap resource="maps/IrsSubjectDim.xml"/>
+    <sqlMap resource="maps/IrsStudentDim.xml"/>    
+    <sqlMap resource="maps/IrsATTR1DIM.xml"/>          
+    <sqlMap resource="maps/IrsATTR2DIM.xml"/>
+    <sqlMap resource="maps/IrsATTR3DIM.xml"/>
+    <sqlMap resource="maps/IrsATTR4DIM.xml"/>
+    <sqlMap resource="maps/IrsATTR5DIM.xml"/>
+    <sqlMap resource="maps/IrsATTR6DIM.xml"/>
+    <sqlMap resource="maps/IrsATTR7DIM.xml"/>
+    <sqlMap resource="maps/IrsATTR8DIM.xml"/>
+    <sqlMap resource="maps/IrsATTR9DIM.xml"/>
+    <sqlMap resource="maps/IrsATTR10DIM.xml"/>
+    <sqlMap resource="maps/IrsOrgNodeDim.xml"/>
+    <sqlMap resource="maps/IrsContentAreaDim.xml"/>
+    <sqlMap resource="maps/IrsGradeDim.xml"/>
+    <sqlMap resource="maps/IrsFormDim.xml"/>
+    <sqlMap resource="maps/IrsCompositeDim.xml"/>
+    <sqlMap resource="maps/IrsCurrentResultDim.xml"/>
+    <sqlMap resource="maps/IrsRecLevelDim.xml"/>
+    <sqlMap resource="maps/IrsSchedulerDim.xml"/>
+    <sqlMap resource="maps/IrsProgramDim.xml"/>
+    <sqlMap resource="maps/IrsResponseDim.xml"/>
+    <sqlMap resource="maps/IrsPrimObjDim.xml"/> 
+    <sqlMap resource="maps/IrsSecObjDim.xml"/>
+    <sqlMap resource="maps/IrsItemDim.xml"/>
+    <sqlMap resource="maps/IrsNRSLevelDim.xml"/>
+    <sqlMap resource="maps/IrsRecActivityDim.xml"/> 
+    <sqlMap resource="maps/IrsScoreTypeDim.xml"/> 
+    <sqlMap resource="maps/IrsSessionDim.xml"/>
+    <sqlMap resource="maps/IrsMasteryLevelDimMap.xml"/>
+    <sqlMap resource="maps/IrsCustomerDimMap.xml"/>
+    <sqlMap resource="maps/tbfactmaps/IrsTABECompositeFact.xml"/>
+    <sqlMap resource="maps/tbfactmaps/IrsTABEContentAreaFact.xml"/>
+    <sqlMap resource="maps/tbfactmaps/IrsTABEItemFact.xml"/>
+    <sqlMap resource="maps/tbfactmaps/IrsTABEPrimObjFact.xml"/>
+    <sqlMap resource="maps/tbfactmaps/IrsTABESecObjFact.xml"/>
+    <sqlMap resource="maps/tbfactmaps/IrsTABEPredSubjectFact.xml"/>
+    <sqlMap resource="maps/tvfactmaps/IrsTVItemFact.xml"/>
+    <sqlMap resource="maps/tvfactmaps/IrsTVSecObjFact.xml"/>
+    <sqlMap resource="maps/tvfactmaps/IrsTVPrimObjFact.xml"/>
+    <sqlMap resource="maps/tvfactmaps/IrsTVContentAreaFact.xml"/>
+    <sqlMap resource="maps/tvfactmaps/IrsTVCompositeFact.xml"/> 
+</sqlMapConfig>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="application-scoring">
+        <wb-resource deploy-path="/" source-path="/EarContent"/>
+        <dependent-module archiveName="dep-scoring-ctrl.jar" deploy-path="/" handle="module:/resource/dep-scoring-ctrl/dep-scoring-ctrl">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/web-scoring/web-scoring">
+            <dependent-object>WebModule_1257456355754</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/dep-scoring-ejb/dep-scoring-ejb">
+            <dependent-object>EjbModule_1257457701717</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>

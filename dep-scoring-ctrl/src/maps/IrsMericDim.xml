@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="IRSMetricDim">
+
+<select id="getMetric" parameterClass="com.ctb.lexington.db.data.IRSMetricDimData" resultClass="com.ctb.lexington.db.data.IRSMetricDimData">
+SELECT 
+        SCORE_TYPEID as scoreTypeId,
+        NAME     as name        
+FROM
+        SCORE_TYPE_DIM  
+WHERE 
+        SCORE_TYPEID = #scoreTypeId:NUMERIC#
+        
+</select> 
+
+</sqlMap>

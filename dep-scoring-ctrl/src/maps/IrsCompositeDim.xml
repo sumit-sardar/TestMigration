@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="IRSCompositeDim">
+
+<select id="findByCompositeID" parameterClass="com.ctb.lexington.db.irsdata.IrsCompositeDimData" resultClass="com.ctb.lexington.db.irsdata.IrsCompositeDimData">
+SELECT 
+        COMPOSITEID as compositeid,
+        NAME as name,
+        COMPOSITE_INDEX as compositeIndex,
+        COMPOSITE_TYPE as compositeType,
+        NUM_ITEMS as numItems,
+        POINTS_POSSIBLE as pointsPossible,
+        SUBJECTID as subjectid,
+        assessmentid as assessmentid
+FROM
+        COMPOSITE_DIM
+WHERE 
+        COMPOSITEID = #compositeid:NUMERIC#
+</select>
+<insert id="insertCompositeDim" parameterClass="com.ctb.lexington.db.irsdata.IrsCompositeDimData">
+    INSERT INTO
+        COMPOSITE_DIM
+                (
+                COMPOSITEID,
+                NAME,
+                COMPOSITE_INDEX,
+                COMPOSITE_TYPE,
+                NUM_ITEMS,
+                POINTS_POSSIBLE,
+                SUBJECTID,
+                assessmentid
+                )
+        VALUES
+                (
+                #compositeid:NUMERIC#,
+                #name:VARCHAR#,
+                #compositeIndex:NUMERIC#,
+                #compositeType:VARCHAR#,
+                #numItems:NUMERIC#,
+                #pointsPossible:NUMERIC#,
+                #subjectid:NUMERIC#,
+                #assessmentid:NUMERIC#
+                )        
+</insert>
+<update id="updateCompositeDim" parameterClass="com.ctb.lexington.db.irsdata.IrsCompositeDimData">
+        UPDATE
+                COMPOSITE_DIM
+        SET
+            NAME = #name:VARCHAR#,  
+            COMPOSITE_INDEX = #compositeIndex:NUMERIC#,
+            COMPOSITE_TYPE = #compositeType:VARCHAR#,
+            NUM_ITEMS =  #numItems:NUMERIC#,
+            POINTS_POSSIBLE = #pointsPossible:NUMERIC#,
+            SUBJECTID = #subjectid:NUMERIC#,
+            assessmentid = #assessmentid:NUMERIC#     
+        WHERE
+            COMPOSITEID = #compositeid:NUMERIC#
+</update>
+<delete id="deleteCompositeDim" parameterClass="java.lang.Long">
+
+	DELETE FROM
+			COMPOSITE_DIM
+	WHERE	
+			COMPOSITEID = #compositeid:NUMERIC#
+</delete>
+</sqlMap>

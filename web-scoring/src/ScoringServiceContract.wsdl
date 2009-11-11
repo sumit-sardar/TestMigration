@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- @editor-info:link autogen="true" source="ScoringService.jws" -->
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:conv="http://www.openuri.org/2002/04/soap/conversation/" xmlns:cw="http://www.openuri.org/2002/04/wsdl/conversation/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:jms="http://www.openuri.org/2002/04/wsdl/jms/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s0="http://www.openuri.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://www.openuri.org/">
+  <types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.openuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema">
+      <s:element name="scoreCompletedRostersForAdmin">
+        <s:complexType>
+          <s:sequence>
+            <s:element name="testAdminId" type="s:int" minOccurs="0"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="scoreCompletedRostersForAdminResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element name="scoreCompletedRostersForAdminResult" type="s:string" minOccurs="0"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="string" nillable="true" type="s:string"/>
+      <s:element name="scoreCompletedRostersForProduct">
+        <s:complexType>
+          <s:sequence>
+            <s:element name="productId" type="s:int" minOccurs="0"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="scoreCompletedRostersForProductResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element name="scoreCompletedRostersForProductResult" type="s:string" minOccurs="0"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="invokeScoring">
+        <s:complexType>
+          <s:sequence>
+            <s:element name="testRosterId" type="s:string" minOccurs="0"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="invokeScoringResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element name="invokeScoringResult" type="s:string" minOccurs="0"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="scoreCompletedRostersForCustomer">
+        <s:complexType>
+          <s:sequence>
+            <s:element name="customerId" type="s:int" minOccurs="0"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="scoreCompletedRostersForCustomerResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element name="scoreCompletedRostersForCustomerResult" type="s:string" minOccurs="0"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+
+  </types>
+  <message name="scoreCompletedRostersForAdminSoapIn">
+    <part name="parameters" element="s0:scoreCompletedRostersForAdmin"/>
+  </message>
+  <message name="scoreCompletedRostersForAdminSoapOut">
+    <part name="parameters" element="s0:scoreCompletedRostersForAdminResponse"/>
+  </message>
+  <message name="scoreCompletedRostersForProductSoapIn">
+    <part name="parameters" element="s0:scoreCompletedRostersForProduct"/>
+  </message>
+  <message name="scoreCompletedRostersForProductSoapOut">
+    <part name="parameters" element="s0:scoreCompletedRostersForProductResponse"/>
+  </message>
+  <message name="invokeScoringSoapIn">
+    <part name="parameters" element="s0:invokeScoring"/>
+  </message>
+  <message name="invokeScoringSoapOut">
+    <part name="parameters" element="s0:invokeScoringResponse"/>
+  </message>
+  <message name="scoreCompletedRostersForCustomerSoapIn">
+    <part name="parameters" element="s0:scoreCompletedRostersForCustomer"/>
+  </message>
+  <message name="scoreCompletedRostersForCustomerSoapOut">
+    <part name="parameters" element="s0:scoreCompletedRostersForCustomerResponse"/>
+  </message>
+  <message name="scoreCompletedRostersForAdminHttpGetIn">
+    <part name="testAdminId" type="s:string"/>
+  </message>
+  <message name="scoreCompletedRostersForAdminHttpGetOut">
+    <part name="Body" element="s0:string"/>
+  </message>
+  <message name="scoreCompletedRostersForProductHttpGetIn">
+    <part name="productId" type="s:string"/>
+  </message>
+  <message name="scoreCompletedRostersForProductHttpGetOut">
+    <part name="Body" element="s0:string"/>
+  </message>
+  <message name="invokeScoringHttpGetIn">
+    <part name="testRosterId" type="s:string"/>
+  </message>
+  <message name="invokeScoringHttpGetOut">
+    <part name="Body" element="s0:string"/>
+  </message>
+  <message name="scoreCompletedRostersForCustomerHttpGetIn">
+    <part name="customerId" type="s:string"/>
+  </message>
+  <message name="scoreCompletedRostersForCustomerHttpGetOut">
+    <part name="Body" element="s0:string"/>
+  </message>
+  <message name="scoreCompletedRostersForAdminHttpPostIn">
+    <part name="testAdminId" type="s:string"/>
+  </message>
+  <message name="scoreCompletedRostersForAdminHttpPostOut">
+    <part name="Body" element="s0:string"/>
+  </message>
+  <message name="scoreCompletedRostersForProductHttpPostIn">
+    <part name="productId" type="s:string"/>
+  </message>
+  <message name="scoreCompletedRostersForProductHttpPostOut">
+    <part name="Body" element="s0:string"/>
+  </message>
+  <message name="invokeScoringHttpPostIn">
+    <part name="testRosterId" type="s:string"/>
+  </message>
+  <message name="invokeScoringHttpPostOut">
+    <part name="Body" element="s0:string"/>
+  </message>
+  <message name="scoreCompletedRostersForCustomerHttpPostIn">
+    <part name="customerId" type="s:string"/>
+  </message>
+  <message name="scoreCompletedRostersForCustomerHttpPostOut">
+    <part name="Body" element="s0:string"/>
+  </message>
+  <portType name="ScoringServiceSoap">
+    <operation name="scoreCompletedRostersForAdmin">
+      <input message="s0:scoreCompletedRostersForAdminSoapIn"/>
+      <output message="s0:scoreCompletedRostersForAdminSoapOut"/>
+    </operation>
+    <operation name="scoreCompletedRostersForProduct">
+      <input message="s0:scoreCompletedRostersForProductSoapIn"/>
+      <output message="s0:scoreCompletedRostersForProductSoapOut"/>
+    </operation>
+    <operation name="invokeScoring">
+      <input message="s0:invokeScoringSoapIn"/>
+      <output message="s0:invokeScoringSoapOut"/>
+    </operation>
+    <operation name="scoreCompletedRostersForCustomer">
+      <input message="s0:scoreCompletedRostersForCustomerSoapIn"/>
+      <output message="s0:scoreCompletedRostersForCustomerSoapOut"/>
+    </operation>
+  </portType>
+  <portType name="ScoringServiceHttpGet">
+    <operation name="scoreCompletedRostersForAdmin">
+      <input message="s0:scoreCompletedRostersForAdminHttpGetIn"/>
+      <output message="s0:scoreCompletedRostersForAdminHttpGetOut"/>
+    </operation>
+    <operation name="scoreCompletedRostersForProduct">
+      <input message="s0:scoreCompletedRostersForProductHttpGetIn"/>
+      <output message="s0:scoreCompletedRostersForProductHttpGetOut"/>
+    </operation>
+    <operation name="invokeScoring">
+      <input message="s0:invokeScoringHttpGetIn"/>
+      <output message="s0:invokeScoringHttpGetOut"/>
+    </operation>
+    <operation name="scoreCompletedRostersForCustomer">
+      <input message="s0:scoreCompletedRostersForCustomerHttpGetIn"/>
+      <output message="s0:scoreCompletedRostersForCustomerHttpGetOut"/>
+    </operation>
+  </portType>
+  <portType name="ScoringServiceHttpPost">
+    <operation name="scoreCompletedRostersForAdmin">
+      <input message="s0:scoreCompletedRostersForAdminHttpPostIn"/>
+      <output message="s0:scoreCompletedRostersForAdminHttpPostOut"/>
+    </operation>
+    <operation name="scoreCompletedRostersForProduct">
+      <input message="s0:scoreCompletedRostersForProductHttpPostIn"/>
+      <output message="s0:scoreCompletedRostersForProductHttpPostOut"/>
+    </operation>
+    <operation name="invokeScoring">
+      <input message="s0:invokeScoringHttpPostIn"/>
+      <output message="s0:invokeScoringHttpPostOut"/>
+    </operation>
+    <operation name="scoreCompletedRostersForCustomer">
+      <input message="s0:scoreCompletedRostersForCustomerHttpPostIn"/>
+      <output message="s0:scoreCompletedRostersForCustomerHttpPostOut"/>
+    </operation>
+  </portType>
+  <binding name="ScoringServiceSoap" type="s0:ScoringServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+    <operation name="scoreCompletedRostersForAdmin">
+      <soap:operation soapAction="http://www.openuri.org/scoreCompletedRostersForAdmin" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="scoreCompletedRostersForProduct">
+      <soap:operation soapAction="http://www.openuri.org/scoreCompletedRostersForProduct" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="invokeScoring">
+      <soap:operation soapAction="http://www.openuri.org/invokeScoring" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="scoreCompletedRostersForCustomer">
+      <soap:operation soapAction="http://www.openuri.org/scoreCompletedRostersForCustomer" style="document"/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <binding name="ScoringServiceHttpGet" type="s0:ScoringServiceHttpGet">
+    <http:binding verb="GET"/>
+    <operation name="scoreCompletedRostersForAdmin">
+      <http:operation location="/scoreCompletedRostersForAdmin"/>
+      <input>
+        <http:urlEncoded/>
+      </input>
+      <output>
+        <mime:mimeXml part="Body"/>
+      </output>
+    </operation>
+    <operation name="scoreCompletedRostersForProduct">
+      <http:operation location="/scoreCompletedRostersForProduct"/>
+      <input>
+        <http:urlEncoded/>
+      </input>
+      <output>
+        <mime:mimeXml part="Body"/>
+      </output>
+    </operation>
+    <operation name="invokeScoring">
+      <http:operation location="/invokeScoring"/>
+      <input>
+        <http:urlEncoded/>
+      </input>
+      <output>
+        <mime:mimeXml part="Body"/>
+      </output>
+    </operation>
+    <operation name="scoreCompletedRostersForCustomer">
+      <http:operation location="/scoreCompletedRostersForCustomer"/>
+      <input>
+        <http:urlEncoded/>
+      </input>
+      <output>
+        <mime:mimeXml part="Body"/>
+      </output>
+    </operation>
+  </binding>
+  <binding name="ScoringServiceHttpPost" type="s0:ScoringServiceHttpPost">
+    <http:binding verb="POST"/>
+    <operation name="scoreCompletedRostersForAdmin">
+      <http:operation location="/scoreCompletedRostersForAdmin"/>
+      <input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </input>
+      <output>
+        <mime:mimeXml part="Body"/>
+      </output>
+    </operation>
+    <operation name="scoreCompletedRostersForProduct">
+      <http:operation location="/scoreCompletedRostersForProduct"/>
+      <input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </input>
+      <output>
+        <mime:mimeXml part="Body"/>
+      </output>
+    </operation>
+    <operation name="invokeScoring">
+      <http:operation location="/invokeScoring"/>
+      <input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </input>
+      <output>
+        <mime:mimeXml part="Body"/>
+      </output>
+    </operation>
+    <operation name="scoreCompletedRostersForCustomer">
+      <http:operation location="/scoreCompletedRostersForCustomer"/>
+      <input>
+        <mime:content type="application/x-www-form-urlencoded"/>
+      </input>
+      <output>
+        <mime:mimeXml part="Body"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="ScoringService">
+    <port name="ScoringServiceSoap" binding="s0:ScoringServiceSoap">
+      <soap:address location="http://localhost:7001/ScoringService/ScoringService.jws"/>
+    </port>
+    <port name="ScoringServiceHttpGet" binding="s0:ScoringServiceHttpGet">
+      <http:address location="http://localhost:7001/ScoringService/ScoringService.jws"/>
+    </port>
+    <port name="ScoringServiceHttpPost" binding="s0:ScoringServiceHttpPost">
+      <http:address location="http://localhost:7001/ScoringService/ScoringService.jws"/>
+    </port>
+  </service>
+</definitions>

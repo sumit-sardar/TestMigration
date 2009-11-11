@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="IrsResponseDim">
+
+<select id="findByResponseID" parameterClass="com.ctb.lexington.db.irsdata.IrsResponseDimData" resultClass="com.ctb.lexington.db.irsdata.IrsResponseDimData">
+SELECT 
+        RESPONSEID as responseid,
+        RESPONSE as response
+FROM
+        RESPONSE_DIM  
+WHERE 
+        RESPONSEID = #responseid:NUMERIC#
+</select>
+<insert id="insertResponseDim" parameterClass="com.ctb.lexington.db.irsdata.IrsResponseDimData">
+
+    INSERT INTO
+        RESPONSE_DIM
+                (
+                RESPONSEID,
+                RESPONSE
+                )
+        VALUES
+                (
+                #responseid:NUMERIC#,
+                #response:VARCHAR#
+                )        
+</insert>
+<update id="updateResponseDim" parameterClass="com.ctb.lexington.db.irsdata.IrsResponseDimData">
+       
+        UPDATE
+                RESPONSE_DIM
+        SET
+            RESPONSE = #response:VARCHAR#
+        WHERE
+           RESPONSEID = #responseid:NUMERIC#
+</update>
+<delete id="deleteResponseDim" parameterClass="java.lang.Long">
+
+	DELETE FROM
+			RESPONSE_DIM
+	WHERE	
+			RESPONSEID = #responseid:NUMERIC#
+</delete>
+</sqlMap>

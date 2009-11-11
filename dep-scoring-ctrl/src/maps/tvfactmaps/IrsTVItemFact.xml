@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="IrsTVItemFact">
+
+<select id="TVfindByItemStudentSession" parameterClass="com.ctb.lexington.db.irsdata.irstvdata.IrsTVItemFactData" resultClass="com.ctb.lexington.db.irsdata.irstvdata.IrsTVItemFactData">
+SELECT 
+        FACTID as factid,
+        STUDENTID as studentid,        
+        FORMID as formid,
+        SESSIONID as sessionid,
+        ATTR1ID	as attr1id,
+        ATTR2ID as attr2id,
+        ATTR3ID as attr3id,
+        ATTR4ID as attr4id,
+        ATTR5ID as attr5id,
+        ATTR6ID as attr6id,
+        ATTR7ID as attr7id,
+        ATTR8ID as attr8id,
+        ATTR9ID as attr9id,
+        ATTR10ID as attr10id,
+        ATTR11ID as attr11id,
+        ATTR12ID as attr12id,
+        ATTR13ID as attr13id,
+        ATTR14ID as attr14id,
+        ATTR15ID as attr15id,
+        ATTR16ID as attr16id,
+        GRADEID	as gradeid,
+        LEVELID	as levelid,
+        ITEMID as itemid,
+        ORG_NODEID	as orgNodeid,
+        ASSESSMENTID as assessmentid,
+        PROGRAMID as programid,	
+        CURRENT_RESULTID as currentResultid,
+        POINTS_OBTAINED as pointsObtained,
+        ITEM_RESPONSE_TIMESTAMP	as itemResponseTimestamp,
+        TEST_COMPLETION_TIMESTAMP as testCompletionTimestamp,
+        RESPONSEID as responseid,
+        POINTS_POSSIBLE as pointsPossible,
+        NATIONAL_AVERAGE as nationalAverage
+FROM
+        TV_ITEM_FACT  
+WHERE 
+			STUDENTID = #studentid:NUMERIC#
+		AND
+			SESSIONID =  #sessionid:NUMERIC#
+		AND		
+	        ITEMID = #itemid:NUMERIC#
+</select> 
+
+<insert id="TVinsertTVItemFact" parameterClass="com.ctb.lexington.db.irsdata.irstvdata.IrsTVItemFactData">
+
+        INSERT INTO
+            TV_ITEM_FACT
+                (
+                FACTID,
+        		STUDENTID,        
+		        FORMID,
+        		SESSIONID,
+		        ATTR1ID,
+        		ATTR2ID,
+		        ATTR3ID,
+        		ATTR4ID,
+		        ATTR5ID,
+        		ATTR6ID,
+		        ATTR7ID,
+        		ATTR8ID,
+		        ATTR9ID,
+		        ATTR10ID,
+		        ATTR11ID,
+		        ATTR12ID,
+    		    ATTR13ID,
+		        ATTR14ID,
+		        ATTR15ID,
+		        ATTR16ID,
+        		GRADEID,
+		        LEVELID,
+		        ITEMID,
+        		ORG_NODEID,
+		        ASSESSMENTID,
+		        PROGRAMID,	
+        		CURRENT_RESULTID,
+		        POINTS_OBTAINED,
+		        ITEM_RESPONSE_TIMESTAMP,
+        		TEST_COMPLETION_TIMESTAMP,
+		        RESPONSEID,
+        		POINTS_POSSIBLE,
+                NATIONAL_AVERAGE
+                )
+        VALUES
+                (
+                #factid:NUMERIC#,
+                #studentid:NUMERIC#,
+                #formid:NUMERIC#,
+                #sessionid:NUMERIC#,
+                #attr1id:NUMERIC#,
+                #attr2id:NUMERIC#,
+                #attr3id:NUMERIC#,
+                #attr4id:NUMERIC#,
+                #attr5id:NUMERIC#,
+                #attr6id:NUMERIC#,
+                #attr7id:NUMERIC#,
+                #attr8id:NUMERIC#,
+                #attr9id:NUMERIC#,
+                #attr10id:NUMERIC#,
+                #attr11id:NUMERIC#,
+		        #attr12id:NUMERIC#,
+		        #attr13id:NUMERIC#,
+		        #attr14id:NUMERIC#,
+		        #attr15id:NUMERIC#,
+		        #attr16id:NUMERIC#,
+                #gradeid:NUMERIC#,
+                #levelid:NUMERIC#,
+                #itemid:NUMERIC#,
+                #orgNodeid:NUMERIC#,
+                #assessmentid:NUMERIC#,
+                #programid:NUMERIC#,
+                decode(#currentResultid:NUMERIC#, 1,
+                decode(
+                    sign( 
+                        NVL(to_number(
+                            TO_CHAR(
+                                to_timestamp(
+                                    to_char((select max(test_completion_timestamp) from tv_item_fact fact,
+                                        item_dim itemdim, sec_obj_dim secdim, prim_obj_dim primdim, content_area_dim condim
+                                        where fact.sessionid != #sessionid:NUMERIC#
+                                        and fact.studentid = #studentid:NUMERIC#
+                                        and fact.assessmentid = #assessmentid:NUMERIC#
+                                        and programid = #programid:NUMERIC#
+                                        and fact.current_Resultid = 1
+                                        and fact.itemid = itemdim.itemid
+                                        and itemdim.sec_objid = secdim.sec_objid
+                                        and secdim.prim_objid = primdim.prim_objid
+                                        and primdim.content_Areaid = condim.content_areaid
+                                        and #subtestName:VARCHAR# like '%' || condim.name 
+                                    ), 'MM/DD/YYYY HH24:MI:SS'), 'MM/DD/YYYY HH24:MI:SS'
+                                ), 
+                                'YYYYMMDDHH24MISSFF3'
+                            )
+                        ), 0) -
+                        to_number(
+                            TO_CHAR(
+                                to_timestamp(
+                                    #testCompletionTimestamp:TIMESTAMP#
+                                ), 
+                                'YYYYMMDDHH24MISSFF3'
+                            )
+                        )
+                    ), 
+                    -1, 
+                    1,
+                    0,
+                    2,
+                    1,
+                    2,
+                    1
+                ), 2),
+                #pointsObtained:NUMERIC#,
+                #itemResponseTimestamp:TIMESTAMP#,
+                #testCompletionTimestamp:TIMESTAMP#,
+                #responseid:NUMERIC#,
+                #pointsPossible:NUMERIC#,
+                #nationalAverage:NUMERIC#
+                )        
+</insert>
+
+<update id="TVupdateTVItemFact" parameterClass="com.ctb.lexington.db.irsdata.irstvdata.IrsTVItemFactData">
+       
+        UPDATE
+                TV_ITEM_FACT
+        SET
+        	FACTID = #factid:NUMERIC#,
+        	FORMID = #formid:NUMERIC#,
+			ATTR1ID = #attr1id:NUMERIC#,
+			ATTR2ID	= #attr2id:NUMERIC#,
+			ATTR3ID = #attr3id:NUMERIC#,
+			ATTR4ID	= #attr4id:NUMERIC#,
+			ATTR5ID	= #attr5id:NUMERIC#,
+			ATTR6ID	= #attr6id:NUMERIC#,
+			ATTR7ID	= #attr7id:NUMERIC#,
+			ATTR8ID	= #attr8id:NUMERIC#,
+			ATTR9ID	= #attr9id:NUMERIC#,
+			ATTR10ID = #attr10id:NUMERIC#,
+			ATTR11ID = #attr11id:NUMERIC#,
+			ATTR12ID = #attr12id:NUMERIC#,
+			ATTR13ID = #attr13id:NUMERIC#,
+		    ATTR14ID = #attr14id:NUMERIC#,
+			ATTR15ID = #attr15id:NUMERIC#,
+			ATTR16ID = #attr16id:NUMERIC#,
+			GRADEID = #gradeid:NUMERIC#,
+			LEVELID	= #levelid:NUMERIC#,
+			ORG_NODEID = #orgNodeid:NUMERIC#,
+			ASSESSMENTID = #assessmentid:NUMERIC#,
+			PROGRAMID = #programid:NUMERIC#,
+			CURRENT_RESULTID = #currentResultid:NUMERIC#,
+			POINTS_OBTAINED = #pointsObtained:NUMERIC#,
+			ITEM_RESPONSE_TIMESTAMP = #itemResponseTimestamp:TIMESTAMP#,
+			TEST_COMPLETION_TIMESTAMP = #testCompletionTimestamp:TIMESTAMP#,
+			RESPONSEID = #responseid:NUMERIC#,
+			POINTS_POSSIBLE = #pointsPossible:NUMERIC#,
+            NATIONAL_AVERAGE = #nationalAverage:NUMERIC#
+        WHERE 
+			STUDENTID = #studentid:NUMERIC#
+		AND
+			SESSIONID =  #sessionid:NUMERIC#
+		AND		        
+	        ITEMID = #itemid:NUMERIC#
+</update>
+
+<update id="TVupdateTVItemFactCurrentResult" parameterClass="com.ctb.lexington.db.irsdata.irstvdata.IrsTVItemFactData">
+       
+        UPDATE
+                TV_ITEM_FACT fact
+        SET	
+		        CURRENT_RESULTID = #currentResultid:NUMERIC#	
+        WHERE 
+			STUDENTID = #studentid:NUMERIC#
+        AND
+            SESSIONID != #sessionid:NUMERIC#
+        AND
+			(itemID in (select curritemdim.itemID 
+                                from TV_item_FACT itemfact, 
+                                item_dim itemdim, sec_obj_dim secdim, prim_obj_dim primdim, content_Area_dim condim,
+                                prim_obj_dim currprimdim, sec_obj_dim currsecdim, item_dim curritemdim
+                                where itemfact.sessionid = #sessionid:NUMERIC#
+                                and itemfact.studentid = #studentid:NUMERIC#
+                                and itemdim.itemid = itemfact.itemid
+                                and secdim.sec_objid = itemdim.sec_objid
+                                and primdim.prim_objid = secdim.prim_objid
+                                and condim.content_Areaid = primdim.content_areaid
+                                and currprimdim.content_areaid = condim.content_areaid
+                                and currsecdim.prim_objid = currprimdim.prim_objid
+                                and curritemdim.sec_objid = currsecdim.sec_objid
+                        )
+            OR #currentResultid:NUMERIC# = 1)
+        and programid = #programid:NUMERIC#
+        AND
+            test_completion_timestamp = (select max(test_completion_timestamp) from tv_item_fact
+                        where sessionid != #sessionid:NUMERIC#
+                        and studentid = #studentid:NUMERIC#
+                        and programid = #programid:NUMERIC#
+                        and itemid = fact.itemid
+                        and assessmentid = fact.assessmentid
+                        and test_completion_timestamp &lt;= decode(#currentResultid:NUMERIC#, 1, sysdate, #testCompletionTimestamp:TIMESTAMP#))        
+</update>
+
+<delete id="TVdeleteByItemFactId" parameterClass="com.ctb.lexington.db.irsdata.irstvdata.IrsTVItemFactData">
+
+	DELETE FROM
+			TV_ITEM_FACT
+	WHERE 
+			STUDENTID = #studentid:NUMERIC#
+		AND
+			SESSIONID =  #sessionid:NUMERIC#
+		AND		
+	        ITEMID = #itemid:NUMERIC#
+</delete>
+</sqlMap>

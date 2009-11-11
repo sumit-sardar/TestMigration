@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="IrsSchedulerDim">
+
+<select id="findBySchedulerID" parameterClass="com.ctb.lexington.db.irsdata.IrsSchedulerDimData" resultClass="com.ctb.lexington.db.irsdata.IrsSchedulerDimData">
+SELECT 
+        SCHEDULERID as schedulerid,
+        NAME as name        
+FROM
+        SCHEDULER_DIM  
+WHERE 
+        SCHEDULERID = #schedulerid:NUMERIC#
+</select>
+<insert id="insertSchedulerDim" parameterClass="com.ctb.lexington.db.irsdata.IrsSchedulerDimData">
+
+        INSERT INTO
+            SCHEDULER_DIM
+                (
+                SCHEDULERID,
+                NAME
+                )
+        VALUES
+                (
+                #schedulerid:NUMERIC#,
+                #name:VARCHAR#
+                )        
+</insert>
+<update id="updateSchedulerDim" parameterClass="com.ctb.lexington.db.irsdata.IrsSchedulerDimData">
+       
+        UPDATE
+                SCHEDULER_DIM
+        SET
+            NAME = #name:VARCHAR#
+        WHERE
+            SCHEDULERID = #schedulerid:NUMERIC#
+</update>
+<delete id="deleteSchedulerDim" parameterClass="java.lang.Long">
+
+	DELETE FROM
+			SCHEDULER_DIM
+	WHERE	
+			SCHEDULERID = #schedulerid:NUMERIC#
+</delete>
+</sqlMap>

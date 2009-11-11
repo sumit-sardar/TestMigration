@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="StudentResearchDataRecord">
+    <select id="studentResearchDataExists" parameterClass="com.ctb.lexington.db.record.StudentResearchDataRecord" resultClass="com.ctb.lexington.db.record.StudentResearchDataRecord">
+        SELECT
+            1
+        FROM
+            DUAL
+        WHERE EXISTS( SELECT
+                          STUDENT_DIM_ID as studentDimId,
+                          STUDENT_DIM_VERSION_ID as studentDimVersionId,
+                          DEMO_CATEGORY as demoCategory,
+                          DEMO_VALUE as demoValue,
+                          ADMIN_DIM_ID as adminDimId
+                      FROM
+                          STS_STUDENT_RESEARCH_DATA
+                      WHERE
+                              STUDENT_DIM_ID = #studentDimId:NUMERIC#
+                          AND STUDENT_DIM_VERSION_ID = #studentDimVersionId:NUMERIC#
+                          AND ADMIN_DIM_ID = #adminDimId:NUMERIC#
+                          AND DEMO_CATEGORY = #demoCategory:VARCHAR#)
+    </select>
+
+    <insert id="insertStudentResearchData" parameterClass="com.ctb.lexington.db.record.StudentResearchDataRecord">
+        INSERT INTO
+            STS_STUDENT_RESEARCH_DATA
+            (
+            STUDENT_DIM_ID,
+            STUDENT_DIM_VERSION_ID,
+            DEMO_CATEGORY,
+            DEMO_VALUE,
+            ADMIN_DIM_ID
+            )
+        VALUES
+            (
+            #studentDimId:NUMERIC#,
+            #studentDimVersionId:NUMERIC#,
+            #demoCategory:VARCHAR#,
+            #demoValue:VARCHAR#,
+            #adminDimId:NUMERIC#
+            )
+    </insert>
+
+    <update id="updateStudentResearchData" parameterClass="com.ctb.lexington.db.record.StudentResearchDataRecord">
+        UPDATE
+            STS_STUDENT_RESEARCH_DATA
+        SET
+            DEMO_VALUE = #demoValue:VARCHAR#
+        WHERE
+                STUDENT_DIM_ID = #studentDimId:NUMERIC#
+            AND STUDENT_DIM_VERSION_ID = #studentDimVersionId:NUMERIC#
+            AND ADMIN_DIM_ID = #adminDimId:NUMERIC#
+            AND DEMO_CATEGORY = #demoCategory:VARCHAR#
+    </update>
+</sqlMap>

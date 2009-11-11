@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="IRSATTR10Dim">
+
+<select id="findByAttr10DimID" parameterClass="com.ctb.lexington.db.irsdata.IrsAttr10DimData" resultClass="com.ctb.lexington.db.irsdata.IrsAttr10DimData">
+SELECT 
+        ATTR10ID as attr10Id,
+        NAME as name,        
+        TYPE as type
+FROM
+        ATTR10_DIM  
+WHERE 
+        ATTR10ID = #attr10Id:NUMERIC#
+        
+</select>
+<insert id="insertAttr10Dim" parameterClass="com.ctb.lexington.db.irsdata.IrsAttr10DimData">
+
+    INSERT INTO
+        ATTR10_DIM
+                (
+                ATTR10ID,
+                NAME,
+                TYPE
+                )
+        VALUES
+                (
+                #attr10Id:NUMERIC#,
+                #name:VARCHAR#,
+                #type:VARCHAR#
+                )        
+</insert>
+<update id="updateAttr10Dim" parameterClass="com.ctb.lexington.db.irsdata.IrsAttr10DimData">
+       
+        UPDATE
+                ATTR10_DIM
+        SET
+            NAME = #name:VARCHAR#,
+            TYPE =  #type:VARCHAR#            
+        WHERE
+           ATTR10ID = #attr10Id:NUMERIC#
+</update>
+<delete id="deleteAttr10Dim" parameterClass="java.lang.Long">
+
+	DELETE FROM
+			ATTR10_DIM
+	WHERE	
+			ATTR10ID = #attr10Id:NUMERIC#
+</delete>
+</sqlMap>

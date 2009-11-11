@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="IrsOrgNodeDim">
+
+<select id="findByOrgNodeIds" parameterClass="com.ctb.lexington.db.irsdata.IrsOrgNodeDimData" resultClass="com.ctb.lexington.db.irsdata.IrsOrgNodeDimData">
+SELECT 
+       ORG_NODEID as orgNodeid,
+       NUM_LEVELS as numLevels,	
+       LEVEL1_ID as level1Id,
+       LEVEL1_TYPE as level1Type,
+       LEVEL1_NAME as level1Name,
+       LEVEL2_ID as level2Id,
+       LEVEL2_TYPE as level2Type,
+       LEVEL2_NAME as level2Name,
+       LEVEL3_ID as level3Id,
+       LEVEL3_TYPE as level3Type,
+       LEVEL3_NAME as level3Name,
+       LEVEL4_ID as level4Id,
+       LEVEL4_TYPE as level4Type,
+       LEVEL4_NAME as level4Name,
+       LEVEL5_ID as level5Id,
+       LEVEL5_TYPE as level5Type,
+       LEVEL5_NAME as level5Name,
+       LEVEL6_ID as level6Id,
+       LEVEL6_TYPE as level6Type,
+       LEVEL6_NAME as level6Name,
+       LEVEL7_ID as level7Id,
+       LEVEL7_TYPE as level7Type,
+       LEVEL7_NAME as level7Name,
+       CUSTOMERID as customerid
+FROM
+       ORG_NODE_DIM
+WHERE 
+        level1_ID = #level1Id:NUMERIC#
+        and (level2_ID = #level2Id:NUMERIC# or (level2_id is null and #level2Id:NUMERIC# is null))
+        and (level3_ID = #level3Id:NUMERIC# or (level3_id is null and #level3Id:NUMERIC# is null))
+        and (level4_ID = #level4Id:NUMERIC# or (level4_id is null and #level4Id:NUMERIC# is null))
+        and (level5_ID = #level5Id:NUMERIC# or (level5_id is null and #level5Id:NUMERIC# is null))
+        and (level6_ID = #level6Id:NUMERIC# or (level6_id is null and #level6Id:NUMERIC# is null))
+        and (level7_ID = #level7Id:NUMERIC# or (level7_id is null and #level7Id:NUMERIC# is null))
+</select>
+
+<insert id="insertOrgNodeDim" parameterClass="com.ctb.lexington.db.irsdata.IrsOrgNodeDimData">
+
+    INSERT INTO
+        ORG_NODE_DIM
+                (
+                ORG_NODEID,
+                NUM_LEVELS,
+                LEVEL1_ID,
+                LEVEL1_TYPE,
+                LEVEL1_NAME,
+                LEVEL2_ID,
+                LEVEL2_TYPE,
+                LEVEL2_NAME,
+                LEVEL3_ID,
+                LEVEL3_TYPE,
+                LEVEL3_NAME,
+                LEVEL4_ID,
+                LEVEL4_TYPE,
+                LEVEL4_NAME,
+                LEVEL5_ID,
+                LEVEL5_TYPE,
+                LEVEL5_NAME,
+                LEVEL6_ID,
+                LEVEL6_TYPE,
+                LEVEL6_NAME,
+                LEVEL7_ID,
+                LEVEL7_TYPE,
+                LEVEL7_NAME,
+                CUSTOMERID
+                )
+        VALUES
+                (
+                #orgNodeid:NUMERIC#,
+                #numLevels:NUMERIC#,
+                #level1Id:NUMERIC#,
+                #level1Type:VARCHAR#,
+                #level1Name:VARCHAR#,
+                #level2Id:NUMERIC#,
+                #level2Type:VARCHAR#,
+                #level2Name:VARCHAR#,
+                #level3Id:NUMERIC#,
+                #level3Type:VARCHAR#,
+                #level3Name:VARCHAR#,
+                #level4Id:NUMERIC#,
+                #level4Type:VARCHAR#,
+                #level4Name:VARCHAR#,
+                #level5Id:NUMERIC#,
+                #level5Type:VARCHAR#,
+                #level5Name:VARCHAR#,
+                #level6Id:NUMERIC#,
+                #level6Type:VARCHAR#,
+                #level6Name:VARCHAR#,
+                #level7Id:NUMERIC#,
+                #level7Type:VARCHAR#,
+                #level7Name:VARCHAR#,
+                #customerid:NUMERIC#
+                )        
+</insert>
+<update id="updateOrgNodeDim" parameterClass="com.ctb.lexington.db.irsdata.IrsOrgNodeDimData">
+       
+        UPDATE
+                ORG_NODE_DIM
+        SET
+	            NUM_LEVELS = #numLevels:NUMERIC#,
+                LEVEL1_ID = #level1Id:NUMERIC#,
+                LEVEL1_TYPE = #level1Type:VARCHAR#,
+                LEVEL1_NAME = #level1Name:VARCHAR#,
+                LEVEL2_ID = #level2Id:NUMERIC#,
+                LEVEL2_TYPE = #level2Type:VARCHAR#,
+                LEVEL2_NAME = #level2Name:VARCHAR#,
+                LEVEL3_ID = #level3Id:NUMERIC#,
+                LEVEL3_TYPE = #level3Type:VARCHAR#,
+                LEVEL3_NAME = #level3Name:VARCHAR#,
+                LEVEL4_ID = #level4Id:NUMERIC#,
+                LEVEL4_TYPE = #level4Type:VARCHAR#,
+                LEVEL4_NAME = #level4Name:VARCHAR#,
+                LEVEL5_ID = #level5Id:NUMERIC#,
+                LEVEL5_TYPE = #level5Type:VARCHAR#,
+                LEVEL5_NAME = #level5Name:VARCHAR#,
+                LEVEL6_ID = #level6Id:NUMERIC#,
+                LEVEL6_TYPE = #level6Type:VARCHAR#,
+                LEVEL6_NAME = #level6Name:VARCHAR#,
+                LEVEL7_ID = #level7Id:NUMERIC#,
+                LEVEL7_TYPE = #level7Type:VARCHAR#,
+                LEVEL7_NAME = #level7Name:VARCHAR#,
+                CUSTOMERID = #customerid:NUMERIC#      
+        WHERE
+          ORG_NODEID = #orgNodeid:NUMERIC#
+</update>
+
+<delete id="deleteOrgNodeDim" parameterClass="java.lang.Long">
+
+	DELETE FROM
+			ORG_NODE_DIM
+	WHERE	
+			ORG_NODEID = #orgNodeid:NUMERIC#
+</delete>
+
+<update id="updateOldOrgsLevelOne" parameterClass="com.ctb.lexington.db.irsdata.IrsOrgNodeDimData">
+       
+        UPDATE
+                ORG_NODE_DIM
+        SET
+	            LEVEL1_TYPE = #level1Type:VARCHAR#,
+                LEVEL1_NAME = #level1Name:VARCHAR#    
+        WHERE
+          LEVEL1_ID = #level1Id:NUMERIC#
+</update>
+
+<update id="updateOldOrgsLevelTwo" parameterClass="com.ctb.lexington.db.irsdata.IrsOrgNodeDimData">
+       
+        UPDATE
+                ORG_NODE_DIM
+        SET
+	            LEVEL2_TYPE = #level2Type:VARCHAR#,
+                LEVEL2_NAME = #level2Name:VARCHAR#    
+        WHERE
+          LEVEL2_ID = #level2Id:NUMERIC#
+</update>
+
+<update id="updateOldOrgsLevelThree" parameterClass="com.ctb.lexington.db.irsdata.IrsOrgNodeDimData">
+       
+        UPDATE
+                ORG_NODE_DIM
+        SET
+	            LEVEL3_TYPE = #level3Type:VARCHAR#,
+                LEVEL3_NAME = #level3Name:VARCHAR#     
+        WHERE
+          LEVEL3_ID = #level3Id:NUMERIC#
+</update>
+
+<update id="updateOldOrgsLevelFour" parameterClass="com.ctb.lexington.db.irsdata.IrsOrgNodeDimData">
+       
+        UPDATE
+                ORG_NODE_DIM
+        SET
+	            LEVEL4_TYPE = #level4Type:VARCHAR#,
+                LEVEL4_NAME = #level4Name:VARCHAR#     
+        WHERE
+          LEVEL4_ID = #level4Id:NUMERIC#
+</update>
+
+<update id="updateOldOrgsLevelFive" parameterClass="com.ctb.lexington.db.irsdata.IrsOrgNodeDimData">
+       
+        UPDATE
+                ORG_NODE_DIM
+        SET
+	            LEVEL5_TYPE = #level5Type:VARCHAR#,
+                LEVEL5_NAME = #level5Name:VARCHAR#    
+        WHERE
+          LEVEL5_ID = #level5Id:NUMERIC#
+</update>
+
+<update id="updateOldOrgsLevelSix" parameterClass="com.ctb.lexington.db.irsdata.IrsOrgNodeDimData">
+       
+        UPDATE
+                ORG_NODE_DIM
+        SET
+	            LEVEL6_TYPE = #level6Type:VARCHAR#,
+                LEVEL6_NAME = #level6Name:VARCHAR#     
+        WHERE
+          LEVEL6_ID = #level6Id:NUMERIC#
+</update>
+
+<update id="updateOldOrgsLevelSeven" parameterClass="com.ctb.lexington.db.irsdata.IrsOrgNodeDimData">
+       
+        UPDATE
+                ORG_NODE_DIM
+        SET
+	            LEVEL7_TYPE = #level7Type:VARCHAR#,
+                LEVEL7_NAME = #level7Name:VARCHAR#    
+        WHERE
+          LEVEL7_ID = #level7Id:NUMERIC#
+</update>
+
+</sqlMap>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="IRSSubjectDim">
+
+<select id="findBySubjectID" parameterClass="com.ctb.lexington.db.irsdata.IrsSubjectDimData" resultClass="com.ctb.lexington.db.irsdata.IrsSubjectDimData">
+SELECT 
+        SUBJECTID as subjectid,
+        SUBJECT_NAME as subjectName        
+FROM
+        SUBJECT_DIM  
+WHERE 
+        SUBJECTID = #subjectid:NUMERIC#
+        
+</select>
+
+<select id="findBySubjectName" parameterClass="com.ctb.lexington.db.irsdata.IrsSubjectDimData" resultClass="com.ctb.lexington.db.irsdata.IrsSubjectDimData">
+SELECT 
+        SUBJECTID as subjectid,
+        SUBJECT_NAME as subjectName        
+FROM
+        SUBJECT_DIM  
+WHERE 
+        SUBJECT_NAME = #subjectName:NUMERIC#
+        
+</select>
+ 
+<insert id="insertSubjectDim" parameterClass="com.ctb.lexington.db.irsdata.IrsSubjectDimData">
+
+        INSERT INTO
+            SUBJECT_DIM
+                (
+                SUBJECTID,
+                SUBJECT_NAME
+                )
+        VALUES
+                (
+                #subjectid:NUMERIC#,
+                #subjectName:VARCHAR#
+                )        
+</insert>
+
+<delete id="deleteSubjectDim" parameterClass="java.lang.Long">
+
+	DELETE FROM
+			SUBJECT_DIM
+	WHERE	
+			SUBJECTID = #subjectid:NUMERIC#
+</delete>
+
+
+<update id="updateSubjectDim" parameterClass="com.ctb.lexington.db.irsdata.IrsSubjectDimData">
+       
+        UPDATE
+                SUBJECT_DIM
+        SET
+            SUBJECT_NAME = #subjectName:VARCHAR#
+        WHERE
+            SUBJECTID = #subjectid:NUMERIC#
+</update>
+
+</sqlMap>

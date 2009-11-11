@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="IrsAssessmentDimMap">
+<select id="findByAssessmentDimId" parameterClass="com.ctb.lexington.db.irsdata.IrsAssessmentDimData" resultClass="com.ctb.lexington.db.irsdata.IrsAssessmentDimData">
+    SELECT 
+        ASSESSMENTID as assessmentid,
+        NAME as name,
+        PRODUCTID as productid,
+        TYPE as type,
+        FORMID as formid,
+        PRODUCT_TYPEID as productTypeid,
+        LEVELID as levelid
+    FROM
+        ASSESSMENT_DIM
+    WHERE
+        ASSESSMENTID = #assessmentid:NUMERIC#
+</select>
+<insert id="insertAssessmentDim" parameterClass="com.ctb.lexington.db.irsdata.IrsAssessmentDimData">
+
+        INSERT INTO
+            ASSESSMENT_DIM
+                (
+                ASSESSMENTID,
+                NAME,
+                PRODUCTID,
+                TYPE,
+                FORMID,
+                PRODUCT_TYPEID,
+                LEVELID
+                )
+        VALUES
+                (
+                #assessmentid:NUMERIC#,
+                #name:VARCHAR#,
+                #productid:NUMERIC#,
+                #type:VARCHAR#,
+                #formid:NUMERIC#,
+                #productTypeid:NUMERIC#,
+                #levelid:NUMERIC#
+                )        
+</insert>
+<delete id="deleteAssessmentDim" parameterClass="java.lang.Long">
+
+	DELETE FROM
+			ASSESSMENT_DIM
+	WHERE	
+			ASSESSMENTID = #assessmentid:NUMERIC#
+</delete>
+<update id="updateAssessmentDim" parameterClass="com.ctb.lexington.db.irsdata.IrsAssessmentDimData">
+       
+        UPDATE
+                ASSESSMENT_DIM
+        SET
+            NAME = #name:VARCHAR#,
+            PRODUCTID = #productid:NUMERIC#,
+            TYPE =  #type:VARCHAR#,
+            FORMID = #formid:NUMERIC#,
+            PRODUCT_TYPEID = #productTypeid:NUMERIC#,
+            LEVELID = #levelid:NUMERIC#            
+        WHERE
+            ASSESSMENTID = #assessmentid:NUMERIC#
+</update>
+</sqlMap>
