@@ -438,13 +438,12 @@ public class ManageStudentController extends PageFlowController
 
 	/**
 	 * @jpf:action
-	 * @jpf:forward name="success" path="goToViewStudent.do" redirect="true"
+	 * @jpf:forward name="success" path="goToViewStudent.do" 
 	 * @jpf:forward name="error" path="addEditStudent.do"
 	 */
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success", 
-					path = "goToViewStudent.do", 
-					redirect = true), 
+					path = "goToViewStudent.do"), 
 					@Jpf.Forward(name = "error",
 							path = "addEditStudent.do")
 	})
