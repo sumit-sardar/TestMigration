@@ -294,6 +294,19 @@ public class ScheduleTestController extends PageFlowController
         form.getTestAdmin().setSessionName(null);
         
         Date now = new Date(System.currentTimeMillis());
+        if(this.user.getTimeZone() == null){
+        	System.out.println("this.user.getTimeZone is NULL");
+        	try
+            {
+        		User userNew = this.scheduleTest.getUserDetails(this.userName, this.userName);
+        		this.user.setTimeZone(userNew.getTimeZone());
+            }
+            catch (CTBBusinessException e)
+            {
+                e.printStackTrace();
+            }
+        	
+        }
         Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
         Date tomorrow = com.ctb.util.DateUtils.getAdjustedDate(new Date(now.getTime() + (24 * 60 * 60 * 1000)), TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
         
