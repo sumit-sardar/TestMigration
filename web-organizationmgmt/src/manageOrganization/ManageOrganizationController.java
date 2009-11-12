@@ -134,6 +134,8 @@ public class ManageOrganizationController extends PageFlowController
         this.savedForm = initialize(globalApp.ACTION_DEFAULT);
         String orgNodeIdString = (String)this.getRequest().getAttribute("orgNodeId");
         String orgNodeName = (String)this.getRequest().getAttribute("orgNodeName");
+        System.out.println("orgNodeIdString............" + orgNodeIdString);
+        System.out.println("orgNodeName................" + orgNodeName);
         Integer orgNodeId = null;
         
         if (orgNodeIdString != null)
@@ -158,6 +160,7 @@ public class ManageOrganizationController extends PageFlowController
         this.savedForm.setOrgNodeName(node.getOrgNodeName());
         this.orgNodePath = setupHierarchy(orgNodeId, null);
         this.isManageOrganization = true;
+        System.out.println("orgNodeId........" + orgNodeId);
         
         return new Forward("success", this.savedForm);
     }
@@ -246,7 +249,9 @@ public class ManageOrganizationController extends PageFlowController
         
         if (currentAction.equals(globalApp.ACTION_VIEW_ORGANIZATION) || currentAction.equals(globalApp.ACTION_ADD_ORGANIZATION) || currentAction.equals(globalApp.ACTION_EDIT_ORGANIZATION) || currentAction.equals(globalApp.ACTION_DELETE_ORGANIZATION))
         {
-            return new Forward(currentAction, form);            
+        	System.out.println("return currentAction");
+            return new Forward(currentAction, form);   
+            
         }                        
         
         if (!this.isToFindOrg && !this.isManageOrganization)
@@ -262,7 +267,7 @@ public class ManageOrganizationController extends PageFlowController
         }                     
         this.isToFindOrg = false;
         
-        
+        System.out.println("this.isToFindOrg==>" + this.isToFindOrg);
         
         handleOrganizationControl(form, null);
         this.isAddFromSideBar = false;
@@ -1677,7 +1682,7 @@ public class ManageOrganizationController extends PageFlowController
         this.getRequest().setAttribute("orgCategoryName", orgCategoryName);   
 		this.getRequest().setAttribute("selectedOrgNodes", this.selectedOrgNodes);
         this.getRequest().setAttribute("orgNodesForSelector", orgNodesForSelector);
-
+        System.out.println(" this.selectedOrgNodes==>" +  this.selectedOrgNodes);
        
         if (selectedOrgNodeId != null) {
          
