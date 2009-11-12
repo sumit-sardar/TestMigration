@@ -136,7 +136,7 @@
         </auth-constraint>
         <user-data-constraint>
             <description>This is how the user data must be transmitted.</description>
-            <transport-guarantee>NONE</transport-guarantee>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
     <login-config>
