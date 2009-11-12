@@ -16,8 +16,8 @@
     if (cookies != null && cookies.length > 0 ) {
 	    for (int i=0 ; i<cookies.length ; i++) {
 	        Cookie c = cookies[i];
-	        if ((c != null) && c.getName().equals("_wl_authcookie_")) {
-                Cookie r = new Cookie("_wl_authcookie_", null);
+	        if ((c != null) && c.getName().equals("_WL_AUTHCOOKIE_TAS_SESSIONID")) {
+                Cookie r = new Cookie(c.getName(), null);
                 r.setMaxAge(0);
                 r.setPath("/");
                 response.addCookie(r);
@@ -26,6 +26,7 @@
 	            request.setAttribute("message", message);
 	            response.sendRedirect("/TestSessionInfoWeb/logout2.jsp?timeout=true");
 	        }
+
 	    }  
     }
 %>

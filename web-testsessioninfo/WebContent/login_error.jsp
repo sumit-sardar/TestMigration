@@ -28,7 +28,7 @@
         for (int i=0 ; i<cookies.length ; i++) {
             Cookie c = cookies[i];
             if (c != null) {
-                if (c.getName().equals("TAS_SESSIONID") || c.getName().equals("_wl_authcookie_")) {                
+    	        if ((c != null) && c.getName().equals("_WL_AUTHCOOKIE_TAS_SESSIONID")) {
                     Cookie r = new Cookie(c.getName(), null);
                     r.setMaxAge(0);
                     r.setPath("/");
