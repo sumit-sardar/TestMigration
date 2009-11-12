@@ -263,15 +263,15 @@ public class ManageUserController extends PageFlowController
      * handle find users by profile and hierarchy
      * @jpf:action
      * @jpf:forward name="success" path="find_user.jsp"
-     * @jpf:forward name="gotoNextAction" path="gotoNextAction.do" 
+     * @jpf:forward name="gotoNextAction" path="gotoNextAction.do" redirect="true"
      * 
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "find_user.jsp"), 
         @Jpf.Forward(name = "gotoNextAction", 
-                     path = "gotoNextAction.do") 
-                     
+                     path = "gotoNextAction.do", 
+                     redirect = true)
     })
     protected Forward findUser(ManageUserForm form)
     {        
@@ -1802,7 +1802,7 @@ public class ManageUserController extends PageFlowController
      * @jpf:action
      * @jpf:forward name="addUser" path="addUser.do"
      * @jpf:forward name="findUser" path="returnToFindUser.do"
-     * @jpf:forward name="viewUser" path="returnToViewUser.do" 
+     * @jpf:forward name="viewUser" path="returnToViewUser.do" redirect="true"
      * @jpf:forward name="editUser" path="beginEditUser.do"
      * @jpf:forward name="myProfile" path="myProfile.do"
      * @jpf:forward name="defaultAction" path="defaultAction.do"
@@ -1813,8 +1813,8 @@ public class ManageUserController extends PageFlowController
         @Jpf.Forward(name = "findUser",
                      path = "returnToFindUser.do"), 
         @Jpf.Forward(name = "viewUser", 
-                     path = "returnToViewUser.do"), 
-                    
+                     path = "returnToViewUser.do", 
+                     redirect = true), 
         @Jpf.Forward(name = "editUser",
                      path = "beginEditUser.do"), 
         @Jpf.Forward(name = "myProfile",
