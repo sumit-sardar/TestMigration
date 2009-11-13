@@ -79,7 +79,15 @@
     </tr>
 
 <netui-data:repeater dataSource="requestScope.orgNodes">
+    <netui-data:repeaterHeader>
     
+    <tr class="sortable">
+        <ctb:tableSortColumnGroup columnDataSource="actionForm.orgSortColumn" orderByDataSource="actionForm.orgSortOrderBy}" >
+            <th class="sortable alignCenter" nowrap>&nbsp;<netui:content value="${bundle.web['common.column.select']}"/>&nbsp;</th>                
+        </ctb:tableSortColumnGroup>
+    </tr>
+    
+    </netui-data:repeaterHeader>
     <netui-data:repeaterItem>
     
     <tr class="sortable">
