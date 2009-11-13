@@ -11,6 +11,7 @@ import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.CTBConstants;
+import com.ctb.util.OASLogger;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.widgets.bean.PathListEntry;
@@ -30,6 +31,7 @@ import utils.OrgFormUtils;
 import utils.OrgNodeUtils;
 import utils.OrgPathListUtils;
 import utils.PermissionsUtils;
+import com.ctb.util.OASLogger;
 
 
 /**
@@ -148,6 +150,7 @@ public class ManageOrganizationController extends PageFlowController
         this.parentOrgNodeIdForAdd = orgNodeId;   
         //retrive parentOrganization for orgNodeId
         Node node = getParentOrgNode(orgNodeId, this.savedForm);
+        System.out.println("Node.."+ node.getOrgNodeName());
         //retrive actual pageRequest for orgNodeId
         SortParams sort = FilterSortPageUtils.buildSortParams(this.savedForm.getOrgSortColumn(), this.savedForm.getOrgSortOrderBy(), null, null);
         HashMap pageSummary = getPageSummary(node.getOrgNodeId(), orgNodeId, sort);
@@ -268,7 +271,7 @@ public class ManageOrganizationController extends PageFlowController
         this.isToFindOrg = false;
         
         System.out.println("this.isToFindOrg==>" + this.isToFindOrg);
-        
+        OASLogger.getLogger("findorg....").debug(String.valueOf(this.isToFindOrg));
         handleOrganizationControl(form, null);
         this.isAddFromSideBar = false;
         this.isCancelFromAdd = false;
@@ -874,7 +877,7 @@ public class ManageOrganizationController extends PageFlowController
             
             if (this.globalApp.navPath.getPreviousAction().equals(globalApp.ACTION_ADD_ORGANIZATION) || globalApp.ACTION_ADD_ORGANIZATION.equals(form.getPreviousAction()))
             { 
-                if (form.getActionElement().equals("{actionForm.actionElement}"))
+                if (form.getActionElement().equals("actionElement"))
                 { 
                     
                     initOrgLevelOption(globalApp.ACTION_ADD_ORGANIZATION, form.getSelectedOrgNodeId(), null); 
@@ -891,7 +894,7 @@ public class ManageOrganizationController extends PageFlowController
             else if (this.globalApp.navPath.getPreviousAction().equals(globalApp.ACTION_EDIT_ORGANIZATION) || globalApp.ACTION_EDIT_ORGANIZATION.equals(form.getPreviousAction()) || this.globalApp.navPath.getPreviousAction().equals(globalApp.ACTION_VIEW_ORGANIZATION))
             { 
                             
-                if (form.getActionElement().equals("{actionForm.actionElement}"))
+                if (form.getActionElement().equals("actionElement"))
                 { 
                     
                     initOrgLevelOption(globalApp.ACTION_ADD_ORGANIZATION, form.getSelectedOrgNodeId(), null); 
@@ -1675,7 +1678,12 @@ public class ManageOrganizationController extends PageFlowController
             if( this.currentOrgNodeIds.length != 0 && !this.isCancelFromAdd ) 
                 form.setSelectedOrgNodeId(this.currentOrgNodeIds[0]);               
         }
-         
+        
+        OASLogger.getLogger("FindOrganization orgNodePath").debug(this.orgNodePath.toString());
+        OASLogger.getLogger("FindOrganization orgNodes").debug(orgNodes.toString());
+        OASLogger.getLogger("FindOrganization selectedOrgNodes").debug(this.selectedOrgNodes.toString());
+        OASLogger.getLogger("FindOrganization").debug(this.orgNodePath.toString());
+        
         this.getRequest().setAttribute("orgNodePath", this.orgNodePath);
         this.getRequest().setAttribute("orgNodes", orgNodes);        
         this.getRequest().setAttribute("orgPagerSummary", orgPagerSummary);

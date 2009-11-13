@@ -71,10 +71,10 @@ function openFile() {
 function submitToAction(toAction, subtestId, status) {
     document.body.style.cursor = 'wait';
     
-    var actionElement = document.getElementById('{actionForm.actionElement}');
+    var actionElement = document.getElementById('actionElement');
     actionElement.value = subtestId;
     
-    var currentAction = document.getElementById('{actionForm.currentAction}');
+    var currentAction = document.getElementById('currentAction');
     currentAction.value = status;
     
     actionElement.form.action = toAction;
@@ -138,7 +138,7 @@ function handleEnterKey(elementId, value) {
         var element = document.getElementById(elementId);
         if(element) {
             element.value = value;
-            var actionElement = document.getElementById('{actionForm.actionElement}');
+            var actionElement = document.getElementById('actionElement');
             if(actionElement) {
                 actionElement.value = elementId;
             }
@@ -240,10 +240,10 @@ function updateOrgNodeSelection(element)
 function setupOrgNodePath(orgId) {
     document.body.style.cursor = 'wait';
     
-    var actionElement = document.getElementById('{actionForm.actionElement}');
+    var actionElement = document.getElementById('actionElement');
     actionElement.value = 'setupOrgNodePath';
     
-    var currentAction = document.getElementById('{actionForm.currentAction}');
+    var currentAction = document.getElementById('currentAction');
     currentAction.value = orgId;
     
     actionElement.form.submit();
@@ -438,8 +438,8 @@ function isDigit(charVal)
 
 function gotoNextStep(step, id, anchorName) 
 {
-    var currentAction = document.getElementById('{actionForm.currentAction}');
-    var actionElement = document.getElementById('{actionForm.actionElement}');
+    var currentAction = document.getElementById('currentAction');
+    var actionElement = document.getElementById('actionElement');
 
     currentAction.value = step;
     actionElement.value = id;
