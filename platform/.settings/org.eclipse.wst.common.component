@@ -30,5 +30,8 @@
         <dependent-module archiveName="dep-weblib-webutils.jar" deploy-path="/" handle="module:/resource/dep-weblib-webutils/dep-weblib-webutils">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="dep-testdelivery-ctrl.jar" deploy-path="/" handle="module:/resource/dep-testdelivery-ctrl/dep-testdelivery-ctrl">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
     </wb-module>
 </project-modules>

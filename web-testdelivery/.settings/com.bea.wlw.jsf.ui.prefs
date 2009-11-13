@@ -1,0 +1,4 @@
+#Thu Nov 12 14:42:48 PST 2009
+defaultJSFTemplate=com.bea.wlw.netui.core.filetemplate.netuiJSF
+eclipse.preferences.version=1
+useProjectSettings.defaultJSFTemplate=true
