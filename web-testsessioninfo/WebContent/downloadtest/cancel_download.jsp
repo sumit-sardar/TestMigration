@@ -18,7 +18,7 @@
 
 <h1><netui:content value="${bundle.web['loadTest.loadTestToWorkstation.title']}"/></h1>
 <p><netui:content value="${bundle.web['loadTest.loadProgress.title.message1']}"/></p>
-<ctb:message title="{bundle.web['loadTest.cancelDownload.title']}" style="alertMessage">
+<ctb:message title="${bundle.web['loadTest.cancelDownload.title']}" style="alertMessage">
     <netui:content value="${bundle.web['loadTest.cancelDownload.message']}"/>
 </ctb:message>
     <br/>

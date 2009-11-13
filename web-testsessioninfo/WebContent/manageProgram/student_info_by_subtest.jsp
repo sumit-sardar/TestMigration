@@ -21,13 +21,13 @@
 <netui-data:getData resultId="formIsClean" value="${requestScope.formIsClean}"/>
 
 <c:if test="${(formIsClean != null) && (! formIsClean)}">
-    <p><ctb:message title="{bundle.web['common.message.form.invalidCharacters']}" style="alertMessage"></ctb:message></p>
+    <p><ctb:message title="${bundle.web['common.message.form.invalidCharacters']}" style="alertMessage"></ctb:message></p>
 </c:if>
 
 <a name="programStatusAnchor"><!-- programStatusAnchor --></a>    
 
 <div id="exportError" style="display:none">
-    <p><ctb:message title="{bundle.web['manageProgram.export.support']}" style="alertMessage"></ctb:message></p>
+    <p><ctb:message title="${bundle.web['manageProgram.export.support']}" style="alertMessage"></ctb:message></p>
 </div>
 
 <table class="sortable">
@@ -138,7 +138,7 @@
     <ctb:tableNoResults dataSource="request.statusList">
         <tr class="sortable">
             <td class="sortable" colspan="5">
-                <ctb:message title="{bundle.web['common.message.noStudent.title']}" style="tableMessage">
+                <ctb:message title="${bundle.web['common.message.noStudent.title']}" style="tableMessage">
                     <netui:content value="${bundle.web['common.message.noStudent.message']}"/>
                 </ctb:message>
             </td>

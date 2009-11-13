@@ -5,7 +5,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
- 
+  
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
@@ -313,13 +313,13 @@
 <netui-data:getData resultId="formIsClean" value="${requestScope.formIsClean}"/>
 
 <c:if test="${(formIsClean != null) && (! formIsClean)}">
-    <p><ctb:message title="{bundle.web['common.message.form.invalidCharacters']}" style="alertMessage"></ctb:message></p>
+    <p><ctb:message title="${bundle.web['common.message.form.invalidCharacters']}" style="alertMessage"></ctb:message></p>
 </c:if>
 
 <a name="programStatusAnchor"><!-- programStatusAnchor --></a>    
 
 <div id="exportError" style="display:none">
-    <p><ctb:message title="{bundle.web['manageProgram.export.support']}" style="alertMessage"></ctb:message></p>
+    <p><ctb:message title="${bundle.web['manageProgram.export.support']}" style="alertMessage"></ctb:message></p>
 </div>
 
 <table class="sortable">
@@ -333,18 +333,18 @@
                 <tr class="tableFilter">
                     <td class="tableFilter alignLeft"><netui:content value="${bundle.web['common.column.sessionName']}"/>:</td>
                     <td class="tableFilter alignLeft"><netui:select optionsDataSource="${pageFlow.nameOptions}" dataSource="actionForm.testStatusFilter.sessionNameFilterType" size="1" defaultValue="${actionForm.testStatusFilter.sessionNameFilterType}" style="width:100px"/></td>
-                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testStatusFilter.sessionName" onChange="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'changeFilter', 'programStatusAnchor');"/></td>                    
+                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testStatusFilter.sessionName" /></td>                    
                     <td class="tableFilter alignLeft"><netui:content value="${bundle.web['common.column.loginId']}"/>:</td>
                     <td class="tableFilter alignLeft"><netui:select optionsDataSource="${pageFlow.nameOptions}" dataSource="actionForm.testStatusFilter.loginIdFilterType" size="1" defaultValue="${actionForm.testStatusFilter.loginIdFilterType}" style="width:100px"/></td>
-                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testStatusFilter.loginId" onChange="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'changeFilter', 'programStatusAnchor');"/></td>                    
+                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testStatusFilter.loginId" /></td>                    
                 </tr>
                 <tr class="tableFilter">
                     <td class="tableFilter alignLeft"><netui:content value="${bundle.web['common.column.sessionId']}"/>:</td>
                     <td class="tableFilter alignLeft"><netui:select optionsDataSource="${pageFlow.nameOptions}" dataSource="actionForm.testStatusFilter.sessionNumberFilterType" size="1" defaultValue="${actionForm.testStatusFilter.sessionNumberFilterType}" style="width:100px"/></td>
-                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testStatusFilter.sessionNumber" onChange="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'changeFilter', 'programStatusAnchor');"/></td>                    
+                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testStatusFilter.sessionNumber" /></td>                    
                     <td class="tableFilter alignLeft"><netui:content value="${bundle.web['common.column.password']}"/>:</td>
                     <td class="tableFilter alignLeft"><netui:select optionsDataSource="${pageFlow.nameOptions}" dataSource="actionForm.testStatusFilter.passwordFilterType" size="1" defaultValue="${actionForm.testStatusFilter.passwordFilterType}" style="width:100px"/></td>
-                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testStatusFilter.password" onChange="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'changeFilter', 'programStatusAnchor');"/></td>                    
+                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testStatusFilter.password" /></td>                    
                 </tr>
                 <tr class="tableFilter">
                     <td class="tableFilter alignLeft">&nbsp;</td>
@@ -352,12 +352,12 @@
                     <td class="tableFilter alignLeft">&nbsp;</td>                    
                     <td class="tableFilter alignLeft"><netui:content value="${bundle.web['common.column.accessCode']}"/>:</td>
                     <td class="tableFilter alignLeft"><netui:select optionsDataSource="${pageFlow.nameOptions}" dataSource="actionForm.testStatusFilter.accessCodeFilterType" size="1" defaultValue="${actionForm.testStatusFilter.accessCodeFilterType}" style="width:100px"/></td>
-                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testStatusFilter.accessCode" onChange="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'changeFilter', 'programStatusAnchor');"/></td>                    
+                    <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testStatusFilter.accessCode" /></td>                    
                 </tr>
                 <tr class="tableFilter">
                     <td class="tableFilter alignRight" colspan="6">
-                        <netui:button styleClass="button" value="${bundle.widgets['button.apply']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'applyFilters', 'programStatusAnchor');"/>&nbsp;
-                        <netui:button styleClass="button" value="${bundle.widgets['button.clearAll']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'clearFilters', 'programStatusAnchor');"/>&nbsp;
+                        <netui:button styleClass="button" value="${bundle.widgets['button.apply']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'applyFilters', 'programStatusAnchor'); " />&nbsp;
+                        <netui:button styleClass="button" value="${bundle.widgets['button.clearAll']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'clearFilters', 'programStatusAnchor'); "/>&nbsp;
                     </td>                        
                 </tr>
                 </table>
@@ -430,7 +430,7 @@
     <ctb:tableNoResults dataSource="request.statusList">
         <tr class="sortable">
             <td class="sortable" colspan="5">
-                <ctb:message title="{bundle.web['common.message.noStudent.title']}" style="tableMessage">
+                <ctb:message title="${bundle.web['common.message.noStudent.title']}" style="tableMessage">
                     <netui:content value="${bundle.web['common.message.noStudent.message']}"/>
                 </ctb:message>
             </td>
