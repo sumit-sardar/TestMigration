@@ -1701,6 +1701,9 @@ public class ManageOrganizationController extends PageFlowController
             this.getRequest().setAttribute("disableButtons", "true");   
         
         }
+        System.out.println("orgSortColumn" + form.getOrgSortColumn());
+        System.out.println("orgSortOrderBy" + form.getOrgSortOrderBy());
+        
     }
 
 
