@@ -164,7 +164,7 @@ public class ManageOrganizationController extends PageFlowController
         this.orgNodePath = setupHierarchy(orgNodeId, null);
         this.isManageOrganization = true;
         System.out.println("orgNodeId........" + orgNodeId);
-        
+        System.out.println("beginmanageOrg pathorgNode......." + this.orgNodePath);
         return new Forward("success", this.savedForm);
     }
 
@@ -271,7 +271,7 @@ public class ManageOrganizationController extends PageFlowController
         this.isToFindOrg = false;
         
         System.out.println("this.isToFindOrg==>" + this.isToFindOrg);
-        OASLogger.getLogger("findorg....").debug(String.valueOf(this.isToFindOrg));
+        
         handleOrganizationControl(form, null);
         this.isAddFromSideBar = false;
         this.isCancelFromAdd = false;
@@ -1516,7 +1516,7 @@ public class ManageOrganizationController extends PageFlowController
             }
             
         }
-        
+        System.out.println("setupOrgNodePath ....." + actionElement);
         if (actionElement.equals("setupOrgNodePath")) {
             String tempOrgNodeId = form.getCurrentAction();  
             
@@ -1679,11 +1679,11 @@ public class ManageOrganizationController extends PageFlowController
                 form.setSelectedOrgNodeId(this.currentOrgNodeIds[0]);               
         }
         
-        OASLogger.getLogger("FindOrganization orgNodePath").debug(this.orgNodePath.toString());
-        OASLogger.getLogger("FindOrganization orgNodes").debug(orgNodes.toString());
-        OASLogger.getLogger("FindOrganization selectedOrgNodes").debug(this.selectedOrgNodes.toString());
-        OASLogger.getLogger("FindOrganization").debug(this.orgNodePath.toString());
-        
+        System.out.println("FindOrganization orgNodePath..." + this.orgNodePath.toString());
+        System.out.println("FindOrganization orgNodes...."+orgNodes.toString());
+        System.out.println("FindOrganization selectedOrgNodes....."+ this.selectedOrgNodes.toString());
+        System.out.println("FindOrganization......"+this.orgNodePath.toString());
+        System.out.println("orgCategoryName......"+orgCategoryName);
         this.getRequest().setAttribute("orgNodePath", this.orgNodePath);
         this.getRequest().setAttribute("orgNodes", orgNodes);        
         this.getRequest().setAttribute("orgPagerSummary", orgPagerSummary);
