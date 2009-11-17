@@ -149,7 +149,7 @@ function $()
 
 function enableDownload()
 { 
-   var element = document.getElementById("actionOverride:downloadTemplate");
+   var element = getSafeElement("actionOverride:downloadTemplate");
    element.removeAttribute("disabled"); 
 }
 
