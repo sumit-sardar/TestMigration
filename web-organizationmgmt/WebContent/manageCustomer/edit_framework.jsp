@@ -32,14 +32,14 @@
 <netui:form action="editFramework">
 
 	<netui:hidden dataSource="actionForm.selectedCustomerId"/>
-	<netui:hidden tagId="customerMaxPage" dataSource="actionForm.customerMaxPage"/>
-	<netui:hidden tagId="customerPageRequested" dataSource="actionForm.customerPageRequested"/>
+	<netui:hidden  dataSource="actionForm.customerMaxPage"/>
+	<netui:hidden  dataSource="actionForm.customerPageRequested"/>
 	<netui:hidden dataSource="actionForm.customerSortColumn"/>
 	<netui:hidden dataSource="actionForm.customerSortOrderBy"/>
 	<netui:hidden dataSource="actionForm.byCustomerProfileVisible"/> 
 	<netui:hidden dataSource="actionForm.byCustomerBillingVisible"/> 
 	<netui:hidden dataSource="actionForm.byCustomerMailingVisible"/>
-	<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement" /> 
+	<netui:hidden  dataSource="actionForm.actionElement" /> 
 	
 	
 	

@@ -45,8 +45,8 @@
 <netui:form action="addOrganization">
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.selectedOrgName}" />
 
-<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/> 
-<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
+<netui:hidden  dataSource="actionForm.actionElement"/> 
+<netui:hidden  dataSource="actionForm.currentAction"/>
 <netui:hidden dataSource="actionForm.previousParentId"/>
 <netui:hidden dataSource="actionForm.previousParentName"/>
 <netui:hidden dataSource="actionForm.selectedOrgNodeName"/>
@@ -126,7 +126,7 @@
     <tr class="sortable">
         <td class="sortable alignCenter">
             <netui-data:getData resultId="isSelectable" value="${container.item.selectable}"/>
-        
+        	
             <c:if test="${isSelectable == 'false'}">                            
                 <netui:radioButtonGroup dataSource="actionForm.selectedOrgNodeId" disabled="true">
                     &nbsp;<netui:radioButtonOption value="${container.item.id}">&nbsp;</netui:radioButtonOption>                
@@ -134,8 +134,9 @@
             </c:if>
             <c:if test="${isSelectable == 'true'}">               
                 <netui-data:getData resultId="orgNodeName" value="${container.item.name}"/>
+                
                 <netui-data:getData resultId="orgNodeId" value="${container.item.id}"/>
-                <% 
+                  <% 
                     String orgNodeName = (String)pageContext.getAttribute("orgNodeName"); 
                     Integer orgNodeId = (Integer)pageContext.getAttribute("orgNodeId"); 
                     String orgNodeIdStr = orgNodeId.toString(); 
@@ -149,7 +150,7 @@
                 </c:if>
                 <c:if test="${orgNodeName != 'CTB'}">
                 <netui:radioButtonGroup dataSource="actionForm.selectedOrgNodeId">
-                    &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="updateOrgNodeSelection(this); setElementValueAndSubmitWithAnchor('actionElement', '${actionForm.actionElement}', 'userSearchResult');">&nbsp;</netui:radioButtonOption>                
+                    &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="updateOrgNodeSelection(this); setElementValueAndSubmitWithAnchor('{actionForm.actionElement}', '${actionForm.actionElement}', 'userSearchResult');">&nbsp;</netui:radioButtonOption>                
                 </netui:radioButtonGroup>
                 </c:if>                
             </c:if>

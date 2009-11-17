@@ -55,6 +55,17 @@ function enableButtons() {
     enableElementById("Add");
 }
 
+function getSafeElement( elementId ) {
+	var element = document.getElementById(elementId);
+	if (element == null) {
+		var elements = document.getElementsByName(elementId);
+		if (elements != null) {
+			element = elements[0];
+		}
+	}
+	return element;
+}
+
 function openFile() {    
     var inputs=document.getElementsByTagName("input");
     for (var i=0; i < inputs.length; i++) {
@@ -71,10 +82,10 @@ function openFile() {
 function submitToAction(toAction, subtestId, status) {
     document.body.style.cursor = 'wait';
     
-    var actionElement = document.getElementById('actionElement');
+    var actionElement = getSafeElement('{actionForm.actionElement}');
     actionElement.value = subtestId;
     
-    var currentAction = document.getElementById('currentAction');
+    var currentAction = getSafeElement('{actionForm.currentAction}');
     currentAction.value = status;
     
     actionElement.form.action = toAction;
@@ -88,7 +99,7 @@ function setupStates(name) {
     enableElementById("Delete");
     enableElementById("Add");
 
-    var element = document.getElementById("{actionForm.selectedOrgNodeName}");
+    var element = getSafeElement("{actionForm.selectedOrgNodeName}");
     if (element) {
         element.value = name;
     }
@@ -138,7 +149,7 @@ function handleEnterKey(elementId, value) {
         var element = document.getElementById(elementId);
         if(element) {
             element.value = value;
-            var actionElement = document.getElementById('actionElement');
+            var actionElement = getSafeElement('{actionForm.actionElement}');
             if(actionElement) {
                 actionElement.value = elementId;
             }
@@ -152,7 +163,7 @@ function handleEnterKey(elementId, value) {
 function verifyDeleteOrganization(){
     var ret = confirm("Click 'OK' to delete this Organization member.");    
     if (ret == true) {
-        setElementValue('currentAction', 'deleteOrganization')    
+        setElementValue('{actionForm.currentAction}', 'deleteOrganization')    
         return true;
     }
     return false;    
@@ -161,7 +172,7 @@ function verifyDeleteOrganization(){
 function verifyDeleteFile(){
     var ret = confirm("Click 'OK' to delete this File.");    
     if (ret == true) {
-        setElementValue('currentAction', 'deleteFile')    
+        setElementValue('{actionForm.currentAction}', 'deleteFile')    
         return true;
     }
     return false;    
@@ -240,10 +251,10 @@ function updateOrgNodeSelection(element)
 function setupOrgNodePath(orgId) {
     document.body.style.cursor = 'wait';
     
-    var actionElement = document.getElementById('actionElement');
+    var actionElement = getSafeElement('{actionForm.actionElement}');
     actionElement.value = 'setupOrgNodePath';
     
-    var currentAction = document.getElementById('currentAction');
+    var currentAction = getSafeElement('{actionForm.currentAction}');
     currentAction.value = orgId;
     
     actionElement.form.submit();
@@ -438,8 +449,8 @@ function isDigit(charVal)
 
 function gotoNextStep(step, id, anchorName) 
 {
-    var currentAction = document.getElementById('currentAction');
-    var actionElement = document.getElementById('actionElement');
+    var currentAction = getSafeElement('{actionForm.currentAction}');
+    var actionElement = getSafeElement('{actionForm.actionElement}');
 
     currentAction.value = step;
     actionElement.value = id;

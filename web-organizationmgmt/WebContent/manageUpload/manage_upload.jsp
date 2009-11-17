@@ -47,8 +47,8 @@
 <!-- start form -->
 <netui:form action="manageUpload" enctype="multipart/form-data" method="post">
 <!-- hidden parameters-->
-<netui:hidden tagid="actionElement" dataSource="actionForm.actionElement"/> 
-<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
+<netui:hidden  dataSource="actionForm.actionElement"/> 
+<netui:hidden  dataSource="actionForm.currentAction"/>
 <netui:hidden dataSource="actionForm.fileMaxPage"/> 
 <netui:hidden tagId="uploadStatus" dataSource="requestScope.uploadStatus"/>
 

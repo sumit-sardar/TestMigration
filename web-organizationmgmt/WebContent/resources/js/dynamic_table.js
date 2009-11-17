@@ -611,7 +611,7 @@ function collectData()
         return false;    
     }
     
-    var actionElement = document.getElementById("actionElement");
+    var actionElement = getSafeElement('{actionForm.actionElement}');
     actionElement.value = dataList;
     
     return true;

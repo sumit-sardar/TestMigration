@@ -27,8 +27,8 @@
 <netui:form action="viewOrganization">
 
 
-<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/> 
-<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
+<netui:hidden  dataSource="actionForm.actionElement"/> 
+<netui:hidden  dataSource="actionForm.currentAction"/>
 <netui:hidden dataSource="actionForm.selectedOrgChildNodeId"/>
 <netui:hidden dataSource="actionForm.selectedOrgNodeId"/>
 <netui:hidden dataSource="actionForm.orgMaxPage"/>

@@ -24,13 +24,12 @@
 <!-- start form -->
 <netui:form action="findOrganization">
 
-<netui:hidden tagid="actionElement" dataSource="actionForm.actionElement"/> 
-<netui:hidden tagid="currentAction" dataSource="actionForm.currentAction"/>
+<netui:hidden  dataSource="actionForm.actionElement"/> 
+<netui:hidden  dataSource="actionForm.currentAction"/>
 
 <netui:hidden dataSource="actionForm.orgMaxPage"/> 
 <netui:hidden dataSource="actionForm.selectedOrgNodeName"/>
 <%--<netui:hidden dataSource="{actionForm.previousParentName}" />--%>
-
 
 
 
@@ -71,10 +70,10 @@
 
     <tr class="sortable">
         <td class="sortableControls" colspan="3" height="30" style="border-style: solid; border-width: 1px">&nbsp;
-            <netui:button tagId="View" type="submit" value=" View " onClick="setElementValue('currentAction', 'viewOrganization');" disabled="${requestScope.disableViewButton}"/>
-            <netui:button tagId="Edit" type="submit" value=" Edit " onClick="setElementValue('currentAction', 'editOrganization');" disabled="${requestScope.disableEditButton}"/>
+            <netui:button tagId="View" type="submit" value=" View " onClick="setElementValue('{actionForm.currentAction}', 'viewOrganization');" disabled="${requestScope.disableViewButton}"/>
+            <netui:button tagId="Edit" type="submit" value=" Edit " onClick="setElementValue('{actionForm.currentAction}', 'editOrganization');" disabled="${requestScope.disableEditButton}"/>
             <netui:button tagId="Delete" type="submit" value="Delete" onClick="return verifyDeleteOrganization();" disabled="${requestScope.disableDeleteButton}"/>
-            <netui:button tagId="Add" type="submit" value="Add Organization" onClick="setElementValue('currentAction', 'addOrganization');" disabled="${requestScope.disableADDButton}"/>
+            <netui:button tagId="Add" type="submit" value="Add Organization" onClick="setElementValue('{actionForm.currentAction}', 'addOrganization');" disabled="${requestScope.disableADDButton}"/>
         </td>
     </tr>
 

@@ -23,8 +23,8 @@
 <!-- start form -->
 <netui:form action="manageLicense">
 
-<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/> 
-<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
+<netui:hidden  dataSource="actionForm.actionElement"/> 
+<netui:hidden  dataSource="actionForm.currentAction"/>
 
 <netui:hidden dataSource="actionForm.orgMaxPage"/> 
 
@@ -44,7 +44,7 @@
 <tr class="transparent">
     <td class="transparent">Product:</td>
     <td class="transparent">
-        <netui:select dataSource="pageFlow.productName" optionsDataSource="${pageFlow.productNameOptions}" size="1" multiple="false" onChange="setElementValueAndSubmit('currentAction', 'changeProduct');">
+        <netui:select dataSource="pageFlow.productName" optionsDataSource="${pageFlow.productNameOptions}" size="1" multiple="false" onChange="setElementValueAndSubmit('{currentAction}', 'changeProduct');">
         </netui:select>
     </td>
 </tr>

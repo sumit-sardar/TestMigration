@@ -877,7 +877,7 @@ public class ManageOrganizationController extends PageFlowController
             
             if (this.globalApp.navPath.getPreviousAction().equals(globalApp.ACTION_ADD_ORGANIZATION) || globalApp.ACTION_ADD_ORGANIZATION.equals(form.getPreviousAction()))
             { 
-                if (form.getActionElement().equals("actionElement"))
+                if (form.getActionElement().equals("{actionForm.actionElement}"))
                 { 
                     
                     initOrgLevelOption(globalApp.ACTION_ADD_ORGANIZATION, form.getSelectedOrgNodeId(), null); 
@@ -894,7 +894,7 @@ public class ManageOrganizationController extends PageFlowController
             else if (this.globalApp.navPath.getPreviousAction().equals(globalApp.ACTION_EDIT_ORGANIZATION) || globalApp.ACTION_EDIT_ORGANIZATION.equals(form.getPreviousAction()) || this.globalApp.navPath.getPreviousAction().equals(globalApp.ACTION_VIEW_ORGANIZATION))
             { 
                             
-                if (form.getActionElement().equals("actionElement"))
+                if (form.getActionElement().equals("{actionForm.actionElement}"))
                 { 
                     
                     initOrgLevelOption(globalApp.ACTION_ADD_ORGANIZATION, form.getSelectedOrgNodeId(), null); 
@@ -1553,7 +1553,7 @@ public class ManageOrganizationController extends PageFlowController
                                 pageSize);
        
         }    
-           
+        System.out.println("OrgPathListUtils orgNodeId" + orgNodeId); 
         NodeData und = OrgPathListUtils.getOrganizationNodes(this.userName, 
                                 this.organizationManagement, orgNodeId, filter, page, sort);         
         if( form.getOrgPageRequested() == null ||  und.getFilteredPages() == null) {

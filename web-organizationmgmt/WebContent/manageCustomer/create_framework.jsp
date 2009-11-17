@@ -35,7 +35,7 @@
 <netui:hidden dataSource="actionForm.byCustomerProfileVisible"/> 
 <netui:hidden dataSource="actionForm.byCustomerBillingVisible"/> 
 <netui:hidden dataSource="actionForm.byCustomerMailingVisible"/> 
-<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/> 
+<netui:hidden  dataSource="actionForm.actionElement"/> 
 
 <h1>
     <netui:content value="${pageFlow.pageTitle}"/>

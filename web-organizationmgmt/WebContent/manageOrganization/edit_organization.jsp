@@ -43,8 +43,8 @@
 <netui:form action="editOrganization">
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.selectedOrgName}" />
 
-<netui:hidden tagid="actionElement" dataSource="actionForm.actionElement"/> 
-<netui:hidden tagid="currentAction" dataSource="actionForm.currentAction"/>
+<netui:hidden  dataSource="actionForm.actionElement"/> 
+<netui:hidden  dataSource="actionForm.currentAction"/>
 <netui:hidden dataSource="actionForm.selectedOrgChildNodeId"/>
 <netui:hidden dataSource="actionForm.selectedOrgNodeName"/>
 <netui:hidden dataSource="actionForm.previousParentId"/>
@@ -149,7 +149,7 @@
                 %> 
                 <input type="hidden" id="<%=orgNodeId%>" name="<%=orgNodeId%>" value="<%=orgNodeName%>">
                 <netui:radioButtonGroup dataSource="actionForm.selectedOrgNodeId">
-                    &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="updateOrgNodeSelection(this);setElementValueAndSubmitWithAnchor('actionElement', '${actionForm.actionElement}', 'userSearchResult');">&nbsp;</netui:radioButtonOption>                
+                    &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="updateOrgNodeSelection(this);setElementValueAndSubmitWithAnchor('{actionForm.actionElement}', '${actionForm.actionElement}', 'userSearchResult');">&nbsp;</netui:radioButtonOption>                
                 </netui:radioButtonGroup>                
             </c:if>
         </td>        

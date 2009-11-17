@@ -32,13 +32,13 @@ function setElementValue(elementId, value) {
 }
 
 function setElementValue(elementId, value, submitForm) {
-    var element = document.getElementById(elementId);
+    var element = getSafeElement(elementId);
     var oldElementVal = element.value;
 
     if( element ) {
         element.value = value;
 
-        var actionElement = document.getElementById('actionElement');
+        var actionElement = getSafeElement('{actionForm.actionElement}');
         if( actionElement ) {
             actionElement.value = elementId;
         }
@@ -47,10 +47,10 @@ function setElementValue(elementId, value, submitForm) {
 
             document.body.style.cursor = 'wait';
             if(oldElementVal == "moduleUploadFile" && element.value != "moduleUploadFile") {
-                var status = document.getElementById("{request.uploadStatus}");
+                var status = getSafeElement("{request.uploadStatus}");
                 if(status != null && status.value == "uploadFile") {
         //alert("status.value :" + status.value);        
-                    var txtField = document.getElementById("{actionForm.theFile}");
+                    var txtField = getSafeElement("{actionForm.theFile}");
                     txtField.setAttribute("disabled",true);
                 }
             }
@@ -63,19 +63,17 @@ function setElementValue(elementId, value, submitForm) {
     }
 }
 
-
-
 function setElementValueAndSubmit(elementId, value) {
     setElementValue( elementId, value, true );
 }
 
 function setElementValueAndSubmitWithAnchor(elementId, value, anchorName) {
-    var element = document.getElementById(elementId);
+    var element = getSafeElement(elementId);
 
     if( element ) {
         element.value = value;
 
-        var actionElement = document.getElementById('actionElement');
+        var actionElement = getSafeElement('{actionForm.actionElement}');
         if( actionElement ) {
             actionElement.value = elementId;
         }
@@ -98,7 +96,7 @@ function setElementValueAndSubmitWithAnchor(elementId, value, anchorName) {
 
 
 function enableElementById(elementId) {
-    var element = document.getElementById(elementId);
+    var element = getSafeElement(elementId);
     
     if( element != null) {
         element.removeAttribute("disabled");      
@@ -113,7 +111,7 @@ function constrainNumericKeyEvent( e, element, id, anchorName ) {
     var results = false;
     
     if ( keyId == 13 ) {
-        var actionElement = document.getElementById('actionElement');
+        var actionElement = getSafeElement('{actionForm.actionElement}');
         if( actionElement ) {
             if ( id != null )
                 actionElement.value = "EnterKeyInvoked_" + id;
@@ -145,7 +143,7 @@ function constrainNumericKeyEvent( e, element, id, anchorName ) {
 }
 
 function buttonGoInvoked( id, anchorName ) {
-    var actionElement = document.getElementById('actionElement');
+    var actionElement = getSafeElement('{actionForm.actionElement}');
     if( actionElement ) {
         if (id != null)
             actionElement.value = "ButtonGoInvoked_" + id;
