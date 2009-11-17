@@ -473,7 +473,7 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
            Integer [] prodId = message.getFrameworkProductForUser(userName);
            //System.out.println("getBroadcastMessages productId" + prodId[0].intValue());
            Integer pageSize = null;
-           String qString = "''";
+          String qString = "''";
            
            if (prodId != null && prodId.length > 0 ){
         	   qString = SQLutils.convertArraytoString(prodId);
@@ -712,7 +712,7 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
      */
     public RosterElementData getRosterForTestSession(String userName, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
     {
-        validator.validateAdmin(userName, testAdminId, "testAdmin.getRosterElementsForTestSession");
+     validator.validateAdmin(userName, testAdminId, "testAdmin.getRosterElementsForTestSession");
         try {
             RosterElementData red = new RosterElementData();
             Integer pageSize = null;
@@ -1258,7 +1258,8 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
         validator.validateNode(userName, orgNodeId, "TestSessionStatusImpl.getAncestorOrganizationNodesForOrgNode");
         try {
             Integer [] topOrgNodeIds = customerConfiguration.getTopOrgNodeIdsForUser(userName);
-            OrganizationNode [] orgNodes = customerConfiguration.getAncestorOrganizationNodesForOrgNodeAtAndBelowTopOrgNodes(orgNodeId, SQLutils.convertArraytoString(topOrgNodeIds));
+            String findInColumn = "ona1.ancestor_org_node_id in ";
+            OrganizationNode [] orgNodes = customerConfiguration.getAncestorOrganizationNodesForOrgNodeAtAndBelowTopOrgNodes(orgNodeId, SQLutils.generateSQLCriteria(findInColumn ,topOrgNodeIds));
             return orgNodes;
         } catch (SQLException se) {
             OrgNodeDataNotFoundException one = new OrgNodeDataNotFoundException("TestSessionStatusImpl: getAncestorOrganizationNodesForOrgNode: " + se.getMessage());

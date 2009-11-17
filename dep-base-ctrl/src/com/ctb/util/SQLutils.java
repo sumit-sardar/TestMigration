@@ -60,7 +60,8 @@ public class SQLutils {
 		}
 
 		temp = temp.substring(0, temp.length() - 1);
-		temp = columnName+temp+")";
+		temp = columnName + "( "+ temp+")";
+		
 		return temp;
 	}
 

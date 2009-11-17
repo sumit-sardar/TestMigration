@@ -932,7 +932,7 @@ public class OrganizationManagementImpl implements OrganizationManagement, Seria
 
         try {
              topOrgNodeIds = orgNode.getTopOrgNodeIdsForUser(userName);
-             String findInColumn = "ona1.ancestor_org_node_id in (";
+             String findInColumn = "ona1.ancestor_org_node_id in ";
              nodes = orgNode.getAncestorOrganizationNodesForOrgNodeAtAndBelowTopOrgNodes(
                                                                                 orgNodeId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
             return nodes;
