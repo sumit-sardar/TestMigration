@@ -122,12 +122,12 @@ public interface OrgNodeStudent extends JdbcControl
      *     org_node_student
      * where student_id = {studentId}
      *      and org_node_id in (select distinct ona.org_node_id from org_node_ancestor ona 
-     *      where ona.ANCESTOR_ORG_NODE_ID in ({orgNodeIds}) 
+     *      where {sql: searchCriteria} 
      * 	 )
      * ::
     */ 
-    @JdbcControl.SQL(statement = "select \tstudent_id as studentId, \torg_node_id as orgNodeId, \tcreated_date_time as createdDateTime, \tcreated_by as createdBy, \tcustomer_id as customerId, \tupdated_by as updatedBy,  \tupdated_date_time as updatedDateTime, \tactivation_status as activationStatus,  \tdata_import_history_id as dataImportHistoryId from  org_node_student where student_id = {studentId}  and org_node_id in (select distinct ona.org_node_id from org_node_ancestor ona  where ona.ANCESTOR_ORG_NODE_ID in ({orgNodeIds})  \t )")
-    com.ctb.bean.testAdmin.OrgNodeStudent [] getOrgNodeStudentForStudentAtAndBelowOrgNodes(Integer studentId, String orgNodeIds) throws SQLException;
+    @JdbcControl.SQL(statement = "select \tstudent_id as studentId, \torg_node_id as orgNodeId, \tcreated_date_time as createdDateTime, \tcreated_by as createdBy, \tcustomer_id as customerId, \tupdated_by as updatedBy,  \tupdated_date_time as updatedDateTime, \tactivation_status as activationStatus,  \tdata_import_history_id as dataImportHistoryId from  org_node_student where student_id = {studentId}  and org_node_id in (select distinct ona.org_node_id from org_node_ancestor ona  where {sql: searchCriteria}  \t )")
+    com.ctb.bean.testAdmin.OrgNodeStudent [] getOrgNodeStudentForStudentAtAndBelowOrgNodes(Integer studentId, String searchCriteria) throws SQLException;
 
     /**
      * @jc:sql statement::
