@@ -50,7 +50,7 @@ public class SQLutils {
 	 * @return
 	 */
 
-	public static String generateSQLCriteria (Integer []orgnodeId) {
+	public static String generateSQLCriteria (String columnName, Integer []orgnodeId) {
 
 		String temp = "";
 
@@ -60,7 +60,7 @@ public class SQLutils {
 		}
 
 		temp = temp.substring(0, temp.length() - 1);
-		temp = "ona.ancestor_org_node_id in ("+temp+")";
+		temp = columnName+temp+")";
 		return temp;
 	}
 

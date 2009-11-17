@@ -454,7 +454,8 @@ public class UserManagementImpl implements UserManagement, Serializable
                 System.out.println("searchCriteria" + searchCriteria);
                 //searchCriteria = "'"+"TAI"+"'";
                 //System.out.println("searchCriteria===>"+searchCriteria);
-                String searchCriteriaTemp = SQLutils.generateSQLCriteria(orgNodeIds); 
+                String findInColumn = "ona.ancestor_org_node_id in (";
+                String searchCriteriaTemp = SQLutils.generateSQLCriteria(findInColumn,orgNodeIds); 
                 findUsers = users.getUsersAtOrBelowNodesForActManager(
                 		searchCriteriaTemp,searchCriteria);
          
@@ -494,11 +495,11 @@ public class UserManagementImpl implements UserManagement, Serializable
                 continue;
             }
             
-           
+                String findInColumn = "ona.ancestor_org_node_id in (";
             	Node[] orgNodes = 
                     orgNode.getAssignedBelowOrgNodes(
                                 userData.getUsers()[i].getUserId(), 
-                                SQLutils.convertArraytoString(orgNodeIds));
+                                SQLutils.generateSQLCriteria(findInColumn,orgNodeIds));
             	
            
             
@@ -596,7 +597,8 @@ public class UserManagementImpl implements UserManagement, Serializable
                 }*/
                 //searchCriteria = searchCriteria + orderByClause;
                 System.out.println("searchCriteria" + searchCriteria);
-                String searchCriteriaTemp = SQLutils.generateSQLCriteria(orgNodeIds);
+                String findInColumn = "ona.ancestor_org_node_id in (";
+                String searchCriteriaTemp = SQLutils.generateSQLCriteria(findInColumn,orgNodeIds);
                 findUsers = users.getUsersAtOrBelowNodesForActManager(searchCriteriaTemp,searchCriteria);
          
         } else {
@@ -633,11 +635,11 @@ public class UserManagementImpl implements UserManagement, Serializable
                         || userData.getUsers()[i].getUserId() == null) {
                 continue;
             }
-          
+            String findInColumn = "ona.ancestor_org_node_id in (";
             	Node[] orgNodes = 
                     orgNode.getAssignedBelowOrgNodes(
                                 userData.getUsers()[i].getUserId(), 
-                                SQLutils.convertArraytoString(orgNodeIds));
+                                SQLutils.generateSQLCriteria(findInColumn,orgNodeIds));
             	
            
             /*Node[] orgNodes = 
@@ -700,9 +702,9 @@ public class UserManagementImpl implements UserManagement, Serializable
             user.setRole(userRole);
             //retrive organization node details by passing Array of organozation nodeId
           
-            	
+            String findInColumn = "ona.ancestor_org_node_id in (";	
             Node[] orgNodes = orgNode.getAssignedBelowOrgNodes(user.getUserId(),
-            			SQLutils.convertArraytoString(loginUserOrgNodeIds));
+            			SQLutils.generateSQLCriteria(findInColumn,loginUserOrgNodeIds));
             
             user.setOrganizationNodes(orgNodes);
             String enableflag = getPermisssion(loginUser.getUserId(), 
@@ -774,9 +776,9 @@ public class UserManagementImpl implements UserManagement, Serializable
             Role userRole = roles.getActiveRoleForUser(selectedUser);
             user.setRole(userRole);
             //retrive organization node details by passing Array of organozation nodeId
-            
+            String findInColumn = "ona.ancestor_org_node_id in (";
             Node[] orgNodes = orgNode.getAssignedBelowOrgNodes(user.getUserId(),
-        			SQLutils.convertArraytoString(loginUserOrgNodeIds));
+        			SQLutils.generateSQLCriteria(findInColumn,loginUserOrgNodeIds));
            // Node[] orgNodes = orgNode.getAssignedBelowOrgNodes(user.getUserId(),
                                                            //  loginUserOrgNodeIds);
             user.setOrganizationNodes(orgNodes);
@@ -834,8 +836,9 @@ public class UserManagementImpl implements UserManagement, Serializable
 
         try {
              topOrgNodeIds = orgNode.getTopOrgNodeIdsForUser(userName);
+             String findInColumn = "ona1.ancestor_org_node_id in (";
              userNodes = orgNode.getAncestorOrganizationNodesForOrgNodeAtAndBelowTopOrgNodes(
-                                                                                orgNodeId, SQLutils.convertArraytoString(topOrgNodeIds));
+                                                                                orgNodeId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
             return userNodes;
         } catch (SQLException se) {
             OrgNodeDataNotFoundException nodeNotFoundException = 
@@ -1273,10 +1276,10 @@ public class UserManagementImpl implements UserManagement, Serializable
                 if (userData.getUsers()[i] != null &&
                         userData.getUsers()[i].getUserId() != null) {
                 	
-                	
+                	String findInColumn = "ona.ancestor_org_node_id in (";
                     Node[] orgNodes = 
                             orgNode.getAssignedBelowOrgNodes(
-                                        userData.getUsers()[i].getUserId(), SQLutils.convertArraytoString(orgNodeIds));
+                                        userData.getUsers()[i].getUserId(), SQLutils.generateSQLCriteria(findInColumn,orgNodeIds));
                     userData.getUsers()[i].setOrganizationNodes(orgNodes);                
                    
                     String enableflag = getPermisssion(loginUser.getUserId(), 

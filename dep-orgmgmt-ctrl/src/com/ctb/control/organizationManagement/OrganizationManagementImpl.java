@@ -932,8 +932,9 @@ public class OrganizationManagementImpl implements OrganizationManagement, Seria
 
         try {
              topOrgNodeIds = orgNode.getTopOrgNodeIdsForUser(userName);
+             String findInColumn = "ona1.ancestor_org_node_id in (";
              nodes = orgNode.getAncestorOrganizationNodesForOrgNodeAtAndBelowTopOrgNodes(
-                                                                                orgNodeId, SQLutils.convertArraytoString(topOrgNodeIds));
+                                                                                orgNodeId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
             return nodes;
         } catch (SQLException se) {
             OrgNodeDataNotFoundException nodeNotFoundException = 
