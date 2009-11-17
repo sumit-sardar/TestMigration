@@ -706,12 +706,12 @@ public interface StudentManagement extends JdbcControl
      * 	 and ona.org_node_id = {orgNodeId}
      *   and node.org_node_id in 
      * 	 	 (select distinct ona1.org_node_id 
-     * 	 	 from org_node_ancestor ona1 where ona1.ANCESTOR_ORG_NODE_ID in ({orgNodeIds})
+     * 	 	 from org_node_ancestor ona1 where {sql: searchCriteria}
      * 	 )
      * order by ona.number_of_levels desc::
      */
-    @JdbcControl.SQL(statement = "select distinct  node.org_node_id as orgNodeId,  node.customer_id as customerId,  node.org_node_category_id as orgNodeCategoryId,  node.org_node_name as orgNodeName,  node.ext_qed_pin as extQedPin,  node.ext_elm_id as extElmId,  node.ext_org_node_type as extOrgNodeType,  node.org_node_description as orgNodeDescription,  node.created_by as createdBy,  node.created_date_time as createdDateTime,  node.updated_by as updatedBy,  node.updated_date_time as updatedDateTime,  node.activation_status as activationStatus,  node.data_import_history_id as dataImportHistoryId,  node.parent_state as parentState,  node.parent_region as parentRegion,  node.parent_county as parentCounty,  node.parent_district as parentDistrict,  node.org_node_code as orgNodeCode,  cat.category_name as orgNodeCategoryName, \t  ona.number_of_levels as numberOfLevels from  org_node node, org_node_category cat, org_node_ancestor ona where  \t cat.org_node_category_id = node.org_node_category_id \t and ona.ancestor_org_node_id = node.org_node_id \t and ona.org_node_id = {orgNodeId}  and node.org_node_id in  \t \t (select distinct ona1.org_node_id  \t \t from org_node_ancestor ona1 where ona1.ANCESTOR_ORG_NODE_ID in ({orgNodeIds}) \t ) order by ona.number_of_levels desc")
-    OrganizationNode [] getAncestorOrganizationNodesForOrgNodeAtAndBelowTopOrgNodes(Integer orgNodeId, String orgNodeIds) throws SQLException;
+    @JdbcControl.SQL(statement = "select distinct  node.org_node_id as orgNodeId,  node.customer_id as customerId,  node.org_node_category_id as orgNodeCategoryId,  node.org_node_name as orgNodeName,  node.ext_qed_pin as extQedPin,  node.ext_elm_id as extElmId,  node.ext_org_node_type as extOrgNodeType,  node.org_node_description as orgNodeDescription,  node.created_by as createdBy,  node.created_date_time as createdDateTime,  node.updated_by as updatedBy,  node.updated_date_time as updatedDateTime,  node.activation_status as activationStatus,  node.data_import_history_id as dataImportHistoryId,  node.parent_state as parentState,  node.parent_region as parentRegion,  node.parent_county as parentCounty,  node.parent_district as parentDistrict,  node.org_node_code as orgNodeCode,  cat.category_name as orgNodeCategoryName, \t  ona.number_of_levels as numberOfLevels from  org_node node, org_node_category cat, org_node_ancestor ona where  \t cat.org_node_category_id = node.org_node_category_id \t and ona.ancestor_org_node_id = node.org_node_id \t and ona.org_node_id = {orgNodeId}  and node.org_node_id in  \t \t (select distinct ona1.org_node_id  \t \t from org_node_ancestor ona1 where {sql: searchCriteria} \t ) order by ona.number_of_levels desc")
+    OrganizationNode [] getAncestorOrganizationNodesForOrgNodeAtAndBelowTopOrgNodes(Integer orgNodeId, String searchCriteria) throws SQLException;
  
  
  
@@ -964,12 +964,12 @@ public interface StudentManagement extends JdbcControl
      * WHERE r.STUDENT_ID = {studentId}
      * and r.org_node_id in 
      * 	 	 (select distinct ona.org_node_id 
-     * 	 	 from org_node_ancestor ona where ona.ANCESTOR_ORG_NODE_ID in ({orgNodeIds}) 
+     * 	 	 from org_node_ancestor ona where {sql: searchCriteria} 
      * 	     )
      * ::
      */
-    @JdbcControl.SQL(statement = "delete from  TEST_ROSTER r WHERE r.STUDENT_ID = {studentId} and r.org_node_id in  \t \t (select distinct ona.org_node_id  \t \t from org_node_ancestor ona where ona.ANCESTOR_ORG_NODE_ID in ({orgNodeIds})  \t  )")
-    void deleteRostersByStudentId(Integer studentId, String  orgNodeIds) throws SQLException;
+    @JdbcControl.SQL(statement = "delete from  TEST_ROSTER r WHERE r.STUDENT_ID = {studentId} and r.org_node_id in  \t \t (select distinct ona.org_node_id  \t \t from org_node_ancestor ona where {sql: searchCriteria}  \t  )")
+    void deleteRostersByStudentId(Integer studentId, String  searchCriteria) throws SQLException;
     
 
     /**
@@ -993,12 +993,12 @@ public interface StudentManagement extends JdbcControl
      *    	  WHERE r.STUDENT_ID = {studentId}
      * 	     and r.org_node_id in 
      * 	 	 (select distinct ona.org_node_id 
-     * 	 	  from org_node_ancestor ona where ona.ANCESTOR_ORG_NODE_ID in ({orgNodeIds})
+     * 	 	  from org_node_ancestor ona where {sql: searchCriteria}
      * 	         )
      *      )::
      */
-    @JdbcControl.SQL(statement = "delete from  student_item_set_status  where  test_roster_id in (  select distinct r.test_roster_id from  TEST_ROSTER r  \t  WHERE r.STUDENT_ID = {studentId} \t  and r.org_node_id in  \t \t (select distinct ona.org_node_id  \t \t  from org_node_ancestor ona where ona.ANCESTOR_ORG_NODE_ID in ({orgNodeIds}) \t  )  )")
-    void deleteStudentItemSetStatusesForRoster(Integer studentId, String  orgNodeIds) throws SQLException;
+    @JdbcControl.SQL(statement = "delete from  student_item_set_status  where  test_roster_id in (  select distinct r.test_roster_id from  TEST_ROSTER r  \t  WHERE r.STUDENT_ID = {studentId} \t  and r.org_node_id in  \t \t (select distinct ona.org_node_id  \t \t  from org_node_ancestor ona where {sql: searchCriteria} \t  )  )")
+    void deleteStudentItemSetStatusesForRoster(Integer studentId, String  searchCriteria) throws SQLException;
 
 
     /**

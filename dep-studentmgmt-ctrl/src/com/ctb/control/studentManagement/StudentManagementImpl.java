@@ -124,6 +124,7 @@ public class StudentManagementImpl implements StudentManagement, Serializable
     static final long serialVersionUID = 1L;
     
     private static final int CTB_CUSTOMER_ID =2;
+    private String findInColumn = "ona.ancestor_org_node_id in ";
 
     /**
      * Get student profile for the specified student.
@@ -1126,8 +1127,9 @@ public class StudentManagementImpl implements StudentManagement, Serializable
         validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getAncestorOrganizationNodesForOrgNode");
         try {
             Integer [] topOrgNodeIds = studentManagement.getTopOrgNodeIdsForUser(userName);
+            String findInColumn = "ona1.ancestor_org_node_id in ";
             //OrganizationNode [] orgNodes = studentManagement.getAncestorOrganizationNodesForOrgNodeAtAndBelowTopOrgNodes(orgNodeId, topOrgNodeIds);
-            OrganizationNode [] orgNodes = studentManagement.getAncestorOrganizationNodesForOrgNodeAtAndBelowTopOrgNodes(orgNodeId, SQLutils.convertArraytoString(topOrgNodeIds));
+            OrganizationNode [] orgNodes = studentManagement.getAncestorOrganizationNodesForOrgNodeAtAndBelowTopOrgNodes(orgNodeId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
             return orgNodes;
         } catch (SQLException se) {
             OrgNodeDataNotFoundException one = new OrgNodeDataNotFoundException("StudentManagementImpl: getAncestorOrganizationNodesForOrgNode: " + se.getMessage());
@@ -1269,7 +1271,8 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	 * @throws com.ctb.exception.CTBBusinessException
      */
     public void updateStudent(String userName, ManageStudent manageStudent) throws CTBBusinessException
-    {
+    {	
+    	 
         Integer studentId = manageStudent.getId();
         validator.validateStudent(userName, studentId, "StudentManagementImpl.updateStudent");
         OrganizationNode [] organizationNodes = manageStudent.getOrganizationNodes();
@@ -1289,7 +1292,7 @@ public class StudentManagementImpl implements StudentManagement, Serializable
                 newOrgNodeHash.put(organizationNodes[i].getOrgNodeId(), organizationNodes[i]);
             }
 
-            com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentId, SQLutils.convertArraytoString(topOrgNodeIds));
+            com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
             for (int i=0; orgNodeStus!=null && i< orgNodeStus.length; i++) {
                 com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDB = orgNodeStus[i];
                 boolean foundInNewOrgNodes = newOrgNodeHash.containsKey(oldOrgNodeInDB.getOrgNodeId());
@@ -1362,7 +1365,7 @@ public class StudentManagementImpl implements StudentManagement, Serializable
                 newOrgNodeHash.put(organizationNodes[i].getOrgNodeId(), organizationNodes[i]);
             }
 
-            com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentId, SQLutils.convertArraytoString(topOrgNodeIds));
+            com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
             for (int i=0; orgNodeStus!=null && i< orgNodeStus.length; i++) {
                 com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDB = orgNodeStus[i];
                 boolean foundInNewOrgNodes = newOrgNodeHash.containsKey(oldOrgNodeInDB.getOrgNodeId());
@@ -1493,12 +1496,13 @@ public class StudentManagementImpl implements StudentManagement, Serializable
             Integer [] topOrgNodeIds = studentManagement.getTopOrgNodeIdsForUser(userName);
             
             if (deleteStatus == 2) {
-                studentManagement.deleteStudentItemSetStatusesForRoster(studentId,SQLutils.convertArraytoString(topOrgNodeIds));
-                studentManagement.deleteRostersByStudentId(studentId,SQLutils.convertArraytoString(topOrgNodeIds));  
+                studentManagement.deleteStudentItemSetStatusesForRoster(studentId,SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
+                studentManagement.deleteRostersByStudentId(studentId,SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));  
                 studentManagement.deleteStudentTutorialStatus(studentId);
             }
             
-            com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentId,SQLutils.convertArraytoString(topOrgNodeIds));
+           
+            com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentId,SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
             for (int i=0; orgNodeStus!=null && i< orgNodeStus.length; i++) {
                 Integer orgNodeId = orgNodeStus[i].getOrgNodeId();
                 Integer rosterCount = testRosters.getRosterCountForStudentAndOrgNode(studentId, orgNodeId);
