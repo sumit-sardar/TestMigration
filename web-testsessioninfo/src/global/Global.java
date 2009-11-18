@@ -2,20 +2,19 @@ package global;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Hashtable;
 import java.util.ResourceBundle;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 
 import org.apache.beehive.netui.pageflow.FormData;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.GlobalApp;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
-
-import weblogic.jndi.Environment;
-import weblogic.management.runtime.UserLockoutManagerRuntimeMBean;
 
 
 /**
@@ -167,7 +166,7 @@ public class Global extends GlobalApp
         }          
         return new Forward( "error" );
     }   
-        
+	
     /**
      * Retrieve a reference to a <code>ServerSecurityRuntimeMBean</code> instance.
      * @post return value is non-null.
@@ -179,24 +178,30 @@ public class Global extends GlobalApp
 
         boolean lockout = false;
         try {
-            if(security == null) security = ResourceBundle.getBundle("security");
+        	if(security == null) security = ResourceBundle.getBundle("security");
             String adminUrl = security.getString("adminURL");
             String adminUser = security.getString("adminUser");
             String adminPass = security.getString("adminPass");
              
-            // retrieve a reference to MBeanHome
-//            Environment env = new Environment();
-//            env.setSecurityPrincipal(adminUser);
-//            env.setSecurityCredentials(adminPass);
-//            env.setProviderUrl(adminUrl);
-//            Context jndiContext = env.getInitialContext();
-
-            // retrieve user lockout manager
-//            MBeanServer svr = (MBeanServer)jndiContext.lookup("java:comp/env/jmx/runtime");
-//            UserLockoutManagerRuntimeMBean mgr = (UserLockoutManagerRuntimeMBean)svr.getObjectInstance(new ObjectName("Security:Name=myrealmUserLockoutManagerRuntime"));
-//            System.out.println("mgr: " + mgr);
-//            lockout = mgr.isLockedOut(username);
-
+            Hashtable env = new Hashtable();     
+            env.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");     
+            env.put(Context.PROVIDER_URL, adminUrl);
+            env.put(Context.SECURITY_PRINCIPAL, adminUser);     
+            env.put(Context.SECURITY_CREDENTIALS, adminPass);     
+            Context jndiContext = new InitialContext(env);
+            
+            Object[] params = new String[1];
+            params[0] = username;
+            String[] sig = new String[1];
+            sig[0] = "java.lang.String";
+            MBeanServer svr = (MBeanServer)jndiContext.lookup("java:comp/env/jmx/runtime");
+            ObjectName objName = new ObjectName("Security:Name=myrealmUserLockoutManager");
+            
+            //System.out.println(svr.getMBeanInfo(objName).toString());
+            
+            lockout = ((Boolean) svr.invoke(objName, "isLockedOut", params, sig)).booleanValue();
+            System.out.println("User locked out: " + lockout);
+            
             /*
             System.out.println("LoginAttemptsWhileLockedTotalCount: " + mgr.getLoginAttemptsWhileLockedTotalCount());
             System.out.println("    InvalidLoginAttemptsTotalCount: " + mgr.getInvalidLoginAttemptsTotalCount());

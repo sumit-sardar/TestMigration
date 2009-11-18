@@ -20,7 +20,5 @@
 	</classpathentry>
 	<classpathentry kind="con" path="com.bea.workshop.xmlbeans.lib/version_2_3"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="C:/bea10/wlserver_10.3/server/lib/mbeantypes/wlManagementMBean.jar"/>
-	<classpathentry kind="lib" path="C:/bea10/wlserver_10.3/server/lib/mbeantypes/wlManagementImplSource.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
