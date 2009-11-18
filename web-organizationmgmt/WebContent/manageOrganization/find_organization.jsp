@@ -87,7 +87,7 @@
     <tr class="sortable">
         <ctb:tableSortColumnGroup columnDataSource="actionForm.orgSortColumn" orderByDataSource="actionForm.orgSortOrderBy" >
             <th class="sortable alignCenter" nowrap>&nbsp;<netui:content value="${bundle.web['common.column.select']}"/>&nbsp;</th>                
-            <th class="sortable alignLeft" width="100%" nowrap><ctb:tableSortColumn value="OrgNodeName"><netui:content value="<%= orgCategoryName %>"/></ctb:tableSortColumn></th>
+            <th class="sortable alignLeft" width="100%" nowrap><ctb:tableSortColumn value="OrgNodeName"><netui:content value="Organization"/></ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="ChildNodeCount"><netui:content value="Suborganizations"/></ctb:tableSortColumn></th>
         </ctb:tableSortColumnGroup>
     </tr>
