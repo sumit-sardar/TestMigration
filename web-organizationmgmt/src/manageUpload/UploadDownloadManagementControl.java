@@ -13,7 +13,7 @@ public interface UploadDownloadManagementControl extends ServiceControl
 {
     static final long serialVersionUID = 1L;
 
-    public void uploadFile(java.lang.String userName_arg,java.lang.String serverFilePath_arg,int uploadDataFileId_arg);
+    public void uploadFile(java.lang.String userName_arg,java.lang.String serverFilePath_arg,java.lang.Integer uploadDataFileId_arg) throws com.ctb.webservices.CTBBusinessException;
 
    /** This event set interface provides support for the onAsyncFailure event.
     */
