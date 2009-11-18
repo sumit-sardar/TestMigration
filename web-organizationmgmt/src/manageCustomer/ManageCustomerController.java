@@ -794,12 +794,12 @@ public class ManageCustomerController extends PageFlowController
 
     /**
      * @jpf:action
-     * @jpf:forward name="success" path="../manageOrganization/beginManageOrganization.do"
+     * @jpf:forward name="success" path="/OrganizationManagementWeb/manageOrganization/beginManageOrganization.do"
      * @jpf:forward name="error" path="findCustomer.do"
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
-                     path = "../manageOrganization/beginManageOrganization.do"), 
+                     path = "/OrganizationManagementWeb/manageOrganization/beginManageOrganization.do"), 
         @Jpf.Forward(name = "error",
                      path = "findCustomer.do")
     })
