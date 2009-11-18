@@ -97,7 +97,7 @@ public class TableColumnSortTag extends WidgetsBaseTag
             JspWriter out = pageContext.getOut();
             out.print( "</a> ");
             
-            if( this.currentColumnSort.getValue().equals( this.value ) ) {
+            if( this.currentColumnSort.getValue() != null && this.currentColumnSort.getValue().equals( this.value ) ) {
                 // Add icon to this column if its the active sort
                 if( this.currentColumnSort.getOrderBy().equals( ColumnSortEntry.ASCENDING )  )
                     out.print( sortImage(IMG_SORT_ASC) );
