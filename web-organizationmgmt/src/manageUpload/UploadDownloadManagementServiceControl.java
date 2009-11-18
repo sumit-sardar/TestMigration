@@ -7,9 +7,9 @@ import org.apache.beehive.controls.api.bean.ControlExtension;
 @ServiceControl.Location(urls = {"http://localhost:7001/platform-webservices/UploadDownloadManagement"})
 @ServiceControl.HttpSoapProtocol
 @ServiceControl.SOAPBinding(style = ServiceControl.SOAPBinding.Style.DOCUMENT, use = ServiceControl.SOAPBinding.Use.LITERAL, parameterStyle = ServiceControl.SOAPBinding.ParameterStyle.WRAPPED)
-@ServiceControl.WSDL(resourcePath = "manageUpload/UploadDownloadManagement.wsdl", service = "UploadDownloadManagementService")
+@ServiceControl.WSDL(resourcePath = "manageUpload/UploadDownloadManagementService.wsdl", service = "UploadDownloadManagementService")
 @ControlExtension
-public interface UploadDownloadManagementControl extends ServiceControl
+public interface UploadDownloadManagementServiceControl extends ServiceControl
 {
     static final long serialVersionUID = 1L;
 

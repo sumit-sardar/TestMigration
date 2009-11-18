@@ -59,13 +59,7 @@ import utils.UploadDownloadFormUtils;
 @Jpf.Controller()
 public class ManageUploadController extends PageFlowController
 {
-    /**
-     * @common:control
-     */
-    @Control()
-    private manageUpload.UploadDownloadManagementControl uploadService;
-
-
+	
     /**
      * @common:control
      */
@@ -125,6 +119,10 @@ public class ManageUploadController extends PageFlowController
     private boolean isEmptyProfileSearch = false;
     
     private static final String ACTION_ELEMENT = "{actionForm.selectedTab}";
+
+
+	@Control
+	private UploadDownloadManagementServiceControl uploadDownloadManagementServiceControl;
 
     
     
@@ -755,9 +753,9 @@ public class ManageUploadController extends PageFlowController
             try {
                 System.out.println("***** Upload App: invoking process service: " + this.userName + " : " + saveFileName);
                 String endpoint = this.instanceURL + "/platform-webservices/UploadDownloadManagement";
-                uploadService.setEndPoint(new URL(endpoint));
+                uploadDownloadManagementServiceControl.setEndPoint(new URL(endpoint));
                 System.out.println("***** Upload App: using service endpoint: " + endpoint);
-                uploadService.uploadFile(this.userName, this.fullFilePath, this.uploadFileId);
+                uploadDownloadManagementServiceControl.uploadFile(this.userName, this.fullFilePath, this.uploadFileId);
             } catch (Exception e) {
                 
                 DataFileAudit dataFileAudit = new DataFileAudit();
