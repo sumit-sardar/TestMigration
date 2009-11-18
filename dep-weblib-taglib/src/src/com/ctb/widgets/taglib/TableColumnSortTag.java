@@ -96,6 +96,17 @@ public class TableColumnSortTag extends WidgetsBaseTag
         try {
             JspWriter out = pageContext.getOut();
             out.print( "</a> ");
+            System.out.println("Inside doEndTag..........");
+            if(this.currentColumnSort == null )
+            	System.out.println("this.currentColumnSort == null.");
+            else if(this.currentColumnSort.getValue() == null )
+            	System.out.println("this.currentColumnSort.getValue() == null.");
+            else 
+            	System.out.println("this.currentColumnSort.getValue() = " + this.currentColumnSort.getValue());
+            if(this.value == null)
+            	System.out.println("this.value == null.");
+            else
+            	System.out.println("this.value = " + this.value);
             
             if( this.currentColumnSort.getValue() != null && this.currentColumnSort.getValue().equals( this.value ) ) {
                 // Add icon to this column if its the active sort
