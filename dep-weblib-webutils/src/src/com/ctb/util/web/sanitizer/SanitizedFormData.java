@@ -9,8 +9,7 @@ import org.apache.struts.action.ActionError;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
-//public  class SanitizedFormData extends FormData  implements java.io.Serializable
-public class SanitizedFormData extends FormData
+public class SanitizedFormData extends FormData implements java.io.Serializable
 { 
 	private static final long serialVersionUID = 1L;
 
