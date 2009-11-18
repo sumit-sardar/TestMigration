@@ -1,102 +1,72 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- @editor-info:link autogen="true" source="UploadDownloadManagementTest.jws" -->
-<definitions xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:conv="http://www.openuri.org/2002/04/soap/conversation/" xmlns:cw="http://www.openuri.org/2002/04/wsdl/conversation/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:jms="http://www.openuri.org/2002/04/wsdl/jms/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:s0="http://www.openuri.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" targetNamespace="http://www.openuri.org/">
-  <types>
-    <s:schema elementFormDefault="qualified" targetNamespace="http://www.openuri.org/" xmlns:s="http://www.w3.org/2001/XMLSchema">
-      <s:element name="uploadFile">
-        <s:complexType>
-          <s:sequence>
-            <s:element name="userName" type="s:string" minOccurs="0"/>
-            <s:element name="serverFilePath" type="s:string" minOccurs="0"/>
-            <s:element name="uploadDataFileId" type="s:int" minOccurs="0"/>
-          </s:sequence>
-        </s:complexType>
-      </s:element>
-      <s:element name="uploadFileResponse">
-        <s:complexType>
-          <s:sequence/>
-        </s:complexType>
-      </s:element>
-    </s:schema>
-
-  </types>
-  <message name="uploadFileSoapIn">
-    <part name="parameters" element="s0:uploadFile"/>
-  </message>
-  <message name="uploadFileSoapOut">
-    <part name="parameters" element="s0:uploadFileResponse"/>
-  </message>
-  <message name="uploadFileHttpGetIn">
-    <part name="userName" type="s:string"/>
-    <part name="serverFilePath" type="s:string"/>
-    <part name="uploadDataFileId" type="s:string"/>
-  </message>
-  <message name="uploadFileHttpGetOut"/>
-  <message name="uploadFileHttpPostIn">
-    <part name="userName" type="s:string"/>
-    <part name="serverFilePath" type="s:string"/>
-    <part name="uploadDataFileId" type="s:string"/>
-  </message>
-  <message name="uploadFileHttpPostOut"/>
-  <portType name="UploadDownloadManagementTestSoap">
-    <operation name="uploadFile">
-      <input message="s0:uploadFileSoapIn"/>
-      <output message="s0:uploadFileSoapOut"/>
-    </operation>
-  </portType>
-  <portType name="UploadDownloadManagementTestHttpGet">
-    <operation name="uploadFile">
-      <input message="s0:uploadFileHttpGetIn"/>
-      <output message="s0:uploadFileHttpGetOut"/>
-    </operation>
-  </portType>
-  <portType name="UploadDownloadManagementTestHttpPost">
-    <operation name="uploadFile">
-      <input message="s0:uploadFileHttpPostIn"/>
-      <output message="s0:uploadFileHttpPostOut"/>
-    </operation>
-  </portType>
-  <binding name="UploadDownloadManagementTestSoap" type="s0:UploadDownloadManagementTestSoap">
-    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-    <operation name="uploadFile">
-      <soap:operation soapAction="http://www.openuri.org/uploadFile" style="document"/>
-      <input>
-        <soap:body use="literal"/>
-      </input>
-      <output>
-        <soap:body use="literal"/>
-      </output>
-    </operation>
-  </binding>
-  <binding name="UploadDownloadManagementTestHttpGet" type="s0:UploadDownloadManagementTestHttpGet">
-    <http:binding verb="GET"/>
-    <operation name="uploadFile">
-      <http:operation location="/uploadFile"/>
-      <input>
-        <http:urlEncoded/>
-      </input>
-      <output/>
-    </operation>
-  </binding>
-  <binding name="UploadDownloadManagementTestHttpPost" type="s0:UploadDownloadManagementTestHttpPost">
-    <http:binding verb="POST"/>
-    <operation name="uploadFile">
-      <http:operation location="/uploadFile"/>
-      <input>
-        <mime:content type="application/x-www-form-urlencoded"/>
-      </input>
-      <output/>
-    </operation>
-  </binding>
-  <service name="UploadDownloadManagementTest">
-    <port name="UploadDownloadManagementTestSoap" binding="s0:UploadDownloadManagementTestSoap">
-      <soap:address location="http://localhost:7001/OrganizationManagementWebService/UploadDownloadManagementTest.jws"/>
-    </port>
-    <port name="UploadDownloadManagementTestHttpGet" binding="s0:UploadDownloadManagementTestHttpGet">
-      <http:address location="http://localhost:7001/OrganizationManagementWebService/UploadDownloadManagementTest.jws"/>
-    </port>
-    <port name="UploadDownloadManagementTestHttpPost" binding="s0:UploadDownloadManagementTestHttpPost">
-      <http:address location="http://localhost:7001/OrganizationManagementWebService/UploadDownloadManagementTest.jws"/>
-    </port>
-  </service>
-</definitions>
+<?xml version='1.0' encoding='UTF-8'?>
+<s0:definitions name="UploadDownloadManagementServiceDefinitions" targetNamespace="http://com/ctb/webservices" xmlns="" xmlns:s0="http://schemas.xmlsoap.org/wsdl/" xmlns:s1="http://com/ctb/webservices" xmlns:s2="com.ctb.exception" xmlns:s3="http://schemas.xmlsoap.org/wsdl/soap/">
+  <s0:types>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="java:com.ctb.exception" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="CTBBusinessException">
+        <xs:annotation>
+          <xs:documentation>/** 
+ * CTBBusinessException
+ * @author Nate_Cohen
+ * Generic business exception type, all platform exceptions extend this
+ */</xs:documentation>
+        </xs:annotation>
+      </xs:complexType>
+      <xs:element name="CTBBusinessException" type="java:CTBBusinessException" xmlns:java="java:com.ctb.exception"/>
+    </xs:schema>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="com.ctb.exception" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="string" type="xs:string"/>
+    </xs:schema>
+    <xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://com/ctb/webservices" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="uploadFile">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="userName" type="xs:string"/>
+            <xs:element name="serverFilePath" type="xs:string"/>
+            <xs:element minOccurs="0" name="uploadDataFileId" nillable="true" type="xs:int"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="uploadFileResponse">
+        <xs:complexType>
+          <xs:sequence/>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+  </s0:types>
+  <s0:message name="uploadFile">
+    <s0:part element="s1:uploadFile" name="parameters"/>
+  </s0:message>
+  <s0:message name="uploadFileResponse">
+    <s0:part element="s1:uploadFileResponse" name="parameters"/>
+  </s0:message>
+  <s0:message name="CTBBusinessException">
+    <s0:part element="s2:string" name="CTBBusinessException"/>
+  </s0:message>
+  <s0:portType name="UploadDownloadManagement">
+    <s0:operation name="uploadFile" parameterOrder="parameters">
+      <s0:input message="s1:uploadFile"/>
+      <s0:output message="s1:uploadFileResponse"/>
+      <s0:fault message="s1:CTBBusinessException" name="CTBBusinessException"/>
+    </s0:operation>
+  </s0:portType>
+  <s0:binding name="UploadDownloadManagementServiceSoapBinding" type="s1:UploadDownloadManagement">
+    <s3:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <s0:operation name="uploadFile">
+      <s3:operation style="document"/>
+      <s0:input>
+        <s3:body parts="parameters" use="literal"/>
+      </s0:input>
+      <s0:output>
+        <s3:body use="literal"/>
+      </s0:output>
+      <s0:fault name="CTBBusinessException">
+        <s3:fault name="CTBBusinessException" use="literal"/>
+      </s0:fault>
+    </s0:operation>
+  </s0:binding>
+  <s0:service name="UploadDownloadManagementService">
+    <s0:port binding="s1:UploadDownloadManagementServiceSoapBinding" name="UploadDownloadManagementSoapPort">
+      <s3:address location="http://localhost:7001/platform-webservices/UploadDownloadManagement"/>
+    </s0:port>
+  </s0:service>
+</s0:definitions>

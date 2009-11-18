@@ -786,16 +786,16 @@ public class ManageUploadController extends PageFlowController
         try{
             Integer uploadDataFileId = uploadDownloadManagement.addErrorDataFile(this.userName, fullFilePath, form.getAuditFileId());
                      
-     //       ResourceBundle rb = ResourceBundle.getBundle("security");
-      //      String processURL = rb.getString("processURL");
+            ResourceBundle rb = ResourceBundle.getBundle("security");
+            String processURL = rb.getString("processURL");
                                     
-           /* final Thread uploadThread = new UploadThread(this.userName, fullFilePath, uploadDataFileId, processURL);
-            uploadThread.start();*/
+            final Thread uploadThread = new UploadThread(this.userName, fullFilePath, uploadDataFileId, processURL);
+            uploadThread.start();
             
-            PathFinderUtils.saveFileToDB(fullFilePath , 
+            /*PathFinderUtils.saveFileToDB(fullFilePath , 
                                          this.uploadDownloadManagement, 
                                          this.userName,uploadDataFileId);
-            
+            */
             
             return true;         
         } catch(Exception be ) {
