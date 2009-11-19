@@ -85,7 +85,7 @@
     <tr class="sortable">
         <td class="sortable alignCenter">
             <netui:radioButtonGroup dataSource="actionForm.selectedOrgNodeId">
-                &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="setElementValueAndSubmit('{actionForm.actionElement}', '{actionForm.actionElement}');">&nbsp;</netui:radioButtonOption>                
+                &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="setElementValueAndSubmit('{actionForm.actionElement}', '{actionForm.actionElement}', null);">&nbsp;</netui:radioButtonOption>                
             </netui:radioButtonGroup>
         </td>        
         <td class="sortable alignLeft">     
@@ -148,14 +148,14 @@
                     			  tagId="sessionViewStatus" 
                     			  value="${bundle.widgets['button.viewStatus']}" 
                     			  type="button" 
-                    			  onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'sessionViewStatus');" 
+                    			  onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'sessionViewStatus', this);" 
                     			  disabled="true" />
                     
                     <netui:button styleClass="button" 
                     			  tagId="sessionEdit" 
                     			  value="${bundle.widgets['button.edit']}" 
                     			  type="button" 
-                    			  onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'sessionEdit');" 
+                    			  onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'sessionEdit', this);" 
                     			  disabled="true" />
                     			  
                 <c:if test="${sessionScope.canRegisterStudent}">
@@ -163,7 +163,7 @@
                     			  tagId="registerStudent" 
                     			  value="${bundle.widgets['button.registerStudent']}" 
                     			  type="button" 
-                    			  onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'registerStudent');" 
+                    			  onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'registerStudent', this);" 
                     			  disabled="true"/>
                 </c:if>
                 </td>

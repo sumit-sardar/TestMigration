@@ -12,18 +12,27 @@ function getSafeElement( elementId ) {
 	}
 	return element;
 }
+
+var submitToActionDone = false; 
+function submitToAction(toAction, subtestId, status, ctrl) {
+
+    if (!submitToActionDone) {
  
-function submitToAction(toAction, subtestId, status) {
-    document.body.style.cursor = 'wait';
+ 		ctrl.disabled = true;
+ 		submitToActionDone = true;
+ 
+	    document.body.style.cursor = 'wait';
+	    
+	    var actionElement = getSafeElement('{actionForm.actionElement}');
+	    actionElement.value = subtestId;
+	    
+	    var currentAction = getSafeElement('{actionForm.currentAction}');
+	    currentAction.value = status;
+	    
+	    actionElement.form.action = toAction;
+	    actionElement.form.submit();
     
-    var actionElement = getSafeElement('{actionForm.actionElement}');
-    actionElement.value = subtestId;
-    
-    var currentAction = getSafeElement('{actionForm.currentAction}');
-    currentAction.value = status;
-    
-    actionElement.form.action = toAction;
-    actionElement.form.submit();
+    }
     return false;
 }
 

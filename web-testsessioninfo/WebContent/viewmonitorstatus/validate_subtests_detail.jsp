@@ -93,9 +93,9 @@
 <table class="transparent" width="100%">
         <tr class="sortable">
             <td class="sortableGrey" colspan="<%= colSpan %>%>">
-                <netui:button type="button" tagId="toggleSubtestValidation" value="Toggle Validation" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'toggleSubtestValidation');" disabled="${requestScope.disableToogleButton}"/>           
+                <netui:button type="button" tagId="toggleSubtestValidation" value="Toggle Validation" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'toggleSubtestValidation', this);" disabled="${requestScope.disableToogleButton}"/>           
             <c:if test="${isShowToggleForCustomerFlag == 'true'}">                 
-                <netui:button type="button" tagId="toggleSubtestCustom" value="Toggle Custom" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'toggleSubtestCustom');" disabled="${requestScope.disableToogleButton}"/>           
+                <netui:button type="button" tagId="toggleSubtestCustom" value="Toggle Custom" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'toggleSubtestCustom', this);" disabled="${requestScope.disableToogleButton}"/>           
             </c:if>
             </td>
         </tr>
@@ -195,7 +195,7 @@
 <p>
 <br>
 
-    <netui:button type="button" tagId="done" value="Done" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'done');"/>           
+    <netui:button type="button" tagId="done" value="Done" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'done', this);"/>           
 </p>
 
 </netui:form>

@@ -161,8 +161,8 @@
                 </tr>
                 <tr class="tableFilter">
                     <td class="tableFilter alignRight" colspan="6">
-                        <netui:button styleClass="button" value="${bundle.widgets['button.apply']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'applyFilters', 'tableAnchor');"/>&nbsp;
-                        <netui:button styleClass="button" value="${bundle.widgets['button.clearAll']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'clearFilters', 'tableAnchor');"/>&nbsp;
+                        <netui:button styleClass="button" value="${bundle.widgets['button.apply']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'applyFilters', 'tableAnchor', this);"/>&nbsp;
+                        <netui:button styleClass="button" value="${bundle.widgets['button.clearAll']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'clearFilters', 'tableAnchor', this);"/>&nbsp;
                     </td>                        
                 </tr>
                 </table>

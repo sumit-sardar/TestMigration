@@ -79,7 +79,7 @@
                             <netui:hidden dataSource="actionForm.selectedProgramId"/>
                         </c:if>
                         <c:if test="${multiplePrograms}">
-                        <netui:select optionsDataSource="${pageFlow.programList}" dataSource="actionForm.selectedProgramId" size="1" onChange="setElementValueAndSubmit('{actionForm.currentAction}', 'onProgramChange');"/>
+                        <netui:select optionsDataSource="${pageFlow.programList}" dataSource="actionForm.selectedProgramId" size="1" onChange="setElementValueAndSubmit('{actionForm.currentAction}', 'onProgramChange', null);"/>
                         </c:if>
                     </td>
                 </tr>
@@ -98,7 +98,7 @@
                             <netui:hidden dataSource="actionForm.selectedTestId"/>
                         </c:if>
                         <c:if test="${multipleTests}">
-                        <netui:select optionsDataSource="${pageFlow.testList}" dataSource="actionForm.selectedTestId" size="1" onChange="setElementValueAndSubmit('{actionForm.currentAction}', 'onTestChange');"/>
+                        <netui:select optionsDataSource="${pageFlow.testList}" dataSource="actionForm.selectedTestId" size="1" onChange="setElementValueAndSubmit('{actionForm.currentAction}', 'onTestChange', null);"/>
                         </c:if>
                     </td>
                 </tr>    
@@ -136,7 +136,7 @@
                 <tr class="sortable">
                     <td class="sortable alignCenter">
                         <netui:radioButtonGroup dataSource="actionForm.selectedOrgNodeId">
-                            &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="setElementValueAndSubmit('{actionForm.actionElement}', '{actionForm.actionElement}');">&nbsp;</netui:radioButtonOption>                
+                            &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="setElementValueAndSubmit('{actionForm.actionElement}', '{actionForm.actionElement}', null);">&nbsp;</netui:radioButtonOption>                
                         </netui:radioButtonGroup>
                     </td>        
                     <td class="sortable alignLeft">     
@@ -245,7 +245,7 @@
                     <font color="red"><netui:content value="${container.item.scheduled}" defaultValue="&nbsp;"/></font>
         </c:if>            
         <c:if test="${viewSubtestStatus != subtestName || currentStatus != 'Scheduled'}">                 
-                <a href="#" onclick="this.disabled=true; return submitToAction('viewSubtestStatus.do#subtestTableAnchor', '<%= subtestId %>', 'Scheduled');">             
+                <a href="#" onclick="return submitToAction('viewSubtestStatus.do#subtestTableAnchor', '<%= subtestId %>', 'Scheduled', this);">             
                     <netui:content value="${container.item.scheduled}" defaultValue="&nbsp;"/>
                 </a>
         </c:if>    
@@ -260,7 +260,7 @@
                     <font color="red"><netui:content value="${container.item.attempted}" defaultValue="&nbsp;"/></font>
         </c:if>            
         <c:if test="${viewSubtestStatus != subtestName || currentStatus != 'Started'}">                             
-                <a href="#" onclick="this.disabled=true; return submitToAction('viewSubtestStatus.do#subtestTableAnchor', '<%= subtestId %>', 'Started');">             
+                <a href="#" onclick="return submitToAction('viewSubtestStatus.do#subtestTableAnchor', '<%= subtestId %>', 'Started', this);">             
                     <netui:content value="${container.item.attempted}" defaultValue="&nbsp;"/>
                 </a>
         </c:if>     
@@ -275,7 +275,7 @@
                     <font color="red"><netui:content value="${container.item.completed}" defaultValue="&nbsp;"/></font>
         </c:if>            
         <c:if test="${viewSubtestStatus != subtestName || currentStatus != 'Completed'}">                             
-                <a href="#" onclick="this.disabled=true; return submitToAction('viewSubtestStatus.do#subtestTableAnchor', '<%= subtestId %>', 'Completed');">             
+                <a href="#" onclick="return submitToAction('viewSubtestStatus.do#subtestTableAnchor', '<%= subtestId %>', 'Completed', this);">             
                     <netui:content value="${container.item.completed}" defaultValue="&nbsp;"/>
                 </a>
         </c:if>      
@@ -356,8 +356,8 @@
                 </tr>
                 <tr class="tableFilter">
                     <td class="tableFilter alignRight" colspan="6">
-                        <netui:button styleClass="button" value="${bundle.widgets['button.apply']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'applyFilters', 'programStatusAnchor'); " />&nbsp;
-                        <netui:button styleClass="button" value="${bundle.widgets['button.clearAll']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'clearFilters', 'programStatusAnchor'); "/>&nbsp;
+                        <netui:button styleClass="button" value="${bundle.widgets['button.apply']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'applyFilters', 'programStatusAnchor', this); " />&nbsp;
+                        <netui:button styleClass="button" value="${bundle.widgets['button.clearAll']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'clearFilters', 'programStatusAnchor', this); "/>&nbsp;
                     </td>                        
                 </tr>
                 </table>

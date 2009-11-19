@@ -1,6 +1,8 @@
 /**
  * widgets.js
  */
+ var submitDone = false; 
+ 
 function doHourglass()
 {
     document.body.style.cursor = 'wait';
@@ -60,11 +62,31 @@ function setElementValue(elementId, value, submitForm) {
     }
 }
 
-function setElementValueAndSubmit(elementId, value) {
-    setElementValue( elementId, value, true );
+function setElementValueAndSubmit(elementId, value, ctrl) {
+    var element = getSafeElement(elementId);
+
+    if( element ) {
+        element.value = value;
+
+        var actionElement = getSafeElement('{actionForm.actionElement}');
+        if( actionElement ) {
+            actionElement.value = elementId;
+        }
+
+    	if (!submitDone) {
+			if (ctrl != null) 
+ 				ctrl.disabled = true;
+ 			submitDone = true;
+            document.body.style.cursor = 'wait';
+            element.form.submit();
+        }
+
+    } else {
+        alert("Could not set value for form element '" + elementId + "'!");
+    }
 }
 
-function setElementValueAndSubmitWithAnchor(elementId, value, anchorName) {
+function setElementValueAndSubmitWithAnchor(elementId, value, anchorName, ctrl) {
     var element = getSafeElement(elementId);
 
     if( element ) {
@@ -82,8 +104,13 @@ function setElementValueAndSubmitWithAnchor(elementId, value, anchorName) {
             }
         }
         
-        document.body.style.cursor = 'wait';
-        element.form.submit();
+    	if (!submitDone) {
+			if (ctrl != null) 
+ 				ctrl.disabled = true;
+ 			submitDone = true;
+        	document.body.style.cursor = 'wait';
+        	element.form.submit();
+        }
 
     } else {
         alert("Could not set value for form element '" + elementId + "'!");
