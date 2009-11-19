@@ -270,8 +270,7 @@ public class ManageUserController extends PageFlowController
         @Jpf.Forward(name = "success",
                      path = "find_user.jsp"), 
         @Jpf.Forward(name = "gotoNextAction", 
-                     path = "gotoNextAction.do", 
-                     redirect = true)
+                     path = "gotoNextAction.do")
     })
     protected Forward findUser(ManageUserForm form)
     {        
