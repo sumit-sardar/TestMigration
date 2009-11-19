@@ -153,7 +153,7 @@
 </table>
 
 <p>
-<br><netui:button type="button" value="${bundle.web['common.button.back']}" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'none', 'tableAnchor');"/>           
+<br><netui:button type="button" value="${bundle.web['common.button.back']}" onClick="this.disabled=true; setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'none', 'tableAnchor');"/>           
 </p>
 
 </netui:form>

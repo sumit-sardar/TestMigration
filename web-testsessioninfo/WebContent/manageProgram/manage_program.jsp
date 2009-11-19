@@ -245,7 +245,7 @@
                     <font color="red"><netui:content value="${container.item.scheduled}" defaultValue="&nbsp;"/></font>
         </c:if>            
         <c:if test="${viewSubtestStatus != subtestName || currentStatus != 'Scheduled'}">                 
-                <a href="#" onclick="return submitToAction('viewSubtestStatus.do#subtestTableAnchor', '<%= subtestId %>', 'Scheduled');">             
+                <a href="#" onclick="this.disabled=true; return submitToAction('viewSubtestStatus.do#subtestTableAnchor', '<%= subtestId %>', 'Scheduled');">             
                     <netui:content value="${container.item.scheduled}" defaultValue="&nbsp;"/>
                 </a>
         </c:if>    
@@ -260,7 +260,7 @@
                     <font color="red"><netui:content value="${container.item.attempted}" defaultValue="&nbsp;"/></font>
         </c:if>            
         <c:if test="${viewSubtestStatus != subtestName || currentStatus != 'Started'}">                             
-                <a href="#" onclick="return submitToAction('viewSubtestStatus.do#subtestTableAnchor', '<%= subtestId %>', 'Started');">             
+                <a href="#" onclick="this.disabled=true; return submitToAction('viewSubtestStatus.do#subtestTableAnchor', '<%= subtestId %>', 'Started');">             
                     <netui:content value="${container.item.attempted}" defaultValue="&nbsp;"/>
                 </a>
         </c:if>     
@@ -275,7 +275,7 @@
                     <font color="red"><netui:content value="${container.item.completed}" defaultValue="&nbsp;"/></font>
         </c:if>            
         <c:if test="${viewSubtestStatus != subtestName || currentStatus != 'Completed'}">                             
-                <a href="#" onclick="return submitToAction('viewSubtestStatus.do#subtestTableAnchor', '<%= subtestId %>', 'Completed');">             
+                <a href="#" onclick="this.disabled=true; return submitToAction('viewSubtestStatus.do#subtestTableAnchor', '<%= subtestId %>', 'Completed');">             
                     <netui:content value="${container.item.completed}" defaultValue="&nbsp;"/>
                 </a>
         </c:if>      
