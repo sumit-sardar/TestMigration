@@ -559,7 +559,7 @@
                     <td class="sortable alignLeft" width="120"><netui:textBox dataSource="pageFlow.locatorSubtest.testAccessCode" maxlength="32" onKeyPress="return constrainEnterKeyEvent(event);"/></td>
                 </c:if>   
                 <c:if test="${! autoLocator}"> 
-                    <td class="sortable alignLeft" width="120"><netui:textBox dataSource="{pageFlow.blankInputString}" defaultValue="" maxlength="32" onKeyPress="return constrainEnterKeyEvent(event);"/></td>
+                    <td class="sortable alignLeft" width="120"><netui:textBox dataSource="pageFlow.blankInputString" defaultValue="" maxlength="32" onKeyPress="return constrainEnterKeyEvent(event);"/></td><!-- Changes for defect 60384 -->
                 </c:if>   
             </c:if>   
         </tr>
