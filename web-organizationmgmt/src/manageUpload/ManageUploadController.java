@@ -53,6 +53,7 @@ import javax.jms.Session;
 import utils.PermissionsUtils;
 import utils.UploadDownloadFormUtils;
 
+
 /**
  * @jpf:controller
  *  */
@@ -88,6 +89,8 @@ public class ManageUploadController extends PageFlowController
     private String userName = null;
     private ManageUploadForm savedForm = null;
     public String strFileName = null;
+    
+    public String uploadStatus = null;
 
     
     private static final String ACTION_DELETE_FILE = "deleteFile";
@@ -173,7 +176,8 @@ public class ManageUploadController extends PageFlowController
         selectedTab = JavaScriptSanitizer.sanitizeString(selectedTab);
 
         this.getRequest().setAttribute("selectedModule", selectedTab);   
-        this.getRequest().setAttribute("uploadStatus", "uploadFile");   
+        this.uploadStatus = "uploadFile";   
+        this.getRequest().setAttribute("uploadStatus", "uploadFile");
                 
         if (selectedTab != null && MODULE_VIEW_UPLOADS.equals(selectedTab))
         {            
@@ -263,13 +267,15 @@ public class ManageUploadController extends PageFlowController
             if ("1".equals(isSuccess))
             {
                 this.getRequest().setAttribute("noFileSelected", "true");   
-                this.getRequest().setAttribute("uploadStatus", "uploadFile");   
+                this.uploadStatus = "uploadFile";   
+                this.getRequest().setAttribute("uploadStatus", "uploadFile");
                 return new Forward("success", form);
             }
             else
             {
                 this.getRequest().setAttribute("failToUpload", "true");   
-                this.getRequest().setAttribute("uploadStatus", "uploadFile");   
+                this.uploadStatus = "uploadFile";   
+                this.getRequest().setAttribute("uploadStatus", "uploadFile");
                 return new Forward("success", form);
             }
         }
@@ -281,13 +287,15 @@ public class ManageUploadController extends PageFlowController
             if (isSuccessful)
             {
             
-                this.getRequest().setAttribute("uploadStatus", "uploadDone");   
+                this.uploadStatus = "uploadDone";  
+                this.getRequest().setAttribute("uploadStatus", "uploadDone");
             
             }
             else
             {
             
-                this.getRequest().setAttribute("uploadStatus", "uploadFile");   
+            	this.uploadStatus = "uploadFile";
+            	this.getRequest().setAttribute("uploadStatus", "uploadFile");
             
             }  
             

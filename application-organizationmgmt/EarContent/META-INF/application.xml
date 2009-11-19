@@ -7,4 +7,10 @@
 			<context-root>OrganizationManagementWeb</context-root>
 		</web>
 	</module>
+	<module id="WebModule_1258598282036">
+		<web>
+			<web-uri>platform-webservices.war</web-uri>
+			<context-root>platform-webservices</context-root>
+		</web>
+	</module>
 </application>

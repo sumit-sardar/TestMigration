@@ -11,6 +11,16 @@ import com.ctb.util.OASLogger;
 public class CTBBusinessException extends Exception
 { 
     static final long serialVersionUID = 1L;
+    
+    public String message;
+    
+    public String getMessage() {
+    	return message;
+    }
+    
+    public void setMessage(String message) {
+    	this.message = message;
+    }
 	/**
 	 * Construct a new exception
 	 * @param message

@@ -10,6 +10,9 @@
  * Generic business exception type, all platform exceptions extend this
  */</xs:documentation>
         </xs:annotation>
+        <xs:sequence>
+          <xs:element minOccurs="1" name="Message" nillable="true" type="xs:string"/>
+        </xs:sequence>
       </xs:complexType>
       <xs:element name="CTBBusinessException" type="java:CTBBusinessException" xmlns:java="java:com.ctb.exception"/>
     </xs:schema>

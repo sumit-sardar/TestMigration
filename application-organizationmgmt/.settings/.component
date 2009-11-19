@@ -6,5 +6,9 @@
             <dependent-object>WebModule_1256942020715</dependent-object>
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module deploy-path="/" handle="module:/resource/platform-webservices/platform-webservices">
+            <dependent-object>WebModule_1258598282036</dependent-object>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
 </wb-module>
 </project-modules>
