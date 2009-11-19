@@ -12,7 +12,7 @@ public class CTBBusinessException extends Exception
 { 
     static final long serialVersionUID = 1L;
     
-    public String message;
+    private String message;
     
     public String getMessage() {
     	return message;
