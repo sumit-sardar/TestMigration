@@ -760,9 +760,11 @@ public class ManageUploadController extends PageFlowController
         public void run() {
             try {
                 System.out.println("***** Upload App: invoking process service: " + this.userName + " : " + saveFileName);
+                System.out.println("***** New Addnition");
                 String endpoint = this.instanceURL + "/platform-webservices/UploadDownloadManagement";
                 uploadDownloadManagementServiceControl.setEndPoint(new URL(endpoint));
                 System.out.println("***** Upload App: using service endpoint: " + endpoint);
+                
                 uploadDownloadManagementServiceControl.uploadFile(this.userName, this.fullFilePath, this.uploadFileId);
             } catch (Exception e) {
                 
