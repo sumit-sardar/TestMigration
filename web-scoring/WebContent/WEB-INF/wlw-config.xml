@@ -4,7 +4,7 @@ be accomplished by locating a runtime-wlw-config file in the root of the deploym
 -->
 <wlw-config xmlns="http://www.bea.com/2003/03/wlw/config/">
 
-	<transaction-timeout>3600</transaction-timeout>
+	<transaction-timeout>600</transaction-timeout>
 
 	<!-- hostname that will be in WSDL and Callback URL -->
 	<!-- <hostname>production_host</hostname> -->

@@ -308,13 +308,13 @@
   </binding>
   <service name="ScoringService">
     <port name="ScoringServiceSoap" binding="s0:ScoringServiceSoap">
-      <soap:address location="http://localhost:7001/ScoringService/ScoringService.jws"/>
+      <soap:address location="http://dagobah.mhe.mhc:4001/ScoringService/ScoringService.jws"/>
     </port>
     <port name="ScoringServiceHttpGet" binding="s0:ScoringServiceHttpGet">
-      <http:address location="http://localhost:7001/ScoringService/ScoringService.jws"/>
+      <http:address location="http://dagobah.mhe.mhc:4001/ScoringService/ScoringService.jws"/>
     </port>
     <port name="ScoringServiceHttpPost" binding="s0:ScoringServiceHttpPost">
-      <http:address location="http://localhost:7001/ScoringService/ScoringService.jws"/>
+      <http:address location="http://dagobah.mhe.mhc:4001/ScoringService/ScoringService.jws"/>
     </port>
   </service>
 </definitions>

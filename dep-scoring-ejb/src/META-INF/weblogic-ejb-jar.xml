@@ -15,7 +15,7 @@
       <destination-jndi-name>ScoreStudentJMSQueue</destination-jndi-name>
     </message-driven-descriptor>
 	<transaction-descriptor> 
-		<trans-timeout-seconds>1000</trans-timeout-seconds>
+		<trans-timeout-seconds>600</trans-timeout-seconds>
 	</transaction-descriptor>
     
   </weblogic-enterprise-bean>

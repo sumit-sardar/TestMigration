@@ -384,7 +384,8 @@ public class SafeConnection implements Connection {
 	@Override
 	public boolean isValid(int timeout) throws SQLException {
 		// TODO Auto-generated method stub
-		return false;
+//		return false;
+		return realConnection.isValid(timeout);
 	}
 
 	@Override
