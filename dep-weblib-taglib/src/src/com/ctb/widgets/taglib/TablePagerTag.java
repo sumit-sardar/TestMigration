@@ -34,6 +34,8 @@ public class TablePagerTag extends WidgetsBaseTag
     private String foundLabel;
     private String id = "unknown";
     private String anchorName = null;
+    private Integer value= null;
+    
     
     
     public void setDataSource( String dataSource ) {
@@ -92,19 +94,28 @@ public class TablePagerTag extends WidgetsBaseTag
 
             String expression = this.getDataSource();
             Integer pageRequested;
-            
+            //System.out.println("pgetrequest in jsp..."+ this.value);
             if (isOldStyle(this.getDataSource())) {            
             	pageRequested= (Integer) tlu.resolveVariable( this.getDataSource() );
+            	//System.out.println("pageRequested in old" + pageRequested);
             }
             else {
-            	pageRequested= (Integer) tlu.performResolveVariable( this.getDataSource() );     
+            	pageRequested= (Integer) tlu.performResolveVariable( this.getDataSource() );
+            	//System.out.println("pageRequested" + pageRequested);
             	expression = addBrackets(this.getDataSource());            	
             }
             
             PagerSummary pagerSummary = (PagerSummary)tlu.performResolveVariable( this.getSummary() );
 
             if( pageRequested == null ) {
-                throw new JspException("dataSource attribute not defined!");
+            	if (this.value != null) {
+            		
+            		pageRequested = this.value;
+            		
+            	} else {
+            		throw new JspException("dataSource attribute not defined!");
+            	}
+                
             }
             if( pagerSummary == null ) {
                 throw new JspException("summary attribute not defined!");
@@ -185,6 +196,10 @@ public class TablePagerTag extends WidgetsBaseTag
 
         String expression = addBrackets(this.getDataSource());            	
         
+        //System.out.println("expression..." + expression);
+        //System.out.println("currentPage..." + currentPage);
+        //System.out.println("firstPage..." + firstPage);
+        //System.out.println("this.anchorName..." + this.anchorName);
         if( currentPage <= firstPage ) {
             html += buttonElement(null, firstButton, STYLE_CLASS_BUTTON, null, null, null, null, true) + " ";
             html += buttonElement(null, prevButton, STYLE_CLASS_BUTTON, null, null, null, null, true) + " ";
@@ -293,5 +308,13 @@ public class TablePagerTag extends WidgetsBaseTag
         
         return "<span>" + html + "</span>";   
     }
+
+	public Integer getValue() {
+		return value;
+	}
+
+	public void setValue(Integer value) {
+		this.value = value;
+	}
 
 } 

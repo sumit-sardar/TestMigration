@@ -29,6 +29,9 @@
 
 <netui:hidden dataSource="actionForm.orgMaxPage"/> 
 <netui:hidden dataSource="actionForm.selectedOrgNodeName"/>
+
+
+
 <%--<netui:hidden dataSource="{actionForm.previousParentName}" />--%>
 
 
@@ -117,10 +120,10 @@
     
     </netui-data:repeaterItem>
     <netui-data:repeaterFooter>
-
+		<% Integer orgpageRequest= (Integer)request.getAttribute("formData");%>
         <tr class="sortable">
             <td class="sortableControls" colspan="3">
-                <ctb:tablePager dataSource="actionForm.orgPageRequested" summary="request.orgPagerSummary" objectLabel="${bundle.oas['object.organizations']}" id="tablePathListAnchor" anchorName="tablePathListAnchor"/>
+                <ctb:tablePager dataSource="actionForm.orgPageRequested" value="<%= orgpageRequest %>" summary="request.orgPagerSummary" objectLabel="${bundle.oas['object.organizations']}" id="tablePathListAnchor" anchorName="tablePathListAnchor"/>
             </td>
         </tr>         
             

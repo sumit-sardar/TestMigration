@@ -136,8 +136,8 @@ public class ManageOrganizationController extends PageFlowController
         this.savedForm = initialize(globalApp.ACTION_DEFAULT);
         String orgNodeIdString = (String)this.getRequest().getAttribute("orgNodeId");
         String orgNodeName = (String)this.getRequest().getAttribute("orgNodeName");
-        //System.out.println("orgNodeIdString............" + orgNodeIdString);
-        //System.out.println("orgNodeName................" + orgNodeName);
+        /*System.out.println("orgNodeIdString............" + orgNodeIdString);
+        System.out.println("orgNodeName................" + orgNodeName);*/
         Integer orgNodeId = null;
         
         if (orgNodeIdString != null)
@@ -1553,7 +1553,7 @@ public class ManageOrganizationController extends PageFlowController
                                 pageSize);
        
         }    
-        //System.out.println("OrgPathListUtils orgNodeId" + orgNodeId); 
+        System.out.println("OrgPathListUtils orgNodeId" + orgNodeId); 
         NodeData und = OrgPathListUtils.getOrganizationNodes(this.userName, 
                                 this.organizationManagement, orgNodeId, filter, page, sort);         
         if( form.getOrgPageRequested() == null ||  und.getFilteredPages() == null) {
@@ -1690,7 +1690,7 @@ public class ManageOrganizationController extends PageFlowController
         this.getRequest().setAttribute("orgCategoryName", orgCategoryName);   
 		this.getRequest().setAttribute("selectedOrgNodes", this.selectedOrgNodes);
         this.getRequest().setAttribute("orgNodesForSelector", orgNodesForSelector);
-        //System.out.println(" this.selectedOrgNodes==>" +  this.selectedOrgNodes);
+        System.out.println(" this.selectedOrgNodes==>" +  this.selectedOrgNodes);
        
         if (selectedOrgNodeId != null) {
          
@@ -1703,6 +1703,7 @@ public class ManageOrganizationController extends PageFlowController
         }
         //System.out.println("orgSortColumn" + form.getOrgSortColumn());
         //System.out.println("orgSortOrderBy" + form.getOrgSortOrderBy());
+        setFormInfoOnRequest(form);
         
     }
 
@@ -2195,6 +2196,7 @@ public class ManageOrganizationController extends PageFlowController
     
     private void setFormInfoOnRequest(ManageOrganizationForm form) {
     	this.getRequest().setAttribute("pageMessage", form.getMessage());
+    	this.getRequest().setAttribute("formData", form.getOrgPageRequested());
     }
 
 
