@@ -1,0 +1,197 @@
+<?xml version="1.0"?>
+
+<!-- Copyright (C) 2002 Mxi Technologies. All Rights Reserved. -->
+
+<project name="platform-security" default="all" basedir=".">
+
+	<!-- global properties -->
+	<property environment="env"/>
+	<property name="lib"                 value="${env.WL_HOME}/server/lib"/>
+	<property name="mbeantypes"          value="${lib}/mbeantypes"/>
+	<property name="providersjar"        value="wlOASSecurityProviders.jar"/>
+	<property name="src_dir"             value="./src"/>
+	<property name="test_src_dir"        value="${src_dir}/tests"/>
+	<property name="provider_src_dir"    value="${src_dir}"/>
+	<property name="build_dir"           value="./build"/>
+	<property name="classes"             value="./classes"/>
+
+	<!-- Server connection properties -->
+	<property name="url"                 value="t3://localhost:7001"/>
+	<property name="user"                value="system"/>
+	<property name="pass"                value="weblogic"/>
+	<property name="DBSERVER"            value="168.116.31.32"/>
+	<property name="DBPORT"              value="1521"/>
+	<property name="DBSID"               value="toast"/>
+	<property name="DBUSER"              value="oas"/>
+	<property name="DBPASSWORD"          value="oas"/>
+
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- Build These Providers                                             -->
+	<!--   to build,   use: ant                                            -->
+	<!--   to cleanup, use: ant clean                                      -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<target name="all" depends="clean">
+
+		<!-- Set up the build directories -->
+		<mkdir dir="${build_dir}"/>
+		<mkdir dir="${classes}"/>
+
+
+
+		<!-- Only copy over the commo dtd and provider xml files for now -->
+		<copy todir="${build_dir}" flatten="true">
+			<fileset dir="${lib}">
+				<include name="commo.dtd"/>
+			</fileset>
+		</copy>
+		<copy todir="${build_dir}" flatten="true">
+			<fileset dir="${provider_src_dir}">
+				<include name="**/OAS*.xml"/>
+			</fileset>
+		</copy>
+		<copy todir="${build_dir}" flatten="true">
+			<fileset dir="${provider_src_dir}">
+				<include name="**/DEx*.xml"/>
+			</fileset>
+		</copy>
+
+		<!-- Build the security providers' mbean definition files -->
+		<antcall target="build.mdf">
+			<param name="mdf" value="OASAuthenticator.xml"    />
+		</antcall>
+		<antcall target="build.mdf">
+			<param name="mdf" value="OASIdentityAsserter.xml" />
+		</antcall>
+		<antcall target="build.mdf">
+			<param name="mdf" value="DExAuthenticator.xml" />
+		</antcall>
+		<antcall target="build.mdf">
+			<param name="mdf" value="DExIdentityAsserter.xml" />
+		</antcall>
+
+		<!-- Copy over sources (they depend on generated code so they can't be copied over until now) -->
+		<copy todir="${build_dir}" flatten="true" overwrite="true">
+			<fileset dir="${provider_src_dir}">
+				<include name="**/*.java"/>
+			</fileset>
+		</copy>
+
+		<!-- Build the security providers' jar file -->
+		<java classname="weblogic.management.commo.WebLogicMBeanMaker" fork="true" failonerror="true">
+			<jvmarg line="-Dfiles=${build_dir} -DMJF=${build_dir}/${providersjar}"/>
+			<classpath>
+				<pathelement path="${java.class.path}"/>
+				<pathelement location="${mbeantypes}/wlManagement.jar"/>
+				<pathelement location="${lib}/weblogic.jar"/>
+				<pathelement location="${lib}/jobaccess.jar"/>
+			</classpath>
+		</java>
+
+		<!-- Deploy the security providers -->
+		<copy todir="${mbeantypes}" flatten="true">
+			<fileset dir="${build_dir}">
+				<include name="${providersjar}"/>
+			</fileset>
+		</copy>
+
+	</target>
+
+	<!-- helper to build an MDF (mbean definition file) -->
+	<target name="build.mdf">
+		<java classname="weblogic.management.commo.WebLogicMBeanMaker" fork="true" failonerror="true">
+			<jvmarg line="-Dfiles=${build_dir} -DMDF=${build_dir}/${mdf} -DcreateStubs=true"/>
+			<classpath>
+				<pathelement path="${java.class.path}"/>
+				<pathelement location="${build_dir}"/>
+				<pathelement location="${lib}/weblogic.jar"/>
+				<pathelement location="${lib}/jobaccess.jar"/>
+				<pathelement location="${mbeantypes}/wlManagement.jar"/>
+			</classpath>
+		</java>
+	</target>
+
+	<target name="clean">
+		<delete quiet="true" dir="${build_dir}"/>
+		<delete quiet="true" dir="${classes}"/>
+		<delete quiet="true" file="${mbeantypes}/${providersjar}"/>
+	</target>
+
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+	<!-- Modify The Domain To Use These Providers                             -->
+	<!--   use: ant -Ddomain=pathname_to_your_domain setup.domain          -->
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<!-- setup a domain to use the security providers -->
+	<target name="setup.domain">
+
+		<!-- copy over test webapps -->
+
+		<copy todir="${domain}/applications" >
+			<fileset dir="${test_src_dir}/webapps"/>
+		</copy>
+
+		<!-- add an authenicator -->
+		<antcall
+      target="create.provider">
+			<param name="realm_object_name"       value="Security:Name=myrealm"                   />
+			<param name="provider_type"           value="OASAuthenticator"                         />
+			<param name="provider_package"        value="com.ctb.security.provider.authentication"   />
+		</antcall>
+		<antcall
+      target="admin.cmd.OAS">
+			<param
+        name="options"
+        value="SET -mbean Security:Name=myrealm  -property AuthenticationProviders Security:Name=myrealmDefaultAuthenticator|Security:Name=myrealmDefaultIdentityAsserter|Security:Name=myrealmOASAuthenticator:Name=myrealmDExAuthenticator commotype"
+      />
+		</antcall>
+		<antcall
+      target="admin.cmd.OAS">
+			<param
+        name="options"
+        value="-SET -mbean Security:Name=myrealmDefaultAuthenticator,Type=weblogic.security.providers.authentication.DefaultAuthenticator -property ControlFlag SUFFICIENT"
+      />
+		</antcall>
+		<antcall
+      target="admin.cmd.OAS">
+			<param
+        name="options"
+        value="-SET -mbean Security:Name=myrealmOASAuthenticator,Type=com.ctb.security.provider.authentication.OASAuthenticator -property ControlFlag SUFFICIENT -property Realm Security:Name=myrealm"
+      />
+		</antcall>
+		<antcall
+      target="admin.cmd.OAS">
+			<param
+        name="options"
+        value="-SET -mbean Security:Name=myrealmDExAuthenticator,Type=com.ctb.security.provider.authentication.DExAuthenticator -property ControlFlag SUFFICIENT -property Realm Security:Name=myrealm"
+      />
+		</antcall>
+
+	</target>
+
+	<!-- helper to create a provider, make it reference the realm -->
+	<target name="create.provider">
+		<property name="provider_object_name" value="${realm_object_name}${provider_type}"/>
+		<antcall
+      target="admin.cmd.OAS">
+			<param
+        name="options"
+        value="CREATE -mbean ${provider_object_name} -type ${provider_package}.${provider_type} commotype"
+      />
+		</antcall>
+	</target>
+
+	<!-- helper to use the admin command line tool, read the domain's url and boot username/password from variables -->
+	<target name="admin.cmd.OAS">
+		<java classname="weblogic.Admin" fork="true">
+			<arg line="-url ${url} -username ${user} -password ${pass} ${options}"/>
+			<classpath>
+				<pathelement location="${lib}/weblogic.jar"/>
+			</classpath>
+		</java>
+	</target>
+
+
+</project>
