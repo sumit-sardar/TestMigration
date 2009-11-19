@@ -20,7 +20,7 @@ import com.ctb.web.util.stgtms.CTBUploadAuditFileProcessor;
 /**
  * @jpf:controller
  *  */
-@Jpf.Controller()
+@Jpf.Controller(multipartHandler=Jpf.MultipartHandler.memory)
 public class CTBController extends PageFlowController
 {
     /**
@@ -148,7 +148,7 @@ public class CTBController extends PageFlowController
     
 
     /**
-     * @jpf:action
+     * @jpf:action 
      * @jpf:forward name="index" path="index.jsp"
      * @jpf:forward name="error" path="error.jsp"
      */
