@@ -11,7 +11,7 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
 <netui-data:getData resultId="action" value="${pageFlow.action}"/>
-<netui-data:getData resultId="hasBreak" value="${requestScope.isTestSessionBreak}"/>
+<netui-data:getData resultId="hasBreak" value="${requestScope.hasBreak}"/>  <!-- Changes for defect 60393 -->
 <netui-data:getData resultId="isRandomize" value="${actionForm.testAdmin.isRandomize}"/>
 <netui-data:getData resultId="autoLocatorDisplay" value="${requestScope.autoLocatorDisplay}"/>
 <netui-data:getData resultId="showAccommodations" value="${actionForm.testRosterFilter.showAccommodations}"/>

@@ -38,7 +38,7 @@
 
 <netui:hidden dataSource="actionForm.selectedProductName"/>        
 <netui:hidden dataSource="actionForm.selectedLevel"/>        
-<!-- <netui:hidden dataSource="actionForm.hasBreak"/> -->  
+<netui:hidden dataSource="actionForm.hasBreak"/> <!-- Changes for defect 60393 -->
 <netui:hidden dataSource="actionForm.testAdmin.testName"/>   
 <netui:hidden dataSource="actionForm.testAdmin.level"/>   
 <netui:hidden dataSource="actionForm.testAdmin.accessCode"/>   
@@ -64,7 +64,7 @@
 <netui:hidden dataSource="actionForm.autoLocator"/>
 
 <netui-data:getData resultId="action" value="${pageFlow.action}"/>
-<netui-data:getData resultId="hasBreak" value="${actionForm.hasBreak}"/>
+<netui-data:getData resultId="hasBreak" value="${requestScope.hasBreak}"/> <!-- Changes for defect 60393 -->
 <netui-data:getData resultId="studentCount" value="${requestScope.studentCount}"/>
 <netui-data:getData resultId="isFormEditable" value="${requestScope.isFormEditable}"/>
 <netui-data:getData resultId="displayFormList" value="${requestScope.displayFormList}"/>
