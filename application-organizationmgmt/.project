@@ -4,7 +4,6 @@
 	<comment></comment>
 	<projects>
 		<project>web-organizationmgmt</project>
-		<project>platform-webservices</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
