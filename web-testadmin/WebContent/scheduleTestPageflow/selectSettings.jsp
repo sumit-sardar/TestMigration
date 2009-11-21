@@ -56,7 +56,7 @@
 <netui:hidden dataSource="actionForm.testStatePathList.sortOrderBy"/>        
 
 <netui:hidden dataSource="actionForm.creatorOrgNodeName"/>   
-<netui:hidden dataSource="actionForm.creatorOrgNodeId"/>  
+
 <netui:hidden dataSource="actionForm.studentStatePathList.maxPageRequested"/>
 <netui:hidden dataSource="actionForm.proctorStatePathList.maxPageRequested"/>
 <netui:hidden dataSource="actionForm.testAdmin.isRandomize"/>    <!--added for randomize distractor-->

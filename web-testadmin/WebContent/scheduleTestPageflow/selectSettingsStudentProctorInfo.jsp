@@ -22,7 +22,7 @@
 
 <netui-data:getData resultId="isTabeProduct" value="${requestScope.isTabeProduct}"/>
 <netui-data:getData resultId="productType" value="${requestScope.productType}"/>
-<netui:hidden dataSource="actionForm.creatorOrgNodeId"/>  
+<!--<netui:hidden dataSource="actionForm.creatorOrgNodeId"/>  --><!-- Changes for defect 60455 -->
 <a name="studentTableAnchor"><!-- studentTableAnchor --></a>    
 <h3><netui:span value="${bundle.web['selectsettings.students.title']}"/></h3>
 

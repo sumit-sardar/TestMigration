@@ -42,7 +42,7 @@
 <netui-data:getData resultId="displayLicenseBar" value="${sessionScope.displayLicenseBar}"/>
 <netui-data:getData resultId="licensebarColor" value="${pageFlow.licenseBarColor}"/>
 
-<netui:hidden dataSource="actionForm.creatorOrgNodeId"/>  
+
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td valign="top" width="75%">
@@ -529,12 +529,12 @@
     <netui:hidden dataSource="actionForm.creatorOrgNodeId"/>   
 </c:if>    
 <c:if test="${action=='schedule' || action=='edit'}"> 
-    <c:if test="${showSelectOrganization == 'editable'}">     
+    <c:if test="${showSelectOrganization == 'editable'}">  
         <tr class="transparent">
             <td class="transparent" colspan="4">
             <netui:span value="${bundle.web['selectsettings.label.selectOrganization']}"/>
             <br/>
-                <netui:select dataSource="actionForm.creatorOrgNodeId" optionsDataSource="${pageFlow.topNodesMap}" size="1" multiple="false">
+                 <netui:select dataSource="actionForm.creatorOrgNodeId" optionsDataSource="${pageFlow.topNodesMap}" size="1" multiple="false">
                 </netui:select>
             </td>
         </tr>
