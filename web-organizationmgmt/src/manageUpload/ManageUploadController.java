@@ -760,22 +760,21 @@ public class ManageUploadController extends PageFlowController
         public void run() {
             try {
                 System.out.println("***** Upload App: invoking process service: " + this.userName + " : " + saveFileName);
-                System.out.println("***** New Addnition");
                 String endpoint = this.instanceURL + "/platform-webservices/UploadDownloadManagement";
                 uploadDownloadManagementServiceControl.setEndPoint(new URL(endpoint));
                 System.out.println("***** Upload App: using service endpoint: " + endpoint);
-                
                 uploadDownloadManagementServiceControl.uploadFile(this.userName, this.fullFilePath, this.uploadFileId);
             } catch (Exception e) {
+            	System.out.println("Mail Exception is got after run");
                 
                 DataFileAudit dataFileAudit = new DataFileAudit();
                 dataFileAudit.setStatus("FL");
-                try{
+               /* try{
                     uploadDownloadManagement.updateAuditFileStatus(this.uploadFileId);
                 
                 } catch (Exception se) {
                     se.printStackTrace();
-                }
+                }*/
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
@@ -796,6 +795,7 @@ public class ManageUploadController extends PageFlowController
                      
             ResourceBundle rb = ResourceBundle.getBundle("security");
             String processURL = rb.getString("processURL");
+            
                                     
             final Thread uploadThread = new UploadThread(this.userName, fullFilePath, uploadDataFileId, processURL);
             uploadThread.start();
@@ -1208,6 +1208,7 @@ public class ManageUploadController extends PageFlowController
 	public List getFileList() {
 		return fileList;
 	}
+
     
     
 }

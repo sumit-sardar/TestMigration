@@ -3,7 +3,10 @@ package dto;
 import java.util.Date;
 import utils.PermissionsUtils;
 
-public class AuditFileHistory {
+public class AuditFileHistory implements java.io.Serializable {
+	
+	
+	static final long serialVersionUID = 1L;
 	
 	//private  Integer uploadFileRecordCount = new Integer(0);
     //private  Integer failedRecordCount = new Integer(0);
