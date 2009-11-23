@@ -81,7 +81,7 @@
     </tr>
 
 <% String orgCategoryName = (String)request.getAttribute("orgCategoryName"); 
-   System.out.println("### OrgCategoryName: " + orgCategoryName);
+   
 %> 
 
 <netui-data:repeater dataSource="requestScope.orgNodes">
