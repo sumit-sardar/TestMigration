@@ -667,7 +667,6 @@ public class TestSessionUtils
     public static SubtestVO getLocatorSubtest(List subtests)
     {
         SubtestVO locatorSubtest = null;
-        //System.out.println("getLocatorSubtest subtests" + subtests.size());
         if ((subtests != null) && (subtests.size() > 0)) {
             for (int i=0 ; i<subtests.size() ; i++) {
                 SubtestVO subtest = (SubtestVO)subtests.get(i);

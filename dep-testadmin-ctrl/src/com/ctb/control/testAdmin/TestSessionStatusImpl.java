@@ -221,7 +221,6 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
 	 * @throws com.ctb.exception.CTBBusinessException
      */
     public String getIndividualReportUrl(String userName, Integer testRosterId) throws CTBBusinessException {
-        System.out.println("*****  Generating Ind. report URL: ");
         String reportURL = null;
         try {
             RosterElement re = roster.getRosterElement(testRosterId);
@@ -230,17 +229,11 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
             validator.validateAdmin(userName, re.getTestAdminId(), "testAdmin.getTestSessionDetails");
 
             String orgNodeId = String.valueOf(session.getCreatorOrgNodeId());
-            System.out.println("*****  orgNodeId: " + orgNodeId);
             String sessionId = String.valueOf(re.getTestAdminId());
-            System.out.println("*****  sessionId: " + sessionId);
             String programId = String.valueOf(session.getProgramId());
-            System.out.println("*****  programId: " + programId);
             String studentId = String.valueOf(re.getStudentId());
-            System.out.println("*****  studentId: " + studentId);
             String studentName = re.getLastName() + ", " + re.getFirstName();
-            System.out.println("*****  studentName: " + studentName);
             String testId = String.valueOf(session.getTestCatalogId());
-            System.out.println("*****  testId: " + testId);
             String systemKey = null;
             String customerKey = null;
             String orgCategoryLevel = null;
@@ -255,9 +248,7 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
                     orgCategoryLevel = String.valueOf(cr[i].getCategoryLevel());
                 }
             }
-            System.out.println("*****  clear sys: " + programId);
             String encryptedProgramId = DESUtils.encrypt(String.valueOf(programId), systemKey);
-            System.out.println("*****  enc sys: " + encryptedProgramId);
             String paramsPlainText = 
                 "Timestamp="+(new Date()).toString()+
                 "&LevelId="+orgCategoryLevel+
@@ -265,9 +256,7 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
                 "&CurrentTestSessionId="+sessionId+
                 "&CurrentStudentId="+studentId+
                 "&CurrentStudentName="+studentName;
-            System.out.println("*****  clear parms: " + paramsPlainText);
             String encryptedParams = DESUtils.encrypt(paramsPlainText, customerKey);
-            System.out.println("*****  enc parms: " + encryptedParams);
             reportURL = reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+encryptedParams+"&RunReport=1";
         } catch (SQLException se) {
             CustomerReportDataNotFoundException tee = new CustomerReportDataNotFoundException("ScheduleTestImpl: getIndividualReportUrl: " + se.getMessage());
@@ -471,7 +460,6 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
         try {
            BroadcastMessageData bmd = new BroadcastMessageData();
            Integer [] prodId = message.getFrameworkProductForUser(userName);
-           //System.out.println("getBroadcastMessages productId" + prodId[0].intValue());
            Integer pageSize = null;
           String qString = "''";
            
@@ -479,7 +467,6 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
         	   qString = SQLutils.convertArraytoString(prodId);
            }
           
-           //System.out.println("qString====>"+qString);
            bmd.setBroadcastMessages(message.getProductSpecificBroadcastMsg(qString), null);
            return bmd;
         } catch (SQLException se) {

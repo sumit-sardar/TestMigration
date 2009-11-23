@@ -113,7 +113,6 @@ public class FontLoader extends SWFTagTypesImpl
         
         if( kernCodes1 != null && kernCodes1.length > 0 )
         {
-            //System.out.println( "Number of Kernings --> " + kernCodes1.length );
             
             ArrayList kerns = fontDef.getKerningPairList();
         
@@ -155,7 +154,6 @@ public class FontLoader extends SWFTagTypesImpl
         
         public void done()
         {
-            //System.out.println( "------------" );
             double advance = (advances == null) ? 0.0 : ((double)advances[i])/twips;
             int code = codes[i];
             

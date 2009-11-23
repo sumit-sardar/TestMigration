@@ -33,7 +33,6 @@ public class CTBSaveRequestProcessor
         // construct output XML string from response document
         try {
             StudentFeedbackDataDocument response = saveControl.ctbFeedback(document);
-            //System.out.println(response.toString());
             return response.toString();
         } catch (Exception e) {
             //e.printStackTrace();

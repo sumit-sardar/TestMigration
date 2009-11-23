@@ -62,7 +62,6 @@ public class CTBController extends PageFlowController
     })
     protected Forward begin(TestForm test)
     {   
-    	System.out.println("tmsLogin");
         return handleTMSRequest(test);
     }
 
@@ -339,7 +338,6 @@ public class CTBController extends PageFlowController
             String responseXML = null;
             if(requestXML.indexOf("tmssvc_request") >= 0) {
                 String remoteAddress = this.getRequest().getRemoteAddr();
-                System.out.println("remoteAddress" +remoteAddress);
                 responseXML = CTBLoginRequestProcessor.processLoginRequest(requestXML, loginControl, remoteAddress);
             } else if(requestXML.indexOf("get_feedback_data") >= 0) {
                 responseXML = CTBSaveRequestProcessor.processFeedbackRequest(requestXML, saveControl);

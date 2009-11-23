@@ -142,7 +142,6 @@ public abstract class ReportUtils
             this.scheme = "http"; // hard code for SSL connection issue.
     //        URL url = new URL(this.scheme, server, port.intValue(), imageUrl);
             URL url = new URL(this.scheme, server, imageUrl);
-//    System.out.println("****************scheme:"+this.scheme+" server:"+server +" imageUrl:"+imageUrl);
             Image img = Image.getInstance(url);
             img.setAbsolutePosition(x, y);
             document.add(img);

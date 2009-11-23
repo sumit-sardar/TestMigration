@@ -8,7 +8,6 @@ public class CTBAssessmentDeliveryProcessor
 { 
     public static String processGetSubtest(String requestXML, AssessmentDelivery adsControl) throws XmlException {
         // construct document from XML string
-    	//System.out.println(AdssvcRequestDocument.type);
         AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(requestXML);
         // construct output XML string from response document
         return adsControl.getSubtest(document).toString();

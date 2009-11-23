@@ -2251,7 +2251,6 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
                         }
                         rosterCount++;
                         if(rosterCount >= 999) {
-                            //System.out.println("TestAdmin: createStudentItemSetStatusRecords: inserting siss records for item set " + subtestId + ", order " + order + " for rosters: " + rosterList);
                             siss.createNewStudentItemSetStatus(customerId, admins, students, subtestId, order, "F", "VA", "SC");
                             rosterCount = 0;
                             admins = "";

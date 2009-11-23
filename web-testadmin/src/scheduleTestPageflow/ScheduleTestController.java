@@ -267,10 +267,11 @@ public class ScheduleTestController extends PageFlowController
             UserNode node = (UserNode)nodes[i];
             if (node != null)
             {
-                this.topNodesMap.put(node.getOrgNodeId(), node.getOrgNodeName());
+            	this.topNodesMap.put(node.getOrgNodeId(), node.getOrgNodeName());
                 if (i == 0) 
                     form.setCreatorOrgNodeId(node.getOrgNodeId());                
             }
+            
         }
         
         this.scheduledSession = null;
@@ -295,7 +296,6 @@ public class ScheduleTestController extends PageFlowController
         
         Date now = new Date(System.currentTimeMillis());
         if(this.user.getTimeZone() == null){
-        	System.out.println("this.user.getTimeZone is NULL");
         	try
             {
         		User userNew = this.scheduleTest.getUserDetails(this.userName, this.userName);
@@ -1109,9 +1109,9 @@ public class ScheduleTestController extends PageFlowController
                         UserNode node = (UserNode)nodes[i];
                         if (node != null)
                         {
-                            this.topNodesMap.put(node.getOrgNodeId(), node.getOrgNodeName());
+                        	this.topNodesMap.put(node.getOrgNodeId(), node.getOrgNodeName());
                             if (i == 0) 
-                                form.setCreatorOrgNodeId(node.getOrgNodeId());                
+                                form.setCreatorOrgNodeId(node.getOrgNodeId());             
                         }
                     }
                 }        

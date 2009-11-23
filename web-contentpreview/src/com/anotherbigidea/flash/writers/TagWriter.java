@@ -550,7 +550,6 @@ public class TagWriter implements SWFTagTypes, SWFConstants
         startTag( TAG_DEFINEBUTTON, id, true );
         
         ButtonRecord.write( out, buttonRecords );
-        System.out.println( "BUTTON" );
         return new ActionWriter( this, version );
     }
     

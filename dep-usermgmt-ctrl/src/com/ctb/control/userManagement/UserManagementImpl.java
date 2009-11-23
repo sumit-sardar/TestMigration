@@ -451,9 +451,7 @@ public class UserManagementImpl implements UserManagement, Serializable
                     sort = null;
                 }*/
                 //searchCriteria = searchCriteria + orderByClause;
-                System.out.println("searchCriteria" + searchCriteria);
                 //searchCriteria = "'"+"TAI"+"'";
-                //System.out.println("searchCriteria===>"+searchCriteria);
                 String findInColumn = "ona.ancestor_org_node_id in ";
                 String searchCriteriaTemp = SQLutils.generateSQLCriteria(findInColumn,orgNodeIds); 
                 findUsers = users.getUsersAtOrBelowNodesForActManager(
@@ -596,7 +594,6 @@ public class UserManagementImpl implements UserManagement, Serializable
                     sort = null;
                 }*/
                 //searchCriteria = searchCriteria + orderByClause;
-                System.out.println("searchCriteria" + searchCriteria);
                 String findInColumn = "ona.ancestor_org_node_id in ";
                 String searchCriteriaTemp = SQLutils.generateSQLCriteria(findInColumn,orgNodeIds);
                 findUsers = users.getUsersAtOrBelowNodesForActManager(searchCriteriaTemp,searchCriteria);
@@ -1431,7 +1428,6 @@ public class UserManagementImpl implements UserManagement, Serializable
             }*/
             
             /*----------------End of Dex Change----------------------------*/
-          //  System.out.println(rawPassword);
             encodedPassword = FormatUtils.encodePassword(rawPassword);
             user.setPassword(encodedPassword);
             Calendar today = Calendar.getInstance();
@@ -2441,7 +2437,6 @@ public class UserManagementImpl implements UserManagement, Serializable
             
             String encodedPassword = FormatUtils.encodePassword(rawPassword); 
             user.setPassword(encodedPassword);
-     //       System.out.println(rawPassword);
             Calendar today = Calendar.getInstance();
             today.setTimeInMillis(System.currentTimeMillis());
             today.add(Calendar.MONTH, CTBConstants.PASSWORD_EXPIRE_MONTH);

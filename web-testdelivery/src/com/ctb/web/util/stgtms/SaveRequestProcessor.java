@@ -25,7 +25,6 @@ public class SaveRequestProcessor
         // construct output XML string from response document
         try {
             StudentFeedbackDataDocument response = saveControl.feedback(document);
-            //System.out.println(response.toString());
             return response.toString();
         } catch (Exception e) {
             //e.printStackTrace();

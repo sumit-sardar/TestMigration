@@ -990,7 +990,6 @@ public class RegistrationController extends PageFlowController
             
             // set current into form before goto next step
             form.setStudentProfile(this.student);
-            System.out.println(roster.getPassword());
             form.setPassword(roster.getPassword());
             
             form.setStudentSectionVisible(Boolean.TRUE);            
