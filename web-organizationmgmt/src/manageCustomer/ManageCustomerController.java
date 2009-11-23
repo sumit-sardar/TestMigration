@@ -1343,7 +1343,7 @@ public class ManageCustomerController extends PageFlowController
     })
     protected Forward cancelCurrentAction(ManageCustomerForm form)
     {   
-        System.out.println("Cancel");
+        
     	this.frameWork = null;
         this.clearCurrentMessage = true;
         clearMessage(form);

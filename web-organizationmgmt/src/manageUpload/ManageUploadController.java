@@ -765,8 +765,7 @@ public class ManageUploadController extends PageFlowController
                 System.out.println("***** Upload App: using service endpoint: " + endpoint);
                 uploadDownloadManagementServiceControl.uploadFile(this.userName, this.fullFilePath, this.uploadFileId);
             } catch (Exception e) {
-            	System.out.println("Mail Exception is got after run");
-                
+            	
                 DataFileAudit dataFileAudit = new DataFileAudit();
                 dataFileAudit.setStatus("FL");
                /* try{

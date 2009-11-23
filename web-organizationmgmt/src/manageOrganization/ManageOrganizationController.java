@@ -136,8 +136,7 @@ public class ManageOrganizationController extends PageFlowController
         this.savedForm = initialize(globalApp.ACTION_DEFAULT);
         String orgNodeIdString = (String)this.getRequest().getAttribute("orgNodeId");
         String orgNodeName = (String)this.getRequest().getAttribute("orgNodeName");
-        /*System.out.println("orgNodeIdString............" + orgNodeIdString);
-        System.out.println("orgNodeName................" + orgNodeName);*/
+        
         Integer orgNodeId = null;
         
         if (orgNodeIdString != null)
@@ -150,7 +149,7 @@ public class ManageOrganizationController extends PageFlowController
         this.parentOrgNodeIdForAdd = orgNodeId;   
         //retrive parentOrganization for orgNodeId
         Node node = getParentOrgNode(orgNodeId, this.savedForm);
-        //System.out.println("Node.."+ node.getOrgNodeName());
+       
         //retrive actual pageRequest for orgNodeId
         SortParams sort = FilterSortPageUtils.buildSortParams(this.savedForm.getOrgSortColumn(), this.savedForm.getOrgSortOrderBy(), null, null);
         HashMap pageSummary = getPageSummary(node.getOrgNodeId(), orgNodeId, sort);
@@ -163,8 +162,6 @@ public class ManageOrganizationController extends PageFlowController
         this.savedForm.setOrgNodeName(node.getOrgNodeName());
         this.orgNodePath = setupHierarchy(orgNodeId, null);
         this.isManageOrganization = true;
-        //System.out.println("orgNodeId........" + orgNodeId);
-        //System.out.println("beginmanageOrg pathorgNode......." + this.orgNodePath);
         return new Forward("success", this.savedForm);
     }
 
@@ -252,7 +249,7 @@ public class ManageOrganizationController extends PageFlowController
         
         if (currentAction.equals(globalApp.ACTION_VIEW_ORGANIZATION) || currentAction.equals(globalApp.ACTION_ADD_ORGANIZATION) || currentAction.equals(globalApp.ACTION_EDIT_ORGANIZATION) || currentAction.equals(globalApp.ACTION_DELETE_ORGANIZATION))
         {
-        	//System.out.println("return currentAction");
+        	
             return new Forward(currentAction, form);   
             
         }                        
@@ -270,7 +267,7 @@ public class ManageOrganizationController extends PageFlowController
         }                     
         this.isToFindOrg = false;
         
-        //System.out.println("this.isToFindOrg==>" + this.isToFindOrg);
+      
         
         handleOrganizationControl(form, null);
         this.isAddFromSideBar = false;
@@ -1516,7 +1513,6 @@ public class ManageOrganizationController extends PageFlowController
             }
             
         }
-        //System.out.println("setupOrgNodePath ....." + actionElement);
         if (actionElement.equals("setupOrgNodePath")) {
             String tempOrgNodeId = form.getCurrentAction();  
             
@@ -1553,7 +1549,7 @@ public class ManageOrganizationController extends PageFlowController
                                 pageSize);
        
         }    
-        System.out.println("OrgPathListUtils orgNodeId" + orgNodeId); 
+       
         NodeData und = OrgPathListUtils.getOrganizationNodes(this.userName, 
                                 this.organizationManagement, orgNodeId, filter, page, sort);         
         if( form.getOrgPageRequested() == null ||  und.getFilteredPages() == null) {
@@ -1679,18 +1675,12 @@ public class ManageOrganizationController extends PageFlowController
                 form.setSelectedOrgNodeId(this.currentOrgNodeIds[0]);               
         }
         
-        /*System.out.println("FindOrganization orgNodePath..." + this.orgNodePath.toString());
-        System.out.println("FindOrganization orgNodes...."+orgNodes.toString());
-        System.out.println("FindOrganization selectedOrgNodes....."+ this.selectedOrgNodes.toString());
-        System.out.println("FindOrganization......"+this.orgNodePath.toString());
-        System.out.println("orgCategoryName......"+orgCategoryName);*/
         this.getRequest().setAttribute("orgNodePath", this.orgNodePath);
         this.getRequest().setAttribute("orgNodes", orgNodes);        
         this.getRequest().setAttribute("orgPagerSummary", orgPagerSummary);
         this.getRequest().setAttribute("orgCategoryName", orgCategoryName);   
 		this.getRequest().setAttribute("selectedOrgNodes", this.selectedOrgNodes);
         this.getRequest().setAttribute("orgNodesForSelector", orgNodesForSelector);
-        System.out.println(" this.selectedOrgNodes==>" +  this.selectedOrgNodes);
        
         if (selectedOrgNodeId != null) {
          
@@ -1701,8 +1691,6 @@ public class ManageOrganizationController extends PageFlowController
             this.getRequest().setAttribute("disableButtons", "true");   
         
         }
-        //System.out.println("orgSortColumn" + form.getOrgSortColumn());
-        //System.out.println("orgSortOrderBy" + form.getOrgSortOrderBy());
         setFormInfoOnRequest(form);
         
     }
