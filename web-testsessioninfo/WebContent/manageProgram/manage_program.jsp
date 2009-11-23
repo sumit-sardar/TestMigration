@@ -356,7 +356,7 @@
                 </tr>
                 <tr class="tableFilter">
                     <td class="tableFilter alignRight" colspan="6">
-                        <netui:button styleClass="button" value="${bundle.widgets['button.apply']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'applyFilters', 'programStatusAnchor', this); " />&nbsp;
+                        <netui:button styleClass="button" value="${bundle.widgets['button.apply']}" type="submit" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'applyFilters', 'programStatusAnchor', this); return false;" />&nbsp;
                         <netui:button styleClass="button" value="${bundle.widgets['button.clearAll']}" type="button" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'clearFilters', 'programStatusAnchor', this); "/>&nbsp;
                     </td>                        
                 </tr>
