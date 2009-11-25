@@ -339,6 +339,7 @@ public class ManageStudentController extends PageFlowController
 	{      
 		String stringAction = form.getStringAction();
 		setFormInfoOnRequest(form);
+		saveToken(this.getRequest());
 		return new Forward(stringAction, form);
 	}
 
@@ -432,7 +433,8 @@ public class ManageStudentController extends PageFlowController
 					path = "viewStudent.do")
 	})
 	protected Forward goToViewStudent()
-	{
+	{   
+		saveToken(this.getRequest());
 		return new Forward("success", this.savedForm);
 	}
 
@@ -448,64 +450,86 @@ public class ManageStudentController extends PageFlowController
 							path = "addEditStudent.do")
 	})
 	protected Forward saveAddEditStudent(ManageStudentForm form)
-	{
+	{   
+		//System.out.println("current action in save" + form.getCurrentAction());
+		//System.out.println(" action element in save" + form.getActionElement());
+		Boolean isTokenValid = isTokenValid();
+		System.out.println("isTokenValid........." + isTokenValid);
+		
+		
 		Integer studentId = form.getSelectedStudentId();
+		
+		if ( studentId == null) {
+			 
+			//System.out.println( studentId );
+			studentId = (Integer)this.getSession().getAttribute("selectStudentIdInView");
+			System.out.println("after session" +  studentId );
+			form.setSelectedStudentId(studentId);
+		}
+		
 		boolean isCreateNew = studentId == null ? true : false;
-
-		if (! isCreateNew)
-		{        
-			Boolean profileEditable = isProfileEditable(form.getStudentProfile().getCreateBy());
-			if (! profileEditable.booleanValue())
+		
+		//System.out.println("create new or not " + isCreateNew);
+		
+		if ( isTokenValid ) {
+			
+				if (! isCreateNew)
+				{        
+					Boolean profileEditable = isProfileEditable(form.getStudentProfile().getCreateBy());
+					if (! profileEditable.booleanValue())
+					{
+						// reload student profile since nothing in the request
+						StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
+						form.setStudentProfile(studentProfile);
+					}                
+				}
+		
+				this.selectedOrgNodes = StudentPathListUtils.buildSelectedOrgNodes(this.currentOrgNodesInPathList, this.currentOrgNodeIds, this.selectedOrgNodes);
+		
+				boolean result = form.verifyStudentInformation(this.selectedOrgNodes);
+				if (! result)
+				{           
+					form.setActionElement(ACTION_DEFAULT);
+					form.setCurrentAction(ACTION_DEFAULT);                 
+					return new Forward("error", form);
+				}        
+				
+				
+				studentId = saveStudentProfileInformation(isCreateNew, form, studentId, this.selectedOrgNodes);
+				
+		
+				String demographicVisible = this.user.getCustomer().getDemographicVisible();
+				if ((studentId != null) && demographicVisible.equalsIgnoreCase("T"))
+				{
+					result = saveStudentDemographic(isCreateNew, form, studentId);
+				}
+		
+				if (studentId != null)
+				{
+					result = saveStudentAccommodations(isCreateNew, form, studentId);
+				}
+		
+				form.setSelectedStudentId(studentId);
+		
+				this.viewStudentFromSearch = false;             
+			
+			if (isCreateNew)
 			{
-				// reload student profile since nothing in the request
-				StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
-				form.setStudentProfile(studentProfile);
-			}                
+				if (studentId != null) 
+					form.setMessage(Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION);
+				else 
+					form.setMessage(Message.ADD_TITLE, Message.ADD_ERROR, Message.INFORMATION);
+			}
+			else
+			{
+				if (studentId != null) 
+					form.setMessage(Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION);
+				else 
+					form.setMessage(Message.EDIT_TITLE, Message.EDIT_ERROR, Message.INFORMATION);
+			}
+			
+			this.savedForm = form.createClone();    
 		}
-
-		this.selectedOrgNodes = StudentPathListUtils.buildSelectedOrgNodes(this.currentOrgNodesInPathList, this.currentOrgNodeIds, this.selectedOrgNodes);
-
-		boolean result = form.verifyStudentInformation(this.selectedOrgNodes);
-		if (! result)
-		{           
-			form.setActionElement(ACTION_DEFAULT);
-			form.setCurrentAction(ACTION_DEFAULT);                 
-			return new Forward("error", form);
-		}        
-
-		studentId = saveStudentProfileInformation(isCreateNew, form, studentId, this.selectedOrgNodes);
-
-		String demographicVisible = this.user.getCustomer().getDemographicVisible();
-		if ((studentId != null) && demographicVisible.equalsIgnoreCase("T"))
-		{
-			result = saveStudentDemographic(isCreateNew, form, studentId);
-		}
-
-		if (studentId != null)
-		{
-			result = saveStudentAccommodations(isCreateNew, form, studentId);
-		}
-
-		form.setSelectedStudentId(studentId);
-
-		this.viewStudentFromSearch = false;             
-
-		if (isCreateNew)
-		{
-			if (studentId != null) 
-				form.setMessage(Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION);
-			else 
-				form.setMessage(Message.ADD_TITLE, Message.ADD_ERROR, Message.INFORMATION);
-		}
-		else
-		{
-			if (studentId != null) 
-				form.setMessage(Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION);
-			else 
-				form.setMessage(Message.EDIT_TITLE, Message.EDIT_ERROR, Message.INFORMATION);
-		}
-
-		this.savedForm = form.createClone();                     
 		return new Forward("success");
 	}
 
@@ -1731,7 +1755,9 @@ public class ManageStudentController extends PageFlowController
 	validationErrorForward = @Jpf.Forward(name = "failure",
 			path = "viewStudent.do"))
 			protected Forward viewStudent(ManageStudentForm form)
-	{
+	{   
+		//Save the token to remove F5 problem
+		saveToken(this.getRequest());
 		Integer studentId = form.getSelectedStudentId();   
 		boolean studentImported = (form.getStudentProfile().getCreateBy().intValue() == 1);
 
@@ -1985,7 +2011,7 @@ public class ManageStudentController extends PageFlowController
 
 		this.getRequest().setAttribute("pageMessage", form.getMessage());
 		this.getRequest().setAttribute("studentProfileData", form.getStudentProfile());
-
+		this.getSession().setAttribute("selectStudentIdInView",form.getSelectedStudentId());
 
 
 	}
