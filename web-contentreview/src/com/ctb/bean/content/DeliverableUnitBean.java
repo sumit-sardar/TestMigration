@@ -13,6 +13,9 @@ public class DeliverableUnitBean implements Serializable
     private String itemReferences;
     private String startingQuestionNumber;
     
+    
+    
+    
     public ItemBean [] getItems() {
         return this.items;
     }
@@ -56,6 +59,8 @@ public class DeliverableUnitBean implements Serializable
     public void setOrderReferences(String orderReferences_ ) {
         this.orderReferences = orderReferences_;
     }
+    
+    
     
     public void setItemReferences(String itemReferences_ ) {
         this.itemReferences = itemReferences_;
