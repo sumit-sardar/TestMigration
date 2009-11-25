@@ -40,17 +40,13 @@ public class DownloadClientController extends PageFlowController
     })
     protected Forward begin()
     {
-        String PC_URI = "'" +
-                        getdownloadURI("TDCINSTPC") +
-                        "'";
-        String MAC_URI = "'" +
-                         getdownloadURI("TDCINSTMAC") +
-                         "'";
+        String PC_URI = "'" + getdownloadURI("TDCINSTPC") + "'";
+        String MAC_URI = "'" + getdownloadURI("TDCINSTMAC") + "'";
+        String LINUX_URI = "'" + getdownloadURI("TDCINSTLINUX") + "'";
         
-        this.getRequest().setAttribute("downloadURI_PC", "location.href=" +
-                                                         PC_URI);
-        this.getRequest().setAttribute("downloadURI_MAC", "location.href=" +
-                                                          MAC_URI);
+        this.getRequest().setAttribute("downloadURI_PC", "location.href=" + PC_URI);
+        this.getRequest().setAttribute("downloadURI_MAC", "location.href=" + MAC_URI);
+        this.getRequest().setAttribute("downloadURI_LINUX", "location.href=" + LINUX_URI);
 
         return new Forward("success");
     }
@@ -109,7 +105,13 @@ public class DownloadClientController extends PageFlowController
         if (resourceTypeCode.equals("TDCINSTPC")) 
             return "/downloadfiles/InstallOnlineAsmt.exe";
         else            
+        if (resourceTypeCode.equals("TDCINSTMAC")) 
             return "/downloadfiles/InstallOnlineAsmt.zip";        
+        else            
+        if (resourceTypeCode.equals("TDCINSTLINUX")) 
+            return "/downloadfiles/InstallOnlineAsmt.bin";        
+        else            
+        return "/downloadfiles/InstallOnlineAsmt.exe";
     }
     
 }

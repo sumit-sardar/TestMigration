@@ -135,7 +135,7 @@
                     </td>
                     <td class="transparent-top">
                             <% String href_PC = (String)request.getAttribute("downloadURI_PC"); %>                    
-                            <netui:button styleClass="button" tagId="installPCClient" value="${bundle.web['installClient.windows.buttonText']}" type="button" onClick="<%= href_PC %>" disabled="false"/>        
+                            <netui:button styleClass="button" tagId="installPCClient" value="${bundle.web['installClient.windows.buttonText']}" type="button" onClick="<%= href_PC %>" />        
                     </td>
                 </tr>         
                 
@@ -144,7 +144,7 @@
                 </tr>
                 
             	<%-- Mac OS --%>
-		        <tr id="installPCClientRow" class="transparent">
+		        <tr id="installMacClientRow" class="transparent">
 		            <td class="transparent-top" width="5%">
 		                <img class="transparent" src="../resources/images/legacy/icon_macX.gif"/>
 		            </td>
@@ -156,11 +156,31 @@
 		            </td>
 		            <td class="transparent-top">
                         <% String href_MAC = (String)request.getAttribute("downloadURI_MAC"); %>                    
-		                <netui:button styleClass="button" tagId="installPCClient" value="${bundle.web['installClient.windows.buttonText']}" type="button" onClick="<%= href_MAC %>" disabled="false"/>        
+		                <netui:button styleClass="button" tagId="installMacClient" value="${bundle.web['installClient.windows.buttonText']}" type="button" onClick="<%= href_MAC %>" />        
 		            </td>
 		        </tr>     
 
 
+                <tr class="transparent">
+                    <td class="transparent" height="25" colspan="3"/>
+                </tr>
+                
+            	<%-- Mac OS --%>
+		        <tr id="installLinuxClientRow" class="transparent">
+		            <td class="transparent-top" width="5%">
+		                <img class="transparent" src="../resources/images/legacy/icon_linux.gif"/>
+		            </td>
+		            <td class="transparent-top" width="75%">
+		                <b><netui:content value="${bundle.web['installClient.linux.clientName']}"/></b><br>
+		                <netui:content value="${bundle.web['installClient.linux.version']}"/><br>
+		                <i><netui:content value="${bundle.web['installClient.linux.OS']}"/></i><br>
+		                <netui:content value="${bundle.web['installClient.linux.size']}"/>
+		            </td>
+		            <td class="transparent-top">
+                        <% String href_Linux = (String)request.getAttribute("downloadURI_LINUX"); %>                    
+		                <netui:button styleClass="button" tagId="installLinuxClient" value="${bundle.web['installClient.windows.buttonText']}" type="button" onClick="<%= href_Linux %>" />        
+		            </td>
+		        </tr>     
 
             </table>
         </td>
