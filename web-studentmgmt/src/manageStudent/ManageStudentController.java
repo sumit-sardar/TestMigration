@@ -106,7 +106,7 @@ public class ManageStudentController extends PageFlowController
 
 	private ManageStudentForm savedForm = null;
 	private StudentProfileInformation studentSearch = null;
-
+	
 	private HashMap currentOrgNodesInPathList = null;
 	public List selectedOrgNodes = null;
 	public Integer[] currentOrgNodeIds = null;
@@ -278,12 +278,19 @@ public class ManageStudentController extends PageFlowController
 	 */
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
-					path = "addEditStudent.do")
+					path = "addEditStudent.do"),
+			@Jpf.Forward(name = "error",
+							path = "findStudent.do")
 	})
 	protected Forward beginEditStudent(ManageStudentForm form)
 	{                
 		Integer studentId = form.getSelectedStudentId();
 		StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
+		if (studentProfile == null) {						//Changes for Defect 60478
+            form.setCurrentAction(ACTION_DEFAULT);
+           return new Forward("error", form);
+       }
+		
 		form.setStudentProfile(studentProfile);
 		this.studentName = studentProfile.getFirstName() + " " + studentProfile.getLastName();
 
@@ -1368,14 +1375,15 @@ public class ManageStudentController extends PageFlowController
 	validationErrorForward = @Jpf.Forward(name = "failure",
 			path = "logout.do"))
 			protected Forward findStudent(ManageStudentForm form)
-	{        
+	{    
+		//System.out.println("findstudent action on refresh");
 		form.validateValues();
 
 		String currentAction = form.getCurrentAction();
 		String actionElement = form.getActionElement();
 
-		form.resetValuesForAction(actionElement, ACTION_FIND_STUDENT);        
-
+		form.resetValuesForAction(actionElement, ACTION_FIND_STUDENT); 
+		//System.out.println("currentAction" + currentAction);
 		if (currentAction.equals(ACTION_VIEW_STUDENT) || currentAction.equals(ACTION_EDIT_STUDENT) || currentAction.equals(ACTION_DELETE_STUDENT))
 		{
 			this.viewStudentFromSearch = true;             
@@ -1735,7 +1743,7 @@ public class ManageStudentController extends PageFlowController
 					path = "viewStudent.do")
 	})
 	protected Forward beginViewStudent(ManageStudentForm form)
-	{        
+	{         
 		form.setCurrentAction(MODULE_STUDENT_PROFILE);
 		form.clearSectionVisibility();
 		form.setByStudentProfileVisible(Boolean.TRUE);
@@ -1750,18 +1758,26 @@ public class ManageStudentController extends PageFlowController
 	 */
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
-					path = "view_student.jsp")
+					path = "view_student.jsp"),
+			@Jpf.Forward(name = "error",
+					path = "findStudent.do")
 	}, 
 	validationErrorForward = @Jpf.Forward(name = "failure",
 			path = "viewStudent.do"))
 			protected Forward viewStudent(ManageStudentForm form)
 	{   
 		//Save the token to remove F5 problem
-		saveToken(this.getRequest());
-		Integer studentId = form.getSelectedStudentId();   
+		//System.out.println("View student");
+		saveToken(this.getRequest());   
+		Integer studentId = form.getSelectedStudentId(); 
+		
 		boolean studentImported = (form.getStudentProfile().getCreateBy().intValue() == 1);
 
 		StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
+		if (studentProfile == null) {							//Changed for Defect 60478
+            form.setCurrentAction(ACTION_DEFAULT);
+           return new Forward("error", form);
+        }
 		//this.getRequest().setAttribute("studentProfileForView",studentProfile);
 		form.setStudentProfile(studentProfile);
 
@@ -1769,7 +1785,6 @@ public class ManageStudentController extends PageFlowController
 
 		form.setCurrentAction(ACTION_DEFAULT);
 		this.getRequest().setAttribute("selectedModule", MODULE_STUDENT_PROFILE);
-
 		if (this.viewStudentFromSearch) 
 			this.getRequest().setAttribute("showBackButton", "returnToFindStudent");
 		else
@@ -1836,12 +1851,12 @@ public class ManageStudentController extends PageFlowController
 	)
 	protected Forward deleteStudent(ManageStudentForm form)
 	{
-		Integer studentId = form.getSelectedStudentId();   
+		Integer studentId = form.getSelectedStudentId(); 
 		if (studentId != null) {
 			try {                    
 				DeleteStudentStatus status = this.studentManagement.deleteStudent(this.userName, studentId);
 				this.savedForm.setMessage(Message.DELETE_TITLE, Message.DELETE_SUCCESSFUL, Message.INFORMATION);
-				this.savedForm.setSelectedStudentId(null);      
+				this.savedForm.setSelectedStudentId(null);
 			}
 			catch (StudentDataDeletionException sde) {
 				sde.printStackTrace();

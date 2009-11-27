@@ -151,6 +151,7 @@ public class StudentSearchUtils
             studentProfileInfo = new StudentProfileInformation(student);   
         }      
         catch (Exception e) {
+        	studentProfileInfo = null;   //Changes for Defect 60478
             e.printStackTrace();
         }
         return studentProfileInfo;
