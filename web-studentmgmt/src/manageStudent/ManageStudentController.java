@@ -1918,9 +1918,9 @@ public class ManageStudentController extends PageFlowController
 	private void getCustomerConfigurations()
 	{
 		try {
-			if (this.customerConfigurations == null) {
+			//if (this.customerConfigurations == null) {   //Changes for Defect-60479
 				this.customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);
-			}
+			//}
 		}
 		catch (CTBBusinessException be) {
 			be.printStackTrace();
