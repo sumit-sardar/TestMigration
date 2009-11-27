@@ -226,8 +226,8 @@ public class OrganizationManagementImpl implements OrganizationManagement, Seria
              if ( role.getRoleName().equalsIgnoreCase(CTBConstants.ROLE_NAME_ACCOUNT_MANAGER) ) {
                 
                  Integer getCustomerId  = orgNode.getOrgNodeById(node.getOrgNodeId())
-                                                                        .getCustomerId();node.getCustomerId();    
-                 Integer toCustomerId = orgNode.getOrgNodeById(node.getParentOrgNodeId())
+                                                                   .getCustomerId();node.getCustomerId();
+                Integer toCustomerId = orgNode.getOrgNodeById(node.getParentOrgNodeId())
                                                                         .getCustomerId();
                  if ( toCustomerId.intValue()  > 10 ) {
                                                                            
@@ -243,6 +243,12 @@ public class OrganizationManagementImpl implements OrganizationManagement, Seria
             
             
          } catch ( CTBBusinessException be ) {
+        	 
+        	 System.out.println("control error message"+ be.getMessage());
+        	 if (be.getMessage() == null) {					//changes for Defect 60480
+        		 
+        		 be.setMessage("AssociateOrganOrganization.Failed");
+        	 }
             
               throw be;
                
