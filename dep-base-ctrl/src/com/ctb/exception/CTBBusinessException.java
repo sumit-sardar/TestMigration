@@ -19,7 +19,6 @@ public class CTBBusinessException extends Exception
     }
     
     public void setMessage(String message) {
-    	System.out.println("setmessage==>"+message);
     	this.message = message;
     }
 	/**
