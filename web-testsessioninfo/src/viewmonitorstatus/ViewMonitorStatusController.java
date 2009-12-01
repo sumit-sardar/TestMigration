@@ -1086,6 +1086,14 @@ public class ViewMonitorStatusController extends PageFlowController
     protected Forward viewIndividualReport(ViewMonitorStatusForm form)
     {
         try {
+        	// Defect 60476 
+        	if (this.userName == null) {
+        		
+        		 java.security.Principal principal = getRequest().getUserPrincipal();
+        	        if (principal != null) 
+        	            this.userName = principal.toString();  
+        	}
+        	
             String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, form.getTestRosterId());           
             this.getRequest().setAttribute("reportUrl", reportUrl);
             this.getRequest().setAttribute("testAdminId", String.valueOf(this.sessionId));
