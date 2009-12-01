@@ -920,7 +920,9 @@ public class ManageUserController extends PageFlowController
         @Jpf.Forward(name = "success",
                      path = "addEditUser.do"), 
         @Jpf.Forward(name = "editMyProfile",
-                     path = "beginEditMyProfile.do")
+                     path = "beginEditMyProfile.do"),
+        @Jpf.Forward(name = "error",
+							path = "findUser.do")
     })
     protected Forward beginEditUser(ManageUserForm form)
     {      
@@ -935,6 +937,11 @@ public class ManageUserController extends PageFlowController
         try
         {
             userProfile = setUserProfileToForm(form); 
+            if (userProfile == null) 
+            {
+            	return new Forward("error", form);    //Changes for browser Back button error
+            }
+            
             if ((userProfile.getFirstName() != null && userProfile.getFirstName().length() > 0) && (userProfile.getLastName() != null && userProfile.getLastName().length() > 0))
             {
                 this.getRequest().getSession().setAttribute("UserFirstName", userProfile.getFirstName()); 
@@ -1001,9 +1008,9 @@ public class ManageUserController extends PageFlowController
     protected Forward addEditUser(ManageUserForm form)
     {      
         String stringAction = form.getStringAction();
-
+        //System.out.println("stringAction==>"+stringAction);
         setFormInfoOnRequest(form);
-        
+        saveToken(this.getRequest());   		 //Changes for F5 issue
         return new Forward(stringAction, form);
     }
 
@@ -1183,10 +1190,21 @@ public class ManageUserController extends PageFlowController
                      path = "addEditUser.do")
     })
     protected Forward saveAddEditUser(ManageUserForm form)
-    {
+    {	
+    	Boolean isTokenValid = isTokenValid();  //Changes for F5 issue
+		//System.out.println("isTokenValid........." + isTokenValid);
+		
         String userName = form.getSelectedUserName();
         
+        if ( userName == null) {
+			//System.out.println( userName );
+        	userName = (String)this.getSession().getAttribute("selectedUserNameInView"); 		 //Changes for browser Back button error
+			System.out.println("after session" +  userName );
+			form.setSelectedUserName(userName);
+		}
+        
         boolean isCreateNew = (userName == null || "".equals(userName)) ? true : false;
+        if ( isTokenValid ) {  //changes for F5
         Node[] loginUserNode = this.user.getOrganizationNodes();
        
         this.selectedOrgNodes = UserPathListUtils.buildSelectedOrgNodes(this.currentOrgNodesInPathList, this.currentOrgNodeIds, this.selectedOrgNodes);
@@ -1209,12 +1227,12 @@ public class ManageUserController extends PageFlowController
                           
             return new Forward("error", form);
         }        
-        
+       
         userName = saveUserProfileInformation(isCreateNew, form, userName, this.selectedOrgNodes);
-        
+       
         if (userName == null)
-        {
-            return new Forward("error", form);
+        {	
+        	return new Forward("error", form);	 //Changes for browser Back button error
         }
         
         form.setSelectedUserName(userName);
@@ -1262,7 +1280,7 @@ public class ManageUserController extends PageFlowController
         this.savedForm.setUserProfile(form.getUserProfile());
         this.savedForm.setSelectedUserName(form.getSelectedUserName());
         this.savedForm.setSelectedUserId(form.getSelectedUserId());
-
+        }// changes for F5
         if (isCreateNew)
             this.navPath.setReturnActions(ACTION_VIEW_USER, ACTION_ADD_USER);
         else
@@ -1270,7 +1288,7 @@ public class ManageUserController extends PageFlowController
         
         if (this.isAddAdministrator)
             return new Forward("toManageOrganization");
-                                  
+                                
         return new Forward("success");
     }
 
@@ -1606,16 +1624,24 @@ public class ManageUserController extends PageFlowController
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
-                     path = "view_user.jsp")
+                     path = "view_user.jsp"),
+                     @Jpf.Forward(name = "error",
+         					path = "findUser.do")
     }, 
                 validationErrorForward = @Jpf.Forward(name = "failure",
                                                       path = "viewUser.do"))
     protected Forward viewUser(ManageUserForm form)
     {   
+    	//System.out.println("View User");
+		saveToken(this.getRequest());		 //Changes for F5
         UserProfileInformation userProfile = null;
         try
         {
             userProfile = setUserProfileToForm(form); 
+            if (userProfile == null) 
+            {
+            	return new Forward("error", form);		 //Changes for browser Back button error
+            }
         }
         catch (CTBBusinessException be)
         {
@@ -1654,6 +1680,7 @@ public class ManageUserController extends PageFlowController
     	
     	this.getRequest().setAttribute("pageMessage", form.getMessage());
     	this.getRequest().setAttribute("userProfileData", form.getUserProfile());
+    	this.getRequest().setAttribute("selectedUserNameInView", form.getUserProfile().getUserName()); 		 //Changes for browser Back button error
     	
         //////////////////// NEED TO CONTINUE TO ADD MORE INFO HERE /////////////////////////
         
@@ -2234,13 +2261,14 @@ public class ManageUserController extends PageFlowController
     {
         String selectedUserName = form.getSelectedUserName();
         if (selectedUserName == null) {
+        	form.setCurrentAction(ACTION_DEFAULT);//Changes for browser Back button error
             return null;
         }
             
         UserProfileInformation userProfile = 
                 UserSearchUtils.getUserProfileInformation(
                 this.userManagement, this.userName, selectedUserName);
-                                
+         
         userProfile.setTimeZoneDesc((String) 
                 this.timeZoneOptions.get(userProfile.getTimeZone()));
 		
