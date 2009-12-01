@@ -19,6 +19,7 @@ public class CTBBusinessException extends Exception
     }
     
     public void setMessage(String message) {
+    	System.out.println("setmessage==>"+message);
     	this.message = message;
     }
 	/**
@@ -27,6 +28,7 @@ public class CTBBusinessException extends Exception
 	 */
     public CTBBusinessException(String message) {
         super(message);
+        this.setMessage(message);  //Changed for defect 60480 ,60488 ,60489 ,60490 ,60491
         OASLogger.getLogger("TestAdmin").debug(message, this);
     }
 } 
