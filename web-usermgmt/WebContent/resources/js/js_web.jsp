@@ -16,7 +16,7 @@ function setFocusFirstElement() {
         }
     }
 }
- 
+
 function setFocus(id) { 
     var element = document.getElementById(id);
     if (element != null) {
@@ -43,7 +43,7 @@ function handleEnterKey(elementId, value) {
 function verifyDeleteUser(){
     var ret = confirm("Click 'OK' to delete this user's profile from your organization.");    
     if (ret == true) {
-        setElementValue('{actionForm.currentAction}', 'deleteUser')    
+        setElementValue('currentAction', 'deleteUser')    
         return true;
     }
     return false;    
@@ -127,10 +127,10 @@ function setupOrgNodePath(orgId)
 {
     document.body.style.cursor = 'wait';
     
-    var actionElement = document.getElementById('{actionForm.actionElement}');
+     var actionElement = document.getElementById('actionElement');
     actionElement.value = 'setupOrgNodePath';
     
-    var currentAction = document.getElementById('{actionForm.currentAction}');
+    var currentAction = document.getElementById('currentAction');
     currentAction.value = orgId;
     
     actionElement.form.submit();
