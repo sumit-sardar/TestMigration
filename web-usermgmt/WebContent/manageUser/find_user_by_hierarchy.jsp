@@ -47,7 +47,7 @@
             </c:if>
             <c:if test="${isSelectable == 'true'}">                            
                 <netui:radioButtonGroup dataSource="actionForm.selectedOrgNodeId">
-                    &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="setElementValueAndSubmitWithAnchor('{actionForm.actionElement}', '{actionForm.actionElement}', 'userSearchResult');">&nbsp;</netui:radioButtonOption>                
+                    &nbsp;<netui:radioButtonOption value="${container.item.id}" onClick="setElementValueAndSubmitWithAnchor('actionElement', 'actionElement', 'userSearchResult');">&nbsp;</netui:radioButtonOption>                
                 </netui:radioButtonGroup>
             </c:if>
         </td>        
