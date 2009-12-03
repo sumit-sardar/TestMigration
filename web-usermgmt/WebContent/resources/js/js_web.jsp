@@ -29,7 +29,7 @@ function handleEnterKey(elementId, value) {
         var element = document.getElementById(elementId);
         if(element) {
             element.value = value;
-            var actionElement = document.getElementById('{actionForm.actionElement}');
+            var actionElement = document.getElementById('actionElement');
             if(actionElement) {
                 actionElement.value = elementId;
             }
@@ -43,7 +43,7 @@ function handleEnterKey(elementId, value) {
 function verifyDeleteUser(){
     var ret = confirm("Click 'OK' to delete this user's profile from your organization.");    
     if (ret == true) {
-        setElementValue('currentAction', 'deleteUser')    
+        setElementValue('currentAction', 'deleteUser');    
         return true;
     }
     return false;    
@@ -127,7 +127,7 @@ function setupOrgNodePath(orgId)
 {
     document.body.style.cursor = 'wait';
     
-     var actionElement = document.getElementById('actionElement');
+    var actionElement = document.getElementById('actionElement');
     actionElement.value = 'setupOrgNodePath';
     
     var currentAction = document.getElementById('currentAction');

@@ -106,7 +106,8 @@ public class ManageUserController extends PageFlowController
     private static final String ACTION_APPLY_SEARCH   = "applySearch";
     private static final String ACTION_CLEAR_SEARCH   = "clearSearch";
     
-    private static final String ACTION_FORM_ELEMENT   = "{actionForm.actionElement}";
+    //private static final String ACTION_FORM_ELEMENT   = "{actionForm.actionElement}";
+    private static final String ACTION_FORM_ELEMENT   = "actionElement";
     private static final String ACTION_CURRENT_ELEMENT   = "{actionForm.currentAction}";
 
 
