@@ -694,7 +694,7 @@ public class ManageStudentController extends PageFlowController
 		PagerSummary orgPagerSummary = StudentPathListUtils.buildOrgNodePagerSummary(ond, form.getOrgPageRequested());        
 		form.setOrgMaxPage(ond.getFilteredPages());
 
-		if (actionElement.equals("{actionForm.actionElement}"))
+		if (actionElement.equals("actionElement")) //Changes for Find_Student_Hierarchy Display Message
 		{
 			PathNode node = StudentPathListUtils.findOrgNode(orgNodes, form.getSelectedOrgNodeId());
 			if (node != null)
@@ -1569,7 +1569,7 @@ public class ManageStudentController extends PageFlowController
 		PagerSummary orgPagerSummary = StudentPathListUtils.buildOrgNodePagerSummary(ond, form.getOrgPageRequested());        
 		form.setOrgMaxPage(ond.getFilteredPages());
 
-		if (actionElement.equals("{actionForm.actionElement}"))
+		if (actionElement.equals("actionElement"))  //Changes for Find_Student_Hierarchy Display Message
 		{
 			PathNode node = StudentPathListUtils.findOrgNode(orgNodes, form.getSelectedOrgNodeId());
 			if (node != null)
