@@ -431,7 +431,7 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
      */
     public TestSessionData getTestSessionDetails(String userName, Integer testAdminId) throws CTBBusinessException
     {
-        validator.validateAdmin(userName, testAdminId, "testAdmin.getTestSessionDetails");
+      //  validator.validateAdmin(userName, testAdminId, "testAdmin.getTestSessionDetails");
         try {
             TestSession [] sessions = new TestSession[1];
             sessions[0] = testAdmin.getTestAdminDetails(testAdminId);
