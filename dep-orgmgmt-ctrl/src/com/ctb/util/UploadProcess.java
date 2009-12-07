@@ -418,13 +418,14 @@ public class UploadProcess extends BatchProcessor.Process
                 
                 errorExcelCreation (requiredMap, maxLengthMap, invalidCharMap, 
                         logicalErrorMap, hierarchyErrorMap); 
-           } 
+           }
            //create user and organization
            createOrganizationAndUser (requiredMap, maxLengthMap, 
                                             invalidCharMap, logicalErrorMap, 
                                             hierarchyErrorMap, userDataMap, 
                                             blankRowMap, isMatchUploadOrgIds, user,
                                             this.userTopOrgNode);
+          
                                             
                                                     
         
@@ -847,7 +848,10 @@ public class UploadProcess extends BatchProcessor.Process
                 this.dataFileAudit.setFaildRec(null);
             
             
-            }  
+            } else {
+            	
+            	this.dataFileAudit.setStatus("FL");
+            }
             
             this.dataFileAudit.setUploadFileRecordCount(new Integer(uploadRecordCount));
             uploadDataFile.upDateAuditTable(this.dataFileAudit);
@@ -1663,7 +1667,7 @@ public class UploadProcess extends BatchProcessor.Process
            errorData  = baos.toByteArray(); 
            
            dataFileAudit.setFaildRec(errorData);
-           dataFileAudit.setStatus("FL");
+           //dataFileAudit.setStatus("FL");
            dataFileAudit.setFailedRecordCount(new Integer(errorCount));
            dataFileAudit.setUploadFileRecordCount(new Integer(0));
            uploadDataFile.upDateAuditTable(dataFileAudit);

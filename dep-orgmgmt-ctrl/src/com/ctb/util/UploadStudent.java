@@ -2569,7 +2569,7 @@ public class UploadStudent extends BatchProcessor.Process
                errorData  = baos.toByteArray(); 
                
                dataFileAudit.setFaildRec(errorData);
-               dataFileAudit.setStatus("FL");
+               //dataFileAudit.setStatus("FL");
                dataFileAudit.setFailedRecordCount(new Integer(errorCount));
                dataFileAudit.setUploadFileRecordCount(new Integer(0));
                uploadDataFile.upDateAuditTable(dataFileAudit);
@@ -4234,7 +4234,10 @@ public class UploadStudent extends BatchProcessor.Process
                 this.dataFileAudit.setFaildRec(null);
             
             
-            }  
+            } else {
+            	
+            	dataFileAudit.setStatus("FL");
+            }
             
             this.dataFileAudit.setUploadFileRecordCount(new Integer(uploadRecordCount));
             uploadDataFile.upDateAuditTable(this.dataFileAudit);
