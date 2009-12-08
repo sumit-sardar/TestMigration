@@ -935,17 +935,19 @@ public class ViewMonitorStatusController extends PageFlowController
 
     private List buildRosterList(RosterElementData red)
     {
-        List rosterList = new ArrayList();        
-        RosterElement[] rosterElements = red.getRosterElements();
-        for (int i=0; i < rosterElements.length; i++)
-        {
-            RosterElement rosterElt = rosterElements[i];
-            if (rosterElt != null)
-            {
-                TestRosterVO vo = new TestRosterVO(rosterElt);                    
-                rosterList.add(vo);
-            }
-        }        
+        List rosterList = new ArrayList();    
+        if (red != null){
+	        RosterElement[] rosterElements = red.getRosterElements();
+	        for (int i=0; i < rosterElements.length; i++)
+	        {
+	            RosterElement rosterElt = rosterElements[i];
+	            if (rosterElt != null)
+	            {
+	                TestRosterVO vo = new TestRosterVO(rosterElt);                    
+	                rosterList.add(vo);
+	            }
+	        }   
+        }
         return rosterList;
     }
     
