@@ -87,7 +87,7 @@ public class QueueSend {
 	    readAndSend(qs);
 	    qs.close();
 	    
-	    System.out.println("+++++Build3");
+	    System.out.println("+++ ++Build3");
 	    
 	 /*   Hashtable<String,String> env = new Hashtable<String,String>();
 	    env.put("java.naming.security.principal", "tai_dev");
