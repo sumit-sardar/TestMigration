@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import javax.naming.InitialContext;
+
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 
 import com.ctb.bean.request.FilterParams;
@@ -60,6 +62,7 @@ import com.ctb.util.DateUtils;
 import com.ctb.util.SQLutils;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
 import com.ctb.control.jms.QueueSend;
+import java.util.ResourceBundle;
 
 /**
  * Platform control provides functions related to test session
@@ -169,6 +172,13 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
     private static final String CUSTOMER_CONFIG_ALLOW_SUBTEST_INVALIDATION = "Allow_Subtest_Invalidation";
     private static final String CUSTOMER_CONFIG_PARTIALLY ="Partially ";
 
+    private String jndiFactory = "";
+    private String jmsFactory = "";
+    private String jmsURL = "";
+    private String jmsQueue = "";
+    private String jmsPrincipal = "";
+    private String jmsCredentials = "";
+    
    /**
      * Retrieves the set of online reports available to a user's customer
      * @common:operation
@@ -803,8 +813,9 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
             }
             
           //  scorer.sendObjectMessage(testRosterId);
-            
-            QueueSend.invoke(testRosterId);
+          /*  QueueSend qs = new QueueSend();
+            qs.invoke(testRosterId); */
+            invoke(testRosterId);
             
         } catch (SQLException se) {
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleRosterValidationStatus: " + se.getMessage());
@@ -843,7 +854,10 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
             
           //  scorer.sendObjectMessage(testRosterId);
             
-            QueueSend.invoke(testRosterId);
+          /*  QueueSend qs = new QueueSend();
+            qs.invoke(testRosterId); */
+            
+            invoke(testRosterId);
             
         } catch (SQLException se) {
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleSubtestValidationStatus: " + se.getMessage());
@@ -857,7 +871,37 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
         }
     }
     
+    private void invoke(Integer testRosterId) throws Exception {
+	 /*   if (JMS_URL == null || "".equals(JMS_URL)) {
+	      System.out.println("Usage: java examples.jms.queue.QueueSend WebLogicURL");
+	      return;
+	    }*/
+    	getResourceValue();
+	    InitialContext ic = QueueSend.getInitialContext(jmsURL);
+	    QueueSend qs = new QueueSend();
+	    qs.init(ic, jmsQueue);
+	    qs.readAndSend(qs,testRosterId);
+	    qs.close();
+	    
+	    System.out.println("+++ ++Build3");
+	    
+	 /*   Hashtable<String,String> env = new Hashtable<String,String>();
+	    env.put("java.naming.security.principal", "tai_dev");
+	    env.put("java.naming.security.credentials", "tai009");
+	   */ ic.close();
+	    
+	  }
         
+    private void getResourceValue() throws Exception {
+	    ResourceBundle rb = ResourceBundle.getBundle("security");
+	    jndiFactory = rb.getString("jndiFactory");
+	    jmsFactory = rb.getString("jmsFactory");
+	    jmsURL = rb.getString("jmsURL");
+	    jmsQueue = rb.getString("jmsQueue");
+	    jmsPrincipal = rb.getString("jmsPrincipal");
+	    jmsCredentials = rb.getString("jmsCredentials");
+    }
+	    
     /**
      * Retrieves a filtered, sorted, paged list of active tests, meaning tests having
      * scheduled sessions whose login window opens within the next 60 days. Each ActiveTest

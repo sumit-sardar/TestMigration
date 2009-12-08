@@ -57,8 +57,9 @@ public class QueueSend {
 	   * @param message  message to be sent
 	   * @exception JMSException if JMS fails to send message due to internal error
 	   */
-	  public void send() throws JMSException {
-	    msg.setObject(new Integer("1626113"));
+	  public void send(Integer testRosterId) throws JMSException {
+	   // msg.setObject(new Integer("1626113"));
+		msg.setObject(testRosterId);  
 	    qsender.send(msg);
 	  }
 
@@ -76,7 +77,7 @@ public class QueueSend {
 	  * @param args WebLogic Server URL
 	  * @exception Exception if operation fails
 	  */
-	  public static void invoke(Integer testRosterId) throws Exception {
+	  public static void invoke1(Integer testRosterId) throws Exception {
 	    if (JMS_URL == null || "".equals(JMS_URL)) {
 	      System.out.println("Usage: java examples.jms.queue.QueueSend WebLogicURL");
 	      return;
@@ -84,7 +85,7 @@ public class QueueSend {
 	    InitialContext ic = getInitialContext(JMS_URL);
 	    QueueSend qs = new QueueSend();
 	    qs.init(ic, QUEUE);
-	    readAndSend(qs);
+	    readAndSend(qs,testRosterId);
 	    qs.close();
 	    
 	    System.out.println("+++ ++Build3");
@@ -107,7 +108,7 @@ public class QueueSend {
 		  
 	  }
 
-	  private static void readAndSend(QueueSend qs)
+	  public static void readAndSend(QueueSend qs,Integer testRosterId)
 	    throws IOException, JMSException
 	  {
 	    //BufferedReader msgStream = new BufferedReader(new InputStreamReader(System.in));
@@ -116,7 +117,7 @@ public class QueueSend {
 	    do {
 	      line = "Hi This is Queue";
 	      if (line != null && line.trim().length() != 0) {
-	        qs.send();
+	        qs.send(testRosterId);
 	        System.out.println("JMS Message Sent: "+line+"\n");
 	        quitNow = true;
 	      }
@@ -124,7 +125,7 @@ public class QueueSend {
 
 	  }
 
-	  private static InitialContext getInitialContext(String url)
+	  public static InitialContext getInitialContext(String url)
 	    throws NamingException
 	  {
 	    Hashtable<String,String> env = new Hashtable<String,String>();
