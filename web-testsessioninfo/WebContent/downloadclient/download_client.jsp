@@ -62,55 +62,9 @@
             <hr/>
         </td>
     </tr>
+
     <tr class="transparent">
         <td class="transparent-top" width="20"><font size="6" color="#999999">2</font></td>    
-        <td class="transparent-top">
-            <div id="showDownloadFlashMessage" style="display:block">                    
-                <h2><netui:content value="${bundle.web['installClient.flash.title']}"/></h2>
-                <p><netui:content value="${bundle.web['installClient.flash.message']}"/></p>
-            </div>
-            <div id="showDownloadFlashNonIEMessage" style="display:none">                    
-                <h2><netui:content value="${bundle.web['installClient.flash.title']}"/></h2>
-                <p><netui:content value="${bundle.web['installClient.flash.error.message']}"/></p>
-            </div>
-        </td>
-    </tr>
-    <tr class="transparent">
-        <td class="transparent-top">
-        </td>
-        <td class="transparent-top">
-            <div id="downloadFlashOk" style="display:block">            
-                <table class="transparent">
-                    <tr id="installFlash7Row" class="transparent">
-                        <td class="transparent-top">
-                            <netui:content value="Go to the Adobe website and download it for free."/>
-                            <br>
-                            <a href="#" onclick="newWindow('http://www.adobe.com/products/flashplayer/'); return false;"><netui:content value="http://www.adobe.com/products/flashplayer/"/></a>
-                            <br>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div id="downloadFlashError" style="display:none">            
-                <table class="transparent">
-                    <tr id="installFlash7Row" class="transparent">
-                        <td class="transparent-top">
-                            <p><netui:content value="${bundle.web['installClient.installFlash9.message']}"/></p>
-                        </td>
-                    </tr>
-            </table>
-            </div>
-        </td>
-    </tr>
-    <tr class="transparent">
-        <td class="transparent-top" colspan="2">
-            <hr/>
-        </td>
-    </tr>
-
-
-    <tr class="transparent">
-        <td class="transparent-top" width="20"><font size="6" color="#999999">3</font></td>    
         <td class="transparent-top">
             <h2><netui:content value="${bundle.web['installClient.installClient.title']}"/></h2>
             <p><netui:content value="${bundle.web['installClient.title.message']}"/></p>
@@ -168,7 +122,7 @@
             	<%-- Mac OS --%>
 		        <tr id="installLinuxClientRow" class="transparent">
 		            <td class="transparent-top" width="5%">
-		                <img class="transparent" src="../resources/images/legacy/icon_linux.gif"/>
+		                <img class="transparent" src="../resources/images/legacy/icon_linux.png"/>
 		            </td>
 		            <td class="transparent-top" width="75%">
 		                <b><netui:content value="${bundle.web['installClient.linux.clientName']}"/></b><br>
