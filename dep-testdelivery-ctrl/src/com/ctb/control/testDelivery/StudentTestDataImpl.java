@@ -8,6 +8,7 @@ import com.ctb.bean.testDelivery.studentTestData.RecommendedSubtestLevel;
 import com.ctb.bean.testDelivery.studentTestData.RosterSubtestFeedback;
 import com.ctb.bean.testDelivery.studentTestData.RosterSubtestStatus;
 import com.ctb.bean.testDelivery.studentTestData.StudentTutorialStatus;
+import com.ctb.control.jms.QueueSend;
 import com.ctb.exception.testDelivery.InvalidCorrelationIdException;
 import com.ctb.exception.testDelivery.InvalidItemResponseException;
 import com.ctb.exception.testDelivery.InvalidItemSetIdException;
@@ -509,7 +510,12 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                         }
                     }
                     if(!allSubtestsComplete) {
-                        scorer.sendObjectMessage(new Integer(testRosterId));
+                       // scorer.sendObjectMessage(new Integer(testRosterId));
+                    	try{
+                    		QueueSend.invoke(new Integer(testRosterId));
+                    	} catch (Exception se) {
+                		
+                		}
                     }
                 }
             }
@@ -804,7 +810,12 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
             
             // if all subtests are complete, score the roster
             if(allSubtestsComplete) {
-                scorer.sendObjectMessage(new Integer(testRosterId));
+                //scorer.sendObjectMessage(new Integer(testRosterId));
+            	try{
+            		QueueSend.invoke(new Integer(testRosterId));
+            	} catch (Exception se) {
+        		
+        		}
             }
             
             return nextId;
@@ -953,7 +964,12 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                         saver.setRosterCompletionStatus(testRosterId, newStatus, new Date(), mseq);
                         // score student if they're interrupted after completing all subtests (eg. on feedback screen)
                         if(Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(newStatus)) {
-                            scorer.sendObjectMessage(new Integer(testRosterId));
+                           // scorer.sendObjectMessage(new Integer(testRosterId));
+                        	try{
+                        		QueueSend.invoke(new Integer(testRosterId));
+                        	} catch (Exception se) {
+                    		
+                    		}
                         }
                     } else {
                         saver.setRosterCompletionStatus(testRosterId, Constants.StudentTestCompletionStatus.INCOMPLETE_STATUS, new Date(), mseq);
