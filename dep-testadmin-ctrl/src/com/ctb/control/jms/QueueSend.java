@@ -86,6 +86,14 @@ public class QueueSend {
 	    qs.init(ic, QUEUE);
 	    readAndSend(qs);
 	    qs.close();
+	    
+	    System.out.println("+++++Build3");
+	    
+	 /*   Hashtable<String,String> env = new Hashtable<String,String>();
+	    env.put("java.naming.security.principal", "tai_dev");
+	    env.put("java.naming.security.credentials", "tai009");
+	   */ ic.close();
+	    
 	  }
 	  
 	  /** main() method.
