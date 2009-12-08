@@ -59,6 +59,7 @@ import com.ctb.util.DESUtils;
 import com.ctb.util.DateUtils;
 import com.ctb.util.SQLutils;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
+import com.ctb.control.jms.QueueSend;
 
 /**
  * Platform control provides functions related to test session
@@ -146,8 +147,8 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
     /**
      * @common:control
      */
-    @org.apache.beehive.controls.api.bean.Control()
-    private com.ctb.control.jms.ScoreStudent scorer;
+  //  @org.apache.beehive.controls.api.bean.Control()
+   // private com.ctb.control.jms.ScoreStudent scorer;
     
     /**
      * @common:control
@@ -431,7 +432,7 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
      */
     public TestSessionData getTestSessionDetails(String userName, Integer testAdminId) throws CTBBusinessException
     {
-        validator.validateAdmin(userName, testAdminId, "testAdmin.getTestSessionDetails");
+      //  validator.validateAdmin(userName, testAdminId, "testAdmin.getTestSessionDetails");
         try {
             TestSession [] sessions = new TestSession[1];
             sessions[0] = testAdmin.getTestAdminDetails(testAdminId);
@@ -699,7 +700,7 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
      */
     public RosterElementData getRosterForTestSession(String userName, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
     {
-     validator.validateAdmin(userName, testAdminId, "testAdmin.getRosterElementsForTestSession");
+    // validator.validateAdmin(userName, testAdminId, "testAdmin.getRosterElementsForTestSession");
         try {
             RosterElementData red = new RosterElementData();
             Integer pageSize = null;
@@ -801,8 +802,16 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
                 }                
             }
             
-            scorer.sendObjectMessage(testRosterId);
+          //  scorer.sendObjectMessage(testRosterId);
+            
+            QueueSend.invoke(testRosterId);
+            
         } catch (SQLException se) {
+            RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleRosterValidationStatus: " + se.getMessage());
+            rde.setStackTrace(se.getStackTrace());
+            throw rde;  
+        }
+        catch (Exception se) {
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleRosterValidationStatus: " + se.getMessage());
             rde.setStackTrace(se.getStackTrace());
             throw rde;  
@@ -832,8 +841,16 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
             rosterDetail.setValidationStatus(newRosterStatus);
             roster.updateTestRoster(rosterDetail);
             
-            scorer.sendObjectMessage(testRosterId);
+          //  scorer.sendObjectMessage(testRosterId);
+            
+            QueueSend.invoke(testRosterId);
+            
         } catch (SQLException se) {
+            RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleSubtestValidationStatus: " + se.getMessage());
+            rde.setStackTrace(se.getStackTrace());
+            throw rde;  
+        }
+        catch (Exception se) {
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleSubtestValidationStatus: " + se.getMessage());
             rde.setStackTrace(se.getStackTrace());
             throw rde;  

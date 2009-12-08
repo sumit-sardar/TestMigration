@@ -12,7 +12,12 @@ import org.apache.beehive.controls.system.jms.JMSControl;
 @ControlExtension()
 @JMSControl.Destination(sendType = JMSControl.DestinationType.Queue, 
                         sendJndiName = "ScoreStudentJMSQueue", 
-                        jndiConnectionFactory = "irsConnectionFactory"
+                        jndiContextFactory = "weblogic.jndi.WLInitialContextFactory",
+                        jndiConnectionFactory = "irsConnectionFactory",
+                        jndiProviderURL = "t3://dagobah.mhe.mhc:22411",
+                        jndiUsername ="system",
+                        jndiPassword = "ditp2luh"
+
 )
 public interface ScoreStudent extends JMSControl 
 {
