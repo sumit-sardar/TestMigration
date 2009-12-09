@@ -983,6 +983,8 @@ public class ManageCustomerController extends PageFlowController
     })
     protected Forward returnToFindCustomer(ManageCustomerForm form)
     {
+    	String msg = (String)this.getRequest().getParameter("SuccessfullyAdded");
+    	
         if (this.savedForm == null)
         {
             initialize(globalApp.ACTION_DEFAULT);
@@ -998,8 +1000,10 @@ public class ManageCustomerController extends PageFlowController
         }
         else
         {
-        
-            savedForm.clearMessage();
+        	if (msg != null && "SuccessfullyAdded".equals(msg)) 
+        		this.savedForm.setMessage(Message.CREATE_ADMIN_TITLE, Message.CREATE_ADMIN_SUCCESSFUL, Message.INFORMATION);
+        	else	
+        		savedForm.clearMessage();
         
         }
         

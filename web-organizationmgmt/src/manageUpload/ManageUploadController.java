@@ -297,6 +297,8 @@ public class ManageUploadController extends PageFlowController
             	this.uploadStatus = "uploadFile";
             	this.getRequest().setAttribute("uploadStatus", "uploadFile");
             
+                setFormInfoOnRequest(form);
+            	
             }  
             
         }
