@@ -33,8 +33,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
+
+import javax.naming.InitialContext;
 
 
 import noNamespace.AdssvcRequestDocument;
@@ -100,6 +103,12 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
     static final long serialVersionUID = 1L;
     
     private static final String CACHE_TYPE_SPEECH = "CACHE_TYPE_SPEECH";
+    private String jndiFactory = "";
+    private String jmsFactory = "";
+    private String jmsURL = "";
+    private String jmsQueue = "";
+    private String jmsPrincipal = "";
+    private String jmsCredentials = "";
     
     /**
      * @common:control
@@ -512,7 +521,8 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                     if(!allSubtestsComplete) {
                        // scorer.sendObjectMessage(new Integer(testRosterId));
                     	try{
-                    		QueueSend.invoke(new Integer(testRosterId));
+                    		// QueueSend.invoke(new Integer(testRosterId));
+                    		invokeScoring(new Integer(testRosterId));
                     	} catch (Exception se) {
                 		
                 		}
@@ -812,7 +822,8 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
             if(allSubtestsComplete) {
                 //scorer.sendObjectMessage(new Integer(testRosterId));
             	try{
-            		QueueSend.invoke(new Integer(testRosterId));
+            		//QueueSend.invoke(new Integer(testRosterId));
+            		invokeScoring(new Integer(testRosterId));
             	} catch (Exception se) {
         		
         		}
@@ -825,6 +836,27 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
             se.printStackTrace();
             throw new TestDeliveryException();
         }
+    }
+    
+    private void invokeScoring(Integer testRosterId) throws Exception 
+    {
+		getResourceValue();
+	    InitialContext ic = QueueSend.getInitialContext(jndiFactory,jmsURL,jmsPrincipal,jmsCredentials);
+	    QueueSend qs = new QueueSend();
+	    qs.init(ic, jmsFactory, jmsQueue);
+	    qs.readAndSend(qs,testRosterId);
+	    qs.close();
+	    ic.close();
+	  }
+    
+    private void getResourceValue() throws Exception {
+	    ResourceBundle rb = ResourceBundle.getBundle("security");
+	    jndiFactory = rb.getString("jndiFactory");
+	    jmsFactory = rb.getString("jmsFactory");
+	    jmsURL = rb.getString("jmsURL");
+	    jmsQueue = rb.getString("jmsQueue");
+	    jmsPrincipal = rb.getString("jmsPrincipal");
+	    jmsCredentials = rb.getString("jmsCredentials");
     }
     
     private void handleTabeLocator(int testRosterId, int itemSetId) throws SQLException {
@@ -966,7 +998,8 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                         if(Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(newStatus)) {
                            // scorer.sendObjectMessage(new Integer(testRosterId));
                         	try{
-                        		QueueSend.invoke(new Integer(testRosterId));
+                        		// QueueSend.invoke(new Integer(testRosterId));
+                        		invokeScoring(new Integer(testRosterId));
                         	} catch (Exception se) {
                     		
                     		}

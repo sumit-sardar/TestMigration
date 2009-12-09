@@ -12,16 +12,16 @@ import javax.naming.NamingException;
 public class QueueSend {
 
 	// Defines the JNDI context factory.
-	  public final static String JNDI_FACTORY="weblogic.jndi.WLInitialContextFactory";
+	 // public final static String JNDI_FACTORY="weblogic.jndi.WLInitialContextFactory";
 
 	  // Defines the JMS context factory.
-	  public final static String JMS_FACTORY="irsConnectionFactory";
+	 // public final static String JMS_FACTORY="irsConnectionFactory";
 	 
 	  // Defines the JMS context factory.
-	  public final static String JMS_URL="t3://dagobah.mhe.mhc:22411";
+	//  public final static String JMS_URL="t3://dagobah.mhe.mhc:22411";
 
 	  // Defines the queue.
-	  public final static String QUEUE="ScoreStudentJMSQueue";
+	 // public final static String QUEUE="ScoreStudentJMSQueue";
 
 	  private QueueConnectionFactory qconFactory;
 	  private QueueConnection qcon;
@@ -39,10 +39,10 @@ public class QueueSend {
 	   * @exception NamingException if operation cannot be performed
 	   * @exception JMSException if JMS fails to initialize due to internal error
 	   */
-	  public void init(Context ctx, String queueName)
+	  public void init(Context ctx, String jmsFactory, String queueName)
 	    throws NamingException, JMSException
 	  {
-	    qconFactory = (QueueConnectionFactory) ctx.lookup(JMS_FACTORY);
+	    qconFactory = (QueueConnectionFactory) ctx.lookup(jmsFactory);
 	    qcon = qconFactory.createQueueConnection();
 	    qsession = qcon.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 	    queue = (Queue) ctx.lookup(queueName);
@@ -57,8 +57,9 @@ public class QueueSend {
 	   * @param message  message to be sent
 	   * @exception JMSException if JMS fails to send message due to internal error
 	   */
-	  public void send() throws JMSException {
-	    msg.setObject(new Integer("1626113"));
+	  public void send(Integer testRosterId) throws JMSException {
+	   // msg.setObject(new Integer("1626113"));
+		msg.setObject(new Integer(testRosterId));  
 	    qsender.send(msg);
 	  }
 
@@ -76,7 +77,7 @@ public class QueueSend {
 	  * @param args WebLogic Server URL
 	  * @exception Exception if operation fails
 	  */
-	  public static void invoke(Integer testRosterId) throws Exception {
+	/*  public static void invoke1(Integer testRosterId) throws Exception {
 	    if (JMS_URL == null || "".equals(JMS_URL)) {
 	      System.out.println("Usage: java examples.jms.queue.QueueSend WebLogicURL");
 	      return;
@@ -84,17 +85,17 @@ public class QueueSend {
 	    InitialContext ic = getInitialContext(JMS_URL);
 	    QueueSend qs = new QueueSend();
 	    qs.init(ic, QUEUE);
-	    readAndSend(qs);
+	    readAndSend(qs,testRosterId);
 	    qs.close();
 	    
-	    System.out.println("+++++Build3");
+	    System.out.println("+++ ++Build3");
 	    
-	 /*   Hashtable<String,String> env = new Hashtable<String,String>();
-	    env.put("java.naming.security.principal", "tai_dev");
-	    env.put("java.naming.security.credentials", "tai009");
-	   */ ic.close();
+	 //   Hashtable<String,String> env = new Hashtable<String,String>();
+	 //   env.put("java.naming.security.principal", "tai_dev");
+	 //   env.put("java.naming.security.credentials", "tai009");
+	 //   ic.close();
 	    
-	  }
+	  }*/
 	  
 	  /** main() method.
 	  *
@@ -107,31 +108,25 @@ public class QueueSend {
 		  
 	  }
 
-	  private static void readAndSend(QueueSend qs)
+	  public static void readAndSend(QueueSend qs,Integer testRosterId)
 	    throws IOException, JMSException
 	  {
 	    //BufferedReader msgStream = new BufferedReader(new InputStreamReader(System.in));
-	    String line=null;
-	    boolean quitNow = false;
-	    do {
-	      line = "Hi This is Queue";
-	      if (line != null && line.trim().length() != 0) {
-	        qs.send();
-	        System.out.println("JMS Message Sent: "+line+"\n");
-	        quitNow = true;
-	      }
-	    } while (! quitNow);
-
+	    if (testRosterId != null) {
+	        qs.send(testRosterId);
+	        System.out.println("JMS Message Sent");
+	     } 
 	  }
 
-	  private static InitialContext getInitialContext(String url)
+	  public static InitialContext getInitialContext(String contextFactory,String url,
+			  String principal,String credentials)
 	    throws NamingException
 	  {
 	    Hashtable<String,String> env = new Hashtable<String,String>();
-	    env.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_FACTORY);
+	    env.put(Context.INITIAL_CONTEXT_FACTORY, contextFactory);
 	    env.put(Context.PROVIDER_URL, url);
-	    env.put("java.naming.security.principal", "system");
-	    env.put("java.naming.security.credentials", "ditp2luh");
+	    env.put("java.naming.security.principal", principal);
+	    env.put("java.naming.security.credentials", credentials);
 	    return new InitialContext(env);
 	  }
 	
