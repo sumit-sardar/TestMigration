@@ -150,8 +150,8 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
     /**
      * @common:control
      */
-  //  @org.apache.beehive.controls.api.bean.Control()
-   // private com.ctb.control.jms.ScoreStudent scorer;
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.jms.ScoreStudent scorer;
     
     /**
      * @common:control
@@ -812,10 +812,10 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
                 }                
             }
             
-          //  scorer.sendObjectMessage(testRosterId);
+            scorer.sendObjectMessage(testRosterId);
           /*  QueueSend qs = new QueueSend();
             qs.invoke(testRosterId); */
-            invokeScoring(testRosterId);
+          //  invokeScoring(testRosterId);
             
         } catch (SQLException se) {
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleRosterValidationStatus: " + se.getMessage());
@@ -852,12 +852,12 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
             rosterDetail.setValidationStatus(newRosterStatus);
             roster.updateTestRoster(rosterDetail);
             
-          //  scorer.sendObjectMessage(testRosterId);
+            scorer.sendObjectMessage(testRosterId);
             
           /*  QueueSend qs = new QueueSend();
             qs.invoke(testRosterId); */
             
-            invokeScoring(testRosterId);
+          //  invokeScoring(testRosterId);
             
         } catch (SQLException se) {
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleSubtestValidationStatus: " + se.getMessage());
@@ -883,13 +883,13 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
 	  }
         
     private void getResourceValue() throws Exception {
-	    ResourceBundle rb = ResourceBundle.getBundle("security");
+	 /*   ResourceBundle rb = ResourceBundle.getBundle("security");
 	    jndiFactory = rb.getString("jndiFactory");
 	    jmsFactory = rb.getString("jmsFactory");
 	    jmsURL = rb.getString("jmsURL");
 	    jmsQueue = rb.getString("jmsQueue");
 	    jmsPrincipal = rb.getString("jmsPrincipal");
-	    jmsCredentials = rb.getString("jmsCredentials");
+	    jmsCredentials = rb.getString("jmsCredentials");*/
     }
 	    
     /**
