@@ -815,7 +815,7 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
           //  scorer.sendObjectMessage(testRosterId);
           /*  QueueSend qs = new QueueSend();
             qs.invoke(testRosterId); */
-            invoke(testRosterId);
+            invokeScoring(testRosterId);
             
         } catch (SQLException se) {
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleRosterValidationStatus: " + se.getMessage());
@@ -857,7 +857,7 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
           /*  QueueSend qs = new QueueSend();
             qs.invoke(testRosterId); */
             
-            invoke(testRosterId);
+            invokeScoring(testRosterId);
             
         } catch (SQLException se) {
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleSubtestValidationStatus: " + se.getMessage());
@@ -871,25 +871,15 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
         }
     }
     
-    private void invoke(Integer testRosterId) throws Exception {
-	 /*   if (JMS_URL == null || "".equals(JMS_URL)) {
-	      System.out.println("Usage: java examples.jms.queue.QueueSend WebLogicURL");
-	      return;
-	    }*/
-    	getResourceValue();
-	    InitialContext ic = QueueSend.getInitialContext(jmsURL);
+    private void invokeScoring(Integer testRosterId) throws Exception 
+    {
+		getResourceValue();
+	    InitialContext ic = QueueSend.getInitialContext(jndiFactory,jmsURL,jmsPrincipal,jmsCredentials);
 	    QueueSend qs = new QueueSend();
-	    qs.init(ic, jmsQueue);
+	    qs.init(ic, jmsFactory, jmsQueue);
 	    qs.readAndSend(qs,testRosterId);
 	    qs.close();
-	    
-	    System.out.println("+++ ++Build3");
-	    
-	 /*   Hashtable<String,String> env = new Hashtable<String,String>();
-	    env.put("java.naming.security.principal", "tai_dev");
-	    env.put("java.naming.security.credentials", "tai009");
-	   */ ic.close();
-	    
+	    ic.close();
 	  }
         
     private void getResourceValue() throws Exception {
