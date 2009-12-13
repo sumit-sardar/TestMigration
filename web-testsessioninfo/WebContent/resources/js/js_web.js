@@ -88,6 +88,21 @@ function checkDownloadFlashNonIE(){
     }
 }
 
+function allowDownLoadBinFile(){
+
+    var agt = navigator.userAgent.toLowerCase(); 
+    var firefox  = (agt.indexOf("firefox") != -1);
+    
+    if (firefox) {
+        showElement(getElement("allowDownload", "div"));
+        hideElement(getElement("notAllowDownload", "div"));
+    }
+	else {
+        showElement(getElement("notAllowDownload", "div"));
+        hideElement(getElement("allowDownload", "div"));
+    }
+}
+
 function checkForPCNotIE(){
     var result = false;
     

@@ -119,7 +119,7 @@
                     <td class="transparent" height="25" colspan="3"/>
                 </tr>
                 
-            	<%-- Mac OS --%>
+            	<%-- Linux --%>
 		        <tr id="installLinuxClientRow" class="transparent">
 		            <td class="transparent-top" width="5%">
 		                <img class="transparent" src="../resources/images/legacy/icon_linux.png"/>
@@ -131,8 +131,14 @@
 		                <netui:content value="${bundle.web['installClient.linux.size']}"/>
 		            </td>
 		            <td class="transparent-top">
-                        <% String href_Linux = (String)request.getAttribute("downloadURI_LINUX"); %>                    
-		                <netui:button styleClass="button" tagId="installLinuxClient" value="${bundle.web['installClient.windows.buttonText']}" type="button" onClick="<%= href_Linux %>" />        
+<div id="allowDownload" style="display:none">		            
+                        <% String href_LINUX = (String)request.getAttribute("downloadURI_LINUX"); %>
+                        <netui:button styleClass="button" tagId="installLinuxClient" value="${bundle.web['installClient.windows.buttonText']}" type="button" onClick="<%= href_LINUX %>" />        
+</div>		     
+<div id="notAllowDownload" style="display:none">		            
+                        <% String alertMsg = "alert('Use Mozilla Firefox to download the installer.');"; %>
+                        <netui:button styleClass="button" tagId="installLinuxClient" value="${bundle.web['installClient.windows.buttonText']}" type="button" onClick="<%= alertMsg %>" />        
+</div>		     
 		            </td>
 		        </tr>     
 
@@ -154,7 +160,7 @@
 </table>
 
 <script>
-	checkDownloadFlashNonIE();
+	allowDownLoadBinFile();
 </script>
 
 <!-- ********************************************************************************************************************* -->
