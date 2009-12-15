@@ -442,7 +442,8 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
      */
     public TestSessionData getTestSessionDetails(String userName, Integer testAdminId) throws CTBBusinessException
     {
-      //  validator.validateAdmin(userName, testAdminId, "testAdmin.getTestSessionDetails");
+    	
+      validator.validateAdmin(userName, testAdminId, "testAdmin.getTestSessionDetails");
         try {
             TestSession [] sessions = new TestSession[1];
             sessions[0] = testAdmin.getTestAdminDetails(testAdminId);
@@ -811,11 +812,12 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
                     studentItemSetStatus.updateStudentItemSetStatus(studentSessionStatuses[i]);
                 }                
             }
-            
-            scorer.sendObjectMessage(testRosterId);
-          /*  QueueSend qs = new QueueSend();
-            qs.invoke(testRosterId); */
-          //  invokeScoring(testRosterId);
+           
+            // old Weblogic 8.1 JMS call
+            // scorer.sendObjectMessage(testRosterId);
+          
+            // new Weblogic 10.3 JMS call
+            invokeScoring(testRosterId);
             
         } catch (SQLException se) {
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleRosterValidationStatus: " + se.getMessage());
@@ -851,13 +853,12 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
             RosterElement rosterDetail = getRoster(testRosterId);
             rosterDetail.setValidationStatus(newRosterStatus);
             roster.updateTestRoster(rosterDetail);
+          
+            // old Weblogic 8.1 JMS call
+            // scorer.sendObjectMessage(testRosterId);
             
-            scorer.sendObjectMessage(testRosterId);
-            
-          /*  QueueSend qs = new QueueSend();
-            qs.invoke(testRosterId); */
-            
-          //  invokeScoring(testRosterId);
+            // new Weblogic 10.3 JMS call
+            invokeScoring(testRosterId);
             
         } catch (SQLException se) {
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleSubtestValidationStatus: " + se.getMessage());

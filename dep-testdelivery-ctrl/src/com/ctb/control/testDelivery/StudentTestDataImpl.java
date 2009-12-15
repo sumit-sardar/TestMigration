@@ -519,9 +519,10 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                         }
                     }
                     if(!allSubtestsComplete) {
-                       // scorer.sendObjectMessage(new Integer(testRosterId));
+                        // old Weblogic 8.1 JMS call
+                    	// scorer.sendObjectMessage(new Integer(testRosterId));
                     	try{
-                    		// QueueSend.invoke(new Integer(testRosterId));
+                    		// new Weblogic 10.3 JMS call
                     		invokeScoring(new Integer(testRosterId));
                     	} catch (Exception se) {
                 		
@@ -820,9 +821,10 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
             
             // if all subtests are complete, score the roster
             if(allSubtestsComplete) {
-                //scorer.sendObjectMessage(new Integer(testRosterId));
+                // old Weblogic 8.1 JMS call
+            	//scorer.sendObjectMessage(new Integer(testRosterId));
             	try{
-            		//QueueSend.invoke(new Integer(testRosterId));
+            		// new Weblogic 10.3 JMS call
             		invokeScoring(new Integer(testRosterId));
             	} catch (Exception se) {
         		
@@ -996,9 +998,10 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                         saver.setRosterCompletionStatus(testRosterId, newStatus, new Date(), mseq);
                         // score student if they're interrupted after completing all subtests (eg. on feedback screen)
                         if(Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(newStatus)) {
-                           // scorer.sendObjectMessage(new Integer(testRosterId));
+                            // old Weblogic 8.1 JMS call
+                        	// scorer.sendObjectMessage(new Integer(testRosterId));
                         	try{
-                        		// QueueSend.invoke(new Integer(testRosterId));
+                        		// new Weblogic 10.3 JMS call
                         		invokeScoring(new Integer(testRosterId));
                         	} catch (Exception se) {
                     		
