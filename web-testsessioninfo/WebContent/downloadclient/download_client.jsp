@@ -27,6 +27,8 @@
 </p>    
 
 <table class="transparent">
+
+   	<%-- Check Java Version --%>
     <tr class="transparent">
         <td class="transparent-top" width="20"><font size="6" color="#999999">1</font></td>    
         <td class="transparent-top">
@@ -63,8 +65,41 @@
         </td>
     </tr>
 
+
+   	<%-- Install Adobe AIR --%>
     <tr class="transparent">
         <td class="transparent-top" width="20"><font size="6" color="#999999">2</font></td>    
+        <td class="transparent-top">
+
+            <h2><netui:content value="${bundle.web['installClient.air.title']}"/></h2>
+            <p><netui:content value="${bundle.web['installClient.air.message']}"/></p>
+        </td>
+    </tr>
+    <tr class="transparent">
+        <td class="transparent-top">
+        </td>
+        <td class="transparent-top">
+            <table class="transparent">
+                <tr id="installJavaRow" class="transparent">
+                   <td class="transparent-top">
+                        <netui:content value="Go to the Adobe website and download the latest Adobe AIR for free."/>
+                        <br>
+                        <a href="#" onclick="newWindow('http://get.adobe.com/air/');"><netui:content value="http://get.adobe.com/air/"/></a>
+                    </td>
+                </tr>
+            </table>  
+        </td>
+    </tr>
+    <tr class="transparent">
+        <td class="transparent-top" colspan="2">
+            <hr/>
+        </td>
+    </tr>
+
+
+   	<%-- Install Online Assessment Software --%>
+    <tr class="transparent">
+        <td class="transparent-top" width="20"><font size="6" color="#999999">3</font></td>    
         <td class="transparent-top">
             <h2><netui:content value="${bundle.web['installClient.installClient.title']}"/></h2>
             <p><netui:content value="${bundle.web['installClient.title.message']}"/></p>
