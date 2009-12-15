@@ -297,8 +297,6 @@ public class ManageUploadController extends PageFlowController
             	this.uploadStatus = "uploadFile";
             	this.getRequest().setAttribute("uploadStatus", "uploadFile");
             
-                setFormInfoOnRequest(form);
-            	
             }  
             
         }
@@ -767,7 +765,6 @@ public class ManageUploadController extends PageFlowController
                 System.out.println("***** Upload App: using service endpoint: " + endpoint);
                 uploadDownloadManagementServiceControl.uploadFile(this.userName, this.fullFilePath, this.uploadFileId);
             } catch (Exception e) {
-            	
                 DataFileAudit dataFileAudit = new DataFileAudit();
                 dataFileAudit.setStatus("FL");
                /* try{

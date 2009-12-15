@@ -50,9 +50,8 @@
 <netui:hidden  dataSource="actionForm.actionElement"/> 
 <netui:hidden  dataSource="actionForm.currentAction"/>
 <netui:hidden dataSource="actionForm.fileMaxPage"/> 
-<netui-data:getData resultId="uploadStatus" value="${requestScope.uploadStatus}"/>
+<netui:hidden tagId="uploadStatus" dataSource="uploadStatus"/>
 
-   
 <jsp:include page="/manageUpload/show_message.jsp" />
 
 <!-- tabs -->      
