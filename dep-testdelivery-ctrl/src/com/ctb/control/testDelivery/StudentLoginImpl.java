@@ -269,25 +269,30 @@ public class StudentLoginImpl implements StudentLogin, Serializable
                 AccomodationsData accomData = authenticator.getAccomodations(testRosterId);
                 
                 //ISTEP2010CR001 : For get controller of speed of the speech(TTS)
-                if (accomData.getScreenReader().equals("T")) {
-                    
-                    String speechControllerFlag = authenticator.
-                                getSpeechControllerAccommodation(testRosterId);
-                        if (speechControllerFlag != null && 
-                                speechControllerFlag.equals("T")) {
-                    
-                            if (authData.getTtsSpeedStatus() != null) {
-                                
-                                loginResponse.setTtsSpeedValue(authData.getTtsSpeedStatus());
-                                
-                            } else {
-                              
-                               loginResponse.setTtsSpeedValue(Constants.SpeechController.
-                                    DEFAULT_TTS_SPEED_VALUE );
-                                    
-                        }
-                        
-                    }
+                //Defect #60524 : 503 error
+                if(accomData != null) {
+                	
+                
+	                if (accomData.getScreenReader() != null && accomData.getScreenReader().equals("T")) {
+	                    
+	                    String speechControllerFlag = authenticator.
+	                                getSpeechControllerAccommodation(testRosterId);
+	                        if (speechControllerFlag != null && 
+	                                speechControllerFlag.equals("T")) {
+	                    
+	                            if (authData.getTtsSpeedStatus() != null) {
+	                                
+	                                loginResponse.setTtsSpeedValue(authData.getTtsSpeedStatus());
+	                                
+	                            } else {
+	                              
+	                               loginResponse.setTtsSpeedValue(Constants.SpeechController.
+	                                    DEFAULT_TTS_SPEED_VALUE );
+	                                    
+	                        }
+	                        
+	                    }
+	                }
                 }
                 
                 if(accomData != null) {
