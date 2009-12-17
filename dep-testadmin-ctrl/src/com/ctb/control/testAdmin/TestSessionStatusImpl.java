@@ -814,10 +814,10 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
             }
            
             // old Weblogic 8.1 JMS call
-             scorer.sendObjectMessage(testRosterId);
+            // scorer.sendObjectMessage(testRosterId);
           
             // new Weblogic 10.3 JMS call
-            //invokeScoring(testRosterId);
+             invokeScoring(testRosterId);
             
         } catch (SQLException se) {
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleRosterValidationStatus: " + se.getMessage());
@@ -855,10 +855,10 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
             roster.updateTestRoster(rosterDetail);
           
             // old Weblogic 8.1 JMS call
-             scorer.sendObjectMessage(testRosterId);
+            // scorer.sendObjectMessage(testRosterId);
             
             // new Weblogic 10.3 JMS call
-            // invokeScoring(testRosterId);
+             invokeScoring(testRosterId);
             
         } catch (SQLException se) {
             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: toggleSubtestValidationStatus: " + se.getMessage());
@@ -884,13 +884,13 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
 	  }
         
     private void getResourceValue() throws Exception {
-	 /*   ResourceBundle rb = ResourceBundle.getBundle("security");
+	    ResourceBundle rb = ResourceBundle.getBundle("security");
 	    jndiFactory = rb.getString("jndiFactory");
 	    jmsFactory = rb.getString("jmsFactory");
 	    jmsURL = rb.getString("jmsURL");
 	    jmsQueue = rb.getString("jmsQueue");
 	    jmsPrincipal = rb.getString("jmsPrincipal");
-	    jmsCredentials = rb.getString("jmsCredentials");*/
+	    jmsCredentials = rb.getString("jmsCredentials");
     }
 	    
     /**
