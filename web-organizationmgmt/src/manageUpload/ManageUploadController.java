@@ -300,9 +300,9 @@ public class ManageUploadController extends PageFlowController
             }  
             
         }
-
+  
         System.out.println("***** Upload App: returning control to user");
-                  
+        setFormInfoOnRequest(form) ; //Added for defect 61360     
         return new Forward("success", form);
     }
 
