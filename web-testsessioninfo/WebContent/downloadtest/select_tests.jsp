@@ -18,6 +18,9 @@
  
 <%
 String userAgent = request.getHeader("User-Agent").toLowerCase();
+
+System.out.println(userAgent);
+
 Boolean windowsVista = new Boolean(userAgent.indexOf("windows nt 6.0") > 0);  
 %>
  
@@ -168,6 +171,11 @@ Boolean windowsVista = new Boolean(userAgent.indexOf("windows nt 6.0") > 0);
 <div id="showMacOSError" style="display:none">
     <ctb:message title="${bundle.web['loadTest.macNotSupported.error.title']}" style="alertMessage">
         <netui:content value="${bundle.web['loadTest.macNotSupported.error.message']}"/>
+    </ctb:message>
+</div>
+<div id="showLinuxError" style="display:none">
+    <ctb:message title="${bundle.web['loadTest.linuxNotSupported.error.title']}" style="alertMessage">
+        <netui:content value="${bundle.web['loadTest.linuxNotSupported.error.message']}"/>
     </ctb:message>
 </div>
 <div id="showJavaVersionError" style="display:none">

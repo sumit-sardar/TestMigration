@@ -72,6 +72,11 @@ function checkForDownloadManager(){
         hideElement(getElement("showContent", "div"));
     }
     else
+    if ( isLinux() ) {
+        showElement(getElement("showLinuxError", "div"));
+        hideElement(getElement("showContent", "div"));
+    }
+    else
     if ( !isClientInstalled() ) {
         showElement(getElement("showDMError", "div"));
         hideElement(getElement("showContent", "div"));
@@ -133,6 +138,12 @@ function isMacOS() {
     var agt = navigator.userAgent.toLowerCase();
     var mac = (agt.indexOf("mac")!=-1);
     return mac;
+}
+
+function isLinux() {
+    var agt = navigator.userAgent.toLowerCase();
+    var linux = (agt.indexOf("linux")!=-1);
+    return linux;
 }
 
 function isClientInstalled() {
