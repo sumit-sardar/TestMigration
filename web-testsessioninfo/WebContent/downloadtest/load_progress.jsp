@@ -432,7 +432,7 @@ function showError(errorStr)
          style="display:none">
         <ctb:message title="${bundle.web['loadTest.loadProgress.fail.title']}" style="errorMessage">
             <p><netui:content value="${bundle.web['loadTest.loadProgress.fail.message1']}"/></p>
-            <p><netui:content value="${bundle.web['loadTest.loadProgress.fail.message2']}"/><a href="<netui:content value="${bundle.web['help.contactSupport.page']}"/>" onClick="return showHelpWindow(this.href);"><netui:content value="${bundle.web['loadTest.loadProgress.fail.supportLink']}"/></a>&nbsp;<netui:content value="${bundle.web['loadTest.loadProgress.fail.message3']}"/></p>
+            <p><netui:content value="${bundle.web['loadTest.loadProgress.fail.message2']}"/><a href="<netui:content value="/help/index.html#how_to_contact_i_know_support.htm"/>" onClick="return showHelpWindow(this.href);"><netui:content value="${bundle.web['loadTest.loadProgress.fail.supportLink']}"/></a>&nbsp;<netui:content value="${bundle.web['loadTest.loadProgress.fail.message3']}"/></p>
         </ctb:message>
         <br/>
     </div>
