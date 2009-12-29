@@ -484,7 +484,7 @@ function showError(errorStr)
     <div id="downloadInProgressButtons">
     </div>
     <div id="downloadFailureButtons" style="display:none">
-        <netui:button type="button" value="Try Again" onClick="document.location.href='goto_load_progress.do'"/>
+        <netui:button type="button" value="Try Again" onClick="document.location.href='goto_load_progress.do?objectBankPath=C:\Program Files\CTB\Online Assessment\data\objectbank\'"/>
         &nbsp;&nbsp;
         <netui:button type="button" value="Finish" onClick="document.location.href='goto_homepage.do'"/>
     </div>
