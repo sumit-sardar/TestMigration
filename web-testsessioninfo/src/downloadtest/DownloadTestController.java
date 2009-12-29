@@ -676,7 +676,7 @@ public class DownloadTestController extends PageFlowController
     protected Forward load_progress()
     {
         String objectBankPath = (String)this.getRequest().getParameter("objectBankPath");
-        
+        System.out.println("###objectBankPath:"+objectBankPath+" end.");
         // construct download manager xml from tests that user selected
         String xml = this.getDownloadManagerXml();
         String sdsId = null;
