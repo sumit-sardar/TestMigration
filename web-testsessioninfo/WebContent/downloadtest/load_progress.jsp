@@ -458,7 +458,7 @@ function showError(errorStr)
 	<form name="errorForm">
         <!--This field will hold the error code, that will come from Query String-->
         <input type="hidden" name="errorCode" value="471">
-        <input type="text" id="objectBankPath" name="objectBankPath" value="<%=objectBankPath%>" />  
+        <input type="hidden" id="objectBankPath" name="objectBankPath" value="<%=objectBankPath%>" />  
 	</form>
 	
 
