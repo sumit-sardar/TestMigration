@@ -52,6 +52,14 @@
                 </tr>
                 <tr class="transparent">
                    <td class="transparent-top">
+                        <netui:content value="<b>For Linux</b>: Go to the Java website and download the current JRE update for free."/>
+                        <br>
+                        <a href="#" onclick="newWindow('http://java.com/en/download/manual.jsp');"><netui:content value="http://java.com/en/download/manual.jsp"/></a>
+                        <br>
+                    </td>
+                </tr>
+                <tr class="transparent">
+                   <td class="transparent-top">
                         <netui:content value="<b>For Mac</b>: Open Software Update on the Mac workstation to update the JRE."/>
                         <br>
                     </td>
