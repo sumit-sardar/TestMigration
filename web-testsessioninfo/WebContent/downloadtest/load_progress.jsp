@@ -444,11 +444,31 @@ function showError(errorStr)
         <br/>
     </div>
 
+ <%
+ if (objectBankPath == null || "".equals(objectBankPath)){
+ 	objectBankPath = "C:\\Program Files\\CTB\\Online Assessment\\data\\objectbank\\";
+ }
+ %>
+ 
+ <% if ( ie7.booleanValue() ) { %>
+<script type="text/javascript">
+    document.writeln('<OBJECT ID="LDBJSBridgeCTL" CLASSID="CLSID:56871AC2-4683-4D8E-B5EB-E7E3AA40DD52" VIEWASTEXT WIDTH=0 HEIGHT = 0></OBJECT>' );
+</script>
+<% } %>
 	<form name="errorForm">
         <!--This field will hold the error code, that will come from Query String-->
         <input type="hidden" name="errorCode" value="471">
+        <input type="hidden" id="objectBankPath" name="objectBankPath" value="<%=objectBankPath%>" />  
 	</form>
+	
 
+
+<% if ( ie7.booleanValue() ) { %>
+<script type="text/javascript">
+    var objectBankPath =  LDBJSBridgeCTL.GetRegistryKeyValue("ObjectbankPath"); 
+    document.getElementById("objectBankPath").value = objectBankPath;
+</script>
+<% } %>
     <div style="background-color: #cc9; border-color: #f00; border-width: 0px; border-style: solid; width: 800px; height: 600px; overflow: hidden;">
         <div style="position: relative; top: 0px; left: 0px; border-color: #f00; border-width:0px; border-style: solid; width: 800px; height: 600px; overflow: hidden;">
         <SCRIPT>
@@ -484,7 +504,7 @@ function showError(errorStr)
     <div id="downloadInProgressButtons">
     </div>
     <div id="downloadFailureButtons" style="display:none">
-        <netui:button type="button" value="Try Again" onClick="document.location.href='load_progress.do?objectBankPath=C:\Program Files\CTB\Online Assessment\data\objectbank\'"/>
+        <netui:button type="submit" value="Try Again" onClick="submitFormAndSwitchPage('load_progress.do')"/>
         &nbsp;&nbsp;
         <netui:button type="button" value="Finish" onClick="document.location.href='goto_homepage.do'"/>
     </div>
