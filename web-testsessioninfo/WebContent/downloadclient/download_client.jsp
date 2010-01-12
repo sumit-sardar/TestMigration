@@ -92,7 +92,7 @@
                    <td class="transparent-top">
                         <netui:content value="Go to the Adobe website and download the latest Adobe AIR for free."/>
                         <br>
-                        <a href="#" onclick="newWindow('http://get.adobe.com/air/');"><netui:content value="http://get.adobe.com/air/"/></a>
+                        <a href="#" onclick="newWindow('http://www.adobe.com/go/getair');"><netui:content value="http://www.adobe.com/go/getair"/></a>
                     </td>
                 </tr>
             </table>  
