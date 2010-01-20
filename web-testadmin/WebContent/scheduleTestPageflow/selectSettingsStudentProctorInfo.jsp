@@ -12,6 +12,7 @@
 
 <netui-data:getData resultId="action" value="${pageFlow.action}"/>
 <netui-data:getData resultId="hasBreak" value="${actionForm.hasBreak}"/>
+<netui-data:getData resultId="formOperand" value="${requestScope.formOperand}"/>  <!-- Changes for defect 61543 -->
 <netui-data:getData resultId="studentCount" value="${requestScope.studentCount}"/>
 <netui-data:getData resultId="showAccommodations" value="${requestScope.testRosterFilter.showAccommodations}"/>
 <netui-data:getData resultId="isFormEditable" value="${requestScope.isFormEditable}"/>
@@ -25,6 +26,7 @@
 <!--<netui:hidden dataSource="actionForm.creatorOrgNodeId"/>  --><!-- Changes for defect 60455 -->
 <a name="studentTableAnchor"><!-- studentTableAnchor --></a>    
 <h3><netui:span value="${bundle.web['selectsettings.students.title']}"/></h3>
+<% String formOperand = (String)pageContext.getAttribute("formOperand");%>  <!-- Changes for defect 61543 -->
 
 
 <c:if test="${! isTabeProduct}">                 
@@ -37,7 +39,7 @@
     <c:if test="${showFormAssignment == 'noneditable'}">    
         <netui:span value="${bundle.web['selectsettings.students.message1']}"/>
         <br/>
-        <ctb:switch dataSource="${actionForm.formOperand}">
+        <ctb:switch dataSource="<%=formOperand %>">
             <ctb:case value="roundrobin">
                 <div class="formValue"><netui:span value="${bundle.web['selectsettings.students.form.option1']}" styleClass="formValue"/></div>
             </ctb:case>
@@ -61,8 +63,8 @@
     <c:if test="${showFormAssignment == 'noneditable'}">    
         <netui:span value="${bundle.web['selectsettings.students.message1']}"/>
         <br/>
-        <ctb:switch dataSource="${actionForm.formOperand}">
-            <ctb:case value="roundrobin">
+        <ctb:switch dataSource= "<%=formOperand %>" >
+             <ctb:case value="roundrobin" >
                 <div class="formValue"><netui:span value="${bundle.web['selectsettings.students.form.option1']}" styleClass="formValue"/></div>
             </ctb:case>
             <ctb:case value="samesame">
@@ -79,7 +81,7 @@
     <c:if test="${showFormAssignment == 'noneditable_samesame'}">    
         <netui:span value="${bundle.web['selectsettings.students.message1']}"/>
         <br/>
-        <ctb:switch dataSource="${actionForm.formOperand}">
+        <ctb:switch dataSource="<%=formOperand %>">
             <ctb:case value="roundrobin">
                 <div class="formValue"><netui:span value="${bundle.web['selectsettings.students.form.option1']}" styleClass="formValue"/></div>
             </ctb:case>

@@ -828,6 +828,7 @@ public class ScheduleTestController extends PageFlowController
     	this.getRequest().setAttribute("pageMessage", form.getMessage());
     	this.getRequest().setAttribute("scheduledTestSessionData", form.getTestAdmin());
     	this.getRequest().setAttribute("hasBreak", form.getHasBreak());  //Changes for defect 60393 
+    	this.getRequest().setAttribute("formOperand", form.getFormOperand());  //Changes for defect 61543
     	this.getRequest().setAttribute("autoLocatorDisplay",form.getAutoLocatorDisplay());
     	this.getRequest().setAttribute("autoLocator",form.getAutoLocator());
     	this.getRequest().setAttribute("testRosterFilter",form.getTestRosterFilter());
