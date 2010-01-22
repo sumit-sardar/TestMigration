@@ -21,8 +21,9 @@ public class PasswordGenerator
         RandomWordGenerator rwFactory = new RandomWordGenerator(RandomWordGenerator.Dictionary.US_DICTIONARY);
 
         while (!validPassword)
-        {
-            password = rwFactory.generateWordPaddedWithDigits(GENERATED_STUDENT_PASSWORD_LENGTH);
+        {   
+        	 //ISTEP2010CR005 - to generate uppercase for test roster password
+            password = rwFactory.generateWordPaddedWithDigits(GENERATED_STUDENT_PASSWORD_LENGTH).toUpperCase();
 
             if ((rwFactory.verifyNoVulgar(password)) || (rwFactory.verifyNotNegative(password)))
             {

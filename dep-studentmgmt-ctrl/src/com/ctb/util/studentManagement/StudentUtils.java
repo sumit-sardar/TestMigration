@@ -37,12 +37,12 @@ public class StudentUtils
             (new SimpleDateFormat( "d")).format( birthdate );
         String dobMonth = 
             (new SimpleDateFormat( "M")).format( birthdate );
-        return new String( firstName.toLowerCase() +
+        return new String( firstName.toUpperCase() +
                 (middleInitial.length()>0?
-                   middleInitial.toLowerCase() + "-":"")
-                   + lastName.toLowerCase() +
+                   middleInitial.toUpperCase() + "-":"")
+                   + lastName.toUpperCase() +
                         padWithZero( dobMonth ) +
-                        padWithZero( dobDay ) )+suffix;
+                        padWithZero( dobDay ) )+suffix;   //ISTEP2010CR005 - to generate uppercase for student login id
     }
 
     private static String convertForUserName( String inString_ )

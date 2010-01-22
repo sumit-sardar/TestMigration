@@ -21,8 +21,9 @@ public class AccessCodeGenerator
         String accessCode = null;
     
         RandomWordGenerator rwFactory = new RandomWordGenerator(RandomWordGenerator.Dictionary.US_DICTIONARY);
-
-        accessCode = rwFactory.generateWordPaddedWithDigits(GENERATED_ACCESS_CODE_LENGTH);
+        
+        //ISTEP2010CR005 - to generate uppercase for test accesscode
+        accessCode = rwFactory.generateWordPaddedWithDigits(GENERATED_ACCESS_CODE_LENGTH).toUpperCase();
 
         return accessCode;
     }

@@ -354,7 +354,8 @@ public class TestTicketController extends PageFlowController
         TestSession testSession = testSessions[0];
         String testName = testSession.getTestAdminName();
         String location = testSession.getLocation();
-        String accessCode = testSession.getAccessCode();
+        //ISTEP2010CR005 to retrieve accesscode in upper case
+        String accessCode = testSession.getAccessCode().toUpperCase();
         String sessionName = testSession.getTestAdminName();
         String level = null;
         Date startDate = testSession.getLoginStartDate();
@@ -545,6 +546,9 @@ public class TestTicketController extends PageFlowController
         for (int i=0 ; i<rosterElements.length ; i++) {
             RosterElement rosterElt = rosterElements[i];
             if (rosterElt != null) {
+            	//ISTEP2010CR005 - to reset username, roster password in upper case
+            	rosterElt.setUserName(rosterElt.getUserName().toUpperCase());
+            	rosterElt.setPassword(rosterElt.getPassword().toUpperCase());
                 TestRosterVO vo = new TestRosterVO(rosterElt);
                 vo.setSeq(i);
                 map.put(vo.getStudentId(), vo);
