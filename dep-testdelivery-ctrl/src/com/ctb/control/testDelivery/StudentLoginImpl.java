@@ -200,10 +200,12 @@ public class StudentLoginImpl implements StudentLogin, Serializable
         try {
            // AuthenticateStudent authenticator = authenticatorFactory.create();
             // might be more than one roster for these creds, due to random passwords
-            AuthenticationData [] authDataArray = authenticator.authenticateStudent(loginRequest.getLoginRequest().getUserName(), loginRequest.getLoginRequest().getPassword());
+        	System.out.println("########### Login ID:"+ loginRequest.getLoginRequest().getUserName()+" Password:"+loginRequest.getLoginRequest().getPassword());
+        	AuthenticationData [] authDataArray = authenticator.authenticateStudent(loginRequest.getLoginRequest().getUserName(), loginRequest.getLoginRequest().getPassword());
             AuthenticationData authData = null;
             boolean authenticated = false;
             String testAccessCode = loginRequest.getLoginRequest().getAccessCode();
+            System.out.println("########### TestAccessCode:"+ testAccessCode);
             int testRosterId = -1;
             String lsid = null;
             ManifestData [] manifestData = new ManifestData [0];
