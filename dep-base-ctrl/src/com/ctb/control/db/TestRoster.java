@@ -144,9 +144,9 @@ public interface TestRoster extends JdbcControl
     
     /**
      * @jc:sql statement::
-     * select count(*) from test_roster where password = {password}::
+     * select count(*) from test_roster where upper(password) = upper({password})::
      */
-    @JdbcControl.SQL(statement = "select count(*) from test_roster where password = {password}")
+    @JdbcControl.SQL(statement = "select count(*) from test_roster where upper(password) = upper({password})")
     Integer getRosterCountForPassword(String password) throws SQLException;
 
 
