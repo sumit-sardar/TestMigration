@@ -78,8 +78,8 @@ public class TableUtils
     private static final float STUDENT_CELL_PADDING = 2.5f;
     
     private static final float STUDENT_NAME_WIDTH = 170f;
-    private static final float STUDENT_ID_WIDTH = 120f;
-    private static final float LOGIN_ID_WIDTH = 200f;
+    private static final float STUDENT_ID_WIDTH = 100f;
+    private static final float LOGIN_ID_WIDTH = 300f;
 
     /**
      * This method returns a table displaying the title in large bold blue font

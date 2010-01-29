@@ -102,8 +102,8 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private static final float[] SESSION_WIDTHS = new float[] {47f, 63f};
     private static final float[] THREE_COLUMN_TAC_WIDTHS = new float[] {6f, 2f, 3f};
     private static final float[] FOUR_COLUMN_TAC_WIDTHS = new float[] {1.5f, 6f, 2f, 3f};
-    private static final float[] STUDENT_WIDTHS = new float[] {50f, 35f, 54f, 24f, 15f, 29f, 33f};
-    private static final float[] STUDENT_WIDTHS_FOR_TABE = new float[] {50f, 35f, 54f, 24f, 29f, 48f};
+    private static final float[] STUDENT_WIDTHS = new float[] {50f, 32f, 72f, 21f, 13f, 21f, 31f};
+    private static final float[] STUDENT_WIDTHS_FOR_TABE = new float[] {50f, 32f, 72f, 21f, 21f, 44f};
 
     private static final float SESSION_VALUE_WIDTH = 170f;
     // maximum number of student lines on a page
