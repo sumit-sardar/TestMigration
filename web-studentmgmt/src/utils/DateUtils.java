@@ -385,7 +385,15 @@ public class DateUtils
         else
             return true;    
     }
-        
+     
+    public static boolean noneSelected(String month, String day, String year)
+    {
+        if (month.equals("") && day.equals("") && year.equals(""))
+            return true;
+        else
+            return false;    
+    } 
+    
     public static boolean verifyDate(String month, String day, String year)
     {
         return true;    // for now

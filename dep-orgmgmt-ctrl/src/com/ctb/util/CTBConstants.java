@@ -197,4 +197,8 @@ public final class CTBConstants {
     
     public static final String EMAIL_SUBJECT = "Data upload";
     
+  //For GACRCT2010CR007 --  	Configuration for Birth Date mandatory and Non mandatory field. 
+    public static final String DISABLE_MANDATORY_BIRTH_DATE  =  "Disable_Mandatory_Birth_Date";
+
+    
  } 

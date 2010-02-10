@@ -124,8 +124,12 @@ public class StudentProfileInformation implements java.io.Serializable
         copied.setGrade(this.grade);
         copied.setStudentIdNumber(this.studentNumber);
         copied.setStudentIdNumber2(this.studentSecondNumber);
+        //GACRCT2010CR007 - changed for creating date when supplied.
+        Date date = null;
         
-        Date date = DateUtils.createDate(this.year, this.month, this.day);
+        if (DateUtils.allSelected(month, day, year)) 
+        	 date = DateUtils.createDate(this.year, this.month, this.day);
+        
         copied.setBirthDate(date);
         
         if (this.gender.equals("Male")) copied.setGender("M");

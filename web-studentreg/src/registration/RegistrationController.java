@@ -141,7 +141,10 @@ public class RegistrationController extends PageFlowController
  
     // customer configuration
     CustomerConfiguration[] customerConfigurations = null;
- 
+    
+    //GACRCT2010CR007- Disable_Mandatory_Birth_Date according to customer cofiguration
+    private boolean disableMandatoryBirthdate = false;
+    
     /**
      * This method represents the point of entry into the pageflow
      * @jpf:action
@@ -181,7 +184,10 @@ public class RegistrationController extends PageFlowController
         this.licenseInfo = new CustomerLicenseInfo(this.customerId, this.userName);
 
         this.getSession().setAttribute("userHasReports", userHasReports());
-
+        
+        //GACRCT2010CR007- retrieve value for Disable_Mandatory_Birth_Date 
+        getCustomerConfigurations();
+        
         return new Forward("success", this.savedForm);
     }
 
@@ -394,8 +400,9 @@ public class RegistrationController extends PageFlowController
         this.savedForm.setMessage(null, null, null);
         this.savedForm.setSelectedStudentId(null);      
         this.student = null;  
-        this.returnFromCongratulation = false;     
-                                        
+        this.returnFromCongratulation = false;
+        //GACRCT2010CR007- retrieve value for Disable_Mandatory_Birth_Date 
+        getCustomerConfigurations();
         return new Forward("success", this.savedForm);
     }
 
@@ -530,7 +537,9 @@ public class RegistrationController extends PageFlowController
 
         StudentProfileInformation studentProfile = form.getStudentProfile();
         Integer selectedOrgNodeId = form.getSelectedOrgNodeId();
-                
+        
+        //GACRCT2010CR007- set value for disableMandatoryBirthdate in  form.
+        form.setDisableMandatoryBirthdate(disableMandatoryBirthdate);
         boolean result = form.verifyStudentInformation(studentProfile, selectedOrgNodeId);
         if (! result)
         {           
@@ -677,7 +686,11 @@ public class RegistrationController extends PageFlowController
         this.getRequest().setAttribute("orgNodePath", this.orgNodePath);
         this.getRequest().setAttribute("orgNodes", this.orgNodeList);        
         this.getRequest().setAttribute("orgPagerSummary", orgPagerSummary);
-        this.getRequest().setAttribute("orgCategoryName", orgCategoryName);      
+        this.getRequest().setAttribute("orgCategoryName", orgCategoryName);   
+        
+        //GACRCT2010CR007- retrieve value for Disable_Mandatory_Birth_Date 
+        isMandatoryBirthDate();
+        
     }
     
     
@@ -814,7 +827,7 @@ public class RegistrationController extends PageFlowController
         this.savedForm.setMessage(null, null, null);
         this.savedForm.setCurrentAction(ACTION_APPLY_SEARCH);
         this.savedForm.setActionElement(ACTION_DEFAULT);
-
+        
         return new Forward("success", this.savedForm);
     }
 
@@ -858,7 +871,7 @@ public class RegistrationController extends PageFlowController
             if (! this.isLocatorTest)
             {      
                         
-                boolean validateLevels = !autoLocatorChecked;                                          
+                boolean validateLevels = !autoLocatorChecked;    
                 boolean valid = TABESubtestValidation.validation(this.selectedSubtests, validateLevels);
                 String message = TABESubtestValidation.currentMessage;
                         
@@ -876,10 +889,10 @@ public class RegistrationController extends PageFlowController
                     {
                         form.setMessage(MessageResourceBundle.getMessage("SubtestValidationWarning"), message, Message.ALERT);            
                     }
-                }                
+                }              
             }
             
-    
+    	
             if (this.selectedSubtests.size() == 0)
             {
                 this.selectedSubtests = TestSessionUtils.cloneSubtests(this.defaultSubtests);
@@ -1150,10 +1163,10 @@ public class RegistrationController extends PageFlowController
     {
         try
         {
-            if (this.customerConfigurations == null)
-            {
+            //if (this.customerConfigurations == null)
+            //{
                 this.customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);
-            }
+            //}
         }
         catch (CTBBusinessException be)
         {
@@ -1161,6 +1174,26 @@ public class RegistrationController extends PageFlowController
         }
     }
     
+    /*
+	 * GACRCT2010CR007- retrieve value for disableMandatoryBirthdate set  Value in request. 
+	 */
+    private void isMandatoryBirthDate() 
+    {     
+    	boolean disableMandatoryBirthdateValue = false;
+        for (int i=0; i < this.customerConfigurations.length; i++)
+         {
+             CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+             if (cc.getCustomerConfigurationName().equalsIgnoreCase("Disable_Mandatory_Birth_Date") && cc.getDefaultValue().equalsIgnoreCase("T"))
+             {
+            	 
+             	disableMandatoryBirthdateValue = true; 
+             }
+          }
+        disableMandatoryBirthdate = disableMandatoryBirthdateValue;
+        System.out.println("Student registration disableMandatoryBirthdate==>"+disableMandatoryBirthdate);
+        this.getRequest().setAttribute("isMandatoryBirthDate", disableMandatoryBirthdate);
+                
+     }
     /**
      * createStudentAccommodations
      */
@@ -1493,6 +1526,7 @@ public class RegistrationController extends PageFlowController
         private Boolean reportSectionVisible;
         
         private String autoLocator;
+        private  boolean disableMandatoryBirthdate = false; //GACRCT2010CR007 - Disable Mandatory Birth Date
         
         public RegistrationForm()
         {
@@ -1904,7 +1938,19 @@ public class RegistrationController extends PageFlowController
         {
             return this.password;
         }
+        /**
+		 * @return the disableMandatoryBirthdate
+		 */
+		public boolean isDisableMandatoryBirthdate() {
+			return disableMandatoryBirthdate;
+		}
 
+		/**
+		 * @param disableMandatoryBirthdate the disableMandatoryBirthdate to set
+		 */
+		public void setDisableMandatoryBirthdate(boolean disableMandatoryBirthdate) {
+			this.disableMandatoryBirthdate = disableMandatoryBirthdate;
+		}  
         public boolean verifyStudentInformation(StudentProfileInformation studentProfile, Integer selectedOrgNodeId)
         {
             // check for required fields
@@ -1926,11 +1972,14 @@ public class RegistrationController extends PageFlowController
             String month = this.studentProfile.getMonth();
             String day = this.studentProfile.getDay();
             String year = this.studentProfile.getYear();
-            if (! DateUtils.allSelected(month, day, year)) {
-                requiredFieldCount += 1;            
-                requiredFields = Message.buildErrorString("Date of Birth", requiredFieldCount, requiredFields);       
+          //GACRCT2010CR007 - validate required date of birth  according to customer configuartion 
+            System.out.println("isDisableMandatoryBirthdate==>"+isDisableMandatoryBirthdate());
+			if(!isDisableMandatoryBirthdate()) {
+	            if (! DateUtils.allSelected(month, day, year)) {
+	                requiredFieldCount += 1;            
+	                requiredFields = Message.buildErrorString("Date of Birth", requiredFieldCount, requiredFields);       
+	            }
             }
-    
             String studentGrade = studentProfile.getGrade();
             if ( studentGrade.equals(FilterSortPageUtils.FILTERTYPE_SELECT_A_GRADE)) {
                 requiredFieldCount += 1;            
@@ -1976,14 +2025,26 @@ public class RegistrationController extends PageFlowController
                 setMessage(MessageResourceBundle.getMessage("InvalidCharacters"), invalidCharFields, Message.ERROR);
                 return false;
             }
-                  
-            int isDateValid = DateUtils.validateDateValues(year, month, day);
-            if (isDateValid != DateUtils.DATE_VALID) {
-                invalidCharFields += Message.INVALID_DATE;
-                setMessage("Invalid Date of Birth:", invalidCharFields, Message.ERROR);
-                return false;
-            }
-                    
+            
+			//GACRCT2010CR007 - validate  date of birth  when date value is provided.
+            
+            if(isDisableMandatoryBirthdate() && !DateUtils.allSelected(month, day, year)) {
+				if (!DateUtils.noneSelected(month, day, year)) {
+					invalidCharFields += Message.INVALID_DATE;
+					setMessage("Invalid Date of Birth:", invalidCharFields, Message.ERROR);
+	                return false;
+					      
+				}
+			}
+            
+            if (DateUtils.allSelected(month, day, year)) {
+	            int isDateValid = DateUtils.validateDateValues(year, month, day);
+	            if (isDateValid != DateUtils.DATE_VALID) {
+	                invalidCharFields += Message.INVALID_DATE;
+	                setMessage("Invalid Date of Birth:", invalidCharFields, Message.ERROR);
+	                return false;
+	            }
+            }       
             return true;
         }        
 

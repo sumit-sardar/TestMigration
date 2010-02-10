@@ -12,6 +12,8 @@
 
 <%
     Boolean profileEditable = (Boolean)request.getAttribute("profileEditable"); 
+	Boolean isMandatoryBirthDate = (Boolean)request.getAttribute("isMandatoryBirthDate"); //GACRCT2010CR007 - Disable Mandatory Birth Date 
+	
 %>
 
 <table class="simple">
@@ -59,7 +61,12 @@
         </td>
     </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="120"><span class="asterisk">*</span>&nbsp;<netui:content value="Date of Birth:"/></td>
+        <td class="transparent alignRight" width="120">
+        <c:if test="${!isMandatoryBirthDate }">   
+        	<span class="asterisk">*</span>&nbsp;
+        </c:if>
+        <netui:content value="Date of Birth:"/>
+        </td>
         <td class="transparent" nowrap>    
         <c:if test="${ profileEditable }">            
             <netui:select optionsDataSource="${pageFlow.monthOptions}" dataSource="actionForm.studentProfile.month" size="1" style="width:60px"/>

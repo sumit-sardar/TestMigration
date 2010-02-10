@@ -8,6 +8,11 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
+<%
+	Boolean isMandatoryBirthDate = (Boolean)request.getAttribute("isMandatoryBirthDate"); //GACRCT2010CR007 - Disable Mandatory Birth Date 
+%>
+
+
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.studentProfile.firstName}" />
 
 
@@ -31,7 +36,12 @@
         <td class="transparent"><netui:textBox dataSource="actionForm.studentProfile.lastName" maxlength="32" style="width:180px" tabindex="3"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="120"><span class="asterisk">*</span>&nbsp;<netui:content value="Date of Birth:"/></td>
+        <td class="transparent alignRight" width="120">
+        <c:if test="${!isMandatoryBirthDate }">   
+        	<span class="asterisk">*</span>&nbsp;
+        </c:if>
+        <netui:content value="Date of Birth:"/>
+        </td>
         <td class="transparent" nowrap>    
             <netui:select optionsDataSource="${pageFlow.monthOptions}" dataSource="actionForm.studentProfile.month" size="1" style="width:60px" tabindex="4"/>
             <netui:select optionsDataSource="${pageFlow.dayOptions}" dataSource="actionForm.studentProfile.day" size="1" style="width:45px" tabindex="5"/>
