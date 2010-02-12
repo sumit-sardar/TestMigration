@@ -38,8 +38,7 @@
         </td>
     </tr>
     <tr class="transparent">
-        <td class="transparent-top">
-        </td>
+        <td class="transparent-top"></td>
         <td class="transparent-top">
             <table class="transparent">
                 <tr id="installJavaRow" class="transparent">
@@ -72,25 +71,35 @@
     </tr>
 
 
-   	<%-- Install Adobe AIR --%>
+   	<%-- Additional Software --%>
     <tr class="transparent">
         <td class="transparent-top" width="20"><font size="6" color="#999999">2</font></td>    
         <td class="transparent-top">
 
-            <h2><netui:content value="${bundle.web['installClient.air.title']}"/></h2>
-            <p><netui:content value="${bundle.web['installClient.air.message']}"/></p>
+            <h2><netui:content value="${bundle.web['installClient.addtionalSoftware.title']}"/></h2>
+            <p><netui:content value="${bundle.web['installClient.addtionalSoftware.message']}"/></p>
         </td>
     </tr>
     <tr class="transparent">
-        <td class="transparent-top">
-        </td>
+        <td class="transparent-top"></td>
+        
+        
         <td class="transparent-top">
             <table class="transparent">
                 <tr id="installJavaRow" class="transparent">
                    <td class="transparent-top">
-                        <netui:content value="Go to the Adobe website and download the latest Adobe AIR for free."/>
+                        <netui:content value="<b>For PC and Linux</b>: Go to the Adobe website and download the latest Adobe AIR for free."/>
                         <br>
                         <a href="#" onclick="newWindow('http://www.adobe.com/go/getair');"><netui:content value="http://www.adobe.com/go/getair"/></a>
+                        <br>
+                    </td>
+                </tr>
+                <tr class="transparent">
+                   <td class="transparent-top">
+                        <netui:content value="<b>For Mac</b>: Go to the Adobe website and download the latest Adobe Flash for free."/>
+                        <br>
+                        <a href="#" onclick="newWindow('http://www.adobe.com/products/flashplayer/');"><netui:content value="http://www.adobe.com/products/flashplayer/"/></a>
+                        <br>
                     </td>
                 </tr>
             </table>  
