@@ -14,6 +14,7 @@
 <netui-template:template templatePage="/resources/jsp/template.jsp">
     <netui-template:setAttribute name="title" value="${bundle.web['installClient.window.title']}"/>
     <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.installClient']}"/>
+    <netui-template:setAttribute name="helpLinkLinux" value="${bundle.help['help.topic.installClientLinux']}"/>
 <netui-template:section name="bodySection">
  
 <!-- ********************************************************************************************************************* -->
@@ -164,7 +165,6 @@
 		            </td>
 		        </tr>     
 
-
                 <tr class="transparent">
                     <td class="transparent" height="25" colspan="3"/>
                 </tr>
@@ -179,6 +179,9 @@
 		                <netui:content value="${bundle.web['installClient.linux.version']}"/><br>
 		                <i><netui:content value="${bundle.web['installClient.linux.OS']}"/></i><br>
 		                <netui:content value="${bundle.web['installClient.linux.size']}"/>
+		                
+<br/>Use <a href="<netui-template:attribute name="helpLinkLinux"/>" onClick="return showHelpWindow(this.href);">root / sudo access</a> to install.
+		                
 		            </td>
 		            <td class="transparent-top">
 <div id="allowDownload" style="display:none">		            
