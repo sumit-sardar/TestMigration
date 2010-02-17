@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.PrintWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -516,7 +517,7 @@ public class ContentReviewPageFlowController extends PageFlowController
         return new Forward("login");
     }
 
-    public class UserInfo
+    public class UserInfo implements Serializable
     {
         public String userName;
         public String password;
