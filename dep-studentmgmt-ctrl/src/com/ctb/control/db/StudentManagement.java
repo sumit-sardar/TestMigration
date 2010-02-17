@@ -876,10 +876,10 @@ public interface StudentManagement extends JdbcControl
      * @jc:sql statement::
      * select decode(count(*), 0, 0, 1) from 
      *      student 
-     * where user_name={userName}
+     * where upper(user_name)=upper({userName})
      * ::
      */
-    @JdbcControl.SQL(statement = "select decode(count(*), 0, 0, 1) from  student  where user_name={userName}")
+    @JdbcControl.SQL(statement = "select decode(count(*), 0, 0, 1) from  student  where upper(user_name)=upper({userName})")
     boolean isExistingStudentUserName(String userName) throws SQLException;
 
 
