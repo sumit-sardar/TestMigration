@@ -46,11 +46,11 @@ public class StudentUtils
             	
         } 
         
-        newUserName = new String( firstName.toLowerCase() +
+        newUserName = new String( firstName.toUpperCase() +
         		(middleInitial.length()>0?
-        				middleInitial.toLowerCase() + "-":"")
-        				+ lastName.toLowerCase() +
-        				seqNumber )+suffix;
+        				middleInitial.toUpperCase() + "-":"")
+        				+ lastName.toUpperCase() +
+        				seqNumber )+suffix;   //ISTEP2010CR005 - to generate uppercase for student login id
             
 
       return newUserName ;
