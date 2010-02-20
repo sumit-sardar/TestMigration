@@ -54,6 +54,8 @@ public class TestSession extends CTBBean
     private String enforceBreak;
     //Added for Random Distractor
     private String isRandomize;
+    //added for GACRCT2010CR006-OAS Export Automate
+    private String isTestSessionDataExported ;
     private String timeZone;
     private String updatedBy;
     private Date updatedDateTime;
@@ -522,4 +524,18 @@ public class TestSession extends CTBBean
 	public void setTestCatalogId(Integer testCatalogId) {
 		this.testCatalogId = testCatalogId;
     }
+
+	/**
+	 * @return the isTestSessionDataExported
+	 */
+	public String getIsTestSessionDataExported() {
+		return isTestSessionDataExported;
+	}
+
+	/**
+	 * @param isTestSessionDataExported the isTestSessionDataExported to set
+	 */
+	public void setIsTestSessionDataExported(String isTestSessionDataExported) {
+		this.isTestSessionDataExported = isTestSessionDataExported;
+	}
 } 

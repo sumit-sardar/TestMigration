@@ -194,6 +194,8 @@ public class ScheduleTestController extends PageFlowController
     private static final String RD_YES = "Y";
     private static final String RD_NO = "N";
     
+    private boolean isTestSessionDataExported  = false;
+    
     
     public String [] getFormOptions() {
 		return formOptions;
@@ -1425,7 +1427,8 @@ public class ScheduleTestController extends PageFlowController
                     boolean isProctorRole = this.getRequest().isUserInRole("Proctor");
                     boolean noPermission = isProctorRole || (!this.user.getUserId().equals(this.scheduler.getUserId()) && this.topNodesMap.size() > 1) || foundNonCopyableProctor || (nonEitableStudentCount > studentsLoggedIn);
                     StringBuffer msgBuf = new StringBuffer();
-                    
+                    //added for GACRCT2010CR006-OAS Export Automate
+                    this.isTestSessionDataExported  =  testSession.getIsTestSessionDataExported().equals("T")? true : false;
                     if (this.condition.getHasStudentLoggedIn().booleanValue() || this.condition.getTestSessionExpired().booleanValue() || noPermission)
                     {
                         String previousInfoMsg = (String)this.getRequest().getAttribute("informationMessage");
@@ -1434,10 +1437,14 @@ public class ScheduleTestController extends PageFlowController
                             msgBuf.append(previousInfoMsg).append("<br/>");
                         
                         msgBuf.append(MessageResourceBundle.getMessage("SelectSettings.CertainFieldsUnavailable.Header"));  
-                        
-                        if (this.condition.getTestSessionExpired().booleanValue())
+                        //changes for GACRCT2010CR006-OAS Export Automate
+                        if (this.condition.getTestSessionExpired().booleanValue() && ! this.isTestSessionDataExported)
                         {
                             msgBuf.append(MessageResourceBundle.getMessage("SelectSettings.CertainFieldsUnavailable.TestSessionEnded"));
+                        }
+                        else if (this.condition.getTestSessionExpired().booleanValue() && this.isTestSessionDataExported)
+                        {
+                            msgBuf.append(MessageResourceBundle.getMessage("SelectSettings.CertainFieldsUnavailable.TestSessionExported"));
                         }
                         else if (this.condition.getHasStudentLoggedIn().booleanValue())
                         {
@@ -1454,6 +1461,12 @@ public class ScheduleTestController extends PageFlowController
                     //Change for license
                     this.getSession().setAttribute("displayLicenseBar",
                             new Boolean(productLicenseEnabled));
+                    if (this.condition.getTestSessionExpired().booleanValue() && this.isTestSessionDataExported){
+                    	this.getSession().setAttribute("isTestSessionDataExported",true);
+                    }
+                    else{
+                    	this.getSession().setAttribute("isTestSessionDataExported",false);
+                    }
                 }
 
                 TestProduct testProduct = getTestProduct(tps, productId);
@@ -1493,7 +1506,7 @@ public class ScheduleTestController extends PageFlowController
                 }
             }
             
-            if (this.formList.length <= 1)
+            if (this.formList!= null && this.formList.length <= 1)
                 form.setFormOperand(TestSession.FormAssignment.ROUND_ROBIN);
                 
             if (this.overrideFormAssignment != null)
@@ -1506,7 +1519,7 @@ public class ScheduleTestController extends PageFlowController
                 if (form.getFormOperand() == null)
                     form.setFormOperand(TestSession.FormAssignment.ROUND_ROBIN);
                 String defaultForm = "";
-                if (this.formList.length >= 1)
+                if (this.formList!= null && this.formList.length >= 1)
                     defaultForm = this.formList[0];
                 form.setFormAssigned(defaultForm); 
                 

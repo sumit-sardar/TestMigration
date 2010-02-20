@@ -41,7 +41,7 @@
 <netui-data:getData resultId="licenseAdminConfig" value="${sessionScope.disableAvailableBarSubtest}"/>
 <netui-data:getData resultId="displayLicenseBar" value="${sessionScope.displayLicenseBar}"/>
 <netui-data:getData resultId="licensebarColor" value="${pageFlow.licenseBarColor}"/>
-
+<netui-data:getData resultId="isTestSessionDataExported" value="${sessionScope.isTestSessionDataExported}"/> <!--GACRCT2010CR006 OAS Export Automate-->
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
@@ -380,8 +380,14 @@
         </c:if>    
         <c:if test="${action=='edit'}">
             <ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator, Coordinator">
-                <netui:textBox tagId="endDate" dataSource="actionForm.endDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
-                <a href="#" onclick="showCalendar(document.getElementById('endDate'), document.getElementById('overrideStartDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
+                 <c:if test="${!isTestSessionDataExported}">
+                	<netui:textBox tagId="endDate" dataSource="actionForm.endDate" maxlength="8" styleClass="textFieldDate" onKeyPress="return constrainEnterKeyEvent(event);"/>
+                	<a href="#" onclick="showCalendar(document.getElementById('endDate'), document.getElementById('overrideStartDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
+                 </c:if>  	
+                <c:if test="${isTestSessionDataExported}">
+                    <div class="formValue"><netui:label value="${formData.endDate}" styleClass="formValue"/></div>
+                    <netui:hidden dataSource="actionForm.endDate"/>   
+                </c:if>  
             </ctb:auth>                
             <ctb:auth roles="Proctor">
                 <div class="formValue"><netui:label value="${formData.endDate}" styleClass="formValue"/></div>
