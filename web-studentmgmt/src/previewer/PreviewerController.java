@@ -323,8 +323,8 @@ public class PreviewerController extends PageFlowController
             
         String pageTitle = "Color and Font Preview";
         
-        //changes for defect 62681-- speedValue was missing
-        String loginXML = "<tmssvc_response method=\"login_response\"><login_response restart_number=\"0\" restart_flag=\"false\" lsid=\"1:swirl50346\" tts_speed_value=\"S\" ><status status_code=\"200\"/>" +
+        
+        String loginXML = "<tmssvc_response method=\"login_response\"><login_response restart_number=\"0\" restart_flag=\"false\" lsid=\"1:swirl50346\" ><status status_code=\"200\"/>" +
          "<testing_session_data><cmi.core student_first_name=\"" + this.firstName + "\" student_last_name=\"" + this.lastName + "\"student_middle_name=\"\" student_id=\"12345\" />" +
           "<lms.student.accommodations calculator=\"" + calculator + "\" magnifier=\"" + magnifier + 
           "\" screen_reader=\"" + screenReader + "\" untimed=\"" + untimed + "\" rest_break=\"" + rest_break + "\" highlighter=\"" + highlighter+ 
