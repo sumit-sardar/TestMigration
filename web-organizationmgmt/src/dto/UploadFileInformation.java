@@ -1,5 +1,7 @@
 package dto; 
 
+import com.ctb.util.web.sanitizer.SanitizedFormField;
+
 
 /**
  *@author Tata Consultancy Services
@@ -7,7 +9,7 @@ package dto;
  * recordUploaded,recordFailed and status informations. 
  */
 
-public class UploadFileInformation implements java.io.Serializable{
+public class UploadFileInformation extends SanitizedFormField {
     
         static final long serialVersionUID = 1L;
         

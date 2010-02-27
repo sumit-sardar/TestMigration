@@ -1,19 +1,21 @@
 package dto; 
 
+import java.util.List;
+import java.util.StringTokenizer;
+
+import utils.PermissionsUtils;
+import utils.StringUtils;
+
 import com.ctb.bean.testAdmin.Address;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.Role;
 import com.ctb.bean.testAdmin.User;
-import java.util.List;
-import java.util.StringTokenizer;
-import javax.servlet.http.HttpServletRequest;
-import utils.PermissionsUtils;
-import utils.StringUtils;
+import com.ctb.util.web.sanitizer.SanitizedFormField;
 
 /**
  * UserProfileInformation
  */
-public class UserProfileInformation implements java.io.Serializable
+public class UserProfileInformation extends SanitizedFormField
 { 
     static final long serialVersionUID = 1L;
 

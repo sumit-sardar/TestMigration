@@ -1,9 +1,9 @@
 package data; 
 
 import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
-import java.util.List;
+import com.ctb.util.web.sanitizer.SanitizedFormField;
 
-public class StatePathList implements java.io.Serializable  
+public class StatePathList extends SanitizedFormField  
 { 
     static final long serialVersionUID = 1L;
 
