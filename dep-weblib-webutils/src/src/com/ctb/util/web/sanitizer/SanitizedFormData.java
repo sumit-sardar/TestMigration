@@ -35,14 +35,22 @@ public class SanitizedFormData extends FormData implements java.io.Serializable
                 if(methods[j].getParameterTypes().length == 0 && methodName.startsWith("get") && methods[j].getReturnType() != null) {
                 	if(methods[j].getReturnType().isInstance(new SanitizedFormField())) {
                 		SanitizedFormField formval = (SanitizedFormField) methods[j].invoke(obj, null);
-                		errs.add(validateObject(formval));
+                		if(formval != null) {
+                			errs.add(validateObject(formval));
+                		}
                 	} else if(methods[j].getReturnType().isInstance(new String())) {
                 		String formval = (String) methods[j].invoke(obj, null);
-                		validateString(formval);
+                		if(formval != null) {
+                			validateString(formval);
+                		}
                 	} else if(methods[j].getReturnType().isInstance(new String[0])) {
                 		String[] formvals = (String[]) methods[j].invoke(obj, null);
-                		for(int i=0;i<formvals.length;i++) {
-                			validateString(formvals[i]);
+                		if(formvals != null) {
+                			for(int i=0;i<formvals.length;i++) {
+                				if(formvals[i] != null) {
+                					validateString(formvals[i]);
+                				}
+                			}
                 		}
                 	}
                 } 
