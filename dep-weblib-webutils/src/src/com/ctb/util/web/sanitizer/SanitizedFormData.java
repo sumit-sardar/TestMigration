@@ -29,18 +29,13 @@ public class SanitizedFormData extends FormData implements java.io.Serializable
     private ActionErrors validateRequest(HttpServletRequest request) {
     	ActionErrors errs = new ActionErrors();
 
-    	try {
-			Enumeration<String> params = request.getParameterNames();
-			while(params.hasMoreElements()) {
-				Object obj = request.getParameter(params.nextElement());
-				if(obj != null && obj instanceof String) {
-					validateString((String) obj);
-				}
+		Enumeration<String> params = request.getParameterNames();
+		while(params.hasMoreElements()) {
+			Object obj = request.getParameter(params.nextElement());
+			if(obj != null && obj instanceof String) {
+				validateString((String) obj);
 			}
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        errs.add(e.getMessage(), new ActionError("cannot_validate"));
-	    }
+		}
    
 	    return errs;
     }
