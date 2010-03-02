@@ -2,6 +2,7 @@ package com.ctb.util.web.sanitizer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,7 +20,29 @@ public class SanitizedFormData extends FormData implements java.io.Serializable
 	}
 	
     public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) {
-        return validateObject(this);            
+    	ActionErrors errs = new ActionErrors();
+    	errs.add(validateObject(this));
+    	errs.add(validateRequest(request));
+    	return errs;
+    }
+    
+    private ActionErrors validateRequest(HttpServletRequest request) {
+    	ActionErrors errs = new ActionErrors();
+
+    	try {
+			Enumeration<String> params = request.getParameterNames();
+			while(params.hasMoreElements()) {
+				Object obj = request.getParameter(params.nextElement());
+				if(obj != null && obj instanceof String) {
+					validateString((String) obj);
+				}
+			}
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        errs.add(e.getMessage(), new ActionError("cannot_validate"));
+	    }
+   
+	    return errs;
     }
      
     private ActionErrors validateObject(Object obj) {
