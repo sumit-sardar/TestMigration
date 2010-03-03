@@ -103,6 +103,8 @@ public class SanitizedFormData extends FormData implements java.io.Serializable
                 formval.indexOf("+||+") >= 0 ||
                 formval.indexOf("javascript:") >= 0 ||
                 formval.indexOf("javascript%3A") >= 0 ||
+                formval.indexOf("%3A%2F%2F") >= 0 ||
+                formval.indexOf("://") >= 0 ||
                 formval.matches(".*script.*\\(.*") || 
                 formval.matches(".*<.*script.*>.*"))) {
             throw new RuntimeException("XSS or SQL Injection attack detected!");
