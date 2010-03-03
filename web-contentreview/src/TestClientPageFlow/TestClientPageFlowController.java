@@ -295,10 +295,8 @@ public class TestClientPageFlowController extends PageFlowController
     		
     		if (filename == null || "".equals(filename.trim())) 
     			throw new Exception("No filename in request.");
-    		
-    		//String resourcePath = getSession().getServletContext().getRealPath("resources");    //removed -because not working for .ear files
-    		String resourcePath = getSession().getServletContext().getRealPath("resources");
-    		System.out.println("ResourcePath: "+resourcePath);
+    	//	String resourcePath = getSession().getServletContext().getRealPath("resources");    //removed -because not working for .ear files
+    		String resourcePath = getUserImageFolderPath();
     		String filePath = resourcePath + "/" + filename;
             
             System.out.println("Loading resource: " + filePath);
@@ -333,9 +331,7 @@ public class TestClientPageFlowController extends PageFlowController
         } catch (Exception e) {
             StackTraceElement [] trace = e.getStackTrace();
             StringBuffer sb = new StringBuffer();
-            String err = e.getMessage();
-            System.out.println("Error: " + err);
-            sb.append("\n" + err + "\n");
+            sb.append("\n" + e.getMessage() + "\n");
             for( int i = 0; i < trace.length; i++ ) 
             {
                 sb.append( trace[i].getClassName() + "." + trace[i].getMethodName() + "()  " + trace[i].getFileName() + " line " + trace[i].getLineNumber() + "\n");
