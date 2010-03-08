@@ -382,7 +382,7 @@ public class TestTicketController extends PageFlowController
                 duration = durationMinutes +" minutes";
             String subtestTAC = accessCode;
             if("t".equals(enforceBreaks.toLowerCase())){
-                subtestTAC = testElements[i].getAccessCode().toUpperCase(); 	//Defect- 62682 ISTEP2010CR005 to retrieve accesscode in upper case
+                subtestTAC = testElements[i].getAccessCode().toUpperCase(); //Defect- 62682 ISTEP2010CR005 to retrieve accesscode in upper case
             }
             SubtestVO subtestVO = new SubtestVO(testElements[i].getItemSetId(),
                                                 i+1+"", 
