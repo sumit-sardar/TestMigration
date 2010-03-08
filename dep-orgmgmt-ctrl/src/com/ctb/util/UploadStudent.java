@@ -151,6 +151,10 @@ public class UploadStudent extends BatchProcessor.Process
     //Changed 04/12/2008
     private Node [] detailNodeM = null;
     
+    //Changes for GACRCT2010CR007
+    private boolean disableMandatoryBirthdate = false;
+    
+    boolean checkCustomerConfiguration;
     
     public UploadStudent ( String serverFilePath,String username, 
             InputStream uploadedStream , 
@@ -1027,18 +1031,22 @@ public class UploadStudent extends BatchProcessor.Process
             strCell = getCellValue(cell);
             
             if ( !strCell.equals("")){
+            	//Changes for GACRCT2010CR007.Based on the customer's configuration for Date of Birth Validation is done. 
+            	if(!(strCell == null ||  strCell.equals(""))){
+            		  if ( cellHeader.getStringCellValue().
+                              equals(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH)
+                              && isFutureDate(strCell) ) {
+                                  
+                          logicalErrorList.add(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);
+                          
+                          
+                      }
+            	}
             
-                if ( cellHeader.getStringCellValue().
-                        equals(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH)
-                        && isFutureDate(strCell) ) {
-                            
-                    logicalErrorList.add(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);
-                    
-                    
-                }
+             
                 
                 //For validating combination of question background and font color 
-                else if ( cellHeader.getStringCellValue().
+            else if ( cellHeader.getStringCellValue().
                         equals(CTBConstants.QUESTION_BACKGROUND_COLOR) ) {
                             
                     msBackGroundColor = strCell;  
@@ -1368,8 +1376,21 @@ public class UploadStudent extends BatchProcessor.Process
         
            checkOrgNodeCode = this.uploadDataFile.checkCustomerConfigurationEntries(
                                                 this.customerId,CTBConstants.MATCH_ORG_CODE);
-                                                
-          //Changed 04/12/2008
+           //Changes for GACRCT2010CR007 
+           //Get the customer configuration for Disable Mandatory Birth date
+           checkCustomerConfiguration = this.uploadDataFile.checkCustomerConfigurationEntries(
+        		   								this.customerId,CTBConstants.DISABLE_MANDATORY_BIRTH_DATE);
+           if(checkCustomerConfiguration)
+           {
+        	   String disableMandatoryBirthdateValue = this.uploadDataFile.checkCustomerConfiguration(this.customerId,CTBConstants.DISABLE_MANDATORY_BIRTH_DATE);
+        	   if (disableMandatoryBirthdateValue.equalsIgnoreCase("T"))
+               {
+               	disableMandatoryBirthdate = true; 
+               }
+           }
+           
+                    
+           //Changed 04/12/2008
            this.detailNodeM = this.uploadDataFile.
                                         getUserDataTemplate(this.userName);                                                
         
@@ -1405,15 +1426,22 @@ public class UploadStudent extends BatchProcessor.Process
                 (CTBConstants.REQUIREDFIELD_LAST_NAME)));
         student.setStudentIdNumber2((String)studentDataMap.get(CTBConstants.STUDENT_ID2));
    
-        
         String date = (String)studentDataMap.get(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);
         
-        int month = Integer.parseInt(date.substring(0,2)) - 1;
-        int day = Integer.parseInt(date.substring(3,5));
-      	int year = Integer.parseInt(date.substring(6,10)) - 1900;
-        
-        
-        Date dateOfBirth = new Date(year, month, day );
+        //Changes for GACRCT2010CR007.This helps in setting  null date of birth to the students.
+        Date dateOfBirth = null;
+              
+        if (!(date == null ||  date.equals("")))
+        {
+        	System.out.println("date..." + date);
+	        int month = Integer.parseInt(date.substring(0,2)) - 1;
+	        int day = Integer.parseInt(date.substring(3,5));
+	      	int year = Integer.parseInt(date.substring(6,10)) - 1900;
+	        
+	        
+	        dateOfBirth = new Date(year, month, day );
+	        
+	    }
         student.setBirthDate(dateOfBirth);
         student.setGender(getGender((String)studentDataMap.get(CTBConstants.REQUIREDFIELD_GENDER)));
         student.setGrade(getGradeValue((String)studentDataMap.get(CTBConstants.REQUIREDFIELD_GRADE)));
@@ -2059,7 +2087,7 @@ public class UploadStudent extends BatchProcessor.Process
                         }
                         
                         // check by gender
-                        
+                                               
                         boolean gender = false;
                         
                         if ( studentFileRow[i].getGender() != null ) {
@@ -2072,19 +2100,53 @@ public class UploadStudent extends BatchProcessor.Process
                         // check by date of birth  name 
                         
                         boolean dateOfBirth = false;
+                        Date studentBday = student.getBirthDate();
+                        Date dbDate = studentFileRow[i].getBirthdate();
                         
-                        if ( studentFileRow[i].getBirthdate() != null ) {
-                            
-                            Date dbDate = studentFileRow[i].getBirthdate();
-                            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
-                            String datefromDB   = sdf.format(dbDate);                           
-                            
-                            Date studentBday = student.getBirthDate();
-                            String studentBDate = sdf.format(studentBday);
-                            dateOfBirth = datefromDB.equals(studentBDate);
-                            
-                        }
+                        //Changes for GACRCT2010CR007 . 
+                          
+                        if (studentBday!= null && !studentBday.equals("")) {
+                         
+                              if ( dbDate != null && !dbDate.equals("")) {
+                                     // Update Student
+                            	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+  	                            String datefromDB   = sdf.format(dbDate);                           
+  	                            String studentBDate = sdf.format(studentBday);
+  	                            dateOfBirth = datefromDB.equals(studentBDate);
+                                             
+                             } else {
+                                 
+                            	 dateOfBirth = false;
+                                 
+                             }
+                         
+                        } else {
+                     
+                                 if ( dbDate == null  
+                                         || dbDate.equals("")) {
+                                     
+                                	 dateOfBirth = true;
+                                     
+                                 } else {
+                                     
+                                	 dateOfBirth = false;
+                                     
+                                 }
+                     
+                         }
                         
+                       /* if (!(studentBday == null ||  studentBday.equals("")))
+                        { 
+	                        if ( studentFileRow[i].getBirthdate() != null ) {
+	                            
+	                            //Date dbDate = studentFileRow[i].getBirthdate();
+	                            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+	                            String datefromDB   = sdf.format(dbDate);                           
+	                            String studentBDate = sdf.format(studentBday);
+	                            dateOfBirth = datefromDB.equals(studentBDate);
+	                            
+	                        }
+                        }*/
                         
                         // check middle name,gender and data of birth is true. If true then 
                         // return student Id
@@ -2676,19 +2738,23 @@ public class UploadStudent extends BatchProcessor.Process
                     requiredList.add(CTBConstants.REQUIREDFIELD_LAST_NAME);   
                 } 
                         
-                        
+                       
         /*    }
             
 
             if ( strCell.equals("") || cell.getCellType() == 3 || (cell.getCellType() == 1 
                     && cell.getStringCellValue().trim().equals(""))) {
-       */          
-                 else if ( cellHeader.getStringCellValue().
+       */        
+       //Changes for GACRCT2010CR007 .  
+                
+                 else if(!disableMandatoryBirthdate){
+                	 
+                	 if ( cellHeader.getStringCellValue().
                         equals(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH) ) {
                         
                     requiredList.add(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);   
-                } 
-                        
+                }      
+                 }
                         
       /*      }
             
@@ -2801,15 +2867,16 @@ public class UploadStudent extends BatchProcessor.Process
                     
                 }
                 
-            
-                else if ( cellHeader.getStringCellValue().
+            //Changes for GACRCT2010CR007 .
+                else if (!(strCell == null ||  strCell.equals(""))){ 
+                	if ( cellHeader.getStringCellValue().
                         equals(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH)
                         && !validateDateString(strCell) ) {
                             
                     invalidList.add(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);
                     
-                    
-                }
+                    	}
+                	}
                 //Student accomodation
                 
                 else if ( cellHeader.getStringCellValue().
@@ -4839,7 +4906,7 @@ public class UploadStudent extends BatchProcessor.Process
 
 	    return value;
 	}
-      
+	
       
 } 
 

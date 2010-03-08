@@ -625,7 +625,17 @@ public interface Students extends JdbcControl
 	@JdbcControl.SQL(statement = "update student  set activation_status = 'IN'  where  student_id = {studentId}")
     void deactivateStudent(Integer studentId) throws SQLException;
     
-
+	/**
+     * @jc:sql statement::
+     * select 
+     * 		seq_student_login_id.nextval
+     * from 
+     * 		dual
+     */
+	@JdbcControl.SQL(statement = "select seq_student_login_id.nextval from dual")
+    String getStudentLoginIdSequence() throws SQLException;
+    
+	
     static final long serialVersionUID = 1L;
 
 

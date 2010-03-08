@@ -20,9 +20,10 @@ public class StudentUtils
 	 * @param student
 	 * @return String
 	 */
-    public static String generateBasicStudentUsername(Student student, String suffix)
+    public static String generateBasicStudentUsername(Student student, String suffix, String studentLoginIdSequence)
     {
-        String firstName = convertForUserName( student.getFirstName() );
+        String newUserName = null;
+    	String firstName = convertForUserName( student.getFirstName() );
         String lastName = convertForUserName (student.getLastName() );
         String middleName = convertForUserName (student.getMiddleName() );
         firstName = firstName.length() < 11?firstName:firstName.substring(0,10);
@@ -31,18 +32,28 @@ public class StudentUtils
         lastName = lastName.endsWith("-")?lastName:lastName + "-";
         String middleInitial = middleName.length() > 0?
                 middleName.substring(0,1):"";
-        Date birthdate = (student.getBirthdate() != null) ? student.getBirthdate() : new Date();
+        //GACRCT2010CR007 - changed to concatenate 4 digit sequence number when provide student  date of birth is null.
+        String seqNumber = studentLoginIdSequence ;
+        if(student.getBirthdate() != null) {
+        	
+        	Date birthdate = student.getBirthdate();
+        	String dobDay = 
+                (new SimpleDateFormat( "d")).format( birthdate );
+        	String dobMonth = 
+                (new SimpleDateFormat( "M")).format( birthdate );	
+            seqNumber =
+            	padWithZero( dobMonth ) + padWithZero( dobDay );
+            	
+        } 
         
-        String dobDay = 
-            (new SimpleDateFormat( "d")).format( birthdate );
-        String dobMonth = 
-            (new SimpleDateFormat( "M")).format( birthdate );
-        return new String( firstName.toUpperCase() +
-                (middleInitial.length()>0?
-                   middleInitial.toUpperCase() + "-":"")
-                   + lastName.toUpperCase() +
-                        padWithZero( dobMonth ) +
-                        padWithZero( dobDay ) )+suffix;   //ISTEP2010CR005 - to generate uppercase for student login id
+        newUserName = new String( firstName.toUpperCase() +
+        		(middleInitial.length()>0?
+        				middleInitial.toUpperCase() + "-":"")
+        				+ lastName.toUpperCase() +
+        				seqNumber )+suffix;   //ISTEP2010CR005 - to generate uppercase for student login id
+            
+
+      return newUserName ;
     }
 
     private static String convertForUserName( String inString_ )

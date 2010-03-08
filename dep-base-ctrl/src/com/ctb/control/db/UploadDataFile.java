@@ -1016,4 +1016,17 @@ public interface UploadDataFile extends JdbcControl
      */
 	@JdbcControl.SQL(statement = "  select DT.DATA_FILE  from DATA_FILE_TEMP DT  where DT.DATA_FILE_AUDIT_ID = {dataFileAuditId}")
     Blob getDataFileTemp(Integer dataFileAuditId) throws SQLException;
+	
+	/**
+     * @jc:sql statement::
+     * select cc.default_value
+     * from customer_configuration cc
+     * where cc.customer_id = {customerId}
+     * and cc.customer_configuration_name = {customerConfigurationName}::
+     *
+     */
+	@JdbcControl.SQL(statement = "select cc.default_value from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name = {customerConfigurationName}")
+	String checkCustomerConfiguration(Integer customerId,String customerConfigurationName) throws SQLException;
+    
+
 }

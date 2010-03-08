@@ -1173,8 +1173,13 @@ public class StudentManagementImpl implements StudentManagement, Serializable
             student.setCreatedBy(userId);
             student.setCreatedDateTime(new Date());
             student.setCustomerId(user.getCustomer().getCustomerId());
-
-            String studentUserName = generateUniqueStudentUserName(student);
+            
+            //GACRCT2010CR007 - changed to generate 4 digit sequence number when provide student  date of birth is null.
+            String studentLoginIdSequence = "";
+            if(manageStudent.getBirthDate() == null)
+            	studentLoginIdSequence = students.getStudentLoginIdSequence();
+            
+            String studentUserName = generateUniqueStudentUserName(student, studentLoginIdSequence);
             student.setUserName(studentUserName);
             students.createNewStudent(student);
             
@@ -1234,8 +1239,13 @@ public class StudentManagementImpl implements StudentManagement, Serializable
             student.setCreatedBy(userId);
             student.setCreatedDateTime(new Date());
             student.setCustomerId(user.getCustomer().getCustomerId());
-
-            String studentUserName = generateUniqueStudentUserName(student);
+            
+            //GACRCT2010CR007 - changed to generate 4 digit sequence number when provide student  date of birth is null.
+            String studentLoginIdSequence = "";
+            if(manageStudent.getBirthDate() == null)
+            	studentLoginIdSequence = students.getStudentLoginIdSequence();
+            
+            String studentUserName = generateUniqueStudentUserName(student, studentLoginIdSequence);
             student.setUserName(studentUserName);
             students.createNewStudent(student);
             
@@ -1465,7 +1475,7 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 
                     for (int i=0; i<rosters.length; i++)
                     {
-//                        if ( !"SC".equals(rosters[i].getTestCompletionStatus()) && !"NT".equals(rosters[i].getTestCompletionStatus()))
+                    	//if ( !"SC".equals(rosters[i].getTestCompletionStatus()) && !"NT".equals(rosters[i].getTestCompletionStatus()))
         			    //if has some responses
     					if ((!"SC".equals(rosters[i].getTestCompletionStatus()) && !"NT".equals(rosters[i].getTestCompletionStatus()))
                         || studentManagement.getResponseCountForRoster(rosters[i].getTestRosterId()).intValue() > 0) 
@@ -1481,7 +1491,6 @@ public class StudentManagementImpl implements StudentManagement, Serializable
                 }
             }
 
-//            System.out.println("deleteStatus="+deleteStatus);
 			// end of checking, now perform action based on the deleteStatus
 			if ( deleteStatus == 0 )
 			{
@@ -1535,7 +1544,6 @@ public class StudentManagementImpl implements StudentManagement, Serializable
                 status = DeleteStudentStatus.DELETED;
             }   
             
-//            System.out.println("status="+status);
             return status;      
         } catch (SQLException se) {
             StudentDataDeletionException one = new StudentDataDeletionException("StudentManagementImpl: deleteStudent("+studentId+"): " + se.getMessage());
@@ -1753,14 +1761,14 @@ public class StudentManagementImpl implements StudentManagement, Serializable
     }
       
 
-    private String generateUniqueStudentUserName(Student student) throws SQLException{
+    private String generateUniqueStudentUserName(Student student, String studentLoginIdSequence) throws SQLException{
         
-        String userName = StudentUtils.generateBasicStudentUsername(student, "");
+        String userName = StudentUtils.generateBasicStudentUsername(student, "", studentLoginIdSequence);
         int count = 0;
         while (studentManagement.isExistingStudentUserName(userName)) {
             count++;
             String suffix = "-"+count;
-            userName = StudentUtils.generateBasicStudentUsername(student, suffix);
+            userName = StudentUtils.generateBasicStudentUsername(student, suffix, studentLoginIdSequence);
         }
         return userName;
         
