@@ -2747,13 +2747,13 @@ public class UploadStudent extends BatchProcessor.Process
        */        
        //Changes for GACRCT2010CR007 .  
                 
-                 else if(!disableMandatoryBirthdate){
+                
                 	 
-                	 if ( cellHeader.getStringCellValue().
-                        equals(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH) ) {
-                        
-                    requiredList.add(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);   
-                }      
+                 else if ( cellHeader.getStringCellValue().
+                		 equals(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH) ) {
+                		 if(!disableMandatoryBirthdate){    
+                			 requiredList.add(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);   
+                		 }      
                  }
                         
       /*      }
