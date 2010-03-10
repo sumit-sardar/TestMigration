@@ -743,6 +743,7 @@ public class HomePageController extends PageFlowController
     {
         if (this.reportManager == null)
         {
+        	System.out.println("ViewReports: this.reportManager == null");
         	getLoggedInUserPrincipal();   
             getUserDetails();            
         }
