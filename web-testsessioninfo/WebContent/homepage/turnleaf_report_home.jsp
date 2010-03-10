@@ -46,7 +46,7 @@
     <td class="transparent">Customer Program:</td>
     <td class="transparent">
 <c:if test="${multipleProgram}">    
-        <netui:select tagId="program" optionsDataSource="${requestScope.programList}" dataSource="requestScope.program" onChange="getReportList(); return false;" size="1" style="width:300px"/>
+        <netui:select tagId="program" optionsDataSource="${requestScope.programList}" dataSource="requestScope.program" onChange="getReportList();" size="1" style="width:300px"/>
 </c:if>        
 <c:if test="${! multipleProgram}">    
         <netui:span value="${requestScope.program}"/>
