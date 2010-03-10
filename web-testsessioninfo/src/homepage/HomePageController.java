@@ -790,6 +790,8 @@ public class HomePageController extends PageFlowController
         Integer programId = this.reportManager.setSelectedProgram(programIndex);
         Integer orgNodeId = this.reportManager.setSelectedOrganization(organizationIndex);
         
+System.out.println("programId = " + programId + "       orgNodeId = " + orgNodeId);
+
         List reportList = buildReportList(orgNodeId, programId);
 
         this.getRequest().setAttribute("reportList", reportList);

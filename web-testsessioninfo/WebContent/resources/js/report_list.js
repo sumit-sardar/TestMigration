@@ -26,7 +26,7 @@ function getReportList()
     var callback = processgetReportList;
     executeXhr(callback, url, programIndex, organizationIndex);
 }
-
+ 
 
 /**
  * processgetReportList
