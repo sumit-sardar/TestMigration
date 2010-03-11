@@ -761,6 +761,8 @@ public class HomePageController extends PageFlowController
 
         List reportList = buildReportList(orgNodeId, programId);
         String reportUrl = buildReportUrl(selectedReport, reportList);        
+        System.out.println("Report URL in controller: " + reportUrl);
+        
         
         this.getRequest().setAttribute("reportList", reportList);
         this.getRequest().setAttribute("selectedReport", selectedReport);
