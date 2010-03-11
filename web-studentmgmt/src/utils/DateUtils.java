@@ -380,7 +380,9 @@ public class DateUtils
 
     public static boolean allSelected(String month, String day, String year)
     {
-        if (month.equals("") || day.equals("") || year.equals(""))
+    	if (month == null || day == null || year == null)
+    		return false;
+    	else if (month.equals("") || day.equals("") || year.equals(""))
             return false;
         else
             return true;    
