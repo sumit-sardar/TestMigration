@@ -743,25 +743,17 @@ public class HomePageController extends PageFlowController
     {
         if (this.reportManager == null)
         {
-        	System.out.println("ViewReports: this.reportManager == null");
         	getLoggedInUserPrincipal();   
             getUserDetails();            
-        }else{
-        	System.out.println("this.reportManager.getSelectedProgramId: "+this.reportManager.getSelectedProgramId());
-        	System.out.println("this.reportManager.getSelectedProgramName: "+this.reportManager.getSelectedProgramName());
-        	System.out.println("this.reportManager.getSelectedOrganizationId: "+this.reportManager.getSelectedOrganizationId());
-        	System.out.println("this.reportManager.getSelectedOrganizationName: "+this.reportManager.getSelectedOrganizationName());
         }
         
         String selectedReport = (String)this.getRequest().getParameter("report");
-        System.out.println("selectedReport: "+selectedReport);
         
         Integer programId = this.reportManager.getSelectedProgramId();
         Integer orgNodeId = this.reportManager.getSelectedOrganizationId();
 
         List reportList = buildReportList(orgNodeId, programId);
         String reportUrl = buildReportUrl(selectedReport, reportList);        
-        System.out.println("Report URL in controller: " + reportUrl);
         
         
         this.getRequest().setAttribute("reportList", reportList);
@@ -800,8 +792,8 @@ public class HomePageController extends PageFlowController
         Integer programId = this.reportManager.setSelectedProgram(programIndex);
         Integer orgNodeId = this.reportManager.setSelectedOrganization(organizationIndex);
         
-System.out.println("getReportList:   " + "   programId = " + programId + "       orgNodeId = " + orgNodeId);
-
+        System.out.println(" #####  programId = " + programId + "       orgNodeId = " + orgNodeId);
+        
         List reportList = buildReportList(orgNodeId, programId);
 
         this.getRequest().setAttribute("reportList", reportList);
@@ -815,7 +807,6 @@ System.out.println("getReportList:   " + "   programId = " + programId + "      
      */
     private List buildReportList(Integer orgNodeId, Integer programId)
     {
-System.out.println("buildReportList:   " + "   programId = " + programId + "       orgNodeId = " + orgNodeId);
     	
         this.customerReportData = getCustomerReportData(orgNodeId, programId);
         
@@ -827,9 +818,7 @@ System.out.println("buildReportList:   " + "   programId = " + programId + "    
             CustomerReport cr = crs[i];
             if (! cr.getReportName().equals("IndividualProfile"))
             {
-            	System.out.println("ProgramName = " + cr.getProgramName() + "  ReportName = " + cr.getReportName() + "  ReportUrl = " + cr.getReportUrl());
-            	
-                reportList.add(cr);
+            	reportList.add(cr);
             }
         }           
                          

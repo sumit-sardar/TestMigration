@@ -196,6 +196,10 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
             if(page != null) {
                 pageSize = new Integer(page.getPageSize());
             }
+            
+            System.out.println("Inside Platform orgNodeId: "+orgNodeId + "programId: " +programId);
+//          
+            
 //            Integer [] topOrgNodeIds = orgNode.getTopOrgNodeIdsForUser(userName);
 //            Integer orgNodeId = topOrgNodeIds[0];
             CustomerReport [] cr = reportBridge.getReportAssignmentsForUser(userName, programId, orgNodeId);
