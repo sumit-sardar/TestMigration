@@ -746,9 +746,16 @@ public class HomePageController extends PageFlowController
         	System.out.println("ViewReports: this.reportManager == null");
         	getLoggedInUserPrincipal();   
             getUserDetails();            
+        }else{
+        	System.out.println("this.reportManager.getSelectedProgramId: "+this.reportManager.getSelectedProgramId());
+        	System.out.println("this.reportManager.getSelectedProgramName: "+this.reportManager.getSelectedProgramName());
+        	System.out.println("this.reportManager.getSelectedOrganizationId: "+this.reportManager.getSelectedOrganizationId());
+        	System.out.println("this.reportManager.getSelectedOrganizationName: "+this.reportManager.getSelectedOrganizationName());
         }
         
         String selectedReport = (String)this.getRequest().getParameter("report");
+        System.out.println("selectedReport: "+selectedReport);
+        
         Integer programId = this.reportManager.getSelectedProgramId();
         Integer orgNodeId = this.reportManager.getSelectedOrganizationId();
 
