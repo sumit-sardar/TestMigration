@@ -791,7 +791,7 @@ public class HomePageController extends PageFlowController
         Integer programId = this.reportManager.setSelectedProgram(programIndex);
         Integer orgNodeId = this.reportManager.setSelectedOrganization(organizationIndex);
         
-System.out.println("programId = " + programId + "       orgNodeId = " + orgNodeId);
+System.out.println("getReportList:   " + "   programId = " + programId + "       orgNodeId = " + orgNodeId);
 
         List reportList = buildReportList(orgNodeId, programId);
 
@@ -806,6 +806,8 @@ System.out.println("programId = " + programId + "       orgNodeId = " + orgNodeI
      */
     private List buildReportList(Integer orgNodeId, Integer programId)
     {
+System.out.println("buildReportList:   " + "   programId = " + programId + "       orgNodeId = " + orgNodeId);
+    	
         this.customerReportData = getCustomerReportData(orgNodeId, programId);
         
         List reportList = new ArrayList();
@@ -816,6 +818,8 @@ System.out.println("programId = " + programId + "       orgNodeId = " + orgNodeI
             CustomerReport cr = crs[i];
             if (! cr.getReportName().equals("IndividualProfile"))
             {
+            	System.out.println("ProgramName = " + cr.getProgramName() + "  ReportName = " + cr.getReportName() + "  ReportUrl = " + cr.getReportUrl());
+            	
                 reportList.add(cr);
             }
         }           
