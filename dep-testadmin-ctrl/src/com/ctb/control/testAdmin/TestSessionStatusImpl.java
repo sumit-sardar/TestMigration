@@ -212,7 +212,7 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
                 String paramsPlainText = "NodeInstanceId="+orgNodeId
                     +"&LevelId="+cr[i].getCategoryLevel()+"&Timestamp="+(new Date()).toString();
                 String encryptedParams = DESUtils.encrypt(paramsPlainText, cr[i].getCustomerKey());
-                reportURL = reportURL +"?sys="+encryptedProgramId+"&parms="+encryptedParams;
+                reportURL = reportURL +"?sys="+encryptedProgramId+"&parms="+encryptedParams+"&RunReport=1&GetTestSessionWindow=1";
                 cr[i].setReportUrl(reportURL);
             }
             crd.setCustomerReports(cr, pageSize);
