@@ -764,15 +764,18 @@ public class ManageUploadController extends PageFlowController
                 uploadDownloadManagementServiceControl.setEndPoint(new URL(endpoint));
                 System.out.println("***** Upload App: using service endpoint: " + endpoint);
                 uploadDownloadManagementServiceControl.uploadFile(this.userName, this.fullFilePath, this.uploadFileId);
-            } catch (Exception e) {
+            } catch (com.ctb.webservices.CTBBusinessException e) {
                 DataFileAudit dataFileAudit = new DataFileAudit();
                 dataFileAudit.setStatus("FL");
-               /* try{
+               try{
                     uploadDownloadManagement.updateAuditFileStatus(this.uploadFileId);
                 
                 } catch (Exception se) {
                     se.printStackTrace();
-                }*/
+                }
+                e.printStackTrace();
+                //throw new RuntimeException(e);
+            } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
