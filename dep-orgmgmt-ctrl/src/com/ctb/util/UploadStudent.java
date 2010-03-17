@@ -1032,7 +1032,7 @@ public class UploadStudent extends BatchProcessor.Process
             
             if ( !strCell.equals("")){
             	//Changes for GACRCT2010CR007.Based on the customer's configuration for Date of Birth Validation is done. 
-            	if(!(strCell == null ||  strCell.equals(""))){
+            	if((strCell != null && !strCell.equals(""))){
             		  if ( cellHeader.getStringCellValue().
                               equals(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH)
                               && isFutureDate(strCell) ) {
@@ -1431,10 +1431,9 @@ public class UploadStudent extends BatchProcessor.Process
         //Changes for GACRCT2010CR007.This helps in setting  null date of birth to the students.
         Date dateOfBirth = null;
               
-        if (!(date == null ||  date.equals("")))
+        if (date != null &&  !date.equals(""))
         {
-        	System.out.println("date..." + date);
-	        int month = Integer.parseInt(date.substring(0,2)) - 1;
+        	int month = Integer.parseInt(date.substring(0,2)) - 1;
 	        int day = Integer.parseInt(date.substring(3,5));
 	      	int year = Integer.parseInt(date.substring(6,10)) - 1900;
 	        
