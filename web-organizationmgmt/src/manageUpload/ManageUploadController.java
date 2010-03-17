@@ -758,26 +758,32 @@ public class ManageUploadController extends PageFlowController
         }
         
         public void run() {
-            try {
-                System.out.println("***** Upload App: invoking process service: " + this.userName + " : " + saveFileName);
-                String endpoint = this.instanceURL + "/platform-webservices/UploadDownloadManagement";
-                uploadDownloadManagementServiceControl.setEndPoint(new URL(endpoint));
-                System.out.println("***** Upload App: using service endpoint: " + endpoint);
-                uploadDownloadManagementServiceControl.uploadFile(this.userName, this.fullFilePath, this.uploadFileId);
-            } catch (com.ctb.webservices.CTBBusinessException e) {
-                DataFileAudit dataFileAudit = new DataFileAudit();
-                dataFileAudit.setStatus("FL");
-               try{
-                    uploadDownloadManagement.updateAuditFileStatus(this.uploadFileId);
-                
-                } catch (Exception se) {
-                    se.printStackTrace();
-                }
-                e.printStackTrace();
-                //throw new RuntimeException(e);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
+            invokeService(this.userName, this.fullFilePath, this.uploadFileId, this.instanceURL, 1);
+        }
+    }
+    
+    private void invokeService(String userName, String fullFilePath, Integer uploadFileId, String instanceURL, int trycount) {
+    	try {
+            System.out.println("***** Upload App: invoking process service: " + this.userName + " : " + saveFileName);
+            String endpoint = instanceURL + "/platform-webservices/UploadDownloadManagement";
+            uploadDownloadManagementServiceControl.setEndPoint(new URL(endpoint));
+            System.out.println("***** Upload App: using service endpoint: " + endpoint);
+            uploadDownloadManagementServiceControl.uploadFile(this.userName, fullFilePath, uploadFileId);
+        } catch (com.ctb.webservices.CTBBusinessException e) {
+            DataFileAudit dataFileAudit = new DataFileAudit();
+            dataFileAudit.setStatus("FL");
+            try{
+                uploadDownloadManagement.updateAuditFileStatus(uploadFileId);
+            } catch (Exception se) {
+                se.printStackTrace();
+            }
+        } catch (Exception e) {
+            if(trycount < 5 && "getMethodName".equals(e.getStackTrace()[0].getMethodName())) {
+            	System.out.println("***** Service invocation failed, trying again - " + trycount);
+            	invokeService(userName, fullFilePath, uploadFileId, instanceURL, trycount++);
+            } else {
+            	e.printStackTrace();
+            	throw new RuntimeException(e);
             }
         }
     }
