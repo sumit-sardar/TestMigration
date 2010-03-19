@@ -2461,6 +2461,11 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
      public RosterElement addStudentToSession(String userName, com.ctb.bean.testAdmin.SessionStudent sessionStudent, Integer testAdminId)throws com.ctb.exception.CTBBusinessException
      {       
         validator.validate(userName,testAdminId,"addStudentToSession");
+        
+        UserTransaction userTrans = null;
+    	boolean transanctionFlag = false;
+        RosterElement roster = new RosterElement(); 
+        
         try{  
             TestSession testSession = admins.getTestAdminDetails(testAdminId);
             Integer userId = users.getUserIdForName(userName);
@@ -2468,7 +2473,10 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
             String defaultCustomerFlagStatus = customerConfigurations.getDefaulCustomerFlagStatus(customerId);
             String form = testSession.getFormAssignmentMethod();
             Integer productId = testSession.getProductId();
-            RosterElement roster = new RosterElement();            
+                       
+            userTrans = getTransaction();
+			userTrans.begin();
+            
             if(sessionStudent != null){                       
                 Student student =(Student) sessionStudent;
                 Integer studentId = student.getStudentId();  
@@ -2553,7 +2561,13 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
                     }                    
                 }      */          
                 return roster;
-        } catch (SQLException se) {
+        } catch (Exception se) {
+        	transanctionFlag = true;
+        	try {
+        		userTrans.rollback();
+        	}catch (Exception e1){
+        		e1.printStackTrace();
+        	}
             CTBBusinessException ctbe = null;
             String message = se.getMessage();
             if(message.indexOf("Insufficient available license quantity") >=0) {
@@ -2563,7 +2577,14 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
                 ctbe.setStackTrace(se.getStackTrace());
             }
             throw ctbe;
-        }        
+        }
+        finally{
+			try {
+				closeTransaction(userTrans,transanctionFlag);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
      } 
  
     /**
