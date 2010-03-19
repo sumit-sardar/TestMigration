@@ -81,6 +81,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
 import org.apache.beehive.controls.api.bean.ControlImplementation;
+import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
 
 /**
  * Platform control provides functions related to test session
@@ -1523,11 +1525,19 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
     
 
     private Integer writeTestSession(String userName, ScheduledSession newSession) throws CTBBusinessException {
-        try {
+        
+    	UserTransaction userTrans = null;
+    	boolean transanctionFlag = false;
+    	Integer thisTestAdminId = null;
+    	try {
             Integer userId = users.getUserIdForName(userName);
             Integer customerId = users.getCustomerIdForName(userName);
             TestSession session = newSession.getTestSession();
             Integer testAdminId = session.getTestAdminId();
+            
+            userTrans = getTransaction();
+			userTrans.begin();
+			
             if(testAdminId == null) {
                 session.setTestAdminId(createNewTestAdminRecord(userId, customerId, session));
                 ArrayList subtests = createTestAdminItemSetRecords(newSession);
@@ -1539,9 +1549,17 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
                 updateTestRosters(userName, userId, subtests, newSession, session.getItemSetId());
                 updateProctorAssignments(userName, userId, newSession);
             }
-            return session.getTestAdminId();
+            
+            thisTestAdminId = session.getTestAdminId();
+            
         } catch (Exception se) {
-            CTBBusinessException ctbe = null;
+        	transanctionFlag = true;
+        	try {
+        		userTrans.rollback();
+        	}catch (Exception e1){
+        		e1.printStackTrace();
+        	}
+    		CTBBusinessException ctbe = null;
             String message = se.getMessage();
             if(message.indexOf("Insufficient available license quantity") >=0) {
                 ctbe = new InsufficientLicenseQuantityException("Insufficient available license quantity");
@@ -1551,6 +1569,17 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
             }
             throw ctbe;
         }
+        finally{
+
+			try {
+				System.out.println("finally");
+				closeTransaction(userTrans,transanctionFlag);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+        return thisTestAdminId;
     }
 
     private Integer createNewTestAdminRecord(Integer userId, Integer customerId, TestSession session) throws SessionCreationException,com.ctb.exception.CTBBusinessException {
@@ -2895,4 +2924,62 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
         }
         return orderedSubtests;
     }
+    
+    
+    /**
+	 * This method return UserTransaction instance
+	 * @return UserTransaction
+	 */
+
+    private UserTransaction getTransaction() {
+
+		UserTransaction userTransaction = null;
+		try {
+
+			InitialContext init = new InitialContext ();
+			userTransaction = (UserTransaction)init.lookup("javax.transaction.UserTransaction");
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+		}
+
+		return userTransaction;
+	}
+
+	/**
+	 * This method is used to close the transaction
+	 * @param userTransaction
+	 */
+
+    private void closeTransaction (UserTransaction userTransaction, boolean flag) {
+
+		try {
+
+			System.out.println("Close transaction");
+			if(userTransaction != null && !flag) {
+				System.out.println("Commit transaction");
+				userTransaction.commit();
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+			try {
+				if(userTransaction != null) {
+
+					userTransaction.rollback();
+				System.out.println("Rollback transaction");
+				}
+			} catch (Exception e1) {
+
+				e1.printStackTrace();
+
+			}
+
+		} 
+
+	}
+    
 } 
