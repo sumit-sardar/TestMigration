@@ -639,15 +639,29 @@ public class StudentLoginImpl implements StudentLogin, Serializable
         response.addNewManifest();
         Manifest manifest = response.getManifest();
         String isUltimateAccessCode = authenticator.isUltimateAccessCode(new Integer(testRosterId), new Integer(testAdminId), accessCode);
+        
+        if(response.getRestartFlag() && "T".equals(isUltimateAccessCode)) {
+	        ArrayList a = new ArrayList();
+	        for(int i=0;i<manifestData.length;i++) {
+	        	ManifestData data = manifestData[i];
+	        	if(Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(data.getCompletionStatus())){
+	        		continue;
+	        	}else{
+	        		a.add(data);
+	        	}
+	        }
+	        manifestData = (ManifestData [])a.toArray();
+        }
+        
         for(int i=0;i<manifestData.length;i++) {
         	ManifestData data = manifestData[i];
-        	if(response.getRestartFlag() && "T".equals(isUltimateAccessCode) 
+        /*	if(response.getRestartFlag() && "T".equals(isUltimateAccessCode) 
         				&& Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(data.getCompletionStatus())){
 	            System.out.println("***** In If");
 	            System.out.println("RestartFlag: "+response.getRestartFlag()+", isUltimateAccessCode: "
 	            			+isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
         		continue;
-        	}else{
+        	}else{*/
         		System.out.println("***** In Else");
         		System.out.println("RestartFlag: "+response.getRestartFlag()+", isUltimateAccessCode: "
 	            			+isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
@@ -679,7 +693,7 @@ public class StudentLoginImpl implements StudentLogin, Serializable
 	            int minutes = (int) Math.floor((data.getTotalTime() - (hours * 3600)) / 60);
 	            int seconds = data.getTotalTime() - (hours * 3600) - (minutes * 60);
 	            sco.setCmiCoreTotalTime(hours + ":" + minutes + ":" + seconds);
-        	}
+        	//}
         }
         //AuthenticateStudent authenticator = authenticatorFactory.create();
         if("T".equals(isUltimateAccessCode)) {
