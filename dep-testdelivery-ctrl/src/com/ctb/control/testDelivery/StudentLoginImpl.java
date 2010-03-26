@@ -650,7 +650,10 @@ public class StudentLoginImpl implements StudentLogin, Serializable
 	        		a.add(data);
 	        	}
 	        }
-	        manifestData = (ManifestData [])a.toArray();
+	        
+	        manifestData = new ManifestData[a.size()];
+	        a.toArray(manifestData);
+	       // manifestData = (ManifestData [])a.toArray();
         }
         
         for(int i=0;i<manifestData.length;i++) {
