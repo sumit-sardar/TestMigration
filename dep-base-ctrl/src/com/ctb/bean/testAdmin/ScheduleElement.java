@@ -17,6 +17,7 @@ public class ScheduleElement extends CTBBean
      private String tested;
      private String itemSetForm;
      private String sessionDefault;
+     private String itemSetName;
     
      /**
  	 * @return Returns the itemSetForm.
@@ -30,6 +31,20 @@ public class ScheduleElement extends CTBBean
 	public void setItemSetForm(String itemSetForm) {
 		this.itemSetForm = itemSetForm;
 	}
+	
+	/**
+ 	 * @return Returns the itemSetForm.
+ 	 */
+    public String getItemSetName() {
+		return itemSetName;
+	}
+    /**
+	 * @param itemSetForm The itemSetForm to set.
+	 */
+	public void setItemSetName(String itemSetName) {
+		this.itemSetName = itemSetName;
+	}
+	
 	/**
 	 * @return Returns the tested.
 	 */

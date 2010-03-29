@@ -27,7 +27,15 @@ public class StudentSessionStatus extends CTBBean
     private Integer unscored;	
     private String recommendedLevel;
     private String customerFlagStatus;
-    	
+    private String itemSetName;
+    private String totalItem;
+    private String itemAnswered;
+    private String timeSpent;
+    private String studentName;
+    private String studentLoginName;
+    private String studentId;
+    private String org_name;
+    
     
     /**
 	 * @return Returns the maxScore.
@@ -40,6 +48,54 @@ public class StudentSessionStatus extends CTBBean
 	 */
 	public void setMaxScore(Integer maxScore) {
 		this.maxScore = maxScore;
+	}
+	/**
+	 * @return Returns the itemSetName.
+	 */  
+	public String getItemSetName() {
+		return itemSetName;
+	}
+	/**
+	 * @param itemSetName The itemSetName to set.
+	 */
+	public void setItemSetName(String itemSetName) {
+		this.itemSetName = itemSetName;
+	}
+	/**
+	 * @return Returns the itemAnswered.
+	 */  
+	public String getTotalItem() {
+		return totalItem;
+	}
+	/**
+	 * @param itemAnswered The itemAnswered to set.
+	 */
+	public void setTotalItem(String totalItem) {
+		this.totalItem = totalItem;
+	}
+	/**
+	 * @return Returns the itemAnswered.
+	 */  
+	public String getItemAnswered() {
+		return itemAnswered;
+	}
+	/**
+	 * @param itemAnswered The itemAnswered to set.
+	 */
+	public void setItemAnswered(String itemAnswered) {
+		this.itemAnswered = itemAnswered;
+	}
+	/**
+	 * @return Returns the itemAnswered.
+	 */  
+	public String getTimeSpent() {
+		return timeSpent;
+	}
+	/**
+	 * @param timeSpent The timeSpent to set.
+	 */
+	public void setTimeSpent(String timeSpent) {
+		this.timeSpent = timeSpent;
 	}
 	/**
 	 * @return Returns the rawScore.

@@ -635,8 +635,22 @@ public interface Students extends JdbcControl
 	@JdbcControl.SQL(statement = "select seq_student_login_id.nextval from dual")
     String getStudentLoginIdSequence() throws SQLException;
     
+	     
 	
-    static final long serialVersionUID = 1L;
+	@JdbcControl.SQL(statement= " select distinct  stu.student_id as studentId, stu.user_name as userName,  stu.first_name as firstName, stu.middle_name as middleName,  stu.last_name as lastName,   concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as preferredName,  stu.gender as gender, stu.birthdate as birthdate,  stu.grade as grade,  stu.ext_pin1 as extPin1,  stu.ext_pin2 as extPin2, stu.created_by as createdBy, stu.customer_id as customerId from org_node_student ons, student stu, org_node_ancestor ona, user_role urole, users usr where stu.user_name = {studentUserName} and stu.activation_status = 'AC' and stu.student_id = ons.student_id and ons.activation_status = 'AC' and ons.org_node_id = ona.org_node_id and ona.ANCESTOR_ORG_NODE_ID = urole.org_node_id and urole.activation_Status = 'AC' and urole.user_id = usr.user_id and usr.user_name = {loginUserName} ")
+	Student getStudentDetail(String loginUserName,String studentUserName) throws SQLException;
+	
+	/**
+     * @jc:sql statement::
+     * update student
+     *      set active_session = 'F' 
+     * where 
+     *      student_id = {studentId}::
+     */
+	@JdbcControl.SQL(statement = "update student set active_session = 'F' where student_id = {studentId}")
+    void updateStudentActiveSessionFlag ( java.lang.Integer studentId) throws SQLException;
+    
+	static final long serialVersionUID = 1L;
 
 
 }

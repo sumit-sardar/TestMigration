@@ -57,12 +57,9 @@ public interface License extends JdbcControl
      * AND prod.license_enabled = 'T'
      * AND tr.test_admin_id = adm.test_admin_id
      * AND adm.product_id = prod.product_id
-     * AND tr.test_completion_status NOT IN ('NT','SC')
-     * AND exists (select siss.* from item_set iset, student_item_Set_status siss
-     *  where iset.sample = 'F' and iset.item_set_level != 'L' and iset.item_Set_id = siss.item_set_id and siss.test_Roster_id = tr.test_roster_id
-     *  and siss.completion_status not in ('SC', 'NT'))::
+     * AND tr.test_completion_status NOT IN ('NT','SC')::
      */
-    @JdbcControl.SQL(statement = "SELECT COUNT(tr.test_roster_id)  FROM  test_roster tr, org_node_ancestor ona, test_admin adm, product prod  WHERE tr.org_node_id = ona.org_node_id AND ona.ancestor_org_node_id = {orgId} AND (prod.product_id = {productId} OR prod.parent_product_id = {productId}) AND prod.license_enabled = 'T' AND tr.test_admin_id = adm.test_admin_id AND adm.product_id = prod.product_id AND tr.test_completion_status NOT IN ('NT','SC') AND exists (select siss.* from item_set iset, student_item_Set_status siss where iset.sample = 'F' and iset.item_set_level != 'L' and iset.item_Set_id = siss.item_set_id and siss.test_Roster_id = tr.test_roster_id and siss.completion_status not in ('SC', 'NT'))")
+    @JdbcControl.SQL(statement = "SELECT COUNT(tr.test_roster_id)  FROM  test_roster tr, org_node_ancestor ona, test_admin adm, product prod  WHERE tr.org_node_id = ona.org_node_id AND ona.ancestor_org_node_id = {orgId} AND (prod.product_id = {productId} OR prod.parent_product_id = {productId}) AND prod.license_enabled = 'T' AND tr.test_admin_id = adm.test_admin_id AND adm.product_id = prod.product_id AND tr.test_completion_status NOT IN ('NT','SC')")
     Integer getConsumedQuantityForOrgByRoster(Integer orgId, Integer productId) throws SQLException;
 
     /**
@@ -80,11 +77,9 @@ public interface License extends JdbcControl
      * AND prod.license_enabled = 'T'
      * AND tr.test_admin_id = adm.test_admin_id
      * AND adm.product_id = prod.product_id
-     * AND (TR.test_completion_status = 'SC' OR (TR.test_completion_Status in ('IP', 'IN', 'IS') and not exists (select siss.* from item_set iset, student_item_Set_status siss
-     *  where iset.sample = 'F' and iset.item_set_level != 'L' and iset.item_Set_id = siss.item_set_id and siss.test_Roster_id = tr.test_roster_id
-     *  and siss.completion_status not in ('SC', 'NT'))))::
+     * AND tr.test_completion_status ='SC'::
      */
-    @JdbcControl.SQL(statement = "SELECT COUNT(tr.test_roster_id) FROM  test_roster tr, org_node_ancestor ona, test_admin adm, product prod WHERE tr.org_node_id = ona.org_node_id AND ona.ancestor_org_node_id = {orgId} AND (prod.product_id = {productId} OR prod.parent_product_id = {productId}) AND prod.license_enabled = 'T' AND tr.test_admin_id = adm.test_admin_id AND adm.product_id = prod.product_id AND (TR.test_completion_status = 'SC' OR (TR.test_completion_Status in ('IP', 'IN', 'IS') and not exists (select siss.* from item_set iset, student_item_Set_status siss where iset.sample = 'F' and iset.item_set_level != 'L' and iset.item_Set_id = siss.item_set_id and siss.test_Roster_id = tr.test_roster_id and siss.completion_status not in ('SC', 'NT'))))")
+    @JdbcControl.SQL(statement = "SELECT COUNT(tr.test_roster_id) FROM  test_roster tr, org_node_ancestor ona, test_admin adm, product prod WHERE tr.org_node_id = ona.org_node_id AND ona.ancestor_org_node_id = {orgId} AND (prod.product_id = {productId} OR prod.parent_product_id = {productId}) AND prod.license_enabled = 'T' AND tr.test_admin_id = adm.test_admin_id AND adm.product_id = prod.product_id AND tr.test_completion_status ='SC'")
     Integer getReservedQuantityForOrgByRoster(Integer orgId, Integer productId) throws SQLException;
 
     /**
