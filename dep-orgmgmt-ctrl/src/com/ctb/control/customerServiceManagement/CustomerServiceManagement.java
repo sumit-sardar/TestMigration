@@ -17,4 +17,8 @@ public interface CustomerServiceManagement {
 	com.ctb.bean.testAdmin.TestSessionData getStudentTestSessionData(java.lang.String loginUserName,java.lang.Integer studentId, String  accessCode, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException;
 	
 	com.ctb.bean.testAdmin.StudentSessionStatusData getSubtestListForStudent(java.lang.Integer rosterId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException;
+	
+	com.ctb.bean.testAdmin.ScheduleElementData   getSubTestListForTestSession(java.lang.String loginUserName,java.lang.String accessCode) throws CTBBusinessException ;
+	com.ctb.bean.testAdmin.StudentSessionStatusData getStudentListForSubTest(java.lang.Integer testAdminId, java.lang.Integer itemSetId,FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException;
+	
 }

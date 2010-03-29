@@ -9,12 +9,13 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.ScheduleElement;
+import com.ctb.bean.testAdmin.ScheduleElementData;
 import com.ctb.bean.testAdmin.Student;
+import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
-import com.ctb.bean.testAdmin.ScheduleElement;
-import com.ctb.bean.testAdmin.ScheduleElementData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.customerServiceManagement.StudentDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
@@ -62,9 +63,15 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 	static final long serialVersionUID = 1L;
 
 	/**
-	 * @common:operation
+     * Retrieve Student details
+     * below user's top org node(s). 
+     * @common:operation
+     * @param loginUserName - identifies the user
+     * @param studentUserName - identifies the student
+	 * @return student
 	 * @throws CTBBusinessException
-	 */
+     */
+		
 	public Student getStudentDetail(String loginUserName,String studentUserName) throws CTBBusinessException {
 
 		Student student = null;
@@ -85,6 +92,19 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		return student;
 	}
 
+	/**
+     * Retrieve test session details
+     * below user's top org node(s). 
+     * @common:operation
+     * @param loginUserName - identifies the user
+     * @param studentId - identifies the student
+     * @param accessCode- identifies the testadmin
+      * @param filter - filtering params
+	 * @param page - paging params
+	 * @param sort - sorting params
+	 * @return testSessionData
+	 * @throws CTBBusinessException
+     */
 
 	public TestSessionData getStudentTestSessionData(String loginUserName,
 			Integer studentId, 
@@ -154,8 +174,18 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		return testSessionData;
 	}
 	
-	
-	public StudentSessionStatusData getSubtestListForStudent(Integer rosterId, 
+	/**
+     * Retrieve subtest list for student
+     * below user's top org node(s). 
+     * @common:operation
+     * @param rosterId - identifies the subtest
+     * @param filter - filtering params
+	 * @param page - paging params
+	 * @param sort - sorting params
+	 * @return studentSessionStatusData
+	 * @throws CTBBusinessException
+     */
+		public StudentSessionStatusData getSubtestListForStudent(Integer rosterId, 
 			FilterParams filter, 
 			PageParams page, 
 			SortParams sort)
@@ -195,6 +225,19 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 
 		return studentSessionStatusData;
 	}
+		
+		/**
+	     * Retrieve subtest list for test session
+	     * below user's top org node(s). 
+	     * @common:operation
+	     * @param loginUserName - identifies the subtest
+	     * @param accessCode - identifies the accesscode
+	     * @param filter - filtering params
+	     * @param page - paging params
+	     * @param sort - sorting params
+		 * @return scheduleElementData
+		 * @throws CTBBusinessException
+	     */
 	
 	public ScheduleElementData getSubTestListForTestSession(String loginUserName,
 			String accessCode)
@@ -203,7 +246,7 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		ScheduleElementData scheduleElementData = null;
 		
 		try {
-			scheduleElements = testAdminItemSet.getSubTestListForTestSession(accessCode);
+			scheduleElements = testAdminItemSet.getSubTestListForTestSession( accessCode.toUpperCase());
 		} catch(SQLException se){
 			se.printStackTrace();
 			StudentDataNotFoundException studentDataNotFoundException = 
@@ -227,13 +270,23 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 					scheduleElementData = new ScheduleElementData();
 					scheduleElementData.setScheduleElements(scheduleElements, null);
 			} catch (ValidationException ve) {
-	        		
+	        	
+				throw ve;
 	        }
 	    }
 					
 		return scheduleElementData;
 	}
 	
+	/**
+     * Retrieve student list for a subtest
+     * below user's top org node(s). 
+     * @common:operation
+     * @param testAdminId - identifies the testadmin
+     * @param ItemSetId - identifies the itemset
+	 * @return studentSessionStatusData
+	 * @throws CTBBusinessException
+     */
 	public StudentSessionStatusData getStudentListForSubTest(Integer testAdminId, 
 			Integer ItemSetId,
 			FilterParams filter, 
@@ -276,6 +329,18 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		return studentSessionStatusData;
 	}
 	
+	/**
+     * Reopen the subtest
+     * below user's top org node(s). 
+     * @common:operation
+     * @param userId - identifies the user
+     * @param testRosterId - identifies the test roster
+     * @param studentId - identifies the student
+     * @param customerId - identifies the customer
+	 * @return studentSessionStatusData
+	 * @throws CTBBusinessException
+     */
+	
 	public boolean reopenSubtest(Integer userId, Integer testRosterId, 
 			Integer studentId, Integer customerId, 
 			String [] selectedItemSetIds, String [] completionStatus)
@@ -304,6 +369,13 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 	
 		return saveFlag;
 	}
+	
+/**
+ * This is just a private method used to generate the search criteria
+ * @param studentId
+ * @param accessCode
+ * @return
+ */
 
 	
 	private String generateSearchCriteria (Integer studentId,String accessCode) {
@@ -315,7 +387,7 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		}
 		if (accessCode != null &&  !accessCode.trim().equals("")){
 			String studentIdCheck = " and ta.test_admin_id in (select distinct tais.test_admin_id "+
-			" from test_admin_item_set tais where tais.access_code = '" + accessCode + "') ";
+			" from test_admin_item_set tais where tais.access_code = '" + accessCode.toUpperCase() + "') ";
 			findInColumn.append(studentIdCheck);
 		}
 		return findInColumn.toString();
