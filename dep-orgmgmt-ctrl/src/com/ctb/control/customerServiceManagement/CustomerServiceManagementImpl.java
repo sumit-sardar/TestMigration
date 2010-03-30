@@ -248,7 +248,7 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		ScheduleElementData scheduleElementData = null;
 		
 		try {
-			scheduleElements = testAdminItemSet.getSubTestListForTestSession( accessCode.toUpperCase());
+			scheduleElements = testAdminItemSet.getSubTestListForTestSession(accessCode);
 		} catch(SQLException se){
 			se.printStackTrace();
 			StudentDataNotFoundException studentDataNotFoundException = 
@@ -388,7 +388,7 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		}
 		if (accessCode != null &&  !accessCode.trim().equals("")){
 			String studentIdCheck = " and ta.test_admin_id in (select distinct tais.test_admin_id "+
-			" from test_admin_item_set tais where tais.access_code = '" + accessCode.toUpperCase() + "') ";
+			" from test_admin_item_set tais where upper(tais.access_code) = '" + accessCode.toUpperCase() + "') ";
 			findInColumn.append(studentIdCheck);
 		}
 		return findInColumn.toString();
