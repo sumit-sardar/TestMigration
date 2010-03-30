@@ -640,7 +640,7 @@ public class StudentLoginImpl implements StudentLogin, Serializable
         Manifest manifest = response.getManifest();
         String isUltimateAccessCode = authenticator.isUltimateAccessCode(new Integer(testRosterId), new Integer(testAdminId), accessCode);
         
-        if(response.getRestartFlag() && "T".equals(isUltimateAccessCode)) {
+        if(response.getRestartFlag()) {
 	        ArrayList a = new ArrayList();
 	        for(int i=0;i<manifestData.length;i++) {
 	        	ManifestData data = manifestData[i];
