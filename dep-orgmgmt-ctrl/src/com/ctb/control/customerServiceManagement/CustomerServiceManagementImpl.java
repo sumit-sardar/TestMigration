@@ -9,11 +9,13 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.AuditFileReopenSubtest;
 import com.ctb.bean.testAdmin.ScheduleElement;
 import com.ctb.bean.testAdmin.ScheduleElementData;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
+import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.exception.CTBBusinessException;
@@ -341,18 +343,18 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 	 * @throws CTBBusinessException
      */
 	
-	public boolean reopenSubtest(Integer userId, Integer testRosterId, 
-			Integer studentId, Integer customerId, 
-			String [] selectedItemSetIds, String [] completionStatus)
+	public void reopenSubtest(AuditFileReopenSubtest [] auditFileReopenSubtest)
 			throws CTBBusinessException { 
 		
-		boolean saveFlag = false;
-		
 		try {
-			testRoster.updateTestRosterForReopen(testRosterId);
-			students.updateStudentActiveSessionFlag(studentId);
-			
-			saveFlag = true;
+			for(int i=0;i<auditFileReopenSubtest.length;i++) {
+				AuditFileReopenSubtest reopenSubtestInfo = auditFileReopenSubtest[i];
+				testRoster.updateTestRosterForReopen(reopenSubtestInfo.getTestRosterId());
+				students.updateStudentActiveSessionFlag(reopenSubtestInfo.getStudentId());
+				studentItemSetStatus.updateStudentItemSetStatus(reopenSubtestInfo.getTestRosterId(),
+						reopenSubtestInfo.getItemSetTDId());
+				studentItemSetStatus.insertAuditRecordForReopenSubtestData(reopenSubtestInfo);
+			}
 		} catch(SQLException se){
 			se.printStackTrace();
 			StudentDataNotFoundException studentDataNotFoundException = 
@@ -367,7 +369,6 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 			throw studentDataNotFoundException;
 		} 
 	
-		return saveFlag;
 	}
 	
 /**

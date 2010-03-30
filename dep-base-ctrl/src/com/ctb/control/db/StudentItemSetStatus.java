@@ -8,6 +8,7 @@ import com.ctb.bean.testAdmin.SubtestStatusCount;
 import com.ctb.bean.testAdmin.TABERecommendedLevel; 
 import java.sql.SQLException; 
 import org.apache.beehive.controls.api.bean.ControlExtension;
+import com.ctb.bean.testAdmin.AuditFileReopenSubtest;
 
 /** 
  * Defines a new database control. 
@@ -529,23 +530,30 @@ public interface StudentItemSetStatus extends JdbcControl
 	 * 
 	 * For ISTEP CR003
 	 */
-    @JdbcControl.SQL(statement = " select distinct siss.TEST_ROSTER_ID as testRosterId, siss.ITEM_SET_ID as itemSetId, tcsc.test_completion_status_desc as completionStatus, siss.START_DATE_TIME as startDateTime, siss.COMPLETION_DATE_TIME as completionDateTime, siss.VALIDATION_STATUS as validationStatus, siss.VALIDATION_UPDATED_BY as validationUpdatedBy, siss.VALIDATION_UPDATED_DATE_TIME as validationUpdatedDateTime, siss.VALIDATION_UPDATED_NOTE as validationUpdatedNote, siss.TIME_EXPIRED as timeExpired, siss.ITEM_SET_ORDER as itemSetOrder, siss.RAW_SCORE as rawScore, siss.MAX_SCORE as maxScore, siss.UNSCORED as unscored, siss.RECOMMENDED_LEVEL as recommendedLevel, siss.CUSTOMER_FLAG_STATUS as customerFlagStatus, its.item_set_name as itemSetName, (select nvl(sum(max(resp.response_elapsed_time)), 0) from item_response resp where resp.test_roster_id = {testRosterId} and resp.item_set_id = its.item_set_id group by resp.test_roster_id, resp.item_set_id, resp.item_id) as timeSpent, (select  count (isi.item_id) from item_set_item isi where isi.item_set_id = its.item_set_id group by isi.item_set_id) totalItem, (select  count(distinct irs.item_id) from item_response irs where irs.item_set_id = its.item_set_id and irs.test_roster_id = {testRosterId} and irs.response is not null group by irs.test_roster_id, irs.item_set_id) as itemAnswered from student_item_set_status siss, item_set its, test_roster ros, test_completion_status_code tcsc where siss.test_roster_id = ros.test_roster_id and ros.test_roster_id = {testRosterId} and siss.item_set_id = its.item_set_id and siss.completion_status = tcsc.test_completion_status order by siss.item_set_order ")
+    @JdbcControl.SQL(statement = " select distinct siss.TEST_ROSTER_ID as testRosterId, siss.ITEM_SET_ID as itemSetId, tcsc.test_completion_status_desc as completionStatus, siss.START_DATE_TIME as startDateTime, siss.COMPLETION_DATE_TIME as completionDateTime, siss.TIME_EXPIRED as timeExpired, siss.ITEM_SET_ORDER as itemSetOrder, siss.RAW_SCORE as rawScore, siss.MAX_SCORE as maxScore, siss.UNSCORED as unscored, its.item_set_name as itemSetName, (select nvl(sum(max(resp.response_elapsed_time)), 0) from item_response resp where resp.test_roster_id = ros.test_roster_id and resp.item_set_id = its.item_set_id group by resp.test_roster_id, resp.item_set_id, resp.item_id) as timeSpent, (select  count (isi.item_id) from item_set_item isi where isi.item_set_id = its.item_set_id group by isi.item_set_id) totalItem, (select  count(distinct irs.item_id) from item_response irs where irs.item_set_id = its.item_set_id and irs.test_roster_id = ros.test_roster_id and irs.response is not null group by irs.test_roster_id, irs.item_set_id) as itemAnswered from student_item_set_status siss, item_set its, test_roster ros, test_completion_status_code tcsc where siss.test_roster_id = ros.test_roster_id and ros.test_roster_id = {testRosterId} and siss.item_set_id = its.item_set_id and siss.completion_status = tcsc.test_completion_status order by siss.item_set_order ")
 	StudentSessionStatus [] getSubtestListForRoster(Integer testRosterId) throws SQLException;
-    
-    /**
-	 * 
-	 * For ISTEP CR003
-	 */
-	@JdbcControl.SQL(statement ="update student_item_set_status set completion_status = 'IN' where test_roster_id ={testRosterId} and item_set_id in {itemSetIds} ")
-    void updateStudentItemSetStatus(Integer testRosterId,Integer itemSetIds) throws SQLException;
-    
+         
 	/**
 	 * 
 	 * For ISTEP CR003 
 	 * to get student subtestDetails
 	 */
-	@JdbcControl.SQL(statement =" select distinct siss.TEST_ROSTER_ID as testRosterId, siss.ITEM_SET_ID as itemSetId, tcsc.test_completion_status_desc as completionStatus, siss.START_DATE_TIME as startDateTime, siss.COMPLETION_DATE_TIME as completionDateTime, siss.VALIDATION_STATUS as validationStatus, siss.VALIDATION_UPDATED_BY as validationUpdatedBy, siss.VALIDATION_UPDATED_DATE_TIME as validationUpdatedDateTime, siss.VALIDATION_UPDATED_NOTE as validationUpdatedNote, siss.TIME_EXPIRED as timeExpired, siss.ITEM_SET_ORDER as itemSetOrder, siss.RAW_SCORE as rawScore, siss.MAX_SCORE as maxScore, siss.UNSCORED as unscored, siss.RECOMMENDED_LEVEL as recommendedLevel, siss.CUSTOMER_FLAG_STATUS as customerFlagStatus, its.item_set_name as itemSetName, concat(concat(std.last_name, ', '), concat(std.first_name, concat(' ', std.MIDDLE_NAME))) as studentName, std.user_name as studentLoginName, std.ext_pin1 as externalStudentId, std.student_id as studentId , ong.org_node_name as org_name,  (select nvl(sum(max(resp.response_elapsed_time)), 0) from item_response resp where resp.test_roster_id = ros.test_roster_id and resp.item_set_id = its.item_set_id group by resp.test_roster_id, resp.item_set_id, resp.item_id) as timeSpent, (select count(isi.item_id) from item_set_item isi where isi.item_set_id = its.item_set_id group by isi.item_set_id) totalItem, (select count(distinct irs.item_id) from item_response irs where irs.item_set_id = its.item_set_id and irs.test_roster_id = ros.test_roster_id and irs.response is not null group by irs.test_roster_id, irs.item_set_id) as itemAnswered from student_item_set_status siss, item_set its, test_roster ros, test_completion_status_code tcsc, student std, item_set_parent itsp, org_node_student ons, org_node ong where ros.test_admin_id = {testAdminId} and ros.student_id = std.student_id and std.activation_status = 'AC' and std.student_id = ons.student_id and ons.org_node_id = ong.org_node_id and ros.test_roster_id = siss.test_roster_id and siss.item_set_id = itsp.item_set_id and itsp.parent_item_set_id = {itemSetId} and siss.item_set_id = its.item_set_id and siss.completion_status = tcsc.test_completion_status order by siss.item_set_order ")
+	@JdbcControl.SQL(statement =" select distinct siss.TEST_ROSTER_ID as testRosterId, siss.ITEM_SET_ID as itemSetId, tcsc.test_completion_status_desc as completionStatus, siss.START_DATE_TIME as startDateTime, siss.COMPLETION_DATE_TIME as completionDateTime, siss.ITEM_SET_ORDER as itemSetOrder, siss.RAW_SCORE as rawScore, siss.MAX_SCORE as maxScore, siss.UNSCORED as unscored, its.item_set_name as itemSetName, concat(concat(std.last_name, ', '), concat(std.first_name, concat(' ', std.MIDDLE_NAME))) as studentName, std.user_name as studentLoginName, std.ext_pin1 as externalStudentId, std.student_id as studentId , ong.org_node_name as org_name,  (select nvl(sum(max(resp.response_elapsed_time)), 0) from item_response resp where resp.test_roster_id = ros.test_roster_id and resp.item_set_id = its.item_set_id group by resp.test_roster_id, resp.item_set_id, resp.item_id) as timeSpent, (select count(isi.item_id) from item_set_item isi where isi.item_set_id = its.item_set_id group by isi.item_set_id) totalItem, (select count(distinct irs.item_id) from item_response irs where irs.item_set_id = its.item_set_id and irs.test_roster_id = ros.test_roster_id and irs.response is not null group by irs.test_roster_id, irs.item_set_id) as itemAnswered from student_item_set_status siss, item_set its, test_roster ros, test_completion_status_code tcsc, student std, item_set_parent itsp, org_node ong where ros.test_admin_id = {testAdminId} and ros.student_id = std.student_id and std.activation_status = 'AC' and ros.org_node_id = ong.org_node_id and ros.test_roster_id = siss.test_roster_id and siss.item_set_id = itsp.item_set_id and itsp.parent_item_set_id = {itemSetId} and siss.item_set_id = its.item_set_id and siss.completion_status = tcsc.test_completion_status order by std.user_name, siss.item_set_order ")
     StudentSessionStatus [] getRosterListForSubTest(Integer testAdminId, Integer itemSetId) throws SQLException;
+   	
+	/**
+	 * 
+	 * For ISTEP CR003
+	 */
+	@JdbcControl.SQL(statement ="update student_item_set_status set completion_status = 'IN' where test_roster_id = {testRosterId} and item_set_id = {itemSetId} ")
+    void updateStudentItemSetStatus(Integer testRosterId,Integer itemSetId) throws SQLException;
+   	
+	/**
+	 * 
+	 * For ISTEP CR003
+	 */
+	@JdbcControl.SQL(statement =" insert into audit_file_reopen_subtest ( AUDIT_ID, CUSTOMER_ID, ORG_NODE_ID, TEST_ADMIN_ID, STUDENT_ID, TEST_ROSTER_ID, ITEM_SET_TS_ID, ITEM_SET_TD_ID, OLD_ROSTER_COMPLETION_STATUS, NEW_ROSTER_COMPLETION_STATUS, OLD_SUBTEST_COMPLETION_STATUS, NEW_SUBTEST_COMPLETION_STATUS, TICKET_ID, REQUESTOR_NAME, REASON_FOR_REQUEST, CREATED_BY, CREATED_DATE_TIME ) values ( seq_audit_id.nextval, {auditFileReopenSubtest.customerId}, {auditFileReopenSubtest.orgNodeId}, {auditFileReopenSubtest.testAdminId}, {auditFileReopenSubtest.studentId}, {auditFileReopenSubtest.testRosterId}, {auditFileReopenSubtest.itemSetTSId}, {auditFileReopenSubtest.itemSetTDId}, {auditFileReopenSubtest.oldSRosterCompStatus}, {auditFileReopenSubtest.newRosterCompStatus}, {auditFileReopenSubtest.oldSubtestCompStatus}, {auditFileReopenSubtest.newSubtestCompStatus}, {auditFileReopenSubtest.ticketId}, {auditFileReopenSubtest.requestorName}, {auditFileReopenSubtest.reasonForRequest}, {auditFileReopenSubtest.createdBy}, {auditFileReopenSubtest.createdDateTime} ")
+    void insertAuditRecordForReopenSubtestData(AuditFileReopenSubtest auditFileReopenSubtest) throws SQLException;
    	
     static final long serialVersionUID = 1L;
 
