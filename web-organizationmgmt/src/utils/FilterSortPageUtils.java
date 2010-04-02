@@ -60,8 +60,16 @@ public class FilterSortPageUtils
 
     public static final String ASCENDING = "asc";
     public static final String DESCENDING = "desc";
-
+    
+    //sort for ISTEP CR 003
+    
+    public static final String REOPEN_TESTSESSION_DEFAULT_SORT = "TestAdminName";
+    public static final String STUDENT_USER_NAME_DEFAULT_SORT = "StudentName";
+    public static final String SUBTEST_ITEM_SET_ORDER_DEFAULT_SORT = "ItemSetOrder";
+    public static final String SUBTEST_DETAIL_DEFAULT_SORT = "StudentLoginId";
+    
     // Page
+    public static final int PAGESIZE_1 = 1;
     public static final int PAGESIZE_3 = 3;
     public static final int PAGESIZE_5 = 5;
     public static final int PAGESIZE_8 = 8;

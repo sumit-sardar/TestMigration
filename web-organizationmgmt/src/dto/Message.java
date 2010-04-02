@@ -157,6 +157,17 @@ public class Message implements java.io.Serializable
     public static final String FILE_HISTORY_ERROR = "Failed to get the file list.";
     public static final String ERROR_FILE_TITLE = "Failed to get the File";
     
+    //ISTEP CR003
+    public static final String FIND_TEST_SESSION_TITLE      = "Find Test Session";
+    public static final String STUDENT_LOGIN_ID 			= "Student Login";
+    public static final String STUDENT_TEST_ACCESS_CODE 	= "Access Code";
+    public static final String FIND_NO_TESTDATA_RESULT      = "No Test Session found";
+
+    public static final String TEST_ROSTER_UPDATION_TITLE  = "Test Roster Updation";	
+    public static final String TEST_ROSTER_UPDATION_FAILED  = "Test Roster Updation Failed";	
+    public static final String TEST_ROSTER_UPDATION_SUCCESS	= "Test Roster Updated Successfully";
+    public static final String FIND_STUDENT_ERROR			= "Student Not Found";
+
     public Message() {
         this.title = "";
         this.content = "";

@@ -36,6 +36,7 @@ public class StudentSessionStatus extends CTBBean
     private String externalStudentId;
     private Integer studentId;
     private String org_name;
+	private String testAccessCode;
     
     
     /**
@@ -338,6 +339,18 @@ public class StudentSessionStatus extends CTBBean
 	 */
 	public void setExternalStudentId(String externalStudentId) {
 		this.externalStudentId = externalStudentId;
+	} 
+	/**
+     * @return the testAccessCode
+	 */
+	public String getTestAccessCode() {
+		return testAccessCode;
+	}
+	/**
+	 * @param testAccessCode the testAccessCode to set
+	 */
+	public void setTestAccessCode(String testAccessCode) {
+		this.testAccessCode = testAccessCode;
 	}
 
 } 

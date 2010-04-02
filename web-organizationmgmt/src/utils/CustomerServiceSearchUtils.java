@@ -1,0 +1,293 @@
+package utils;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.ctb.bean.request.FilterParams;
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.AuditFileReopenSubtest;
+import com.ctb.bean.testAdmin.ScheduleElement;
+import com.ctb.bean.testAdmin.ScheduleElementData;
+import com.ctb.bean.testAdmin.Student;
+import com.ctb.bean.testAdmin.StudentData;
+import com.ctb.bean.testAdmin.StudentSessionStatus;
+import com.ctb.bean.testAdmin.StudentSessionStatusData;
+import com.ctb.bean.testAdmin.TestSession;
+import com.ctb.bean.testAdmin.TestSessionData;
+import com.ctb.bean.testAdmin.User;
+import com.ctb.control.customerServiceManagement.CustomerServiceManagement;
+import com.ctb.exception.CTBBusinessException;
+import com.ctb.widgets.bean.PagerSummary;
+
+import dto.ScheduleElementVO;
+import dto.StudentProfileInformation;
+import dto.StudentSessionStatusVO;
+import dto.TestSessionVO;
+
+public class CustomerServiceSearchUtils {
+
+	private final static String TIME_FORMAT="hh:mm a";
+	private final static String DATE_FORMAT="MM/dd/yy";
+
+
+	/**
+	 * searchAllUsersAtAndBelow
+	 */    
+	public static Student searchStudentData( 
+			CustomerServiceManagement customerServiceManagement, 
+			String loginUserName, 
+			String studentLoginId) 
+	throws CTBBusinessException {   
+
+
+		Student sData = customerServiceManagement.getStudentDetail(loginUserName, studentLoginId);
+		return sData;
+	}
+
+	public static TestSessionData getStudentTestSessionData(CustomerServiceManagement customerServiceManagement, 
+			String loginUserName, 
+			Integer studentId,
+			Integer customerId,
+			String  accessCode,
+			FilterParams filter, 
+			PageParams page, 
+			SortParams sort
+	) throws CTBBusinessException {   
+
+		TestSessionData testSessionData = customerServiceManagement.getStudentTestSessionData(
+				loginUserName, studentId,accessCode,filter,page,sort);
+		return testSessionData;
+	}
+
+	public static StudentSessionStatusData getSubtestListForStudent(CustomerServiceManagement customerServiceManagement, 
+			Integer rosterId,
+			FilterParams filter,
+			PageParams page, 
+			SortParams sort 
+
+	) throws CTBBusinessException {   
+
+		StudentSessionStatusData statusData = customerServiceManagement.getSubtestListForStudent(
+				rosterId, filter, page, sort);
+		return statusData;
+	}
+
+	public static StudentSessionStatusData getStudentListForSubTest(CustomerServiceManagement customerServiceManagement,
+			Integer testAdminId,
+			Integer itemSetId,
+			FilterParams filter,
+			PageParams page, 
+			SortParams sort 
+	) throws CTBBusinessException {
+		StudentSessionStatusData statusData = customerServiceManagement.getStudentListForSubTest(testAdminId, itemSetId,filter,page,sort);
+		return statusData;
+	}
+
+	/**
+	 * buildOrgNodePagerSummary
+	 */    
+	public static PagerSummary buildTestDataPagerSummary(TestSessionData tsData, 
+			Integer pageRequested) {
+		PagerSummary pagerSummary = new PagerSummary();
+		pagerSummary.setCurrentPage(pageRequested);        
+		pagerSummary.setTotalObjects(tsData.getFilteredCount());
+		pagerSummary.setTotalPages(tsData.getFilteredPages());
+		pagerSummary.setTotalFilteredObjects(null);        
+		return pagerSummary;
+	}
+
+	public static PagerSummary buildSubtestDataPagerSummary(StudentSessionStatusData sstData, 
+			Integer pageRequested) {
+		PagerSummary pagerSummary = new PagerSummary();
+		pagerSummary.setCurrentPage(pageRequested);        
+		pagerSummary.setTotalObjects(sstData.getFilteredCount());
+		pagerSummary.setTotalPages(sstData.getFilteredPages());
+		pagerSummary.setTotalFilteredObjects(null);        
+		return pagerSummary;
+	}
+	
+	/*
+	 * Put all the customer detals in the list
+	 */
+	public static List buildTestSessionList (TestSessionData testSessionData) {
+
+		List testSessionList = new ArrayList();
+		if (testSessionData != null){
+
+			TestSession[] testSessions = testSessionData.getTestSessions();
+
+			if ( testSessions != null) {
+
+				for ( TestSession testSession :  testSessions ) {
+
+					if ( testSession != null && testSession.getTestAdminId() != null) {
+
+						TestSessionVO testSessionDetails =
+							new TestSessionVO(testSession);
+						testSessionList.add(testSessionDetails);                                        
+					}
+				}
+			}
+		}
+		return testSessionList;
+	}
+
+	/*
+	 * Put all the customer detals in the list
+	 */
+	public static List buildTestDeliveritemList (ScheduleElementData scheduleElementData) {
+
+		List testDeliveryitemList = new ArrayList();
+		if (scheduleElementData != null){
+
+			ScheduleElement[] scheduleElements = scheduleElementData.getElements();
+
+			if ( scheduleElements != null) {
+
+				for ( ScheduleElement scheduleElement :  scheduleElements ) {
+
+					if ( scheduleElement != null && scheduleElement.getTestAdminId() != null) {
+
+						ScheduleElementVO testDeliveryItemDetails =
+							new ScheduleElementVO(scheduleElement);
+						testDeliveryitemList.add(testDeliveryItemDetails);                                        
+					}
+				}
+			}
+		}
+		return testDeliveryitemList;
+	}
+
+	/*
+	 * Put all the student detals in the list
+	 */
+	public static List buildStudentList (StudentData studentData) {
+
+		List studentList = new ArrayList();
+		if (studentData != null){
+
+			Student[] students = studentData.getStudents();
+
+			if ( students != null) {
+
+				for ( int i = 0; i < students.length; i++ ) {
+					Student student = students[i];
+
+					if ( student != null && student.getStudentId() != null) {
+
+						StudentProfileInformation studentDetails =
+							new StudentProfileInformation(student);
+						studentList.add(studentDetails);                                      
+					}
+				}
+			}
+		}
+		return studentList;
+	}
+
+	public static ScheduleElementData getTestDeliveryDataInTestSession( CustomerServiceManagement customerServiceManagement, 
+			String loginUserName,String testAccessCode
+	) throws CTBBusinessException {   
+
+		ScheduleElementData scheduleElementData = 
+			customerServiceManagement.getSubTestListForTestSession(loginUserName,testAccessCode);
+		return scheduleElementData;
+	}
+
+
+	/*
+	 * Put all the subtest details in the list
+	 */
+	public static List buildSubtestList (StudentSessionStatusData statusData,String timeZone) {
+		List subtestList = new ArrayList();
+		if (statusData != null){
+
+			StudentSessionStatus[] subtests = statusData.getStudentSessionStatuses();
+
+			if ( subtests != null) {
+
+				for ( StudentSessionStatus subtest :  subtests ) {
+
+					if ( subtest != null && subtest.getItemSetId() != null) {
+
+						StudentSessionStatusVO subtestDetails =
+							new StudentSessionStatusVO(subtest);
+						if(subtest.getCompletionDateTime() != null) {
+							subtestDetails.setCompletionDateTime(
+									getAdjustedDateTime(subtest.getCompletionDateTime(),timeZone));
+						}
+						if(subtest.getCompletionDateTime() != null) {
+							subtestDetails.setStartDateTime(
+									getAdjustedDateTime(subtest.getStartDateTime(),timeZone));
+						}
+
+						subtestList.add(subtestDetails);                                        
+					}
+				}
+			}
+		}
+		return subtestList;
+	}
+
+	public   static   void  reOpenSubtest( CustomerServiceManagement customerServiceManagement,
+			User user, String requestDescription, String serviceRequestor, String ticketId,
+			Integer testAdminId, Integer customerId, List studentTestStatusDetailsList, 
+			Integer itemTsSetId, Integer creatorOrgId, Integer studentId) 
+	throws  CTBBusinessException {
+
+		if  (studentTestStatusDetailsList != null  && studentTestStatusDetailsList.size() > 0) {
+			AuditFileReopenSubtest[] auditFileReopenSubtestArray = new  
+			AuditFileReopenSubtest[studentTestStatusDetailsList.size()];
+			for  ( int  i = 0 ; i < studentTestStatusDetailsList.size() ; i++) {
+
+				StudentSessionStatusVO studentSessionStatusVO = 
+					(StudentSessionStatusVO)studentTestStatusDetailsList.get(i);
+				AuditFileReopenSubtest auditFileReopenSubtest = new  AuditFileReopenSubtest();
+
+				auditFileReopenSubtest.setTestRosterId(studentSessionStatusVO.getTestRosterId());
+				auditFileReopenSubtest.setNewRosterCompStatus( "IN" );
+				auditFileReopenSubtest.setNewRosterCompStatus( "IN" );
+				auditFileReopenSubtest.setNewSubtestCompStatus( "IN" );
+				//issue
+				auditFileReopenSubtest.
+				setOldSRosterCompStatus(FilterSortPageUtils. testStatus_StringToCode (studentSessionStatusVO.getCompletionStatus()));
+				auditFileReopenSubtest.setOldSubtestCompStatus(
+						FilterSortPageUtils. testStatus_StringToCode (studentSessionStatusVO.getCompletionStatus()));
+
+				auditFileReopenSubtest.setItemSetTDId(studentSessionStatusVO.getItemSetId());
+				auditFileReopenSubtest.setItemSetTSId(Integer. valueOf (itemTsSetId));
+				auditFileReopenSubtest.setCreatedBy(user.getUserId());
+
+				auditFileReopenSubtest.setCreatedDateTime( new  Date());
+				auditFileReopenSubtest.setCustomerId(customerId);
+				auditFileReopenSubtest.setReasonForRequest(requestDescription);
+				auditFileReopenSubtest.setRequestorName(serviceRequestor);
+				if (studentSessionStatusVO.getStudentId() != null) {//condition true for test session
+					
+					auditFileReopenSubtest.setStudentId(studentSessionStatusVO.getStudentId());
+				} else {
+					auditFileReopenSubtest.setStudentId(studentId);
+				}
+				
+				auditFileReopenSubtest.setTestAdminId(testAdminId);
+				auditFileReopenSubtest.setTicketId(ticketId);
+				auditFileReopenSubtest.setOrgNodeId(creatorOrgId);
+
+				auditFileReopenSubtestArray[i] = auditFileReopenSubtest;
+			}
+			customerServiceManagement.reopenSubtest(auditFileReopenSubtestArray);
+
+		}
+	}
+
+
+	public static String getAdjustedDateTime(Date getStartDateTime,String userTimeZone) {
+
+		Date adjStartDate = com.ctb.util.DateUtils.getAdjustedDate(getStartDateTime, "GMT", userTimeZone, getStartDateTime);
+		String startDate = DateUtils.formatDateToDateString(adjStartDate,DATE_FORMAT);
+		String startTime = DateUtils.formatDateToTimeString(adjStartDate);                                
+		return startDate + " " + startTime	;	
+	}	
+}
