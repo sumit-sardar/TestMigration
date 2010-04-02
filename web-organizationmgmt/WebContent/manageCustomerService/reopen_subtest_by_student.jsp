@@ -18,11 +18,11 @@
 	</tr>
 	<tr class="sortable">
 		<td class="sortable">
-			<b>Step1:</b> Specify student login (required) and test access code (optional) and click <b>Search</b> button
+			<b>Step1:</b> Specify student login (required) and test access code (optional) and click <b>Search</b>. 
 			<BR/>
 			<table class="tableFilter">
 				<tr class="tableFilter">
-					<td class="tableFilter" width="100" align="right">* Student Login:</td>
+					<td class="tableFilter" width="100" align="right"><span class="asterisk">*</span>&nbsp;Student Login:</td>
 					<td class="tableFilter" width="*"><netui:textBox tagId="studentLogin"
 						dataSource="actionForm.studentProfile.studentLoginId" tabindex="1" /></td>
 				</tr>
@@ -40,7 +40,7 @@
 
 		<!--START: Test session search result --> 
 		<c:if test="${pageFlow.testSessionList != null}">
-			<b>Step 2:</b> Select a test session to view its contents
+			<b>Step 2:</b> Select a test session to view its sections
 		<BR />
 			<BR />
 			<table class="sortable">
@@ -107,7 +107,7 @@
 			<a name="subtestSearchResult"></a>
 			<BR/>
 			<BR/>
-				<b>Step 3:</b> Select the subtest which you want to reset its status
+				<b>Step 3:</b> Select a section to reset.
 			<BR/>
 			<BR/>
 			<table class="sortable">
@@ -119,8 +119,8 @@
 							<ctb:tableSortColumnGroup columnDataSource="actionForm.subtestSortColumn"
 								orderByDataSource="actionForm.subtestSortOrderBy" anchorName="subtestSearchResult">
 								<th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['common.column.select']}" /></th>
-								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ItemSetName">Subtest Name</ctb:tableSortColumn></th>
-								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Subtest Status</ctb:tableSortColumn></th>
+								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn></th>
+								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StartDateTime">Start Date</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionDateTime">Completion Date</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ItemsAnswered">Items Answered</ctb:tableSortColumn></th>
@@ -171,7 +171,7 @@
 			<a name="subtestDetailsResult"></a>
 			<BR/>
 			<BR/>
-				<b>Step 4:</b> Provide request information, confirm the data, and click <b>Reset</b> button to reset its status
+				<b>Step 4:</b> Provide reset request information. Enter a brief description of the reason for the request to reset.
 			<BR/>
 			<BR/>
 			<table class="sortable">
@@ -206,7 +206,7 @@
 							<td class="tableFilter" valign="top">
 								<table class="tableFilter">
 									<tr class="tableFilter">
-										<td class="tableFilter" width="100" align="left">Request Description:</td>
+										<td class="tableFilter" width="100" align="left">Reason for reset:</td>
 										<td class="tableFilter" rowspan="3" width="*" valign="top">
 											<netui:textArea tagId="requestDescription" rows="3"
 												cols="70" dataSource="actionForm.requestDescription" />
@@ -226,7 +226,7 @@
 				<tr class="sortable">
 					<th class="sortable alignLeft" nowrap>&nbsp;&nbsp;<netui:content value="Student" /></th>
 					<th class="sortable alignLeft" nowrap>&nbsp;&nbsp;<netui:content value="Test Session" /></th>
-					<th class="sortable alignLeft" nowrap>&nbsp;&nbsp;<netui:content value="Subtest" /></th>
+					<th class="sortable alignLeft" nowrap>&nbsp;&nbsp;<netui:content value="Section" /></th>
 				</tr>
 				</netui-data:repeaterHeader>
 				<netui-data:repeaterItem>

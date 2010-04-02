@@ -17,11 +17,11 @@
 	</tr>
 	<tr class="sortable">
 		<td class="sortable" align="left">
-		<b>Step1:</b> Specify access code and click <b>Search</b> button
+		<b>Step1:</b> Specify a test access code and click <b>Search</b>.
 		<BR />
 			<table class="tableFilter">
 				<tr class="tableFilter">
-					<td class="tableFilter" align="left">Access Code:</td>
+					<td class="tableFilter" align="left"><span class="asterisk">*</span>&nbsp;Access Code:</td>
 					<td class="tableFilter" align="left"><netui:textBox tagId="accessCode" dataSource="actionForm.testAccessCode"
 						tabindex="1" maxlength="32" /></td>
 					<td class="tableFilter" width="*" align="left"><netui:button styleClass="button" value="Search" type="submit"
@@ -32,7 +32,7 @@
 		<c:if test="${pageFlow.testDeliveryItemList != null}">
 		<BR />
 		<BR />
-			<b>Step2:</b> Select a subtest which needs to reset
+			<b>Step2:</b> Select a subtest to reset.
 		<BR />
 			<table class="transparent">
 				<tr class="transparent">
@@ -59,7 +59,7 @@
 		<c:if test="${pageFlow.studentStatusDetailsList != null}">
 		<BR />
 		<BR />		
-		<b>Step3:</b> Select one or more students to reset the subtest status
+		<b>Step3:</b> Select one or more students to reset for the selected section.
 		<BR />
 		<table class="sortable">
 			<tr class="sortable">
@@ -86,8 +86,8 @@
 							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentLoginName">Login Name</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ExternalStudentId">Student Id</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="Org_name">Class</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ItemSetName">Subtest Name</ctb:tableSortColumn>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Completion Status</ctb:tableSortColumn>
+							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn>
+							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn>
 						</ctb:tableSortColumnGroup>
 					</tr>
 
@@ -141,7 +141,7 @@
 		<a name="subtestDetailsResult"></a>
 		<BR />
 		<BR />
-		<b>Step 4:</b> Provide request information, confirm the data, and click <b>Reset</b> button to reset its status
+		<b>Step 4:</b> Provide reset request information. Enter a brief description of the reason for the request to reset.
 			<BR />
 		<BR />
 		<table class="sortable">
@@ -176,7 +176,7 @@
 							<td class="tableFilter" valign="top">
 								<table class="tableFilter">
 									<tr class="tableFilter">
-										<td class="tableFilter" width="100" align="left">Request Description:</td>
+										<td class="tableFilter" width="100" align="left">Reason for reset:</td>
 										<td class="tableFilter" rowspan="3" width="*" valign="top">
 											<netui:textArea tagId="requestDescription" rows="3"
 												cols="70" dataSource="actionForm.requestDescription" onKeyDown="limitText(this,255)"/>
@@ -197,7 +197,7 @@
 						<ctb:tableSortColumnGroup columnDataSource="actionForm.subtestSortColumn"
 							orderByDataSource="actionForm.subtestSortOrderBy" anchorName="subtestStatusSearchResult">
 							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentLoginName">Student</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Subtest Status</ctb:tableSortColumn>
+							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn>
 							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StartDateTime">Start Date</ctb:tableSortColumn>
 							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionDateTime">Completion Date</ctb:tableSortColumn>
 							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ItemAnswered">Item Answered</ctb:tableSortColumn>
