@@ -13,9 +13,7 @@ import com.ctb.bean.testAdmin.AuditFileReopenSubtest;
 import com.ctb.bean.testAdmin.ScheduleElement;
 import com.ctb.bean.testAdmin.ScheduleElementData;
 import com.ctb.bean.testAdmin.Student;
-import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
-import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.exception.CTBBusinessException;
@@ -91,6 +89,13 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 			studentDataNotFoundException.setStackTrace(e.getStackTrace());
 			throw studentDataNotFoundException;
 		} 
+		finally {
+			if(student == null) {
+				StudentDataNotFoundException studentDataNotFoundException = 
+					new StudentDataNotFoundException
+					("FindStudentforTestSession.Failed");
+				throw studentDataNotFoundException;			}
+		}
 		return student;
 	}
 
