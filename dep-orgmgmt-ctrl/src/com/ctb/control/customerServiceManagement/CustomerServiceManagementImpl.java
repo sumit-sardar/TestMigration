@@ -3,6 +3,7 @@ package com.ctb.control.customerServiceManagement;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 
@@ -16,6 +17,7 @@ import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
+import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.customerServiceManagement.StudentDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
@@ -171,10 +173,10 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		if ( filter != null ) {
 			testSessionData.applyFiltering(filter);
 		}
-		if( sort != null ) {
+		if( sort != null && testSessionData != null && filteredTestSessions != null ) {
 			testSessionData.applySorting(sort);
 		}
-		if( page != null ) {
+		if( page != null && testSessionData != null && filteredTestSessions != null ) {
 			testSessionData.applyPaging(page);
 		}
 
@@ -253,7 +255,7 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		ScheduleElementData scheduleElementData = null;
 		
 		try {
-			scheduleElements = testAdminItemSet.getSubTestListForTestSession(accessCode);
+			scheduleElements = testAdminItemSet.getSubTestListForTestSession( accessCode.toUpperCase());
 		} catch(SQLException se){
 			se.printStackTrace();
 			StudentDataNotFoundException studentDataNotFoundException = 
@@ -348,14 +350,14 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 	 * @throws CTBBusinessException
      */
 	
-	public void reopenSubtest(AuditFileReopenSubtest [] auditFileReopenSubtest)
+	public void reopenSubtest(AuditFileReopenSubtest [] auditFileReopenSubtest,User user)
 			throws CTBBusinessException { 
 		
 		try {
 			for(int i=0;i<auditFileReopenSubtest.length;i++) {
 				AuditFileReopenSubtest reopenSubtestInfo = auditFileReopenSubtest[i];
-				testRoster.updateTestRosterForReopen(reopenSubtestInfo.getTestRosterId());
-				students.updateStudentActiveSessionFlag(reopenSubtestInfo.getStudentId());
+				testRoster.updateTestRosterForReopen(reopenSubtestInfo.getTestRosterId(),new Date(),user.getUserId());
+				students.updateStudentActiveSessionFlag(reopenSubtestInfo.getStudentId(),new Date(),user.getUserId());
 				studentItemSetStatus.updateStudentItemSetStatus(reopenSubtestInfo.getTestRosterId(),
 						reopenSubtestInfo.getItemSetTDId());
 				studentItemSetStatus.insertAuditRecordForReopenSubtestData(reopenSubtestInfo);
