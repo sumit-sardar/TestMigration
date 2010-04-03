@@ -475,6 +475,10 @@ function verifyExitAddOrganization(){
     return confirm("Click 'OK' to quit editing organization's information. Any changes you've made will be lost.");
 }
 
+function verifyExitReopenTestSession(){
+    return confirm("Click 'OK' to quit reopening test session. Any changes you've made will be lost.");
+}
+
 function showLegend(elementId, tokens) {
     var element = document.getElementById(elementId);
     var enabled = tokens.substr(1, 1);

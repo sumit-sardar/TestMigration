@@ -87,9 +87,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 	PagerSummary  subtestPagerSummary = null;
 	private String userTimeZone = null;
 
-
-
-
 	private StudentProfileInformation studentProfileInformation;
 
 	@Control()
@@ -169,19 +166,19 @@ public class CustomerServiceManagementController extends PageFlowController {
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
 					path = "reopen_subtest.jsp"),
-					@Jpf.Forward(name = "findSubtestByTestSessionId",
-							path = "findSubtestByTestSessionId.do"),
-							@Jpf.Forward(name="changeSubtest",
-									path="changeSubtest.do") ,
-									@Jpf.Forward(name = "showStudentTestStatusDetails",
-											path = "showStudentTestStatusDetails.do"),
-											@Jpf.Forward(name = "showDetails",
-													path = "showDetails.do")
+			@Jpf.Forward(name = "findSubtestByTestSessionId",
+					path = "findSubtestByTestSessionId.do"),
+			@Jpf.Forward(name="changeSubtest",
+					path="changeSubtest.do") ,
+			@Jpf.Forward(name = "showStudentTestStatusDetails",
+					path = "showStudentTestStatusDetails.do"),
+			@Jpf.Forward(name = "showDetails",
+					path = "showDetails.do")
 
 	})
 	protected Forward findTestSessionByStudent(CustomerServiceManagementForm form)
 	{        
-
+		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		form.validateValues();
 		String actionElement = form.getActionElement();            
 		String currentAction = form.getCurrentAction();  
@@ -216,8 +213,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 
 		//form.validateValues();
-		System.out.println("11...");
-
+		
 		if (currentAction.equals("changeSubtest")){
 			//this.savedForm.setSelectedSubtestName(form.getSelectedSubtestName());
 			return new Forward(currentAction,form);
@@ -301,15 +297,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 	}
 
 
-	public String getPageTitle() {
-		return pageTitle;
-	}
-
-	public void setPageTitle(String pageTitle) {
-		this.pageTitle = pageTitle;
-	}
-
-
 	//step 3 of STUDENT tab
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
@@ -328,6 +315,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		Integer testAdminId = form.getSelectedTestSessionId();
 		Integer testRosterId = null;
 
+		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
+		
 		for (TestSessionVO testSessionVO : this.testSessionList) {
 
 			if (testSessionVO.getTestAdminId().intValue() == testAdminId.intValue()) {
@@ -341,7 +330,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 			}
 		}
 
-		page = FilterSortPageUtils.buildPageParams(form.getSubtestPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+		page = FilterSortPageUtils.buildPageParams(form.getSubtestPageRequested(), FilterSortPageUtils.PAGESIZE_20);
 		sort = FilterSortPageUtils.buildSortParams(form.getSubtestSortColumn(), form.getSubtestSortOrderBy());
 
 		try {
@@ -422,7 +411,9 @@ public class CustomerServiceManagementController extends PageFlowController {
 		String subtestName = form.getSelectedSubtestName();
 		Integer testAdminId = this.testDeliveryItemList.get(0).getTestAdminId();
 
-		page = FilterSortPageUtils.buildPageParams(form.getSubtestPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
+		
+		page = FilterSortPageUtils.buildPageParams(form.getSubtestPageRequested(), FilterSortPageUtils.PAGESIZE_20);
 
 		try {
 			sstData = CustomerServiceSearchUtils.getStudentListForSubTest(
@@ -471,14 +462,15 @@ public class CustomerServiceManagementController extends PageFlowController {
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
 					path = "reopen_subtest.jsp")})
-					public Forward showDetails(manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm form){
+	public Forward showDetails(manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm form)
+	{
 
 		SortParams sort = null;
 		FilterParams filter = null;
 		PageParams page = null;
 		StudentSessionStatusData sstData = null;
 
-
+		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		//populate step 4
 		showStudentDeatilsList = null;
 		ArrayList selectedStudentIdFromPage = this.getArrayListFromStringArray(form.getSelectedStudentItemId());
@@ -509,8 +501,9 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 	//step 4 of STUDENT tab
 	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "reopen_subtest.jsp") })
-	public Forward showStudentTestStatusDetails(CustomerServiceManagementForm form) {
-
+	public Forward showStudentTestStatusDetails(CustomerServiceManagementForm form) 
+	{
+		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		Integer itemSetId = form.getSelectedItemSetId();
 		showStudentTestStatusDetails(itemSetId);	
 
@@ -537,10 +530,11 @@ public class CustomerServiceManagementController extends PageFlowController {
 			@ Jpf. Forward (name = "success" ,
 					path = "findSubtestByTestSessionId.do")
 	})
-	protected  Forward reOpenSubtest(CustomerServiceManagementForm form) {
+	protected  Forward reOpenSubtest(CustomerServiceManagementForm form) 
+	{
 
 		try  {
-
+			this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 			StudentProfileInformation sDetails = (StudentProfileInformation)this.studentList.get(0);
 			Integer studentId = sDetails.getStudentId(); 	
 			CustomerServiceSearchUtils.reOpenSubtest (
@@ -580,7 +574,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 	protected Forward reOpenSubtestForStudents(CustomerServiceManagementForm form) {
 
 		try {
-
+			this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 			CustomerServiceSearchUtils.reOpenSubtest( 
 					this.customerServiceManagement ,
 					this.user,
@@ -611,8 +605,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 	})
 	protected Forward selectAllStudents(CustomerServiceManagementForm form)
 	{
+		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		selectAllStudents(form.getTestAdminId(), Integer.valueOf(form.getSelectedSubtestName()),form); 
-
 		return new Forward("success", form);
 	}
 
@@ -622,8 +616,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 	})
 	protected Forward deselectAllStudents(CustomerServiceManagementForm form)
 	{  
+		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		deSelectAllStudents(222911, Integer.valueOf(form.getSelectedSubtestName()),form); 
-
 		return new Forward("success", form);
 	}
 
@@ -651,7 +645,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		if (validInfo) {
 
-			page = FilterSortPageUtils.buildPageParams(form.getTestSessionPageRequested(), FilterSortPageUtils.PAGESIZE_1);
+			page = FilterSortPageUtils.buildPageParams(form.getTestSessionPageRequested(), FilterSortPageUtils.PAGESIZE_20);
 			sort = FilterSortPageUtils.buildSortParams(form.getTestSessionSortColumn(), form.getTestSessionSortOrderBy());
 			sData = CustomerServiceSearchUtils.searchStudentData(customerServiceManagement, this.userName, studentLoginId);
 			StudentData studentData = null;
@@ -719,7 +713,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		Boolean validInfo = true;
 
 		validInfo = CustomerServiceFormUtils.verifyFormInformation(form);
-		PageParams page = FilterSortPageUtils.buildPageParams(form.getTestSessionPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+		PageParams page = FilterSortPageUtils.buildPageParams(form.getTestSessionPageRequested(), FilterSortPageUtils.PAGESIZE_20);
 
 		SortParams sort = null;
 		FilterParams filter = null;
@@ -988,7 +982,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 		List studentStatusDetails = CustomerServiceSearchUtils.buildSubtestList(sssd,this.userTimeZone);
 		this.studentStatusMap = getAllStudentHashMapForArrayList(studentStatusDetails);
-		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_20);
 		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
 		try {
 			sssd.applyPaging(studentPage);
@@ -1015,7 +1009,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		this.studentStatusMap = new HashMap();
 		StudentSessionStatusData sssd = null;
-		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_20);
 		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
 
 
@@ -2044,23 +2038,14 @@ public class CustomerServiceManagementController extends PageFlowController {
 		this.studentStatusMap = studentStatusMap;
 	}
 
-	/*	*//**
-	 * @return the selectedStudents
-	 *//*
-	public List getSelectedStudents() {
-		return selectedStudents;
+	
+	public String getPageTitle() {
+		return pageTitle;
 	}
 
-	  *//**
-	  * @param selectedStudents the selectedStudents to set
-	  *//*
-	public void setSelectedStudents(List selectedStudents) {
-		this.selectedStudents = selectedStudents;
-	}*/
-
-
-
-
+	public void setPageTitle(String pageTitle) {
+		this.pageTitle = pageTitle;
+	}
 
 
 }

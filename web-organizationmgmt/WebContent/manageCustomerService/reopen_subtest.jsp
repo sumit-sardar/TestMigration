@@ -10,7 +10,7 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
-<netui-template:template templatePage="/resources/jsp/template.jsp">
+<netui-template:template templatePage="/resources/jsp/template_reopen_test_session.jsp">
 
 
 <netui-template:setAttribute name="title" value="${bundle.web['reopen.testSession.window.title']}"/>
