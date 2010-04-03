@@ -356,8 +356,8 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		try {
 			for(int i=0;i<auditFileReopenSubtest.length;i++) {
 				AuditFileReopenSubtest reopenSubtestInfo = auditFileReopenSubtest[i];
-				testRoster.updateTestRosterForReopen(reopenSubtestInfo.getTestRosterId(),new Date(),user.getUserId());
-				students.updateStudentActiveSessionFlag(reopenSubtestInfo.getStudentId(),new Date(),user.getUserId());
+				testRoster.updateTestRosterForReopen(reopenSubtestInfo.getTestRosterId(),new Date(),reopenSubtestInfo.getCreatedBy());
+				students.updateStudentActiveSessionFlag(reopenSubtestInfo.getStudentId(),new Date(),reopenSubtestInfo.getCreatedBy());
 				studentItemSetStatus.updateStudentItemSetStatus(reopenSubtestInfo.getTestRosterId(),
 						reopenSubtestInfo.getItemSetTDId());
 				studentItemSetStatus.insertAuditRecordForReopenSubtestData(reopenSubtestInfo);
