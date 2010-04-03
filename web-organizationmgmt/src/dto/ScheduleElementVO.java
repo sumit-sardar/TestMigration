@@ -32,6 +32,7 @@ public class ScheduleElementVO extends SanitizedFormField
  		this.accessCode = scheduleElement.getAccessCode();
  		this.tested = scheduleElement.getTested();
  		this.orgNodeId = scheduleElement.getCreatorOrgNodeId();
+ 		this.itemSetName = scheduleElement.getItemSetName();
 
  	}
 

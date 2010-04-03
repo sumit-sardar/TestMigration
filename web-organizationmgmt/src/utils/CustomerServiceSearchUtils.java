@@ -214,6 +214,13 @@ public class CustomerServiceSearchUtils {
 
 						StudentSessionStatusVO subtestDetails =
 							new StudentSessionStatusVO(subtest);
+						
+						if (subtest.getStudentId() != null && subtest.getItemSetId() != null) {
+							
+							subtestDetails.setStudentItemId(
+									subtest.getStudentId().toString().concat("_").concat(subtest.getItemSetId().toString()));
+						}
+	
 						if(subtest.getCompletionDateTime() != null) {
 							subtestDetails.setCompletionDateTime(
 									getAdjustedDateTime(subtest.getCompletionDateTime(),timeZone));
