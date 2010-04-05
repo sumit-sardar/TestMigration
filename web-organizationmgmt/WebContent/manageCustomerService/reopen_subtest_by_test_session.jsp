@@ -81,12 +81,12 @@
 						<ctb:tableSortColumnGroup columnDataSource="actionForm.studentSortColumn"
 							orderByDataSource="actionForm.studentSortOrderBy" anchorName="studentSearchResult">
 							<th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['common.column.select']}" /></th>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentLoginName">Login Name</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ExternalStudentId">Student Id</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="Org_name">Class</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn>
+							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
+							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentLoginName">Login Name</ctb:tableSortColumn></th>
+							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="ExternalStudentId">Student Id</ctb:tableSortColumn></th>
+							<th class="sortable alignLeft" width="15%" nowrap><netui:content value="Org_name"/></th>
+							<th class="sortable alignLeft" width="30%" nowrap><netui:content value="ItemSetName"/></th>
+							<th class="sortable alignLeft" width="30%" nowrap><netui:content value="CompletionStatus"/></th>
 						</ctb:tableSortColumnGroup>
 					</tr>
 
@@ -163,8 +163,8 @@
 										</td>
 									</tr>
 									<tr class="tableFilter">
-										<td class="tableFilter" width="100" valign="baseline">
-											<netui:button action="reOpenSubtest" styleClass="button" type="submit"
+										<td class="tableFilter" width="100" align="left" valign="baseline">
+											<netui:button action="reOpenSubtestForStudents" styleClass="button" type="submit"
 											value="Reset" onClick="setElementValue('{actionForm.currentAction}', 'reOpenSubtestForStudents');" />
 										</td>
 										<td class="tableFilter" width="*"></td>
@@ -221,9 +221,9 @@
 				<netui-data:repeaterFooter>
 
 					<tr class="sortable">
-						<td class="sortableControls" colspan="7"><ctb:tablePager dataSource="actionForm.subtestPageRequested"
+						<td class="sortableControls" colspan="7"><ctb:tablePager dataSource="actionForm.studentStatusPageRequested"
 							summary="request.subtestDetailsPagerSummary" objectLabel="${bundle.oas['object.students']}" foundLabel="Found"
-							id="studentSearchResult" anchorName="studentSearchResult" /></td>
+							id="studentStatusSearchResult" anchorName="studentStatusSearchResult" /></td>
 					</tr>
 
 				</netui-data:repeaterFooter>
