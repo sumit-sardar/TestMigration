@@ -19,28 +19,26 @@
 	<tr class="sortable">
 		<td class="sortable">
 			<b>Step1:</b> Specify student login (required) and test access code (optional) and click <b>Search</b>. 
-			<BR/>
-			<table class="tableFilter">
-				<tr class="tableFilter">
-					<td class="tableFilter" width="100" align="right"><span class="asterisk">*</span>&nbsp;Student Login:</td>
-					<td class="tableFilter" width="*"><netui:textBox tagId="studentLogin"
-						dataSource="actionForm.studentProfile.studentLoginId" tabindex="1" /></td>
+			<BR/><BR/>
+			<table class="transparent">
+				<tr class="transparent">
+					<td class="transparent"><span class="asterisk">*</span>&nbsp;Student Login:</td>
+					<td class="transparent" width="*"><netui:textBox tagId="studentLogin"
+						dataSource="actionForm.studentProfile.studentLoginId" tabindex="1" maxlength="32" /></td>
 				</tr>
-				<tr class="tableFilter">
-					<td class="tableFilter" width="100" align="right">Access Code:</td>
-					<td class="tableFilter" width="*"><netui:textBox tagId="accessCode"
-						dataSource="actionForm.testAccessCode" tabindex="5" /></td>
-					<td class="tableFilter" width="*">&nbsp;&nbsp; <netui:button styleClass="button" value="Search" type="submit"
-						onClick="setElementValue('currentAction', 'applySearch');" tabindex="8" /></td>
+				<tr class="transparent">
+					<td class="transparent">Access Code:</td>
+					<td class="transparent" width="*"><netui:textBox tagId="accessCode"
+						dataSource="actionForm.testAccessCode" tabindex="2" maxlength="32" /></td>
+					<td class="transparent" width="*">&nbsp;&nbsp; <netui:button styleClass="button" value="Search" type="submit"
+						onClick="setElementValue('currentAction', 'applySearch');" tabindex="3" /></td>
 				</tr>
 			</table>
-		
-		<BR/>
-		<BR/>
-
+		<BR/>		
 		<!--START: Test session search result --> 
 		<c:if test="${pageFlow.testSessionList != null}">
-			<b>Step 2:</b> Select a test session to view its sections
+		<BR/>
+		<b>Step 2:</b> Select a test session to view its sections
 		<BR />
 			<BR />
 			<table class="sortable">
@@ -55,13 +53,13 @@
 								<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="TestAdminName">
 									<netui:content value="${bundle.web['common.column.sessionName']}" />
 								</ctb:tableSortColumn></th>
-								<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="AccessCode">
+								<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="AccessCode">
 									<netui:content value="${bundle.web['common.column.accessCode']}" />
 								</ctb:tableSortColumn></th>
-								<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="TestName">
+								<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="TestName">
 									<netui:content value="${bundle.web['common.column.testName']}" />
 								</ctb:tableSortColumn></th>
-								<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="Scheduler">
+								<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="Scheduler">
 									<netui:content value="${bundle.web['common.column.scheduler']}" />
 								</ctb:tableSortColumn></th>
 							</ctb:tableSortColumnGroup>
@@ -78,12 +76,9 @@
                      &nbsp;</netui:radioButtonOption>
 
 							</netui:radioButtonGroup></td>
-							<td class="sortable"><netui-data:getData resultId="testAdminId" value="${container.item.testAdminId}" /> 
-							
-							<netui:span value="${container.item.testAdminName}" defaultValue="&nbsp;" /></td>
-
-							<td class="sortable alignLeft"><netui:span value="${container.item.accessCode}" defaultValue="&nbsp;" /></td>
-							<td class="sortable"><netui:span value="${container.item.testName}" defaultValue="&nbsp;" /></td>
+							<td class="sortable alignLeft"><netui:span value="${container.item.testAdminName}" defaultValue="&nbsp;" /></td>
+							<td class="sortable alignCenter"><netui:span value="${container.item.accessCode}" defaultValue="&nbsp;" /></td>
+							<td class="sortable alignCenter"><netui:span value="${container.item.testName}" defaultValue="&nbsp;" /></td>
 							<td class="sortable alignCenter"><netui:span value="${container.item.scheduler}" defaultValue="&nbsp;">
 
 							</netui:span></td>
@@ -120,12 +115,12 @@
 							<ctb:tableSortColumnGroup columnDataSource="actionForm.subtestSortColumn"
 								orderByDataSource="actionForm.subtestSortOrderBy" anchorName="subtestSearchResult">
 								<th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['common.column.select']}" /></th>
-								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn></th>
-								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn></th>
-								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StartDateTime">Start Date</ctb:tableSortColumn></th>
-								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionDateTime">Completion Date</ctb:tableSortColumn></th>
-								<th class="sortable alignLeft" width="30%" nowrap><netui:content value="Items Answered"/></th>
-								<th class="sortable alignLeft" width="30%" nowrap><netui:content value="Time Spent"/></th>
+								<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="ItemSetName"><netui:content value="${bundle.web['test.label.sectionName']}" /></ctb:tableSortColumn></th>
+								<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="CompletionStatus"><netui:content value="${bundle.web['test.label.sectionStatus']}" /></ctb:tableSortColumn></th>
+								<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="StartDateTime"><netui:content value="${bundle.web['test.label.startDate']}" /></ctb:tableSortColumn></th>
+								<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="CompletionDateTime"><netui:content value="${bundle.web['test.label.completionDate']}" /></ctb:tableSortColumn></th>
+								<th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['test.label.itemsAnswered']}" /></th>
+								<th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['test.label.timeSpent']}" /></th>
 							</ctb:tableSortColumnGroup>
 						</tr>
 	
@@ -145,11 +140,11 @@
 							
 							</netui:radioButtonGroup></td>
 							<td class="sortable"><netui:span value="${container.item.itemSetName}" /></td>
-							<td class="sortable"><netui:span value="${container.item.completionStatus}" /></td>
-							<td class="sortable"><netui:span value="${container.item.startDateTime}" /></td>
-							<td class="sortable"><netui:span value="${container.item.completionDateTime}" /></td>
-							<td class="sortable"><netui:span value="${container.item.itemAnswered}" /></td>
-							<td class="sortable"><netui:span value="${container.item.timeSpent}" /></td>
+							<td class="sortable alignCenter"><netui:span value="${container.item.completionStatus}" /></td>
+							<td class="sortable alignCenter"><netui:span value="${container.item.startDateTime}"  defaultValue="--"/></td>
+							<td class="sortable alignCenter"><netui:span value="${container.item.completionDateTime}"  defaultValue="--"/></td>
+							<td class="sortable alignCenter"><netui:span value="${container.item.itemAnswered}" /></td>
+							<td class="sortable alignCenter"><netui:span value="${container.item.timeSpent}" /></td>
 						</tr>
 	
 					</netui-data:repeaterItem>
@@ -185,20 +180,20 @@
 									<tr class="tableFilter">
 										<td class="tableFilter" width="100" align="left">Ticket ID:</td>
 										<td class="tableFilter" width="*" align="left">
-											<netui:textBox tagId="ticketId" dataSource="actionForm.ticketId" tabindex="1" />
+											<netui:textBox tagId="ticketId" dataSource="actionForm.ticketId" tabindex="4" maxlength="32"/>
 										</td>
 									</tr>
 									<tr class="tableFilter">
 										<td class="tableFilter" width="100" align="left">Requestor:</td>
 										<td class="tableFilter" width="*" align="left">
 											<netui:textBox tagId="serviceRequestor"
-												dataSource="actionForm.serviceRequestor" tabindex="5" />
+												dataSource="actionForm.serviceRequestor" tabindex="5" maxlength="32"/>
 										</td>
 									</tr>
 									<tr class="tableFilter">
 										<td class="tableFilter" width="100" align="left" valign="baseline">
 											<netui:button action="reOpenSubtest" styleClass="button" type="submit"
-											value="Reset" onClick="setElementValue('{actionForm.currentAction}', 'reOpenSubtest');" />
+											value="Reset" onClick="setElementValue('{actionForm.currentAction}', 'reOpenSubtest');" tabindex="7"/>
 										</td>
 										<td class="tableFilter" width="*"></td>
 									</tr>
@@ -210,7 +205,7 @@
 										<td class="tableFilter" width="100" align="left">Reason for reset:</td>
 										<td class="tableFilter" rowspan="3" width="*" valign="top">
 											<netui:textArea tagId="requestDescription" rows="3"
-												cols="70" dataSource="actionForm.requestDescription" />
+												cols="70" dataSource="actionForm.requestDescription" tabindex="6" onKeyDown="limitText(this,255)"/>
 										</td>
 									</tr>
 									<tr class="tableFilter"><td class="tableFilter">&nbsp;</td></tr>
@@ -224,29 +219,65 @@
 				
 				<netui-data:repeater dataSource="pageFlow.studentTestStatusDetailsList">
 				<netui-data:repeaterHeader>
-				<tr class="sortable">
-					<th class="sortable alignLeft" nowrap>&nbsp;&nbsp;<netui:content value="Student" /></th>
-					<th class="sortable alignLeft" nowrap>&nbsp;&nbsp;<netui:content value="Test Session" /></th>
-					<th class="sortable alignLeft" nowrap>&nbsp;&nbsp;<netui:content value="Section" /></th>
+				<tr class="transparent">
+					<th class="sortable alignLeft" style="height:25px" nowrap>&nbsp;&nbsp;<netui:span value="Student" /></th>
+					<th class="sortable alignLeft" style="height:25px" nowrap>&nbsp;&nbsp;<netui:span value="Test Session" /></th>
+					<th class="sortable alignLeft" style="height:25px" nowrap>&nbsp;&nbsp;<netui:span value="Section" /></th>
 				</tr>
 				</netui-data:repeaterHeader>
 				<netui-data:repeaterItem>
-				<tr class="tableFilter">
-					<td class="tableFilter"><netui:span value="Name: ${container.item.studentName}" /></td>
-					<td class="tableFilter"><netui:span value="Name: ${selectedTestSessionName}" /></td>
-					<td class="tableFilter"><netui:span value="Name: ${container.item.itemSetName}" /></td>
-				</tr>
+				<tr class="sortable">
+					<td class="sortable">
+						<table class="transparent">
+							<tr class="transparent">
+								<td class="transparent"><netui:span value="${bundle.web['test.label.name']}:" /></td>
+								<td class="transparent"><netui:span value="${container.item.studentName}" /></td>
+							</tr>
+							<tr class="transparent">
+								<td class="transparent"><netui:span value="${bundle.web['test.label.login']}:" /></td>
+								<td class="transparent"><netui:span value="${container.item.studentLoginName}" /></td>
+							</tr>
+							<tr class="transparent">
+								<td class="transparent"><netui:span value="${bundle.web['test.label.id']}:" /></td>
+								<td class="transparent"><netui:span value="${container.item.externalStudentId}" /></td>
+							</tr>
+						</table>
+					</td>
 
-				<tr class="tableFilter">
-					<td class="tableFilter"><netui:span value="Login: ${container.item.studentLoginName}" /></td>
-					<td class="tableFilter"><netui:span value="Access Code: ${container.item.testAccessCode}" /></td>
-					<td class="tableFilter"><netui:span value="Status: ${container.item.completionStatus}" /></td>
-				</tr>
+					<td class="sortable">
+						<table class="transparent">
+							<tr class="transparent">
+								<td class="transparent"><netui:span value="${bundle.web['test.label.name']}:" /></td>
+								<td class="transparent"><netui:span value="${selectedTestSessionName}" /></td>
+							</tr>
+							<tr class="transparent">
+								<td class="transparent"><netui:span value="${bundle.web['test.label.accessCode']}:" /></td>
+								<td class="transparent"><netui:span value="${container.item.testAccessCode}" /></td>
+							</tr>
+							<tr class="transparent">
+								<td class="transparent"><netui:span value="${bundle.web['test.label.id']}:" /></td>
+								<td class="transparent"><netui:span value="${selectedTestSessionId}" /></td>
+							</tr>
+						</table>
+					</td>
 
-				<tr class="tableFilter">
-					<td class="tableFilter"><netui:span value="ID: ${container.item.externalStudentId}" /></td>
-					<td class="tableFilter"><netui:span value="ID: ${selectedTestSessionId}" /></td>
-					<td class="tableFilter"><netui:span value="Order: ${container.item.itemSetOrder}" /></td>
+					<td class="sortable">
+						<table class="transparent">
+							<tr class="transparent">
+								<td class="transparent"><netui:span value="${bundle.web['test.label.name']}:" /></td>
+								<td class="transparent"><netui:span value="${container.item.itemSetName}" /></td>
+							</tr>
+							<tr class="transparent">
+								<td class="transparent"><netui:span value="${bundle.web['test.label.status']}:" /></td>
+								<td class="transparent"><netui:span value="${container.item.completionStatus}" /></td>
+							</tr>
+								
+							<tr class="transparent">
+								<td class="transparent"><netui:span value="${bundle.web['test.label.order']}:" /></td>
+								<td class="transparent"><netui:span value="${container.item.itemSetOrder}" /></td>
+							</tr>
+						</table>
+					</td>
 				</tr>
 				</netui-data:repeaterItem>
 				</netui-data:repeater>

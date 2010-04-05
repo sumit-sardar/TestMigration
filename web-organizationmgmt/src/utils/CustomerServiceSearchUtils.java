@@ -109,7 +109,7 @@ public class CustomerServiceSearchUtils {
 	}
 	
 	/*
-	 * Put all the customer detals in the list
+	 * Put all the customer details in the list
 	 */
 	public static List buildTestSessionList (TestSessionData testSessionData) {
 
@@ -135,7 +135,7 @@ public class CustomerServiceSearchUtils {
 	}
 
 	/*
-	 * Put all the customer detals in the list
+	 * Put all the customer details in the list
 	 */
 	public static List buildTestDeliveritemList (ScheduleElementData scheduleElementData) {
 
@@ -161,7 +161,7 @@ public class CustomerServiceSearchUtils {
 	}
 
 	/*
-	 * Put all the student detals in the list
+	 * Put all the student details in the list
 	 */
 	public static List buildStudentList (StudentData studentData) {
 

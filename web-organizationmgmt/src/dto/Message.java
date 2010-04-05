@@ -168,6 +168,10 @@ public class Message implements java.io.Serializable
     public static final String TEST_ROSTER_UPDATION_SUCCESS	= "Test Roster Updated Successfully";
     public static final String FIND_STUDENT_ERROR			= "Student Not Found";
 
+    public static final String TEST_TICKET_ID  			= "Ticket ID";	
+    public static final String TEST_REQUEST_DESCRIPTION	= "Reason for reset";
+    public static final String TEST_SERVICE_REQUESTOR	= "Requestor";
+
     public Message() {
         this.title = "";
         this.content = "";

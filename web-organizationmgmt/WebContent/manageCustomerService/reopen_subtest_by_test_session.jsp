@@ -16,21 +16,20 @@
 		</td>
 	</tr>
 	<tr class="sortable">
-		<td class="sortable" align="left">
+		<td class="sortable">
 		<b>Step1:</b> Specify a test access code and click <b>Search</b>.
-		<BR />
-			<table class="tableFilter">
-				<tr class="tableFilter">
-					<td class="tableFilter" align="left"><span class="asterisk">*</span>&nbsp;Access Code:</td>
-					<td class="tableFilter" align="left"><netui:textBox tagId="accessCode" dataSource="actionForm.testAccessCode"
+		<BR /><BR />
+			<table class="transparent">
+				<tr class="transparent">
+					<td class="transparent"><span class="asterisk">*</span>&nbsp;Access Code:</td>
+					<td class="transparent"><netui:textBox tagId="accessCode" dataSource="actionForm.testAccessCode"
 						tabindex="1" maxlength="32" /></td>
-					<td class="tableFilter" width="*" align="left"><netui:button styleClass="button" value="Search" type="submit"
+					<td class="transparent" width="*"><netui:button styleClass="button" value="Search" type="submit"
 						onClick="setElementValue('currentAction', 'applySearch');" tabindex="8" /></td>
 				</tr>
 			</table>
-
-		<c:if test="${pageFlow.testDeliveryItemList != null}">
 		<BR />
+		<c:if test="${pageFlow.testDeliveryItemList != null}">
 		<BR />
 			<b>Step2:</b> Select a subtest to reset.
 		<BR />
@@ -55,7 +54,7 @@
 				</tr>
 			</table>
 		</c:if> 
-
+		<!-- START: Student search result -->
 		<c:if test="${pageFlow.studentStatusDetailsList != null}">
 		<BR />
 		<BR />		
@@ -134,8 +133,7 @@
 
 		</table>
 	</c:if>
-
-	<!--END: Subtest Search Result -->
+	<!-- END: Student search result -->
 
 	<c:if test="${pageFlow.showStudentDeatilsList != null}">
 		<a name="subtestDetailsResult"></a>
@@ -149,23 +147,23 @@
 					<td class="sortableControls" colspan="6">
 					<table class="tableFilter">
 						<tr class="tableFilter">
-							<td class="tableFilter" align="left">
+							<td class="tableFilter">
 								<table class="tableFilter" width="300">
 									<tr class="tableFilter">
-										<td class="tableFilter" width="100" align="left">Ticket ID:</td>
-										<td class="tableFilter" width="*" align="left">
-											<netui:textBox tagId="ticketId" dataSource="actionForm.ticketId" tabindex="1" />
+										<td class="tableFilter" width="100">Ticket ID:</td>
+										<td class="tableFilter" width="*">
+											<netui:textBox tagId="ticketId" dataSource="actionForm.ticketId" tabindex="1" maxlength="32" />
 										</td>
 									</tr>
 									<tr class="tableFilter">
-										<td class="tableFilter" width="100" align="left">Requestor:</td>
-										<td class="tableFilter" width="*" align="left">
+										<td class="tableFilter" width="100">Requestor:</td>
+										<td class="tableFilter" width="*">
 											<netui:textBox tagId="serviceRequestor"
-												dataSource="actionForm.serviceRequestor" tabindex="5" />
+												dataSource="actionForm.serviceRequestor" tabindex="5" maxlength="32" />
 										</td>
 									</tr>
 									<tr class="tableFilter">
-										<td class="tableFilter" width="100" align="left" valign="baseline">
+										<td class="tableFilter" width="100" valign="baseline">
 											<netui:button action="reOpenSubtest" styleClass="button" type="submit"
 											value="Reset" onClick="setElementValue('{actionForm.currentAction}', 'reOpenSubtestForStudents');" />
 										</td>
@@ -176,7 +174,7 @@
 							<td class="tableFilter" valign="top">
 								<table class="tableFilter">
 									<tr class="tableFilter">
-										<td class="tableFilter" width="100" align="left">Reason for reset:</td>
+										<td class="tableFilter" width="100">Reason for reset:</td>
 										<td class="tableFilter" rowspan="3" width="*" valign="top">
 											<netui:textArea tagId="requestDescription" rows="3"
 												cols="70" dataSource="actionForm.requestDescription" onKeyDown="limitText(this,255)"/>
@@ -237,6 +235,8 @@
 </tr>
 
 </table>
+
+<BR/>
 <c:if test="${searchResultEmpty != null}">
 	<ctb:message title="Search Result" style="informationMessage">
 		<netui:content value="${requestScope.searchResultEmpty}" />

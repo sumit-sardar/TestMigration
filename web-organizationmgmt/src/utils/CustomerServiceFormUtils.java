@@ -93,39 +93,61 @@ public class CustomerServiceFormUtils {
 		return false;   
 	}
 
-	public static String verifyTestSessionInfo(CustomerServiceManagementForm form) {
 
+	public static String verifyTestSessionInfo(CustomerServiceManagementForm form) {
 		String invalidCharFields = "";
 		int invalidCharFieldCount = 0;
 		String studentLoginId = null;
 		String testAccessCode = null;
 
+		String ticketId = null;
+		String serviceRequestor = null;
+		String requestDescription = null;
 		
 		if(form.getSelectedTab().equals("moduleStudentTestSession")) { 
-			studentLoginId = form.getStudentProfile()!=null && form.getStudentProfile().getStudentLoginId() != null ?  form.getStudentProfile().getStudentLoginId().trim() : null;
+			studentLoginId = form.getStudentProfile()!= null && form.getStudentProfile().getStudentLoginId() != null ?  form.getStudentProfile().getStudentLoginId().trim() : null;
 			testAccessCode =  form.getTestAccessCode() != null? form.getTestAccessCode().trim() : null;
-
+			
 			if (! WebUtils.validString(studentLoginId) && studentLoginId != null ) {
 				invalidCharFieldCount += 1;            
 				invalidCharFields = buildErrorString(Message.STUDENT_LOGIN_ID, invalidCharFieldCount, invalidCharFields);       
 			}
-
-
-			if (! WebUtils.validString(testAccessCode) && testAccessCode != null ) {
-				invalidCharFieldCount += 1;            
-				invalidCharFields = buildErrorString(Message.STUDENT_TEST_ACCESS_CODE, invalidCharFieldCount, invalidCharFields);       
-			}
 		}
 	
-
-	if(form.getSelectedTab().equals("moduleTestSession")) { 
+		if(form.getSelectedTab().equals("moduleTestSession")) { 
 		testAccessCode = form.getTestAccessCode()!=null ? form.getTestAccessCode().trim() : null;
 		if (! WebUtils.validString(testAccessCode) && testAccessCode != null ) {
 			invalidCharFieldCount += 1;            
 			invalidCharFields = buildErrorString(Message.STUDENT_TEST_ACCESS_CODE, invalidCharFieldCount, invalidCharFields);       
 		}
 	}
+		
+	if(form.getCurrentAction().equals("reOpenSubtest")) {
 
+		ticketId = form.getTicketId() != null ? form.getTicketId().trim() : null;
+		serviceRequestor = form.getServiceRequestor() != null ? form.getServiceRequestor().trim() : null;
+		requestDescription = form.getRequestDescription() != null ? form.getRequestDescription().trim() : null;
+
+		if (! WebUtils.validString(testAccessCode) && testAccessCode != null ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString(Message.STUDENT_TEST_ACCESS_CODE, invalidCharFieldCount, invalidCharFields);       
+		}
+		
+		if (ticketId != null  && ! WebUtils.validString(ticketId) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString(Message.TEST_TICKET_ID, invalidCharFieldCount, invalidCharFields);       
+		}
+
+		if (serviceRequestor != null && ! WebUtils.validString(serviceRequestor) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString(Message.TEST_SERVICE_REQUESTOR, invalidCharFieldCount, invalidCharFields);       
+		}
+
+		if (requestDescription != null && ! WebUtils.validString(requestDescription) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString(Message.TEST_REQUEST_DESCRIPTION, invalidCharFieldCount, invalidCharFields);       
+		}
+	}
 
 	return invalidCharFields;
 }

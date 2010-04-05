@@ -213,8 +213,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 			return new Forward(currentAction, form);    
 		}
 
-
-
 		if (currentAction.equals("changeSubtest")){
 			//this.savedForm.setSelectedSubtestName(form.getSelectedSubtestName());
 			return new Forward(currentAction,form);
@@ -482,28 +480,42 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 	@ Jpf. Action (forwards = { 
 			@ Jpf. Forward (name = "success" ,
-					path = "findSubtestByTestSessionId.do")
+					path = "findSubtestByTestSessionId.do"),
+					@ Jpf. Forward (name = "error" ,
+							path = "reopen_subtest.jsp")					
 	})
 	protected  Forward reOpenSubtest(CustomerServiceManagementForm form) 
 	{
 
 		try  {
-			this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
-			StudentProfileInformation sDetails = (StudentProfileInformation)this.studentList.get(0);
-			Integer studentId = sDetails.getStudentId(); 	
-			CustomerServiceSearchUtils.reOpenSubtest (
-					this.customerServiceManagement, 
-					this.user,
-					form.getRequestDescription(),
-					form.getServiceRequestor(),
-					form.getTicketId(),
-					form.getSelectedTestSessionId(),
-					form.getCustomerId(), 
-					this.studentTestStatusDetailsList,
-					form.getSelectedItemSetId(),
-					form.getCreatorOrgNodeId(),
-					studentId);
 
+			Boolean isInValidInfo = true;
+			isInValidInfo = CustomerServiceFormUtils.isInvalidFormInfo(form);
+
+			if (!isInValidInfo) {
+
+				this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
+				StudentProfileInformation sDetails = (StudentProfileInformation)this.studentList.get(0);
+				Integer studentId = sDetails.getStudentId(); 	
+				CustomerServiceSearchUtils.reOpenSubtest (
+						this.customerServiceManagement, 
+						this.user,
+						form.getRequestDescription(),
+						form.getServiceRequestor(),
+						form.getTicketId(),
+						form.getSelectedTestSessionId(),
+						form.getCustomerId(), 
+						this.studentTestStatusDetailsList,
+						form.getSelectedItemSetId(),
+						form.getCreatorOrgNodeId(),
+						studentId);
+			}
+			else {
+				//set message in request to show error
+				this.getRequest().setAttribute("pageMessage", form.getMessage());
+				return   new  Forward( "error" );
+			}
+			
 		} catch  (CTBBusinessException be) {
 
 			String msg = MessageResourceBundle. getMessage (be.getMessage());
@@ -618,7 +630,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 						this.userName, sData.getStudentId(),sData.getCustomerId(),form.getTestAccessCode()
 						,filter,page,sort);
 			}
-
+				
 			if (tsData != null && tsData.getFilteredCount().intValue() > 0) {
 
 				this.searchApplied = true;
@@ -1416,10 +1428,12 @@ public class CustomerServiceManagementController extends PageFlowController {
 			if (actionElement.equals("{actionForm.testSessionSortOrderBy}")) {
 				this.testSessionPageRequested = new Integer(1);
 				this.currentAction="defaultAction";
+				this.selectedTestSessionId = null;
 			}
 			if (actionElement.equals("{actionForm.subtestSortOrderBy}")) {
 				this.subtestPageRequested = new Integer(1);
 				this.currentAction="findSubtestByTestSessionId";
+				this.selectedItemSetId = null;
 			}
 			if ((actionElement.indexOf("testSessionSortColumn") != -1) ||
 					(actionElement.indexOf("testSessionSortOrderBy") != -1)) {
