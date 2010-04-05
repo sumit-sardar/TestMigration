@@ -103,13 +103,13 @@ public class CustomerServiceSearchUtils {
 		PagerSummary pagerSummary = new PagerSummary();
 		pagerSummary.setCurrentPage(pageRequested);        
 		pagerSummary.setTotalObjects(sstData.getFilteredCount());
-		pagerSummary.setTotalPages(sstData.getFilteredPages());
+		pagerSummary.setTotalPages(sstData.getTotalPages());
 		pagerSummary.setTotalFilteredObjects(null);        
 		return pagerSummary;
 	}
 	
 	/*
-	 * Put all the customer details in the list
+	 * Put all the customer detals in the list
 	 */
 	public static List buildTestSessionList (TestSessionData testSessionData) {
 
@@ -135,7 +135,7 @@ public class CustomerServiceSearchUtils {
 	}
 
 	/*
-	 * Put all the customer details in the list
+	 * Put all the customer detals in the list
 	 */
 	public static List buildTestDeliveritemList (ScheduleElementData scheduleElementData) {
 
@@ -161,7 +161,7 @@ public class CustomerServiceSearchUtils {
 	}
 
 	/*
-	 * Put all the student details in the list
+	 * Put all the student detals in the list
 	 */
 	public static List buildStudentList (StudentData studentData) {
 
@@ -264,7 +264,7 @@ public class CustomerServiceSearchUtils {
 						FilterSortPageUtils. testStatus_StringToCode (studentSessionStatusVO.getCompletionStatus()));
 
 				auditFileReopenSubtest.setItemSetTDId(studentSessionStatusVO.getItemSetId());
-				auditFileReopenSubtest.setItemSetTSId(Integer. valueOf (itemTsSetId));
+				auditFileReopenSubtest.setItemSetTSId(Integer.valueOf(itemTsSetId));
 				auditFileReopenSubtest.setCreatedBy(user.getUserId());
 
 				auditFileReopenSubtest.setCreatedDateTime( new  Date());

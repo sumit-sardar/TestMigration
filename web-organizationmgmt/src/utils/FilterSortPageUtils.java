@@ -29,7 +29,7 @@ public class FilterSortPageUtils
     public static final String FILTERTYPE_SHOWALL = "Show all";
     public static final String FILTERTYPE_COMPLETED = "Completed";
     public static final String FILTERTYPE_INCOMPLETE = "Incomplete";
-    public static final String FILTERTYPE_INPROGRESS = "In progress";
+    public static final String FILTERTYPE_INPROGRESS = "In Progress";
     public static final String FILTERTYPE_NOTTAKEN = "Not taken";
     public static final String FILTERTYPE_SCHEDULED = "Scheduled";
     public static final String FILTERTYPE_STUDENTSTOP = "Student stop";
@@ -70,6 +70,7 @@ public class FilterSortPageUtils
     
     // Page
     public static final int PAGESIZE_1 = 1;
+    public static final int PAGESIZE_2 = 2;
     public static final int PAGESIZE_3 = 3;
     public static final int PAGESIZE_5 = 5;
     public static final int PAGESIZE_8 = 8;
