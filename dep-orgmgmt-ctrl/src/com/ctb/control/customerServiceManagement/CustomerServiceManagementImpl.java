@@ -17,7 +17,6 @@ import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentSessionStatusData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
-import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.customerServiceManagement.StudentDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
@@ -350,7 +349,7 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 	 * @throws CTBBusinessException
      */
 	
-	public void reopenSubtest(AuditFileReopenSubtest [] auditFileReopenSubtest,User user)
+	public void reopenSubtest(AuditFileReopenSubtest [] auditFileReopenSubtest)
 			throws CTBBusinessException { 
 		
 		try {
