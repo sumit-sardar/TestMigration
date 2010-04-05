@@ -1,11 +1,13 @@
 package com.ctb.control.db; 
 
-import com.bea.control.*;
-import org.apache.beehive.controls.system.jdbc.JdbcControl;
-import com.ctb.bean.testAdmin.ProgramStatusSession;
-import com.ctb.bean.testAdmin.RosterElement; 
-import java.sql.SQLException; 
+import java.sql.SQLException;
+import java.util.Date;
+
 import org.apache.beehive.controls.api.bean.ControlExtension;
+import org.apache.beehive.controls.system.jdbc.JdbcControl;
+
+import com.ctb.bean.testAdmin.ProgramStatusSession;
+import com.ctb.bean.testAdmin.RosterElement;
 
 /** 
  * Defines a new database control. 
@@ -521,8 +523,8 @@ public interface TestRoster extends JdbcControl
     ProgramStatusSession [] getProgramStatusSessions(Integer programId, Integer orgNodeId, Integer itemSetIdTC, Integer itemSetIdTS, String status) throws SQLException;
     
     
-    @JdbcControl.SQL(statement = "update test_roster set test_completion_status = 'IN' where test_roster_id = {testRosterId}")
-    void updateTestRosterForReopen(java.lang.Integer testRosterId) throws SQLException;
+    @JdbcControl.SQL(statement = "update test_roster set test_completion_status = 'IN' , updated_by = {updatedBy} , updated_date_time = {completedDateTime}   where test_roster_id = {testRosterId}")
+    void updateTestRosterForReopen(java.lang.Integer testRosterId, java.util.Date completedDateTime, java.lang.Integer updatedBy) throws SQLException;
 
     static final long serialVersionUID = 1L;
 }

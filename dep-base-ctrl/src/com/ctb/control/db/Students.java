@@ -647,8 +647,8 @@ public interface Students extends JdbcControl
      * where 
      *      student_id = {studentId}::
      */
-	@JdbcControl.SQL(statement = "update student set active_session = 'F' where student_id = {studentId}")
-    void updateStudentActiveSessionFlag ( java.lang.Integer studentId) throws SQLException;
+	@JdbcControl.SQL(statement = "update student set active_session = 'F' ,updated_by = {updatedBy} , updated_date_time = {completedDateTime} where student_id = {studentId}")
+    void updateStudentActiveSessionFlag ( java.lang.Integer studentId,java.util.Date completedDateTime, java.lang.Integer updatedBy) throws SQLException;
     
 	static final long serialVersionUID = 1L;
 
