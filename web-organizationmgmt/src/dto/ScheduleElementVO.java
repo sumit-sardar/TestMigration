@@ -18,6 +18,7 @@ public class ScheduleElementVO extends SanitizedFormField
      private String sessionDefault;
      private String itemSetName;
      private Integer orgNodeId;
+     private Integer customerId;
      
      
      public ScheduleElementVO() {
@@ -33,6 +34,7 @@ public class ScheduleElementVO extends SanitizedFormField
  		this.tested = scheduleElement.getTested();
  		this.orgNodeId = scheduleElement.getCreatorOrgNodeId();
  		this.itemSetName = scheduleElement.getItemSetName();
+ 		this.customerId = scheduleElement.getCustomerId();
 
  	}
 
@@ -163,5 +165,19 @@ public class ScheduleElementVO extends SanitizedFormField
 	 */
 	public void setOrgNodeId(Integer orgNodeId) {
 		this.orgNodeId = orgNodeId;
+	}
+
+	/**
+	 * @return the customerId
+	 */
+	public Integer getCustomerId() {
+		return customerId;
+	}
+
+	/**
+	 * @param customerId the customerId to set
+	 */
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
 	}
 } 
