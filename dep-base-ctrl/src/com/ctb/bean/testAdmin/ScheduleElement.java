@@ -19,6 +19,7 @@ public class ScheduleElement extends CTBBean
      private String sessionDefault;
      private String itemSetName;
      private Integer creatorOrgNodeId;
+     private Integer customerId;
     
      /**
  	 * @return Returns the itemSetForm.
@@ -129,5 +130,17 @@ public class ScheduleElement extends CTBBean
 	 */
 	public void setCreatorOrgNodeId(Integer creatorOrgNodeId) {
 		this.creatorOrgNodeId = creatorOrgNodeId;
+	}
+	/**
+	 * @return the customerId
+	 */
+	public Integer getCustomerId() {
+		return customerId;
+	}
+	/**
+	 * @param customerId the customerId to set
+	 */
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
 	}
 } 
