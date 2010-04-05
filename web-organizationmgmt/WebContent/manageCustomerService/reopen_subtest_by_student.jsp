@@ -78,7 +78,8 @@
                      &nbsp;</netui:radioButtonOption>
 
 							</netui:radioButtonGroup></td>
-							<td class="sortable"><netui-data:getData resultId="testAdminId" value="${container.item.testAdminId}" /> <%%>
+							<td class="sortable"><netui-data:getData resultId="testAdminId" value="${container.item.testAdminId}" /> 
+							
 							<netui:span value="${container.item.testAdminName}" defaultValue="&nbsp;" /></td>
 
 							<td class="sortable alignLeft"><netui:span value="${container.item.accessCode}" defaultValue="&nbsp;" /></td>
@@ -123,8 +124,8 @@
 								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StartDateTime">Start Date</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionDateTime">Completion Date</ctb:tableSortColumn></th>
-								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ItemsAnswered">Items Answered</ctb:tableSortColumn></th>
-								<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="TimeSpent">Time Spent</ctb:tableSortColumn></th>
+								<th class="sortable alignLeft" width="30%" nowrap><netui:content value="Items Answered"/></th>
+								<th class="sortable alignLeft" width="30%" nowrap><netui:content value="Time Spent"/></th>
 							</ctb:tableSortColumnGroup>
 						</tr>
 	

@@ -48,7 +48,7 @@
 						</c:if> 
 						<c:if test="${hideProductNameDropDown}">
 							<div class="formValue">
-								<netui:span value="${actionForm.selectedSubtestName}" styleClass="formValue" />
+								<netui:span value="${selectedTestSessionName}" styleClass="formValue" />
 							</div>
 						</c:if>
 					</td>

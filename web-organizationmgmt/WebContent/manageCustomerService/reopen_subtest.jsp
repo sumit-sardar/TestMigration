@@ -46,7 +46,7 @@
 <netui:hidden tagId="testAccessCode" dataSource="actionForm.testAccessCode"/> 
 <netui:hidden tagId="testAdminName" dataSource="actionForm.testAdminName"/>
 <netui:hidden tagId="creatorOrgNodeId" dataSource="actionForm.creatorOrgNodeId"/>
-<netui:hidden tagId="selectedTestSessionId" dataSource="actionForm.selectedTestSessionId"/>
+
 <netui:hidden tagId="testAdminId" dataSource="actionForm.testAdminId"/> 
 <netui:hidden tagId="studentId" dataSource="actionForm.selectedStudentId"/>
 <netui:hidden tagId="studentLoginId" dataSource="actionForm.studentProfile.studentLoginId"/> 
