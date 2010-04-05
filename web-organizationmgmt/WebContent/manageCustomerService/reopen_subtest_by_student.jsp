@@ -22,12 +22,12 @@
 			<BR/><BR/>
 			<table class="transparent">
 				<tr class="transparent">
-					<td class="transparent"><span class="asterisk">*</span>&nbsp;Student Login:</td>
+					<td class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Student Login:</td>
 					<td class="transparent" width="*"><netui:textBox tagId="studentLogin"
 						dataSource="actionForm.studentProfile.studentLoginId" tabindex="1" maxlength="32" /></td>
 				</tr>
 				<tr class="transparent">
-					<td class="transparent">Access Code:</td>
+					<td class="transparent alignRight">Access Code:</td>
 					<td class="transparent" width="*"><netui:textBox tagId="accessCode"
 						dataSource="actionForm.testAccessCode" tabindex="2" maxlength="32" /></td>
 					<td class="transparent" width="*">&nbsp;&nbsp; <netui:button styleClass="button" value="Search" type="submit"
@@ -178,13 +178,13 @@
 							<td class="tableFilter" align="left">
 								<table class="tableFilter" width="300">
 									<tr class="tableFilter">
-										<td class="tableFilter" width="100" align="left">Ticket ID:</td>
+										<td class="tableFilter" width="100" align="right">Ticket ID:</td>
 										<td class="tableFilter" width="*" align="left">
 											<netui:textBox tagId="ticketId" dataSource="actionForm.ticketId" tabindex="4" maxlength="32"/>
 										</td>
 									</tr>
 									<tr class="tableFilter">
-										<td class="tableFilter" width="100" align="left">Requestor:</td>
+										<td class="tableFilter" width="100" align="right">Requestor:</td>
 										<td class="tableFilter" width="*" align="left">
 											<netui:textBox tagId="serviceRequestor"
 												dataSource="actionForm.serviceRequestor" tabindex="5" maxlength="32"/>
@@ -202,10 +202,10 @@
 							<td class="tableFilter" valign="top">
 								<table class="tableFilter">
 									<tr class="tableFilter">
-										<td class="tableFilter" width="100" align="left">Reason for reset:</td>
+										<td class="tableFilter" width="100" align="right">Reason for reset:</td>
 										<td class="tableFilter" rowspan="3" width="*" valign="top">
 											<netui:textArea tagId="requestDescription" rows="3"
-												cols="70" dataSource="actionForm.requestDescription" tabindex="6" onKeyDown="limitText(this,255)"/>
+												cols="50" dataSource="actionForm.requestDescription" tabindex="6" onKeyDown="limitText(this,255)"/>
 										</td>
 									</tr>
 									<tr class="tableFilter"><td class="tableFilter">&nbsp;</td></tr>

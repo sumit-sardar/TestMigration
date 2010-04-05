@@ -74,7 +74,7 @@
         <jsp:include page="/manageCustomerService/reopen_subtest_by_student.jsp" />
     </ctb:case>
     <ctb:case value="moduleTestSession">
-        <jsp:include page="/manageCustomerService/reopen_subtest_by_test_session.jsp" />
+        <jsp:include page="/manageCustomerService/reopen_subtest_by_session.jsp" />
     </ctb:case>
 </ctb:switch>
 
