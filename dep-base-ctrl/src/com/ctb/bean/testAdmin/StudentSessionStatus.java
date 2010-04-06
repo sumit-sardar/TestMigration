@@ -99,7 +99,7 @@ public class StudentSessionStatus extends CTBBean
 	 */
 	public void setTimeSpent(String timeSpent) {
 		
-		String zeroHrs = "00";
+/*		String zeroHrs = "00";
 		String zeroMins = "00";
 		String zeroSecs = "00";
 		String seperator = ":";
@@ -128,7 +128,9 @@ public class StudentSessionStatus extends CTBBean
 			defaultTime = zeroHrs + seperator + zeroMins + seperator + zeroSecs; 
 			
 		}
-		this.timeSpent = defaultTime;
+		this.timeSpent = defaultTime;*/
+		
+		this.timeSpent = timeSpent;
 	}
 	
 	/**
