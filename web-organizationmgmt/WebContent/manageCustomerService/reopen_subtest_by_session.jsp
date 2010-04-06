@@ -84,11 +84,11 @@
 							orderByDataSource="actionForm.studentSortOrderBy" anchorName="studentSearchResult">
 							<th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['common.column.select']}" /></th>
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
-							<th class="sortable alignCenter" width="15%" nowrap><ctb:tableSortColumn value="StudentLoginName">Login Name</ctb:tableSortColumn></th>
-							<th class="sortable alignCenter" width="15%" nowrap><ctb:tableSortColumn value="ExternalStudentId">Student ID</ctb:tableSortColumn></th>
-							<th class="sortable alignCenter" width="15%" nowrap><netui:content value="Organization"/></th>
-							<th class="sortable alignCenter" width="30%" nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn></th>
-							<th class="sortable alignCenter" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn></th>
+							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentLoginName">Login Name</ctb:tableSortColumn></th>
+							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="ExternalStudentId">Student ID</ctb:tableSortColumn></th>
+							<th class="sortable alignLeft" width="15%" nowrap><netui:content value="Organization"/></th>
+							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn></th>
+							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn></th>
 						</ctb:tableSortColumnGroup>
 					</tr>
 
@@ -109,11 +109,11 @@
 							</c:if>
 						</netui:checkBoxGroup></td>
 						<td class="sortable alignLeft"><netui:span value="${container.item.studentName}" /></td>
-						<td class="sortable alignCenter"><netui:span value="${container.item.studentLoginName}" /></td>
-						<td class="sortable alignCenter"><netui:span value="${container.item.externalStudentId}" /></td>
-						<td class="sortable alignCenter"><netui:span value="${container.item.org_name}" /></td>
-						<td class="sortable alignCenter"><netui:span value="${container.item.itemSetName}" /></td>
-						<td class="sortable alignCenter"><netui:span value="${container.item.completionStatus}" /></td>
+						<td class="sortable alignLeft"><netui:span value="${container.item.studentLoginName}" /></td>
+						<td class="sortable alignLeft"><netui:span value="${container.item.externalStudentId}" /></td>
+						<td class="sortable alignLeft"><netui:span value="${container.item.org_name}" /></td>
+						<td class="sortable alignLeft"><netui:span value="${container.item.itemSetName}" /></td>
+						<td class="sortable alignLeft"><netui:span value="${container.item.completionStatus}" /></td>
 					</tr>
 
 				</netui-data:repeaterItem>
@@ -198,7 +198,7 @@
 							orderByDataSource="actionForm.studentStatusSortOrderBy" anchorName="studentStatusSearchResult">
 							<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="StudentLoginName">Student</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn></th>
-							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn>
+							<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn>
 							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="StartDateTime">Start Date</ctb:tableSortColumn>
 							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="CompletionDateTime">Completion Date</ctb:tableSortColumn>
 							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="ItemAnswered">Item Answered</ctb:tableSortColumn>
@@ -211,8 +211,8 @@
 				<netui-data:repeaterItem>
 					<tr class="tableFilter">
 						<td class="sortable alignLeft"><netui:span value="${container.item.studentLoginName}" /></td>
-						<td class="sortable alignCenter"><netui:span value="${container.item.itemSetName}" /></td>
-						<td class="sortable alignCenter"><netui:span value="${container.item.completionStatus}" /></td>
+						<td class="sortable alignLeft"><netui:span value="${container.item.itemSetName}" /></td>
+						<td class="sortable alignLeft"><netui:span value="${container.item.completionStatus}" /></td>
 						<td class="sortable alignCenter"><netui:span value="${container.item.startDateTime}" /></td>
 						<td class="sortable alignCenter"><netui:span value="${container.item.completionDateTime}" /></td>
 						<td class="sortable alignCenter"><netui:span value="${container.item.itemAnswered}" /></td>

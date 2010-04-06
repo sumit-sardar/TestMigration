@@ -53,13 +53,13 @@
 								<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="TestAdminName">
 									<netui:content value="${bundle.web['common.column.sessionName']}" />
 								</ctb:tableSortColumn></th>
-								<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="AccessCode">
+								<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="AccessCode">
 									<netui:content value="${bundle.web['common.column.accessCode']}" />
 								</ctb:tableSortColumn></th>
-								<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="TestName">
+								<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="TestName">
 									<netui:content value="${bundle.web['common.column.testName']}" />
 								</ctb:tableSortColumn></th>
-								<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="Scheduler">
+								<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="Scheduler">
 									<netui:content value="${bundle.web['common.column.scheduler']}" />
 								</ctb:tableSortColumn></th>
 							</ctb:tableSortColumnGroup>
@@ -77,9 +77,9 @@
 
 							</netui:radioButtonGroup></td>
 							<td class="sortable alignLeft"><netui:span value="${container.item.testAdminName}" defaultValue="&nbsp;" /></td>
-							<td class="sortable alignCenter"><netui:span value="${container.item.accessCode}" defaultValue="&nbsp;" /></td>
-							<td class="sortable alignCenter"><netui:span value="${container.item.testName}" defaultValue="&nbsp;" /></td>
-							<td class="sortable alignCenter"><netui:span value="${container.item.scheduler}" defaultValue="&nbsp;">
+							<td class="sortable alignLeft"><netui:span value="${container.item.accessCode}" defaultValue="&nbsp;" /></td>
+							<td class="sortable alignLeft"><netui:span value="${container.item.testName}" defaultValue="&nbsp;" /></td>
+							<td class="sortable alignLeft"><netui:span value="${container.item.scheduler}" defaultValue="&nbsp;">
 
 							</netui:span></td>
 						</tr>
@@ -116,7 +116,7 @@
 								orderByDataSource="actionForm.subtestSortOrderBy" anchorName="subtestSearchResult">
 								<th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['common.column.select']}" /></th>
 								<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="ItemSetName"><netui:content value="${bundle.web['test.label.sectionName']}" /></ctb:tableSortColumn></th>
-								<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="CompletionStatus"><netui:content value="${bundle.web['test.label.sectionStatus']}" /></ctb:tableSortColumn></th>
+								<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="CompletionStatus"><netui:content value="${bundle.web['test.label.sectionStatus']}" /></ctb:tableSortColumn></th>
 								<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="StartDateTime"><netui:content value="${bundle.web['test.label.startDate']}" /></ctb:tableSortColumn></th>
 								<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="CompletionDateTime"><netui:content value="${bundle.web['test.label.completionDate']}" /></ctb:tableSortColumn></th>
 								<th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['test.label.itemsAnswered']}" /></th>
@@ -139,8 +139,8 @@
 							</c:if>
 							
 							</netui:radioButtonGroup></td>
-							<td class="sortable"><netui:span value="${container.item.itemSetName}" /></td>
-							<td class="sortable alignCenter"><netui:span value="${container.item.completionStatus}" /></td>
+							<td class="sortable alignLeft"><netui:span value="${container.item.itemSetName}" /></td>
+							<td class="sortable alignLeft"><netui:span value="${container.item.completionStatus}" /></td>
 							<td class="sortable alignCenter"><netui:span value="${container.item.startDateTime}"  defaultValue="--"/></td>
 							<td class="sortable alignCenter"><netui:span value="${container.item.completionDateTime}"  defaultValue="--"/></td>
 							<td class="sortable alignCenter"><netui:span value="${container.item.itemAnswered}" /></td>
