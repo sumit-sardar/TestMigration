@@ -476,7 +476,7 @@ function verifyExitAddOrganization(){
 }
 
 function verifyExitReopenTestSession(){
-    return confirm("Click 'OK' to quit reset test session. Any changes you've made will be lost.");
+    return confirm("Click 'OK' to quit resetting test session. Any changes you've made will be lost.");
 }
 
 function showLegend(elementId, tokens) {
