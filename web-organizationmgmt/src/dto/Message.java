@@ -161,16 +161,21 @@ public class Message implements java.io.Serializable
     public static final String FIND_TEST_SESSION_TITLE      = "Find Test Session";
     public static final String STUDENT_LOGIN_ID 			= "Student Login";
     public static final String STUDENT_TEST_ACCESS_CODE 	= "Access Code";
-    public static final String FIND_NO_TESTDATA_RESULT      = "No Test Session found";
+    public static final String FIND_NO_TESTDATA_RESULT      = "There is no Test Session to match your search criteria.";
+    public static final String FIND_NO_STUDENT_DATA         = "Student not found in subtest.";
+    public static final String FIND_NO_SUBTEST_DATA_RESULT  = "Student not found in test session. ";
 
-    public static final String TEST_ROSTER_UPDATION_TITLE  = "Test Roster Updation";	
+    public static final String TEST_ROSTER_UPDATION_TITLE  = "Reset Test Session";	
     public static final String TEST_ROSTER_UPDATION_FAILED  = "Test Roster Updation Failed";	
-    public static final String TEST_ROSTER_UPDATION_SUCCESS	= "Test Roster Updated Successfully";
+    public static final String TEST_ROSTER_UPDATION_SUCCESS	= "has been reset successfully for";
     public static final String FIND_STUDENT_ERROR			= "Student Not Found";
+    public static final String TEST_STUDENT_UPDATION_SUCESS = "has been reset successfully for all selected students.";
 
     public static final String TEST_TICKET_ID  			= "Ticket ID";	
     public static final String TEST_REQUEST_DESCRIPTION	= "Reason for reset";
     public static final String TEST_SERVICE_REQUESTOR	= "Requestor";
+    public static final String TEST_RESET_FAILED ="Subtest failed to reset.";
+    
 
     public Message() {
         this.title = "";

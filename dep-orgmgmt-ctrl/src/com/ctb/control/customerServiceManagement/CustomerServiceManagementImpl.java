@@ -90,13 +90,13 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 			studentDataNotFoundException.setStackTrace(e.getStackTrace());
 			throw studentDataNotFoundException;
 		} 
-		finally {
+		/*finally {
 			if(student == null) {
 				StudentDataNotFoundException studentDataNotFoundException = 
 					new StudentDataNotFoundException
 					("FindStudentforTestSession.Failed");
 				throw studentDataNotFoundException;			}
-		}
+		}*/
 		return student;
 	}
 

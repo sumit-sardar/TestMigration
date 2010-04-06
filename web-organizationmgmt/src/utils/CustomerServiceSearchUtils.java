@@ -2,6 +2,8 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import com.ctb.bean.request.FilterParams;
@@ -19,6 +21,8 @@ import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.control.customerServiceManagement.CustomerServiceManagement;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.request.InvalidPageRequestedException;
+import com.ctb.exception.request.InvalidSortFieldException;
 import com.ctb.widgets.bean.PagerSummary;
 
 import dto.ScheduleElementVO;
@@ -107,9 +111,9 @@ public class CustomerServiceSearchUtils {
 		pagerSummary.setTotalFilteredObjects(null);        
 		return pagerSummary;
 	}
-	
+
 	/*
-	 * Put all the customer detals in the list
+	 * Put all the customer details in the list
 	 */
 	public static List buildTestSessionList (TestSessionData testSessionData) {
 
@@ -135,7 +139,7 @@ public class CustomerServiceSearchUtils {
 	}
 
 	/*
-	 * Put all the customer detals in the list
+	 * Put all the customer details in the list
 	 */
 	public static List buildTestDeliveritemList (ScheduleElementData scheduleElementData) {
 
@@ -161,7 +165,7 @@ public class CustomerServiceSearchUtils {
 	}
 
 	/*
-	 * Put all the student detals in the list
+	 * Put all the student details in the list
 	 */
 	public static List buildStudentList (StudentData studentData) {
 
@@ -214,13 +218,13 @@ public class CustomerServiceSearchUtils {
 
 						StudentSessionStatusVO subtestDetails =
 							new StudentSessionStatusVO(subtest);
-						
+
 						if (subtest.getStudentId() != null && subtest.getItemSetId() != null) {
-							
+
 							subtestDetails.setStudentItemId(
 									subtest.getStudentId().toString().concat("_").concat(subtest.getItemSetId().toString()));
 						}
-	
+
 						if(subtest.getCompletionDateTime() != null) {
 							subtestDetails.setCompletionDateTime(
 									getAdjustedDateTime(subtest.getCompletionDateTime(),timeZone));
@@ -272,12 +276,12 @@ public class CustomerServiceSearchUtils {
 				auditFileReopenSubtest.setReasonForRequest(requestDescription);
 				auditFileReopenSubtest.setRequestorName(serviceRequestor);
 				if (studentSessionStatusVO.getStudentId() != null) {//condition true for test session
-					
+
 					auditFileReopenSubtest.setStudentId(studentSessionStatusVO.getStudentId());
 				} else {
 					auditFileReopenSubtest.setStudentId(studentId);
 				}
-				
+
 				auditFileReopenSubtest.setTestAdminId(testAdminId);
 				auditFileReopenSubtest.setTicketId(ticketId);
 				auditFileReopenSubtest.setOrgNodeId(creatorOrgId);
@@ -296,5 +300,67 @@ public class CustomerServiceSearchUtils {
 		String startDate = DateUtils.formatDateToDateString(adjStartDate,DATE_FORMAT);
 		String startTime = DateUtils.formatDateToTimeString(adjStartDate);                                
 		return startDate + " " + startTime	;	
-	}	
+	}
+
+	public static StudentSessionStatusData getStudentSessionStatus(HashMap studentStatusData,PageParams page,SortParams sort) {
+
+		StudentSessionStatus[] result = new StudentSessionStatus[studentStatusData.size()];
+		StudentSessionStatusData studentSessionStatusData = null;
+		int i=0;
+		for (Iterator it = studentStatusData.keySet().iterator(); it.hasNext(); )
+		{
+			StudentSessionStatusVO studentSessionStatusVO = (StudentSessionStatusVO)studentStatusData.get(it.next());
+			StudentSessionStatus studentSessionStatus = new StudentSessionStatus();
+			studentSessionStatus.setStudentLoginName(studentSessionStatusVO.getStudentLoginName());
+			studentSessionStatus.setCompletionStatus(studentSessionStatusVO.getCompletionStatus());
+			studentSessionStatus.setStartDateTime(studentSessionStatusVO.getTestStartDate());
+			studentSessionStatus.setCompletionDateTime(studentSessionStatusVO.getTestEndDate());
+			studentSessionStatus.setItemAnswered(studentSessionStatusVO.getItemAnswered());
+			studentSessionStatus.setItemSetName(studentSessionStatusVO.getItemSetName());
+			studentSessionStatus.setTimeSpent(studentSessionStatusVO.getTimeSpent());
+			studentSessionStatus.setItemSetId(studentSessionStatusVO.getItemSetId());
+			studentSessionStatus.setExternalStudentId(studentSessionStatusVO.getItemAnswered());
+			studentSessionStatus.setItemAnswered(studentSessionStatusVO.getItemAnsweredByStudent());
+			studentSessionStatus.setItemSetOrder(studentSessionStatusVO.getItemSetOrder());
+			studentSessionStatus.setMaxScore(studentSessionStatusVO.getMaxScore());
+			studentSessionStatus.setOrg_name(studentSessionStatusVO.getOrg_name());
+			studentSessionStatus.setTestRosterId(studentSessionStatusVO.getTestRosterId());
+			studentSessionStatus.setRawScore(studentSessionStatusVO.getRawScore());
+			studentSessionStatus.setStudentId(studentSessionStatusVO.getStudentId());
+			studentSessionStatus.setStudentLoginName(studentSessionStatusVO.getStudentLoginName());
+			studentSessionStatus.setStudentName(studentSessionStatusVO.getStudentName());
+			studentSessionStatus.setTestAccessCode(studentSessionStatusVO.getTestAccessCode());
+			studentSessionStatus.setTotalItem(studentSessionStatusVO.getTotalItem());
+			
+			result[i] = studentSessionStatus;
+			i++;
+		}
+		
+			studentSessionStatusData = new StudentSessionStatusData();
+			studentSessionStatusData.setStudentSessionStatuses(result,page.getPageSize() );
+		
+		
+			if (page != null && studentSessionStatusData != null) {
+				try {
+					studentSessionStatusData.applyPaging(page);
+					
+				} catch (InvalidPageRequestedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			if (sort != null && studentSessionStatusData != null) {
+				try {
+					studentSessionStatusData.applySorting(sort);
+				} catch (InvalidSortFieldException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		
+		
+		return studentSessionStatusData;
+	}
+
 }

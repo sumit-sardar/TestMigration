@@ -47,7 +47,7 @@
 						</c:if> 
 						<c:if test="${hideProductNameDropDown}">
 							<div class="formValue">
-								<netui:span value="${selectedTestSessionName}" styleClass="formValue" />
+								<netui:span value="${selectedItemSetName}" styleClass="formValue" />
 							</div>
 						</c:if>
 					</td>
@@ -56,9 +56,11 @@
 		</c:if> 
 		<!-- START: Student search result -->
 		<c:if test="${pageFlow.studentStatusDetailsList != null}">
+		<a name="studentSearchResult"></a>
 		<BR />
 		<BR />		
 		<b>Step3:</b> Select one or more students to reset for the selected section.
+		<BR />
 		<BR />
 		<table class="sortable">
 			<tr class="sortable">
@@ -82,11 +84,11 @@
 							orderByDataSource="actionForm.studentSortOrderBy" anchorName="studentSearchResult">
 							<th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['common.column.select']}" /></th>
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentLoginName">Login Name</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="ExternalStudentId">Student ID</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="15%" nowrap><netui:content value="Organization"/></th>
-							<th class="sortable alignLeft" width="30%" nowrap><netui:content value="Section Name"/></th>
-							<th class="sortable alignLeft" width="30%" nowrap><netui:content value="Section Status"/></th>
+							<th class="sortable alignCenter" width="15%" nowrap><ctb:tableSortColumn value="StudentLoginName">Login Name</ctb:tableSortColumn></th>
+							<th class="sortable alignCenter" width="15%" nowrap><ctb:tableSortColumn value="ExternalStudentId">Student ID</ctb:tableSortColumn></th>
+							<th class="sortable alignCenter" width="15%" nowrap><netui:content value="Organization"/></th>
+							<th class="sortable alignCenter" width="30%" nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn></th>
+							<th class="sortable alignCenter" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn></th>
 						</ctb:tableSortColumnGroup>
 					</tr>
 
@@ -103,15 +105,15 @@
 							</c:if>
 							<c:if
 								test="${container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress'}">
-								<netui:checkBoxOption value="${container.item.studentItemId}" disabled="false">&nbsp;</netui:checkBoxOption>
+								<netui:checkBoxOption value="${container.item.studentItemId}" disabled="false" onClick="toggleShowButton(this);">&nbsp;</netui:checkBoxOption>
 							</c:if>
 						</netui:checkBoxGroup></td>
-						<td class="sortable"><netui:span value="${container.item.studentName}" /></td>
-						<td class="sortable"><netui:span value="${container.item.studentLoginName}" /></td>
-						<td class="sortable"><netui:span value="${container.item.externalStudentId}" /></td>
-						<td class="sortable"><netui:span value="${container.item.org_name}" /></td>
-						<td class="sortable"><netui:span value="${container.item.itemSetName}" /></td>
-						<td class="sortable"><netui:span value="${container.item.completionStatus}" /></td>
+						<td class="sortable alignLeft"><netui:span value="${container.item.studentName}" /></td>
+						<td class="sortable alignCenter"><netui:span value="${container.item.studentLoginName}" /></td>
+						<td class="sortable alignCenter"><netui:span value="${container.item.externalStudentId}" /></td>
+						<td class="sortable alignCenter"><netui:span value="${container.item.org_name}" /></td>
+						<td class="sortable alignCenter"><netui:span value="${container.item.itemSetName}" /></td>
+						<td class="sortable alignCenter"><netui:span value="${container.item.completionStatus}" /></td>
 					</tr>
 
 				</netui-data:repeaterItem>
@@ -124,7 +126,7 @@
 					</tr>
 					<tr class="sortable">
 						<td class="sortable" colspan="7"><netui:button styleClass="button" tagId="showDetails"
-							value="${bundle.widgets['button.showDetails']}" type="submit"
+							value="${bundle.widgets['button.showDetails']}" type="submit" disabled="${requestScope.disableShowDetailsButton}"
 							onClick="setElementValue('currentAction', 'showDetails');" /></td>
 					</tr>
 				</netui-data:repeaterFooter>
@@ -136,7 +138,7 @@
 	<!-- END: Student search result -->
 
 	<c:if test="${pageFlow.showStudentDeatilsList != null}">
-		<a name="subtestDetailsResult"></a>
+		<a name="studentStatusSearchResult"></a>
 		<BR />
 		<BR />
 		<b>Step 4:</b> Provide reset request information. Enter a brief description of the reason for the request to reset.
@@ -144,7 +146,7 @@
 		<BR />
 		<table class="sortable">
 				<tr class="sortable">
-					<td class="sortableControls" colspan="6">
+					<td class="sortableControls" colspan="7">
 					<table class="tableFilter">
 						<tr class="tableFilter">
 							<td class="tableFilter">
@@ -192,14 +194,15 @@
 			<netui-data:repeater dataSource="pageFlow.showStudentDeatilsList">
 				<netui-data:repeaterHeader>
 					<tr class="sortable">
-						<ctb:tableSortColumnGroup columnDataSource="actionForm.subtestSortColumn"
-							orderByDataSource="actionForm.subtestSortOrderBy" anchorName="subtestStatusSearchResult">
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentLoginName">Student</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StartDateTime">Start Date</ctb:tableSortColumn>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="CompletionDateTime">Completion Date</ctb:tableSortColumn>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="ItemAnswered">Item Answered</ctb:tableSortColumn>
-							<th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="TimeSpent">Time Spent</ctb:tableSortColumn>
+						<ctb:tableSortColumnGroup columnDataSource="actionForm.studentStatusSortColumn"
+							orderByDataSource="actionForm.studentStatusSortOrderBy" anchorName="studentStatusSearchResult">
+							<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="StudentLoginName">Student</ctb:tableSortColumn></th>
+							<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn></th>
+							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn>
+							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="StartDateTime">Start Date</ctb:tableSortColumn>
+							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="CompletionDateTime">Completion Date</ctb:tableSortColumn>
+							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="ItemAnswered">Item Answered</ctb:tableSortColumn>
+							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="TimeSpent">Time Spent</ctb:tableSortColumn>
 						</ctb:tableSortColumnGroup>
 					</tr>
 
@@ -207,12 +210,13 @@
 				</netui-data:repeaterHeader>
 				<netui-data:repeaterItem>
 					<tr class="tableFilter">
-						<td class="sortable"><netui:span value="${container.item.studentLoginName}" /></td>
-						<td class="sortable"><netui:span value="${container.item.completionStatus}" /></td>
-						<td class="sortable"><netui:span value="${container.item.startDateTime}" /></td>
-						<td class="sortable"><netui:span value="${container.item.completionDateTime}" /></td>
-						<td class="sortable"><netui:span value="${container.item.itemAnswered}" /></td>
-						<td class="sortable"><netui:span value="${container.item.timeSpent}" /></td>
+						<td class="sortable alignLeft"><netui:span value="${container.item.studentLoginName}" /></td>
+						<td class="sortable alignCenter"><netui:span value="${container.item.itemSetName}" /></td>
+						<td class="sortable alignCenter"><netui:span value="${container.item.completionStatus}" /></td>
+						<td class="sortable alignCenter"><netui:span value="${container.item.startDateTime}" /></td>
+						<td class="sortable alignCenter"><netui:span value="${container.item.completionDateTime}" /></td>
+						<td class="sortable alignCenter"><netui:span value="${container.item.itemAnswered}" /></td>
+						<td class="sortable alignCenter"><netui:span value="${container.item.timeSpent}" /></td>
 
 					</tr>
 
@@ -222,8 +226,8 @@
 
 					<tr class="sortable">
 						<td class="sortableControls" colspan="7"><ctb:tablePager dataSource="actionForm.studentStatusPageRequested"
-							summary="request.subtestDetailsPagerSummary" objectLabel="${bundle.oas['object.students']}" foundLabel="Found"
-							id="studentStatusSearchResult" anchorName="studentStatusSearchResult" /></td>
+							summary="request.studentStatusDetailsPagerSummary" objectLabel="${bundle.oas['object.students']}" foundLabel="Found"
+							id="studentStatusDetailsSearchResult" anchorName="studentStatusDetailsSearchResult" /></td>
 					</tr>
 
 				</netui-data:repeaterFooter>
@@ -240,5 +244,10 @@
 <c:if test="${searchResultEmpty != null}">
 	<ctb:message title="Search Result" style="informationMessage">
 		<netui:content value="${requestScope.searchResultEmpty}" />
+	</ctb:message>
+</c:if>
+<c:if test="${searchResultForStudent != null}">
+	<ctb:message title="Student Not Found" style="informationMessage">
+		<netui:content value="${requestScope.searchResultForStudent}" />
 	</ctb:message>
 </c:if>

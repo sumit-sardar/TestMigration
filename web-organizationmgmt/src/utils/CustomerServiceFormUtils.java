@@ -112,6 +112,12 @@ public class CustomerServiceFormUtils {
 				invalidCharFieldCount += 1;            
 				invalidCharFields = buildErrorString(Message.STUDENT_LOGIN_ID, invalidCharFieldCount, invalidCharFields);       
 			}
+
+			if (! WebUtils.validString(testAccessCode) && testAccessCode != null ) {
+				invalidCharFieldCount += 1;            
+				invalidCharFields = buildErrorString(Message.STUDENT_TEST_ACCESS_CODE, invalidCharFieldCount, invalidCharFields);       
+			}
+			
 		}
 	
 		if(form.getSelectedTab().equals("moduleTestSession")) { 
@@ -128,11 +134,6 @@ public class CustomerServiceFormUtils {
 		serviceRequestor = form.getServiceRequestor() != null ? form.getServiceRequestor().trim() : null;
 		requestDescription = form.getRequestDescription() != null ? form.getRequestDescription().trim() : null;
 
-		if (! WebUtils.validString(testAccessCode) && testAccessCode != null ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString(Message.STUDENT_TEST_ACCESS_CODE, invalidCharFieldCount, invalidCharFields);       
-		}
-		
 		if (ticketId != null  && ! WebUtils.validString(ticketId) ) {
 			invalidCharFieldCount += 1;            
 			invalidCharFields = buildErrorString(Message.TEST_TICKET_ID, invalidCharFieldCount, invalidCharFields);       

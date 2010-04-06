@@ -37,6 +37,7 @@ public class StudentSessionStatus extends CTBBean
     private Integer studentId;
     private String org_name;
 	private String testAccessCode;
+	private Integer orgNodeId;
     
     
     /**
@@ -97,8 +98,39 @@ public class StudentSessionStatus extends CTBBean
 	 * @param timeSpent The timeSpent to set.
 	 */
 	public void setTimeSpent(String timeSpent) {
-		this.timeSpent = timeSpent;
+		
+		String zeroHrs = "00";
+		String zeroMins = "00";
+		String zeroSecs = "00";
+		String seperator = ":";
+		String defaultTime = "00:00:00";
+		Integer initialTime = Integer.valueOf(timeSpent) ;
+		
+		if(initialTime != 0){
+			
+			Integer hours = initialTime / 60;
+			Integer remainder = initialTime % 60;
+			Integer minutes = initialTime;
+			
+			if ( initialTime >60)
+				minutes = remainder * 60;
+			
+			
+			zeroHrs = hours.toString();
+			zeroMins = minutes.toString();
+			
+			if(hours < 10)
+				zeroHrs = "0" + hours ;
+			
+			if(minutes < 10)
+				zeroMins = "0" + minutes ;
+			
+			defaultTime = zeroHrs + seperator + zeroMins + seperator + zeroSecs; 
+			
+		}
+		this.timeSpent = defaultTime;
 	}
+	
 	/**
 	 * @return Returns the rawScore.
 	 */
@@ -351,6 +383,18 @@ public class StudentSessionStatus extends CTBBean
 	 */
 	public void setTestAccessCode(String testAccessCode) {
 		this.testAccessCode = testAccessCode;
+	}
+	/**
+	 * @return the orgNodeId
+	 */
+	public Integer getOrgNodeId() {
+		return orgNodeId;
+	}
+	/**
+	 * @param orgNodeId the orgNodeId to set
+	 */
+	public void setOrgNodeId(Integer orgNodeId) {
+		this.orgNodeId = orgNodeId;
 	}
 
 } 

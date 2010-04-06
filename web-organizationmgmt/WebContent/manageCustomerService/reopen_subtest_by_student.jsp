@@ -256,7 +256,7 @@
 							</tr>
 							<tr class="transparent">
 								<td class="transparent"><netui:span value="${bundle.web['test.label.id']}:" /></td>
-								<td class="transparent"><netui:span value="${selectedTestSessionId}" /></td>
+								<td class="transparent"><netui:span value="${selectedTestSessionNumber}" /></td>
 							</tr>
 						</table>
 					</td>
@@ -290,8 +290,8 @@
 
 <br/>
 <a name="testSessionSearchResult"></a>
-<c:if test="${searchResultEmpty != null}">
-	<ctb:message title="Search Result" style="informationMessage">
-		<netui:content value="${requestScope.searchResultEmpty}" />
+<c:if test="${studentResultEmpty != null}">
+	<ctb:message title="Student Not Found" style="informationMessage">
+		<netui:content value="${requestScope.studentResultEmpty}" />
 	</ctb:message>
 </c:if>

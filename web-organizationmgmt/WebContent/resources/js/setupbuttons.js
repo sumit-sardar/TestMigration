@@ -89,6 +89,36 @@ function enableAllButtons()
     element4.removeAttribute("disabled"); 
     var element5 = document.getElementById("manageOrg");
     element5.removeAttribute("disabled"); 
+   
+}
+
+function toggleShowButton(element) {
+	var showButton = document.getElementById("showDetails");
+	var eName = element.name;
+	var allElements = document.getElementsByName(eName);
+    
+    if(element.checked) {
+    	showButton.removeAttribute("disabled");
+    } 
+    else {
+    	if(!hasSelectedElements(allElements)) {
+    		showButton.setAttribute("disabled",true);
+    	}
+    }
+}
+
+function hasSelectedElements(allElements) {
+	var selectedCount = 0;
+	var sElement = null;
+
+	for (var i = 0; i < allElements.length; i++) {
+
+		sElement = allElements[i];
+		if(sElement.checked) {
+			selectedCount++;						
+		}
+	}
+	return selectedCount > 0;
 }
 
 function enableButton(tokens, elementId) {   

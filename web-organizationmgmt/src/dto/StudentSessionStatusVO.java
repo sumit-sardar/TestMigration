@@ -39,6 +39,9 @@ public class StudentSessionStatusVO implements java.io.Serializable
 	private String testAccessCode;
 	private String studentItemId;
 	private Integer orgNodeId;
+	private String itemAnsweredByStudent;
+	private Date testStartDate;
+	private Date testEndDate;
 
     public StudentSessionStatusVO() {
 	}
@@ -70,6 +73,10 @@ public class StudentSessionStatusVO implements java.io.Serializable
 	    this.externalStudentId  = sst.getExternalStudentId();
 	    this.org_name			= 	sst.getOrg_name();
 		this.testAccessCode     =   sst.getTestAccessCode();
+		this.itemAnsweredByStudent = sst.getItemAnswered();
+		this.testStartDate = sst.getStartDateTime();
+		this.testEndDate = sst.getCompletionDateTime();
+		
 	}    
 	
 	/**
@@ -383,6 +390,48 @@ public class StudentSessionStatusVO implements java.io.Serializable
 	 */
 	public void setStudentItemId(String studentItemId) {
 		this.studentItemId = studentItemId;
+	}
+
+	/**
+	 * @return the itemAnsweredByStudent
+	 */
+	public String getItemAnsweredByStudent() {
+		return itemAnsweredByStudent;
+	}
+
+	/**
+	 * @param itemAnsweredByStudent the itemAnsweredByStudent to set
+	 */
+	public void setItemAnsweredByStudent(String itemAnsweredByStudent) {
+		this.itemAnsweredByStudent = itemAnsweredByStudent;
+	}
+
+	/**
+	 * @return the testStartDate
+	 */
+	public Date getTestStartDate() {
+		return testStartDate;
+	}
+
+	/**
+	 * @param testStartDate the testStartDate to set
+	 */
+	public void setTestStartDate(Date testStartDate) {
+		this.testStartDate = testStartDate;
+	}
+
+	/**
+	 * @return the testEnDate
+	 */
+	public Date getTestEndDate() {
+		return testEndDate;
+	}
+
+	/**
+	 * @param testEnDate the testEnDate to set
+	 */
+	public void setTestEndDate(Date testEndDate) {
+		this.testEndDate = testEndDate;
 	}
 
 } 

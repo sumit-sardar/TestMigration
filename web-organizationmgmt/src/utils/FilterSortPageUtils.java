@@ -66,7 +66,7 @@ public class FilterSortPageUtils
     public static final String REOPEN_TESTSESSION_DEFAULT_SORT = "TestAdminName";
     public static final String STUDENT_USER_NAME_DEFAULT_SORT = "StudentName";
     public static final String SUBTEST_ITEM_SET_ORDER_DEFAULT_SORT = "ItemSetOrder";
-    public static final String SUBTEST_DETAIL_DEFAULT_SORT = "StudentLoginId";
+    public static final String SUBTEST_DETAIL_DEFAULT_SORT = "StudentLoginName";
     
     // Page
     public static final int PAGESIZE_1 = 1;
