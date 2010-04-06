@@ -174,16 +174,16 @@ public class CustomerServiceManagementController extends PageFlowController {
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
 					path = "reopen_subtest.jsp"),
-					@Jpf.Forward(name = "findSubtestByTestSessionId",
-							path = "findSubtestByTestSessionId.do"),
-							@Jpf.Forward(name="changeSubtest",
-									path="changeSubtest.do") ,
-									@Jpf.Forward(name = "showStudentTestStatusDetails",
-											path = "showStudentTestStatusDetails.do"),
-											@Jpf.Forward(name = "showDetails",
-													path = "showDetails.do"),
-													@Jpf.Forward(name = "selectAllStudents",
-															path = "selectAllStudents.do")	
+			@Jpf.Forward(name = "findSubtestByTestSessionId",
+					path = "findSubtestByTestSessionId.do"),
+			@Jpf.Forward(name="changeSubtest",
+					path="changeSubtest.do") ,
+			@Jpf.Forward(name = "showStudentTestStatusDetails",
+					path = "showStudentTestStatusDetails.do"),
+			@Jpf.Forward(name = "showDetails",
+					path = "showDetails.do"),
+			@Jpf.Forward(name = "selectAllStudents",
+					path = "selectAllStudents.do")	
 
 	})
 	protected Forward findTestSessionByStudent(CustomerServiceManagementForm form)
@@ -622,7 +622,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 				StudentSessionStatusVO studentSessionStatusVO = 
 					(StudentSessionStatusVO) showStudentDeatilsList.get(0);
 				form.setMessage( Message.TEST_ROSTER_UPDATION_TITLE, 
-						studentSessionStatusVO.getItemSetName()+" " +Message.TEST_STUDENT_UPDATION_SUCESS, Message.INFORMATION);
+						Message.TEST_STUDENT_UPDATION_SUCESS, Message.INFORMATION);
 			}
 			
 

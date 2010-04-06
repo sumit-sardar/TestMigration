@@ -291,7 +291,7 @@
 <br/>
 <a name="testSessionSearchResult"></a>
 <c:if test="${studentResultEmpty != null}">
-	<ctb:message title="Student Not Found" style="informationMessage">
+	<ctb:message title="Search Result" style="informationMessage">
 		<netui:content value="${requestScope.studentResultEmpty}" />
 	</ctb:message>
 </c:if>

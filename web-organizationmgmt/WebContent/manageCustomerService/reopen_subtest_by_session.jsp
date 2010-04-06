@@ -201,8 +201,8 @@
 							<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn>
 							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="StartDateTime">Start Date</ctb:tableSortColumn>
 							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="CompletionDateTime">Completion Date</ctb:tableSortColumn>
-							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="ItemAnswered">Item Answered</ctb:tableSortColumn>
-							<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="TimeSpent">Time Spent</ctb:tableSortColumn>
+							<th class="sortable alignCenter" nowrap><netui:content value="Item Answered"/>
+							<th class="sortable alignCenter" nowrap><netui:content value="Time Spent"/>
 						</ctb:tableSortColumnGroup>
 					</tr>
 
@@ -247,7 +247,7 @@
 	</ctb:message>
 </c:if>
 <c:if test="${searchResultForStudent != null}">
-	<ctb:message title="Student Not Found" style="informationMessage">
+	<ctb:message title="Search Result" style="informationMessage">
 		<netui:content value="${requestScope.searchResultForStudent}" />
 	</ctb:message>
 </c:if>
