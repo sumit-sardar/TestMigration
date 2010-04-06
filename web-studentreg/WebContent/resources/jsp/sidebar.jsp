@@ -40,8 +40,8 @@
 <ctb:auth roles="root, Account Manager, Administrator">
 <h1>Organizations</h1>
 <ul>
-    <li><a href="/OrganizationManagementWeb/manageOrganization/beginAddOrganization.do"><span>Add Organization</span></a></li>
-    <li><a href="/OrganizationManagementWeb/manageOrganization/beginFindOrganization.do"><span>Find Organization</span></a></li>
+    <li><a href="/OrganizationManagementWeb/manageOrganization/beginAddOrganization.do" onclick="return verifyExitRegisterStudent();"><span>Add Organization</span></a></li>
+    <li><a href="/OrganizationManagementWeb/manageOrganization/beginFindOrganization.do" onclick="return verifyExitRegisterStudent();"><span>Find Organization</span></a></li>
 </ul>
 </ctb:auth>
 
@@ -49,8 +49,8 @@
 <ctb:auth roles="root, Account Manager">
 <h1>Customers</h1>
 <ul>
-    <li><a href="/OrganizationManagementWeb/manageCustomer/beginAddCustomer.do"><span>Add Customer</span></a></li>
-    <li><a href="/OrganizationManagementWeb/manageCustomer/beginFindCustomer.do"><span>Find Customer</span></a></li>
+    <li><a href="/OrganizationManagementWeb/manageCustomer/beginAddCustomer.do" onclick="return verifyExitRegisterStudent();"><span>Add Customer</span></a></li>
+    <li><a href="/OrganizationManagementWeb/manageCustomer/beginFindCustomer.do" onclick="return verifyExitRegisterStudent();"><span>Find Customer</span></a></li>
 </ul>
 </ctb:auth>
 
@@ -58,7 +58,7 @@
 <ctb:auth roles="root, Account Manager">
 <h1>Tests</h1>
 <ul>
-    <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf"><span>Reset Test Session</span></a></li>
+    <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf" onclick="return verifyExitRegisterStudent();"><span>Reset Test Session</span></a></li>
 </ul>
 </ctb:auth>
 

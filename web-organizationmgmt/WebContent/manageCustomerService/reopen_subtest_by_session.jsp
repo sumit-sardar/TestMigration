@@ -83,10 +83,10 @@
 							<th class="sortable alignCenter" nowrap><netui:content value="${bundle.web['common.column.select']}" /></th>
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentLoginName">Login Name</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="ExternalStudentId">Student Id</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="15%" nowrap><netui:content value="Org_name"/></th>
-							<th class="sortable alignLeft" width="30%" nowrap><netui:content value="ItemSetName"/></th>
-							<th class="sortable alignLeft" width="30%" nowrap><netui:content value="CompletionStatus"/></th>
+							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="ExternalStudentId">Student ID</ctb:tableSortColumn></th>
+							<th class="sortable alignLeft" width="15%" nowrap><netui:content value="Organization"/></th>
+							<th class="sortable alignLeft" width="30%" nowrap><netui:content value="Section Name"/></th>
+							<th class="sortable alignLeft" width="30%" nowrap><netui:content value="Section Status"/></th>
 						</ctb:tableSortColumnGroup>
 					</tr>
 

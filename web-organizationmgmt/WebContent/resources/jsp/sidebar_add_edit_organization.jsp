@@ -64,7 +64,7 @@
 <ctb:auth roles="root, Account Manager">
 <h1>Tests</h1>
 <ul>
-    <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf"><span>Reset Test Session</span></a></li>
+    <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf" onclick="return verifyExitAddOrganization();"><span>Reset Test Session</span></a></li>
 </ul>
 </ctb:auth>
 
