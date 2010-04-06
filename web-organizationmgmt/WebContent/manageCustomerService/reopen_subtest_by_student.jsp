@@ -152,7 +152,7 @@
 	
 						<tr class="sortable">
 							<td class="sortableControls" colspan="7"><ctb:tablePager dataSource="actionForm.subtestPageRequested"
-								summary="request.subtestPagerSummary" objectLabel="${bundle.oas['object.deliverabletestItems']}" foundLabel="Found"
+								summary="request.subtestPagerSummary" objectLabel="${bundle.oas['object.sections']}" foundLabel="Found"
 								id="subtestSearchResult" anchorName="subtestSearchResult" /></td>
 						</tr>
 	
