@@ -335,7 +335,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		form.resetValuesForAction(actionElement, ACTION_FIND_SUBTEST_BY_SESSION_ID); 
 		Integer testAdminId = form.getSelectedTestSessionId();
 		Integer testRosterId = null;
-
+		String testAccessCode = form.getTestAccessCode();
+		
 		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 
 		for (TestSessionVO testSessionVO : this.testSessionList) {
@@ -358,7 +359,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		try {
 			sstData = CustomerServiceSearchUtils.getSubtestListForStudent(
-					customerServiceManagement, testRosterId, filter, page, sort);
+					customerServiceManagement, testRosterId, testAccessCode, filter, page, sort);
 
 		} catch (CTBBusinessException be) {
 			be.printStackTrace();
@@ -1176,9 +1177,10 @@ public class CustomerServiceManagementController extends PageFlowController {
 		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_20);
 		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
 		try {
+			
 			sssd.applySorting(testSort);
 			sssd.applyPaging(studentPage);
-
+			
 		} catch (CTBBusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -2021,6 +2023,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		 */
 		public String getStudentStatusSortOrderBy() {
 			return this.studentStatusSortOrderBy != null ? this.studentStatusSortOrderBy : FilterSortPageUtils.ASCENDING;
+			
 		}
 
 		/**

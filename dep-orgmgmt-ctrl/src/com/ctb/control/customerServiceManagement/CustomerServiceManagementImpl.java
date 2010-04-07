@@ -194,14 +194,17 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 	 * @return studentSessionStatusData
 	 * @throws CTBBusinessException
      */
-		public StudentSessionStatusData getSubtestListForStudent(Integer rosterId, 
+		public StudentSessionStatusData getSubtestListForStudent(Integer rosterId,
+			String testAccessCode,	
 			FilterParams filter, 
 			PageParams page, 
 			SortParams sort)
 	throws CTBBusinessException { 
 		com.ctb.bean.testAdmin.StudentSessionStatus[] studentSessionStatus = null;
+		String searchCriteria = null;
+		searchCriteria = generateSearchCriteriaForRoster(testAccessCode);
 		try {
-			studentSessionStatus = studentItemSetStatus.getSubtestListForRoster(rosterId);
+			studentSessionStatus = studentItemSetStatus.getSubtestListForRoster(rosterId, searchCriteria);
 		} catch(SQLException se){
 			se.printStackTrace();
 			StudentDataNotFoundException studentDataNotFoundException = 
@@ -402,6 +405,18 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		}
 		return findInColumn.toString();
 	}
+
+	private String generateSearchCriteriaForRoster (String accessCode) {
+
+		StringBuffer findInColumn = new StringBuffer();
+
+		if (accessCode != null &&  !accessCode.trim().equals("")){
+			String studentIdCheck = " and upper(tais.access_code) = '" + accessCode.toUpperCase() + "' ";
+			findInColumn.append(studentIdCheck);
+		}
+		return findInColumn.toString();
+	}
+
 }
 
 

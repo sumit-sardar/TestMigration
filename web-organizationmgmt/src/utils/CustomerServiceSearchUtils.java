@@ -67,6 +67,7 @@ public class CustomerServiceSearchUtils {
 
 	public static StudentSessionStatusData getSubtestListForStudent(CustomerServiceManagement customerServiceManagement, 
 			Integer rosterId,
+			String testAccessCode,
 			FilterParams filter,
 			PageParams page, 
 			SortParams sort 
@@ -74,7 +75,7 @@ public class CustomerServiceSearchUtils {
 	) throws CTBBusinessException {   
 
 		StudentSessionStatusData statusData = customerServiceManagement.getSubtestListForStudent(
-				rosterId, filter, page, sort);
+				rosterId, testAccessCode, filter, page, sort);
 		return statusData;
 	}
 
