@@ -227,7 +227,7 @@
 					<tr class="sortable">
 						<td class="sortableControls" colspan="7"><ctb:tablePager dataSource="actionForm.studentStatusPageRequested"
 							summary="request.studentStatusDetailsPagerSummary" objectLabel="${bundle.oas['object.students']}" foundLabel="Found"
-							id="studentStatusDetailsSearchResult" anchorName="studentStatusDetailsSearchResult" /></td>
+							id="studentStatusDetailsSearchResult" anchorName="studentStatusSearchResult" /></td>
 					</tr>
 
 				</netui-data:repeaterFooter>

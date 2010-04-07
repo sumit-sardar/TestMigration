@@ -1084,7 +1084,14 @@ public class CustomerServiceManagementController extends PageFlowController {
 		StudentSessionStatusData sstData = null;
 		//String subtestName = form.getSelectedSubtestName();
 		this.testAdminId = this.testDeliveryItemList.get(0).getTestAdminId();
-		this.itemsetId = Integer.valueOf(form.getSelectedSubtestName());
+
+		if (form.getSelectedSubtestName() != null) {
+			this.itemsetId = Integer.valueOf(form.getSelectedSubtestName());
+		} else {
+			this.itemsetId = Integer.valueOf(this.savedForm.getSelectedSubtestName());
+			form.setSelectedSubtestName(this.savedForm.getSelectedSubtestName());
+		}
+		//this.itemsetId = Integer.valueOf(form.getSelectedSubtestName());
 		//this.itemsetId = this.itemsetId != null ? this.itemsetId : Integer.valueOf(form.getSelectedSubtestName());
 		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		boolean hideProductNameDropDown = this.testDeliveryItemList.size() <= 1;
@@ -1118,7 +1125,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 			String searchMessage = Message.FIND_NO_STUDENT_DATA;
 			this.getRequest().setAttribute("searchResultForStudent", searchMessage);
 		}
-
+		
+		this.savedForm = form.createClone();
 		this.getRequest().setAttribute("disableShowDetailsButton", Boolean.TRUE);
 		setFormInfoOnRequest(form);
 	}
@@ -1472,6 +1480,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 			copied.setActionElement(this.actionElement);     
 			this.setCurrentAction(this.currentAction);
 
+			copied.setSelectedSubtestName(this.selectedSubtestName);
+			
 			return copied;       
 		}
 
