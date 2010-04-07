@@ -339,7 +339,17 @@ public class CustomerServiceSearchUtils {
 		}
 		
 			studentSessionStatusData = new StudentSessionStatusData();
-			studentSessionStatusData.setStudentSessionStatuses(result,page.getPageSize() );
+			
+			Integer pageSize = null;
+			
+			 if ( page != null ) {
+	                
+	                pageSize = new Integer(page.getPageSize());
+	                
+	         }
+			 
+			 studentSessionStatusData.setStudentSessionStatuses(result,pageSize );
+			
 			
 			if (sort != null && studentSessionStatusData != null) {
 				try {
@@ -349,8 +359,9 @@ public class CustomerServiceSearchUtils {
 					e.printStackTrace();
 				}
 			}
-			
+		
 			if (page != null && studentSessionStatusData != null) {
+				
 				try {
 					studentSessionStatusData.applyPaging(page);
 					
