@@ -262,8 +262,9 @@ public class CustomerServiceSearchUtils {
 				auditFileReopenSubtest.setNewRosterCompStatus( "IN" );
 				auditFileReopenSubtest.setNewSubtestCompStatus( "IN" );
 				//issue
-				auditFileReopenSubtest.
+				/*auditFileReopenSubtest.
 				setOldSRosterCompStatus(FilterSortPageUtils. testStatus_StringToCode (studentSessionStatusVO.getCompletionStatus()));
+				*/
 				auditFileReopenSubtest.setOldSubtestCompStatus(
 						FilterSortPageUtils. testStatus_StringToCode (studentSessionStatusVO.getCompletionStatus()));
 
@@ -347,7 +348,7 @@ public class CustomerServiceSearchUtils {
 					e.printStackTrace();
 				}
 			}
-		
+			
 			if (page != null && studentSessionStatusData != null) {
 				try {
 					studentSessionStatusData.applyPaging(page);

@@ -98,38 +98,6 @@ public class StudentSessionStatus extends CTBBean
 	 * @param timeSpent The timeSpent to set.
 	 */
 	public void setTimeSpent(String timeSpent) {
-		
-/*		String zeroHrs = "00";
-		String zeroMins = "00";
-		String zeroSecs = "00";
-		String seperator = ":";
-		String defaultTime = "00:00:00";
-		Integer initialTime = Integer.valueOf(timeSpent) ;
-		
-		if(initialTime != 0){
-			
-			Integer hours = initialTime / 60;
-			Integer remainder = initialTime % 60;
-			Integer minutes = initialTime;
-			
-			if ( initialTime >60)
-				minutes = remainder * 60;
-			
-			
-			zeroHrs = hours.toString();
-			zeroMins = minutes.toString();
-			
-			if(hours < 10)
-				zeroHrs = "0" + hours ;
-			
-			if(minutes < 10)
-				zeroMins = "0" + minutes ;
-			
-			defaultTime = zeroHrs + seperator + zeroMins + seperator + zeroSecs; 
-			
-		}
-		this.timeSpent = defaultTime;*/
-		
 		this.timeSpent = timeSpent;
 	}
 	

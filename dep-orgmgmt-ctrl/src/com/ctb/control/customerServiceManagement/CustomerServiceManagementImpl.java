@@ -11,6 +11,7 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.AuditFileReopenSubtest;
+import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.ScheduleElement;
 import com.ctb.bean.testAdmin.ScheduleElementData;
 import com.ctb.bean.testAdmin.Student;
@@ -355,6 +356,8 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		try {
 			for(int i=0;i<auditFileReopenSubtest.length;i++) {
 				AuditFileReopenSubtest reopenSubtestInfo = auditFileReopenSubtest[i];
+				RosterElement rosterElement = testRoster.getRosterElement(reopenSubtestInfo.getTestRosterId());
+				reopenSubtestInfo.setOldSRosterCompStatus(rosterElement.getTestCompletionStatus());
 				testRoster.updateTestRosterForReopen(reopenSubtestInfo.getTestRosterId(),new Date(),reopenSubtestInfo.getCreatedBy());
 				students.updateStudentActiveSessionFlag(reopenSubtestInfo.getStudentId(),new Date(),reopenSubtestInfo.getCreatedBy());
 				studentItemSetStatus.updateStudentItemSetStatus(reopenSubtestInfo.getTestRosterId(),
