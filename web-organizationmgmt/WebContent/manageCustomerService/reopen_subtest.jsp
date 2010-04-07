@@ -52,6 +52,7 @@
 <netui:hidden tagId="studentLoginId" dataSource="actionForm.studentProfile.studentLoginId"/> 
 <netui:hidden tagId="studentId" dataSource="actionForm.selectedStudentId"/>
 <netui:hidden tagId="subtestMaxPage" dataSource="actionForm.subtestMaxPage"/>
+<netui:hidden tagId="studentStatusMaxPage" dataSource="actionForm.studentStatusMaxPage"/>
 <netui:hidden tagId="studentMaxPage" dataSource="actionForm.studentMaxPage"/> 
 <netui:hidden tagId="testSessionMaxPage" dataSource="actionForm.testSessionMaxPage"/>
 <netui:hidden tagId="customerId" dataSource="actionForm.customerId"/>

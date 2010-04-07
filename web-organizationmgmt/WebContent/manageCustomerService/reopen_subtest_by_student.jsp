@@ -144,7 +144,7 @@
 							<td class="sortable alignCenter"><netui:span value="${container.item.startDateTime}"  defaultValue="--"/></td>
 							<td class="sortable alignCenter"><netui:span value="${container.item.completionDateTime}"  defaultValue="--"/></td>
 							<td class="sortable alignCenter"><netui:span value="${container.item.itemAnswered}" /></td>
-							<td class="sortable alignCenter"><netui:span value="${container.item.timeSpent}" /></td>
+							<td class="sortable alignCenter"><netui:span value="${container.item.timeSpentForDisplay}" /></td>
 						</tr>
 	
 					</netui-data:repeaterItem>

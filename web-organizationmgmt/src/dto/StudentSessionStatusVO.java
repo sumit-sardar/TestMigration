@@ -31,6 +31,7 @@ public class StudentSessionStatusVO implements java.io.Serializable
     private String totalItem;
     private String itemAnswered;
     private String timeSpent;
+    private String timeSpentForDisplay;
     private String studentName;
     private String studentLoginName;
     private String externalStudentId;
@@ -76,6 +77,7 @@ public class StudentSessionStatusVO implements java.io.Serializable
 		this.itemAnsweredByStudent = sst.getItemAnswered();
 		this.testStartDate = sst.getStartDateTime();
 		this.testEndDate = sst.getCompletionDateTime();
+		this.setTimeSpentForDisplay(sst.getTimeSpent());
 		
 	}    
 	
@@ -432,6 +434,50 @@ public class StudentSessionStatusVO implements java.io.Serializable
 	 */
 	public void setTestEndDate(Date testEndDate) {
 		this.testEndDate = testEndDate;
+	}
+
+	/**
+	 * @return the timeSpentForDisplay
+	 */
+	public String getTimeSpentForDisplay() {
+		return timeSpentForDisplay;
+	}
+
+	/**
+	 * @param timeSpentForDisplay the timeSpentForDisplay to set
+	 */
+	public void setTimeSpentForDisplay(String timeSpentForDisplay) {
+		
+		System.out.println("timeSpent ==>" + timeSpentForDisplay);
+		String zeroHrs = "00";
+		String zeroMins = "00";
+		String zeroSecs = "00";
+		String seperator = ":";
+		String defaultTime = "00:00:00";
+		Integer initialTime = Integer.valueOf(timeSpentForDisplay) ;
+
+		if(initialTime != 0){
+
+			Integer hours = initialTime / 60;
+			Integer remainder = initialTime % 60;
+			Integer minutes = remainder;
+
+
+			zeroHrs = hours.toString();
+			zeroMins = minutes.toString();
+
+			if(hours < 10)
+				zeroHrs = "0" + hours ;
+
+			if(minutes < 10)
+				zeroMins = "0" + minutes ;
+
+			defaultTime = zeroHrs + seperator + zeroMins + seperator + zeroSecs; 
+
+		}
+
+		this.timeSpentForDisplay = defaultTime;
+		
 	}
 
 } 

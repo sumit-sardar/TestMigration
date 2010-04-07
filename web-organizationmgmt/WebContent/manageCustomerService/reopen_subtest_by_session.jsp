@@ -68,9 +68,9 @@
 				<table class="tableFilter">
 					<tr class="tableFilter">
 						<td class="tableFilter"><netui:button styleClass="button" tagId="selectAllStudents"
-							value="${bundle.widgets['button.selectAllStudents']}" type="submit" action="selectAllStudents" /> <netui:button
+							value="${bundle.widgets['button.selectAllStudents']}" type="submit" action="selectAllStudents"  onClick="setElementValue('{actionForm.currentAction}', 'selectAllStudents');"/> <netui:button
 							styleClass="button" tagId="deselectAllStudents " value="${bundle.widgets['button.deselectAllStudents']}"
-							type="submit" action="deselectAllStudents" /></td>
+							type="submit" action="deselectAllStudents" onClick="setElementValue('{actionForm.currentAction}', 'deselectAllStudents');"/></td>
 					</tr>
 				</table>
 				</td>
@@ -216,7 +216,7 @@
 						<td class="sortable alignCenter"><netui:span value="${container.item.startDateTime}" /></td>
 						<td class="sortable alignCenter"><netui:span value="${container.item.completionDateTime}" /></td>
 						<td class="sortable alignCenter"><netui:span value="${container.item.itemAnswered}" /></td>
-						<td class="sortable alignCenter"><netui:span value="${container.item.timeSpent}" /></td>
+						<td class="sortable alignCenter"><netui:span value="${container.item.timeSpentForDisplay}" /></td>
 
 					</tr>
 

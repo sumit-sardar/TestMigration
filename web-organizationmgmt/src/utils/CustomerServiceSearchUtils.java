@@ -338,7 +338,15 @@ public class CustomerServiceSearchUtils {
 		
 			studentSessionStatusData = new StudentSessionStatusData();
 			studentSessionStatusData.setStudentSessionStatuses(result,page.getPageSize() );
-		
+			
+			if (sort != null && studentSessionStatusData != null) {
+				try {
+					studentSessionStatusData.applySorting(sort);
+				} catch (InvalidSortFieldException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		
 			if (page != null && studentSessionStatusData != null) {
 				try {
@@ -350,14 +358,7 @@ public class CustomerServiceSearchUtils {
 				}
 			}
 			
-			if (sort != null && studentSessionStatusData != null) {
-				try {
-					studentSessionStatusData.applySorting(sort);
-				} catch (InvalidSortFieldException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+			
 		
 		
 		return studentSessionStatusData;
