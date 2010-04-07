@@ -449,7 +449,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		SortParams sort = null;
 		FilterParams filter = null;
-		PageParams page =  FilterSortPageUtils.buildPageParams(form.getStudentStatusPageRequested(), FilterSortPageUtils.PAGESIZE_2);
+		PageParams page =  FilterSortPageUtils.buildPageParams(form.getStudentStatusPageRequested(), FilterSortPageUtils.PAGESIZE_20);
 		sort =  FilterSortPageUtils.buildSortParams(form.getStudentStatusSortColumn(), form.getStudentStatusSortOrderBy());
 		StudentSessionStatusData studentSessionStatusData = null;
 
@@ -1156,7 +1156,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 	private PagerSummary buildSubtestDataPagerSummary(Integer pageRequested) 
 	{
 		int numTotalTests = this.showStudentDeatilsList.size();
-		Double  maxPageNumber = Math.ceil(new Double(numTotalTests/FilterSortPageUtils.PAGESIZE_2));
+		Double  maxPageNumber = Math.ceil(new Double(numTotalTests/FilterSortPageUtils.PAGESIZE_20));
 		PagerSummary result = new PagerSummary();
 		result.setCurrentPage(pageRequested);
 		result.setTotalObjects(new Integer(maxPageNumber.intValue()));
