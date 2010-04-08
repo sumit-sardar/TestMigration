@@ -128,7 +128,7 @@ public class CustomerServiceFormUtils {
 		}
 	}
 		
-	if(form.getCurrentAction().equals("reOpenSubtest")) {
+	if(form.getCurrentAction().equals("reOpenSubtest") || form.getCurrentAction().equals("reOpenSubtestForStudents")) {
 
 		ticketId = form.getTicketId() != null ? form.getTicketId().trim() : null;
 		serviceRequestor = form.getServiceRequestor() != null ? form.getServiceRequestor().trim() : null;

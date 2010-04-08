@@ -491,8 +491,14 @@ function showLegend(elementId, tokens) {
     }
 }
 
-function limitText(limitField, limitNum) {
-	if (limitField.value.length >= limitNum) {
-		limitField.value = limitField.value.substring(0, limitNum - 1);
-	} 
+function blockEventOnMaxLength(element,len) {
+	return element.value.length < len;
+}
+
+function checkAndTruncate(element,len) {
+
+	if (element.value.length > len) {
+
+		element.value = element.value.substring(0, len);		
+	}	
 }

@@ -93,7 +93,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 	private String userTimeZone = null;
 	private Integer testAdminId = null;
 	private Integer itemsetId = null;
-	private String selectedTestAdminName =null;
+	private String selectedTestAdminName = null;
 	private String selectedTestSessionNumber =null;
 
 	private StudentProfileInformation studentProfileInformation;
@@ -628,26 +628,40 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
-					path = "changeSubtest.do")
+					path = "changeSubtest.do"),
+					@ Jpf. Forward (name = "error" ,
+							path = "reopen_subtest.jsp")
 	})
 	protected Forward reOpenSubtestForStudents(CustomerServiceManagementForm form) {
 		
 		boolean updateFlag = true;
 		try {
-			this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
-			CustomerServiceSearchUtils.reOpenSubtest( 
-					this.customerServiceManagement ,
-					this.user,
-					form.getRequestDescription(),
-					form.getServiceRequestor(),
-					form.getTicketId(),
-					this.testAdminId,
-					this.testDeliveryItemList.get(0).getCustomerId(),
-					this.showStudentDeatilsList,
-					this.itemsetId,
-					this.testDeliveryItemList.get(0).getOrgNodeId(),
-					null);
 
+			Boolean isInValidInfo = true;
+			isInValidInfo = CustomerServiceFormUtils.isInvalidFormInfo(form);
+
+			if (!isInValidInfo) {
+			
+				this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
+				CustomerServiceSearchUtils.reOpenSubtest( 
+						this.customerServiceManagement ,
+						this.user,
+						form.getRequestDescription(),
+						form.getServiceRequestor(),
+						form.getTicketId(),
+						this.testAdminId,
+						this.testDeliveryItemList.get(0).getCustomerId(),
+						this.showStudentDeatilsList,
+						this.itemsetId,
+						this.testDeliveryItemList.get(0).getOrgNodeId(),
+						null);
+			}
+			else {
+				//set message in request to show error
+				this.getRequest().setAttribute("pageMessage", form.getMessage());
+				return   new  Forward( "error" );
+			}
+			
 		} catch (CTBBusinessException be) {
 
 			String msg = MessageResourceBundle.getMessage(be.getMessage());
@@ -2506,6 +2520,20 @@ public class CustomerServiceManagementController extends PageFlowController {
 	 */
 	public void setSelectedTestSessionNumber(String selectedTestSessionNumber) {
 		this.selectedTestSessionNumber = selectedTestSessionNumber;
+	}
+
+	/**
+	 * @return the selectedTestAdminName
+	 */
+	public String getSelectedTestAdminName() {
+		return selectedTestAdminName;
+	}
+
+	/**
+	 * @param selectedTestAdminName the selectedTestAdminName to set
+	 */
+	public void setSelectedTestAdminName(String selectedTestAdminName) {
+		this.selectedTestAdminName = selectedTestAdminName;
 	}
 
 

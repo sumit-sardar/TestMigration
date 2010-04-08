@@ -396,7 +396,6 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		 finally{
 
 				try {
-					System.out.println("finally");
 					transactionPersistenceUtil.closeTransaction(userTrans,transanctionFlag);
 				} catch (Exception e) {
 					e.printStackTrace();
