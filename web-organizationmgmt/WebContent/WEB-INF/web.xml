@@ -108,6 +108,7 @@
             <url-pattern>/manageCustomer/*</url-pattern>
             <url-pattern>/manageProgram/*</url-pattern>
             <url-pattern>/manageLicense/*</url-pattern>
+            <url-pattern>/manageCustomerService/*</url-pattern>
             <http-method>POST</http-method>
             <http-method>GET</http-method>
         </web-resource-collection>

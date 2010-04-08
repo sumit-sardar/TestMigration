@@ -86,7 +86,7 @@
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentLoginName">Login Name</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="ExternalStudentId">Student ID</ctb:tableSortColumn></th>
-							<th class="sortable alignLeft" width="15%" nowrap><netui:content value="Organization"/></th>
+							<th class="sortable alignLeft" width="15%" nowrap><netui:content value="&nbsp;&nbsp;Organization"/></th>
 							<th class="sortable alignLeft" width="35%" nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn></th>
 						</ctb:tableSortColumnGroup>
@@ -200,9 +200,9 @@
 							<th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="StudentLoginName">Student</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" width="30%"nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" width="10%"nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn>
-							<th class="sortable alignCenter" width="13%" nowrap><ctb:tableSortColumn value="StartDateTime">Start Date</ctb:tableSortColumn>
-							<th class="sortable alignCenter" width="12%" nowrap><ctb:tableSortColumn value="CompletionDateTime">Completion Date</ctb:tableSortColumn>
-							<th class="sortable alignCenter" width="10%" nowrap><netui:content value="Item Answered"/>
+							<th class="sortable alignCenter" width="12%" nowrap><ctb:tableSortColumn value="StartDateTime">Start Date</ctb:tableSortColumn>
+							<th class="sortable alignCenter" width="11%" nowrap><ctb:tableSortColumn value="CompletionDateTime">Completion Date</ctb:tableSortColumn>
+							<th class="sortable alignCenter" width="12%" nowrap><netui:content value="Item Answered"/>
 							<th class="sortable alignCenter" width="10%" nowrap><netui:content value="Time Spent"/>
 						</ctb:tableSortColumnGroup>
 					</tr>
@@ -214,9 +214,9 @@
 						<td class="sortable alignLeft" width="15%"><netui:span value="${container.item.studentLoginName}" /></td>
 						<td class="sortable alignLeft" width="30%"><netui:span value="${container.item.itemSetName}" /></td>
 						<td class="sortable alignLeft" width="10%"><netui:span value="${container.item.completionStatus}" /></td>
-						<td class="sortable alignCenter" width="13%"><netui:span value="${container.item.startDateTime}" defaultValue="--"/></td>
-						<td class="sortable alignCenter" width="12%"><netui:span value="${container.item.completionDateTime}" defaultValue="--"/></td>
-						<td class="sortable alignCenter" width="10%"><netui:span value="${container.item.itemAnswered}" /></td>
+						<td class="sortable alignCenter" width="12%"><netui:span value="${container.item.startDateTime}" defaultValue="--"/></td>
+						<td class="sortable alignCenter" width="11%"><netui:span value="${container.item.completionDateTime}" defaultValue="--"/></td>
+						<td class="sortable alignCenter" width="12%"><netui:span value="${container.item.itemAnswered}" /></td>
 						<td class="sortable alignCenter" width="10%"><netui:span value="${container.item.timeSpentForDisplay}" /></td>
 
 					</tr>

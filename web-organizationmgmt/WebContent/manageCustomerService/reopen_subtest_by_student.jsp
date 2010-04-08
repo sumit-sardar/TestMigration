@@ -248,9 +248,9 @@
 
 					<td class="sortable">
 						<table class="transparent">
-							<tr class="transparent" valign="top">
-								<td class="transparent"><netui:span value="${bundle.web['test.label.name']}:" /></td>
-								<td class="transparent"><netui:span value="${pageFlow.selectedTestAdminName}" /></td>
+							<tr class="transparent">
+								<td class="transparent" valign="top"><netui:span value="${bundle.web['test.label.name']}:" /></td>
+								<td class="transparent" nowrap="true"><netui:span value="${pageFlow.selectedTestAdminName}" /></td>
 							</tr>
 							
 							<tr class="transparent" valign="top">
