@@ -606,6 +606,14 @@ public class CustomerServiceManagementController extends PageFlowController {
 				this.getRequest().setAttribute("pageMessage", form.getMessage());
 				return   new  Forward( "error" );
 			}
+		
+			StudentSessionStatusVO studentSessionStatusVO = 
+				(StudentSessionStatusVO) studentTestStatusDetailsList.get(0);
+			
+			form.setMessage( Message.TEST_ROSTER_UPDATION_TITLE, 
+					studentSessionStatusVO.getItemSetName()+ " "+Message.TEST_ROSTER_UPDATION_SUCCESS +" " + studentName, Message.INFORMATION);
+				
+			return   new  Forward( "success" );
 			
 		} catch  (CTBBusinessException be) {
 
@@ -614,15 +622,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 			return   new  Forward( "success" );
 		}
-		finally {StudentSessionStatusVO studentSessionStatusVO = 
-			(StudentSessionStatusVO) studentTestStatusDetailsList.get(0);
 		
-			form.setMessage( Message.TEST_ROSTER_UPDATION_TITLE, 
-					studentSessionStatusVO.getItemSetName()+ " "+Message.TEST_ROSTER_UPDATION_SUCCESS +" " + studentName, Message.INFORMATION);
-
-		}
-
-		return   new  Forward( "success" );
 	}
 
 

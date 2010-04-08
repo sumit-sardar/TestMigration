@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.transaction.UserTransaction;
+
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 
 import com.ctb.bean.request.FilterParams;
@@ -21,6 +23,7 @@ import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.customerServiceManagement.StudentDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
+import com.ctb.util.TransactionPersistenceUtil ;
 
 @ControlImplementation()
 public class CustomerServiceManagementImpl implements CustomerServiceManagement,Serializable {
@@ -355,8 +358,12 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 	
 	public void reopenSubtest(AuditFileReopenSubtest [] auditFileReopenSubtest)
 			throws CTBBusinessException { 
-		
+		UserTransaction userTrans = null;
+    	boolean transanctionFlag = false;
+    	TransactionPersistenceUtil transactionPersistenceUtil = new TransactionPersistenceUtil();
 		try {
+			userTrans = transactionPersistenceUtil.getTransaction();
+			userTrans.begin();
 			for(int i=0;i<auditFileReopenSubtest.length;i++) {
 				AuditFileReopenSubtest reopenSubtestInfo = auditFileReopenSubtest[i];
 				RosterElement rosterElement = testRoster.getRosterElement(reopenSubtestInfo.getTestRosterId());
@@ -368,19 +375,33 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 				studentItemSetStatus.insertAuditRecordForReopenSubtestData(reopenSubtestInfo);
 			}
 		} catch(SQLException se){
+			transanctionFlag = true;
+        	try {
+        		userTrans.rollback();
+        	}catch (Exception e1){
+        		e1.printStackTrace();
+        	}
 			se.printStackTrace();
 			StudentDataNotFoundException studentDataNotFoundException = 
 				new StudentDataNotFoundException
-				("FindStudentforTestSession.Failed");
+				("UpdateStudentforTestSession.Failed");
 			throw studentDataNotFoundException;                                                
 		} catch (Exception e) {
 			StudentDataNotFoundException studentDataNotFoundException = 
 				new StudentDataNotFoundException
-				("FindStudentforTestSession.Failed");
+				("UpdateStudentforTestSession.Failed");
 			studentDataNotFoundException.setStackTrace(e.getStackTrace());
 			throw studentDataNotFoundException;
 		} 
-	
+		 finally{
+
+				try {
+					System.out.println("finally");
+					transactionPersistenceUtil.closeTransaction(userTrans,transanctionFlag);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 	}
 	
 /**
