@@ -106,7 +106,8 @@ function setupStates(name) {
 }
 
 function setFocusFirstElement() { 
-    var element = document.getElementById("firstFocusId");
+
+    var element = getSafeElement("firstFocusId");
     if (element) {
         try{
             setFocus(element.value);

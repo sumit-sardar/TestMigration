@@ -20,7 +20,7 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/setupbuttons.js"></script>
   </head>
   
-  <body>
+  <body onload="setFocusFirstElement();">
 
     <jsp:include page="/resources/jsp/header.jsp" />
     

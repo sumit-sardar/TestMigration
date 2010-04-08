@@ -34,8 +34,6 @@
 
 
 
-
-
 <!-- start form -->
 <netui:form action="findTestSessionByStudent">
 
@@ -49,7 +47,7 @@
 
 <netui:hidden tagId="testAdminId" dataSource="actionForm.testAdminId"/> 
 <netui:hidden tagId="studentId" dataSource="actionForm.selectedStudentId"/>
-<netui:hidden tagId="studentLoginId" dataSource="actionForm.studentProfile.studentLoginId"/> 
+<!-- netui:hidden tagId="studentLoginId" dataSource="actionForm.studentProfile.studentLoginId"/> --> 
 <netui:hidden tagId="studentId" dataSource="actionForm.selectedStudentId"/>
 <netui:hidden tagId="subtestMaxPage" dataSource="actionForm.subtestMaxPage"/>
 <netui:hidden tagId="studentStatusMaxPage" dataSource="actionForm.studentStatusMaxPage"/>
