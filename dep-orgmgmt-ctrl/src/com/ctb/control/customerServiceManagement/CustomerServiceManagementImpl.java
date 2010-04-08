@@ -258,7 +258,7 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		ScheduleElementData scheduleElementData = null;
 		
 		try {
-			scheduleElements = testAdminItemSet.getSubTestListForTestSession( accessCode.toUpperCase());
+			scheduleElements = testAdminItemSet.getSubTestListForTestSession(accessCode);
 		} catch(SQLException se){
 			se.printStackTrace();
 			StudentDataNotFoundException studentDataNotFoundException = 
