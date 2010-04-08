@@ -92,29 +92,30 @@ function enableAllButtons()
    
 }
 
-function toggleShowButton(element) {
+function toggleShowButton(element,flag) {
+//alert(flag);
 	var showButton = document.getElementById("showDetails");
 	var eName = element.name;
 	var allElements = document.getElementsByName(eName);
     
-    if(element.checked) {
+    if(element.checked || flag == false) {
     	showButton.removeAttribute("disabled");
     } 
     else {
-    	if(!hasSelectedElements(allElements)) {
+    	if(!hasSelectedElements(allElements, flag)) {
     		showButton.setAttribute("disabled",true);
     	}
     }
 }
 
-function hasSelectedElements(allElements) {
+function hasSelectedElements(allElements, flag) {
 	var selectedCount = 0;
 	var sElement = null;
 
 	for (var i = 0; i < allElements.length; i++) {
 
 		sElement = allElements[i];
-		if(sElement.checked) {
+		if(sElement.checked || flag == false) {
 			selectedCount++;						
 		}
 	}

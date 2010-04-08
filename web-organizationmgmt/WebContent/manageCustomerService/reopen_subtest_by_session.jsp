@@ -105,7 +105,7 @@
 							</c:if>
 							<c:if
 								test="${container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress'}">
-								<netui:checkBoxOption value="${container.item.studentItemId}" disabled="false" onClick="toggleShowButton(this);">&nbsp;</netui:checkBoxOption>
+								<netui:checkBoxOption value="${container.item.studentItemId}" disabled="false" onClick="toggleShowButton(this, ${requestScope.disableShowDetailsButton});">&nbsp;</netui:checkBoxOption>
 							</c:if>
 						</netui:checkBoxGroup></td>
 						<td class="sortable alignLeft" width="15%"><netui:span value="${container.item.studentName}" /></td>
@@ -180,7 +180,7 @@
 										<td class="tableFilter" rowspan="3" width="*" valign="top">
 											<netui:textArea style="font-family: Arial; font-size: 10pt" tagId="requestDescription" 
 												rows="3" tabindex="5" cols="50" dataSource="actionForm.requestDescription" onBlur="return checkAndTruncate(this,10)" 
-													onKeyUp="checkAndTruncate(this,10)" onKeyPress="return blockEventOnMaxLength(this,10)"/>
+													onKeyUp="checkAndTruncate(this,255)" onKeyPress="return blockEventOnMaxLength(this,255)"/>
 										</td>
 									</tr>
 									<tr class="tableFilter"><td class="tableFilter">&nbsp;</td></tr>

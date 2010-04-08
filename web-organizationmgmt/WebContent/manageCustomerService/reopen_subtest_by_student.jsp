@@ -206,7 +206,7 @@
 										<td class="tableFilter" rowspan="3" width="*" valign="top">
 											<netui:textArea style="font-family: Arial; font-size: 10pt" tagId="requestDescription" 
 												rows="3" cols="50" dataSource="actionForm.requestDescription" tabindex="6" onBlur="return checkAndTruncate(this,10)" 
-													onKeyUp="checkAndTruncate(this,10)" onKeyPress="return blockEventOnMaxLength(this,10)"/>
+													onKeyUp="checkAndTruncate(this,255)" onKeyPress="return blockEventOnMaxLength(this,255)"/>
 										</td>
 									</tr>
 									<tr class="tableFilter"><td class="tableFilter">&nbsp;</td></tr>
