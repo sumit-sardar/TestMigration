@@ -28,8 +28,6 @@ public class CustomerServiceFormUtils {
 
 	public static boolean isRequiredfieldMissing(CustomerServiceManagementForm form )
 	{
-		System.out.println("isRequiredfieldMissing1.."+form.getStudentProfile().getStudentLoginId());
-		System.out.println("isRequiredfieldMissing2.."+form.getSelectedTab());
 
 		// check for required fields
 		String requiredFields = "";
@@ -39,7 +37,7 @@ public class CustomerServiceFormUtils {
 
 			String studentLoginId = form.getStudentProfile().getStudentLoginId().trim();
 			if ( studentLoginId.length() == 0 ) {
-				System.out.println("isRequiredfieldMissing3..");
+
 				requiredFieldCount += 1;    
 				form.setSelectedStudentLoginId("");       
 				requiredFields = Message.buildErrorString(Message.STUDENT_LOGIN_ID, requiredFieldCount, requiredFields);       
@@ -57,16 +55,13 @@ public class CustomerServiceFormUtils {
 		if (requiredFieldCount > 0) {
 			if (requiredFieldCount == 1) {
 
-				System.out.println("isRequiredfieldMissing4..");
 				requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
 				form.setMessage(Message.MISSING_REQUIRED_FIELD, requiredFields, Message.ERROR);
-
 			}
 			else {
-				System.out.println("isRequiredfieldMissing5..");
+
 				requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
 				form.setMessage(Message.MISSING_REQUIRED_FIELDS, requiredFields, Message.ERROR);
-
 			}
 			return true;
 		}

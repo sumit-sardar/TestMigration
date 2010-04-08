@@ -129,7 +129,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 	protected Forward begin()
 	{   
 
-		System.out.println("restest");
 		return new Forward("success");
 	}
 
@@ -155,7 +154,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		CustomerServiceManagementForm form = initialize(ACTION_FIND_TESTSESSION);
 
-		System.out.println("selected tab..."+ form.getSelectedTab());
+		//System.out.println("selected tab..."+ form.getSelectedTab());
 
 		form.setSelectedStudentId(null); 
 		form.setSelectedTab(MODULE_STUDENT_TEST_SESSION);
@@ -226,7 +225,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 
 		if (currentAction.equals("showDetails")){
-			System.out.println("showDetails" );
+
 			return new Forward(currentAction,form);
 		}
 		
@@ -602,8 +601,21 @@ public class CustomerServiceManagementController extends PageFlowController {
 						studentId);
 			}
 			else {
+				if (testSessionPagerSummary != null) {
+
+					this.getRequest().setAttribute("testSessionResult", "true");        
+					this.getRequest().setAttribute("testSessionPagerSummary", testSessionPagerSummary);
+				}
+
+				if (subtestPagerSummary != null) {
+
+					this.getRequest().setAttribute("subtestResult", "true");        
+					this.getRequest().setAttribute("subtestPagerSummary", subtestPagerSummary);
+				}
+
 				//set message in request to show error
 				this.getRequest().setAttribute("pageMessage", form.getMessage());
+
 				return   new  Forward( "error" );
 			}
 		
@@ -657,6 +669,17 @@ public class CustomerServiceManagementController extends PageFlowController {
 						null);
 			}
 			else {
+				if (studentPagerSummary != null) {
+
+					this.getRequest().setAttribute("studentSearchResult", "true");        
+					this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
+				}
+				if (studentStatusDetailsPagerSummary != null) {
+
+					this.getRequest().setAttribute("studentStatusDetailsSearchResult", "true");        
+					this.getRequest().setAttribute("studentStatusDetailsPagerSummary", studentStatusDetailsPagerSummary);
+				}
+				
 				//set message in request to show error
 				this.getRequest().setAttribute("pageMessage", form.getMessage());
 				return   new  Forward( "error" );
@@ -1216,7 +1239,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		this.getRequest().setAttribute("studentSearchResult", "true");        
 		this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
 		//PagerSummary studentPagerSummary = CustomerServiceSearchUtils.buildsubtestDataPagerSummary(sssd, form.getStudentPageRequested()); 
-		System.out.println("Size of students Details list............."+this.studentStatusDetailsList.size());
+		//System.out.println("Size of students Details list............."+this.studentStatusDetailsList.size());
 
 	}
 
@@ -1598,7 +1621,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 			if (this.studentStatusSecSortOrderBy == null)
 				this.studentStatusSecSortOrderBy = FilterSortPageUtils.ASCENDING;
 
-			
 			if (this.studentStatusPageRequested == null) {
 				this.studentStatusPageRequested = new Integer(1);
 			}

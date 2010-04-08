@@ -214,8 +214,8 @@
 						<td class="sortable alignLeft" width="15%"><netui:span value="${container.item.studentLoginName}" /></td>
 						<td class="sortable alignLeft" width="30%"><netui:span value="${container.item.itemSetName}" /></td>
 						<td class="sortable alignLeft" width="10%"><netui:span value="${container.item.completionStatus}" /></td>
-						<td class="sortable alignCenter" width="13%"><netui:span value="${container.item.startDateTime}" /></td>
-						<td class="sortable alignCenter" width="12%"><netui:span value="${container.item.completionDateTime}" /></td>
+						<td class="sortable alignCenter" width="13%"><netui:span value="${container.item.startDateTime}" defaultValue="--"/></td>
+						<td class="sortable alignCenter" width="12%"><netui:span value="${container.item.completionDateTime}" defaultValue="--"/></td>
 						<td class="sortable alignCenter" width="10%"><netui:span value="${container.item.itemAnswered}" /></td>
 						<td class="sortable alignCenter" width="10%"><netui:span value="${container.item.timeSpentForDisplay}" /></td>
 
