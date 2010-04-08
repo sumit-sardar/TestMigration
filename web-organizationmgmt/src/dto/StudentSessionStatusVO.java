@@ -448,7 +448,6 @@ public class StudentSessionStatusVO implements java.io.Serializable
 	 */
 	public void setTimeSpentForDisplay(String timeSpentForDisplay) {
 		
-		System.out.println("timeSpent ==>" + timeSpentForDisplay);
 		String zeroHrs = "00";
 		String zeroMins = "00";
 		String zeroSecs = "00";

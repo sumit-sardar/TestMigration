@@ -128,14 +128,14 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		String searchCriteria = null;
 		TestSession[] testSessions = null;
 		TestSession[] filteredTestSessions = null;
-		System.out.println("platform accessCode" + accessCode);
+		//System.out.println("platform accessCode" + accessCode);
 		searchCriteria = generateSearchCriteria(studentId,accessCode);
 		boolean validationFlag = true;
-		System.out.println("platform method" + searchCriteria);
 		
 		try {
+
 			testSessions = testAdmin.getTestSessionData(searchCriteria);
-			System.out.println("testSessions" + testSessions);
+			
 		} catch(SQLException se){
 			se.printStackTrace();
 			StudentDataNotFoundException studentDataNotFoundException = 
