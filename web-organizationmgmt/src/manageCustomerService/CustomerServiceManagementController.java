@@ -450,7 +450,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		SortParams sort = null;
 		FilterParams filter = null;
 		PageParams page =  FilterSortPageUtils.buildPageParams(form.getStudentStatusPageRequested(), FilterSortPageUtils.PAGESIZE_20);
-		sort =  FilterSortPageUtils.buildSortParams(form.getStudentStatusSortColumn(), form.getStudentStatusSortOrderBy());
+		sort =  FilterSortPageUtils.buildSortParams(form.getStudentStatusSortColumn(), form.getStudentStatusSortOrderBy(), form.getStudentStatusSecSortColumn(), form.getStudentStatusSecSortOrderBy());
 		StudentSessionStatusData studentSessionStatusData = null;
 
 		boolean hideProductNameDropDown = this.testDeliveryItemList.size() <= 1;
@@ -908,9 +908,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 	private void setFormInfoOnRequest(CustomerServiceManagementForm form) {
 		this.getRequest().setAttribute("pageMessage", form.getMessage());
-		this.getRequest().setAttribute("selectedTestSessionName", this.selectedTestAdminName);
 		this.getRequest().setAttribute("selectedItemSetName", form.getSelectedItemSetName());
-		this.getRequest().setAttribute("selectedTestSessionNumber", this.selectedTestSessionNumber);
 	}
 
 
@@ -1424,6 +1422,11 @@ public class CustomerServiceManagementController extends PageFlowController {
 		private String studentStatusSortOrderBy;
 		private Integer studentStatusPageRequested;
 		private Integer studentStatusMaxPage;
+		
+		//resetstatus Secoundary Details Pager
+		private String studentStatusSecSortColumn;
+		private String studentStatusSecSortOrderBy;
+		
 
 		private String ticketId;
 		private String requestDescription;
@@ -1463,6 +1466,10 @@ public class CustomerServiceManagementController extends PageFlowController {
 			copied.setStudentStatusPageRequested(this.studentStatusPageRequested);
 			copied.setStudentStatusSortColumn(this.studentStatusSortColumn);
 			copied.setStudentStatusSortOrderBy(this.studentStatusSortOrderBy);
+			
+			//set student paging variables for tab2 step-4
+			copied.setStudentStatusSecSortColumn(this.studentStatusSecSortColumn);
+			copied.setStudentStatusSecSortOrderBy(this.studentStatusSecSortOrderBy);
 
 			//set test session paging variables for tab1 step-2
 			copied.setTestSessionMaxPage(this.testSessionMaxPage);
@@ -1583,7 +1590,15 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 			if (this.studentStatusSortOrderBy == null)
 				this.studentStatusSortOrderBy = FilterSortPageUtils.ASCENDING;
+			
+			if (this.studentStatusSecSortColumn == null)
+				this.studentStatusSecSortColumn = 
+					FilterSortPageUtils.SUBTEST_ITEM_SET_ORDER_DEFAULT_SORT;
 
+			if (this.studentStatusSecSortOrderBy == null)
+				this.studentStatusSecSortOrderBy = FilterSortPageUtils.ASCENDING;
+
+			
 			if (this.studentStatusPageRequested == null) {
 				this.studentStatusPageRequested = new Integer(1);
 			}
@@ -1660,8 +1675,16 @@ public class CustomerServiceManagementController extends PageFlowController {
 			if (actionElement.equals("ButtonGoInvoked_testSessionSearchResult") && fromAction.equals("showStudentTestStatusDetails") ){
 
 				this.currentAction = "findSubtestByTestSessionId";
-
+				
 			}
+			
+			if (fromAction.equals("showStudentTestStatusDetails") || fromAction.equals("showDetails") ){
+
+				this.ticketId = null;
+				this.requestDescription = null;
+				this.serviceRequestor = null;
+			}
+			
 			if (actionElement.equals("{actionForm.subtestPageRequested}")) {
 
 				this.currentAction = "findSubtestByTestSessionId";
@@ -1716,6 +1739,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 			if (actionElement.equals("{actionForm.studentStatusPageRequested}")) {
 				this.studentStatusSortColumn = null;
 				this.studentStatusSortOrderBy = null;
+				this.studentStatusSecSortColumn = null;
+				this.studentStatusSecSortOrderBy = null;
 				this.currentAction="showDetails";
 			}
 			
@@ -2338,6 +2363,34 @@ public class CustomerServiceManagementController extends PageFlowController {
 		 */
 		public void setSelectedTestSessionNumber(String selectedTestSessionNumber) {
 			this.selectedTestSessionNumber = selectedTestSessionNumber;
+		}
+
+		/**
+		 * @return the studentStatusSecSortColumn
+		 */
+		public String getStudentStatusSecSortColumn() {
+			return this.studentStatusSecSortColumn != null ? this.studentStatusSecSortColumn : FilterSortPageUtils.SUBTEST_ITEM_SET_ORDER_DEFAULT_SORT;
+		}
+
+		/**
+		 * @param studentStatusSecSortColumn the studentStatusSecSortColumn to set
+		 */
+		public void setStudentStatusSecSortColumn(String studentStatusSecSortColumn) {
+			this.studentStatusSecSortColumn = studentStatusSecSortColumn;
+		}
+
+		/**
+		 * @return the studentStatusSecSortOrderBy
+		 */
+		public String getStudentStatusSecSortOrderBy() {
+			return this.studentStatusSecSortOrderBy != null ? this.studentStatusSecSortOrderBy : FilterSortPageUtils.ASCENDING;
+		}
+
+		/**
+		 * @param studentStatusSecSortOrderBy the studentStatusSecSortOrderBy to set
+		 */
+		public void setStudentStatusSecSortOrderBy(String studentStatusSecSortOrderBy) {
+			this.studentStatusSecSortOrderBy = studentStatusSecSortOrderBy;
 		}
 
 	}
