@@ -25,7 +25,7 @@
 					<td class="transparent"><netui:textBox tagId="accessCode" dataSource="actionForm.testAccessCode"
 						tabindex="1" maxlength="32" /></td>
 					<td class="transparent" width="*"><netui:button styleClass="button" value="Search" type="submit"
-						onClick="setElementValue('currentAction', 'applySearch');" tabindex="8" /></td>
+						onClick="setElementValue('currentAction', 'applySearch');" tabindex="2" /></td>
 				</tr>
 			</table>
 		<BR />
@@ -154,19 +154,19 @@
 									<tr class="tableFilter">
 										<td class="tableFilter" align="right" width="100">Ticket ID:</td>
 										<td class="tableFilter" width="*">
-											<netui:textBox tagId="ticketId" dataSource="actionForm.ticketId" tabindex="1" maxlength="32" />
+											<netui:textBox tagId="ticketId" dataSource="actionForm.ticketId" tabindex="3" maxlength="32" />
 										</td>
 									</tr>
 									<tr class="tableFilter">
 										<td class="tableFilter" align="right" width="100">Requestor:</td>
 										<td class="tableFilter" width="*">
 											<netui:textBox tagId="serviceRequestor"
-												dataSource="actionForm.serviceRequestor" tabindex="5" maxlength="32" />
+												dataSource="actionForm.serviceRequestor" tabindex="4" maxlength="32" />
 										</td>
 									</tr>
 									<tr class="tableFilter">
 										<td class="tableFilter" width="100" align="left" valign="baseline">
-											<netui:button action="reOpenSubtestForStudents" styleClass="button" type="submit"
+											<netui:button action="reOpenSubtestForStudents" styleClass="button" type="submit" tabindex="6" 
 											value="Reset" onClick="setElementValue('{actionForm.currentAction}', 'reOpenSubtestForStudents');" />
 										</td>
 										<td class="tableFilter" width="*"></td>
@@ -178,7 +178,7 @@
 									<tr class="tableFilter">
 										<td class="tableFilter" align="right" width="100">Reason for reset:</td>
 										<td class="tableFilter" rowspan="3" width="*" valign="top">
-											<netui:textArea tagId="requestDescription" rows="3"
+											<netui:textArea tagId="requestDescription" rows="3" tabindex="5" 
 												cols="50" dataSource="actionForm.requestDescription" onKeyDown="limitText(this,255)"/>
 										</td>
 									</tr>
