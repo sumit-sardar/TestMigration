@@ -1433,8 +1433,7 @@ public class UploadStudent extends BatchProcessor.Process
               
         if (!(date == null ||  date.equals("")))
         {
-        	System.out.println("date..." + date);
-	        int month = Integer.parseInt(date.substring(0,2)) - 1;
+        	int month = Integer.parseInt(date.substring(0,2)) - 1;
 	        int day = Integer.parseInt(date.substring(3,5));
 	      	int year = Integer.parseInt(date.substring(6,10)) - 1900;
 	        
