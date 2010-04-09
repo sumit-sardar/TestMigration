@@ -325,7 +325,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 			@Jpf.Forward(name = "success",
 					path = "reopen_subtest.jsp")
 	})
-	public Forward findSubtestByTestSessionId(
+	protected Forward findSubtestByTestSessionId(
 			manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm form) {
 
 		SortParams sort = null;
@@ -431,10 +431,10 @@ public class CustomerServiceManagementController extends PageFlowController {
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
 					path = "reopen_subtest.jsp"),
-					@Jpf.Forward(name = "showDetails",
-							path = "showDetails.do")
+			@Jpf.Forward(name = "showDetails",
+					path = "showDetails.do")
 	})
-	public Forward changeSubtest(
+	protected Forward changeSubtest(
 			manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm form) {
 		System.out.println("change subtest is called");
 		buildTestDeliveryListInPage(form);
@@ -451,7 +451,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 			@Jpf.Forward(name = "success",
 					path = "reopen_subtest.jsp")
 	})
-	public Forward showDetails(manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm form)
+	protected Forward showDetails(manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm form)
 	{
 
 		SortParams sort = null;
@@ -510,8 +510,10 @@ public class CustomerServiceManagementController extends PageFlowController {
 	}   
 
 	//step 4 of STUDENT tab
-	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "reopen_subtest.jsp") })
-	public Forward showStudentTestStatusDetails(CustomerServiceManagementForm form) 
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success", 
+					path = "reopen_subtest.jsp") })
+	protected Forward showStudentTestStatusDetails(CustomerServiceManagementForm form) 
 	{
 		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		Integer itemSetId = form.getSelectedItemSetId();
@@ -538,8 +540,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 	@ Jpf. Action (forwards = { 
 			@ Jpf. Forward (name = "success" ,
 					path = "findSubtestByTestSessionId.do"),
-					@ Jpf. Forward (name = "error" ,
-							path = "reopen_subtest.jsp")					
+			@ Jpf. Forward (name = "error" ,
+					path = "reopen_subtest.jsp")					
 	})
 	protected  Forward reOpenSubtest(CustomerServiceManagementForm form) 
 	{
@@ -547,11 +549,12 @@ public class CustomerServiceManagementController extends PageFlowController {
 		try  {
 
 			Boolean isInValidInfo = true;
+			this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
+			
 			isInValidInfo = CustomerServiceFormUtils.isInvalidFormInfo(form);
-
+			
 			if (!isInValidInfo) {
-
-				this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
+				
 				StudentProfileInformation sDetails = (StudentProfileInformation)this.studentList.get(0);
 				Integer studentId = sDetails.getStudentId(); 
 			 	studentName = sDetails.getStudentLoginId();
@@ -599,7 +602,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		} catch  (CTBBusinessException be) {
 
 			String msg = MessageResourceBundle. getMessage (be.getMessage());
-			form.setMessage(Message.TEST_ROSTER_UPDATION_FAILED , msg, Message. ERROR );
+			form.setMessage(Message.TEST_ROSTER_UPDATION_TITLE , msg, Message. ERROR );
 
 			return   new  Forward( "success" );
 		}
@@ -610,8 +613,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
 					path = "changeSubtest.do"),
-					@ Jpf. Forward (name = "error" ,
-							path = "reopen_subtest.jsp")
+			@ Jpf. Forward (name = "error" ,
+					path = "reopen_subtest.jsp")
 	})
 	protected Forward reOpenSubtestForStudents(CustomerServiceManagementForm form) {
 		
@@ -619,11 +622,11 @@ public class CustomerServiceManagementController extends PageFlowController {
 		try {
 
 			Boolean isInValidInfo = true;
+			this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 			isInValidInfo = CustomerServiceFormUtils.isInvalidFormInfo(form);
 
 			if (!isInValidInfo) {
 			
-				this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 				CustomerServiceSearchUtils.reOpenSubtest( 
 						this.customerServiceManagement ,
 						this.user,

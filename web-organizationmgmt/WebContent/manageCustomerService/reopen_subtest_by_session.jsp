@@ -8,6 +8,8 @@
 <netui-data:declareBundle bundlePath="webResources" name="web" />
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets" />
 
+<input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.testAccessCode}" />
+
 <table class="sortable">
 
 	<tr class="sortableControls">
@@ -22,7 +24,7 @@
 			<table class="transparent">
 				<tr class="transparent">
 					<td class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Access Code:</td>
-					<td class="transparent"><netui:textBox tagId="accessCode" dataSource="actionForm.testAccessCode"
+					<td class="transparent"><netui:textBox dataSource="actionForm.testAccessCode"
 						tabindex="1" maxlength="32" /></td>
 					<td class="transparent" width="*"><netui:button styleClass="button" value="Search" type="submit"
 						onClick="setElementValue('currentAction', 'applySearch');" tabindex="2" /></td>
@@ -179,8 +181,8 @@
 										<td class="tableFilter" align="right" width="100">Reason for reset:</td>
 										<td class="tableFilter" rowspan="3" width="*" valign="top">
 											<netui:textArea style="font-family: Arial; font-size: 10pt" tagId="requestDescription" 
-												rows="3" tabindex="5" cols="50" dataSource="actionForm.requestDescription" onBlur="return checkAndTruncate(this,10)" 
-													onKeyUp="checkAndTruncate(this,255)" onKeyPress="return blockEventOnMaxLength(this,255)"/>
+												rows="3" tabindex="5" cols="60" dataSource="actionForm.requestDescription"
+												onKeyUp="limitText(this,255)" onMouseOver="limitText(this,255)"/>
 										</td>
 									</tr>
 									<tr class="tableFilter"><td class="tableFilter">&nbsp;</td></tr>

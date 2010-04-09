@@ -23,7 +23,7 @@ import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.customerServiceManagement.StudentDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
-import com.ctb.util.TransactionPersistenceUtil ;
+
 
 @ControlImplementation()
 public class CustomerServiceManagementImpl implements CustomerServiceManagement,Serializable {
@@ -358,12 +358,14 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 	
 	public void reopenSubtest(AuditFileReopenSubtest [] auditFileReopenSubtest)
 			throws CTBBusinessException { 
-		UserTransaction userTrans = null;
+	/*	UserTransaction userTrans = null;
     	boolean transanctionFlag = false;
-    	TransactionPersistenceUtil transactionPersistenceUtil = new TransactionPersistenceUtil();
+    	TransactionPersistenceUtil transactionPersistenceUtil = new TransactionPersistenceUtil(); */
+	
 		try {
-			userTrans = transactionPersistenceUtil.getTransaction();
-			userTrans.begin();
+		/*	userTrans = transactionPersistenceUtil.getTransaction();
+			userTrans.begin(); */
+		
 			for(int i=0;i<auditFileReopenSubtest.length;i++) {
 				AuditFileReopenSubtest reopenSubtestInfo = auditFileReopenSubtest[i];
 				RosterElement rosterElement = testRoster.getRosterElement(reopenSubtestInfo.getTestRosterId());
@@ -375,12 +377,12 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 				studentItemSetStatus.insertAuditRecordForReopenSubtestData(reopenSubtestInfo);
 			}
 		} catch(SQLException se){
-			transanctionFlag = true;
+		/*	transanctionFlag = true;
         	try {
         		userTrans.rollback();
         	}catch (Exception e1){
         		e1.printStackTrace();
-        	}
+        	}*/
 			se.printStackTrace();
 			StudentDataNotFoundException studentDataNotFoundException = 
 				new StudentDataNotFoundException
@@ -393,14 +395,14 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 			studentDataNotFoundException.setStackTrace(e.getStackTrace());
 			throw studentDataNotFoundException;
 		} 
-		 finally{
+		/* finally{
 
 				try {
 					transactionPersistenceUtil.closeTransaction(userTrans,transanctionFlag);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
+			}*/
 	}
 	
 /**

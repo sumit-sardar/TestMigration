@@ -495,6 +495,20 @@ function blockEventOnMaxLength(element,len) {
 	return element.value.length < len;
 }
 
+function limitText(limitField, limitNum) {
+	if (limitField.value.length > limitNum) {
+		limitField.value = limitField.value.substring(0, limitNum);
+	} 
+}
+
+function limitTextArea() {
+	var textArea = getSafeElement('{actionForm.requestDescription}');
+	var limitNum = 255;
+	if (textArea.value.length > limitNum) {
+		textArea.value = textArea.value.substring(0, limitNum);
+	} 
+}
+
 function checkAndTruncate(element,len) {
 
 	if (element.value.length > len) {

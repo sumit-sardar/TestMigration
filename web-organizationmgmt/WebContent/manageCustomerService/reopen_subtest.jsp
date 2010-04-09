@@ -28,8 +28,7 @@
 <!-- title -->
 
     <p>
-        <netui:content value="Select Student tab to reset a subtest for a single student.select Session tab to reset a subtest for multiple students in the same test session."/>
-
+       Select <b>Student</b> tab to reset a session for a single student. Select <b>Session</b> tab to reset a session for multiple students in the same test session.
     </p>
 
 
@@ -37,11 +36,9 @@
 <!-- start form -->
 <netui:form action="findTestSessionByStudent">
 
-<input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.studentProfile.studentLoginId}" />
-
 <netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/> 
 <netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
-<netui:hidden tagId="testAccessCode" dataSource="actionForm.testAccessCode"/> 
+
 <netui:hidden tagId="testAdminName" dataSource="actionForm.testAdminName"/>
 <netui:hidden tagId="creatorOrgNodeId" dataSource="actionForm.creatorOrgNodeId"/>
 
@@ -76,7 +73,6 @@
         <jsp:include page="/manageCustomerService/reopen_subtest_by_session.jsp" />
     </ctb:case>
 </ctb:switch>
-
 
 
 <br/>
