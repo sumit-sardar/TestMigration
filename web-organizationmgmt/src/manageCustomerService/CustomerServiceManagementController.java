@@ -44,8 +44,6 @@ import dto.StudentSessionStatusVO;
 import dto.TestSessionVO;
 
 
-
-
 @Jpf.Controller
 public class CustomerServiceManagementController extends PageFlowController {
 
@@ -80,7 +78,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 	private List<StudentSessionStatusVO> studentStatusDetailsList = null;
 	private List studentList = null;
 	private LinkedHashMap  subtestNameToIndexHash = null;
-	//private List selectedStudents = null;
 	private HashMap studentsOnPage   = null;
 	private HashMap studentsOnPageList = null;;
 
@@ -88,17 +85,18 @@ public class CustomerServiceManagementController extends PageFlowController {
 	private List studentTestStatusDetailsList = null;
 	private List showStudentDeatilsList = null;
 	private List resetStudentDataList = null;
-	private HashMap studentStatusMap = null;
-	PagerSummary testSessionPagerSummary = null;
-	PagerSummary  subtestPagerSummary = null;
-	PagerSummary studentPagerSummary = null;
-	PagerSummary subtestDetailsPagerSummary = null;
-	PagerSummary studentStatusDetailsPagerSummary = null;
+
 	private String userTimeZone = null;
 	private Integer testAdminId = null;
 	private Integer itemsetId = null;
 	private String selectedTestAdminName = null;
 	private String selectedTestSessionNumber =null;
+	
+	//PagerSummary Variables
+	PagerSummary testSessionPagerSummary = null;
+	PagerSummary  subtestPagerSummary = null;
+	PagerSummary studentPagerSummary = null;
+	PagerSummary studentStatusDetailsPagerSummary = null;
 
 	private StudentProfileInformation studentProfileInformation;
 
@@ -157,16 +155,11 @@ public class CustomerServiceManagementController extends PageFlowController {
 	protected Forward beginFindTestSessionByStudent(){
 
 		CustomerServiceManagementForm form = initialize(ACTION_FIND_TESTSESSION);
-
-		//System.out.println("selected tab..."+ form.getSelectedTab());
-
 		form.setSelectedStudentId(null); 
 		form.setSelectedTab(MODULE_STUDENT_TEST_SESSION);
 		form.setSelectedStudentLoginId(null);        
 		clearMessage(form);
-
 		this.searchApplied = false;
-
 		return new Forward("success", form);
 	}
 
@@ -221,8 +214,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 			return new Forward(currentAction, form);    
 		}
 
-
-
 		if (currentAction.equals(ACTION_CHANGE_SUBTEST)){
 			//this.savedForm.setSelectedSubtestName(form.getSelectedSubtestName());
 			return new Forward(currentAction,form);
@@ -241,8 +232,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		StudentSessionStatusData studentSessionStatusData = null;
 		ScheduleElementData scheduleElementData = null;
 
-		if (this.selectedModuleFind.equals(MODULE_STUDENT_TEST_SESSION))
-		{
+		if (this.selectedModuleFind.equals(MODULE_STUDENT_TEST_SESSION)) {
 			if (applySearch) {
 
 				this.searchApplied = false;
@@ -309,13 +299,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 			this.getRequest().setAttribute("studentSearchResult", "true");        
 			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
 		}
-		if (subtestDetailsPagerSummary !=null) {
-
-			this.getRequest().setAttribute("subtestDetailsSearchResult", "true");        
-			this.getRequest().setAttribute("subtestDetailsPagerSummary", subtestDetailsPagerSummary);
-		}
-
-
+		
 		return new Forward("success");
 	}
 
@@ -1046,7 +1030,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 			this.subtestPagerSummary = null;
 			this.testSessionPagerSummary = null;
 			this.studentPagerSummary = null;
-			this.subtestDetailsPagerSummary = null;
 			form.setSelectedStudentItemId(null);
 			this.studentList = new ArrayList();
 			this.studentsOnPage = new HashMap();
@@ -1217,30 +1200,23 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 		List studentStatusDetails = CustomerServiceSearchUtils.buildSubtestList(sssd,this.userTimeZone);
 		String actionElement = form.getActionElement();
+		Boolean needCommitSelection = commitStudentSelection(actionElement);
 		
-		for (int i=0; i <studentStatusDetails.size(); i++) {   
-			StudentSessionStatusVO ss = (StudentSessionStatusVO) studentStatusDetails.get(i);         
-			if (ss.getCompletionStatus().equals("Completed") || 
-					ss.getCompletionStatus().equals("In Progress" )) {    
-				addSelectedStudentToList(ss); 
-			}
-
-		}
-		
-		if (actionElement != null && 
-				(actionElement.equals("{actionForm.studentPageRequested}") ||
-						actionElement.equals("ButtonGoInvoked_studentSearchResult"))) {
-			updateSelectedStudentsFromForm(form);
-		}
-				
-		if (actionElement != null && (actionElement.equals("studentSortOrderBy"))) {
-			updateSelectedStudentsFromForm(form);
-		}
-		
+		if (needCommitSelection) {
 			
+			updateSelectedStudentsFromForm(form);
+			
+		} else {
+			for (int i=0; i <studentStatusDetails.size(); i++) {   
+				StudentSessionStatusVO ss = (StudentSessionStatusVO) studentStatusDetails.get(i);         
+				if (ss.getCompletionStatus().equals("Completed") || 
+						ss.getCompletionStatus().equals("In Progress" )) {    
+					addSelectedStudentToList(ss); 
+				}
+
+			}
+		}
 		
-		System.out.println("sys size"+ this.selectedStudents.size());
-		this.studentStatusMap = getAllStudentHashMapForArrayList(studentStatusDetails);
 		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_20);
 		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
 		try {
@@ -1249,11 +1225,10 @@ public class CustomerServiceManagementController extends PageFlowController {
 			sssd.applyPaging(studentPage);
 
 		} catch (CTBBusinessException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
-		this.updateSelectedStudentItemDeatilsInForm(form);
-
+		
 		this.studentStatusDetailsList = CustomerServiceSearchUtils.buildSubtestList(sssd,this.userTimeZone);
 		this.studentsOnPage = getStudentHashMapForArrayList(studentStatusDetailsList);
 		this.studentsOnPageList = getStudentHashMapForArrayList(this.studentStatusDetailsList);
@@ -1271,7 +1246,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 	private void deSelectAllStudents(Integer testAdminId, Integer itemSetId,CustomerServiceManagementForm form) {
 
-		this.studentStatusMap = new HashMap();
 		StudentSessionStatusData sssd = null;
 		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_20);
 		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
@@ -1284,22 +1258,15 @@ public class CustomerServiceManagementController extends PageFlowController {
 			sssd = CustomerServiceSearchUtils.getStudentListForSubTest(customerServiceManagement,
 					testAdminId, itemSetId, null, studentPage, testSort);
 		} catch (CTBBusinessException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
-
-		//this.studentStatusMap = getStudentHashMapForArrayList(studentStatusDetails);
-
 		this.studentStatusDetailsList  = CustomerServiceSearchUtils.buildSubtestList(sssd,this.userTimeZone);
 		form.setStudentMaxPage(sssd.getFilteredPages());
-
-		//this.updateSelectedStudentItemDeatilsInForm(form);
 		studentPagerSummary = 
 			CustomerServiceSearchUtils.buildSubtestDataPagerSummary(sssd, form.getStudentPageRequested());
 		this.getRequest().setAttribute("studentSearchResult", "true");        
 		this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
-
-
 
 	}
 
@@ -1315,19 +1282,21 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 		return result;
 	}
-
-
-
-	private void updateSelectedStudentItemDeatilsInForm(CustomerServiceManagementForm form){
-		ArrayList formItemSetIds = new ArrayList();
-		Set selectedStudentItemId = this.studentStatusMap.keySet();
-
-		for(Iterator it=this.studentStatusMap.keySet().iterator(); it.hasNext();){
-			String studentItemSetIdsOnPage = (String)it.next().toString();
-			//if(selectedStudentItemId.contains(studentItemSetIdsOnPage)){
-			formItemSetIds.add(studentItemSetIdsOnPage);
+	
+	private Boolean commitStudentSelection(String actionElement) {
+		
+		Boolean needCommitFlag = false;
+		if (actionElement != null && 
+				(actionElement.equals("{actionForm.studentPageRequested}") ||
+						actionElement.equals("ButtonGoInvoked_studentSearchResult"))) {
+			needCommitFlag = true;
 		}
-		form.setSelectedStudentItemId(getStringArrayFromArraylist(formItemSetIds));
+				
+		if (actionElement != null && (actionElement.equals("studentSortOrderBy"))) {
+			needCommitFlag = true;
+		}
+		
+		return needCommitFlag;
 	}
 
 	private String[] getStringArrayFromArraylist(ArrayList list){
@@ -1338,6 +1307,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 		return result;
 	}
+	
 	private void updateSelectedStudentsFromForm(CustomerServiceManagementForm form){
 
 		String [] selectedStudentIdFromPage = form.getSelectedStudentItemId();
@@ -2627,21 +2597,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 	public void setShowStudentDeatilsList(List showStudentDeatilsList) {
 		this.showStudentDeatilsList = showStudentDeatilsList;
 	}
-
-	/**
-	 * @return the studentStatusMap
-	 */
-	public HashMap getStudentStatusMap() {
-		return studentStatusMap;
-	}
-
-	/**
-	 * @param studentStatusMap the studentStatusMap to set
-	 */
-	public void setStudentStatusMap(HashMap studentStatusMap) {
-		this.studentStatusMap = studentStatusMap;
-	}
-
 
 	public String getPageTitle() {
 		return pageTitle;
