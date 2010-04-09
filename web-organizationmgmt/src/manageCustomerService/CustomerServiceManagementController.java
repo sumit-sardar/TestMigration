@@ -128,8 +128,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 			@Jpf.Forward(name = "success",
 					path = "defaultAction.do")
 	})
-	protected Forward begin()
-	{   
+	protected Forward begin() {   
 
 		return new Forward("success");
 	}
@@ -140,8 +139,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 					path = "beginFindTestSessionByStudent.do") 
 
 	})
-	protected Forward defaultAction(CustomerServiceManagementForm form)
-	{
+	protected Forward defaultAction(CustomerServiceManagementForm form){
 		initialize(ACTION_FIND_TESTSESSION);
 		return new Forward("success");
 	}
@@ -179,8 +177,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 					path = "selectAllStudents.do")	
 
 	})
-	protected Forward findTestSessionByStudent(CustomerServiceManagementForm form)
-	{        
+	protected Forward findTestSessionByStudent(CustomerServiceManagementForm form) { 
+		
 		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		form.validateValues();
 		String actionElement = form.getActionElement();            
@@ -420,7 +418,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 	})
 	protected Forward changeSubtest(
 			manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm form) {
-		System.out.println("change subtest is called");
+		
 		buildTestDeliveryListInPage(form);
 		this.showStudentDeatilsList = null;
 		if(form.getCurrentAction().equals(ACTION_SHOW_DETAILS)) {
@@ -435,7 +433,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 			@Jpf.Forward(name = "success",
 					path = "reopen_subtest.jsp")
 	})
-	protected Forward showDetails(manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm form)
+	protected Forward showDetails(
+			manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm form)
 	{
 
 		SortParams sort = null;
@@ -465,14 +464,16 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 
 		if (studentStatusData != null && studentStatusData.size() > 0) {
-			StudentSessionStatusData resetStudentSessionStatusData = CustomerServiceSearchUtils.getStudentSessionStatus(studentStatusData,null,null);
-			System.out.println(";;;" + resetStudentSessionStatusData);
+			StudentSessionStatusData resetStudentSessionStatusData = 
+					CustomerServiceSearchUtils.getStudentSessionStatus(studentStatusData,null,null);
 			this.resetStudentDataList = new ArrayList();
-			this.resetStudentDataList = CustomerServiceSearchUtils.buildSubtestList(resetStudentSessionStatusData,this.userTimeZone);
+			this.resetStudentDataList = CustomerServiceSearchUtils.
+					buildSubtestList(resetStudentSessionStatusData,this.userTimeZone);
 		}
 
 		if (studentStatusData != null && studentStatusData.size() > 0) {
-			studentSessionStatusData = CustomerServiceSearchUtils.getStudentSessionStatus(studentStatusData,page,sort);
+			studentSessionStatusData = CustomerServiceSearchUtils.
+					getStudentSessionStatus(studentStatusData,page,sort);
 		}
 		if (studentSessionStatusData != null && studentSessionStatusData.getTotalCount() > 0) {
 			this.searchApplied = true;
@@ -988,7 +989,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		form.setActionElement(ACTION_DEFAULT);
 		form.setSelectedStudentId(null);
 		form.setSelectedStudentLoginId(null);
-		form.setSelectedAccessCode(null);
+		//form.setSelectedAccessCode(null);
 		form.setTestAccessCode(null);
 		resetPageFlowLists();
 	}
@@ -1003,7 +1004,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		form.clearSearch();  
 		form.setCurrentAction(ACTION_DEFAULT);
 		form.setActionElement(ACTION_DEFAULT);
-		form.setSelectedAccessCode(null);
+		//form.setSelectedAccessCode(null);
 		form.setTestAccessCode(null);
 		resetPageFlowLists();
 	}
@@ -1049,7 +1050,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 		else {
 			form.setSelectedStudentLoginId(null);
-			form.setSelectedAccessCode(null);
+			//form.setSelectedAccessCode(null);
 		}
 
 		return applySearch;
@@ -1110,7 +1111,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		this.getRequest().setAttribute("hideProductNameDropDown", new Boolean(hideProductNameDropDown));
 		form.setSelectedItemSetName(this.testDeliveryItemList.get(0).getItemSetName());
 		page = FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_20);
-		sort =  FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
+		sort =  FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy(), form.getStudentSecSortColumn(), form.getStudentSecSortOrderBy());
 		updateSelectedStudentsFromForm(form);
 
 		try {
@@ -1219,7 +1220,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 		
 		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_20);
-		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
+		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy(), form.getStudentSecSortColumn(), form.getStudentSecSortOrderBy());
 		try {
 
 			sssd.applySorting(testSort);
@@ -1249,7 +1250,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		StudentSessionStatusData sssd = null;
 		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_20);
-		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
+		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy(), form.getStudentSecSortColumn(), form.getStudentSecSortOrderBy());
 
 		//reset the form
 		form.setSelectedStudentItemId(null);
@@ -1465,7 +1466,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		private String selectedOrgLevel;        
 		private Integer selectedStudentId;
 		private String selectedStudentLoginId;
-		private String selectedAccessCode;
+		//private String selectedAccessCode;
 
 		private Integer selectedTestSessionId;	 
 
@@ -1509,7 +1510,11 @@ public class CustomerServiceManagementController extends PageFlowController {
 		private String studentSortOrderBy;
 		private Integer studentPageRequested;
 		private Integer studentMaxPage;
-
+		
+		// student Secoundary pager
+		private String studentSecSortColumn;
+		private String studentSecSortOrderBy;
+		
 		//resetstatus Details Pager
 		private String studentStatusSortColumn;
 		private String studentStatusSortOrderBy;
@@ -1554,6 +1559,10 @@ public class CustomerServiceManagementController extends PageFlowController {
 			copied.setStudentSortColumn(this.studentSortColumn);
 			copied.setStudentSortOrderBy(this.studentSortOrderBy);
 			
+			//set student paging variables for tab2 step-3
+			copied.setStudentSecSortColumn(this.studentSecSortColumn);
+			copied.setStudentSecSortOrderBy(this.studentSecSortOrderBy);
+			
 			//set student paging variables for tab2 step-4
 			copied.setStudentStatusMaxPage(this.studentStatusMaxPage);
 			copied.setStudentStatusPageRequested(this.studentStatusPageRequested);
@@ -1582,7 +1591,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 			copied.setSelectedTestAdminId(this.selectedTestAdminId);
 
 			//set selected accesscode
-			copied.setSelectedAccessCode(this.selectedAccessCode);
+			//copied.setSelectedAccessCode(this.selectedAccessCode);
 			copied.setSelectedTestSessionId(this.selectedTestSessionId);
 			copied.setSelectedTestAdminId(this.testAdminId);
 			copied.setSelectedTestAdminName(this.selectedTestAdminName);
@@ -1644,7 +1653,14 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 			if (this.studentPageRequested.intValue() <= 0)            
 				this.studentPageRequested = new Integer(1);
+			
+			if (this.studentSecSortColumn == null)
+				this.studentSecSortColumn = 
+					FilterSortPageUtils.SUBTEST_ITEM_SET_ORDER_DEFAULT_SORT;
 
+			if (this.studentSecSortOrderBy == null)
+				this.studentSecSortOrderBy = FilterSortPageUtils.ASCENDING;
+			
 			if (this.studentMaxPage == null)
 				this.studentMaxPage = new Integer(1);
 
@@ -1813,7 +1829,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 				this.selectedTestSessionId = null;
 				if (fromAction.equals(ACTION_FIND_TESTSESSION)) {
 					this.selectedStudentLoginId = null;
-					this.selectedAccessCode = null;
+					//this.selectedAccessCode = null;
 				}
 			}
 
@@ -1938,13 +1954,13 @@ public class CustomerServiceManagementController extends PageFlowController {
 			return this.currentAction != null ? this.currentAction : global.Global.ACTION_DEFAULT;
 		}
 
-		public String getSelectedAccessCode() {
+		/*public String getSelectedAccessCode() {
 			return selectedAccessCode;
 		}
 
 		public void setSelectedAccessCode(String selectedAccessCode) {
 			this.selectedAccessCode = selectedAccessCode;
-		}
+		}*/
 
 		public Message getMessage() {
 			return message;
@@ -2452,6 +2468,34 @@ public class CustomerServiceManagementController extends PageFlowController {
 		 */
 		public void setStudentStatusSecSortOrderBy(String studentStatusSecSortOrderBy) {
 			this.studentStatusSecSortOrderBy = studentStatusSecSortOrderBy;
+		}
+
+		/**
+		 * @return the studentSecSortColumn
+		 */
+		public String getStudentSecSortColumn() {
+			return this.studentSecSortColumn != null ? this.studentSecSortColumn : FilterSortPageUtils.SUBTEST_ITEM_SET_ORDER_DEFAULT_SORT;
+		}
+
+		/**
+		 * @param studentSecSortColumn the studentSecSortColumn to set
+		 */
+		public void setStudentSecSortColumn(String studentSecSortColumn) {
+			this.studentSecSortColumn = studentSecSortColumn;
+		}
+
+		/**
+		 * @return the studentSecSortOrderBy
+		 */
+		public String getStudentSecSortOrderBy() {
+			return this.studentSecSortOrderBy != null ? this.studentSecSortOrderBy : FilterSortPageUtils.ASCENDING;
+		}
+
+		/**
+		 * @param studentSecSortOrderBy the studentSecSortOrderBy to set
+		 */
+		public void setStudentSecSortOrderBy(String studentSecSortOrderBy) {
+			this.studentSecSortOrderBy = studentSecSortOrderBy;
 		}
 
 	}
