@@ -457,19 +457,23 @@ public class StudentSessionStatusVO implements java.io.Serializable
 
 		if(initialTime != 0){
 
-			Integer hours = initialTime / 60;
-			Integer remainder = initialTime % 60;
-			Integer minutes = remainder;
-
-
+			Integer hours = initialTime / 3600;
+			Integer mininsec = initialTime % 3600;
+			Integer minutes = mininsec / 60;
+			Integer seconds = mininsec % 60;
+						
 			zeroHrs = hours.toString();
 			zeroMins = minutes.toString();
-
+			zeroSecs = seconds.toString();
+			
 			if(hours < 10)
 				zeroHrs = "0" + hours ;
 
 			if(minutes < 10)
 				zeroMins = "0" + minutes ;
+			
+			if(seconds < 10)
+				zeroSecs = "0" + seconds ;
 
 			defaultTime = zeroHrs + seperator + zeroMins + seperator + zeroSecs; 
 
