@@ -207,8 +207,8 @@
 										<td class="tableFilter" width="100" align="right">Reason for reset:</td>
 										<td class="tableFilter" rowspan="3" width="*" valign="top">
 											<netui:textArea style="font-family: Arial; font-size: 10pt" tagId="requestDescription" 
-												rows="3" cols="60" dataSource="actionForm.requestDescription" tabindex="6"
-												onKeyUp="limitText(this,255)" onMouseOver="limitText(this,255)"/>
+												rows="3" cols="60" dataSource="actionForm.requestDescription" tabindex="6" onBlur="checkAndTruncate(this,255)" 
+													onKeyUp="checkAndTruncate(this,255)" onKeyPress="return blockEventOnMaxLength(this,255)"/>
 										</td>
 									</tr>
 									<tr class="tableFilter"><td class="tableFilter">&nbsp;</td></tr>

@@ -90,6 +90,7 @@ public class CustomerServiceFormUtils {
 
 
 	public static String verifyTestSessionInfo(CustomerServiceManagementForm form) {
+
 		String invalidCharFields = "";
 		int invalidCharFieldCount = 0;
 		String studentLoginId = null;
@@ -98,11 +99,11 @@ public class CustomerServiceFormUtils {
 		String ticketId = null;
 		String serviceRequestor = null;
 		String requestDescription = null;
-		
-		if(form.getSelectedTab().equals("moduleStudentTestSession")) { 
+
+		if(form.getSelectedTab().equals("moduleStudentTestSession") && form.getCurrentAction().equals("applySearch")) { 
 			studentLoginId = form.getStudentProfile()!= null && form.getStudentProfile().getStudentLoginId() != null ?  form.getStudentProfile().getStudentLoginId().trim() : null;
 			testAccessCode =  form.getTestAccessCode() != null? form.getTestAccessCode().trim() : null;
-			
+
 			if (! WebUtils.validString(studentLoginId) && studentLoginId != null ) {
 				invalidCharFieldCount += 1;            
 				invalidCharFields = buildErrorString(Message.STUDENT_LOGIN_ID, invalidCharFieldCount, invalidCharFields);       
@@ -112,52 +113,53 @@ public class CustomerServiceFormUtils {
 				invalidCharFieldCount += 1;            
 				invalidCharFields = buildErrorString(Message.STUDENT_TEST_ACCESS_CODE, invalidCharFieldCount, invalidCharFields);       
 			}
-			
+
 		}
-	
-		if(form.getSelectedTab().equals("moduleTestSession")) { 
-		testAccessCode = form.getTestAccessCode()!=null ? form.getTestAccessCode().trim() : null;
-		if (! WebUtils.validString(testAccessCode) && testAccessCode != null ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString(Message.STUDENT_TEST_ACCESS_CODE, invalidCharFieldCount, invalidCharFields);       
+
+		if(form.getSelectedTab().equals("moduleTestSession") && form.getCurrentAction().equals("applySearch")) {
+
+			testAccessCode = form.getTestAccessCode()!=null ? form.getTestAccessCode().trim() : null;
+			if (! WebUtils.validString(testAccessCode) && testAccessCode != null ) {
+				invalidCharFieldCount += 1;            
+				invalidCharFields = buildErrorString(Message.STUDENT_TEST_ACCESS_CODE, invalidCharFieldCount, invalidCharFields);       
+			}
 		}
+
+		if(form.getCurrentAction().equals("reOpenSubtest") || form.getCurrentAction().equals("reOpenSubtestForStudents")) {
+
+			ticketId = form.getTicketId() != null ? form.getTicketId().trim() : null;
+			serviceRequestor = form.getServiceRequestor() != null ? form.getServiceRequestor().trim() : null;
+			requestDescription = form.getRequestDescription() != null ? form.getRequestDescription().trim() : null;
+
+			if (ticketId != null  && ! WebUtils.validString(ticketId) ) {
+				invalidCharFieldCount += 1;            
+				invalidCharFields = buildErrorString(Message.TEST_TICKET_ID, invalidCharFieldCount, invalidCharFields);       
+			}
+
+			if (serviceRequestor != null && ! WebUtils.validString(serviceRequestor) ) {
+				invalidCharFieldCount += 1;            
+				invalidCharFields = buildErrorString(Message.TEST_SERVICE_REQUESTOR, invalidCharFieldCount, invalidCharFields);       
+			}
+
+			if (requestDescription != null && ! WebUtils.validString(requestDescription) ) {
+				invalidCharFieldCount += 1;            
+				invalidCharFields = buildErrorString(Message.TEST_REQUEST_DESCRIPTION, invalidCharFieldCount, invalidCharFields);       
+			}
+		}
+
+		return invalidCharFields;
 	}
-		
-	if(form.getCurrentAction().equals("reOpenSubtest") || form.getCurrentAction().equals("reOpenSubtestForStudents")) {
 
-		ticketId = form.getTicketId() != null ? form.getTicketId().trim() : null;
-		serviceRequestor = form.getServiceRequestor() != null ? form.getServiceRequestor().trim() : null;
-		requestDescription = form.getRequestDescription() != null ? form.getRequestDescription().trim() : null;
-
-		if (ticketId != null  && ! WebUtils.validString(ticketId) ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString(Message.TEST_TICKET_ID, invalidCharFieldCount, invalidCharFields);       
+	public static String buildErrorString(String field, int count, String str)
+	{
+		String result = str;
+		if (count == 1) {
+			result += field;
 		}
-
-		if (serviceRequestor != null && ! WebUtils.validString(serviceRequestor) ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString(Message.TEST_SERVICE_REQUESTOR, invalidCharFieldCount, invalidCharFields);       
-		}
-
-		if (requestDescription != null && ! WebUtils.validString(requestDescription) ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString(Message.TEST_REQUEST_DESCRIPTION, invalidCharFieldCount, invalidCharFields);       
-		}
+		else {
+			result += (", " + field);            
+		}        
+		return result;
 	}
-
-	return invalidCharFields;
-}
-
-public static String buildErrorString(String field, int count, String str)
-{
-	String result = str;
-	if (count == 1) {
-		result += field;
-	}
-	else {
-		result += (", " + field);            
-	}        
-	return result;
-}
 
 }

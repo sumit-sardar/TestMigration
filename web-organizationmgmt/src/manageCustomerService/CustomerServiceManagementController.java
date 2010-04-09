@@ -90,7 +90,10 @@ public class CustomerServiceManagementController extends PageFlowController {
 	private Integer testAdminId = null;
 	private Integer itemsetId = null;
 	private String selectedTestAdminName = null;
-	private String selectedTestSessionNumber =null;
+	private String selectedTestSessionNumber = null;
+
+	private String searchedStudentLoginId = null;
+	private String searchedTestAccessCode = null;
 	
 	//PagerSummary Variables
 	PagerSummary testSessionPagerSummary = null;
@@ -201,6 +204,13 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		if (currentAction.equals(globalApp.ACTION_APPLY_SEARCH)) {
 			this.studentProfileInformation = form.getStudentProfile().createClone();
+
+			//store search criteria at pageflow level
+			if(this.selectedModuleFind.equals(MODULE_STUDENT_TEST_SESSION)) {
+				this.searchedStudentLoginId = form.getStudentProfile().getStudentLoginId();
+			}
+			this.searchedTestAccessCode = form.getTestAccessCode();
+			
 			initPagingSorting(form);
 		}
 
@@ -319,8 +329,10 @@ public class CustomerServiceManagementController extends PageFlowController {
 		form.resetValuesForAction(actionElement, ACTION_FIND_SUBTEST_BY_SESSION_ID); 
 		Integer testAdminId = form.getSelectedTestSessionId();
 		Integer testRosterId = null;
-		String testAccessCode = form.getTestAccessCode();
-
+		//String testAccessCode = form.getTestAccessCode();
+		//get the test access code used as search criteria
+		String testAccessCode = this.getSearchedTestAccessCode();
+		
 		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 
 		for (TestSessionVO testSessionVO : this.testSessionList) {
@@ -2677,6 +2689,34 @@ public class CustomerServiceManagementController extends PageFlowController {
 	 */
 	public void setSelectedTestAdminName(String selectedTestAdminName) {
 		this.selectedTestAdminName = selectedTestAdminName;
+	}
+
+	/**
+	 * @return the searchedStudentLoginId
+	 */
+	public String getSearchedStudentLoginId() {
+		return searchedStudentLoginId;
+	}
+
+	/**
+	 * @param searchedStudentLoginId the searchedStudentLoginId to set
+	 */
+	public void setSearchedStudentLoginId(String searchedStudentLoginId) {
+		this.searchedStudentLoginId = searchedStudentLoginId;
+	}
+
+	/**
+	 * @return the searchedTestAccessCode
+	 */
+	public String getSearchedTestAccessCode() {
+		return searchedTestAccessCode;
+	}
+
+	/**
+	 * @param searchedTestAccessCode the searchedTestAccessCode to set
+	 */
+	public void setSearchedTestAccessCode(String searchedTestAccessCode) {
+		this.searchedTestAccessCode = searchedTestAccessCode;
 	}
 
 
