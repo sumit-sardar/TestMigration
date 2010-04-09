@@ -63,8 +63,9 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 	private static final String ACTION_APPLY_SEARCH   = "applySearch";
 	private static final String ACTION_CLEAR_SEARCH   = "clearSearch";
-	private static final String ACTION_ADD_ALL = "addAll";
+	private static final String ACTION_SELECT_ALL = "selectAllStudents";
 	private static final String ACTION_SHOW_DETAILS = "showDetails";
+	private static final String ACTION_CHANGE_SUBTEST = "changeSubtest";
 
 
 	private String userName = null;
@@ -222,17 +223,16 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 
 
-		if (currentAction.equals("changeSubtest")){
+		if (currentAction.equals(ACTION_CHANGE_SUBTEST)){
 			//this.savedForm.setSelectedSubtestName(form.getSelectedSubtestName());
 			return new Forward(currentAction,form);
 		}
 
-		if (currentAction.equals("showDetails")){
-			System.out.println("showDetails" );
-			return new Forward("changeSubtest",form);
+		if (currentAction.equals(ACTION_SHOW_DETAILS)){
+			return new Forward(ACTION_CHANGE_SUBTEST,form);
 		}
 
-		if (currentAction.equals("selectAllStudents")) {
+		if (currentAction.equals(ACTION_SELECT_ALL)) {
 			return new Forward(currentAction,form);
 		}
 
@@ -439,7 +439,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		System.out.println("change subtest is called");
 		buildTestDeliveryListInPage(form);
 		this.showStudentDeatilsList = null;
-		if(form.getCurrentAction().equals("showDetails")) {
+		if(form.getCurrentAction().equals(ACTION_SHOW_DETAILS)) {
 
 			return new Forward(form.getCurrentAction(),form);
 		}
@@ -635,7 +635,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 						form.getTicketId(),
 						this.testAdminId,
 						this.testDeliveryItemList.get(0).getCustomerId(),
-						this.showStudentDeatilsList,
+						this.resetStudentDataList,
 						this.itemsetId,
 						this.testDeliveryItemList.get(0).getOrgNodeId(),
 						null);
@@ -1218,6 +1218,15 @@ public class CustomerServiceManagementController extends PageFlowController {
 		List studentStatusDetails = CustomerServiceSearchUtils.buildSubtestList(sssd,this.userTimeZone);
 		String actionElement = form.getActionElement();
 		
+		for (int i=0; i <studentStatusDetails.size(); i++) {   
+			StudentSessionStatusVO ss = (StudentSessionStatusVO) studentStatusDetails.get(i);         
+			if (ss.getCompletionStatus().equals("Completed") || 
+					ss.getCompletionStatus().equals("In Progress" )) {    
+				addSelectedStudentToList(ss); 
+			}
+
+		}
+		
 		if (actionElement != null && 
 				(actionElement.equals("{actionForm.studentPageRequested}") ||
 						actionElement.equals("ButtonGoInvoked_studentSearchResult"))) {
@@ -1228,14 +1237,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 			updateSelectedStudentsFromForm(form);
 		}
 		
-		for (int i=0; i <studentStatusDetails.size(); i++) {   
-			StudentSessionStatusVO ss = (StudentSessionStatusVO) studentStatusDetails.get(i);         
-			if (ss.getCompletionStatus().equals("Completed") || 
-					ss.getCompletionStatus().equals("In Progress" )) {    
-				addSelectedStudentToList(ss); 
-			}
-
-		}	
+			
 		
 		System.out.println("sys size"+ this.selectedStudents.size());
 		this.studentStatusMap = getAllStudentHashMapForArrayList(studentStatusDetails);
@@ -1253,7 +1255,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		this.updateSelectedStudentItemDeatilsInForm(form);
 
 		this.studentStatusDetailsList = CustomerServiceSearchUtils.buildSubtestList(sssd,this.userTimeZone);
-		this.studentsOnPage = getAllStudentHashMapForArrayList(studentStatusDetailsList);
+		this.studentsOnPage = getStudentHashMapForArrayList(studentStatusDetailsList);
+		this.studentsOnPageList = getStudentHashMapForArrayList(this.studentStatusDetailsList);
 		form.setStudentMaxPage(sssd.getTotalPages());
 		studentPagerSummary = 
 			CustomerServiceSearchUtils.buildSubtestDataPagerSummary(sssd, form.getStudentPageRequested()); 
@@ -1275,6 +1278,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		//reset the form
 		form.setSelectedStudentItemId(null);
+		this.selectedStudents = new HashMap();
 
 		try {
 			sssd = CustomerServiceSearchUtils.getStudentListForSubTest(customerServiceManagement,
@@ -1769,7 +1773,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		public void resetValuesForAction(String actionElement, 
 				String fromAction) {
 
-			if (fromAction.equals("changeSubtest") && 
+			if (fromAction.equals(ACTION_CHANGE_SUBTEST) && 
 					!(actionElement.equals("{actionForm.studentPageRequested}") ||
 							actionElement.equals("ButtonGoInvoked_studentSearchResult"))) {
 
@@ -1795,7 +1799,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 				
 			}
 			
-			if (fromAction.equals("showStudentTestStatusDetails") || fromAction.equals("showDetails") ){
+			if (fromAction.equals("showStudentTestStatusDetails") || fromAction.equals(ACTION_SHOW_DETAILS) ){
 
 				this.ticketId = null;
 				this.requestDescription = null;
@@ -1845,9 +1849,9 @@ public class CustomerServiceManagementController extends PageFlowController {
 			if (actionElement.equals("{actionForm.studentPageRequested}") ||
 					actionElement.equals("ButtonGoInvoked_studentSearchResult")) {
 				
-				if (!this.currentAction.equals("selectAllStudents")) {
+				if (!this.currentAction.equals(ACTION_SELECT_ALL)) {
 
-					this.currentAction="changeSubtest";
+					this.currentAction=ACTION_CHANGE_SUBTEST;
 				} 
 
 				//this.studentSortColumn = null;
@@ -1857,7 +1861,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 			if (actionElement.equals("{actionForm.studentStatusPageRequested}")) {
 				//this.studentStatusSortColumn = null;
 				//this.studentStatusSortOrderBy = null;
-				this.currentAction="showDetails";
+				this.currentAction=ACTION_SHOW_DETAILS;
 			}
 			
 						
@@ -1867,9 +1871,9 @@ public class CustomerServiceManagementController extends PageFlowController {
 			if ((actionElement.indexOf("studentSortColumn") != -1) ||
 					(actionElement.indexOf("studentSortOrderBy") != -1)) {
 				//this.studentPageRequested = new Integer(1);
-				if (!this.currentAction.equals("selectAllStudents")) {
+				if (!this.currentAction.equals(ACTION_SELECT_ALL)) {
 
-					this.currentAction="changeSubtest";
+					this.currentAction=ACTION_CHANGE_SUBTEST ;
 				}
 
 			}
