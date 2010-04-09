@@ -749,6 +749,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 			if (sData != null) {
 				form.setStudentProfile(new StudentProfileInformation(sData));
+				form.getStudentProfile().setStudentLoginId(studentLoginId);
 				form.setSelectedStudentId(sData.getStudentId());
 				form.setSelectedStudentLoginId(sData.getUserName());
 				Student[] students = new Student[1];
