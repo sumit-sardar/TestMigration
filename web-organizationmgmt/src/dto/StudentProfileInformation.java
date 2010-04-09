@@ -29,7 +29,7 @@ public class StudentProfileInformation extends SanitizedFormField
 		this.studentLoginId = student.getUserName();
 		this.studentFirstName = student.getFirstName();
 		this.studentMiddleName = student.getMiddleName();
-		this.studentLastName = student.getFirstName();
+		this.studentLastName = student.getLastName();
 		this.studentPreferredName = student.getPreferredName();
 		this.studentExternalId = student.getExtPin1();
 
