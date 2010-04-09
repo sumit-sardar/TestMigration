@@ -40,7 +40,7 @@
 		<!--START: Test session search result --> 
 		<c:if test="${pageFlow.testSessionList != null}">
 		<BR/>
-		<b>Step 2:</b> Select a test session to view its sections
+		<b>Step 2:</b> Select a test session to view its sections.
 		<BR />
 			<BR />
 			<table class="sortable">
@@ -207,7 +207,7 @@
 										<td class="tableFilter" width="100" align="right">Reason for reset:</td>
 										<td class="tableFilter" rowspan="3" width="*" valign="top">
 											<netui:textArea style="font-family: Arial; font-size: 10pt" tagId="requestDescription" 
-												rows="3" cols="60" dataSource="actionForm.requestDescription" tabindex="6" onBlur="checkAndTruncate(this,255)" 
+												rows="4" cols="60" dataSource="actionForm.requestDescription" tabindex="6" onBlur="checkAndTruncate(this,255)" 
 													onKeyUp="checkAndTruncate(this,255)" onKeyPress="return blockEventOnMaxLength(this,255)"/>
 										</td>
 									</tr>
@@ -231,7 +231,7 @@
 				</netui-data:repeaterHeader>
 				<netui-data:repeaterItem>
 				<tr class="sortable">
-					<td class="sortable">
+					<td class="sortable" width="30%">
 						<table class="transparent">
 							<tr class="transparent" valign="top">
 								<td class="transparent"><netui:span value="${bundle.web['test.label.name']}:" /></td>
@@ -248,7 +248,7 @@
 						</table>
 					</td>
 
-					<td class="sortable">
+					<td class="sortable" width="30%">
 						<table class="transparent">
 							<tr class="transparent">
 								<td class="transparent" valign="top"><netui:span value="${bundle.web['test.label.name']}:" /></td>
@@ -266,7 +266,7 @@
 						</table>
 					</td>
 
-					<td class="sortable">
+					<td class="sortable" width="40%">
 						<table class="transparent">
 							<tr class="transparent" valign="top">
 								<td class="transparent"><netui:span value="${bundle.web['test.label.name']}:" /></td>

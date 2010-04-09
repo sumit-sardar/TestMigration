@@ -431,6 +431,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 	protected Forward changeSubtest(
 			manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm form) {
 		
+		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		buildTestDeliveryListInPage(form);
 		this.showStudentDeatilsList = null;
 		if(form.getCurrentAction().equals(ACTION_SHOW_DETAILS)) {
@@ -451,6 +452,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		SortParams sort = null;
 		FilterParams filter = null;
+		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		PageParams page =  FilterSortPageUtils.buildPageParams(form.getStudentStatusPageRequested(), FilterSortPageUtils.PAGESIZE_20);
 		sort =  FilterSortPageUtils.buildSortParams(form.getStudentStatusSortColumn(), form.getStudentStatusSortOrderBy(), form.getStudentStatusSecSortColumn(), form.getStudentStatusSecSortOrderBy());
 		StudentSessionStatusData studentSessionStatusData = null;
@@ -686,6 +688,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		String currentAction = form.getCurrentAction();  	
 		form.resetValuesForAction(actionElement, currentAction);
 		form.validateValues();
+		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		selectAllStudents(this.testAdminId, this.itemsetId,form); 
 		if (studentPagerSummary !=null) {
 
@@ -712,6 +715,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 	})
 	protected Forward deselectAllStudents(CustomerServiceManagementForm form)
 	{  
+		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		String actionElement = form.getActionElement();            
 		String currentAction = form.getCurrentAction();  	
 		form.resetValuesForAction(actionElement, currentAction);
