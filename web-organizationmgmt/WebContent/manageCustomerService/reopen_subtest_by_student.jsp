@@ -254,7 +254,6 @@
 								<td class="transparent" valign="top"><netui:span value="${bundle.web['test.label.name']}:" /></td>
 								<td class="transparent" nowrap="true"><netui:span value="${pageFlow.selectedTestAdminName}" /></td>
 							</tr>
-							
 							<tr class="transparent" valign="top">
 								<td class="transparent"><netui:span value="${bundle.web['test.label.id']}:" /></td>
 								<td class="transparent"><netui:span value="${pageFlow.selectedTestSessionNumber}" /></td>
@@ -270,28 +269,17 @@
 						<table class="transparent">
 							<tr class="transparent" valign="top">
 								<td class="transparent"><netui:span value="${bundle.web['test.label.name']}:" /></td>
-								<td class="transparent" nowrap="true"><netui:span value="${container.item.itemSetName}" /></td>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
+								<td class="transparent" nowrap="true" colspan="3"><netui:span value="${container.item.itemSetName}" /></td>
 							</tr>
 							<tr class="transparent" valign="top">
 								<td class="transparent"><netui:span value="${bundle.web['test.label.status']}:" /></td>
-								<td class="transparent"><netui:span value="${container.item.completionStatus}" /></td>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
+								<td class="transparent" colspan="3"><netui:span value="${container.item.completionStatus}" /></td>
 							</tr>
-								
 							<tr class="transparent" valign="top">
 								<td class="transparent" width="25%" align="left" nowrap="true"><netui:span value="${bundle.web['test.label.accessCode']}:" /></td>
-								<td class="transparent" width="25%" align="left"><netui:span value="${container.item.testAccessCode}" /></td>
-								<td class="transparent alignRight" colspan="2" width="50%">
-								<table class="transparent">
-									<tr class="transparent alignRight">
-										<td class="transparent"><netui:span value="${bundle.web['test.label.order']}:" /></td>
-										<td class="transparent"><netui:span value="${container.item.itemSetOrder}" /></td>
-									</tr>
-								</table>
-								</td>
+								<td class="transparent" width="30%" align="left"><netui:span value="${container.item.testAccessCode}" /></td>
+								<td class="transparent" width="25%" align="right"><netui:span value="${bundle.web['test.label.order']}:" /></td>
+								<td class="transparent" width="20%" align="left"><netui:span value="${container.item.itemSetOrder}" /></td>
 							</tr>
 						</table>
 					</td>
