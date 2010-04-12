@@ -64,6 +64,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 	private static final String ACTION_SELECT_ALL = "selectAllStudents";
 	private static final String ACTION_SHOW_DETAILS = "showDetails";
 	private static final String ACTION_CHANGE_SUBTEST = "changeSubtest";
+	private static final String ACTION_REOPEN_SUBTEST_FOR_STUDENTS = "reOpenSubtestForStudents";
 
 
 	private String userName = null;
@@ -227,8 +228,27 @@ public class CustomerServiceManagementController extends PageFlowController {
 			return new Forward(currentAction,form);
 		}
 
-		if (currentAction.equals(ACTION_SHOW_DETAILS)){
-			return new Forward(ACTION_CHANGE_SUBTEST,form);
+		if (currentAction.equals(ACTION_SHOW_DETAILS)) {
+
+			if(actionElement.equals("{actionForm.studentStatusSortOrderBy}") ||
+					actionElement.equals("{actionForm.studentStatusPageRequested}")) {
+
+				return new Forward(ACTION_SHOW_DETAILS,form);				
+			}
+			else {
+
+				return new Forward(ACTION_CHANGE_SUBTEST,form);				
+			}
+
+		}
+
+		if (currentAction.equals(ACTION_REOPEN_SUBTEST_FOR_STUDENTS)) {
+
+			if(actionElement.equals("{actionForm.studentStatusSortOrderBy}") ||
+					actionElement.equals("{actionForm.studentStatusPageRequested}")) {
+
+				return new Forward(ACTION_SHOW_DETAILS,form);				
+			}
 		}
 
 		if (currentAction.equals(ACTION_SELECT_ALL)) {
@@ -505,6 +525,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
 		}
 		setFormInfoOnRequest(form);
+		this.getRequest().setAttribute("disableShowDetailsButton", Boolean.FALSE);
+
 		return new Forward("success",form);
 	}   
 
@@ -648,7 +670,17 @@ public class CustomerServiceManagementController extends PageFlowController {
 				if (studentStatusDetailsPagerSummary != null) {
 
 					this.getRequest().setAttribute("studentStatusDetailsSearchResult", "true");        
-					this.getRequest().setAttribute("studentStatusDetailsPagerSummary", studentStatusDetailsPagerSummary);
+					this.getRequest().setAttribute("studentStatusDetailsPagerSummary", 
+							studentStatusDetailsPagerSummary);
+				}
+
+				if(form.getSelectedStudentItemId() != null && 
+						form.getSelectedStudentItemId().length > 0) {
+
+					this.getRequest().setAttribute("disableShowDetailsButton", Boolean.FALSE);
+				} else {
+					
+					this.getRequest().setAttribute("disableShowDetailsButton", Boolean.TRUE);
 				}
 				
 				//set message in request to show error
@@ -1115,6 +1147,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		if (isSubtestChanged) {
 			form.setSelectedItemSetId(null);
+			form.setStudentSortColumn(null);
+			form.setStudentSortOrderBy(null);       //SET THE DEFAULT SORTING FOR STEP2 OF SESSION TAB
 			resetShowStudentDeatilsList();
 			resetStudentStatusDetailsList();
 			this.selectedStudents = new HashMap();
@@ -1165,6 +1199,9 @@ public class CustomerServiceManagementController extends PageFlowController {
 		setSelectedStudentListToForm(form);
 		checkForShowDetailsButton();
 		setFormInfoOnRequest(form);
+		if(isSubtestChanged) {
+			this.selectedStudents = new HashMap();
+		}
 	}
 	private void showStudentTestStatusDetails(Integer itemSetId){
 
@@ -1780,6 +1817,12 @@ public class CustomerServiceManagementController extends PageFlowController {
 							actionElement.equals("ButtonGoInvoked_studentSearchResult"))) {
 
 				this.studentPageRequested = new Integer(1);
+			}
+			if(fromAction.equals(MODULE_TEST_SESSION)) {
+
+				this.studentSortColumn = null;
+				this.studentSortOrderBy = null;     //SET THE DEFAULT SORTING FOR STEP2 OF SESSION TAB
+
 			}
 			if(fromAction.equals("findSubtestByTestSessionId")) {
 				
