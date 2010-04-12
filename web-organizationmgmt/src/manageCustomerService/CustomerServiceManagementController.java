@@ -1179,8 +1179,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 				studentSessionStatusVO.setStudentLoginName(studentProfileInformation.getStudentLoginId());
 				studentSessionStatusVO.setStudentName(studentProfileInformation.getStudentPreferredName());
 				studentSessionStatusVO.setExternalStudentId(studentProfileInformation.getStudentExternalId());
-
-
+				
 				studentSessionStatusVO.setTestAccessCode(studentSessionStatusVO.getTestAccessCode());
 				studentTestStatusDetailsList.add(studentSessionStatusVO);
 				break ;
@@ -1869,8 +1868,13 @@ public class CustomerServiceManagementController extends PageFlowController {
 			
 						
 			if (actionElement.equals("{actionForm.studentStatusSortOrderBy}")) {
-				//this.studentStatusPageRequested = new Integer(1);
+				this.studentStatusPageRequested = new Integer(1);
 			}
+			
+			if (actionElement.equals("{actionForm.studentSortOrderBy}")) {
+				this.studentPageRequested = new Integer(1);
+			}
+			
 			if ((actionElement.indexOf("studentSortColumn") != -1) ||
 					(actionElement.indexOf("studentSortOrderBy") != -1)) {
 				//this.studentPageRequested = new Integer(1);
@@ -1883,6 +1887,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 			if(actionElement.equals("{actionForm.currentAction}")){
 				this.subtestSortColumn = null;
 				this.subtestPageRequested = null;
+				this.studentStatusSortColumn = null;
+				this.studentStatusPageRequested = null;
 			}
 			if(fromAction.equals("reOpenSubtestForStudents")) {
 

@@ -216,7 +216,9 @@ public class CustomerServiceSearchUtils {
 				for ( StudentSessionStatus subtest :  subtests ) {
 
 					if ( subtest != null && subtest.getItemSetId() != null) {
-
+						
+						Integer itemSetOrder = subtest.getItemSetOrder()+ 1 ;
+						subtest.setItemSetOrder(itemSetOrder);
 						StudentSessionStatusVO subtestDetails =
 							new StudentSessionStatusVO(subtest);
 
