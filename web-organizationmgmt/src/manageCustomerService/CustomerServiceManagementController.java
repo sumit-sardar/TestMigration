@@ -1149,9 +1149,11 @@ public class CustomerServiceManagementController extends PageFlowController {
 			form.setSelectedItemSetId(null);
 			form.setStudentSortColumn(null);
 			form.setStudentSortOrderBy(null);       //SET THE DEFAULT SORTING FOR STEP2 OF SESSION TAB
+			form.setSelectedStudentItemId(null);
 			resetShowStudentDeatilsList();
 			resetStudentStatusDetailsList();
 			this.selectedStudents = new HashMap();
+			this.getRequest().setAttribute("disableShowDetailsButton", Boolean.TRUE);
 
 		}
 
@@ -1194,14 +1196,12 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 		
 		this.savedForm = form.createClone();
-		this.getRequest().setAttribute("disableShowDetailsButton", Boolean.TRUE);
+		
 
 		setSelectedStudentListToForm(form);
 		checkForShowDetailsButton();
 		setFormInfoOnRequest(form);
-		if(isSubtestChanged) {
-			this.selectedStudents = new HashMap();
-		}
+		
 	}
 	private void showStudentTestStatusDetails(Integer itemSetId){
 
