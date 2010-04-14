@@ -64,7 +64,7 @@ public class FilterSortPageUtils
     //sort for ISTEP CR 003
     
     public static final String REOPEN_TESTSESSION_DEFAULT_SORT = "TestAdminName";
-    public static final String STUDENT_USER_NAME_DEFAULT_SORT = "StudentName";
+    public static final String STUDENT_USER_NAME_DEFAULT_SORT = "StudentLoginName";
     public static final String SUBTEST_ITEM_SET_ORDER_DEFAULT_SORT = "ItemSetOrder";
     public static final String SUBTEST_DETAIL_DEFAULT_SORT = "StudentLoginName";
     

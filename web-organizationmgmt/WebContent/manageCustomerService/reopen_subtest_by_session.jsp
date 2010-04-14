@@ -7,6 +7,7 @@
 <netui-data:declareBundle bundlePath="oasResources" name="oas" />
 <netui-data:declareBundle bundlePath="webResources" name="web" />
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets" />
+<netui-data:getData resultId="selectedStudentsLength" value="${pageFlow.selectedStudentsLength}"></netui-data:getData>
 
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.testAccessCode}" />
 
@@ -25,8 +26,8 @@
 				<tr class="transparent">
 					<td class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Access Code:</td>
 					<td class="transparent"><netui:textBox dataSource="actionForm.testAccessCode"
-						tabindex="1" maxlength="32" /></td>
-					<td class="transparent" width="*"><netui:button styleClass="button" value="Search" type="submit"
+						tabindex="1" maxlength="32" onKeyPress="return hitEnter('sessionSubmit', event)"/></td>
+					<td class="transparent" width="*"><netui:button tagId="sessionSubmit" styleClass="button" value="Search" type="submit"
 						onClick="setElementValue('currentAction', 'applySearch');" tabindex="2" /></td>
 				</tr>
 			</table>
@@ -107,7 +108,7 @@
 							</c:if>
 							<c:if
 								test="${container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress'}">
-								<netui:checkBoxOption value="${container.item.studentItemId}" disabled="false" onClick="toggleShowButton(this, ${requestScope.disableShowDetailsButton});">&nbsp;</netui:checkBoxOption>
+								<netui:checkBoxOption value="${container.item.studentItemId}" disabled="false" onClick="toggleShowButton(this, ${pageScope.selectedStudentsLength});">&nbsp;</netui:checkBoxOption>
 							</c:if>
 						</netui:checkBoxGroup></td>
 						<td class="sortable alignLeft" width="15%"><netui:span value="${container.item.studentName}" /></td>

@@ -116,9 +116,9 @@ public class CustomerServiceSearchUtils {
 	/*
 	 * Put all the customer details in the list
 	 */
-	public static List<TestSessionVO> buildTestSessionList (TestSessionData testSessionData) {
+	public static List buildTestSessionList (TestSessionData testSessionData) {
 
-		List<TestSessionVO> testSessionList = new ArrayList<TestSessionVO>();
+		List testSessionList = new ArrayList();
 		if (testSessionData != null){
 
 			TestSession[] testSessions = testSessionData.getTestSessions();
@@ -142,9 +142,9 @@ public class CustomerServiceSearchUtils {
 	/*
 	 * Put all the customer details in the list
 	 */
-	public static List<ScheduleElementVO> buildTestDeliveritemList (ScheduleElementData scheduleElementData) {
+	public static List buildTestDeliveritemList (ScheduleElementData scheduleElementData) {
 
-		List<ScheduleElementVO> testDeliveryitemList = new ArrayList<ScheduleElementVO>();
+		List testDeliveryitemList = new ArrayList();
 		if (scheduleElementData != null){
 
 			ScheduleElement[] scheduleElements = scheduleElementData.getElements();
@@ -168,9 +168,9 @@ public class CustomerServiceSearchUtils {
 	/*
 	 * Put all the student details in the list
 	 */
-	public static List<StudentProfileInformation> buildStudentList (StudentData studentData) {
+	public static List buildStudentList (StudentData studentData) {
 
-		List<StudentProfileInformation> studentList = new ArrayList<StudentProfileInformation>();
+		List studentList = new ArrayList();
 		if (studentData != null){
 
 			Student[] students = studentData.getStudents();
@@ -205,8 +205,8 @@ public class CustomerServiceSearchUtils {
 	/*
 	 * Put all the subtest details in the list
 	 */
-	public static List<StudentSessionStatusVO> buildSubtestList (StudentSessionStatusData statusData,String timeZone) {
-		List<StudentSessionStatusVO> subtestList = new ArrayList<StudentSessionStatusVO>();
+	public static List buildSubtestList (StudentSessionStatusData statusData,String timeZone) {
+		List subtestList = new ArrayList();
 		if (statusData != null){
 
 			StudentSessionStatus[] subtests = statusData.getStudentSessionStatuses();

@@ -1,4 +1,5 @@
 var req;
+var EFFECTIVE_TOTAL_STUDENTS = 0;
 
 function setupButtons(url) 
 {
@@ -92,17 +93,22 @@ function enableAllButtons()
    
 }
 
-function toggleShowButton(element,flag) {
-//alert(flag);
+function toggleShowButton(element,totalStudents) {
 	var showButton = document.getElementById("showDetails");
 	var eName = element.name;
 	var allElements = document.getElementsByName(eName);
-    
-    if(element.checked || flag == false) {
+    var flag = false;
+    var remStudents = 0;
+    if(element.checked) {
     	showButton.removeAttribute("disabled");
+    	EFFECTIVE_TOTAL_STUDENTS += 1;
     } 
     else {
-    	if(!hasSelectedElements(allElements, flag)) {
+    	EFFECTIVE_TOTAL_STUDENTS -= 1;
+    	remStudents = totalStudents + EFFECTIVE_TOTAL_STUDENTS;
+   		flag = (remStudents > 0 ? true : false); 
+    	
+    	if(!flag) {
     		showButton.setAttribute("disabled",true);
     	}
     }

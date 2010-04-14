@@ -492,7 +492,11 @@ function showLegend(elementId, tokens) {
 }
 
 function blockEventOnMaxLength(element,len) {
-	return element.value.length < len;
+	if(document.all) {
+		return element.value.length < len;
+	} else {
+		element.value = element.value.substring(0, len);
+	}
 }
 
 function limitText(limitField, limitNum) {
@@ -516,3 +520,16 @@ function checkAndTruncate(element,len) {
 		element.value = element.value.substring(0, len);		
 	}	
 }
+
+function hitEnter(buttonId, e) {
+	var bElement;
+	e = e || window.event;
+	if (e.keyCode == 13) {
+		
+		bElement = document.getElementById(buttonId);
+	    bElement.click();
+	    return false;
+	}
+//alert("hitEnter element, e: "+buttonId+", "+e);
+}
+
