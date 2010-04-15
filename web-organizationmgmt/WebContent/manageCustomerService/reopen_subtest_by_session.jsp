@@ -124,7 +124,7 @@
 
 					<tr class="sortable">
 						<td class="sortableControls" colspan="7"><ctb:tablePager dataSource="actionForm.studentPageRequested"
-							summary="request.studentPagerSummary" objectLabel="${bundle.oas['object.students']}" foundLabel="Found"
+							summary="request.studentPagerSummary" objectLabel="${bundle.oas['object.sections']}" foundLabel="Found"
 							id="studentSearchResult" anchorName="studentSearchResult" /></td>
 					</tr>
 					<tr class="sortable">
@@ -230,7 +230,7 @@
 
 					<tr class="sortable">
 						<td class="sortableControls" colspan="7"><ctb:tablePager dataSource="actionForm.studentStatusPageRequested"
-							summary="request.studentStatusDetailsPagerSummary" objectLabel="${bundle.oas['object.students']}" foundLabel="Found"
+							summary="request.studentStatusDetailsPagerSummary" objectLabel="${bundle.oas['object.sections']}" foundLabel="Found"
 							id="studentStatusDetailsSearchResult" anchorName="studentStatusSearchResult" /></td>
 					</tr>
 
