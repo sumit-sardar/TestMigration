@@ -1885,6 +1885,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 				if (!this.currentAction.equals(ACTION_SELECT_ALL)) {
 
 					this.currentAction=ACTION_CHANGE_SUBTEST;
+					fromAction = ACTION_CHANGE_SUBTEST;
 				} 
 
 			}
@@ -1906,6 +1907,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 				if (!this.currentAction.equals(ACTION_SELECT_ALL)) {
 
 					this.currentAction=ACTION_CHANGE_SUBTEST ;
+					fromAction = ACTION_CHANGE_SUBTEST;
 				}
 
 			}
