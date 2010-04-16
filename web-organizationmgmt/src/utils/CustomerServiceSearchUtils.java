@@ -32,7 +32,6 @@ import dto.TestSessionVO;
 
 public class CustomerServiceSearchUtils {
 
-	private final static String TIME_FORMAT="hh:mm a";
 	private final static String DATE_FORMAT="MM/dd/yy";
 
 
@@ -116,9 +115,9 @@ public class CustomerServiceSearchUtils {
 	/*
 	 * Put all the customer details in the list
 	 */
-	public static List buildTestSessionList (TestSessionData testSessionData) {
+	public static List<TestSessionVO> buildTestSessionList (TestSessionData testSessionData) {
 
-		List testSessionList = new ArrayList();
+		List<TestSessionVO> testSessionList = new ArrayList<TestSessionVO>();
 		if (testSessionData != null){
 
 			TestSession[] testSessions = testSessionData.getTestSessions();
@@ -142,9 +141,9 @@ public class CustomerServiceSearchUtils {
 	/*
 	 * Put all the customer details in the list
 	 */
-	public static List buildTestDeliveritemList (ScheduleElementData scheduleElementData) {
+	public static List<ScheduleElementVO> buildTestDeliveritemList (ScheduleElementData scheduleElementData) {
 
-		List testDeliveryitemList = new ArrayList();
+		List<ScheduleElementVO> testDeliveryitemList = new ArrayList<ScheduleElementVO>();
 		if (scheduleElementData != null){
 
 			ScheduleElement[] scheduleElements = scheduleElementData.getElements();
@@ -168,9 +167,9 @@ public class CustomerServiceSearchUtils {
 	/*
 	 * Put all the student details in the list
 	 */
-	public static List buildStudentList (StudentData studentData) {
+	public static List<StudentProfileInformation> buildStudentList (StudentData studentData) {
 
-		List studentList = new ArrayList();
+		List<StudentProfileInformation> studentList = new ArrayList<StudentProfileInformation>();
 		if (studentData != null){
 
 			Student[] students = studentData.getStudents();
@@ -205,8 +204,8 @@ public class CustomerServiceSearchUtils {
 	/*
 	 * Put all the subtest details in the list
 	 */
-	public static List buildSubtestList (StudentSessionStatusData statusData,String timeZone) {
-		List subtestList = new ArrayList();
+	public static List<StudentSessionStatusVO> buildSubtestList (StudentSessionStatusData statusData,String timeZone) {
+		List<StudentSessionStatusVO> subtestList = new ArrayList<StudentSessionStatusVO>();
 		if (statusData != null){
 
 			StudentSessionStatus[] subtests = statusData.getStudentSessionStatuses();
@@ -247,7 +246,7 @@ public class CustomerServiceSearchUtils {
 
 	public   static   void  reOpenSubtest( CustomerServiceManagement customerServiceManagement,
 			User user, String requestDescription, String serviceRequestor, String ticketId,
-			Integer testAdminId, Integer customerId, List studentTestStatusDetailsList, 
+			Integer testAdminId, Integer customerId, List<StudentSessionStatusVO> studentTestStatusDetailsList, 
 			Integer itemTsSetId, Integer creatorOrgId, Integer studentId) 
 	throws  CTBBusinessException {
 
@@ -257,7 +256,7 @@ public class CustomerServiceSearchUtils {
 			for  ( int  i = 0 ; i < studentTestStatusDetailsList.size() ; i++) {
 
 				StudentSessionStatusVO studentSessionStatusVO = 
-					(StudentSessionStatusVO)studentTestStatusDetailsList.get(i);
+					studentTestStatusDetailsList.get(i);
 				AuditFileReopenSubtest auditFileReopenSubtest = new  AuditFileReopenSubtest();
 
 				auditFileReopenSubtest.setTestRosterId(studentSessionStatusVO.getTestRosterId());
@@ -306,14 +305,14 @@ public class CustomerServiceSearchUtils {
 		return startDate + " " + startTime	;	
 	}
 
-	public static StudentSessionStatusData getStudentSessionStatus(HashMap studentStatusData,PageParams page,SortParams sort) {
+	public static StudentSessionStatusData getStudentSessionStatus(HashMap<String,StudentSessionStatusVO> studentStatusData,PageParams page,SortParams sort) {
 
 		StudentSessionStatus[] result = new StudentSessionStatus[studentStatusData.size()];
 		StudentSessionStatusData studentSessionStatusData = null;
 		int i=0;
-		for (Iterator it = studentStatusData.keySet().iterator(); it.hasNext(); )
+		for (Iterator<String> it = studentStatusData.keySet().iterator(); it.hasNext(); )
 		{
-			StudentSessionStatusVO studentSessionStatusVO = (StudentSessionStatusVO)studentStatusData.get(it.next());
+			StudentSessionStatusVO studentSessionStatusVO = studentStatusData.get(it.next());
 			StudentSessionStatus studentSessionStatus = new StudentSessionStatus();
 			studentSessionStatus.setStudentLoginName(studentSessionStatusVO.getStudentLoginName());
 			studentSessionStatus.setCompletionStatus(studentSessionStatusVO.getCompletionStatus());
@@ -357,7 +356,6 @@ public class CustomerServiceSearchUtils {
 				try {
 					studentSessionStatusData.applySorting(sort);
 				} catch (InvalidSortFieldException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -368,7 +366,6 @@ public class CustomerServiceSearchUtils {
 					studentSessionStatusData.applyPaging(page);
 					
 				} catch (InvalidPageRequestedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

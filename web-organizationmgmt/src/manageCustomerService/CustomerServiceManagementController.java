@@ -71,19 +71,20 @@ public class CustomerServiceManagementController extends PageFlowController {
 	private String selectedModuleFind = null;
 
 	private List<TestSessionVO> testSessionList = null; ;
-	private List subtestList = null;
+	private List<StudentSessionStatusVO> subtestList = null;
 	private List<ScheduleElementVO> testDeliveryItemList = null;	
 	private List<StudentSessionStatusVO> studentStatusDetailsList = null;
-	private List studentList = null;
-	private LinkedHashMap  subtestNameToIndexHash = null;
-	private HashMap studentsOnPage   = null;
-	private HashMap studentsOnPageList = null;
+	private List<StudentProfileInformation> studentList = null;
+	private LinkedHashMap<Integer,String>  subtestNameToIndexHash = null;
+	private HashMap<String,StudentSessionStatusVO> studentsOnPage   = null;
+	private HashMap<String,StudentSessionStatusVO> studentsOnPageList = null;;
 
-	private HashMap selectedStudents = null;
+	private HashMap<String,StudentSessionStatusVO> selectedStudents = null;
 	private Integer selectedStudentsLength = new Integer(0);
-	private List studentTestStatusDetailsList = null;
-	private List showStudentDeatilsList = null;
-	private List resetStudentDataList = null;
+	
+	private List<StudentSessionStatusVO> studentTestStatusDetailsList = null;
+	private List<StudentSessionStatusVO> showStudentDeatilsList = null;
+	private List<StudentSessionStatusVO> resetStudentDataList = null;
 
 	private String userTimeZone = null;
 	private Integer testAdminId = null;
@@ -100,6 +101,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 	PagerSummary studentPagerSummary = null;
 	PagerSummary studentStatusDetailsPagerSummary = null;
 
+	
 	@Control()
 	private com.ctb.control.userManagement.UserManagement userManagement;
 
@@ -218,7 +220,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 
 		if (currentAction.equals(ACTION_CHANGE_SUBTEST)){
-			//this.savedForm.setSelectedSubtestName(form.getSelectedSubtestName());
 			return new Forward(currentAction,form);
 		}
 
@@ -359,12 +360,15 @@ public class CustomerServiceManagementController extends PageFlowController {
 			}
 		}
 
-		page = FilterSortPageUtils.buildPageParams(form.getSubtestPageRequested(), FilterSortPageUtils.PAGESIZE_20);
-		sort = FilterSortPageUtils.buildSortParams(form.getSubtestSortColumn(), form.getSubtestSortOrderBy());
+		page = FilterSortPageUtils.buildPageParams(form.getSubtestPageRequested(), 
+					FilterSortPageUtils.PAGESIZE_20);
+		sort = FilterSortPageUtils.buildSortParams(form.getSubtestSortColumn(),
+					form.getSubtestSortOrderBy());
 
 		try {
 			sstData = CustomerServiceSearchUtils.getSubtestListForStudent(
-					customerServiceManagement, testRosterId, testAccessCode, filter, page, sort);
+					customerServiceManagement, testRosterId, testAccessCode,
+						filter, page, sort);
 
 		} catch (CTBBusinessException be) {
 			be.printStackTrace();
@@ -377,7 +381,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 			this.searchApplied = true;
 			this.subtestList = CustomerServiceSearchUtils.buildSubtestList(sstData,this.userTimeZone);
 			subtestPagerSummary = 
-				CustomerServiceSearchUtils.buildSubtestDataPagerSummary(sstData, form.getSubtestPageRequested()); 
+				CustomerServiceSearchUtils.buildSubtestDataPagerSummary(sstData,
+						form.getSubtestPageRequested()); 
 			form.setSubtestMaxPage(sstData.getFilteredPages());  
 			this.getRequest().setAttribute("subtestResult", "true");        
 			this.getRequest().setAttribute("subtestPagerSummary", subtestPagerSummary);
@@ -396,7 +401,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 		else {
 			if (sstData != null) {
-				if ( form.getSubtestPageRequested().intValue() > sstData.getFilteredPages().intValue() ) {
+				if ( form.getSubtestPageRequested().intValue() > 
+						sstData.getFilteredPages().intValue() ) {
 
 					form.setSubtestPageRequested(sstData.getFilteredPages());
 
@@ -438,7 +444,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 					path = "showDetails.do")
 	})
 	protected Forward changeSubtest(
-			manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm form) {
+					manageCustomerService.CustomerServiceManagementController.	
+					CustomerServiceManagementForm form) {
 		
 		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		buildTestDeliveryListInPage(form);
@@ -459,14 +466,15 @@ public class CustomerServiceManagementController extends PageFlowController {
 					path = "reopen_subtest.jsp")
 	})
 	protected Forward showDetails(
-			manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm form)
-	{
+					manageCustomerService.CustomerServiceManagementController.
+					CustomerServiceManagementForm form) {
 
 		SortParams sort = null;
-		FilterParams filter = null;
 		this.getRequest().setAttribute("isReopenTestSession", Boolean.TRUE);
 		PageParams page =  FilterSortPageUtils.buildPageParams(form.getStudentStatusPageRequested(), FilterSortPageUtils.PAGESIZE_20);
-		sort =  FilterSortPageUtils.buildSortParams(form.getStudentStatusSortColumn(), form.getStudentStatusSortOrderBy(), form.getStudentStatusSecSortColumn(), form.getStudentStatusSecSortOrderBy());
+		sort =  FilterSortPageUtils.buildSortParams(form.getStudentStatusSortColumn(),
+					form.getStudentStatusSortOrderBy(), form.getStudentStatusSecSortColumn(),
+						form.getStudentStatusSecSortOrderBy());
 		StudentSessionStatusData studentSessionStatusData = null;
 
 		boolean hideProductNameDropDown = this.testDeliveryItemList.size() <= 1;
@@ -475,16 +483,16 @@ public class CustomerServiceManagementController extends PageFlowController {
 			form.setSelectedItemSetName(this.testDeliveryItemList.get(0).getItemSetName());
 		//populate step 4
 		showStudentDeatilsList = null;
-		HashMap studentStatusData = null;
+		HashMap<String,StudentSessionStatusVO> studentStatusData = null;
 		if (this.selectedStudents !=null && selectedStudents.size() > 0 ){
-			showStudentDeatilsList = new ArrayList();
-			studentStatusData = new HashMap();
+			showStudentDeatilsList = new ArrayList<StudentSessionStatusVO>();
+			studentStatusData = new HashMap<String,StudentSessionStatusVO>();
 
-			for (Iterator it=this.selectedStudents.keySet().iterator(); it.hasNext(); )
+			for (Iterator<String> it=this.selectedStudents.keySet().iterator(); it.hasNext(); )
 			{  
 				String studentIdOnPage = (String)it.next();
 
-				StudentSessionStatusVO  studentTestSession = (StudentSessionStatusVO)this.selectedStudents.get(studentIdOnPage);
+				StudentSessionStatusVO  studentTestSession = this.selectedStudents.get(studentIdOnPage);
 				studentStatusData.put(studentTestSession.getStudentItemId(), studentTestSession);
 			}
 		}
@@ -492,7 +500,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		if (studentStatusData != null && studentStatusData.size() > 0) {
 			StudentSessionStatusData resetStudentSessionStatusData = 
 					CustomerServiceSearchUtils.getStudentSessionStatus(studentStatusData,null,null);
-			this.resetStudentDataList = new ArrayList();
+			this.resetStudentDataList = new ArrayList<StudentSessionStatusVO>();
 			this.resetStudentDataList = CustomerServiceSearchUtils.
 					buildSubtestList(resetStudentSessionStatusData,this.userTimeZone);
 		}
@@ -503,12 +511,15 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 		if (studentSessionStatusData != null && studentSessionStatusData.getTotalCount() > 0) {
 			this.searchApplied = true;
-			this.showStudentDeatilsList = CustomerServiceSearchUtils.buildSubtestList(studentSessionStatusData,this.userTimeZone);
+			this.showStudentDeatilsList = CustomerServiceSearchUtils.buildSubtestList
+					(studentSessionStatusData,this.userTimeZone);
 			studentStatusDetailsPagerSummary = 
-				CustomerServiceSearchUtils.buildSubtestDataPagerSummary(studentSessionStatusData, form.getStudentStatusPageRequested()); 
+				CustomerServiceSearchUtils.buildSubtestDataPagerSummary(studentSessionStatusData,
+						form.getStudentStatusPageRequested()); 
 			form.setStudentStatusMaxPage(studentSessionStatusData.getTotalPages());  
 			this.getRequest().setAttribute("studentStatusDetailsSearchResult", "true");        
-			this.getRequest().setAttribute("studentStatusDetailsPagerSummary", studentStatusDetailsPagerSummary);
+			this.getRequest().setAttribute("studentStatusDetailsPagerSummary",
+						studentStatusDetailsPagerSummary);
 		}
 
 		if (studentPagerSummary !=null) {
@@ -568,7 +579,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 			
 			if (!isInValidInfo) {
 				
-				StudentProfileInformation sDetails = (StudentProfileInformation)this.studentList.get(0);
+				StudentProfileInformation sDetails = this.studentList.get(0);
 				Integer studentId = sDetails.getStudentId(); 
 			 	studentName = sDetails.getStudentLoginId();
 
@@ -605,10 +616,12 @@ public class CustomerServiceManagementController extends PageFlowController {
 			}
 		
 			StudentSessionStatusVO studentSessionStatusVO = 
-				(StudentSessionStatusVO) studentTestStatusDetailsList.get(0);
+				 studentTestStatusDetailsList.get(0);
 			
 			form.setMessage( Message.TEST_ROSTER_UPDATION_TITLE, 
-					studentSessionStatusVO.getItemSetName()+ " "+Message.TEST_ROSTER_UPDATION_SUCCESS +" " + studentName, Message.INFORMATION);
+					studentSessionStatusVO.getItemSetName()+ " "
+						+Message.TEST_ROSTER_UPDATION_SUCCESS +" " + studentName, 
+							Message.INFORMATION);
 				
 			return   new  Forward( "success" );
 			
@@ -689,8 +702,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		} finally {
 			if (updateFlag) {
-				StudentSessionStatusVO studentSessionStatusVO = 
-					(StudentSessionStatusVO) resetStudentDataList.get(0);
 				form.setMessage( Message.TEST_ROSTER_UPDATION_TITLE, 
 						Message.TEST_STUDENT_UPDATION_SUCESS, Message.INFORMATION);
 			}
@@ -720,7 +731,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
 		}
 		boolean hideProductNameDropDown = this.testDeliveryItemList.size() <= 1;
-		this.getRequest().setAttribute("hideProductNameDropDown", new Boolean(hideProductNameDropDown));
+		this.getRequest().setAttribute("hideProductNameDropDown", 
+					new Boolean(hideProductNameDropDown));
 		form.setSelectedItemSetName(this.testDeliveryItemList.get(0).getItemSetName());
 		setFormInfoOnRequest(form);
 		if(form.getSelectedStudentItemId() != null && form.getSelectedStudentItemId().length > 0) {
@@ -745,7 +757,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		form.resetValuesForAction(actionElement, currentAction);
 		form.validateValues();
 		boolean hideProductNameDropDown = this.testDeliveryItemList.size() <= 1;
-		this.getRequest().setAttribute("hideProductNameDropDown", new Boolean(hideProductNameDropDown));
+		this.getRequest().setAttribute("hideProductNameDropDown",
+					new Boolean(hideProductNameDropDown));
 		form.setSelectedItemSetName(this.testDeliveryItemList.get(0).getItemSetName());
 		deSelectAllStudents(this.testAdminId, this.itemsetId,form); 
 		this.showStudentDeatilsList = null;
@@ -763,7 +776,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 
 //	step 1 of STUDENT tab: find student search criteria
-	private TestSessionData findTestSessionListByStudent(CustomerServiceManagementForm form) throws CTBBusinessException{
+	private TestSessionData findTestSessionListByStudent(CustomerServiceManagementForm form) 
+			throws CTBBusinessException{
 
 		SortParams sort = null;
 		FilterParams filter = null;
@@ -782,9 +796,12 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		if (validInfo) {
 
-			page = FilterSortPageUtils.buildPageParams(form.getTestSessionPageRequested(), FilterSortPageUtils.PAGESIZE_20);
-			sort = FilterSortPageUtils.buildSortParams(form.getTestSessionSortColumn(), form.getTestSessionSortOrderBy());
-			sData = CustomerServiceSearchUtils.searchStudentData(customerServiceManagement, this.userName, studentLoginId);
+			page = FilterSortPageUtils.buildPageParams(form.getTestSessionPageRequested(),
+						FilterSortPageUtils.PAGESIZE_20);
+			sort = FilterSortPageUtils.buildSortParams(form.getTestSessionSortColumn(),
+						form.getTestSessionSortOrderBy());
+			sData = CustomerServiceSearchUtils.searchStudentData(customerServiceManagement,
+						this.userName, studentLoginId);
 			StudentData studentData = null;
 
 
@@ -808,7 +825,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 				this.searchApplied = true;
 				this.testSessionList = CustomerServiceSearchUtils.buildTestSessionList(tsData);
 				testSessionPagerSummary = 
-					CustomerServiceSearchUtils.buildTestDataPagerSummary(tsData, form.getTestSessionPageRequested()); 
+					CustomerServiceSearchUtils.buildTestDataPagerSummary(tsData,
+							form.getTestSessionPageRequested()); 
 				form.setTestSessionMaxPage(tsData.getFilteredPages());  
 				this.getRequest().setAttribute("testSessionResult", "true");        
 				this.getRequest().setAttribute("testSessionPagerSummary", testSessionPagerSummary);
@@ -830,7 +848,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 		else 
 			if (tsData != null)
-				if ( form.getTestSessionPageRequested().intValue() > tsData.getFilteredPages().intValue() ) {
+				if ( form.getTestSessionPageRequested().intValue() >
+					tsData.getFilteredPages().intValue() ) {
 
 					form.setTestSessionPageRequested(tsData.getFilteredPages());
 
@@ -844,25 +863,22 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 
 //	step 1 search of SESSION tab and populate drop down
-	private ScheduleElementData findSubtestListBySession(CustomerServiceManagementForm form) throws CTBBusinessException{
+	private ScheduleElementData findSubtestListBySession(CustomerServiceManagementForm form)
+			throws CTBBusinessException {
 
 
 		String actionElement = form.getActionElement();
 		form.resetValuesForAction(actionElement, MODULE_TEST_SESSION);
-		String studentLoginId = form.getStudentProfile().getStudentLoginId();
 		Boolean validInfo = true;
 		this.selectedStudentsLength = new Integer (0);
 		validInfo = CustomerServiceFormUtils.verifyFormInformation(form);
-		PageParams page = FilterSortPageUtils.buildPageParams(form.getTestSessionPageRequested(), FilterSortPageUtils.PAGESIZE_20);
-
-		SortParams sort = null;
-		FilterParams filter = null;
-		TestSessionData tsData = null;
 		ScheduleElementData scheduleElementData = null;
 		if(validInfo) {
 
 
-			scheduleElementData = CustomerServiceSearchUtils.getTestDeliveryDataInTestSession(customerServiceManagement,this.userName,form.getTestAccessCode());
+			scheduleElementData = CustomerServiceSearchUtils.getTestDeliveryDataInTestSession(
+					customerServiceManagement,this.userName,form.getTestAccessCode());
+			
 			if (scheduleElementData != null && scheduleElementData.getFilteredCount().intValue() > 0) {
 
 				form.setSelectedTestAdminId(scheduleElementData.getElements()[0].getTestAdminId());
@@ -876,17 +892,17 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 				boolean hideProductNameDropDown = this.testDeliveryItemList.size() <= 1;
 
-				this.getRequest().setAttribute("hideProductNameDropDown", new Boolean(hideProductNameDropDown));
+				this.getRequest().setAttribute("hideProductNameDropDown",
+						new Boolean(hideProductNameDropDown));
 
-				if (form.getSelectedSubtestName() != null || this.testDeliveryItemList.size() == 1 ) {
+				if (form.getSelectedSubtestName() != null ||
+						this.testDeliveryItemList.size() == 1 ) {
 
 					this.showStudentDeatilsList = null;
 					this.resetStudentDataList = null;
 					form.setSelectedStudentItemId(null);
 					buildTestDeliveryListInPage(form);
 				}
-
-
 
 			} else {
 				resetPageFlowLists();
@@ -901,11 +917,13 @@ public class CustomerServiceManagementController extends PageFlowController {
 	}
 
 	//Hash
-	private Integer createSubtestNameList(ScheduleElement [] scheduleElement,CustomerServiceManagementForm form)
-	{
-		List result = new ArrayList();   
+	private Integer createSubtestNameList(ScheduleElement [] scheduleElement,
+			CustomerServiceManagementForm form) {
+		
+		List<String> result = new ArrayList<String>();   
 		Integer itemSetId = null;
-		this.subtestNameToIndexHash = new LinkedHashMap();
+		this.subtestNameToIndexHash = new LinkedHashMap<Integer,String>();
+		
 		for (int i=0; i< scheduleElement.length; i++) {
 			String itemSetName = scheduleElement[i].getItemSetName();
 			itemSetName = JavaScriptSanitizer.sanitizeString(itemSetName);            
@@ -935,9 +953,9 @@ public class CustomerServiceManagementController extends PageFlowController {
 	private CustomerServiceManagementForm initialize(String action)
 	{        
 		getUserDetails();
-		this.studentsOnPage = new HashMap();
-		this.studentsOnPageList = new HashMap();
-		this.selectedStudents = new HashMap();
+		this.studentsOnPage = new HashMap<String,StudentSessionStatusVO>();
+		this.studentsOnPageList = new HashMap<String,StudentSessionStatusVO>();
+		this.selectedStudents = new HashMap<String,StudentSessionStatusVO>();
 		resetPageFlowLists();
 		this.savedForm = new CustomerServiceManagementForm();
 		this.savedForm.init(action);
@@ -1044,7 +1062,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 		form.clearSearch();  
 		form.setCurrentAction(ACTION_DEFAULT);
 		form.setActionElement(ACTION_DEFAULT);
-		//form.setSelectedAccessCode(null);
 		form.setTestAccessCode(null);
 		resetPageFlowLists();
 	}
@@ -1073,10 +1090,10 @@ public class CustomerServiceManagementController extends PageFlowController {
 			this.testSessionPagerSummary = null;
 			this.studentPagerSummary = null;
 			form.setSelectedStudentItemId(null);
-			this.studentList = new ArrayList();
-			this.studentsOnPage = new HashMap();
-			this.studentsOnPageList = new HashMap();
-			this.selectedStudents = new HashMap();
+			this.studentList = new ArrayList<StudentProfileInformation>();
+			this.studentsOnPage = new HashMap<String,StudentSessionStatusVO>();
+			this.studentsOnPageList = new HashMap<String,StudentSessionStatusVO>();
+			this.selectedStudents = new HashMap<String,StudentSessionStatusVO>();
 		}
 
 		if ((currentAction != null) && currentAction.equals(ACTION_CLEAR_SEARCH)) {
@@ -1120,14 +1137,15 @@ public class CustomerServiceManagementController extends PageFlowController {
 		form.resetValuesForAction(actionElement, currentAction);
 		if(currentAction.equals("reOpenSubtestForStudents")) {
 
-			this.selectedStudents = new HashMap();
+			this.selectedStudents = new HashMap<String,StudentSessionStatusVO>();
 
 		}
 		this.testAdminId = this.testDeliveryItemList.get(0).getTestAdminId();
 		boolean isSubtestChanged= false;
 		if (form.getSelectedSubtestName() != null) {
 
-			if (this.itemsetId != null && this.itemsetId.intValue() != Integer.valueOf(form.getSelectedSubtestName())) {
+			if (this.itemsetId != null && this.itemsetId.intValue() !=
+					Integer.valueOf(form.getSelectedSubtestName())) {
 				isSubtestChanged = true;
 			}
 			this.itemsetId = Integer.valueOf(form.getSelectedSubtestName());
@@ -1143,7 +1161,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 			form.setSelectedStudentItemId(null);
 			resetShowStudentDeatilsList();
 			resetStudentStatusDetailsList();
-			this.selectedStudents = new HashMap();
+			this.selectedStudents = new HashMap<String,StudentSessionStatusVO>();
 			this.selectedStudentsLength = new Integer(0);
 			this.getRequest().setAttribute("disableShowDetailsButton", Boolean.TRUE);
 
@@ -1152,8 +1170,11 @@ public class CustomerServiceManagementController extends PageFlowController {
 		boolean hideProductNameDropDown = this.testDeliveryItemList.size() <= 1;
 		this.getRequest().setAttribute("hideProductNameDropDown", new Boolean(hideProductNameDropDown));
 		form.setSelectedItemSetName(this.testDeliveryItemList.get(0).getItemSetName());
-		page = FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_20);
-		sort =  FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy(), form.getStudentSecSortColumn(), form.getStudentSecSortOrderBy());
+		page = FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(),
+					FilterSortPageUtils.PAGESIZE_20);
+		sort =  FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(),
+					form.getStudentSortOrderBy(), form.getStudentSecSortColumn(),
+						form.getStudentSecSortOrderBy());
 		updateSelectedStudentsFromForm(form);
 
 		try {
@@ -1174,7 +1195,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 			this.studentsOnPage = getStudentHashMapForArrayList(this.studentStatusDetailsList);
 			this.studentsOnPageList = getStudentHashMapForArrayList(this.studentStatusDetailsList);
 			studentPagerSummary = 
-				CustomerServiceSearchUtils.buildSubtestDataPagerSummary(sstData, form.getStudentPageRequested()); 
+				CustomerServiceSearchUtils.buildSubtestDataPagerSummary(sstData,
+						form.getStudentPageRequested()); 
 			form.setStudentMaxPage(sstData.getFilteredPages());  
 			this.getRequest().setAttribute("studentSearchResult", "true");        
 			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
@@ -1195,14 +1217,12 @@ public class CustomerServiceManagementController extends PageFlowController {
 	}
 	private void showStudentTestStatusDetails(Integer itemSetId){
 
-		studentTestStatusDetailsList  = new  ArrayList();
-		for  (int i = 0; i < subtestList.size(); i++){
-			StudentSessionStatusVO studentSessionStatusVO= 
-				(StudentSessionStatusVO) this . subtestList .get(i);
+		studentTestStatusDetailsList  = new  ArrayList<StudentSessionStatusVO>();
+		for (StudentSessionStatusVO studentSessionStatusVO : this.subtestList) {
 			if  (itemSetId.intValue() == studentSessionStatusVO.getItemSetId().intValue()) {
 
 
-				StudentProfileInformation studentProfileInformation = (StudentProfileInformation)this.studentList.get(0);
+				StudentProfileInformation studentProfileInformation = this.studentList.get(0);
 				studentSessionStatusVO.setStudentLoginName(studentProfileInformation.getStudentLoginId());
 				studentSessionStatusVO.setStudentName(studentProfileInformation.getStudentPreferredName());
 				studentSessionStatusVO.setExternalStudentId(studentProfileInformation.getStudentExternalId());
@@ -1214,35 +1234,17 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 	}
 
+	private void selectAllStudents(Integer testAdminId, Integer itemSetId,
+			CustomerServiceManagementForm form) {
 
-	private PagerSummary buildSubtestDataPagerSummary(Integer pageRequested) 
-	{
-		int numTotalTests = this.showStudentDeatilsList.size();
-		Double  maxPageNumber = Math.ceil(new Double(numTotalTests/FilterSortPageUtils.PAGESIZE_20));
-		PagerSummary result = new PagerSummary();
-		result.setCurrentPage(pageRequested);
-		result.setTotalObjects(new Integer(maxPageNumber.intValue()));
-		result.setTotalFilteredObjects(maxPageNumber.intValue());
-		result.setTotalPages(new Integer(maxPageNumber.intValue()));
-
-		return result;
-	}
-
-
-	private void selectAllStudents(Integer testAdminId, Integer itemSetId,CustomerServiceManagementForm form) 
-	{
-
-		FilterParams filter = null;
-		//PageParams page = new PageParams(1, 10000, 1000);
 		StudentSessionStatusData sssd = null;
 		try {
 			sssd = CustomerServiceSearchUtils.getStudentListForSubTest(customerServiceManagement,
 					testAdminId, itemSetId, null, null, null);
 		} catch (CTBBusinessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		List studentStatusDetails = CustomerServiceSearchUtils.buildSubtestList(sssd,this.userTimeZone);
+		List<StudentSessionStatusVO> studentStatusDetails = CustomerServiceSearchUtils.buildSubtestList(sssd,this.userTimeZone);
 		String actionElement = form.getActionElement();
 		Boolean needCommitSelection = commitStudentSelection(actionElement);
 		
@@ -1263,8 +1265,11 @@ public class CustomerServiceManagementController extends PageFlowController {
 		if(this.selectedStudents != null) {
 			this.selectedStudentsLength = this.selectedStudents.size();
 		}
-		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_20);
-		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy(), form.getStudentSecSortColumn(), form.getStudentSecSortOrderBy());
+		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(),
+					FilterSortPageUtils.PAGESIZE_20);
+		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(),
+								form.getStudentSortOrderBy(), form.getStudentSecSortColumn(),
+									form.getStudentSecSortOrderBy());
 		try {
 
 			sssd.applySorting(testSort);
@@ -1280,7 +1285,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		this.studentsOnPageList = getStudentHashMapForArrayList(this.studentStatusDetailsList);
 		form.setStudentMaxPage(sssd.getTotalPages());
 		studentPagerSummary = 
-			CustomerServiceSearchUtils.buildSubtestDataPagerSummary(sssd, form.getStudentPageRequested()); 
+			CustomerServiceSearchUtils.buildSubtestDataPagerSummary(sssd,
+					form.getStudentPageRequested()); 
 		this.getRequest().setAttribute("studentSearchResult", "true");        
 		this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
 		setSelectedStudentListToForm(form);
@@ -1293,12 +1299,15 @@ public class CustomerServiceManagementController extends PageFlowController {
 	private void deSelectAllStudents(Integer testAdminId, Integer itemSetId,CustomerServiceManagementForm form) {
 
 		StudentSessionStatusData sssd = null;
-		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_20);
-		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy(), form.getStudentSecSortColumn(), form.getStudentSecSortOrderBy());
+		PageParams studentPage =  FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(),
+									FilterSortPageUtils.PAGESIZE_20);
+		SortParams testSort = FilterSortPageUtils.buildSortParams(form.getStudentSortColumn(),
+								form.getStudentSortOrderBy(), form.getStudentSecSortColumn(),
+									form.getStudentSecSortOrderBy());
 
 		//reset the form
 		form.setSelectedStudentItemId(null);
-		this.selectedStudents = new HashMap();
+		this.selectedStudents = new HashMap<String,StudentSessionStatusVO>();
 
 		try {
 			sssd = CustomerServiceSearchUtils.getStudentListForSubTest(customerServiceManagement,
@@ -1316,17 +1325,21 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 	}
 
-	private HashMap getStudentHashMapForArrayList(List studentDetailsList){
-		HashMap result = new HashMap();
-		Iterator studentDataIterator = studentDetailsList.iterator();
+	private HashMap<String,StudentSessionStatusVO> getStudentHashMapForArrayList(
+				List<StudentSessionStatusVO> studentDetailsList) {
+		
+		HashMap<String,StudentSessionStatusVO> result = new HashMap<String,StudentSessionStatusVO>();
+		Iterator<StudentSessionStatusVO> studentDataIterator = studentDetailsList.iterator();
 		while (studentDataIterator.hasNext()) {
-			StudentSessionStatusVO studentStatusVO = (StudentSessionStatusVO)studentDataIterator.next();
+			StudentSessionStatusVO studentStatusVO = studentDataIterator.next();
 
 
-			result.put(studentStatusVO.getStudentId()+ "_" + studentStatusVO.getItemSetId(), studentStatusVO);
+			result.put(studentStatusVO.getStudentId()+ "_" +
+					studentStatusVO.getItemSetId(), studentStatusVO);
 
 		}
 		return result;
+		
 	}
 	
 	private Boolean commitStudentSelection(String actionElement) {
@@ -1345,30 +1358,20 @@ public class CustomerServiceManagementController extends PageFlowController {
 		return needCommitFlag;
 	}
 
-	private String[] getStringArrayFromArraylist(ArrayList list){
-		String[] result = new String[list.size()];
-		int i=0;
-		for(Iterator it=list.iterator(); it.hasNext();){
-			result[i++] = (String)it.next();
-		}
-		return result;
-	}
-	
 	private void updateSelectedStudentsFromForm(CustomerServiceManagementForm form){
 
 		String [] selectedStudentIdFromPage = form.getSelectedStudentItemId();
 		if ((selectedStudentIdFromPage != null) && (this.selectedStudents != null))
 		{
 
-			List unselectedStudents = getUnselectedStudentsInPage(form.getSelectedStudentItemId());
+			List<StudentSessionStatusVO> unselectedStudents = getUnselectedStudentsInPage(form.getSelectedStudentItemId());
 			for (int i=0; i < unselectedStudents.size(); i++)
 			{
-				StudentSessionStatusVO unselected = (StudentSessionStatusVO)unselectedStudents.get(i);
+				StudentSessionStatusVO unselected = unselectedStudents.get(i);
 				for (int j=0; j < this.selectedStudents.size(); j++)
 				{   
 					if(this.selectedStudents.containsKey(unselected.getStudentItemId())){
 
-						StudentSessionStatusVO ss = (StudentSessionStatusVO)this.selectedStudents.get(j);
 						this.selectedStudents.remove(unselected.getStudentItemId());
 						break;
 					}
@@ -1381,7 +1384,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 				String studentInItem = selectedStudentIdFromPage[i];         
 				if (studentInItem != null)
 				{
-					StudentSessionStatusVO ss = (StudentSessionStatusVO)this.studentsOnPage.get(studentInItem);
+					StudentSessionStatusVO ss = this.studentsOnPage.get(studentInItem);
 					if (ss.getCompletionStatus().equals("Completed") || 
 							ss.getCompletionStatus().equals("In Progress" )) {
 						addSelectedStudentToList(ss);
@@ -1393,11 +1396,10 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 	}
 
-	private List getUnselectedStudentsInPage(String[] selectedStudentOrgList)
+	private List<StudentSessionStatusVO> getUnselectedStudentsInPage(String[] selectedStudentOrgList)
 	{
-		Iterator iter = null;
-		ArrayList unselectedStudents = new ArrayList();
-		boolean selected = false;
+		Iterator<StudentSessionStatusVO> iter = null;
+		ArrayList<StudentSessionStatusVO> unselectedStudents = new ArrayList<StudentSessionStatusVO>();
 
 		if (selectedStudentOrgList != null) {
 			for (int i=0; i < selectedStudentOrgList.length; i++){
@@ -1407,9 +1409,9 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 			}
 		}
-		iter = studentsOnPageList.values().iterator();
+		iter = this.studentsOnPageList.values().iterator();
 		while (iter.hasNext()) {
-			StudentSessionStatusVO ss = (StudentSessionStatusVO)iter.next();
+			StudentSessionStatusVO ss = iter.next();
 			unselectedStudents.add(ss);
 		}
 		return unselectedStudents;
@@ -1428,7 +1430,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 			int size = this.selectedStudents.size();
 			int index = 0;
 			String[] studentItemList = new String[size];		    
-			for (Iterator it=this.selectedStudents.keySet().iterator(); it.hasNext(); )
+			for (Iterator<String> it=this.selectedStudents.keySet().iterator(); it.hasNext(); )
 			{   
 
 				String studentItemId = (String)it.next();
@@ -1443,43 +1445,13 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 	}
 
-	private ArrayList getArrayListFromStringArray(String[] in)
-	{
-		ArrayList result = new ArrayList();
-		if (in != null)
-		{
-			for (int i=0; i < in.length; i++)
-			{
-				result.add(in[i]);
-			}
-		}
-		return result;
-	}
-
-	private HashMap getAllStudentHashMapForArrayList(List  studentDetailsList)
-	{
-		HashMap result = new HashMap();
-		Iterator studentDataIterator = studentDetailsList.iterator();
-		while (studentDataIterator.hasNext()) {
-			StudentSessionStatusVO studentStatusVO = (StudentSessionStatusVO)studentDataIterator.next();
-			if (studentStatusVO.getCompletionStatus().equals("Completed") || 
-					studentStatusVO.getCompletionStatus().equals("In Progress" )) {
-
-
-				result.put(studentStatusVO.getStudentId()+ "_" + studentStatusVO.getItemSetId(), studentStatusVO);
-			}
-		}
-		return result;
-
-	}	
-
 	private void checkForShowDetailsButton() {
 
 		if(this.selectedStudents != null && this.selectedStudents.size() > 0) {
-			for (Iterator it=this.selectedStudents.keySet().iterator(); it.hasNext(); )
+			for (Iterator<String> it=this.selectedStudents.keySet().iterator(); it.hasNext(); )
 			{   
 
-				String studentItemId = (String)it.next();
+				String studentItemId = it.next();
 				if (studentItemId != null) {
 					this.getRequest().setAttribute("disableShowDetailsButton", Boolean.FALSE);
 					
@@ -1510,7 +1482,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 		private String selectedOrgLevel;        
 		private Integer selectedStudentId;
 		private String selectedStudentLoginId;
-		//private String selectedAccessCode;
 
 		private Integer selectedTestSessionId;	 
 
@@ -1573,7 +1544,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		private String ticketId;
 		private String requestDescription;
 		private String serviceRequestor;
-		private List selectedStudents;
+		
 		private Integer customerId;
 		private Integer creatorOrgNodeId;
 		private String[] selectedStudentItemId; 
@@ -1826,7 +1797,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 				this.currentAction = "defaultAction";
 
 			}
-			if (actionElement.equals("ButtonGoInvoked_testSessionSearchResult") && fromAction.equals("showStudentTestStatusDetails") ){
+			if (actionElement.equals("ButtonGoInvoked_testSessionSearchResult")
+					&& fromAction.equals("showStudentTestStatusDetails") ){
 
 				this.currentAction = "findSubtestByTestSessionId";
 				
@@ -1875,7 +1847,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 				this.selectedTestSessionId = null;
 				if (fromAction.equals(ACTION_FIND_TESTSESSION)) {
 					this.selectedStudentLoginId = null;
-					//this.selectedAccessCode = null;
 				}
 			}
 
@@ -1884,7 +1855,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 				
 				if (!this.currentAction.equals(ACTION_SELECT_ALL)) {
 
-					this.currentAction=ACTION_CHANGE_SUBTEST;
+					this.currentAction = ACTION_CHANGE_SUBTEST;
 					fromAction = ACTION_CHANGE_SUBTEST;
 				} 
 
@@ -1917,6 +1888,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 				this.studentStatusSortColumn = null;
 				this.studentStatusPageRequested = null;
 			}
+			
 			if(fromAction.equals("reOpenSubtestForStudents")) {
 
 				this.selectedStudentItemId = null;
@@ -1990,7 +1962,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		public String getActionElement()
 		{
-			return this.actionElement != null ? this.actionElement : global.Global.ACTION_DEFAULT;
+			return this.actionElement != null ?
+					this.actionElement : global.Global.ACTION_DEFAULT;
 		}
 
 		public void setCurrentAction(String currentAction)
@@ -2000,16 +1973,9 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 		public String getCurrentAction()
 		{
-			return this.currentAction != null ? this.currentAction : global.Global.ACTION_DEFAULT;
+			return this.currentAction != null ?
+					this.currentAction : global.Global.ACTION_DEFAULT;
 		}
-
-		/*public String getSelectedAccessCode() {
-			return selectedAccessCode;
-		}
-
-		public void setSelectedAccessCode(String selectedAccessCode) {
-			this.selectedAccessCode = selectedAccessCode;
-		}*/
 
 		public Message getMessage() {
 			return message;
@@ -2024,7 +1990,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 
 		public Integer getTestSessionPageRequested() {
-			return this.testSessionPageRequested != null ? this.testSessionPageRequested : new Integer(1);
+			return this.testSessionPageRequested != null ?
+					this.testSessionPageRequested : new Integer(1);
 
 		}
 
@@ -2033,7 +2000,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 
 		public Integer getStudentPageRequested() {
-			return this.studentPageRequested != null ? this.studentPageRequested : new Integer(1);
+			return this.studentPageRequested != null ?
+					this.studentPageRequested : new Integer(1);
 
 		}
 
@@ -2064,7 +2032,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		 * @return the testSessionSortColumn
 		 */
 		public String getTestSessionSortColumn() {
-			return this.testSessionSortColumn != null ? this.testSessionSortColumn : FilterSortPageUtils.REOPEN_TESTSESSION_DEFAULT_SORT;
+			return this.testSessionSortColumn != null ?
+					this.testSessionSortColumn : FilterSortPageUtils.REOPEN_TESTSESSION_DEFAULT_SORT;
 
 		}
 
@@ -2079,7 +2048,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		 * @return the testSessionSortOrderBy
 		 */
 		public String getTestSessionSortOrderBy() {
-			return this.testSessionSortOrderBy != null ? this.testSessionSortOrderBy : FilterSortPageUtils.ASCENDING;
+			return this.testSessionSortOrderBy != null ?
+					this.testSessionSortOrderBy : FilterSortPageUtils.ASCENDING;
 
 		}
 
@@ -2094,7 +2064,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		 * @return the studentSortColumn
 		 */
 		public String getStudentSortColumn() {
-			return this.studentSortColumn != null ? this.studentSortColumn : FilterSortPageUtils.STUDENT_USER_NAME_DEFAULT_SORT;
+			return this.studentSortColumn != null ?
+					this.studentSortColumn : FilterSortPageUtils.STUDENT_USER_NAME_DEFAULT_SORT;
 
 		}
 
@@ -2109,7 +2080,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		 * @return the studentSortOrderBy
 		 */
 		public String getStudentSortOrderBy() {
-			return this.studentSortOrderBy != null ? this.studentSortOrderBy : FilterSortPageUtils.ASCENDING;
+			return this.studentSortOrderBy != null ?
+					this.studentSortOrderBy : FilterSortPageUtils.ASCENDING;
 
 		}
 
@@ -2143,7 +2115,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 
 		public String getSubtestSortColumn() {
-			return this.subtestSortColumn != null ? this.subtestSortColumn : FilterSortPageUtils.SUBTEST_ITEM_SET_ORDER_DEFAULT_SORT;
+			return this.subtestSortColumn != null ?
+					this.subtestSortColumn : FilterSortPageUtils.SUBTEST_ITEM_SET_ORDER_DEFAULT_SORT;
 
 		}
 
@@ -2152,7 +2125,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 
 		public String getSubtestSortOrderBy() {
-			return this.subtestSortOrderBy != null ? this.subtestSortOrderBy : FilterSortPageUtils.ASCENDING;
+			return this.subtestSortOrderBy != null ?
+					this.subtestSortOrderBy : FilterSortPageUtils.ASCENDING;
 
 		}
 
@@ -2161,7 +2135,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 
 		public Integer getSubtestPageRequested() {
-			return this.subtestPageRequested != null ? this.subtestPageRequested : new Integer(1);
+			return this.subtestPageRequested != null ?
+					this.subtestPageRequested : new Integer(1);
 
 		}
 
@@ -2182,7 +2157,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		 * @return the studentStatusSortColumn
 		 */
 		public String getStudentStatusSortColumn() {
-			return this.studentStatusSortColumn != null ? this.studentStatusSortColumn : FilterSortPageUtils.SUBTEST_DETAIL_DEFAULT_SORT;
+			return this.studentStatusSortColumn != null ?
+					this.studentStatusSortColumn : FilterSortPageUtils.SUBTEST_DETAIL_DEFAULT_SORT;
 
 		}
 
@@ -2197,7 +2173,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		 * @return the studentStatusSortOrderBy
 		 */
 		public String getStudentStatusSortOrderBy() {
-			return this.studentStatusSortOrderBy != null ? this.studentStatusSortOrderBy : FilterSortPageUtils.ASCENDING;
+			return this.studentStatusSortOrderBy != null ?
+					this.studentStatusSortOrderBy : FilterSortPageUtils.ASCENDING;
 			
 		}
 
@@ -2212,7 +2189,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		 * @return the studentStatusPageRequested
 		 */
 		public Integer getStudentStatusPageRequested() {
-			return this.studentStatusPageRequested != null ? this.studentStatusPageRequested : new Integer(1);
+			return this.studentStatusPageRequested != null ?
+					this.studentStatusPageRequested : new Integer(1);
 
 		}
 
@@ -2408,20 +2386,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 
 		/**
-		 * @return the selectedStudents
-		 */
-		public List getSelectedStudents() {
-			return selectedStudents;
-		}
-
-		/**
-		 * @param selectedStudents the selectedStudents to set
-		 */
-		public void setSelectedStudents(List selectedStudents) {
-			this.selectedStudents = selectedStudents;
-		}
-
-		/**
 		 * @return the selectedStudentItemId
 		 */
 		public String[] getSelectedStudentItemId() {
@@ -2495,7 +2459,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		 * @return the studentStatusSecSortColumn
 		 */
 		public String getStudentStatusSecSortColumn() {
-			return this.studentStatusSecSortColumn != null ? this.studentStatusSecSortColumn : FilterSortPageUtils.SUBTEST_ITEM_SET_ORDER_DEFAULT_SORT;
+			return this.studentStatusSecSortColumn != null ?
+					this.studentStatusSecSortColumn : FilterSortPageUtils.SUBTEST_ITEM_SET_ORDER_DEFAULT_SORT;
 		}
 
 		/**
@@ -2537,7 +2502,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		 * @return the studentSecSortOrderBy
 		 */
 		public String getStudentSecSortOrderBy() {
-			return this.studentSecSortOrderBy != null ? this.studentSecSortOrderBy : FilterSortPageUtils.ASCENDING;
+			return this.studentSecSortOrderBy != null ?
+					this.studentSecSortOrderBy : FilterSortPageUtils.ASCENDING;
 		}
 
 		/**
@@ -2549,46 +2515,46 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 	}
 
-	public List getTestSessionList() {
+	public List<TestSessionVO> getTestSessionList() {
 		return testSessionList;
 	}
 
-	public void setTestSessionList(List testSessionList) {
+	public void setTestSessionList(List<TestSessionVO> testSessionList) {
 		this.testSessionList = testSessionList;
 	}	
-	public List getSubtestList() {
+	public List<StudentSessionStatusVO> getSubtestList() {
 		return subtestList;
 	}
 
-	public void setSubtestList(List subtestList) {
+	public void setSubtestList(List<StudentSessionStatusVO> subtestList) {
 		this.subtestList = subtestList;
 	}
 
 	/**
 	 * @return the studentList
 	 */
-	public List getStudentList() {
+	public List<StudentProfileInformation> getStudentList() {
 		return studentList;
 	}
 
 	/**
 	 * @param studentList the studentList to set
 	 */
-	public void setStudentList(List studentList) {
+	public void setStudentList(List<StudentProfileInformation> studentList) {
 		this.studentList = studentList;
 	}
 
 	/**
 	 * @return the testDeliveryItemList
 	 */
-	public List getTestDeliveryItemList() {
+	public List<ScheduleElementVO> getTestDeliveryItemList() {
 		return testDeliveryItemList;
 	}
 
 	/**
 	 * @param testDeliveryItemList the testDeliveryItemList to set
 	 */
-	public void setTestDeliveryItemList(List testDeliveryItemList) {
+	public void setTestDeliveryItemList(List<ScheduleElementVO> testDeliveryItemList) {
 		this.testDeliveryItemList = testDeliveryItemList;
 	}  
 
@@ -2627,27 +2593,15 @@ public class CustomerServiceManagementController extends PageFlowController {
 		resetShowStudentDeatilsList();
 	}
 
-	public List getStudentTestStatusDetailsList() {
+	public List<StudentSessionStatusVO> getStudentTestStatusDetailsList() {
 		return studentTestStatusDetailsList;
 	}
 
-	public void setStudentTestStatusDetailsList(List studentTestStatusDetailsList) {
+	public void setStudentTestStatusDetailsList(List<StudentSessionStatusVO> studentTestStatusDetailsList) {
 		this.studentTestStatusDetailsList = studentTestStatusDetailsList;
 	}
 
-	/**
-	 * @return the subtestNameToIndexHash
-	 */
-	public LinkedHashMap getSubtestNameToIndexHash() {
-		return subtestNameToIndexHash;
-	}
 
-	/**
-	 * @param subtestNameToIndexHash the subtestNameToIndexHash to set
-	 */
-	public void setSubtestNameToIndexHash(LinkedHashMap subtestNameToIndexHash) {
-		this.subtestNameToIndexHash = subtestNameToIndexHash;
-	}
 
 	/**
 	 * @return the studentStatusDetailsList
@@ -2667,28 +2621,28 @@ public class CustomerServiceManagementController extends PageFlowController {
 	/**
 	 * @return the selectedStudents
 	 */
-	public HashMap getSelectedStudents() {
+	public HashMap<String,StudentSessionStatusVO> getSelectedStudents() {
 		return selectedStudents;
 	}
 
 	/**
 	 * @param selectedStudents the selectedStudents to set
 	 */
-	public void setSelectedStudents(HashMap selectedStudents) {
+	public void setSelectedStudents(HashMap<String,StudentSessionStatusVO> selectedStudents) {
 		this.selectedStudents = selectedStudents;
 	}
 
 	/**
 	 * @return the showStudentDeatilsList
 	 */
-	public List getShowStudentDeatilsList() {
+	public List<StudentSessionStatusVO> getShowStudentDeatilsList() {
 		return showStudentDeatilsList;
 	}
 
 	/**
 	 * @param showStudentDeatilsList the showStudentDeatilsList to set
 	 */
-	public void setShowStudentDeatilsList(List showStudentDeatilsList) {
+	public void setShowStudentDeatilsList(List<StudentSessionStatusVO> showStudentDeatilsList) {
 		this.showStudentDeatilsList = showStudentDeatilsList;
 	}
 
@@ -2757,6 +2711,21 @@ public class CustomerServiceManagementController extends PageFlowController {
 	}
 
 	/**
+	 * @return the subtestNameToIndexHash
+	 */
+	public LinkedHashMap<Integer, String> getSubtestNameToIndexHash() {
+		return subtestNameToIndexHash;
+	}
+
+	/**
+	 * @param subtestNameToIndexHash the subtestNameToIndexHash to set
+	 */
+	public void setSubtestNameToIndexHash(
+			LinkedHashMap<Integer, String> subtestNameToIndexHash) {
+		this.subtestNameToIndexHash = subtestNameToIndexHash;
+	}
+
+	/**
 	 * @return the selectedStudentsLength
 	 */
 	public Integer getSelectedStudentsLength() {
@@ -2767,10 +2736,9 @@ public class CustomerServiceManagementController extends PageFlowController {
 	 * @param selectedStudentsLength the selectedStudentsLength to set
 	 */
 	public void setSelectedStudentsLength(Integer selectedStudentsLength) {
-		this.selectedStudentsLength = selectedStudentsLength != null ? selectedStudentsLength : new Integer(0);
+		this.selectedStudentsLength = selectedStudentsLength != null ? 
+				selectedStudentsLength : new Integer(0);
 	}
-
-	
 
 
 }

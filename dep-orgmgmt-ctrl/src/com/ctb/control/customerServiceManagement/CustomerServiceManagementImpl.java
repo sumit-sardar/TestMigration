@@ -5,8 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.transaction.UserTransaction;
-
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 
 import com.ctb.bean.request.FilterParams;
@@ -128,9 +126,7 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		String searchCriteria = null;
 		TestSession[] testSessions = null;
 		TestSession[] filteredTestSessions = null;
-		//System.out.println("platform accessCode" + accessCode);
 		searchCriteria = generateSearchCriteria(studentId,accessCode);
-		boolean validationFlag = true;
 		
 		try {
 
@@ -151,7 +147,7 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 		} 
 
 		if (testSessions != null && testSessions.length > 0) {
-			ArrayList testSessionList = new ArrayList();
+			ArrayList<TestSession> testSessionList = new ArrayList<TestSession>();
 			for(int i=0;i<testSessions.length;i++) {
 				TestSession data = testSessions[i];
 				try {

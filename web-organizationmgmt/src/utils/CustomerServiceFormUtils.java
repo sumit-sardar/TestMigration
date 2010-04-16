@@ -1,6 +1,5 @@
 package utils;
 
-import java.util.List;
 
 import manageCustomerService.CustomerServiceManagementController.CustomerServiceManagementForm;
 import dto.Message;
