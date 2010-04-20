@@ -338,7 +338,9 @@ public class CustomerServiceManagementController extends PageFlowController {
 		StudentSessionStatusData sstData = null;
 		form.validateValues(); 
 		String actionElement = form.getActionElement();
-		form.resetValuesForAction(actionElement, ACTION_FIND_SUBTEST_BY_SESSION_ID); 
+		String currentAction = form.getCurrentAction();
+		form.resetValuesForAction(actionElement, currentAction);
+		//form.resetValuesForAction(actionElement, ACTION_FIND_SUBTEST_BY_SESSION_ID); 
 		Integer testAdminId = form.getSelectedTestSessionId();
 		Integer testRosterId = null;
 		//get the test access code used as search criteria
@@ -1783,7 +1785,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 				this.studentSortOrderBy = null;     //SET THE DEFAULT SORTING FOR STEP2 OF SESSION TAB
 
 			}
-			if(fromAction.equals("findSubtestByTestSessionId")) {
+			if(fromAction.equals("findSubtestByTestSessionId") || 
+					fromAction.equals("reOpenSubtest")) {
 				
 				this.selectedItemSetId = null;
 			}
@@ -1791,9 +1794,10 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 				this.currentAction="defaultAction";
 			}
+
 			if (actionElement.equals("ButtonGoInvoked_testSessionSearchResult") 
 					&& fromAction.equals("applySearch") ){
-
+  
 				this.currentAction = "defaultAction";
 
 			}
@@ -1821,11 +1825,13 @@ public class CustomerServiceManagementController extends PageFlowController {
 				this.currentAction="defaultAction";
 				this.selectedTestSessionId = null;
 			}
+			
 			if (actionElement.equals("{actionForm.subtestSortOrderBy}")) {
 				this.subtestPageRequested = new Integer(1);
 				this.currentAction="findSubtestByTestSessionId";
 				this.selectedItemSetId = null;
 			}
+			
 			if ((actionElement.indexOf("testSessionSortColumn") != -1) ||
 					(actionElement.indexOf("testSessionSortOrderBy") != -1)) {
 				this.testSessionPageRequested = new Integer(1);
@@ -1841,7 +1847,16 @@ public class CustomerServiceManagementController extends PageFlowController {
 					actionElement.equals("EnterKeyInvoked_testSessionSearchResult")) {
 
 				this.selectedTestSessionId = null;
+				this.currentAction = "defaultAction";
 			}
+
+			if (actionElement.equals("ButtonGoInvoked_subtestSearchResult") ||
+					actionElement.equals("EnterKeyInvoked_subtestSearchResult")) {
+
+				this.selectedItemSetId = null;
+				this.currentAction = "findSubtestByTestSessionId";
+			}
+
 			if (actionElement.equals("ButtonGoInvoked_tablePathListAnchor") ||
 					actionElement.equals("EnterKeyInvoked_tablePathListAnchor")) {
 				this.selectedTestSessionId = null;
@@ -1882,7 +1897,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 				}
 
 			}
-			if(actionElement.equals("{actionForm.currentAction}")){
+			if(actionElement.equals("{actionForm.currentAction}") && 
+					fromAction.equals("findSubtestByTestSessionId")){
 				this.subtestSortColumn = null;
 				this.subtestPageRequested = null;
 				this.studentStatusSortColumn = null;
