@@ -390,7 +390,7 @@ function CalendarShow() {
     windowOptions += ",top="  + y;
 
     if( this.window == null || this.window.closed ) {
-        this.window = window.open("about:blank", "calendar", windowOptions);
+        this.window = window.open("blank.html", "calendar", windowOptions);
     }
     this.draw();
     this.focus();
