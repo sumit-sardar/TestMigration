@@ -231,7 +231,7 @@ public class CustomerServiceSearchUtils {
 							subtestDetails.setCompletionDateTime(
 									getAdjustedDateTime(subtest.getCompletionDateTime(),timeZone));
 						}
-						if(subtest.getCompletionDateTime() != null) {
+						if(subtest.getStartDateTime() != null) {
 							subtestDetails.setStartDateTime(
 									getAdjustedDateTime(subtest.getStartDateTime(),timeZone));
 						}
@@ -278,6 +278,11 @@ public class CustomerServiceSearchUtils {
 				auditFileReopenSubtest.setCustomerId(customerId);
 				auditFileReopenSubtest.setReasonForRequest(requestDescription);
 				auditFileReopenSubtest.setRequestorName(serviceRequestor);
+				auditFileReopenSubtest.setCompletionDateTime(studentSessionStatusVO.getTestEndDate());  // added for new requirement  # 63500
+				auditFileReopenSubtest.setStartDateTime(studentSessionStatusVO.getTestStartDate());
+				auditFileReopenSubtest.setItemAnswered(studentSessionStatusVO.getItemAnswered());
+				auditFileReopenSubtest.setTimeSpent(studentSessionStatusVO.getTimeSpentForDisplay());
+				
 				if (studentSessionStatusVO.getStudentId() != null) {//condition true for test session
 
 					auditFileReopenSubtest.setStudentId(studentSessionStatusVO.getStudentId());

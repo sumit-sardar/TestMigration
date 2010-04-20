@@ -24,7 +24,59 @@ public class AuditFileReopenSubtest extends CTBBean
     private String ticketId;
     private String requestorName;
     private String reasonForRequest;
+    private Date completionDateTime; // // added for new requirement  # 63500
+    private Date startDateTime;
+    private String itemAnswered;
+    private String timeSpent;
     
+	/**
+	 * @return the completionDateTime
+	 */
+	public Date getCompletionDateTime() {
+		return completionDateTime;
+	}
+	/**
+	 * @param completionDateTime the completionDateTime to set
+	 */
+	public void setCompletionDateTime(Date completionDateTime) {
+		this.completionDateTime = completionDateTime;
+	}
+	/**
+	 * @return the startDateTime
+	 */
+	public Date getStartDateTime() {
+		return startDateTime;
+	}
+	/**
+	 * @param startDateTime the startDateTime to set
+	 */
+	public void setStartDateTime(Date startDateTime) {
+		this.startDateTime = startDateTime;
+	}
+	/**
+	 * @return the itemAnswered
+	 */
+	public String getItemAnswered() {
+		return itemAnswered;
+	}
+	/**
+	 * @param itemAnswered the itemAnswered to set
+	 */
+	public void setItemAnswered(String itemAnswered) {
+		this.itemAnswered = itemAnswered;
+	}
+	/**
+	 * @return the timeSpent
+	 */
+	public String getTimeSpent() {
+		return timeSpent;
+	}
+	/**
+	 * @param timeSpent the timeSpent to set
+	 */
+	public void setTimeSpent(String timeSpent) {
+		this.timeSpent = timeSpent;
+	}
 	/**
 	 * @return Returns the createdBy.
 	 */
