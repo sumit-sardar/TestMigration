@@ -103,12 +103,12 @@ public class CustomerServiceFormUtils {
 			studentLoginId = form.getStudentProfile()!= null && form.getStudentProfile().getStudentLoginId() != null ?  form.getStudentProfile().getStudentLoginId().trim() : null;
 			testAccessCode =  form.getTestAccessCode() != null? form.getTestAccessCode().trim() : null;
 
-			if (! WebUtils.validString(studentLoginId) && studentLoginId != null ) {
+			if (studentLoginId != null && ! WebUtils.validNameString(studentLoginId)) {
 				invalidCharFieldCount += 1;            
 				invalidCharFields = buildErrorString(Message.STUDENT_LOGIN_ID, invalidCharFieldCount, invalidCharFields);       
 			}
 
-			if (! WebUtils.validString(testAccessCode) && testAccessCode != null ) {
+			if (testAccessCode != null && ! WebUtils.validNameString(testAccessCode)) {
 				invalidCharFieldCount += 1;            
 				invalidCharFields = buildErrorString(Message.STUDENT_TEST_ACCESS_CODE, invalidCharFieldCount, invalidCharFields);       
 			}
@@ -118,7 +118,7 @@ public class CustomerServiceFormUtils {
 		if(form.getSelectedTab().equals("moduleTestSession") && form.getCurrentAction().equals("applySearch")) {
 
 			testAccessCode = form.getTestAccessCode()!=null ? form.getTestAccessCode().trim() : null;
-			if (! WebUtils.validString(testAccessCode) && testAccessCode != null ) {
+			if (testAccessCode != null && ! WebUtils.validNameString(testAccessCode)) {
 				invalidCharFieldCount += 1;            
 				invalidCharFields = buildErrorString(Message.STUDENT_TEST_ACCESS_CODE, invalidCharFieldCount, invalidCharFields);       
 			}
@@ -130,17 +130,17 @@ public class CustomerServiceFormUtils {
 			serviceRequestor = form.getServiceRequestor() != null ? form.getServiceRequestor().trim() : null;
 			requestDescription = form.getRequestDescription() != null ? form.getRequestDescription().trim() : null;
 
-			if (ticketId != null  && ! WebUtils.validString(ticketId) ) {
+			if (ticketId != null  && ! WebUtils.validNameString(ticketId) ) {
 				invalidCharFieldCount += 1;            
 				invalidCharFields = buildErrorString(Message.TEST_TICKET_ID, invalidCharFieldCount, invalidCharFields);       
 			}
 
-			if (serviceRequestor != null && ! WebUtils.validString(serviceRequestor) ) {
+			if (serviceRequestor != null && ! WebUtils.validNameString(serviceRequestor) ) {
 				invalidCharFieldCount += 1;            
 				invalidCharFields = buildErrorString(Message.TEST_SERVICE_REQUESTOR, invalidCharFieldCount, invalidCharFields);       
 			}
 
-			if (requestDescription != null && ! WebUtils.validString(requestDescription) ) {
+			if (requestDescription != null && ! WebUtils.validNameString(requestDescription) ) {
 				invalidCharFieldCount += 1;            
 				invalidCharFields = buildErrorString(Message.TEST_REQUEST_DESCRIPTION, invalidCharFieldCount, invalidCharFields);       
 			}
