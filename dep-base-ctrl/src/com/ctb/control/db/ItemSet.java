@@ -3,6 +3,7 @@ package com.ctb.control.db;
 import com.bea.control.*;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 import com.ctb.bean.testAdmin.ActiveTest;
+import com.ctb.bean.testAdmin.ScheduleElement;
 import com.ctb.bean.testAdmin.TestElement; 
 import java.sql.SQLException; 
 import org.apache.beehive.controls.api.bean.ControlExtension;
@@ -742,6 +743,8 @@ public interface ItemSet extends JdbcControl
     @JdbcControl.SQL(statement = "select  iset.ITEM_SET_ID as itemSetId,  iset.ITEM_SET_TYPE as itemSetType,  iset.ITEM_SET_CATEGORY_ID as itemSetCategoryId,  iset.ITEM_SET_NAME as itemSetName,  iset.ITEM_SET_LEVEL as itemSetLevel,  iset.ITEM_SET_FORM as itemSetForm,  iset.MIN_GRADE as minGrade,  iset.MAX_GRADE as maxGrade,  iset.SAMPLE as sample,  iset.TIME_LIMIT as timeLimit,  iset.BREAK_TIME as breakTime,  iset.MEDIA_PATH as mediaPath,  iset.ITEM_SET_DISPLAY_NAME as itemSetDisplayName,  iset.ITEM_SET_DESCRIPTION as itemSetDescription,  iset.ITEM_SET_RULE_ID as itemSetRuleId,  iset.EXT_EMS_ITEM_SET_ID as extEmsItemSetId,  iset.EXT_CMS_ITEM_SET_ID as extCmsItemSetId,  iset.CREATED_BY as createdBy,  iset.CREATED_DATE_TIME as createdDateTime,  iset.UPDATED_BY as updatedBy,  iset.UPDATED_DATE_TIME as updatedDateTime,  iset.ACTIVATION_STATUS as activationStatus,  iset.VERSION as version,  iset.SUBJECT as subject,  iset.GRADE as grade,  iset.OWNER_CUSTOMER_ID as ownerCustomerId,  iset.PUBLISH_STATUS as publishStatus,  iset.ORIGINAL_CREATED_BY as originalCreatedBy,  iset.EXT_TST_ITEM_SET_ID as extTstItemSetId from  item_set iset where  iset.item_set_id = {itemSetId}")
     TestElement getTestElementById(Integer itemSetId) throws SQLException;
     
-    
+    @JdbcControl.SQL(statement = " select iset.ITEM_SET_ID as itemSetId, iset.ITEM_SET_TYPE as itemSetType, iset.ITEM_SET_CATEGORY_ID as itemSetCategoryId, iset.ITEM_SET_NAME as itemSetName, iset.ITEM_SET_LEVEL as itemSetLevel, iset.ITEM_SET_FORM as itemSetForm, iset.MIN_GRADE as minGrade, iset.MAX_GRADE as maxGrade, iset.SAMPLE as sample, iset.TIME_LIMIT as timeLimit, iset.BREAK_TIME as breakTime, iset.MEDIA_PATH as mediaPath, iset.ITEM_SET_DISPLAY_NAME as itemSetDisplayName, iset.ITEM_SET_DESCRIPTION as itemSetDescription, iset.ITEM_SET_RULE_ID as itemSetRuleId, iset.EXT_EMS_ITEM_SET_ID as extEmsItemSetId, iset.EXT_CMS_ITEM_SET_ID as extCmsItemSetId, iset.CREATED_BY as createdBy, iset.CREATED_DATE_TIME as createdDateTime, iset.UPDATED_BY as updatedBy, iset.UPDATED_DATE_TIME as updatedDateTime, iset.ACTIVATION_STATUS as activationStatus, iset.VERSION as version, iset.SUBJECT as subject, iset.GRADE as grade, iset.OWNER_CUSTOMER_ID as ownerCustomerId, iset.PUBLISH_STATUS as publishStatus, iset.ORIGINAL_CREATED_BY as originalCreatedBy, iset.EXT_TST_ITEM_SET_ID as extTstItemSetId from item_set iset, item_set_parent itp where iset.item_set_id = itp.parent_item_set_id and itp.item_set_id = {itemSetId}")
+    TestElement getParentItemset(Integer itemSetId) throws SQLException;
+       
     static final long serialVersionUID = 1L;
 }

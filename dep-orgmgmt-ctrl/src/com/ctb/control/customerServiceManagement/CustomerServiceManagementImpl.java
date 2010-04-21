@@ -20,12 +20,19 @@ import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.customerServiceManagement.StudentDataNotFoundException;
+import com.ctb.bean.testAdmin.TestElement; 
 import com.ctb.exception.validation.ValidationException;
 
 
 @ControlImplementation()
 public class CustomerServiceManagementImpl implements CustomerServiceManagement,Serializable {
 
+	/**
+	 * @common:control
+	 */
+	@org.apache.beehive.controls.api.bean.Control()
+	com.ctb.control.db.ItemSet itemSets;
+	
 	/**
 	 * @common:control
 	 */
@@ -43,7 +50,6 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 	 */
 	@org.apache.beehive.controls.api.bean.Control()
 	com.ctb.control.db.TestAdminItemSet testAdminItemSet;
-
 
 	/**
 	 * @common:control
@@ -370,6 +376,8 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement,
 				students.updateStudentActiveSessionFlag(reopenSubtestInfo.getStudentId(),new Date(),reopenSubtestInfo.getCreatedBy());
 				studentItemSetStatus.updateStudentItemSetStatus(reopenSubtestInfo.getTestRosterId(),
 						reopenSubtestInfo.getItemSetTDId());
+				TestElement testElement = itemSets.getParentItemset(reopenSubtestInfo.getItemSetTDId());
+				reopenSubtestInfo.setItemSetTSId(testElement.getItemSetId());
 				studentItemSetStatus.insertAuditRecordForReopenSubtestData(reopenSubtestInfo);
 			}
 		} catch(SQLException se){
