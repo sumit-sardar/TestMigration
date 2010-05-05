@@ -1,8 +1,45 @@
 package com.ctb.control.testDelivery; 
 
-import com.bea.control.*;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.Set;
+
+import javax.naming.InitialContext;
+
+import noNamespace.AdssvcRequestDocument;
+import noNamespace.AdssvcResponseDocument;
+import noNamespace.BaseType;
+import noNamespace.LmsEventType;
+import noNamespace.StudentFeedbackDataDocument;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.GetFeedbackData.Lms.Sco;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ast;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lev;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Rv;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv.CmiCore.Exit;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse.CompleteTutorial;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.NextSco;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.Status;
+import noNamespace.StudentFeedbackDataDocument.StudentFeedbackData;
+
+import org.apache.beehive.controls.api.bean.ControlImplementation;
+
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.TestProduct;
+import com.ctb.bean.testDelivery.login.ItemResponseData;
 import com.ctb.bean.testDelivery.login.ManifestData;
 import com.ctb.bean.testDelivery.studentTestData.RecommendedSubtestLevel;
 import com.ctb.bean.testDelivery.studentTestData.RosterSubtestFeedback;
@@ -21,54 +58,6 @@ import com.ctb.util.OASLogger;
 import com.ctb.util.SimpleCache;
 import com.ctb.util.testDelivery.Constants;
 import com.ctb.util.testDelivery.TabeLocatorUtils;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URLDecoder;
-import java.util.Date;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.logging.Level;
-
-import javax.naming.InitialContext;
-
-
-import noNamespace.AdssvcRequestDocument;
-import noNamespace.AdssvcResponseDocument;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest;
-import noNamespace.AdssvcResponseDocument.AdssvcResponse;
-import noNamespace.AdssvcResponseDocument.AdssvcResponse.DownloadItem;
-import noNamespace.AdssvcResponseDocument.AdssvcResponse.GetSubtest;
-import noNamespace.ErrorDocument;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.GetFeedbackData.Lms.Sco;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lev;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv.CmiCore.Exit;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ast;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Rv;
-import noNamespace.AdssvcResponseDocument;
-import noNamespace.AdssvcResponseDocument.AdssvcResponse;
-import noNamespace.AdssvcResponseDocument.AdssvcResponse.CompleteTutorial;
-import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
-import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.NextSco;
-import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.Status;
-import noNamespace.BaseType;
-import noNamespace.LmsEventType;
-import noNamespace.StudentFeedbackDataDocument;
-import noNamespace.StudentFeedbackDataDocument.StudentFeedbackData;
-
-
-import org.apache.beehive.controls.api.bean.ControlImplementation;
 
 /**
  * @editor-info:code-gen control-interface="true"
@@ -351,8 +340,10 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                         nextSco.setId(""+nextSubtestId);
                     }
                 } else {
-                    OASLogger.getLogger("TestDelivery").error("ignoring message from lms queue, this mseq: " + tsd.getMseq().intValue() + " is less than last mseq: " + lastMseq);
-                    throw new InvalidMseqException();                                
+                	if(!duplicateResponseExists(Integer.valueOf(testRosterId).intValue(), tsd.getMseq().intValue(), tsd.getIstArray())) {
+                    	OASLogger.getLogger("TestDelivery").error("ignoring message from lms queue, this mseq: " + tsd.getMseq().intValue() + " is less than last mseq: " + lastMseq);
+                    	throw new InvalidMseqException();   
+                    }
                 }
                 
                 //ISTEP2010CR001 : For to save value of tts speed
@@ -404,6 +395,63 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
         return response;
     }
     
+    private boolean duplicateResponseExists(int testRosterId, int mseq, Ist [] ista){
+    	boolean result = false;
+    	try{
+	    	for(int j=0;j<ista.length;j++) {
+	    		result = false;
+	            Ist ist = ista[j];
+	            if(ist != null && ist.getRvArray() != null && ist.getRvArray().length >0 ) {
+	                if( ist.getRvArray(0).getVArray() != null && ist.getRvArray(0).getVArray().length >0){
+	                    if(ist.getRvArray(0).getVArray(0) != null){
+	                        BaseType.Enum responseType = ist.getRvArray(0).getT();
+	                        String xmlResponse = ist.getRvArray(0).getVArray(0).xmlText();
+	                        String response = "";
+	                        String studentMarked = ist.getMrk() ? "T" : "F";
+	                        if(xmlResponse != null && xmlResponse.length() > 0) {
+	                            // strip xml
+	                            int start = xmlResponse.indexOf(">");
+	                            if(start >= 0) {
+	                                response = xmlResponse.substring(start + 1);
+	                                int end = response.lastIndexOf("</");
+	                                if(end != -1)
+	                                    response = response.substring(0, end);
+	                            } else {
+	                                response = xmlResponse;
+	                            }
+	                            // strip CDATA
+	                            start = response.indexOf("[CDATA[");
+	                            if(start >= 0) {
+	                                response = response.substring(start + 7);
+	                                int end = response.lastIndexOf("]]");
+	                                if(end != -1)
+	                                    response = response.substring(0, end);
+	                            }
+	                        }
+	                        ItemResponseData ir = saver.getItemResponseForRosterAndMseq(testRosterId, mseq);
+	                        if(ir.getItemId().equals(ist.getIid()) &&
+	                           ((ir.getResponse() == null && response.equals("")) || ir.getResponse().equals(response)) &&
+	                           ir.getResponseElapsedTime() == ist.getDur() ) {
+	                        	result = true;
+	                        }
+	                     }
+	                }else{ 
+	                    String response = "";                   
+	                    String studentMarked = ist.getMrk() ? "T" : "F";                    
+	                    ItemResponseData ir = saver.getItemResponseForRosterAndMseq(testRosterId, mseq);
+                        if(ir.getItemId().equals(ist.getIid()) &&
+                           ir.getResponse() == null &&
+                           ir.getResponseElapsedTime() == ist.getDur() ) {
+                        	result = true;
+                        }
+	                }       
+	            }
+	    	}
+    	} catch (SQLException se) {
+    		OASLogger.getLogger("TestDelivery").error("Failure while testing for duplicate message for roster " + testRosterId + ", mseq " + mseq);
+    	}
+        return result;
+    }
     
     /**
      * @common:operation
