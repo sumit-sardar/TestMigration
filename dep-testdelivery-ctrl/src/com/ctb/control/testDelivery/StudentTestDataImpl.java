@@ -880,7 +880,11 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
         		
         		}
             }
-            SimpleCache.clearUserCache(String.valueOf(testRosterId));
+            try {
+            	SimpleCache.clearUserCache(String.valueOf(testRosterId));
+            } catch (Exception e) {
+            	OASLogger.getLogger("TestDelivery").info("Error clearing dupe cache for roster " + testRosterId + ". Message: " + e.getMessage());
+            }
             return nextId;
         } catch (SQLException se) {
             // unknown problem, throw generic invalid request exception
