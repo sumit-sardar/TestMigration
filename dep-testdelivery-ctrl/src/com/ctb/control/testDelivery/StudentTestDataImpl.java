@@ -1093,7 +1093,7 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
             if (isCTB) {
             	String cacheArg = testRosterId + ":" + itemSetId + ":" + itemId + ":" + response + ":" + elapsedTime + ":" + answerChoiceId + ":" + mSeq + ":" + studentMarked;
                 Object priorResponse = SimpleCache.checkCache(TMS_PER_INSTANCE_DUPE_CHECK, cacheArg, String.valueOf(testRosterId));
-                if(priorResponse.equals(null)) {
+                if(priorResponse == null) {
                 	saver.storeResponseWithMseq(testRosterId, itemSetId, itemId, response, elapsedTime, answerChoiceId, mSeq, studentMarked);
                 	SimpleCache.cacheResult(TMS_PER_INSTANCE_DUPE_CHECK, cacheArg, cacheArg, String.valueOf(testRosterId));
                 } else {
