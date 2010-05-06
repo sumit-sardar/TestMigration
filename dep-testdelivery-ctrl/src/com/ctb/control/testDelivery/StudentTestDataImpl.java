@@ -341,10 +341,11 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                         nextSco.setId(""+nextSubtestId);
                     }
                 } else {
-                	if(!duplicateResponseExists(Integer.valueOf(testRosterId).intValue(), tsd.getMseq().intValue(), tsd.getIstArray())) {
+                	/*if(!duplicateResponseExists(Integer.valueOf(testRosterId).intValue(), tsd.getMseq().intValue(), tsd.getIstArray())) {
                     	OASLogger.getLogger("TestDelivery").error("ignoring message from lms queue, this mseq: " + tsd.getMseq().intValue() + " is less than last mseq: " + lastMseq);
                     	throw new InvalidMseqException();   
-                    }
+                    }*/
+                	OASLogger.getLogger("TestDelivery").info("ignoring message from lms queue, this mseq: " + tsd.getMseq().intValue() + " is less than last mseq: " + lastMseq);
                 }
                 
                 //ISTEP2010CR001 : For to save value of tts speed
