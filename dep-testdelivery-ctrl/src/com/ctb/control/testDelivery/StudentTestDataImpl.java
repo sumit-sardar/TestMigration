@@ -65,6 +65,7 @@ import com.ctb.util.testDelivery.TabeLocatorUtils;
 @ControlImplementation()
 public class StudentTestDataImpl implements StudentTestData, Serializable
 { 
+	private static final String TMS_PER_INSTANCE_DUPE_CHECK = "TMS_PER_INSTANCE_DUPE_CHECK";
     /**
      * @common:control
      */
@@ -878,7 +879,7 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
         		
         		}
             }
-            
+            SimpleCache.clearUserCache(String.valueOf(testRosterId));
             return nextId;
         } catch (SQLException se) {
             // unknown problem, throw generic invalid request exception
@@ -1082,14 +1083,22 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
     
     private void storeResponse(int testRosterId, int itemSetId, String itemId, String response, float elapsedTime, String answerChoiceId, int mSeq, boolean isCTB, String studentMarked) throws InvalidTestRosterIdException, InvalidItemSetIdException, InvalidItemResponseException {
         try {
-            if (isCTB) 
-                saver.storeResponseWithMseq(testRosterId, itemSetId, itemId, response, elapsedTime, answerChoiceId, mSeq, studentMarked);
-            else
+            if (isCTB) {
+            	String cacheArg = testRosterId + ":" + itemSetId + ":" + itemId + ":" + response + ":" + elapsedTime + ":" + answerChoiceId + ":" + mSeq + ":" + studentMarked;
+                Object priorResponse = SimpleCache.checkCache(TMS_PER_INSTANCE_DUPE_CHECK, cacheArg, String.valueOf(testRosterId));
+                if(priorResponse.equals(null)) {
+                	saver.storeResponseWithMseq(testRosterId, itemSetId, itemId, response, elapsedTime, answerChoiceId, mSeq, studentMarked);
+                	SimpleCache.cacheResult(TMS_PER_INSTANCE_DUPE_CHECK, cacheArg, cacheArg, String.valueOf(testRosterId));
+                } else {
+                	OASLogger.getLogger("TestDelivery").info("Found duplicate message in per-instance cache for testRosterId=" + testRosterId + " mSeq=" + mSeq);
+                }
+            } else {
                 saver.storeResponseSTG(testRosterId, itemSetId, itemId, response, elapsedTime, answerChoiceId);
+            }
         } catch (SQLException se) {
         	if(se.getMessage().indexOf("unique constraint (OAS.XAK1ITEM_RESPONSE) violated") >= 0) {
         		// this is a duplicate message, ignore it
-        		OASLogger.getLogger("TestDelivery").error("Duplicate message in storeResponse() with testRosterId="+testRosterId
+        		OASLogger.getLogger("TestDelivery").warning("Duplicate message in storeResponse() with testRosterId="+testRosterId
                         +" itemSetId="+itemSetId+" itemId="+itemId+" response="+response+" elapsedTime="+elapsedTime
                         +" answerChoiceId="+answerChoiceId+" mSeq="+mSeq+" studentMarked="+studentMarked);
         	} else {

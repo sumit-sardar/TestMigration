@@ -39,6 +39,9 @@ public class SimpleCache {
 	}
 	
 	public static void cacheResult(String cacheType, String cacheArg, Object result, String userId) {
+		if(cacheMap.size() > MAX_USER_CACHE_SIZE) {
+			clearCache();
+		}
 		HashMap userCacheMap = (HashMap) cacheMap.get(userId);
 		ArrayList userCacheAge = (ArrayList) cacheAge.get(userId);
 		if (result instanceof ArrayList ) result = ((ArrayList) result).clone();
@@ -63,6 +66,15 @@ public class SimpleCache {
 		userCacheMap.put(key, result);
 	}
 	
+	private static void clearCache() {
+		HashMap userCacheMap = (HashMap) cacheMap.get(CONTENT_USER_ID);
+		ArrayList userCacheAge = (ArrayList) cacheAge.get(CONTENT_USER_ID);
+		cacheMap.clear();
+		cacheAge.clear();
+		cacheMap.put(CONTENT_USER_ID, userCacheMap);
+		cacheAge.put(CONTENT_USER_ID, userCacheAge);
+	}
+
 	public static void clearUserCache(String userId) {
 		cacheMap.remove(userId);
 		cacheAge.remove(userId);
