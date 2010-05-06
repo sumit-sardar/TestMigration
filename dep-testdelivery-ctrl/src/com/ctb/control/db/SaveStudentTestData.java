@@ -1,13 +1,15 @@
 package com.ctb.control.db; 
 
-import com.bea.control.*;
+import java.sql.SQLException;
+import java.util.Date;
+
+import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
+
+import com.ctb.bean.testDelivery.login.ItemResponseData;
 import com.ctb.bean.testDelivery.studentTestData.RosterSubtestFeedback;
 import com.ctb.bean.testDelivery.studentTestData.RosterSubtestStatus;
 import com.ctb.bean.testDelivery.studentTestData.StudentTutorialStatus;
-import java.util.Date; 
-import java.sql.SQLException; 
-import org.apache.beehive.controls.api.bean.ControlExtension;
 
 /** 
  * Defines a new database control. 
@@ -26,6 +28,19 @@ public interface SaveStudentTestData extends JdbcControl
 { 
 
     static final long serialVersionUID = 1L;
+    
+    /**
+     * @jc:sql statement::
+     *  select
+     *         ir.*
+     *  from
+     *      item_response ir
+     *  where
+     *       ir.test_roster_id = {testRosterId}
+     *       and ir.response_seq_num = {responseSeqNum}::
+     */
+    @JdbcControl.SQL(statement = "select  test_roster.test_completion_status from  test_roster where  test_roster.test_roster_id = {testRosterId}")
+    ItemResponseData getItemResponseForRosterAndMseq(int testRosterId, int responseSeqNum) throws SQLException;
     
     /**
      * @jc:sql statement::
