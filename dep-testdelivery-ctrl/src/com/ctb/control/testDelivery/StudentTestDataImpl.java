@@ -390,6 +390,7 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
             } catch (InvalidMseqException ime) {
                 handleError(tsd, saveResponse.getTsdArray(0), Status.INVALID_MSEQ, "invalid_mseq");
             } catch (Exception tde) {
+            	tde.printStackTrace();
                 handleError(tsd, saveResponse.getTsdArray(0), Status.OTHER_ERROR, "other_error");
             }
             OASLogger.getLogger("TestDelivery").debug(saveResponse.getTsdArray(0).toString());
@@ -552,6 +553,7 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                 istArray[i].setRvArray(new Rv[0]);
         }
         errorTsd.getError().setErrorElement(requestTsd.toString());
+        OASLogger.getLogger("TestDelivery").info("TMS error: " + message);
     }
     
     
