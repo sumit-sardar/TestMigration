@@ -39,7 +39,7 @@ public interface SaveStudentTestData extends JdbcControl
      *       ir.test_roster_id = {testRosterId}
      *       and ir.response_seq_num = {responseSeqNum}::
      */
-    @JdbcControl.SQL(statement = "select  test_roster.test_completion_status from  test_roster where  test_roster.test_roster_id = {testRosterId}")
+    @JdbcControl.SQL(statement = "select ir.item_id as itemId, ir.response as response, ir.response_elapsed_time as responseElapsedTime from item_response ir where ir.test_roster_id = {testRosterId} and ir.response_seq_num = {responseSeqNum}")
     ItemResponseData getItemResponseForRosterAndMseq(int testRosterId, int responseSeqNum) throws SQLException;
     
     /**
