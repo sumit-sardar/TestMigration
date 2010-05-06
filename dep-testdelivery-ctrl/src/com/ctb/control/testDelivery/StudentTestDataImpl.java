@@ -351,7 +351,7 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                 //ISTEP2010CR001 : For to save value of tts speed
                 if (ttsSpeedValue != null && !ttsSpeedValue.trim().equals("")) {                    
                     
-                    String cachettsSpeedValue = (String) SimpleCache.checkCache(CACHE_TYPE_SPEECH, ""+testRosterId);
+                    String cachettsSpeedValue = (String) SimpleCache.checkCache(CACHE_TYPE_SPEECH, ""+testRosterId, ""+testRosterId);
                             
                     if (cachettsSpeedValue != null ) {
                         
@@ -367,7 +367,7 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                                         testRosterId),ttsSpeedValue);                        
                     }
                 
-                    SimpleCache.cacheResult(CACHE_TYPE_SPEECH, "" + testRosterId, ttsSpeedValue);
+                    SimpleCache.cacheResult(CACHE_TYPE_SPEECH, "" + testRosterId, ttsSpeedValue, ""+testRosterId);
                                 OASLogger.getLogger("TestDelivery").debug("******* save to cache "+
                                         CACHE_TYPE_SPEECH+testRosterId);                                                  
                   
