@@ -327,8 +327,7 @@ public class CTBController extends PageFlowController
 
     
     private Forward handleTMSRequest(TestForm test) {
-    	System.out.println("Enterin");
-        String requestXML = null;
+    	String requestXML = null;
         try {
             // pull XML off of request
            requestXML = this.getRequest().getParameter("RequestXML");
