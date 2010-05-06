@@ -1087,11 +1087,18 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
             else
                 saver.storeResponseSTG(testRosterId, itemSetId, itemId, response, elapsedTime, answerChoiceId);
         } catch (SQLException se) {
-            OASLogger.getLogger("TestDelivery").error("Exception caught in storeResponse() with testRosterId="+testRosterId
-                +" itemSetId="+itemSetId+" itemId="+itemId+" response="+response+" elapsedTime="+elapsedTime
-                +" answerChoiceId="+answerChoiceId+" mSeq="+mSeq+" studentMarked="+studentMarked);
-            se.printStackTrace();
-            throw new InvalidItemResponseException();
+        	if(se.getMessage().indexOf("unique constraint (OAS.XAK1ITEM_RESPONSE) violated") >= 0) {
+        		// this is a duplicate message, ignore it
+        		OASLogger.getLogger("TestDelivery").error("Duplicate message in storeResponse() with testRosterId="+testRosterId
+                        +" itemSetId="+itemSetId+" itemId="+itemId+" response="+response+" elapsedTime="+elapsedTime
+                        +" answerChoiceId="+answerChoiceId+" mSeq="+mSeq+" studentMarked="+studentMarked);
+        	} else {
+	            OASLogger.getLogger("TestDelivery").error("Exception caught in storeResponse() with testRosterId="+testRosterId
+	                +" itemSetId="+itemSetId+" itemId="+itemId+" response="+response+" elapsedTime="+elapsedTime
+	                +" answerChoiceId="+answerChoiceId+" mSeq="+mSeq+" studentMarked="+studentMarked);
+	            se.printStackTrace();
+	            throw new InvalidItemResponseException();
+        	}
         }
     }
     
