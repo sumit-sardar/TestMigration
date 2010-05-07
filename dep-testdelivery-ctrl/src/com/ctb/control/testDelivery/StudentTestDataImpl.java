@@ -699,7 +699,8 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
     }
     
     private void processItemResponseEvents(String testRosterId, RosterSubtestStatus [] statusList, String itemSetId, Ist [] ista, int mSeq, int cid, boolean isCTB) throws InvalidTestRosterIdException, InvalidItemSetIdException, InvalidItemResponseException, InvalidSubtestEventException, InvalidCorrelationIdException {
-        if(ista != null && ista.length > 0) {
+        String cacheArg = null;
+    	if(ista != null && ista.length > 0) {
             if(isCTB) {
                 //validate correlation
                 Integer cidInRoster = saver.getCorrelationIdForRoster(Integer.valueOf(testRosterId));
@@ -761,12 +762,11 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                             }
                             if(responseType.equals(BaseType.IDENTIFIER)) {
                                 storeResponse(Integer.parseInt(testRosterId), Integer.parseInt(itemSetId), ist.getIid(), response, ist.getDur(), null, mSeq, isCTB, studentMarked);
+                                cacheArg = testRosterId + ":" + itemSetId + ":" + ist.getIid() + ":" + response + ":" + ist.getDur() + ":" + null + ":" + mSeq + ":" + studentMarked;
                             } else if(responseType.equals(BaseType.STRING)) {
                                 storeCRResponse(Integer.parseInt(testRosterId), Integer.parseInt(itemSetId), ist.getIid(), response, ist.getDur(), null, mSeq, isCTB, studentMarked);
+                                cacheArg = testRosterId + ":" + itemSetId + ":" + ist.getIid() + ":" + null + ":" + ist.getDur() + ":" + null + ":" + mSeq + ":" + studentMarked;
                             }
-        //                    if(isCTB) {
-        //                        saver.updateTestRosterTimeStampWithMseq(Integer.parseInt(testRosterId), new Date(), mSeq);
-        //                    }
                          }
                     }else{ 
                         String response = "";                   
@@ -795,10 +795,14 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                             }
                         }
                     }
-                    if(sp != null) {
-                    	storeScratchpadContent(Integer.parseInt(testRosterId), 
-                                                Integer.parseInt(itemSetId), 
-                                                sp);
+                    if(sp != null && !"".equals(sp.trim())) {
+                    	Object priorResponse = null;
+                        if(cacheArg != null) {
+                        	priorResponse = SimpleCache.checkCache(TMS_PER_INSTANCE_DUPE_CHECK, cacheArg, testRosterId); 
+                        }
+                        if(priorResponse == null) {
+                        	storeScratchpadContent(Integer.parseInt(testRosterId), Integer.parseInt(itemSetId), sp);
+                        }
                     }
 
                 }
