@@ -66,6 +66,7 @@ import com.ctb.util.testDelivery.TabeLocatorUtils;
 public class StudentTestDataImpl implements StudentTestData, Serializable
 { 
 	private static final String TMS_PER_INSTANCE_DUPE_CHECK = "TMS_PER_INSTANCE_DUPE_CHECK";
+	private static final String TMS_PER_INSTANCE_SP_CHECK = "TMS_PER_INSTANCE_SP_CHECK";
     /**
      * @common:control
      */
@@ -798,10 +799,11 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                     if(sp != null && !"".equals(sp.trim())) {
                     	Object priorResponse = null;
                         if(cacheArg != null) {
-                        	priorResponse = SimpleCache.checkCache(TMS_PER_INSTANCE_DUPE_CHECK, cacheArg, testRosterId); 
+                        	priorResponse = SimpleCache.checkCache(TMS_PER_INSTANCE_SP_CHECK, cacheArg, testRosterId); 
                         }
                         if(priorResponse == null) {
                         	storeScratchpadContent(Integer.parseInt(testRosterId), Integer.parseInt(itemSetId), sp);
+                        	SimpleCache.cacheResult(TMS_PER_INSTANCE_SP_CHECK, cacheArg, cacheArg, testRosterId);
                         }
                     }
 
