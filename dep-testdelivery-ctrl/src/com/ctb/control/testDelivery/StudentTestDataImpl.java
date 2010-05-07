@@ -341,11 +341,13 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                         nextSco.setId(""+nextSubtestId);
                     }
                 } else {
-                	/*if(!duplicateResponseExists(Integer.valueOf(testRosterId).intValue(), tsd.getMseq().intValue(), tsd.getIstArray())) {
-                    	OASLogger.getLogger("TestDelivery").error("ignoring message from lms queue, this mseq: " + tsd.getMseq().intValue() + " is less than last mseq: " + lastMseq);
-                    	throw new InvalidMseqException();   
-                    }*/
-                	OASLogger.getLogger("TestDelivery").info("ignoring message from lms queue, this mseq: " + tsd.getMseq().intValue() + " is less than last mseq: " + lastMseq);
+                	OASLogger.getLogger("TestDelivery").info("Out of sequence message from lms queue, this mseq: " + tsd.getMseq().intValue() + " is less than last mseq: " + lastMseq);
+                	Ist [] ista = tsd.getIstArray();
+                	if(ista != null && ista.length > 0) {
+                		OASLogger.getLogger("TestDelivery").info("Handling out of sequence item response message for roster: " + testRosterId);
+                		if (tsd.getCid() == null) throw new MissingCorrelationIdException();
+                		processItemResponseEvents(testRosterId, statusList, itemSetId, tsd.getIstArray(), mSeq, tsd.getCid().intValue(), true);
+                	}	
                 }
                 
                 //ISTEP2010CR001 : For to save value of tts speed
@@ -793,9 +795,11 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                             }
                         }
                     }
-                    storeScratchpadContent(Integer.parseInt(testRosterId), 
+                    if(sp != null) {
+                    	storeScratchpadContent(Integer.parseInt(testRosterId), 
                                                 Integer.parseInt(itemSetId), 
                                                 sp);
+                    }
 
                 }
             }
