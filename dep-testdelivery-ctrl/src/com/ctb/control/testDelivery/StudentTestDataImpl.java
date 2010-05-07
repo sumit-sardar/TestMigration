@@ -951,19 +951,16 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
     }
     
     private int getNextSubtestId(int testRosterId, int itemSetId, String accessCode) throws SQLException {
-            ManifestData [] manifestData = authenticator.getManifest(testRosterId, accessCode);
-            for (int i = 0; i<manifestData.length; i++) {
-                if (manifestData[i].getId() == itemSetId) {
-                	int j = i+1;
-                    while(j < manifestData.length){
-	                	if(!"CO".equals(manifestData[j].getCompletionStatus()))
-		                        return manifestData[j].getId();
-	                	j++;
-                	}
+        ManifestData [] manifestData = authenticator.getManifest(testRosterId, accessCode);
+        for (int i = 0; i<manifestData.length; i++) {
+            if (manifestData[i].getId() == itemSetId) {
+                if (i+1 < manifestData.length) 
+                    return manifestData[i+1].getId();
+                else
                     return -1;
-                }
             }
-            return -1;
+        }
+        return -1;
     }
     
     
