@@ -30,7 +30,7 @@ public class Message implements java.io.Serializable
     public static final String INVALID_FRAMEWORK_CHARS = "Please re-enter your string with these characters:  #, /, \\, -, ', (, ), &, +, comma, period, space";
     
     // Information on Organization
-    public static final String INVALID_NAME_CHARS_ORG  = "Please re-enter your information with these characters: A-Z, a-z, 0-9, /, \\, -, ', (, ), &, +, comma, period, space"; 
+    public static final String INVALID_NAME_CHARS_ORG  = "Please re-enter your information with these characters: A-Z, a-z, 0-9, /, \\, -, _, ', (, ), &, +, comma, period, space"; 
     
     public static final String ADD_TITLE      = "Add Organization";
     public static final String ADD_SUCCESSFUL = "New organization has been successfully added.";
