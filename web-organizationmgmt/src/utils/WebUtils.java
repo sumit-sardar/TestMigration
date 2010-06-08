@@ -99,6 +99,27 @@ public class WebUtils
         return (zero_nine || A_Z || a_z || validChar);
     }
     
+    public static boolean validStudentNameCharacter(char ch) {
+        boolean A_Z = ((ch >= 65) && (ch <= 90));
+        boolean a_z = ((ch >= 97) && (ch <= 122));
+        boolean zero_nine = ((ch >= 48) && (ch <= 57));
+         // !, @, #, -, _, ', :, /, comma, period, and space will be allowed in these fields.
+        boolean validChar = ((ch == '/') ||
+                             (ch == '\\') ||
+                             (ch == '-') ||
+                             (ch == '_') ||
+                             (ch == '\'') ||
+                             (ch == '(') ||
+                             (ch == ')') ||
+                             (ch == '&') ||
+                             (ch == '+') ||
+                             (ch == ',') ||
+                             (ch == '.') ||
+                             (ch == ' '));
+         
+        return (zero_nine || A_Z || a_z || validChar);
+    }
+    
      public static boolean validCharacterForLic(char ch) {
        
         boolean zero_nine = ((ch >= 48) && (ch <= 57));
@@ -207,6 +228,23 @@ public class WebUtils
             char character = characters[i];
             
             if ( ! validNameCharacter(character) ) {
+            
+                return false;
+                
+            }
+                           
+        }
+        
+        return !requestHasInvalidParameters(str);
+    }
+    
+    public static boolean validStudentNameString(String str) {   
+        str = str.trim();
+        char[] characters = str.toCharArray();
+        for ( int i=0 ; i<characters.length ; i++ ) {
+            char character = characters[i];
+            
+            if ( ! validStudentNameCharacter(character) ) {
             
                 return false;
                 

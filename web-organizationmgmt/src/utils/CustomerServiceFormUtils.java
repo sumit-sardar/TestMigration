@@ -103,7 +103,7 @@ public class CustomerServiceFormUtils {
 			studentLoginId = form.getStudentProfile()!= null && form.getStudentProfile().getStudentLoginId() != null ?  form.getStudentProfile().getStudentLoginId().trim() : null;
 			testAccessCode =  form.getTestAccessCode() != null? form.getTestAccessCode().trim() : null;
 
-			if (studentLoginId != null && ! WebUtils.validNameString(studentLoginId)) {
+			if (studentLoginId != null && ! WebUtils.validStudentNameString(studentLoginId)) {
 				invalidCharFieldCount += 1;            
 				invalidCharFields = buildErrorString(Message.STUDENT_LOGIN_ID, invalidCharFieldCount, invalidCharFields);       
 			}
