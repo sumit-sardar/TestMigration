@@ -964,10 +964,13 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
         ManifestData [] manifestData = authenticator.getManifest(testRosterId, accessCode);
         for (int i = 0; i<manifestData.length; i++) {
             if (manifestData[i].getId() == itemSetId) {
-                if (i+1 < manifestData.length) 
-                    return manifestData[i+1].getId();
-                else
-                    return -1;
+            	int j = i+1;
+                while(j < manifestData.length){
+                	if(!"CO".equals(manifestData[j].getCompletionStatus()))
+	                        return manifestData[j].getId();
+                	j++;
+            	}
+                return -1;
             }
         }
         return -1;
