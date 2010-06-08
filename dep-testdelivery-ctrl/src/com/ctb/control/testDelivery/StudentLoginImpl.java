@@ -638,39 +638,68 @@ public class StudentLoginImpl implements StudentLogin, Serializable
     private void copyManifestDataToResponse(LoginResponse response, ManifestData [] manifestData, int testRosterId, int testAdminId, String accessCode) throws SQLException {
         response.addNewManifest();
         Manifest manifest = response.getManifest();
+        String isUltimateAccessCode = authenticator.isUltimateAccessCode(new Integer(testRosterId), new Integer(testAdminId), accessCode);
+        
+        if(response.getRestartFlag()) {
+	        ArrayList a = new ArrayList();
+	        for(int i=0;i<manifestData.length;i++) {
+	        	ManifestData data = manifestData[i];
+	        	if(Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(data.getCompletionStatus())){
+	        		continue;
+	        	}else{
+	        		a.add(data);
+	        	}
+	        }
+	        
+	        manifestData = new ManifestData[a.size()];
+	        a.toArray(manifestData);
+	       // manifestData = (ManifestData [])a.toArray();
+        }
+        
         for(int i=0;i<manifestData.length;i++) {
-            ManifestData data = manifestData[i];
-            manifest.setTitle(data.getTestTitle());
-            manifest.addNewSco();
-            Sco sco = manifest.getScoArray(i);
-            if(data.getAdminForceLogout().equals("T") &&
-                ((i >= manifestData.length - 1) || (data.getScoParentId() != manifestData[i+1].getScoParentId()))) {
-                sco.setForceLogout(true);
-            } else {
-                sco.setForceLogout(false);
-            }
-            if(data.getTotalTime() > 0) {
-                sco.setCmiCoreEntry(EntryType.RESUME);
-            } else {
-                sco.setCmiCoreEntry(EntryType.AB_INITIO);
-            }
-            sco.setId(String.valueOf(data.getId()));
-            sco.setScoDurationMinutes(new BigInteger(String.valueOf(data.getScoDurationMinutes())));
-            // scoUnitQuestionNumberOffset will be used to control multi-part subtest numbering
-            sco.setScoUnitQuestionNumberOffset(String.valueOf(0));
-            sco.setScoUnitType(ScoUnitType.SUBTEST);
-            sco.setTitle(data.getTitle());
-            sco.setAsmtHash(data.getAsmtHash());
-            sco.setAsmtEncryptionKey(data.getAsmtEncryptionKey());
-            sco.setItemEncryptionKey(data.getItemEncryptionKey());
-            sco.setAdsid(data.getAdsid());
-            int hours = (int) Math.floor(data.getTotalTime() / 3600);
-            int minutes = (int) Math.floor((data.getTotalTime() - (hours * 3600)) / 60);
-            int seconds = data.getTotalTime() - (hours * 3600) - (minutes * 60);
-            sco.setCmiCoreTotalTime(hours + ":" + minutes + ":" + seconds);
+        	ManifestData data = manifestData[i];
+        /*	if(response.getRestartFlag() && "T".equals(isUltimateAccessCode) 
+        				&& Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(data.getCompletionStatus())){
+	            System.out.println("***** In If");
+	            System.out.println("RestartFlag: "+response.getRestartFlag()+", isUltimateAccessCode: "
+	            			+isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
+        		continue;
+        	}else{*/
+        		System.out.println("***** In Else");
+        		System.out.println("RestartFlag: "+response.getRestartFlag()+", isUltimateAccessCode: "
+	            			+isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
+        		manifest.setTitle(data.getTestTitle());
+	            manifest.addNewSco();
+	            Sco sco = manifest.getScoArray(i);
+	            if(data.getAdminForceLogout().equals("T") &&
+	                ((i >= manifestData.length - 1) || (data.getScoParentId() != manifestData[i+1].getScoParentId()))) {
+	                sco.setForceLogout(true);
+	            } else {
+	                sco.setForceLogout(false);
+	            }
+	            if(data.getTotalTime() > 0) {
+	                sco.setCmiCoreEntry(EntryType.RESUME);
+	            } else {
+	                sco.setCmiCoreEntry(EntryType.AB_INITIO);
+	            }
+	            sco.setId(String.valueOf(data.getId()));
+	            sco.setScoDurationMinutes(new BigInteger(String.valueOf(data.getScoDurationMinutes())));
+	            // scoUnitQuestionNumberOffset will be used to control multi-part subtest numbering
+	            sco.setScoUnitQuestionNumberOffset(String.valueOf(0));
+	            sco.setScoUnitType(ScoUnitType.SUBTEST);
+	            sco.setTitle(data.getTitle());
+	            sco.setAsmtHash(data.getAsmtHash());
+	            sco.setAsmtEncryptionKey(data.getAsmtEncryptionKey());
+	            sco.setItemEncryptionKey(data.getItemEncryptionKey());
+	            sco.setAdsid(data.getAdsid());
+	            int hours = (int) Math.floor(data.getTotalTime() / 3600);
+	            int minutes = (int) Math.floor((data.getTotalTime() - (hours * 3600)) / 60);
+	            int seconds = data.getTotalTime() - (hours * 3600) - (minutes * 60);
+	            sco.setCmiCoreTotalTime(hours + ":" + minutes + ":" + seconds);
+        	//}
         }
         //AuthenticateStudent authenticator = authenticatorFactory.create();
-        if("T".equals(authenticator.isUltimateAccessCode(new Integer(testRosterId), new Integer(testAdminId), accessCode))) {
+        if("T".equals(isUltimateAccessCode)) {
             if(manifestData.length > 0 && "T".equals(manifestData[0].getShowStudentFeedback())) {
                 manifest.addNewFeedback();
                 manifest.getFeedback().setId("STUDENT_FEEDBACK");
