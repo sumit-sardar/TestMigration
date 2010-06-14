@@ -74,7 +74,7 @@ public class CustomerServiceFormUtils {
 		String invalidString = "";                        
 		if ( invalidCharFields.length() > 0 ) {
 
-			invalidString = invalidCharFields + ("<br/>" + Message.INVALID_NAME_CHARS_ORG);
+			invalidString = invalidCharFields + ("<br/>" + Message.INVALID_NAME_CHARS_STUDENT);
 
 		}																									   
 
