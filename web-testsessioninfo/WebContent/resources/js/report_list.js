@@ -14,19 +14,19 @@ function getReportList()
     var url = "/TestSessionInfoWeb/homepage/getReportList.do";    
     
     var programIndex = 0;
-    var programControl = document.getElementById("wlw-select_key:{request.program}");  
+    var programControl = getSafeElement("wlw-select_key:{requestScope.program}");          
     if (programControl != null) 
         programIndex = programControl.options.selectedIndex;         
 
     var organizationIndex = 0;
-    var orgControl = document.getElementById("wlw-select_key:{request.organization}");    
+    var orgControl = getSafeElement("wlw-select_key:{requestScope.organization}");        
     if (orgControl != null)
         organizationIndex = orgControl.options.selectedIndex;
 
     var callback = processgetReportList;
     executeXhr(callback, url, programIndex, organizationIndex);
 }
-
+ 
 
 /**
  * processgetReportList

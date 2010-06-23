@@ -748,11 +748,13 @@ public class HomePageController extends PageFlowController
         }
         
         String selectedReport = (String)this.getRequest().getParameter("report");
+        
         Integer programId = this.reportManager.getSelectedProgramId();
         Integer orgNodeId = this.reportManager.getSelectedOrganizationId();
 
         List reportList = buildReportList(orgNodeId, programId);
         String reportUrl = buildReportUrl(selectedReport, reportList);        
+        
         
         this.getRequest().setAttribute("reportList", reportList);
         this.getRequest().setAttribute("selectedReport", selectedReport);
@@ -790,6 +792,8 @@ public class HomePageController extends PageFlowController
         Integer programId = this.reportManager.setSelectedProgram(programIndex);
         Integer orgNodeId = this.reportManager.setSelectedOrganization(organizationIndex);
         
+        System.out.println(" #####  programId = " + programId + "       orgNodeId = " + orgNodeId);
+        
         List reportList = buildReportList(orgNodeId, programId);
 
         this.getRequest().setAttribute("reportList", reportList);
@@ -803,6 +807,7 @@ public class HomePageController extends PageFlowController
      */
     private List buildReportList(Integer orgNodeId, Integer programId)
     {
+    	
         this.customerReportData = getCustomerReportData(orgNodeId, programId);
         
         List reportList = new ArrayList();
@@ -813,7 +818,7 @@ public class HomePageController extends PageFlowController
             CustomerReport cr = crs[i];
             if (! cr.getReportName().equals("IndividualProfile"))
             {
-                reportList.add(cr);
+            	reportList.add(cr);
             }
         }           
                          

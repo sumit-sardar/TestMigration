@@ -24,6 +24,8 @@
     String selectedReport = (String)request.getAttribute("selectedReport");
     String reportUrl = (String)request.getAttribute("reportUrl");
     String testAdminId = (String)request.getAttribute("testAdminId");
+    
+    System.out.println("reportUrl = " + reportUrl + "       selectedReport = " + selectedReport);    
 %>
 
 

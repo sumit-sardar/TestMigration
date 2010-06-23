@@ -1,8 +1,9 @@
 package com.ctb.testSessionInfo.dto; 
 
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
+import com.ctb.util.web.sanitizer.SanitizedFormField;
 
-public class TestStatusFilter implements java.io.Serializable  
+public class TestStatusFilter extends SanitizedFormField  
 { 
     static final long serialVersionUID = 1L;
 
