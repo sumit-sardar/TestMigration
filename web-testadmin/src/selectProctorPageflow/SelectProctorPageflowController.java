@@ -231,9 +231,15 @@ public class SelectProctorPageflowController extends PageFlowController
         }
         else { 
             UserData ud = this.getProctors(form.getSelectedOrgNodeId(), filter, page, sort);
-            proctorNodes = this.buildProctorList(ud);        
-            form.getProctorStatePathList().setMaxPageRequested(ud.getFilteredPages());
-            PagerSummary proctorPagerSummary = buildProctorPagerSummary(ud, form.getProctorStatePathList().getPageRequested());        
+            proctorNodes = this.buildProctorList(ud); 
+            // START : 63093  Deferred defect fix.
+            if(ud.getFilteredPages().intValue() == 0){
+            	form.getProctorStatePathList().setMaxPageRequested(1);
+            } else {
+            	form.getProctorStatePathList().setMaxPageRequested(ud.getFilteredPages());
+            }
+            //END : 63093  Deferred defect fix.
+            PagerSummary proctorPagerSummary = buildProctorPagerSummary(ud, form.getProctorStatePathList().getPageRequested());
             this.getRequest().setAttribute("proctorPagerSummary", proctorPagerSummary);
         }        
         this.getRequest().setAttribute("proctorNodes", proctorNodes);        
