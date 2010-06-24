@@ -122,7 +122,7 @@ public class Message implements java.io.Serializable
 	 * User can't be associated with different organizations across different customers
 	*/
     public static final String USER_CREATION_TITLE = "User Information Error";
-    public static final String USER_CREATION_ERROR = "A user cannot be associated with more than one customer account." ;
+    public static final String USER_CREATION_ERROR = "An user cannot be associated with more than one customer account." ;
     //END- Added for Deferred Defect 62758 
          
     public Message()
