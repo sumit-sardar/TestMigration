@@ -1433,8 +1433,7 @@ public class UploadStudent extends BatchProcessor.Process
               
         if (!(date == null ||  date.equals("")))
         {
-        	System.out.println("date..." + date);
-	        int month = Integer.parseInt(date.substring(0,2)) - 1;
+        	int month = Integer.parseInt(date.substring(0,2)) - 1;
 	        int day = Integer.parseInt(date.substring(3,5));
 	      	int year = Integer.parseInt(date.substring(6,10)) - 1900;
 	        
@@ -2747,13 +2746,13 @@ public class UploadStudent extends BatchProcessor.Process
        */        
        //Changes for GACRCT2010CR007 .  
                 
-                 else if(!disableMandatoryBirthdate){
+                
                 	 
-                	 if ( cellHeader.getStringCellValue().
-                        equals(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH) ) {
-                        
-                    requiredList.add(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);   
-                }      
+                 else if ( cellHeader.getStringCellValue().
+                		 equals(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH) ) {
+                		 if(!disableMandatoryBirthdate){    
+                			 requiredList.add(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);   
+                		 }      
                  }
                         
       /*      }
