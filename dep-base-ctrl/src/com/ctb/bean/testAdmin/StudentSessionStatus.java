@@ -27,7 +27,18 @@ public class StudentSessionStatus extends CTBBean
     private Integer unscored;	
     private String recommendedLevel;
     private String customerFlagStatus;
-    	
+    private String itemSetName;
+    private String totalItem;
+    private String itemAnswered;
+    private String timeSpent;
+    private String studentName;
+    private String studentLoginName;
+    private String externalStudentId;
+    private Integer studentId;
+    private String org_name;
+	private String testAccessCode;
+	private Integer orgNodeId;
+    
     
     /**
 	 * @return Returns the maxScore.
@@ -41,6 +52,55 @@ public class StudentSessionStatus extends CTBBean
 	public void setMaxScore(Integer maxScore) {
 		this.maxScore = maxScore;
 	}
+	/**
+	 * @return Returns the itemSetName.
+	 */  
+	public String getItemSetName() {
+		return itemSetName;
+	}
+	/**
+	 * @param itemSetName The itemSetName to set.
+	 */
+	public void setItemSetName(String itemSetName) {
+		this.itemSetName = itemSetName;
+	}
+	/**
+	 * @return Returns the itemAnswered.
+	 */  
+	public String getTotalItem() {
+		return totalItem;
+	}
+	/**
+	 * @param itemAnswered The itemAnswered to set.
+	 */
+	public void setTotalItem(String totalItem) {
+		this.totalItem = totalItem;
+	}
+	/**
+	 * @return Returns the itemAnswered.
+	 */  
+	public String getItemAnswered() {
+		return itemAnswered;
+	}
+	/**
+	 * @param itemAnswered The itemAnswered to set.
+	 */
+	public void setItemAnswered(String itemAnswered) {
+		this.itemAnswered = itemAnswered;
+	}
+	/**
+	 * @return Returns the itemAnswered.
+	 */  
+	public String getTimeSpent() {
+		return timeSpent;
+	}
+	/**
+	 * @param timeSpent The timeSpent to set.
+	 */
+	public void setTimeSpent(String timeSpent) {
+		this.timeSpent = timeSpent;
+	}
+	
 	/**
 	 * @return Returns the rawScore.
 	 */
@@ -221,5 +281,90 @@ public class StudentSessionStatus extends CTBBean
     public void setCustomerFlagStatus(String customerFlagStatus) {
             this.customerFlagStatus = customerFlagStatus;
     }
+	/**
+	 * @return the studentName
+	 */
+	public String getStudentName() {
+		return studentName;
+	}
+	/**
+	 * @param studentName the studentName to set
+	 */
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+	/**
+	 * @return the studentLoginName
+	 */
+	public String getStudentLoginName() {
+		return studentLoginName;
+	}
+	/**
+	 * @param studentLoginName the studentLoginName to set
+	 */
+	public void setStudentLoginName(String studentLoginName) {
+		this.studentLoginName = studentLoginName;
+	}
+	/**
+	 * @return the org_name
+	 */
+	public String getOrg_name() {
+		return org_name;
+	}
+	/**
+	 * @param org_name the org_name to set
+	 */
+	public void setOrg_name(String org_name) {
+		this.org_name = org_name;
+	}
+	
+	/**
+	 * @return the studentId
+	 */
+	public Integer getStudentId() {
+		return studentId;
+	}
+	/**
+	 * @param studentId the studentId to set
+	 */
+	public void setStudentId(Integer studentId) {
+		this.studentId = studentId;
+	}
+	/**
+	 * @return the externalStudentId
+	 */
+	public String getExternalStudentId() {
+		return externalStudentId;
+	}
+	/**
+	 * @param externalStudentId the externalStudentId to set
+	 */
+	public void setExternalStudentId(String externalStudentId) {
+		this.externalStudentId = externalStudentId;
+	} 
+	/**
+     * @return the testAccessCode
+	 */
+	public String getTestAccessCode() {
+		return testAccessCode;
+	}
+	/**
+	 * @param testAccessCode the testAccessCode to set
+	 */
+	public void setTestAccessCode(String testAccessCode) {
+		this.testAccessCode = testAccessCode;
+	}
+	/**
+	 * @return the orgNodeId
+	 */
+	public Integer getOrgNodeId() {
+		return orgNodeId;
+	}
+	/**
+	 * @param orgNodeId the orgNodeId to set
+	 */
+	public void setOrgNodeId(Integer orgNodeId) {
+		this.orgNodeId = orgNodeId;
+	}
 
 } 

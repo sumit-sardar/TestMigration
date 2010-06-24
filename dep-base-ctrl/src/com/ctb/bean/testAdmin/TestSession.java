@@ -69,9 +69,39 @@ public class TestSession extends CTBBean
     //changes for License Management LM13
     private Integer parentProductId;
     private String licenseEnabled;
+    private Integer testRosterId; //ISTEP CR 003
+    private String scheduler;  //ISTEP CR 003
    
    
     /**
+	 * @return the scheduler
+	 */
+	public String getScheduler() {
+		return scheduler;
+	}
+
+	/**
+	 * @param scheduler the scheduler to set
+	 */
+	public void setScheduler(String scheduler) {
+		this.scheduler = scheduler;
+	}
+
+	/**
+	 * @return the testRosterId
+	 */
+	public Integer getTestRosterId() {
+		return testRosterId;
+	}
+
+	/**
+	 * @param testRosterId the testRosterId to set
+	 */
+	public void setTestRosterId(Integer testRosterId) {
+		this.testRosterId = testRosterId;
+	}
+
+	/**
 	 * @return Returns the LicenseEnabled.
 	 */
     
