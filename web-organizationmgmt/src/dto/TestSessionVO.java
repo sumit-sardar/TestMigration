@@ -24,6 +24,10 @@ public class TestSessionVO implements java.io.Serializable
     private String creatorOrgNodeCategoryName = null;
     private String testAdminStatus = null;
     private String showStudentFeedback = null;
+    private String scheduler = null;//added for cr 003
+    private Integer testRosterId = null;
+    private Integer customerId = null;
+    private Integer creatorOrgNodeId = null;
     
     public TestSessionVO() {
     }    
@@ -40,6 +44,10 @@ public class TestSessionVO implements java.io.Serializable
         this.creatorOrgNodeCategoryName = ts.getCreatorOrgNodeCategoryName();
         this.testAdminStatus = ts.getTestAdminStatus();
         this.showStudentFeedback = ts.getShowStudentFeedback();
+        this.scheduler = ts.getScheduler();
+        this.testRosterId = ts.getTestRosterId();
+        this.customerId = ts.getCustomerId();
+        this.creatorOrgNodeId = ts.getCreatorOrgNodeId();
     }     
     public String getAccessCode() {
         return this.accessCode;
@@ -118,5 +126,53 @@ public class TestSessionVO implements java.io.Serializable
     }
     public void setShowStudentFeedback(String showStudentFeedback) {
         this.showStudentFeedback = showStudentFeedback;
-    }                
+    }
+	public String getScheduler() {
+		return scheduler;
+	}
+	public void setScheduler(String scheduler) {
+		this.scheduler = scheduler;
+	}
+	/**
+	 * @return the testRosterId
+	 */
+	public Integer getTestRosterId() {
+		return testRosterId;
+	}
+	/**
+	 * @param testRosterId the testRosterId to set
+	 */
+	public void setTestRosterId(Integer testRosterId) {
+		this.testRosterId = testRosterId;
+	}
+	/**
+	 * @return the customerId
+	 */
+	public Integer getCustomerId() {
+		return customerId;
+	}
+	/**
+	 * @param customerId the customerId to set
+	 */
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
+	}
+	/**
+	 * @param testAdminId the testAdminId to set
+	 */
+	public void setTestAdminId(Integer testAdminId) {
+		this.testAdminId = testAdminId;
+	}
+	/**
+	 * @return the creatorOrgNodeId
+	 */
+	public Integer getCreatorOrgNodeId() {
+		return creatorOrgNodeId;
+	}
+	/**
+	 * @param creatorOrgNodeId the creatorOrgNodeId to set
+	 */
+	public void setCreatorOrgNodeId(Integer creatorOrgNodeId) {
+		this.creatorOrgNodeId = creatorOrgNodeId;
+	}                
 } 

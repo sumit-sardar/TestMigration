@@ -61,6 +61,14 @@
 </ctb:auth>
 
 
+<ctb:auth roles="root, Account Manager">
+<h1>Tests</h1>
+<ul>
+    <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf" onclick="return verifyExitAddOrganization();"><span>Reset Test Session</span></a></li>
+</ul>
+</ctb:auth>
+
+
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
 <h1>Workstation Setup</h1>
 <ul>
@@ -68,6 +76,7 @@
     <li><a href="/TestSessionInfoWeb/downloadtest/DownloadTestController.jpf" onclick="return verifyExitAddOrganization();"><span>Download Test</span></a></li>
 </ul>
 </ctb:auth>
+
 
 
 

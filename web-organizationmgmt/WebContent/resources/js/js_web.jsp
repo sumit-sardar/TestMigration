@@ -106,7 +106,8 @@ function setupStates(name) {
 }
 
 function setFocusFirstElement() { 
-    var element = document.getElementById("firstFocusId");
+
+    var element = getSafeElement("firstFocusId");
     if (element) {
         try{
             setFocus(element.value);
@@ -475,6 +476,10 @@ function verifyExitAddOrganization(){
     return confirm("Click 'OK' to quit editing organization's information. Any changes you've made will be lost.");
 }
 
+function verifyExitReopenTestSession(){
+    return confirm("Click 'OK' to quit resetting test session. Any changes you've made will be lost.");
+}
+
 function showLegend(elementId, tokens) {
     var element = document.getElementById(elementId);
     var enabled = tokens.substr(1, 1);
@@ -485,3 +490,46 @@ function showLegend(elementId, tokens) {
         element.style.display = "none";  
     }
 }
+
+function blockEventOnMaxLength(element,len) {
+	if(document.all) {
+		return element.value.length < len;
+	} else {
+		element.value = element.value.substring(0, len);
+	}
+}
+
+function limitText(limitField, limitNum) {
+	if (limitField.value.length > limitNum) {
+		limitField.value = limitField.value.substring(0, limitNum);
+	} 
+}
+
+function limitTextArea() {
+	var textArea = getSafeElement('{actionForm.requestDescription}');
+	var limitNum = 255;
+	if (textArea.value.length > limitNum) {
+		textArea.value = textArea.value.substring(0, limitNum);
+	} 
+}
+
+function checkAndTruncate(element,len) {
+
+	if (element.value.length > len) {
+
+		element.value = element.value.substring(0, len);		
+	}	
+}
+
+function hitEnter(buttonId, e) {
+	var bElement;
+	e = e || window.event;
+	if (e.keyCode == 13) {
+		
+		bElement = document.getElementById(buttonId);
+	    bElement.click();
+	    return false;
+	}
+//alert("hitEnter element, e: "+buttonId+", "+e);
+}
+

@@ -1,4 +1,5 @@
 var req;
+var EFFECTIVE_TOTAL_STUDENTS = 0;
 
 function setupButtons(url) 
 {
@@ -89,6 +90,42 @@ function enableAllButtons()
     element4.removeAttribute("disabled"); 
     var element5 = document.getElementById("manageOrg");
     element5.removeAttribute("disabled"); 
+   
+}
+
+function toggleShowButton(element,totalStudents) {
+	var showButton = document.getElementById("showDetails");
+	var eName = element.name;
+	var allElements = document.getElementsByName(eName);
+    var flag = false;
+    var remStudents = 0;
+    if(element.checked) {
+    	showButton.removeAttribute("disabled");
+    	EFFECTIVE_TOTAL_STUDENTS += 1;
+    } 
+    else {
+    	EFFECTIVE_TOTAL_STUDENTS -= 1;
+    	remStudents = totalStudents + EFFECTIVE_TOTAL_STUDENTS;
+   		flag = (remStudents > 0 ? true : false); 
+    	
+    	if(!flag) {
+    		showButton.setAttribute("disabled",true);
+    	}
+    }
+}
+
+function hasSelectedElements(allElements, flag) {
+	var selectedCount = 0;
+	var sElement = null;
+
+	for (var i = 0; i < allElements.length; i++) {
+
+		sElement = allElements[i];
+		if(sElement.checked || flag == false) {
+			selectedCount++;						
+		}
+	}
+	return selectedCount > 0;
 }
 
 function enableButton(tokens, elementId) {   

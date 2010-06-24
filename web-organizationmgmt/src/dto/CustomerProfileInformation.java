@@ -6,19 +6,18 @@ package dto;
  * CustomerProfileInformation class is used to contain Customer profile Details.
 */
 
+import utils.PermissionsUtils;
+import utils.StringUtils;
+
 import com.ctb.bean.testAdmin.Address;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfig;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.USState;
-import java.util.List;
-import java.util.StringTokenizer;
-import utils.DateUtils;
-import utils.PermissionsUtils;
-import utils.StringUtils;
+import com.ctb.util.web.sanitizer.SanitizedFormField;
 
 
-public class CustomerProfileInformation implements java.io.Serializable
+public class CustomerProfileInformation extends SanitizedFormField
 { 
     static final long serialVersionUID = 1L;
 

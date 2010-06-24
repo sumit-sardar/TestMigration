@@ -5,12 +5,14 @@ package dto;
  * Organization deals with organization Deals
  */
 
-import com.ctb.bean.testAdmin.Node;
 import manageOrganization.ManageOrganizationController.ManageOrganizationForm;
 import utils.PermissionsUtils;
 
+import com.ctb.bean.testAdmin.Node;
+import com.ctb.util.web.sanitizer.SanitizedFormField;
 
-public class Organization implements java.io.Serializable
+
+public class Organization extends SanitizedFormField
 { 
     static final long serialVersionUID = 1L;
 
