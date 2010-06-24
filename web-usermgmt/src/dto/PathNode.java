@@ -12,6 +12,12 @@ public class PathNode implements java.io.Serializable
     private String selectable = null;
     private String fullPathName = null;
     
+  
+    /* START- Added for Deferred Defect 62758 
+	 * User can't be associated with different organizations across different customers
+	*/
+    private Integer customerId = null;
+    //END- Added for Deferred Defect 62758 
     public PathNode() {}
     
     public Integer getId() {
@@ -63,5 +69,20 @@ public class PathNode implements java.io.Serializable
     public void setFullPathName(String fullPathName) {
         this.fullPathName = fullPathName;
     }
+	//START- Added for Deferred Defect 62758 
+	/**
+	 * @return the customerId
+	 */
+	public Integer getCustomerId() {
+		return customerId;
+	}
+
+	/**
+	 * @param customerId the customerId to set
+	 */
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
+	}
+	//END- Added for Deferred Defect 62758 
     
 } 

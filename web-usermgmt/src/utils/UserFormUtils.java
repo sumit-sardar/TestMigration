@@ -1,5 +1,6 @@
 package utils; 
 
+import java.util.HashMap;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.User;
 import java.util.List;
@@ -725,4 +726,40 @@ public class UserFormUtils
         return true;
     }
     
+
+    /* START- Added for Deferred Defect 62758  
+	 * User can't be associated with different organizations across different customers
+	*/
+	public static boolean verifyUserCreationPermission (ManageUserForm form,  HashMap currentOrgNodesInPathList, 
+			Integer[] currentOrgNodeIds, List selectedOrgNodes) {
+
+		String requiredFields = "";
+		for (int i = 0; i < currentOrgNodeIds.length; i++) {
+
+			Integer currentOrgNodeId = currentOrgNodeIds[i];
+
+			for (int j = 0; j < selectedOrgNodes.size(); j++) {
+
+				PathNode pathNode = (PathNode)selectedOrgNodes.get(j);
+				Integer selectedUserNodeId = pathNode.getId();
+
+				if (currentOrgNodeId.intValue() != selectedUserNodeId.intValue()  ) {
+
+					PathNode pathNodeList = (PathNode)currentOrgNodesInPathList.get(currentOrgNodeId);
+
+					if (pathNodeList != null ) {
+
+						if ( pathNodeList.getCustomerId().intValue() != pathNode.getCustomerId().intValue() ) {
+
+							requiredFields += ("<br/>" + Message.USER_CREATION_ERROR);
+							form.setMessage(Message.USER_CREATION_TITLE, requiredFields, Message.ERROR);
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+	//END- Added for Deferred Defect 62758  
 } 

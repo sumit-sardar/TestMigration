@@ -1215,6 +1215,17 @@ public class ManageUserController extends PageFlowController
             
         }
         boolean validInfo = UserFormUtils.verifyUserInformation(form, this.selectedOrgNodes, isLoggedInUser(form.getSelectedUserName()), userName, this.user);	   
+     
+        /* START- Added for Deferred Defect 62758 
+    	 *  User can't be associated with different organizations across different customers
+    	*/
+        if (validInfo) {
+            
+            validInfo = UserFormUtils.verifyUserCreationPermission(form, this.currentOrgNodesInPathList, 
+                this.currentOrgNodeIds, this.selectedOrgNodes);
+            
+         } 
+         // END- Added for Deferred Defect 62758 
         
         if (!validInfo)
         {           

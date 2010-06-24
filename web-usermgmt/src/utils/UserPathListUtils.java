@@ -280,7 +280,8 @@ public class UserPathListUtils
                     pathNode.setId(node.getOrgNodeId());   
                     pathNode.setChildrenNodeCount(node.getChildNodeCount());
                     pathNode.setCategoryName(node.getOrgNodeCategoryName());
-                    pathNode.setSelectable("true");                
+                    pathNode.setSelectable("true"); 
+                    pathNode.setCustomerId(node.getCustomerId()) ;  	// Deferred Defect 62758 : - User can not be associated with different customer            
                     nodeList.add(pathNode);
                 }
             }
@@ -499,6 +500,7 @@ public class UserPathListUtils
             PathNode node = new PathNode();
             node.setId(orgNode.getOrgNodeId());
             node.setName(orgNode.getOrgNodeName());
+            node.setCustomerId(orgNode.getCustomerId());// Deferred Defect 62758 : - User can not be associated with different customer 
             resultList.add(node);
         }        
         return resultList;

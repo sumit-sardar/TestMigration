@@ -115,7 +115,15 @@ public class Message implements java.io.Serializable
     public static final String SAVE_USER_PROFILE_EXCEPTION = "Problem occured while saving user profile informations";
     
     //password
-     public static final String CHAANGE_PASSWORD_EXCEPTION = "Problem occured while changing password";
+    public static final String CHAANGE_PASSWORD_EXCEPTION = "Problem occured while changing password";
+    
+   
+    /* START- Added for Deferred Defect 62758 
+	 * User can't be associated with different organizations across different customers
+	*/
+    public static final String USER_CREATION_TITLE = "User Creation Error";
+    public static final String USER_CREATION_ERROR = "A user cannot be associated with more than one customer account." ;
+    //END- Added for Deferred Defect 62758 
          
     public Message()
     {
