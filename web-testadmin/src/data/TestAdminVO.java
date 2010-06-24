@@ -1,11 +1,11 @@
 package data; 
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Iterator;
 
-public class TestAdminVO implements java.io.Serializable
+import com.ctb.util.web.sanitizer.SanitizedFormField;
+
+public class TestAdminVO extends SanitizedFormField
 { 
     static final long serialVersionUID = 1L;
 

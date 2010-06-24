@@ -1,17 +1,19 @@
 package dto; 
 
-import com.ctb.bean.studentManagement.ManageStudent;
-import com.ctb.bean.studentManagement.OrganizationNode;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
+
 import utils.DateUtils;
+
+import com.ctb.bean.studentManagement.ManageStudent;
+import com.ctb.bean.studentManagement.OrganizationNode;
+import com.ctb.util.web.sanitizer.SanitizedFormField;
 
 /**
  * 
  */
-public class StudentProfileInformation implements java.io.Serializable
+public class StudentProfileInformation extends SanitizedFormField
 { 
     static final long serialVersionUID = 1L;
     
