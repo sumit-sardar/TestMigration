@@ -752,7 +752,7 @@ public class UserFormUtils
 						if ( pathNodeList.getCustomerId().intValue() != pathNode.getCustomerId().intValue() ) {
 
 							requiredFields += ("<br/>" + Message.USER_CREATION_ERROR);
-							form.setMessage("User Information Error", requiredFields, Message.ERROR);
+							form.setMessage(Message.USER_CREATION_TITLE, requiredFields, Message.ERROR);
 							return false;
 						}
 					}
