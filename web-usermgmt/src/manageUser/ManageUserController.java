@@ -1198,7 +1198,6 @@ public class ManageUserController extends PageFlowController
         String userName = form.getSelectedUserName();
         
         if ( userName == null) {
-			//System.out.println( userName );
         	userName = (String)this.getSession().getAttribute("selectedUserNameInView"); 		 //Changes for browser Back button error
 			System.out.println("after session" +  userName );
 			form.setSelectedUserName(userName);
@@ -1221,8 +1220,7 @@ public class ManageUserController extends PageFlowController
     	*/
         if (validInfo) {
             
-            validInfo = UserFormUtils.verifyUserCreationPermission(form, this.currentOrgNodesInPathList, 
-                this.currentOrgNodeIds, this.selectedOrgNodes);
+            validInfo = UserFormUtils.verifyUserCreationPermission(form, this.selectedOrgNodes);
             
          } 
          // END- Added for Deferred Defect 62758 

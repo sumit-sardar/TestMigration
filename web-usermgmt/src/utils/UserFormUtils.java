@@ -730,31 +730,25 @@ public class UserFormUtils
     /* START- Added for Deferred Defect 62758  
 	 * User can't be associated with different organizations across different customers
 	*/
-	public static boolean verifyUserCreationPermission (ManageUserForm form,  HashMap currentOrgNodesInPathList, 
-			Integer[] currentOrgNodeIds, List selectedOrgNodes) {
+	public static boolean verifyUserCreationPermission (ManageUserForm form, List selectedOrgNodes) {
 
 		String requiredFields = "";
-		for (int i = 0; i < currentOrgNodeIds.length; i++) {
+		for (int i = 0; i < selectedOrgNodes.size(); i++) {
 
-			Integer currentOrgNodeId = currentOrgNodeIds[i];
+			PathNode selectedPathNode = (PathNode)selectedOrgNodes.get(i);
 
-			for (int j = 0; j < selectedOrgNodes.size(); j++) {
-
+			for (int j = 0; j < selectedOrgNodes.size() && i!=j; j++) {
+				
 				PathNode pathNode = (PathNode)selectedOrgNodes.get(j);
-				Integer selectedUserNodeId = pathNode.getId();
+				//System.out.println("pathNodeList.getCustomerId().intValue()" + selectedPathNode.getCustomerId().intValue());
+				//System.out.println("pathNode.getCustomerId().intValue()" + pathNode.getCustomerId().intValue());
+				if (pathNode != null ) {
 
-				if (currentOrgNodeId.intValue() != selectedUserNodeId.intValue()  ) {
+					if ( selectedPathNode.getCustomerId().intValue() != pathNode.getCustomerId().intValue() ) {
 
-					PathNode pathNodeList = (PathNode)currentOrgNodesInPathList.get(currentOrgNodeId);
-
-					if (pathNodeList != null ) {
-
-						if ( pathNodeList.getCustomerId().intValue() != pathNode.getCustomerId().intValue() ) {
-
-							requiredFields += ("<br/>" + Message.USER_CREATION_ERROR);
-							form.setMessage(Message.USER_CREATION_TITLE, requiredFields, Message.ERROR);
-							return false;
-						}
+						requiredFields += ("<br/>" + Message.USER_CREATION_ERROR);
+						form.setMessage(Message.USER_CREATION_TITLE, requiredFields, Message.ERROR);
+						return false;
 					}
 				}
 			}
