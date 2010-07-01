@@ -74,7 +74,7 @@
 <netui:hidden dataSource="actionForm.hasBreak"/>
 <netui:hidden dataSource="actionForm.creatorOrgNodeId"/>  
 <netui:hidden dataSource="actionForm.creatorOrgNodeName"/>   
-
+<netui:hidden dataSource="actionForm.testStatePathList.maxPageRequested"/>   <!-- Added for deferred Defect 59285-->
 <netui:hidden dataSource="actionForm.accommodationOperand"/>
 <netui:hidden dataSource="actionForm.selectedGrade"/>
 <netui:hidden dataSource="actionForm.selectedAccommodationElements"/>

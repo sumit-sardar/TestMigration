@@ -643,7 +643,9 @@ public class ScheduleTestController extends PageFlowController
             TestElementData ted = this.getTestsForProductForUser(productId, testFilter, testPage, testSort);
                    
             int totalNumOfPages = ted.getTotalPages().intValue();                       
-            
+            //START- Added for Deferred Defect 59285
+            form.testStatePathList.setMaxPageRequested(totalNumOfPages);
+            //END- Added for Deferred Defect 59285
             this.testList = buildTestList(ted);
            
             if (form.getTestStatePathList().getPageRequested().intValue() > ted.getFilteredPages().intValue())
