@@ -744,7 +744,14 @@ public class ScheduleTestController extends PageFlowController
                             found = true;
                     }
                     this.condition.setIsSearchTestList(Boolean.FALSE);
-                    disableNextButton = false;
+                    //disableNextButton = false;
+                   //Start Defect fixing 59285
+                    if(!found) {
+                    	disableNextButton = true;
+                    } else {
+                    	disableNextButton = false;
+                    }
+                  //End Defect fixing 59285
                     testPagerSummary = buildTestPagerSummary(ted, form.getTestStatePathList().getPageRequested());
                     this.getRequest().setAttribute("testPagerSummary", testPagerSummary);
                     
