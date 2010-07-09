@@ -864,6 +864,7 @@ public class RegistrationController extends PageFlowController
             List tempList = TestSessionUtils.cloneSubtests(this.defaultSubtests);
             TestSessionUtils.copySubtestLevel(this.selectedSubtests, tempList); 
             this.selectedSubtests = TestSessionUtils.retrieveSelectedSubtestsFromRequest(this.getRequest(), tempList);        
+            this.availableSubtests = TestSessionUtils.getAvailableSubtests(tempList, this.selectedSubtests); //change done for defect 63097
                
             String autoLocator = form.getAutoLocator();
             boolean autoLocatorChecked = ((autoLocator != null) && autoLocator.equals("true"));
