@@ -12,6 +12,8 @@ import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.control.testAdmin.ScheduleTest;
 import com.ctb.control.testAdmin.TestSessionStatus;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
+
 import data.SubtestVO;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,12 +90,23 @@ public class TestSessionUtils
     /**
      * updateManifestForRoster
      */
-    public static RosterElement updateManifestForRoster(ScheduleTest scheduleTest, String userName, Integer studentId, Integer testAdminId, StudentManifestData manifestData)
+    public static RosterElement updateManifestForRoster(ScheduleTest scheduleTest,
+											    		String userName,
+											    		Integer studentId,
+											    		Integer testAdminId,
+											    		StudentManifestData manifestData)  throws CTBBusinessException 
     {
         RosterElement roster = null;
         try {
             roster = scheduleTest.updateManifestForRoster(userName, studentId, null, testAdminId, manifestData);
         }
+        //START- Added for deferred defect-64306
+        catch (InsufficientLicenseQuantityException e)
+        {
+            e.printStackTrace();
+            throw e;         
+        }
+        //END- Added for deferred defect-64306
         catch (Exception be) {
             be.printStackTrace();
         }

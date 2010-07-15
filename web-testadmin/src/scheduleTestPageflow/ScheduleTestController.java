@@ -2028,7 +2028,9 @@ public class ScheduleTestController extends PageFlowController
         {
             this.getRequest().setAttribute("locatorSessionInfo", locatorSessionInfo);
         }
-        
+        //START - Added for Deferred Defect 64306
+        setFormInfoOnRequest(form);
+        //END - Added for Deferred Defect 64306
         return new Forward("success", form);
     }
 
@@ -2071,14 +2073,17 @@ public class ScheduleTestController extends PageFlowController
                  
             boolean valid = TABESubtestValidation.validation(this.selectedSubtests, validateLevels);
                                                    
-            String message = TABESubtestValidation.currentMessage;                
+            String message = TABESubtestValidation.currentMessage;        
             form.setSubtestValidationMessage(null);
             
             if (! valid)
             {
-                form.setCurrentAction(ACTION_SUBTEST_VALIDATION_FAILED);    
-                this.getRequest().setAttribute("errorMessage", message); 
-                this.allSubtests = TestSessionUtils.sortSubtestList(this.allSubtests, this.selectedSubtests);                 
+                form.setCurrentAction(ACTION_SUBTEST_VALIDATION_FAILED);  
+                //START - Changed for Deferred Defect 64306
+                form.setMessage(MessageResourceBundle.getMessage("SelectSettings.SubtestValidationTitle"),message, Message.ERROR);  
+                //END - Changed for Deferred Defect 64306
+                this.allSubtests = TestSessionUtils.sortSubtestList(this.allSubtests, this.selectedSubtests); 
+                
                 return new Forward("error", form);            
             }
             else
@@ -2111,9 +2116,16 @@ public class ScheduleTestController extends PageFlowController
                 manifest.setTestAccessCode(subtest.getTestAccessCode());
                 manifestArray[i] = manifest;
             }
-            
+            try {
             manifestData.setStudentManifests(manifestArray, new Integer(manifestArray.length));
-            TestSessionUtils.updateManifestForRoster(this.scheduleTest, this.userName, this.studentId, this.testAdminId, manifestData);            
+            TestSessionUtils.updateManifestForRoster(this.scheduleTest, this.userName, this.studentId, this.testAdminId, manifestData);  
+            } 
+            catch (CTBBusinessException e)
+            {
+                e.printStackTrace();
+                form.setMessage(MessageResourceBundle.getMessage("ModifyTest.InsufficentLicenseQuantityTitle"),Message.INSUFFICENT_LICENSE_QUANTITY, Message.ERROR);   
+                return new Forward("error", form);            
+            } 
         }
         
         return new Forward("printOptions", form);

@@ -132,13 +132,8 @@
 </p>
 
 
+<jsp:include page="/scheduleTestPageflow/show_message.jsp" />
 
-<netui-data:getData resultId="errorMessage" value="${requestScope.errorMessage}"/>
-<c:if test="${errorMessage != null}">
-    <ctb:message title="Subtest Validation Failed." style="errorMessage">
-        <netui:content value="${requestScope.errorMessage}"/>
-    </ctb:message><br/>
-</c:if>
 
 
 <!-- Locator Test-->
