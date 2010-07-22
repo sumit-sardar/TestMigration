@@ -136,7 +136,10 @@ public class ManageUploadController extends PageFlowController
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "beginManageUpload.do")
-    })
+    }, 
+    validationErrorForward = @Jpf.Forward(name = "failure",
+            path = "logout.do"))
+     //Added for Deferred defect 51537       
     protected Forward begin()
     {
         return new Forward("success");
@@ -149,7 +152,10 @@ public class ManageUploadController extends PageFlowController
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "manageUpload.do")
-    })
+    }, 
+    validationErrorForward = @Jpf.Forward(name = "failure",
+            path = "logout.do"))
+    //Added for Deferred defect 51537   
     protected Forward beginManageUpload()
     {
         getUserDetails();
