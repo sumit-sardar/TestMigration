@@ -23,6 +23,7 @@ import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
 import com.ctb.testSessionInfo.utils.PermissionsUtils;
@@ -33,6 +34,8 @@ import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
+
+import com.ctb.testSessionInfo.utils.DateUtils;
       
 /**
  * @jpf:controller
@@ -86,8 +89,10 @@ public class HomePageController extends PageFlowController
                          
         HomePageForm form = new HomePageForm();
         form.init();
-        
-        if ("T".equals(this.user.getResetPassword()))
+      //START- added for Deferred defect #52645
+       if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword()))
+      //END- added for Deferred defect #52645
+   	// if ("T".equals(this.user.getResetPassword()))
         {
             return new Forward("resetPassword", form);
         }
@@ -335,7 +340,27 @@ public class HomePageController extends PageFlowController
             be.printStackTrace();
         }
     }
-      
+     /*
+      * START- added for Deferred defect #52645
+      * 
+      */
+     
+    private boolean isUserPasswordExpired(){
+    	
+    	boolean pwdExpiredStatus = false;
+    	
+    	Date passwordExpirationDate = this.user.getPasswordExpirationDate();
+    	Date CurrentDate = new Date();
+    	
+    	
+    	if (CurrentDate.compareTo(passwordExpirationDate)> 0 ){
+    		pwdExpiredStatus = true;
+    	}
+    	//System.out.println("passwordExpirationDate==>" +passwordExpirationDate  +"\n CurrentDate==> "+CurrentDate+ "\n pwdExpiredStatus==> "+pwdExpiredStatus);
+    	return pwdExpiredStatus;
+    } 
+    //END- added for Deferred defect #52645
+    
     private void prepareSessionSelection(List sessionList, HomePageForm form, String sessionDisableType)
     {
         String sessionId = null;
@@ -791,8 +816,6 @@ public class HomePageController extends PageFlowController
         
         Integer programId = this.reportManager.setSelectedProgram(programIndex);
         Integer orgNodeId = this.reportManager.setSelectedOrganization(organizationIndex);
-        
-        System.out.println(" #####  programId = " + programId + "       orgNodeId = " + orgNodeId);
         
         List reportList = buildReportList(orgNodeId, programId);
 

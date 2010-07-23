@@ -43,7 +43,10 @@ public class Message implements java.io.Serializable
     public static final String HIGH_LICENSE_COLOR = "GREEN";
     public static final int MAX_LICENSE_PERCENT = 100;
     public static final int MIN_LICENSE_PERCENT = 0;
-
+    //START - Added for Deferred Defect 63097
+    public static final String INSUFFICENT_LICENSE_QUANTITY = "There are insufficient licenses available to schedule the number of tests requested.";
+    //END - Added for Deferred Defect 63097
+    
     public Message()
     {
         this.title = "";

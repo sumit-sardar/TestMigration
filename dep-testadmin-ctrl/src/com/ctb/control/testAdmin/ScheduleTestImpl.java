@@ -1,23 +1,33 @@
 package com.ctb.control.testAdmin; 
 
-import com.bea.control.*;
-//import com.bea.xquery.iso8601.Timezone;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+
+import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
+
+import org.apache.beehive.controls.api.bean.ControlImplementation;
+
 import com.ctb.bean.request.FilterParams;
-import com.ctb.bean.request.FilterParams.FilterParam;
-import com.ctb.bean.request.FilterParams.FilterType;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.request.FilterParams.FilterParam;
+import com.ctb.bean.request.FilterParams.FilterType;
 import com.ctb.bean.request.testAdmin.FormAssignmentCount;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.EditCopyStatus;
-import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.Node;
-import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
 import com.ctb.bean.testAdmin.OrgNodeStudent;
 import com.ctb.bean.testAdmin.ProctorAssignment;
-import com.ctb.bean.testAdmin.Program;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.ScheduleElement;
+import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SchedulingStudent;
 import com.ctb.bean.testAdmin.SchedulingStudentData;
 import com.ctb.bean.testAdmin.SessionStudent;
@@ -42,11 +52,8 @@ import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
-import com.ctb.control.db.StudentAccommodation;
-import com.ctb.control.db.Users;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.CustomerConfigurationDataNotFoundException;
-import com.ctb.exception.testAdmin.CustomerReportDataNotFoundException;
 import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
 import com.ctb.exception.testAdmin.InvalidNoOfProgramsException;
 import com.ctb.exception.testAdmin.ManifestUpdateFailException;
@@ -61,28 +68,12 @@ import com.ctb.exception.testAdmin.StudentNotAddedToSessionException;
 import com.ctb.exception.testAdmin.TestAdminDataNotFoundException;
 import com.ctb.exception.testAdmin.TestElementDataNotFoundException;
 import com.ctb.exception.testAdmin.UserDataNotFoundException;
-import com.ctb.exception.testAdmin.ZeroLicensesException;
 import com.ctb.exception.validation.ValidationException;
-import com.ctb.util.DateUtils;
 import com.ctb.util.SimpleCache;
 import com.ctb.util.testAdmin.AccessCodeGenerator;
 import com.ctb.util.testAdmin.PasswordGenerator;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
 import com.ctb.util.testAdmin.TestFormSelector;
-import java.io.Serializable;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.TimeZone;
-import org.apache.beehive.controls.api.bean.ControlImplementation;
-import javax.naming.InitialContext;
-import javax.transaction.UserTransaction;
 
 /**
  * Platform control provides functions related to test session
@@ -2603,14 +2594,20 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
      public RosterElement updateManifestForRoster(java.lang.String userName,java.lang.Integer studentId,java.lang.Integer stdentOrgNodeId,java.lang.Integer testAdminId, com.ctb.bean.testAdmin.StudentManifestData studentManifestData) throws com.ctb.exception.CTBBusinessException
      {
         validator.validate(userName,studentId,"updateManifestForRoster");
-            
-        try{
+        //START -Added for deferred defect #64306 and #64308
+        UserTransaction userTrans = null;
+    	boolean transanctionFlag = false;   
+        try{	
+        		userTrans = getTransaction();
+        		userTrans.begin();
+        //END -Added for deferred defect #64306 and #64308        		
                  Integer  userId  = users.getUserIdForName(userName);     
                  Integer customerId = users.getCustomerIdForName(userName);            
                  String completionStatus =  siss.geCompletionStatusForRoster(studentId,testAdminId);                 
                  if(!completionStatus.equals("SC"))
                     throw new NotEditableManifestException("This Student manifest can not be changed");
                  RosterElement roster = null; 
+                 
                  if(studentManifestData != null){
                   //  Integer rosterId = rosters.getRosterIdForStudentAndTestAdmin(studentId,testAdminId);
                     roster = rosters.getRosterElementForStudentAndAdmin(studentId,testAdminId);
@@ -2656,11 +2653,36 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
                  }    
                //  RosterElement roster = rosters.getRosterElementForStudentAndAdmin(studentId,testAdminId);                
                  return roster;
-         } catch (SQLException se) {
-            ManifestUpdateFailException muf = new ManifestUpdateFailException("ScheduleTestImpl: getManifestForRoster: " + se.getMessage());
-            muf.setStackTrace(se.getStackTrace());
-            throw muf;
-        }   
+         } 
+         //START- Added for deferred defect #64306 and #64308
+         
+         catch(Exception se){
+        	 transanctionFlag = true;
+	         	try {
+	         		userTrans.rollback();
+	         	}catch (Exception e1){
+	         		e1.printStackTrace();
+	         	}
+     	 CTBBusinessException muf = null;
+     	 String message = se.getMessage();
+     	 if(message.indexOf("Insufficient available license quantity") >=0) {
+     		 muf = new InsufficientLicenseQuantityException("Insufficient available license quantity");
+          } else {
+         	 muf = new ManifestUpdateFailException("ScheduleTestImpl: getManifestForRoster: " + se.getMessage());
+              muf.setStackTrace(se.getStackTrace());
+          }
+         throw muf; 
+         }
+         finally{
+
+ 			try {
+ 				System.out.println("finally");
+ 				closeTransaction(userTrans,transanctionFlag);
+ 			} catch (Exception e) {
+ 				e.printStackTrace();
+ 			}
+ 		}
+        //END- Added for deferred defect #64306 and #64308   
      }  
      
      /**

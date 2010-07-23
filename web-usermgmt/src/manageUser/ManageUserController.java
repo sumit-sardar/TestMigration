@@ -1198,7 +1198,6 @@ public class ManageUserController extends PageFlowController
         String userName = form.getSelectedUserName();
         
         if ( userName == null) {
-			//System.out.println( userName );
         	userName = (String)this.getSession().getAttribute("selectedUserNameInView"); 		 //Changes for browser Back button error
 			System.out.println("after session" +  userName );
 			form.setSelectedUserName(userName);
@@ -1215,6 +1214,16 @@ public class ManageUserController extends PageFlowController
             
         }
         boolean validInfo = UserFormUtils.verifyUserInformation(form, this.selectedOrgNodes, isLoggedInUser(form.getSelectedUserName()), userName, this.user);	   
+     
+        /* START- Added for Deferred Defect 62758 
+    	 *  User can't be associated with different organizations across different customers
+    	*/
+        if (validInfo) {
+            
+            validInfo = UserFormUtils.verifyUserCreationPermission(form, this.selectedOrgNodes);
+            
+         } 
+         // END- Added for Deferred Defect 62758 
         
         if (!validInfo)
         {           

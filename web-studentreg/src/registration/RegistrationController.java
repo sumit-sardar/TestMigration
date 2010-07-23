@@ -864,6 +864,7 @@ public class RegistrationController extends PageFlowController
             List tempList = TestSessionUtils.cloneSubtests(this.defaultSubtests);
             TestSessionUtils.copySubtestLevel(this.selectedSubtests, tempList); 
             this.selectedSubtests = TestSessionUtils.retrieveSelectedSubtestsFromRequest(this.getRequest(), tempList);        
+            this.availableSubtests = TestSessionUtils.getAvailableSubtests(tempList, this.selectedSubtests); //change done for defect 63097
                
             String autoLocator = form.getAutoLocator();
             boolean autoLocatorChecked = ((autoLocator != null) && autoLocator.equals("true"));
@@ -1018,6 +1019,9 @@ public class RegistrationController extends PageFlowController
         catch (InsufficientLicenseQuantityException e)
         {
             e.printStackTrace();
+            //START - Added for Deferred Defect 63097
+            form.setMessage(MessageResourceBundle.getMessage("SelectSettings.InsufficentLicenseQuantity.E001"),Message.INSUFFICENT_LICENSE_QUANTITY, Message.ERROR);            
+            //END - Added for Deferred Defect 63097
             String errorMessage = MessageResourceBundle.getMessage("SelectSettings.InsufficentLicenseQuantity", e.getMessage());
             this.getRequest().setAttribute("errorMessage", errorMessage); 
             return new Forward("error", form);            
