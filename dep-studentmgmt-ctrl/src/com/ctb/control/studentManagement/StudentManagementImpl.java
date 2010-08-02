@@ -1759,7 +1759,6 @@ public class StudentManagementImpl implements StudentManagement, Serializable
         }
     }
       
-
     private String generateUniqueStudentUserName(Student student, String studentLoginIdSequence) throws SQLException{
         
         String userName = StudentUtils.generateBasicStudentUsername(student, "", studentLoginIdSequence);
@@ -1771,8 +1770,6 @@ public class StudentManagementImpl implements StudentManagement, Serializable
         }
         return userName;
         
-        
     }  
-
     
 } 

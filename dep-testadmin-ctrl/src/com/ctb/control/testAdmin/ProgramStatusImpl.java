@@ -123,7 +123,6 @@ public class ProgramStatusImpl implements ProgramStatus, Serializable
         }
     }
     
-
     /**
      * Retrieves a filtered, sorted, paged list of tests under the specified program.
      * @common:operation
