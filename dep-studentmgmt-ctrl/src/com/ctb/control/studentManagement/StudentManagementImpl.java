@@ -174,7 +174,6 @@ public class StudentManagementImpl implements StudentManagement, Serializable
         
     }
 
-
     /**
      * Get student accommodations for the specified student.
      * @common:operation
