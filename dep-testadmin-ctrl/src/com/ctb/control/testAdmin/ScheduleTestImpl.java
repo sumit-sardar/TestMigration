@@ -2968,7 +2968,6 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
         return orderedSubtests;
     }
     
-    
     /**
 	 * This method return UserTransaction instance
 	 * @return UserTransaction
