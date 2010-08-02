@@ -22,7 +22,6 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
 public class OrgNodeHierarchyImpl implements OrgNodeHierarchy, Serializable
 { 
 
-   
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.OrgNode orgNode;
 
