@@ -1,16 +1,43 @@
 package scheduleTestPageflow;
 
-import org.apache.beehive.netui.pageflow.FormData;
-import org.apache.beehive.netui.pageflow.PageFlowController;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
+import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.PageFlowUtils;
+import org.apache.beehive.netui.pageflow.annotations.Jpf;
+import org.apache.struts.action.ActionError;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionMapping;
+
+import utils.DateUtils;
+import utils.FilterSortPageUtils;
+import utils.MessageResourceBundle;
+import utils.PathListUtils;
+import utils.TABESubtestValidation;
+import utils.TestRosterFilter;
+import utils.TestSessionUtils;
+import utils.WebUtils;
+
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerLicense;
-import com.ctb.bean.testAdmin.CustomerReport;
-import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScheduledSession;
@@ -32,18 +59,14 @@ import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
-import com.ctb.exception.testAdmin.SessionCreationException;
+import com.ctb.exception.testAdmin.TransactionTimeoutException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.forms.FormFieldValidator;
 import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
-import org.apache.beehive.controls.api.bean.Control;
-import org.apache.beehive.netui.pageflow.annotations.Jpf;
-import utils.DateUtils;
-import java.util.List;
-import java.util.Iterator;
-import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.widgets.bean.ColumnSortEntry;
+import com.ctb.widgets.bean.PagerSummary;
+
 import data.Condition;
 import data.Message;
 import data.PathNode;
@@ -54,32 +77,6 @@ import data.TestAdminVO;
 import data.TestRosterVO;
 import data.TestSummaryVO;
 import data.TestVO;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.ResourceBundle;
-import java.util.TimeZone;
-import java.util.Vector;
-import javax.servlet.http.HttpServletRequest;
-import org.apache.struts.action.ActionError;
-import org.apache.struts.action.ActionErrors;
-import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionMessage;
-import utils.FilterSortPageUtils;
-import utils.IndividualTestTicketsReportUtils;
-import utils.MessageResourceBundle;
-import utils.PathListUtils;
-import utils.SummaryTestTicketsReportUtils;
-import utils.TABESubtestValidation;
-import utils.TestRosterFilter;
-import utils.TestSessionUtils;
-import utils.WebUtils;
 
 
 /**
@@ -2476,6 +2473,16 @@ public class ScheduleTestController extends PageFlowController
             this.getRequest().setAttribute("errorMessage", errorMessage); 
             return new Forward("error", form);            
         } 
+        //START- Changed for deferred defect 64446
+        catch (TransactionTimeoutException e)
+        {
+            e.printStackTrace();
+            String errorMessage =MessageResourceBundle.getMessage("SelectSettings.FailedToSaveTestSessionTransactionTimeOut"); 
+            System.out.println("errorMessage in TransactionTimeoutException");
+            this.getRequest().setAttribute("errorMessage", errorMessage); 
+            return new Forward("error", form);            
+        }
+        //END- Changed for deferred defect 64446 
         catch (CTBBusinessException e)
         {
             e.printStackTrace();
@@ -2602,7 +2609,17 @@ public class ScheduleTestController extends PageFlowController
                             this.testAdminId, null, null, null);
             studentCountAfterSave = red.getTotalCount().intValue(); 
                  
-        }   
+        } 
+        //START- Changed for deferred defect 64446 
+        catch (TransactionTimeoutException e)
+        {
+            e.printStackTrace();
+            String errorMessage =MessageResourceBundle.getMessage("SelectSettings.FailedToSaveTestSessionTransactionTimeOut"); 
+            System.out.println("errorMessage in TransactionTimeoutException");
+            this.getRequest().setAttribute("errorMessage", errorMessage); 
+            return new Forward("error", form);            
+        } 
+        //END- Changed for deferred defect 64446
         catch (CTBBusinessException e)
         {
             e.printStackTrace();

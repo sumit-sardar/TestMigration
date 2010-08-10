@@ -67,6 +67,7 @@ import com.ctb.exception.testAdmin.StudentDataNotFoundException;
 import com.ctb.exception.testAdmin.StudentNotAddedToSessionException;
 import com.ctb.exception.testAdmin.TestAdminDataNotFoundException;
 import com.ctb.exception.testAdmin.TestElementDataNotFoundException;
+import com.ctb.exception.testAdmin.TransactionTimeoutException;
 import com.ctb.exception.testAdmin.UserDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.util.SimpleCache;
@@ -1527,6 +1528,9 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
             Integer testAdminId = session.getTestAdminId();
             
             userTrans = getTransaction();
+            //START- Changed for deferred defect 64446
+            userTrans.setTransactionTimeout(10 * 60);
+            //END- Changed for deferred defect 64446
 			userTrans.begin();
 			
             if(testAdminId == null) {
@@ -1554,10 +1558,18 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
             String message = se.getMessage();
             if(message.indexOf("Insufficient available license quantity") >=0) {
                 ctbe = new InsufficientLicenseQuantityException("Insufficient available license quantity");
-            } else {
-                ctbe = new SessionCreationException("ScheduleTestImpl: writeTestSession: " + message);
-                ctbe.setStackTrace(se.getStackTrace());
             }
+            //START- Changed for deferred defect 64446
+            else{
+            	if(message.indexOf("Transaction timed out") >=0) {
+                    ctbe = new TransactionTimeoutException("Transaction timed out");
+                }
+            	 else {
+                     ctbe = new SessionCreationException("ScheduleTestImpl: writeTestSession: " + message);
+                     ctbe.setStackTrace(se.getStackTrace());
+                 }
+            }
+            //END- Changed for deferred defect 64446
             throw ctbe;
         }
         finally{
