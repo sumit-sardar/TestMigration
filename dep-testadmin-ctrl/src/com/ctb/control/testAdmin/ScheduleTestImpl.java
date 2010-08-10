@@ -1529,7 +1529,7 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
             
             userTrans = getTransaction();
             //START- Changed for deferred defect 64446
-            userTrans.setTransactionTimeout(10 * 60);
+            userTrans.setTransactionTimeout(5 * 60);
             //END- Changed for deferred defect 64446
 			userTrans.begin();
 			
