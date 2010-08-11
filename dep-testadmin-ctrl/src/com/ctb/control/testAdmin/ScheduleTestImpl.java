@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.ResourceBundle;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
@@ -1529,7 +1530,17 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
             
             userTrans = getTransaction();
             //START- Changed for deferred defect 64446
-            userTrans.setTransactionTimeout(5 * 60);
+            ResourceBundle rb = ResourceBundle.getBundle("security");
+            String testSessionTransactionTimeOut = rb.getString("testSessionTransactionTimeOutMinutes");
+            Float transactionTimeOut = new Float(5) * 60;
+            try{
+            	transactionTimeOut = new Float(testSessionTransactionTimeOut) * 60;
+            }
+            catch(Exception ex){
+            	
+            }
+            int txTimeOut = transactionTimeOut.intValue();
+            userTrans.setTransactionTimeout(txTimeOut);
             //END- Changed for deferred defect 64446
 			userTrans.begin();
 			
