@@ -302,7 +302,13 @@ public class StudentLoginImpl implements StudentLogin, Serializable
                     copyAccomodationsDataToResponse(loginResponse, accomData);
                 }
                 boolean subtestsRemaining = false;
-                for(int i=0;i<manifestData.length&&!subtestsRemaining;i++) {
+                //START Change for Deferred defect 63502
+                ConsolidatedRestartData restartData = null;
+                if (loginResponse.getRestartFlag() && manifestData.length > 0 ){
+                	restartData = loginResponse.addNewConsolidatedRestartData();
+                }
+                //END
+                for(int i=0; i<manifestData.length ;i++) {
                     if(Constants.StudentTestCompletionStatus.SCHEDULED_STATUS.equals(manifestData[i].getCompletionStatus()) ||
                        Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS.equals(manifestData[i].getCompletionStatus()) ||
                        Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
@@ -313,7 +319,10 @@ public class StudentLoginImpl implements StudentLogin, Serializable
                             manifestData[i].setTotalTime(authenticator.getTotalElapsedTimeForSubtest(new Integer(testRosterId), new Integer(manifestData[i].getId())).intValue());
                             int remSec = (manifestData[i].getScoDurationMinutes() * 60) - manifestData[i].getTotalTime();
                             ItemResponseData [] itemResponseData = authenticator.getRestartItemResponses(testRosterId, manifestData[i].getId());
-                            copyRestartDataToResponse(lsid, testRosterId, manifestData[i].getId(), loginResponse, itemResponseData, remSec, Integer.parseInt(manifestData[i].getAdsid()), manifestData[i].getScratchpadContentStr());
+                            //START Change For deferred defect 63502
+                            copyRestartDataToResponse(lsid, testRosterId, manifestData[i].getId(), loginResponse, itemResponseData, remSec, 
+                            		Integer.parseInt(manifestData[i].getAdsid()), manifestData[i].getScratchpadContentStr(), restartData);
+                            		//END
                         }
                     }
                 }
@@ -372,7 +381,7 @@ public class StudentLoginImpl implements StudentLogin, Serializable
         }
         return response;
     }
-    
+    //START Change for Deferred defect 63502
     private void copyRestartDataToResponse(String lsid, 
                                     int testRosterId, 
                                     int subtestItemSetId, 
@@ -380,9 +389,11 @@ public class StudentLoginImpl implements StudentLogin, Serializable
                                     ItemResponseData [] itemResponseData, 
                                     int remSec, 
                                     int adsAssessmentId, 
-                                    String scratchpadContent) throws SQLException
+                                    String scratchpadContent,
+                                    ConsolidatedRestartData restartData ) throws SQLException
     {
-        ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
+    //END
+        //ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
         Tsd tsd = restartData.addNewTsd();        
         tsd.setScid(String.valueOf(subtestItemSetId));
         tsd.setLsid(lsid);
