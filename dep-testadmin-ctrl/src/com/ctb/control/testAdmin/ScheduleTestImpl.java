@@ -1531,13 +1531,13 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
             userTrans = getTransaction();
             //START- Changed for deferred defect 64446
             ResourceBundle rb = ResourceBundle.getBundle("security");
-            String testSessionTransactionTimeOut = rb.getString("testSessionTransactionTimeOutMinutes");
             Float transactionTimeOut = new Float(5) * 60;
             try{
+            	String testSessionTransactionTimeOut = rb.getString("testSessionTransactionTimeOutMinutes");
             	transactionTimeOut = new Float(testSessionTransactionTimeOut) * 60;
             }
             catch(Exception ex){
-            	
+            	transactionTimeOut = new Float(5) * 60;
             }
             int txTimeOut = transactionTimeOut.intValue();
             userTrans.setTransactionTimeout(txTimeOut);
