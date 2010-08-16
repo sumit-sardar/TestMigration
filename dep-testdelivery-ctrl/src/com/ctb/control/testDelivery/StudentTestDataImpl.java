@@ -401,7 +401,7 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
         return response;
     }
     
-    private boolean duplicateResponseExists(int testRosterId, int mseq, Ist [] ista){
+   /* private boolean duplicateResponseExists(int testRosterId, int mseq, Ist [] ista){
     	boolean result = false;
     	try{
 	    	for(int j=0;j<ista.length;j++) {
@@ -457,7 +457,7 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
     		OASLogger.getLogger("TestDelivery").error("Failure while testing for duplicate message for roster " + testRosterId + ", mseq " + mseq);
     	}
         return result;
-    }
+    } */
     
     /**
      * @common:operation
@@ -797,14 +797,14 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
                         }
                     }
                     if(sp != null && !"".equals(sp.trim())) {
-                    	Object priorResponse = null;
-                        if(cacheArg != null) {
-                        	priorResponse = SimpleCache.checkCache(TMS_PER_INSTANCE_SP_CHECK, cacheArg, testRosterId); 
-                        }
-                        if(priorResponse == null) {
+                    	//Object priorResponse = null;
+                        //if(cacheArg != null) {
+                        //	priorResponse = SimpleCache.checkCache(TMS_PER_INSTANCE_SP_CHECK, cacheArg, testRosterId); 
+                        //}
+                        //if(priorResponse == null) {
                         	storeScratchpadContent(Integer.parseInt(testRosterId), Integer.parseInt(itemSetId), sp);
-                        	SimpleCache.cacheResult(TMS_PER_INSTANCE_SP_CHECK, cacheArg, cacheArg, testRosterId);
-                        }
+                        //	SimpleCache.cacheResult(TMS_PER_INSTANCE_SP_CHECK, cacheArg, cacheArg, testRosterId);
+                        //}
                     }
 
                 }
@@ -1101,14 +1101,14 @@ public class StudentTestDataImpl implements StudentTestData, Serializable
     private void storeResponse(int testRosterId, int itemSetId, String itemId, String response, float elapsedTime, String answerChoiceId, int mSeq, boolean isCTB, String studentMarked) throws InvalidTestRosterIdException, InvalidItemSetIdException, InvalidItemResponseException {
         try {
             if (isCTB) {
-            	String cacheArg = testRosterId + ":" + itemSetId + ":" + itemId + ":" + response + ":" + elapsedTime + ":" + answerChoiceId + ":" + mSeq + ":" + studentMarked;
-                Object priorResponse = SimpleCache.checkCache(TMS_PER_INSTANCE_DUPE_CHECK, cacheArg, String.valueOf(testRosterId));
-                if(priorResponse == null) {
+            	//String cacheArg = testRosterId + ":" + itemSetId + ":" + itemId + ":" + response + ":" + elapsedTime + ":" + answerChoiceId + ":" + mSeq + ":" + studentMarked;
+                //Object priorResponse = SimpleCache.checkCache(TMS_PER_INSTANCE_DUPE_CHECK, cacheArg, String.valueOf(testRosterId));
+                //if(priorResponse == null) {
                 	saver.storeResponseWithMseq(testRosterId, itemSetId, itemId, response, elapsedTime, answerChoiceId, mSeq, studentMarked);
-                	SimpleCache.cacheResult(TMS_PER_INSTANCE_DUPE_CHECK, cacheArg, cacheArg, String.valueOf(testRosterId));
-                } else {
-                	OASLogger.getLogger("TestDelivery").info("Found duplicate message in per-instance cache for testRosterId=" + testRosterId + " mSeq=" + mSeq);
-                }
+                //	SimpleCache.cacheResult(TMS_PER_INSTANCE_DUPE_CHECK, cacheArg, cacheArg, String.valueOf(testRosterId));
+                //} else {
+               // 	OASLogger.getLogger("TestDelivery").info("Found duplicate message in per-instance cache for testRosterId=" + testRosterId + " mSeq=" + mSeq);
+               // }
             } else {
                 saver.storeResponseSTG(testRosterId, itemSetId, itemId, response, elapsedTime, answerChoiceId);
             }
