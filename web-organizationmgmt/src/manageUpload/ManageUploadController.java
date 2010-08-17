@@ -138,10 +138,10 @@ public class ManageUploadController extends PageFlowController
                      path = "beginManageUpload.do")
     }, 
     validationErrorForward = @Jpf.Forward(name = "failure",
-            path = "logout.do"))
-     //Added for Deferred defect 51537       
+            path = "sessionTimeout.do"))
     protected Forward begin()
     {
+    	  
         return new Forward("success");
     }
 
@@ -154,8 +154,7 @@ public class ManageUploadController extends PageFlowController
                      path = "manageUpload.do")
     }, 
     validationErrorForward = @Jpf.Forward(name = "failure",
-            path = "logout.do"))
-    //Added for Deferred defect 51537   
+            path = "sessionTimeout.do"))
     protected Forward beginManageUpload()
     {
         getUserDetails();
@@ -174,9 +173,10 @@ public class ManageUploadController extends PageFlowController
         @Jpf.Forward(name = "success",
                      path = "manage_upload.jsp"), 
         @Jpf.Forward(name = "viewUploads",
-                     path = "viewUploads.do")
-    })
-    protected Forward manageUpload(ManageUploadForm form)
+                     path = "viewUploads.do")},
+        validationErrorForward = @Jpf.Forward(name = "failure",
+                             path = "sessionTimeout.do"))
+     protected Forward manageUpload(ManageUploadForm form)
     {         
         String selectedTab = form.getSelectedTab();
         selectedTab = JavaScriptSanitizer.sanitizeString(selectedTab);
@@ -810,13 +810,13 @@ public class ManageUploadController extends PageFlowController
             String processURL = rb.getString("processURL");
             
                                     
-            final Thread uploadThread = new UploadThread(this.userName, fullFilePath, uploadDataFileId, processURL);
-            uploadThread.start();
+           final Thread uploadThread = new UploadThread(this.userName, fullFilePath, uploadDataFileId, processURL);
+           uploadThread.start();
             
             /*PathFinderUtils.saveFileToDB(fullFilePath , 
                                          this.uploadDownloadManagement, 
-                                         this.userName,uploadDataFileId);
-            */
+                                         this.userName,uploadDataFileId);*/
+           
             
             return true;         
         } catch(Exception be ) {
