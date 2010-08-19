@@ -2478,7 +2478,7 @@ public class ScheduleTestController extends PageFlowController
         {
             e.printStackTrace();
             String errorMessage =MessageResourceBundle.getMessage("SelectSettings.FailedToSaveTestSessionTransactionTimeOut"); 
-            System.out.println("errorMessage in TransactionTimeoutException");
+            System.out.println("errorMessage in TransactionTimeoutException==> " + errorMessage);
             this.getRequest().setAttribute("errorMessage", errorMessage); 
             return new Forward("error", form);            
         }

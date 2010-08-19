@@ -1532,6 +1532,7 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
             //START- Changed for deferred defect 64446
             ResourceBundle rb = ResourceBundle.getBundle("security");
             Float transactionTimeOut = new Float(5) * 60;
+            System.out.println("transactionTimeOut==>"+transactionTimeOut);
             try{
             	String testSessionTransactionTimeOut = rb.getString("testSessionTransactionTimeOutMinutes");
             	transactionTimeOut = new Float(testSessionTransactionTimeOut) * 60;
@@ -1573,9 +1574,11 @@ public class ScheduleTestImpl implements ScheduleTest, Serializable
             //START- Changed for deferred defect 64446
             else{
             	if(message.indexOf("Transaction timed out") >=0) {
+					System.out.println("Transaction timed out:"+message);
                     ctbe = new TransactionTimeoutException("Transaction timed out");
                 }
             	 else {
+					 System.out.println("Exception");
                      ctbe = new SessionCreationException("ScheduleTestImpl: writeTestSession: " + message);
                      ctbe.setStackTrace(se.getStackTrace());
                  }
