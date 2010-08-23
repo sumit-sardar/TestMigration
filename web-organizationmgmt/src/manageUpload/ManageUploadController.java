@@ -29,9 +29,13 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
+import org.apache.struts.action.ActionErrors;
+import org.apache.struts.action.ActionMapping;
 import org.apache.struts.upload.DiskFile;
 import org.apache.struts.upload.FormFile;
 import utils.UploadHistoryUtils;
@@ -136,12 +140,9 @@ public class ManageUploadController extends PageFlowController
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "beginManageUpload.do")
-    }, 
-    validationErrorForward = @Jpf.Forward(name = "failure",
-            path = "sessionTimeout.do"))
+    })
     protected Forward begin()
     {
-    	  
         return new Forward("success");
     }
 
@@ -152,9 +153,7 @@ public class ManageUploadController extends PageFlowController
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "manageUpload.do")
-    }, 
-    validationErrorForward = @Jpf.Forward(name = "failure",
-            path = "sessionTimeout.do"))
+    })
     protected Forward beginManageUpload()
     {
         getUserDetails();
@@ -173,10 +172,9 @@ public class ManageUploadController extends PageFlowController
         @Jpf.Forward(name = "success",
                      path = "manage_upload.jsp"), 
         @Jpf.Forward(name = "viewUploads",
-                     path = "viewUploads.do")},
-        validationErrorForward = @Jpf.Forward(name = "failure",
-                             path = "sessionTimeout.do"))
-     protected Forward manageUpload(ManageUploadForm form)
+                     path = "viewUploads.do")
+    })
+    protected Forward manageUpload(ManageUploadForm form)
     {         
         String selectedTab = form.getSelectedTab();
         selectedTab = JavaScriptSanitizer.sanitizeString(selectedTab);
@@ -810,13 +808,13 @@ public class ManageUploadController extends PageFlowController
             String processURL = rb.getString("processURL");
             
                                     
-           final Thread uploadThread = new UploadThread(this.userName, fullFilePath, uploadDataFileId, processURL);
-           uploadThread.start();
+            final Thread uploadThread = new UploadThread(this.userName, fullFilePath, uploadDataFileId, processURL);
+            uploadThread.start();
             
             /*PathFinderUtils.saveFileToDB(fullFilePath , 
                                          this.uploadDownloadManagement, 
-                                         this.userName,uploadDataFileId);*/
-           
+                                         this.userName,uploadDataFileId);
+            */
             
             return true;         
         } catch(Exception be ) {
@@ -968,7 +966,19 @@ public class ManageUploadController extends PageFlowController
             
             return copied;
         }
-        
+     //   START- Added for defect-#51537
+		 // validation
+        public ActionErrors validate(ActionMapping mapping, 
+                                HttpServletRequest request)
+        {
+            ActionErrors errs = super.validate(mapping, request);
+            if (!errs.isEmpty()) {
+                request.setAttribute("hasAlert", Boolean.TRUE);
+            }
+            return errs;
+        }
+	//	END-Added for defect-#51537
+		
          // validate values
         public void validateValues() {
             if ( this.fileSortColumn == null ) {
