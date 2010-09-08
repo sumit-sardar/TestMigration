@@ -58,4 +58,10 @@ public class Constants
         public static String DEFAULT_TTS_SPEED_VALUE  = "M";
         
     }
+    
+    public static class LoadTestConfig{
+    	
+    	public static String RUN_LOAD = "R";
+    	public static String NO_RUN = "N";
+    }
 } 
