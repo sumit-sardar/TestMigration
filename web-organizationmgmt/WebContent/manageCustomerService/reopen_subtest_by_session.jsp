@@ -102,13 +102,17 @@
 					<tr class="sortable">
 						<td class="sortable alignCenter" width="5%"><netui:checkBoxGroup dataSource="actionForm.selectedStudentItemId">
                 &nbsp;
-                <c:if
+               				 <c:if
 								test="${container.item.completionStatus != 'Completed' && container.item.completionStatus != 'In Progress'}">
 								<netui:checkBoxOption value="${container.item.studentItemId}" disabled="true">&nbsp;</netui:checkBoxOption>
 							</c:if>
 							<c:if
-								test="${container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress'}">
+								test="${container.item.itemSetLevel != 'L' && (container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress')}">
 								<netui:checkBoxOption value="${container.item.studentItemId}" disabled="false" onClick="toggleShowButton(this, ${pageScope.selectedStudentsLength});">&nbsp;</netui:checkBoxOption>
+							</c:if>
+							<c:if
+								test="${container.item.itemSetLevel == 'L' && (container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress')}">
+								<netui:checkBoxOption value="${container.item.studentItemId}" disabled="true">&nbsp;</netui:checkBoxOption>
 							</c:if>
 						</netui:checkBoxGroup></td>
 						<td class="sortable alignLeft" width="15%"><netui:span value="${container.item.studentName}" /></td>

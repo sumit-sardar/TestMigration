@@ -136,9 +136,13 @@
 							<c:if test="${container.item.completionStatus != 'Completed' && container.item.completionStatus != 'In Progress'}">	                		
 				                <netui:radioButtonOption value="${container.item.itemSetId}" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'showStudentTestStatusDetails', 'subtestDetailsResult');" disabled="true">&nbsp;</netui:radioButtonOption>
 							</c:if>
-							<c:if test="${container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress'}">	                		
+							<c:if test="${container.item.itemSetLevel != 'L' && (container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress')}">	                		
 				                <netui:radioButtonOption value="${container.item.itemSetId}" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'showStudentTestStatusDetails', 'subtestDetailsResult');">&nbsp;</netui:radioButtonOption>
 							</c:if>
+							<c:if test="${container.item.itemSetLevel == 'L' && (container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress')}">	                		
+				                <netui:radioButtonOption value="${container.item.itemSetId}" disabled="true">&nbsp;</netui:radioButtonOption>
+							</c:if>
+							
 							
 							</netui:radioButtonGroup></td>
 							<td class="sortable alignLeft" width="30%"><netui:span value="${container.item.itemSetName}" /></td>

@@ -28,6 +28,7 @@ public class StudentSessionStatusVO implements java.io.Serializable
 	private String recommendedLevel;
 	private String customerFlagStatus;
     private String itemSetName;
+    private String itemSetLevel;    //Added for defect - 64622 
     private String totalItem;
     private String itemAnswered;
     private String timeSpent;
@@ -65,6 +66,7 @@ public class StudentSessionStatusVO implements java.io.Serializable
 		this.recommendedLevel 	= 	sst.getRecommendedLevel();
 		this.customerFlagStatus = 	sst.getCustomerFlagStatus();
 	    this.itemSetName		= 	sst.getItemSetName();
+	    this.itemSetLevel		= 	sst.getItemSetLevel();   //Added for defect - 64622
 	    this.totalItem			= 	sst.getTotalItem();
 	    this.itemAnswered		= 	(sst.getItemAnswered() != null  ? sst.getItemAnswered() : "0") +" of "+ totalItem;
 	    this.timeSpent 			= 	sst.getTimeSpent();
@@ -481,6 +483,20 @@ public class StudentSessionStatusVO implements java.io.Serializable
 
 		this.timeSpentForDisplay = defaultTime;
 		
+	}
+
+	/**
+	 * @return the itemSetLevel
+	 */
+	public String getItemSetLevel() {
+		return itemSetLevel;
+	}
+
+	/**
+	 * @param itemSetLevel the itemSetLevel to set
+	 */
+	public void setItemSetLevel(String itemSetLevel) {
+		this.itemSetLevel = itemSetLevel;
 	}
 
 } 
