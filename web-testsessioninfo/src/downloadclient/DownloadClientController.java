@@ -42,7 +42,7 @@ public class DownloadClientController extends PageFlowController
     {
         String PC_URI = "'" + getdownloadURI("TDCINSTPC") + "'";
         String MAC_URI = "'" + getdownloadURI("TDCINSTMAC") + "'";
-        String LINUX_URI = "'" + getdownloadURI("TDCINSTLINUX") + "'";
+        String LINUX_URI = "'" + getdownloadURI("TDCINSTLIN") + "'";
         
         this.getRequest().setAttribute("downloadURI_PC", "location.href=" + PC_URI);
         this.getRequest().setAttribute("downloadURI_MAC", "location.href=" + MAC_URI);
