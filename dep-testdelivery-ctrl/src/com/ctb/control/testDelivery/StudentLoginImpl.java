@@ -302,6 +302,11 @@ public class StudentLoginImpl implements StudentLogin, Serializable
                     copyAccomodationsDataToResponse(loginResponse, accomData);
                 }
                 boolean subtestsRemaining = false;
+                boolean isReOpenEnabled = false;
+                isReOpenEnabled = (loginRequest.getLoginRequest().getIsReopen() == null ||loginRequest.getLoginRequest().getIsReopen()=="" ? false : true);
+                System.out.println("value Of Reopen"+loginRequest.getLoginRequest().getIsReopen()+"-----"+loginRequest.getLoginRequest().getUserName());
+                boolean moveOn = false;
+                
                 //START Change for Deferred defect 63502
                 ConsolidatedRestartData restartData = null;
                 if (loginResponse.getRestartFlag() && manifestData.length > 0 ){
@@ -315,6 +320,10 @@ public class StudentLoginImpl implements StudentLogin, Serializable
                        Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
                        Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS.equals(manifestData[i].getCompletionStatus())) {
                         subtestsRemaining = true;
+                        if(moveOn) {
+                        	System.out.println("skipping iteration...."+i);
+                        	continue;
+	                    }
                         if(loginResponse.getRestartFlag()) {
                             manifestData[i].setTotalTime(authenticator.getTotalElapsedTimeForSubtest(new Integer(testRosterId), new Integer(manifestData[i].getId())).intValue());
                             int remSec = (manifestData[i].getScoDurationMinutes() * 60) - manifestData[i].getTotalTime();
@@ -323,7 +332,11 @@ public class StudentLoginImpl implements StudentLogin, Serializable
                             copyRestartDataToResponse(lsid, testRosterId, manifestData[i].getId(), loginResponse, itemResponseData, remSec, 
                             		Integer.parseInt(manifestData[i].getAdsid()), manifestData[i].getScratchpadContentStr(), restartData);
                             		//END
+                            if(!isReOpenEnabled) {
+	                        	moveOn = true;
+	                        }
                         }
+                        System.out.println("iteration : "+i);
                     }
                 }
                 if(!subtestsRemaining) {

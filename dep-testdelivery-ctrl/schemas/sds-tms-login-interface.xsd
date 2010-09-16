@@ -68,6 +68,11 @@
 								</xs:documentation>
 							</xs:annotation>
 						</xs:attribute>
+						<xs:attribute name="is_reopen" type="xs:string" use="optional">
+							<xs:annotation>
+								<xs:documentation>is_reopen is  a boolean flag to indicated where the test client supports student with more than one intrupted state</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
 						<xs:attribute name="os_enum"
 							type="operatingSystemType" use="optional">
 							<xs:annotation>
