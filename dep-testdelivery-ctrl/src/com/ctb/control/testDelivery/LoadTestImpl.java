@@ -42,7 +42,7 @@ public class LoadTestImpl implements LoadTest, Serializable {
 		RunLoadResponse runLoadResponse = response.addNewTmssvcResponse().addNewRunLoadResponse();
 		response.addNewTmssvcResponse().setMethod("run_load_response");
 		runLoadResponse.setSystemId(runLoadRequest.getRunLoadRequest().getSystemId());
-		
+		String systemId = runLoadRequest.getRunLoadRequest().getSystemId();
         try{
         	LoadTestConfig loadTestConfig = loadTestDB.getLoadTestConfig();
         	if (loadTestConfig != null){
@@ -81,7 +81,17 @@ public class LoadTestImpl implements LoadTest, Serializable {
             				OASLogger.getLogger("TestDelivery").debug(loadTestConfig.toString());
             			}        			        			        			        			            		
                 		
-                		LoadTestRoster loadTestRoster = loadTestDB.getLoadTestRoster();
+            			LoadTestRoster loadTestRoster = null;
+            			boolean existingRoster = true;
+            			//check if this system already has a roster scheduled for future run
+            			loadTestRoster = loadTestDB.getAssignedLoadTestRoster(systemId);
+            			
+            			if (loadTestRoster == null){
+            				loadTestRoster = loadTestDB.getLoadTestRoster();
+            				existingRoster = false;
+            			}
+            				
+            			
                 		if (loadTestRoster != null){
                 			runLoadResponse.setRosterId(loadTestRoster.getTestRosterId());
                     		runLoadResponse.setLoginId(loadTestRoster.getLoginId());
@@ -92,10 +102,14 @@ public class LoadTestImpl implements LoadTest, Serializable {
                     		if (updateCount <= 0){
                     			OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
                     		}                		
-                    		int insertCount = loadTestDB.createStatisticsRecord(runLoadRequest.getRunLoadRequest().getSystemId(), Integer.valueOf(loadTestRoster.getTestRosterId()));
-                    		if (insertCount <= 0){
-                    			OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
-                    		}            		
+                    		if (!existingRoster){
+                    			int insertCount = loadTestDB.createStatisticsRecord(runLoadRequest.getRunLoadRequest().getSystemId(), Integer.valueOf(loadTestRoster.getTestRosterId()));
+                            	if (insertCount <= 0){
+                            		OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
+                            	}
+                    		}
+                    		
+                    		                   		            		
                 		}else{
                 			runLoadResponse.setStatus(Constants.LoadTestConfig.NO_RUN);
                 			System.out.println("##### loadTestRoster SQL exception ### ");

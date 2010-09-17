@@ -38,6 +38,9 @@ public interface LoadTestDB extends JdbcControl {
 	@JdbcControl.SQL(statement = "select to_char(tr.test_roster_id) AS testRosterId, tr.password as password, ta.access_code AS accessCode, s.user_name AS loginId FROM test_roster tr, test_admin ta, student s, load_test_rosters ltr WHERE ltr.test_roster_id = tr.test_roster_id AND ltr.used_flag != 'Y' AND tr.test_admin_id = ta.test_admin_id AND tr.student_id = s.student_id")
 	LoadTestRoster getLoadTestRoster() throws SQLException;
 	
+	@JdbcControl.SQL(statement = "SELECT TO_CHAR(TR.TEST_ROSTER_ID) AS TESTROSTERID, TR.PASSWORD AS PASSWORD, TA.ACCESS_CODE AS ACCESSCODE, S.USER_NAME AS LOGINID FROM TEST_ROSTER TR, TEST_ADMIN TA, STUDENT S, LOAD_TEST_ROSTERS LTR, LOAD_TEST_STATISTICS LTS WHERE LTR.TEST_ROSTER_ID = TR.TEST_ROSTER_ID AND LTR.USED_FLAG = 'Y' AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID AND TR.STUDENT_ID = S.STUDENT_ID AND LTS.SYSTEM_ID = {systemId} AND LTS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID AND TR.TEST_COMPLETION_STATUS = 'SC' AND ROWNUM = 1")
+	LoadTestRoster getAssignedLoadTestRoster(String systemId) throws SQLException;
+	
 	@JdbcControl.SQL(statement = "update load_test_rosters set used_flag = 'Y' where test_roster_id = {testRosterId}")
 	int setUsedFlag(Integer testRosterId) throws SQLException;
 
