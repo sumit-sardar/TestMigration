@@ -56,10 +56,10 @@ public interface LoadTestDB extends JdbcControl {
 	@JdbcControl.SQL(statement = "select count(1) from test_roster where test_completion_status = 'IP'")
 	int getInprogressRosters() throws SQLException;
 	
-	@JdbcControl.SQL(statement = "INSERT INTO site_info(SITE_ID,SYSTEM_ID,OS_NAME,OS_VERSION,SYSTEM_MODEL,PHYSICAL_MEMORY,VIRTUAL_MEMORY,PROCESSORS,NETWORK_CARDS) VALUES({siteId},{systemId},{osName},{osVersion},{systemModel},{physicalMemory},{virtualMemory},{processors},{networkCards})")
+	@JdbcControl.SQL(statement = "INSERT INTO site_info(SITE_ID,SYSTEM_ID,OS_NAME,OS_VERSION,SYSTEM_MODEL,PHYSICAL_MEMORY,VIRTUAL_MEMORY,PROCESSORS,NETWORK_CARDS, CREATED_DATE, UPDATED_DATE) VALUES({siteId},{systemId},{osName},{osVersion},{systemModel},{physicalMemory},{virtualMemory},{processors},{networkCards}, sysdate, sysdate)")
 	int insertSystemInfo(String siteId, String systemId, String osName, String osVersion, String systemModel, String physicalMemory, String virtualMemory, String processors, String networkCards) throws SQLException;
 
-	@JdbcControl.SQL(statement = "UPDATE site_info SET OS_NAME = {osName} ,OS_VERSION = {osVersion}, SYSTEM_MODEL = {systemModel}, PHYSICAL_MEMORY= {physicalMemory}, VIRTUAL_MEMORY = {virtualMemory}, PROCESSORS = {processors} , NETWORK_CARDS = {networkCards} WHERE system_id = {systemId}")
+	@JdbcControl.SQL(statement = "UPDATE site_info SET OS_NAME = {osName} ,OS_VERSION = {osVersion}, SYSTEM_MODEL = {systemModel}, PHYSICAL_MEMORY= {physicalMemory}, VIRTUAL_MEMORY = {virtualMemory}, PROCESSORS = {processors} , NETWORK_CARDS = {networkCards}, UPDATED_DATE = sysdate WHERE system_id = {systemId}")
 	int updateSystemInfo(String systemId, String osName, String osVersion, String systemModel, String physicalMemory, String virtualMemory, String processors, String networkCards) throws SQLException;
 	
 }
