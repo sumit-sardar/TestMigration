@@ -67,14 +67,14 @@ public class LoadTestImpl implements LoadTest, Serializable {
                 			serverTime.setTime(df.parse(loadTestDB.getServerTime()));
                 			
                 			//time diff in hours
-                			Long longTimeDiff = (clientTime.getTimeInMillis() - serverTime.getTimeInMillis())/(60 * 60 * 1000);
+                			Long longTimeDiff = (clientTime.getTimeInMillis() - serverTime.getTimeInMillis())/(60 * 1000);
                 			Integer timeDiff = Integer.valueOf(longTimeDiff.intValue());
                 			
                 			Calendar runDate = Calendar.getInstance();
                 			runDate.setTime(df.parse(loadTestConfig.getRunDate()));
                 			
                 			//adjust run date as per time difference between server and client
-                			runDate.add(Calendar.HOUR, timeDiff);
+                			runDate.add(Calendar.MINUTE, timeDiff);
                 			
                 			runLoadResponse.setRunDate(df.format(runDate.getTime()));
             			}catch(Exception e){
