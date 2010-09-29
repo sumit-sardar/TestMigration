@@ -32,7 +32,7 @@ public interface LoadTestDB extends JdbcControl {
 	static final long serialVersionUID = 1L;
 	
 	
-	@JdbcControl.SQL(statement = "select  NVL(run_load,'X') as runLoad,  NVL(max_load,-1) as maxLoad,  to_char(NVL(run_date,to_date('01-JAN-1900')),'YYYY-MM-DD HH:MI:SS') as runDate from load_test_config")
+	@JdbcControl.SQL(statement = "select  NVL(run_load,'X') as runLoad,  NVL(max_load,-1) as maxLoad,  to_char(NVL(run_date,to_date('01-JAN-1900')),'YYYY-MM-DD HH24:MI:SS') as runDate from load_test_config")
 	LoadTestConfig getLoadTestConfig() throws SQLException;	
 	
 	@JdbcControl.SQL(statement = "select to_char(tr.test_roster_id) AS testRosterId, tr.password as password, ta.access_code AS accessCode, s.user_name AS loginId FROM test_roster tr, test_admin ta, student s, load_test_rosters ltr WHERE ltr.test_roster_id = tr.test_roster_id AND ltr.used_flag != 'Y' AND tr.test_admin_id = ta.test_admin_id AND tr.student_id = s.student_id")
@@ -50,7 +50,7 @@ public interface LoadTestDB extends JdbcControl {
 	@JdbcControl.SQL(statement = "update load_test_statistics set end_time = sysdate, max_response_time = {maxResponseTime}, min_response_time = {minResponseTime}, avg_response_time = {avgResponseTime}, success_count = {successCount}, failure_count = {failureCount} where  system_id = {systemId} and test_roster_id = {testRosterId}")
 	int updateStatistics(String systemId, Integer testRosterId, Integer maxResponseTime, Integer minResponseTime, Integer avgResponseTime, Integer successCount, Integer failureCount ) throws SQLException;
 
-	@JdbcControl.SQL(statement = "select to_char(sysdate, 'YYYY-MM-DD HH:MI:SS') from dual")
+	@JdbcControl.SQL(statement = "select to_char(sysdate, 'YYYY-MM-DD HH24:MI:SS') from dual")
 	String getServerTime() throws SQLException;
 	
 	@JdbcControl.SQL(statement = "select count(1) from test_roster where test_completion_status = 'IP'")
