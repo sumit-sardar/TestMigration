@@ -696,8 +696,10 @@ public class ManageStudentController extends PageFlowController
 		SortParams sort = FilterSortPageUtils.buildSortParams(form.getOrgSortColumn(), form.getOrgSortOrderBy(), null, null);
 
 		OrganizationNodeData ond = StudentPathListUtils.getOrganizationNodes(this.userName, this.studentManagement, orgNodeId, filter, page, sort);
-
-		List orgNodes = StudentPathListUtils.buildOrgNodeList(ond, profileEditable, ACTION_ADD_STUDENT);
+		//START - Added for CR017
+		 Boolean isClassReassignable = isClassReassignable(profileEditable);
+		List orgNodes = StudentPathListUtils.buildOrgNodeList(ond, profileEditable, ACTION_ADD_STUDENT, isClassReassignable);
+		//END - Added for CR017
 		String orgCategoryName = StudentPathListUtils.getOrgCategoryName(orgNodes);
 
 		PagerSummary orgPagerSummary = StudentPathListUtils.buildOrgNodePagerSummary(ond, form.getOrgPageRequested());        
@@ -1572,7 +1574,7 @@ public class ManageStudentController extends PageFlowController
 		{
 			form.setOrgPageRequested(ond.getFilteredPages());
 		}
-		List orgNodes = StudentPathListUtils.buildOrgNodeList(ond, Boolean.TRUE, ACTION_FIND_STUDENT);
+		List orgNodes = StudentPathListUtils.buildOrgNodeList(ond, Boolean.TRUE, ACTION_FIND_STUDENT,Boolean.TRUE );  //Added for CR017
 		String orgCategoryName = StudentPathListUtils.getOrgCategoryName(orgNodes);
 
 		PagerSummary orgPagerSummary = StudentPathListUtils.buildOrgNodePagerSummary(ond, form.getOrgPageRequested());        
@@ -2059,6 +2061,32 @@ public class ManageStudentController extends PageFlowController
      }
                
 
+
+	/*
+	 * CR017- based on the value of customercofiguration and profileEditable flag set Value in profileEditable flag. 
+	 */
+	private boolean isClassReassignable(Boolean profileEditable) 
+    {     
+		boolean classReassignable = false;
+		
+		if(profileEditable)
+			 return true ;
+		else
+		{
+			for (int i=0; i < this.customerConfigurations.length; i++)
+	        {
+	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Class_Reassignment") && cc.getDefaultValue().equalsIgnoreCase("T"))
+	            {
+	            	classReassignable = true; 
+	            	break;
+	            }
+	         }
+		}
+			
+		 
+		 return classReassignable;
+     }
         
     
     

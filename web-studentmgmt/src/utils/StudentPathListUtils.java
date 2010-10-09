@@ -189,7 +189,7 @@ public class StudentPathListUtils
     /**
      * buildOrgNodeList
      */    
-    public static List buildOrgNodeList(OrganizationNodeData ond, Boolean profileEditable, String action) 
+    public static List buildOrgNodeList(OrganizationNodeData ond, Boolean profileEditable, String action, Boolean isClassReassignable) 
     {
         ArrayList nodeList = new ArrayList();
         PathNode pathNode = null;
@@ -203,10 +203,17 @@ public class StudentPathListUtils
                 pathNode.setChildrenNodeCount(node.getChildNodeCount());
                 pathNode.setCategoryName(node.getOrgNodeCategoryName());
                 pathNode.setStudentCount(node.getStudentCount());
-                pathNode.setSelectable(node.getBottomLevelNodeFlag());
-                if (! profileEditable.booleanValue()) {
+                /*if (! profileEditable.booleanValue()) {
                     pathNode.setSelectable("false");
-                }
+                }*/
+               // START - Added for CR017 - class reassignment is decided based on the isClassReassignable flag value
+                if(isClassReassignable)
+                	pathNode.setSelectable("true");
+                else
+                	pathNode.setSelectable("false");
+                 // END            
+                pathNode.setSelectable(node.getBottomLevelNodeFlag());
+                   
                 if (action.equals("findStudent") && (node.getStudentCount().intValue() == 0)) {
                     pathNode.setSelectable("false");
                 }
