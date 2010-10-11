@@ -208,12 +208,12 @@ public class StudentPathListUtils
                 }*/
                // START - Added for CR017 - class reassignment is decided based on the isClassReassignable flag value
                 if(isClassReassignable)
-                	pathNode.setSelectable("true");
-                else
+                	pathNode.setSelectable(node.getBottomLevelNodeFlag());  
+               else
                 	pathNode.setSelectable("false");
+               
                  // END            
-                pathNode.setSelectable(node.getBottomLevelNodeFlag());
-                   
+    
                 if (action.equals("findStudent") && (node.getStudentCount().intValue() == 0)) {
                     pathNode.setSelectable("false");
                 }
