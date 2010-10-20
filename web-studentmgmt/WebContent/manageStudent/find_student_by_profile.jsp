@@ -8,7 +8,7 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 <%
-   	Boolean isGTIDCustomer = (Boolean)request.getAttribute("isGTIDCustomer"); // Change For CR - GA2011CR001
+   	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); // Change For CR - GA2011CR001
 	
 %>
 
@@ -20,10 +20,10 @@
     <tr class="tableFilter">
    
         
-         <c:if test="${isGTIDCustomer}">   
-         <td class="tableFilter" width="100" align="right">${GTIDArrValue[0]}:</td>
+         <c:if test="${isStudentIdConfigurable}">   
+         <td class="tableFilter" width="100" align="right">${studentIdArrValue[0]}:</td>
           </c:if>
-          <c:if test="${!isGTIDCustomer}">   
+          <c:if test="${!isStudentIdConfigurable}">   
        <td class="tableFilter" width="100" align="right">Student ID:</td>
          </c:if>
         <td class="tableFilter" width="*"><netui:textBox tagId="studentNumber" dataSource="actionForm.studentProfile.studentNumber" tabindex="1"/></td>

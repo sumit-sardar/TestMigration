@@ -15,13 +15,13 @@
 	Boolean isMandatoryBirthDate = (Boolean)request.getAttribute("isMandatoryBirthDate"); //GACRCT2010CR007 - Disable Mandatory Birth Date 
 	
 	//Start Change For CR - GA2011CR001
-	Boolean isGTIDCustomer = (Boolean)request.getAttribute("isGTIDCustomer"); 
-	Boolean isFTECustomer = (Boolean)request.getAttribute("isFTECustomer"); 
-	String []GTIDArrValue = (String[])request.getAttribute("GTIDArrValue");
-	String []FTEArrValue = (String[])request.getAttribute("FTEArrValue");
+	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); 
+	Boolean isStudentId2Configurable = (Boolean)request.getAttribute("isStudentId2Configurable"); 
+	String []studentIdArrValue = (String[])request.getAttribute("studentIdArrValue");
+	String []studentId2ArrValue = (String[])request.getAttribute("studentId2ArrValue");
 	boolean isGTIDMandatory = false;
-	if(GTIDArrValue != null && GTIDArrValue[2] != null && GTIDArrValue[2]!= "") {
-		if (GTIDArrValue[2].equalsIgnoreCase("T")) {
+	if(studentIdArrValue != null && studentIdArrValue[2] != null && studentIdArrValue[2]!= "") {
+		if (studentIdArrValue[2].equalsIgnoreCase("T")) {
 			isGTIDMandatory = true;
 		}
 	}
@@ -124,15 +124,15 @@
         	<span class="asterisk">*</span>&nbsp;
          </c:if>
  			
-         <c:if test="${isGTIDCustomer}">   
-        <netui:content value="${GTIDArrValue[0]}:"/></td>
+         <c:if test="${isStudentIdConfigurable}">   
+        <netui:content value="${studentIdArrValue[0]}:"/></td>
          </c:if>
-          <c:if test="${!isGTIDCustomer}">   
+          <c:if test="${!isStudentIdConfigurable}">   
         <netui:content value="Student ID:"/></td>
          </c:if>
         <td class="transparent">
         <c:if test="${ profileEditable }">            
-            <netui:textBox dataSource="actionForm.studentProfile.studentNumber" maxlength="<%= isGTIDCustomer ? new Integer(GTIDArrValue[1]).intValue() : 32 %>" style="width:180px"/>
+            <netui:textBox dataSource="actionForm.studentProfile.studentNumber" maxlength="<%= isStudentIdConfigurable ? new Integer(studentIdArrValue[1]).intValue() : 32 %>" style="width:180px"/>
         </c:if>            
         <c:if test="${ !profileEditable }">            
             <netui:textBox dataSource="actionForm.studentProfile.studentNumber" maxlength="32" style="width:180px" disabled="true"/>
@@ -141,16 +141,16 @@
     </tr>
     <tr class="transparent">
         <td class="transparent alignRight" width="120">
-         <c:if test="${isFTECustomer}"> 
+         <c:if test="${isStudentId2Configurable}"> 
         
-        <netui:content value="${FTEArrValue[0]}:"/></td>
+        <netui:content value="${studentId2ArrValue[0]}:"/></td>
          </c:if>
-          <c:if test="${!isFTECustomer}">   
+          <c:if test="${!isStudentId2Configurable}">   
          <netui:content value="Student ID 2:"/></td>
          </c:if>
         <td class="transparent">
         <c:if test="${ profileEditable }">            
-            <netui:textBox dataSource="actionForm.studentProfile.studentSecondNumber" maxlength="<%=isFTECustomer ? new Integer(FTEArrValue[1]).intValue() : 32 %>" style="width:180px"/>
+            <netui:textBox dataSource="actionForm.studentProfile.studentSecondNumber" maxlength="<%=isStudentId2Configurable ? new Integer(studentId2ArrValue[1]).intValue() : 32 %>" style="width:180px"/>
         </c:if>            
         <c:if test="${ !profileEditable }">            
             <netui:textBox dataSource="actionForm.studentProfile.studentSecondNumber" maxlength="32" style="width:180px" disabled="true"/>

@@ -53,6 +53,7 @@
 <netui:hidden dataSource="actionForm.orgMaxPage"/> 
 <netui:hidden dataSource="actionForm.selectedOrgNodeName"/> 
 <netui:hidden dataSource="actionForm.selectedTab"/> 
+<netui:hidden dataSource="actionForm.studentIdLabelName"/>
 
 <!-- message -->
 <jsp:include page="/manageStudent/show_message.jsp" />
