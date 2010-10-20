@@ -413,4 +413,16 @@ public interface StudentManagement
      */
 	
     com.ctb.bean.testAdmin.Student createStudentUpload(com.ctb.bean.testAdmin.User user, com.ctb.bean.studentManagement.ManageStudent manageStudent) throws com.ctb.exception.CTBBusinessException;
+    
+    /**
+     * New method added for CR - GA2011CR001
+     * Get customer configuration value for the specified customer configuration.
+     * @common:operation
+     * @param configId - identifies the customerconfiguration whose information is desired
+     * @return CustomerConfigurationValue []
+     * @throws CTBBusinessException
+     */
+    
+    com.ctb.bean.studentManagement.CustomerConfigurationValue[] getCustomerConfigurationsValue(java.lang.Integer configId) throws com.ctb.exception.CTBBusinessException;
+    
 } 

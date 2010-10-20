@@ -27,6 +27,7 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
+import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.studentManagement.OrganizationNode;
@@ -113,9 +114,13 @@ public class ManageStudentController extends PageFlowController
 
 	// customer configuration
 	CustomerConfiguration[] customerConfigurations = null;
+	CustomerConfigurationValue[] customerConfigurationsValue = null;
 	
 	//GACRCT2010CR007- Disable_Mandatory_Birth_Date according to customer cofiguration
 	private boolean disableMandatoryBirthdate = false;
+	
+	private boolean isMandatoryGTEGeorgia = false; // Change For CR - GA2011CR001
+	
 
 	// student demographics
 	List demographics = null;
@@ -285,6 +290,7 @@ public class ManageStudentController extends PageFlowController
 	})
 	protected Forward beginEditStudent(ManageStudentForm form)
 	{                
+		System.out.println("edit");
 		Integer studentId = form.getSelectedStudentId();
 		StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
 		if (studentProfile == null) {						//Changes for Defect 60478
@@ -345,6 +351,7 @@ public class ManageStudentController extends PageFlowController
 	})
 	protected Forward addEditStudent(ManageStudentForm form)
 	{      
+		isGeorgiaCustomer(); //Change For CR - GA2011CR001
 		String stringAction = form.getStringAction();
 		setFormInfoOnRequest(form);
 		saveToken(this.getRequest());
@@ -501,6 +508,9 @@ public class ManageStudentController extends PageFlowController
 				
 				//GACRCT2010CR007- set value for disableMandatoryBirthdate in  form. 
 				form.setDisableMandatoryBirthdate(disableMandatoryBirthdate);
+				
+				//CR - GA2011CR001 - set value for FTE Mandatory Field
+				form.setMandatoryGTEGeorgia(isMandatoryGTEGeorgia);
 				
 				boolean result = form.verifyStudentInformation(this.selectedOrgNodes);
 				if (! result)
@@ -696,10 +706,13 @@ public class ManageStudentController extends PageFlowController
 		SortParams sort = FilterSortPageUtils.buildSortParams(form.getOrgSortColumn(), form.getOrgSortOrderBy(), null, null);
 
 		OrganizationNodeData ond = StudentPathListUtils.getOrganizationNodes(this.userName, this.studentManagement, orgNodeId, filter, page, sort);
+
 		//START - Added for CR017
 		 Boolean isClassReassignable = isClassReassignable(profileEditable);
+		 System.out.println("isClassReassignable==>"+isClassReassignable);
 		List orgNodes = StudentPathListUtils.buildOrgNodeList(ond, profileEditable, ACTION_ADD_STUDENT, isClassReassignable);
 		//END - Added for CR017
+
 		String orgCategoryName = StudentPathListUtils.getOrgCategoryName(orgNodes);
 
 		PagerSummary orgPagerSummary = StudentPathListUtils.buildOrgNodePagerSummary(ond, form.getOrgPageRequested());        
@@ -1387,6 +1400,7 @@ public class ManageStudentController extends PageFlowController
 			path = "logout.do"))
 			protected Forward findStudent(ManageStudentForm form)
 	{    
+		isGeorgiaCustomer();// Change For CR - GA2011CR001
 		//System.out.println("findstudent action on refresh");
 		form.validateValues();
 
@@ -1825,6 +1839,7 @@ public class ManageStudentController extends PageFlowController
 		if (this.demographics.size() == 0) {
 			this.getRequest().setAttribute("demographicVisible", "F");       
 		}
+		isGeorgiaCustomer(); //Change For CR - GA2011CR001
 		setFormInfoOnRequest(form);
 		return new Forward("success", form);                                                                                                                                                                                                    
 	}
@@ -1937,6 +1952,21 @@ public class ManageStudentController extends PageFlowController
 			be.printStackTrace();
 		}
 	}
+	
+	/*
+	 * New method added for CR - GA2011CR001
+	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
+	 */
+	private void customerConfigurationValues(Integer configId)
+	{
+		try {
+				this.customerConfigurationsValue = this.studentManagement.getCustomerConfigurationsValue(configId);
+			
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+	}
 
 	/**
 	 * getGradeOptions
@@ -2038,8 +2068,7 @@ public class ManageStudentController extends PageFlowController
 		this.getRequest().setAttribute("pageMessage", form.getMessage());
 		this.getRequest().setAttribute("studentProfileData", form.getStudentProfile());
 		this.getSession().setAttribute("selectStudentIdInView",form.getSelectedStudentId());
-
-
+		
 	}
 	/*
 	 * GACRCT2010CR007- retrieve value for disableMandatoryBirthdate set  Value in request. 
@@ -2089,7 +2118,56 @@ public class ManageStudentController extends PageFlowController
      }
         
     
-    
+	/*
+	 * New method added for CR - GA2011CR001
+	 * This method retrieve  the value of provide two customer configuration and their corresponding data in customer configuration value.
+	 */
+	private void isGeorgiaCustomer() 
+    {     
+		 boolean isGTIDCustomer = false;
+		 boolean isFTECustomer = false;
+		 Integer configId=0;
+		 String []valueForGTID = null ;
+		 String []valueForFTE = null ;
+		for (int i=0; i < this.customerConfigurations.length; i++)
+	        {
+	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Is_FTE_Customer") && cc.getDefaultValue().equalsIgnoreCase("T"))
+	            {
+	            	isFTECustomer = true; 
+	            	configId = cc.getId();
+	            	customerConfigurationValues(configId);
+	            	valueForFTE = new String[customerConfigurationsValue.length];
+	            	for(int j=0; j<this.customerConfigurationsValue.length; j++){
+	            		
+	            			valueForFTE[j] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+	            			
+	            	}
+	            }
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Is_GTID_Customer") && cc.getDefaultValue().equalsIgnoreCase("T"))
+	            {
+	            	isGTIDCustomer = true; 
+	            	configId = cc.getId();
+	            	customerConfigurationValues(configId);
+	            	valueForGTID = new String[customerConfigurationsValue.length];
+	            	for(int j=0; j<this.customerConfigurationsValue.length; j++){
+	            		
+	            			valueForGTID[j] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+	            		
+	            	}
+
+	            }
+	            
+	            
+	         }
+		this.isMandatoryGTEGeorgia = valueForGTID !=null &&  valueForGTID[2] != null && valueForGTID[2].equals("T") ?  true : false ;
+		System.out.println("isMandatoryGTEGeorgia" + isMandatoryGTEGeorgia);
+		this.getRequest().setAttribute("GTIDArrValue",valueForGTID);
+        this.getRequest().setAttribute("isGTIDCustomer",isGTIDCustomer);
+        this.getRequest().setAttribute("isFTECustomer",isFTECustomer);
+        this.getRequest().setAttribute("FTEArrValue",valueForFTE);
+    }
+        
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** MANAGESTUDENTFORM ************* /////////////////////////////    
@@ -2134,6 +2212,7 @@ public class ManageStudentController extends PageFlowController
 
 		private Message message;
 		private  boolean disableMandatoryBirthdate = false;  //GACRCT2010CR007 - Disable Mandatory Birth Date 
+		private boolean isMandatoryGTEGeorgia = false;//GA2011CR001- GTID mandatory field
 		public ManageStudentForm()
 		{
 		}
@@ -2575,6 +2654,16 @@ public class ManageStudentController extends PageFlowController
 				requiredFieldCount += 1;      
 				requiredFields = Message.buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
 			}        
+			
+			//CR - GA2011CR001 - validation For GTID
+			if(isMandatoryGTEGeorgia){
+				System.out.println("GTEGeorgia.."+ isMandatoryGTEGeorgia);
+				String gte = this.studentProfile.getStudentNumber().trim();
+				if ( gte.length()==0) {
+					requiredFieldCount += 1;            
+					requiredFields = Message.buildErrorString("GTID", requiredFieldCount, requiredFields);   
+				}
+			}
 
 
 			if (requiredFieldCount > 0) {
@@ -2627,7 +2716,23 @@ public class ManageStudentController extends PageFlowController
 			}
 			return true;
 		}
+		
+		// start Change For CR - GA2011CR001
+		/**
+		 * @return the isMandatoryGTEGeorgia
+		 */
+		public boolean isMandatoryGTEGeorgia() {
+			return this.isMandatoryGTEGeorgia;
+		}
 
+		/**
+		 * @param isMandatoryGTEGeorgia the isMandatoryGTEGeorgia to set
+		 */
+		public void setMandatoryGTEGeorgia(boolean isMandatoryGTEGeorgia) {
+			this.isMandatoryGTEGeorgia = isMandatoryGTEGeorgia;
+		}
+		
+		// End  Change For CR - GA2011CR001
 	}
 
 

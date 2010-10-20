@@ -9,6 +9,9 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
 
+<%
+    Boolean isGTIDCustomer = (Boolean)request.getAttribute("isGTIDCustomer"); //Start Change For CR - GA2011CR001
+%>
 
 <!--  studentList table -->
 <table class="sortable">
@@ -36,7 +39,13 @@
             <th class="sortable alignLeft" width="30%" nowrap>&nbsp;&nbsp;Organization</th>
             <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="LoginId">Login ID</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="Grade">Grade</ctb:tableSortColumn></th>
-            <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentIdNumber">Student ID</ctb:tableSortColumn></th>
+           <c:if test="${isGTIDCustomer}">   
+          <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentIdNumber">${GTIDArrValue[0]}</ctb:tableSortColumn></th>
+          </c:if>
+          <c:if test="${!isGTIDCustomer}">   
+        <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentIdNumber">Student ID</ctb:tableSortColumn></th>
+         </c:if>
+           
         </ctb:tableSortColumnGroup>
     </tr>
     
