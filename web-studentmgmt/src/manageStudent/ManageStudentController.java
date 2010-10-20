@@ -119,8 +119,8 @@ public class ManageStudentController extends PageFlowController
 	//GACRCT2010CR007- Disable_Mandatory_Birth_Date according to customer cofiguration
 	private boolean disableMandatoryBirthdate = false;
 	
-	private boolean isMandatoryGTEGeorgia = false; // Change For CR - GA2011CR001
-	
+	private boolean isMandatoryStudentId = false; // Change For CR - GA2011CR001
+	private String studentIdLabelName = "Student ID";
 
 	// student demographics
 	List demographics = null;
@@ -351,7 +351,7 @@ public class ManageStudentController extends PageFlowController
 	})
 	protected Forward addEditStudent(ManageStudentForm form)
 	{      
-		isGeorgiaCustomer(); //Change For CR - GA2011CR001
+		isGeorgiaCustomer(form); //Change For CR - GA2011CR001
 		String stringAction = form.getStringAction();
 		setFormInfoOnRequest(form);
 		saveToken(this.getRequest());
@@ -510,7 +510,7 @@ public class ManageStudentController extends PageFlowController
 				form.setDisableMandatoryBirthdate(disableMandatoryBirthdate);
 				
 				//CR - GA2011CR001 - set value for FTE Mandatory Field
-				form.setMandatoryGTEGeorgia(isMandatoryGTEGeorgia);
+				form.setMandatoryStudentId(isMandatoryStudentId);
 				
 				boolean result = form.verifyStudentInformation(this.selectedOrgNodes);
 				if (! result)
@@ -709,8 +709,7 @@ public class ManageStudentController extends PageFlowController
 
 		//START - Added for CR017
 		 Boolean isClassReassignable = isClassReassignable(profileEditable);
-		 System.out.println("isClassReassignable==>"+isClassReassignable);
-		List orgNodes = StudentPathListUtils.buildOrgNodeList(ond, profileEditable, ACTION_ADD_STUDENT, isClassReassignable);
+		 List orgNodes = StudentPathListUtils.buildOrgNodeList(ond, profileEditable, ACTION_ADD_STUDENT, isClassReassignable);
 		//END - Added for CR017
 
 		String orgCategoryName = StudentPathListUtils.getOrgCategoryName(orgNodes);
@@ -1400,7 +1399,7 @@ public class ManageStudentController extends PageFlowController
 			path = "logout.do"))
 			protected Forward findStudent(ManageStudentForm form)
 	{    
-		isGeorgiaCustomer();// Change For CR - GA2011CR001
+		isGeorgiaCustomer(form);// Change For CR - GA2011CR001
 		//System.out.println("findstudent action on refresh");
 		form.validateValues();
 
@@ -1839,7 +1838,7 @@ public class ManageStudentController extends PageFlowController
 		if (this.demographics.size() == 0) {
 			this.getRequest().setAttribute("demographicVisible", "F");       
 		}
-		isGeorgiaCustomer(); //Change For CR - GA2011CR001
+		isGeorgiaCustomer(form); //Change For CR - GA2011CR001
 		setFormInfoOnRequest(form);
 		return new Forward("success", form);                                                                                                                                                                                                    
 	}
@@ -1967,7 +1966,29 @@ public class ManageStudentController extends PageFlowController
 			be.printStackTrace();
 		}
 	}
-
+	
+	/*
+	 * New method added for CR - GA2011CR001
+	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
+	 */
+	private String getDefaultValue(String arrValue, int counter, String labelName, ManageStudentForm form)
+	{
+		if(arrValue == null || arrValue == ""){
+			if(counter==0){
+				arrValue = labelName;
+			}
+			if(counter==1){
+				arrValue = "32";
+			}
+		}
+		if(counter==0 && labelName.equals("Student ID")){
+			this.studentIdLabelName = arrValue;
+			form.setStudentIdLabelName(this.studentIdLabelName );
+			
+		}
+		return arrValue;
+	}
+	
 	/**
 	 * getGradeOptions
 	 */
@@ -2122,50 +2143,76 @@ public class ManageStudentController extends PageFlowController
 	 * New method added for CR - GA2011CR001
 	 * This method retrieve  the value of provide two customer configuration and their corresponding data in customer configuration value.
 	 */
-	private void isGeorgiaCustomer() 
+	private void isGeorgiaCustomer(ManageStudentForm form) 
     {     
-		 boolean isGTIDCustomer = false;
-		 boolean isFTECustomer = false;
+		 boolean isStudentIdConfigurable = false;
+		 boolean isStudentId2Configurable = false;
 		 Integer configId=0;
-		 String []valueForGTID = null ;
-		 String []valueForFTE = null ;
+		 String []valueForStudentId = new String[3] ;
+		 String []valueForStudentId2 = new String[2] ;
 		for (int i=0; i < this.customerConfigurations.length; i++)
 	        {
 	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Is_FTE_Customer") && cc.getDefaultValue().equalsIgnoreCase("T"))
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") && cc.getDefaultValue().equalsIgnoreCase("T"))
 	            {
-	            	isFTECustomer = true; 
+	            	isStudentId2Configurable = true; 
 	            	configId = cc.getId();
 	            	customerConfigurationValues(configId);
-	            	valueForFTE = new String[customerConfigurationsValue.length];
-	            	for(int j=0; j<this.customerConfigurationsValue.length; j++){
-	            		
-	            			valueForFTE[j] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
-	            			
+	            	for(int sort = 1; sort < 3; sort++) {
+		            	for(int j=0; j<this.customerConfigurationsValue.length; j++){
+		            		int sortOrder = this.customerConfigurationsValue[j].getSortOrder() - 1;
+		            		if(sort == this.customerConfigurationsValue[j].getSortOrder()){
+		            			
+		            			valueForStudentId2[sortOrder] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+		            			
+		            		}
+		            		else{
+		            			valueForStudentId2[sort-1] = getDefaultValue(valueForStudentId2[sort-1], sort-1, "Student ID 2", form);
+		            		}
+		            		
+		            	}
 	            	}
-	            }
-	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Is_GTID_Customer") && cc.getDefaultValue().equalsIgnoreCase("T"))
+	            	
+	           }
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
 	            {
-	            	isGTIDCustomer = true; 
+	            	isStudentIdConfigurable = true; 
 	            	configId = cc.getId();
 	            	customerConfigurationValues(configId);
-	            	valueForGTID = new String[customerConfigurationsValue.length];
-	            	for(int j=0; j<this.customerConfigurationsValue.length; j++){
-	            		
-	            			valueForGTID[j] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
-	            		
+	            	for(int sort = 1; sort <= 3; sort++) {
+		            	for(int j=0; j<this.customerConfigurationsValue.length; j++){
+		            		int sortOrder = this.customerConfigurationsValue[j].getSortOrder() - 1;
+		            		if(sort == this.customerConfigurationsValue[j].getSortOrder()){
+		            			valueForStudentId[sortOrder] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+		            					            		}
+		            		else{
+		            			valueForStudentId[sort-1] = getDefaultValue(valueForStudentId[sort-1], sort-1, "Student ID", form);
+		            		}
+		            		valueForStudentId[2] ="T";
+		            		if(sort ==3){
+			            		valueForStudentId[2] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+			            		if(valueForStudentId[2] == null || valueForStudentId[2]== "") {
+			            			
+			            			valueForStudentId[2] = "F";
+			            			
+			            		}
+			            	}
+		            			
+		            	}
+		            	
 	            	}
-
+	            	System.out.println(valueForStudentId[0]+valueForStudentId[1]+valueForStudentId[2]);
 	            }
-	            
 	            
 	         }
-		this.isMandatoryGTEGeorgia = valueForGTID !=null &&  valueForGTID[2] != null && valueForGTID[2].equals("T") ?  true : false ;
-		System.out.println("isMandatoryGTEGeorgia" + isMandatoryGTEGeorgia);
-		this.getRequest().setAttribute("GTIDArrValue",valueForGTID);
-        this.getRequest().setAttribute("isGTIDCustomer",isGTIDCustomer);
-        this.getRequest().setAttribute("isFTECustomer",isFTECustomer);
-        this.getRequest().setAttribute("FTEArrValue",valueForFTE);
+		if(valueForStudentId.length ==3) {
+			this.isMandatoryStudentId = valueForStudentId !=null &&  valueForStudentId[2] != null && valueForStudentId[2].equals("T") ?  true : false ;
+			
+		}
+		this.getRequest().setAttribute("studentIdArrValue",valueForStudentId);
+        this.getRequest().setAttribute("isStudentIdConfigurable",isStudentIdConfigurable);
+        this.getRequest().setAttribute("isStudentId2Configurable",isStudentId2Configurable);
+        this.getRequest().setAttribute("studentId2ArrValue",valueForStudentId2);
     }
         
 
@@ -2212,7 +2259,8 @@ public class ManageStudentController extends PageFlowController
 
 		private Message message;
 		private  boolean disableMandatoryBirthdate = false;  //GACRCT2010CR007 - Disable Mandatory Birth Date 
-		private boolean isMandatoryGTEGeorgia = false;//GA2011CR001- GTID mandatory field
+		private boolean isMandatoryStudentId = false;//GA2011CR001- GTID mandatory field
+		private String studentIdLabelName = null;
 		public ManageStudentForm()
 		{
 		}
@@ -2656,12 +2704,11 @@ public class ManageStudentController extends PageFlowController
 			}        
 			
 			//CR - GA2011CR001 - validation For GTID
-			if(isMandatoryGTEGeorgia){
-				System.out.println("GTEGeorgia.."+ isMandatoryGTEGeorgia);
+			if(isMandatoryStudentId){
 				String gte = this.studentProfile.getStudentNumber().trim();
 				if ( gte.length()==0) {
-					requiredFieldCount += 1;            
-					requiredFields = Message.buildErrorString("GTID", requiredFieldCount, requiredFields);   
+					requiredFieldCount += 1;     
+					requiredFields = Message.buildErrorString(this.studentIdLabelName, requiredFieldCount, requiredFields);   
 				}
 			}
 
@@ -2717,22 +2764,38 @@ public class ManageStudentController extends PageFlowController
 			return true;
 		}
 		
+		
 		// start Change For CR - GA2011CR001
 		/**
-		 * @return the isMandatoryGTEGeorgia
+		 * @return the isMandatoryStudentId
 		 */
-		public boolean isMandatoryGTEGeorgia() {
-			return this.isMandatoryGTEGeorgia;
+		public boolean isMandatoryStudentId() {
+			return isMandatoryStudentId;
 		}
 
 		/**
-		 * @param isMandatoryGTEGeorgia the isMandatoryGTEGeorgia to set
+		 * @param isMandatoryStudentId the isMandatoryStudentId to set
 		 */
-		public void setMandatoryGTEGeorgia(boolean isMandatoryGTEGeorgia) {
-			this.isMandatoryGTEGeorgia = isMandatoryGTEGeorgia;
+		public void setMandatoryStudentId(boolean isMandatoryStudentId) {
+			this.isMandatoryStudentId = isMandatoryStudentId;
 		}
-		
 		// End  Change For CR - GA2011CR001
+
+		/**
+		 * @return the studentIdLabelName
+		 */
+		public String getStudentIdLabelName() {
+			return studentIdLabelName;
+		}
+
+		/**
+		 * @param studentIdLabelName the studentIdLabelName to set
+		 */
+		public void setStudentIdLabelName(String studentIdLabelName) {
+			this.studentIdLabelName = studentIdLabelName;
+		}
+
+		
 	}
 
 
@@ -2766,5 +2829,5 @@ public class ManageStudentController extends PageFlowController
 		return yearOptions;
 	}
 
-
+	
 }
