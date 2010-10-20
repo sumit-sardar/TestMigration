@@ -1,46 +1,5 @@
 package com.ctb.control.uploadDownloadManagement; 
 
-import com.bea.control.*;
-import com.ctb.bean.request.PageParams;
-import com.ctb.bean.request.SortParams;
-import com.ctb.bean.request.SortParams.SortParam;
-import com.ctb.bean.request.SortParams.SortType;
-import com.ctb.bean.studentManagement.CustomerDemographic;
-import com.ctb.bean.studentManagement.CustomerDemographicValue;
-import com.ctb.bean.testAdmin.Address;
-import com.ctb.bean.testAdmin.Customer;
-import com.ctb.bean.testAdmin.CustomerConfig;
-import com.ctb.bean.testAdmin.DataFileAudit;
-import com.ctb.bean.testAdmin.DataFileAuditData;
-import com.ctb.bean.testAdmin.DataFileTemp;
-import com.ctb.bean.testAdmin.Node;
-import com.ctb.bean.testAdmin.OrgNodeCategory;
-import com.ctb.bean.testAdmin.UserFile;
-import com.ctb.bean.testAdmin.UserFileRow;
-import com.ctb.bean.testAdmin.StudentDemoGraphics;
-import com.ctb.bean.testAdmin.StudentDemoGraphicsData;
-import com.ctb.bean.testAdmin.StudentFile;
-import com.ctb.bean.testAdmin.StudentFileRow;
-import com.ctb.bean.testAdmin.StudentFileRowData;
-import com.ctb.bean.testAdmin.User;
-import com.ctb.bean.testAdmin.UserFileRowData;
-import com.ctb.exception.CTBBusinessException;
-import com.ctb.exception.uploadDownloadManagement.FileNotUploadedException;
-import com.ctb.exception.uploadDownloadManagement.CreateTemplateException;
-import com.ctb.exception.uploadDownloadManagement.DeleteFileException;
-import com.ctb.exception.uploadDownloadManagement.DownloadTemplateException;
-import com.ctb.exception.uploadDownloadManagement.FileDownloadException;
-import com.ctb.exception.uploadDownloadManagement.FileHeaderException;
-import com.ctb.exception.uploadDownloadManagement.FileHistoryException;
-import com.ctb.util.BatchProcessor;
-import com.ctb.util.CTBConstants;
-import com.ctb.util.DateUtils;
-import com.ctb.util.HeaderOrder;
-import com.ctb.util.UploadProcess;
-import com.ctb.util.UploadStudent;
-import com.ctb.util.StudentHeader;
-import com.ctb.util.UserHeader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -57,12 +16,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
+
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -70,6 +25,44 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
+import com.ctb.bean.request.SortParams.SortParam;
+import com.ctb.bean.request.SortParams.SortType;
+import com.ctb.bean.studentManagement.CustomerConfiguration;
+import com.ctb.bean.studentManagement.CustomerConfigurationValue;
+import com.ctb.bean.testAdmin.Address;
+import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfig;
+import com.ctb.bean.testAdmin.DataFileAudit;
+import com.ctb.bean.testAdmin.DataFileAuditData;
+import com.ctb.bean.testAdmin.DataFileTemp;
+import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.OrgNodeCategory;
+import com.ctb.bean.testAdmin.StudentDemoGraphics;
+import com.ctb.bean.testAdmin.StudentDemoGraphicsData;
+import com.ctb.bean.testAdmin.StudentFile;
+import com.ctb.bean.testAdmin.StudentFileRow;
+import com.ctb.bean.testAdmin.StudentFileRowData;
+import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.UserFile;
+import com.ctb.bean.testAdmin.UserFileRow;
+import com.ctb.bean.testAdmin.UserFileRowData;
+import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.uploadDownloadManagement.DeleteFileException;
+import com.ctb.exception.uploadDownloadManagement.DownloadTemplateException;
+import com.ctb.exception.uploadDownloadManagement.FileDownloadException;
+import com.ctb.exception.uploadDownloadManagement.FileHeaderException;
+import com.ctb.exception.uploadDownloadManagement.FileHistoryException;
+import com.ctb.exception.uploadDownloadManagement.FileNotUploadedException;
+import com.ctb.util.CTBConstants;
+import com.ctb.util.DateUtils;
+import com.ctb.util.HeaderOrder;
+import com.ctb.util.StudentHeader;
+import com.ctb.util.UploadProcess;
+import com.ctb.util.UploadStudent;
+import com.ctb.util.UserHeader;
 
 /**
  * @editor-info:code-gen control-interface="true"
@@ -152,7 +145,19 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
     @org.apache.beehive.controls.api.bean.Control()
      private com.ctb.control.studentManagement.StudentManagement studentManagement ;
     
-
+     //Changes for GA2011CR001
+    CustomerConfiguration[] customerConfigurations = null;
+    CustomerConfigurationValue[] customerConfigurationsValue = null;
+    private String loginUserName = null;
+	private Integer customerId = null;
+	private boolean isStudentIdConfigurable = false;
+	private boolean isStudentId2Configurable = false;
+	private boolean isGTIDMandatory = false;
+	private Integer configId=0;
+	private String []valueForStudentId = null ;
+	private String []valueForStudentId2 = null ;
+    
+    // END
     static final long serialVersionUID = 1L;
 
     /**
@@ -179,7 +184,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             Node [] sortedOrgNodes = new Node[OrgNodeCategory.length];                     
             //retrive userNode details
             Node [] detailNode = uploadDataFile.getUserDataTemplate(userName);
-            
+           
             /*login user is belonging those nodes which are in parent-child 
              relation ship, then we need to
             delete child nodes*/
@@ -322,7 +327,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             Node [] sortedOrgNodes = new Node[OrgNodeCategory.length];                     
             //retrive StudentNode details
             Node [] detailNode = uploadDataFile.getUserDataTemplate(userName);
-            
+            System.out.println("Customer Name"+ customer + "customerId" + customer.getCustomerId());
             /*login user is belonging those nodes which are 
              * in parent-child relation ship, then we need to
              * delete child nodes
@@ -347,6 +352,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             int totalSize = hierarchyMap.size() + 1; 
             
             studentFileRow = new StudentFileRow[totalSize];
+            
+          
+            isGeorgiaCustomer(userName);
             // Insert Header Part
             createTemplateHeader(customer,OrgNodeCategory, 
                     studentFileRow, false);
@@ -629,7 +637,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
    public StudentFile getStudentFile(String userName)throws CTBBusinessException {
         
         StudentFile studentFile = new StudentFile();
-
+       
         try {
             StringBuffer orgNodeBuff = null;
             String displayStudentName = null;
@@ -637,6 +645,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             HashMap commonPathMap = new HashMap ();
             Node []userTopOrgNode =  orgNode.getTopNodesForUser(userName);
             Customer customer = users.getCustomer(userName);
+            System.out.println("getStudentFile" + userName + customer+ customer.getCustomerId());
             //Template Header Creation for Organization and User
             OrgNodeCategory []OrgNodeCategory = orgNodeCate.getOrgNodeCategories(
                                                             customer.getCustomerId());
@@ -658,7 +667,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             int totalSize = studentFileRow.length + 1; 
             StudentFileRow [] downloadStudentFileRow =
                     new StudentFileRow[totalSize];
-
+            
+            isGeorgiaCustomer(userName);
+            
+            
              // Insert downLoad Header Part
             createTemplateHeader(customer,OrgNodeCategory, 
                     downloadStudentFileRow, false);
@@ -951,7 +963,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                                 
  //       Integer uploadDataFileId = null;
         
-        int noOfUserColumn = 0;
+       
+    	int noOfUserColumn = 0;
         
        String excelFile = serverFilePath;
 
@@ -990,7 +1003,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             //Validating the excel sheet
             String fileType = getUploadFileType(
                     fileInputStrean,noOfUserColumn,customerId,
-                    orgNodeCategory, customer);            
+                    orgNodeCategory, customer, userName);            
             
             if ( fileType == "") {
              
@@ -1207,7 +1220,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             
             String fileType = getUploadFileType(
                     fileInputStrean,noOfUserColumn,customerId,
-                    orgNodeCategory, customer);
+                    orgNodeCategory, customer, userName);
             
             
                                                             
@@ -1877,6 +1890,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                                        OrgNodeCategory []OrgNodeCategory, 
                                        Object []object, 
                                        boolean isUserHeader) {
+    	System.out.println("customer" + customer + "Customer Name"  + customer.getCustomerName() + "Customer Id" + customer.getCustomerId() );
         
         int userHeaderPosition = 0;
         int cellPosition = 0;
@@ -1971,13 +1985,22 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             tempStudentFileRow.setLastName(studentHeader.getLastName());
             tempStudentFileRow.setHeaderDateOfBirth(
                     studentHeader.getHeaderDateOfBirthDate());
-                    
             tempStudentFileRow.setGrade(studentHeader.getGrade());
+            System.out.println("isStudentIdConfigurable"+"::"+isStudentIdConfigurable);
+            if(isStudentIdConfigurable){
+            tempStudentFileRow.setExtPin1(this.valueForStudentId[0]);
+            }
+            else{
             tempStudentFileRow.setExtPin1(studentHeader.getStudentId());
+            }
+            System.out.println("isStudentId2Configurable"+"::"+isStudentId2Configurable);
+            if(isStudentId2Configurable){
+            tempStudentFileRow.setExtPin2(this.valueForStudentId2[0]);
+            }
+            else{
             tempStudentFileRow.setExtPin2(studentHeader.getStudentId2());
+            }
             tempStudentFileRow.setGender(studentHeader.getGender());
-            
-            
             tempStudentFileRow.setScreenReader(studentHeader.getScreenReader());
             tempStudentFileRow.setCalculator(studentHeader.getCalculator());
             tempStudentFileRow.setTestPause(studentHeader.getTestPause());
@@ -2551,8 +2574,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                                        int noOfUserColumn,
                                        Integer customerId,
                                        OrgNodeCategory[] orgNodeCategory,
-                                       Customer customer) throws CTBBusinessException {
-        
+                                       Customer customer,String userName) throws CTBBusinessException {
+    
+    System.out.println("userName" + userName);	
+    isGeorgiaCustomer(userName);
        String fileType = "";                 
        try {                              
             POIFSFileSystem pfs  = new POIFSFileSystem( fileInputStream );
@@ -2699,8 +2724,12 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                             
                         }
                          
-                           
-                         headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();      
+                         if(isStudentIdConfigurable || isStudentId2Configurable){  
+                         headerListFromTemplate = getStudentGeorgiaHeaderOrderList();    
+                         }
+                         else{
+                        	 headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();  
+                         }
                          for ( int i = noOfUserColumn - 1; i < totalColumns; i++) {
                          
                             cells = row.getCell((short)i);
@@ -2871,9 +2900,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             users,customerdb,
             uploadDataFile, organizationManagement,
             studentManagement,dataFileAudit,students));*/
+    	isGeorgiaCustomer(userName);
+    	
       
-         System.out.println("  ***** Upload Control: Processing Student file"); 
-      
+         System.out.println("  ***** Upload Control: Processing Student file" + userName); 
          UploadStudent uploadStudent = new UploadStudent(
                                         serverFilePath,userName,inputStream , 
             studentFileRowHeader,
@@ -2881,7 +2911,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             orgNode ,  orgNodeCate, 
             users,customerdb,
             uploadDataFile, organizationManagement,
-            studentManagement,userManagement, dataFileAudit,students,userTopOrgNode);
+            studentManagement,userManagement, dataFileAudit,students,userTopOrgNode,valueForStudentId,valueForStudentId2);
                                     
                                     
         uploadStudent.run();
@@ -2939,8 +2969,13 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                         }
                         
                     } else {    // end of user header validation   
-                      
-                         headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();      
+                    	 if(isStudentIdConfigurable || isStudentId2Configurable){  
+                             headerListFromTemplate = getStudentGeorgiaHeaderOrderList();    
+                             }
+                             else{
+                            	 headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();  
+                             }
+                        // headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();      
                          for ( int i = startPosition; i < totalColumns; i++) {
                          
                             cells = row.getCell((short)i);
@@ -3044,7 +3079,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
          try {
 			// Get the user
             User user = users.getUserDetails(loginUserName); 
-            
+            System.out.println("user name" + user);
             if ( user.getUserId().intValue() == createdBy.intValue()) {
           
                 if ( status.equals(CTBConstants.ACTIVATION_STATUS_IN_PROGRESS) ) {
@@ -3169,4 +3204,139 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
        return newOrgArray;
         
     }
+    
+    //Changes for GA2011CR001
+    private void isGeorgiaCustomer(String userName) 
+    {     
+    	
+    	try{
+		Customer customer = users.getCustomer(userName);
+		this.loginUserName = userName;
+		this.customerId = customer.getCustomerId();
+		 getCustomerConfigurations(this.loginUserName, this.customerId);
+		for (int i=0; i < this.customerConfigurations.length; i++)
+	        {
+	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") && cc.getDefaultValue().equalsIgnoreCase("T"))
+	            {
+	            	this.isStudentId2Configurable = true; 
+	            	configId = cc.getId();
+	            	System.out.println("configId"+ configId);
+	            	customerConfigurationValues(configId);
+	            	this.valueForStudentId2 = new String[customerConfigurationsValue.length];
+	            
+	            	for(int j=0; j<this.customerConfigurationsValue.length; j++){
+	            		if(this.customerConfigurationsValue[j].getSortOrder().equals(j+1)){
+	            			this.valueForStudentId2[j] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+	            			
+	            		}	
+	            	}
+	            }
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
+	            {
+	            	this.isStudentIdConfigurable = true; 
+	            	configId = cc.getId();
+	            	customerConfigurationValues(configId);
+	            	
+	            	this.valueForStudentId = new String[customerConfigurationsValue.length];
+	            	for(int j=0; j<this.customerConfigurationsValue.length; j++){
+	            		if(this.customerConfigurationsValue[j].getSortOrder().equals(j+1)){
+	            			this.valueForStudentId[j] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+	            		}	
+	            	}
+
+	            }
+
+
+	         }
+		
+    	}
+		catch(SQLException e){
+            
+			FileNotUploadedException dataNotfoundException = 
+                new FileNotUploadedException
+                        ("UploadDownloadManagement.Failed");
+				dataNotfoundException.setStackTrace(e.getStackTrace());                                    
+        
+	         } 
+	
+	
+	
+     }
+    
+    //Changes for GA2011CR001
+	  private ArrayList getStudentGeorgiaHeaderOrderList() {
+	        
+	        ArrayList headerArray = new ArrayList();
+	        
+	        headerArray.add(CTBConstants.REQUIREDFIELD_FIRST_NAME);
+	        headerArray.add(CTBConstants.MIDDLE_NAME);
+	        headerArray.add(CTBConstants.REQUIREDFIELD_LAST_NAME);
+	        headerArray.add(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);
+	        headerArray.add(CTBConstants.REQUIREDFIELD_GRADE);
+	        headerArray.add(CTBConstants.REQUIREDFIELD_GENDER);
+	        
+	       if(isStudentIdConfigurable){
+	    	   headerArray.add(valueForStudentId[0]);
+	    	   
+	       }
+	       else{
+	    	   headerArray.add(CTBConstants.STUDENT_ID);
+	       }
+	        
+	       
+	       if(isStudentId2Configurable){
+	    	   headerArray.add(valueForStudentId2[0]);
+	    	   
+	       }
+	       else{
+	    	   headerArray.add(CTBConstants.STUDENT_ID2);
+	       }
+	     
+	        
+	        headerArray.add(CTBConstants.SCREEN_READER);
+	        headerArray.add(CTBConstants.CALCULATOR);
+	        headerArray.add(CTBConstants.TEST_PAUSE);
+	        headerArray.add(CTBConstants.UNTIMED_TEST);
+	        headerArray.add(CTBConstants.HIGHLIGHTER);
+	        headerArray.add(CTBConstants.QUESTION_BACKGROUND_COLOR);
+	        headerArray.add(CTBConstants.QUESTION_FONT_COLOR);
+	        headerArray.add(CTBConstants.ANSWER_BACKGROUND_COLOR);
+	        headerArray.add(CTBConstants.ANSWER_FONT_COLOR);
+	        headerArray.add(CTBConstants.FONT_SIZE);
+	       
+	        return headerArray;
+	    }
+	/***
+	 *  //Changes for GA2011CR001
+	 * @param configId
+	 */
+	private void customerConfigurationValues(Integer configId)
+	{
+		try {
+				this.customerConfigurationsValue = this.studentManagement.getCustomerConfigurationsValue(configId);
+
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+	}
+	/**
+	 * getCustomerConfigurations  //Changes for GA2011CR001
+	 */
+	private void getCustomerConfigurations(String userName, Integer customerId)
+	{
+		try {
+			//if (this.customerConfigurations == null) {   //Changes for Defect-60479
+				this.customerConfigurations = this.studentManagement.getCustomerConfigurations(userName, customerId);
+			//}
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+	}
+	
+ 
+   
+    
 } 

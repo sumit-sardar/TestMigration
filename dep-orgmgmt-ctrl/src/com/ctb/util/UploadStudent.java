@@ -156,6 +156,24 @@ public class UploadStudent extends BatchProcessor.Process
     
     boolean checkCustomerConfiguration;
     
+    
+  
+    //Changes for GA2011CR001
+ 	
+	private boolean isStudentIdConfigurable = false;
+	private boolean isStudentId2Configurable = false;
+	private String studentIdLabel = CTBConstants.STUDENT_ID;
+	private String studentId2Label = CTBConstants.STUDENT_ID2;
+	private boolean isStudentIdMandatory = false;
+	private String isFTEMandatory = null;
+	private String maxlengthGTID = null;
+	private String maxlengthFTE = null;
+	
+	private Integer configId=0;
+	private String []valueForGTID = null ;
+	private String []valueForFTE = null ;
+	private HashMap configMap = new HashMap();
+    
     public UploadStudent ( String serverFilePath,String username, 
             InputStream uploadedStream , 
             StudentFileRow []studentFileRowHeader,
@@ -168,9 +186,11 @@ public class UploadStudent extends BatchProcessor.Process
             StudentManagement studentManagement,
             UserManagement userManagement, DataFileAudit dataFileAudit,
             com.ctb.control.db.Students students,
-            Node []userTopOrgNode ) {
+            Node []userTopOrgNode,String []valueForGTID,String []valueForFTE ) {
                 
-                
+        
+    	
+    	
         
         setPriority(BatchProcessor.PRIORITY_NORMAL);
 
@@ -212,6 +232,25 @@ public class UploadStudent extends BatchProcessor.Process
         this.serverFilePath = serverFilePath;
         this.userTopOrgNode = userTopOrgNode;
         
+      //Changes for GA2011CR001
+        if( valueForGTID != null){
+        	this.isStudentIdConfigurable = true;
+        	this.studentIdLabel = valueForGTID[0]!=null ? valueForGTID[0]: "Student ID";
+        	this.maxlengthGTID = valueForGTID[1];
+        	this.isStudentIdMandatory = valueForGTID[2]!=null && valueForGTID[2].equals("T")? true : false;
+        	                 	
+        }
+      //Changes for GA2011CR001  
+        if( valueForFTE != null){
+        	this.isStudentId2Configurable = true;
+        	this.studentId2Label = valueForFTE[0];
+        	this.maxlengthFTE = valueForFTE[1];
+        	//this.isFTEMandatory = valueForFTE[2];
+        	
+        }
+        
+        
+                
         // Initialize the list of color, get the customer configuration entries of customer, 
         
         initList();
@@ -1389,12 +1428,16 @@ public class UploadStudent extends BatchProcessor.Process
                }
            }
            
-                    
            //Changed 04/12/2008
            this.detailNodeM = this.uploadDataFile.
-                                        getUserDataTemplate(this.userName);                                                
+                                        getUserDataTemplate(this.userName);  
+           
+           System.out.println("this.userName" + this.userName);
+           
+           
         
-
+           
+           
             
         } catch(SQLException se){
              se.printStackTrace();
@@ -2776,7 +2819,20 @@ public class UploadStudent extends BatchProcessor.Process
                         equals(CTBConstants.REQUIREDFIELD_GENDER) ) {
                         
                     requiredList.add(CTBConstants.REQUIREDFIELD_GENDER);   
-                } 
+                }
+                
+               
+                //Changes for GA2011CR001
+                
+                 else if( this.isStudentIdMandatory){
+                	 
+                	 if ( cellHeader.getStringCellValue().
+                             equals(this.studentIdLabel) ) {
+                             
+                         requiredList.add(this.studentIdLabel);
+                	 }
+                	 
+                 }
                         
                         
             }
@@ -2966,24 +3022,44 @@ public class UploadStudent extends BatchProcessor.Process
                     invalidList.add(CTBConstants.FONT_SIZE);
                     
                 }
-    
-                else if ( cellHeader.getStringCellValue().
-                        equals(CTBConstants.STUDENT_ID)
+                
+              //Changes for GA2011CR001              
+                else if(cellHeader.getStringCellValue().
+                        equals(this.studentIdLabel)
                         && !strCell.trim().equals("")
-                        && !validStudentId(strCell) ) {
+                        && !validStudentId(strCell) 
+                        && this.isStudentIdConfigurable) {
+                	
+                	invalidList.add(this.studentIdLabel);
+                  	
+                } else if (cellHeader.getStringCellValue().
+                		equals(CTBConstants.STUDENT_ID) 
+                		&& !strCell.trim().equals("")
+                		&& !validStudentId(strCell) ) {
                             
                     invalidList.add(CTBConstants.STUDENT_ID);
                     
-                }
-    
-                else if ( cellHeader.getStringCellValue().
-                        equals(CTBConstants.STUDENT_ID2)
-                        && !strCell.trim().equals("")
-                        && !validStudentId(strCell) ) {
-                            
-                    invalidList.add(CTBConstants.STUDENT_ID2);
-                    
-                }
+                	}
+              //Changes for GA2011CR001               
+                else if(cellHeader.getStringCellValue().
+                            equals(this.studentId2Label)
+                            && !strCell.trim().equals("")
+                            && !validStudentId(strCell) 
+                            && this.isStudentId2Configurable) {
+                    	
+                    	invalidList.add(this.studentId2Label);
+                      	
+                    } else if ( cellHeader.getStringCellValue().
+                            equals(CTBConstants.STUDENT_ID2)
+                            && !strCell.trim().equals("")
+                            && !validStudentId(strCell) ) {
+                                
+                        invalidList.add(CTBConstants.STUDENT_ID2);
+                        
+                    	}
+                
+                                 
+                
             
                 //For validating demographics data
                 else if ( i == start ) {
@@ -3355,15 +3431,36 @@ public class UploadStudent extends BatchProcessor.Process
                     maxLengthList.add(CTBConstants.REQUIREDFIELD_LAST_NAME);
                     
                 }
-                
-                else if ( cellHeader.getStringCellValue().
-                        equals(CTBConstants.STUDENT_ID)
-                        && !strCell.trim().equals("")
-                        && !isMaxLength64(strCell) ) {
-                    
-                        maxLengthList.add(CTBConstants.STUDENT_ID);
-                    
-                }
+                              
+              //Changes for GA2011CR001	
+                else if( cellHeader.getStringCellValue().
+                            equals(this.studentIdLabel)
+                            && !strCell.trim().equals("")
+                            && !isMaxLengthConfigurableStudentId(strCell) 
+                            && this.isStudentIdConfigurable 
+                            && this.maxlengthGTID != null ) {
+                        
+                            maxLengthList.add(this.studentIdLabel);
+                	}
+                	else if ( cellHeader.getStringCellValue().
+                            equals(CTBConstants.STUDENT_ID)
+                            && !strCell.trim().equals("")
+                            && !isMaxLength64(strCell) ) {
+                        
+                            maxLengthList.add(CTBConstants.STUDENT_ID);
+                        
+                    }
+                	
+              //Changes for GA2011CR001
+                	 else if( cellHeader.getStringCellValue().
+                             equals(this.studentId2Label)
+                             && !strCell.trim().equals("")
+                             && !isMaxLengthConfigurableStudentId2(strCell) 
+                             && this.isStudentId2Configurable 
+                             && this.maxlengthFTE != null ) {
+                         
+                             maxLengthList.add(this.studentId2Label);
+                 	}
       
                 else if ( cellHeader.getStringCellValue().
                         equals(CTBConstants.STUDENT_ID2)
@@ -3473,6 +3570,40 @@ public class UploadStudent extends BatchProcessor.Process
         }
         
     }
+    
+    /*
+     * check Maxlength for gerogia Customer for studentID
+     */
+    
+    private boolean isMaxLengthConfigurableStudentId (String value){
+    	  
+    	if ( value.length() <= Integer.parseInt(this.maxlengthGTID) ) {
+               
+               return true;
+           
+           } else {
+               
+               return false;   
+           }
+    	
+    }
+    /*
+     * check Maxlength for gerogia Customer for studentID2
+     */
+    private boolean isMaxLengthConfigurableStudentId2 (String value){
+  	  
+    	if ( value.length() <= Integer.parseInt(this.maxlengthFTE) ) {
+               
+               return true;
+           
+           } else {
+               
+               return false;   
+           }
+    	
+    }
+    
+    
     
     
   /*
@@ -4905,6 +5036,9 @@ public class UploadStudent extends BatchProcessor.Process
 
 	    return value;
 	}
+    
+    
+    
 	
       
 } 
