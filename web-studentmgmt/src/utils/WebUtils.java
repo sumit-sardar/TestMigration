@@ -150,7 +150,7 @@ public class WebUtils
         return invalidCharFields;
     }
 
-    public static String verifyCreateStudentNumber(String studentNumber, String studentSecondNumber)
+    public static String verifyCreateStudentNumber(String studentNumber, String studentSecondNumber, String studentIdLabelName, String studentId2LabelName)
     {
         String invalidCharFields = "";
         int invalidCharFieldCount = 0;
@@ -158,13 +158,13 @@ public class WebUtils
         if (studentNumber != null) {
             if (! validTextString(studentNumber) ) {
                 invalidCharFieldCount += 1;            
-                invalidCharFields = buildErrorString("Student ID", invalidCharFieldCount, invalidCharFields);       
+                invalidCharFields = buildErrorString(studentIdLabelName, invalidCharFieldCount, invalidCharFields);       //Changed for GA2011CR001
             }
         }
         if (studentSecondNumber != null) {
             if (! validTextString(studentSecondNumber) ) {
                 invalidCharFieldCount += 1;            
-                invalidCharFields = buildErrorString("Student ID 2", invalidCharFieldCount, invalidCharFields);       
+                invalidCharFields = buildErrorString(studentId2LabelName, invalidCharFieldCount, invalidCharFields);      //Changed for GA2011CR001 
             }
         }
             
@@ -172,7 +172,7 @@ public class WebUtils
     }
 
     public static String verifyFindStudentInfo(String firstName, String lastName, String middleName,
-                                                 String studentNumber, String loginId)
+                                                 String studentNumber, String loginId, String studentIdLabelName)
     {
         String invalidCharFields = "";
         int invalidCharFieldCount = 0;
@@ -194,7 +194,7 @@ public class WebUtils
 
         if (! validString(studentNumber) ) {
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Student ID", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString(studentIdLabelName, invalidCharFieldCount, invalidCharFields);      //Changed for GA2011CR001 
         }
     
         if (! validString(loginId) ) {

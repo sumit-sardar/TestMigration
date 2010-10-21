@@ -19,14 +19,14 @@
 	Boolean isStudentId2Configurable = (Boolean)request.getAttribute("isStudentId2Configurable"); 
 	String []studentIdArrValue = (String[])request.getAttribute("studentIdArrValue");
 	String []studentId2ArrValue = (String[])request.getAttribute("studentId2ArrValue");
-	boolean isGTIDMandatory = false;
+	boolean isMandatoryStudentId = false;
 	if(studentIdArrValue != null && studentIdArrValue[2] != null && studentIdArrValue[2]!= "") {
 		if (studentIdArrValue[2].equalsIgnoreCase("T")) {
-			isGTIDMandatory = true;
+			isMandatoryStudentId = true;
 		}
 	}
 	
-	pageContext.setAttribute("gtidMandatory",new Boolean(isGTIDMandatory));
+	pageContext.setAttribute("gtidMandatory",new Boolean(isMandatoryStudentId));
 
 	// End of Change CR - GA2011CR001 
 
@@ -132,7 +132,7 @@
          </c:if>
         <td class="transparent">
         <c:if test="${ profileEditable }">            
-            <netui:textBox dataSource="actionForm.studentProfile.studentNumber" maxlength="<%= isStudentIdConfigurable ? new Integer(studentIdArrValue[1]).intValue() : 32 %>" style="width:180px"/>
+            <netui:textBox dataSource="actionForm.studentProfile.studentNumber" maxlength="<%= isStudentIdConfigurable ? new Integer(studentIdArrValue[1]).intValue()<32 ? new Integer(studentIdArrValue[1]).intValue() : 32 : 32 %>" style="width:180px"/>
         </c:if>            
         <c:if test="${ !profileEditable }">            
             <netui:textBox dataSource="actionForm.studentProfile.studentNumber" maxlength="32" style="width:180px" disabled="true"/>
@@ -150,7 +150,7 @@
          </c:if>
         <td class="transparent">
         <c:if test="${ profileEditable }">            
-            <netui:textBox dataSource="actionForm.studentProfile.studentSecondNumber" maxlength="<%=isStudentId2Configurable ? new Integer(studentId2ArrValue[1]).intValue() : 32 %>" style="width:180px"/>
+            <netui:textBox dataSource="actionForm.studentProfile.studentSecondNumber" maxlength="<%=isStudentId2Configurable ? new Integer(studentId2ArrValue[1]).intValue()<32 ? new Integer(studentId2ArrValue[1]).intValue() : 32 : 32 %>" style="width:180px"/>
         </c:if>            
         <c:if test="${ !profileEditable }">            
             <netui:textBox dataSource="actionForm.studentProfile.studentSecondNumber" maxlength="32" style="width:180px" disabled="true"/>

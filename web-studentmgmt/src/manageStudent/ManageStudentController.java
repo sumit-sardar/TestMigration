@@ -121,6 +121,7 @@ public class ManageStudentController extends PageFlowController
 	
 	private boolean isMandatoryStudentId = false; // Change For CR - GA2011CR001
 	private String studentIdLabelName = "Student ID";
+	private String studentId2LabelName = "Student ID 2";
 
 	// student demographics
 	List demographics = null;
@@ -290,7 +291,6 @@ public class ManageStudentController extends PageFlowController
 	})
 	protected Forward beginEditStudent(ManageStudentForm form)
 	{                
-		System.out.println("edit");
 		Integer studentId = form.getSelectedStudentId();
 		StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
 		if (studentProfile == null) {						//Changes for Defect 60478
@@ -471,10 +471,7 @@ public class ManageStudentController extends PageFlowController
 	})
 	protected Forward saveAddEditStudent(ManageStudentForm form)
 	{   
-		//System.out.println("current action in save" + form.getCurrentAction());
-		//System.out.println(" action element in save" + form.getActionElement());
 		Boolean isTokenValid = isTokenValid();
-		System.out.println("isTokenValid........." + isTokenValid);
 		
 		
 		Integer studentId = form.getSelectedStudentId();
@@ -483,13 +480,10 @@ public class ManageStudentController extends PageFlowController
 			 
 			//System.out.println( studentId );
 			studentId = (Integer)this.getSession().getAttribute("selectStudentIdInView");
-			System.out.println("after session" +  studentId );
 			form.setSelectedStudentId(studentId);
 		}
 		
 		boolean isCreateNew = studentId == null ? true : false;
-		
-		//System.out.println("create new or not " + isCreateNew);
 		
 		if ( isTokenValid ) {
 			
@@ -1400,14 +1394,12 @@ public class ManageStudentController extends PageFlowController
 			protected Forward findStudent(ManageStudentForm form)
 	{    
 		isGeorgiaCustomer(form);// Change For CR - GA2011CR001
-		//System.out.println("findstudent action on refresh");
 		form.validateValues();
 
 		String currentAction = form.getCurrentAction();
 		String actionElement = form.getActionElement();
 
 		form.resetValuesForAction(actionElement, ACTION_FIND_STUDENT); 
-		//System.out.println("currentAction" + currentAction);
 		if (currentAction.equals(ACTION_VIEW_STUDENT) || currentAction.equals(ACTION_EDIT_STUDENT) || currentAction.equals(ACTION_DELETE_STUDENT))
 		{
 			this.viewStudentFromSearch = true;             
@@ -1660,7 +1652,7 @@ public class ManageStudentController extends PageFlowController
 				gender = "U";
 		}
 
-		String invalidCharFields = WebUtils.verifyFindStudentInfo(firstName, lastName, middleName, studentNumber, loginId);                
+		String invalidCharFields = WebUtils.verifyFindStudentInfo(firstName, lastName, middleName, studentNumber, loginId, form.studentIdLabelName);                
 
 		if (invalidCharFields.length() > 0)
 		{
@@ -1791,7 +1783,6 @@ public class ManageStudentController extends PageFlowController
 			protected Forward viewStudent(ManageStudentForm form)
 	{   
 		//Save the token to remove F5 problem
-		//System.out.println("View student");
 		saveToken(this.getRequest());   
 		Integer studentId = form.getSelectedStudentId(); 
 		
@@ -1971,21 +1962,37 @@ public class ManageStudentController extends PageFlowController
 	 * New method added for CR - GA2011CR001
 	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
 	 */
-	private String getDefaultValue(String arrValue, int counter, String labelName, ManageStudentForm form)
+	private String[] getDefaultValue(String [] arrValue, String labelName, ManageStudentForm form)
 	{
-		if(arrValue == null || arrValue == ""){
-			if(counter==0){
-				arrValue = labelName;
-			}
-			if(counter==1){
-				arrValue = "32";
-			}
+		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
+		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
+		
+		if(labelName.equals("Student ID 2")){
+			this.studentId2LabelName = arrValue[0];
+			form.setStudentId2LabelName(this.studentId2LabelName );
+			
 		}
-		if(counter==0 && labelName.equals("Student ID")){
-			this.studentIdLabelName = arrValue;
+		if(labelName.equals("Student ID")){
+			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
+			if(!arrValue[2].equals("T") && !arrValue[2].equals("F"))
+				{ 
+					arrValue[2]  = "F";
+				}
+			this.studentIdLabelName = arrValue[0];
 			form.setStudentIdLabelName(this.studentIdLabelName );
 			
 		}
+		
+		// check for numeric conversion of maxlength
+
+		try {
+			int maxLength = Integer.valueOf(arrValue[1]);
+		} catch (NumberFormatException nfe){
+			arrValue[1] = "32" ;
+		}
+		
+		
+		
 		return arrValue;
 	}
 	
@@ -2154,55 +2161,34 @@ public class ManageStudentController extends PageFlowController
 	        {
 	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
 	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") && cc.getDefaultValue().equalsIgnoreCase("T"))
-	            {
-	            	isStudentId2Configurable = true; 
-	            	configId = cc.getId();
-	            	customerConfigurationValues(configId);
-	            	for(int sort = 1; sort < 3; sort++) {
-		            	for(int j=0; j<this.customerConfigurationsValue.length; j++){
-		            		int sortOrder = this.customerConfigurationsValue[j].getSortOrder() - 1;
-		            		if(sort == this.customerConfigurationsValue[j].getSortOrder()){
-		            			
-		            			valueForStudentId2[sortOrder] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
-		            			
-		            		}
-		            		else{
-		            			valueForStudentId2[sort-1] = getDefaultValue(valueForStudentId2[sort-1], sort-1, "Student ID 2", form);
-		            		}
-		            		
-		            	}
-	            	}
-	            	
-	           }
+				{
+					isStudentId2Configurable = true; 
+					configId = cc.getId();
+					customerConfigurationValues(configId);
+					valueForStudentId2 = new String[2];
+
+					for(int j=0; j<this.customerConfigurationsValue.length; j++){
+
+						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
+						valueForStudentId2[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+
+					}
+					valueForStudentId2 = getDefaultValue(valueForStudentId2,"Student ID 2", form);
+				}
 	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
-	            {
-	            	isStudentIdConfigurable = true; 
-	            	configId = cc.getId();
-	            	customerConfigurationValues(configId);
-	            	for(int sort = 1; sort <= 3; sort++) {
-		            	for(int j=0; j<this.customerConfigurationsValue.length; j++){
-		            		int sortOrder = this.customerConfigurationsValue[j].getSortOrder() - 1;
-		            		if(sort == this.customerConfigurationsValue[j].getSortOrder()){
-		            			valueForStudentId[sortOrder] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
-		            					            		}
-		            		else{
-		            			valueForStudentId[sort-1] = getDefaultValue(valueForStudentId[sort-1], sort-1, "Student ID", form);
-		            		}
-		            		valueForStudentId[2] ="T";
-		            		if(sort ==3){
-			            		valueForStudentId[2] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
-			            		if(valueForStudentId[2] == null || valueForStudentId[2]== "") {
-			            			
-			            			valueForStudentId[2] = "F";
-			            			
-			            		}
-			            	}
-		            			
-		            	}
-		            	
-	            	}
-	            	System.out.println(valueForStudentId[0]+valueForStudentId[1]+valueForStudentId[2]);
-	            }
+				{
+					isStudentIdConfigurable = true; 
+					configId = cc.getId();
+					customerConfigurationValues(configId);
+					//By default there should be 3 entries for customer configurations
+					valueForStudentId = new String[3];
+					for(int j=0; j<this.customerConfigurationsValue.length; j++){
+						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
+						valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+					}	
+					valueForStudentId = getDefaultValue(valueForStudentId,"Student ID", form);
+					
+				}
 	            
 	         }
 		if(valueForStudentId.length ==3) {
@@ -2260,7 +2246,8 @@ public class ManageStudentController extends PageFlowController
 		private Message message;
 		private  boolean disableMandatoryBirthdate = false;  //GACRCT2010CR007 - Disable Mandatory Birth Date 
 		private boolean isMandatoryStudentId = false;//GA2011CR001- GTID mandatory field
-		private String studentIdLabelName = null;
+		private String studentIdLabelName = "Student ID";
+		private String studentId2LabelName = "Student ID 2";
 		public ManageStudentForm()
 		{
 		}
@@ -2697,11 +2684,6 @@ public class ManageStudentController extends PageFlowController
 				requiredFieldCount += 1;            
 				requiredFields = Message.buildErrorString("Gender", requiredFieldCount, requiredFields);       
 			}
-
-			if ( selectedOrgNodes.size() == 0 ) {
-				requiredFieldCount += 1;      
-				requiredFields = Message.buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
-			}        
 			
 			//CR - GA2011CR001 - validation For GTID
 			if(isMandatoryStudentId){
@@ -2712,7 +2694,12 @@ public class ManageStudentController extends PageFlowController
 				}
 			}
 
-
+			if ( selectedOrgNodes.size() == 0 ) {
+				requiredFieldCount += 1;      
+				requiredFields = Message.buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
+			}        
+			
+			
 			if (requiredFieldCount > 0) {
 				if (requiredFieldCount == 1) {
 					requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
@@ -2736,7 +2723,7 @@ public class ManageStudentController extends PageFlowController
 				return false;
 			}
 
-			invalidCharFields = WebUtils.verifyCreateStudentNumber(studentNumber, studentSecondNumber);                
+			invalidCharFields = WebUtils.verifyCreateStudentNumber(studentNumber, studentSecondNumber, this.studentIdLabelName, this.studentId2LabelName );                
 			if (invalidCharFields.length() > 0) {
 				invalidCharFields += ("<br/>" + Message.INVALID_NUMBER_CHARS);
 				setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
@@ -2779,7 +2766,7 @@ public class ManageStudentController extends PageFlowController
 		public void setMandatoryStudentId(boolean isMandatoryStudentId) {
 			this.isMandatoryStudentId = isMandatoryStudentId;
 		}
-		// End  Change For CR - GA2011CR001
+		
 
 		/**
 		 * @return the studentIdLabelName
@@ -2795,6 +2782,20 @@ public class ManageStudentController extends PageFlowController
 			this.studentIdLabelName = studentIdLabelName;
 		}
 
+		/**
+		 * @return the studentId2LabelName
+		 */
+		public String getStudentId2LabelName() {
+			return studentId2LabelName;
+		}
+
+		/**
+		 * @param studentId2LabelName the studentId2LabelName to set
+		 */
+		public void setStudentId2LabelName(String studentId2LabelName) {
+			this.studentId2LabelName = studentId2LabelName;
+		}
+		// End  Change For CR - GA2011CR001
 		
 	}
 
@@ -2828,6 +2829,34 @@ public class ManageStudentController extends PageFlowController
 	public String[] getYearOptions() {
 		return yearOptions;
 	}
-
 	
+	// start Change For CR - GA2011CR001
+	/**
+	 * @return the studentId2LabelName
+	 */
+	public String getStudentId2LabelName() {
+		return studentId2LabelName;
+	}
+
+	/**
+	 * @param studentId2LabelName the studentId2LabelName to set
+	 */
+	public void setStudentId2LabelName(String studentId2LabelName) {
+		this.studentId2LabelName = studentId2LabelName;
+	}
+
+	/**
+	 * @return the studentIdLabelName
+	 */
+	public String getStudentIdLabelName() {
+		return studentIdLabelName;
+	}
+
+	/**
+	 * @param studentIdLabelName the studentIdLabelName to set
+	 */
+	public void setStudentIdLabelName(String studentIdLabelName) {
+		this.studentIdLabelName = studentIdLabelName;
+	}
+	// End  Change For CR - GA2011CR001
 }
