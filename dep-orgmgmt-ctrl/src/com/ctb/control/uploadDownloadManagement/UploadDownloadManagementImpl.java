@@ -327,7 +327,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             Node [] sortedOrgNodes = new Node[OrgNodeCategory.length];                     
             //retrive StudentNode details
             Node [] detailNode = uploadDataFile.getUserDataTemplate(userName);
-            System.out.println("Customer Name"+ customer + "customerId" + customer.getCustomerId());
+           
             /*login user is belonging those nodes which are 
              * in parent-child relation ship, then we need to
              * delete child nodes
@@ -353,8 +353,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             
             studentFileRow = new StudentFileRow[totalSize];
             
-          
-            isGeorgiaCustomer(userName);
+            isStudentIDConfigurableCustomer(userName);
             // Insert Header Part
             createTemplateHeader(customer,OrgNodeCategory, 
                     studentFileRow, false);
@@ -668,9 +667,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             StudentFileRow [] downloadStudentFileRow =
                     new StudentFileRow[totalSize];
             
-            isGeorgiaCustomer(userName);
-            
-            
+            isStudentIDConfigurableCustomer(userName);
+                        
              // Insert downLoad Header Part
             createTemplateHeader(customer,OrgNodeCategory, 
                     downloadStudentFileRow, false);
@@ -2576,8 +2574,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                                        OrgNodeCategory[] orgNodeCategory,
                                        Customer customer,String userName) throws CTBBusinessException {
     
-    System.out.println("userName" + userName);	
-    isGeorgiaCustomer(userName);
+       isStudentIDConfigurableCustomer(userName);
        String fileType = "";                 
        try {                              
             POIFSFileSystem pfs  = new POIFSFileSystem( fileInputStream );
@@ -2725,7 +2722,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                         }
                          
                          if(isStudentIdConfigurable || isStudentId2Configurable){  
-                         headerListFromTemplate = getStudentGeorgiaHeaderOrderList();    
+                         headerListFromTemplate = getStudentIDHeaderOrderList();    
                          }
                          else{
                         	 headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();  
@@ -2900,7 +2897,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             users,customerdb,
             uploadDataFile, organizationManagement,
             studentManagement,dataFileAudit,students));*/
-    	isGeorgiaCustomer(userName);
+    	    isStudentIDConfigurableCustomer(userName);
     	
       
          System.out.println("  ***** Upload Control: Processing Student file" + userName); 
@@ -2970,7 +2967,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                         
                     } else {    // end of user header validation   
                     	 if(isStudentIdConfigurable || isStudentId2Configurable){  
-                             headerListFromTemplate = getStudentGeorgiaHeaderOrderList();    
+                             headerListFromTemplate = getStudentIDHeaderOrderList();    
                              }
                              else{
                             	 headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();  
@@ -3079,8 +3076,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
          try {
 			// Get the user
             User user = users.getUserDetails(loginUserName); 
-            System.out.println("user name" + user);
-            if ( user.getUserId().intValue() == createdBy.intValue()) {
+           if ( user.getUserId().intValue() == createdBy.intValue()) {
           
                 if ( status.equals(CTBConstants.ACTIVATION_STATUS_IN_PROGRESS) ) {
                     
@@ -3206,66 +3202,98 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
     }
     
     //Changes for GA2011CR001
-    private void isGeorgiaCustomer(String userName) 
+    private void isStudentIDConfigurableCustomer(String userName) 
     {     
-    	
     	try{
-		Customer customer = users.getCustomer(userName);
-		this.loginUserName = userName;
-		this.customerId = customer.getCustomerId();
-		 getCustomerConfigurations(this.loginUserName, this.customerId);
-		for (int i=0; i < this.customerConfigurations.length; i++)
-	        {
-	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") && cc.getDefaultValue().equalsIgnoreCase("T"))
-	            {
-	            	this.isStudentId2Configurable = true; 
-	            	configId = cc.getId();
-	            	System.out.println("configId"+ configId);
-	            	customerConfigurationValues(configId);
-	            	this.valueForStudentId2 = new String[customerConfigurationsValue.length];
-	            
-	            	for(int j=0; j<this.customerConfigurationsValue.length; j++){
-	            		if(this.customerConfigurationsValue[j].getSortOrder().equals(j+1)){
-	            			this.valueForStudentId2[j] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
-	            			
-	            		}	
-	            	}
-	            }
-	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
-	            {
-	            	this.isStudentIdConfigurable = true; 
-	            	configId = cc.getId();
-	            	customerConfigurationValues(configId);
-	            	
-	            	this.valueForStudentId = new String[customerConfigurationsValue.length];
-	            	for(int j=0; j<this.customerConfigurationsValue.length; j++){
-	            		if(this.customerConfigurationsValue[j].getSortOrder().equals(j+1)){
-	            			this.valueForStudentId[j] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
-	            		}	
-	            	}
+			Customer customer = users.getCustomer(userName);
+			this.loginUserName = userName;
+			this.customerId = customer.getCustomerId();
+			getCustomerConfigurations(this.loginUserName, this.customerId);
+			for (int i=0; i < this.customerConfigurations.length; i++)
+			{
+				CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") && cc.getDefaultValue().equalsIgnoreCase("T"))
+				{
+					this.isStudentId2Configurable = true; 
+					configId = cc.getId();
+					System.out.println("configId"+ configId);
+					customerConfigurationValues(configId);
+					this.valueForStudentId2 = new String[2];
 
-	            }
+					for(int j=0; j<this.customerConfigurationsValue.length; j++){
+
+						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
+						this.valueForStudentId2[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+					}
+					
+					this.valueForStudentId2 = getDefaultValue(valueForStudentId2, CTBConstants.STUDENT_ID2);
+					
+				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
+				{
+					this.isStudentIdConfigurable = true; 
+					configId = cc.getId();
+					customerConfigurationValues(configId);
+					//By default there should be 3 entries for customer configurations
+					this.valueForStudentId = new String[3];
+					for(int j=0; j<this.customerConfigurationsValue.length; j++){
+						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
+						this.valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+					}	
+					
+					this.valueForStudentId = getDefaultValue(valueForStudentId, CTBConstants.STUDENT_ID);
+					
+				}
 
 
-	         }
-		
-    	}
-		catch(SQLException e){
-            
+			}
+
+		} catch(SQLException e){
+
 			FileNotUploadedException dataNotfoundException = 
-                new FileNotUploadedException
-                        ("UploadDownloadManagement.Failed");
-				dataNotfoundException.setStackTrace(e.getStackTrace());                                    
-        
-	         } 
+				new FileNotUploadedException
+				("UploadDownloadManagement.Failed");
+			dataNotfoundException.setStackTrace(e.getStackTrace());                                    
+
+		} 
 	
 	
 	
      }
+   //Changes for GA2011CR001 
+    private String[] getDefaultValue(String [] arrValue, String labelName)
+	{
+		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
+		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
+		
+		
+		if(labelName.equals("Student ID")){
+			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
+			if(!arrValue[2].equals("T") && !arrValue[2].equals("F"))
+				{ 
+					arrValue[2]  = "F";
+				}
+			
+		}
+		
+		// check for numeric conversion of maxlength
+
+		try {
+			int maxLength = Integer.valueOf(arrValue[1]);
+		} catch (NumberFormatException nfe){
+			arrValue[1] = "32" ;
+		}
+		
+		
+		
+		return arrValue;
+	}
+    
+    
+    
     
     //Changes for GA2011CR001
-	  private ArrayList getStudentGeorgiaHeaderOrderList() {
+	  private ArrayList getStudentIDHeaderOrderList() {
 	        
 	        ArrayList headerArray = new ArrayList();
 	        

@@ -1431,13 +1431,8 @@ public class UploadStudent extends BatchProcessor.Process
            //Changed 04/12/2008
            this.detailNodeM = this.uploadDataFile.
                                         getUserDataTemplate(this.userName);  
-           
-           System.out.println("this.userName" + this.userName);
-           
-           
         
-           
-           
+
             
         } catch(SQLException se){
              se.printStackTrace();
@@ -2921,17 +2916,7 @@ public class UploadStudent extends BatchProcessor.Process
                     invalidList.add(CTBConstants.REQUIREDFIELD_GENDER);
                     
                 }
-                
-            //Changes for GACRCT2010CR007 .
-                else if (!(strCell == null ||  strCell.equals(""))){ 
-                	if ( cellHeader.getStringCellValue().
-                        equals(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH)
-                        && !validateDateString(strCell) ) {
-                            
-                    invalidList.add(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);
-                    
-                    	}
-                	}
+                     
                 //Student accomodation
                 
                 else if ( cellHeader.getStringCellValue().
@@ -3028,7 +3013,7 @@ public class UploadStudent extends BatchProcessor.Process
                         equals(this.studentIdLabel)
                         && !strCell.trim().equals("")
                         && !validStudentId(strCell) 
-                        && this.isStudentIdConfigurable) {
+                        && isStudentIdConfigurable) {
                 	
                 	invalidList.add(this.studentIdLabel);
                   	
@@ -3045,7 +3030,7 @@ public class UploadStudent extends BatchProcessor.Process
                             equals(this.studentId2Label)
                             && !strCell.trim().equals("")
                             && !validStudentId(strCell) 
-                            && this.isStudentId2Configurable) {
+                            && isStudentId2Configurable) {
                     	
                     	invalidList.add(this.studentId2Label);
                       	
@@ -3058,7 +3043,16 @@ public class UploadStudent extends BatchProcessor.Process
                         
                     	}
                 
-                                 
+                //Changes for GACRCT2010CR007 .
+                    else if (!(strCell == null ||  strCell.equals(""))){ 
+                    	if ( cellHeader.getStringCellValue().
+                            equals(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH)
+                            && !validateDateString(strCell) ) {
+                                
+                        invalidList.add(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);
+                        
+                        	}
+                    	}              
                 
             
                 //For validating demographics data
@@ -5036,9 +5030,6 @@ public class UploadStudent extends BatchProcessor.Process
 
 	    return value;
 	}
-    
-    
-    
 	
       
 } 
