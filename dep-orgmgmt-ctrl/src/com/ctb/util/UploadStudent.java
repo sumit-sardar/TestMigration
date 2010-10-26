@@ -1804,7 +1804,8 @@ public class UploadStudent extends BatchProcessor.Process
          boolean isNewStudent = true;
          boolean isNewOrgAssigned = true;
          boolean isNewStudentExtId = true;
-        
+         //Changes for GA2011CR003 OAS Student Bulk Upload using Unique Student ID
+         boolean matchWithOtherCriteria = false; 
       
                                                                                      
         // Set into student Demographic
@@ -1845,29 +1846,41 @@ public class UploadStudent extends BatchProcessor.Process
             StudentFileRow[] studentFileRow = (StudentFileRow[])(new ArrayList(this.visibleStudent.values())).
                                                     toArray(new StudentFileRow[0]);
             if ( checkExternalStudent_id ) {
-                
-                       // Check existence of external  student Id
+            	    // Check existence of external  student Id
+            		// Change for GA2011CR003 OAS Student Bulk Upload using Unique Student ID
+            	     if (manageStudent.getStudentIdNumber()!= null && !"".equals(manageStudent.getStudentIdNumber())) {
+            	    	 
+	                       for ( int i = 0 ; i < studentFileRow.length ; i++ ) {
+	                    	   
+	                           if ( studentFileRow[i].getExtPin1() != null && !"".equals(studentFileRow[i].getExtPin1())) {
+	                                if ( studentFileRow[i].getExtPin1().
+	                                            equalsIgnoreCase(manageStudent.getStudentIdNumber()) ){
+	                                            
+	                                  //  isNewStudentExtId = false; 
+	                                	matchWithOtherCriteria = false;
+	                                    isNewStudent = false;    
+	                                    manageStudent.setLoginId(studentFileRow[i].getUserName());
+	                                    manageStudent.setId(studentFileRow[i].getStudentId());
+	                                    
+	                                    break;
+	                            }
+	                         }
+	                            
+	                       }
+	                       
+	                      
+            	     } else { // start of change; GA2011CR003 OAS Student Bulk Upload using Unique Student ID
+            	    	 
+            	    	 matchWithOtherCriteria = true;
+            	     }
                        
-                       for ( int i = 0 ; i < studentFileRow.length ; i++ ) {
-                        
-                           if ( studentFileRow[i].getExtPin1() != null && !"".equals(studentFileRow[i].getExtPin1())) {
-                                if ( studentFileRow[i].getExtPin1().
-                                            equalsIgnoreCase(manageStudent.getStudentIdNumber()) ){
-                                            
-                                    isNewStudentExtId = false; 
-                                    isNewStudent = false;    
-                                    manageStudent.setLoginId(studentFileRow[i].getUserName());
-                                    manageStudent.setId(studentFileRow[i].getStudentId());
-                                    
-                                    break;
-                            }
-                         }
-                            
-                       }
-                       
-                       
-                      if ( isNewStudentExtId ) {
-                        
+            	     if ( matchWithOtherCriteria && manageStudent.getStudentIdNumber() != null && !"".equals(manageStudent.getStudentIdNumber())) {
+            	    	 
+            	    	 matchWithOtherCriteria = false;
+            	    	 isNewStudent = true;
+            	     }
+            	     
+                     if ( matchWithOtherCriteria ) { //End  of change; GA2011CR003 OAS Student Bulk Upload using Unique Student ID
                         
                             StudentFileRow studentFile = isStudentExists(manageStudent,studentFileRow);
                             
@@ -1881,7 +1894,7 @@ public class UploadStudent extends BatchProcessor.Process
                             
                       }
              
-            }  else {
+            }	  else {
                 
                   StudentFileRow studentFile = isStudentExists(manageStudent,studentFileRow);
                             
