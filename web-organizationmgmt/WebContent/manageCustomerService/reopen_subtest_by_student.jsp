@@ -9,7 +9,14 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets" />
 
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.studentProfile.studentLoginId}" />
+<%
+   
+	//Start Change For CR - GA2011CR001
+	
+	String []studentIdArrValue = (String[])request.getAttribute("studentIdArrValue");
+	// End of Change CR - GA2011CR001 
 
+%>
 <!-- Parent table start-->
 <table class="sortable">
 
@@ -246,7 +253,12 @@
 								<td class="transparent"><netui:span value="${container.item.studentLoginName}" /></td>
 							</tr>
 							<tr class="transparent" valign="top">
+								<c:if test="${studentIdArrValue[0] != null}">
+								<td class="transparent"><netui:span value="${studentIdArrValue[0]}:"/></td>
+								</c:if>
+								<c:if test="${studentIdArrValue[0] == null}">
 								<td class="transparent"><netui:span value="${bundle.web['test.label.id']}:" /></td>
+								</c:if>
 								<td class="transparent"><netui:span value="${container.item.externalStudentId}" /></td>
 							</tr>
 						</table>

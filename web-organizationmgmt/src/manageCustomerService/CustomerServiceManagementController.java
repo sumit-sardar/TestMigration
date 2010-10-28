@@ -132,6 +132,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 	private Integer customerId = 0;
 	private Integer configId=0;
 	private String []valueForStudentId = null ;
+	private Boolean isSubtestByStudent = false;
 	//END
 
 	/**
@@ -456,7 +457,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		//reset the list
 		this.studentTestStatusDetailsList = null;
 
-
+		//Changes For GA2011CR001
+		this.getRequest().setAttribute("studentIdArrValue", this.valueForStudentId);
 		return new Forward("success",form);
 	}  
 
@@ -556,7 +558,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 		setFormInfoOnRequest(form);
 		this.getRequest().setAttribute("disableShowDetailsButton", Boolean.FALSE);
-
+		//Change For GA2011CR001
+		this.getRequest().setAttribute("studentIdArrValue", this.valueForStudentId);
 		return new Forward("success",form);
 	}   
 
@@ -582,7 +585,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 			this.getRequest().setAttribute("subtestResult", "true");        
 			this.getRequest().setAttribute("subtestPagerSummary", subtestPagerSummary);
 		}
-
+		//Changes For GA2011CR001
+		this.getRequest().setAttribute("studentIdArrValue", this.valueForStudentId);
 		Forward forward = new Forward("success", form);
 		return forward;
 	}
@@ -831,12 +835,16 @@ public class CustomerServiceManagementController extends PageFlowController {
 						this.userName, studentLoginId);
 			StudentData studentData = null;
 
-
 			if (sData != null) {
 				form.setStudentProfile(new StudentProfileInformation(sData));
 				form.getStudentProfile().setStudentLoginId(studentLoginId);
 				form.setSelectedStudentId(sData.getStudentId());
 				form.setSelectedStudentLoginId(sData.getUserName());
+				// Changes for GA2011CR001
+				this.customerId = sData.getCustomerId();
+				this.isSubtestByStudent = true;
+				isStudentIdConfigurable(customerId, isSubtestByStudent);
+				//END
 				Student[] students = new Student[1];
 				students[0] = sData;
 				studentData = new StudentData();
@@ -916,7 +924,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 				this.itemsetId = this.createSubtestNameList(scheduleElementData.getElements(),form);
 				//Start Changes for GA2011CR001 	
 				this.customerId=	scheduleElementData.getElements()[0].getCustomerId();
-				isStudentIdConfigurable(this.customerId);
+				isStudentIdConfigurable(this.customerId, isSubtestByStudent);
 				//End Changes for GA2011CR001
 				this.getRequest().setAttribute("testSessionResult", "true"); 
 
@@ -1320,7 +1328,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 		this.getRequest().setAttribute("studentSearchResult", "true");        
 		this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
 		setSelectedStudentListToForm(form);
-		System.out.println(form.getSelectedStudentItemId().length);
 		checkForShowDetailsButton();
 		System.out.println("Size of students Details list............."+this.studentStatusDetailsList.size());
 
@@ -1501,7 +1508,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 	 * @param customerId
 	 */
 	
-	private void isStudentIdConfigurable(Integer customerId) 
+	private void isStudentIdConfigurable(Integer customerId, Boolean isSubtestByStudent) 
     {     
     	
 			getCustomerConfigurations(customerId);
@@ -1517,11 +1524,14 @@ public class CustomerServiceManagementController extends PageFlowController {
 					for(int j=0; j<this.customerConfigurationsValue.length; j++){
 						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
 						this.valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
-					}	
-					
-					this.valueForStudentId = getDefaultValue(valueForStudentId, CTBConstants.STUDENT_ID);
-					System.out.println("value for student Id" + this.valueForStudentId );
-					
+					}
+					if(isSubtestByStudent){
+					valueForStudentId[0] = valueForStudentId[0] != null ? valueForStudentId[0]   : "ID" ;
+					}
+					else{
+						valueForStudentId[0] = valueForStudentId[0] != null ? valueForStudentId[0]   : CTBConstants.STUDENT_ID ;
+					}
+														
 				}
 			else{
 				this.valueForStudentId = null;
@@ -1529,6 +1539,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 
 			}
+			this.isSubtestByStudent = false;
 			this.getRequest().setAttribute("studentIdArrValue",valueForStudentId);
 	
 	
@@ -1536,6 +1547,7 @@ public class CustomerServiceManagementController extends PageFlowController {
      }
 	/***
 	 *  Changes for GA2011CR001
+	 *  This method can be used in future to set a default value for configurable_customerid configuration
 	 * @param arrValue[], labelName
 	 */
     private String[] getDefaultValue(String [] arrValue, String labelName)
