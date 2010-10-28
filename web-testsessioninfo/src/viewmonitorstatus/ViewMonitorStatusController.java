@@ -6,6 +6,7 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.StudentManifest;
@@ -78,7 +79,13 @@ public class ViewMonitorStatusController extends PageFlowController
     private boolean showStudentReportButton = false;
     private List studentStatusSubtests = null;
     private List TABETestElements = null;
-                 
+   
+ 	// START- Added for CR GA2011CR001
+	CustomerConfiguration[] customerConfigurations = null;
+	CustomerConfigurationValue[] customerConfigurationsValue = null;
+	private String studentIdLabelName = "Student ID";
+	// END- Added for CR GA2011CR001  
+	           
     // Uncomment this declaration to access Global.app.
     // 
     //     protected global.Global globalApp;
@@ -102,7 +109,9 @@ public class ViewMonitorStatusController extends PageFlowController
         this.testRosterFilter = new TestRosterFilter();            
         ViewMonitorStatusForm form = new ViewMonitorStatusForm();
         form.init();
-        
+        // START- Added for CR GA2011CR001
+        getCustomerConfigurations();  
+        // END- Added for CR GA2011CR001
         this.sessionDetailsShowScores = isSessionDetailsShowScores();
 
         this.subtestValidationAllowed = isSubtestValidationAllowed();
@@ -145,7 +154,9 @@ public class ViewMonitorStatusController extends PageFlowController
             this.savedForm = form.createClone();
             return new Forward(forwardName, form);
         }
-
+        // START- Added for CR GA2011CR001
+        isGeorgiaCustomer(form);
+        // END- Added for CR GA2011CR001
         RosterElementData red = getRosterForTestSession(this.sessionId, form);
         List rosterList = buildRosterList(red);        
         this.getRequest().setAttribute("rosterList", rosterList);
@@ -182,7 +193,112 @@ public class ViewMonitorStatusController extends PageFlowController
         form.setActionElement("none");   
         return new Forward("success");
     }
-
+    // START- Added for CR GA2011CR001
+    /**
+	 * New method added for CR - GA2011CR001
+	 * isGeorgiaCustomer
+	 */
+    private void isGeorgiaCustomer(ViewMonitorStatusForm form) 
+    {     
+		 boolean isStudentIdConfigurable = false;
+		 Integer configId=0;
+		 String []valueForStudentId = new String[3] ;
+			for (int i=0; i < this.customerConfigurations.length; i++)
+		        {
+		            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+		          
+		            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
+					{
+						isStudentIdConfigurable = true; 
+						configId = cc.getId();
+						customerConfigurationValues(configId);
+						//By default there should be 3 entries for customer configurations
+						valueForStudentId = new String[3];
+						for(int j=0; j<this.customerConfigurationsValue.length; j++){
+							int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
+							valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+						}	
+						valueForStudentId[0] = valueForStudentId[0] != null ? valueForStudentId[0]   : "Student ID" ;
+						this.studentIdLabelName = valueForStudentId[0];
+						form.setStudentIdLabelName(this.studentIdLabelName );
+						
+						
+					}
+		            
+		         }
+			
+			this.getRequest().setAttribute("studentIdArrValue",valueForStudentId);
+	        this.getRequest().setAttribute("isStudentIdConfigurable",isStudentIdConfigurable);
+		
+		
+		 
+    }
+   
+    /**
+	 * New method added for CR - GA2011CR001
+	 * getCustomerConfigurations
+	 */
+	private void getCustomerConfigurations()
+	{
+		try {
+				User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
+				Customer customer = user.getCustomer();
+				Integer customerId = customer.getCustomerId();
+				this.customerConfigurations = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+	}
+	
+	/*
+	 * New method added for CR - GA2011CR001
+	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
+	 */
+	private void customerConfigurationValues(Integer configId)
+	{
+		try {
+				this.customerConfigurationsValue = this.testSessionStatus.getCustomerConfigurationsValue(configId);
+			
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+	}
+	
+	/*
+	 * New method added for CR - GA2011CR001
+	 * this method can be used in future for setting default value of configurable_StudentId configuration.
+	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
+	 */
+	private String[] getDefaultValue(String [] arrValue, String labelName, ViewMonitorStatusForm form)
+	{
+		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
+		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
+		if(labelName.equals("Student ID")){
+			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
+			if(!arrValue[2].equals("T") && !arrValue[2].equals("F"))
+				{ 
+					arrValue[2]  = "F";
+				}
+			this.studentIdLabelName = arrValue[0];
+			form.setStudentIdLabelName(this.studentIdLabelName );
+			
+		}
+		
+		// check for numeric conversion of maxlength
+		try {
+			int maxLength = Integer.valueOf(arrValue[1]);
+		} catch (NumberFormatException nfe){
+			arrValue[1] = "32" ;
+		}
+		
+		
+		
+		return arrValue;
+	}
+	 // END- Added for CR GA2011CR001 
+	  
     private boolean retrieveInfoFromSession()
     {
         boolean success = true;
@@ -497,16 +613,9 @@ public class ViewMonitorStatusController extends PageFlowController
     {               
         boolean showScores = false; 
 
-        try
-        {      
-            User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
-            Customer customer = user.getCustomer();
-            Integer customerId = customer.getCustomerId();
-            
-            CustomerConfiguration [] ccArray = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);       
-            for (int i=0; i < ccArray.length; i++)
+       	for (int i=0; i < this.customerConfigurations.length; i++)
             {
-                CustomerConfiguration cc = (CustomerConfiguration)ccArray[i];
+                CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
                 if (cc.getCustomerConfigurationName().equalsIgnoreCase("Session_Details_Show_Scores") && cc.getDefaultValue().equalsIgnoreCase("T"))
                 {
                     showScores = true; 
@@ -519,12 +628,6 @@ public class ViewMonitorStatusController extends PageFlowController
             }
             this.getRequest().setAttribute("setCustomerFlagToogleButton", setCustomerFlagToogleButton);  
                 
-        }
-        catch (CTBBusinessException be)
-        {
-            be.printStackTrace();
-        }        
-
         return showScores;
     }
     
@@ -532,27 +635,14 @@ public class ViewMonitorStatusController extends PageFlowController
     {               
         boolean showButton = false; 
 
-        try
-        {      
-            User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
-            Customer customer = user.getCustomer();
-            Integer customerId = customer.getCustomerId();
-            
-            CustomerConfiguration [] ccArray = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);       
-            for (int i=0; i < ccArray.length; i++)
+        for (int i=0; i < this.customerConfigurations.length; i++)
             {
-                CustomerConfiguration cc = (CustomerConfiguration)ccArray[i];
+                CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
                 if (cc.getCustomerConfigurationName().equalsIgnoreCase("Session_Status_Student_Reports") && cc.getDefaultValue().equalsIgnoreCase("T"))
                 {
                     showButton = true; 
                 }
             }     
-        }
-        catch (CTBBusinessException be)
-        {
-            be.printStackTrace();
-        }        
-
         return showButton;
     }
 
@@ -1297,7 +1387,9 @@ public class ViewMonitorStatusController extends PageFlowController
         private String currentAction = null;
         
         private Integer maxPage = null;
-
+        // START- Added for CR GA2011CR001 
+        private String studentIdLabelName = "Student ID";
+        // END- Added for CR GA2011CR001 
         public ViewMonitorStatusForm()
         {
         }
@@ -1494,6 +1586,20 @@ public class ViewMonitorStatusController extends PageFlowController
             }                 
             return this.selectedItemSetIds;
         }
+
+		/**
+		 * @return the studentIdLabelName
+		 */
+		public String getStudentIdLabelName() {
+			return studentIdLabelName;
+		}
+
+		/**
+		 * @param studentIdLabelName the studentIdLabelName to set
+		 */
+		public void setStudentIdLabelName(String studentIdLabelName) {
+			this.studentIdLabelName = studentIdLabelName;
+		}
            
     }
 
@@ -1596,6 +1702,43 @@ public class ViewMonitorStatusController extends PageFlowController
 
 	public void setSessionDetailsShowScores(boolean sessionDetailsShowScores) {
 		this.sessionDetailsShowScores = sessionDetailsShowScores;
+	}
+
+	/**
+	 * @return the customerConfigurationsValue
+	 */
+	public CustomerConfigurationValue[] getCustomerConfigurationsValue() {
+		return customerConfigurationsValue;
+	}
+
+	/**
+	 * @param customerConfigurationsValue the customerConfigurationsValue to set
+	 */
+	public void setCustomerConfigurationsValue(
+			CustomerConfigurationValue[] customerConfigurationsValue) {
+		this.customerConfigurationsValue = customerConfigurationsValue;
+	}
+
+	/**
+	 * @return the studentIdLabelName
+	 */
+	public String getStudentIdLabelName() {
+		return studentIdLabelName;
+	}
+
+	/**
+	 * @param studentIdLabelName the studentIdLabelName to set
+	 */
+	public void setStudentIdLabelName(String studentIdLabelName) {
+		this.studentIdLabelName = studentIdLabelName;
+	}
+
+	/**
+	 * @param customerConfigurations the customerConfigurations to set
+	 */
+	public void setCustomerConfigurations(
+			CustomerConfiguration[] customerConfigurations) {
+		this.customerConfigurations = customerConfigurations;
 	}
 }
  

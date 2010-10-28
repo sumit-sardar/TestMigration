@@ -9,7 +9,14 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
+<%
 
+//Start Change For CR - GA2011CR001
+Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); 
+String []studentIdArrValue = (String[])request.getAttribute("studentIdArrValue");
+
+
+%>
 <netui-template:template templatePage="/resources/jsp/template.jsp">
     <netui-template:setAttribute name="title" value="${bundle.web['viewMonitorStatus.window.title']}"/>
     <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.viewStatus']}"/>
@@ -202,7 +209,12 @@
                 <th class="sortable alignCenter" style="width:50px;" nowrap><netui:content value="${bundle.web['common.column.select']}"/></th>                
                 <th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="LastName"><netui:content value="${bundle.web['common.column.lastName']}"/></ctb:tableSortColumn></th>
                 <th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="FirstName"><netui:content value="${bundle.web['common.column.firstName']}"/></ctb:tableSortColumn></th>
-                <th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="ExtPin1"><netui:content value="${bundle.web['common.column.studentId']}"/></ctb:tableSortColumn></th>
+                <c:if test="${isStudentIdConfigurable}">   
+                	<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="ExtPin1"><netui:content value="${studentIdArrValue[0]}"/></ctb:tableSortColumn></th>
+	            </c:if>
+	            <c:if test="${!isStudentIdConfigurable}">   
+	            	<th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="ExtPin1"><netui:content value="${bundle.web['common.column.studentId']}"/></ctb:tableSortColumn></th>
+	            </c:if>
                 <th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="UserName"><netui:content value="${bundle.web['common.column.loginName']}"/></ctb:tableSortColumn></th>
                 <th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="Password"><netui:content value="${bundle.web['common.column.password']}"/></ctb:tableSortColumn></th>
                 <th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="ValidationStatus"><netui:content value="${bundle.web['common.column.validationStatus']}"/></ctb:tableSortColumn></th>
