@@ -31,6 +31,8 @@ public class Message implements java.io.Serializable
     public static final String DELETE_SUCCESSFUL = "Student has been deleted successfully.";
     public static final String DELETE_ERROR_TAS = "You cannot delete this student. Student is associated with test administrations.";
     public static final String DELETE_ERROR_UNKNOWN = "Failed to delete this student.";
+    
+    public static final String STUDENT_ASSIGNMENT_ERROR = "Student cannot be associated with more than one organization.";     //Added for CR  ISTEP2011CR017
 
     public Message()
     {

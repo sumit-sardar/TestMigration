@@ -513,8 +513,22 @@ public class ManageStudentController extends PageFlowController
 					form.setCurrentAction(ACTION_DEFAULT);                 
 					return new Forward("error", form);
 				}        
-				
-				
+				//START- Added for CR  ISTEP2011CR017
+				 Boolean isMultiOrgAssociationValid = isMultiOrgAssociationValid();
+				if(result && !isMultiOrgAssociationValid){
+					if ( this.selectedOrgNodes.size() > 1 ) {
+						
+						if (isCreateNew)
+							form.setMessage(Message.ADD_TITLE, Message.STUDENT_ASSIGNMENT_ERROR, Message.ERROR);
+						else
+							form.setMessage(Message.EDIT_TITLE, Message.STUDENT_ASSIGNMENT_ERROR, Message.ERROR);
+						
+						form.setActionElement(ACTION_DEFAULT);
+						form.setCurrentAction(ACTION_DEFAULT);                 
+						return new Forward("error", form);
+					}  
+				}	
+				//END- Added for CR  ISTEP2011CR017
 				studentId = saveStudentProfileInformation(isCreateNew, form, studentId, this.selectedOrgNodes);
 				
 		
@@ -2144,6 +2158,30 @@ public class ManageStudentController extends PageFlowController
 		 
 		 return classReassignable;
      }
+      
+	/*
+	 * New method added for CR  ISTEP2011CR017 . 
+	 */
+	private boolean isMultiOrgAssociationValid() 
+    {     
+		boolean multiOrgAssociationValid = true;
+		
+		
+		
+			for (int i=0; i < this.customerConfigurations.length; i++)
+	        {
+	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Class_Reassignment") && cc.getDefaultValue().equalsIgnoreCase("T"))
+	            {
+	            	multiOrgAssociationValid = false; 
+	            	break;
+	            }
+	         }
+		
+			
+		 
+		 return multiOrgAssociationValid;
+     }
         
     
 	/*
@@ -2687,8 +2725,8 @@ public class ManageStudentController extends PageFlowController
 			
 			//CR - GA2011CR001 - validation For GTID
 			if(isMandatoryStudentId){
-				String gte = this.studentProfile.getStudentNumber().trim();
-				if ( gte.length()==0) {
+				String externalStudentNumber = this.studentProfile.getStudentNumber().trim();
+				if ( externalStudentNumber.length()==0) {
 					requiredFieldCount += 1;     
 					requiredFields = Message.buildErrorString(this.studentIdLabelName, requiredFieldCount, requiredFields);   
 				}
