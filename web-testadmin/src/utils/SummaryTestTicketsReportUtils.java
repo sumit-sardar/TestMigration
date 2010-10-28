@@ -174,9 +174,11 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private TestVO test = null;
     private float tacTableHeight = 0f;
     private Boolean isTabeProduct = Boolean.FALSE;
-    
     private TestProduct testProduct;
-     
+    //START - Changed for CR GA2011CR001
+    private Boolean isStudentIdConfigurable = Boolean.FALSE;
+    private String studentIdLabelName = "Student ID";
+    //END - Changed for CR GA2011CR001 
     /**
      * initialize globals passed into method
      * create static tables
@@ -191,6 +193,10 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         this.setDynamicGlobals();
         this.isTabeProduct = (Boolean)args[8];
         this.testProduct = (TestProduct)args[9];
+        //START - Changed for CR GA2011CR001
+        this.isStudentIdConfigurable = (Boolean)args[10];
+        this.studentIdLabelName = (String)args[11];
+        //END - Changed for CR GA2011CR001
         addStaticTables();
         createPages();
     }
@@ -265,7 +271,12 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         if (this.isTabeProduct.booleanValue()) {
             result =  new String[6];
             result[0] = STUDENT_LABEL;
-            result[1] = STUDENT_ID_LABEL;
+            //START - Changed for CR GA2011CR001
+            if(isStudentIdConfigurable)
+            	result[1] = studentIdLabelName;
+            else
+                result[1] = STUDENT_ID_LABEL;
+            //END - Changed for CR GA2011CR001
             result[2] = LOGIN_ID_LABEL;
             result[3] = PASSWORD_LABEL;
             result[4] = STATUS_LABEL;
@@ -274,7 +285,12 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         else {
             result =  new String[7];
             result[0] = STUDENT_LABEL;
-            result[1] = STUDENT_ID_LABEL;
+            //START - Changed for CR GA2011CR001
+            if(isStudentIdConfigurable)
+            	result[1] = studentIdLabelName;
+            else
+                result[1] = STUDENT_ID_LABEL;
+            //END - Changed for CR GA2011CR001
             result[2] = LOGIN_ID_LABEL;
             result[3] = PASSWORD_LABEL;
             result[4] = FORM_LABEL;
