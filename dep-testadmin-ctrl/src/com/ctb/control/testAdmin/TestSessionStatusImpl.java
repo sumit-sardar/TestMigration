@@ -1523,6 +1523,27 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
         
         return expectedPosition;        
     }
+     
+     /**
+      * New method added for CR - GA2011CR001
+      * Get customer configuration value for the specified customer configuration.
+      * @common:operation
+      * @param configId - identifies the customerconfiguration whose information is desired
+      * @return CustomerConfigurationValue []
+      * @throws CTBBusinessException
+      */
+     public CustomerConfigurationValue [] getCustomerConfigurationsValue( Integer configId) throws CTBBusinessException
+     {	
+     	try {
+     	CustomerConfigurationValue [] customerConfigurationValues 
+         = customerConfiguration.getCustomerConfigurationValues(configId);
+     	 return customerConfigurationValues;
+ 	    } catch (SQLException se) {
+ 	        CustomerConfigurationDataNotFoundException tee = new CustomerConfigurationDataNotFoundException("StudentManagementImpl: getCustomerConfigurations: " + se.getMessage());
+ 	        tee.setStackTrace(se.getStackTrace());
+ 	        throw tee;
+ 	    }
+     }
    
     
 } 

@@ -3,6 +3,8 @@ package com.ctb.control.testAdmin;
 
 import com.bea.control.annotations.TransactionAttribute;
 import com.bea.control.annotations.TransactionAttributeType;
+import com.ctb.exception.CTBBusinessException;
+
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
 /**
@@ -404,4 +406,16 @@ public interface TestSessionStatus
      */
 	
     java.lang.String getIndividualReportUrl(java.lang.String userName, java.lang.Integer testRosterId) throws com.ctb.exception.CTBBusinessException;
+    
+    /**
+     * New method added for CR - GA2011CR001
+     * Get customer configuration value for the specified customer configuration.
+     * @common:operation
+     * @param configId - identifies the customerconfiguration whose information is desired
+     * @return CustomerConfigurationValue []
+     * @throws CTBBusinessException
+     */
+    
+    com.ctb.bean.testAdmin.CustomerConfigurationValue[] getCustomerConfigurationsValue(java.lang.Integer configId) throws com.ctb.exception.CTBBusinessException;
+    
 } 
