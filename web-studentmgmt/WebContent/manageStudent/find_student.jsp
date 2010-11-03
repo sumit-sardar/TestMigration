@@ -55,6 +55,8 @@ template_find_student.jsp
 <netui:hidden  dataSource="actionForm.orgMaxPage"/> 
 <netui:hidden  dataSource="actionForm.studentMaxPage"/> 
 <netui:hidden  dataSource="actionForm.selectedOrgNodeName"/> 
+<netui:hidden  dataSource="actionForm.ABECustomer"/> 
+
 
 
 <!-- message -->

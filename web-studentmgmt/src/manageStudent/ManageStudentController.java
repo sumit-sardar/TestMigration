@@ -122,6 +122,7 @@ public class ManageStudentController extends PageFlowController
 	private boolean isMandatoryStudentId = false; // Change For CR - GA2011CR001
 	private String studentIdLabelName = "Student ID";
 	private String studentId2LabelName = "Student ID 2";
+	private boolean isABECustomer = false;   //added for CA-ABE
 
 	// student demographics
 	List demographics = null;
@@ -352,6 +353,7 @@ public class ManageStudentController extends PageFlowController
 	protected Forward addEditStudent(ManageStudentForm form)
 	{      
 		isGeorgiaCustomer(form); //Change For CR - GA2011CR001
+		isABECustomer(form);    //added for CA-ABE
 		String stringAction = form.getStringAction();
 		setFormInfoOnRequest(form);
 		saveToken(this.getRequest());
@@ -472,8 +474,6 @@ public class ManageStudentController extends PageFlowController
 	protected Forward saveAddEditStudent(ManageStudentForm form)
 	{   
 		Boolean isTokenValid = isTokenValid();
-		
-		
 		Integer studentId = form.getSelectedStudentId();
 		
 		if ( studentId == null) {
@@ -562,7 +562,7 @@ public class ManageStudentController extends PageFlowController
 					form.setMessage(Message.EDIT_TITLE, Message.EDIT_ERROR, Message.INFORMATION);
 			}
 			
-			this.savedForm = form.createClone();    
+			this.savedForm = form.createClone(); 
 		}
 		return new Forward("success");
 	}
@@ -1408,6 +1408,7 @@ public class ManageStudentController extends PageFlowController
 			protected Forward findStudent(ManageStudentForm form)
 	{    
 		isGeorgiaCustomer(form);// Change For CR - GA2011CR001
+		isABECustomer(form);	//added for CA-ABE
 		form.validateValues();
 
 		String currentAction = form.getCurrentAction();
@@ -2110,6 +2111,7 @@ public class ManageStudentController extends PageFlowController
 		this.getRequest().setAttribute("pageMessage", form.getMessage());
 		this.getRequest().setAttribute("studentProfileData", form.getStudentProfile());
 		this.getSession().setAttribute("selectStudentIdInView",form.getSelectedStudentId());
+		this.getRequest().setAttribute("isABECustomer",form.isABECustomer);	//added for CA-ABE
 		
 	}
 	/*
@@ -2238,7 +2240,25 @@ public class ManageStudentController extends PageFlowController
         this.getRequest().setAttribute("isStudentId2Configurable",isStudentId2Configurable);
         this.getRequest().setAttribute("studentId2ArrValue",valueForStudentId2);
     }
-        
+    //StART-  added for CA-ABE
+	private void isABECustomer(ManageStudentForm form){
+		
+		 for (int i=0; i < this.customerConfigurations.length; i++)
+	        {
+	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("ABE_Customer") && cc.getDefaultValue().equalsIgnoreCase("T"))
+				{
+	            	this.isABECustomer = true;
+	    			form.setABECustomer(this.isABECustomer );	
+				}
+					
+	         }
+		
+		 this.getRequest().setAttribute("isABECustomer",form.isABECustomer);
+	        
+		
+	}
+	//END- added for CA-ABE
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** MANAGESTUDENTFORM ************* /////////////////////////////    
@@ -2286,6 +2306,21 @@ public class ManageStudentController extends PageFlowController
 		private boolean isMandatoryStudentId = false;//GA2011CR001- GTID mandatory field
 		private String studentIdLabelName = "Student ID";
 		private String studentId2LabelName = "Student ID 2";
+		private boolean isABECustomer = false;
+		/**
+		 * @return the isABECustomer
+		 */
+		public boolean isABECustomer() {
+			return isABECustomer;
+		}
+
+		/**
+		 * @param isABECustomer the isABECustomer to set
+		 */
+		public void setABECustomer(boolean isABECustomer) {
+			this.isABECustomer = isABECustomer;
+		}
+
 		public ManageStudentForm()
 		{
 		}
@@ -2451,7 +2486,7 @@ public class ManageStudentController extends PageFlowController
 			copied.setStudentMaxPage(this.studentMaxPage);
 
 			copied.setStudentProfile(this.studentProfile);
-
+			copied.setABECustomer(this.isABECustomer);	//added for CA-ABE
 			return copied;                    
 		} 
 

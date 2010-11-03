@@ -1,0 +1,220 @@
+<%@ page language="java" contentType="text/html;charset=UTF-8"%>
+<%@ page import="dto.PathNode"%>
+<%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
+<%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+ 
+<netui-data:declareBundle bundlePath="oasResources" name="oas"/>
+<netui-data:declareBundle bundlePath="webResources" name="web"/>
+<netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
+
+
+<table class="simple">
+    <tr class="transparent">
+        
+        
+<!-- column 1 -->
+		<td class="transparent-top" width="50%" valign="top">
+		<table class="transparent">
+			<tr class="transparent">
+				<td class="transparent" width="210"><b>Highest Year Of School Completed</b></td>
+
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 280px">
+					<Option selected="true">None</Option>
+					<Option>6</Option>
+					<Option>7</Option>
+					<Option>8</Option>
+					<Option>9</Option>
+					<Option>10</Option>
+					<Option>11</Option>
+					<Option>12</Option>
+				</select></td>
+			</tr>
+
+			<tr class="transparent">
+				<td class="transparent " width="210"><b>Highest Diploma Or Degree Earned </b></td>
+
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 280px">
+					<Option selected="true">None</Option>
+					<Option>GED Certificate</Option>
+					<Option>High School Diploma</Option>
+					<Option>Technical/Certificate</Option>
+					<Option>AA/AS Degree</Option>
+					<Option>4 yr College Graduate</Option>
+					<Option>Graduate Student</Option>
+					<Option>Other</Option>
+				</select></td>
+			</tr>
+
+			<tr class="transparent">
+				<td class="transparent " width="210"><b>Earned the above outside the U.S. </b></td>
+
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small" width="280">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" value="Yes" checked="true">&nbsp;&nbsp;&nbsp;Yes</input>
+				
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small" width="280">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" value="No" />&nbsp;&nbsp;&nbsp;No</input></td>
+	
+			</tr>
+		
+
+			<tr class="transparent">
+				<td class="transparent " width="210"><b>Class Number </b></td>
+
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" maxlength="64" style="width: 280px" /></td>
+			</tr>
+
+			<tr class="transparent">
+				<td class="transparent " width="210"><b>Date of Entry into this Class </b></td>
+
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<netui:select optionsDataSource="${pageFlow.monthOptions}" dataSource="actionForm.studentProfile.month" size="1" style="width:60px" />
+				 <netui:select	optionsDataSource="${pageFlow.dayOptions}" dataSource="actionForm.studentProfile.day" size="1" style="width:45px" />
+				<netui:select optionsDataSource="${pageFlow.yearOptions}" dataSource="actionForm.studentProfile.year" size="1" style="width:68px" /></td>
+
+			</tr>
+			<tr class="transparent">
+				<td class="transparent " width="210"><b>Instructional Level </b></td>
+
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<select style="width: 280px">
+					<Option selected="true">Please Select</Option>
+					<Option>ESL Beginning Literacy</Option>
+					<Option>ESL Beginning</Option>
+					<Option>ESL Intermediate Low</Option>
+					<Option>ESL Intermediate High</Option>
+					<Option>ESL Advanced Low</Option>
+					<Option>ESL Advanced High</Option>
+					<Option>ABE Beginning Literacy</Option>
+					<Option>ABE Beginning</Option>
+					<Option>ABE Intermediate Low</Option>
+					<Option>ABE Intermediate High</Option>
+					<Option>ASE Low</Option>
+					<Option>ASE High</Option>
+				</select></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent " width="210"><b>Skill Level(0-9) </b></td>
+
+			</tr>
+
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<select style="width: 280px">
+					<Option selected="true">Please Select</Option>
+					<Option>Technology</Option>
+					<Option>Speaking</Option>
+					<Option>Reading</Option>
+					<Option>Writing</Option>
+					<Option>Math</Option>
+
+				</select></td>
+			</tr>
+		</table>
+		</td>
+		<!-- column 2 -->
+
+<td class="transparent-top" width="50%" valign="top">
+<table class="transparent">
+    <tr class="transparent">
+        <td class="transparent-small" width="210"><b>Instructional Program </b></td>
+    </tr>
+    <tr class="transparent">
+   
+    	<td class="transparent" >   	
+        	<table class="transparent">
+        	
+            <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "ABE" value ="ABE" checked="false" >ABE</input>
+             </td>
+            </tr>
+             <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "ESL" value ="ESL" checked="false" >ESL</input>
+             </td>
+            </tr>
+             <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "ESL/Citizenship" value ="ESL/Citizenship" checked="false" >ESL/Citizenship</input>
+             </td>
+            </tr>
+             <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "High School Diploma" value ="High School Diploma" checked="false" >High School Diploma</input>
+             </td>
+            </tr>
+             <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "GED" value ="GED" checked="false" >GED</input>
+             </td>
+            </tr>
+             <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "Spanish GED" value ="Spanish GED" checked="true" >Spanish GED</input>
+             </td>
+            </tr>
+             <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "Voc./Occupational skills" value ="Voc./Occupational skills" checked="true" >Voc./Occupational skills</input>
+             </td>
+            </tr>
+             <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "Workforce Readiness" value ="Workforce Readiness" checked="false" >Workforce Readiness</input>
+             </td>
+            </tr>
+             <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "Adults with Disabilities" value ="Adults with Disabilities" checked="false" >Adults with Disabilities</input>
+             </td>
+            </tr>
+             <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "Health & Safety" value ="Health & Safety" checked="false" >Health & Safety</input>
+             </td>
+            </tr>
+             <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "Home Economics" value ="Home Economics" checked="false" >Home Economics</input>
+             </td>
+            </tr>
+             <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "Parent Education" value ="Parent Education" checked="false" >Parent Education</input>
+             </td>
+            </tr>
+            <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "Other Adults" value ="Other Adults" checked="false" >Other Adults</input>
+             </td>
+            </tr>
+            <tr class="transparent">
+	        	 <td class="transparent-small">
+             <input type="checkbox" name="" id = "Other" value ="Other" checked="false" >Other</input>
+             </td>
+            </tr>
+        </table>        
+        </td>
+    </tr>
+ 
+    
+</table>
+</td>
+
+</tr>
+</table>
+

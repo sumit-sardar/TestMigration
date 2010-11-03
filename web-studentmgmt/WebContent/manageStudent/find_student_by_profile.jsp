@@ -9,7 +9,7 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 <%
    	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); // Change For CR - GA2011CR001
-	
+	Boolean isABECustomer = (Boolean)request.getAttribute("isABECustomer");
 %>
 
 <table class="sortable">
@@ -27,37 +27,83 @@
        <td class="tableFilter" width="100" align="right">Student ID:</td>
          </c:if>
         <td class="tableFilter" width="*"><netui:textBox tagId="studentNumber" dataSource="actionForm.studentProfile.studentNumber" tabindex="1"/></td>
-        <td class="tableFilter" width="100" align="right">Login ID:</td>
+         <c:if test="${isABECustomer}">  
+         <td class="tableFilter" width="110" align="right">Instructor First Name:</td>
+    	<td class="tableFilter" width="200"><netui:textBox tagId="lastName" dataSource="actionForm.studentProfile.lastName" tabindex="4"/></td>
+    	</c:if>
+    	 
+    	 <c:if test="${!isABECustomer}"> 
+    	 <td class="tableFilter" width="100" align="right">Login ID:</td>
         <td class="tableFilter" width="*"><netui:textBox tagId="userName" dataSource="actionForm.studentProfile.userName" tabindex="5"/></td>
+     
+    	 </c:if>
     </tr>
     <tr class="tableFilter">
         <td class="tableFilter" width="100" align="right">First Name:</td>
         <td class="tableFilter" width="200"><netui:textBox tagId="firstName" dataSource="actionForm.studentProfile.firstName" tabindex="2"/></td>
-        <td class="tableFilter" width="100" align="right">Grade:</td>
+       <c:if test="${isABECustomer}"> 
+      <td class="tableFilter" width="110" align="right">Instructor Last Name:</td>
+    <td class="tableFilter" width="200"><netui:textBox tagId="lastName" dataSource="actionForm.studentProfile.lastName" tabindex="4"/></td>
+    </c:if>
+   
+    <c:if test="${!isABECustomer}"> 
+       <td class="tableFilter" width="100" align="right">Grade:</td>
         <td class="tableFilter" width="*">
             <netui:select optionsDataSource="${pageFlow.gradeOptions}" dataSource="actionForm.studentProfile.grade" size="1" style="width:155px" tabindex="6"/>
-            
-            
         </td>
+    </c:if>
+    
     </tr>
     <tr class="tableFilter">
         <td class="tableFilter" width="100" align="right">Middle Name:</td>
         <td class="tableFilter" width="200"><netui:textBox tagId="middleName" dataSource="actionForm.studentProfile.middleName" tabindex="3"/></td>
+        <c:if test="${isABECustomer}"> 
+        <td class="tableFilter" width="110" align="right">Grade:</td>
+        <td class="tableFilter" width="*">
+            <netui:select optionsDataSource="${pageFlow.gradeOptions}" dataSource="actionForm.studentProfile.grade" size="1" style="width:155px" tabindex="6"/>
+        </td>
+        </c:if>
+        <c:if test="${!isABECustomer}"> 
         <td class="tableFilter" width="100" align="right">Gender:</td>
         <td class="tableFilter" width="*">
              <netui:select optionsDataSource="${pageFlow.genderOptions}" dataSource="actionForm.studentProfile.gender" size="1" style="width:155px" tabindex="7"/>
            
         </td>
+        </c:if>
     </tr>
     <tr class="tableFilter">
         <td class="tableFilter" width="100" align="right">Last Name:</td>
         <td class="tableFilter" width="200"><netui:textBox tagId="lastName" dataSource="actionForm.studentProfile.lastName" tabindex="4"/></td>
-        <td class="tableFilter" width="100" align="right">&nbsp;</td>
+        <c:if test="${isABECustomer}"> 
+        <td class="tableFilter" width="110" align="right">Gender:</td>
+        <td class="tableFilter" width="*">
+             <netui:select optionsDataSource="${pageFlow.genderOptions}" dataSource="actionForm.studentProfile.gender" size="1" style="width:155px" tabindex="7"/>
+           
+        </td>
+        </c:if>
+         <c:if test="${!isABECustomer}"> 
+         <td class="tableFilter" width="100" align="right">&nbsp;</td>
+       <td class="tableFilter" width="*">
+            <netui:button styleClass="button" value="Search" type="submit" onClick="setElementValue('currentAction', 'applySearch');" tabindex="8"/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <netui:button styleClass="button" value="Clear All" type="button" onClick="setElementValueAndSubmit('currentAction', 'clearSearch');" tabindex="9"/>&nbsp;
+        </td>
+        </c:if>
+        
+    </tr>
+    <tr class="tableFilter">
+    <c:if test="${isABECustomer}">  
+     <td class="tableFilter" width="100" align="right">Login ID:</td>
+        <td class="tableFilter" width="*"><netui:textBox tagId="userName" dataSource="actionForm.studentProfile.userName" tabindex="5"/></td>
+     </c:if>
+     <c:if test="${isABECustomer}"> 
+     <td class="tableFilter" width="100" align="right">&nbsp;</td>
         <td class="tableFilter" width="*">
             <netui:button styleClass="button" value="Search" type="submit" onClick="setElementValue('currentAction', 'applySearch');" tabindex="8"/>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <netui:button styleClass="button" value="Clear All" type="button" onClick="setElementValueAndSubmit('currentAction', 'clearSearch');" tabindex="9"/>&nbsp;
         </td>
+        </c:if>
     </tr>
 </table>    
 <br/>

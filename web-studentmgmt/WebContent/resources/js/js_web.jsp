@@ -27,7 +27,7 @@ function selectAllCheckboxes() {
     var inputs=d.getElementsByTagName("input");
     for(var i=0; i < inputs.length; i++) {
         if(inputs[i].getAttribute("type") == "checkbox"){
-          inputs[i].checked=true;
+                 inputs[i].checked=true;
         }
     }
 }
@@ -193,6 +193,7 @@ function closeColorPreviewWindow()
 
 function enableAccommodationCheckBoxes(enabled)
 {
+
     var inputs = document.getElementsByTagName("input");
     for(var i=0;i < inputs.length;i++) {
         var chkbox = inputs[i];
@@ -692,3 +693,80 @@ function isDigit(charVal)
 function verifyExitAddEditStudent(){
     return confirm("Click 'OK' to quit editing student's information. Any changes you've made will be lost.");
 }
+///////////////////////////////////////
+function displayWorkforceSection(element){
+var selection;
+if(element.value == 'Employed'){
+selection = true;
+enableWorkforceSection(selection);
+}
+else{
+
+selection = false;
+enableWorkforceSection(selection);
+}
+
+}
+
+function enableWorkforceSection(selection){
+
+var classNumber = document.getElementById("classNumber");
+var dateOfEntryYear = document.getElementById("dateOfEntryYear");
+var dateOfEntryMonth = document.getElementById("dateOfEntryMonth");
+var dateOfEntryDay = document.getElementById("dateOfEntryDay");
+var annualIncome = document.getElementById("annualIncome");
+var services = document.getElementById("services");
+var supportServices = document.getElementById("supportServices");
+var maturitySkills = document.getElementById("maturitySkills");
+var workforceReadiness = document.getElementById("workforceReadiness");
+var providerUse = document.getElementById("providerUse");
+var specialPrograms = document.getElementsByName("specialPrograms");
+
+
+var HourlyWage = document.getElementById("HourlyWage");
+var ScheduledWorkHours = document.getElementById("ScheduledWorkHours");
+
+
+if(selection){
+
+
+
+annualIncome.removeAttribute("disabled");
+services.removeAttribute("disabled");
+supportServices.removeAttribute("disabled");
+maturitySkills.removeAttribute("disabled");
+workforceReadiness.removeAttribute("disabled");
+providerUse.removeAttribute("disabled");
+for (var i = 0; i < specialPrograms.length; i++){
+if (specialPrograms[i].name=='specialPrograms'){
+specialPrograms[i].removeAttribute("disabled");
+}
+
+}
+HourlyWage.removeAttribute("disabled");
+ScheduledWorkHours.removeAttribute("disabled");
+
+}
+else{
+
+
+
+annualIncome.setAttribute("disabled","true");
+services.setAttribute("disabled","true");
+supportServices.setAttribute("disabled","true");
+maturitySkills.setAttribute("disabled","true");
+workforceReadiness.setAttribute("disabled","true");
+providerUse.setAttribute("disabled","true");
+for (var i = 0; i < specialPrograms.length; i++){
+if (specialPrograms[i].name=='specialPrograms'){
+specialPrograms[i].setAttribute("disabled",true);
+}
+
+}
+HourlyWage.setAttribute("disabled","true");
+ScheduledWorkHours.setAttribute("disabled","true");
+}
+
+}
+
+

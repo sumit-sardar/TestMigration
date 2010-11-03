@@ -12,6 +12,7 @@ import javax.servlet.jsp.JspException;
  * @author Tai Truong
  *  
  */  
+//intake and student-record editing UI
 public class StudentDemographicsTag extends CTBTag 
 {
 	private List demographics;
@@ -184,9 +185,7 @@ public class StudentDemographicsTag extends CTBTag
 	    for (i=0 ; i<values.length ; i++) {
 	        StudentDemographicValue sdv = (StudentDemographicValue)values[i];
 		    value = sdv.getValueName().trim();
-		    selected = sdv.getSelectedFlag().equals("true");		
-		    String prin = sdv.getValueName();     //added for CA-ABE
-		    System.out.println("displayValue_radio"+prin);
+		    selected = sdv.getSelectedFlag().equals("true");	
 		    if (selected)
 		        hasSelected = true;
 			displayRowStart();
@@ -263,7 +262,7 @@ public class StudentDemographicsTag extends CTBTag
     {
 	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 	    String nameId = name + "_" + value;
-		return "<input type=\"checkbox\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +
+		return " <input type=\"checkbox\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +
 				" value=\""+ value + "\" " + 
 				" tabindex=\"" + (this.tabIndex++) + "\" " +
 				(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
@@ -275,7 +274,7 @@ public class StudentDemographicsTag extends CTBTag
 		return "<input type=\"radio\" name=\"" + name + "\" id=\"" + name + "\"" +
 				" value=\"" + value + "\" " + 
 				" tabindex=\"" + (this.tabIndex++) + "\" " +
-				(isChecked?"checked=\"true\" ":" ") + disabled + " onClick=\"displayWorkforceSection(this)\"/>";			//added for CA-ABE
+				(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
 	}
 
     private String getSpaces(int spaces) 
