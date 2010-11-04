@@ -124,7 +124,8 @@ public class StudentDemographicsTag extends CTBTag
         
     	displayRowStart();
             displayCellStart("transparent");
-		        writeToPage("<b>" + displayName + "</b>");
+                //Changes for CA-ABE student intake
+                writeToPage("<span>*&nbsp;</span><b>" + displayName + "</b>");
     		displayCellEnd();
     	displayRowEnd();  
     	

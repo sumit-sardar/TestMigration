@@ -18,11 +18,11 @@
 <td class="transparent-top" width="50%" valign="top">
 <table class="transparent">
     <tr class="transparent">
-        <td class="transparent " width="260"><b>Attainable Goal within Program Year –Primary</b></td>
+        <td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Attainable Goal within Program Year – Primary</b></td>
                           
     </tr>
    <tr class="transparent">
-   <td class="transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   <td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
              <select style="width:280px" >
 	             <Option selected="true">None</Option>
 	             <Option>Improve basic skills</Option>
@@ -41,11 +41,11 @@
         </td>   
         </tr>           
     <tr class="transparent">
-        <td class="transparent " width="260"><b>Attainable Goal within Program Year –Secondary</b></td>
+        <td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Attainable Goal within Program Year – Secondary</b></td>
                          
     </tr>
     <tr class="transparent">
-    <td class="transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
              <select style="width:280px" >
 	             <Option selected="true">None</Option>
 	             <Option>Improve basic skills</Option>
@@ -69,7 +69,7 @@
         
     </tr>
     <tr class="transparent">
-    <td class="transparent">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text"  maxlength="64" style="width:280px"/></td>
+    <td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text"  maxlength="64" style="width:280px"/></td>
     </tr>
 </table>
 </td>
@@ -77,7 +77,7 @@
 <td class="transparent-top" width="50%" valign="top">
 <table class="transparent">
 	<tr class="transparent">
-        <td class="transparent-small" width="210"><b>Special Programs </b></td>
+        <td class="transparent-small" width="210"><span class="asterisk">*</span>&nbsp;<b>Special Programs </b></td>
     </tr>
     <tr class="transparent">
         <td class="transparent">
@@ -157,4 +157,6 @@
 
 </tr>
 </table>
+
+
 

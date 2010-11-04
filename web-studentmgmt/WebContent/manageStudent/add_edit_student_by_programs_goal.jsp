@@ -18,7 +18,7 @@
 <td class="transparent-top" width="50%" valign="top">
 <table class="transparent">
     <tr class="transparent">
-        <td class="transparent " width="300"><b>Attainable Goal within Program Year – Primary</b></td>
+        <td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Attainable Goal within Program Year – Primary</b></td>
                           
     </tr>
    <tr class="transparent">
@@ -41,7 +41,7 @@
         </td>   
         </tr>           
     <tr class="transparent">
-        <td class="transparent " width="300"><b>Attainable Goal within Program Year – Secondary</b></td>
+        <td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Attainable Goal within Program Year – Secondary</b></td>
                          
     </tr>
     <tr class="transparent">
@@ -77,7 +77,7 @@
 <td class="transparent-top" width="50%" valign="top">
 <table class="transparent">
 	<tr class="transparent">
-        <td class="transparent-small" width="210"><b>Special Programs </b></td>
+        <td class="transparent-small" width="210"><span class="asterisk">*</span>&nbsp;<b>Special Programs </b></td>
     </tr>
     <tr class="transparent">
         <td class="transparent">

@@ -20,50 +20,50 @@ Boolean profileEditable = (Boolean)request.getAttribute("profileEditable");
 		<td class="transparent-top" width="50%" valign="top">
 		<table class="transparent">
 			<tr class="transparent ">
-				<td class="transparent"><b>Annual Income</b></td>
+				<td class="transparent"><span class="asterisk">*</span>&nbsp;<b>Annual Income</b></td>
 
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select disabled="true" id="annualIncome"
 					style="width: 280px">
-					<Option selected="true">Please Select</Option>
+					<Option >Please Select</Option>
 					<Option>Single with Income Below $7,500 per year</Option>
 					<Option>Married and Combined Income is below $15,000 per year</Option>
-					<Option>None of the above</Option>
+					<Option selected="true">None of the above</Option>
 				</select></td>
 			</tr>
 
 			<tr class="transparent">
-				<td class="transparent"><b>Services Previously Received</b></td>
+				<td class="transparent"><span class="asterisk">*</span>&nbsp;<b>Services Previously Received</b></td>
 
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select disabled="true" id="services" style="width: 280px">
-					<Option selected="true">Please Select</Option>
+					<Option >Please Select</Option>
 					<Option>Assessment/Testing/Counseling</Option>
 					<Option>Personal Development Training</Option>
 					<Option>Job Development/Job Search Assistance</Option>
 					<Option>Occupation Sills Training (non-On the Job)</Option>
 					<Option>On-the-job training</Option>
-					<Option>Work Experience</Option>
+					<Option selected="true">Work Experience</Option>
 					<Option>Pre-employment skills job readiness training</Option>
 					<Option>Postsecondary Academic Education</Option>
 				</select></td>
 			</tr>
 
 			<tr class="transparent">
-				<td class="transparent" width="210"><b>Support Services Needed</b></td>
+				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Support Services Needed</b></td>
 				
 			</tr>
 			
 			<tr class="transparent">
 			<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select disabled="true" id="supportServices" style="width: 280px">
-					<Option selected="true">Please Select</Option>
+					<Option >Please Select</Option>
 					<Option>Transportation</Option>
 					<Option>Health Care and Mental Health Care</Option>
 					<Option>Housing or Retail Assistance</Option>
 					<Option>Personal, Financing or legal Counseling</Option>
-					<Option>Supplemental Instructional Service</Option>
+					<Option selected="true">Supplemental Instructional Service</Option>
 					<Option>Needs-based related payments</Option>
 					<Option>Emergency Financial Services</Option>
 					<Option>Federal Education Cash Assistance</Option>
@@ -71,7 +71,7 @@ Boolean profileEditable = (Boolean)request.getAttribute("profileEditable");
 				</select></td>
 			</tr>
 			<tr class="transparent">
-				<td class="transparent" width="210"><b>Pre-employment work maturity skills </b></td>
+				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Pre-employment work maturity skills </b></td>
 				
 			</tr>
 			
@@ -93,7 +93,7 @@ Boolean profileEditable = (Boolean)request.getAttribute("profileEditable");
 				</select></td>
 			</tr>
 			<tr class="transparent">
-				<td class="transparent" width="210"><b>Workforce Readiness </b></td>
+				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Workforce Readiness </b></td>
 				
 			</tr>
 			
@@ -120,31 +120,26 @@ Boolean profileEditable = (Boolean)request.getAttribute("profileEditable");
 			
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input disabled="true" id="providerUse" type="text" maxlength="6" style="width: 280px" /></td>
-				
 			</tr>
 			
 			
 			
 			<tr class="transparent">
-				<td class="transparent " width="210"><b>Hourly Wage</b></td>
-				
-
+				<td class="transparent " width="210"><span class="asterisk">*</span>&nbsp;<b>Hourly Wage</b></td>
 			</tr>
-				<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input disabled="true" id="providerUse" type="text" maxlength="7" style="width: 280px" /></td>
-				
-
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input disabled="true" id="HourlyWage" type="text" maxlength="7" style="width: 280px" /></td>
 			</tr>
 			
 			
 			<tr class="transparent">
-				<td class="transparent" width="210"><b>Scheduled Work Hours Per Week</b></td>
+				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Scheduled Work Hours Per Week</b></td>
 				
 			</tr>
 			
 			
 				<tr class="transparent">
-			<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input disabled="true" id="providerUse" type="text" maxlength="5" style="width: 280px" /></td>
+			<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input disabled="true" id="ScheduledWorkHours" type="text" maxlength="5" style="width: 280px" /></td>
 				
 			</tr>
 			
@@ -157,7 +152,7 @@ Boolean profileEditable = (Boolean)request.getAttribute("profileEditable");
 		<td class="transparent-top" width="50%" valign="top">
 		<table class="transparent">
 			<tr class="transparent">
-				<td class="transparent-small" width="210"><b>Special Programs  </b></td>
+				<td class="transparent-small" width="210"><span class="asterisk">*</span>&nbsp;<b>Special Programs  </b></td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent">

@@ -125,7 +125,8 @@ public class StudentDemographicsTag extends CTBTag
         
     	displayRowStart();
             displayCellStart("transparent");
-		        writeToPage("<b>" + displayName + "</b>");
+		        //Changes for CA-ABE student intake
+		        writeToPage("<span>*&nbsp;</span><b>" + displayName + "</b>");
     		displayCellEnd();
     	displayRowEnd();  
     	
@@ -274,7 +275,7 @@ public class StudentDemographicsTag extends CTBTag
 		return "<input type=\"radio\" name=\"" + name + "\" id=\"" + name + "\"" +
 				" value=\"" + value + "\" " + 
 				" tabindex=\"" + (this.tabIndex++) + "\" " +
-				(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
+				(isChecked?"checked=\"true\" ":" ") + disabled + " onClick=\"displayWorkforceSection(this)\"/>";
 	}
 
     private String getSpaces(int spaces) 

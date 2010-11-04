@@ -38,12 +38,12 @@
         
         
 <!-- Student Information -->
-<td class="simple" width="400">
+<td class="simple" width="430">
 
 
 <table class="transparent">
     <tr class="transparent">
-        <td class="transparent alignRight" width="210"><span class="asterisk">*</span>&nbsp;<netui:content value="First Name:"/></td>
+        <td class="transparent alignRight" width="240"><span class="asterisk">*</span>&nbsp;<netui:content value="First Name:"/></td>
         <td class="transparent">
         <c:if test="${ profileEditable }">     
          <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
@@ -55,7 +55,7 @@
         </td>
     </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="210"><netui:content value="Middle Name:"/></td>
+        <td class="transparent alignRight" width="240"><netui:content value="Middle Name:"/></td>
         <td class="transparent">
         <c:if test="${ profileEditable }">            
             <netui:textBox dataSource="actionForm.studentProfile.middleName" maxlength="32" style="width:180px"/>
@@ -66,7 +66,7 @@
         </td>
     </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="210"><span class="asterisk">*</span>&nbsp;<netui:content value="Last Name:"/></td>
+        <td class="transparent alignRight" width="240"><span class="asterisk">*</span>&nbsp;<netui:content value="Last Name:"/></td>
         <td class="transparent">
         <c:if test="${ profileEditable }">   
          <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->             
@@ -78,7 +78,7 @@
         </td>
     </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="210">
+        <td class="transparent alignRight" width="240">
         <c:if test="${!isMandatoryBirthDate }">   
         	<span class="asterisk">*</span>&nbsp;
         </c:if>
@@ -98,7 +98,7 @@
         </td>                    
     </tr>
     <tr class="transparent" >
-        <td class="transparent alignRight" width="210"><span class="asterisk">*</span>&nbsp;<netui:content value="Grade:"/></td>
+        <td class="transparent alignRight" width="240"><span class="asterisk">*</span>&nbsp;<netui:content value="Grade:"/></td>
         <td class="transparent">
         <c:if test="${ profileEditable }">            
             <netui:select optionsDataSource="${pageFlow.gradeOptions}" dataSource="actionForm.studentProfile.grade" size="1" style="width:180px"/>
@@ -109,7 +109,7 @@
         </td>                                
     </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="210"><span class="asterisk">*</span>&nbsp;<netui:content value="Gender:"/></td>
+        <td class="transparent alignRight" width="240"><span class="asterisk">*</span>&nbsp;<netui:content value="Gender:"/></td>
         <td class="transparent">
         <c:if test="${ profileEditable }">            
             <netui:select optionsDataSource="${pageFlow.genderOptions}" dataSource="actionForm.studentProfile.gender" size="1" style="width:180px"/>
@@ -120,34 +120,36 @@
         </td>                                
     </tr>
      <tr class="transparent">
-        <td class="transparent alignRight" width="210"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor First Name:"/></td>
-        <td class="transparent"><input type="text" maxlength="64" style="width:180px"/></td>
+        <td class="transparent alignRight" width="240"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor First Name:"/></td>
+        <td class="transparent"><input type="text" maxlength="32" style="width:180px"/></td>
     </tr>
        <tr class="transparent">
-        <td class="transparent alignRight" width="210"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor Last Name:"/></td>
-        <td class="transparent"><input type="text" maxlength="64" style="width:180px"/></td>
+        <td class="transparent alignRight" width="240"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor Last Name:"/></td>
+        <td class="transparent"><input type="text" maxlength="32" style="width:180px"/></td>
     </tr>
      <tr class="transparent">
-        <td class="transparent alignRight" width="210"><span class="asterisk">*</span>&nbsp;<netui:content value="Social Security Number/Student ID :"/></td>
-         <td class="transparent"><input type="text"  maxlength="64" style="width:180px"/></td>
+        <td class="transparent alignRight" width="240"><span class="asterisk">*</span>&nbsp;<netui:content value="Social Security Number/Student ID:"/></td>
+         <td class="transparent"><input type="text"  maxlength="32" style="width:180px"/></td>
     </tr>
      <tr class="transparent">
-        <td class="transparent alignRight" width="230"><span class="asterisk">*</span>&nbsp;<netui:content value="Is above id a Social Security Number:"/></td>
-        <td class="transparent-small" width="200">
-	        <input type="radio" value="Yes" checked="true"/>&nbsp;&nbsp;&nbsp;Yes
-	        <input type="radio" value="No"/>&nbsp;&nbsp;&nbsp;No
+        <td class="transparent alignRight" width="240"><span class="asterisk">*</span>&nbsp;<netui:content value="Is the above id a Social Security Number:"/></td>
+        <td class="transparent" width="180">
+	        <input type="radio" value="Yes" />&nbsp;&nbsp;&nbsp;Yes
+	        <input type="radio" value="No" checked="true"/>&nbsp;&nbsp;&nbsp;No
         </td>
      </tr>
      <tr class="transparent">
-        <td class="transparent alignRight" width="210"><span class="asterisk">*</span>&nbsp;<netui:content value="Is PBA Consent form signed:"/></td>
-        <td class="transparent-small" width="200">
-	        <input type="radio" value="Yes" checked="true"/>&nbsp;&nbsp;&nbsp;Yes
-	        <input type="radio" value="No"/>&nbsp;&nbsp;&nbsp;No
+        <td class="transparent alignRight" width="240"><span class="asterisk">*</span>&nbsp;<netui:content value="Is PBA Consent form signed:"/></td>
+        <td class="transparent" width="180">
+	        <input type="radio" value="Yes" />&nbsp;&nbsp;&nbsp;Yes
+	        <input type="radio" value="No" checked="true"/>&nbsp;&nbsp;&nbsp;No
         </td>
     </tr>
     
+   
+    
     <tr class="transparent">
-        <td class="transparent-top alignRight" width="210"><span class="asterisk">*</span>&nbsp;<netui:content value="Organization:"/></td>
+        <td class="transparent-top alignRight" width="240"><span class="asterisk">*</span>&nbsp;<netui:content value="Organization:"/></td>
         <td class="transparent-top">
             <table id="orgTable" class="transparent">
             
@@ -202,6 +204,14 @@
 %>                
             </table>
             
+        </td>
+    </tr>
+        
+       <tr class="transparent">
+        <td class="transparent alignRight" width="240"><span class="asterisk">*</span>&nbsp;<netui:content value="Is student visible across organizations:"/></td>
+        <td class="transparent-small" width="180">
+	        <input type="radio" value="Yes" />&nbsp;&nbsp;&nbsp;Yes
+	        <input type="radio" value="No" checked="true"/>&nbsp;&nbsp;&nbsp;No
         </td>
     </tr>
     

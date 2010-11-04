@@ -11,6 +11,7 @@
 
 <%
     Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); //Start Change For CR - GA2011CR001
+    Boolean isABECustomer = (Boolean)request.getAttribute("isABECustomer");
 %>
 
 <!--  studentList table -->
@@ -39,12 +40,14 @@
             <th class="sortable alignLeft" width="30%" nowrap>&nbsp;&nbsp;Organization</th>
             <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="LoginId">Login ID</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="Grade">Grade</ctb:tableSortColumn></th>
-           <c:if test="${isStudentIdConfigurable}">   
-          <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentIdNumber">${studentIdArrValue[0]}</ctb:tableSortColumn></th>
-          </c:if>
-          <c:if test="${!isStudentIdConfigurable}">   
+         
+          <c:if test="${isABECustomer}">   
+        <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentIdNumber">Social Security Number/Student ID</ctb:tableSortColumn></th>
+         </c:if>
+           <c:if test="${!isABECustomer}">   
         <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentIdNumber">Student ID</ctb:tableSortColumn></th>
          </c:if>
+         
            
         </ctb:tableSortColumnGroup>
     </tr>

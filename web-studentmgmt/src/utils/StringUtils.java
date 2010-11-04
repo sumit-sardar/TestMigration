@@ -95,6 +95,51 @@ public class StringUtils
 
         return (sb.toString());
     }
+    
+    /**
+     * Split Phone Number 
+     */
+     //Changes for CA-ABE student intake
+    public static String[] splitPhoneNumber(String temp, boolean isPhone) {
+        int length = temp.length();
+        String[] splitString = {"","","",""}; 
+        boolean isExtention = false; 
+        int i = 0;
+        while (temp.length() != 1){
+             int len = temp.length();
+             int contain = 0;
+             if(temp.indexOf("x") > 0) {
+                 contain = temp.indexOf("x");
+                 isExtention = true;        
+             }else if(temp.indexOf("-") > 0) {
+                 contain = temp.indexOf("-");
+             }else if(temp.indexOf(" ") > 0) {
+                 contain = temp.indexOf(" ");
+             }else if(temp.indexOf("(") >= 0){
+                 contain = temp.indexOf("(");
+             }
+             
+            if(isPhone) {
+             if(!isExtention) {            
+                splitString[i] = "";
+                isExtention = true;
+                i++;
+             }
+            }
+             
+             if ( contain > 0 ) {
+                 splitString[i] = temp.substring(contain+1, len);
+                 temp = temp.substring(0,len-splitString[i].length()-(1));
+             } 
+             if (contain == 0) {
+                 splitString[i] = temp.substring(contain+1, len-1);
+                 temp = temp.substring(0,len-splitString[i].length()-(1));
+             }
+            
+            i++;
+		 }
+         return splitString;
+    }
 
     
 } 

@@ -18,7 +18,7 @@
 <td class="transparent-top" width="50%" valign="top">
 <table class="transparent alignRight" >
         <tr class="transparent">
-        <td class="transparent alignRight" width="110"><netui:content value="Address Line 1:"/></td>
+        <td class="transparent alignRight" width="110"><span class="asterisk">*</span>&nbsp;<netui:content value="Address Line 1:"/></td>
         <td class="transparent"><input type="text"  maxlength="64" style="width:200px"/></td>
     </tr>
     <tr class="transparent">
@@ -30,7 +30,7 @@
         <td class="transparent"><input type="text"  maxlength="64" style="width:200px"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="110"><netui:content value="State:"/></td>
+        <td class="transparent alignRight" width="110"><span class="asterisk">*</span>&nbsp;<netui:content value="State:"/></td>
         <td class="transparent">
             <select style="width:200px" >
 	             <Option selected="true">Please Select</Option>
@@ -50,35 +50,35 @@
 <td class="transparent-top" width="50%" valign="top">
 <table class="transparent">
   <tr class="transparent">
-        <td class="transparent alignRight" width="110"><netui:content value="Zip:"/></td>
+        <td class="transparent alignRight" width="110"><span class="asterisk">*</span>&nbsp;<netui:content value="Zip Code:"/></td>
         <td class="transparent">
-            <input type="text" onKeyPress="return constrainNumericChar(event);" style="width:50px" onKeyUp="focusNextControl(this); "/>
+            <input type="text" maxlength="5" onKeyPress="return constrainNumericChar(event);" style="width:50px" onKeyUp="focusNextControl(this); "/>
             -
-            <input type="text" onKeyPress="return constrainNumericChar(event);" style="width:50px" onKeyUp="focusNextControl(this); "/>
+            <input type="text" maxlength="5" onKeyPress="return constrainNumericChar(event);" style="width:50px" onKeyUp="focusNextControl(this); "/>
         </td>
     </tr>
      <tr class="transparent">
-        <td class="transparent alignRight" width="110"><netui:content value="Primary Phone:"/></td>
+        <td class="transparent alignRight" width="110"><span class="asterisk">*</span>&nbsp;<netui:content value="Primary Phone:"/></td>
         <td class="transparent">
-            <input type="text" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            <input type="text"  maxlength="3" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
             -
-            <input type="text" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            <input type="text" maxlength="3" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
             -
-            <input type="text" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            <input type="text" maxlength="4" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
             Ext:
-            <input type="text" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            <input type="text" maxlength="4" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
         </td>
     </tr>
     <tr class="transparent">
         <td class="transparent alignRight" width="110"><netui:content value="Secondary Phone:"/></td>
         <td class="transparent">
-            <input type="text" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            <input type="text" maxlength="3" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
             -
-            <input type="text" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            <input type="text" maxlength="3" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
             -
-            <input type="text" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            <input type="text" maxlength="4" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
             Ext:
-            <input type="text" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            <input type="text" maxlength="4" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
         </td>
     </tr>
 </table>

@@ -96,7 +96,7 @@
 <c:if test="${isABECustomer}">   
 <p>
     <ctb:showHideSection sectionId="moduleStudentContact" sectionTitle="Contact Information" sectionVisible="actionForm.byStudentAccommodationVisible">
-        <jsp:include page="/manageStudent/add_edit_student_by_contact.jsp" />
+        <jsp:include page="/manageStudent/view_student_by_contact.jsp" />
     </ctb:showHideSection>
 </p>
 </c:if>

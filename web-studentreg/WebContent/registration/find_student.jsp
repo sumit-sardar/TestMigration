@@ -11,7 +11,7 @@
 
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.studentProfile.studentNumber}" />
 <%
-   	Boolean isCustomizedTabeCustomer = (Boolean)session.getAttribute("isCustomizedTABE"); // Change For CR - GA2011CR001
+   	Boolean isCustomizedTABE = (Boolean)session.getAttribute("isCustomizedTABE"); // Change For CR - GA2011CR001
 	
 %>
 
@@ -53,12 +53,6 @@
             <netui:button styleClass="button" value="Clear All" type="button" onClick="setElementValueAndSubmit('currentAction', 'clearSearch');" tabindex="9"/>&nbsp;
         </td>
     </tr>
-    <c:if test="${isCustomizedTabeCustomer}"> 
-	    <tr class="tableFilter">
-	    	<td class="tableFilter" width="100" align="right">Instructor:</td>
-	    	<td class="tableFilter" width="200"><netui:textBox tagId="lastName" dataSource="actionForm.studentProfile.lastName" tabindex="4"/></td>
-	    </tr>
-   </c:if>
 </table>    
 <br/>
 

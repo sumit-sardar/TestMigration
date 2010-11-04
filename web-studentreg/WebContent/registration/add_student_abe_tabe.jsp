@@ -53,6 +53,13 @@
     </ctb:showHideSection>
 </p>
 
+<a name="moduleStudentAccommodation"><!-- moduleStudentAccommodation --></a>    
+<p>
+    <ctb:showHideSection sectionId="moduleStudentAccommodation" sectionTitle="Specific Accommodations" sectionVisible="actionForm.byStudentAccommodationVisible">
+        <jsp:include page="/registration/add_student_by_accommodation.jsp" />
+    </ctb:showHideSection>
+</p>
+
                 
 <!-- buttons -->
 <p>

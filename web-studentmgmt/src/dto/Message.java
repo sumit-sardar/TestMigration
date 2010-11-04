@@ -33,7 +33,8 @@ public class Message implements java.io.Serializable
     public static final String DELETE_ERROR_UNKNOWN = "Failed to delete this student.";
     
     public static final String STUDENT_ASSIGNMENT_ERROR = "Student cannot be associated with more than one organization.";     //Added for CR  ISTEP2011CR017
-
+    //Changes for CA-ABE student intake
+    public static final String SELECT_STATE = "Select a state";
     public Message()
     {
         this.title = "";

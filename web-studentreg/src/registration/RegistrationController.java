@@ -31,7 +31,8 @@ import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.PagerSummary;
 import dto.Message;
 import dto.PathNode;
-
+//Changes for CA-ABE student intake
+import dto.StudentAccommodationsDetail;
 import dto.StudentProfileInformation;
 import data.CustomerLicenseInfo;
 import data.SubtestVO;
@@ -155,7 +156,9 @@ public class RegistrationController extends PageFlowController
 	List demographics = null;
 
 
-	
+	// student accommodations intake and student-record editing UI
+	public StudentAccommodationsDetail accommodations = null;
+    
     /**
      * This method represents the point of entry into the pageflow
      * @jpf:action
@@ -525,7 +528,103 @@ public class RegistrationController extends PageFlowController
 		}
 	}
 	
+	/////intake and student-record editing UI Accommodations ///////
 	
+	/**
+	 * addAccommodations
+	 */
+	private void addAccommodations(RegistrationForm form)
+	{
+		if (this.accommodations == null)
+		{
+			Integer studentId = form.getStudentProfile().getStudentId();
+			this.accommodations = getStudentAccommodations(studentId);         
+		}
+	
+		this.getRequest().getSession().setAttribute("accommodations", this.accommodations);       
+	}
+	
+	/**
+	 * getStudentAccommodations
+	 */
+	private StudentAccommodationsDetail getStudentAccommodations(Integer studentId)
+	{
+		StudentAccommodationsDetail studentAcc = new StudentAccommodationsDetail();
+
+		if ((studentId != null) && (studentId.intValue() > 0))
+		{
+			try
+			{    
+				StudentAccommodations sa = this.studentManagement.getStudentAccommodations(this.userName, studentId);
+				studentAcc = new StudentAccommodationsDetail(sa);
+			}
+			catch (CTBBusinessException be)
+			{
+				be.printStackTrace();
+			}  
+		}
+		else
+		{
+			setCustomerAccommodations(studentAcc, true);
+		}
+
+		studentAcc.convertHexToText();
+
+
+		return studentAcc;
+	}
+	
+	/**
+	 * setCustomerAccommodations
+	 */
+	private void setCustomerAccommodations(StudentAccommodationsDetail sad, boolean isSetDefaultValue) 
+	{        
+		// set checked value if there is configuration for this customer
+		for (int i=0; i < this.customerConfigurations.length; i++)
+		{
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			String ccName = cc.getCustomerConfigurationName();
+			String defaultValue = cc.getDefaultValue() != null ? cc.getDefaultValue() : "F";
+			String editable = cc.getEditable() != null ? cc.getEditable() : "F";
+
+			if (isSetDefaultValue)
+				editable = "F";
+
+			if (defaultValue.equalsIgnoreCase("T") && editable.equalsIgnoreCase("F"))
+			{
+
+				if (ccName.equalsIgnoreCase("screen_reader"))
+				{
+					sad.setScreenReader(Boolean.TRUE);
+				}
+
+				if (ccName.equalsIgnoreCase("calculator"))
+				{
+					sad.setCalculator(Boolean.TRUE);
+				}
+
+				if (ccName.equalsIgnoreCase("test_pause"))
+				{
+					sad.setTestPause(Boolean.TRUE);
+				}
+
+				if (ccName.equalsIgnoreCase("untimed_test"))
+				{
+					sad.setUntimedTest(Boolean.TRUE);
+				}
+
+				if (ccName.equalsIgnoreCase("highlighter"))
+				{
+					sad.setHighlighter(Boolean.TRUE);
+				}
+			}
+		}
+	}
+
+
+
+    
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** ENTER STUDENT ************* /////////////////////////////    
 /////////////////////////////////////////////////////////////////////////////////////////////    
@@ -585,7 +684,10 @@ public class RegistrationController extends PageFlowController
         this.isABECustomer = isCustomizedABECustomer();
         //System.out.println("enter isCustomizedTABE" + isABECustomer);
         //start of change intake and student-record editing UI
-        addDemographics(form);    
+        if(this.isABECustomer) {
+        	addDemographics(form);
+        	addAccommodations(form);  
+        }    
         if (this.isABECustomer()) {
         	this.getRequest().setAttribute("isCustomizedTABE",this.isABECustomer());
         	return new Forward("successcatbe", form);
@@ -1826,10 +1928,10 @@ public class RegistrationController extends PageFlowController
         private Boolean proctorSectionVisible;
         private Boolean reportSectionVisible;
         
-        
+        //Changes for CA-ABE student intake
         private Boolean byStudentProfileVisible=true;
 		private Boolean byStudentDemographicVisible=true;
-		
+		private Boolean byStudentAccommodationVisible=true;
         
         private String autoLocator;
         private  boolean disableMandatoryBirthdate = false; //GACRCT2010CR007 - Disable Mandatory Birth Date
@@ -2353,7 +2455,8 @@ public class RegistrationController extends PageFlowController
             }       
             return true;
         }
-
+        
+        //Changes for CA-ABE student intake
 		public Boolean getByStudentProfileVisible() {
 			return byStudentProfileVisible;
 		}
@@ -2369,7 +2472,17 @@ public class RegistrationController extends PageFlowController
 		public void setByStudentDemographicVisible(Boolean byStudentDemographicVisible) {
 			this.byStudentDemographicVisible = byStudentDemographicVisible;
 		}
- 
+
+		public Boolean getByStudentAccommodationVisible() {
+			return byStudentAccommodationVisible;
+		}
+
+		public void setByStudentAccommodationVisible(
+				Boolean byStudentAccommodationVisible) {
+			this.byStudentAccommodationVisible = byStudentAccommodationVisible;
+		}        
+
+
     }
     
     /**
