@@ -2,6 +2,7 @@ package com.ctb.bean.studentManagement;
 
 import com.ctb.bean.CTBBean;
 import java.util.Date;
+import com.ctb.bean.testAdmin.Address;
 
 /**
  * Data bean representing the partial contents of the OAS.STUDENT table 
@@ -25,6 +26,7 @@ public class ManageStudent extends CTBBean
     private Date birthDate;
     private Integer createdBy;
     private OrganizationNode [] organizationNodes;
+    private Address address;
     
 	/**
 	 * @return the id
@@ -181,6 +183,18 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setCreatedBy(Integer createdBy) {
 		this.createdBy = createdBy;
+	}
+	/**
+	 * @return Returns the address.
+	 */
+	public Address getAddress() {
+		return this.address;
+	}
+	/**
+	 * @param createdBy The createdBy to set.
+	 */
+	public void setAddress(Address address) {
+		this.address = address;
 	}
     
 } 
