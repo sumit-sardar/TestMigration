@@ -84,11 +84,6 @@
         <table class="transparent">
         	<tr class="transparent">
 	        	 <td class="transparent-small">
-	             <input type="checkbox" name="" id = "none" value ="None" checked="true" >None</input>
-	             </td>
-            </tr>
-            <tr class="transparent">
-	        	 <td class="transparent-small">
              <input type="checkbox" name="" id = "community" value ="Community Corrections" checked="false" >Community Corrections</input>
              </td>
             </tr>

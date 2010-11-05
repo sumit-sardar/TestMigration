@@ -159,10 +159,6 @@ Boolean profileEditable = (Boolean)request.getAttribute("profileEditable");
 				<table class="transparent">
 					<tr class="transparent">
 						<td class="transparent-small"><input disabled="true" type="checkbox" name="specialPrograms"
-							id="specialPrograms1" value="None" checked="false">None</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input disabled="true" type="checkbox" name="specialPrograms"
 							id="specialPrograms2" value="Community Corrections" checked="false">Community Corrections</input></td>
 					</tr>
 					<tr class="transparent">
