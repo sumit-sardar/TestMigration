@@ -62,16 +62,16 @@
 <td class="transparent-top" width="50%">
 <table class="transparent">
 <tr class="transparent">
-        <td class="transparent" width="120"><netui:content value="Instructor First Name:"/></td>
+        <td class="transparent" width="270"><netui:content value="Instructor First Name:"/></td>
         <td class="transparent"><netui:label value="${studentProfileData.firstName}"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent" width="120"><netui:content value="Instructor Last Name:"/></td>
+        <td class="transparent" width="270"><netui:content value="Instructor Last Name:"/></td>
         <td class="transparent"><netui:label value="${studentProfileData.middleName}"/></td>
     </tr>
  
     <tr class="transparent">
-        <td class="transparent" width="213">
+        <td class="transparent" width="270">
         
          <c:if test="${isStudentIdConfigurable}">   
         <netui:content value="${studentIdArrValue[0]}:"/></td>
@@ -82,7 +82,7 @@
         <td class="transparent"><netui:label value="${studentProfileData.studentNumber}"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent-top" width="213"><netui:content value="Organization:"/></td>
+        <td class="transparent-top" width="270"><netui:content value="Organization:"/></td>
         <td class="transparent-top">
             <table class="transparent">
             <netui-data:repeater dataSource="requestScope.organizationNodes">
@@ -96,7 +96,7 @@
         </td>
     </tr>
      <tr class="transparent">
-        <td class="transparent" width="213"><netui:content value="Make student visible across organizations:"/></td>
+        <td class="transparent" width="270"><netui:content value="Make student visible across organizations:"/></td>
         <td class="transparent">Yes</td>
     </tr>
     
