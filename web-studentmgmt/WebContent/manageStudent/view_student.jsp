@@ -132,7 +132,7 @@
 <a name="moduleStudentProgramsGoal"><!-- moduleStudentProgramsGoal --></a>    
 <p>
     <ctb:showHideSection sectionId="moduleStudentProgramsGoal" sectionTitle="Programs And Goal" sectionVisible="actionForm.byStudentAccommodationVisible">
-        <jsp:include page="/manageStudent/add_edit_student_by_programs_goal.jsp" />
+        <jsp:include page="/manageStudent/view_student_by_programs_goal.jsp" />
     </ctb:showHideSection>
 </p>
 </c:if>

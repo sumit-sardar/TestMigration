@@ -12,7 +12,9 @@
 
 <table class="simple">
 	<tr class="transparent">
-
+       	<td class="transparent" width="300">&nbsp;</td>
+    </tr> 
+	<tr class="transparent">
 
 		<!-- column 1 -->
 		<td class="transparent-top" width="50%" valign="top">
@@ -34,11 +36,15 @@
 					<Option>12</Option>
 				</select></td>
 			</tr>
-
+			
+			<tr class="transparent">
+		       	<td class="transparent" width="300">&nbsp;</td>
+		    </tr>  
+			
 			<tr class="transparent">
 				<td class="transparent " width="210"><span class="asterisk">*</span>&nbsp;<b>Highest Diploma Or Degree
-				Earned </b></td>
-
+				Earned </b>
+				</td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 280px">
@@ -52,6 +58,10 @@
 					<Option>Other</Option>
 				</select></td>
 			</tr>
+
+			<tr class="transparent">
+		       	<td class="transparent" width="300">&nbsp;</td>
+		    </tr>  
 
 			<tr class="transparent">
 				<td class="transparent " width="210"><span class="asterisk">*</span>&nbsp;<b>Earned the above outside the
@@ -69,6 +79,9 @@
 
 			</tr>
 
+			<tr class="transparent">
+		       	<td class="transparent" width="300">&nbsp;</td>
+		    </tr>  
 
 			<tr class="transparent">
 				<td class="transparent " width="210"><span class="asterisk">*</span>&nbsp;<b>Class Number </b></td>
@@ -78,6 +91,10 @@
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="text" maxlength="64"
 					style="width: 280px" /></td>
 			</tr>
+			
+			<tr class="transparent">
+		       	<td class="transparent" width="300">&nbsp;</td>
+		    </tr>  
 
 			<tr class="transparent">
 				<td class="transparent " width="210"><span class="asterisk">*</span>&nbsp;<b>Date of Entry into this Class
@@ -91,11 +108,14 @@
 					dataSource="actionForm.studentProfile.day" size="1" style="width:45px" /> <netui:select
 					optionsDataSource="${pageFlow.yearOptions}" dataSource="actionForm.studentProfile.year" size="1" style="width:68px" />
 				</td>
-
 			</tr>
+			
+			<tr class="transparent">
+		       	<td class="transparent" width="300">&nbsp;</td>
+		    </tr>  
+			
 			<tr class="transparent">
 				<td class="transparent " width="210"><span class="asterisk">*</span>&nbsp;<b>Instructional Level </b></td>
-
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 280px">
@@ -114,100 +134,6 @@
 					<Option>ASE High</Option>
 				</select></td>
 			</tr>
-
-			<tr class="transparent">
-				<td class="transparent " width="150"><span class="asterisk">*</span>&nbsp;<b>Skill Level</b></td>
-
-			</tr>
-			<tr class="transparent">
-			<td>
-				<table>
-					<tr>
-						<td class="transparent-small" width="100%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Technology</td>
-						<td><select>
-							<Option>Please Select</Option>
-							<Option>0</Option>
-							<Option>1</Option>
-							<Option>2</Option>
-							<Option>3</Option>
-							<Option>4</Option>
-							<Option>5</Option>
-							<Option>6</Option>
-							<Option>7</Option>
-							<Option>8</Option>
-							<Option>9</Option>
-						</select></td>
-					</tr>
-					<tr>
-						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Speaking</td>
-						<td><select>
-							<Option>Please Select</Option>
-							<Option>0</Option>
-							<Option>1</Option>
-							<Option>2</Option>
-							<Option>3</Option>
-							<Option>4</Option>
-							<Option>5</Option>
-							<Option>6</Option>
-							<Option>7</Option>
-							<Option>8</Option>
-							<Option>9</Option>
-						</select></td>
-
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reading</td>
-
-						<td><select style="float: right;">
-							<Option>Please Select</Option>
-							<Option>0</Option>
-							<Option>1</Option>
-							<Option>2</Option>
-							<Option>3</Option>
-							<Option>4</Option>
-							<Option>5</Option>
-							<Option>6</Option>
-							<Option>7</Option>
-							<Option>8</Option>
-							<Option>9</Option>
-						</select></td>
-
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Writing</td>
-						<td><select style="float: right;">
-							<Option>Please Select</Option>
-							<Option>0</Option>
-							<Option>1</Option>
-							<Option>2</Option>
-							<Option>3</Option>
-							<Option>4</Option>
-							<Option>5</Option>
-							<Option>6</Option>
-							<Option>7</Option>
-							<Option>8</Option>
-							<Option>9</Option>
-						</select></td>
-
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Math</td>
-						<td><select style="float: right;">
-							<Option>Please Select</Option>
-							<Option>0</Option>
-							<Option>1</Option>
-							<Option>2</Option>
-							<Option>3</Option>
-							<Option>4</Option>
-							<Option>5</Option>
-							<Option>6</Option>
-							<Option>7</Option>
-							<Option>8</Option>
-							<Option>9</Option>
-						</select></td>
-					</tr>
-				</table>
-			</td>
 		</table>
 		</td>
 
@@ -224,69 +150,168 @@
 				<table class="transparent">
 
 					<tr class="transparent">
-						<td class="transparent-small"><input type="checkbox" name="" id="ABE" value="ABE" checked="false">ABE
+						<td class="transparent-small"><input type="checkbox" name="" id="ABE" value="ABE">ABE
 						</td>
 					</tr>
 					<tr class="transparent">
-						<td class="transparent-small"><input type="checkbox" name="" id="ESL" value="ESL" checked="false">ESL
+						<td class="transparent-small"><input type="checkbox" name="" id="ESL" value="ESL">ESL
 						</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="ESL/Citizenship" value="ESL/Citizenship"
-							checked="false">ESL/Citizenship</td>
+							>ESL/Citizenship</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="High School Diploma"
-							value="High School Diploma" checked="false">High School Diploma</td>
+							value="High School Diploma">High School Diploma</td>
 					</tr>
 					<tr class="transparent">
-						<td class="transparent-small"><input type="checkbox" name="" id="GED" value="GED" checked="false">GED
+						<td class="transparent-small"><input type="checkbox" name="" id="GED" value="GED">GED
 						</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="Spanish GED" value="Spanish GED"
-							checked="true">Spanish GED</td>
+							>Spanish GED</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="Voc./Occupational skills"
-							value="Voc./Occupational skills" checked="true">Voc./Occupational skills</td>
+							value="Voc./Occupational skills">Voc./Occupational skills</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="Workforce Readiness"
-							value="Workforce Readiness" checked="false">Workforce Readiness</td>
+							value="Workforce Readiness">Workforce Readiness</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="Adults with Disabilities"
-							value="Adults with Disabilities" checked="false">Adults with Disabilities</td>
+							value="Adults with Disabilities">Adults with Disabilities</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="Health & Safety" value="Health & Safety"
-							checked="false">Health & Safety</td>
+							>Health & Safety</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="Home Economics" value="Home Economics"
-							checked="false">Home Economics</td>
+							>Home Economics</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="Parent Education" value="Parent Education"
-							checked="false">Parent Education</td>
+							>Parent Education</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="Other Adults" value="Other Adults"
-							checked="false">Other Adults</td>
+							>Other Adults</td>
 					</tr>
 					<tr class="transparent">
-						<td class="transparent-small"><input type="checkbox" name="" id="Other" value="Other" checked="false">Other
+						<td class="transparent-small"><input type="checkbox" name="" id="Other" value="Other">Other
 						</td>
 					</tr>
 				</table>
 				</td>
 			</tr>
+			
+			<tr class="transparent">
+		       	<td class="transparent" width="300">&nbsp;</td>
+		    </tr>  
+		    
+			<tr class="transparent">
+				<td class="transparent" width="100"><span class="asterisk">*</span>&nbsp;<b>Skill Level</b></td>
 
+			</tr>
+			<tr class="transparent">
+			<td>
+				<table>
+					<tr>
+						<td class="transparent-small" align="right">Technology:</td>
+						<td><select>
+							<Option>Please Select</Option>
+							<Option>0</Option>
+							<Option>1</Option>
+							<Option>2</Option>
+							<Option>3</Option>
+							<Option>4</Option>
+							<Option>5</Option>
+							<Option>6</Option>
+							<Option>7</Option>
+							<Option>8</Option>
+							<Option>9</Option>
+						</select></td>
+					</tr>
+					<tr>
+						<td class="transparent-small" align="right">Speaking:</td>
+						<td><select>
+							<Option>Please Select</Option>
+							<Option>0</Option>
+							<Option>1</Option>
+							<Option>2</Option>
+							<Option>3</Option>
+							<Option>4</Option>
+							<Option>5</Option>
+							<Option>6</Option>
+							<Option>7</Option>
+							<Option>8</Option>
+							<Option>9</Option>
+						</select></td>
 
+					</tr>
+					<tr class="transparent">
+						<td class="transparent-small" align="right">Reading:</td>
+
+						<td><select style="float: right;">
+							<Option>Please Select</Option>
+							<Option>0</Option>
+							<Option>1</Option>
+							<Option>2</Option>
+							<Option>3</Option>
+							<Option>4</Option>
+							<Option>5</Option>
+							<Option>6</Option>
+							<Option>7</Option>
+							<Option>8</Option>
+							<Option>9</Option>
+						</select></td>
+
+					</tr>
+					<tr class="transparent">
+						<td class="transparent-small" align="right">Writing:</td>
+						<td><select style="float: right;">
+							<Option>Please Select</Option>
+							<Option>0</Option>
+							<Option>1</Option>
+							<Option>2</Option>
+							<Option>3</Option>
+							<Option>4</Option>
+							<Option>5</Option>
+							<Option>6</Option>
+							<Option>7</Option>
+							<Option>8</Option>
+							<Option>9</Option>
+						</select></td>
+
+					</tr>
+					<tr class="transparent">
+						<td class="transparent-small" align="right">Math:</td>
+						<td><select style="float: right;">
+							<Option>Please Select</Option>
+							<Option>0</Option>
+							<Option>1</Option>
+							<Option>2</Option>
+							<Option>3</Option>
+							<Option>4</Option>
+							<Option>5</Option>
+							<Option>6</Option>
+							<Option>7</Option>
+							<Option>8</Option>
+							<Option>9</Option>
+						</select></td>
+					</tr>
+				</table>
+			</td>
+			</tr>
 		</table>
 		</td>
-
 	</tr>
+	<tr class="transparent">
+       	<td class="transparent" width="300">&nbsp;</td>
+    </tr>
 </table>
 

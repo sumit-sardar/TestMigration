@@ -11,6 +11,11 @@
 
 
 <table class="simple">
+
+	<tr class="transparent">
+       	<td class="transparent" width="300">&nbsp;</td>
+    </tr>
+
     <tr class="transparent">
         
         
@@ -39,7 +44,10 @@
 	 			 <Option>Other</Option>
 	            </select>
         </td>   
-        </tr>           
+    </tr>  
+    <tr class="transparent">
+       	<td class="transparent" width="300">&nbsp;</td>
+    </tr>           
     <tr class="transparent">
         <td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Attainable Goal within Program Year – Secondary</b></td>
                          
@@ -62,8 +70,10 @@
 	 			 <Option>Other</Option>
              </select>
         </td> 
-        </tr>              
-   
+    </tr>              
+    <tr class="transparent">
+       	<td class="transparent" width="300">&nbsp;</td>
+    </tr>  
     <tr class="transparent">
         <td class="transparent " width="210"><b>Provider Use </b></td>
         
@@ -84,73 +94,74 @@
         <table class="transparent">
         	<tr class="transparent">
 	        	 <td class="transparent-small">
-             <input type="checkbox" name="" id = "community" value ="Community Corrections" checked="false" disabled="true">Community Corrections</input>
+             <input type="checkbox" name="" id = "community" value ="Community Corrections" disabled="true">Community Corrections</input>
              </td>
             </tr>
              <tr class="transparent">
 	        	 <td class="transparent-small">
-             <input type="checkbox" name="" id = "state" value ="State Corrections" checked="false" disabled="true">State Corrections</input>
+             <input type="checkbox" name="" id = "state" value ="State Corrections" disabled="true">State Corrections</input>
              </td>
             </tr>
              <tr class="transparent">
 	        	 <td class="transparent-small">
-             <input type="checkbox" name="" id = "homeless" value ="Homeless Program" checked="false" disabled="true">Homeless Program</input>
+             <input type="checkbox" name="" id = "homeless" value ="Homeless Program" disabled="true">Homeless Program</input>
              </td>
             </tr>
              <tr class="transparent">
 	        	 <td class="transparent-small">
-             <input type="checkbox" name="" id = "family" value ="Workplace Ed." checked="false" disabled="true">Workplace Ed.</input>
+             <input type="checkbox" name="" id = "family" value ="Workplace Ed." disabled="true">Workplace Ed.</input>
              </td>
             </tr>
              <tr class="transparent">
 	        	 <td class="transparent-small">
-             <input type="checkbox" name="" id = "family" value ="Tutoring" checked="false" disabled="true">Tutoring</input>
+             <input type="checkbox" name="" id = "family" value ="Tutoring" disabled="true">Tutoring</input>
              </td>
             </tr>
              <tr class="transparent">
 	        	 <td class="transparent-small">
-             <input type="checkbox" name="" id = "family" value ="Distance Learning" checked="true" disabled="true">Distance Learning</input>
+             <input type="checkbox" name="" id = "family" value ="Distance Learning" disabled="true">Distance Learning</input>
              </td>
             </tr>
              <tr class="transparent">
 	        	 <td class="transparent-small">
-             <input type="checkbox" name="" id = "family" value ="Special Needs" checked="true" disabled="true">Special Needs</input>
+             <input type="checkbox" name="" id = "family" value ="Special Needs" disabled="true">Special Needs</input>
              </td>
             </tr>
              <tr class="transparent">
 	        	 <td class="transparent-small">
-             <input type="checkbox" name="" id = "family" value ="Alternative Ed. (K12)" checked="false" disabled="true">Alternative Ed. (K12)</input>
+             <input type="checkbox" name="" id = "family" value ="Alternative Ed. (K12)" disabled="true">Alternative Ed. (K12)</input>
              </td>
             </tr>
              <tr class="transparent">
 	        	 <td class="transparent-small">
-             <input type="checkbox" name="" id = "family" value ="Non-traditional Training" checked="false" disabled="true">Non-traditional Training</input>
+             <input type="checkbox" name="" id = "family" value ="Non-traditional Training" disabled="true">Non-traditional Training</input>
              </td>
             </tr>
              <tr class="transparent">
 	        	 <td class="transparent-small">
-             <input type="checkbox" name="" id = "family" value ="El Civics" checked="false" disabled="true">El Civics</input>
+             <input type="checkbox" name="" id = "family" value ="El Civics" disabled="true">El Civics</input>
              </td>
             </tr>
              <tr class="transparent">
 	        	 <td class="transparent-small">
-             <input type="checkbox" name="" id = "family" value ="Carl Perkins" checked="false" disabled="true">Carl Perkins</input>
+             <input type="checkbox" name="" id = "family" value ="Carl Perkins" disabled="true">Carl Perkins</input>
              </td>
             </tr>
              <tr class="transparent">
 	        	 <td class="transparent-small">
-             <input type="checkbox" name="" id = "family" value ="Other" checked="false" disabled="true">Other</input>
+             <input type="checkbox" name="" id = "family" value ="Other" disabled="true">Other</input>
              </td>
             </tr>
         </table>        
         </td>                                
     </tr>
- 
-    
 </table>
 </td>
-
 </tr>
+<tr class="transparent">
+   	<td class="transparent" width="300">&nbsp;</td>
+</tr>
+
 </table>
 
 

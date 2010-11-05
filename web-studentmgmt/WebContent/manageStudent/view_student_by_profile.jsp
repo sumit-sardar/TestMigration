@@ -96,7 +96,7 @@
         </td>
     </tr>
      <tr class="transparent">
-        <td class="transparent" width="213"><netui:content value="Is student visible across organizations:"/></td>
+        <td class="transparent" width="213"><netui:content value="Make student visible across organizations:"/></td>
         <td class="transparent">Yes</td>
     </tr>
     
