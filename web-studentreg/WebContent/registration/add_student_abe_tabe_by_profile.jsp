@@ -91,8 +91,8 @@
         </td>
     </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="230"><span class="asterisk">*</span>&nbsp;<netui:content value="Is student visible across organizations:"/></td>
-        <td class="transparent-small" width="180">
+        <td class="transparent alignRight" width="230"><span class="asterisk">*</span>&nbsp;<netui:content value="Make student visible across organizations:"/></td>
+        <td class="transparent-small" width="200">
 	        <input type="radio" value="Yes" checked="true"/>&nbsp;&nbsp;&nbsp;Yes
 	        <input type="radio" value="No"/>&nbsp;&nbsp;&nbsp;No
         </td>
