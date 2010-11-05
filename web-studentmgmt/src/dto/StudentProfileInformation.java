@@ -161,7 +161,7 @@ public class StudentProfileInformation extends SanitizedFormField
         if ((this.addressId != null && this.addressId.intValue() != 0) 
                 || !studentContact.isEmpty()) {
         Address address = new Address();
-        copied.setAddressId(this.addressId);   
+     //   copied.setAddressId(this.addressId);   
         address.setAddressId(this.addressId);
         address.setAddressLine1(this.studentContact.getAddressLine1());
         address.setAddressLine2(this.studentContact.getAddressLine2());
