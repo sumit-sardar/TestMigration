@@ -124,8 +124,7 @@ public class StudentDemographicsTag extends CTBTag
         
     	displayRowStart();
             displayCellStart("transparent");
-                //Changes for CA-ABE student intake
-                writeToPage("<span>*&nbsp;</span><b>" + displayName + "</b>");
+		        writeToPage("<b>" + displayName + "</b>");
     		displayCellEnd();
     	displayRowEnd();  
     	
@@ -185,9 +184,7 @@ public class StudentDemographicsTag extends CTBTag
 	    for (i=0 ; i<values.length ; i++) {
 	        StudentDemographicValue sdv = (StudentDemographicValue)values[i];
 		    value = sdv.getValueName().trim();
-		    selected = sdv.getSelectedFlag().equals("true");		
-		    String prin = sdv.getValueName();     //added for CA-ABE
-		    System.out.println("displayValue_radio"+prin);
+		    selected = sdv.getSelectedFlag().equals("true");	
 		    if (selected)
 		        hasSelected = true;
 			displayRowStart();
@@ -276,7 +273,7 @@ public class StudentDemographicsTag extends CTBTag
 		return "<input type=\"radio\" name=\"" + name + "\" id=\"" + name + "\"" +
 				" value=\"" + value + "\" " + 
 				" tabindex=\"" + (this.tabIndex++) + "\" " +
-				(isChecked?"checked=\"true\" ":" ") + disabled + " onClick=\"displayWorkforceSection(this)\"/>";			//added for CA-ABE
+				(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
 	}
 
     private String getSpaces(int spaces) 

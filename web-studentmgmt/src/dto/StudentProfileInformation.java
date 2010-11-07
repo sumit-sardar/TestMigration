@@ -7,8 +7,6 @@ import java.util.StringTokenizer;
 import utils.DateUtils;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.OrganizationNode;
-////Changes for CA-ABE student intake
-import com.ctb.bean.testAdmin.Address;
 import com.ctb.util.web.sanitizer.SanitizedFormField;
 
 /**
@@ -37,10 +35,6 @@ public class StudentProfileInformation extends SanitizedFormField
     private String month;
     private String day;
     private String year;
-    
-    private StudentContactInformation studentContact = new StudentContactInformation();
-    private Integer addressId = new Integer(0);
-    
 
     public StudentProfileInformation() {
         this.studentId = new Integer(0);
@@ -99,8 +93,6 @@ public class StudentProfileInformation extends SanitizedFormField
         }
         
         this.organizationNodes = student.getOrganizationNodes();
-        
-        this.studentContact = new StudentContactInformation(student.getId(), student.getAddress());
     }
     
 
@@ -118,7 +110,6 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setStudentSecondNumber(this.studentSecondNumber);
         copied.setBirthdate(this.birthdate);
         copied.setOrganizationNodes(this.organizationNodes);
-        copied.setStudentContact(this.studentContact);
         
         return copied;       
     }
@@ -154,25 +145,6 @@ public class StudentProfileInformation extends SanitizedFormField
             orgNodes[i] = orgNode;
         }
         copied.setOrganizationNodes(orgNodes);    
-        //Contact Information
-        this.studentContact.setPrimaryPhoneFromOthers();
-        this.studentContact.setSecondaryPhoneFromOthers();
-        
-        if ((this.addressId != null && this.addressId.intValue() != 0) 
-                || !studentContact.isEmpty()) {
-        Address address = new Address();
-     //   copied.setAddressId(this.addressId);   
-        address.setAddressId(this.addressId);
-        address.setAddressLine1(this.studentContact.getAddressLine1());
-        address.setAddressLine2(this.studentContact.getAddressLine2());
-        address.setCity(this.studentContact.getCity());
-        address.setStatePr(this.studentContact.getState());
-        address.setZipCode(this.studentContact.getZipCode1());
-        address.setZipCodeExt(this.studentContact.getZipCode2());
-        address.setPrimaryPhone(this.studentContact.getPrimaryPhone());
-        address.setSecondaryPhone(this.studentContact.getSecondaryPhone());
-        copied.setAddress(address);        
-    }
             
         return copied;       
     }
@@ -417,16 +389,5 @@ public class StudentProfileInformation extends SanitizedFormField
             }
         }
         return str;
-	}
-
-
-	public StudentContactInformation getStudentContact() {
-		return this.studentContact != null ? this.studentContact : new StudentContactInformation();
-		
-	}
-
-
-	public void setStudentContact(StudentContactInformation studentContact) {
-		this.studentContact = studentContact;
 	}
 } 

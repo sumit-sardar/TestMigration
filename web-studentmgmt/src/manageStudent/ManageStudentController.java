@@ -2,13 +2,8 @@
 package manageStudent;
 
 import java.util.ArrayList;
-//Changes for CA-ABE student intake
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,7 +36,6 @@ import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.StudentAccommodations;
-import com.ctb.bean.testAdmin.USState;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
@@ -128,12 +122,9 @@ public class ManageStudentController extends PageFlowController
 	private boolean isMandatoryStudentId = false; // Change For CR - GA2011CR001
 	private String studentIdLabelName = "Student ID";
 	private String studentId2LabelName = "Student ID 2";
-	private boolean isABECustomer = false;   //added for CA-ABE
 
 	// student demographics
 	List demographics = null;
-	//Changes for CA-ABE student intake
-	public LinkedHashMap stateOptions = null;
 
 
 	// student accommodations
@@ -178,7 +169,7 @@ public class ManageStudentController extends PageFlowController
 		this.monthOptions = DateUtils.getMonthOptions();
 		this.dayOptions = DateUtils.getDayOptions();
 		this.yearOptions = DateUtils.getYearOptions();
-		initStateOptions(ACTION_FIND_STUDENT);		
+
 		this.savedForm = new ManageStudentForm();
 		this.savedForm.init( action );
 
@@ -273,7 +264,7 @@ public class ManageStudentController extends PageFlowController
 		form.setByStudentProfileVisible(Boolean.TRUE);
 
 		initGradeGenderOptions(ACTION_ADD_STUDENT, form, null, null);
-	    initStateOptions(ACTION_ADD_STUDENT);
+
 		form.getStudentProfile().setMonth(this.monthOptions[0]);
 		form.getStudentProfile().setDay(this.dayOptions[0]);
 		form.getStudentProfile().setYear(this.yearOptions[0]);
@@ -283,7 +274,7 @@ public class ManageStudentController extends PageFlowController
 
 		this.studentName = null;
 		this.searchApplied = false;
- 
+
 		return new Forward("success", form);
 	}
 
@@ -341,9 +332,7 @@ public class ManageStudentController extends PageFlowController
 		this.accommodations = null;
 		this.demographics = null;
 
-		this.gradeOptions = getGradeOptions();
-		//Changes for CA-ABE student intake
-		initStateOptions(ACTION_EDIT_STUDENT);
+		this.gradeOptions = getGradeOptions(ACTION_EDIT_STUDENT);
 		this.genderOptions = getGenderOptions(ACTION_EDIT_STUDENT);
 		getCustomerConfigurations();  
 		return new Forward("success", form);
@@ -363,7 +352,6 @@ public class ManageStudentController extends PageFlowController
 	protected Forward addEditStudent(ManageStudentForm form)
 	{      
 		isGeorgiaCustomer(form); //Change For CR - GA2011CR001
-		isABECustomer(form);    //added for CA-ABE
 		String stringAction = form.getStringAction();
 		setFormInfoOnRequest(form);
 		saveToken(this.getRequest());
@@ -484,6 +472,8 @@ public class ManageStudentController extends PageFlowController
 	protected Forward saveAddEditStudent(ManageStudentForm form)
 	{   
 		Boolean isTokenValid = isTokenValid();
+		
+		
 		Integer studentId = form.getSelectedStudentId();
 		
 		if ( studentId == null) {
@@ -572,7 +562,7 @@ public class ManageStudentController extends PageFlowController
 					form.setMessage(Message.EDIT_TITLE, Message.EDIT_ERROR, Message.INFORMATION);
 			}
 			
-			this.savedForm = form.createClone(); 
+			this.savedForm = form.createClone();    
 		}
 		return new Forward("success");
 	}
@@ -609,75 +599,6 @@ public class ManageStudentController extends PageFlowController
 
 		return orgNodePath;
 	}
-	
-	
-	 /**
-     * initStateOptions
-     */
-     //Changes for CA-ABE student intake
-    private void initStateOptions(String action)
-    {        
-        this.stateOptions = new LinkedHashMap();
-        
-        TreeMap territoriesOptions = new TreeMap();
-         
-
-        if (action.equals(ACTION_ADD_STUDENT)) {
-            this.stateOptions.put("", Message.SELECT_STATE);
-        }
-        if (action.equals(ACTION_EDIT_STUDENT) ) {
-            this.stateOptions.put("", Message.SELECT_STATE);
-        }
-       
-        try {
-            USState[] state = this.studentManagement.getStates();
-            if (state != null) {
-                for (int i = 0 ; i < state.length ; i++) {
-                    if (!isContains (state[i].getStatePrDesc())) {
-                        
-                        this.stateOptions.put(state[i].getStatePr(), 
-                                            state[i].getStatePrDesc());
-                    } else {
-                        
-                        territoriesOptions.put(state[i].getStatePrDesc(),state[i]);
-                        
-                    }
-                    
-                }
-            }
-            orderedStateTerritories(territoriesOptions); 
-            
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
- private boolean isContains (String stateDesc) {
-        
-        String []USterritories = {"Virgin Islands","Puerto Rico","Palau","North Mariana Islands","Marshall Islands","Guam","F.S. of Micronesia","American Samoa"};
-        
-        for (int i = 0; i < USterritories.length; i++) {
-            
-            if (USterritories[i].equals(stateDesc)) {
-                return true;
-            } 
-        }
-        return false;
-        
-    } 
-    
-    private void orderedStateTerritories (TreeMap territoriesOptions) {
-        
-        Collection territories = territoriesOptions.values();
-        
-        Iterator iterate = territories.iterator();
-        while (iterate.hasNext()) {
-            USState state = (USState) iterate.next();
-            this.stateOptions.put(state.getStatePr(), 
-                                            state.getStatePrDesc());
-        }
-    }
 
 	/**
 	 * isProfileEditable
@@ -1487,7 +1408,6 @@ public class ManageStudentController extends PageFlowController
 			protected Forward findStudent(ManageStudentForm form)
 	{    
 		isGeorgiaCustomer(form);// Change For CR - GA2011CR001
-		isABECustomer(form);	//added for CA-ABE
 		form.validateValues();
 
 		String currentAction = form.getCurrentAction();
@@ -2190,7 +2110,6 @@ public class ManageStudentController extends PageFlowController
 		this.getRequest().setAttribute("pageMessage", form.getMessage());
 		this.getRequest().setAttribute("studentProfileData", form.getStudentProfile());
 		this.getSession().setAttribute("selectStudentIdInView",form.getSelectedStudentId());
-		this.getRequest().setAttribute("isABECustomer",form.isABECustomer);	//added for CA-ABE
 		
 	}
 	/*
@@ -2319,25 +2238,7 @@ public class ManageStudentController extends PageFlowController
         this.getRequest().setAttribute("isStudentId2Configurable",isStudentId2Configurable);
         this.getRequest().setAttribute("studentId2ArrValue",valueForStudentId2);
     }
-    //StART-  added for CA-ABE
-	private void isABECustomer(ManageStudentForm form){
-		
-		 for (int i=0; i < this.customerConfigurations.length; i++)
-	        {
-	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("ABE_Customer") && cc.getDefaultValue().equalsIgnoreCase("T"))
-				{
-	            	this.isABECustomer = true;
-	    			form.setABECustomer(this.isABECustomer );	
-				}
-					
-	         }
-		
-		 this.getRequest().setAttribute("isABECustomer",form.isABECustomer);
-	        
-		
-	}
-	//END- added for CA-ABE
+        
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** MANAGESTUDENTFORM ************* /////////////////////////////    
@@ -2385,21 +2286,6 @@ public class ManageStudentController extends PageFlowController
 		private boolean isMandatoryStudentId = false;//GA2011CR001- GTID mandatory field
 		private String studentIdLabelName = "Student ID";
 		private String studentId2LabelName = "Student ID 2";
-		private boolean isABECustomer = false;
-		/**
-		 * @return the isABECustomer
-		 */
-		public boolean isABECustomer() {
-			return isABECustomer;
-		}
-
-		/**
-		 * @param isABECustomer the isABECustomer to set
-		 */
-		public void setABECustomer(boolean isABECustomer) {
-			this.isABECustomer = isABECustomer;
-		}
-
 		public ManageStudentForm()
 		{
 		}
@@ -2565,7 +2451,7 @@ public class ManageStudentController extends PageFlowController
 			copied.setStudentMaxPage(this.studentMaxPage);
 
 			copied.setStudentProfile(this.studentProfile);
-			copied.setABECustomer(this.isABECustomer);	//added for CA-ABE
+
 			return copied;                    
 		} 
 
@@ -2964,10 +2850,6 @@ public class ManageStudentController extends PageFlowController
 
 	public String[] getGenderOptions() {
 		return genderOptions;
-	}
-	//Changes for CA-ABE student intake
-	public LinkedHashMap getStateOptions() {
-		return stateOptions;
 	}
 
 	public String getPageMessage() {

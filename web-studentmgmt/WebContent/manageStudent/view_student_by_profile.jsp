@@ -12,7 +12,6 @@
 <%
    
 	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); //Change For CR - GA2011CR001
-	Boolean isABECustomer = (Boolean)request.getAttribute("isABECustomer");
 %>
 
 
@@ -23,32 +22,24 @@
 <td class="transparent-top" width="50%">
 <table class="transparent">
     <tr class="transparent">
-        <td class="transparent" width="120"><netui:content value="First Name:"/></td>
+        <td class="transparent" width="80"><netui:content value="First Name:"/></td>
         <td class="transparent"><netui:label value="${studentProfileData.firstName}"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent" width="120"><netui:content value="Middle Name:"/></td>
+        <td class="transparent" width="80"><netui:content value="Middle Name:"/></td>
         <td class="transparent"><netui:label value="${studentProfileData.middleName}"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent" width="120"><netui:content value="Last Name:"/></td>
+        <td class="transparent" width="80"><netui:content value="Last Name:"/></td>
         <td class="transparent"><netui:label value="${studentProfileData.lastName}"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent" width="120"><netui:content value="Login ID:"/></td>
+        <td class="transparent" width="80"><netui:content value="Login ID:"/></td>
         <td class="transparent"><netui:label value="${studentProfileData.userName}"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent" width="120"><netui:content value="Date of Birth:"/></td>
+        <td class="transparent" width="80"><netui:content value="Date of Birth:"/></td>
         <td class="transparent"><netui:label value="${studentProfileData.birthdateString}"/></td>
-    </tr>
-       <tr class="transparent">
-        <td class="transparent" width="213"><netui:content value="Grade:"/></td>
-        <td class="transparent"><netui:label value="${studentProfileData.grade}"/></td>
-    </tr>
-    <tr class="transparent">
-        <td class="transparent" width="213"><netui:content value="Gender:"/></td>
-        <td class="transparent"><netui:label value="${studentProfileData.gender}"/></td>
     </tr>
 </table>
 
@@ -61,28 +52,27 @@
 <!-- column 2 -->
 <td class="transparent-top" width="50%">
 <table class="transparent">
-<tr class="transparent">
-        <td class="transparent" width="270"><netui:content value="Instructor First Name:"/></td>
-        <td class="transparent"><netui:label value="${studentProfileData.firstName}"/></td>
+    <tr class="transparent">
+        <td class="transparent" width="80"><netui:content value="Grade:"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.grade}"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent" width="270"><netui:content value="Instructor Last Name:"/></td>
-        <td class="transparent"><netui:label value="${studentProfileData.middleName}"/></td>
+        <td class="transparent" width="80"><netui:content value="Gender:"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.gender}"/></td>
     </tr>
- 
     <tr class="transparent">
-        <td class="transparent" width="270">
+        <td class="transparent" width="80">
         
          <c:if test="${isStudentIdConfigurable}">   
         <netui:content value="${studentIdArrValue[0]}:"/></td>
          </c:if>
           <c:if test="${!isStudentIdConfigurable}">   
-        <netui:content value="Social Security Number/Student ID:"/></td>
+        <netui:content value="Student ID:"/></td>
          </c:if>
         <td class="transparent"><netui:label value="${studentProfileData.studentNumber}"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent-top" width="270"><netui:content value="Organization:"/></td>
+        <td class="transparent-top" width="80"><netui:content value="Organization:"/></td>
         <td class="transparent-top">
             <table class="transparent">
             <netui-data:repeater dataSource="requestScope.organizationNodes">
@@ -95,11 +85,6 @@
             </table>        
         </td>
     </tr>
-     <tr class="transparent">
-        <td class="transparent" width="270"><netui:content value="Make student visible across organizations:"/></td>
-        <td class="transparent">Yes</td>
-    </tr>
-    
 </table>
 
 </td>

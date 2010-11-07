@@ -30,10 +30,7 @@
     <netui:content value="Review the student information listed below."/> 
 </p>
 
-<%
-  	Boolean isABECustomer = (Boolean)request.getAttribute("isABECustomer");
-	
-%>
+
 <!-- start form -->
 <netui:form action="viewStudent">
 
@@ -42,7 +39,6 @@
 <netui:hidden dataSource="actionForm.selectedStudentId"/>
 <netui:hidden dataSource="actionForm.selectedOrgNodeName"/> 
 <netui:hidden dataSource="actionForm.selectedTab"/> 
-
 
 
 <!-- message -->
@@ -77,29 +73,12 @@
 
 
 <!-- collapsible sections -->
-<c:if test="${!isABECustomer}"> 
 <p>
     <ctb:showHideSection sectionId="moduleStudentProfile" sectionTitle="Student Information" sectionVisible="actionForm.byStudentProfileVisible">
         <jsp:include page="/manageStudent/view_student_by_profile.jsp" />
     </ctb:showHideSection>
 </p>
-</c:if> 
 
-<c:if test="${isABECustomer}">       
-<p>
-    <ctb:showHideSection sectionId="moduleStudentProfile" sectionTitle="Student Information" sectionVisible="actionForm.byStudentProfileVisible">
-        <jsp:include page="/manageStudent/view_student_by_profile.jsp" />
-    </ctb:showHideSection>
-</p>
-</c:if> 
-
-<c:if test="${isABECustomer}">   
-<p>
-    <ctb:showHideSection sectionId="moduleStudentContact" sectionTitle="Contact Information" sectionVisible="actionForm.byStudentAccommodationVisible">
-        <jsp:include page="/manageStudent/view_student_by_contact.jsp" />
-    </ctb:showHideSection>
-</p>
-</c:if>
 
 <c:if test="${demographicVisible == 'T'}">                 
 <p>
@@ -110,33 +89,6 @@
 </c:if>
 
 
-<c:if test="${isABECustomer}"> 
-<a name="moduleStudentSupplementData"><!-- moduleStudentContact --></a>    
-<p>
-    <ctb:showHideSection sectionId="moduleStudentSupplementData" sectionTitle="Supplemental Data for Workforce Student" sectionVisible="actionForm.byStudentAccommodationVisible">
-        <jsp:include page="/manageStudent/add_edit_student_supplement_data_workforce.jsp" />
-    </ctb:showHideSection>
-</p>
-</c:if> 
-
-<c:if test="${isABECustomer}">       
-<a name="moduleStudentEduInstruction"><!-- moduleStudentEduInstruction --></a>    
-<p>
-    <ctb:showHideSection sectionId="moduleStudentEduInstruction" sectionTitle="Education  And Instruction Information" sectionVisible="actionForm.byStudentAccommodationVisible">
-        <jsp:include page="/manageStudent/view_student_edu_intruction.jsp" />
-    </ctb:showHideSection>
-</p>
-</c:if>
-
-<c:if test="${isABECustomer}">     
-<a name="moduleStudentProgramsGoal"><!-- moduleStudentProgramsGoal --></a>    
-<p>
-    <ctb:showHideSection sectionId="moduleStudentProgramsGoal" sectionTitle="Programs And Goal" sectionVisible="actionForm.byStudentAccommodationVisible">
-        <jsp:include page="/manageStudent/view_student_by_programs_goal.jsp" />
-    </ctb:showHideSection>
-</p>
-</c:if>
-
 <c:if test="${hideAccommodations == 'F'}">                 
 <p>
     <ctb:showHideSection sectionId="moduleStudentAccommodation" sectionTitle="Specific Accommodations" sectionVisible="actionForm.byStudentAccommodationVisible">
@@ -144,6 +96,8 @@
     </ctb:showHideSection>
 </p>
 </c:if>
+
+
 
 
 <!-- buttons -->
