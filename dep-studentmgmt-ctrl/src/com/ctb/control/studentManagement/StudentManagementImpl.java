@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 
 import com.ctb.bean.request.FilterParams;
@@ -34,10 +33,8 @@ import com.ctb.bean.testAdmin.StudentAccommodations;
 import com.ctb.bean.testAdmin.StudentNode;
 import com.ctb.bean.testAdmin.StudentNodeData;
 import com.ctb.bean.testAdmin.TestSession;
-import com.ctb.bean.testAdmin.USState;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
-import com.ctb.exception.UserDataRetrivalException;
 import com.ctb.exception.studentManagement.CustomerConfigurationDataNotFoundException;
 import com.ctb.exception.studentManagement.CustomerDemographicDataNotFoundException;
 import com.ctb.exception.studentManagement.CustomerReportDataNotFoundException;
@@ -112,12 +109,6 @@ public class StudentManagementImpl implements StudentManagement, Serializable
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.Users users;
 
-    /**
-     * @common:control
-     */
-    @Control()
-    private com.ctb.control.db.Addresses addresses;
-    
     /**
      * @common:control
      */
@@ -1802,39 +1793,4 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	        throw tee;
 	    }
     }
-    
-    /**
-     * retrieve States and places it in cache.
-     * @common:operation
-     * @param void
-	 * @return USState[]
-	 * @throws CTBBusinessException
-     */
-    public USState[] getStates() throws CTBBusinessException {
-        
-        try {
-            
-            String key = "STATES";
-            USState[] states = (USState[]) SimpleCache.checkCache("usStateArray", key, "manageStudent");
-            if (states == null) {
-                states = addresses.getStates();
-                SimpleCache.cacheResult("usStateArray", key, states, "manageStudent");
-            }
-            
-            return states;
-        } catch(SQLException se) {
-            OrgNodeDataNotFoundException dataNotfound = 
-                                        new OrgNodeDataNotFoundException
-                                                ("StudentManagement.Failed");
-            dataNotfound.setStackTrace(se.getStackTrace());
-            throw dataNotfound;
-        } catch (Exception e) {
-            UserDataRetrivalException dataRetrivalException = 
-                                        new UserDataRetrivalException
-                                                ("StudentManagement.Failed");
-            dataRetrivalException.setStackTrace(e.getStackTrace());
-            throw dataRetrivalException;
-        }
-        
-    } 
 } 

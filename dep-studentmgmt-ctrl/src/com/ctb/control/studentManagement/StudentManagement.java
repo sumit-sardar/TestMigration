@@ -425,14 +425,4 @@ public interface StudentManagement
     
     com.ctb.bean.studentManagement.CustomerConfigurationValue[] getCustomerConfigurationsValue(java.lang.Integer configId) throws com.ctb.exception.CTBBusinessException;
     
-    /**
-     * retrieve States and places it in cache.
-     * @param void
-     * @return USState[]
-     * @throws CTBBusinessException
-     */
-    
-    com.ctb.bean.testAdmin.USState[] getStates() throws com.ctb.exception.CTBBusinessException;
-
-    
 } 
