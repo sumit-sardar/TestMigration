@@ -79,22 +79,22 @@
      <tr class="transparent">
         <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Is above id a Social Security Number:"/></td>
         <td class="transparent-small" width="200">
-	        <input type="radio" value="Yes" checked="true"/>&nbsp;&nbsp;&nbsp;Yes
-	        <input type="radio" value="No"/>&nbsp;&nbsp;&nbsp;No
+	        <input type="radio" value="Yes"/>&nbsp;&nbsp;&nbsp;Yes
+	        <input type="radio" value="No" checked="true"/>&nbsp;&nbsp;&nbsp;No
         </td>
      </tr>
      <tr class="transparent">
         <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Is PBA Consent form signed:"/></td>
         <td class="transparent-small" width="200">
-	        <input type="radio" value="Yes" checked="true"/>&nbsp;&nbsp;&nbsp;Yes
-	        <input type="radio" value="No"/>&nbsp;&nbsp;&nbsp;No
+	        <input type="radio" value="Yes"/>&nbsp;&nbsp;&nbsp;Yes
+	        <input type="radio" value="No" checked="true"/>&nbsp;&nbsp;&nbsp;No
         </td>
     </tr>
     <tr class="transparent">
         <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Make student visible across organizations:"/></td>
         <td class="transparent-small" width="200">
-	        <input type="radio" value="Yes" checked="true"/>&nbsp;&nbsp;&nbsp;Yes
-	        <input type="radio" value="No"/>&nbsp;&nbsp;&nbsp;No
+	        <input type="radio" value="Yes"/>&nbsp;&nbsp;&nbsp;Yes
+	        <input type="radio" value="No" checked="true"/>&nbsp;&nbsp;&nbsp;No
         </td>
     </tr>
     
