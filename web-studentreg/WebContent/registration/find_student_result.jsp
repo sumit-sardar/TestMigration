@@ -30,12 +30,7 @@
             <th class="sortable alignLeft" width="30%" nowrap>&nbsp;&nbsp;Organization</th>
             <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="LoginId">Login ID</ctb:tableSortColumn></th>
             <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="Grade">Grade</ctb:tableSortColumn></th>
-            <c:if test="${isCustomizedTABE}">
-            <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentIdNumber">Social Security Number/Student ID</ctb:tableSortColumn></th>
-            </c:if>
-            <c:if test="${!isCustomizedTABE}">
             <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentIdNumber">Student ID</ctb:tableSortColumn></th>
-            </c:if>
         </ctb:tableSortColumnGroup>
     </tr>
     

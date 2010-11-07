@@ -10,10 +10,7 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.studentProfile.studentNumber}" />
-<%
-   	Boolean isCustomizedTABE = (Boolean)session.getAttribute("isCustomizedTABE"); // Change For CR - GA2011CR001
-	
-%>
+
 
 <table class="sortable">
     <tr class="sortable">

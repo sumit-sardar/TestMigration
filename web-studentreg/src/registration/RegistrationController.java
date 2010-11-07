@@ -9,8 +9,6 @@ import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.bean.studentManagement.OrganizationNodeData;
-import com.ctb.bean.studentManagement.StudentDemographic;
-import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
@@ -31,8 +29,6 @@ import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.PagerSummary;
 import dto.Message;
 import dto.PathNode;
-//Changes for CA-ABE student intake
-import dto.StudentAccommodationsDetail;
 import dto.StudentProfileInformation;
 import data.CustomerLicenseInfo;
 import data.SubtestVO;
@@ -149,16 +145,6 @@ public class RegistrationController extends PageFlowController
     //GACRCT2010CR007- Disable_Mandatory_Birth_Date according to customer cofiguration
     private boolean disableMandatoryBirthdate = false;
     
-   //intake and student-record editing UI
-    boolean isABECustomer = false;
-    
-	// intake and student-record editing UI student demographics
-	List demographics = null;
-
-
-	// student accommodations intake and student-record editing UI
-	public StudentAccommodationsDetail accommodations = null;
-    
     /**
      * This method represents the point of entry into the pageflow
      * @jpf:action
@@ -170,9 +156,7 @@ public class RegistrationController extends PageFlowController
     })
     protected Forward begin()
     {
-       
-    	
-    	getUserDetails();
+        getUserDetails();
                         
         this.gradeOptions = getGradeOptions(ACTION_FIND_STUDENT);
         this.genderOptions = getGenderOptions(ACTION_FIND_STUDENT);
@@ -196,7 +180,6 @@ public class RegistrationController extends PageFlowController
         this.savedForm = initData();
 
         initTestStructure(this.savedForm);
-        //addDemographics(this.savedForm); //intake and student-record editing UI
 
         this.licenseInfo = new CustomerLicenseInfo(this.customerId, this.userName);
 
@@ -204,47 +187,8 @@ public class RegistrationController extends PageFlowController
         
         //GACRCT2010CR007- retrieve value for Disable_Mandatory_Birth_Date 
         getCustomerConfigurations();
-        //intake and student-record editing UI
-        this.isABECustomer = isCustomizedABECustomer();
-        this.getRequest().setAttribute("isCustomizedTABE",this.isABECustomer);
-        System.out.println("begin..isCustomizedTABE " + isABECustomer );
+        
         return new Forward("success", this.savedForm);
-    }
-    
-    /*
-     * intake and student-record editing UI
-     */
-    private boolean isCustomizedABECustomer() {
-    	
-    	/*List studentBioContact = new ArrayList();
-    	String studentExternalId1 = "Student ID 1";
-    	String studentExternalId2 = "Student ID 2";*/
-    	boolean isABECustomer = false;
-    	
-    	try {
-             
-                if (this.customerConfigurations != null) {
-                	 
-                	for (CustomerConfiguration customerconfig : this.customerConfigurations) {
-                		
-                		if(customerconfig.getCustomerConfigurationName().equalsIgnoreCase("ABE_Customer") &&
-                				customerconfig.getDefaultValue().equalsIgnoreCase("T")) {
-                			isABECustomer = true;
-                			break;
-                		}
-                		
-                	}
-                } 
-                 
-            
-         }
-         catch (Exception be)
-         {
-             be.printStackTrace();
-         }
-       
-      	 return isABECustomer;
-         
     }
 
     /**
@@ -346,284 +290,6 @@ public class RegistrationController extends PageFlowController
         return form;  
     }
     
-    
-/////////////////////////////////////////////////////////////////////////////////////////////
-/////// *********************** intake and student-record editing UI DEMOGRAPHICS ************* //////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * //intake and student-record editing UI addEditDemographics
-	 */
-	private void addDemographics(RegistrationForm form)
-	{
-		Integer studentId = form.getStudentProfile().getStudentId();
-		boolean studentImported = (form.getStudentProfile().getCreateBy().intValue() == 1);
-
-		if ((this.demographics == null) && (studentId != null))
-		{
-			this.demographics = getStudentDemographics(studentId);
-			prepareOnNullRule();            
-		}
-		else
-		{
-			if (studentImported)
-			{        
-				prepareStudentDemographicForCustomerConfiguration();
-			}
-			getStudentDemographicsFromRequest();
-		}
-
-		this.getRequest().setAttribute("demographics", this.demographics);       
-		this.getRequest().setAttribute("studentImported", new Boolean(studentImported));       
-	}
-	
-	/**
-	 * getStudentDemographicsFromRequest
-	 */
-	private void getStudentDemographicsFromRequest() 
-	{
-		String param = null, paramValue = null;
-
-		for (int i=0; i < this.demographics.size(); i++)
-		{
-			StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
-			StudentDemographicValue[] values = sdd.getStudentDemographicValues();
-
-			for (int j=0; j < values.length; j++)
-			{
-				StudentDemographicValue sdv = (StudentDemographicValue)values[j];
-
-				// Look up the parameter based on checkbox vs radio/select
-				if (sdd.getMultipleAllowedFlag().equals("true"))
-				{
-					if (! sdv.getVisible().equals("false"))
-						sdv.setSelectedFlag("false");
-					param = sdd.getLabelName() + "_" + sdv.getValueName();
-					if (getRequest().getParameter(param) != null)
-					{
-						paramValue = getRequest().getParameter(param);
-						sdv.setSelectedFlag("true");
-					}
-				} 
-				else
-				{
-					if (values.length == 1)
-					{
-						if (! sdv.getVisible().equals("false"))
-							sdv.setSelectedFlag("false");
-						param = sdd.getLabelName() + "_" + sdv.getValueName();
-						if (getRequest().getParameter(param) != null)
-						{
-							paramValue = getRequest().getParameter(param);
-							sdv.setSelectedFlag("true");
-						}
-					}
-					else
-					{
-						param = sdd.getLabelName();
-						if (getRequest().getParameter(param) != null)
-						{
-							paramValue = getRequest().getParameter(param);
-
-							for (int k=0; k < values.length; k++)
-							{
-								StudentDemographicValue sdv1 = (StudentDemographicValue)values[k];
-								if (! sdv1.getVisible().equals("false"))
-									sdv1.setSelectedFlag("false");
-								if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
-								{
-									if (paramValue.equals(sdv1.getValueName()))
-									{
-										sdv1.setSelectedFlag("true");
-									}
-								}
-							}
-
-							break;
-						}
-					}
-				}
-				sdv.setVisible("T");
-			}
-		}
-	}
-	
-	/**
-	 * getStudentDemographics
-	 */
-	private List getStudentDemographics(Integer studentId)
-	{
-		this.demographics = new ArrayList();
-		try
-		{
-			if ((studentId != null) && (studentId.intValue() == 0))
-				studentId = null;
-
-			StudentDemographic[] studentDemoList = this.studentManagement.getStudentDemographics(this.userName, this.customerId, studentId, false);
-
-			if (studentDemoList != null)
-			{
-				for (int i=0; i < studentDemoList.length; i++)
-				{
-					StudentDemographic sd = studentDemoList[i];
-					this.demographics.add(sd);                
-				}                        
-			}
-		}
-		catch (CTBBusinessException be)
-		{
-			be.printStackTrace();
-		}
-
-		return this.demographics;
-	}
-
-	/**
-	 * prepareOnNullRule
-	 */
-	private void prepareOnNullRule() 
-	{
-		for (int i=0; i < this.demographics.size(); i++)
-		{
-			StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
-			if (sdd.getImportEditable().equals("ON_NULL_RULE"))
-			{
-				StudentDemographicValue[] values = sdd.getStudentDemographicValues();		    
-				boolean hasValue = false;
-				for (int j=0; j < values.length; j++)
-				{
-					StudentDemographicValue value = values[j];
-					if ((value.getSelectedFlag() != null) && value.getSelectedFlag().equals("true"))
-						hasValue = true;
-				}
-				if (hasValue)
-				{
-					sdd.setImportEditable("UNEDITABLE_ON_NULL_RULE");
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * prepareStudentDemographicForCustomerConfiguration
-	 */
-	private void prepareStudentDemographicForCustomerConfiguration() 
-	{
-		for (int i=0; i < this.demographics.size(); i++)
-		{
-			StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
-			if (sdd.getImportEditable().equals("ON_NULL_RULE") || sdd.getImportEditable().equals("UNEDITABLE_ON_NULL_RULE") || sdd.getImportEditable().equals("F"))
-			{            
-				StudentDemographicValue[] values = sdd.getStudentDemographicValues();		    
-				for (int j=0; j < values.length; j++)
-				{
-					StudentDemographicValue value = (StudentDemographicValue)values[j];
-					if ((value.getSelectedFlag() != null) && value.getSelectedFlag().equals("true"))
-					{
-						value.setVisible("false");            
-					}
-				}
-			}
-		}
-	}
-	
-	/////intake and student-record editing UI Accommodations ///////
-	
-	/**
-	 * addAccommodations
-	 */
-	private void addAccommodations(RegistrationForm form)
-	{
-		if (this.accommodations == null)
-		{
-			Integer studentId = form.getStudentProfile().getStudentId();
-			this.accommodations = getStudentAccommodations(studentId);         
-		}
-	
-		this.getRequest().getSession().setAttribute("accommodations", this.accommodations);       
-	}
-	
-	/**
-	 * getStudentAccommodations
-	 */
-	private StudentAccommodationsDetail getStudentAccommodations(Integer studentId)
-	{
-		StudentAccommodationsDetail studentAcc = new StudentAccommodationsDetail();
-
-		if ((studentId != null) && (studentId.intValue() > 0))
-		{
-			try
-			{    
-				StudentAccommodations sa = this.studentManagement.getStudentAccommodations(this.userName, studentId);
-				studentAcc = new StudentAccommodationsDetail(sa);
-			}
-			catch (CTBBusinessException be)
-			{
-				be.printStackTrace();
-			}  
-		}
-		else
-		{
-			setCustomerAccommodations(studentAcc, true);
-		}
-
-		studentAcc.convertHexToText();
-
-
-		return studentAcc;
-	}
-	
-	/**
-	 * setCustomerAccommodations
-	 */
-	private void setCustomerAccommodations(StudentAccommodationsDetail sad, boolean isSetDefaultValue) 
-	{        
-		// set checked value if there is configuration for this customer
-		for (int i=0; i < this.customerConfigurations.length; i++)
-		{
-			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-			String ccName = cc.getCustomerConfigurationName();
-			String defaultValue = cc.getDefaultValue() != null ? cc.getDefaultValue() : "F";
-			String editable = cc.getEditable() != null ? cc.getEditable() : "F";
-
-			if (isSetDefaultValue)
-				editable = "F";
-
-			if (defaultValue.equalsIgnoreCase("T") && editable.equalsIgnoreCase("F"))
-			{
-
-				if (ccName.equalsIgnoreCase("screen_reader"))
-				{
-					sad.setScreenReader(Boolean.TRUE);
-				}
-
-				if (ccName.equalsIgnoreCase("calculator"))
-				{
-					sad.setCalculator(Boolean.TRUE);
-				}
-
-				if (ccName.equalsIgnoreCase("test_pause"))
-				{
-					sad.setTestPause(Boolean.TRUE);
-				}
-
-				if (ccName.equalsIgnoreCase("untimed_test"))
-				{
-					sad.setUntimedTest(Boolean.TRUE);
-				}
-
-				if (ccName.equalsIgnoreCase("highlighter"))
-				{
-					sad.setHighlighter(Boolean.TRUE);
-				}
-			}
-		}
-	}
-
-
-
-    
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** ENTER STUDENT ************* /////////////////////////////    
@@ -634,13 +300,11 @@ public class RegistrationController extends PageFlowController
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
-                     path = "enter_student.jsp"),
-                     @Jpf.Forward(name = "successcatbe",
-                             path = "enter_student_abe.jsp")
+                     path = "enter_student.jsp")
     })
     protected Forward enterStudent(RegistrationForm form)
     {   
-    	
+        
         String selectedTab = form.getSelectedTab();
         
         if (! selectedTab.equals(this.currentSelectedTab))
@@ -680,20 +344,8 @@ public class RegistrationController extends PageFlowController
         }
         //End License user stories Agile task 
          
-        setFormInfoOnRequest(form);  
-        this.isABECustomer = isCustomizedABECustomer();
-        //System.out.println("enter isCustomizedTABE" + isABECustomer);
-        //start of change intake and student-record editing UI
-        if(this.isABECustomer) {
-        	addDemographics(form);
-        	addAccommodations(form);  
-        }    
-        if (this.isABECustomer()) {
-        	this.getRequest().setAttribute("isCustomizedTABE",this.isABECustomer());
-        	return new Forward("successcatbe", form);
-        } else
-        	return new Forward("success", form);
-      //end of change intake and student-record editing UI
+        setFormInfoOnRequest(form);                
+        return new Forward("success", form);
     }
 
     /**
@@ -1248,8 +900,7 @@ public class RegistrationController extends PageFlowController
             }
                             
             // add a new student if needed
-            Integer studentId = this.savedForm.getSelectedStudentId(); 
-            boolean isCreateNew = studentId != null ? false : true;
+            Integer studentId = this.savedForm.getSelectedStudentId();        
             if (studentId == null)
             {
                 studentId = createNewStudent(this.savedForm.getStudentProfile(), this.studentOrgId); 
@@ -1262,15 +913,7 @@ public class RegistrationController extends PageFlowController
             
             this.savedForm.setSelectedStudentId(studentId);
             form.setSelectedStudentId(studentId);
-            
-            // demographic add
-            boolean result=false;
-            String demographicVisible = this.user.getCustomer().getDemographicVisible();
-			if ((studentId != null) && demographicVisible.equalsIgnoreCase("T") && isCreateNew)
-			{
-				result = saveStudentDemographic(form, studentId);
-			}
-     
+        
             List studentSubtests = TestSessionUtils.cloneSubtests(this.selectedSubtests);
               
             if (autoLocatorChecked)
@@ -1414,12 +1057,11 @@ public class RegistrationController extends PageFlowController
         try
         {                    
             studentId = this.studentManagement.createNewStudent(this.userName, student);
-            boolean result = false;
+            
             if (studentId != null)
             {
-               result = saveStudentAccommodations(studentId);
+                boolean result = saveStudentAccommodations(studentId);
             }
-           
         }
         catch (StudentDataCreationException sde)
         {
@@ -1431,46 +1073,6 @@ public class RegistrationController extends PageFlowController
         }                    
         return studentId;
     }
-    
-    
-    /**
-	 * saveStudentDemographic
-	 */
-	private boolean saveStudentDemographic(RegistrationForm form, Integer studentId)
-	{
-		boolean studentImported = (form.getStudentProfile().getCreateBy().intValue() == 1);                
-		if (studentImported)
-		{        
-			prepareStudentDemographicForCustomerConfiguration();
-		}        
-		getStudentDemographicsFromRequest();        
-
-		
-		createStudentDemographics(studentId);
-		
-		this.demographics = null;
-
-		return true;
-	}
-	
-	/**
-	 * createStudentDemographics
-	 */
-	private void createStudentDemographics(Integer studentId)
-	{
-		if ((studentId != null) && (studentId.intValue() > 0) && (this.demographics != null))
-		{
-			try
-			{    
-				StudentDemographic[] studentDemoList = (StudentDemographic[])this.demographics.toArray( new StudentDemographic[0] );
-				this.studentManagement.createStudentDemographics(this.userName, studentId, studentDemoList);
-			}
-			catch (CTBBusinessException be)
-			{
-				be.printStackTrace();
-			} 
-		}
-	}
 
     /**
      * saveStudentAccommodation
@@ -1568,7 +1170,6 @@ public class RegistrationController extends PageFlowController
             //if (this.customerConfigurations == null)
             //{
                 this.customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);
-                this.getRequest().getSession().setAttribute("customerConfigurations", this.customerConfigurations);
             //}
         }
         catch (CTBBusinessException be)
@@ -1927,11 +1528,6 @@ public class RegistrationController extends PageFlowController
         private Boolean testStructureSectionVisible;
         private Boolean proctorSectionVisible;
         private Boolean reportSectionVisible;
-        
-        //Changes for CA-ABE student intake
-        private Boolean byStudentProfileVisible=true;
-		private Boolean byStudentDemographicVisible=true;
-		private Boolean byStudentAccommodationVisible=true;
         
         private String autoLocator;
         private  boolean disableMandatoryBirthdate = false; //GACRCT2010CR007 - Disable Mandatory Birth Date
@@ -2454,33 +2050,7 @@ public class RegistrationController extends PageFlowController
 	            }
             }       
             return true;
-        }
-        
-        //Changes for CA-ABE student intake
-		public Boolean getByStudentProfileVisible() {
-			return byStudentProfileVisible;
-		}
-
-		public void setByStudentProfileVisible(Boolean byStudentProfileVisible) {
-			this.byStudentProfileVisible = byStudentProfileVisible;
-		}
-
-		public Boolean getByStudentDemographicVisible() {
-			return byStudentDemographicVisible;
-		}
-
-		public void setByStudentDemographicVisible(Boolean byStudentDemographicVisible) {
-			this.byStudentDemographicVisible = byStudentDemographicVisible;
-		}
-
-		public Boolean getByStudentAccommodationVisible() {
-			return byStudentAccommodationVisible;
-		}
-
-		public void setByStudentAccommodationVisible(
-				Boolean byStudentAccommodationVisible) {
-			this.byStudentAccommodationVisible = byStudentAccommodationVisible;
-		}        
+        }        
 
 
     }
@@ -2532,14 +2102,6 @@ public class RegistrationController extends PageFlowController
 
 	public List getOrgNodeNames() {
 		return orgNodeNames;
-	}
-
-	public boolean isABECustomer() {
-		return isABECustomer;
-	}
-
-	public void setABECustomer(boolean isCustomizedTABE) {
-		this.isABECustomer = isCustomizedTABE;
 	}
     
 }
