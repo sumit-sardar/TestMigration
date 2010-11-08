@@ -11,16 +11,6 @@
 
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.testAccessCode}" />
 
-
-<%
-   
-	//Start Change For CR - GA2011CR001
-	
-	String []studentIdArrValue = (String[])request.getAttribute("studentIdArrValue");
-	
-	// End of Change CR - GA2011CR001 
-
-%>
 <table class="sortable">
 
 	<tr class="sortableControls">
@@ -98,12 +88,7 @@
 							<th class="sortable alignCenter" width="5%" nowrap><netui:content value="${bundle.web['common.column.select']}" /></th>
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentLoginName">Login Name</ctb:tableSortColumn></th>
-							<c:if test="${studentIdArrValue[0] != null}">
-							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="ExternalStudentId">${studentIdArrValue[0]}</ctb:tableSortColumn></th>
-							</c:if>
-							<c:if test="${studentIdArrValue[0] == null}">
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="ExternalStudentId">Student ID</ctb:tableSortColumn></th>
-							</c:if>
 							<th class="sortable alignLeft" width="15%" nowrap><netui:content value="&nbsp;&nbsp;Organization"/></th>
 							<th class="sortable alignLeft" width="35%" nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn></th>

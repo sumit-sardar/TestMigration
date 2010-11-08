@@ -2,9 +2,6 @@ package testTicket;
 
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
-
-import com.ctb.bean.testAdmin.CustomerConfiguration;
-import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScheduledSession;
@@ -68,17 +65,6 @@ public class TestTicketController extends PageFlowController
     private ScheduledSession scheduledSession = null;
 
     private String schedulerName = null;
-    
- // START- Added for CR GA2011CR001
-	CustomerConfiguration[] customerConfigurations = null;
-	
-	CustomerConfigurationValue[] customerConfigurationsValue = null;
-	
-	private String studentIdLabelName = "Student ID";
-	
-	private boolean isStudentIdConfigurable = false;
-	// END- Added for CR GA2011CR001  
-	
 
 // Uncomment this declaration to access Global.app.
     // 
@@ -109,13 +95,6 @@ public class TestTicketController extends PageFlowController
         this.userName = principal.toString();
         
         getSession().setAttribute("userName", this.userName);
-        
-        // START- Added for CR GA2011CR001
-        getCustomerConfigurations();  
-        isGeorgiaCustomer();
-        // END- Added for CR GA2011CR001
-        
-        
     }    
     
     /**
@@ -172,9 +151,7 @@ public class TestTicketController extends PageFlowController
                                 server,
                                 new Integer(port),
                                 this.getRequest().getScheme(),
-                                Boolean.FALSE,
-                                this.isStudentIdConfigurable,
-                                this.studentIdLabelName});
+                                Boolean.FALSE});
         }
         catch (IOException ie)
         {
@@ -294,7 +271,6 @@ public class TestTicketController extends PageFlowController
             getResponse().setContentType("application/pdf");
             getResponse().setHeader("Content-Disposition","attachment; filename=TestTicketSummary.pdf");
             getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-            
             util.generateReport(new Object[]{
                                 rosterList, 
                                 testAdmin, 
@@ -305,9 +281,7 @@ public class TestTicketController extends PageFlowController
                                 new Integer(port),
                                 this.getRequest().getScheme(),
                                 isTabeProduct,
-                                testproduct,
-                                this.isStudentIdConfigurable,
-                                this.studentIdLabelName});
+                                testproduct});
         }
         catch(IOException ie){
             ie.printStackTrace();
@@ -732,134 +706,5 @@ public class TestTicketController extends PageFlowController
                                  new Integer (untimed),
                                  new Integer (highLighter));
      } 
-    
- // START- Added for CR GA2011CR001
-    /**
-	 * New method added for CR - GA2011CR001
-	 * isGeorgiaCustomer
-	 */
-    private void isGeorgiaCustomer() 
-    {     
-		 boolean isStudentIdConfigurable = false;
-		 Integer configId=0;
-		 String []valueForStudentId = new String[3] ;
-			for (int i=0; i < this.customerConfigurations.length; i++)
-		        {
-		            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-		          
-		            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
-					{
-						isStudentIdConfigurable = true; 
-						configId = cc.getId();
-						customerConfigurationValues(configId);
-						//By default there should be 3 entries for customer configurations
-						valueForStudentId = new String[3];
-						for(int j=0; j<this.customerConfigurationsValue.length; j++){
-							int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
-							valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
-						}
-						valueForStudentId[0] = valueForStudentId[0] != null ? valueForStudentId[0]   : "Student ID" ;
-						this.studentIdLabelName = valueForStudentId[0];
-						
-					}
-		            
-		        }
-			
-			this.isStudentIdConfigurable = isStudentIdConfigurable;
-		 
-    }
-   
-    /**
-	 * New method added for CR - GA2011CR001
-	 * getCustomerConfigurations
-	 */
-	private void getCustomerConfigurations()
-	{
-		try {
-				User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
-				Customer customer = user.getCustomer();
-				Integer customerId = customer.getCustomerId();
-				this.customerConfigurations = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);
-		}
-		catch (CTBBusinessException be) {
-			be.printStackTrace();
-		}
-	}
-	
-	/*
-	 * New method added for CR - GA2011CR001
-	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
-	 */
-	private void customerConfigurationValues(Integer configId)
-	{
-		try {
-				this.customerConfigurationsValue = this.testSessionStatus.getCustomerConfigurationsValue(configId);
-			
-		}
-		catch (CTBBusinessException be) {
-			be.printStackTrace();
-		}
-	}
-	
-	/*
-	 * New method added for CR - GA2011CR001 
-	 * this method can be used in future for setting default value of configurable_StudentId configuration.
-	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
-	 */
-	private String[] getDefaultValue(String [] arrValue, String labelName)
-	{
-		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
-		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
-		if(labelName.equals("Student ID")){
-			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
-			if(!arrValue[2].equals("T") && !arrValue[2].equals("F"))
-				{ 
-					arrValue[2]  = "F";
-				}
-			this.studentIdLabelName = arrValue[0];
-			
-		}
-		
-		// check for numeric conversion of maxlength
-		try {
-			int maxLength = Integer.valueOf(arrValue[1]);
-		} catch (NumberFormatException nfe){
-			arrValue[1] = "32" ;
-		}
-		
-		
-		
-		return arrValue;
-	}
-	 // END- Added for CR GA2011CR001 
-
-	/**
-	 * @return the studentIdLabelName
-	 */
-	public String getStudentIdLabelName() {
-		return studentIdLabelName;
-	}
-
-	/**
-	 * @param studentIdLabelName the studentIdLabelName to set
-	 */
-	public void setStudentIdLabelName(String studentIdLabelName) {
-		this.studentIdLabelName = studentIdLabelName;
-	}
-
-	/**
-	 * @return the isStudentIdConfigurable
-	 */
-	public boolean isStudentIdConfigurable() {
-		return isStudentIdConfigurable;
-	}
-
-	/**
-	 * @param isStudentIdConfigurable the isStudentIdConfigurable to set
-	 */
-	public void setStudentIdConfigurable(boolean isStudentIdConfigurable) {
-		this.isStudentIdConfigurable = isStudentIdConfigurable;
-	}
-	  
 
 }
