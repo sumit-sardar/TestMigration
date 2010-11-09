@@ -107,7 +107,8 @@
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 280px">
-					<Option selected="true">Retain in Program</Option>
+					<Option selected="true">Please Select</Option>
+					<Option>Retain in Program</Option>
 					<Option>Left Program</Option>
 					<Option>No show or did not attend at least 12 hours</Option>
 				</select></td>
@@ -118,7 +119,8 @@
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 280px">
-					<Option selected="true">Progressed within level or program</Option>
+					<Option selected="true">Please Select</Option>
+					<Option>Progressed within level or program</Option>
 					<Option>Completed level or program</Option>
 					<Option>Advance to a higher level or program</Option>
 				</select></td>
@@ -129,7 +131,8 @@
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 190px">
-					<Option selected="true">Improve basic skills</Option>
+					<Option selected="true">Please Select</Option>
+					<Option>Improve basic skills</Option>
 					<Option>Improve English skills</Option>
 					<Option>H.S. Diploma/GED</Option>
 					<Option>Get a Job</Option>
@@ -150,7 +153,8 @@
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 190px">
-					<Option selected="true">Improve basic skills</Option>
+					<Option selected="true">Please Select</Option>
+					<Option>Improve basic skills</Option>
 					<Option>Improve English skills</Option>
 					<Option>H.S. Diploma/GED</Option>
 					<Option>Get a Job</Option>

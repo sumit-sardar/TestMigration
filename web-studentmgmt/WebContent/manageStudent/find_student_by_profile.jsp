@@ -129,7 +129,8 @@
 				<c:if test="${isABECustomer}">
 					<td class="tableFilter" width="110" align="right">Follow Up Status:</td>
 					<td class="tableFilter" width="*"><select style="width: 155px">
-					<Option selected="true">Please Select</Option>
+					<Option selected="true">Any Status</Option>
+					<Option>Not Applicable</Option>
 					<Option>Pending</Option>
 					<Option>Completed</Option>
 				</select></td>

@@ -28,7 +28,7 @@
 
 <!-- title message -->
 <p>
-    <netui:content value="Edit the student data. Required fields are marked by a blue asterisk *."/>
+    <netui:content value="Provide the student follow-up data. Required fields are marked by a blue asterisk *."/>
     <br />
     <netui:content value=""/>
 </p>

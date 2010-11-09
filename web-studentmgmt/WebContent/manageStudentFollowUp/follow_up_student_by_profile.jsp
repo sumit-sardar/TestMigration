@@ -85,7 +85,7 @@
      </td>
      </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="250"><netui:content value="Hours of Instruction:"/></td>
+        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Hours of Instruction:"/></td>
        <td class="transparent"><input type="text"  maxlength="32" style="width:180px"/></td>
      </tr>
 </table>
