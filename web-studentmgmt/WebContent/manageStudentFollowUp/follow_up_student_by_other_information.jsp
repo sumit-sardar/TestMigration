@@ -103,7 +103,7 @@
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="300"><b>Status</b></td>
+				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Status</b></td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 280px">
@@ -141,8 +141,8 @@
 					<Option>Military</Option>
 					<Option>Personal goal</Option>
 					<Option>Other</Option>
-				</select> &nbsp;&nbsp;&nbsp; <input type="checkbox" name="" id="Yes" value="Yes" />Yes
-				<input type="checkbox" name="" id="No" value="No" />No</td>
+				</select> &nbsp;&nbsp;&nbsp; <input type="radio" name="" id="Yes" value="Yes" />Yes
+				<input type="radio" name="" id="No" value="No" />No</td>
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
@@ -163,8 +163,8 @@
 					<Option>Personal goal</Option>
 					<Option>None</Option>
 					<Option>Other</Option>
-				</select> &nbsp;&nbsp;&nbsp;<input type="checkbox" name="" id="Yes" value="Yes" />Yes
-				<input type="checkbox" name="" id="No" value="No" />No</td>
+				</select> &nbsp;&nbsp;&nbsp;<input type="radio" name="" id="Yes" value="Yes" />Yes
+				<input type="radio" name="" id="No" value="No" />No</td>
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
@@ -324,7 +324,7 @@
 				<td>
 				<table>
 					<tr>
-						<td class="transparent-small"><input type="checkbox" name="" value="Work">Work</td>
+						<td class="transparent-small">Work</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Got a Job
@@ -358,7 +358,7 @@
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Other</td>
 					</tr>
 					<tr>
-						<td class="transparent-small"><input type="checkbox" name="" value="Work">Personal/Family</td>
+						<td class="transparent-small">Personal/Family</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Increased
@@ -376,7 +376,7 @@
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Other</td>
 					</tr>
 					<tr>
-						<td class="transparent-small"><input type="checkbox" name="" value="Work">Community</td>
+						<td class="transparent-small">Community</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Achieved
@@ -394,7 +394,7 @@
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Other</td>
 					</tr>
 					<tr>
-						<td class="transparent-small"><input type="checkbox" name="" value="Work">Education</td>
+						<td class="transparent-small">Education</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Returned
@@ -436,7 +436,7 @@
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent" width="210"><b>Reason for Leaving</b></td>
+				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Reason for Leaving</b></td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 280px">
