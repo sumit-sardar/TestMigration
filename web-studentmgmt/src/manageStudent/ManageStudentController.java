@@ -552,7 +552,7 @@ public class ManageStudentController extends PageFlowController
 					form.setCurrentAction(ACTION_DEFAULT);                 
 					return new Forward("error", form);
 				}        
-				//START- Added for CR  ISTEP2011CR017
+				//START- Added for CR  ISTEP2011CR023
 				 Boolean isMultiOrgAssociationValid = isMultiOrgAssociationValid();
 				if(result && !isMultiOrgAssociationValid){
 					if ( this.selectedOrgNodes.size() > 1 ) {
