@@ -252,4 +252,6 @@
 
 </table>
 
-<br />
+</td>
+</tr>
+</table>

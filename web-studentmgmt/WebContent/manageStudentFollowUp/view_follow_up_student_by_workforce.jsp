@@ -42,7 +42,7 @@
 
 		<table class="transparent">
 				<tr class="transparent">
-				<td class="transparent"><span class="asterisk">*</span>&nbsp;<b>Services Previously Received</b></td>
+				<td class="transparent"><b>Services Previously Received</b></td>
 
 			</tr>
 			<tr class="transparent">
@@ -63,7 +63,7 @@
 			</tr>
 
 			<tr class="transparent">
-				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Support Services Needed</b></td>
+				<td class="transparent" width="210"><b>Support Services Needed</b></td>
 				
 			</tr>
 			
@@ -87,7 +87,7 @@
 			</tr>
 
 			<tr class="transparent">
-				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Pre-employment work maturity skills </b></td>
+				<td class="transparent" width="210"><b>Pre-employment work maturity skills </b></td>
 				
 			</tr>
 			
@@ -114,7 +114,7 @@
 			</tr>
 			
 			<tr class="transparent">
-				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Workforce Readiness </b></td>
+				<td class="transparent" width="210"><b>Workforce Readiness </b></td>
 			</tr>
 		
 			<tr class = "transparent">
@@ -136,7 +136,7 @@
 			   	<td class="transparent" width="300">&nbsp;</td>
 			</tr>
 			<tr class="transparent ">
-				<td class="transparent"><span class="asterisk">*</span>&nbsp;<b>Annual Income</b></td>
+				<td class="transparent"><b>Annual Income</b></td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select id="annualIncome"
@@ -171,7 +171,7 @@
 		<td class="transparent-top" width="50%">
 		<table class="transparent">
 			<tr class="transparent">
-				<td class="transparent " width="210"><span class="asterisk">*</span>&nbsp;<b>Hourly Wage</b></td>
+				<td class="transparent " width="210"><b>Hourly Wage</b></td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="HourlyWage"
@@ -183,7 +183,7 @@
 			</tr>
 
 			<tr class="transparent">
-				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Scheduled Work Hours Per Week</b></td>
+				<td class="transparent" width="210"><b>Scheduled Work Hours Per Week</b></td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input  id="ScheduledWorkHours"
@@ -193,7 +193,7 @@
 				<td class="transparent" width="300">&nbsp;</td>
 			</tr>
 			<tr class="transparent">
-				<td class="transparent-small" width="210"><span class="asterisk">*</span>&nbsp;<b>Special Programs  </b></td>
+				<td class="transparent-small" width="210"><b>Special Programs  </b></td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent">
@@ -257,4 +257,6 @@
 
 </table>
 
-<br />
+</td>
+</tr>
+</table>

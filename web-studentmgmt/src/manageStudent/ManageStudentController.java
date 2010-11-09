@@ -1379,7 +1379,7 @@ public class ManageStudentController extends PageFlowController
 	/**
 	 * addEditProgAndGoals
 	 */
-	/*private void addEditProgAndGoals(ManageStudentForm form)
+	private void addEditProgAndGoals(ManageStudentForm form)
 	{
 		Integer studentId = form.getStudentProfile().getStudentId();
 		
@@ -1398,9 +1398,9 @@ public class ManageStudentController extends PageFlowController
 	}
 	
 	
-	*//**
+	/**
 	 * saveStudentProgAndGoals
-	 *//*
+	 */
 	private boolean saveStudentProgAndGoals(boolean isCreateNew, ManageStudentForm form, Integer studentId)
 	{
 		getStudentProgAndGoalsFromRequest();        
@@ -1417,7 +1417,7 @@ public class ManageStudentController extends PageFlowController
 
 		return true;
 	}
-*/
+
 	/**
 	 * createStudentProgAndGoals
 	 */
@@ -1460,7 +1460,7 @@ public class ManageStudentController extends PageFlowController
 	/**
 	 * getStudentProgAndGoals
 	 */
-/*	private List getStudentAdditionalABEData(Integer studentId)
+	private List getStudentProgAndGoals(Integer studentId)
 	{
 		this.programAndGoals = new ArrayList();
 		try
@@ -1468,7 +1468,7 @@ public class ManageStudentController extends PageFlowController
 			if ((studentId != null) && (studentId.intValue() == 0))
 				studentId = null;
 
-			StudentABEDetail[] studentABEDetailList = this.studentManagement.getStudentAdditionalABEData(this.userName, this.customerId, studentId, false);
+			StudentABEDetail[] studentABEDetailList = this.studentManagement.getStudentProgramGoalData(this.userName, this.customerId, studentId, false);
 
 			if (studentABEDetailList != null)
 			{
@@ -1487,40 +1487,11 @@ public class ManageStudentController extends PageFlowController
 		return this.programAndGoals;
 	}
 	
-	*//**
-	 * getStudentProgAndGoals
-	 *//*
-	private List getStudentProgAndGoals(Integer studentId)
-	{
-		this.programAndGoals = new ArrayList();
-		try
-		{
-			if ((studentId != null) && (studentId.intValue() == 0))
-				studentId = null;
-
-			StudentABEDetail[] studentABEDetailList = (StudentABEDetail[])getStudentAdditionalABEData(studentId).toArray();
-
-			if (studentABEDetailList != null)
-			{
-				for (int i=0; i < studentABEDetailList.length; i++)
-				{
-					StudentABEDetail sei = studentABEDetailList[i];
-					this.programAndGoals.add(sei);                
-				}                        
-			}
-		}
-		catch (Exception be)
-		{
-			be.printStackTrace();
-		}
-
-		return this.programAndGoals;
-	}
 	
 	
-	*//**
+	/**
 	 * getStudentProgAndGoalsFromRequest
-	 *//*
+	 */
 	private void getStudentProgAndGoalsFromRequest() 
 	{
 		String param = null, paramValue = null;
@@ -1587,7 +1558,7 @@ public class ManageStudentController extends PageFlowController
 				seiv.setVisible("T");
 			}
 		}
-	}*/
+	}
 //END- added for CA-ABE
 	
 	
@@ -2352,7 +2323,8 @@ public class ManageStudentController extends PageFlowController
 
 		this.demographics = getStudentDemographics(studentId);
 		this.getRequest().setAttribute("demographics", this.demographics);       
-		this.getRequest().setAttribute("studentImported", new Boolean(studentImported));       
+		this.getRequest().setAttribute("studentImported", new Boolean(studentImported)); 
+		this.getRequest().setAttribute("mandatoryField",new Boolean(isABECustomer));
 
 		this.accommodations = getStudentAccommodations(studentId);
 		this.getRequest().setAttribute("accommodations", this.accommodations);       

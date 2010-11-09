@@ -22,7 +22,7 @@
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 <h1>
-    <netui:content value="View Follow Up Data: Test Stu"/>
+    <netui:content value="View Student Follow Up Data: Test Stu"/>
 </h1>      
 
 
@@ -84,10 +84,12 @@
     </ctb:showHideSection>
 </p>
 
-<netui:button type="submit" value="Back" action="returnToFindStudent"/>
-<netui:button type="submit" value="Edit" action="followUpStudent"/>
 
+<p>
+	<netui:button type="submit" value="Back" action="returnToFindStudent"/>
+	<netui:button type="submit" value="Edit" action="followUpStudent"/>
 
+</p>
 
 </netui:form>
         

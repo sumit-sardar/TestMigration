@@ -378,7 +378,7 @@
 			</tr>
 
 			<tr class="transparent">
-				<td class="transparent " width="500"><b>Learner Results</b></td>
+				<td class="transparent " width="500"><span class="asterisk">*</span>&nbsp;<b>Learner Results</b></td>
 
 			</tr>
 
@@ -386,7 +386,7 @@
 				<td>
 				<table>
 					<tr>
-						<td class="transparent-small"><span class="asterisk">*</span>&nbsp;<input type="checkbox" name="" value="Work">Work</td>
+						<td class="transparent-small"><input type="checkbox" name="" value="Work">Work</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Got a Job
@@ -421,7 +421,7 @@
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Other</td>
 					</tr>
 					<tr>
-						<td class="transparent-small"><span class="asterisk">*</span>&nbsp;<input type="checkbox" name="" value="Work">Personal/Family</td>
+						<td class="transparent-small"><input type="checkbox" name="" value="Work">Personal/Family</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Increased
@@ -442,7 +442,7 @@
 
 
 					<tr>
-						<td class="transparent-small"><span class="asterisk">*</span>&nbsp;<input type="checkbox" name="" value="Work">Community</td>
+						<td class="transparent-small"><input type="checkbox" name="" value="Work">Community</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Achieved
@@ -461,7 +461,7 @@
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Other</td>
 					</tr>
 					<tr>
-						<td class="transparent-small"><span class="asterisk">*</span>&nbsp;<input type="checkbox" name="" value="Work">Education</td>
+						<td class="transparent-small"><input type="checkbox" name="" value="Work">Education</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work">Returned

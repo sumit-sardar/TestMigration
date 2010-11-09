@@ -42,7 +42,7 @@
 
 		<table class="transparent">
 			<tr class="transparent">
-				<td class="transparent-small" width="210"><span class="asterisk">*</span>&nbsp;<b>Instructional Program </b></td>
+				<td class="transparent-small" width="210"><b>Instructional Program </b></td>
 			</tr>
 			<tr class="transparent">
 
@@ -117,7 +117,7 @@
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Progress</b></td>
+				<td class="transparent " width="300"><b>Progress</b></td>
 
 			</tr>
 			
@@ -130,7 +130,7 @@
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Attainable Goal within Program Year – Primary </b></td>
+				<td class="transparent " width="300"><b>Attainable Goal within Program Year – Primary </b></td>
 
 			</tr>
 			<tr class="transparent">
@@ -153,7 +153,7 @@
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Attainable Goal within Program Year – Secondary </b></td>
+				<td class="transparent " width="300"><b>Attainable Goal within Program Year – Secondary </b></td>
 
 			</tr>
 			<tr class="transparent">
@@ -178,7 +178,7 @@
 
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Class Number</b></td>
+				<td class="transparent " width="300"><b>Class Number</b></td>
 
 			</tr>
 			<tr class="transparent">
@@ -186,7 +186,7 @@
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="210"><span class="asterisk">*</span>&nbsp;<b>Instructional Level </b></td>
+				<td class="transparent " width="210"><b>Instructional Level </b></td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select disabled="true" style="width: 280px">
@@ -207,7 +207,7 @@
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent" width="100"><span class="asterisk">*</span>&nbsp;<b>Skill Level</b></td>
+				<td class="transparent" width="100"><b>Skill Level</b></td>
 
 			</tr>
 			<tr class="transparent">
@@ -328,7 +328,7 @@
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent" width="100"><span class="asterisk">*</span>&nbsp;<b>High School Credits Earned (0.5
+				<td class="transparent" width="100"><b>High School Credits Earned (0.5
 				– 60.0) </b></td>
 
 			</tr>
@@ -349,7 +349,7 @@
 		<td class="transparent-top" width="50%">
 		<table class="transparent">
 			<tr class="transparent">
-				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Sub-Sections of GED passed</b></td>
+				<td class="transparent " width="300"><b>Sub-Sections of GED passed</b></td>
 
 			</tr>
 			<tr>
@@ -386,7 +386,7 @@
 				<td>
 				<table>
 					<tr>
-						<td class="transparent-small"><span class="asterisk">*</span>&nbsp;<input type="checkbox" name="" value="Work" disabled="true" checked="checked">Work</td>
+						<td class="transparent-small"><input type="checkbox" name="" value="Work" disabled="true" checked="checked">Work</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work" disabled="true">Got a Job
@@ -421,7 +421,7 @@
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work" disabled="true">Other</td>
 					</tr>
 					<tr>
-						<td class="transparent-small"><span class="asterisk">*</span>&nbsp;<input type="checkbox" name="" value="Work" disabled="true">Personal/Family</td>
+						<td class="transparent-small"><input type="checkbox" name="" value="Work" disabled="true">Personal/Family</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work" disabled="true">Increased
@@ -442,7 +442,7 @@
 
 
 					<tr>
-						<td class="transparent-small"><span class="asterisk">*</span>&nbsp;<input type="checkbox" name="" value="Work" disabled="true" checked="checked">Community</td>
+						<td class="transparent-small"><input type="checkbox" name="" value="Work" disabled="true" checked="checked">Community</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work" disabled="true">Achieved
@@ -461,7 +461,7 @@
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work" disabled="true">Other</td>
 					</tr>
 					<tr>
-						<td class="transparent-small"><span class="asterisk">*</span>&nbsp;<input type="checkbox" name="" value="Work" disabled="true" checked="checked">Education</td>
+						<td class="transparent-small"><input type="checkbox" name="" value="Work" disabled="true" checked="checked">Education</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work" disabled="true" checked="checked">Returned

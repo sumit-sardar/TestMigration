@@ -90,9 +90,7 @@
 
 
 <p>
-
-     
-        <netui:button type="submit" value="Save" action="saveFollowUpData"/>
+         <netui:button type="submit" value="Save" action="saveFollowUpData"/>
          <netui:button type="submit" value="Cancel" action="returnToFindStudent"/>
 </p>
 
