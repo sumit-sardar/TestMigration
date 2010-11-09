@@ -27,7 +27,7 @@
             <netui:button tagId="Delete" type="submit" value="Delete" onClick="return verifyDeleteStudent();" disabled="${requestScope.disableButtons}"/>
         </c:if>
         <c:if test="${isABECustomer}">
-         <netui:button tagId="FollowUp" type="submit" value="Add Follow Up" action="studentfollowUp" disabled="${requestScope.disableButtons}" />
+         <netui:button tagId="FollowUp" type="submit" value=" Follow Up" action="studentfollowUp" disabled="${requestScope.disableButtons}" />
         </c:if>
         </td>
     </tr>
