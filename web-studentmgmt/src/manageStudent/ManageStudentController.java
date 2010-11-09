@@ -1385,7 +1385,7 @@ public class ManageStudentController extends PageFlowController
 		
 		if ((this.programAndGoals == null) && (studentId != null))
 		{
-			this.programAndGoals = getStudentProgAndGoals(studentId);
+			//this.programAndGoals = getStudentProgAndGoals(studentId);
 			//prepareOnNullRule();            
 		}
 		else
@@ -1403,7 +1403,7 @@ public class ManageStudentController extends PageFlowController
 	 */
 	private boolean saveStudentProgAndGoals(boolean isCreateNew, ManageStudentForm form, Integer studentId)
 	{
-		getStudentProgAndGoalsFromRequest();        
+		//getStudentProgAndGoalsFromRequest();        
 
 		if (isCreateNew)
 		{
@@ -1460,7 +1460,7 @@ public class ManageStudentController extends PageFlowController
 	/**
 	 * getStudentProgAndGoals
 	 */
-	private List getStudentProgAndGoals(Integer studentId)
+	/*private List getStudentProgAndGoals(Integer studentId)
 	{
 		this.programAndGoals = new ArrayList();
 		try
@@ -1485,14 +1485,14 @@ public class ManageStudentController extends PageFlowController
 		}
 
 		return this.programAndGoals;
-	}
+	}*/
 	
 	
 	
 	/**
 	 * getStudentProgAndGoalsFromRequest
 	 */
-	private void getStudentProgAndGoalsFromRequest() 
+	/*private void getStudentProgAndGoalsFromRequest() 
 	{
 		String param = null, paramValue = null;
 
@@ -1558,7 +1558,7 @@ public class ManageStudentController extends PageFlowController
 				seiv.setVisible("T");
 			}
 		}
-	}
+	}*/
 //END- added for CA-ABE
 	
 	
