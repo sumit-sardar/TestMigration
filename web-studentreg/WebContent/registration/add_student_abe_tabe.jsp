@@ -42,7 +42,7 @@
 <a name="moduleStudentEduInstruction"><!-- moduleStudentEduInstruction --></a>    
 <p>
     <ctb:showHideSection sectionId="moduleStudentEduInstruction" sectionTitle="Education And Instruction" sectionVisible="actionForm.byStudentDemographicVisible">
-        <jsp:include page="/registration/add_student_Edu_Intruction.jsp" />
+        <jsp:include page="/registration/add_student_edu_instruction.jsp" />
     </ctb:showHideSection>
 </p>
 
