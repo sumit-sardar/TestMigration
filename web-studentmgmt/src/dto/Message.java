@@ -32,9 +32,12 @@ public class Message implements java.io.Serializable
     public static final String DELETE_ERROR_TAS = "You cannot delete this student. Student is associated with test administrations.";
     public static final String DELETE_ERROR_UNKNOWN = "Failed to delete this student.";
     
-    public static final String STUDENT_ASSIGNMENT_ERROR = "Student cannot be associated with more than one organization.";     //Added for CR  ISTEP2011CR017
+    //Added for CR  ISTEP2011CR023
+    public static final String STUDENT_ASSIGNMENT_ERROR = "Your school system does not allow students to be associated with more than one organization (class) for testing. Please choose only one.";     
+
     //Changes for CA-ABE student intake
     public static final String SELECT_STATE = "Select a state";
+    
     public Message()
     {
         this.title = "";
