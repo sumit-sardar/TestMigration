@@ -127,13 +127,25 @@
 						dataSource="actionForm.studentProfile.userName" tabindex="5" /></td>
 				</c:if>
 				<c:if test="${isABECustomer}">
-					<td class="tableFilter" width="100" align="right">&nbsp;</td>
+					<td class="tableFilter" width="110" align="right">Follow Up Status:</td>
+					<td class="tableFilter" width="*"><select style="width: 155px">
+					<Option selected="true">Please Select</Option>
+					<Option>Pending</Option>
+					<Option>Completed</Option>
+				</select></td>
+				</c:if>
+			</tr>
+			<c:if test="${isABECustomer}">
+			<tr class="tableFilter">
+				<td class="tableFilter" width ="170" align="right"></td>
+				<td class="tableFilter" width="*"></td>
+				<td class="tableFilter" width="100" align="right">&nbsp;</td>
 					<td class="tableFilter" width="*"><netui:button styleClass="button" value="Search" type="submit"
 						onClick="setElementValue('currentAction', 'applySearch');" tabindex="8" />
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <netui:button styleClass="button" value="Clear All" type="button"
 						onClick="setElementValueAndSubmit('currentAction', 'clearSearch');" tabindex="9" />&nbsp;</td>
-				</c:if>
 			</tr>
+		    </c:if>
 		</table>
 		<br/>
         </td>
