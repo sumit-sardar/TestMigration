@@ -40,34 +40,34 @@
 
 <table class="transparent">
     <tr class="transparent">
-        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="First Name:"/></td>
+        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="First Name:"/></td>
                
          <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
           <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Test"/>
          </td>
     </tr>
       <tr class="transparent">
-        <td class="transparent alignRight" width="200"><netui:content value="Middle Name:"/></td>
+        <td class="transparent alignRight" width="250"><netui:content value="Middle Name:"/></td>
                         
           <td class="transparent"><input type="text"  maxlength="32" style="width:180px"/>
          </td>
     </tr>
       <tr class="transparent">
-        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Last Name:"/></td>
+        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Last Name:"/></td>
                           
           <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Stu"/>
          </td>
     </tr>
 
      <tr class="transparent">
-        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor First Name:"/></td>
+        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor First Name:"/></td>
             <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
             <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Test"/>
         </td>
     </tr>
     
        <tr class="transparent">
-        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor Last Name:"/></td>
+        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor Last Name:"/></td>
              <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
             <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Instructor"/>
        </td>
@@ -75,17 +75,17 @@
    
    
      <tr class="transparent">
-        <td class="transparent alignRight" width="215" nowrap="nowrap"><span class="asterisk">*</span>&nbsp;<netui:content value="Student ID or Social Security Number:"/></td>
+        <td class="transparent alignRight" width="250" nowrap="nowrap"><span class="asterisk">*</span>&nbsp;<netui:content value="Student ID or Social Security Number:"/></td>
          <td class="transparent"> <netui:label value="STU0208"/></td>
     </tr>
      <tr class="transparent">
-        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Date of Class Update:"/></td>
+        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Date of Class Update:"/></td>
         <td class="transparent"><input type="text" id='startDate' maxlength="32" style="width:150px"/>
       <a href="#" onclick="showCalendar(document.getElementById('startDate'), document.getElementById('overrideStartDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
      </td>
      </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="200"><netui:content value="Hours of Instruction:"/></td>
+        <td class="transparent alignRight" width="250"><netui:content value="Hours of Instruction:"/></td>
        <td class="transparent"><input type="text"  maxlength="32" style="width:180px"/></td>
      </tr>
 </table>
@@ -107,7 +107,7 @@
         <td class="transparent"><input type="text"  maxlength="64" style="width:205px" value="California"/></td>                           
     </tr>
      <tr class="transparent">
-        <td class="transparent alignRight" width="110"><span class="asterisk">*</span>&nbsp;<netui:content value="State:"/></td>
+        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="State:"/></td>
         <td class="transparent">
         	<netui:select optionsDataSource="${pageFlow.stateOptions}" dataSource="actionForm.studentProfile.studentContact.state" size="1" style="width:200px" defaultValue="${actionForm.studentProfile.studentContact.state}"/>
         </td>                  

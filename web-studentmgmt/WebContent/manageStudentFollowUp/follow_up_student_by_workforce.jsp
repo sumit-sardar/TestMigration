@@ -34,9 +34,11 @@
 
 
 <table class="simple">
+
 	<tr class="transparent">
-
-
+       	<td class="transparent" width="300">&nbsp;</td>
+    </tr>
+	<tr class="transparent">
 		<!-- Student Information -->
 		<td class="transparent-top" width="50%">
 
@@ -241,17 +243,13 @@
 						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
 							id="specialPrograms13" value="Other">Other</input></td>
 					</tr>
-
-
-		</table>
-
-
-		</td>
-	</tr>
-
-
-</table>
-
-</td>
-</tr>
+				</table>
+			</td>
+		</tr>
+	  </table>
+	</td>
+  </tr>
+  <tr class="transparent">
+     	<td class="transparent" width="300">&nbsp;</td>
+  </tr>
 </table>
