@@ -43,30 +43,38 @@
 
 <table class="transparent">
     <tr class="transparent">
-        <td class="transparent alignRight" width="200"><netui:content value="Student Name:"/></td>
-        <td class="transparent">
-          
-         <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
-          <netui:label value="Test,Stu"/>
-                  
-                 
-        </td>
+        <td class="transparent alignRight" width="200"><netui:content value="First Name:"/></td>
+         <td class="transparent"><netui:label value="TEST"/>
+         </td>
     </tr>
      <tr class="transparent">
-        <td class="transparent alignRight" width="200"><netui:content value="Instructor Name:"/></td>
-        <td class="transparent">
-          
-         <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
-             <netui:label value="Test,Instructor"/>
-                  
-                 
-        </td>
+        <td class="transparent alignRight" width="200"><netui:content value="Middle Name:"/></td>
+                        
+          <td class="transparent"><netui:label value=""/>
+         </td>
+    </tr>
+       <tr class="transparent">
+        <td class="transparent alignRight" width="200"><netui:content value="Last Name:"/></td>
+                        
+          <td class="transparent"><netui:label value="STU"/>
+         </td>
     </tr>
    
    
      <tr class="transparent">
         <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Student ID or Social Security Number:"/></td>
-         <td class="transparent"> <netui:label value="TEST-STU-0208"/></td>
+         <td class="transparent"> <netui:label value="STU0208"/></td>
+    </tr>
+     <tr class="transparent">
+        <td class="transparent alignRight" width="200"><netui:content value="Instructor First Name:"/></td>
+         <td class="transparent"><netui:label value="Test"/>
+         </td>
+    </tr>
+     <tr class="transparent">
+        <td class="transparent alignRight" width="200"><netui:content value="Instructor Last Name:"/></td>
+                        
+          <td class="transparent"><netui:label value="Instructor"/>
+         </td>
     </tr>
      <tr class="transparent">
         <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Date of Class Update:"/></td>
@@ -79,6 +87,8 @@
        <td class="transparent"><netui:label value="20"/></td>
      </tr>
     
+   
+    
     
 </table>
 </td>
@@ -88,9 +98,10 @@
 <!-- OrgNode PathList -->
 <td class="transparent-top" width="60%">
 <table class="transparent">
- <tr class="transparent">
-   <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Address Line 1:"/></td>
-        <td class="transparent"><netui:label value="4 Parametta Springs"/></td>                    
+ 
+ 	<tr class="transparent">
+  	 <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Address Line 1:"/></td>
+     <td class="transparent"><netui:label value="4 Parametta Springs"/></td>                    
     </tr>
       <tr class="transparent">
         <td class="transparent alignRight" width="200"><netui:content value="Address Line 2:"/></td>
@@ -125,6 +136,13 @@
            <netui:label value="1234"/>
         </td>
     </tr>
+        <tr class="transparent">
+        <td class="transparent alignRight" width="200"><netui:content value="Email:"/></td>
+        <td class="transparent">
+      <netui:label value="test@edu.com"/>
+      </td>
+    </tr>
+    
 </table>
 </td>
 </tr>

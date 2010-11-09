@@ -12,7 +12,7 @@
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
 <netui-template:template templatePage="/resources/jsp/template_add_edit_student.jsp">
-<netui-template:setAttribute name="title" value="${bundle.web['followupstudent.window.title']}"/>
+<netui-template:setAttribute name="title" value="${bundle.web['view.followupstudent.window.title']}"/>
 <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.addStudent']}"/>
 <netui-template:section name="bodySection">
 
@@ -22,13 +22,13 @@
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 <h1>
-    <netui:content value="Follow Up Data: Test Stu"/>
+    <netui:content value="View Follow Up Data: Test Stu"/>
 </h1>      
 
 
 <!-- title message -->
 <p>
-    <netui:content value="Edit the student data. Required fields are marked by a blue asterisk *."/>
+    <netui:content value=""/>
     <br />
     <netui:content value=""/>
 </p>
@@ -36,7 +36,7 @@
 
 
 <!-- start form -->
-<netui:form action="addEditStudent">
+<netui:form action="followUpStudent">
 
 <%
     Boolean profileEditable = (Boolean)request.getAttribute("profileEditable"); 
@@ -53,55 +53,39 @@
 <netui:hidden dataSource="actionForm.studentProfile.userName"/>
 <netui:hidden dataSource="actionForm.studentProfile.createBy"/>
 <netui:hidden dataSource="actionForm.orgMaxPage"/> 
-<netui:hidden dataSource="actionForm.selectedOrgNodeName"/> 
-<netui:hidden dataSource="actionForm.selectedTab"/> 
+<netui:hidden dataSource="actionForm.selectedOrgNodeName"/>  
 <netui:hidden dataSource="actionForm.studentIdLabelName"/>
 <netui:hidden dataSource="actionForm.studentId2LabelName"/>
 <netui:hidden dataSource="actionForm.ABECustomer"/>
 
 
 <!-- message -->
-<jsp:include page="/manageStudent/show_message.jsp" />
-
-<p>
-        <netui:button type="submit" value="Save" action="saveFollowUpData"/>
-        <ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator">
-        <netui:button type="submit" value="Delete" action="beginDeleteStudent" onClick="return verifyDeleteStudent();"/>
-        </ctb:auth>    
-
-    <netui:button type="submit" value="Cancel" action="returnToFindStudent"/>
-</p>
+<jsp:include page="/manageStudentFollowUp/show_message.jsp" />
+<netui:button type="submit" value="Back" action="returnToFindStudent"/>
+<netui:button type="submit" value="Edit" action="followUpStudent"/>
 
 <!-- collapsible sections -->
 <a name="moduleStudentProfile"><!-- moduleStudentProfile --></a>  
       
 <p>
     <ctb:showHideSection sectionId="moduleStudentFollowUpProfile" sectionTitle="Student Information" sectionVisible="actionForm.byStudentProfileVisible">
-        <jsp:include page="/manageStudent/follow_up_student_by_profile.jsp" />
+        <jsp:include page="/manageStudentFollowUp/view_follow_up_student_by_profile.jsp" />
     </ctb:showHideSection>
 </p>
 
 <p>
     <ctb:showHideSection sectionId="moduleStudentFollowUpAdditionalInformation" sectionTitle="Additional Information" sectionVisible="actionForm.byStudentAccommodationVisible">
-        <jsp:include page="/manageStudent/follow_up_student_by_other_information.jsp" />
+        <jsp:include page="/manageStudentFollowUp/view_follow_up_student_by_other_information.jsp" />
     </ctb:showHideSection>
 </p>     
 <p>
     <ctb:showHideSection sectionId="moduleStudentFollowUpWorkforce" sectionTitle="Student Workforce" sectionVisible="actionForm.byStudentAccommodationVisible">
-        <jsp:include page="/manageStudent/follow_up_student_by_workforce.jsp" />
+        <jsp:include page="/manageStudentFollowUp/view_follow_up_student_by_workforce.jsp" />
     </ctb:showHideSection>
 </p>
 
-
-<p>
-
-     
-        <netui:button type="submit" value="Save" action="saveFollowUpData"/>
-        <ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator">
-        <netui:button type="submit" value="Delete" action="beginDeleteStudent" onClick="return verifyDeleteStudent();"/>
-        </ctb:auth>    
-     <netui:button type="submit" value="Cancel" action="returnToFindStudent"/>
-</p>
+<netui:button type="submit" value="Back" action="returnToFindStudent"/>
+<netui:button type="submit" value="Edit" action="followUpStudent"/>
 
 
 

@@ -32,41 +32,51 @@
 
 %>
 
-
 <table class="simple">
     <tr class="transparent">
-        
-        
+     
 <!-- Student Information -->
 <td class="transparent-top" width="40%">
 
-
 <table class="transparent">
     <tr class="transparent">
-        <td class="transparent alignRight" width="200"><netui:content value="Student Name:"/></td>
-        <td class="transparent">
-          
+        <td class="transparent alignRight" width="200"><netui:content value="First Name:"/></td>
+               
          <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
-            <netui:label value="Test,Stu"/>
-                  
-                 
+          <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Test"/>
+         </td>
+    </tr>
+      <tr class="transparent">
+        <td class="transparent alignRight" width="200"><netui:content value="Middle Name:"/></td>
+                        
+          <td class="transparent"><input type="text"  maxlength="32" style="width:180px"/>
+         </td>
+    </tr>
+      <tr class="transparent">
+        <td class="transparent alignRight" width="200"><netui:content value="Last Name:"/></td>
+                          
+          <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Stu"/>
+         </td>
+    </tr>
+
+     <tr class="transparent">
+        <td class="transparent alignRight" width="200"><netui:content value="Instructor First Name:"/></td>
+            <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
+            <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Test"/>
         </td>
     </tr>
-     <tr class="transparent">
-        <td class="transparent alignRight" width="200"><netui:content value="Instructor Name:"/></td>
-        <td class="transparent">
-          
-         <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
-             <netui:label value="Test,Instructor"/>
-                  
-                 
-        </td>
+    
+       <tr class="transparent">
+        <td class="transparent alignRight" width="200"><netui:content value="Instructor Last Name:"/></td>
+             <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
+            <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Instructor"/>
+       </td>
     </tr>
    
    
      <tr class="transparent">
-        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Student ID or Social Security Number:"/></td>
-         <td class="transparent"> <netui:label value="TEST-STU-0208"/></td>
+        <td class="transparent alignRight" width="215" nowrap="nowrap"><span class="asterisk">*</span>&nbsp;<netui:content value="Student ID or Social Security Number:"/></td>
+         <td class="transparent"> <netui:label value="STU0208"/></td>
     </tr>
      <tr class="transparent">
         <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Date of Class Update:"/></td>
@@ -78,13 +88,9 @@
         <td class="transparent alignRight" width="200"><netui:content value="Hours of Instruction:"/></td>
        <td class="transparent"><input type="text"  maxlength="32" style="width:180px"/></td>
      </tr>
-    
-    
 </table>
 </td>
-
-
-    
+  
 <!-- OrgNode PathList -->
 <td class="transparent-top" width="60%">
 <table class="transparent">
@@ -100,36 +106,44 @@
          <td class="transparent alignRight" width="200"><netui:content value="City:"/></td>
         <td class="transparent"><input type="text"  maxlength="64" style="width:205px" value="California"/></td>                           
     </tr>
-     <tr class="transparent" >
-         <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="State:" /></td>
-        <td class="transparent"><input type="text"  maxlength="64" style="width:205px" value="California"/></td>                           
+     <tr class="transparent">
+        <td class="transparent alignRight" width="110"><span class="asterisk">*</span>&nbsp;<netui:content value="State:"/></td>
+        <td class="transparent">
+        	<netui:select optionsDataSource="${pageFlow.stateOptions}" dataSource="actionForm.studentProfile.studentContact.state" size="1" style="width:200px" defaultValue="${actionForm.studentProfile.studentContact.state}"/>
+        </td>                  
     </tr>
    
    <tr class="transparent">
         <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Zip Code:"/></td>
         <td class="transparent">
-            <netui:textBox tagId="zipCode1" dataSource="actionForm.studentProfile.studentContact.zipCode1" maxlength="5" style="width:50px" onKeyPress="return constrainNumericChar(event);" onKeyUp="focusNextControl(this); "/>
+            <netui:textBox tagId="zipCode1" dataSource="actionForm.studentProfile.studentContact.zipCode1" maxlength="5" style="width:50px" onKeyPress="return constrainNumericChar(event);" onKeyUp="focusNextControl(this); " defaultValue="45632"/>
             -
-            <netui:textBox tagId="zipCode2" dataSource="actionForm.studentProfile.studentContact.zipCode2" maxlength="5" style="width:50px" onKeyPress="return constrainNumericChar(event);"/>
+            <netui:textBox tagId="zipCode2" dataSource="actionForm.studentProfile.studentContact.zipCode2" maxlength="5" style="width:50px" onKeyPress="return constrainNumericChar(event);" defaultValue="69856"/>
         </td>
     </tr>
         <tr class="transparent">
         <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Phone Number:"/></td>
         <td class="transparent">
-            <netui:textBox tagId="primaryPhone1" dataSource="actionForm.studentProfile.studentContact.primaryPhone1" maxlength="3" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            <netui:textBox tagId="primaryPhone1" dataSource="actionForm.studentProfile.studentContact.primaryPhone1" maxlength="3" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this);" defaultValue="001"/>
             -
-            <netui:textBox tagId="primaryPhone2" dataSource="actionForm.studentProfile.studentContact.primaryPhone1"  maxlength="3" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            <netui:textBox tagId="primaryPhone2" dataSource="actionForm.studentProfile.studentContact.primaryPhone1"  maxlength="3" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); " defaultValue="831"/>
             -
-            <netui:textBox tagId="primaryPhone3" dataSource="actionForm.studentProfile.studentContact.primaryPhone1"  maxlength="4"onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            <netui:textBox tagId="primaryPhone3" dataSource="actionForm.studentProfile.studentContact.primaryPhone1"  maxlength="4"onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); " defaultValue="321"/>
             Ext:
-            <netui:textBox tagId="primaryPhone4" dataSource="actionForm.studentProfile.studentContact.primaryPhone1" maxlength="4" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            <netui:textBox tagId="primaryPhone4" dataSource="actionForm.studentProfile.studentContact.primaryPhone1" maxlength="4" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); " defaultValue="4326"/>
         </td>
     </tr>
+    <tr class="transparent">
+        <td class="transparent alignRight" width="200"><netui:content value="Email:"/></td>
+        <td class="transparent">
+        <input type="text"  maxlength="64" style="width:205px" value=""/>
+      </td>
+    </tr>
+    
+    
 </table>
 </td>
 </tr>
-
-
 </table>
 
 <br/>

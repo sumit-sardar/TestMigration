@@ -39,6 +39,8 @@ import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
+//import com.ctb.bean.studentManagement.StudentABEDetail;
+//import com.ctb.bean.studentManagement.StudentABEDetailValue;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.StudentAccommodations;
 import com.ctb.bean.testAdmin.USState;
@@ -135,6 +137,11 @@ public class ManageStudentController extends PageFlowController
 	//Changes for CA-ABE student intake
 	public LinkedHashMap stateOptions = null;
 
+	// student EducationAndInstruction
+	List educationAndInstruction = null;
+
+	// student ProgramAndGoals
+	List programAndGoals = null;
 
 	// student accommodations
 	public StudentAccommodationsDetail accommodations = null;
@@ -162,6 +169,22 @@ public class ManageStudentController extends PageFlowController
 	{
 		return new Forward("success");
 	}
+	
+	/**
+	 * This method represents the point of entry into the pageflow
+	 * @jpf:action
+	 * @jpf:forward name="success" path="/manageStudentFollowUp/followUpStudent.do"
+	 */
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "/manageStudentFollowUp/followUpStudent.do")
+	})
+	protected Forward studentfollowUp()
+	{   
+		System.out.println("foolowup called in stumgmt");
+		return new Forward("success");
+	}
+
 
 	/**
 	 * initialize
@@ -404,7 +427,8 @@ public class ManageStudentController extends PageFlowController
 					path = "add_edit_student.jsp")
 	})
 	protected Forward editStudent(ManageStudentForm form)
-	{        
+	{   
+		System.out.println("editStudent from js");
 		Boolean profileEditable = isProfileEditable(form.getStudentProfile().getCreateBy());
 
 		handleAddEdit(form, profileEditable);
@@ -437,7 +461,12 @@ public class ManageStudentController extends PageFlowController
 
 		addEditStudentProfile(form, profileEditable);    
 
-		addEditDemographics(form);    
+		addEditDemographics(form);
+		
+		
+		//addEditEduAndInstr(form);  //added for CA-ABE
+		
+		//addEditProgAndGoals(form);  //added for CA-ABE
 
 		addEditAccommodations(form);    
 
@@ -523,7 +552,7 @@ public class ManageStudentController extends PageFlowController
 					form.setCurrentAction(ACTION_DEFAULT);                 
 					return new Forward("error", form);
 				}        
-				//START- Added for CR  ISTEP2011CR023
+				//START- Added for CR  ISTEP2011CR017
 				 Boolean isMultiOrgAssociationValid = isMultiOrgAssociationValid();
 				if(result && !isMultiOrgAssociationValid){
 					if ( this.selectedOrgNodes.size() > 1 ) {
@@ -547,7 +576,20 @@ public class ManageStudentController extends PageFlowController
 				{
 					result = saveStudentDemographic(isCreateNew, form, studentId);
 				}
-		
+				//START- added for CA-ABE
+				if (studentId != null)
+				{
+					//result = saveStudentEduAndInstr(isCreateNew, form, studentId);
+				}
+				//END- added for CA-ABE
+				
+				//START- added for CA-ABE
+				if (studentId != null)
+				{
+					//result = saveStudentProgAndGoals(isCreateNew, form, studentId);
+				}
+				//END- added for CA-ABE
+				
 				if (studentId != null)
 				{
 					result = saveStudentAccommodations(isCreateNew, form, studentId);
@@ -1141,7 +1183,413 @@ public class ManageStudentController extends PageFlowController
 		}
 	}
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////// *********************** EDUCATION AND INSTRUCTION ************* //////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/*//START- added for CA-ABE
+	*//**
+	 * addEditEduAndInst
+	 *//*
+	private void addEditEduAndInstr(ManageStudentForm form)
+	{
+		Integer studentId = form.getStudentProfile().getStudentId();
+		
+		if ((this.educationAndInstruction == null) && (studentId != null))
+		{
+			this.educationAndInstruction = getStudentEduAndInstr(studentId);
+			//prepareOnNullRule();            
+		}
+		else
+		{
+			
+			getStudentDemographicsFromRequest();
+		}
 
+		this.getRequest().setAttribute("educationAndInstruction", this.educationAndInstruction);         
+	}
+	*/
+	
+	/**
+	 * saveStudentEduAndInstr
+	 */
+	/*private boolean saveStudentEduAndInstr(boolean isCreateNew, ManageStudentForm form, Integer studentId)
+	{
+		getStudentEduAndInstrFromRequest();        
+
+		if (isCreateNew)
+		{
+			createStudentEduAndInstr(studentId);
+		}
+		else
+		{
+			updateStudentEduAndInstr(studentId);
+		}
+		this.educationAndInstruction = null;
+
+		return true;
+	}*/
+
+	/**
+	 * createStudentEduAndInstr
+	 */
+	/*private void createStudentEduAndInstr(Integer studentId)
+	{
+		if ((studentId != null) && (studentId.intValue() > 0) && (this.educationAndInstruction != null))
+		{
+			try
+			{    
+				StudentABEDetail[] studentABEDetailList = (StudentABEDetail[])this.educationAndInstruction.toArray( new StudentABEDetail[0] );
+				this.studentManagement.createStudentEduAndInstrs(this.userName, studentId, studentABEDetailList);
+			}
+			catch (CTBBusinessException be)
+			{
+				be.printStackTrace();
+			} 
+		}
+	}*/
+
+	/**
+	 * updateStudentEduAndInstr
+	 */
+	/*private void updateStudentEduAndInstr(Integer studentId)
+	{
+		if ((studentId != null) && (studentId.intValue() > 0) && (this.educationAndInstruction != null))
+		{
+			try
+			{    
+				StudentABEDetail[] studentABEDetailList = (StudentABEDetail[])this.educationAndInstruction.toArray( new StudentABEDetail[0] );
+				this.studentManagement.updateStudentEduAndInstrs(this.userName, studentId, studentABEDetailList);
+			}
+			catch (CTBBusinessException be)
+			{
+				be.printStackTrace();
+			}    
+		}
+	}*/
+	
+	
+/*	*//**
+	 * getStudentEduAndInstr
+	 *//*
+	private List getStudentEduAndInstr(Integer studentId)
+	{
+		this.educationAndInstruction = new ArrayList();
+		try
+		{
+			if ((studentId != null) && (studentId.intValue() == 0))
+				studentId = null;
+
+			StudentABEDetail[] studentABEDetailList = this.studentManagement.getStudentAdditionalABEData(this.userName, this.customerId, studentId, false);
+
+			if (studentABEDetailList != null)
+			{
+				for (int i=0; i < studentABEDetailList.length; i++)
+				{
+					StudentABEDetail sei = studentABEDetailList[i];
+					this.educationAndInstruction.add(sei);                
+				}                        
+			}
+		}
+		catch (CTBBusinessException be)
+		{
+			be.printStackTrace();
+		}
+
+		return this.educationAndInstruction;
+	}
+	
+	
+	*//**
+	 * getStudentEduAndInstrFromRequest
+	 *//*
+	private void getStudentEduAndInstrFromRequest() 
+	{
+		String param = null, paramValue = null;
+
+		for (int i=0; i < this.educationAndInstruction.size(); i++)
+		{
+			StudentABEDetail sei = (StudentABEDetail)this.educationAndInstruction.get(i);
+			StudentABEDetailValue[] values = sei.getStudentABEEduInstruValues();
+
+			for (int j=0; j < values.length; j++)
+			{
+				StudentABEDetailValue seiv = (StudentABEDetailValue)values[j];
+
+				// Look up the parameter based on checkbox vs radio/select
+				if (sei.getMultipleAllowedFlag().equals("true"))
+				{
+					if (! seiv.getVisible().equals("false"))
+						seiv.setSelectedFlag("false");
+					param = sei.getLabelName() + "_" + seiv.getValueName();
+					if (getRequest().getParameter(param) != null)
+					{
+						paramValue = getRequest().getParameter(param);
+						seiv.setSelectedFlag("true");
+					}
+				} 
+				else
+				{
+					if (values.length == 1)
+					{
+						if (! seiv.getVisible().equals("false"))
+							seiv.setSelectedFlag("false");
+						param = sei.getLabelName() + "_" + seiv.getValueName();
+						if (getRequest().getParameter(param) != null)
+						{
+							paramValue = getRequest().getParameter(param);
+							seiv.setSelectedFlag("true");
+						}
+					}
+					else
+					{
+						param = sei.getLabelName();
+						if (getRequest().getParameter(param) != null)
+						{
+							paramValue = getRequest().getParameter(param);
+
+							for (int k=0; k < values.length; k++)
+							{
+								StudentABEDetailValue seiv1 = (StudentABEDetailValue)values[k];
+								if (! seiv1.getVisible().equals("false"))
+									seiv1.setSelectedFlag("false");
+								if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
+								{
+									if (paramValue.equals(seiv1.getValueName()))
+									{
+										seiv1.setSelectedFlag("true");
+									}
+								}
+							}
+
+							break;
+						}
+					}
+				}
+				seiv.setVisible("T");
+			}
+		}
+	}*/
+//END- added for CA-ABE
+	
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////// *********************** PROGRAM AND GOALS ************* //////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+//START- added for CA-ABE
+	/**
+	 * addEditProgAndGoals
+	 */
+	/*private void addEditProgAndGoals(ManageStudentForm form)
+	{
+		Integer studentId = form.getStudentProfile().getStudentId();
+		
+		if ((this.programAndGoals == null) && (studentId != null))
+		{
+			this.programAndGoals = getStudentProgAndGoals(studentId);
+			//prepareOnNullRule();            
+		}
+		else
+		{
+			
+			getStudentDemographicsFromRequest();
+		}
+
+		this.getRequest().setAttribute("programAndGoals", this.programAndGoals);         
+	}
+	
+	
+	*//**
+	 * saveStudentProgAndGoals
+	 *//*
+	private boolean saveStudentProgAndGoals(boolean isCreateNew, ManageStudentForm form, Integer studentId)
+	{
+		getStudentProgAndGoalsFromRequest();        
+
+		if (isCreateNew)
+		{
+			//createStudentProgAndGoals(studentId);
+		}
+		else
+		{
+			//updateStudentProgAndGoals(studentId);
+		}
+		this.programAndGoals = null;
+
+		return true;
+	}
+*/
+	/**
+	 * createStudentProgAndGoals
+	 */
+	/*private void createStudentProgAndGoals(Integer studentId)
+	{
+		if ((studentId != null) && (studentId.intValue() > 0) && (this.programAndGoals != null))
+		{
+			try
+			{    
+				StudentABEDetail[] studentABEDetailList = (StudentABEDetail[])this.programAndGoals.toArray( new StudentABEDetail[0] );
+				this.studentManagement.createStudentProgAndGoals(this.userName, studentId, studentABEDetailList);
+			}
+			catch (CTBBusinessException be)
+			{
+				be.printStackTrace();
+			} 
+		}
+	}*/
+
+	/**
+	 * updateStudentProgAndGoals
+	 */
+	/*private void updateStudentProgAndGoals(Integer studentId)
+	{
+		if ((studentId != null) && (studentId.intValue() > 0) && (this.programAndGoals != null))
+		{
+			try
+			{    
+				StudentABEDetail[] studentABEDetailList = (StudentABEDetail[])this.programAndGoals.toArray( new StudentABEDetail[0] );
+				this.studentManagement.updateStudentProgAndGoals(this.userName, studentId, studentABEDetailList);
+			}
+			catch (CTBBusinessException be)
+			{
+				be.printStackTrace();
+			}    
+		}
+	}
+	*/
+	
+	/**
+	 * getStudentProgAndGoals
+	 */
+/*	private List getStudentAdditionalABEData(Integer studentId)
+	{
+		this.programAndGoals = new ArrayList();
+		try
+		{
+			if ((studentId != null) && (studentId.intValue() == 0))
+				studentId = null;
+
+			StudentABEDetail[] studentABEDetailList = this.studentManagement.getStudentAdditionalABEData(this.userName, this.customerId, studentId, false);
+
+			if (studentABEDetailList != null)
+			{
+				for (int i=0; i < studentABEDetailList.length; i++)
+				{
+					StudentABEDetail sei = studentABEDetailList[i];
+					this.programAndGoals.add(sei);                
+				}                        
+			}
+		}
+		catch (CTBBusinessException be)
+		{
+			be.printStackTrace();
+		}
+
+		return this.programAndGoals;
+	}
+	
+	*//**
+	 * getStudentProgAndGoals
+	 *//*
+	private List getStudentProgAndGoals(Integer studentId)
+	{
+		this.programAndGoals = new ArrayList();
+		try
+		{
+			if ((studentId != null) && (studentId.intValue() == 0))
+				studentId = null;
+
+			StudentABEDetail[] studentABEDetailList = (StudentABEDetail[])getStudentAdditionalABEData(studentId).toArray();
+
+			if (studentABEDetailList != null)
+			{
+				for (int i=0; i < studentABEDetailList.length; i++)
+				{
+					StudentABEDetail sei = studentABEDetailList[i];
+					this.programAndGoals.add(sei);                
+				}                        
+			}
+		}
+		catch (Exception be)
+		{
+			be.printStackTrace();
+		}
+
+		return this.programAndGoals;
+	}
+	
+	
+	*//**
+	 * getStudentProgAndGoalsFromRequest
+	 *//*
+	private void getStudentProgAndGoalsFromRequest() 
+	{
+		String param = null, paramValue = null;
+
+		for (int i=0; i < this.programAndGoals.size(); i++)
+		{
+			StudentABEDetail sei = (StudentABEDetail)this.programAndGoals.get(i);
+			StudentABEDetailValue[] values = sei.getStudentABEPrgGoalValues();
+
+			for (int j=0; j < values.length; j++)
+			{
+				StudentABEDetailValue seiv = (StudentABEDetailValue)values[j];
+
+				// Look up the parameter based on checkbox vs radio/select
+				if (sei.getMultipleAllowedFlag().equals("true"))
+				{
+					if (! seiv.getVisible().equals("false"))
+						seiv.setSelectedFlag("false");
+					param = sei.getLabelName() + "_" + seiv.getValueName();
+					if (getRequest().getParameter(param) != null)
+					{
+						paramValue = getRequest().getParameter(param);
+						seiv.setSelectedFlag("true");
+					}
+				} 
+				else
+				{
+					if (values.length == 1)
+					{
+						if (! seiv.getVisible().equals("false"))
+							seiv.setSelectedFlag("false");
+						param = sei.getLabelName() + "_" + seiv.getValueName();
+						if (getRequest().getParameter(param) != null)
+						{
+							paramValue = getRequest().getParameter(param);
+							seiv.setSelectedFlag("true");
+						}
+					}
+					else
+					{
+						param = sei.getLabelName();
+						if (getRequest().getParameter(param) != null)
+						{
+							paramValue = getRequest().getParameter(param);
+
+							for (int k=0; k < values.length; k++)
+							{
+								StudentABEDetailValue seiv1 = (StudentABEDetailValue)values[k];
+								if (! seiv1.getVisible().equals("false"))
+									seiv1.setSelectedFlag("false");
+								if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
+								{
+									if (paramValue.equals(seiv1.getValueName()))
+									{
+										seiv1.setSelectedFlag("true");
+									}
+								}
+							}
+
+							break;
+						}
+					}
+				}
+				seiv.setVisible("T");
+			}
+		}
+	}*/
+//END- added for CA-ABE
+	
+	
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** ACCOMODATIONS ************* //////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1461,31 +1909,8 @@ public class ManageStudentController extends PageFlowController
 
 		return new Forward("success", form);
 	}
-	
-	//Changes for CA_ABE Follow-Up
-	@Jpf.Action(forwards = { 
-			@Jpf.Forward(name = "success",
-					path = "follow_up_student.jsp")
-	})
-	protected Forward followUpStudent()
-	{
-		ManageStudentForm form = initialize(ACTION_FIND_STUDENT);
-		form.byStudentProfileVisible = true;
-		
-		return new Forward("success",form);
-	}
-	
-	//Changes for CA_ABE Follow-Up
-	@Jpf.Action(forwards = { 
-			@Jpf.Forward(name = "success",
-					path = "view_follow_up_student.jsp")
-	})
-	protected Forward saveFollowUpData()
-	{
-		ManageStudentForm form = initialize(ACTION_FIND_STUDENT);
-		form.byStudentProfileVisible = true;
-		return new Forward("success",form);
-	}
+
+
 
 	/**
 	 * @jpf:action
@@ -2862,6 +3287,16 @@ public class ManageStudentController extends PageFlowController
 			
 			//CR - GA2011CR001 - validation For GTID
 			if(isMandatoryStudentId){
+				String externalStudentNumber = this.studentProfile.getStudentNumber().trim();
+				if ( externalStudentNumber.length()==0) {
+					requiredFieldCount += 1;     
+					requiredFields = Message.buildErrorString(this.studentIdLabelName, requiredFieldCount, requiredFields);   
+				}
+			}
+			
+			//change for CA-ABE student intake UI
+			
+			if(isABECustomer) {
 				String externalStudentNumber = this.studentProfile.getStudentNumber().trim();
 				if ( externalStudentNumber.length()==0) {
 					requiredFieldCount += 1;     

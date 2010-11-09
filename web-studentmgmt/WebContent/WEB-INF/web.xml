@@ -104,6 +104,7 @@
             <web-resource-name>StudentManagementWeb</web-resource-name>
             <description>Protect any resources within the following Page Flow.</description>
             <url-pattern>/manageStudent/*</url-pattern>
+            <url-pattern>/manageStudentFollowUp/*</url-pattern>
             <http-method>POST</http-method>
             <http-method>GET</http-method>
         </web-resource-collection>

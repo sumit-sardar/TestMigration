@@ -26,6 +26,9 @@
         <c:if test="${showDeleteButton == 'true'}">                 
             <netui:button tagId="Delete" type="submit" value="Delete" onClick="return verifyDeleteStudent();" disabled="${requestScope.disableButtons}"/>
         </c:if>
+        <c:if test="${isABECustomer}">
+         <netui:button tagId="FollowUp" type="submit" value="Add Follow Up" action="studentfollowUp" disabled="${requestScope.disableButtons}" />
+        </c:if>
         </td>
     </tr>
         
@@ -47,8 +50,9 @@
            <c:if test="${!isABECustomer}">   
         <th class="sortable alignLeft" width="30%" nowrap><ctb:tableSortColumn value="StudentIdNumber">Student ID</ctb:tableSortColumn></th>
          </c:if>
-         
-           
+          <c:if test="${isABECustomer}">   
+         <th class="sortable alignLeft" width="30%" nowrap>&nbsp;Follow Up Status&nbsp;</th>
+            </c:if> 
         </ctb:tableSortColumnGroup>
     </tr>
     
@@ -58,7 +62,7 @@
     <tr class="sortable">
         <td class="sortable alignCenter">
             <netui:radioButtonGroup dataSource="actionForm.selectedStudentId">
-                &nbsp;<netui:radioButtonOption value="${container.item.studentId}" onClick="enableElementById('View'); enableElementById('Edit'); enableElementById('Delete'); setFocus('View');">&nbsp;</netui:radioButtonOption>                
+                &nbsp;<netui:radioButtonOption value="${container.item.studentId}" onClick="enableElementById('View'); enableElementById('Edit'); enableElementById('Delete');enableElementById('FollowUp'); setFocus('View');">&nbsp;</netui:radioButtonOption>                
             </netui:radioButtonGroup>
         </td>        
         <td class="sortable">
@@ -76,6 +80,11 @@
         <td class="sortable">
             <netui:span value="${container.item.studentNumber}"/>
         </td>
+         <c:if test="${isABECustomer}">   
+        <td class="sortable">
+            <netui:span value="Pending"/>
+        </td>
+        </c:if>
     </tr>
     
     </netui-data:repeaterItem>
