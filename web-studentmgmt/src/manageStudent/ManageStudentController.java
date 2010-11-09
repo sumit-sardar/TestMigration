@@ -1461,8 +1461,31 @@ public class ManageStudentController extends PageFlowController
 
 		return new Forward("success", form);
 	}
-
-
+	
+	//Changes for CA_ABE Follow-Up
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "follow_up_student.jsp")
+	})
+	protected Forward followUpStudent()
+	{
+		ManageStudentForm form = initialize(ACTION_FIND_STUDENT);
+		form.byStudentProfileVisible = true;
+		
+		return new Forward("success",form);
+	}
+	
+	//Changes for CA_ABE Follow-Up
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "view_follow_up_student.jsp")
+	})
+	protected Forward saveFollowUpData()
+	{
+		ManageStudentForm form = initialize(ACTION_FIND_STUDENT);
+		form.byStudentProfileVisible = true;
+		return new Forward("success",form);
+	}
 
 	/**
 	 * @jpf:action
