@@ -2160,7 +2160,7 @@ public class ManageStudentController extends PageFlowController
      }
       
 	/*
-	 * New method added for CR  ISTEP2011CR017 . 
+	 * New method added for CR  ISTEP2011CR023.
 	 */
 	private boolean isMultiOrgAssociationValid() 
     {     
