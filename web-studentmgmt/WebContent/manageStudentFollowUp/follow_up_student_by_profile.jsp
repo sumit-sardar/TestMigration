@@ -40,7 +40,7 @@
 
 <table class="transparent">
     <tr class="transparent">
-        <td class="transparent alignRight" width="200"><netui:content value="First Name:"/></td>
+        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="First Name:"/></td>
                
          <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
           <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Test"/>
@@ -53,21 +53,21 @@
          </td>
     </tr>
       <tr class="transparent">
-        <td class="transparent alignRight" width="200"><netui:content value="Last Name:"/></td>
+        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Last Name:"/></td>
                           
           <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Stu"/>
          </td>
     </tr>
 
      <tr class="transparent">
-        <td class="transparent alignRight" width="200"><netui:content value="Instructor First Name:"/></td>
+        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor First Name:"/></td>
             <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
             <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Test"/>
         </td>
     </tr>
     
        <tr class="transparent">
-        <td class="transparent alignRight" width="200"><netui:content value="Instructor Last Name:"/></td>
+        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor Last Name:"/></td>
              <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
             <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Instructor"/>
        </td>
