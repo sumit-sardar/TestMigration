@@ -14,11 +14,13 @@
     List demographics = (List)request.getAttribute("demographics");
 	Boolean viewOnly = (Boolean) request.getAttribute("viewOnly");
 	Boolean studentImported = (Boolean) request.getAttribute("studentImported");
+	Boolean mandatoryField = (Boolean) request.getAttribute("mandatoryField");
 %>
 
 <!-- Student Demographic Information -->
 <ctbweb:studentDemographics demographics = "<%= demographics %>" 
                             viewOnly = "<%= viewOnly %>" 
+                            mandatoryField = "<%=mandatoryField %>"
                             studentImported = "<%= studentImported %>" />
 
 

@@ -946,7 +946,8 @@ public class ManageStudentController extends PageFlowController
 		}
 
 		this.getRequest().setAttribute("demographics", this.demographics);       
-		this.getRequest().setAttribute("studentImported", new Boolean(studentImported));       
+		this.getRequest().setAttribute("studentImported", new Boolean(studentImported));
+		this.getRequest().setAttribute("mandatoryField",new Boolean(isABECustomer));
 	}
 
 

@@ -16,6 +16,8 @@ public class StudentDemographicsTag extends CTBTag
 {
 	private List demographics;
 	private Boolean viewOnly = Boolean.FALSE;
+	//CA-ABE student intake
+	private Boolean mandatoryField = Boolean.FALSE;
 	private Boolean studentImported = Boolean.FALSE;
 	private int tabIndex = 1;
 	
@@ -125,7 +127,13 @@ public class StudentDemographicsTag extends CTBTag
     	displayRowStart();
             displayCellStart("transparent");
                 //Changes for CA-ABE student intake
-                writeToPage("<span>*&nbsp;</span><b>" + displayName + "</b>");
+                if (this.mandatoryField) {
+                	
+                	writeToPage("<span>*&nbsp;</span><b>" + displayName + "</b>");
+                } else {
+                	writeToPage("<b>" + displayName + "</b>");
+                }
+                
     		displayCellEnd();
     	displayRowEnd();  
     	
@@ -287,6 +295,10 @@ public class StudentDemographicsTag extends CTBTag
         }
         return str;
     }
+
+	public void setMandatoryField(Boolean mandatoryField) {
+		this.mandatoryField = mandatoryField;
+	}
     	
 }
 
