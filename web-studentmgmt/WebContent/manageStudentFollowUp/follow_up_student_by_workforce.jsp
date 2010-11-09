@@ -43,7 +43,22 @@
 		<td class="transparent-top" width="50%">
 
 		<table class="transparent">
-				<tr class="transparent">
+			<tr class="transparent ">
+				<td class="transparent"><span class="asterisk">*</span>&nbsp;<b>Annual Income</b></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select id="annualIncome"
+					style="width: 280px">
+					<Option >Please Select</Option>
+					<Option selected="true">Single with Income Below $7,500 per year</Option>
+					<Option >Married and Combined Income is below $15,000 per year</Option>
+					<Option>None of the above</Option>
+				</select></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent" width="300">&nbsp;</td>
+			</tr>
+			<tr class="transparent">
 				<td class="transparent"><span class="asterisk">*</span>&nbsp;<b>Services Previously Received</b></td>
 
 			</tr>
@@ -137,23 +152,7 @@
 			<tr class="transparent">
 			   	<td class="transparent" width="300">&nbsp;</td>
 			</tr>
-			<tr class="transparent ">
-				<td class="transparent"><span class="asterisk">*</span>&nbsp;<b>Annual Income</b></td>
-			</tr>
-			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select id="annualIncome"
-					style="width: 280px">
-					<Option >Please Select</Option>
-					<Option selected="true">Single with Income Below $7,500 per year</Option>
-					<Option >Married and Combined Income is below $15,000 per year</Option>
-					<Option>None of the above</Option>
-				</select></td>
-			</tr>
-			<tr class="transparent">
-				<td class="transparent" width="300">&nbsp;</td>
-			</tr>
-		
-			<tr class="transparent">
+				<tr class="transparent">
 				<td class="transparent" width="210"><b> Provider Use </b></td>
 			</tr>
 			<tr class="transparent">
