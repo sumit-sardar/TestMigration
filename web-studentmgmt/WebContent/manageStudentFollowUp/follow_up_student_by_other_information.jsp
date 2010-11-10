@@ -48,7 +48,7 @@
 				<td class="transparent">
 				<table class="transparent">
 					<tr class="transparent">
-						<td class="transparent-small"><input type="checkbox" name="" id="ABE" value="ABE">ABE</td>
+						<td class="transparent-small"><input type="checkbox" name="" id="ABE" value="ABE" checked="true">ABE</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="ESL" value="ESL">ESL</td>
@@ -130,9 +130,9 @@
 				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Attainable Goal within Program Year – Primary </b></td>
 			</tr>
 			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 190px">
-					<Option selected="true">Please Select</Option>
-					<Option>Improve basic skills</Option>
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 190px" disabled="true">
+					<Option>Please Select</Option>
+					<Option selected="true">Improve basic skills</Option>
 					<Option>Improve English skills</Option>
 					<Option>H.S. Diploma/GED</Option>
 					<Option>Get a Job</Option>
@@ -144,20 +144,20 @@
 					<Option>Military</Option>
 					<Option>Personal goal</Option>
 					<Option>Other</Option>
-				</select> &nbsp;&nbsp;&nbsp; <input type="radio" name="" id="Yes" value="Yes" />Yes
-				<input type="radio" name="" id="No" value="No" />No</td>
+				</select> &nbsp;&nbsp;&nbsp; <input type="radio" name="a" id="Yes" value="Yes" />Yes
+				<input type="radio" name="a" id="No" value="No" checked="true"/>No</td>
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
 				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Attainable Goal within Program Year – Secondary </b></td>
 			</tr>
 			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 190px">
-					<Option selected="true">Please Select</Option>
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select style="width: 190px" disabled="true">
+					<Option>Please Select</Option>
 					<Option>Improve basic skills</Option>
 					<Option>Improve English skills</Option>
 					<Option>H.S. Diploma/GED</Option>
-					<Option>Get a Job</Option>
+					<Option selected="true">Get a Job</Option>
 					<Option>Retain a Job</Option>
 					<Option>Enter college or training</Option>
 					<Option>Work-based project</Option>
@@ -167,16 +167,28 @@
 					<Option>Personal goal</Option>
 					<Option>None</Option>
 					<Option>Other</Option>
-				</select> &nbsp;&nbsp;&nbsp;<input type="radio" name="" id="Yes" value="Yes" />Yes
-				<input type="radio" name="" id="No" value="No" />No</td>
+				</select> &nbsp;&nbsp;&nbsp;<input type="radio" name="b" id="Yes" value="Yes"/>Yes
+				<input type="radio" name="b" id="No" value="No" checked="true"/>No</td>
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Class Number</b></td>
+				<td class="transparent" width="300"><span class="asterisk">*</span>&nbsp;<b>Class Number</b></td>
 			</tr>
 			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="text" style="width: 280px;" /></td>
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="text" style="width: 280px;" value="8"/></td>
 			</tr>
+			<tr><td>&nbsp;</td></tr>
+			<tr class="transparent">
+		        <td class="transparent" width="300"><span class="asterisk">*</span>&nbsp;<b>Date of Class Update</b></td>
+		    </tr>
+			<tr class="transparent">
+		        <td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <netui:select
+					optionsDataSource="${pageFlow.monthOptions}" dataSource="actionForm.studentProfile.month" size="1"
+					style="width:60px" /> <netui:select optionsDataSource="${pageFlow.dayOptions}"
+					dataSource="actionForm.studentProfile.day" size="1" style="width:45px" /> <netui:select
+					optionsDataSource="${pageFlow.yearOptions}" dataSource="actionForm.studentProfile.year" size="1" style="width:68px" />
+				</td>
+		    </tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
 				<td class="transparent " width="210"><span class="asterisk">*</span>&nbsp;<b>Instructional Level </b></td>

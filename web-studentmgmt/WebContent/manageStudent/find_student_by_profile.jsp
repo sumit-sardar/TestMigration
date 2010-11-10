@@ -130,9 +130,8 @@
 					<td class="tableFilter" width="110" align="right">Follow Up Status:</td>
 					<td class="tableFilter" width="*"><select style="width: 155px">
 					<Option selected="true">Any Status</Option>
-					<Option>Not Applicable</Option>
 					<Option>Incomplete</Option>
-					<Option>Completed</Option>
+					<Option>Complete</Option>
 				</select></td>
 				</c:if>
 			</tr>

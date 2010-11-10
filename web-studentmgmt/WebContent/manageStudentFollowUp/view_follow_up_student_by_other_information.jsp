@@ -35,14 +35,15 @@
 
 <table class="simple">
 	<tr class="transparent">
-
-
+       	<td class="transparent" width="300">&nbsp;</td>
+    </tr>
+	<tr class="transparent">
 		<!-- Student Information -->
 		<td class="transparent-top" width="50%">
 
 		<table class="transparent">
 			<tr class="transparent">
-				<td class="transparent-small" width="210"><b>Instructional Program </b></td>
+				<td class="transparent-small" width="210"><span class="asterisk">*</span>&nbsp;<b>Instructional Program </b></td>
 			</tr>
 			<tr class="transparent">
 
@@ -50,7 +51,7 @@
 				<table class="transparent">
 
 					<tr class="transparent">
-						<td class="transparent-small"><input type="checkbox" name="" id="ABE" value="ABE" disabled="true" >ABE</td>
+						<td class="transparent-small"><input type="checkbox" name="" id="ABE" value="ABE" disabled="true" checked="true">ABE</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="ESL" value="ESL" disabled="true">ESL</td>
@@ -60,7 +61,7 @@
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="High School Diploma"
-							value="High School Diploma" disabled="true" checked="checked">High School Diploma</td>
+							value="High School Diploma" disabled="true" checked="true">High School Diploma</td>
 					</tr>
 					<tr class="transparent">
 						<td class="transparent-small"><input type="checkbox" name="" id="GED" value="GED" disabled="true">GED</td>
@@ -105,32 +106,30 @@
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="300"><b>Status</b></td>
-
+				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Status</b></td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select disabled="true" style="width: 280px">
-					<Option selected="true" >Retain in Program</Option>
-					<Option>Left Program</Option>
+					<Option >Retain in Program</Option>
+					<Option selected="true">Left Program</Option>
 					<Option>No show or did not attend at least 12 hours</Option>
 				</select></td>
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="300"><b>Progress</b></td>
-
+				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Progress</b></td>
 			</tr>
 			
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select disabled="true" style="width: 280px">
-									<Option selected="true">Progressed within level or program</Option>
+					<Option selected="true">Progressed within level or program</Option>
 					<Option>Completed level or program</Option>
 					<Option>Advance to a higher level or program</Option>
 				</select></td>
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="300"><b>Attainable Goal within Program Year – Primary </b></td>
+				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Attainable Goal within Program Year – Primary </b></td>
 
 			</tr>
 			<tr class="transparent">
@@ -148,13 +147,12 @@
 					<Option>Military</Option>
 					<Option>Personal goal</Option>
 					<Option>Other</Option>
-				</select> &nbsp;&nbsp;&nbsp; <input disabled="true" type="checkbox" name="" id="Yes" value="Yes" checked="checked"/>Yes
-				<input disabled="true" type="checkbox" name="" id="No" value="No" />No</td>
+				</select> &nbsp;&nbsp;&nbsp; <input disabled="true" type="radio" name="a" id="Yes" value="Yes" checked="radio"/>Yes
+				<input disabled="true" type="radio" name="a" id="No" value="No" checked="true"/>No</td>
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="300"><b>Attainable Goal within Program Year – Secondary </b></td>
-
+				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Attainable Goal within Program Year – Secondary </b></td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select disabled="true" style="width: 190px">
@@ -172,13 +170,13 @@
 					<Option>Personal goal</Option>
 					<Option>None</Option>
 					<Option>Other</Option>
-				</select> &nbsp;&nbsp;&nbsp;<input disabled="true" type="checkbox" name="" id="Yes" value="Yes" checked="checked" />Yes
-				<input disabled="true" type="checkbox" name="" id="No" value="No" />No</td>
+				</select> &nbsp;&nbsp;&nbsp;<input disabled="true" type="radio" name="b" id="Yes" value="Yes" checked="true" />Yes
+				<input disabled="true" type="radio" name="b" id="No" value="No" />No</td>
 			</tr>
 
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="300"><b>Class Number</b></td>
+				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Class Number</b></td>
 
 			</tr>
 			<tr class="transparent">
@@ -186,7 +184,19 @@
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent " width="210"><b>Instructional Level </b></td>
+		        <td class="transparent" width="300"><span class="asterisk">*</span>&nbsp;<b>Date of Class Update</b></td>
+		    </tr>
+		    <tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <netui:select disabled="true"
+					optionsDataSource="${pageFlow.monthOptions}" dataSource="actionForm.studentProfile.month" size="1"
+					style="width:60px" /> <netui:select optionsDataSource="${pageFlow.dayOptions}" disabled="true"
+					dataSource="actionForm.studentProfile.day" size="1" style="width:45px" /> <netui:select disabled="true"
+					optionsDataSource="${pageFlow.yearOptions}" dataSource="actionForm.studentProfile.year" size="1" style="width:68px" />
+				</td>
+	        </tr>
+    		<tr><td>&nbsp;</td></tr>
+			<tr class="transparent">
+				<td class="transparent " width="210"><span class="asterisk">*</span>&nbsp;<b>Instructional Level </b></td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select disabled="true" style="width: 280px">
@@ -207,7 +217,7 @@
 			</tr>
 			<tr><td>&nbsp;</td></tr>
 			<tr class="transparent">
-				<td class="transparent" width="100"><b>Skill Level</b></td>
+				<td class="transparent" width="100"><span class="asterisk">*</span>&nbsp;<b>Skill Level</b></td>
 
 			</tr>
 			<tr class="transparent">
@@ -300,60 +310,16 @@
 				</table>
 				</td>
 			</tr>
-			<tr><td>&nbsp;</td></tr>
-			<tr class="transparent">
-				<td class="transparent" width="100"><b>Reason for Leaving</b></td>
-
-			</tr>
-			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select disabled="true" style="width: 280px">
-					<Option selected="true">Please Select</Option>
-					<Option>Changed Class or Program</Option>
-					<Option>Completed Program</Option>
-					<Option>Met goal</Option>
-					<Option>End of program year</Option>
-					<Option>Got a job</Option>
-					<Option>Moved</Option>
-					<Option>Schedule conflict</Option>
-					<Option>Lack of transportation</Option>
-					<Option>Lack of child care</Option>
-					<Option>Family problems</Option>
-					<Option>Own health problems</Option>
-					<Option>Lack of interest</Option>
-					<Option>Public safety</Option>
-					<Option>Administratively separated</Option>
-					<Option>Unknown reason</Option>
-					<Option>Other known reason</Option>
-				</select></td>
-			</tr>
-			<tr><td>&nbsp;</td></tr>
-			<tr class="transparent">
-				<td class="transparent" width="100"><b>High School Credits Earned (0.5
-				– 60.0) </b></td>
-
-			</tr>
-			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input disabled="true" type="text" style="width: 280px;" value="20.0"/></td>
-			</tr>
-
-
-
-
-
 		</table>
 		</td>
-
-
-
 		<!-- OrgNode PathList -->
 		<td class="transparent-top" width="50%">
 		<table class="transparent">
 			<tr class="transparent">
-				<td class="transparent " width="300"><b>Sub-Sections of GED passed</b></td>
-
+				<td class="transparent " width="300"><span class="asterisk">*</span>&nbsp;<b>Sub-Sections of GED passed</b></td>
 			</tr>
 			<tr>
-				<td>
+			  <td>
 				<table class="transparent">
 
 					<tr class="transparent">
@@ -376,10 +342,11 @@
 				</table>
 				</td>
 			</tr>
-
 			<tr class="transparent">
-				<td class="transparent " width="500"><b>Learner Results</b></td>
-
+	       	  <td class="transparent" width="300">&nbsp;</td>
+	        </tr>
+			<tr class="transparent">
+				<td class="transparent " width="500"><span class="asterisk">*</span>&nbsp;<b>Learner Results</b></td>
 			</tr>
 
 			<tr class="transparent">
@@ -504,15 +471,43 @@
 				</table>
 				</td>
 			</tr>
-
-
-		</table>
-
-
+			<tr><td>&nbsp;</td></tr>
+			<tr class="transparent">
+				<td class="transparent" width="150"><span class="asterisk">*</span>&nbsp;<b>Reason for Leaving</b></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <select disabled="true" style="width: 280px">
+					<Option>Please Select</Option>
+					<Option selected="true">Changed Class or Program</Option>
+					<Option>Completed Program</Option>
+					<Option>Met goal</Option>
+					<Option>End of program year</Option>
+					<Option>Got a job</Option>
+					<Option>Moved</Option>
+					<Option>Schedule conflict</Option>
+					<Option>Lack of transportation</Option>
+					<Option>Lack of child care</Option>
+					<Option>Family problems</Option>
+					<Option>Own health problems</Option>
+					<Option>Lack of interest</Option>
+					<Option>Public safety</Option>
+					<Option>Administratively separated</Option>
+					<Option>Unknown reason</Option>
+					<Option>Other known reason</Option>
+				</select></td>
+			</tr>
+			<tr><td>&nbsp;</td></tr>
+			<tr class="transparent">
+				<td class="transparent" width="250"><span class="asterisk">*</span>&nbsp;<b>High School Credits Earned (0.5 – 60.0) </b></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input disabled="true" type="text" style="width: 280px;" value="20.0"/></td>
+			</tr>
+		 </table>
 		</td>
-	</tr>
-
-
-</table>
-
-<br />
+	  </tr>
+	  <tr class="transparent">
+       	<td class="transparent" width="300">&nbsp;</td>
+      </tr>
+  </table>
+<br/>

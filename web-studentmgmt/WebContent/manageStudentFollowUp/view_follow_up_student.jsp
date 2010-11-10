@@ -62,7 +62,6 @@
 <!-- message -->
 <jsp:include page="/manageStudentFollowUp/show_message.jsp" />
 <netui:button type="submit" value="Back" action="returnToFindStudent"/>
-<netui:button type="submit" value="Edit" action="followUpStudent"/>
 
 <!-- collapsible sections -->
 <a name="moduleStudentProfile"><!-- moduleStudentProfile --></a>  
@@ -87,8 +86,6 @@
 
 <p>
 	<netui:button type="submit" value="Back" action="returnToFindStudent"/>
-	<netui:button type="submit" value="Edit" action="followUpStudent"/>
-
 </p>
 
 </netui:form>

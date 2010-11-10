@@ -52,18 +52,16 @@
                         
           <td class="transparent"><netui:label value=""/>
          </td>
-    </tr>
-       <tr class="transparent">
+     </tr>
+     <tr class="transparent">
         <td class="transparent alignRight" width="215"><netui:content value="Last Name:"/></td>
                         
           <td class="transparent"><netui:label value="STU"/>
          </td>
     </tr>
-   
-   
-     <tr class="transparent">
-        <td class="transparent alignRight" width="215"><netui:content value="Student ID or Social Security Number:"/></td>
-         <td class="transparent"> <netui:label value="STU0208"/></td>
+    <tr class="transparent">
+        <td class="transparent alignRight" width="215"><netui:content value="Login ID:"/>
+        <td class="transparent"><netui:label value="Test-Stu-0205"/>
     </tr>
      <tr class="transparent">
         <td class="transparent alignRight" width="215"><netui:content value="Instructor First Name:"/></td>
@@ -76,20 +74,14 @@
           <td class="transparent"><netui:label value="Instructor"/>
          </td>
     </tr>
-     <tr class="transparent">
-        <td class="transparent alignRight" width="215"><netui:content value="Date of Class Update:"/></td>
-        <td class="transparent"> <netui:label value="11/11/2159"/>
-      
-     </td>
+    <tr class="transparent">
+        <td class="transparent alignRight" width="215"><netui:content value="Student ID or Social Security Number:"/></td>
+         <td class="transparent"> <netui:label value="STU0208"/></td>
+    </tr>
+    <tr class="transparent">
+        <td class="transparent alignRight" width="215"><netui:content value="Hours of Instruction:"/></td>
+       <td class="transparent"><netui:label value="20"/></td>
      </tr>
-     <tr class="transparent">
-        <td class="transparent alignRight" width="215"><netui:content value="Login ID:"/></td>
-       <td class="transparent"><netui:label value="TEST_STU_0088"/></td>
-     </tr>
-    
-   
-    
-    
 </table>
 </td>
 
@@ -137,10 +129,6 @@
         </td>
     </tr>
     <tr class="transparent">
-        <td class="transparent alignRight" width="215"><netui:content value="Hours of Instruction:"/></td>
-       <td class="transparent"><netui:label value="20"/></td>
-     </tr>
-       <tr class="transparent">
         <td class="transparent alignRight" width="215"><netui:content value="Email:"/></td>
         <td class="transparent">
       <netui:label value="test@edu.com"/>

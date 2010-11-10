@@ -192,7 +192,7 @@ public class ManageStudentController extends PageFlowController
 			return new Forward("error", form);
 		}
 		if (studentId.intValue()== 1639200)
-			studentProfile.setStudentFollowUpStatus("Completed");
+			studentProfile.setStudentFollowUpStatus("Complete");
 		else 
 			studentProfile.setStudentFollowUpStatus("Incomplete");
 		form.setStudentProfile(studentProfile);

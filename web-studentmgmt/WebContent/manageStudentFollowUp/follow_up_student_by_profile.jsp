@@ -52,14 +52,15 @@
           <td class="transparent"><input type="text"  maxlength="32" style="width:180px"/>
          </td>
     </tr>
-      <tr class="transparent">
-        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Last Name:"/></td>
-                          
-          <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Stu"/>
-         </td>
+    <tr class="transparent">
+         <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Last Name:"/></td>
+         <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Stu"/>
     </tr>
-
-     <tr class="transparent">
+    <tr class="transparent">
+        <td class="transparent alignRight" width="250">&nbsp;<netui:content value="Login ID:"/>
+        <td class="transparent"><netui:label value="Test-Stu-0205"/>
+    </tr>
+    <tr class="transparent">
         <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor First Name:"/></td>
             <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
             <td class="transparent"><input type="text"  maxlength="32" style="width:180px" value="Test"/>
@@ -78,12 +79,6 @@
         <td class="transparent alignRight" width="250" nowrap="nowrap"><span class="asterisk">*</span>&nbsp;<netui:content value="Student ID or Social Security Number:"/></td>
          <td class="transparent"> <netui:label value="STU0208"/></td>
     </tr>
-     <tr class="transparent">
-        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Date of Class Update:"/></td>
-        <td class="transparent"><input type="text" id='startDate' maxlength="32" style="width:150px"/>
-      <a href="#" onclick="showCalendar(document.getElementById('startDate'), document.getElementById('overrideStartDate')); return false;"><img src="<%=request.getContextPath()%>/resources/images/calendar/show_calendar.gif" border="0" width="24" height="22" ></a>
-     </td>
-     </tr>
     <tr class="transparent">
         <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Hours of Instruction:"/></td>
        <td class="transparent"><input type="text"  maxlength="32" style="width:180px"/></td>

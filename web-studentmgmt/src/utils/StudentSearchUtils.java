@@ -74,7 +74,7 @@ public class StudentSearchUtils
                 if (student != null) {
                     StudentProfileInformation studentDetail = new StudentProfileInformation(student);
                     if (studentDetail.getStudentId().intValue()== 1639200)
-                    	studentDetail.setStudentFollowUpStatus("Completed");
+                    	studentDetail.setStudentFollowUpStatus("Complete");
             		else 
             			studentDetail.setStudentFollowUpStatus("Incomplete");
                     studentList.add(studentDetail);
