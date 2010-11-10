@@ -76,7 +76,7 @@ public class StudentSearchUtils
                     if (studentDetail.getStudentId().intValue()== 1639200)
                     	studentDetail.setStudentFollowUpStatus("Completed");
             		else 
-            			studentDetail.setStudentFollowUpStatus("In Complete");
+            			studentDetail.setStudentFollowUpStatus("Incomplete");
                     studentList.add(studentDetail);
                 }
             }

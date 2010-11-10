@@ -132,7 +132,7 @@ public class ManageStudentFollowUpController extends PageFlowController {
 		
 		String followUpStatus= form.getStudentProfile().getStudentFollowUpStatus();
 		
-		if (followUpStatus.equalsIgnoreCase("In Complete")) {
+		if (followUpStatus.equalsIgnoreCase("Incomplete")) {
 			return new Forward("success",followUpform);
 		} else {
 			return new Forward("viewFollowUp",followUpform);
