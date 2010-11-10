@@ -79,15 +79,16 @@
 </p>
 
 <p>
-    <ctb:showHideSection sectionId="moduleStudentFollowUpAdditionalInformation" sectionTitle="Additional Information" sectionVisible="actionForm.byStudentAccommodationVisible">
-        <jsp:include page="/manageStudentFollowUp/follow_up_student_by_other_information.jsp" />
-    </ctb:showHideSection>
-</p>     
-<p>
     <ctb:showHideSection sectionId="moduleStudentFollowUpWorkforce" sectionTitle="Supplemental Data for Workforce Student" sectionVisible="actionForm.byStudentAccommodationVisible">
         <jsp:include page="/manageStudentFollowUp/follow_up_student_by_workforce.jsp" />
     </ctb:showHideSection>
 </p>
+<p>
+    <ctb:showHideSection sectionId="moduleStudentFollowUpAdditionalInformation" sectionTitle="Education and Learning Information" sectionVisible="actionForm.byStudentAccommodationVisible">
+        <jsp:include page="/manageStudentFollowUp/follow_up_student_by_other_information.jsp" />
+    </ctb:showHideSection>
+</p>     
+
 
 
 <p>
