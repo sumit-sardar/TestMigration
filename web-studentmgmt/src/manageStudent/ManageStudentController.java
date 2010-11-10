@@ -60,7 +60,7 @@ import dto.StudentProfileInformation;
 
 /**
  * @jpf:controller
-**/
+ **/
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** ManageStudentController ************* ///////////////////////
@@ -115,7 +115,7 @@ public class ManageStudentController extends PageFlowController
 
 	private ManageStudentForm savedForm = null;
 	private StudentProfileInformation studentSearch = null;
-	
+
 	private HashMap currentOrgNodesInPathList = null;
 	public List selectedOrgNodes = null;
 	public Integer[] currentOrgNodeIds = null;
@@ -123,10 +123,10 @@ public class ManageStudentController extends PageFlowController
 	// customer configuration
 	CustomerConfiguration[] customerConfigurations = null;
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
-	
+
 	//GACRCT2010CR007- Disable_Mandatory_Birth_Date according to customer cofiguration
 	private boolean disableMandatoryBirthdate = false;
-	
+
 	private boolean isMandatoryStudentId = false; // Change For CR - GA2011CR001
 	private String studentIdLabelName = "Student ID";
 	private String studentId2LabelName = "Student ID 2";
@@ -169,7 +169,7 @@ public class ManageStudentController extends PageFlowController
 	{
 		return new Forward("success");
 	}
-	
+
 	/**
 	 * This method represents the point of entry into the pageflow
 	 * @jpf:action
@@ -177,12 +177,28 @@ public class ManageStudentController extends PageFlowController
 	 */
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
-					path = "/manageStudentFollowUp/followUpStudent.do")
+					path = "/manageStudentFollowUp/followUpStudent.do"),
+					@Jpf.Forward(name = "error",
+							path = "findStudent.do")
 	})
-	protected Forward studentfollowUp()
+	protected Forward studentfollowUp(ManageStudentForm form)
 	{   
-		System.out.println("foolowup called in stumgmt");
-		return new Forward("success");
+		Integer studentId = form.getSelectedStudentId();
+		String followupstatus = this.getRequest().getParameter("Follow Up Status");
+		StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
+		
+		if (studentProfile == null) {						//Changes for Defect 60478
+			form.setCurrentAction(ACTION_DEFAULT);
+			return new Forward("error", form);
+		}
+		if (studentId.intValue()== 1639200)
+			studentProfile.setStudentFollowUpStatus("Completed");
+		else 
+			studentProfile.setStudentFollowUpStatus("In Complete");
+		form.setStudentProfile(studentProfile);
+		this.studentName = studentProfile.getFirstName() + " " + studentProfile.getLastName();
+
+		return new Forward("success",form);
 	}
 
 
@@ -296,7 +312,7 @@ public class ManageStudentController extends PageFlowController
 		form.setByStudentProfileVisible(Boolean.TRUE);
 
 		initGradeGenderOptions(ACTION_ADD_STUDENT, form, null, null);
-	    initStateOptions(ACTION_ADD_STUDENT);
+		initStateOptions(ACTION_ADD_STUDENT);
 		form.getStudentProfile().setMonth(this.monthOptions[0]);
 		form.getStudentProfile().setDay(this.dayOptions[0]);
 		form.getStudentProfile().setYear(this.yearOptions[0]);
@@ -306,7 +322,7 @@ public class ManageStudentController extends PageFlowController
 
 		this.studentName = null;
 		this.searchApplied = false;
- 
+
 		return new Forward("success", form);
 	}
 
@@ -318,7 +334,7 @@ public class ManageStudentController extends PageFlowController
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
 					path = "addEditStudent.do"),
-			@Jpf.Forward(name = "error",
+					@Jpf.Forward(name = "error",
 							path = "findStudent.do")
 	})
 	protected Forward beginEditStudent(ManageStudentForm form)
@@ -326,10 +342,10 @@ public class ManageStudentController extends PageFlowController
 		Integer studentId = form.getSelectedStudentId();
 		StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
 		if (studentProfile == null) {						//Changes for Defect 60478
-            form.setCurrentAction(ACTION_DEFAULT);
-           return new Forward("error", form);
-       }
-		
+			form.setCurrentAction(ACTION_DEFAULT);
+			return new Forward("error", form);
+		}
+
 		form.setStudentProfile(studentProfile);
 		this.studentName = studentProfile.getFirstName() + " " + studentProfile.getLastName();
 
@@ -432,10 +448,10 @@ public class ManageStudentController extends PageFlowController
 		Boolean profileEditable = isProfileEditable(form.getStudentProfile().getCreateBy());
 
 		handleAddEdit(form, profileEditable);
-		
+
 		//GACRCT2010CR007- retrieve value for Disable_Mandatory_Birth_Date 
 		isMandatoryBirthDate();
-		
+
 		this.getRequest().setAttribute("isEditStudent", Boolean.TRUE);
 
 		this.getRequest().setAttribute("profileEditable", profileEditable);
@@ -462,10 +478,10 @@ public class ManageStudentController extends PageFlowController
 		addEditStudentProfile(form, profileEditable);    
 
 		addEditDemographics(form);
-		
-		
+
+
 		//addEditEduAndInstr(form);  //added for CA-ABE
-		
+
 		//addEditProgAndGoals(form);  //added for CA-ABE
 
 		addEditAccommodations(form);    
@@ -514,91 +530,91 @@ public class ManageStudentController extends PageFlowController
 	{   
 		Boolean isTokenValid = isTokenValid();
 		Integer studentId = form.getSelectedStudentId();
-		
+
 		if ( studentId == null) {
-			 
+
 			//System.out.println( studentId );
 			studentId = (Integer)this.getSession().getAttribute("selectStudentIdInView");
 			form.setSelectedStudentId(studentId);
 		}
-		
+
 		boolean isCreateNew = studentId == null ? true : false;
-		
+
 		if ( isTokenValid ) {
-			
-				if (! isCreateNew)
-				{        
-					Boolean profileEditable = isProfileEditable(form.getStudentProfile().getCreateBy());
-					if (! profileEditable.booleanValue())
-					{
-						// reload student profile since nothing in the request
-						StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
-						form.setStudentProfile(studentProfile);
-					}                
-				}
-		
-				this.selectedOrgNodes = StudentPathListUtils.buildSelectedOrgNodes(this.currentOrgNodesInPathList, this.currentOrgNodeIds, this.selectedOrgNodes);
-				
-				//GACRCT2010CR007- set value for disableMandatoryBirthdate in  form. 
-				form.setDisableMandatoryBirthdate(disableMandatoryBirthdate);
-				
-				//CR - GA2011CR001 - set value for FTE Mandatory Field
-				form.setMandatoryStudentId(isMandatoryStudentId);
-				
-				boolean result = form.verifyStudentInformation(this.selectedOrgNodes);
-				if (! result)
-				{           
+
+			if (! isCreateNew)
+			{        
+				Boolean profileEditable = isProfileEditable(form.getStudentProfile().getCreateBy());
+				if (! profileEditable.booleanValue())
+				{
+					// reload student profile since nothing in the request
+					StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
+					form.setStudentProfile(studentProfile);
+				}                
+			}
+
+			this.selectedOrgNodes = StudentPathListUtils.buildSelectedOrgNodes(this.currentOrgNodesInPathList, this.currentOrgNodeIds, this.selectedOrgNodes);
+
+			//GACRCT2010CR007- set value for disableMandatoryBirthdate in  form. 
+			form.setDisableMandatoryBirthdate(disableMandatoryBirthdate);
+
+			//CR - GA2011CR001 - set value for FTE Mandatory Field
+			form.setMandatoryStudentId(isMandatoryStudentId);
+
+			boolean result = form.verifyStudentInformation(this.selectedOrgNodes);
+			if (! result)
+			{           
+				form.setActionElement(ACTION_DEFAULT);
+				form.setCurrentAction(ACTION_DEFAULT);                 
+				return new Forward("error", form);
+			}        
+			//START- Added for CR  ISTEP2011CR017
+			Boolean isMultiOrgAssociationValid = isMultiOrgAssociationValid();
+			if(result && !isMultiOrgAssociationValid){
+				if ( this.selectedOrgNodes.size() > 1 ) {
+
+					if (isCreateNew)
+						form.setMessage(Message.ADD_TITLE, Message.STUDENT_ASSIGNMENT_ERROR, Message.ERROR);
+					else
+						form.setMessage(Message.EDIT_TITLE, Message.STUDENT_ASSIGNMENT_ERROR, Message.ERROR);
+
 					form.setActionElement(ACTION_DEFAULT);
 					form.setCurrentAction(ACTION_DEFAULT);                 
 					return new Forward("error", form);
-				}        
-				//START- Added for CR  ISTEP2011CR023
-				 Boolean isMultiOrgAssociationValid = isMultiOrgAssociationValid();
-				if(result && !isMultiOrgAssociationValid){
-					if ( this.selectedOrgNodes.size() > 1 ) {
-						
-						if (isCreateNew)
-							form.setMessage(Message.ADD_TITLE, Message.STUDENT_ASSIGNMENT_ERROR, Message.ERROR);
-						else
-							form.setMessage(Message.EDIT_TITLE, Message.STUDENT_ASSIGNMENT_ERROR, Message.ERROR);
-						
-						form.setActionElement(ACTION_DEFAULT);
-						form.setCurrentAction(ACTION_DEFAULT);                 
-						return new Forward("error", form);
-					}  
-				}	
-				//END- Added for CR  ISTEP2011CR017
-				studentId = saveStudentProfileInformation(isCreateNew, form, studentId, this.selectedOrgNodes);
-				
-		
-				String demographicVisible = this.user.getCustomer().getDemographicVisible();
-				if ((studentId != null) && demographicVisible.equalsIgnoreCase("T"))
-				{
-					result = saveStudentDemographic(isCreateNew, form, studentId);
-				}
-				//START- added for CA-ABE
-				if (studentId != null)
-				{
-					//result = saveStudentEduAndInstr(isCreateNew, form, studentId);
-				}
-				//END- added for CA-ABE
-				
-				//START- added for CA-ABE
-				if (studentId != null)
-				{
-					//result = saveStudentProgAndGoals(isCreateNew, form, studentId);
-				}
-				//END- added for CA-ABE
-				
-				if (studentId != null)
-				{
-					result = saveStudentAccommodations(isCreateNew, form, studentId);
-				}
-		
-				form.setSelectedStudentId(studentId);
-		
-				this.viewStudentFromSearch = false;             
-			
+				}  
+			}	
+			//END- Added for CR  ISTEP2011CR017
+			studentId = saveStudentProfileInformation(isCreateNew, form, studentId, this.selectedOrgNodes);
+
+
+			String demographicVisible = this.user.getCustomer().getDemographicVisible();
+			if ((studentId != null) && demographicVisible.equalsIgnoreCase("T"))
+			{
+				result = saveStudentDemographic(isCreateNew, form, studentId);
+			}
+			//START- added for CA-ABE
+			if (studentId != null)
+			{
+				//result = saveStudentEduAndInstr(isCreateNew, form, studentId);
+			}
+			//END- added for CA-ABE
+
+			//START- added for CA-ABE
+			if (studentId != null)
+			{
+				//result = saveStudentProgAndGoals(isCreateNew, form, studentId);
+			}
+			//END- added for CA-ABE
+
+			if (studentId != null)
+			{
+				result = saveStudentAccommodations(isCreateNew, form, studentId);
+			}
+
+			form.setSelectedStudentId(studentId);
+
+			this.viewStudentFromSearch = false;             
+
 			if (isCreateNew)
 			{
 				if (studentId != null) 
@@ -613,7 +629,7 @@ public class ManageStudentController extends PageFlowController
 				else 
 					form.setMessage(Message.EDIT_TITLE, Message.EDIT_ERROR, Message.INFORMATION);
 			}
-			
+
 			this.savedForm = form.createClone(); 
 		}
 		return new Forward("success");
@@ -638,12 +654,12 @@ public class ManageStudentController extends PageFlowController
 			if (orgId.intValue() >= 2)
 			{    // ignore Root
 				PathNode node = new PathNode();
-			node.setId(orgId);
-			node.setName(orgName);
-			nodeAncestors.add(node);                
-			form.setOrgNodeId(orgId);
-			form.setOrgNodeName(orgName);
-			form.resetValuesForPathList();
+				node.setId(orgId);
+				node.setName(orgName);
+				nodeAncestors.add(node);                
+				form.setOrgNodeId(orgId);
+				form.setOrgNodeName(orgName);
+				form.resetValuesForPathList();
 			}
 		}    
 
@@ -651,75 +667,75 @@ public class ManageStudentController extends PageFlowController
 
 		return orgNodePath;
 	}
-	
-	
-	 /**
-     * initStateOptions
-     */
-     //Changes for CA-ABE student intake
-    private void initStateOptions(String action)
-    {        
-        this.stateOptions = new LinkedHashMap();
-        
-        TreeMap territoriesOptions = new TreeMap();
-         
 
-        if (action.equals(ACTION_ADD_STUDENT)) {
-            this.stateOptions.put("", Message.SELECT_STATE);
-        }
-        if (action.equals(ACTION_EDIT_STUDENT) ) {
-            this.stateOptions.put("", Message.SELECT_STATE);
-        }
-       
-        try {
-            USState[] state = this.studentManagement.getStates();
-            if (state != null) {
-                for (int i = 0 ; i < state.length ; i++) {
-                    if (!isContains (state[i].getStatePrDesc())) {
-                        
-                        this.stateOptions.put(state[i].getStatePr(), 
-                                            state[i].getStatePrDesc());
-                    } else {
-                        
-                        territoriesOptions.put(state[i].getStatePrDesc(),state[i]);
-                        
-                    }
-                    
-                }
-            }
-            orderedStateTerritories(territoriesOptions); 
-            
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
- private boolean isContains (String stateDesc) {
-        
-        String []USterritories = {"Virgin Islands","Puerto Rico","Palau","North Mariana Islands","Marshall Islands","Guam","F.S. of Micronesia","American Samoa"};
-        
-        for (int i = 0; i < USterritories.length; i++) {
-            
-            if (USterritories[i].equals(stateDesc)) {
-                return true;
-            } 
-        }
-        return false;
-        
-    } 
-    
-    private void orderedStateTerritories (TreeMap territoriesOptions) {
-        
-        Collection territories = territoriesOptions.values();
-        
-        Iterator iterate = territories.iterator();
-        while (iterate.hasNext()) {
-            USState state = (USState) iterate.next();
-            this.stateOptions.put(state.getStatePr(), 
-                                            state.getStatePrDesc());
-        }
-    }
+
+	/**
+	 * initStateOptions
+	 */
+	//Changes for CA-ABE student intake
+	private void initStateOptions(String action)
+	{        
+		this.stateOptions = new LinkedHashMap();
+
+		TreeMap territoriesOptions = new TreeMap();
+
+
+		if (action.equals(ACTION_ADD_STUDENT)) {
+			this.stateOptions.put("", Message.SELECT_STATE);
+		}
+		if (action.equals(ACTION_EDIT_STUDENT) ) {
+			this.stateOptions.put("", Message.SELECT_STATE);
+		}
+
+		try {
+			USState[] state = this.studentManagement.getStates();
+			if (state != null) {
+				for (int i = 0 ; i < state.length ; i++) {
+					if (!isContains (state[i].getStatePrDesc())) {
+
+						this.stateOptions.put(state[i].getStatePr(), 
+								state[i].getStatePrDesc());
+					} else {
+
+						territoriesOptions.put(state[i].getStatePrDesc(),state[i]);
+
+					}
+
+				}
+			}
+			orderedStateTerritories(territoriesOptions); 
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private boolean isContains (String stateDesc) {
+
+		String []USterritories = {"Virgin Islands","Puerto Rico","Palau","North Mariana Islands","Marshall Islands","Guam","F.S. of Micronesia","American Samoa"};
+
+		for (int i = 0; i < USterritories.length; i++) {
+
+			if (USterritories[i].equals(stateDesc)) {
+				return true;
+			} 
+		}
+		return false;
+
+	} 
+
+	private void orderedStateTerritories (TreeMap territoriesOptions) {
+
+		Collection territories = territoriesOptions.values();
+
+		Iterator iterate = territories.iterator();
+		while (iterate.hasNext()) {
+			USState state = (USState) iterate.next();
+			this.stateOptions.put(state.getStatePr(), 
+					state.getStatePrDesc());
+		}
+	}
 
 	/**
 	 * isProfileEditable
@@ -837,8 +853,8 @@ public class ManageStudentController extends PageFlowController
 		OrganizationNodeData ond = StudentPathListUtils.getOrganizationNodes(this.userName, this.studentManagement, orgNodeId, filter, page, sort);
 
 		//START - Added for CR017
-		 Boolean isClassReassignable = isClassReassignable(profileEditable);
-		 List orgNodes = StudentPathListUtils.buildOrgNodeList(ond, profileEditable, ACTION_ADD_STUDENT, isClassReassignable);
+		Boolean isClassReassignable = isClassReassignable(profileEditable);
+		List orgNodes = StudentPathListUtils.buildOrgNodeList(ond, profileEditable, ACTION_ADD_STUDENT, isClassReassignable);
 		//END - Added for CR017
 
 		String orgCategoryName = StudentPathListUtils.getOrgCategoryName(orgNodes);
@@ -865,7 +881,7 @@ public class ManageStudentController extends PageFlowController
 		List selectableOrgNodes = StudentPathListUtils.buildSelectableOrgNodes(this.currentOrgNodesInPathList, this.selectedOrgNodes);
 
 		List orgNodesForSelector = buildOrgNodesForSelector(this.selectedOrgNodes, selectableOrgNodes, form.getOrgSortOrderBy());
-		
+
 		this.getRequest().setAttribute("orgNodePath", this.orgNodePath);
 		this.getRequest().setAttribute("orgNodes", orgNodes);        
 		this.getRequest().setAttribute("orgPagerSummary", orgPagerSummary);
@@ -1187,14 +1203,14 @@ public class ManageStudentController extends PageFlowController
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** EDUCATION AND INSTRUCTION ************* //////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
-/*//START- added for CA-ABE
-	*//**
+	/*//START- added for CA-ABE
+	 *//**
 	 * addEditEduAndInst
 	 *//*
 	private void addEditEduAndInstr(ManageStudentForm form)
 	{
 		Integer studentId = form.getStudentProfile().getStudentId();
-		
+
 		if ((this.educationAndInstruction == null) && (studentId != null))
 		{
 			this.educationAndInstruction = getStudentEduAndInstr(studentId);
@@ -1202,14 +1218,14 @@ public class ManageStudentController extends PageFlowController
 		}
 		else
 		{
-			
+
 			getStudentDemographicsFromRequest();
 		}
 
 		this.getRequest().setAttribute("educationAndInstruction", this.educationAndInstruction);         
 	}
-	*/
-	
+	  */
+
 	/**
 	 * saveStudentEduAndInstr
 	 */
@@ -1267,9 +1283,9 @@ public class ManageStudentController extends PageFlowController
 			}    
 		}
 	}*/
-	
-	
-/*	*//**
+
+
+	/*	*//**
 	 * getStudentEduAndInstr
 	 *//*
 	private List getStudentEduAndInstr(Integer studentId)
@@ -1298,11 +1314,11 @@ public class ManageStudentController extends PageFlowController
 
 		return this.educationAndInstruction;
 	}
-	
-	
-	*//**
-	 * getStudentEduAndInstrFromRequest
-	 *//*
+
+
+	  *//**
+	  * getStudentEduAndInstrFromRequest
+	  *//*
 	private void getStudentEduAndInstrFromRequest() 
 	{
 		String param = null, paramValue = null;
@@ -1370,19 +1386,19 @@ public class ManageStudentController extends PageFlowController
 			}
 		}
 	}*/
-//END- added for CA-ABE
-	
+//	END- added for CA-ABE
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** PROGRAM AND GOALS ************* //////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
-//START- added for CA-ABE
+//	START- added for CA-ABE
 	/**
 	 * addEditProgAndGoals
 	 */
 	private void addEditProgAndGoals(ManageStudentForm form)
 	{
 		Integer studentId = form.getStudentProfile().getStudentId();
-		
+
 		if ((this.programAndGoals == null) && (studentId != null))
 		{
 			//this.programAndGoals = getStudentProgAndGoals(studentId);
@@ -1390,14 +1406,14 @@ public class ManageStudentController extends PageFlowController
 		}
 		else
 		{
-			
+
 			getStudentDemographicsFromRequest();
 		}
 
 		this.getRequest().setAttribute("programAndGoals", this.programAndGoals);         
 	}
-	
-	
+
+
 	/**
 	 * saveStudentProgAndGoals
 	 */
@@ -1455,8 +1471,8 @@ public class ManageStudentController extends PageFlowController
 			}    
 		}
 	}
-	*/
-	
+	 */
+
 	/**
 	 * getStudentProgAndGoals
 	 */
@@ -1486,9 +1502,9 @@ public class ManageStudentController extends PageFlowController
 
 		return this.programAndGoals;
 	}*/
-	
-	
-	
+
+
+
 	/**
 	 * getStudentProgAndGoalsFromRequest
 	 */
@@ -1559,9 +1575,9 @@ public class ManageStudentController extends PageFlowController
 			}
 		}
 	}*/
-//END- added for CA-ABE
-	
-	
+//	END- added for CA-ABE
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** ACCOMODATIONS ************* //////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1962,7 +1978,7 @@ public class ManageStudentController extends PageFlowController
 			List studentList = StudentSearchUtils.buildStudentList(msData);
 			PagerSummary studentPagerSummary = StudentSearchUtils.buildStudentPagerSummary(msData, form.getStudentPageRequested());        
 			form.setStudentMaxPage(msData.getFilteredPages());
-			 
+
 			this.getRequest().setAttribute("studentList", studentList);        
 			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
 
@@ -1971,7 +1987,7 @@ public class ManageStudentController extends PageFlowController
 
 			} else {
 				this.getRequest().setAttribute("disableButtons", Boolean.TRUE);      
-				
+
 			}   
 			String roleName = this.user.getRole().getRoleName();
 			this.getRequest().setAttribute("showEditButton", PermissionsUtils.showEditButton(roleName));
@@ -2289,8 +2305,8 @@ public class ManageStudentController extends PageFlowController
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
 					path = "view_student.jsp"),
-			@Jpf.Forward(name = "error",
-					path = "findStudent.do")
+					@Jpf.Forward(name = "error",
+							path = "findStudent.do")
 	}, 
 	validationErrorForward = @Jpf.Forward(name = "failure",
 			path = "viewStudent.do"))
@@ -2299,14 +2315,14 @@ public class ManageStudentController extends PageFlowController
 		//Save the token to remove F5 problem
 		saveToken(this.getRequest());   
 		Integer studentId = form.getSelectedStudentId(); 
-		
+
 		boolean studentImported = (form.getStudentProfile().getCreateBy().intValue() == 1);
 
 		StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
 		if (studentProfile == null) {							//Changed for Defect 60478
-            form.setCurrentAction(ACTION_DEFAULT);
-           return new Forward("error", form);
-        }
+			form.setCurrentAction(ACTION_DEFAULT);
+			return new Forward("error", form);
+		}
 		//this.getRequest().setAttribute("studentProfileForView",studentProfile);
 		form.setStudentProfile(studentProfile);
 
@@ -2450,14 +2466,14 @@ public class ManageStudentController extends PageFlowController
 	{
 		try {
 			//if (this.customerConfigurations == null) {   //Changes for Defect-60479
-				this.customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);
+			this.customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);
 			//}
 		}
 		catch (CTBBusinessException be) {
 			be.printStackTrace();
 		}
 	}
-	
+
 	/*
 	 * New method added for CR - GA2011CR001
 	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
@@ -2465,14 +2481,14 @@ public class ManageStudentController extends PageFlowController
 	private void customerConfigurationValues(Integer configId)
 	{
 		try {
-				this.customerConfigurationsValue = this.studentManagement.getCustomerConfigurationsValue(configId);
-			
+			this.customerConfigurationsValue = this.studentManagement.getCustomerConfigurationsValue(configId);
+
 		}
 		catch (CTBBusinessException be) {
 			be.printStackTrace();
 		}
 	}
-	
+
 	/*
 	 * New method added for CR - GA2011CR001
 	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
@@ -2481,23 +2497,23 @@ public class ManageStudentController extends PageFlowController
 	{
 		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
 		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
-		
+
 		if(labelName.equals("Student ID 2")){
 			this.studentId2LabelName = arrValue[0];
 			form.setStudentId2LabelName(this.studentId2LabelName );
-			
+
 		}
 		if(labelName.equals("Student ID")){
 			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
 			if(!arrValue[2].equals("T") && !arrValue[2].equals("F"))
-				{ 
-					arrValue[2]  = "F";
-				}
+			{ 
+				arrValue[2]  = "F";
+			}
 			this.studentIdLabelName = arrValue[0];
 			form.setStudentIdLabelName(this.studentIdLabelName );
-			
+
 		}
-		
+
 		// check for numeric conversion of maxlength
 
 		try {
@@ -2505,12 +2521,12 @@ public class ManageStudentController extends PageFlowController
 		} catch (NumberFormatException nfe){
 			arrValue[1] = "32" ;
 		}
-		
-		
-		
+
+
+
 		return arrValue;
 	}
-	
+
 	/**
 	 * getGradeOptions
 	 */
@@ -2612,151 +2628,151 @@ public class ManageStudentController extends PageFlowController
 		this.getRequest().setAttribute("studentProfileData", form.getStudentProfile());
 		this.getSession().setAttribute("selectStudentIdInView",form.getSelectedStudentId());
 		this.getRequest().setAttribute("isABECustomer",form.isABECustomer);	//added for CA-ABE
-		
+
 	}
 	/*
 	 * GACRCT2010CR007- retrieve value for disableMandatoryBirthdate set  Value in request. 
 	 */
 	private void isMandatoryBirthDate() 
-    {     
+	{     
 		boolean disableMandatoryBirthdateValue = false;
-           for (int i=0; i < this.customerConfigurations.length; i++)
-            {
-                CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Disable_Mandatory_Birth_Date") && cc.getDefaultValue().equalsIgnoreCase("T"))
-                {
-                	disableMandatoryBirthdateValue = true; 
-                }
-             }
-           disableMandatoryBirthdate = disableMandatoryBirthdateValue;
-           this.getRequest().setAttribute("isMandatoryBirthDate", disableMandatoryBirthdate);
-                
-     }
-               
+		for (int i=0; i < this.customerConfigurations.length; i++)
+		{
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Disable_Mandatory_Birth_Date") && cc.getDefaultValue().equalsIgnoreCase("T"))
+			{
+				disableMandatoryBirthdateValue = true; 
+			}
+		}
+		disableMandatoryBirthdate = disableMandatoryBirthdateValue;
+		this.getRequest().setAttribute("isMandatoryBirthDate", disableMandatoryBirthdate);
+
+	}
+
 
 
 	/*
 	 * CR017- based on the value of customercofiguration and profileEditable flag set Value in profileEditable flag. 
 	 */
 	private boolean isClassReassignable(Boolean profileEditable) 
-    {     
+	{     
 		boolean classReassignable = false;
-		
+
 		if(profileEditable)
-			 return true ;
+			return true ;
 		else
 		{
 			for (int i=0; i < this.customerConfigurations.length; i++)
-	        {
-	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Class_Reassignment") && cc.getDefaultValue().equalsIgnoreCase("T"))
-	            {
-	            	classReassignable = true; 
-	            	break;
-	            }
-	         }
+			{
+				CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Class_Reassignment") && cc.getDefaultValue().equalsIgnoreCase("T"))
+				{
+					classReassignable = true; 
+					break;
+				}
+			}
 		}
-			
-		 
-		 return classReassignable;
-     }
-      
+
+
+		return classReassignable;
+	}
+
 	/*
 	 * New method added for CR  ISTEP2011CR017 . 
 	 */
 	private boolean isMultiOrgAssociationValid() 
-    {     
+	{     
 		boolean multiOrgAssociationValid = true;
-		
-		
-		
-			for (int i=0; i < this.customerConfigurations.length; i++)
-	        {
-	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Class_Reassignment") && cc.getDefaultValue().equalsIgnoreCase("T"))
-	            {
-	            	multiOrgAssociationValid = false; 
-	            	break;
-	            }
-	         }
-		
-			
-		 
-		 return multiOrgAssociationValid;
-     }
-        
-    
+
+
+
+		for (int i=0; i < this.customerConfigurations.length; i++)
+		{
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Class_Reassignment") && cc.getDefaultValue().equalsIgnoreCase("T"))
+			{
+				multiOrgAssociationValid = false; 
+				break;
+			}
+		}
+
+
+
+		return multiOrgAssociationValid;
+	}
+
+
 	/*
 	 * New method added for CR - GA2011CR001
 	 * This method retrieve  the value of provide two customer configuration and their corresponding data in customer configuration value.
 	 */
 	private void isGeorgiaCustomer(ManageStudentForm form) 
-    {     
-		 boolean isStudentIdConfigurable = false;
-		 boolean isStudentId2Configurable = false;
-		 Integer configId=0;
-		 String []valueForStudentId = new String[3] ;
-		 String []valueForStudentId2 = new String[2] ;
+	{     
+		boolean isStudentIdConfigurable = false;
+		boolean isStudentId2Configurable = false;
+		Integer configId=0;
+		String []valueForStudentId = new String[3] ;
+		String []valueForStudentId2 = new String[2] ;
 		for (int i=0; i < this.customerConfigurations.length; i++)
-	        {
-	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") && cc.getDefaultValue().equalsIgnoreCase("T"))
-				{
-					isStudentId2Configurable = true; 
-					configId = cc.getId();
-					customerConfigurationValues(configId);
-					valueForStudentId2 = new String[2];
+		{
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") && cc.getDefaultValue().equalsIgnoreCase("T"))
+			{
+				isStudentId2Configurable = true; 
+				configId = cc.getId();
+				customerConfigurationValues(configId);
+				valueForStudentId2 = new String[2];
 
-					for(int j=0; j<this.customerConfigurationsValue.length; j++){
+				for(int j=0; j<this.customerConfigurationsValue.length; j++){
 
-						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
-						valueForStudentId2[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+					int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
+					valueForStudentId2[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
 
-					}
-					valueForStudentId2 = getDefaultValue(valueForStudentId2,"Student ID 2", form);
 				}
-	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
-				{
-					isStudentIdConfigurable = true; 
-					configId = cc.getId();
-					customerConfigurationValues(configId);
-					//By default there should be 3 entries for customer configurations
-					valueForStudentId = new String[3];
-					for(int j=0; j<this.customerConfigurationsValue.length; j++){
-						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
-						valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
-					}	
-					valueForStudentId = getDefaultValue(valueForStudentId,"Student ID", form);
-					
-				}
-	            
-	         }
+				valueForStudentId2 = getDefaultValue(valueForStudentId2,"Student ID 2", form);
+			}
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
+			{
+				isStudentIdConfigurable = true; 
+				configId = cc.getId();
+				customerConfigurationValues(configId);
+				//By default there should be 3 entries for customer configurations
+				valueForStudentId = new String[3];
+				for(int j=0; j<this.customerConfigurationsValue.length; j++){
+					int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
+					valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+				}	
+				valueForStudentId = getDefaultValue(valueForStudentId,"Student ID", form);
+
+			}
+
+		}
 		if(valueForStudentId.length ==3) {
 			this.isMandatoryStudentId = valueForStudentId !=null &&  valueForStudentId[2] != null && valueForStudentId[2].equals("T") ?  true : false ;
-			
+
 		}
 		this.getRequest().setAttribute("studentIdArrValue",valueForStudentId);
-        this.getRequest().setAttribute("isStudentIdConfigurable",isStudentIdConfigurable);
-        this.getRequest().setAttribute("isStudentId2Configurable",isStudentId2Configurable);
-        this.getRequest().setAttribute("studentId2ArrValue",valueForStudentId2);
-    }
-    //StART-  added for CA-ABE
+		this.getRequest().setAttribute("isStudentIdConfigurable",isStudentIdConfigurable);
+		this.getRequest().setAttribute("isStudentId2Configurable",isStudentId2Configurable);
+		this.getRequest().setAttribute("studentId2ArrValue",valueForStudentId2);
+	}
+	//StART-  added for CA-ABE
 	private void isABECustomer(ManageStudentForm form){
-		
-		 for (int i=0; i < this.customerConfigurations.length; i++)
-	        {
-	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("ABE_Customer") && cc.getDefaultValue().equalsIgnoreCase("T"))
-				{
-	            	this.isABECustomer = true;
-	    			form.setABECustomer(this.isABECustomer );	
-				}
-					
-	         }
-		
-		 this.getRequest().setAttribute("isABECustomer",form.isABECustomer);
-	        
-		
+
+		for (int i=0; i < this.customerConfigurations.length; i++)
+		{
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("ABE_Customer") && cc.getDefaultValue().equalsIgnoreCase("T"))
+			{
+				this.isABECustomer = true;
+				form.setABECustomer(this.isABECustomer );	
+			}
+
+		}
+
+		this.getRequest().setAttribute("isABECustomer",form.isABECustomer);
+
+
 	}
 	//END- added for CA-ABE
 
@@ -3217,7 +3233,7 @@ public class ManageStudentController extends PageFlowController
 		public void setDisableMandatoryBirthdate(boolean disableMandatoryBirthdate) {
 			this.disableMandatoryBirthdate = disableMandatoryBirthdate;
 		}  
-		
+
 		public boolean verifyStudentInformation(List selectedOrgNodes)
 		{
 			// check for required fields
@@ -3235,7 +3251,7 @@ public class ManageStudentController extends PageFlowController
 				requiredFieldCount += 1;            
 				requiredFields = Message.buildErrorString("Last Name", requiredFieldCount, requiredFields);       
 			}
-			
+
 			String month = this.studentProfile.getMonth();
 			String day = this.studentProfile.getDay();
 			String year = this.studentProfile.getYear();
@@ -3257,7 +3273,7 @@ public class ManageStudentController extends PageFlowController
 				requiredFieldCount += 1;            
 				requiredFields = Message.buildErrorString("Gender", requiredFieldCount, requiredFields);       
 			}
-			
+
 			//CR - GA2011CR001 - validation For GTID
 			if(isMandatoryStudentId){
 				String externalStudentNumber = this.studentProfile.getStudentNumber().trim();
@@ -3266,9 +3282,9 @@ public class ManageStudentController extends PageFlowController
 					requiredFields = Message.buildErrorString(this.studentIdLabelName, requiredFieldCount, requiredFields);   
 				}
 			}
-			
+
 			//change for CA-ABE student intake UI
-			
+
 			if(isABECustomer) {
 				String externalStudentNumber = this.studentProfile.getStudentNumber().trim();
 				if ( externalStudentNumber.length()==0) {
@@ -3281,8 +3297,8 @@ public class ManageStudentController extends PageFlowController
 				requiredFieldCount += 1;      
 				requiredFields = Message.buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
 			}        
-			
-			
+
+
 			if (requiredFieldCount > 0) {
 				if (requiredFieldCount == 1) {
 					requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
@@ -3313,16 +3329,16 @@ public class ManageStudentController extends PageFlowController
 				return false;
 			}
 			//GACRCT2010CR007 - validate  date of birth  when date value is provided.
-			
+
 			if(isDisableMandatoryBirthdate() && !DateUtils.allSelected(month, day, year)) {
 				if (!DateUtils.noneSelected(month, day, year)) {
 					invalidCharFields += Message.INVALID_DATE;
 					setMessage(MessageResourceBundle.getMessage("invalid_birthdate"), invalidCharFields, Message.ERROR);
 					return false;
-					      
+
 				}
 			}
-						
+
 			if (DateUtils.allSelected(month, day, year)) {
 				int isDateValid = DateUtils.validateDateValues(year, month, day);
 				if (isDateValid != DateUtils.DATE_VALID) {
@@ -3333,8 +3349,7 @@ public class ManageStudentController extends PageFlowController
 			}
 			return true;
 		}
-		
-		
+
 		// start Change For CR - GA2011CR001
 		/**
 		 * @return the isMandatoryStudentId
@@ -3349,7 +3364,7 @@ public class ManageStudentController extends PageFlowController
 		public void setMandatoryStudentId(boolean isMandatoryStudentId) {
 			this.isMandatoryStudentId = isMandatoryStudentId;
 		}
-		
+
 
 		/**
 		 * @return the studentIdLabelName
@@ -3379,7 +3394,7 @@ public class ManageStudentController extends PageFlowController
 			this.studentId2LabelName = studentId2LabelName;
 		}
 		// End  Change For CR - GA2011CR001
-		
+
 	}
 
 
@@ -3416,7 +3431,7 @@ public class ManageStudentController extends PageFlowController
 	public String[] getYearOptions() {
 		return yearOptions;
 	}
-	
+
 	// start Change For CR - GA2011CR001
 	/**
 	 * @return the studentId2LabelName

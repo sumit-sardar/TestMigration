@@ -82,7 +82,7 @@
         </td>
          <c:if test="${isABECustomer}">   
         <td class="sortable">
-            <netui:span value="Pending"/>
+            <netui:span  value="${container.item.studentFollowUpStatus}"/>
         </td>
         </c:if>
     </tr>

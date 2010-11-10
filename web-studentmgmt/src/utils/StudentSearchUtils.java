@@ -73,6 +73,10 @@ public class StudentSearchUtils
                 ManageStudent student = (ManageStudent)students[i];
                 if (student != null) {
                     StudentProfileInformation studentDetail = new StudentProfileInformation(student);
+                    if (studentDetail.getStudentId().intValue()== 1639200)
+                    	studentDetail.setStudentFollowUpStatus("Completed");
+            		else 
+            			studentDetail.setStudentFollowUpStatus("In Complete");
                     studentList.add(studentDetail);
                 }
             }

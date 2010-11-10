@@ -195,7 +195,6 @@ public class StudentDemographicsTag extends CTBTag
 		    value = sdv.getValueName().trim();
 		    selected = sdv.getSelectedFlag().equals("true");		
 		    String prin = sdv.getValueName();     //added for CA-ABE
-		    System.out.println("displayValue_radio"+prin);
 		    if (selected)
 		        hasSelected = true;
 			displayRowStart();

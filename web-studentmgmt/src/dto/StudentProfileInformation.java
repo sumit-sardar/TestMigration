@@ -41,6 +41,10 @@ public class StudentProfileInformation extends SanitizedFormField
     private StudentContactInformation studentContact = new StudentContactInformation();
     private Integer addressId = new Integer(0);
     
+    //ca-abe followup
+    
+    private String studentFollowUpStatus;
+    
 
     public StudentProfileInformation() {
         this.studentId = new Integer(0);
@@ -55,6 +59,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.studentSecondNumber = "";
         this.birthdate = null;        
         this.organizationNodes = null;
+        this.studentFollowUpStatus="";
         
         this.birthdateString = "";
         this.month = "";
@@ -428,5 +433,21 @@ public class StudentProfileInformation extends SanitizedFormField
 
 	public void setStudentContact(StudentContactInformation studentContact) {
 		this.studentContact = studentContact;
+	}
+
+
+	/**
+	 * @return the studentGollowUpStatus
+	 */
+	public String getStudentFollowUpStatus() {
+		return studentFollowUpStatus;
+	}
+
+
+	/**
+	 * @param studentGollowUpStatus the studentGollowUpStatus to set
+	 */
+	public void setStudentFollowUpStatus(String studentFollowUpStatus) {
+		this.studentFollowUpStatus = studentFollowUpStatus;
 	}
 } 
