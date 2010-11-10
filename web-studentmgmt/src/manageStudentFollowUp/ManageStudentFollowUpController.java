@@ -58,6 +58,7 @@ import dto.Message;
 import dto.PathNode;
 import dto.StudentAccommodationsDetail;
 import dto.StudentProfileInformation;
+import manageStudent.ManageStudentController;
 
 /*
  * Manage Student Follow Up Controller Main Class
@@ -115,15 +116,29 @@ public class ManageStudentFollowUpController extends PageFlowController {
 	//Changes for CA_ABE Follow-Up
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
-					path = "follow_up_student.jsp")
+					path = "follow_up_student.jsp"),
+					@Jpf.Forward(name = "viewFollowUp",
+							path = "viewFollowUpStudent.do")
+					
 	})
-	protected Forward followUpStudent(ManageStudentFollowUpForm form)
+	protected Forward followUpStudent(ManageStudentController.ManageStudentForm form)
 	{   
-		System.out.println("foolowup called");
-		form = initialize(ACTION_FIND_STUDENT);
-		form.byStudentProfileVisible = true;
 		
-		return new Forward("success",form);
+		ManageStudentFollowUpForm followUpform = initialize(ACTION_FIND_STUDENT);
+		
+		followUpform.byStudentProfileVisible = true;
+		
+		followUpform.setStudentProfile(form.getStudentProfile());
+		
+		String followUpStatus= form.getStudentProfile().getStudentFollowUpStatus();
+		
+		if (followUpStatus.equalsIgnoreCase("In Complete")) {
+			return new Forward("success",followUpform);
+		} else {
+			return new Forward("viewFollowUp",followUpform);
+		}
+		
+		
 	}
 	
 	//Changes for CA_ABE Follow-Up
