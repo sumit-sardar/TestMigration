@@ -386,7 +386,7 @@
 				<td>
 				<table>
 					<tr>
-						<td class="transparent-small"><input type="checkbox" name="" value="Work" disabled="true" checked="checked">Work</td>
+						<td class="transparent-small">&nbsp;Work</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work" disabled="true">Got a Job
@@ -421,7 +421,7 @@
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work" disabled="true">Other</td>
 					</tr>
 					<tr>
-						<td class="transparent-small"><input type="checkbox" name="" value="Work" disabled="true">Personal/Family</td>
+						<td class="transparent-small">&nbsp;Personal/Family</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work" disabled="true">Increased
@@ -442,7 +442,7 @@
 
 
 					<tr>
-						<td class="transparent-small"><input type="checkbox" name="" value="Work" disabled="true" checked="checked">Community</td>
+						<td class="transparent-small">&nbsp;Community</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work" disabled="true">Achieved
@@ -461,7 +461,7 @@
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work" disabled="true">Other</td>
 					</tr>
 					<tr>
-						<td class="transparent-small"><input type="checkbox" name="" value="Work" disabled="true" checked="checked">Education</td>
+						<td class="transparent-small">&nbsp;Education</td>
 					</tr>
 					<tr>
 						<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="" value="Work" disabled="true" checked="checked">Returned
