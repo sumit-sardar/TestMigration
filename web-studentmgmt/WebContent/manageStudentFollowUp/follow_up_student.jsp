@@ -64,8 +64,9 @@
 <jsp:include page="/manageStudentFollowUp/show_message.jsp" />
 
 <p>
-        <netui:button type="submit" value="Save" action="saveFollowUpData"/>   
-        <netui:button type="submit" value="Cancel" action="returnToFindStudent"/>
+        <netui:button type="submit" value="Save" action="saveFollowUpData"/>  
+        <netui:button type="submit" value="Submit" action="saveFollowUpData"/>
+        <netui:button type="submit" value="Back" action="returnToFindStudent"/>
 </p>
 
 <!-- collapsible sections -->
