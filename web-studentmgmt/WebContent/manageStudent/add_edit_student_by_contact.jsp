@@ -75,6 +75,12 @@
             <netui:textBox tagId="secondaryPhone4" dataSource="actionForm.studentProfile.studentContact.secondaryPhone4" maxlength="4" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
         </td>
     </tr>
+     <tr class="transparent">
+        <td class="transparent alignRight" width="110"><netui:content value="Email:"/></td>
+        <td class="transparent">
+        <input type="text"  maxlength="64" style="width:205px" value=""/>
+      </td>
+    </tr>
 </table>
 </td>
 

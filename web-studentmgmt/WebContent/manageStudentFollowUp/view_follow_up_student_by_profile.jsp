@@ -116,8 +116,8 @@
             <netui:label value="8314"/>
         </td>
     </tr>
-        <tr class="transparent">
-        <td class="transparent alignRight" width="215"><netui:content value="Phone Number:"/></td>
+    <tr class="transparent">
+        <td class="transparent alignRight" width="215"><netui:content value="Primary Phone:"/></td>
         <td class="transparent">
             <netui:label value="123"/>
             -
@@ -126,6 +126,18 @@
             <netui:label value="1234"/>
             Ext:
            <netui:label value="1234"/>
+        </td>
+    </tr>
+    <tr class="transparent">
+        <td class="transparent alignRight" width="215"><netui:content value="Secondary Phone:"/></td>
+        <td class="transparent">
+            <netui:label value="123"/>
+            -
+            <netui:label value="123"/>
+            -
+            <netui:label value="1234"/>
+            Ext:
+           <netui:label value=""/>
         </td>
     </tr>
     <tr class="transparent">

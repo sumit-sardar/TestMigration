@@ -54,7 +54,12 @@
         <td class="transparent" width="100"><netui:content value="Secondary Phone:"/></td>
         <td class="transparent"><netui:label value=""/></td>
     </tr>
-    
+     <tr class="transparent">
+        <td class="transparent" width="100"><netui:content value="Email:"/></td>
+        <td class="transparent">
+        	<netui:label value=""/>
+        </td>
+    </tr>
 </table>
 </td>
 

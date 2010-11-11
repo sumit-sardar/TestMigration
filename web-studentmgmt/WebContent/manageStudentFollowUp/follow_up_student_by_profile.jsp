@@ -116,8 +116,8 @@
             <netui:textBox tagId="zipCode2" dataSource="actionForm.studentProfile.studentContact.zipCode2" maxlength="5" style="width:50px" onKeyPress="return constrainNumericChar(event);" defaultValue="69856"/>
         </td>
     </tr>
-        <tr class="transparent">
-        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Phone Number:"/></td>
+    <tr class="transparent">
+        <td class="transparent alignRight" width="200"><span class="asterisk">*</span>&nbsp;<netui:content value="Primary Phone:"/></td>
         <td class="transparent">
             <netui:textBox tagId="primaryPhone1" dataSource="actionForm.studentProfile.studentContact.primaryPhone1" maxlength="3" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this);" defaultValue="001"/>
             -
@@ -126,6 +126,18 @@
             <netui:textBox tagId="primaryPhone3" dataSource="actionForm.studentProfile.studentContact.primaryPhone1"  maxlength="4"onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); " defaultValue="321"/>
             Ext:
             <netui:textBox tagId="primaryPhone4" dataSource="actionForm.studentProfile.studentContact.primaryPhone1" maxlength="4" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); " defaultValue="4326"/>
+        </td>
+    </tr>
+    <tr class="transparent">
+        <td class="transparent alignRight" width="200"><netui:content value="Secondary Phone:"/></td>
+        <td class="transparent">
+            <netui:textBox tagId="secondaryPhone1" dataSource="actionForm.studentProfile.studentContact.secondaryPhone1" maxlength="3" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            -
+            <netui:textBox tagId="secondaryPhone2" dataSource="actionForm.studentProfile.studentContact.secondaryPhone2" maxlength="3" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            -
+            <netui:textBox tagId="secondaryPhone3" dataSource="actionForm.studentProfile.studentContact.secondaryPhone3" maxlength="4" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
+            Ext:
+            <netui:textBox tagId="secondaryPhone4" dataSource="actionForm.studentProfile.studentContact.secondaryPhone4" maxlength="4" onKeyPress="return constrainNumericChar(event);" style="width:40px" onKeyUp="focusNextControl(this); "/>
         </td>
     </tr>
     <tr class="transparent">
