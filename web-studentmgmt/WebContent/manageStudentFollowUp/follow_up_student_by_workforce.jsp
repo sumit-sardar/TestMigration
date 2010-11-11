@@ -130,34 +130,6 @@
 			   	<td class="transparent" width="300">&nbsp;</td>
 			</tr>
 			
-			<tr class="transparent">
-				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Workforce Readiness </b></td>
-			</tr>
-		
-			<tr class = "transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select  id="workforceReadiness" style="width: 280px">
-					<Option>Please Select</Option>
-					<Option>Communications</Option>
-					<Option>Think Skills</Option>
-					<Option>Learning to Learn</Option>
-					<Option  selected="true">Personal Qualities</Option>
-					<Option>Resources</Option>
-					<Option>Interpersonal Skills</Option>
-					<Option>Information</Option>
-					<Option>Systems</Option>
-					<Option>Technology</Option>
-
-				</select></td>
-			</tr>
-			<tr class="transparent">
-			   	<td class="transparent" width="300">&nbsp;</td>
-			</tr>
-				<tr class="transparent">
-				<td class="transparent" width="210"><b> Provider Use </b></td>
-			</tr>
-			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="providerUse" type="text" maxlength="6" style="width: 280px" /></td>
-			</tr>
 		</table>
 		</td>
 
@@ -189,62 +161,33 @@
 				<td class="transparent" width="300">&nbsp;</td>
 			</tr>
 			<tr class="transparent">
-				<td class="transparent-small" width="210"><span class="asterisk">*</span>&nbsp;<b>Special Programs  </b></td>
+				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Workforce Readiness </b></td>
+			</tr>
+		
+			<tr class = "transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select  id="workforceReadiness" style="width: 280px">
+					<Option>Please Select</Option>
+					<Option>Communications</Option>
+					<Option>Think Skills</Option>
+					<Option>Learning to Learn</Option>
+					<Option  selected="true">Personal Qualities</Option>
+					<Option>Resources</Option>
+					<Option>Interpersonal Skills</Option>
+					<Option>Information</Option>
+					<Option>Systems</Option>
+					<Option>Technology</Option>
+
+				</select></td>
 			</tr>
 			<tr class="transparent">
-				<td class="transparent">
-				<table class="transparent">
-					<tr class="transparent">
-						<td class="transparent-small"><input type="checkbox" name="specialPrograms"
-							id="specialPrograms2" value="Community Corrections">Community Corrections</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms3" value="State Corrections" checked="checked">State Corrections</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms4" value="Homeless Program">Homeless Program</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms5" value="Workplace Ed.">Workplace Ed.</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms6" value="Tutoring">Tutoring</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input type="checkbox" name="specialPrograms"
-							id="specialPrograms7" value="Distance Learning">Distance Learning</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms8" value="Special Needs">Special Needs</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input type="checkbox" name="specialPrograms"
-							id="specialPrograms9" value="Alternative Ed. (K12)">Alternative Ed. (K12)</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms10" value="Non-traditional Training">Non-traditional Training</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms11" value="El Civics">El Civics</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms12" value="Carl Perkins">Carl Perkins</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms13" value="Other">Other</input></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
+			   	<td class="transparent" width="300">&nbsp;</td>
+			</tr>
+				<tr class="transparent">
+				<td class="transparent" width="210"><b> Provider Use </b></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="providerUse" type="text" maxlength="6" style="width: 280px" /></td>
+			</tr>
 	  </table>
 	</td>
   </tr>

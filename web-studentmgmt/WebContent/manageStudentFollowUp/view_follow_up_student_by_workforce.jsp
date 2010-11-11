@@ -129,6 +129,33 @@
 			   	<td class="transparent" width="300">&nbsp;</td>
 			</tr>
 			
+		</table>
+		</td>
+		<!-- second column -->
+		<td class="transparent-top" width="50%">
+		<table class="transparent">
+			<tr class="transparent">
+				<td class="transparent " width="210"><span class="asterisk">*</span>&nbsp;<b>Hourly Wage</b></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="HourlyWage"
+					type="text" maxlength="7" style="width: 280px" value="8" disabled="disabled"/></td>
+			</tr>
+
+			<tr class="transparent">
+				<td class="transparent" width="300">&nbsp;</td>
+			</tr>
+
+			<tr class="transparent">
+				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Scheduled Work Hours Per Week</b></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input  id="ScheduledWorkHours"
+					type="text" maxlength="5" style="width: 280px"  value="13" disabled="disabled"/></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent" width="300">&nbsp;</td>
+			</tr>
 			<tr class="transparent">
 				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Workforce Readiness </b></td>
 			</tr>
@@ -158,92 +185,8 @@
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input disabled="true" id="providerUse" type="text" maxlength="6" style="width: 280px" value="856"/></td>
 			</tr>
-		</table>
-		</td>
-		<!-- second column -->
-		<td class="transparent-top" width="50%">
-		<table class="transparent">
-			<tr class="transparent">
-				<td class="transparent " width="210"><span class="asterisk">*</span>&nbsp;<b>Hourly Wage</b></td>
-			</tr>
-			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="HourlyWage"
-					type="text" maxlength="7" style="width: 280px" value="8" disabled="disabled"/></td>
-			</tr>
-
-			<tr class="transparent">
-				<td class="transparent" width="300">&nbsp;</td>
-			</tr>
-
-			<tr class="transparent">
-				<td class="transparent" width="210"><span class="asterisk">*</span>&nbsp;<b>Scheduled Work Hours Per Week</b></td>
-			</tr>
-			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input  id="ScheduledWorkHours"
-					type="text" maxlength="5" style="width: 280px"  value="13" disabled="disabled"/></td>
-			</tr>
-			<tr class="transparent">
-				<td class="transparent" width="300">&nbsp;</td>
-			</tr>
-			<tr class="transparent">
-				<td class="transparent-small" width="210"><span class="asterisk">*</span>&nbsp;<b>Special Programs</b></td>
-			</tr>
-			<tr class="transparent">
-				<td class="transparent">
-				<table class="transparent">
-					<tr class="transparent">
-						<td class="transparent-small"><input type="checkbox" name="specialPrograms"
-							id="specialPrograms2" value="Community Corrections" disabled="disabled">Community Corrections</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms3" value="State Corrections" checked="checked" disabled="disabled">State Corrections</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms4" value="Homeless Program" checked="checked" disabled="disabled">Homeless Program</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms5" value="Workplace Ed." checked="checked" disabled="disabled">Workplace Ed.</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms6" value="Tutoring" disabled="disabled">Tutoring</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input type="checkbox" name="specialPrograms"
-							id="specialPrograms7" value="Distance Learning" disabled="disabled">Distance Learning</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms8" value="Special Needs" disabled="disabled">Special Needs</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input type="checkbox" name="specialPrograms"
-							id="specialPrograms9" value="Alternative Ed. (K12)" disabled="disabled">Alternative Ed. (K12)</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms10" value="Non-traditional Training" disabled="disabled">Non-traditional Training</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms11" value="El Civics" disabled="disabled">El Civics</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms12" value="Carl Perkins" disabled="disabled">Carl Perkins</input></td>
-					</tr>
-					<tr class="transparent">
-						<td class="transparent-small"><input  type="checkbox" name="specialPrograms"
-							id="specialPrograms13" value="Other" disabled="disabled">Other</input></td>
-					</tr>
-				</table>
-			</td>
-		  </tr>
-	  </table>
-	 </td>
+		  </table>
+	 	</td>
 	</tr>
 	<tr class="transparent">
        	<td class="transparent" width="300">&nbsp;</td>
