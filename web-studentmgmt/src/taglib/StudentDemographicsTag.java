@@ -122,7 +122,15 @@ public class StudentDemographicsTag extends CTBTag
             if (sdd.getImportEditable().equals("F") || sdd.getImportEditable().equals("UNEDITABLE_ON_NULL_RULE")) {
                 editable = false;
             }
-        }            
+        }   
+        //check for CA-ABE followup to make Labor Force Status Non Editable
+        if (this.mandatoryField) {
+        	
+        	if( sdd.getVisible().equals("NON EDITABLE")){
+                 editable = false;
+        	}
+            
+        }
         
     	displayRowStart();
             displayCellStart("transparent");

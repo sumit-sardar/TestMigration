@@ -78,6 +78,12 @@
     </ctb:showHideSection>
 </p>
 
+<a name="moduleStudentFollowUpDemographic"></a>    
+<p>
+    <ctb:showHideSection sectionId="moduleStudentFollowUpDemographic" sectionTitle="Additional Student Information" sectionVisible="actionForm.byStudentAccommodationVisible">
+       <jsp:include page="/manageStudentFollowUp/follow_up_student_by_demographic.jsp" />
+    </ctb:showHideSection>
+</p>
 <p>
     <ctb:showHideSection sectionId="moduleStudentFollowUpWorkforce" sectionTitle="Supplemental Data for Workforce Student" sectionVisible="actionForm.byStudentAccommodationVisible">
         <jsp:include page="/manageStudentFollowUp/follow_up_student_by_workforce.jsp" />

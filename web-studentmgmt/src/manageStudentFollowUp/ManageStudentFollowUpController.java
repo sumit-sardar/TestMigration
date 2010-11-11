@@ -95,6 +95,7 @@ public class ManageStudentFollowUpController extends PageFlowController {
 	
 	private Integer customerId = null;
 	private User user = null;
+	List demographics = null;
 	
 	
 	
@@ -123,7 +124,7 @@ public class ManageStudentFollowUpController extends PageFlowController {
 	})
 	protected Forward followUpStudent(ManageStudentController.ManageStudentForm form)
 	{   
-		
+		Boolean isABECustomer = true;
 		ManageStudentFollowUpForm followUpform = initialize(ACTION_FIND_STUDENT);
 		
 		followUpform.byStudentProfileVisible = true;
@@ -132,6 +133,10 @@ public class ManageStudentFollowUpController extends PageFlowController {
 		
 		String followUpStatus= form.getStudentProfile().getStudentFollowUpStatus();
 		
+		addEditDemographics(followUpform);
+		StudentDemographic sdd = (StudentDemographic)(this.demographics.get(0));
+		this.getRequest().setAttribute("viewOnly", Boolean.FALSE); 
+		this.getRequest().setAttribute("mandatoryField",new Boolean(isABECustomer));
 		if (followUpStatus.equalsIgnoreCase("Incomplete")) {
 			return new Forward("success",followUpform);
 		} else {
@@ -150,6 +155,7 @@ public class ManageStudentFollowUpController extends PageFlowController {
 	{
 		
 		form.byStudentProfileVisible = true;
+		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);
 		return new Forward("success",form);
 	}
 	
@@ -161,8 +167,13 @@ public class ManageStudentFollowUpController extends PageFlowController {
 	})
 	protected Forward viewFollowUpStudent(ManageStudentFollowUpForm form)
 	{  
+		Boolean isABECustomer = true;
 		form.clearSectionVisibility();
 		form.setByStudentProfileVisible(Boolean.TRUE);
+		addEditDemographics(form);
+		StudentDemographic sdd = (StudentDemographic)(this.demographics.get(0));
+		this.getRequest().setAttribute("viewOnly", Boolean.TRUE); 
+		this.getRequest().setAttribute("mandatoryField",new Boolean(isABECustomer));
 		return new Forward("success",form);
 	}
 	
@@ -176,7 +187,7 @@ public class ManageStudentFollowUpController extends PageFlowController {
 					path = "/manageStudent/beginFindStudent.do")
 	})
 	protected Forward returnToFindStudent(ManageStudentFollowUpForm form)
-	{   
+	{  
 		
 		return new Forward("success");
 	}
@@ -226,72 +237,249 @@ public class ManageStudentFollowUpController extends PageFlowController {
 		//getCustomerConfigurations();             
 	}
 	
-	 /**
-     * initStateOptions
-     */
-     //Changes for CA-ABE student intake
-    private void initStateOptions(String action)
-    {        
-        this.stateOptions = new LinkedHashMap();
-        
-        TreeMap territoriesOptions = new TreeMap();
-         
+	/**
+	 * initStateOptions
+	 */
+	//Changes for CA-ABE student intake
+	private void initStateOptions(String action)
+	{        
+		this.stateOptions = new LinkedHashMap();
 
-       this.stateOptions.put("", Message.SELECT_STATE);
-            
-       
-        try {
-            USState[] state = this.studentManagement.getStates();
-            if (state != null) {
-                for (int i = 0 ; i < state.length ; i++) {
-                    if (!isContains (state[i].getStatePrDesc())) {
-                        
-                        this.stateOptions.put(state[i].getStatePr(), 
-                                            state[i].getStatePrDesc());
-                    } else {
-                        
-                        territoriesOptions.put(state[i].getStatePrDesc(),state[i]);
-                        
-                    }
-                    
-                }
-            }
-            orderedStateTerritories(territoriesOptions); 
-            
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+		TreeMap territoriesOptions = new TreeMap();
+		this.stateOptions.put("", Message.SELECT_STATE);
+		try {
+			USState[] state = this.studentManagement.getStates();
+			if (state != null) {
+				for (int i = 0 ; i < state.length ; i++) {
+					if (!isContains (state[i].getStatePrDesc())) {
+
+						this.stateOptions.put(state[i].getStatePr(), 
+								state[i].getStatePrDesc());
+					} else {
+
+						territoriesOptions.put(state[i].getStatePrDesc(),state[i]);
+
+					}
+
+				}
+			}
+			orderedStateTerritories(territoriesOptions); 
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private boolean isContains (String stateDesc) {
+
+		String []USterritories = {"Virgin Islands","Puerto Rico","Palau","North Mariana Islands","Marshall Islands","Guam","F.S. of Micronesia","American Samoa"};
+
+		for (int i = 0; i < USterritories.length; i++) {
+
+			if (USterritories[i].equals(stateDesc)) {
+				return true;
+			} 
+		}
+		return false;
+
+	} 
+
+	private void orderedStateTerritories (TreeMap territoriesOptions) {
+
+		Collection territories = territoriesOptions.values();
+
+		Iterator iterate = territories.iterator();
+		while (iterate.hasNext()) {
+			USState state = (USState) iterate.next();
+			this.stateOptions.put(state.getStatePr(), 
+					state.getStatePrDesc());
+		}
+	}
+
+///////////////////////////////////////////////////////////////
+//////**************Demographics******************/////////////
     
- private boolean isContains (String stateDesc) {
-        
-        String []USterritories = {"Virgin Islands","Puerto Rico","Palau","North Mariana Islands","Marshall Islands","Guam","F.S. of Micronesia","American Samoa"};
-        
-        for (int i = 0; i < USterritories.length; i++) {
-            
-            if (USterritories[i].equals(stateDesc)) {
-                return true;
-            } 
-        }
-        return false;
-        
-    } 
-    
-    private void orderedStateTerritories (TreeMap territoriesOptions) {
-        
-        Collection territories = territoriesOptions.values();
-        
-        Iterator iterate = territories.iterator();
-        while (iterate.hasNext()) {
-            USState state = (USState) iterate.next();
-            this.stateOptions.put(state.getStatePr(), 
-                                            state.getStatePrDesc());
-        }
-    }
+    private void addEditDemographics(ManageStudentFollowUpForm form)
+	{
+		Integer studentId = form.getStudentProfile().getStudentId();
+		boolean studentImported = (form.getStudentProfile().getCreateBy().intValue() == 1);
 
+		if ((this.demographics == null) && (studentId != null))
+		{
+			this.demographics = getStudentDemographics(studentId);
+			prepareOnNullRule();            
+		}
+		else
+		{
+			if (studentImported)
+			{        
+				prepareStudentDemographicForCustomerConfiguration();
+			}
+			getStudentDemographicsFromRequest();
+		}
+		this.getRequest().setAttribute("demographics", this.demographics);       
+		this.getRequest().setAttribute("studentImported", new Boolean(studentImported));
+		
+	}
+    private List getStudentDemographics(Integer studentId)
+	{
+		this.demographics = new ArrayList();
+		try
+		{
+			if ((studentId != null) && (studentId.intValue() == 0))
+				studentId = null;
 
+			StudentDemographic[] studentDemoList = this.studentManagement.getStudentDemographics(this.userName, this.customerId, studentId, false);
+
+			if (studentDemoList != null)
+			{
+				for (int i=0; i < studentDemoList.length; i++)
+				{
+					StudentDemographic sd = studentDemoList[i];
+					this.demographics.add(sd);                
+				}                        
+			}
+		}
+		catch (CTBBusinessException be)
+		{
+			be.printStackTrace();
+		}
+
+		return this.demographics;
+	}
 	
+    /**
+	 * prepareOnNullRule
+	 */
+    private void prepareOnNullRule() 
+    {
+    	for (int i=0; i < this.demographics.size(); i++)
+    	{
+    		StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
+
+    		if (sdd.getImportEditable().equals("ON_NULL_RULE"))
+    		{
+    			StudentDemographicValue[] values = sdd.getStudentDemographicValues();		    
+    			boolean hasValue = false;
+    			for (int j=0; j < values.length; j++)
+    			{
+    				StudentDemographicValue value = values[j];
+    				if ((value.getSelectedFlag() != null) && value.getSelectedFlag().equals("true"))
+    					hasValue = true;
+    			}
+    			if (hasValue)
+    			{
+    				sdd.setImportEditable("UNEDITABLE_ON_NULL_RULE");
+    			}
+
+    		}
+
+    		if( ! sdd.getLabelName().equals("Labor Force Status")){
+
+    			sdd.setVisible("NON EDITABLE");
+    		}
+
+
+
+    	}
+    }
+
+
+	/**
+	 * prepareStudentDemographicForCustomerConfiguration
+	 */
+	private void prepareStudentDemographicForCustomerConfiguration() 
+	{
+		for (int i=0; i < this.demographics.size(); i++)
+		{
+			StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
+			if (sdd.getImportEditable().equals("ON_NULL_RULE") || sdd.getImportEditable().equals("UNEDITABLE_ON_NULL_RULE") || sdd.getImportEditable().equals("F"))
+			{            
+				StudentDemographicValue[] values = sdd.getStudentDemographicValues();		    
+				for (int j=0; j < values.length; j++)
+				{
+					StudentDemographicValue value = (StudentDemographicValue)values[j];
+					if ((value.getSelectedFlag() != null) && value.getSelectedFlag().equals("true"))
+					{
+						value.setVisible("false");            
+					}
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * getStudentDemographicsFromRequest
+	 */
+	private void getStudentDemographicsFromRequest() 
+	{
+		String param = null, paramValue = null;
+
+		for (int i=0; i < this.demographics.size(); i++)
+		{
+			StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
+			StudentDemographicValue[] values = sdd.getStudentDemographicValues();
+
+			for (int j=0; j < values.length; j++)
+			{
+				StudentDemographicValue sdv = (StudentDemographicValue)values[j];
+
+				// Look up the parameter based on checkbox vs radio/select
+				if (sdd.getMultipleAllowedFlag().equals("true"))
+				{
+					if (! sdv.getVisible().equals("false"))
+						sdv.setSelectedFlag("false");
+					param = sdd.getLabelName() + "_" + sdv.getValueName();
+					if (getRequest().getParameter(param) != null)
+					{
+						paramValue = getRequest().getParameter(param);
+						sdv.setSelectedFlag("true");
+					}
+				} 
+				else
+				{
+					if (values.length == 1)
+					{
+						if (! sdv.getVisible().equals("false"))
+							sdv.setSelectedFlag("false");
+						param = sdd.getLabelName() + "_" + sdv.getValueName();
+						if (getRequest().getParameter(param) != null)
+						{
+							paramValue = getRequest().getParameter(param);
+							sdv.setSelectedFlag("true");
+						}
+					}
+					else
+					{
+						param = sdd.getLabelName();
+						if (getRequest().getParameter(param) != null)
+						{
+							paramValue = getRequest().getParameter(param);
+
+							for (int k=0; k < values.length; k++)
+							{
+								StudentDemographicValue sdv1 = (StudentDemographicValue)values[k];
+								if (! sdv1.getVisible().equals("false"))
+									sdv1.setSelectedFlag("false");
+								if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
+								{
+									if (paramValue.equals(sdv1.getValueName()))
+									{
+										sdv1.setSelectedFlag("true");
+									}
+								}
+							}
+
+							break;
+						}
+					}
+				}
+				sdv.setVisible("T");
+			}
+		}
+	}
 	
 	
 	

@@ -48,7 +48,7 @@
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select id="annualIncome"
-					style="width: 280px">
+					style="width: 280px" disabled="disabled">
 					<Option >Please Select</Option>
 					<Option selected="true">Single with Income Below $7,500 per year</Option>
 					<Option >Married and Combined Income is below $15,000 per year</Option>
@@ -63,7 +63,7 @@
 
 			</tr>
 			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select  id="services" style="width: 280px">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select  id="services" style="width: 280px" disabled="disabled">
 					<Option >Please Select</Option>
 					<Option>Assessment/Testing/Counseling</Option>
 					<Option>Personal Development Training</Option>
@@ -85,7 +85,7 @@
 			</tr>
 			
 			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select  id="supportServices" style="width: 280px">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select  id="supportServices" style="width: 280px" disabled="disabled">
 					<Option >Please Select</Option>
 					<Option>Transportation</Option>
 					<Option>Health Care and Mental Health Care</Option>
@@ -109,7 +109,7 @@
 			</tr>
 			
 			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select  id="maturitySkills" style="width: 280px">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select  id="maturitySkills" style="width: 280px" disabled="disabled">
 					<Option >Please Select</Option>
 					<Option>Make career decisions</Option>
 					<Option>Use labor market info</Option>
@@ -143,7 +143,7 @@
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="HourlyWage"
-					type="text" maxlength="7" style="width: 280px" value="8"/></td>
+					type="text" maxlength="7" style="width: 280px" value="8" disabled="disabled"/></td>
 			</tr>
 
 			<tr class="transparent">
@@ -155,7 +155,7 @@
 			</tr>
 			<tr class="transparent">
 				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input  id="ScheduledWorkHours"
-					type="text" maxlength="5" style="width: 280px"  value="13"/></td>
+					type="text" maxlength="5" style="width: 280px"  value="13" disabled="disabled"/></td>
 			</tr>
 			<tr class="transparent">
 				<td class="transparent" width="300">&nbsp;</td>
@@ -165,7 +165,7 @@
 			</tr>
 		
 			<tr class = "transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select  id="workforceReadiness" style="width: 280px">
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select  id="workforceReadiness" style="width: 280px" disabled="disabled">
 					<Option>Please Select</Option>
 					<Option>Communications</Option>
 					<Option>Think Skills</Option>
@@ -186,7 +186,7 @@
 				<td class="transparent" width="210"><b> Provider Use </b></td>
 			</tr>
 			<tr class="transparent">
-				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="providerUse" type="text" maxlength="6" style="width: 280px" /></td>
+				<td class="transparent-small">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="providerUse" type="text" maxlength="6" style="width: 280px" disabled="disabled" /></td>
 			</tr>
 	  </table>
 	</td>
