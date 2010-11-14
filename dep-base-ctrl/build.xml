@@ -1,0 +1,258 @@
+<project default="build">
+  
+  <description>
+    Project build script. All public targets require the "workspace" property to be
+    set at invocation. It can either point at the Eclipse workspace directory that
+    this project belongs to or an exported workspace.xml file. The wl.home property
+    may also need to be specified unless WL_HOME environment variable is defined.
+    The workshop.home property may also need to be specified unless WORKSHOP_HOME
+    environment variable is defined.
+  </description>
+  
+  <target name="init.env" unless="init.env.executed">
+    <property name="init.env.executed" value="true"/>
+    <property environment="env"/>
+    <condition property="wl.home" value="${env.WL_HOME}">
+      <isset property="env.WL_HOME"/>
+    </condition>
+    <fail unless="wl.home" message="The wl.home property needs to be set!"/>
+    <condition property="workshop.home" value="${env.WORKSHOP_HOME}">
+      <isset property="env.WORKSHOP_HOME"/>
+    </condition>
+    <fail unless="workshop.home" message="The workshop.home property needs to be set!"/>
+  </target>
+   
+  <target name="init.typedefs" depends="check.params,check.versions" unless="init.typedefs.executed">
+    
+    <property name="init.typedefs.executed" value="true"/>
+    <echo message="Using Workshop Libraries located in the &quot;${workshop.lib.dir}&quot; directory."/>
+    
+    <typedef resource="com/bea/workshop/cmdline/antlib/antlib.xml">
+      <classpath>
+        <fileset dir="${workshop.lib.dir}" includes="*.jar"/>
+      </classpath>
+    </typedef>
+    
+    <typedef resource="com/bea/workshop/wls/antlib/antlib.xml">
+      <classpath>
+        <fileset dir="${workshop.lib.dir}" includes="*.jar"/>
+      </classpath>
+    </typedef>
+    
+  </target>
+   
+  <target name="check.versions" depends="check.params" unless="check.versions.executed">
+    <property name="check.versions.executed" value="true"/>
+    <taskdef name="check-versions" classname="com.bea.workshop.cmdline.antlib.CheckManifestVersionTask">
+      <classpath>
+        <fileset dir="${workshop.lib.dir}" includes="*.jar"/>
+      </classpath>
+    </taskdef>
+    <check-versions>
+      <jar path="${workshop.lib.dir}/workshop-antlib.jar" version="[2.0.0,3.0.0)"/>
+      <jar path="${workshop.lib.dir}/workshop-util.jar" version="[1.2.0,3.0.0)"/>
+      <jar path="${workshop.lib.dir}/workshop-wls.jar" version="[1.0.0,2.0.0)"/>
+      <jar path="${workshop.lib.dir}/workshop-wls-antlib.jar" version="[1.0.0,2.0.0)"/>
+    </check-versions>
+  </target>
+   
+  <target name="check.params" depends="init.env" unless="check.params.executed">
+    <property name="check.params.executed" value="true"/>
+    <condition property="workspace" value="${env.WORKSHOP_WORKSPACE}">
+      <isset property="env.WORKSHOP_WORKSPACE"/>
+    </condition>
+    <fail unless="workspace" message="The workspace property needs to be set!"/>
+    <condition property="workshop.lib.dir" value="${env.WORKSHOP_LIB_DIR}">
+      <isset property="env.WORKSHOP_LIB_DIR"/>
+    </condition>
+    <fail unless="workshop.lib.dir" message="The workshop.lib.dir property needs to be set!"/>
+  </target>
+   
+  <target name="init" depends="init.env,check.params,check.versions,init.typedefs" unless="init.executed">
+    
+    <property name="init.executed" value="true"/>
+    
+    <dirname property="project.dir" file="${ant.file}"/>
+    <property name="echo.metadata" value="false"/>
+    
+    <mdimport workspace="${workspace}" pjdir="${project.dir}" echo="${echo.metadata}">
+    </mdimport>
+    
+    <property name="archive.name" value="${project.name}.jar"/>
+    <property name="uri" value="${archive.name}"/>
+    
+  </target>
+  
+  <target name="build" depends="init" description="compiles the source files; does not package the results">
+    
+    <if>
+      <isreference refid="apt.factory.path"/>
+      <then>
+        <mkdir dir="${apt.src.output.dir}"/>
+        <for-each-java-src-path>
+          <if>
+            <available file="${.java.src.dir}"/>
+            <then>
+              <mkdir dir="${.java.src.output}"/>
+              <apt
+                sourcepath="${java.sourcepath}"
+                srcdir="${.java.src.dir}"
+                includes="${.java.src.include}"
+                excludes="${.java.src.exclude}"
+                destdir="${.java.src.output}"
+                preprocessdir="${apt.src.output.dir}"
+                classpathref="java.classpath"
+                factorypathref="apt.factory.path"
+                options="${apt.options}"
+                compile="false"
+                memoryMaximumSize="1024m"/>
+            </then>
+          </if>
+        </for-each-java-src-path>
+      </then>
+    </if>
+    
+    <for-each-java-src-path>
+      <if>
+        <available file="${.java.src.dir}"/>
+        <then>
+          <mkdir dir="${.java.src.output}"/>
+          <javac
+            sourcepath="${java.sourcepath}"
+            srcdir="${.java.src.dir}"
+            includes="${.java.src.include}"
+            excludes="${.java.src.exclude}"
+            destdir="${.java.src.output}"
+            classpathref="java.classpath"
+            debug="on"/>
+        </then>
+      </if>
+    </for-each-java-src-path>
+    
+  </target>
+  
+  <target name="assemble" depends="init" description="assembles the project for iterative dev deployment; requires that the &quot;ear.root&quot; property is specified">
+    
+    <property name="prefix" value=""/>
+     
+    <for-each-resource-path>
+      <link ear="${ear.root}" source="${.resource.path}" target="${prefix}${uri}/${.resource.prefix}"/>
+    </for-each-resource-path>
+    
+  </target>
+  
+  <target name="stage" depends="init" description="copies all of project's resources and build artifacts into a form that's ready for archive creation; staging directory can be overridden via the &quot;staging.dir&quot; property">
+    
+    <property name="staging.dir" value="${project.dir}/.staging"/>
+     
+    <delete dir="${staging.dir}" quiet="true"/>
+    <mkdir dir="${staging.dir}"/>
+     
+    <for-each-resource-path>
+      <if>
+        <available file="${.resource.path}"/>
+        <then>
+          <if>
+            <isfile path="${.resource.path}"/>
+            <then>
+              <copy file="${.resource.path}" tofile="${staging.dir}/${.resource.prefix}"/>
+            </then>
+            <else>
+              <copy todir="${staging.dir}/${.resource.prefix}">
+                <fileset dir="${.resource.path}" includes="${.resource.include}" excludes="${.resource.exclude}"/>
+              </copy>
+            </else>
+          </if>
+        </then>
+      </if>
+    </for-each-resource-path>
+    
+  </target>
+  
+  <target name="archive" depends="stage" description="creates an archive containing all projects's resources and build artifacts; archive name and location can be overridden via the &quot;archive.dir&quot; and &quot;archive.name&quot; properties.">
+    
+    <property name="archive.dir" value="${project.dir}"/>
+    <mkdir dir="${archive.dir}"/>
+     
+    <zip destfile="${archive.dir}/${archive.name}" encoding="UTF8" whenempty="create">
+      <fileset dir="${staging.dir}"/>
+    </zip>
+    
+  </target>
+  
+  <target name="clean" depends="init" description="removes the files and directories generated by the build target">
+    
+    <if>
+      <available file="${apt.src.output.dir}"/>
+      <then>
+        <delete includeEmptyDirs="true">
+          <fileset dir="${apt.src.output.dir}" includes="**/*"/>
+        </delete>
+      </then>
+    </if>
+    
+    <for-each-java-src-path>
+      <if>
+        <available file="${.java.src.output}"/>
+        <then>
+          <if>
+            <equals arg1="${.java.src.dir}" arg2="${.java.src.output}"/>
+            <then>
+              <delete includeEmptyDirs="true">
+                <fileset dir="${.java.src.output}">
+                  <or>
+                    <filename name="**/*.class"/>
+                    <and>
+                      <type type="dir"/>
+                      <depth min="0"/>
+                    </and>
+                  </or>
+                </fileset>
+              </delete>
+            </then>
+            <else>
+              <delete includeEmptyDirs="true">
+                <fileset dir="${.java.src.output}" includes="**/*"/>
+              </delete>
+            </else>
+          </if>
+        </then>
+      </if>
+    </for-each-java-src-path>
+    
+  </target>
+  
+  <target name="clean.all" depends="clean" description="removes the files and directories generated by build, stage and archive targets">
+    
+    <property name="staging.dir" value="${project.dir}/.staging"/>
+    <delete dir="${staging.dir}"/>
+     
+    <property name="archive.dir" value="${project.dir}"/>
+    <delete file="${archive.dir}/${archive.name}"/>
+    
+  </target>
+  
+  <target name="stage.to.ear" depends="init">
+    
+    <property name="prefix" value=""/>
+     
+    <antcallex target="archive" inheritUserProps="false" inheritAll="false" inheritRefs="false">
+      <param name="workshop.home" value="${workshop.home}"/>
+      <param name="workshop.lib.dir" value="${workshop.lib.dir}"/>
+      <param name="wl.home" value="${wl.home}"/>
+      <param name="patch.home" value="${patch.home}"/>
+      <param name="workspace" value="${workspace}"/>
+      <param name="echo.metadata" value="${echo.metadata}"/>
+      <param name="init.typedefs.executed" value="true"/>
+      <param name="archive.dir" value="${ear.staging.dir}${prefix}"/>
+      <param name="ear.staging.dir" value="${ear.staging.dir}"/>
+      <param name="compile.jsp" value="${compile.jsp}" />
+      <param name="appc.library" value="${appc.library}" />
+      <propertyset>
+        <propertyref regex="${path.vars.regex}"/>
+      </propertyset>
+    </antcallex>
+    
+  </target>
+  
+</project>
