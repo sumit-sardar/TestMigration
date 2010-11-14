@@ -101,7 +101,7 @@
 </c:if> 
 <c:if test="${isABECustomer}">   
 <p>
-    <ctb:showHideSection sectionId="moduleStudentContact" sectionTitle="Contact Information" sectionVisible="actionForm.byStudentAccommodationVisible">
+    <ctb:showHideSection sectionId="moduleStudentContact" sectionTitle="Contact Information" sectionVisible="actionForm.byStudentContactVisible">
         <jsp:include page="/manageStudent/add_edit_student_by_contact.jsp" />
     </ctb:showHideSection>
 </p>
@@ -117,28 +117,12 @@
 </p>
 </c:if>
 
-<c:if test="${isABECustomer}"> 
-<a name="moduleStudentSupplementData"><!-- moduleStudentContact --></a>    
-<p>
-    <ctb:showHideSection sectionId="moduleStudentSupplementData" sectionTitle="Supplemental Data for Workforce Student" sectionVisible="actionForm.byStudentAccommodationVisible">
-        <jsp:include page="/manageStudent/add_edit_student_supplement_data_workforce.jsp" />
-    </ctb:showHideSection>
-</p>
-</c:if> 
 
-<c:if test="${isABECustomer}">       
-<a name="moduleStudentEduInstruction"><!-- moduleStudentEduInstruction --></a>    
-<p>
-    <ctb:showHideSection sectionId="moduleStudentEduInstruction" sectionTitle="Education  And Instruction" sectionVisible="actionForm.byStudentAccommodationVisible">
-        <jsp:include page="/manageStudent/add_edit_student_edu_instruction.jsp" />
-    </ctb:showHideSection>
-</p>
-</c:if>
 
 <c:if test="${isABECustomer}">     
 <a name="moduleStudentProgramsGoal"><!-- moduleStudentProgramsGoal --></a>    
 <p>
-    <ctb:showHideSection sectionId="moduleStudentProgramsGoal" sectionTitle="Program And Goals" sectionVisible="actionForm.byStudentAccommodationVisible">
+    <ctb:showHideSection sectionId="moduleStudentProgramsGoal" sectionTitle="Program And Goals" sectionVisible="actionForm.byStudentProgramGoalVisible">
         <jsp:include page="/manageStudent/add_edit_student_by_programs_goal.jsp" />
     </ctb:showHideSection>
 </p>

@@ -13,6 +13,8 @@
    
 	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); //Change For CR - GA2011CR001
 	Boolean isABECustomer = (Boolean)request.getAttribute("isABECustomer");
+	
+	
 %>
 
 
@@ -63,11 +65,11 @@
 <table class="transparent">
 <tr class="transparent">
         <td class="transparent" width="270"><netui:content value="Instructor First Name:"/></td>
-        <td class="transparent"><netui:label value="${studentProfileData.firstName}"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.instructorFirstName}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="270"><netui:content value="Instructor Last Name:"/></td>
-        <td class="transparent"><netui:label value="${studentProfileData.middleName}"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.instructorLastName}"/></td>
     </tr>
  
     <tr class="transparent">
@@ -97,7 +99,7 @@
     </tr>
      <tr class="transparent">
         <td class="transparent" width="270"><netui:content value="Make student visible across organizations:"/></td>
-        <td class="transparent">Yes</td>
+        <td class="transparent"><netui:label value="${studentProfileData.visibleAcrossOrganization}"/></td>
     </tr>
     
 </table>

@@ -1,4 +1,4 @@
-<%@ page import="java.io.*, java.util.*"%>
+<%@ page import="java.io.*,java.util.*"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ page import="dto.PathNode"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
@@ -41,114 +41,120 @@
 <td class="simple" width="450">
 
 
-<table class="transparent">
-    <tr class="transparent">
-        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="First Name:"/></td>
-        <td class="transparent">
-        <c:if test="${ profileEditable }">     
-         <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->       
-            <netui:textBox tagId="firstName"  dataSource="actionForm.studentProfile.firstName" maxlength="32" style="width:180px" tabindex="0"/>
-        </c:if>            
-        <c:if test="${ !profileEditable }">            
-            <netui:textBox tagId="firstName" dataSource="actionForm.studentProfile.firstName" maxlength="32" style="width:180px" disabled="true"/>
-        </c:if>            
-        </td>
-    </tr>
-    <tr class="transparent">
-        <td class="transparent alignRight" width="250"><netui:content value="Middle Name:"/></td>
-        <td class="transparent">
-        <c:if test="${ profileEditable }">            
-            <netui:textBox dataSource="actionForm.studentProfile.middleName" maxlength="32" style="width:180px"/>
-        </c:if>            
-        <c:if test="${ !profileEditable }">            
-            <netui:textBox dataSource="actionForm.studentProfile.middleName" maxlength="32" style="width:180px" disabled="true"/>
-        </c:if>            
-        </td>
-    </tr>
-    <tr class="transparent">
-        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Last Name:"/></td>
-        <td class="transparent">
-        <c:if test="${ profileEditable }">   
-         <!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->             
-            <netui:textBox  tagId="lastName" dataSource="actionForm.studentProfile.lastName" maxlength="32" style="width:180px"/>
-        </c:if>            
-        <c:if test="${ !profileEditable }">            
-            <netui:textBox  tagId="lastName"  dataSource="actionForm.studentProfile.lastName" maxlength="32" style="width:180px" disabled="true"/>
-        </c:if>            
-        </td>
-    </tr>
-    <tr class="transparent">
-        <td class="transparent alignRight" width="250">
-        <c:if test="${!isMandatoryBirthDate }">   
-        	<span class="asterisk">*</span>&nbsp;
-        </c:if>
-        <netui:content value="Date of Birth:"/>
-        </td>
-        <td class="transparent" nowrap>    
-        <c:if test="${ profileEditable }">            
-            <netui:select optionsDataSource="${pageFlow.monthOptions}" dataSource="actionForm.studentProfile.month" size="1" style="width:60px"/>
-            <netui:select optionsDataSource="${pageFlow.dayOptions}" dataSource="actionForm.studentProfile.day" size="1" style="width:45px"/>
-            <netui:select optionsDataSource="${pageFlow.yearOptions}" dataSource="actionForm.studentProfile.year" size="1" style="width:68px"/>
-        </c:if>            
-        <c:if test="${ !profileEditable }">            
-            <netui:select optionsDataSource="${pageFlow.monthOptions}" dataSource="actionForm.studentProfile.month" size="1" style="width:60px" disabled="true"/>
-            <netui:select optionsDataSource="${pageFlow.dayOptions}" dataSource="actionForm.studentProfile.day" size="1" style="width:45px" disabled="true"/>
-            <netui:select optionsDataSource="${pageFlow.yearOptions}" dataSource="actionForm.studentProfile.year" size="1" style="width:68px" disabled="true"/>
-        </c:if>            
-        </td>                    
-    </tr>
-    <tr class="transparent" >
-        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Grade:"/></td>
-        <td class="transparent">
-        <c:if test="${ profileEditable }">            
-            <netui:select optionsDataSource="${pageFlow.gradeOptions}" dataSource="actionForm.studentProfile.grade" size="1" style="width:180px"/>
-        </c:if>            
-        <c:if test="${ !profileEditable }">            
-            <netui:select optionsDataSource="${pageFlow.gradeOptions}" dataSource="actionForm.studentProfile.grade" size="1" style="width:180px" disabled="true"/>
-        </c:if>            
-        </td>                                
-    </tr>
-    <tr class="transparent">
-        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Gender:"/></td>
-        <td class="transparent">
-        <c:if test="${ profileEditable }">            
-            <netui:select optionsDataSource="${pageFlow.genderOptions}" dataSource="actionForm.studentProfile.gender" size="1" style="width:180px"/>
-        </c:if>            
-        <c:if test="${ !profileEditable }">            
-            <netui:select optionsDataSource="${pageFlow.genderOptions}" dataSource="actionForm.studentProfile.gender" size="1" style="width:180px" disabled="true"/>
-        </c:if>            
-        </td>                                
-    </tr>
-     <tr class="transparent">
-        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor First Name:"/></td>
-        <td class="transparent"><input type="text" maxlength="32" style="width:180px"/></td>
-    </tr>
-       <tr class="transparent">
-        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Instructor Last Name:"/></td>
-        <td class="transparent"><input type="text" maxlength="32" style="width:180px"/></td>
-    </tr>
-     <tr class="transparent">
-        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Social Security Number/Student ID:"/></td>
-         <td class="transparent"><input type="text"  maxlength="32" style="width:180px"/></td>
-    </tr>
-     <tr class="transparent">
-        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Is the above id a Social Security Number:"/></td>
-        <td class="transparent" width="180">
-	        <input type="radio" value="Yes" />&nbsp;&nbsp;&nbsp;Yes
-	        <input type="radio" value="No" checked="true"/>&nbsp;&nbsp;&nbsp;No
-        </td>
-     </tr>
-     <tr class="transparent">
-        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Is PBA Consent form signed:"/></td>
-        <td class="transparent" width="180">
-	        <input type="radio" value="Yes" />&nbsp;&nbsp;&nbsp;Yes
-	        <input type="radio" value="No" checked="true"/>&nbsp;&nbsp;&nbsp;No
-        </td>
-    </tr>
-    
-   
-    
-    <tr class="transparent">
+		<table class="transparent">
+			<tr class="transparent">
+				<td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content
+					value="First Name:" /></td>
+				<td class="transparent"><c:if test="${ profileEditable }">
+					<!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->
+					<netui:textBox tagId="firstName" dataSource="actionForm.studentProfile.firstName" maxlength="32"
+						style="width:180px" tabindex="0" />
+				</c:if> <c:if test="${ !profileEditable }">
+					<netui:textBox tagId="firstName" dataSource="actionForm.studentProfile.firstName" maxlength="32"
+						style="width:180px" disabled="true" />
+				</c:if></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent alignRight" width="250"><netui:content value="Middle Name:" /></td>
+				<td class="transparent"><c:if test="${ profileEditable }">
+					<netui:textBox dataSource="actionForm.studentProfile.middleName" maxlength="32" style="width:180px" />
+				</c:if> <c:if test="${ !profileEditable }">
+					<netui:textBox dataSource="actionForm.studentProfile.middleName" maxlength="32" style="width:180px" disabled="true" />
+				</c:if></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content
+					value="Last Name:" /></td>
+				<td class="transparent"><c:if test="${ profileEditable }">
+					<!-- Added tagId to resolve javascript isssue occured in mozilla  for webLogic 10.3-->
+					<netui:textBox tagId="lastName" dataSource="actionForm.studentProfile.lastName" maxlength="32" style="width:180px" />
+				</c:if> <c:if test="${ !profileEditable }">
+					<netui:textBox tagId="lastName" dataSource="actionForm.studentProfile.lastName" maxlength="32" style="width:180px"
+						disabled="true" />
+				</c:if></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent alignRight" width="250"><c:if test="${!isMandatoryBirthDate }">
+					<span class="asterisk">*</span>&nbsp;
+        </c:if> <netui:content value="Date of Birth:" /></td>
+				<td class="transparent" nowrap><c:if test="${ profileEditable }">
+					<netui:select optionsDataSource="${pageFlow.monthOptions}" dataSource="actionForm.studentProfile.month" size="1"
+						style="width:60px" />
+					<netui:select optionsDataSource="${pageFlow.dayOptions}" dataSource="actionForm.studentProfile.day" size="1"
+						style="width:45px" />
+					<netui:select optionsDataSource="${pageFlow.yearOptions}" dataSource="actionForm.studentProfile.year" size="1"
+						style="width:68px" />
+				</c:if> <c:if test="${ !profileEditable }">
+					<netui:select optionsDataSource="${pageFlow.monthOptions}" dataSource="actionForm.studentProfile.month" size="1"
+						style="width:60px" disabled="true" />
+					<netui:select optionsDataSource="${pageFlow.dayOptions}" dataSource="actionForm.studentProfile.day" size="1"
+						style="width:45px" disabled="true" />
+					<netui:select optionsDataSource="${pageFlow.yearOptions}" dataSource="actionForm.studentProfile.year" size="1"
+						style="width:68px" disabled="true" />
+				</c:if></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content
+					value="Grade:" /></td>
+				<td class="transparent"><c:if test="${ profileEditable }">
+					<netui:select optionsDataSource="${pageFlow.gradeOptions}" dataSource="actionForm.studentProfile.grade" size="1"
+						style="width:180px" />
+				</c:if> <c:if test="${ !profileEditable }">
+					<netui:select optionsDataSource="${pageFlow.gradeOptions}" dataSource="actionForm.studentProfile.grade" size="1"
+						style="width:180px" disabled="true" />
+				</c:if></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content
+					value="Gender:" /></td>
+				<td class="transparent"><c:if test="${ profileEditable }">
+					<netui:select optionsDataSource="${pageFlow.genderOptions}" dataSource="actionForm.studentProfile.gender" size="1"
+						style="width:180px" />
+				</c:if> <c:if test="${ !profileEditable }">
+					<netui:select optionsDataSource="${pageFlow.genderOptions}" dataSource="actionForm.studentProfile.gender" size="1"
+						style="width:180px" disabled="true" />
+				</c:if></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content
+					value="Instructor First Name:" /></td>
+				<td class="transparent"><netui:textBox tagId="instructorFirstName"
+					dataSource="actionForm.studentProfile.instructorFirstName" maxlength="32" style="width:180px" /></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content
+					value="Instructor Last Name:" /></td>
+				<td class="transparent"><netui:textBox tagId="instructorLastName"
+					dataSource="actionForm.studentProfile.instructorLastName" maxlength="32" style="width:180px" /></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content
+					value="Social Security Number/Student ID:" /></td>
+				<td class="transparent"><netui:textBox dataSource="actionForm.studentProfile.studentNumber" maxlength="32"
+					style="width:180px" /></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content
+					value="Is the above id a Social Security Number:" /></td>
+				<td class="transparent" width="180"><netui:radioButtonGroup dataSource="actionForm.studentProfile.isSSN">
+					<netui:radioButtonOption value="Yes">Yes</netui:radioButtonOption>
+					<netui:radioButtonOption value="No">No</netui:radioButtonOption>
+				</netui:radioButtonGroup></td>
+			</tr>
+			<tr class="transparent">
+				<td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content
+					value="Is PBA Consent form signed:" /></td>
+					<td class="transparent" width="180"><netui:radioButtonGroup dataSource="actionForm.studentProfile.isPBAFormSigned">
+					<netui:radioButtonOption value="Yes">Yes</netui:radioButtonOption>
+					
+					<netui:radioButtonOption value="No">No</netui:radioButtonOption>
+				
+				</netui:radioButtonGroup></td>
+			</tr>
+
+
+
+			<tr class="transparent">
         <td class="transparent-top alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Organization:"/></td>
         <td class="transparent-top">
             <table id="orgTable" class="transparent">
@@ -206,17 +212,18 @@
             
         </td>
     </tr>
-        
-       <tr class="transparent">
-        <td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content value="Make student visible across organizations:"/></td>
-        <td class="transparent-small" width="180">
-	        <input type="radio" value="Yes" />&nbsp;&nbsp;&nbsp;Yes
-	        <input type="radio" value="No" checked="true"/>&nbsp;&nbsp;&nbsp;No
-        </td>
-    </tr>
-    
-</table>
-</td>
+
+			<tr class="transparent">
+				<td class="transparent alignRight" width="250"><span class="asterisk">*</span>&nbsp;<netui:content
+					value="Make student visible across organizations:" /></td>
+				<td class="transparent" width="180"><netui:radioButtonGroup dataSource="actionForm.studentProfile.visibleAcrossOrganization" defaultValue="No">
+					<netui:radioButtonOption value="Yes">Yes</netui:radioButtonOption>
+					<netui:radioButtonOption value="No">No</netui:radioButtonOption>
+					
+				</netui:radioButtonGroup></td>
+
+		</table>
+		</td>
 
 
     

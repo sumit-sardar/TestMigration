@@ -45,6 +45,14 @@ public class Student extends CTBBean
     private String udf;
     private String udf1;
     private String udf2;
+    //Added for California_ABE
+    //START
+     private String instructorFirstName;
+     private String instructorLastName;
+     private String visibleAcrossOrganization;
+     private String isSSN;
+     private String isPBAFormSigned;
+     //END
     
     public boolean equals(Object other) {
         if(this.extElmId != null) {
@@ -458,4 +466,47 @@ public class Student extends CTBBean
 	public void setUdf2(String udf2) {
 		this.udf2 = udf2;
 	}
+
+	 //Added for California_ABE
+	//Start
+	public String getInstructorFirstName() {
+		return instructorFirstName;
+	}
+
+	public void setInstructorFirstName(String instructorFirstName) {
+		this.instructorFirstName = instructorFirstName;
+	}
+
+	public String getInstructorLastName() {
+		return instructorLastName;
+	}
+
+	public void setInstructorLastName(String instructorLastName) {
+		this.instructorLastName = instructorLastName;
+	}
+
+	public String getVisibleAcrossOrganization() {
+		return visibleAcrossOrganization;
+	}
+
+	public void setVisibleAcrossOrganization(String visibleAcrossOrganization) {
+		this.visibleAcrossOrganization = visibleAcrossOrganization;
+	}
+
+	public String getIsSSN() {
+		return isSSN;
+	}
+
+	public void setIsSSN(String isSSN) {
+		this.isSSN = isSSN;
+	}
+
+	public String getIsPBAFormSigned() {
+		return isPBAFormSigned;
+	}
+
+	public void setIsPBAFormSigned(String isPBAFormSigned) {
+		this.isPBAFormSigned = isPBAFormSigned;
+	}
+	//END
 } 

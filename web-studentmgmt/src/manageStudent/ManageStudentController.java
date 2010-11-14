@@ -39,6 +39,8 @@ import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
+import com.ctb.bean.studentManagement.StudentProgramGoal;
+import com.ctb.bean.studentManagement.StudentProgramGoalValue;
 //import com.ctb.bean.studentManagement.StudentABEDetail;
 //import com.ctb.bean.studentManagement.StudentABEDetailValue;
 import com.ctb.bean.testAdmin.Customer;
@@ -57,6 +59,7 @@ import dto.Message;
 import dto.PathNode;
 import dto.StudentAccommodationsDetail;
 import dto.StudentProfileInformation;
+import dto.StudentContactInformation;
 
 /**
  * @jpf:controller
@@ -186,13 +189,13 @@ public class ManageStudentController extends PageFlowController
 		Integer studentId = form.getSelectedStudentId();
 		String followupstatus = this.getRequest().getParameter("Follow Up Status");
 		StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
-		
+
 		if (studentProfile == null) {						//Changes for Defect 60478
 			form.setCurrentAction(ACTION_DEFAULT);
 			return new Forward("error", form);
 		}
 		if (studentId.intValue()== 1639200)
-			studentProfile.setStudentFollowUpStatus("Complete");
+			studentProfile.setStudentFollowUpStatus("Completed");
 		else 
 			studentProfile.setStudentFollowUpStatus("Incomplete");
 		form.setStudentProfile(studentProfile);
@@ -319,6 +322,7 @@ public class ManageStudentController extends PageFlowController
 
 		this.accommodations = null;
 		this.demographics = null;
+		this.programAndGoals = null;
 
 		this.studentName = null;
 		this.searchApplied = false;
@@ -379,6 +383,7 @@ public class ManageStudentController extends PageFlowController
 		// init demographics and accommodations
 		this.accommodations = null;
 		this.demographics = null;
+		this.programAndGoals = null;
 
 		this.gradeOptions = getGradeOptions();
 		//Changes for CA-ABE student intake
@@ -482,7 +487,9 @@ public class ManageStudentController extends PageFlowController
 
 		//addEditEduAndInstr(form);  //added for CA-ABE
 
-		//addEditProgAndGoals(form);  //added for CA-ABE
+		addEditProgAndGoals(form);  //added for CA-ABE
+		
+		
 
 		addEditAccommodations(form);    
 
@@ -530,6 +537,7 @@ public class ManageStudentController extends PageFlowController
 	{   
 		Boolean isTokenValid = isTokenValid();
 		Integer studentId = form.getSelectedStudentId();
+		
 
 		if ( studentId == null) {
 
@@ -561,14 +569,37 @@ public class ManageStudentController extends PageFlowController
 			//CR - GA2011CR001 - set value for FTE Mandatory Field
 			form.setMandatoryStudentId(isMandatoryStudentId);
 
-			boolean result = form.verifyStudentInformation(this.selectedOrgNodes);
+			
+			boolean result = false;
+			if (isABECustomer) {
+				
+				result = form.verifyABEStudentInformation(this.selectedOrgNodes);
+				if (result) {
+					getStudentDemographicsFromRequest(); 
+					result = form.vaildateABEStudentDemographicInfo(this.demographics);
+				}
+
+				if (result) {
+					System.out.println("1");
+					getStudentProgAndGoalsFromRequest(); 
+					result = form.vaildateABEStudentProgramGoalInfo(this.programAndGoals);
+
+				}
+
+
+			} else {
+				
+				result = form.verifyStudentInformation(this.selectedOrgNodes);
+				
+			}
+
 			if (! result)
 			{           
 				form.setActionElement(ACTION_DEFAULT);
 				form.setCurrentAction(ACTION_DEFAULT);                 
 				return new Forward("error", form);
 			}        
-			//START- Added for CR  ISTEP2011CR017
+			//START- Added for CR  ISTEP2011CR023
 			Boolean isMultiOrgAssociationValid = isMultiOrgAssociationValid();
 			if(result && !isMultiOrgAssociationValid){
 				if ( this.selectedOrgNodes.size() > 1 ) {
@@ -585,7 +616,8 @@ public class ManageStudentController extends PageFlowController
 			}	
 			//END- Added for CR  ISTEP2011CR017
 			studentId = saveStudentProfileInformation(isCreateNew, form, studentId, this.selectedOrgNodes);
-
+			
+	
 
 			String demographicVisible = this.user.getCustomer().getDemographicVisible();
 			if ((studentId != null) && demographicVisible.equalsIgnoreCase("T"))
@@ -600,9 +632,9 @@ public class ManageStudentController extends PageFlowController
 			//END- added for CA-ABE
 
 			//START- added for CA-ABE
-			if (studentId != null)
+			if (isABECustomer && studentId != null)
 			{
-				//result = saveStudentProgAndGoals(isCreateNew, form, studentId);
+				result = saveStudentProgAndGoals(isCreateNew, form, studentId);
 			}
 			//END- added for CA-ABE
 
@@ -804,7 +836,43 @@ public class ManageStudentController extends PageFlowController
 
 		return studentId;
 	}
+	
+	/**
+	 * Change for California-ABE
+	 *saveStudentContactInformation 
+	 * 
+	 */
+	
+	private boolean saveStudentContactInformation(boolean isCreateNew,ManageStudentForm form, Integer studentId){
+		
+		StudentProfileInformation studentProfile = form.getStudentProfile();
+		ManageStudent student = studentProfile.makeCopy(studentId, selectedOrgNodes);
 
+		try
+		{                    
+			if (isCreateNew)
+			{
+				this.studentManagement.createNewStudent(this.userName, student);
+			}
+			else
+			{
+				this.studentManagement.updateStudent(this.userName, student);
+			}
+		}
+		catch (StudentDataCreationException sde)
+		{
+			sde.printStackTrace();
+			studentId = null;
+		}        
+		catch (CTBBusinessException be)
+		{
+			be.printStackTrace();
+			studentId = null;
+		}  
+		
+		
+		return true;
+	}
 
 
 	/**
@@ -960,10 +1028,10 @@ public class ManageStudentController extends PageFlowController
 			}
 			getStudentDemographicsFromRequest();
 		}
-
 		this.getRequest().setAttribute("demographics", this.demographics);       
 		this.getRequest().setAttribute("studentImported", new Boolean(studentImported));
 		this.getRequest().setAttribute("mandatoryField",new Boolean(isABECustomer));
+		
 	}
 
 
@@ -1401,16 +1469,17 @@ public class ManageStudentController extends PageFlowController
 
 		if ((this.programAndGoals == null) && (studentId != null))
 		{
-			//this.programAndGoals = getStudentProgAndGoals(studentId);
-			//prepareOnNullRule();            
+			this.programAndGoals = getStudentProgAndGoals(studentId);
+    
 		}
 		else
 		{
 
-			getStudentDemographicsFromRequest();
+			getStudentProgAndGoalsFromRequest();
 		}
 
-		this.getRequest().setAttribute("programAndGoals", this.programAndGoals);         
+		this.getRequest().setAttribute("programAndGoals", this.programAndGoals);
+		this.getRequest().setAttribute("mandatoryField",new Boolean(isABECustomer));
 	}
 
 
@@ -1419,11 +1488,11 @@ public class ManageStudentController extends PageFlowController
 	 */
 	private boolean saveStudentProgAndGoals(boolean isCreateNew, ManageStudentForm form, Integer studentId)
 	{
-		//getStudentProgAndGoalsFromRequest();        
+		getStudentProgAndGoalsFromRequest();        
 
 		if (isCreateNew)
 		{
-			//createStudentProgAndGoals(studentId);
+			createStudentProgAndGoals(studentId);
 		}
 		else
 		{
@@ -1437,21 +1506,21 @@ public class ManageStudentController extends PageFlowController
 	/**
 	 * createStudentProgAndGoals
 	 */
-	/*private void createStudentProgAndGoals(Integer studentId)
+	private void createStudentProgAndGoals(Integer studentId)
 	{
 		if ((studentId != null) && (studentId.intValue() > 0) && (this.programAndGoals != null))
 		{
 			try
 			{    
-				StudentABEDetail[] studentABEDetailList = (StudentABEDetail[])this.programAndGoals.toArray( new StudentABEDetail[0] );
-				this.studentManagement.createStudentProgAndGoals(this.userName, studentId, studentABEDetailList);
+				StudentProgramGoal[] studentPrgGoalDetailList = (StudentProgramGoal[])this.programAndGoals.toArray( new StudentProgramGoal[0] );
+				this.studentManagement.createStudentProgAndGoals(this.userName, studentId, studentPrgGoalDetailList);
 			}
 			catch (CTBBusinessException be)
 			{
 				be.printStackTrace();
 			} 
 		}
-	}*/
+	}
 
 	/**
 	 * updateStudentProgAndGoals
@@ -1476,22 +1545,22 @@ public class ManageStudentController extends PageFlowController
 	/**
 	 * getStudentProgAndGoals
 	 */
-	/*private List getStudentProgAndGoals(Integer studentId)
-	{
+	private List getStudentProgAndGoals(Integer studentId) {
+
 		this.programAndGoals = new ArrayList();
 		try
 		{
 			if ((studentId != null) && (studentId.intValue() == 0))
 				studentId = null;
 
-			StudentABEDetail[] studentABEDetailList = this.studentManagement.getStudentProgramGoalData(this.userName, this.customerId, studentId, false);
+			StudentProgramGoal[] studentProgramGoalList = this.studentManagement.getStudentProgramGoals(this.userName, this.customerId, studentId, false);
 
-			if (studentABEDetailList != null)
+			if (studentProgramGoalList != null)
 			{
-				for (int i=0; i < studentABEDetailList.length; i++)
+				for (int i=0; i < studentProgramGoalList.length; i++)
 				{
-					StudentABEDetail sei = studentABEDetailList[i];
-					this.programAndGoals.add(sei);                
+					StudentProgramGoal spg = studentProgramGoalList[i];
+					this.programAndGoals.add(spg);                
 				}                        
 			}
 		}
@@ -1501,41 +1570,29 @@ public class ManageStudentController extends PageFlowController
 		}
 
 		return this.programAndGoals;
-	}*/
+	}
 
 
 
 	/**
 	 * getStudentProgAndGoalsFromRequest
 	 */
-	/*private void getStudentProgAndGoalsFromRequest() 
+	private void getStudentProgAndGoalsFromRequest() 
 	{
 		String param = null, paramValue = null;
 
 		for (int i=0; i < this.programAndGoals.size(); i++)
 		{
-			StudentABEDetail sei = (StudentABEDetail)this.programAndGoals.get(i);
-			StudentABEDetailValue[] values = sei.getStudentABEPrgGoalValues();
-
+			StudentProgramGoal sei = (StudentProgramGoal)this.programAndGoals.get(i);
+			StudentProgramGoalValue[] values = sei.getStudentProgramGoalValues();
+			if(!sei.getLabelName().equals("Provider Use")) {
 			for (int j=0; j < values.length; j++)
 			{
-				StudentABEDetailValue seiv = (StudentABEDetailValue)values[j];
+				StudentProgramGoalValue seiv = (StudentProgramGoalValue)values[j];
 
-				// Look up the parameter based on checkbox vs radio/select
-				if (sei.getMultipleAllowedFlag().equals("true"))
-				{
-					if (! seiv.getVisible().equals("false"))
-						seiv.setSelectedFlag("false");
-					param = sei.getLabelName() + "_" + seiv.getValueName();
-					if (getRequest().getParameter(param) != null)
-					{
-						paramValue = getRequest().getParameter(param);
-						seiv.setSelectedFlag("true");
-					}
-				} 
-				else
-				{
-					if (values.length == 1)
+				
+					// Look up the parameter based on checkbox vs radio/select
+					if (sei.getMultipleAllowedFlag().equals("true"))
 					{
 						if (! seiv.getVisible().equals("false"))
 							seiv.setSelectedFlag("false");
@@ -1545,36 +1602,74 @@ public class ManageStudentController extends PageFlowController
 							paramValue = getRequest().getParameter(param);
 							seiv.setSelectedFlag("true");
 						}
-					}
+					} 
 					else
 					{
-						param = sei.getLabelName();
-						if (getRequest().getParameter(param) != null)
+						if (values.length == 1)
 						{
-							paramValue = getRequest().getParameter(param);
-
-							for (int k=0; k < values.length; k++)
+							if (! seiv.getVisible().equals("false"))
+								seiv.setSelectedFlag("false");
+							param = sei.getLabelName() + "_" + seiv.getValueName();
+							if (getRequest().getParameter(param) != null)
 							{
-								StudentABEDetailValue seiv1 = (StudentABEDetailValue)values[k];
-								if (! seiv1.getVisible().equals("false"))
-									seiv1.setSelectedFlag("false");
-								if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
+								paramValue = getRequest().getParameter(param);
+								seiv.setSelectedFlag("true");
+							}
+						}
+						else
+						{
+							param = sei.getLabelName();
+							if (getRequest().getParameter(param) != null)
+							{
+								paramValue = getRequest().getParameter(param);
+
+								for (int k=0; k < values.length; k++)
 								{
-									if (paramValue.equals(seiv1.getValueName()))
+									StudentProgramGoalValue seiv1 = (StudentProgramGoalValue)values[k];
+									if (! seiv1.getVisible().equals("false"))
+										seiv1.setSelectedFlag("false");
+									if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
 									{
-										seiv1.setSelectedFlag("true");
+										if (paramValue.equals(seiv1.getValueName()))
+										{
+											seiv1.setSelectedFlag("true");
+										}
 									}
 								}
+
+								break;
 							}
 
-							break;
+							
 						}
 					}
+					seiv.setVisible("T");
 				}
-				seiv.setVisible("T");
+			} else {
+				
+
+					param = sei.getLabelName() ;
+					System.out.println(param);
+					if (getRequest().getParameter(param) != null)
+					{
+						paramValue = getRequest().getParameter(param);
+						StudentProgramGoalValue[] prgGoalvalues = new StudentProgramGoalValue[1];
+						StudentProgramGoalValue prgGoalvalue = new StudentProgramGoalValue();
+						if(paramValue != null && !paramValue.equals("")) {
+
+							prgGoalvalue.setValueName(paramValue);
+							prgGoalvalue.setVisible("true");
+							prgGoalvalue.setSelectedFlag("true");
+							prgGoalvalues[0]= prgGoalvalue;
+							sei.setStudentProgramGoalValues(prgGoalvalues);
+
+						} 
+					}
+				
 			}
+
 		}
-	}*/
+	}
 //	END- added for CA-ABE
 
 
@@ -2338,6 +2433,8 @@ public class ManageStudentController extends PageFlowController
 		this.getRequest().setAttribute("organizationNodes", studentProfile.getOrganizationNodes());       
 
 		this.demographics = getStudentDemographics(studentId);
+		this.programAndGoals = getStudentProgAndGoals(studentId);
+		this.getRequest().setAttribute("programAndGoals", this.programAndGoals);      
 		this.getRequest().setAttribute("demographics", this.demographics);       
 		this.getRequest().setAttribute("studentImported", new Boolean(studentImported)); 
 		this.getRequest().setAttribute("mandatoryField",new Boolean(isABECustomer));
@@ -2359,6 +2456,9 @@ public class ManageStudentController extends PageFlowController
 
 		if (this.demographics.size() == 0) {
 			this.getRequest().setAttribute("demographicVisible", "F");       
+		}
+		if (this.programAndGoals.size() == 0) {
+			this.getRequest().setAttribute("programGoalVisible", "F");       
 		}
 		isGeorgiaCustomer(form); //Change For CR - GA2011CR001
 		setFormInfoOnRequest(form);
@@ -2789,8 +2889,13 @@ public class ManageStudentController extends PageFlowController
 		private String selectedTab;
 
 		private Boolean byStudentProfileVisible;
+
 		private Boolean byStudentDemographicVisible;
 		private Boolean byStudentAccommodationVisible;
+
+		// Changes for CA-ABE
+		private Boolean byStudentContactVisible;
+		private Boolean byStudentProgramGoalVisible;
 
 		private String selectedOrgLevel;
 
@@ -2982,6 +3087,9 @@ public class ManageStudentController extends PageFlowController
 			copied.setByStudentProfileVisible(this.byStudentProfileVisible);
 			copied.setByStudentDemographicVisible(this.byStudentDemographicVisible);
 			copied.setByStudentAccommodationVisible(this.byStudentAccommodationVisible);
+			copied.setByStudentContactVisible(this.byStudentContactVisible);
+			copied.setByStudentProgramGoalVisible(this.byStudentProgramGoalVisible);
+
 
 			copied.setSelectedOrgLevel(this.selectedOrgLevel);            
 			copied.setSelectedStudentId(this.selectedStudentId);
@@ -3218,6 +3326,9 @@ public class ManageStudentController extends PageFlowController
 			this.byStudentProfileVisible = Boolean.FALSE;
 			this.byStudentDemographicVisible = Boolean.FALSE;
 			this.byStudentAccommodationVisible = Boolean.FALSE;
+			this.byStudentContactVisible = Boolean.FALSE;
+			this.byStudentProgramGoalVisible=Boolean.FALSE;
+		
 		}
 
 		/**
@@ -3283,20 +3394,12 @@ public class ManageStudentController extends PageFlowController
 				}
 			}
 
-			//change for CA-ABE student intake UI
-
-			if(isABECustomer) {
-				String externalStudentNumber = this.studentProfile.getStudentNumber().trim();
-				if ( externalStudentNumber.length()==0) {
-					requiredFieldCount += 1;     
-					requiredFields = Message.buildErrorString(this.studentIdLabelName, requiredFieldCount, requiredFields);   
-				}
-			}
 
 			if ( selectedOrgNodes.size() == 0 ) {
 				requiredFieldCount += 1;      
 				requiredFields = Message.buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
 			}        
+
 
 
 			if (requiredFieldCount > 0) {
@@ -3350,6 +3453,359 @@ public class ManageStudentController extends PageFlowController
 			return true;
 		}
 
+		private boolean requiredFieldValidation(List selectedOrgNodes,String sectionName) {
+
+			String requiredFields = "";
+			int requiredFieldCount = 0;
+
+			String firstName = this.studentProfile.getFirstName().trim();
+
+			if (sectionName.equals("Student Information")) {
+
+
+				if ( firstName.length() == 0 ) {
+					requiredFieldCount += 1;            
+					requiredFields = Message.buildErrorString("First Name", requiredFieldCount, requiredFields);       
+				}
+
+				String lastName = this.studentProfile.getLastName().trim();
+				if ( lastName.length() == 0 ) {
+					requiredFieldCount += 1;            
+					requiredFields = Message.buildErrorString("Last Name", requiredFieldCount, requiredFields);       
+				}
+
+				String month = this.studentProfile.getMonth();
+				String day = this.studentProfile.getDay();
+				String year = this.studentProfile.getYear();
+				//GACRCT2010CR007 - validate required date of birth  according to customer configuartion 
+				if(!isDisableMandatoryBirthdate()) {
+					if (! DateUtils.allSelected(month, day, year)) {
+						requiredFieldCount += 1;            
+						requiredFields = Message.buildErrorString("Date of Birth", requiredFieldCount, requiredFields);       
+					}
+				}
+				String studentGrade = this.studentProfile.getGrade();
+				if ( studentGrade.equals(FilterSortPageUtils.FILTERTYPE_SELECT_A_GRADE)) {
+					requiredFieldCount += 1;            
+					requiredFields = Message.buildErrorString("Grade", requiredFieldCount, requiredFields);       
+				}
+
+				String studentGender = this.studentProfile.getGender();
+				if ( studentGender.equals(FilterSortPageUtils.FILTERTYPE_SELECT_A_GENDER) ) {
+					requiredFieldCount += 1;            
+					requiredFields = Message.buildErrorString("Gender", requiredFieldCount, requiredFields);       
+				}
+
+				//CR - GA2011CR001 - validation For GTID
+				if(isMandatoryStudentId){
+					String externalStudentNumber = this.studentProfile.getStudentNumber().trim();
+					if ( externalStudentNumber.length()==0) {
+						requiredFieldCount += 1;     
+						requiredFields = Message.buildErrorString(this.studentIdLabelName, requiredFieldCount, requiredFields);   
+					}
+				}
+
+
+				if ( selectedOrgNodes.size() == 0 ) {
+					requiredFieldCount += 1;      
+					requiredFields = Message.buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
+				}        
+
+
+
+
+				String externalStudentNumber = this.studentProfile.getStudentNumber().trim();
+				if ( externalStudentNumber.length()==0) {
+					requiredFieldCount += 1;     
+					requiredFields = Message.buildErrorString("Social Security Number/Student ID", requiredFieldCount, requiredFields);   
+				}
+
+				String instructorFirstName = this.studentProfile.getInstructorFirstName().trim();
+				if( instructorFirstName.length()== 0){
+					requiredFieldCount += 1;
+					requiredFields = Message.buildErrorString("Instructor First Name", requiredFieldCount, requiredFields);
+				}
+
+				String instructorLastName = this.studentProfile.getInstructorLastName().trim();
+				if( instructorLastName.length()== 0){
+					requiredFieldCount += 1;
+					requiredFields = Message.buildErrorString("Instructor Last Name", requiredFieldCount, requiredFields);
+				}
+			}
+			// required field contact check
+			if (sectionName.equals("Contact Information")) {
+
+				String addressLine1 = this.studentProfile.getStudentContact().getAddressLine1().trim();
+				if( addressLine1.length()== 0){
+					requiredFieldCount += 1;
+					requiredFields = Message.buildErrorString("Address Line 1", requiredFieldCount, requiredFields);
+				}
+				String state = this.studentProfile.getStudentContact().getState().trim();
+				if( state.length()== 0){
+					requiredFieldCount += 1;
+					requiredFields = Message.buildErrorString("State", requiredFieldCount, requiredFields);
+				}
+
+				String zipCode1 = this.studentProfile.getStudentContact().getZipCode1().trim();
+				if( zipCode1.length()== 0){
+					requiredFieldCount += 1;
+					requiredFields = Message.buildErrorString("Zip Code", requiredFieldCount, requiredFields);
+				}
+
+				String phoneNumber1 = this.studentProfile.getStudentContact().getPrimaryPhone1().trim();
+				String phoneNumber2 = this.studentProfile.getStudentContact().getPrimaryPhone2().trim();
+				String phoneNumber3 = this.studentProfile.getStudentContact().getPrimaryPhone3().trim();
+				if(phoneNumber1.length() == 0 || phoneNumber2.length() == 0 || phoneNumber3.length() == 0){
+					requiredFieldCount += 1;
+					requiredFields = Message.buildErrorString("Primary Phone", requiredFieldCount, requiredFields);
+				}
+
+			}
+
+
+
+
+			if (requiredFieldCount > 0) {
+				requiredFields += " in " + sectionName;
+				if (requiredFieldCount == 1) {
+					requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
+					setMessage("Missing required field", requiredFields, Message.ERROR);
+
+				}
+				else {
+					requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
+					setMessage("Missing required fields", requiredFields, Message.ERROR);
+				}
+
+				if (sectionName.equals("Contact Information")) {
+					this.byStudentContactVisible = Boolean.TRUE;
+				}
+
+
+				return false;
+			}
+
+			return true;
+		}
+		private boolean verifyABEStudentInformation(List selectedOrgNodes){
+
+
+			boolean validationFlagStudentInfo = requiredFieldValidation(selectedOrgNodes,"Student Information");
+			
+			if (validationFlagStudentInfo)
+				
+				validationFlagStudentInfo = validateABEStudentInvalidChar(selectedOrgNodes,"Student Information");
+			
+			if (validationFlagStudentInfo) {
+				validationFlagStudentInfo = requiredFieldValidation(selectedOrgNodes,"Contact Information");
+			}
+			
+			if (validationFlagStudentInfo) {
+				validationFlagStudentInfo = validateABEStudentInvalidChar(selectedOrgNodes,"Contact Information");
+			}
+			
+			
+
+
+			return validationFlagStudentInfo;
+		}
+		
+		//CA-ABE Invalid Character check
+		
+		private boolean validateABEStudentInvalidChar(List selectedOrgNodes, String sectionName){
+			
+			String invalidCharFields = "";
+			
+			if(sectionName.equals("Student Information")){
+
+
+				String firstName = this.studentProfile.getFirstName().trim();
+				String lastName = this.studentProfile.getLastName().trim();
+				String middleName = this.studentProfile.getMiddleName().trim();
+				String instructorFirstName = this.studentProfile.getInstructorFirstName().trim();
+				String instructorLastName = this.studentProfile.getInstructorLastName().trim();
+				String studentNumber = this.studentProfile.getStudentNumber().trim();
+				String month = this.studentProfile.getMonth();
+				String day = this.studentProfile.getDay();
+				String year = this.studentProfile.getYear();
+
+				invalidCharFields = WebUtils.verifyABECreateStudentInstructorName(firstName, lastName, middleName, instructorFirstName, instructorLastName);                
+				if (invalidCharFields.length() > 0) {
+					invalidCharFields += ("<br/>" + Message.INVALID_NAME_CHARS);
+					setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
+					return false;
+				}
+
+				invalidCharFields = WebUtils.verifyCreateStudentNumber(studentNumber, null, "Social Security Number/Student ID", null );                
+				if (invalidCharFields.length() > 0) {
+					invalidCharFields += ("<br/>" + Message.INVALID_NUMBER_CHARS);
+					setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
+					return false;
+				}
+				//GACRCT2010CR007 - validate  date of birth  when date value is provided.
+
+				if(isDisableMandatoryBirthdate() && !DateUtils.allSelected(month, day, year)) {
+					if (!DateUtils.noneSelected(month, day, year)) {
+						invalidCharFields += Message.INVALID_DATE;
+						setMessage(MessageResourceBundle.getMessage("invalid_birthdate"), invalidCharFields, Message.ERROR);
+						return false;
+
+					}
+				}
+
+				if (DateUtils.allSelected(month, day, year)) {
+					int isDateValid = DateUtils.validateDateValues(year, month, day);
+					if (isDateValid != DateUtils.DATE_VALID) {
+						invalidCharFields += Message.INVALID_DATE;
+						setMessage(MessageResourceBundle.getMessage("invalid_birthdate"), invalidCharFields, Message.ERROR);
+						return false;
+					}
+				}
+			}
+
+
+			if (sectionName.equals("Contact Information")) {
+							
+				invalidCharFields = WebUtils.verifyABEValidStudentContact(this.studentProfile.getStudentContact());                
+				if (invalidCharFields.length() > 0) {
+					invalidCharFields += ("<br/>" + Message.INVALID_NAME_CHARS);
+					setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
+					return false;
+				}
+
+
+			}
+
+
+
+
+			return true;
+
+		}
+
+		// CA-ABE demographic validation
+		private boolean vaildateABEStudentDemographicInfo(List selectedDemographicList) {
+
+			String sectionName = "Additional Student Information";
+			String requiredFields = "";
+			int requiredFieldCount = 0;
+			for (int i=0; i < selectedDemographicList.size(); i++)
+			{
+
+				StudentDemographic sdd = (StudentDemographic)selectedDemographicList.get(i);
+				StudentDemographicValue[] values = sdd.getStudentDemographicValues();
+				boolean result = false;
+
+				for (int k=0; k < values.length; k++) {
+
+					if (values[k].getSelectedFlag().equals("true")) {
+						result= true;
+					}
+				}
+
+				if (!result  ) {
+					requiredFieldCount += 1;
+					requiredFields = Message.buildErrorString(sdd.getLabelName(), requiredFieldCount, requiredFields);
+				}
+			}
+			if (requiredFieldCount > 0) {
+				requiredFields += " in " + sectionName;
+				if (requiredFieldCount == 1) {
+					requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
+					setMessage("Missing required field", requiredFields, Message.ERROR);
+
+				}
+				else {
+					requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
+					setMessage("Missing required fields", requiredFields, Message.ERROR);
+				}
+
+				if (sectionName.equals("Contact Information")) {
+					this.byStudentContactVisible = Boolean.TRUE;
+				}
+
+
+				return false;
+			}
+
+			return true;
+
+		}
+
+		// CA-ABE demographic validation
+		private boolean vaildateABEStudentProgramGoalInfo(List selectedPrgGoalList) {
+
+			String sectionName = "Program & Goals";
+			String requiredFields = "";
+			int requiredFieldCount = 0;
+			for (int i=0; i < selectedPrgGoalList.size(); i++)
+			{
+
+				StudentProgramGoal sdd = (StudentProgramGoal)selectedPrgGoalList.get(i);
+
+				if ( ! sdd.getLabelName().equals("Provider Use")) {
+					StudentProgramGoalValue[] values = sdd.getStudentProgramGoalValues();
+					boolean result = false;
+
+					for (int k=0; k < values.length; k++) {
+
+						if (values[k].getSelectedFlag().equals("true")) {
+							result= true;
+						}
+					}
+
+					if (!result  ) {
+						requiredFieldCount += 1;
+						requiredFields = Message.buildErrorString(sdd.getLabelName(), requiredFieldCount, requiredFields);
+					}
+				}
+				if (requiredFieldCount > 0) {
+					requiredFields += " in " + sectionName;
+					if (requiredFieldCount == 1) {
+						requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
+						setMessage("Missing required field", requiredFields, Message.ERROR);
+
+					}
+					else {
+						requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
+						setMessage("Missing required fields", requiredFields, Message.ERROR);
+					}
+
+					/*if (sectionName.equals("sectionName")) {
+						this.byStudent = Boolean.TRUE;
+					}*/
+
+
+					return false;
+				}
+			}
+
+			for (int i=0; i < selectedPrgGoalList.size(); i++)
+			{
+
+				StudentProgramGoal sdd = (StudentProgramGoal)selectedPrgGoalList.get(i);
+				StudentProgramGoalValue[] values = sdd.getStudentProgramGoalValues();
+
+				if(sdd.getLabelName().equals("Provider Use")) {
+
+					String invalidCharFields = WebUtils.validProviderUse(values[0].getValueName());                
+					if (invalidCharFields.length() > 0) {
+						invalidCharFields += " in " + "";
+						invalidCharFields += ("<br/>" + Message.INVALID_NUMBER_CHARS);
+						setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
+						return false;
+
+					}
+				}
+
+			}
+
+
+			return true;
+
+		}
+
+
 		// start Change For CR - GA2011CR001
 		/**
 		 * @return the isMandatoryStudentId
@@ -3394,6 +3850,34 @@ public class ManageStudentController extends PageFlowController
 			this.studentId2LabelName = studentId2LabelName;
 		}
 		// End  Change For CR - GA2011CR001
+
+		/**
+		 * @return the byStudentContactVisible
+		 */
+		public Boolean getByStudentContactVisible() {
+			return byStudentContactVisible;
+		}
+
+		/**
+		 * @param byStudentContactVisible the byStudentContactVisible to set
+		 */
+		public void setByStudentContactVisible(Boolean byStudentContactVisible) {
+			this.byStudentContactVisible = byStudentContactVisible;
+		}
+
+		/**
+		 * @return the byStudentProgramGoalVisible
+		 */
+		public Boolean getByStudentProgramGoalVisible() {
+			return byStudentProgramGoalVisible;
+		}
+
+		/**
+		 * @param byStudentProgramGoalVisible the byStudentProgramGoalVisible to set
+		 */
+		public void setByStudentProgramGoalVisible(Boolean byStudentProgramGoalVisible) {
+			this.byStudentProgramGoalVisible = byStudentProgramGoalVisible;
+		}
 
 	}
 

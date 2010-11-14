@@ -435,4 +435,46 @@ public interface StudentManagement
     com.ctb.bean.testAdmin.USState[] getStates() throws com.ctb.exception.CTBBusinessException;
 
     
+  /*  
+    *//**
+     * Get student Additional Data and student.
+     * @param userName - identifies the calling user
+     * @param customerId - identifies the customer whose information is desired
+     * @param studentId - identifies the student whose information is desired
+     * @param returnInvisible - indicates whether to return invisible data/values
+     * @return StudentABEDetail []
+     * @throws CTBBusinessException
+     *//*
+    
+    com.ctb.bean.studentManagement.StudentABEDetail[] getStudentAdditionalABEData(java.lang.String userName, java.lang.Integer customerId, java.lang.Integer studentId, boolean returnInvisible) throws com.ctb.exception.CTBBusinessException;
+*/
+    
+    /**
+     * Get student Program And Goals for the specified customer and student.
+     * @param userName - identifies the calling user
+     * @param customerId - identifies the customer whose information is desired
+     * @param studentId - identifies the student whose information is desired
+     * @param returnInvisible - indicates whether to return invisible data/values
+     * @return StudentABEDetail []
+     * @throws CTBBusinessException
+     */
+    
+    com.ctb.bean.studentManagement.StudentProgramGoal[] getStudentProgramGoals(java.lang.String userName, java.lang.Integer customerId, java.lang.Integer studentId, boolean returnInvisible) throws com.ctb.exception.CTBBusinessException;
+
+
+    /**
+     * create Student Contact Information
+     * 
+     * 
+     * 
+     * @param userName
+     * @param manageStudent
+     * @return
+     * @throws com.ctb.exception.CTBBusinessException
+     */
+
+
+  
+
+	 void createStudentProgAndGoals(java.lang.String userName, java.lang.Integer studentId, com.ctb.bean.studentManagement.StudentProgramGoal[] studentProgramGoals) throws com.ctb.exception.CTBBusinessException;
 } 

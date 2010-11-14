@@ -1,23 +1,26 @@
 package com.ctb.control.db; 
 
-import com.bea.control.*;
-import org.apache.beehive.controls.system.jdbc.JdbcControl; 
+import java.sql.SQLException;
+import java.util.Date;
+
+import org.apache.beehive.controls.api.bean.ControlExtension;
+import org.apache.beehive.controls.system.jdbc.JdbcControl;
+
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.CustomerDemographic;
 import com.ctb.bean.studentManagement.CustomerDemographicValue;
+import com.ctb.bean.studentManagement.CustomerProgramGoal;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.OrganizationNode;
-import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicData;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
+import com.ctb.bean.studentManagement.StudentProgramGoalData;
+import com.ctb.bean.studentManagement.StudentProgramGoalValue;
+import com.ctb.bean.studentManagement.Address;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentAccommodations;
-
-import java.sql.SQLException;
-import java.util.Date; 
-import org.apache.beehive.controls.api.bean.ControlExtension;
 
 /** 
  * Defines a new database control. 
@@ -110,8 +113,10 @@ public interface StudentManagement extends JdbcControl
      *      student stu
      * where
      * 	 stu.student_id = {studentId}::
+     * 
+     * Modified for CA_ABE
      */
-    @JdbcControl.SQL(statement = "select  stu.student_id as id,  stu.user_name as loginId,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName, \t  concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.gender as gender,  stu.birthdate as birthDate,  stu.grade as grade,  stu.ext_pin1 as studentIdNumber,  stu.ext_pin2 as studentIdNumber2,  stu.created_by as createdBy from  student stu where \t stu.student_id = {studentId}")
+    @JdbcControl.SQL(statement = "select  stu.student_id as id,  stu.user_name as loginId,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName, \t  concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.gender as gender,  stu.birthdate as birthDate,  stu.grade as grade,  stu.ext_pin1 as studentIdNumber,  stu.ext_pin2 as studentIdNumber2,stu.INSTRUCTOR_FIRST_NAME as instructorFirstName, stu.INSTRUCTOR_LAST_NAME as instructorLastName, stu.VISIBLE_ACROSS_ORGANIZATION as visibleAcrossOrganization, stu.IS_SSN as isSSN, stu.IS_PBA_FORM_SIGNED as isPBAFormSigned, stu.created_by as createdBy from  student stu where \t stu.student_id = {studentId}")
     ManageStudent getManageStudent(int studentId) throws SQLException;
     
 
@@ -1008,4 +1013,121 @@ public interface StudentManagement extends JdbcControl
      */
 	@JdbcControl.SQL(statement = "delete from student_tutorial_status where student_id = {studentId}")
     void deleteStudentTutorialStatus(Integer studentId);
+	
+	/**
+     * @jc:sql statement::
+     * select customer_demographic_id as id,
+     *   customer_id as customerId,
+     *   label_name as labelName,
+     *   label_code as labelCode,
+     *   value_cardinality as valueCardinality,
+     *   sort_order as sortOrder,
+     *   import_editable as importEditable,
+     *   visible as visible
+     * from customer_demographic
+     * where customer_id = {customerId}
+     * order by sort_order, label_name::
+     */
+    @JdbcControl.SQL(statement = "select CA_ABE_PRG_GOAL_ID as customerPrgGoalId,   CUSTOMER_ID as customerId  ,   SECTION_NAME  as sectionName  , LABEL_NAME   as  labelName   , LABEL_CODE   as labelCode ,VALUE_CARDINALITY as valueCardinality  , SORT_ORDER as sortOrder from CA_ABE_PROGRAM_GOAL where customer_id = {customerId} order by sort_order, label_name")
+    CustomerProgramGoal [] getCustomerProgramGoals(int customerId) throws SQLException;
+
+    
+    /**
+     * @jc:sql statement::
+     * select customer_demographic_id as customerDemographicId,
+     *   value_name as valueName,
+     *   value_code as valueCode,
+     *   sort_order as sortOrder,
+     *   visible as visible,
+     *   (select decode(count(*),0, 'false', 'true') as sddcount from student_demographic_data sdd
+     *   where sdd.CUSTOMER_DEMOGRAPHIC_ID = sdv.CUSTOMER_DEMOGRAPHIC_ID
+     *    and sdd.VALUE_NAME = sdv.value_name
+     *    and sdd.STUDENT_ID = {studentId}) as selectedFlag
+     * from customer_demographic_value sdv
+     * where customer_demographic_id = {customerDemographicId} 
+     * order by sort_order, value_name
+     * ::
+     */
+    @JdbcControl.SQL(statement = "select CA_ABE_PRG_GOAL_ID as customerPrgGoalId,  value_name as valueName,  value_code as valueCode,  sort_order as sortOrder,  visible as visible,  (select decode(count(*),0, 'false', 'true') as sddcount from  STUDENT_CA_ABE_PRG_GOAL_DATA sdd  where sdd.CA_ABE_PRG_GOAL_ID = sdv.CA_ABE_PRG_GOAL_ID  and sdd.VALUE_NAME = sdv.value_name  and sdd.STUDENT_ID = {studentId}) as selectedFlag from CA_ABE_PROGRAM_GOAL_VALUE sdv where  CA_ABE_PRG_GOAL_ID = {customerPrgGoalId}  order by sort_order, value_name")
+    StudentProgramGoalValue [] getStudentProgramGoalValues(int customerPrgGoalId, int studentId) throws SQLException;
+
+
+    @JdbcControl.SQL(statement = "select sdv.CA_ABE_PRG_GOAL_ID as customerPrgGoalId, sdd.value_name as valueName,sdv.value_code  as valueCode,sdv.sort_order as sortOrder,sdv.visible  as visible from STUDENT_CA_ABE_PRG_GOAL_DATA sdd,CA_ABE_PROGRAM_GOAL_VALUE sdv where sdd.CA_ABE_PRG_GOAL_ID = sdv.CA_ABE_PRG_GOAL_ID and sdd.STUDENT_ID = {studentId} and sdv.CA_ABE_PRG_GOAL_ID = {customerPrgGoalId} order by sdv.sort_order, sdv.value_name")
+    StudentProgramGoalValue [] getStudentProGProvider(int customerPrgGoalId, int studentId) throws SQLException;
+
+    /**
+     * @jc:sql statement::
+     * select count(*) from 
+     *      student_demographic_data 
+     * where 	student_id={studentId}
+     * ::
+     */
+    @JdbcControl.SQL(statement = "select count(*) from  STUDENT_CA_ABE_PRG_GOAL_DATA  where \tstudent_id={studentId}")
+    Integer getCountStudentPrgGoalDataForStudent(Integer studentId) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
+     * select SEQ_STUDENT_DEMOGRAPHIC_ID.nextval from dual
+     */
+    @JdbcControl.SQL(statement = "select SEQ_STUDENT_PRG_GOAL_DATA.nextval from dual")
+    Integer getNextPKForStudentPrgGoalData() throws SQLException;
+    
+    /**
+     * @jc:sql statement::
+     * insert into 
+     *     student_demographic_data (
+     *      student_demographic_data_id,
+     * 		student_id,
+     * 		customer_demographic_id,
+     * 		value_name,
+     * 		value,
+     * 		created_by,
+     * 		created_date_time,
+     * 		updated_by,
+     * 		updated_date_time
+     * 	) values (
+     * 	     {sdd.studentDemographicDataId},
+     *       {sdd.studentId},
+     *       {sdd.customerDemographicId},
+     *       {sdd.valueName},
+     *       {sdd.value},
+     *       {sdd.createdBy},
+     *       {sdd.createdDateTime},
+     *       {sdd.updatedBy},
+     *       {sdd.updatedDateTime}
+     * 	)
+     * 	::
+     */
+    @JdbcControl.SQL(statement = "insert into  STUDENT_CA_ABE_PRG_GOAL_DATA (  STUDENT_PRG_GOAL_DATA_ID, \t\tstudent_id, \t\tCA_ABE_PRG_GOAL_ID, \t\tvalue_name, \t\tvalue, \t\tcreated_by, \t\tcreated_date_time, \t\tupdated_by, \t\tupdated_date_time \t) values ( \t  {sdd.studentProgramGoalDataId},  {sdd.studentId},  {sdd.customerPrgGoalId},  {sdd.valueName},  {sdd.value},  {sdd.createdBy},  {sdd.createdDateTime},  {sdd.updatedBy},  {sdd.updatedDateTime} \t)")
+    void createStudentProgramGoalData( StudentProgramGoalData sdd) throws SQLException;
+    
+    /**
+	* Changes for CA_ABE
+	*
+	*For Storing the student Contact Information
+	*
+	**/
+  
+    
+	@JdbcControl.SQL(statement="insert into  student_contact (STUDENT_CONTACT_ID, STREET_LINE1, STREET_LINE2, CONTACT_EMAIL, STUDENT_ID, UPDATED_DATE_TIME, UPDATED_BY, CREATED_DATE_TIME, CREATED_BY, SECONDARY_PHONE, PRIMARY_PHONE, ZIPCODE, STATEPR, CITY   ) values ( {address.addressId}, {address.addressLine1}, {address.addressLine2}, {address.email},  {address.studentId}, {address.updatedDateTime}, {address.updatedBy}, {address.CreatedDateTime}, {address.createdBy}, {address.secondaryPhone}, {address.primaryPhone},{address.zipCode}, {address.statePr}, {address.city} )")
+	void createNewStudentContactInformation(Address address) throws SQLException;
+	
+	
+	  /**
+     * @jc:sql statement::
+     * select SEQ_STUDENT_DEMOGRAPHIC_ID.nextval from dual
+     */
+    @JdbcControl.SQL(statement = "select SEQ_STUDENT_CONTACT_ID.nextval from dual")
+    Integer getNextPKForStudentContact() throws SQLException;
+	/**
+	 * View student Information studentcontact
+	 * 
+	 * 
+	 * st.statepr as statePr,
+     * st.statepr_desc as stateDesc
+	 */
+    @JdbcControl.SQL(statement = "select  stu.STUDENT_CONTACT_ID as addressId,  stu.STREET_LINE1 as addressLine1,  stu.STREET_LINE2 as addressLine2,  stu.CONTACT_EMAIL as email,  stu.STUDENT_ID as studentId, stu.CREATED_BY as createdBy, stu.SECONDARY_PHONE as secondaryPhone,  stu.PRIMARY_PHONE as primaryPhone,  stu.ZIPCODE as zipCode,  st.statepr as statePr, st.statepr_desc as stateDesc,  stu.CITY as city from  STUDENT_CONTACT stu, statepr_code st where stu.statepr = st.statepr(+) and stu.student_id = {studentId}")
+    Address getStudentContact(int studentId) throws SQLException;  
+    
+   
 }

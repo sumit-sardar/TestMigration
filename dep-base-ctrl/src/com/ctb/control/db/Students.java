@@ -5,6 +5,9 @@ import org.apache.beehive.controls.system.jdbc.JdbcControl;
 import com.ctb.bean.testAdmin.SchedulingStudent;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.Student; 
+import com.ctb.bean.testAdmin.StudentFileRowData;
+import com.ctb.bean.testAdmin.Address;
+
 import java.sql.SQLException; 
 import org.apache.beehive.controls.api.bean.ControlExtension;
 
@@ -594,8 +597,10 @@ public interface Students extends JdbcControl
      * 		{student.udf2}
      * 	 
      *      )::
+     *      
+     *      Modified for California-ABE
      */
-    @JdbcControl.SQL(statement = "insert into  student ( \t\tSTUDENT_ID, \t\tUSER_NAME, \t\tPASSWORD, \t\tFIRST_NAME, \t\tMIDDLE_NAME, \t\tPREFERRED_NAME, \t\tLAST_NAME, \t\tBIRTHDATE, \t\tETHNICITY, \t\tGENDER, \t\tEMAIL, \t\tGRADE, \t\tEXT_PIN1, \t\tEXT_ELM_ID, \t\tEXT_PIN2, \t\tEXT_PIN3, \t\tCREATED_DATE_TIME, \t\tACTIVE_SESSION, \t\tACTIVATION_STATUS, \t\tPOTENTIAL_DUPLICATED_STUDENT, \t\tCREATED_BY, \t\tUPDATED_BY, \t\tUPDATED_DATE_TIME, \t\tEXT_SCHOOL_ID, \t\tPREFIX, \t\tSUFFIX, \t\tDATA_IMPORT_HISTORY_ID, \t\tBARCODE, \t\tCUSTOMER_ID, \t\tPRECODE_ID, \t\tUDF, \t\tUDF_1, \t\tUDF_2  ) values ( \t\t{student.studentId}, \t\t{student.userName}, \t\t{student.password}, \t\t{student.firstName}, \t\t{student.middleName}, \t\t{student.preferredName}, \t\t{student.lastName}, \t\t{student.birthdate}, \t\t{student.ethnicity}, \t\t{student.gender}, \t\t{student.email}, \t\t{student.grade}, \t\t{student.extPin1}, \t\t{student.extElmId}, \t\t{student.extPin2}, \t\t{student.extPin3}, \t\t{student.createdDateTime}, \t\t{student.activeSession}, \t\t{student.activationStatus}, \t\t{student.potentialDuplicatedStudent}, \t\t{student.createdBy}, \t\t{student.updatedBy}, \t\t{student.updatedDateTime}, \t\t{student.extSchoolId}, \t\t{student.prefix}, \t\t{student.suffix}, \t\t{student.dataImportHistoryId}, \t\t{student.barcode}, \t\t{student.customerId}, \t\t{student.precodeId}, \t\t{student.udf}, \t\t{student.udf1}, \t\t{student.udf2} \t  )")
+    @JdbcControl.SQL(statement = "insert into  student (STUDENT_ID, USER_NAME, PASSWORD, FIRST_NAME, MIDDLE_NAME, PREFERRED_NAME, LAST_NAME, BIRTHDATE, ETHNICITY, GENDER, EMAIL, GRADE, EXT_PIN1, EXT_ELM_ID, EXT_PIN2, EXT_PIN3, CREATED_DATE_TIME, ACTIVE_SESSION, ACTIVATION_STATUS, POTENTIAL_DUPLICATED_STUDENT, CREATED_BY, UPDATED_BY, UPDATED_DATE_TIME, EXT_SCHOOL_ID, PREFIX, SUFFIX, DATA_IMPORT_HISTORY_ID, BARCODE, CUSTOMER_ID, PRECODE_ID, UDF, UDF_1, UDF_2, INSTRUCTOR_FIRST_NAME, INSTRUCTOR_LAST_NAME, VISIBLE_ACROSS_ORGANIZATION, IS_SSN, IS_PBA_FORM_SIGNED   ) values ( {student.studentId}, {student.userName}, {student.password}, {student.firstName}, {student.middleName}, {student.preferredName}, {student.lastName}, {student.birthdate}, {student.ethnicity}, {student.gender}, {student.email}, {student.grade}, {student.extPin1}, {student.extElmId}, {student.extPin2}, {student.extPin3}, {student.createdDateTime}, {student.activeSession}, {student.activationStatus}, {student.potentialDuplicatedStudent}, {student.createdBy}, {student.updatedBy}, {student.updatedDateTime}, {student.extSchoolId}, {student.prefix}, {student.suffix}, {student.dataImportHistoryId}, {student.barcode}, {student.customerId}, {student.precodeId}, {student.udf}, {student.udf1}, {student.udf2}, {student.instructorFirstName}, {student.instructorLastName}, {student.visibleAcrossOrganization}, {student.isSSN}, {student.isPBAFormSigned} )")
     void createNewStudent(Student student) throws SQLException;
    
     /**
@@ -650,7 +655,6 @@ public interface Students extends JdbcControl
 	@JdbcControl.SQL(statement = "update student set active_session = 'F' ,updated_by = {updatedBy} , updated_date_time = {completedDateTime} where student_id = {studentId}")
     void updateStudentActiveSessionFlag ( java.lang.Integer studentId,java.util.Date completedDateTime, java.lang.Integer updatedBy) throws SQLException;
     
-	static final long serialVersionUID = 1L;
-
+	
 
 }

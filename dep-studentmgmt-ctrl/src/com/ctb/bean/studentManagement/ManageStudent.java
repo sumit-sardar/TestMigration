@@ -1,8 +1,9 @@
 package com.ctb.bean.studentManagement; 
 
 import com.ctb.bean.CTBBean;
+import com.ctb.bean.studentManagement.Address;
+
 import java.util.Date;
-import com.ctb.bean.testAdmin.Address;
 
 /**
  * Data bean representing the partial contents of the OAS.STUDENT table 
@@ -26,7 +27,16 @@ public class ManageStudent extends CTBBean
     private Date birthDate;
     private Integer createdBy;
     private OrganizationNode [] organizationNodes;
+     //Changes for CA-ABE
+    //START
     private Address address;
+    private Integer addressId;
+    private String instructorFirstName;
+    private String instructorLastName;
+    private String visibleAcrossOrganization;
+    private String isSSN;
+    private String isPBAFormSigned;
+    //END
     
 	/**
 	 * @return the id
@@ -184,17 +194,78 @@ public class ManageStudent extends CTBBean
 	public void setCreatedBy(Integer createdBy) {
 		this.createdBy = createdBy;
 	}
-	/**
-	 * @return Returns the address.
-	 */
 	public Address getAddress() {
-		return this.address;
+        return address;
+    }
+    
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+	public Integer getAddressId() {
+		return addressId;
+	}
+	public void setAddressId(Integer addressId) {
+		this.addressId = addressId;
 	}
 	/**
-	 * @param createdBy The createdBy to set.
+	 * @return the instructorFirstName
 	 */
-	public void setAddress(Address address) {
-		this.address = address;
+	public String getInstructorFirstName() {
+		return instructorFirstName;
+	}
+	/**
+	 * @param instructorFirstName the instructorFirstName to set
+	 */
+	public void setInstructorFirstName(String instructorFirstName) {
+		this.instructorFirstName = instructorFirstName;
+	}
+	/**
+	 * @return the instructorLastName
+	 */
+	public String getInstructorLastName() {
+		return instructorLastName;
+	}
+	/**
+	 * @param instructorLastName the instructorLastName to set
+	 */
+	public void setInstructorLastName(String instructorLastName) {
+		this.instructorLastName = instructorLastName;
+	}
+	/**
+	 * @return the visibleAcrossOrganization
+	 */
+	public String getVisibleAcrossOrganization() {
+		return visibleAcrossOrganization;
+	}
+	/**
+	 * @param visibleAcrossOrganization the visibleAcrossOrganization to set
+	 */
+	public void setVisibleAcrossOrganization(String visibleAcrossOrganization) {
+		this.visibleAcrossOrganization = visibleAcrossOrganization;
+	}
+	/**
+	 * @return the isSSN
+	 */
+	public String getIsSSN() {
+		return isSSN;
+	}
+	/**
+	 * @param isSSN the isSSN to set
+	 */
+	public void setIsSSN(String isSSN) {
+		this.isSSN = isSSN;
+	}
+	/**
+	 * @return the isPBAFormSigned
+	 */
+	public String getIsPBAFormSigned() {
+		return isPBAFormSigned;
+	}
+	/**
+	 * @param isPBAFormSigned the isPBAFormSigned to set
+	 */
+	public void setIsPBAFormSigned(String isPBAFormSigned) {
+		this.isPBAFormSigned = isPBAFormSigned;
 	}
     
 } 

@@ -38,6 +38,39 @@
         <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
+  
+  
+  <tag> 
+      <name>studentPrgGoalTag</name>
+      <tag-class>taglib.StudentPrgGoalTag</tag-class>
+    <body-content>JSP</body-content>      
+    <attribute>
+        <name>programAndGoals</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>viewOnly</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+      <attribute>
+        <name>mandatoryField</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>studentImported</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>tabIndex</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
 
 
   <tag> 

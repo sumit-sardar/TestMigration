@@ -13,10 +13,12 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.request.FilterParams.FilterParam;
+import com.ctb.bean.studentManagement.Address;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.CustomerDemographic;
 import com.ctb.bean.studentManagement.CustomerDemographicValue;
+import com.ctb.bean.studentManagement.CustomerProgramGoal;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.studentManagement.OrganizationNode;
@@ -24,6 +26,9 @@ import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicData;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
+import com.ctb.bean.studentManagement.StudentProgramGoal;
+import com.ctb.bean.studentManagement.StudentProgramGoalData;
+import com.ctb.bean.studentManagement.StudentProgramGoalValue;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.Node;
@@ -172,8 +177,12 @@ public class StudentManagementImpl implements StudentManagement, Serializable
         
         try {
             ManageStudent student = studentManagement.getManageStudent(studentId.intValue());
+            
             OrganizationNode [] orgNodes = studentManagement.getAssignedOrganizationNodesForStudentAtAndBelowUserTopNodes(studentId.intValue(), userName);
+            Address studentContact = studentManagement.getStudentContact(studentId.intValue());
+            
             student.setOrganizationNodes(orgNodes);
+            student.setAddress(studentContact);
             return student;
         } catch (SQLException se) {
             StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getManageStudent: " + se.getMessage());
@@ -1168,13 +1177,21 @@ public class StudentManagementImpl implements StudentManagement, Serializable
             Student student = new Student();
             student.setActivationStatus("AC");
             Integer newStudentId = students.getNextPK();
-            student.setStudentId(newStudentId);
+           //Changes for CA_ABE
+           //START
+            Integer cloneStudentId = newStudentId;
+            student.setStudentId(cloneStudentId);
             student.setFirstName(manageStudent.getFirstName());
             student.setMiddleName(manageStudent.getMiddleName());
             student.setLastName(manageStudent.getLastName());
             student.setBirthdate(manageStudent.getBirthDate());
             student.setGender(manageStudent.getGender());
             student.setGrade(manageStudent.getGrade());
+            student.setInstructorFirstName(manageStudent.getInstructorFirstName());
+            student.setInstructorLastName(manageStudent.getInstructorLastName());
+            student.setIsPBAFormSigned(manageStudent.getIsPBAFormSigned());
+            student.setIsSSN(manageStudent.getIsSSN());
+            student.setVisibleAcrossOrganization(manageStudent.getVisibleAcrossOrganization());
             
             student.setExtPin1(manageStudent.getStudentIdNumber());
             student.setExtPin2(manageStudent.getStudentIdNumber2());
@@ -1189,9 +1206,19 @@ public class StudentManagementImpl implements StudentManagement, Serializable
             
             String studentUserName = generateUniqueStudentUserName(student, studentLoginIdSequence);
             student.setUserName(studentUserName);
+           
             students.createNewStudent(student);
-            
-            
+            if(manageStudent.getAddress() != null){
+            	Address address = manageStudent.getAddress();
+            	address.setStudentId(cloneStudentId);
+            	Integer newAddressId = studentManagement.getNextPKForStudentContact();
+            	address.setAddressId(newAddressId);
+            	address.setCreatedBy(userId);
+            	address.setCreatedDateTime(new Date());
+            	studentManagement.createNewStudentContactInformation(address);
+            	
+            }
+            //END
             for (int i=0; organizationNodes!=null && i< organizationNodes.length; i++) {
                 Node node = orgNode.getOrgNodeById(organizationNodes[i].getOrgNodeId());                
                 OrgNodeStudent orgNodeStudent = new OrgNodeStudent();
@@ -1803,7 +1830,7 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	    }
     }
     
-    /**
+    /**CHANGES for CA_ABE
      * retrieve States and places it in cache.
      * @common:operation
      * @param void
@@ -1836,5 +1863,100 @@ public class StudentManagementImpl implements StudentManagement, Serializable
             throw dataRetrivalException;
         }
         
-    } 
+    }
+    
+    /**
+     * Get student demographic for the specified customer and student.
+     * @common:operation
+     * @param userName - identifies the calling user
+     * @param customerId - identifies the customer whose information is desired
+     * @param studentId - identifies the student whose information is desired
+     * @param returnInvisible - indicates whether to return invisible data/values
+     * @return StudentDemographic []
+     * @throws CTBBusinessException
+     */
+    public StudentProgramGoal [] getStudentProgramGoals(String userName, Integer customerId, Integer studentId, boolean returnInvisible) throws CTBBusinessException
+    {
+        if (studentId !=null)
+            validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentProgramGoals");
+        validator.validateCustomer(userName, customerId, "StudentManagementImpl.getStudentProgramGoals");
+        try {
+            CustomerProgramGoal [] customerProgramGoals;
+            
+            	customerProgramGoals = studentManagement.getCustomerProgramGoals(customerId.intValue());
+           
+           
+
+            StudentProgramGoal [] studentProgramGoal = null;
+                
+            if (customerProgramGoals != null && customerProgramGoals.length > 0) 
+            {
+            	studentProgramGoal = new StudentProgramGoal[customerProgramGoals.length];
+                for (int i = 0; i < customerProgramGoals.length; i++) {
+                	studentProgramGoal[i] = new StudentProgramGoal(customerProgramGoals[i]);
+                	studentProgramGoal[i].setStudentId(studentId);
+                    StudentProgramGoalValue [] studentProgramGoalValues;
+                    studentProgramGoalValues = studentManagement.getStudentProgramGoalValues(studentProgramGoal[i].getCustomerPrgGoalId().intValue(), studentId == null? -1: studentId.intValue());
+                    if (customerProgramGoals[i].getLabelName().equals("Provider Use") && studentId != null) {
+                    	 studentProgramGoalValues = studentManagement.getStudentProGProvider(studentProgramGoal[i].getCustomerPrgGoalId().intValue(), studentId.intValue());
+                    }
+                    studentProgramGoal[i].setStudentProgramGoalValues(studentProgramGoalValues);
+                }
+                //retrieve customer provider use value
+                
+            }
+            return studentProgramGoal;
+        } catch (SQLException se) {
+            StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentDemographics: " + se.getMessage());
+            tee.setStackTrace(se.getStackTrace());
+            throw tee;
+        }
+            
+    }
+    
+    
+    /**
+     * Create student demographic data for the specified student.
+     * @common:operation
+     * @param userName - identifies the calling user
+     * @param studentId - identifies the student 
+     * @param studentDemographics [] - contains the student's demographic information
+     * @throws CTBBusinessException
+     */
+    public void createStudentProgAndGoals(String userName, Integer studentId, StudentProgramGoal [] studentProgramGoals) throws CTBBusinessException
+    {
+        validator.validateStudent(userName, studentId, "StudentManagementImpl.createStudentDemographics");
+        
+        try {
+            Integer count = studentManagement.getCountStudentPrgGoalDataForStudent(studentId);
+            if (count.intValue() > 0) 
+                throw new StudentDataCreationException("StudentManagementImpl: createStudentProgAndGoals: Student with id '" + studentId+ "' has existing demographic data.");
+            User user = getUserDetails(userName, userName);
+            Integer userId = user.getUserId();
+            Date now = new Date();
+            for (int i=0; studentProgramGoals!= null && i<studentProgramGoals.length; i++) {
+            	StudentProgramGoalValue [] studentProgramGoalValues = studentProgramGoals[i].getStudentProgramGoalValues();
+                for (int j=0; studentProgramGoalValues!=null && j<studentProgramGoalValues.length; j++) {
+                    if (studentProgramGoalValues[j] != null && "true".equals(studentProgramGoalValues[j].getSelectedFlag())) {
+                        StudentProgramGoalData studentProgramGoalData = new StudentProgramGoalData();
+                        studentProgramGoalData.setStudentProgramGoalDataId(studentManagement.getNextPKForStudentPrgGoalData());                        
+                        studentProgramGoalData.setStudentId(studentId);
+                        studentProgramGoalData.setCustomerPrgGoalId(studentProgramGoals[i].getCustomerPrgGoalId());
+                        studentProgramGoalData.setValueName(studentProgramGoalValues[j].getValueName());
+                        studentProgramGoalData.setCreatedBy(userId);
+                        studentProgramGoalData.setCreatedDateTime(now);
+                        studentManagement.createStudentProgramGoalData(studentProgramGoalData);
+                    }
+                }
+            }
+        } catch (SQLException se) {
+            StudentDataCreationException tee = new StudentDataCreationException("StudentManagementImpl: createStudentDemographics: " + se.getMessage());
+            tee.setStackTrace(se.getStackTrace());
+            throw tee;
+        }
+    }    
+    
+    //END-  added for CA-ABE
+  
+    
 } 

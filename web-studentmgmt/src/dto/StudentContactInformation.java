@@ -1,7 +1,7 @@
 package dto; 
 
 
-import com.ctb.bean.testAdmin.Address;
+import com.ctb.bean.studentManagement.Address;
 import utils.StringUtils;
 
 /**
@@ -34,6 +34,8 @@ public class StudentContactInformation implements java.io.Serializable
     private String secondaryPhone2 = "";
     private String secondaryPhone3 = "";
     private String secondaryPhone4 = "";
+    private String email ="";
+    
     
   
     public StudentContactInformation() {    
@@ -51,7 +53,7 @@ public class StudentContactInformation implements java.io.Serializable
         this.city = studentContact.getCity();
         this.state = studentContact.getStatePr();
         this.stateDesc = studentContact.getStateDesc();
-        
+        this.email = studentContact.getEmail();
        
         
         //Split Primary Phone for Edit
@@ -278,6 +280,14 @@ public class StudentContactInformation implements java.io.Serializable
         }
         setSecondaryPhone(phone1+phone2+phone3+phone4);
     }
+
+	public String getEmail() {
+		return this.email != null ? this.email.trim() : "";
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
     
    
 } 

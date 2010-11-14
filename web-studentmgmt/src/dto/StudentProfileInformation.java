@@ -8,7 +8,7 @@ import utils.DateUtils;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.OrganizationNode;
 ////Changes for CA-ABE student intake
-import com.ctb.bean.testAdmin.Address;
+import com.ctb.bean.studentManagement.Address;
 import com.ctb.util.web.sanitizer.SanitizedFormField;
 
 /**
@@ -44,7 +44,13 @@ public class StudentProfileInformation extends SanitizedFormField
     //ca-abe followup
     
     private String studentFollowUpStatus;
-    
+    // added for CA-ABE
+    private String instructorFirstName;
+    private String instructorLastName;
+    private String visibleAcrossOrganization;
+    private String isSSN;
+    private String isPBAFormSigned;
+ 
 
     public StudentProfileInformation() {
         this.studentId = new Integer(0);
@@ -67,6 +73,14 @@ public class StudentProfileInformation extends SanitizedFormField
         this.year = "";
 
         this.createBy = null;
+        
+        // added for CA-ABE
+        this.instructorFirstName= "";
+        this.instructorLastName= "";
+        this.visibleAcrossOrganization = "NO";
+        this.isSSN = "";
+        this.isPBAFormSigned ="";
+        
     }
         
         
@@ -79,6 +93,12 @@ public class StudentProfileInformation extends SanitizedFormField
         this.displayName = student.getStudentName();
         this.createBy = student.getCreatedBy();
         
+        // added for CA-ABE
+        this.instructorFirstName = student.getInstructorFirstName();
+        this.instructorLastName = student.getInstructorLastName();
+        this.visibleAcrossOrganization = student.getVisibleAcrossOrganization();
+        this.isSSN = student.getIsSSN();
+        this.isPBAFormSigned = student.getIsPBAFormSigned();
         this.gender = student.getGender();
         if (this.gender == null) this.gender = "Unknown";
         else
@@ -123,14 +143,19 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setStudentSecondNumber(this.studentSecondNumber);
         copied.setBirthdate(this.birthdate);
         copied.setOrganizationNodes(this.organizationNodes);
+        //ca-abe
         copied.setStudentContact(this.studentContact);
-        
+        copied.setInstructorFirstName(this.instructorFirstName);
+        copied.setInstructorLastName(this.instructorLastName);
+        copied.setIsPBAFormSigned(this.isPBAFormSigned);
+        copied.setIsSSN(this.isSSN);
+        copied.setVisibleAcrossOrganization(this.visibleAcrossOrganization);
         return copied;       
     }
   
     public ManageStudent makeCopy(Integer studentId, List selectedOrgNodes) {
         ManageStudent copied = new ManageStudent();
-        
+        System.out.println("makeCopy 1 Studentid"+ studentId);
         copied.setId(studentId);
         copied.setLoginId(this.userName);
         copied.setFirstName( upperCaseFirstLetter(this.firstName) );
@@ -139,6 +164,12 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setGrade(this.grade);
         copied.setStudentIdNumber(this.studentNumber);
         copied.setStudentIdNumber2(this.studentSecondNumber);
+        //ca-abe
+        copied.setInstructorFirstName(this.instructorFirstName);
+        copied.setInstructorLastName(this.instructorLastName);
+        copied.setIsPBAFormSigned(this.isPBAFormSigned);
+        copied.setIsSSN(this.isSSN);
+        copied.setVisibleAcrossOrganization(this.visibleAcrossOrganization);
         //GACRCT2010CR007 - changed for creating date when supplied.
         Date date = null;
         
@@ -176,7 +207,10 @@ public class StudentProfileInformation extends SanitizedFormField
         address.setZipCodeExt(this.studentContact.getZipCode2());
         address.setPrimaryPhone(this.studentContact.getPrimaryPhone());
         address.setSecondaryPhone(this.studentContact.getSecondaryPhone());
-        copied.setAddress(address);        
+        address.setEmail(this.studentContact.getEmail());
+        address.setStudentId(studentId);
+        copied.setAddress(address); 
+        System.out.println("makeCopy 2 Studentid"+ studentId + address);
     }
             
         return copied;       
@@ -424,7 +458,7 @@ public class StudentProfileInformation extends SanitizedFormField
         return str;
 	}
 
-
+	/*start change for ca-abe */
 	public StudentContactInformation getStudentContact() {
 		return this.studentContact != null ? this.studentContact : new StudentContactInformation();
 		
@@ -449,5 +483,102 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setStudentFollowUpStatus(String studentFollowUpStatus) {
 		this.studentFollowUpStatus = studentFollowUpStatus;
+	}
+
+
+	/**
+	 * @return the instructorFirstName
+	 */
+	public String getInstructorFirstName() {
+		return instructorFirstName;
+	}
+
+
+	/**
+	 * @param instructorFirstName the instructorFirstName to set
+	 */
+	public void setInstructorFirstName(String instructorFirstName) {
+		this.instructorFirstName = instructorFirstName;
+	}
+
+
+	/**
+	 * @return the instructorLastName
+	 */
+	public String getInstructorLastName() {
+		return instructorLastName;
+	}
+
+
+	/**
+	 * @param instructorLastName the instructorLastName to set
+	 */
+	public void setInstructorLastName(String instructorLastName) {
+		this.instructorLastName = instructorLastName;
+	}
+	/*end change for ca-abe */
+
+
+	/**
+	 * @return the addressId
+	 */
+	public Integer getAddressId() {
+		return addressId;
+	}
+
+
+	/**
+	 * @param addressId the addressId to set
+	 */
+	public void setAddressId(Integer addressId) {
+		this.addressId = addressId;
+	}
+
+
+	/**
+	 * @return the visibleAcrossOrganization
+	 */
+	public String getVisibleAcrossOrganization() {
+		return visibleAcrossOrganization;
+	}
+
+
+	/**
+	 * @param visibleAcrossOrganization the visibleAcrossOrganization to set
+	 */
+	public void setVisibleAcrossOrganization(String visibleAcrossOrganization) {
+		this.visibleAcrossOrganization = visibleAcrossOrganization;
+	}
+
+
+	/**
+	 * @return the isSSN
+	 */
+	public String getIsSSN() {
+		return isSSN;
+	}
+
+
+	/**
+	 * @param isSSN the isSSN to set
+	 */
+	public void setIsSSN(String isSSN) {
+		this.isSSN = isSSN;
+	}
+
+
+	/**
+	 * @return the isPBAFormSigned
+	 */
+	public String getIsPBAFormSigned() {
+		return isPBAFormSigned;
+	}
+
+
+	/**
+	 * @param isPBAFormSigned the isPBAFormSigned to set
+	 */
+	public void setIsPBAFormSigned(String isPBAFormSigned) {
+		this.isPBAFormSigned = isPBAFormSigned;
 	}
 } 

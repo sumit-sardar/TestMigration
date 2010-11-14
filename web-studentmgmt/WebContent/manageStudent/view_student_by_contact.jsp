@@ -8,7 +8,12 @@
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
-
+<%
+   
+	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); //Change For CR - GA2011CR001
+	Boolean isABECustomer = (Boolean)request.getAttribute("isABECustomer");
+	
+%>
 
 <table class="simple">
     <tr class="transparent">
@@ -19,19 +24,19 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Address Line 1:"/></td>
-        <td class="transparent"><netui:label value="Alaska Street 1"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.studentContact.addressLine1}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Address Line 2:"/></td>
-        <td class="transparent"><netui:label value="Alaska Street 2"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.studentContact.addressLine2}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="City:"/></td>
-        <td class="transparent"><netui:label value="Alaska"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.studentContact.city}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="State:"/></td>
-        <td class="transparent"><netui:label value="Alaska"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.studentContact.stateDesc}"/></td>
     </tr>
     
 </table>
@@ -44,20 +49,20 @@
 <table class="transparent">
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Zip:"/></td>
-        <td class="transparent"><netui:label value="122"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.studentContact.zipCode}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Primary Phone:"/></td>
-        <td class="transparent"><netui:label value=""/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.studentContact.primaryPhone}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Secondary Phone:"/></td>
-        <td class="transparent"><netui:label value=""/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.studentContact.secondaryPhone}"/></td>
     </tr>
      <tr class="transparent">
         <td class="transparent" width="100"><netui:content value="Email:"/></td>
         <td class="transparent">
-        	<netui:label value=""/>
+        	<netui:label value="${studentProfileData.studentContact.email}"/>
         </td>
     </tr>
 </table>

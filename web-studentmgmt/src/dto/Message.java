@@ -37,6 +37,11 @@ public class Message implements java.io.Serializable
 
     //Changes for CA-ABE student intake
     public static final String SELECT_STATE = "Select a state";
+    public static final String FIELD_ADDRESS_LINE1 = "Address Line1";
+    public static final String FIELD_ADDRESS_LINE2 = "Address Line2";
+    public static final String FIELD_CITY = "City";
+    public static final String FIELD_EMAIL = "Email";
+    public static final String FIELD_PROVIDER_USE ="Provider Use";
     
     public Message()
     {
