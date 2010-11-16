@@ -78,7 +78,7 @@
      <tr class="transparent">
         <td class="transparent alignRight" width="110"><netui:content value="Email:"/></td>
         <td class="transparent">
-        <input type="text"  maxlength="64" style="width:205px" value=""/>
+        <netui:textBox tagId="email" datasource="actionForm.studentProfile.studentContact.email" maxlength="64" style="width:200px" />
       </td>
     </tr>
 </table>

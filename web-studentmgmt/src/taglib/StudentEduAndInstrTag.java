@@ -1,30 +1,28 @@
 package taglib;
 
-import com.ctb.bean.studentManagement.StudentDemographic;
-import com.ctb.bean.studentManagement.StudentDemographicValue;
 import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.jsp.JspException;
+
+import com.ctb.bean.studentManagement.StudentOtherDetail;
+import com.ctb.bean.studentManagement.StudentOtherDetailValue;
 
 
 /**
  * @author Tai Truong
  *  
  */  
-public class StudentDemographicsTag extends CTBTag 
+public class StudentEduAndInstrTag extends CTBTag 
 {
-	private List demographics;
+	private List educationAndInstruction;
 	private Boolean viewOnly = Boolean.FALSE;
 	//CA-ABE student intake
 	private Boolean mandatoryField = Boolean.FALSE;
 	private Boolean studentImported = Boolean.FALSE;
 	private int tabIndex = 1;
 	
-    public void setDemographics(List demographics) {
-        this.demographics= demographics;
-    }
-    
+  
     public void setViewOnly(Boolean viewOnly) {
         this.viewOnly = viewOnly;
     }
@@ -41,7 +39,7 @@ public class StudentDemographicsTag extends CTBTag
 	public int doStartTag() throws JspException 
     {
 		try {
-		    if ((this.demographics != null) && (this.demographics.size() > 0)) {
+		    if ((this.educationAndInstruction != null) && (this.educationAndInstruction.size() > 0)) {
 		        displayContent();
 		    }
 		}
@@ -55,7 +53,7 @@ public class StudentDemographicsTag extends CTBTag
  
     private void displayContent() throws IOException 
     {
-		int totalCount = this.demographics.size();
+		int totalCount = this.educationAndInstruction.size();
         int secondCount = totalCount / 2;
         int firstCount = totalCount - secondCount;
         
@@ -75,8 +73,8 @@ public class StudentDemographicsTag extends CTBTag
         
                     displayTableStart();
                     for (int i=0 ; i<firstCount ; i++) {
-                        StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
-                        displayStudentDemoGraphic(sdd);
+                    	StudentOtherDetail sdd = (StudentOtherDetail)this.educationAndInstruction.get(i);
+                    	displayStudentEduAndInstr(sdd);
                         displayRowStart();
                             displayCellStart("transparent-small");
                                 writeToPage("&nbsp;");
@@ -93,8 +91,8 @@ public class StudentDemographicsTag extends CTBTag
 
                     displayTableStart();
                     for (int i=firstCount ; i<totalCount ; i++) {
-                        StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
-                        displayStudentDemoGraphic(sdd);
+                    	StudentOtherDetail sdd = (StudentOtherDetail)this.educationAndInstruction.get(i);
+                    	displayStudentEduAndInstr(sdd);
                         displayRowStart();
                             displayCellStart("transparent-small");
                                 writeToPage("&nbsp;");
@@ -112,17 +110,17 @@ public class StudentDemographicsTag extends CTBTag
         
 	}
 
-    private void displayStudentDemoGraphic(StudentDemographic sdd) throws IOException 
+    private void displayStudentEduAndInstr(StudentOtherDetail sdd) throws IOException 
     {
         String displayName = sdd.getLabelName().trim();
         boolean multipleAllowed = sdd.getMultipleAllowedFlag().equals("true");
         boolean editable = true;
         
-        if (this.studentImported.booleanValue() && (sdd.getImportEditable() != null)) {
+       /* if (this.studentImported.booleanValue() && (sdd.getImportEditable() != null)) {
             if (sdd.getImportEditable().equals("F") || sdd.getImportEditable().equals("UNEDITABLE_ON_NULL_RULE")) {
                 editable = false;
             }
-        }   
+        }  */ 
         //check for CA-ABE followup to make Labor Force Status Non Editable
         if (this.mandatoryField) {
         	
@@ -145,13 +143,15 @@ public class StudentDemographicsTag extends CTBTag
     		displayCellEnd();
     	displayRowEnd();  
     	
-	    StudentDemographicValue[] values = sdd.getStudentDemographicValues();
+    	StudentOtherDetailValue[] values = sdd.getStudentOtherDetailValues();
 	    if( multipleAllowed ) {
 	        displayValues_CheckBoxes(displayName, values, editable);
 	    } 
         else { 
-		    if ( values.length == 1 ) {  
-                displayValues_CheckBoxes(displayName, values, editable);
+		    if ( values.length <= 1 ) {  
+                //displayValues_CheckBoxes(displayName, values, editable);
+		    	displayValues_TextBox(displayName, values[0].getValueName() ,editable);
+
             }
             else
 		    if ( values.length < 5 ) {  
@@ -162,11 +162,25 @@ public class StudentDemographicsTag extends CTBTag
 		    }
 	    }
 	}
+    
+    private void displayValues_TextBox(String displayName,String value,
+			 boolean enable) throws IOException {
+		System.out.println("text box");
+		// TODO Auto-generated method stub
+		displayRowStart();
+		displayCellStart("transparent-small");
+		writeToPage(textBox(displayName,value,enable));
+		displayCellEnd();
+		displayRowEnd();
+		
 
-	private void displayValues_CheckBoxes(String name, StudentDemographicValue[] values, boolean editable) throws IOException 
+	}
+
+
+	private void displayValues_CheckBoxes(String name, StudentOtherDetailValue[] values, boolean editable) throws IOException 
     {
 	    for (int i=0 ; i<values.length ; i++) {
-	        StudentDemographicValue sdv = (StudentDemographicValue)values[i];
+	    	StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
 		    String value = sdv.getValueName().trim();
 		    boolean selected = sdv.getSelectedFlag().equals("true");	
 			displayRowStart();
@@ -191,7 +205,7 @@ public class StudentDemographicsTag extends CTBTag
 	    }
 	}
 
-	private void displayValues_RadioButtons(String name, StudentDemographicValue[] values, boolean editable) throws IOException 
+	private void displayValues_RadioButtons(String name, StudentOtherDetailValue[] values, boolean editable) throws IOException 
     {
 	    int i;
 	    String value = null;
@@ -199,7 +213,7 @@ public class StudentDemographicsTag extends CTBTag
 	    boolean hasSelected = false;	
 	     
 	    for (i=0 ; i<values.length ; i++) {
-	        StudentDemographicValue sdv = (StudentDemographicValue)values[i];
+	    	StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
 		    value = sdv.getValueName().trim();
 		    selected = sdv.getSelectedFlag().equals("true");		
 		    String prin = sdv.getValueName();     //added for CA-ABE
@@ -213,8 +227,8 @@ public class StudentDemographicsTag extends CTBTag
                     displayCellStart("transparent-small", "12", null);                    
                         writeToPage(getSpaces(1));  
                     displayCellEnd();                    
-                    displayCellStart("transparent-small", "20", null);                    
-                        writeToPage(radioButton(name, value, selected, editable));
+                    displayCellStart("transparent-small", "20", null); 
+                    	writeToPage(radioButton(name, value, selected, editable));
                     displayCellEnd();
                     displayCellStart("transparent-small", "*", null);                    
                         writeToPage(value);
@@ -225,7 +239,7 @@ public class StudentDemographicsTag extends CTBTag
 		        displayCellEnd();
 			displayRowEnd();  
 	    }
-		displayRowStart();
+		/*displayRowStart();
 			displayCellStart("transparent-small");
             
                     displayTableStart();
@@ -243,10 +257,10 @@ public class StudentDemographicsTag extends CTBTag
                     displayTableEnd();
                 
 	        displayCellEnd();
-		displayRowEnd();  
+		displayRowEnd();  */
 	}
 
-	private void displayValues_Dropdown(String name, StudentDemographicValue[] values, boolean editable) throws IOException 
+	private void displayValues_Dropdown(String name, StudentOtherDetailValue[] values, boolean editable) throws IOException 
     {
 	    int i;
 	    String value = null;
@@ -259,7 +273,7 @@ public class StudentDemographicsTag extends CTBTag
 				writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
 		        writeToPage(option("Please Select", true));
 			    for (i=0 ; i<values.length ; i++) {
-			        StudentDemographicValue sdv = (StudentDemographicValue)values[i];
+			    	StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
 				    value = sdv.getValueName().trim();
 				    selected = sdv.getSelectedFlag().equals("true");
    			        writeToPage(option(value, selected));
@@ -274,6 +288,18 @@ public class StudentDemographicsTag extends CTBTag
 	    String selected = isChecked ? "selected" : "";
 		return "<option " + selected + " >" + value + "</option>";
 	}
+	
+	private String textBox(String name,String value,   boolean editable) 
+	{
+		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
+		String nameId = name  ;
+		System.out.println("nameId.." + nameId);
+		return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "64" + 
+		" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
+		" tabindex=\"" + (this.tabIndex++) + "\" " +
+		  disabled + "/>";
+	}
+
 	
 	private String checkBox(String name, String value, boolean isChecked, boolean editable) 
     {
@@ -291,7 +317,7 @@ public class StudentDemographicsTag extends CTBTag
 		return "<input type=\"radio\" name=\"" + name + "\" id=\"" + name + "\"" +
 				" value=\"" + value + "\" " + 
 				" tabindex=\"" + (this.tabIndex++) + "\" " +
-				(isChecked?"checked=\"true\" ":" ") + disabled + "/>";			//added for CA-ABE
+				(isChecked?"checked=\"true\" ":" ") + disabled + " onClick=\"displayWorkforceSection(this)\"/>";			//added for CA-ABE
 	}
 
     private String getSpaces(int spaces) 
@@ -302,9 +328,51 @@ public class StudentDemographicsTag extends CTBTag
         }
         return str;
     }
-    //change for ca-abe
+
 	public void setMandatoryField(Boolean mandatoryField) {
 		this.mandatoryField = mandatoryField;
+	}
+
+	/**
+	 * @return the educationAndInstruction
+	 */
+	public List getEducationAndInstruction() {
+		return educationAndInstruction;
+	}
+
+	/**
+	 * @param educationAndInstruction the educationAndInstruction to set
+	 */
+	public void setEducationAndInstruction(List educationAndInstruction) {
+		this.educationAndInstruction = educationAndInstruction;
+	}
+
+	/**
+	 * @return the viewOnly
+	 */
+	public Boolean getViewOnly() {
+		return viewOnly;
+	}
+
+	/**
+	 * @return the mandatoryField
+	 */
+	public Boolean getMandatoryField() {
+		return mandatoryField;
+	}
+
+	/**
+	 * @return the studentImported
+	 */
+	public Boolean getStudentImported() {
+		return studentImported;
+	}
+
+	/**
+	 * @return the tabIndex
+	 */
+	public int getTabIndex() {
+		return tabIndex;
 	}
     	
 }

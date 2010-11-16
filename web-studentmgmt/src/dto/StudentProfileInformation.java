@@ -77,9 +77,9 @@ public class StudentProfileInformation extends SanitizedFormField
         // added for CA-ABE
         this.instructorFirstName= "";
         this.instructorLastName= "";
-        this.visibleAcrossOrganization = "NO";
-        this.isSSN = "";
-        this.isPBAFormSigned ="";
+        this.visibleAcrossOrganization = "No";
+        this.isSSN = "No";
+        this.isPBAFormSigned ="No";
         
     }
         
@@ -190,7 +190,7 @@ public class StudentProfileInformation extends SanitizedFormField
             orgNodes[i] = orgNode;
         }
         copied.setOrganizationNodes(orgNodes);    
-        //Contact Information
+        //Contact Information -change for ca-abe
         this.studentContact.setPrimaryPhoneFromOthers();
         this.studentContact.setSecondaryPhoneFromOthers();
         

@@ -11,16 +11,17 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
 <% 
-    List workforceSectionDetails = (List)request.getAttribute("workforceSectionDetails");
-	//Boolean studentImported = (Boolean) request.getAttribute("studentImported");
-	Boolean mandatoryField = (Boolean) request.getAttribute("mandatoryField");
+    List educationAndInstruction = (List)request.getAttribute("educationAndInstruction");
 	Boolean viewOnly = (Boolean) request.getAttribute("viewOnly");
+	Boolean studentImported = (Boolean) request.getAttribute("studentImported");
+	Boolean mandatoryField = (Boolean) request.getAttribute("mandatoryField");
 %>
 
 <!-- Student Demographic Information -->
-<ctbweb:studentWorkorceTag studentWorkForceDetails = "<%= workforceSectionDetails %>" 
+<ctbweb:studentEduAndInstrTag educationAndInstruction= "<%= educationAndInstruction %>" 
                             viewOnly = "<%= viewOnly %>" 
-                            mandatoryField = "<%=mandatoryField %>" />
+                            mandatoryField = "<%=mandatoryField %>"
+                            studentImported = "<%= studentImported %>" />
 
 
 <br/>

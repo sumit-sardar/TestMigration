@@ -6,6 +6,7 @@ import java.util.Date;
 import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
+import com.ctb.bean.studentManagement.Address;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.CustomerDemographic;
@@ -17,7 +18,8 @@ import com.ctb.bean.studentManagement.StudentDemographicData;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.studentManagement.StudentProgramGoalData;
 import com.ctb.bean.studentManagement.StudentProgramGoalValue;
-import com.ctb.bean.studentManagement.Address;
+import com.ctb.bean.studentManagement.StudentOtherDetailValue;
+import com.ctb.bean.studentManagement.StudentWorkForceData;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentAccommodations;
@@ -1051,8 +1053,17 @@ public interface StudentManagement extends JdbcControl
     @JdbcControl.SQL(statement = "select CA_ABE_PRG_GOAL_ID as customerPrgGoalId,  value_name as valueName,  value_code as valueCode,  sort_order as sortOrder,  visible as visible,  (select decode(count(*),0, 'false', 'true') as sddcount from  STUDENT_CA_ABE_PRG_GOAL_DATA sdd  where sdd.CA_ABE_PRG_GOAL_ID = sdv.CA_ABE_PRG_GOAL_ID  and sdd.VALUE_NAME = sdv.value_name  and sdd.STUDENT_ID = {studentId}) as selectedFlag from CA_ABE_PROGRAM_GOAL_VALUE sdv where  CA_ABE_PRG_GOAL_ID = {customerPrgGoalId}  order by sort_order, value_name")
     StudentProgramGoalValue [] getStudentProgramGoalValues(int customerPrgGoalId, int studentId) throws SQLException;
 
-
-    @JdbcControl.SQL(statement = "select sdv.CA_ABE_PRG_GOAL_ID as customerPrgGoalId, sdd.value_name as valueName,sdv.value_code  as valueCode,sdv.sort_order as sortOrder,sdv.visible  as visible from STUDENT_CA_ABE_PRG_GOAL_DATA sdd,CA_ABE_PROGRAM_GOAL_VALUE sdv where sdd.CA_ABE_PRG_GOAL_ID = sdv.CA_ABE_PRG_GOAL_ID and sdd.STUDENT_ID = {studentId} and sdv.CA_ABE_PRG_GOAL_ID = {customerPrgGoalId} order by sdv.sort_order, sdv.value_name")
+    /***
+     * 
+     * 
+     * Changes for CA_ABE
+     * 
+     * @param customerPrgGoalId
+     * @param studentId
+     * @return
+     * @throws SQLException
+     */
+    @JdbcControl.SQL(statement = "select sdv.CA_ABE_PRG_GOAL_ID as customerPrgGoalId, sdd.value_name as valueName,sdv.sort_order as sortOrder,sdv.visible  as visible from STUDENT_CA_ABE_PRG_GOAL_DATA sdd,CA_ABE_PROGRAM_GOAL sdv where sdd.CA_ABE_PRG_GOAL_ID = sdv.CA_ABE_PRG_GOAL_ID and sdd.STUDENT_ID = {studentId} and sdv.CA_ABE_PRG_GOAL_ID = {customerPrgGoalId} order by sdv.sort_order")
     StudentProgramGoalValue [] getStudentProGProvider(int customerPrgGoalId, int studentId) throws SQLException;
 
     /**
@@ -1129,5 +1140,10 @@ public interface StudentManagement extends JdbcControl
     @JdbcControl.SQL(statement = "select  stu.STUDENT_CONTACT_ID as addressId,  stu.STREET_LINE1 as addressLine1,  stu.STREET_LINE2 as addressLine2,  stu.CONTACT_EMAIL as email,  stu.STUDENT_ID as studentId, stu.CREATED_BY as createdBy, stu.SECONDARY_PHONE as secondaryPhone,  stu.PRIMARY_PHONE as primaryPhone,  stu.ZIPCODE as zipCode,  st.statepr as statePr, st.statepr_desc as stateDesc,  stu.CITY as city from  STUDENT_CONTACT stu, statepr_code st where stu.statepr = st.statepr(+) and stu.student_id = {studentId}")
     Address getStudentContact(int studentId) throws SQLException;  
     
-   
+    @JdbcControl.SQL(statement="insert into  STUDENT_ADDITIONAL_DATA (  student_additional_data_id, student_id, section_name, label_name, value_name, value, created_by, created_date_time, updated_by, updated_date_time) values ({sdd.studentAdditionalDataId},  {sdd.studentId},  {sdd.sectionName}, {sdd.labelName},  {sdd.valueName},  {sdd.value},  {sdd.createdBy},  {sdd.createdDateTime},  {sdd.updatedBy},  {sdd.updatedDateTime} \t)")
+	void createStudentWorkforceData(StudentWorkForceData sdd) throws SQLException;
+    
+    
+    @JdbcControl.SQL(statement="select student_additional_data_id as studentAdditionalDataId , student_id as studentId, section_name  as sectionName, label_name as labelName, value_name as valueName, value as value , created_by as createdBy, created_date_time as createdDateTime, updated_by as updatedBy, updated_date_time as updatedDateTime from STUDENT_ADDITIONAL_DATA where student_id = {studentId}")
+	StudentWorkForceData [] getStudentWorkforceDetails(Integer studentId) throws SQLException; 
 }

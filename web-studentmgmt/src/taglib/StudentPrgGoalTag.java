@@ -125,8 +125,9 @@ public class StudentPrgGoalTag extends CTBTag
 		displayRowStart();
 		displayCellStart("transparent");
 		//Changes for CA-ABE student intake
-		if (this.mandatoryField) {
-
+		
+		if (this.mandatoryField && !displayName.equals("Provider Use")) {
+			
 			writeToPage("<span>*&nbsp;</span><b>" + displayName + "</b>");
 		} else {
 			writeToPage("<b>" + displayName + "</b>");
@@ -167,12 +168,9 @@ public class StudentPrgGoalTag extends CTBTag
 		// TODO Auto-generated method stub
 		displayRowStart();
 		displayCellStart("transparent-small");
-
-		displayTableStart();
-		displayRowStart();
-		displayCellStart("transparent-small");
 		writeToPage(textBox(displayName,value,enable));
 		displayCellEnd();
+		displayRowEnd();
 		
 
 	}
@@ -304,8 +302,8 @@ public class StudentPrgGoalTag extends CTBTag
 		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 		String nameId = name  ;
 		System.out.println("nameId.." + nameId);
-		return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "64" +
-		" value=\""+ value + "\" " +  
+		return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "64" + 
+		" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
 		" tabindex=\"" + (this.tabIndex++) + "\" " +
 		  disabled + "/>";
 	}

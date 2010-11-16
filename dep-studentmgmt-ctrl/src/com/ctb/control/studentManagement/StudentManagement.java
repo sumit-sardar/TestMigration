@@ -477,4 +477,42 @@ public interface StudentManagement
   
 
 	 void createStudentProgAndGoals(java.lang.String userName, java.lang.Integer studentId, com.ctb.bean.studentManagement.StudentProgramGoal[] studentProgramGoals) throws com.ctb.exception.CTBBusinessException;
+	 
+	 /**
+	     * Get student Program And Goals for the specified customer and student.
+	     * @param userName - identifies the calling user
+	     * @param customerId - identifies the customer whose information is desired
+	     * @param studentId - identifies the student whose information is desired
+	     * @param returnInvisible - indicates whether to return invisible data/values
+	     * @return StudentOtherDetail []
+	     * @throws CTBBusinessException
+	     */
+	    
+	    com.ctb.bean.studentManagement.StudentOtherDetail[] getStudentWorkFoceDetails(java.lang.String userName, java.lang.Integer customerId, java.lang.Integer studentId, boolean returnInvisible) throws com.ctb.exception.CTBBusinessException;
+
+	    /**
+	     * Get student Program And Goals for the specified customer and student.
+	     * @param userName - identifies the calling user
+	     * @param customerId - identifies the customer whose information is desired
+	     * @param studentId - identifies the student whose information is desired
+	     * @param returnInvisible - indicates whether to return invisible data/values
+	     * @return StudentOtherDetail []
+	     * @throws CTBBusinessException
+	     */
+	    
+	    com.ctb.bean.studentManagement.StudentOtherDetail[] getStudentEduAndInstr(java.lang.String userName, java.lang.Integer customerId, java.lang.Integer studentId, boolean returnInvisible) throws com.ctb.exception.CTBBusinessException;
+		
+		/**
+	     * create Student Workforce Data Information
+	     * 
+	     * 
+	     * 
+	     * @param userName
+	     * @param manageStudent
+	     * @return
+	     * @throws com.ctb.exception.CTBBusinessException
+	     */
+	    
+	    void createStudentWorkForceData(java.lang.String userName, java.lang.Integer studentId, com.ctb.bean.studentManagement.StudentOtherDetail[] studentOtherDetail) throws com.ctb.exception.CTBBusinessException;
+
 } 

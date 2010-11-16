@@ -694,79 +694,107 @@ function verifyExitAddEditStudent(){
     return confirm("Click 'OK' to quit editing student's information. Any changes you've made will be lost.");
 }
 ///////////////////////////////////////
+
+//Change for California_ABE
 function displayWorkforceSection(element){
-var selection;
-if(element.value == 'Employed'){
-selection = true;
-enableWorkforceSection(selection);
-}
-else{
+	var selection;
+	if(element.value == 'Employed'){
+		selection = true;
+		enableWorkforceSection(selection);
+	}
+	else{
 
-selection = false;
-enableWorkforceSection(selection);
-}
+		selection = false;
+		enableWorkforceSection(selection);
+	}
 
 }
-
+//Change for California_ABE
 function enableWorkforceSection(selection){
 
-var classNumber = document.getElementById("classNumber");
-var dateOfEntryYear = document.getElementById("dateOfEntryYear");
-var dateOfEntryMonth = document.getElementById("dateOfEntryMonth");
-var dateOfEntryDay = document.getElementById("dateOfEntryDay");
-var annualIncome = document.getElementById("annualIncome");
-var services = document.getElementById("services");
-var supportServices = document.getElementById("supportServices");
-var maturitySkills = document.getElementById("maturitySkills");
-var workforceReadiness = document.getElementById("workforceReadiness");
-var providerUse = document.getElementById("providerUse");
-var specialPrograms = document.getElementsByName("specialPrograms");
-
-
-var HourlyWage = document.getElementById("HourlyWage");
-var ScheduledWorkHours = document.getElementById("ScheduledWorkHours");
-
-
-if(selection){
-
-
-
-annualIncome.removeAttribute("disabled");
-services.removeAttribute("disabled");
-supportServices.removeAttribute("disabled");
-maturitySkills.removeAttribute("disabled");
-workforceReadiness.removeAttribute("disabled");
-providerUse.removeAttribute("disabled");
-for (var i = 0; i < specialPrograms.length; i++){
-if (specialPrograms[i].name=='specialPrograms'){
-specialPrograms[i].removeAttribute("disabled");
+	var classNumber = document.getElementById("classNumber");
+	var dateOfEntryYear = document.getElementById("dateOfEntryYear");
+	var dateOfEntryMonth = document.getElementById("dateOfEntryMonth");
+	var dateOfEntryDay = document.getElementById("dateOfEntryDay");
+	var annualIncome = document.getElementById("annualIncome");
+	var services = document.getElementById("services");
+	var supportServices = document.getElementById("supportServices");
+	var maturitySkills = document.getElementById("maturitySkills");
+	var workforceReadiness = document.getElementById("workforceReadiness");
+	var providerUse = document.getElementById("providerUse");
+	var specialPrograms = document.getElementsByName("specialPrograms");
+	var HourlyWage = document.getElementById("HourlyWage");
+	var ScheduledWorkHours = document.getElementById("ScheduledWorkHours");
+	if(selection){
+		annualIncome.removeAttribute("disabled");
+		services.removeAttribute("disabled");
+		supportServices.removeAttribute("disabled");
+		maturitySkills.removeAttribute("disabled");
+		workforceReadiness.removeAttribute("disabled");
+		providerUse.removeAttribute("disabled");
+		for (var i = 0; i < specialPrograms.length; i++){
+			if (specialPrograms[i].name=='specialPrograms'){
+				specialPrograms[i].removeAttribute("disabled");
+			}
+		}
+		HourlyWage.removeAttribute("disabled");
+		ScheduledWorkHours.removeAttribute("disabled");
+	}
+	else{
+		annualIncome.setAttribute("disabled","true");
+		services.setAttribute("disabled","true");
+		supportServices.setAttribute("disabled","true");
+		maturitySkills.setAttribute("disabled","true");
+		workforceReadiness.setAttribute("disabled","true");
+		providerUse.setAttribute("disabled","true");
+		for (var i = 0; i < specialPrograms.length; i++){
+			if (specialPrograms[i].name=='specialPrograms'){
+				specialPrograms[i].setAttribute("disabled",true);
+			}
+		}
+		HourlyWage.setAttribute("disabled","true");
+		ScheduledWorkHours.setAttribute("disabled","true");
+	}
 }
 
+//Change for California_ABE
+function constrainNumericChar(e) 
+{
+    var keyId = (window.event) ? event.keyCode : e.which;
+    var keyValue = String.fromCharCode( keyId );
+    var regExp = /\d/;    
+    var results = false;
+   
+    if ( keyId == null || keyId == 0 || keyId == 8 || keyId == 9 || keyId == 13 || keyId == 27 ) {        
+        results = true; // allow control characters
+    } 
+    else 
+    if ( regExp.test(keyValue) ) {
+        results = true;    
+    }
+    
+    return results;
 }
-HourlyWage.removeAttribute("disabled");
-ScheduledWorkHours.removeAttribute("disabled");
+//Change for California_ABE
+function focusNextControl(element)
+{
+    if (element.value.length < element.getAttribute('maxlength')) 
+        return;
 
-}
-else{
-
-
-
-annualIncome.setAttribute("disabled","true");
-services.setAttribute("disabled","true");
-supportServices.setAttribute("disabled","true");
-maturitySkills.setAttribute("disabled","true");
-workforceReadiness.setAttribute("disabled","true");
-providerUse.setAttribute("disabled","true");
-for (var i = 0; i < specialPrograms.length; i++){
-if (specialPrograms[i].name=='specialPrograms'){
-specialPrograms[i].setAttribute("disabled",true);
-}
-
-}
-HourlyWage.setAttribute("disabled","true");
-ScheduledWorkHours.setAttribute("disabled","true");
+    var f = element.form;
+    var els = f.elements;
+    var len = els.length;
+    var x, nextEl;
+    
+    for (var i=0 ; i < len ; i++) {
+        x = els[i];
+        if (element == x && (nextEl = els[i+1])) {
+            if (nextEl.focus) 
+                nextEl.focus();
+            return;
+        }
+    }
 }
 
-}
 
 

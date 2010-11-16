@@ -120,6 +120,26 @@
 
 
 <c:if test="${isABECustomer}">     
+<a name="moduleStudentEduAndInstr"><!-- moduleStudentProgramsGoal --></a>    
+<p>
+    <ctb:showHideSection sectionId="moduleStudentEduAndInstr" sectionTitle="Education And Instruction" sectionVisible="actionForm.byStudentProgramGoalVisible">
+        <jsp:include page="/manageStudent/add_edit_student_edu_instru.jsp" />
+    </ctb:showHideSection>
+</p>
+</c:if>
+
+<c:if test="${isABECustomer}">     
+<a name="moduleStudentWorkforceGoal"><!-- moduleStudentProgramsGoal --></a>    
+<p>
+    <ctb:showHideSection sectionId="moduleStudentWorkforceGoal" sectionTitle="Supplement data for Workforce Student" sectionVisible="actionForm.byStudentProgramGoalVisible">
+        <jsp:include page="/manageStudent/add_edit_student_supplement_data_workforce.jsp" />
+    </ctb:showHideSection>
+</p>
+</c:if>
+
+
+
+<c:if test="${isABECustomer}">     
 <a name="moduleStudentProgramsGoal"><!-- moduleStudentProgramsGoal --></a>    
 <p>
     <ctb:showHideSection sectionId="moduleStudentProgramsGoal" sectionTitle="Program And Goals" sectionVisible="actionForm.byStudentProgramGoalVisible">
@@ -127,6 +147,7 @@
     </ctb:showHideSection>
 </p>
 </c:if>
+
 
 <c:if test="${hideAccommodations == 'F'}">                 
 <a name="moduleStudentAccommodation"><!-- moduleStudentAccommodation --></a>    

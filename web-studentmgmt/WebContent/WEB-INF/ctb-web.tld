@@ -39,6 +39,31 @@
     </attribute>
   </tag>
   
+  <tag> 
+      <name>studentEduAndInstrTag</name>
+      <tag-class>taglib.StudentEduAndInstrTag</tag-class>
+    <body-content>JSP</body-content>      
+    <attribute>
+        <name>educationAndInstruction</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>viewOnly</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+      <attribute>
+        <name>mandatoryField</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>tabIndex</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
   
   <tag> 
       <name>studentPrgGoalTag</name>
@@ -70,8 +95,33 @@
         <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
-  
 
+
+  <tag> 
+      <name>studentWorkorceTag</name>
+      <tag-class>taglib.StudentWorkorceTag</tag-class>
+    <body-content>JSP</body-content>      
+    <attribute>
+        <name>studentWorkForceDetails</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>viewOnly</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+      <attribute>
+        <name>mandatoryField</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>tabIndex</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
 
   <tag> 
       <name>studentAccommodations</name>

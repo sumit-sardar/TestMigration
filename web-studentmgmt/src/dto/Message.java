@@ -42,6 +42,8 @@ public class Message implements java.io.Serializable
     public static final String FIELD_CITY = "City";
     public static final String FIELD_EMAIL = "Email";
     public static final String FIELD_PROVIDER_USE ="Provider Use";
+    public static final String INVALID_EMAIL  = "Please enter a valid email address";
+    public static final String INVALID_NUMBER_FORMAT  = "Please re-enter numeric fields in valid format";
     
     public Message()
     {
