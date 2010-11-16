@@ -24,6 +24,7 @@ import com.ctb.util.testDelivery.Constants;
 import com.ctb.util.DateUtils;
 import com.ctb.util.OASLogger;
 import java.util.Date;
+import java.util.Random;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -75,6 +76,13 @@ public class LoadTestImpl implements LoadTest, Serializable {
                 			
                 			//adjust run date as per time difference between server and client
                 			runDate.add(Calendar.MINUTE, timeDiff);
+                			
+                			
+                			//change to randomly distribute the load test schedule over 30 mins              			
+                			Random r = new Random();          			
+                			Integer randSecs = r.nextInt(1800);
+                			runDate.add(Calendar.SECOND, randSecs);
+                		              			
                 			
                 			runLoadResponse.setRunDate(df.format(runDate.getTime()));
             			}catch(Exception e){
