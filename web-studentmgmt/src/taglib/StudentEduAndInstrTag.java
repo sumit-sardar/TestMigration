@@ -54,117 +54,114 @@ public class StudentEduAndInstrTag extends CTBTag
     private void displayContent() throws IOException 
     {
 		int totalCount = this.educationAndInstruction.size();
-        int secondCount = totalCount / 2;
-        int firstCount = totalCount - secondCount;
-        
-        
-        displayTableStart("simple");
-        
-            displayRowStart("transparent");   
-                displayCellStartColspan("transparent-small", null, "2");
-                    writeToPage("&nbsp;");
-                displayCellEnd();
-            displayRowEnd();  
+		int secondCount = totalCount / 2;
+		int firstCount = totalCount - secondCount;
 
-            displayRowStart("transparent");   
-                     
-                // first column
-                displayCellStart("CollapsibleTextNoBorder", "50%");
-        
-                    displayTableStart();
-                    for (int i=0 ; i<firstCount ; i++) {
-                    	StudentOtherDetail sdd = (StudentOtherDetail)this.educationAndInstruction.get(i);
-                    	displayStudentEduAndInstr(sdd);
-                        displayRowStart();
-                            displayCellStart("transparent-small");
-                                writeToPage("&nbsp;");
-                            displayCellEnd();
-                        displayRowEnd();  
-                    }
-                    displayTableEnd();
-        
-                displayCellEnd();
-                
-                
-                // second column
-                displayCellStart("CollapsibleTextNoBorder", "50%");
 
-                    displayTableStart();
-                    for (int i=firstCount ; i<totalCount ; i++) {
-                    	StudentOtherDetail sdd = (StudentOtherDetail)this.educationAndInstruction.get(i);
-                    	displayStudentEduAndInstr(sdd);
-                        displayRowStart();
-                            displayCellStart("transparent-small");
-                                writeToPage("&nbsp;");
-                            displayCellEnd();
-                        displayRowEnd();  
-                    }
-                    displayTableEnd();
-        
-                displayCellEnd();        
-                
-            displayRowEnd();  
-            
-        displayTableEnd();
-        
-        
+		displayTableStart("simple");
+
+		displayRowStart("transparent");   
+		displayCellStartColspan("transparent-small", null, "2");
+		writeToPage("&nbsp;");
+		displayCellEnd();
+		displayRowEnd();  
+
+		displayRowStart("transparent");   
+
+		// first column
+		displayCellStart("CollapsibleTextNoBorder", "50%");
+
+		displayTableStart();
+		for (int i=0 ; i<firstCount ; i++) {
+			StudentOtherDetail sdd = (StudentOtherDetail)this.educationAndInstruction.get(i);
+			displayStudentEduAndInstr(sdd);
+			displayRowStart();
+			displayCellStart("transparent-small");
+			writeToPage("&nbsp;");
+			displayCellEnd();
+			displayRowEnd();  
+		}
+		displayTableEnd();
+
+		displayCellEnd();
+
+
+		// second column
+		displayCellStart("CollapsibleTextNoBorder", "50%");
+
+		displayTableStart();
+		for (int i=firstCount ; i<totalCount ; i++) {
+			StudentOtherDetail sdd = (StudentOtherDetail)this.educationAndInstruction.get(i);
+			displayStudentEduAndInstr(sdd);
+			displayRowStart();
+			displayCellStart("transparent-small");
+			writeToPage("&nbsp;");
+			displayCellEnd();
+			displayRowEnd();  
+		}
+		displayTableEnd();
+
+		displayCellEnd();        
+
+		displayRowEnd();  
+
+		displayTableEnd();
+
+
 	}
 
-    private void displayStudentEduAndInstr(StudentOtherDetail sdd) throws IOException 
-    {
-        String displayName = sdd.getLabelName().trim();
-        boolean multipleAllowed = sdd.getMultipleAllowedFlag().equals("true");
-        boolean editable = true;
-        
-       /* if (this.studentImported.booleanValue() && (sdd.getImportEditable() != null)) {
-            if (sdd.getImportEditable().equals("F") || sdd.getImportEditable().equals("UNEDITABLE_ON_NULL_RULE")) {
-                editable = false;
-            }
-        }  */ 
-        //check for CA-ABE followup to make Labor Force Status Non Editable
-        if (this.mandatoryField) {
-        	
-        	if( sdd.getVisible().equals("NON EDITABLE")){
-                 editable = false;
-        	}
-            
-        }
-        
-    	displayRowStart();
-            displayCellStart("transparent");
-                //Changes for CA-ABE student intake
-                if (this.mandatoryField) {
-                	
-                	writeToPage("<span>*&nbsp;</span><b>" + displayName + "</b>");
-                } else {
-                	writeToPage("<b>" + displayName + "</b>");
-                }
-                
-    		displayCellEnd();
-    	displayRowEnd();  
-    	
-    	StudentOtherDetailValue[] values = sdd.getStudentOtherDetailValues();
-	    if( multipleAllowed ) {
-	        displayValues_CheckBoxes(displayName, values, editable);
-	    } 
-        else { 
-		    if ( values.length <= 1 ) {  
-                //displayValues_CheckBoxes(displayName, values, editable);
-		    	displayValues_TextBox(displayName, values[0].getValueName() ,editable);
+	private void displayStudentEduAndInstr(StudentOtherDetail sdd) throws IOException 
+	{
+		String displayName = sdd.getLabelName().trim();
+		boolean multipleAllowed = sdd.getMultipleAllowedFlag().equals("true");
+		boolean editable = true;
+		//check for CA-ABE followup to make Labor Force Status Non Editable
+		if (this.mandatoryField) {
 
-            }
-            else
-		    if ( values.length < 5 ) {  
-	            displayValues_RadioButtons(displayName, values, editable);
-		    } 
-            else { 
-		        displayValues_Dropdown(displayName, values, editable);
-		    }
-	    }
+			if( sdd.getVisible().equals("NON EDITABLE")){
+				editable = false;
+			}
+
+		}
+
+		displayRowStart();
+		displayCellStart("transparent");
+		//Changes for CA-ABE student intake
+		if (this.mandatoryField) {
+
+			writeToPage("<span>*&nbsp;</span><b>" + displayName + "</b>");
+		} else {
+			writeToPage("<b>" + displayName + "</b>");
+		}
+
+		displayCellEnd();
+		displayRowEnd();  
+
+		StudentOtherDetailValue[] values = sdd.getStudentOtherDetailValues();
+		if( multipleAllowed ) {
+			displayValues_CheckBoxes(displayName, values, editable);
+		} 
+		else { 
+			if ( values.length <= 1 ) {  
+				//displayValues_CheckBoxes(displayName, values, editable);
+				displayValues_TextBox(displayName, values[0].getValueName() ,editable);
+
+			}
+			else if ( sdd.getValueCardinality().equals("multipleDropdown")) {  
+				displayValues_MultiDropdown(displayName, values, editable);
+			} 
+			else if ( values.length < 5 ) {  
+				displayValues_RadioButtons(displayName, values, editable);
+			}
+			else { 
+				displayValues_Dropdown(displayName, values, editable);
+			}
+
+		}
 	}
-    
-    private void displayValues_TextBox(String displayName,String value,
-			 boolean enable) throws IOException {
+
+	private void displayValues_TextBox(String displayName,String value,
+			boolean enable) throws IOException {
 		System.out.println("text box");
 		// TODO Auto-generated method stub
 		displayRowStart();
@@ -172,162 +169,193 @@ public class StudentEduAndInstrTag extends CTBTag
 		writeToPage(textBox(displayName,value,enable));
 		displayCellEnd();
 		displayRowEnd();
-		
+
 
 	}
 
 
 	private void displayValues_CheckBoxes(String name, StudentOtherDetailValue[] values, boolean editable) throws IOException 
-    {
-	    for (int i=0 ; i<values.length ; i++) {
-	    	StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
-		    String value = sdv.getValueName().trim();
-		    boolean selected = sdv.getSelectedFlag().equals("true");	
+	{
+		for (int i=0 ; i<values.length ; i++) {
+			StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
+			String value = sdv.getValueName().trim();
+			boolean selected = sdv.getSelectedFlag().equals("true");	
 			displayRowStart();
-    			displayCellStart("transparent-small");
-                
-                    displayTableStart();
-                    displayRowStart();
-                    displayCellStart("transparent-small", "12", null);                    
-                        writeToPage(getSpaces(1));	
-                    displayCellEnd();
-                    displayCellStart("transparent-small", "20", null);                    
-                        writeToPage(checkBox(name, value, selected, editable));	
-                    displayCellEnd();
-                    displayCellStart("transparent-small", "*", null);                    
-                        writeToPage(value);
-                    displayCellEnd();
-                    displayRowEnd();
-                    displayTableEnd();
-                    
-		        displayCellEnd();
+			displayCellStart("transparent-small");
+
+			displayTableStart();
+			displayRowStart();
+			displayCellStart("transparent-small", "12", null);                    
+			writeToPage(getSpaces(1));	
+			displayCellEnd();
+			displayCellStart("transparent-small", "20", null);                    
+			writeToPage(checkBox(name, value, selected, editable));	
+			displayCellEnd();
+			displayCellStart("transparent-small", "*", null);                    
+			writeToPage(value);
+			displayCellEnd();
+			displayRowEnd();
+			displayTableEnd();
+
+			displayCellEnd();
 			displayRowEnd();  
-	    }
+		}
 	}
 
 	private void displayValues_RadioButtons(String name, StudentOtherDetailValue[] values, boolean editable) throws IOException 
-    {
-	    int i;
-	    String value = null;
-	    boolean selected = false;	
-	    boolean hasSelected = false;	
-	     
-	    for (i=0 ; i<values.length ; i++) {
-	    	StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
-		    value = sdv.getValueName().trim();
-		    selected = sdv.getSelectedFlag().equals("true");		
-		    String prin = sdv.getValueName();     //added for CA-ABE
-		    if (selected)
-		        hasSelected = true;
+	{
+		int i;
+		String value = null;
+		boolean selected = false;	
+		boolean hasSelected = false;	
+
+		for (i=0 ; i<values.length ; i++) {
+			StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
+			value = sdv.getValueName().trim();
+			selected = sdv.getSelectedFlag().equals("true");		
+			String prin = sdv.getValueName();     //added for CA-ABE
+			if (selected)
+				hasSelected = true;
 			displayRowStart();
-    			displayCellStart("transparent-small");
-                
-                    displayTableStart();
-                    displayRowStart();
-                    displayCellStart("transparent-small", "12", null);                    
-                        writeToPage(getSpaces(1));  
-                    displayCellEnd();                    
-                    displayCellStart("transparent-small", "20", null); 
-                    	writeToPage(radioButton(name, value, selected, editable));
-                    displayCellEnd();
-                    displayCellStart("transparent-small", "*", null);                    
-                        writeToPage(value);
-                    displayCellEnd();
-                    displayRowEnd();
-                    displayTableEnd();
-                    
-		        displayCellEnd();
-			displayRowEnd();  
-	    }
-		/*displayRowStart();
 			displayCellStart("transparent-small");
-            
-                    displayTableStart();
-                    displayRowStart();
-                    displayCellStart("transparent-small", "12", null);                    
-                        writeToPage(getSpaces(1));  
-                    displayCellEnd();                    
-                    displayCellStart("transparent-small", "20", null);                    
-                        writeToPage(radioButton(name, "None", !hasSelected, editable));
-                    displayCellEnd();
-                    displayCellStart("transparent-small", "*", null);                    
-                        writeToPage("None");
-                    displayCellEnd();
-                    displayRowEnd();
-                    displayTableEnd();
-                
-	        displayCellEnd();
-		displayRowEnd();  */
+
+			displayTableStart();
+			displayRowStart();
+			displayCellStart("transparent-small", "12", null);                    
+			writeToPage(getSpaces(1));  
+			displayCellEnd();                    
+			displayCellStart("transparent-small", "20", null); 
+			writeToPage(radioButton(name, value, selected, editable));
+			displayCellEnd();
+			displayCellStart("transparent-small", "*", null);                    
+			writeToPage(value);
+			displayCellEnd();
+			displayRowEnd();
+			displayTableEnd();
+
+			displayCellEnd();
+			displayRowEnd();  
+		}
+
 	}
 
 	private void displayValues_Dropdown(String name, StudentOtherDetailValue[] values, boolean editable) throws IOException 
-    {
-	    int i;
-	    String value = null;
-	    boolean selected = false;	
-	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
+	{
+		int i;
+		String value = null;
+		boolean selected = false;	
+		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 
-	    displayRowStart();
-            displayCellStart("transparent-small");
-                writeToPage(getSpaces(8));
-				writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
-		        writeToPage(option("Please Select", true));
-			    for (i=0 ; i<values.length ; i++) {
-			    	StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
-				    value = sdv.getValueName().trim();
-				    selected = sdv.getSelectedFlag().equals("true");
-   			        writeToPage(option(value, selected));
-			    }
-		        writeToPage("</select>");
-	        displayCellEnd();
+		displayRowStart();
+		displayCellStart("transparent-small");
+		writeToPage(getSpaces(8));
+		writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+		writeToPage(option("Please Select", true));
+		for (i=0 ; i<values.length ; i++) {
+			StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
+			value = sdv.getValueName().trim();
+			selected = sdv.getSelectedFlag().equals("true");
+			writeToPage(option(value, selected));
+		}
+		writeToPage("</select>");
+		displayCellEnd();
 		displayRowEnd();  
 	}
 
+	private void displayValues_MultiDropdown(String name, StudentOtherDetailValue[] values, boolean editable) throws IOException 
+	{
+		int i;
+		String value = null;
+		boolean selected = false;	
+		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
+
+		displayRowStart();
+		displayCellStart("transparent-small");
+		displayTableStart();
+
+		for (i=0 ; i<values.length ; i++) {
+			String[] paramsTyes = values[i].getValueName().split(",");
+
+			displayRowStart();
+			displayCellStart("transparent");
+			writeToPage("<b>" + paramsTyes[0] + "</b>");
+			System.out.println("paramsTyes[0]==>"+paramsTyes[0]);
+			displayCellEnd();
+			displayCellStart("transparent-small");
+			writeToPage(getSpaces(8));
+
+			writeToPage("<select name=\"" + paramsTyes[0] + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+			writeToPage(option("Please Select", true));
+
+			//StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
+			for(int j=1; j < paramsTyes.length; j++){
+				StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
+				value = paramsTyes[j].trim();
+				if(sdv.getValueCode()!= null && sdv.getValueCode().equals(value))
+					selected = true;
+				else 
+					selected=false;
+				//selected= true;
+				writeToPage(option(value, selected));
+			}
+			writeToPage("</select>");
+			displayCellEnd();
+			displayRowEnd();
+
+		}	
+		displayTableEnd();
+		displayCellEnd();
+		displayRowEnd();
+
+
+	}
+
+
 	private String option(String value, boolean isChecked) 
-    {
-	    String selected = isChecked ? "selected" : "";
+	{
+		String selected = isChecked ? "selected" : "";
 		return "<option " + selected + " >" + value + "</option>";
 	}
-	
+
 	private String textBox(String name,String value,   boolean editable) 
 	{
 		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 		String nameId = name  ;
 		System.out.println("nameId.." + nameId);
-		return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "64" + 
+		return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "4" + 
 		" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
 		" tabindex=\"" + (this.tabIndex++) + "\" " +
-		  disabled + "/>";
+		disabled + " onkeypress=\""+ "return constrainNumericChar(event)" + "\"/>";
 	}
 
-	
+
 	private String checkBox(String name, String value, boolean isChecked, boolean editable) 
-    {
-	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
-	    String nameId = name + "_" + value;
+	{
+		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
+		String nameId = name + "_" + value;
 		return "<input type=\"checkbox\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +
-				" value=\""+ value + "\" " + 
-				" tabindex=\"" + (this.tabIndex++) + "\" " +
-				(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
-	}
-    
-	private String radioButton(String name, String value, boolean isChecked, boolean editable) 
-    {
-	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
-		return "<input type=\"radio\" name=\"" + name + "\" id=\"" + name + "\"" +
-				" value=\"" + value + "\" " + 
-				" tabindex=\"" + (this.tabIndex++) + "\" " +
-				(isChecked?"checked=\"true\" ":" ") + disabled + " onClick=\"displayWorkforceSection(this)\"/>";			//added for CA-ABE
+		" value=\""+ value + "\" " + 
+		" tabindex=\"" + (this.tabIndex++) + "\" " +
+		(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
 	}
 
-    private String getSpaces(int spaces) 
-    {
-        String str = "";        
-        for (int i=0 ; i<spaces ; i++) {
-            str += "&nbsp;";
-        }
-        return str;
-    }
+	private String radioButton(String name, String value, boolean isChecked, boolean editable) 
+	{
+		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
+		return "<input type=\"radio\" name=\"" + name + "\" id=\"" + name + "\"" +
+		" value=\"" + value + "\" " + 
+		" tabindex=\"" + (this.tabIndex++) + "\" " +
+		(isChecked?"checked=\"true\" ":" ") + disabled + "/>";			//added for CA-ABE
+	}
+
+	private String getSpaces(int spaces) 
+	{
+		String str = "";        
+		for (int i=0 ; i<spaces ; i++) {
+			str += "&nbsp;";
+		}
+		return str;
+	}
 
 	public void setMandatoryField(Boolean mandatoryField) {
 		this.mandatoryField = mandatoryField;
@@ -374,6 +402,6 @@ public class StudentEduAndInstrTag extends CTBTag
 	public int getTabIndex() {
 		return tabIndex;
 	}
-    	
+
 }
 

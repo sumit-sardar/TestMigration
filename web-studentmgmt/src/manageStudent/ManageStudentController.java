@@ -622,7 +622,6 @@ public class ManageStudentController extends PageFlowController
 			if (isABECustomer) {
 				
 				String laborForceValue = getRequest().getParameter("Labor Force Status");
-				System.out.println("laborForceValue.." +laborForceValue);
 				result = form.verifyABEStudentInformation(this.selectedOrgNodes);
 				if (result) {
 					getStudentDemographicsFromRequest(); 
@@ -686,10 +685,16 @@ public class ManageStudentController extends PageFlowController
 			{
 				result = saveStudentDemographic(isCreateNew, form, studentId);
 			}
-			//START- added for CA-ABE
-			if (studentId != null)
+			// START- added for CA-ABE
+			if (isABECustomer && studentId != null)
 			{
-				//result = saveStudentEduAndInstr(isCreateNew, form, studentId);
+				result = saveStudentWorkForceDetails(isCreateNew, form, studentId);
+			}
+			//END
+			//START- added for CA-ABE
+			if (isABECustomer && studentId != null)
+			{
+				result = saveStudentEduAndInstr(isCreateNew, form, studentId);
 			}
 			//END- added for CA-ABE
 
@@ -699,14 +704,7 @@ public class ManageStudentController extends PageFlowController
 				result = saveStudentProgAndGoals(isCreateNew, form, studentId);
 			}
 			//END- added for CA-ABE
-			
-			// START- added for CA-ABE
-			if (isABECustomer && studentId != null && !this.workforceSectionVisible)
-			{
-				result = saveStudentWorkForceDetails(isCreateNew, form, studentId);
-			}
-			
-			//END
+
 			if (studentId != null)
 			{
 				result = saveStudentAccommodations(isCreateNew, form, studentId);
@@ -1367,7 +1365,7 @@ public class ManageStudentController extends PageFlowController
 	/**
 	 * saveStudentEduAndInstr
 	 */
-	/*private boolean saveStudentEduAndInstr(boolean isCreateNew, ManageStudentForm form, Integer studentId)
+	private boolean saveStudentEduAndInstr(boolean isCreateNew, ManageStudentForm form, Integer studentId)
 	{
 		getStudentEduAndInstrFromRequest();        
 
@@ -1377,31 +1375,31 @@ public class ManageStudentController extends PageFlowController
 		}
 		else
 		{
-			updateStudentEduAndInstr(studentId);
+			//updateStudentEduAndInstr(studentId);
 		}
 		this.educationAndInstruction = null;
 
 		return true;
-	}*/
+	}
 
 	/**
 	 * createStudentEduAndInstr
 	 */
-	/*private void createStudentEduAndInstr(Integer studentId)
+	private void createStudentEduAndInstr(Integer studentId)
 	{
 		if ((studentId != null) && (studentId.intValue() > 0) && (this.educationAndInstruction != null))
 		{
 			try
 			{    
-				StudentABEDetail[] studentABEDetailList = (StudentABEDetail[])this.educationAndInstruction.toArray( new StudentABEDetail[0] );
-				this.studentManagement.createStudentEduAndInstrs(this.userName, studentId, studentABEDetailList);
+				StudentOtherDetail[] studentABEDetailList = (StudentOtherDetail[])this.educationAndInstruction.toArray( new StudentOtherDetail[0] );
+				this.studentManagement.createStudentEducationInstructionData(this.userName, studentId, studentABEDetailList);
 			}
 			catch (CTBBusinessException be)
 			{
 				be.printStackTrace();
 			} 
 		}
-	}*/
+	}
 
 	/**
 	 * updateStudentEduAndInstr
@@ -1423,7 +1421,7 @@ public class ManageStudentController extends PageFlowController
 	}*/
 
 
-		/**
+	/**
 	 * getStudentEduAndInstr
 	 */
 	private List getStudentEduAndInstr(Integer studentId)
@@ -1454,9 +1452,9 @@ public class ManageStudentController extends PageFlowController
 	}
 
 
-	  /**
-	  * getStudentEduAndInstrFromRequest
-	  */
+	/**
+	 * getStudentEduAndInstrFromRequest
+	 */
 	private void getStudentEduAndInstrFromRequest() 
 	{
 		String param = null, paramValue = null;
@@ -1466,63 +1464,81 @@ public class ManageStudentController extends PageFlowController
 			StudentOtherDetail sei = (StudentOtherDetail)this.educationAndInstruction.get(i);
 			StudentOtherDetailValue[] values = sei.getStudentOtherDetailValues();
 
-			for (int j=0; j < values.length; j++)
-			{
-				StudentOtherDetailValue seiv = (StudentOtherDetailValue)values[j];
+			if(sei.getLabelName().equals("Skill Level")) {
 
-				// Look up the parameter based on checkbox vs radio/select
-				if (sei.getMultipleAllowedFlag().equals("true"))
+				for (int j=0; j < values.length; j++)
 				{
-					if (! seiv.getVisible().equals("false"))
-						seiv.setSelectedFlag("false");
-					param = sei.getLabelName() + "_" + seiv.getValueName();
-					if (getRequest().getParameter(param) != null)
+					StudentOtherDetailValue seiv = (StudentOtherDetailValue)values[j];
+					String[] paramsValue =  seiv.getValueName().split(",");
+					if (getRequest().getParameter(paramsValue[0]) != null)
 					{
-						paramValue = getRequest().getParameter(param);
-						seiv.setSelectedFlag("true");
+						paramValue = getRequest().getParameter(paramsValue[0]);
+						seiv.setValueCode(paramValue);
+						System.out.println(paramsValue[0]);
+						if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
+							seiv.setSelectedFlag("true");
 					}
-				} 
-				else
+				}
+					
+			} else
+				for (int j=0; j < values.length; j++)
 				{
-					if (values.length == 1)
+					StudentOtherDetailValue seiv = (StudentOtherDetailValue)values[j];
+
+					// Look up the parameter based on checkbox vs radio/select
+					if (sei.getMultipleAllowedFlag().equals("true"))
 					{
 						if (! seiv.getVisible().equals("false"))
 							seiv.setSelectedFlag("false");
-						//param = sei.getLabelName() + "_" + seiv.getValueName();
-						param = sei.getLabelName();
+						param = sei.getLabelName() + "_" + seiv.getValueName();
 						if (getRequest().getParameter(param) != null)
 						{
 							paramValue = getRequest().getParameter(param);
 							seiv.setSelectedFlag("true");
 						}
-					}
+					} 
 					else
 					{
-						param = sei.getLabelName();
-						if (getRequest().getParameter(param) != null)
+						if (values.length == 1)
 						{
-							paramValue = getRequest().getParameter(param);
-
-							for (int k=0; k < values.length; k++)
+							if (! seiv.getVisible().equals("false"))
+								seiv.setSelectedFlag("false");
+							//param = sei.getLabelName() + "_" + seiv.getValueName();
+							param = sei.getLabelName();
+							if (getRequest().getParameter(param) != null)
 							{
-								StudentOtherDetailValue seiv1 = (StudentOtherDetailValue)values[k];
-								if (! seiv1.getVisible().equals("false"))
-									seiv1.setSelectedFlag("false");
-								if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
+								paramValue = getRequest().getParameter(param);
+								seiv.setValueName(paramValue);
+								seiv.setSelectedFlag("true");
+							}
+						}
+						else
+						{
+							param = sei.getLabelName();
+							if (getRequest().getParameter(param) != null)
+							{
+								paramValue = getRequest().getParameter(param);
+
+								for (int k=0; k < values.length; k++)
 								{
-									if (paramValue.equals(seiv1.getValueName()))
+									StudentOtherDetailValue seiv1 = (StudentOtherDetailValue)values[k];
+									if (! seiv1.getVisible().equals("false"))
+										seiv1.setSelectedFlag("false");
+									if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
 									{
-										seiv1.setSelectedFlag("true");
+										if (paramValue.equals(seiv1.getValueName()))
+										{
+											seiv1.setSelectedFlag("true");
+										}
 									}
 								}
-							}
 
-							break;
+								break;
+							}
 						}
 					}
+					seiv.setVisible("T");
 				}
-				seiv.setVisible("T");
-			}
 		}
 	}
 //	END- added for CA-ABE
@@ -1616,7 +1632,7 @@ public class ManageStudentController extends PageFlowController
 		{
 			//updateStudentProgAndGoals(studentId);
 		}
-		this.programAndGoals = null;
+		this.workforceSectionDetails = null;
 
 		return true;
 	}
@@ -1733,8 +1749,8 @@ public class ManageStudentController extends PageFlowController
 			{    
 				StudentOtherDetail[] studentOtherDetailList = (StudentOtherDetail[])this.workforceSectionDetails.toArray( new StudentOtherDetail[0] );
 				this.studentManagement.createStudentWorkForceData(this.userName, studentId, studentOtherDetailList);
-			
-				
+
+
 			}
 			catch (CTBBusinessException be)
 			{
@@ -1750,32 +1766,19 @@ public class ManageStudentController extends PageFlowController
 	private void getStudentProgAndGoalsFromRequest() 
 	{
 		String param = null, paramValue = null;
-
-		for (int i=0; i < this.programAndGoals.size(); i++)
-		{
-			StudentProgramGoal sei = (StudentProgramGoal)this.programAndGoals.get(i);
-			StudentProgramGoalValue[] values = sei.getStudentProgramGoalValues();
-			if(!sei.getLabelName().equals("Provider Use")) {
-				for (int j=0; j < values.length; j++)
-				{
-					StudentProgramGoalValue seiv = (StudentProgramGoalValue)values[j];
-
-
-					// Look up the parameter based on checkbox vs radio/select
-					if (sei.getMultipleAllowedFlag().equals("true"))
+		if(this.programAndGoals != null) {
+			for (int i=0; i < this.programAndGoals.size(); i++)
+			{
+				StudentProgramGoal sei = (StudentProgramGoal)this.programAndGoals.get(i);
+				StudentProgramGoalValue[] values = sei.getStudentProgramGoalValues();
+				if(!sei.getLabelName().equals("Provider Use")) {
+					for (int j=0; j < values.length; j++)
 					{
-						if (! seiv.getVisible().equals("false"))
-							seiv.setSelectedFlag("false");
-						param = sei.getLabelName() + "_" + seiv.getValueName();
-						if (getRequest().getParameter(param) != null)
-						{
-							paramValue = getRequest().getParameter(param);
-							seiv.setSelectedFlag("true");
-						}
-					} 
-					else
-					{
-						if (values.length == 1)
+						StudentProgramGoalValue seiv = (StudentProgramGoalValue)values[j];
+	
+	
+						// Look up the parameter based on checkbox vs radio/select
+						if (sei.getMultipleAllowedFlag().equals("true"))
 						{
 							if (! seiv.getVisible().equals("false"))
 								seiv.setSelectedFlag("false");
@@ -1785,59 +1788,73 @@ public class ManageStudentController extends PageFlowController
 								paramValue = getRequest().getParameter(param);
 								seiv.setSelectedFlag("true");
 							}
-						}
+						} 
 						else
 						{
-							param = sei.getLabelName();
-							if (getRequest().getParameter(param) != null)
+							if (values.length == 1)
 							{
-								paramValue = getRequest().getParameter(param);
-
-								for (int k=0; k < values.length; k++)
+								if (! seiv.getVisible().equals("false"))
+									seiv.setSelectedFlag("false");
+								param = sei.getLabelName() + "_" + seiv.getValueName();
+								if (getRequest().getParameter(param) != null)
 								{
-									StudentProgramGoalValue seiv1 = (StudentProgramGoalValue)values[k];
-									if (! seiv1.getVisible().equals("false"))
-										seiv1.setSelectedFlag("false");
-									if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
+									paramValue = getRequest().getParameter(param);
+									seiv.setSelectedFlag("true");
+								}
+							}
+							else
+							{
+								param = sei.getLabelName();
+								if (getRequest().getParameter(param) != null)
+								{
+									paramValue = getRequest().getParameter(param);
+	
+									for (int k=0; k < values.length; k++)
 									{
-										if (paramValue.equals(seiv1.getValueName()))
+										StudentProgramGoalValue seiv1 = (StudentProgramGoalValue)values[k];
+										if (! seiv1.getVisible().equals("false"))
+											seiv1.setSelectedFlag("false");
+										if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
 										{
-											seiv1.setSelectedFlag("true");
+											if (paramValue.equals(seiv1.getValueName()))
+											{
+												seiv1.setSelectedFlag("true");
+											}
 										}
 									}
+	
+									break;
 								}
-
-								break;
+	
+	
 							}
-
-
 						}
+						seiv.setVisible("T");
 					}
-					seiv.setVisible("T");
+				} else {
+	
+	
+					param = sei.getLabelName() ;
+					System.out.println(param);
+					if (getRequest().getParameter(param) != null)
+					{
+						paramValue = getRequest().getParameter(param);
+						StudentProgramGoalValue[] prgGoalvalues = new StudentProgramGoalValue[1];
+						StudentProgramGoalValue prgGoalvalue = new StudentProgramGoalValue();
+						if(paramValue != null && !paramValue.equals("")) {
+	
+							prgGoalvalue.setValueName(paramValue);
+							prgGoalvalue.setVisible("true");
+							prgGoalvalue.setSelectedFlag("true");
+							prgGoalvalues[0]= prgGoalvalue;
+							sei.setStudentProgramGoalValues(prgGoalvalues);
+	
+						} 
+					}
+	
 				}
-			} else {
-
-
-				param = sei.getLabelName() ;
-				System.out.println(param);
-				if (getRequest().getParameter(param) != null)
-				{
-					paramValue = getRequest().getParameter(param);
-					StudentProgramGoalValue[] prgGoalvalues = new StudentProgramGoalValue[1];
-					StudentProgramGoalValue prgGoalvalue = new StudentProgramGoalValue();
-					if(paramValue != null && !paramValue.equals("")) {
-
-						prgGoalvalue.setValueName(paramValue);
-						prgGoalvalue.setVisible("true");
-						prgGoalvalue.setSelectedFlag("true");
-						prgGoalvalues[0]= prgGoalvalue;
-						sei.setStudentProgramGoalValues(prgGoalvalues);
-
-					} 
-				}
-
+	
 			}
-
 		}
 	}
 
@@ -3332,6 +3349,7 @@ public class ManageStudentController extends PageFlowController
 			copied.setByStudentEduInstrucVisible(this.byStudentEduInstrucVisible);
 			copied.setByStudentWorkforceVisible(this.byStudentWorkforceVisible);
 
+
 			copied.setSelectedOrgLevel(this.selectedOrgLevel);            
 			copied.setSelectedStudentId(this.selectedStudentId);
 
@@ -4083,26 +4101,26 @@ public class ManageStudentController extends PageFlowController
 					}
 				}
 			}
-				if (requiredFieldCount > 0) {
-					requiredFields += " in " + sectionName;
-					if (requiredFieldCount == 1) {
-						requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
-						setMessage("Missing required field", requiredFields, Message.ERROR);
+			if (requiredFieldCount > 0) {
+				requiredFields += " in " + sectionName;
+				if (requiredFieldCount == 1) {
+					requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
+					setMessage("Missing required field", requiredFields, Message.ERROR);
 
-					}
-					else {
-						requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
-						setMessage("Missing required fields", requiredFields, Message.ERROR);
-					}
+				}
+				else {
+					requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
+					setMessage("Missing required fields", requiredFields, Message.ERROR);
+				}
 
-					/*if (sectionName.equals("sectionName")) {
+				/*if (sectionName.equals("sectionName")) {
 						this.byStudent = Boolean.TRUE;
 					}*/
 
 
-					return false;
-				}
-			
+				return false;
+			}
+
 
 			for (int i=0; i < selecteWorkForcelList.size(); i++)
 			{
@@ -4147,39 +4165,39 @@ public class ManageStudentController extends PageFlowController
 
 				StudentOtherDetail sdd = (StudentOtherDetail)educationAndInstruction.get(i);
 
-				
-					StudentOtherDetailValue[] values = sdd.getStudentOtherDetailValues();
-					boolean result = false;
 
-					for (int k=0; k < values.length; k++) {
+				StudentOtherDetailValue[] values = sdd.getStudentOtherDetailValues();
+				boolean result = false;
 
-						if (values[k].getSelectedFlag().equals("true")) {
-							result= true;
-						}
+				for (int k=0; k < values.length; k++) {
+
+					if (values[k].getSelectedFlag().equals("true")) {
+						result= true;
 					}
-
-					if (!result  ) {
-						requiredFieldCount += 1;
-						requiredFields = Message.buildErrorString(sdd.getLabelName(), requiredFieldCount, requiredFields);
-					}
-				
-			}
-				if (requiredFieldCount > 0) {
-					requiredFields += " in " + sectionName;
-					if (requiredFieldCount == 1) {
-						requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
-						setMessage("Missing required field", requiredFields, Message.ERROR);
-
-					}
-					else {
-						requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
-						setMessage("Missing required fields", requiredFields, Message.ERROR);
-					}
-
-					
-					return false;
 				}
-			
+
+				if (!result  ) {
+					requiredFieldCount += 1;
+					requiredFields = Message.buildErrorString(sdd.getLabelName(), requiredFieldCount, requiredFields);
+				}
+
+			}
+			if (requiredFieldCount > 0) {
+				requiredFields += " in " + sectionName;
+				if (requiredFieldCount == 1) {
+					requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
+					setMessage("Missing required field", requiredFields, Message.ERROR);
+
+				}
+				else {
+					requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
+					setMessage("Missing required fields", requiredFields, Message.ERROR);
+				}
+
+
+				return false;
+			}
+
 
 			return true;
 		}

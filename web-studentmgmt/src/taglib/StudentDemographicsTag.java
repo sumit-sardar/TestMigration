@@ -155,7 +155,7 @@ public class StudentDemographicsTag extends CTBTag
             }
             else
 		    if ( values.length < 5 ) {  
-		    	displayValues_RadioButtons(displayName, values, editable);
+	            displayValues_RadioButtons(displayName, values, editable);
 		    } 
             else { 
 		        displayValues_Dropdown(displayName, values, editable);
@@ -288,10 +288,13 @@ public class StudentDemographicsTag extends CTBTag
 	private String radioButton(String name, String value, boolean isChecked, boolean editable) 
     {
 	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
+	    
+	    String displayWorkforceSection = (name.equals("Labor Force Status")) ? "  displayWorkforceSection(this);": "";
+	    
 		return "<input type=\"radio\" name=\"" + name + "\" id=\"" + name + "\"" +
 				" value=\"" + value + "\" " + 
 				" tabindex=\"" + (this.tabIndex++) + "\" " +
-				(isChecked?"checked=\"true\" ":" ") + disabled + " onClick=\"displayWorkforceSection(this)\"/>";	//added for CA-ABE
+				(isChecked?"checked=\"true\" ":" ") + disabled + "onClick=\""+ displayWorkforceSection + "\"/>";			//added for CA-ABE
 	}
 
     private String getSpaces(int spaces) 
