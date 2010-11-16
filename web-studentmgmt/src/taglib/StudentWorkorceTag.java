@@ -26,7 +26,7 @@ public class StudentWorkorceTag extends CTBTag
 
 	public void setViewOnly(Boolean viewOnly) {
 		this.viewOnly = viewOnly;
-	}
+		}
 
 	public void setStudentImported(Boolean studentImported) {
 		this.studentImported = studentImported;
@@ -75,7 +75,7 @@ public class StudentWorkorceTag extends CTBTag
 		displayTableStart();
 		for (int i=0 ; i<firstCount ; i++) {
 			StudentOtherDetail sdd = (StudentOtherDetail)this.studentWorkForceDetails.get(i);
-			displayStudentProgramGoals(sdd);
+			displayStudentWorkForce(sdd);
 			displayRowStart();
 			displayCellStart("transparent-small");
 			writeToPage("&nbsp;");
@@ -93,7 +93,7 @@ public class StudentWorkorceTag extends CTBTag
 		displayTableStart();
 		for (int i=firstCount ; i<totalCount ; i++) {
 			StudentOtherDetail sdd = (StudentOtherDetail)this.studentWorkForceDetails.get(i);
-			displayStudentProgramGoals(sdd);
+			displayStudentWorkForce(sdd);
 			displayRowStart();
 			displayCellStart("transparent-small");
 			writeToPage("&nbsp;");
@@ -111,7 +111,7 @@ public class StudentWorkorceTag extends CTBTag
 
 	}
 
-	private void displayStudentProgramGoals(StudentOtherDetail sdd) throws IOException 
+	private void displayStudentWorkForce(StudentOtherDetail sdd) throws IOException 
 	{
 		String displayName = sdd.getLabelName().trim();
 		boolean multipleAllowed = sdd.getValueCardinality().equals("dropdown");
@@ -209,13 +209,22 @@ public class StudentWorkorceTag extends CTBTag
 		{
 			String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 			String nameId = name  ;
-			System.out.println("nameId.." + nameId);
+			String maxlength = "64";
 			
 			String constrainNumericChar = (nameId.equals("Workforce_Scheduled Work Hours Per Week") || nameId.equals("Workforce_Hourly Wage")) ? " return constrainNumericChar(event);": "";
+			
+			if(nameId.equals("Workforce_Scheduled Work Hours Per Week")){
+				maxlength = "3";
+			}
+			else if (nameId.equals("Workforce_Hourly Wage")){
+				maxlength = "4";
+			}
+		
+			
 			//String focusNextControl = (nameId.equals("Scheduled Work Hours Per Week") || nameId.equals("Hourly Wage")) ? " focusNextControl(this);": "";
 			
-			return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "64" + 
-			" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
+			return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=\"" + maxlength + 
+			" \" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
 			" tabindex=\"" + (this.tabIndex++) + "\" " +
 			  disabled +" onkeypress=\""+ constrainNumericChar + "\"/>";
 		}

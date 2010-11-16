@@ -301,7 +301,7 @@ public class StudentPrgGoalTag extends CTBTag
 	{
 		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 		String nameId = name  ;
-		System.out.println("nameId.." + nameId);
+		
 		return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "64" + 
 		" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
 		" tabindex=\"" + (this.tabIndex++) + "\" " +

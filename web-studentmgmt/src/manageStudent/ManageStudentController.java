@@ -122,6 +122,8 @@ public class ManageStudentController extends PageFlowController
 	private HashMap currentOrgNodesInPathList = null;
 	public List selectedOrgNodes = null;
 	public Integer[] currentOrgNodeIds = null;
+	
+
 
 	// customer configuration
 	CustomerConfiguration[] customerConfigurations = null;
@@ -133,7 +135,7 @@ public class ManageStudentController extends PageFlowController
 	private boolean isMandatoryStudentId = false; // Change For CR - GA2011CR001
 
 	private boolean isABECustomer = false;   //added for CA-ABE
-
+	private boolean workforceSectionVisible=true;
 	private String studentIdLabelName = "Student ID";
 	private String studentId2LabelName = "Student ID 2";
 
@@ -527,9 +529,29 @@ public class ManageStudentController extends PageFlowController
 		{
 			this.getRequest().setAttribute("demographicVisible", "F");       
 		}
-
-		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);       
-
+		
+		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);  
+		
+		
+		for (int i=0 ; i < this.demographics.size(); i++ ) {
+			 StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
+			 if (sdd.getLabelName().equals("Labor Force Status")) {
+				
+				 System.out.println("demo name" + sdd.getLabelName());
+				 
+				 StudentDemographicValue[] values = sdd.getStudentDemographicValues();
+				 for (int k=0 ; k < values.length; k++ ) {
+					 if(values[k].getValueName().equals("Employed") && 
+							 values[k].getSelectedFlag().equals("true")) {
+						this.workforceSectionVisible=false;
+						 break; 
+					 }
+				 }
+				
+				
+			 }
+		}
+		this.getRequest().setAttribute("workforceSectionVisible",this.workforceSectionVisible);  
 		form.setCurrentAction(ACTION_DEFAULT);
 
 	}
@@ -598,33 +620,33 @@ public class ManageStudentController extends PageFlowController
 			// change for intake ui
 			boolean result = false;
 			if (isABECustomer) {
-
+				
+				String laborForceValue = getRequest().getParameter("Labor Force Status");
+				System.out.println("laborForceValue.." +laborForceValue);
 				result = form.verifyABEStudentInformation(this.selectedOrgNodes);
 				if (result) {
 					getStudentDemographicsFromRequest(); 
 					result = form.vaildateABEStudentDemographicInfo(this.demographics);
 				}
+				if (result && !this.workforceSectionVisible) {
+					getStudentWorkForceDetailsFromRequest(); 
+					result = form.vaildateABEStudentWorkForceInfo(this.workforceSectionDetails);
+
+				}
 				
 				if (result) {
-					System.out.println("1");
 					getStudentEduAndInstrFromRequest(); 
 					result = form.vaildateABEStudentEduAndInstrInfo(this.educationAndInstruction);
 
 				}
 				
 				if (result) {
-					System.out.println("1");
 					getStudentProgAndGoalsFromRequest(); 
 					result = form.vaildateABEStudentProgramGoalInfo(this.programAndGoals);
 
 				}
 
-				if (result) {
-					System.out.println("1");
-					getStudentWorkForceDetailsFromRequest(); 
-					result = form.vaildateABEStudentWorkForceInfo(this.workforceSectionDetails);
-
-				}
+				
 
 
 			} else {
@@ -679,7 +701,7 @@ public class ManageStudentController extends PageFlowController
 			//END- added for CA-ABE
 			
 			// START- added for CA-ABE
-			if (isABECustomer && studentId != null)
+			if (isABECustomer && studentId != null && !this.workforceSectionVisible)
 			{
 				result = saveStudentWorkForceDetails(isCreateNew, form, studentId);
 			}
@@ -1552,7 +1574,7 @@ public class ManageStudentController extends PageFlowController
 
 
 
-		this.getRequest().setAttribute("workforceSectionDetails", this.workforceSectionDetails);     
+		this.getRequest().setAttribute("workforceSectionDetails", this.workforceSectionDetails); 
 		this.getRequest().setAttribute("mandatoryField",new Boolean(isABECustomer));
 
 	}
@@ -3112,7 +3134,8 @@ public class ManageStudentController extends PageFlowController
 		// Changes for CA-ABE
 		private Boolean byStudentContactVisible;
 		private Boolean byStudentProgramGoalVisible;
-
+		private Boolean byStudentWorkforceVisible;
+		private Boolean byStudentEduInstrucVisible;
 		private String selectedOrgLevel;
 
 		private Integer selectedStudentId;
@@ -3306,7 +3329,8 @@ public class ManageStudentController extends PageFlowController
 			//student intake UI
 			copied.setByStudentContactVisible(this.byStudentContactVisible);
 			copied.setByStudentProgramGoalVisible(this.byStudentProgramGoalVisible);
-
+			copied.setByStudentEduInstrucVisible(this.byStudentEduInstrucVisible);
+			copied.setByStudentWorkforceVisible(this.byStudentWorkforceVisible);
 
 			copied.setSelectedOrgLevel(this.selectedOrgLevel);            
 			copied.setSelectedStudentId(this.selectedStudentId);
@@ -3547,6 +3571,8 @@ public class ManageStudentController extends PageFlowController
 			//student intke ui
 			this.byStudentContactVisible = Boolean.FALSE;
 			this.byStudentProgramGoalVisible=Boolean.FALSE;
+			this.byStudentEduInstrucVisible = Boolean.FALSE;
+			this.byStudentWorkforceVisible = Boolean.FALSE;
 
 		}
 
@@ -4233,6 +4259,34 @@ public class ManageStudentController extends PageFlowController
 			this.byStudentProgramGoalVisible = byStudentProgramGoalVisible;
 		}
 
+		/**
+		 * @return the byStudentWorkforceVisible
+		 */
+		public Boolean getByStudentWorkforceVisible() {
+			return byStudentWorkforceVisible;
+		}
+
+		/**
+		 * @param byStudentWorkforceVisible the byStudentWorkforceVisible to set
+		 */
+		public void setByStudentWorkforceVisible(Boolean byStudentWorkforceVisible) {
+			this.byStudentWorkforceVisible = byStudentWorkforceVisible;
+		}
+
+		/**
+		 * @return the byStudentEduInstrucVisible
+		 */
+		public Boolean getByStudentEduInstrucVisible() {
+			return byStudentEduInstrucVisible;
+		}
+
+		/**
+		 * @param byStudentEduInstrucVisible the byStudentEduInstrucVisible to set
+		 */
+		public void setByStudentEduInstrucVisible(Boolean byStudentEduInstrucVisible) {
+			this.byStudentEduInstrucVisible = byStudentEduInstrucVisible;
+		}
+
 		// End change for Student Intake UI
 	}
 
@@ -4300,4 +4354,18 @@ public class ManageStudentController extends PageFlowController
 		this.studentIdLabelName = studentIdLabelName;
 	}
 	// End  Change For CR - GA2011CR001
+
+	/**
+	 * @return the workforceSectionVisible
+	 */
+	public boolean isWorkforceSectionVisible() {
+		return workforceSectionVisible;
+	}
+
+	/**
+	 * @param workforceSectionVisible the workforceSectionVisible to set
+	 */
+	public void setWorkforceSectionVisible(boolean workforceSectionVisible) {
+		this.workforceSectionVisible = workforceSectionVisible;
+	}
 }
