@@ -621,11 +621,42 @@ public class ManageStudentController extends PageFlowController
 			boolean result = false;
 			if (isABECustomer) {
 				
-				String laborForceValue = getRequest().getParameter("Labor Force Status");
+				/*String laborForceValue = getRequest().getParameter("laborForceStatus");
+				System.out.println("laborforcevalue"+ laborForceValue);
+				
+				
+					if(laborForceValue != null && laborForceValue.equals("Employed")){
+						this.workforceSectionVisible = false;
+						
+					}*/
+					
+				
+				
+				
 				result = form.verifyABEStudentInformation(this.selectedOrgNodes);
 				if (result) {
 					getStudentDemographicsFromRequest(); 
 					result = form.vaildateABEStudentDemographicInfo(this.demographics);
+				}
+				if (result) {
+				for (int i=0 ; i < this.demographics.size(); i++ ) {
+					 StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
+					 if (sdd.getLabelName().equals("Labor Force Status")) {
+						
+						 System.out.println("demo name" + sdd.getLabelName());
+						 
+						 StudentDemographicValue[] values = sdd.getStudentDemographicValues();
+						 for (int k=0 ; k < values.length; k++ ) {
+							 if(values[k].getValueName().equals("Employed") && 
+									 values[k].getSelectedFlag().equals("true")) {
+								this.workforceSectionVisible=false;
+								 break; 
+							 }
+						 }
+						
+						
+					 }
+				}
 				}
 				if (result && !this.workforceSectionVisible) {
 					getStudentWorkForceDetailsFromRequest(); 
@@ -2692,7 +2723,7 @@ public class ManageStudentController extends PageFlowController
 		this.getRequest().setAttribute("demographics", this.demographics);       
 		this.getRequest().setAttribute("studentImported", new Boolean(studentImported)); 
 		this.getRequest().setAttribute("mandatoryField",new Boolean(isABECustomer));
-
+		this.getRequest().setAttribute("workforceSectionVisible",true);
 		this.accommodations = getStudentAccommodations(studentId);
 		this.getRequest().setAttribute("accommodations", this.accommodations);       
 
