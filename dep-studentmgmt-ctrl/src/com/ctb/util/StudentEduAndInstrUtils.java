@@ -131,14 +131,19 @@ public class StudentEduAndInstrUtils {
 
 				
 				if(parameterName.equals("Skill Level")) {
-					fieldType = "dropdown";
+					fieldType = "multipleDropdown";
 					keyName=parameterName+"_"+fieldType;
 					valueList = new ArrayList();
-					valueList.add("Technology");
-					valueList.add("Speaking");
-					valueList.add("Reading");
-					valueList.add("Writing");
-					valueList.add("Math");
+					
+					String value[]= new String []{"0","1","2","3","4","5","6","7","8","9"};
+					Map skillLevelMap = new HashMap();
+					skillLevelMap.put("Technology", value);
+					skillLevelMap.put("Speaking", value);
+					skillLevelMap.put("Reading", value);
+					skillLevelMap.put("Writing", value);
+					skillLevelMap.put("Math", value);
+					valueList.add(skillLevelMap);
+					
 					eduAndInstrList.put(keyName,valueList);
 				}
 				

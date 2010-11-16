@@ -3,6 +3,7 @@ package com.ctb.control.studentManagement;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -2006,7 +2007,7 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 
 				String[] paramsTyes = paramName.split("_");
 				StudentOtherDetail stuOtherDetail = new StudentOtherDetail();
-				stuOtherDetail.setSectionName("Supplemental Workforce");
+				stuOtherDetail.setSectionName("Supplement data for Workforce Student");
 				stuOtherDetail.setLabelName(paramsTyes[0]);
 				stuOtherDetail.setSortOrder(i);
 				stuOtherDetail.setValueCardinality(paramsTyes[1]);
@@ -2023,51 +2024,74 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 					j++;
 				}
 
-				if (studentId !=null) {
-					//retrieve from database and set the selected flag
-					StudentWorkForceData [] studentOtherDetailValuesDB;
-
-					studentOtherDetailValuesDB = studentManagement.getStudentWorkforceDetails(studentId); 
-					for(int k=0 ; k < studentOtherDetailValuesDB.length ; k++ ) {
-
-						for(int l=0 ; l < studentOtherDetailValues.length ; l++ ) {
-
-							if (studentOtherDetailValuesDB[k].getLabelName().
-									equals(studentOtherDetailValues[l].getLabelName())) {
-								if (studentOtherDetailValuesDB[k].getValueName().
-										equals(studentOtherDetailValues[l].getLabelName())) {
-									studentOtherDetailValues[l].setSelectedFlag("true");
-									studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-								}
-							}
-							
-							if (studentOtherDetailValuesDB[k].getLabelName().equals("Scheduled Work Hours Per Week") &&
-									studentOtherDetailValues[l].getLabelName().equals("Scheduled Work Hours Per Week")) {
-								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-								studentOtherDetailValues[l].setSelectedFlag("true");
-							}
-							
-							if (studentOtherDetailValuesDB[k].getLabelName().equals("Provider Values") &&
-									studentOtherDetailValues[l].getLabelName().equals("Provider Values")) {
-								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-								studentOtherDetailValues[l].setSelectedFlag("true");
-							}
-							if (studentOtherDetailValuesDB[k].getLabelName().equals("Hourly Wage") &&
-									studentOtherDetailValues[l].getLabelName().equals("Hourly Wage")) {
-								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-								studentOtherDetailValues[l].setSelectedFlag("true");
-							}
-								
-
-						}
-					}
-				}
+				
 				stuOtherDetail.setStudentOtherDetailValues(studentOtherDetailValues);
 				studentOtherDetails[i]= stuOtherDetail;
 
 
 				i++;
 			}
+			
+			
+			
+			if (studentId !=null) {
+			//retrieve from database and set the selected flag
+			StudentWorkForceData [] studentOtherDetailValuesDB;
+
+			studentOtherDetailValuesDB = studentManagement.getStudentWorkforceDetails(studentId,"Supplement data for Workforce Student"); 
+			for(int k=0 ; k < studentOtherDetailValuesDB.length ; k++ ) {
+				StudentOtherDetailValue [] studentOtherDetailValues = studentOtherDetails[k].getStudentOtherDetailValues();
+				for(int l=0 ; l < studentOtherDetailValues.length ; l++ ) {
+
+					if (studentOtherDetailValuesDB[k].getLabelName().
+							equals(studentOtherDetailValues[l].getLabelName())) { 
+						if (studentOtherDetailValuesDB[k].getValueName()!= null
+								&& studentOtherDetailValues[l].getValueName() != null
+									&&(studentOtherDetailValuesDB[k].getValueName().
+											equals(studentOtherDetailValues[l].getValueName()))) {
+								studentOtherDetailValues[l].setSelectedFlag("true");
+								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+							}
+					
+					}
+					
+					if (studentOtherDetailValuesDB[k].getLabelName() != null
+							&& studentOtherDetailValues[l].getLabelName() != null
+								&& studentOtherDetailValuesDB[k].getLabelName().equals("Scheduled Work Hours Per Week")
+									&& studentOtherDetailValues[l].getLabelName().equals("Scheduled Work Hours Per Week")) {
+						if (studentOtherDetailValuesDB[k].getValueName()!= null) {
+							studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+						} else {
+							studentOtherDetailValues[l].setValueName("");
+						}
+						studentOtherDetailValues[l].setSelectedFlag("true");
+					}
+					
+					if (studentOtherDetailValuesDB[k].getLabelName().equals("Provider Use") &&
+							studentOtherDetailValues[l].getLabelName().equals("Provider Use")) {
+						if (studentOtherDetailValuesDB[k].getValueName()!= null) {
+							studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+						} else {
+							studentOtherDetailValues[l].setValueName("");
+						}
+						studentOtherDetailValues[l].setSelectedFlag("true");
+					}
+					if (studentOtherDetailValuesDB[k].getLabelName().equals("Hourly Wage") &&
+							studentOtherDetailValues[l].getLabelName().equals("Hourly Wage")) {
+						if (studentOtherDetailValuesDB[k].getValueName()!= null) {
+							studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+						} else {
+							studentOtherDetailValues[l].setValueName("");
+						}
+						studentOtherDetailValues[l].setSelectedFlag("true");
+					}
+						
+
+				}
+			}
+		}
+			
+			
 
 
 
@@ -2082,7 +2106,7 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	}
 
 	/**
-	 * Create student demographic data for the specified student.
+	 * Create student WorkForce data for the specified student.
 	 * @common:operation
 	 * @param userName - identifies the calling user
 	 * @param studentId - identifies the student 
@@ -2105,7 +2129,7 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 				 for (int j=0; studentOtherDetailValues!=null && j<studentOtherDetailValues.length; j++) {
 					 if (studentOtherDetailValues[j] != null && "true".equals(studentOtherDetailValues[j].getSelectedFlag())) {
 						 StudentWorkForceData studentWorkForceData = new StudentWorkForceData();
-						 Integer studentAdditionalId = studentManagement.getNextPKForStudentPrgGoalData();
+						 Integer studentAdditionalId = studentManagement.getNextPKForStudentOtherData();
 						 studentWorkForceData.setStudentAdditionalDataId(studentAdditionalId);                        
 						 studentWorkForceData.setStudentId(studentId);
 						 studentWorkForceData.setSectionName(studentOtherDetail[i].getSectionName());
@@ -2126,33 +2150,63 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	}
 
 	/**
-     * Get student demographic for the specified customer and student.
-     * @common:operation
-     * @param userName - identifies the calling user
-     * @param customerId - identifies the customer whose information is desired
-     * @param studentId - identifies the student whose information is desired
-     * @param returnInvisible - indicates whether to return invisible data/values
-     * @return StudentDemographic []
-     * @throws CTBBusinessException
-     */
-    public StudentOtherDetail [] getStudentEduAndInstr(String userName, Integer customerId, Integer studentId, boolean returnInvisible) throws CTBBusinessException
-    {
-        if (studentId !=null)
-            validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentEduAndInstr");
-        validator.validateCustomer(userName, customerId, "StudentManagementImpl.getStudentEduAndInstr");
-        try {
-            
-        	StudentOtherDetail [] studentOtherDetails = null;
-        	 Map eduAndInstrOptions = StudentEduAndInstrUtils.getEduAndInstrList();
-        	 
-        	 studentOtherDetails = new StudentOtherDetail[eduAndInstrOptions.size()];
-				Iterator iterate = eduAndInstrOptions.keySet().iterator();
-				
-				int i=0;
-				while (iterate.hasNext()) {
-					String paramName = (String)iterate.next();
-					List parameterOptions= (List)eduAndInstrOptions.get(paramName);
-					String[] stgpeduAndInstroptions = null;
+	 * Get student demographic for the specified customer and student.
+	 * @common:operation
+	 * @param userName - identifies the calling user
+	 * @param customerId - identifies the customer whose information is desired
+	 * @param studentId - identifies the student whose information is desired
+	 * @param returnInvisible - indicates whether to return invisible data/values
+	 * @return StudentDemographic []
+	 * @throws CTBBusinessException
+	 */
+	public StudentOtherDetail [] getStudentEduAndInstr(String userName, Integer customerId, Integer studentId, boolean returnInvisible) throws CTBBusinessException
+	{
+		if (studentId !=null)
+			validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentEduAndInstr");
+		validator.validateCustomer(userName, customerId, "StudentManagementImpl.getStudentEduAndInstr");
+		try {
+
+			StudentOtherDetail [] studentOtherDetails = null;
+			Map eduAndInstrOptions = StudentEduAndInstrUtils.getEduAndInstrList();
+
+			studentOtherDetails = new StudentOtherDetail[eduAndInstrOptions.size()];
+			Iterator iterate = eduAndInstrOptions.keySet().iterator();
+
+			int i=0;
+			while (iterate.hasNext()) {
+				String paramName = (String)iterate.next();
+				String[] paramsTyes = paramName.split("_");
+				List parameterOptions= (List)eduAndInstrOptions.get(paramName);
+				String[] stgpeduAndInstroptions = null;
+				String tempStgpeduAndInstroptions = "";
+				if(paramsTyes[0].equals("Skill Level")){
+					if(parameterOptions != null && parameterOptions.size()==1){
+						stgpeduAndInstroptions = new String[5];
+						HashMap skillMap = (HashMap)parameterOptions.get(0);
+						Iterator iterator = skillMap.keySet().iterator();
+						int k=0;
+						while (iterator.hasNext()) { 
+							String skillName = (String)iterator.next();
+							System.out.println("skillName==>"+skillName);
+							String mapvalue[]= (String[])skillMap.get(skillName);
+							//tempStgpeduAndInstroptions = new String[mapvalue.length+1];
+							//stgpeduAndInstroptions = mapvalue;
+							tempStgpeduAndInstroptions = skillName+",";
+							for(int skis= 0 ; skis < mapvalue.length; skis++  ) {
+								tempStgpeduAndInstroptions = tempStgpeduAndInstroptions +(String)mapvalue[skis];
+								if(skis != mapvalue.length-1)
+								tempStgpeduAndInstroptions = tempStgpeduAndInstroptions+",";
+								}
+							stgpeduAndInstroptions[k] = tempStgpeduAndInstroptions;
+							System.out.println(stgpeduAndInstroptions[k]);
+							k++;
+						}
+
+					}
+					
+					
+				} else {
+
 					if(parameterOptions != null && parameterOptions.size() > 0){
 						stgpeduAndInstroptions = new String[parameterOptions.size()];
 						for(int k= 0 ; k < parameterOptions.size(); k++  ) {
@@ -2163,45 +2217,81 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 						stgpeduAndInstroptions = new String[1];
 						stgpeduAndInstroptions[0]="";
 					}
-
-
-					String[] paramsTyes = paramName.split("_");
-					StudentOtherDetail stuOtherDetail = new StudentOtherDetail();
-					stuOtherDetail.setSectionName("Education And Instruction");
-					stuOtherDetail.setLabelName(paramsTyes[0]);
-					stuOtherDetail.setSortOrder(i);
-					stuOtherDetail.setValueCardinality(paramsTyes[1]);
-					stuOtherDetail.setVisible("true");
-					StudentOtherDetailValue[] studentotherDetailValues = new StudentOtherDetailValue[stgpeduAndInstroptions.length];
-					int j = 0;
-					for(String stgpeduAndInstr: stgpeduAndInstroptions ) {
-
-						StudentOtherDetailValue steduAndInstrval = new StudentOtherDetailValue();
-						steduAndInstrval.setValueName(stgpeduAndInstr);
-						steduAndInstrval.setVisible("true");
-						steduAndInstrval.setSelectedFlag("false");
-						studentotherDetailValues[j] = steduAndInstrval;
-						j++;
-					}
-					if(stuOtherDetail.getLabelName().equals("Instructional Program")) {
-						stuOtherDetail.setMultipleAllowedFlag("true");
-					} else {
-						stuOtherDetail.setMultipleAllowedFlag("false");
-					}
-					stuOtherDetail.setStudentOtherDetailValues(studentotherDetailValues);
-					studentOtherDetails[i]= stuOtherDetail;
-
-
-					i++;
+					
+					
 				}
-				
-				if (studentId !=null) {
+
+
+
+				StudentOtherDetail stuOtherDetail = new StudentOtherDetail();
+				stuOtherDetail.setSectionName("Education And Instruction");
+				stuOtherDetail.setLabelName(paramsTyes[0]);
+				stuOtherDetail.setSortOrder(i);
+				stuOtherDetail.setValueCardinality(paramsTyes[1]);
+				System.out.println("paramsTyes[0]  paramsTyes[1]"+paramsTyes[0]+"...."+paramsTyes[1]);
+				stuOtherDetail.setVisible("true");
+				StudentOtherDetailValue[] studentotherDetailValues = new StudentOtherDetailValue[stgpeduAndInstroptions.length];
+				int j = 0;
+				for(String stgpeduAndInstr: stgpeduAndInstroptions ) {
+
+					StudentOtherDetailValue steduAndInstrval = new StudentOtherDetailValue();
+					steduAndInstrval.setValueName(stgpeduAndInstr);
+					steduAndInstrval.setVisible("true");
+					steduAndInstrval.setSelectedFlag("false");
+					studentotherDetailValues[j] = steduAndInstrval;
+					j++;
+				}
+				if(stuOtherDetail.getLabelName().equals("Instructional Program")) {
+					stuOtherDetail.setMultipleAllowedFlag("true");
+				} else {
+					stuOtherDetail.setMultipleAllowedFlag("false");
+				}
+				stuOtherDetail.setStudentOtherDetailValues(studentotherDetailValues);
+				studentOtherDetails[i]= stuOtherDetail;
+
+
+				i++;
+			}
+
+		if (studentId !=null) {
 					//retrieve from database and set the selected flag
-					CustomerProgramGoal [] customerProgramGoals;
-		            
-	            	customerProgramGoals = studentManagement.getCustomerProgramGoals(customerId.intValue());
-				}
+					StudentWorkForceData [] studentOtherDetailValuesDB;
 
+					studentOtherDetailValuesDB = studentManagement.getStudentWorkforceDetails(studentId,"Education And Instruction"); 
+					for(int k=0 ; k < studentOtherDetailValuesDB.length ; k++ ) {
+						StudentOtherDetailValue [] studentOtherDetailValues = studentOtherDetails[k].getStudentOtherDetailValues();
+						for(int l=0 ; l < studentOtherDetailValues.length ; l++ ) {
+
+							if (studentOtherDetailValuesDB[k].getLabelName().
+									equals(studentOtherDetailValues[l].getLabelName())) {
+								if (studentOtherDetailValuesDB[k].getValueName().
+										equals(studentOtherDetailValues[l].getValueName())) {
+									studentOtherDetailValues[l].setSelectedFlag("true");
+									studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+								}
+							}
+							
+							if (studentOtherDetailValuesDB[k].getLabelName().equals("Scheduled Work Hours Per Week") &&
+									studentOtherDetailValues[l].getLabelName().equals("Scheduled Work Hours Per Week")) {
+								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+								studentOtherDetailValues[l].setSelectedFlag("true");
+							}
+							
+							if (studentOtherDetailValuesDB[k].getLabelName().equals("Provider Use") &&
+									studentOtherDetailValues[l].getLabelName().equals("Provider Use")) {
+								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+								studentOtherDetailValues[l].setSelectedFlag("true");
+							}
+							if (studentOtherDetailValuesDB[k].getLabelName().equals("Hourly Wage") &&
+									studentOtherDetailValues[l].getLabelName().equals("Hourly Wage")) {
+								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+								studentOtherDetailValues[l].setSelectedFlag("true");
+							}
+								
+
+						}
+					}
+				}
 
 			
           
@@ -2216,6 +2306,48 @@ public class StudentManagementImpl implements StudentManagement, Serializable
             
     }
     
+    /**
+	 * Create student WorkForce data for the specified student.
+	 * @common:operation
+	 * @param userName - identifies the calling user
+	 * @param studentId - identifies the student 
+	 * @param studentDemographics [] - contains the student's demographic information
+	 * @throws CTBBusinessException
+	 */
+	public void createStudentEducationInstructionData(String userName, Integer studentId, StudentOtherDetail [] studentOtherDetail) throws CTBBusinessException
+	{
+		validator.validateStudent(userName, studentId, "StudentManagementImpl.createStudentWorkForceData");
+
+		try {
+			 
+			 User user = getUserDetails(userName, userName);
+			 Integer userId = user.getUserId();
+			 Date now = new Date();
+			 for (int i=0; studentOtherDetail!= null && i<studentOtherDetail.length; i++) {
+				 StudentOtherDetailValue [] studentOtherDetailValues = studentOtherDetail[i].getStudentOtherDetailValues();
+				 for (int j=0; studentOtherDetailValues!=null && j<studentOtherDetailValues.length; j++) {
+					 if (studentOtherDetailValues[j] != null && "true".equals(studentOtherDetailValues[j].getSelectedFlag())) {
+						 StudentWorkForceData studentWorkForceData = new StudentWorkForceData();
+						 Integer studentAdditionalId = studentManagement.getNextPKForStudentOtherData();
+						 studentWorkForceData.setStudentAdditionalDataId(studentAdditionalId);                        
+						 studentWorkForceData.setStudentId(studentId);
+						 studentWorkForceData.setSectionName(studentOtherDetail[i].getSectionName());
+						 studentWorkForceData.setValueName(studentOtherDetailValues[j].getValueName());
+						 studentWorkForceData.setValue(studentOtherDetailValues[j].getValueCode());
+						 studentWorkForceData.setLabelName(studentOtherDetail[i].getLabelName());
+						 studentWorkForceData.setCreatedBy(userId);
+						 studentWorkForceData.setCreatedDateTime(now);
+						 studentManagement.createStudentEducationInstructionData(studentWorkForceData);
+					 }
+
+				 }
+			 }
+		} catch (SQLException se) {
+			StudentDataCreationException tee = new StudentDataCreationException("StudentManagementImpl: createStudentWorkForceData: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
 
 
 	//END-  added for CA-ABE

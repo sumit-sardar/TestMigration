@@ -1085,6 +1085,13 @@ public interface StudentManagement extends JdbcControl
     
     /**
      * @jc:sql statement::
+     * select SEQ_STUDENT_ADDITIONAL_DATA.nextval from dual
+     */
+    @JdbcControl.SQL(statement = "select SEQ_STUDENT_ADDITIONAL_DATA.nextval from dual")
+    Integer getNextPKForStudentOtherData() throws SQLException;
+    
+    /**
+     * @jc:sql statement::
      * insert into 
      *     student_demographic_data (
      *      student_demographic_data_id,
@@ -1144,6 +1151,10 @@ public interface StudentManagement extends JdbcControl
 	void createStudentWorkforceData(StudentWorkForceData sdd) throws SQLException;
     
     
-    @JdbcControl.SQL(statement="select student_additional_data_id as studentAdditionalDataId , student_id as studentId, section_name  as sectionName, label_name as labelName, value_name as valueName, value as value , created_by as createdBy, created_date_time as createdDateTime, updated_by as updatedBy, updated_date_time as updatedDateTime from STUDENT_ADDITIONAL_DATA where student_id = {studentId}")
-	StudentWorkForceData [] getStudentWorkforceDetails(Integer studentId) throws SQLException; 
+    @JdbcControl.SQL(statement="select student_additional_data_id as studentAdditionalDataId , student_id as studentId, section_name  as sectionName, label_name as labelName, value_name as valueName, value as value , created_by as createdBy, created_date_time as createdDateTime, updated_by as updatedBy, updated_date_time as updatedDateTime from STUDENT_ADDITIONAL_DATA where student_id = {studentId} and section_name={sectionName}")
+	StudentWorkForceData [] getStudentWorkforceDetails(Integer studentId,String sectionName) throws SQLException; 
+    
+    @JdbcControl.SQL(statement="insert into  STUDENT_ADDITIONAL_DATA (  student_additional_data_id, student_id, section_name, label_name, value_name, value, created_by, created_date_time, updated_by, updated_date_time) values ({sdd.studentAdditionalDataId},  {sdd.studentId},  {sdd.sectionName}, {sdd.labelName},  {sdd.valueName},  {sdd.value},  {sdd.createdBy},  {sdd.createdDateTime},  {sdd.updatedBy},  {sdd.updatedDateTime} \t)")
+	void createStudentEducationInstructionData(StudentWorkForceData sdd) throws SQLException;
+   
 }

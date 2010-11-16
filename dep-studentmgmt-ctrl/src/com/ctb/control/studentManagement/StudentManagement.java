@@ -4,6 +4,7 @@ package com.ctb.control.studentManagement;
 
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
+import com.ctb.bean.studentManagement.StudentOtherDetail;
 import com.ctb.exception.CTBBusinessException;
 
 /** 
@@ -514,5 +515,7 @@ public interface StudentManagement
 	     */
 	    
 	    void createStudentWorkForceData(java.lang.String userName, java.lang.Integer studentId, com.ctb.bean.studentManagement.StudentOtherDetail[] studentOtherDetail) throws com.ctb.exception.CTBBusinessException;
+	    
+	    void createStudentEducationInstructionData(String userName, Integer studentId, StudentOtherDetail [] studentOtherDetail) throws com.ctb.exception.CTBBusinessException;
 
 } 
