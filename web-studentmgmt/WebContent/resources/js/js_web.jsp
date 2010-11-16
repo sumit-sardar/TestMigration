@@ -695,69 +695,131 @@ function verifyExitAddEditStudent(){
 }
 ///////////////////////////////////////
 
-//Change for California_ABE
+
 function displayWorkforceSection(element){
 	var selection;
+	
 	if(element.value == 'Employed'){
 		selection = true;
+	//	var laborForceStatus= document.getElementsByName("laborForceStatus");
+	//	if(laborForceStatus.length < 1){
+	//	var input = document.createElement('input');
+	//	input.setAttribute("type","hidden");
+	//	input.setAttribute("name","laborForceStatus");
+	//	input.setAttribute("id", "laborForceId");
+	//	input.setAttribute("value",element.value);
+	//	document.body.appendChild(input);
 		enableWorkforceSection(selection);
+		}
 	}
 	else{
-
+		
 		selection = false;
 		enableWorkforceSection(selection);
 	}
 
 }
-//Change for California_ABE
+
 function enableWorkforceSection(selection){
 
-	var classNumber = document.getElementById("classNumber");
-	var dateOfEntryYear = document.getElementById("dateOfEntryYear");
-	var dateOfEntryMonth = document.getElementById("dateOfEntryMonth");
-	var dateOfEntryDay = document.getElementById("dateOfEntryDay");
-	var annualIncome = document.getElementById("annualIncome");
-	var services = document.getElementById("services");
-	var supportServices = document.getElementById("supportServices");
-	var maturitySkills = document.getElementById("maturitySkills");
-	var workforceReadiness = document.getElementById("workforceReadiness");
-	var providerUse = document.getElementById("providerUse");
-	var specialPrograms = document.getElementsByName("specialPrograms");
-	var HourlyWage = document.getElementById("HourlyWage");
-	var ScheduledWorkHours = document.getElementById("ScheduledWorkHours");
+	var servicesPreviouslyReceived = document.getElementsByName("Services Previously Received");	
+	var providerUse = document.getElementsByName("Workforce_Provider Use");
+	var workMaturitySkills = document.getElementsByName("Pre-employment work maturity skills");	
+	var workforceReadiness = document.getElementsByName("Workforce Readiness");
+	var annualIncome = document.getElementsByName("Annual Income");
+	var hourlyWage = document.getElementsByName("Workforce_Hourly Wage");
+	var scheduledWorkHours = document.getElementsByName("Workforce_Scheduled Work Hours Per Week");
+	var supportServices = document.getElementsByName("Support Services Needed");
+	
 	if(selection){
-		annualIncome.removeAttribute("disabled");
-		services.removeAttribute("disabled");
-		supportServices.removeAttribute("disabled");
-		maturitySkills.removeAttribute("disabled");
-		workforceReadiness.removeAttribute("disabled");
-		providerUse.removeAttribute("disabled");
-		for (var i = 0; i < specialPrograms.length; i++){
-			if (specialPrograms[i].name=='specialPrograms'){
-				specialPrograms[i].removeAttribute("disabled");
+			for (var i = 0; i < servicesPreviouslyReceived.length; i++){
+			if (servicesPreviouslyReceived[i].name=='Services Previously Received'){
+				servicesPreviouslyReceived[i].removeAttribute("disabled");
 			}
 		}
-		HourlyWage.removeAttribute("disabled");
-		ScheduledWorkHours.removeAttribute("disabled");
+		for (var i = 0; i < providerUse.length; i++){
+			if (providerUse[i].name=='Workforce_Provider Use'){
+				providerUse[i].removeAttribute("disabled");
+			}
+		}
+		for (var i = 0; i < workMaturitySkills.length; i++){
+			if (workMaturitySkills[i].name=='Pre-employment work maturity skills'){
+				workMaturitySkills[i].removeAttribute("disabled");
+			}
+		}
+		for (var i = 0; i < workforceReadiness.length; i++){
+			if (workforceReadiness[i].name=='Workforce Readiness'){
+				workforceReadiness[i].removeAttribute("disabled");
+			}
+		}
+			for (var i = 0; i < annualIncome.length; i++){
+			if (annualIncome[i].name=='Annual Income'){
+				annualIncome[i].removeAttribute("disabled");
+			}
+		}
+		for (var i = 0; i < supportServices.length; i++){
+			if (supportServices[i].name=='Support Services Needed'){
+				supportServices[i].removeAttribute("disabled");
+			}
+		}
+			for (var i = 0; i < hourlyWage.length; i++){
+			if (hourlyWage[i].name=='Workforce_Hourly Wage'){
+				hourlyWage[i].removeAttribute("disabled");
+			}
+		}
+			for (var i = 0; i < scheduledWorkHours.length; i++){
+			if (scheduledWorkHours[i].name=='Workforce_Scheduled Work Hours Per Week'){
+				scheduledWorkHours[i].removeAttribute("disabled");
+			}
+		}
 	}
 	else{
-		annualIncome.setAttribute("disabled","true");
-		services.setAttribute("disabled","true");
-		supportServices.setAttribute("disabled","true");
-		maturitySkills.setAttribute("disabled","true");
-		workforceReadiness.setAttribute("disabled","true");
-		providerUse.setAttribute("disabled","true");
-		for (var i = 0; i < specialPrograms.length; i++){
-			if (specialPrograms[i].name=='specialPrograms'){
-				specialPrograms[i].setAttribute("disabled",true);
+	
+		for (var i = 0; i < servicesPreviouslyReceived.length; i++){
+			if (servicesPreviouslyReceived[i].name=='Services Previously Received'){
+				servicesPreviouslyReceived[i].setAttribute("disabled",true);
 			}
 		}
-		HourlyWage.setAttribute("disabled","true");
-		ScheduledWorkHours.setAttribute("disabled","true");
+		for (var i = 0; i < providerUse.length; i++){
+			if (providerUse[i].name=='Workforce_Provider Use'){
+				providerUse[i].setAttribute("disabled",true);
+			}
+		}
+		for (var i = 0; i < workMaturitySkills.length; i++){
+			if (workMaturitySkills[i].name=='Pre-employment work maturity skills'){
+				workMaturitySkills[i].setAttribute("disabled",true);
+			}
+		}
+		for (var i = 0; i < workforceReadiness.length; i++){
+			if (workforceReadiness[i].name=='Workforce Readiness'){
+				workforceReadiness[i].setAttribute("disabled",true);
+			}
+		}
+			for (var i = 0; i < annualIncome.length; i++){
+			if (annualIncome[i].name=='Annual Income'){
+				annualIncome[i].setAttribute("disabled",true);
+			}
+		}
+		for (var i = 0; i < supportServices.length; i++){
+			if (supportServices[i].name=='Support Services Needed'){
+				supportServices[i].setAttribute("disabled",true);
+			}
+		}
+			for (var i = 0; i < hourlyWage.length; i++){
+			if (hourlyWage[i].name=='Workforce_Hourly Wage'){
+				hourlyWage[i].setAttribute("disabled",true);
+			}
+		}
+			for (var i = 0; i < scheduledWorkHours.length; i++){
+			if (scheduledWorkHours[i].name=='Workforce_Scheduled Work Hours Per Week'){
+				scheduledWorkHours[i].setAttribute("disabled",true);
+			}
+		}
+			
 	}
 }
 
-//Change for California_ABE
+
 function constrainNumericChar(e) 
 {
     var keyId = (window.event) ? event.keyCode : e.which;
@@ -775,7 +837,7 @@ function constrainNumericChar(e)
     
     return results;
 }
-//Change for California_ABE
+
 function focusNextControl(element)
 {
     if (element.value.length < element.getAttribute('maxlength')) 
@@ -795,6 +857,8 @@ function focusNextControl(element)
         }
     }
 }
+
+
 
 
 
