@@ -78,9 +78,9 @@ public class LoadTestImpl implements LoadTest, Serializable {
                 			runDate.add(Calendar.MINUTE, timeDiff);
                 			
                 			
-                			//change to randomly distribute the load test schedule over 30 mins              			
+                			//change to randomly distribute the load test schedule over 60 mins              			
                 			Random r = new Random();          			
-                			Integer randSecs = r.nextInt(1800);
+                			Integer randSecs = r.nextInt(3600);
                 			runDate.add(Calendar.SECOND, randSecs);
                 		              			
                 			
