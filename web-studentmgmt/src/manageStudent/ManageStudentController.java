@@ -649,6 +649,7 @@ public class ManageStudentController extends PageFlowController
 						 for (int k=0 ; k < values.length; k++ ) {
 							 if(values[k].getValueName().equals("Employed") && 
 									 values[k].getSelectedFlag().equals("true")) {
+								 
 								this.workforceSectionVisible=false;
 								 break; 
 							 }
@@ -3791,30 +3792,6 @@ public class ManageStudentController extends PageFlowController
 					requiredFields = Message.buildErrorString("Gender", requiredFieldCount, requiredFields);       
 				}
 
-				//CR - GA2011CR001 - validation For GTID
-				if(isMandatoryStudentId){
-					String externalStudentNumber = this.studentProfile.getStudentNumber().trim();
-					if ( externalStudentNumber.length()==0) {
-						requiredFieldCount += 1;     
-						requiredFields = Message.buildErrorString(this.studentIdLabelName, requiredFieldCount, requiredFields);   
-					}
-				}
-
-
-				if ( selectedOrgNodes.size() == 0 ) {
-					requiredFieldCount += 1;      
-					requiredFields = Message.buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
-				}        
-
-
-
-
-				String externalStudentNumber = this.studentProfile.getStudentNumber().trim();
-				if ( externalStudentNumber.length()==0) {
-					requiredFieldCount += 1;     
-					requiredFields = Message.buildErrorString("Social Security Number/Student ID", requiredFieldCount, requiredFields);   
-				}
-
 				String instructorFirstName = this.studentProfile.getInstructorFirstName().trim();
 				if( instructorFirstName.length()== 0){
 					requiredFieldCount += 1;
@@ -3826,6 +3803,18 @@ public class ManageStudentController extends PageFlowController
 					requiredFieldCount += 1;
 					requiredFields = Message.buildErrorString("Instructor Last Name", requiredFieldCount, requiredFields);
 				}
+				
+				String externalStudentNumber = this.studentProfile.getStudentNumber().trim();
+				if ( externalStudentNumber.length()==0) {
+					requiredFieldCount += 1;     
+					requiredFields = Message.buildErrorString("Social Security Number/Student ID", requiredFieldCount, requiredFields);   
+				}
+
+				if ( selectedOrgNodes.size() == 0 ) {
+					requiredFieldCount += 1;      
+					requiredFields = Message.buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
+				} 
+				
 			}
 			// required field contact check
 			if (sectionName.equals("Contact Information")) {
@@ -3887,9 +3876,10 @@ public class ManageStudentController extends PageFlowController
 
 			boolean validationFlagStudentInfo = requiredFieldValidation(selectedOrgNodes,"Student Information");
 
-			if (validationFlagStudentInfo)
-
+			if (validationFlagStudentInfo){
 				validationFlagStudentInfo = validateABEStudentInvalidChar(selectedOrgNodes,"Student Information");
+			}
+				
 
 			if (validationFlagStudentInfo) {
 				validationFlagStudentInfo = requiredFieldValidation(selectedOrgNodes,"Contact Information");
@@ -3910,7 +3900,7 @@ public class ManageStudentController extends PageFlowController
 		private boolean validateABEStudentInvalidChar(List selectedOrgNodes, String sectionName){
 
 			String invalidCharFields = "";
-
+			
 			if(sectionName.equals("Student Information")){
 
 
@@ -3924,9 +3914,10 @@ public class ManageStudentController extends PageFlowController
 				String day = this.studentProfile.getDay();
 				String year = this.studentProfile.getYear();
 
-				invalidCharFields = WebUtils.verifyABECreateStudentInstructorName(firstName, lastName, middleName, instructorFirstName, instructorLastName);                
+				invalidCharFields = WebUtils.verifyABECreateStudentInstructorName(firstName, middleName, lastName, instructorFirstName, instructorLastName);                
 				if (invalidCharFields.length() > 0) {
 					invalidCharFields += ("<br/>" + Message.INVALID_NAME_CHARS);
+					invalidCharFields += " in " + sectionName;
 					setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
 					return false;
 				}
@@ -3934,6 +3925,7 @@ public class ManageStudentController extends PageFlowController
 				invalidCharFields = WebUtils.verifyCreateStudentNumber(studentNumber, null, "Social Security Number/Student ID", null );                
 				if (invalidCharFields.length() > 0) {
 					invalidCharFields += ("<br/>" + Message.INVALID_NUMBER_CHARS);
+					invalidCharFields += " in " + sectionName;
 					setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
 					return false;
 				}
@@ -3942,20 +3934,24 @@ public class ManageStudentController extends PageFlowController
 				if(isDisableMandatoryBirthdate() && !DateUtils.allSelected(month, day, year)) {
 					if (!DateUtils.noneSelected(month, day, year)) {
 						invalidCharFields += Message.INVALID_DATE;
+						invalidCharFields += " in " + sectionName;
 						setMessage(MessageResourceBundle.getMessage("invalid_birthdate"), invalidCharFields, Message.ERROR);
 						return false;
 
 					}
+					//
 				}
 
 				if (DateUtils.allSelected(month, day, year)) {
 					int isDateValid = DateUtils.validateDateValues(year, month, day);
 					if (isDateValid != DateUtils.DATE_VALID) {
 						invalidCharFields += Message.INVALID_DATE;
+						invalidCharFields += " in " + sectionName;
 						setMessage(MessageResourceBundle.getMessage("invalid_birthdate"), invalidCharFields, Message.ERROR);
 						return false;
 					}
 				}
+				
 			}
 
 
@@ -3968,11 +3964,7 @@ public class ManageStudentController extends PageFlowController
 					return false;
 				}
 
-
 			}
-
-
-
 
 			return true;
 
@@ -4047,6 +4039,8 @@ public class ManageStudentController extends PageFlowController
 						if (values[k].getSelectedFlag().equals("true")) {
 							result= true;
 						}
+						
+						                                                
 					}
 
 					if (!result  ) {
@@ -4124,6 +4118,7 @@ public class ManageStudentController extends PageFlowController
 						if (values[k].getSelectedFlag().equals("true")) {
 							result= true;
 						}
+						
 					}
 
 					if (!result  ) {
@@ -4199,12 +4194,17 @@ public class ManageStudentController extends PageFlowController
 
 				StudentOtherDetailValue[] values = sdd.getStudentOtherDetailValues();
 				boolean result = false;
-
+				
 				for (int k=0; k < values.length; k++) {
-
-					if (values[k].getSelectedFlag().equals("true")) {
+					
+					if (values[k].getValueName().trim().equals("") || values[k].getValueName().trim().equals(null)){
+						result = false;
+					}
+					else if (values[k].getSelectedFlag().equals("true")) {
 						result= true;
 					}
+					
+					
 				}
 
 				if (!result  ) {

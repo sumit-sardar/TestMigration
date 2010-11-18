@@ -2187,10 +2187,7 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 						int k=0;
 						while (iterator.hasNext()) { 
 							String skillName = (String)iterator.next();
-							System.out.println("skillName==>"+skillName);
 							String mapvalue[]= (String[])skillMap.get(skillName);
-							//tempStgpeduAndInstroptions = new String[mapvalue.length+1];
-							//stgpeduAndInstroptions = mapvalue;
 							tempStgpeduAndInstroptions = skillName+",";
 							for(int skis= 0 ; skis < mapvalue.length; skis++  ) {
 								tempStgpeduAndInstroptions = tempStgpeduAndInstroptions +(String)mapvalue[skis];
@@ -2198,7 +2195,6 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 								tempStgpeduAndInstroptions = tempStgpeduAndInstroptions+",";
 								}
 							stgpeduAndInstroptions[k] = tempStgpeduAndInstroptions;
-							System.out.println(stgpeduAndInstroptions[k]);
 							k++;
 						}
 
@@ -2228,7 +2224,6 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 				stuOtherDetail.setLabelName(paramsTyes[0]);
 				stuOtherDetail.setSortOrder(i);
 				stuOtherDetail.setValueCardinality(paramsTyes[1]);
-				System.out.println("paramsTyes[0]  paramsTyes[1]"+paramsTyes[0]+"...."+paramsTyes[1]);
 				stuOtherDetail.setVisible("true");
 				StudentOtherDetailValue[] studentotherDetailValues = new StudentOtherDetailValue[stgpeduAndInstroptions.length];
 				int j = 0;
@@ -2237,10 +2232,18 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 					StudentOtherDetailValue steduAndInstrval = new StudentOtherDetailValue();
 					steduAndInstrval.setValueName(stgpeduAndInstr);
 					steduAndInstrval.setVisible("true");
-					steduAndInstrval.setSelectedFlag("false");
+					if(stuOtherDetail.getLabelName().equals("Earned the above outside the U.S.")) {
+						if(stgpeduAndInstroptions[1].equals("No"))
+							steduAndInstrval.setSelectedFlag("true");
+					}
+					else {
+						steduAndInstrval.setSelectedFlag("false");
+					}
+					System.out.println("steduAndInstrval.setSelectedFlag();==>"+steduAndInstrval.getSelectedFlag());
 					studentotherDetailValues[j] = steduAndInstrval;
 					j++;
 				}
+				
 				if(stuOtherDetail.getLabelName().equals("Instructional Program")) {
 					stuOtherDetail.setMultipleAllowedFlag("true");
 				} else {

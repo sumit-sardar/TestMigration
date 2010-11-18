@@ -156,6 +156,109 @@ public class WebUtils
 
 		return invalidCharFields;
 	}
+	//Changes for CA-ABE
+	public static String verifyABECreateStudentInstructorName(String firstName, String lastName, String middleName, String instructorFirstName, String instructorLastName)
+	{
+		String invalidCharFields = "";
+		int invalidCharFieldCount = 0;
+
+		if (! validNameString(firstName) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString("First Name", invalidCharFieldCount, invalidCharFields);       
+		}
+		
+		if (! validNameString(middleName) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString("Middle Name", invalidCharFieldCount, invalidCharFields);       
+		}
+		
+		if (! validNameString(lastName) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString("Last Name", invalidCharFieldCount, invalidCharFields);       
+		}
+
+		if (! validNameString(instructorFirstName) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString("Instructor First Name", invalidCharFieldCount, invalidCharFields);       
+		}
+		if (! validNameString(instructorLastName) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString("Instructor Last Name", invalidCharFieldCount, invalidCharFields);       
+		}
+
+		return invalidCharFields;
+	}
+
+	public static String verifyABEValidStudentContact(StudentContactInformation studentContact){
+		String addressLine1 = studentContact.getAddressLine1();
+		String addressLine2 = studentContact.getAddressLine2();
+		String city = studentContact.getCity();
+		String email =studentContact.getEmail();
+		
+		
+		
+		String invalidCharFields = "";
+		int invalidCharFieldCount = 0;
+		String invalidNumFields = "";
+		String invalidEmailField = "";
+		int invalidEmailFieldCount = 0;
+		int invalidNumFieldCount = 0;
+		String sectionName = "Contact Information";
+		if (! validAddressString(addressLine1) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString(Message.FIELD_ADDRESS_LINE1, invalidCharFieldCount, invalidCharFields);       
+		}
+		if (! validAddressString(addressLine2) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString(Message.FIELD_ADDRESS_LINE2, invalidCharFieldCount, invalidCharFields);       
+		}
+		if (! validNameString(city) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString(Message.FIELD_CITY, invalidCharFieldCount, invalidCharFields);       
+		}
+		
+		if (! validEmail(email)) {
+			invalidEmailFieldCount += 1;            
+			invalidEmailField = buildErrorString(Message.FIELD_EMAIL, invalidEmailFieldCount, invalidEmailField);       
+		}
+		
+		if( invalidZipLength(studentContact)){
+			invalidNumFieldCount += 1;            
+			invalidNumFields = buildErrorString(Message.FIELDS_ZIP_CODE, invalidNumFieldCount, invalidNumFields);       
+		}
+		if(invalidPrimaryPhoneLength(studentContact)){
+			invalidNumFieldCount += 1;            
+			invalidNumFields = buildErrorString(Message.FIELD_PRIMARY_PHONE, invalidNumFieldCount, invalidNumFields);       
+		
+		}
+		if(invalidSecondaryPhoneLength(studentContact)){
+			invalidNumFieldCount += 1;            
+			invalidNumFields = buildErrorString(Message.FIELD_SECONDARY_PHONE, invalidNumFieldCount, invalidNumFields);       
+		}
+	
+		
+		if(invalidCharFieldCount > 0){
+			invalidCharFields = invalidCharFields + ("<br/>" + Message.INVALID_NAME_CHARS + " in " + sectionName);
+			invalidCharFields += ("<br/>");
+			}
+		if(invalidNumFieldCount > 0){
+			
+			 if(invalidNumFields!=null && invalidNumFields.length()>0){
+				 invalidNumFields += ("<br/>");
+	            }
+			 invalidCharFields += invalidNumFields + (Message.INVALID_NUMBER_FORMAT +" in "+ sectionName + "<br/>");
+			 	
+		}
+		if(invalidEmailFieldCount > 0){
+			 if(invalidEmailField!=null && invalidEmailField.length()>0){
+				 invalidEmailField += ("<br/>");
+	            }
+			invalidCharFields += invalidEmailField + Message.INVALID_EMAIL + " in " + sectionName;
+		}
+		
+		return invalidCharFields;
+
+	}
 
 	public static String verifyCreateStudentNumber(String studentNumber, String studentSecondNumber, String studentIdLabelName, String studentId2LabelName)
 	{
@@ -223,109 +326,6 @@ public class WebUtils
 		}        
 		return result;
 	}
-
-	
-		//Changes for CA-ABE
-	public static String verifyABECreateStudentInstructorName(String firstName, String lastName, String middleName, String instructorFirstName, String instructorLastName)
-	{
-		String invalidCharFields = "";
-		int invalidCharFieldCount = 0;
-
-		if (! validNameString(firstName) ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString("First Name", invalidCharFieldCount, invalidCharFields);       
-		}
-
-		if (! validNameString(lastName) ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString("Last Name", invalidCharFieldCount, invalidCharFields);       
-		}
-
-		if (! validNameString(middleName) ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString("Middle Name", invalidCharFieldCount, invalidCharFields);       
-		}
-		if (! validNameString(instructorFirstName) ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString("Instructor First Name", invalidCharFieldCount, invalidCharFields);       
-		}
-		if (! validNameString(instructorLastName) ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString("Instructor Last Name", invalidCharFieldCount, invalidCharFields);       
-		}
-
-		return invalidCharFields;
-	}
-
-	public static String verifyABEValidStudentContact(StudentContactInformation studentContact){
-		String addressLine1 = studentContact.getAddressLine1();
-		String addressLine2 = studentContact.getAddressLine2();
-		String city = studentContact.getCity();
-		String email =studentContact.getEmail();
-		
-		
-		
-		String invalidCharFields = "";
-		int invalidCharFieldCount = 0;
-		String invalidNumFields = "";
-		String invalidEmailField = "";
-		int invalidEmailFieldCount = 0;
-		int invalidNumFieldCount = 0;
-		if (! validAddressString(addressLine1) ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString(Message.FIELD_ADDRESS_LINE1, invalidCharFieldCount, invalidCharFields);       
-		}
-		if (! validAddressString(addressLine2) ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString(Message.FIELD_ADDRESS_LINE2, invalidCharFieldCount, invalidCharFields);       
-		}
-		if (! validNameString(city) ) {
-			invalidCharFieldCount += 1;            
-			invalidCharFields = buildErrorString(Message.FIELD_CITY, invalidCharFieldCount, invalidCharFields);       
-		}
-		
-		if (! validEmail(email)) {
-			invalidEmailFieldCount += 1;            
-			invalidEmailField = buildErrorString(Message.FIELD_EMAIL, invalidEmailFieldCount, invalidEmailField);       
-		}
-		
-		if(invalidPrimaryPhoneLength(studentContact)){
-			invalidNumFieldCount += 1;            
-			invalidNumFields = buildErrorString("Primary Phone", invalidNumFieldCount, invalidNumFields);       
-		
-		}
-		if(invalidSecondaryPhoneLength(studentContact)){
-			invalidNumFieldCount += 1;            
-			invalidNumFields = buildErrorString("Secondary Phone", invalidNumFieldCount, invalidNumFields);       
-		}
-		if( invalidZipLength(studentContact)){
-			invalidNumFieldCount += 1;            
-			invalidNumFields = buildErrorString("Zip Code", invalidNumFieldCount, invalidNumFields);       
-		}
-		
-		if(invalidCharFieldCount > 0){
-			invalidCharFields = invalidCharFields + ("<br/>" + Message.INVALID_CHARS);
-			invalidCharFields += ("<br/>");
-			}
-		if(invalidNumFieldCount > 0){
-			
-			 if(invalidNumFields!=null && invalidNumFields.length()>0){
-				 invalidNumFields += ("<br/>");
-	            }
-			 invalidCharFields += invalidNumFields + (Message.INVALID_NUMBER_FORMAT + "<br/>");
-			 	
-		}
-		if(invalidEmailFieldCount > 0){
-			 if(invalidEmailField!=null && invalidEmailField.length()>0){
-				 invalidEmailField += ("<br/>");
-	            }
-			invalidCharFields += invalidEmailField + Message.INVALID_EMAIL;
-		}
-		
-		return invalidCharFields;
-
-	}
-
 
 	//Changes for CA-ABE
 	public static boolean validEmail(String email)
@@ -453,7 +453,7 @@ public class WebUtils
 			   
 		}
 		if (invalidCharFieldCount > 0) {
-			invalidCharFields = buildErrorString(Message.FIELD_PROVIDER_USE,invalidCharFieldCount, invalidCharFields);
+			invalidCharFields = buildErrorString(Message.FIELD_PROVIDER_USE, invalidCharFieldCount, invalidCharFields);
 		}
 		
 		return invalidCharFields;

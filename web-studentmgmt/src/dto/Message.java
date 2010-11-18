@@ -37,14 +37,18 @@ public class Message implements java.io.Serializable
 
     //Changes for CA-ABE student intake
     public static final String SELECT_STATE = "Select a state";
-    public static final String FIELD_ADDRESS_LINE1 = "Address Line1";
-    public static final String FIELD_ADDRESS_LINE2 = "Address Line2";
+    public static final String FIELD_ADDRESS_LINE1 = "Address Line 1";
+    public static final String FIELD_ADDRESS_LINE2 = "Address Line 2";
     public static final String FIELD_CITY = "City";
     public static final String FIELD_EMAIL = "Email";
+    public static final String FIELDS_ZIP_CODE = "Zip Code";
+   
+    public static final String FIELD_PRIMARY_PHONE = "Primary Phone";
+    public static final String FIELD_SECONDARY_PHONE ="Secondary Phone";
     public static final String FIELD_PROVIDER_USE ="Provider Use";
-    public static final String INVALID_EMAIL  = "Please enter a valid email address";
     public static final String INVALID_NUMBER_FORMAT  = "Please re-enter numeric fields in valid format";
-    
+    public static final String INVALID_EMAIL = "Please enter a valid email address";
+    public static final String INVALID_FORMAT_TITLE = "One or more fields contain invalid formats or invalid values:";
     public Message()
     {
         this.title = "";
