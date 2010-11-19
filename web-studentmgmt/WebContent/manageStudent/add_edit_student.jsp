@@ -130,7 +130,7 @@
 <a name="moduleStudentEduAndInstr"><!-- moduleStudentProgramsGoal --></a>    
 <p>
     <ctb:showHideSection sectionId="moduleStudentEduAndInstr" sectionTitle="Education And Instruction" sectionVisible="actionForm.byStudentEduInstrucVisible">
-        <jsp:include page="/manageStudent/add_edit_student_edu_instru.jsp" />
+        <jsp:include page="/manageStudent/add_edit_student_edu_instruction.jsp" />
     </ctb:showHideSection>
 </p>
 </c:if>

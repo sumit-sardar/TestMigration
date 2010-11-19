@@ -26,15 +26,20 @@
 				</c:if>
 
 				<c:if test="${!isABECustomer}">
-					<td class="tableFilter" width="100" align="right">Student ID:</td>
+					 <c:if test="${isStudentIdConfigurable}">   
+         				<td class="tableFilter" width="100" align="right">${studentIdArrValue[0]}:</td>
+          			</c:if>
+         			<c:if test="${!isStudentIdConfigurable}">   
+      					 <td class="tableFilter" width="100" align="right">Student ID:</td>
+        			 </c:if>
 					<td class="tableFilter" width="*"><netui:textBox tagId="studentNumber"
 						dataSource="actionForm.studentProfile.studentNumber" tabindex="1" /></td>
 				</c:if>
 
 				<c:if test="${isABECustomer}">
 					<td class="tableFilter" width="110" align="right">Instructor First Name:</td>
-					<td class="tableFilter" width="200"><netui:textBox tagId="lastName"
-						dataSource="actionForm.studentProfile.lastName" tabindex="4" /></td>
+					<td class="tableFilter" width="200"><netui:textBox tagId="instructorFirstName"
+						dataSource="actionForm.studentProfile.instructorFirstName" tabindex="4" /></td>
 				</c:if>
 
 				<c:if test="${!isABECustomer}">
@@ -60,8 +65,8 @@
 
 				<c:if test="${isABECustomer}">
 					<td class="tableFilter" width="110" align="right">Instructor Last Name:</td>
-					<td class="tableFilter" width="200"><netui:textBox tagId="lastName"
-						dataSource="actionForm.studentProfile.lastName" tabindex="4" /></td>
+					<td class="tableFilter" width="200"><netui:textBox tagId="instructorLastName"
+						dataSource="actionForm.studentProfile.instructorLastName" tabindex="4" /></td>
 				</c:if>
 
 				<c:if test="${!isABECustomer}">
@@ -126,14 +131,7 @@
 					<td class="tableFilter" width="*"><netui:textBox tagId="userName"
 						dataSource="actionForm.studentProfile.userName" tabindex="5" /></td>
 				</c:if>
-				<c:if test="${isABECustomer}">
-					<td class="tableFilter" width="110" align="right">Follow Up Status:</td>
-					<td class="tableFilter" width="*"><select style="width: 155px">
-					<Option selected="true">Any Status</Option>
-					<Option>Incomplete</Option>
-					<Option>Complete</Option>
-				</select></td>
-				</c:if>
+				
 			</tr>
 			<c:if test="${isABECustomer}">
 			<tr class="tableFilter">

@@ -212,6 +212,7 @@ public class StudentWorkorceTag extends CTBTag
 			String maxlength = "64";
 			
 			String constrainNumericChar = (nameId.equals("Workforce_Scheduled Work Hours Per Week") || nameId.equals("Workforce_Hourly Wage")) ? " return constrainNumericChar(event);": "";
+			String checkAndTruncate = (nameId.equals("Workforce_Scheduled Work Hours Per Week") || nameId.equals("Workforce_Hourly Wage")) ? " checkAndTruncate(this)": "";
 			
 			if(nameId.equals("Workforce_Scheduled Work Hours Per Week")){
 				maxlength = "3";
@@ -226,7 +227,7 @@ public class StudentWorkorceTag extends CTBTag
 			return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=\"" + maxlength + 
 			" \" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
 			" tabindex=\"" + (this.tabIndex++) + "\" " +
-			  disabled +" onkeypress=\""+ constrainNumericChar + "\"/>";
+			  disabled +" onkeypress=\""+ constrainNumericChar + "\" onBlur=\""+ checkAndTruncate + "\" onKeyUp=\""+ checkAndTruncate + "\"/>";
 		}
 
 		

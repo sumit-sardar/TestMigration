@@ -36,6 +36,7 @@ public class ManageStudent extends CTBBean
     private String visibleAcrossOrganization;
     private String isSSN;
     private String isPBAFormSigned;
+    private String deletePermission="true";
     //END
     
 	/**
@@ -266,6 +267,19 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setIsPBAFormSigned(String isPBAFormSigned) {
 		this.isPBAFormSigned = isPBAFormSigned;
+	}
+	
+	/**
+	 * @return the deletePermission
+	 */
+	public String getDeletePermission() {
+		return deletePermission;
+	}
+	/**
+	 * @param deletePermission the deletePermission to set
+	 */
+	public void setDeletePermission(String deletePermission) {
+		this.deletePermission = deletePermission;
 	}
     
 } 

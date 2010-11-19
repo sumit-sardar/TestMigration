@@ -50,6 +50,7 @@ public class StudentProfileInformation extends SanitizedFormField
     private String visibleAcrossOrganization;
     private String isSSN;
     private String isPBAFormSigned;
+    private String deletePermission="true"; //ca-abe delete change
  
 
     public StudentProfileInformation() {
@@ -100,6 +101,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.isSSN = student.getIsSSN();
         this.isPBAFormSigned = student.getIsPBAFormSigned();
         this.gender = student.getGender();
+        this.deletePermission = student.getDeletePermission();
         if (this.gender == null) this.gender = "Unknown";
         else
         if (this.gender.equals("M")) this.gender = "Male";
@@ -150,6 +152,7 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setIsPBAFormSigned(this.isPBAFormSigned);
         copied.setIsSSN(this.isSSN);
         copied.setVisibleAcrossOrganization(this.visibleAcrossOrganization);
+        copied.setDeletePermission(this.deletePermission);
         return copied;       
     }
   
@@ -580,5 +583,20 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setIsPBAFormSigned(String isPBAFormSigned) {
 		this.isPBAFormSigned = isPBAFormSigned;
+	}
+
+	/**
+	 * @return the deletePermission
+	 */
+	public String getDeletePermission() {
+		return deletePermission;
+	}
+
+
+	/**
+	 * @param deletePermission the deletePermission to set
+	 */
+	public void setDeletePermission(String deletePermission) {
+		this.deletePermission = deletePermission;
 	}
 } 

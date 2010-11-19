@@ -860,7 +860,6 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			}
 			searchCriteria = searchCriteria + orderByClause;
 
-
 			ManageStudent [] students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteria(userName, searchCriteria);
 			std.setManageStudents(students, pageSize);
 			if(filter != null) std.applyFiltering(filter);
@@ -892,6 +891,133 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			throw tee;
 		}
 	}
+
+
+	/**
+	 * Retrieves a sorted, filtered, paged list of students at and below user's top org node(s).
+	 * The SQL's where clause is dynamically generated on based on filter passed in.
+	 * @common:operation
+	 * @param userName - identifies the user
+	 * @param filter - filtering params
+	 * @param page - paging params
+	 * @param sort - sorting params
+	 * @return ManageStudentData
+	 * @throws com.ctb.exception.CTBBusinessException
+	 */
+	public ManageStudentData findCAABEStudentsAtAndBelowTopOrgNodesWithDynamicSQL(String userName, Integer customerId,FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+	{
+		try {
+			ManageStudentData std = new ManageStudentData();
+
+			Integer pageSize = null;
+			if(page != null) {
+				pageSize = new Integer(page.getPageSize());
+			}
+
+			Integer totalCount = null;
+			String searchCriteria = "";
+			if (filter != null) {
+				searchCriteria = DynamicSQLUtils.generateWhereClauseForFilter(filter);
+				System.out.println("search criteria...." + searchCriteria);
+				filter.setFilterParams(new FilterParam[0]);
+				totalCount = studentManagement.getAcrossOrgStudentCount(userName,customerId);
+				//totalCount=32;
+			}
+			String orderByClause = "";
+			if (sort != null) {
+				orderByClause = DynamicSQLUtils.generateOrderByClauseForSorterABEStudent(sort);                
+				sort = null;
+			}
+			searchCriteria = searchCriteria ;
+			orderByClause = searchCriteria + orderByClause;
+			//ca-abe
+			ManageStudent [] students = studentManagement.getCAABEStudentsAtAndBelowUserTopNodeWithSearchCriteria(userName, searchCriteria,customerId,orderByClause);
+			std.setManageStudents(students, pageSize);
+			if(filter != null) std.applyFiltering(filter);
+			if(sort != null) std.applySorting(sort);
+			if(page != null) std.applyPaging(page);
+			System.out.println("1");
+			students = std.getManageStudents();
+
+			for (int i=0; i <students.length; i++) {
+				if (students[i] != null) {
+					OrganizationNode [] orgNodes = studentManagement.getAssignedOrganizationNodesForCAABEStudentAtAndBelowUserTopNodes(students[i].getId().intValue(), userName,customerId);
+					students[i].setOrganizationNodes(orgNodes);
+				}
+			}
+
+			//getThe orgnodes which are not visible to login user
+
+
+
+			OrganizationNode [] accrossOrgNodes = studentManagement.getInvisibleAssignedOrganizationNodesForCAABEStudentOtherpNodes(userName,customerId);
+
+			if (students != null && students.length > 0) {
+
+				for (int i=0; i <students.length; i++) {
+
+					if (students[i] != null ) {
+
+						OrganizationNode [] stuAssignedorgNodes = students[i].getOrganizationNodes();
+
+						if (stuAssignedorgNodes != null && stuAssignedorgNodes.length > 0) {
+
+							for (int j=0; j <stuAssignedorgNodes.length; j++) {
+
+								for (int k=0; k < accrossOrgNodes.length; k++) {
+
+									if (stuAssignedorgNodes[j].getOrgNodeId().intValue() ==
+										accrossOrgNodes[k].getOrgNodeId().intValue()) {
+										stuAssignedorgNodes[j].setUserHierarchy("false");
+										break;
+									}
+
+								}
+							}
+
+
+						}
+					}
+				}
+			}
+
+			//set the permisssion for deletion
+			//String deletePermission="true";
+			for (int i=0; i <students.length; i++) {
+				if (students[i] != null ) {
+					OrganizationNode [] stuAssignedorgNodes = students[i].getOrganizationNodes();
+					String deletePermissionOfStudent="false";
+					if (stuAssignedorgNodes != null && stuAssignedorgNodes.length > 0) {
+
+						for (int j=0; j <stuAssignedorgNodes.length; j++) {
+							if (stuAssignedorgNodes[j].getUserHierarchy().equals("true")) {
+								deletePermissionOfStudent="true";
+								break;
+							}
+						}
+					}
+					students[i].setDeletePermission(deletePermissionOfStudent);
+				}
+			}
+
+
+			if (totalCount != null) {
+				std.setTotalCount(totalCount);
+				if (page == null)
+					std.setTotalPages(new Integer(1));
+				else 
+					std.setTotalPages(MathUtils.intDiv(totalCount, new Integer(page.getPageSize())));
+			}
+
+
+			return std;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findStudentsAtAndBelowTopOrgNodesWithDynamicSQL: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
+
 
 	/**
 	 * Retrieves a sorted, filtered, paged list of students at and below specified org node(s).
@@ -1583,6 +1709,14 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			else {
 				studentManagement.deleteStudentDemographicDataForStudent(studentId);                
 				accommodation.deleteStudentAccommodations(studentId);
+				//ca-abe change -student address deletion
+				studentManagement.deleteStudentContactInformationDataForStudent(studentId);   
+				//student workforce section deletion
+				studentManagement.deleteStudentAdditionalDataForStudent(studentId,"Supplement data for Workforce Student");
+				//student prg-goal deletion
+				studentManagement.deleteStudentPrgGoalDataForStudent(studentId);   
+				//student edu_instru deletion
+				studentManagement.deleteStudentAdditionalDataForStudent(studentId,"Education And Instruction");
 				students.deleteStudent(studentId);
 				status = DeleteStudentStatus.DELETED;
 			}   
@@ -2036,57 +2170,59 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			
 			if (studentId !=null) {
 			//retrieve from database and set the selected flag
-			StudentWorkForceData [] studentOtherDetailValuesDB;
+			
 
-			studentOtherDetailValuesDB = studentManagement.getStudentWorkforceDetails(studentId,"Supplement data for Workforce Student"); 
-			for(int k=0 ; k < studentOtherDetailValuesDB.length ; k++ ) {
-				StudentOtherDetailValue [] studentOtherDetailValues = studentOtherDetails[k].getStudentOtherDetailValues();
-				for(int l=0 ; l < studentOtherDetailValues.length ; l++ ) {
-
-					if (studentOtherDetailValuesDB[k].getLabelName().
-							equals(studentOtherDetailValues[l].getLabelName())) { 
-						if (studentOtherDetailValuesDB[k].getValueName()!= null
-								&& studentOtherDetailValues[l].getValueName() != null
-									&&(studentOtherDetailValuesDB[k].getValueName().
-											equals(studentOtherDetailValues[l].getValueName()))) {
-								studentOtherDetailValues[l].setSelectedFlag("true");
-								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-							}
-					
-					}
-					
-					if (studentOtherDetailValuesDB[k].getLabelName() != null
-							&& studentOtherDetailValues[l].getLabelName() != null
-								&& studentOtherDetailValuesDB[k].getLabelName().equals("Scheduled Work Hours Per Week")
-									&& studentOtherDetailValues[l].getLabelName().equals("Scheduled Work Hours Per Week")) {
-						if (studentOtherDetailValuesDB[k].getValueName()!= null) {
-							studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-						} else {
-							studentOtherDetailValues[l].setValueName("");
-						}
-						studentOtherDetailValues[l].setSelectedFlag("true");
-					}
-					
-					if (studentOtherDetailValuesDB[k].getLabelName().equals("Provider Use") &&
-							studentOtherDetailValues[l].getLabelName().equals("Provider Use")) {
-						if (studentOtherDetailValuesDB[k].getValueName()!= null) {
-							studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-						} else {
-							studentOtherDetailValues[l].setValueName("");
-						}
-						studentOtherDetailValues[l].setSelectedFlag("true");
-					}
-					if (studentOtherDetailValuesDB[k].getLabelName().equals("Hourly Wage") &&
-							studentOtherDetailValues[l].getLabelName().equals("Hourly Wage")) {
-						if (studentOtherDetailValuesDB[k].getValueName()!= null) {
-							studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-						} else {
-							studentOtherDetailValues[l].setValueName("");
-						}
-						studentOtherDetailValues[l].setSelectedFlag("true");
-					}
+		    StudentWorkForceData [] studentOtherDetailValuesDB = studentManagement.getStudentWorkforceDetails(studentId,"Supplement data for Workforce Student"); 
+			if(studentOtherDetailValuesDB != null){
+				for(int k=0 ; k < studentOtherDetailValuesDB.length ; k++ ) {
+					StudentOtherDetailValue [] studentOtherDetailValues = studentOtherDetails[k].getStudentOtherDetailValues();
+					for(int l=0 ; l < studentOtherDetailValues.length ; l++ ) {
+	
+						if (studentOtherDetailValuesDB[k].getLabelName().
+								equals(studentOtherDetailValues[l].getLabelName())) { 
+							if (studentOtherDetailValuesDB[k].getValueName()!= null
+									&& studentOtherDetailValues[l].getValueName() != null
+										&&(studentOtherDetailValuesDB[k].getValueName().
+												equals(studentOtherDetailValues[l].getValueName()))) {
+									studentOtherDetailValues[l].setSelectedFlag("true");
+									studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+								}
 						
-
+						}
+						
+						if (studentOtherDetailValuesDB[k].getLabelName() != null
+								&& studentOtherDetailValues[l].getLabelName() != null
+									&& studentOtherDetailValuesDB[k].getLabelName().equals("Scheduled Work Hours Per Week")
+										&& studentOtherDetailValues[l].getLabelName().equals("Scheduled Work Hours Per Week")) {
+							if (studentOtherDetailValuesDB[k].getValueName()!= null) {
+								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+							} else {
+								studentOtherDetailValues[l].setValueName("");
+							}
+							studentOtherDetailValues[l].setSelectedFlag("true");
+						}
+						
+						if (studentOtherDetailValuesDB[k].getLabelName().equals("Provider Use") &&
+								studentOtherDetailValues[l].getLabelName().equals("Provider Use")) {
+							if (studentOtherDetailValuesDB[k].getValueName()!= null) {
+								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+							} else {
+								studentOtherDetailValues[l].setValueName("");
+							}
+							studentOtherDetailValues[l].setSelectedFlag("true");
+						}
+						if (studentOtherDetailValuesDB[k].getLabelName().equals("Hourly Wage") &&
+								studentOtherDetailValues[l].getLabelName().equals("Hourly Wage")) {
+							if (studentOtherDetailValuesDB[k].getValueName()!= null) {
+								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+							} else {
+								studentOtherDetailValues[l].setValueName("");
+							}
+							studentOtherDetailValues[l].setSelectedFlag("true");
+						}
+							
+	
+					}
 				}
 			}
 		}
@@ -2308,8 +2444,8 @@ public class StudentManagementImpl implements StudentManagement, Serializable
         }
             
     }
-    
-    /**
+
+	/**
 	 * Create student WorkForce data for the specified student.
 	 * @common:operation
 	 * @param userName - identifies the calling user
@@ -2322,10 +2458,10 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 		validator.validateStudent(userName, studentId, "StudentManagementImpl.createStudentWorkForceData");
 
 		try {
-			 
-			 User user = getUserDetails(userName, userName);
-			 Integer userId = user.getUserId();
-			 Date now = new Date();
+
+			User user = getUserDetails(userName, userName);
+			Integer userId = user.getUserId();
+			Date now = new Date();
 			 for (int i=0; studentOtherDetail!= null && i<studentOtherDetail.length; i++) {
 				 StudentOtherDetailValue [] studentOtherDetailValues = studentOtherDetail[i].getStudentOtherDetailValues();
 				 for (int j=0; studentOtherDetailValues!=null && j<studentOtherDetailValues.length; j++) {

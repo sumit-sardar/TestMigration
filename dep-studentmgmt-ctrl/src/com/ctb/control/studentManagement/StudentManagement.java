@@ -517,5 +517,18 @@ public interface StudentManagement
 	    void createStudentWorkForceData(java.lang.String userName, java.lang.Integer studentId, com.ctb.bean.studentManagement.StudentOtherDetail[] studentOtherDetail) throws com.ctb.exception.CTBBusinessException;
 	    
 	    void createStudentEducationInstructionData(String userName, Integer studentId, StudentOtherDetail [] studentOtherDetail) throws com.ctb.exception.CTBBusinessException;
+	    /**
+	     * Retrieves a sorted, filtered, paged list of students at and below user's
+	     * top org node(s). The SQL's where clause is dynamically generated on based
+	     * on filter passed in.
+	     * @param userName - identifies the user
+	     * @param filter - filtering params
+	     * @param page - paging params
+	     * @param sort - sorting params
+	     * @return ManageStudentData
+	     * @throws com.ctb.exception.CTBBusinessException
+	     */
+	    
+	    com.ctb.bean.studentManagement.ManageStudentData findCAABEStudentsAtAndBelowTopOrgNodesWithDynamicSQL(java.lang.String userName, Integer customerId,com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 
 } 

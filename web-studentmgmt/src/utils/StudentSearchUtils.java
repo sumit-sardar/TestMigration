@@ -73,10 +73,10 @@ public class StudentSearchUtils
                 ManageStudent student = (ManageStudent)students[i];
                 if (student != null) {
                     StudentProfileInformation studentDetail = new StudentProfileInformation(student);
-                    if (studentDetail.getStudentId().intValue()== 1639200)
+                    /*if (studentDetail.getStudentId().intValue()== 1639200)
                     	studentDetail.setStudentFollowUpStatus("Complete");
             		else 
-            			studentDetail.setStudentFollowUpStatus("Incomplete");
+            			studentDetail.setStudentFollowUpStatus("Incomplete");*/
                     studentList.add(studentDetail);
                 }
             }
@@ -112,6 +112,21 @@ public class StudentSearchUtils
         }        
         return msData;
     }
+    
+    /**
+     * searchAllCAABEStudentsAtAndBelow : ca-abe find student
+     */    
+    public static ManageStudentData searchAllCAABEStudentsAtAndBelow(String userName, Integer customerID,StudentManagement studentManagement, PageParams page, SortParams sort)
+    {   
+        ManageStudentData msData = null;
+        try {    
+            msData = studentManagement.findCAABEStudentsAtAndBelowTopOrgNodesWithDynamicSQL(userName,customerID, null, page, sort);
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }        
+        return msData;
+    }
 
     /**
      * searchStudentsByProfile
@@ -121,6 +136,21 @@ public class StudentSearchUtils
         ManageStudentData msData = null;
         try {    
             msData = studentManagement.findStudentsAtAndBelowTopOrgNodesWithDynamicSQL(userName, filter, page, sort);
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }        
+        return msData;
+    }
+    
+    /**
+     * searchCAABEStudentsByProfile : ca-abe find student
+     */    
+    public static ManageStudentData searchCAABEStudentsByProfile(String userName,Integer customerId, StudentManagement studentManagement, FilterParams filter, PageParams page, SortParams sort)
+    {   
+        ManageStudentData msData = null;
+        try {    
+            msData = studentManagement.findCAABEStudentsAtAndBelowTopOrgNodesWithDynamicSQL(userName,customerId, filter, page, sort);
         }
         catch (CTBBusinessException be) {
             be.printStackTrace();

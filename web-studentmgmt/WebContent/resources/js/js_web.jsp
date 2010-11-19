@@ -698,23 +698,26 @@ function verifyExitAddEditStudent(){
 
 function displayWorkforceSection(element){
 	var selection;
-	
+	var input;
 	if(element.value == 'Employed'){
 		selection = true;
 		var laborForceStatus= document.getElementsByName("laborForceStatus");
 		if(laborForceStatus.length < 1){
-		var input = document.createElement('input');
+		input = document.createElement('input');
 		input.setAttribute("type","hidden");
 		input.setAttribute("name","laborForceStatus");
 		input.setAttribute("id", "laborForceId");
 		input.setAttribute("value",element.value);
-		document.body.appendChild(input);
+		document.forms[0].appendChild(input);
+		
 		enableWorkforceSection(selection);
 		}
 	}
 	else{
 		var laborForceStatus = document.getElementById("laborForceId");
-	
+		if(laborForceStatus != null){
+		document.forms[0].removeChild(laborForceStatus);
+		}
 		selection = false;
 		enableWorkforceSection(selection);
 	}
@@ -838,6 +841,22 @@ function constrainNumericChar(e)
     
     return results;
 }
+
+
+function checkAndTruncate(element) {
+	var str = element.value;
+	var letters = [];
+	
+	for (var i = 1; i <= str.length; i++)
+	{
+	    letters[i] = str.substring((i - 1), i);
+	    if(!(letters[i] < 10 && letters[i] >= 0))
+			element.value = "";
+	}
+	//if(element.value != "")
+	//focusNextControl(element);
+}
+
 
 function focusNextControl(element)
 {

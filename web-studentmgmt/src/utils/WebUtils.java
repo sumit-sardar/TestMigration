@@ -10,6 +10,8 @@ import dto.Message;
 import dto.StudentContactInformation;
 
 
+
+
 public class WebUtils 
 { 
 	public static String buildURI(HttpServletRequest req, String flow, String controller)
@@ -157,7 +159,7 @@ public class WebUtils
 		return invalidCharFields;
 	}
 	//Changes for CA-ABE
-	public static String verifyABECreateStudentInstructorName(String firstName, String lastName, String middleName, String instructorFirstName, String instructorLastName)
+	public static String verifyABECreateStudentInstructorName(String firstName, String middleName, String lastName, String instructorFirstName, String instructorLastName)
 	{
 		String invalidCharFields = "";
 		int invalidCharFieldCount = 0;
@@ -222,7 +224,7 @@ public class WebUtils
 			invalidEmailField = buildErrorString(Message.FIELD_EMAIL, invalidEmailFieldCount, invalidEmailField);       
 		}
 		
-		if( invalidZipLength(studentContact)){
+		if( isInvalidZip(studentContact)){
 			invalidNumFieldCount += 1;            
 			invalidNumFields = buildErrorString(Message.FIELDS_ZIP_CODE, invalidNumFieldCount, invalidNumFields);       
 		}
@@ -282,7 +284,7 @@ public class WebUtils
 	}
 
 	public static String verifyFindStudentInfo(String firstName, String lastName, String middleName,
-			String studentNumber, String loginId, String studentIdLabelName)
+			String studentNumber, String loginId, String studentIdLabelName,String instructorFirstName,String instructorLastName)
 	{
 		String invalidCharFields = "";
 		int invalidCharFieldCount = 0;
@@ -310,6 +312,16 @@ public class WebUtils
 		if (! validString(loginId) ) {
 			invalidCharFieldCount += 1;            
 			invalidCharFields = buildErrorString("Login ID", invalidCharFieldCount, invalidCharFields);       
+		}
+		
+		if (! validNameString(instructorFirstName) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString("Instructor First Name", invalidCharFieldCount, invalidCharFields);       
+		}
+
+		if (! validNameString(instructorLastName) ) {
+			invalidCharFieldCount += 1;            
+			invalidCharFields = buildErrorString("Instructor Last Name", invalidCharFieldCount, invalidCharFields);       
 		}
 
 		return invalidCharFields;
@@ -437,8 +449,31 @@ public class WebUtils
             
         }
         return false;
+    }    
+    //Changes for CA-ABE
+    public static boolean invalidZipFormat(StudentContactInformation studentContact) 
+    {     
+        if ( (! validNumber(studentContact.getZipCode1())) ||
+             (! validNumber(studentContact.getZipCode2())) ) {                    
+            return true;
+        }
+        return false;
     }
     
+    public static boolean isInvalidZip(StudentContactInformation studentContact) 
+    {
+        boolean invalidZiplength = invalidZipLength(studentContact);
+        if (invalidZiplength) {
+            return true;
+        }
+        
+        boolean invalidZipFormat  = invalidZipFormat(studentContact);
+        if (invalidZipFormat) {
+            return true;
+        }
+        
+        return false;
+    } 
   //Changes for CA-ABE
 	public static String validProviderUse(String str)
 	{

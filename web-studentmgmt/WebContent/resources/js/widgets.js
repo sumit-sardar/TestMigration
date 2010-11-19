@@ -100,6 +100,25 @@ function enableElementById(elementId) {
     }
 }    
 
+//ca-abe change for delete buttton permission
+
+function enableButtons(elementId,enabled) 
+{
+    var str = enabled;
+    
+    var element = document.getElementById(elementId);    
+    if (element != null) {
+        if (str=='true') 
+            element.removeAttribute("disabled");      
+        else
+            element.setAttribute("disabled", "true");      
+    }
+   
+   
+ }
+    
+ 
+
 
 function constrainNumericKeyEvent( e, element, id, anchorName ) {
     var keyId = (window.event) ? event.keyCode : e.which;

@@ -53,6 +53,11 @@ public class DynamicSQLUtils
                     result.append(" and stu.grade = '").append(filterValue).append("'");
                 else if (fieldName.equals("Gender")) 
                     result.append(" and stu.gender = '").append(filterValue).append("'");
+                //change for CA-ABE intake
+                else if (fieldName.equals("InstructorFirstName")) 
+                    result.append(" and upper(stu.instructor_first_name) = upper('").append(escapeString(filterValue)).append("')");
+                else if (fieldName.equals("InstructorLastName")) 
+                    result.append(" and upper(stu.instructor_last_name) = upper('").append(escapeString(filterValue)).append("')");             
                 else 
                     throw new InvalidFilterFieldException("Field name '"+fieldName+"' is not supported");
             }
@@ -206,6 +211,60 @@ public class DynamicSQLUtils
                     if (hasSomeField)
                         result.append(",");
                     result.append(" stu.ext_pin1 ").append(sortType.getType());
+                    hasSomeField = true;
+                }
+                else 
+                    throw new InvalidSortFieldException("Field name '"+sortName+"' is not supported");
+            }
+        }
+        if (hasSomeField)
+            return " order by " + result.toString();
+        else
+            return "";
+    }
+    
+    
+	/**
+	 * Generates an order by clause for SQL based on sort params
+	 * @param sort
+	 * @return String
+	 */
+    public static String generateOrderByClauseForSorterABEStudent(SortParams sort) 
+        throws InvalidSortFieldException
+    {
+        StringBuffer result = new StringBuffer();
+        
+        SortParam [] sortParams = sort.getSortParams();
+        boolean hasSomeField = false;
+        for (int i = 0; i < sortParams.length; i++) {
+            SortParam sortParam = sortParams[i];
+            if (sortParam != null) {
+                String sortName = sortParam.getField();
+                SortType sortType = sortParam.getType();
+                if (sortName.equals("StudentName")) {
+                    if (hasSomeField)
+                        result.append(",");
+                    result.append(" lastName ").append(sortType.getType());
+                    result.append(", firstName ").append(sortType.getType());
+                    result.append(", middleName ").append(sortType.getType());
+                    hasSomeField = true;
+                }
+                else if (sortName.equals("LoginId")) {
+                    if (hasSomeField)
+                        result.append(",");
+                    result.append(" loginId ").append(sortType.getType());
+                    hasSomeField = true;
+                }
+                else if (sortName.equals("Grade")) {
+                    if (hasSomeField)
+                        result.append(",");
+                    result.append(" grade ").append(sortType.getType());
+                    hasSomeField = true;
+                }
+                else if (sortName.equals("StudentIdNumber")) {
+                    if (hasSomeField)
+                        result.append(",");
+                    result.append(" studentIdNumber ").append(sortType.getType());
                     hasSomeField = true;
                 }
                 else 

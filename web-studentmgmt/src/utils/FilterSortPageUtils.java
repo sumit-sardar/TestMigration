@@ -148,11 +148,12 @@ public class FilterSortPageUtils
     }
     
     public static FilterParams buildFilterParams(String firstName, String middleName, String lastName,
-                                String loginId, String studentNumber, String grade, String gender)
+                                String loginId, String studentNumber, String grade, String gender,
+                                String instructorFirstName,String instructorLastName )
     {
         ArrayList filters = new ArrayList();
         FilterParam fp;
-
+        
         if ((firstName != null) && (firstName.length() > 0)) {
             fp = buildFilterParamSingleValue("FirstName", firstName, FilterType.EQUALS);
             if (fp != null)
@@ -191,6 +192,18 @@ public class FilterSortPageUtils
 
         if ((gender != null) && (gender.length() > 0) && (! gender.equalsIgnoreCase(FILTERTYPE_ANY_GENDER))) {
             fp = buildFilterParamSingleValue("Gender", gender, FilterType.EQUALS);
+            if (fp != null)
+                filters.add(fp);
+        }
+        //ca-abe find student filter criteria intake
+        if ((instructorFirstName != null) && (instructorFirstName.length() > 0)) {
+            fp = buildFilterParamSingleValue("InstructorFirstName", instructorFirstName, FilterType.EQUALS);
+            if (fp != null)
+                filters.add(fp);
+        }
+
+        if ((instructorLastName != null) && (instructorLastName.length() > 0)) {
+            fp = buildFilterParamSingleValue("InstructorLastName", instructorLastName, FilterType.EQUALS);
             if (fp != null)
                 filters.add(fp);
         }

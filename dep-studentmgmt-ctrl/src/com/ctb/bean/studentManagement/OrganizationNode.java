@@ -17,6 +17,7 @@ public class OrganizationNode extends Node
     private Integer studentCount;
     private String bottomLevelNodeFlag;
     private Integer numberOfLevels;
+    private String userHierarchy="true"; //ca-abe change
     
     public OrganizationNode() {
         super();
@@ -86,6 +87,21 @@ public class OrganizationNode extends Node
 	 */
 	public void setNumberOfLevels(Integer numberOfLevels) {
 		this.numberOfLevels = numberOfLevels;
+	}
+
+	
+	/**
+	 * @return the userHierarchy
+	 */
+	public String getUserHierarchy() {
+		return userHierarchy;
+	}
+
+	/**
+	 * @param userHierarchy the userHierarchy to set
+	 */
+	public void setUserHierarchy(String userHierarchy) {
+		this.userHierarchy = userHierarchy;
 	}
 } 
 

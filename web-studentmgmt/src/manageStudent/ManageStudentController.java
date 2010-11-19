@@ -187,7 +187,7 @@ public class ManageStudentController extends PageFlowController
 	 * This method represents the point of entry into the pageflow
 	 * @jpf:action
 	 * @jpf:forward name="success" path="/manageStudentFollowUp/followUpStudent.do"
-	 */
+	 *//*
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
 					path = "/manageStudentFollowUp/followUpStudent.do"),
@@ -214,7 +214,7 @@ public class ManageStudentController extends PageFlowController
 		return new Forward("success",form);
 	}
 
-
+*/
 	/**
 	 * initialize
 	 */
@@ -621,14 +621,18 @@ public class ManageStudentController extends PageFlowController
 			boolean result = false;
 			if (isABECustomer) {
 				
-				/*String laborForceValue = getRequest().getParameter("laborForceStatus");
+				String laborForceValue = getRequest().getParameter("laborForceStatus");
 				System.out.println("laborforcevalue"+ laborForceValue);
 				
 				
 					if(laborForceValue != null && laborForceValue.equals("Employed")){
 						this.workforceSectionVisible = false;
 						
-					}*/
+					}
+					else
+					{
+						this.workforceSectionVisible = true;
+					}
 					
 				
 				
@@ -638,7 +642,10 @@ public class ManageStudentController extends PageFlowController
 					getStudentDemographicsFromRequest(); 
 					result = form.vaildateABEStudentDemographicInfo(this.demographics);
 				}
-				if (result) {
+				
+				
+				
+				/*if (result) {
 				for (int i=0 ; i < this.demographics.size(); i++ ) {
 					 StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
 					 if (sdd.getLabelName().equals("Labor Force Status")) {
@@ -658,7 +665,7 @@ public class ManageStudentController extends PageFlowController
 						
 					 }
 				}
-				}
+				}*/
 				if (result && !this.workforceSectionVisible) {
 					getStudentWorkForceDetailsFromRequest(); 
 					result = form.vaildateABEStudentWorkForceInfo(this.workforceSectionDetails);
@@ -2575,6 +2582,10 @@ public class ManageStudentController extends PageFlowController
 		String studentNumber = form.getStudentProfile().getStudentNumber().trim();
 		String grade = form.getStudentProfile().getGrade().trim();
 		String gender = form.getStudentProfile().getGender().trim();
+		
+		//ca-abe find student intake
+		String instructorFirstName = form.getStudentProfile().getInstructorFirstName().trim();
+		String instructorLastName = form.getStudentProfile().getInstructorLastName().trim();
 
 		if (! gender.equals(FilterSortPageUtils.FILTERTYPE_ANY_GENDER))
 		{
@@ -2585,8 +2596,13 @@ public class ManageStudentController extends PageFlowController
 			else
 				gender = "U";
 		}
-
-		String invalidCharFields = WebUtils.verifyFindStudentInfo(firstName, lastName, middleName, studentNumber, loginId, form.studentIdLabelName);                
+		//ca-abe find student intake
+		if(this.isABECustomer) {
+			form.setStudentIdLabelName("Social Security Number/Student ID");
+		}
+		String invalidCharFields = WebUtils.verifyFindStudentInfo(firstName, lastName, middleName, 
+				studentNumber, loginId, form.studentIdLabelName,instructorFirstName,instructorLastName);                
+		
 
 		if (invalidCharFields.length() > 0)
 		{
@@ -2599,18 +2615,31 @@ public class ManageStudentController extends PageFlowController
 
 		PageParams page = FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_10);
 		SortParams sort = FilterSortPageUtils.buildStudentSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
-		FilterParams filter = FilterSortPageUtils.buildFilterParams(firstName, middleName, lastName, loginId, studentNumber, grade, gender);
-
+		//ca-abe-find student intake
+		FilterParams filter = FilterSortPageUtils.buildFilterParams(firstName, middleName, lastName, loginId, studentNumber, grade, gender,instructorFirstName,instructorLastName);
+		
 		ManageStudentData msData = null;
 
 		if (filter == null)
-		{
-			msData = StudentSearchUtils.searchAllStudentsAtAndBelow(this.userName, this.studentManagement, page, sort);   
+		{  
+			if(!this.isABECustomer) {
+				msData = StudentSearchUtils.searchAllStudentsAtAndBelow(this.userName, this.studentManagement, page, sort);   
+			}
+			if(this.isABECustomer) {
+				msData = StudentSearchUtils.searchAllCAABEStudentsAtAndBelow(this.userName,this.customerId, this.studentManagement, page, sort);   
+			}
+			
 			this.pageMessage = MessageResourceBundle.getMessage("searchResultFound");
 		}
 		else
 		{
-			msData = StudentSearchUtils.searchStudentsByProfile(this.userName, this.studentManagement, filter, page, sort);   
+			if(!this.isABECustomer) {
+				msData = StudentSearchUtils.searchStudentsByProfile(this.userName, this.studentManagement, filter, page, sort);   
+			}
+			if(this.isABECustomer) {
+				msData = StudentSearchUtils.searchCAABEStudentsByProfile(this.userName, this.customerId,this.studentManagement, filter, page, sort); 
+			}
+			  
 			this.pageMessage = MessageResourceBundle.getMessage("searchProfileFound");
 		}
 

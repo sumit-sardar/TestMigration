@@ -152,10 +152,11 @@ public class StudentEduAndInstrTag extends CTBTag
 				writeToPage("<b>" + displayName + "</b>");
 			}
 		}
+
 		displayCellEnd();
 		displayRowEnd();  
 
-		
+	
 		if( multipleAllowed ) {
 			displayValues_CheckBoxes(displayName, values, editable);
 		} 
@@ -376,11 +377,11 @@ public class StudentEduAndInstrTag extends CTBTag
 	{
 		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 		String nameId = name  ;
-		System.out.println("nameId.." + nameId);
+		
 		return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "4" + 
 		" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
 		" tabindex=\"" + (this.tabIndex++) + "\" " +
-		disabled + " onkeypress=\""+ "return constrainNumericChar(event)" + "\"/>";
+		disabled + " onkeypress=\""+ "return constrainNumericChar(event)" + "\" onBlur=\""+ "checkAndTruncate(this)" + "\" onKeyUp=\""+ "checkAndTruncate(this)" + "\"/>";
 	}
 
 

@@ -434,6 +434,10 @@ public interface StudentManagement extends JdbcControl
                      arrayMaxLength = 100000)
     ManageStudent [] getStudentsAtAndBelowUserTopNodeWithSearchCriteria(String userName, String searchCriteria) throws SQLException;
 
+	@JdbcControl.SQL(statement = "select distinct  stu.student_id as id,  stu.user_name as loginId,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName,   concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.gender as gender,  stu.birthdate as birthDate,  stu.grade as grade,  stu.ext_pin1 as studentIdNumber,  stu.ext_pin2 as studentIdNumber2,  stu.created_by as createdBy, stu.instructor_first_name as instructorFirstName , stu.instructor_last_name as  instructorLastName,stu.visible_across_organization as visibleAcrossOrganization, stu.is_ssn as isSSN ,stu.is_pba_form_signed as isPBAFormSigned from  org_node_student ons,  student stu,  org_node node,  org_node_category onc,  org_node_ancestor ona,  user_role urole,  users where  ons.student_id = stu.student_id  and ons.activation_status= 'AC'  and stu.activation_status= 'AC'  and ons.org_node_id = node.org_node_id  and ons.org_node_id = ona.org_node_id   and ona.ANCESTOR_ORG_NODE_ID = urole.org_node_id  and urole.activation_status = 'AC'  and users.user_id = urole.user_id  and users.user_name = {userName}  and onc.org_node_category_id = node.org_node_category_id  {sql: searchCriteria} union select distinct  stu.student_id as id,  stu.user_name as loginId,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName,  concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.gender as gender,  stu.birthdate as birthDate,  stu.grade as grade,  stu.ext_pin1 as studentIdNumber,  stu.ext_pin2 as studentIdNumber2,  stu.created_by as createdBy ,stu.instructor_first_name as instructorFirstName , stu.instructor_last_name as  instructorLastName,stu.visible_across_organization as visibleAcrossOrganization, stu.is_ssn as isSSN ,stu.is_pba_form_signed as isPBAFormSigned  from   student stu where   stu.visible_across_organization='Yes' and stu.customer_id={customerId}  and stu.activation_status='AC'  {sql: orderByClause}",
+            arrayMaxLength = 100000)
+    ManageStudent [] getCAABEStudentsAtAndBelowUserTopNodeWithSearchCriteria(String userName, String searchCriteria,Integer customerId, String orderByClause) throws SQLException;
+
 
     /**
      * @jc:sql statement::
@@ -484,6 +488,8 @@ public interface StudentManagement extends JdbcControl
     @JdbcControl.SQL(statement = "select count(distinct stu.student_id)  from  org_node_student ons,  student stu,  org_node node,  org_node_category onc,  org_node_ancestor ona,  user_role urole,  users where  ons.student_id = stu.student_id \t and ons.activation_status= 'AC' \t and stu.activation_status= 'AC' \t and ons.org_node_id = node.org_node_id  and ons.org_node_id = ona.org_node_id  \t and ona.ANCESTOR_ORG_NODE_ID = urole.org_node_id \t and urole.user_id = users.user_id \t and urole.activation_Status = 'AC' \t and users.user_name = {userName}  and onc.org_node_category_id = node.org_node_category_id")
     Integer getStudentCountAtAndBelowUserTopNodes(String userName) throws SQLException;
 
+    @JdbcControl.SQL(statement = "select count(studentId) from ( select distinct stu.student_id as studentId from  org_node_student ons,  student stu,  org_node node,  org_node_category onc,  org_node_ancestor ona,  user_role urole,  users where  ons.student_id = stu.student_id  and ons.activation_status= 'AC'  and stu.activation_status= 'AC'  and ons.org_node_id = node.org_node_id and ons.org_node_id = ona.org_node_id   and ona.ANCESTOR_ORG_NODE_ID = urole.org_node_id  and urole.activation_status = 'AC'  and users.user_id = urole.user_id  and users.user_name = {userName}  and onc.org_node_category_id = node.org_node_category_id  union select distinct  stu.student_id as id from   student stu where   stu.visible_across_organization='Yes' and stu.customer_id={customerId} and stu.activation_status='AC' ) dual")
+    Integer getAcrossOrgStudentCount(String userName,Integer customerId) throws SQLException;
 
     /**
      * @jc:sql statement::
@@ -587,6 +593,12 @@ public interface StudentManagement extends JdbcControl
     @JdbcControl.SQL(statement = "select distinct  node.org_node_id as orgNodeId,  node.customer_id as customerId,  node.org_node_category_id as orgNodeCategoryId,  node.org_node_name as orgNodeName,  node.ext_qed_pin as extQedPin,  node.ext_elm_id as extElmId,  node.ext_org_node_type as extOrgNodeType,  node.org_node_description as orgNodeDescription,  node.created_by as createdBy,  node.created_date_time as createdDateTime,  node.updated_by as updatedBy,  node.updated_date_time as updatedDateTime,  node.activation_status as activationStatus,  node.data_import_history_id as dataImportHistoryId,  node.parent_state as parentState,  node.parent_region as parentRegion,  node.parent_county as parentCounty,  node.parent_district as parentDistrict,  node.org_node_code as orgNodeCode from  org_node_student ons,  student stu,  org_node node,  org_node_category onc,  org_node_ancestor ona,  user_role urole,  users where  ons.student_id = stu.student_id \t and stu.student_id = {studentId} \t and ons.org_node_id = node.org_node_id \t and ons.activation_status = 'AC'  and ons.org_node_id = ona.org_node_id  and ona.ANCESTOR_ORG_NODE_ID = urole.org_node_id  and urole.activation_Status = 'AC'  and users.user_id = urole.user_id  and users.user_name = {userName}  and onc.org_node_category_id = node.org_node_category_id  order by node.org_node_name asc")
     OrganizationNode [] getAssignedOrganizationNodesForStudentAtAndBelowUserTopNodes(int studentId, String userName) throws SQLException;
     
+	@JdbcControl.SQL(statement = "select distinct node.org_node_id  as orgNodeId, node.customer_id  as customerId, node.org_node_category_id   as orgNodeCategoryId,node.org_node_name          as orgNodeName, node.ext_qed_pin            as extQedPin, node.ext_elm_id             as extElmId,   node.ext_org_node_type      as extOrgNodeType,   node.org_node_description   as orgNodeDescription,  node.created_by             as createdBy, node.created_date_time      as createdDateTime,   node.updated_by             as updatedBy,   node.updated_date_time      as updatedDateTime, node.activation_status      as activationStatus,       node.data_import_history_id as dataImportHistoryId,    node.parent_state           as parentState,  node.parent_region          as parentRegion,   node.parent_county  as parentCounty, node.parent_district   as parentDistrict,  node.org_node_code  as orgNodeCode from org_node_student ons,student stu,org_node node, org_node_category onc, org_node_ancestor ona,  user_role urole, users where ons.student_id = stu.student_id  and stu.student_id = {studentId} and ons.org_node_id = node.org_node_id and ons.activation_status = 'AC' and ons.org_node_id = ona.org_node_id and ona.ANCESTOR_ORG_NODE_ID = urole.org_node_id and urole.activation_Status = 'AC' and users.user_id = urole.user_id and users.user_name = {userName} and onc.org_node_category_id = node.org_node_category_id union select distinct node.org_node_id    as orgNodeId,  node.customer_id  as customerId, node.org_node_category_id   as orgNodeCategoryId, node.org_node_name          as orgNodeName,  node.ext_qed_pin            as extQedPin,  node.ext_elm_id             as extElmId,  node.ext_org_node_type      as extOrgNodeType, node.org_node_description   as orgNodeDescription, node.created_by             as createdBy,  node.created_date_time      as createdDateTime,node.updated_by             as updatedBy, node.updated_date_time      as updatedDateTime, node.activation_status      as activationStatus,node.data_import_history_id as dataImportHistoryId, node.parent_state           as parentState,  node.parent_region          as parentRegion,   node.parent_county          as parentCounty,node.parent_district        as parentDistrict,   node.org_node_code          as orgNodeCode from org_node_student ons, student stu, org_node node where ons.student_id = stu.student_id  and stu.student_id =  {studentId} and stu.customer_id = {customerId} and stu.visible_across_organization = 'Yes' and ons.org_node_id = node.org_node_id and node.customer_id = {customerId} and ons.activation_status = 'AC'order by orgNodeName asc")
+    OrganizationNode [] getAssignedOrganizationNodesForCAABEStudentAtAndBelowUserTopNodes(int studentId, String userName,Integer customerId) throws SQLException;
+    
+	@JdbcControl.SQL(statement = "select distinct  node.org_node_id as orgNodeId,  node.customer_id as customerId,  node.org_node_category_id as orgNodeCategoryId,node.org_node_name as orgNodeName,  node.ext_qed_pin as extQedPin,  node.ext_elm_id as extElmId, node.ext_org_node_type as extOrgNodeType,  node.org_node_description as orgNodeDescription,  node.created_by as createdBy,  node.created_date_time as createdDateTime,  node.updated_by as updatedBy,  node.updated_date_time as updatedDateTime,  node.activation_status as activationStatus,  node.data_import_history_id as dataImportHistoryId,  node.parent_state as parentState, node.parent_region as parentRegion,  node.parent_county as parentCounty,  node.parent_district as parentDistrict,  node.org_node_code as orgNodeCode from    org_node node  where node.customer_id={customerId}  minus  select distinct  node.org_node_id as orgNodeId,  node.customer_id as customerId,  node.org_node_category_id as orgNodeCategoryId,node.org_node_name as orgNodeName,  node.ext_qed_pin as extQedPin,  node.ext_elm_id as extElmId,  node.ext_org_node_type as extOrgNodeType,  node.org_node_description as orgNodeDescription,  node.created_by as createdBy,  node.created_date_time as createdDateTime,  node.updated_by as updatedBy,  node.updated_date_time as updatedDateTime,  node.activation_status as activationStatus,  node.data_import_history_id as dataImportHistoryId,  node.parent_state as parentState,node.parent_region as parentRegion,  node.parent_county as parentCounty,  node.parent_district as parentDistrict, node.org_node_code as orgNodeCode from   org_node node,  org_node_category onc,  org_node_ancestor ona,  user_role urole,  users where  node.activation_status='AC'   and node.org_node_id = ona.org_node_id  and ona.ANCESTOR_ORG_NODE_ID = urole.org_node_id  and urole.activation_Status = 'AC'   and users.user_id = urole.user_id  and users.user_name = {userName}  and onc.org_node_category_id = node.org_node_category_id order by orgNodeName asc ")
+    OrganizationNode [] getInvisibleAssignedOrganizationNodesForCAABEStudentOtherpNodes(String userName,Integer customerId) throws SQLException;
+   
     /**
      * @jc:sql statement::
      * select distinct
@@ -817,7 +829,38 @@ public interface StudentManagement extends JdbcControl
      */
     @JdbcControl.SQL(statement = "delete from  student_demographic_data  where \tstudent_id={studentId}")
     void deleteStudentDemographicDataForStudent(Integer studentId) throws SQLException;
+    
+    
+    /**
+     * @jc:sql statement::
+     * delete from 
+     *      student_contact 
+     * where 	student_id={studentId}
+     * ::
+     */
+    @JdbcControl.SQL(statement = "delete from  student_contact where student_id={studentId}")
+    void deleteStudentContactInformationDataForStudent(Integer studentId) throws SQLException;
 
+    /**
+     * @jc:sql statement::
+     * delete from 
+     *      STUDENT_CA_ABE_PRG_GOAL_DATA 
+     * where 	student_id={studentId}
+     * ::
+     */
+    @JdbcControl.SQL(statement = "delete from  STUDENT_CA_ABE_PRG_GOAL_DATA where student_id={studentId}")
+    void deleteStudentPrgGoalDataForStudent(Integer studentId) throws SQLException;
+
+    /**
+     * @jc:sql statement::
+     * delete from 
+     *      STUDENT_ADDITIONAL_DATA 
+     * where 	student_id={studentId} and
+     *  and section_name={sectionName}
+     * ::
+     */
+    @JdbcControl.SQL(statement = "delete from  STUDENT_ADDITIONAL_DATA where student_id={studentId} and section_name={sectionName}")
+    void deleteStudentAdditionalDataForStudent(Integer studentId,String sectionName) throws SQLException;
 
 
     /**
