@@ -238,7 +238,7 @@ public class WebUtils
 	
 		
 		if(invalidCharFieldCount > 0){
-			invalidCharFields = invalidCharFields + ("<br/>" + Message.INVALID_NAME_CHARS + " in " + sectionName);
+			invalidCharFields = invalidCharFields + ("<br/>" + Message.INVALID_NAME_CHARS );
 			invalidCharFields += ("<br/>");
 			}
 		if(invalidNumFieldCount > 0){
@@ -246,14 +246,14 @@ public class WebUtils
 			 if(invalidNumFields!=null && invalidNumFields.length()>0){
 				 invalidNumFields += ("<br/>");
 	            }
-			 invalidCharFields += invalidNumFields + (Message.INVALID_NUMBER_FORMAT +" in "+ sectionName + "<br/>");
+			 invalidCharFields += invalidNumFields + (Message.INVALID_NUMBER_FORMAT + "<br/>");
 			 	
 		}
 		if(invalidEmailFieldCount > 0){
 			 if(invalidEmailField!=null && invalidEmailField.length()>0){
 				 invalidEmailField += ("<br/>");
 	            }
-			invalidCharFields += invalidEmailField + Message.INVALID_EMAIL + " in " + sectionName;
+			invalidCharFields += invalidEmailField + Message.INVALID_EMAIL ;
 		}
 		
 		return invalidCharFields;

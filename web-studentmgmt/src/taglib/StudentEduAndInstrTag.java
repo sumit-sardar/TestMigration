@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.jsp.JspException;
 
+import utils.DateUtils;
+
 import com.ctb.bean.studentManagement.StudentOtherDetail;
 import com.ctb.bean.studentManagement.StudentOtherDetailValue;
 
@@ -56,7 +58,7 @@ public class StudentEduAndInstrTag extends CTBTag
 		int totalCount = this.educationAndInstruction.size();
 		int secondCount = totalCount / 2;
 		int firstCount = totalCount - secondCount;
-
+		String field, description;
 
 		displayTableStart("simple");
 
@@ -81,6 +83,20 @@ public class StudentEduAndInstrTag extends CTBTag
 			displayCellEnd();
 			displayRowEnd();  
 		}
+		
+		 field = "Date of Entry into this class";
+         description = "<b>Date of Entry into this class</b>:";
+         for(int i=0; i<totalCount; i++){
+        	 StudentOtherDetail sdd = (StudentOtherDetail)this.educationAndInstruction.get(i);
+        	 if(sdd.getValueCardinality().equals("Date")){ 
+        		 StudentOtherDetailValue[] values = sdd.getStudentOtherDetailValues();
+        		 displayControlRow(field, description, true, values); 
+        		 break;
+             }
+
+         }
+                                
+         
 		displayTableEnd();
 
 		displayCellEnd();
@@ -123,25 +139,27 @@ public class StudentEduAndInstrTag extends CTBTag
 			}
 
 		}
-
+		
+		StudentOtherDetailValue[] values = sdd.getStudentOtherDetailValues();
 		displayRowStart();
 		displayCellStart("transparent");
 		//Changes for CA-ABE student intake
-		if (this.mandatoryField) {
-
-			writeToPage("<span>*&nbsp;</span><b>" + displayName + "</b>");
-		} else {
-			writeToPage("<b>" + displayName + "</b>");
+		if(!sdd.getValueCardinality().equals("Date")){
+			if (this.mandatoryField) {
+	
+				writeToPage("<span>*&nbsp;</span><b>" + displayName + "</b>");
+			} else {
+				writeToPage("<b>" + displayName + "</b>");
+			}
 		}
-
 		displayCellEnd();
 		displayRowEnd();  
 
-		StudentOtherDetailValue[] values = sdd.getStudentOtherDetailValues();
+		
 		if( multipleAllowed ) {
 			displayValues_CheckBoxes(displayName, values, editable);
 		} 
-		else { 
+		else if(!sdd.getValueCardinality().equals("Date")){ 
 			if ( values.length <= 1 ) {  
 				//displayValues_CheckBoxes(displayName, values, editable);
 				displayValues_TextBox(displayName, values[0].getValueName() ,editable);
@@ -214,8 +232,8 @@ public class StudentEduAndInstrTag extends CTBTag
 			value = sdv.getValueName().trim();
 			selected = sdv.getSelectedFlag().equals("true");		
 			String prin = sdv.getValueName();     //added for CA-ABE
-			if (selected)
-				hasSelected = true;
+			/*if (selected)
+				hasSelected = true;*/
 			displayRowStart();
 			displayCellStart("transparent-small");
 
@@ -261,6 +279,28 @@ public class StudentEduAndInstrTag extends CTBTag
 		displayCellEnd();
 		displayRowEnd();  
 	}
+	
+	private void displayValues_DateDropdown(String name, String[] values, boolean editable, StudentOtherDetailValue sodValue ) throws IOException 
+	{
+		int i;
+		String value = null;
+		boolean selected = false;	
+		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
+		writeToPage(getSpaces(8));
+		writeToPage("<select name=\"" + name + "\" style=width:76px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+		for (i=0 ; i<values.length ; i++) {
+			
+			if(sodValue.getValueCode()!= null && sodValue.getValueCode()!= "" && sodValue.getValueCode().equals(values[i])) {
+					selected = true	;
+			}
+			else
+				selected = false;
+			
+			writeToPage(option(values[i], selected));
+		}
+		writeToPage("</select>");
+		
+	}
 
 	private void displayValues_MultiDropdown(String name, StudentOtherDetailValue[] values, boolean editable) throws IOException 
 	{
@@ -277,29 +317,27 @@ public class StudentEduAndInstrTag extends CTBTag
 			String[] paramsTyes = values[i].getValueName().split(",");
 
 			displayRowStart();
-			displayCellStart("transparent");
-			writeToPage("<b>" + paramsTyes[0] + "</b>");
-			System.out.println("paramsTyes[0]==>"+paramsTyes[0]);
-			displayCellEnd();
-			displayCellStart("transparent-small");
-			writeToPage(getSpaces(8));
+				displayCellStart("transparent");
+					writeToPage(getSpaces(6));
+					writeToPage("<b>" + paramsTyes[0] + "</b>");
+				displayCellEnd();
+				displayCellStart("transparent-small");
+					writeToPage(getSpaces(8));
+					writeToPage("<select name=\"" + paramsTyes[0] + "\" style=width:190px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+					writeToPage(option("Please Select", true));
 
-			writeToPage("<select name=\"" + paramsTyes[0] + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
-			writeToPage(option("Please Select", true));
-
-			//StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
-			for(int j=1; j < paramsTyes.length; j++){
-				StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
-				value = paramsTyes[j].trim();
-				if(sdv.getValueCode()!= null && sdv.getValueCode().equals(value))
-					selected = true;
-				else 
-					selected=false;
-				//selected= true;
-				writeToPage(option(value, selected));
-			}
-			writeToPage("</select>");
-			displayCellEnd();
+					for(int j=1; j < paramsTyes.length; j++){
+					StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
+					value = paramsTyes[j].trim();
+					if(sdv.getValueCode()!= null && sdv.getValueCode().equals(value))
+						selected = true;
+					else 
+						selected=false;
+				
+					writeToPage(option(value, selected));
+					}
+					writeToPage("</select>");
+				displayCellEnd();
 			displayRowEnd();
 
 		}	
@@ -309,6 +347,23 @@ public class StudentEduAndInstrTag extends CTBTag
 
 
 	}
+	private void displayControlRow(String field, String description, 
+            boolean editable, StudentOtherDetailValue[] values) throws IOException 
+   {
+       displayRowStart();
+       		displayCellStart("transparent");
+       			writeToPage("<span>*&nbsp;</span><b>" + description + "</b>");
+			displayCellEnd();
+		displayRowEnd();  
+       
+       displayRowStart();
+       	   displayCellStart("transparent-small");
+               displayValues_DateDropdown("Month", DateUtils.getMonthOptions(),editable, values[0]);
+               displayValues_DateDropdown("Day", DateUtils.getDayOptions(),editable, values[1]);
+               displayValues_DateDropdown("Year", DateUtils.getYearOptions(),editable, values[2]);
+          displayCellEnd();
+       displayRowEnd();
+}	
 
 
 	private String option(String value, boolean isChecked) 

@@ -1495,7 +1495,32 @@ public class ManageStudentController extends PageFlowController
 		{
 			StudentOtherDetail sei = (StudentOtherDetail)this.educationAndInstruction.get(i);
 			StudentOtherDetailValue[] values = sei.getStudentOtherDetailValues();
-
+			
+			if(sei.getLabelName().equals("Date of Entry into this Class")) {
+				StudentOtherDetailValue seivMonth = (StudentOtherDetailValue)values[0];
+				String month = getRequest().getParameter("Month") ;
+				seivMonth.setValueCode(month);
+				StudentOtherDetailValue seivDay = (StudentOtherDetailValue)values[1];
+				String day = getRequest().getParameter("Day") ;
+				seivDay.setValueCode(day);
+				StudentOtherDetailValue seivYear = (StudentOtherDetailValue)values[2];
+				String year = getRequest().getParameter("Year") ;
+				seivYear.setValueCode(year);
+				if(month != null && !month.equals("") && day != null && !day.equals("") && year != null && !year.equals("")) {
+					seivMonth.setSelectedFlag("true");
+					seivDay.setSelectedFlag("true");
+					seivYear.setSelectedFlag("true");
+				}
+				else {
+					seivMonth.setSelectedFlag("false");
+					seivDay.setSelectedFlag("false");
+					seivYear.setSelectedFlag("false");
+				}
+					
+					
+				
+			}
+			
 			if(sei.getLabelName().equals("Skill Level")) {
 
 				for (int j=0; j < values.length; j++)
@@ -3850,15 +3875,14 @@ public class ManageStudentController extends PageFlowController
 
 
 			if (requiredFieldCount > 0) {
-				requiredFields += " in " + sectionName;
 				if (requiredFieldCount == 1) {
 					requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
-					setMessage("Missing required field", requiredFields, Message.ERROR);
+					setMessage("Missing required field"+"    In " + sectionName , requiredFields, Message.ERROR);
 
 				}
 				else {
 					requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
-					setMessage("Missing required fields", requiredFields, Message.ERROR);
+					setMessage("Missing required fields"+"    In " + sectionName, requiredFields, Message.ERROR);
 				}
 
 				if (sectionName.equals("Contact Information")) {
@@ -3900,7 +3924,8 @@ public class ManageStudentController extends PageFlowController
 		private boolean validateABEStudentInvalidChar(List selectedOrgNodes, String sectionName){
 
 			String invalidCharFields = "";
-			
+			String invalidString = "";  
+			String invalidNumber = "";
 			if(sectionName.equals("Student Information")){
 
 
@@ -3916,51 +3941,53 @@ public class ManageStudentController extends PageFlowController
 
 				invalidCharFields = WebUtils.verifyABECreateStudentInstructorName(firstName, middleName, lastName, instructorFirstName, instructorLastName);                
 				if (invalidCharFields.length() > 0) {
-					invalidCharFields += ("<br/>" + Message.INVALID_NAME_CHARS);
-					invalidCharFields += " in " + sectionName;
-					setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
-					return false;
-				}
+					invalidString = invalidCharFields + ("<br/>" + Message.INVALID_NAME_CHARS);
+					
+				}	
 
-				invalidCharFields = WebUtils.verifyCreateStudentNumber(studentNumber, null, "Social Security Number/Student ID", null );                
-				if (invalidCharFields.length() > 0) {
-					invalidCharFields += ("<br/>" + Message.INVALID_NUMBER_CHARS);
-					invalidCharFields += " in " + sectionName;
-					setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
-					return false;
-				}
+				invalidNumber = WebUtils.verifyCreateStudentNumber(studentNumber, null, "Social Security Number/Student ID", null );   
+				if (invalidNumber.length() > 0 ) {
+		            if(invalidString!=null && invalidString.length()>0){
+		               invalidString += ("<br/>");
+		            }
+		            invalidString += invalidNumber + ("<br/>" + Message.INVALID_NUMBER_CHARS);
+		        } 
+				
+				 if (invalidString!=null && invalidString.length() > 0 ) {    
+			            setMessage(MessageResourceBundle.getMessage("invalid_char_message")+"    In " + sectionName, invalidString, Message.ERROR);
+			            return false;
+			    } 
+				
 				//GACRCT2010CR007 - validate  date of birth  when date value is provided.
 
 				if(isDisableMandatoryBirthdate() && !DateUtils.allSelected(month, day, year)) {
 					if (!DateUtils.noneSelected(month, day, year)) {
-						invalidCharFields += Message.INVALID_DATE;
-						invalidCharFields += " in " + sectionName;
-						setMessage(MessageResourceBundle.getMessage("invalid_birthdate"), invalidCharFields, Message.ERROR);
+						invalidString += Message.INVALID_DATE;
+						setMessage(MessageResourceBundle.getMessage("invalid_birthdate")+"    In " + sectionName, invalidString, Message.ERROR);
 						return false;
 
 					}
-					//
+					
 				}
 
 				if (DateUtils.allSelected(month, day, year)) {
 					int isDateValid = DateUtils.validateDateValues(year, month, day);
 					if (isDateValid != DateUtils.DATE_VALID) {
-						invalidCharFields += Message.INVALID_DATE;
-						invalidCharFields += " in " + sectionName;
-						setMessage(MessageResourceBundle.getMessage("invalid_birthdate"), invalidCharFields, Message.ERROR);
+						invalidString += Message.INVALID_DATE;
+						setMessage(MessageResourceBundle.getMessage("invalid_birthdate")+"    In " + sectionName, invalidString, Message.ERROR);
 						return false;
 					}
 				}
 				
 			}
-
+			
 
 			if (sectionName.equals("Contact Information")) {
 
 				invalidCharFields = WebUtils.verifyABEValidStudentContact(this.studentProfile.getStudentContact());                
 				if (invalidCharFields.length() > 0) {
 					
-					setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
+					setMessage(MessageResourceBundle.getMessage("invalid_char_message")+"    In " + sectionName, invalidCharFields, Message.ERROR);
 					return false;
 				}
 
@@ -3996,15 +4023,15 @@ public class ManageStudentController extends PageFlowController
 				}
 			}
 			if (requiredFieldCount > 0) {
-				requiredFields += " in " + sectionName;
+				
 				if (requiredFieldCount == 1) {
 					requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
-					setMessage("Missing required field", requiredFields, Message.ERROR);
+					setMessage("Missing required field"+"    In " + sectionName, requiredFields, Message.ERROR);
 
 				}
 				else {
 					requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
-					setMessage("Missing required fields", requiredFields, Message.ERROR);
+					setMessage("Missing required fields"+"    In " + sectionName, requiredFields, Message.ERROR);
 				}
 
 				if (sectionName.equals("Contact Information")) {
@@ -4050,15 +4077,15 @@ public class ManageStudentController extends PageFlowController
 				}
 			}
 			if (requiredFieldCount > 0) {
-				requiredFields += " in " + sectionName;
+				
 				if (requiredFieldCount == 1) {
 					requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
-					setMessage("Missing required field", requiredFields, Message.ERROR);
+					setMessage("Missing required field"+"    In " + sectionName, requiredFields, Message.ERROR);
 
 				}
 				else {
 					requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
-					setMessage("Missing required fields", requiredFields, Message.ERROR);
+					setMessage("Missing required fields"+"    In " + sectionName, requiredFields, Message.ERROR);
 				}
 
 				/*if (sectionName.equals("sectionName")) {
@@ -4080,9 +4107,8 @@ public class ManageStudentController extends PageFlowController
 					if (values != null && values.length >0) {
 						String invalidCharFields = WebUtils.validProviderUse(values[0].getValueName());                
 						if (invalidCharFields.length() > 0) {
-							invalidCharFields += " in " + "";
 							invalidCharFields += ("<br/>" + Message.INVALID_NUMBER_CHARS);
-							setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
+							setMessage(MessageResourceBundle.getMessage("invalid_char_message")+"    In " + sectionName, invalidCharFields, Message.ERROR);
 							return false;
 
 						}
@@ -4099,7 +4125,7 @@ public class ManageStudentController extends PageFlowController
 		// CA-ABE prggoal validation
 		private boolean vaildateABEStudentWorkForceInfo(List selecteWorkForcelList) {
 
-			String sectionName = "Workforce";
+			String sectionName = "Supplement data for Workforce Student";
 			String requiredFields = "";
 			int requiredFieldCount = 0;
 			String invalidCharFields = "";
@@ -4128,15 +4154,15 @@ public class ManageStudentController extends PageFlowController
 				}
 			}
 			if (requiredFieldCount > 0) {
-				requiredFields += " in " + sectionName;
+				
 				if (requiredFieldCount == 1) {
 					requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
-					setMessage("Missing required field", requiredFields, Message.ERROR);
+					setMessage("Missing required field"+"    In " + sectionName, requiredFields, Message.ERROR);
 
 				}
 				else {
 					requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
-					setMessage("Missing required fields", requiredFields, Message.ERROR);
+					setMessage("Missing required fields"+"    In " + sectionName, requiredFields, Message.ERROR);
 				}
 
 				/*if (sectionName.equals("sectionName")) {
@@ -4167,10 +4193,10 @@ public class ManageStudentController extends PageFlowController
 
 			}
 			if (invalidFieldCount > 0) {
-				invalidCharFields += " in " + sectionName;
+				
 
 				requiredFields += ("<br/>" + Message.INVALID_NUMBER_CHARS);
-				setMessage(MessageResourceBundle.getMessage("invalid_char_message"), requiredFields, Message.ERROR);
+				setMessage(MessageResourceBundle.getMessage("invalid_char_message")+"    In " + sectionName, requiredFields, Message.ERROR);
 				return false;
 			}
 
@@ -4214,15 +4240,15 @@ public class ManageStudentController extends PageFlowController
 
 			}
 			if (requiredFieldCount > 0) {
-				requiredFields += " in " + sectionName;
+				
 				if (requiredFieldCount == 1) {
 					requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
-					setMessage("Missing required field", requiredFields, Message.ERROR);
+					setMessage("Missing required field"+"    In " + sectionName, requiredFields, Message.ERROR);
 
 				}
 				else {
 					requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
-					setMessage("Missing required fields", requiredFields, Message.ERROR);
+					setMessage("Missing required fields"+"    In " + sectionName, requiredFields, Message.ERROR);
 				}
 
 

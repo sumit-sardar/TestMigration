@@ -88,6 +88,15 @@ public class StudentEduAndInstrUtils {
 					valueList = new ArrayList();
 					eduAndInstrList.put(keyName,valueList);
 				}
+				if(parameterName.equals("Date of Entry into this Class")) {
+					fieldType = "Date";
+					keyName=parameterName+"_"+fieldType;
+					valueList = new ArrayList();
+					valueList.add("Month");
+					valueList.add("Day");
+					valueList.add("Year");
+					eduAndInstrList.put(keyName,valueList);
+				}
 				
 				if(parameterName.equals("Instructional Level")) {
 					fieldType = "dropdown";
