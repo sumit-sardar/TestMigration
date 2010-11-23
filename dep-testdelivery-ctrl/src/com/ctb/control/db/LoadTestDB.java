@@ -32,12 +32,15 @@ public interface LoadTestDB extends JdbcControl {
 	static final long serialVersionUID = 1L;
 	
 	
-	@JdbcControl.SQL(statement = "select  NVL(run_load,'X') as runLoad,  NVL(max_load,-1) as maxLoad,  to_char(NVL(run_date,to_date('01-JAN-1900')),'YYYY-MM-DD HH24:MI:SS') as runDate from load_test_config")
+	@JdbcControl.SQL(statement = "select  NVL(run_load,'X') as runLoad,  NVL(max_load,-1) as maxLoad,  to_char(NVL(run_date,to_date('01-JAN-1900')),'YYYY-MM-DD HH24:MI:SS') as runDate, nvl(ramp_up_time,0) as rampUpTime, nvl(filter_sites,'N') as filterSites from load_test_config")
 	LoadTestConfig getLoadTestConfig() throws SQLException;	
 	
-	@JdbcControl.SQL(statement = "select to_char(tr.test_roster_id) AS testRosterId, tr.password as password, ta.access_code AS accessCode, s.user_name AS loginId FROM test_roster tr, test_admin ta, student s, load_test_rosters ltr WHERE ltr.test_roster_id = tr.test_roster_id AND ltr.used_flag != 'Y' AND tr.test_admin_id = ta.test_admin_id AND tr.student_id = s.student_id")
-	LoadTestRoster getLoadTestRoster() throws SQLException;
-	
+	@JdbcControl.SQL(statement = "select getLoadTestRosterId() AS testRosterId from dual")
+	String getLoadTestRosterId() throws SQLException;
+
+	@JdbcControl.SQL(statement = "SELECT TO_CHAR(TR.TEST_ROSTER_ID) AS TESTROSTERID, TR.PASSWORD AS PASSWORD, TA.ACCESS_CODE AS ACCESSCODE, S.USER_NAME AS LOGINID FROM TEST_ROSTER TR, TEST_ADMIN TA, STUDENT S, LOAD_TEST_ROSTERS LTR WHERE LTR.TEST_ROSTER_ID = TR.TEST_ROSTER_ID AND LTR.USED_FLAG != 'Y' AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID AND TR.STUDENT_ID = S.STUDENT_ID AND tr.test_roster_id = {testRosterId}")
+	LoadTestRoster getLoadTestRoster(Integer testRosterId) throws SQLException;
+
 	@JdbcControl.SQL(statement = "SELECT TO_CHAR(TR.TEST_ROSTER_ID) AS TESTROSTERID, TR.PASSWORD AS PASSWORD, TA.ACCESS_CODE AS ACCESSCODE, S.USER_NAME AS LOGINID FROM TEST_ROSTER TR, TEST_ADMIN TA, STUDENT S, LOAD_TEST_ROSTERS LTR, LOAD_TEST_STATISTICS LTS WHERE LTR.TEST_ROSTER_ID = TR.TEST_ROSTER_ID AND LTR.USED_FLAG = 'Y' AND TR.TEST_ADMIN_ID = TA.TEST_ADMIN_ID AND TR.STUDENT_ID = S.STUDENT_ID AND LTS.SYSTEM_ID = {systemId} AND LTS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID AND TR.TEST_COMPLETION_STATUS = 'SC' AND ROWNUM = 1")
 	LoadTestRoster getAssignedLoadTestRoster(String systemId) throws SQLException;
 	
@@ -62,4 +65,7 @@ public interface LoadTestDB extends JdbcControl {
 	@JdbcControl.SQL(statement = "UPDATE site_info SET OS_NAME = {osName} ,OS_VERSION = {osVersion}, SYSTEM_MODEL = {systemModel}, PHYSICAL_MEMORY= {physicalMemory}, VIRTUAL_MEMORY = {virtualMemory}, PROCESSORS = {processors} , NETWORK_CARDS = {networkCards}, UPDATED_DATE = sysdate WHERE system_id = {systemId}")
 	int updateSystemInfo(String systemId, String osName, String osVersion, String systemModel, String physicalMemory, String virtualMemory, String processors, String networkCards) throws SQLException;
 	
+	@JdbcControl.SQL(statement = "SELECT COUNT(1) FROM ALLOWED_SITES WHERE LOWER(CORP_ID) = LOWER({corpId})")
+	int allowedSite(String corpId) throws SQLException;
+
 }

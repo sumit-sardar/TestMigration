@@ -43,90 +43,125 @@ public class LoadTestImpl implements LoadTest, Serializable {
 		RunLoadResponse runLoadResponse = response.addNewTmssvcResponse().addNewRunLoadResponse();
 		response.addNewTmssvcResponse().setMethod("run_load_response");
 		runLoadResponse.setSystemId(runLoadRequest.getRunLoadRequest().getSystemId());
+		
 		String systemId = runLoadRequest.getRunLoadRequest().getSystemId();
-        try{
+		String loadTestRosterId = "";
+		
+		//changes for filtering load test by sites
+		boolean allowedSite = true;
+		String siteId = systemId.substring(0, systemId.indexOf(":"));
+        String corpId = "";
+        if(!siteId.equals("")){
+        	corpId = siteId.substring(0, systemId.indexOf("-"));
+        }       
+        
+		try{
         	LoadTestConfig loadTestConfig = loadTestDB.getLoadTestConfig();
         	if (loadTestConfig != null){
         		if (loadTestConfig.getRunLoad().equals("Y")){
             		
-        			int inProgressRosters = loadTestDB.getInprogressRosters();
-        			
-        			if (inProgressRosters < loadTestConfig.getMaxLoad()){
-        				runLoadResponse.setStatus(Constants.LoadTestConfig.RUN_LOAD);
-            			
-            			try{
-            				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                			
-                			Date requestTime = df.parse(runLoadRequest.getRunLoadRequest().getSystemTime());
-                			
-                			//get client time from request
-                			Calendar clientTime = Calendar.getInstance();
-                			clientTime.setTime(requestTime);
-                			
-                			//get server time from database
-                			Calendar serverTime = Calendar.getInstance();
-                			serverTime.setTime(df.parse(loadTestDB.getServerTime()));
-                			
-                			//time diff in hours
-                			Long longTimeDiff = (clientTime.getTimeInMillis() - serverTime.getTimeInMillis())/(60 * 1000);
-                			Integer timeDiff = Integer.valueOf(longTimeDiff.intValue());
-                			
-                			Calendar runDate = Calendar.getInstance();
-                			runDate.setTime(df.parse(loadTestConfig.getRunDate()));
-                			
-                			//adjust run date as per time difference between server and client
-                			runDate.add(Calendar.MINUTE, timeDiff);
-                			
-                			
-                			//change to randomly distribute the load test schedule over 60 mins              			
-                			Random r = new Random();          			
-                			Integer randSecs = r.nextInt(3600);
-                			runDate.add(Calendar.SECOND, randSecs);
-                		              			
-                			
-                			runLoadResponse.setRunDate(df.format(runDate.getTime()));
-            			}catch(Exception e){
-            				OASLogger.getLogger("TestDelivery").debug(loadTestConfig.toString());
-            			}        			        			        			        			            		
-                		
-            			LoadTestRoster loadTestRoster = null;
-            			boolean existingRoster = true;
-            			//check if this system already has a roster scheduled for future run
-            			loadTestRoster = loadTestDB.getAssignedLoadTestRoster(systemId);
-            			
-            			if (loadTestRoster == null){
-            				loadTestRoster = loadTestDB.getLoadTestRoster();
-            				existingRoster = false;
-            			}
+        			//changes for filtering load test by sites
+        			if (loadTestConfig.getfilterSites().equals("Y")){
+            			if (!corpId.equals("")){
+            				int siteCount = loadTestDB.allowedSite(corpId);
             				
+            				if (siteCount == 0 ){
+            					allowedSite = false;
+            				}
+            			}else{
+            				allowedSite = false;
+            			}
+            		}
+        			
+        			if (allowedSite){
+        				int inProgressRosters = loadTestDB.getInprogressRosters();
             			
-                		if (loadTestRoster != null){
-                			runLoadResponse.setRosterId(loadTestRoster.getTestRosterId());
-                    		runLoadResponse.setLoginId(loadTestRoster.getLoginId());
-                    		runLoadResponse.setAccessCode(loadTestRoster.getAccessCode());
-                    		runLoadResponse.setPassword(loadTestRoster.getPassword());
+            			if (inProgressRosters < loadTestConfig.getMaxLoad()){
+            				runLoadResponse.setStatus(Constants.LoadTestConfig.RUN_LOAD);
+                			
+                			try{
+                				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    			
+                    			Date requestTime = df.parse(runLoadRequest.getRunLoadRequest().getSystemTime());
+                    			
+                    			//get client time from request
+                    			Calendar clientTime = Calendar.getInstance();
+                    			clientTime.setTime(requestTime);
+                    			
+                    			//get server time from database
+                    			Calendar serverTime = Calendar.getInstance();
+                    			serverTime.setTime(df.parse(loadTestDB.getServerTime()));
+                    			
+                    			//time diff in hours
+                    			Long longTimeDiff = (clientTime.getTimeInMillis() - serverTime.getTimeInMillis())/(60 * 1000);
+                    			Integer timeDiff = Integer.valueOf(longTimeDiff.intValue());
+                    			
+                    			Calendar runDate = Calendar.getInstance();
+                    			runDate.setTime(df.parse(loadTestConfig.getRunDate()));
+                    			
+                    			//adjust run date as per time difference between server and client
+                    			runDate.add(Calendar.MINUTE, timeDiff);
+                    			                			
+                    			//change to randomly distribute the load test schedule over 60 mins              			                			
+                    			Integer rampUpTime = loadTestConfig.getrampUpTime();
+                    			if (rampUpTime != 0){
+                    				Random r = new Random();
+                    				Integer randSecs = r.nextInt(rampUpTime);
+                        			runDate.add(Calendar.SECOND, randSecs);
+                    			}                    			                    		              			
+                    			
+                    			runLoadResponse.setRunDate(df.format(runDate.getTime()));
+                			}catch(Exception e){
+                				OASLogger.getLogger("TestDelivery").debug(loadTestConfig.toString());
+                			}        			        			        			        			            		
                     		
-                    		int updateCount = loadTestDB.setUsedFlag(Integer.valueOf(loadTestRoster.getTestRosterId()));
-                    		if (updateCount <= 0){
-                    			OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
-                    		}                		
-                    		if (!existingRoster){
-                    			int insertCount = loadTestDB.createStatisticsRecord(runLoadRequest.getRunLoadRequest().getSystemId(), Integer.valueOf(loadTestRoster.getTestRosterId()));
-                            	if (insertCount <= 0){
-                            		OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
-                            	}
-                    		}
-                    		
-                    		                   		            		
-                		}else{
-                			runLoadResponse.setStatus(Constants.LoadTestConfig.NO_RUN);
-                			System.out.println("##### loadTestRoster SQL exception ### ");
-                		}       		            		            		
-                	
+                			LoadTestRoster loadTestRoster = null;
+                			boolean existingRoster = true;
+                			//check if this system already has a roster scheduled for future run
+                			loadTestRoster = loadTestDB.getAssignedLoadTestRoster(systemId);
+                			
+                			if (loadTestRoster == null){
+                				loadTestRosterId = loadTestDB.getLoadTestRosterId();
+                				existingRoster = false;
+                			}
+                			if (!loadTestRosterId.equals("")){
+                				
+                				loadTestRoster = loadTestDB.getLoadTestRoster(Integer.parseInt(loadTestRosterId));
+                				
+                				if (loadTestRoster != null){
+                        			runLoadResponse.setRosterId(loadTestRoster.getTestRosterId());
+                            		runLoadResponse.setLoginId(loadTestRoster.getLoginId());
+                            		runLoadResponse.setAccessCode(loadTestRoster.getAccessCode());
+                            		runLoadResponse.setPassword(loadTestRoster.getPassword());
+                            		
+                            		int updateCount = loadTestDB.setUsedFlag(Integer.valueOf(loadTestRoster.getTestRosterId()));
+                            		if (updateCount <= 0){
+                            			OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
+                            		}                		
+                            		if (!existingRoster){
+                            			int insertCount = loadTestDB.createStatisticsRecord(runLoadRequest.getRunLoadRequest().getSystemId(), Integer.valueOf(loadTestRoster.getTestRosterId()));
+                                    	if (insertCount <= 0){
+                                    		OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
+                                    	}
+                            		}                  		
+                            		                   		            		
+                        		}else{
+                        			runLoadResponse.setStatus(Constants.LoadTestConfig.NO_RUN);
+                        			System.out.println("##### loadTestRoster SQL exception ### ");
+                        		}  
+                			}else{
+                				runLoadResponse.setStatus(Constants.LoadTestConfig.NO_RUN);
+                    			System.out.println("##### loadTestRoster SQL exception ### ");
+                			}
+                    		     		            		            		                    	
+            			}else{
+            				runLoadResponse.setStatus(Constants.LoadTestConfig.NO_RUN); 
+                    		System.out.println("##### loadTestConfig ### exceeds max load");
+            			}
         			}else{
         				runLoadResponse.setStatus(Constants.LoadTestConfig.NO_RUN); 
-                		System.out.println("##### loadTestConfig ### exceeds max load");
-        			}
+                		System.out.println("##### site not allowed to participate ###");
+        			}       			        			
         		}		
         	}else{
         		runLoadResponse.setStatus(Constants.LoadTestConfig.NO_RUN); 

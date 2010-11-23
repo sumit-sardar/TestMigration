@@ -8,7 +8,7 @@ import com.bea.control.annotations.TransactionAttributeType;
 @ControlInterface
 public interface LoadTest {
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	noNamespace.TmssvcResponseDocument getLoadTestConfig(noNamespace.TmssvcRequestDocument document);
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
