@@ -61,7 +61,7 @@ public class LoadTestImpl implements LoadTest, Serializable {
         		if (loadTestConfig.getRunLoad().equals("Y")){
             		
         			//changes for filtering load test by sites
-        			if (loadTestConfig.getfilterSites().equals("Y")){
+        			if (loadTestConfig.getFilterSites().equals("Y")){
             			if (!corpId.equals("")){
             				int siteCount = loadTestDB.allowedSite(corpId);
             				
@@ -103,7 +103,7 @@ public class LoadTestImpl implements LoadTest, Serializable {
                     			runDate.add(Calendar.MINUTE, timeDiff);
                     			                			
                     			//change to randomly distribute the load test schedule over 60 mins              			                			
-                    			Integer rampUpTime = loadTestConfig.getrampUpTime();
+                    			Integer rampUpTime = loadTestConfig.getRampUpTime();
                     			if (rampUpTime != 0){
                     				Random r = new Random();
                     				Integer randSecs = r.nextInt(rampUpTime);

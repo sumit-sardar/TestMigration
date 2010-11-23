@@ -52,27 +52,27 @@ public class LoadTestConfig {
 	/**
 	 * @return Returns the rampUpTime.
 	 */
-	public Integer getrampUpTime() {
+	public Integer getRampUpTime() {
 		return rampUpTime;
 	}
 	
 	/**
 	 * @param rampUpTime The rampUpTime value to set.
 	 */
-	public void setrampUpTime(Integer rampUpTime) {
+	public void setRampUpTime(Integer rampUpTime) {
 		this.rampUpTime = rampUpTime;
 	}
 	
 	/**
 	 * @return Returns the filterSites flag.
 	 */
-	public String getfilterSites() {
+	public String getFilterSites() {
 		return filterSites;
 	}
 	/**
 	 * @param runLoad The runLoad flag to set.
 	 */
-	public void setfilterSites(String filterSites) {
+	public void setFilterSites(String filterSites) {
 		this.filterSites = filterSites;
 	}
 
