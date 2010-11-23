@@ -121,34 +121,27 @@ public class LoadTestImpl implements LoadTest, Serializable {
                 			loadTestRoster = loadTestDB.getAssignedLoadTestRoster(systemId);
                 			
                 			if (loadTestRoster == null){
-                				loadTestRosterId = loadTestDB.getLoadTestRosterId();
+                				loadTestRoster = loadTestDB.getLoadTestRoster();
                 				existingRoster = false;
                 			}
-                			if (!(loadTestRosterId == null)){
                 				
-                				loadTestRoster = loadTestDB.getLoadTestRoster(Integer.parseInt(loadTestRosterId));
-                				
-                				if (loadTestRoster != null){
-                        			runLoadResponse.setRosterId(loadTestRoster.getTestRosterId());
-                            		runLoadResponse.setLoginId(loadTestRoster.getLoginId());
-                            		runLoadResponse.setAccessCode(loadTestRoster.getAccessCode());
-                            		runLoadResponse.setPassword(loadTestRoster.getPassword());
-                            		
-                            		int updateCount = loadTestDB.setUsedFlag(Integer.valueOf(loadTestRoster.getTestRosterId()));
-                            		if (updateCount <= 0){
-                            			OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
-                            		}                		
-                            		if (!existingRoster){
-                            			int insertCount = loadTestDB.createStatisticsRecord(runLoadRequest.getRunLoadRequest().getSystemId(), Integer.valueOf(loadTestRoster.getTestRosterId()));
-                                    	if (insertCount <= 0){
-                                    		OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
-                                    	}
-                            		}                  		
-                            		                   		            		
-                        		}else{
-                        			runLoadResponse.setStatus(Constants.LoadTestConfig.NO_RUN);
-                        			System.out.println("##### loadTestRoster SQL exception ### ");
-                        		}  
+                			
+                    		if (loadTestRoster != null){
+                    			runLoadResponse.setRosterId(loadTestRoster.getTestRosterId());
+                        		runLoadResponse.setLoginId(loadTestRoster.getLoginId());
+                        		runLoadResponse.setAccessCode(loadTestRoster.getAccessCode());
+                        		runLoadResponse.setPassword(loadTestRoster.getPassword());
+                        		
+                        		int updateCount = loadTestDB.setUsedFlag(Integer.valueOf(loadTestRoster.getTestRosterId()));
+                        		if (updateCount <= 0){
+                        			OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
+                        		}                		
+                        		if (!existingRoster){
+                        			int insertCount = loadTestDB.createStatisticsRecord(runLoadRequest.getRunLoadRequest().getSystemId(), Integer.valueOf(loadTestRoster.getTestRosterId()));
+                                	if (insertCount <= 0){
+                                		OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
+                                	}
+                        		} 
                 			}else{
                 				runLoadResponse.setStatus(Constants.LoadTestConfig.NO_RUN);
                     			System.out.println("##### loadTestRoster SQL exception ### ");
