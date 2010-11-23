@@ -124,7 +124,7 @@ public class LoadTestImpl implements LoadTest, Serializable {
                 				loadTestRosterId = loadTestDB.getLoadTestRosterId();
                 				existingRoster = false;
                 			}
-                			if (!loadTestRosterId.equals("")){
+                			if (!(loadTestRosterId == null)){
                 				
                 				loadTestRoster = loadTestDB.getLoadTestRoster(Integer.parseInt(loadTestRosterId));
                 				
