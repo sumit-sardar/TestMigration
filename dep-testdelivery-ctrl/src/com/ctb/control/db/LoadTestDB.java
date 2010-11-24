@@ -64,5 +64,14 @@ public interface LoadTestDB extends JdbcControl {
 	
 	@JdbcControl.SQL(statement = "SELECT COUNT(1) FROM ALLOWED_SITES WHERE LOWER(CORP_ID) = LOWER({corpId})")
 	int allowedSite(String corpId) throws SQLException;
+	
+	@JdbcControl.SQL(statement = "select iset.item_set_id  from item_Set iset where iset.ads_ob_asmt_id = {adsSubtestId}")
+	int getTDItemSetId(int adsSubtestId) throws SQLException;
+	
+	@JdbcControl.SQL(statement = "select isa.ancestor_item_set_id from item_set_ancestor isa where isa.ancestor_item_set_type = 'TC' and isa.item_set_id = {TDSubtestId}")
+	int getTCItemSetId(int TDSubtestId) throws SQLException;
+	
+	@JdbcControl.SQL(statement = " select  tc.block_download_flag from test_catalog tc where tc.item_set_id = {TCSubtestId}")
+	String getBlockFlag(int TCSubtestId) throws SQLException;
 
 }
