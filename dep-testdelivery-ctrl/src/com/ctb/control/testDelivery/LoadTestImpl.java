@@ -124,7 +124,7 @@ public class LoadTestImpl implements LoadTest, Serializable {
                 			if (loadTestRoster == null){
                 				//change to fix duplicate roster assignment
                 				newLoadTestRosters = loadTestDB.getLoadTestRoster();
-                				if(newLoadTestRosters != null){
+                				if(newLoadTestRosters != null && newLoadTestRosters.length > 0){
                 					Random n = new Random();
                 					Integer randIndex = n.nextInt(newLoadTestRosters.length);
                 					loadTestRoster = newLoadTestRosters[randIndex];
