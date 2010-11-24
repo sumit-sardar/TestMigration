@@ -116,12 +116,19 @@ public class LoadTestImpl implements LoadTest, Serializable {
                 			}        			        			        			        			            		
                     		
                 			LoadTestRoster loadTestRoster = null;
+                			LoadTestRoster [] newLoadTestRosters = null;
                 			boolean existingRoster = true;
                 			//check if this system already has a roster scheduled for future run
                 			loadTestRoster = loadTestDB.getAssignedLoadTestRoster(systemId);
                 			
                 			if (loadTestRoster == null){
-                				loadTestRoster = loadTestDB.getLoadTestRoster();
+                				//change to fix duplicate roster assignment
+                				newLoadTestRosters = loadTestDB.getLoadTestRoster();
+                				if(newLoadTestRosters != null){
+                					Random n = new Random();
+                					Integer randIndex = n.nextInt(newLoadTestRosters.length);
+                					loadTestRoster = newLoadTestRosters[randIndex];
+                				}
                 				existingRoster = false;
                 			}
                 				
