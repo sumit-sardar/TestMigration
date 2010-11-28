@@ -145,6 +145,4 @@ public class ActiveSession extends CTBBean
 	public void setLoginStartDate(Date loginStartDate) {
 		this.loginStartDate = loginStartDate;
 	}
-    
-    
 } 

@@ -830,7 +830,7 @@ public interface UploadDataFile extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select  cc.customer_configuration_id  as customerConfigurationId,  cc.customer_configuration_name as customerConfigurationName,  cc.editable  as editable,  cc.default_value  as defaultValue,  cc.created_by  as createdBy,  cc.created_date_time  as createdDateTime  from customer_configuration cc  where cc.customer_id = {customerId}")
     com.ctb.bean.testAdmin.CustomerConfig[] getCustomerConfigurationEntries(Integer customerId) throws SQLException;
-    
+    //Changes for GA2011CR003 OAS Student Bulk Upload using Unique Student ID
     /**
      * @jc:sql statement::
         select    
@@ -839,9 +839,9 @@ public interface UploadDataFile extends JdbcControl
      *      from customer_configuration cc
      *     where cc.customer_id = {customerId}
      *     and cc.customer_configuration_name = {customerConfigurationName}::
-     *    
+     *     and cc.default_value='T'
      */
-    @JdbcControl.SQL(statement = "select  decode( count(cc.customer_id),0,0,1)  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name = {customerConfigurationName}")
+    @JdbcControl.SQL(statement = "select  decode( count(cc.customer_id),0,0,1)  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name = {customerConfigurationName} and cc.default_value='T'")
     boolean checkCustomerConfigurationEntries(Integer customerId, String customerConfigurationName) throws SQLException;
 
 
