@@ -1,7 +1,6 @@
 package com.ctb.bean.testAdmin; 
 
 import com.ctb.bean.CTBBean;
-
 import java.util.Date;
 import java.util.HashMap;
 
@@ -46,16 +45,6 @@ public class Student extends CTBBean
     private String udf;
     private String udf1;
     private String udf2;
-    
-    //Changes for CA-ABE
-    //START
-    private Integer addressId;
-    private String instructorFirstName;
-    private String instructorLastName;
-    private String visibleAcrossOrganization;
-    private String isSSN;
-    private String isPBAFormSigned;
-    //END
     
     public boolean equals(Object other) {
         if(this.extElmId != null) {
@@ -468,73 +457,5 @@ public class Student extends CTBBean
 	 */
 	public void setUdf2(String udf2) {
 		this.udf2 = udf2;
-	}
-	
-	// CA-ABE
-	public Integer getAddressId() {
-		return addressId;
-	}
-	public void setAddressId(Integer addressId) {
-		this.addressId = addressId;
-	}
-	/**
-	 * @return the instructorFirstName
-	 */
-	public String getInstructorFirstName() {
-		return instructorFirstName;
-	}
-	/**
-	 * @param instructorFirstName the instructorFirstName to set
-	 */
-	public void setInstructorFirstName(String instructorFirstName) {
-		this.instructorFirstName = instructorFirstName;
-	}
-	/**
-	 * @return the instructorLastName
-	 */
-	public String getInstructorLastName() {
-		return instructorLastName;
-	}
-	/**
-	 * @param instructorLastName the instructorLastName to set
-	 */
-	public void setInstructorLastName(String instructorLastName) {
-		this.instructorLastName = instructorLastName;
-	}
-	/**
-	 * @return the visibleAcrossOrganization
-	 */
-	public String getVisibleAcrossOrganization() {
-		return visibleAcrossOrganization;
-	}
-	/**
-	 * @param visibleAcrossOrganization the visibleAcrossOrganization to set
-	 */
-	public void setVisibleAcrossOrganization(String visibleAcrossOrganization) {
-		this.visibleAcrossOrganization = visibleAcrossOrganization;
-	}
-	/**
-	 * @return the isSSN
-	 */
-	public String getIsSSN() {
-		return isSSN;
-	}
-	/**
-	 * @param isSSN the isSSN to set
-	 */
-	public void setIsSSN(String isSSN) {
-		this.isSSN = isSSN;
-	}
-	/**
-	 * @return the isPBAFormSigned
-	 */
-	public String getIsPBAFormSigned() {
-		return isPBAFormSigned;
-	}
-	/**
-	 * @param isPBAFormSigned the isPBAFormSigned to set
-	 */
-	public void setIsPBAFormSigned(String isPBAFormSigned) {
-		this.isPBAFormSigned = isPBAFormSigned;
 	}
 } 
