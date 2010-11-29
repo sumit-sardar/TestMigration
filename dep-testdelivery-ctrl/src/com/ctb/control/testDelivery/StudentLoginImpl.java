@@ -94,6 +94,9 @@ public class StudentLoginImpl implements StudentLogin, Serializable
     static final long serialVersionUID = 1L;
     
     private static final String CACHE_TYPE_ITEM_MAP = "CACHE_TYPE_ITEM_MAP";
+    private static final String CACHE_TYPE_ADMIN_PRODUCT_MAP = "CACHE_TYPE_ADMIN_PRODUCT_MAP";
+    private static final String CACHE_TYPE_PRODUCT_LOGO = "CACHE_TYPE_PRODUCT_LOGO";
+    private static final String CACHE_TYPE_TUTORIAL_RESOURCE = "CACHE_TYPE_TUTORIAL_RESOURCE";
     
 
     /**
@@ -240,7 +243,7 @@ public class StudentLoginImpl implements StudentLogin, Serializable
                 loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.AUTHENTICATION_FAILURE_STATUS);
                 throw new AuthenticationFailureException();
             } else {
-                validateAuthenticationData(loginRequest.getLoginRequest(), loginResponse, authData);
+                Integer productId = validateAuthenticationData(loginRequest.getLoginRequest(), loginResponse, authData);
                 
                 /* Set the Random Number Distractor 
                     in Login ressponse for TABE product
@@ -349,9 +352,15 @@ public class StudentLoginImpl implements StudentLogin, Serializable
                 if(manifestData != null) OASLogger.getLogger("TestDelivery").debug(manifestData.toString());
                 copyManifestDataToResponse(loginResponse, manifestData, testRosterId, authData.getTestAdminId(), loginRequest.getLoginRequest().getAccessCode());
 
-                String tutorialResource = authenticator.getTutorialResource(testRosterId);
-                boolean wasTutorialTaken = authenticator.wasTutotrialTaken(testRosterId);
+                String tutorialResource = SimpleCache.checkCache("CACHE_TYPE_TUTORIAL_RESOURCE", productId);
+                if(tutorialResource == null) {
+                	tutorialResource = authenticator.getTutorialResource(testRosterId);
+                	if(tutorialResource == null) tutorialResource = "";
+                	SimpleCache.cacheResult("CACHE_TYPE_TUTORIAL_RESOURCE", productId, tutorialResource);
+                }
+                
                 if (tutorialResource!= null && !tutorialResource.trim().equals("")) {
+                	boolean wasTutorialTaken = authenticator.wasTutotrialTaken(testRosterId);
                     Tutorial tutorial =loginResponse.addNewTutorial();
                     tutorial.setTutorialUrl(tutorialResource);
                     tutorial.setDeliverTutorial(new BigInteger(wasTutorialTaken ? "0":"1"));
@@ -480,7 +489,7 @@ public class StudentLoginImpl implements StudentLogin, Serializable
         
     }
 */    
-    private void validateAuthenticationData(LoginRequest request, LoginResponse response, AuthenticationData authData) throws AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException, LocatorSubtestNotCompletedException, SQLException {
+    private Integer validateAuthenticationData(LoginRequest request, LoginResponse response, AuthenticationData authData) throws AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException, LocatorSubtestNotCompletedException, SQLException {
         // were credentials correct?
         if(authData == null) 
             throw new AuthenticationFailureException();
@@ -488,7 +497,12 @@ public class StudentLoginImpl implements StudentLogin, Serializable
         if(authData.getCaptureMethod() != null && !authData.getCaptureMethod().equals(Constants.RosterCaptureMethod.CAPTURE_METHOD_ONLINE))
             throw new KeyEnteredResponsesException();  
 
-        TestProduct testProduct = product.getProductForTestAdmin(new Integer(authData.getTestAdminId()));
+        String testAdminId = authData.getTestAdminId();
+        TestProduct testProduct = SimpleCache.checkCache(CACHE_TYPE_ADMIN_PRODUCT_MAP, testAdminId);
+        if(testProduct == null)	 {
+        	testProduct = product.getProductForTestAdmin(new Integer(testAdminId));
+        	SimpleCache.cacheResult(CACHE_TYPE_ADMIN_PRODUCT_MAP, testAdminId, testProduct);
+        }
         //AuthenticateStudent authenticator = authenticatorFactory.create();
 
         boolean isTabe = false;
@@ -570,10 +584,19 @@ public class StudentLoginImpl implements StudentLogin, Serializable
         }
         response.setRestartNumber(new BigInteger(String.valueOf(authData.getRestartNumber())));
         
-        String logoURI = authenticator.getProductLogo(testProduct.getProductId());
-        if (logoURI == null || "".equals(logoURI))
-            logoURI = "/resources/logo.swf";
+        Integer productId = testProduct.getProductId();
+        String logoURI = SimpleCache.checkCache("CACHE_TYPE_PRODUCT_LOGO", productId);
+        if(logoURI == null) {
+        	logoURI = authenticator.getProductLogo();
+        	if (logoURI == null || "".equals(logoURI)) {
+                logoURI = "/resources/logo.swf";
+        	}
+        	SimpleCache.cacheResult("CACHE_TYPE_PRODUCT_LOGO", productId, logoURI);
+        }
+        
         response.addNewBranding().setTdclogo(logoURI);
+        
+        return productId;
     }
     
     private void copyAuthenticationDataToResponse(LoginResponse response, AuthenticationData authData) throws AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException {
@@ -662,8 +685,7 @@ public class StudentLoginImpl implements StudentLogin, Serializable
     private void copyManifestDataToResponse(LoginResponse response, ManifestData [] manifestData, int testRosterId, int testAdminId, String accessCode) throws SQLException {
         response.addNewManifest();
         Manifest manifest = response.getManifest();
-        String isUltimateAccessCode = authenticator.isUltimateAccessCode(new Integer(testRosterId), new Integer(testAdminId), accessCode);
-        
+                
         if(response.getRestartFlag()) {
 	        ArrayList a = new ArrayList();
 	        for(int i=0;i<manifestData.length;i++) {
@@ -680,54 +702,55 @@ public class StudentLoginImpl implements StudentLogin, Serializable
 	       // manifestData = (ManifestData [])a.toArray();
         }
         
+        boolean showFeedback = false;
+        if(manifestData != null && manifestData.length > 0) {
+        	showFeedback = "T".equals(manifestData[0].getShowStudentFeedback());
+        	if(showFeedback) {
+        		String isUltimateAccessCode = authenticator.isUltimateAccessCode(new Integer(testRosterId), new Integer(testAdminId), accessCode);
+        		if(!"T".equals(isUltimateAccessCode)) {
+        			showFeedback = false;
+        		}
+        	}
+        }
+        
         for(int i=0;i<manifestData.length;i++) {
         	ManifestData data = manifestData[i];
-        /*	if(response.getRestartFlag() && "T".equals(isUltimateAccessCode) 
-        				&& Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(data.getCompletionStatus())){
-	            System.out.println("***** In If");
-	            System.out.println("RestartFlag: "+response.getRestartFlag()+", isUltimateAccessCode: "
-	            			+isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
-        		continue;
-        	}else{*/
-        		System.out.println("***** In Else");
-        		System.out.println("RestartFlag: "+response.getRestartFlag()+", isUltimateAccessCode: "
-	            			+isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
-        		manifest.setTitle(data.getTestTitle());
-	            manifest.addNewSco();
-	            Sco sco = manifest.getScoArray(i);
-	            if(data.getAdminForceLogout().equals("T") &&
-	                ((i >= manifestData.length - 1) || (data.getScoParentId() != manifestData[i+1].getScoParentId()))) {
-	                sco.setForceLogout(true);
-	            } else {
-	                sco.setForceLogout(false);
-	            }
-	            if(data.getTotalTime() > 0) {
-	                sco.setCmiCoreEntry(EntryType.RESUME);
-	            } else {
-	                sco.setCmiCoreEntry(EntryType.AB_INITIO);
-	            }
-	            sco.setId(String.valueOf(data.getId()));
-	            sco.setScoDurationMinutes(new BigInteger(String.valueOf(data.getScoDurationMinutes())));
-	            // scoUnitQuestionNumberOffset will be used to control multi-part subtest numbering
-	            sco.setScoUnitQuestionNumberOffset(String.valueOf(0));
-	            sco.setScoUnitType(ScoUnitType.SUBTEST);
-	            sco.setTitle(data.getTitle());
-	            sco.setAsmtHash(data.getAsmtHash());
-	            sco.setAsmtEncryptionKey(data.getAsmtEncryptionKey());
-	            sco.setItemEncryptionKey(data.getItemEncryptionKey());
-	            sco.setAdsid(data.getAdsid());
-	            int hours = (int) Math.floor(data.getTotalTime() / 3600);
-	            int minutes = (int) Math.floor((data.getTotalTime() - (hours * 3600)) / 60);
-	            int seconds = data.getTotalTime() - (hours * 3600) - (minutes * 60);
-	            sco.setCmiCoreTotalTime(hours + ":" + minutes + ":" + seconds);
-        	//}
+        	System.out.println("***** In Else");
+    		System.out.println("RestartFlag: "+response.getRestartFlag()+", isUltimateAccessCode: "
+            			+isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
+    		manifest.setTitle(data.getTestTitle());
+            manifest.addNewSco();
+            Sco sco = manifest.getScoArray(i);
+            if(data.getAdminForceLogout().equals("T") &&
+                ((i >= manifestData.length - 1) || (data.getScoParentId() != manifestData[i+1].getScoParentId()))) {
+                sco.setForceLogout(true);
+            } else {
+                sco.setForceLogout(false);
+            }
+            if(data.getTotalTime() > 0) {
+                sco.setCmiCoreEntry(EntryType.RESUME);
+            } else {
+                sco.setCmiCoreEntry(EntryType.AB_INITIO);
+            }
+            sco.setId(String.valueOf(data.getId()));
+            sco.setScoDurationMinutes(new BigInteger(String.valueOf(data.getScoDurationMinutes())));
+            // scoUnitQuestionNumberOffset will be used to control multi-part subtest numbering
+            sco.setScoUnitQuestionNumberOffset(String.valueOf(0));
+            sco.setScoUnitType(ScoUnitType.SUBTEST);
+            sco.setTitle(data.getTitle());
+            sco.setAsmtHash(data.getAsmtHash());
+            sco.setAsmtEncryptionKey(data.getAsmtEncryptionKey());
+            sco.setItemEncryptionKey(data.getItemEncryptionKey());
+            sco.setAdsid(data.getAdsid());
+            int hours = (int) Math.floor(data.getTotalTime() / 3600);
+            int minutes = (int) Math.floor((data.getTotalTime() - (hours * 3600)) / 60);
+            int seconds = data.getTotalTime() - (hours * 3600) - (minutes * 60);
+            sco.setCmiCoreTotalTime(hours + ":" + minutes + ":" + seconds);
         }
         //AuthenticateStudent authenticator = authenticatorFactory.create();
-        if("T".equals(isUltimateAccessCode)) {
-            if(manifestData.length > 0 && "T".equals(manifestData[0].getShowStudentFeedback())) {
-                manifest.addNewFeedback();
-                manifest.getFeedback().setId("STUDENT_FEEDBACK");
-            }
+        if(showFeedback) {
+        	manifest.addNewFeedback();
+        	manifest.getFeedback().setId("STUDENT_FEEDBACK");
         }
         manifest.addNewTerminator();
         manifest.getTerminator().setId("SEE_YOU_LATER");  
