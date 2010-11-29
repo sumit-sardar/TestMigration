@@ -352,11 +352,11 @@ public class StudentLoginImpl implements StudentLogin, Serializable
                 if(manifestData != null) OASLogger.getLogger("TestDelivery").debug(manifestData.toString());
                 copyManifestDataToResponse(loginResponse, manifestData, testRosterId, authData.getTestAdminId(), loginRequest.getLoginRequest().getAccessCode());
 
-                String tutorialResource = SimpleCache.checkCache("CACHE_TYPE_TUTORIAL_RESOURCE", productId);
+                String tutorialResource = SimpleCache.checkCache("CACHE_TYPE_TUTORIAL_RESOURCE", String.valueOf(productId));
                 if(tutorialResource == null) {
                 	tutorialResource = authenticator.getTutorialResource(testRosterId);
                 	if(tutorialResource == null) tutorialResource = "";
-                	SimpleCache.cacheResult("CACHE_TYPE_TUTORIAL_RESOURCE", productId, tutorialResource);
+                	SimpleCache.cacheResult("CACHE_TYPE_TUTORIAL_RESOURCE", String.valueOf(productId), tutorialResource);
                 }
                 
                 if (tutorialResource!= null && !tutorialResource.trim().equals("")) {
@@ -585,13 +585,13 @@ public class StudentLoginImpl implements StudentLogin, Serializable
         response.setRestartNumber(new BigInteger(String.valueOf(authData.getRestartNumber())));
         
         Integer productId = testProduct.getProductId();
-        String logoURI = SimpleCache.checkCache("CACHE_TYPE_PRODUCT_LOGO", productId);
+        String logoURI = SimpleCache.checkCache("CACHE_TYPE_PRODUCT_LOGO", String.valueOf(productId));
         if(logoURI == null) {
         	logoURI = authenticator.getProductLogo();
         	if (logoURI == null || "".equals(logoURI)) {
                 logoURI = "/resources/logo.swf";
         	}
-        	SimpleCache.cacheResult("CACHE_TYPE_PRODUCT_LOGO", productId, logoURI);
+        	SimpleCache.cacheResult("CACHE_TYPE_PRODUCT_LOGO", String.valueOf(productId), logoURI);
         }
         
         response.addNewBranding().setTdclogo(logoURI);
