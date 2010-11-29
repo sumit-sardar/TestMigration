@@ -587,7 +587,7 @@ public class StudentLoginImpl implements StudentLogin, Serializable
         Integer productId = testProduct.getProductId();
         String logoURI = (String) SimpleCache.checkCache("CACHE_TYPE_PRODUCT_LOGO", String.valueOf(productId));
         if(logoURI == null) {
-        	logoURI = authenticator.getProductLogo();
+        	logoURI = authenticator.getProductLogo(productId);
         	if (logoURI == null || "".equals(logoURI)) {
                 logoURI = "/resources/logo.swf";
         	}
@@ -716,8 +716,7 @@ public class StudentLoginImpl implements StudentLogin, Serializable
         for(int i=0;i<manifestData.length;i++) {
         	ManifestData data = manifestData[i];
         	System.out.println("***** In Else");
-    		System.out.println("RestartFlag: "+response.getRestartFlag()+", isUltimateAccessCode: "
-            			+isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
+    		System.out.println("RestartFlag: "+response.getRestartFlag()+", CompletionStatus: "+data.getCompletionStatus());
     		manifest.setTitle(data.getTestTitle());
             manifest.addNewSco();
             Sco sco = manifest.getScoArray(i);
