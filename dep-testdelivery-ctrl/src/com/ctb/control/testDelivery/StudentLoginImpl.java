@@ -352,7 +352,7 @@ public class StudentLoginImpl implements StudentLogin, Serializable
                 if(manifestData != null) OASLogger.getLogger("TestDelivery").debug(manifestData.toString());
                 copyManifestDataToResponse(loginResponse, manifestData, testRosterId, authData.getTestAdminId(), loginRequest.getLoginRequest().getAccessCode());
 
-                String tutorialResource = SimpleCache.checkCache("CACHE_TYPE_TUTORIAL_RESOURCE", String.valueOf(productId));
+                String tutorialResource = (String) SimpleCache.checkCache("CACHE_TYPE_TUTORIAL_RESOURCE", String.valueOf(productId));
                 if(tutorialResource == null) {
                 	tutorialResource = authenticator.getTutorialResource(testRosterId);
                 	if(tutorialResource == null) tutorialResource = "";
@@ -497,8 +497,8 @@ public class StudentLoginImpl implements StudentLogin, Serializable
         if(authData.getCaptureMethod() != null && !authData.getCaptureMethod().equals(Constants.RosterCaptureMethod.CAPTURE_METHOD_ONLINE))
             throw new KeyEnteredResponsesException();  
 
-        String testAdminId = authData.getTestAdminId();
-        TestProduct testProduct = SimpleCache.checkCache(CACHE_TYPE_ADMIN_PRODUCT_MAP, testAdminId);
+        String testAdminId = String.valueOf(authData.getTestAdminId());
+        TestProduct testProduct = (TestProduct) SimpleCache.checkCache(CACHE_TYPE_ADMIN_PRODUCT_MAP, testAdminId);
         if(testProduct == null)	 {
         	testProduct = product.getProductForTestAdmin(new Integer(testAdminId));
         	SimpleCache.cacheResult(CACHE_TYPE_ADMIN_PRODUCT_MAP, testAdminId, testProduct);
@@ -585,7 +585,7 @@ public class StudentLoginImpl implements StudentLogin, Serializable
         response.setRestartNumber(new BigInteger(String.valueOf(authData.getRestartNumber())));
         
         Integer productId = testProduct.getProductId();
-        String logoURI = SimpleCache.checkCache("CACHE_TYPE_PRODUCT_LOGO", String.valueOf(productId));
+        String logoURI = (String) SimpleCache.checkCache("CACHE_TYPE_PRODUCT_LOGO", String.valueOf(productId));
         if(logoURI == null) {
         	logoURI = authenticator.getProductLogo();
         	if (logoURI == null || "".equals(logoURI)) {
