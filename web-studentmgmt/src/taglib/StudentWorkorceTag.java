@@ -176,7 +176,7 @@ public class StudentWorkorceTag extends CTBTag
 			displayRowStart();
 			displayCellStart("transparent-small");
 			writeToPage(getSpaces(8));
-			writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+			writeToPage("<select name=\"" + name + "\" style=width:350px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
 			writeToPage(option("Please Select", true));
 			for (i=0 ; i<values.length ; i++) {
 				StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];

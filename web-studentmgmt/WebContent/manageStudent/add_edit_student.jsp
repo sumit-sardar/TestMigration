@@ -58,7 +58,7 @@
 <netui:hidden dataSource="actionForm.studentIdLabelName"/>
 <netui:hidden dataSource="actionForm.studentId2LabelName"/>
 <netui:hidden dataSource="actionForm.ABECustomer"/>
-
+<netui:hidden tagId="laborForceId" dataSource="actionForm.laborForceValue" />
 
 <!-- message -->
 <jsp:include page="/manageStudent/show_message.jsp" />
@@ -130,7 +130,7 @@
 <a name="moduleStudentEduAndInstr"><!-- moduleStudentProgramsGoal --></a>    
 <p>
     <ctb:showHideSection sectionId="moduleStudentEduAndInstr" sectionTitle="Education And Instruction" sectionVisible="actionForm.byStudentEduInstrucVisible">
-        <jsp:include page="/manageStudent/add_edit_student_edu_instruction.jsp" />
+        <jsp:include page="/manageStudent/add_edit_student_edu_instru.jsp" />
     </ctb:showHideSection>
 </p>
 </c:if>

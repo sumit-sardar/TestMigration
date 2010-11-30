@@ -97,11 +97,12 @@
             </table>        
         </td>
     </tr>
+    <c:if test="${isABECustomer}">  
      <tr class="transparent">
         <td class="transparent" width="270"><netui:content value="Make student visible across organizations:"/></td>
         <td class="transparent"><netui:label value="${studentProfileData.visibleAcrossOrganization}"/></td>
     </tr>
-    
+    </c:if> 
 </table>
 
 </td>

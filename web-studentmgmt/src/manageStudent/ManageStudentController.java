@@ -532,7 +532,7 @@ public class ManageStudentController extends PageFlowController
 		
 		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);  
 		
-		
+		this.workforceSectionVisible=true;
 		for (int i=0 ; i < this.demographics.size(); i++ ) {
 			 StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
 			 if (sdd.getLabelName().equals("Labor Force Status")) {
@@ -621,11 +621,9 @@ public class ManageStudentController extends PageFlowController
 			boolean result = false;
 			if (isABECustomer) {
 				
-				String laborForceValue = getRequest().getParameter("laborForceStatus");
-				System.out.println("laborforcevalue"+ laborForceValue);
 				
 				
-					if(laborForceValue != null && laborForceValue.equals("Employed")){
+					if(form.laborForceValue != null && form.laborForceValue.equals("Employed")){
 						this.workforceSectionVisible = false;
 						
 					}
@@ -3283,6 +3281,7 @@ public class ManageStudentController extends PageFlowController
 		private String studentIdLabelName = "Student ID";
 		private String studentId2LabelName = "Student ID 2";
 		private boolean isABECustomer = false;
+		private String laborForceValue  = "None";
 		/**
 		 * @return the isABECustomer
 		 */
@@ -3305,7 +3304,7 @@ public class ManageStudentController extends PageFlowController
 		{
 			this.actionElement = ACTION_DEFAULT;
 			this.currentAction = ACTION_DEFAULT;
-
+			this.laborForceValue = "None";
 			this.selectedTab = MODULE_STUDENT_PROFILE;
 
 			clearSearch();
@@ -4183,8 +4182,11 @@ public class ManageStudentController extends PageFlowController
 					boolean result = false;
 
 					for (int k=0; k < values.length; k++) {
-
-						if (values[k].getSelectedFlag().equals("true")) {
+						
+						if (values[k].getValueName().trim().equals("") || values[k].getValueName().trim()== null){
+							result = false;
+						}
+						else if (values[k].getSelectedFlag().equals("true")) {
 							result= true;
 						}
 						
@@ -4208,11 +4210,7 @@ public class ManageStudentController extends PageFlowController
 					setMessage("Missing required fields"+"    In " + sectionName, requiredFields, Message.ERROR);
 				}
 
-				/*if (sectionName.equals("sectionName")) {
-						this.byStudent = Boolean.TRUE;
-					}*/
-
-
+				
 				return false;
 			}
 
@@ -4266,7 +4264,7 @@ public class ManageStudentController extends PageFlowController
 				
 				for (int k=0; k < values.length; k++) {
 					
-					if (values[k].getValueName().trim().equals("") || values[k].getValueName().trim().equals(null)){
+					if (values[k].getValueName().trim().equals("") || values[k].getValueName().trim()== null){
 						result = false;
 					}
 					else if (values[k].getSelectedFlag().equals("true")) {
@@ -4403,6 +4401,20 @@ public class ManageStudentController extends PageFlowController
 		 */
 		public void setByStudentEduInstrucVisible(Boolean byStudentEduInstrucVisible) {
 			this.byStudentEduInstrucVisible = byStudentEduInstrucVisible;
+		}
+
+		/**
+		 * @return the laborForceValue
+		 */
+		public String getLaborForceValue() {
+			return laborForceValue;
+		}
+
+		/**
+		 * @param laborForceValue the laborForceValue to set
+		 */
+		public void setLaborForceValue(String laborForceValue) {
+			this.laborForceValue = laborForceValue;
 		}
 
 		// End change for Student Intake UI

@@ -701,23 +701,19 @@ function displayWorkforceSection(element){
 	var input;
 	if(element.value == 'Employed'){
 		selection = true;
-		var laborForceStatus= document.getElementsByName("laborForceStatus");
-		if(laborForceStatus.length < 1){
-		input = document.createElement('input');
-		input.setAttribute("type","hidden");
-		input.setAttribute("name","laborForceStatus");
-		input.setAttribute("id", "laborForceId");
-		input.setAttribute("value",element.value);
-		document.forms[0].appendChild(input);
 		
-		enableWorkforceSection(selection);
-		}
+		var laborForceId = document.getElementById('laborForceId');
+            if(laborForceId) {
+                laborForceId.value = element.value;
+                enableWorkforceSection(selection);
+            }
+		
 	}
 	else{
-		var laborForceStatus = document.getElementById("laborForceId");
-		if(laborForceStatus != null){
-		document.forms[0].removeChild(laborForceStatus);
-		}
+		var laborForceId = document.getElementById('laborForceId');
+        if(laborForceId) {
+                laborForceId.value = element.value;
+            }
 		selection = false;
 		enableWorkforceSection(selection);
 	}
