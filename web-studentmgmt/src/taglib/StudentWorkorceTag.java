@@ -122,7 +122,7 @@ public class StudentWorkorceTag extends CTBTag
 		displayCellStart("transparent");
 		//Changes for CA-ABE student intake
 		StudentOtherDetailValue[] values = sdd.getStudentOtherDetailValues();
-		if (this.mandatoryField && values.length > 1) {
+		if (this.mandatoryField && !(displayName.equals("Provider Use"))) {
 
 			writeToPage("<span>*&nbsp;</span><b>" + displayName + "</b>");
 		} else {

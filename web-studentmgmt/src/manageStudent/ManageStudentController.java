@@ -641,6 +641,10 @@ public class ManageStudentController extends PageFlowController
 				if (result) {
 					getStudentDemographicsFromRequest(); 
 					result = form.vaildateABEStudentDemographicInfo(this.demographics);
+					if (!result) {
+						form.byStudentDemographicVisible = Boolean.TRUE;
+					}
+
 				}
 				
 				
@@ -669,18 +673,27 @@ public class ManageStudentController extends PageFlowController
 				if (result && !this.workforceSectionVisible) {
 					getStudentWorkForceDetailsFromRequest(); 
 					result = form.vaildateABEStudentWorkForceInfo(this.workforceSectionDetails);
+					if (!result) {
+						form.byStudentWorkforceVisible = Boolean.TRUE;
+					}
 
 				}
 				
 				if (result) {
 					getStudentEduAndInstrFromRequest(); 
 					result = form.vaildateABEStudentEduAndInstrInfo(this.educationAndInstruction);
+					if (!result) {
+						form.byStudentEduInstrucVisible = Boolean.TRUE;
+					}
 
 				}
 				
 				if (result) {
 					getStudentProgAndGoalsFromRequest(); 
 					result = form.vaildateABEStudentProgramGoalInfo(this.programAndGoals);
+					if (!result) {
+						form.byStudentProgramGoalVisible = Boolean.TRUE;
+					}
 
 				}
 
@@ -3199,7 +3212,7 @@ public class ManageStudentController extends PageFlowController
 	}
 	//StART-  added for CA-ABE
 	private void isABECustomer(ManageStudentForm form){
-
+		this.isABECustomer = false;
 		for (int i=0; i < this.customerConfigurations.length; i++)
 		{
 			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
@@ -3431,11 +3444,10 @@ public class ManageStudentController extends PageFlowController
 			copied.setByStudentAccommodationVisible(this.byStudentAccommodationVisible);
 			//student intake UI
 			copied.setByStudentContactVisible(this.byStudentContactVisible);
-			copied.setByStudentProgramGoalVisible(this.byStudentProgramGoalVisible);
-			copied.setByStudentEduInstrucVisible(this.byStudentEduInstrucVisible);
 			copied.setByStudentWorkforceVisible(this.byStudentWorkforceVisible);
-
-
+			copied.setByStudentEduInstrucVisible(this.byStudentEduInstrucVisible);
+			copied.setByStudentProgramGoalVisible(this.byStudentProgramGoalVisible);
+			
 			copied.setSelectedOrgLevel(this.selectedOrgLevel);            
 			copied.setSelectedStudentId(this.selectedStudentId);
 
@@ -3914,10 +3926,7 @@ public class ManageStudentController extends PageFlowController
 					setMessage("Missing required fields"+"    In " + sectionName, requiredFields, Message.ERROR);
 				}
 
-				if (sectionName.equals("Contact Information")) {
-					this.byStudentContactVisible = Boolean.TRUE;
-				}
-
+				
 
 				return false;
 			}
@@ -3936,10 +3945,18 @@ public class ManageStudentController extends PageFlowController
 
 			if (validationFlagStudentInfo) {
 				validationFlagStudentInfo = requiredFieldValidation(selectedOrgNodes,"Contact Information");
+				if (!validationFlagStudentInfo) {
+					this.byStudentContactVisible = Boolean.TRUE;
+				}
+
 			}
 
 			if (validationFlagStudentInfo) {
 				validationFlagStudentInfo = validateABEStudentInvalidChar(selectedOrgNodes,"Contact Information");
+				if (!validationFlagStudentInfo) {
+					this.byStudentContactVisible = Boolean.TRUE;
+				}
+
 			}
 
 
@@ -4063,10 +4080,7 @@ public class ManageStudentController extends PageFlowController
 					setMessage("Missing required fields"+"    In " + sectionName, requiredFields, Message.ERROR);
 				}
 
-				if (sectionName.equals("Contact Information")) {
-					this.byStudentContactVisible = Boolean.TRUE;
-				}
-
+				
 
 				return false;
 			}
