@@ -285,6 +285,24 @@ public class ValidatorImpl implements Validator, Serializable
 			throw ve;
 		}
 	}
+	
+	public void validateStudentAcrossOrg(Object operator, Object operand, String action) throws ValidationException
+	{
+		try {
+			String userName = (String) operator;
+			if(operand != null) {
+				Integer studentId  = (Integer) operand;
+				if(!"true".equals(students.checkVisibilityAcrossOrg(userName, studentId)))
+					throw new ValidationException("ValidatorImpl: validateStudent: failed validation for student: " + operator + " on: " + operand);;
+
+			}
+			
+		} catch (Exception e) {
+			ValidationException ve = new ValidationException("ValidatorImpl: validateStudent: failed validation for student: " + operator + " on: " + operand);
+			ve.setStackTrace(e.getStackTrace());
+			throw ve;
+		}
+	}
 
 	/**
 	 * This method return UserTransaction instance
