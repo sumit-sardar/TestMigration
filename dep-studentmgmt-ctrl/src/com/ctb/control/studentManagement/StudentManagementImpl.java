@@ -2135,7 +2135,7 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 
 
 	/**
-	 * Get student demographic for the specified customer and student.
+	 * Get student workforce for the specified customer and student.
 	 * @common:operation
 	 * @param userName - identifies the calling user
 	 * @param customerId - identifies the customer whose information is desired
@@ -2210,65 +2210,77 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			
 			
 			if (studentId !=null) {
-			//retrieve from database and set the selected flag
-			
+				//retrieve from database and set the selected flag
 
-		    StudentWorkForceData [] studentOtherDetailValuesDB = studentManagement.getStudentWorkforceDetails(studentId,"Supplement data for Workforce Student"); 
-			if(studentOtherDetailValuesDB != null){
-				for(int k=0 ; k < studentOtherDetailValuesDB.length ; k++ ) {
-					StudentOtherDetailValue [] studentOtherDetailValues = studentOtherDetails[k].getStudentOtherDetailValues();
-					for(int l=0 ; l < studentOtherDetailValues.length ; l++ ) {
-	
+
+				StudentWorkForceData [] studentOtherDetailValuesDB = studentManagement.getStudentWorkforceDetails(studentId,"Supplement data for Workforce Student"); 
+				if(studentOtherDetailValuesDB != null){
+
+					for(int k=0 ; k < studentOtherDetailValuesDB.length ; k++ ) {
+
+						for(int m=0 ; m < studentOtherDetails.length ; m++ ) {
 						if (studentOtherDetailValuesDB[k].getLabelName().
-								equals(studentOtherDetailValues[l].getLabelName())) { 
-							if (studentOtherDetailValuesDB[k].getValueName()!= null
-									&& studentOtherDetailValues[l].getValueName() != null
-										&&(studentOtherDetailValuesDB[k].getValueName().
-												equals(studentOtherDetailValues[l].getValueName()))) {
-									studentOtherDetailValues[l].setSelectedFlag("true");
-									studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+								equals(studentOtherDetails[m].getLabelName())) { 
+
+							StudentOtherDetailValue [] studentOtherDetailValues = studentOtherDetails[m].getStudentOtherDetailValues();
+							for(int l=0 ; l < studentOtherDetailValues.length ; l++ ) {
+
+								if (studentOtherDetailValuesDB[k].getLabelName().
+										equals(studentOtherDetailValues[l].getLabelName())) { 
+									if (studentOtherDetailValuesDB[k].getValueName()!= null
+											&& studentOtherDetailValues[l].getValueName() != null
+											&&(studentOtherDetailValuesDB[k].getValueName().
+													equals(studentOtherDetailValues[l].getValueName()))) {
+										studentOtherDetailValues[l].setSelectedFlag("true");
+										studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+										break;
+									}
+
 								}
-						
-						}
-						
-						if (studentOtherDetailValuesDB[k].getLabelName() != null
-								&& studentOtherDetailValues[l].getLabelName() != null
-									&& studentOtherDetailValuesDB[k].getLabelName().equals("Scheduled Work Hours Per Week")
+
+								if (studentOtherDetailValuesDB[k].getLabelName() != null
+										&& studentOtherDetailValues[l].getLabelName() != null
+										&& studentOtherDetailValuesDB[k].getLabelName().equals("Scheduled Work Hours Per Week")
 										&& studentOtherDetailValues[l].getLabelName().equals("Scheduled Work Hours Per Week")) {
-							if (studentOtherDetailValuesDB[k].getValueName()!= null) {
-								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-							} else {
-								studentOtherDetailValues[l].setValueName("");
+									if (studentOtherDetailValuesDB[k].getValueName()!= null) {
+										studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+									} else {
+										studentOtherDetailValues[l].setValueName("");
+									}
+									studentOtherDetailValues[l].setSelectedFlag("true");
+									break;
+								}
+
+								if (studentOtherDetailValuesDB[k].getLabelName().equals("Provider Use") &&
+										studentOtherDetailValues[l].getLabelName().equals("Provider Use")) {
+									if (studentOtherDetailValuesDB[k].getValueName()!= null) {
+										studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+									} else {
+										studentOtherDetailValues[l].setValueName("");
+									}
+									studentOtherDetailValues[l].setSelectedFlag("true");
+									break;
+								}
+								if (studentOtherDetailValuesDB[k].getLabelName().equals("Hourly Wage") &&
+										studentOtherDetailValues[l].getLabelName().equals("Hourly Wage")) {
+									if (studentOtherDetailValuesDB[k].getValueName()!= null) {
+										studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+									} else {
+										studentOtherDetailValues[l].setValueName("");
+									}
+									studentOtherDetailValues[l].setSelectedFlag("true");
+									break;
+								}
+
+
 							}
-							studentOtherDetailValues[l].setSelectedFlag("true");
 						}
-						
-						if (studentOtherDetailValuesDB[k].getLabelName().equals("Provider Use") &&
-								studentOtherDetailValues[l].getLabelName().equals("Provider Use")) {
-							if (studentOtherDetailValuesDB[k].getValueName()!= null) {
-								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-							} else {
-								studentOtherDetailValues[l].setValueName("");
-							}
-							studentOtherDetailValues[l].setSelectedFlag("true");
 						}
-						if (studentOtherDetailValuesDB[k].getLabelName().equals("Hourly Wage") &&
-								studentOtherDetailValues[l].getLabelName().equals("Hourly Wage")) {
-							if (studentOtherDetailValuesDB[k].getValueName()!= null) {
-								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-							} else {
-								studentOtherDetailValues[l].setValueName("");
-							}
-							studentOtherDetailValues[l].setSelectedFlag("true");
-						}
-							
-	
 					}
 				}
 			}
-		}
-			
-			
+
+
 
 
 
