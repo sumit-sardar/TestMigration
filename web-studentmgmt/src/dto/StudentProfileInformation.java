@@ -81,6 +81,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.visibleAcrossOrganization = "No";
         this.isSSN = "No";
         this.isPBAFormSigned ="No";
+        this.deletePermission="true";
         
     }
         
@@ -158,7 +159,6 @@ public class StudentProfileInformation extends SanitizedFormField
   
     public ManageStudent makeCopy(Integer studentId, List selectedOrgNodes) {
         ManageStudent copied = new ManageStudent();
-        System.out.println("makeCopy 1 Studentid"+ studentId);
         copied.setId(studentId);
         copied.setLoginId(this.userName);
         copied.setFirstName( upperCaseFirstLetter(this.firstName) );
@@ -173,6 +173,7 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setIsPBAFormSigned(this.isPBAFormSigned);
         copied.setIsSSN(this.isSSN);
         copied.setVisibleAcrossOrganization(this.visibleAcrossOrganization);
+        copied.setDeletePermission(this.deletePermission);
         //GACRCT2010CR007 - changed for creating date when supplied.
         Date date = null;
         
@@ -213,7 +214,7 @@ public class StudentProfileInformation extends SanitizedFormField
         address.setEmail(this.studentContact.getEmail());
         address.setStudentId(studentId);
         copied.setAddress(address); 
-        System.out.println("makeCopy 2 Studentid"+ studentId + address);
+       
     }
             
         return copied;       

@@ -475,7 +475,7 @@ public class ManageStudentController extends PageFlowController
 	})
 	protected Forward editStudent(ManageStudentForm form)
 	{   
-		System.out.println("editStudent from js");
+		
 		Boolean profileEditable = isProfileEditable(form.getStudentProfile().getCreateBy());
 
 		handleAddEdit(form, profileEditable);
@@ -2354,9 +2354,14 @@ public class ManageStudentController extends PageFlowController
 		form.resetValuesForAction(actionElement, ACTION_FIND_STUDENT); 
 		if (currentAction.equals(ACTION_VIEW_STUDENT) || currentAction.equals(ACTION_EDIT_STUDENT) || currentAction.equals(ACTION_DELETE_STUDENT))
 		{
-			this.viewStudentFromSearch = true;             
+			this.viewStudentFromSearch = true;  
+			Integer studentId = form.getSelectedStudentId(); 
+			String studentIdR = String.valueOf(studentId.intValue());
+			//System.out.println("selected student permission in find" + this.getRequest().getParameter(studentIdR));
+			String deletePermission = this.getRequest().getParameter(studentIdR);
 			this.savedForm = form.createClone();             
-			this.studentSearch = form.getStudentProfile().createClone();          
+			this.studentSearch = form.getStudentProfile().createClone();
+			this.studentSearch.setDeletePermission(deletePermission);
 			return new Forward(currentAction, form);
 		}
 
@@ -2406,9 +2411,16 @@ public class ManageStudentController extends PageFlowController
 
 			if (form.getSelectedStudentId() != null){
 				this.getRequest().setAttribute("disableButtons", Boolean.FALSE);
-
+				//System.out.println("student id" + form.getStudentProfile().getStudentId());
+				//System.out.println("delete permisssion" + form.getStudentProfile().getDeletePermission());
+				if (form.getStudentProfile().getDeletePermission().equals("false"))
+					this.getRequest().setAttribute("disableDeleteButton", Boolean.TRUE);
+				else {
+					this.getRequest().setAttribute("disableDeleteButton", Boolean.FALSE);
+				}
 			} else {
-				this.getRequest().setAttribute("disableButtons", Boolean.TRUE);      
+				this.getRequest().setAttribute("disableButtons", Boolean.TRUE);    
+				this.getRequest().setAttribute("disableDeleteButton", Boolean.TRUE);
 
 			}   
 			String roleName = this.user.getRole().getRoleName();
@@ -2759,7 +2771,11 @@ public class ManageStudentController extends PageFlowController
 		//Save the token to remove F5 problem
 		saveToken(this.getRequest());   
 		Integer studentId = form.getSelectedStudentId(); 
-
+		String studentIdR = String.valueOf(studentId.intValue());
+		//System.out.println("selected student permission" + this.getRequest().getParameter(studentIdR));
+		String deletePermission =  this.getRequest().getParameter(studentIdR)!= null ? 
+						this.getRequest().getParameter(studentIdR) : "true";
+		
 		boolean studentImported = (form.getStudentProfile().getCreateBy().intValue() == 1);
 
 		StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
@@ -2768,6 +2784,7 @@ public class ManageStudentController extends PageFlowController
 			return new Forward("error", form);
 		}
 		//this.getRequest().setAttribute("studentProfileForView",studentProfile);
+		studentProfile.setDeletePermission(deletePermission);
 		form.setStudentProfile(studentProfile);
 
 		this.studentName = studentProfile.getFirstName() + " " + studentProfile.getLastName();        
@@ -2784,8 +2801,10 @@ public class ManageStudentController extends PageFlowController
 		this.demographics = getStudentDemographics(studentId);
 		this.programAndGoals = getStudentProgAndGoals(studentId);
 		this.workforceSectionDetails = getStudentWorkForceDetails(studentId);
+		this.educationAndInstruction = getStudentEduAndInstr(studentId);
 		this.getRequest().setAttribute("programAndGoals", this.programAndGoals);
 		this.getRequest().setAttribute("workforceSectionDetails", this.workforceSectionDetails);
+		this.getRequest().setAttribute("educationAndInstruction", this.educationAndInstruction);
 		this.getRequest().setAttribute("demographics", this.demographics);       
 		this.getRequest().setAttribute("studentImported", new Boolean(studentImported)); 
 		this.getRequest().setAttribute("mandatoryField",new Boolean(isABECustomer));
@@ -2802,7 +2821,12 @@ public class ManageStudentController extends PageFlowController
 		String roleName = this.user.getRole().getRoleName();
 		this.getRequest().setAttribute("showEditButton", PermissionsUtils.showEditButton(roleName));
 		this.getRequest().setAttribute("showDeleteButton", PermissionsUtils.showDeleteButton(roleName));
-
+		if (studentProfile.getDeletePermission().equals("false"))
+			this.getRequest().setAttribute("disableDeleteButton", Boolean.TRUE);
+		else {
+			this.getRequest().setAttribute("disableDeleteButton", Boolean.FALSE);
+		}
+		
 		setCustomerSettings();
 
 		if (this.demographics.size() == 0) {

@@ -32,7 +32,8 @@
 
 <%
   	Boolean isABECustomer = (Boolean)request.getAttribute("isABECustomer");
-	
+	Boolean disableDeleteButton = (Boolean)request.getAttribute("disableDeleteButton");
+
 %>
 <!-- start form -->
 <netui:form action="viewStudent">
@@ -66,10 +67,18 @@
     <netui:button type="submit" value="Edit" action="beginEditStudent"/>
 </ctb:auth>    
 </c:if>
-<c:if test="${showDeleteButton == 'true'}">                 
-<ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator">
-    <netui:button type="submit" value="Delete" action="beginDeleteStudent" onClick="return verifyDeleteStudent();"/>
-</ctb:auth>    
+<c:if test="${showDeleteButton == 'true'}">   
+    <c:if test="${disableDeleteButton}">             
+		<ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator"> 
+		    	<netui:button type="submit" value="Delete" action="beginDeleteStudent" disabled="true" onClick="return verifyDeleteStudent();"/>
+		</ctb:auth> 
+	</c:if>   
+	
+	<c:if test="${!disableDeleteButton}">             
+		<ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator"> 
+		    	<netui:button type="submit" value="Delete" action="beginDeleteStudent"  onClick="return verifyDeleteStudent();"/>
+		</ctb:auth> 
+	</c:if>   
 </c:if>
 </p>
 
@@ -163,9 +172,17 @@
 </ctb:auth>    
 </c:if>
 <c:if test="${showDeleteButton == 'true'}">                 
-<ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator">
-    <netui:button type="submit" value="Delete" action="beginDeleteStudent" onClick="return verifyDeleteStudent();"/>
-</ctb:auth>    
+ <c:if test="${disableDeleteButton}">             
+		<ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator"> 
+		    	<netui:button type="submit" value="Delete" action="beginDeleteStudent" disabled="true" onClick="return verifyDeleteStudent();"/>
+		</ctb:auth> 
+	</c:if>   
+	
+	<c:if test="${!disableDeleteButton}">             
+		<ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator"> 
+		    	<netui:button type="submit" value="Delete" action="beginDeleteStudent"  onClick="return verifyDeleteStudent();"/>
+		</ctb:auth> 
+	</c:if>       
 </c:if>
 </p>
 

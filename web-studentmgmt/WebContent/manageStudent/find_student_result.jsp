@@ -24,7 +24,7 @@
             <netui:button tagId="Edit" type="submit" value=" Edit " onClick="setElementValue('currentAction', 'editStudent');" disabled="${requestScope.disableButtons}"/>              
         </c:if>
         <c:if test="${showDeleteButton == 'true'}">                 
-            <netui:button tagId="Delete" type="submit" value="Delete" onClick="return verifyDeleteStudent();" disabled="${requestScope.disableButtons}"/>
+            <netui:button tagId="Delete" type="submit" value="Delete" onClick="return verifyDeleteStudent();" disabled="${requestScope.disableDeleteButton}"/>
         </c:if>
         </td>
     </tr>
@@ -56,6 +56,13 @@
     
     <tr class="sortable">
         <td class="sortable alignCenter">
+         <netui-data:getData resultId="deleterPermission" value="${container.item.deletePermission}"/>
+                <netui-data:getData resultId="selectedStudentId" value="${container.item.studentId}"/>
+                <% 
+                    String deleterPermission = (String)pageContext.getAttribute("deleterPermission"); 
+                    Integer selectedStudentId = (Integer)pageContext.getAttribute("selectedStudentId"); 
+                %> 
+        	 <input type="hidden" id="<%=selectedStudentId%>" name="<%=selectedStudentId%>" value="<%=deleterPermission%>">
             <netui:radioButtonGroup dataSource="actionForm.selectedStudentId">
                 &nbsp;<netui:radioButtonOption value="${container.item.studentId}" alt="${container.item.deletePermission}" onClick="enableElementById('View'); enableElementById('Edit'); enableButtons('Delete',this.alt);enableElementById('FollowUp'); setFocus('View');">&nbsp;</netui:radioButtonOption>                
             </netui:radioButtonGroup>

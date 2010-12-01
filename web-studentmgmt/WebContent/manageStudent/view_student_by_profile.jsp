@@ -44,14 +44,16 @@
         <td class="transparent" width="120"><netui:content value="Date of Birth:"/></td>
         <td class="transparent"><netui:label value="${studentProfileData.birthdateString}"/></td>
     </tr>
+    <c:if test="${isABECustomer}">
        <tr class="transparent">
         <td class="transparent" width="213"><netui:content value="Grade:"/></td>
         <td class="transparent"><netui:label value="${studentProfileData.grade}"/></td>
-    </tr>
-    <tr class="transparent">
+       </tr>
+      <tr class="transparent">
         <td class="transparent" width="213"><netui:content value="Gender:"/></td>
         <td class="transparent"><netui:label value="${studentProfileData.gender}"/></td>
     </tr>
+   </c:if>
 </table>
 
 </td>
@@ -63,26 +65,50 @@
 <!-- column 2 -->
 <td class="transparent-top" width="50%">
 <table class="transparent">
-<tr class="transparent">
-        <td class="transparent" width="270"><netui:content value="Instructor First Name:"/></td>
-        <td class="transparent"><netui:label value="${studentProfileData.instructorFirstName}"/></td>
+  <c:if test="${!isABECustomer}">
+ 	<tr class="transparent">
+        <td class="transparent" width="80"><netui:content value="Grade:"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.grade}"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent" width="270"><netui:content value="Instructor Last Name:"/></td>
-        <td class="transparent"><netui:label value="${studentProfileData.instructorLastName}"/></td>
+        <td class="transparent" width="80"><netui:content value="Gender:"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.gender}"/></td>
     </tr>
- 
+  </c:if>
+     <c:if test="${isABECustomer}">
+		<tr class="transparent">
+        	<td class="transparent" width="270"><netui:content value="Instructor First Name:"/></td>
+        	<td class="transparent"><netui:label value="${studentProfileData.instructorFirstName}"/></td>
+    	</tr>
+    	<tr class="transparent">
+        	<td class="transparent" width="270"><netui:content value="Instructor Last Name:"/></td>
+        	<td class="transparent"><netui:label value="${studentProfileData.instructorLastName}"/></td>
+    	</tr>
+    </c:if>
+    
     <tr class="transparent">
-        <td class="transparent" width="270">
-        
-         <c:if test="${isStudentIdConfigurable}">   
-        <netui:content value="${studentIdArrValue[0]}:"/></td>
+      <td class="transparent" width="270">
+         <c:if test="${isABECustomer}">
+	         <c:if test="${isStudentIdConfigurable}">   
+	        	<netui:content value="${studentIdArrValue[0]}:"/>
+	         </c:if>
+	          <c:if test="${!isStudentIdConfigurable}">   
+	        	<netui:content value="Social Security Number/Student ID:"/>
+	         </c:if>
          </c:if>
+         
+         <c:if test="${!isABECustomer}">
+	         <c:if test="${isStudentIdConfigurable}">   
+	        	<netui:content value="${studentIdArrValue[0]}:"/>
+	         </c:if>
           <c:if test="${!isStudentIdConfigurable}">   
-        <netui:content value="Social Security Number/Student ID:"/></td>
-         </c:if>
+        	<netui:content value="Student ID:"/>
+          </c:if>
+        </c:if>
+	</td>
         <td class="transparent"><netui:label value="${studentProfileData.studentNumber}"/></td>
-    </tr>
+     </tr>
+
     <tr class="transparent">
         <td class="transparent-top" width="270"><netui:content value="Organization:"/></td>
         <td class="transparent-top">
@@ -97,12 +123,15 @@
             </table>        
         </td>
     </tr>
-    <c:if test="${isABECustomer}">  
-     <tr class="transparent">
+    <c:if test="${isABECustomer}">
+    
+    <tr class="transparent">
         <td class="transparent" width="270"><netui:content value="Make student visible across organizations:"/></td>
         <td class="transparent"><netui:label value="${studentProfileData.visibleAcrossOrganization}"/></td>
     </tr>
-    </c:if> 
+    </c:if>
+     
+    
 </table>
 
 </td>

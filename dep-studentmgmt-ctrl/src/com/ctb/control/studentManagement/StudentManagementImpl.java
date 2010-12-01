@@ -181,8 +181,12 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	 */
 	public ManageStudent getManageStudent(String userName, Integer studentId) throws CTBBusinessException
 	{
-		validator.validateStudent(userName, studentId, "StudentManagementImpl.getManageStudent");
-
+		try {
+			validator.validateStudent(userName, studentId, "StudentManagementImpl.getManageStudent");
+		} catch (ValidationException ve) {
+			//validate student if student is not across organization
+			validator.validateStudentAcrossOrg(userName, studentId, "StudentManagementImpl.getManageStudent");
+		}
 		try {
 			ManageStudent student = studentManagement.getManageStudent(studentId.intValue());
 
@@ -210,8 +214,18 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	 */
 	public StudentAccommodations getStudentAccommodations(String userName, Integer studentId) throws CTBBusinessException
 	{
-		validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentAccommodations");
+		
+		//change for CA-ABE student intake
+		if (studentId !=null) {
+			
+			try {
+				validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentAccommodations");
+			} catch (ValidationException ve) {
+				//validate student if student is not across organization
+				validator.validateStudentAcrossOrg(userName, studentId, "StudentManagementImpl.getStudentAccommodations");
+			}
 
+		}
 		try {
 			StudentAccommodations studentAccommo = accommodation.getStudentAccommodations(studentId);
 			return studentAccommo;
@@ -418,9 +432,19 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	 * @throws CTBBusinessException
 	 */
 	public StudentDemographic [] getStudentDemographics(String userName, Integer customerId, Integer studentId, boolean returnInvisible) throws CTBBusinessException
-	{
-		if (studentId !=null)
-			validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentDemographics");
+	{   
+		//change for CA-ABE student intake
+		if (studentId !=null) {
+			
+			try {
+				validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentDemographics");
+			} catch (ValidationException ve) {
+				//validate student if student is not across organization
+				validator.validateStudentAcrossOrg(userName, studentId, "StudentManagementImpl.getStudentDemographics");
+			}
+
+		}
+		
 		validator.validateCustomer(userName, customerId, "StudentManagementImpl.getStudentDemographics");
 		try {
 			CustomerDemographic [] customerDemographics;
@@ -918,7 +942,6 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			String searchCriteria = "";
 			if (filter != null) {
 				searchCriteria = DynamicSQLUtils.generateWhereClauseForFilter(filter);
-				System.out.println("search criteria...." + searchCriteria);
 				filter.setFilterParams(new FilterParam[0]);
 				totalCount = studentManagement.getAcrossOrgStudentCount(userName,customerId);
 				//totalCount=32;
@@ -936,7 +959,6 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			if(filter != null) std.applyFiltering(filter);
 			if(sort != null) std.applySorting(sort);
 			if(page != null) std.applyPaging(page);
-			System.out.println("1");
 			students = std.getManageStudents();
 
 			for (int i=0; i <students.length; i++) {
@@ -1800,7 +1822,14 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 		try {
 			StudentDemographicData sdd = studentManagement.getStudentDemographicData(studentDemographicDataId);
 			Integer studentId = sdd.getStudentId();
-			validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentDemographics");
+			if (studentId !=null) {
+				try {
+					validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentDemographicData");
+				} catch (ValidationException ve) {
+					//validate student if student is not across organization
+					validator.validateStudentAcrossOrg(userName, studentId, "StudentManagementImpl.getStudentDemographicData");
+				}
+			}
 			return sdd;
 		} catch (SQLException se) {
 			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentDemographics: " + se.getMessage());
@@ -2019,8 +2048,14 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	 */
 	public StudentProgramGoal [] getStudentProgramGoals(String userName, Integer customerId, Integer studentId, boolean returnInvisible) throws CTBBusinessException
 	{
-		if (studentId !=null)
-			validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentProgramGoals");
+		if (studentId !=null) {
+			try {
+				validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentProgramGoals");
+			} catch (ValidationException ve) {
+				//validate student if student is not across organization
+				validator.validateStudentAcrossOrg(userName, studentId, "StudentManagementImpl.getStudentProgramGoals");
+			}
+		}
 		validator.validateCustomer(userName, customerId, "StudentManagementImpl.getStudentProgramGoals");
 		try {
 			CustomerProgramGoal [] customerProgramGoals;
@@ -2111,8 +2146,14 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	 */
 	public StudentOtherDetail [] getStudentWorkFoceDetails(String userName, Integer customerId, Integer studentId, boolean returnInvisible) throws CTBBusinessException
 	{
-		if (studentId !=null)
-			validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentWorkFoceDetails");
+		if (studentId !=null) {
+			try {
+				validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentWorkFoceDetails");
+			} catch (ValidationException ve) {
+				//validate student if student is not across organization
+				validator.validateStudentAcrossOrg(userName, studentId, "StudentManagementImpl.getStudentWorkFoceDetails");
+			}
+		}
 		validator.validateCustomer(userName, customerId, "StudentManagementImpl.getStudentWorkFoceDetails");
 		try {
 
@@ -2297,8 +2338,15 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	 */
 	public StudentOtherDetail [] getStudentEduAndInstr(String userName, Integer customerId, Integer studentId, boolean returnInvisible) throws CTBBusinessException
 	{
-		if (studentId !=null)
-			validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentEduAndInstr");
+		if (studentId !=null) {
+			try {
+				validator.validateStudent(userName, studentId, "StudentManagementImpl.getStudentEduAndInstr");
+			} catch (ValidationException ve) {
+				//validate student if student is not across organization
+				validator.validateStudentAcrossOrg(userName, studentId, "StudentManagementImpl.getStudentEduAndInstr");
+			}
+		}
+			
 		validator.validateCustomer(userName, customerId, "StudentManagementImpl.getStudentEduAndInstr");
 		try {
 
@@ -2328,15 +2376,15 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 							for(int skis= 0 ; skis < mapvalue.length; skis++  ) {
 								tempStgpeduAndInstroptions = tempStgpeduAndInstroptions +(String)mapvalue[skis];
 								if(skis != mapvalue.length-1)
-								tempStgpeduAndInstroptions = tempStgpeduAndInstroptions+",";
-								}
+									tempStgpeduAndInstroptions = tempStgpeduAndInstroptions+",";
+							}
 							stgpeduAndInstroptions[k] = tempStgpeduAndInstroptions;
 							k++;
 						}
 
 					}
-					
-					
+
+
 				} else {
 
 					if(parameterOptions != null && parameterOptions.size() > 0){
@@ -2349,8 +2397,8 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 						stgpeduAndInstroptions = new String[1];
 						stgpeduAndInstroptions[0]="";
 					}
-					
-					
+
+
 				}
 
 
@@ -2375,7 +2423,6 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 					else {
 						steduAndInstrval.setSelectedFlag("false");
 					}
-					System.out.println("steduAndInstrval.setSelectedFlag();==>"+steduAndInstrval.getSelectedFlag());
 					studentotherDetailValues[j] = steduAndInstrval;
 					j++;
 				}
@@ -2392,58 +2439,96 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 				i++;
 			}
 
-		if (studentId !=null) {
-					//retrieve from database and set the selected flag
-					StudentWorkForceData [] studentOtherDetailValuesDB;
+			if (studentId !=null) {
+				//retrieve from database and set the selected flag
+				StudentWorkForceData [] studentOtherDetailValuesDB;
 
-					studentOtherDetailValuesDB = studentManagement.getStudentWorkforceDetails(studentId,"Education And Instruction"); 
-					for(int k=0 ; k < studentOtherDetailValuesDB.length ; k++ ) {
-						StudentOtherDetailValue [] studentOtherDetailValues = studentOtherDetails[k].getStudentOtherDetailValues();
-						for(int l=0 ; l < studentOtherDetailValues.length ; l++ ) {
+				studentOtherDetailValuesDB = studentManagement.getStudentWorkforceDetails(studentId,"Education And Instruction"); 
+				
+				
+				if(studentOtherDetailValuesDB != null){
 
-							if (studentOtherDetailValuesDB[k].getLabelName().
-									equals(studentOtherDetailValues[l].getLabelName())) {
-								if (studentOtherDetailValuesDB[k].getValueName().
-										equals(studentOtherDetailValues[l].getValueName())) {
-									studentOtherDetailValues[l].setSelectedFlag("true");
-									studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+					for(int j=0 ; j < studentOtherDetails.length ; j++ ){
+						StudentOtherDetailValue [] studentOtherDetailValues = studentOtherDetails[j].getStudentOtherDetailValues();
+						
+						for(int k=0 ; k < studentOtherDetailValuesDB.length ; k++ ) {
+
+								if(studentOtherDetailValuesDB[k].getLabelName().equals("Date of Entry into this Class") 
+										&& studentOtherDetails[j].getLabelName().equals("Date of Entry into this Class")){
+									for(int l=0; l < studentOtherDetailValues.length; l++){
+										if(studentOtherDetailValues[l].getValueName().equals(studentOtherDetailValuesDB[k].getValueName())) {
+											studentOtherDetailValues[l].setValueCode(studentOtherDetailValuesDB[k].getValue());
+											break;
+										}
+									}
+
 								}
-							}
-							
-							if (studentOtherDetailValuesDB[k].getLabelName().equals("Scheduled Work Hours Per Week") &&
-									studentOtherDetailValues[l].getLabelName().equals("Scheduled Work Hours Per Week")) {
-								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-								studentOtherDetailValues[l].setSelectedFlag("true");
-							}
-							
-							if (studentOtherDetailValuesDB[k].getLabelName().equals("Provider Use") &&
-									studentOtherDetailValues[l].getLabelName().equals("Provider Use")) {
-								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-								studentOtherDetailValues[l].setSelectedFlag("true");
-							}
-							if (studentOtherDetailValuesDB[k].getLabelName().equals("Hourly Wage") &&
-									studentOtherDetailValues[l].getLabelName().equals("Hourly Wage")) {
-								studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
-								studentOtherDetailValues[l].setSelectedFlag("true");
-							}
+								//still in progress
 								
+							/*	if(studentOtherDetailValuesDB[k].getLabelName().equals("Skill Level") 
+										&& studentOtherDetails[j].getLabelName().equals("Skill Level")){
+									for(int l=0; l < studentOtherDetailValues.length; l++){
+										if(studentOtherDetailValues[l].getValueName().equals(studentOtherDetailValuesDB[k].getValueName())) {
+											studentOtherDetailValues[l].setValueCode(studentOtherDetailValuesDB[k].getValue());
+											break;
+										}
+									}
 
+								}*/
+								
+								if(studentOtherDetailValuesDB[k].getLabelName().equals("Instructional Program") 
+										&& studentOtherDetails[j].getLabelName().equals("Instructional Program")){
+									for(int l=0; l < studentOtherDetailValues.length; l++){
+										if(studentOtherDetailValues[l].getValueName().equals(studentOtherDetailValuesDB[k].getValueName())) {
+											studentOtherDetailValues[l].setSelectedFlag("true");
+											studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+											break;
+										}
+									}
+
+								}
+								
+														
+								if (studentOtherDetailValuesDB[k].getLabelName().equals("Class Number") &&
+										studentOtherDetails[j].getLabelName().equals("Class Number")) {
+									if (studentOtherDetailValuesDB[k].getValueName()!= null) {
+										studentOtherDetailValues[0].setValueName(studentOtherDetailValuesDB[k].getValueName());
+									} else {
+										studentOtherDetailValues[0].setValueName("");
+									}
+									studentOtherDetailValues[0].setSelectedFlag("true");
+								}
+								
+								if (studentOtherDetailValuesDB[k].getLabelName().
+										equals(studentOtherDetails[j].getLabelName())) {
+									
+									for(int l=0; l < studentOtherDetailValues.length; l++){
+										if (studentOtherDetailValuesDB[k].getValueName().
+												equals(studentOtherDetailValues[l].getValueName())) {
+											studentOtherDetailValues[l].setSelectedFlag("true");
+											studentOtherDetailValues[l].setValueName(studentOtherDetailValuesDB[k].getValueName());
+										}
+									}
+								}
 						}
-					}
-				}
 
-			
-          
-                
-            
-            return studentOtherDetails;
-        } catch (SQLException se) {
-            StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentEduAndInstr: " + se.getMessage());
-            tee.setStackTrace(se.getStackTrace());
-            throw tee;
-        }
-            
-    }
+					}
+				
+				}
+			}
+
+
+
+
+
+			return studentOtherDetails;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentEduAndInstr: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+
+	}
 
 	/**
 	 * Create student WorkForce data for the specified student.
