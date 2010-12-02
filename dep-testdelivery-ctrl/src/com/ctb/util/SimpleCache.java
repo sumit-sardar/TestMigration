@@ -15,7 +15,7 @@ public class SimpleCache {
 	
     public static final String CONTENT_USER_ID = "0000000000000";
     
-    private static final int MAX_USER_CACHE_SIZE = 25000;
+    private static final int MAX_USER_CACHE_SIZE = 10000;
 	
 	private static HashMap cacheMap = new HashMap();
 	private static HashMap cacheAge = new HashMap();
