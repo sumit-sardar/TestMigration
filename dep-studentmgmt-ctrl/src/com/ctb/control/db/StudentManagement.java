@@ -1171,7 +1171,7 @@ public interface StudentManagement extends JdbcControl
 	**/
   
     
-	@JdbcControl.SQL(statement="insert into  student_contact (STUDENT_CONTACT_ID, STREET_LINE1, STREET_LINE2, CONTACT_EMAIL, STUDENT_ID, UPDATED_DATE_TIME, UPDATED_BY, CREATED_DATE_TIME, CREATED_BY, SECONDARY_PHONE, PRIMARY_PHONE, ZIPCODE, STATEPR, CITY   ) values ( {address.addressId}, {address.addressLine1}, {address.addressLine2}, {address.email},  {address.studentId}, {address.updatedDateTime}, {address.updatedBy}, {address.CreatedDateTime}, {address.createdBy}, {address.secondaryPhone}, {address.primaryPhone},{address.zipCode}, {address.statePr}, {address.city} )")
+	@JdbcControl.SQL(statement="insert into  student_contact (STUDENT_CONTACT_ID, STREET_LINE1, STREET_LINE2, CONTACT_EMAIL, STUDENT_ID, UPDATED_DATE_TIME, UPDATED_BY, CREATED_DATE_TIME, CREATED_BY, SECONDARY_PHONE, PRIMARY_PHONE, ZIPCODE, ZIPCODE_EXT,STATEPR, CITY   ) values ( {address.addressId}, {address.addressLine1}, {address.addressLine2}, {address.email},  {address.studentId}, {address.updatedDateTime}, {address.updatedBy}, {address.CreatedDateTime}, {address.createdBy}, {address.secondaryPhone}, {address.primaryPhone},{address.zipCode}, {address.zipCodeExt},{address.statePr}, {address.city} )")
 	void createNewStudentContactInformation(Address address) throws SQLException;
 	
 	
@@ -1188,7 +1188,7 @@ public interface StudentManagement extends JdbcControl
 	 * st.statepr as statePr,
      * st.statepr_desc as stateDesc
 	 */
-    @JdbcControl.SQL(statement = "select  stu.STUDENT_CONTACT_ID as addressId,  stu.STREET_LINE1 as addressLine1,  stu.STREET_LINE2 as addressLine2,  stu.CONTACT_EMAIL as email,  stu.STUDENT_ID as studentId, stu.CREATED_BY as createdBy, stu.SECONDARY_PHONE as secondaryPhone,  stu.PRIMARY_PHONE as primaryPhone,  stu.ZIPCODE as zipCode,  st.statepr as statePr, st.statepr_desc as stateDesc,  stu.CITY as city from  STUDENT_CONTACT stu, statepr_code st where stu.statepr = st.statepr(+) and stu.student_id = {studentId}")
+    @JdbcControl.SQL(statement = "select  stu.STUDENT_CONTACT_ID as addressId,  stu.STREET_LINE1 as addressLine1,  stu.STREET_LINE2 as addressLine2,  stu.CONTACT_EMAIL as email,  stu.STUDENT_ID as studentId, stu.CREATED_BY as createdBy, stu.SECONDARY_PHONE as secondaryPhone,  stu.PRIMARY_PHONE as primaryPhone,  stu.ZIPCODE as zipCode, stu.ZIPCODE_EXT as zipCodeExt, st.statepr as statePr, st.statepr_desc as stateDesc,  stu.CITY as city from  STUDENT_CONTACT stu, statepr_code st where stu.statepr = st.statepr(+) and stu.student_id = {studentId}")
     Address getStudentContact(int studentId) throws SQLException;  
     
     @JdbcControl.SQL(statement="insert into  STUDENT_ADDITIONAL_DATA (  student_additional_data_id, student_id, section_name, label_name, value_name, value, created_by, created_date_time, updated_by, updated_date_time) values ({sdd.studentAdditionalDataId},  {sdd.studentId},  {sdd.sectionName}, {sdd.labelName},  {sdd.valueName},  {sdd.value},  {sdd.createdBy},  {sdd.createdDateTime},  {sdd.updatedBy},  {sdd.updatedDateTime} \t)")

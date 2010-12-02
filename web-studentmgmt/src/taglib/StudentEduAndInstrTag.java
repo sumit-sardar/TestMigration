@@ -295,7 +295,7 @@ public class StudentEduAndInstrTag extends CTBTag
 				writeToPage(getSpaces(2));
 			for (i=0 ; i<values.length ; i++) {
 				if(sodValue.getValueCode()!= null && sodValue.getValueCode()!= "" && sodValue.getValueCode().equals(values[i])){
-					writeToPage("<label name=\"" + name + "\" id=\"" + name + "\"" + " style=width:76px"+" >"+ values[i] + comma + "</label>");
+					writeToPage("<label name=\"" + name + "\" id=\"" + name + "\"" + " style=width:20px"+" >"+ values[i] + comma + "</label>");
 				}
 			}
 		}else{
