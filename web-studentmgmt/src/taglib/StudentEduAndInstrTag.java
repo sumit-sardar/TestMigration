@@ -181,7 +181,7 @@ public class StudentEduAndInstrTag extends CTBTag
 
 	private void displayValues_TextBox(String displayName,String value,
 			boolean enable) throws IOException {
-		System.out.println("text box");
+		
 		// TODO Auto-generated method stub
 		displayRowStart();
 		displayCellStart("transparent-small");
@@ -281,25 +281,39 @@ public class StudentEduAndInstrTag extends CTBTag
 		displayRowEnd();  
 	}
 	
-	private void displayValues_DateDropdown(String name, String[] values, boolean editable, StudentOtherDetailValue sodValue ) throws IOException 
+	private void displayValues_DateDropdown(String name, String[] values, boolean editable, StudentOtherDetailValue sodValue, String comma ) throws IOException 
 	{
 		int i;
 		String value = null;
 		boolean selected = false;	
 		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
-		writeToPage(getSpaces(8));
-		writeToPage("<select name=\"" + name + "\" style=width:76px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
-		for (i=0 ; i<values.length ; i++) {
-			
-			if(sodValue.getValueCode()!= null && sodValue.getValueCode()!= "" && sodValue.getValueCode().equals(values[i])) {
-					selected = true	;
-			}
+		
+		if(this.viewOnly.booleanValue()){
+			if(name.equals("Month"))
+				writeToPage(getSpaces(8));
 			else
-				selected = false;
+				writeToPage(getSpaces(2));
+			for (i=0 ; i<values.length ; i++) {
+				if(sodValue.getValueCode()!= null && sodValue.getValueCode()!= "" && sodValue.getValueCode().equals(values[i])){
+					writeToPage("<label name=\"" + name + "\" id=\"" + name + "\"" + " style=width:76px"+" >"+ values[i] + comma + "</label>");
+				}
+			}
+		}else{
+			writeToPage(getSpaces(8));
 			
-			writeToPage(option(values[i], selected));
+			writeToPage("<select name=\"" + name + "\" style=width:76px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+			for (i=0 ; i<values.length ; i++) {
+				
+				if(sodValue.getValueCode()!= null && sodValue.getValueCode()!= "" && sodValue.getValueCode().equals(values[i])) {
+						selected = true	;
+				}
+				else
+					selected = false;
+				
+				writeToPage(option(values[i], selected));
+			}
+			writeToPage("</select>");
 		}
-		writeToPage("</select>");
 		
 	}
 
@@ -359,9 +373,9 @@ public class StudentEduAndInstrTag extends CTBTag
        
        displayRowStart();
        	   displayCellStart("transparent-small");
-               displayValues_DateDropdown("Month", DateUtils.getMonthOptions(),editable, values[0]);
-               displayValues_DateDropdown("Day", DateUtils.getDayOptions(),editable, values[1]);
-               displayValues_DateDropdown("Year", DateUtils.getYearOptions(),editable, values[2]);
+               displayValues_DateDropdown("Month", DateUtils.getMonthOptions(),editable, values[0],"");
+               displayValues_DateDropdown("Day", DateUtils.getDayOptions(),editable, values[1],",");
+               displayValues_DateDropdown("Year", DateUtils.getYearOptions(),editable, values[2],"");
           displayCellEnd();
        displayRowEnd();
 }	
@@ -377,11 +391,16 @@ public class StudentEduAndInstrTag extends CTBTag
 	{
 		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 		String nameId = name  ;
-		
-		return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "4" + 
-		" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
-		" tabindex=\"" + (this.tabIndex++) + "\" " +
-		disabled + " onkeypress=\""+ "return constrainNumericChar(event)" + "\" onBlur=\""+ "checkAndTruncate(this)" + "\" onKeyUp=\""+ "checkAndTruncate(this)" + "\"/>";
+		if(this.viewOnly.booleanValue()) {
+		return "<label name=\"" + nameId + "\" id=\"" + nameId + "\"" + 
+		" style="+ " margin-left:"+"25px; >"+ value + "</label>";
+		}
+		else{
+			return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "4" + 
+			" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
+			" tabindex=\"" + (this.tabIndex++) + "\" " +
+			disabled + " onkeypress=\""+ "return constrainNumericChar(event)" + "\" onBlur=\""+ "checkAndTruncate(this)" + "\" onKeyUp=\""+ "checkAndTruncate(this)" + "\"/>";
+			}
 	}
 
 

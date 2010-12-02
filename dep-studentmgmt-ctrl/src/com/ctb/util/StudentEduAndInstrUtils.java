@@ -47,7 +47,7 @@ public class StudentEduAndInstrUtils {
 					fieldType = "dropdown";
 					keyName=parameterName+"_"+fieldType;
 					valueList = new ArrayList();
-					valueList.add("None");
+					//valueList.add("None");
 					valueList.add("6");
 					valueList.add("7");
 					valueList.add("8");
@@ -62,7 +62,7 @@ public class StudentEduAndInstrUtils {
 					fieldType = "dropdown";
 					keyName=parameterName+"_"+fieldType;
 					valueList = new ArrayList();	
-					valueList.add("None");
+					//valueList.add("None");
 					valueList.add("GED Certificate");
 					valueList.add("High School Diploma");
 					valueList.add("Technical/Certificate");

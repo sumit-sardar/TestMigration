@@ -16,6 +16,7 @@ public class StudentWorkorceTag extends CTBTag
 {
 	private List studentWorkForceDetails;
 	private Boolean viewOnly = Boolean.FALSE;
+	private Boolean workforceSectionDisable = Boolean.TRUE;
 	//CA-ABE student intake
 	private Boolean mandatoryField = Boolean.FALSE;
 	private Boolean studentImported = Boolean.FALSE;
@@ -115,9 +116,8 @@ public class StudentWorkorceTag extends CTBTag
 	{
 		String displayName = sdd.getLabelName().trim();
 		boolean multipleAllowed = sdd.getValueCardinality().equals("dropdown");
-		boolean editable = true;
-
-		System.out.println("1");
+		boolean editable = !workforceSectionDisable;
+		//System.out.println("workforceSectionDisable " + workforceSectionDisable);
 		displayRowStart();
 		displayCellStart("transparent");
 		//Changes for CA-ABE student intake
@@ -145,7 +145,7 @@ public class StudentWorkorceTag extends CTBTag
 
 		private void displayValues_TextBox(String displayName,StudentOtherDetailValue value,
 				boolean enable) throws IOException {
-			System.out.println("text box");
+			
 			// TODO Auto-generated method stub
 			displayRowStart();
 			displayCellStart("transparent-small");
@@ -176,7 +176,7 @@ public class StudentWorkorceTag extends CTBTag
 			displayRowStart();
 			displayCellStart("transparent-small");
 			writeToPage(getSpaces(8));
-			writeToPage("<select name=\"" + name + "\" style=width:350px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+			writeToPage("<select name=\"" + name + "\" style=width:380px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
 			writeToPage(option("Please Select", true));
 			for (i=0 ; i<values.length ; i++) {
 				StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
@@ -221,13 +221,18 @@ public class StudentWorkorceTag extends CTBTag
 				maxlength = "4";
 			}
 		
-			
-			//String focusNextControl = (nameId.equals("Scheduled Work Hours Per Week") || nameId.equals("Hourly Wage")) ? " focusNextControl(this);": "";
-			
-			return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=\"" + maxlength + 
-			" \" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
-			" tabindex=\"" + (this.tabIndex++) + "\" " +
-			  disabled +" onkeypress=\""+ constrainNumericChar + "\" onBlur=\""+ checkAndTruncate + "\" onKeyUp=\""+ checkAndTruncate + "\"/>";
+			//System.out.println("this.viewOnly.booleanValue()..." + editable + ".." + disabled);
+			//String focusNextControl = (nameId.equals("Provider Use") || nameId.equals("Scheduled Work Hours Per Week") || nameId.equals("Hourly Wage")) ? " focusNextControl(this);": "";
+			if(this.viewOnly.booleanValue() && this.workforceSectionDisable.booleanValue() ) {
+				return "<label name=\"" + nameId + "\" id=\"" + nameId + "\"" + 
+				" style="+ " margin-left:"+"25px; >"+ value + "</label>";
+			}
+			else{
+				return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=\"" + maxlength + 
+				" \" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
+				" tabindex=\"" + (this.tabIndex++) + "\" " +
+				  disabled +" onkeypress=\""+ constrainNumericChar + "\" onBlur=\""+ checkAndTruncate + "\" onKeyUp=\""+ checkAndTruncate + "\"/>";
+			}
 		}
 
 		
@@ -256,6 +261,20 @@ public class StudentWorkorceTag extends CTBTag
 		 */
 		public void setStudentWorkForceDetails(List studentWorkForceDetails) {
 			this.studentWorkForceDetails = studentWorkForceDetails;
+		}
+
+		/**
+		 * @return the workforceSectionDisable
+		 */
+		public Boolean getWorkforceSectionDisable() {
+			return workforceSectionDisable;
+		}
+
+		/**
+		 * @param workforceSectionDisable the workforceSectionDisable to set
+		 */
+		public void setWorkforceSectionDisable(Boolean workforceSectionDisable) {
+			this.workforceSectionDisable = workforceSectionDisable;
 		}
 
 	}

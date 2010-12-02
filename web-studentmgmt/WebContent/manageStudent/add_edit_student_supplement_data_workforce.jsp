@@ -13,14 +13,17 @@
 <% 
     List workforceSectionDetails = (List)request.getAttribute("workforceSectionDetails");
 	//Boolean studentImported = (Boolean) request.getAttribute("studentImported");
+	Boolean viewOnly = (Boolean) request.getAttribute("viewOnly");
 	Boolean mandatoryField = (Boolean) request.getAttribute("mandatoryField");
-	Boolean workforceSectionVisible = (Boolean) request.getAttribute("workforceSectionVisible");
+	Boolean workforceSectionDisable = (Boolean) request.getAttribute("workforceSectionDisable");
+	
 %>
 
 <!-- Student Demographic Information -->
 <ctbweb:studentWorkorceTag studentWorkForceDetails = "<%= workforceSectionDetails %>" 
-                            viewOnly = "<%= workforceSectionVisible %>" 
-                            mandatoryField = "<%=mandatoryField %>" />
+                            viewOnly = "<%= viewOnly %>" 
+                            mandatoryField = "<%=mandatoryField %>"
+                            workforceSectionDisable= "<%=workforceSectionDisable %>" />
 
 
 <br/>

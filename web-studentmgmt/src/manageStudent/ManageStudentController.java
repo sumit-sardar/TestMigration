@@ -135,7 +135,7 @@ public class ManageStudentController extends PageFlowController
 	private boolean isMandatoryStudentId = false; // Change For CR - GA2011CR001
 
 	private boolean isABECustomer = false;   //added for CA-ABE
-	private boolean workforceSectionVisible=true;
+	private boolean workforceSectionDisable=true;
 	private String studentIdLabelName = "Student ID";
 	private String studentId2LabelName = "Student ID 2";
 
@@ -532,18 +532,16 @@ public class ManageStudentController extends PageFlowController
 		
 		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);  
 		
-		this.workforceSectionVisible=true;
+		this.workforceSectionDisable=true;
 		for (int i=0 ; i < this.demographics.size(); i++ ) {
 			 StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
 			 if (sdd.getLabelName().equals("Labor Force Status")) {
-				
-				 System.out.println("demo name" + sdd.getLabelName());
 				 
 				 StudentDemographicValue[] values = sdd.getStudentDemographicValues();
 				 for (int k=0 ; k < values.length; k++ ) {
 					 if(values[k].getValueName().equals("Employed") && 
 							 values[k].getSelectedFlag().equals("true")) {
-						this.workforceSectionVisible=false;
+						this.workforceSectionDisable=false;
 						 break; 
 					 }
 				 }
@@ -551,7 +549,7 @@ public class ManageStudentController extends PageFlowController
 				
 			 }
 		}
-		this.getRequest().setAttribute("workforceSectionVisible",this.workforceSectionVisible);  
+		this.getRequest().setAttribute("workforceSectionDisable",this.workforceSectionDisable);  
 		form.setCurrentAction(ACTION_DEFAULT);
 
 	}
@@ -588,8 +586,7 @@ public class ManageStudentController extends PageFlowController
 
 
 		if ( studentId == null) {
-
-			//System.out.println( studentId );
+			
 			studentId = (Integer)this.getSession().getAttribute("selectStudentIdInView");
 			form.setSelectedStudentId(studentId);
 		}
@@ -624,12 +621,12 @@ public class ManageStudentController extends PageFlowController
 				
 				
 					if(form.laborForceValue != null && form.laborForceValue.equals("Employed")){
-						this.workforceSectionVisible = false;
+						this.workforceSectionDisable = false;
 						
 					}
 					else
 					{
-						this.workforceSectionVisible = true;
+						this.workforceSectionDisable = true;
 					}
 					
 				
@@ -645,30 +642,7 @@ public class ManageStudentController extends PageFlowController
 
 				}
 				
-				
-				
-				/*if (result) {
-				for (int i=0 ; i < this.demographics.size(); i++ ) {
-					 StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
-					 if (sdd.getLabelName().equals("Labor Force Status")) {
-						
-						 System.out.println("demo name" + sdd.getLabelName());
-						 
-						 StudentDemographicValue[] values = sdd.getStudentDemographicValues();
-						 for (int k=0 ; k < values.length; k++ ) {
-							 if(values[k].getValueName().equals("Employed") && 
-									 values[k].getSelectedFlag().equals("true")) {
-								 
-								this.workforceSectionVisible=false;
-								 break; 
-							 }
-						 }
-						
-						
-					 }
-				}
-				}*/
-				if (result && !this.workforceSectionVisible) {
+				if (result && !this.workforceSectionDisable) {
 					getStudentWorkForceDetailsFromRequest(); 
 					result = form.vaildateABEStudentWorkForceInfo(this.workforceSectionDetails);
 					if (!result) {
@@ -1910,7 +1884,6 @@ public class ManageStudentController extends PageFlowController
 	
 	
 					param = sei.getLabelName() ;
-					System.out.println(param);
 					if (getRequest().getParameter(param) != null)
 					{
 						paramValue = getRequest().getParameter(param);
@@ -2356,9 +2329,8 @@ public class ManageStudentController extends PageFlowController
 		{
 			this.viewStudentFromSearch = true;  
 			Integer studentId = form.getSelectedStudentId(); 
-			String studentIdR = String.valueOf(studentId.intValue());
-			//System.out.println("selected student permission in find" + this.getRequest().getParameter(studentIdR));
-			String deletePermission = this.getRequest().getParameter(studentIdR);
+			String studentIdReq = String.valueOf(studentId.intValue());
+			String deletePermission = this.getRequest().getParameter(studentIdReq);
 			this.savedForm = form.createClone();             
 			this.studentSearch = form.getStudentProfile().createClone();
 			this.studentSearch.setDeletePermission(deletePermission);
@@ -2411,8 +2383,6 @@ public class ManageStudentController extends PageFlowController
 
 			if (form.getSelectedStudentId() != null){
 				this.getRequest().setAttribute("disableButtons", Boolean.FALSE);
-				//System.out.println("student id" + form.getStudentProfile().getStudentId());
-				//System.out.println("delete permisssion" + form.getStudentProfile().getDeletePermission());
 				if (form.getStudentProfile().getDeletePermission().equals("false"))
 					this.getRequest().setAttribute("disableDeleteButton", Boolean.TRUE);
 				else {
@@ -2808,7 +2778,7 @@ public class ManageStudentController extends PageFlowController
 		this.getRequest().setAttribute("demographics", this.demographics);       
 		this.getRequest().setAttribute("studentImported", new Boolean(studentImported)); 
 		this.getRequest().setAttribute("mandatoryField",new Boolean(isABECustomer));
-		this.getRequest().setAttribute("workforceSectionVisible",true);
+		this.getRequest().setAttribute("workforceSectionDisable",true);
 		this.accommodations = getStudentAccommodations(studentId);
 		this.getRequest().setAttribute("accommodations", this.accommodations);       
 
@@ -4277,6 +4247,9 @@ public class ManageStudentController extends PageFlowController
 			int requiredFieldCount = 0;
 			String invalidCharFields = "";
 			int invalidFieldCount = 0;
+			String month = "";
+			String day = "";
+			String year = "";
 			for (int i=0; i < educationAndInstruction.size(); i++)
 			{
 
@@ -4293,6 +4266,14 @@ public class ManageStudentController extends PageFlowController
 					}
 					else if (values[k].getSelectedFlag().equals("true")) {
 						result= true;
+						if(sdd.getLabelName().equals("Date of Entry into this Class")){
+							if(values[k].getValueName().equals("Month"))
+								month = values[k].getValueCode();
+							if(values[k].getValueName().equals("Day"))
+								day = values[k].getValueCode();
+							if(values[k].getValueName().equals("Year"))
+								year = values[k].getValueCode();
+						}
 					}
 					
 					
@@ -4319,8 +4300,17 @@ public class ManageStudentController extends PageFlowController
 
 				return false;
 			}
-
-
+			
+			
+				if (DateUtils.allSelected(month, day, year)) {
+					int isDateValid = DateUtils.validateDateValues(year, month, day);
+					if (isDateValid != DateUtils.DATE_VALID) {
+						setMessage(MessageResourceBundle.getMessage("invalid_date")+"    In " + sectionName, Message.INVALID_DATE, Message.ERROR);
+						return false;
+					}
+				}
+			
+			
 			return true;
 		}
 
@@ -4510,16 +4500,16 @@ public class ManageStudentController extends PageFlowController
 	// End  Change For CR - GA2011CR001
 
 	/**
-	 * @return the workforceSectionVisible
+	 * @return the workforceSectionDisable
 	 */
-	public boolean isWorkforceSectionVisible() {
-		return workforceSectionVisible;
+	public boolean isWorkforceSectionDisable() {
+		return workforceSectionDisable;
 	}
 
 	/**
 	 * @param workforceSectionVisible the workforceSectionVisible to set
 	 */
-	public void setWorkforceSectionVisible(boolean workforceSectionVisible) {
-		this.workforceSectionVisible = workforceSectionVisible;
+	public void setWorkforceSectionDisable(boolean workforceSectionDisable) {
+		this.workforceSectionDisable = workforceSectionDisable;
 	}
 }

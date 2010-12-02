@@ -164,7 +164,6 @@ public class StudentPrgGoalTag extends CTBTag
 
 	private void displayValues_TextBox(String displayName,String value,
 			 boolean enable) throws IOException {
-		System.out.println("text box");
 		// TODO Auto-generated method stub
 		displayRowStart();
 		displayCellStart("transparent-small");
@@ -301,11 +300,16 @@ public class StudentPrgGoalTag extends CTBTag
 	{
 		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 		String nameId = name  ;
-		
-		return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "64" + 
-		" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
-		" tabindex=\"" + (this.tabIndex++) + "\" " +
-		  disabled + "/>";
+		if(this.viewOnly.booleanValue()) {
+			return "<label name=\"" + nameId + "\" id=\"" + nameId + "\"" + 
+			" style="+ " margin-left:"+"25px; >"+ value + "</label>";
+		}
+		else{
+			return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "64" + 
+			" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
+			" tabindex=\"" + (this.tabIndex++) + "\" " +
+			  disabled + "/>";
+		}
 	}
 
 	private String radioButton(String name, String value, boolean isChecked, boolean editable) 
