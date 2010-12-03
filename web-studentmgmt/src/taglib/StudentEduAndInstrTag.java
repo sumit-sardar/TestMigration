@@ -22,7 +22,7 @@ public class StudentEduAndInstrTag extends CTBTag
 	//CA-ABE student intake
 	private Boolean mandatoryField = Boolean.FALSE;
 	private Boolean studentImported = Boolean.FALSE;
-	private int tabIndex = 1;
+	//private int tabIndex = 1; //Removed because the page has multiple elements with same Tab index number
 	
   
     public void setViewOnly(Boolean viewOnly) {
@@ -33,9 +33,9 @@ public class StudentEduAndInstrTag extends CTBTag
         this.studentImported = studentImported;
     }
     
-    public void setTabIndex(int tabIndex) {
+    /*public void setTabIndex(int tabIndex) {
     	this.tabIndex = tabIndex;
-    }
+    }*/
     
     
 	public int doStartTag() throws JspException 
@@ -268,7 +268,7 @@ public class StudentEduAndInstrTag extends CTBTag
 		displayRowStart();
 		displayCellStart("transparent-small");
 		writeToPage(getSpaces(8));
-		writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+		writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " >");
 		writeToPage(option("Please Select", true));
 		for (i=0 ; i<values.length ; i++) {
 			StudentOtherDetailValue sdv = (StudentOtherDetailValue)values[i];
@@ -292,7 +292,7 @@ public class StudentEduAndInstrTag extends CTBTag
 			if(name.equals("Month"))
 				writeToPage(getSpaces(8));
 			else
-				writeToPage(getSpaces(2));
+				writeToPage(getSpaces(1));
 			for (i=0 ; i<values.length ; i++) {
 				if(sodValue.getValueCode()!= null && sodValue.getValueCode()!= "" && sodValue.getValueCode().equals(values[i])){
 					writeToPage("<label name=\"" + name + "\" id=\"" + name + "\"" + " style=width:20px"+" >"+ values[i] + comma + "</label>");
@@ -301,7 +301,7 @@ public class StudentEduAndInstrTag extends CTBTag
 		}else{
 			writeToPage(getSpaces(8));
 			
-			writeToPage("<select name=\"" + name + "\" style=width:76px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+			writeToPage("<select name=\"" + name + "\" style=width:76px " + disabled +  " >");
 			for (i=0 ; i<values.length ; i++) {
 				
 				if(sodValue.getValueCode()!= null && sodValue.getValueCode()!= "" && sodValue.getValueCode().equals(values[i])) {
@@ -338,7 +338,7 @@ public class StudentEduAndInstrTag extends CTBTag
 				displayCellEnd();
 				displayCellStart("transparent-small");
 					writeToPage(getSpaces(8));
-					writeToPage("<select name=\"" + paramsTyes[0] + "\" style=width:190px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+					writeToPage("<select name=\"" + paramsTyes[0] + "\" style=width:190px " + disabled + " >");
 					writeToPage(option("Please Select", true));
 
 					for(int j=1; j < paramsTyes.length; j++){
@@ -359,8 +359,6 @@ public class StudentEduAndInstrTag extends CTBTag
 		displayTableEnd();
 		displayCellEnd();
 		displayRowEnd();
-
-
 	}
 	private void displayControlRow(String field, String description, 
             boolean editable, StudentOtherDetailValue[] values) throws IOException 
@@ -397,8 +395,7 @@ public class StudentEduAndInstrTag extends CTBTag
 		}
 		else{
 			return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "4" + 
-			" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
-			" tabindex=\"" + (this.tabIndex++) + "\" " +
+			" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +
 			disabled + " onkeypress=\""+ "return constrainNumericChar(event)" + "\" onBlur=\""+ "checkAndTruncate(this)" + "\" onKeyUp=\""+ "checkAndTruncate(this)" + "\"/>";
 			}
 	}
@@ -409,8 +406,7 @@ public class StudentEduAndInstrTag extends CTBTag
 		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 		String nameId = name + "_" + value;
 		return "<input type=\"checkbox\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +
-		" value=\""+ value + "\" " + 
-		" tabindex=\"" + (this.tabIndex++) + "\" " +
+		" value=\""+ value + "\" "  +
 		(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
 	}
 
@@ -418,8 +414,7 @@ public class StudentEduAndInstrTag extends CTBTag
 	{
 		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 		return "<input type=\"radio\" name=\"" + name + "\" id=\"" + name + "\"" +
-		" value=\"" + value + "\" " + 
-		" tabindex=\"" + (this.tabIndex++) + "\" " +
+		" value=\"" + value + "\" " +
 		(isChecked?"checked=\"true\" ":" ") + disabled + "/>";			//added for CA-ABE
 	}
 
@@ -474,9 +469,9 @@ public class StudentEduAndInstrTag extends CTBTag
 	/**
 	 * @return the tabIndex
 	 */
-	public int getTabIndex() {
+	/*public int getTabIndex() {
 		return tabIndex;
-	}
+	}*/
 
 }
 

@@ -165,11 +165,11 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setMiddleName( upperCaseFirstLetter(this.middleName) );
         copied.setLastName( upperCaseFirstLetter(this.lastName) );
         copied.setGrade(this.grade);
-        copied.setStudentIdNumber(this.studentNumber);
-        copied.setStudentIdNumber2(this.studentSecondNumber);
+        copied.setStudentIdNumber(this.studentNumber.trim());
+        copied.setStudentIdNumber2(this.studentSecondNumber.trim());
         //ca-abe
-        copied.setInstructorFirstName(this.instructorFirstName);
-        copied.setInstructorLastName(this.instructorLastName);
+        copied.setInstructorFirstName(upperCaseFirstLetter(this.instructorFirstName));
+        copied.setInstructorLastName(upperCaseFirstLetter(this.instructorLastName));
         copied.setIsPBAFormSigned(this.isPBAFormSigned);
         copied.setIsSSN(this.isSSN);
         copied.setVisibleAcrossOrganization(this.visibleAcrossOrganization);

@@ -19,7 +19,7 @@ public class StudentPrgGoalTag extends CTBTag
 	//CA-ABE student intake
 	private Boolean mandatoryField = Boolean.FALSE;
 	private Boolean studentImported = Boolean.FALSE;
-	private int tabIndex = 1;
+	//private int tabIndex = 1;
 
 
 
@@ -31,10 +31,10 @@ public class StudentPrgGoalTag extends CTBTag
 		this.studentImported = studentImported;
 	}
 
-	public void setTabIndex(int tabIndex) {
+	/*public void setTabIndex(int tabIndex) {
 		this.tabIndex = tabIndex;
 	}
-
+*/
 
 	public int doStartTag() throws JspException 
 	{
@@ -267,7 +267,7 @@ public class StudentPrgGoalTag extends CTBTag
 		displayRowStart();
 		displayCellStart("transparent-small");
 		writeToPage(getSpaces(8));
-		writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+		writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled +  " >");
 		writeToPage(option("Please Select", true));
 		for (i=0 ; i<values.length ; i++) {
 			StudentProgramGoalValue sdv = (StudentProgramGoalValue)values[i];
@@ -292,7 +292,6 @@ public class StudentPrgGoalTag extends CTBTag
 		String nameId = name + "_" + value;
 		return "<input type=\"checkbox\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +
 		" value=\""+ value + "\" " + 
-		" tabindex=\"" + (this.tabIndex++) + "\" " +
 		(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
 	}
 	
@@ -307,8 +306,7 @@ public class StudentPrgGoalTag extends CTBTag
 		else{
 			return "<input type=\"text\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +  "maxlength=" + "64" + 
 			" style="+ " margin-left:"+"25px;"+	" value=\""+ value + "\" " +  
-			" tabindex=\"" + (this.tabIndex++) + "\" " +
-			  disabled + "/>";
+			disabled + "/>";
 		}
 	}
 
@@ -317,7 +315,6 @@ public class StudentPrgGoalTag extends CTBTag
 		String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 		return "<input type=\"radio\" name=\"" + name + "\" id=\"" + name + "\"" +
 		" value=\"" + value + "\" " + 
-		" tabindex=\"" + (this.tabIndex++) + "\" " +
 		(isChecked?"checked=\"true\" ":" ") + disabled + " onClick=\"displayWorkforceSection(this)\"/>";			//added for CA-ABE
 	}
 

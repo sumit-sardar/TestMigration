@@ -1557,7 +1557,7 @@ public class ManageStudentController extends PageFlowController
 							if (getRequest().getParameter(param) != null)
 							{
 								paramValue = getRequest().getParameter(param);
-								seiv.setValueName(paramValue);
+								seiv.setValueName(paramValue.trim());
 								seiv.setSelectedFlag("true");
 							}
 						}
@@ -1840,7 +1840,7 @@ public class ManageStudentController extends PageFlowController
 						} 
 						else
 						{
-							if (values.length == 1)
+							/*if (values.length == 1)
 							{
 								if (! seiv.getVisible().equals("false"))
 									seiv.setSelectedFlag("false");
@@ -1852,7 +1852,7 @@ public class ManageStudentController extends PageFlowController
 								}
 							}
 							else
-							{
+							{*/
 								param = sei.getLabelName();
 								if (getRequest().getParameter(param) != null)
 								{
@@ -1876,7 +1876,7 @@ public class ManageStudentController extends PageFlowController
 								}
 	
 	
-							}
+						//	}
 						}
 						seiv.setVisible("T");
 					}
@@ -1891,7 +1891,7 @@ public class ManageStudentController extends PageFlowController
 						StudentProgramGoalValue prgGoalvalue = new StudentProgramGoalValue();
 						if(paramValue != null && !paramValue.equals("")) {
 	
-							prgGoalvalue.setValueName(paramValue);
+							prgGoalvalue.setValueName(paramValue.trim());
 							prgGoalvalue.setVisible("true");
 							prgGoalvalue.setSelectedFlag("true");
 							prgGoalvalues[0]= prgGoalvalue;
@@ -1934,7 +1934,7 @@ public class ManageStudentController extends PageFlowController
 					if (getRequest().getParameter(param) != null)
 					{
 						paramValue = getRequest().getParameter(param);
-						seiv.setValueName(paramValue);
+						seiv.setValueName(paramValue.trim());
 						seiv.setSelectedFlag("true");
 					}
 				}
