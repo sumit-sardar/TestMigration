@@ -4138,11 +4138,12 @@ public class ManageStudentController extends PageFlowController
 
 				StudentProgramGoal sdd = (StudentProgramGoal)selectedPrgGoalList.get(i);
 				StudentProgramGoalValue[] values = sdd.getStudentProgramGoalValues();
-
+				String invalidCharFields = "";
 				if(sdd.getLabelName().equals("Provider Use")) {
 					if (values != null && values.length >0) {
-						String invalidCharFields = WebUtils.validProviderUse(values[0].getValueName());                
-						if (invalidCharFields.length() > 0) {
+						boolean validField = WebUtils.validProviderUse(values[0].getValueName());                
+						if (!validField) {
+							invalidCharFields = WebUtils.buildErrorString(Message.FIELD_PROVIDER_USE, 1, invalidCharFields);
 							invalidCharFields += ("<br/>" + Message.INVALID_NUMBER_CHARS);
 							setMessage(MessageResourceBundle.getMessage("invalid_char_message")+"    In " + sectionName, invalidCharFields, Message.ERROR);
 							return false;
@@ -4214,13 +4215,15 @@ public class ManageStudentController extends PageFlowController
 
 				StudentOtherDetail sdd = (StudentOtherDetail)selecteWorkForcelList.get(i);
 				StudentOtherDetailValue[] values = sdd.getStudentOtherDetailValues();
-
 				if(values.length ==1) {
-
-					boolean validField  = WebUtils.validCharField(values[0].getValueName(),sdd.getLabelName());                
+					boolean validField = true ;
+					if (sdd.getLabelName().equals("Provider Use"))
+						 validField  = WebUtils.validProviderUse(values[0].getValueName()); 
+					else
+						validField  = WebUtils.validCharField(values[0].getValueName(),sdd.getLabelName()); 
 					if (!validField) {
 						invalidFieldCount +=1; 
-						invalidCharFields = Message.buildErrorString(sdd.getLabelName(), invalidFieldCount, invalidCharFields);
+						requiredFields += Message.buildErrorString(sdd.getLabelName(), invalidFieldCount, invalidCharFields);
 
 
 					}

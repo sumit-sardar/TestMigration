@@ -475,27 +475,22 @@ public class WebUtils
         return false;
     } 
   //Changes for CA-ABE
-	public static String validProviderUse(String str)
+	public static boolean validProviderUse(String str)
 	{
 		str = str.trim();
 		char[] characters = str.toCharArray();
-		String invalidCharFields = "";
-		int invalidCharFieldCount = 0;
 		for (int i=0 ; i<characters.length ; i++) {
 			char character = characters[i];
-			if (! validAlphaNumericCharacter(character) )
-				invalidCharFieldCount += 1;            
+			if (! validProviderUseCharacter(character) )
+				return false;           
 			   
 		}
-		if (invalidCharFieldCount > 0) {
-			invalidCharFields = buildErrorString(Message.FIELD_PROVIDER_USE, invalidCharFieldCount, invalidCharFields);
-		}
 		
-		return invalidCharFields;
+		return true;
 	}
 	
 	//Changes for CA-ABE
-	public static boolean validCharField(String str,String sectionName)
+	public static boolean validCharField(String str, String sectionName)
 	{
 		str = str.trim();
 		char[] characters = str.toCharArray();
@@ -520,6 +515,15 @@ public class WebUtils
 
 		return (zero_nine || A_Z || a_z );
 	}
-	
+    public static boolean validProviderUseCharacter(char ch)
+	{
+		boolean zero_nine = ((ch >= 48) && (ch <= 57));
+		boolean A_Z = ((ch >= 65) && (ch <= 90));
+		boolean a_z = ((ch >= 97) && (ch <= 122));
+		boolean validChar = (ch == ' ');
+		return (zero_nine || A_Z || a_z || validChar );
+	}
+    
+    
 
 } 

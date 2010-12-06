@@ -2122,7 +2122,8 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 						studentProgramGoalData.setValueName(studentProgramGoalValues[j].getValueName());
 						studentProgramGoalData.setCreatedBy(userId);
 						studentProgramGoalData.setCreatedDateTime(now);
-						studentManagement.createStudentProgramGoalData(studentProgramGoalData);
+						if(studentProgramGoalValues[j].getValueName() != null && !(studentProgramGoalValues[j].getValueName().trim().equals("")))
+							studentManagement.createStudentProgramGoalData(studentProgramGoalData);
 					}
 				}
 			}
