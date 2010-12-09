@@ -5,6 +5,7 @@ package com.ctb.control.studentManagement;
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
 import com.ctb.bean.studentManagement.StudentOtherDetail;
+import com.ctb.bean.studentManagement.StudentProgramGoal;
 import com.ctb.exception.CTBBusinessException;
 
 /** 
@@ -462,22 +463,26 @@ public interface StudentManagement
     
     com.ctb.bean.studentManagement.StudentProgramGoal[] getStudentProgramGoals(java.lang.String userName, java.lang.Integer customerId, java.lang.Integer studentId, boolean returnInvisible) throws com.ctb.exception.CTBBusinessException;
 
-
     /**
-     * create Student Contact Information
-     * 
-     * 
-     * 
-     * @param userName
-     * @param manageStudent
-     * @return
-     * @throws com.ctb.exception.CTBBusinessException
-     */
-
-
-  
-
-	 void createStudentProgAndGoals(java.lang.String userName, java.lang.Integer studentId, com.ctb.bean.studentManagement.StudentProgramGoal[] studentProgramGoals) throws com.ctb.exception.CTBBusinessException;
+	 * Create student Programs And Goals data for the specified student.
+	 * @common:operation
+	 * @param userName - identifies the calling user
+	 * @param studentId - identifies the student 
+	 * @param StudentProgramGoal [] - contains the student's Programs And Goals information
+	 * @throws CTBBusinessException
+	 */
+	 	void createStudentProgAndGoals(java.lang.String userName, java.lang.Integer studentId, com.ctb.bean.studentManagement.StudentProgramGoal[] studentProgramGoals) throws com.ctb.exception.CTBBusinessException;
+	 
+	 /**
+		 * Update student Programs And Goals data for the specified student.
+		 * @common:operation
+		 * @param userName - identifies the calling user
+		 * @param studentId - identifies the student 
+		 * @param StudentProgramGoal [] - contains the student's Programs And Goals information
+		 * @throws CTBBusinessException
+		 */
+		public void updateStudentProgAndGoals(String userName, Integer studentId, StudentProgramGoal [] studentProgramGoals) throws com.ctb.exception.CTBBusinessException;
+		
 	 
 	 /**
 	     * Get student Program And Goals for the specified customer and student.
@@ -492,7 +497,7 @@ public interface StudentManagement
 	    com.ctb.bean.studentManagement.StudentOtherDetail[] getStudentWorkFoceDetails(java.lang.String userName, java.lang.Integer customerId, java.lang.Integer studentId, boolean returnInvisible) throws com.ctb.exception.CTBBusinessException;
 
 	    /**
-	     * Get student Program And Goals for the specified customer and student.
+	     * Get student EduAndInstr for the specified customer and student.
 	     * @param userName - identifies the calling user
 	     * @param customerId - identifies the customer whose information is desired
 	     * @param studentId - identifies the student whose information is desired
@@ -503,20 +508,50 @@ public interface StudentManagement
 	    
 	    com.ctb.bean.studentManagement.StudentOtherDetail[] getStudentEduAndInstr(java.lang.String userName, java.lang.Integer customerId, java.lang.Integer studentId, boolean returnInvisible) throws com.ctb.exception.CTBBusinessException;
 		
-		/**
-	     * create Student Workforce Data Information
-	     * 
-	     * 
-	     * 
-	     * @param userName
-	     * @param manageStudent
-	     * @return
-	     * @throws com.ctb.exception.CTBBusinessException
-	     */
+	    /**
+		 * Update student WorkForce data for the specified student.
+		 * @common:operation
+		 * @param userName - identifies the calling user
+		 * @param studentId - identifies the student 
+		 * @param StudentOtherDetail [] - contains the student's WorkForce information
+		 * @throws CTBBusinessException
+		 */
 	    
 	    void createStudentWorkForceData(java.lang.String userName, java.lang.Integer studentId, com.ctb.bean.studentManagement.StudentOtherDetail[] studentOtherDetail) throws com.ctb.exception.CTBBusinessException;
 	    
+	    /**
+		 * Update student WorkForce data for the specified student.
+		 * @common:operation
+		 * @param userName - identifies the calling user
+		 * @param studentId - identifies the student 
+		 * @param StudentOtherDetail [] - contains the student's WorkForce information
+		 * @throws CTBBusinessException
+		 */
+		public void updateStudentWorkForceData(String userName, Integer studentId, StudentOtherDetail [] studentOtherDetail) throws com.ctb.exception.CTBBusinessException;
+		
+	    
+	    /**
+		 * Create student Education And Instruction data for the specified student.
+		 * @common:operation
+		 * @param userName - identifies the calling user
+		 * @param studentId - identifies the student 
+		 * @param StudentOtherDetail [] - contains the student's Education And Instruction information
+		 * @throws CTBBusinessException
+		 */
+	    
 	    void createStudentEducationInstructionData(String userName, Integer studentId, StudentOtherDetail [] studentOtherDetail) throws com.ctb.exception.CTBBusinessException;
+	    
+	    /**
+		 * Update student Education And Instruction data for the specified student.
+		 * @common:operation
+		 * @param userName - identifies the calling user
+		 * @param studentId - identifies the student 
+		 * @param StudentOtherDetail [] - contains the student's Education And Instruction information
+		 * @throws CTBBusinessException
+		 */
+		void updateStudentEducationInstructionData(String userName, Integer studentId, StudentOtherDetail [] studentOtherDetail) throws com.ctb.exception.CTBBusinessException;
+		
+		
 	    /**
 	     * Retrieves a sorted, filtered, paged list of students at and below user's
 	     * top org node(s). The SQL's where clause is dynamically generated on based

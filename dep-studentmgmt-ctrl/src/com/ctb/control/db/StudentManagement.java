@@ -753,7 +753,7 @@ public interface StudentManagement extends JdbcControl
      * 	updated_Date_Time = {updatedDateTime}
      * where student_id = {student.id}::
      */
-    @JdbcControl.SQL(statement = "update student set  \tuser_name = {student.loginId}, \tfirst_name = {student.firstName}, \tmiddle_name = {student.middleName}, \tlast_name = {student.lastName}, \tgender = {student.gender}, \tbirthdate = {student.birthDate}, \tgrade = {student.grade}, \text_pin1 = {student.studentIdNumber}, \text_pin2 = {student.studentIdNumber2}, \tupdated_By = {updatedBy}, \tupdated_Date_Time = {updatedDateTime} where student_id = {student.id}")
+    @JdbcControl.SQL(statement = "update student set  \tuser_name = {student.loginId}, \tfirst_name = {student.firstName}, \tmiddle_name = {student.middleName}, \tlast_name = {student.lastName}, \tgender = {student.gender}, \tbirthdate = {student.birthDate}, \tgrade = {student.grade}, \text_pin1 = {student.studentIdNumber}, \text_pin2 = {student.studentIdNumber2}, \tupdated_By = {updatedBy}, \tupdated_Date_Time = {updatedDateTime}, instructor_First_Name = {student.instructorFirstName}, instructor_Last_Name = {student.instructorLastName}, visible_Across_Organization = {student.visibleAcrossOrganization}, is_Ssn = {student.isSSN}, is_PBA_Form_Signed = {student.isPBAFormSigned}  where student_id = {student.id}")
     void updateStudent(ManageStudent student, Integer updatedBy, Date updatedDateTime) throws SQLException;
 
     /**
@@ -1200,5 +1200,21 @@ public interface StudentManagement extends JdbcControl
     
     @JdbcControl.SQL(statement="insert into  STUDENT_ADDITIONAL_DATA (  student_additional_data_id, student_id, section_name, label_name, value_name, value, created_by, created_date_time, updated_by, updated_date_time) values ({sdd.studentAdditionalDataId},  {sdd.studentId},  {sdd.sectionName}, {sdd.labelName},  {sdd.valueName},  {sdd.value},  {sdd.createdBy},  {sdd.createdDateTime},  {sdd.updatedBy},  {sdd.updatedDateTime} \t)")
 	void createStudentEducationInstructionData(StudentWorkForceData sdd) throws SQLException;
+    
+    
+    @JdbcControl.SQL(statement = "delete from STUDENT_ADDITIONAL_DATA as sad where sad.section_name = {sectionName} and sad.student_id = {studentId})")
+    void deleteVisibleStudentAdditionalDataForStudent(Integer studentId, String sectionName) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "delete from  STUDENT_CA_ABE_PRG_GOAL_DATA  where \tstudent_id={studentId} \tand ca_abe_prg_goal_id = {CustomerPrgGoalId}")
+    void deleteStudentProgramGoalDataForStudentAndCustomerProgramGoal(Integer studentId, Integer CustomerPrgGoalId) throws SQLException;
+    
+    
+    @JdbcControl.SQL(statement = "delete from STUDENT_CA_ABE_PRG_GOAL_DATA where student_prg_goal_data_id in (select spgd.student_prg_goal_data_id from STUDENT_CA_ABE_PRG_GOAL_DATA   spgd, CA_ABE_PROGRAM_GOAL cpg, CA_ABE_PROGRAM_GOAL_VALUE cpgv  where spgd.ca_abe_prg_goal_id = cpg.ca_abe_prg_goal_id and cpg.ca_abe_prg_goal_id = cpgv.ca_abe_prg_goal_id and spgd.value_name = cpgv.value_name and cpgv.visible = 'T' and spgd.student_id = {studentId}) ")
+    void deleteVisibleStudentProgramGoalDataForStudent(Integer studentId) throws SQLException;
+
+	
+    @JdbcControl.SQL(statement="update student_contact set  STREET_LINE1 = {address.addressLine1}, STREET_LINE2 = {address.addressLine2}, CONTACT_EMAIL = {address.email}, UPDATED_DATE_TIME = {updatedDateTime}, UPDATED_BY = {updatedBy}, SECONDARY_PHONE = {address.secondaryPhone}, PRIMARY_PHONE = {address.primaryPhone}, ZIPCODE = {address.zipCode}, ZIPCODE_EXT = {address.zipCodeExt},STATEPR = {address.statePr}, CITY={address.city} where STUDENT_ID = {address.studentId}")
+	void updateStudentContactInformation(Address address,Integer updatedBy, Date updatedDateTime ) throws SQLException;
+	
    
 }

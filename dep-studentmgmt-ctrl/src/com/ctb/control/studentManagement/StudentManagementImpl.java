@@ -1484,9 +1484,15 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			User user = getUserDetails(userName, userName);
 			Integer userId = user.getUserId();
 			Integer [] topOrgNodeIds = studentManagement.getTopOrgNodeIdsForUser(userName);
-
 			studentManagement.updateStudent(manageStudent, userId, new Date());
+			
+			if ( manageStudent.getAddress() != null ) {
+				
+				Address address = manageStudent.getAddress();
+				studentManagement.updateStudentContactInformation(address, userId, new Date());
 
+			}
+			
 			Hashtable newOrgNodeHash = new Hashtable();
 
 			for (int i=0; organizationNodes!=null && i< organizationNodes.length; i++) {
@@ -2093,11 +2099,11 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 
 
 	/**
-	 * Create student demographic data for the specified student.
+	 * Create student Programs And Goals data for the specified student.
 	 * @common:operation
 	 * @param userName - identifies the calling user
 	 * @param studentId - identifies the student 
-	 * @param studentDemographics [] - contains the student's demographic information
+	 * @param StudentProgramGoal [] - contains the student's Programs And Goals information
 	 * @throws CTBBusinessException
 	 */
 	public void createStudentProgAndGoals(String userName, Integer studentId, StudentProgramGoal [] studentProgramGoals) throws CTBBusinessException
@@ -2133,7 +2139,69 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			throw tee;
 		}
 	}
+	
+	/**
+	 * Update student Programs And Goals data for the specified student.
+	 * @common:operation
+	 * @param userName - identifies the calling user
+	 * @param studentId - identifies the student 
+	 * @param StudentProgramGoal [] - contains the student's Programs And Goals information
+	 * @throws CTBBusinessException
+	 */
+	public void updateStudentProgAndGoals(String userName, Integer studentId, StudentProgramGoal [] studentProgramGoals) throws CTBBusinessException
+	{
+		validator.validateStudent(userName, studentId, "StudentManagementImpl.updateStudentDemographics");
 
+		try {
+			User user = getUserDetails(userName, userName);
+			Integer userId = user.getUserId();
+			Date now = new Date();
+			// delete all visible for student then insert new ones
+			studentManagement.deleteVisibleStudentProgramGoalDataForStudent(studentId);
+
+				for (int i=0; studentProgramGoals!= null && i<studentProgramGoals.length; i++) {
+				StudentProgramGoalValue [] studentProgramGoalValues = studentProgramGoals[i].getStudentProgramGoalValues();
+				boolean isSingle = false;
+				if ("SINGLE".equals(studentProgramGoals[i].getValueCardinality())) {
+					boolean foundSelectedValue = false;
+					for (int j=0; studentProgramGoalValues!=null && j<studentProgramGoalValues.length; j++) 
+						if (studentProgramGoalValues[j] != null && "true".equals(studentProgramGoalValues[j].getSelectedFlag())) 
+							foundSelectedValue = true;                 
+
+					if (foundSelectedValue)  
+						studentManagement.deleteStudentProgramGoalDataForStudentAndCustomerProgramGoal(studentId, studentProgramGoals[i].getCustomerPrgGoalId());
+					else {
+						boolean foundInvisibleValue = false;
+						StudentProgramGoalValue [] oldStudentProgramGoalValues = studentManagement.getStudentProgramGoalValues(studentProgramGoals[i].getCustomerPrgGoalId().intValue(), studentId.intValue());
+						for (int j=0; oldStudentProgramGoalValues!=null && j<oldStudentProgramGoalValues.length; j++) 
+							if (oldStudentProgramGoalValues[j] != null && "true".equals(oldStudentProgramGoalValues[j].getSelectedFlag()) && "F".equals(oldStudentProgramGoalValues[j].getVisible())) 
+								foundInvisibleValue = true; 
+
+						if (!foundInvisibleValue)
+							studentManagement.deleteStudentProgramGoalDataForStudentAndCustomerProgramGoal(studentId, studentProgramGoals[i].getCustomerPrgGoalId());
+					}  
+				}	
+					for (int j=0; studentProgramGoalValues!=null && j<studentProgramGoalValues.length; j++) {
+						if (studentProgramGoalValues[j] != null && "true".equals(studentProgramGoalValues[j].getSelectedFlag())) {
+							StudentProgramGoalData studentProgramGoalData = new StudentProgramGoalData();
+							studentProgramGoalData.setStudentProgramGoalDataId(studentManagement.getNextPKForStudentPrgGoalData());                        
+							studentProgramGoalData.setStudentId(studentId);
+							studentProgramGoalData.setCustomerPrgGoalId(studentProgramGoals[i].getCustomerPrgGoalId());
+							studentProgramGoalData.setValueName(studentProgramGoalValues[j].getValueName());
+							studentProgramGoalData.setCreatedBy(userId);
+							studentProgramGoalData.setCreatedDateTime(now);
+							if(studentProgramGoalValues[j].getValueName() != null && !(studentProgramGoalValues[j].getValueName().trim().equals("")))
+								studentManagement.createStudentProgramGoalData(studentProgramGoalData);
+						}
+					}
+				}
+			
+		} catch (SQLException se) {
+			StudentDataUpdateException tee = new StudentDataUpdateException("StudentManagementImpl: updateStudentDemographics: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}   
 
 	/**
 	 * Get student workforce for the specified customer and student.
@@ -2339,7 +2407,55 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			throw tee;
 		}
 	}
+	
+	
+	/**
+	 * Create student WorkForce data for the specified student.
+	 * @common:operation
+	 * @param userName - identifies the calling user
+	 * @param studentId - identifies the student 
+	 * @param StudentOtherDetail [] - contains the student's WorkForce information
+	 * @throws CTBBusinessException
+	 */
+	public void updateStudentWorkForceData(String userName, Integer studentId, StudentOtherDetail [] studentOtherDetail) throws CTBBusinessException
+	{
+		validator.validateStudent(userName, studentId, "StudentManagementImpl.updateStudentWorkForceData");
 
+		try {
+			User user = getUserDetails(userName, userName);
+			 Integer userId = user.getUserId();
+			 Date now = new Date();
+			 
+			// delete all visible for student then insert new ones
+			studentManagement.deleteStudentAdditionalDataForStudent(studentId, "Supplement data for Workforce Student");
+				
+			 for (int i=0; studentOtherDetail!= null && i<studentOtherDetail.length; i++) {
+				 StudentOtherDetailValue [] studentOtherDetailValues = studentOtherDetail[i].getStudentOtherDetailValues();
+				 for (int j=0; studentOtherDetailValues!=null && j<studentOtherDetailValues.length; j++) {
+					 if (studentOtherDetailValues[j] != null && "true".equals(studentOtherDetailValues[j].getSelectedFlag())) {
+						 StudentWorkForceData studentWorkForceData = new StudentWorkForceData();
+						 Integer studentAdditionalId = studentManagement.getNextPKForStudentOtherData();
+						 studentWorkForceData.setStudentAdditionalDataId(studentAdditionalId);                        
+						 studentWorkForceData.setStudentId(studentId);
+						 studentWorkForceData.setSectionName(studentOtherDetail[i].getSectionName());
+						 studentWorkForceData.setValueName(studentOtherDetailValues[j].getValueName());
+						 studentWorkForceData.setLabelName(studentOtherDetail[i].getLabelName());
+						 studentWorkForceData.setCreatedBy(userId);
+						 studentWorkForceData.setCreatedDateTime(now);
+						 studentManagement.createStudentWorkforceData(studentWorkForceData);
+					 }
+
+				 }
+			 }
+		} catch (SQLException se) {
+			StudentDataCreationException tee = new StudentDataCreationException("StudentManagementImpl: createStudentWorkForceData: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
+
+	
+	
 	/**
 	 * Get student demographic for the specified customer and student.
 	 * @common:operation
@@ -2587,6 +2703,51 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 		}
 	}
 
+	/**
+	 * Update student Education And Instruction data for the specified student.
+	 * @common:operation
+	 * @param userName - identifies the calling user
+	 * @param studentId - identifies the student 
+	 * @param StudentOtherDetail [] - contains the student's Education And Instruction information
+	 * @throws CTBBusinessException
+	 */
+	public void updateStudentEducationInstructionData(String userName, Integer studentId, StudentOtherDetail [] studentOtherDetail) throws CTBBusinessException
+	{
+		validator.validateStudent(userName, studentId, "StudentManagementImpl.updateStudentWorkForceData");
+
+		try {
+			User user = getUserDetails(userName, userName);
+			Integer userId = user.getUserId();
+			Date now = new Date();
+			// delete all visible for student then insert new ones
+			studentManagement.deleteStudentAdditionalDataForStudent(studentId, "Education And Instruction");
+
+			for (int i=0; studentOtherDetail!= null && i<studentOtherDetail.length; i++) {
+				StudentOtherDetailValue [] studentOtherDetailValues = studentOtherDetail[i].getStudentOtherDetailValues();
+				for (int j=0; studentOtherDetailValues!=null && j<studentOtherDetailValues.length; j++) {
+					if (studentOtherDetailValues[j] != null && "true".equals(studentOtherDetailValues[j].getSelectedFlag())) {
+						StudentWorkForceData studentWorkForceData = new StudentWorkForceData();
+						Integer studentAdditionalId = studentManagement.getNextPKForStudentOtherData();
+						studentWorkForceData.setStudentAdditionalDataId(studentAdditionalId);                        
+						studentWorkForceData.setStudentId(studentId);
+						studentWorkForceData.setSectionName(studentOtherDetail[i].getSectionName());
+						studentWorkForceData.setValueName(studentOtherDetailValues[j].getValueName());
+						studentWorkForceData.setValue(studentOtherDetailValues[j].getValueCode());
+						studentWorkForceData.setLabelName(studentOtherDetail[i].getLabelName());
+						studentWorkForceData.setCreatedBy(userId);
+						studentWorkForceData.setCreatedDateTime(now);
+						studentManagement.createStudentEducationInstructionData(studentWorkForceData);
+					}
+
+				}
+			}
+			
+		} catch (SQLException se) {
+			StudentDataCreationException tee = new StudentDataCreationException("StudentManagementImpl: createStudentWorkForceData: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}   
 
 	//END-  added for CA-ABE
 

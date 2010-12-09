@@ -408,7 +408,7 @@ public class ManageStudentController extends PageFlowController
 		this.programAndGoals = null;
 		this.workforceSectionDetails = null;
 
-		this.gradeOptions = getGradeOptions();
+		this.gradeOptions = getGradeOptions(ACTION_EDIT_STUDENT);
 		//Changes for CA-ABE student intake
 		if(form.isABECustomer){
 			initStateOptions(ACTION_EDIT_STUDENT);
@@ -510,13 +510,11 @@ public class ManageStudentController extends PageFlowController
 
 		addEditDemographics(form);
 
+		addEditSupplementalorkfForce(form);
 
 		addEditEduAndInstr(form);  //added for CA-ABE
 
 		addEditProgAndGoals(form);  //added for CA-ABE
-		
-		addEditSupplementalorkfForce(form);
-
 
 		addEditAccommodations(form);    
 
@@ -1399,7 +1397,7 @@ public class ManageStudentController extends PageFlowController
 		}
 		else
 		{
-			//updateStudentEduAndInstr(studentId);
+			updateStudentEduAndInstr(studentId);
 		}
 		this.educationAndInstruction = null;
 
@@ -1428,21 +1426,21 @@ public class ManageStudentController extends PageFlowController
 	/**
 	 * updateStudentEduAndInstr
 	 */
-	/*private void updateStudentEduAndInstr(Integer studentId)
+	private void updateStudentEduAndInstr(Integer studentId)
 	{
 		if ((studentId != null) && (studentId.intValue() > 0) && (this.educationAndInstruction != null))
 		{
 			try
 			{    
-				StudentABEDetail[] studentABEDetailList = (StudentABEDetail[])this.educationAndInstruction.toArray( new StudentABEDetail[0] );
-				this.studentManagement.updateStudentEduAndInstrs(this.userName, studentId, studentABEDetailList);
+				StudentOtherDetail[] studentABEDetailList = (StudentOtherDetail[])this.educationAndInstruction.toArray( new StudentOtherDetail[0] );
+				this.studentManagement.updateStudentEducationInstructionData(this.userName, studentId, studentABEDetailList);
 			}
 			catch (CTBBusinessException be)
 			{
 				be.printStackTrace();
 			}    
 		}
-	}*/
+	}
 
 
 	/**
@@ -1523,7 +1521,6 @@ public class ManageStudentController extends PageFlowController
 					{
 						paramValue = getRequest().getParameter(paramsValue[0]);
 						seiv.setValueCode(paramValue);
-						System.out.println(paramsValue[0]);
 						if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
 							seiv.setSelectedFlag("true");
 					}
@@ -1658,7 +1655,7 @@ public class ManageStudentController extends PageFlowController
 		}
 		else
 		{
-			//updateStudentProgAndGoals(studentId);
+			updateStudentProgAndGoals(studentId);
 		}
 		this.programAndGoals = null;
 
@@ -1679,7 +1676,7 @@ public class ManageStudentController extends PageFlowController
 		}
 		else
 		{
-			//updateStudentProgAndGoals(studentId);
+			updateStudentWorkforceDetails(studentId);
 		}
 		this.workforceSectionDetails = null;
 
@@ -1709,13 +1706,13 @@ public class ManageStudentController extends PageFlowController
 	/**
 	 * updateStudentProgAndGoals
 	 */
-	/*private void updateStudentProgAndGoals(Integer studentId)
+	private void updateStudentProgAndGoals(Integer studentId)
 	{
 		if ((studentId != null) && (studentId.intValue() > 0) && (this.programAndGoals != null))
 		{
 			try
 			{    
-				StudentABEDetail[] studentABEDetailList = (StudentABEDetail[])this.programAndGoals.toArray( new StudentABEDetail[0] );
+				StudentProgramGoal[] studentABEDetailList = (StudentProgramGoal[])this.programAndGoals.toArray( new StudentProgramGoal[0] );
 				this.studentManagement.updateStudentProgAndGoals(this.userName, studentId, studentABEDetailList);
 			}
 			catch (CTBBusinessException be)
@@ -1724,7 +1721,7 @@ public class ManageStudentController extends PageFlowController
 			}    
 		}
 	}
-	 */
+	 
 
 	/**
 	 * getStudentProgAndGoals
@@ -1808,6 +1805,27 @@ public class ManageStudentController extends PageFlowController
 		}
 	}
 
+	
+	/**
+	 * createStudentWorkforceDetails
+	 */
+	private void updateStudentWorkforceDetails(Integer studentId)
+	{
+		if ((studentId != null) && (studentId.intValue() > 0) && (this.workforceSectionDetails != null))
+		{
+			try
+			{    
+				StudentOtherDetail[] studentOtherDetailList = (StudentOtherDetail[])this.workforceSectionDetails.toArray( new StudentOtherDetail[0] );
+				this.studentManagement.updateStudentWorkForceData(this.userName, studentId, studentOtherDetailList);
+
+
+			}
+			catch (CTBBusinessException be)
+			{
+				be.printStackTrace();
+			} 
+		}
+	}
 
 	/**
 	 * getStudentProgAndGoalsFromRequest

@@ -1,8 +1,11 @@
 package dto; 
 
 
-import com.ctb.bean.studentManagement.Address;
+import java.util.Date;
+
 import utils.StringUtils;
+
+import com.ctb.bean.studentManagement.Address;
 
 /**
  * 
@@ -41,13 +44,13 @@ public class StudentContactInformation implements java.io.Serializable
     public StudentContactInformation() {    
     }
             
-    public StudentContactInformation(Integer addressId, Address studentContact) {   
+    public StudentContactInformation(Integer studentId, Address studentContact) {   
         
-        if (addressId == null || studentContact == null) {
+        if (studentId == null || studentContact == null) {
             return;
         }
 
-        this.addressId = addressId;         
+        this.addressId = studentContact.getAddressId();         
         this.addressLine1 = studentContact.getAddressLine1();
         this.addressLine2 = studentContact.getAddressLine2();
         this.city = studentContact.getCity();
