@@ -370,7 +370,7 @@ public class ManageStudentController extends PageFlowController
 			form.setCurrentAction(ACTION_DEFAULT);
 			return new Forward("error", form);
 		}
-
+		studentProfile.setDeletePermission(this.studentSearch.getDeletePermission());
 		form.setStudentProfile(studentProfile);
 		this.studentName = studentProfile.getFirstName() + " " + studentProfile.getLastName();
 
@@ -491,11 +491,16 @@ public class ManageStudentController extends PageFlowController
 		Integer studentId = form.getSelectedStudentId(); 
 		String studentIdR = String.valueOf(studentId.intValue());
 		//System.out.println("selected student permission" + this.getRequest().getParameter(studentIdR));
-		String deletePermission =  this.getRequest().getParameter(studentIdR)!= null ? 
-						this.getRequest().getParameter(studentIdR) : "true";
-		form.getStudentProfile().setDeletePermission(deletePermission);
-		if (form.getStudentProfile().getDeletePermission().equals("false"))
+		if (this.getRequest().getParameter(studentIdR)!= null) {
+			String deletePermission =  this.getRequest().getParameter(studentIdR);
+			form.getStudentProfile().setDeletePermission(deletePermission);
+		} else {
+			form.getStudentProfile().setDeletePermission(this.studentSearch.getDeletePermission());
+		}
+		System.out.println("form.getStudentProfile().getDeletePermission()..."+form.getStudentProfile().getDeletePermission());
+		if (form.getStudentProfile().getDeletePermission().equals("false")) {
 			this.getRequest().setAttribute("disableDeleteButton", Boolean.TRUE);
+		}
 		else {
 			this.getRequest().setAttribute("disableDeleteButton", Boolean.FALSE);
 		}
@@ -688,6 +693,10 @@ public class ManageStudentController extends PageFlowController
 
 			if (! result)
 			{           
+				if (! isCreateNew)
+				{
+				form.getStudentProfile().setDeletePermission(this.studentSearch.getDeletePermission());
+				}
 				form.setActionElement(ACTION_DEFAULT);
 				form.setCurrentAction(ACTION_DEFAULT);                 
 				return new Forward("error", form);
@@ -2775,8 +2784,6 @@ public class ManageStudentController extends PageFlowController
 		
 		String studentIdR = String.valueOf(studentId.intValue());
 		//System.out.println("selected student permission" + this.getRequest().getParameter(studentIdR));
-		String deletePermission =  this.getRequest().getParameter(studentIdR)!= null ? 
-						this.getRequest().getParameter(studentIdR) : "true";
 		
 		boolean studentImported = (form.getStudentProfile().getCreateBy().intValue() == 1);
 
@@ -2786,7 +2793,12 @@ public class ManageStudentController extends PageFlowController
 			return new Forward("error", form);
 		}
 		//this.getRequest().setAttribute("studentProfileForView",studentProfile);
-		studentProfile.setDeletePermission(deletePermission);
+		if(this.getRequest().getParameter(studentIdR)!= null) {
+			
+			String deletePermission  = this.getRequest().getParameter(studentIdR);
+			studentProfile.setDeletePermission(deletePermission);
+			
+		}
 		form.setStudentProfile(studentProfile);
 
 		this.studentName = studentProfile.getFirstName() + " " + studentProfile.getLastName();        
@@ -3106,7 +3118,6 @@ public class ManageStudentController extends PageFlowController
 		this.getRequest().setAttribute("studentProfileData", form.getStudentProfile());
 		this.getSession().setAttribute("selectStudentIdInView",form.getSelectedStudentId());
 		this.getRequest().setAttribute("isABECustomer",form.isABECustomer);	//added for CA-ABE
-
 	}
 	/*
 	 * GACRCT2010CR007- retrieve value for disableMandatoryBirthdate set  Value in request. 

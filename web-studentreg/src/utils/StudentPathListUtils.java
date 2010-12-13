@@ -25,7 +25,7 @@ public class StudentPathListUtils
     /**
      * getFullPathNodeName
      */    
-    public static String getFullPathNodeName(String userName, Integer orgNodeId, StudentManagement studentManagement)
+   /* public static String getFullPathNodeName(String userName, Integer orgNodeId, StudentManagement studentManagement)
     {    
         String fullPathName = "";    
         try {      
@@ -44,12 +44,12 @@ public class StudentPathListUtils
             be.printStackTrace();
         }       
         return fullPathName;
-    }
+    }*/
 
     /**
      * getAncestorOrganizationNodesForOrgNode
      */    
-    public static OrganizationNode[] getAncestorOrganizationNodesForOrgNode(String userName, Integer orgNodeId, StudentManagement studentManagement)
+   /* public static OrganizationNode[] getAncestorOrganizationNodesForOrgNode(String userName, Integer orgNodeId, StudentManagement studentManagement)
     {    
         OrganizationNode[] orgNodes = null;    
         try {      
@@ -59,7 +59,7 @@ public class StudentPathListUtils
             be.printStackTrace();
         }       
         return orgNodes;
-    }
+    }*/
 
 
     /**
