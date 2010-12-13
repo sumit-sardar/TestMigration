@@ -51,4 +51,6 @@ public interface Validator
     void validateCustomer(java.lang.Object operator, java.lang.Object operand, java.lang.String action) throws com.ctb.exception.validation.ValidationException;
     
     void validateStudentAcrossOrg(Object operator, Object operand, String action) throws com.ctb.exception.validation.ValidationException;
+    
+    void validateStuOrgIsInUserScope(Object operator, Object operand1, Object operand2, String action) throws com.ctb.exception.validation.ValidationException;
 } 

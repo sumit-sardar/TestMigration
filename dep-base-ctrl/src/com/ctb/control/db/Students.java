@@ -656,7 +656,11 @@ public interface Students extends JdbcControl
     void updateStudentActiveSessionFlag ( java.lang.Integer studentId,java.util.Date completedDateTime, java.lang.Integer updatedBy) throws SQLException;
     
 	 @JdbcControl.SQL(statement = "select  decode(count(stu.student_id ), 0, 'false', 'true') as visible from  user_role urole, users,org_node_student ons, org_node org,student stu where \t users.user_name = {userName} \t and urole.user_id = users.user_id \t  and org.org_node_id = urole.org_node_id     and  org.customer_id=stu.customer_id and  ons.student_id = stu.student_id \t and ons.activation_status = 'AC' \t and stu.activation_status = 'AC' and stu.visible_across_organization='Yes' and   stu.student_id = {studentId} \t ")
-	 String checkVisibilityAcrossOrg(String userName, Integer studentId) throws SQLException;
+	 String checkStuVisibilityAcrossOrg(String userName, Integer studentId) throws SQLException;
+	 
+	 @JdbcControl.SQL(statement = "select decode(count(ons.org_node_id), 0, 'false', 'true') as visible from user_role urole, users, org_node_student ons, org_node org, student stu where users.user_name =  {userName} and urole.user_id = users.user_id and org.org_node_id = urole.org_node_id and org.customer_id = stu.customer_id and ons.org_node_id = {orgNodeId} and ons.student_id = stu.student_id and ons.activation_status = 'AC' and stu.activation_status = 'AC' and stu.visible_across_organization = 'Yes' and stu.student_id = {studentId} ")
+	 String checkorgVisibilityForUserAcrossOrg(String userName, Integer orgNodeId, Integer studentId) throws SQLException;
+	
 	
 	static final long serialVersionUID = 1L;
 

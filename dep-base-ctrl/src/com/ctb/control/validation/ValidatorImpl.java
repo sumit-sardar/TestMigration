@@ -292,13 +292,32 @@ public class ValidatorImpl implements Validator, Serializable
 			String userName = (String) operator;
 			if(operand != null) {
 				Integer studentId  = (Integer) operand;
-				if(!"true".equals(students.checkVisibilityAcrossOrg(userName, studentId)))
+				if(!"true".equals(students.checkStuVisibilityAcrossOrg(userName, studentId)))
 					throw new ValidationException("ValidatorImpl: validateStudent: failed validation for student: " + operator + " on: " + operand);;
 
 			}
 			
 		} catch (Exception e) {
 			ValidationException ve = new ValidationException("ValidatorImpl: validateStudent: failed validation for student: " + operator + " on: " + operand);
+			ve.setStackTrace(e.getStackTrace());
+			throw ve;
+		}
+	}
+	
+	public void validateStuOrgIsInUserScope(Object operator, Object operand1, Object operand2, String action) throws ValidationException
+	{
+		try {
+			String userName = (String) operator;
+			if(operand1 != null && operand2 != null) {
+				Integer orgNodeId = (Integer) operand1;
+				Integer studentId  = (Integer) operand2;
+				if(!"true".equals(students.checkorgVisibilityForUserAcrossOrg(userName, orgNodeId, studentId)))
+					throw new ValidationException("ValidatorImpl: validateNode: failed validation for user: " + operator + " on: " + operand1 + "for: " + operand2);
+
+			}
+			
+		} catch (Exception e) {
+			ValidationException ve = new ValidationException("ValidatorImpl: validateNode: failed validation for user: " + operator + " on: " + operand1 + "for: " + operand2);
 			ve.setStackTrace(e.getStackTrace());
 			throw ve;
 		}
