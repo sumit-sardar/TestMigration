@@ -41,6 +41,7 @@
 <%
     Boolean profileEditable = (Boolean)request.getAttribute("profileEditable"); 
 	Boolean isABECustomer = (Boolean)request.getAttribute("isABECustomer");
+	Boolean disableDeleteButton = (Boolean)request.getAttribute("disableDeleteButton");
 	
 %>
 <c:if test="${ profileEditable }">            
@@ -73,9 +74,17 @@
     </c:if> 
     <c:if test="${isEditStudent != null}">     
         <netui:button type="submit" value="Save" action="saveAddEditStudent"/>
-        <ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator">
-        <netui:button type="submit" value="Delete" action="beginDeleteStudent" onClick="return verifyDeleteStudent();"/>
-        </ctb:auth>    
+         <c:if test="${disableDeleteButton}">             
+			<ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator"> 
+			    	<netui:button type="submit" value="Delete" action="beginDeleteStudent" disabled="true" onClick="return verifyDeleteStudent();"/>
+			</ctb:auth> 
+		</c:if>   
+	
+		<c:if test="${!disableDeleteButton}">             
+			<ctb:auth roles="root, Account Manager, Administrator, Administrative Coordinator"> 
+			    	<netui:button type="submit" value="Delete" action="beginDeleteStudent"  onClick="return verifyDeleteStudent();"/>
+			</ctb:auth> 
+		</c:if>      
     </c:if> 
 </c:if> 
     <netui:button type="submit" value="Cancel" action="returnToFindStudent"/>

@@ -186,7 +186,8 @@
                 String orgId = node.getId().toString();
                 String orgName = node.getName();                
                 String fullpath = node.getFullPathName();
-                String selectable = node.getSelectable();                
+                String selectable = node.getSelectable();  
+                boolean isorgInScope = node.isOrgInScope();
                 String showRow = "display: block";
                 
                 if (userAgent.indexOf("firefox") != -1) {
@@ -201,9 +202,17 @@
                 
 %>            
                 <tr id="<%= orgId %>" class="transparent" style="<%= showRow %>">
-                    <td class="transparent-small">
-                        <a href="#" style="text-decoration: none" title="<%= fullpath %>" onclick="return setupOrgNodePath('<%= orgId %>');"><%= orgName %></a>
-                    </td>
+                    
+                      <c:if test="<%= isorgInScope%>"> 
+                     	  <td class="transparent-small">
+	                        <a href="#" style="text-decoration: none" title="<%= fullpath %>" onclick="return setupOrgNodePath('<%= orgId %>');"><%= orgName %></a>
+	                      </td>
+	                  </c:if>  
+	                  <c:if test="<%= !isorgInScope%>"> 
+	                      <td class="transparent-small">
+	                        <label><%= orgName %></label>
+	                      </td>
+	                  </c:if>     
                 </tr>
 <%
             }

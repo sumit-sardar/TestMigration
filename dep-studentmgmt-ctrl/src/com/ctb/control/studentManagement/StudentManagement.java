@@ -124,7 +124,7 @@ public interface StudentManagement
      * @throws com.ctb.exception.CTBBusinessException
      */
 
-    com.ctb.bean.studentManagement.OrganizationNode[] getAncestorOrganizationNodesForOrgNode(java.lang.String userName, java.lang.Integer orgNodeId) throws com.ctb.exception.CTBBusinessException;
+    com.ctb.bean.studentManagement.OrganizationNode[] getAncestorOrganizationNodesForOrgNode(java.lang.String userName, java.lang.Integer orgNodeId, java.lang.Integer studentId) throws com.ctb.exception.CTBBusinessException;
 
     /**
      * Update student record.

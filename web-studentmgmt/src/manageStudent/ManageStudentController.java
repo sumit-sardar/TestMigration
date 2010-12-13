@@ -488,7 +488,17 @@ public class ManageStudentController extends PageFlowController
 		this.getRequest().setAttribute("profileEditable", profileEditable);
 
 		this.pageTitle = buildPageTitle(ACTION_EDIT_STUDENT, form);
-
+		Integer studentId = form.getSelectedStudentId(); 
+		String studentIdR = String.valueOf(studentId.intValue());
+		//System.out.println("selected student permission" + this.getRequest().getParameter(studentIdR));
+		String deletePermission =  this.getRequest().getParameter(studentIdR)!= null ? 
+						this.getRequest().getParameter(studentIdR) : "true";
+		form.getStudentProfile().setDeletePermission(deletePermission);
+		if (form.getStudentProfile().getDeletePermission().equals("false"))
+			this.getRequest().setAttribute("disableDeleteButton", Boolean.TRUE);
+		else {
+			this.getRequest().setAttribute("disableDeleteButton", Boolean.FALSE);
+		}
 		return new Forward("success");
 	}
 
@@ -765,7 +775,7 @@ public class ManageStudentController extends PageFlowController
 
 		List nodeAncestors = new ArrayList();
 
-		OrganizationNode[] orgNodes = StudentPathListUtils.getAncestorOrganizationNodesForOrgNode(this.userName, orgNodeId, this.studentManagement);
+		OrganizationNode[] orgNodes = StudentPathListUtils.getAncestorOrganizationNodesForOrgNode(this.userName, orgNodeId, form.getSelectedStudentId(), this.studentManagement);
 
 		for (int i=0; i < (orgNodes.length - 1); i++)
 		{
@@ -1037,7 +1047,7 @@ public class ManageStudentController extends PageFlowController
 
 		List selectableOrgNodes = StudentPathListUtils.buildSelectableOrgNodes(this.currentOrgNodesInPathList, this.selectedOrgNodes);
 
-		List orgNodesForSelector = buildOrgNodesForSelector(this.selectedOrgNodes, selectableOrgNodes, form.getOrgSortOrderBy());
+		List orgNodesForSelector = buildOrgNodesForSelector(this.selectedOrgNodes, selectableOrgNodes, form.getSelectedStudentId(), form.getOrgSortOrderBy());
 
 		this.getRequest().setAttribute("orgNodePath", this.orgNodePath);
 		this.getRequest().setAttribute("orgNodes", orgNodes);        
@@ -1052,14 +1062,17 @@ public class ManageStudentController extends PageFlowController
 	/**
 	 * setFullPathNodeName
 	 */
-	private void setFullPathNodeName(List orgNodes)    
+	private void setFullPathNodeName(List orgNodes, Integer studentId)    
 	{
 		for (int i=0; i < orgNodes.size(); i++)
 		{
 			PathNode node = (PathNode)orgNodes.get(i);
 			Integer orgNodeId = node.getId();
-			String fullPathNodeName = StudentPathListUtils.getFullPathNodeName(this.userName, orgNodeId, this.studentManagement);
-			node.setFullPathName(fullPathNodeName);            
+			String fullPathNodeName = StudentPathListUtils.getFullPathNodeName(this.userName, orgNodeId,  studentId, this.studentManagement);
+			node.setFullPathName(fullPathNodeName);   
+			if(node.getFullPathName().equals("")||node.getFullPathName() == null)
+				node.setOrgInScope(false);
+			System.out.println("node.getFullPathName()"+node.getFullPathName() + node.isOrgInScope());
 		}    
 	}
 
@@ -1067,7 +1080,7 @@ public class ManageStudentController extends PageFlowController
 	/**
 	 * buildOrgNodesForSelector
 	 */
-	private List buildOrgNodesForSelector(List selectedOrgNodes, List selectableOrgNodes, String sortOrderBy)    
+	private List buildOrgNodesForSelector(List selectedOrgNodes, List selectableOrgNodes, Integer studentId, String sortOrderBy)    
 	{
 		List orgNodesForSelector = new ArrayList();
 
@@ -1084,7 +1097,7 @@ public class ManageStudentController extends PageFlowController
 			orgNodesForSelector.add(node);
 		}
 
-		setFullPathNodeName(orgNodesForSelector);    
+		setFullPathNodeName(orgNodesForSelector, studentId);    
 
 		OrgNodeUtils.sortList(orgNodesForSelector, sortOrderBy); 
 
@@ -2759,6 +2772,7 @@ public class ManageStudentController extends PageFlowController
 		//Save the token to remove F5 problem
 		saveToken(this.getRequest());   
 		Integer studentId = form.getSelectedStudentId(); 
+		
 		String studentIdR = String.valueOf(studentId.intValue());
 		//System.out.println("selected student permission" + this.getRequest().getParameter(studentIdR));
 		String deletePermission =  this.getRequest().getParameter(studentIdR)!= null ? 
@@ -3890,7 +3904,23 @@ public class ManageStudentController extends PageFlowController
 				if ( selectedOrgNodes.size() == 0 ) {
 					requiredFieldCount += 1;      
 					requiredFields = Message.buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
-				} 
+				} else{
+					boolean visibleScopeFlag = false;
+					 for (int i=0 ; i<selectedOrgNodes.size() ; i++) {
+			                PathNode node = (PathNode)selectedOrgNodes.get(i);
+			                boolean isorgInScope = node.isOrgInScope();
+			                if(isorgInScope) {
+			                	visibleScopeFlag = true;
+			                	break;
+			                }
+					 }
+					 if (!visibleScopeFlag) {
+						 requiredFieldCount += 1;      
+							requiredFields = Message.buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
+						
+					 }
+						 
+				}
 				
 			}
 			// required field contact check

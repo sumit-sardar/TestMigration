@@ -15,8 +15,23 @@ public class PathNode implements java.io.Serializable
     private String categoryName = null;
     private String selectable = null;
     private String fullPathName = null;
+    private boolean orgInScope = true;
     
-    public PathNode() {}
+    /**
+	 * @return the orgInScope
+	 */
+	public boolean isOrgInScope() {
+		return orgInScope;
+	}
+
+	/**
+	 * @param orgInScope the orgInScope to set
+	 */
+	public void setOrgInScope(boolean orgInScope) {
+		this.orgInScope = orgInScope;
+	}
+
+	public PathNode() {}
     
     public Integer getId() {
         return this.id;

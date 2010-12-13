@@ -1295,9 +1295,16 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	 * @return OrganizationNode []
 	 * @throws com.ctb.exception.CTBBusinessException
 	 */
-	public OrganizationNode [] getAncestorOrganizationNodesForOrgNode(String userName, Integer orgNodeId) throws CTBBusinessException
-	{
-		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getAncestorOrganizationNodesForOrgNode");
+	public OrganizationNode [] getAncestorOrganizationNodesForOrgNode(String userName, Integer orgNodeId,  Integer studentId) throws CTBBusinessException
+	{	
+			try {
+				validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getAncestorOrganizationNodesForOrgNode");
+			} catch (ValidationException ve) {
+				//validate org if student org is not in user scope
+				if (studentId !=null) {
+				validator.validateStuOrgIsInUserScope(userName, orgNodeId, studentId, "StudentManagementImpl.getStudentDemographics");
+				}
+			}
 		try {
 			Integer [] topOrgNodeIds = studentManagement.getTopOrgNodeIdsForUser(userName);
 			String findInColumn = "ona1.ancestor_org_node_id in ";
@@ -1475,11 +1482,22 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 	{	
 
 		Integer studentId = manageStudent.getId();
-		validator.validateStudent(userName, studentId, "StudentManagementImpl.updateStudent");
+		try {
+			validator.validateStudent(userName, studentId, "StudentManagementImpl.updateStudent");
+		} catch (ValidationException ve) {
+			//validate student if student is not across organization
+			validator.validateStudentAcrossOrg(userName, studentId, "StudentManagementImpl.updateStudent");
+		}
 		OrganizationNode [] organizationNodes = manageStudent.getOrganizationNodes();
-		for (int i=0; organizationNodes!=null && i< organizationNodes.length; i++) 
-			validator.validateNode(userName, organizationNodes[i].getOrgNodeId(), "StudentManagementImpl.updateStudent");
-
+		for (int i=0; organizationNodes!=null && i< organizationNodes.length; i++) {
+			try {
+				validator.validateNode(userName, organizationNodes[i].getOrgNodeId(), "StudentManagementImpl.updateStudent");
+			} catch (ValidationException ve) {
+				//validate org if student org is not in user scope
+					validator.validateStuOrgIsInUserScope(userName, organizationNodes[i].getOrgNodeId(), studentId, "StudentManagementImpl.updateStudent");
+				
+			}
+		}
 		try {
 			User user = getUserDetails(userName, userName);
 			Integer userId = user.getUserId();

@@ -25,11 +25,11 @@ public class StudentPathListUtils
     /**
      * getFullPathNodeName
      */    
-    public static String getFullPathNodeName(String userName, Integer orgNodeId, StudentManagement studentManagement)
+    public static String getFullPathNodeName(String userName, Integer orgNodeId, Integer studentId, StudentManagement studentManagement)
     {    
         String fullPathName = "";    
         try {      
-            OrganizationNode[] orgNodes = studentManagement.getAncestorOrganizationNodesForOrgNode(userName, orgNodeId);
+            OrganizationNode[] orgNodes = studentManagement.getAncestorOrganizationNodesForOrgNode(userName, orgNodeId, studentId);
             for (int i=0 ; i<orgNodes.length ; i++) {
                 OrganizationNode orgNode = (OrganizationNode)orgNodes[i];
                 if (orgNode.getOrgNodeId().intValue() >= 2) {    // ignore Root
@@ -49,11 +49,11 @@ public class StudentPathListUtils
     /**
      * getAncestorOrganizationNodesForOrgNode
      */    
-    public static OrganizationNode[] getAncestorOrganizationNodesForOrgNode(String userName, Integer orgNodeId, StudentManagement studentManagement)
+    public static OrganizationNode[] getAncestorOrganizationNodesForOrgNode(String userName, Integer orgNodeId, Integer studentId, StudentManagement studentManagement)
     {    
         OrganizationNode[] orgNodes = null;    
         try {      
-            orgNodes = studentManagement.getAncestorOrganizationNodesForOrgNode(userName, orgNodeId);
+            orgNodes = studentManagement.getAncestorOrganizationNodesForOrgNode(userName, orgNodeId, studentId);
         }
         catch (CTBBusinessException be) {
             be.printStackTrace();
