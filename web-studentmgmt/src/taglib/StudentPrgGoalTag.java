@@ -147,12 +147,13 @@ public class StudentPrgGoalTag extends CTBTag
 							paramValue = values[0].getValueName();
 						}
 						displayValues_TextBox(displayName, paramValue ,editable);
-				} else
-						if ( values.length < 5 && values.length > 1 ) {  
+				} else {
+						if ( values.length < 5 && values.length > 1 ) { 
 							displayValues_RadioButtons(displayName, values, editable);
 						} else if ( values.length > 5 ){ 
 							displayValues_Dropdown(displayName, values, editable);
-					} 
+						} 
+				}
 		}
 		
 			

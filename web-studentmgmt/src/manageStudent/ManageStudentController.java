@@ -370,7 +370,9 @@ public class ManageStudentController extends PageFlowController
 			form.setCurrentAction(ACTION_DEFAULT);
 			return new Forward("error", form);
 		}
-		studentProfile.setDeletePermission(this.studentSearch.getDeletePermission());
+		if(this.studentSearch != null){
+			studentProfile.setDeletePermission(this.studentSearch.getDeletePermission());
+		}
 		form.setStudentProfile(studentProfile);
 		this.studentName = studentProfile.getFirstName() + " " + studentProfile.getLastName();
 
@@ -495,7 +497,10 @@ public class ManageStudentController extends PageFlowController
 			String deletePermission =  this.getRequest().getParameter(studentIdR);
 			form.getStudentProfile().setDeletePermission(deletePermission);
 		} else {
-			form.getStudentProfile().setDeletePermission(this.studentSearch.getDeletePermission());
+			if(this.studentSearch != null){
+				form.getStudentProfile().setDeletePermission(this.studentSearch.getDeletePermission());
+			}
+			
 		}
 		System.out.println("form.getStudentProfile().getDeletePermission()..."+form.getStudentProfile().getDeletePermission());
 		if (form.getStudentProfile().getDeletePermission().equals("false")) {
@@ -693,10 +698,14 @@ public class ManageStudentController extends PageFlowController
 
 			if (! result)
 			{           
-				if (! isCreateNew)
+				if (! isCreateNew && this.studentSearch!= null)
 				{
-				form.getStudentProfile().setDeletePermission(this.studentSearch.getDeletePermission());
+					form.getStudentProfile().setDeletePermission(this.studentSearch.getDeletePermission());
 				}
+			}
+
+			if (! result)
+			{           
 				form.setActionElement(ACTION_DEFAULT);
 				form.setCurrentAction(ACTION_DEFAULT);                 
 				return new Forward("error", form);
@@ -771,6 +780,12 @@ public class ManageStudentController extends PageFlowController
 			}
 
 			this.savedForm = form.createClone(); 
+			
+			if (! isCreateNew && this.studentSearch!= null)
+			{
+				this.studentSearch.setDeletePermission(form.getStudentProfile().getDeletePermission());
+				
+			}
 		}
 		return new Forward("success");
 	}
@@ -1057,7 +1072,18 @@ public class ManageStudentController extends PageFlowController
 		List selectableOrgNodes = StudentPathListUtils.buildSelectableOrgNodes(this.currentOrgNodesInPathList, this.selectedOrgNodes);
 
 		List orgNodesForSelector = buildOrgNodesForSelector(this.selectedOrgNodes, selectableOrgNodes, form.getSelectedStudentId(), form.getOrgSortOrderBy());
+		
+		/*boolean disableDeleteButton=true;
+		for (int i=0; i < orgNodesForSelector.size(); i++)
+		{
+			PathNode node = (PathNode)orgNodesForSelector.get(i);
+			if(node.isOrgInScope()) {
+				disableDeleteButton=false;
+			}
 
+		}
+
+		this.getRequest().setAttribute("disableDeleteButton", disableDeleteButton);*/
 		this.getRequest().setAttribute("orgNodePath", this.orgNodePath);
 		this.getRequest().setAttribute("orgNodes", orgNodes);        
 		this.getRequest().setAttribute("orgPagerSummary", orgPagerSummary);

@@ -1517,7 +1517,7 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 				newOrgNodeHash.put(organizationNodes[i].getOrgNodeId(), organizationNodes[i]);
 			}
 
-			com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
+			com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForEditStudentAtAndBelowOrgNodes(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
 			for (int i=0; orgNodeStus!=null && i< orgNodeStus.length; i++) {
 				com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDB = orgNodeStus[i];
 				boolean foundInNewOrgNodes = newOrgNodeHash.containsKey(oldOrgNodeInDB.getOrgNodeId());

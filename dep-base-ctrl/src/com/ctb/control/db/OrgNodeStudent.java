@@ -127,6 +127,10 @@ public interface OrgNodeStudent extends JdbcControl
      * ::
     */ 
     @JdbcControl.SQL(statement = "select \tstudent_id as studentId, \torg_node_id as orgNodeId, \tcreated_date_time as createdDateTime, \tcreated_by as createdBy, \tcustomer_id as customerId, \tupdated_by as updatedBy,  \tupdated_date_time as updatedDateTime, \tactivation_status as activationStatus,  \tdata_import_history_id as dataImportHistoryId from  org_node_student where student_id = {studentId}  and org_node_id in (select distinct ona.org_node_id from org_node_ancestor ona  where {sql: searchCriteria} ) union select ons.student_id as studentId, ons.org_node_id as orgNodeId, ons.created_date_time as createdDateTime, ons.created_by as createdBy, ons.customer_id as customerId, ons.updated_by as updatedBy,  ons.updated_date_time as updatedDateTime, ons.activation_status as activationStatus,  ons.data_import_history_id as dataImportHistoryId from  org_node_student ons,student stu where ons.student_id=stu.student_id and  stu.student_id = {studentId}  and stu.activation_status='AC' and ons.activation_status='AC' and stu.visible_across_organization='Yes' ")
+    com.ctb.bean.testAdmin.OrgNodeStudent [] getOrgNodeStudentForEditStudentAtAndBelowOrgNodes(Integer studentId, String searchCriteria) throws SQLException;
+
+    
+    @JdbcControl.SQL(statement = "select \tstudent_id as studentId, \torg_node_id as orgNodeId, \tcreated_date_time as createdDateTime, \tcreated_by as createdBy, \tcustomer_id as customerId, \tupdated_by as updatedBy,  \tupdated_date_time as updatedDateTime, \tactivation_status as activationStatus,  \tdata_import_history_id as dataImportHistoryId from  org_node_student where student_id = {studentId}  and org_node_id in (select distinct ona.org_node_id from org_node_ancestor ona  where {sql: searchCriteria} ) ")
     com.ctb.bean.testAdmin.OrgNodeStudent [] getOrgNodeStudentForStudentAtAndBelowOrgNodes(Integer studentId, String searchCriteria) throws SQLException;
 
     /**
