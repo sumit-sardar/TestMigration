@@ -117,7 +117,10 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     // global variables
 	private Collection rosterList = null;
 	private TestAdminVO testAdmin = null;
-    
+	//START - Changed for CR GA2011CR001
+	private Boolean isStudentIdConfigurable = Boolean.FALSE;
+    private String studentIdLabelName = "Student ID";
+    //END - Changed for CR GA2011CR001
     private TableVO noPauseKeyboards = null;
     private TableVO pauseKeyboards = null;
      
@@ -145,6 +148,10 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
         super.initializeGlobals(new Object[] {args[2], args[3], args[4], PageSize.LETTER, args[5]});
         this.rosterList = (Collection)args[0];
         this.testAdmin = (TestAdminVO)args[1];
+        //START - Changed for CR GA2011CR001
+        this.isStudentIdConfigurable = (Boolean)args[7];
+        this.studentIdLabelName = (String)args[8];
+        //END - Changed for CR GA2011CR001
         this.getKeyboardShortcutsTables();
         this.createStaticTables();
         this.createPages();
@@ -222,8 +229,14 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
    }
 
     private void addStudentIdLabel() throws DocumentException{
+    	//START - Changed for CR GA2011CR001
+    	String studentIdLabel = STUDENT_ID_LABEL;
+    	if(isStudentIdConfigurable) {
+    		studentIdLabel = studentIdLabelName;
+    	}
+    	//END - Changed for CR GA2011CR001
         this.staticTables.add( 
-             tableUtils.getLabelTable(STUDENT_ID_LABEL,
+             tableUtils.getLabelTable(studentIdLabel,
                                       INFO_LABEL_WIDTH,
                                       LEFT_X,
                                       STUDENT_ID_Y));
