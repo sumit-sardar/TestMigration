@@ -129,6 +129,9 @@
 						<xs:attribute name="system_time"
 							type="xs:string">
 						</xs:attribute>
+						<xs:attribute name ="network_service"		
+						type ="xs:string">
+						 </xs:attribute>
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="upload_statistics_request">
@@ -180,7 +183,7 @@
 						</xs:attribute>
 						<xs:attribute name="network_cards"
 							type="xs:string">
-						</xs:attribute>
+						</xs:attribute>		
 					</xs:complexType></xs:element>
 			</xs:sequence>
 			<xs:attribute name="method" type="xs:string" use="required"/>

@@ -43,21 +43,34 @@ public class LoadTestImpl implements LoadTest, Serializable {
 		RunLoadResponse runLoadResponse = response.addNewTmssvcResponse().addNewRunLoadResponse();
 		response.addNewTmssvcResponse().setMethod("run_load_response");
 		runLoadResponse.setSystemId(runLoadRequest.getRunLoadRequest().getSystemId());
-		
+		 //START Changes for defect 65267
+		String networkService = runLoadRequest.getRunLoadRequest().getNetworkService();
+		//END
 		String systemId = runLoadRequest.getRunLoadRequest().getSystemId();
 		String loadTestRosterId = "";
-		
 		//changes for filtering load test by sites
 		boolean allowedSite = true;
 		String siteId = systemId.substring(0, systemId.indexOf(":"));
         String corpId = "";
+         // Changes for defect 65267
+        Boolean testSimulation = false;
         if(!siteId.equals("")){
         	corpId = siteId.substring(0, systemId.indexOf("-"));
         }       
         
 		try{
         	LoadTestConfig loadTestConfig = loadTestDB.getLoadTestConfig();
-        	if (loadTestConfig != null){
+        	 //START Changes for defect 65267
+        	testSimulation =   loadTestConfig.getAllowTestSimulation().equals("Y");
+        	//Changes for identifying the Load Test Request from "network utility.exe"
+        	if(networkService != null){
+        		if(testSimulation && networkService.equalsIgnoreCase("Yes")){
+        			response = networkSimulation(document, loadTestConfig);
+        			return response;
+        		}
+        	}
+        	//END
+        	if (loadTestConfig != null ){
         		if (loadTestConfig.getRunLoad().equals("Y")){
             		
         			//changes for filtering load test by sites
@@ -174,6 +187,93 @@ public class LoadTestImpl implements LoadTest, Serializable {
         }				
 		return response;
 	}
+	
+	 // START Changes for defect 65267
+	private TmssvcResponseDocument networkSimulation(TmssvcRequestDocument document,LoadTestConfig loadTestConfig ){
+		TmssvcRequest runLoadRequest = document.getTmssvcRequest();
+		TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance();
+		RunLoadResponse runLoadResponse = response.addNewTmssvcResponse().addNewRunLoadResponse();
+		response.addNewTmssvcResponse().setMethod("run_load_response");
+		runLoadResponse.setSystemId(runLoadRequest.getRunLoadRequest().getSystemId());
+		String systemId = runLoadRequest.getRunLoadRequest().getSystemId();
+		String siteId = systemId.substring(0, systemId.indexOf(":"));
+		String corpId = "";
+		if(!siteId.equals("")){
+			corpId = siteId.substring(0, systemId.indexOf("-"));
+		}       
+
+		try{
+			int inProgressRosters = loadTestDB.getInprogressRosters();
+			if (inProgressRosters < loadTestConfig.getMaxLoad()){
+				runLoadResponse.setStatus(Constants.LoadTestConfig.RUN_LOAD);
+				try{
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+					Date requestTime = df.parse(runLoadRequest.getRunLoadRequest().getSystemTime());
+
+					Calendar runDate = Calendar.getInstance();
+        			runDate.setTime(requestTime);
+        			
+        			//adjust run date as per time difference between server and client
+        			runDate.add(Calendar.MINUTE, -30);
+					runLoadResponse.setRunDate(df.format(runDate.getTime()));
+
+				}catch(Exception e){
+					OASLogger.getLogger("TestDelivery").debug(loadTestConfig.toString());
+				}
+				LoadTestRoster loadTestRoster = null;
+				LoadTestRoster [] newLoadTestRosters = null;
+				boolean existingRoster = true;
+				//check if this system already has a roster scheduled for future run
+				loadTestRoster = loadTestDB.getAssignedLoadTestRoster(systemId);
+
+				if (loadTestRoster == null){
+					//change to fix duplicate roster assignment
+					newLoadTestRosters = loadTestDB.getLoadTestRoster();
+					if(newLoadTestRosters != null && newLoadTestRosters.length > 0){
+						Random n = new Random();
+						Integer randIndex = n.nextInt(newLoadTestRosters.length);
+						loadTestRoster = newLoadTestRosters[randIndex];
+					}
+					existingRoster = false;
+				}
+
+
+				if (loadTestRoster != null){
+					runLoadResponse.setRosterId(loadTestRoster.getTestRosterId());
+					runLoadResponse.setLoginId(loadTestRoster.getLoginId());
+					runLoadResponse.setAccessCode(loadTestRoster.getAccessCode());
+					runLoadResponse.setPassword(loadTestRoster.getPassword());
+
+					int updateCount = loadTestDB.setUsedFlag(Integer.valueOf(loadTestRoster.getTestRosterId()));
+					if (updateCount <= 0){
+						OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
+					}                		
+					if (!existingRoster){
+						int insertCount = loadTestDB.createStatisticsRecord(runLoadRequest.getRunLoadRequest().getSystemId(), Integer.valueOf(loadTestRoster.getTestRosterId()));
+						if (insertCount <= 0){
+							OASLogger.getLogger("TestDelivery").debug(loadTestRoster.toString());
+						}
+					} 
+				}else{
+					runLoadResponse.setStatus(Constants.LoadTestConfig.NO_RUN);
+					System.out.println("##### loadTestRoster SQL exception ### ");
+				}
+
+			}
+			else{
+				runLoadResponse.setStatus(Constants.LoadTestConfig.NO_RUN); 
+				System.out.println("##### loadTestConfig ### exceeds max load");
+			}
+
+		} catch(Exception e){
+
+			runLoadResponse.setStatus(Constants.LoadTestConfig.NO_RUN);
+		}
+
+		return response;
+	}
+	//END
 	
 	public TmssvcResponseDocument setLoadTestStatistics(TmssvcRequestDocument document){
 		TmssvcRequest uploadStatisticsRequest = document.getTmssvcRequest();

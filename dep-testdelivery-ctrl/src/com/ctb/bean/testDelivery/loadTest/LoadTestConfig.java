@@ -7,6 +7,8 @@ public class LoadTestConfig {
 	private String runDate;
 	private Integer rampUpTime;
 	private String filterSites;
+	 // Changes for defect 65267
+	private String allowTestSimulation;
 	
 	/**
 	 * @return Returns the runLoad flag.
@@ -75,5 +77,18 @@ public class LoadTestConfig {
 	public void setFilterSites(String filterSites) {
 		this.filterSites = filterSites;
 	}
-
+	 //START Changes for defect 65267
+	/**
+	 * @return the allowTestSimulation
+	 */
+	public String getAllowTestSimulation() {
+		return allowTestSimulation;
+	}
+	/**
+	 * @param allowTestSimulation the allowTestSimulation to set
+	 */
+	public void setAllowTestSimulation(String allowTestSimulation) {
+		this.allowTestSimulation = allowTestSimulation;
+	}
+	 //END Changes for defect 65267
 }
