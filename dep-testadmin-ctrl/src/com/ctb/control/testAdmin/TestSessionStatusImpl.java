@@ -73,7 +73,7 @@ import java.util.ResourceBundle;
  * @editor-info:code-gen control-interface="true"
  */
 @ControlImplementation(isTransient=true)
-public class TestSessionStatusImpl implements TestSessionStatus, Serializable
+public class TestSessionStatusImpl implements TestSessionStatus
 { 
     /**
      * @common:control

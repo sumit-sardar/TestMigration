@@ -89,7 +89,7 @@ import com.ctb.util.testAdmin.TestFormSelector;
  * @editor-info:code-gen control-interface="true"
  */
 @ControlImplementation(isTransient=true)
-public class ScheduleTestImpl implements ScheduleTest, Serializable
+public class ScheduleTestImpl implements ScheduleTest
 { 
     /**
      * @common:control

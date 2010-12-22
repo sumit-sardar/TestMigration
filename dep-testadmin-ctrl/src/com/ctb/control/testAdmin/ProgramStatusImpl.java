@@ -31,7 +31,7 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
  * @editor-info:code-gen control-interface="true"
  */
 @ControlImplementation(isTransient=true)
-public class ProgramStatusImpl implements ProgramStatus, Serializable
+public class ProgramStatusImpl implements ProgramStatus
 { 
     /**
      * @common:control
