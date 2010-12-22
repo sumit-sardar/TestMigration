@@ -30,8 +30,7 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
  * @author John_Wang
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-@ThreadingModel(ThreadingModel.Policy.MULTI_THREADED)
+@ControlImplementation(isTransient=true)
 public class ProgramStatusImpl implements ProgramStatus, Serializable
 { 
     /**
