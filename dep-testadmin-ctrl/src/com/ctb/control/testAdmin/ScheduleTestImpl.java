@@ -89,7 +89,7 @@ import com.ctb.util.testAdmin.TestFormSelector;
  * @editor-info:code-gen control-interface="true"
  */
 @ControlImplementation()
-@ThreadingModel.Policy.MULTI_THREADED
+@ThreadingModel(ThreadingModel.Policy.MULTI_THREADED)
 public class ScheduleTestImpl implements ScheduleTest, Serializable
 { 
     /**
