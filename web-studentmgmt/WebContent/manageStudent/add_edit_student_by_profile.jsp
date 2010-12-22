@@ -132,7 +132,7 @@
          </c:if>
         <td class="transparent">
         <c:if test="${ profileEditable }">            
-            <netui:textBox dataSource="actionForm.studentProfile.studentNumber" maxlength="<%= isStudentIdConfigurable ? new Integer(studentIdArrValue[1]).intValue()<32 ? new Integer(studentIdArrValue[1]).intValue() : 32 : 32 %>" style="width:180px"/>
+            <netui:textBox dataSource="actionForm.studentProfile.studentNumber" maxlength="<%= isStudentIdConfigurable ? new Integer(studentIdArrValue[1]).intValue()>0 && new Integer(studentIdArrValue[1]).intValue()<32 ? new Integer(studentIdArrValue[1]).intValue() : 32 : 32 %>" style="width:180px"/>
         </c:if>            
         <c:if test="${ !profileEditable }">            
             <netui:textBox dataSource="actionForm.studentProfile.studentNumber" maxlength="32" style="width:180px" disabled="true"/>
@@ -150,7 +150,7 @@
          </c:if>
         <td class="transparent">
         <c:if test="${ profileEditable }">            
-            <netui:textBox dataSource="actionForm.studentProfile.studentSecondNumber" maxlength="<%=isStudentId2Configurable ? new Integer(studentId2ArrValue[1]).intValue()<32 ? new Integer(studentId2ArrValue[1]).intValue() : 32 : 32 %>" style="width:180px"/>
+            <netui:textBox dataSource="actionForm.studentProfile.studentSecondNumber" maxlength="<%=isStudentId2Configurable ? new Integer(studentId2ArrValue[1]).intValue()>0 && new Integer(studentId2ArrValue[1]).intValue()<32 ? new Integer(studentId2ArrValue[1]).intValue() : 32 : 32 %>" style="width:180px"/>
         </c:if>            
         <c:if test="${ !profileEditable }">            
             <netui:textBox dataSource="actionForm.studentProfile.studentSecondNumber" maxlength="32" style="width:180px" disabled="true"/>
