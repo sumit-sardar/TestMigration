@@ -55,6 +55,10 @@
 <netui:hidden dataSource="actionForm.selectedTab"/> 
 <netui:hidden dataSource="actionForm.studentIdLabelName"/>
 <netui:hidden dataSource="actionForm.studentId2LabelName"/>
+<netui:hidden dataSource="actionForm.studentIdMinLength"/>
+<netui:hidden dataSource="actionForm.studentId2MinLength"/>
+<netui:hidden dataSource="actionForm.studentIdConfigurable"/>
+<netui:hidden dataSource="actionForm.studentId2Configurable"/>
 
 <!-- message -->
 <jsp:include page="/manageStudent/show_message.jsp" />

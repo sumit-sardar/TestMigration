@@ -122,6 +122,13 @@ public class ManageStudentController extends PageFlowController
 	private boolean isMandatoryStudentId = false; // Change For CR - GA2011CR001
 	private String studentIdLabelName = "Student ID";
 	private String studentId2LabelName = "Student ID 2";
+	//START- GACR005 
+	private String studentIdMinLength = "0";
+	private String studentId2MinLength = "0";
+	private boolean studentIdConfigurable = false;
+	private boolean studentId2Configurable = false;
+	//END- GACR005 
+
 
 	// student demographics
 	List demographics = null;
@@ -1984,7 +1991,16 @@ public class ManageStudentController extends PageFlowController
 		if(labelName.equals("Student ID 2")){
 			this.studentId2LabelName = arrValue[0];
 			form.setStudentId2LabelName(this.studentId2LabelName );
-			
+			//START- GACR005 
+			arrValue[2] = (arrValue[2] != null && new Integer(arrValue[2]).intValue() > 0)? arrValue[2]   : "0" ;
+			try {
+				int minLength = Integer.valueOf(arrValue[2]);
+			} catch (NumberFormatException nfe){
+				arrValue[2] = "0" ;
+			}
+			this.studentId2MinLength = arrValue[2];
+			form.setStudentId2MinLength(this.studentId2MinLength);
+			//END- GACR005 
 		}
 		if(labelName.equals("Student ID")){
 			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
@@ -1994,7 +2010,16 @@ public class ManageStudentController extends PageFlowController
 				}
 			this.studentIdLabelName = arrValue[0];
 			form.setStudentIdLabelName(this.studentIdLabelName );
-			
+			//START- GACR005 
+			arrValue[3] = (arrValue[3] != null && new Integer(arrValue[3]).intValue() > 0)? arrValue[3]   : "0" ;
+			try {
+				int minLength = Integer.valueOf(arrValue[3]);
+			} catch (NumberFormatException nfe){
+				arrValue[3] = "0" ;
+			}
+			this.studentIdMinLength = arrValue[3];
+			form.setStudentIdMinLength(this.studentIdMinLength);
+			//END- GACR005 
 		}
 		
 		// check for numeric conversion of maxlength
@@ -2193,8 +2218,10 @@ public class ManageStudentController extends PageFlowController
 		 boolean isStudentIdConfigurable = false;
 		 boolean isStudentId2Configurable = false;
 		 Integer configId=0;
-		 String []valueForStudentId = new String[3] ;
-		 String []valueForStudentId2 = new String[2] ;
+		//START- GACR005 
+		String []valueForStudentId = new String[8] ;
+		String []valueForStudentId2 = new String[8] ;
+		//END- GACR005 
 		for (int i=0; i < this.customerConfigurations.length; i++)
 	        {
 	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
@@ -2203,7 +2230,7 @@ public class ManageStudentController extends PageFlowController
 					isStudentId2Configurable = true; 
 					configId = cc.getId();
 					customerConfigurationValues(configId);
-					valueForStudentId2 = new String[2];
+				valueForStudentId2 = new String[8];
 
 					for(int j=0; j<this.customerConfigurationsValue.length; j++){
 
@@ -2211,6 +2238,10 @@ public class ManageStudentController extends PageFlowController
 						valueForStudentId2[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
 
 					}
+				//START- GACR005 
+				this.studentId2Configurable = isStudentId2Configurable;
+				form.setStudentId2Configurable(this.studentId2Configurable);
+				//END- GACR005 
 					valueForStudentId2 = getDefaultValue(valueForStudentId2,"Student ID 2", form);
 				}
 	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
@@ -2219,11 +2250,15 @@ public class ManageStudentController extends PageFlowController
 					configId = cc.getId();
 					customerConfigurationValues(configId);
 					//By default there should be 3 entries for customer configurations
-					valueForStudentId = new String[3];
+				valueForStudentId = new String[8];
 					for(int j=0; j<this.customerConfigurationsValue.length; j++){
 						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
 						valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
 					}	
+				//START- GACR005 
+				this.studentIdConfigurable = isStudentIdConfigurable;
+				form.setStudentIdConfigurable(this.studentIdConfigurable);
+				//END- GACR005 
 					valueForStudentId = getDefaultValue(valueForStudentId,"Student ID", form);
 					
 				}
@@ -2286,6 +2321,12 @@ public class ManageStudentController extends PageFlowController
 		private boolean isMandatoryStudentId = false;//GA2011CR001- GTID mandatory field
 		private String studentIdLabelName = "Student ID";
 		private String studentId2LabelName = "Student ID 2";
+		//START- GACR005 
+		private String studentIdMinLength = "0";
+		private String studentId2MinLength = "0";
+		private boolean studentIdConfigurable = false;
+		private boolean studentId2Configurable = false;
+		//END- GACR005 
 		public ManageStudentForm()
 		{
 		}
@@ -2760,13 +2801,29 @@ public class ManageStudentController extends PageFlowController
 				setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
 				return false;
 			}
-
-			invalidCharFields = WebUtils.verifyCreateStudentNumber(studentNumber, studentSecondNumber, this.studentIdLabelName, this.studentId2LabelName );                
+			invalidCharFields = WebUtils.verifyCreateStudentNumber(studentNumber, studentSecondNumber, this.studentIdLabelName, this.studentId2LabelName, this.studentIdConfigurable, this.studentId2Configurable );                
 			if (invalidCharFields.length() > 0) {
 				invalidCharFields += ("<br/>" + Message.INVALID_NUMBER_CHARS);
 				setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
 				return false;
 			}
+			//START- GACR005 
+			invalidCharFields = WebUtils.verifyConfigurableStudentNumber(studentNumber, studentSecondNumber, this.studentIdLabelName, this.studentId2LabelName, this.studentIdConfigurable, this.studentId2Configurable );                
+			if (invalidCharFields.length() > 0) {
+				invalidCharFields += ("<br/>" + Message.INVALID_NUMBER_FORMAT);
+				setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
+					return false;
+			}
+			
+			//CR - GACR005 - validation For GTID
+			invalidCharFields = WebUtils.verifyMinLengthStudentNumber(studentNumber, studentSecondNumber, this.studentIdLabelName, this.studentId2LabelName, this.studentIdMinLength, this.studentId2MinLength );                
+			if (invalidCharFields.length() > 0) {
+				invalidCharFields += ("<br/>" + Message.INVALID_STUDENT_MINLENGTH_FORMAT);    
+				setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
+					return false;
+				}
+			//END- GACR005 
+			
 			//GACRCT2010CR007 - validate  date of birth  when date value is provided.
 			
 			if(isDisableMandatoryBirthdate() && !DateUtils.allSelected(month, day, year)) {
@@ -2834,6 +2891,62 @@ public class ManageStudentController extends PageFlowController
 			this.studentId2LabelName = studentId2LabelName;
 		}
 		// End  Change For CR - GA2011CR001
+
+		/**
+		 * @return the studentIdMinLength
+		 */
+		public String getStudentIdMinLength() {
+			return studentIdMinLength;
+		}
+
+		/**
+		 * @param studentIdMinLength the studentIdMinLength to set
+		 */
+		public void setStudentIdMinLength(String studentIdMinLength) {
+			this.studentIdMinLength = studentIdMinLength;
+		}
+
+		/**
+		 * @return the studentId2MinLength
+		 */
+		public String getStudentId2MinLength() {
+			return studentId2MinLength;
+		}
+
+		/**
+		 * @param studentId2MinLength the studentId2MinLength to set
+		 */
+		public void setStudentId2MinLength(String studentId2MinLength) {
+			this.studentId2MinLength = studentId2MinLength;
+		}
+
+		/**
+		 * @return the studentIdConfigurable
+		 */
+		public boolean isStudentIdConfigurable() {
+			return studentIdConfigurable;
+		}
+
+		/**
+		 * @param studentIdConfigurable the studentIdConfigurable to set
+		 */
+		public void setStudentIdConfigurable(boolean studentIdConfigurable) {
+			this.studentIdConfigurable = studentIdConfigurable;
+		}
+
+		/**
+		 * @return the studentId2Configurable
+		 */
+		public boolean isStudentId2Configurable() {
+			return studentId2Configurable;
+		}
+
+		/**
+		 * @param studentId2Configurable the studentId2Configurable to set
+		 */
+		public void setStudentId2Configurable(boolean studentId2Configurable) {
+			this.studentId2Configurable = studentId2Configurable;
+		}
 		
 	}
 
