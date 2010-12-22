@@ -73,6 +73,7 @@ import java.util.ResourceBundle;
  * @editor-info:code-gen control-interface="true"
  */
 @ControlImplementation()
+@ThreadingModel.Policy.MULTI_THREADED
 public class TestSessionStatusImpl implements TestSessionStatus, Serializable
 { 
     /**

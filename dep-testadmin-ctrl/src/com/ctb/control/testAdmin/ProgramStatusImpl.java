@@ -31,6 +31,7 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
  * @editor-info:code-gen control-interface="true"
  */
 @ControlImplementation()
+@ThreadingModel.Policy.MULTI_THREADED
 public class ProgramStatusImpl implements ProgramStatus, Serializable
 { 
     /**
