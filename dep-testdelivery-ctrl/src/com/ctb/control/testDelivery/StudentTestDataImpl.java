@@ -62,8 +62,8 @@ import com.ctb.util.testDelivery.TabeLocatorUtils;
 /**
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class StudentTestDataImpl implements StudentTestData, Serializable
+@ControlImplementation(isTransient=true)
+public class StudentTestDataImpl implements StudentTestData
 { 
 	private static final String TMS_PER_INSTANCE_DUPE_CHECK = "TMS_PER_INSTANCE_DUPE_CHECK";
 	private static final String TMS_PER_INSTANCE_SP_CHECK = "TMS_PER_INSTANCE_SP_CHECK";

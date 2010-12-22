@@ -67,8 +67,8 @@ import com.ctb.util.UserHeader;
 /**
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class UploadDownloadManagementImpl implements UploadDownloadManagement, Serializable
+@ControlImplementation(isTransient=true)
+public class UploadDownloadManagementImpl implements UploadDownloadManagement
 { 
     /**
      * @common:control

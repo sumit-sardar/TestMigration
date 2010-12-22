@@ -18,8 +18,8 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
 /**
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class OrgNodeHierarchyImpl implements OrgNodeHierarchy, Serializable
+@ControlImplementation(isTransient=true)
+public class OrgNodeHierarchyImpl implements OrgNodeHierarchy
 { 
 
     @org.apache.beehive.controls.api.bean.Control()

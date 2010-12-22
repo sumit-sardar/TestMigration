@@ -44,8 +44,8 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
  * @editor-info:code-gen control-interface="true"
  */
 
-@ControlImplementation()
-public class CustomerManagementImpl implements CustomerManagement, Serializable
+@ControlImplementation(isTransient=true)
+public class CustomerManagementImpl implements CustomerManagement
 { 
     /**
      * @common:control

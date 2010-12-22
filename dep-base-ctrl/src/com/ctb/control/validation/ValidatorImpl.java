@@ -12,8 +12,8 @@ import com.ctb.exception.validation.ValidationException;
 /**
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class ValidatorImpl implements Validator, Serializable
+@ControlImplementation(isTransient=true)
+public class ValidatorImpl implements Validator
 { 
 	/**
 	 * @common:control

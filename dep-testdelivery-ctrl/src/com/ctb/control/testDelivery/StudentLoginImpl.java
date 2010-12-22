@@ -62,8 +62,8 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Tutorial;
 /**
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class StudentLoginImpl implements StudentLogin, Serializable
+@ControlImplementation(isTransient=true)
+public class StudentLoginImpl implements StudentLogin
 { 
     /**
      * @common:control

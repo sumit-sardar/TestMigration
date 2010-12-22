@@ -8,8 +8,8 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
 /**
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class ScoringControlImpl implements ScoringControl, Serializable
+@ControlImplementation(isTransient=true)
+public class ScoringControlImpl implements ScoringControl
 { 
     /**
      * @common:control

@@ -29,8 +29,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-@ControlImplementation()
-public class LoadTestImpl implements LoadTest, Serializable {
+@ControlImplementation(isTransient=true)
+public class LoadTestImpl implements LoadTest {
 	private static final long serialVersionUID = 1L;
 	
 	@Control

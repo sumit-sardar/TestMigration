@@ -58,8 +58,8 @@ import com.ctb.util.studentManagement.StudentUtils;
  *
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class StudentManagementImpl implements StudentManagement, Serializable
+@ControlImplementation(isTransient=true)
+public class StudentManagementImpl implements StudentManagement
 { 
     /**
      * @common:control

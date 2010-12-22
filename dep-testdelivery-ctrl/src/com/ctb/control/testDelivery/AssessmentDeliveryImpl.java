@@ -29,8 +29,8 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
 /**
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class AssessmentDeliveryImpl implements AssessmentDelivery, Serializable
+@ControlImplementation(isTransient=true)
+public class AssessmentDeliveryImpl implements AssessmentDelivery
 { 
 	/**
 	 * @common:control

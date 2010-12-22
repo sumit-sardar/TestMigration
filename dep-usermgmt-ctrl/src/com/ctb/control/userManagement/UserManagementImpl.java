@@ -71,8 +71,8 @@ import com.ctb.util.SQLutils;
  * 
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class UserManagementImpl implements UserManagement, Serializable
+@ControlImplementation(isTransient=true)
+public class UserManagementImpl implements UserManagement
 { 
 	/**
      * @common:control

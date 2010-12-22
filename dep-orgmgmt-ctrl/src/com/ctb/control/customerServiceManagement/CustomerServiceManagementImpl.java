@@ -24,8 +24,8 @@ import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.exception.validation.ValidationException;
 
 
-@ControlImplementation()
-public class CustomerServiceManagementImpl implements CustomerServiceManagement,Serializable {
+@ControlImplementation(isTransient=true)
+public class CustomerServiceManagementImpl implements CustomerServiceManagement {
 
 	/**
 	 * @common:control
