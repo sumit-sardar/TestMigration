@@ -1992,8 +1992,8 @@ public class ManageStudentController extends PageFlowController
 			this.studentId2LabelName = arrValue[0];
 			form.setStudentId2LabelName(this.studentId2LabelName );
 			//START- GACR005 
-			arrValue[2] = (arrValue[2] != null && new Integer(arrValue[2]).intValue() > 0)? arrValue[2]   : "0" ;
 			try {
+				arrValue[2] = (arrValue[2] != null && new Integer(arrValue[2]).intValue() > 0)? arrValue[2]   : "0" ;
 				int minLength = Integer.valueOf(arrValue[2]);
 			} catch (NumberFormatException nfe){
 				arrValue[2] = "0" ;
@@ -2011,8 +2011,8 @@ public class ManageStudentController extends PageFlowController
 			this.studentIdLabelName = arrValue[0];
 			form.setStudentIdLabelName(this.studentIdLabelName );
 			//START- GACR005 
-			arrValue[3] = (arrValue[3] != null && new Integer(arrValue[3]).intValue() > 0)? arrValue[3]   : "0" ;
 			try {
+				arrValue[3] = (arrValue[3] != null && new Integer(arrValue[3]).intValue() > 0)? arrValue[3]   : "0" ;
 				int minLength = Integer.valueOf(arrValue[3]);
 			} catch (NumberFormatException nfe){
 				arrValue[3] = "0" ;
@@ -2264,7 +2264,7 @@ public class ManageStudentController extends PageFlowController
 				}
 	            
 	         }
-		if(valueForStudentId.length ==3) {
+		if(valueForStudentId.length == 8) {
 			this.isMandatoryStudentId = valueForStudentId !=null &&  valueForStudentId[2] != null && valueForStudentId[2].equals("T") ?  true : false ;
 			
 		}
