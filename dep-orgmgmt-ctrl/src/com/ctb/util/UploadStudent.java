@@ -167,9 +167,11 @@ public class UploadStudent extends BatchProcessor.Process
 	private boolean isStudentIdMandatory = false;
 	private String maxlengthStudentID = null;
 	private String maxlengthStudentId2 = null;
+	//START- GACR005 
+	private String studentIdMinLength = "0";
+	private String studentId2MinLength = "0";
+    //END- GACR005
 	
-
-
     
     public UploadStudent ( String serverFilePath,String username, 
             InputStream uploadedStream , 
@@ -235,6 +237,7 @@ public class UploadStudent extends BatchProcessor.Process
         	this.studentIdLabel = valueForStudentId[0]!=null ? valueForStudentId[0]: CTBConstants.STUDENT_ID;
         	this.maxlengthStudentID = valueForStudentId[1];
         	this.isStudentIdMandatory = valueForStudentId[2]!=null && valueForStudentId[2].equals("T")? true : false;
+        	this.studentIdMinLength = valueForStudentId[3];   //GACR005
         	                 	
         }
       //Changes for GA2011CR001  
@@ -242,7 +245,7 @@ public class UploadStudent extends BatchProcessor.Process
         	this.isStudentId2Configurable = true;
         	this.studentId2Label = valueForStudentId2[0]!=null ? valueForStudentId2[0]: CTBConstants.STUDENT_ID2;
         	this.maxlengthStudentId2 = valueForStudentId2[1];
-        	//this.isFTEMandatory = valueForStudentId2[2];
+        	this.studentId2MinLength = valueForStudentId2[2];//GACR005
         	
         }
         
@@ -3032,18 +3035,33 @@ public class UploadStudent extends BatchProcessor.Process
                     invalidList.add(CTBConstants.FONT_SIZE);
                     
                 }
-                
-              //Changes for GA2011CR001              
-                else if(cellHeader.getStringCellValue().
-                        equals(this.studentIdLabel)
-                        && !strCell.trim().equals("")
-                        && !validStudentId(strCell)) {
-                	
-                	invalidList.add(this.studentIdLabel);
-                  	
-                } 
-              //Changes for GA2011CR001               
-                else if(cellHeader.getStringCellValue().
+                //START- Changes for GA2011CR001   
+                else if(!this.isStudentIdConfigurable){
+		                if(cellHeader.getStringCellValue().
+		                        equals(this.studentIdLabel)
+		                        && !strCell.trim().equals("")
+		                        && !validStudentId(strCell)) {
+		                	
+		                	invalidList.add(this.studentIdLabel);
+		                  	
+		                }
+                }
+                //END- Changes for GA2011CR001   
+                //START- Changes for GACR005  
+                else if(this.isStudentIdConfigurable){
+	                if(cellHeader.getStringCellValue().
+	                        equals(this.studentIdLabel)
+	                        && !strCell.trim().equals("")
+	                        && !validConfigurableStudentId(strCell)) {
+	                	
+	                	invalidList.add(this.studentIdLabel);
+	                  	
+	                }
+                }
+                //END- Changes for GACR005  
+              //START- Changes for GA2011CR001               
+                else if(!this.isStudentId2Configurable){
+                	if(cellHeader.getStringCellValue().
                             equals(this.studentId2Label)
                             && !strCell.trim().equals("")
                             && !validStudentId(strCell)){
@@ -3051,8 +3069,20 @@ public class UploadStudent extends BatchProcessor.Process
                     	invalidList.add(this.studentId2Label);
                       	
                     } 
-                
-            
+                }
+              // END- Changes for GA2011CR001   
+              //START- Changes for GACR005  
+                else if(this.isStudentId2Configurable){
+                	if(cellHeader.getStringCellValue().
+                            equals(this.studentId2Label)
+                            && !strCell.trim().equals("")
+                            && !validConfigurableStudentId(strCell)){
+                    	
+                    	invalidList.add(this.studentId2Label);
+                      	
+                    } 
+                }
+                //END- Changes for GACR005  
                     	              
                 
             
@@ -3368,7 +3398,23 @@ public class UploadStudent extends BatchProcessor.Process
     }
 
 
-
+	//Start- GACR005
+    /**
+     *  validate the StudentId
+     */
+     private  boolean validConfigurableStudentId(String str) {
+         
+         str = str.trim();
+             
+             if ( !validNumber(str) ) {
+                 
+                 return false;
+             }
+         
+         
+         return true;
+     }
+	//END- GACR005
     /**
     *  validate the StudentId character
     */
@@ -3426,7 +3472,45 @@ public class UploadStudent extends BatchProcessor.Process
                     maxLengthList.add(CTBConstants.REQUIREDFIELD_LAST_NAME);
                     
                 }
-                              
+                //Changes for GACR005
+                if( cellHeader.getStringCellValue().
+                        equals(this.studentIdLabel)
+                        && !strCell.trim().equals("")
+                        && this.isStudentIdConfigurable
+                        && !isMinLengthConfigurableStudentId(strCell) 
+                        && this.studentIdMinLength != null ) {
+                    
+                	maxLengthList.add(this.studentIdLabel);
+            	}
+            	else if ( cellHeader.getStringCellValue().
+                        equals(CTBConstants.STUDENT_ID)
+                        && !strCell.trim().equals("")
+                        && !this.isStudentIdConfigurable ) {
+                    
+            		maxLengthList.add(CTBConstants.STUDENT_ID);
+                    
+                }
+            	
+         
+            	 else if( cellHeader.getStringCellValue().
+                         equals(this.studentId2Label)
+                         && !strCell.trim().equals("")
+                         && this.isStudentId2Configurable
+                         && !isMinLengthConfigurableStudentId2(strCell)
+                         && this.studentId2MinLength != null ) {
+                     
+            		 maxLengthList.add(this.studentId2Label);
+             	}
+  
+            else if ( cellHeader.getStringCellValue().
+                    equals(CTBConstants.STUDENT_ID2)
+                    && !strCell.trim().equals("")
+                    && !this.isStudentIdConfigurable ) {
+                
+            	maxLengthList.add(CTBConstants.STUDENT_ID2);
+                
+            }
+            //Changes for GACR005    
               //Changes for GA2011CR001	
                 else if( cellHeader.getStringCellValue().
                             equals(this.studentIdLabel)
@@ -3590,6 +3674,28 @@ public class UploadStudent extends BatchProcessor.Process
     	
     }
     /*
+     * check Minlength for gerogia Customer for studentID
+     */
+    
+    private boolean isMinLengthConfigurableStudentId (String value){
+    	
+    	if (Integer.parseInt(this.studentIdMinLength) < 0){
+    		this.studentIdMinLength = "0";
+    		}
+    	
+    	if ( value.length() >= Integer.parseInt(this.studentIdMinLength) ) {
+               
+               return true;
+           
+           } else {
+               
+               return false;   
+           }
+    	
+    	
+    }
+    
+    /*
      * check Maxlength for gerogia Customer for studentID2
      */
     private boolean isMaxLengthConfigurableStudentId2 (String value){
@@ -3609,7 +3715,25 @@ public class UploadStudent extends BatchProcessor.Process
     	
     }
     
-    
+    /*
+     * check Minlength for gerogia Customer for studentID2
+     */
+    private boolean isMinLengthConfigurableStudentId2 (String value){
+    	
+    	if (Integer.parseInt(this.studentId2MinLength) < 0){
+    		this.studentId2MinLength = "0";
+    	}
+  	  
+    	if ( value.length() >= Integer.parseInt(this.studentId2MinLength) ) {
+               
+               return true;
+           
+           } else {
+               
+               return false;   
+           }
+    	
+    }
     
     
   /*

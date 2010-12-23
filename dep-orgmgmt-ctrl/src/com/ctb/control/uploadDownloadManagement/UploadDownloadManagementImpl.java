@@ -156,7 +156,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 	private Integer configId=0;
 	private String []valueForStudentId = null ;
 	private String []valueForStudentId2 = null ;
-    
+	//START- GACR005 
+	private String studentIdMinLength = "0";
+	private String studentId2MinLength = "0";
+    //END- GACR005
     // END
     static final long serialVersionUID = 1L;
 
@@ -3218,7 +3221,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 					configId = cc.getId();
 					System.out.println("configId"+ configId);
 					customerConfigurationValues(configId);
-					this.valueForStudentId2 = new String[2];
+					this.valueForStudentId2 = new String[8];
 
 					for(int j=0; j<this.customerConfigurationsValue.length; j++){
 
@@ -3235,7 +3238,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 					configId = cc.getId();
 					customerConfigurationValues(configId);
 					//By default there should be 3 entries for customer configurations
-					this.valueForStudentId = new String[3];
+					this.valueForStudentId = new String[8];
 					for(int j=0; j<this.customerConfigurationsValue.length; j++){
 						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
 						this.valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
@@ -3273,7 +3276,29 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 				{ 
 					arrValue[2]  = "F";
 				}
+			//START- GACR005 
+			arrValue[3] = (arrValue[3] != null && new Integer(arrValue[3]).intValue() > 0)? arrValue[3]   : "0" ;
+			try {
+				int minLength = Integer.valueOf(arrValue[3]);
+			} catch (NumberFormatException nfe){
+				arrValue[3] = "0" ;
+			}
+			this.studentIdMinLength = arrValue[3];
 			
+			//END- GACR005 
+		}
+		
+		if(labelName.equals("Student ID 2")){
+			//START- GACR005 
+			arrValue[2] = (arrValue[2] != null && new Integer(arrValue[2]).intValue() > 0)? arrValue[2]   : "0" ;
+			try {
+				int minLength = Integer.valueOf(arrValue[2]);
+			} catch (NumberFormatException nfe){
+				arrValue[2] = "0" ;
+			}
+			this.studentId2MinLength = arrValue[2];
+			
+			//END- GACR005 
 		}
 		
 		// check for numeric conversion of maxlength
@@ -3362,6 +3387,46 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 		catch (CTBBusinessException be) {
 			be.printStackTrace();
 		}
+	}
+
+
+
+
+	/**
+	 * @return the studentIdMinLength
+	 */
+	public String getStudentIdMinLength() {
+		return studentIdMinLength;
+	}
+
+
+
+
+	/**
+	 * @param studentIdMinLength the studentIdMinLength to set
+	 */
+	public void setStudentIdMinLength(String studentIdMinLength) {
+		this.studentIdMinLength = studentIdMinLength;
+	}
+
+
+
+
+	/**
+	 * @return the studentId2MinLength
+	 */
+	public String getStudentId2MinLength() {
+		return studentId2MinLength;
+	}
+
+
+
+
+	/**
+	 * @param studentId2MinLength the studentId2MinLength to set
+	 */
+	public void setStudentId2MinLength(String studentId2MinLength) {
+		this.studentId2MinLength = studentId2MinLength;
 	}
 	
  
