@@ -742,7 +742,7 @@ public class TestTicketController extends PageFlowController
     {     
 		 boolean isStudentIdConfigurable = false;
 		 Integer configId=0;
-		 String []valueForStudentId = new String[3] ;
+		 String []valueForStudentId = new String[8] ;
 			for (int i=0; i < this.customerConfigurations.length; i++)
 		        {
 		            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
@@ -753,7 +753,7 @@ public class TestTicketController extends PageFlowController
 						configId = cc.getId();
 						customerConfigurationValues(configId);
 						//By default there should be 3 entries for customer configurations
-						valueForStudentId = new String[3];
+						valueForStudentId = new String[8];
 						for(int j=0; j<this.customerConfigurationsValue.length; j++){
 							int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
 							valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
