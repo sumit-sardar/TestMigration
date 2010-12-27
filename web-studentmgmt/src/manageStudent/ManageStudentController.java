@@ -127,7 +127,8 @@ public class ManageStudentController extends PageFlowController
 	private String studentId2MinLength = "0";
 	private String isStudentIdNumeric = "AN";
 	private String isStudentId2Numeric = "AN";
-	
+	private boolean studentIdConfigurable = false;
+	private boolean studentId2Configurable = false;
 	//END- GACR005 
 
 
@@ -2254,7 +2255,10 @@ public class ManageStudentController extends PageFlowController
 						valueForStudentId2[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
 
 					}
-				
+				//START- GACR005 
+				this.studentId2Configurable = isStudentId2Configurable;
+				form.setStudentId2Configurable(this.studentId2Configurable);
+				//END- GACR005 
 					valueForStudentId2 = getDefaultValue(valueForStudentId2,"Student ID 2", form);
 				}
 	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
@@ -2268,8 +2272,11 @@ public class ManageStudentController extends PageFlowController
 						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
 						valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
 					}	
-				
-				valueForStudentId = getDefaultValue(valueForStudentId,"Student ID", form);
+				//START- GACR005 
+				this.studentIdConfigurable = isStudentIdConfigurable;
+				form.setStudentIdConfigurable(this.studentIdConfigurable);
+				//END- GACR005 
+					valueForStudentId = getDefaultValue(valueForStudentId,"Student ID", form);
 					
 				}
 	            
@@ -2336,7 +2343,37 @@ public class ManageStudentController extends PageFlowController
 		private String studentId2MinLength = "0";
 		private String isStudentIdNumeric = "AN";
 		private String isStudentId2Numeric = "AN";
+		private boolean studentIdConfigurable = false;
+		private boolean studentId2Configurable = false;
 		
+		/**
+		 * @return the studentIdConfigurable
+		 */
+		public boolean isStudentIdConfigurable() {
+			return studentIdConfigurable;
+		}
+
+		/**
+		 * @param studentIdConfigurable the studentIdConfigurable to set
+		 */
+		public void setStudentIdConfigurable(boolean studentIdConfigurable) {
+			this.studentIdConfigurable = studentIdConfigurable;
+		}
+
+		/**
+		 * @return the studentId2Configurable
+		 */
+		public boolean isStudentId2Configurable() {
+			return studentId2Configurable;
+		}
+
+		/**
+		 * @param studentId2Configurable the studentId2Configurable to set
+		 */
+		public void setStudentId2Configurable(boolean studentId2Configurable) {
+			this.studentId2Configurable = studentId2Configurable;
+		}
+
 		//END- GACR005 
 		public ManageStudentForm()
 		{
@@ -2812,14 +2849,21 @@ public class ManageStudentController extends PageFlowController
 				setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
 				return false;
 			}
-			invalidCharFields = WebUtils.verifyCreateStudentNumber(studentNumber, studentSecondNumber, this.studentIdLabelName, this.studentId2LabelName, this.isStudentIdNumeric, this.isStudentId2Numeric );                
+			invalidCharFields = WebUtils.verifyCreateStudentNumber(studentNumber, studentSecondNumber, this.studentIdLabelName, this.studentId2LabelName,this.studentIdConfigurable, this.studentId2Configurable  );                
 			if (invalidCharFields.length() > 0) {
 				invalidCharFields += ("<br/>" + Message.INVALID_NUMBER_CHARS);
 				setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
 				return false;
 			}
 			//START- GACR005 
-			invalidCharFields = WebUtils.verifyConfigurableStudentNumber(studentNumber, studentSecondNumber, this.studentIdLabelName, this.studentId2LabelName, this.isStudentIdNumeric, this.isStudentId2Numeric );                
+			invalidCharFields = WebUtils.verifyAlphaNumericStudentNumber(studentNumber, studentSecondNumber, this.studentIdLabelName, this.studentId2LabelName, this.isStudentIdNumeric, this.isStudentId2Numeric,this.studentIdConfigurable, this.studentId2Configurable  );                
+			if (invalidCharFields.length() > 0) {
+				invalidCharFields += ("<br/>" + Message.INVALID_ALPHANUMBER_CHARS);
+				setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
+				return false;
+			}
+			
+			invalidCharFields = WebUtils.verifyConfigurableStudentNumber(studentNumber, studentSecondNumber, this.studentIdLabelName, this.studentId2LabelName, this.isStudentIdNumeric, this.isStudentId2Numeric);                
 			if (invalidCharFields.length() > 0) {
 				invalidCharFields += ("<br/>" + Message.INVALID_NUMBER_FORMAT);
 				setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
@@ -3057,5 +3101,33 @@ public class ManageStudentController extends PageFlowController
 	 */
 	public void setIsStudentId2Numeric(String isStudentId2Numeric) {
 		this.isStudentId2Numeric = isStudentId2Numeric;
+	}
+
+	/**
+	 * @return the studentIdConfigurable
+	 */
+	public boolean isStudentIdConfigurable() {
+		return studentIdConfigurable;
+	}
+
+	/**
+	 * @param studentIdConfigurable the studentIdConfigurable to set
+	 */
+	public void setStudentIdConfigurable(boolean studentIdConfigurable) {
+		this.studentIdConfigurable = studentIdConfigurable;
+	}
+
+	/**
+	 * @return the studentId2Configurable
+	 */
+	public boolean isStudentId2Configurable() {
+		return studentId2Configurable;
+	}
+
+	/**
+	 * @param studentId2Configurable the studentId2Configurable to set
+	 */
+	public void setStudentId2Configurable(boolean studentId2Configurable) {
+		this.studentId2Configurable = studentId2Configurable;
 	}
 }

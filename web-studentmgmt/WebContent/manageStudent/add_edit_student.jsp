@@ -59,6 +59,9 @@
 <netui:hidden dataSource="actionForm.studentId2MinLength"/>
 <netui:hidden dataSource="actionForm.isStudentIdNumeric"/>
 <netui:hidden dataSource="actionForm.isStudentId2Numeric"/>
+<netui:hidden dataSource="actionForm.studentIdConfigurable"/>
+<netui:hidden dataSource="actionForm.studentId2Configurable"/>
+
 
 <!-- message -->
 <jsp:include page="/manageStudent/show_message.jsp" />
