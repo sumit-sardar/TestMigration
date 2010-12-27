@@ -1469,7 +1469,8 @@ public class UploadStudent extends BatchProcessor.Process
 	private void setStudentPersonalData ( ManageStudent student , HashMap studentDataMap ) {
 
 
-		student.setStudentIdNumber((String)studentDataMap.get(this.studentIdLabel));
+		student.setStudentIdNumber(
+				((String)studentDataMap.get(this.studentIdLabel)).trim());
 		student.setFirstName(initStringCap((String)studentDataMap.get
 				(CTBConstants.REQUIREDFIELD_FIRST_NAME)));
 		student.setMiddleName(initStringCap((String)studentDataMap.get
@@ -1477,7 +1478,8 @@ public class UploadStudent extends BatchProcessor.Process
 		student.setLastName(initStringCap((String)studentDataMap.get
 				(CTBConstants.REQUIREDFIELD_LAST_NAME)));
 
-		student.setStudentIdNumber2((String)studentDataMap.get(this.studentId2Label));
+		student.setStudentIdNumber2(
+				((String)studentDataMap.get(this.studentId2Label)).trim() );
 
 
 		String date = (String)studentDataMap.get(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);
@@ -3088,8 +3090,7 @@ public class UploadStudent extends BatchProcessor.Process
 					invalidList.add(CTBConstants.FONT_SIZE);
 
 				}
-				//START- Changes for GA2011CR001   
-				else if(this.isStudentIdNumeric.equals("AN")){
+				else if(!this.isStudentIdConfigurable){
 					if(cellHeader.getStringCellValue().
 							equals(this.studentIdLabel)
 							&& !strCell.trim().equals("")
@@ -3099,9 +3100,20 @@ public class UploadStudent extends BatchProcessor.Process
 
 					}
 				}
+				//START- Changes for GA2011CR001   
+				else if(this.isStudentIdConfigurable && this.isStudentIdNumeric.equals("AN")){
+					if(cellHeader.getStringCellValue().
+							equals(this.studentIdLabel)
+							&& !strCell.trim().equals("")
+							&& !validAlphaNumericStudentId(strCell)) {
+
+						invalidList.add(this.studentIdLabel);
+
+					}
+				}
 				//END- Changes for GA2011CR001   
 				//START- Changes for GACR005  
-				else if(this.isStudentIdNumeric.equals("NU")){
+				else if(this.isStudentIdConfigurable && this.isStudentIdNumeric.equals("NU")){
 					if(cellHeader.getStringCellValue().
 							equals(this.studentIdLabel)
 							&& !strCell.trim().equals("")
@@ -3112,8 +3124,8 @@ public class UploadStudent extends BatchProcessor.Process
 					}
 				}
 				//END- Changes for GACR005  
-				//START- Changes for GA2011CR001               
-				else if(this.isStudentId2Numeric.equals("AN")){
+				else if(!this.isStudentId2Configurable){
+					System.out.println("isStudentId2Numeric==>AN"+ (cellHeader.getStringCellValue().equals(this.studentId2Label) && !strCell.trim().equals("") && !validStudentId(strCell)));
 					if(cellHeader.getStringCellValue().
 							equals(this.studentId2Label)
 							&& !strCell.trim().equals("")
@@ -3123,9 +3135,23 @@ public class UploadStudent extends BatchProcessor.Process
 
 					} 
 				}
+				//START- Changes for GA2011CR001               
+				else if(this.isStudentId2Configurable && this.isStudentId2Numeric.equals("AN")){
+					System.out.println("isStudentId2Numeric==>AN"+ (cellHeader.getStringCellValue().equals(this.studentId2Label) && !strCell.trim().equals("") && !validStudentId(strCell)));
+					if(cellHeader.getStringCellValue().
+							equals(this.studentId2Label)
+							&& !strCell.trim().equals("")
+							&& !validAlphaNumericStudentId(strCell)){
+
+						invalidList.add(this.studentId2Label);
+
+					} 
+				}
 				// END- Changes for GA2011CR001   
 				//START- Changes for GACR005  
-				else if(this.isStudentId2Numeric.equals("NU")){
+				else if(this.isStudentId2Configurable && this.isStudentId2Numeric.equals("NU")){
+					System.out.println("isStudentId2Numeric==>AN"+(cellHeader.getStringCellValue().equals(this.studentId2Label) && !strCell.trim().equals("") && !validConfigurableStudentId(strCell)));
+					
 					if(cellHeader.getStringCellValue().
 							equals(this.studentId2Label)
 							&& !strCell.trim().equals("")
@@ -3449,6 +3475,26 @@ public class UploadStudent extends BatchProcessor.Process
 
 		return true;
 	}
+	/**
+	 *  validate the StudentId
+	 */
+	private  boolean validAlphaNumericStudentId(String str) {
+
+		str = str.trim();
+		char[] characters = str.toCharArray();
+
+		for ( int i=0 ; i<characters.length ; i++ ) {
+
+			char character = characters[i];
+
+			if ( !validAlphaNumericCharacter(character) ) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 
 	//Start- GACR005
@@ -3480,6 +3526,18 @@ public class UploadStudent extends BatchProcessor.Process
 		boolean validChar = (ch == ' ');
 
 		return (zero_nine || A_Z || a_z || validChar);
+
+	}
+	/**
+	 *  validate the StudentId character
+	 */
+
+	private  boolean validAlphaNumericCharacter(char ch) {
+		boolean A_Z = ((ch >= 65) && (ch <= 90));
+		boolean a_z = ((ch >= 97) && (ch <= 122));
+		boolean zero_nine = ((ch >= 48) && (ch <= 57));
+		
+		return (zero_nine || A_Z || a_z );
 
 	}
 
