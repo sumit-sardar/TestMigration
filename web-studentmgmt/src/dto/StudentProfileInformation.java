@@ -80,8 +80,8 @@ public class StudentProfileInformation extends SanitizedFormField
         this.grade = student.getGrade();
         if (this.grade == null) this.grade = "";
         //GACR005
-        this.studentNumber = student.getStudentIdNumber().trim();
-        this.studentSecondNumber = student.getStudentIdNumber2().trim();
+        this.studentNumber = student.getStudentIdNumber()!= null ? student.getStudentIdNumber().trim() : student.getStudentIdNumber();
+        this.studentSecondNumber = student.getStudentIdNumber2() != null ? student.getStudentIdNumber2().trim() : student.getStudentIdNumber2();
         //GACR005
         this.birthdate = student.getBirthDate(); 
         if (this.birthdate != null) {
@@ -124,8 +124,8 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setMiddleName( upperCaseFirstLetter(this.middleName) );
         copied.setLastName( upperCaseFirstLetter(this.lastName) );
         copied.setGrade(this.grade);
-        copied.setStudentIdNumber(this.studentNumber);
-        copied.setStudentIdNumber2(this.studentSecondNumber);
+        copied.setStudentIdNumber(this.studentNumber.trim());
+        copied.setStudentIdNumber2(this.studentSecondNumber.trim());
         //GACRCT2010CR007 - changed for creating date when supplied.
         Date date = null;
         
