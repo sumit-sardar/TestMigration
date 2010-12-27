@@ -35,7 +35,7 @@ public class Message implements java.io.Serializable
     //Added for CR  ISTEP2011CR023
     public static final String STUDENT_ASSIGNMENT_ERROR = "Your school system does not allow students to be associated with more than one organization (class) for testing. Please choose only one.";     
 	//START- GACR005 
-	public static final String INVALID_STUDENT_MINLENGTH_FORMAT  = "Please re-enter valid length  for numeric fields in valid format";
+	public static final String INVALID_STUDENT_MINLENGTH_FORMAT  = "Please re-enter valid length in valid format. Minimum length should be :";
 	public static final String INVALID_NUMBER_FORMAT  = "Please re-enter numeric fields in valid format";
 	//END- GACR005 
     public Message()

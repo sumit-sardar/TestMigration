@@ -152,11 +152,11 @@ public class WebUtils
 
    
 	//START- Changed for GACR005 
-	public static String verifyCreateStudentNumber(String studentNumber, String studentSecondNumber, String studentIdLabelName, String studentId2LabelName, boolean studentIdConfigurable, boolean studentId2Configurable)
+	public static String verifyCreateStudentNumber(String studentNumber, String studentSecondNumber, String studentIdLabelName, String studentId2LabelName, String isStudentIdNumeric,String isStudentId2Numeric )
 	{
 		String invalidCharFields = "";
 		int invalidCharFieldCount = 0;
-		if(!studentIdConfigurable) {
+		if(isStudentIdNumeric.equals("AN")) {
 			if (studentNumber != null) {
 				if (! validTextString(studentNumber) ) {
 					invalidCharFieldCount += 1;            
@@ -165,7 +165,7 @@ public class WebUtils
 			}
 		}
 		
-		if(!studentId2Configurable) {
+		if(isStudentId2Numeric.equals("AN")) {
 			if (studentSecondNumber != null) {
 				if (! validTextString(studentSecondNumber) ) {
 					invalidCharFieldCount += 1;            
@@ -178,11 +178,11 @@ public class WebUtils
 	//END- Changed for GACR005 
 	
 	//START- Created for GACR005 
-	public static String verifyConfigurableStudentNumber(String studentNumber, String studentSecondNumber, String studentIdLabelName, String studentId2LabelName, boolean studentIdConfigurable, boolean studentId2Configurable)
+	public static String verifyConfigurableStudentNumber(String studentNumber, String studentSecondNumber, String studentIdLabelName, String studentId2LabelName, String isStudentIdNumeric, String isStudentId2Numeric)
 	{
 		String invalidCharFields = "";
 		int invalidCharFieldCount = 0;
-		if(studentIdConfigurable) {
+		if(isStudentIdNumeric.equals("NU")) {
 			if (studentNumber != null) {
 				if (! validNumber(studentNumber) ) {
 					invalidCharFieldCount += 1;            
@@ -191,7 +191,7 @@ public class WebUtils
 			}
 		}
 		
-		if(studentId2Configurable) {
+		if(isStudentId2Numeric.equals("NU")) {
 			if (studentSecondNumber != null) {
 				if (! validNumber(studentSecondNumber) ) {
 					invalidCharFieldCount += 1;            

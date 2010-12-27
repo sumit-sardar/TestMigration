@@ -79,9 +79,10 @@ public class StudentProfileInformation extends SanitizedFormField
         
         this.grade = student.getGrade();
         if (this.grade == null) this.grade = "";
-        
-        this.studentNumber = student.getStudentIdNumber();
-        this.studentSecondNumber = student.getStudentIdNumber2();
+        //GACR005
+        this.studentNumber = student.getStudentIdNumber().trim();
+        this.studentSecondNumber = student.getStudentIdNumber2().trim();
+        //GACR005
         this.birthdate = student.getBirthDate(); 
         if (this.birthdate != null) {
             this.birthdateString = DateUtils.formatDateToDateString(this.birthdate, DateUtils.DATE_FORMAT_CHAR);     
