@@ -1520,7 +1520,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 					configId = cc.getCustomerConfigurationId();
 					customerConfigurationValues(configId);
 					//By default there should be 3 entries for customer configurations
-					this.valueForStudentId = new String[3];
+					this.valueForStudentId = new String[8];
 					for(int j=0; j<this.customerConfigurationsValue.length; j++){
 						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
 						this.valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
