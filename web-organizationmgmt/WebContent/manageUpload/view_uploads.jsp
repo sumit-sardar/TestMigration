@@ -115,6 +115,10 @@
         <td class="simpleHeader">Error Color</td> 
     </tr>
     <tr class="simple">
+        <td class="simple">Less characters than allowed</td>
+        <td class="simpleColored" bgcolor="#FF69B4">&nbsp;&nbsp;</td>
+    </tr>
+    <tr class="simple">
         <td class="simple">More characters than allowed</td>
         <td class="simpleColored" bgcolor="#FBFF73">&nbsp;&nbsp;</td>
     </tr>

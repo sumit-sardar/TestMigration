@@ -159,6 +159,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 	//START- GACR005 
 	private String studentIdMinLength = "0";
 	private String studentId2MinLength = "0";
+	private String isStudentIdNumeric = "AN";
+	private String isStudentId2Numeric = "AN";
     //END- GACR005
     // END
     static final long serialVersionUID = 1L;
@@ -647,7 +649,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             HashMap commonPathMap = new HashMap ();
             Node []userTopOrgNode =  orgNode.getTopNodesForUser(userName);
             Customer customer = users.getCustomer(userName);
-            System.out.println("getStudentFile" + userName + customer+ customer.getCustomerId());
+            //System.out.println("getStudentFile" + userName + customer+ customer.getCustomerId());
             //Template Header Creation for Organization and User
             OrgNodeCategory []OrgNodeCategory = orgNodeCate.getOrgNodeCategories(
                                                             customer.getCustomerId());
@@ -1891,7 +1893,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                                        OrgNodeCategory []OrgNodeCategory, 
                                        Object []object, 
                                        boolean isUserHeader) {
-    	System.out.println("customer" + customer + "Customer Name"  + customer.getCustomerName() + "Customer Id" + customer.getCustomerId() );
+    	//System.out.println("customer" + customer + "Customer Name"  + customer.getCustomerName() + "Customer Id" + customer.getCustomerId() );
         
         int userHeaderPosition = 0;
         int cellPosition = 0;
@@ -1987,14 +1989,14 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             tempStudentFileRow.setHeaderDateOfBirth(
                     studentHeader.getHeaderDateOfBirthDate());
             tempStudentFileRow.setGrade(studentHeader.getGrade());
-            System.out.println("isStudentIdConfigurable"+"::"+isStudentIdConfigurable);
+            //System.out.println("isStudentIdConfigurable"+"::"+isStudentIdConfigurable);
             if(isStudentIdConfigurable){
             tempStudentFileRow.setExtPin1(this.valueForStudentId[0]);
             }
             else{
             tempStudentFileRow.setExtPin1(studentHeader.getStudentId());
             }
-            System.out.println("isStudentId2Configurable"+"::"+isStudentId2Configurable);
+            //System.out.println("isStudentId2Configurable"+"::"+isStudentId2Configurable);
             if(isStudentId2Configurable){
             tempStudentFileRow.setExtPin2(this.valueForStudentId2[0]);
             }
@@ -3219,7 +3221,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 				{
 					this.isStudentId2Configurable = true; 
 					configId = cc.getId();
-					System.out.println("configId"+ configId);
+					//System.out.println("configId"+ configId);
 					customerConfigurationValues(configId);
 					this.valueForStudentId2 = new String[8];
 
@@ -3284,11 +3286,18 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 				arrValue[3] = "0" ;
 			}
 			this.studentIdMinLength = arrValue[3];
-			
+			arrValue[4] = arrValue[4] != null ? arrValue[4]   : "AN" ;
+			if(!arrValue[4].equals("NU") && !arrValue[4].equals("AN"))
+				{ 
+					arrValue[4]  = "AN";
+				}
+			this.isStudentIdNumeric = arrValue[4];
 			//END- GACR005 
+			System.out.println("Student ID" + arrValue[0] +"...."+arrValue[1] +"..." +arrValue[2] +"..." +arrValue[3] +"..."+arrValue[4] );
+			
 		}
 		
-		if(labelName.equals("Student ID 2")){
+		if(labelName.equals("Student ID2")){
 			//START- GACR005 
 			arrValue[2] = (arrValue[2] != null && new Integer(arrValue[2]).intValue() > 0)? arrValue[2]   : "0" ;
 			try {
@@ -3297,8 +3306,15 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 				arrValue[2] = "0" ;
 			}
 			this.studentId2MinLength = arrValue[2];
-			
+			arrValue[3] = arrValue[3] != null ? arrValue[3]   : "AN" ;
+			if(!arrValue[3].equals("NU") && !arrValue[3].equals("AN"))
+				{ 
+					arrValue[3]  = "AN";
+				}
+			this.isStudentId2Numeric = arrValue[3];
 			//END- GACR005 
+			System.out.println("Student ID 2" + arrValue[0] +"...."+arrValue[1] +"..." +arrValue[2] +"..." +arrValue[3]  );
+			
 		}
 		
 		// check for numeric conversion of maxlength
@@ -3427,6 +3443,46 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 	 */
 	public void setStudentId2MinLength(String studentId2MinLength) {
 		this.studentId2MinLength = studentId2MinLength;
+	}
+
+
+
+
+	/**
+	 * @return the isStudentIdNumeric
+	 */
+	public String getIsStudentIdNumeric() {
+		return isStudentIdNumeric;
+	}
+
+
+
+
+	/**
+	 * @param isStudentIdNumeric the isStudentIdNumeric to set
+	 */
+	public void setIsStudentIdNumeric(String isStudentIdNumeric) {
+		this.isStudentIdNumeric = isStudentIdNumeric;
+	}
+
+
+
+
+	/**
+	 * @return the isStudentId2Numeric
+	 */
+	public String getIsStudentId2Numeric() {
+		return isStudentId2Numeric;
+	}
+
+
+
+
+	/**
+	 * @param isStudentId2Numeric the isStudentId2Numeric to set
+	 */
+	public void setIsStudentId2Numeric(String isStudentId2Numeric) {
+		this.isStudentId2Numeric = isStudentId2Numeric;
 	}
 	
  
