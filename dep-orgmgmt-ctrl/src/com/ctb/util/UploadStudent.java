@@ -243,7 +243,6 @@ public class UploadStudent extends BatchProcessor.Process
 			this.isStudentIdNumeric = valueForStudentId[4];   //GACR005
 
 		}
-		System.out.println("Student ID " + this.isStudentIdConfigurable +"...."+this.studentIdLabel +"..." +this.maxlengthStudentID  +"..." +this.studentIdMinLength +".."+this.isStudentIdNumeric  );
 		
 		//Changes for GA2011CR001  
 		if( valueForStudentId2 != null){
@@ -255,7 +254,6 @@ public class UploadStudent extends BatchProcessor.Process
 			
 
 		}
-		System.out.println("Student ID 2" + this.isStudentId2Configurable +"...."+this.studentId2Label +"..." +this.maxlengthStudentId2  +"..." +this.studentId2MinLength +".."+this.isStudentId2Numeric  );
 		// Initialize the list of color, get the customer configuration entries of customer, 
 
 		initList();
@@ -3090,77 +3088,45 @@ public class UploadStudent extends BatchProcessor.Process
 					invalidList.add(CTBConstants.FONT_SIZE);
 
 				}
-				else if(!this.isStudentIdConfigurable){
-					if(cellHeader.getStringCellValue().
-							equals(this.studentIdLabel)
-							&& !strCell.trim().equals("")
-							&& !validStudentId(strCell)) {
-
-						invalidList.add(this.studentIdLabel);
-
-					}
-				}
-				//START- Changes for GA2011CR001   
-				else if(this.isStudentIdConfigurable && this.isStudentIdNumeric.equals("AN")){
-					if(cellHeader.getStringCellValue().
-							equals(this.studentIdLabel)
-							&& !strCell.trim().equals("")
-							&& !validAlphaNumericStudentId(strCell)) {
-
-						invalidList.add(this.studentIdLabel);
-
-					}
-				}
-				//END- Changes for GA2011CR001   
-				//START- Changes for GACR005  
-				else if(this.isStudentIdConfigurable && this.isStudentIdNumeric.equals("NU")){
-					if(cellHeader.getStringCellValue().
-							equals(this.studentIdLabel)
-							&& !strCell.trim().equals("")
-							&& !validConfigurableStudentId(strCell)) {
-
-						invalidList.add(this.studentIdLabel);
-
-					}
-				}
-				//END- Changes for GACR005  
-				else if(!this.isStudentId2Configurable){
-					System.out.println("isStudentId2Numeric==>AN"+ (cellHeader.getStringCellValue().equals(this.studentId2Label) && !strCell.trim().equals("") && !validStudentId(strCell)));
-					if(cellHeader.getStringCellValue().
-							equals(this.studentId2Label)
-							&& !strCell.trim().equals("")
-							&& !validStudentId(strCell)){
-
-						invalidList.add(this.studentId2Label);
-
-					} 
-				}
-				//START- Changes for GA2011CR001               
-				else if(this.isStudentId2Configurable && this.isStudentId2Numeric.equals("AN")){
-					System.out.println("isStudentId2Numeric==>AN"+ (cellHeader.getStringCellValue().equals(this.studentId2Label) && !strCell.trim().equals("") && !validStudentId(strCell)));
-					if(cellHeader.getStringCellValue().
-							equals(this.studentId2Label)
-							&& !strCell.trim().equals("")
-							&& !validAlphaNumericStudentId(strCell)){
-
-						invalidList.add(this.studentId2Label);
-
-					} 
-				}
-				// END- Changes for GA2011CR001   
-				//START- Changes for GACR005  
-				else if(this.isStudentId2Configurable && this.isStudentId2Numeric.equals("NU")){
-					System.out.println("isStudentId2Numeric==>AN"+(cellHeader.getStringCellValue().equals(this.studentId2Label) && !strCell.trim().equals("") && !validConfigurableStudentId(strCell)));
+				else if (cellHeader.getStringCellValue().
+						equals(this.studentIdLabel)
+						&& !strCell.trim().equals("")){
 					
-					if(cellHeader.getStringCellValue().
-							equals(this.studentId2Label)
-							&& !strCell.trim().equals("")
+					if(!this.isStudentIdConfigurable && !validStudentId(strCell)){
+						invalidList.add(this.studentIdLabel);
+					}
+					else if(this.isStudentIdConfigurable 
+							&& this.isStudentIdNumeric.equals("AN") 
+							&& !validAlphaNumericStudentId(strCell)){
+							invalidList.add(this.studentIdLabel);
+					}
+					else if(this.isStudentIdConfigurable 
+							&& this.isStudentIdNumeric.equals("NU") 
 							&& !validConfigurableStudentId(strCell)){
-
-						invalidList.add(this.studentId2Label);
-
+							invalidList.add(this.studentIdLabel);
 					} 
+					
 				}
+				else if (cellHeader.getStringCellValue().
+						equals(this.studentId2Label)
+						&& !strCell.trim().equals("")){
+					
+					if(!this.isStudentId2Configurable && !validStudentId(strCell)){
+						invalidList.add(this.studentId2Label);
+					}
+					else if(this.isStudentId2Configurable 
+							&& this.isStudentId2Numeric.equals("AN") 
+							&& !validAlphaNumericStudentId(strCell)){
+						invalidList.add(this.studentId2Label);
+					}
+					else if(this.isStudentId2Configurable 
+							&& this.isStudentId2Numeric.equals("NU") 
+							&& !validConfigurableStudentId(strCell)){
+						invalidList.add(this.studentId2Label);
+					} 
+					
+				}
+				 
 				//END- Changes for GACR005  
 
 
