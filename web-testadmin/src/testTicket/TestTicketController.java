@@ -79,6 +79,11 @@ public class TestTicketController extends PageFlowController
 	private boolean isStudentIdConfigurable = false;
 	// END- Added for CR GA2011CR001  
 	
+	//START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+	private boolean isMultiIndividualTkt = false;
+	private String filename = "attachment; filename=TestTicketIndividual.pdf ";
+	//END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+	
 
 // Uncomment this declaration to access Global.app.
     // 
@@ -135,10 +140,24 @@ public class TestTicketController extends PageFlowController
             String studentId = (String)getRequest().getParameter("studentId");
             String testAdminId = (String)getRequest().getParameter("testAdminId");
             String orgNodeId = (String)getRequest().getParameter("orgNodeId");
+            String ticketType = (String)getRequest().getParameter("ticketType");  //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
             Integer sessionId = new Integer(testAdminId); 
             TestSessionData tsd = getTestSessionDetails(sessionId);
             ScheduledSession session = this.getScheduledSession(sessionId);
-
+            
+            //START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+            if(ticketType != null){
+            	
+	            if(ticketType.equals("multiple")){
+	            	this.isMultiIndividualTkt = true;
+	            	filename = "attachment; filename=TestTicketMultiple.pdf ";
+	            } else {
+	            	this.isMultiIndividualTkt = false;
+	            	filename = "attachment; filename=TestTicketIndividual.pdf ";
+	            }
+            }
+            //END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+            
             TestAdminVO testAdmin = buildTestAdminVO(tsd, session);
             RosterElementData red = getRosterForTestSessionAndOrgNode(orgNodeId, sessionId);
 //            TestElementData ted = this.getTestsForProductForUser(
@@ -163,11 +182,12 @@ public class TestTicketController extends PageFlowController
             String server = getRequest().getServerName();
             int port = getRequest().getServerPort();
             getResponse().setContentType("application/pdf");
-            getResponse().setHeader("Content-Disposition","attachment; filename=TestTicketIndividual.pdf ");
+            getResponse().setHeader("Content-Disposition", filename); // Changed For CR ISTEP2011CR007 (Multiple Test Ticket)
             getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
             util.generateReport(new Object[]{
                                 rosterList, 
-                                testAdmin, 
+                                testAdmin,
+                                this.isMultiIndividualTkt,
                                 getResponse().getOutputStream(), 
                                 server,
                                 new Integer(port),
@@ -298,6 +318,7 @@ public class TestTicketController extends PageFlowController
             util.generateReport(new Object[]{
                                 rosterList, 
                                 testAdmin, 
+                                false,
                                 summary,
                                 test,
                                 getResponse().getOutputStream(), 
@@ -859,6 +880,13 @@ public class TestTicketController extends PageFlowController
 	 */
 	public void setStudentIdConfigurable(boolean isStudentIdConfigurable) {
 		this.isStudentIdConfigurable = isStudentIdConfigurable;
+	}
+
+	/**
+	 * @param isMultiIndividualTkt the isMultiIndividualTkt to set
+	 */
+	public void setMultiIndividualTkt(boolean isMultiIndividualTkt) {
+		this.isMultiIndividualTkt = isMultiIndividualTkt;
 	}
 	  
 

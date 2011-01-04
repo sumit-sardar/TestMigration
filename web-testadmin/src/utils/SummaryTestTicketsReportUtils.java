@@ -184,22 +184,24 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
      * create static tables
      * set the variable y coordinates that we can
      */
+     //START - Changed For CR ISTEP2011CR007 (Multiple Test Ticket)
     protected void setup(Object[] args) throws DocumentException{
-        super.initializeGlobals(new Object[] {args[4], args[5], args[6], PageSize.LETTER.rotate(), args[7]});
+        super.initializeGlobals(new Object[] {args[5], args[6], args[7], PageSize.LETTER.rotate(), args[8]});
         this.rosterList = (Collection)args[0];
         this.testAdmin = (TestAdminVO)args[1];
-        this.testSummary = (TestSummaryVO)args[2];
-        this.test = (TestVO)args[3];
+        this.testSummary = (TestSummaryVO)args[3];
+        this.test = (TestVO)args[4];
         this.setDynamicGlobals();
-        this.isTabeProduct = (Boolean)args[8];
-        this.testProduct = (TestProduct)args[9];
+        this.isTabeProduct = (Boolean)args[9];
+        this.testProduct = (TestProduct)args[10];
         //START - Changed for CR GA2011CR001
-        this.isStudentIdConfigurable = (Boolean)args[10];
-        this.studentIdLabelName = (String)args[11];
+        this.isStudentIdConfigurable = (Boolean)args[11];
+        this.studentIdLabelName = (String)args[12];
         //END - Changed for CR GA2011CR001
         addStaticTables();
         createPages();
     }
+    //END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
     
     private void setDynamicGlobals() throws DocumentException{
         float titleHeight = getTitleHeight();

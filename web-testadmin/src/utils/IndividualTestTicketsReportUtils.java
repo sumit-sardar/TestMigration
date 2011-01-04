@@ -69,6 +69,11 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private static final float LOGIN_WIDTH = 388f;
     private static final float KEYBOARD_WIDTH = 306f;
     private static final float WATERMARK_WIDTH = 50f;
+    //START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+    private static final float ADDITIONAL_Y = 385f;
+    private static final float UNADDITIONAL_Y = 0f;
+    private static final float DOTTED_LINE_Y = 400f;
+    //END - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
 
     // table column width ratios
     private static float[] LOGIN_WIDTHS = new float[] {1.3f, 3f};
@@ -123,180 +128,254 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     //END - Changed for CR GA2011CR001
     private TableVO noPauseKeyboards = null;
     private TableVO pauseKeyboards = null;
-     
-    protected boolean createStaticTables() throws DocumentException, IOException {
-        addTitle();
-        addStaticGeneralInformation();
-        addStaticLoginInformation();
-        addKeyboardShortcuts();
-        addFooter();
-        addWatermark();
+    //START - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
+    private boolean isMultiIndividualTkt = false;
+    //END - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
+    
+    //START - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
+    protected boolean createStaticAboveTables() throws DocumentException, IOException {
+        addTitle(UNADDITIONAL_Y);
+        addStaticGeneralInformation(UNADDITIONAL_Y);
+        addStaticLoginInformation(UNADDITIONAL_Y);
+        addFooter(UNADDITIONAL_Y);
+        addWatermark(UNADDITIONAL_Y);
         return true;
     }
+    protected boolean createStaticBelowTables() throws DocumentException, IOException {
+    	addFooter(ADDITIONAL_Y);
+        addWatermark(ADDITIONAL_Y);
+    	addDottedLine();
+        addTitle(ADDITIONAL_Y);
+        addStaticGeneralInformation(ADDITIONAL_Y);
+        addStaticLoginInformation(ADDITIONAL_Y);
+        return true;
+    }
+    //END - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
+    
     protected boolean setDynamicTables() throws DocumentException, IOException{
         this.dynamicTables = (Collection)this.pages.get(currentPageIndex);
         return (this.dynamicTables != null && this.dynamicTables.size() > 0);
     }
     protected boolean setImages() throws DocumentException, IOException{
         if(currentPageIndex == 0){
-            addWavingMan();
+           addWavingMan();
         }
         return true;
     }
     
-    protected void setup(Object[] args) throws DocumentException, IOException{
-        super.initializeGlobals(new Object[] {args[2], args[3], args[4], PageSize.LETTER, args[5]});
+     protected void setup(Object[] args) throws DocumentException, IOException{
+        super.initializeGlobals(new Object[] {args[3], args[4], args[5], PageSize.LETTER, args[6]});
         this.rosterList = (Collection)args[0];
         this.testAdmin = (TestAdminVO)args[1];
         //START - Changed for CR GA2011CR001
-        this.isStudentIdConfigurable = (Boolean)args[7];
-        this.studentIdLabelName = (String)args[8];
+        this.isStudentIdConfigurable = (Boolean)args[8];
+        this.studentIdLabelName = (String)args[9];
         //END - Changed for CR GA2011CR001
-        this.getKeyboardShortcutsTables();
-        this.createStaticTables();
-        this.createPages();
+        
+      //START - Changed for CR ISTEP2011CR007 (Multiple Test Ticket)
+      	this.isMultiIndividualTkt = (Boolean)args[2];
+        
+        if(!isMultiIndividualTkt) {
+        	this.getKeyboardShortcutsTables();
+        	addKeyboardShortcuts();
+        	addWavingMan();
+        	this.createStaticAboveTables();
+        	this.createPages();
+        }
+        else {
+        	
+        	 this.createStaticAboveTables();
+        	 this.createStaticBelowTables();
+        	 this.createMultiTktPages();
+        	 
+         	
+        }	
+        //END - Changed for  CR ISTEP2011CR007 (Multiple Test Ticket)
+        
+       
     }
     
-    private void createPages() throws DocumentException{
-        this.totalPages = this.rosterList.size();
+    //START - Changed for CR ISTEP2011CR007 (Multiple Test Ticket)
+    private void createPages() throws DocumentException, IOException{
+    	float yValue = UNADDITIONAL_Y;
+    	this.totalPages = this.rosterList.size();
         for(Iterator it=this.rosterList.iterator(); it.hasNext();){
             TestRosterVO student = (TestRosterVO)it.next();
             ArrayList tables = new ArrayList();
-            tables.add(getStudentNameValue(student));
-            tables.add(getStudentIdValue(student));
-            tables.add(getLoginTable(student));
+            tables.add(getStudentNameValue(student, yValue));
+            tables.add(getStudentIdValue(student, yValue));
+            tables.add(getLoginTable(student, yValue));
             tables.add(getKeyboardShortcutsTable(student));
             this.pages.add(tables);
         }
     }
-    private void addTitle() throws DocumentException{
-        addTitleText();
-        addTitleLine();
+    //END - Changed for CR ISTEP2011CR007 (Multiple Test Ticket)
+    
+   //START - Added for CR ISTEP2011CR007 (Multiple Test Ticket)
+    private void createMultiTktPages() throws DocumentException, IOException{
+    	boolean flag = true;
+    	float yValue = UNADDITIONAL_Y;
+        this.totalPages = this.rosterList.size();
+        for(Iterator it=this.rosterList.iterator(); it.hasNext();){
+            TestRosterVO student = (TestRosterVO)it.next();
+            ArrayList tables = new ArrayList();
+            tables.add(getStudentNameValue(student, yValue));
+            tables.add(getStudentIdValue(student, yValue));
+            tables.add(getLoginTable(student, yValue));
+           if(flag){
+            	//this.createStaticAboveTables();
+            	yValue = ADDITIONAL_Y;
+            	flag =false;	
+            	
+            	}
+            else{
+            	//this.createStaticBelowTables();
+            	yValue = UNADDITIONAL_Y;
+            	flag =true;	
+            	}
+            
+            this.pages.add(tables);
+        }
+    }
+    //END - Added for CR ISTEP2011CR007 (Multiple Test Ticket)
+    
+    private void addTitle(float yValue) throws DocumentException{
+        addTitleText(yValue);
+        addTitleLine(yValue);
     }
     
-    private void addTitleText() throws DocumentException{
+    private void addTitleText(float yValue) throws DocumentException{
+    	System.out.println("TITLE_Y+yValue====>"+(TITLE_Y-yValue));
          this.staticTables.add(
             tableUtils.getTitleTable(PAGE_NAME_LABEL,
                                      PAGE_WIDTH,
                                      LEFT_X,
-                                     TITLE_Y));
+                                     (TITLE_Y-yValue)));
     }
     
-    private void addTitleLine() throws DocumentException{
-        this.staticTables.add(
+    private void addTitleLine(float yValue) throws DocumentException{
+    	this.staticTables.add(
             tableUtils.getLineTable(LINE_WIDTH,
                                     LEFT_X,
-                                    LINE_Y));
+                                    (LINE_Y-yValue)));
     }
     
-    private void addFooter() throws DocumentException{
+    //START - Changed for CR ISTEP2011CR007 (Multiple Test Ticket)
+    private void addDottedLine() throws DocumentException{
+    	this.staticTables.add(
+            tableUtils.getDottedLineTable(LINE_WIDTH,
+                                    LEFT_X,
+                                    (DOTTED_LINE_Y)));
+    }
+    //END - Changed for CR ISTEP2011CR007 (Multiple Test Ticket)
+    
+    private void addFooter(float yValue) throws DocumentException{
         this.staticTables.add(
             tableUtils.getCopywriteTable(PAGE_WIDTH,
                                          LEFT_X,
-                                         FOOTER_Y));
+                                         (FOOTER_Y + yValue)));
      }
     
-    private void addWatermark() throws DocumentException{
+    private void addWatermark(float yValue) throws DocumentException{
         this.staticTables.add(
             tableUtils.getWatermarkTable(WATERMARK_TEXT,
                                          WATERMARK_WIDTH,
                                          WATERMARK_X,
-                                         WATERMARK_Y));
+                                         (WATERMARK_Y + yValue )));
      }
     
-    private void addStaticGeneralInformation() throws DocumentException{
-        addStudentNameLabel();
-        addStudentIdLabel();
-        addTestNameLabel();
-        addTestNameValue();
-        addLocationLabel();
-        addLocationValue();
+    private void addStaticGeneralInformation(float yValue) throws DocumentException{
+        addStudentNameLabel(yValue);
+        addStudentIdLabel(yValue);
+        addTestNameLabel(yValue);
+        addTestNameValue(yValue);
+        addLocationLabel(yValue);
+        addLocationValue(yValue);
     }
     
-    private void addStudentNameLabel() throws DocumentException{
+    private void addStudentNameLabel(float yValue) throws DocumentException{
         this.staticTables.add( 
              tableUtils.getLabelTable(STUDENT_NAME_LABEL,
                                       INFO_LABEL_WIDTH,
                                       LEFT_X,
-                                      STUDENT_NAME_Y));
+                                      (STUDENT_NAME_Y-yValue)));
     }
 
-    private TableVO getStudentNameValue(TestRosterVO student) throws DocumentException{
+    private TableVO getStudentNameValue(TestRosterVO student,float yValue) throws DocumentException{
         return tableUtils.getInfoTable(getStudentName(student),
                                        INFO_VALUE_WIDTH,
                                        INFO_X,
-                                       STUDENT_NAME_Y);
+                                       (STUDENT_NAME_Y-yValue));
    }
 
-    private void addStudentIdLabel() throws DocumentException{
+    private void addStudentIdLabel(float yValue) throws DocumentException{
     	//START - Changed for CR GA2011CR001
     	String studentIdLabel = STUDENT_ID_LABEL;
     	if(isStudentIdConfigurable) {
-    		studentIdLabel = studentIdLabelName;
+    		studentIdLabel = studentIdLabelName + ":";
     	}
     	//END - Changed for CR GA2011CR001
         this.staticTables.add( 
              tableUtils.getLabelTable(studentIdLabel,
                                       INFO_LABEL_WIDTH,
                                       LEFT_X,
-                                      STUDENT_ID_Y));
+                                      (STUDENT_ID_Y-yValue)));
     }
 
-    private TableVO getStudentIdValue(TestRosterVO student) throws DocumentException{
+    private TableVO getStudentIdValue(TestRosterVO student, float yValue) throws DocumentException{
         return tableUtils.getInfoTable(getStudentId(student),
                                        INFO_VALUE_WIDTH,
                                        INFO_X,
-                                       STUDENT_ID_Y);
+                                       (STUDENT_ID_Y-yValue));
    }
 
-    private void addTestNameLabel() throws DocumentException{
+    private void addTestNameLabel(float yValue) throws DocumentException{
         this.staticTables.add( 
              tableUtils.getLabelTable(TEST_NAME_LABEL,
                                       INFO_LABEL_WIDTH,
                                       LEFT_X,
-                                      TEST_NAME_Y));
+                                      (TEST_NAME_Y-yValue)));
    }
 
-    private void addTestNameValue() throws DocumentException{
+    private void addTestNameValue(float yValue) throws DocumentException{
          this.staticTables.add( 
             tableUtils.getInfoTable(getTestName(),
                                     INFO_VALUE_WIDTH,
                                     INFO_X,
-                                    TEST_NAME_Y));
+                                    (TEST_NAME_Y-yValue)));
      }
     
-    private void addLocationLabel() throws DocumentException{
+    private void addLocationLabel(float yValue) throws DocumentException{
         if(hasLocation()){
             this.staticTables.add( 
                  tableUtils.getLabelTable(LOCATION_LABEL,
                                           INFO_LABEL_WIDTH,
                                           LEFT_X,
-                                          LOCATION_Y));
+                                          (LOCATION_Y-yValue)));
         }
     }
 
-    private void addLocationValue() throws DocumentException{
+    private void addLocationValue(float yValue) throws DocumentException{
         if(hasLocation()){
             this.staticTables.add( 
                 tableUtils.getInfoTable(getLocation(),
                                         INFO_VALUE_WIDTH,
                                         INFO_X,
-                                        LOCATION_Y));
+                                        (LOCATION_Y-yValue)));
         }
    }
 
-    private void addStaticLoginInformation() throws DocumentException, IOException{
-        addLoginLabel();
-        addWavingMan();
-        addLoginInstructions();
+    private void addStaticLoginInformation(float yValue) throws DocumentException, IOException{
+        addLoginLabel(yValue);
+        addLoginInstructions(yValue);
     }
  
-    private void addLoginInstructions() throws DocumentException{
+    private void addLoginInstructions(float yValue) throws DocumentException{
         this.staticTables.add( 
             tableUtils.getBorderedTable(LOGIN_INSTRUCTIONS,
                                         LOGIN_WIDTH,
                                         LEFT_X,
-                                        LOGIN_INSTRUCTIONS_Y,
+                                        (LOGIN_INSTRUCTIONS_Y-yValue),
                                         LOGIN_INSTRUCTIONS_BORDER));
     }
     
@@ -308,24 +387,24 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
         this.images.add(wavingMan);
     }
 
-    private void addLoginLabel() throws DocumentException{
+    private void addLoginLabel(float yValue) throws DocumentException{
         this.staticTables.add( 
              tableUtils.getLabelTable(LOGIN_INFORMATION,
                                       PAGE_WIDTH,
                                       LEFT_X,
-                                      LOGIN_INFO_Y));
+                                      (LOGIN_INFO_Y-yValue)));
     }
     
-    private TableVO getLoginTable(TestRosterVO student) throws DocumentException {
-        return tableUtils.getLoginTable(getLoginInfoTexts(student),
+    private TableVO getLoginTable(TestRosterVO student,float yValue) throws DocumentException {
+        return tableUtils.getLoginTable(getLoginInfoTexts(student, yValue),
                                         LOGIN_WIDTH,
                                         LOGIN_WIDTHS,
                                         LEFT_X,
-                                        LOGIN_INFO_TABLE_Y,
+                                        (LOGIN_INFO_TABLE_Y-yValue),
                                         LOGIN_BORDER);
     }
     
-    private String[] getLoginInfoTexts(TestRosterVO student){
+    private String[] getLoginInfoTexts(TestRosterVO student,float yValue){
         String[] result = new String[6];
         result[0] = LOGIN_ID_LABEL;
         result[1] = getLoginId(student);
@@ -341,7 +420,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     }
     
     private void addKeyboardShortcutsTitle() throws DocumentException{
-        this.staticTables.add( 
+        this.staticKeyboardTables.add( 
              tableUtils.getLabelTable(KEYBOARD_SHORTCUTS_LABEL,
                                       PAGE_WIDTH,
                                       LEFT_X,
@@ -355,7 +434,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     }
     
     private void addKeyboardShortcutsText1() throws DocumentException{
-        this.staticTables.add( 
+        this.staticKeyboardTables.add( 
              tableUtils.getInfoTable(KEYBOARD_SHORTCUTS_TEXT_1,
                                      PAGE_WIDTH,
                                      LEFT_X,
@@ -363,7 +442,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     }
     
     private void addKeyboardShortcutsText2() throws DocumentException{
-        this.staticTables.add( 
+        this.staticKeyboardTables.add( 
              tableUtils.getInfoTable(KEYBOARD_SHORTCUTS_TEXT_2,
                                      PAGE_WIDTH,
                                      LEFT_X,
@@ -371,7 +450,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
       }
      
      private void addKeyboardShortcutsText3() throws DocumentException{
-        this.staticTables.add( 
+        this.staticKeyboardTables.add( 
              tableUtils.getInfoTable(KEYBOARD_SHORTCUTS_TEXT_3,
                                      PAGE_WIDTH,
                                      LEFT_X,

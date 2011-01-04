@@ -427,6 +427,16 @@
 <netui:content value="${bundle.web['printoptions.testSessionDocuments.message.testTickets']}"/>
 </p>
 
+<!--START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)-->
+<p>
+<netui:anchor href="#" onClick="return openTestTicketMultiple(this, document.getElementById('printTestAdminId').value, document.getElementById('printOrgNodeId').value);">Multiple Test Tickets</netui:anchor>
+&nbsp;
+<img src="/TestAdministrationWeb/resources/images/logo_pdf.gif" border="0">
+<br/>
+<netui:content value="${bundle.web['printoptions.testSessionDocuments.message.testTickets']}"/>
+</p>
+<!--END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)-->
+
 <p>
 <netui:anchor href="#" onClick="return openTestTicketSummary(this, document.getElementById('printTestAdminId').value, document.getElementById('printOrgNodeId').value);">Summary Test Ticket</netui:anchor>
 &nbsp;<img src="/TestAdministrationWeb/resources/images/logo_pdf.gif" border="0">
