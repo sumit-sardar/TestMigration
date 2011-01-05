@@ -5,11 +5,13 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerData;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.USState;
+import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.PagerSummary;
@@ -19,6 +21,8 @@ import dto.LicenseNode;
 import dto.Level;
 import dto.Message;
 import dto.NavigationPath;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -58,6 +62,19 @@ public class ManageCustomerController extends PageFlowController
      */
     @Control()
     private com.ctb.control.licensing.Licensing license;
+    
+
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.db.Users users;
+    
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.userManagement.UserManagement userManagement;
 
     static final long serialVersionUID = 1L;
     
@@ -98,6 +115,7 @@ public class ManageCustomerController extends PageFlowController
     public String webTitle = null;
     public Boolean frommanageOrg = Boolean.FALSE;
     
+    private User user = null;
     
     // help
     public String helpLink = null;
@@ -1395,6 +1413,8 @@ public class ManageCustomerController extends PageFlowController
     private ManageCustomerForm initialize(String action)
     {        
         getUserDetails();
+        //Bulk Accommodation Changes
+        customerHasBulkAccommodation();
         this.savedForm = new ManageCustomerForm();
         this.savedForm.init(action);
         this.globalApp.navPath = new NavigationPath();
@@ -1417,7 +1437,14 @@ public class ManageCustomerController extends PageFlowController
                        
             this.userName = (String)getSession().getAttribute("userName");
         }
-        
+        try {
+            this.user = this.userManagement.getUser(this.userName, 
+                                                this.userName);
+       //     this.displayNewMessage = user.getDisplayNewMessage();                                                
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         getSession().setAttribute("userName", this.userName);
     }
 
@@ -2384,6 +2411,39 @@ public class ManageCustomerController extends PageFlowController
 		return customerOptions;
 	}
     
-    
+	/*
+     * Bulk accommodation
+     */
+	private Boolean customerHasBulkAccommodation()
+    {               
+        Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasBulkStudentConfigurable = false;
+
+        try
+        {      
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = users.getCustomerConfigurations(2);
+			}
+            
+            for (int i=0; i < customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+                //Bulk Accommodation
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && cc.getDefaultValue().equals("T")	)
+                {
+                    this.getSession().setAttribute("isBulkAccommodationConfigured", true);
+                    break;
+                } 
+            }
+        }
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+        
+       
+        return new Boolean(hasBulkStudentConfigurable);
+    }
+
     
 }

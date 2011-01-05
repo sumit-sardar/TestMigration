@@ -5,6 +5,7 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.NodeData;
@@ -20,6 +21,8 @@ import dto.LicenseNode;
 import dto.Message;
 import dto.NavigationPath;
 import dto.Organization;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,6 +59,12 @@ public class ManageLicenseController extends PageFlowController
     @Control()
     private com.ctb.control.licensing.Licensing licensing;
 
+    @Control()
+    private com.ctb.control.db.Users users;
+    
+    @Control()
+    private com.ctb.control.userManagement.UserManagement userManagement;
+    
 
     private String userName = null;
     private CustomerLicense[] customerLicenses = null;
@@ -70,6 +79,8 @@ public class ManageLicenseController extends PageFlowController
     private static final String BUTTON_GO_INVOKED = "ButtonGoInvoked_tablePathListAnchor";
     private static final String SETUP_ORG_NODE_PATH = "setupOrgNodePath";
     private static final String ACTION_ORG_LIST_SORT_ORDER_BY ="{actionForm.orgListSortOrderBy}";
+    
+    private User user = null;
     
     public String[] productNameOptions = null;
     public String productName = null;
@@ -86,7 +97,8 @@ public class ManageLicenseController extends PageFlowController
     protected Forward begin()
     {                
         getUserDetails();
-        
+        //Bulk Accommodation Changes
+        customerHasBulkAccommodation();
         ManageLicenseForm form = initialize();
         
         this.customerLicenses = getCustomerLicenses();
@@ -412,7 +424,14 @@ public class ManageLicenseController extends PageFlowController
             this.userName = (String)getSession().getAttribute("userName");
       
         }
-        
+        try {
+            this.user = this.userManagement.getUser(this.userName, 
+                                                this.userName);
+       //     this.displayNewMessage = user.getDisplayNewMessage();                                                
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         getSession().setAttribute("userName", this.userName);
     }
     
@@ -691,6 +710,38 @@ public class ManageLicenseController extends PageFlowController
 		return productNameOptions;
 	}
   
+	/*
+     * Bulk accommodation
+     */
+	private Boolean customerHasBulkAccommodation()
+    {               
+        Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasBulkStudentConfigurable = false;
 
+        try
+        {      
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = users.getCustomerConfigurations(2);
+			}
+            
+            for (int i=0; i < customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+                //Bulk Accommodation
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && cc.getDefaultValue().equals("T")	)
+                {
+                    this.getSession().setAttribute("isBulkAccommodationConfigured", true);
+                    break;
+                } 
+            }
+        }
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+        
+       
+        return new Boolean(hasBulkStudentConfigurable);
+    }
        
 }

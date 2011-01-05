@@ -2,10 +2,13 @@ package administration;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
 import java.io.IOException;
+import java.sql.SQLException;
+
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
@@ -20,6 +23,7 @@ public class AdministrationController extends PageFlowController
     static final long serialVersionUID = 1L;
     
     private String userName = null;
+    private User user = null;
     
     /**
      * @common:control
@@ -45,6 +49,17 @@ public class AdministrationController extends PageFlowController
     @Control()
     private com.ctb.control.licensing.Licensing licensing;
     
+    /**
+     * @common:control
+     */    
+    @Control()
+    private com.ctb.control.db.Users users;
+    
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.userManagement.UserManagement userManagement;
     
     /**
      * @jpf:action
@@ -75,6 +90,8 @@ public class AdministrationController extends PageFlowController
     protected Forward begin()
     {
         getUserDetails();
+        //for Bulk Accommodation
+        customerHasBulkAccommodation();
         this.getSession().setAttribute("hasUploadDownloadConfig", hasUploadDownloadConfig());
         this.getSession().setAttribute("hasProgramStatusConfig", hasProgramStatusConfig());
         this.getSession().setAttribute("hasLicenseConfig", hasLicenseConfig());
@@ -162,6 +179,14 @@ public class AdministrationController extends PageFlowController
             this.userName = principal.toString();
         else            
             this.userName = (String)getSession().getAttribute("userName");
+        try {
+            this.user = this.userManagement.getUser(this.userName, 
+                                                this.userName);
+       //     this.displayNewMessage = user.getDisplayNewMessage();                                                
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        } 
         
         getSession().setAttribute("userName", this.userName);
     }
@@ -232,6 +257,38 @@ public class AdministrationController extends PageFlowController
         return hasLicenseConfig;
     }
 
+	//Bulk Accommodation
+	private Boolean customerHasBulkAccommodation()
+    {               
+        Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasBulkStudentConfigurable = false;
+
+        try
+        {      
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = users.getCustomerConfigurations(2);
+			}
+            
+            for (int i=0; i < customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+                //Bulk Accommodation
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && cc.getDefaultValue().equals("T")	)
+                {
+                    this.getSession().setAttribute("isBulkAccommodationConfigured", true);
+                    break;
+                } 
+            }
+        }
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+        
+       
+        return new Boolean(hasBulkStudentConfigurable);
+    }
+       
 
 
 }
