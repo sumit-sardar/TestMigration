@@ -1,23 +1,24 @@
 package com.ctb.control.db; 
 
-import com.bea.control.*;
-import org.apache.beehive.controls.system.jdbc.JdbcControl; 
+import java.sql.SQLException;
+import java.util.Date;
+
+import org.apache.beehive.controls.api.bean.ControlExtension;
+import org.apache.beehive.controls.system.jdbc.JdbcControl;
+
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.CustomerDemographic;
 import com.ctb.bean.studentManagement.CustomerDemographicValue;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.OrganizationNode;
-import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicData;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.testAdmin.RosterElement;
+import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentAccommodations;
-
-import java.sql.SQLException;
-import java.util.Date; 
-import org.apache.beehive.controls.api.bean.ControlExtension;
+import com.ctb.bean.testAdmin.StudentDemoGraphics;
 
 /** 
  * Defines a new database control. 
@@ -177,6 +178,10 @@ public interface StudentManagement extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select customer_demographic_id as id,  customer_id as customerId,  label_name as labelName,  label_code as labelCode,  value_cardinality as valueCardinality,  sort_order as sortOrder,  import_editable as importEditable,  visible as visible from customer_demographic where customer_id = {customerId} order by sort_order, label_name")
     CustomerDemographic [] getCustomerDemographics(int customerId) throws SQLException;
+	
+	@JdbcControl.SQL(statement = "select customer_demographic_id as id,  customer_id as customerId,  label_name as labelName,  label_code as labelCode,  value_cardinality as valueCardinality,  sort_order as sortOrder,  import_editable as importEditable,  visible as visible from customer_demographic where customer_id = {customerId}  and value_cardinality = {cardinality} order by sort_order, label_name")
+    CustomerDemographic [] getCustomerDemographicsBasedOnCardinality(int customerId, String cardinality) throws SQLException;
+
 
     /**
      * @jc:sql statement::
@@ -613,6 +618,10 @@ public interface StudentManagement extends JdbcControl
                      arrayMaxLength = 100000)
     ManageStudent [] getStudentsForOrgNode(String username, Integer orgNodeId) throws SQLException;
     
+    /* added for bulk accommodation */
+    @JdbcControl.SQL(statement = "select distinct  stu.student_id as studentId,  stu.user_Name as userName,  stu.password as password,  stu.first_Name as firstName,  stu.middle_Name as middleName,  stu.last_Name as lastName,  stu.preferred_Name as preferredName,  stu.prefix as prefix,  stu.suffix as suffix,  stu.birthdate as birthdate,  stu.gender as gender,  stu.ethnicity as ethnicity,  stu.email as email,  stu.grade as grade,  stu.ext_Elm_Id as extElmId,  stu.ext_Pin1 as extPin1,  stu.ext_Pin2 as extPin2,  stu.ext_Pin3 as extPin3,  stu.ext_School_Id as extSchoolId,  stu.active_Session as activeSession,  stu.potential_Duplicated_Student as potentialDuplicatedStudent,  stu.created_By as createdBy , stu.created_Date_Time as createdDateTime,  stu.updated_By as updatedBy, stu.updated_Date_Time as updatedDateTime, stu.activation_Status as activationStatus, stu.data_import_history_id as dataImportHistoryId, stu.grade as studentGrade, node.org_node_name as orgNodeName, node.org_node_id as orgNodeId, accom.SCREEN_MAGNIFIER as screenMagnifier,  \t  accom.SCREEN_READER as screenReader,  \t  accom.CALCULATOR as calculator,  \t  accom.TEST_PAUSE as testPause,  \t  accom.UNTIMED_TEST as untimedTest,  \t  accom.QUESTION_BACKGROUND_COLOR as questionBackgroundColor,  \t  accom.QUESTION_FONT_COLOR as questionFontColor,  \t  accom.QUESTION_FONT_SIZE as questionFontSize,  \t  accom.ANSWER_BACKGROUND_COLOR as answerBackgroundColor,  \t  accom.ANSWER_FONT_COLOR as answerFontColor,  \t  accom.ANSWER_FONT_SIZE as answerFontSize from  org_node_student ons,  student stu,   student_accommodation accom, org_node node,  org_node_category onc where  ons.student_id = stu.student_id \t and ons.activation_status= 'AC' \t and stu.activation_status= 'AC' \t and ons.org_node_id = node.org_node_id  and ons.org_node_id  in (select org_node_id from org_node_ancestor ons where ancestor_org_node_id={orgNodeId} and number_of_levels in(0,1))   \t and onc.org_node_category_id = node.org_node_category_id and accom.student_id (+) = stu.student_id",
+            arrayMaxLength = 100000)
+    SessionStudent [] getBulkStudentsForOrgNode(String username, Integer orgNodeId) throws SQLException;
 
     /**
      * @jc:sql statement::
@@ -1008,4 +1017,11 @@ public interface StudentManagement extends JdbcControl
      */
 	@JdbcControl.SQL(statement = "delete from student_tutorial_status where student_id = {studentId}")
     void deleteStudentTutorialStatus(Integer studentId);
+	
+	@JdbcControl.SQL(statement = "   select student_demographic_data_id as studentDemographicDataId,ona.org_node_id as orgNodeId,stu.STUDENT_ID  as studentId,concat(concat(cdg.label_name,'_'),std.value_name)  as valueName,std.customer_demographic_id as customerDemographicId,cdg.label_name as labelName from student_demographic_data std,student stu,org_node_ancestor  ona,org_node_ancestor ona2,org_node_student ons,customer_demographic cdg  where std.student_id(+) = stu.student_id and stu.student_id = ons.student_id  and std.customer_demographic_id = cdg.customer_demographic_id  and cdg.customer_id = {customerId} and stu.activation_status = 'AC' and ons.activation_status = 'AC' and ons.org_node_id = ona2.org_node_id and ona2.ancestor_org_node_id = ona.org_node_id and ona.ancestor_org_node_id = {orgNodeId} ")
+    StudentDemoGraphics [] getStudentDemographicDataValues(int orgNodeId, int customerId) throws SQLException;
+	
+	@JdbcControl.SQL(statement = "   select distinct student_demographic_data_id as studentDemographicDataId,std.STUDENT_ID  as studentId,concat(concat(cdg.label_name,'_'),std.value_name)  as valueName,cdg.label_name as labelName from student_demographic_data std,customer_demographic cdg  where std.student_id = {studentId}  and std.customer_demographic_id = cdg.customer_demographic_id and cdg.value_Cardinality='SINGLE' and cdg.customer_id = {customerId}  ")
+    StudentDemoGraphics [] getStudentDemoValues(int studentId, int customerId) throws SQLException;
+
 }

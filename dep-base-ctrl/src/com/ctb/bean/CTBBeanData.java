@@ -2,21 +2,24 @@ package com.ctb.bean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.request.FilterParams.FilterParam;
 import com.ctb.bean.request.SortParams.SortParam;
+import com.ctb.bean.testAdmin.StudentDemoGraphics;
 import com.ctb.exception.request.InvalidFilterFieldException;
 import com.ctb.exception.request.InvalidPageRequestedException;
 import com.ctb.exception.request.InvalidSortFieldException;
 import com.ctb.util.MathUtils;
 import com.ctb.util.request.Filterer;
 import com.ctb.util.request.Sorter;
-import java.util.Arrays;
-import java.util.Iterator;
 
 /**
  * The base data collection object, all platform method return types
@@ -143,6 +146,111 @@ public abstract class CTBBeanData implements Serializable
         
         this.filteredCount = new Integer(result.size());
         this.filteredPages =  MathUtils.intDiv(this.filteredCount, this.pageSize);
+    }
+    
+    public void applyDemoFiltering(FilterParams params) throws InvalidFilterFieldException{
+        /*FilterParam [] filters = params.getFilterParams();
+        List result = new ArrayList();
+        List originalList=new ArrayList();
+        Map originalMap = new HashMap();
+        for(int i=0;i<beans.length;i++) {
+            result.add(beans[i]);
+           // originalList.add(beans[i]);
+            if (beans[i] instanceof StudentDemoGraphics) {
+            	StudentDemoGraphics stdDemo = (StudentDemoGraphics) beans[i];
+            	originalMap.put(stdDemo.getStudentId()+stdDemo.getStudentDemographicDataId()
+            			,beans[i]);
+            }
+        }
+        
+        for(int iter=0;iter<filters.length;iter++) {
+            FilterParam param = (FilterParam) filters[iter];
+            try {
+                 Filterer.demoFilter(result, param);
+                
+            } catch (Exception e) {
+                InvalidFilterFieldException ife = new InvalidFilterFieldException(e.getMessage());
+                ife.setStackTrace(e.getStackTrace());
+                throw ife;
+            }
+        }
+        
+        if(filters.length > 0 ) {
+        	
+        	 Iterator iter = originalMap.keySet().iterator();
+             //remove  out non find students from orgiginal list only
+             while (iter.hasNext()) {
+             	Integer keyValue=(Integer)iter.next();
+             	StudentDemoGraphics sdg=(StudentDemoGraphics)originalMap.get(keyValue);
+             	Integer studentId = sdg.getStudentId();
+             	Iterator iter1 = result.iterator();
+             	 while (iter1.hasNext()) {
+                 	StudentDemoGraphics sdgv=(StudentDemoGraphics)iter1.next();
+                 	Integer studentIdV = sdgv.getStudentId();
+                 	if(studentId==studentIdV) {
+                 		iter.remove();
+                 		iter1.remove();
+                 	}
+             	 }
+             	
+             }
+        }
+        
+        //filter out total match criteria
+        
+        
+        Iterator iterKeys = originalMap.keySet().iterator();
+        //filter out find students only
+        while (iterKeys.hasNext()) {
+        	Integer studentId=(Integer)iterKeys.next();
+        	originalList.add(originalMap.get(studentId));
+        }
+        
+       
+        Iterator iterator = originalList.iterator();
+        CTBBean [] results = new CTBBean[originalList.size()];
+        int i = 0;
+        while (iterator.hasNext()) {
+            results[i] = (CTBBean) iterator.next();
+            i++;
+        }
+        this.beans = results;
+
+        this.filtered = true;
+        
+        this.filteredCount = new Integer(originalList.size()-result.size());
+        this.filteredPages =  MathUtils.intDiv(this.filteredCount, this.pageSize);*/
+    	
+    	 FilterParam [] filters = params.getFilterParams();
+         List result = new ArrayList();
+         for(int i=0;i<beans.length;i++) {
+             result.add(beans[i]);
+         }
+         
+         for(int iter=0;iter<filters.length;iter++) {
+             FilterParam param = (FilterParam) filters[iter];
+             try {
+                  Filterer.demoFilter(result, param);
+             } catch (Exception e) {
+                 InvalidFilterFieldException ife = new InvalidFilterFieldException(e.getMessage());
+                 ife.setStackTrace(e.getStackTrace());
+                 throw ife;
+             }
+         }
+         
+         Iterator iterator = result.iterator();
+         CTBBean [] results = new CTBBean[result.size()];
+         int i = 0;
+         while (iterator.hasNext()) {
+             results[i] = (CTBBean) iterator.next();
+             i++;
+         }
+         this.beans = results;
+
+         this.filtered = true;
+         
+         this.filteredCount = new Integer(result.size());
+         this.filteredPages =  MathUtils.intDiv(this.filteredCount, this.pageSize);
     }
     
     /**

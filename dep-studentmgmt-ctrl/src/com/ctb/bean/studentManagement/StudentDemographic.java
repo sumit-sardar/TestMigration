@@ -12,7 +12,7 @@ public class StudentDemographic extends CustomerDemographic
 { 
     private Integer studentId;
     private StudentDemographicValue [] studentDemographicValues;
-    
+    private Integer orgNodeId;//bulk accommodation
      public StudentDemographic() {
         super();
      }
@@ -53,6 +53,20 @@ public class StudentDemographic extends CustomerDemographic
 	public void setStudentDemographicValues(
 			StudentDemographicValue[] studentDemographicValues) {
 		this.studentDemographicValues = studentDemographicValues;
+	}
+
+	/**
+	 * @return the orgNodeId
+	 */
+	public Integer getOrgNodeId() {
+		return orgNodeId;
+	}
+
+	/**
+	 * @param orgNodeId the orgNodeId to set
+	 */
+	public void setOrgNodeId(Integer orgNodeId) {
+		this.orgNodeId = orgNodeId;
 	}
     
     

@@ -4,6 +4,9 @@ package com.ctb.control.studentManagement;
 
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
+import com.ctb.bean.request.FilterParams;
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
 import com.ctb.exception.CTBBusinessException;
 
 /** 
@@ -425,4 +428,32 @@ public interface StudentManagement
     
     com.ctb.bean.studentManagement.CustomerConfigurationValue[] getCustomerConfigurationsValue(java.lang.Integer configId) throws com.ctb.exception.CTBBusinessException;
     
+	//bulk accommodation 
+	com.ctb.bean.studentManagement.ManageBulkStudentData findBulkStudentsForOrgNode(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.FilterParams demoFilter,com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+	
+	//bulk Accommodation
+    com.ctb.bean.studentManagement.CustomerDemographic[] getCustomerDemographics(java.lang.String userName, java.lang.Integer customerId) throws com.ctb.exception.CTBBusinessException;
+
+    /**
+     * Retrieves a list of org nodes at which the specified user has a role
+     * defined. <br/><br/>Each node contains two counts: the number of students
+     * rostered in the specified admin which are at or below the node
+     * (rosterCount), and the number of students matching the grade and student
+     * test accommodation filter criteria which are at or below the node
+     * (studentCount). If no test admin id is specified, only the student count
+     * is populated, not the roster count. <br/><br/>The filter params passed to
+     * this call only affect the student count, not the set of org nodes
+     * returned, whereas the sort and paging params affect the org node list, as
+     * usual.
+     * @param userName - identifies the user
+     * @param testAdminId - identifies the test admin
+     * @param filter - filtering params
+     * @param page - paging params
+     * @param sort - sorting params
+     * @return StudentNodeData
+     * @throws com.ctb.exception.CTBBusinessException
+     */
+    
+    com.ctb.bean.testAdmin.StudentNodeData getTopStudentNodesForBulkAccommodationUserAndAdmin(java.lang.String userName, java.lang.Integer customerId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.FilterParams demoFilter,com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+    com.ctb.bean.testAdmin.StudentNodeData getStudentNodesForBulkAccomUserParentAndAdmin(String userName, java.lang.Integer customerId,Integer orgNodeId, FilterParams filter,FilterParams demoFilter,PageParams page, SortParams sort)throws com.ctb.exception.CTBBusinessException;
 } 
