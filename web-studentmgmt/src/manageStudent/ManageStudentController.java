@@ -231,6 +231,30 @@ public class ManageStudentController extends PageFlowController
 		}        
 		return new Boolean(hasReports);           
 	}
+	
+	
+	/**
+	 * Bulk Accommodation
+	 */
+	private Boolean customerHasBulkAccommodation() 
+	{
+		boolean hasBulkStudentConfigurable = false;
+			 //Bulk Accommodation
+		 for (int i=0; i < this.customerConfigurations.length; i++) {
+			 
+	           CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+	    	        		cc.getDefaultValue().equals("T")) {
+	                	hasBulkStudentConfigurable = true; 
+	                	break;
+	             }
+	      }
+			
+	    getSession().setAttribute("isBulkAccommodationConfigured", hasBulkStudentConfigurable);
+	            
+	 	
+		return new Boolean(hasBulkStudentConfigurable);           
+	}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -448,7 +472,9 @@ public class ManageStudentController extends PageFlowController
 			this.getRequest().setAttribute("demographicVisible", "F");       
 		}
 
-		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);       
+		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);  
+		//Bulk Accommodation
+		customerHasBulkAccommodation();
 
 		form.setCurrentAction(ACTION_DEFAULT);
 	}
@@ -1492,7 +1518,8 @@ public class ManageStudentController extends PageFlowController
 		this.getRequest().setAttribute("selectedModule", this.selectedModuleFind);
 
 		this.pageTitle = buildPageTitle(ACTION_FIND_STUDENT, form);
-
+		//Bulk Accommodation
+		customerHasBulkAccommodation();
 		setFormInfoOnRequest(form);
 		return new Forward("success");
 	}

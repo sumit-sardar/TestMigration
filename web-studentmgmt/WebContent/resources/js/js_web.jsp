@@ -119,7 +119,7 @@ function verifyRemoveAllProctors(anchorName){
 }
 
 function verifyCancelAddStudents(){
-    return confirm("Click 'OK' to return to the Test Session Settings page.\nAny changes you've made to the student test roster will be lost.\n");
+    return confirm("Click 'OK' to return to the Find Student page.\nAny changes you've made to the student Accommodation will be lost.\n");
 }
 
 function verifyCancelAddProctors(){
@@ -130,6 +130,12 @@ function verifyCancelResolveAssignments(){
     return confirm("Click 'OK' to return to the Select Students page.\nAny changes you've made to the student test roster list will be lost.\n");
 }
 
+
+//for bulk accomodation
+
+function verifyBulkAccommodation(){
+    return confirm("Click 'OK' to quit,assigning student accomodation information. Any changes you've made will be lost.");
+    }
 function openAcknowledgmentsWindow(url) {
     if( !acknowledgmentsWindow || acknowledgmentsWindow.closed ) {
         acknowledgmentsWindow = window.open(url, 'Acknowledgments', 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,menubar=no,resizable=yes,width=560, height=430');

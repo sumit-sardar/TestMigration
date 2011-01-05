@@ -37,7 +37,9 @@ public class FilterSortPageUtils
     //sort 
     public static final String TEST_DEFAULT_SORT_COLUMN = "ItemSetLevel";    
     public static final String ORGNODE_DEFAULT_SORT_COLUMN = "OrgNodeName";    
-    public static final String STUDENT_DEFAULT_SORT_COLUMN = "StudentName";    
+    public static final String STUDENT_DEFAULT_SORT_COLUMN = "StudentName";  
+    //Add bulk accommodation
+    public static final String STUDENT_DEFAULT_SORT_COLUMN_LAST_NAME = "LastName";
     public static final String PROCTOR_DEFAULT_SORT_COLUMN = "LastName";
     public static final String PROCTOR_DEFAULT_SECONDARY_SORT_COLUMN = "FirstName";    
     public static final String TESTROSTER_DEFAULT_SORT = "LastName";
@@ -57,6 +59,13 @@ public class FilterSortPageUtils
     public static final int PAGESIZE_15 = 15;
     public static final int PAGESIZE_20 = 20;
     public static final int MAX_RECORDS = 10000;
+    
+    //show all filter bulk accommodation
+    
+    public static final String FILTERTYPE_SHOWALL = "Show All";
+    public static final String STUDENTS_WITH_AND_WITHOUT_ACCOMMODATIONS ="Show All";
+    public static final String STUDENTS_WITH_ACCOMMODATIONS ="Students with selected accommodations";
+    public static final String STUDENTS_WITHOUT_ACCOMMODATIONS ="Students without accommodations";
   
     
     public static FilterParams buildFilterParams(String fieldName, String fieldValue)

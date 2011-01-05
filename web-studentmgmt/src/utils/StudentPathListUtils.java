@@ -5,7 +5,11 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.bean.studentManagement.OrganizationNodeData;
+//bulk accommodation
+import com.ctb.bean.testAdmin.StudentNodeData;
 import com.ctb.control.studentManagement.StudentManagement;
+//bulk accommodation
+import com.ctb.control.testAdmin.ScheduleTest;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.widgets.bean.PathListEntry;
@@ -415,6 +419,25 @@ public class StudentPathListUtils
         }        
         return resultList;
     }
+    
+    /**
+	 * getOrganizationNodes for bulk accommodation
+	 */    
+	public static StudentNodeData getOrganizationNodesForBulkAccommodation( String userName, StudentManagement studentManagement,Integer customerId, Integer orgNodeId,
+			FilterParams filter, FilterParams demoFilter,PageParams page, SortParams sort)
+	{    
+		StudentNodeData snd = null;
+		try { 
+			if ((orgNodeId == null) || (orgNodeId.intValue() <= 0)) {
+				snd = studentManagement.getTopStudentNodesForBulkAccommodationUserAndAdmin(userName, customerId, filter,demoFilter, page, sort);
+			} else {
+				snd = studentManagement.getStudentNodesForBulkAccomUserParentAndAdmin(userName, customerId,orgNodeId, filter,demoFilter, page, sort);
+			} 
+		} catch (CTBBusinessException be) {
+				be.printStackTrace();
+			} 
+			return snd;
+		}
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** PRIVATE METHODS ************* /////////////////////////////    

@@ -1141,3 +1141,19 @@ function moveSelectedOption(elementId, moveDirection)
     
         return true;   
     }    
+var totalSelectedCount=0;
+     function toggleShowButton(element) {
+    spanOfTablePager = document.getElementById("totalSelected");
+    totalSelectedCount = spanOfTablePager.innerHTML;
+    //spanOfTablePager.innerHtml =spanOfTablePager.innerText;
+    if(element.checked)
+    {
+    totalSelectedCount++;
+    spanOfTablePager.innerHTML =totalSelectedCount;
+    }
+    else
+    {
+    totalSelectedCount--;
+    spanOfTablePager.innerHTML =totalSelectedCount;
+    }
+}

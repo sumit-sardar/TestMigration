@@ -15,6 +15,11 @@ public class PathNode implements java.io.Serializable
     private String categoryName = null;
     private String selectable = null;
     private String fullPathName = null;
+	 //Bulk accommodation
+	private String clickable;
+	private Integer filteredCount = null;
+	private String hasChildren = null;
+	private Integer selectedCount = null;
     
     public PathNode() {}
     
@@ -67,5 +72,55 @@ public class PathNode implements java.io.Serializable
     public void setFullPathName(String fullPathName) {
         this.fullPathName = fullPathName;
     }
+	 //Bulk Accommodation
+    public String getClickable() {
+        if (this.clickable == null) {
+            if ((this.childrenNodeCount != null) && (this.childrenNodeCount.intValue() > 0 &&
+            		(this.filteredCount != null) && (this.filteredCount.intValue() > 0)))
+                this.clickable = "true";
+            else
+                this.clickable = "false";
+        }
+        return this.clickable;
+    }
+    public void setClickable(String clickable) {
+        this.clickable = clickable;
+    }
+
+	/**
+	 * @return the filteredCount
+	 */
+	public Integer getFilteredCount() {
+		return filteredCount;
+	}
+
+	/**
+	 * @param filteredCount the filteredCount to set
+	 */
+	public void setFilteredCount(Integer filteredCount) {
+		this.filteredCount = filteredCount;
+	}
+
+	/**
+	 * @param hasChildren the hasChildren to set
+	 */
+	public void setHasChildren(String hasChildren) {
+		this.hasChildren = hasChildren;
+	}
+
+	/**
+	 * @return the selectedCount
+	 */
+	public Integer getSelectedCount() {
+		return selectedCount;
+	}
+
+	/**
+	 * @param selectedCount the selectedCount to set
+	 */
+	public void setSelectedCount(Integer selectedCount) {
+		this.selectedCount = selectedCount;
+	}
+    
     
 } 
