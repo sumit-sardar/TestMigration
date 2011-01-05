@@ -2,7 +2,6 @@
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator">
 <h1>Tests</h1>
 <ul>
@@ -23,6 +22,11 @@
         <li><a href="/StudentManagementWeb/manageStudent/beginAddStudent.do" ><span>Add Student</span></a></li>
 </ctb:auth>
         <li><a href="/StudentManagementWeb/manageStudent/beginFindStudent.do" ><span>Find Student</span></a></li>
+<ctb:auth roles="Administrator, Administrative Coordinator">
+     <c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
+        <li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Bulk Accommodation</span></a></li>
+    </c:if>
+</ctb:auth>
 </ul>
 </ctb:auth>
 

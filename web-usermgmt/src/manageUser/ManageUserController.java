@@ -6,6 +6,7 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.Node;
@@ -24,6 +25,7 @@ import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNode;	  
 import com.ctb.bean.testAdmin.PasswordDetails;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.CustomerConfigurationDataNotFoundException;
 import com.ctb.exception.userManagement.UserDataCreationException;
 import com.ctb.exception.userManagement.UserPasswordUpdateException;
 import com.ctb.util.userManagement.CTBConstants;
@@ -37,6 +39,7 @@ import dto.PasswordInformation;
 import dto.PathNode;
 import dto.UserProfileInformation;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -79,7 +82,13 @@ public class ManageUserController extends PageFlowController
      */
     @Control()
     private com.ctb.control.userManagement.UserManagement userManagement;
-   
+
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.db.Users users;
+
     /**
      * @common:control
      */   
@@ -240,7 +249,7 @@ public class ManageUserController extends PageFlowController
     })
     protected Forward beginFindUser()
     {
-        ManageUserForm form = initialize(ACTION_FIND_USER);
+    	ManageUserForm form = initialize(ACTION_FIND_USER);
        
         form.setSelectedUserId(null); 
         form.setSelectedUserName(null);
@@ -1971,7 +1980,9 @@ public class ManageUserController extends PageFlowController
     private ManageUserForm initialize(String action)
     {        
         getUserDetails();
-        
+    	//Bulk Accommodation
+    	customerHasBulkAccommodation();
+
         this.orgNodePath = new ArrayList();
         this.currentOrgNodesInPathList = new HashMap();
         this.currentOrgNodeIds = new Integer[0];
@@ -3036,6 +3047,38 @@ public class ManageUserController extends PageFlowController
 	public LinkedHashMap getStateOptions() {
 		return stateOptions;
 	}
-    
+	/*
+     * Bulk accommodation
+     */
+	private Boolean customerHasBulkAccommodation()
+    {               
+        Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasBulkStudentConfigurable = false;
+
+        try
+        {      
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = users.getCustomerConfigurations(2);
+			}
+            
+            for (int i=0; i < customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+                //Bulk Accommodation
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && cc.getDefaultValue().equals("T")	)
+                {
+                    this.getSession().setAttribute("isBulkAccommodationConfigured", true);
+                    break;
+                } 
+            }
+        }
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+        
+       
+        return new Boolean(hasBulkStudentConfigurable);
+    }
 
 }
