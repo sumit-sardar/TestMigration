@@ -1977,7 +1977,7 @@ public class StudentManagementImpl implements StudentManagement
 
 				//StudentDemographicDataBean cachedDemoData = (StudentDemographicDataBean) SimpleCache.checkCache5min("STUDENT_DEMOGRAPHICS_BY_ORG", String.valueOf(studentNodes[i].getOrgNodeId()));
 				StudentDemographicDataBean cachedDemoData = null;
-				if(cachedDemoData == null) {
+				if(cachedDemoData == null && demoFilter != null && demoFilter.getFilterParams().length > 0) {
 					StudentDemoGraphics[] studentDemographicData = studentManagement.getStudentDemographicDataValues(studentNodes[i].getOrgNodeId(),customerId);
 					HashMap<Integer , HashMap<Integer , StudentDemoGraphics>> demosByOrg = new HashMap(studentNodes.length);
 					HashMap<Integer , StudentDemoGraphics> studentDemoData = new HashMap<Integer , StudentDemoGraphics> ();
@@ -2160,7 +2160,7 @@ public class StudentManagementImpl implements StudentManagement
 
 				//StudentDemographicDataBean cachedDemoData = (StudentDemographicDataBean) SimpleCache.checkCache5min("STUDENT_DEMOGRAPHICS_BY_ORG", String.valueOf(studentNodes[i].getOrgNodeId()));
 				StudentDemographicDataBean cachedDemoData = null;
-				if(cachedDemoData == null) {
+				if(cachedDemoData == null && demoFilter != null && demoFilter.getFilterParams().length > 0) {
 					StudentDemoGraphics[] studentDemographicData = studentManagement.getStudentDemographicDataValues(studentNodes[i].getOrgNodeId(),customerId);
 					HashMap<Integer , HashMap<Integer , StudentDemoGraphics>> demosByOrg = new HashMap(studentNodes.length);
 					HashMap<Integer , StudentDemoGraphics> studentDemoData = new HashMap<Integer , StudentDemoGraphics> ();
@@ -2240,22 +2240,6 @@ public class StudentManagementImpl implements StudentManagement
 					}
 
 				} 
-				/*if(cachedDemoData!= null && cachedDemoData.getStudentDemographics() != null && 
-						cachedDemoData.getStudentDemographics().length > 0) {
-					StudentDemoGraphics[] sdArray = new StudentDemoGraphics
-					[cachedDemoData.getStudentDemographics().length];
-					for(int j=0;j<sdArray.length;j++) {
-						sdArray[j] = cachedDemoData.getStudentDemographics()[j];
-					}
-					demoData.setStudentDemographics(sdArray, null);
-					if(demoFilter != null) 
-						demoData.applyDemoFiltering(demoFilter);
-
-					for(int j=0 ; j < demoData.getStudentDemographics().length ; j++) {
-						demosByOrgStudent.add(demoData.getStudentDemographics()[j].getStudentId());
-					}
-
-				} */
 				
 				
 				if(cachedAccommData != null && cachedAccommData.getStudentAccommodations() != null) {
