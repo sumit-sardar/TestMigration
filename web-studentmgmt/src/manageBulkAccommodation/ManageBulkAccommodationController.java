@@ -73,9 +73,9 @@ public class ManageBulkAccommodationController extends PageFlowController
 	@Control()
 	private com.ctb.control.studentManagement.StudentManagement studentManagement;
 
-	@Control()
+/*	@Control()
 	private com.ctb.control.testAdmin.ScheduleTest scheduleTest;
-
+*/
 
 	private static final String ACTION_DEFAULT           = "defaultAction";
 	private static final String ACTION_FIND_STUDENT		="findStudent";

@@ -283,7 +283,8 @@ public class HomePageController extends PageFlowController
         {
             this.getRequest().setAttribute("enableProctorRegisterStudent", Boolean.TRUE);
         }
-
+        //Bulk Accommodation
+        customerHasBulkAccommodation();
         form.setActionElement("none");   
         return new Forward("success", form);
     }
@@ -491,6 +492,7 @@ public class HomePageController extends PageFlowController
                 {
                     validCustomer = true; 
                 }
+               
             }
         }
         catch (CTBBusinessException be)
@@ -501,6 +503,38 @@ public class HomePageController extends PageFlowController
         boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
         
         return new Boolean(validCustomer && validUser);
+    }
+    
+    /*
+     * Bulk accommodation
+     */
+    private Boolean customerHasBulkAccommodation()
+    {               
+        Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasBulkStudentConfigurable = false;
+
+        try
+        {      
+            CustomerConfiguration [] ccArray = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);       
+            for (int i=0; i < ccArray.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)ccArray[i];
+                //Bulk Accommodation
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+                		cc.getDefaultValue().equals("T")	)
+                {
+                    this.getSession().setAttribute("isBulkAccommodationConfigured", true);
+                    break;
+                } 
+            }
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }        
+        
+       
+        return new Boolean(hasBulkStudentConfigurable);
     }
  
     private TestSessionData getTestSessionsForUser(FilterParams filter, PageParams page, SortParams sort) 
