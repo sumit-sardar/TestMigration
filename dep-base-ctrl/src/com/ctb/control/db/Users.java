@@ -8,6 +8,8 @@ import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerEmail;
 import com.ctb.bean.testAdmin.FindUser;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
@@ -889,4 +891,12 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "update dex.dex_user_password d  set d.user_password_old = (select dd.user_password_new  \t\t\t\t\t\t\t  from dex.dex_user_password dd  \t\t\t\t\t\t\t  where dd.user_id = {userId}),  \t\td.user_password_new = {newPassword}  where d.user_id = {userId}")
     void updateDexPassword(Integer userId, String newPassword) throws SQLException;
+    
+    
+    @JdbcControl.SQL(statement = "select  customer_configuration_id as id,  customer_configuration_name as customerConfigurationName,  customer_id as customerId,  editable as editable,  default_value as defaultValue from customer_configuration where customer_id = {customerId}")
+    CustomerConfiguration [] getCustomerConfigurations(int customerId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select  customer_configuration_value as customerConfigurationValue,  customer_configuration_id as customerConfigurationId,  sort_order sortOrder from customer_configuration_value where customer_configuration_id = {customerConfigurationId} order by sort_order, customer_configuration_value")
+    CustomerConfigurationValue [] getCustomerConfigurationValues(int customerConfigurationId) throws SQLException;
+
 }
