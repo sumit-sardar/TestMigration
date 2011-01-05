@@ -27,6 +27,7 @@ public class TablePagerTag extends WidgetsBaseTag
     private static final String RESOURCE_FILTERED     = "{bundle.widgets['pager.filtered']}";
     private static final String RESOURCE_FOUND        = "{bundle.widgets['pager.found']}";
     private static final String RESOURCE_LOCATION     = "{bundle.widgets['pager.location']}";
+    private static final String RESOURCE_SELECTED     = "{bundle.widgets['pager.selected']}";//Bulk Accommodation
         
     private String dataSource;
     private String summary;
@@ -304,6 +305,15 @@ public class TablePagerTag extends WidgetsBaseTag
             int filtered = pagerSummary.getTotalFilteredObjects().intValue();
             html += filteredMsg;
             html = html.replaceAll( "\\$x", String.valueOf(filtered) );
+        }
+        
+        if(pagerSummary.getTotalSelectedObjects() != null) {
+        	String js="toggleShowButton(element,totalStudents)";
+        	String selectedMsg = null;
+        	selectedMsg = (String) tlu.resolveVariable( this.RESOURCE_SELECTED );
+        	html += selectedMsg;
+        	html += "<span id=\"totalSelected\">"+pagerSummary.getTotalSelectedObjects()+"</span>";
+        	 
         }
         
         return "<span>" + html + "</span>";   

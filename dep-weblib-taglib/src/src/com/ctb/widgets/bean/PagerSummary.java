@@ -9,6 +9,8 @@ public class PagerSummary implements Serializable
     private Integer totalPages;
     private Integer totalObjects;
     private Integer totalFilteredObjects;
+    private Integer totalSelectedObjects;//Bulk Accommodation
+    
     
     
     
@@ -18,6 +20,7 @@ public class PagerSummary implements Serializable
         this.totalPages = null;
         this.totalObjects = null;
         this.totalFilteredObjects = null;
+        this.totalSelectedObjects = null;
     }
     
     
@@ -60,5 +63,15 @@ public class PagerSummary implements Serializable
     public String getObjectLabel( ) {
         return this.objectLabel;
     }
+
+
+	public Integer getTotalSelectedObjects() {
+		return totalSelectedObjects;
+	}
+
+
+	public void setTotalSelectedObjects(Integer totalSelectedObjects) {
+		this.totalSelectedObjects = totalSelectedObjects;
+	}
 
 } 
