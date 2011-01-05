@@ -157,6 +157,7 @@ public class RegistrationController extends PageFlowController
     protected Forward begin()
     {
         getUserDetails();
+     
                         
         this.gradeOptions = getGradeOptions(ACTION_FIND_STUDENT);
         this.genderOptions = getGenderOptions(ACTION_FIND_STUDENT);
@@ -187,7 +188,8 @@ public class RegistrationController extends PageFlowController
         
         //GACRCT2010CR007- retrieve value for Disable_Mandatory_Birth_Date 
         getCustomerConfigurations();
-        
+        //Bulk Accommodation
+		customerHasBulkAccommodation();
         return new Forward("success", this.savedForm);
     }
 
@@ -2102,6 +2104,29 @@ public class RegistrationController extends PageFlowController
 
 	public List getOrgNodeNames() {
 		return orgNodeNames;
+	}
+	
+	/**
+	 * Bulk Accommodation
+	 */
+	private Boolean customerHasBulkAccommodation() 
+	{
+		boolean hasBulkStudentConfigurable = false;
+			 //Bulk Accommodation
+		 for (int i=0; i < this.customerConfigurations.length; i++) {
+			 
+	           CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+	    	        		cc.getDefaultValue().equals("T")) {
+	                	hasBulkStudentConfigurable = true; 
+	                	break;
+	             }
+	      }
+			
+	    getSession().setAttribute("isBulkAccommodationConfigured", hasBulkStudentConfigurable);
+	            
+	 	
+		return new Boolean(hasBulkStudentConfigurable);           
 	}
     
 }
