@@ -79,8 +79,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 */
 
 	private static final String ACTION_DEFAULT           = "defaultAction";
-	private static final String ACTION_FIND_STUDENT		="findStudent";
-
 	public static final String ACTION_CHANGE_ACCOMMODATION = "changeAccommodation";
 	public static final String ACTION_APPLY = "apply";
 	public static final String ACTION_CLEAR = "clear";
@@ -93,8 +91,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 	private static final String ACTION_CLEAR_SEARCH   = "clearSearch";
 
 	public String[] gradeOptions = null;
-	public String[] genderOptions = null;
-
+	
 	public String[] realDemographicOptions = null;
 	public String[] demographic1 = null;
 	public String[] demographic2 = null;
@@ -106,11 +103,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
-
-	private String selectedModuleFind = null;
 	private boolean searchApplied = false;
-	private boolean viewStudentFromSearch = false;
-
 	private List orgNodePath = null;
 	private Integer selectedOrgNodeId = null;    
 	private Integer copyOfOrgNodeId = null;    
@@ -291,8 +284,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 		for (int i=0 ; i<this.selectedStudents.size() ; i++) {
 			SessionStudent ss = (SessionStudent) this.selectedStudents.get(i);
-			/*String key = encodeStudentOrgIds(ss);
-			ss.setExtElmId(key);*/
 			this.originalSelectedStudents.add(ss);
 		}
 	}
@@ -425,9 +416,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 	{
 		ManageBulkAccommodationForm form = initialize(ACTION_DEFAULT);
 		form.setSelectedStudentId(null); 
-
-		//form.setSelectedTab(MODULE_STUDENT_PROFILE);        
-
 		this.searchApplied = false;
 		getCustomerDemographicOptions();
 		initGradeOptions(ACTION_DEFAULT, form, null);
@@ -542,20 +530,21 @@ public class ManageBulkAccommodationController extends PageFlowController
 			form.setSelectedDemoValue2(this.selectedDemoValue2);    
 			this.selectedDemoValue3 = FilterSortPageUtils.FILTERTYPE_SHOWALL;
 			form.setSelectedDemoValue3(this.selectedDemoValue3);    
-
+			this.demographic1 = this.realDemographicOptions;
+			this.demographic2 = this.realDemographicOptions;
+			this.demographic3 = this.realDemographicOptions;
 			this.selectedFormOperand = FilterSortPageUtils.STUDENTS_WITH_AND_WITHOUT_ACCOMMODATIONS;
 			form.setAccommodationOperand(this.selectedFormOperand);
 			this.selectedAccommodations = null;
-			form.setSelectedAccommodations(this.selectedAccommodations);            
+			form.setSelectedAccommodations(this.selectedAccommodations);   
 		}
 
 		if (currentAction.equals(ACTION_GET_DEMO_DATA))
-		{	//today change
+		{	
 			String[] tempDemographic1 = new String[realDemographicOptions.length +1];
 			String[] tempDemographic2 = new String[realDemographicOptions.length +1];
 			String[] tempDemographic3 = new String[realDemographicOptions.length +1];
 			
-			//System.out.println("ACTION_GET_DEMO_DATA called....." +customerDemographic.length);
 			tempDemographic1[0] = form.getSelectedDemo1();
 			tempDemographic2[0] = form.getSelectedDemo2();
 			tempDemographic3[0] = form.getSelectedDemo3();
@@ -628,38 +617,42 @@ public class ManageBulkAccommodationController extends PageFlowController
 				}
 
 			}
-
-		}
-		
-		/*if((orgNodeId != null &&  (this.savedForm.selectedOrgNodeId != null )) 
-				 && (orgNodeId.intValue() != this.savedForm.selectedOrgNodeId.intValue())){
-				
-				removeSelectedStudentToList();
 			
 		}
 		
-
-		if (isNeedCommitSelection(currentAction, actionElement, form))
-		{
-			commitSelection(form);
-		}*/
-
+		
 		String accommodationOperand = form.getAccommodationOperand();
 		if ((accommodationOperand != null) && (accommodationOperand.equals(FilterSortPageUtils.STUDENTS_WITH_ACCOMMODATIONS)))
 		{
 			form.setShowAccommodations(Boolean.TRUE);        
 			this.selectedAccommodations = form.getSelectedAccommodations();            
-			if ((this.selectedAccommodations != null) && (this.selectedAccommodations.length > 0))             
+			if ((this.selectedAccommodations != null) && (this.selectedAccommodations.length > 0))  {            
 				this.getRequest().setAttribute("disableApply", "false");     
-			else
-				this.getRequest().setAttribute("disableApply", "true");     
+				form.setDisableApply("false");
+			} else {
+				this.getRequest().setAttribute("disableApply", "true"); 
+				form.setDisableApply("true");
+			}
 		}               
 		else
 		{
-			form.setShowAccommodations(Boolean.FALSE);        
+			form.setShowAccommodations(Boolean.FALSE); 
+			form.setDisableApply("false");
 			this.getRequest().setAttribute("disableApply", "false");     
 		}      
-
+		if(currentAction.equals(ACTION_GET_DEMO_DATA)) {
+			savedForm.setSelectedDemo1(form.getSelectedDemo1());
+			savedForm.setSelectedDemo2(form.getSelectedDemo2());
+			savedForm.setSelectedDemo3(form.getSelectedDemo3());
+			savedForm.setSelectedDemoValue1(form.getSelectedDemoValue1());
+			savedForm.setSelectedDemoValue2(form.getSelectedDemoValue2());
+			savedForm.setSelectedDemoValue3(form.getSelectedDemoValue3());
+			form.setActionElement(ACTION_DEFAULT); 
+			form.setCurrentAction(ACTION_DEFAULT); 
+			
+			setFormInfoOnRequest(this.savedForm);
+			return new Forward("success");
+		}
 
 		// get data for Pathlist - getChildrenOrgNodes
 		FilterParams filter = new FilterParams();
@@ -876,16 +869,15 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 
 
-		List studentNodes = buildStudentList(msData);
-		PagerSummary studentPagerSummary = buildStudentPagerSummary(msData, form.getStudentPageRequested());        
+		form.setStudentNodes(buildStudentList(msData));
+		form.setStudentPagerSummary(buildStudentPagerSummary(msData, form.getStudentPageRequested()));        
 		form.setStudentMaxPage(msData.getFilteredPages());
-
-
-		this.getRequest().setAttribute("studentNodes", studentNodes);        
-		
-		this.getRequest().setAttribute("hasStudentNodes", studentNodes.size() > 0 ? "true" : null);
-		this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
-		this.getRequest().setAttribute("nodeContainsStudents", msData.getTotalCount().intValue() > 0 ? "true" : null);			
+		form.setStudentNodesSize(form.getStudentNodes().size() > 0 ? "true" : null);
+		form.setMsCount(msData.getTotalCount().intValue() > 0 ? "true" : null);
+		this.getRequest().setAttribute("studentNodes", form.getStudentNodes());        
+		this.getRequest().setAttribute("hasStudentNodes", form.getStudentNodesSize());
+		this.getRequest().setAttribute("studentPagerSummary", form.getStudentPagerSummary());
+		this.getRequest().setAttribute("nodeContainsStudents",form.getMsCount());			
 		this.getRequest().setAttribute("isBulkAccommodation", Boolean.TRUE);
 
 		setSelectedStudentOrgListToForm(form);                    
@@ -896,10 +888,19 @@ public class ManageBulkAccommodationController extends PageFlowController
 		this.pageTitle = buildPageTitle(ACTION_DEFAULT, form);
 		if (this.selectedGrade.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
 		{
-			if (this.selectedFormOperand == null)
+			if (this.selectedFormOperand == null) {
 				this.getRequest().setAttribute("noFilterApplied", "true");
-			else if (this.selectedFormOperand.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL)) 
+				form.setNoFilterApplied("true");
+			}
+			else if (this.selectedFormOperand.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL)) {
 				this.getRequest().setAttribute("noFilterApplied", "true");
+				form.setNoFilterApplied("true");
+			}
+		}
+		
+		if(!(demoFilter != null && demoFilter.getFilterParams().length > 0)){
+			this.getRequest().setAttribute("noFilterApplied", "true");
+			form.setNoFilterApplied("true");
 		}
 		this.savedForm = form;
 		form.setActionElement(ACTION_DEFAULT);    
@@ -910,8 +911,10 @@ public class ManageBulkAccommodationController extends PageFlowController
 	
 
 
-	public PagerSummary buildStudentPagerSummary(ManageBulkStudentData msData, Integer pageRequested) 
+	public  PagerSummary buildStudentPagerSummary(ManageBulkStudentData msData,Integer pageRequested ) 
 	{
+		
+		
 		PagerSummary pagerSummary = new PagerSummary();
 		pagerSummary.setCurrentPage(pageRequested);                
 		pagerSummary.setTotalObjects(msData.getTotalCount());
@@ -1210,7 +1213,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		}
 		List orgNodes = buildOrgNodeList(snd);  //Added for CR017
 		String orgCategoryName = StudentPathListUtils.getOrgCategoryName(orgNodes);
-		PagerSummary orgPagerSummary = buildOrgNodePagerSummary(snd, form.getOrgPageRequested());   
+		PagerSummary orgPagerSummary = buildOrgNodePagerSummary(snd, form);   
 
 		form.setOrgMaxPage(snd.getFilteredPages());
 
@@ -1225,7 +1228,9 @@ public class ManageBulkAccommodationController extends PageFlowController
 			}
 		}
 
-		System.out.println("this.orgNodePath..."+ this.orgNodePath);
+		form.setOrgNodes(orgNodes);
+		form.setOrgNodePath(this.orgNodePath);
+		form.setOrgCategoryName(orgCategoryName);
 		this.getRequest().setAttribute("orgNodePath", this.orgNodePath);
 		this.getRequest().setAttribute("orgNodes", orgNodes);        
 		this.getRequest().setAttribute("orgPagerSummary", orgPagerSummary);
@@ -1233,18 +1238,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		
 		boolean nodeChanged = StudentPathListUtils.adjustOrgNodePath(this.orgNodePath, orgNodeId, orgNodeName);
 
-		/*if (nodeChanged)
-		{
-			form.resetValuesForPathList();
-			//form.setSelectedOrgNodeId(null);
-			if (this.copyOfOrgNodeId != null)
-			{
-				form.setSelectedOrgNodeId(this.copyOfOrgNodeId);
-				this.copyOfOrgNodeId = null;
-			}
-
-		}*/
-		//today change
+		
 		 if (actionElement.equals("{actionForm.orgPageRequested}") || actionElement.equals("{actionForm.orgSortOrderBy}") )
 	        {                
 	            nodeChanged = true;
@@ -1277,20 +1271,18 @@ public class ManageBulkAccommodationController extends PageFlowController
 	            }
 	        }   
 
-	      //today change
-		this.pageMessage = "";
-		
-
 	return orgNodes;
 	}
 
-	private PagerSummary buildOrgNodePagerSummary(StudentNodeData snd, Integer pageRequested) 
+	private PagerSummary buildOrgNodePagerSummary(StudentNodeData snd, ManageBulkAccommodationForm form) 
 	{
+		Integer pageRequested = form.getOrgPageRequested();
 		PagerSummary pagerSummary = new PagerSummary();
 		pagerSummary.setCurrentPage(pageRequested);        
 		pagerSummary.setTotalPages(snd.getFilteredPages());
 		pagerSummary.setTotalObjects(snd.getFilteredCount());
-		pagerSummary.setTotalFilteredObjects(null);        
+		pagerSummary.setTotalFilteredObjects(null);     
+		form.setOrgPagerSummary(pagerSummary);
 		return pagerSummary;
 	}
 	private List buildOrgNodeList(StudentNodeData snd) 
@@ -1309,8 +1301,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 				pathNode.setFilteredCount(node.getStudentCount());
 				Integer selectedCount = getSelectedStudentCountAtOrgNode(node.getOrgNodeId());
 				pathNode.setSelectedCount(selectedCount);
-				/*pathNode.setSelectable(node.getBottomLevelNodeFlag());  
-				pathNode.setSelectable(selectable)(selectedCount);*/
 				pathNode.setChildrenNodeCount(node.getChildNodeCount());
 				pathNode.setHasChildren((new Boolean(node.getChildNodeCount().intValue() > 0)).toString());                
 				pathNode.setCategoryName(node.getOrgNodeCategoryName());                
@@ -1368,7 +1358,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 	private void getCustomerConfigurations()
 	{
 		try {
-			//if (this.customerConfigurations == null) {   //Changes for Defect-60479
 			this.customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);
 
 			Boolean supportAccommodations = Boolean.TRUE;            
@@ -1380,7 +1369,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 				supportAccommodations = Boolean.FALSE;
 			}
 			getSession().setAttribute("supportAccommodations", supportAccommodations); 
-			//}
+			
 		}
 		catch (CTBBusinessException be) {
 			be.printStackTrace();
@@ -1443,7 +1432,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 
 	/**
-	 * initGradeGenderOptions
+	 * initGradeOptions
 	 */
 	private void initGradeOptions(String action, ManageBulkAccommodationForm form, String grade)
 	{        
@@ -1456,42 +1445,24 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 	}
 
-
-	/**
-	 * clearStudentProfileSearch
-	 */
-	private void clearStudentProfileSearch(ManageBulkAccommodationForm form)
-	{   
-		this.searchApplied = false;
-
-		form.clearSearch();    
-
-		form.setSelectedStudentId(null);
-		form.setSelectedOrgNodeId(null);
-	}
-
-	/**
-	 * clearHierarchySearch
-	 */
-	private void clearHierarchySearch(ManageBulkAccommodationForm form)
-	{   
-		this.searchApplied = false;
-		this.orgNodePath = new ArrayList();
-
-		form.setOrgNodeName("Top");
-		form.setOrgNodeId(new Integer(0));
-
-		form.setSelectedStudentId(null);
-		form.setSelectedOrgNodeId(null);
-	}
-
 	/*
 	 * set form Value in request
 	 */
 	private void setFormInfoOnRequest(ManageBulkAccommodationForm form) {
 
-
+		this.getRequest().setAttribute("studentPagerSummary", form.getStudentPagerSummary());
+		this.getRequest().setAttribute("orgPagerSummary", form.getOrgPagerSummary());
 		this.getRequest().setAttribute("pageMessage", form.getMessage());
+		this.getRequest().setAttribute("orgNodePath", form.getOrgNodePath());
+		this.getRequest().setAttribute("orgNodes", form.getOrgNodes());
+		this.getRequest().setAttribute("orgCategoryName", form.getOrgCategoryName());
+		this.getRequest().setAttribute("studentNodes", form.getStudentNodes());        
+		this.getRequest().setAttribute("hasStudentNodes",form.getStudentNodesSize());
+		this.getRequest().setAttribute("studentPagerSummary", form.getStudentPagerSummary());
+		this.getRequest().setAttribute("nodeContainsStudents", form.getMsCount());			
+		this.getRequest().setAttribute("isBulkAccommodation", Boolean.TRUE);
+		this.getRequest().setAttribute("disableApply", form.getDisableApply());			
+		this.getRequest().setAttribute("noFilterApplied", form.getNoFilterApplied());
 	}
 
 
@@ -1502,7 +1473,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 	protected Forward selectStudentCancel(ManageBulkAccommodationForm form)
 	{        
 		form.setSelectedStudents(null);
-		//resetFormOnReturn(form, "selectStudentCancel");
 		return new Forward("done");
 	}
 
@@ -1525,17 +1495,67 @@ public class ManageBulkAccommodationController extends PageFlowController
 		private Integer selectedStudentId;
 
 		private String[] selectedStudentOrgList;
+		
+		private PagerSummary studentPagerSummary ;
+		private PagerSummary orgPagerSummary ;
+		
+		private List orgNodePath;
+		private List orgNodes;
+		private List studentNodes;
+		private String studentNodesSize;
+		private String msCount;
+		private String orgCategoryName;
+		private String disableApply;
+		private String noFilterApplied;
+		
+		/**
+		 * @return the studentNodes
+		 */
+		public List getStudentNodes() {
+			return studentNodes;
+		}
+
+		/**
+		 * @param studentNodes the studentNodes to set
+		 */
+		public void setStudentNodes(List studentNodes) {
+			this.studentNodes = studentNodes;
+		}
+
+		/**
+		 * @return the studentNodesSize
+		 */
+		public String getStudentNodesSize() {
+			return studentNodesSize;
+		}
+
+		/**
+		 * @param studentNodesSize the studentNodesSize to set
+		 */
+		public void setStudentNodesSize(String studentNodesSize) {
+			this.studentNodesSize = studentNodesSize;
+		}
+
+		/**
+		 * @return the msCount
+		 */
+		public String getMsCount() {
+			return msCount;
+		}
+
+		/**
+		 * @param msCount the msCount to set
+		 */
+		public void setMsCount(String msCount) {
+			this.msCount = msCount;
+		}
+
 		/**
 		 * @return the selectedStudentOrgList
 		 */
 		public String[] getSelectedStudentOrgList() {
 			return selectedStudentOrgList;
 		}
-
-
-
-
-
 
 		/**
 		 * @param selectedStudentOrgList the selectedStudentOrgList to set
@@ -2083,11 +2103,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 			this.selectedStudentIds = selectedStudentIds;
 		}
 
-
-
-
-
-
 		/**
 		 * @return the filterVisible
 		 */
@@ -2111,22 +2126,12 @@ public class ManageBulkAccommodationController extends PageFlowController
 			return creatorOrgNodeName;
 		}
 
-
-
-
-
-
 		/**
 		 * @param creatorOrgNodeName the creatorOrgNodeName to set
 		 */
 		public void setCreatorOrgNodeName(String creatorOrgNodeName) {
 			this.creatorOrgNodeName = creatorOrgNodeName;
 		}
-
-
-
-
-
 
 		/**
 		 * @return the action
@@ -2135,22 +2140,12 @@ public class ManageBulkAccommodationController extends PageFlowController
 			return action;
 		}
 
-
-
-
-
-
 		/**
 		 * @param action the action to set
 		 */
 		public void setAction(String action) {
 			this.action = action;
 		}
-
-
-
-
-
 
 		/**
 		 * @return the creatorOrgNodeId
@@ -2160,10 +2155,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 		}
 
 
-
-
-
-
 		/**
 		 * @param creatorOrgNodeId the creatorOrgNodeId to set
 		 */
@@ -2171,34 +2162,19 @@ public class ManageBulkAccommodationController extends PageFlowController
 			this.creatorOrgNodeId = creatorOrgNodeId;
 		}
 
-
-
-
-
-
 		/**
 		 * @return the selectedDemoValue1
 		 */
 		public String getSelectedDemoValue1() {
 			return selectedDemoValue1;
 		}
-
-
-
-
-
-
+		
 		/**
 		 * @param selectedDemoValue1 the selectedDemoValue1 to set
 		 */
 		public void setSelectedDemoValue1(String selectedDemoValue1) {
 			this.selectedDemoValue1 = selectedDemoValue1;
 		}
-
-
-
-
-
 
 		/**
 		 * @return the selectedDemoValue2
@@ -2207,22 +2183,12 @@ public class ManageBulkAccommodationController extends PageFlowController
 			return selectedDemoValue2;
 		}
 
-
-
-
-
-
 		/**
 		 * @param selectedDemoValue2 the selectedDemoValue2 to set
 		 */
 		public void setSelectedDemoValue2(String selectedDemoValue2) {
 			this.selectedDemoValue2 = selectedDemoValue2;
 		}
-
-
-
-
-
 
 		/**
 		 * @return the selectedDemoValue3
@@ -2231,22 +2197,12 @@ public class ManageBulkAccommodationController extends PageFlowController
 			return selectedDemoValue3;
 		}
 
-
-
-
-
-
 		/**
 		 * @param selectedDemoValue3 the selectedDemoValue3 to set
 		 */
 		public void setSelectedDemoValue3(String selectedDemoValue3) {
 			this.selectedDemoValue3 = selectedDemoValue3;
 		}
-
-
-
-
-
 
 		/**
 		 * @return the selectedDemo1
@@ -2255,34 +2211,19 @@ public class ManageBulkAccommodationController extends PageFlowController
 			return selectedDemo1;
 		}
 
-
-
-
-
-
 		/**
 		 * @param selectedDemo1 the selectedDemo1 to set
 		 */
 		public void setSelectedDemo1(String selectedDemo1) {
 			this.selectedDemo1 = selectedDemo1;
 		}
-
-
-
-
-
-
+		
 		/**
 		 * @return the selectedDemo2
 		 */
 		public String getSelectedDemo2() {
 			return selectedDemo2;
 		}
-
-
-
-
-
 
 		/**
 		 * @param selectedDemo2 the selectedDemo2 to set
@@ -2291,22 +2232,12 @@ public class ManageBulkAccommodationController extends PageFlowController
 			this.selectedDemo2 = selectedDemo2;
 		}
 
-
-
-
-
-
-		/**
+	   /**
 		 * @return the selectedDemo3
 		 */
 		public String getSelectedDemo3() {
 			return selectedDemo3;
 		}
-
-
-
-
-
 
 		/**
 		 * @param selectedDemo3 the selectedDemo3 to set
@@ -2316,9 +2247,127 @@ public class ManageBulkAccommodationController extends PageFlowController
 		}
 
 
+		/**
+		 * @return the studentPagerSummary
+		 */
+		public PagerSummary getStudentPagerSummary() {
+			return studentPagerSummary;
+		}
+
+		/**
+		 * @param studentPagerSummary the studentPagerSummary to set
+		 */
+		public void setStudentPagerSummary(PagerSummary studentPagerSummary) {
+			this.studentPagerSummary = studentPagerSummary;
+		}
+
+		/**
+		 * @return the orgPagerSummary
+		 */
+		public PagerSummary getOrgPagerSummary() {
+			return orgPagerSummary;
+		}
+
+		/**
+		 * @param orgPagerSummary the orgPagerSummary to set
+		 */
+		public void setOrgPagerSummary(PagerSummary orgPagerSummary) {
+			this.orgPagerSummary = orgPagerSummary;
+		}
+
+
+
+
+
+
+		/**
+		 * @return the orgNodePath
+		 */
+		public List getOrgNodePath() {
+			return orgNodePath;
+		}
+
+
+
+
+
+
+		/**
+		 * @param orgNodePath the orgNodePath to set
+		 */
+		public void setOrgNodePath(List orgNodePath) {
+			this.orgNodePath = orgNodePath;
+		}
+
+
+
+
+
+
+		/**
+		 * @return the orgNodes
+		 */
+		public List getOrgNodes() {
+			return orgNodes;
+		}
+
+
+
+
+
+
+		/**
+		 * @param orgNodes the orgNodes to set
+		 */
+		public void setOrgNodes(List orgNodes) {
+			this.orgNodes = orgNodes;
+		}
+
+		/**
+		 * @return the orgCategoryName
+		 */
+		public String getOrgCategoryName() {
+			return orgCategoryName;
+		}
+
+		/**
+		 * @param orgCategoryName the orgCategoryName to set
+		 */
+		public void setOrgCategoryName(String orgCategoryName) {
+			this.orgCategoryName = orgCategoryName;
+		}
+
+		
+		/**
+		 * @return the noFilterApplied
+		 */
+		public String getNoFilterApplied() {
+			return noFilterApplied;
+		}
+
+		/**
+		 * @param noFilterApplied the noFilterApplied to set
+		 */
+		public void setNoFilterApplied(String noFilterApplied) {
+			this.noFilterApplied = noFilterApplied;
+		}
+
+		/**
+		 * @return the disableApply
+		 */
+		public String getDisableApply() {
+			return disableApply;
+		}
+
+		/**
+		 * @param disableApply the disableApply to set
+		 */
+		public void setDisableApply(String disableApply) {
+			this.disableApply = disableApply;
+		}
+
+
 	}
-
-
 
 	//Added getter method for all pageFlow attribute in weblogic 10.3
 	public String getPageTitle() {
@@ -2348,14 +2397,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 		this.realDemographicOptions = realDemographicOptions;
 	}
 
-
-
-
-
-
-	public String[] getGenderOptions() {
-		return genderOptions;
-	}
 
 
 	public String getPageMessage() {
