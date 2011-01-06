@@ -230,11 +230,11 @@
 											<th class="sortable alignLeft" width="65%" nowrap><ctb:tableSortColumn value="OrgNodeName">
 												<netui:content value="${requestScope.orgCategoryName}" />
 											</ctb:tableSortColumn></th>
-											<c:if test="${noFilterApplied != null}">
+											<c:if test="${!appliedFilterFlag}">
 												<th class="sortable alignRight" width="*" nowrap><netui:content
 													value="${bundle.web['selectstudents.selectStudents.totalStudents']}" /></th>
 											</c:if>
-											<c:if test="${noFilterApplied == null}">
+											<c:if test="${appliedFilterFlag}">
 												<th class="sortable alignRight" width="*" nowrap><netui:content
 													value="${bundle.web['selectstudents.selectStudents.filteredStudents']}" /></th>
 											</c:if>
@@ -358,7 +358,7 @@
 								<tr class="sortable">
 									<td class="sortable alignCenter">
 											<netui:checkBoxGroup  id="bulkCheckBox"  dataSource="actionForm.selectedStudentOrgList">
-                        &nbsp;<netui:checkBoxOption  value="${container.item.extElmId}" onClick="toggleShowButton(this)">&nbsp;</netui:checkBoxOption>
+                        &nbsp;<netui:checkBoxOption  value="${container.item.studentId}" onClick="toggleShowButton(this)">&nbsp;</netui:checkBoxOption>
 											</netui:checkBoxGroup>
 										</td>
 									<td class="sortable alignLeft"><netui:span value="${container.item.lastName}" /></td>
