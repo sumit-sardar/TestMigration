@@ -24,6 +24,7 @@ import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.testSessionInfo.dto.ActiveSessionVO;
 import com.ctb.testSessionInfo.dto.ActiveTestVO;
+import com.ctb.testSessionInfo.dto.FileInfo;
 import com.ctb.testSessionInfo.utils.FileSizeUtils;
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
@@ -71,25 +72,46 @@ public class DownloadTestController extends PageFlowController
     /**
      * This method represents the point of entry into the pageflow
      * @jpf:action
-     * @jpf:forward name="start" path="select_tests.do"
+     * @jpf:forward name="start" path="download_zippedFile.do"
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "start",
-                     path = "select_tests.do")
+                     path = "download_zippedFile.do")
     })
     protected Forward begin()
     {
         this.getLoggedInUserPrincipal();
-        String sessionId = (String)getSession().getAttribute("sessionId");        
-        this.selectedTests = new HashMap();
-        this.testsOnPage = new HashMap();
-        SelectTestsForm form = new SelectTestsForm();
-        form.init();
-        this.updatePageFlowFormVarsForSelectTest(form);
-        return new Forward("start", form);
+        return new Forward("start");
     }
     
 
+    /**
+     * @jpf:action
+     * @jpf:forward name="success" path="download_zippedFile.jsp"
+     */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "success",
+                     path = "download_zippedFile.jsp")
+    })
+    protected Forward download_zippedFile()
+    {
+    	FileInfo fileInfo = null;
+    	//String hostName = "http://oasdev.ctb.com/downloadfiles/";
+    	String hostName = "/downloadfiles/";
+    	ArrayList fileInfoList = new ArrayList();
+    	
+    	fileInfo = new FileInfo("ISTEP 2011", hostName + "ISTEP_2011.zip", "28.5 MB");    	
+    	fileInfoList.add(fileInfo);
+    	fileInfo = new FileInfo("TABE Complete Battery 2011", hostName + "TABE_CB_2011.zip", "52.4 MB");    	
+    	fileInfoList.add(fileInfo);
+    	
+        this.getRequest().setAttribute("fileInfoList", fileInfoList);
+    	
+        return new Forward("success");
+    }
+    
+      
+    
     /**
      * @jpf:action
      * @jpf:forward name="success" path="/homepage/HomePageController.jpf"
