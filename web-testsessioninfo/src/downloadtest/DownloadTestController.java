@@ -95,14 +95,13 @@ public class DownloadTestController extends PageFlowController
     })
     protected Forward download_zippedFile()
     {
+    	String folderName = "/downloadfiles/";	// "http://oasdev.ctb.com/downloadfiles/";
+
     	FileInfo fileInfo = null;
-    	//String hostName = "http://oasdev.ctb.com/downloadfiles/";
-    	String hostName = "/downloadfiles/";
-    	ArrayList fileInfoList = new ArrayList();
-    	
-    	fileInfo = new FileInfo("ISTEP 2011", hostName + "ISTEP_2011.zip", "28.5 MB");    	
+    	ArrayList fileInfoList = new ArrayList();   	
+    	fileInfo = new FileInfo("ISTEP 2011", folderName + "ISTEP_2011.zip", "28.5 MB");    	
     	fileInfoList.add(fileInfo);
-    	fileInfo = new FileInfo("TABE Complete Battery 2011", hostName + "TABE_CB_2011.zip", "52.4 MB");    	
+    	fileInfo = new FileInfo("TABE Complete Battery 2011", folderName + "TABE_CB_2011.zip", "52.4 MB");    	
     	fileInfoList.add(fileInfo);
     	
         this.getRequest().setAttribute("fileInfoList", fileInfoList);

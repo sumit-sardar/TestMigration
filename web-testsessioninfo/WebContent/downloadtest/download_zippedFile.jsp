@@ -29,10 +29,8 @@ For details, click this link: <a href="<netui:content value="/help/index.html#do
 <br/>
 <p>
 <table class="sortable">
-
 <netui-data:repeater dataSource="requestScope.fileInfoList">
     <netui-data:repeaterHeader>
-
        <tr class="sortable">
                 <th class="sortable alignLeft" nowrap>
                     <div class="notCurrentSort"><span>Product Type</span></div>
@@ -41,15 +39,12 @@ For details, click this link: <a href="<netui:content value="/help/index.html#do
                     <div class="notCurrentSort"><span>Size</span></div>
                 </th>
         </tr>
-
     </netui-data:repeaterHeader>
     <netui-data:repeaterItem>
-
         <tr class="sortable">
             <td class="sortable alignLeft">
         		<netui-data:getData resultId="fileName" value="${container.item.fileName}"/>    
-        		<% String fileName = (String)pageContext.getAttribute("fileName"); %> 
-        		          
+        		<% String fileName = (String)pageContext.getAttribute("fileName"); %>         		          
             	<a href="<%= fileName %>">
                		<netui:span value="${container.item.displayName}" defaultValue="&nbsp;"/>
             	</a>
@@ -59,15 +54,9 @@ For details, click this link: <a href="<netui:content value="/help/index.html#do
             </td>
         </tr>
     </netui-data:repeaterItem>
-
 </netui-data:repeater>
-
-
 </table>
 </p>
-
-
-
 
 <!-- ********************************************************************************************************************* -->
 <!-- End Page Content -->
