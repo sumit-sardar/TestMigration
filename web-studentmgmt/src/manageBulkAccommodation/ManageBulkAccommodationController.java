@@ -571,12 +571,15 @@ public class ManageBulkAccommodationController extends PageFlowController
 				
 				if(form.getSelectedDemo1() != null && form.getSelectedDemo1().equals(FilterSortPageUtils.FILTERTYPE_SHOWALL)) {
 					form.setSelectedDemoValue1(FilterSortPageUtils.FILTERTYPE_SHOWALL);
+					this.selectedDemoValue1 = form.getSelectedDemoValue1();
 				}
 				if(form.getSelectedDemo2() != null && form.getSelectedDemo2().equals(FilterSortPageUtils.FILTERTYPE_SHOWALL)) {
 					form.setSelectedDemoValue2(FilterSortPageUtils.FILTERTYPE_SHOWALL);
+					this.selectedDemoValue2 = form.getSelectedDemoValue2();
 				}
 				if(form.getSelectedDemo3() != null && form.getSelectedDemo3().equals(FilterSortPageUtils.FILTERTYPE_SHOWALL)) {
 					form.setSelectedDemoValue3(FilterSortPageUtils.FILTERTYPE_SHOWALL);
+					this.selectedDemoValue3 = form.getSelectedDemoValue3();
 				}
 				
 				if(!(this.savedForm.getSelectedDemo1().equals(form.getSelectedDemo1()))) {
@@ -647,6 +650,8 @@ public class ManageBulkAccommodationController extends PageFlowController
 			savedForm.setSelectedDemoValue1(form.getSelectedDemoValue1());
 			savedForm.setSelectedDemoValue2(form.getSelectedDemoValue2());
 			savedForm.setSelectedDemoValue3(form.getSelectedDemoValue3());
+			commitSelection(form);
+			savedForm.getStudentPagerSummary().setTotalSelectedObjects(this.selectedStudents.size());
 			form.setActionElement(ACTION_DEFAULT); 
 			form.setCurrentAction(ACTION_DEFAULT); 
 			

@@ -44,10 +44,6 @@
 			<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction" />
 			<netui:hidden dataSource="actionForm.selectedOrgNodeName" />
 			
-			<netui:hidden dataSource="actionForm.selectedGrade" />
-
-			
-			
 			<netui:hidden dataSource="actionForm.action" />
 			<netui:hidden dataSource="actionForm.creatorOrgNodeId" />
 			<netui:hidden dataSource="actionForm.creatorOrgNodeName" />
@@ -114,17 +110,17 @@
 								<td class="sortableControls" style="padding: 5px;"><netui:span
 									value="${bundle.web['selectstudents.filter.fieldDrop.demographics']}" /><br>
 									<netui:select optionsDataSource="${pageFlow.demographic1}" dataSource="actionForm.selectedDemo1"
-									style="width: 260px" size="1" multiple="false" onChange="setElementValueAndSubmit('currentAction', 'getDemoData');"/>
+									 size="1" multiple="false" onChange="setElementValueAndSubmit('currentAction', 'getDemoData');"/>
 								</td>
 								<td class="sortableControls" style="padding: 5px;"><netui:span
 									value="${bundle.web['selectstudents.filter.fieldDrop.demographicsValues']}" /><br>
 									<c:if test="${selectedDemo1 == 'Show All'}">
 										<netui:select optionsDataSource="${pageFlow.demographicValues1}" dataSource="actionForm.selectedDemoValue1"
-										style="width: 260px" size="1" multiple="false" disabled="true"/>
+										 size="1" multiple="false" disabled="true"/>
 									</c:if>
 									<c:if test="${selectedDemo1 != 'Show All'}">
 										<netui:select optionsDataSource="${pageFlow.demographicValues1}" dataSource="actionForm.selectedDemoValue1"
-										style="width: 260px" size="1" multiple="false"/>
+										 size="1" multiple="false"/>
 									</c:if>
 								</td>
 							</tr>
@@ -132,17 +128,17 @@
 								<td class="sortableControls" style="padding: 5px;"><netui:span
 									value="${bundle.web['selectstudents.filter.fieldDrop.demographics']}" /><br>
 									<netui:select optionsDataSource="${pageFlow.demographic2}" dataSource="actionForm.selectedDemo2"
-									style="width: 260px" size="1" multiple="false" onChange="setElementValueAndSubmit('currentAction', 'getDemoData');"/>
+									 size="1" multiple="false" onChange="setElementValueAndSubmit('currentAction', 'getDemoData');"/>
 								</td>
 								<td class="sortableControls" style="padding: 5px;"><netui:span
 									value="${bundle.web['selectstudents.filter.fieldDrop.demographicsValues']}" /><br>
 									<c:if test="${selectedDemo2 == 'Show All'}">
 										<netui:select optionsDataSource="${pageFlow.demographicValues2}" dataSource="actionForm.selectedDemoValue2"
-										style="width: 260px" size="1" multiple="false" disabled="true"/>
+										 size="1" multiple="false" disabled="true"/>
 									</c:if>
 									<c:if test="${selectedDemo2 != 'Show All'}">
 										<netui:select optionsDataSource="${pageFlow.demographicValues2}" dataSource="actionForm.selectedDemoValue2"
-										style="width: 260px" size="1" multiple="false"/>
+										 size="1" multiple="false"/>
 									</c:if>
 								</td>
 							</tr>
@@ -150,17 +146,17 @@
 								<td class="sortableControls" style="padding: 5px;"><netui:span
 									value="${bundle.web['selectstudents.filter.fieldDrop.demographics']}" /><br>
 									<netui:select optionsDataSource="${pageFlow.demographic3}" dataSource="actionForm.selectedDemo3"
-									style="width: 260px" size="1" multiple="false" onChange="setElementValueAndSubmit('currentAction', 'getDemoData');"/>
+									 size="1" multiple="false" onChange="setElementValueAndSubmit('currentAction', 'getDemoData');"/>
 								</td>
 								<td class="sortableControls" style="padding: 5px;"><netui:span
 									value="${bundle.web['selectstudents.filter.fieldDrop.demographicsValues']}" /><br>
 									<c:if test="${selectedDemo3 == 'Show All'}">
 										<netui:select optionsDataSource="${pageFlow.demographicValues3}" dataSource="actionForm.selectedDemoValue3"
-										style="width: 260px" size="1" multiple="false" disabled="true"/>
+										 size="1" multiple="false" disabled="true"/>
 									</c:if>
 									<c:if test="${selectedDemo3 != 'Show All'}">
 										<netui:select optionsDataSource="${pageFlow.demographicValues3}" dataSource="actionForm.selectedDemoValue3"
-										style="width: 260px" size="1" multiple="false"/>
+										 size="1" multiple="false"/>
 									</c:if>
 								</td>
 							</tr>
@@ -169,7 +165,7 @@
 								<td class="sortableControls" style="padding: 5px;"><netui:span
 									value="${bundle.web['selectstudents.filter.fieldDrop.grade']}" /><br>
 								<netui:select optionsDataSource="${pageFlow.gradeOptions}" dataSource="actionForm.selectedGrade"
-									style="width: 260px" size="1" multiple="false" /></td>
+									 size="1" multiple="false" /></td>
 
 							<!--  </tr>-->
 
@@ -178,14 +174,14 @@
 									<td class="sortableControls" style="padding: 5px;"><netui:span
 										value="${bundle.web['selectstudents.accommodations']}" />:<br />
 									<netui:select optionsDataSource="${pageFlow.accommodationOperandOptions}"
-										dataSource="actionForm.accommodationOperand" style="width: 260px" size="1" multiple="false"
+										dataSource="actionForm.accommodationOperand"  size="1" multiple="false"
 										onChange="setElementValueAndSubmit('currentAction', 'changeAccommodation');" /> <%
         Boolean showAccommodationsBoolean = (Boolean) pageContext.getAttribute("showAccommodations");
         boolean showAccommodations = showAccommodationsBoolean == null? false:showAccommodationsBoolean.booleanValue();
         
         if (showAccommodations) { %> <br />
 									<netui:select optionsDataSource="${pageFlow.selectedAccommodationsOptions}"
-										dataSource="actionForm.selectedAccommodations" style="width: 260px" size="4" multiple="true"
+										dataSource="actionForm.selectedAccommodations"  size="4" multiple="true"
 										onClick="enableElementById('applyFilter');" /><br />
 									<br />
 									<netui:span value="${bundle.web['selectstudents.accommodations.info']}" /> <%      } %>

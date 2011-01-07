@@ -17,7 +17,12 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>   
   
   </head>
-
+	
+<style>
+select {
+	width:260px;
+}
+</style>	
   <body onload="setFocusFirstElement();" onunload="closeColorPreviewWindow();">
     
     <jsp:include page="/resources/jsp/header.jsp" />
