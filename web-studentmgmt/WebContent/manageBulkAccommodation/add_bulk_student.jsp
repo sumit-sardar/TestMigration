@@ -59,8 +59,12 @@
 
 
 			<input type="hidden" id="validateTest" name="validateTest" value="noValidateTest" />
+			<input type="hidden" name="firstName" id="firstName" value="ISTEP" />
+			<input type="hidden" name="lastName" id="lastName" value="ISTEP" />
+			<input type="hidden" name="middleName" id="middleName" value="ISTEP" />
 
 			<netui-data:getData resultId="showAccommodations" value="${actionForm.showAccommodations}" />
+			<netui-data:getData resultId="TotalSelectedStudents" value="${actionForm.studentPagerSummary.totalSelectedObjects}" />
 
 			<netui-data:getData resultId="selectedDemo1" value="${actionForm.selectedDemo1}"/>
 			<netui-data:getData resultId="selectedDemo2" value="${actionForm.selectedDemo2}"/>
@@ -69,6 +73,7 @@
 				String selectedDemo1 = (String) pageContext.getAttribute("selectedDemo1");
 				String selectedDemo2 = (String) pageContext.getAttribute("selectedDemo2");
 				String selectedDemo3 = (String) pageContext.getAttribute("selectedDemo3");
+				Integer	TotalSelectedStudents = (Integer) pageContext.getAttribute("TotalSelectedStudents");
 			%>
 
 				<table width="100%" cellpadding="0" cellspacing="0" class="transparent">
@@ -346,6 +351,9 @@
 											<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="UntimedTest">
 												<netui:span value="Untimed" />
 											</ctb:tableSortColumn></th>
+											<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="UntimedTest">
+												<netui:span value="Highlighter" />
+											</ctb:tableSortColumn></th>
 										</c:if>
 									</ctb:tableSortColumnGroup>
 								</tr>
@@ -388,6 +396,11 @@
 												<netui:image src="/StudentManagementWeb/resources/images/check.gif" width="20" height="20" />
 											</ctb:case>
 										</ctb:switch></td>
+										<td class="sortable alignCenter"><ctb:switch dataSource="{container.item.highLighter}">
+											<ctb:case value="T">
+												<netui:image src="/StudentManagementWeb/resources/images/check.gif" width="20" height="20" />
+											</ctb:case>
+										</ctb:switch></td>
 									</c:if>
 								</tr>
 
@@ -416,16 +429,24 @@
 
 					<br />
 
-
-					<hr>
 				</c:if>
 				<%-- nodeContainsStudents != null --%>
 
+				<jsp:include page="/manageBulkAccommodation/bulkAccommodationSelection.jsp" />
 
-				<p><br>
-				<netui:button type="submit" value="${bundle.web['common.button.done']}" action="saveBulkStudentData" />
-				<netui:button type="submit" value="${bundle.web['common.button.cancel']}" action="selectStudentCancel"
-					onClick="return verifyCancelAddStudents();" /></p>
+				<p>
+					<br>
+					<c:if test="${TotalSelectedStudents <= 0}">
+						<netui:button tagId ="bulkSubmit" type="submit" value="${bundle.web['common.button.done']}" action="saveBulkStudentData"  disabled ="true"/>
+				
+					</c:if>
+					<c:if test="${TotalSelectedStudents > 0}">
+						<netui:button tagId ="bulkSubmit" type="submit" value="${bundle.web['common.button.done']}" action="saveBulkStudentData" />
+				
+					</c:if>
+						<netui:button type="submit" value="${bundle.web['common.button.cancel']}" action="selectStudentCancel"
+						onClick="return verifyCancelAddStudents();" />
+				</p>
 		</netui:form>
 
 		<!-- ********************************************************************************************************************* -->
