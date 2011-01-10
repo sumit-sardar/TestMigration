@@ -4,6 +4,7 @@ import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import dto.StudentAccommodationsDetail;
 import java.io.IOException;
+import com.ctb.bean.testAdmin.StudentAccommodations;
 
 import javax.servlet.jsp.JspException;
 
@@ -87,7 +88,8 @@ public class StudentBulkAccommodationTag extends CTBTag
             field = "screen_reader";
             description = "<b>Allow Screen Reader</b>:";
             disabled = isDisabled(field);
-            displayControlRow(field, description, add,delete, false , disabled, null);
+            String selectedFlag = this.accommodations.getScreenReaderRBValue();
+            displayControlRow(field, description, add,delete, false , disabled, null,selectedFlag);
             
             displayEmptyRow("2");
             displayEmptyRow("2");
@@ -97,7 +99,8 @@ public class StudentBulkAccommodationTag extends CTBTag
             field = "calculator";
             description = "<b>Online calculator</b>:";
             disabled = isDisabled(field);
-            displayControlRow(field, description, add, delete, false, disabled, null);                        
+            String selectedCalculatorFlag = this.accommodations.getCalculatorRBValue();
+            displayControlRow(field, description, add, delete, false, disabled, null,selectedCalculatorFlag);                        
 
 
             displayEmptyRow("2");
@@ -108,7 +111,8 @@ public class StudentBulkAccommodationTag extends CTBTag
             field = "test_pause";
             description = "<b>Test Pause</b>:";
             disabled = isDisabled(field);
-            displayControlRow(field, description, add, delete, false, disabled, null);                        
+            String selectedTestPauseFlag = this.accommodations.getTestPauseRBValue();
+            displayControlRow(field, description, add, delete, false, disabled, null,selectedTestPauseFlag);                        
 
 
             displayEmptyRow("2");
@@ -119,7 +123,8 @@ public class StudentBulkAccommodationTag extends CTBTag
             field = "untimed_test";
             description = "<b>Untimed Test</b>:";
             disabled = isDisabled(field);
-            displayControlRow(field, description, add, delete, false, disabled, null);                        
+            String selectedUntimedTestFlag = this.accommodations.getUntimedTestRBValue();
+            displayControlRow(field, description, add, delete, false, disabled, null,selectedUntimedTestFlag);                        
 
             displayEmptyRow("2");
             displayEmptyRow("2");
@@ -129,7 +134,8 @@ public class StudentBulkAccommodationTag extends CTBTag
             field = "highlighter";
             description = "<b>Highlighter</b>:";
             disabled = isDisabled(field);
-            displayControlRow(field, description, add, delete, false, disabled, null);                        
+            String selectedHighlighterFlag = this.accommodations.getHighLighterRBValue();
+            displayControlRow(field, description, add, delete, false, disabled, null,selectedHighlighterFlag);                        
 
         
             displayEmptyRow("2");
@@ -145,7 +151,7 @@ public class StudentBulkAccommodationTag extends CTBTag
         String questionColorStyle = this.accommodations.getQuestionColorStyle();
         String answerColorStyle = this.accommodations.getAnswerColorStyle();
         String fontSize = this.accommodations.getFontSize();
-        
+        String selectedColorFont = this.accommodations.getSelectedColorFont();
         displayTableStart("transparent");
         
             displayEmptyRow("2");
@@ -154,7 +160,7 @@ public class StudentBulkAccommodationTag extends CTBTag
             field = "colorFont";
             description = "<b>Color and Font</b>:";
             disabled = isDisabled(field);
-            displayControlRow(field, description, add, delete, false, disabled, "toogleColorSettingsLink('colorFont');");                        
+            displayControlRow(field, description, add, delete, false, disabled, "toogleColorSettingsLink('colorFont');",selectedColorFont);                        
                                 
 		displayTableEnd();
         
@@ -191,9 +197,15 @@ public class StudentBulkAccommodationTag extends CTBTag
                             displayCellEnd();
                             displayCellStart("transparent", "70%");
                                 field = "question_bgrdColor";
-                                disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
+                                disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());     
+                                System.out.println("disabled.."+ disabled);
                                 selection = this.accommodations.getQuestion_bgrdColor();
-                                displayBackgroundColorOptions(field, disabled, selection, "setQuestionColorOptions();");
+                                if(selectedColorFont != null && selectedColorFont.equals("T")) {
+                                	displayBackgroundColorOptions(field, false, selection, "setQuestionColorOptions();");
+                                }else {
+                                	displayBackgroundColorOptions(field, disabled, selection, "setQuestionColorOptions();");
+                                }
+                                
                             displayCellEnd();                            
                         displayRowEnd();        
                         displayRowStart("transparent");
@@ -205,7 +217,12 @@ public class StudentBulkAccommodationTag extends CTBTag
                                 disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
                                 selection = this.accommodations.getQuestion_fontColor();
                                 bgrdColor = this.accommodations.getQuestion_bgrdColor();
-                                displayForegroundColorOptions(field, disabled, bgrdColor, selection, "setQuestionColorBox();");
+                                if(selectedColorFont != null && selectedColorFont.equals("T")) {
+                                	displayForegroundColorOptions(field, false, bgrdColor, selection, "setQuestionColorBox();");
+                                } else {
+                                	displayForegroundColorOptions(field, disabled, bgrdColor, selection, "setQuestionColorBox();");
+                                }
+                                
                             displayCellEnd();                            
                         displayRowEnd();        
                     displayTableEnd();
@@ -246,7 +263,12 @@ public class StudentBulkAccommodationTag extends CTBTag
                                 field = "answer_bgrdColor";
                                 disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
                                 selection = this.accommodations.getAnswer_bgrdColor();
-                                displayBackgroundColorOptions(field, disabled, selection, "setAnswerColorOptions();");
+                                if(selectedColorFont != null && selectedColorFont.equals("T")) {
+                                	displayBackgroundColorOptions(field, false, selection, "setAnswerColorOptions();");
+                                } else {
+                                	displayBackgroundColorOptions(field, disabled, selection, "setAnswerColorOptions();");
+                                }
+                                
                             displayCellEnd();                            
                         displayRowEnd();        
                         displayRowStart("transparent");
@@ -258,7 +280,12 @@ public class StudentBulkAccommodationTag extends CTBTag
                                 disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
                                 selection = this.accommodations.getAnswer_fontColor();
                                 bgrdColor = this.accommodations.getAnswer_bgrdColor();
-                                displayForegroundColorOptions(field, disabled, bgrdColor, selection, "setAnswerColorBox();");
+                                if(selectedColorFont != null && selectedColorFont.equals("T")) {
+                                	displayForegroundColorOptions(field, false, bgrdColor, selection, "setAnswerColorBox();");
+                                } else {
+                                	displayForegroundColorOptions(field, disabled, bgrdColor, selection, "setAnswerColorBox();");
+                                }
+                               
                             displayCellEnd();                            
                         displayRowEnd();        
                     displayTableEnd();
@@ -283,7 +310,12 @@ public class StudentBulkAccommodationTag extends CTBTag
                                 field = "standartFont";
                                 disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
                                 checked = fontSize.equals("1") ? true : false;
-                                writeToPage(buildRadioFont(field, "1", checked, disabled, "setFontSize('12px');"));    
+                                if(selectedColorFont != null && selectedColorFont.equals("T")) {
+                                	writeToPage(buildRadioFont(field, "1", checked, false, "setFontSize('12px');")); 
+                                } else {
+                                	writeToPage(buildRadioFont(field, "1", checked, disabled, "setFontSize('12px');")); 
+                                }
+                                   
                             displayCellEnd();
                         displayRowEnd();        
             
@@ -295,7 +327,12 @@ public class StudentBulkAccommodationTag extends CTBTag
                                 field = "largeFont";
                                 disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
                                 checked = fontSize.equals("1.5") ? true : false;
-                                writeToPage(buildRadioFont(field, "1.5", checked, disabled, "setFontSize('18px');"));    
+                                if(selectedColorFont != null && selectedColorFont.equals("T")) {
+                                	writeToPage(buildRadioFont(field, "1.5", checked, false, "setFontSize('18px');"));
+                                } else {
+                                	writeToPage(buildRadioFont(field, "1.5", checked, disabled, "setFontSize('18px');"));
+                                }
+                                    
                             displayCellEnd();
                         displayRowEnd();        
                                             
@@ -305,8 +342,13 @@ public class StudentBulkAccommodationTag extends CTBTag
                 
                 
                 displayCellStart("transparent");
-                    disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
-                    writeToPage(buildPreviewButton("previewColor", "Preview", disabled));    
+                    disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue()); 
+                    if(selectedColorFont != null && selectedColorFont.equals("T")) {
+                    	writeToPage(buildPreviewButton("previewColor", "Preview", false));   
+                    } else {
+                    	writeToPage(buildPreviewButton("previewColor", "Preview", disabled));   
+                    }
+                     
                 displayCellEnd();
                 
             displayRowEnd();        
@@ -351,9 +393,14 @@ public class StudentBulkAccommodationTag extends CTBTag
 
 
     private void displayControlRow(String field, String description, String add, String delete,  
-            boolean checked, boolean disabled, String onClick) throws IOException 
+            boolean checked, boolean disabled, String onClick,String selectedFlag) throws IOException 
     {
-        displayRowStart("transparent");
+        
+    	
+       
+    	
+    	
+    	displayRowStart("transparent");
 	        displayCellStart("transparent-small", "140");
 	        	writeToPage("&nbsp;&nbsp;&nbsp;"+description);
 
@@ -363,10 +410,20 @@ public class StudentBulkAccommodationTag extends CTBTag
 	    displayRowStart("transparent");
             displayCellStart("transparent-small");
             writeToPage("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
-                writeToPage(buildRadio(field, add, checked, disabled, onClick));
+            if(selectedFlag != null && selectedFlag.equals("T")){
+            	 writeToPage(buildRadio(field, add, true, disabled, onClick));
+            } else {
+                writeToPage(buildRadio(field, add, false, disabled, onClick));
+            }
                 writeToPage("Add");
                 writeToPage("&nbsp;&nbsp;&nbsp;");
-            	writeToPage(buildRadio(field, delete, checked, disabled, onClick));
+                
+            if(selectedFlag != null && selectedFlag.equals("F")){
+               	 writeToPage(buildRadio(field, delete, true, disabled, onClick));
+            } else {
+                   writeToPage(buildRadio(field, delete, false, disabled, onClick));
+            }
+            	//writeToPage(buildRadio(field, delete, checked, disabled, onClick));
             	writeToPage("Delete");
             displayCellEnd();
         displayRowEnd();

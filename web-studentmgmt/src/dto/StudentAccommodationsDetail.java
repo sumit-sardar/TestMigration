@@ -390,6 +390,63 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         
         return style;
     }
+    //Start of Bulk Accommodation Changes
+    private String calculatorRBValue ;
+    private String untimedTestRBValue ;
+    private String highLighterRBValue ;
+    private String testPauseRBValue ;
+    private String screenReaderRBValue ;
+    private String selectedColorFont;
+
+	public String getCalculatorRBValue() {
+		return calculatorRBValue;
+	}
+
+	public void setCalculatorRBValue(String calculatorRBValue) {
+		this.calculatorRBValue = calculatorRBValue;
+	}
+
+	public String getUntimedTestRBValue() {
+		return untimedTestRBValue;
+	}
+
+	public void setUntimedTestRBValue(String untimedTestRBValue) {
+		this.untimedTestRBValue = untimedTestRBValue;
+	}
+
+	public String getHighLighterRBValue() {
+		return highLighterRBValue;
+	}
+
+	public void setHighLighterRBValue(String highLighterRBValue) {
+		this.highLighterRBValue = highLighterRBValue;
+	}
+
+	public String getTestPauseRBValue() {
+		return testPauseRBValue;
+	}
+
+	public void setTestPauseRBValue(String testPauseRBValue) {
+		this.testPauseRBValue = testPauseRBValue;
+	}
+
+	public String getScreenReaderRBValue() {
+		return screenReaderRBValue;
+	}
+
+	public void setScreenReaderRBValue(String screenReaderRBValue) {
+		this.screenReaderRBValue = screenReaderRBValue;
+	}
+
+	public String getSelectedColorFont() {
+		return selectedColorFont;
+	}
+
+	public void setSelectedColorFont(String selectedColorFont) {
+		this.selectedColorFont = selectedColorFont;
+	}
+
+	//End Bulk Accommodation Changes
     
 }
 

@@ -34,12 +34,17 @@ public class Message implements java.io.Serializable
     public static final String DELETE_ERROR_TAS = "You cannot delete this student. Student is associated with test administrations.";
     public static final String DELETE_ERROR_UNKNOWN = "Failed to delete this student.";
     
+    //Added for Bulk Accommodation
+    public static final String BULK_ADD_TITLE      = "Add Bulk Accommodations";
+    public static final String BULK_ADD_SUCCESSFUL = "Accommodations has been successfully updated for the selected set of students.";
+    public static final String BULK_ADD_ERROR = "Failed to assign accommodations to the set of selected students.";
+
+    
     //Added for CR  ISTEP2011CR023
     public static final String STUDENT_ASSIGNMENT_ERROR = "Your school system does not allow students to be associated with more than one organization (class) for testing. Please choose only one.";     
 	//START- GACR005 
-	public static final String INVALID_STUDENT_MINLENGTH_FORMAT  = "Please enter ID of minimum length, with no spaces.";
-	public static final String INVALID_NUMBER_FORMAT  = "Please enter ID of numeric characters, with no spaces.Acceptable characters are 0-9.";
-
+	public static final String INVALID_STUDENT_MINLENGTH_FORMAT  = "Please re-enter valid length in valid format. Minimum length should be :";
+	public static final String INVALID_NUMBER_FORMAT  = "Please re-enter numeric fields in valid format";
 	//END- GACR005 
     public Message()
     {

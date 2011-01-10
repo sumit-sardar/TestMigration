@@ -17,12 +17,8 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
-
-import utils.DateUtils;
 import utils.FilterSortPageUtils;
-import utils.MessageResourceBundle;
 import utils.OrgNodeUtils;
-
 import utils.StudentPathListUtils;
 import utils.StudentSearchUtils;
 import utils.WebUtils;
@@ -37,8 +33,6 @@ import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.CustomerDemographic;
 import com.ctb.bean.studentManagement.CustomerDemographicValue;
 import com.ctb.bean.studentManagement.ManageBulkStudentData;
-import com.ctb.bean.studentManagement.ManageStudent;
-import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.StudentAccommodations;
@@ -46,9 +40,9 @@ import com.ctb.bean.testAdmin.StudentNode;
 import com.ctb.bean.testAdmin.StudentNodeData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
-import com.ctb.exception.request.InvalidFilterFieldException;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.PagerSummary;
+import com.ctb.widgets.bean.PathListEntry;
 
 import dto.Message;
 import dto.PathNode;
@@ -76,10 +70,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 	@Control()
 	private com.ctb.control.studentManagement.StudentManagement studentManagement;
 
-/*	@Control()
-	private com.ctb.control.testAdmin.ScheduleTest scheduleTest;
-*/
-
+	
 	private static final String ACTION_DEFAULT           = "defaultAction";
 	public static final String ACTION_CHANGE_ACCOMMODATION = "changeAccommodation";
 	public static final String ACTION_APPLY = "apply";
@@ -89,11 +80,8 @@ public class ManageBulkAccommodationController extends PageFlowController
 	public static final String ACTION_GET_DEMO_DATA = "getDemoData";
 
 
-	private static final String ACTION_APPLY_SEARCH   = "applySearch";
-	private static final String ACTION_CLEAR_SEARCH   = "clearSearch";
-
 	public String[] gradeOptions = null;
-	
+
 	public String[] realDemographicOptions = null;
 	public String[] demographic1 = null;
 	public String[] demographic2 = null;
@@ -105,13 +93,13 @@ public class ManageBulkAccommodationController extends PageFlowController
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
-	private boolean searchApplied = false;
-	private List orgNodePath = null;
+	
+	private List<PathListEntry> orgNodePath = null;
 	private Integer selectedOrgNodeId = null;    
-	private Integer copyOfOrgNodeId = null;    
+	   
 
 	private ManageBulkAccommodationForm savedForm = null;
-	private StudentProfileInformation studentSearch = null;
+	
 
 	private HashMap currentOrgNodesInPathList = null;
 	public List selectedOrgNodes = null;
@@ -182,7 +170,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 	{        
 		getUserDetails();
 
-		this.orgNodePath = new ArrayList();
+		this.orgNodePath = new ArrayList<PathListEntry>();
 		this.currentOrgNodesInPathList = new HashMap();
 		this.currentOrgNodeIds = new Integer[0];
 		this.selectedOrgNodes = new ArrayList();
@@ -276,6 +264,62 @@ public class ManageBulkAccommodationController extends PageFlowController
 		return new Boolean(hasBulkStudentConfigurable);           
 	}
 
+
+	/**
+	 * getStudentAccommodationsFromRequest
+	 */
+	/**
+	 * getStudentAccommodationsFromRequest
+	 */
+	private void getStudentAccommodationsFromRequest() 
+	{
+		// first get values from request
+		String screenReader = getRequest().getParameter("screen_reader");
+		String calculator = getRequest().getParameter("calculator");
+		String highlighter = getRequest().getParameter("highlighter");
+		String testPause = getRequest().getParameter("test_pause");
+		String untimedTest = getRequest().getParameter("untimed_test");
+		String colorFont = getRequest().getParameter("colorFont");
+		
+		this.accommodations.setCalculatorRBValue(calculator);
+		this.accommodations.setScreenReaderRBValue(screenReader);
+		this.accommodations.setHighLighterRBValue(highlighter);
+		this.accommodations.setTestPauseRBValue(testPause);
+		this.accommodations.setUntimedTestRBValue(untimedTest);
+		this.accommodations.setSelectedColorFont(colorFont);
+		setCustomerAccommodations(this.accommodations, false);
+
+		String question_bgrdColor = this.getRequest().getParameter("question_bgrdColor");
+		if (question_bgrdColor != null)
+		{
+			this.accommodations.setQuestion_bgrdColor(question_bgrdColor);
+		}
+
+		String question_fontColor = this.getRequest().getParameter("question_fontColor");
+		if (question_fontColor != null)
+		{
+			this.accommodations.setQuestion_fontColor(question_fontColor);
+		}
+
+		String answer_bgrdColor = this.getRequest().getParameter("answer_bgrdColor");
+		if (answer_bgrdColor != null)
+		{
+			this.accommodations.setAnswer_bgrdColor(answer_bgrdColor);
+		}
+
+		String answer_fontColor = this.getRequest().getParameter("answer_fontColor");
+		if (answer_fontColor != null)
+		{
+			this.accommodations.setAnswer_fontColor(answer_fontColor);
+		}
+
+		String fontSize = this.getRequest().getParameter("fontSize");
+		if (fontSize != null)
+		{
+			this.accommodations.setFontSize(fontSize);
+		}
+	}
+
 	private void copySelectedStudents(ManageBulkAccommodationForm form)
 	{
 		this.selectedStudents = form.getSelectedStudents();    
@@ -351,14 +395,17 @@ public class ManageBulkAccommodationController extends PageFlowController
 	})
 	protected Forward saveBulkStudentData(ManageBulkAccommodationForm form)
 	{   
-		
-		
+
+
 		commitSelection(form);
 		Integer[] studentId = new Integer[this.selectedStudents.size()];
+		if(this.selectedStudents != null && this.selectedStudents.size()>0)
+		{
 		for(int i=0;i< this.selectedStudents.size();i++)
 		{
 			SessionStudent sst = (SessionStudent)this.selectedStudents.get(i);
 			studentId[i] = sst.getStudentId();
+		}
 		}
 		boolean successFlag=true;
 		if(studentId != null && studentId.length > 0) {
@@ -368,14 +415,23 @@ public class ManageBulkAccommodationController extends PageFlowController
 			} catch (CTBBusinessException e) {
 				// TODO Auto-generated catch block
 				successFlag=false;
-			}
+			}	
 		}
-		return new Forward("success");
+		if(successFlag) {
+			form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ADD_SUCCESSFUL, Message.INFORMATION);
+			this.getRequest().setAttribute("pageMessage", form.getMessage());
+		}
+		else {
+			form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ADD_ERROR, Message.INFORMATION);
+			this.getRequest().setAttribute("pageMessage", form.getMessage());
+		}
 		
+		return new Forward("success");
+
 	}
-	
-	
-	
+
+
+
 	public StudentAccommodations saveAccommodationsSelected()
 	{
 		String screenReader = getRequest().getParameter("screen_reader");
@@ -385,73 +441,77 @@ public class ManageBulkAccommodationController extends PageFlowController
 		String highLighter = getRequest().getParameter("highlighter");
 		String colorFont = getRequest().getParameter("colorFont");
 		String questionBgrdColor = this.getRequest().getParameter("question_bgrdColor");
-		
+
 		String questionFontColor = this.getRequest().getParameter("question_fontColor");
-		
+
 		String answerBgrdColor = this.getRequest().getParameter("answer_bgrdColor");
-		
+
 
 		String answerFontColor = this.getRequest().getParameter("answer_fontColor");
-		
+
 
 		String fontSize = this.getRequest().getParameter("fontSize");
-		
+
 		StudentAccommodations stuAommodations = new StudentAccommodations();
 		StudentAccommodationsDetail stdDetail = new StudentAccommodationsDetail();
-		
+
 		//generate dynamic sql query for update
-		 StringBuffer result = new StringBuffer();
-		 if (screenReader != null ) {
-				stuAommodations.setScreenReader(screenReader);
+		StringBuffer result = new StringBuffer();
+		if (screenReader != null ) {
+			stuAommodations.setScreenReader(screenReader);
+
+
+		}
+
+		if (calculator != null) {
+			stuAommodations.setCalculator(calculator);
+		}	 
+
+		if (testPause != null ) {
+			stuAommodations.setTestPause(testPause);
+		}
+
+		if (untimedTest != null ) {
+			stuAommodations.setUntimedTest(untimedTest);
+		}
+
+		if (highLighter != null) {
+			stuAommodations.setHighlighter(highLighter);
+		}
+		if (questionBgrdColor != null) {
 			
-		 }
-		 		 
-		 if (calculator != null) {
-			 stuAommodations.setCalculator(calculator);
-		 }	 
-		 
-		 if (testPause != null ) {
-			 stuAommodations.setTestPause(testPause);
-		 }
-		 
-		 if (untimedTest != null ) {
-			 stuAommodations.setUntimedTest(untimedTest);
-		 }
-		
-		 if (highLighter != null) {
-			 stuAommodations.setHighlighter(highLighter);
-		 }
-		 if (questionBgrdColor != null) {
-			 //stuAommodations.setQuestionBackgroundColor(questionBgrdColor);
-			 stuAommodations.setQuestionBackgroundColor
-			 	(stdDetail.getColorHexMapping(questionBgrdColor));
-		 }
-		 
-		 if (questionFontColor != null) {
-			 stuAommodations.setQuestionFontColor(stdDetail.getColorHexMapping(questionFontColor));
-			 //stuAommodations.getQuestionFontColor(questionFontColor);
-		 }
-		 if (answerBgrdColor != null) {
-			 stuAommodations.setAnswerBackgroundColor(stdDetail.getColorHexMapping(answerBgrdColor));
-		 }
-		 
-		 if (answerFontColor != null) {
-			 stuAommodations.setAnswerFontColor(stdDetail.getColorHexMapping(answerFontColor));
-		 }
-		 
-		 if (fontSize != null) {
-			 stuAommodations.setAnswerFontSize(fontSize);
-		 }
-		 if (fontSize != null) {
-			 stuAommodations.setQuestionFontSize(fontSize);
-		 }
-		
+			stuAommodations.setQuestionBackgroundColor
+			(stdDetail.getColorHexMapping(questionBgrdColor));
+		}
+
+		if (questionFontColor != null) {
+			stuAommodations.setQuestionFontColor(
+					stdDetail.getColorHexMapping(questionFontColor));
+			
+		}
+		if (answerBgrdColor != null) {
+			stuAommodations.setAnswerBackgroundColor(
+					stdDetail.getColorHexMapping(answerBgrdColor));
+		}
+
+		if (answerFontColor != null) {
+			stuAommodations.setAnswerFontColor(
+					stdDetail.getColorHexMapping(answerFontColor));
+		}
+
+		if (fontSize != null) {
+			stuAommodations.setAnswerFontSize(fontSize);
+		}
+		if (fontSize != null) {
+			stuAommodations.setQuestionFontSize(fontSize);
+		}
+
 		return stuAommodations;
 	}
-	
-	   
-	
-	
+
+
+
+
 
 	/**
 	 * setFullPathNodeName
@@ -462,7 +522,8 @@ public class ManageBulkAccommodationController extends PageFlowController
 		{
 			PathNode node = (PathNode)orgNodes.get(i);
 			Integer orgNodeId = node.getId();
-			String fullPathNodeName = StudentPathListUtils.getFullPathNodeName(this.userName, orgNodeId, this.studentManagement);
+			String fullPathNodeName = StudentPathListUtils.getFullPathNodeName(
+					this.userName, orgNodeId, this.studentManagement);
 			node.setFullPathName(fullPathNodeName);   
 		}    
 	}
@@ -471,7 +532,8 @@ public class ManageBulkAccommodationController extends PageFlowController
 	/**
 	 * buildOrgNodesForSelector
 	 */
-	private List buildOrgNodesForSelector(List selectedOrgNodes, List selectableOrgNodes, Integer studentId, String sortOrderBy)    
+	private List buildOrgNodesForSelector(List selectedOrgNodes, List selectableOrgNodes, 
+								Integer studentId, String sortOrderBy)    
 	{
 		List orgNodesForSelector = new ArrayList();
 
@@ -517,7 +579,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 	{
 		ManageBulkAccommodationForm form = initialize(ACTION_DEFAULT);
 		form.setSelectedStudentId(null); 
-		this.searchApplied = false;
 		getCustomerDemographicOptions();
 		initGradeOptions(ACTION_DEFAULT, form, null);
 
@@ -549,13 +610,29 @@ public class ManageBulkAccommodationController extends PageFlowController
 	{    
 
 		form.validateValues();
-		//accommodation changes
-		this.accommodations = getStudentAccommodations();
-		this.getRequest().setAttribute("accommodations",accommodations);
-		
 		String currentAction = form.getCurrentAction();
 		String actionElement = form.getActionElement();
+		//accommodation changes
+		if (actionElement != null && ((actionElement.equals("ButtonGoInvoked_studentTableAnchor")) ||
+				(actionElement.equals("EnterKeyInvoked_studentTableAnchor")) || 
+				(actionElement.equals("{actionForm.studentSortOrderBy}") ) || 
+				(currentAction.equals(ACTION_ADD_ALL) )
+				|| (actionElement.equals("{actionForm.studentPageRequested}")))
+		) {
 
+			if(this.accommodations != null) {
+				getStudentAccommodationsFromRequest() ;
+			} 
+			else {
+				this.accommodations = getStudentAccommodations();
+			}
+		} else {
+
+			this.accommodations = getStudentAccommodations();
+		}
+		this.getRequest().setAttribute("accommodations",accommodations);
+
+		
 		form.resetValuesForAction(actionElement); 
 		if (form.getSelectedGrade() == null)
 		{                
@@ -650,31 +727,31 @@ public class ManageBulkAccommodationController extends PageFlowController
 			String[] tempDemographic1 = new String[realDemographicOptions.length +1];
 			String[] tempDemographic2 = new String[realDemographicOptions.length +1];
 			String[] tempDemographic3 = new String[realDemographicOptions.length +1];
-			
+
 			tempDemographic1[0] = form.getSelectedDemo1();
 			tempDemographic2[0] = form.getSelectedDemo2();
 			tempDemographic3[0] = form.getSelectedDemo3();
 			tempDemographic1[1] = (form.getSelectedDemo1().equals(FilterSortPageUtils.FILTERTYPE_SHOWALL)? null : FilterSortPageUtils.FILTERTYPE_SHOWALL);
 			tempDemographic2[1] = (form.getSelectedDemo2().equals(FilterSortPageUtils.FILTERTYPE_SHOWALL)? null : FilterSortPageUtils.FILTERTYPE_SHOWALL);
 			tempDemographic3[1] = (form.getSelectedDemo3().equals(FilterSortPageUtils.FILTERTYPE_SHOWALL)? null : FilterSortPageUtils.FILTERTYPE_SHOWALL);
-			
+
 			int x = 1;	
 			for(int k = 1;k< realDemographicOptions.length; k++){
-				 if( !realDemographicOptions[k].equals(form.getSelectedDemo1()) 
-						 && !realDemographicOptions[k].equals(form.getSelectedDemo2()) 
-						 && !realDemographicOptions[k].equals(form.getSelectedDemo3())){
-					 x += 1;
-					 	 tempDemographic1[x] =  realDemographicOptions[k];
-						 tempDemographic2[x] =  realDemographicOptions[k];
-						 tempDemographic3[x] =  realDemographicOptions[k];
-				 }
-			 }
+				if( !realDemographicOptions[k].equals(form.getSelectedDemo1()) 
+						&& !realDemographicOptions[k].equals(form.getSelectedDemo2()) 
+						&& !realDemographicOptions[k].equals(form.getSelectedDemo3())){
+					x += 1;
+					tempDemographic1[x] =  realDemographicOptions[k];
+					tempDemographic2[x] =  realDemographicOptions[k];
+					tempDemographic3[x] =  realDemographicOptions[k];
+				}
+			}
 			demographic1 = tempDemographic1;
 			demographic2 = tempDemographic2;
 			demographic3 = tempDemographic3;
-			
+
 			for(int i= 0; i<customerDemographic.length; i++){
-				
+
 				if(form.getSelectedDemo1() != null && form.getSelectedDemo1().equals(FilterSortPageUtils.FILTERTYPE_SHOWALL)) {
 					form.setSelectedDemoValue1(FilterSortPageUtils.FILTERTYPE_SHOWALL);
 					this.selectedDemoValue1 = form.getSelectedDemoValue1();
@@ -687,17 +764,17 @@ public class ManageBulkAccommodationController extends PageFlowController
 					form.setSelectedDemoValue3(FilterSortPageUtils.FILTERTYPE_SHOWALL);
 					this.selectedDemoValue3 = form.getSelectedDemoValue3();
 				}
-				
+
 				if(!(this.savedForm.getSelectedDemo1().equals(form.getSelectedDemo1()))) {
 					if(customerDemographic[i].getLabelName().equals(form.getSelectedDemo1())){
 						CustomerDemographicValue[] customerDemographicValue  = customerDemographic[i].getCustomerDemographicValues();
 						form.setSelectedDemoValue1(FilterSortPageUtils.FILTERTYPE_SHOWALL);
 						demographicValues1 = new String[customerDemographicValue.length+1];
 						demographicValues1[0] = FilterSortPageUtils.FILTERTYPE_SHOWALL;
-						 for (int j=0 ; j<customerDemographicValue.length ; j++) {        
-							 demographicValues1[j+1] = customerDemographicValue[j].getValueName();
-						 }
-						 
+						for (int j=0 ; j<customerDemographicValue.length ; j++) {        
+							demographicValues1[j+1] = customerDemographicValue[j].getValueName();
+						}
+
 					}
 				}
 				if(!(this.savedForm.getSelectedDemo2().equals(form.getSelectedDemo2()))) {
@@ -706,10 +783,10 @@ public class ManageBulkAccommodationController extends PageFlowController
 						form.setSelectedDemoValue2(FilterSortPageUtils.FILTERTYPE_SHOWALL);
 						demographicValues2 = new String[customerDemographicValue.length+1];
 						demographicValues2[0] = FilterSortPageUtils.FILTERTYPE_SHOWALL;
-						 for (int j=0 ; j<customerDemographicValue.length ; j++) {        
-							 demographicValues2[j+1] = customerDemographicValue[j].getValueName();
-						 }
-						 
+						for (int j=0 ; j<customerDemographicValue.length ; j++) {        
+							demographicValues2[j+1] = customerDemographicValue[j].getValueName();
+						}
+
 					}
 				}
 				if(!(this.savedForm.getSelectedDemo3().equals(form.getSelectedDemo3()))) {
@@ -718,18 +795,18 @@ public class ManageBulkAccommodationController extends PageFlowController
 						form.setSelectedDemoValue3(FilterSortPageUtils.FILTERTYPE_SHOWALL);
 						demographicValues3 = new String[customerDemographicValue.length+1];
 						demographicValues3[0] = FilterSortPageUtils.FILTERTYPE_SHOWALL;
-						 for (int j=0 ; j<customerDemographicValue.length ; j++) {        
-							 demographicValues3[j+1] = customerDemographicValue[j].getValueName();
-						 }
-						
+						for (int j=0 ; j<customerDemographicValue.length ; j++) {        
+							demographicValues3[j+1] = customerDemographicValue[j].getValueName();
+						}
+
 					}
 				}
 
 			}
-			
+
 		}
-		
-		
+
+
 		String accommodationOperand = form.getAccommodationOperand();
 		if ((accommodationOperand != null) && (accommodationOperand.equals(FilterSortPageUtils.STUDENTS_WITH_ACCOMMODATIONS)))
 		{
@@ -778,49 +855,49 @@ public class ManageBulkAccommodationController extends PageFlowController
 			filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));
 		}
 		if (this.selectedDemo1 != null && !this.selectedDemo1.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
+		{
+			String [] arg = new String[1];
+			arg[0] = this.selectedDemo1;
+			if (this.selectedDemoValue1 != null && !this.selectedDemoValue1.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
 			{
-				String [] arg = new String[1];
-				arg[0] = this.selectedDemo1;
-				if (this.selectedDemoValue1 != null && !this.selectedDemoValue1.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
-				{
-					String [] valueArg = new String[1];
-					valueArg[0] = arg[0]+ "_" + this.selectedDemoValue1;
-					demoFilters.add(new FilterParam("ValueName", valueArg, FilterType.EQUALS));
-				} else {
-					demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
-				}
-
+				String [] valueArg = new String[1];
+				valueArg[0] = arg[0]+ "_" + this.selectedDemoValue1;
+				demoFilters.add(new FilterParam("ValueName", valueArg, FilterType.EQUALS));
+			} else {
+				demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
 			}
+
+		}
 
 		if (this.selectedDemo2 != null && !this.selectedDemo2.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
+		{
+			String [] arg = new String[1];
+			arg[0] = this.selectedDemo2;
+			if (this.selectedDemoValue2 != null && !this.selectedDemoValue2.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
 			{
-				String [] arg = new String[1];
-				arg[0] = this.selectedDemo2;
-				if (this.selectedDemoValue2 != null && !this.selectedDemoValue2.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
-				{
-					String [] valueArg = new String[1];
-					valueArg[0] = arg[0]+ "_" + this.selectedDemoValue2;
-					demoFilters.add(new FilterParam("ValueName", valueArg, FilterType.EQUALS));
-				} else {
-					demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
-				}
-
+				String [] valueArg = new String[1];
+				valueArg[0] = arg[0]+ "_" + this.selectedDemoValue2;
+				demoFilters.add(new FilterParam("ValueName", valueArg, FilterType.EQUALS));
+			} else {
+				demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
 			}
+
+		}
 
 		if (this.selectedDemo3 != null && !this.selectedDemo3.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
+		{
+			String [] arg = new String[1];
+			arg[0] = this.selectedDemo3;
+			if (this.selectedDemoValue3 != null && !this.selectedDemoValue3.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
 			{
-				String [] arg = new String[1];
-				arg[0] = this.selectedDemo3;
-				if (this.selectedDemoValue3 != null && !this.selectedDemoValue3.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
-				{
-					String [] valueArg = new String[1];
-					valueArg[0] = arg[0]+ "_" +this.selectedDemoValue3;
-					demoFilters.add(new FilterParam("ValueName", valueArg, FilterType.EQUALS));
-				} else {
-					demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
-				}
+				String [] valueArg = new String[1];
+				valueArg[0] = arg[0]+ "_" +this.selectedDemoValue3;
+				demoFilters.add(new FilterParam("ValueName", valueArg, FilterType.EQUALS));
+			} else {
+				demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
 			}
-		
+		}
+
 
 		if (this.selectedFormOperand != null && this.selectedFormOperand.equals(FilterSortPageUtils.STUDENTS_WITH_ACCOMMODATIONS))
 		{
@@ -858,21 +935,21 @@ public class ManageBulkAccommodationController extends PageFlowController
 		}
 		filter.setFilterParams((FilterParam[])filters.toArray(new FilterParam[0]));
 		demoFilter.setFilterParams((FilterParam[])demoFilters.toArray(new FilterParam[0]));
-		
+
 		PageParams page = FilterSortPageUtils.buildPageParams(form.getOrgPageRequested(), FilterSortPageUtils.PAGESIZE_5);
 		SortParams sort = FilterSortPageUtils.buildSortParams(form.getOrgSortColumn(), form.getOrgSortOrderBy(), null, null);   
 
 		List orgNodes = findByHierarchy(form,page,sort,filter,demoFilter); 
-		
+
 		if(((form.getSelectedOrgNodeId() != null &&  (this.savedForm.selectedOrgNodeId != null )) 
-		 && (form.getSelectedOrgNodeId().intValue() != this.savedForm.selectedOrgNodeId.intValue())) || currentAction.equals(ACTION_APPLY)){
-		
+				&& (form.getSelectedOrgNodeId().intValue() != this.savedForm.selectedOrgNodeId.intValue())) || currentAction.equals(ACTION_APPLY)){
+
 			removeSelectedStudentToList();
-	
+
 		}
 		else {
 			if (isNeedCommitSelection(currentAction, actionElement, form)) {
-				
+
 				commitSelection(form);
 				this.getRequest().setAttribute("viewOnly", Boolean.TRUE);//4th Jan Bulk Accommodation
 			}
@@ -901,7 +978,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 		}
 
-	if (this.selectedDemo2 != null && !this.selectedDemo2.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
+		if (this.selectedDemo2 != null && !this.selectedDemo2.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
 		{
 			String [] arg = new String[1];
 			arg[0] = this.selectedDemo2;
@@ -916,7 +993,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 		}
 
-	if (this.selectedDemo3 != null && !this.selectedDemo3.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
+		if (this.selectedDemo3 != null && !this.selectedDemo3.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
 		{
 			String [] arg = new String[1];
 			arg[0] = this.selectedDemo3;
@@ -929,7 +1006,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 				demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
 			}
 		}
-	
+
 		if (this.selectedFormOperand != null && this.selectedFormOperand.equals(FilterSortPageUtils.STUDENTS_WITH_ACCOMMODATIONS))
 		{
 			if (this.selectedAccommodations != null)
@@ -973,11 +1050,12 @@ public class ManageBulkAccommodationController extends PageFlowController
 		Integer selectedOrgNodeId = form.getSelectedOrgNodeId();
 		if (currentAction.equals(ACTION_ADD_ALL))
 		{
-			addAllStudents(filter,demoFilter, selectedOrgNodeId, selectedOrgNodeId);    
+			addAllStudents(filter,demoFilter, selectedOrgNodeId, selectedOrgNodeId); 
+			form.setCurrentAction(ACTION_DEFAULT);
 		}  
 
 
-		
+
 		ManageBulkStudentData msData=null;
 		msData = StudentSearchUtils.searchBulkStudentsByOrgNode(this.userName, this.studentManagement, selectedOrgNodeId, filter,demoFilter, page, sort);
 
@@ -1001,14 +1079,14 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 		this.pageTitle = buildPageTitle(ACTION_DEFAULT, form);
 		boolean appliedFilterFlag = false;
-		
+
 		if( (demoFilter != null && demoFilter.getFilterParams().length > 0)
-			 || (filter != null && filter.getFilterParams().length > 0) ) {
+				|| (filter != null && filter.getFilterParams().length > 0) ) {
 			appliedFilterFlag = true;
 		}
 		this.getRequest().setAttribute("appliedFilterFlag", appliedFilterFlag);
 		form.setAppliedFilterFlag(appliedFilterFlag);
-		
+
 		//Bulk Accommodation Changes
 		customerHasBulkAccommodation();
 		form.setCustomerConfigurations(this.customerConfigurations);
@@ -1019,13 +1097,13 @@ public class ManageBulkAccommodationController extends PageFlowController
 		setFormInfoOnRequest(form);
 		return new Forward("success");
 	}
-	
+
 
 
 	public  PagerSummary buildStudentPagerSummary(ManageBulkStudentData msData,Integer pageRequested ) 
 	{
-		
-		
+
+
 		PagerSummary pagerSummary = new PagerSummary();
 		pagerSummary.setCurrentPage(pageRequested);                
 		pagerSummary.setTotalObjects(msData.getTotalCount());
@@ -1169,7 +1247,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 	private boolean isNeedCommitSelection(String currentAction, String actionElement, ManageBulkAccommodationForm form)
 	{
 		boolean needCommit = false;
-	
+
 		if ((actionElement != null) && actionElement.equals("{actionForm.studentPageRequested}"))
 			needCommit = true;
 		if ((actionElement != null) && actionElement.equals("{actionForm.orgNodeId}"))
@@ -1177,7 +1255,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		if ((actionElement != null) && actionElement.equals("{actionForm.studentSortOrderBy}"))
 			needCommit = true;
 
-	
+
 
 		return needCommit;                         
 	}
@@ -1271,74 +1349,77 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 
 	}
-	
+
 	private void removeSelectedStudentToList() {
-		
-			this.selectedStudents= new ArrayList();
-		
+
+		this.selectedStudents= new ArrayList();
+
 	}
 
-	 private StudentAccommodationsDetail getStudentAccommodations()
+	private StudentAccommodationsDetail getStudentAccommodations()
+	{
+
+
+		this.accommodations = new StudentAccommodationsDetail();
+		setCustomerAccommodations(this.accommodations, true);
+		this.accommodations.convertHexToText();      
+
+
+
+
+
+		return this.accommodations;
+	}
+
+
+
+	//Bulk Accommodation Changes
+	/**
+	 * setCustomerAccommodations
+	 */
+	private void setCustomerAccommodations(StudentAccommodationsDetail sad, boolean isSetDefaultValue) 
+	{        
+		// set checked value if there is configuration for this customer
+		for (int i=0; i < this.customerConfigurations.length; i++)
 		{
-		
-			 	this.accommodations = new StudentAccommodationsDetail();
-				setCustomerAccommodations(this.accommodations, true);
-				this.accommodations.convertHexToText();      
-			
-		
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			String ccName = cc.getCustomerConfigurationName();
+			String defaultValue = cc.getDefaultValue() != null ? cc.getDefaultValue() : "F";
+			String editable = cc.getEditable() != null ? cc.getEditable() : "F";
 
-			return this.accommodations;
-		}
-	 
-	
-	 
-	 //Bulk Accommodation Changes
-	 	/**
-		 * setCustomerAccommodations
-		 */
-		private void setCustomerAccommodations(StudentAccommodationsDetail sad, boolean isSetDefaultValue) 
-		{        
-			// set checked value if there is configuration for this customer
-			for (int i=0; i < this.customerConfigurations.length; i++)
+			if (isSetDefaultValue)
+				editable = "F";
+
+			if (defaultValue.equalsIgnoreCase("T") && editable.equalsIgnoreCase("F"))
 			{
-				CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-				String ccName = cc.getCustomerConfigurationName();
-				String defaultValue = cc.getDefaultValue() != null ? cc.getDefaultValue() : "F";
-				String editable = cc.getEditable() != null ? cc.getEditable() : "F";
 
-				if (isSetDefaultValue)
-					editable = "F";
-
-				if (defaultValue.equalsIgnoreCase("T") && editable.equalsIgnoreCase("F"))
+				if (ccName.equalsIgnoreCase("screen_reader"))
 				{
+					sad.setScreenReader(Boolean.TRUE);
+				}
 
-					if (ccName.equalsIgnoreCase("screen_reader"))
-					{
-						sad.setScreenReader(Boolean.TRUE);
-					}
+				if (ccName.equalsIgnoreCase("calculator"))
+				{
+					sad.setCalculator(Boolean.TRUE);
+				}
 
-					if (ccName.equalsIgnoreCase("calculator"))
-					{
-						sad.setCalculator(Boolean.TRUE);
-					}
+				if (ccName.equalsIgnoreCase("test_pause"))
+				{
+					sad.setTestPause(Boolean.TRUE);
+				}
 
-					if (ccName.equalsIgnoreCase("test_pause"))
-					{
-						sad.setTestPause(Boolean.TRUE);
-					}
+				if (ccName.equalsIgnoreCase("untimed_test"))
+				{
+					sad.setUntimedTest(Boolean.TRUE);
+				}
 
-					if (ccName.equalsIgnoreCase("untimed_test"))
-					{
-						sad.setUntimedTest(Boolean.TRUE);
-					}
-
-					if (ccName.equalsIgnoreCase("highlighter"))
-					{
-						sad.setHighlighter(Boolean.TRUE);
-					}
+				if (ccName.equalsIgnoreCase("highlighter"))
+				{
+					sad.setHighlighter(Boolean.TRUE);
 				}
 			}
 		}
+	}
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1346,33 +1427,33 @@ public class ManageBulkAccommodationController extends PageFlowController
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	* @jpf:action
-	* @jpf:forward name="success" path="/previewer/PreviewerController.jpf"
-	*/
-		@Jpf.Action(forwards = { 
-		@Jpf.Forward(name = "success",
-		path = "/previewer/PreviewerController.jpf")
-		})
-		protected Forward colorFontPreview()
-		{      
-			String param = getRequest().getParameter("param");
-			getSession().setAttribute("param", param);
-			
-			return new Forward("success");
-		}
-	
+	 * @jpf:action
+	 * @jpf:forward name="success" path="/previewer/PreviewerController.jpf"
+	 */
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "/previewer/PreviewerController.jpf")
+	})
+	protected Forward colorFontPreview()
+	{      
+		String param = getRequest().getParameter("param");
+		getSession().setAttribute("param", param);
+
+		return new Forward("success");
+	}
+
 	/**
-	* @jpf:action
-	* @jpf:forward name="success" path="addEditStudent.do"
-	*/
-		@Jpf.Action(forwards = { 
-		@Jpf.Forward(name = "success",
-		path = "addEditStudent.do")
-		})
-		protected Forward colorFontPreviewDone() {
-			
-			return new Forward("success");
-		}
+	 * @jpf:action
+	 * @jpf:forward name="success" path="addEditStudent.do"
+	 */
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "addEditStudent.do")
+	})
+	protected Forward colorFontPreviewDone() {
+
+		return new Forward("success");
+	}
 
 	/**
 	 * This method represents the point of entry into the pageflow
@@ -1398,7 +1479,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 	 */
 	private List findByHierarchy(ManageBulkAccommodationForm form,PageParams page,SortParams sort,FilterParams filter,FilterParams demoFilter)
 	{      
-		
+
 
 		ManageBulkStudentData msData = null;
 		String actionElement = form.getActionElement();
@@ -1408,8 +1489,8 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 		String orgNodeName = form.getOrgNodeName();
 		Integer orgNodeId = form.getOrgNodeId();   
-		
-		
+
+
 
 		StudentNodeData snd = StudentPathListUtils.getOrganizationNodesForBulkAccommodation(this.userName, this.studentManagement,this.customerId, orgNodeId, filter,demoFilter, page, sort);        
 
@@ -1441,43 +1522,43 @@ public class ManageBulkAccommodationController extends PageFlowController
 		this.getRequest().setAttribute("orgNodes", orgNodes);        
 		this.getRequest().setAttribute("orgPagerSummary", orgPagerSummary);
 		this.getRequest().setAttribute("orgCategoryName", orgCategoryName);  
-		
+
 		boolean nodeChanged = StudentPathListUtils.adjustOrgNodePath(this.orgNodePath, orgNodeId, orgNodeName);
 
-		
-		 if (actionElement.equals("{actionForm.orgPageRequested}") || actionElement.equals("{actionForm.orgSortOrderBy}") )
-	        {                
-	            nodeChanged = true;
-	        }
+
+		if (actionElement.equals("{actionForm.orgPageRequested}") || actionElement.equals("{actionForm.orgSortOrderBy}") )
+		{                
+			nodeChanged = true;
+		}
 
 
-	        String selectedOrgNodeName = null;
-	        if (nodeChanged)
-	        {
-	            selectedOrgNodeName = initFirstOrgNode(orgNodes, form);
-	        }
-	        else
-	        {
-	            Integer id = form.getSelectedOrgNodeId();
-	            if (id != null)
-	            {
-	                for (int i=0; i < orgNodes.size(); i++)
-	                {
-	                    PathNode node = (PathNode)orgNodes.get(i);
-	                    if (node.getId().intValue() == id.intValue())
-	                    {
-	                        selectedOrgNodeName = node.getName();
-	                        break;
-	                    }
-	                }
-	            }
-	            if (selectedOrgNodeName == null)
-	            {
-	                selectedOrgNodeName = initFirstOrgNode(orgNodes, form);
-	            }
-	        }   
+		String selectedOrgNodeName = null;
+		if (nodeChanged)
+		{
+			selectedOrgNodeName = initFirstOrgNode(orgNodes, form);
+		}
+		else
+		{
+			Integer id = form.getSelectedOrgNodeId();
+			if (id != null)
+			{
+				for (int i=0; i < orgNodes.size(); i++)
+				{
+					PathNode node = (PathNode)orgNodes.get(i);
+					if (node.getId().intValue() == id.intValue())
+					{
+						selectedOrgNodeName = node.getName();
+						break;
+					}
+				}
+			}
+			if (selectedOrgNodeName == null)
+			{
+				selectedOrgNodeName = initFirstOrgNode(orgNodes, form);
+			}
+		}   
 
-	return orgNodes;
+		return orgNodes;
 	}
 
 	private PagerSummary buildOrgNodePagerSummary(StudentNodeData snd, ManageBulkAccommodationForm form) 
@@ -1516,27 +1597,27 @@ public class ManageBulkAccommodationController extends PageFlowController
 		return nodeList;
 	}
 
-	  private String initFirstOrgNode(List orgNodes,ManageBulkAccommodationForm form)
-	    {
-	        String selectedOrgNodeName = "";
-	        if (orgNodes.size() > 0)
-	        {
-	            PathNode node = (PathNode)orgNodes.get(0);
-	            form.setSelectedOrgNodeId(node.getId());
-	            form.setSelectedOrgNodeName(node.getName());
-	            this.orgNodeId = node.getId();
-	            selectedOrgNodeName = node.getName();
-	        }
-	        else
-	        {
-	            form.setSelectedOrgNodeId(new Integer(0));
-	            form.setSelectedOrgNodeName("");
-	            this.orgNodeId = new Integer(0);
-	            selectedOrgNodeName = "";
-	        }
-	        return selectedOrgNodeName;
-	    }
-	    
+	private String initFirstOrgNode(List orgNodes,ManageBulkAccommodationForm form)
+	{
+		String selectedOrgNodeName = "";
+		if (orgNodes.size() > 0)
+		{
+			PathNode node = (PathNode)orgNodes.get(0);
+			form.setSelectedOrgNodeId(node.getId());
+			form.setSelectedOrgNodeName(node.getName());
+			this.orgNodeId = node.getId();
+			selectedOrgNodeName = node.getName();
+		}
+		else
+		{
+			form.setSelectedOrgNodeId(new Integer(0));
+			form.setSelectedOrgNodeName("");
+			this.orgNodeId = new Integer(0);
+			selectedOrgNodeName = "";
+		}
+		return selectedOrgNodeName;
+	}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1575,7 +1656,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 				supportAccommodations = Boolean.FALSE;
 			}
 			getSession().setAttribute("supportAccommodations", supportAccommodations); 
-			
+
 		}
 		catch (CTBBusinessException be) {
 			be.printStackTrace();
@@ -1643,7 +1724,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 	private void initGradeOptions(String action, ManageBulkAccommodationForm form, String grade)
 	{        
 		this.gradeOptions = getGradeOptions(action);
-		
+
 	}
 
 	/*
@@ -1653,7 +1734,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 		this.getRequest().setAttribute("studentPagerSummary", form.getStudentPagerSummary());
 		this.getRequest().setAttribute("orgPagerSummary", form.getOrgPagerSummary());
-		this.getRequest().setAttribute("pageMessage", form.getMessage());
+		//this.getRequest().setAttribute("pageMessage", form.getMessage());
 		this.getRequest().setAttribute("orgNodePath", form.getOrgNodePath());
 		this.getRequest().setAttribute("orgNodes", form.getOrgNodes());
 		this.getRequest().setAttribute("orgCategoryName", form.getOrgCategoryName());
@@ -1697,10 +1778,10 @@ public class ManageBulkAccommodationController extends PageFlowController
 		private Integer selectedStudentId;
 
 		private Integer[] selectedStudentOrgList;
-		
+
 		private PagerSummary studentPagerSummary ;
 		private PagerSummary orgPagerSummary ;
-		
+
 		private List orgNodePath;
 		private List orgNodes;
 		private List studentNodes;
@@ -1716,7 +1797,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		public Integer[] getSelectedStudentOrgList() {
 			return selectedStudentOrgList;
 		}
-		
+
 		/**
 		 * @return the studentNodes
 		 */
@@ -1759,7 +1840,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 			this.msCount = msCount;
 		}
 
-	
+
 		// find all students
 		private String orgNodeName;
 		private Integer orgNodeId;
@@ -1779,7 +1860,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		private Integer studentMaxPage;
 
 		private Message message;
-		
+
 		private String accommodationOperand;        
 		private List gradeList = null;    
 		private List selectedStudents;
@@ -1812,9 +1893,9 @@ public class ManageBulkAccommodationController extends PageFlowController
 		{
 			this.actionElement = ACTION_DEFAULT;
 			this.currentAction = ACTION_DEFAULT;
-			
+
 			this.filterVisible = Boolean.FALSE;
-			
+
 			this.selectedStudentId = null;
 
 			this.orgNodeName = "Top";
@@ -1832,7 +1913,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 			this.studentPageRequested = new Integer(1);       
 			this.studentMaxPage = new Integer(1);      
 
-			
+
 		}   
 
 		public ActionErrors validate( ActionMapping mapping, HttpServletRequest request )
@@ -1903,8 +1984,8 @@ public class ManageBulkAccommodationController extends PageFlowController
 			if (actionElement.equals("{actionForm.studentSortOrderBy}")) {
 				this.studentPageRequested = new Integer(1);
 			}
-			if (actionElement.equals("ButtonGoInvoked_studentSearchResult") ||
-					actionElement.equals("EnterKeyInvoked_studentSearchResult")) {
+			if (actionElement.equals("ButtonGoInvoked_studentTableAnchor") ||
+					actionElement.equals("EnterKeyInvoked__studentTableAnchor")) {
 				this.selectedStudentId = null;
 			}
 			if (actionElement.equals("ButtonGoInvoked_tablePathListAnchor") ||
@@ -2336,7 +2417,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		public String getSelectedDemoValue1() {
 			return selectedDemoValue1;
 		}
-		
+
 		/**
 		 * @param selectedDemoValue1 the selectedDemoValue1 to set
 		 */
@@ -2385,7 +2466,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		public void setSelectedDemo1(String selectedDemo1) {
 			this.selectedDemo1 = selectedDemo1;
 		}
-		
+
 		/**
 		 * @return the selectedDemo2
 		 */
@@ -2400,7 +2481,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 			this.selectedDemo2 = selectedDemo2;
 		}
 
-	   /**
+		/**
 		 * @return the selectedDemo3
 		 */
 		public String getSelectedDemo3() {
@@ -2505,8 +2586,8 @@ public class ManageBulkAccommodationController extends PageFlowController
 			this.orgCategoryName = orgCategoryName;
 		}
 
-		
-		
+
+
 		/**
 		 * @return the disableApply
 		 */
@@ -2528,7 +2609,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 			this.selectedStudentOrgList = selectedStudentOrgList;
 		}
 
-		
+
 		/**
 		 * @param appliedFilterFlag the appliedFilterFlag to set
 		 */
