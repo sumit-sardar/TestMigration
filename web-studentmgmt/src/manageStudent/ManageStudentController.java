@@ -2903,11 +2903,12 @@ public class ManageStudentController extends PageFlowController
 				String str[] =invalidCharFields.split(",");
 				invalidCharFields += ("<br/>" + Message.INVALID_STUDENT_MINLENGTH_FORMAT);  
 				for(String temp :  str){
-					if(temp.equals(this.studentIdLabelName))
-						invalidCharFields += ("<br/>" + "For " + this.studentIdLabelName +" - " + this.studentIdMinLength);  
-					if(temp.equals(this.studentId2LabelName))
-						invalidCharFields += ("<br/>" + "For " + this.studentId2LabelName +" - " + this.studentId2MinLength);  
+					if(temp.trim().equals(this.studentIdLabelName))
+						invalidCharFields += ("<br/>" + this.studentIdLabelName +" - " + this.studentIdMinLength + " characters");  
+					if(temp.trim().equals(this.studentId2LabelName))
+						invalidCharFields += ("<br/>" + this.studentId2LabelName +" - " + this.studentId2MinLength+ " characters");  
 				}
+				//System.out.println(invalidCharFields);
 				setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
 					return false;
 				}
