@@ -26,7 +26,7 @@
 	        
 	        	<td nowrap=""> 
 	   				<h3><span>Select Bulk Accommodations</span></h3>
-					<p>You may assign accommodations to all students registered in a Test Session. Click <b>Reset</b> to clear the selections below if required.</p>
+					<p>You may assign accommodations to all students in an Organization. Click <b>Reset</b> to clear the selections below if required.</p>
 				</td>
 				
 			</tr>

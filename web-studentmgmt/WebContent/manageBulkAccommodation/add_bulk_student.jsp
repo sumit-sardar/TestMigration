@@ -97,7 +97,8 @@
 
 				<p><netui:content value="${bundle.web['selectstudents.selectStudents.introtext']}" /></p>
 
-				<!-- message for licnese -->
+				<!-- successfull message for bulk accommodation -->
+				
 				<jsp:include page="/manageBulkAccommodation/show_message.jsp" />
 				<br />
 
@@ -352,7 +353,7 @@
 												<netui:span value="Untimed" />
 											</ctb:tableSortColumn></th>
 											<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="UntimedTest">
-												<netui:span value="Highlighter" />
+												<netui:span value="HighLighter" />
 											</ctb:tableSortColumn></th>
 										</c:if>
 									</ctb:tableSortColumnGroup>

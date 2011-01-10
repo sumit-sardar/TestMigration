@@ -198,7 +198,7 @@ public class StudentBulkAccommodationTag extends CTBTag
                             displayCellStart("transparent", "70%");
                                 field = "question_bgrdColor";
                                 disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());     
-                                System.out.println("disabled.."+ disabled);
+                                
                                 selection = this.accommodations.getQuestion_bgrdColor();
                                 if(selectedColorFont != null && selectedColorFont.equals("T")) {
                                 	displayBackgroundColorOptions(field, false, selection, "setQuestionColorOptions();");
