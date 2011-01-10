@@ -20,6 +20,8 @@ import com.ctb.bean.testAdmin.ActiveTest;
 import com.ctb.bean.testAdmin.ActiveTestData;
 import com.ctb.bean.testAdmin.CustomerSDS;
 import com.ctb.bean.testAdmin.CustomerSDSData;
+import com.ctb.bean.testAdmin.CustomerTestResource;
+import com.ctb.bean.testAdmin.CustomerTestResourceData;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.testSessionInfo.dto.ActiveSessionVO;
@@ -95,14 +97,26 @@ public class DownloadTestController extends PageFlowController
     })
     protected Forward download_zippedFile()
     {
-    	String folderName = "/downloadfiles/";	// "http://oasdev.ctb.com/downloadfiles/";
-
-    	FileInfo fileInfo = null;
-    	ArrayList fileInfoList = new ArrayList();   	
+     	//String folderName = "/downloadfiles/";	// "http://oasdev.ctb.com/downloadfiles/";
+     	//ISTEP CR032
+     	ArrayList<FileInfo> fileInfoList = new ArrayList<FileInfo>(); 
+    	try {
+			CustomerTestResourceData resourceData= this.testSessionStatus.getCustomerTestResources(this.userName, null, null, null);
+			CustomerTestResource[] result =resourceData.getCustomerTestResource();
+			for(CustomerTestResource resource:result){
+				FileInfo fileInfo = new FileInfo(resource.getProductName(), resource.getResourceURI(), resource.getContentSize());
+				fileInfoList.add(fileInfo);
+				
+			}
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		} 
+    	/*FileInfo fileInfo = null;
+    	  	
     	fileInfo = new FileInfo("ISTEP 2011", folderName + "ISTEP_2011.zip", "28.5 MB");    	
     	fileInfoList.add(fileInfo);
     	fileInfo = new FileInfo("TABE Complete Battery 2011", folderName + "TABE_CB_2011.zip", "52.4 MB");    	
-    	fileInfoList.add(fileInfo);
+    	fileInfoList.add(fileInfo);*/
     	
         this.getRequest().setAttribute("fileInfoList", fileInfoList);
     	

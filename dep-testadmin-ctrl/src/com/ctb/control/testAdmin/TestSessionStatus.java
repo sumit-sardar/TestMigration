@@ -3,6 +3,8 @@ package com.ctb.control.testAdmin;
 
 import com.bea.control.annotations.TransactionAttribute;
 import com.bea.control.annotations.TransactionAttributeType;
+import com.ctb.bean.testAdmin.CustomerTestResource;
+import com.ctb.bean.testAdmin.CustomerTestResourceData;
 import com.ctb.exception.CTBBusinessException;
 
 import org.apache.beehive.controls.api.bean.ControlInterface;
@@ -417,5 +419,18 @@ public interface TestSessionStatus
      */
     
     com.ctb.bean.testAdmin.CustomerConfigurationValue[] getCustomerConfigurationsValue(java.lang.Integer configId) throws com.ctb.exception.CTBBusinessException;
+    
+    
+    /**   
+     * ISTEP CR032 -Download Test
+     * @param userName
+     * @param filter
+     * @param page
+     * @param sort
+     * @return
+     * @throws com.ctb.exception.CTBBusinessException
+     */
+    CustomerTestResourceData getCustomerTestResources(java.lang.String userName, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+    
     
 } 

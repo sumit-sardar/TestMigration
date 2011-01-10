@@ -27,6 +27,8 @@ import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.CustomerSDSData;
+import com.ctb.bean.testAdmin.CustomerTestResource;
+import com.ctb.bean.testAdmin.CustomerTestResourceData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.OrganizationNode;
@@ -1543,6 +1545,39 @@ public class TestSessionStatusImpl implements TestSessionStatus
  	        tee.setStackTrace(se.getStackTrace());
  	        throw tee;
  	    }
+     }
+     
+     /**
+      * ISTEP CR032 -Download Test
+      * Each CustomerTestResource
+      * object contains a list of all CustomerTestResource.
+ 	  * @param userName - identifies the user
+      * @return CustomerTestResourceData
+ 	  * @throws com.ctb.exception.CTBBusinessException
+      * @common:operation
+      */
+     public CustomerTestResourceData getCustomerTestResources(String userName, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException {
+         validator.validate(userName, null, "testAdmin.getCustomerTestResources");
+         try {
+        	 Integer customerId= this.users.getCustomer(userName).getCustomerId();
+        	 CustomerTestResourceData ctr = new CustomerTestResourceData();
+             Integer pageSize = null;
+             if(page != null) {
+                 pageSize = new Integer(page.getPageSize());
+             }
+             CustomerTestResource []  tests = itemSet.getCustomerTestResources(customerId);
+            
+             ctr.setCustomerTestResources(tests, pageSize);
+             if(filter != null) ctr.applyFiltering(filter);
+             if(sort != null) ctr.applySorting(sort);
+             if(page != null) ctr.applyPaging(page);
+             return ctr;
+         
+         } catch (SQLException se) {
+             TestElementDataNotFoundException rde = new TestElementDataNotFoundException("TestSessionStatusImpl: getCustomerTestResources: " + se.getMessage());
+             rde.setStackTrace(se.getStackTrace());
+             throw rde;  
+         }
      }
    
     
