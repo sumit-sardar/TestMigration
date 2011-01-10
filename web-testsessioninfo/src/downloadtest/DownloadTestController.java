@@ -97,8 +97,6 @@ public class DownloadTestController extends PageFlowController
     })
     protected Forward download_zippedFile()
     {
-     	//String folderName = "/downloadfiles/";	// "http://oasdev.ctb.com/downloadfiles/";
-     	//ISTEP CR032
      	ArrayList<FileInfo> fileInfoList = new ArrayList<FileInfo>(); 
     	try {
 			CustomerTestResourceData resourceData= this.testSessionStatus.getCustomerTestResources(this.userName, null, null, null);
@@ -111,12 +109,6 @@ public class DownloadTestController extends PageFlowController
 		} catch (CTBBusinessException e) {
 			e.printStackTrace();
 		} 
-    	/*FileInfo fileInfo = null;
-    	  	
-    	fileInfo = new FileInfo("ISTEP 2011", folderName + "ISTEP_2011.zip", "28.5 MB");    	
-    	fileInfoList.add(fileInfo);
-    	fileInfo = new FileInfo("TABE Complete Battery 2011", folderName + "TABE_CB_2011.zip", "52.4 MB");    	
-    	fileInfoList.add(fileInfo);*/
     	
         this.getRequest().setAttribute("fileInfoList", fileInfoList);
     	
