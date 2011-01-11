@@ -116,5 +116,12 @@ public class Message implements java.io.Serializable
         }        
         return result;
     }
+    /**
+     * getNothing - dummy stub for forcing build
+     */
+    public static String getNothing(String str)
+    {
+        return str + " dummy stub for forcing build";
+    }
         
 } 
