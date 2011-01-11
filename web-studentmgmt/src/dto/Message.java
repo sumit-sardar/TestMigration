@@ -35,7 +35,7 @@ public class Message implements java.io.Serializable
     public static final String DELETE_ERROR_UNKNOWN = "Failed to delete this student.";
     
     //Added for Bulk Accommodation
-    public static final String BULK_ADD_TITLE      = "Assign Bulk Accommodations";
+    public static final String BULK_ADD_TITLE      = "Edit Group Accommodations";
     public static final String BULK_ADD_SUCCESSFUL = "Accommodations have been successfully updated for the selected set of students.";
     public static final String BULK_ADD_ERROR = "Failed to assign accommodations to the set of selected students.";
     
