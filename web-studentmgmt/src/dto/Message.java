@@ -38,7 +38,7 @@ public class Message implements java.io.Serializable
     public static final String BULK_ADD_TITLE      = "Assign Bulk Accommodations";
     public static final String BULK_ADD_SUCCESSFUL = "Accommodations have been successfully updated for the selected set of students.";
     public static final String BULK_ADD_ERROR = "Failed to assign accommodations to the set of selected students.";
-
+    
     
     //Added for CR  ISTEP2011CR023
     public static final String STUDENT_ASSIGNMENT_ERROR = "Your school system does not allow students to be associated with more than one organization (class) for testing. Please choose only one.";     
@@ -46,6 +46,9 @@ public class Message implements java.io.Serializable
 	public static final String INVALID_STUDENT_MINLENGTH_FORMAT  = "Please enter ID of minimum length:";
 	public static final String INVALID_NUMBER_FORMAT  = "Please enter ID of numeric characters, with no spaces. Acceptable characters are 0-9.";
 	//END- GACR005 
+	
+	public String NOT_USED = "Just added for forcing a new build";
+	
     public Message()
     {
         this.title = "";
