@@ -55,13 +55,7 @@ public class StudentAccommodations extends CTBBean
     
   
     public String getColorFontAccommodation() {
-        return 
-            this.getAnswerBackgroundColor() != null ||
-            this.getAnswerFontColor() != null ||
-            this.getAnswerFontSize() != null ||
-            this.getQuestionBackgroundColor() != null ||
-            this.getQuestionFontColor() != null ||
-            this.getQuestionFontSize() != null ? "T" : "F";
+        return this.colorFontAccommodation;
     }
     
     public void setColorFontAccommodation(String colorFontAccommodation) {
