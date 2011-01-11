@@ -44,7 +44,7 @@ public class Message implements java.io.Serializable
     public static final String STUDENT_ASSIGNMENT_ERROR = "Your school system does not allow students to be associated with more than one organization (class) for testing. Please choose only one.";     
 	//START- GACR005 
 	public static final String INVALID_STUDENT_MINLENGTH_FORMAT  = "Please enter ID of minimum length:";
-	public static final String INVALID_NUMBER_FORMAT  = "Please enter ID of numeric characters, with no spaces.Acceptable characters are 0-9.";
+	public static final String INVALID_NUMBER_FORMAT  = "Please enter ID of numeric characters, with no spaces. Acceptable characters are 0-9.";
 	//END- GACR005 
     public Message()
     {
