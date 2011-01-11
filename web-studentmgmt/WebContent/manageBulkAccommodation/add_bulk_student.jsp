@@ -107,7 +107,8 @@
 						<td class="transparent" style="vertical-align: top" width="40%"><img
 							src="/StudentManagementWeb/resources/images/legacy/step1_off.gif" border="0" height="15" width="15">&nbsp;
 						<b><netui:span value="${bundle.web['selectstudents.filter.title']}" /></b>
-						<p><netui:span value="${bundle.web['selectstudents.filter.introtext']}" /> <c:if
+						<p> Select criteria and click <b>Apply</b> to reduce your results in the Organizations and Students tables.
+						 <c:if
 							test="${offGradeTestingDisabled}">
 							<netui:span value="${bundle.web['selectstudents.selectStudents.gradePreselected']}" />
 						</c:if></p>
@@ -303,7 +304,7 @@
 					<netui:span value="${requestScope.selectedOrgNodeName}" />&nbsp;<netui:span
 						value="${bundle.web['selectstudents.student.studentText']}" /></h4>
 					<p>
-						<p><netui:span value="${bundle.web['selectstudents.student.studentintrotext']}" />
+						Select students to edit and then click <b>Submit</b>.
 					</p>
 
 					<table class="sortable">
