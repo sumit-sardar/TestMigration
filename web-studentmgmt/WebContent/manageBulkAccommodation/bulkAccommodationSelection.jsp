@@ -25,8 +25,8 @@
 	    	<tr>
 	        
 	        	<td nowrap=""> 
-	   				<h3><span>Select Bulk Accommodations</span></h3>
-					<p>You may assign accommodations to all students in an Organization. Click <b>Reset</b> to clear the selections below if required.</p>
+	   				<h3><span>Select Group Accommodations</span></h3>
+					<p>Accommodations you add or delete apply to ALL the selected students when you click <b>Submit</b>. Clicking <b>Reset</b> clears selections in this table.</p>
 				</td>
 				
 			</tr>

@@ -40,7 +40,7 @@
 	        	<li><span class="navleft-unclickable">Bulk Accommodation</span></li>
 	    	</c:if>
 		    <c:if test="${ !requestScope.isBulkAccommodation }">    
-		        <li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Bulk Accommodation</span></a></li>
+		        <li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Group Accommodations</span></a></li>
 		    </c:if>
 	   </c:if>
    </ctb:auth>
