@@ -16,7 +16,7 @@ public class Message implements java.io.Serializable
     public static final String REQUIRED_TEXT_MULTIPLE   = "Please enter/select these values to continue.";
     public static final String INVALID_CHARS  = "Please re-enter your string without these characters: !, @, #, $, %, ^";
     public static final String INVALID_NUMBER_CHARS  = "Please re-enter your string with these characters: A-Z, a-z, 0-9, space";
-    public static final String INVALID_ALPHANUMBER_CHARS  = "Please enter ID of alpha-numeric characters, with no spaces.Acceptable characters are a-z, A-Z, 0-9.";
+    public static final String INVALID_ALPHANUMBER_CHARS  = "Please enter ID of alpha-numeric characters, with no spaces. Acceptable characters are a-z, A-Z, 0-9.";
     
     public static final String INVALID_NAME_CHARS  = "Please re-enter your string with these characters: A-Z, a-z, 0-9, /, \\, -, ', (, ), &, +, comma, period, space";
     public static final String INVALID_DATE  = "Please re-select valid month, day, and year.";
