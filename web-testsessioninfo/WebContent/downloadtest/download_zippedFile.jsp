@@ -21,12 +21,15 @@
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 <h1><netui:content value="${bundle.web['loadTest.title']}"/></h1>
-
 <p><netui:content value="${bundle.web['loadTest.title.message1']}"/></p>
+
+<c:if test="${ requestScope.showMessage }"> 
 <p><netui:content value="${bundle.web['loadTest.title.message3']}"/>
 For details, click this link: <a href="<netui:content value="/help/index.html#downloading_the_test_on_the_student_workstation.htm"/>" onClick="return showHelpWindow(this.href);"><netui:content value="Tell me more..."/></a>
 </p>
 <br/>
+</c:if>
+
 <p>
 <table class="sortable">
 <netui-data:repeater dataSource="requestScope.fileInfoList">
@@ -55,6 +58,17 @@ For details, click this link: <a href="<netui:content value="/help/index.html#do
         </tr>
     </netui-data:repeaterItem>
 </netui-data:repeater>
+
+    <ctb:tableNoResults dataSource="request.fileInfoList">
+        <tr class="sortable">
+            <td class="sortable" colspan="2">
+                 <ctb:message title="${bundle.web['loadTest.noContent.title']}" style="tableMessage">
+                     <netui:content value="${bundle.web['loadTest.noContent.message']}"/>
+                 </ctb:message>
+            </td>
+       </tr>
+	</ctb:tableNoResults>
+	   
 </table>
 </p>
 

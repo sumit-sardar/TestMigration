@@ -111,7 +111,8 @@ public class DownloadTestController extends PageFlowController
 		} 
     	
         this.getRequest().setAttribute("fileInfoList", fileInfoList);
-    	
+        this.getRequest().setAttribute("showMessage", new Boolean(fileInfoList.size() > 0));
+    	 
         return new Forward("success");
     }
     
