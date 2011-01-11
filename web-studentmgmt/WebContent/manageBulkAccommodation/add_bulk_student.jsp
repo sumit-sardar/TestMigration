@@ -302,7 +302,9 @@
 					<h4><img src="/StudentManagementWeb/resources/images/legacy/step3_off.gif" border="0" height="15" width="15">&nbsp;
 					<netui:span value="${requestScope.selectedOrgNodeName}" />&nbsp;<netui:span
 						value="${bundle.web['selectstudents.student.studentText']}" /></h4>
-
+					<p>
+						<p><netui:span value="${bundle.web['selectstudents.student.studentintrotext']}" />
+					</p>
 
 					<table class="sortable">
 
