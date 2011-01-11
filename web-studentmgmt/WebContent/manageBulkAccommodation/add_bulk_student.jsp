@@ -352,7 +352,7 @@
 											<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="UntimedTest">
 												<netui:span value="Untimed" />
 											</ctb:tableSortColumn></th>
-											<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="UntimedTest">
+											<th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="HighLighter">
 												<netui:span value="HighLighter" />
 											</ctb:tableSortColumn></th>
 										</c:if>

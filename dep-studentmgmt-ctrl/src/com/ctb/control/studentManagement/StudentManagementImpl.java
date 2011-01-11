@@ -2255,30 +2255,14 @@ public class StudentManagementImpl implements StudentManagement
 				if(studentAccommodations.getScreenMagnifier()!= null) {
 					strBuffer.append("SCREEN_MAGNIFIER='"+ studentAccommodations.getScreenMagnifier()+"',");
 				}
-				if(studentAccommodations.getAnswerBackgroundColor()!= null) {
-					strBuffer.append("ANSWER_BACKGROUND_COLOR='" +studentAccommodations.getAnswerBackgroundColor()+"',");
-				}
-				if(studentAccommodations.getAnswerFontColor()!= null) {
-					strBuffer.append("ANSWER_FONT_COLOR='" + studentAccommodations.getAnswerFontColor()+"',");
-				}
-				if(studentAccommodations.getAnswerFontSize()!= null) {
-					strBuffer.append("ANSWER_FONT_SIZE='" + studentAccommodations.getAnswerFontSize()+"',");
-				}
+				
 				if(studentAccommodations.getCalculator()!= null) {
 					strBuffer.append("CALCULATOR='" + studentAccommodations.getCalculator()+"',");
 				}
 				if(studentAccommodations.getHighlighter()!= null) {
 					strBuffer.append("HIGHLIGHTER='" + studentAccommodations.getHighlighter()+"',");
 				}
-				if(studentAccommodations.getQuestionBackgroundColor()!= null) {
-					strBuffer.append("QUESTION_BACKGROUND_COLOR='" +studentAccommodations.getQuestionBackgroundColor()+"',");
-				}
-				if(studentAccommodations.getQuestionFontColor()!= null) {
-					strBuffer.append("QUESTION_FONT_COLOR='" + studentAccommodations.getQuestionFontColor()+"',");
-				}
-				if(studentAccommodations.getQuestionFontSize()!= null) {
-					strBuffer.append("QUESTION_FONT_SIZE='" + studentAccommodations.getQuestionFontSize() + "',");
-				}
+				
 				if(studentAccommodations.getScreenReader()!= null) {
 					strBuffer.append("SCREEN_READER='"+studentAccommodations.getScreenReader()+"',");
 				}
@@ -2289,9 +2273,43 @@ public class StudentManagementImpl implements StudentManagement
 					strBuffer.append("UNTIMED_TEST='"+studentAccommodations.getUntimedTest()+"',");
 				}
 				
+				if(studentAccommodations.getColorFontAccommodation() != null && studentAccommodations.getColorFontAccommodation().equals("T")) {
+					if(studentAccommodations.getAnswerBackgroundColor()!= null) {
+						strBuffer.append("ANSWER_BACKGROUND_COLOR='" +studentAccommodations.getAnswerBackgroundColor()+"',");
+					}
+					if(studentAccommodations.getAnswerFontColor()!= null) {
+						strBuffer.append("ANSWER_FONT_COLOR='" + studentAccommodations.getAnswerFontColor()+"',");
+					}
+					if(studentAccommodations.getAnswerFontSize()!= null) {
+						strBuffer.append("ANSWER_FONT_SIZE='" + studentAccommodations.getAnswerFontSize()+"',");
+					}
+					if(studentAccommodations.getQuestionBackgroundColor()!= null) {
+						strBuffer.append("QUESTION_BACKGROUND_COLOR='" +studentAccommodations.getQuestionBackgroundColor()+"',");
+					}
+					if(studentAccommodations.getQuestionFontColor()!= null) {
+						strBuffer.append("QUESTION_FONT_COLOR='" + studentAccommodations.getQuestionFontColor()+"',");
+					}
+					if(studentAccommodations.getQuestionFontSize()!= null) {
+						strBuffer.append("QUESTION_FONT_SIZE='" + studentAccommodations.getQuestionFontSize() + "',");
+					}
+				}
+				
+				if(studentAccommodations.getColorFontAccommodation() != null && studentAccommodations.getColorFontAccommodation().equals("F")) {
+					strBuffer.append("ANSWER_BACKGROUND_COLOR=null" +",");
+					strBuffer.append("ANSWER_FONT_COLOR=null" +",");
+					strBuffer.append("ANSWER_FONT_SIZE=null" +",");
+					strBuffer.append("QUESTION_BACKGROUND_COLOR=null" +",");
+					strBuffer.append("QUESTION_FONT_COLOR=null" +",");
+					strBuffer.append("QUESTION_FONT_SIZE=null" +",");
+					
+				}
+				
+				
+				
+				
 				if (strBuffer != null && strBuffer.length() > 0) {
 					String sqlUpdateStr = strBuffer.substring(0, strBuffer.length() - 1);
-					System.out.println("sqlUpdateStr.."+ sqlUpdateStr);
+					//System.out.println("sqlUpdateStr.."+ sqlUpdateStr);
 					accommodation.updateBulkStudentAccommodations(searchbyStudentId,sqlUpdateStr);
 				}
 			}

@@ -396,36 +396,48 @@ public class ManageBulkAccommodationController extends PageFlowController
 	protected Forward saveBulkStudentData(ManageBulkAccommodationForm form)
 	{   
 
+		Boolean isTokenValid = isTokenValid();
+		if (isTokenValid) {
+			commitSelection(form);
+			boolean successFlag=true;
+			if(this.selectedStudents != null && this.selectedStudents.size()>0 ) {
+				Integer[] studentId = new Integer[this.selectedStudents.size()];
 
-		commitSelection(form);
-		Integer[] studentId = new Integer[this.selectedStudents.size()];
-		if(this.selectedStudents != null && this.selectedStudents.size()>0)
-		{
-		for(int i=0;i< this.selectedStudents.size();i++)
-		{
-			SessionStudent sst = (SessionStudent)this.selectedStudents.get(i);
-			studentId[i] = sst.getStudentId();
+				for(int i=0;i< this.selectedStudents.size();i++)
+				{
+					SessionStudent sst = (SessionStudent)this.selectedStudents.get(i);
+					if(sst != null) {
+						studentId[i] = sst.getStudentId();
+						//System.out.println(studentId[i]);
+					}
+
+				}
+
+				if(studentId != null && studentId.length > 0) {
+					StudentAccommodations sa = saveAccommodationsSelected();
+					try {
+						this.studentManagement.updateBulkStudentAccommodations(this.userName,sa,studentId);
+					} catch (CTBBusinessException e) {
+						// TODO Auto-generated catch block
+						successFlag=false;
+					}	
+				}
+
+
+				if(successFlag) {
+					form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ADD_SUCCESSFUL, Message.INFORMATION);
+					this.getRequest().setAttribute("pageMessage", form.getMessage());
+				}
+				else {
+					form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ADD_ERROR, Message.INFORMATION);
+					this.getRequest().setAttribute("pageMessage", form.getMessage());
+				}
+				//this.selectedStudents = null;
+				//form.setSelectedStudentOrgList(null);
+
+			}
 		}
-		}
-		boolean successFlag=true;
-		if(studentId != null && studentId.length > 0) {
-			StudentAccommodations sa = saveAccommodationsSelected();
-			try {
-				this.studentManagement.updateBulkStudentAccommodations(this.userName,sa,studentId);
-			} catch (CTBBusinessException e) {
-				// TODO Auto-generated catch block
-				successFlag=false;
-			}	
-		}
-		if(successFlag) {
-			form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ADD_SUCCESSFUL, Message.INFORMATION);
-			this.getRequest().setAttribute("pageMessage", form.getMessage());
-		}
-		else {
-			form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ADD_ERROR, Message.INFORMATION);
-			this.getRequest().setAttribute("pageMessage", form.getMessage());
-		}
-		
+
 		return new Forward("success");
 
 	}
@@ -459,8 +471,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 		StringBuffer result = new StringBuffer();
 		if (screenReader != null ) {
 			stuAommodations.setScreenReader(screenReader);
-
-
 		}
 
 		if (calculator != null) {
@@ -477,6 +487,10 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 		if (highLighter != null) {
 			stuAommodations.setHighlighter(highLighter);
+		}
+
+		if (colorFont != null) {
+			stuAommodations.setColorFontAccommodation(colorFont);
 		}
 		if (questionBgrdColor != null) {
 			
@@ -504,6 +518,16 @@ public class ManageBulkAccommodationController extends PageFlowController
 		}
 		if (fontSize != null) {
 			stuAommodations.setQuestionFontSize(fontSize);
+		}
+
+		if (colorFont != null && colorFont.equalsIgnoreCase("F")) {
+			stuAommodations.setColorFontAccommodation(colorFont);
+			stuAommodations.setAnswerBackgroundColor(null);
+			stuAommodations.setAnswerFontColor(null);
+			stuAommodations.setAnswerFontSize(null);
+			stuAommodations.setQuestionBackgroundColor(null);
+			stuAommodations.setQuestionFontColor(null);
+			stuAommodations.setQuestionFontSize(null);
 		}
 
 		return stuAommodations;
@@ -610,6 +634,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 	{    
 
 		form.validateValues();
+		saveToken(this.getRequest());
 		String currentAction = form.getCurrentAction();
 		String actionElement = form.getActionElement();
 		//accommodation changes
@@ -737,13 +762,15 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 			int x = 1;	
 			for(int k = 1;k< realDemographicOptions.length; k++){
-				if( !realDemographicOptions[k].equals(form.getSelectedDemo1()) 
-						&& !realDemographicOptions[k].equals(form.getSelectedDemo2()) 
-						&& !realDemographicOptions[k].equals(form.getSelectedDemo3())){
-					x += 1;
-					tempDemographic1[x] =  realDemographicOptions[k];
-					tempDemographic2[x] =  realDemographicOptions[k];
-					tempDemographic3[x] =  realDemographicOptions[k];
+				if(realDemographicOptions[k] != null) {
+					if( !realDemographicOptions[k].equals(form.getSelectedDemo1()) 
+							&& !realDemographicOptions[k].equals(form.getSelectedDemo2()) 
+							&& !realDemographicOptions[k].equals(form.getSelectedDemo3())){
+						x += 1;
+						tempDemographic1[x] =  realDemographicOptions[k];
+						tempDemographic2[x] =  realDemographicOptions[k];
+						tempDemographic3[x] =  realDemographicOptions[k];
+					}
 				}
 			}
 			demographic1 = tempDemographic1;
@@ -771,8 +798,12 @@ public class ManageBulkAccommodationController extends PageFlowController
 						form.setSelectedDemoValue1(FilterSortPageUtils.FILTERTYPE_SHOWALL);
 						demographicValues1 = new String[customerDemographicValue.length+1];
 						demographicValues1[0] = FilterSortPageUtils.FILTERTYPE_SHOWALL;
-						for (int j=0 ; j<customerDemographicValue.length ; j++) {        
-							demographicValues1[j+1] = customerDemographicValue[j].getValueName();
+						for (int j=0 ; j<customerDemographicValue.length ; j++) {  
+							if(customerDemographicValue[j].getVisible() != null 
+									&& !(customerDemographicValue[j].getVisible().equals("")) 
+									&& customerDemographicValue[j].getVisible().equals("T")) {
+								demographicValues1[j+1] = customerDemographicValue[j].getValueName();
+							}
 						}
 
 					}
@@ -783,8 +814,12 @@ public class ManageBulkAccommodationController extends PageFlowController
 						form.setSelectedDemoValue2(FilterSortPageUtils.FILTERTYPE_SHOWALL);
 						demographicValues2 = new String[customerDemographicValue.length+1];
 						demographicValues2[0] = FilterSortPageUtils.FILTERTYPE_SHOWALL;
-						for (int j=0 ; j<customerDemographicValue.length ; j++) {        
-							demographicValues2[j+1] = customerDemographicValue[j].getValueName();
+						for (int j=0 ; j<customerDemographicValue.length ; j++) { 
+							if(customerDemographicValue[j].getVisible() != null 
+									&& !(customerDemographicValue[j].getVisible().equals("")) 
+									&& customerDemographicValue[j].getVisible().equals("T")) {
+								demographicValues2[j+1] = customerDemographicValue[j].getValueName();
+							}
 						}
 
 					}
@@ -795,8 +830,12 @@ public class ManageBulkAccommodationController extends PageFlowController
 						form.setSelectedDemoValue3(FilterSortPageUtils.FILTERTYPE_SHOWALL);
 						demographicValues3 = new String[customerDemographicValue.length+1];
 						demographicValues3[0] = FilterSortPageUtils.FILTERTYPE_SHOWALL;
-						for (int j=0 ; j<customerDemographicValue.length ; j++) {        
-							demographicValues3[j+1] = customerDemographicValue[j].getValueName();
+						for (int j=0 ; j<customerDemographicValue.length ; j++) { 
+							if(customerDemographicValue[j].getVisible() != null 
+									&& !(customerDemographicValue[j].getVisible().equals("")) 
+									&& customerDemographicValue[j].getVisible().equals("T")) {
+								demographicValues3[j+1] = customerDemographicValue[j].getValueName();
+							}
 						}
 
 					}
@@ -1364,10 +1403,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 		setCustomerAccommodations(this.accommodations, true);
 		this.accommodations.convertHexToText();      
 
-
-
-
-
 		return this.accommodations;
 	}
 
@@ -1679,8 +1714,12 @@ public class ManageBulkAccommodationController extends PageFlowController
 			realDemographicOptions = new String[customerDemographic.length+1];
 			realDemographicOptions[0] = FilterSortPageUtils.FILTERTYPE_SHOWALL;
 
-			for (int i=0 ; i<customerDemographic.length ; i++) {        
-				realDemographicOptions[i+1] = customerDemographic[i].getLabelName();
+			for (int i=0 ; i<customerDemographic.length ; i++) { 
+				if(customerDemographic[i].getVisible() != null 
+						&& !(customerDemographic[i].getVisible().equals("")) 
+						&& customerDemographic[i].getVisible().equals("T")) {
+					realDemographicOptions[i+1] = customerDemographic[i].getLabelName();
+				}
 			}
 		}
 		if(realDemographicOptions != null) {
