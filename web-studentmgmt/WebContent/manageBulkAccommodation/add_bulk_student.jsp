@@ -27,7 +27,7 @@
 
 
 <netui-template:template templatePage="<%=templatePage%>">
-	<netui-template:setAttribute name="title" value="${bundle.web['selectstudents.window.title']}" />
+	<netui-template:setAttribute name="title" value="${bundle.web['selectstudents.window.title.BulkAccommodation']}" />
 	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.scheduleTestSessionSelectStudents']}" />
 	<netui-template:section name="bodySection">
 
