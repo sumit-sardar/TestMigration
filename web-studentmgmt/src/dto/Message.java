@@ -47,7 +47,6 @@ public class Message implements java.io.Serializable
 	public static final String INVALID_NUMBER_FORMAT  = "Please enter ID of numeric characters, with no spaces. Acceptable characters are 0-9.";
 	//END- GACR005 
 	
-	public String NOT_USED = "Just added for forcing a new build";
 	
     public Message()
     {
@@ -116,12 +115,5 @@ public class Message implements java.io.Serializable
         }        
         return result;
     }
-    /**
-     * getNothing - dummy stub for forcing build
-     */
-    public static String getNothing(String str)
-    {
-        return str + " dummy stub for forcing build";
-    }
-        
+       
 } 
