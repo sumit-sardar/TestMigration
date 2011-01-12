@@ -984,7 +984,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		if(((form.getSelectedOrgNodeId() != null &&  (this.savedForm.selectedOrgNodeId != null )) 
 				&& (form.getSelectedOrgNodeId().intValue() != this.savedForm.selectedOrgNodeId.intValue())) 
 				|| currentAction.equals(ACTION_APPLY)
-				|| this.savedForm.isAppliedFilterFlag()){
+				|| (currentAction.equals(ACTION_CLEAR) && this.savedForm.isAppliedFilterFlag())){
 
 			removeSelectedStudentToList();
 
