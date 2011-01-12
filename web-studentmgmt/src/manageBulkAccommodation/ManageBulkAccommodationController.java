@@ -490,7 +490,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		}
 
 		if (colorFont != null) {
-			stuAommodations.setColorFontAccommodation(colorFont);
+			stuAommodations.setColorFont(colorFont);
 		}
 		if (questionBgrdColor != null) {
 			
@@ -521,7 +521,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		}
 
 		if (colorFont != null && colorFont.equalsIgnoreCase("F")) {
-			stuAommodations.setColorFontAccommodation(colorFont);
+			stuAommodations.setColorFont(colorFont);
 			stuAommodations.setAnswerBackgroundColor(null);
 			stuAommodations.setAnswerFontColor(null);
 			stuAommodations.setAnswerFontSize(null);

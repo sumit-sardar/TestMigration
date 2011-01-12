@@ -2273,7 +2273,7 @@ public class StudentManagementImpl implements StudentManagement
 					strBuffer.append("UNTIMED_TEST='"+studentAccommodations.getUntimedTest()+"',");
 				}
 				
-				if(studentAccommodations.getColorFontAccommodation() != null && studentAccommodations.getColorFontAccommodation().equals("T")) {
+				if(studentAccommodations.getColorFont() != null && studentAccommodations.getColorFont().equals("T")) {
 					if(studentAccommodations.getAnswerBackgroundColor()!= null) {
 						strBuffer.append("ANSWER_BACKGROUND_COLOR='" +studentAccommodations.getAnswerBackgroundColor()+"',");
 					}
@@ -2294,7 +2294,7 @@ public class StudentManagementImpl implements StudentManagement
 					}
 				}
 				
-				if(studentAccommodations.getColorFontAccommodation() != null && studentAccommodations.getColorFontAccommodation().equals("F")) {
+				if(studentAccommodations.getColorFont() != null && studentAccommodations.getColorFont().equals("F")) {
 					strBuffer.append("ANSWER_BACKGROUND_COLOR=null" +",");
 					strBuffer.append("ANSWER_FONT_COLOR=null" +",");
 					strBuffer.append("ANSWER_FONT_SIZE=null" +",");
