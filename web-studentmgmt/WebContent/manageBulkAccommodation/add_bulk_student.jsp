@@ -70,10 +70,11 @@
 			<netui-data:getData resultId="selectedDemo2" value="${actionForm.selectedDemo2}"/>
 			<netui-data:getData resultId="selectedDemo3" value="${actionForm.selectedDemo3}"/>
 			<%
+				Integer	TotalSelectedStudents = 0;	
 				String selectedDemo1 = (String) pageContext.getAttribute("selectedDemo1");
 				String selectedDemo2 = (String) pageContext.getAttribute("selectedDemo2");
 				String selectedDemo3 = (String) pageContext.getAttribute("selectedDemo3");
-				Integer	TotalSelectedStudents = (Integer) pageContext.getAttribute("TotalSelectedStudents");
+				TotalSelectedStudents = (Integer) pageContext.getAttribute("TotalSelectedStudents");
 			%>
 
 				<table width="100%" cellpadding="0" cellspacing="0" class="transparent">
