@@ -490,7 +490,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		}
 
 		if (colorFont != null) {
-			stuAommodations.setColorFont(colorFont);
+			stuAommodations.setColorFont(colorFont);     //Change for defect -# 65698 
 		}
 		if (questionBgrdColor != null) {
 			
@@ -521,7 +521,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		}
 
 		if (colorFont != null && colorFont.equalsIgnoreCase("F")) {
-			stuAommodations.setColorFont(colorFont);
+			stuAommodations.setColorFont(colorFont);       //Change for defect -# 65698 
 			stuAommodations.setAnswerBackgroundColor(null);
 			stuAommodations.setAnswerFontColor(null);
 			stuAommodations.setAnswerFontSize(null);
@@ -641,7 +641,8 @@ public class ManageBulkAccommodationController extends PageFlowController
 		if (actionElement != null && ((actionElement.equals("ButtonGoInvoked_studentTableAnchor")) ||
 				(actionElement.equals("EnterKeyInvoked_studentTableAnchor")) || 
 				(actionElement.equals("{actionForm.studentSortOrderBy}") ) || 
-				(currentAction.equals(ACTION_ADD_ALL) )
+				(currentAction.equals(ACTION_ADD_ALL) ) || currentAction.equals(ACTION_GET_DEMO_DATA)
+				|| (currentAction.equals(ACTION_CHANGE_ACCOMMODATION) )
 				|| (actionElement.equals("{actionForm.studentPageRequested}")))
 		) {
 
@@ -850,8 +851,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		if ((accommodationOperand != null) && (accommodationOperand.equals(FilterSortPageUtils.STUDENTS_WITH_ACCOMMODATIONS)))
 		{
 			form.setShowAccommodations(Boolean.TRUE);        
-			this.selectedAccommodations = form.getSelectedAccommodations();            
-			if ((this.selectedAccommodations != null) && (this.selectedAccommodations.length > 0))  {            
+			if ((form.getSelectedAccommodations() != null) && (form.getSelectedAccommodations().length > 0))  {            
 				this.getRequest().setAttribute("disableApply", "false");     
 				form.setDisableApply("false");
 			} else {
@@ -874,6 +874,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 			savedForm.setSelectedDemoValue3(form.getSelectedDemoValue3());
 			commitSelection(form);
 			savedForm.getStudentPagerSummary().setTotalSelectedObjects(this.selectedStudents.size());
+			form.setStudentPagerSummary(savedForm.getStudentPagerSummary());
 			form.setActionElement(ACTION_DEFAULT); 
 			form.setCurrentAction(ACTION_DEFAULT); 
 			//this.accommodations = getStudentAccommodations();
@@ -979,9 +980,11 @@ public class ManageBulkAccommodationController extends PageFlowController
 		SortParams sort = FilterSortPageUtils.buildSortParams(form.getOrgSortColumn(), form.getOrgSortOrderBy(), null, null);   
 
 		List orgNodes = findByHierarchy(form,page,sort,filter,demoFilter); 
-
+		
 		if(((form.getSelectedOrgNodeId() != null &&  (this.savedForm.selectedOrgNodeId != null )) 
-				&& (form.getSelectedOrgNodeId().intValue() != this.savedForm.selectedOrgNodeId.intValue())) || currentAction.equals(ACTION_APPLY)){
+				&& (form.getSelectedOrgNodeId().intValue() != this.savedForm.selectedOrgNodeId.intValue())) 
+				|| currentAction.equals(ACTION_APPLY)
+				|| this.savedForm.isAppliedFilterFlag()){
 
 			removeSelectedStudentToList();
 
@@ -1782,7 +1785,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 		this.getRequest().setAttribute("studentPagerSummary", form.getStudentPagerSummary());
 		this.getRequest().setAttribute("nodeContainsStudents", form.getMsCount());			
 		this.getRequest().setAttribute("isBulkAccommodation", Boolean.TRUE);
-		this.getRequest().setAttribute("disableApply", form.getDisableApply());			
 		this.getRequest().setAttribute("appliedFilterFlag", form.isAppliedFilterFlag());
 		this.getRequest().setAttribute("customerConfigurations", form.getCustomerConfigurations());
 	}
@@ -1828,7 +1830,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		private String msCount;
 		private String orgCategoryName;
 		private String disableApply;
-		private boolean appliedFilterFlag;
+		private boolean appliedFilterFlag = false;
 		private CustomerConfiguration[] customerConfigurations;
 		/**
 		 * @return the selectedStudentOrgList

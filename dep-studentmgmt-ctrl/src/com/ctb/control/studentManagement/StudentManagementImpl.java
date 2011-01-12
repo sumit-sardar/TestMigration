@@ -1857,7 +1857,7 @@ public class StudentManagementImpl implements StudentManagement
 				}
 
 
-				std.setManageStudents((SessionStudent[]) filteredStudents.toArray(new SessionStudent[0]), null);
+				std.setManageStudents((SessionStudent[]) filteredStudents.toArray(new SessionStudent[0]), pageSize);
 				std.applyDemoFiltering(demoFilter);
 			} 
 
@@ -1953,7 +1953,8 @@ public class StudentManagementImpl implements StudentManagement
 
 			for(int i=0;i<studentNodes.length && studentNodes[i] != null;i++) {
 				//filter student accommodation and grades
-				StudentAccommodationsData cachedAccommData = (StudentAccommodationsData) SimpleCache.checkCache5min("STUDENT_ACCOMMODATIONS_BY_ORG", String.valueOf(studentNodes[i].getOrgNodeId()));
+				//StudentAccommodationsData cachedAccommData = (StudentAccommodationsData) SimpleCache.checkCache5min("STUDENT_ACCOMMODATIONS_BY_ORG", String.valueOf(studentNodes[i].getOrgNodeId()));
+				StudentAccommodationsData cachedAccommData = null;
 				if(cachedAccommData == null) {
 					StudentAccommodations[] accommData = accommodation.getStudentAccommodationsByAncestorNode(studentNodes[i].getOrgNodeId());
 					HashMap accommsByOrg = new HashMap(studentNodes.length);
@@ -1969,9 +1970,9 @@ public class StudentManagementImpl implements StudentManagement
 						ArrayList accomms = (ArrayList) accommsByOrg.get(keys[j]);
 						cachedAccommData = new StudentAccommodationsData();
 						cachedAccommData.setStudentAccommodations((StudentAccommodations[]) accomms.toArray(new StudentAccommodations[0]), null);
-						SimpleCache.cacheResult("STUDENT_ACCOMMODATIONS_BY_ORG", String.valueOf((Integer)keys[j]), cachedAccommData);
+						SimpleCache.cacheResult("STUDENT_ACCOMMODATIONS_BY_ORG_BULK_ACCOMMODATION", String.valueOf((Integer)keys[j]), cachedAccommData);
 					}
-					cachedAccommData = (StudentAccommodationsData) SimpleCache.checkCache("STUDENT_ACCOMMODATIONS_BY_ORG", String.valueOf(studentNodes[i].getOrgNodeId()));
+					cachedAccommData = (StudentAccommodationsData) SimpleCache.checkCache("STUDENT_ACCOMMODATIONS_BY_ORG_BULK_ACCOMMODATION", String.valueOf(studentNodes[i].getOrgNodeId()));
 				}
 				StudentAccommodationsData newAccommData = new StudentAccommodationsData();
 				if(cachedAccommData != null && cachedAccommData.getStudentAccommodations() != null) {
@@ -2114,7 +2115,7 @@ public class StudentManagementImpl implements StudentManagement
 			PageParams page, SortParams sort)
 	throws CTBBusinessException {
 
-		validator.validateNode(userName, orgNodeId, "testAdmin.getStudentNodesForParentAndAdmin");
+		validator.validateNode(userName, orgNodeId, "StudentManagement.getStudentNodesForBulkAccomUserParentAndAdmin");
 		try {
 			StudentNodeData ond = new StudentNodeData();
 			Integer pageSize = null;
@@ -2132,10 +2133,33 @@ public class StudentManagementImpl implements StudentManagement
 			studentNodes = ond.getStudentNodes();
 
 			for(int i=0;i<studentNodes.length && studentNodes[i] != null;i++) {   
-				StudentAccommodationsData cachedAccommData = (StudentAccommodationsData) SimpleCache.
+				/*StudentAccommodationsData cachedAccommData = (StudentAccommodationsData) SimpleCache.
 				checkCache("STUDENT_ACCOMMODATIONS_BY_ORG", String.valueOf(studentNodes[i].getOrgNodeId()));
 				// copy cached data to new object before filtering
-				StudentAccommodationsData accommData = new StudentAccommodationsData();
+				 
+*/				StudentAccommodationsData cachedAccommData = null;
+				StudentAccommodationsData newAccommData = new StudentAccommodationsData();
+				if(cachedAccommData == null) {
+					StudentAccommodations[] accommData = accommodation.getStudentAccommodationsByAncestorNode(studentNodes[i].getOrgNodeId());
+					HashMap accommsByOrg = new HashMap(studentNodes.length);
+					for(int j=0;j<accommData.length;j++) {
+						StudentAccommodations sa = accommData[j];
+						ArrayList thisOrgAccoms = (ArrayList) accommsByOrg.get(sa.getOrgNodeId());
+						if(thisOrgAccoms == null) thisOrgAccoms = new ArrayList();
+						thisOrgAccoms.add(sa);
+						accommsByOrg.put(sa.getOrgNodeId(), thisOrgAccoms);
+					}
+					Object[] keys = accommsByOrg.keySet().toArray();
+					for(int j=0;j<keys.length;j++) {
+						ArrayList accomms = (ArrayList) accommsByOrg.get(keys[j]);
+						cachedAccommData = new StudentAccommodationsData();
+						cachedAccommData.setStudentAccommodations((StudentAccommodations[]) accomms.toArray(new StudentAccommodations[0]), null);
+						SimpleCache.cacheResult("STUDENT_ACCOMMODATIONS_BY_ORG_BULK_ACCOMMODATION", String.valueOf((Integer)keys[j]), cachedAccommData);
+					}
+					cachedAccommData = (StudentAccommodationsData) SimpleCache.checkCache("STUDENT_ACCOMMODATIONS_BY_ORG_BULK_ACCOMMODATION", String.valueOf(studentNodes[i].getOrgNodeId()));
+				}
+				
+				
 
 				StudentDemographicDataBean newDemoData = new StudentDemographicDataBean();
 				ArrayList<Integer> demosByOrgStudent = new ArrayList();
@@ -2202,14 +2226,14 @@ public class StudentManagementImpl implements StudentManagement
 					for(int j=0;j<saArray.length;j++) {
 						saArray[j] = cachedAccommData.getStudentAccommodations()[j];
 					}
-					accommData.setStudentAccommodations(saArray, null);
+					newAccommData.setStudentAccommodations(saArray, null);
 					if(filter != null) 
-						accommData.applyFiltering(filter);
+						newAccommData.applyFiltering(filter);
 					if(demoFilter != null && demoFilter.getFilterParams().length > 0) {
 						if(demosByOrgStudent != null && demosByOrgStudent.size() > 0 ){
 							int filteredCount=0;
-							for(int k=0 ; k < accommData.getStudentAccommodations().length ; k++) {
-								if(demosByOrgStudent.contains(accommData.getStudentAccommodations()[k].getStudentId())){
+							for(int k=0 ; k < newAccommData.getStudentAccommodations().length ; k++) {
+								if(demosByOrgStudent.contains(newAccommData.getStudentAccommodations()[k].getStudentId())){
 
 									filteredCount = filteredCount + 1;
 								}
@@ -2220,7 +2244,7 @@ public class StudentManagementImpl implements StudentManagement
 							studentNodes[i].setStudentCount(0);
 						}
 					}else {
-						studentNodes[i].setStudentCount(accommData.getFilteredCount());
+						studentNodes[i].setStudentCount(newAccommData.getFilteredCount());
 					}
 
 
@@ -2272,7 +2296,7 @@ public class StudentManagementImpl implements StudentManagement
 				if(studentAccommodations.getUntimedTest()!= null) {
 					strBuffer.append("UNTIMED_TEST='"+studentAccommodations.getUntimedTest()+"',");
 				}
-				
+				//Change for defect -# 65698 
 				if(studentAccommodations.getColorFont() != null && studentAccommodations.getColorFont().equals("T")) {
 					if(studentAccommodations.getAnswerBackgroundColor()!= null) {
 						strBuffer.append("ANSWER_BACKGROUND_COLOR='" +studentAccommodations.getAnswerBackgroundColor()+"',");
@@ -2293,7 +2317,7 @@ public class StudentManagementImpl implements StudentManagement
 						strBuffer.append("QUESTION_FONT_SIZE='" + studentAccommodations.getQuestionFontSize() + "',");
 					}
 				}
-				
+				//Change for defect -# 65698 
 				if(studentAccommodations.getColorFont() != null && studentAccommodations.getColorFont().equals("F")) {
 					strBuffer.append("ANSWER_BACKGROUND_COLOR=null" +",");
 					strBuffer.append("ANSWER_FONT_COLOR=null" +",");
