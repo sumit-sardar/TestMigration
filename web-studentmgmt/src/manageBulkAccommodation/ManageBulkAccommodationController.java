@@ -435,7 +435,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 				//this.selectedStudents = null;
 				//form.setSelectedStudentOrgList(null);
 				
-				if(form.getErrorMsg().equals("error")){
+				if(form.getErrorMsg()!= null && form.getErrorMsg().equals("error")){
 					form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ACCOM_NOTSELECTED, Message.INFORMATION);
 					this.getRequest().setAttribute("pageMessage", form.getMessage());
 				}
