@@ -452,6 +452,8 @@
 						<netui:button type="submit" value="${bundle.web['common.button.cancel']}" action="selectStudentCancel"
 						onClick="return verifyCancelAddStudents();" />
 				</p>
+				
+				<netui:hidden dataSource="${actionForm.errorMsg}" tagId="errorMsg"/>
 		</netui:form>
 
 		<!-- ********************************************************************************************************************* -->

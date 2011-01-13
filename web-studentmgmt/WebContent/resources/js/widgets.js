@@ -1212,11 +1212,7 @@ function moveSelectedOption(elementId, moveDirection)
 			&& colorFont[0].checked==false && colorFont[1].checked==false) {
 		
 				
-			alert("select atleast one accommodation to proceed");
-			return false;
-		} else {
-			return true;
-		}
+			document.getElementsByName("errorMsg").value = "error";
 		
 		
 	}

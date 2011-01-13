@@ -434,6 +434,11 @@ public class ManageBulkAccommodationController extends PageFlowController
 				}
 				//this.selectedStudents = null;
 				//form.setSelectedStudentOrgList(null);
+				
+				if(form.getErrorMsg().equals("error")){
+					form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ACCOM_NOTSELECTED, Message.INFORMATION);
+					this.getRequest().setAttribute("pageMessage", form.getMessage());
+				}
 
 			}
 		}
@@ -1832,6 +1837,9 @@ public class ManageBulkAccommodationController extends PageFlowController
 		private String disableApply;
 		private boolean appliedFilterFlag = false;
 		private CustomerConfiguration[] customerConfigurations;
+		
+		private String errorMsg;
+		
 		/**
 		 * @return the selectedStudentOrgList
 		 */
@@ -2678,6 +2686,20 @@ public class ManageBulkAccommodationController extends PageFlowController
 		public void setCustomerConfigurations(
 				CustomerConfiguration[] customerConfigurations) {
 			this.customerConfigurations = customerConfigurations;
+		}
+
+		/**
+		 * @return the errorMsg
+		 */
+		public String getErrorMsg() {
+			return errorMsg;
+		}
+
+		/**
+		 * @param errorMsg the errorMsg to set
+		 */
+		public void setErrorMsg(String errorMsg) {
+			this.errorMsg = errorMsg;
 		}
 
 

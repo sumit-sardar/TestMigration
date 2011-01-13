@@ -38,7 +38,7 @@ public class Message implements java.io.Serializable
     public static final String BULK_ADD_TITLE      = "Edit Group Accommodations";
     public static final String BULK_ADD_SUCCESSFUL = "Accommodations have been successfully updated for the selected set of students.";
     public static final String BULK_ADD_ERROR = "Failed to assign accommodations to the set of selected students.";
-    
+    public static final String BULK_ACCOM_NOTSELECTED = "No accommodation was selected. Accommodations for the selected set of students was not updated";
     
     //Added for CR  ISTEP2011CR023
     public static final String STUDENT_ASSIGNMENT_ERROR = "Your school system does not allow students to be associated with more than one organization (class) for testing. Please choose only one.";     
