@@ -446,7 +446,7 @@
 				
 					</c:if>
 					<c:if test="${TotalSelectedStudents > 0}">
-						<netui:button tagId ="bulkSubmit" type="submit" value="${bundle.web['common.button.done']}" action="saveBulkStudentData" />
+						<netui:button tagId ="bulkSubmit" type="submit" value="${bundle.web['common.button.done']}" action="saveBulkStudentData" onClick="checkAccommodations()" />
 				
 					</c:if>
 						<netui:button type="submit" value="${bundle.web['common.button.cancel']}" action="selectStudentCancel"

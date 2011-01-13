@@ -1194,3 +1194,29 @@ function moveSelectedOption(elementId, moveDirection)
 		enableColorSettingsLink();
 		
 	}
+	
+	function checkAccommodations() {
+	
+		var screen_reader = document.getElementsByName("screen_reader");
+		var calculator = document.getElementsByName("calculator");
+		var test_pause = document.getElementsByName("test_pause");
+		var untimed_test = document.getElementsByName("untimed_test");
+		var highlighter = document.getElementsByName("highlighter");
+		var colorFont = document.getElementsByName("colorFont");
+		
+		if(screen_reader[0].checked==false && screen_reader[1].checked==false
+			&& calculator[0].checked==false && calculator[1].checked==false
+			&& test_pause[0].checked==false && test_pause[1].checked==false
+			&& untimed_test[0].checked==false && untimed_test[1].checked==false
+			&& highlighter[0].checked==false && highlighter[1].checked==false
+			&& colorFont[0].checked==false && colorFont[1].checked==false) {
+		
+				
+			alert("select atleast one accommodation to proceed");
+			return false;
+		} else {
+			return true;
+		}
+		
+		
+	}
