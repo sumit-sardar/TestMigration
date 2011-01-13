@@ -1165,6 +1165,33 @@ public class ManageStudentController extends PageFlowController
 			}
 			getStudentDemographicsFromRequest();
 		}
+		for (int i=0; i < this.demographics.size(); i++)
+		{
+			StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
+			if (sdd.getLabelName().equalsIgnoreCase("Labor Force Status"))
+			{
+				StudentDemographicValue[] values = sdd.getStudentDemographicValues();		    
+				boolean hasValue = false;
+				for (int j=0; j < values.length; j++)
+				{
+					StudentDemographicValue value = values[j];
+					if ((value.getSelectedFlag() != null) && value.getSelectedFlag().equals("true"))
+						hasValue = true;
+					 if (hasValue)
+					 {
+						 if (value.getValueName().equalsIgnoreCase("Employed"))
+						 {
+							 form.setLaborForceValue(value.getValueName());
+							 break;
+						 }
+						 else{
+							 form.setLaborForceValue(value.getValueName());
+						 }
+					 }
+				}
+			}
+		}
+		 
 		this.getRequest().setAttribute("demographics", this.demographics);       
 		this.getRequest().setAttribute("studentImported", new Boolean(studentImported));
 		// student intake
@@ -1571,6 +1598,8 @@ public class ManageStudentController extends PageFlowController
 						seiv.setValueCode(paramValue);
 						if (!paramValue.equalsIgnoreCase("None") && !paramValue.equalsIgnoreCase("Please Select"))
 							seiv.setSelectedFlag("true");
+						else 
+							seiv.setSelectedFlag("false");
 					}
 				}
 					
@@ -2021,7 +2050,11 @@ public class ManageStudentController extends PageFlowController
 								if (paramValue.equals(seiv1.getValueName()))
 								{
 									seiv1.setSelectedFlag("true");
+								} else {
+									seiv1.setSelectedFlag("false");
 								}
+							} else {
+								seiv1.setSelectedFlag("false");
 							}
 						}
 

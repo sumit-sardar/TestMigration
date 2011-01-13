@@ -1212,7 +1212,9 @@ public interface StudentManagement extends JdbcControl
     @JdbcControl.SQL(statement = "delete from STUDENT_CA_ABE_PRG_GOAL_DATA where student_prg_goal_data_id in (select spgd.student_prg_goal_data_id from STUDENT_CA_ABE_PRG_GOAL_DATA   spgd, CA_ABE_PROGRAM_GOAL cpg, CA_ABE_PROGRAM_GOAL_VALUE cpgv  where spgd.ca_abe_prg_goal_id = cpg.ca_abe_prg_goal_id and cpg.ca_abe_prg_goal_id = cpgv.ca_abe_prg_goal_id and spgd.value_name = cpgv.value_name and cpgv.visible = 'T' and spgd.student_id = {studentId}) ")
     void deleteVisibleStudentProgramGoalDataForStudent(Integer studentId) throws SQLException;
 
-	
+    @JdbcControl.SQL(statement="delete from student_contact where STUDENT_ID = {studentId}")
+	void deleteStudentContactInformation(Integer studentId) throws SQLException;
+    
     @JdbcControl.SQL(statement="update student_contact set  STREET_LINE1 = {address.addressLine1}, STREET_LINE2 = {address.addressLine2}, CONTACT_EMAIL = {address.email}, UPDATED_DATE_TIME = {updatedDateTime}, UPDATED_BY = {updatedBy}, SECONDARY_PHONE = {address.secondaryPhone}, PRIMARY_PHONE = {address.primaryPhone}, ZIPCODE = {address.zipCode}, ZIPCODE_EXT = {address.zipCodeExt},STATEPR = {address.statePr}, CITY={address.city} where STUDENT_ID = {address.studentId}")
 	void updateStudentContactInformation(Address address,Integer updatedBy, Date updatedDateTime ) throws SQLException;
 	

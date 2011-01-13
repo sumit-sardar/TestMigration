@@ -1507,7 +1507,13 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			if ( manageStudent.getAddress() != null ) {
 				
 				Address address = manageStudent.getAddress();
-				studentManagement.updateStudentContactInformation(address, userId, new Date());
+				studentManagement.deleteStudentContactInformation(address.getStudentId());
+				//studentManagement.updateStudentContactInformation(address, userId, new Date());
+				Integer newAddressId = studentManagement.getNextPKForStudentContact();
+				address.setAddressId(newAddressId);
+				address.setCreatedBy(userId);
+				address.setCreatedDateTime(new Date());
+				studentManagement.createNewStudentContactInformation(address);
 
 			}
 			
@@ -1518,6 +1524,8 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			}
 
 			com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForEditStudentAtAndBelowOrgNodes(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
+			
+			//com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
 			for (int i=0; orgNodeStus!=null && i< orgNodeStus.length; i++) {
 				com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDB = orgNodeStus[i];
 				boolean foundInNewOrgNodes = newOrgNodeHash.containsKey(oldOrgNodeInDB.getOrgNodeId());
