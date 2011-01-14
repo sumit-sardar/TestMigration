@@ -1204,6 +1204,19 @@ function moveSelectedOption(elementId, moveDirection)
 		var highlighter = document.getElementsByName("highlighter");
 		var colorFont = document.getElementsByName("colorFont");
 		
+		alert(screen_reader[0].checked + ":" +
+			screen_reader[1].checked + ":" +
+			calculator[0].checked + ":" +
+			calculator[1].checked + ":" +
+			test_pause[0].checked + ":" +
+			test_pause[1].checked + ":" +
+			untimed_test[0].checked + ":" +
+			untimed_test[1].checked + ":" +
+			highlighter[0].checked + ":" +
+			highlighter[1].checked + ":" +
+			colorFont[0].checked + ":" +
+			colorFont[1].checked );
+		
 		if(screen_reader[0].checked==false && screen_reader[1].checked==false
 			&& calculator[0].checked==false && calculator[1].checked==false
 			&& test_pause[0].checked==false && test_pause[1].checked==false
