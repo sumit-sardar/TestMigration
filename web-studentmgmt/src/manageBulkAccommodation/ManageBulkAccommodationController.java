@@ -391,7 +391,9 @@ public class ManageBulkAccommodationController extends PageFlowController
 	 */
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success", 
-					path = "beginAddBulkStudent.do")
+					path = "beginAddBulkStudent.do"),
+			@Jpf.Forward(name = "selectAccommodation", 
+					path = "findBulkStudent.do")
 	})
 	protected Forward saveBulkStudentData(ManageBulkAccommodationForm form)
 	{   
@@ -415,31 +417,33 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 				if(studentId != null && studentId.length > 0) {
 					StudentAccommodations sa = saveAccommodationsSelected();
-					try {
-						this.studentManagement.updateBulkStudentAccommodations(this.userName,sa,studentId);
-					} catch (CTBBusinessException e) {
-						// TODO Auto-generated catch block
-						successFlag=false;
-					}	
-				}
+					if (sa != null) {
+						try {
+							
+							this.studentManagement.updateBulkStudentAccommodations(this.userName,sa,studentId);
+						} catch (CTBBusinessException e) {
+							// TODO Auto-generated catch block
+							successFlag=false;
+						}
+						
 
-
-				if(successFlag) {
-					form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ADD_SUCCESSFUL, Message.INFORMATION);
-					this.getRequest().setAttribute("pageMessage", form.getMessage());
+						if(successFlag) {
+							form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ADD_SUCCESSFUL, Message.INFORMATION);
+							this.getRequest().setAttribute("pageMessage", form.getMessage());
+						}
+						else {
+							form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ADD_ERROR, Message.INFORMATION);
+							this.getRequest().setAttribute("pageMessage", form.getMessage());
+						}
+						
+					} else {
+						
+							form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ACCOM_NOTSELECTED, Message.ALERT);
+							this.getRequest().setAttribute("pageMessage", form.getMessage());
+							return new Forward("selectAccommodation");
+					}
+					
 				}
-				else {
-					form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ADD_ERROR, Message.INFORMATION);
-					this.getRequest().setAttribute("pageMessage", form.getMessage());
-				}
-				//this.selectedStudents = null;
-				//form.setSelectedStudentOrgList(null);
-				
-				if(form.getErrorMsg()!= null && form.getErrorMsg().equals("error")){
-					form.setMessage(Message.BULK_ADD_TITLE, Message.BULK_ACCOM_NOTSELECTED, Message.INFORMATION);
-					this.getRequest().setAttribute("pageMessage", form.getMessage());
-				}
-
 			}
 		}
 
@@ -450,7 +454,8 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 
 	public StudentAccommodations saveAccommodationsSelected()
-	{
+	{	
+		boolean isAccommodationSelected = false;
 		String screenReader = getRequest().getParameter("screen_reader");
 		String calculator = getRequest().getParameter("calculator");
 		String testPause = getRequest().getParameter("test_pause");
@@ -476,53 +481,65 @@ public class ManageBulkAccommodationController extends PageFlowController
 		StringBuffer result = new StringBuffer();
 		if (screenReader != null ) {
 			stuAommodations.setScreenReader(screenReader);
+			isAccommodationSelected = true;
 		}
 
 		if (calculator != null) {
 			stuAommodations.setCalculator(calculator);
+			isAccommodationSelected = true;
 		}	 
 
 		if (testPause != null ) {
 			stuAommodations.setTestPause(testPause);
+			isAccommodationSelected = true;
 		}
 
 		if (untimedTest != null ) {
 			stuAommodations.setUntimedTest(untimedTest);
+			isAccommodationSelected = true;
 		}
 
 		if (highLighter != null) {
 			stuAommodations.setHighlighter(highLighter);
+			isAccommodationSelected = true;
 		}
 
 		if (colorFont != null) {
-			stuAommodations.setColorFont(colorFont);     //Change for defect -# 65698 
+			stuAommodations.setColorFont(colorFont);
+			isAccommodationSelected = true;//Change for defect -# 65698 
 		}
 		if (questionBgrdColor != null) {
 			
 			stuAommodations.setQuestionBackgroundColor
 			(stdDetail.getColorHexMapping(questionBgrdColor));
+			isAccommodationSelected = true;
 		}
 
 		if (questionFontColor != null) {
 			stuAommodations.setQuestionFontColor(
 					stdDetail.getColorHexMapping(questionFontColor));
+			isAccommodationSelected = true;
 			
 		}
 		if (answerBgrdColor != null) {
 			stuAommodations.setAnswerBackgroundColor(
 					stdDetail.getColorHexMapping(answerBgrdColor));
+			isAccommodationSelected = true;
 		}
 
 		if (answerFontColor != null) {
 			stuAommodations.setAnswerFontColor(
 					stdDetail.getColorHexMapping(answerFontColor));
+			isAccommodationSelected = true;
 		}
 
 		if (fontSize != null) {
 			stuAommodations.setAnswerFontSize(fontSize);
+			isAccommodationSelected = true;
 		}
 		if (fontSize != null) {
 			stuAommodations.setQuestionFontSize(fontSize);
+			isAccommodationSelected = true;
 		}
 
 		if (colorFont != null && colorFont.equalsIgnoreCase("F")) {
@@ -534,8 +551,10 @@ public class ManageBulkAccommodationController extends PageFlowController
 			stuAommodations.setQuestionFontColor(null);
 			stuAommodations.setQuestionFontSize(null);
 		}
-
-		return stuAommodations;
+		if(isAccommodationSelected)
+			return stuAommodations;
+		else
+			return null;
 	}
 
 
@@ -990,7 +1009,8 @@ public class ManageBulkAccommodationController extends PageFlowController
 				&& (form.getSelectedOrgNodeId().intValue() != this.savedForm.selectedOrgNodeId.intValue())) 
 				|| currentAction.equals(ACTION_APPLY)
 				|| (currentAction.equals(ACTION_CLEAR) && this.savedForm.isAppliedFilterFlag())){
-
+			
+			form.studentPageRequested = new Integer(1);
 			removeSelectedStudentToList();
 
 		}
@@ -1838,7 +1858,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 		private boolean appliedFilterFlag = false;
 		private CustomerConfiguration[] customerConfigurations;
 		
-		private String errorMsg;
 		
 		/**
 		 * @return the selectedStudentOrgList
@@ -2687,22 +2706,6 @@ public class ManageBulkAccommodationController extends PageFlowController
 				CustomerConfiguration[] customerConfigurations) {
 			this.customerConfigurations = customerConfigurations;
 		}
-
-		/**
-		 * @return the errorMsg
-		 */
-		public String getErrorMsg() {
-			return errorMsg;
-		}
-
-		/**
-		 * @param errorMsg the errorMsg to set
-		 */
-		public void setErrorMsg(String errorMsg) {
-			this.errorMsg = errorMsg;
-		}
-
-
 	}
 
 	//Added getter method for all pageFlow attribute in weblogic 10.3

@@ -446,14 +446,13 @@
 				
 					</c:if>
 					<c:if test="${TotalSelectedStudents > 0}">
-						<netui:button tagId ="bulkSubmit" type="submit" value="${bundle.web['common.button.done']}" action="saveBulkStudentData" onClick="checkAccommodations();" />
+						<netui:button tagId ="bulkSubmit" type="submit" value="${bundle.web['common.button.done']}" action="saveBulkStudentData" />
 				
 					</c:if>
 						<netui:button type="submit" value="${bundle.web['common.button.cancel']}" action="selectStudentCancel"
 						onClick="return verifyCancelAddStudents();" />
 				</p>
 				
-				<netui:hidden dataSource="actionForm.errorMsg" tagId="errorMsg"/>
 		</netui:form>
 
 		<!-- ********************************************************************************************************************* -->
