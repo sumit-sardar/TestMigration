@@ -1211,8 +1211,8 @@ function moveSelectedOption(elementId, moveDirection)
 			&& highlighter[0].checked==false && highlighter[1].checked==false
 			&& colorFont[0].checked==false && colorFont[1].checked==false) {
 		
-				
 			document.getElementsByName("errorMsg").value = "error";
+		}
 		
 		
 	}
