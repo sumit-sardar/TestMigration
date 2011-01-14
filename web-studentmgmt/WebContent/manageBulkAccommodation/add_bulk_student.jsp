@@ -453,7 +453,7 @@
 						onClick="return verifyCancelAddStudents();" />
 				</p>
 				
-				<netui:hidden dataSource="${actionForm.errorMsg}" tagId="errorMsg"/>
+				<netui:hidden dataSource="actionForm.errorMsg" tagId="errorMsg"/>
 		</netui:form>
 
 		<!-- ********************************************************************************************************************* -->
