@@ -189,9 +189,11 @@ public class StudentProfileInformation extends SanitizedFormField
         OrganizationNode[] orgNodes = new OrganizationNode[ selectedOrgNodes.size() ];        
         for (int i=0 ; i<selectedOrgNodes.size() ; i++) {
             PathNode node = (PathNode)selectedOrgNodes.get(i);
-            OrganizationNode orgNode = new OrganizationNode();
-            orgNode.setOrgNodeId(node.getId());
-            orgNodes[i] = orgNode;
+            if(node.getFullPathName() != null && !(node.getFullPathName().equals(""))) {
+	            OrganizationNode orgNode = new OrganizationNode();
+	            orgNode.setOrgNodeId(node.getId());
+	            orgNodes[i] = orgNode;
+            }
         }
         copied.setOrganizationNodes(orgNodes);    
         //Contact Information -change for ca-abe

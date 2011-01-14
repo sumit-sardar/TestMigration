@@ -1491,11 +1491,14 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 		OrganizationNode [] organizationNodes = manageStudent.getOrganizationNodes();
 		for (int i=0; organizationNodes!=null && i< organizationNodes.length; i++) {
 			try {
-				validator.validateNode(userName, organizationNodes[i].getOrgNodeId(), "StudentManagementImpl.updateStudent");
+				if(organizationNodes[i] != null) {
+					validator.validateNode(userName, organizationNodes[i].getOrgNodeId(), "StudentManagementImpl.updateStudent");
+				}
 			} catch (ValidationException ve) {
 				//validate org if student org is not in user scope
+				if(organizationNodes[i] != null) {
 					validator.validateStuOrgIsInUserScope(userName, organizationNodes[i].getOrgNodeId(), studentId, "StudentManagementImpl.updateStudent");
-				
+				}
 			}
 		}
 		try {
@@ -1520,12 +1523,14 @@ public class StudentManagementImpl implements StudentManagement, Serializable
 			Hashtable newOrgNodeHash = new Hashtable();
 
 			for (int i=0; organizationNodes!=null && i< organizationNodes.length; i++) {
-				newOrgNodeHash.put(organizationNodes[i].getOrgNodeId(), organizationNodes[i]);
+				if(organizationNodes[i] != null) {
+					newOrgNodeHash.put(organizationNodes[i].getOrgNodeId(), organizationNodes[i]);
+				}
 			}
 
-			com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForEditStudentAtAndBelowOrgNodes(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
+			//com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForEditStudentAtAndBelowOrgNodes(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
 			
-			//com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
+			com.ctb.bean.testAdmin.OrgNodeStudent [] orgNodeStus = orgNodeStudents.getOrgNodeStudentForStudentAtAndBelowOrgNodes(studentId, SQLutils.generateSQLCriteria(findInColumn,topOrgNodeIds));
 			for (int i=0; orgNodeStus!=null && i< orgNodeStus.length; i++) {
 				com.ctb.bean.testAdmin.OrgNodeStudent oldOrgNodeInDB = orgNodeStus[i];
 				boolean foundInNewOrgNodes = newOrgNodeHash.containsKey(oldOrgNodeInDB.getOrgNodeId());

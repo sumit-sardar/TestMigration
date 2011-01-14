@@ -3259,8 +3259,8 @@ public class ManageStudentController extends PageFlowController
 		boolean isStudentIdConfigurable = false;
 		boolean isStudentId2Configurable = false;
 		Integer configId=0;
-		String []valueForStudentId = new String[3] ;
-		String []valueForStudentId2 = new String[2] ;
+		String []valueForStudentId = new String[8] ;
+		String []valueForStudentId2 = new String[8] ;
 		for (int i=0; i < this.customerConfigurations.length; i++)
 		{
 			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
@@ -3269,7 +3269,7 @@ public class ManageStudentController extends PageFlowController
 				isStudentId2Configurable = true; 
 				configId = cc.getId();
 				customerConfigurationValues(configId);
-				valueForStudentId2 = new String[2];
+				valueForStudentId2 = new String[8];
 
 				for(int j=0; j<this.customerConfigurationsValue.length; j++){
 
@@ -3285,7 +3285,7 @@ public class ManageStudentController extends PageFlowController
 				configId = cc.getId();
 				customerConfigurationValues(configId);
 				//By default there should be 3 entries for customer configurations
-				valueForStudentId = new String[3];
+				valueForStudentId = new String[8];
 				for(int j=0; j<this.customerConfigurationsValue.length; j++){
 					int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
 					valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
