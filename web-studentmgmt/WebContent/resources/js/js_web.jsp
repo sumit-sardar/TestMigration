@@ -720,6 +720,20 @@ function displayWorkforceSection(element){
 
 }
 
+function workForceObject(){
+	this.servicesPreviouslyReceived = 0;	
+	this.providerUse = "";
+	this.workMaturitySkills = 0;	
+	this.workforceReadiness = 0;
+	this.annualIncome = 0;
+	this.hourlyWage = "";
+	this.scheduledWorkHours = "";
+	this.supportServices = 0;
+}
+
+
+var workForceObj =new workForceObject();
+var isPreviousEmployee = true;
 function enableWorkforceSection(selection){
 
 	var servicesPreviouslyReceived = document.getElementsByName("Services Previously Received");	
@@ -732,89 +746,122 @@ function enableWorkforceSection(selection){
 	var supportServices = document.getElementsByName("Support Services Needed");
 	
 	if(selection){
+		isPreviousEmployee = true;
 			for (var i = 0; i < servicesPreviouslyReceived.length; i++){
 			if (servicesPreviouslyReceived[i].name=='Services Previously Received'){
+				servicesPreviouslyReceived[i].selectedIndex = workForceObj.servicesPreviouslyReceived;
 				servicesPreviouslyReceived[i].removeAttribute("disabled");
 			}
 		}
 		for (var i = 0; i < providerUse.length; i++){
 			if (providerUse[i].name=='Workforce_Provider Use'){
+				providerUse[i].value = workForceObj.providerUse;
 				providerUse[i].removeAttribute("disabled");
 			}
 		}
 		for (var i = 0; i < workMaturitySkills.length; i++){
 			if (workMaturitySkills[i].name=='Pre-employment work maturity skills'){
+				workMaturitySkills[i].selectedIndex = workForceObj.workMaturitySkills;
 				workMaturitySkills[i].removeAttribute("disabled");
 			}
 		}
 		for (var i = 0; i < workforceReadiness.length; i++){
 			if (workforceReadiness[i].name=='Workforce Readiness'){
+				workforceReadiness[i].selectedIndex = workForceObj.workforceReadiness;
 				workforceReadiness[i].removeAttribute("disabled");
 			}
 		}
 			for (var i = 0; i < annualIncome.length; i++){
 			if (annualIncome[i].name=='Annual Income'){
+				annualIncome[i].selectedIndex = workForceObj.annualIncome;
 				annualIncome[i].removeAttribute("disabled");
 			}
 		}
 		for (var i = 0; i < supportServices.length; i++){
 			if (supportServices[i].name=='Support Services Needed'){
+				supportServices[i].selectedIndex = workForceObj.supportServices;
 				supportServices[i].removeAttribute("disabled");
 			}
 		}
 			for (var i = 0; i < hourlyWage.length; i++){
 			if (hourlyWage[i].name=='Workforce_Hourly Wage'){
+				hourlyWage[i].value = workForceObj.hourlyWage;
 				hourlyWage[i].removeAttribute("disabled");
 			}
 		}
 			for (var i = 0; i < scheduledWorkHours.length; i++){
 			if (scheduledWorkHours[i].name=='Workforce_Scheduled Work Hours Per Week'){
+				scheduledWorkHours[i].value = workForceObj.scheduledWorkHours;
 				scheduledWorkHours[i].removeAttribute("disabled");
 			}
 		}
 	}
 	else{
-	
 		for (var i = 0; i < servicesPreviouslyReceived.length; i++){
 			if (servicesPreviouslyReceived[i].name=='Services Previously Received'){
+				if(isPreviousEmployee)
+					workForceObj.servicesPreviouslyReceived = servicesPreviouslyReceived[i].selectedIndex;
+				servicesPreviouslyReceived[i].selectedIndex = 0;
 				servicesPreviouslyReceived[i].setAttribute("disabled",true);
 			}
 		}
 		for (var i = 0; i < providerUse.length; i++){
 			if (providerUse[i].name=='Workforce_Provider Use'){
+				if(isPreviousEmployee)
+					workForceObj.providerUse = providerUse[i].value;
+				providerUse[i].value = "";
 				providerUse[i].setAttribute("disabled",true);
 			}
 		}
 		for (var i = 0; i < workMaturitySkills.length; i++){
 			if (workMaturitySkills[i].name=='Pre-employment work maturity skills'){
+				if(isPreviousEmployee)
+					workForceObj.workMaturitySkills = workMaturitySkills[i].selectedIndex;
+				workMaturitySkills[i].selectedIndex = 0;
 				workMaturitySkills[i].setAttribute("disabled",true);
 			}
 		}
 		for (var i = 0; i < workforceReadiness.length; i++){
 			if (workforceReadiness[i].name=='Workforce Readiness'){
+				if(isPreviousEmployee)
+					workForceObj.workforceReadiness = workforceReadiness[i].selectedIndex;
+				workforceReadiness[i].selectedIndex = 0;
 				workforceReadiness[i].setAttribute("disabled",true);
 			}
 		}
-			for (var i = 0; i < annualIncome.length; i++){
+		for (var i = 0; i < annualIncome.length; i++){
 			if (annualIncome[i].name=='Annual Income'){
+				if(isPreviousEmployee)
+					workForceObj.annualIncome = annualIncome[i].selectedIndex;
+				annualIncome[i].selectedIndex = 0;
 				annualIncome[i].setAttribute("disabled",true);
 			}
 		}
 		for (var i = 0; i < supportServices.length; i++){
 			if (supportServices[i].name=='Support Services Needed'){
+				if(isPreviousEmployee)
+					workForceObj.supportServices = supportServices[i].selectedIndex;
+				supportServices[i].selectedIndex = 0;
 				supportServices[i].setAttribute("disabled",true);
 			}
 		}
-			for (var i = 0; i < hourlyWage.length; i++){
+		for (var i = 0; i < hourlyWage.length; i++){
 			if (hourlyWage[i].name=='Workforce_Hourly Wage'){
+				if(isPreviousEmployee)
+					workForceObj.hourlyWage = hourlyWage[i].value;
+				hourlyWage[i].value = "";
 				hourlyWage[i].setAttribute("disabled",true);
 			}
 		}
-			for (var i = 0; i < scheduledWorkHours.length; i++){
+		for (var i = 0; i < scheduledWorkHours.length; i++){
 			if (scheduledWorkHours[i].name=='Workforce_Scheduled Work Hours Per Week'){
+				if(isPreviousEmployee)
+					workForceObj.scheduledWorkHours = scheduledWorkHours[i].value;
+				scheduledWorkHours[i].value = "";
 				scheduledWorkHours[i].setAttribute("disabled",true);
 			}
 		}
+		isPreviousEmployee = false;
 			
 	}
 }
@@ -873,6 +920,7 @@ function focusNextControl(element)
         }
     }
 }
+
 
 
 

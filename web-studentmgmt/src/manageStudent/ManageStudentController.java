@@ -2043,6 +2043,9 @@ public class ManageStudentController extends PageFlowController
 						seiv.setValueName(paramValue.trim());
 						seiv.setSelectedFlag("true");
 					}
+					else{
+						seiv.setSelectedFlag("false");
+					}
 				}
 				else
 				{
@@ -2070,6 +2073,9 @@ public class ManageStudentController extends PageFlowController
 						}
 
 						break;
+					}
+					else{
+						seiv.setSelectedFlag("false");
 					}
 
 
