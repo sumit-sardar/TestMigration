@@ -398,11 +398,22 @@ public class ManageStudentController extends PageFlowController
 		Integer orgNodeId = null;
 		String orgNodeName = null;       
 
-		PathNode node = (PathNode)this.selectedOrgNodes.get(0);     // get first node
-		orgNodeId = node.getId();
-		orgNodeName = node.getName();
-		this.orgNodePath = initHierarchyControl(orgNodeId, form);
-
+		for( int i=0;i<selectedOrgNodes.size();i++ ){
+		
+			PathNode node=(PathNode)this.selectedOrgNodes.get(i);
+			orgNodeId=node.getId();
+			orgNodeName=node.getName();
+			OrganizationNode[] orgNodes = StudentPathListUtils.getAncestorOrganizationNodesForOrgNode(this.userName, orgNodeId, form.getSelectedStudentId(), this.studentManagement);
+			if ( orgNodes.length <= 0 )
+				continue;
+			else {
+				break;
+			}
+			
+		}
+		
+		this.orgNodePath=initHierarchyControl(orgNodeId,form);
+		
 		// init demographics and accommodations
 		this.accommodations = null;
 		this.demographics = null;
