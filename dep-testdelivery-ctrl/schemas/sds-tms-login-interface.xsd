@@ -1353,6 +1353,8 @@
 							use="optional" default="0" />
 						<xs:attribute name="tts_speed_value"
 							type="xs:string" use="optional" />
+						<xs:attribute name="tms_url"
+							type="xs:string" use="optional" />
 					</xs:complexType>
 				</xs:element>
 

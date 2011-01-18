@@ -4,7 +4,11 @@ import com.bea.control.*;
 import java.io.Serializable;
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 import org.apache.xmlbeans.XmlObject;
+
+import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.TestProduct;
+import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testDelivery.assessmentDeliveryData.ItemIdEidMap;
 import com.ctb.bean.testDelivery.login.AccomodationsData;
 import com.ctb.bean.testDelivery.login.AuthenticationData;
@@ -15,6 +19,7 @@ import com.ctb.control.db.AuthenticateStudent;
 import com.ctb.control.db.AssessmentDeliveryDB;
 import com.ctb.control.db.AuthenticateStudentBean;
 import com.ctb.control.db.AuthenticateStudentBeanBeanInfo;
+import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testDelivery.AuthenticationFailureException;
 import com.ctb.exception.testDelivery.KeyEnteredResponsesException;
 import com.ctb.exception.testDelivery.LocatorSubtestNotCompletedException;
@@ -70,7 +75,23 @@ public class StudentLoginImpl implements StudentLogin
      */
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.TestAdminItemSet testAdminItemSet;
+    
+ //  start ISTEP33
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.Users users;
+    
 
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.Students students;
+
+//  end ISTEP33
+    
     /**
      * @common:control
      */
@@ -88,6 +109,8 @@ public class StudentLoginImpl implements StudentLogin
      * @common:control
      */
     @org.apache.beehive.controls.api.bean.Control()
+    
+   
    private AuthenticateStudent authenticator;
     //private com.ctb.control.db.testDelivery.AuthenticateStudentFactory authenticatorFactory;
 
@@ -96,12 +119,14 @@ public class StudentLoginImpl implements StudentLogin
     private static final String CACHE_TYPE_ITEM_MAP = "CACHE_TYPE_ITEM_MAP";
     
 
+
     /**
      * @common:operation
      */
     public TmssvcResponseDocument login(TmssvcRequestDocument document)
     {
-        TmssvcRequest loginRequest = document.getTmssvcRequest();
+        System.out.println("login");
+    	TmssvcRequest loginRequest = document.getTmssvcRequest();
         TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance();
         LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
         loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.OK_STATUS);
@@ -191,7 +216,8 @@ public class StudentLoginImpl implements StudentLogin
      */
     public TmssvcResponseDocument ctbLogin(TmssvcRequestDocument document)
     {
-        TmssvcRequest loginRequest = document.getTmssvcRequest();
+    	
+    	TmssvcRequest loginRequest = document.getTmssvcRequest();
         OASLogger.getLogger("TestDelivery").debug("ctbLogin()\n"+loginRequest.toString());
         TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance();
         LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
@@ -200,14 +226,16 @@ public class StudentLoginImpl implements StudentLogin
         try {
            // AuthenticateStudent authenticator = authenticatorFactory.create();
             // might be more than one roster for these creds, due to random passwords
-        	System.out.println("########### Login ID:"+ loginRequest.getLoginRequest().getUserName()+" Password:"+loginRequest.getLoginRequest().getPassword());
+  /**/     	System.out.println("########### Login ID:"+ loginRequest.getLoginRequest().getUserName()+" Password:"+loginRequest.getLoginRequest().getPassword());
+        	
         	AuthenticationData [] authDataArray = authenticator.authenticateStudent(loginRequest.getLoginRequest().getUserName(), loginRequest.getLoginRequest().getPassword());
             AuthenticationData authData = null;
             boolean authenticated = false;
             String testAccessCode = loginRequest.getLoginRequest().getAccessCode();
-            System.out.println("########### TestAccessCode:"+ testAccessCode);
+ /**/       System.out.println("########### TestAccessCode:"+ testAccessCode);
             int testRosterId = -1;
             String lsid = null;
+            String tmsURL = null;
             ManifestData [] manifestData = new ManifestData [0];
             for(int a=0;a<authDataArray.length && !authenticated;a++) {
                 authData = authDataArray[a];
@@ -219,6 +247,10 @@ public class StudentLoginImpl implements StudentLogin
                 testRosterId = authData.getTestRosterId();
                 lsid = String.valueOf(testRosterId) + ":" + testAccessCode;
                 loginResponse.setLsid(lsid);
+                
+                
+                
+                
                 manifestData = authenticator.getManifest(testRosterId, testAccessCode);
                 if(manifestData.length > 0) {
                     authenticated = true;
@@ -233,8 +265,29 @@ public class StudentLoginImpl implements StudentLogin
                     }
                 }
             }
+            
+           /*
+            * start changes for CR - ISTEP33
+            * 
+           */
+           
+            
+            String tmsUrl = customerTmsUrl(loginRequest.getLoginRequest().getUserName());
+            
+            //sets the customer specific tms url as an attribute to login response xml
+            if ( tmsUrl != null ) {
+            	
+            	loginResponse.setTmsUrl(tmsUrl);
+            }
+            
+            /*
+             * end changes for CR - ISTEP33
+             * 
+             */
+            
             if(manifestData.length <= 0) {
-                response = TmssvcResponseDocument.Factory.newInstance();
+                
+            	response = TmssvcResponseDocument.Factory.newInstance();
                 loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
                 loginResponse.setLsid(lsid);
                 loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.AUTHENTICATION_FAILURE_STATUS);
@@ -660,7 +713,8 @@ public class StudentLoginImpl implements StudentLogin
     }
     
     private void copyManifestDataToResponse(LoginResponse response, ManifestData [] manifestData, int testRosterId, int testAdminId, String accessCode) throws SQLException {
-        response.addNewManifest();
+        System.out.println("copyManifestDataToResponse");
+    	response.addNewManifest();
         Manifest manifest = response.getManifest();
         String isUltimateAccessCode = authenticator.isUltimateAccessCode(new Integer(testRosterId), new Integer(testAdminId), accessCode);
         
@@ -807,4 +861,53 @@ public class StudentLoginImpl implements StudentLogin
 		return Integer.valueOf(String.valueOf(seed.charAt(seed.length() - 1))).
 				intValue() % 2 == 0 ? false:true;
 	}
+    
+    /*
+     * start changes for CR - ISTEP33
+     * 
+    */
+    private String customerTmsUrl(String userName) throws CTBBusinessException,SQLException {
+    	
+    	
+       
+        // customer configuration - ISTEP33
+    	CustomerConfiguration[] customerConfigurations = null;
+    	String customerConfigurationsValue = null;
+    	Integer customerId = students.getStudentCustomer(userName).getCustomerId();
+        
+        customerConfigurations = users.getCustomerConfigurations(customerId);
+        
+        
+        for (int i=0; i < customerConfigurations.length; i++)
+		{
+			CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("TMS_Url_Configurable") 
+					&& cc.getDefaultValue().equalsIgnoreCase("T"))
+			{
+				
+				Integer configId = cc.getId();
+				customerConfigurationsValue = customerConfigurationValues(configId);  
+			}
+
+		}
+        return customerConfigurationsValue;
+    }
+    
+    
+    private String customerConfigurationValues(Integer configId) throws 
+    		CTBBusinessException,SQLException {
+    	
+		CustomerConfigurationValue [] customerConfigurationValues = 
+				users.getCustomerConfigurationValues(configId);
+		
+		return customerConfigurationValues !=null && customerConfigurationValues.length > 0 ? 
+				customerConfigurationValues[0].getCustomerConfigurationValue() : null;
+	}
+    
+    /*
+     * end changes for CR - ISTEP33
+     * 
+    */ 
+    
 } 
