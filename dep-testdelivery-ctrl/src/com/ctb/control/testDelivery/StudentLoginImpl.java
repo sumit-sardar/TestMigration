@@ -1,24 +1,16 @@
 package com.ctb.control.testDelivery; 
 
-import com.bea.control.*;
-import java.io.Serializable;
 import org.apache.beehive.controls.api.bean.ControlImplementation;
-import org.apache.xmlbeans.XmlObject;
-
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.TestProduct;
-import com.ctb.bean.testAdmin.User;
-import com.ctb.bean.testDelivery.assessmentDeliveryData.ItemIdEidMap;
 import com.ctb.bean.testDelivery.login.AccomodationsData;
 import com.ctb.bean.testDelivery.login.AuthenticationData;
 import com.ctb.bean.testDelivery.login.ItemResponseData;
 import com.ctb.bean.testDelivery.login.ManifestData;
-import com.ctb.control.db.AssessmentDeliveryDBBeanBeanInfo;
+
 import com.ctb.control.db.AuthenticateStudent;
-import com.ctb.control.db.AssessmentDeliveryDB;
-import com.ctb.control.db.AuthenticateStudentBean;
-import com.ctb.control.db.AuthenticateStudentBeanBeanInfo;
+
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testDelivery.AuthenticationFailureException;
 import com.ctb.exception.testDelivery.KeyEnteredResponsesException;
@@ -29,7 +21,6 @@ import com.ctb.exception.testDelivery.TestSessionInProgressException;
 import com.ctb.exception.testDelivery.TestSessionNotScheduledException;
 import com.ctb.util.DateUtils;
 import com.ctb.util.OASLogger;
-import com.ctb.util.SimpleCache;
 import com.ctb.util.testDelivery.Constants;
 import java.math.BigInteger;
 import java.sql.Clob;
@@ -38,7 +29,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.TimeZone;
-import java.util.logging.Level;
 
 import noNamespace.BaseType;
 import noNamespace.EntryType;
@@ -52,7 +42,6 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Consolida
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.Sco;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.Sco.ScoUnitType;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Status.StatusCode;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.TestingSessionData.LmsStudentAccommodations;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.TestingSessionData.LmsStudentAccommodations.StereotypeStyle;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd;
@@ -237,11 +226,15 @@ public class StudentLoginImpl implements StudentLogin
             String lsid = null;
             String tmsURL = null;
             ManifestData [] manifestData = new ManifestData [0];
+            System.out.println("1...");
             for(int a=0;a<authDataArray.length && !authenticated;a++) {
+            	System.out.println("1");
                 authData = authDataArray[a];
                 if(authData != null) {
+                	System.out.println("2");
                     OASLogger.getLogger("TestDelivery").debug(authData.toString());
                 } else {
+                	System.out.println("3");
                     throw new AuthenticationFailureException();
                 }
                 testRosterId = authData.getTestRosterId();
@@ -271,13 +264,23 @@ public class StudentLoginImpl implements StudentLogin
             * 
            */
            
+            if(authData != null) {
+                OASLogger.getLogger("TestDelivery").debug(authData.toString());
+            } else {
+                throw new AuthenticationFailureException();
+            }
             
-            String tmsUrl = customerTmsUrl(loginRequest.getLoginRequest().getUserName());
-            
-            //sets the customer specific tms url as an attribute to login response xml
-            if ( tmsUrl != null ) {
+            if(loginRequest.getLoginRequest().getUserName() != null 
+            		&& !loginRequest.getLoginRequest().getUserName().equals("")) {
             	
-            	loginResponse.setTmsUrl(tmsUrl);
+	            String tmsUrl = customerTmsUrl(loginRequest.
+	            		getLoginRequest().getUserName());
+	            
+	            //sets the customer specific tms url as an attribute to login response xml
+	            if ( tmsUrl != null ) {
+	            	
+	            	loginResponse.setTmsUrl(tmsUrl);
+	            }
             }
             
             /*
