@@ -2044,6 +2044,7 @@ public class ManageStudentController extends PageFlowController
 						seiv.setSelectedFlag("true");
 					}
 					else{
+						seiv.setValueName("");
 						seiv.setSelectedFlag("false");
 					}
 				}
