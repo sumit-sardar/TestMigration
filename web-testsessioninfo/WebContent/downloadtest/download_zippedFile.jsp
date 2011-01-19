@@ -21,7 +21,7 @@
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 <h1><netui:content value="${bundle.web['loadTest.title']}"/></h1>
-<p><netui:content value="${bundle.web['loadTest.title.message1']}"/></p>
+
 
 <c:if test="${ requestScope.showMessage }"> 
 <p><netui:content value="${bundle.web['loadTest.title.message3']}"/>
