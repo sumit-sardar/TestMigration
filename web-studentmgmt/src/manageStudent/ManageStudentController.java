@@ -1995,7 +1995,7 @@ public class ManageStudentController extends PageFlowController
 						paramValue = getRequest().getParameter(param);
 						StudentProgramGoalValue[] prgGoalvalues = new StudentProgramGoalValue[1];
 						StudentProgramGoalValue prgGoalvalue = new StudentProgramGoalValue();
-						if(paramValue != null && !paramValue.equals("")) {
+						if(paramValue != null) {
 	
 							prgGoalvalue.setValueName(paramValue.trim());
 							prgGoalvalue.setVisible("true");
