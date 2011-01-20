@@ -37,10 +37,10 @@
     <ctb:auth roles="Administrator, Administrative Coordinator">
 	   <c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
 	     	<c:if test="${ requestScope.isBulkAccommodation }">
-	        	<li><span class="navleft-unclickable">Edit Group Accommodations</span></li>
+	        	<li><span class="navleft-unclickable">Edit Accommodations</span></li>
 	    	</c:if>
 		    <c:if test="${ !requestScope.isBulkAccommodation }">    
-		        <li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Group Accommodations</span></a></li>
+		        <li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Accommodations</span></a></li>
 		    </c:if>
 	   </c:if>
    </ctb:auth>

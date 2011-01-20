@@ -36,7 +36,7 @@
     </c:if>
      <ctb:auth roles="Administrator, Administrative Coordinator">  
 	     <c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
-	        <li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Group Accommodations</span></a></li>
+	        <li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Accommodations</span></a></li>
 	    </c:if>
      </ctb:auth>
 </ul>

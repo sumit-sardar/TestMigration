@@ -26,7 +26,7 @@
 	        
 	        	<td nowrap=""> 
 	   				<h3><span>Select Group Accommodations</span></h3>
-					<p>Accommodations you add or delete apply to ALL the selected students when you click <b>Submit</b>. Clicking <b>Reset</b> clears selections in this table.</p>
+					<p>Accommodations you add or delete apply to ALL the selected students when you click <b>Submit</b>. Clicking <b>Reset</b> clears selections in the section below. </p>
 				</td>
 				
 			</tr>
