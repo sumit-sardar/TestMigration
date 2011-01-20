@@ -1,35 +1,17 @@
 package utils; 
 
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Cell;
-import com.lowagie.text.Chunk;
 import data.TestRosterVO;
 import data.TestAdminVO;
 import java.io.IOException;
-import java.util.List;
 
-import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.Image;
 import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Table;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfTable;
-import com.lowagie.text.pdf.PdfWriter;
+
 import data.ImageVO;
 import data.TableVO;
-import java.awt.Color;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import javax.servlet.ServletOutputStream;
 //import weblogic.webservice.tools.pagegen.result;
 
 public class IndividualTestTicketsReportUtils extends ReportUtils
@@ -63,7 +45,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private static final float WATERMARK_Y = 30f;
 
     private static final float PAGE_WIDTH = 460f;
-    private static final float INFO_LABEL_WIDTH = 460f;
+    private static final float INFO_LABEL_WIDTH = 110f;  //460f;
     private static final float INFO_VALUE_WIDTH = 300f;
     private static final float LINE_WIDTH = 480f;
     private static final float LOGIN_WIDTH = 388f;
@@ -312,7 +294,11 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     	//START - Changed for CR GA2011CR001
     	String studentIdLabel = STUDENT_ID_LABEL;
     	if(isStudentIdConfigurable) {
-    		studentIdLabel = studentIdLabelName + ":";
+    		if(studentIdLabelName.toCharArray().length > 15)
+    			studentIdLabel = studentIdLabelName.substring(0, 15);
+    		else
+    			studentIdLabel = studentIdLabelName;
+    		studentIdLabel = studentIdLabel.trim() + ":";
     	}
     	//END - Changed for CR GA2011CR001
         this.staticTables.add( 
