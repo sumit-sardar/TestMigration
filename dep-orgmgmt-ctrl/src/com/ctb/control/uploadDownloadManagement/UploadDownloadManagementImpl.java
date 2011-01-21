@@ -937,7 +937,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             
             
         } catch (SQLException e) {
-            
+        	System.out.println("Inside SQL exception");
+            System.out.println(e.getMessage());
             FileNotUploadedException fileNotUploadedException = 
                                         new FileNotUploadedException
                                                 ("Uploaded.Failed");
@@ -945,7 +946,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             throw fileNotUploadedException;
           
         } catch (Exception e ) {
-        
+        	System.out.println("Inside general exception");
+            System.out.println(e.getMessage());
             FileNotUploadedException fileNotUploadedException = 
                                         new FileNotUploadedException
                                                 ("Uploaded.Failed");
