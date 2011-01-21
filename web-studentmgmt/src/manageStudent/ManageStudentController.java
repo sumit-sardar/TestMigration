@@ -3313,7 +3313,7 @@ public class ManageStudentController extends PageFlowController
 			}
 
 		}
-		if(valueForStudentId.length ==3) {
+		if(valueForStudentId.length ==8) {
 			this.isMandatoryStudentId = valueForStudentId !=null &&  valueForStudentId[2] != null && valueForStudentId[2].equals("T") ?  true : false ;
 
 		}
