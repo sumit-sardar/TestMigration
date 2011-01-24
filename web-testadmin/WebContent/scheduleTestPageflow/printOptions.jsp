@@ -433,7 +433,7 @@
 &nbsp;
 <img src="/TestAdministrationWeb/resources/images/logo_pdf.gif" border="0">
 <br/>
-<netui:content value="${bundle.web['printoptions.testSessionDocuments.message.testTickets']}"/>
+<netui:content value="${bundle.web['printoptions.testSessionDocuments.message.multipleTestTickets']}"/>
 </p>
 <!--END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)-->
 
