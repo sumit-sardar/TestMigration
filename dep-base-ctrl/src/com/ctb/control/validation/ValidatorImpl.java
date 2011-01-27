@@ -75,14 +75,13 @@ public class ValidatorImpl implements Validator
 	 */
 	public void validate(Object operator, Object operand, String action) throws ValidationException
 	{
-		return;
-		/*try {
+		try {
 			//policy.checkPolicy(operator, action);
 		} catch (Exception e) {
 			ValidationException ve = new ValidationException("ValidatorImpl: validate: failed validation for user: " + operator);
 			ve.setStackTrace(e.getStackTrace());
 			throw ve;
-		}*/
+		}
 	}
 
 	/**
@@ -90,14 +89,13 @@ public class ValidatorImpl implements Validator
 	 */
 	public void validateNode(Object operator, Object operand, String action) throws ValidationException
 	{
-		return;
-		/*try {
+		try {
 			String userName = (String) operator;
 			if(operand != null) {
 				Integer orgNodeId = (Integer) operand;
-				///Programmatic Transaction
-				//UserTransaction userTrans= getTransaction();
-				//userTrans.begin();
+				/*//Programmatic Transaction
+				UserTransaction userTrans= getTransaction();
+				userTrans.begin();*/
 				if(!"true".equals(node.checkVisibility(userName, orgNodeId)))
 					throw new ValidationException("ValidatorImpl: validateNode: failed validation for user: " + operator + " on: " + operand);;
 					//Close Transaction
@@ -108,22 +106,21 @@ public class ValidatorImpl implements Validator
 			ValidationException ve = new ValidationException("ValidatorImpl: validateNode: failed validation for user: " + operator + " on: " + operand);
 			ve.setStackTrace(e.getStackTrace());
 			throw ve;
-		}*/
+		}
 	}
 
 	/**
 	 * @common:operation
 	 */
 	public void validateAdmin(Object operator, Object operand, String action) throws ValidationException
-	{ 
-		return;
-		/*try {
+	{
+		try {
 			String userName = (String) operator;
 			if(operand != null) {
 				Integer testAdminId = (Integer) operand;
-				////Programmatic Transaction
-				//UserTransaction userTrans= getTransaction();
-				//userTrans.begin();
+				/*//Programmatic Transaction
+				UserTransaction userTrans= getTransaction();
+				userTrans.begin();*/
 				if(!"true".equals(admin.checkVisibility(userName, testAdminId)))
 					throw new ValidationException("ValidatorImpl: validateAdmin: failed validation for user: " + operator + " on: " + operand);;
 					//Close Transaction
@@ -135,7 +132,7 @@ public class ValidatorImpl implements Validator
 			ValidationException ve = new ValidationException("ValidatorImpl: validateAdmin: failed validation for user: " + operator + " on: " + operand);
 			ve.setStackTrace(e.getStackTrace());
 			throw ve;
-		}*/
+		}
 	}
 
 	/**
@@ -143,14 +140,13 @@ public class ValidatorImpl implements Validator
 	 */
 	public void validateItemSet(Object operator, Object operand, String action) throws ValidationException
 	{
-		return;
-		/*try {
+		try {
 			String userName = (String) operator;
 			if(operand != null) {
 				Integer itemSetId = (Integer) operand;
-				///Programmatic Transaction
-				//UserTransaction userTrans= getTransaction();
-				//userTrans.begin();
+				/*//Programmatic Transaction
+				UserTransaction userTrans= getTransaction();
+				userTrans.begin();*/
 				if (!"true".equals(itemSet.checkVisibility(userName, itemSetId)))
 					throw new ValidationException("ValidatorImpl: validateItemSet: failed validation for user: " + operator + " on: " + operand);;
 					//Close Transaction
@@ -161,7 +157,7 @@ public class ValidatorImpl implements Validator
 			ValidationException ve = new ValidationException("ValidatorImpl: validateItemSet: failed validation for user: " + operator + " on: " + operand);
 			ve.setStackTrace(e.getStackTrace());
 			throw ve;
-		}*/
+		}
 	}
 
 	/**
@@ -169,14 +165,13 @@ public class ValidatorImpl implements Validator
 	 */
 	public void validateProduct(Object operator, Object operand, String action) throws ValidationException
 	{
-		return;
-		/*try {
+		try {
 			String userName = (String) operator;
 			if(operand != null) {
 				Integer productId = (Integer) operand;
-				///Programmatic Transaction
-				//UserTransaction userTrans= getTransaction();
-				//userTrans.begin();
+				/*//Programmatic Transaction
+				UserTransaction userTrans= getTransaction();
+				userTrans.begin();*/
 				if(!"true".equals(product.checkVisibility(userName, productId)))
 					throw new ValidationException("ValidatorImpl: validateProduct: failed validation for user: " + operator + " on: " + operand);;
 					//Close Transaction
@@ -187,7 +182,7 @@ public class ValidatorImpl implements Validator
 			ValidationException ve = new ValidationException("ValidatorImpl: validateProduct: failed validation for user: " + operator + " on: " + operand);
 			ve.setStackTrace(e.getStackTrace());
 			throw ve;
-		}*/
+		}
 	}
 
 	/**
@@ -195,14 +190,13 @@ public class ValidatorImpl implements Validator
 	 */
 	public void validateRoster(Object operator, Object operand, String action) throws ValidationException
 	{
-		return;
-		/*try {
+		try {
 			String userName = (String) operator;
 			if(operand != null) {
 				Integer testRosterId = (Integer) operand;
-				///Programmatic Transaction
-				//UserTransaction userTrans= getTransaction();
-				//userTrans.begin();
+				/*//Programmatic Transaction
+				UserTransaction userTrans= getTransaction();
+				userTrans.begin();*/
 				if(!"true".equals(roster.checkVisibility(userName, testRosterId)))
 					throw new ValidationException("ValidatorImpl: validateRoster: failed validation for user: " + operator + " on: " + operand);;
 					//Close Transaction
@@ -213,7 +207,7 @@ public class ValidatorImpl implements Validator
 			ValidationException ve = new ValidationException("ValidatorImpl: validateRoster: failed validation for user: " + operator + " on: " + operand);
 			ve.setStackTrace(e.getStackTrace());
 			throw ve;
-		}*/
+		}
 	}
 
 	/**
@@ -221,8 +215,8 @@ public class ValidatorImpl implements Validator
 	 */
 	public void validateUser(Object operator, Object operand, String action) throws ValidationException
 	{
-		return;
-		/*try {
+
+		try {
 			String userName = (String) operator;
 
 			if(operand != null) {
@@ -243,7 +237,7 @@ public class ValidatorImpl implements Validator
 			ValidationException ve = new ValidationException("ValidatorImpl: validateUser: failed validation for user: " + operator + " on: " + operand);
 			ve.setStackTrace(e.getStackTrace());
 			throw ve;
-		}*/
+		}
 	}
 
 	/**
@@ -251,8 +245,7 @@ public class ValidatorImpl implements Validator
 	 */
 	public void validateStudent(Object operator, Object operand, String action) throws ValidationException
 	{
-		return;
-		/*try {
+		try {
 			String userName = (String) operator;
 			if(operand != null) {
 				Integer studentId  = (Integer) operand;
@@ -265,7 +258,7 @@ public class ValidatorImpl implements Validator
 			ValidationException ve = new ValidationException("ValidatorImpl: validateStudent: failed validation for student: " + operator + " on: " + operand);
 			ve.setStackTrace(e.getStackTrace());
 			throw ve;
-		}*/
+		}
 	}
 
 	/**
@@ -273,14 +266,13 @@ public class ValidatorImpl implements Validator
 	 */
 	public void validateCustomer(Object operator, Object operand, String action) throws ValidationException
 	{
-		return;
-		/*try {
+		try {
 			String userName = (String) operator;
 			if(operand != null) {
 				Integer customerId  = (Integer) operand;
 				//Programmatic Transaction
-				//UserTransaction userTrans= getTransaction();
-				//userTrans.begin();
+				/*UserTransaction userTrans= getTransaction();
+				userTrans.begin();*/
 				if(!"true".equals(customers.checkVisibility(userName, customerId)))
 					throw new ValidationException("ValidatorImpl: validateCustomer: failed validation for customer: " + operator + " on: " + operand);;
 					//Close Transaction
@@ -291,7 +283,7 @@ public class ValidatorImpl implements Validator
 			ValidationException ve = new ValidationException("ValidatorImpl: validateCustomer: failed validation for customer: " + operator + " on: " + operand);
 			ve.setStackTrace(e.getStackTrace());
 			throw ve;
-		}*/
+		}
 	}
 
 	/**
