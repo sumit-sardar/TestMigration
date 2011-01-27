@@ -889,7 +889,7 @@ public class StudentTestDataImpl implements StudentTestData
             		// new Weblogic 10.3 JMS call
             		invokeScoring(new Integer(testRosterId));
             	} catch (Exception se) {
-        		
+            		OASLogger.getLogger("TestDelivery").info("TMS error: " + se.getMessage());
         		}
             }
             try {
@@ -1073,7 +1073,7 @@ public class StudentTestDataImpl implements StudentTestData
                         		// new Weblogic 10.3 JMS call
                         		invokeScoring(new Integer(testRosterId));
                         	} catch (Exception se) {
-                    		
+                        		OASLogger.getLogger("TestDelivery").info("TMS error: " + se.getMessage());
                     		}
                         }
                     } else {
