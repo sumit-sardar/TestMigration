@@ -81,8 +81,7 @@ public class Global extends GlobalApp
     {
         try
         {
-            super.logout(false);
-            this.getSession().invalidate();
+            super.logout(true);
         } 
         catch (Exception e)
         {
