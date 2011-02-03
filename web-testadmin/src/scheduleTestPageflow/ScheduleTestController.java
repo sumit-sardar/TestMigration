@@ -307,7 +307,8 @@ public class ScheduleTestController extends PageFlowController
         
         form.getTestAdmin().setSessionName(null);
         
-        /* this block does nothing
+        /*
+        // this block does nothing
         Date now = new Date(System.currentTimeMillis());
         if(this.user.getTimeZone() == null){
         	try
@@ -324,6 +325,8 @@ public class ScheduleTestController extends PageFlowController
         Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
         Date tomorrow = com.ctb.util.DateUtils.getAdjustedDate(new Date(now.getTime() + (24 * 60 * 60 * 1000)), TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
         */
+        
+        this.getSession().setAttribute("userHasReports", userHasReports());
         
         this.testRosterFilter = new TestRosterFilter();
 
@@ -1933,6 +1936,9 @@ public class ScheduleTestController extends PageFlowController
                
         form.setActionElement(ACTION_DEFAULT);  
         setFormInfoOnRequest(form);
+        
+    	customerHasBulkAccommodation();
+        
         return new Forward("selectSettings", form);
     }
 
@@ -2193,6 +2199,37 @@ public class ScheduleTestController extends PageFlowController
             be.printStackTrace();
         }        
         return new Boolean(hasReports);           
+    }
+
+	private Boolean customerHasBulkAccommodation()
+    {               
+        Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasBulkStudentConfigurable = false;
+
+        try
+        {      
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = users.getCustomerConfigurations(2);
+			}
+            
+            for (int i=0; i < customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+                //Bulk Accommodation
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && cc.getDefaultValue().equals("T")	)
+                {
+                    this.getSession().setAttribute("isBulkAccommodationConfigured", true);
+                    break;
+                } 
+            }
+        }
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+        
+       
+        return new Boolean(hasBulkStudentConfigurable);
     }
 
     /**
