@@ -305,14 +305,6 @@
 											<th class="sortable alignLeft" width="65%" nowrap><ctb:tableSortColumn value="OrgNodeName">
 												<netui:content value="${requestScope.orgCategoryName}" />
 											</ctb:tableSortColumn></th>
-											<c:if test="${noFilterApplied != null}">
-												<th class="sortable alignRight" width="*" nowrap><netui:content
-													value="${bundle.web['selectstudents.selectStudents.totalStudents']}" /></th>
-											</c:if>
-											<c:if test="${noFilterApplied == null}">
-												<th class="sortable alignRight" width="*" nowrap><netui:content
-													value="${bundle.web['selectstudents.selectStudents.filteredStudents']}" /></th>
-											</c:if>
 										</ctb:tableSortColumnGroup>
 									</tr>
 
@@ -333,7 +325,6 @@
 												<netui:span value="${container.item.name}" />
 											</ctb:case>
 										</ctb:switch></td>
-										<td class="sortable alignRight"><netui:span value="${container.item.filteredCount}" /></td>
 									</tr>
 
 								</netui-data:repeaterItem>

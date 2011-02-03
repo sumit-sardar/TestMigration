@@ -221,9 +221,14 @@ public class ScheduleTestController extends PageFlowController
     })
     protected Forward begin(ScheduleTestForm form)
     {
+    	String bulkAcc = (String)getRequest().getParameter("bulkAcc");
+    	String hasReport = (String)getRequest().getParameter("hasReport");
+    	
+    	this.getSession().setAttribute("userHasReports", new Boolean(hasReport));
+        this.getSession().setAttribute("isBulkAccommodationConfigured", new Boolean(bulkAcc));        
+    	
         init(form);
-        //for Bulk Accommodation
-        customerHasBulkAccommodation();
+
         this.action = ACTION_SCHEDULE_TEST;
         
         return new Forward("success", form);
@@ -302,6 +307,7 @@ public class ScheduleTestController extends PageFlowController
         
         form.getTestAdmin().setSessionName(null);
         
+        /* this block does nothing
         Date now = new Date(System.currentTimeMillis());
         if(this.user.getTimeZone() == null){
         	try
@@ -317,6 +323,7 @@ public class ScheduleTestController extends PageFlowController
         }
         Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
         Date tomorrow = com.ctb.util.DateUtils.getAdjustedDate(new Date(now.getTime() + (24 * 60 * 60 * 1000)), TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
+        */
         
         this.testRosterFilter = new TestRosterFilter();
 
@@ -324,8 +331,6 @@ public class ScheduleTestController extends PageFlowController
         this.addedProctorsCount = 0;
         
         this.orgNodePath = new ArrayList(); //clean up path
-        
-        this.getSession().setAttribute("userHasReports", userHasReports());
         
         this.currentSelectedTestId = "";
         
@@ -463,11 +468,7 @@ public class ScheduleTestController extends PageFlowController
         boolean disableNextButton = false;
         boolean hideTestOptions = false;
         boolean hasMultipleSubtests = false;
-        //Change for License management 
-        Boolean license_status_subtest = Boolean.FALSE;
-        Boolean license_status_admin = Boolean.FALSE;
-       
-       
+        
         try
         {
             if (this.testProductData == null)
@@ -2160,7 +2161,7 @@ public class ScheduleTestController extends PageFlowController
     private String getReportable(Integer testAdminId) 
     {
         String reportable = null;
-        Boolean userHasReport = userHasReports();
+        Boolean userHasReport = (Boolean)this.getSession().getAttribute("userHasReports");
         
         try
         {      
@@ -5337,20 +5338,6 @@ public class ScheduleTestController extends PageFlowController
         
     }
 
-    private Boolean userHasReports() 
-    {
-        boolean hasReports = false;
-        try {      
-            Customer customer = this.user.getCustomer();
-            Integer customerId = customer.getCustomerId();   
-            hasReports = this.testSessionStatus.userHasReports(this.userName, customerId);
-        }
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }        
-        return new Boolean(hasReports);           
-    }
-    
     private String getSessionStudentOrgCategoryName(List studentNodes) {
         String categoryName = "Organization";        
         if (studentNodes.size() > 0) {
@@ -5535,36 +5522,5 @@ public class ScheduleTestController extends PageFlowController
 		return selectedAccommodationsOptions;
 	}
 	
-	//Bulk Accommodation
-	private Boolean customerHasBulkAccommodation()
-    {               
-        Integer customerId = this.user.getCustomer().getCustomerId();
-        boolean hasBulkStudentConfigurable = false;
-
-        try
-        {      
-			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
-			if (customerConfigurations == null || customerConfigurations.length == 0) {
-				customerConfigurations = users.getCustomerConfigurations(2);
-			}
-            
-            for (int i=0; i < customerConfigurations.length; i++)
-            {
-            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
-                //Bulk Accommodation
-                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && cc.getDefaultValue().equals("T")	)
-                {
-                    this.getSession().setAttribute("isBulkAccommodationConfigured", true);
-                    break;
-                } 
-            }
-        }
-        catch (SQLException se) {
-        	se.printStackTrace();
-		}
-        
-       
-        return new Boolean(hasBulkStudentConfigurable);
-    }
 	
 }

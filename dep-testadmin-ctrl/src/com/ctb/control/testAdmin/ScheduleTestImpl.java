@@ -760,6 +760,7 @@ public class ScheduleTestImpl implements ScheduleTest
             studentNodes = ond.getStudentNodes();
             
             for(int i=0;i<studentNodes.length && studentNodes[i] != null;i++) {   
+            	/*
                 StudentAccommodationsData cachedAccommData = (StudentAccommodationsData) SimpleCache.checkCache("STUDENT_ACCOMMODATIONS_BY_ORG", String.valueOf(studentNodes[i].getOrgNodeId()));
                 // copy cached data to new object before filtering
                 StudentAccommodationsData accommData = new StudentAccommodationsData();
@@ -774,6 +775,8 @@ public class ScheduleTestImpl implements ScheduleTest
                 } else {
                     studentNodes[i].setStudentCount(new Integer(0));
                 }
+                */
+                studentNodes[i].setStudentCount(new Integer(0));
                 if(testAdminId != null) {
                     studentNodes[i].setRosterCount(orgNode.getRosterCountForAncestorNode(studentNodes[i].getOrgNodeId(), testAdminId));
                 }
@@ -825,6 +828,7 @@ public class ScheduleTestImpl implements ScheduleTest
             if(page != null) ond.applyPaging(page);
             studentNodes = ond.getStudentNodes();
             for(int i=0;i<studentNodes.length && studentNodes[i] != null;i++) {
+            	/*
                 StudentAccommodationsData cachedAccommData = (StudentAccommodationsData) SimpleCache.checkCache5min("STUDENT_ACCOMMODATIONS_BY_ORG", String.valueOf(studentNodes[i].getOrgNodeId()));
                 if(cachedAccommData == null) {
                     StudentAccommodations[] accommData = accommodation.getStudentAccommodationsByAncestorNode(studentNodes[i].getOrgNodeId());
@@ -860,6 +864,9 @@ public class ScheduleTestImpl implements ScheduleTest
                 } else {
                     studentNodes[i].setStudentCount(new Integer(0));
                 }
+            	*/
+                studentNodes[i].setStudentCount(new Integer(0));
+            	
                 if(testAdminId != null) {
                     studentNodes[i].setRosterCount(orgNode.getRosterCountForAncestorNode(studentNodes[i].getOrgNodeId(), testAdminId));
                 }            

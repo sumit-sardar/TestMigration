@@ -66,8 +66,7 @@ public class PathNode implements java.io.Serializable
      
     public String getClickable() {
         if (this.clickable == null) {
-            if ((this.hasChildren != null) && this.hasChildren.equals("true") && 
-                (this.filteredCount != null) && (this.filteredCount.intValue() > 0))
+            if ((this.hasChildren != null) && this.hasChildren.equals("true"))  
                 this.clickable = "true";
             else
                 this.clickable = "false";

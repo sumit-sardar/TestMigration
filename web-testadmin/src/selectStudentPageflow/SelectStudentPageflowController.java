@@ -1137,21 +1137,6 @@ public class SelectStudentPageflowController extends PageFlowController
         return snd;
     }
 
-    private boolean nodeContainsStudents(Integer orgNodeId, List orgNodes) 
-    {
-        boolean hasStudents = false;
-        for (int i=0; i < orgNodes.size(); i++)
-        {
-            PathNode node = (PathNode)orgNodes.get(i);
-            if (node.getId().intValue() == orgNodeId.intValue())
-            {
-                hasStudents = node.getFilteredCount().intValue() > 0;
-                break;
-            }
-        }
-        return hasStudents;
-    }
-    
     private List buildOrgNodeList(StudentNodeData snd) 
     {
         ArrayList nodeList = new ArrayList();
