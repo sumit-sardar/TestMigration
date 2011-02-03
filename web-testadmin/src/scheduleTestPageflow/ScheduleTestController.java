@@ -200,6 +200,8 @@ public class ScheduleTestController extends PageFlowController
     private static final String RD_NO = "N";
     
     private boolean isTestSessionDataExported  = false;
+    private String hasReport = null;
+    private String bulkAcc = null;
     
     
     public String [] getFormOptions() {
@@ -221,12 +223,9 @@ public class ScheduleTestController extends PageFlowController
     })
     protected Forward begin(ScheduleTestForm form)
     {
-    	String bulkAcc = (String)getRequest().getParameter("bulkAcc");
-    	String hasReport = (String)getRequest().getParameter("hasReport");
-    	
-    	this.getSession().setAttribute("userHasReports", new Boolean(hasReport));
-        this.getSession().setAttribute("isBulkAccommodationConfigured", new Boolean(bulkAcc));        
-    	
+    	this.hasReport = (String)getRequest().getParameter("hasReport");
+    	this.bulkAcc = (String)getRequest().getParameter("bulkAcc");
+    	   	
         init(form);
 
         this.action = ACTION_SCHEDULE_TEST;
@@ -307,8 +306,7 @@ public class ScheduleTestController extends PageFlowController
         
         form.getTestAdmin().setSessionName(null);
         
-        /*
-        // this block does nothing
+        /* this block does nothing
         Date now = new Date(System.currentTimeMillis());
         if(this.user.getTimeZone() == null){
         	try
@@ -326,8 +324,16 @@ public class ScheduleTestController extends PageFlowController
         Date tomorrow = com.ctb.util.DateUtils.getAdjustedDate(new Date(now.getTime() + (24 * 60 * 60 * 1000)), TimeZone.getDefault().getID(), this.user.getTimeZone(), now);
         */
         
-        this.getSession().setAttribute("userHasReports", userHasReports());
+        if (this.hasReport != null)
+        	this.getSession().setAttribute("userHasReports", new Boolean(this.hasReport));
+        else
+        	this.getSession().setAttribute("userHasReports", userHasReports());
         
+        if (this.bulkAcc != null)
+        	this.getSession().setAttribute("isBulkAccommodationConfigured", new Boolean(this.bulkAcc));        
+        else
+        	this.getSession().setAttribute("isBulkAccommodationConfigured", customerHasBulkAccommodation());        
+        	
         this.testRosterFilter = new TestRosterFilter();
 
         this.addedStudentsCount = 0;
@@ -1937,8 +1943,6 @@ public class ScheduleTestController extends PageFlowController
         form.setActionElement(ACTION_DEFAULT);  
         setFormInfoOnRequest(form);
         
-    	customerHasBulkAccommodation();
-        
         return new Forward("selectSettings", form);
     }
 
@@ -2219,7 +2223,7 @@ public class ScheduleTestController extends PageFlowController
                 //Bulk Accommodation
                 if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && cc.getDefaultValue().equals("T")	)
                 {
-                    this.getSession().setAttribute("isBulkAccommodationConfigured", true);
+                    hasBulkStudentConfigurable = true;
                     break;
                 } 
             }
@@ -2227,8 +2231,7 @@ public class ScheduleTestController extends PageFlowController
         catch (SQLException se) {
         	se.printStackTrace();
 		}
-        
-       
+               
         return new Boolean(hasBulkStudentConfigurable);
     }
 
