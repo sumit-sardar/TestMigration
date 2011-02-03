@@ -2157,11 +2157,11 @@ public class ScheduleTestController extends PageFlowController
         
         return helpLink;
     }
-    
+     
     private String getReportable(Integer testAdminId) 
     {
         String reportable = null;
-        Boolean userHasReport = (Boolean)this.getSession().getAttribute("userHasReports");
+        Boolean userHasReport = userHasReports();
         
         try
         {      
@@ -2179,6 +2179,20 @@ public class ScheduleTestController extends PageFlowController
             be.printStackTrace();
         }
         return reportable;
+    }
+
+    private Boolean userHasReports() 
+    {
+        boolean hasReports = false;
+        try {      
+            Customer customer = this.user.getCustomer();
+            Integer customerId = customer.getCustomerId();   
+            hasReports = this.testSessionStatus.userHasReports(this.userName, customerId);
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }        
+        return new Boolean(hasReports);           
     }
 
     /**
