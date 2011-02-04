@@ -225,12 +225,19 @@ public class ValidatorImpl implements Validator
 				//Programmatic Transaction
 				//UserTransaction userTrans= getTransaction();
 				//userTrans.begin();
-				
-				if(!"true".equals(user.checkVisibility(userName, otherName)))
+		//Attempt to improve performance
+				if(userName.equals(otherName))
+				{
+				if(!"true".equals(user.checkVisibilitySame(userName, otherName)))
 
 					throw new ValidationException("ValidatorImpl: validateUser: failed validation for user: " + operator + " on: " + operand);;
 					//Close Transaction
-				//closeTransaction(userTrans);   
+				//closeTransaction(userTrans); 
+				} else {
+					if(!"true".equals(user.checkVisibility(userName, otherName)))
+
+						throw new ValidationException("ValidatorImpl: validateUser: failed validation for user: " + operator + " on: " + operand);;
+				}
 			}
 			//policy.checkPolicy(userName, action);
 		} catch (Exception e) {

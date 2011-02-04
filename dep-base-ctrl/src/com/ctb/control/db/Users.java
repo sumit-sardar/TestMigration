@@ -53,6 +53,9 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select  \t  decode(count(ona.org_node_id), 0, 'false', 'true') as visible from \torg_node_ancestor ona, \tuser_role urole, \tusers, \tuser_role orole, \tusers ousers where \t users.user_name = {userName} \t and urole.user_id = users.user_id \t and ona.ancestor_org_node_id = urole.org_node_id \t and ona.org_node_id = orole.org_node_id \t and orole.user_id = ousers.user_id \t and ousers.user_name = {otherName}")
     String checkVisibility(String userName, String otherName) throws SQLException;
+	//attempt to improve performance
+	@JdbcControl.SQL(statement = "select  \t  decode(count(ona.org_node_id), 0, 'false', 'true') as visible from \torg_node_ancestor ona, \tuser_role urole, \tusers where \t users.user_name = {userName} \t and urole.user_id = users.user_id \t and ona.ancestor_org_node_id = urole.org_node_id")
+    String checkVisibilitySame(String userName, String otherName) throws SQLException;
 
     /**
      * @jc:sql statement::
@@ -241,6 +244,10 @@ public interface Users extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select  users.user_id as userId,  users.user_name as userName,  users.display_user_name as displayUserName,  users.password,  users.first_name as firstName,  users.middle_name as middleName,  users.last_name as lastName,  users.preferred_name as preferredName,  users.prefix,  users.suffix,  users.time_zone as timeZone,  users.email,  users.password_hint_question_id as passwordHintQuestionId,  phq.password_hint_question as passwordHintQuestion,  users.password_expiration_date as passwordExpirationDate,  users.password_hint_answer as passwordHintAnswer,  users.address_id as addressId,  users.active_session as activeSession,  users.reset_password as resetPassword,  users.last_login_date_time as lastLoginDateTime,  users.ext_pin1 as extPin1,  users.ext_pin2 as extPin2,  users.ext_pin3 as extPin3,  users.ext_school_id as extSchoolId,  users.created_by as createdBy,  users.created_date_time as CreatedDateTime,  users.updated_by as updatedBy,  users.updated_date_time as updatedDateTime,  users.activation_status as activationStatus,  users.data_import_history_id as dataImportHistoryId,  users.display_new_message as displayNewMessage from  users, password_hint_question phq where  phq.password_hint_question_id (+) = users.password_hint_question_id  and users.user_name = {userName}  and users.activation_status = 'AC'")
     User getUserDetails(String userName) throws SQLException;
+    
+    //attempt to improve performance
+    @JdbcControl.SQL(statement = "select  users.user_id as userId,  users.user_name as userName,  users.display_user_name as displayUserName,  users.password,  users.first_name as firstName,  users.middle_name as middleName,  users.last_name as lastName,  users.preferred_name as preferredName,  users.prefix,  users.suffix,  users.time_zone as timeZone,  users.email,  users.password_hint_question_id as passwordHintQuestionId,  users.password_expiration_date as passwordExpirationDate,  users.password_hint_answer as passwordHintAnswer,  users.address_id as addressId,  users.active_session as activeSession,  users.reset_password as resetPassword,  users.last_login_date_time as lastLoginDateTime,  users.ext_pin1 as extPin1,  users.ext_pin2 as extPin2,  users.ext_pin3 as extPin3,  users.ext_school_id as extSchoolId,  users.created_by as createdBy,  users.created_date_time as CreatedDateTime,  users.updated_by as updatedBy,  users.updated_date_time as updatedDateTime,  users.activation_status as activationStatus,  users.data_import_history_id as dataImportHistoryId,  users.display_new_message as displayNewMessage from  users where users.user_name = {userName}  and users.activation_status = 'AC'")
+    User getUserDetailsWithoutPassword(String userName) throws SQLException;
 
     /**
      * @jc:sql statement::
