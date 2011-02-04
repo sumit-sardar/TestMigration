@@ -85,23 +85,19 @@ public class HomePageController extends PageFlowController
     protected Forward begin()
     {        
     	getLoggedInUserPrincipal();   
+    	
         getUserDetails();
                          
         HomePageForm form = new HomePageForm();
         form.init();
-      //START- added for Deferred defect #52645
-       if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword()))
-      //END- added for Deferred defect #52645
-   	// if ("T".equals(this.user.getResetPassword()))
+
+        if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword()))
         {
             return new Forward("resetPassword", form);
         }
-        
-        /*Changed for DEx defect # 57562 & 57563*/ 
         else if (this.user.getTimeZone() == null)
         {
-            return new Forward("editTimeZone", form);
-            
+            return new Forward("editTimeZone", form);            
         }
         else
         {
@@ -177,11 +173,8 @@ public class HomePageController extends PageFlowController
                                               path = "logout.do"))
     protected Forward home_page(HomePageForm form)
     {
-    	
         if (this.user.getRole().getRoleName().equals("ACCOUNT MANAGER"))
         {
-
-
             // get CTB broadcast messages
             List broadcastMessages = getBroadcastMessages(true);
             this.getRequest().setAttribute("broadcastMessages", broadcastMessages);
@@ -193,10 +186,11 @@ public class HomePageController extends PageFlowController
             
             return new Forward("accountManagerHomePage", form);
         }
-        
-        
+              
         form.resetValuesForAction();        
         form.validateValues();
+        
+        CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.user.getCustomer().getCustomerId());
         
         // retrieve information for user test sessions
         FilterParams sessionFilter = FilterSortPageUtils.buildFilterParams(FilterSortPageUtils.TESTSESSION_DEFAULT_FILTER_COLUMN, form.getUserSessionFilterTab());
@@ -238,13 +232,16 @@ public class HomePageController extends PageFlowController
         this.getRequest().setAttribute("proctorSessionPagerSummary", proctorPagerSummary);
         this.getRequest().setAttribute("proctorOrgCategoryName", proctorOrgCategoryName);        
 
-        this.getSession().setAttribute("hasLicenseConfig", hasLicenseConfig());
 
         // get licenses
         CustomerLicense[] customerLicenses = getCustomerLicenses();
         if ((customerLicenses != null) && (customerLicenses.length > 0))
         {
             this.getRequest().setAttribute("customerLicenses", customerLicenses);
+            this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
+        }
+        else {
+            this.getSession().setAttribute("hasLicenseConfig", new Boolean(false));        	
         }
 
         //check avaliable license count for Register Student
@@ -262,7 +259,7 @@ public class HomePageController extends PageFlowController
          
         this.getSession().setAttribute("userHasReports", userHasReports());
 
-        this.getSession().setAttribute("canRegisterStudent", canRegisterStudent());
+        this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         
         String userSessionFilterTab = form.getUserSessionFilterTab();
         if (userSessionFilterTab.equalsIgnoreCase("PA"))
@@ -284,8 +281,10 @@ public class HomePageController extends PageFlowController
             this.getRequest().setAttribute("enableProctorRegisterStudent", Boolean.TRUE);
         }
         //Bulk Accommodation
-        customerHasBulkAccommodation();
+        this.getSession().setAttribute("isBulkAccommodationConfigured", customerHasBulkAccommodation(customerConfigs));
+        
         form.setActionElement("none");   
+        
         return new Forward("success", form);
     }
   
@@ -416,26 +415,6 @@ public class HomePageController extends PageFlowController
         return cls;
     }
 
-    /**
-     * hasLicenseConfig
-     */
-    private Boolean hasLicenseConfig()
-    {
-        Boolean hasLicenseConfig = Boolean.FALSE;       
-      
-        try
-        {
-            CustomerLicense[] cls = this.licensing.getCustomerLicenseData(this.userName, null);            
-            hasLicenseConfig = new Boolean(cls.length > 0);
-        }    
-        catch (CTBBusinessException be)
-        {
-            be.printStackTrace();
-        }     
-        
-        return hasLicenseConfig;
-    }
-
     private Boolean userHasReports() 
     {
         boolean hasReports = false;
@@ -476,29 +455,19 @@ public class HomePageController extends PageFlowController
         return crd;
     }
 
-    private Boolean canRegisterStudent() 
+    private Boolean canRegisterStudent(CustomerConfiguration [] customerConfigs) 
     {               
-        Integer customerId = this.user.getCustomer().getCustomerId();
         String roleName = this.user.getRole().getRoleName();        
         boolean validCustomer = false; 
 
-        try
-        {      
-            CustomerConfiguration [] ccArray = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);       
-            for (int i=0; i < ccArray.length; i++)
-            {
-                CustomerConfiguration cc = (CustomerConfiguration)ccArray[i];
-                if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer"))
-                {
-                    validCustomer = true; 
-                }
-               
-            }
-        }
-        catch (CTBBusinessException be)
+        for (int i=0; i < customerConfigs.length; i++)
         {
-            be.printStackTrace();
-        }        
+            CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer"))
+            {
+                validCustomer = true; 
+            }               
+        }
         
         boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
         
@@ -508,25 +477,32 @@ public class HomePageController extends PageFlowController
     /*
      * Bulk accommodation
      */
-    private Boolean customerHasBulkAccommodation()
+    private Boolean customerHasBulkAccommodation(CustomerConfiguration [] customerConfigs)
     {               
-        Integer customerId = this.user.getCustomer().getCustomerId();
         boolean hasBulkStudentConfigurable = false;
 
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+            		cc.getDefaultValue().equals("T")	) {
+                hasBulkStudentConfigurable = true;
+                break;
+            } 
+        }
+       
+        return new Boolean(hasBulkStudentConfigurable);
+    }
+
+    /*
+     * getCustomerConfigurations
+     */
+    private CustomerConfiguration [] getCustomerConfigurations(Integer customerId)
+    {               
+        CustomerConfiguration [] ccArray = null;
         try
         {      
-            CustomerConfiguration [] ccArray = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);       
-            for (int i=0; i < ccArray.length; i++)
-            {
-            	 CustomerConfiguration cc = (CustomerConfiguration)ccArray[i];
-                //Bulk Accommodation
-                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
-                		cc.getDefaultValue().equals("T")	)
-                {
-                    this.getSession().setAttribute("isBulkAccommodationConfigured", true);
-                    break;
-                } 
-            }
+            ccArray = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);       
         }
         catch (CTBBusinessException be)
         {
@@ -534,9 +510,9 @@ public class HomePageController extends PageFlowController
         }        
         
        
-        return new Boolean(hasBulkStudentConfigurable);
+        return ccArray;
     }
- 
+    
     private TestSessionData getTestSessionsForUser(FilterParams filter, PageParams page, SortParams sort) 
     {
         TestSessionData tsd = new TestSessionData();                
