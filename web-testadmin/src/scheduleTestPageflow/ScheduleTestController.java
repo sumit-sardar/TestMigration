@@ -118,6 +118,12 @@ public class ScheduleTestController extends PageFlowController
     @Control()
     private com.ctb.control.db.Users users;
 
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.ItemSet itemSet;
+    
     public static final String ACTION_SCHEDULE_TEST = "schedule";
     public static final String ACTION_VIEW_TEST = "view";
     public static final String ACTION_EDIT_TEST = "edit";
@@ -484,7 +490,7 @@ public class ScheduleTestController extends PageFlowController
             { // first time here 
                 this.testProductData = this.getTestProductDataForUser();
             }
-            
+        	           
             TestProduct [] tps = this.testProductData.getTestProducts();           
             
             if (form.getSelectedProductName() == null || form.getSelectedProductName().equals(""))
@@ -575,6 +581,16 @@ public class ScheduleTestController extends PageFlowController
             }
             
             int selectedProductIndex = getProductListIndexByName(selectedProductName);
+            
+            // populate grade and level for selected product
+            TestProduct prod = tps[selectedProductIndex];
+            try {
+				prod.setLevels(itemSet.getLevelsForProduct(prod.getProductId()));
+	            prod.setGrades(itemSet.getGradesForProduct(prod.getProductId()));
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+            
             this.levelList = createLevelList(tps[selectedProductIndex].getLevels());
             this.gradeList = createGradeList(tps[selectedProductIndex].getGrades()); 
             this.condition.setShowStudentFeedback(new Boolean(tps[selectedProductIndex].getShowStudentFeedback().equals("T")));
@@ -1191,6 +1207,16 @@ public class ScheduleTestController extends PageFlowController
                             productLicenseEnabled = true;
                            
                         }
+                        
+                        // populate grade and level for selected product
+                        TestProduct prod = tps[i];
+                        try {
+            				prod.setLevels(itemSet.getLevelsForProduct(prod.getProductId()));
+            	            prod.setGrades(itemSet.getGradesForProduct(prod.getProductId()));
+            			} catch (SQLException e) {
+            				e.printStackTrace();
+            			}
+                        
                         this.levelList = createLevelList(tps[i].getLevels());
                         this.gradeList = createGradeList(tps[i].getGrades());  
              
