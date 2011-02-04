@@ -207,7 +207,8 @@ public class ScheduleTestImpl implements ScheduleTest
      */
     public TestProductData getTestProductsForUser(String userName, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
     {
-        validator.validate(userName, null, "testAdmin.getTestProductsForUser");
+    	//Attempt to improve performance
+        //validator.validate(userName, null, "testAdmin.getTestProductsForUser");
         try {
             TestProductData tpd = new TestProductData();
             Integer pageSize = null;
@@ -252,7 +253,9 @@ public class ScheduleTestImpl implements ScheduleTest
      */
     public TestElementData getTestsForProduct(String userName, Integer productId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
     {
-        validator.validateProduct(userName, productId, "testAdmin.getTestsForProduct");
+    	//Attempt to improve performance
+        //validator.validateProduct(userName, productId, "testAdmin.getTestsForProduct");
+    	//commented, since product is already validated while checking for license.
         try {
             TestElementData ted = new TestElementData();
             Integer pageSize = null;
@@ -353,7 +356,7 @@ public class ScheduleTestImpl implements ScheduleTest
      */
     public StudentAccommodationsData getAccommodationOptionsForUser(String userName, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
     {
-        validator.validate(userName, null, "testAdmin.getAccommodationOptionsForUser");
+        //validator.validate(userName, null, "testAdmin.getAccommodationOptionsForUser");
         try {
             StudentAccommodationsData sad = new StudentAccommodationsData();
             Integer pageSize = null;
@@ -1174,7 +1177,9 @@ public class ScheduleTestImpl implements ScheduleTest
      */
     public UserNodeData getTopUserNodesForUser(String userName, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
     {
-        validator.validateAdmin(userName, testAdminId, "testAdmin.getTopUserNodesForUser");
+    	//Attempt to improve performance
+    	if(testAdminId != null)
+    		validator.validateAdmin(userName, testAdminId, "testAdmin.getTopUserNodesForUser");
         try {
             UserNodeData ond = new UserNodeData();
             Integer pageSize = null;
@@ -1265,7 +1270,7 @@ public class ScheduleTestImpl implements ScheduleTest
      * @throws CTBBusinessException
      */
     public String [] validateAccessCodes(String userName, String [] accessCodes, Integer testAdminId) throws CTBBusinessException {
-        validator.validate(userName, null, "testAdmin.validateAccessCodes");
+        //validator.validate(userName, null, "testAdmin.validateAccessCodes");
         String[] invalidChars = { "!", "@", "#", "$", "%", "^", "&", "(", ")", "-", "+", "<", ">", "*" };            
         String results [] = new String [accessCodes.length];
         try {
@@ -1318,7 +1323,9 @@ public class ScheduleTestImpl implements ScheduleTest
             hasPerms = false;
         }
         try {
-            User user = users.getUserDetails(detailUserName);
+            //User user = users.getUserDetails(detailUserName);
+        	//Attempt to improve performance
+            User user = users.getUserDetailsWithoutPassword(detailUserName);
             user.setCustomer(users.getCustomer(detailUserName));
             user.setRole(users.getRole(detailUserName));
             if(!hasPerms) {
@@ -2409,7 +2416,7 @@ public class ScheduleTestImpl implements ScheduleTest
      */
     public StudentManifestData  getManifestForRoster(java.lang.String userName, java.lang.Integer studentId,java.lang.Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws com.ctb.exception.CTBBusinessException
     {
-         validator.validate(userName,studentId,"getManifestForRoster");
+        // validator.validate(userName,studentId,"getManifestForRoster");
             try{
                   StudentManifestData smd = new StudentManifestData();
                   StudentManifest []  sm =  siss.getStudentManifestsForRoster(studentId,testAdminId);
@@ -2486,7 +2493,7 @@ public class ScheduleTestImpl implements ScheduleTest
      */
      public RosterElement addStudentToSession(String userName, com.ctb.bean.testAdmin.SessionStudent sessionStudent, Integer testAdminId)throws com.ctb.exception.CTBBusinessException
      {       
-        validator.validate(userName,testAdminId,"addStudentToSession");
+       // validator.validate(userName,testAdminId,"addStudentToSession");
         
         UserTransaction userTrans = null;
     	boolean transanctionFlag = false;
@@ -2628,7 +2635,7 @@ public class ScheduleTestImpl implements ScheduleTest
     
      public RosterElement updateManifestForRoster(java.lang.String userName,java.lang.Integer studentId,java.lang.Integer stdentOrgNodeId,java.lang.Integer testAdminId, com.ctb.bean.testAdmin.StudentManifestData studentManifestData) throws com.ctb.exception.CTBBusinessException
      {
-        validator.validate(userName,studentId,"updateManifestForRoster");
+       // validator.validate(userName,studentId,"updateManifestForRoster");
         //START -Added for deferred defect #64306 and #64308
         UserTransaction userTrans = null;
     	boolean transanctionFlag = false;   
@@ -2730,7 +2737,7 @@ public class ScheduleTestImpl implements ScheduleTest
      */
      public void deleteAddedStudentFromSession(String userName,Integer studentId,Integer testAdminId) throws com.ctb.exception.CTBBusinessException
      {
-            validator.validate(userName,studentId,"deleteAddedStudentFormSession");
+           // validator.validate(userName,studentId,"deleteAddedStudentFormSession");
         try{            
             RosterElement re  = rosters.getRosterElementForStudentAndAdmin(studentId,testAdminId);
             siss.deleteStudentItemSetStatusesForRoster(re.getTestRosterId());
