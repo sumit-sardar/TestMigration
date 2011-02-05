@@ -167,6 +167,7 @@ public class ScheduleTestController extends PageFlowController
     private Integer itemSetId = null;
     private Integer studentId = null;
     private String showLevelOrGrade = "level";
+    private TestProduct [] tps;
 
     // scheduler and product info
     private String userName = null;
@@ -483,15 +484,23 @@ public class ScheduleTestController extends PageFlowController
         boolean disableNextButton = false;
         boolean hideTestOptions = false;
         boolean hasMultipleSubtests = false;
+        String actionElement = form.getActionElement();
+        String currentAction = form.getCurrentAction();
+      //change for performance tuning
+        if(currentAction==null)
+        {
+       	currentAction="null";
+        }
         
         try
         {
             if (this.testProductData == null)
             { // first time here 
                 this.testProductData = this.getTestProductDataForUser();
+                 tps = this.testProductData.getTestProducts();//changes for performance tuning
             }
         	           
-            TestProduct [] tps = this.testProductData.getTestProducts();           
+                       
             
             if (form.getSelectedProductName() == null || form.getSelectedProductName().equals(""))
             {
@@ -507,13 +516,20 @@ public class ScheduleTestController extends PageFlowController
             }
             
             form.validateValues();
+            //changes for performance tuning
+            
+            if(currentAction.equals("null")){
+            	 selectedProductName = form.getSelectedProductName();
+                 selectedLevel = form.getSelectedLevel();
+            }
+           if (!((currentAction.equals("selectTest"))||(currentAction.equals("null")))){
+               selectedProductName = form.getSelectedProductName();
+                selectedLevel = form.getSelectedLevel();
+            }
     
-            String selectedProductName = form.getSelectedProductName();
-            String selectedLevel = form.getSelectedLevel();
             boolean newTestSelected = false;
             
-            String actionElement = form.getActionElement();
-            String currentAction = form.getCurrentAction();
+            
 
             disableNextButton = false;
             hideTestOptions = false;
@@ -590,11 +606,24 @@ public class ScheduleTestController extends PageFlowController
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+         //changes for performance tuning
             
-            this.levelList = createLevelList(tps[selectedProductIndex].getLevels());
-            this.gradeList = createGradeList(tps[selectedProductIndex].getGrades()); 
-            this.condition.setShowStudentFeedback(new Boolean(tps[selectedProductIndex].getShowStudentFeedback().equals("T")));
-    
+            if(currentAction.equals("null")){
+            	 this.levelList = createLevelList(tps[selectedProductIndex].getLevels());
+                 this.gradeList = createGradeList(tps[selectedProductIndex].getGrades()); 
+                 this.condition.setShowStudentFeedback(new Boolean(tps[selectedProductIndex].getShowStudentFeedback().equals("T")));
+         
+            }
+           if (!((currentAction.equals("selectTest"))||(currentAction.equals("null")))){
+        	   this.levelList = createLevelList(tps[selectedProductIndex].getLevels());
+               this.gradeList = createGradeList(tps[selectedProductIndex].getGrades()); 
+               this.condition.setShowStudentFeedback(new Boolean(tps[selectedProductIndex].getShowStudentFeedback().equals("T")));
+       
+            }
+//            this.levelList = createLevelList(tps[selectedProductIndex].getLevels());
+//            this.gradeList = createGradeList(tps[selectedProductIndex].getGrades()); 
+//            this.condition.setShowStudentFeedback(new Boolean(tps[selectedProductIndex].getShowStudentFeedback().equals("T")));
+//    
             if (this.scheduledSession != null)
             {
                 TestSession testSession = this.scheduledSession.getTestSession();
