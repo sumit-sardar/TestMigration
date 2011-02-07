@@ -219,14 +219,14 @@ public class ScheduleTestImpl implements ScheduleTest
             if(filter != null) tpd.applyFiltering(filter);
             if(sort != null) tpd.applySorting(sort);
             if(page != null) tpd.applyPaging(page);
-            
+            /*
             TestProduct [] products = tpd.getTestProducts();
             for(int i=0;i<products.length && products[i] != null;i++) {
                 TestProduct prod = products[i];
                 prod.setLevels(itemSet.getLevelsForProduct(prod.getProductId()));
                 prod.setGrades(itemSet.getGradesForProduct(prod.getProductId()));
             }
-            
+            */
             return tpd;
         } catch (SQLException se) {
             ProductDataNotFoundException pde = new ProductDataNotFoundException("ScheduleTestImpl: getTestProductsForUser: " + se.getMessage());

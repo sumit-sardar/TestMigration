@@ -28,6 +28,7 @@ import data.TestRosterVO;
 import data.TestSummaryVO;
 import data.TestVO;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -60,6 +61,11 @@ public class TestTicketController extends PageFlowController
     @Control()
     private com.ctb.control.testAdmin.ScheduleTest scheduleTest;
 
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.ItemSet itemSet;
 
     private List testTicketTestList = null;
     
@@ -231,6 +237,15 @@ public class TestTicketController extends PageFlowController
         {
             if (productId.equals(tps[i].getProductId()))
             {
+                // populate grade and level for selected product
+                TestProduct prod = tps[i];
+                try {
+    				prod.setLevels(itemSet.getLevelsForProduct(prod.getProductId()));
+    	            prod.setGrades(itemSet.getGradesForProduct(prod.getProductId()));
+    			} catch (SQLException e) {
+    				e.printStackTrace();
+    			}
+            	
                 String[] levels = tps[i].getLevels();
                 String[] grades = tps[i].getGrades();
                 if (levels.length > 0)
