@@ -497,8 +497,8 @@ public class ScheduleTestController extends PageFlowController
             if (this.testProductData == null)
             { // first time here 
                 this.testProductData = this.getTestProductDataForUser();
-                 tps = this.testProductData.getTestProducts();//changes for performance tuning
             }
+            tps = this.testProductData.getTestProducts();//changes for performance tuning
         	           
                        
             
