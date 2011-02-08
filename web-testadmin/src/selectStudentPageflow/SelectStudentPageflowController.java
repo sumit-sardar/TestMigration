@@ -1331,6 +1331,12 @@ public class SelectStudentPageflowController extends PageFlowController
             needCommit = true;
         if ((actionElement != null) && actionElement.equals("{actionForm.studentStatePathList.sortOrderBy}"))
             needCommit = true;
+        //Added for Table pager go button start
+        if ((actionElement != null) && actionElement.equals("EnterKeyInvoked_studentTableAnchor"))
+            needCommit = true;
+        if ((actionElement != null) && actionElement.equals("ButtonGoInvoked_studentTableAnchor"))
+            needCommit = true;
+      //Added for Table pager go button end
             
         Integer orgNodeId = form.getSelectedOrgNodeId();
         if ((orgNodeId != null) && (this.selectedOrgNodeId != null) && 
