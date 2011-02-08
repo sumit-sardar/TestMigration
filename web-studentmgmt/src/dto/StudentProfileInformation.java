@@ -79,10 +79,10 @@ public class StudentProfileInformation extends SanitizedFormField
         
         this.grade = student.getGrade();
         if (this.grade == null) this.grade = "";
-        //GACR005
-        this.studentNumber = student.getStudentIdNumber()!= null ? student.getStudentIdNumber().trim() : student.getStudentIdNumber();
-        this.studentSecondNumber = student.getStudentIdNumber2() != null ? student.getStudentIdNumber2().trim() : student.getStudentIdNumber2();
-        //GACR005
+        //GACR005  For Defect # 65786
+        this.studentNumber = student.getStudentIdNumber()!= null ? student.getStudentIdNumber().trim() : "";
+        this.studentSecondNumber = student.getStudentIdNumber2() != null ? student.getStudentIdNumber2().trim() : "";
+        //GACR005   For Defect # 65786
         this.birthdate = student.getBirthDate(); 
         if (this.birthdate != null) {
             this.birthdateString = DateUtils.formatDateToDateString(this.birthdate, DateUtils.DATE_FORMAT_CHAR);     
