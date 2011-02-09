@@ -2495,8 +2495,9 @@ public class ScheduleTestImpl implements ScheduleTest
      {       
        // validator.validate(userName,testAdminId,"addStudentToSession");
         
-        UserTransaction userTrans = null;
-    	boolean transanctionFlag = false;
+    	//removing user transaction to suport new non-XA driver
+        //UserTransaction userTrans = null;
+    	//boolean transanctionFlag = false;
         RosterElement roster = new RosterElement(); 
         
         try{  
@@ -2507,8 +2508,8 @@ public class ScheduleTestImpl implements ScheduleTest
             String form = testSession.getFormAssignmentMethod();
             Integer productId = testSession.getProductId();
                        
-            userTrans = getTransaction();
-			userTrans.begin();
+            //userTrans = getTransaction();
+			//userTrans.begin();
             
             if(sessionStudent != null){                       
                 Student student =(Student) sessionStudent;
@@ -2595,12 +2596,12 @@ public class ScheduleTestImpl implements ScheduleTest
                 }      */          
                 return roster;
         } catch (Exception se) {
-        	transanctionFlag = true;
-        	try {
+        	//transanctionFlag = true;
+        	/*try {
         		userTrans.rollback();
         	}catch (Exception e1){
         		e1.printStackTrace();
-        	}
+        	}*/
             CTBBusinessException ctbe = null;
             String message = se.getMessage();
             if(message.indexOf("Insufficient available license quantity") >=0) {
@@ -2611,13 +2612,13 @@ public class ScheduleTestImpl implements ScheduleTest
             }
             throw ctbe;
         }
-        finally{
+        /*finally{
 			try {
 				closeTransaction(userTrans,transanctionFlag);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
      } 
  
     /**
