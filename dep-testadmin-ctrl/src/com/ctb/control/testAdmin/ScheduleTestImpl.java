@@ -2495,10 +2495,9 @@ public class ScheduleTestImpl implements ScheduleTest
      {       
        // validator.validate(userName,testAdminId,"addStudentToSession");
         
-    	 //Removing user transaction to support non-XA driver
-        
-    	 //UserTransaction userTrans = null;
-    	 //boolean transanctionFlag = false;
+    	
+    	UserTransaction userTrans = null;
+    	boolean transanctionFlag = false;
         RosterElement roster = new RosterElement(); 
         
         try{  
@@ -2509,8 +2508,8 @@ public class ScheduleTestImpl implements ScheduleTest
             String form = testSession.getFormAssignmentMethod();
             Integer productId = testSession.getProductId();
                        
-            //userTrans = getTransaction();
-			//userTrans.begin();
+            userTrans = getTransaction();
+			userTrans.begin();
             
             if(sessionStudent != null){                       
                 Student student =(Student) sessionStudent;
@@ -2573,8 +2572,8 @@ public class ScheduleTestImpl implements ScheduleTest
                                 sss.setValidationUpdatedBy(userId);
                                 sss.setValidationUpdatedDateTime(new Date());
                                 sss.setValidationUpdatedNote("");
-                                
-                                siss.createNewStudentItemSetStatusForRoster(customerId, sss,rosterId);
+                                //for defect #-  65787
+                                rosters.createNewStudentItemSetStatusForRoster(customerId, sss,rosterId);
                                 subtestOrder++;
                             }
                         }
@@ -2598,12 +2597,12 @@ public class ScheduleTestImpl implements ScheduleTest
                 }      */          
                 return roster;
         } catch (Exception se) {
-        	//transanctionFlag = true;
-        	//try {
-        	//	userTrans.rollback();
-        	//}catch (Exception e1){
-        	//	e1.printStackTrace();
-        	//}
+        	transanctionFlag = true;
+        	try {
+        		userTrans.rollback();
+        	}catch (Exception e1){
+        		e1.printStackTrace();
+        	}
             CTBBusinessException ctbe = null;
             String message = se.getMessage();
             if(message.indexOf("Insufficient available license quantity") >=0) {
