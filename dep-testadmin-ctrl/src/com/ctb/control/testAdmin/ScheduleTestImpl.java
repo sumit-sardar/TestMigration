@@ -2613,13 +2613,13 @@ public class ScheduleTestImpl implements ScheduleTest
             }
             throw ctbe;
         }
-        //finally{
-			//try {
-			//	closeTransaction(userTrans,transanctionFlag);
-			//} catch (Exception e) {
-			//	e.printStackTrace();
-			//}
-		//}
+        finally{
+		try {
+			closeTransaction(userTrans,transanctionFlag);
+			} catch (Exception e) {
+			e.printStackTrace();
+			}
+		}
      } 
  
     /**
