@@ -573,7 +573,7 @@ public class StudentTestDataImpl implements StudentTestData
                             allSubtestsComplete = false;
                         }
                     }
-                    if(!allSubtestsComplete) {
+                    if(!allSubtestsComplete && isScorableItemSet(itemSetId)) {
                         // old Weblogic 8.1 JMS call
                     	// scorer.sendObjectMessage(new Integer(testRosterId));
                     	try{
