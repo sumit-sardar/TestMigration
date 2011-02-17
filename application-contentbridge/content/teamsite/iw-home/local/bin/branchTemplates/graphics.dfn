@@ -1,0 +1,20 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE component_category SYSTEM "component_category1.0.dtd">
+<component_category>
+	<display_name name = "Graphics"/>
+	<root_elements>
+		<element type = "Graphic"/>
+	</root_elements>
+	<display_name_ruleset>
+		<display_name_rule xpath = "/Graphic/@ID"/>
+	</display_name_ruleset>
+	<component_directory area_rel_path = "Content/graphics"/>
+	<index_ruleset>
+		<file_attr index_all = "true"/>
+		<content is_xml = "true">
+			<field name = "File Name" xpath = "/Graphic/@ID">
+				<text_type/>
+			</field>
+		</content>
+	</index_ruleset>
+</component_category>

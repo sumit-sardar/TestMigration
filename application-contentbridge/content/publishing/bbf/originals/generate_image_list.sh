@@ -1,0 +1,6 @@
+#!/bin/sh
+
+XALAN_PROGRAM_FILENAME=../xalan.sh
+XML_FILENAME=./xml/$1
+XSL_FILENAME=image_list.xsl
+$XALAN_PROGRAM_FILENAME $XML_FILENAME $XSL_FILENAME image_list.txt -TEXT

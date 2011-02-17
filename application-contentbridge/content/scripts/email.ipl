@@ -1,0 +1,67 @@
+#!/appl/TeamSite/iw-perl/bin/iwperl -w
+
+use strict;
+use Net::SMTP;
+
+        ##################################################################################################################
+	#
+	#  Now we send the email
+	#
+	##################################################################################################################
+
+	#######################################################################
+	#
+	# Here is where we get the names of the people getting the email 
+	#
+	#######################################################################
+	
+	my $date = localtime();
+	
+	my $iwhome = `iwgethome`;
+	chomp $iwhome;
+	
+	my $pm = "pm";
+
+	my ($name, $passwd, $gid, $members) = getgrnam($pm);
+	$members =~ s/\s/,/g;
+
+	my $logfile = $ARGV[0];
+	my $jobno = $ARGV[1];
+	my $status = $ARGV[2];
+	my $to = "CTBJobDeployPROD\@mcgraw-hill.com";
+	my $mail = "bobby_magee\@mcgraw-hill.com";
+
+
+	#########################################################################       
+	#
+	#  Now we put together the email
+	#
+	#########################################################################
+
+	my $smtp = Net::SMTP->new('mhemtymsg01.mhe.mhc',
+				   Hello => 'mcgraw-hill.com',
+				   Timeout => 30,
+				   Debug   => 1,
+				  );
+
+	$smtp->mail($mail);
+	$smtp->to($to);
+	# $smtp->recipient(@address,{ SkipBad => 1 });
+	$smtp->data();
+		
+	$smtp->datasend("Subject: Deployment to OAS: Job $jobno - $status \n");
+        $smtp->datasend("To: $to \n");
+
+	$smtp->datasend("This is the log file:\n");
+	open(FILE, "$logfile");
+	
+	while (<FILE>) {
+		$smtp->datasend("$_");
+	}
+	
+	close FILE;
+	
+	
+	$smtp->dataend();    
+	$smtp->quit; 
+	

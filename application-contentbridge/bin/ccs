@@ -1,0 +1,3 @@
+java -cp testdat:build/ccs.jar com.ctb.commands.ContentImportModule $*
+
+

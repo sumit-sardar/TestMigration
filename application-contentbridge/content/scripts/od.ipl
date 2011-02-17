@@ -1,0 +1,58 @@
+use strict;
+use CTB::OD;
+use TeamSite::Config;
+use Time::Local;
+
+my @today = localtime();
+my $time = timelocal(@today);
+
+
+my $iwhome = TeamSite::Config::iwgethome();
+my $odcmd = $iwhome . "/tmp/odcmd.txt";
+my $jobdir = "/appl/publishing/production/outbound";
+my $message = "/appl/publishing/production/email_message.txt";
+my $jobid;
+my @failed_jobs;
+my $results;
+my $counter;
+my $cmd;
+
+open(CMD, $odcmd);
+while (<CMD>) {
+    if (/###\s*(\d+)\s*###/) {
+    	$jobid = $1;
+    	next;
+    }
+    next if !(/iwodstart/);
+    chomp($cmd = $_); 
+    my @ret = CTB::OD::execute($cmd);
+    if ($ret[0] != 0) {
+    	push @failed_jobs, $jobid;
+    	open (FAIL, ">$jobdir/$jobid/od_failed.txt");
+    	print FAIL "\n";
+    	close FAIL;
+    	$jobid = 0;
+    	next;
+    } else {
+    	open (PASS, ">$jobdir/$jobid/od_success.txt");
+	print PASS "\n";
+    	close PASS;
+    	$jobid = 0;
+    	next;
+    }
+}
+$counter = @failed_jobs;
+
+if ($counter > 0) {
+	$results = "The following jobs failed to deploy:\n" . join(' ', @failed_jobs) . "\n";
+}
+else
+{
+	$results = "The deployments completed successfully\n";
+}
+
+open(MESSAGE, ">>$message");
+print MESSAGE $results;
+close MESSAGE;
+
+rename($odcmd, "$odcmd.$time");

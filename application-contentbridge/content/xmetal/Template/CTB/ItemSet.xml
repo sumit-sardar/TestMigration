@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE ItemSet SYSTEM "R2_Flash_UI.dtd">
+<ItemSet> 
+  <Item Sample="No" Version="0.0" Template="1" SequenceNo=""> 
+	 <Stem><P><?xm-replace_text {Add paragraph text here}?></P> 
+	 </Stem><SelectedResponse> 
+	 <AnswerChoice ID="1"><?xm-replace_text {AnswerChoice}?></AnswerChoice> 
+	 <AnswerChoice ID="2"><?xm-replace_text {AnswerChoice}?></AnswerChoice> 
+	 <AnswerChoice ID="3"><?xm-replace_text {AnswerChoice}?></AnswerChoice> 
+	 <AnswerChoice ID="4"><?xm-replace_text {AnswerChoice}?></AnswerChoice>
+	 </SelectedResponse> 
+  </Item> 
+</ItemSet>

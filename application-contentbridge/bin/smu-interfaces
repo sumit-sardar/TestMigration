@@ -1,0 +1,501 @@
+#!/bin/ksh
+# Interfaces Migration Utility Script
+# Created by Chris Ulbrich (chris.p.ulbrich@accenture.com)
+# May 2, 2003 
+#
+# This script assists in migrating files by creating a list of files to migrate.
+# It then tars the list of files, preserving its relative directory structure,  
+# and you may extract the tar file in the base destination directory.
+#
+
+export SRC_PARENT=$HOME/interfaces
+# Load IP addresses 
+vought="198.45.17.43" 
+gloster="198.45.17.44"
+convair="198.45.17.45"
+sukhoi="198.45.17.46"
+mikoyan="198.45.17.47" 
+hawker="198.45.17.48"
+
+hindmost="198.45.17.4"
+atlantis="198.45.17.17"
+pak="198.45.17.5"
+kaizen="198.45.17.2"
+junkers="198.45.17.35"
+grumman="198.45.17.36"
+dassault="198.45.17.33"
+tupolev="198.45.17.34"
+
+iwtest="168.116.31.222"
+iwprod="168.116.31.217"
+
+# Load initial variables
+
+export LD_LIBRARY_PATH=/usr/openwin/lib:/usr/openwin/lib/X11:/usr/dt/lib:/opt/lib:/opt/lib/X11:/oracle/product/9.0.1/lib:/export/$SP_LOC/6.1/lib/solaris:/export/$SP_LOC/6.1/lib:/opt/hpnpl/lib:/export/loadrunner/bin
+JAVA_HOME=/export/weblogic/jdk131
+
+VERSION="0.1"
+IAM=`/usr/xpg4/bin/id -unr`
+
+INTERFACES_ROOT="interfaces"
+DIST_DIR="build/dist"
+INTERFACES_BUILD="$SRC_PARENT/$DIST_DIR"
+MIGRATION_DIR="/export/migration"
+CIM_DIR="/export/home/ejun/interfaces_old"
+XSLT_DIR="content/publishing"
+PUBLISHING_DIR="content/publishing"
+DESTUSER="iwuser"
+
+
+IWTESTSERVER="$iwtest"
+IWPRODSERVER="$iwprod"
+TESTSERVER="$atlantis"
+TRAINSERVER="$atlantis"
+STAGINGSERVER="$kaizen"
+CONTENTQASERVER="$kaizen"
+PRODSERVERS="$vought $gloster $convair $sukhoi $mikoyan $hawker"
+
+ACTION_LOG=""
+
+initialcurrentdate=`date +%Y%m%d`
+initialcurrenttime=`date +%H%M%S`
+
+initial_menu()
+{
+  clear
+# display an option menu to the user
+echo "Actions: $ACTION_LOG"
+echo "-----------------------------------------------------------------------------------------------------------------------------"
+  echo "\n"
+
+
+echo "                  Interfaces Migration Utility V$VERSION"
+echo "                  $codebase MAIN MENU"
+echo "\n"
+echo "                  Timestamp: $timestamp"
+echo "		  SRC_PARENT: $SRC_PARENT"
+cat << EOF
+
+        1)  Update source code
+
+        2)  Tag Current Working Directory.
+
+	3)  Compile and build package (ant dist and create tar file into migration folder)
+
+	4)  Deploy publishing components to IW and OAS environments
+
+	x)  Exit
+
+EOF
+}
+
+
+select_env()
+{
+
+echo
+echo        Environment Menu
+echo 
+echo "        1)  IW Test Server"
+echo
+echo "	2)  IW Production Server"
+echo
+echo " 	3)  STAGING"
+
+        if [ "$ALLOWED_PUSH_TO_PROD" = "$codebase" ] ; then
+          echo "        4)  CONTENTQA"
+          echo ""
+          echo "        5)  PRODUCTION"
+          echo ""
+        fi
+
+
+
+        DEFAULT="1"
+        PROMPT="Please choose an environment now"
+        smart_read
+
+
+
+
+	case $INPUT in
+                1)
+                        ENV_TO_PUSH="iwtest"
+                        IWSERVERS=$IWTESTSERVER
+                        APPSERVERS=$TESTSERVER
+                        ;;
+                2)
+			ENV_TO_PUSH="iwproduction"
+                        IWSERVERS=$IWPRODSERVER
+                        APPSERVERS=$PRODSERVERS
+                        ;;
+                3)
+			ENV_TO_PUSH="staging"
+                        APPSERVERS=$STAGINGSERVER
+                        ;;
+                4)
+			ENV_TO_PUSH="contentqa"
+                        APPSERVERS=$CONTENTQASERVER
+                        ;;
+                5)
+			ENV_TO_PUSH="production"
+                        APPSERVERS=$PRODSERVERS
+                        ;;
+		*)	
+	 	        echo
+                        echo Invalid response!
+                        echo
+                        ;;	
+		esac;
+
+        MIGRATION_DIRECTORY="$MIGRATION_DIR/$buildtag"
+        TEMP_LOC="$MIGRATION_DIRECTORY/temp"
+        NEW_ACTION_LOG="SELECTED $ENV_TO_PUSH ENVIRONMENT"
+        ACTION_LOG=$NEW_ACTION_LOG
+        TEMPFILE="$TEMP_LOC/temp_list"
+        LOGFILE="$TEMP_LOC/migration.log"
+
+}
+
+select_interfaces_codebase()
+{
+#        clear
+
+
+	DEFAULT="1"
+        cat << EOF
+        Codebase Menu
+
+        1)  ATSR3
+
+EOF
+
+
+ #       PROMPT="Please choose a codebase now"
+ #       smart_read
+
+
+
+# Hard-coded value for now... once multiple branches are used, input will be selected by user
+INPUT="1"
+
+
+
+case $INPUT in
+                1)
+                        codebase="trunk"
+                        buildtag="interfaces"
+                        ;;
+                *)
+                        echo "Invalid response...exiting"
+                        exit 1
+                        ;;
+                esac;
+
+        MIGRATION_DIRECTORY="$MIGRATION_DIR/$buildtag"
+        TEMP_LOC="$MIGRATION_DIRECTORY/temp"
+        SRC_PARENT=$HOME/$INTERFACES_ROOT
+        NEW_ACTION_LOG="SELECTED $codebase CODEBASE"
+        ACTION_LOG=$NEW_ACTION_LOG
+        TEMPFILE="$TEMP_LOC/temp_list"
+        LOGFILE="$TEMP_LOC/migration.log"
+}
+
+
+select_timestamp()
+{
+	clear
+	# allow the user to select a time stamp from the previous builds
+	echo "\n"
+	cat << EOF
+	Timestamp Menu
+	
+EOF
+
+	cd $SRC_PARENT 
+        testfile="content/publishing/FOP_Interface.xsl"
+
+        /usr/local/bin/cvs log $testfile | grep build-$buildtag-2003 | awk '{ print $1 }' | sed s/://
+
+	PROMPT="Please choose a date value now"
+	DEFAULT=$initialcurrentdate
+	smart_read
+	currentdate=$INPUT
+	PROMPT="Please choose a time value now"
+	DEFAULT=$initialcurrenttime
+	smart_read
+	currenttime=$INPUT
+	timestamp="$buildtag-$currentdate-$currenttime"
+	NEW_ACTION_LOG="$ACTION_LOG, SELECT TIMESTAMP"
+	ACTION_LOG=$NEW_ACTION_LOG
+}
+
+
+update_code()
+{
+  PROMPT="Type 1 to update code based on a specific tag, or 2 to update the entire tree (appropriate branch tag will be used)"
+  DEFAULT="2"
+  smart_read
+
+  if [ "$INPUT" = "1" ] ; then
+	TAG_TO_UPDATE="build-$timestamp"
+        PROMPT="Enter the tag for the code you wish to update:" 
+	DEFAULT=$TAG_TO_UPDATE
+        smart_read      
+        PROMPT="Update code with tag '$TAG_TO_UPDATE'?"
+        DEFAULT="y"
+        smart_read
+        if [ "$INPUT" = "y" ] ; then
+                /usr/local/bin/cvs update -r $TAG_TO_UPDATE
+	fi
+  else 
+	if [ "$codebase" = "trunk" ] ; then
+	  PROMPT="Update entire tree from trunk?"
+	  DEFAULT="y"
+ 	  smart_read
+	  if [ "$INPUT" = "y" ] ; then
+		/usr/local/bin/cvs update -P -d
+	  fi
+  	else	
+	  PROMPT="Update entire tree for branch $codebase?"
+	  DEFAULT="y"
+	  smart_read
+	  if [ "$INPUT" = "y" ] ; then
+ 		/usr/local/bin/cvs update -r $codebase -P -d	
+	  fi
+	fi
+  fi
+        echo "\nStep completed. Hit <Enter> to continue. "
+        read junk
+
+        NEW_ACTION_LOG="$ACTION_LOG, UPDATE CODE"
+        ACTION_LOG=$NEW_ACTION_LOG
+}
+
+
+tag_current_version()
+{
+        cd $SRC_PARENT
+        PROMPT="Tag current deployment in $SRC_PARENT?"
+        DEFAULT="y"
+        smart_read
+        if [ "$INPUT" != "y" ] ; then
+            return
+        fi
+
+        echo "Tagging working directory $SRC_PARENT as build-$timestamp"
+        /usr/local/bin/cvs tag build-$timestamp
+        PROMPT="ENTER to return to menu"
+        smart_read
+        NEW_ACTION_LOG="$ACTION_LOG, TAG CURRENT VERSION"
+        ACTION_LOG=$NEW_ACTION_LOG
+}
+
+
+deploy_publishing()
+{
+
+	select_env 
+
+	echo "deploying build to $ENV_TO_PUSH"
+
+	case $ENV_TO_PUSH in
+            iwtest | iwproduction )
+	 	 deploy_env publishing $IWSERVERS	
+                 ;;
+	    contentqa|staging|production)
+		 deploy_env publishing $APPSERVERS
+                 ;;
+            *)
+                 echo "Invalid response...exiting"
+                 exit 1
+                 ;;
+        esac;
+
+}
+
+
+# deploys $codebase to development env
+build_publishing()
+{
+	cd $SRC_PARENT
+        ant dist
+        echo "cd $INTERFACES_BUILD"
+        cd $INTERFACES_BUILD
+	
+        move_to_migration publishing
+  
+        echo "Built publishing components. Please tag if this build will be deployed." 
+
+        echo "Hit <Enter> to continue."
+        read junk
+
+        NEW_ACTION_LOG="$ACTION_LOG, DEPLOY PUBLISHING TO DEV"
+        ACTION_LOG=$NEW_ACTION_LOG
+}
+
+
+move_to_migration()
+{
+        if [ ! -r $INTERFACES_BUILD/$1.tar ]; then
+
+            echo "The file $INTERFACES_BUILD/$1.tar does not exist!"
+            echo "Exiting..."
+            exit
+        fi
+
+        if [ ! -d $MIGRATION_DIRECTORY/$currentdate ] ; then
+            mkdir -p $MIGRATION_DIRECTORY/$currentdate
+            chmod -R 775 $MIGRATION_DIRECTORY/$currentdate
+        fi
+
+        echo "moving $INTERFACES_BUILD/$1.tar to $MIGRATION_DIRECTORY/$currentdate..."
+        if [ -r $MIGRATION_DIRECTORY/$currentdate/$1-$timestamp.ear ] ; then
+           echo "WARNING:  Possible linking error!"
+        fi
+        mv $INTERFACES_BUILD/$1.tar $MIGRATION_DIRECTORY/$currentdate/$1-$timestamp.tar
+
+}
+
+
+deploy_env()
+{
+
+                  if [ -r $MIGRATION_DIRECTORY/$currentdate/$1-$timestamp.tar ]; then
+
+                        cd $MIGRATION_DIRECTORY/$date_dir
+                        for server in $2;
+                        do
+                        echo "Pushing $MIGRATION_DIRECTORY/$currentdate/$1-$timestamp.tar to $server..."
+                        touch $MIGRATION_DIRECTORY/$currentdate/$1-$timestamp.tar.SMU
+                        /usr/mount/bin/scp $MIGRATION_DIRECTORY/$currentdate/$1-$timestamp.tar $DESTUSER@$server:/export/migration/incoming
+                        /usr/mount/bin/scp $MIGRATION_DIRECTORY/$currentdate/$1-$timestamp.tar.SMU $DESTUSER@$server:/export/migration/incoming
+
+			case $ENV_TO_PUSH in
+                		iwtest)
+                        		;;
+                		iwproduction)
+                        		echo "Pushing $MIGRATION_DIRECTORY/$currentdate/$1-$timestamp.tar to $CONTENTQASERVER..."
+                        		touch $MIGRATION_DIRECTORY/$currentdate/contentqa-$1-$timestamp.tar.SMU
+                        		/usr/mount/bin/scp $MIGRATION_DIRECTORY/$currentdate/$1-$timestamp.tar oasuser@$CONTENTQASERVER:/export/migration/incoming/contentqa-$1-$timestamp.tar
+                        		/usr/mount/bin/scp $MIGRATION_DIRECTORY/$currentdate/contentqa-$1-$timestamp.tar.SMU $DESTUSER@$server:/export/migration/incoming
+                        		;;
+                		production)
+                        		;;
+                *)
+                        echo "Invalid response...exiting"
+                        exit 1
+                        ;;
+                esac;
+                        \rm -f $MIGRATION_DIRECTORY/$currentdate/$1-$timestamp.tar.SMU
+                        done
+                else
+                        echo "Tarfile doesn't exist!\n$1 not deployed!"
+                fi
+
+                echo "\nStep completed. Hit <Enter> to continue. "
+                read junk
+
+
+NEW_ACTION_LOG="$ACTION_LOG, DEPLOY $1"
+ACTION_LOG=$NEW_ACTION_LOG
+}
+
+
+verify_user()
+{
+	case $IAM in
+		oasuser)
+		;;
+		*)
+			echo "You must be oasuser to run this script."
+			echo "Exiting..."	
+			exit 1
+		;;
+	esac
+}
+
+smart_read() 
+{
+  echo
+  if [ "$DEFAULT" != "" ]
+  then
+    echo "$PROMPT [$DEFAULT]: \c"
+    read INPUT
+    if [ "${INPUT}" = "" ]
+    then
+      INPUT=$DEFAULT
+    fi
+  else
+    INPUT=""
+    while [ "$INPUT" = "" ]
+    do
+      if [ "$EXAMPLE" != "" ]; then
+        echo "$PROMPT (ex: $EXAMPLE) \c"
+      else
+        echo "$PROMPT \c"
+      fi
+      read INPUT
+    done
+  fi
+}
+
+prompt_password()
+{
+	clear
+	PROMPT="Please enter your password:"
+	smart_read
+
+	case $INPUT in 
+		welcome)
+		;;
+		prodpassword)
+		ALLOWED_PUSH_TO_PROD="trunk"
+		;;
+		*)
+			echo "Invalid Password, Exiting..."
+			exit 1;
+		;;
+	esac
+}
+
+
+
+
+
+
+#begin Migration utility
+
+#verify_user
+#prompt_password
+
+select_interfaces_codebase
+select_timestamp interfaces
+
+MAIN_MENU_DONE=FALSE
+while [ "$MAIN_MENU_DONE" = "FALSE" ]
+     do
+         initial_menu
+         echo "Select menu option : \c"
+         read INPUT
+         case $INPUT in
+         1)   update_code
+                 ;;
+         2)   tag_current_version
+                 ;;
+	 3)   build_publishing
+		;;
+	 4)   deploy_publishing
+		 ;;
+
+       x|X)
+                 echo "Exiting....\n"
+                 exit
+                 ;;
+         *)
+                 echo
+                 echo Invalid response!
+                 echo
+                 ;;
+         esac
+done

@@ -1,0 +1,16 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE document_category SYSTEM "document_category1.0.dtd">
+<document_category>
+	<display_name name = "Grade 7 SubTest Document"/>
+	<root_elements>
+		<element type = "SubTest"/>
+	</root_elements>
+        <component_ruleset>
+                <component xpath = "//Item[@ItemType='SR']" category = "TeamXML/Rules/G7ItemSR.dfn"/>
+                <component xpath = "//Item[@ItemType='CR']" category = "TeamXML/Rules/G7ItemCR.dfn"/>
+        </component_ruleset>
+</document_category>
+
+
+
+

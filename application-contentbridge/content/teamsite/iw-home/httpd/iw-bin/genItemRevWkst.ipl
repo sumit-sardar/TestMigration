@@ -1,0 +1,321 @@
+#!/appl/TeamSite/iw-home/iw-perl/bin/iwperl
+
+use TeamSite::CGI_lite;
+use Spreadsheet::WriteExcel;
+use TeamSite::Config;
+use TeamSite::WFtask;
+use File::Basename;
+use XML::Parser;
+use TeamSite::WFworkflow;
+
+my @answerkey = qw(A
+		   B 
+		   C 
+		   D);
+
+my $ac_counter;
+sub start  { 
+
+		my ($p, $data, %atts)= @_;
+		if ($doc_type == 0) {
+			$doc_type = $data;
+		}
+		if ($data =~ /^Item$/) {
+			$ac_counter = 0;
+			$master_col = 0;
+		        $master_row++;
+			$id = $atts{'ID'};
+			$master_worksheet->write($master_row, $master_col,"$id");
+			$ItemType = $atts{'ItemType'};
+			$master_worksheet->write($master_row, 2, "CAB");
+                        $master_worksheet->write($master_row, 1, "None");
+                        
+                        # This is for the Item Review Worksheet
+                        $row++;
+			$worksheet->write($row, 0, "$id");
+			$worksheet->set_row($row, 40, $format2);
+			
+		}
+		elsif ($data =~ /^Hierarchy/) {
+			$Type = $atts{'Type'};
+			$Name = $atts{'Name'};
+			$CID = $atts{'CurriculumID'};
+			if($Type eq "Root") {
+				$master_col = 2;
+				$master_worksheet->write($master_row, $master_col, "$CID");			
+				return;
+			}
+			else {
+			        $master_col++;
+				$master_worksheet->write($master_row, $master_col, "$Name");
+				return;
+			}				
+		}
+		elsif ($data =~ /^ConstructedResponse/) {
+			$Min = $atts{'MinScorePts'};
+			$Max = $atts{'MaxScorePts'};
+			$master_worksheet->write($master_row, 1, "$Min/$Max");
+			return;
+		}
+		elsif ($data =~ /^AnswerChoice/) {
+		        $ac_type = $atts{'Type'};
+		        if ($ac_type ne "Correct") {
+		        	$ac_counter++;
+		        	return;
+		        } else {
+				$master_worksheet->write($master_row, 1, "$answerkey[$ac_counter]");
+				return;
+			}
+		}
+}
+
+	
+	
+# Set Some variables
+my $iwhome = TeamSite::Config::iwgethome();
+
+# Get the information from the form
+$cgi = TeamSite::CGI_lite->new();
+$cgi->parse_data();
+
+  foreach $name (keys %{$cgi->{form}})
+  {
+  	if($name eq "JobID") {
+  	  $jobID = $cgi->{form}{$name};
+        }
+  }
+
+#====================================================
+### Create Query XML for Windows ###
+#====================================================
+#my $queryxml = "D:\\iw-home\\local\\config\\ctb\\querytasks.xml";
+#open(QUERY, ">$queryxml") or die "Can't open $queryxml: $!\n";
+#	print QUERY "<taskquery><workflow v=\"$jobID\"/></taskquery>";
+#close QUERY;
+#====================================================
+### Begin Finding Items ###
+#====================================================
+# Below is for Unix
+
+$workflow = new TeamSite::WFworkflow($jobID);
+$tasks = $workflow->GetTasks();
+
+foreach my $taskid (@$tasks) {
+	$id = $taskid->GetId();
+	last if ($taskid->GetState() eq "active");
+	# $id = $taskid->GetId();
+	# push(@ids,$id);
+}
+$task= new TeamSite::WFtask($id);
+
+$area = $task->GetArea();
+@files = $task->GetFiles();
+	foreach $file (@files) {
+		# Below for Windows
+		#$fullpath = "$area"."\\"."$file";
+		# Below for Unix
+		$fullpath = "$area/$file";
+		#for Windows
+		#$fullpath = "Y:"."$fullpath";
+		# Open the document for reading
+
+		$basefile=basename($fullpath);
+	} # end of foreach loop
+#====================================================
+### End Finding Items ###
+#====================================================
+
+#====================================================
+### Begin Creating Item Review Worksheet Excel File ###
+#====================================================
+
+$col = 0;
+$row = 0;
+
+# Create a new Excel workbook
+my $tsadmin = 206;
+my $oasgrp = 100;
+my $mode = 0777;
+my $excel_dir = $area . "/Excel_Files";
+if (!(-e $excel_dir)) {
+	mkdir $excel_dir, $mode;
+	chown $tsadmin, $oasgrp, $excel_dir;
+	chmod $mode, $excel_dir;
+}
+$ExcelFile = $excel_dir . "/job_". $jobID . "_item_rev_wrksht.xls";
+#unlink the file if it exists
+unlink "$ExcelFile" if (-e $ExcelFile);
+
+#print DEBUG "$area\n";
+#$ExcelFile = "Y:"."$area"."\\"."Excel_Files\\job_"."$jobID"."_item_rev_wrksht.xls";
+#print DEBUG "$ExcelFile\n";
+my $workbook = Spreadsheet::WriteExcel->new("$ExcelFile");
+
+
+#  Add and define a format for the first line
+$header_format = $workbook->addformat(); # Add a format"
+$header_format->set_bold();
+$header_format->set_align('center');
+$header_format->set_size(12);
+$header_format->set_merge();
+
+$format = $workbook->addformat();
+$format->set_bold();
+$format->set_color('red');
+$format->set_align('center');
+$format->set_align('vcenter');
+$format->set_rotation(2);
+$format->set_text_wrap();
+$format->set_border(1);
+
+$format2=$workbook->addformat();
+$format2->set_align('left');
+$format2->set_bold();
+$format2->set_text_wrap();
+$format2->set_border(1);
+
+# Write a formatted and unformatted string, row and column notation.
+# Add a worksheet
+$worksheet = $workbook->addworksheet("$jobID");
+# Write a formatted first line
+$worksheet->write(0, 0, "Job ID: $jobID  File: $basefile", $header_format);
+$worksheet->write_blank($row, 1,$header_format);
+$worksheet->write_blank($row, 2,$header_format);
+$worksheet->write_blank($row, 3,$header_format);
+$worksheet->write_blank($row, 4,$header_format);
+$worksheet->write_blank($row, 5,$header_format);
+$worksheet->write_blank($row, 6,$header_format);
+$worksheet->write_blank($row, 7,$header_format);
+$worksheet->write_blank($row, 8,$header_format);
+
+$worksheet->set_header('ITEM REVIEW WORKSHEET',.25);
+$worksheet->set_margins(.50);
+$worksheet->center_horizontally();
+$worksheet->set_landscape();
+$worksheet->set_row(1,80,$format);
+$worksheet->set_column(6,6,51, $format2);
+$worksheet->set_column(0,0,20, $format2);
+$worksheet->set_column(1,1,6,$format2);
+$worksheet->set_column(2,2,6,$format2);
+$worksheet->set_column(3,3,6,$format2);
+$worksheet->set_column(4,4,6,$format2);
+$worksheet->set_column(5,5,6,$format2);
+$worksheet->set_column(7,7,6,$format2);
+$worksheet->set_column(8,8,6,$format2);
+
+$row = $row+1;
+$worksheet->write($row, $col, "Item ID's", $format2);
+$worksheet->write($row, $col+1, "Sample Test\nQuestion", $format);
+$worksheet->write($row,    $col+2, "Date", $format);
+$worksheet->write($row,$col+3,"Editor",$format);
+$worksheet->write($row,$col+4,"PDF - Y/N",$format);
+$worksheet->write($row,$col+5,"FLASH - Y/N", $format);
+$worksheet->write($row,$col+6,"Comments", $format2);
+$worksheet->write($row,$col+7,"Item pulled for editorial QA", $format);
+$worksheet->write($row,$col+8,"Item pulled for tech QA",$format);
+
+# Write out the items
+#foreach $i (@items) {
+#	$row = $row +1;
+#	my $id = $i->att('ID');
+#	$worksheet->write($row, 0, "$id");
+#	$worksheet->set_row($row, 40, $format2);
+#}
+
+#$workbook->close();
+#====================================================
+### End Creating Item Review Worksheet Excel File ###
+#====================================================
+
+#====================================================
+### Begin Creating Master Excel File ###
+#====================================================
+# Create a new Excel workbook
+#$MasterExcelFile = "Y:"."$area"."\\"."Excel_Files\\job_"."$jobID"."_master.xls";
+$MasterExcelFile = "$area"."/Excel_Files/job_"."$jobID"."_master.xls";
+#unlink file if it exists
+unlink "$MasterExcelFile";
+
+my $master_col = 0;
+my $master_row = 0;
+
+my $master_workbook = Spreadsheet::WriteExcel->new("$MasterExcelFile");
+
+#  Add and define a format for the first line
+$master_header_format = $master_workbook->addformat(); # Add a format"
+$master_header_format->set_bold();
+$master_header_format->set_align('center');
+$master_header_format->set_size(15);
+$master_header_format->set_color('blue');
+
+$master_format = $master_workbook->addformat();
+$master_format->set_color('black');
+$master_format->set_align('left');
+$master_format->set_text_wrap();
+$master_format->set_border(1);
+
+# Write a formatted and unformatted string, row and column notation.
+# Add a worksheet
+$master_worksheet = $master_workbook->addworksheet("$jobID");
+
+$master_worksheet->set_header("Master Tech QA: $jobID",.25);
+$master_worksheet->set_margins(.50);
+$master_worksheet->center_horizontally();
+$master_worksheet->set_landscape();
+$master_worksheet->set_row(0,19.50,$master_format); #This is the 1st line with the labels
+$master_worksheet->set_column(0,0,14,$master_format); # Set all the columns to be 50
+$master_worksheet->set_column(1,1,25,$master_format);
+$master_worksheet->set_column(2,2,14,$master_format);
+$master_worksheet->set_column(3,3,50,$master_format);
+$master_worksheet->set_column(4,4,50,$master_format);
+$master_worksheet->set_column(5,5,50,$master_format);
+$master_worksheet->set_column(6,6,50,$master_format);
+$master_worksheet->set_column(7,7,50,$master_format);
+$master_worksheet->set_column(8,8,50,$master_format);
+
+
+$master_worksheet->write($master_row, $master_col, "ItemID", $master_header_format);
+$master_worksheet->write($master_row, 1, "Key or Min/Max", $master_header_format);
+$master_worksheet->write($master_row, 2, "State", $master_header_format);
+$master_worksheet->write($master_row, $master_col+3, "Hierarchy 1", $master_header_format);
+$master_worksheet->write($master_row,$master_col+4,"Hierarchy 2",$master_header_format);
+$master_worksheet->write($master_row,$master_col+5,"Hierarchy 3",$master_header_format);
+$master_worksheet->write($master_row,$master_col+6,"Hierarchy 4",$master_header_format);
+$master_worksheet->write($master_row,$master_col+7,"Hierarchy 5",$master_header_format);
+$master_worksheet->write($master_row,$master_col+8,"Hierarchy 6",$master_header_format);
+
+
+$master_row=$master_row + 2;
+
+my $p= new XML::Parser( Handlers =>
+                 { Start   => \&start,
+                 },
+              );
+
+
+$p->parsefile("$fullpath");	
+
+$workbook->close();
+$master_workbook->close();
+
+print<<"END";
+Content-type: text/html
+
+<html>
+<head>
+  <title>File Has Been Sent</title>
+</head>
+<body bgcolor='#cccccc'>
+<center>
+<img src='/iw/webdesk/images/ts_logo.gif' align='center'>
+<BR>
+<H2>The following file(s) is ready to download!</H2>
+<p>
+END
+$base_excel=basename($ExcelFile);
+$base_master=basename($MasterExcelFile);
+print "File: <a href=\"/iw-mount$ExcelFile\">$base_excel</a> Item Review Worksheet.</p><BR>";
+print "File: <a href=\"/iw-mount$MasterExcelFile\">$base_master</a> Tech QA Master Worksheet.</p><BR>";
+print "<a href=\"javascript:close()\"><img src='/iw/webdesk/images/en/btn_close.gif' align='center' border=0></A></center>";
+print "</body>";
+print "</html>";

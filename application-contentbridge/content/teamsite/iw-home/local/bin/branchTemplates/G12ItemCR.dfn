@@ -1,0 +1,61 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE component_category SYSTEM "component_category1.0.dtd">
+<component_category>
+	<display_name name = "Grade 12 CR"/>
+	<root_elements>
+		<element type = "Item"/>
+	</root_elements>
+	<display_name_ruleset>
+		<display_name_rule xpath = "/Item/@ID"/>
+	</display_name_ruleset>
+	<component_directory area_rel_path = "Content/Grade_12/CR"/>
+		<index_ruleset>
+		<file_attr index_all = "true"/>
+		<content is_xml = "true">
+			<field name = "ITEM ID" xpath = "/Item/@ID">
+				<text_type/>
+			</field>
+			<field name = "ITEM SAMPLE" xpath = "/Item/@Sample">
+				<text_type/>
+			</field>
+			<field name = "ITEM FIELD TEST" xpath = "/Item/@FieldTest">
+				<text_type/>
+			</field>
+			<field name = "ITEM MANIPULATIVE" xpath = "/Item/@Manipulative">
+				<text_type/>
+			</field>
+			<field name = "ITEM TEMPLATE" xpath = "/Item/@Template">
+				<text_type/>
+			</field>
+			<field name = "ITEM OBJECTIVE ID" xpath = "/Item/@ObjectiveID">
+				<text_type/>
+			</field>
+			<field name = "HIERARCHY TYPE" xpath = "/Item/Hierarchy/@Type">
+				<text_type/>
+			</field>
+			<field name = "HIERARCHY NAME" xpath = "/Item/Hierarchy/@Name">
+				<text_type/>
+			</field>
+			<field name = "STUDENT DIRECTIONS" xpath = "/Item/StudentDirections/text()">
+				<text_type/>
+			</field>
+			<field name = "LeadIn" xpath = "/Item/LeadIn/text()">
+				<text_type/>
+			</field>
+			<field name = "STEM" xpath = "/Item/Stem/text()">
+				<text_type/>
+			</field>
+			<field name = "ACKNOWLEDGEMENT" xpath = "/Item/Acknowledgement/text()">
+				<text_type/>
+			</field>
+			<field name = "GRAPHIC FILE NAME" xpath = "/Item/Graphic/@ID">
+				<text_type/>
+			</field>
+		</content>
+	</index_ruleset>
+	<prolog>
+		<prolog_data>
+		  <![CDATA[ <!DOCTYPE Item SYSTEM "R2_Flash_UI.dtd"> ]]>
+		</prolog_data>
+	</prolog>
+</component_category>

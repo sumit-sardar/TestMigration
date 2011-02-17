@@ -1,0 +1,318 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE workflow SYSTEM "iwwf.dtd">
+
+
+<template_script><![CDATA[
+
+ #Server: (Offline)
+
+ #Version: 5.5.2
+
+ #Build 9275 20020617
+
+
+##########----------Beginning of customized text section----------##########
+my $iwhome = `iwgethome`;
+chomp $iwhome;
+
+my $root = "iwuser";
+my $qa_group = "qa";
+my $art_group = "artists";
+my $coord_group = "apco";
+my $pm_group = "pm";
+my $production_group = "ap";
+my $editing_group = "editing";
+
+my $unlock = "$iwhome/iw-perl/bin/iwperl $iwhome/local/bin/unlock.ipl";
+# my $stg_deploy = $unlock;
+# my $prod_deploy = $unlock;
+my $encoding = "html";
+my $desc = __VALUE__("iw_desc", $encoding);
+my $iwuser = __VALUE__("iw_user");
+my $unixuser = $iwuser;
+if ($unixuser eq "aahmad" || $unixuser eq "abhandar" || $unixuser eq "aakhtar" || $unixuser eq "serskine")
+{
+       $unixuser = "qa";
+}
+my $prd_deploy =   "$iwhome/iw-perl/bin/iwperl -I /export/home/$unixuser/interfaces/build/dist/new/ccs/teamsite /export/home/$unixuser/interfaces/build/dist/new/ccs/teamsite/tw_deploy.ipl $desc $unixuser";
+######################################################################
+# Name:         set_area
+# Args:         btag    - TAG_info variable name for branch path.
+#               watag   - TAG_info variable name for workarea.
+# Usage:        ($a, $b, $w, $s) = set_area("$btag", "$watag");
+# Purpose:      If the built-in variables for branch and workarea have
+#               not been set, pull the information from the workflow
+#               instantiation form (using the btag and watag info).
+#               Use the branch and workarea information to generate
+#               a valid areavpath (using a library routine)
+# Returns:      Returns the generated areavpath, the branch path, the
+#               workarea name, and a boolean indicating whether or not
+#               the branch and workarea need to be prompted for during
+#               instantiation (this relies on the fact that this code
+#               is run multiple times during the instantion process).
+######################################################################
+sub set_area{
+    my($btag, $watag) = @_;
+    my($avpath, $bpath, $wapath, $skip);
+    my($iwbpath, $iwwapath) = (__VALUE__("iw_branch"),
+                               __VALUE__("iw_workarea"));
+    if ((length($iwbpath)) > 0 && (length($iwwapath)) > 0){
+        $bpath = $iwbpath;
+        ($wapath = $iwwapath) =~ s|^\s*/.*:||;
+        $wapath =~ s|/\s*$||;
+        return("$wapath", "$iwbpath", "$wapath", "TRUE");
+    }
+    ($bpath, $wapath, $avpath) = cleanup_paths(__VALUE__("$btag"),
+                                               __VALUE__("$watag"));
+    return("$avpath", "$bpath", "$wapath", "FALSE");
+}
+
+my($area_vpath, $branch_path, $work_area, $skip_branch) =
+    set_area("branch_path", "work_area");
+##########----------End of customized text section----------##########
+
+
+
+use TeamSite::Config;
+(my $iwhome = TeamSite::Config::iwgethome()) =~ tr|\\|/|;
+
+#=====================================================================
+# Name:		iw_cleanup_paths
+# Args:		bp	- branch path
+#		wa	- workarea name
+# Usage:	($b, $w, $a) = iw_cleanup_paths($bp, $wa);
+# Purpose:	Function used to clean up leading and trailing blanks 
+#       	from branch path and work area path, then derive
+#		$areavpath.
+# Returns:	Cleaned branch path, workarea, and generated areavpath
+#=====================================================================
+sub iw_cleanup_paths {
+    my ($bp, $wa) = @_;
+
+    # clean up leading and trailing slashes so we don't
+    # end up hassling the user over including/excluding them 
+    $bp =~ s|^\s*/*([^/].*\S)/\s*$|$1|;
+    $wa =~ s|^\s*/*([^/].*\S)/\s*$|$1|;
+    #=# (Note - this code may need to change when we start supporting
+    #=#  multiple archives [Arnold])
+    $bp = "main/$bp" if ($bpath !~ /^main/);
+
+    $areavpath = TeamSite::CGI_lite::escape_html_data(
+                            "/default/$bp/WORKAREA/$wa");
+    return ($bp, $wa, $areavpath);
+}
+
+
+
+#=====================================================================
+# Name:		iw_set_area
+# Args:		btag	- TAG_info variable name for branch path.
+# 		watag	- TAG_info variable name for workarea.
+# Usage:	($a, $b, $w, $s) = set_area("$btag", "$watag");
+# Purpose:	If the built-in variables for branch and workarea have
+#		not been set, pull the information from the workflow
+#		instantiation form (using the btag and watag info).
+#		Use the branch and workarea information to generate
+#		a valid areavpath (using a library routine)
+# Returns:	Returns the generated areavpath, the branch path, the
+#		workarea name, and a boolean indicating whether or not
+#		the branch and workarea need to be prompted for during
+#		instantiation (this relies on the fact that this code
+#		is run multiple times during the instantion process).
+#=====================================================================
+sub iw_set_area{
+    my($btag, $watag) = @_;
+    my($avpath, $bpath, $wapath, $skip);
+    my($iwbpath, $iwwapath) = (__VALUE__("iw_branch"),
+                               __VALUE__("iw_workarea"));
+    if ((length($iwbpath)) > 0 && (length($iwwapath)) > 0){
+        $bpath = $iwbpath;
+        ($wapath = $iwwapath) =~ s|^\s*/.*:||;
+        $wapath =~ s|/\s*$||;
+        return("$wapath", "$iwbpath", "$wapath", "TRUE");
+    }
+    ($bpath, $wapath, $avpath) = iw_cleanup_paths(__VALUE__("$btag"),
+                                                  __VALUE__("$watag"));
+    return("$avpath", "$bpath", "$wapath", "FALSE");
+}
+
+my($iw_area_vpath, $iw_branch_path, $iw_work_area, $iw_skip_branch) =
+    iw_set_area("branch_path", "work_area");
+    
+
+
+#======================================================================
+# Name:		iw_get_mail_cmd
+# Args:		type	- either "iwsend_mail" or "iwsend_servlet_mail"
+#		addr	- 'To:' email address 
+# Usage:	__INSERT__(iw_get_mail_cmd("$type", "$addr"));
+# Purpose:	This function generates the command statement called 
+#		by the external email notification task.
+# Returns:	Returns the generated XML string.
+# Note: 	Defaults to iwsend_servlet_mail.ipl unless $type is
+#		explicitly set to iwsend_mail
+#=# (this will hopefully change with the next version of iwsend_mail)
+#=# (when that happens, either drop type, or make it a second 
+#=#  [optional] argument, that if set - assumes the program lives in
+#=#  iw-home/local/bin ?)
+#=====================================================================
+sub iw_get_mail_cmd {
+    # NT lacks the ability to bind a script executor with a
+    # script on a 'shebang' line (eg:  #!/blah/blah/iwperl)
+    # Instead it uses the assoc/ftype mechanism which employs
+    # the use of environment variables that are not always
+    # available (cf: IIS's metabasse, which replicates the
+    # extention-based association scheme on its own).  Therefore,
+    # we need to spoon-feed iwperl the script like this for now:
+
+    my($type, $taskName, $addr) = @_;
+    return(sprintf("<command v='%s$iwhome/bin/%s %s'/>",
+                   ($^O eq "MSWin32") ? "$iwhome/iw-perl/bin/iwperl " : "",
+                   ($type eq "iwsend_mail") ?
+                   "$type.ipl" : "iwsend_servlet_mail.ipl",
+                   ($taskName eq "" ) ? $addr: "$taskName $addr"));
+}
+
+
+#=====================================================================
+# Name:		iw_getrole
+# Args:		role	- basename of a TeamSite role (*.uid) file, or
+#			  similarly constructed customized file in the
+#			  same directory.
+# Usage:	$html = iw_getrole("master");
+# Purpose:	Generate an HTML formatted drop-down menu of all 
+#		entries in named file for use within a TAG_info() 
+#		section.
+# Returns:	Returns the generated drop down list on success, or
+#		a text field with an error message if it was unable
+#		to open the file.
+#=====================================================================
+sub iw_getrole{
+    my($role) = @_;
+    $role .= ".uid" if ($role !~ /\.uid$/);
+    my($html) = "";
+    
+    if (!open(IN, "<$iwhome/conf/roles/$role")){
+        $html = "<input type='text' value='--Error opening $role--'>";
+    }
+    else {
+        $html = "<select size='1'>\n<option>\n";
+        foreach (sort(<IN>)){
+            s/^\s*//gs; s/\s*$//gs;
+            $html .= "<option>$_\n";
+        }
+        close(IN);
+        $html .= "</select>\n";
+    }
+    return($html);
+}
+
+#=# (changed reference to renamed subroutine)
+my($iw_admin_html) = iw_getrole("admin"); 
+my($iw_masters_html) = iw_getrole("master"); 
+my($iw_authors_html) = iw_getrole("author");
+my($iw_editors_html) = iw_getrole("editor");
+
+
+
+#=====================================================================
+# file list for start task
+#=====================================================================
+my($iw_selected_files) = iw_get_filelist();
+
+#=====================================================================
+# Name:		iw_get_filelist
+# Args:		None.
+# Usage:	$xml = iw_get_filelist();
+# Purpose:	Generate an XML formatted list of all the files that 
+#		were pre-selected when the workflow was initiated.
+# Returns:	Returns the XML formatted list if files were selected.
+#		Returns an empty string if no files were selected.
+# Notes:	Sorts the filelist in uuencode form, then html-encodes
+#		each entry using a library routine - all this using 
+#		the Sambre-Janken transform algorithm
+#=====================================================================
+sub iw_get_filelist{
+    my($files) = ""; 
+    if (__ELEM__('iw_file')){
+        my(@flist) = map { 			
+          TeamSite::CGI_lite::escape_html_data($_);
+        }  sort map {
+            tr|\\|/|; 
+            s|^\Q$iw_area_vpath\E||;
+            $_;
+        }  __VALUE__('iw_file');
+
+        $files = "<files>\n";
+        for (my $i = 0; $i < @flist; ++$i) {
+            $files .= "\t<file path='$flist[$i]' comment='task file'/>\n";
+        }
+        $files .=  "</files>\n";
+    }
+    return($files);
+}
+
+
+
+##############################################################################
+
+
+#    my $unlock = $unlock;
+#    my $stg_deploy = $stg_deploy;
+#    my $prd_deploy = $prd_deploy;
+#    my $qa_group = $qa_group;
+#    my $art_group = $art_group;
+#    my $coord_group = $coord_group;
+#    my $production_group = $production_group;
+#    my $pm_group = $pm_group;
+#    my $editing_group = $editing_group;
+#    my $root = $root;
+#    my $desc = $desc;
+#    my $iwuser = $iwuser;
+#    my $area_vpath = $area_vpath;
+
+#======================================================================
+#  JOB FORM DATA CAPTURE
+#---------------------------------------------------------------------
+# This section capture the necessary data on the job creation form in 
+# order to dynamically assemble a workflow.
+#======================================================================
+sub debug{
+    TAG_info(
+             iw_output_file => "<input type='text' value='/tmp/foo.xml'>",
+             iw_debug_mode  =>
+             "<input type='radio' value='true'>True</input>" .
+             "<input type='radio' value='false'>False</input>",
+             );
+}
+#======================================================================
+# Uncomment following line if you wish to enable workflow debugging.
+#======================================================================
+&debug;
+
+]]>
+
+</template_script>
+
+<workflow name = "TW Review Workflow" owner = "__INSERT__($iwuser);" creator = "__TAG__('iw_user');" description = "__INSERT__($desc);">
+
+    <externaltask lock = "f" name = "PROD_AND_EMAIL" owner = "__INSERT__($root);" retry = "f" start = "t" description = "Push to Production and send out an email notification">
+        <areavpath v = "__INSERT__($area_vpath);"/>
+        <successors>
+            <successorset description = "End">
+                <succ v = "End"/>
+            </successorset>
+        </successors>
+        <command v = "__INSERT__($prd_deploy);"/>
+       __INSERT__($iw_selected_files);
+    </externaltask>
+
+    <endtask name = "End" description = "All good things...">
+        <activation>
+            <or>
+                <pred v = "PROD_AND_EMAIL"/>
+            </or>
+        </activation>
+    </endtask>
+
+</workflow>

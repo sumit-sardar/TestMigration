@@ -1,0 +1,1 @@
+Framework.bat FormatAndTest Path=%*

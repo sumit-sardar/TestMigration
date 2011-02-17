@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE Assessment SYSTEM "R2_Flash_UI.dtd">
+<Assessment><TitleImage/> 
+  <SubTest> 
+	 <ItemSet> 
+		<Item Sample="No" Version="0.0" Template="1" SequenceNo=""> 
+		  <Stem><P><?xm-replace_text {Add paragraph text here}?></P> 
+		  </Stem><SelectedResponse> 
+		  <AnswerChoice><?xm-replace_text {AnswerChoice}?></AnswerChoice> 
+		  <AnswerChoice><?xm-replace_text {AnswerChoice}?></AnswerChoice> 
+		  <AnswerChoice><?xm-replace_text {AnswerChoice}?></AnswerChoice> 
+		  <AnswerChoice><?xm-replace_text {AnswerChoice}?></AnswerChoice>
+		  </SelectedResponse> 
+		</Item>
+	 </ItemSet> 
+  </SubTest>
+</Assessment>

@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class
+        name="com.ctb.hibernate.Product"
+        table="PRODUCT"
+        dynamic-update="true"
+        dynamic-insert="true"
+    >
+
+        <id
+            name="productId"
+            column="PRODUCT_ID"
+            type="java.lang.Long"
+        >
+            <generator class="assigned">
+            </generator>
+        </id>
+
+        <property
+            name="activationStatus"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ACTIVATION_STATUS"
+        />
+
+        <property
+            name="contentAreaLevel"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="CONTENT_AREA_LEVEL"
+        />
+
+        <property
+            name="createdBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="CREATED_BY"
+        />
+
+        <property
+            name="createdDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="CREATED_DATE_TIME"
+        />
+
+        <property
+            name="extProductId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="EXT_PRODUCT_ID"
+        />
+
+        <property
+            name="internalDisplayName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="INTERNAL_DISPLAY_NAME"
+        />
+
+        <property
+            name="parentProductId"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="PARENT_PRODUCT_ID"
+        />
+
+        <property
+            name="previewItemSetLevel"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="PREVIEW_ITEM_SET_LEVEL"
+        />
+
+        <property
+            name="productdescription"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="PRODUCT_DESCRIPTION"
+        />
+
+        <property
+            name="productName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="PRODUCT_NAME"
+        />
+
+        <property
+            name="productType"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="PRODUCT_TYPE"
+        />
+
+        <property
+            name="scoringItemSetLevel"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="SCORING_ITEM_SET_LEVEL"
+        />
+
+        <property
+            name="secScoringItemSetLevel"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="SEC_SCORING_ITEM_SET_LEVEL"
+        />
+
+        <property
+            name="updateDBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="UPDATED_BY"
+        />
+
+        <property
+            name="updatedDate"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="UPDATED_DATE_TIME"
+        />
+
+        <property
+            name="version"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="VERSION"
+        />
+
+        <set
+            name="subProducts"
+            lazy="true"
+            inverse="false"
+            cascade="none"
+            sort="unsorted"
+        >
+
+              <key
+                  column="PARENT_PRODUCT_ID"
+              />
+
+              <one-to-many
+                  class="com.ctb.hibernate.SubProduct"
+              />
+        </set>
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-Product.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+        <joined-subclass
+            name="com.ctb.hibernate.SubProduct"
+            table="PRODUCT"
+            dynamic-update="true"
+            dynamic-insert="true"
+        >
+        <key
+            column="PRODUCT_ID"
+        />
+
+        </joined-subclass>
+
+    </class>
+
+</hibernate-mapping>

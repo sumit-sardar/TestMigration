@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deploymentConfiguration>
+
+    <localNode host="MHEMTYEUD9003"/>
+
+    <replicationFarmSet>
+        <replicationFarm name="MYFARMNAME">
+            <nodeRef useNode="kaizen"/>
+        </replicationFarm>
+    </replicationFarmSet>
+
+    <definition name="CTB_IMAGES">
+        <source>
+            <sourceFilesystem 
+                      area="$area^"
+            	      filelist= "$file_list^" >
+                <pathSpecification>
+                    <path name="."/>
+                </pathSpecification>
+            </sourceFilesystem>
+        </source>
+
+        <target useReplicationFarm="MYFARMNAME">
+            <comparisonRules dateDifferent="yes"/>
+            <permissionRules file="0740" directory="0755" user="oasuser" group="oasgrp"/>
+            <targetFilesystem area="$area^"/>
+        </target>
+    </definition>
+
+    <deployment transactional="yes">
+        <execDeploymentTask useDefinition="CTB_IMAGES"/>
+    </deployment>
+
+    <logRules maxBytes="32Mb" level="verbose"/>
+
+</deploymentConfiguration>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="content/oastools/java"/>
+	<classpathentry exported="true" kind="lib" path="resources"/>
+	<classpathentry exported="true" kind="lib" path="conf"/>
+	<classpathentry exported="true" kind="lib" path="wsdl"/>
+	<classpathentry exported="true" kind="lib" path="lib/activation.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/axis.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/ant.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/AuthorizationEjb.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/avalon-framework-cvs-20020315.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/axis-ant.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/batik.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cglib2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/classes12.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/collections.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-beanutils.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-cli-20030513.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-collections.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-discovery-0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-lang-2.0-dev.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-logging-1.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cos.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/crimson.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/dom4j.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/edtftpj-1.5.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ehcache.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/fit.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/fop.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/hibernate2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaas-patch.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jakarta-oro-2.0.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxen-1.0-dev.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxp-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxrpc.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jdom.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jsch-0.1.24.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jsp-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jta.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.8.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mail.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mockobjects-core-0.09.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mockobjects-jdk1.3-0.09.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/odmg.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/openapi_client.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/picocontainer-1.0-beta-4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/picocontainer-tck-1.0-beta-4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/saaj.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/saxpath-1.0-FCS.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/servlet.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/wsdl4j-1.5.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xalan.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xerces.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xml-apis.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlparserv2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlsec-1.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlunit1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/aspectj-ant.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/aspectjtools.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/commons-collections.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/commons-logging.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/crimson.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/jaxp.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/junit.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/optional.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/parser.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/xdoclet-1.2b4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/xdoclet-hibernate-module-1.2b4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/xdoclet-xdoclet-module-1.2b4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/build-only/xjavadoc-1.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="build"/>
+</classpath>

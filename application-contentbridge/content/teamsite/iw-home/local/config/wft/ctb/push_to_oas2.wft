@@ -1,0 +1,347 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE workflow SYSTEM "../iwwf.dtd">
+<!-- ============================================================
+     Copyright 1999, 2000 Interwoven, Inc.
+     All Rights Reserved
+     ============================================================ -->
+
+<workflow name="Push_to_OAS2"
+          owner="__TAG__('iw_user');" 
+          creator="__TAG__('iw_user');" 
+          description="__TAG__('iw_desc');">
+
+<template_script><![CDATA[
+# Import routines from library
+use TeamSite::Usertask qw(
+                          cleanup_paths
+                          get_names_from_file
+                          get_mail_cmd
+                          make_branchpathlist
+                          );
+
+######################################################################
+# Name:		set_area
+# Args:		btag	- TAG_info variable name for branch path.
+# 		watag	- TAG_info variable name for workarea.
+# Usage:	($a, $b, $w, $s) = set_area("$btag", "$watag");
+# Purpose:	If the built-in variables for branch and workarea have
+#		not been set, pull the information from the workflow
+#		instantiation form (using the btag and watag info).
+#		Use the branch and workarea information to generate
+#		a valid areavpath (using a library routine)
+# Returns:	Returns the generated areavpath, the branch path, the
+#		workarea name, and a boolean indicating whether or not
+#		the branch and workarea need to be prompted for during
+#		instantiation (this relies on the fact that this code
+#		is run multiple times during the instantion process).
+######################################################################
+sub set_area{
+    my($btag, $watag) = @_;
+    my($avpath, $bpath, $wapath, $skip);
+    my($iwbpath, $iwwapath) = (__VALUE__("iw_branch"),
+                               __VALUE__("iw_workarea"));
+    if ((length($iwbpath)) > 0 && (length($iwwapath)) > 0){
+        $bpath = $iwbpath;
+        ($wapath = $iwwapath) =~ s|^\s*/.*:||;
+        $wapath =~ s|/\s*$||;
+        return("$wapath", "$iwbpath", "$wapath", "TRUE");
+    }
+    ($bpath, $wapath, $avpath) = cleanup_paths(__VALUE__("$btag"),
+                                               __VALUE__("$watag"));
+    return("$avpath", "$bpath", "$wapath", "FALSE");
+}
+
+my($area_vpath, $branch_path, $work_area, $skip_branch) =
+    set_area("branch_path", "work_area");
+
+#======================================================================
+# Set some variables for later use
+#======================================================================
+use TeamSite::Config;
+my $iwhome = TeamSite::Config::iwgethome();
+my $iwmount = TeamSite::Config::iwgetmount();
+my($roles) = "$iwhome/conf/roles";
+
+#======================================================================
+# Create drop-down menu of all available 'contributors' from which to 
+# choose an assignee.
+#======================================================================
+my($contrib_html) = get_names_from_file(undef, 1, undef,
+                                        "$roles/prod_auth.uid");
+my($artists_html) = get_names_from_file(undef, 1, undef,
+                                         "$roles/artists.uid");
+my($techqa_html) = get_names_from_file(undef, 1, undef,
+                                         "$roles/tqa.uid");                                         
+
+#======================================================================
+#  JOB FORM DATA CAPTURE
+#---------------------------------------------------------------------
+# This section capture the necessary data on the job creation form in 
+# order to dynamically assemble a workflow.
+#======================================================================
+sub debug{
+    TAG_info(
+             iw_output_file => "<input type='text' value='/tmp/foo.xml'>",
+             iw_debug_mode  =>
+             "<input type='radio' value='true'>True</input>" .
+             "<input type='radio' value='false'>False</input>",
+             );
+}
+#======================================================================
+# Uncomment following line if you wish to enable workflow debugging.
+#======================================================================
+#&debug;
+
+TAG_info(
+         contributor  =>
+         [ html      => $contrib_html,
+           label     => "Content Contributor",
+           error_msg => 'Please pick a contributor',
+           ],
+         artists  =>
+         [ html      => $artists_html,
+           label     => "Artists",
+           error_msg => 'Please pick a contributor',
+           ], 
+         contributor  =>
+	 [ html      => $techqa_html,
+	   label     => "Tech QA",
+	   error_msg => 'Please pick a contributor',
+           ],
+         iw_desc =>
+         [ html  => "<textarea rows='5' cols='40'></textarea>",
+           label => "Job Description", 
+           error_msg => 'Please enter a description',
+           ],
+         reviewer_0 =>
+         [ html      =>  $reviewer_html,
+           label     => "Content Reviewer", 
+           error_msg => 'Please choose an reviewer',
+           ],
+         reviewer_1 =>
+         [ html  =>  $reviewer_html,
+           label => "Content Reviewer 1<br><i>Optional</i>", 
+           is_required => 'false',
+           ],
+         reviewer_2 =>
+         [ html  =>  $reviewer_html,
+           label => "Content Reviewer 2<br><i>Optional</i>", 
+           is_required => 'false',
+           ],
+        );
+
+if ($skip_branch eq "FALSE"){
+    my($branch_menu) = make_branchpathlist("$iwhome");
+    TAG_info(
+             branch_path =>
+             [ html  => "$branch_menu",
+               label => 'Select Branch',
+               is_required => 'true',
+               ],
+
+             work_area =>
+             [ html  => "<input type='text'></input>",
+               label       => 'Enter Workarea',
+               valid_input => 'wa_validator($_, 0)',
+               error_msg   => q{'wa_validator($_, 1)'},
+               is_required => 'true',
+               ],
+             );
+
+use TeamSite::Uniscape::uniscape qw(UTF8ToNative_2);
+    sub wa_validator{
+        my($wa, $error) = @_;
+	 my $utf8wa = $wa;
+	 $wa = UTF8ToNative_2( "$wa");
+        my($branch) = __VALUE__('branch_path');
+	my $utf8branch = $branch;
+	 $branch = UTF8ToNative_2( "$branch");
+        my $avpath;
+        (undef, undef, $avpath) = cleanup_paths("$branch", "$wa");
+	 (undef, undef, $utf8avpath) = cleanup_paths("$utf8branch", "$utf8wa");
+	 if (! -d "$iwmount$avpath"){
+            return(0) if (!$error);
+	     return("Invalid path: '$iwmount$utf8avpath'");
+        }
+        return(1);
+    }
+}
+
+#======================================================================
+#  REVIEWER LIST GENERATOR
+#======================================================================
+#  This code takes the set of user-entered data in the list of reviewers
+#  and builds an array of reviewer names that can be easily looped 
+#  through to dynamically generate a series of usertasks.
+
+my @reviewer=();
+for (my $i = 0; $i < 3; ++$i) {
+    my $rev = __VALUE__("reviewer_$i", "html");
+    if (defined($rev) && $rev ne ""){
+        push(@reviewer, $rev);
+    }
+}
+
+#=====================================================================
+#  XML JOB SPECIFICATION SKELETON
+#=====================================================================
+#  This XML section is used to generate the job specification files based on
+#  input provided by the end-user in the job creation form.
+]]></template_script>
+
+    <!-- ============= CHANGE REQUEST WORKFLOW EXAMPLE 1 ============= -->
+    <!-- ================== Contributor Edits Content ================ -->
+
+    <usertask name="Edit_Content___TAG__('contributor');" 
+              owner="__TAG__('contributor');"
+              description="__TAG__('iw_desc');" start="t"> 
+
+        __INSERT__("<areavpath v='$area_vpath'/>");
+        <successors>
+            <successorset description="Done">
+               __INSERT__("<succ v='Review_$reviewer[0]'/>");
+            </successorset>
+        </successors>
+        <activation>    
+            <or>
+               <template_script><![CDATA[
+                   # Any reviewer can reject the content, therefore
+                   # any reviewer can activate this task.  
+                   for (my $i =0; $i<@reviewer; ++$i) {
+                       __INSERT__("<pred v='Review_$reviewer[$i]'/>\n\t");
+                   }
+               ]]></template_script>
+            </or>
+        </activation>
+        <resets>
+             <reset v="Submit"/>
+        </resets>
+    </usertask>
+
+    <!-- ============================================================= -->
+    <template_script><![CDATA[
+    __INSERT__("
+    <!-- ======================== Approval Chain ===================== -->\n");
+
+    for (my $i =0; $i<@reviewer; ++$i) {
+        my ($pred,$prev_reviewer);
+        if ($i == 0){
+            $pred = "<pred v='Edit_Content___TAG__('contributor');'/>";
+        }
+        else { 
+            # Note:  you want to  say  "reviewer[$i-1]" 
+            #        (see below)  not  'reviewer[$i-1]'
+            #        because you want the value of $i
+            #        to be interpreted as a variable, not
+            #        not the literal characters '$' and 'i'.
+
+            $prev_reviewer = $reviewer[$i-1];
+            $pred = "<pred v='Review_$prev_reviewer'/>";
+        }
+        my ($succ,$next_reviewer);
+        if (($i + 1) == @reviewer){
+            $succ = "<succ v='Submit'/>";
+        }
+        else {
+            $next_reviewer = $reviewer[$i+1];
+            $succ = "<succ v='Review_$next_reviewer'/>";
+        }
+
+        # NOTE:  The next two lines show how you can insert XML snippets 
+        #        that take parameters!   This is an extremely powerful
+        #        feature, since it lets you library-ize all of the stuff    
+        #        you do repetitively & create reusable components. 
+
+         __INSERT__(get_reviewer_task_xml($i, $succ, $pred));
+    }
+    __INSERT__("
+    <!-- ================== End of Approval Chain ================== -->\n");
+
+     my $last_index    = $#reviewer;
+     my $last_reviewer = $reviewer[$last_index];
+    ]]></template_script>
+
+    <!-- ===================== Submit The Change =================== -->
+
+    <submittask name='Submit' 
+                owner="__TAG__('iw_user');" 
+                description="__TAG__('job_name');">
+
+        __INSERT__("<areavpath v='$area_vpath'/>");
+        <successorset>
+            <succ v='End'/>
+        </successorset>
+        <activation> __INSERT__("
+             <pred v='Review_$last_reviewer'/>");
+        </activation>
+    </submittask>
+
+    <!-- ============================================================= -->
+    <!-- =========================== End ============================= -->
+
+    <endtask name='End'>
+        <activation>
+            <pred v='Submit'/>
+        </activation>
+    </endtask>
+
+    <!-- ============================================================= -->
+
+
+
+<template_script><![CDATA[
+#=====================================================================
+#  SUBROUTINES SECTION
+#=====================================================================
+# The next two functions return workflow XML snippets that take 
+# parameters.
+# This demonstrates an extremely feature:  function/library-ized
+# templates.
+# 
+# If you find yourself doing something often, you can build your own
+# custom library (eg: Mystuff.pm) then say:
+#
+#               use Mystuff;
+#
+# somewhere in your template script.  This allows common XML snippets 
+# and code to be reused.
+#=====================================================================
+
+#=====================================================================
+#  REVIEWER TASK GENERATOR
+#=====================================================================
+# This function generators the user task for content approval based on
+# the current index number of the array of content reviewers.
+
+sub get_reviewer_task_xml {
+    my ($i,$succ,$pred) = @_;
+    my $reviewer_task_xml=<<EOS;
+
+    <!-- =======  Reviewer task in approval chain  ======= -->
+
+    <usertask  name='Review_$reviewer[$i]' 
+               owner='$reviewer[$i]'
+               description='Please review'> 
+
+        <areavpath v='$area_vpath'/>
+        <successors>
+            <successorset description='Approve'>
+                 $succ
+            </successorset>
+            <successorset description='Reject'>
+                <succ v='Edit_Content___TAG__(contributor);'/>
+            </successorset>
+        </successors>
+        <activation>    
+            $pred
+        </activation>
+    </usertask>
+
+    <!-- ================================================= --> 
+EOS
+   return $reviewer_task_xml;
+}
+]]></template_script>
+
+</workflow>
+

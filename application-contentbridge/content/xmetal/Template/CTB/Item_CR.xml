@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE Item SYSTEM "R2_Flash_UI.dtd">
+<Item Template="1" ItemType="CR">
+  <Hierarchy>
+    <Hierarchy>
+      <Hierarchy>
+        <Hierarchy>
+          <Hierarchy>
+            <Hierarchy>
+            </Hierarchy>
+          </Hierarchy>
+        </Hierarchy>
+      </Hierarchy>
+    </Hierarchy>
+  </Hierarchy>
+  <Stem>
+    <P><?xm-replace_text {Add paragraph text here}?></P>
+  </Stem>
+  <ConstructedResponse MaxScorePts="4">
+    <AnswerArea>
+      <P><?xm-replace_text {Add paragraph text here}?></P>
+    </AnswerArea>
+    <Rubric>
+      <P><?xm-replace_text {Add paragraph text here}?></P>
+    </Rubric>
+  </ConstructedResponse>
+</Item>

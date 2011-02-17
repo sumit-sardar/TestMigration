@@ -1,0 +1,47 @@
+#!/bin/ksh
+# FOP utility script
+
+if [ ! $1 ] ; then
+   echo "Usage: fopit xml_file_to_convert_to_pdf name_of_xsl_file" 
+   echo
+   exit
+fi
+
+if [ ! -f $1 ]; then
+  echo "File $1 does not exist!" 
+  exit
+fi
+
+if [ ! $2 ] ; then
+   XSLFILE=/export/cim/FOP_Interface_AK.xsl
+else
+   XSLFILE=$2
+fi
+
+PATH=$PATH:/opt/bin:/opt/X11/bin:/usr/bin:.:/usr/ccs/bin:/usr/ucb:/usr/openwin/bin:/oracle/product/9.0.1/bin:/export/weblogic/6.1/bin:/usr/local/bin:/usr/j2sdkee1.3.1/bin:.:/usr/ccs/bin:/usr/ucb:/usr/openwin/bin:/oracle/product/9.0.1/bin:/export/weblogic/6.1/bin:/usr/local/bin:/usr/j2sdkee1.3.1/bin:.
+export PATH
+
+CLASSPATH=/usr/java/jre/lib:/usr/java/jre/lib/rt.jar:/usr/java/jre/lib/ext:/usr/java/jre/lib/servlet.jar:/usr/java/jre/lib/ext/xerces.jar:/export/fop/fop-0.20.4/lib/avalon-framework-cvs-20020315.jar:/export/fop/fop-0.20.4/lib/batik.jar:/export/fop/fop-0.20.4/lib/bsf.jar:/export/fop/fop-0.20.4/lib/buildtools.jar:/export/fop/fop-0.20.4/lib/stylebook.jar:/export/fop/fop-0.20.4/lib/xalan-2.3.1.jar:/export/fop/fop-0.20.4/lib/xercesImpl-2.0.1.jar:/export/fop/fop-0.20.4/lib/xml-apis.jar:/export/fop/fop-0.20.4/build/fop.jar:$CLASSPATH
+export CLASSPATH
+/export/cim/hyphenspace.pl $1    || exit 1
+
+TMPFILE=`echo $1.tmp | /usr/bin/sed -e 's/.xml.tmp/.ak.tmp/'`
+mv $1.tmp $TMPFILE
+
+FOFILE=`echo $TMPFILE | /usr/bin/sed -e 's/.tmp/.fo/'`
+echo "Performing XSLT of $TMPFILE with $XSLFILE to get $FOFILE"
+java org.apache.xalan.xslt.Process -in $TMPFILE -xsl $XSLFILE -out $FOFILE    || exit 1
+
+PSFILE=`echo $TMPFILE | /usr/bin/sed -e 's/.tmp/.ps/'`
+PDFFILE=`echo $TMPFILE | /usr/bin/sed -e 's/.tmp/.pdf/'`
+
+echo
+echo "Starting FOP translation for $TMPFILE to create $PSFILE"
+java org.apache.fop.apps.Fop -fo $FOFILE -ps $PSFILE    || exit 1
+
+echo
+echo "Transforming $PSFILE to $PDFFILE"
+/usr/local/bin/ps2pdf $PSFILE $PDFFILE && echo "Created $PDFFILE Successfully!" || exit 1
+echo
+
+#chmod 775 compdisp* cab*

@@ -1,0 +1,28 @@
+#!/appl/TeamSite/iw-home/iw-perl/bin/iwperl
+
+use TeamSite::WFtask;
+use TeamSite::Config;
+
+my $iwhome = TeamSite::Config::iwgethome(); 
+my $area = $ARGV[2];
+my $task = new TeamSite::WFtask($ARGV[1]);
+my @files;
+
+if ($task->IsValid())
+{
+    @files = $task->GetFiles();
+    for (my $i = 0; $i < @files; $i++)
+    {
+        if ($^O eq "MSWin32")
+        {
+	    `$iwhome\\bin\\iwunlock $area\\$files[$i]`;
+        }
+        else
+        {
+            system("$iwhome/bin/iwunlock", $area . "/" . $files[$i]);
+        }            
+    }
+    $task->CallBack(0, "Unlocked files.");
+}
+
+

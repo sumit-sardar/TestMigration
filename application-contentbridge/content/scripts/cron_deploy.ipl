@@ -1,0 +1,114 @@
+#!/appl/teamsite/iw-perl/bin/iwperl
+
+#------------------------------------------------------------------------------
+# Usage:
+#
+# cron_deploy.ipl [STAGING|PRODUCTION] <arguments for com.ctb.teamsite.TeamsiteAdapter>
+#------------------------------------------------------------------------------
+
+use lib "/export/home/$iw_user/content/teamsite/iw-home/iw-perl/lib/perl5/site_perl/5.005";
+
+use TeamSite::WFtask;
+use TeamSite::Config;
+use File::Copy;
+use File::Basename;
+use Time::Local;
+
+my $timeStamp = &getTimeStamp();
+print "\n\n Starting deployment perl script - $timeStamp\n";
+for (@ARGV) { printf "%d %s\n", $i++, $_};
+my $environment=$ARGV[0];
+my $jobid = $ARGV[1];
+my $taskid = $ARGV[2];
+
+umask(022);
+my $workingdir = "/appl/oas1/".$jobid;
+if ($environment eq "PRODUCTION") {
+   $workingdir = "/appl/publishing/deployments/production/outbound/".$jobid;
+}
+my $java_version = `which java`;
+my $fileName = "/tmp/cron_deploy_log.txt";
+
+open(OUTPUT, ">> $fileName")
+    || warn("Cannot open $fileName for writing: $!\n");
+print OUTPUT "$timeStamp: $0 - $environment - $jobid - $taskid - $workingdir - $java_version\n";
+close(OUTPUT);
+
+#--------------------------#
+# function: getTimestamp() #
+#--------------------------#---------------------------------------------------#
+# This function gets the current date and time, formats it as                  #
+#                      mm/dd/yyyy - hh:mm:ss                                   #
+# and returns it to the calling function.                                      #
+#------------------------------------------------------------------------------#
+
+sub getTimeStamp {
+
+    my ($sec,$min,$hr,$day,$mon,$year,$wday,$yday,$isdst)=localtime(time);
+    $mon = sprintf("%02d",($mon + 1));
+    $day = sprintf("%02d",$day);
+    $hr = sprintf("%02d",$hr);
+    $min = sprintf("%02d",$min);
+    $sec = sprintf("%02d",$sec);
+    my $ddyear = substr($year,1);
+    my $modYear = 1900 + $year;
+    my $timestamp = "$mon/$day/$modYear - $hr:$min:$sec";
+    return($timestamp);
+
+}
+
+#------------------------------------------------------------------------------#
+# End of getTimeStamp() function.                                              #
+#------------------------------------------------------------------------------#
+
+`rm -r $workingdir` if (-e $workingdir);
+mkdir ($workingdir, 0777) || die "$date: could not create $workingdir";
+chmod (0775,$workingdir) || die "$date: could not chmod $workingdir";
+
+#Call the CCS_CIM tool for a buildassessment to OAS
+print "Entering Java Application\n";
+chdir ("/export/cim/ccs") || die "$date: could not change directory to /export/cim/ccs";
+my $error_flag = 0;
+print "\n\n Changed Directory to ccs\n";
+
+# my $cmd = 'LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"; export LD_LIBRARY_PATH; ' . "java -cp /export/cim/ccs/lib/ccs.jar com.ctb.common.teamsite.TeamSiteAdapter importandmapitems @ARGV";
+
+my $cmd = 'DISPLAY=localhost:1.0; export DISPLAY; LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/lib"; export LD_LIBRARY_PATH; ' . "java -Xms32m -Xmx128m -cp /export/cim/ccs/lib/ccs.jar:/appl/publishing/cim/lib/jsch-0.1.24.jar:/appl/publishing/cim/lib/xmlunit1.0.jar:/appl/publishing/cim/ccs/resources:/appl/publishing/cim/lib/xmlsec-1.2.1.jar:/appl/publishing/cim/lib/xmlparserv2.jar:/appl/publishing/cim/lib/xml-apis.jar:/appl/publishing/cim/lib/xercesImpl.jar:/appl/publishing/cim/lib/xalan.jar:/appl/publishing/cim/lib/wsdl4j-1.5.1.jar:/appl/publishing/cim/lib/saxpath-1.0-FCS.jar:/appl/publishing/cim/lib/saaj.jar:/appl/publishing/cim/lib/openapi_client.jar:/appl/publishing/cim/lib/mail.jar:/appl/publishing/cim/lib/log4j-1.2.11.jar:/appl/publishing/cim/lib/log4j-1.2.8.jar:/appl/publishing/cim/lib/jta.jar:/appl/publishing/cim/lib/jsp-api.jar:/appl/publishing/cim/lib/jdom.jar:/appl/publishing/cim/lib/jaxrpc.jar:/appl/publishing/cim/lib/jaxp-api.jar:/appl/publishing/cim/lib/jaxen-1.0-dev.jar:/appl/publishing/cim/lib/jakarta-oro-2.0.7.jar:/appl/publishing/cim/lib/jaas-patch.jar:/appl/publishing/cim/lib/hibernate2.jar:/appl/publishing/cim/lib/fop.jar:/appl/publishing/cim/lib/ehcache.jar:/appl/publishing/cim/lib/edtftpj-1.5.1.jar:/appl/publishing/cim/lib/dom4j.jar:/appl/publishing/cim/lib/crimson.jar:/appl/publishing/cim/lib/commons-logging.jar:/appl/publishing/cim/lib/commons-logging-1.0.4.jar:/appl/publishing/cim/lib/commons-lang-2.0-dev.jar:/appl/publishing/cim/lib/commons-discovery-0.2.jar:/appl/publishing/cim/lib/commons-collections.jar:/appl/publishing/cim/lib/commons-cli-20030513.jar:/appl/publishing/cim/lib/commons-beanutils.jar:/appl/publishing/cim/lib/collections.jar:/appl/publishing/cim/lib/classes12.jar:/appl/publishing/cim/lib/cglib2.jar:/appl/publishing/cim/lib/axis-ant.jar:/appl/publishing/cim/lib/axis.jar:/appl/publishing/cim/lib/activation.jar com.ctb.common.teamsite.TeamSiteAdapter buildassessment $ARGV[0] $ARGV[1] $ARGV[2] $ARGV[3] $ARGV[4]";
+
+print "pwd is " . `pwd`;
+print "Command is $cmd\n";
+
+if ($environment ne "PRODUCTION") {
+        if (system("$cmd") != 0) {
+                print "Content import failed!\n";
+                $error_flag = 1;
+        }
+} else {
+        `echo Creating deployToProduction for $workingdir >> $logfile`;
+        if (!open(DTP, "> $workingdir/deployToProduction")) {
+                print "Couldn't open $workingdir/deployToProduction\n";
+                $error_flag = 1;
+        }
+        print DTP "#!/bin/sh\n";
+        print DTP "cd /export/cim/ccs\n";
+        print DTP "$cmd\n\n";
+        close DTP;
+        if (!chmod (0775, "$workingdir/deployToProduction")) {
+                print "Couldn't chmod $workingdir/deployToProduction\n";
+                $error_flag = 1;
+        }
+}
+
+`chown -R iwuser:oasgrp $workingdir`;
+if ($? != 0) {
+	print "Couldn't chown $workingdir\n";
+	$error_flag = 1;
+}
+print "Exiting Java Application\n";
+
+# Finally we need to call back to the workflow and it know we are done
+my $task = new TeamSite::WFtask($taskid);
+$task->CallBack(0, "Deployed files.");
+print "Calling back to Teamsite, finished with external task\n";
+exit 0;
+

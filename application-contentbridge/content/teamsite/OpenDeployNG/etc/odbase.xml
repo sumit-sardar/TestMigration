@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<deployServerConfiguration>
+
+    <!-- This is a deploy server configuration for a RECEIVER & SENDER  -->
+
+    <!-- Indicate that the configuration defined hereafter in this file -->
+    <!-- are applicable on the specified host.  Moving this file to     -->
+    <!-- another host requires changing the host value.                 -->
+
+    <localNode host="MHEMTYEUD9003"/>
+
+    <listenerProperties  name="InterwovenOpenDeploy" 
+                         bindPort="20014"/>
+
+    <transportProperties name="od"    
+                         bufferSize="8000"  
+                         />
+
+    <schedulerProperties jdbcDriverClass="org.hsql.jdbcDriver"
+                         dbUrl="jdbc:HypersonicSQL:/appl/OpenDeploy/OpenDeployNG/db/schedDB"
+                         dbUser="sa"
+                         dbPassword=""
+                         />
+
+    <allowedHosts>
+        <node host="MHEMTYEUD9003">
+            <allowedDirectories>
+                <path name="/appl/OpenDeploy/OpenDeployNG/tmp"/>
+                <path name="/MY/ALLOWED/DIR/PATH-1"/>
+            </allowedDirectories>
+        </node>
+        <node host="198.45.17.18">
+            <allowedDirectories>
+                <path name="/tmp/ODTest/"/>
+            </allowedDirectories>
+        </node>
+    </allowedHosts>
+
+    <logRules maxBytes="32Mb"
+              directory="/appl/OpenDeploy/OpenDeployNG/log"
+              level="verbose"
+              />
+
+</deployServerConfiguration>

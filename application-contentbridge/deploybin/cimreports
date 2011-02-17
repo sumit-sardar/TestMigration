@@ -1,0 +1,3 @@
+java -cp lib/ccs.jar com.ctb.common.tools.CimReports $*
+
+

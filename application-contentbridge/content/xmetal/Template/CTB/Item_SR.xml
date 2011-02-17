@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE Item SYSTEM "R2_Flash_UI.dtd">
+<Item Template="1">
+  <Hierarchy>
+    <Hierarchy>
+      <Hierarchy>
+        <Hierarchy>
+          <Hierarchy>
+            <Hierarchy>
+            </Hierarchy>
+          </Hierarchy>
+        </Hierarchy>
+      </Hierarchy>
+    </Hierarchy>
+  </Hierarchy>
+  <Stem>
+    <P><?xm-replace_text {Add paragraph text here}?></P>
+  </Stem>
+  <SelectedResponse>
+    <AnswerChoice Type="Correct" ID="1"><?xm-replace_text {AnswerChoice}?></AnswerChoice>
+    <AnswerChoice Type="Distractor" ID="2"><?xm-replace_text {AnswerChoice}?></AnswerChoice>
+    <AnswerChoice Type="Distractor" ID="3"><?xm-replace_text {AnswerChoice}?></AnswerChoice>
+    <AnswerChoice Type="Distractor" ID="4"><?xm-replace_text {AnswerChoice}?></AnswerChoice>
+  </SelectedResponse>
+</Item>

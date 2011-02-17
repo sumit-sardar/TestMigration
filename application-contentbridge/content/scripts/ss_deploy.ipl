@@ -1,0 +1,297 @@
+#!/appl/TeamSite/iw-home/iw-perl/bin/iwperl
+
+use File::Find;
+use File::Basename;
+use File::Copy;
+use Time::Local;
+use CTB::OD;
+use CTB::RegEx;
+use CTB::CIM;
+use CTB::Email;
+
+# use strict;
+
+#####################################################################################
+#
+# Here we set up the variables needed for our deployments
+#
+#####################################################################################
+
+#we need to set some environment variables for Oracle
+$ENV{'ORACLE32_LIB'}='/oracle/oracle32/lib';
+$ENV{'ORACLE_HOME'}='/oracle/product/9.2.0.1';
+$ENV{'ORACLE_BASE'}='/oracle';
+$ENV{'ORACLE_LIB'}=$ENV{'ORACLE32_LIB'};
+$ENV{'LD_LIBRARY_PATH'}="$ENV{'ORACLE32_LIB'}:/usr/openwin/lib:/usr/openwin/lib/x11:/usr/dt/lib:/opt/lib:/opt/libx11:/oracle/product/9.2.0.1/lib";
+
+my $counter = 0;
+my $time = timelocal((localtime)[0,1,2,3,4,5]); # the number of seconds since 1 January 1970
+my $i;
+my $environment = shift @ARGV;  # this should be either "oas" or "cqa"
+my $state = shift @ARGV;
+my $logfile = "/export/cim/logs/" . $state . "_" . $environment . "_deploy_" . $time . ".log";
+
+# list of users to send the email to
+
+my     @to = qw(tracie_munoz@ctb.com
+                edward_jun@ctb.com
+                robert_magee@ctb.com
+                sherry_erskine@ctb.com
+                david_ngo@ctb.com
+                jason_hasselkus@ctb.com
+                jessica_glissmann@ctb.com);
+
+open (LOG, ">$logfile");
+
+my $size = @ARGV;
+
+if ($size == 0 || $ARGV[0] eq "-h") {
+	&usage();
+        exit 1;
+}
+
+
+if ($environment =~ /oas/i) {
+
+	foreach $i (@ARGV) {
+		chdir $i;
+		my $cmd = "/appl/TeamSite/iw-home/iw-perl/bin/iwperl /export/cim/ss_rename.ipl .";
+		`$cmd`;
+		find(\&oas_process_file, $i);
+	}
+
+} elsif ($environment =~ /cqa/i) {
+
+	foreach $i (@ARGV) {
+        	chdir $i;
+        	my $cmd = "/appl/TeamSite/iw-home/iw-perl/bin/iwperl /export/cim/ss_rename.ipl .";
+        	`$cmd`;
+		find(\&cqa_process_file, $i);
+	}
+
+} else {
+	&usage();
+}
+
+sub usage {
+	print "The ss_oas_deploy.ipl script takes a list of directories as a command line arguement and deploys all the content to Content QA\n";
+        print "USAGE: iwperl ss_oas_deploy.ipl [-h] <environment> <state> <dir> <dir> ...\n";
+        print "EXAMPLE:\n\t`iwgethome`/iw-perl/bin/iwperl ss_oas_deploy.ipl oas TEXAS /appl/publishing/deployments/contentqa/outbound\n";
+        print "\t<environment> - either \"oas\" or \"cqa\"\n\t<state> - just used to label the log file name\n\t<dir> - directory to run the deployment against\n";
+        exit 1;
+}
+
+sub removedec {
+
+	my $file = $_[0];
+	my $area;
+	my $ret = "";
+
+	open(OLD, $file)         or die "can't open $old: $!";
+	open(NEW, "> $file.new")         or die "can't open $file.new: $!";
+	while (<OLD>) {
+                chomp;
+		$_ = "" if /encoding="UTF-8"/ || /DOCTYPE/;
+		s/^\s+//;
+                s/\n//;
+		print NEW $_            or die "can't write $new: $!";
+		if (/FileName/ && !(defined $area)) {
+		   /FileName="([^"]+)\/images[^"]+/gi; #"
+		   $area = $1;
+         	}
+         	$ret .= $_;
+	}
+	close(OLD)                  or die "can't close $old: $!";
+	close(NEW)                  or die "can't close $new: $!";
+	rename($file, "$file.orig") or die "can't rename $old to $old.orig: $!";
+	rename("$file.new", $file)  or die "can't rename $new to $old: $!";
+	unlink "$file.orig";
+        $area = "undefined" unless defined $area;
+	return $area, $ret;
+
+}
+
+sub setup4cim {
+	my $cimdir="/appl/publishing/cim";
+	my $cmd="cp $cimdir/*.dtd $cimdir/*.ent $cimdir/*.xsl $cimdir/*.swt $cimdir/*.properties $cimdir/lookups.xml .";
+	print LOG "$cmd\n";
+	`$cmd`;
+}
+
+sub cleanup4cim {
+       my $cmd="rm *.dtd *.ent *.xsl *.swt *.properties *.temp compdisp.xml lookups.xml";
+       print LOG "$cmd\n";
+       `$cmd`;
+}
+
+sub email {
+       $email_log = `more $logfile | grep CIM | grep SS`;
+       my $items_failed = `more $logfile | grep CIM | grep -c 256`;
+       chomp $items_failed;
+       my $items_success = `more $logfile | grep CIM | grep -vc 256`;
+       chomp $items_success;
+       my $item_count = `more $logfile | grep CIM | grep -c SS`;
+       chomp $item_count;
+ 
+       $email_log .= "\nTotal Item Count: $item_count\nSuccessful Items: $items_success\nFailed Items: $items_failed\n";
+       if ($items_failed == 0) {
+		$subject = "Results of the $state state specific deployment to $environment: all items succeeded";
+       } else {
+                $subject = "Results of the $state state specific deployment to $environment: some items rejected";
+       }
+       
+       &CTB::Email::send_email("sherry_erskine\@ctb.com", $subject, $email_log, @to);
+
+}
+
+sub cqa_process_file {
+	my $xml_string;
+	my $area;
+	my $odhome = "/appl/OpenDeploy/OpenDeployNG";
+	$time = timelocal((localtime)[0,1,2,3,4,5]);
+	my $deploylistfile = "/tmp/ss_deploy_$time.txt";
+	my $jobid = "SS";
+
+	return unless -f && /xml$/;
+	return if /lookups/ || /compdisp/;
+	/(.*).xml$/;
+	my $file = $_;
+	my $itemid = $1;
+	my $directory = $File::Find::dir;
+	chdir $directory;
+
+	#now we collect the OpenDeploy files
+	($area, $xml_string) = removedec($_);
+
+	$xml_string =~ s/\n//mg;
+
+	if ($area ne "undefined") {
+	# print "AREA: $area\n";
+	print LOG "AREA: $area\n";
+
+	my @images = CTB::RegEx::get_images($xml_string);
+
+	open(DEPLOYLIST, ">$deploylistfile") || die("[w] '$deploylistfile' ($!)\n");
+
+	    foreach (@images) {
+		print DEPLOYLIST "$_\n";
+		print LOG "IMAGE: $_\n";
+	    }
+
+	close (DEPLOYLIST);
+
+	my($odcd) = &CTB::OD::create_stg_cmd($odhome, "stg_filelist_deploy", $time, $area, "no", $deploylistfile);
+	my @odret = CTB::OD::execute($odcd);
+	my $od_logline = &CTB::CIM::logline($jobid, $itemid, "OD", $odret[0]);
+	print LOG "OD COMMAND: $odcd\n";
+	print LOG $od_logline;
+	print LOG "$odret[1]\n";
+	}
+
+	&setup4cim();
+
+	&CTB::RegEx::parse4fop($file);
+	copy($file, "compdisp.xml");
+	&CTB::RegEx::parse4jgen("compdisp.xml");
+
+	# todo: unify these three calls with the identical code in ctb_deploy
+
+
+
+	my @jgen_ret = &CTB::CIM::run_jgen("$itemid.swf");
+	my $jgen_logline = &CTB::CIM::logline($jobid, $itemid, "JGEN", $jgen_ret[0]);
+	print LOG $jgen_logline;
+	print LOG "$jgen_ret[1]\n";
+
+	my @fop_ret = &CTB::CIM::run_fop("$itemid.xml");
+	my $fop_logline = &CTB::CIM::logline($jobid, $itemid, "FOP", $fop_ret[0]);
+	print LOG $fop_logline;
+	print LOG "$fop_ret[1]\n";
+
+	my @cim_ret = &CTB::CIM::run_cim("staging", "$itemid.xml", "$itemid.swf", "$itemid.pdf");
+	my $cim_logline = &CTB::CIM::logline($jobid, $itemid, "CIM", $cim_ret[0], $cim_ret[2]);
+	print LOG $cim_logline;
+	print LOG "$cim_ret[1]\n";
+
+    # &cleanup4cim();
+}
+
+sub oas_process_file {
+	my $xml_string;
+	my $area;
+	my $odhome = "/appl/OpenDeploy/OpenDeployNG";
+	$time = timelocal((localtime)[0,1,2,3,4,5]);
+	my $deploylistfile = "/tmp/ss_deploy_$time.txt";
+	my $jobid = "SS";
+
+	return unless -f && /xml$/;
+	return if /lookups/ || /compdisp/;
+	/(.*).xml$/;
+	my $file = $_;
+	my $itemid = $1;
+	my $directory = $File::Find::dir;
+	chdir $directory;
+
+	#now we collect the OpenDeploy files
+	($area, $xml_string) = removedec($_);
+
+	$xml_string =~ s/\n//mg;
+
+	if ($area ne "undefined") {
+		# print "AREA: $area\n";
+		print LOG "AREA: $area\n";
+
+		my @images = CTB::RegEx::get_images($xml_string);
+
+		open(DEPLOYLIST, ">$deploylistfile") || die("[w] '$deploylistfile' ($!)\n");
+
+	    foreach (@images) {
+		print DEPLOYLIST "$_\n";
+		print LOG "IMAGE: $_\n";
+		}
+
+		close (DEPLOYLIST);
+
+	    my(@odcd) = &CTB::OD::create_prd_cmd($odhome, "prd_filelist_deploy", $time, $area, "no", $deploylistfile);
+	    foreach (@odcd) {
+		    my @odret = CTB::OD::execute($_);
+		    my $od_logline = &CTB::CIM::logline($jobid, $itemid, "OD", $odret[0]);
+		    print LOG "OD COMMAND: $_\n";
+		    print LOG $od_logline;
+		    print LOG "$odret[1]\n";
+	    }
+	}
+
+	&setup4cim();
+
+	&CTB::RegEx::parse4fop($file);
+	copy($file, "compdisp.xml");
+	&CTB::RegEx::parse4jgen("compdisp.xml");
+
+	# todo: unify these three calls with the identical code in ctb_deploy
+
+
+
+	my @jgen_ret = &CTB::CIM::run_jgen("$itemid.swf");
+	my $jgen_logline = &CTB::CIM::logline($jobid, $itemid, "JGEN", $jgen_ret[0]);
+	print LOG $jgen_logline;
+	print LOG "$jgen_ret[1]\n";
+
+	my @fop_ret = &CTB::CIM::run_fop("$itemid.xml");
+	my $fop_logline = &CTB::CIM::logline($jobid, $itemid, "FOP", $fop_ret[0]);
+	print LOG $fop_logline;
+	print LOG "$fop_ret[1]\n";
+
+	my @cim_ret = &CTB::CIM::run_cim("production", "$itemid.xml", "$itemid.swf", "$itemid.pdf");
+	my $cim_logline = &CTB::CIM::logline($jobid, $itemid, "CIM", $cim_ret[0], $cim_ret[2]);
+	print LOG $cim_logline;
+	print LOG "$cim_ret[1]\n";
+
+	# &cleanup4cim();
+    }
+
+
+
+close LOG;
+
+&email();

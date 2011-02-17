@@ -1,0 +1,15 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE document_category SYSTEM "document_category1.0.dtd">
+<document_category>
+	<display_name name = "Grade 3 Assessment Document"/>
+	<root_elements>
+		<element type = "Assessment"/>
+	</root_elements>
+	<component_ruleset>
+		<component xpath = "//Item" category = "TeamXML/Rules/G3Item.dfn"/>
+	</component_ruleset>
+</document_category>
+
+
+
+

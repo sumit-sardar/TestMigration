@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="dist" name="application-contentbridge">
+		
+
+    <!-- Set up global properties -->
+    <property environment="env"/>
+    <property file="${basedir}/build.properties"/>
+
+    <property name="NAME" value="CTB"/>
+    <property name="name" value="ctb"/>
+    <property name="project" value="CTB Content Import Module"/>
+    <property name="version" value="1.0"/>
+    <property name="year" value="2007"/>
+    <property name="testreportdir" value="./test-reports" />    
+	
+    <target name="usage" depends="init">
+        <echo>
+            compile      --&gt; Compiles source.
+            dist         --&gt; Build the new distribution (ready for deployment).
+            test         --&gt; Runs fast JUnit tests.
+            test.all     --&gt; Runs all JUnit tests.
+            test.report  --&gt; Runs JUnit tests; generates reports in ${dir.test.report}
+            clean        --&gt; Cleans up entire build.
+
+            See the comments inside the build.xml file for more details.
+            --------------------------------------------------------------------------------
+
+            Example:  prompt&gt; ant deploy
+
+        </echo>
+    </target>
+
+    <target name="init" description="Initialize tree">
+        <tstamp/>
+        <property name="day" value="${DSTAMP}"/>
+        <property name="time" value="${TSTAMP}"/>
+        <property name="now" value="${DSTAMP}-${TSTAMP}"/>
+        <filter token="project" value="${project}"/>
+        <filter token="date" value="${TODAY}"/>
+        <filter token="now" value="${now}"/>
+
+        <mkdir dir="${dir.classes}"/>
+        <mkdir dir="${dir.build}/jars"/>
+        <mkdir dir="${dir.build}/etc"/>
+        <mkdir dir="${dir.dist}"/>
+        <mkdir dir="${dir.tmp}"/>
+        <mkdir dir="${dir.test}"/>
+        <mkdir dir="${dir.generated}"/>
+        
+        
+        <available file="${basedir}/user.properties" property="user.props.present"/>
+        <antcall target="create_user_properties"/>
+        <property file="${basedir}/user.properties"/>
+
+        <property name="xml2dbimport.jar" location="${dir.build}/XML2DBImport.jar"/>
+        <property name="ccs.jar" location="${dir.build}/ccs.jar"/>
+
+        <property name="fitnesse.zip" value="tools/fitnesse20030509.zip"/>
+        <property name="fitnesse.dir" value="${dir.build}/fitnesse"/>
+        <property name="fitnesse.jar" value="${fitnesse.dir}/fitnesse.jar"/>
+        <property name="fitnesse.root" value="CtbFitnesseRoot"/>
+
+
+    </target>
+    <target name="install.resources" description="installs the R2_Flash_UI into interfaces root for unit testing purposes">
+        <delete file="Assessment.dtd"/>
+        <copy todir="${basedir}">
+            <fileset dir="etc">
+                <include name="**/Assessment.dtd"/>
+            </fileset>
+        </copy>
+        
+
+    </target>
+    <target name="setclasspath" depends="init">
+        <path id="classpath.path">
+            <pathelement path="${dir.classes}"/>
+            <pathelement path="${basedir}"/>
+            <fileset dir="${dir.lib}">
+                <include name="*.jar"/>
+            </fileset>
+        	<fileset dir="${dir.lib}/build-only">
+                <include name="*.jar"/>
+            </fileset>
+        </path>
+        <property name="classpath" refid="classpath.path"/>
+    </target>
+
+    <target name="compile" depends="init,setclasspath,generate.hibernate,compile.javac,compile.resources,install.resources" description="Compiles all of the source code."/>
+
+    <target name="compile.javac" depends="init,setclasspath" description="compile all Java source code">
+        <javac debug="${debug}"
+            defaultexcludes="true" deprecation="${deprecation}"
+            destdir="${dir.classes}"
+            excludes="**/*Aspect.java" optimize="${optimize}"
+            srcdir="${dir.src}" verbose="${verbose}">
+            <classpath>
+                <path refid="classpath.path"/>
+            </classpath>
+        </javac>
+        <echo message="Finished compiling."/>
+    </target>
+    
+	<target name="generate.hibernate"
+		description="Generates Hibernate class descriptor files.">
+		
+		<delete>
+			<fileset dir="${dir.generated}" includes="**/*.hbm.xml"/>
+		</delete>
+		
+		<path id="lib.build-only.path">
+		      <fileset dir="${dir.lib}/build-only" includes="*.jar"/>
+		</path>
+
+		<taskdef name="hibernatedoclet"
+			classname="xdoclet.modules.hibernate.HibernateDocletTask"  classpathref="lib.build-only.path">
+		</taskdef>	
+		
+		<!-- Execute the hibernatedoclet task -->
+		<hibernatedoclet destdir="${dir.generated}"
+			excludedtags="@version,@author,@todo" force="${generated.forced}"
+			mergedir="${dir.generated}" verbose="false">
+			<fileset dir="${dir.src}">
+				<include name="**/hibernate/persist/*.java"/>
+			</fileset>
+			
+			<hibernate version="2.0"/>
+			
+			<hibernate/>
+		</hibernatedoclet>
+		
+		<!-- Upgrade grammar from Hibernate1 to Hibernate2 -->
+		<replace dir="${dir.generated}">
+			<include name="**/*.hbm.xml"/>
+			<replacefilter token="readonly=" value="inverse="/>
+			<replacefilter token="role=" value="name="/>
+			<replacefilter token="hibernate-mapping-1.1.dtd"
+				value="hibernate-mapping-2.0.dtd"/>
+			<replacefilter token="&lt;class" 
+				value="&lt;class persister=&quot;com.ctb.hibernate.CTBEntityPersister&quot;" />
+		</replace>
+	</target>	
+
+    <target name="compile.resources" depends="init" description="move resources (e.g. DTD) into classpath">
+    </target>
+
+   <target name="test" depends="init,setclasspath,compile,clean.test" description="runs JUnit tests (command-line mode)">
+            <delete dir="${testreportdir}" />
+            <mkdir dir="${testreportdir}" />
+            <mkdir dir="${testreportdir}/xml" />
+            <junit printsummary="true" fork="true" failureproperty="test.failure">
+                <classpath refid="classpath.path"/>
+                <formatter type="xml" usefile="true"/>
+                <batchtest fork="yes" todir="${testreportdir}/xml">
+                    <fileset dir="${dir.src}">
+                          <include name="**/*Test.java"/>
+                          <exclude name="**/oneoff/**/*"/>
+                    </fileset>
+                </batchtest>
+            </junit>
+            <junitreport todir="${testreportdir}">
+                  <fileset dir="${testreportdir}/xml">
+                    <include name="TEST-*.xml"/>
+                  </fileset>
+            </junitreport>
+            <java classname="org.apache.xalan.xslt.Process" fork="yes">
+                <arg value="-in" />
+                <arg value="${testreportdir}/TESTS-TestSuites.xml" />
+                <arg value="-xsl" />
+                <arg value="./conf/junit-noframes.xsl" />
+                <arg value="-out" />
+                <arg value="${testreportdir}\index.html" />
+                <classpath>
+                    <path refid="classpath.path"/>
+                </classpath>
+            </java>
+            <fail message="JUnit tests failed!" if="test.failure" />
+    </target>
+
+    <target name="test.dev" depends="init,setclasspath,compile,clean.test" description="runs JUnit tests (command-line mode)">
+            <delete dir="${testreportdir}" />
+            <mkdir dir="${testreportdir}" />
+            <mkdir dir="${testreportdir}/xml" />
+            <junit printsummary="true" fork="true" failureproperty="test.failure">
+                <classpath refid="classpath.path"/>
+                <formatter type="xml" usefile="true"/>
+                <batchtest fork="yes" todir="${testreportdir}/xml">
+                    <fileset dir="${dir.src}">
+                          <include name="**/*Test.java"/>
+                          <exclude name="**/oneoff/**/*"/>
+                          <exclude name="**/CommandProcessorLoadItemsTest.java"/>
+                          <exclude name="**/CommandProcessorProductReportTest.java"/>
+                    </fileset>
+                </batchtest>
+            </junit>
+            <junitreport todir="${testreportdir}">
+                  <fileset dir="${testreportdir}/xml">
+                    <include name="TEST-*.xml"/>
+                  </fileset>
+            </junitreport>
+            <java classname="org.apache.xalan.xslt.Process" fork="yes">
+                <arg value="-in" />
+                <arg value="${testreportdir}/TESTS-TestSuites.xml" />
+                <arg value="-xsl" />
+                <arg value="./conf/junit-noframes.xsl" />
+                <arg value="-out" />
+                <arg value="${testreportdir}/index.html" />
+                <classpath>
+                    <path refid="classpath.path"/>
+                </classpath>
+            </java>
+            <fail message="JUnit tests failed!" if="test.failure" />
+	</target>
+
+    <target name="create_user_properties" unless="user.props.present">
+        <copy file="${basedir}/conf/build/user.properties" tofile="${basedir}/user.properties"/>
+        <property location="${basedir}/user.properties" name="tmp.user.props"/>
+        <echo>
+            *****************************************************************************
+            Created ${tmp.user.props}
+            You may update it to include the correct values for your environment.
+            *****************************************************************************
+        </echo>
+    </target>
+
+    <target name="clean" depends="init" description="Deletes files used specifically for the build">
+        <echo message="Cleaning Up Working Directories"/>
+        <property file="${basedir}/user.properties"/>
+        <!-- Cleans up the build directory -->
+        <delete dir="${dir.build}" quiet="true"/>
+        <delete dir="${dir.test}" quiet="true"/>
+        <delete dir="${dir.dist}" quiet="true"/>
+        <delete dir="${dir.tmp}" quiet="true"/>
+    </target>
+
+    <target name="clean.test" description="Deletes files used specifically for testing" depends="init">
+        <delete dir="${dir.test}" quiet="true"/>
+        <mkdir dir="${dir.build}"/>
+        <mkdir dir="${dir.test}"/>
+    </target>
+
+    <target name="xml2dbimport.jar" depends="init">
+        <antcall target="makejar">
+            <param name="param.dir" value="${dir.build}/xml2dbimport"/>
+            <param name="param.jarfile" value="${xml2dbimport.jar}"/>
+            <param name="param.manifest" value="${dir.conf}/xml2dbimport.mf.txt"/>
+        </antcall>
+    </target>
+
+    <target name="ccs.jar" depends="init,compile">
+        <antcall target="makejar">
+            <param name="param.dir" value="${dir.build}/xml2dbimport"/>
+            <param name="param.jarfile" value="${ccs.jar}"/>
+            <param name="param.manifest" value="${dir.conf}/ccs.mf.txt"/>
+        </antcall>
+    </target>
+
+    <target name="makejar" depends="init">
+        <!-- make temp dir -->
+        <mkdir dir="${param.dir}"/>
+        <!-- unjar libraries         
+        <unjar dest="${param.dir}">
+        	<fileset dir="${dir.lib}">
+                <include name="**/*.jar"/>
+                <exclude name="**/build-only/*.jar"/>
+                <exclude name="**/servlet.jar"/>
+            </fileset>
+        </unjar> -->
+        
+
+        <!-- create the jar file -->
+        <delete file="${param.jarfile}"/>
+        <jar jarfile="${param.jarfile}" manifest="${param.manifest}">
+            <fileset dir="${param.dir}"/>
+            <fileset dir="${dir.classes}">
+                <include name="**/*"/>
+                <exclude name="**/*Test.class"/>
+            	<exclude name="**/Servlet.class"/>
+            </fileset>
+            <fileset dir="${basedir}">
+                <include name="conf/filter.properties"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="customer_media_import" depends="init">
+        <!-- make temp dir -->
+        <mkdir dir="${dir.tmp}/customermediaimport"/>
+        <!-- unjar libraries -->
+        <unjar dest="${dir.tmp}/customermediaimport" src="${dir.lib}/xerces.jar"/>
+        <unjar dest="${dir.tmp}/customermediaimport" src="${dir.lib}/classes12.jar"/>
+        <!-- create the jar file -->
+        <jar jarfile="${dir.build}/CustomerMediaImport.jar" manifest="${basedir}/clients/customermediaimport/META-INF/MANIFEST.MF">
+            <fileset dir="${dir.tmp}/customermediaimport"/>
+            <fileset dir="${dir.classes}">
+                <include name="content/java/CustomerMediaImport*"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="dist.old" depends="init,compile,xml2dbimport.jar,ccs.jar" description="Build the distribution (ready for deployment)">
+
+        <property name="dir.cim" location="${dir.dist}/smu"/>
+
+        <delete dir="${dir.cim}"/>
+        <mkdir dir="${dir.cim}"/>
+
+        <!-- copy version info file -->
+        <copy todir="${dir.cim}" file="conf/version.txt" overwrite="yes" filtering="on"/>
+
+        <copy todir="${dir.cim}">
+            <fileset dir="${dir.build}">
+                <include name="${xml2dbimport.jar}"/>
+                <include name="${ccs.jar}"/>
+            </fileset>
+            <fileset dir="content/publishing">
+                <include name="lookups.xml"/>
+                <include name="*.xsl"/>
+                <include name="*.swt"/>
+                <include name="fopit"/>
+                <include name="fopitak"/>
+                <include name="genPdf"/>
+                <include name="genSwf"/>
+                <include name="hyphenspace.pl"/>
+            </fileset>
+            <fileset dir="content/scripts">
+                <include name="sed_script.pl"/>
+                <include name="prod_publish.ksh"/>
+                <include name="email.ipl"/>
+                <include name="od.ipl"/>
+                <include name="alex_deploy.ipl"/>
+                <include name="alex_jobid.ipl"/>
+                <include name="ss_deploy.ipl"/>
+                <include name="ss_rename.ipl"/>
+                <include name="ss_cqa_deploy.ipl"/>
+                <include name="ss_oas_deploy.ipl"/>
+            </fileset>
+            <fileset dir="${dir.classes}">
+                <include name="ItemValidation.class"/>
+            </fileset>
+            <fileset dir="content/xmetal/Rules">
+                <include name="*.dtd"/>
+                <include name="*.ent"/>
+            </fileset>
+            <fileset dir=".">
+                <include name="dryrun.txt"/>
+            </fileset>
+            <fileset dir="build">
+                <include name="XML2DBImport.jar"/>
+                <include name="ccs.jar"/>
+            </fileset>
+        </copy>
+
+        <copydir src="content/teamsite/iw-home"
+            dest="${dir.cim}/iw-home"
+            includes="**/*.ipl,**/*.pm"
+            />
+
+        <!-- remove windows newlines -->
+        <!--
+        <replaceregexp match="\r\n" replace="\n" flags="sg">
+            <fileset dir="${dir.cim}">
+                <include name="*.pl"/>
+                <include name="*.ipl"/>
+                <include name="fopit"/>
+                <include name="fopitak"/>
+                <include name="genPdf"/>
+            </fileset>
+        </replaceregexp>
+        -->
+
+        <chmod perm="ugo+x">
+            <fileset dir="${dir.cim}">
+                <include name="fopit"/>
+                <include name="fopitak"/>
+                <include name="**/*.ipl"/>
+                <include name="**/*.pl"/>
+            </fileset>
+        </chmod>
+
+        <!-- this used to be a symlink, and it should go away soon -->
+        <copy file="content/publishing/FOP_Interface.xsl" tofile="${dir.cim}/FOP_Interface.xsl.modified"/>
+
+        <!-- Interwoven calls cab_ak_subtest.swt instead of cab_ak.swt;
+        when this is fixed, we can remove this line -->
+        <copy file="content/publishing/cab_ak.swt" tofile="${dir.cim}/cab_ak_subtest.swt"/>
+
+        <property name="tarball" value="${dir.dist}/publishing.tar"/>
+        <delete file="${tarball}"/>
+        <tar tarfile="${tarball}"
+            basedir="${dir.dist}/smu"
+            includes="**"
+            />
+        <!--gzip zipfile="${tarball}.gz" src="${tarball}" /-->
+        <!-- <delete file="${tarball}"/>  -->
+
+    </target>
+
+    <target name="dist" depends="init,compile, ccs.jar" description="Build the new distribution (ready for deployment)">
+
+        <property name="dir.cim.new" location="${dir.dist}/new"/>
+
+        <delete dir="${dir.cim.new}"/>
+
+        <mkdir dir="${dir.cim.new}"/>
+        <property name="dir.cim.new.ccs" location="${dir.cim.new}/ccs"/>
+        <mkdir dir="${dir.cim.new.ccs}"/>
+        <mkdir dir="${dir.cim.new.ccs}/bin"/>
+        <mkdir dir="${dir.cim.new.ccs}/lib"/>
+	    <mkdir dir="${dir.cim.new.ccs}/etc"/>
+	    <mkdir dir="${dir.cim.new.ccs}/conf"/>
+	    <mkdir dir="${dir.cim.new.ccs}/generated"/>    
+        <mkdir dir="${dir.cim.new.ccs}/teamsite"/>
+        <mkdir dir="${dir.cim.new.ccs}/teamsite/CTB"/>
+
+        <!-- copy version info file -->
+        <copy todir="${dir.cim.new.ccs}" file="conf/version.txt" overwrite="yes" filtering="on"/>
+        <copy todir="${dir.cim.new.ccs}/lib">
+            <fileset dir="${dir.build}">
+                <include name="ccs.jar"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.cim.new.ccs}/teamsite/CTB">
+            <fileset dir="content/teamsite/iw-home/iw-perl/lib/perl5/site_perl/5.005/CTB">
+                <include name="DEPLOY.pm"/>
+                <include name="Email.pm"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.cim.new.ccs}/teamsite">
+            <fileset dir="content/scripts">
+                <include name="prod_publish.ksh"/>
+            </fileset>
+            <fileset dir="${basedir}/content/scripts">
+                <include name="sofa_test_deploy.ipl"/>
+                <include name="tw_deploy.ipl"/>
+                <include name="cron_deploy.ipl"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.cim.new.ccs}/etc">
+            <fileset dir="etc">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.cim.new.ccs}/conf">
+            <fileset dir="conf/build">
+                <include name="**/*.properties"/>
+                <include name="**/badFrameworks.xml"/>
+                <exclude name="**/user.properties"/>
+            </fileset>
+            <fileset dir="${basedir}">
+                <include name="user.properties"/>
+            </fileset>
+            <fileset dir="${dir.conf}">
+               <include name="badFrameworks.xml"/>
+               <include name="global.properties"/> 
+               <include name="log4j.properties"/>
+               <include name="hibernate.cfg.xml"/>
+            </fileset>
+            
+                
+        </copy>
+        
+        <copy todir="${dir.cim.new.ccs}/generated">
+        	<fileset dir="${dir.generated}">
+               <include name="**/*.xml"/>
+            </fileset>      
+        </copy>
+        
+
+        <copy todir="${dir.cim.new.ccs}/conf">
+            <fileset dir="conf">
+                <include name="**/filter.properties"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.cim.new.ccs}/bin">
+            <fileset dir="deploybin">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.cim.new.ccs}">
+            <fileset dir="${dir.cim.new.ccs}/etc">
+                <include name="**/Assessment.dtd.dtd"/>
+            </fileset>
+        </copy>
+        <!-- SLI - copy entity file. Need for the new templates -->
+        <copy todir="${dir.cim.new.ccs}">
+            <fileset dir="${dir.cim.new.ccs}/etc">
+                <include name="**/*.ent"/>
+            </fileset>
+        </copy>
+
+<!--
+        <replaceregexp match="\r\n" replace="\n" flags="sg">
+            <fileset dir="${dir.cim.new}/bin">
+                <include name="*"/>
+                <include name="*"/>
+            </fileset>
+        </replaceregexp>
+-->
+        <chmod perm="ugo+x">
+            <fileset dir="${dir.cim.new.ccs}/bin">
+                <include name="*"/>
+            </fileset>
+            <fileset dir="${dir.cim.new.ccs}/teamsite">
+                <include name="*.ksh"/>
+            </fileset>
+        </chmod>
+        <property name="tarball" value="${dir.dist}/ccs.tar"/>
+        <delete file="${tarball}"/>
+        <tar destfile="${tarball}">
+            <tarfileset dir="${dir.cim.new}" mode="755" username="iwuser" group="oasgrp">
+                <include name="ccs/bin/**"/>
+            </tarfileset>
+            <tarfileset dir="${dir.cim.new}" mode="755" username="iwuser" group="oasgrp">
+                <include name="**"/>
+                <exclude name="ccs/bin/**"/>
+                <exclude name="ccs/work/teamsite/**"/>
+            </tarfileset>
+            <tarfileset dir="${dir.cim.new}" mode="755" username="iwuser" group="oasgrp">
+                <include name="ccs/work/teamsite/**"/>
+            </tarfileset>
+        </tar>
+    </target>
+
+   <target name="dist.preview" depends="init,compile,ccs.jar" description="Build the Art Preview War">
+
+        <property name="dir.cim.preview" location="${dir.dist}/preview"/>
+
+        <delete dir="${dir.cim.preview}"/>
+
+        <mkdir dir="${dir.cim.preview}"/>
+        <mkdir dir="${dir.cim.preview}/lib"/>
+        <mkdir dir="${dir.cim.preview}/conf"/>
+	    <mkdir dir="${dir.cim.preview}/etc"/>
+        <!-- copy version info file -->
+        <copy todir="${dir.cim.preview}/lib">
+            <fileset dir="${dir.build}">
+                <include name="ccs.jar"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.cim.preview}">
+            <fileset dir="conf/build">
+                <include name="web-fop.xml"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.cim.preview}/etc">
+            <fileset dir="etc">
+                <include name="**/*"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.cim.preview}">
+            <fileset dir="etc">
+                <include name="**/Assessment.dtd"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.cim.preview}/conf">
+            <fileset dir="conf">
+                <include name="filter.properties"/>
+                <include name="badFrameworks.xml"/>
+            </fileset>
+        </copy>
+        <copy todir="${dir.cim.preview}">
+            <fileset dir="${basedir}/webapp">
+                <include name="Error.jsp"/>
+            </fileset>
+        </copy>
+
+        <war destfile="${dir.dist}/fop.war" webxml="conf/web-fop.xml">
+          <lib dir="${dir.cim.preview}/lib"/>
+          <fileset dir="${dir.cim.preview}">
+              <exclude name="**/lib/**/*"/>
+          </fileset>
+        </war>
+        <property name="tarball.preview" value="${dir.dist}/preview.tar"/>
+        <delete file="${tarball.preview}"/>
+        <tar tarfile="${tarball.preview}"
+            basedir="${dir.cim.preview}"
+            includes="**"
+            />
+
+    </target>
+
+    <target name="deploy-iwtest" depends="dist.old">
+    </target>
+
+    <target name="fitnesse" depends="init,setclasspath" description="launch fitnesse server">
+        <unzip src="${fitnesse.zip}" dest="${dir.build}"/>
+        <java classname="fitnesse.Fitnesse" fork="yes">
+            <arg value="-p"/>
+            <arg value="8023"/>
+            <arg value="-l"/>
+            <arg value="${fitnesse.dir}/logs"/>
+            <arg value="-r"/>
+            <arg value="${fitnesse.root}"/>
+            <classpath>
+                <path refid="classpath.path"/>
+                <pathelement location="${fitnesse.jar}"/>
+            </classpath>
+        </java>
+    </target>
+
+</project>

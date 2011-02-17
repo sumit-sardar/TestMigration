@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<nodeSet name="od receiver nodes">
+    <node name="MyLocalHost"
+          host="MHEMTYEUD9003"
+          port="20014"
+          />
+    <node name="Pompeii"
+	  host="198.45.17.18"
+	  port="20014"
+	  />
+    <node name="kaizen"
+	  host="198.45.17.2"
+	  port="20014"
+	  />
+    <node name="vought"
+          host="198.45.17.43"
+          port="20014"
+          />
+    <node name="gloster"
+          host="198.45.17.44"
+          port="20014"
+          />
+    <node name="convair"
+          host="198.45.17.45"
+          port="20014"
+          />
+    <node name="sukhoi"
+          host="198.45.17.46"
+          port="20014"
+          />
+    <node name="mikoyan"
+          host="198.45.17.47"
+          port="20014"
+          />
+    <node name="hawker"
+          host="198.45.17.48"
+          port="20014"
+          />
+</nodeSet>

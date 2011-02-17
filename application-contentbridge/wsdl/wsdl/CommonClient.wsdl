@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://client.stgglobal.com" xmlns:impl="http://client.stgglobal.com" xmlns:intf="http://client.stgglobal.com" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<!--WSDL created by Apache Axis version: 1.2.1
+Built on Jun 14, 2005 (09:15:57 EDT)-->
+
+   <wsdl:message name="callUploadSubtestResponse">
+
+      <wsdl:part name="callUploadSubtestReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="callUploadItemResponse">
+
+      <wsdl:part name="callUploadItemReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="callUploadItemRequest">
+
+      <wsdl:part name="request" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="callUploadAssetRequest">
+
+      <wsdl:part name="request" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="callUploadSubtestRequest">
+
+      <wsdl:part name="request" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="callUploadAssetResponse">
+
+      <wsdl:part name="callUploadAssetReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="CommonClient">
+
+      <wsdl:operation name="callUploadAsset" parameterOrder="request">
+
+         <wsdl:input name="callUploadAssetRequest" message="impl:callUploadAssetRequest"/>
+
+         <wsdl:output name="callUploadAssetResponse" message="impl:callUploadAssetResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="callUploadItem" parameterOrder="request">
+
+         <wsdl:input name="callUploadItemRequest" message="impl:callUploadItemRequest"/>
+
+         <wsdl:output name="callUploadItemResponse" message="impl:callUploadItemResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="callUploadSubtest" parameterOrder="request">
+
+         <wsdl:input name="callUploadSubtestRequest" message="impl:callUploadSubtestRequest"/>
+
+         <wsdl:output name="callUploadSubtestResponse" message="impl:callUploadSubtestResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="CommonClientSoapBinding" type="impl:CommonClient">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="callUploadAsset">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="callUploadAssetRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://client.stgglobal.com"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="callUploadAssetResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://client.stgglobal.com"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="callUploadItem">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="callUploadItemRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://client.stgglobal.com"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="callUploadItemResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://client.stgglobal.com"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="callUploadSubtest">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="callUploadSubtestRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://client.stgglobal.com"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="callUploadSubtestResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://client.stgglobal.com"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="CommonClientService">
+
+      <wsdl:port name="CommonClient" binding="impl:CommonClientSoapBinding">
+
+         <wsdlsoap:address location="http://dagobah.mhe.mhc:9001/PublishContent/services/CommonClient"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

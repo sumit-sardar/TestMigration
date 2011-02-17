@@ -1,0 +1,188 @@
+#!/appl/TeamSite/iw-home/iw-perl/bin/iwperl
+
+#------------------------------------------------------------------------------
+# Copyright 2002 Interwoven, Inc.   All rights reserved.
+#
+# Author    Bobby Magee <bobby@interwoven.com>
+#
+# File      ctb_deploy_filelist.ipl
+# Use       Used to Test Deploying content out the the CTB servers
+#           
+#           ctb_deploy_filelist.ipl [STAGING|PRODUCTION]
+#
+#------------------------------------------------------------------------------
+
+# argument is path to jobdoc in TeamSite
+# e.g. /default/main/CAB/MATH/WORKAREA/load/Job_Documents
+
+use TeamSite::WFtask;
+use TeamSite::Config;
+use File::Copy;
+use Net::SMTP;
+use File::Basename;
+use CTB::OD;
+use CTB::RegEx;
+
+
+my $iwhome = TeamSite::Config::iwgethome();
+
+if (@ARGV == 0 || $ARGV[0] eq "-h") {
+	print "USAGE: alex_deploy.ipl [-h] <Job_Document> <Job_Document> ...\n\n";
+	print "This script reads in Job Documents and produces the PDF and FLASH for each Item exactly the way it would look before being sent to Content QA\n";
+	print "Options:\n\t -h:\t\t Prints this help message\n\t <Job_Document>: The Absolute path to a job document in TeamXML\n";
+	exit 1;
+}
+my @files = @ARGV;
+my @item_id;
+my @xml_files;
+my $area;
+
+my $date = localtime();
+
+my $where = "/iwmnt" . $area; # This needs to be changed for SOLARIS
+my $tmp = "/appl"; # This needs to be changed for SOLARIS
+my $job_dir = ".";
+my $file_basename;
+
+	
+#########################################################################################
+#
+# If you are debugging this code I would start with looking at the logfile
+#
+#########################################################################################
+
+print "\n============================ $date: START OF LOG FOR PARSING =====================\n";
+
+my $location = `pwd`;
+print "PWD: $location";
+
+print "Files: @files\n";
+
+#copy the necessary files to the appropriate area
+mkdir "data", 0777;
+
+for (my $i = 0; $i < @files; $i++)
+{
+        next unless ($files[$i] =~ /xml$/);
+        $files[$i] =~ /^(.*\/WORKAREA\/load).*/;
+        if (defined $1) {
+        	$area = $1;
+        }
+        else {
+        	print "ERROR: This XML document does not reside in TeamXML!!!\n";
+        	print "ABORTING PARSING!!! Ciao, Baby!\n";
+        	exit 1;
+        }
+        
+        $file_basename = basename($files[$i]);
+        print LOG "Base Name: $file_basename\n";
+        push @xml_files, $file_basename;
+        open (IN, "$files[$i]") || die "Can't open $files[$i]: $!\n";
+        open (OUT, ">$job_dir/data/$file_basename") || die "Can't open $job_dir/data/$file_basename: $!\n";
+        while (<IN>) {
+                my $line_in = $_;
+                $line_in =~ s/<\/Item>/<\/Item>\n/;
+                print OUT $line_in;
+        }
+        close IN;
+        close OUT;
+}
+
+for (my $i = 0; $i < @xml_files; $i++)
+{
+        print "FILE $i: $job_dir/data/$xml_files[$i]\n";
+        open (XML, "$job_dir/data/$xml_files[$i]") || die "Can't open $job_dir/data/$xml_files[$i])\n";
+        LINE: while (<XML>) {        
+			
+		if (/<Item\s+[^>]*\s+ID="([^"]+)/ || /<Item\s+ID="([^"]+)/)
+		{
+			$item_line = "";
+			$item_id = $1;
+			#$flag = "$1.swf";
+			$flag = "$1.swf";
+			push (@item_id, "$item_id");
+			open (FILE, ">$1.xml");
+			chomp($temp_line = $_);
+			$temp_line =~ s/iwts:/$area/gm;
+			$temp_line =~ /(<Item\s.*)/;
+			$item_line = $1;
+
+			#print FILE $1;
+			next LINE;
+		}
+		elsif ($_ =~ /\<\/Item\>/)
+		{
+			chomp($temp_line = $_);
+			$temp_line =~ s/iwts:/$area/gm;
+			#print FILE $_;
+			$item_line = "$item_line"."$temp_line";
+			$item_line =~ s/&nbsp;/ /gm;
+			$item_line =~ s/&USpace;/&#160;/gm;
+			$item_line =~ s/"\.\.\/images/"$area\/images/gm;
+			$item_line =~ s/iwts:/$area/gm;
+			#print FILE $temp_line;
+			#$item_line =~ s/\n//gm;
+			print FILE $item_line;
+			close FILE;
+			`chmod 755 $job_dir/*.*`;
+			$flag = 0;
+			next LINE;
+		}
+		elsif ($flag ne 0)
+		{
+			chomp($temp_line = $_);
+			$temp_line =~ s/iwts:/$area/gm;
+			$item_line = "$item_line"."$temp_line";
+		#       print FILE $_;
+		#       print FILE $temp_line;
+			next LINE;
+		}
+		else
+		{
+			next LINE;
+		}
+        }
+        close XML;
+        
+}
+for (my $j=0;$j < @item_id;$j++) {
+	print LOG "Item File: $dir/$item_id[$j].xml\n";
+	#copy the file for jgen
+	`cp $item_id[$j].xml compdisp.xml`;
+
+	&CTB::RegEx::handle_uspace("compdisp.xml");
+
+	#print command for JGen
+	print "$date: Running JGen command\n";
+	`/appl/publishing/jgenerator/2.1/bin/jgenerate -log4j -swf $item_id[$j].swf cab_iak.swt`;
+	print LOG "/appl/publishing/jgenerator/2.1/bin/jgenerate -log4j -swf $item_id[$j].swf cab_iak.swt\n";
+
+	#print command for FOP
+	print "$date: Running FOP command\n";
+	`/appl/publishing/cim/./fopit $item_id[$j].xml FOP_Interface.xsl`;
+	print LOG "/appl/publishing/cim/./fopit $item_id[$j].xml FOP_Interface.xsl\n";
+
+	if ($ARGV[0] eq "STAGING") {
+		#Import into CIM
+		print "$date: Running CIM command\n";
+		`java -jar /appl/publishing/cim/XML2DBImport.jar interwoven cab item $environment $item_id[$j].xml $item_id[$j].swf $item_id[$j].pdf`;
+		print LOG "java -jar /appl/publishing/cim/XML2DBImport.jar interwoven cab item $environment $item_id[$j].xml $item_id[$j].swf $item_id[$j].pdf\n";
+		$cim_ret = $?;
+		print LOG "RESULTS OF THE CIM CALL: $cim_ret\n";
+	}
+	$date = localtime();
+	print "$date: Finishing up $item_id[$j]\n";
+	#Delete the compdisp file
+	# `rm compdisp.xml`;
+}
+
+#unlink "$job_dir/FOP_Interface.xsl";
+#unlink "$job_dir/cab_iak.swt";
+#unlink "$job_dir/R2_Flash_UI.dtd";
+print `rm -r $job_dir/data`;
+
+$date = localtime();
+
+print "\n============================ $date: END OF LOG FOR DEPLOY For Job $jobid =======================\n";
+
+$mode = 0775; chmod ($mode, <*.*>);

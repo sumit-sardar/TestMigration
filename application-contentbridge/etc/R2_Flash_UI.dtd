@@ -1,0 +1,363 @@
+<!--
+
+FILENAME:
+       R2_Flash_UI.dtd
+
+TYPICAL INVOCATION:
+        <!DOCTYPE Assessment PUBLIC
+        "-//CTB//DTD Online Assessment System Authoring V 2.0//EN">
+
+PURPOSE:
+	  This file defines structures for CTB questions to be authored
+	  for Release 3 of the Online Assessment System.
+	  
+CHANGE HISTORY:
+	Initial Draft  					Sudha and Wen			11-30-2005
+    -->
+<!-- ============== PARAMETER ENTITY DECLARATIONS -->
+<!ENTITY % HTMLlat1 PUBLIC "-//W3C//ENTITIES Latin 1 for XHTML//EN" "etc/xhtml-lat1.ent">
+%HTMLlat1;
+<!ENTITY % HTMLsymbol PUBLIC "-//W3C//ENTITIES Symbols for XHTML//EN" "etc/xhtml-symbol.ent">
+%HTMLsymbol;
+<!ENTITY % HTMLspecial PUBLIC "-//W3C//ENTITIES Special for XHTML//EN" "etc/xhtml-special.ent">
+%HTMLspecial;
+<!-- =======   URI attribute used to identify linked information -->
+<!ENTITY % URI "CDATA">
+<!ENTITY ldquo "&quot;">
+<!ENTITY rdquo "&quot;">
+<!ENTITY apos "'">
+<!ENTITY USpace "&#160;">
+<!-- Standard sets of text and modifiers -->
+<!ENTITY % text "#PCDATA | BR | U | I | B | Graphic | P |OrderedList|UnorderedList">
+<!-- ===========================================================================
+	Element: Assessment
+
+	Description: The top level tag for the DTD. Files build in accordance with
+	this doctype have a 5 level hiearchy
+	
+
+	     Assessment
+	         +- - -  SchedulableUnit+
+							+- - -			DeliverableUnit+
+												+- - -		TestItem+
+
+
+		+- - - ThemePage
+				+- - - ThemePageContent
+						+- - - Graphic+
+						+- - - (Passage|Break)+
+	                                    
+	
+	While an assessment may contain several SubTests it does
+	not have to be resident within one XML file built to this DTD. A hierachy
+	is defined here to allow for any potential breakdown.
+  =========================================================================== -->
+<!ELEMENT Assessment (Comments?, Description?, SchedulableUnit+)>
+<!ATTLIST Assessment
+	ID CDATA #REQUIRED
+	ProductID CDATA #REQUIRED
+	Grade CDATA #REQUIRED
+	Level CDATA #IMPLIED
+	Title CDATA #REQUIRED
+	Form CDATA #IMPLIED
+	Author CDATA #IMPLIED
+	CreationDate CDATA #IMPLIED
+	AddOn (YES | NO) "NO"
+>
+<!-- ===========================================================================
+	Element: SchedulableUnit
+
+  =========================================================================== -->
+<!ELEMENT SchedulableUnit (Comments?, Description?, DeliverableUnit+)>
+<!ATTLIST SchedulableUnit
+	ID CDATA #REQUIRED
+	ContentArea CDATA #REQUIRED
+	Level CDATA #IMPLIED
+	Title CDATA #REQUIRED
+>
+<!-- ===========================================================================
+	Element: DeliverableUnit
+
+  =========================================================================== -->
+<!ELEMENT DeliverableUnit (Comments?, Description?, (TestItem | ThemePage)+)>
+<!ATTLIST DeliverableUnit
+	ID CDATA #REQUIRED
+	Type ( sample | standard | survey ) "standard"
+	ContentArea CDATA #REQUIRED
+	Grade CDATA #REQUIRED
+	Level CDATA #IMPLIED
+	Title CDATA #REQUIRED
+	Form CDATA #IMPLIED
+	TimeLimit CDATA #IMPLIED
+	ScoreLookupID CDATA #IMPLIED
+	ScoreTypeCode CDATA #IMPLIED
+>
+<!-- ===========================================================================
+	Element: TestItem
+
+  =========================================================================== -->
+<!ELEMENT TestItem (Item)>
+<!ATTLIST TestItem
+	Sample (Yes | No) "No"
+	SuppressScore (Yes | No) "No"
+	FieldTest (Yes | No) "No"
+	ScaleScore (Yes | No) "No"
+>
+
+<!-- ===========================================================================
+   Element:  ItemSet
+
+   =========================================================================== -->
+<!ELEMENT ItemSet (Comments?, (Item | ThemePage)+ )>
+<!ATTLIST ItemSet
+	ID CDATA #REQUIRED
+	Author CDATA #IMPLIED
+>
+
+<!ELEMENT Item (Title?, StudentDirections?, LeadIn?, Stimulus?, Stem+, (ConstructedResponse | SelectedResponse), ThinkCode?, Manipulative*, Comments?)>
+<!ATTLIST Item
+	ID CDATA #REQUIRED
+	DisplayID CDATA #IMPLIED
+	Author CDATA #IMPLIED
+	ItemType (SR | CR) "SR"
+	PEID_ID CDATA #IMPLIED 
+>
+
+<!ELEMENT ThinkCode EMPTY>
+<!ATTLIST ThinkCode
+    ThinkID (0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10) #REQUIRED
+>
+
+<!ELEMENT Manipulative EMPTY>
+<!ATTLIST Manipulative
+    Type (oneeighth_inch_ruler | cm_ruler | mm_ruler | half_inch_ruler | protractor | standard_calculator | formula_card | scientific_calculator ) #REQUIRED
+	Provision ( required | accommodated ) "required"
+>
+
+<!ELEMENT ThemePage (ThemePageContent)>
+<!ATTLIST ThemePage
+    Template (TP1 | TP2 | TP3) #REQUIRED
+    Part CDATA #REQUIRED
+>
+
+<!ELEMENT Comments (Comment)+>
+<!ELEMENT Comment (%text;)*>
+<!ATTLIST Comment
+	ID CDATA #IMPLIED
+	UserName CDATA #IMPLIED
+	DateStamp CDATA #IMPLIED
+>
+<!ELEMENT StudentDirections (%text; | P | OrderedList | UnorderedList)*>
+<!ATTLIST StudentDirections
+	ID CDATA #IMPLIED
+	x	CDATA #IMPLIED
+	y	CDATA #IMPLIED
+	width	CDATA #IMPLIED
+	height	CDATA #IMPLIED
+	layout (vertical | horizontal) "vertical"
+	spacing CDATA #IMPLIED
+>
+<!ELEMENT LeadIn (%text; | Acknowledgement)*>
+
+<!ELEMENT Stem (%blocktext;)*>
+<!ATTLIST Stem
+	x	CDATA #IMPLIED
+	y	CDATA #IMPLIED
+	width	CDATA #IMPLIED
+	height	CDATA #IMPLIED
+	layout (vertical | horizontal) "vertical"
+	spacing CDATA #IMPLIED
+	location ( left_column | right_column | full_row ) "right_column"
+>
+
+<!-- Constructed Response; an essay-type answer -->
+<!ELEMENT ConstructedResponse ((AnswerGroup | AnswerArea), Rubric?)>
+<!ATTLIST ConstructedResponse
+	ID CDATA #IMPLIED
+	MaxScorePts CDATA #REQUIRED
+	MinScorePts (0 | 1) "0"
+	ResponseType CDATA #IMPLIED
+	x	CDATA #IMPLIED
+	y	CDATA #IMPLIED
+	width	CDATA #IMPLIED
+	height	CDATA #IMPLIED
+	layout (vertical | horizontal) "vertical"
+	spacing CDATA #IMPLIED
+	location ( left_column | right_column | full_row ) "full_row"
+>
+
+<!ELEMENT AnswerArea (%text; | TextBox | Line)*>
+<!ATTLIST AnswerArea
+	Label CDATA #IMPLIED
+	ID CDATA #IMPLIED
+	AreLinesVisible (Yes | No) "Yes"
+	AnswerSizeInWords  CDATA #IMPLIED
+>
+
+<!ELEMENT AnswerGroup (Stem+, AnswerArea+)>
+
+<!ELEMENT Rubric (%blocktext;)*>
+<!ATTLIST Rubric
+	Label CDATA #IMPLIED
+	ID CDATA #IMPLIED
+>
+<!ELEMENT Line (%text;)*>
+<!ATTLIST Line
+	IndentLevel CDATA #IMPLIED
+	ID CDATA #IMPLIED
+	FillPageWithLines (Yes | No) "No"
+	LineLength (Short | Medium | Full) "Full"
+>
+
+<!-- Selected Response; multiple choice, where the answer choices
+are given to the student and for which there is only one correct
+answer -->
+<!ELEMENT SelectedResponse (AnswerChoice)+>
+<!ATTLIST SelectedResponse
+	ID CDATA #IMPLIED
+	NumberAnswerChoices (2 | 3 | 4 | 5 | 6) "4"
+	x	CDATA #IMPLIED
+	y	CDATA #IMPLIED
+	width	CDATA #IMPLIED
+	height	CDATA #IMPLIED
+	spacing CDATA #IMPLIED
+	layout (vertical | horizontal) "vertical"
+	location ( left_column | right_column | full_row ) "full_row"
+	stack ( Z | N | na ) "na"
+>
+<!ELEMENT AnswerChoice (%text; | DistractorRationale)*>
+<!ATTLIST AnswerChoice
+	Type (Distractor | Correct) "Distractor"
+>
+<!ELEMENT DistractorRationale (%text;)*>
+<!ATTLIST DistractorRationale
+	ID CDATA #IMPLIED
+    	DisplayMessage CDATA #IMPLIED
+>
+<!-- a component that is necessary to answer a given set of items -->
+<!ELEMENT Stimulus (Title?, StimulusDirections?, (Graphic | Heading | Passage | Acknowledgement | BR )+)>
+<!ATTLIST Stimulus
+	ID CDATA #IMPLIED
+	dedupe ( yes ) #IMPLIED
+	x	CDATA #IMPLIED
+	y	CDATA #IMPLIED
+	width	CDATA #IMPLIED
+	height	CDATA #IMPLIED
+	layout (vertical | horizontal) "vertical"
+	spacing CDATA #IMPLIED 
+	location ( left_column | right_column | full_row ) "left_column"
+>
+
+<!ELEMENT StimulusDirections (%text;)*>
+<!ATTLIST StimulusDirections
+	ID CDATA #IMPLIED
+	x	CDATA #IMPLIED
+	y	CDATA #IMPLIED
+	width	CDATA #IMPLIED
+	height	CDATA #IMPLIED
+	layout (vertical | horizontal) "vertical"
+	spacing CDATA #IMPLIED
+>
+
+<!ELEMENT Acknowledgement (%text;)*>
+<!ATTLIST Acknowledgement
+	ID CDATA #IMPLIED
+>
+
+<!ELEMENT Heading (%text; | P)*>
+<!ATTLIST Heading
+	ID CDATA #IMPLIED
+>
+
+<!-- usually a reading passage from which the student must gather
+facts and reach conclusions -->
+<!ELEMENT Passage (%text; | Heading)*>
+<!ATTLIST Passage
+	LengthInWords CDATA #IMPLIED
+	Readability CDATA #IMPLIED
+	Genre CDATA #IMPLIED
+	ID CDATA #IMPLIED
+	title CDATA #IMPLIED
+	width	CDATA #IMPLIED
+	height	CDATA #IMPLIED
+	layout_group_id	CDATA #IMPLIED
+>
+<!-- emphasis, etc in all caps for Flash client -->
+<!ELEMENT B (#PCDATA | U | I | BR | FONT)*>
+<!ELEMENT I (#PCDATA | U | B | BR | FONT)*>
+<!ELEMENT U (#PCDATA | I | B | BR | FONT)*>
+
+<!ELEMENT P (#PCDATA | U | I | B | FONT | BR )*>
+<!ATTLIST P
+	IndentLevel CDATA #IMPLIED
+	ALIGN (LEFT | CENTER | RIGHT) "LEFT"
+>
+<!-- break: line break by default; can also be page break -->
+<!ELEMENT BR EMPTY>
+<!ATTLIST BR
+	Type (Line | Page) "Line"
+>
+<!-- common components -->
+<!ELEMENT Graphic (BMPPrint | Flash | EPSPrint)*>
+<!ATTLIST Graphic
+	ID CDATA #IMPLIED
+	title CDATA #IMPLIED
+>
+
+<!ELEMENT BMPPrint EMPTY>
+<!ATTLIST BMPPrint
+	ID CDATA #IMPLIED
+	FileName CDATA #REQUIRED
+	Alt CDATA #IMPLIED
+	Height CDATA #IMPLIED
+	Width CDATA #IMPLIED
+	Position (Above | Below | Left | Right | Here | Center) "Here"
+>
+<!ELEMENT Flash EMPTY>
+<!ATTLIST Flash
+	ID CDATA #IMPLIED
+	FileName CDATA #REQUIRED
+	FileName2 CDATA #IMPLIED
+	MathML CDATA #IMPLIED
+	Alt CDATA #IMPLIED
+	Height CDATA #IMPLIED
+	Width CDATA #IMPLIED
+	Position (Above | Below | Left | Right | Here | Center) "Here"
+>
+<!ELEMENT EPSPrint EMPTY>
+<!ATTLIST EPSPrint
+	ID CDATA #IMPLIED
+	FileName CDATA #REQUIRED
+	Alt CDATA #IMPLIED
+	Height CDATA #IMPLIED
+	Width CDATA #IMPLIED
+	Position (Above | Below | Left | Right | Here | Center) "Here"
+>
+<!ELEMENT TextBox (BoxDirection?, BoxAnswer*)>
+<!ATTLIST TextBox
+	LineCount CDATA #REQUIRED
+	IndentLevel CDATA #IMPLIED
+>
+
+<!ELEMENT BoxDirection (%text;)*>
+<!ATTLIST BoxDirection
+	IndentLevel CDATA #IMPLIED
+	ID CDATA #IMPLIED
+>
+<!ELEMENT BoxAnswer (%text;)*>
+<!ATTLIST BoxAnswer
+	IndentLevel CDATA #IMPLIED
+	ID CDATA #IMPLIED
+>
+<!ELEMENT OrderedList (ListItem+)>
+<!ELEMENT UnorderedList (ListItem+)>
+<!ELEMENT ListItem (%text;)*>
+
+<!ELEMENT ThemePageContent (Graphic | Passage | BR)+>
+<!ATTLIST ThemePageContent
+	ID CDATA #IMPLIED
+>
+<!ELEMENT Description (#PCDATA)>
+<!ELEMENT Title (#PCDATA)>
+
+

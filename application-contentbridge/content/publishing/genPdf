@@ -1,0 +1,68 @@
+#!/bin/ksh
+
+if [ "$1" = "1" -o "$1" = "2" ] ; then
+   CR_CALL="true"
+else
+   CR_CALL="false"
+fi
+
+echo "CR_CALL: $CR_CALL"
+
+if [ "$CR_CALL" = "true" ] ; then 
+	if [ "$1" = "" ] ; then
+	   FLAG="1"
+	else
+	   FLAG="$1"
+	fi
+
+	if [ "$2" = "" ] ; then
+	   DIR="/export/cim"
+	else
+	   DIR="$2"
+	fi
+else
+        if [ "$1" = "" ] ; then
+           DIR="/export/cim"
+        else
+           DIR="$1"
+        fi	
+fi
+
+echo "GOT: $1, DIR: $DIR"
+
+cd $DIR
+
+# /usr/bin/rm $LOGS_PATH/*
+
+/usr/bin/date > $DIR/logs/fopib.txt
+/usr/bin/date > $DIR/logs/fopak.txt
+
+#chmod 775 $DIR/compdisp.xml
+
+#fopit compdisp.xml FOP_Interface.xsl >> $DIR/logs/fopib.txt 2>&1
+
+if [ "$FLAG" = "2" ] ; then
+   echo "Creating compdisp_IBPDF.pdf...."
+   $DIR/fopit compdisp.xml FOP_Interface.xsl >> $DIR/logs/fopib.txt 2>&1 || exit 1
+   cp compdisp.pdf compdisp_IBPDF.pdf
+   echo "Creating compdisp_CRIBPDF.pdf...."
+   $DIR/fopit compdisp.xml FOP_Interface_CRIBPDF.xsl >> $DIR/logs/fopib.txt 2>&1 || exit 1
+   cp compdisp.pdf compdisp_CRIBPDF.pdf
+   echo "Creating compdisp_AKPDF.pdf...."
+   $DIR/fopit compdisp.xml FOP_Interface_AK.xsl >> $DIR/logs/fopak.txt 2>&1 || exit 1
+   cp compdisp.pdf compdisp_AKPDF.pdf
+   cp compdisp.pdf compdisp.ak.pdf
+   echo "Creating compdisp_CRAKPDF.pdf...."
+   $DIR/fopit compdisp.xml FOP_Interface_CRAKPDF.xsl >> $DIR/logs/fopak.txt 2>&1 || exit 1
+   cp compdisp.pdf compdisp_CRAKPDF.pdf
+else
+   echo "Creating compdisp_AKPDF.pdf...."
+   $DIR/fopit compdisp.xml FOP_Interface_AK.xsl >> $DIR/logs/fopak.txt 2>&1 || exit 1
+   cp compdisp.pdf compdisp_AKPDF.pdf
+   echo "Creating compdisp_IBPDF.pdf...."
+   $DIR/fopit compdisp.xml FOP_Interface.xsl >> $DIR/logs/fopib.txt 2>&1 || exit 1
+   cp compdisp.pdf compdisp_IBPDF.pdf
+fi
+
+
+

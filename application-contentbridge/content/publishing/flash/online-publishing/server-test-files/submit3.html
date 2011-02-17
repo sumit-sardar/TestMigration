@@ -1,0 +1,61 @@
+<HTML>
+<HEAD><TITLE>File Upload</TITLE>
+</HEAD>
+<script language="JavaScript" type="text/javascript">
+<!--
+function setTemplateFile(){
+	templateFile = document.forms[0].elements[2].value;
+	serverLoc = "http://198.45.17.23:8000/onlinetest/";
+	finalLoc = serverLoc + templateFile;
+	document.form[0].submit();
+};
+// end hiding contents -->
+</script>
+<BODY>
+<span class="headerart">Upload XML File</span>
+<BR>
+<BR>
+
+<BR>
+Click the browse button to locate the fo file you wish to preview in pdf.
+<br>
+<br>
+<form name="form1" id="frmUploadOrganizationFile" method="post" ENCTYPE="multipart/form-data" onSubmit="http://198.45.17.23:8000/onlinetest/tabe_ak2.swt;">
+<input type="hidden" name="command" value="frmUploadOrganizationFile">
+<table cellspacing="0" cellpadding="1" border="0">
+<tr>
+    <td class="wrapperTable">
+<!--Start of wrapper table-->
+
+<!--Start of upload table-->
+    <table cellspacing="0" cellpadding="5" border="0" width="375" class="infoTable">
+    <tr>
+        <td class="infoTableLabels" width="38%">Select the file to Upload:</td>
+        <td class="infoTableLabels"><img src="/images/transparent.gif" width="4" height="20" border="0" alt="" /></td>
+        <td class="infoTableData" width="60%">
+            <INPUT TYPE=FILE class="inputText" name="file1" id="file1" value="">
+        </td>
+    </tr>
+	<tr>
+		<td class="infoTableLabels" width="38%">Select the template to use:</td>
+        <td class="infoTableLabels"><img src="/images/transparent.gif" width="4" height="20" border="0" alt="" /></td>
+        <td class="infoTableData" width="60%">
+            <INPUT TYPE=TEXT class="inputText" name="place" id="place" value="" onBlur="setTemplateFile">
+        </td>
+	</tr>
+    <tr>
+        <td class="infoTableLabels"><input type=submit value="submit xml" src="https://testadministration.ctb.com/images/buttons/Submit.gif" width="47" height="14" border="0" alt="Submit Button"></td>
+        <td class="infoTableLabels"><img src="<ctb:staticRoot/>/images/transparent.gif" width="4" height="20" border="0" alt="" /></
+td>
+        <td class="infoTableData"><a href="<ctb:back/>"><img src="https://testadministration.ctb.com/images/buttons/Cancel.gif" widt
+h="47" height="15" border="0" alt="Cancel Button"></a></td>
+    </TR>
+    </table>
+    </td>
+</tr>
+</table>
+</form>
+        
+<!--end of upload form-->
+</BODY>
+</HTML>

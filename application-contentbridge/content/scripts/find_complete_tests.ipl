@@ -1,0 +1,47 @@
+use strict;
+use File::Find;
+
+
+my %item_ids = ();
+my $file;
+my @ctbs4 = qw( 	/default/main/CTBS4/MATH/WORKAREA/load/Content
+			/default/main/CTBS4/READING/WORKAREA/load/Content
+);
+
+&find(\&file_process, @ctbs4);
+	
+foreach $file (@ARGV) {
+	next unless -f $file && $file =~ /txt$/;
+        my $found = 1;
+	my @missing;
+	
+	open(FILEHANDLE, $file);
+	while (<FILEHANDLE>) {
+		chomp;
+		if ($item_ids{$_}) {
+	#		print "FOUND ITEM: $_ is in CTBS4\n";
+		} else {
+	#		print "MISSING ITEM: $_ is not in CTBS4\n";
+			push @missing, $_;
+			$found = 0;
+		}
+	}
+	$found == 1 ? print "FOUND TEST: Test $file is complete!\n" : print "INCOMPLETE TEST: Test $file not complete missing: " . join(' ', @missing) . "\n";
+
+}
+
+sub file_process {
+	return unless -f;
+	my $file = $File::Find::name;
+	return unless $file =~ /^(.*\/WORKAREA\/load)\/Content.*/;
+        return if $file =~ /graphics/i; 
+	my $area = $1;
+	my $cmd = "/appl/TeamSite/iw-home/bin/iwxmlinfo -f script fi $file";
+	my @full_file_path = `/appl/TeamSite/iw-home/bin/iwxmlinfo -f script fi $file`;
+	foreach (@full_file_path) {
+		my $item_id;
+		$_ =~ m/"([^"]+)"/mg; #"
+		$item_ids{$1} = 1;
+        }
+	return 0;
+}

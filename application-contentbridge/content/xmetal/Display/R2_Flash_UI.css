@@ -1,0 +1,500 @@
+@sq-tag-makes-line-non-empty ;
+
+/* Use Times New Roman for default font */
+$DOCUMENT {
+  font-family: "Lucida Sans Unicode";
+  font-size: 12pt;
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+$COMMENT {
+  display: block;
+  color: purple;
+  // white-space: pre;
+}
+
+$PROCINS {
+  color: black;
+  background-color: #FFFF99;
+  font-family: System;
+}
+
+Item {
+  display: block;
+  margin-top: 20pt;
+  margin-left: 10pt;
+  margin-bottom: 20pt;
+  counter-reset: hierarchyctr;
+  counter-increment: itemctr;
+}
+
+ItemSet {
+  counter-reset: itemctr;
+  counter-increment: itemsetctr;
+  border-top: thin solid;
+  display: block;
+  margin-top: 10pt;
+  margin-left: 10pt;
+  margin-bottom: 10pt;
+  border-right: solid;
+  border-bottom: solid;
+}
+
+Item[Sample="Yes"] {
+  background-color: #FFFFCC;
+}
+
+SubTest {
+  // display: block;
+  counter-reset: itemsetctr;
+  counter-increment: subtestctr;
+  margin-top: 10pt;
+  margin-left: 10pt;
+  margin-bottom: 10pt;
+}
+
+SubTest:before {
+  content: "Subtest " counter(subtestctr) "\A (Content Area: " attr(ContentArea) ") \a (Grade: " attr(Grade) ") \a (Title: " attr(Title) ")\A";
+}
+
+B {
+  font-weight: bold;
+  display: inline;
+}
+
+I {
+  font-style: italic;
+  display: inline;
+}
+
+U {
+  text-decoration: underline;
+  display: inline;
+}
+
+ItemSet, SubTest, P, AnswerChoice, Assessment, ConstructedResponse, AnswerArea, Rubric, Graphic, Flash, BMPPrint, EPSPrint, Heading, LeadIn, ListItem, OrderedList, Passage, Acknowledgement, SampleSet, SelectedResponse, Stem, Stimulus, StudentDirections, TextBox, UnorderedList, Comment, Comments, DistractorRationale, TitleImage {
+  display: block;
+}
+
+SubTest:before, Assessment:before, TitleImage:before, Item:before, StudentDirections:before, Stem:before, Stimulus:before, DistractorRationale:before, AnswerArea:before, Rubric:before, Comment:before, Passage:before, Heading:before, Acknowledgement:before, SampleSet:before, ItemSet:before, ConstructedResponse:before, Hierarchy:before, LeadIn:before, SelectedResponse:before, Graphic:before, Flash:before, BMPPrint:before, EPSPrint:before, BoxDirection:before, BoxAnswer:before, Line:before, TextBox:before {
+  color: blue;
+}
+
+Hierarchy>Hierarchy {
+  border: none;
+}
+
+Hierarchy, Stimulus, Stem, StudentDirections, Comment, LeadIn, ConstructedResponse, SelectedResponse {
+  border: thin gray solid;
+}
+
+Assessment {
+  counter-reset: subtestctr;
+}
+
+Assessment:before {
+  content: "Assessment \a (Product ID: " attr(ProductID) ") \a (Grade: " attr(Grade) ") \a (Title: " attr(Title) ")\A";
+  font-family: "Arial CYR";
+}
+
+Item:before {
+  content: "Item " counter(itemctr) "\A (ID: " attr(ID) ")\A (Display ID: " attr(DisplayID) ")\A (Item Type: " attr(ItemType) ")\A (Objective ID: " attr(ObjectiveID) ")\A (Historical Item ID: " attr(ItemHistory) ")\A";
+  display: inline;
+}
+
+StudentDirections:before {
+  content: "Student Directions:\A (Display Always: " attr(DisplayAlways) ")\A";
+}
+
+Comments {
+  margin-top: 5pt;
+  margin-left: 5pt;
+  margin-bottom: 5pt;
+}
+
+Assessment>Comments:before {
+  content: "Assessment Comments -- ";
+  color: blue;
+}
+
+SubTest>Comments:before {
+  content: "SubTest Comments -- ";
+  color: blue;
+}
+
+ItemSet>Comments:before {
+  content: "ItemSet Comments -- ";
+  color: blue;
+}
+
+Stem:before {
+  display: block;
+  content: "Stem: ";
+}
+
+Stimulus:before {
+  content: "Stimulus: \A";
+}
+
+Stimulus {
+  margin-left: 5pt;
+  margin-bottom: 5pt;
+}
+
+Heading {
+  margin-left: 5pt;
+  margin-bottom: 5pt;
+}
+
+Graphic {
+  margin-left: 5pt;
+  margin-bottom: 5pt;
+}
+
+Graphic:before {
+  margin-left: 20pt;
+  margin-bottom: 5pt;
+  content: "Graphic: \a (ID: " attr(ID) ")\a";
+}
+
+Flash {
+  margin-left: 5pt;
+  margin-bottom: 5pt;
+}
+
+Flash:before {
+  margin-left: 20pt;
+  margin-bottom: 5pt;
+  content: "Flash -- (File Name: " attr(FileName) ")\a";
+}
+
+BMPPrint {
+  margin-left: 5pt;
+  margin-bottom: 5pt;
+}
+
+BMPPrint:before {
+  margin-left: 20pt;
+  margin-bottom: 5pt;
+  content: "BMP Print -- (File Name: " attr(FileName) ")\a";
+}
+
+EPSPrint {
+  margin-left: 5pt;
+  margin-bottom: 5pt;
+}
+
+EPSPrint:before {
+  margin-left: 20pt;
+  margin-bottom: 5pt;
+  content: "EPS Print -- (File Name: " attr(FileName) ")\a";
+}
+
+TitleImage:before {
+  content: "Title Image -- (Src: " attr(Src) ")\a";
+}
+
+Passage {
+  margin-left: 5pt;
+  margin-bottom: 5pt;
+  font-weight: normal;
+}
+
+Acknowledgement {
+  margin-left: 5pt;
+  margin-bottom: 5pt;
+  font-weight: normal;
+}
+
+Stem {
+  margin-left: 5pt;
+  margin-bottom: 5pt;
+  margin-top: 10pt;
+}
+
+BR {
+  display: inline;
+}
+
+BR[Type="Page"] {
+  display: inline;
+}
+
+BR[Type="Page"]:before {
+  color: blue;
+  content: "\a --- Page Break --- \a";
+}
+
+BR:after {
+  content: "\a.";
+  color: white;
+  background-color: white;
+}
+
+DistractorRationale:before {
+  display: inline;
+  content: "Distractor Rationale: ";
+}
+
+DistractorRationale:after {
+  display: inline;
+}
+
+DistractorRationale {
+  display: block;
+  margin-left: 15pt;
+  margin-right: 15pt;
+}
+
+AnswerChoice[Type="Correct"] {
+  color: green;
+}
+
+AnswerChoice {
+  border-right: thin solid;
+  border-bottom: thin solid;
+  border-left: thin solid;
+}
+
+Comment:before {
+  content: "Comment \a (Editor: " attr(UserName) ") \a (Date: " attr(DateStamp) ")\A";
+}
+
+Passage:before {
+  display: inline;
+  content: "Passage: ";
+}
+
+Acknowledgement:before {
+  display: inline;
+  content: "Acknowledgement: \a";
+}
+
+Heading:before {
+  display: inline;
+  content: "Heading: ";
+}
+
+P {
+  margin-left: 5pt;
+  margin-bottom: 10pt;
+  display: block;
+}
+
+SampleSet:before {
+  display: block;
+  content: "Sample Set";
+}
+
+ItemSet:before {
+  content: "Item Set " counter(itemsetctr) "\A (ID: " attr(ID) ")\A";
+}
+
+Hierarchy:before {
+  display: block;
+  content: "(Curriculum Type: " attr(Type) "), (Curriculum Name: " attr(Name) ")";
+  margin-left: 0pt;
+}
+
+ 
+Hierarchy {
+  counter-increment: hierarchyctr;
+  display: block;
+  margin-left: 5pt;
+  margin-right: 15pt;
+  margin-top: 5pt;
+  margin-bottom: 5pt;
+}
+
+LeadIn {
+  margin-top: 5pt;
+  margin-left: 5pt;
+  margin-bottom: 5pt;
+}
+
+LeadIn:before {
+  content: "Lead In:";
+}
+
+SelectedResponse {
+  display: block;
+  margin-left: 5pt;
+  margin-top: 5pt;
+  margin-bottom: 5pt;
+}
+
+SelectedResponse:before {
+  content: "Selected Response \a (Number of Answer Choices: " attr(NumberAnswerChoices) ")\a";
+}
+
+ConstructedResponse {
+  display: block;
+  margin-left: 5pt;
+  margin-top: 5pt;
+  margin-bottom: 5pt;
+}
+
+ConstructedResponse:before {
+  content: "Constructed Response \a (Maximum Score Points: " attr(MaxScorePts) ")\a (Minimum Score Points: " attr(MinScorePts) ")\a (Response Type: " attr(ResponseType) ")\a (Scoring Type: " attr(ScoringType) ")\a (Answer Size: " attr(AnswerSize) ")\a";
+  // color: blue;
+}
+
+AnswerArea {
+  counter-reset: linectr;
+  display: block;
+  margin-left: 10pt;
+  margin-top: 10pt;
+  margin-bottom: 10pt;
+}
+
+AnswerArea:before {
+  content: "Answer Area: \A (Label: " attr(Label) ")\a";
+}
+
+Rubric {
+  display: block;
+  margin-left: 10pt;
+  margin-top: 10pt;
+  margin-bottom: 10pt;
+}
+
+Rubric:before {
+  content: "Rubric: \A (Label: " attr(Label) ")\a";
+}
+
+Comment {
+  margin-bottom: 5pt;
+}
+
+ListItem {
+  display: list-item;
+  margin-left: 15pt;
+}
+
+OrderedList {
+  list-style-type: decimal;
+  margin-left: 15pt;
+  margin-bottom: 20pt;
+  margin-top: 20pt;
+}
+
+UnorderedList {
+  list-style-type: circle;
+  margin-left: 15pt;
+  margin-bottom: 20pt;
+  margin-top: 20pt;
+}
+
+StudentDirections {
+  margin-left: 5pt;
+  margin-right: 5pt;
+  margin-bottom: 10pt;
+  margin-top: 10pt;
+}
+
+TitleImage {
+  margin-left: 10pt;
+}
+
+TextBox:before {
+  display: block;
+  content: "(Line Count: " attr(LineCount) ")\a";
+}
+
+TextBox {
+  margin-top: 5pt;
+  margin-bottom: 5pt;
+  margin-right: 20pt;
+  margin-left: 20pt;
+  border: thin gray solid;
+}
+
+Line:before {
+  content: "Line " counter(linectr) ":\a";
+}
+
+Line {
+  counter-increment: linectr;
+  margin-left: 5pt;
+  margin-bottom: 10pt;
+  display: block;
+}
+
+AnswerArea>P, AnswerArea>OrderedList, AnswerArea>UnorderedList, AnswerArea>TextBox, AnswerArea>Graphic {
+  counter-reset: linectr;
+}
+
+BoxDirection:before {
+  content: "Box Direction: ";
+}
+
+BoxAnswer:before {
+  content: "Box Answer: ";
+}
+
+BoxDirection, BoxAnswer {
+  margin-left: 5pt;
+  margin-bottom: 5pt;
+  display: block;
+}
+
+FONT {
+  display: inline;
+}
+
+[FACE="Times New Roman"] {
+  font-family: "Times New Roman";
+}
+
+[FACE="Arial"] {
+  font-family: "Arial";
+}
+
+[FACE="Tahoma"] {
+  font-family: "Tahoma";
+}
+
+[FACE="Courier"] {
+  font-family: "Courier";
+}
+
+[FACE="Courier New"] {
+  font-family: "Courier New";
+}
+
+[FACE="Lucida Sans Unicode"] } font-family: "Lucida Sans Unicode"; } [SIZE="medium"] {
+  font-size: medium;
+}
+
+[SIZE="small"] {
+  font-size: small;
+}
+
+[SIZE="smaller"] {
+  font-size: smaller;
+}
+
+[SIZE="x-small"] {
+  font-size: x-small;
+}
+
+[SIZE="xx-small"] {
+  font-size: xx-small;
+}
+
+[SIZE="large"] {
+  font-size: large;
+}
+
+[SIZE="larger"] {
+  font-size: larger;
+}
+
+[SIZE="x-large"] {
+  font-size: x-large;
+}
+
+[SIZE="xx-large"] {
+  font-size: xx-large;
+}

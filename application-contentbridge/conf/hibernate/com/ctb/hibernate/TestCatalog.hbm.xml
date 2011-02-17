@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping>
+    <class
+        name="com.ctb.hibernate.TestCatalog"
+        table="TEST_CATALOG"
+        dynamic-update="true"
+        dynamic-insert="true"
+    >
+
+        <id
+            name="testCatalogId"
+            column="TEST_CATALOG_ID"
+            type="java.lang.Long"
+        >
+            <generator class="assigned">
+            </generator>
+        </id>
+
+        <property
+            name="activationStatus"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="ACTIVATION_STATUS"
+            not-null="true"
+        />
+
+        <property
+            name="createdBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="CREATED_BY"
+            not-null="true"
+        />
+
+        <property
+            name="createdDateTime"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="CREATED_DATE_TIME"
+            not-null="false"
+        />
+
+        <property
+            name="extCatalogId"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="EXT_CATALOG_ID"
+            not-null="false"
+        />
+
+        <property
+            name="productId"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="PRODUCT_ID"
+            not-null="true"
+        />
+
+        <property
+            name="subject"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="SUBJECT"
+            not-null="true"
+        />
+
+        <property
+            name="testDisplayName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="TEST_DISPLAY_NAME"
+            not-null="false"
+        />
+
+        <property
+            name="testForm"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="TEST_FORM"
+            not-null="false"
+        />
+
+        <property
+            name="testGrade"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="TEST_GRADE"
+            not-null="false"
+        />
+
+        <property
+            name="testLevel"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="TEST_LEVEL"
+            not-null="false"
+        />
+
+        <property
+            name="testName"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="TEST_NAME"
+            not-null="true"
+        />
+
+        <property
+            name="updatedBy"
+            type="java.lang.Long"
+            update="true"
+            insert="true"
+            column="UPDATED_BY"
+            not-null="false"
+        />
+
+        <property
+            name="updatedDateTime"
+            type="java.util.Date"
+            update="true"
+            insert="true"
+            column="UPDATED_DATE_TIME"
+            not-null="false"
+        />
+
+        <property
+            name="version"
+            type="java.lang.String"
+            update="true"
+            insert="true"
+            column="VERSION"
+            not-null="false"
+        />
+
+        <!--
+            To add non XDoclet property mappings, create a file named
+                hibernate-properties-TestCatalog.xml
+            containing the additional properties and place it in your merge dir.
+        -->
+
+    </class>
+
+</hibernate-mapping>
