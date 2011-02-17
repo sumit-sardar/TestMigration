@@ -209,6 +209,8 @@ public class ScheduleTestController extends PageFlowController
     private boolean isTestSessionDataExported  = false;
     private String hasReport = null;
     private String bulkAcc = null;
+    //Changes for defect in performance tuning
+    private boolean gradeFlag = false;
     
     
     public String [] getFormOptions() {
@@ -489,7 +491,7 @@ public class ScheduleTestController extends PageFlowController
       //change for performance tuning
         if(currentAction==null)
         {
-       	currentAction="null";
+        	currentAction="null";
         }
         
         try
@@ -497,8 +499,8 @@ public class ScheduleTestController extends PageFlowController
             if (this.testProductData == null)
             { // first time here 
                 this.testProductData = this.getTestProductDataForUser();
+                 tps = this.testProductData.getTestProducts();//changes for performance tuning
             }
-            tps = this.testProductData.getTestProducts();//changes for performance tuning
         	           
                        
             
@@ -661,11 +663,15 @@ public class ScheduleTestController extends PageFlowController
             //End of change for license
             
             this.productType = TestSessionUtils.getProductType(tps[selectedProductIndex].getProductType());
-    
-            if (this.levelList.size() > 0) 
+            
+            //Changes for defect in performance tuning    
+            if (this.levelList.size() > 0 && gradeFlag==false) {
                 this.showLevelOrGrade = "level";
+            }
             else if (this.gradeList.size() > 0)
             {
+            	 //Changes for defect in performance tuning 
+            	gradeFlag = true;
                 this.showLevelOrGrade = "grade";
                 this.levelList = this.gradeList;
             }
@@ -707,7 +713,14 @@ public class ScheduleTestController extends PageFlowController
             //START- Added for Deferred Defect 59285
             form.testStatePathList.setMaxPageRequested(totalNumOfPages);
             //END- Added for Deferred Defect 59285
+          //code for performance tuning
+            if(currentAction.equals("null")){
             this.testList = buildTestList(ted);
+            }
+            
+            if (!((currentAction.equals("selectTest"))||(currentAction.equals("null")))){
+            	this.testList = buildTestList(ted);
+         }
            
             if (form.getTestStatePathList().getPageRequested().intValue() > ted.getFilteredPages().intValue())
             {
@@ -1249,10 +1262,12 @@ public class ScheduleTestController extends PageFlowController
                         this.levelList = createLevelList(tps[i].getLevels());
                         this.gradeList = createGradeList(tps[i].getGrades());  
              
-                        if (this.levelList.size() > 0) 
+                        //Changes for defect in performance tuning
+                        if (this.levelList.size() > 0 && gradeFlag==false) 
                             this.showLevelOrGrade = "level";
                         else if (this.gradeList.size() > 0)
                         {
+                        	gradeFlag=true;
                             this.showLevelOrGrade = "grade";
                             this.levelList = this.gradeList;
                         }
