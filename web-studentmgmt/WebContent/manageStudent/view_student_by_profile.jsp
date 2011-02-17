@@ -1,3 +1,4 @@
+<%@ page import="java.io.*, java.util.*"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
@@ -8,7 +9,10 @@
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
-
+<%
+   
+	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); //Change For CR - GA2011CR001
+%>
 
 
 <table class="simple">
@@ -57,7 +61,14 @@
         <td class="transparent"><netui:label value="${studentProfileData.gender}"/></td>
     </tr>
     <tr class="transparent">
-        <td class="transparent" width="80"><netui:content value="Student ID:"/></td>
+        <td class="transparent" width="80">
+        
+         <c:if test="${isStudentIdConfigurable}">   
+        <netui:content value="${studentIdArrValue[0]}:"/></td>
+         </c:if>
+          <c:if test="${!isStudentIdConfigurable}">   
+        <netui:content value="Student ID:"/></td>
+         </c:if>
         <td class="transparent"><netui:label value="${studentProfileData.studentNumber}"/></td>
     </tr>
     <tr class="transparent">

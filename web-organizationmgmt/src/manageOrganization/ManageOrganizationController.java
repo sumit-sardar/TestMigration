@@ -1,37 +1,40 @@
 package manageOrganization;
-import org.apache.beehive.netui.pageflow.Forward;
-import org.apache.beehive.netui.pageflow.PageFlowController;
-import com.ctb.bean.request.FilterParams;
-import com.ctb.bean.request.PageParams;
-import com.ctb.bean.request.SortParams;
-import com.ctb.bean.testAdmin.Customer;
-import com.ctb.bean.testAdmin.Node;
-import com.ctb.bean.testAdmin.NodeData;
-import com.ctb.bean.testAdmin.OrgNodeCategory;
-import com.ctb.bean.testAdmin.User;
-import com.ctb.exception.CTBBusinessException;
-import com.ctb.util.CTBConstants;
-import com.ctb.util.OASLogger;
-import com.ctb.util.web.sanitizer.SanitizedFormData;
-import com.ctb.widgets.bean.PagerSummary;
-import com.ctb.widgets.bean.PathListEntry;
-import dto.Message;
-import dto.NavigationPath;
-import dto.Organization;
-import dto.PathNode;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+
 import org.apache.beehive.controls.api.bean.Control;
+import org.apache.beehive.netui.pageflow.Forward;
+import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
+
 import utils.FilterSortPageUtils;
 import utils.MessageResourceBundle;
 import utils.OrgFormUtils;
 import utils.OrgNodeUtils;
 import utils.OrgPathListUtils;
 import utils.PermissionsUtils;
-import com.ctb.util.OASLogger;
+
+import com.ctb.bean.request.FilterParams;
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.NodeData;
+import com.ctb.bean.testAdmin.OrgNodeCategory;
+import com.ctb.bean.testAdmin.User;
+import com.ctb.exception.CTBBusinessException;
+import com.ctb.util.CTBConstants;
+import com.ctb.util.web.sanitizer.SanitizedFormData;
+import com.ctb.widgets.bean.PagerSummary;
+import com.ctb.widgets.bean.PathListEntry;
+
+import dto.Message;
+import dto.NavigationPath;
+import dto.Organization;
+import dto.PathNode;
 
 
 /**
@@ -46,6 +49,18 @@ public class ManageOrganizationController extends PageFlowController
      */
     @Control()
     private com.ctb.control.db.Roles roles;
+
+    /**
+     * @common:control
+     */    
+    @Control()
+    private com.ctb.control.db.Users users;
+    
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.userManagement.UserManagement userManagement;
 
     static final long serialVersionUID = 1L;
     
@@ -85,6 +100,7 @@ public class ManageOrganizationController extends PageFlowController
     public String pageMessage = null;
     public String webTitle = null;
     public String pageTitle = null;
+    private User user = null;
 
     protected global.Global globalApp;
     
@@ -133,6 +149,8 @@ public class ManageOrganizationController extends PageFlowController
     protected Forward beginManageOrganization()
     {        
         getUserDetails();
+        //For Bulk Accommodation
+        customerHasBulkAccommodation();
         this.savedForm = initialize(globalApp.ACTION_DEFAULT);
         String orgNodeIdString = (String)this.getRequest().getAttribute("orgNodeId");
         String orgNodeName = (String)this.getRequest().getAttribute("orgNodeName");
@@ -180,6 +198,8 @@ public class ManageOrganizationController extends PageFlowController
     protected Forward beginFindOrganization()
     {                
         getUserDetails();
+        //For Bulk Accommodation
+        customerHasBulkAccommodation();
         this.savedForm = initialize(globalApp.ACTION_FIND_ORGANIZATION);
         initHierarchy(this.savedForm);                
         this.globalApp.navPath.reset(globalApp.ACTION_FIND_ORGANIZATION);
@@ -745,6 +765,8 @@ public class ManageOrganizationController extends PageFlowController
     protected Forward beginAddOrganization()
     {
         getUserDetails();
+        //For Bulk Accommodation
+        customerHasBulkAccommodation();
         this.savedForm = initialize(globalApp.ACTION_ADD_ORGANIZATION);
         initHierarchy(this.savedForm);                
         this.globalApp.navPath.reset(globalApp.ACTION_ADD_ORGANIZATION);
@@ -2025,7 +2047,14 @@ public class ManageOrganizationController extends PageFlowController
             this.userName = (String)getSession().getAttribute("userName");
       
         }
-        
+        try {
+            this.user = this.userManagement.getUser(this.userName, 
+                                                this.userName);
+       //     this.displayNewMessage = user.getDisplayNewMessage();                                                
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        } 
         getSession().setAttribute("userName", this.userName);
     }
     
@@ -2695,7 +2724,37 @@ public class ManageOrganizationController extends PageFlowController
 	public LinkedHashMap getOrgLevelOptions() {
 		return orgLevelOptions;
 	}
-  
 
+	//Bulk Accommodation
+	private Boolean customerHasBulkAccommodation()
+    {               
+        Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasBulkStudentConfigurable = false;
+
+        try
+        {      
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = users.getCustomerConfigurations(2);
+			}
+            
+            for (int i=0; i < customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+                //Bulk Accommodation
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && cc.getDefaultValue().equals("T")	)
+                {
+                    this.getSession().setAttribute("isBulkAccommodationConfigured", true);
+                    break;
+                } 
+            }
+        }
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+        
+       
+        return new Boolean(hasBulkStudentConfigurable);
+    }
        
 }

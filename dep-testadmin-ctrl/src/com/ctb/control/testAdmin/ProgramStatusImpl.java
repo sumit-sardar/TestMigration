@@ -30,8 +30,8 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
  * @author John_Wang
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class ProgramStatusImpl implements ProgramStatus, Serializable
+@ControlImplementation(isTransient=true)
+public class ProgramStatusImpl implements ProgramStatus
 { 
     /**
      * @common:control
@@ -123,7 +123,6 @@ public class ProgramStatusImpl implements ProgramStatus, Serializable
         }
     }
     
-
     /**
      * Retrieves a filtered, sorted, paged list of tests under the specified program.
      * @common:operation

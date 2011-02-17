@@ -2,6 +2,9 @@ package testTicket;
 
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
+
+import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScheduledSession;
@@ -25,6 +28,7 @@ import data.TestRosterVO;
 import data.TestSummaryVO;
 import data.TestVO;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -57,6 +61,11 @@ public class TestTicketController extends PageFlowController
     @Control()
     private com.ctb.control.testAdmin.ScheduleTest scheduleTest;
 
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.ItemSet itemSet;
 
     private List testTicketTestList = null;
     
@@ -65,6 +74,22 @@ public class TestTicketController extends PageFlowController
     private ScheduledSession scheduledSession = null;
 
     private String schedulerName = null;
+    
+ // START- Added for CR GA2011CR001
+	CustomerConfiguration[] customerConfigurations = null;
+	
+	CustomerConfigurationValue[] customerConfigurationsValue = null;
+	
+	private String studentIdLabelName = "Student ID";
+	
+	private boolean isStudentIdConfigurable = false;
+	// END- Added for CR GA2011CR001  
+	
+	//START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+	private boolean isMultiIndividualTkt = false;
+	private String filename = "attachment; filename=TestTicketIndividual.pdf ";
+	//END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+	
 
 // Uncomment this declaration to access Global.app.
     // 
@@ -95,6 +120,13 @@ public class TestTicketController extends PageFlowController
         this.userName = principal.toString();
         
         getSession().setAttribute("userName", this.userName);
+        
+        // START- Added for CR GA2011CR001
+        getCustomerConfigurations();  
+        isGeorgiaCustomer();
+        // END- Added for CR GA2011CR001
+        
+        
     }    
     
     /**
@@ -114,10 +146,24 @@ public class TestTicketController extends PageFlowController
             String studentId = (String)getRequest().getParameter("studentId");
             String testAdminId = (String)getRequest().getParameter("testAdminId");
             String orgNodeId = (String)getRequest().getParameter("orgNodeId");
+            String ticketType = (String)getRequest().getParameter("ticketType");  //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
             Integer sessionId = new Integer(testAdminId); 
             TestSessionData tsd = getTestSessionDetails(sessionId);
             ScheduledSession session = this.getScheduledSession(sessionId);
-
+            
+            //START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+            if(ticketType != null){
+            	
+	            if(ticketType.equals("multiple")){
+	            	this.isMultiIndividualTkt = true;
+	            	filename = "attachment; filename=TestTicketMultiple.pdf ";
+	            } else {
+	            	this.isMultiIndividualTkt = false;
+	            	filename = "attachment; filename=TestTicketIndividual.pdf ";
+	            }
+            }
+            //END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+            
             TestAdminVO testAdmin = buildTestAdminVO(tsd, session);
             RosterElementData red = getRosterForTestSessionAndOrgNode(orgNodeId, sessionId);
 //            TestElementData ted = this.getTestsForProductForUser(
@@ -142,16 +188,19 @@ public class TestTicketController extends PageFlowController
             String server = getRequest().getServerName();
             int port = getRequest().getServerPort();
             getResponse().setContentType("application/pdf");
-            getResponse().setHeader("Content-Disposition","attachment; filename=TestTicketIndividual.pdf ");
+            getResponse().setHeader("Content-Disposition", filename); // Changed For CR ISTEP2011CR007 (Multiple Test Ticket)
             getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
             util.generateReport(new Object[]{
                                 rosterList, 
-                                testAdmin, 
+                                testAdmin,
+                                this.isMultiIndividualTkt,
                                 getResponse().getOutputStream(), 
                                 server,
                                 new Integer(port),
                                 this.getRequest().getScheme(),
-                                Boolean.FALSE});
+                                Boolean.FALSE,
+                                this.isStudentIdConfigurable,
+                                this.studentIdLabelName});
         }
         catch (IOException ie)
         {
@@ -188,6 +237,15 @@ public class TestTicketController extends PageFlowController
         {
             if (productId.equals(tps[i].getProductId()))
             {
+                // populate grade and level for selected product
+                TestProduct prod = tps[i];
+                try {
+    				prod.setLevels(itemSet.getLevelsForProduct(prod.getProductId()));
+    	            prod.setGrades(itemSet.getGradesForProduct(prod.getProductId()));
+    			} catch (SQLException e) {
+    				e.printStackTrace();
+    			}
+            	
                 String[] levels = tps[i].getLevels();
                 String[] grades = tps[i].getGrades();
                 if (levels.length > 0)
@@ -271,9 +329,11 @@ public class TestTicketController extends PageFlowController
             getResponse().setContentType("application/pdf");
             getResponse().setHeader("Content-Disposition","attachment; filename=TestTicketSummary.pdf");
             getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+            
             util.generateReport(new Object[]{
                                 rosterList, 
                                 testAdmin, 
+                                false,
                                 summary,
                                 test,
                                 getResponse().getOutputStream(), 
@@ -281,7 +341,9 @@ public class TestTicketController extends PageFlowController
                                 new Integer(port),
                                 this.getRequest().getScheme(),
                                 isTabeProduct,
-                                testproduct});
+                                testproduct,
+                                this.isStudentIdConfigurable,
+                                this.studentIdLabelName});
         }
         catch(IOException ie){
             ie.printStackTrace();
@@ -706,5 +768,141 @@ public class TestTicketController extends PageFlowController
                                  new Integer (untimed),
                                  new Integer (highLighter));
      } 
+    
+ // START- Added for CR GA2011CR001
+    /**
+	 * New method added for CR - GA2011CR001
+	 * isGeorgiaCustomer
+	 */
+    private void isGeorgiaCustomer() 
+    {     
+		 boolean isStudentIdConfigurable = false;
+		 Integer configId=0;
+		 String []valueForStudentId = new String[8] ;
+			for (int i=0; i < this.customerConfigurations.length; i++)
+		        {
+		            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+		          
+		            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
+					{
+						isStudentIdConfigurable = true; 
+						configId = cc.getId();
+						customerConfigurationValues(configId);
+						//By default there should be 3 entries for customer configurations
+						valueForStudentId = new String[8];
+						for(int j=0; j<this.customerConfigurationsValue.length; j++){
+							int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
+							valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+						}
+						valueForStudentId[0] = valueForStudentId[0] != null ? valueForStudentId[0]   : "Student ID" ;
+						this.studentIdLabelName = valueForStudentId[0];
+						
+					}
+		            
+		        }
+			
+			this.isStudentIdConfigurable = isStudentIdConfigurable;
+		 
+    }
+   
+    /**
+	 * New method added for CR - GA2011CR001
+	 * getCustomerConfigurations
+	 */
+	private void getCustomerConfigurations()
+	{
+		try {
+				User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
+				Customer customer = user.getCustomer();
+				Integer customerId = customer.getCustomerId();
+				this.customerConfigurations = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+	}
+	
+	/*
+	 * New method added for CR - GA2011CR001
+	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
+	 */
+	private void customerConfigurationValues(Integer configId)
+	{
+		try {
+				this.customerConfigurationsValue = this.testSessionStatus.getCustomerConfigurationsValue(configId);
+			
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+	}
+	
+	/*
+	 * New method added for CR - GA2011CR001 
+	 * this method can be used in future for setting default value of configurable_StudentId configuration.
+	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
+	 */
+	private String[] getDefaultValue(String [] arrValue, String labelName)
+	{
+		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
+		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
+		if(labelName.equals("Student ID")){
+			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
+			if(!arrValue[2].equals("T") && !arrValue[2].equals("F"))
+				{ 
+					arrValue[2]  = "F";
+				}
+			this.studentIdLabelName = arrValue[0];
+			
+		}
+		
+		// check for numeric conversion of maxlength
+		try {
+			int maxLength = Integer.valueOf(arrValue[1]);
+		} catch (NumberFormatException nfe){
+			arrValue[1] = "32" ;
+		}
+		
+		
+		
+		return arrValue;
+	}
+	 // END- Added for CR GA2011CR001 
+
+	/**
+	 * @return the studentIdLabelName
+	 */
+	public String getStudentIdLabelName() {
+		return studentIdLabelName;
+	}
+
+	/**
+	 * @param studentIdLabelName the studentIdLabelName to set
+	 */
+	public void setStudentIdLabelName(String studentIdLabelName) {
+		this.studentIdLabelName = studentIdLabelName;
+	}
+
+	/**
+	 * @return the isStudentIdConfigurable
+	 */
+	public boolean isStudentIdConfigurable() {
+		return isStudentIdConfigurable;
+	}
+
+	/**
+	 * @param isStudentIdConfigurable the isStudentIdConfigurable to set
+	 */
+	public void setStudentIdConfigurable(boolean isStudentIdConfigurable) {
+		this.isStudentIdConfigurable = isStudentIdConfigurable;
+	}
+
+	/**
+	 * @param isMultiIndividualTkt the isMultiIndividualTkt to set
+	 */
+	public void setMultiIndividualTkt(boolean isMultiIndividualTkt) {
+		this.isMultiIndividualTkt = isMultiIndividualTkt;
+	}
+	  
 
 }

@@ -16,6 +16,8 @@ public class Message implements java.io.Serializable
     public static final String REQUIRED_TEXT_MULTIPLE   = "Please enter/select these values to continue.";
     public static final String INVALID_CHARS  = "Please re-enter your string without these characters: !, @, #, $, %, ^";
     public static final String INVALID_NUMBER_CHARS  = "Please re-enter your string with these characters: A-Z, a-z, 0-9, space";
+    public static final String INVALID_ALPHANUMBER_CHARS  = "Please enter ID of alpha-numeric characters, with no spaces. Acceptable characters are a-z, A-Z, 0-9.";
+    
     public static final String INVALID_NAME_CHARS  = "Please re-enter your string with these characters: A-Z, a-z, 0-9, /, \\, -, ', (, ), &, +, comma, period, space";
     public static final String INVALID_DATE  = "Please re-select valid month, day, and year.";
 
@@ -31,7 +33,21 @@ public class Message implements java.io.Serializable
     public static final String DELETE_SUCCESSFUL = "Student has been deleted successfully.";
     public static final String DELETE_ERROR_TAS = "You cannot delete this student. Student is associated with test administrations.";
     public static final String DELETE_ERROR_UNKNOWN = "Failed to delete this student.";
-
+    
+    //Added for Bulk Accommodation
+    public static final String BULK_ADD_TITLE      = "Edit Accommodations";
+    public static final String BULK_ADD_SUCCESSFUL = "Accommodations have been successfully updated for the selected set of students.";
+    public static final String BULK_ADD_ERROR = "Failed to assign accommodations to the set of selected students.";
+    public static final String BULK_ACCOM_NOTSELECTED = "No accommodation was selected. Accommodations for the selected set of students was not updated";
+    
+    //Added for CR  ISTEP2011CR023
+    public static final String STUDENT_ASSIGNMENT_ERROR = "Your school system does not allow students to be associated with more than one organization (class) for testing. Please choose only one.";     
+	//START- GACR005 
+	public static final String INVALID_STUDENT_MINLENGTH_FORMAT  = "Please enter ID of minimum length:";
+	public static final String INVALID_NUMBER_FORMAT  = "Please enter ID of numeric characters, with no spaces. Acceptable characters are 0-9.";
+	//END- GACR005 
+	
+	
     public Message()
     {
         this.title = "";
@@ -99,5 +115,5 @@ public class Message implements java.io.Serializable
         }        
         return result;
     }
-        
+       
 } 

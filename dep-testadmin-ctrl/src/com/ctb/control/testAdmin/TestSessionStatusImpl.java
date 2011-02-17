@@ -27,6 +27,8 @@ import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.CustomerSDSData;
+import com.ctb.bean.testAdmin.CustomerTestResource;
+import com.ctb.bean.testAdmin.CustomerTestResourceData;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.OrganizationNode;
@@ -72,8 +74,8 @@ import java.util.ResourceBundle;
  * @author Nate_Cohen, John_Wang
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class TestSessionStatusImpl implements TestSessionStatus, Serializable
+@ControlImplementation(isTransient=true)
+public class TestSessionStatusImpl implements TestSessionStatus
 { 
     /**
      * @common:control
@@ -196,10 +198,6 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
             if(page != null) {
                 pageSize = new Integer(page.getPageSize());
             }
-            
-            System.out.println("Inside Platform orgNodeId: "+orgNodeId + "programId: " +programId);
-//          
-            
 //            Integer [] topOrgNodeIds = orgNode.getTopOrgNodeIdsForUser(userName);
 //            Integer orgNodeId = topOrgNodeIds[0];
             CustomerReport [] cr = reportBridge.getReportAssignmentsForUser(userName, programId, orgNodeId);
@@ -1038,6 +1036,9 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
                     secureUser.setUserId(user.getUserId());
                     secureUser.setUserName(user.getUserName());
                     secureUser.setCustomer(user.getCustomer());
+                    //START- Added for Deferred defect 52645
+                    secureUser.setPasswordExpirationDate(user.getPasswordExpirationDate());
+                    //END- Added for Deferred defect 52645
                     return secureUser;
                 } else {
                     return user;
@@ -1524,6 +1525,60 @@ public class TestSessionStatusImpl implements TestSessionStatus, Serializable
         
         return expectedPosition;        
     }
+     
+     /**
+      * New method added for CR - GA2011CR001
+      * Get customer configuration value for the specified customer configuration.
+      * @common:operation
+      * @param configId - identifies the customerconfiguration whose information is desired
+      * @return CustomerConfigurationValue []
+      * @throws CTBBusinessException
+      */
+     public CustomerConfigurationValue [] getCustomerConfigurationsValue( Integer configId) throws CTBBusinessException
+     {	
+     	try {
+     	CustomerConfigurationValue [] customerConfigurationValues 
+         = customerConfiguration.getCustomerConfigurationValues(configId);
+     	 return customerConfigurationValues;
+ 	    } catch (SQLException se) {
+ 	        CustomerConfigurationDataNotFoundException tee = new CustomerConfigurationDataNotFoundException("StudentManagementImpl: getCustomerConfigurations: " + se.getMessage());
+ 	        tee.setStackTrace(se.getStackTrace());
+ 	        throw tee;
+ 	    }
+     }
+     
+     /**
+      * ISTEP CR032 -Download Test
+      * Each CustomerTestResource
+      * object contains a list of all CustomerTestResource.
+ 	  * @param userName - identifies the user
+      * @return CustomerTestResourceData
+ 	  * @throws com.ctb.exception.CTBBusinessException
+      * @common:operation
+      */
+     public CustomerTestResourceData getCustomerTestResources(String userName, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException {
+         validator.validate(userName, null, "testAdmin.getCustomerTestResources");
+         try {
+        	 Integer customerId= this.users.getCustomer(userName).getCustomerId();
+        	 CustomerTestResourceData ctr = new CustomerTestResourceData();
+             Integer pageSize = null;
+             if(page != null) {
+                 pageSize = new Integer(page.getPageSize());
+             }
+             CustomerTestResource []  tests = itemSet.getCustomerTestResources(customerId);
+            
+             ctr.setCustomerTestResources(tests, pageSize);
+             if(filter != null) ctr.applyFiltering(filter);
+             if(sort != null) ctr.applySorting(sort);
+             if(page != null) ctr.applyPaging(page);
+             return ctr;
+         
+         } catch (SQLException se) {
+             TestElementDataNotFoundException rde = new TestElementDataNotFoundException("TestSessionStatusImpl: getCustomerTestResources: " + se.getMessage());
+             rde.setStackTrace(se.getStackTrace());
+             throw rde;  
+         }
+     }
    
     
 } 

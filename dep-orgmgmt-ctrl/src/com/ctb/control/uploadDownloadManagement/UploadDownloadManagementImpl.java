@@ -1,46 +1,5 @@
 package com.ctb.control.uploadDownloadManagement; 
 
-import com.bea.control.*;
-import com.ctb.bean.request.PageParams;
-import com.ctb.bean.request.SortParams;
-import com.ctb.bean.request.SortParams.SortParam;
-import com.ctb.bean.request.SortParams.SortType;
-import com.ctb.bean.studentManagement.CustomerDemographic;
-import com.ctb.bean.studentManagement.CustomerDemographicValue;
-import com.ctb.bean.testAdmin.Address;
-import com.ctb.bean.testAdmin.Customer;
-import com.ctb.bean.testAdmin.CustomerConfig;
-import com.ctb.bean.testAdmin.DataFileAudit;
-import com.ctb.bean.testAdmin.DataFileAuditData;
-import com.ctb.bean.testAdmin.DataFileTemp;
-import com.ctb.bean.testAdmin.Node;
-import com.ctb.bean.testAdmin.OrgNodeCategory;
-import com.ctb.bean.testAdmin.UserFile;
-import com.ctb.bean.testAdmin.UserFileRow;
-import com.ctb.bean.testAdmin.StudentDemoGraphics;
-import com.ctb.bean.testAdmin.StudentDemoGraphicsData;
-import com.ctb.bean.testAdmin.StudentFile;
-import com.ctb.bean.testAdmin.StudentFileRow;
-import com.ctb.bean.testAdmin.StudentFileRowData;
-import com.ctb.bean.testAdmin.User;
-import com.ctb.bean.testAdmin.UserFileRowData;
-import com.ctb.exception.CTBBusinessException;
-import com.ctb.exception.uploadDownloadManagement.FileNotUploadedException;
-import com.ctb.exception.uploadDownloadManagement.CreateTemplateException;
-import com.ctb.exception.uploadDownloadManagement.DeleteFileException;
-import com.ctb.exception.uploadDownloadManagement.DownloadTemplateException;
-import com.ctb.exception.uploadDownloadManagement.FileDownloadException;
-import com.ctb.exception.uploadDownloadManagement.FileHeaderException;
-import com.ctb.exception.uploadDownloadManagement.FileHistoryException;
-import com.ctb.util.BatchProcessor;
-import com.ctb.util.CTBConstants;
-import com.ctb.util.DateUtils;
-import com.ctb.util.HeaderOrder;
-import com.ctb.util.UploadProcess;
-import com.ctb.util.UploadStudent;
-import com.ctb.util.StudentHeader;
-import com.ctb.util.UserHeader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -57,12 +16,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
+
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -71,11 +26,49 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
+import com.ctb.bean.request.SortParams.SortParam;
+import com.ctb.bean.request.SortParams.SortType;
+import com.ctb.bean.studentManagement.CustomerConfiguration;
+import com.ctb.bean.studentManagement.CustomerConfigurationValue;
+import com.ctb.bean.testAdmin.Address;
+import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfig;
+import com.ctb.bean.testAdmin.DataFileAudit;
+import com.ctb.bean.testAdmin.DataFileAuditData;
+import com.ctb.bean.testAdmin.DataFileTemp;
+import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.OrgNodeCategory;
+import com.ctb.bean.testAdmin.StudentDemoGraphics;
+import com.ctb.bean.testAdmin.StudentDemoGraphicsData;
+import com.ctb.bean.testAdmin.StudentFile;
+import com.ctb.bean.testAdmin.StudentFileRow;
+import com.ctb.bean.testAdmin.StudentFileRowData;
+import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.UserFile;
+import com.ctb.bean.testAdmin.UserFileRow;
+import com.ctb.bean.testAdmin.UserFileRowData;
+import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.uploadDownloadManagement.DeleteFileException;
+import com.ctb.exception.uploadDownloadManagement.DownloadTemplateException;
+import com.ctb.exception.uploadDownloadManagement.FileDownloadException;
+import com.ctb.exception.uploadDownloadManagement.FileHeaderException;
+import com.ctb.exception.uploadDownloadManagement.FileHistoryException;
+import com.ctb.exception.uploadDownloadManagement.FileNotUploadedException;
+import com.ctb.util.CTBConstants;
+import com.ctb.util.DateUtils;
+import com.ctb.util.HeaderOrder;
+import com.ctb.util.StudentHeader;
+import com.ctb.util.UploadProcess;
+import com.ctb.util.UploadStudent;
+import com.ctb.util.UserHeader;
+
 /**
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class UploadDownloadManagementImpl implements UploadDownloadManagement, Serializable
+@ControlImplementation(isTransient=true)
+public class UploadDownloadManagementImpl implements UploadDownloadManagement
 { 
     /**
      * @common:control
@@ -152,7 +145,24 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
     @org.apache.beehive.controls.api.bean.Control()
      private com.ctb.control.studentManagement.StudentManagement studentManagement ;
     
-
+     //Changes for GA2011CR001
+    CustomerConfiguration[] customerConfigurations = null;
+    CustomerConfigurationValue[] customerConfigurationsValue = null;
+    private String loginUserName = null;
+	private Integer customerId = null;
+	private boolean isStudentIdConfigurable = false;
+	private boolean isStudentId2Configurable = false;
+	private boolean isGTIDMandatory = false;
+	private Integer configId=0;
+	private String []valueForStudentId = null ;
+	private String []valueForStudentId2 = null ;
+	//START- GACR005 
+	private String studentIdMinLength = "0";
+	private String studentId2MinLength = "0";
+	private String isStudentIdNumeric = "AN";
+	private String isStudentId2Numeric = "AN";
+    //END- GACR005
+    // END
     static final long serialVersionUID = 1L;
 
     /**
@@ -179,7 +189,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             Node [] sortedOrgNodes = new Node[OrgNodeCategory.length];                     
             //retrive userNode details
             Node [] detailNode = uploadDataFile.getUserDataTemplate(userName);
-            
+           
             /*login user is belonging those nodes which are in parent-child 
              relation ship, then we need to
             delete child nodes*/
@@ -322,7 +332,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             Node [] sortedOrgNodes = new Node[OrgNodeCategory.length];                     
             //retrive StudentNode details
             Node [] detailNode = uploadDataFile.getUserDataTemplate(userName);
-            
+           
             /*login user is belonging those nodes which are 
              * in parent-child relation ship, then we need to
              * delete child nodes
@@ -347,6 +357,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             int totalSize = hierarchyMap.size() + 1; 
             
             studentFileRow = new StudentFileRow[totalSize];
+            
+            isStudentIDConfigurableCustomer(userName);
             // Insert Header Part
             createTemplateHeader(customer,OrgNodeCategory, 
                     studentFileRow, false);
@@ -629,7 +641,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
    public StudentFile getStudentFile(String userName)throws CTBBusinessException {
         
         StudentFile studentFile = new StudentFile();
-
+       
         try {
             StringBuffer orgNodeBuff = null;
             String displayStudentName = null;
@@ -637,6 +649,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             HashMap commonPathMap = new HashMap ();
             Node []userTopOrgNode =  orgNode.getTopNodesForUser(userName);
             Customer customer = users.getCustomer(userName);
+            //System.out.println("getStudentFile" + userName + customer+ customer.getCustomerId());
             //Template Header Creation for Organization and User
             OrgNodeCategory []OrgNodeCategory = orgNodeCate.getOrgNodeCategories(
                                                             customer.getCustomerId());
@@ -658,7 +671,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             int totalSize = studentFileRow.length + 1; 
             StudentFileRow [] downloadStudentFileRow =
                     new StudentFileRow[totalSize];
-
+            
+            isStudentIDConfigurableCustomer(userName);
+                        
              // Insert downLoad Header Part
             createTemplateHeader(customer,OrgNodeCategory, 
                     downloadStudentFileRow, false);
@@ -922,7 +937,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             
             
         } catch (SQLException e) {
-            
+        	System.out.println("Inside SQL exception");
+            System.out.println(e.getMessage());
             FileNotUploadedException fileNotUploadedException = 
                                         new FileNotUploadedException
                                                 ("Uploaded.Failed");
@@ -930,7 +946,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             throw fileNotUploadedException;
           
         } catch (Exception e ) {
-        
+        	System.out.println("Inside general exception");
+            System.out.println(e.getMessage());
             FileNotUploadedException fileNotUploadedException = 
                                         new FileNotUploadedException
                                                 ("Uploaded.Failed");
@@ -951,7 +968,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                                 
  //       Integer uploadDataFileId = null;
         
-        int noOfUserColumn = 0;
+       
+    	int noOfUserColumn = 0;
         
        String excelFile = serverFilePath;
 
@@ -990,7 +1008,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             //Validating the excel sheet
             String fileType = getUploadFileType(
                     fileInputStrean,noOfUserColumn,customerId,
-                    orgNodeCategory, customer);            
+                    orgNodeCategory, customer, userName);            
             
             if ( fileType == "") {
              
@@ -1207,7 +1225,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             
             String fileType = getUploadFileType(
                     fileInputStrean,noOfUserColumn,customerId,
-                    orgNodeCategory, customer);
+                    orgNodeCategory, customer, userName);
             
             
                                                             
@@ -1877,6 +1895,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                                        OrgNodeCategory []OrgNodeCategory, 
                                        Object []object, 
                                        boolean isUserHeader) {
+    	//System.out.println("customer" + customer + "Customer Name"  + customer.getCustomerName() + "Customer Id" + customer.getCustomerId() );
         
         int userHeaderPosition = 0;
         int cellPosition = 0;
@@ -1971,13 +1990,22 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             tempStudentFileRow.setLastName(studentHeader.getLastName());
             tempStudentFileRow.setHeaderDateOfBirth(
                     studentHeader.getHeaderDateOfBirthDate());
-                    
             tempStudentFileRow.setGrade(studentHeader.getGrade());
+            //System.out.println("isStudentIdConfigurable"+"::"+isStudentIdConfigurable);
+            if(isStudentIdConfigurable){
+            tempStudentFileRow.setExtPin1(this.valueForStudentId[0]);
+            }
+            else{
             tempStudentFileRow.setExtPin1(studentHeader.getStudentId());
+            }
+            //System.out.println("isStudentId2Configurable"+"::"+isStudentId2Configurable);
+            if(isStudentId2Configurable){
+            tempStudentFileRow.setExtPin2(this.valueForStudentId2[0]);
+            }
+            else{
             tempStudentFileRow.setExtPin2(studentHeader.getStudentId2());
+            }
             tempStudentFileRow.setGender(studentHeader.getGender());
-            
-            
             tempStudentFileRow.setScreenReader(studentHeader.getScreenReader());
             tempStudentFileRow.setCalculator(studentHeader.getCalculator());
             tempStudentFileRow.setTestPause(studentHeader.getTestPause());
@@ -2551,8 +2579,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                                        int noOfUserColumn,
                                        Integer customerId,
                                        OrgNodeCategory[] orgNodeCategory,
-                                       Customer customer) throws CTBBusinessException {
-        
+                                       Customer customer,String userName) throws CTBBusinessException {
+    
+       isStudentIDConfigurableCustomer(userName);
        String fileType = "";                 
        try {                              
             POIFSFileSystem pfs  = new POIFSFileSystem( fileInputStream );
@@ -2699,8 +2728,12 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                             
                         }
                          
-                           
-                         headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();      
+                         if(isStudentIdConfigurable || isStudentId2Configurable){  
+                         headerListFromTemplate = getStudentIDHeaderOrderList();    
+                         }
+                         else{
+                        	 headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();  
+                         }
                          for ( int i = noOfUserColumn - 1; i < totalColumns; i++) {
                          
                             cells = row.getCell((short)i);
@@ -2871,9 +2904,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             users,customerdb,
             uploadDataFile, organizationManagement,
             studentManagement,dataFileAudit,students));*/
+    	    isStudentIDConfigurableCustomer(userName);
+    	
       
-         System.out.println("  ***** Upload Control: Processing Student file"); 
-      
+         System.out.println("  ***** Upload Control: Processing Student file" + userName); 
          UploadStudent uploadStudent = new UploadStudent(
                                         serverFilePath,userName,inputStream , 
             studentFileRowHeader,
@@ -2881,7 +2915,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
             orgNode ,  orgNodeCate, 
             users,customerdb,
             uploadDataFile, organizationManagement,
-            studentManagement,userManagement, dataFileAudit,students,userTopOrgNode);
+            studentManagement,userManagement, dataFileAudit,students,userTopOrgNode,valueForStudentId,valueForStudentId2);
                                     
                                     
         uploadStudent.run();
@@ -2939,8 +2973,13 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
                         }
                         
                     } else {    // end of user header validation   
-                      
-                         headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();      
+                    	 if(isStudentIdConfigurable || isStudentId2Configurable){  
+                             headerListFromTemplate = getStudentIDHeaderOrderList();    
+                             }
+                             else{
+                            	 headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();  
+                             }
+                        // headerListFromTemplate = HeaderOrder.getStudentHeaderOrderList();      
                          for ( int i = startPosition; i < totalColumns; i++) {
                          
                             cells = row.getCell((short)i);
@@ -3044,8 +3083,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
          try {
 			// Get the user
             User user = users.getUserDetails(loginUserName); 
-            
-            if ( user.getUserId().intValue() == createdBy.intValue()) {
+           if ( user.getUserId().intValue() == createdBy.intValue()) {
           
                 if ( status.equals(CTBConstants.ACTIVATION_STATUS_IN_PROGRESS) ) {
                     
@@ -3169,4 +3207,287 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement, S
        return newOrgArray;
         
     }
+    
+    //Changes for GA2011CR001
+    private void isStudentIDConfigurableCustomer(String userName) 
+    {     
+    	try{
+			Customer customer = users.getCustomer(userName);
+			this.loginUserName = userName;
+			this.customerId = customer.getCustomerId();
+			getCustomerConfigurations(this.loginUserName, this.customerId);
+			for (int i=0; i < this.customerConfigurations.length; i++)
+			{
+				CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID_2") && cc.getDefaultValue().equalsIgnoreCase("T"))
+				{
+					this.isStudentId2Configurable = true; 
+					configId = cc.getId();
+					//System.out.println("configId"+ configId);
+					customerConfigurationValues(configId);
+					this.valueForStudentId2 = new String[8];
+
+					for(int j=0; j<this.customerConfigurationsValue.length; j++){
+
+						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
+						this.valueForStudentId2[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+					}
+					
+					this.valueForStudentId2 = getDefaultValue(valueForStudentId2, CTBConstants.STUDENT_ID2);
+					
+				}
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
+				{
+					this.isStudentIdConfigurable = true; 
+					configId = cc.getId();
+					customerConfigurationValues(configId);
+					//By default there should be 3 entries for customer configurations
+					this.valueForStudentId = new String[8];
+					for(int j=0; j<this.customerConfigurationsValue.length; j++){
+						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
+						this.valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+					}	
+					
+					this.valueForStudentId = getDefaultValue(valueForStudentId, CTBConstants.STUDENT_ID);
+					
+				}
+
+
+			}
+
+		} catch(SQLException e){
+
+			FileNotUploadedException dataNotfoundException = 
+				new FileNotUploadedException
+				("UploadDownloadManagement.Failed");
+			dataNotfoundException.setStackTrace(e.getStackTrace());                                    
+
+		} 
+	
+	
+	
+     }
+   //Changes for GA2011CR001 
+    private String[] getDefaultValue(String [] arrValue, String labelName)
+	{
+		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
+		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
+		
+		
+		if(labelName.equals("Student ID")){
+			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
+			if(!arrValue[2].equals("T") && !arrValue[2].equals("F"))
+				{ 
+					arrValue[2]  = "F";
+				}
+			//START- GACR005 
+			arrValue[3] = (arrValue[3] != null && new Integer(arrValue[3]).intValue() > 0)? arrValue[3]   : "0" ;
+			try {
+				int minLength = Integer.valueOf(arrValue[3]);
+			} catch (NumberFormatException nfe){
+				arrValue[3] = "0" ;
+			}
+			this.studentIdMinLength = arrValue[3];
+			arrValue[4] = arrValue[4] != null ? arrValue[4]   : "AN" ;
+			if(!arrValue[4].equals("NU") && !arrValue[4].equals("AN"))
+				{ 
+					arrValue[4]  = "AN";
+				}
+			this.isStudentIdNumeric = arrValue[4];
+			//END- GACR005 
+			System.out.println("Student ID" + arrValue[0] +"...."+arrValue[1] +"..." +arrValue[2] +"..." +arrValue[3] +"..."+arrValue[4] );
+			
+		}
+		
+		if(labelName.equals("Student ID2")){
+			//START- GACR005 
+			arrValue[2] = (arrValue[2] != null && new Integer(arrValue[2]).intValue() > 0)? arrValue[2]   : "0" ;
+			try {
+				int minLength = Integer.valueOf(arrValue[2]);
+			} catch (NumberFormatException nfe){
+				arrValue[2] = "0" ;
+			}
+			this.studentId2MinLength = arrValue[2];
+			arrValue[3] = arrValue[3] != null ? arrValue[3]   : "AN" ;
+			if(!arrValue[3].equals("NU") && !arrValue[3].equals("AN"))
+				{ 
+					arrValue[3]  = "AN";
+				}
+			this.isStudentId2Numeric = arrValue[3];
+			//END- GACR005 
+			System.out.println("Student ID 2" + arrValue[0] +"...."+arrValue[1] +"..." +arrValue[2] +"..." +arrValue[3]  );
+			
+		}
+		
+		// check for numeric conversion of maxlength
+
+		try {
+			int maxLength = Integer.valueOf(arrValue[1]);
+		} catch (NumberFormatException nfe){
+			arrValue[1] = "32" ;
+		}
+		
+		
+		
+		return arrValue;
+	}
+    
+    
+    
+    
+    //Changes for GA2011CR001
+	  private ArrayList getStudentIDHeaderOrderList() {
+	        
+	        ArrayList headerArray = new ArrayList();
+	        
+	        headerArray.add(CTBConstants.REQUIREDFIELD_FIRST_NAME);
+	        headerArray.add(CTBConstants.MIDDLE_NAME);
+	        headerArray.add(CTBConstants.REQUIREDFIELD_LAST_NAME);
+	        headerArray.add(CTBConstants.REQUIREDFIELD_DATE_OF_BIRTH);
+	        headerArray.add(CTBConstants.REQUIREDFIELD_GRADE);
+	        headerArray.add(CTBConstants.REQUIREDFIELD_GENDER);
+	        
+	       if(isStudentIdConfigurable){
+	    	   headerArray.add(valueForStudentId[0]);
+	    	   
+	       }
+	       else{
+	    	   headerArray.add(CTBConstants.STUDENT_ID);
+	       }
+	        
+	       
+	       if(isStudentId2Configurable){
+	    	   headerArray.add(valueForStudentId2[0]);
+	    	   
+	       }
+	       else{
+	    	   headerArray.add(CTBConstants.STUDENT_ID2);
+	       }
+	     
+	        
+	        headerArray.add(CTBConstants.SCREEN_READER);
+	        headerArray.add(CTBConstants.CALCULATOR);
+	        headerArray.add(CTBConstants.TEST_PAUSE);
+	        headerArray.add(CTBConstants.UNTIMED_TEST);
+	        headerArray.add(CTBConstants.HIGHLIGHTER);
+	        headerArray.add(CTBConstants.QUESTION_BACKGROUND_COLOR);
+	        headerArray.add(CTBConstants.QUESTION_FONT_COLOR);
+	        headerArray.add(CTBConstants.ANSWER_BACKGROUND_COLOR);
+	        headerArray.add(CTBConstants.ANSWER_FONT_COLOR);
+	        headerArray.add(CTBConstants.FONT_SIZE);
+	       
+	        return headerArray;
+	    }
+	/***
+	 *  //Changes for GA2011CR001
+	 * @param configId
+	 */
+	private void customerConfigurationValues(Integer configId)
+	{
+		try {
+				this.customerConfigurationsValue = this.studentManagement.getCustomerConfigurationsValue(configId);
+
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+	}
+	/**
+	 * getCustomerConfigurations  //Changes for GA2011CR001
+	 */
+	private void getCustomerConfigurations(String userName, Integer customerId)
+	{
+		try {
+			//if (this.customerConfigurations == null) {   //Changes for Defect-60479
+				this.customerConfigurations = this.studentManagement.getCustomerConfigurations(userName, customerId);
+			//}
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+	}
+
+
+
+
+	/**
+	 * @return the studentIdMinLength
+	 */
+	public String getStudentIdMinLength() {
+		return studentIdMinLength;
+	}
+
+
+
+
+	/**
+	 * @param studentIdMinLength the studentIdMinLength to set
+	 */
+	public void setStudentIdMinLength(String studentIdMinLength) {
+		this.studentIdMinLength = studentIdMinLength;
+	}
+
+
+
+
+	/**
+	 * @return the studentId2MinLength
+	 */
+	public String getStudentId2MinLength() {
+		return studentId2MinLength;
+	}
+
+
+
+
+	/**
+	 * @param studentId2MinLength the studentId2MinLength to set
+	 */
+	public void setStudentId2MinLength(String studentId2MinLength) {
+		this.studentId2MinLength = studentId2MinLength;
+	}
+
+
+
+
+	/**
+	 * @return the isStudentIdNumeric
+	 */
+	public String getIsStudentIdNumeric() {
+		return isStudentIdNumeric;
+	}
+
+
+
+
+	/**
+	 * @param isStudentIdNumeric the isStudentIdNumeric to set
+	 */
+	public void setIsStudentIdNumeric(String isStudentIdNumeric) {
+		this.isStudentIdNumeric = isStudentIdNumeric;
+	}
+
+
+
+
+	/**
+	 * @return the isStudentId2Numeric
+	 */
+	public String getIsStudentId2Numeric() {
+		return isStudentId2Numeric;
+	}
+
+
+
+
+	/**
+	 * @param isStudentId2Numeric the isStudentId2Numeric to set
+	 */
+	public void setIsStudentId2Numeric(String isStudentId2Numeric) {
+		this.isStudentId2Numeric = isStudentId2Numeric;
+	}
+	
+ 
+   
+    
 } 

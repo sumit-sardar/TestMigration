@@ -1,7 +1,10 @@
 package com.ctb.bean.testAdmin;
 
-import com.ctb.bean.CTBBean;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import com.ctb.bean.CTBBean;
 
 
 public class StudentDemoGraphics extends CTBBean
@@ -18,6 +21,14 @@ public class StudentDemoGraphics extends CTBBean
     private String visible;
     private Date createdDateTime;
     private Date updatedDateTime;
+   //Bulk Accommodation
+    private Integer orgNodeId;
+    private Integer studentId;
+    private String valueName;
+    private Integer studentDemographicDataId;
+    private String[] valueMap;
+    private List valueHashMap;
+ 
     
     
 	/**
@@ -140,5 +151,86 @@ public class StudentDemoGraphics extends CTBBean
 	public void setUpdatedDateTime(Date updatedDateTime) {
 		this.updatedDateTime = updatedDateTime;
 	}
+	/**
+	 * @return the orgNodeId
+	 */
+	public Integer getOrgNodeId() {
+		return orgNodeId;
+	}
+	/**
+	 * @param orgNodeId the orgNodeId to set
+	 */
+	public void setOrgNodeId(Integer orgNodeId) {
+		this.orgNodeId = orgNodeId;
+	}
+	/**
+	 * @return the studentId
+	 */
+	public Integer getStudentId() {
+		return studentId;
+	}
+	/**
+	 * @param studentId the studentId to set
+	 */
+	public void setStudentId(Integer studentId) {
+		this.studentId = studentId;
+	}
+	/**
+	 * @return the valueName
+	 */
+	public String getValueName() {
+		return valueName;
+	}
+	/**
+	 * @param valueName the valueName to set
+	 */
+	public void setValueName(String valueName) {
+		this.valueName = valueName;
+	}
+	/**
+	 * @return the studentDemographicDataId
+	 */
+	public Integer getStudentDemographicDataId() {
+		return studentDemographicDataId;
+	}
+	/**
+	 * @param studentDemographicDataId the studentDemographicDataId to set
+	 */
+	public void setStudentDemographicDataId(Integer studentDemographicDataId) {
+		this.studentDemographicDataId = studentDemographicDataId;
+	}
+	/**
+	 * @return the valueMap
+	 */
+	public String[] getValueMap() {
+		return valueMap;
+	}
+	/**
+	 * @param valueMap the valueMap to set
+	 */
+	public void setValueMap(String[] valueMap) {
+		this.valueMap = valueMap;
+		if (valueHashMap != null) {
+			valueHashMap.add( this.valueMap );
+		} else {
+			valueHashMap = new ArrayList();
+			valueHashMap.add( this.valueMap );
+		}
+		
+	}
+	/**
+	 * @return the valueHashMap
+	 */
+	public List getValueHashMap() {
+		return valueHashMap;
+	}
+	
+	/**
+	 * @param valueHashMap the valueHashMap to set
+	 */
+	public void setValueHashMap(List valueHashMap) {
+		this.valueHashMap = valueHashMap;
+	}
+	
 	
 }

@@ -194,6 +194,10 @@ public interface StudentAccommodation extends JdbcControl
     @JdbcControl.SQL(statement = "delete from  \tstudent_accommodation  where STUDENT_ID = {studentId}")
     void deleteStudentAccommodations(Integer studentId) throws SQLException;
 
+    
+    @JdbcControl.SQL(statement = "update student_accommodation set {sql: updateParameters} where {sql: updateByStudetnId} ")
+    void updateBulkStudentAccommodations(String updateByStudetnId, String updateParameters) throws SQLException;
+
 
     static final long serialVersionUID = 1L;
 }

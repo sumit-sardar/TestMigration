@@ -34,6 +34,11 @@
     <c:if test="${ !requestScope.isFindStudent }">    
         <li><a href="/StudentManagementWeb/manageStudent/beginFindStudent.do" onclick="return verifyExitAddEditStudent();"><span>Find Student</span></a></li>
     </c:if>
+    <ctb:auth roles="Administrator, Administrative Coordinator">
+	     <c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
+	        <li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Accommodations</span></a></li>
+	    </c:if>
+    </ctb:auth>
 </ul>
 </ctb:auth>
 

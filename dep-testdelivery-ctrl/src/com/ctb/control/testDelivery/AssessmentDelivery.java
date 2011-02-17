@@ -9,9 +9,11 @@ import org.apache.beehive.controls.api.bean.ControlInterface;
 public interface AssessmentDelivery 
 { 
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    noNamespace.AdssvcResponseDocument downloadItem(noNamespace.AdssvcRequestDocument document);
+    //@TransactionAttribute(TransactionAttributeType.REQUIRED)
+    /* Transaction is commented to remove this error : Connection has already been created in this tx context for pool named oasDataSource. Illegal attempt to create connection 
+     * from another pool: adsDataSource :*/ 
+	noNamespace.AdssvcResponseDocument downloadItem(noNamespace.AdssvcRequestDocument document);
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    //@TransactionAttribute(TransactionAttributeType.REQUIRED)
     noNamespace.AdssvcResponseDocument getSubtest(noNamespace.AdssvcRequestDocument document);
 } 

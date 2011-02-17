@@ -1,8 +1,11 @@
 package manageDownload;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
+
+import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.StudentFile;
 import com.ctb.bean.testAdmin.StudentFileRow;
+import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserFile;
 import com.ctb.bean.testAdmin.UserFileRow;
 import com.ctb.exception.CTBBusinessException;
@@ -11,6 +14,8 @@ import com.ctb.util.web.sanitizer.SanitizedFormData;
 import dto.Message;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletResponse;
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
@@ -33,7 +38,7 @@ public class ManageDownloadController extends PageFlowController
     
     private String userName = null;
     private ManageDownloadForm savedForm = null;
-
+    private User user = null;
     
     private static final String ACTION_DEFAULT = "defaultAction";
 
@@ -49,7 +54,10 @@ public class ManageDownloadController extends PageFlowController
     @Control()
     private com.ctb.control.organizationManagement.OrganizationManagement organizationManagement;
 
-
+    @Control()
+    private com.ctb.control.db.Users users;
+    
+    
     /**
      * @jpf:action
      * @jpf:forward name="success" path="beginManageDownload.do"
@@ -74,7 +82,8 @@ public class ManageDownloadController extends PageFlowController
     protected Forward beginManageDownload()
     {
         getUserDetails();
-        
+        //Bulk Accommodation Changes
+        customerHasBulkAccommodation();
         this.savedForm = initialize();
         
         return new Forward("success", this.savedForm);
@@ -230,7 +239,14 @@ public class ManageDownloadController extends PageFlowController
             this.userName = (String)getSession().getAttribute("userName");
         
         }
-        
+        try {
+            this.user = this.userManagement.getUser(this.userName, 
+                                                this.userName);
+       //     this.displayNewMessage = user.getDisplayNewMessage();                                                
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         getSession().setAttribute("userName", this.userName);
     }
 
@@ -308,4 +324,37 @@ public class ManageDownloadController extends PageFlowController
         
     }
     
+    /*
+     * Bulk accommodation
+     */
+	private Boolean customerHasBulkAccommodation()
+    {               
+        Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasBulkStudentConfigurable = false;
+
+        try
+        {      
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = users.getCustomerConfigurations(2);
+			}
+            
+            for (int i=0; i < customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+                //Bulk Accommodation
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && cc.getDefaultValue().equals("T")	)
+                {
+                    this.getSession().setAttribute("isBulkAccommodationConfigured", true);
+                    break;
+                } 
+            }
+        }
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+        
+       
+        return new Boolean(hasBulkStudentConfigurable);
+    }
 }

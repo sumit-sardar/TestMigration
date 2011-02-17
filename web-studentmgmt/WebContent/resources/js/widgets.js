@@ -1141,3 +1141,58 @@ function moveSelectedOption(elementId, moveDirection)
     
         return true;   
     }    
+//Changes for Bulk Accommodation Selection
+    
+    var totalSelectedCount=0;
+    
+     function toggleShowButton(element) {
+    var spanOfTablePager = document.getElementById("totalSelected");
+    var submitBulk = document.getElementById("bulkSubmit");
+    totalSelectedCount = spanOfTablePager.innerHTML;
+    if(element.checked)
+    {
+    totalSelectedCount++;
+    spanOfTablePager.innerHTML =totalSelectedCount;
+    }
+    else
+    {
+    totalSelectedCount--;
+    spanOfTablePager.innerHTML =totalSelectedCount;
+    }
+    if(totalSelectedCount<=0)
+    	submitBulk.setAttribute("disabled",'true');
+    else
+    	submitBulk.removeAttribute("disabled");
+
+	}
+	
+	function resetRadioAccommodation() {
+		var screen_reader = document.getElementsByName("screen_reader");
+		screen_reader[0].checked=false;
+		screen_reader[1].checked=false;
+		
+		var calculator = document.getElementsByName("calculator");
+		calculator[0].checked=false;
+		calculator[1].checked=false;
+		
+		var test_pause = document.getElementsByName("test_pause");
+		test_pause[0].checked=false;
+		test_pause[1].checked=false;
+		
+		var untimed_test = document.getElementsByName("untimed_test");
+		untimed_test[0].checked=false;
+		untimed_test[1].checked=false;
+		
+		var highlighter = document.getElementsByName("highlighter");
+		highlighter[0].checked=false;
+		highlighter[1].checked=false;
+		
+		var colorFont = document.getElementsByName("colorFont");
+		colorFont[0].checked=false;
+		colorFont[1].checked=false;
+		
+		enableColorSettingsLink();
+		
+	}
+	
+	

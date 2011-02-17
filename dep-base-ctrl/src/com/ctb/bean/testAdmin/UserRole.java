@@ -47,7 +47,7 @@ public class UserRole
 	 * @param orgNodeId the orgNodeId to set
 	 */
 	public void setOrgNodeId(Long orgNodeId) {
-		orgNodeId = orgNodeId;
+		this.orgNodeId = orgNodeId;   // 'this' keyword was missing ,Changed for Deferred Defect 60566
 	}
 	/**
 	 * @return the createdBy

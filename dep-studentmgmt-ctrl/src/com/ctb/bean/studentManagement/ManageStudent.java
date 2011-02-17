@@ -25,6 +25,7 @@ public class ManageStudent extends CTBBean
     private Date birthDate;
     private Integer createdBy;
     private OrganizationNode [] organizationNodes;
+    private String extElmId;//Bulk Accommodation
     
 	/**
 	 * @return the id
@@ -181,6 +182,18 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setCreatedBy(Integer createdBy) {
 		this.createdBy = createdBy;
+	}
+	/**
+	 * @return the extElmId
+	 */
+	public String getExtElmId() {
+		return extElmId;
+	}
+	/**
+	 * @param extElmId the extElmId to set
+	 */
+	public void setExtElmId(String extElmId) {
+		this.extElmId = extElmId;
 	}
     
 } 

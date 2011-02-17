@@ -1,5 +1,8 @@
 package com.ctb.bean.testAdmin; 
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Data bean representing the contents of the OAS.STUDENT table
  * with additional fields for current grade and accommodations
@@ -27,6 +30,8 @@ public class SessionStudent extends SchedulingStudent
     private String testCompletionStatus;
     private String scoringStatus;
     private StudentManifest [] studentManifests;
+    private String[] valueMap;
+    private List valueHashMap;
     
     public SessionStudent() {
         super();
@@ -142,5 +147,37 @@ public class SessionStudent extends SchedulingStudent
 	 */
 	public void setStudentManifests(StudentManifest[] studentManifests) {
 		this.studentManifests = studentManifests;
+	}
+	/**
+	 * @return the valueMap
+	 */
+	public String[] getValueMap() {
+		return valueMap;
+	}
+	/**
+	 * @param valueMap the valueMap to set
+	 */
+	public void setValueMap(String[] valueMap) {
+		this.valueMap = valueMap;
+		if (valueHashMap != null) {
+			valueHashMap.add( this.valueMap );
+		} else {
+			valueHashMap = new ArrayList();
+			valueHashMap.add( this.valueMap );
+		}
+		
+	}
+	/**
+	 * @return the valueHashMap
+	 */
+	public List getValueHashMap() {
+		return valueHashMap;
+	}
+	
+	/**
+	 * @param valueHashMap the valueHashMap to set
+	 */
+	public void setValueHashMap(List valueHashMap) {
+		this.valueHashMap = valueHashMap;
 	}
 } 

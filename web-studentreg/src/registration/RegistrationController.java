@@ -157,6 +157,7 @@ public class RegistrationController extends PageFlowController
     protected Forward begin()
     {
         getUserDetails();
+     
                         
         this.gradeOptions = getGradeOptions(ACTION_FIND_STUDENT);
         this.genderOptions = getGenderOptions(ACTION_FIND_STUDENT);
@@ -187,7 +188,8 @@ public class RegistrationController extends PageFlowController
         
         //GACRCT2010CR007- retrieve value for Disable_Mandatory_Birth_Date 
         getCustomerConfigurations();
-        
+        //Bulk Accommodation
+		customerHasBulkAccommodation();
         return new Forward("success", this.savedForm);
     }
 
@@ -864,6 +866,7 @@ public class RegistrationController extends PageFlowController
             List tempList = TestSessionUtils.cloneSubtests(this.defaultSubtests);
             TestSessionUtils.copySubtestLevel(this.selectedSubtests, tempList); 
             this.selectedSubtests = TestSessionUtils.retrieveSelectedSubtestsFromRequest(this.getRequest(), tempList);        
+            this.availableSubtests = TestSessionUtils.getAvailableSubtests(tempList, this.selectedSubtests); //change done for defect 63097
                
             String autoLocator = form.getAutoLocator();
             boolean autoLocatorChecked = ((autoLocator != null) && autoLocator.equals("true"));
@@ -1018,6 +1021,9 @@ public class RegistrationController extends PageFlowController
         catch (InsufficientLicenseQuantityException e)
         {
             e.printStackTrace();
+            //START - Added for Deferred Defect 63097
+            form.setMessage(MessageResourceBundle.getMessage("SelectSettings.InsufficentLicenseQuantity.E001"),Message.INSUFFICENT_LICENSE_QUANTITY, Message.ERROR);            
+            //END - Added for Deferred Defect 63097
             String errorMessage = MessageResourceBundle.getMessage("SelectSettings.InsufficentLicenseQuantity", e.getMessage());
             this.getRequest().setAttribute("errorMessage", errorMessage); 
             return new Forward("error", form);            
@@ -2098,6 +2104,29 @@ public class RegistrationController extends PageFlowController
 
 	public List getOrgNodeNames() {
 		return orgNodeNames;
+	}
+	
+	/**
+	 * Bulk Accommodation
+	 */
+	private Boolean customerHasBulkAccommodation() 
+	{
+		boolean hasBulkStudentConfigurable = false;
+			 //Bulk Accommodation
+		 for (int i=0; i < this.customerConfigurations.length; i++) {
+			 
+	           CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+	    	        		cc.getDefaultValue().equals("T")) {
+	                	hasBulkStudentConfigurable = true; 
+	                	break;
+	             }
+	      }
+			
+	    getSession().setAttribute("isBulkAccommodationConfigured", hasBulkStudentConfigurable);
+	            
+	 	
+		return new Boolean(hasBulkStudentConfigurable);           
 	}
     
 }

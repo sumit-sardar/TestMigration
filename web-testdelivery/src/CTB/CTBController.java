@@ -16,6 +16,8 @@ import com.ctb.web.util.stgtms.CTBAssessmentDeliveryProcessor;
 import com.ctb.web.util.stgtms.CTBLoginRequestProcessor;
 import com.ctb.web.util.stgtms.CTBSaveRequestProcessor;
 import com.ctb.web.util.stgtms.CTBUploadAuditFileProcessor;
+import com.ctb.web.util.stgtms.CTBLoadTestRequestProcessor;
+import com.ctb.control.testDelivery.LoadTest;
 
 /**
  * @jpf:controller
@@ -47,6 +49,9 @@ public class CTBController extends PageFlowController
      */
     @Control()
     private com.ctb.control.testDelivery.StudentTestData saveControl;
+
+	@Control
+	private LoadTest loadTestControl;
 
 
     /**
@@ -323,7 +328,53 @@ public class CTBController extends PageFlowController
             return new Forward("error");
         }
     }
-    
+
+	 /**
+     * @jpf:action
+     * @jpf:forward name="index" path="index.jsp"
+     * @jpf:forward name="error" path="error.jsp"
+     */
+	@Jpf.Action(
+		forwards = { 
+			@Jpf.Forward(name = "index", path = "index.jsp"), 
+			@Jpf.Forward(name = "error", path = "error.jsp")
+		}
+	)
+	public Forward getLoadTestConfig(TestForm test) {
+		
+		return handleTMSRequest(test);
+        
+	}
+
+	/**
+     * @jpf:action
+     * @jpf:forward name="index" path="index.jsp"
+     * @jpf:forward name="error" path="error.jsp"
+     */
+	@Jpf.Action(
+		forwards = { 
+			@Jpf.Forward(name = "index", path = "index.jsp"), 
+			@Jpf.Forward(name = "error", path = "error.jsp")
+		}
+	)
+	public Forward uploadStatistics(TestForm test) {
+		return handleTMSRequest(test);
+	}
+
+	/**
+     * @jpf:action
+     * @jpf:forward name="index" path="index.jsp"
+     * @jpf:forward name="error" path="error.jsp"
+     */
+	@Jpf.Action(
+		forwards = { 
+			@Jpf.Forward(name = "index", path = "index.jsp"), 
+			@Jpf.Forward(name = "error", path = "error.jsp")
+		}
+	)
+	public Forward uploadSystemInfo(TestForm test) {
+		return handleTMSRequest(test);
+	}    
 
     
     private Forward handleTMSRequest(TestForm test) {
@@ -336,8 +387,16 @@ public class CTBController extends PageFlowController
             if(requestXML == null) requestXML = "Missing XML request";
             String responseXML = null;
             if(requestXML.indexOf("tmssvc_request") >= 0) {
-                String remoteAddress = this.getRequest().getRemoteAddr();
-                responseXML = CTBLoginRequestProcessor.processLoginRequest(requestXML, loginControl, remoteAddress);
+            	if (requestXML.indexOf("runLoad_request") > 0){
+            		responseXML = CTBLoadTestRequestProcessor.processLoadTestRequest(requestXML, loadTestControl);
+            	}else if(requestXML.indexOf("upload_statistics_request") > 0){
+            		responseXML = CTBLoadTestRequestProcessor.processUploadStatisticsRequest(requestXML, loadTestControl);
+            	}else if(requestXML.indexOf("upload_systemInfo_request") > 0){
+            		responseXML = CTBLoadTestRequestProcessor.processUploadSystemInfoRequest(requestXML, loadTestControl);
+            	}else{
+                    String remoteAddress = this.getRequest().getRemoteAddr();
+                    responseXML = CTBLoginRequestProcessor.processLoginRequest(requestXML, loginControl, remoteAddress);
+            	}
             } else if(requestXML.indexOf("get_feedback_data") >= 0) {
                 responseXML = CTBSaveRequestProcessor.processFeedbackRequest(requestXML, saveControl);
             } else if(requestXML.indexOf("adssvc_request") >= 0) {

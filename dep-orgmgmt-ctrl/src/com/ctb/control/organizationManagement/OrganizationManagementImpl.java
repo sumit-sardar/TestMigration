@@ -43,8 +43,8 @@ import com.ctb.util.SQLutils;
 
 
 
-@ControlImplementation()
-public class OrganizationManagementImpl implements OrganizationManagement, Serializable
+@ControlImplementation(isTransient=true)
+public class OrganizationManagementImpl implements OrganizationManagement
 { 
     /**
      * @common:control

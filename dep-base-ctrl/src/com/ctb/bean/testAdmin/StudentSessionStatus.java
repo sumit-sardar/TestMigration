@@ -28,6 +28,7 @@ public class StudentSessionStatus extends CTBBean
     private String recommendedLevel;
     private String customerFlagStatus;
     private String itemSetName;
+    private String itemSetLevel;    //Added for defect - 64622 
     private String totalItem;
     private String itemAnswered;
     private String timeSpent;
@@ -365,6 +366,18 @@ public class StudentSessionStatus extends CTBBean
 	 */
 	public void setOrgNodeId(Integer orgNodeId) {
 		this.orgNodeId = orgNodeId;
+	}
+	/**
+	 * @return the itemSetLevel
+	 */
+	public String getItemSetLevel() {
+		return itemSetLevel;
+	}
+	/**
+	 * @param itemSetLevel the itemSetLevel to set
+	 */
+	public void setItemSetLevel(String itemSetLevel) {
+		this.itemSetLevel = itemSetLevel;
 	}
 
 } 

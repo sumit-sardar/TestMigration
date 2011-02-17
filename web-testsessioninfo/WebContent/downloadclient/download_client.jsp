@@ -89,7 +89,7 @@
             <table class="transparent">
                 <tr id="installJavaRow" class="transparent">
                    <td class="transparent-top">
-                        <netui:content value="<b>For PC and Linux</b>: Go to the Adobe website and download the latest Adobe AIR for free."/>
+                        <netui:content value="<b>For PC and Linux</b>: Go to the Adobe website and download the latest Adobe AIR for free. Then log in to OAS again to install Online Assessment Software."/>
                         <br>
                         <a href="#" onclick="newWindow('http://www.adobe.com/go/getair');"><netui:content value="http://www.adobe.com/go/getair"/></a>
                         <br>

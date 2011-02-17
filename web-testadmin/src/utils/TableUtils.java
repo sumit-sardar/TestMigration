@@ -107,6 +107,25 @@ public class TableUtils
         table.setTotalWidth(width);
         return new TableVO(table, 0, 1, x, y, 1);
     }
+    //START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+    /**
+     * This method returns a table displaying a horizontal dotted line
+     * haven't been able to get it to do a rounded line style - maybe using PdfPTable instead of cell
+     */
+    protected TableVO getDottedLineTable(float width,
+                                   float x,
+                                   float y) throws DocumentException{
+        ArrayList cells = new ArrayList();
+        String text="";
+    	for (int i=0; i< 64; i++){
+    		text = text + "- ";
+    	}
+    	cells.add(getTableCell(getBlueColor(),text, getNormalBlueFont(), false, false, false, false, 0f));
+        PdfPTable table = getTable(1, cells);
+        table.setTotalWidth(width);
+        return new TableVO(table, 0, 1, x, y, 1);
+    }
+    //END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
     
     /**
      * This method returns a table displaying the copywrite text in medium font

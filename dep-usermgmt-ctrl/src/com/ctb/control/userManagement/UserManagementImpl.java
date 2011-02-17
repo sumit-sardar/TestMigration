@@ -2,11 +2,13 @@ package com.ctb.control.userManagement;
 
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.Message;
@@ -39,6 +41,7 @@ import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
+import com.ctb.bean.testAdmin.UserRole;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.OrgNodeDataNotFoundException;
 import com.ctb.exception.UserDataRetrivalException;
@@ -68,8 +71,8 @@ import com.ctb.util.SQLutils;
  * 
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class UserManagementImpl implements UserManagement, Serializable
+@ControlImplementation(isTransient=true)
+public class UserManagementImpl implements UserManagement
 { 
 	/**
      * @common:control
@@ -866,7 +869,7 @@ public class UserManagementImpl implements UserManagement, Serializable
         Integer userId = user.getUserId();
         Integer addressId = user.getAddressId();
         Integer newAddressId = null;
-        
+        List<Integer> totalAssignedOrgnode = new ArrayList<Integer>();   //Added for Deferred Defect 60566
         try {
             
             validator.validateUser(loginUser.getUserName(), user.getUserName(), "UserManagementImpl.updateUser");
@@ -924,20 +927,24 @@ public class UserManagementImpl implements UserManagement, Serializable
             users.updateUser(user);
                 
             //Update Selected User Role
-             
-            if (!loginUser.getUserName().equals(user.getUserName())) {
-            	userRoles.deleteUserRolesForUser(user);
-                if (user.getRole() != null && user.getRole().getRoleId() != null) {
-                    for (int i = 0; i < organizationNodes.length; i++) {
-                        Role rl = user.getRole();
-                        rl.setCreatedBy(loginUserId);
-                        rl.setCreatedDateTime(new Date());
-                        userRoles.createUserRole(new Long(userId.intValue()), 
-                                    rl, 
-                                    new Long(organizationNodes[i].getOrgNodeId().intValue()));
-                    }
-                }
-            }
+          //START-  Change for Deferred Defect 60566
+             if (!loginUser.getUserName().equals(user.getUserName())) {
+              	UserRole[] userRole = userRoles.getInvisibleOrgnodesForUser(loginUser.getUserName(), user.getUserName());
+             	userRoles.deleteUserRolesForUser(user);
+                 if (user.getRole() != null && user.getRole().getRoleId() != null) {
+                 	totalAssignedOrgnode = totalAssignedOrgNode(userRole, organizationNodes);
+                 		for (int i = 0; i < totalAssignedOrgnode.size(); i++) {
+                 				Role rl = user.getRole();
+                                     rl.setCreatedBy(loginUserId);
+                                     rl.setCreatedDateTime(new Date());
+                                     userRoles.createUserRole(new Long(userId.intValue()), 
+                                                 rl, 
+                                                 new Long(totalAssignedOrgnode.get(i)));
+                        } 
+ 	                		
+                 }
+             }
+          //END-  Change for Deferred Defect 60566
         } catch (SQLException se) {
             UserDataUpdateException updateException = 
                                         new UserDataUpdateException(
@@ -967,6 +974,7 @@ public class UserManagementImpl implements UserManagement, Serializable
         Integer userId = user.getUserId();
         Integer addressId = user.getAddressId();
         Integer newAddressId = null;
+        List<Integer> totalAssignedOrgnode = new ArrayList<Integer>();     //Added for Deferred Defect 60566
         
         // CR Dex
         if (user.getExtPin1() != null) {
@@ -1032,20 +1040,26 @@ public class UserManagementImpl implements UserManagement, Serializable
             users.updateUser(user);
                 
             //Update Selected User Role
-            
+            //START-  Change for Deferred Defect 60566
             if (!loginUserName.equals(user.getUserName())) {
+            	
+            	UserRole[] userRole = userRoles.getInvisibleOrgnodesForUser(loginUserName, user.getUserName());
             	userRoles.deleteUserRolesForUser(user);
                 if (user.getRole() != null && user.getRole().getRoleId() != null) {
-                    for (int i = 0; i < organizationNodes.length; i++) {
-                        Role rl = user.getRole();
-                        rl.setCreatedBy(loginUserId);
-                        rl.setCreatedDateTime(new Date());
-                        userRoles.createUserRole(new Long(userId.intValue()), 
-                                    rl, 
-                                    new Long(organizationNodes[i].getOrgNodeId().intValue()));
-                    }
+                	totalAssignedOrgnode = totalAssignedOrgNode(userRole, organizationNodes);
+                		for (int i = 0; i < totalAssignedOrgnode.size(); i++) {
+                				Role rl = user.getRole();
+                                    rl.setCreatedBy(loginUserId);
+                                    rl.setCreatedDateTime(new Date());
+                                    userRoles.createUserRole(new Long(userId.intValue()), 
+                                                rl, 
+                                                new Long(totalAssignedOrgnode.get(i)));
+                       } 
+	                		
                 }
             }
+          //END-  Change for Deferred Defect 60566
+           
         } catch (SQLException se) {
             UserDataUpdateException updateException = 
                                         new UserDataUpdateException(
@@ -2535,6 +2549,26 @@ public class UserManagementImpl implements UserManagement, Serializable
          
     }
     
+     /**This method is used to  generate list of all  organization to which 
+     * user will be associated on role or organization change
+     * @common:operation
+     * @param UserRole[]
+     * @param Node[]
+     * @return List<Integer>
+     */
+    //START- Added for Deferred Defect 60566
+    private List<Integer> totalAssignedOrgNode(UserRole[] userRole, Node[] organizationNodes){
+    	List<Integer> totalAssignedOrgnode = new ArrayList<Integer>();
+    	for (int i = 0; i < userRole.length; i++) {
+			totalAssignedOrgnode.add(userRole[i].getOrgNodeId().intValue());
+			
+        } 
+		for (int i = 0; i < organizationNodes.length; i++) {
+			totalAssignedOrgnode.add(organizationNodes[i].getOrgNodeId().intValue());
+		} 
+		return  totalAssignedOrgnode;
+    }
+    //END- Added for Deferred Defect 60566
 }
         
  

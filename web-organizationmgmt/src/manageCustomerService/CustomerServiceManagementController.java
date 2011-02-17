@@ -1,5 +1,6 @@
 package manageCustomerService;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,6 +26,10 @@ import utils.MessageResourceBundle;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.studentManagement.CustomerConfigurationValue;
+import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfig;
 import com.ctb.bean.testAdmin.ScheduleElement;
 import com.ctb.bean.testAdmin.ScheduleElementData;
 import com.ctb.bean.testAdmin.Student;
@@ -33,6 +38,8 @@ import com.ctb.bean.testAdmin.StudentSessionStatusData;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.uploadDownloadManagement.FileNotUploadedException;
+import com.ctb.util.CTBConstants;
 import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.PagerSummary;
@@ -47,6 +54,13 @@ import dto.TestSessionVO;
 @Jpf.Controller
 public class CustomerServiceManagementController extends PageFlowController {
 
+	/**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.db.Users users;
+
+    
 	private static final long serialVersionUID = 1L;
 	public String pageTitle = null;
 
@@ -91,6 +105,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 	private Integer itemsetId = null;
 	private String selectedTestAdminName = null;
 	private String selectedTestSessionNumber = null;
+	
 
 	private String searchedStudentLoginId = null;
 	private String searchedTestAccessCode = null;
@@ -110,6 +125,26 @@ public class CustomerServiceManagementController extends PageFlowController {
 	
 	@Control()
     private com.ctb.control.organizationManagement.OrganizationManagement organizationManagement;
+	
+	
+	
+	
+	//Changes for GA2011CR001
+	//START
+    @Control()
+    private com.ctb.control.db.UploadDataFile customerConfigurationEntry; 
+    
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.studentManagement.StudentManagement studentManagement ;
+    
+    CustomerConfig[] customerConfigurations = null;
+    CustomerConfigurationValue[] customerConfigurationsValue = null;
+	private Integer customerId = 0;
+	private Integer configId=0;
+	private String []valueForStudentId = null ;
+	private Boolean isSubtestByStudent = false;
+	
+	//END
 
 	/**
 	 * Callback that is invoked when this controller instance is created.
@@ -433,7 +468,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		//reset the list
 		this.studentTestStatusDetailsList = null;
 
-
+		//Changes For GA2011CR001
+		this.getRequest().setAttribute("studentIdArrValue", this.valueForStudentId);
 		return new Forward("success",form);
 	}  
 
@@ -459,6 +495,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 
 			return new Forward(form.getCurrentAction(),form);
 		}
+		//Change for GA2011CR001
+		this.getRequest().setAttribute("studentIdArrValue", this.valueForStudentId);
 		return new Forward("success",form);
 	}
 
@@ -531,7 +569,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 		setFormInfoOnRequest(form);
 		this.getRequest().setAttribute("disableShowDetailsButton", Boolean.FALSE);
-
+		//Change For GA2011CR001
+		this.getRequest().setAttribute("studentIdArrValue", this.valueForStudentId);
 		return new Forward("success",form);
 	}   
 
@@ -557,7 +596,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 			this.getRequest().setAttribute("subtestResult", "true");        
 			this.getRequest().setAttribute("subtestPagerSummary", subtestPagerSummary);
 		}
-
+		//Changes For GA2011CR001
+		this.getRequest().setAttribute("studentIdArrValue", this.valueForStudentId);
 		Forward forward = new Forward("success", form);
 		return forward;
 	}
@@ -806,12 +846,16 @@ public class CustomerServiceManagementController extends PageFlowController {
 						this.userName, studentLoginId);
 			StudentData studentData = null;
 
-
 			if (sData != null) {
 				form.setStudentProfile(new StudentProfileInformation(sData));
 				form.getStudentProfile().setStudentLoginId(studentLoginId);
 				form.setSelectedStudentId(sData.getStudentId());
 				form.setSelectedStudentLoginId(sData.getUserName());
+				// Changes for GA2011CR001
+				this.customerId = sData.getCustomerId();
+				this.isSubtestByStudent = true;
+				isStudentIdConfigurable(customerId, isSubtestByStudent);
+				//END
 				Student[] students = new Student[1];
 				students[0] = sData;
 				studentData = new StudentData();
@@ -889,7 +933,10 @@ public class CustomerServiceManagementController extends PageFlowController {
 				this.searchApplied = true;
 				this.testDeliveryItemList = CustomerServiceSearchUtils.buildTestDeliveritemList(scheduleElementData);
 				this.itemsetId = this.createSubtestNameList(scheduleElementData.getElements(),form);
-
+				//Start Changes for GA2011CR001 	
+				this.customerId=	scheduleElementData.getElements()[0].getCustomerId();
+				isStudentIdConfigurable(this.customerId, isSubtestByStudent);
+				//End Changes for GA2011CR001
 				this.getRequest().setAttribute("testSessionResult", "true"); 
 
 				boolean hideProductNameDropDown = this.testDeliveryItemList.size() <= 1;
@@ -955,6 +1002,8 @@ public class CustomerServiceManagementController extends PageFlowController {
 	private CustomerServiceManagementForm initialize(String action)
 	{        
 		getUserDetails();
+		//Bulk Accommodation Changes
+		customerHasBulkAccommodation();
 		this.studentsOnPage = new HashMap<String,StudentSessionStatusVO>();
 		this.studentsOnPageList = new HashMap<String,StudentSessionStatusVO>();
 		this.selectedStudents = new HashMap<String,StudentSessionStatusVO>();
@@ -1292,7 +1341,6 @@ public class CustomerServiceManagementController extends PageFlowController {
 		this.getRequest().setAttribute("studentSearchResult", "true");        
 		this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
 		setSelectedStudentListToForm(form);
-		System.out.println(form.getSelectedStudentItemId().length);
 		checkForShowDetailsButton();
 		System.out.println("Size of students Details list............."+this.studentStatusDetailsList.size());
 
@@ -1467,6 +1515,111 @@ public class CustomerServiceManagementController extends PageFlowController {
 		}
 
 	}
+	
+	/***
+	 *  Changes for GA2011CR001
+	 * @param customerId
+	 */
+	
+	private void isStudentIdConfigurable(Integer customerId, Boolean isSubtestByStudent) 
+    {     
+    	
+			getCustomerConfigurations(customerId);
+			for (int i=0; i < this.customerConfigurations.length; i++)
+			{
+				CustomerConfig cc = (CustomerConfig)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
+				{
+					configId = cc.getCustomerConfigurationId();
+					customerConfigurationValues(configId);
+					//By default there should be 3 entries for customer configurations
+					this.valueForStudentId = new String[8];
+					for(int j=0; j<this.customerConfigurationsValue.length; j++){
+						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
+						this.valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+					}
+					if(isSubtestByStudent){
+					valueForStudentId[0] = valueForStudentId[0] != null ? valueForStudentId[0]   : "ID" ;
+					}
+					else{
+						valueForStudentId[0] = valueForStudentId[0] != null ? valueForStudentId[0]   : CTBConstants.STUDENT_ID ;
+					}
+														
+				}
+			else{
+				this.valueForStudentId = null;
+			}
+
+
+			}
+			this.isSubtestByStudent = false;
+			this.getRequest().setAttribute("studentIdArrValue",valueForStudentId);
+	
+	
+	
+     }
+	/***
+	 *  Changes for GA2011CR001
+	 *  This method can be used in future to set a default value for configurable_customerid configuration
+	 * @param arrValue[], labelName
+	 */
+    private String[] getDefaultValue(String [] arrValue, String labelName)
+	{
+		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
+		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
+		
+		
+		if(labelName.equals("Student ID")){
+			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
+			if(!arrValue[2].equals("T") && !arrValue[2].equals("F"))
+				{ 
+					arrValue[2]  = "F";
+				}
+			
+		}
+		try {
+			int maxLength = Integer.valueOf(arrValue[1]);
+		} catch (NumberFormatException nfe){
+			arrValue[1] = "32" ;
+		}
+		
+		
+		
+		return arrValue;
+	}
+    
+	/***
+	 *  Changes for GA2011CR001
+	 * @param configId
+	 */
+	private void customerConfigurationValues(Integer configId)
+	{
+		try {
+				this.customerConfigurationsValue = this.studentManagement.getCustomerConfigurationsValue(configId);
+
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+	}
+	/**
+	 * Changes for GA2011CR001
+	 * @param customerId
+	 */
+	private void getCustomerConfigurations(Integer customerId)
+	{
+		try {
+			//if (this.customerConfigurations == null) {   //Changes for Defect-60479
+				this.customerConfigurations = this.customerConfigurationEntry.getCustomerConfigurationEntries(customerId);
+			//}
+		}
+		catch (SQLException be) {
+			be.printStackTrace();
+		}
+	}
+	
+	
+	
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** CustomerServiceManagementForm ************* ////////////////////////////////    
 /////////////////////////////////////////////////////////////////////////////////////////////    
@@ -2756,5 +2909,39 @@ public class CustomerServiceManagementController extends PageFlowController {
 				selectedStudentsLength : new Integer(0);
 	}
 
+
+	/*
+     * Bulk accommodation
+     */
+	private Boolean customerHasBulkAccommodation()
+    {               
+        Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasBulkStudentConfigurable = false;
+
+        try
+        {      
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = users.getCustomerConfigurations(2);
+			}
+            
+            for (int i=0; i < customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+                //Bulk Accommodation
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && cc.getDefaultValue().equals("T")	)
+                {
+                    this.getSession().setAttribute("isBulkAccommodationConfigured", true);
+                    break;
+                } 
+            }
+        }
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+        
+       
+        return new Boolean(hasBulkStudentConfigurable);
+    }
 
 }

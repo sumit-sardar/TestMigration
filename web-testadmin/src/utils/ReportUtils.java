@@ -63,6 +63,11 @@ public abstract class ReportUtils
     protected int currentPageIndex = 0;
     protected String scheme;
     protected ArrayList pages = new ArrayList();
+    //START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+    protected Collection staticKeyboardTables = null;
+    protected boolean lastStudent = true;
+    private boolean isMultiIndividualTkt = false;
+    //END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
        
     protected abstract void setup(Object[] args) throws DocumentException, IOException;
     protected abstract boolean setDynamicTables() throws DocumentException, IOException;
@@ -71,12 +76,21 @@ public abstract class ReportUtils
     public void generateReport(Object[] args) throws IOException {
         try{
             setup(args);
-            displayPage();
-            while(hasNextPage()){
-                document.newPage();
-                currentPageIndex++;
-                displayPage();
+            //START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+            this.isMultiIndividualTkt = (Boolean)args[2];
+            createPage();
+            
+           while(hasNextPage()){
+        	   document.newPage();
+               currentPageIndex++;
+               createPage();
             }
+            //END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+          /* if(isMultiIndividualTkt) {
+        	   document.newPage();
+        	   displayKeyBoardPage();
+           }*/
+           
             close();
          }
         catch(DocumentException de){
@@ -89,6 +103,7 @@ public abstract class ReportUtils
         this.tableUtils = new TableUtils();
         this.dynamicTables = new ArrayList();
         this.staticTables = new ArrayList();
+        this.staticKeyboardTables = new ArrayList(); // Added For CR ISTEP2011CR007 (Multiple Test Ticket)
         this.images = new ArrayList();
         this.out =    (ServletOutputStream)args[0];
         this.server = (String)args[1];
@@ -103,22 +118,52 @@ public abstract class ReportUtils
     private void displayPage() throws IOException, DocumentException {
         for(Iterator it=staticTables.iterator(); it.hasNext();){
             TableVO table = (TableVO)it.next();
+            //START - Changed For CR ISTEP2011CR007 (Multiple Test Ticket)
+            if((isMultiIndividualTkt && !lastStudent && table.getY()== 72.0f ) 
+            		|| (isMultiIndividualTkt && !lastStudent && table.getY()== 30.0f ))
+            	continue;
+            if(!lastStudent && table.getY()== 400.0f )
+            	break;
             write(table.getTable(), 0, table.getEnd(), table.getX(), table.getY());
+            //END - Changed For CR ISTEP2011CR007 (Multiple Test Ticket)
         }
+        
         if(setDynamicTables()){
             for(Iterator it=dynamicTables.iterator(); it.hasNext();){
                 TableVO table = (TableVO)it.next();
                 write(table.getTable(), 0, table.getEnd(), table.getX(), table.getY());
             }
         }
-        if(setImages()){
+        if(!isMultiIndividualTkt && setImages()){
             for(Iterator it=images.iterator(); it.hasNext();){
                 ImageVO image = (ImageVO)it.next();
                 writeImage(image.getUrl(), image.getX(), image.getY());
             }
         }
     }
- 
+ 	//START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+    private void displayKeyBoardPage() throws IOException, DocumentException {
+        for(Iterator it=staticKeyboardTables.iterator(); it.hasNext();){
+            TableVO table = (TableVO)it.next();
+            write(table.getTable(), 0, table.getEnd(), table.getX(), table.getY());
+        }
+    }
+    
+    private void createPage() throws IOException, DocumentException {
+    	  lastStudent = hasNextPage();
+          if(!isMultiIndividualTkt) {
+         	 displayKeyBoardPage();
+          }
+          displayPage();
+          if(isMultiIndividualTkt) {
+              if(hasNextPage()){
+              	currentPageIndex++;
+              	displayPage();
+              }
+          }
+    }
+    //END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+    
     private boolean hasNextPage(){
         return this.currentPageIndex < this.totalPages - 1;
     }

@@ -1,11 +1,10 @@
 package dto; 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
-
 import utils.DateUtils;
-
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.util.web.sanitizer.SanitizedFormField;
@@ -80,9 +79,10 @@ public class StudentProfileInformation extends SanitizedFormField
         
         this.grade = student.getGrade();
         if (this.grade == null) this.grade = "";
-        
-        this.studentNumber = student.getStudentIdNumber();
-        this.studentSecondNumber = student.getStudentIdNumber2();
+        //GACR005  For Defect # 65786
+        this.studentNumber = student.getStudentIdNumber()!= null ? student.getStudentIdNumber().trim() : "";
+        this.studentSecondNumber = student.getStudentIdNumber2() != null ? student.getStudentIdNumber2().trim() : "";
+        //GACR005   For Defect # 65786
         this.birthdate = student.getBirthDate(); 
         if (this.birthdate != null) {
             this.birthdateString = DateUtils.formatDateToDateString(this.birthdate, DateUtils.DATE_FORMAT_CHAR);     
@@ -124,8 +124,8 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setMiddleName( upperCaseFirstLetter(this.middleName) );
         copied.setLastName( upperCaseFirstLetter(this.lastName) );
         copied.setGrade(this.grade);
-        copied.setStudentIdNumber(this.studentNumber);
-        copied.setStudentIdNumber2(this.studentSecondNumber);
+        copied.setStudentIdNumber(this.studentNumber.trim());
+        copied.setStudentIdNumber2(this.studentSecondNumber.trim());
         //GACRCT2010CR007 - changed for creating date when supplied.
         Date date = null;
         

@@ -94,6 +94,10 @@ public interface UserRoles extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select ur.user_id as userId, ur.role_id as roleId, ur.org_node_id as orgNodeId from user_role ur where ur.user_id = (select u.user_id from users u where u.user_name = {userName}) ")
     UserRole[] getUserRoles(String userName) throws SQLException;
+    
+    
+    @JdbcControl.SQL(statement = "select ur.user_id as userId, ur.role_id as roleId, ur.org_node_id as orgNodeId from user_role ur where ur.user_id = (select u.user_id from users u where u.user_name = {userName}) and not ur.org_node_id in (select distinct t.org_node_id from org_node_ancestor t where t.ancestor_org_node_id in (select ur.org_node_id as orgNodeId from user_role ur where ur.user_id = (select u.user_id from users u where u.user_name = {loginUserName})))")
+    UserRole[] getInvisibleOrgnodesForUser(String loginUserName, String userName) throws SQLException;
 
    
 }

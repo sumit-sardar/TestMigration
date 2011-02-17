@@ -3,6 +3,7 @@ package utils;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.studentManagement.ManageBulkStudentData;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.control.studentManagement.StudentManagement;
@@ -155,6 +156,22 @@ public class StudentSearchUtils
             e.printStackTrace();
         }
         return studentProfileInfo;
+    }
+    
+    /**
+     * searchBulkStudentsByOrgNode Bulk accommodation
+     */    
+    public static ManageBulkStudentData searchBulkStudentsByOrgNode(String userName, StudentManagement studentManagement, Integer orgNodeId,
+                                                           FilterParams filter,FilterParams demoFilter, PageParams page, SortParams sort)
+    {    
+    	ManageBulkStudentData msData = null;
+        try {    
+            msData = studentManagement.findBulkStudentsForOrgNode(userName, orgNodeId, filter,demoFilter, page, sort);
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }        
+        return msData;
     }
     
 } 

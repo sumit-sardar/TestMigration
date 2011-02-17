@@ -88,7 +88,12 @@
 							<th class="sortable alignCenter" width="5%" nowrap><netui:content value="${bundle.web['common.column.select']}" /></th>
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentName">Student Name</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="StudentLoginName">Login Name</ctb:tableSortColumn></th>
+							<c:if test="${studentIdArrValue[0] != null}">
+							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="ExternalStudentId">${studentIdArrValue[0]}</ctb:tableSortColumn></th>
+							</c:if>
+							<c:if test="${studentIdArrValue[0] == null}">
 							<th class="sortable alignLeft" width="15%" nowrap><ctb:tableSortColumn value="ExternalStudentId">Student ID</ctb:tableSortColumn></th>
+							</c:if>
 							<th class="sortable alignLeft" width="15%" nowrap><netui:content value="&nbsp;&nbsp;Organization"/></th>
 							<th class="sortable alignLeft" width="35%" nowrap><ctb:tableSortColumn value="ItemSetName">Section Name</ctb:tableSortColumn></th>
 							<th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="CompletionStatus">Section Status</ctb:tableSortColumn></th>
@@ -102,13 +107,17 @@
 					<tr class="sortable">
 						<td class="sortable alignCenter" width="5%"><netui:checkBoxGroup dataSource="actionForm.selectedStudentItemId">
                 &nbsp;
-                <c:if
+               				 <c:if
 								test="${container.item.completionStatus != 'Completed' && container.item.completionStatus != 'In Progress'}">
 								<netui:checkBoxOption value="${container.item.studentItemId}" disabled="true">&nbsp;</netui:checkBoxOption>
 							</c:if>
 							<c:if
-								test="${container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress'}">
+								test="${container.item.itemSetLevel != 'L' && (container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress')}">
 								<netui:checkBoxOption value="${container.item.studentItemId}" disabled="false" onClick="toggleShowButton(this, ${pageScope.selectedStudentsLength});">&nbsp;</netui:checkBoxOption>
+							</c:if>
+							<c:if
+								test="${container.item.itemSetLevel == 'L' && (container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress')}">
+								<netui:checkBoxOption value="${container.item.studentItemId}" disabled="true">&nbsp;</netui:checkBoxOption>
 							</c:if>
 						</netui:checkBoxGroup></td>
 						<td class="sortable alignLeft" width="15%"><netui:span value="${container.item.studentName}" /></td>

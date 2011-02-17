@@ -92,6 +92,14 @@ public class WebUtils
         
         return (zero_nine || A_Z || a_z || validChar);
     }
+    public static boolean validAlphaNumericCharacter(char ch)
+    {
+        boolean zero_nine = ((ch >= 48) && (ch <= 57));
+        boolean A_Z = ((ch >= 65) && (ch <= 90));
+        boolean a_z = ((ch >= 97) && (ch <= 122));
+       
+        return (zero_nine || A_Z || a_z );
+    }
 
     public static boolean validString(String str)
     {
@@ -127,6 +135,17 @@ public class WebUtils
         return !requestHasInvalidParameters(str);
     }
     
+    public static boolean validAlphaNumericString(String str)
+    {
+        char[] characters = str.toCharArray();
+        for (int i=0 ; i<characters.length ; i++) {
+            char character = characters[i];
+            if (! validAlphaNumericCharacter(character))
+                return false;
+        }
+        return !requestHasInvalidParameters(str);
+    }
+    
     public static String verifyCreateStudentName(String firstName, String lastName, String middleName)
     {
         String invalidCharFields = "";
@@ -150,29 +169,107 @@ public class WebUtils
         return invalidCharFields;
     }
 
-    public static String verifyCreateStudentNumber(String studentNumber, String studentSecondNumber)
-    {
-        String invalidCharFields = "";
-        int invalidCharFieldCount = 0;
+   
+	//START- Changed for GACR005 
+	public static String verifyCreateStudentNumber(String studentNumber, String studentSecondNumber, String studentIdLabelName, String studentId2LabelName, boolean studentIdConfigurable, boolean studentId2Configurable )
+	{
+		String invalidCharFields = "";
+		int invalidCharFieldCount = 0;
+		if(!studentIdConfigurable) {
+			if (studentNumber != null) {
+				if (! validTextString(studentNumber) ) {
+					invalidCharFieldCount += 1;            
+					invalidCharFields = buildErrorString(studentIdLabelName, invalidCharFieldCount, invalidCharFields);       //Changed for GA2011CR001
+				}
+			}
+		}
+		
+		if(!studentId2Configurable) {
+			if (studentSecondNumber != null) {
+				if (! validTextString(studentSecondNumber) ) {
+					invalidCharFieldCount += 1;            
+					invalidCharFields = buildErrorString(studentId2LabelName, invalidCharFieldCount, invalidCharFields);      //Changed for GA2011CR001 
+				}
+			}
+		}
+		
+		
+		return invalidCharFields;
+	}
+	//END- Changed for GACR005 
+	//START- Changed for GACR005 
+	public static String verifyAlphaNumericStudentNumber(String studentNumber, String studentSecondNumber, String studentIdLabelName, String studentId2LabelName, String isStudentIdNumeric,String isStudentId2Numeric, boolean studentIdConfigurable, boolean studentId2Configurable )
+	{
+		String invalidCharFields = "";
+		int invalidCharFieldCount = 0;
+		if(studentIdConfigurable && isStudentIdNumeric.equals("AN")) {
+			if (studentNumber != null) {
+				if (! validAlphaNumericString(studentNumber) ) {
+					invalidCharFieldCount += 1;            
+					invalidCharFields = buildErrorString(studentIdLabelName, invalidCharFieldCount, invalidCharFields);       //Changed for GA2011CR001
+				}
+			}
+		}
+		
+		if(studentId2Configurable && isStudentId2Numeric.equals("AN")) {
+			if (studentSecondNumber != null) {
+				if (! validAlphaNumericString(studentSecondNumber) ) {
+					invalidCharFieldCount += 1;            
+					invalidCharFields = buildErrorString(studentId2LabelName, invalidCharFieldCount, invalidCharFields);      //Changed for GA2011CR001 
+				}
+			}
+		}
+		return invalidCharFields;
+	}
+	//START- Created for GACR005 
+	public static String verifyConfigurableStudentNumber(String studentNumber, String studentSecondNumber, String studentIdLabelName, String studentId2LabelName, String isStudentIdNumeric, String isStudentId2Numeric)
+	{
+		String invalidCharFields = "";
+		int invalidCharFieldCount = 0;
+		if(isStudentIdNumeric.equals("NU")) {
+			if (studentNumber != null) {
+				if (! validNumber(studentNumber) ) {
+					invalidCharFieldCount += 1;            
+					invalidCharFields = buildErrorString(studentIdLabelName, invalidCharFieldCount, invalidCharFields);       //Changed for GA2011CR001
+				}
+			}
+		}
+		
+		if(isStudentId2Numeric.equals("NU")) {
+			if (studentSecondNumber != null) {
+				if (! validNumber(studentSecondNumber) ) {
+					invalidCharFieldCount += 1;            
+					invalidCharFields = buildErrorString(studentId2LabelName, invalidCharFieldCount, invalidCharFields);      //Changed for GA2011CR001 
+				}
+			}
+		}
 
-        if (studentNumber != null) {
-            if (! validTextString(studentNumber) ) {
-                invalidCharFieldCount += 1;            
-                invalidCharFields = buildErrorString("Student ID", invalidCharFieldCount, invalidCharFields);       
-            }
-        }
-        if (studentSecondNumber != null) {
-            if (! validTextString(studentSecondNumber) ) {
-                invalidCharFieldCount += 1;            
-                invalidCharFields = buildErrorString("Student ID 2", invalidCharFieldCount, invalidCharFields);       
-            }
-        }
-            
-        return invalidCharFields;
-    }
+		return invalidCharFields;
+	}
+	
+	public static String verifyMinLengthStudentNumber(String studentNumber, String studentSecondNumber, String studentIdLabelName, String studentId2LabelName, String studentIdMinLength, String studentId2MinLength)
+	{
+		String invalidCharFields = "";
+		int invalidCharFieldCount = 0;
+		
+		if (studentNumber != null) {
+			if ((studentNumber.length()> 0 ) && studentNumber.length() < (new Integer(studentIdMinLength)).intValue()) {
+				invalidCharFieldCount += 1;            
+				invalidCharFields = buildErrorString(studentIdLabelName, invalidCharFieldCount, invalidCharFields);       //Changed for GA2011CR001
+			}
+		}
+		if (studentSecondNumber != null) {
+			if ((studentSecondNumber.length() > 0 ) && studentSecondNumber.length() < (new Integer(studentId2MinLength)).intValue())  {
+				invalidCharFieldCount += 1;            
+				invalidCharFields = buildErrorString(studentId2LabelName, invalidCharFieldCount, invalidCharFields);      //Changed for GA2011CR001 
+			}
+		}
 
+		return invalidCharFields;
+	}
+	//END- Created for GACR005 
     public static String verifyFindStudentInfo(String firstName, String lastName, String middleName,
-                                                 String studentNumber, String loginId)
+                                                 String studentNumber, String loginId, String studentIdLabelName)
     {
         String invalidCharFields = "";
         int invalidCharFieldCount = 0;
@@ -194,7 +291,7 @@ public class WebUtils
 
         if (! validString(studentNumber) ) {
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Student ID", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString(studentIdLabelName, invalidCharFieldCount, invalidCharFields);      //Changed for GA2011CR001 
         }
     
         if (! validString(loginId) ) {
@@ -216,5 +313,19 @@ public class WebUtils
         }        
         return result;
     }
-    
+    //START- GACR005
+	 public static boolean validNumber(String str)
+	{
+		str = str.trim();
+		char[] characters = str.toCharArray();
+
+		for (int i=0 ; i<characters.length ; i++) {
+			char character = characters[i];
+			if (!((character >= 48) && (character <= 57))) {
+				return false;
+			}
+		} 
+		return true;
+	}
+    //END- GACR005
 } 

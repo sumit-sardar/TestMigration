@@ -72,6 +72,9 @@
     </p>
 </c:if>
 
+<!-- message -->
+<jsp:include page="/registration/show_message.jsp" />
+
 <c:if test="${multipleSubtest == null}">     
     <c:if test="${showDropDown != null}">     
         <h1>
@@ -152,8 +155,6 @@
 </p>
 
 
-<!-- message -->
-<jsp:include page="/registration/show_message.jsp" />
 
 
 <!-- Locator Test-->

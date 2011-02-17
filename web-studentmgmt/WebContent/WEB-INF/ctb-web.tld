@@ -56,6 +56,26 @@
     </attribute>
   </tag>
  
+   <tag> 
+      <name>studentBulkAccommodations</name>
+      <tag-class>taglib.StudentBulkAccommodationTag</tag-class>
+    <body-content>JSP</body-content>      
+    <attribute>
+        <name>accommodations</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>customerConfigurations</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>viewOnly</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
  
   <tag> 
       <name>studentColorSettings</name>

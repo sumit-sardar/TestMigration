@@ -12,8 +12,8 @@ import com.ctb.exception.validation.ValidationException;
 /**
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class ValidatorImpl implements Validator, Serializable
+@ControlImplementation(isTransient=true)
+public class ValidatorImpl implements Validator
 { 
 	/**
 	 * @common:control
@@ -225,12 +225,19 @@ public class ValidatorImpl implements Validator, Serializable
 				//Programmatic Transaction
 				//UserTransaction userTrans= getTransaction();
 				//userTrans.begin();
-				
-				if(!"true".equals(user.checkVisibility(userName, otherName)))
+		//Attempt to improve performance
+				if(userName.equals(otherName))
+				{
+				if(!"true".equals(user.checkVisibilitySame(userName, otherName)))
 
 					throw new ValidationException("ValidatorImpl: validateUser: failed validation for user: " + operator + " on: " + operand);;
 					//Close Transaction
-				//closeTransaction(userTrans);   
+				//closeTransaction(userTrans); 
+				} else {
+					if(!"true".equals(user.checkVisibility(userName, otherName)))
+
+						throw new ValidationException("ValidatorImpl: validateUser: failed validation for user: " + operator + " on: " + operand);;
+				}
 			}
 			//policy.checkPolicy(userName, action);
 		} catch (Exception e) {

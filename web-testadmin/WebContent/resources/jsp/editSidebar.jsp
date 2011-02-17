@@ -2,6 +2,14 @@
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
+<%
+	Boolean bulkAcc = (Boolean)session.getAttribute("isBulkAccommodationConfigured");
+	if (bulkAcc == null) bulkAcc = new Boolean(false);
+	Boolean hasReport = (Boolean)session.getAttribute("userHasReports");
+	if (hasReport == null) hasReport = new Boolean(false);
+	String scheduleTestURL = "/TestAdministrationWeb/scheduleTestPageflow/ScheduleTestController.jpf" + 
+							"?bulkAcc=" + bulkAcc.toString() + "&hasReport=" + hasReport.toString();
+%>
 
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator">
     <h1>Tests</h1>
@@ -10,7 +18,7 @@
             <li><span class="navleft-unclickable">Schedule Test Session</span></li>
         </c:if>
         <c:if test="${ !requestScope.isSelectTest }">    
-            <li><a href="/TestAdministrationWeb/scheduleTestPageflow/ScheduleTestController.jpf" onclick="return verifyExitEditTest();"><span>Schedule Test Session</span></a></li>
+            <li><a href="<%= scheduleTestURL  %>" onclick="return verifyExitEditTest();"><span>Schedule Test Session</span></a></li>
         </c:if>
         <li><a href="/TestSessionInfoWeb/viewtestsessions/ViewTestSessionsController.jpf" onclick="return verifyExitEditTest();"><span>Find Test Session</span></a></li>
     </ul>
@@ -24,6 +32,11 @@
     <li><a href="/StudentManagementWeb/manageStudent/beginAddStudent.do" onclick="return verifyExitEditTest();"><span>Add Student</span></a></li>
 </ctb:auth>
     <li><a href="/StudentManagementWeb/manageStudent/beginFindStudent.do" onclick="return verifyExitEditTest();"><span>Find Student</span></a></li>
+<ctb:auth roles="Administrator, Administrative Coordinator">
+	<c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
+		<li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Accommodations</span></a></li>
+	</c:if>
+</ctb:auth>  
 </ul>
 </ctb:auth>
 

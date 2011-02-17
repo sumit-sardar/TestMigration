@@ -135,6 +135,12 @@ function openTestTicketIndividual( anchor, testAdminId, orgNodeId ) {
     var url = "/TestAdministrationWeb/testTicket/individualTestTicket.do";
     return openTestTicket( "individual", anchor, url, testAdminId, orgNodeId );
 }
+//START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+function openTestTicketMultiple( anchor, testAdminId, orgNodeId ) {
+    var url = "/TestAdministrationWeb/testTicket/individualTestTicket.do";
+    return openTestTicket( "multiple", anchor, url, testAdminId, orgNodeId );
+}
+//END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
 
 function openTestTicketSummary( anchor, testAdminId, orgNodeId ) {
     var url = "/TestAdministrationWeb/testTicket/summaryTestTicket.do";
@@ -146,7 +152,7 @@ function openTestTicket( ticketType, anchor, url, testAdminId, orgNodeId ) {
     anchor.href  = url;
     anchor.href += "?testAdminId=" + testAdminId;
     anchor.href += "&orgNodeId=" + orgNodeId;
-    
+    anchor.href += "&ticketType=" + ticketType;    //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
 //    var targetWindowName = ticketType + orgNodeId;
 //    anchor.target = targetWindowName;
     return true;

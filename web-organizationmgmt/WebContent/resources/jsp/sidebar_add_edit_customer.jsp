@@ -19,6 +19,11 @@
     <li><a href="/StudentManagementWeb/manageStudent/beginAddStudent.do" onclick="return verifyExitAddCustomer();"><span>Add Student</span></a></li>
 </ctb:auth>
     <li><a href="/StudentManagementWeb/manageStudent/beginFindStudent.do" onclick="return verifyExitAddCustomer();"><span>Find Student</span></a></li>
+<ctb:auth roles="Administrator, Administrative Coordinator">
+	<c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
+		<li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Accommodations</span></a></li>
+	</c:if>
+</ctb:auth>    
 </ul>
 </ctb:auth>
 

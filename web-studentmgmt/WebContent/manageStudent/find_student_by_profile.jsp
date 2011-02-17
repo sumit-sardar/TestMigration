@@ -7,7 +7,10 @@
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
-
+<%
+   	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); // Change For CR - GA2011CR001
+	
+%>
 
 <table class="sortable">
     <tr class="sortable">
@@ -15,7 +18,14 @@
 <br/>        
 <table class="tableFilter">
     <tr class="tableFilter">
-        <td class="tableFilter" width="100" align="right">Student ID:</td>
+   
+        
+         <c:if test="${isStudentIdConfigurable}">   
+         <td class="tableFilter" width="100" align="right">${studentIdArrValue[0]}:</td>
+          </c:if>
+          <c:if test="${!isStudentIdConfigurable}">   
+       <td class="tableFilter" width="100" align="right">Student ID:</td>
+         </c:if>
         <td class="tableFilter" width="*"><netui:textBox tagId="studentNumber" dataSource="actionForm.studentProfile.studentNumber" tabindex="1"/></td>
         <td class="tableFilter" width="100" align="right">Login ID:</td>
         <td class="tableFilter" width="*"><netui:textBox tagId="userName" dataSource="actionForm.studentProfile.userName" tabindex="5"/></td>

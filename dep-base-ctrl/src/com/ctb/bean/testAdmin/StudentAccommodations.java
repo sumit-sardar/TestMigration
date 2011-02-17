@@ -25,6 +25,7 @@ public class StudentAccommodations extends CTBBean
     private String answerFontColor;
     private String answerFontSize;
     private String colorFontAccommodation;
+    private String colorFont;//bulk accommodation new field
     private String highlighter;
     
      /**
@@ -223,5 +224,11 @@ public class StudentAccommodations extends CTBBean
 	 */
 	public void setUntimedTest(String untimedTest) {
 		this.untimedTest = untimedTest;
+	}
+	public String getColorFont() {
+		return colorFont;
+	}
+	public void setColorFont(String colorFont) {
+		this.colorFont = colorFont;
 	}
 } 

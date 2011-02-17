@@ -19,8 +19,8 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
 /**
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class StudentTestDeliveryAuditImpl implements StudentTestDeliveryAudit, Serializable
+@ControlImplementation(isTransient=true)
+public class StudentTestDeliveryAuditImpl implements StudentTestDeliveryAudit
 { 
     /**
      * @common:control

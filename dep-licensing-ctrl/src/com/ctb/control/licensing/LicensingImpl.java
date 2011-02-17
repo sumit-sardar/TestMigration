@@ -20,8 +20,8 @@ import com.ctb.util.licensing.CTBConstants;
 /**
  * @editor-info:code-gen control-interface="true"
  */
-@ControlImplementation()
-public class LicensingImpl implements Licensing, Serializable
+@ControlImplementation(isTransient=true)
+public class LicensingImpl implements Licensing
 { 
     /**
      * @common:control
@@ -330,9 +330,5 @@ public class LicensingImpl implements Licensing, Serializable
          return true;    
                 
     }
-    
-   
-
-   
     
 } 

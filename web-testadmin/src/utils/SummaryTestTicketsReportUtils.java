@@ -174,26 +174,34 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private TestVO test = null;
     private float tacTableHeight = 0f;
     private Boolean isTabeProduct = Boolean.FALSE;
-    
     private TestProduct testProduct;
-     
+    //START - Changed for CR GA2011CR001
+    private Boolean isStudentIdConfigurable = Boolean.FALSE;
+    private String studentIdLabelName = "Student ID";
+    //END - Changed for CR GA2011CR001 
     /**
      * initialize globals passed into method
      * create static tables
      * set the variable y coordinates that we can
      */
+     //START - Changed For CR ISTEP2011CR007 (Multiple Test Ticket)
     protected void setup(Object[] args) throws DocumentException{
-        super.initializeGlobals(new Object[] {args[4], args[5], args[6], PageSize.LETTER.rotate(), args[7]});
+        super.initializeGlobals(new Object[] {args[5], args[6], args[7], PageSize.LETTER.rotate(), args[8]});
         this.rosterList = (Collection)args[0];
         this.testAdmin = (TestAdminVO)args[1];
-        this.testSummary = (TestSummaryVO)args[2];
-        this.test = (TestVO)args[3];
+        this.testSummary = (TestSummaryVO)args[3];
+        this.test = (TestVO)args[4];
         this.setDynamicGlobals();
-        this.isTabeProduct = (Boolean)args[8];
-        this.testProduct = (TestProduct)args[9];
+        this.isTabeProduct = (Boolean)args[9];
+        this.testProduct = (TestProduct)args[10];
+        //START - Changed for CR GA2011CR001
+        this.isStudentIdConfigurable = (Boolean)args[11];
+        this.studentIdLabelName = (String)args[12];
+        //END - Changed for CR GA2011CR001
         addStaticTables();
         createPages();
     }
+    //END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
     
     private void setDynamicGlobals() throws DocumentException{
         float titleHeight = getTitleHeight();
@@ -265,7 +273,12 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         if (this.isTabeProduct.booleanValue()) {
             result =  new String[6];
             result[0] = STUDENT_LABEL;
-            result[1] = STUDENT_ID_LABEL;
+            //START - Changed for CR GA2011CR001
+            if(isStudentIdConfigurable)
+            	result[1] = studentIdLabelName;
+            else
+                result[1] = STUDENT_ID_LABEL;
+            //END - Changed for CR GA2011CR001
             result[2] = LOGIN_ID_LABEL;
             result[3] = PASSWORD_LABEL;
             result[4] = STATUS_LABEL;
@@ -274,7 +287,12 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         else {
             result =  new String[7];
             result[0] = STUDENT_LABEL;
-            result[1] = STUDENT_ID_LABEL;
+            //START - Changed for CR GA2011CR001
+            if(isStudentIdConfigurable)
+            	result[1] = studentIdLabelName;
+            else
+                result[1] = STUDENT_ID_LABEL;
+            //END - Changed for CR GA2011CR001
             result[2] = LOGIN_ID_LABEL;
             result[3] = PASSWORD_LABEL;
             result[4] = FORM_LABEL;

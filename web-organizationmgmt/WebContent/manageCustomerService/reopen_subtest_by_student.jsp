@@ -9,7 +9,14 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets" />
 
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.studentProfile.studentLoginId}" />
+<%
+   
+	//Start Change For CR - GA2011CR001
+	
+	String []studentIdArrValue = (String[])request.getAttribute("studentIdArrValue");
+	// End of Change CR - GA2011CR001 
 
+%>
 <!-- Parent table start-->
 <table class="sortable">
 
@@ -136,9 +143,13 @@
 							<c:if test="${container.item.completionStatus != 'Completed' && container.item.completionStatus != 'In Progress'}">	                		
 				                <netui:radioButtonOption value="${container.item.itemSetId}" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'showStudentTestStatusDetails', 'subtestDetailsResult');" disabled="true">&nbsp;</netui:radioButtonOption>
 							</c:if>
-							<c:if test="${container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress'}">	                		
+							<c:if test="${container.item.itemSetLevel != 'L' && (container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress')}">	                		
 				                <netui:radioButtonOption value="${container.item.itemSetId}" onClick="setElementValueAndSubmitWithAnchor('{actionForm.currentAction}', 'showStudentTestStatusDetails', 'subtestDetailsResult');">&nbsp;</netui:radioButtonOption>
 							</c:if>
+							<c:if test="${container.item.itemSetLevel == 'L' && (container.item.completionStatus == 'Completed' || container.item.completionStatus == 'In Progress')}">	                		
+				                <netui:radioButtonOption value="${container.item.itemSetId}" disabled="true">&nbsp;</netui:radioButtonOption>
+							</c:if>
+							
 							
 							</netui:radioButtonGroup></td>
 							<td class="sortable alignLeft" width="30%"><netui:span value="${container.item.itemSetName}" /></td>
@@ -242,7 +253,12 @@
 								<td class="transparent"><netui:span value="${container.item.studentLoginName}" /></td>
 							</tr>
 							<tr class="transparent" valign="top">
+								<c:if test="${studentIdArrValue[0] != null}">
+								<td class="transparent"><netui:span value="${studentIdArrValue[0]}:"/></td>
+								</c:if>
+								<c:if test="${studentIdArrValue[0] == null}">
 								<td class="transparent"><netui:span value="${bundle.web['test.label.id']}:" /></td>
+								</c:if>
 								<td class="transparent"><netui:span value="${container.item.externalStudentId}" /></td>
 							</tr>
 						</table>

@@ -5,7 +5,11 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.bean.studentManagement.OrganizationNodeData;
+//bulk accommodation
+import com.ctb.bean.testAdmin.StudentNodeData;
 import com.ctb.control.studentManagement.StudentManagement;
+//bulk accommodation
+//import com.ctb.control.testAdmin.ScheduleTest;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.widgets.bean.PathListEntry;
@@ -189,7 +193,7 @@ public class StudentPathListUtils
     /**
      * buildOrgNodeList
      */    
-    public static List buildOrgNodeList(OrganizationNodeData ond, Boolean profileEditable, String action) 
+    public static List buildOrgNodeList(OrganizationNodeData ond, Boolean profileEditable, String action, Boolean isClassReassignable) 
     {
         ArrayList nodeList = new ArrayList();
         PathNode pathNode = null;
@@ -203,10 +207,17 @@ public class StudentPathListUtils
                 pathNode.setChildrenNodeCount(node.getChildNodeCount());
                 pathNode.setCategoryName(node.getOrgNodeCategoryName());
                 pathNode.setStudentCount(node.getStudentCount());
-                pathNode.setSelectable(node.getBottomLevelNodeFlag());
-                if (! profileEditable.booleanValue()) {
+                /*if (! profileEditable.booleanValue()) {
                     pathNode.setSelectable("false");
-                }
+                }*/
+               // START - Added for CR017 - class reassignment is decided based on the isClassReassignable flag value
+                if(isClassReassignable)
+                	pathNode.setSelectable(node.getBottomLevelNodeFlag());  
+               else
+                	pathNode.setSelectable("false");
+               
+                 // END            
+    
                 if (action.equals("findStudent") && (node.getStudentCount().intValue() == 0)) {
                     pathNode.setSelectable("false");
                 }
@@ -408,6 +419,25 @@ public class StudentPathListUtils
         }        
         return resultList;
     }
+    
+    /**
+	 * getOrganizationNodes for bulk accommodation
+	 */    
+	public static StudentNodeData getOrganizationNodesForBulkAccommodation( String userName, StudentManagement studentManagement,Integer customerId, Integer orgNodeId,
+			FilterParams filter, FilterParams demoFilter,PageParams page, SortParams sort)
+	{    
+		StudentNodeData snd = null;
+		try { 
+			if ((orgNodeId == null) || (orgNodeId.intValue() <= 0)) {
+				snd = studentManagement.getTopStudentNodesForBulkAccommodationUserAndAdmin(userName, customerId, filter,demoFilter, page, sort);
+			} else {
+				snd = studentManagement.getStudentNodesForBulkAccomUserParentAndAdmin(userName, customerId,orgNodeId, filter,demoFilter, page, sort);
+			} 
+		} catch (CTBBusinessException be) {
+				be.printStackTrace();
+			} 
+			return snd;
+		}
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** PRIVATE METHODS ************* /////////////////////////////    
