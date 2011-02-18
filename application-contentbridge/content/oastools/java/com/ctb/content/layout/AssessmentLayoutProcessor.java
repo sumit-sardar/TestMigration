@@ -174,7 +174,10 @@ public class AssessmentLayoutProcessor
                     Element xml = ( Element )itemList.get( j );
                     String id = xml.getAttributeValue( "ID" );
                     String itemType = xml.getAttributeValue("ItemType");
-                    sb.append("<itemref linkrefid=\"" + id + "\" type=\"" +itemType+"\"/>\n");
+                    // For Audio Item - Las Links
+                    String allowRevisit = xml.getAttributeValue("AllowRevisit","true");
+                    String AllowRevisitOnRestart = xml.getAttributeValue("AllowRevisitOnRestart","true");
+                    sb.append("<itemref linkrefid=\"" + id + "\" type=\"" +itemType+"\" allow_revisit=\"" +allowRevisit+"\" allow_revisit_on_restart=\"" +AllowRevisitOnRestart+"\" />\n");
                 }
             }
             sb.append("<section associate_items=\"1\" >\n");
@@ -183,7 +186,10 @@ public class AssessmentLayoutProcessor
                 Element xml = ( Element )itemList.get( j );
                 String id = xml.getAttributeValue( "ID" );
                 String itemType = xml.getAttributeValue("ItemType");
-                sb.append("<itemref linkrefid=\"" + id + "\" type=\"" +itemType+"\"/>\n");
+                // For Audio Item - Las Links
+                String allowRevisit = xml.getAttributeValue("AllowRevisit","true");
+                String AllowRevisitOnRestart = xml.getAttributeValue("AllowRevisitOnRestart","true");
+                sb.append("<itemref linkrefid=\"" + id + "\" type=\"" +itemType+"\" allow_revisit=\"" +allowRevisit+"\" allow_revisit_on_restart=\"" +AllowRevisitOnRestart+"\" />\n");
             }
             sb.append("</section>");
             start = aRun.end + 1;
@@ -195,7 +201,10 @@ public class AssessmentLayoutProcessor
                 Element xml = ( Element )itemList.get( j );
                 String id = xml.getAttributeValue( "ID" );
                 String itemType = xml.getAttributeValue("ItemType");
-                sb.append("<itemref linkrefid=\"" + id + "\" type=\"" +itemType+"\"/>\n");
+                // For Audio Item - Las Links
+                String allowRevisit = xml.getAttributeValue("AllowRevisit","true");
+                String AllowRevisitOnRestart = xml.getAttributeValue("AllowRevisitOnRestart","true");
+                sb.append("<itemref linkrefid=\"" + id + "\" type=\"" +itemType+"\" allow_revisit=\"" +allowRevisit+"\" allow_revisit_on_restart=\"" +AllowRevisitOnRestart+"\" />\n");
             }
         }
         sb.append( "</section></assessment></questestinterop></publish_subtest></ads_publish_request>" );

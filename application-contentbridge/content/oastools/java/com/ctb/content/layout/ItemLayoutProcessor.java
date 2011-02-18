@@ -207,21 +207,38 @@ public class ItemLayoutProcessor
     {
         return extractAllElement( ".//Grid", itemElement ).size() > 0;
     }
-    
+     /* For Audio Item - Las Links
+      * Method cheks Item is AudioItem or not.
+      */
+    private boolean checkAudioItemElement()throws Exception{
+    	 return extractAllElement( ".//AudioItem", itemElement ).size() > 0;
+	}
+	
     public Element layoutItem() throws Exception
     {
         Element layout = getDummy();
+        updateNavigationalConstraint(layout); // For Audio Item - Las Links: To add attributes AllowRevisit and AllowRevisitOnRestart to Item
         boolean isFakeCR = checkGridElement( );
+        boolean isAudioItem= checkAudioItemElement( ); // For Audio Item - Las Links: 
+        boolean isNICR = false;
+        boolean isNISR = false;
+        
         handleLeadIn();
         extractStudentDirection( null );
         handleStimulusDirection();
         extractStimulus();
         extractStem();
-        if("NI".equals(itemElement.getAttributeValue( "ItemType"))) {
-        	// do nothing for NI
+        if("NI".equals(itemElement.getAttributeValue( "ItemType"))) { //FOR NI ITEM : TO ADD RESPONSE AREA
+        	
+        	isNICR = (extractSingleElement( ".//ConstructedResponse", itemElement ) != null);
+        	isNISR =  ( extractSingleElement( ".//SelectedResponse", itemElement ) !=null);
+        	if(isNICR)
+        		extractCRArea( isFakeCR, isAudioItem );
+        	else if (isNISR)
+        		extractSRChoice();
         } 
         else if ( "CR".equals( itemElement.getAttributeValue( "ItemType" )))
-            extractCRArea( isFakeCR );
+            extractCRArea( isFakeCR, isAudioItem ); // For Audio Item - Las Links
         else
             extractSRChoice();
         extractAccommodation( isFakeCR ); 
@@ -229,8 +246,13 @@ public class ItemLayoutProcessor
         doStimulus();
         doStem();
                 
-        if("NI".equals(itemElement.getAttributeValue( "ItemType"))) {
-        	// do nothing for NI
+        if("NI".equals(itemElement.getAttributeValue( "ItemType"))) { //FOR NI ITEM : TO ADD RESPONSE AREA
+        	if ( isFakeCR )
+                doFakeCRArea();
+        	else if(isNISR)
+        		 doAnswerChoice();
+            else
+                doCRArea();
         } 
         else if ( "CR".equals( itemElement.getAttributeValue( "ItemType" )))
         {
@@ -243,7 +265,7 @@ public class ItemLayoutProcessor
             doAnswerChoice();
         removeUselessHeight();
         reDoScrollWidgetTextWidthHeight();
-        putAllPiecesTogether( layout, !isFakeCR && "CR".equals( itemElement.getAttributeValue( "ItemType" )) );
+        putAllPiecesTogether( layout, !isFakeCR && !isAudioItem && "CR".equals( itemElement.getAttributeValue( "ItemType" )) ); // For Audio Item - Las Links
         fillDefaultIDs();
         totalDownloadSize += 1000 + Math.abs( Math.random() ) % 999 ; // xml size
         if ( stimulus != null )
@@ -2418,7 +2440,7 @@ public class ItemLayoutProcessor
         }
     }
     
-    public void extractCRArea( boolean isFakeCR )throws Exception
+    public void extractCRArea( boolean isFakeCR, boolean isAudioItem )throws Exception    // For Audio Item - Las Links
     {
         Element constructedResponse = extractSingleElement( ".//ConstructedResponse", itemElement );
         if (constructedResponse == null)
@@ -2428,7 +2450,7 @@ public class ItemLayoutProcessor
         if (answerArea == null)
             return;
         
-        if ( !isFakeCR && answerArea.getAttributeValue( "OnlineVisible").equals( "no" ))
+        if ( !isFakeCR && !isAudioItem && answerArea.getAttributeValue( "OnlineVisible").equals( "no" ))  // For Audio Item - Las Links
             return;
         int numberOfGridCol = 0;
         if ( isFakeCR )
@@ -2455,6 +2477,22 @@ public class ItemLayoutProcessor
                 replaceGridDisplayValue( newElement );
                 gridresponse.addContent( newElement );
             }
+        } else if (isAudioItem){     //  For Audio Item - Las Links: Extracts all attributes from AudioItem and creats new element for recorder_widget  
+        	 answer = new Element( "panel" );
+             answer.setAttribute( "stereotype", "answerArea" );
+             Element recordedResponse = extractSingleElement( ".//AudioItem", itemElement );
+             if (recordedResponse == null)
+             	return;
+             Element recorder_wid = new Element( "recorder_widget" );
+             setAllDefaultAttributes( recorder_wid, recordedResponse );
+             recorder_wid.setAttribute( "totalTime", recordedResponse.getAttributeValue("totalTime") );
+             recorder_wid.setAttribute( "pausable", recordedResponse.getAttributeValue("pausable","false" )  );
+             recorder_wid.setAttribute( "playable", recordedResponse.getAttributeValue("playable","false" )  );
+             recorder_wid.setAttribute( "timer", recordedResponse.getAttributeValue("timer","true" )  );
+             recorder_wid.setAttribute( "progressBar", recordedResponse.getAttributeValue("progressBar","true" )  );
+             recorder_wid.setAttribute( "showActivityLevel", recordedResponse.getAttributeValue("showActivityLevel","true" )  );
+             answer.addContent(recorder_wid);
+             
         }
         else
         {
@@ -2463,7 +2501,7 @@ public class ItemLayoutProcessor
         }
         answer.setAttribute( "id", "A1" );
         setAllDefaultAttributes( answer, constructedResponse );
-        if ( isFakeCR )
+        if ( isFakeCR || isAudioItem)     //  For Audio Item - Las Links : For GR and Audio Item
             answer.setAttribute( "spacing", "0" );
         String location = constructedResponse.getAttributeValue( "location" );
         if ( "across".equals( location ))
@@ -2775,8 +2813,12 @@ public class ItemLayoutProcessor
         {
             populateAnswerInfo( item_model );
         }
-        else if ( itemElement.getAttributeValue( "ItemType" ).equals( "NI" )){
-        	
+        else if ( itemElement.getAttributeValue( "ItemType" ).equals( "NI" )){  //FOR NI ITEM : TO ADD RESPONSE AREA
+        	if(item_model!=null && extractAllElement( ".//AnswerChoice", itemElement ).size()>0 ){
+        		populateAnswerInfo( item_model );
+        	} else if(item_model!=null && extractAllElement( ".//gridcol", itemElement ).size()>0){
+        		populateAnswerAreaInfo( item_model );
+        	}
         }
         else if ( isFakeCR )
             populateAnswerAreaInfo( item_model );
@@ -2985,6 +3027,8 @@ public class ItemLayoutProcessor
             String correctAnswer = item_model.getAttributeValue( "correct" );
             Element toolbar = item_model.getChild( "toolbar" );
             boolean isSR = ItemLayoutProcessor.extractSingleElement( ".//selector_widget", itemLML ) != null;
+            // For Audio Item - Las Links
+            boolean isAudioItem = (ItemLayoutProcessor.extractSingleElement( ".//recorder_widget", itemLML ) != null);
             Element interaction = null;
             if ( isSR )
             {
@@ -3033,14 +3077,14 @@ public class ItemLayoutProcessor
             correctResponse.addContent( value );
             responseDeclaration.addContent( correctResponse );
             item_model.addContent( responseDeclaration );
-            if ( !isSR && !itemType.equals("NI"))
+            if ( (!isSR && !itemType.equals("NI")) ||( !itemType.equals("NI") && item_model!=null) ) // FOR NI ITEM : TO ADD RESPONSE AREA
             {
                 Element textEntryInteraction = new Element( "textEntryInteraction" );
                 textEntryInteraction.setAttribute( "responseIdentifier", "RESPONSE" );
                 textEntryInteraction.setAttribute( "obj_id_ref", "obj_con_response" );
                 item_model.addContent( textEntryInteraction );
             }
-            if ( isSR )
+            else if ( isSR ) // to avoid unnecessary comparison "else if" is introduced
             {
                 Element outcomeDeclaration = new Element( "outcomeDeclaration" );
                 outcomeDeclaration.setAttribute( "identifier", "SCORE" );
@@ -3074,6 +3118,14 @@ public class ItemLayoutProcessor
     {
         return this.includeAcknowledgement;
     }
-
+    /*
+     *  For Audio Item - Las Links
+     *  Method is used to add attributes AllowRevisit and AllowRevisitOnRestart to Item.
+     *  If attribute is not defined in Assessment XML, method will add default value  
+     */
+    private void updateNavigationalConstraint(Element layout) {
+    	layout.setAttribute("allow_revisit", itemElement.getAttributeValue("AllowRevisit","true") );
+    	layout.setAttribute("allow_revisit_on_restart", itemElement.getAttributeValue("AllowRevisitOnRestart","true") );
+	}
 }
 
