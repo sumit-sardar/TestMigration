@@ -3077,7 +3077,7 @@ public class ItemLayoutProcessor
             correctResponse.addContent( value );
             responseDeclaration.addContent( correctResponse );
             item_model.addContent( responseDeclaration );
-            if ( (!isSR && !itemType.equals("NI")) ||( !itemType.equals("NI") && item_model!=null) ) // FOR NI ITEM : TO ADD RESPONSE AREA
+            if ( (!isSR && item_model!=null) ) // FOR NI ITEM : TO ADD RESPONSE AREA
             {
                 Element textEntryInteraction = new Element( "textEntryInteraction" );
                 textEntryInteraction.setAttribute( "responseIdentifier", "RESPONSE" );
