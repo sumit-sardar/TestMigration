@@ -568,12 +568,16 @@ public class StudentTestDataImpl implements StudentTestData
                     OASLogger.getLogger("TestDelivery").debug("handling tsd terminated message");
                     // send the scoring message
                     boolean allSubtestsComplete = true;
+                    boolean scorable = false;
                     for(int i=0;i<statusList.length;i++) {
                         if(!statusList[i].getSubtestCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
                             allSubtestsComplete = false;
                         }
+                        if(isScorableItemSet(statusList[i].getItemSetId())) {
+                        	scorable = true;
+                        }
                     }
-                    if(!allSubtestsComplete && isScorableItemSet(Integer.valueOf(itemSetId).intValue())) {
+                    if(!allSubtestsComplete && scorable) {
                         // old Weblogic 8.1 JMS call
                     	// scorer.sendObjectMessage(new Integer(testRosterId));
                     	try{
