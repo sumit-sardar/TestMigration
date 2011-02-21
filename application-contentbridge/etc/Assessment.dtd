@@ -107,6 +107,8 @@ CHANGE HISTORY:
 	ItemType 	(SR | CR | NI) "SR"
 	ExternalID 	CDATA #IMPLIED 
 	ExternalSystem  (PEID | Monarch| na) "na"
+	AllowRevisit (true | false) "true"
+	AllowRevisitOnRestart (true | false) "true"
 >
 
 <!ELEMENT StudentDirections (Text|Graphic|Table)*>
@@ -221,7 +223,7 @@ facts and reach conclusions -->
 	widgetspacing 	CDATA #IMPLIED
 >
 
-<!ELEMENT AnswerArea (AnswerAreaDirection?, (Grid|Line)*, SubAnswerArea*)>
+<!ELEMENT AnswerArea (AnswerAreaDirection?, ((Grid|Line)* | (AudioItem)?), SubAnswerArea*)>
 <!ATTLIST AnswerArea
 	ID 		CDATA #IMPLIED
 	Border  	(yes | no) "yes"
@@ -430,4 +432,17 @@ answer -->
 	charLimit        CDATA #IMPLIED
 	softWordLimit    CDATA #IMPLIED
 	hardWordLimit    CDATA #IMPLIED
+>
+<!ELEMENT AudioItem EMPTY>
+<!ATTLIST AudioItem
+	x				    CDATA #IMPLIED
+	y				    CDATA #IMPLIED
+	width				CDATA #IMPLIED
+	height				CDATA #IMPLIED
+	totalTime		    CDATA #REQUIRED
+	pausable        	(true | false) "false"
+	playable        	(true | false) "false"
+	timer           	(true | false) "true" 
+	progressBar	    	(true | false) "true"
+	showActivityLevel 	(true | false) "true"
 >
