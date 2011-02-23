@@ -98,7 +98,7 @@ CHANGE HISTORY:
 	Author 		CDATA #IMPLIED
 >
 
-<!ELEMENT Item (StudentDirections?, Stimulus?, LeadIn?, Stem*, (ConstructedResponse | SelectedResponse)?, ThinkCode?, Manipulative*, Comments?)>
+<!ELEMENT Item (StudentDirections?, Stimulus?, LeadIn?, Stem*, (ConstructedResponse | SelectedResponse)?, ThinkCode?, Manipulative*, Comments?, FormulaCard?)>
 <!ATTLIST Item
 	ID 		CDATA #REQUIRED
 	Grade		(K | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | Adult | EOC) "3"
@@ -329,8 +329,13 @@ answer -->
 
 <!ELEMENT Manipulative EMPTY>
 <!ATTLIST Manipulative
-    	Type 		(oneeighth_inch_ruler | cm_ruler | mm_ruler | half_inch_ruler | protractor | standard_calculator | formula_card | FCAT_formula_card | TN_formula_card | straight_edge |scientific_calculator ) #REQUIRED
+    	Type 		(oneeighth_inch_ruler | cm_ruler | mm_ruler | half_inch_ruler | protractor | standard_calculator | formula_card | FCAT_formula_card | TN_formula_card | straight_edge |scientific_calculator | scratchpad) #REQUIRED
 	Provision 	(required | accommodated ) "required"
+>
+
+<!ELEMENT FormulaCard EMPTY>
+<!ATTLIST FormulaCard 
+    	resource CDATA #REQUIRED
 >
 
 <!ELEMENT ThemePage (Text|Graphic)*>
