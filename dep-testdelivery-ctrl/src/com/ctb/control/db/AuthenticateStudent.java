@@ -1,16 +1,17 @@
 package com.ctb.control.db; 
 
-import com.bea.control.*;
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.util.Date;
+
+import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
-//import org.apache.beehive.controls.system.jdbc.JdbcControl;
+
 import com.ctb.bean.testDelivery.login.AccomodationsData;
 import com.ctb.bean.testDelivery.login.AuthenticationData;
-import com.ctb.bean.testDelivery.login.ManifestData;
 import com.ctb.bean.testDelivery.login.ItemResponseData;
-import java.util.Date; 
-import java.sql.Clob;
-import java.sql.SQLException; 
-import org.apache.beehive.controls.api.bean.ControlExtension;
+import com.ctb.bean.testDelivery.login.ManifestData;
+import com.ctb.bean.testDelivery.login.SystemThrottle;
 
 /** 
  * Defines a new database control. 
@@ -29,6 +30,25 @@ public interface AuthenticateStudent extends JdbcControl
 { 
     static final long serialVersionUID = 1L;
 
+    /**
+     * @jc:sql statement::
+     * select 
+     * 		throttle_mode as throttleMode, 
+     * 		throttle_threshold as throttleThreshold, 
+     * 		check_frequency as checkFrequency 
+     * from 
+     * 		system_throttle::
+     */
+    @JdbcControl.SQL(statement = "select throttle_mode as throttleMode, throttle_threshold as throttleThreshold, check_frequency as checkFrequency from system_throttle")
+    SystemThrottle getSystemThrottle();
+
+    /**
+     * @jc:sql statement::
+     * select count(*) as counter from test_roster where test_completion_status = 'IP'::
+     */
+    @JdbcControl.SQL(statement = "select count(*) as counter from test_roster where test_completion_status = 'IP'")
+    int getInProgressRosterCount();
+    
     /**
      * @jc:sql statement::
      * update

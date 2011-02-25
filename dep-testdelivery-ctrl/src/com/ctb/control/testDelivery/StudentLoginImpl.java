@@ -58,6 +58,7 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Consolida
 //import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Sp;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Tutorial;
 //import weblogic.knex.jdom.CDATA;
+import com.ctb.web.listener.TestDeliveryContextListener;
 
 /**
  * @editor-info:code-gen control-interface="true"
@@ -101,87 +102,91 @@ public class StudentLoginImpl implements StudentLogin
      */
     public TmssvcResponseDocument login(TmssvcRequestDocument document)
     {
-        TmssvcRequest loginRequest = document.getTmssvcRequest();
         TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance();
         LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
-        loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.OK_STATUS);
-        response.getTmssvcResponse().setMethod("login_response");
-        try {
-            //AuthenticateStudent authenticator = authenticatorFactory.getClass();
-            // might be more than one roster for these creds, due to random passwords
-            AuthenticationData [] authDataArray = authenticator.authenticateStudent(loginRequest.getLoginRequest().getUserName(), loginRequest.getLoginRequest().getPassword());
-            AuthenticationData authData = null;
-            boolean authenticated = false;
-            String testAccessCode = loginRequest.getLoginRequest().getAccessCode();
-            int testRosterId = -1;
-            String lsid = null;
-            ManifestData [] manifestData = new ManifestData [0];
-            for(int a=0;a<authDataArray.length && !authenticated;a++) {
-                authData = authDataArray[a];
-                if(authData != null) {
-                    OASLogger.getLogger("TestDelivery").debug(authData.toString());
-                } else {
-                    throw new AuthenticationFailureException();
-                }
-                testRosterId = authData.getTestRosterId();
-                lsid = String.valueOf(testRosterId) + ":" + testAccessCode;
-                loginResponse.setLsid(lsid);
-                manifestData = authenticator.getManifest(testRosterId, testAccessCode);
-                if(manifestData.length > 0) {
-                    authenticated = true;
-                }
-            }
-            if(manifestData.length <= 0) {
-                response = TmssvcResponseDocument.Factory.newInstance();
-                loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
-                loginResponse.setLsid(lsid);
-                loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.AUTHENTICATION_FAILURE_STATUS);
-                throw new AuthenticationFailureException();
-            } else {
-                validateAuthenticationData(loginRequest.getLoginRequest(), loginResponse, authData);
-                copyAuthenticationDataToResponse(loginResponse, authData);
-                AccomodationsData accomData = authenticator.getAccomodations(testRosterId);
-                if(accomData != null) {
-                    OASLogger.getLogger("TestDelivery").debug(accomData.toString());
-                    copyAccomodationsDataToResponse(loginResponse, accomData);
-                }
-                boolean subtestsRemaining = false;
-                for(int i=0;i<manifestData.length;i++) {
-                    if(Constants.StudentTestCompletionStatus.SCHEDULED_STATUS.equals(manifestData[i].getCompletionStatus()) ||
-                       Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS.equals(manifestData[i].getCompletionStatus()) ||
-                       Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
-                       Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
-                       Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS.equals(manifestData[i].getCompletionStatus())) {
-                        subtestsRemaining = true;
-                    }
-                }
-                if(!subtestsRemaining) {
-                    response = TmssvcResponseDocument.Factory.newInstance();
-                    loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
-                    loginResponse.setLsid(lsid);
-                    loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_COMPLETED_STATUS);
-                    throw new TestSessionCompletedException();
-                }
-                if(manifestData != null) OASLogger.getLogger("TestDelivery").debug(manifestData.toString());
-                copyManifestDataToResponse(loginResponse, manifestData, testRosterId, authData.getTestAdminId(), loginRequest.getLoginRequest().getAccessCode());
-                authenticator.setRosterCompletionStatus(testRosterId, Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS, "ON", loginResponse.getRestartNumber().intValue() + 1, new Date(), -1);
-            }
-            
-        } catch (AuthenticationFailureException afe) {
-            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.AUTHENTICATION_FAILURE_STATUS); 
-        } catch (KeyEnteredResponsesException afe) {
-            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.KEY_ENTERED_RESPONSES_STATUS); 
-        } catch (OutsideTestWindowException afe) {
-            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.OUTSIDE_TEST_WINDOW_STATUS); 
-        } catch (TestSessionCompletedException afe) {
-            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_COMPLETED_STATUS); 
-        } catch (TestSessionInProgressException afe) {
-            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_IN_PROGRESS_STATUS); 
-        } catch (TestSessionNotScheduledException afe) {
-            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_NOT_SCHEDULED_OR_INTERRUPTED_STATUS); 
-        } catch (Exception e) {
-            e.printStackTrace();
-            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.INTERNAL_SERVER_ERROR_STATUS);
+        if(TestDeliveryContextListener.isSystemHealthy(authenticator)) {
+        	TmssvcRequest loginRequest = document.getTmssvcRequest();
+	        loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.OK_STATUS);
+	        response.getTmssvcResponse().setMethod("login_response");
+	        try {
+	            //AuthenticateStudent authenticator = authenticatorFactory.getClass();
+	            // might be more than one roster for these creds, due to random passwords
+	            AuthenticationData [] authDataArray = authenticator.authenticateStudent(loginRequest.getLoginRequest().getUserName(), loginRequest.getLoginRequest().getPassword());
+	            AuthenticationData authData = null;
+	            boolean authenticated = false;
+	            String testAccessCode = loginRequest.getLoginRequest().getAccessCode();
+	            int testRosterId = -1;
+	            String lsid = null;
+	            ManifestData [] manifestData = new ManifestData [0];
+	            for(int a=0;a<authDataArray.length && !authenticated;a++) {
+	                authData = authDataArray[a];
+	                if(authData != null) {
+	                    OASLogger.getLogger("TestDelivery").debug(authData.toString());
+	                } else {
+	                    throw new AuthenticationFailureException();
+	                }
+	                testRosterId = authData.getTestRosterId();
+	                lsid = String.valueOf(testRosterId) + ":" + testAccessCode;
+	                loginResponse.setLsid(lsid);
+	                manifestData = authenticator.getManifest(testRosterId, testAccessCode);
+	                if(manifestData.length > 0) {
+	                    authenticated = true;
+	                }
+	            }
+	            if(manifestData.length <= 0) {
+	                response = TmssvcResponseDocument.Factory.newInstance();
+	                loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
+	                loginResponse.setLsid(lsid);
+	                loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.AUTHENTICATION_FAILURE_STATUS);
+	                throw new AuthenticationFailureException();
+	            } else {
+	                validateAuthenticationData(loginRequest.getLoginRequest(), loginResponse, authData);
+	                copyAuthenticationDataToResponse(loginResponse, authData);
+	                AccomodationsData accomData = authenticator.getAccomodations(testRosterId);
+	                if(accomData != null) {
+	                    OASLogger.getLogger("TestDelivery").debug(accomData.toString());
+	                    copyAccomodationsDataToResponse(loginResponse, accomData);
+	                }
+	                boolean subtestsRemaining = false;
+	                for(int i=0;i<manifestData.length;i++) {
+	                    if(Constants.StudentTestCompletionStatus.SCHEDULED_STATUS.equals(manifestData[i].getCompletionStatus()) ||
+	                       Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS.equals(manifestData[i].getCompletionStatus()) ||
+	                       Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
+	                       Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
+	                       Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS.equals(manifestData[i].getCompletionStatus())) {
+	                        subtestsRemaining = true;
+	                    }
+	                }
+	                if(!subtestsRemaining) {
+	                    response = TmssvcResponseDocument.Factory.newInstance();
+	                    loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
+	                    loginResponse.setLsid(lsid);
+	                    loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_COMPLETED_STATUS);
+	                    throw new TestSessionCompletedException();
+	                }
+	                if(manifestData != null) OASLogger.getLogger("TestDelivery").debug(manifestData.toString());
+	                copyManifestDataToResponse(loginResponse, manifestData, testRosterId, authData.getTestAdminId(), loginRequest.getLoginRequest().getAccessCode());
+	                authenticator.setRosterCompletionStatus(testRosterId, Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS, "ON", loginResponse.getRestartNumber().intValue() + 1, new Date(), -1);
+	            }
+	            
+	        } catch (AuthenticationFailureException afe) {
+	            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.AUTHENTICATION_FAILURE_STATUS); 
+	        } catch (KeyEnteredResponsesException afe) {
+	            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.KEY_ENTERED_RESPONSES_STATUS); 
+	        } catch (OutsideTestWindowException afe) {
+	            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.OUTSIDE_TEST_WINDOW_STATUS); 
+	        } catch (TestSessionCompletedException afe) {
+	            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_COMPLETED_STATUS); 
+	        } catch (TestSessionInProgressException afe) {
+	            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_IN_PROGRESS_STATUS); 
+	        } catch (TestSessionNotScheduledException afe) {
+	            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_NOT_SCHEDULED_OR_INTERRUPTED_STATUS); 
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            loginResponse.getStatus().setStatusCode(Constants.StudentLoginResponseStatus.INTERNAL_SERVER_ERROR_STATUS);
+	        }
+        } else {
+        	loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.SERVER_BUSY_STATUS);
         }
         return response;
     }

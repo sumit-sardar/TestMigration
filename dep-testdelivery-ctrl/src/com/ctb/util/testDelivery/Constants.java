@@ -17,6 +17,7 @@ public class Constants
         public static StatusCode.Enum LOCATOR_SUBTEST_NOT_COMPLETED_STATUS = StatusCode.X_477;
         public static StatusCode.Enum INTERNAL_SERVER_ERROR_STATUS = StatusCode.X_500;
         public static StatusCode.Enum SERVER_ERROR_STATUS = StatusCode.X_501;
+        public static StatusCode.Enum SERVER_BUSY_STATUS = StatusCode.X_560;
     }
     
     public static class StudentTestCompletionStatus 
