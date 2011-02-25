@@ -18,6 +18,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	public static boolean isSystemHealthy(AuthenticateStudent authenticator) {
 		if(TestDeliveryContextListener.auth == null) {
 			TestDeliveryContextListener.auth = authenticator;
+			System.out.println("*****  Assigned authenticator control to health check thread.");
 		}
 		return systemHealthy;
 	}
@@ -27,8 +28,10 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	}
     
 	public void contextInitialized(ServletContextEvent sce) {
+		System.out.print("*****  Starting system health check background thread . . .");
 		TestDeliveryContextListener.healthCheck = new HealthCheck();
 		TestDeliveryContextListener.healthCheck.start();
+		System.out.println(" started.");
 	}
 	
 	private static class HealthCheck extends Thread {
@@ -48,17 +51,21 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 							if(loadAverage >= throttle.getThrottleThreshold()) {
 								TestDeliveryContextListener.systemHealthy = false;
 							}
-							System.out.println("Current load avg: " + loadAverage + ", system healthy: " + TestDeliveryContextListener.systemHealthy);
+							System.out.println("*****  Current load avg: " + loadAverage + ", system healthy: " + TestDeliveryContextListener.systemHealthy);
 						} else if(throttle != null && SystemThrottle.THROTTLE_MODE_STUDENT_COUNT.equals(throttle.getThrottleMode())) {
 							int studentCount = auth.getInProgressRosterCount();
 							if(studentCount >= throttle.getThrottleThreshold()) {
 								TestDeliveryContextListener.systemHealthy = false;
 							}
-							System.out.println("Current active student count: " + studentCount + ", system healthy: " + TestDeliveryContextListener.systemHealthy);
+							System.out.println("*****  Current active student count: " + studentCount + ", system healthy: " + TestDeliveryContextListener.systemHealthy);
+						} else {
+							System.out.println("*****  No valid throttle mode specified in system_throttle table - skipping health check.");
 						}
 						if(throttle != null) {
 							TestDeliveryContextListener.checkFrequency = throttle.getCheckFrequency();
-						}
+						} 
+					} else {
+						System.out.println("*****  No authenticator module recieved from StudentLoginImpl - skipping health check.");
 					}
 				} catch (Exception e) {
 					// err on the side of caution, report healthy if system health is unknown
@@ -66,6 +73,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					TestDeliveryContextListener.systemHealthy = true;
 				} finally {
 					try {
+						System.out.println("*****  Completed health check. Sleeping for " + checkFrequency + " seconds.");
 						Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000);
 					}catch (InterruptedException ie) {
 						// do nothing
