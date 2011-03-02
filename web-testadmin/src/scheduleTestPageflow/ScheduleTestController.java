@@ -549,6 +549,7 @@ public class ScheduleTestController extends PageFlowController
                 }
                 else if (currentAction.equals("changeProduct"))
                 {
+                	gradeFlag = false; // Change for defects in performance tuning
                     selectedLevel = FilterSortPageUtils.FILTERTYPE_SHOWALL;
                     form.setSelectedLevel(selectedLevel);
                     form.getTestStatePathList().setPageRequested(new Integer(1));
@@ -1228,7 +1229,7 @@ public class ScheduleTestController extends PageFlowController
                     this.testProductData = this.getTestProductDataForUser();
                 }
 
-                TestProduct [] tps = this.testProductData.getTestProducts(); 
+                tps = this.testProductData.getTestProducts(); //Change for  change button defect appeared during performance tuning
                 
                 if (this.productNameList == null)
                     this.productNameList = createProductNameList(tps); 

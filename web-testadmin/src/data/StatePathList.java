@@ -22,7 +22,8 @@ public class StatePathList extends SanitizedFormField
 
 
     public Integer getPageRequested() {
-        return this.pageRequested;
+    	//Changed for the defect of table pager text box
+        return this.pageRequested ==null || this.pageRequested == 0  ? 1 : this.pageRequested ;
     }
     public void setPageRequested(Integer pageRequested) {
         this.pageRequested = pageRequested;

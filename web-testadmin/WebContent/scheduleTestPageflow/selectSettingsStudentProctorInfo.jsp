@@ -300,7 +300,7 @@
             <ctb:switch dataSource="${container.item.status.editable}">
                 <ctb:case value="T">
                     <netui:checkBoxGroup dataSource="actionForm.selectedStudentIds">
-                        &nbsp;<netui:checkBoxOption value="${container.item.studentId}" onClick="enableElementById(getNetuiTagName('removeSelectedStudents'));">&nbsp;</netui:checkBoxOption>                
+                        &nbsp;<netui:checkBoxOption value="${container.item.studentId}" onClick="toggleEnableElementById(this);">&nbsp;</netui:checkBoxOption>                
                     </netui:checkBoxGroup>
                 </ctb:case>
                 <ctb:case value="F">

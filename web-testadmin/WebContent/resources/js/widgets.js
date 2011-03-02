@@ -93,6 +93,23 @@ function setElementValueAndSubmitWithAnchor(elementId, value, anchorName) {
 }
  
 
+//Changes for existing defect in Students section of settings page for removeSelectedStudents button
+var totalSelectedCount = 0;
+function toggleEnableElementById(element) {
+   // alert("element apply fileter" + elementId + " " + element);
+    
+    if(element.checked)
+    	totalSelectedCount++;
+    else
+    	totalSelectedCount--;
+    	
+    var removeButton = document.getElementById("removeSelectedStudents");
+    
+    if(totalSelectedCount<=0)
+    	removeButton.setAttribute("disabled",'true');
+    else
+    	removeButton.removeAttribute("disabled");
+}    
 
 function enableElementById(elementId) {
     var element = document.getElementById(elementId);
