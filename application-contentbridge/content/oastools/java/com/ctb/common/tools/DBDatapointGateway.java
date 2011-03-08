@@ -1,9 +1,11 @@
 package com.ctb.common.tools;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Query;
 import net.sf.hibernate.Session;
@@ -23,6 +25,7 @@ import com.ctb.hibernate.persist.ProductRecord;
 public class DBDatapointGateway {
     public static final String[] SR_CONDITION_CODES = { "-", "*" };
     public static final String[] CR_CONDITION_CODES = { "A", "B", "C" };
+    private static Logger logger = Logger.getLogger(DBDatapointGateway.class);
 
     private Session session;
 
@@ -114,9 +117,16 @@ public class DBDatapointGateway {
             throw new SystemException(e.getMessage(), e);
         }
     }
-    
-    public Datapoint getFrameworkDatapoint(String itemId, String framework_code )
+
+    /**
+     *  SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+     * @param itemId
+     * @param framework_code
+     * @return List - modified
+     */
+    public List getFrameworkDatapoint(String itemId, String framework_code )
     {
+    	List listOfDatapoint =  new ArrayList();
         try 
         {
             Query query = session.createQuery(FIND_EXISTING_DATAPOINT);
@@ -124,7 +134,7 @@ public class DBDatapointGateway {
             query.setString(1, itemId);
             query.setString(2, framework_code);
             Iterator datapointIT = query.iterate();
-            if ( datapointIT.hasNext() )
+            while ( datapointIT.hasNext() ) //SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
             {
                 DatapointRecord datapointRecord = (DatapointRecord) datapointIT.next();
                 Datapoint datapoint =
@@ -133,15 +143,13 @@ public class DBDatapointGateway {
                         datapointRecord.getItemSetId().longValue(),
                         datapointRecord.getMinPoints().intValue(),
                         datapointRecord.getMaxPoints().intValue());
-                return datapoint;
+                listOfDatapoint.add(datapoint); //SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
             }
-            else
-            {
-                return null;
-            }
+            return listOfDatapoint;
         }
         catch (Exception e) 
         {
+        	logger.error("Exception while retrieving FrameworkDatapoint", e);
             return null;
         }
     }

@@ -7,6 +7,7 @@ import java.util.Iterator;
 import org.jdom.Element;
 
 
+import com.ctb.util.ObjectiveUtil;
 import com.ctb.xmlProcessing.item.Item;
 import com.ctb.xmlProcessing.item.ItemAssembler;
 
@@ -60,7 +61,18 @@ public class Mapper {
             String curriculumID = itemMap.curriculumId(itemID);
 
             if (objectives.objectiveFromCurriculumId(curriculumID) == null) {
-                badItems.add(itemID);
+                //START SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+            	String [] curruculamArray = ObjectiveUtil.getArrayFromString(curriculumID,ObjectiveUtil.ObjectiveSeperatore);
+            	if(curruculamArray.length>1){
+            		for (int i=0; i<curruculamArray.length; i++) {
+            			if (objectives.objectiveFromCurriculumId(curruculamArray[i]) == null){
+               			 	badItems.add(itemID);
+               			}
+                   	}
+            	} else {
+                	badItems.add(itemID);
+                }
+             //END SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
             }
         }
         return badItems;

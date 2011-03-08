@@ -16,6 +16,7 @@ import net.sf.hibernate.type.Type;
 
 import com.ctb.hibernate.persist.*;
 import com.ctb.reporting.ItemProcessorReport;
+import com.ctb.util.ObjectiveUtil;
 import com.ctb.xmlProcessing.item.*;
 
 public class DBItemGateway {
@@ -315,26 +316,34 @@ public class DBItemGateway {
 
     /* *************************************************************************** */
     /* === The following public functions modify the database tables === */
-
+   /*  TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVES */
     private void writeItemIntoDatabase(Item item, boolean activateObjectives) {
 
         long itemSetId = 0;
+        List itemSetIdArray = new ArrayList();
         DBObjectivesGateway ogw = new DBObjectivesGateway(session);
 
         // create data point entry and connect to curriculum if the item type is not NI
         if (! Item.NOT_AN_ITEM.equals(item.getType())) {
         
 	        item.setFrameworkId(ogw.getFrameWorkID(item.getFrameworkCode()));
-	
-	
-	        itemSetId = ogw.getItemSetIdFromObjective(item.getObjectiveId(), item
-	                .getFrameworkCode());
+	        //START : SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+	        final String OriginalObjectiveId =  item.getObjectiveId();
+                String [] objectiveIdArray = ObjectiveUtil.getArrayFromString(OriginalObjectiveId,ObjectiveUtil.ObjectiveSeperatore);
+	    		for (int i=0; i<objectiveIdArray.length; i++) {
+	    			itemSetId = ogw.getItemSetIdFromObjective(objectiveIdArray[i], item.getFrameworkCode());
+	    			itemSetIdArray.add(new Long(itemSetId));
+	       		 }
+	       		
+
         }
         if (itemExistsActiveOrInactive(item.getId())) {
-            updateExistingItem(item, itemSetId, item.isSample());
+            updateExistingItem(item, itemSetIdArray, item.isSample());
         } else {
-            insertNewItem(item, itemSetId, item.isSample());
+            insertNewItem(item, itemSetIdArray, item.isSample());
         }
+         //END : SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+
         if (item.getChoiceCount() > 2 && item.getChoiceCount() < 6)
         {	// handle item_answer_choice
 	        CallableStatement stmt = null;
@@ -357,79 +366,136 @@ public class DBItemGateway {
         }
         //TODO - mws - prune logic should be part of the else
         if (!item.isSample() && activateObjectives  && ! Item.NOT_AN_ITEM.equals(item.getType())) {
-            ogw.activateAllParentObjectives(itemSetId);
+            ogw.activateAllParentObjectives(itemSetIdArray); // SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
         }
     }
 
-    private void insertNewItem(Item item, long itemSetId, boolean isSampleItem) {
+ 
+    /**
+     * Modified method signature for SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+     * @param item
+     * @param itemSetIdList - modified
+     * @param isSampleItem
+     */
+    private void insertNewItem(Item item, List itemSetIdList, boolean isSampleItem) {
         ItemRecord itemRecord = new ItemRecord();
         itemRecord.setCreatedBy(new Long(OASConstants.CREATED_BY));
         itemRecord.setCreatedDateTime(new Date());
         saveOrUpdateItem(item, itemRecord);
 
         // create data point entry and connect to curriculum if the item type is not NI
-        if (! Item.NOT_AN_ITEM.equals(item.getType())) {
+        if (! Item.NOT_AN_ITEM.equals(item.getType()) ) {
         
 			String[] conditionCodes = item.isCR() ? DBDatapointGateway.CR_CONDITION_CODES
 			        : DBDatapointGateway.SR_CONDITION_CODES;
-			
-		    new DBDatapointGateway(session).insertDatapoint(item.getId(), itemSetId,
-		            conditionCodes, item.getMinPoints(), item.getMaxPoints());
-		
-		    new DBObjectivesGateway(session).linkItemToObjective(item.getId(), itemSetId
-			            						, item.getFrameworkCode()
-			            						, !item.isInvisible());
-
+			//START : SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+			for (Iterator it=itemSetIdList.iterator() ; it.hasNext();){
+				long itemSetID= ((Long)it.next()).longValue();
+				 new DBDatapointGateway(session).insertDatapoint(item.getId(), itemSetID,
+				            conditionCodes, item.getMinPoints(), item.getMaxPoints());
+			}
+			 new DBObjectivesGateway(session).linkItemToObjective(item.getId(), itemSetIdList
+						, item.getFrameworkCode()
+						, !item.isInvisible());
+		   //END : SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
         }
     }
 
-    private void updateExistingItem(Item item, long itemSetId, boolean isSampleItem) {
+ 
+    /**
+     * Modified method signature for SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+     * @param item
+     * @param itemSetIdList - modified
+     * @param isSampleItem
+     */
+    private void updateExistingItem(Item item, List itemSetIdList, boolean isSampleItem) {
         DBDatapointGateway dpgw = new DBDatapointGateway(session);
-
+        List datapointList;
+        List newItemSetIdList = new ArrayList();
         saveOrUpdateItem(item, getUniqueItemRecord(item.getId()));
-
+       
         // update data point if the item type is not NI
         if (! Item.NOT_AN_ITEM.equals(item.getType())) {
         
 	        String[] conditionCodes = item.isCR() ? DBDatapointGateway.CR_CONDITION_CODES
 	                : DBDatapointGateway.SR_CONDITION_CODES;
-	
-	        // update data point if the item is sample
-	    //    if (!isSampleItem) {
-	 //          dpgw.deleteItemDatapoints( item.getId(), itemSetId );
-	            Datapoint theDatapoint = dpgw.getFrameworkDatapoint( item.getId(), item.getFrameworkCode() );
-	            if ( theDatapoint != null && theDatapoint.getItemSetId() == itemSetId )
-	            {
-	                dpgw.updateDataPoint(item.getId(), itemSetId, conditionCodes, item.getMinPoints(), item
-	                        .getMaxPoints());
+           //START SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+            datapointList = dpgw.getFrameworkDatapoint( item.getId(), item.getFrameworkCode() );
+            
+	        for (Iterator it= datapointList.iterator(); it.hasNext();){
+	        	long itemSetId= ((Datapoint)it.next()).getItemSetId();
+	        	if( itemSetIdList.contains(new Long (itemSetId)) ){
+	        		updateDataPoint( dpgw, item,itemSetId , conditionCodes );
+	            	newItemSetIdList.add(new Long(itemSetId));
+	            } else {
+	            	    ItemProcessorReport r = ItemProcessorReport.getCurrentReport();
+	            	    ItemSetRecord originalItemSet;
+						try {
+							originalItemSet = (ItemSetRecord) session.get(ItemSetRecord.class, new Long(itemSetId));
+							r.setWarning( "Item removed from \"" + originalItemSet.getExtCmsItemSetId() + ":" +
+	                        		originalItemSet.getItemSetDisplayName() +"\"." );
+						} catch (HibernateException e) {
+						
+						}
+						deleteDataPoint(dpgw, item, itemSetId);
+	             		
 	            }
-	            else if ( theDatapoint != null )
-	            {
-	                try 
-	                {
-	                    ItemProcessorReport r = ItemProcessorReport.getCurrentReport();
-		                ItemSetRecord originalItemSet = (ItemSetRecord) session.get(ItemSetRecord.class, new Long( theDatapoint.getItemSetId()));
-		                ItemSetRecord moveToItemSet = (ItemSetRecord) session.get(ItemSetRecord.class, new Long( itemSetId ) );
-		                r.setWarning( "Item moved from \"" + originalItemSet.getExtCmsItemSetId() + ":" +
-		                        		originalItemSet.getItemSetDisplayName() + "\" to \""
-		                        		+ moveToItemSet.getExtCmsItemSetId() + ":"
-		                        		+ moveToItemSet.getItemSetDisplayName() + "\"." );
-	                }
-	                catch (Exception e) 
-	                {
-	                }
-	                dpgw.updateDataPoint(item.getId(), theDatapoint.getItemSetId(), itemSetId, conditionCodes, item.getMinPoints(), item
-	                        .getMaxPoints());
-	            }
-	            else
-	            {
-		            dpgw.insertDatapoint(item.getId(), itemSetId,
-		                    conditionCodes, item.getMinPoints(), item.getMaxPoints());
-	            }
-	            new DBObjectivesGateway(session).linkItemToObjective(item.getId(), itemSetId
+	        }
+
+	        if(!newItemSetIdList.containsAll(itemSetIdList)){
+	        	for (Iterator it= itemSetIdList.iterator(); it.hasNext();){
+	        		long itemSetId= ((Long)it.next()).longValue();
+		            if( !newItemSetIdList.contains(new Long (itemSetId)) ){
+		            	insertDataPoint(dpgw, item, itemSetId, conditionCodes);
+		            } 
+		       }
+	        }
+
+	            new DBObjectivesGateway(session).linkItemToObjective(item.getId(), itemSetIdList
 						, item.getFrameworkCode(), !item.isInvisible());
         }
+        //END SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
       }
+
+     /**
+     * SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+     * This method update existing datapoint
+     * @param dpgw 
+     * @param item
+     * @param itemSetId
+     * @param conditionCodes
+     */
+    private void updateDataPoint(DBDatapointGateway dpgw, Item item, long itemSetId, String[] conditionCodes ) {
+    	 dpgw.updateDataPoint(item.getId(), itemSetId, conditionCodes, item.getMinPoints(), item
+                 .getMaxPoints());
+    }
+
+
+    /**
+     * SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+     * This method delete a datapoint
+     * @param dpgw
+     * @param item
+     * @param itemSetId
+     */
+    private void deleteDataPoint(DBDatapointGateway dpgw, Item item, long itemSetId) {
+    	dpgw.deleteItemDatapoints( item.getId(), itemSetId );
+    	
+    }
+
+
+    /**
+     * SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+     * This method insert a datapoint
+     * @param dpgw
+     * @param item
+     * @param itemSetId
+     * @param conditionCodes
+     */
+    private void insertDataPoint(DBDatapointGateway dpgw, Item item, long itemSetId, String[] conditionCodes) {
+    	 dpgw.insertDatapoint(item.getId(), itemSetId,
+                 conditionCodes, item.getMinPoints(), item.getMaxPoints());	
+    }
 
     private void saveOrUpdateItem(Item item, ItemRecord itemRecord) {
         // TODO: *all* the item fields arguments (not just these)

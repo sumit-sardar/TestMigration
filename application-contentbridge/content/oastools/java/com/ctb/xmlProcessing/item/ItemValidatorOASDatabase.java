@@ -4,6 +4,7 @@ import com.ctb.common.tools.DBDatapointGateway;
 import com.ctb.common.tools.DBItemGateway;
 import com.ctb.common.tools.DBObjectivesGateway;
 import com.ctb.common.tools.SystemException;
+import com.ctb.util.ObjectiveUtil;
 
 public class ItemValidatorOASDatabase {
     protected Item item;
@@ -19,6 +20,32 @@ public class ItemValidatorOASDatabase {
         this.dpgw = dpgw;
     }
 
+    /**
+     *  SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+     *  This method validated all objective associated with a item.
+     * @throws Exception
+     */
+    public void validateItemForAllObjectveForInsert() throws Exception {
+
+    	final String originalObjective = item.getObjectiveId();
+    	if (originalObjective.indexOf(ObjectiveUtil.ObjectiveSeperatore)>1){
+    		String [] objectiveArray = ObjectiveUtil.getArrayFromString(originalObjective,ObjectiveUtil.ObjectiveSeperatore);
+    		try{
+    			for (int i=0; i<objectiveArray.length; i++) {
+        			item.setObjectiveId(objectiveArray[i]);
+        			validateItemreadyForInsert();
+           		 }
+    			item.setObjectiveId(originalObjective);
+    		} catch (Exception e) {
+    			item.setObjectiveId(originalObjective);
+    			throw e;
+			}
+    	} else {
+    		validateItemreadyForInsert();
+    	}
+
+    }
+    
     public void validateItemreadyForInsert() {
 
 
@@ -32,19 +59,46 @@ public class ItemValidatorOASDatabase {
 
     }
 
-    public boolean validateItemInDB() {
+    public boolean validateItemInDB() throws Exception {
         checkItemInDB();
 
         // only preform checking for regular item.
         // sample item won't have item set and datapoint entry.
         if (!item.isSample() &&  !Item.NOT_AN_ITEM.equals(item.getType())) {
-            checkItemSetItemInDB();
-            // TODO: reactivate
-            // checkItemMediaInDB();
-            checkDatapointInDB();
-            checkDatapointConditionCodeInDB();
+        	//START SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+        
+        	final String OriginalObjectiveId =  item.getObjectiveId();
+ 	    	if (OriginalObjectiveId.indexOf(ObjectiveUtil.ObjectiveSeperatore)>1){
+ 	    		String [] objectiveIdArray = ObjectiveUtil.getArrayFromString(OriginalObjectiveId,ObjectiveUtil.ObjectiveSeperatore);
+ 	    		for (int i=0; i<objectiveIdArray.length; i++) {
+ 	    			item.setObjectiveId(objectiveIdArray[i]);
+ 	    			try{
+ 	    			validateItemInDB(OriginalObjectiveId);
+ 	    			} catch (Exception e){
+ 	    	    		item.setObjectiveId(OriginalObjectiveId);
+ 	    	    		throw e;
+ 	    	    		
+ 	    	    	}
+ 	       		 }
+ 	    		item.setObjectiveId(OriginalObjectiveId);
+
+ 	    	} else {
+ 	    		validateItemInDB(OriginalObjectiveId);
+ 	    	}
+ 	    	//END SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
         }
         return true;
+    }
+
+    /**
+     * SPRINT 10: TO SUPPORT MULTIPLE OBJECTIVE
+     * Method validated objective, datapoint and datapoint condition code in database
+     * @param OriginalObjectiveId
+     */
+    public void validateItemInDB( String OriginalObjectiveId ) {
+    		checkItemSetItemInDB();
+            checkDatapointInDB();
+            checkDatapointConditionCodeInDB();
     }
 
     public void validateChangesAllowed() {

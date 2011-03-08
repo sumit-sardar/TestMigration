@@ -112,6 +112,7 @@ public class DBObjectivesGateway {
             + "AND itemSet.extCmsItemSetId = :extCmsItemSetId "
             + "AND upper(product.internalDisplayName) = :internalDisplayName";
 
+    //SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
     private final String FIND_ANCESTOR_ITEM_SET =
         "select itemSet from "
             + ItemSetRecord.class.getName()
@@ -120,7 +121,7 @@ public class DBObjectivesGateway {
             + " as itemSetAncestor "
             + "where itemSet.activationStatus = :activationStatus "
             + "and itemSet.itemSetType = :itemSetType "
-            + "and itemSetAncestor.id.itemSetId = :itemSetId "
+            + "and itemSetAncestor.id.itemSetId in (:itemSetIdList )"
             + "and itemSet.itemSetId = itemSetAncestor.id.ancestorItemSetId";
 
     private final String FIND_PARENT_ITEM_SET =
@@ -205,7 +206,15 @@ public class DBObjectivesGateway {
      * to another. The current business requirement is not to allow such a move, so
      * the ItemValidator explicitly prevents such a move.
      */
-    public void linkItemToObjective(String itemId, long itemSetId
+
+    /**
+     * SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+     * @param itemId
+     * @param itemSetIdList -- modified from itemSetId to itemSetIdList
+     * @param frameworkCode
+     * @param setVisible
+     */
+    public void linkItemToObjective(String itemId, List itemSetIdList
             				, String frameworkCode, boolean setVisible ) {
         final Object[] arguments =
             { itemId, OASConstants.ITEM_SET_TYPE_REPORTING, frameworkCode };
@@ -218,33 +227,42 @@ public class DBObjectivesGateway {
                 DELETE_ITEM_SET_ITEM_ARGU_TYPES);
 
             // now link the item to the desired item set
-            ItemSetItemCompositeId itemSetItemId = new ItemSetItemCompositeId();
-            itemSetItemId.setItemId(itemId);
-            itemSetItemId.setItemSetId(new Long(itemSetId));
+            //START : SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+            for (Iterator it=itemSetIdList.iterator() ; it.hasNext();){
+            	ItemSetItemCompositeId itemSetItemId = new ItemSetItemCompositeId();
+                itemSetItemId.setItemId(itemId);
+                itemSetItemId.setItemSetId((Long)it.next());
 
-            ItemSetItemRecord itemSetItem = new ItemSetItemRecord();
-            itemSetItem.setId(itemSetItemId);
-            itemSetItem.setItemSortOrder(new Long(0));
-            itemSetItem.setCreatedBy(new Long(OASConstants.CREATED_BY));
-            itemSetItem.setCreatedDateTime(new Date());
-            itemSetItem.setFieldTest( "F" );
-            itemSetItem.setSuppressed( "F" );
-            itemSetItem.setIbsInvisible( setVisible ? "F" : "T" );
-            session.save(itemSetItem);
+                ItemSetItemRecord itemSetItem = new ItemSetItemRecord();
+                itemSetItem.setId(itemSetItemId);
+                itemSetItem.setItemSortOrder(new Long(0));
+                itemSetItem.setCreatedBy(new Long(OASConstants.CREATED_BY));
+                itemSetItem.setCreatedDateTime(new Date());
+                itemSetItem.setFieldTest( "F" );
+                itemSetItem.setSuppressed( "F" );
+                itemSetItem.setIbsInvisible( setVisible ? "F" : "T" );
+                session.save(itemSetItem);
+            }
+             //END   : SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
 
         } catch (HibernateException e) {
             throw new SystemException(e.getMessage(), e);
         }
     }
-
+/***
+ * SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+ * This is does not reference but modified as method signature of 
+ * linkItemToObjective() is updated
+ */
     public void linkItemToObjectiveByObjectiveID(
         String ItemID,
         String objectiveID,
         String frameworkCode,
         boolean setVisible) {
         long itemSetID = getItemSetIdFromObjective(objectiveID, frameworkCode);
-
-        linkItemToObjective(ItemID, itemSetID, frameworkCode, setVisible);
+        List itemSetIDList = new ArrayList();
+        itemSetIDList.add(new Long(itemSetID));
+        linkItemToObjective(ItemID, itemSetIDList, frameworkCode, setVisible);
     }
 
     /**
@@ -487,7 +505,12 @@ public class DBObjectivesGateway {
         }
     }
 
-    public int activateAllParentObjectives(long itemSetId) {
+    /**
+     * SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+     * @param itemSetIdList - modified from itemSetId to itemSetIdList
+     * @return int 
+     */
+    public int activateAllParentObjectives(List itemSetIdList) {
         // select all ancestorItemSet and set the activation status to active.
         try {
             Query query = session.createQuery(FIND_ANCESTOR_ITEM_SET);
@@ -497,7 +520,7 @@ public class DBObjectivesGateway {
             query.setString(
                 "itemSetType",
                 OASConstants.ITEM_SET_TYPE_REPORTING);
-            query.setLong("itemSetId", itemSetId);
+            query.setParameterList("itemSetIdList", itemSetIdList);  // SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
 
             int ancestorCount = 0;
             for (Iterator iter = query.iterate(); iter.hasNext();) {

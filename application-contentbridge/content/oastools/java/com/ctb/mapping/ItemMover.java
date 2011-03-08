@@ -2,6 +2,8 @@ package com.ctb.mapping;
 
 import java.io.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Session;
@@ -44,7 +46,8 @@ public class ItemMover {
             og.getItemSetIdFromObjective(sourceObjective, frameworkCode);
         long targetItemSetid =
             og.getItemSetIdFromObjective(targetObjective, frameworkCode);
-
+       List targetItemSetidList = new ArrayList();
+       targetItemSetidList.add(new Long(targetItemSetid));
         validateMove(
             item,
             frameworkCode,
@@ -59,7 +62,7 @@ public class ItemMover {
             targetItemSetid,
             frameworkCode);
         System.out.println("ITEM_SET_ITEM row updated ...");
-        if (og.activateAllParentObjectives(targetItemSetid) > 0) {
+        if (og.activateAllParentObjectives(targetItemSetidList) > 0) { //SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
             System.out.println("Target objective activated ...");
         }
         DBItemGateway itemGW = new DBItemGateway(session);

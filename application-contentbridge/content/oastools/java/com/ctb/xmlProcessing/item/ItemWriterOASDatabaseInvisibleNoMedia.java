@@ -23,7 +23,8 @@ public class ItemWriterOASDatabaseInvisibleNoMedia
             setItemIdFromDatabase(item);
             this.setDatabaseValidator(item);
             if (!"NI".equals(item.getType()))
-            	this.getDatabaseValidator().validateItemreadyForInsert();
+              //SPRINT 10: TO SUPPORT MAPPING AN ITEM TO MULTIPLE OBJECTIVE
+            	this.getDatabaseValidator().validateItemForAllObjectveForInsert();
             this.getItemGateway().writeItemIntoDatabase(item);
             this.getDatabaseValidator().validateItemInDB();
             return item.getId();
