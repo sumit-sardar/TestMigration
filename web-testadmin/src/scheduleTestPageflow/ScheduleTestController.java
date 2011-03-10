@@ -1138,6 +1138,11 @@ public class ScheduleTestController extends PageFlowController
 
             // init since this is the first time to the page flow                
             init(form);
+            // START- Added for defect #65862
+            if( this.showLevelOrGrade.equals("level")){
+            	gradeFlag = false;
+            }
+            // END- Added for defect #65862
             form.getStudentStatePathList().setSortColumn(FilterSortPageUtils.ORGNODE_DEFAULT_SORT_COLUMN); // special for kitchen sink
             
             if (integrationAction.equals(ACTION_SCHEDULE_TEST) || integrationAction.equals(ACTION_VIEW_TEST) || integrationAction.equals(ACTION_EDIT_TEST)) 
@@ -3434,7 +3439,10 @@ public class ScheduleTestController extends PageFlowController
         form.setSelectedLevel(this.getSelectedLevel());
         form.setSelectedTestId(this.getSelectedTestId()); 
         form.getTestAdmin().setAccessCode(this.testAccessCode);    
-                   
+        // START- Added for defect #65862
+        this.showLevelOrGrade = this.stateScheduler.getShowLevelOrGrade(); 
+        this.gradeFlag = this.stateScheduler.isGradeFlag();
+        // END- Added for defect #65862     
         form.setHasBreak(this.condition.getHasBreak());   
         this.defaultSubtests = this.stateScheduler.getSubtests();
         this.testList = this.stateScheduler.getTestList();
@@ -3470,7 +3478,13 @@ public class ScheduleTestController extends PageFlowController
         this.setSelectedProductName(form.getSelectedProductName());
         this.setSelectedLevel(form.getSelectedLevel());
         this.setSelectedTestId(form.getSelectedTestId()); 
-        this.testAccessCode = form.getTestAdmin().getAccessCode();           
+        this.testAccessCode = form.getTestAdmin().getAccessCode(); 
+        // START- Added for defect #65862
+        if(this.showLevelOrGrade != null){
+        	this.stateScheduler.setShowLevelOrGrade(this.showLevelOrGrade);
+        	this.stateScheduler.setGradeFlag(this.gradeFlag);
+        }
+        // END- Added for defect #65862
         if (this.locatorSubtest != null)        
             this.stateScheduler.setLocatorTAC(this.locatorSubtest.getTestAccessCode());
         

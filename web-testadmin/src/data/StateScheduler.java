@@ -12,6 +12,10 @@ public class StateScheduler implements java.io.Serializable
     private String locatorTAC;
     private List testList;
     private List subtests; 
+    // START- Added for defect #65862
+    private String showLevelOrGrade;
+    private boolean gradeFlag ;
+    // END- Added for defect #65862
     //Added for license which is in use during select test cancel
     private Integer productId; 
     
@@ -29,7 +33,11 @@ public class StateScheduler implements java.io.Serializable
         this.autoLocator = "";
         this.locatorTAC = "";
         this.testList = null;
-        this.subtests = null;            
+        this.subtests = null;
+        // START- Added for defect #65862
+        this.showLevelOrGrade = "";
+        this.gradeFlag = false;
+        // END- Added for defect #65862
     }    
 
 
@@ -108,6 +116,26 @@ public class StateScheduler implements java.io.Serializable
 	public void setProductId(Integer productId) {
            this.productId = productId;
     }
+
+
+	public String getShowLevelOrGrade() {
+		return showLevelOrGrade;
+	}
+
+
+	public void setShowLevelOrGrade(String showLevelOrGrade) {
+		this.showLevelOrGrade = showLevelOrGrade;
+	}
+
+
+	public boolean isGradeFlag() {
+		return gradeFlag;
+	}
+
+
+	public void setGradeFlag(boolean gradeFlag) {
+		this.gradeFlag = gradeFlag;
+	}
     
     
 } 
