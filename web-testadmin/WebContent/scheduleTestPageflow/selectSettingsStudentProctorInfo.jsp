@@ -487,7 +487,7 @@
             <ctb:switch dataSource="${container.item.editable}">
                 <ctb:case value="T">
                     <netui:checkBoxGroup dataSource="actionForm.selectedProctorIds">
-                        &nbsp;<netui:checkBoxOption value="${container.item.userId}" onClick="enableElementById(getNetuiTagName('removeSelectedProctors'));">&nbsp;</netui:checkBoxOption>                
+                        &nbsp;<netui:checkBoxOption value="${container.item.userId}" onClick="toggleEnableElementByIdProctor(this);">&nbsp;</netui:checkBoxOption>                
                     </netui:checkBoxGroup>
                 </ctb:case>
                 <ctb:case value="F">

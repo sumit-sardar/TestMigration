@@ -93,7 +93,7 @@ function setElementValueAndSubmitWithAnchor(elementId, value, anchorName) {
 }
  
 
-//Changes for existing defect in Students section of settings page for removeSelectedStudents button
+//Changes for existing defect in Students section of selectsettings page for removeSelectedStudents button
 var totalSelectedCount = 0;
 function toggleEnableElementById(element) {
    // alert("element apply fileter" + elementId + " " + element);
@@ -110,6 +110,24 @@ function toggleEnableElementById(element) {
     else
     	removeButton.removeAttribute("disabled");
 }    
+
+//Changes for existing defect in Proctor section of selectsettings page for removeSelectedProctors button
+var totalSelectedProctorCount = 0;
+function toggleEnableElementByIdProctor(element) {
+   // alert("element apply fileter" + elementId + " " + element);
+    
+    if(element.checked)
+    	totalSelectedProctorCount++;
+    else
+    	totalSelectedProctorCount--;
+    	
+    var removeButton = document.getElementById("removeSelectedProctors");
+    
+    if(totalSelectedProctorCount<=0)
+    	removeButton.setAttribute("disabled",'true');
+    else
+    	removeButton.removeAttribute("disabled");
+}  
 
 function enableElementById(elementId) {
     var element = document.getElementById(elementId);
