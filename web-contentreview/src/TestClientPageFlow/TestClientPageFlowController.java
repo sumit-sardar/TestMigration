@@ -270,11 +270,7 @@ public class TestClientPageFlowController extends PageFlowController
        Element itemElement = requestElement.getChild("get_item");
             
        String itemId = itemElement.getAttributeValue("itemid");
-       // For Lesser than symbol issue
-       String itemLML  = null;
-       
-       
-        int index;
+		    int index;
         //try
         {
             index = Integer.parseInt( itemId );
@@ -285,17 +281,6 @@ public class TestClientPageFlowController extends PageFlowController
         }
                 
         ItemBean item = globalApp.currentDeliverableUnitBean.getItems()[ index - 1 ];
-        
-		// For Lesser than symbol issue
-		//Start
-        itemLML = item.getLml();
-        
-        itemLML = itemLML.replaceAll("&#x003C", "&LT;");
-        itemLML = itemLML.replaceAll("&lt;", "&LT;");
-        item.setLml(itemLML);
-       // System.out.println("itemLML**********" + itemLML);
-        //End
-        
         getRequest().setAttribute("item", item.getLml());
         
     }
