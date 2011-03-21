@@ -500,5 +500,10 @@ public interface SaveStudentTestData extends JdbcControl
     @JdbcControl.SQL(statement = "update test_roster ros  set ros.tts_speed_status = {ttsSpeedValue}  where ros.test_roster_id = {testRosterId}")
     public void updateStudentTTSspeedValue (Integer testRosterId,String ttsSpeedValue) throws SQLException;
 
-   
+    
+    @JdbcControl.SQL(statement = "SELECT decode(i.answer_area, 'AudioItem',1,0) FROM item i WHERE i.item_id = {itemId}")
+    int checkAudioItem(String itemId);
+    
+    @JdbcControl.SQL(statement = "SELECT COUNT(1) FROM item_response_cr WHERE item_id = {itemId} AND item_set_id = {itemSetId}")
+    int checkCRResponseExists(String itemId, int itemSetId);
 }

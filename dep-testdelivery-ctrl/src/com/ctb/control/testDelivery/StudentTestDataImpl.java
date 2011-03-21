@@ -1439,9 +1439,25 @@ public class StudentTestDataImpl implements StudentTestData
                 catch (UnsupportedEncodingException uee) {
                     uee.printStackTrace();
                 }
-*/                
-                saver.deleteCRResponse(testRosterId, itemSetId, itemId);
-                saver.storeCRResponse(testRosterId, itemSetId, itemId, response);
+*/              
+            	// changes for not updating the response of an audio item if 
+            	// the incoming response is null
+            	
+            	if(saver.checkAudioItem(itemId)== 1){
+            		if(response.equals("")){
+            			if(saver.checkCRResponseExists(itemId, itemSetId)== 0){
+            				saver.deleteCRResponse(testRosterId, itemSetId, itemId);
+                            saver.storeCRResponse(testRosterId, itemSetId, itemId, response);
+                		}
+            		}else{
+            			saver.deleteCRResponse(testRosterId, itemSetId, itemId);
+                        saver.storeCRResponse(testRosterId, itemSetId, itemId, response);
+            		}
+            		
+            	}else{
+                    saver.deleteCRResponse(testRosterId, itemSetId, itemId);
+                    saver.storeCRResponse(testRosterId, itemSetId, itemId, response);
+            	}
             }
             else {
                 saver.deleteCRResponseSTG(testRosterId, itemSetId, itemId);
