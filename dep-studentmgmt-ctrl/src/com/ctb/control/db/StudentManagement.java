@@ -10,6 +10,7 @@ import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.CustomerDemographic;
 import com.ctb.bean.studentManagement.CustomerDemographicValue;
+import com.ctb.bean.studentManagement.ItemResponseData;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.bean.studentManagement.StudentDemographicData;
@@ -1024,4 +1025,13 @@ public interface StudentManagement extends JdbcControl
 	@JdbcControl.SQL(statement = "   select distinct student_demographic_data_id as studentDemographicDataId,std.STUDENT_ID  as studentId,concat(concat(cdg.label_name,'_'),std.value_name)  as valueName,cdg.label_name as labelName from student_demographic_data std,customer_demographic cdg  where std.customer_demographic_id = cdg.customer_demographic_id and cdg.value_Cardinality='SINGLE' and cdg.customer_id = {customerId} and {sql: searchbyStudentId}  ")
     StudentDemoGraphics [] getStudentDemoValues(String searchbyStudentId , int customerId) throws SQLException;
 
+
+    /***
+     * 
+     * Test Get CR response
+     */
+     
+     @JdbcControl.SQL(statement = "select constructed_response as constructedResponse from item_response_cr where test_roster_id = {testRosterId} and item_id = {itemId}")
+     ItemResponseData getCrResponse(int testRosterId, String itemId) throws SQLException;
+	
 }

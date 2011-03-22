@@ -59,6 +59,7 @@ import com.ctb.util.SimpleCache;
 import com.ctb.util.studentManagement.DeleteStudentStatus;
 import com.ctb.util.studentManagement.DynamicSQLUtils;
 import com.ctb.util.studentManagement.StudentUtils;
+import com.ctb.bean.studentManagement.ItemResponseData;
 
 /**
  * @author John_Wang
@@ -2345,5 +2346,21 @@ public class StudentManagementImpl implements StudentManagement
 		throw tee;
 	}
 }    
-
+	// Temporary change for audio CR RESPONSE
+	public ItemResponseData getStudentCrResponse(Integer testRosterId,String itemId) throws CTBBusinessException
+	{
+	
+		try{
+			ItemResponseData itemResponse = null;
+			
+			itemResponse = studentManagement.getCrResponse(testRosterId,itemId);
+			return itemResponse;
+		}
+		catch(Exception e){
+			
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentEduAndInstr: " );
+			tee.setStackTrace(e.getStackTrace());
+			throw tee;
+		}
+	}
 } 

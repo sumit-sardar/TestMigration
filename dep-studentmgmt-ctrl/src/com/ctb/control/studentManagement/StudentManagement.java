@@ -457,4 +457,13 @@ public interface StudentManagement
     com.ctb.bean.testAdmin.StudentNodeData getTopStudentNodesForBulkAccommodationUserAndAdmin(java.lang.String userName, java.lang.Integer customerId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.FilterParams demoFilter,com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
     com.ctb.bean.testAdmin.StudentNodeData getStudentNodesForBulkAccomUserParentAndAdmin(String userName, java.lang.Integer customerId,Integer orgNodeId, FilterParams filter,FilterParams demoFilter,PageParams page, SortParams sort)throws com.ctb.exception.CTBBusinessException;
     void updateBulkStudentAccommodations(String userName,  com.ctb.bean.testAdmin.StudentAccommodations studentAccommodations,Integer[] studentId) throws  com.ctb.exception.CTBBusinessException;
+    
+    /***
+     * Temporary Change
+     * Retrieve Cr Response
+     * 
+     */
+    
+    com.ctb.bean.studentManagement.ItemResponseData getStudentCrResponse(Integer testRosterId,String itemId) throws com.ctb.exception.CTBBusinessException;
+    
 } 
