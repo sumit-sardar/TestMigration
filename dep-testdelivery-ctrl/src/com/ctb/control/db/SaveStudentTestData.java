@@ -504,6 +504,6 @@ public interface SaveStudentTestData extends JdbcControl
     @JdbcControl.SQL(statement = "SELECT decode(i.answer_area, 'AudioItem',1,0) FROM item i WHERE i.item_id = {itemId}")
     int checkAudioItem(String itemId);
     
-    @JdbcControl.SQL(statement = "SELECT COUNT(1) FROM item_response_cr WHERE item_id = {itemId} AND item_set_id = {itemSetId}")
-    int checkCRResponseExists(String itemId, int itemSetId);
+    @JdbcControl.SQL(statement = "SELECT COUNT(1) FROM item_response_cr WHERE item_id = {itemId} AND test_roster_id = {testRosterId}")
+    int checkCRResponseExists(String itemId, int testRosterId);
 }

@@ -1444,8 +1444,8 @@ public class StudentTestDataImpl implements StudentTestData
             	// the incoming response is null
             	
             	if(saver.checkAudioItem(itemId)== 1){
-            		if(response.equals("")){
-            			if(saver.checkCRResponseExists(itemId, itemSetId)== 0){
+            		if(response.length()< 50){
+            			if(saver.checkCRResponseExists(itemId, testRosterId)== 0){
             				saver.deleteCRResponse(testRosterId, itemSetId, itemId);
                             saver.storeCRResponse(testRosterId, itemSetId, itemId, response);
                 		}
