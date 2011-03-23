@@ -40,6 +40,7 @@
 
 <netui:hidden dataSource="actionForm.creatorOrgNodeName"/>   
 <netui:hidden dataSource="actionForm.studentStatePathList.maxPageRequested"/>
+<netui:hidden dataSource="actionForm.orgStatePathList.maxPageRequested"/>
 <netui:hidden dataSource="actionForm.testAdmin.isRandomize"/><!--Change for Random Distractor-->
 
 <netui:hidden dataSource="actionForm.autoLocator"/>

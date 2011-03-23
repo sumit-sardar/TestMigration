@@ -2344,6 +2344,7 @@ public class ScheduleTestController extends PageFlowController
         
         snd = getTestTicketNodes(this.orgNodeId, this.testAdminId, filter, page, sort);           
 
+        form.getOrgStatePathList().setMaxPageRequested(snd.getFilteredPages());
         if (form.getOrgStatePathList().getPageRequested().intValue() > snd.getFilteredPages().intValue())
             form.getOrgStatePathList().setPageRequested(snd.getFilteredPages());
             
