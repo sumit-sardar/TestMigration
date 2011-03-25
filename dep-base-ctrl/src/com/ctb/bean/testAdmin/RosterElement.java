@@ -40,6 +40,9 @@ public class RosterElement extends CTBBean
   private String extPin1;
   private String userName;
   private String customerFlagStatus;
+  private String testCompletionStatusDesc; // For CR Soring 
+  private String grade; // For CR Soring 
+  
 
 	/**
 	 * @return Returns the userName.
@@ -389,4 +392,33 @@ public class RosterElement extends CTBBean
     public void setCustomerFlagStatus(String customerFlagStatus) {
             this.customerFlagStatus = customerFlagStatus;
     }
+    
+    
+	/**
+	 * @return Returns testCompletionStatusDesccription of a student
+	 */
+	public String getTestCompletionStatusDesc() {
+		return testCompletionStatusDesc;
+	}
+	
+	/**
+	 * @param testCompletionStatusDesc The testCompletionStatusDesccription to set.
+	 */
+	public void setTestCompletionStatusDesc(String testCompletionStatusDesc) {
+		this.testCompletionStatusDesc = testCompletionStatusDesc;
+	}
+	
+	/**
+	 * @return Returns grade of a student
+	 */
+	public String getGrade() {
+		return grade;
+	}
+	
+	/**
+	 * @param grade The Grade to set.
+	 */
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
 } 
