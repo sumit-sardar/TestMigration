@@ -19,6 +19,8 @@ public class ScorableItem extends CTBBean {
 	private Integer itemSetId;
 	private String scoreStatus;
 	private Integer scorePoint;
+	private Integer dataPointId;
+	private String answered;
 	
 
 	/**
@@ -147,6 +149,22 @@ public class ScorableItem extends CTBBean {
 
 	public void setScorePoint(Integer scorePoint) {
 		this.scorePoint = scorePoint;
+	}
+
+	public Integer getDataPointId() {
+		return dataPointId;
+	}
+
+	public void setDataPointId(Integer dataPointId) {
+		this.dataPointId = dataPointId;
+	}
+
+	public String getAnswered() {
+		return answered;
+	}
+
+	public void setAnswered(String answered) {
+		this.answered = answered;
 	}
 
 	
