@@ -1835,27 +1835,61 @@ public class StudentManagementImpl implements StudentManagement
 					studentMapData.put(selectedStudentid[i], std.getManageStudents()[i]);
 
 				}
-				String searchbyStudentId = SQLutils.generateSQLCriteria("std.student_id in  ",selectedStudentid);
-				StudentDemoGraphics[] sdgv = this.studentManagement.getStudentDemoValues(searchbyStudentId,customerId);
-				for(int k = 0 ; k < sdgv.length ; k++) {
-					Integer studentid =  sdgv[k].getStudentId();
-					if(studentMapData.containsKey(studentid)) {
-						SessionStudent sst = studentMapData.get(studentid);
-						String[] values = new String[2];
-						values[0] = sdgv[k].getLabelName();
-						values[1] = sdgv[k].getValueName();
-						sst.setValueMap(values);
-
-
-					}
-
+				
+				//Start -Inclause changes
+				int inClauselimit = 999;
+				
+				
+				List sdgvsGlobal = new ArrayList();
+				
+				int loopCounters = selectedStudentid.length / inClauselimit;
+				if((selectedStudentid.length % inClauselimit) > 0){
+					loopCounters = loopCounters + 1;
 				}
-
+				
+				for(int counter=0; counter<loopCounters; counter++){
+					Integer[] newselectedStudentid = null;
+					String searchbyStudentIds="";
+					if((counter+1)!=loopCounters){
+						newselectedStudentid = new Integer [inClauselimit];
+						System.arraycopy(selectedStudentid, (counter*inClauselimit) , newselectedStudentid, 0, inClauselimit);
+						
+						
+						
+					} else {
+						int count = selectedStudentid.length % inClauselimit;
+						newselectedStudentid = new Integer [count];
+						System.arraycopy(selectedStudentid, ((loopCounters-1)*inClauselimit) , newselectedStudentid, 0, count);
+						
+					}
+					searchbyStudentIds = SQLutils.generateSQLCriteria("std.student_id in  ",newselectedStudentid);
+					StudentDemoGraphics[] sdgvs = this.studentManagement.getStudentDemoValues(searchbyStudentIds,customerId);
+					sdgvsGlobal.add(sdgvs);
+				}
+				
+				
+				for(int j = 0 ; j < sdgvsGlobal.size() ; j++){
+					StudentDemoGraphics[] sdgvse = (StudentDemoGraphics[])sdgvsGlobal.get(j);
+					for(int k = 0 ; k < sdgvse.length ; k++) {
+						Integer studentid =  sdgvse[k].getStudentId();
+						if(studentMapData.containsKey(studentid)) {
+							SessionStudent sst = studentMapData.get(studentid);
+							String[] values = new String[2];
+							values[0] = sdgvse[k].getLabelName();
+							values[1] = sdgvse[k].getValueName();
+							sst.setValueMap(values);
+	
+	
+						}
+	
+					}
+				}
+				
+				//end -Inclause changes
 				for(int i = 0 ; i < selectedStudentid.length ; i++){
 					SessionStudent sst = studentMapData.get(selectedStudentid[i]);
 					filteredStudents.add(sst);
 				}
-
 
 				std.setManageStudents((SessionStudent[]) filteredStudents.toArray(new SessionStudent[0]), pageSize);
 				std.applyDemoFiltering(demoFilter);
@@ -1865,7 +1899,6 @@ public class StudentManagementImpl implements StudentManagement
 			if(page != null) std.applyPaging(page);
 
 			students = std.getManageStudents();
-
 			return std;
 		} catch (SQLException se) {
 			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findStudentsForOrgNode: " + se.getMessage());
@@ -1948,8 +1981,6 @@ public class StudentManagementImpl implements StudentManagement
 			if(sort != null) ond.applySorting(sort);
 			if(page != null) ond.applyPaging(page);
 			studentNodes = ond.getStudentNodes();
-
-
 
 			for(int i=0;i<studentNodes.length && studentNodes[i] != null;i++) {
 				//filter student accommodation and grades
@@ -2079,7 +2110,6 @@ public class StudentManagementImpl implements StudentManagement
 
 			} 
 			//}
-
 			return ond;
 		} catch (SQLException se) {
 			OrgNodeDataNotFoundException one = new OrgNodeDataNotFoundException("ScheduleTestImpl: getTopStudentNodesForUserAndAdmin: " + se.getMessage());
@@ -2273,7 +2303,7 @@ public class StudentManagementImpl implements StudentManagement
 		try {
 
 			if (studentAccommodations != null)	{	
-				String searchbyStudentId = SQLutils.generateSQLCriteria("student_id in  ",studentId);
+				
 				StringBuffer strBuffer = new StringBuffer();
 
 				if(studentAccommodations.getScreenMagnifier()!= null) {
@@ -2334,7 +2364,29 @@ public class StudentManagementImpl implements StudentManagement
 				if (strBuffer != null && strBuffer.length() > 0) {
 					String sqlUpdateStr = strBuffer.substring(0, strBuffer.length() - 1);
 					//System.out.println("sqlUpdateStr.."+ sqlUpdateStr);
-					accommodation.updateBulkStudentAccommodations(searchbyStudentId,sqlUpdateStr);
+					
+						//Start -Inclause changes
+						int inClauselimit = 999;
+						int loopCounters = studentId.length / inClauselimit;
+						if((studentId.length % inClauselimit) > 0){
+							loopCounters = loopCounters + 1;
+						}
+						for(int counter=0; counter<loopCounters; counter++){
+							Integer[] newStudentid = null;
+							String searchbyStudentIds="";
+							if((counter+1)!=loopCounters){
+								newStudentid = new Integer [inClauselimit];
+								System.arraycopy(studentId, (counter*inClauselimit) , newStudentid, 0, inClauselimit);
+							} else {
+								int count = studentId.length % inClauselimit;
+								newStudentid = new Integer [count];
+								System.arraycopy(studentId, ((loopCounters-1)*inClauselimit) , newStudentid, 0, count);
+								
+							}
+							searchbyStudentIds = SQLutils.generateSQLCriteria("student_id in  ",newStudentid);
+							accommodation.updateBulkStudentAccommodations(searchbyStudentIds,sqlUpdateStr);
+						}
+						//END -Inclause changes
 				}
 			}
 			

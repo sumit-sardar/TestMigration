@@ -1017,11 +1017,16 @@ public interface StudentManagement extends JdbcControl
      */
 	@JdbcControl.SQL(statement = "delete from student_tutorial_status where student_id = {studentId}")
     void deleteStudentTutorialStatus(Integer studentId);
-	
-	@JdbcControl.SQL(statement = "   select distinct student_demographic_data_id as studentDemographicDataId,stu.STUDENT_ID  as studentId,concat(concat(cdg.label_name,'_'),std.value_name)  as valueName,std.customer_demographic_id as customerDemographicId,cdg.label_name as labelName from student_demographic_data std,student stu,org_node_ancestor  ona,org_node_ancestor ona2,org_node_student ons,customer_demographic cdg  where std.student_id(+) = stu.student_id and stu.student_id = ons.student_id  and std.customer_demographic_id = cdg.customer_demographic_id  and cdg.customer_id = {customerId} and stu.activation_status = 'AC' and ons.activation_status = 'AC' and ons.org_node_id = ona2.org_node_id and ona2.ancestor_org_node_id = ona.org_node_id and ona.ancestor_org_node_id = {orgNodeId} ")
+	//array max length change
+	@JdbcControl.SQL(statement = "   select distinct student_demographic_data_id as studentDemographicDataId,stu.STUDENT_ID  as studentId,concat(concat(cdg.label_name,'_'),std.value_name)  as valueName,std.customer_demographic_id as customerDemographicId,cdg.label_name as labelName from student_demographic_data std,student stu,org_node_ancestor  ona,org_node_ancestor ona2,org_node_student ons,customer_demographic cdg  where std.student_id(+) = stu.student_id and stu.student_id = ons.student_id  and std.customer_demographic_id = cdg.customer_demographic_id  and cdg.customer_id = {customerId} and stu.activation_status = 'AC' and ons.activation_status = 'AC' and ons.org_node_id = ona2.org_node_id and ona2.ancestor_org_node_id = ona.org_node_id and ona.ancestor_org_node_id = {orgNodeId} ",   arrayMaxLength = 100000)
     StudentDemoGraphics [] getStudentDemographicDataValues(int orgNodeId, int customerId) throws SQLException;
-	
-	@JdbcControl.SQL(statement = "   select distinct student_demographic_data_id as studentDemographicDataId,std.STUDENT_ID  as studentId,concat(concat(cdg.label_name,'_'),std.value_name)  as valueName,cdg.label_name as labelName from student_demographic_data std,customer_demographic cdg  where std.customer_demographic_id = cdg.customer_demographic_id and cdg.value_Cardinality='SINGLE' and cdg.customer_id = {customerId} and {sql: searchbyStudentId}  ")
+	//array max length change
+	@JdbcControl.SQL(statement = "   select distinct student_demographic_data_id as studentDemographicDataId,std.STUDENT_ID  as studentId,concat(concat(cdg.label_name,'_'),std.value_name)  as valueName,cdg.label_name as labelName from student_demographic_data std,customer_demographic cdg  where std.customer_demographic_id = cdg.customer_demographic_id and cdg.value_Cardinality='SINGLE' and cdg.customer_id = {customerId} and {sql: searchbyStudentId}",   arrayMaxLength = 100000)
     StudentDemoGraphics [] getStudentDemoValues(String searchbyStudentId , int customerId) throws SQLException;
+	
+	@JdbcControl.SQL(statement = "   select count (distinct stu.STUDENT_ID ) as studentCount from student stu, org_node_ancestor ona, org_node_ancestor  ona2, org_node_student ons, where  stu.student_id = ons.student_id and to_char(stu.activation_status) = 'AC' and to_char(ons.activation_status) = 'AC'  and ons.org_node_id = ona2.org_node_id  and ona2.ancestor_org_node_id = ona.org_node_id  and ona.ancestor_org_node_id = {orgNodeId}  ")
+    Integer getStudentAtOrgNode(Integer orgNodeId) throws SQLException;
+	
+	
 
 }
