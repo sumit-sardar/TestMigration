@@ -1321,6 +1321,12 @@ public class ManageBulkAccommodationController extends PageFlowController
 			needCommit = true;
 		if ((actionElement != null) && actionElement.equals("{actionForm.studentSortOrderBy}"))
 			needCommit = true;
+		//Added for Table pager go button start
+        if ((actionElement != null) && actionElement.equals("EnterKeyInvoked_studentTableAnchor"))
+            needCommit = true;
+        if ((actionElement != null) && actionElement.equals("ButtonGoInvoked_studentTableAnchor"))
+            needCommit = true;
+        //Added for Table pager go button end
 
 
 
