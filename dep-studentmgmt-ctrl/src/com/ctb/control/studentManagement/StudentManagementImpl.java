@@ -1824,6 +1824,12 @@ public class StudentManagementImpl implements StudentManagement
 			//Integer [] orgNodeIds = studentManagement.getTopOrgNodeIdsForUser(userName);
 			SessionStudent [] students = studentManagement.getBulkStudentsForOrgNode(userName, orgNodeId);
 			std.setManageStudents(students, pageSize);
+			//START- change for TotalStudent Count display
+			int totalStudents = 0;
+			if( std.getManageStudents() != null && std.getManageStudents().length > 0){
+				totalStudents = std.getTotalCount();
+			} 
+			//END- change for TotalStudent Count display
 			if(filter != null) std.applyFiltering(filter);
 			if(demoFilter != null && demoFilter.getFilterParams().length > 0 &&
 					std!= null &&  std.getManageStudents() != null && std.getManageStudents().length > 0){
@@ -1846,28 +1852,21 @@ public class StudentManagementImpl implements StudentManagement
 				if((selectedStudentid.length % inClauselimit) > 0){
 					loopCounters = loopCounters + 1;
 				}
-				
 				for(int counter=0; counter<loopCounters; counter++){
 					Integer[] newselectedStudentid = null;
 					String searchbyStudentIds="";
 					if((counter+1)!=loopCounters){
 						newselectedStudentid = new Integer [inClauselimit];
 						System.arraycopy(selectedStudentid, (counter*inClauselimit) , newselectedStudentid, 0, inClauselimit);
-						
-						
-						
 					} else {
 						int count = selectedStudentid.length % inClauselimit;
 						newselectedStudentid = new Integer [count];
 						System.arraycopy(selectedStudentid, ((loopCounters-1)*inClauselimit) , newselectedStudentid, 0, count);
-						
 					}
 					searchbyStudentIds = SQLutils.generateSQLCriteria("std.student_id in  ",newselectedStudentid);
 					StudentDemoGraphics[] sdgvs = this.studentManagement.getStudentDemoValues(searchbyStudentIds,customerId);
 					sdgvsGlobal.add(sdgvs);
 				}
-				
-				
 				for(int j = 0 ; j < sdgvsGlobal.size() ; j++){
 					StudentDemoGraphics[] sdgvse = (StudentDemoGraphics[])sdgvsGlobal.get(j);
 					for(int k = 0 ; k < sdgvse.length ; k++) {
@@ -1878,10 +1877,7 @@ public class StudentManagementImpl implements StudentManagement
 							values[0] = sdgvse[k].getLabelName();
 							values[1] = sdgvse[k].getValueName();
 							sst.setValueMap(values);
-	
-	
 						}
-	
 					}
 				}
 				
@@ -1897,10 +1893,17 @@ public class StudentManagementImpl implements StudentManagement
 
 			if(sort != null) std.applySorting(sort);
 			if(page != null) std.applyPaging(page);
-
-			students = std.getManageStudents();
+			//START- change for TotalStudent Count display
+			std.setTotalCount(totalStudents);
+			//END- change for TotalStudent Count display
+			//students = std.getManageStudents();
 			return std;
 		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findStudentsForOrgNode: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+		catch (Exception se) {
 			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findStudentsForOrgNode: " + se.getMessage());
 			tee.setStackTrace(se.getStackTrace());
 			throw tee;
