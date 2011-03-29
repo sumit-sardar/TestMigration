@@ -21,6 +21,7 @@ public class ScorableItem extends CTBBean {
 	private Integer scorePoint;
 	private Integer dataPointId;
 	private String answered;
+	private String testItemType;
 	
 
 	/**
@@ -135,10 +136,16 @@ public class ScorableItem extends CTBBean {
 		return itemType.trim().equalsIgnoreCase("AI");
 	}
 
+	/**
+	 * @return Return scoreStatus
+	 */
 	public String getScoreStatus() {
 		return scoreStatus;
 	}
 
+	/**
+	 * @param scoreStatus - set scoreStatus
+	 */
 	public void setScoreStatus(String scoreStatus) {
 		this.scoreStatus = scoreStatus;
 	}
@@ -147,24 +154,53 @@ public class ScorableItem extends CTBBean {
 		return scorePoint;
 	}
 
+	/**
+	 * @param scorePoint - scorePoint
+	 */
 	public void setScorePoint(Integer scorePoint) {
 		this.scorePoint = scorePoint;
 	}
 
+	/**
+	 * @return Return dataPointId
+	 */
 	public Integer getDataPointId() {
 		return dataPointId;
 	}
 
+	/**
+	 * @param dataPointId - DataPointId
+	 */
 	public void setDataPointId(Integer dataPointId) {
 		this.dataPointId = dataPointId;
 	}
 
+	/**
+	 * @return Return answered
+	 */
 	public String getAnswered() {
 		return answered;
 	}
 
+	/**
+	 * @param answered set answered
+	 */
 	public void setAnswered(String answered) {
 		this.answered = answered;
+	}
+
+	/**
+	 * @return Return testItemType
+	 */
+	public String getTestItemType() {
+		return testItemType;
+	}
+
+	/**
+	 * @param testItemType - testItemType
+	 */
+	public void setTestItemType(String testItemType) {
+		this.testItemType = testItemType;
 	}
 
 	
