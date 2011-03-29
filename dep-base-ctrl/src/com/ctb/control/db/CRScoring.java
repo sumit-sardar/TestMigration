@@ -8,6 +8,7 @@ import org.apache.beehive.controls.api.bean.ControlExtension;
 
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.ScorableItem;
+import com.ctb.bean.testAdmin.TestSession;
 
 @ControlExtension
 @JdbcControl.ConnectionDataSource(jndiName = "oasDataSource")
@@ -41,7 +42,7 @@ public interface CRScoring extends JdbcControl {
 	 
 	 
 	 //get items from test session in score by item
-	 @JdbcControl.SQL(statement = "select iset.item_set_id as itemSetId,iset.item_set_name as itemSetName, isi.item_sort_order as itemSetOrder,  isi.item_id as itemId, decode(it.answer_area,null,'CR','AI') as itemType, (select max_points from datapoint dpoint where item_id = isi.item_Id and rownum = 1 ) as maxPoints,  (select min_points from datapoint dpoint where item_id = isi.item_Id and rownum = 1) minPoints   from item_set_item  isi,  item it,  item_set   iset,  item_set_ancestor isa , test_admin tad  where isi.item_set_id = isa.item_set_id  and isa.item_set_type = 'TD'     and  isa.ancestor_item_set_id = tad.item_set_id   and tad.test_admin_id = {testAdminId}  and it.item_id = isi.item_id     and (upper(it.item_type) = 'CR' and  (it.answer_area is null or  upper(it.answer_area) = upper('AudioItem')))     and iset.item_set_id = isi.item_set_id order by isi.item_set_id, isi.item_sort_order",
+	 @JdbcControl.SQL(statement = "select iset.item_set_id as itemSetId,iset.item_set_name as itemSetName, isi.item_sort_order as itemSetOrder,  isi.item_id as itemId, decode(it.answer_area,null,'CR','AI') as itemType, it.item_type as testItemType, (select max_points from datapoint dpoint where item_id = isi.item_Id and rownum = 1 ) as maxPoints,  (select min_points from datapoint dpoint where item_id = isi.item_Id and rownum = 1) minPoints   from item_set_item  isi,  item it,  item_set   iset,  item_set_ancestor isa , test_admin tad  where isi.item_set_id = isa.item_set_id  and isa.item_set_type = 'TD'     and  isa.ancestor_item_set_id = tad.item_set_id   and tad.test_admin_id = {testAdminId}  and it.item_id = isi.item_id     and (upper(it.item_type) = 'CR' and  (it.answer_area is null or  upper(it.answer_area) = upper('AudioItem')))     and iset.item_set_id = isi.item_set_id order by isi.item_set_id, isi.item_sort_order",
              arrayMaxLength = 0, fetchSize=1000)
 	 ScorableItem [] getAllScorableCRItemsForItemSet(Integer  testAdminId) throws SQLException;
 	 
@@ -61,6 +62,10 @@ public interface CRScoring extends JdbcControl {
 	 //get response for CR item
 	 @JdbcControl.SQL(statement =" select constructed_response from  item_response_cr irscr where irscr.test_roster_id = {testRosterId} and irscr.item_set_id ={deliverableItemId} and irscr.item_id = {itemId}")
 	 Clob getCRItemResponse(Integer testRosterId, Integer deliverableItemId, String itemId);
+	 
+	 // get TestAdminDetails
+	 @JdbcControl.SQL(statement = "select  test_admin.TEST_ADMIN_ID as testAdminId,  test_admin.CUSTOMER_ID as customerId,  test_admin.TEST_ADMIN_NAME as testAdminName,  test_admin.PRODUCT_ID as productId,  test_admin.CREATOR_ORG_NODE_ID as creatorOrgNodeId,  node.org_node_name as creatorOrgNodeName,  test_admin.ACCESS_CODE as accessCode,  test_admin.LOCATION as location,  test_admin.LOGIN_START_DATE as loginStartDate,  test_admin.LOGIN_END_DATE as loginEndDate,  test_admin.DAILY_LOGIN_START_TIME as dailyLoginStartTime,  test_admin.DAILY_LOGIN_END_TIME as dailyLoginEndTime,  users.USER_NAME as createdBy,  test_admin.CREATED_DATE_TIME as createdDateTime,  test_admin.ACTIVATION_STATUS as activationStatus,  test_admin.ITEM_SET_ID as itemSetId,  test_admin.TEST_ADMIN_STATUS as testAdminStatus,  test_admin.SESSION_NUMBER as sessionNumber,  test_admin.TEST_ADMIN_TYPE as testAdminType,  test_admin.PREFERRED_FORM as preferredForm,  test_admin.FORM_ASSIGNMENT_METHOD as formAssignmentMethod,  test_admin.TIME_ZONE as timeZone,  test_admin.SHOW_STUDENT_FEEDBACK as showStudentFeedback,  test_admin.ENFORCE_TIME_LIMIT as enforceTimeLimit,  test_admin.ENFORCE_BREAK as enforceBreak,  test.item_Set_name as testName,  nvl(report.completed, 'F') as reportable,  ontc.override_form_assignment as overrideFormAssignmentMethod,  ontc.override_login_start_date as overrideLoginStartDate,  test_admin.test_catalog_id as testCatalogId,  test_admin.program_id as programId,  test_admin.random_distractor_status as isRandomize,  test_admin.test_session_data_exported as isTestSessionDataExported from  test_admin, users, item_set test,  org_node node,  org_node_test_catalog ontc,  (select  \t  \t\t  ros.test_admin_id,  \t\t\t  decode(count(distinct ros.test_roster_id), 0, 'F', 'T') as completed  \t  \tfrom  \t\t\t  test_roster ros,  \t\t\t  test_admin \t  \twhere  \t\t\t  ros.test_admin_id = test_admin.test_admin_id \t\t\t  and ros.test_completion_Status = 'CO' \t\t\t  and ros.validation_status = 'VA' \t\t\t  and test_admin.activation_status = 'AC'  and test_admin.test_admin_id = {testAdminId} \t\tgroup by  \t\t\t  ros.test_admin_id) report where  test_admin.activation_status = 'AC'  and ontc.item_set_id (+) = test_admin.item_set_id  and ontc.org_node_id (+) = test_admin.creator_org_node_id  and node.org_node_id = test_Admin.creator_org_node_id  and test.item_Set_id = test_admin.item_set_id \t\tand test_Admin.test_admin_id = report.test_admin_id (+)  and test_admin.created_by = users.user_id  and test_admin.test_admin_id = {testAdminId}")
+	 TestSession getTestAdminDetails(Integer testAdminId) throws SQLException;
 	 
 	 
 	 

@@ -18,6 +18,7 @@ import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
 import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.ScorableItemData;
+import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.ScoringException;
 import com.ctb.exception.testAdmin.StudentNotAddedToSessionException;
@@ -125,8 +126,9 @@ public class TestScoringImpl implements TestScoring {
 	 * @throws CTBBusinessException
 	 */
 	@Override
-	public RosterElementData getAllStudentForTestSessionAndTD(Integer testAdminID, Integer itemSetId,
-			FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException {
+	public RosterElementData getAllStudentForTestSessionAndTD(
+			Integer testAdminID, Integer itemSetId, FilterParams filter,
+			PageParams page, SortParams sort) throws CTBBusinessException {
 		RosterElementData rosterElementData = new RosterElementData();
 		Integer pageSize = null;
 		try {
@@ -192,10 +194,9 @@ public class TestScoringImpl implements TestScoring {
 	 * @throws CTBBusinessException
 	 */
 	@Override
-	public ScorableItemData getAllScorableCRItemsForTestRoster(Integer testRosterId, Integer itemSetId,
-			FilterParams filter, PageParams page, SortParams sort
-			)
-			throws CTBBusinessException {
+	public ScorableItemData getAllScorableCRItemsForTestRoster(
+			Integer testRosterId, Integer itemSetId, FilterParams filter,
+			PageParams page, SortParams sort) throws CTBBusinessException {
 		ScorableItemData scorableItemData = new ScorableItemData();
 		Integer pageSize = null;
 		try {
@@ -533,6 +534,21 @@ public class TestScoringImpl implements TestScoring {
 		}
 
 		return itemResponseData;
+	}
+
+	/**
+	 * This method retrieve testAdminDetails from data base.
+	 * 
+	 * @param testAdminId -
+	 *            testAdminId
+	 * @return - TestSession
+	 * @throws SQLException
+	 * @throws Exception
+	 */
+	TestSession getTestAdminDetails(Integer testAdminId) throws SQLException,
+			Exception {
+		TestSession testSession = scoring.getTestAdminDetails(testAdminId);
+		return testSession;
 	}
 
 }
