@@ -37,7 +37,7 @@ import com.jcraft.jsch.*;
  */
 public class ItemLayoutPublisher {
 	
-	String destinationPath = "/web/sites/wldomains/ads/assets/";
+	String destinationPath = "/local/apps/oas/ads/assets/";
 	String statusOk = "ok";
 	String status_republish = "Item cannot be re-published as state is locked.";
 	String status_republish_asset = "Asset cannot be re-published as it is being used and its state is locked.";
