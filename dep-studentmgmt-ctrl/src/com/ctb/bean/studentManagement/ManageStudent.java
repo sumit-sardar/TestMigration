@@ -2,6 +2,7 @@ package com.ctb.bean.studentManagement;
 
 import com.ctb.bean.CTBBean;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Data bean representing the partial contents of the OAS.STUDENT table 
@@ -21,12 +22,28 @@ public class ManageStudent extends CTBBean
     private String studentIdNumber;
     private String studentIdNumber2;
     private String grade;
+    private String productNameList;
     private String gender;
+    private String scoringStatus;
     private Date birthDate;
     private Integer createdBy;
     private OrganizationNode [] organizationNodes;
     private String extElmId;//Bulk Accommodation
+    private Integer rosterId;
+    private String testSessionName;
     
+	/**
+	 * @return the testSessionName
+	 */
+	public String getTestSessionName() {
+		return testSessionName;
+	}
+	/**
+	 * @param testSessionName the testSessionName to set
+	 */
+	public void setTestSessionName(String testSessionName) {
+		this.testSessionName = testSessionName;
+	}
 	/**
 	 * @return the id
 	 */
@@ -129,11 +146,28 @@ public class ManageStudent extends CTBBean
 	public String getGrade() {
 		return grade;
 	}
+	
+	public String getProductNameList() {
+		return productNameList;
+	}
+	public void setProductNameList(String productNameList) {
+		this.productNameList = productNameList;
+	}
 	/**
 	 * @param grade the grade to set
 	 */
 	public void setGrade(String grade) {
 		this.grade = grade;
+	}
+	
+	public String getScoringStatus() {
+		return scoringStatus;
+	}
+	/**
+	 * @param scoringStatus the scoringStatus to set
+	 */
+	public void setScoringStatus(String scoringStatus) {
+		this.scoringStatus = scoringStatus;
 	}
 	/**
 	 * @return the studentIdNumber
@@ -194,6 +228,18 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setExtElmId(String extElmId) {
 		this.extElmId = extElmId;
+	}
+	/**
+	 * @return Return RosterId
+	 */
+	public Integer getRosterId() {
+		return rosterId;
+	}
+	/**
+	 * @param rosterId - rosterId
+	 */
+	public void setRosterId(Integer rosterId) {
+		this.rosterId = rosterId;
 	}
     
 } 

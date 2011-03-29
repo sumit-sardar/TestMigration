@@ -987,7 +987,75 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
+	/**
+	 * Retrieves a sorted, filtered, paged list of students at and below user's top org node(s).
+	 * The SQL's where clause is dynamically generated on based on filter passed in.
+	 * @common:operation
+	 * @param userName - identifies the user
+	 * @param filter - filtering params
+	 * @param page - paging params
+	 * @param sort - sorting params
+	 * @return ManageStudentData
+	 * @throws com.ctb.exception.CTBBusinessException
+	 */
 
+	public ManageStudentData findStudentsAtAndBelowTopOrgNodesWithDynamicSQLForScoring(String userName, Integer productId, FilterParams filter, PageParams page, SortParams sort ) throws CTBBusinessException
+	{
+		try {
+			ManageStudentData std = new ManageStudentData();
+
+			Integer pageSize = null;
+			if(page != null) {
+				pageSize = new Integer(page.getPageSize());
+			}
+
+			Integer totalCount = null;
+			String searchCriteria = "";
+			if (filter != null) {
+				searchCriteria = DynamicSQLUtils.generateWhereClauseForFilter(filter);
+				filter.setFilterParams(new FilterParam[0]);
+				totalCount = studentManagement.getStudentCountAtAndBelowUserTopNodes(userName);
+			}
+			String orderByClause = "";
+			if (sort != null) {
+				orderByClause = DynamicSQLUtils.generateOrderByClauseForSorter(sort);                
+				sort = null;
+			}
+			searchCriteria = searchCriteria + orderByClause;
+			ManageStudent [] students = null;
+            
+            students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForScoring(userName, productId, searchCriteria);
+           
+			
+			std.setManageStudents(students, pageSize);
+			if(filter != null) std.applyFiltering(filter);
+			if(sort != null) std.applySorting(sort);
+			if(page != null) std.applyPaging(page);
+
+			students = std.getManageStudents();
+			for (int i=0; i <students.length; i++) {
+				if (students[i] != null) {
+					OrganizationNode [] orgNodes = studentManagement.getAssignedOrganizationNodesForStudentAtAndBelowUserTopNodes(students[i].getId().intValue(), userName);
+					students[i].setOrganizationNodes(orgNodes);
+				}
+			}
+
+
+			if (totalCount != null) {
+				std.setTotalCount(totalCount);
+				if (page == null)
+					std.setTotalPages(new Integer(1));
+				else 
+					std.setTotalPages(MathUtils.intDiv(totalCount, new Integer(page.getPageSize())));
+			}
+
+			return std;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findStudentsAtAndBelowTopOrgNodesWithDynamicSQL: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
 
 
 	/**
