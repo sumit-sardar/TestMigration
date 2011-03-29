@@ -203,7 +203,7 @@ public class TestScoringImpl implements TestScoring {
 			if (page != null) {
 				pageSize = new Integer(page.getPageSize());
 			}
-			ScorableItem[] rosterElements = getAllScorableCRItemsForTestRestore(
+			ScorableItem[] rosterElements = getAllScorableCRItemsForTestRoster(
 					testRestorId, itemSetId);
 			scorableItemData.setScorableItems(rosterElements, pageSize);
 			if (filter != null)
@@ -220,7 +220,7 @@ public class TestScoringImpl implements TestScoring {
 							"Exception occurred while getting all scorable CR Items for student and TD.",
 							se);
 			TestElementDataNotFoundException rde = new TestElementDataNotFoundException(
-					"TestScoringImpl: getAllScorableCRItemsForTestRestore: "
+					"TestScoringImpl: getAllScorableCRItemsForTestRoster: "
 							+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
@@ -232,7 +232,7 @@ public class TestScoringImpl implements TestScoring {
 							"Exception occurred while getting all scorable CR Items for student and TD.",
 							se);
 			TestElementDataNotFoundException rde = new TestElementDataNotFoundException(
-					"TestScoringImpl: getAllScorableCRItemsForTestRestore: "
+					"TestScoringImpl: getAllScorableCRItemsForTestRoster: "
 							+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
@@ -296,7 +296,7 @@ public class TestScoringImpl implements TestScoring {
 							"Exception occurred while getting all scorable CR Items for TD.",
 							se);
 			TestElementDataNotFoundException rde = new TestElementDataNotFoundException(
-					"TestScoringImpl: getAllScorableCRItemsForTestRestore: "
+					"TestScoringImpl: getAllScorableCRItemsForTestRoster: "
 							+ se.getMessage());
 			rde.setStackTrace(se.getStackTrace());
 			throw rde;
@@ -410,9 +410,9 @@ public class TestScoringImpl implements TestScoring {
 	 * @return Array of ScorableItem
 	 * @throws SQLException
 	 */
-	private ScorableItem[] getAllScorableCRItemsForTestRestore(
-			Integer testRestorId, Integer itemSetId) throws SQLException {
-		return scoring.getAllScorableCRItemsForTestRestore(testRestorId,
+	private ScorableItem[] getAllScorableCRItemsForTestRoster(
+			Integer testRosterId, Integer itemSetId) throws SQLException {
+		return scoring.getAllScorableCRItemsForTestRoster(testRosterId,
 				itemSetId);
 	}
 
@@ -474,7 +474,7 @@ public class TestScoringImpl implements TestScoring {
 		String crResponse = "";
 		Clob responseContent = null;
 		List<String> cRItemResponse = new ArrayList<String>();
-		responseContent = scoring.getCRItemResponses(testRosterId,
+		responseContent = scoring.getCRItemResponse(testRosterId,
 				deliverableItemId, itemId);
 		int len = (int) responseContent.length();
 		crResponse = responseContent.getSubString(1, len);
