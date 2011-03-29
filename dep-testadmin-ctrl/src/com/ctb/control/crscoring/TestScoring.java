@@ -76,14 +76,14 @@ public interface TestScoring {
 	 *            for pagination
 	 * @param sort -
 	 *            for sorting
-	 * @param testRestorId -
+	 * @param testRosterId -
 	 *            identifies the test session
 	 * @param itemSetId -
 	 *            identifies the test of type TD
 	 * @return ScorableItemData
 	 * @throws CTBBusinessException
 	 */
-	public ScorableItemData getAllScorableCRItemsForTestRoster(Integer testRestorId, Integer itemSetId,
+	public ScorableItemData getAllScorableCRItemsForTestRoster(Integer testRosterId, Integer itemSetId,
 			FilterParams filter, PageParams page, SortParams sort
 			) throws CTBBusinessException;
 

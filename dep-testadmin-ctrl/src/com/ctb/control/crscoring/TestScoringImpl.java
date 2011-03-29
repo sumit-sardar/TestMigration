@@ -184,7 +184,7 @@ public class TestScoringImpl implements TestScoring {
 	 *            for pagination
 	 * @param sort -
 	 *            for sorting
-	 * @param testRestorId -
+	 * @param testRosterId -
 	 *            identifies the test session
 	 * @param itemSetId -
 	 *            identifies the test of type TD
@@ -192,7 +192,7 @@ public class TestScoringImpl implements TestScoring {
 	 * @throws CTBBusinessException
 	 */
 	@Override
-	public ScorableItemData getAllScorableCRItemsForTestRoster(Integer testRestorId, Integer itemSetId,
+	public ScorableItemData getAllScorableCRItemsForTestRoster(Integer testRosterId, Integer itemSetId,
 			FilterParams filter, PageParams page, SortParams sort
 			)
 			throws CTBBusinessException {
@@ -204,7 +204,7 @@ public class TestScoringImpl implements TestScoring {
 				pageSize = new Integer(page.getPageSize());
 			}
 			ScorableItem[] rosterElements = getAllScorableCRItemsForTestRoster(
-					testRestorId, itemSetId);
+					testRosterId, itemSetId);
 			scorableItemData.setScorableItems(rosterElements, pageSize);
 			if (filter != null)
 				scorableItemData.applyFiltering(filter);
@@ -401,9 +401,9 @@ public class TestScoringImpl implements TestScoring {
 
 	/**
 	 * Method retrieves all scorable CR and Audio item from data base based on
-	 * testrestor and itemSet, returns as an array of ScorableItem.
+	 * testroster and itemSet, returns as an array of ScorableItem.
 	 * 
-	 * @param testRestorId -
+	 * @param testRosterId -
 	 *            identifies the schedule student
 	 * @param itemSetId -
 	 *            identifies the test of type TD
