@@ -29,23 +29,27 @@ public class ManageStudent extends CTBBean
     private Integer createdBy;
     private OrganizationNode [] organizationNodes;
     private String extElmId;//Bulk Accommodation
+    //START-Added for HandScoring
     private Integer rosterId;
     private String testSessionName;
-    private Integer  itemSetId;
-    
+    private Integer  itemSetIdTC;
+    private String accessCode;
+    private String testAdminId;
+    //END-Added for HandScoring
     
 	/**
-	 * @return Return ItemSetId
+	 * @return the accessCode
 	 */
-	public Integer getItemSetId() {
-		return itemSetId;
+	public String getAccessCode() {
+		return accessCode;
 	}
 	/**
-	 * @param itemSetId - set ItemSetId
+	 * @param accessCode the accessCode to set
 	 */
-	public void setItemSetId(Integer itemSetId) {
-		this.itemSetId = itemSetId;
+	public void setAccessCode(String accessCode) {
+		this.accessCode = accessCode;
 	}
+	
 	/**
 	 * @return the testSessionName
 	 */
@@ -254,6 +258,30 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setRosterId(Integer rosterId) {
 		this.rosterId = rosterId;
+	}
+	/**
+	 * @return the itemSetIdTC
+	 */
+	public Integer getItemSetIdTC() {
+		return itemSetIdTC;
+	}
+	/**
+	 * @param itemSetIdTC the itemSetIdTC to set
+	 */
+	public void setItemSetIdTC(Integer itemSetIdTC) {
+		this.itemSetIdTC = itemSetIdTC;
+	}
+	/**
+	 * @return the testAdminId
+	 */
+	public String getTestAdminId() {
+		return testAdminId;
+	}
+	/**
+	 * @param testAdminId the testAdminId to set
+	 */
+	public void setTestAdminId(String testAdminId) {
+		this.testAdminId = testAdminId;
 	}
     
 } 

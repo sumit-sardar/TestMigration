@@ -194,9 +194,10 @@ public class TestScoringImpl implements TestScoring {
 	 * @throws CTBBusinessException
 	 */
 	@Override
-	public ScorableItemData getAllScorableCRItemsForTestRoster(
-			Integer testRosterId, Integer itemSetId, FilterParams filter,
-			PageParams page, SortParams sort) throws CTBBusinessException {
+	public ScorableItemData getAllScorableCRItemsForTestRoster(Integer testRosterId, Integer itemSetId,
+			 PageParams page, SortParams sort
+			)
+			throws CTBBusinessException {
 		ScorableItemData scorableItemData = new ScorableItemData();
 		Integer pageSize = null;
 		try {
@@ -207,8 +208,6 @@ public class TestScoringImpl implements TestScoring {
 			ScorableItem[] rosterElements = getAllScorableCRItemsForTestRoster(
 					testRosterId, itemSetId);
 			scorableItemData.setScorableItems(rosterElements, pageSize);
-			if (filter != null)
-				scorableItemData.applyFiltering(filter);
 			if (sort != null)
 				scorableItemData.applySorting(sort);
 			if (page != null)

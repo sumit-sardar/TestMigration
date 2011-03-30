@@ -51,6 +51,8 @@ public class DynamicSQLUtils
                     result.append(" and upper(stu.ext_pin1) = upper('").append(escapeString(filterValue)).append("')");
                 else if (fieldName.equals("Grade")) 
                     result.append(" and stu.grade = '").append(filterValue).append("'");
+               /* else if (fieldName.equals("scoringStatus")) 
+                    result.append(" and stu.scoringStatus = '").append(filterValue).append("'");*/
                 else if (fieldName.equals("Gender")) 
                     result.append(" and stu.gender = '").append(filterValue).append("'");
                 else 
@@ -202,6 +204,12 @@ public class DynamicSQLUtils
                     result.append(" stu.grade ").append(sortType.getType());
                     hasSomeField = true;
                 }
+                else if (sortName.equals("TestSessionName")) {
+                    if (hasSomeField)
+                        result.append(",");
+                    result.append(" tadmin.test_admin_name ").append(sortType.getType());
+                    hasSomeField = true;
+                } 
                 else if (sortName.equals("StudentIdNumber")) {
                     if (hasSomeField)
                         result.append(",");

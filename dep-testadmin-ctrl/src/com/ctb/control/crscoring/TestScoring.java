@@ -83,8 +83,8 @@ public interface TestScoring {
 	 * @return ScorableItemData
 	 * @throws CTBBusinessException
 	 */
-	public ScorableItemData getAllScorableCRItemsForTestRoster(Integer testRosterId, Integer itemSetId,
-			FilterParams filter, PageParams page, SortParams sort
+	public ScorableItemData getAllScorableCRItemsForTestRoster(Integer testRestorId, Integer itemSetId,
+			 PageParams page, SortParams sort
 			) throws CTBBusinessException;
 
 	/**
