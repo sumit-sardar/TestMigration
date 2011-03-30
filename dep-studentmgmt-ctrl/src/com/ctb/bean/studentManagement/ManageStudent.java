@@ -31,7 +31,21 @@ public class ManageStudent extends CTBBean
     private String extElmId;//Bulk Accommodation
     private Integer rosterId;
     private String testSessionName;
+    private Integer  itemSetId;
     
+    
+	/**
+	 * @return Return ItemSetId
+	 */
+	public Integer getItemSetId() {
+		return itemSetId;
+	}
+	/**
+	 * @param itemSetId - set ItemSetId
+	 */
+	public void setItemSetId(Integer itemSetId) {
+		this.itemSetId = itemSetId;
+	}
 	/**
 	 * @return the testSessionName
 	 */
