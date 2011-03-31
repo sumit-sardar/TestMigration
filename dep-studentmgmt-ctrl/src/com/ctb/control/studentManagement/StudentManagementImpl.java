@@ -1008,7 +1008,22 @@ public class StudentManagementImpl implements StudentManagement
 			if(page != null) {
 				pageSize = new Integer(page.getPageSize());
 			}
-
+			FilterParams statusFilter = new FilterParams();
+			statusFilter.setFilterParams(new FilterParam[0]);
+			
+			if (filter != null) {
+				FilterParam [] filterParams = filter.getFilterParams();
+				for (int i = 0; i < filterParams.length; i++) {
+			            FilterParam filterParam = filterParams[i];
+			            if (filterParam != null) {
+			                String fieldName = filterParam.getField();
+			                if(fieldName.equals("ScoringStatus")) {
+			                	statusFilter.setFilterParams(filterParams);
+			                	break;
+			                }
+			            }
+				}
+			}
 			Integer totalCount = null;
 			String searchCriteria = "";
 			if (filter != null) {
@@ -1024,11 +1039,14 @@ public class StudentManagementImpl implements StudentManagement
 			searchCriteria = searchCriteria + orderByClause;
 			ManageStudent [] students = null;
             
-            students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForScoring(userName, productId, searchCriteria);
-           
+           students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForScoring(userName, productId, searchCriteria);
+           for(ManageStudent student : students) {
+        	   student.setScoringStatus( studentManagement.getScoringStatus(student.getRosterId(), student.getItemSetIdTC()));
+           }
 			
 			std.setManageStudents(students, pageSize);
 			if(filter != null) std.applyFiltering(filter);
+			if(statusFilter != null) std.applyFiltering(statusFilter);
 			if(sort != null) std.applySorting(sort);
 			if(page != null) std.applyPaging(page);
 

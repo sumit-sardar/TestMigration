@@ -90,7 +90,7 @@ public interface StudentManagement extends JdbcControl
      * where
      * 	 stu.student_id = {studentId}::
      */
-    @JdbcControl.SQL(statement = "select  stu.student_id as studentId,  stu.user_Name as userName,  stu.password as password,  stu.first_Name as firstName,  stu.middle_Name as middleName,  stu.last_Name as lastName,  stu.preferred_Name as preferredName,  stu.prefix as prefix,  stu.suffix as suffix,  stu.birthdate as birthdate,  stu.gender as gender,  stu.ethnicity as ethnicity,  stu.email as email,  stu.grade as grade,  stu.ext_Elm_Id as extElmId,  stu.ext_Pin1 as extPin1,  stu.ext_Pin2 as extPin2,  stu.ext_Pin3 as extPin3,  stu.ext_School_Id as extSchoolId,  stu.active_Session as activeSession,  stu.potential_Duplicated_Student as potentialDuplicatedStudent,  stu.created_By as createdBy,  stu.created_Date_Time as createdDateTime,  stu.updated_By as updatedBy,  stu.updated_Date_Time as updatedDateTime,  stu.activation_Status as activationStatus,  stu.data_import_history_id as dataImportHistoryId from  student stu where \t stu.student_id = {studentId}")
+    @JdbcControl.SQL(statement = "select  stu.student_id as studentId,  stu.user_Name as userName,  stu.password as password,  stu.first_Name as firstName,  stu.middle_Name as middleName,  stu.last_Name as lastName,  stu.preferred_Name as preferredName,  stu.prefix as prefix,  stu.suffix as suffix,  stu.birthdate as birthdate,  stu.gender as gender,  stu.ethnicity as ethnicity,  stu.email as email,  stu.grade as grade,  stu.ext_Elm_Id as extElmId,  stu.ext_Pin1 as extPin1,  stu.ext_Pin2 as extPin2,  stu.ext_Pin3 as extPin3,  stu.ext_School_Id as extSchoolId,  stu.active_Session as activeSession,  stu.potential_Duplicated_Student as potentialDuplicatedStudent,  stu.created_By as createdBy,  stu.created_Date_Time as createdDateTime,  stu.updated_By as updatedBy,  stu.updated_Date_Time as updatedDateTime,  stu.activation_Status as activationStatus,  stu.data_import_history_id as dataImportHistoryId from  student stu where \t stu.student_id = {studentId}", arrayMaxLength = 100000)
     Student getStudent(int studentId) throws SQLException;
     
     /**
@@ -113,7 +113,7 @@ public interface StudentManagement extends JdbcControl
      * where
      * 	 stu.student_id = {studentId}::
      */
-    @JdbcControl.SQL(statement = "select  stu.student_id as id,  stu.user_name as loginId,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName, \t  concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.gender as gender,  stu.birthdate as birthDate,  stu.grade as grade,  stu.ext_pin1 as studentIdNumber,  stu.ext_pin2 as studentIdNumber2,  stu.created_by as createdBy from  student stu where \t stu.student_id = {studentId}")
+    @JdbcControl.SQL(statement = "select  stu.student_id as id,  stu.user_name as loginId,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName, \t  concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.gender as gender,  stu.birthdate as birthDate,  stu.grade as grade,  stu.ext_pin1 as studentIdNumber,  stu.ext_pin2 as studentIdNumber2,  stu.created_by as createdBy from  student stu where \t stu.student_id = {studentId}", arrayMaxLength = 100000)
     ManageStudent getManageStudent(int studentId) throws SQLException;
     
 
@@ -129,7 +129,7 @@ public interface StudentManagement extends JdbcControl
      * from customer_configuration
      * where customer_id = {customerId}::
      */
-    @JdbcControl.SQL(statement = "select  customer_configuration_id as id,  customer_configuration_name as customerConfigurationName,  customer_id as customerId,  editable as editable,  default_value as defaultValue from customer_configuration where customer_id = {customerId}")
+    @JdbcControl.SQL(statement = "select  customer_configuration_id as id,  customer_configuration_name as customerConfigurationName,  customer_id as customerId,  editable as editable,  default_value as defaultValue from customer_configuration where customer_id = {customerId}", arrayMaxLength = 100000)
     CustomerConfiguration [] getCustomerConfigurations(int customerId) throws SQLException;
 
     /**
@@ -143,7 +143,7 @@ public interface StudentManagement extends JdbcControl
      * order by sort_order, customer_configuration_value
      * ::
      */
-    @JdbcControl.SQL(statement = "select  customer_configuration_value as customerConfigurationValue,  customer_configuration_id as customerConfigurationId,  sort_order sortOrder from customer_configuration_value where customer_configuration_id = {customerConfigurationId} order by sort_order, customer_configuration_value")
+    @JdbcControl.SQL(statement = "select  customer_configuration_value as customerConfigurationValue,  customer_configuration_id as customerConfigurationId,  sort_order sortOrder from customer_configuration_value where customer_configuration_id = {customerConfigurationId} order by sort_order, customer_configuration_value", arrayMaxLength = 100000)
     CustomerConfigurationValue [] getCustomerConfigurationValues(int customerConfigurationId) throws SQLException;
 
     /**
@@ -1038,5 +1038,9 @@ public interface StudentManagement extends JdbcControl
      
      @JdbcControl.SQL(statement = "select constructed_response as constructedResponse from item_response_cr where test_roster_id = {testRosterId} and item_id = {itemId}")
      ItemResponseData getCrResponse(int testRosterId, String itemId) throws SQLException;
+     
+     
+     @JdbcControl.SQL(statement = "select decode(count(irp.item_response_id) , 0 , 'IN' ,'CO' ) from item_response_points irp ,((select max(irs.item_response_id) as   item_response_id from student_item_set_status siss,item_set_ancestor ita ,item_response  irs ,item_set_item iti , item it where siss.test_roster_id = {rosterId} and ita.ancestor_item_set_id = {itemSetIDTC}  and ita.item_set_type='TD' and siss.item_set_id=ita.item_set_id and irs.test_roster_id = siss.test_roster_id and irs.item_set_id=ita.item_set_id and iti.item_set_id=ita.item_set_id and ((upper(it.item_type) = 'CR' and (it.answer_area is null or upper(it.answer_area) = upper('AudioItem')))) and  it.item_id=iti.item_id group by irs.test_roster_id ,irs.item_set_id,irs.item_id ,irs.item_response_id))  itemResponseDetails where irp.item_response_id(+) = itemResponseDetails.item_response_id and  irp.item_response_id is  null ")
+     String getScoringStatus(Integer rosterId, Integer itemSetIDTC) throws SQLException;
 	
 }
