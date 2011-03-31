@@ -72,7 +72,7 @@ public class StudentScoringController extends PageFlowController {
 	private static final String ACTION_APPLY_SEARCH   = "applySearch";
 	private static final String ACTION_CLEAR_SEARCH   = "clearSearch";
 	private static final String ACTION_DISPLAY_ITEMLIST   = "displayItemList";
-	
+	private static final String ACTION_CURRENT_ELEMENT   = "{actionForm.currentAction}";
 	private boolean searchApplied = false;
 	
 	private User user = null;
@@ -98,6 +98,7 @@ public class StudentScoringController extends PageFlowController {
     private Integer testAdminId = null;
 	
 	private StudentScoringForm savedForm = null;
+	private StudentProfileInformation studentSearch = null;
 	
 	// customer configuration
 	CustomerConfiguration[] customerConfigurations = null;
@@ -187,7 +188,8 @@ public class StudentScoringController extends PageFlowController {
 		this.searchApplied = false;
 		if ((msData != null) && (msData.getFilteredCount().intValue() > 0))
 		{
-			this.searchApplied = true;        
+			this.searchApplied = true;
+			
 			List studentList = StudentSearchUtils.buildStudentList(msData);
 			System.out.println("form.getStudentPageRequested()==>"+form.getStudentPageRequested());
 			PagerSummary studentPagerSummary = StudentSearchUtils.buildStudentPagerSummary(msData, form.getStudentPageRequested());        
@@ -196,16 +198,17 @@ public class StudentScoringController extends PageFlowController {
 			this.getRequest().setAttribute("studentList", studentList);        
 			this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
 		}
-
-		form.setCurrentAction(ACTION_DEFAULT);
+		
 		this.getRequest().setAttribute("isFindStudent", Boolean.TRUE);
 		
 		this.pageTitle  = "Scoring: Find Student";
 		
 		customerHasBulkAccommodation();
-		
+		this.savedForm = form.createClone();    
+		form.setCurrentAction(ACTION_DEFAULT);     
+		//this.studentSearch = form.getStudentProfile().createClone();    
 		//setFormInfoOnRequest(form);
-		return new Forward("success");
+		return new Forward("success",form);
 	}
 	
 	
@@ -223,24 +226,28 @@ public class StudentScoringController extends PageFlowController {
 	{ 
 			form.validateValues();
 			System.out.println(form.getActionElement());
+			String currentAction = form.getCurrentAction();
+			String actionElement = form.getActionElement();
+			
+			 if(actionElement.equals(ACTION_DEFAULT))
+			 {
+				 form.setRosterId(Integer.valueOf(this.getRequest().getParameter("rosterId")));
+				 form.setItemSetIdTC(Integer.valueOf(this.getRequest().getParameter("itemSetIdTC")));
+				 form.setAccessCode(this.getRequest().getParameter("accessCode"));
+				 form.setUserName(this.getRequest().getParameter("userName"));
+				 form.setTestAdminId(Integer.valueOf(this.getRequest().getParameter("testAdminId")));
+			 }
 			if(form.getActionElement().equals(ACTION_DEFAULT)) {
 				form.setActionElement(ACTION_DISPLAY_ITEMLIST);
 				form.setCurrentAction(ACTION_DISPLAY_ITEMLIST);
 			}
 			
-			String currentAction = form.getCurrentAction();
-			String actionElement = form.getActionElement();
+			currentAction = form.getCurrentAction();
+			actionElement = form.getActionElement();
 			
 			
 		// System.out.println("form data:" +  form.getStudentPageRequested());
-		 if(actionElement.equals(ACTION_DISPLAY_ITEMLIST))
-		 {
-		 this.setRosterId(Integer.valueOf(this.getRequest().getParameter("rosterId")));
-		 this.setItemSetIdTC(Integer.valueOf(this.getRequest().getParameter("itemSetIdTC")));
-		 this.setAccessCode(this.getRequest().getParameter("accessCode"));
-		 this.setStuUserName(this.getRequest().getParameter("userName"));
-		 this.setTestAdminId(Integer.valueOf(this.getRequest().getParameter("testAdminId")));
-		 }
+		
 		 
 		 PageParams page =  FilterSortPageUtils.buildPageParams(form.getItemPageRequested(), FilterSortPageUtils.PAGESIZE_10);
 		 SortParams sort = FilterSortPageUtils.buildItemSortParams(form.getItemSortColumn(), form.getItemSortOrderBy());
@@ -250,7 +257,7 @@ public class StudentScoringController extends PageFlowController {
          PagerSummary itemPagerSummary = buildItemPagerSummary(sid, form.getItemPageRequested()); 
          form.setItemMaxPage(sid.getFilteredPages());
          try{
-    		 TestSession testSession = scoring.getTestAdminDetails(this.getTestAdminId());
+    		 TestSession testSession = scoring.getTestAdminDetails(form.getTestAdminId());
     		 this.getRequest().setAttribute("testSessionName", testSession.getTestAdminName());
     	}catch(Exception e){
     			 e.printStackTrace();
@@ -258,14 +265,52 @@ public class StudentScoringController extends PageFlowController {
         
          this.getRequest().setAttribute("itemList", itemList);
          this.getRequest().setAttribute("itemPagerSummary", itemPagerSummary);
-         this.getRequest().setAttribute("accessCode", this.getAccessCode());
-         this.getRequest().setAttribute("userName", this.getStuUserName());
+         this.getRequest().setAttribute("accessCode", form.getAccessCode());
+         this.getRequest().setAttribute("userName", form.getUserName());
          if(itemList.isEmpty())
          {	
         	 this.getRequest().setAttribute("itemSearchResultEmpty", MessageResourceBundle.getMessage("itemSearchResultEmpty"));        
         	 return new Forward("success");
          }
-       return new Forward("success");
+       return new Forward("success",form);
+	}
+	
+	
+	
+	/**
+	 * @jpf:action
+	 * @jpf:forward name="success" path="findStudent.do"
+	 */
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "findStudent.do")
+	})
+	protected Forward returnToFindStudent(StudentScoringForm form)
+	{   
+		
+		String grade = (this.savedForm.getStudentProfile() != null) ? this.savedForm.getStudentProfile().getGrade() : null;
+		String gender = (this.savedForm.getStudentProfile() != null) ? this.savedForm.getStudentProfile().getGender() : null;
+		String scoringStatus = (this.savedForm.getStudentProfile() != null) ? this.savedForm.getStudentProfile().getScoringStatus() : null;
+		String testName = (this.savedForm.getStudentProfile() != null) ? this.savedForm.getStudentProfile().getProductNameList() : null;
+
+		initGradeGenderStatusTestNameOptions(ACTION_FIND_STUDENT, this.savedForm, grade, gender,scoringStatus,testName);
+
+		
+		//setFormInfoOnRequest(this.savedForm);
+		return new Forward("success", this.savedForm);
+	}
+
+	
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "/itemPlayer/ItemPlayerController.jpf")
+	})
+	protected Forward viewQuestionWindow()
+	{      
+		String param = getRequest().getParameter("param");
+		getSession().setAttribute("param", param);
+
+		return new Forward("success");
 	}
 	
 	
@@ -420,7 +465,7 @@ public class StudentScoringController extends PageFlowController {
 		            tps = this.testProductData.getTestProducts();
 		            
 		            if (testNameOption == null)
-	                    testNameOption = createProductNameList(tps); 
+	                    testNameOption = createProductNameList(action,tps); 
 	    
 				
 		}
@@ -453,11 +498,13 @@ public class StudentScoringController extends PageFlowController {
 	/**
 	 * createProductNameList
 	 */
-		 private List createProductNameList(TestProduct [] tps)
+		 private List createProductNameList(String action,TestProduct [] tps)
 		    {
 		        List result = new ArrayList();   
 		        this.productNameToIndexHash = new Hashtable();
 		        this.productIdToProductName = new Hashtable();
+		    	if ( action.equals(ACTION_FIND_STUDENT) )
+		        result.add(FilterSortPageUtils.FILTERTYPE_ANY_TESTNAME);
 		        for (int i=0; i< tps.length; i++) {
 		            String productName = tps[i].getProductName();
 		            Integer productId   = tps[i].getProductId();
@@ -514,10 +561,14 @@ public class StudentScoringController extends PageFlowController {
 			form.getStudentProfile().setGrade(this.gradeOptions[0]);
 		
 		this.testNameOptions = getTestNameOptions(action);
-		if (testName != null)
+		if (testName != null){
+			System.out.println(testName+"..."+action);
 			form.getStudentProfile().setProductNameList(testName);
-		else
+		}
+		else {
+			System.out.println(action+"..."+this.testNameOptions[0]);
 			form.getStudentProfile().setProductNameList(this.testNameOptions[0]);
+		}
 
 		this.genderOptions = getGenderOptions( action );
 		if (gender != null)
@@ -674,17 +725,17 @@ public class StudentScoringController extends PageFlowController {
 			else
 				gender = "U";
 		}
-		if (! gender.equals(FilterSortPageUtils.FILTERTYPE_ANY_SCORING_STATUS))
+		if (! scoringStatus.equals(FilterSortPageUtils.FILTERTYPE_ANY_SCORING_STATUS))
 		{
 			if(scoringStatus.equals("Complete"))
-				scoringStatus = "C";
+				scoringStatus = "CO";
 			else if(scoringStatus.equals("InComplete"))
-				scoringStatus = "I";
+				scoringStatus = "IN";
 			
 		}
 		if (productName.equals(FilterSortPageUtils.FILTERTYPE_ANY_TESTNAME))
 		{
-			String requiredFields = "";
+			String requiredFields = "Test Name, ";
 			 requiredFields += (Message.REQUIRED_TEXT);
 			 form.setMessage("Missing required field", requiredFields, Message.ERROR);
 			this.getRequest().setAttribute("pageMessage", form.getMessage());
@@ -699,11 +750,12 @@ public class StudentScoringController extends PageFlowController {
 			invalidCharFields += ("<br/>" +
 					Message.INVALID_CHARS);
 			form.setMessage(MessageResourceBundle.getMessage("invalid_char_message"), invalidCharFields, Message.ERROR);
+			this.getRequest().setAttribute("pageMessage", form.getMessage());
 			return null;
 		}
 
 
-		PageParams page = FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+		PageParams page = FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_5);
 		SortParams sort = FilterSortPageUtils.buildStudentSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
 	 	 
 	    
@@ -826,6 +878,23 @@ public class StudentScoringController extends PageFlowController {
 			
 		}
 		
+		public StudentScoringForm createClone()
+		{
+			StudentScoringForm copied = new StudentScoringForm();
+
+			copied.setActionElement(this.actionElement);
+			copied.setCurrentAction(this.currentAction);
+			
+
+			copied.setStudentSortColumn(this.studentSortColumn);
+			copied.setStudentSortOrderBy(this.studentSortOrderBy);
+			copied.setStudentPageRequested(this.studentPageRequested);      
+			copied.setStudentMaxPage(this.studentMaxPage);
+
+			copied.setStudentProfile(this.studentProfile);
+
+			return copied;                    
+		} 
 		
 		public void setActionElement(String actionElement)
 		{

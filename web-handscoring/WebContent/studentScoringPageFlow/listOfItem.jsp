@@ -32,6 +32,11 @@
 <netui:form action="beginDisplayStudItemList">
 <netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/> 
 <netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
+<netui:hidden tagId="accessCode" dataSource="actionForm.accessCode"/>
+<netui:hidden tagId="userName" dataSource="actionForm.userName"/>
+<netui:hidden tagId="testAdminId" dataSource="actionForm.testAdminId"/>
+<netui:hidden tagId="rosterId" dataSource="actionForm.rosterId"/>
+<netui:hidden tagId="itemSetIdTC" dataSource="actionForm.itemSetIdTC"/>
 <netui:hidden  dataSource="actionForm.itemMaxPage"/> 
 <h2><netui:content value="${bundle.web['individualStudentScoring.StudentDetails.title']}"/></h2>
 <table class="transparent" width="100%">
@@ -102,7 +107,10 @@
             <netui:span value="${container.item.itemSetName}"/>
         </td>
         <td class="sortable">
-            <netui:button type="button" value="View Question" />           
+           	<netui-data:getData resultId="itemNumber" value="${container.item.itemSetOrder}"/>  
+           		<%Integer itemNumber = (Integer)pageContext.getAttribute("itemNumber"); %>
+             <input name="ViewQuestion" type="submit" value="View Question" onclick="openViewQuestionWindow(<%=itemNumber%>); return true;"/>
+                      
         </td>
          <td class="sortable">
           <netui-data:getData resultId="itemtype" value="${container.item.itemType}"/> 
@@ -151,6 +159,12 @@
           <netui:content value="${requestScope.itemSearchResultEmpty}"/>
     </ctb:message>
 </c:if>
+
+<!-- buttons -->
+<p>
+  
+    <netui:button type="submit" value="Back" action="returnToFindStudent"/>
+</p>
 </netui:form>
 <!-- ********************************************************************************************************************* -->
 <!-- End Page Content -->

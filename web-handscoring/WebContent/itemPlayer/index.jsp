@@ -44,9 +44,9 @@ function updateLDB()
 <%
     String eliminatorResource = "eliminator.swf";
 	String itemNumber = request.getParameter("itemNumber");
-	//System.out.println("itemNumber==>"+itemNumber);
+	System.out.println("itemNumber==>"+itemNumber);
     String url = request.getRequestURL().toString().trim();
-    //System.out.println("url==>"+url);
+    System.out.println("url==>"+url);
     int lastSlash = url.lastIndexOf("/");
     url = url.substring(0,lastSlash).trim().replaceAll("https:","http:").replaceAll(":443",":80");
     System.out.println("URL: " + url);
@@ -60,12 +60,8 @@ function updateLDB()
     <SCRIPT>
 		//This method will include the required SWF file in the html page. The function exists in the embed.js file
         
-	//	lzEmbed({url: 'ItemViewer.lzx.swf?lzt=swf&servletUrl=https://oasdev.ctb.com/StudentManagementWeb/previewer&eliminatorResource=<%=eliminatorResource%>&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('includes/h.html?h='), bgcolor: '#6691B4"',  width: '100%', height: '100%'});
-    //  lzEmbed({url: 'ItemViewer.lzx.swf?lzt=swf&servletUrl=http://oastest1.ctb.com/StudentManagementWeb/previewer&eliminatorResource=<%=eliminatorResource%>&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('includes/h.html?h='), bgcolor: '#6691B4"',  width: '100%', height: '100%'});
-     // lzEmbed({url: 'ItemViewer.lzx.swf?lzt=swf&servletUrl=http://127.0.0.1:7001/StudentManagementWeb/previewer&eliminatorResource=<%=eliminatorResource%>&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('includes/h.html?h='), bgcolor: '#6691B4"',  width: '100%', height: '100%'});
-        lzEmbed({url: 'ItemViewer.lzx.swf?lzt=swf&itemNum=<%=itemNumber%>&servletUrl=<%=url%>&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('includes/h.html?h='), bgcolor: '#6691B4"',  width: '100%', height: '100%'});
-        //lzEmbed({url: 'ItemViewer.lzx?lzt=swf&servletUrl=StudentManagementWeb/previewer&eliminatorResource=<%=eliminatorResource%>&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('includes/h.html?h='), bgcolor: '#6691B4"',  width: '100%', height: '100%'});
-		lzHistEmbed('includes');
+	   lzEmbed({url: 'ItemViewer.lzx.swf?lzt=swf&itemNum=<%=itemNumber%>&servletUrl=<%=url%>&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('includes/h.html?h='), bgcolor: '#6691B4"',  width: '100%', height: '100%'});
+        lzHistEmbed('includes');
 	</SCRIPT>
 </BODY>
 </HTML>

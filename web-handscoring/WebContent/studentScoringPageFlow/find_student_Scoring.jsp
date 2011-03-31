@@ -31,7 +31,7 @@ template_find_student.jsp
     
     <p>
         <netui:content value="To see a list of all students, click Search. To find specific students, enter the known information on which to search."/><br/>
-        <netui:content value="If you know the student's organization assignment, use the Organization tab to locate him or her."/> 
+        
     </p>
 
 

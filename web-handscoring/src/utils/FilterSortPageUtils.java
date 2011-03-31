@@ -398,7 +398,7 @@ public class FilterSortPageUtils
 	}
 	
 	if ((scoringStatus!= null) && (scoringStatus.length() > 0) && (!scoringStatus.equalsIgnoreCase(FILTERTYPE_ANY_SCORING_STATUS))) {
-		fp = buildFilterParamSingleValue("scoringStatus", scoringStatus, FilterType.EQUALS);
+		fp = buildFilterParamSingleValue("ScoringStatus", scoringStatus, FilterType.EQUALS);
 		if (fp != null)
 		filters.add(fp);
 		}

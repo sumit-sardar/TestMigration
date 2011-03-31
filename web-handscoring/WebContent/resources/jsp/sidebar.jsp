@@ -14,8 +14,8 @@
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator">
     <h1>Tests</h1>
     <ul>
-        <li><a href="/TestAdministrationWeb/scheduleTestPageflow/ScheduleTestController.jpf"><span>Schedule Test Session</span></a></li>
-        <li><a href="/TestSessionInfoWeb/viewtestsessions/ViewTestSessionsController.jpf"><span>Find Test Session</span></a></li>
+        <li><a href="/TestAdministrationWeb/scheduleTestPageflow/ScheduleTestController.jpf" onclick="return verifyExitScoringStudent();"><span>Schedule Test Session</span></a></li>
+        <li><a href="/TestSessionInfoWeb/viewtestsessions/ViewTestSessionsController.jpf" onclick="return verifyExitScoringStudent();"><span>Find Test Session</span></a></li>
     </ul>
 </ctb:auth>
 
@@ -24,12 +24,12 @@
 <h1>Students</h1>
 <ul>
 <ctb:auth roles="Administrator, Administrative Coordinator">
-    <li><a href="/StudentManagementWeb/manageStudent/beginAddStudent.do" onclick="return verifyExitScheduleTest();"><span>Add Student</span></a></li>
+    <li><a href="/StudentManagementWeb/manageStudent/beginAddStudent.do" onclick="return verifyExitScoringStudent();"><span>Add Student</span></a></li>
 </ctb:auth>
-    <li><a href="/StudentManagementWeb/manageStudent/beginFindStudent.do" onclick="return verifyExitScheduleTest();"><span>Find Student</span></a></li>
+    <li><a href="/StudentManagementWeb/manageStudent/beginFindStudent.do" onclick="return verifyExitScoringStudent();"><span>Find Student</span></a></li>
 <ctb:auth roles="Administrator, Administrative Coordinator">
 	<c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
-		<li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Accommodations</span></a></li>
+		<li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" onclick="return verifyExitScoringStudent();"><span>Edit Accommodations</span></a></li>
 	</c:if>
 </ctb:auth>      
 </ul>
@@ -39,8 +39,8 @@
 <ctb:auth roles="root, Account Manager, Administrator">
 <h1>Users</h1>
 <ul>
-    <li><a href="/UserManagementWeb/manageUser/beginAddUser.do" onclick="return verifyExitScheduleTest();"><span>Add User</span></a></li>
-    <li><a href="/UserManagementWeb/manageUser/beginFindUser.do" onclick="return verifyExitScheduleTest();"><span>Find User</span></a></li>
+    <li><a href="/UserManagementWeb/manageUser/beginAddUser.do" onclick="return verifyExitScoringStudent();"><span>Add User</span></a></li>
+    <li><a href="/UserManagementWeb/manageUser/beginFindUser.do" onclick="return verifyExitScoringStudent();"><span>Find User</span></a></li>
 </ul>
 </ctb:auth>
 
@@ -48,8 +48,8 @@
 <ctb:auth roles="root, Account Manager, Administrator">
 <h1>Organizations</h1>
 <ul>
-    <li><a href="/OrganizationManagementWeb/manageOrganization/beginAddOrganization.do" onclick="return verifyExitScheduleTest();"><span>Add Organization</span></a></li>
-    <li><a href="/OrganizationManagementWeb/manageOrganization/beginFindOrganization.do" onclick="return verifyExitScheduleTest();"><span>Find Organization</span></a></li>
+    <li><a href="/OrganizationManagementWeb/manageOrganization/beginAddOrganization.do" onclick="return verifyExitScoringStudent();"><span>Add Organization</span></a></li>
+    <li><a href="/OrganizationManagementWeb/manageOrganization/beginFindOrganization.do" onclick="return verifyExitScoringStudent();"><span>Find Organization</span></a></li>
 </ul>
 </ctb:auth>
 
@@ -66,22 +66,22 @@
 <ctb:auth roles="root, Account Manager">
 <h1>Tests</h1>
 <ul>
-    <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf" onclick="return verifyExitScheduleTest();"><span>Reset Test Session</span></a></li>
+    <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf" onclick="return verifyExitScoringStudent();"><span>Reset Test Session</span></a></li>
 </ul>
 </ctb:auth>
 
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
 <h1>Score</h1>
 <ul>
-   <li><a href="/HandScoringWeb/studentScoringPageFlow/beginIndivStudentScoring.do" onclick=""><span>Student Scoring</span></a></li>
+   <li><span class="navleft-unclickable">Student Scoring</span></li>
 </ul>
 </ctb:auth>
 
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
 <h1>Workstation Setup</h1>
 <ul>
-    <li><a href="/TestSessionInfoWeb/downloadclient/DownloadClientController.jpf" onclick="return verifyExitScheduleTest();"><span>Install Software</span></a></li>
-    <li><a href="/TestSessionInfoWeb/downloadtest/DownloadTestController.jpf" onclick="return verifyExitScheduleTest();"><span>Download Test</span></a></li>
+    <li><a href="/TestSessionInfoWeb/downloadclient/DownloadClientController.jpf" onclick="return verifyExitScoringStudent();"><span>Install Software</span></a></li>
+    <li><a href="/TestSessionInfoWeb/downloadtest/DownloadTestController.jpf" onclick="return verifyExitScoringStudent();"><span>Download Test</span></a></li>
 </ul>
 </ctb:auth>
 

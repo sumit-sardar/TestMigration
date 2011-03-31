@@ -31,7 +31,7 @@
 <tr><td id="legacyBody">
 
 
-<netui:form action="colorFontPreview">
+<netui:form action="ViewQuestion">
 
 <input type="hidden" name="itemNumber" id="itemNumber" value="<%=itemNumber%>">
 

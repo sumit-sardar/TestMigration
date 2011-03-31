@@ -109,10 +109,8 @@ public class StudentProfileInformation extends SanitizedFormField
         this.productNameList = student.getProductNameList();
         if (this.grade == null) this.grade = "";
         if (this.productNameList == null) this.productNameList = "";
-        //GACR005  For Defect # 65786
         this.studentNumber = student.getStudentIdNumber()!= null ? student.getStudentIdNumber().trim() : "";
         this.studentSecondNumber = student.getStudentIdNumber2() != null ? student.getStudentIdNumber2().trim() : "";
-        //GACR005   For Defect # 65786
         this.birthdate = student.getBirthDate(); 
         if (this.birthdate != null) {
             this.birthdateString = DateUtils.formatDateToDateString(this.birthdate, DateUtils.DATE_FORMAT_CHAR);     
@@ -134,7 +132,6 @@ public class StudentProfileInformation extends SanitizedFormField
 
     public StudentProfileInformation createClone() {
         StudentProfileInformation copied = new StudentProfileInformation();
-        
         copied.setStudentId(this.studentId);
         copied.setUserName(this.userName);
         copied.setFirstName(this.firstName);
@@ -146,7 +143,14 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setStudentNumber(this.studentNumber);
         copied.setStudentSecondNumber(this.studentSecondNumber);
         copied.setBirthdate(this.birthdate);
+        copied.setTestSessionName(this.testSessionName);
         copied.setOrganizationNodes(this.organizationNodes);
+        copied.setRosterId(this.rosterId);
+        copied.setItemSetIdTC(this.itemSetIdTC);
+        copied.setAccessCode(this.accessCode);
+        copied.setTestAdminId(this.testAdminId);
+        
+        
         
         return copied;       
     }
@@ -162,7 +166,6 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setGrade(this.grade);
         copied.setStudentIdNumber(this.studentNumber.trim());
         copied.setStudentIdNumber2(this.studentSecondNumber.trim());
-        //GACRCT2010CR007 - changed for creating date when supplied.
         Date date = null;
         
         if (DateUtils.allSelected(month, day, year)) 

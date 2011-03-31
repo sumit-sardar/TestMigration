@@ -52,7 +52,7 @@ public class ItemPlayerController extends PageFlowController {
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
-                     path = "colorFontPreview.do")
+                     path = "ViewQuestion.do")
     })
     protected Forward begin()
     {
@@ -61,13 +61,13 @@ public class ItemPlayerController extends PageFlowController {
 
     /**
      * @jpf:action
-     * @jpf:forward name="success" return-action="colorFontPreviewDone"
+     * @jpf:forward name="success" return-action="ViewQuestionDone"
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
-                     returnAction = "colorFontPreviewDone")
+                     returnAction = "ViewQuestionDone")
     })
-    protected Forward colorFontPreviewDone()
+    protected Forward ViewQuestionDone()
     {      
         return new Forward("success");
     }
@@ -80,22 +80,22 @@ public class ItemPlayerController extends PageFlowController {
         @Jpf.Forward(name = "success",
                      path = "color_font_preview.jsp")
     })
-    protected Forward colorFontPreview()
+    protected Forward ViewQuestion()
     {      
         String value = null;
         String param = (String)getSession().getAttribute("param");
-        
+        System.out.println("param"+param);
         if (param != null) {
         	
             StringTokenizer tn = new StringTokenizer(param, ",");
-            this.itemNumber = null;
+           this.itemNumber = param;
           //  int count = tn.countTokens();  
            // this.itemNumber = tn.nextToken();
             if ((this.itemNumber == null)) {           
                 this.itemNumber = "1";               
             }
             this.getRequest().setAttribute("itemNumber", this.itemNumber);  
-            System.out.println("colorFrontPreview " + this.itemNumber);
+            System.out.println("ViewQuestion " + this.itemNumber);
         }
        
         return new Forward("success");
@@ -110,11 +110,9 @@ public class ItemPlayerController extends PageFlowController {
      * @jpf:forward name="item3" path="item3.jsp"
      */
     @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "subtest",
-                     path = "subtest.jsp"), 
-			@Jpf.Forward(name = "item1", path = "item1.jsp"), 
-			@Jpf.Forward(name = "item2", path = "item2.jsp"), 
-			@Jpf.Forward(name = "item3", path = "item3.jsp")
+    		@Jpf.Forward(name = "item1", path = "item1.jsp"), 
+			@Jpf.Forward(name = "item2", path = "item2.jsp") 
+			
 		}
 	)
     protected Forward ContentServlet()
@@ -126,7 +124,7 @@ public class ItemPlayerController extends PageFlowController {
         String method = getRequest().getParameter("method");
         String inxml = getRequest().getParameter("requestXML");
         String itemId = getRequest().getParameter("itemNum");
-System.out.println("Content servlet - " + method + "  " + itemId);
+        System.out.println("Content servlet - " + method + "  " + itemId);
         try{
         
             if (method.equals("downloadItem"))
@@ -136,20 +134,21 @@ System.out.println("Content servlet - " + method + "  " + itemId);
                 return new Forward("subtest"); 
             else 
             if (method.equals("getItem")) {        
-            System.out.println("getItem called");
-            	if(itemId.equals("1"))
+          
+            
+            int inum = Integer.parseInt(itemId);
+            System.out.println("getItem called"+inum);
+            	if((inum%2) == 0)
             		 return new Forward("item1"); 
-               /* if (inxml.indexOf("itemid=\"1\"") > 0)
-                    return new Forward("item1"); 
-                if (inxml.indexOf("itemid=\"2\"") > 0)
-                    return new Forward("item2"); 
-                if (inxml.indexOf("itemid=\"3\"") > 0)
-                    return new Forward("item3");  */
+            	else{
+            		 return new Forward("item2"); 
+            	}
+              
                                  
             }
             else 
             if (method.equals("getImage")) 
-                return getImage(inxml);
+                return getImage(itemId);
             else
                 result = ERROR;  
                       
@@ -173,7 +172,13 @@ System.out.println("Content servlet - " + method + "  " + itemId);
         try
         {
            String imageId = "1";
-            if (inxml.indexOf("imageid=\"snacks_10rSB.swf\"") > 0)
+           if(inxml.equals("5"))
+        	   imageId = "snacks_10rSB.swf";
+             else{
+            	 imageId = "2.4.1.02A_09mOAS.swf";
+             }
+        
+           /* if (inxml.indexOf("imageid=\"snacks_10rSB.swf\"") > 0)
                 imageId = "snacks_10rSB.swf";
             if (inxml.indexOf("imageid=\"2.4.1.02A_09mOAS.swf\"") > 0)
                 imageId = "2.4.1.02A_09mOAS.swf";
@@ -185,8 +190,9 @@ System.out.println("Content servlet - " + method + "  " + itemId);
                 imageId = "2.4.1.02D_09mOAS.swf";
                       
             getRequest().setAttribute( "imageType", "application/x-shockwave-flash" );
-            
+            */
             String filePath = "/images/" + imageId ;
+            System.out.println("filePath==>"+filePath);
                      
             BufferedInputStream bis = new BufferedInputStream( this.getClass().getResourceAsStream(filePath));
                         

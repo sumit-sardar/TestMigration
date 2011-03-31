@@ -83,6 +83,11 @@ function verifyExitScheduleTest(){
     return confirm("Click 'OK' to quit scheduling this test session. Any changes you've made will be lost.");
 }
 
+
+function verifyExitScoringStudent(){
+    return confirm("Click 'OK' to quit Manual Scoring for Student. Any changes you've made will be lost.");
+}
+
 function verifyExitEditTest(){
     return confirm("Click 'OK' to quit editing this test session. Any changes you've made will be lost.");
 }
@@ -177,27 +182,28 @@ function disableRemoveStudentButton()
 }
 var colorPreviewWindow = null;
 
-function openColorPreviewWindow()
+function openViewQuestionWindow(itemNumber)
 {
-alert("hiiiiiiiiiiiii");
+//alert("hiiiiiiiiiiiii"+itemNumber);
 	var param = "?param=";
+	param = param + itemNumber ;
 	/*var srcCtrl = document.getElementById("question_bgrdColor");
 	var index = srcCtrl.selectedIndex;
 	param = param + srcCtrl.options[index].text + ",";*/
 	
 
-   	var location = "colorFontPreview.do" + param;
+   	var location = "viewQuestionWindow.do" + param;
     
-	var windowName = "colorPreviewWindow"; 
-    colorPreviewWindow = window.open(location, windowName,'toolbar=no,location=no,directories=no,status=yes,scrollbars=yes,menubar=no,resizable=yes,width=850, height=600');
-    colorPreviewWindow.focus();
+	var windowName = "ViewQuestionWindow"; 
+    ViewQuestionWindow = window.open(location, windowName,'toolbar=no,location=no,directories=no,status=yes,scrollbars=yes,menubar=no,resizable=yes,width=850, height=600');
+    ViewQuestionWindow.focus();
     
     return false;
 }
 
-function closeColorPreviewWindow()
+function closeViewQuestionWindow()
 {
-    if (colorPreviewWindow != null)
-        colorPreviewWindow.close();
+    if (ViewQuestionWindow != null)
+        ViewQuestionWindow.close();
 }
 

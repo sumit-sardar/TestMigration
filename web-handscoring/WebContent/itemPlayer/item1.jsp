@@ -1,36 +1,46 @@
 <%@ page contentType="text/xml"%>
-<element_package iid="8L.1.2.2.17" security_classification_id="alg112">
-<item_canvas id="IC">
-<panel left_padding="12" stereotype="stem" id="stem1" height="120"
-	layout="vertical" spacing="12" x="0" width="780" y="79">
-<text_widget halign="left" width="751" id="widget1000"><![CDATA[Read the sentences.]]></text_widget>
-<text_widget halign="left" width="751" id="widget1001"><![CDATA[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The shopper had plenty of money.<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;He refused to buy expensive products.]]></text_widget>
-<text_widget halign="left" width="751" id="widget1002"><![CDATA[Which of the following best combines the two sentences?]]></text_widget></panel>
-<answer_area_panel id="A1" stereotype="answerArea" layout="vertical"
-	spacing="12" width="768" x="12" height="156" top_padding="12"
-	left_padding="12" y="206">
-<answer_choice_widget spacing="6" layout="horizontal" width="756">
-<selector_widget valign="top" identifier="A" />
-<text_widget halign="left" width="709" id="widget1005"><![CDATA[Refusing to buy expensive products, the shopper had plenty of money.]]></text_widget></answer_choice_widget>
-<answer_choice_widget spacing="6" layout="horizontal" width="756">
-<selector_widget valign="top" identifier="B" />
-<text_widget halign="left" width="709" id="widget1008"><![CDATA[The shopper had plenty of money, he refused to buy expensive products.]]></text_widget></answer_choice_widget>
-<answer_choice_widget spacing="6" layout="horizontal" width="756">
-<selector_widget valign="top" identifier="C" />
-<text_widget halign="left" width="709" id="widget1011"><![CDATA[The shopper had plenty of money, yet he refused to buy expensive products.]]></text_widget></answer_choice_widget>
-<answer_choice_widget spacing="6" layout="horizontal" width="756">
-<selector_widget valign="top" identifier="D" />
-<text_widget halign="left" width="709" id="widget1014"><![CDATA[The shopper had plenty of money, however, he refused to buy expensive products.]]></text_widget></answer_choice_widget></answer_area_panel></item_canvas>
-<item_model iid="8L.1.2.2.17" eid="1" marked="0" answered="0" number="0"
-	type="question" correct="C">
-<toolbar straight_edge="not provisioned"
-	oneeighth_inch_ruler="not provisioned" mm_ruler="not provisioned"
-	formula_card="not provisioned" highlighter="required" eraser="required"
-	cm_ruler="not provisioned" scientific_calculator="not provisioned"
-	standard_calculator="not provisioned" protractor="not provisioned"
-	option_eliminator="required" half_inch_ruler="not provisioned" />
-<interaction type="choice" max_choices="1">
-<selector identifier="A" obj_id_ref="A" user_action="n" />
-<selector identifier="B" obj_id_ref="B" user_action="n" />
-<selector identifier="C" obj_id_ref="C" user_action="n" />
-<selector identifier="D" obj_id_ref="D" user_action="n" /></interaction></item_model> </element_package>
+<element_package iid="DEMO.CR.100" eid="38398102" xslt_ver="145">
+	<item_canvas id="IC">
+		<panel stereotype="directions" id="sd1" left_padding="12"
+			width="790" height="25" layout="vertical" spacing="12" x="0"
+			y="79">
+			<text_widget halign="left" width="761"
+				id="widget1716301000"><![CDATA[<b> Revisit is allowed for this CR item. </b>]]></text_widget>
+		</panel>
+		<panel left_padding="12" stereotype="stem" id="stem1"
+			width="525" layout="vertical" spacing="12" x="0" y="104"
+			height="288">
+			<table halign="left" title="" border="yes" showvlines="yes"
+				showhlines="yes" enlargeable="no" autoenlargeable="yes" height="90"
+				width="105" id="widget1716301001">
+				<row height="30" id="widget1716301002">
+					<cell halign="center" valign="middle" width="75"
+						id="widget1716301003">
+						<text_widget halign="left"
+							alt_text="7 times 4 equals 28." width="75"
+							id="widget1716301004"><![CDATA[7 &#215; 4 = 28]]></text_widget>
+					</cell>
+				</row>
+			</table>
+			<text_widget halign="left" width="496" 
+				id="widget1716301005"><![CDATA[Write a word problem that could be solved using the number sentence shown above.]]></text_widget>
+			<multi_line_answer width="450" height="150" acc_width="675"
+				acc_height="225" char_limit="5000" id="widget1716301006" />
+		</panel>
+	</item_canvas>
+	<item_model type="question" iid="DEMO.CR.100" eid="1"
+		number="0" answered="0" marked="0" correct="" score=""
+		answer_text="">
+		<toolbar straight_edge="not provisioned"
+			mm_ruler="not provisioned" FCAT_formula_card="not provisioned"
+			cm_ruler="not provisioned" scratchpad="not provisioned"
+			scientific_calculator="not provisioned" protractor="not provisioned"
+			half_inch_ruler="not provisioned"
+			oneeighth_inch_ruler="not provisioned" highlighter="required"
+			eraser="required" standard_calculator="not provisioned"
+			TN_formula_card="not provisioned" option_eliminator="required" />
+		<interaction type="text_entry">
+			<text_entry obj_id_ref="obj_con_response" />
+		</interaction>
+	</item_model>
+</element_package>
