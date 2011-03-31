@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Class-Path: APP-INF/lib/weblogic-jdbc-control.jar 
+ application-handscoring1.jar 
+ dep-weblib-webutils.jar 
+ dep-testadmin-ctrl.jar 
+ dep-weblib-taglib.jar 
+ dep-base-ctrl.jar 
+ dep-studentmgmt-ctrl.jar
+

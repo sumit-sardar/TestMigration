@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="web-handscoring">
+        <wb-resource deploy-path="/" source-path="/WebContent"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/build/assembly/.src"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/.apt_src"/>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/dep-base-ctrl/dep-base-ctrl">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/dep-studentmgmt-ctrl/dep-studentmgmt-ctrl">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/dep-weblib-webutils/dep-weblib-webutils">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/dep-weblib-taglib/dep-weblib-taglib">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/dep-testadmin-ctrl/dep-testadmin-ctrl">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="java-output-path" value="build/classes"/>
+        <property name="context-root" value="web-handscoring"/>
+    </wb-module>
+</project-modules>

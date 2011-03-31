@@ -3,6 +3,10 @@
 	<name>web-handscoring</name>
 	<comment></comment>
 	<projects>
+		<project>dep-base-ctrl</project>
+		<project>dep-studentmgmt-ctrl</project>
+		<project>dep-testadmin-ctrl</project>
+		<project>dep-weblib-webutils</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
