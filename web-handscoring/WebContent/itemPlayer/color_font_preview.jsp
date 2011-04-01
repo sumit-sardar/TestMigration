@@ -18,7 +18,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 <head>
-  <title>Color/Font Preview</title>
+  <title>View Question</title>
     <link href="<%=request.getContextPath()%>/resources/css/legacy.css" type="text/css" rel="stylesheet" />
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>

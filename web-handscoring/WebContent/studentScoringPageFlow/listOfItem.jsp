@@ -114,17 +114,29 @@
         </td>
          <td class="sortable">
           <netui-data:getData resultId="itemtype" value="${container.item.itemType}"/> 
+           <netui-data:getData resultId="answered" value="${container.item.answered}"/> 
          	 <c:if test="${itemtype =='AI'}">  
-            <netui:button type="button" value="Audio Response" />  
+         	  <c:if test="${answered == 'NA'}">
+           		 <netui:button type="button" value="Audio Response" disabled="true"/>  
+           	  </c:if>
+           	  <c:if test="${answered == 'A'}">
+           		 <netui:button type="button" value="Audio Response"/>  
+           	  </c:if>
             </c:if>
              <c:if test="${itemtype =='CR'}">  
-            <netui:button type="button" value="Text Response" />   
+             	<c:if test="${answered == 'NA'}">
+           		  <netui:button type="button" value="Text Response" disabled="true"/>  
+           	    </c:if>
+           	    <c:if test="${answered == 'A'}">
+           		  <netui:button type="button" value="Text Response" />  
+           	    </c:if>
+           
             </c:if>     
         </td>
         <td class="sortable">
         <netui-data:getData resultId="isanswered" value="${container.item.answered}"/> 
         	<c:if test="${isanswered =='NA'}">  
-            <netui:span value="NotAnswered"/>
+            <netui:span value="Not Answered"/>
             </c:if>
              <c:if test="${isanswered =='A'}">  
            <netui:span value="Answered"/>

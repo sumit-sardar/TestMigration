@@ -44,6 +44,8 @@ public class TestProduct extends CTBBean
     private String subtestsLevelsVary;
     private String supportPhoneNumber;
     private String offGradeTestingDisabled;
+    private Integer catalogId;
+    private String  testCatalogName;
     
 	//License
     private String productLicenseEnabled;
@@ -458,6 +460,30 @@ public class TestProduct extends CTBBean
 	 */
 	public void setOffGradeTestingDisabled(String offGradeTestingDisabled) {
 		this.offGradeTestingDisabled = offGradeTestingDisabled;
+	}
+	/**
+	 * @return the catalogId
+	 */
+	public Integer getCatalogId() {
+		return catalogId;
+	}
+	/**
+	 * @param catalogId the catalogId to set
+	 */
+	public void setCatalogId(Integer catalogId) {
+		this.catalogId = catalogId;
+	}
+	/**
+	 * @return the testCatalogName
+	 */
+	public String getTestCatalogName() {
+		return testCatalogName;
+	}
+	/**
+	 * @param testCatalogName the testCatalogName to set
+	 */
+	public void setTestCatalogName(String testCatalogName) {
+		this.testCatalogName = testCatalogName;
 	}
     
     

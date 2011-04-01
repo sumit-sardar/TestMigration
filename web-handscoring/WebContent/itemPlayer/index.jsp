@@ -44,24 +44,26 @@ function updateLDB()
 <%
     String eliminatorResource = "eliminator.swf";
 	String itemNumber = request.getParameter("itemNumber");
-	System.out.println("itemNumber==>"+itemNumber);
+	//System.out.println("itemNumber==>"+itemNumber);
     String url = request.getRequestURL().toString().trim();
-    System.out.println("url==>"+url);
+    //System.out.println("url==>"+url);
     int lastSlash = url.lastIndexOf("/");
     url = url.substring(0,lastSlash).trim().replaceAll("https:","http:").replaceAll(":443",":80");
-    System.out.println("URL: " + url);
+   // System.out.println("URL: " + url);
 %>
 
-<!--SA041005 start -->
+
 
 <BODY topmargin=0 leftmargin=0 rightmargin=0 bottommargin=0 scroll=no onload="//loadSubtest('subtest')" bgcolor="#6691B4">
-<!--SA041005 end -->
-	
+<div id="flashcontent">
+</div>
+
     <SCRIPT>
+    
 		//This method will include the required SWF file in the html page. The function exists in the embed.js file
-        
-	   lzEmbed({url: 'ItemViewer.lzx.swf?lzt=swf&itemNum=<%=itemNumber%>&servletUrl=<%=url%>&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('includes/h.html?h='), bgcolor: '#6691B4"',  width: '100%', height: '100%'});
-        lzHistEmbed('includes');
+  
+	  lzEmbed({url: 'ItemViewer.lzx.swf?lzt=swf&itemNum=<%=itemNumber%>&servletUrl=<%=url%>&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('includes/h.html?h='), bgcolor: '#6691B4"',  width: '100%', height: '100%'});
+      lzHistEmbed('includes');
 	</SCRIPT>
 </BODY>
 </HTML>

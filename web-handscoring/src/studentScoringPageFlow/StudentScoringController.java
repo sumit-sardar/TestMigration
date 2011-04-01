@@ -191,7 +191,7 @@ public class StudentScoringController extends PageFlowController {
 			this.searchApplied = true;
 			
 			List studentList = StudentSearchUtils.buildStudentList(msData);
-			System.out.println("form.getStudentPageRequested()==>"+form.getStudentPageRequested());
+			//System.out.println("form.getStudentPageRequested()==>"+form.getStudentPageRequested());
 			PagerSummary studentPagerSummary = StudentSearchUtils.buildStudentPagerSummary(msData, form.getStudentPageRequested());        
 			form.setStudentMaxPage(msData.getFilteredPages());
 			 
@@ -225,10 +225,9 @@ public class StudentScoringController extends PageFlowController {
 			protected Forward beginDisplayStudItemList(StudentScoringForm form)
 	{ 
 			form.validateValues();
-			System.out.println(form.getActionElement());
+			//System.out.println(form.getActionElement());
 			String currentAction = form.getCurrentAction();
 			String actionElement = form.getActionElement();
-			
 			 if(actionElement.equals(ACTION_DEFAULT))
 			 {
 				 form.setRosterId(Integer.valueOf(this.getRequest().getParameter("rosterId")));
@@ -244,6 +243,7 @@ public class StudentScoringController extends PageFlowController {
 			
 			currentAction = form.getCurrentAction();
 			actionElement = form.getActionElement();
+			form.resetValuesForAction(actionElement, ACTION_DISPLAY_ITEMLIST); 
 			
 			
 		// System.out.println("form data:" +  form.getStudentPageRequested());
@@ -458,7 +458,7 @@ public class StudentScoringController extends PageFlowController {
 		        {
 		            if (this.testProductData == null)
 		            { // first time here 
-		                this.testProductData = this.getTestProductDataForUser();
+		                this.testProductData = this.getTestCatalogDataForUser();
 		                
 		                
 		            }
@@ -483,13 +483,16 @@ public class StudentScoringController extends PageFlowController {
 	   
 	
 	/**
-	 * getTestProductDataForUser
+	 * getTestCatalogDataForUser
 	 */
-		 private TestProductData getTestProductDataForUser() throws CTBBusinessException
+		 private TestProductData getTestCatalogDataForUser() throws CTBBusinessException
 		    {
 		        TestProductData tpd = null;                
-		        SortParams sortParams = FilterSortPageUtils.buildSortParams("ProductName", ColumnSortEntry.ASCENDING, null, null);            
-		        tpd = this.scheduleTest.getTestProductsForUser(this.userName,null,null,sortParams);
+		        SortParams sortParams = FilterSortPageUtils.buildSortParams("TestCatalogName", ColumnSortEntry.ASCENDING, null, null);            
+		       // tpd = this.scheduleTest.getTestProductsForUser(this.userName,null,null,sortParams);
+		        tpd = this.scheduleTest.getTestCatalogForUser(this.userName,null,null,sortParams);
+		        
+		        
 		        
 		        return tpd;
 		        
@@ -506,12 +509,12 @@ public class StudentScoringController extends PageFlowController {
 		    	if ( action.equals(ACTION_FIND_STUDENT) )
 		        result.add(FilterSortPageUtils.FILTERTYPE_ANY_TESTNAME);
 		        for (int i=0; i< tps.length; i++) {
-		            String productName = tps[i].getProductName();
-		            Integer productId   = tps[i].getProductId();
-		            productName = JavaScriptSanitizer.sanitizeString(productName);            
-		            result.add(productName);
-		            this.productNameToIndexHash.put(productName, new Integer(i));
-		            this.productIdToProductName.put(productName, productId);
+		            String catalogName = tps[i].getTestCatalogName();
+		            Integer catalogId   = tps[i].getCatalogId();
+		            catalogName = JavaScriptSanitizer.sanitizeString(catalogName);            
+		            result.add(catalogName);
+		            this.productNameToIndexHash.put(catalogName, new Integer(i));
+		            this.productIdToProductName.put(catalogName, catalogId);
 		        }
 		        
 		        return result;
@@ -562,11 +565,11 @@ public class StudentScoringController extends PageFlowController {
 		
 		this.testNameOptions = getTestNameOptions(action);
 		if (testName != null){
-			System.out.println(testName+"..."+action);
+			//System.out.println(testName+"..."+action);
 			form.getStudentProfile().setProductNameList(testName);
 		}
 		else {
-			System.out.println(action+"..."+this.testNameOptions[0]);
+			//System.out.println(action+"..."+this.testNameOptions[0]);
 			form.getStudentProfile().setProductNameList(this.testNameOptions[0]);
 		}
 
@@ -755,7 +758,7 @@ public class StudentScoringController extends PageFlowController {
 		}
 
 
-		PageParams page = FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_5);
+		PageParams page = FilterSortPageUtils.buildPageParams(form.getStudentPageRequested(), FilterSortPageUtils.PAGESIZE_10);
 		SortParams sort = FilterSortPageUtils.buildStudentSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
 	 	 
 	    
@@ -943,7 +946,10 @@ public class StudentScoringController extends PageFlowController {
 			if (actionElement.equals("{actionForm.studentSortOrderBy}")) {
 				this.studentPageRequested = new Integer(1);
 			}
-			if (actionElement.equals("ButtonGoInvoked_studentSearchResult") ||
+			if (actionElement.equals("{actionForm.itemSortOrderBy}")) {
+				this.itemPageRequested = new Integer(1);
+			}
+		/*	if (actionElement.equals("ButtonGoInvoked_studentSearchResult") ||
 					actionElement.equals("EnterKeyInvoked_studentSearchResult")) {
 			    	this.selectedStudentId = null;
 			}
@@ -953,7 +959,7 @@ public class StudentScoringController extends PageFlowController {
 				if (fromAction.equals(ACTION_FIND_STUDENT)){
 					this.selectedStudentId = null;
 				}
-			}
+			}*/
 		}
 		
 		public void clearSearch()

@@ -999,7 +999,7 @@ public class StudentManagementImpl implements StudentManagement
 	 * @throws com.ctb.exception.CTBBusinessException
 	 */
 
-	public ManageStudentData findStudentsAtAndBelowTopOrgNodesWithDynamicSQLForScoring(String userName, Integer productId, FilterParams filter, PageParams page, SortParams sort ) throws CTBBusinessException
+	public ManageStudentData findStudentsAtAndBelowTopOrgNodesWithDynamicSQLForScoring(String userName, Integer catalogId, FilterParams filter, PageParams page, SortParams sort ) throws CTBBusinessException
 	{
 		try {
 			ManageStudentData std = new ManageStudentData();
@@ -1029,7 +1029,10 @@ public class StudentManagementImpl implements StudentManagement
 			if (filter != null) {
 				searchCriteria = DynamicSQLUtils.generateWhereClauseForFilter(filter);
 				filter.setFilterParams(new FilterParam[0]);
-				totalCount = studentManagement.getStudentCountAtAndBelowUserTopNodes(userName);
+				//totalCount = studentManagement.getStudentCountAtAndBelowUserTopNodes(userName);
+				ManageStudent [] studentTotalCount = null;
+				studentTotalCount = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForScoring(userName, catalogId, "");
+				totalCount = studentTotalCount.length;
 			}
 			String orderByClause = "";
 			if (sort != null) {
@@ -1039,7 +1042,7 @@ public class StudentManagementImpl implements StudentManagement
 			searchCriteria = searchCriteria + orderByClause;
 			ManageStudent [] students = null;
             
-           students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForScoring(userName, productId, searchCriteria);
+           students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForScoring(userName, catalogId, searchCriteria);
            for(ManageStudent student : students) {
         	   student.setScoringStatus( studentManagement.getScoringStatus(student.getRosterId(), student.getItemSetIdTC()));
            }

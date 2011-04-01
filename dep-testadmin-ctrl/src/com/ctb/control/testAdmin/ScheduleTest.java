@@ -36,6 +36,21 @@ public interface ScheduleTest
     com.ctb.bean.testAdmin.TestProductData getTestProductsForUser(java.lang.String userName, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 
     /**
+     * Retrieves a filtered, sorted, paged list of products which the specified
+     * user is able to schedule tests for. Each product contains a list of the
+     * unique set of levels of the tests within that product. and a list of the
+     * unique set of grades of the tests within that product
+     * @param userName - identifies the user
+     * @param filter - filtering params
+     * @param page - paging params
+     * @param sort - sorting params
+     * @return TestProductData
+     * @throws com.ctb.exception.CTBBusinessException
+     */
+    
+    com.ctb.bean.testAdmin.TestProductData getTestCatalogForUser(java.lang.String userName, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+
+    /**
      * Retrieves a filtered, sorted, paged list of tests under the specified
      * product. Each testElement object also contains a
      * overrideFormAssigmentMethod field, which if populated (see

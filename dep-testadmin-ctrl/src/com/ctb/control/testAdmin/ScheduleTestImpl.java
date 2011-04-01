@@ -236,6 +236,49 @@ public class ScheduleTestImpl implements ScheduleTest
     }
     
     /**
+     * Retrieves a filtered, sorted, paged list of products which the specified user is able to schedule tests for.
+     * Each product contains a list of the unique set of levels of the tests within that product.
+     * and a list of the unique set of grades of the tests within that product
+     * @common:operation
+     * @param userName - identifies the user
+	 * @param filter - filtering params
+	 * @param page - paging params
+	 * @param sort - sorting params
+	 * @return TestProductData
+	 * @throws com.ctb.exception.CTBBusinessException
+     */
+    public TestProductData getTestCatalogForUser(String userName, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+    	//Attempt to improve performance
+        //validator.validate(userName, null, "testAdmin.getTestProductsForUser");
+        try {
+            TestProductData tpd = new TestProductData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            tpd.setTestProducts(product.getTestCatalogForUser(userName), pageSize);
+            if(filter != null) tpd.applyFiltering(filter);
+            if(sort != null) tpd.applySorting(sort);
+            if(page != null) tpd.applyPaging(page);
+            /*
+            TestProduct [] products = tpd.getTestProducts();
+            for(int i=0;i<products.length && products[i] != null;i++) {
+                TestProduct prod = products[i];
+                prod.setLevels(itemSet.getLevelsForProduct(prod.getProductId()));
+                prod.setGrades(itemSet.getGradesForProduct(prod.getProductId()));
+            }
+            */
+            return tpd;
+        } catch (SQLException se) {
+            ProductDataNotFoundException pde = new ProductDataNotFoundException("ScheduleTestImpl: getTestProductsForUser: " + se.getMessage());
+            pde.setStackTrace(se.getStackTrace());
+            throw pde;
+        }
+    }
+    
+    
+    /**
      * Retrieves a filtered, sorted, paged list of tests under the specified product.
      * Each testElement object also contains a overrideFormAssigmentMethod field, which
      * if populated (see TestSession.FormAssignment constants) indicates that
