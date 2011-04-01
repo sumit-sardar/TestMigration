@@ -72,6 +72,15 @@
 </ul>
 </ctb:auth>
 
+<ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
+	<h1>Score</h1>
+	<ul>
+     <c:if test="${ sessionScope.isScoringConfigured}">    
+        <li><a href="/HandScoringWeb/studentScoringPageFlow/beginIndivStudentScoring.do" onclick="return verifyExitAddCustomer();" ><span>Student Scoring</span></a></li>
+    </c:if>
+	</ul>
+</ctb:auth>
+
 
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
 <h1>Workstation Setup</h1>

@@ -257,6 +257,35 @@ public class ManageStudentController extends PageFlowController
 	}
 
 
+
+	//changes for scoring
+		
+		/**
+		 * This method checks whether customer is configured to access the scoring feature or not.
+		 * @return Return Boolean 
+		 */
+	
+	
+	private Boolean customerHasScoring()
+    {               
+        
+        boolean hasScoringConfigurable = false;
+
+        for (int i=0; i < customerConfigurations.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
+            		cc.getDefaultValue().equals("T")	) {
+            	hasScoringConfigurable = true;
+                break;
+            } 
+        }
+       
+        getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
+        return new Boolean(hasScoringConfigurable);
+    }
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** ADD - EDIT STUDENT ************* ////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -475,6 +504,7 @@ public class ManageStudentController extends PageFlowController
 		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);  
 		//Bulk Accommodation
 		customerHasBulkAccommodation();
+		customerHasScoring();//For hand scoring changes
 
 		form.setCurrentAction(ACTION_DEFAULT);
 	}
@@ -1520,6 +1550,8 @@ public class ManageStudentController extends PageFlowController
 		this.pageTitle = buildPageTitle(ACTION_FIND_STUDENT, form);
 		//Bulk Accommodation
 		customerHasBulkAccommodation();
+		//scoring changes
+		customerHasScoring();//For hand scoring changes
 		setFormInfoOnRequest(form);
 		return new Forward("success");
 	}

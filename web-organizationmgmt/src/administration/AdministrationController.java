@@ -92,6 +92,7 @@ public class AdministrationController extends PageFlowController
         getUserDetails();
         //for Bulk Accommodation
         customerHasBulkAccommodation();
+        customerHasScoring(); // For hand scoring changes
         this.getSession().setAttribute("hasUploadDownloadConfig", hasUploadDownloadConfig());
         this.getSession().setAttribute("hasProgramStatusConfig", hasProgramStatusConfig());
         this.getSession().setAttribute("hasLicenseConfig", hasLicenseConfig());
@@ -288,6 +289,45 @@ public class AdministrationController extends PageFlowController
        
         return new Boolean(hasBulkStudentConfigurable);
     }
+	
+	//changes for scoring
+	
+	/**
+	 * This method checks whether customer is configured to access the scoring feature or not.
+	 * @return Return Boolean 
+	 */
+	private Boolean customerHasScoring()
+    {               
+		Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasScoringConfigurable = false;
+        
+        try
+        {      
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = users.getCustomerConfigurations(2);
+			}
+        
+
+        for (int i=0; i < customerConfigurations.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
+            		cc.getDefaultValue().equals("T")	) {
+            	hasScoringConfigurable = true;
+                  break;
+            } 
+        }
+       }
+        
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+        getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
+        return new Boolean(hasScoringConfigurable);
+    }
+    
+	
        
 
 

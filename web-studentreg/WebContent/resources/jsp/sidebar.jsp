@@ -66,7 +66,17 @@
     <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf" onclick="return verifyExitRegisterStudent();"><span>Reset Test Session</span></a></li>
 </ul>
 </ctb:auth>
+<c:if test="${ sessionScope.isScoringConfigured}">   
+<ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
+	<h1>Score</h1>
+	<ul>
+      
+        <li><a href="/HandScoringWeb/studentScoringPageFlow/beginIndivStudentScoring.do" onclick="return verifyExitRegisterStudent();" ><span>Student Scoring</span></a></li>
+   
+	</ul>
+</ctb:auth>
 
+ </c:if>
 
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
 <h1>Workstation Setup</h1>

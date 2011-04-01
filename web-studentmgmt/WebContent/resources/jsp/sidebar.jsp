@@ -4,18 +4,18 @@
 
 
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator">
-<h1>Tests</h1>
-<ul>
+    <h1>Tests</h1>
+    <ul>
     <c:if test="${ requestScope.isSelectTest }">
         <li><span class="navleft-unclickable">Schedule Test Session</span></li>
     </c:if>
     <c:if test="${ !requestScope.isSelectTest }">    
-        <li><a href="/TestAdministrationWeb/scheduleTestPageflow/ScheduleTestController.jpf" ><span>Schedule Test Session</span></a></li>
+        <li><a href="/TestAdministrationWeb/scheduleTestPageflow/ScheduleTestController.jpf"><span>Schedule Test Session</span></a></li>
     </c:if>
         <li><a href="/TestSessionInfoWeb/viewtestsessions/ViewTestSessionsController.jpf"><span>Find Test Session</span></a></li>
-</ul>
+    </ul>
 </ctb:auth>
-
+   
 
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
 <h1>Students</h1>
@@ -25,20 +25,20 @@
         <li><span class="navleft-unclickable">Add Student</span></li>
     </c:if>
     <c:if test="${ !requestScope.isAddStudent }">    
-        <li><a href="/StudentManagementWeb/manageStudent/beginAddStudent.do" ><span>Add Student</span></a></li>
+    <li><a href="/StudentManagementWeb/manageStudent/beginAddStudent.do" ><span>Add Student</span></a></li>
     </c:if>
 </ctb:auth>
     <c:if test="${ requestScope.isFindStudent }">
         <li><span class="navleft-unclickable">Find Student</span></li>
     </c:if>
     <c:if test="${ !requestScope.isFindStudent }">    
-        <li><a href="/StudentManagementWeb/manageStudent/beginFindStudent.do" ><span>Find Student</span></a></li>
+    <li><a href="/StudentManagementWeb/manageStudent/beginFindStudent.do" ><span>Find Student</span></a></li>
     </c:if>
-     <ctb:auth roles="Administrator, Administrative Coordinator">  
-	     <c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
+<ctb:auth roles="Administrator, Administrative Coordinator">
+	<c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
 	        <li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Accommodations</span></a></li>
-	    </c:if>
-     </ctb:auth>
+	</c:if>
+</ctb:auth>      
 </ul>
 </ctb:auth>
 
@@ -46,8 +46,8 @@
 <ctb:auth roles="root, Account Manager, Administrator">
 <h1>Users</h1>
 <ul>
-    <li><a href="/UserManagementWeb/manageUser/beginAddUser.do" ><span>Add User</span></a></li>
-    <li><a href="/UserManagementWeb/manageUser/beginFindUser.do" ><span>Find User</span></a></li>
+    <li><a href="/UserManagementWeb/manageUser/beginAddUser.do"><span>Add User</span></a></li>
+    <li><a href="/UserManagementWeb/manageUser/beginFindUser.do"><span>Find User</span></a></li>
 </ul>
 </ctb:auth>
 
@@ -76,13 +76,22 @@
     <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf"><span>Reset Test Session</span></a></li>
 </ul>
 </ctb:auth>
+ <c:if test="${ sessionScope.isScoringConfigured}">    
+<ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
+<h1>Score</h1>
+<ul>
+    
+        <li><a href="/HandScoringWeb/studentScoringPageFlow/beginIndivStudentScoring.do" ><span>Student Scoring</span></a></li>
 
+</ul>
+</ctb:auth>
+    </c:if>
 
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
 <h1>Workstation Setup</h1>
 <ul>
-    <li><a href="/TestSessionInfoWeb/downloadclient/DownloadClientController.jpf" ><span>Install Software</span></a></li>
-    <li><a href="/TestSessionInfoWeb/downloadtest/DownloadTestController.jpf" ><span>Download Test</span></a></li>
+        <li><a href="/TestSessionInfoWeb/downloadclient/DownloadClientController.jpf"><span>Install Software</span></a></li>
+        <li><a href="/TestSessionInfoWeb/downloadtest/DownloadTestController.jpf"><span>Download Test</span></a></li>
 </ul>
 </ctb:auth>
 

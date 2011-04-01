@@ -237,6 +237,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 		this.getSession().setAttribute("userHasReports", userHasReports());
 		customerHasBulkAccommodation();
+		customerHasScoring();//For hand scoring changes
 		copySelectedStudents(savedForm);
 
 		return this.savedForm;
@@ -263,6 +264,33 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 		return new Boolean(hasBulkStudentConfigurable);           
 	}
+
+	//changes for scoring
+		
+		/**
+		 * This method checks whether customer is configured to access the scoring feature or not.
+		 * @return Return Boolean 
+		 */
+	
+	private Boolean customerHasScoring()
+    {               
+        
+        boolean hasScoringConfigurable = false;
+
+        for (int i=0; i < customerConfigurations.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
+            		cc.getDefaultValue().equals("T")	) {
+            	hasScoringConfigurable = true;
+                break;
+            } 
+        }
+        getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
+       
+        return new Boolean(hasScoringConfigurable);
+    }
+    
 
 
 	/**
@@ -1138,6 +1166,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		this.getRequest().setAttribute("studentPagerSummary", form.getStudentPagerSummary());
 		this.getRequest().setAttribute("nodeContainsStudents",form.getMsCount());			
 		this.getRequest().setAttribute("isBulkAccommodation", Boolean.TRUE);
+		this.getRequest().setAttribute("isScoring", Boolean.TRUE);
 
 		setSelectedStudentOrgListToForm(form);                    
 		setSelectedStudentCountToForm(form);
@@ -1156,6 +1185,8 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 		//Bulk Accommodation Changes
 		customerHasBulkAccommodation();
+		//scoring changes
+		customerHasScoring();//For hand scoring changes
 		form.setCustomerConfigurations(this.customerConfigurations);
 		this.getRequest().setAttribute("customerConfigurations", customerConfigurations);
 		this.savedForm = form;
@@ -1321,6 +1352,12 @@ public class ManageBulkAccommodationController extends PageFlowController
 			needCommit = true;
 		if ((actionElement != null) && actionElement.equals("{actionForm.studentSortOrderBy}"))
 			needCommit = true;
+		//Added for Table pager go button start
+        if ((actionElement != null) && actionElement.equals("EnterKeyInvoked_studentTableAnchor"))
+            needCommit = true;
+        if ((actionElement != null) && actionElement.equals("ButtonGoInvoked_studentTableAnchor"))
+            needCommit = true;
+        //Added for Table pager go button end
 
 
 
@@ -1810,6 +1847,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		this.getRequest().setAttribute("studentPagerSummary", form.getStudentPagerSummary());
 		this.getRequest().setAttribute("nodeContainsStudents", form.getMsCount());			
 		this.getRequest().setAttribute("isBulkAccommodation", Boolean.TRUE);
+		this.getRequest().setAttribute("isScoring", Boolean.TRUE);
 		this.getRequest().setAttribute("appliedFilterFlag", form.isAppliedFilterFlag());
 		this.getRequest().setAttribute("customerConfigurations", form.getCustomerConfigurations());
 	}

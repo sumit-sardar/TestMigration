@@ -27,6 +27,8 @@
         <li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Accommodations</span></a></li>
     </c:if>
 </ctb:auth>
+
+
 </ul>
 </ctb:auth>
 
@@ -74,6 +76,16 @@
     <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf"><span>Reset Test Session</span></a></li>
 </ul>
 </ctb:auth>
+<c:if test="${ sessionScope.isScoringConfigured}"> 
+<ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
+	<h1>Score</h1>
+	<ul>
+        
+        <li><a href="/HandScoringWeb/studentScoringPageFlow/beginIndivStudentScoring.do"  ><span>Student Scoring</span></a></li>
+    
+	</ul>
+</ctb:auth>
+</c:if>
 
 
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
