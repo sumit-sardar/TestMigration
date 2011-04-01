@@ -236,11 +236,13 @@ public class ScheduleTestController extends PageFlowController
     	this.hasReport = (String)getRequest().getParameter("hasReport");
     	this.bulkAcc = (String)getRequest().getParameter("bulkAcc");
     	   	
-    	customerHasScoring();//For hand scoring changes
+    	//customerHasScoring();//For hand scoring changes
     	//this.getSession().setAttribute("isBulkAccommodationConfigured",  customerHasScoring());    
     	   	
         init(form);
-
+		
+		customerHasScoring();//For hand scoring changes
+        
         this.action = ACTION_SCHEDULE_TEST;
         
         return new Forward("success", form);
