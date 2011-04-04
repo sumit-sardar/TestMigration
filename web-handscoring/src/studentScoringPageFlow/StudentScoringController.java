@@ -738,8 +738,8 @@ public class StudentScoringController extends PageFlowController {
 		}
 		if (productName.equals(FilterSortPageUtils.FILTERTYPE_ANY_TESTNAME))
 		{
-			String requiredFields = "Test Name, ";
-			 requiredFields += (Message.REQUIRED_TEXT);
+			String requiredFields = "Test Name ";
+			 requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
 			 form.setMessage("Missing required field", requiredFields, Message.ERROR);
 			this.getRequest().setAttribute("pageMessage", form.getMessage());
 			return null;

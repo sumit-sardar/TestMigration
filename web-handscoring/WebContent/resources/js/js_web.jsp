@@ -195,7 +195,7 @@ function openViewQuestionWindow(itemNumber)
    	var location = "viewQuestionWindow.do" + param;
     
 	var windowName = "ViewQuestionWindow"; 
-    ViewQuestionWindow = window.open(location, windowName,'toolbar=no,location=no,directories=no,status=yes,scrollbars=yes,menubar=no,resizable=yes,width=850, height=600');
+    ViewQuestionWindow = window.open(location, windowName,'toolbar=no,location=no,directories=no,status=yes,scrollbars=no,menubar=no,resizable=yes,width=800px, height=600px');
     ViewQuestionWindow.focus();
     
     return false;

@@ -46,7 +46,7 @@
         <netui:content value="${bundle.web['individualStudentScoring.StudentDetails.AccessCode']}"/>
     </td>
     <td class="transparent">    
-        <div class="formValue"><netui:span value="${requestScope.accessCode}" styleClass="formValue"/></div>
+        <div class="formValueLarge"><netui:span value="${requestScope.accessCode}" styleClass="formValueLarge"/></div>
     </td>
 </tr>
 
@@ -56,7 +56,7 @@
         <netui:content value="${bundle.web['individualStudentScoring.StudentDetails.StudentLoginName']}"/>
     </td>
     <td class="transparent">
-        <div class="formValue"><netui:span value="${requestScope.userName}" styleClass="formValue"/></div>
+        <div class="formValueLarge"><netui:span value="${requestScope.userName}" styleClass="formValueLarge"/></div>
     </td>
 </tr>
 <tr class="transparent">
@@ -64,7 +64,7 @@
         <netui:content value="${bundle.web['individualStudentScoring.StudentDetails.TestSessionName']}"/>
     </td>
     <td class="transparent">
-        <div class="formValue"><netui:span value="${requestScope.testSessionName}" styleClass="formValue"/></div>
+        <div class="formValueLarge"><netui:span value="${requestScope.testSessionName}" styleClass="formValueLarge"/></div>
 
     </td>
 </tr> 

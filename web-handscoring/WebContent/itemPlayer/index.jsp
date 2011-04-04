@@ -44,12 +44,10 @@ function updateLDB()
 <%
     String eliminatorResource = "eliminator.swf";
 	String itemNumber = request.getParameter("itemNumber");
-	//System.out.println("itemNumber==>"+itemNumber);
-    String url = request.getRequestURL().toString().trim();
-    //System.out.println("url==>"+url);
+	String url = request.getRequestURL().toString().trim();
     int lastSlash = url.lastIndexOf("/");
-    url = url.substring(0,lastSlash).trim().replaceAll("https:","http:").replaceAll(":443",":80");
-   // System.out.println("URL: " + url);
+    url = url.substring(0,lastSlash).trim().replaceAll(":443",":80");
+   
 %>
 
 
