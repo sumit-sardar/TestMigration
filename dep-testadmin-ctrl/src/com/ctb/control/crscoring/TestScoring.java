@@ -126,4 +126,16 @@ public interface TestScoring {
 			Integer testRosterId, Integer deliverableItemId, String itemId,
 			String itemType) throws CTBBusinessException;
 
+	/**
+	 * This method save or update a students points
+	 * @param userId - user id
+	 * @param itemId - item id
+	 * @param itemSetIdTD - item set id TD type
+	 * @param testRosterId - roster id
+	 * @param point - point
+	 * @throws CTBBusinessException
+	 */
+	public Boolean saveOrUpdateScore(Integer userId, String itemId, Integer itemSetIdTD,
+			Integer testRosterId, Integer point) throws CTBBusinessException;
+
 }

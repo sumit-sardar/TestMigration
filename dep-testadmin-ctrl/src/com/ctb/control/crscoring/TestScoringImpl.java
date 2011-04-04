@@ -3,6 +3,7 @@ package com.ctb.control.crscoring;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
@@ -13,6 +14,7 @@ import org.jdom.Element;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.ResponsePoints;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
@@ -194,10 +196,9 @@ public class TestScoringImpl implements TestScoring {
 	 * @throws CTBBusinessException
 	 */
 	@Override
-	public ScorableItemData getAllScorableCRItemsForTestRoster(Integer testRosterId, Integer itemSetId,
-			 PageParams page, SortParams sort
-			)
-			throws CTBBusinessException {
+	public ScorableItemData getAllScorableCRItemsForTestRoster(
+			Integer testRosterId, Integer itemSetId, PageParams page,
+			SortParams sort) throws CTBBusinessException {
 		ScorableItemData scorableItemData = new ScorableItemData();
 		Integer pageSize = null;
 		try {
@@ -369,6 +370,70 @@ public class TestScoringImpl implements TestScoring {
 
 		}
 		return answerContent;
+	}
+
+
+	/**
+	 * This method save or update a students points
+	 * @param userId - user id
+	 * @param itemId - item id
+	 * @param itemSetIdTD - item set id TD type
+	 * @param testRosterId - roster id
+	 * @param point - point
+	 * @throws CTBBusinessException
+	 */
+	@Override
+	public Boolean saveOrUpdateScore(Integer userId, String itemId,
+			Integer itemSetIdTD, Integer testRosterId, Integer point)
+			throws CTBBusinessException {
+		System.out.println("saveOrUpdateScore");
+		Boolean isSuccess  = new Boolean(false);
+		try {
+			ResponsePoints[] responsePoints = getResponseForScore(itemId,
+					itemSetIdTD, testRosterId);
+
+			if (responsePoints == null || responsePoints.length == 0) {
+				OASLogger.getLogger("TestAdmin").error(
+						"No valid response found for itemId["+itemId+"]"+" itemsetId["+itemSetIdTD+"] testRosterId["+testRosterId+"]");
+				ScoringException rde = new ScoringException(
+						"TestScoringImpl: saveOrUpdateScore: ");
+				throw rde;
+			}
+			for (ResponsePoints points : responsePoints) {
+				points.setCreatedBy(userId);
+				points.setCreattionDate(new Date());
+				points.setPoint(point);
+				Integer noOfRows = saveOrUpdateScore(points);
+				if(noOfRows > 0) {
+					isSuccess = true;
+				}
+			}
+			
+			
+		} catch (SQLException se) {
+			OASLogger.getLogger("TestAdmin").error(
+					"Exception occurred while saveing score.", se);
+			ScoringException rde = new ScoringException(
+					"TestScoringImpl: saveOrUpdateScore: "
+							+ se.getMessage());
+			rde.setStackTrace(se.getStackTrace());
+			throw rde;
+		} catch (Exception e) {
+
+			OASLogger.getLogger("TestAdmin").error(
+					"Exception occurred while saveing score.", e);
+			ScoringException rde = new ScoringException(
+					"TestScoringImpl: saveOrUpdateScore: "
+							+ e.getMessage());
+			rde.setStackTrace(e.getStackTrace());
+			throw rde;
+		
+		}
+		finally{
+			return isSuccess;
+
+		}
+		
 	}
 
 	/**
@@ -548,6 +613,46 @@ public class TestScoringImpl implements TestScoring {
 			Exception {
 		TestSession testSession = scoring.getTestAdminDetails(testAdminId);
 		return testSession;
+	}
+
+	/**
+	 * This method retrieve ResponsePoints from data base.
+	 * 
+	 * @param itemId -
+	 *            itemId
+	 * @param itemSetIdTD -
+	 *            testAdminId
+	 * @param testRosterId -
+	 *            testRosterId
+	 * @return - ResponsePoints
+	 * @throws SQLException
+	 * @throws Exception
+	 */
+	ResponsePoints[] getResponseForScore(String itemId, Integer itemSetIdTD,
+			Integer testRosterId) throws SQLException, Exception {
+		ResponsePoints[] responsePoints = scoring.getResponseForScore(itemId,
+				itemSetIdTD, testRosterId);
+		return responsePoints;
+	}
+
+	/**
+	 * This method retrieve ResponsePoints from data base.
+	 * 
+	 * @param itemId -
+	 *            itemId
+	 * @param itemSetIdTD -
+	 *            testAdminId
+	 * @param testRosterId -
+	 *            testRosterId
+	 * @return - int
+	 * @throws SQLException
+	 * @throws Exception
+	 */
+	private int saveOrUpdateScore(ResponsePoints responsePoints) throws SQLException,
+			Exception {
+		int noOfRows= scoring.saveOrUpdateScore(responsePoints);
+		
+		return noOfRows;
 	}
 
 }
