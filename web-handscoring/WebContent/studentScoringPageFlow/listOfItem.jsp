@@ -12,7 +12,7 @@
 
 <script type="text/javascript" src="/HandScoringWeb/resources/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="/HandScoringWeb/resources/js/jquery-ui-1.8.10.custom.min.js"></script>
-<script src="dtfx.js"></script>
+<script src="http://dl.javafx.com/1.3/dtfx.js"></script>
 <link type="text/css" href="/HandScoringWeb/resources/css/jquery-ui-1.8.10.custom.css" rel="stylesheet" />	
 
 <script>
@@ -20,11 +20,11 @@
 function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 
 var param = "&itemId="+itemId+"&itemType="+itemType+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val();
-
 document.getElementById("itemId").value = itemId;
 document.getElementById("itemSetId").value = itemSetId;
 document.getElementById("itemNumber").value = itemNumber;
-//updateMaxPoints();
+document.getElementById("message").style.display = 'none';
+//updateScore(itemNumber);
 
 	//alert($("#formid").serialize());
 	$.ajax(
@@ -51,7 +51,7 @@ document.getElementById("itemNumber").value = itemNumber;
 								audioResponseString = audioResponseString.substr(13);
 								audioResponseString = audioResponseString.split("%3C%2F");
 								document.getElementById("audioResponseString").value = audioResponseString[0];
-								openPopup();
+								openPopup(itemNumber);
 								$("#crText").hide();
 								document.getElementById("crText").style.display='none';
 								document.getElementById("audioPlayer").style.display='inline';							
@@ -62,8 +62,8 @@ document.getElementById("itemNumber").value = itemNumber;
 								document.getElementById("itemType").value = "CR";								
 								document.getElementById("audioPlayer").style.display='none';
 								document.getElementById("crText").style.display='inline';
-								var crTextResponse = data.answer.cRItemContent;
-								    openPopup();
+								var crTextResponse = data.answer.cRItemContent.string;
+								    openPopup(itemNumber);
 								    $("#audioPlayer").hide();
 									$("#crText").show();
 									$("#crText").val(crTextResponse);
@@ -84,13 +84,24 @@ document.getElementById("itemNumber").value = itemNumber;
 	);
 	}
 	
+	
 function formSave() {
 var itemId =  document.getElementById("itemId").value ;
 var itemSetId = document.getElementById("itemSetId").value  ;
 var itemNumber = document.getElementById("itemNumber").value;
+
 var param = "&itemId="+itemId+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val() + "&score="+$("#pointsDropDown option:selected").val();    
 
-alert(param);
+var optionValue = $("#pointsDropDown option:selected").val();
+if(optionValue == null || optionValue == "" ){
+document.getElementById("message").style.display = 'inline';
+var spanElement = document.getElementById("messageSpan");
+spanElement.innerHTML = "Please select a valid Score";
+}
+
+
+
+if($("#pointsDropDown option:selected").val() != ''){
 	$.ajax(
 		{
 				async:		true,
@@ -110,17 +121,22 @@ alert(param);
 									var isSuccess = data.boolean;	
 									var spanElement = document.getElementById("messageSpan");
 									var scorePointsElement = document.getElementById("scorePoints"+itemNumber);
-									alert(isSuccess);
+									var scoreStatusElement = document.getElementById("scoreStatus"+itemNumber);
+									
 									if(isSuccess){
 								
 									scorePointsElement.firstChild.nodeValue = $("#pointsDropDown option:selected").val();
+									
+									scoreStatusElement.innerHTML = "complete"; 
+									
 									document.getElementById("messageStatus").value = isSuccess;
-									document.getElementById("message").style.display = 'inline';									
-									spanElement.innerHtml = "Item Scored Successfully";
+									document.getElementById("message").style.display = 'inline';	
+																
+									spanElement.innerHTML = "<b> Item Scored Successfully </b>";
 									
 									}
 									else{				
-									spanElement.innerHtml = "Item Not Scored";
+									spanElement.innerHTML = "<b> Item Not Scored </b>";
 									
 									}
 								
@@ -131,39 +147,30 @@ alert(param);
 							},
 				complete :  function(){
 								//alert('after complete....');
-								//unblockUI();
+							//	unblockUI();
 							}
 		}
 	);
 	}
-	
-	function createDiv(){
-	var fxVal = 'javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});';
-	var mainDiv = document.getElementById('dialogIdDiv');
-	var newDiv = document.createElement('div');
-	newDiv.id = "audioPlayer";
-	newDiv.innerHTML = '<script>'+ fxVal +'</script'+'>';
-	mainDiv.appendChild(newDiv);					
-																
-	//var newSc = document.createElement('script');
-	//newSc.text = fxVal;
-	//var tt = document.createTextNode(scr);
-	//newSc.appendChild(tt);								
-	//var ss = document.getElementById('audioPlayer');
-	//ss.appendChild(newSc);
 	}
-	
-	function openPopup() {
+
+
+
+
+
+		function openPopup(itemNumber) {
 				//alert("....................."+document.getElementById("dialogID"));
 				//alert($("#dialogID"));
+				var maxPointsElement = document.getElementById("maxPoints"+itemNumber);
+				var scoreCutOff = maxPointsElement.firstChild.nodeValue;
 				$("#dialogID").dialog();
-				
+				updateMaxPoints(scoreCutOff);
 			}
 			function blockUI()
 			{	
 				$("body").append('<div id="blockDiv" style="background:url(/HandScoringWeb/resources/images/transparent.gif);position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"><img src="/HandScoringWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/></div>');
 				$("#blockDiv").css("cursor","wait");
-				openPopup();
+				openPopup(itemNumber);
 			}
 			
 			function unblockUI()
@@ -175,6 +182,7 @@ alert(param);
 			
 			$("#dialogID").dialog("close");
 			}
+			
 <!--This Function  will be called by javafx at runtime-->
     function show_alert() {
     	var audioResponseString = document.getElementById("audioResponseString").value;
@@ -182,7 +190,43 @@ alert(param);
     	return audioResponseString;
 	}
 	
-	function getPlayer(){
+	function updateMaxPoints(scoreCutOff){
+	
+	var select = document.getElementById('pointsDropDown');
+	
+	 select.options.length = 0; 
+	 addOption(select , "Please Select", "" );
+	  for(var i=0; i <= scoreCutOff.length; i++) {  
+	    addOption(select,i,i);
+	     } 
+	}
+	
+	function updateScore(itemNumber){
+	
+	
+	var scoreStatusElement = document.getElementById("scoreStatus"+itemNumber);
+	if(scoreStatusElement.innerHTML =="complete"){
+		var select = document.getElementById('pointsDropDown');
+		//select.options.
+	
+	}
+	
+	}
+	
+	
+	
+
+	
+function addOption(selectbox,text,value )
+{
+var optn = document.createElement("OPTION");
+optn.text = text;
+optn.value = value;
+
+selectbox.options.add(optn);
+}
+
+function getPlayer(){
 	//alert(document.getElementById("itemType").value);
 	//if(document.getElementById("itemType").value == "AI"){
 	javafx(
@@ -198,14 +242,7 @@ alert(param);
    
 	//}
 	}	
-function addOption(selectbox,text,value )
-{
-var optn = document.createElement("OPTION");
-optn.text = text;
-optn.value = value;
-selectbox.options.add(optn);
-}
-
+	
 </script>
 <%
 
@@ -235,12 +272,15 @@ selectbox.options.add(optn);
 <netui:hidden tagId="testAdminId" dataSource="actionForm.testAdminId"/>
 <netui:hidden tagId="rosterId" dataSource="actionForm.rosterId"/>
 <netui:hidden tagId="itemSetIdTC" dataSource="actionForm.itemSetIdTC"/>
-<netui:hidden  dataSource="actionForm.itemMaxPage"/>
+
+<netui:hidden  dataSource="actionForm.itemMaxPage"/> 
+<input type="hidden" id="itemSetId"/>
 <input type="hidden" id="itemId"/>
 <input type="hidden" id="itemNumber"/>
-<input type="hidden" id="messageStatus"/> 
-<input type="hidden" id="audioResponseString"/>
+<input type="hidden" id="messageStatus"/>
 <input type="hidden" id="itemType"/>
+<input type="hidden" id="audioResponseString"/>
+
 <h2><netui:content value="${bundle.web['individualStudentScoring.StudentDetails.title']}"/></h2>
 <table class="transparent" width="100%">
 
@@ -296,7 +336,7 @@ selectbox.options.add(optn);
     <netui-data:repeaterItem>
     
     <tr class="sortable">
-         
+            
         <td class="sortable">
             <netui:span value="${container.item.itemSetOrder}"/>
         </td>
@@ -351,7 +391,7 @@ selectbox.options.add(optn);
             </c:if>     
         </td>
         <td class="sortable">
-            <netui:span value="${container.item.scoreStatus}"/>
+            <netui:span tagId="scoreStatus${container.item.itemSetOrder}" value="${container.item.scoreStatus}"/>
         </td>
         <td class="sortable">
             <netui:span tagId="maxPoints${container.item.itemSetOrder}" value="${container.item.maxPoints}"/>
@@ -379,6 +419,7 @@ selectbox.options.add(optn);
           <netui:content value="${requestScope.itemSearchResultEmpty}"/>
     </ctb:message>
 </c:if>
+</br>
 
 <!-- buttons -->
 <p>
@@ -398,33 +439,33 @@ selectbox.options.add(optn);
 			</script>
 		
 		</div>
-		
 		</td>
 	</tr>
 	 <tr width="100%">
 		<td class="transparent alignRight" style="width:10%;"><span>&nbsp;<b> Score :</b></span></td>
 		<td class="transparent" style="width:90%;">
 
-		<div ><select><option selected="selected">&nbsp;</option>
-		<option>1</option>
-		<option>2</option>
-		<option>3</option>
-		<option>4</option>
-		<option>5</option>
-		<option>6</option>
-		</select></div>
+		<div ><netui:select tagId="pointsDropDown" datasource="actionForm.scorePoints" />
+		</div>
 		</td>
 	</tr> 
-
+	<tr width="100%">
+	<td colspan=2>
+	<div id="message" style="display: none; " >
+	<span id="messageSpan"></span>
+	</div>
+	</td>
+	</tr>
+	<tr>
+	<td colspan="2">
 	  <table class="transparent">
 		<tr class="transparent" width="100%">
-			<td class="transparent"><netui:button type="submit" tagId="Back" value="Cancel" onClick="document.getElementById('dialogID').style.display='none';"/></td>
-			<td class="transparent"><input type="button" name="Question" value="Save"></td>
+		   	<td class="transparent"><netui:button type="button" tagId="cancel" value="Cancel" onClick="closePopUp();"/></td>
+			<td class="transparent">
+			<input type="button" id="Question" value="Save"  onclick="formSave() "/></td>
 		</tr>
 	</table> 
-	
-	
-
+	</td></tr>
 </table>
 </td>
 </tr>
