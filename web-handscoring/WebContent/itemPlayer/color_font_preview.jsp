@@ -28,7 +28,7 @@
 
 
 <table class="legacyBodyLayout">
-<tr><td id="legacyBody">
+<tr><td id="legacyBodyViewer">
 
 
 <netui:form action="ViewQuestion">
@@ -37,19 +37,12 @@
 
 
 <table class="transparent" width="800">
-<tr>
-<td>
-    <h1><netui:content value="View Question"/></h1>
-</td>
-<td align="right">
-    <input type="button" name="Close" value="Close" onClick="self.close();" >
-</td>
-</tr>
+
 </table>
 <table class="transparent">
 <tr class="transparent">
   <td class="transparent">
-      <iframe src="<%=previewUrl%>" frameborder="0" style="border-color: #000; border-style: solid; border-width: 1px; margin: 0px; width: 800px; height: 600px;" ></iframe>
+      <iframe src="<%=previewUrl%>" frameborder="0" style="border-color: #000; border-style: solid; border-width: 1px; margin: 0px; width: 790px; height: 590px;" ></iframe>
   </td>
 </tr>
 </table>

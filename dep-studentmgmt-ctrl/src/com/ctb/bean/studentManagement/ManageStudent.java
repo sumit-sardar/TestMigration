@@ -35,6 +35,7 @@ public class ManageStudent extends CTBBean
     private Integer  itemSetIdTC;
     private String accessCode;
     private String testAdminId;
+    private Integer itemCountCRAI;
     //END-Added for HandScoring
     
 	/**
@@ -282,6 +283,18 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setTestAdminId(String testAdminId) {
 		this.testAdminId = testAdminId;
+	}
+	/**
+	 * @return the itemCountCRAI
+	 */
+	public Integer getItemCountCRAI() {
+		return itemCountCRAI;
+	}
+	/**
+	 * @param itemCountCRAI the itemCountCRAI to set
+	 */
+	public void setItemCountCRAI(Integer itemCountCRAI) {
+		this.itemCountCRAI = itemCountCRAI;
 	}
     
 } 

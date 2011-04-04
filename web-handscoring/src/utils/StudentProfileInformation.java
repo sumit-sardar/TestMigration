@@ -38,6 +38,7 @@ public class StudentProfileInformation extends SanitizedFormField
     private String accessCode;
     private Integer  itemSetIdTC;
     private String testAdminId;
+    private Integer itemCountCRAI;
     
     private OrganizationNode[] organizationNodes;
 
@@ -75,6 +76,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.itemSetIdTC = new Integer(0);
         this.accessCode = "";
         this.testAdminId = "";
+        this.itemCountCRAI = new Integer(0);
     }
         
         
@@ -127,6 +129,7 @@ public class StudentProfileInformation extends SanitizedFormField
         this.itemSetIdTC = student.getItemSetIdTC();
         this.accessCode = student.getAccessCode();
         this.testAdminId  = student.getTestAdminId();
+        this.itemCountCRAI = student.getItemCountCRAI();
     }
     
 
@@ -149,6 +152,7 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setItemSetIdTC(this.itemSetIdTC);
         copied.setAccessCode(this.accessCode);
         copied.setTestAdminId(this.testAdminId);
+        copied.setItemCountCRAI(this.itemCountCRAI);
         
         
         
@@ -555,5 +559,21 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setTestAdminId(String testAdminId) {
 		this.testAdminId = testAdminId;
+	}
+
+
+	/**
+	 * @return the itemCountCRAI
+	 */
+	public Integer getItemCountCRAI() {
+		return itemCountCRAI;
+	}
+
+
+	/**
+	 * @param itemCountCRAI the itemCountCRAI to set
+	 */
+	public void setItemCountCRAI(Integer itemCountCRAI) {
+		this.itemCountCRAI = itemCountCRAI;
 	}
 } 

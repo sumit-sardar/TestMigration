@@ -104,7 +104,10 @@ p {
 
 
 
-
+#legacyBodyViewer {
+    background-color: #fff;
+    vertical-align: top;
+}
 
 
 /******************************************************************************/

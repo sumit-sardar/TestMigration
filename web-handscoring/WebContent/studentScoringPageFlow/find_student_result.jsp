@@ -45,6 +45,8 @@
     <tr class="sortable">
     
            <td class="sortable">
+            <netui-data:getData resultId="itemCount" value="${container.item.itemCountCRAI}"/> 
+             <c:if test="${itemCount > 0}">  
              <netui-data:getData resultId="rosterId" value="${container.item.rosterId}"/>  
              
              <netui-data:getData resultId="accessCode" value="${container.item.accessCode}"/> 
@@ -63,7 +65,10 @@
                     <netui:anchor href="<%= href %>" formSubmit="true">
                         <netui:span  value="${container.item.userName}" defaultValue="&nbsp;"/>
                     </netui:anchor>
-        
+        	 </c:if>
+        	  <c:if test="${itemCount <= 0}">  
+        	  <netui:content value="${container.item.userName}"/>
+        	  </c:if>
            </td>
         <td class="sortable">
 			<netui:content value="${container.item.displayName}"/>

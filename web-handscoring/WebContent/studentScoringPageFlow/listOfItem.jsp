@@ -109,7 +109,7 @@
         <td class="sortable">
            	<netui-data:getData resultId="itemNumber" value="${container.item.itemSetOrder}"/>  
            		<%Integer itemNumber = (Integer)pageContext.getAttribute("itemNumber"); %>
-             <input name="ViewQuestion" type="submit" value="View Question" onclick="openViewQuestionWindow(<%=itemNumber%>); return true;"/>
+             <input name="ViewQuestion" type="button" value="View Question" onclick="openViewQuestionWindow(<%=itemNumber%>); return true;"/>
                       
         </td>
          <td class="sortable">
@@ -171,6 +171,7 @@
           <netui:content value="${requestScope.itemSearchResultEmpty}"/>
     </ctb:message>
 </c:if>
+</br>
 
 <!-- buttons -->
 <p>
