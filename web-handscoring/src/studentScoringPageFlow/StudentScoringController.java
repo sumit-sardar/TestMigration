@@ -1,10 +1,11 @@
 package studentScoringPageFlow;
-
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.beehive.controls.api.bean.Control;
@@ -13,6 +14,8 @@ import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import utils.FilterSortPageUtils;
+import utils.JsonUtils;
+import utils.Message;
 import utils.MessageResourceBundle;
 import utils.StudentProfileInformation;
 import utils.StudentSearchUtils;
@@ -26,6 +29,7 @@ import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
 import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.ScorableItemData;
 import com.ctb.bean.testAdmin.TestProduct;
@@ -72,6 +76,7 @@ public class StudentScoringController extends PageFlowController {
 	private static final String ACTION_APPLY_SEARCH   = "applySearch";
 	private static final String ACTION_CLEAR_SEARCH   = "clearSearch";
 	private static final String ACTION_DISPLAY_ITEMLIST   = "displayItemList";
+	private static final String ACTION_DISPLAY_CR_ITEM_RESPONSE = "beginCRResponseDisplay";
 	private static final String ACTION_CURRENT_ELEMENT   = "{actionForm.currentAction}";
 	private boolean searchApplied = false;
 	
@@ -301,6 +306,41 @@ public class StudentScoringController extends PageFlowController {
 	}
 
 	
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="listOfItem.jsp")
+	})
+	protected Forward beginCRResponseDisplay(StudentScoringForm form){
+	
+		
+		String jsonResponse = "";
+		String itemType = getRequest().getParameter("itemType");
+		String itemId = getRequest().getParameter("itemId");
+		Integer itemSetId = Integer.valueOf(getRequest().getParameter("itemSetId"));
+		Integer testRosterId =  Integer.valueOf(getRequest().getParameter("rosterId"));
+		ScorableCRAnswerContent scr =  getIndividualCRResponse(this.userName,testRosterId,itemSetId,itemId, itemType );
+		
+		try {
+			jsonResponse = JsonUtils.getJson(scr, "answer",scr.getClass());
+		
+
+		//	getCRItemResponseForScoring
+		
+		   HttpServletResponse resp = this.getResponse();     
+		   resp.setContentType("application/json");
+           resp.flushBuffer();
+	        OutputStream stream = resp.getOutputStream();
+	        stream.write(jsonResponse.getBytes());
+	        stream.close();
+	        
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return null;
+		
+	}
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
 					path = "/itemPlayer/ItemPlayerController.jpf")
@@ -312,6 +352,66 @@ public class StudentScoringController extends PageFlowController {
 
 		return new Forward("success");
 	}
+	
+	
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "beginDisplayStudItemList.do")
+	})
+	protected Forward saveDetails(StudentScoringForm form)
+	{      
+		 String jsonMessageResponse = "";
+	 
+		String itemId = getRequest().getParameter("itemId");
+		Integer itemSetId = Integer.valueOf(getRequest().getParameter("itemSetId"));
+		Integer testRosterId =  Integer.valueOf(getRequest().getParameter("rosterId"));
+		Integer score = Integer.valueOf(getRequest().getParameter("score"));
+		//System.out.println("user.getUserId(), itemId, itemSetId, testRosterId, score :: "+user.getUserId() + itemId +  itemSetId +  testRosterId +  score);
+	try {
+		 Boolean isSuccess = this.testScoring.saveOrUpdateScore(user.getUserId(), itemId, itemSetId, testRosterId, score);
+			
+		 
+		 
+		 jsonMessageResponse = JsonUtils.getJson(isSuccess, "SaveStatus",isSuccess.getClass());
+			
+			//System.out.println("jsonResponse:==>"+jsonMessageResponse);
+			//	getCRItemResponseForScoring
+			
+			   HttpServletResponse resp = this.getResponse();     
+			   resp.setContentType("application/json");
+	           resp.flushBuffer();
+		        OutputStream stream = resp.getOutputStream();
+		        stream.write(jsonMessageResponse.getBytes());
+		        stream.close();
+	
+	} catch (CTBBusinessException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+		return null;
+	}
+	
+	
+/*	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "beginDisplayStudItemList.do")
+	})
+	protected Forward saveDetails()
+	{      
+	 System.out.println("save details");
+		String itemType = getRequest().getParameter("itemType");
+		String itemId = getRequest().getParameter("itemId");
+		Integer itemSetId = Integer.valueOf(getRequest().getParameter("itemSetId"));
+		Integer testRosterId =  Integer.valueOf(getRequest().getParameter("rosterId"));
+	 
+	//	System.out.println("save details called" + user.getUserId() + " :: " + itemId + " :: " +form.getScorePoints());
+
+		return new Forward("success");
+	}
+	*/
 	
 	
 	/**
@@ -342,7 +442,7 @@ public class StudentScoringController extends PageFlowController {
 
 		try
 		{
-			this.user = this.studentManagement.getUserDetails(this.userName, this.userName);     
+			this.user = this.studentManagement.getUserDetails(this.userName, this.userName);   
 			this.customerId = user.getCustomer().getCustomerId();
 		}
 		catch (CTBBusinessException be)
@@ -491,8 +591,6 @@ public class StudentScoringController extends PageFlowController {
 		        SortParams sortParams = FilterSortPageUtils.buildSortParams("TestCatalogName", ColumnSortEntry.ASCENDING, null, null);            
 		       // tpd = this.scheduleTest.getTestProductsForUser(this.userName,null,null,sortParams);
 		        tpd = this.scheduleTest.getTestCatalogForUser(this.userName,null,null,sortParams);
-		        
-		        
 		        
 		        return tpd;
 		        
@@ -700,6 +798,22 @@ public class StudentScoringController extends PageFlowController {
         return pagerSummary;
     }
     
+    
+    private ScorableCRAnswerContent getIndividualCRResponse(String userName,
+			Integer testRosterId, Integer deliverableItemSetId, String itemId,
+			String itemType){
+    	ScorableCRAnswerContent answerArea = new ScorableCRAnswerContent();
+    	try{
+    		
+    		answerArea =  this.testScoring.getCRItemResponseForScoring(userName, testRosterId, deliverableItemSetId, itemId, itemType);
+    	}
+    	catch(CTBBusinessException be){
+    		be.printStackTrace();
+    	}
+    	
+    	
+    	return answerArea;
+    }
 	
 	/**
 	 * findByStudentProfile
@@ -812,6 +926,8 @@ public class StudentScoringController extends PageFlowController {
 	    private String accessCode = null;
 	    private String userName = null;
 	    private Integer testAdminId = null;
+	    
+	    private Integer scorePoints = null;
 		 
 
 		public StudentScoringForm()
@@ -1113,6 +1229,20 @@ public class StudentScoringController extends PageFlowController {
 		 */
 		public void setTestAdminId(Integer testAdminId) {
 			this.testAdminId = testAdminId;
+		}
+
+		/**
+		 * @return the scorePoints
+		 */
+		public Integer getScorePoints() {
+			return scorePoints;
+		}
+
+		/**
+		 * @param scorePoints the scorePoints to set
+		 */
+		public void setScorePoints(Integer scorePoints) {
+			this.scorePoints = scorePoints;
 		}  
 		
 	}
