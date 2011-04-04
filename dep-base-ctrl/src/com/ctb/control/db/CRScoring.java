@@ -47,7 +47,7 @@ public interface CRScoring extends JdbcControl {
 	 ScorableItem [] getAllScorableCRItemsForItemSet(Integer  testAdminId) throws SQLException;
 	 
 	//get response for AI item
-	 @JdbcControl.SQL(statement = "select   isr.constructed_response as constructedResponse from item_response_cr isr where isr.test_roster_id = {testRosterId}  and isr.item_set_id = {deliverableItemId}  and isr.item_id {itemId}",
+	 @JdbcControl.SQL(statement = "select   isr.constructed_response as constructedResponse from item_response_cr isr where isr.test_roster_id = {testRosterId}  and isr.item_set_id = {deliverableItemId}  and isr.item_id = {itemId}",
 			 arrayMaxLength = 0, fetchSize=1000)
 	 Clob getAIItemResponse(Integer  testRosterId, Integer  deliverableItemId, String  itemId) throws SQLException;
 	 
