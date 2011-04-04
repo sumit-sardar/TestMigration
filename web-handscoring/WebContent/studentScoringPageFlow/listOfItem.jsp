@@ -24,7 +24,7 @@ document.getElementById("itemId").value = itemId;
 document.getElementById("itemSetId").value = itemSetId;
 document.getElementById("itemNumber").value = itemNumber;
 document.getElementById("message").style.display = 'none';
-//updateScore(itemNumber);
+
 
 	//alert($("#formid").serialize());
 	$.ajax(
@@ -56,7 +56,7 @@ document.getElementById("message").style.display = 'none';
 								document.getElementById("crText").style.display='none';
 								document.getElementById("audioPlayer").style.display='inline';							
 								$("#audioPlayer").show();								
-								
+								updateScore(itemNumber);
 								}
 								else{
 								document.getElementById("itemType").value = "CR";								
@@ -67,7 +67,7 @@ document.getElementById("message").style.display = 'none';
 								    $("#audioPlayer").hide();
 									$("#crText").show();
 									$("#crText").val(crTextResponse);
-				
+								updateScore(itemNumber);
 								}									
 								//alert(data.var1);
 								//$("#fName").val(data.var1);
@@ -202,15 +202,18 @@ if($("#pointsDropDown option:selected").val() != ''){
 	}
 	
 	function updateScore(itemNumber){
-	
-	
 	var scoreStatusElement = document.getElementById("scoreStatus"+itemNumber);
+	var scorePointsElement = document.getElementById("scorePoints"+itemNumber);
 	if(scoreStatusElement.innerHTML =="complete"){
 		var select = document.getElementById('pointsDropDown');
-		//select.options.
-	
+		for(var i=1; i<= select.options.length; i++){
+			if(select.options[i].value == scorePointsElement.firstChild.nodeValue){
+			
+			select.options[i].selected = 'true';
+			}
+		
+		}
 	}
-	
 	}
 	
 	
