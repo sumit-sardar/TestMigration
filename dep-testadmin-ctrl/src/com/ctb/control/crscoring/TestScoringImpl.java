@@ -325,8 +325,8 @@ public class TestScoringImpl implements TestScoring {
 			String itemType) throws CTBBusinessException {
 		String[] itemResponse = null;
 		ScorableCRAnswerContent answerContent = new ScorableCRAnswerContent();
-		validator.validateRoster(userName, testRosterId,
-				"TestScoringImpl: getCRItemResponseForScoring");
+		/*validator.validateRoster(userName, testRosterId,
+				"TestScoringImpl: getCRItemResponseForScoring");*/
 
 		try {
 			if (itemType.equals("CR")) {
