@@ -26,16 +26,11 @@ document.getElementById("itemNumber").value = itemNumber;
 document.getElementById("message").style.display = 'none';
 
 
-	//alert($("#formid").serialize());
 	$.ajax(
 		{
 				async:		true,
 				beforeSend:	function(){
-								//show progress bar
-								//$("#showSuccessmessage").hide();
-								//$("#invalidRubricCharacterMessage").hide();
-								//blockUI();
-								//alert('before send....');
+
 							},
 				url:		'beginCRResponseDisplay.do',
 				type:		'POST',
@@ -45,29 +40,29 @@ document.getElementById("message").style.display = 'none';
 							
 								var isAudioItem = data.answer.isAudioItem;
 								if(isAudioItem){
-								
-								document.getElementById("itemType").value = "AI";
-								var audioResponseString = data.answer.audioItemContent;
-								audioResponseString = audioResponseString.substr(13);
-								audioResponseString = audioResponseString.split("%3C%2F");
-								document.getElementById("audioResponseString").value = audioResponseString[0];
-								openPopup(itemNumber);
-								$("#crText").hide();
-								document.getElementById("crText").style.display='none';
-								document.getElementById("audioPlayer").style.display='inline';							
-								$("#audioPlayer").show();								
-								updateScore(itemNumber);
+									//alert("isAudioItem : "+isAudioItem);								
+									document.getElementById("itemType").value = "AI";
+									var audioResponseString = data.answer.audioItemContent;
+									audioResponseString = audioResponseString.substr(13);
+									audioResponseString = audioResponseString.split("%3C%2F");
+									document.getElementById("audioResponseString").value = audioResponseString[0];
+									$("#crText").hide();
+									$("#audioPlayer").show();								
+									openPopup(itemNumber);
+									//document.getElementById("crText").style.display='none';
+									//document.getElementById("audioPlayer").style.display='inline';							
+									updateScore(itemNumber);
 								}
 								else{
-								document.getElementById("itemType").value = "CR";								
-								document.getElementById("audioPlayer").style.display='none';
-								document.getElementById("crText").style.display='inline';
-								var crTextResponse = data.answer.cRItemContent.string;
-								    openPopup(itemNumber);
+									document.getElementById("itemType").value = "CR";								
+									//document.getElementById("audioPlayer").style.display='none';
+									//document.getElementById("crText").style.display='inline';
+									var crTextResponse = data.answer.cRItemContent.string;
 								    $("#audioPlayer").hide();
 									$("#crText").show();
 									$("#crText").val(crTextResponse);
-								updateScore(itemNumber);
+								    openPopup(itemNumber);
+									updateScore(itemNumber);
 								}									
 								//alert(data.var1);
 								//$("#fName").val(data.var1);
@@ -158,32 +153,31 @@ if($("#pointsDropDown option:selected").val() != ''){
 
 
 
-		function openPopup(itemNumber) {
-				//alert("....................."+document.getElementById("dialogID"));
-				//alert($("#dialogID"));
-				var maxPointsElement = document.getElementById("maxPoints"+itemNumber);
-				var scoreCutOff = maxPointsElement.firstChild.nodeValue;
-				$("#dialogID").dialog();
-				updateMaxPoints(scoreCutOff);
-			}
-			function blockUI()
-			{	
-				$("body").append('<div id="blockDiv" style="background:url(/HandScoringWeb/resources/images/transparent.gif);position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"><img src="/HandScoringWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/></div>');
-				$("#blockDiv").css("cursor","wait");
-				openPopup(itemNumber);
-			}
+	function openPopup(itemNumber) {
+		var maxPointsElement = document.getElementById("maxPoints"+itemNumber);
+		var scoreCutOff = maxPointsElement.firstChild.nodeValue;
+		$("#dialogID").dialog();
+		updateMaxPoints(scoreCutOff);
+	}
+	
+	function blockUI()
+	{	
+		$("body").append('<div id="blockDiv" style="background:url(/HandScoringWeb/resources/images/transparent.gif);position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"><img src="/HandScoringWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/></div>');
+		$("#blockDiv").css("cursor","wait");
+		openPopup(itemNumber);
+	}
+	
+	function unblockUI()
+	{
+		$("#blockDiv").css("cursor","normal");
+		$("#blockDiv").remove();
+	}
+	
+	function closePopUp(){
+		$("#dialogID").dialog("close");
+	}
 			
-			function unblockUI()
-			{
-				$("#blockDiv").css("cursor","normal");
-				$("#blockDiv").remove();
-			}
-			function closePopUp(){
-			
-			$("#dialogID").dialog("close");
-			}
-			
-<!--This Function  will be called by javafx at runtime-->
+	//This Function  will be called by javafx at runtime
     function show_alert() {
     	var audioResponseString = document.getElementById("audioResponseString").value;
     	//alert("audio" + audioResponseString);
