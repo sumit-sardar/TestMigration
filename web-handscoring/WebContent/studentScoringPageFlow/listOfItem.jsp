@@ -156,7 +156,10 @@ if($("#pointsDropDown option:selected").val() != ''){
 	function openPopup(itemNumber) {
 		var maxPointsElement = document.getElementById("maxPoints"+itemNumber);
 		var scoreCutOff = maxPointsElement.firstChild.nodeValue;
-		$("#dialogID").dialog();
+		//var studentid = document.getElementById("studentName").innerHTML;
+		//var itemOrder = document.getElementById("itemSetOrder"+itemNumber).firstChild.nodeValue;
+		var titleString = "Item Scoring For Item No "+ itemNumber ;
+		$("#dialogID").dialog({title:titleString});
 		updateMaxPoints(scoreCutOff);
 	}
 	
@@ -452,9 +455,6 @@ selectbox.options.add(optn);
 					</table>
 					</td>
 				</tr>
-			</table>
-			</td>
-			</tr>
 			</table>
 
 			</div>
