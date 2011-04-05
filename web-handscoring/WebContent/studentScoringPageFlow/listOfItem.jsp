@@ -17,74 +17,71 @@
 
 <script>
 
-		function formSubmit(itemId, itemType, itemSetId, itemNumber) {
-		
-			var param = "&itemId="+itemId+"&itemType="+itemType+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val();
-			document.getElementById("itemId").value = itemId;
-			document.getElementById("itemSetId").value = itemSetId;
-			document.getElementById("itemNumber").value = itemNumber;
-			document.getElementById("message").style.display = 'none';
-		
-			$.ajax(
-				{
-						async:		false,
-						beforeSend:	function(){
-										blockUI();
-									
-									},
-						url:		'beginCRResponseDisplay.do',
-						type:		'POST',
-						data:		param,
-						dataType:	'json',
-						success:	function(data, textStatus, XMLHttpRequest){	
-										var crTextResponse = "";
-										var isAudioItem = data.answer.isAudioItem;
-										var linebreak ="\n\n";
-										if(isAudioItem){
-										
-											document.getElementById("itemType").value = "AI";
-											var audioResponseString = data.answer.audioItemContent;
-											audioResponseString = audioResponseString.substr(13);
-											audioResponseString = audioResponseString.split("%3C%2F");
-											document.getElementById("audioResponseString").value = audioResponseString[0];
-											openPopup(itemNumber);
-											$("#crText").hide();
-											document.getElementById("crText").style.display='none';
-											document.getElementById("audioPlayer").style.display='inline';							
-											$("#audioPlayer").show();								
-											updateScore(itemNumber);
-										}
-										else{
-											document.getElementById("itemType").value = "CR";								
-											document.getElementById("audioPlayer").style.display='none';
-											document.getElementById("crText").style.display='inline';
-											var crResponses =data.answer.cRItemContent.string.length;
-											alert(data.answer.cRItemContent.string[0]);
-											for(var i = 0; i < crResponses; i++){
-											if( i == (crResponses-1)){
+function formSubmit(itemId, itemType, itemSetId, itemNumber) {
+
+var param = "&itemId="+itemId+"&itemType="+itemType+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val();
+document.getElementById("itemId").value = itemId;
+document.getElementById("itemSetId").value = itemSetId;
+document.getElementById("itemNumber").value = itemNumber;
+document.getElementById("message").style.display = 'none';
+
+
+	$.ajax(
+		{
+				async:		false,
+				beforeSend:	function(){
+
+							},
+				url:		'beginCRResponseDisplay.do',
+				type:		'POST',
+				data:		param,
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){	
+							
+								var isAudioItem = data.answer.isAudioItem;
+								if(isAudioItem){
+									//alert("isAudioItem : "+isAudioItem);								
+									document.getElementById("itemType").value = "AI";
+									var audioResponseString = data.answer.audioItemContent;
+									audioResponseString = audioResponseString.substr(13);
+									audioResponseString = audioResponseString.split("%3C%2F");
+									document.getElementById("audioResponseString").value = audioResponseString[0];
+									$("#crText").hide();
+									$("#audioPlayer").show();								
+									openPopup(itemNumber);
+									//document.getElementById("crText").style.display='none';
+									//document.getElementById("audioPlayer").style.display='inline';							
+									updateScore(itemNumber);
+								}
+								else{
+									document.getElementById("itemType").value = "CR";								
+									//document.getElementById("audioPlayer").style.display='none';
+									//document.getElementById("crText").style.display='inline';
+									var crTextResponse = data.answer.cRItemContent.string;
+									for(var i = 0; i < crResponses; i++){
+										if( i == (crResponses-1)){
 											linebreak ="";
 										}
-										 crTextResponse = crTextResponse + data.answer.cRItemContent.string[i] + linebreak;
+										crTextResponse = crTextResponse + data.answer.cRItemContent.string[i] + linebreak;
 										
-										}
-																				
-										openPopup(itemNumber);
-										$("#audioPlayer").hide();
-										$("#crText").show();
-										$("#crText").val(crTextResponse);
-										updateScore(itemNumber);
-										}									
-									},
-						error  :    function(XMLHttpRequest, textStatus, errorThrown){
-										
-									},
-						complete :  function(){
-										//alert('after complete....');
-										unblockUI();
 									}
-				}
-			);
-			}
+								    $("#audioPlayer").hide();
+									$("#crText").show();
+									$("#crText").val(crTextResponse);
+								    openPopup(itemNumber);
+									updateScore(itemNumber);
+								}
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							
+							},
+				complete :  function(){
+								//alert('after complete....');
+								unblockUI();
+							}
+		}
+	);
+	}
 	
 	function notRedirect () {
 	
