@@ -106,7 +106,7 @@ public class WebUtils
 		
 		if (! validString(studentNumber) ) {
 		invalidCharFieldCount += 1;            
-		invalidCharFields = buildErrorString("StudentId", invalidCharFieldCount, invalidCharFields);      //Changed for GA2011CR001 
+		invalidCharFields = buildErrorString("Student ID", invalidCharFieldCount, invalidCharFields);      //Changed for GA2011CR001 
 		}
 		
         /* if (productName.equals(FilterSortPageUtils.FILTERTYPE_ANY_TESTNAME)) {
