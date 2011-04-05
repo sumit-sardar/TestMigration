@@ -208,7 +208,7 @@ document.getElementById("message").style.display = 'none';
 		var select = document.getElementById('pointsDropDown');
 		 select.options.length = 0; 
 		 addOption(select , "Please Select", "" );
-		  for(var i=0; i < scoreCutOff.length; i++) {  
+		  for(var i=0; i <= scoreCutOff.length; i++) {  
 		    addOption(select,i,i);
 		     } 
 		}
