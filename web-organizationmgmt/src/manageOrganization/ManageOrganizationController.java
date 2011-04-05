@@ -201,6 +201,7 @@ public class ManageOrganizationController extends PageFlowController
         getUserDetails();
         //For Bulk Accommodation
         customerHasBulkAccommodation();
+        customerHasScoring();//for scoring changes
         this.savedForm = initialize(globalApp.ACTION_FIND_ORGANIZATION);
         initHierarchy(this.savedForm);                
         this.globalApp.navPath.reset(globalApp.ACTION_FIND_ORGANIZATION);
