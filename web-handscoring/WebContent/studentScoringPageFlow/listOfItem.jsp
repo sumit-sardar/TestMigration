@@ -28,7 +28,7 @@ document.getElementById("message").style.display = 'none';
 
 	$.ajax(
 		{
-				async:		true,
+				async:		false,
 				beforeSend:	function(){
 
 							},
@@ -184,8 +184,6 @@ if($("#pointsDropDown option:selected").val() != ''){
 	function openPopup(itemNumber) {
 		var maxPointsElement = document.getElementById("maxPoints"+itemNumber);
 		var scoreCutOff = maxPointsElement.firstChild.nodeValue;
-		//var studentid = document.getElementById("studentName").innerHTML;
-		//var itemOrder = document.getElementById("itemSetOrder"+itemNumber).firstChild.nodeValue;
 		var titleString = "Item Scoring For Item No "+ itemNumber ;
 		$("#dialogID").dialog({title:titleString});
 		updateMaxPoints(scoreCutOff);
@@ -205,14 +203,17 @@ if($("#pointsDropDown option:selected").val() != ''){
 	}
 	
 	function closePopUp(){
+		stopAudio();
 		$("#dialogID").dialog("close");
 	}
 			
 	//This Function  will be called by javafx at runtime
     function show_alert() {
     	var audioResponseString = document.getElementById("audioResponseString").value;
+    	var regExp = /\s+/g;
+		var stringFX = audioResponseString.replace(regExp,'');
     	//alert("audio" + audioResponseString);
-    	return audioResponseString;
+    	return stringFX;
 	}
 	
 	function updateMaxPoints(scoreCutOff){
@@ -231,7 +232,7 @@ if($("#pointsDropDown option:selected").val() != ''){
 	var scorePointsElement = document.getElementById("scorePoints"+itemNumber);
 	if(scoreStatusElement.innerHTML =="complete"){
 		var select = document.getElementById('pointsDropDown');
-		for(var i=1; i<= select.options.length; i++){
+		for(var i=0; i< select.options.length; i++){
 			if(select.options[i].value == scorePointsElement.firstChild.nodeValue){
 			
 			select.options[i].selected = 'true';
@@ -261,13 +262,29 @@ selectbox.options.add(optn);
 	            width: 250,
 	            height: 80,
 	            code: "javafxapplication1.Main",
-	            name: "fxApp",
-	            id: "fxApp"
+	            name: "myApplet",
+	            id: "myApp"
 	    }
 	  );
 	  document.getElementById(parentObj).innerHTML = fxstring;
 	}
 
+function stopAudio(){
+
+	try {
+        var myApp = document.getElementById("myApp");
+        //alert(myApp.script.playCalledflag);
+        if(myApp.script.playCalledflag){
+        //alert(myApp.script.playCalledflag)
+        	myApp.script.stopAudio("");
+        }
+	}catch (e) {
+        
+    }
+       
+ }
+
+    
 /*function getPlayer(){
 
 	javafx(
@@ -452,10 +469,11 @@ selectbox.options.add(optn);
 					<td class="transparent" style="width: 90%;" id="dialogIdDiv">
 					
 					<textarea id="crText" width="70%" cols="100" rows="8" readonly="readonly"></textarea>
-					<div id="audioPlayer" width="200" height="200"><script>
-						getAudioPlayer('audioPlayer');
-						//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
-			</script></div>
+					<div id="audioPlayer" width="200" height="200">
+						<script>
+							getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
+						</script>
+					</div>
 					</td>
 				</tr>
 				<tr width="100%">
