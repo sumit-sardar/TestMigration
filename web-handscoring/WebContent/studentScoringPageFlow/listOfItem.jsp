@@ -79,6 +79,34 @@ document.getElementById("message").style.display = 'none';
 	);
 	}
 	
+	function notRedirect () {
+	
+		$.ajax(
+		{
+				async:		true,
+				beforeSend:	function(){
+
+							},
+				url:		'listOfItem.jsp',
+				type:		'GET',
+				data:		null,
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){	
+							
+								//do nothing
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								//alert(XMLHttpRequest.responseText+" http code"+XMLHttpRequest.statusCode);
+								//alert('XMLHttpRequest:'+XMLHttpRequest+'===>> textStatus:'+textStatus+'==>>errorThrown:'+errorThrown);
+							},
+				complete :  function(){
+								//alert('after complete....');
+								//unblockUI();
+							}
+		}
+	);
+	
+	}
 	
 function formSave() {
 var itemId =  document.getElementById("itemId").value ;
@@ -167,7 +195,7 @@ if($("#pointsDropDown option:selected").val() != ''){
 	{	
 		$("body").append('<div id="blockDiv" style="background:url(/HandScoringWeb/resources/images/transparent.gif);position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"><img src="/HandScoringWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/></div>');
 		$("#blockDiv").css("cursor","wait");
-		openPopup(itemNumber);
+		//openPopup(itemNumber);
 	}
 	
 	function unblockUI()
@@ -347,11 +375,7 @@ selectbox.options.add(optn);
 
 							<td class="sortable"><netui:span value="${container.item.itemSetOrder}" /></td>
 							<td class="sortable">
-							<%
-								String href = "beginDisplayStudItemList.do";
-							%> <netui:anchor href="<%= href %>">
-								<netui:span value="View" defaultValue="&nbsp;" />
-							</netui:anchor></td>
+							<a href="javascript:notRedirect()">View</a> 
 							<td class="sortable"><netui:span value="${container.item.itemSetName}" /></td>
 							<td class="sortable"><netui-data:getData resultId="itemNumber" value="${container.item.itemSetOrder}" /> 
 							<%	Integer itemNumber = (Integer) pageContext.getAttribute("itemNumber"); %>
@@ -420,16 +444,17 @@ selectbox.options.add(optn);
 			<!-- buttons -->
 			<p><netui:button type="submit" value="Back" action="returnToFindStudent" /></p>
 			<div id="dialogID"
-				style="display: none; width: 700px; height: 700px; background-color: #FFFFCC; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-			<table border="1" width="100%">
+				style="display: none; width: 1000px; height: 1000px; overflow:visible; background-color: #FFFFCC; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+			<table border="0" width="100%">
 
 				<tr width="100%">
 					<td class="transparent alignRight" style="width: 10%;"><span>&nbsp;<b> Answer :</b></span></td>
 					<td class="transparent" style="width: 90%;" id="dialogIdDiv">
 					
-					<textarea id="crText" width="70%" cols="100" rows="4" readonly="readonly"></textarea>
+					<textarea id="crText" width="70%" cols="100" rows="8" readonly="readonly"></textarea>
 					<div id="audioPlayer" width="200" height="200"><script>
-						getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
+						getAudioPlayer('audioPlayer');
+						//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
 			</script></div>
 					</td>
 				</tr>
