@@ -17,67 +17,74 @@
 
 <script>
 
-function formSubmit(itemId, itemType, itemSetId, itemNumber) {
-
-var param = "&itemId="+itemId+"&itemType="+itemType+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val();
-document.getElementById("itemId").value = itemId;
-document.getElementById("itemSetId").value = itemSetId;
-document.getElementById("itemNumber").value = itemNumber;
-document.getElementById("message").style.display = 'none';
-
-
-	$.ajax(
-		{
-				async:		false,
-				beforeSend:	function(){
-
-							},
-				url:		'beginCRResponseDisplay.do',
-				type:		'POST',
-				data:		param,
-				dataType:	'json',
-				success:	function(data, textStatus, XMLHttpRequest){	
-							
-								var isAudioItem = data.answer.isAudioItem;
-								if(isAudioItem){
-									//alert("isAudioItem : "+isAudioItem);								
-									document.getElementById("itemType").value = "AI";
-									var audioResponseString = data.answer.audioItemContent;
-									audioResponseString = audioResponseString.substr(13);
-									audioResponseString = audioResponseString.split("%3C%2F");
-									document.getElementById("audioResponseString").value = audioResponseString[0];
-									$("#crText").hide();
-									$("#audioPlayer").show();								
-									openPopup(itemNumber);
-									//document.getElementById("crText").style.display='none';
-									//document.getElementById("audioPlayer").style.display='inline';							
-									updateScore(itemNumber);
-								}
-								else{
-									document.getElementById("itemType").value = "CR";								
-									//document.getElementById("audioPlayer").style.display='none';
-									//document.getElementById("crText").style.display='inline';
-									var crTextResponse = data.answer.cRItemContent.string;
-								    $("#audioPlayer").hide();
-									$("#crText").show();
-									$("#crText").val(crTextResponse);
-								    openPopup(itemNumber);
-									updateScore(itemNumber);
-								}									
-								//alert(data.var1);
-								//$("#fName").val(data.var1);
-							},
-				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								//alert(XMLHttpRequest.responseText+" http code"+XMLHttpRequest.statusCode);
-								//alert('XMLHttpRequest:'+XMLHttpRequest+'===>> textStatus:'+textStatus+'==>>errorThrown:'+errorThrown);
-							},
-				complete :  function(){
-								//alert('after complete....');
-								//unblockUI();
-							}
-		}
-	);
-	}
+		function formSubmit(itemId, itemType, itemSetId, itemNumber) {
+		
+			var param = "&itemId="+itemId+"&itemType="+itemType+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val();
+			document.getElementById("itemId").value = itemId;
+			document.getElementById("itemSetId").value = itemSetId;
+			document.getElementById("itemNumber").value = itemNumber;
+			document.getElementById("message").style.display = 'none';
+		
+			$.ajax(
+				{
+						async:		false,
+						beforeSend:	function(){
+										blockUI();
+									
+									},
+						url:		'beginCRResponseDisplay.do',
+						type:		'POST',
+						data:		param,
+						dataType:	'json',
+						success:	function(data, textStatus, XMLHttpRequest){	
+										var crTextResponse = "";
+										var isAudioItem = data.answer.isAudioItem;
+										var linebreak ="\n\n";
+										if(isAudioItem){
+										
+											document.getElementById("itemType").value = "AI";
+											var audioResponseString = data.answer.audioItemContent;
+											audioResponseString = audioResponseString.substr(13);
+											audioResponseString = audioResponseString.split("%3C%2F");
+											document.getElementById("audioResponseString").value = audioResponseString[0];
+											openPopup(itemNumber);
+											$("#crText").hide();
+											document.getElementById("crText").style.display='none';
+											document.getElementById("audioPlayer").style.display='inline';							
+											$("#audioPlayer").show();								
+											updateScore(itemNumber);
+										}
+										else{
+											document.getElementById("itemType").value = "CR";								
+											document.getElementById("audioPlayer").style.display='none';
+											document.getElementById("crText").style.display='inline';
+											var crResponses =data.answer.cRItemContent.string.length;
+											alert(data.answer.cRItemContent.string[0]);
+											for(var i = 0; i < crResponses; i++){
+											if( i == (crResponses-1)){
+											linebreak ="";
+										}
+										 crTextResponse = crTextResponse + data.answer.cRItemContent.string[i] + linebreak;
+										
+										}
+																				
+										openPopup(itemNumber);
+										$("#audioPlayer").hide();
+										$("#crText").show();
+										$("#crText").val(crTextResponse);
+										updateScore(itemNumber);
+										}									
+									},
+						error  :    function(XMLHttpRequest, textStatus, errorThrown){
+										
+									},
+						complete :  function(){
+										//alert('after complete....');
+										unblockUI();
+									}
+				}
+			);
+			}
 	
 	function notRedirect () {
 	
@@ -108,106 +115,90 @@ document.getElementById("message").style.display = 'none';
 	
 	}
 	
-function formSave() {
-var itemId =  document.getElementById("itemId").value ;
-var itemSetId = document.getElementById("itemSetId").value  ;
-var itemNumber = document.getElementById("itemNumber").value;
+		function formSave() {
+			var itemId =  document.getElementById("itemId").value ;
+			var itemSetId = document.getElementById("itemSetId").value  ;
+			var itemNumber = document.getElementById("itemNumber").value;
+			var param = "&itemId="+itemId+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val() + "&score="+$("#pointsDropDown option:selected").val();    
+			var optionValue = $("#pointsDropDown option:selected").val();
+			
+			if(optionValue == null || optionValue == "" ){
+				document.getElementById("message").style.display = 'inline';
+				var spanElement = document.getElementById("messageSpan");
+				spanElement.innerHTML = "Please select a valid Score";
+			}
+		
+			if($("#pointsDropDown option:selected").val() != ''){
+					$.ajax(
+						{
+								async:		true,
+								beforeSend:	function(){
+											
+												blockUI();
+												//alert('before send....');
+											},
+								url:		'saveDetails.do',
+								type:		'POST',
+								data:		param,
+								dataType:	'json',
+								success:	function(data, textStatus, XMLHttpRequest){	
+													
+													var isSuccess = data.boolean;	
+													var spanElement = document.getElementById("messageSpan");
+													var scorePointsElement = document.getElementById("scorePoints"+itemNumber);
+													var scoreStatusElement = document.getElementById("scoreStatus"+itemNumber);
+													
+													if(isSuccess){
+														scorePointsElement.firstChild.nodeValue = $("#pointsDropDown option:selected").val();
+														scoreStatusElement.innerHTML = "complete"; 
+														document.getElementById("messageStatus").value = isSuccess;
+														document.getElementById("message").style.display = 'inline';	
+														spanElement.innerHTML = "<b> Item Scored Successfully </b>";
+													}
+													else{				
+														spanElement.innerHTML = "<b> Item Not Scored </b>";
+													}
+												
+											},
+								error  :    function(XMLHttpRequest, textStatus, errorThrown){
+												
+											},
+								complete :  function(){
+												//alert('after complete....');
+												unblockUI();
+											}
+						}
+					);
+				}
+			}
 
-var param = "&itemId="+itemId+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val() + "&score="+$("#pointsDropDown option:selected").val();    
-
-var optionValue = $("#pointsDropDown option:selected").val();
-if(optionValue == null || optionValue == "" ){
-document.getElementById("message").style.display = 'inline';
-var spanElement = document.getElementById("messageSpan");
-spanElement.innerHTML = "Please select a valid Score";
-}
-
-
-
-if($("#pointsDropDown option:selected").val() != ''){
-	$.ajax(
-		{
-				async:		true,
-				beforeSend:	function(){
-								//show progress bar
-								//$("#showSuccessmessage").hide();
-								//$("#invalidRubricCharacterMessage").hide();
-							//	blockUI();
-								//alert('before send....');
-							},
-				url:		'saveDetails.do',
-				type:		'POST',
-				data:		param,
-				dataType:	'json',
-				success:	function(data, textStatus, XMLHttpRequest){	
-									
-									var isSuccess = data.boolean;	
-									var spanElement = document.getElementById("messageSpan");
-									var scorePointsElement = document.getElementById("scorePoints"+itemNumber);
-									var scoreStatusElement = document.getElementById("scoreStatus"+itemNumber);
-									
-									if(isSuccess){
-								
-									scorePointsElement.firstChild.nodeValue = $("#pointsDropDown option:selected").val();
-									
-									scoreStatusElement.innerHTML = "complete"; 
-									
-									document.getElementById("messageStatus").value = isSuccess;
-									document.getElementById("message").style.display = 'inline';	
-																
-									spanElement.innerHTML = "<b> Item Scored Successfully </b>";
-									
-									}
-									else{				
-									spanElement.innerHTML = "<b> Item Not Scored </b>";
-									
-									}
-								
-							},
-				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								//alert(XMLHttpRequest.responseText+" http code"+XMLHttpRequest.statusCode);
-								//alert('XMLHttpRequest:'+XMLHttpRequest+'===>> textStatus:'+textStatus+'==>>errorThrown:'+errorThrown);
-							},
-				complete :  function(){
-								//alert('after complete....');
-							//	unblockUI();
-							}
+		function openPopup(itemNumber) {
+				var maxPointsElement = document.getElementById("maxPoints"+itemNumber);
+		        var scoreCutOff = maxPointsElement.firstChild.nodeValue;
+		        var titleString = "Item Scoring For Item No "+ itemNumber ;
+		        $("#dialogID").dialog({title:titleString});
+		        updateMaxPoints(scoreCutOff);
+				
 		}
-	);
-	}
-	}
-
-
-
-
-
-	function openPopup(itemNumber) {
-		var maxPointsElement = document.getElementById("maxPoints"+itemNumber);
-		var scoreCutOff = maxPointsElement.firstChild.nodeValue;
-		var titleString = "Item Scoring For Item No "+ itemNumber ;
-		$("#dialogID").dialog({title:titleString});
-		updateMaxPoints(scoreCutOff);
-	}
-	
-	function blockUI()
-	{	
-		$("body").append('<div id="blockDiv" style="background:url(/HandScoringWeb/resources/images/transparent.gif);position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"><img src="/HandScoringWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/></div>');
-		$("#blockDiv").css("cursor","wait");
-		//openPopup(itemNumber);
-	}
-	
-	function unblockUI()
-	{
-		$("#blockDiv").css("cursor","normal");
-		$("#blockDiv").remove();
-	}
-	
-	function closePopUp(){
+		function blockUI()
+		{	
+			$("body").append('<div id="blockDiv" style="background:url(/HandScoringWeb/resources/images/transparent.gif);position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"><img src="/HandScoringWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/></div>');
+			$("#blockDiv").css("cursor","wait");
+			
+		}
+			
+		function unblockUI()
+		{
+			$("#blockDiv").css("cursor","normal");
+			$("#blockDiv").remove();
+		}
+		function closePopUp(){
 		stopAudio();
 		$("#dialogID").dialog("close");
 	}
 			
-	//This Function  will be called by javafx at runtime
+	
+	 //This Function  will be called by javafx at runtime
     function show_alert() {
     	var audioResponseString = document.getElementById("audioResponseString").value;
     	var regExp = /\s+/g;
@@ -216,46 +207,38 @@ if($("#pointsDropDown option:selected").val() != ''){
     	return stringFX;
 	}
 	
-	function updateMaxPoints(scoreCutOff){
-	
-	var select = document.getElementById('pointsDropDown');
-	
-	 select.options.length = 0; 
-	 addOption(select , "Please Select", "" );
-	  for(var i=0; i <= scoreCutOff.length; i++) {  
-	    addOption(select,i,i);
-	     } 
-	}
-	
-	function updateScore(itemNumber){
-	var scoreStatusElement = document.getElementById("scoreStatus"+itemNumber);
-	var scorePointsElement = document.getElementById("scorePoints"+itemNumber);
-	if(scoreStatusElement.innerHTML =="complete"){
+		function updateMaxPoints(scoreCutOff){
 		var select = document.getElementById('pointsDropDown');
-		for(var i=0; i< select.options.length; i++){
-			if(select.options[i].value == scorePointsElement.firstChild.nodeValue){
-			
-			select.options[i].selected = 'true';
-			}
-		
+		 select.options.length = 0; 
+		 addOption(select , "Please Select", "" );
+		  for(var i=0; i < scoreCutOff.length; i++) {  
+		    addOption(select,i,i);
+		     } 
 		}
-	}
-	}
 	
+		function updateScore(itemNumber){
+			var scoreStatusElement = document.getElementById("scoreStatus"+itemNumber);
+			var scorePointsElement = document.getElementById("scorePoints"+itemNumber);
+			
+			if(scoreStatusElement.innerHTML =="complete"){
+				var select = document.getElementById('pointsDropDown');
+				for(var i=0; i< select.options.length; i++){
+					if(select.options[i].value == scorePointsElement.firstChild.nodeValue){
+					select.options[i].selected = 'true';
+					}
+				
+				}
+			}
+		}
 	
-	
-
-	
-function addOption(selectbox,text,value )
-{
-var optn = document.createElement("OPTION");
-optn.text = text;
-optn.value = value;
-
-selectbox.options.add(optn);
-}
-	
-	function getAudioPlayer(parentObj) {
+		function addOption(selectbox,text,value )
+		{
+			var optn = document.createElement("OPTION");
+			optn.text = text;
+			optn.value = value;
+			selectbox.options.add(optn);
+		}
+		function getAudioPlayer(parentObj) {
 	  var fxstring = javafxString(
 	    {
 	            archive: "JavaFXApplication1.jar",
@@ -284,21 +267,7 @@ function stopAudio(){
        
  }
 
-    
-/*function getPlayer(){
-
-	javafx(
-        {
-              archive: "JavaFXApplication1.jar",
-              width: 250,
-              height: 80,
-              code: "javafxapplication1.Main",
-              name: "fxApp",
-              id: "fxApp"
-        }
-    );
-   
-	}*/	
+		
 	
 </script>
 <%
@@ -394,18 +363,25 @@ function stopAudio(){
 							<td class="sortable">
 							<a href="javascript:notRedirect()">View</a> 
 							<td class="sortable"><netui:span value="${container.item.itemSetName}" /></td>
-							<td class="sortable"><netui-data:getData resultId="itemNumber" value="${container.item.itemSetOrder}" /> 
-							<%	Integer itemNumber = (Integer) pageContext.getAttribute("itemNumber"); %>
+							<td class="sortable"><netui-data:getData resultId="itemNumber" value="${container.item.itemSetOrder}" /> <%
+ 	Integer itemNumber = (Integer) pageContext
+ 								.getAttribute("itemNumber");
+ %>
 							<input name="ViewQuestion" type="button" value="View Question"
 								onclick="openViewQuestionWindow(<%=itemNumber%>); return true;" /></td>
-							<td class="sortable"><netui-data:getData resultId="itemtype" value="${container.item.itemType}" /> 
-							<%String itemtype = (String) pageContext.getAttribute("itemtype"); %>
-							<netui-data:getData resultId="itemSetId" value="${container.item.itemSetId}" /> 
-							<%	Integer itemSetId = (Integer) pageContext.getAttribute("itemSetId"); %>
-							<netui-data:getData resultId="itemId" value="${container.item.itemId}" /> 
-							<%	String itemId = (String) pageContext.getAttribute("itemId");%>
-							<netui-data:getData resultId="answered" value="${container.item.answered}" /> 
-							<c:if test="${itemtype =='AI'}">
+							<td class="sortable"><netui-data:getData resultId="itemtype" value="${container.item.itemType}" /> <%
+ 	String itemtype = (String) pageContext
+ 								.getAttribute("itemtype");
+ %>
+							<netui-data:getData resultId="itemSetId" value="${container.item.itemSetId}" /> <%
+ 	Integer itemSetId = (Integer) pageContext
+ 								.getAttribute("itemSetId");
+ %>
+							<netui-data:getData resultId="itemId" value="${container.item.itemId}" /> <%
+ 	String itemId = (String) pageContext
+ 								.getAttribute("itemId");
+ %>
+							<netui-data:getData resultId="answered" value="${container.item.answered}" /> <c:if test="${itemtype =='AI'}">
 								<c:if test="${answered == 'NA'}">
 									<input type="button" value="Audio Response" disabled="true" />
 								</c:if>
