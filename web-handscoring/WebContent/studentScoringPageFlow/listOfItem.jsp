@@ -12,76 +12,89 @@
 
 <script type="text/javascript" src="/HandScoringWeb/resources/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="/HandScoringWeb/resources/js/jquery-ui-1.8.10.custom.min.js"></script>
-<script src="http://dl.javafx.com/1.3/dtfx.js"></script>
+<script src="dtfx.js"></script>
 <link type="text/css" href="/HandScoringWeb/resources/css/jquery-ui-1.8.10.custom.css" rel="stylesheet" />
 
 <script>
-
+function stopAudio(){
+//alert("stopAudio");
+	try {
+        var myApp = document.getElementById("myApp");
+        //alert(myApp.script.playCalledflag);
+        if(myApp.script.playCalledflag){
+        //alert(myApp.script.playCalledflag)
+        	myApp.script.stopAudio("");
+        }
+	}catch (e) {
+        
+    }
+       
+ }
+ 
 function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 
-var param = "&itemId="+itemId+"&itemType="+itemType+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val();
-document.getElementById("itemId").value = itemId;
-document.getElementById("itemSetId").value = itemSetId;
-document.getElementById("itemNumber").value = itemNumber;
-document.getElementById("message").style.display = 'none';
+			var param = "&itemId="+itemId+"&itemType="+itemType+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val();
+			document.getElementById("itemId").value = itemId;
+			document.getElementById("itemSetId").value = itemSetId;
+			document.getElementById("itemNumber").value = itemNumber;
+			document.getElementById("message").style.display = 'none';
 
+			$.ajax(
+				{
+						async:		false,
+						beforeSend:	function(){
+										blockUI();
 
-	$.ajax(
-		{
-				async:		false,
-				beforeSend:	function(){
-
-							},
-				url:		'beginCRResponseDisplay.do',
-				type:		'POST',
-				data:		param,
-				dataType:	'json',
-				success:	function(data, textStatus, XMLHttpRequest){	
-							
-								var isAudioItem = data.answer.isAudioItem;
-								if(isAudioItem){
-									//alert("isAudioItem : "+isAudioItem);								
-									document.getElementById("itemType").value = "AI";
-									var audioResponseString = data.answer.audioItemContent;
-									audioResponseString = audioResponseString.substr(13);
-									audioResponseString = audioResponseString.split("%3C%2F");
-									document.getElementById("audioResponseString").value = audioResponseString[0];
-									$("#crText").hide();
-									$("#audioPlayer").show();								
-									openPopup(itemNumber);
-									//document.getElementById("crText").style.display='none';
-									//document.getElementById("audioPlayer").style.display='inline';							
-									updateScore(itemNumber);
-								}
-								else{
-									document.getElementById("itemType").value = "CR";								
-									//document.getElementById("audioPlayer").style.display='none';
-									//document.getElementById("crText").style.display='inline';
-									var crTextResponse = data.answer.cRItemContent.string;
-									for(var i = 0; i < crResponses; i++){
-										if( i == (crResponses-1)){
+									},
+						url:		'beginCRResponseDisplay.do',
+						type:		'POST',
+						data:		param,
+						dataType:	'json',
+						success:	function(data, textStatus, XMLHttpRequest){	
+										var crTextResponse = "";
+										var isAudioItem = data.answer.isAudioItem;
+										var linebreak ="\n\n";
+										//stopAudio();
+										if(isAudioItem){
+											document.getElementById("itemType").value = "AI";
+											var audioResponseString = data.answer.audioItemContent;
+											audioResponseString = audioResponseString.substr(13);
+											audioResponseString = audioResponseString.split("%3C%2F");
+											document.getElementById("audioResponseString").value = audioResponseString[0];
+											openPopup(itemNumber);
+											
+											$("#crText").hide();
+											$("#audioPlayer").show();								
+											updateScore(itemNumber);
+										}
+										else{
+											document.getElementById("itemType").value = "CR";								
+											var crResponses =data.answer.cRItemContent.string.length;
+											for(var i = 0; i < crResponses; i++){
+											if( i == (crResponses-1)){
 											linebreak ="";
 										}
-										crTextResponse = crTextResponse + data.answer.cRItemContent.string[i] + linebreak;
-										
+										 crTextResponse = crTextResponse + data.answer.cRItemContent.string[i] + linebreak;
+
+										}
+
+										openPopup(itemNumber);
+										$("#audioPlayer").hide();
+										$("#crText").show();
+										$("#crText").val(crTextResponse);
+										updateScore(itemNumber);
+										}									
+									},
+						error  :    function(XMLHttpRequest, textStatus, errorThrown){
+
+									},
+						complete :  function(){
+										//alert('after complete....');
+										unblockUI();
 									}
-								    $("#audioPlayer").hide();
-									$("#crText").show();
-									$("#crText").val(crTextResponse);
-								    openPopup(itemNumber);
-									updateScore(itemNumber);
-								}
-							},
-				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-							
-							},
-				complete :  function(){
-								//alert('after complete....');
-								unblockUI();
-							}
-		}
-	);
-	}
+				}
+			);
+			}
 	
 	function notRedirect () {
 	
@@ -173,7 +186,8 @@ document.getElementById("message").style.display = 'none';
 				var maxPointsElement = document.getElementById("maxPoints"+itemNumber);
 		        var scoreCutOff = maxPointsElement.firstChild.nodeValue;
 		        var titleString = "Item Scoring For Item No "+ itemNumber ;
-		        $("#dialogID").dialog({title:titleString});
+		        $("#dialogID").dialog({title:titleString, beforeclose: function(event, ui) { stopAudio(); } });
+		        //$("#dialogID").dialog({title:titleString});
 		        updateMaxPoints(scoreCutOff);
 				
 		}
@@ -190,9 +204,10 @@ document.getElementById("message").style.display = 'none';
 			$("#blockDiv").remove();
 		}
 		function closePopUp(){
-		stopAudio();
-		$("#dialogID").dialog("close");
-	}
+			//alert("closed");
+			stopAudio();
+			$("#dialogID").dialog("close");
+		}
 			
 	
 	 //This Function  will be called by javafx at runtime
@@ -249,20 +264,7 @@ document.getElementById("message").style.display = 'none';
 	  document.getElementById(parentObj).innerHTML = fxstring;
 	}
 
-function stopAudio(){
 
-	try {
-        var myApp = document.getElementById("myApp");
-        //alert(myApp.script.playCalledflag);
-        if(myApp.script.playCalledflag){
-        //alert(myApp.script.playCalledflag)
-        	myApp.script.stopAudio("");
-        }
-	}catch (e) {
-        
-    }
-       
- }
 
 		
 	
