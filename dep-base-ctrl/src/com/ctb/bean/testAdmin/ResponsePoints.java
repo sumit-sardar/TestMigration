@@ -4,11 +4,17 @@ import java.util.Date;
 
 import com.ctb.bean.CTBBean;
 
+/**
+ *  Data bean representing the contents of the response points
+ * @author TCS
+ * 
+ *
+ */
 public class ResponsePoints extends CTBBean {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer itemId;
+	private String itemId;
 	private Integer responseId;
 	private Integer datapointId;
 	private Integer point;
@@ -17,13 +23,13 @@ public class ResponsePoints extends CTBBean {
 	/**
 	 * @return the itemId
 	 */
-	public Integer getItemId() {
+	public String getItemId() {
 		return itemId;
 	}
 	/**
 	 * @param itemId the itemId to set
 	 */
-	public void setItemId(Integer itemId) {
+	public void setItemId(String itemId) {
 		this.itemId = itemId;
 	}
 	/**
