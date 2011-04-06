@@ -104,10 +104,11 @@ public class WebUtils
 		invalidCharFields = buildErrorString("Middle Name", invalidCharFieldCount, invalidCharFields);       
 		}
 		
-		if (! validString(studentNumber) ) {
-		invalidCharFieldCount += 1;            
-		invalidCharFields = buildErrorString("Student ID", invalidCharFieldCount, invalidCharFields);      //Changed for GA2011CR001 
-		}
+		
+		 if (! validString(studentNumber) ) {
+	            invalidCharFieldCount += 1;            
+	            invalidCharFields = buildErrorString(studentIdLabelName, invalidCharFieldCount, invalidCharFields);      //Changed for # 65980 
+	     }
 		
         /* if (productName.equals(FilterSortPageUtils.FILTERTYPE_ANY_TESTNAME)) {
              requiredFieldCount += 1;            
@@ -118,19 +119,7 @@ public class WebUtils
 		invalidCharFieldCount += 1;            
 		invalidCharFields = buildErrorString("Login ID", invalidCharFieldCount, invalidCharFields);       
 		}
-		/*if (requiredFieldCount > 0) {
-            if (requiredFieldCount == 1) {
-                requiredFields += ("<br/>" + Message.REQUIRED_TEXT);
-                setMessage("Missing required field", requiredFields, Message.ERROR);
-            }
-            else {
-                requiredFields += ("<br/>" + Message.REQUIRED_TEXT_MULTIPLE);
-                setMessage("Missing required fields", requiredFields, Message.ERROR);
-            }
-            return false;
-        }*/
-        
-		
+	
 		return invalidCharFields;
 		}
     

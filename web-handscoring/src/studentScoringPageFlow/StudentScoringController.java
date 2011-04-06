@@ -104,7 +104,10 @@ public class StudentScoringController extends PageFlowController {
 	
 	private StudentScoringForm savedForm = null;
 	private StudentProfileInformation studentSearch = null;
-	
+	//START -changes for defect # 65980
+	private String studentIdLabelName = "Student ID";
+	private boolean studentIdConfigurable = false;
+	//END -changes for defect # 65980
 	// customer configuration
 	CustomerConfiguration[] customerConfigurations = null;
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
@@ -168,7 +171,10 @@ public class StudentScoringController extends PageFlowController {
 	validationErrorForward = @Jpf.Forward(name = "failure",
 			path = "logout.do"))
 			protected Forward findStudent(StudentScoringForm form)
-	{    
+	{   
+		//START -changes for defect # 65980
+		isGeorgiaCustomer(form);
+		//END -changes for defect # 65980
 		form.validateValues();
 
 		String currentAction = form.getCurrentAction();
@@ -580,7 +586,71 @@ public class StudentScoringController extends PageFlowController {
 	  }
 	       
 	        
-	   
+	/*
+	 * //START -changes for defect # 65980
+	 * This method retrieve  the value of provide two customer configuration and their corresponding data in customer configuration value.
+	 */
+	private void isGeorgiaCustomer(StudentScoringForm form) 
+    {     
+		 boolean isStudentIdConfigurable = false;
+		 Integer configId=0;
+		
+		String []valueForStudentId = new String[8] ;
+		
+		for (int i=0; i < this.customerConfigurations.length; i++)
+	        {
+	            CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	           
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
+				{
+					isStudentIdConfigurable = true; 
+					configId = cc.getId();
+					customerConfigurationValues(configId);
+					//By default there should be 3 entries for customer configurations
+				valueForStudentId = new String[8];
+					for(int j=0; j<this.customerConfigurationsValue.length; j++){
+						int sortOrder = this.customerConfigurationsValue[j].getSortOrder();
+						valueForStudentId[sortOrder-1] = this.customerConfigurationsValue[j].getCustomerConfigurationValue();
+					}	
+				
+				this.studentIdConfigurable = isStudentIdConfigurable;
+				form.setStudentIdConfigurable(this.studentIdConfigurable);
+				
+					valueForStudentId = getDefaultValue(valueForStudentId,"Student ID", form);
+					
+				}
+	            
+	         }
+		
+		this.getRequest().setAttribute("studentIdArrValue",valueForStudentId);
+        this.getRequest().setAttribute("isStudentIdConfigurable",isStudentIdConfigurable);
+        
+    } 
+    //END -changes for defect # 65980
+	
+	/*
+	 * //START -changes for defect # 65980
+	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
+	 */
+	private String[] getDefaultValue(String [] arrValue, String labelName, StudentScoringForm form)
+	{
+		arrValue[0] = arrValue[0] != null ? arrValue[0]   : labelName ;
+		arrValue[1] = arrValue[1] != null ? arrValue[1]   : "32" ;
+		
+		
+		if(labelName.equals("Student ID")){
+			arrValue[2] = arrValue[2] != null ? arrValue[2]   : "F" ;
+			if(!arrValue[2].equals("T") && !arrValue[2].equals("F"))
+				{ 
+					arrValue[2]  = "F";
+				}
+			this.studentIdLabelName = arrValue[0];
+			form.setStudentIdLabelName(this.studentIdLabelName );
+			
+		}
+		return arrValue;
+	}
+	//END -changes for defect # 65980
 	
 	/**
 	 * getTestCatalogDataForUser
@@ -900,7 +970,6 @@ public class StudentScoringController extends PageFlowController {
 		private Integer selectedStudentId;
 		private Integer testRosterId;
 		private Integer itemSetId;
-		private String studentIdLabelName = "Student ID";
 		private Message message;
 		 private String selectedProductName;  
 		
@@ -928,7 +997,27 @@ public class StudentScoringController extends PageFlowController {
 	    private Integer testAdminId = null;
 	    
 	    private Integer scorePoints = null;
+	    //START -changes for defect # 65980
+	    private String studentIdLabelName = "Student ID";
+		private boolean studentIdConfigurable = false;
+		//END -changes for defect # 65980
 		 
+
+		
+
+		/**
+		 * @return the studentIdConfigurable
+		 */
+		public boolean isStudentIdConfigurable() {
+			return studentIdConfigurable;
+		}
+
+		/**
+		 * @param studentIdConfigurable the studentIdConfigurable to set
+		 */
+		public void setStudentIdConfigurable(boolean studentIdConfigurable) {
+			this.studentIdConfigurable = studentIdConfigurable;
+		}
 
 		public StudentScoringForm()
 		{
