@@ -30,7 +30,7 @@ function stopAudio(){
        
  }
  
-function formSubmit(itemId, itemType, itemSetId, itemNumber) {
+function formSubmit(itemId, itemType, itemSetId, itemNumber, rowno) {
 
 var isHidden = $('#dialogID').is(':hidden');  
 if(isHidden){		
@@ -39,6 +39,7 @@ if(isHidden){
 			document.getElementById("itemSetId").value = itemSetId;
 			document.getElementById("itemNumber").value = itemNumber;
 			document.getElementById("message").style.display = 'none';
+			document.getElementById("rowNo").value = rowno;
 
 			$.ajax(
 				{
@@ -67,12 +68,12 @@ if(isHidden){
 											//$("#crText").hide();
 											$("#audioPlayer").show();
 											getAudioPlayer('audioPlayer');
-											openPopup(itemNumber);
-																			
-											updateScore(itemNumber);
+											openPopup(rowno, itemNumber);
+											
+											updateScore(rowno);
 										}
 										else{
-											document.getElementById("itemType").value = "CR";								
+										document.getElementById("itemType").value = "CR";								
 											var crResponses =data.answer.cRItemContent.string.length;
 											for(var i = 0; i < crResponses; i++){
 											if( i == (crResponses-1)){
@@ -82,11 +83,12 @@ if(isHidden){
 										 crTextResponse = crTextResponse + data.answer.cRItemContent.string[i] + linebreak;
 
 										}
+
+										openPopup(rowno, itemNumber);
 										//$("#audioPlayer").hide();
-										openPopup(itemNumber);							
 										$("#crText").show();
 										$("#crText").val(crTextResponse);
-										updateScore(itemNumber);
+										updateScore(rowno);
 										}									
 									},
 						error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -134,6 +136,7 @@ if(isHidden){
 			var itemId =  document.getElementById("itemId").value ;
 			var itemSetId = document.getElementById("itemSetId").value  ;
 			var itemNumber = document.getElementById("itemNumber").value;
+			var rowno = document.getElementById("rowNo").value;
 			var param = "&itemId="+itemId+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val() + "&score="+$("#pointsDropDown option:selected").val();    
 			var optionValue = $("#pointsDropDown option:selected").val();
 			
@@ -160,12 +163,12 @@ if(isHidden){
 													
 													var isSuccess = data.boolean;	
 													var spanElement = document.getElementById("messageSpan");
-													var scorePointsElement = document.getElementById("scorePoints"+itemNumber);
-													var scoreStatusElement = document.getElementById("scoreStatus"+itemNumber);
+													var scorePointsElement = document.getElementById("scorePoints"+rowno);
+													var scoreStatusElement = document.getElementById("scoreStatus"+rowno);
 													
 													if(isSuccess){
 														scorePointsElement.firstChild.nodeValue = $("#pointsDropDown option:selected").val();
-														scoreStatusElement.innerHTML = "complete"; 
+														scoreStatusElement.innerHTML = "Complete"; 
 														document.getElementById("messageStatus").value = isSuccess;
 														document.getElementById("message").style.display = 'inline';	
 														spanElement.innerHTML = "<b> Item Scored Successfully </b>";
@@ -187,11 +190,11 @@ if(isHidden){
 				}
 			}
 
-		function openPopup(itemNumber) {
-				var maxPointsElement = document.getElementById("maxPoints"+itemNumber);
+		function openPopup(rowno, itemNumber) {
+				var maxPointsElement = document.getElementById("maxPoints"+rowno);
 		        var scoreCutOff = maxPointsElement.firstChild.nodeValue;
 		        var titleString = "Item Scoring For Item No "+ itemNumber ;
-		        $("#dialogID").dialog({title:titleString, beforeclose: function(event, ui) { stopAudio(); showScoreSelect("true");} });
+		      $("#dialogID").dialog({title:titleString, resizable:false, beforeclose: function(event, ui) { stopAudio(); showScoreSelect("true");} });
 		        //$("#dialogID").dialog({title:titleString});
 		        updateMaxPoints(scoreCutOff);
 				
@@ -229,19 +232,24 @@ if(isHidden){
 		var select = document.getElementById('pointsDropDown');
 		 select.options.length = 0; 
 		 addOption(select , "Please Select", "" );
-		  for(var i=0; i <= scoreCutOff.length; i++) {  
+		
+		  for(var i=0; i <= scoreCutOff; i++) {  
 		    addOption(select,i,i);
 		     } 
 		}
 	
-		function updateScore(itemNumber){
-			var scoreStatusElement = document.getElementById("scoreStatus"+itemNumber);
-			var scorePointsElement = document.getElementById("scorePoints"+itemNumber);
-			
-			if(scoreStatusElement.innerHTML =="Complete"){
+		function updateScore(rowno){
+		
+			var scoreStatusElement = document.getElementById("scoreStatus"+rowno);
+			var scorePointsElement = document.getElementById("scorePoints"+rowno);
+			var complete = scoreStatusElement.firstChild.nodeValue;
+				complete  = trim(complete);
+			if(complete =="Complete"){
+		
 				var select = document.getElementById('pointsDropDown');
+				
 				for(var i=0; i< select.options.length; i++){
-					if(select.options[i].value == scorePointsElement.firstChild.nodeValue){
+				if(select.options[i].value == trim(scorePointsElement.firstChild.nodeValue)){
 					select.options[i].selected = 'true';
 					}
 				
@@ -282,6 +290,21 @@ if(isHidden){
 	}
 	}
 		
+		
+		 
+	function trim(str, chars) {
+		return ltrim(rtrim(str, chars), chars);
+	}
+ 
+	function ltrim(str, chars) {
+		chars = chars || "\\s";
+		return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
+	}
+ 
+	function rtrim(str, chars) {
+		chars = chars || "\\s";
+		return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
+	}
 	
 </script>
 <%
@@ -317,6 +340,7 @@ if(isHidden){
 			<input type="hidden" id="messageStatus" />
 			<input type="hidden" id="itemType" />
 			<input type="hidden" id="audioResponseString" />
+			<input type="hidden" id="rowNo" />
 
 			<h2><netui:content value="${bundle.web['individualStudentScoring.StudentDetails.title']}" /></h2>
 			<table class="transparent" width="100%">
@@ -350,6 +374,7 @@ if(isHidden){
 			</table>
 			<br />
 			<table class="sortable" width="100%">
+			<% int rowId = 0; %>
 				<netui-data:repeater dataSource="requestScope.itemList">
 					<netui-data:repeaterHeader>
 
@@ -370,7 +395,7 @@ if(isHidden){
 
 					</netui-data:repeaterHeader>
 					<netui-data:repeaterItem>
-
+                       <%  rowId = rowId+1; %>
 						<tr class="sortable">
 
 							<td class="sortable"><netui:span value="${container.item.itemSetOrder}" /></td>
@@ -401,7 +426,7 @@ if(isHidden){
 								</c:if>
 								<c:if test="${answered == 'A'}">
 									<input type="button" value="Audio Response"
-										onclick="formSubmit('<%=itemId%>','<%=itemtype%>',<%=itemSetId%>,<%=itemNumber%>)" />
+										onclick="formSubmit('<%=itemId%>','<%=itemtype%>',<%=itemSetId%>,<%=itemNumber%>, <%=rowId%>)" />
 								</c:if>
 							</c:if> 
 							<c:if test="${itemtype =='CR'}">
@@ -410,7 +435,7 @@ if(isHidden){
 								</c:if>
 								<c:if test="${answered == 'A'}">
 									<input type="button" value="Text Response"
-										onclick="formSubmit('<%=itemId%>','<%=itemtype%>',<%=itemSetId%>,<%=itemNumber%>)" />
+										onclick="formSubmit('<%=itemId%>','<%=itemtype%>',<%=itemSetId%>,<%=itemNumber%>, <%=rowId%>)" />
 								</c:if>
 							</c:if>
 							</td>
@@ -420,18 +445,22 @@ if(isHidden){
 							</c:if> <c:if test="${isanswered =='A'}">
 								<netui:span value="Answered" />
 							</c:if></td>
-							<td class="sortable"><netui:span tagId="scoreStatus${container.item.itemSetOrder}"
-								value="${container.item.scoreStatus}" /></td>
-							<td class="sortable"><netui:span tagId="maxPoints${container.item.itemSetOrder}"
-								value="${container.item.maxPoints}" /></td>
+							<%String scoreStatus= "scoreStatus"+rowId;%>
+							<td class="sortable"><span id='<%=scoreStatus%>'
+								 >${container.item.scoreStatus} </span></td>
+							<%String maxPoints= "maxPoints"+rowId;%>
+							<td class="sortable"><span id='<%=maxPoints%>'
+								>${container.item.maxPoints}</span></td>
 								
 							<td class="sortable">
 							<netui-data:getData resultId="isCompleted" value="${container.item.scoreStatus}" />
+							<%String scorePoints= "scorePoints"+rowId;%>
 							<c:if test="${isCompleted == 'Complete'}">
-								<netui:span tagId="scorePoints${container.item.itemSetOrder}" value="${container.item.scorePoint}" />
+								<span id="<%=scorePoints%>">
+								${container.item.scorePoint}</span>
 							</c:if>
 							<c:if test="${isCompleted =='Incomplete'}">
-								<netui:span tagId="scorePoints${container.item.itemSetOrder}" value="-" />
+								<span id="<%=scorePoints%>"> -</span>
 							</c:if>
 							</td>
 						</tr>
@@ -466,7 +495,7 @@ if(isHidden){
 					<td class="transparent alignRight" style="width: 10%;"><span>&nbsp;<b> Answer :</b></span></td>
 					<td class="transparent" style="width: 90%;" id="dialogIdDiv">
 					
-					<textarea id="crText" width="70%" cols="100" rows="8" readonly="readonly" style="padding-left:27px;"></textarea>
+					<textarea id="crText" width="70%" cols="85" rows="8" readonly="readonly" style="padding-left:27px;"></textarea>
 					<div id="audioPlayer">
 						<script>
 							//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
@@ -477,7 +506,8 @@ if(isHidden){
 				<tr width="100%">
 					<td class="transparent alignRight" style="width: 10%;"><span>&nbsp;<b> Score :</b></span></td>
 					<td class="transparent" style="width: 90%;">
-					<div style="padding-left:27px;"><netui:select tagId="pointsDropDown" datasource="actionForm.scorePoints" /></div>
+
+					<div><netui:select tagId="pointsDropDown" datasource="actionForm.scorePoints" /></div>
 					</td>
 				</tr>
 				<tr width="100%">
