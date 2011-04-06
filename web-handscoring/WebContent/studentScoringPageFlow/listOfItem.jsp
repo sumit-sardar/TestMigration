@@ -43,7 +43,7 @@ if(isHidden){
 
 			$.ajax(
 				{
-						async:		false,
+						async:		true,
 						beforeSend:	function(){
 										blockUI();
 										$("#audioPlayer").hide();
@@ -493,7 +493,7 @@ if(isHidden){
 
 				<tr width="100%">
 					<td class="transparent alignRight" style="width: 10%;"><span>&nbsp;<b> Answer :</b></span></td>
-					<td class="transparent" style="width: 90%;" id="dialogIdDiv">
+					<td class="transparent" style="width: 90%;padding-left:5px;" id="dialogIdDiv">
 					
 					<textarea id="crText" width="70%" cols="85" rows="8" readonly="readonly" style="padding-left:27px;"></textarea>
 					<div id="audioPlayer">
