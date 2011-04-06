@@ -41,7 +41,7 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 
 			$.ajax(
 				{
-						async:		false,
+						async:		true,
 						beforeSend:	function(){
 										blockUI();
 
@@ -409,8 +409,16 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 								value="${container.item.scoreStatus}" /></td>
 							<td class="sortable"><netui:span tagId="maxPoints${container.item.itemSetOrder}"
 								value="${container.item.maxPoints}" /></td>
-							<td class="sortable"><netui:span tagId="scorePoints${container.item.itemSetOrder}"
-								value="${container.item.scorePoint}" /></td>
+								
+							<td class="sortable">
+							<netui-data:getData resultId="isCompleted" value="${container.item.scoreStatus}" />
+							<c:if test="${isCompleted == 'Complete'}">
+								<netui:span tagId="scorePoints${container.item.itemSetOrder}" value="${container.item.scorePoint}" />
+							</c:if>
+							<c:if test="${isCompleted =='Incomplete'}">
+								<netui:span tagId="scorePoints${container.item.itemSetOrder}" value="-" />
+							</c:if>
+							</td>
 						</tr>
 
 					</netui-data:repeaterItem>
