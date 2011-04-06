@@ -17,14 +17,13 @@
 
 <script>
 function stopAudio(){
-//alert("stopAudio");
 	try {
         var myApp = document.getElementById("myApp");
-        //alert(myApp.script.playCalledflag);
         if(myApp.script.playCalledflag){
-        //alert(myApp.script.playCalledflag)
         	myApp.script.stopAudio("");
         }
+        myApp.script.stop.disable = true;
+        myApp.script.pause.disable = true;
 	}catch (e) {
         
     }
@@ -33,6 +32,8 @@ function stopAudio(){
  
 function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 
+var isHidden = $('#dialogID').is(':hidden');  
+if(isHidden){		
 			var param = "&itemId="+itemId+"&itemType="+itemType+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val();
 			document.getElementById("itemId").value = itemId;
 			document.getElementById("itemSetId").value = itemSetId;
@@ -41,10 +42,11 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 
 			$.ajax(
 				{
-						async:		true,
+						async:		false,
 						beforeSend:	function(){
 										blockUI();
-
+										$("#audioPlayer").hide();
+										$("#crText").hide();
 									},
 						url:		'beginCRResponseDisplay.do',
 						type:		'POST',
@@ -54,17 +56,19 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 										var crTextResponse = "";
 										var isAudioItem = data.answer.isAudioItem;
 										var linebreak ="\n\n";
-										//stopAudio();
+										
 										if(isAudioItem){
 											document.getElementById("itemType").value = "AI";
 											var audioResponseString = data.answer.audioItemContent;
 											audioResponseString = audioResponseString.substr(13);
 											audioResponseString = audioResponseString.split("%3C%2F");
 											document.getElementById("audioResponseString").value = audioResponseString[0];
+											document.getElementById("pointsDropDown").setAttribute("disabled",true);
+											//$("#crText").hide();
+											$("#audioPlayer").show();
+											getAudioPlayer('audioPlayer');
 											openPopup(itemNumber);
-											
-											$("#crText").hide();
-											$("#audioPlayer").show();								
+																			
 											updateScore(itemNumber);
 										}
 										else{
@@ -73,13 +77,13 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 											for(var i = 0; i < crResponses; i++){
 											if( i == (crResponses-1)){
 											linebreak ="";
+											document.getElementById("pointsDropDown").removeAttribute("disabled");
 										}
 										 crTextResponse = crTextResponse + data.answer.cRItemContent.string[i] + linebreak;
 
 										}
-
-										openPopup(itemNumber);
-										$("#audioPlayer").hide();
+										//$("#audioPlayer").hide();
+										openPopup(itemNumber);							
 										$("#crText").show();
 										$("#crText").val(crTextResponse);
 										updateScore(itemNumber);
@@ -94,6 +98,7 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 									}
 				}
 			);
+			}
 			}
 	
 	function notRedirect () {
@@ -186,7 +191,7 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 				var maxPointsElement = document.getElementById("maxPoints"+itemNumber);
 		        var scoreCutOff = maxPointsElement.firstChild.nodeValue;
 		        var titleString = "Item Scoring For Item No "+ itemNumber ;
-		        $("#dialogID").dialog({title:titleString, beforeclose: function(event, ui) { stopAudio(); } });
+		        $("#dialogID").dialog({title:titleString, beforeclose: function(event, ui) { stopAudio(); showScoreSelect("true");} });
 		        //$("#dialogID").dialog({title:titleString});
 		        updateMaxPoints(scoreCutOff);
 				
@@ -206,6 +211,7 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 		function closePopUp(){
 			//alert("closed");
 			stopAudio();
+			//document.getElementById("pointsDropDown").setAttribute("disabled",true);
 			$("#dialogID").dialog("close");
 		}
 			
@@ -232,7 +238,7 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 			var scoreStatusElement = document.getElementById("scoreStatus"+itemNumber);
 			var scorePointsElement = document.getElementById("scorePoints"+itemNumber);
 			
-			if(scoreStatusElement.innerHTML =="complete"){
+			if(scoreStatusElement.innerHTML =="Complete"){
 				var select = document.getElementById('pointsDropDown');
 				for(var i=0; i< select.options.length; i++){
 					if(select.options[i].value == scorePointsElement.firstChild.nodeValue){
@@ -250,10 +256,12 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 			optn.value = value;
 			selectbox.options.add(optn);
 		}
-		function getAudioPlayer(parentObj) {
+	
+	function getAudioPlayer(parentObj) {
 	  var fxstring = javafxString(
 	    {
 	            archive: "JavaFXApplication1.jar",
+	            visible: false,	            
 	            width: 250,
 	            height: 80,
 	            code: "javafxapplication1.Main",
@@ -265,7 +273,14 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 	}
 
 
-
+	function showScoreSelect(disableStatus){
+	if(document.getElementById("itemType").value == "AI"){
+		if(disableStatus == "true")
+			document.getElementById("pointsDropDown").setAttribute("disabled",true);
+		else
+			document.getElementById("pointsDropDown").removeAttribute("disabled");
+	}
+	}
 		
 	
 </script>
@@ -439,7 +454,7 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 					<netui:content value="${requestScope.itemSearchResultEmpty}" />
 				</ctb:message>
 			</c:if>
-			</br>
+			<br>
 
 			<!-- buttons -->
 			<p><netui:button type="submit" value="Back" action="returnToFindStudent" /></p>
@@ -451,10 +466,10 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 					<td class="transparent alignRight" style="width: 10%;"><span>&nbsp;<b> Answer :</b></span></td>
 					<td class="transparent" style="width: 90%;" id="dialogIdDiv">
 					
-					<textarea id="crText" width="70%" cols="100" rows="8" readonly="readonly"></textarea>
-					<div id="audioPlayer" width="200" height="200">
+					<textarea id="crText" width="70%" cols="100" rows="8" readonly="readonly" style="padding-left:27px;"></textarea>
+					<div id="audioPlayer">
 						<script>
-							getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
+							//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
 						</script>
 					</div>
 					</td>
@@ -462,8 +477,7 @@ function formSubmit(itemId, itemType, itemSetId, itemNumber) {
 				<tr width="100%">
 					<td class="transparent alignRight" style="width: 10%;"><span>&nbsp;<b> Score :</b></span></td>
 					<td class="transparent" style="width: 90%;">
-
-					<div><netui:select tagId="pointsDropDown" datasource="actionForm.scorePoints" /></div>
+					<div style="padding-left:27px;"><netui:select tagId="pointsDropDown" datasource="actionForm.scorePoints" /></div>
 					</td>
 				</tr>
 				<tr width="100%">
