@@ -498,7 +498,7 @@ if(isHidden){
 					<td class="transparent alignRight" style="width: 10%;"><span>&nbsp;<b> Answer :</b></span></td>
 					<td class="transparent" style="width: 90%;padding-left:5px;" id="dialogIdDiv">
 					
-					<textarea id="crText" width="70%" cols="85" rows="8" readonly="readonly" style="padding-left:27px;"></textarea>
+					<textarea id="crText" width="70%" cols="85" rows="8" readonly="readonly"></textarea>
 					<div id="audioPlayer">
 						<script>
 							//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
