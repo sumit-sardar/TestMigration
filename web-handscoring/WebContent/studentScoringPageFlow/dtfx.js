@@ -1,5 +1,5 @@
-var runtime_codebase = "";
-var runtime_url = "";
+var runtime_codebase = "http://dl.javafx.com/1.3/";
+var runtime_url = "http://dl.javafx.com/1.3/";
 var idCounter = 0;
 var pingEnable = false;
 var timedPings = 10;
