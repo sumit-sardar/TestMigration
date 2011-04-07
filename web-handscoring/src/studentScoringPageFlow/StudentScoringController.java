@@ -347,10 +347,13 @@ public class StudentScoringController extends PageFlowController {
 		return null;
 		
 	}
+	
+	//changes for defect #66003
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
-					path = "/itemPlayer/ItemPlayerController.jpf")
-	})
+					path ="/itemPlayer/ItemPlayerController.jpf")}, 
+	validationErrorForward = @Jpf.Forward(name = "failure",
+			path = "logout.do"))
 	protected Forward viewQuestionWindow()
 	{      
 		String param = getRequest().getParameter("param");

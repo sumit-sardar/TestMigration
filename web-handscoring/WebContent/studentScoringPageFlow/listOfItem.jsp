@@ -92,7 +92,9 @@ if(isHidden){
 										}									
 									},
 						error  :    function(XMLHttpRequest, textStatus, errorThrown){
-
+										//changes for defect #66003
+										window.location.href="/TestSessionInfoWeb/logout.do";
+										
 									},
 						complete :  function(){
 										//alert('after complete....');
@@ -179,7 +181,8 @@ if(isHidden){
 												
 											},
 								error  :    function(XMLHttpRequest, textStatus, errorThrown){
-												
+												//changes for defect #66003
+												window.location.href="/TestSessionInfoWeb/logout.do";
 											},
 								complete :  function(){
 												//alert('after complete....');
