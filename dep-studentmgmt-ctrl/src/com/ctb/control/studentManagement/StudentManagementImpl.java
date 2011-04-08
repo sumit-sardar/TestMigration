@@ -1035,14 +1035,15 @@ public class StudentManagementImpl implements StudentManagement
 				totalCount = studentTotalCount.length;
 			}
 			String orderByClause = "";
-			if (sort != null) {
+			/*if (sort != null) {
 				orderByClause = DynamicSQLUtils.generateOrderByClauseForSorter(sort);                
 				sort = null;
-			}
-			searchCriteria = searchCriteria + orderByClause;
+			}*/
+			
+			//searchCriteria = searchCriteria + orderByClause;
 			ManageStudent [] students = null;
             
-           students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForScoring(userName, catalogId, searchCriteria);
+           students = studentManagement.getStudentsAtAndBelowUserTopNodeWithSearchCriteriaForScoring(userName, catalogId,searchCriteria);
            for(ManageStudent student : students) {
         	   student.setScoringStatus( studentManagement.getScoringStatus(student.getRosterId(), student.getItemSetIdTC()));
            }
