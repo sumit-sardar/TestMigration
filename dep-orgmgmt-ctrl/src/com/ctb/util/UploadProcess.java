@@ -430,7 +430,12 @@ public class UploadProcess extends BatchProcessor.Process
                                                     
         
         } catch (Exception e) {
-            
+            dataFileAudit.setStatus("FL");
+            try{
+               uploadDataFile.upDateAuditTable(dataFileAudit);
+            } catch (SQLException ex) {
+               ex.printStackTrace();
+            }
             e.printStackTrace();    
         }
     
