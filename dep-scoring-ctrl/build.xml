@@ -1,158 +1,258 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- WARNING: Eclipse auto-generated file.
-              Any modifications will be overwritten.
-              To include a user specific buildfile here, simply create one in the same
-              directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. -->
-<project basedir="." default="build" name="dep-scoring-ctrl">
+<project default="build">
+  
+  <description>
+    Project build script. All public targets require the "workspace" property to be
+    set at invocation. It can either point at the Eclipse workspace directory that
+    this project belongs to or an exported workspace.xml file. The wl.home property
+    may also need to be specified unless WL_HOME environment variable is defined.
+    The workshop.home property may also need to be specified unless WORKSHOP_HOME
+    environment variable is defined.
+  </description>
+  
+  <target name="init.env" unless="init.env.executed">
+    <property name="init.env.executed" value="true"/>
     <property environment="env"/>
-    <property name="dep-scoring-ejb.location" value="../dep-scoring-ejb"/>
-    <property name="ECLIPSE_HOME" value="../../../../tools/eclipse_pkgs/2.0/eclipse_3.3.2/eclipse"/>
-    <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.6"/>
-    <property name="source" value="1.6"/>
-    <path id="WebLogic System Libraries.libraryclasspath">
-        <pathelement location="C:/bea10/wlserver_10.3/server/lib/api.jar"/>
-        <pathelement location="C:/bea10/modules/glassfish.jstl_1.2.0.1.jar"/>
-        <pathelement location="C:/bea10/modules/javax.jsf_1.2.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/javax.ejb_3.0.1.jar"/>
-        <pathelement location="C:/bea10/modules/javax.enterprise.deploy_1.2.jar"/>
-        <pathelement location="C:/bea10/modules/javax.interceptor_1.0.jar"/>
-        <pathelement location="C:/bea10/modules/javax.jms_1.1.1.jar"/>
-        <pathelement location="C:/bea10/modules/javax.jsp_1.1.0.0_2-1.jar"/>
-        <pathelement location="C:/bea10/modules/javax.jws_2.0.jar"/>
-        <pathelement location="C:/bea10/modules/javax.activation_1.1.0.0_1-1.jar"/>
-        <pathelement location="C:/bea10/modules/javax.mail_1.1.0.0_1-1.jar"/>
-        <pathelement location="C:/bea10/modules/javax.xml.soap_1.3.1.0.jar"/>
-        <pathelement location="C:/bea10/modules/javax.xml.rpc_1.2.1.jar"/>
-        <pathelement location="C:/bea10/modules/javax.xml.ws_2.1.1.jar"/>
-        <pathelement location="C:/bea10/modules/javax.management.j2ee_1.0.jar"/>
-        <pathelement location="C:/bea10/modules/javax.resource_1.5.1.jar"/>
-        <pathelement location="C:/bea10/modules/javax.servlet_1.0.0.0_2-5.jar"/>
-        <pathelement location="C:/bea10/modules/javax.transaction_1.0.0.0_1-1.jar"/>
-        <pathelement location="C:/bea10/modules/javax.xml.stream_1.1.1.0.jar"/>
-        <pathelement location="C:/bea10/modules/javax.security.jacc_1.0.0.0_1-1.jar"/>
-        <pathelement location="C:/bea10/modules/javax.xml.registry_1.0.0.0_1-0.jar"/>
-        <pathelement location="C:/bea10/wlserver_10.3/server/lib/wls-api.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.apache_1.2.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.i18n_1.4.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.logging_1.4.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.utils.full_1.4.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.utils.wrapper_1.3.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.utils.classloaders_1.4.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.common.security.providers.env_1.0.0.0_5-0-2-0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.common.security.saml2.manage_1.0.0.0_5-0-2-0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.weblogic.web.api_1.2.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.weblogic.rmi.client_1.4.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.transaction_2.5.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.workarea_1.4.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.xml.weblogic.xpath_1.1.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.datasource6_1.4.0.0.jar"/>
-        <pathelement location="C:/bea10/modules/com.bea.core.weblogic.stax_1.4.0.0.jar"/>
-        <pathelement location="C:/bea10/wlserver_10.3/server/lib/webservices.jar"/>
-        <pathelement location="C:/bea10/wlserver_10.3/server/lib/webserviceclient.jar"/>
-    </path>
-    <path id="EAR Libraries.libraryclasspath"/>
-    <path id="Enterprise Application Libraries [application-scoring].libraryclasspath">
-        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/commons-beanutils.jar"/>
-        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/commons-lang-2.4.jar"/>
-        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/commons-logging.jar"/>
-        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/ibatis-common-2.jar"/>
-        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/ibatis-sqlmap-2.jar"/>
-        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/jdom.jar"/>
-        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/junit.jar"/>
-        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/junitperf.jar"/>
-        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/ojdbc14.jar"/>
-        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/weblogic-jdbc-control.jar"/>
-        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/classes"/>
-    </path>
-    <path id="Shared Library [beehive-controls-1.0.1-10.0].libraryclasspath">
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/beehive-controls.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/beehive-ejb-control.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/beehive-jdbc-control.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/beehive-jms-control.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/commons-codec-1.3.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/commons-discovery.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/commons-logging.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/log4j-1.2.8.jar"/>
-    </path>
-    <path id="Apache XMLBeans v2.3.libraryclasspath">
-        <pathelement location="../../../../tools/eclipse_pkgs/2.0/pkgs/eclipse/plugins/com.bea.workshop.thirdparty.xmlbeans.v23_1.2.0.20080711173356.jar"/>
-    </path>
-    <path id="Shared Library [weblogic-controls-10.0].libraryclasspath">
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/weblogic-controls-10.0_10.0_10.2/1/APP-INF/lib/weblogic-controls.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/weblogic-controls-10.0_10.0_10.2/1/APP-INF/lib/weblogic-ejb3-control.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/weblogic-controls-10.0_10.0_10.2/1/APP-INF/lib/weblogic-webservice-control.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/weblogic-controls-10.0_10.0_10.2/1/APP-INF/lib/wlcommons-logging.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/weblogic-controls-10.0_10.0_10.2/1/weblogic-timer-control.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/weblogic-controls-10.0_10.0_10.2/1/weblogic-messagebuffer-mdb.jar"/>
-    </path>
-    <path id="Shared Library [wls-commonslogging-bridge].libraryclasspath">
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/wls-commonslogging-bridge_1.0_1.1/1/APP-INF/lib/commons-logging.jar"/>
-        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/wls-commonslogging-bridge_1.0_1.1/1/APP-INF/lib/wlcommons-logging.jar"/>
-    </path>
-    <path id="dep-scoring-ctrl.classpath">
-        <pathelement location="build/classes"/>
-        <path refid="WebLogic System Libraries.libraryclasspath"/>
-        <path refid="EAR Libraries.libraryclasspath"/>
-        <path refid="Enterprise Application Libraries [application-scoring].libraryclasspath"/>
-        <path refid="Shared Library [beehive-controls-1.0.1-10.0].libraryclasspath"/>
-        <path refid="Apache XMLBeans v2.3.libraryclasspath"/>
-        <path refid="Shared Library [weblogic-controls-10.0].libraryclasspath"/>
-        <path refid="Shared Library [wls-commonslogging-bridge].libraryclasspath"/>
-    </path>
-    <target name="init">
-        <mkdir dir="build/classes"/>
-        <copy includeemptydirs="false" todir="build/classes">
-            <fileset dir="src" excludes="**/*.launch, **/*.java"/>
-        </copy>
-        <copy includeemptydirs="false" todir="build/classes">
-            <fileset dir="build/assembly/.src" excludes="**/*.launch, **/*.java"/>
-        </copy>
-        <copy includeemptydirs="false" todir="build/classes">
-            <fileset dir=".apt_src" excludes="**/*.launch, **/*.java"/>
-        </copy>
-    </target>
-    <target name="clean">
-        <delete dir="build/classes"/>
-    </target>
-    <target depends="clean" name="cleanall"/>
-    <target depends="build-subprojects,build-project" name="build"/>
-    <target name="build-subprojects"/>
-    <target depends="init" name="build-project">
-        <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="build/classes" source="${source}" target="${target}">
-            <src path="src"/>
-            <classpath refid="dep-scoring-ctrl.classpath"/>
-        </javac>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="build/classes" source="${source}" target="${target}">
-            <src path="build/assembly/.src"/>
-            <classpath refid="dep-scoring-ctrl.classpath"/>
-        </javac>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="build/classes" source="${source}" target="${target}">
-            <src path=".apt_src"/>
-            <classpath refid="dep-scoring-ctrl.classpath"/>
-        </javac>
-    </target>
-    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
-        <ant antfile="${dep-scoring-ejb.location}/build.xml" inheritAll="false" target="clean"/>
-        <ant antfile="${dep-scoring-ejb.location}/build.xml" inheritAll="false" target="build">
-            <propertyset>
-                <propertyref name="build.compiler"/>
-            </propertyset>
-        </ant>
-    </target>
-    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
-        <copy todir="${ant.library.dir}">
-            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
-        </copy>
-        <unzip dest="${ant.library.dir}">
-            <patternset includes="jdtCompilerAdapter.jar"/>
-            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
-        </unzip>
-    </target>
-    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
-        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
-        <antcall target="build"/>
-    </target>
+    <condition property="wl.home" value="${env.WL_HOME}">
+      <isset property="env.WL_HOME"/>
+    </condition>
+    <fail unless="wl.home" message="The wl.home property needs to be set!"/>
+    <condition property="workshop.home" value="${env.WORKSHOP_HOME}">
+      <isset property="env.WORKSHOP_HOME"/>
+    </condition>
+    <fail unless="workshop.home" message="The workshop.home property needs to be set!"/>
+  </target>
+   
+  <target name="init.typedefs" depends="check.params,check.versions" unless="init.typedefs.executed">
+    
+    <property name="init.typedefs.executed" value="true"/>
+    <echo message="Using Workshop Libraries located in the &quot;${workshop.lib.dir}&quot; directory."/>
+    
+    <typedef resource="com/bea/workshop/cmdline/antlib/antlib.xml">
+      <classpath>
+        <fileset dir="${workshop.lib.dir}" includes="*.jar"/>
+      </classpath>
+    </typedef>
+    
+    <typedef resource="com/bea/workshop/wls/antlib/antlib.xml">
+      <classpath>
+        <fileset dir="${workshop.lib.dir}" includes="*.jar"/>
+      </classpath>
+    </typedef>
+    
+  </target>
+   
+  <target name="check.versions" depends="check.params" unless="check.versions.executed">
+    <property name="check.versions.executed" value="true"/>
+    <taskdef name="check-versions" classname="com.bea.workshop.cmdline.antlib.CheckManifestVersionTask">
+      <classpath>
+        <fileset dir="${workshop.lib.dir}" includes="*.jar"/>
+      </classpath>
+    </taskdef>
+    <check-versions>
+      <jar path="${workshop.lib.dir}/workshop-antlib.jar" version="[2.0.0,3.0.0)"/>
+      <jar path="${workshop.lib.dir}/workshop-util.jar" version="[1.2.0,3.0.0)"/>
+      <jar path="${workshop.lib.dir}/workshop-wls.jar" version="[1.0.0,2.0.0)"/>
+      <jar path="${workshop.lib.dir}/workshop-wls-antlib.jar" version="[1.0.0,2.0.0)"/>
+    </check-versions>
+  </target>
+   
+  <target name="check.params" depends="init.env" unless="check.params.executed">
+    <property name="check.params.executed" value="true"/>
+    <condition property="workspace" value="${env.WORKSHOP_WORKSPACE}">
+      <isset property="env.WORKSHOP_WORKSPACE"/>
+    </condition>
+    <fail unless="workspace" message="The workspace property needs to be set!"/>
+    <condition property="workshop.lib.dir" value="${env.WORKSHOP_LIB_DIR}">
+      <isset property="env.WORKSHOP_LIB_DIR"/>
+    </condition>
+    <fail unless="workshop.lib.dir" message="The workshop.lib.dir property needs to be set!"/>
+  </target>
+   
+  <target name="init" depends="init.env,check.params,check.versions,init.typedefs" unless="init.executed">
+    
+    <property name="init.executed" value="true"/>
+    
+    <dirname property="project.dir" file="${ant.file}"/>
+    <property name="echo.metadata" value="false"/>
+    
+    <mdimport workspace="${workspace}" pjdir="${project.dir}" echo="${echo.metadata}">
+    </mdimport>
+    
+    <property name="archive.name" value="${project.name}.jar"/>
+    <property name="uri" value="${archive.name}"/>
+    
+  </target>
+  
+  <target name="build" depends="init" description="compiles the source files; does not package the results">
+    
+    <if>
+      <isreference refid="apt.factory.path"/>
+      <then>
+        <mkdir dir="${apt.src.output.dir}"/>
+        <for-each-java-src-path>
+          <if>
+            <available file="${.java.src.dir}"/>
+            <then>
+              <mkdir dir="${.java.src.output}"/>
+              <apt
+                sourcepath="${java.sourcepath}"
+                srcdir="${.java.src.dir}"
+                includes="${.java.src.include}"
+                excludes="${.java.src.exclude}"
+                destdir="${.java.src.output}"
+                preprocessdir="${apt.src.output.dir}"
+                classpathref="java.classpath"
+                factorypathref="apt.factory.path"
+                options="${apt.options}"
+                compile="false"
+                memoryMaximumSize="1024m"/>
+            </then>
+          </if>
+        </for-each-java-src-path>
+      </then>
+    </if>
+    
+    <for-each-java-src-path>
+      <if>
+        <available file="${.java.src.dir}"/>
+        <then>
+          <mkdir dir="${.java.src.output}"/>
+          <javac
+            sourcepath="${java.sourcepath}"
+            srcdir="${.java.src.dir}"
+            includes="${.java.src.include}"
+            excludes="${.java.src.exclude}"
+            destdir="${.java.src.output}"
+            classpathref="java.classpath"
+            debug="on"/>
+        </then>
+      </if>
+    </for-each-java-src-path>
+    
+  </target>
+  
+  <target name="assemble" depends="init" description="assembles the project for iterative dev deployment; requires that the &quot;ear.root&quot; property is specified">
+    
+    <property name="prefix" value=""/>
+     
+    <for-each-resource-path>
+      <link ear="${ear.root}" source="${.resource.path}" target="${prefix}${uri}/${.resource.prefix}"/>
+    </for-each-resource-path>
+    
+  </target>
+  
+  <target name="stage" depends="init" description="copies all of project's resources and build artifacts into a form that's ready for archive creation; staging directory can be overridden via the &quot;staging.dir&quot; property">
+    
+    <property name="staging.dir" value="${project.dir}/.staging"/>
+     
+    <delete dir="${staging.dir}" quiet="true"/>
+    <mkdir dir="${staging.dir}"/>
+     
+    <for-each-resource-path>
+      <if>
+        <available file="${.resource.path}"/>
+        <then>
+          <if>
+            <isfile path="${.resource.path}"/>
+            <then>
+              <copy file="${.resource.path}" tofile="${staging.dir}/${.resource.prefix}"/>
+            </then>
+            <else>
+              <copy todir="${staging.dir}/${.resource.prefix}">
+                <fileset dir="${.resource.path}" includes="${.resource.include}" excludes="${.resource.exclude}"/>
+              </copy>
+            </else>
+          </if>
+        </then>
+      </if>
+    </for-each-resource-path>
+    
+  </target>
+  
+  <target name="archive" depends="stage" description="creates an archive containing all projects's resources and build artifacts; archive name and location can be overridden via the &quot;archive.dir&quot; and &quot;archive.name&quot; properties.">
+    
+    <property name="archive.dir" value="${project.dir}"/>
+    <mkdir dir="${archive.dir}"/>
+     
+    <zip destfile="${archive.dir}/${archive.name}" encoding="UTF8" whenempty="create">
+      <fileset dir="${staging.dir}"/>
+    </zip>
+    
+  </target>
+  
+  <target name="clean" depends="init" description="removes the files and directories generated by the build target">
+    
+    <if>
+      <available file="${apt.src.output.dir}"/>
+      <then>
+        <delete includeEmptyDirs="true">
+          <fileset dir="${apt.src.output.dir}" includes="**/*"/>
+        </delete>
+      </then>
+    </if>
+    
+    <for-each-java-src-path>
+      <if>
+        <available file="${.java.src.output}"/>
+        <then>
+          <if>
+            <equals arg1="${.java.src.dir}" arg2="${.java.src.output}"/>
+            <then>
+              <delete includeEmptyDirs="true">
+                <fileset dir="${.java.src.output}">
+                  <or>
+                    <filename name="**/*.class"/>
+                    <and>
+                      <type type="dir"/>
+                      <depth min="0"/>
+                    </and>
+                  </or>
+                </fileset>
+              </delete>
+            </then>
+            <else>
+              <delete includeEmptyDirs="true">
+                <fileset dir="${.java.src.output}" includes="**/*"/>
+              </delete>
+            </else>
+          </if>
+        </then>
+      </if>
+    </for-each-java-src-path>
+    
+  </target>
+  
+  <target name="clean.all" depends="clean" description="removes the files and directories generated by build, stage and archive targets">
+    
+    <property name="staging.dir" value="${project.dir}/.staging"/>
+    <delete dir="${staging.dir}"/>
+     
+    <property name="archive.dir" value="${project.dir}"/>
+    <delete file="${archive.dir}/${archive.name}"/>
+    
+  </target>
+  
+  <target name="stage.to.ear" depends="init">
+    
+    <property name="prefix" value=""/>
+     
+    <antcallex target="archive" inheritUserProps="false" inheritAll="false" inheritRefs="false">
+      <param name="workshop.home" value="${workshop.home}"/>
+      <param name="workshop.lib.dir" value="${workshop.lib.dir}"/>
+      <param name="wl.home" value="${wl.home}"/>
+      <param name="patch.home" value="${patch.home}"/>
+      <param name="workspace" value="${workspace}"/>
+      <param name="echo.metadata" value="${echo.metadata}"/>
+      <param name="init.typedefs.executed" value="true"/>
+      <param name="archive.dir" value="${ear.staging.dir}${prefix}"/>
+      <param name="ear.staging.dir" value="${ear.staging.dir}"/>
+      <param name="compile.jsp" value="${compile.jsp}" />
+      <param name="appc.library" value="${appc.library}" />
+      <propertyset>
+        <propertyref regex="${path.vars.regex}"/>
+      </propertyset>
+    </antcallex>
+    
+  </target>
+  
 </project>
