@@ -3,7 +3,7 @@
 	<name>dep-scoring-ejb</name>
 	<comment></comment>
 	<projects>
-		<project>ScoringControl</project>
+		<project>dep-scoring-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

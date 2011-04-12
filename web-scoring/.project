@@ -3,8 +3,8 @@
 	<name>web-scoring</name>
 	<comment></comment>
 	<projects>
-		<project>ScoringControl</project>
 		<project>dep-scoring-ctrl</project>
+		<project>dep-scoring-ejb</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
