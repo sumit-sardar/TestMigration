@@ -23,7 +23,7 @@ public class AdminCollector{
         try{	    
         	final String sql = "SELECT distinct count(distinct ros.student_id) as roster_count, " + 
         								"a.test_admin_id, " + 
-        								"a.LOGIN_START_DATE, " + 
+        								"a.LOGIN_START_DATE - 0.5, " + 
         								"a.LOGIN_END_DATE, " + 
         								"prog.PRODUCT_ID, " +
         								"pp.product_name, " + 
