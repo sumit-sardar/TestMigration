@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="dep-scoring-ejb">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../../../tools/eclipse_pkgs/2.0/eclipse_3.3.2/eclipse"/>
+    <property name="dep-scoring-ctrl.location" value="../dep-scoring-ctrl"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
+    <path id="Apache XMLBeans v2.3.libraryclasspath">
+        <pathelement location="../../../../tools/eclipse_pkgs/2.0/pkgs/eclipse/plugins/com.bea.workshop.thirdparty.xmlbeans.v23_1.2.0.20080711173356.jar"/>
+    </path>
+    <path id="WebLogic System Libraries.libraryclasspath">
+        <pathelement location="C:/bea10/wlserver_10.3/server/lib/api.jar"/>
+        <pathelement location="C:/bea10/modules/glassfish.jstl_1.2.0.1.jar"/>
+        <pathelement location="C:/bea10/modules/javax.jsf_1.2.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/javax.ejb_3.0.1.jar"/>
+        <pathelement location="C:/bea10/modules/javax.enterprise.deploy_1.2.jar"/>
+        <pathelement location="C:/bea10/modules/javax.interceptor_1.0.jar"/>
+        <pathelement location="C:/bea10/modules/javax.jms_1.1.1.jar"/>
+        <pathelement location="C:/bea10/modules/javax.jsp_1.1.0.0_2-1.jar"/>
+        <pathelement location="C:/bea10/modules/javax.jws_2.0.jar"/>
+        <pathelement location="C:/bea10/modules/javax.activation_1.1.0.0_1-1.jar"/>
+        <pathelement location="C:/bea10/modules/javax.mail_1.1.0.0_1-1.jar"/>
+        <pathelement location="C:/bea10/modules/javax.xml.soap_1.3.1.0.jar"/>
+        <pathelement location="C:/bea10/modules/javax.xml.rpc_1.2.1.jar"/>
+        <pathelement location="C:/bea10/modules/javax.xml.ws_2.1.1.jar"/>
+        <pathelement location="C:/bea10/modules/javax.management.j2ee_1.0.jar"/>
+        <pathelement location="C:/bea10/modules/javax.resource_1.5.1.jar"/>
+        <pathelement location="C:/bea10/modules/javax.servlet_1.0.0.0_2-5.jar"/>
+        <pathelement location="C:/bea10/modules/javax.transaction_1.0.0.0_1-1.jar"/>
+        <pathelement location="C:/bea10/modules/javax.xml.stream_1.1.1.0.jar"/>
+        <pathelement location="C:/bea10/modules/javax.security.jacc_1.0.0.0_1-1.jar"/>
+        <pathelement location="C:/bea10/modules/javax.xml.registry_1.0.0.0_1-0.jar"/>
+        <pathelement location="C:/bea10/wlserver_10.3/server/lib/wls-api.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.apache_1.2.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.i18n_1.4.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.logging_1.4.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.utils.full_1.4.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.utils.wrapper_1.3.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.utils.classloaders_1.4.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.common.security.providers.env_1.0.0.0_5-0-2-0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.common.security.saml2.manage_1.0.0.0_5-0-2-0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.weblogic.web.api_1.2.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.weblogic.rmi.client_1.4.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.transaction_2.5.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.workarea_1.4.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.xml.weblogic.xpath_1.1.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.datasource6_1.4.0.0.jar"/>
+        <pathelement location="C:/bea10/modules/com.bea.core.weblogic.stax_1.4.0.0.jar"/>
+        <pathelement location="C:/bea10/wlserver_10.3/server/lib/webservices.jar"/>
+        <pathelement location="C:/bea10/wlserver_10.3/server/lib/webserviceclient.jar"/>
+    </path>
+    <path id="EAR Libraries.libraryclasspath"/>
+    <path id="Enterprise Application Libraries [application-scoring].libraryclasspath">
+        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/commons-beanutils.jar"/>
+        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/commons-lang-2.4.jar"/>
+        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/commons-logging.jar"/>
+        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/ibatis-common-2.jar"/>
+        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/ibatis-sqlmap-2.jar"/>
+        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/jdom.jar"/>
+        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/junit.jar"/>
+        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/junitperf.jar"/>
+        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/ojdbc14.jar"/>
+        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/lib/weblogic-jdbc-control.jar"/>
+        <pathelement location="../../../../../application-scoring/EarContent/APP-INF/classes"/>
+    </path>
+    <path id="Shared Library [beehive-controls-1.0.1-10.0].libraryclasspath">
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/beehive-controls.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/beehive-ejb-control.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/beehive-jdbc-control.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/beehive-jms-control.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/commons-codec-1.3.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/commons-discovery.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/commons-logging.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/beehive-controls-1.0.1-10.0_1.0_1.0.2.2/1/APP-INF/lib/log4j-1.2.8.jar"/>
+    </path>
+    <path id="Shared Library [weblogic-controls-10.0].libraryclasspath">
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/weblogic-controls-10.0_10.0_10.2/1/APP-INF/lib/weblogic-controls.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/weblogic-controls-10.0_10.0_10.2/1/APP-INF/lib/weblogic-ejb3-control.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/weblogic-controls-10.0_10.0_10.2/1/APP-INF/lib/weblogic-webservice-control.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/weblogic-controls-10.0_10.0_10.2/1/APP-INF/lib/wlcommons-logging.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/weblogic-controls-10.0_10.0_10.2/1/weblogic-timer-control.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/weblogic-controls-10.0_10.0_10.2/1/weblogic-messagebuffer-mdb.jar"/>
+    </path>
+    <path id="Shared Library [wls-commonslogging-bridge].libraryclasspath">
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/wls-commonslogging-bridge_1.0_1.1/1/APP-INF/lib/commons-logging.jar"/>
+        <pathelement location="../.metadata/.plugins/com.bea.workshop.wls.core/libraries/wls-commonslogging-bridge_1.0_1.1/1/APP-INF/lib/wlcommons-logging.jar"/>
+    </path>
+    <path id="dep-scoring-ctrl.classpath">
+        <pathelement location="${dep-scoring-ctrl.location}/build/classes"/>
+        <path refid="WebLogic System Libraries.libraryclasspath"/>
+        <path refid="EAR Libraries.libraryclasspath"/>
+        <path refid="Enterprise Application Libraries [application-scoring].libraryclasspath"/>
+        <path refid="Shared Library [beehive-controls-1.0.1-10.0].libraryclasspath"/>
+        <path refid="Apache XMLBeans v2.3.libraryclasspath"/>
+        <path refid="Shared Library [weblogic-controls-10.0].libraryclasspath"/>
+        <path refid="Shared Library [wls-commonslogging-bridge].libraryclasspath"/>
+    </path>
+    <path id="dep-scoring-ejb.classpath">
+        <pathelement location="build/classes"/>
+        <path refid="Apache XMLBeans v2.3.libraryclasspath"/>
+        <path refid="WebLogic System Libraries.libraryclasspath"/>
+        <path refid="EAR Libraries.libraryclasspath"/>
+        <path refid="Enterprise Application Libraries [application-scoring].libraryclasspath"/>
+        <path refid="dep-scoring-ctrl.classpath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="build/classes"/>
+        <copy includeemptydirs="false" todir="build/classes">
+            <fileset dir="src" excludes="**/*.launch, **/*.java"/>
+        </copy>
+        <copy includeemptydirs="false" todir="build/classes">
+            <fileset dir=".apt_src" excludes="**/*.launch, **/*.java"/>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="build/classes"/>
+    </target>
+    <target depends="clean" name="cleanall">
+        <ant antfile="${dep-scoring-ctrl.location}/build.xml" inheritAll="false" target="clean"/>
+    </target>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects">
+        <ant antfile="${dep-scoring-ctrl.location}/build.xml" inheritAll="false" target="build-project">
+            <propertyset>
+                <propertyref name="build.compiler"/>
+            </propertyset>
+        </ant>
+    </target>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="build/classes" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="dep-scoring-ejb.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="build/classes" source="${source}" target="${target}">
+            <src path=".apt_src"/>
+            <classpath refid="dep-scoring-ejb.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+</project>
