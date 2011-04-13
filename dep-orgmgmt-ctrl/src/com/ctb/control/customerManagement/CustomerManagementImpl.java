@@ -184,7 +184,9 @@ public class CustomerManagementImpl implements CustomerManagement
             customer.setUpdatedBy(loginUserId);
             customer.setUpdatedDateTime(new Date());
             customers.updateCustomer(customer);
-              
+            //START - Changes For LASLINK Product
+            customers.updateCustomerTopNodeMdrNumber(customer);
+            //END - Changes For LASLINK Product              
         }  catch (SQLException se) {
                CustomerUpdationException dataUpdationException = 
                                             new CustomerUpdationException(
@@ -293,6 +295,14 @@ public class CustomerManagementImpl implements CustomerManagement
                 customers.createTerranovaCustomerConfiguration(customerId);
                     
             }
+            //START - Changes for LASLINK PRODUCT 
+            else if(CTBConstants.LASLINK_CUSTOMER.equalsIgnoreCase
+                    (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
+               
+                customers.createLasLinkCustomerConfiguration(customerId);
+                    
+            }
+            //END - Changes for LASLINK PRODUCT 
             else if(CTBConstants.OTHER_CUSTOMER.equalsIgnoreCase
                     (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
                 saveCustomerEmail(customer);
@@ -562,6 +572,13 @@ public class CustomerManagementImpl implements CustomerManagement
                 
                 Node[] orgNode = orgNodeCate.getOrgNodeForCategory(orgNdcat.
                                                                 getOrgNodeCategoryId());
+				//START - Changes For LASLINK Product                                                
+                if ( orgNdcat.getCategoryLevel().intValue() == 1 ){
+                	
+                	customer.setMdrNumber(orgNode[0].getMdrNumber() );
+                    
+                } 
+				//END - Changes For LASLINK Product
                 if( orgNode != null && orgNode.length > 0 ){
                     
                     orgNdcat.setDeletable(Boolean.FALSE);
@@ -606,6 +623,15 @@ public class CustomerManagementImpl implements CustomerManagement
                                 CTBConstants.TERRANOVA_CUSTOMER);
                                                             
                 }
+                //START - Changes For LASLINK Product
+                else if( customerConfigurations[0].getCustomerConfigurationName().equals(
+                        CTBConstants.DB_LASLINK_CUSTOMER)){
+                            
+                	customerConfigurations[0].setCustomerConfigurationName(
+                        CTBConstants.LASLINK_CUSTOMER);
+                                                    
+       			 }
+       			//END - Changes For LASLINK Product
                 
                 customer.setCustomerConfiguration(customerConfigurations);
             } 
@@ -968,7 +994,11 @@ public class CustomerManagementImpl implements CustomerManagement
                topNode.setOrgNodeCategoryId(maxOrgNodeCategory.getOrgNodeCategoryId());
                topNode.setParentOrgNodeId(userNode[0]);
                topNode.setCustomerId(customer.getCustomerId());
-               
+               //START - Changes for LASLINK PRODUCT 
+               if(customer.getMdrNumber() != null ){
+            	   topNode.setMdrNumber(customer.getMdrNumber());
+               }
+               //END - Changes for LASLINK PRODUCT 
                organizationManagement.createOrganization(loginUserName,topNode);
                
            }

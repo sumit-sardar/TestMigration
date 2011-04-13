@@ -21,6 +21,7 @@
 
 <!-- start form -->
 <netui:form action="saveAddEditCustomer">
+<netui-data:getData resultId="isLasLinkProduct" value="${actionForm.isLasLinkProduct}" />
 
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.customerProfile.name}" />
 
@@ -66,6 +67,7 @@
         <jsp:include page="/manageCustomer/add_customer_profile.jsp">
         
         	<jsp:param name="currentAction" value="${actionForm.currentAction}" />
+        	<jsp:param name="isLasLinkProduct" value="${actionForm.isLasLinkProduct}" />
         </jsp:include>
     </ctb:showHideSection>
 </p>

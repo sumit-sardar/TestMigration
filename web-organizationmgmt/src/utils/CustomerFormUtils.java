@@ -148,8 +148,17 @@ public class CustomerFormUtils
                 requiredFields = Message.buildErrorString(Message.FIELD_STATE, 
                                         requiredFieldCount, requiredFields);       
         }
-        
-        
+        //START- Changed For LASLINK Product
+        if(customerProfile.getCustomerTypeId().equals("LasLink Customer")) {
+	        String mDRNumber = customerProfile.getMdrNumber().trim();
+	        if ( mDRNumber == null || mDRNumber.length() == 0 ) {
+	                
+	                requiredFieldCount += 1;            
+	                requiredFields = Message.buildErrorString(Message.FIELD_MDRNUMBER, 
+	                                        requiredFieldCount, requiredFields);       
+	        }
+        }
+        //END- Changed For LASLINK Product
         String ctbContact = customerProfile.getCtbContact().trim();
         if ( ctbContact.length() == 0 ) {
             
@@ -319,7 +328,18 @@ public class CustomerFormUtils
                                                  invalidCharFields);       
         
         }
-        
+        //START- Changed For LASLINK Product
+        if(customerProfile.getCustomerTypeId().equals("LasLink Customer")) {
+	        if ( !WebUtils.validCustomerNameString(customerProfile.getMdrNumber()) ) {
+	            
+	            invalidCharFieldCount += 1;            
+	            invalidCharFields = buildErrorString(Message.FIELD_MDRNUMBER, 
+	                                                 invalidCharFieldCount,
+	                                                 invalidCharFields);       
+	        
+	        }
+        }
+        //END- Changed For LASLINK Product
         if ( !WebUtils.validCustomerNameString(customerProfile.getCtbContact()) ) {
             
             invalidCharFieldCount += 1;            

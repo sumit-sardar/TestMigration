@@ -533,3 +533,31 @@ function hitEnter(buttonId, e) {
 //alert("hitEnter element, e: "+buttonId+", "+e);
 }
 
+
+  
+function toogleMDRNoTextBox(elementId)
+{
+    var dropDown = document.getElementById(elementId);
+    //alert(dropDown);
+	//alert("..."+dropDown.options[dropDown.selectedIndex].value);
+	var selectedCustomerType = dropDown.options[dropDown.selectedIndex].value;
+	 if (selectedCustomerType == "LasLink Customer") 
+		enableMDRNoTextBox("true");
+	else 
+		enableMDRNoTextBox("false"); 
+}
+
+function enableMDRNoTextBox(enabled){
+var MDRNoTextBox = document.getElementById("MDRNoTextBox");
+
+  if (enabled == "true") {
+        MDRNoTextBox.removeAttribute("disabled");
+    }
+    else {    
+        MDRNoTextBox.setAttribute("disabled", "true");
+        MDRNoTextBox.value = "";
+    }
+   	return true;
+}
+
+

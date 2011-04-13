@@ -957,4 +957,25 @@ public class OrganizationManagementImpl implements OrganizationManagement
             throw nodeNotFoundException;
         }
     }
+    
+    
+    /**
+     * @common:operation
+     * @throws CTBBusinessException
+     */
+    //START - Changes for LASLINK PRODUCT 
+     public String getlasLinkConfigForOrgNodes(Integer selectedOrgNodeId) throws CTBBusinessException {
+        try{
+            String lasLinkConfigForOrgNodes = orgNode.getlasLinkConfigForOrgNodes(selectedOrgNodeId,"LASLINK_Customer");
+            System.out.println("==>"+selectedOrgNodeId+"..."+lasLinkConfigForOrgNodes);
+            return lasLinkConfigForOrgNodes;
+        } catch (SQLException e) {
+             OrgDataNotFoundException dataNotfoundException = 
+                                        new OrgDataNotFoundException
+                                                ("ViewOrganization.Failed");
+            dataNotfoundException.setStackTrace(e.getStackTrace());                                    
+            throw dataNotfoundException; 
+        }  
+    }
+    //END - Changes for LASLINK PRODUCT 
 } 

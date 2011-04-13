@@ -501,6 +501,12 @@ public class ManageCustomerController extends PageFlowController
     protected Forward beginCreateFramework(ManageCustomerForm form)
     {   
         Integer selectedCustomerId = form.getSelectedCustomerId();   
+        //START- Changed For LASLINK Product
+        if(form.customerProfile.getCustomerTypeId() != null && form.customerProfile.getCustomerTypeId().equals("LasLink Customer"))
+        {
+        	form.setIsLasLinkProduct(true);
+        }
+        //END- Changed For LASLINK Product
         boolean validInfo = CustomerFormUtils.verifyCustomerInformation(form, selectedCustomerId);	
         if (!validInfo)
         {
@@ -1579,7 +1585,10 @@ public class ManageCustomerController extends PageFlowController
         //not sure if this will be hard coded or from db?????
         customerOptions.put(CTBConstants.TABE_CUSTOMER,CTBConstants.TABE_CUSTOMER);
         customerOptions.put(CTBConstants.TERRANOVA_CUSTOMER,CTBConstants.TERRANOVA_CUSTOMER);
-        customerOptions.put(CTBConstants.OTHER_CUSTOMER,CTBConstants.OTHER_CUSTOMER);          
+        //START - Changes for LASLINK PRODUCT 
+        customerOptions.put(CTBConstants.OTHER_CUSTOMER,CTBConstants.OTHER_CUSTOMER);    
+        customerOptions.put(CTBConstants.LASLINK_CUSTOMER,CTBConstants.LASLINK_CUSTOMER);          
+        //END - Changes for LASLINK PRODUCT 
     }
     
      private boolean isContains (String stateDesc) {
@@ -1959,7 +1968,12 @@ public class ManageCustomerController extends PageFlowController
         form.setCustomerProfile(customerProfile);
         form.setSelectedCustomerName(customerProfile.getName());
         form.setSelectedCustomerId(Integer.valueOf(customerProfile.getId()));
-        
+        //START- Changed For LASLINK Product
+        if(customerProfile.getCustomerType() != null && customerProfile.getCustomerType().equals("LasLink Customer"))
+        {
+        	form.setIsLasLinkProduct(true);
+        }
+        //END- Changed For LASLINK Product
         return customerProfile;
     }
     
@@ -2056,7 +2070,9 @@ public class ManageCustomerController extends PageFlowController
         private String customerSortOrderBy;
         private Integer customerPageRequested;
         private Integer customerMaxPage;
-       
+        //START - Changes for LASLINK PRODUCT 
+        public Boolean isLasLinkProduct =  Boolean.FALSE;
+        //END - Changes for LASLINK PRODUCT 
         
         //added for LM12
         private  LicenseNode licenseNode;
@@ -2175,6 +2191,9 @@ public class ManageCustomerController extends PageFlowController
             copied.setByCustomerProfileVisible(this.byCustomerProfileVisible);
             copied.setByCustomerBillingVisible(this.byCustomerBillingVisible);
             copied.setByCustomerMailingVisible(this.byCustomerMailingVisible);
+            //START- Changed For LASLINK Product
+            copied.setIsLasLinkProduct(this.isLasLinkProduct);
+            //END- Changed For LASLINK Product
             copied.setMessage(this.message);
             
             return copied;
@@ -2384,7 +2403,21 @@ public class ManageCustomerController extends PageFlowController
          */
         public void setLicenseNode(LicenseNode licenseNode) {
             this.licenseNode = licenseNode;
-        }                 
+        }
+
+		/**
+		 * @return the isLasLinkProduct
+		 */
+		public Boolean getIsLasLinkProduct() {
+			return isLasLinkProduct;
+		}
+
+		/**
+		 * @param isLasLinkProduct the isLasLinkProduct to set
+		 */
+		public void setIsLasLinkProduct(Boolean isLasLinkProduct) {
+			this.isLasLinkProduct = isLasLinkProduct;
+		}                 
     }
 
 

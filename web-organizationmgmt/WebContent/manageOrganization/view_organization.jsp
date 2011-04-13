@@ -21,6 +21,8 @@
     List selectedOrgNodes = (List)request.getAttribute("selectedOrgNodes"); 
     List orgNodesForSelector = (List)request.getAttribute("orgNodesForSelector");             
     String userAgent = request.getHeader("User-Agent");
+    Boolean isLasLinkCustomer = (Boolean)request.getAttribute("isLasLinkCustomer");
+
 %>
 
 <!-- start form -->
@@ -102,6 +104,12 @@
                 <td class="transparent alignRight" width="66"><netui:content value="Org Code:"/></td>
                 <td class="transparent"><netui:content value="${actionForm.selectedOrgNodeCode}"/></td>
             </tr>
+             <c:if test="${isLasLinkCustomer}">       
+	            <tr class="transparent">
+	                <td class="transparent alignRight" width="66"><netui:content value="MDR Number:"/></td>
+	                <td class="transparent"><netui:content value="${actionForm.selectedOrgMdrNumber}"/></td>
+	            </tr>
+            </c:if>
             <tr class="transparent">
                 <td class="transparent alignRight" width="66"><netui:content value="Layer:"/></td>
                 <td class="transparent"><netui:content value="${actionForm.selectedOrgNodeType}"/></td>

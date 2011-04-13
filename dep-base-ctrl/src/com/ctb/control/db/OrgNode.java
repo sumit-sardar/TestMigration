@@ -225,8 +225,9 @@ public interface OrgNode extends JdbcControl
      *      node.org_node_id = {orgNodeId}
      *    and node.activation_status = 'AC'::
      *      array-max-length="all"
+	 * Changes For LASLINK Customer
      */
-    @JdbcControl.SQL(statement = "select  node.org_node_id as orgNodeId,  node.customer_id as customerId,  node.org_node_category_id as orgNodeCategoryId,  node.org_node_name as orgNodeName,  node.ext_qed_pin as extQedPin,  node.ext_elm_id as extElmId,  node.ext_org_node_type as extOrgNodeType,  node.org_node_description as orgNodeDescription,  node.created_by as createdBy,  node.created_date_time as createdDateTime,  node.updated_by as updatedBy,  node.updated_date_time as updatedDateTime,  node.activation_status as activationStatus,  node.data_import_history_id as dataImportHistoryId,  node.parent_state as parentState,  node.parent_region as parentRegion,  node.parent_county as parentCounty,  node.parent_district as parentDistrict,  node.org_node_code as orgNodeCode from  org_node node where  node.org_node_id = {orgNodeId}  and node.activation_status = 'AC'",
+    @JdbcControl.SQL(statement = "select  node.org_node_id as orgNodeId,  node.customer_id as customerId,  node.org_node_category_id as orgNodeCategoryId,  node.org_node_name as orgNodeName,  node.ext_qed_pin as extQedPin,  node.ext_elm_id as extElmId,  node.ext_org_node_type as extOrgNodeType,  node.org_node_description as orgNodeDescription,  node.created_by as createdBy,  node.created_date_time as createdDateTime,  node.updated_by as updatedBy,  node.updated_date_time as updatedDateTime,  node.activation_status as activationStatus,  node.data_import_history_id as dataImportHistoryId,  node.parent_state as parentState,  node.parent_region as parentRegion,  node.parent_county as parentCounty,  node.parent_district as parentDistrict,  node.org_node_code as orgNodeCode, node.org_node_mdr_number as mdrNumber from  org_node node where  node.org_node_id = {orgNodeId}  and node.activation_status = 'AC'",
                      arrayMaxLength = 100000)
     Node getOrgNodeById(Integer orgNodeId) throws SQLException;
 
@@ -1528,8 +1529,9 @@ public interface OrgNode extends JdbcControl
      *    {orgNode.orgNodeCode},
      *    {orgNode.activationStatus} 
      *   )::
+	 * Changes For LASLINK Customer
      */
-    @JdbcControl.SQL(statement = "Insert into  org_node(  org_node_id,  org_node_category_id,  org_node_name,  customer_id,  created_by,  org_node_code,  activation_status  )  values (  {orgNode.orgNodeId},  {orgNode.orgNodeCategoryId},  {orgNode.orgNodeName},  {orgNode.customerId},  {orgNode.createdBy},  {orgNode.orgNodeCode},  {orgNode.activationStatus}  )")
+    @JdbcControl.SQL(statement = "Insert into  org_node(  org_node_id,  org_node_category_id,  org_node_name,  customer_id,  created_by,  org_node_code,  activation_status, org_node_mdr_number)  values (  {orgNode.orgNodeId},  {orgNode.orgNodeCategoryId},  {orgNode.orgNodeName},  {orgNode.customerId},  {orgNode.createdBy},  {orgNode.orgNodeCode},  {orgNode.activationStatus}, {orgNode.mdrNumber} )")
     void createOrganization(Node orgNode) throws SQLException ;
     
     /**
@@ -1579,8 +1581,9 @@ public interface OrgNode extends JdbcControl
      * updated_By = {node.updatedBy},
      * updated_Date_Time = {node.updatedDateTime}
      * where org_node_id = {node.orgNodeId}::
+	 * Changes For LASLINK Customer
      */
-    @JdbcControl.SQL(statement = "update org_node set org_node_category_id = {node.orgNodeCategoryId}, org_node_name = {node.orgNodeName}, org_node_code = {node.orgNodeCode}, updated_By = {node.updatedBy}, updated_Date_Time = {node.updatedDateTime} where org_node_id = {node.orgNodeId}")
+    @JdbcControl.SQL(statement = "update org_node set org_node_category_id = {node.orgNodeCategoryId}, org_node_name = {node.orgNodeName}, org_node_code = {node.orgNodeCode}, org_node_mdr_number = {node.mdrNumber}, updated_By = {node.updatedBy}, updated_Date_Time = {node.updatedDateTime} where org_node_id = {node.orgNodeId}")
     void updateOrganization(Node node) throws SQLException;
 
     /**
@@ -1860,4 +1863,12 @@ public interface OrgNode extends JdbcControl
      */
 	@JdbcControl.SQL(statement = "select customer_id from org_node  where org_node_id = {orgNodeId}")
     Integer getCustomerIdbyOrgNode(Integer orgNodeId) throws SQLException;
+	
+	//START - Changes for LASLINK Customer
+	@JdbcControl.SQL(statement = "select decode(count(1),0,'F','T') as isLasLinkCustomer from org_node org, customer_configuration config where org.org_node_id ={selectedOrgNodeId} and config.customer_Id = org.customer_Id   and config.customer_configuration_name = {ConfigName}  and config.default_value ='T'")
+    String getlasLinkConfigForOrgNodes(Integer selectedOrgNodeId, String ConfigName) throws SQLException;
+	
+	//END - Changes for LASLINK Customer
+	
+	
 }

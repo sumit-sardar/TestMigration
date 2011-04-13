@@ -121,6 +121,9 @@ public class Message implements java.io.Serializable
     public static final String FIELD_CUSTOMER_NAME = "Customer Name";
     public static final String FIELD_CUSTOMER_TYPE = "Customer Type";
     public static final String FIELD_STATE = "State";
+    //START - Changes for LASLINK PRODUCT 
+    public static final String FIELD_MDRNUMBER = "MDR Number";
+    //END - Changes for LASLINK PRODUCT 
     public static final String FIELD_CTB_CONTACT = "CTB Contact";
     public static final String FIELD_CTB_CONTACT_EMAIL = "CTB Contact Email";
     public static final String FIELD_CUSTOMER_CONTACT = "Customer Contact";

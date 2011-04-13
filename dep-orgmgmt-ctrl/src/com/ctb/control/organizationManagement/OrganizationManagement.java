@@ -3,6 +3,8 @@ package com.ctb.control.organizationManagement;
 
 import com.bea.control.annotations.TransactionAttribute;
 import com.bea.control.annotations.TransactionAttributeType;
+import com.ctb.exception.CTBBusinessException;
+
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
 @ControlInterface()
@@ -106,4 +108,8 @@ public interface OrganizationManagement
      */
     
     com.ctb.bean.testAdmin.Node getOrganization(java.lang.String userName, java.lang.Integer orgNodeId) throws com.ctb.exception.CTBBusinessException;
+    
+    //START - Changes for LASLINK PRODUCT 
+    java.lang.String  getlasLinkConfigForOrgNodes(Integer selectedOrgNodeId) throws com.ctb.exception.CTBBusinessException ;
+    //END - Changes for LASLINK PRODUCT 
 } 

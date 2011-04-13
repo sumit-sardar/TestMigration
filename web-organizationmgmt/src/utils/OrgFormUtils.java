@@ -47,6 +47,16 @@ public class OrgFormUtils
             invalidCharFields = buildErrorString(Message.FIELD_ORGCODE_NAME, invalidCharFieldCount, invalidCharFields);       
         
         }
+        //START- Changed For LASLINK Product
+        if(form.getSelectedOrgMdrNumber() != null){
+        if ( !WebUtils.validNameString(form.getSelectedOrgMdrNumber()) ) {
+            
+            invalidCharFieldCount += 1;            
+            invalidCharFields = buildErrorString(Message.FIELD_MDRNUMBER, invalidCharFieldCount, invalidCharFields);       
+        
+        }
+        }
+        //END- Changed For LASLINK Product
             
         return invalidCharFields;
     }
@@ -105,7 +115,16 @@ public class OrgFormUtils
             requiredFields = Message.buildErrorString(Message.FIELD_ORG_NAME, requiredFieldCount, requiredFields);       
         
         }
-       
+        //START- Changed For LASLINK Product
+        if(form.getSelectedOrgMdrNumber() != null){
+        String mDRNumber = form.getSelectedOrgMdrNumber().trim();
+        if ( mDRNumber == null || mDRNumber.length() == 0 ) {
+                
+                requiredFieldCount += 1;            
+                requiredFields = Message.buildErrorString(Message.FIELD_MDRNUMBER, requiredFieldCount, requiredFields);       
+        }
+        }
+        //END- Changed For LASLINK Product
         String orgType = form.getSelectedOrgNodeTypeId();
         if ( "".equals(orgType) || orgType.length() == 0 ) {
             requiredFieldCount += 1;            

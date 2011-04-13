@@ -38,10 +38,27 @@ public class Node extends CTBBean
     private OrgNodeCategory orgNodeCategory;
     private String editable;
     private Integer categoryLevel;
+    //START - Changes for MDR Number
+    private String mdrNumber;
+    //END - Changes for MDR Number
     //private Integer numberOfLevels;
 	//private boolean hasFramework;
     
-    public Node() {}
+    /**
+	 * @return the mdrNumber
+	 */
+	public String getMdrNumber() {
+		return mdrNumber;
+	}
+
+	/**
+	 * @param mdrNumber the mdrNumber to set
+	 */
+	public void setMdrNumber(String mdrNumber) {
+		this.mdrNumber = mdrNumber;
+	}
+
+	public Node() {}
     
 	/**
 	 * @return Returns the childNodeCount.

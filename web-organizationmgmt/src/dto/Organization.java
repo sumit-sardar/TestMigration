@@ -22,6 +22,9 @@ public class Organization extends SanitizedFormField
     private String orgType = "";
     private String orgTypeId = "";
     private String orgParent = "";
+    //START - Changes for LASLINK PRODUCT 
+    private String orgMdrNumber = "";
+    //END - Changes for LASLINK PRODUCT 
     private Integer orgParentId = new Integer (0);
     private String actionPermission = PermissionsUtils.VIEW_ADD_PERMISSION_TOKEN;
     
@@ -32,6 +35,11 @@ public class Organization extends SanitizedFormField
         this.orgId = node.getOrgNodeId();
         this.orgName = node.getOrgNodeName();
         this.orgCode = node.getOrgNodeCode();
+        //START - Changes for LASLINK PRODUCT 
+        if( node.getMdrNumber() != null) {
+        	this.orgMdrNumber = node.getMdrNumber();
+        }
+        //END - Changes for LASLINK PRODUCT 
         this.orgType = node.getOrgNodeCategoryName();  
         this.orgTypeId = node.getOrgNodeCategoryId().toString();
         this.orgParent = node.getParentOrgNodeName(); 
@@ -49,6 +57,11 @@ public class Organization extends SanitizedFormField
         copied.setOrgId(this.orgId);
         copied.setOrgName(this.orgName);
         copied.setOrgCode(this.orgCode);
+        //START - Changes for LASLINK PRODUCT 
+        if(this.orgMdrNumber != null) {
+        	copied.setOrgMdrNumber(this.orgMdrNumber);
+        }
+        //END - Changes for LASLINK PRODUCT 
         copied.setOrgType(this.orgType);  
         copied.setOrgTypeId(this.orgTypeId);
         copied.setOrgParent(this.orgParent); 
@@ -67,6 +80,11 @@ public class Organization extends SanitizedFormField
         copied.setOrgNodeId(form.getSelectedOrgChildNodeId());
         copied.setOrgNodeName(form.getSelectedOrgName().trim());
         copied.setOrgNodeCode(form.getSelectedOrgNodeCode().trim());
+        //START - Changes for LASLINK PRODUCT 
+        if(form.getSelectedOrgMdrNumber() != null) {
+        copied.setMdrNumber(form.getSelectedOrgMdrNumber().trim());
+        }
+        //END - Changes for LASLINK PRODUCT 
         copied.setOrgNodeCategoryId(Integer.valueOf(form.getSelectedOrgNodeTypeId()));
         copied.setParentOrgNodeId(form.getSelectedOrgNodeId());
       
@@ -170,6 +188,20 @@ public class Organization extends SanitizedFormField
 	 */
 	public void setActionPermission(String actionPermission) {
 		this.actionPermission = actionPermission;
+	}
+
+	/**
+	 * @return the orgMdrNumber
+	 */
+	public String getOrgMdrNumber() {
+		return orgMdrNumber;
+	}
+
+	/**
+	 * @param orgMdrNumber the orgMdrNumber to set
+	 */
+	public void setOrgMdrNumber(String orgMdrNumber) {
+		this.orgMdrNumber = orgMdrNumber;
 	}
     
 } 

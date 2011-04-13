@@ -551,7 +551,23 @@ public class OrgPathListUtils
         return result;
     }
     
-
+    
+    /**
+     * isOrgNodeForLasLinkCustomer
+     */    
+    public static String isOrgNodeForLasLinkCustomer(Integer selectedOrgNodeId, 
+                                                    OrganizationManagement organizationManagement) 
+    {
+        String lasLinkConfigForOrgNodes = "F";    
+        try {
+        	if(selectedOrgNodeId != null)
+        		lasLinkConfigForOrgNodes = organizationManagement.getlasLinkConfigForOrgNodes(selectedOrgNodeId);
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }       
+        return lasLinkConfigForOrgNodes;
+    }
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** PRIVATE METHODS ************* /////////////////////////////    
 /////////////////////////////////////////////////////////////////////////////////////////////    

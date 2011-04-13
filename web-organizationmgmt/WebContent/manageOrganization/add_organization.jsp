@@ -22,6 +22,8 @@
     List selectedOrgNodes = (List)request.getAttribute("selectedOrgNodes"); 
     List orgNodesForSelector = (List)request.getAttribute("orgNodesForSelector");             
     String userAgent = request.getHeader("User-Agent");
+    Boolean isLasLinkCustomer = (Boolean)request.getAttribute("isLasLinkCustomer");
+
 %>
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
@@ -83,10 +85,18 @@
             <netui:textBox dataSource="actionForm.selectedOrgNodeCode" maxlength="32" style="width:180px" tabindex="2"/>
         </td>
     </tr>
+    <c:if test="${isLasLinkCustomer}">       
+     <tr class="transparent">
+        <td class="transparent alignRight" width="100"><span class="asterisk">*</span>&nbsp;<netui:content value="MDR Number:"/></td>
+        <td class="transparent">
+                <netui:textBox dataSource="actionForm.selectedOrgMdrNumber" maxlength="32" style="width:180px" tabindex="3"/>
+        </td>
+    </tr>
+    </c:if>
     <tr class="transparent">
         <td class="transparent alignRight" width="100"><span class="asterisk">*</span>&nbsp;<netui:content value="Layer:"/></td>
         <td class="transparent">
-                <netui:select dataSource="actionForm.selectedOrgNodeTypeId" optionsDataSource="${pageFlow.orgLevelOptions}" defaultValue="${actionForm.selectedOrgNodeTypeId}" size="1" style="width:180px" tabindex="3"/>
+                <netui:select dataSource="actionForm.selectedOrgNodeTypeId" optionsDataSource="${pageFlow.orgLevelOptions}" defaultValue="${actionForm.selectedOrgNodeTypeId}" size="1" style="width:180px" tabindex="4"/>
         </td>
     </tr>
     <tr class="transparent">

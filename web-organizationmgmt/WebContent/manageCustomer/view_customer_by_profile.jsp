@@ -33,6 +33,10 @@
         <td class="transparent" width="100" nowrap><netui:content value="State:"/></td>
         <td class="transparent"><netui:label value="${customerProfileData.state}"/></td>
     </tr>
+     <tr class="transparent">
+        <td class="transparent" width="100" nowrap><netui:content value="MDR Number:"/></td>
+        <td class="transparent"><netui:label value="${customerProfileData.mdrNumber}"/></td>
+    </tr>
 </table>
 </td>
 

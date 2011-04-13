@@ -23,6 +23,10 @@ public final class CTBConstants {
     public static final String TERRANOVA_CUSTOMER = "TerraNova Customer";
     public static final String DB_TERRANOVA_CUSTOMER = "TERRANOVA_Customer";
     public static final String OTHER_CUSTOMER = "Other Customer";
+    //START - Changes for LASLINK PRODUCT 
+    public static final String LASLINK_CUSTOMER = "LasLink Customer";
+    public static final String DB_LASLINK_CUSTOMER = "LASLINK_Customer";
+    //END - Changes for LASLINK PRODUCT 
     public static final Integer MAX_CTB_CUSTOMER = new Integer(10);
 	public static final int MAX_PAGE = 5;
     public static final int DEFAULT_STATE_CATEGORY_ID = 1000; 

@@ -118,8 +118,9 @@ public interface OrgNodeCategory extends JdbcControl
      *    from org_node orn
      *    where orn.org_node_category_id = {orgNodeCategoryId}
      *    and orn.activation_status = 'AC'
+	 *    Changed For LASLINK Product	
      */
-    @JdbcControl.SQL(statement = "select orn.org_node_id as orgNodeId  from org_node orn  where orn.org_node_category_id = {orgNodeCategoryId}  and orn.activation_status = 'AC'")
+    @JdbcControl.SQL(statement = "select orn.org_node_id as orgNodeId, orn.org_node_mdr_number as mdrNumber from org_node orn  where orn.org_node_category_id = {orgNodeCategoryId}  and orn.activation_status = 'AC'")
     com.ctb.bean.testAdmin.Node[] getOrgNodeForCategory(Integer orgNodeCategoryId) throws SQLException;
    
    

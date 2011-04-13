@@ -271,9 +271,10 @@ public interface Customer extends JdbcControl
      *     where cc.customer_id = {customerId}
      *     and cc.customer_configuration_name in ('TABE_Customer','TERRANOVA_Customer')::
      */
-    @JdbcControl.SQL(statement = "select  cc.customer_configuration_id  as customerConfigurationId,  cc.customer_configuration_name as customerConfigurationName,  cc.editable  as editable,  cc.default_value  as defaultValue,  cc.created_by  as createdBy,  cc.created_date_time  as createdDateTime  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name in ('TABE_Customer','TERRANOVA_Customer')")
+     //START - Changes for LASLINK Product
+    @JdbcControl.SQL(statement = "select  cc.customer_configuration_id  as customerConfigurationId,  cc.customer_configuration_name as customerConfigurationName,  cc.editable  as editable,  cc.default_value  as defaultValue,  cc.created_by  as createdBy,  cc.created_date_time  as createdDateTime  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name in ('TABE_Customer','TERRANOVA_Customer','LASLINK_Customer')")
     com.ctb.bean.testAdmin.CustomerConfig[] getCustomerConfigurations(Integer customerId) throws SQLException;
-
+	//END - Changes for LASLINK Product
     /**
      * @jc:sql statement::
      *  select    decon.email_type as emailType,
@@ -284,6 +285,17 @@ public interface Customer extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select  decon.email_type as emailType,  decon.subject as subject,  decon.email_body as emailBody,  decon.reply_to as replyTo from  default_email_config decon")
     CustomerEmail[] getDefaultEmails() throws SQLException;
-
+	
+	
+    //START - Changes for LASLINK Product
+    @JdbcControl.SQL(statement = "call setup_laslink_customer({CustomerId})")
+    void createLasLinkCustomerConfiguration(Integer CustomerId) throws SQLException;
+    //END - Changes for LASLINK Product
+	
+    
+    //START - Changes for LASLINK Product
+    @JdbcControl.SQL(statement = "update org_node set org_node_mdr_number = {customer.mdrNumber}  where org_node_id = (select org.org_node_id from org_node org, org_node_category onc where onc.category_level = 1  and org.org_node_category_id = onc.org_node_category_id  and onc.customer_id = org.customer_id  and org.customer_id = {customer.customerId})")
+    void updateCustomerTopNodeMdrNumber(com.ctb.bean.testAdmin.Customer customer) throws SQLException;
+    //END - Changes for LASLINK Product
     
 }

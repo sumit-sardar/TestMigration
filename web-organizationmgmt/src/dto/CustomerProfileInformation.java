@@ -45,7 +45,11 @@ public class CustomerProfileInformation extends SanitizedFormField
     private String conatctPhone3 = "";
     private String conatctPhone4 = ""; 
     private String actionPermission = PermissionsUtils.ENABLE_ALL_PERMISSION_TOKEN;
-    /*
+    //START - Changes for LASLINK PRODUCT 
+    private String mdrNumber = "";
+    //END - Changes for LASLINK PRODUCT 
+    
+	/*
      * default construnctor
     */
     public CustomerProfileInformation() {
@@ -130,7 +134,10 @@ public class CustomerProfileInformation extends SanitizedFormField
                 categoryList[i] = this.level;
              }
              
-        }                                                          
+        }
+        //START - Changes for LASLINK PRODUCT 
+        this.mdrNumber = customer.getMdrNumber();
+        //END - Changes for LASLINK PRODUCT 
     }
 
     
@@ -163,6 +170,9 @@ public class CustomerProfileInformation extends SanitizedFormField
         copied.setCustomerContactEmail(this.customerContactEmail);
         copied.setConatctPhone(this.conatctPhone);
         copied.setLevel(this.level);
+        //START - Changes for LASLINK PRODUCT 
+        copied.setMdrNumber(this.mdrNumber);
+        //END - Changes for LASLINK PRODUCT 
         return copied;       
     }
     
@@ -261,6 +271,9 @@ public class CustomerProfileInformation extends SanitizedFormField
             copied.setMailingAddress(address);    
                 
         }
+        //START - Changes for LASLINK PRODUCT 
+        copied.setMdrNumber(this.mdrNumber.trim());
+        //END - Changes for LASLINK PRODUCT 
                  
         return copied;       
     }
@@ -427,7 +440,22 @@ public class CustomerProfileInformation extends SanitizedFormField
 	public void setCategoryList(Level[] categoryList) {
 		this.categoryList = categoryList;
 	}
-   
+   	
+	
+
+	/**
+	 * @return the mdrNumber
+	 */
+	public String getMdrNumber() {
+		return mdrNumber;
+	}
+
+	/**
+	 * @param mdrNumber the mdrNumber to set
+	 */
+	public void setMdrNumber(String mdrNumber) {
+		this.mdrNumber = mdrNumber;
+	}
     public String joinPhoneFromOthers() {
         String phone1 = "";
         String phone2 = "";

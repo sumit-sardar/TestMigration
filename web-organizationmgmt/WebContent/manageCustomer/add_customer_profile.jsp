@@ -5,7 +5,11 @@
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
-<% String currentAction = (String)request.getParameter("currentAction"); %>
+<% String currentAction = (String)request.getParameter("currentAction"); 
+	Boolean isLasLinkProduct = new Boolean((String)request.getParameter("isLasLinkProduct")); 
+	pageContext.setAttribute("isLasLinkProduct",isLasLinkProduct);
+	
+%>
 
 <table class="simple">
     <tr class="transparent">
@@ -16,7 +20,9 @@
             
                 <td class="transparent alignRight" width="130" valign="top" nowrap><span class="asterisk">*</span>&nbsp;Customer Type:</td>
               <c:if test="${currentAction == 'defaultAction'}">
-                <td class="transparent"><netui:select optionsDataSource="${pageFlow.customerOptions}" dataSource="actionForm.customerProfile.customerTypeId" size="1" style="width:200px" defaultValue="${actionForm.customerProfile.customerTypeId}"/></td>        
+               <td class="transparent">	
+               <netui:select tagId="selectedCustomerTypeId" optionsDataSource="${pageFlow.customerOptions}" dataSource="actionForm.customerProfile.customerTypeId" size="1" style="width:200px" defaultValue="${actionForm.customerProfile.customerTypeId}" onChange="toogleMDRNoTextBox('selectedCustomerTypeId');"/>
+               </td>
               </c:if>
               <c:if test="${currentAction == 'editCustomer'}"> 
                 <td class="transparent"><netui:label value="${customerProfileData.customerType}"/></td>
@@ -33,6 +39,20 @@
             <tr class="transparent">
                 <td class="transparent alignRight" width="130" valign="top" nowrap><span class="asterisk">*</span>&nbsp;State:</td>
                 <td class="transparent"><netui:select optionsDataSource="${pageFlow.stateOptions}" dataSource="actionForm.customerProfile.stateId" size="1" style="width:200px" defaultValue="${actionForm.customerProfile.stateId}"/></td>        
+            </tr>
+            <tr class="transparent">
+            	
+                <td class="transparent alignRight" width="130" valign="top" nowrap><span class="asterisk">*</span>&nbsp;MDR Number:</td>
+                <td class="transparent">
+                <c:if test="${!isLasLinkProduct}">
+                 <netui:textBox tagId="MDRNoTextBox" dataSource="actionForm.customerProfile.mdrNumber" maxlength="32" style="width:200px"  disabled="true"/>
+                 </c:if>
+                 <c:if test="${isLasLinkProduct}">
+                 <netui:textBox tagId="MDRNoTextBox" dataSource="actionForm.customerProfile.mdrNumber" maxlength="32" style="width:200px"  />
+        		 </c:if>
+                 
+                 
+                </td>        
             </tr>
         </table>
 

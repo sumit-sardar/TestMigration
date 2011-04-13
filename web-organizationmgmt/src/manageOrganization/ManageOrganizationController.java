@@ -20,6 +20,7 @@ import utils.PermissionsUtils;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.NodeData;
@@ -86,7 +87,14 @@ public class ManageOrganizationController extends PageFlowController
     public boolean isADD = false;
     // option list
     public LinkedHashMap orgLevelOptions = null;
-
+    //START - Changes for LASLINK PRODUCT 
+    public boolean isLasLinkCustomer = false;
+    private Integer customerId = null;
+    private Boolean isLasLinkCustomerSelected = false;
+    CustomerConfiguration[] customerConfigurations = null;
+    
+	CustomerConfigurationValue[] customerConfigurationsValue = null;
+	//END - Changes for LASLINK PRODUCT 
     // navigation
     private static final String ACTION_CURRENT = "{actionForm.currentAction}";
     private static final String ACTION_ORG_NODE_ID = "{actionForm.orgNodeId}";
@@ -149,6 +157,7 @@ public class ManageOrganizationController extends PageFlowController
     protected Forward beginManageOrganization()
     {        
         getUserDetails();
+        getCustomerConfigurations();
         //For Bulk Accommodation
         customerHasBulkAccommodation();
         customerHasScoring();//For hand scoring changes
@@ -199,6 +208,10 @@ public class ManageOrganizationController extends PageFlowController
     protected Forward beginFindOrganization()
     {                
         getUserDetails();
+        //START- Changed For LASLINK Product
+        getCustomerConfigurations();
+        isLasLinkCustomer();
+        //END- Changed For LASLINK Product
         //For Bulk Accommodation
         customerHasBulkAccommodation();
         customerHasScoring();//for scoring changes
@@ -250,6 +263,15 @@ public class ManageOrganizationController extends PageFlowController
         if (this.userName == null)
             checkUserState();
         Integer orgId = null;
+        //START- Changed For LASLINK Product
+        String lasLinkConfigForOrgNodes = OrgPathListUtils.isOrgNodeForLasLinkCustomer(form.getSelectedOrgNodeId(), organizationManagement);
+        if(lasLinkConfigForOrgNodes != null && lasLinkConfigForOrgNodes.equals("T")) {
+        	this.isLasLinkCustomerSelected = true;
+        }
+        else {
+        	this.isLasLinkCustomerSelected = false;
+        }
+        //START- Changed For LASLINK Product
         if (globalApp.ACTION_DELETE_ORGANIZATION.equals(globalApp.navPath.getPreviousAction()))
         {
             
@@ -356,6 +378,9 @@ public class ManageOrganizationController extends PageFlowController
     protected Forward viewOrganization(ManageOrganizationForm form)
     {
         this.pageTitle = buildPageTitle(globalApp.ACTION_VIEW_ORGANIZATION, form);
+        //START- Changed For LASLINK Product
+        setFormInfoOnRequest(form);
+        //END- Changed For LASLINK Product
         return new Forward("success", form);
     }
 
@@ -629,6 +654,15 @@ public class ManageOrganizationController extends PageFlowController
     {
         try
         {
+        	 //START- Changed For LASLINK Product
+        	 String lasLinkConfigForOrgNodes = OrgPathListUtils.isOrgNodeForLasLinkCustomer(form.getSelectedOrgNodeId(), organizationManagement);
+             if(lasLinkConfigForOrgNodes != null && lasLinkConfigForOrgNodes.equals("T")) {
+             	this.isLasLinkCustomerSelected = true;
+             }
+             else {
+             	this.isLasLinkCustomerSelected = false;
+             }
+             //END- Changed For LASLINK Product
             
             Integer orgNodeId = null;
 
@@ -767,6 +801,10 @@ public class ManageOrganizationController extends PageFlowController
     protected Forward beginAddOrganization()
     {
         getUserDetails();
+        //START- Changed For LASLINK Product
+        getCustomerConfigurations();
+        isLasLinkCustomer();
+        //END- Changed For LASLINK Product
         //For Bulk Accommodation
         customerHasBulkAccommodation();
         customerHasScoring();//For hand scoring changes
@@ -855,7 +893,29 @@ public class ManageOrganizationController extends PageFlowController
                                                  
         return new Forward("success", this.savedForm);
     }
-
+    
+    /**
+	 * START- Changed For LASLINK Product
+	 * getCustomerConfigurations
+	 */
+	private void getCustomerConfigurations()
+	{
+		
+		this.customerId = this.user.getCustomer().getCustomerId();
+		
+		try {
+				this.customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+				if (this.customerConfigurations == null || this.customerConfigurations.length == 0) {
+					this.customerConfigurations = users.getCustomerConfigurations(2);
+				}
+		}
+		 catch (SQLException se) {
+	        	se.printStackTrace();
+			}
+	}
+	
+	
+	 
     private Node getOrganization(Integer orgId) 
     {
         Node nodeDetails = null;
@@ -893,7 +953,16 @@ public class ManageOrganizationController extends PageFlowController
                      path = "add_organization.jsp")
     })
     protected Forward addOrganization(ManageOrganizationForm form)
-    {
+    {	
+    	//START- Changed For LASLINK Product
+    	 String lasLinkConfigForOrgNodes = OrgPathListUtils.isOrgNodeForLasLinkCustomer(form.getSelectedOrgNodeId(), organizationManagement);
+         if(lasLinkConfigForOrgNodes != null && lasLinkConfigForOrgNodes.equals("T")) {
+         	this.isLasLinkCustomerSelected = true;
+         }
+         else {
+         	this.isLasLinkCustomerSelected = false;
+         }
+         //END- Changed For LASLINK Product
         if (form.getSelectedOrgNodeId() != null && form.getMessage().getType() == null && (!form.getActionElement().equals(ACTION_ORG_NODE_ID) && !form.getActionElement().equals(ACTION_ORG_SORT_ORDER_BY)) && !form.getActionElement().equals(ACTION_ORG_PAGE_REQUESTED) && !form.getActionElement().equals(BUTTON_GO_INVOKED) && !form.getActionElement().equals(SETUP_ORG_NODE_PATH))
         { 
             
@@ -1855,6 +1924,7 @@ public class ManageOrganizationController extends PageFlowController
             
             form.setSelectedOrgName(org.getOrgName());
             form.setSelectedOrgNodeCode(org.getOrgCode());
+            form.setSelectedOrgMdrNumber(org.getOrgMdrNumber());
             form.setSelectedOrgNodeType(org.getOrgType());
             form.setSelectedOrgNodeTypeId(org.getOrgTypeId());
             
@@ -2217,6 +2287,13 @@ public class ManageOrganizationController extends PageFlowController
     private void setFormInfoOnRequest(ManageOrganizationForm form) {
     	this.getRequest().setAttribute("pageMessage", form.getMessage());
     	this.getRequest().setAttribute("formData", form.getOrgPageRequested());
+    	if(this.isLasLinkCustomerSelected){
+    		this.getRequest().setAttribute("isLasLinkCustomer", this.isLasLinkCustomerSelected);
+    	}
+    	else {
+    		this.getRequest().setAttribute("isLasLinkCustomer", this.isLasLinkCustomer);
+    	}
+        
     }
 
 
@@ -2244,7 +2321,8 @@ public class ManageOrganizationController extends PageFlowController
         private Integer selectedOrgChildNodeId;
         private String selectedOrgNodeName;
 		private String selectedOrgName;
-        private String selectedOrgNodeCode;
+		private String selectedOrgNodeCode;
+		private String selectedOrgMdrNumber;
         private String selectedOrgNodeType;
         private String selectedOrgNodeTypeId;
         private String selectedOrgNodeParent;
@@ -2292,6 +2370,7 @@ public class ManageOrganizationController extends PageFlowController
             this.previousParentId = null;
             this.selectedOrgNodeName = null;
 			this.selectedOrgName = null;
+			this.selectedOrgMdrNumber = null;
             this.previousParentName = null;
             this.selectedOrgNodeCode = null;
             this.selectedOrgNodeType = null;
@@ -2326,7 +2405,8 @@ public class ManageOrganizationController extends PageFlowController
             copied.setSelectedOrgChildNodeId(this.selectedOrgChildNodeId);
             copied.setSelectedOrgNodeName(this.selectedOrgNodeName);
 			copied.setSelectedOrgName(this.selectedOrgName);
-            copied.setSelectedOrgNodeCode(this.selectedOrgNodeCode);
+			copied.setSelectedOrgNodeCode(this.selectedOrgNodeCode);
+			copied.setSelectedOrgMdrNumber(this.selectedOrgMdrNumber);
             copied.setSelectedOrgNodeType(this.selectedOrgNodeType);
             copied.setSelectedOrgNodeParent(this.selectedOrgNodeParent);
             
@@ -2716,7 +2796,23 @@ public class ManageOrganizationController extends PageFlowController
          */
         public void setActionPermission(String actionPermission) {
             this.actionPermission = actionPermission;
-        }        
+        }
+
+		
+
+		/**
+		 * @return the selectedOrgMdrNumber
+		 */
+		public String getSelectedOrgMdrNumber() {
+			return selectedOrgMdrNumber;
+		}
+
+		/**
+		 * @param selectedOrgMdrNumber the selectedOrgMdrNumber to set
+		 */
+		public void setSelectedOrgMdrNumber(String selectedOrgMdrNumber) {
+			this.selectedOrgMdrNumber = selectedOrgMdrNumber;
+		}        
     }
 
 
@@ -2727,23 +2823,41 @@ public class ManageOrganizationController extends PageFlowController
 	public LinkedHashMap getOrgLevelOptions() {
 		return orgLevelOptions;
 	}
+	
+	//isLasLink customer
+	private void isLasLinkCustomer()
+    {               
+        
+        boolean isLasLinkCustomer = false;
 
+            
+			 for (int i=0; i < this.customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+            	//isLasLink customer
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("LASLINK_Customer") && cc.getDefaultValue().equals("T")	)
+                {
+                	isLasLinkCustomer = true;
+                    break;
+                } 
+            }
+       
+        this.isLasLinkCustomer = isLasLinkCustomer;
+       
+    }
+	
+	
+	
 	//Bulk Accommodation
 	private Boolean customerHasBulkAccommodation()
     {               
-        Integer customerId = this.user.getCustomer().getCustomerId();
+        
         boolean hasBulkStudentConfigurable = false;
 
-        try
-        {      
-			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
-			if (customerConfigurations == null || customerConfigurations.length == 0) {
-				customerConfigurations = users.getCustomerConfigurations(2);
-			}
             
-            for (int i=0; i < customerConfigurations.length; i++)
+			 for (int i=0; i < this.customerConfigurations.length; i++)
             {
-            	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+            	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
                 //Bulk Accommodation
                 if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && cc.getDefaultValue().equals("T")	)
                 {
@@ -2751,10 +2865,7 @@ public class ManageOrganizationController extends PageFlowController
                     break;
                 } 
             }
-        }
-        catch (SQLException se) {
-        	se.printStackTrace();
-		}
+       
         
        
         return new Boolean(hasBulkStudentConfigurable);
@@ -2769,15 +2880,9 @@ public class ManageOrganizationController extends PageFlowController
 	
 	private Boolean customerHasScoring()
     {               
-		Integer customerId = this.user.getCustomer().getCustomerId();
+		
         boolean hasScoringConfigurable = false;
         
-        try
-        {      
-			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
-			if (customerConfigurations == null || customerConfigurations.length == 0) {
-				customerConfigurations = users.getCustomerConfigurations(2);
-			}
         
 
         for (int i=0; i < customerConfigurations.length; i++)
@@ -2790,16 +2895,28 @@ public class ManageOrganizationController extends PageFlowController
                 break;
             } 
         }
-       }
+      
         
-        catch (SQLException se) {
-        	se.printStackTrace();
-		}
        
         return new Boolean(hasScoringConfigurable);
     }
+
+
+		/**
+		 * @return the isLasLinkCustomerSelected
+		 */
+		public Boolean getIsLasLinkCustomerSelected() {
+			return isLasLinkCustomerSelected;
+		}
+
+		/**
+		 * @param isLasLinkCustomerSelected the isLasLinkCustomerSelected to set
+		 */
+		public void setIsLasLinkCustomerSelected(Boolean isLasLinkCustomerSelected) {
+			this.isLasLinkCustomerSelected = isLasLinkCustomerSelected;
+		}
     
 	
-	
+
        
 }
