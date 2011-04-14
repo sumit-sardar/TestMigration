@@ -57,7 +57,8 @@ public class FilterSortPageUtils
     //sort 
     public static final String TEST_DEFAULT_SORT_COLUMN = "ItemSetLevel";    
     public static final String ORGNODE_DEFAULT_SORT_COLUMN = "OrgNodeName";    
-    public static final String STUDENT_DEFAULT_SORT_COLUMN = "TestSessionName";    
+    public static final String STUDENT_DEFAULT_SORT_COLUMN = "TestSessionName";  
+    public static final String SCORE_STUDENT_DEFAULT_SORT_COLUMN = "UserName";  
     public static final String PROCTOR_DEFAULT_SORT_COLUMN = "LastName";
     public static final String PROCTOR_DEFAULT_SECONDARY_SORT_COLUMN = "FirstName";    
     public static final String TESTROSTER_DEFAULT_SORT = "LastName";

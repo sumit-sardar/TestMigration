@@ -786,7 +786,7 @@ public class ScoreByStudentController extends PageFlowController {
 			this.currentAction = ACTION_DEFAULT;
 			// clearSearch();
 			this.selectedStudentId = null;
-			this.studentSortColumn = FilterSortPageUtils.STUDENT_DEFAULT_SORT_COLUMN;
+			this.studentSortColumn = FilterSortPageUtils.SCORE_STUDENT_DEFAULT_SORT_COLUMN;
 			this.studentSortOrderBy = FilterSortPageUtils.ASCENDING;
 			this.studentPageRequested = new Integer(1);
 			this.studentMaxPage = new Integer(1);
@@ -800,7 +800,7 @@ public class ScoreByStudentController extends PageFlowController {
 
 		public void validateValues() {
 			if (this.studentSortColumn == null)
-				this.studentSortColumn = FilterSortPageUtils.STUDENT_DEFAULT_SORT_COLUMN;
+				this.studentSortColumn = FilterSortPageUtils.SCORE_STUDENT_DEFAULT_SORT_COLUMN;
 
 			if (this.studentSortOrderBy == null)
 				this.studentSortOrderBy = FilterSortPageUtils.ASCENDING;
