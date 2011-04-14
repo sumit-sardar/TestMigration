@@ -29,6 +29,7 @@ import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.RubricViewData; //Added for rubric view
 import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
 import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.ScorableItemData;
@@ -422,6 +423,40 @@ public class StudentScoringController extends PageFlowController {
 	}
 	*/
 	
+	/**
+	 * Included for rubric View
+	 * @jpf:action
+	 * @jpf:forward name="success" path="listOfItem.jsp"
+	 */
+		
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="listOfItem.jsp")
+	})
+	protected Forward rubricViewDisplay(StudentScoringForm form){
+			
+		String jsonResponse = "";
+		String itemId = getRequest().getParameter("itemId");
+		
+		RubricViewData[] scr =  getRubricDetails(itemId);
+		
+		try {
+			jsonResponse = JsonUtils.getJson(scr, "rubricData",scr.getClass());
+
+			HttpServletResponse resp = this.getResponse();     
+			resp.setContentType("application/json");
+			resp.flushBuffer();
+	        OutputStream stream = resp.getOutputStream();
+	        stream.write(jsonResponse.getBytes());
+	        stream.close();
+	        
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		return null;		
+	}
+
 	
 	/**
 	 * initialize
@@ -888,6 +923,23 @@ public class StudentScoringController extends PageFlowController {
     	return answerArea;
     }
 	
+    
+    /**
+     *getRubricDetails() for rubricView
+     */
+    private RubricViewData[] getRubricDetails(String itemId){
+
+    	RubricViewData[] rubricDetailsData = null;
+    	try {	
+    		rubricDetailsData =  this.testScoring.getRubricDetailsData(itemId);
+    	}
+    	catch(CTBBusinessException be){
+    		be.printStackTrace();
+    	}
+    	return rubricDetailsData;
+    }
+    
+    
 	/**
 	 * findByStudentProfile
 	 */

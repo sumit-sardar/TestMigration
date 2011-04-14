@@ -14,6 +14,7 @@
 <script type="text/javascript" src="/HandScoringWeb/resources/js/jquery-ui-1.8.10.custom.min.js"></script>
 <script src="dtfx.js"></script>
 <link type="text/css" href="/HandScoringWeb/resources/css/jquery-ui-1.8.10.custom.css" rel="stylesheet" />
+<link type="text/css" href="/HandScoringWeb/resources/css/style.css" rel="stylesheet" />
 
 <script>
 function stopAudio(){
@@ -105,34 +106,131 @@ if(isHidden){
 			}
 			}
 	
-	function notRedirect () {
+	function viewRubric (itemIdRubric, itemNumber) {
 	
+	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber;
+	$("#itemId").val(itemIdRubric);
+	$("#itemNumber").val(itemNumber);
+	
+	var isHidden = $('#rubricDialogID').is(':hidden');  
+	if(isHidden){
 		$.ajax(
 		{
 				async:		true,
 				beforeSend:	function(){
+								blockUI();
 
 							},
-				url:		'listOfItem.jsp',
-				type:		'GET',
-				data:		null,
+				url:		'rubricViewDisplay.do',
+				type:		'POST',
+				data:		param,
 				dataType:	'json',
 				success:	function(data, textStatus, XMLHttpRequest){	
-							
-								//do nothing
+										
+								var questionNumber = $("#itemNumber").val();	
+								var counter = 0;
+								var rowCountRubric = $('#rubricTable tr').length;
+								var rowCountExemplar = $('#exemplarsTable tr').length;								
+								var cellCountExemplar = $('#exemplarsTable tr td').length;
+																
+								//Rows needs to be deleted, since dynamically new rows are added everytime
+								$('#rubricTable tr:not(:first)').remove();
+								$('#exemplarsTable tr:not(:first)').remove();
+								$("#rubricDialogID").css('height',350);
+								 
+								 if(cellCountExemplar == 1)	 {
+								 	$('#rubricExemplarId').hide();
+								 	$("#exemplarNoDataId").show();
+								 } else {
+								 	$('#rubricExemplarId').show();
+								 	$("#exemplarNoDataId").hide();
+								 }
+								 								 
+								 if(data.rubricData.entry) {
+								 	$("#rubricNoDataId").hide();
+								 	$("#rubricTableId").show();								 								 
+								 	for(var i=0;i<data.rubricData.entry.length;i++) {									
+										var description = handleSpecialCharacters(data.rubricData.entry[i].rubricDescription);								
+										$('#rubricTable tr:last').
+											after('<tr><td><center><small>'+
+												data.rubricData.entry[i].score+
+													'</small></center></td><td><small>'+description+'</small></td></tr>');
+
+										if(data.rubricData.entry[i].rubricExplanation){
+											var explanation = handleSpecialCharacters(data.rubricData.entry[i].rubricExplanation);
+											var response = handleSpecialCharacters(data.rubricData.entry[i].sampleResponse);
+											$('#exemplarsTable tr:last').
+												after('<tr><td><center><small>'+
+													data.rubricData.entry[i].score+
+														'</small></center></td><td><small>'+
+															response+
+																'</small></td><td><small>'+
+																	explanation+
+																		'</small></td></tr>');																		
+										} else {
+											counter++;
+											if(counter==data.rubricData.entry.length) {
+												$("#exemplarNoDataId").show();
+												$("#rubricExemplarId").hide();
+											}
+										}
+									}
+								} else {
+									$("#exemplarNoDataId").show();
+									$("#rubricNoDataId").show();
+									$("#rubricExemplarId").hide();
+									$("#rubricTableId").hide();									
+								}								
+								 $("#rubricDialogID").dialog({title:"Question "+questionNumber, resizable:false});
+								 if(data.rubricData.entry)
+								 $("#rubricDialogID").css('height',350);
+								 else
+								 $("#rubricDialogID").css("height",'auto');								 						
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								//alert(XMLHttpRequest.responseText+" http code"+XMLHttpRequest.statusCode);
-								//alert('XMLHttpRequest:'+XMLHttpRequest+'===>> textStatus:'+textStatus+'==>>errorThrown:'+errorThrown);
 							},
 				complete :  function(){
-								//alert('after complete....');
-								//unblockUI();
+								unblockUI();
 							}
-		}
-	);
-	
+				}
+			);
+		}	
 	}
+	
+	function handleSpecialCharacters(s) {
+		s= s.replace(/&nbsp;/g,' ').split('');
+		var k;
+		for(var i= 0; i<s.length; i++){
+			k= s[i];
+			c= k.charCodeAt(0);
+			s[i]= (function(){
+				switch(c){
+					case 60: return "&lt;";
+					case 62: return "&gt;";
+					case 34: return "&quot;";
+					case 38: return "&amp;";
+					case 39: return "&#39;";
+					//For IE
+					case 65535: {
+						if(!((s[i-1].charCodeAt(0)>=65 && s[i-1].charCodeAt(0)<=90) || (s[i-1].charCodeAt(0)>=97 && s[i-1].charCodeAt(0)<=122)) || !((s[i+1].charCodeAt(0)>=65 && s[i+1].charCodeAt(0)<=90) || (s[i+1].charCodeAt(0)>=97 && s[i+1].charCodeAt(0)<=122)))
+							return "&quot;";
+						else
+							return "&#39;";
+					}
+					//For Mozila and Safari
+					case 65533: {
+						if(!((s[i-1].charCodeAt(0)>=65 && s[i-1].charCodeAt(0)<=90) || (s[i-1].charCodeAt(0)>=97 && s[i-1].charCodeAt(0)<=122)) || !((s[i+1].charCodeAt(0)>=65 && s[i+1].charCodeAt(0)<=90) || (s[i+1].charCodeAt(0)>=97 && s[i+1].charCodeAt(0)<=122)))
+							return "&quot;";
+						else
+							return "&#39;";
+					}
+					default: return k;
+				}
+			})();
+		}
+		return s.join('');
+	}
+
 	
 		function formSave() {
 			var itemId =  document.getElementById("itemId").value ;
@@ -403,12 +501,17 @@ if(isHidden){
 
 							<td class="sortable"><netui:span value="${container.item.itemSetOrder}" /></td>
 							<td class="sortable">
-							<a href="javascript:notRedirect()">View</a> 
-							<td class="sortable"><netui:span value="${container.item.itemSetName}" /></td>
-							<td class="sortable"><netui-data:getData resultId="itemNumber" value="${container.item.itemSetOrder}" /> <%
+							<netui-data:getData resultId="itemId" value="${container.item.itemId}" /> <%
+ 	String itemId = (String) pageContext
+ 								.getAttribute("itemId");
+ %>
+ <netui-data:getData resultId="itemNumber" value="${container.item.itemSetOrder}" /> <%
  	Integer itemNumber = (Integer) pageContext
  								.getAttribute("itemNumber");
  %>
+							<a href="javascript:viewRubric('<%=itemId%>','<%=itemNumber%>')">View</a> 
+							<td class="sortable"><netui:span value="${container.item.itemSetName}" /></td>
+							<td class="sortable">
 							<input name="ViewQuestion" type="button" value="View Question"
 								onclick="openViewQuestionWindow(<%=itemNumber%>); return true;" /></td>
 							<td class="sortable"><netui-data:getData resultId="itemtype" value="${container.item.itemType}" /> <%
@@ -419,10 +522,7 @@ if(isHidden){
  	Integer itemSetId = (Integer) pageContext
  								.getAttribute("itemSetId");
  %>
-							<netui-data:getData resultId="itemId" value="${container.item.itemId}" /> <%
- 	String itemId = (String) pageContext
- 								.getAttribute("itemId");
- %>
+							
 							<netui-data:getData resultId="answered" value="${container.item.answered}" /> <c:if test="${itemtype =='AI'}">
 								<c:if test="${answered == 'NA'}">
 									<input type="button" value="Audio Response" disabled="true" />
@@ -531,6 +631,74 @@ if(isHidden){
 			</table>
 
 			</div>
+			
+			<!-- RUBRIC POPUP -->
+			
+			<div class="scroll" id="rubricDialogID"
+				style="display: none; background-color: #FFFFCC; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+				<span>
+					<center>
+						<font size='4'>Scoring Rubric
+						</font>
+					</center>
+				</span>
+				<div style="width: 100%; height: 90%; background-color: #FFFFCC; font-family: Arial,Verdana,Sans Serif; font-size: 8px; font-weight: normal;">
+					<div id="rubricNoDataId" style="display: none; border: 10px; background-color: #FFFFFF;">
+						<table border="1" style="width: 100%;">
+							<tr>
+								<td align="center" >No rubric data is present for the Item
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div id="rubricTableId" style="display: none;">
+						<table border="1" bgcolor="#FFFFFF" id="rubricTable" style="width: 100%;">
+							<tr bgcolor="#EAEAEA">
+								<td style="width: 20%;" align="center">
+									<font size='4'>Score
+									</font>
+								</td>
+								<td align="center">
+									<font size='4'>Description
+									</font>
+								</td>
+							</tr>
+						</table>
+					</div>
+					<span>
+						<center>
+							<font size='4'>Exemplars
+							</font>
+						</center>
+					</span>
+					<div id="exemplarNoDataId" style="display: none; border: 10px; background-color: #FFFFFF;">
+						<table border="1" style="width: 100%;">
+							<tr>
+								<td align="center" >No exemplar data is present for the Item
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div id="rubricExemplarId" style="display: none;">
+						<table border="1" bgcolor="#FFFFFF" id="exemplarsTable" style="width: 100%;">
+							<tr bgcolor="#EAEAEA">
+								<td style="width: 20%;" align="center">
+									<font size='4'>Score
+									</font>
+								</td>
+								<td style="width: 30%;" align="center">
+									<font size='4'>Sample Response
+									</font>
+								</td>
+								<td align="center">
+									<font size='4'>Explanation
+									</font>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>						
 		</netui:form>
 		<!-- ********************************************************************************************************************* -->
 		<!-- End Page Content -->
