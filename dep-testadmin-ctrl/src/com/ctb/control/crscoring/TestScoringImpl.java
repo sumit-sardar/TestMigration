@@ -73,6 +73,10 @@ public class TestScoringImpl implements TestScoring {
 				pageSize = new Integer(page.getPageSize());
 			}
 			RosterElement[] rosterElements = getAllStudentForTestSession(testAdminID);
+			//Change for HandScoring: score by student
+			for (RosterElement rosterElement: rosterElements) {
+				rosterElement.setScoringStatus(getScoringStatus(rosterElement.getTestRosterId(),rosterElement.getItemSetIdTC()));
+            }
 			rosterElementData.setRosterElements(rosterElements, pageSize);
 			if (filter != null)
 				rosterElementData.applyFiltering(filter);
@@ -387,7 +391,7 @@ public class TestScoringImpl implements TestScoring {
 	public Boolean saveOrUpdateScore(Integer userId, String itemId,
 			Integer itemSetIdTD, Integer testRosterId, Integer point)
 			throws CTBBusinessException {
-		System.out.println("saveOrUpdateScore");
+	
 		Boolean isSuccess  = new Boolean(false);
 		try {
 			ResponsePoints[] responsePoints = getResponseForScore(itemId,
@@ -699,6 +703,17 @@ public class TestScoringImpl implements TestScoring {
 
 		}
 		return rubricData;
+	}
+	
+	/**
+	 * This method returns scoring status of student.
+	 * @param rosterId
+	 * @param itemSetIDTC
+	 * @return
+	 * @throws Exception
+	 */
+	private String getScoringStatus(int rosterId, int itemSetIDTC) throws Exception{
+		return scoring.getScoringStatus(rosterId, itemSetIDTC);
 	}
 
 

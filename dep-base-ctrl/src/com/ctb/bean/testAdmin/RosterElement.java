@@ -42,6 +42,8 @@ public class RosterElement extends CTBBean
   private String customerFlagStatus;
   private String testCompletionStatusDesc; // For CR Soring 
   private String grade; // For CR Soring 
+  private Integer itemSetIdTC; // For CR Soring 
+
   
 
 	/**
@@ -420,5 +422,17 @@ public class RosterElement extends CTBBean
 	 */
 	public void setGrade(String grade) {
 		this.grade = grade;
+	}
+	/**
+	 * @return the itemSetIDTC
+	 */
+	public Integer getItemSetIdTC() {
+		return itemSetIdTC;
+	}
+	/**
+	 * @param itemSetIDTC the itemSetIDTC to set
+	 */
+	public void setItemSetIdTC(Integer itemSetIdTC) {
+		this.itemSetIdTC = itemSetIdTC;
 	}
 } 

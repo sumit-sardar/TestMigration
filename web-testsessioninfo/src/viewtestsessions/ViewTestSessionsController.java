@@ -1,10 +1,20 @@
 package viewtestsessions;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
+import org.apache.beehive.netui.pageflow.annotations.Jpf;
+
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.OrganizationNode;
@@ -12,18 +22,14 @@ import com.ctb.bean.testAdmin.SessionNode;
 import com.ctb.bean.testAdmin.SessionNodeData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
+import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
-import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.testSessionInfo.dto.PathNode;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
 import com.ctb.testSessionInfo.utils.PathListUtils;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
-import org.apache.beehive.controls.api.bean.Control;
-import org.apache.beehive.netui.pageflow.annotations.Jpf;
+import com.ctb.widgets.bean.PagerSummary;
 
 
 /**
@@ -50,6 +56,10 @@ public class ViewTestSessionsController extends PageFlowController
     private String userName = null;
     private List orgNodePath = null;
     
+ // customer configuration Change for HandScoring: score by student
+	CustomerConfiguration[] customerConfigurations = null;
+	CustomerConfigurationValue[] customerConfigurationsValue = null;
+    
          
     public static final String ACTION_DEFAULT = "defaultAction";
 
@@ -74,18 +84,20 @@ public class ViewTestSessionsController extends PageFlowController
         {
             this.orgNodePath = restoreFormSettings(formCopied, form);               
         }
-        
+     // change for handscoring
+        customerHasScoring();
         this.getSession().setAttribute("orgNodePath", this.orgNodePath);
         
         return new Forward("success", form);
     }
- 
+  //Change for HandScoring: score by student
     /**
      * @jpf:action
      * @jpf:forward name="success" path="view_test_sessions.jsp"
      * @jpf:forward name="sessionViewStatus" path="goto_view_session_monitor_status.do"
      * @jpf:forward name="sessionEdit" path="goto_edit_session_information.do"
      * @jpf:forward name="registerStudent" path="goto_register_student.do"
+     * @jpf:forward name="scoringByItem" path="goto_score_by_item.do"
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
@@ -95,16 +107,23 @@ public class ViewTestSessionsController extends PageFlowController
         @Jpf.Forward(name = "sessionEdit",
                 	 path = "goto_edit_session_information.do"),                     
         @Jpf.Forward(name = "registerStudent",
-                   	 path = "goto_register_student.do")                     
+                   	 path = "goto_register_student.do"),
+        @Jpf.Forward(name = "scoringByItem",
+                     path = "goto_score_by_item.do"),
+        @Jpf.Forward(name = "scoringByStudent",
+                     path = "goto_score_by_student.do")
     })
     protected Forward view_test_sessions(ViewTestSessionsForm form)
     {
-        String actionElement = form.getActionElement();            
+    	retrieveInfoFromSession();
+    	String actionElement = form.getActionElement();            
         String currentAction = form.getCurrentAction();            
         
         if (currentAction.equals("sessionViewStatus") ||
             currentAction.equals("sessionEdit") ||
-            currentAction.equals("registerStudent")) {
+            currentAction.equals("registerStudent") ||
+            currentAction.equals("scoringByItem") || 
+            currentAction.equals("scoringByStudent")){
             return new Forward(currentAction, form);        	
         }
 
@@ -254,7 +273,58 @@ public class ViewTestSessionsController extends PageFlowController
         }
         return null;
     }
-
+    
+    //Change for HandScoring: score by student
+    /**
+     * @jpf:action
+     */
+    @Jpf.Action()
+    protected Forward goto_score_by_item(ViewTestSessionsForm form)
+    {
+        saveFormToSession(form);
+        
+        String contextPath = "/HandScoringWeb/itemScoringPageFlow/beginIndivItemScoring.do";
+        String sessionId = form.getSessionId().toString();
+        String testAdminId = "testAdminId=" +
+                             sessionId;            
+        String url = contextPath + "?" + testAdminId;            
+            
+        try
+        {
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+    // Change for HandScoring: score by student
+    /**
+     * @jpf:action
+     */
+    @Jpf.Action()
+    protected Forward goto_score_by_student(ViewTestSessionsForm form)
+    {
+        saveFormToSession(form);
+        
+        String contextPath = "/HandScoringWeb/scorebystudent/beginIndivStudentScoring.do";
+        String sessionId = form.getSessionId().toString();
+        String testAdminId = "testAdminId=" +
+                             sessionId;            
+        String url = contextPath + "?" + testAdminId;            
+            
+        try
+        {
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+    
     private void saveFormToSession(ViewTestSessionsForm form)
     {
         /*
@@ -691,8 +761,40 @@ public class ViewTestSessionsController extends PageFlowController
         
         return orgNodePath;
     }
+    
+    // Change for HandScoring: score by student
      
+    private Boolean customerHasScoring() {
+    	getCustomerConfigurations();
+		boolean hasScoringConfigurable = false;
+		for (CustomerConfiguration cc : customerConfigurations) {
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase(
+					"Configurable_Hand_Scoring")
+					&& cc.getDefaultValue().equals("T")) {
+				hasScoringConfigurable = true;
+				break;
+			}
+		}
 
+		getSession()
+				.setAttribute("isScoringConfigured", hasScoringConfigurable);
+		return new Boolean(hasScoringConfigurable);
+	}
+    
+    /**
+     * Changes For cr hand scoring score by student
+	 * getCustomerConfigurations
+	 */
+	private void getCustomerConfigurations() {
+		try {
+			User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
+			Customer customer = user.getCustomer();
+			Integer customerId = customer.getCustomerId();
+			this.customerConfigurations = this.testSessionStatus.getCustomerConfigurations(this.userName, customerId);
+		} catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+	}
     /**
      * FormData get and set methods may be overwritten by the Form Bean editor.
      */

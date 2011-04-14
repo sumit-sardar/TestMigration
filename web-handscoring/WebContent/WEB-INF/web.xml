@@ -10,6 +10,10 @@
         <filter-name>NoCacheFilter</filter-name>
         <url-pattern>/studentScoringPageFlow/*</url-pattern>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>NoCacheFilter</filter-name>
+        <url-pattern>/scorebystudent/*</url-pattern>
+    </filter-mapping>
     <servlet>
         <description/>
         <servlet-name>action</servlet-name>
@@ -79,6 +83,7 @@
             <description>Protect any resources within the following Page Flow.</description>
             <url-pattern>/studentScoringPageFlow/*</url-pattern>
             <url-pattern>/itemPlayer/*</url-pattern>
+            <url-pattern>/scorebystudent/*</url-pattern>
             <http-method>GET</http-method>
             <http-method>POST</http-method>
         </web-resource-collection>
