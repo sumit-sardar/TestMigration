@@ -6,6 +6,7 @@ import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.RosterElementData;
+import com.ctb.bean.testAdmin.RubricViewData; //Added for rubric view
 import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
 import com.ctb.bean.testAdmin.ScorableItemData;
 import com.ctb.exception.CTBBusinessException;
@@ -137,5 +138,13 @@ public interface TestScoring {
 	 */
 	public Boolean saveOrUpdateScore(Integer userId, String itemId, Integer itemSetIdTD,
 			Integer testRosterId, Integer point) throws CTBBusinessException;
+	
+	/**
+	 * This method retrieves the rubric data for view purpose
+	 * @param itemId - item id
+	 * @return RubricViewData
+	 * @throws CTBBusinessException
+	 */
+	public RubricViewData[] getRubricDetailsData(String itemId) throws CTBBusinessException;
 
 }

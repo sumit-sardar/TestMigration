@@ -17,6 +17,7 @@ import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.ResponsePoints;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
+import com.ctb.bean.testAdmin.RubricViewData;
 import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
 import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.ScorableItemData;
@@ -654,5 +655,51 @@ public class TestScoringImpl implements TestScoring {
 		
 		return noOfRows;
 	}
+	
+	
+	/**
+	 * Method retrieves score, sample and corresponding explanation for rubric view as per the itemid
+	 * 
+	 * @param itemId -
+	 *            identifies item
+	 * @return RubricViewData 
+	 * @throws CTBBusinessException
+	 */
+	@Override
+	public RubricViewData[] getRubricDetailsData(String itemId) throws CTBBusinessException {
+
+		RubricViewData[] rubricData = null;
+
+		try {			
+			rubricData = scoring.getRubricDataDetails(itemId);
+
+		} catch (SQLException se) {
+			OASLogger
+					.getLogger("TestAdmin")
+					.error(
+							"Exception occurred while getting rubric data.",
+							se);
+			ScoringException rde = new ScoringException(
+					"TestScoringImpl: getRubricDetailsData: "
+							+ se.getMessage());
+			rde.setStackTrace(se.getStackTrace());
+			throw rde;
+
+		} catch (Exception se) {
+			OASLogger
+					.getLogger("TestAdmin")
+					.error(
+							"Exception occurred while getting rubric data.",
+							se);
+			ScoringException rde = new ScoringException(
+					"TestScoringImpl: getRubricDetailsData: "
+							+ se.getMessage());
+			rde.setStackTrace(se.getStackTrace());
+			throw rde;
+
+		}
+		return rubricData;
+	}
+
 
 }

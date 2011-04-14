@@ -8,6 +8,7 @@ import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
 import com.ctb.bean.testAdmin.ResponsePoints;
 import com.ctb.bean.testAdmin.RosterElement;
+import com.ctb.bean.testAdmin.RubricViewData;//Added for rubric view
 import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.TestSession;
 
@@ -77,9 +78,9 @@ public interface CRScoring extends JdbcControl {
 	 @JdbcControl.SQL(statement = "MERGE INTO item_response_points responsePt USING (select {responsePoints.responseId}   as responseId,  {responsePoints.datapointId} as datapointId, {responsePoints.point}  as point, {responsePoints.createdBy}    as createdBy, {responsePoints.creattionDate}  as createdDate  from dual) temp ON (responsePt.item_response_id = temp.responseId and responsePt.datapoint_id = temp.datapointId) WHEN MATCHED THEN   UPDATE SET responsePt.points  = temp.point,  responsePt.created_by  = temp.createdBy,   responsePt.created_date_time = temp.createdDate WHEN NOT MATCHED THEN   INSERT  (responsePt.points,  responsePt.item_response_points_seq_num,      responsePt.datapoint_id,      responsePt.item_response_id,      responsePt.created_by,      responsePt.created_date_time)   VALUES     (temp.point,      1,      temp.datapointId,      temp.responseId,      temp.createdBy,      temp.createdDate)")
 	 int  saveOrUpdateScore( ResponsePoints responsePoints  ) throws SQLException;
 	 
-	
-	 
-	 
+	//Data details for rubric view
+	 @JdbcControl.SQL(statement = "select rdata.item_id as itemId, rdata.score as score, rdata.rubric_description as rubricDescription, rdataEx.sample_response as sampleResponse, rdataEx.rubric_explanation as rubricExplanation from item_rubric_data rdata, item_rubric_exemplars rdataEx where rdata.item_id = rdataEx.item_id(+) and rdata.score = rdataEx.score(+) and rdata.item_id = {itemId} order by rdata.score asc")
+	 RubricViewData[] getRubricDataDetails(String itemId) throws SQLException; 
 	 
 	 
 }
