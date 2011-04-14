@@ -80,11 +80,49 @@
     
     <property name="archive.name" value="${project.name}.jar"/>
     <property name="uri" value="${archive.name}"/>
-    
+  	<taskdef name="ejbgen" classname="com.bea.wls.ejbgen.ant.EJBGenAntTask">
+  		<classpath>
+  			<pathelement location="${patch.home}/weblogic_patch.jar"/>
+  			<pathelement location="${wl.home}/server/lib/weblogic.jar"/>
+  			<pathelement location="${wl.home}/../modules/com.bea.core.i18n_1.0.0.0.jar"/>
+  		</classpath>
+  	</taskdef>
+
   </target>
   
   <target name="build" depends="init" description="compiles the source files; does not package the results">
-    
+  	<ejbgen
+  	source="1.5"
+  	outputDir = "${apt.src.output.dir}"
+  	wls9="true"
+  	descriptorDir = "${apt.src.output.dir}/META-INF"
+  	forceGeneration = "true"
+  	ejbSuffix = "."
+  	localSuffix = "Local"
+  	localHomeSuffix = "LocalHome"
+  	remoteSuffix = "Remote"
+  	remoteHomeSuffix = "RemoteHome"
+  	valueObjectSuffix = "Value"
+  	fork="yes">
+  	<classpath>
+  	<pathelement location="${patch.home}/weblogic_patch.jar"/>
+  	<pathelement location="${wl.home}/server/lib/weblogic.jar"/>
+  	<pathelement path="${java.class.path}"/>
+  	</classpath>
+  	<fileset dir="${project.dir}">
+  	<include name="${java.src.0.relative}/**/*.java"/>
+  	<include name="${java.src.1.relative}/**/*.java"/>
+  	<or>
+  	<contains text="@Session"/>
+  	<contains text="@Entity"/>
+  	<contains text="@MessageDriven"/>
+  	<contains text="@weblogic.ejbgen.Session"/>
+  	<contains text="@weblogic.ejbgen.Entity"/>
+  	<contains text="@weblogic.ejbgen.MessageDriven"/>
+  	</or>
+  	</fileset>
+  	</ejbgen>
+
     <if>
       <isreference refid="apt.factory.path"/>
       <then>
@@ -129,6 +167,24 @@
       </if>
     </for-each-java-src-path>
     
+  	<java classname="weblogic.ejbc"
+  	failonerror="true"
+  	fork="yes">
+  	<classpath>
+  	<pathelement location="${wl.home}/../modules/com.bea.core.xml.beaxmlbeans_2.1.0.0.jar"/>
+  	<pathelement location="${patch.home}/weblogic_patch.jar"/>
+  	<pathelement location="${wl.home}/server/lib/wlxbean.jar"/>
+  	<pathelement location="${wl.home}/server/lib/weblogic.jar"/>
+  	<path refid="java.classpath"/>
+  	</classpath>
+  	<arg value="-classpath"/>
+  	<arg value="${java.outpath}"/>
+  	<arg value="-compiler"/>
+  	<arg value="/opt/jrmc/bin/javac"/>
+  	<arg value="${apt.src.output.dir}"/>
+  	<arg value="${apt.src.class.dir}"/>
+  	</java>
+
   </target>
   
   <target name="assemble" depends="init" description="assembles the project for iterative dev deployment; requires that the &quot;ear.root&quot; property is specified">
