@@ -14,7 +14,6 @@ import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
-import studentScoringPageFlow.StudentScoringController.StudentScoringForm;
 import utils.FilterSortPageUtils;
 import utils.JsonUtils;
 import utils.MessageResourceBundle;
@@ -551,7 +550,7 @@ public class ScoreByStudentController extends PageFlowController {
 			@Jpf.Forward(name = "success", 
 					path ="listOfItem.jsp")
 	})
-	protected Forward rubricViewDisplay(StudentScoringForm form){
+	protected Forward rubricViewDisplay(ScoreByStudentForm form){
 			
 		String jsonResponse = "";
 		String itemId = getRequest().getParameter("itemId");
