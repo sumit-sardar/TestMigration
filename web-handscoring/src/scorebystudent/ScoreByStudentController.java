@@ -685,7 +685,7 @@ public class ScoreByStudentController extends PageFlowController {
 	@Jpf.Action()
 	protected Forward goToHomePage(ScoreByStudentForm form) {
 		try {
-			System.out.println("home called");
+		
 			getResponse().sendRedirect(
 					"/TestSessionInfoWeb/homepage/HomePageController.jpf");
 		} catch (IOException ioe) {
