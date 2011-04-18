@@ -803,6 +803,8 @@ public class ManageUploadController extends PageFlowController
             	System.out.println("***** Service invocation failed, trying again - " + trycount);
             	invokeService(userName, fullFilePath, uploadFileId, instanceURL, trycount++);
             } else {
+            	System.out.println("****************** EXCEPTION in invokeService ***************** ");
+            	/*
                 DataFileAudit dataFileAudit = new DataFileAudit();
                 dataFileAudit.setStatus("FL");
                 try{
@@ -810,6 +812,7 @@ public class ManageUploadController extends PageFlowController
                 } catch (Exception se) {
                     se.printStackTrace();
                 }
+                */
             	e.printStackTrace();
             	throw new RuntimeException(e);
             }
