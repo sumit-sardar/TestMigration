@@ -548,16 +548,20 @@ function toogleMDRNoTextBox(elementId)
 }
 
 function enableMDRNoTextBox(enabled){
-var MDRNoTextBox = document.getElementById("MDRNoTextBox");
-
-  if (enabled == "true") {
-        MDRNoTextBox.removeAttribute("disabled");
-    }
-    else {    
-        MDRNoTextBox.setAttribute("disabled", "true");
-        MDRNoTextBox.value = "";
-    }
-   	return true;
+	var MDRNoTextBox = document.getElementById('MDRNoTextBox');
+	var MDRAsterisk = document.getElementById('MdrAsterisk');
+	var MdrLabel = document.getElementById('MdrLabel');
+	  if (enabled == "true") {
+	        MDRNoTextBox.style.display="block";
+	        MDRAsterisk.style.display="inline";
+	        MdrLabel.style.display="inline";
+	    }
+	    else {    
+	        MDRNoTextBox.style.display="none";
+	        MDRAsterisk.style.display="none";
+	        MdrLabel.style.display="none";
+	    }
+	   	return true;
 }
 
 

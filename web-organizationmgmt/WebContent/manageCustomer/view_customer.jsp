@@ -42,6 +42,7 @@
 <netui:hidden dataSource="actionForm.customerSortOrderBy"/>
 <netui:hidden dataSource="actionForm.customerMaxPage"/>
 <netui:hidden dataSource="actionForm.enableLicense"/> 
+<netui-data:getData resultId="isLasLinkProduct" value="${actionForm.isLasLinkProduct}" />
 
 
 <!-- message -->
@@ -62,7 +63,9 @@
 <a name="moduleCustomerProfile"><!-- moduleCustomerProfile --></a>    
 <p>
      <ctb:showHideSection sectionId="moduleCustomerProfile" sectionTitle="Profile Information" sectionVisible="actionForm.byCustomerProfileVisible">
-        <jsp:include page="/manageCustomer/view_customer_by_profile.jsp" />
+        <jsp:include page="/manageCustomer/view_customer_by_profile.jsp" >
+                	<jsp:param name="isLasLinkProduct" value="${actionForm.isLasLinkProduct}" />
+        </jsp:include>
     </ctb:showHideSection>
 </p>
 

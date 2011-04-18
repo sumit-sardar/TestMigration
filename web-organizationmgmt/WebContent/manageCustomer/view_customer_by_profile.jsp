@@ -9,6 +9,10 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
+<% 	Boolean isLasLinkProduct = new Boolean((String)request.getParameter("isLasLinkProduct")); 
+	pageContext.setAttribute("isLasLinkProduct",isLasLinkProduct);
+	
+%>
 
 
 <table class="simple">
@@ -33,10 +37,12 @@
         <td class="transparent" width="100" nowrap><netui:content value="State:"/></td>
         <td class="transparent"><netui:label value="${customerProfileData.state}"/></td>
     </tr>
+    <c:if test="${isLasLinkProduct}">
      <tr class="transparent">
         <td class="transparent" width="100" nowrap><netui:content value="MDR Number:"/></td>
         <td class="transparent"><netui:label value="${customerProfileData.mdrNumber}"/></td>
     </tr>
+    </c:if>
 </table>
 </td>
 

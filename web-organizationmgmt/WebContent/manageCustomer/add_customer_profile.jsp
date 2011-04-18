@@ -42,13 +42,18 @@
             </tr>
             <tr class="transparent">
             	
-                <td class="transparent alignRight" width="130" valign="top" nowrap><span class="asterisk">*</span>&nbsp;MDR Number:</td>
+            	<c:if test="${!isLasLinkProduct}">
+                <td class="transparent alignRight" width="130" valign="top" nowrap><span class="asterisk" style="display: none;" id="MdrAsterisk">*</span>&nbsp;<span style="display: none;" id="MdrLabel">MDR Number:</span></td>
+                </c:if>
+                <c:if test="${isLasLinkProduct}">
+                <td class="transparent alignRight" width="130" valign="top" nowrap><span class="asterisk" style="display: inline;" id="MdrAsterisk">*</span>&nbsp;<span style="display: inline;" id="MdrLabel">MDR Number:</span></td>
+                </c:if>
                 <td class="transparent">
-                <c:if test="${!isLasLinkProduct}">
-                 <netui:textBox tagId="MDRNoTextBox" dataSource="actionForm.customerProfile.mdrNumber" maxlength="32" style="width:200px"  disabled="true"/>
+	             <c:if test="${!isLasLinkProduct}">
+                 <netui:textBox tagId="MDRNoTextBox" dataSource="actionForm.customerProfile.mdrNumber" maxlength="32" style="width:200px; display: none;"  />
                  </c:if>
                  <c:if test="${isLasLinkProduct}">
-                 <netui:textBox tagId="MDRNoTextBox" dataSource="actionForm.customerProfile.mdrNumber" maxlength="32" style="width:200px"  />
+                 <netui:textBox tagId="MDRNoTextBox" dataSource="actionForm.customerProfile.mdrNumber" maxlength="32" style="width:200px; display: block;"  />
         		 </c:if>
                  
                  

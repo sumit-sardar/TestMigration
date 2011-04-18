@@ -1123,6 +1123,7 @@ public class ManageCustomerController extends PageFlowController
         }
         else
         { 
+        	form.isLasLinkProduct = this.savedForm.isLasLinkProduct;
             //validation for edit only as add validation already done
             boolean validInfo = CustomerFormUtils.verifyCustomerInformation(form, customerId);
             if (!validInfo)
