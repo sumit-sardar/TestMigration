@@ -1,5 +1,7 @@
 package com.ctb.control.crscoring;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import org.jdom.Element;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.ItemData;
 import com.ctb.bean.testAdmin.ResponsePoints;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
@@ -44,6 +47,9 @@ public class TestScoringImpl implements TestScoring {
 
 	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.CRScoring scoring;
+	
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.testAdmin.ADS ads;
 
 	/**
 	 * Retrieves a filtered, sorted, paged list of active students for a test
@@ -391,7 +397,7 @@ public class TestScoringImpl implements TestScoring {
 	public Boolean saveOrUpdateScore(Integer userId, String itemId,
 			Integer itemSetIdTD, Integer testRosterId, Integer point)
 			throws CTBBusinessException {
-	
+		System.out.println("saveOrUpdateScore");
 		Boolean isSuccess  = new Boolean(false);
 		try {
 			ResponsePoints[] responsePoints = getResponseForScore(itemId,
@@ -440,6 +446,46 @@ public class TestScoringImpl implements TestScoring {
 		}
 		
 	}
+	
+	
+	/***
+	 * Retrieves Decrypted Item XMl from ADS Database 
+	 * 
+	 * 
+	 * 
+	 */
+	
+	@Override
+	public ItemData getItemXML(String itemId) throws CTBBusinessException{
+		
+		ItemData item = new ItemData();
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try{
+		InputStream is = ads.getDecryptedItemXml(itemId).getBinaryStream();
+		boolean moreData = true;
+		while(moreData) {
+			byte [] buffer = new byte[128];
+			int read = is.read(buffer);
+			moreData = read > 0;
+			if(moreData) {
+				baos.write(buffer, 0, read);
+			}
+		}
+		item.setItem(baos.toByteArray());
+		item.setItemId(itemId);
+		
+		}
+		
+		
+		catch (Exception e){
+			OASLogger.getLogger("TestAdmin").error(
+					"Exception occurred while saveing score.", e);
+		}
+		return item;
+	}
+	
+	
 
 	/**
 	 * Retrieves array of active students for a test sessions.
