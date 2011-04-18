@@ -1,21 +1,44 @@
 package itemPlayer;
 
-import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
+import org.jdom.Element;
+import org.jdom.output.XMLOutputter;
+import org.xml.sax.InputSource;
+
+import utils.AssetInfo;
+import utils.ItemPlayerUtils;
+import utils.MemoryCache;
+
+import com.ctb.bean.testAdmin.ItemData;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+
 
 @Jpf.Controller(nested = true)
 public class ItemPlayerController extends PageFlowController {
 	private static final long serialVersionUID = 1L;
+	
+	
+	   @Control()
+	    private com.ctb.control.crscoring.TestScoring testScoring;
 
 	/**
 	 * Callback that is invoked when this controller instance is created.
@@ -119,12 +142,13 @@ public class ItemPlayerController extends PageFlowController {
     {
     	String OK = "<OK />";
         String ERROR = "<ERROR />";
-        
+		MemoryCache aMemoryCache = MemoryCache.getInstance();
+		HashMap assetMap = aMemoryCache.getAssetMap();
         String result = OK; 
         String method = getRequest().getParameter("method");
-        String inxml = getRequest().getParameter("requestXML");
+        String requestXml = getRequest().getParameter("requestXML");
         String itemId = getRequest().getParameter("itemNum");
-        System.out.println("Content servlet - " + method + "  " + itemId);
+        String imageId = getRequest().getParameter("imageId");
         try{
         
             if (method.equals("downloadItem"))
@@ -135,25 +159,58 @@ public class ItemPlayerController extends PageFlowController {
             else 
             if (method.equals("getItem")) {        
           
+            ItemData item = this.testScoring.getItemXML(itemId);	
+      /*      String itemXML = new String(item.getItem());
+            itemXML = ItemPlayerUtils.doUTF8Chars(itemXML);
             
-            int inum = Integer.parseInt(itemId);
-            System.out.println("getItem called"+inum);
-            	if((inum%2) == 0)
-            		 return new Forward("item1"); 
-            	else{
-            		 return new Forward("item2"); 
-            	}
-              
-                                 
+           byte [] itemEncodedXML = itemXML.getBytes();*/
+           byte [] decryptedContent = item.getItem();
+            org.jdom.Document itemDoc = null;
+			synchronized(aMemoryCache.saxBuilder) {
+					itemDoc = aMemoryCache.saxBuilder.build(new ByteArrayInputStream(decryptedContent));
+			}
+			org.jdom.Element element = (org.jdom.Element) itemDoc.getRootElement();
+			element = element.getChild("assets");
+			if (element != null) {
+				List imageList = element.getChildren();
+				for (int i = 0; i < imageList.size(); i++) {
+					element = (org.jdom.Element) imageList.get(i);
+					 imageId = element.getAttributeValue("id");
+					if (!assetMap.containsKey(imageId)) {
+						String mimeType = element.getAttributeValue("type");
+						String ext = mimeType.substring(mimeType
+								.lastIndexOf("/") + 1);
+						String b64data = element.getText();
+						byte[] imageData = Base64.decode(b64data);
+						System.out.println("imageData.length: " + imageData  + " :: " + imageId);
+						AssetInfo aAssetInfo = new AssetInfo();
+						aAssetInfo.setData(imageData);
+						aAssetInfo.setExt(ext);
+						assetMap.put(imageId, aAssetInfo);
+					}
+				}
+			}
+			String itemxml = updateItem(decryptedContent, assetMap);
+		
+            System.out.println("**************************Item Xml**********************" + item.getItemId() + " :: " +  item.getItem().toString() + " ::  " + itemxml);
+            
+            
+           HttpServletResponse resp = this.getResponse();     
+ 		   resp.setContentType("text/xml");
+            resp.flushBuffer();
+ 	        OutputStream stream = resp.getOutputStream();
+ 	        stream.write(itemxml.getBytes());
+ 	        stream.close();
+           
             }
             else 
             if (method.equals("getImage")) 
-                return getImage(itemId);
+                return getImage(requestXml);
             else
                 result = ERROR;  
                       
             // return response to client
-            this.writeResponse(result);
+          //  this.writeResponse(result);
         }
         catch(Exception e) { 
             e.printStackTrace();
@@ -166,64 +223,96 @@ public class ItemPlayerController extends PageFlowController {
     /**
      * 
      */
-    private Forward getImage(String inxml)
+    private Forward getImage(String imageRequestXml)
     {
+    	
+    	System.out.println("Get Image XMl Called");
         Forward result = null;
+        String imageId = null;
+        MemoryCache aMemoryCache = MemoryCache.getInstance();
+		HashMap assetMap = aMemoryCache.getAssetMap();
         try
         {
-           String imageId = "1";
-           if(inxml.equals("5"))
-        	   imageId = "snacks_10rSB.swf";
-             else{
-            	 imageId = "2.4.1.02A_09mOAS.swf";
-             }
-        
-           /* if (inxml.indexOf("imageid=\"snacks_10rSB.swf\"") > 0)
-                imageId = "snacks_10rSB.swf";
-            if (inxml.indexOf("imageid=\"2.4.1.02A_09mOAS.swf\"") > 0)
-                imageId = "2.4.1.02A_09mOAS.swf";
-            if (inxml.indexOf("imageid=\"2.4.1.02B_09mOAS.swf\"") > 0)
-                imageId = "2.4.1.02B_09mOAS.swf";
-            if (inxml.indexOf("imageid=\"2.4.1.02C_09mOAS.swf\"") > 0)
-                imageId = "2.4.1.02C_09mOAS.swf";
-            if (inxml.indexOf("imageid=\"2.4.1.02D_09mOAS.swf\"") > 0)
-                imageId = "2.4.1.02D_09mOAS.swf";
-                      
-            getRequest().setAttribute( "imageType", "application/x-shockwave-flash" );
-            */
-            String filePath = "/images/" + imageId ;
-            System.out.println("filePath==>"+filePath);
-                     
-            BufferedInputStream bis = new BufferedInputStream( this.getClass().getResourceAsStream(filePath));
-                        
-            int size = bis.available();
-            byte[] data = new byte[ size ];
-            bis.read( data );
-            bis.close();
-            getResponse().setContentType( "application/x-shockwave-flash" );
-            getResponse().setContentLength( size );
-            ServletOutputStream myOutput = getResponse().getOutputStream();
+        	imageId = ItemPlayerUtils.parseTag("imageid=", imageRequestXml);
+        	System.out.println("get Image image Id" + imageId);
+        		if (imageId == null || "".equals(imageId.trim())) // invalid image id
+				throw new Exception("No image id in request.");
+			
+			if (!assetMap.containsKey(imageId)) 
+				throw new Exception("Image with id '"+imageId+
+						"' not found in memory cache. Please call getItem before getImage.");
+
+			AssetInfo assetInfo = (AssetInfo) assetMap.get(imageId);
+			if (assetInfo == null)
+				throw new Exception("Image with id '"+imageId+
+				"' not found in memory cache. Please call getItem before getImage.");
+			HttpServletResponse resp = this.getResponse();    
+            String MIMEType = assetInfo.getMIMEType();
+            resp.setContentType( MIMEType );
+            byte[] data = assetInfo.getData();
+            int size = data.length;
+            resp.setContentLength( size );
+            ServletOutputStream myOutput = resp.getOutputStream();
             myOutput.write( data );
             myOutput.flush();
-            myOutput.close();
-            result = null;
+            myOutput.close();			
+		} catch (Exception e) {
+		e.printStackTrace();
            
-        }
-        catch (Exception e) 
-        {
-            StackTraceElement [] trace = e.getStackTrace();
-            StringBuffer sb = new StringBuffer();
-            sb.append("\n" + e.getMessage() + "\n");
-            for( int i = 0; i < trace.length; i++ ) 
-            {
-                sb.append( trace[i].getClassName() + "." + trace[i].getMethodName() + "()  " + trace[i].getFileName() + " line " + trace[i].getLineNumber() + "\n");
-            }
-            getRequest().setAttribute( "errorMessage", sb.toString() );
-            result = new Forward("error");
-        }
+		}
         return result;
     }
     
+    /**
+     * 
+     * 
+     * 
+     * @param itemBytes
+     * @param assetMap
+     * @return
+     * @throws Exception
+     */
+	private String updateItem( byte[] itemBytes, HashMap assetMap ) throws Exception
+    {
+		MemoryCache aMemoryCache = MemoryCache.getInstance();
+		org.jdom.Document itemDoc = null;
+		synchronized(aMemoryCache.saxBuilder) {
+          itemDoc = aMemoryCache.saxBuilder.build( new ByteArrayInputStream( itemBytes ) );
+		}
+        org.jdom.Element rootElement = (org.jdom.Element) itemDoc.getRootElement();
+        if (rootElement.getChild( "assets" )!=null)
+        	rootElement.getChild( "assets" ).detach();
+        List items = extractAllElement( ".//image_widget", rootElement);
+        for ( int i = 0; i < items.size(); i++ )
+        {
+            org.jdom.Element element = ( org.jdom.Element )items.get( i );
+            String id = element.getAttributeValue( "image_ref" );
+            if ( id != null && assetMap.containsKey( id ))
+                element.setAttribute( "src", id );
+        }
+        XMLOutputter aXMLOutputter = new XMLOutputter();
+        StringWriter aStringWriter = new StringWriter();
+        aXMLOutputter.output( rootElement, aStringWriter );
+        return aStringWriter.getBuffer().toString();
+    }
+    
+	
+	public static List extractAllElement(String pattern, Element element ) throws Exception
+	{
+//		TO-DO: this will only work with simple './/name' queries as is . . .
+		ArrayList results = new ArrayList();
+		pattern = pattern.substring(pattern.indexOf(".//") + 3);
+		List children = element.getChildren();
+		Iterator iterator = children.iterator();
+		while(iterator.hasNext()) {
+			Element elem = (Element) iterator.next();
+			if(pattern.equals(elem.getName())) {
+				results.add(elem);
+			}
+			results.addAll(extractAllElement(".//" + pattern, elem));
+		}
+		return results;
+	}
    
     /**
      * write xml content to response 

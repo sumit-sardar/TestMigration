@@ -513,7 +513,7 @@ if(isHidden){
 							<td class="sortable"><netui:span value="${container.item.itemSetName}" /></td>
 							<td class="sortable">
 							<input name="ViewQuestion" type="button" value="View Question"
-								onclick="openViewQuestionWindow(<%=itemNumber%>); return true;" /></td>
+								onclick="openViewQuestionWindow('<%=itemId%>'); return true;" /></td>
 							<td class="sortable"><netui-data:getData resultId="itemtype" value="${container.item.itemType}" /> <%
  	String itemtype = (String) pageContext
  								.getAttribute("itemtype");
