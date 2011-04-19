@@ -219,15 +219,26 @@ public class ViewTestSessionsController extends PageFlowController
         this.getRequest().setAttribute("testSessionOrgCategoryName", testSessionOrgCategoryName);        
         
         String sessionFilterTab = form.getSessionFilterTab();
-        if (sessionFilterTab.equalsIgnoreCase("PA"))
+        Boolean isScoringConfigured =  (Boolean) getSession().getAttribute("isScoringConfigured");
+        Boolean canRegisterStudent =  (Boolean) getSession().getAttribute("canRegisterStudent");
+        
+        if( (canRegisterStudent) && !(sessionFilterTab.equalsIgnoreCase("PA")))
         {
-            this.getRequest().setAttribute("enableRegisterStudent", Boolean.FALSE);
-        }
-        else
-        {
-            this.getRequest().setAttribute("enableRegisterStudent", Boolean.TRUE);
+        	this.getRequest().setAttribute("visibleRegisterStudent", Boolean.TRUE);
+        } 
+        else {
+        	this.getRequest().setAttribute("visibleRegisterStudent", Boolean.FALSE);
         }
         
+        
+        if( ((Boolean)isScoringConfigured) && !(sessionFilterTab.equalsIgnoreCase("FU")))
+        {
+        	this.getRequest().setAttribute("visiableScoreByStudent", Boolean.TRUE);
+        } 
+        else {
+        	this.getRequest().setAttribute("visiableScoreByStudent", Boolean.FALSE);
+        }
+
         saveFormToSession(form);
         
         this.getSession().setAttribute("hasLicenseConfig", hasLicenseConfig());
