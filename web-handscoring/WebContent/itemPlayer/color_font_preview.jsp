@@ -36,13 +36,13 @@
 <input type="hidden" name="itemNumber" id="itemNumber" value="<%=itemNumber%>">
 
 
-<table class="transparent" width="800">
+<table>
 
 </table>
-<table class="transparent">
-<tr class="transparent">
-  <td class="transparent">
-      <iframe src="<%=previewUrl%>" frameborder="0" style="border-color: #000; border-style: solid; border-width: 1px; margin: 0px; width: 790px; height: 590px;" ></iframe>
+<table >
+<tr>
+  <td >
+      <iframe src="<%=previewUrl%>" frameborder="0" style="border-color: #000; border-style: solid; border-width: 0px; margin: 0px; width: 900; height: 700;" ></iframe>
   </td>
 </tr>
 </table>
