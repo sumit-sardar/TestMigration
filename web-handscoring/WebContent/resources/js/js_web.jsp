@@ -181,21 +181,18 @@ function disableRemoveStudentButton()
     return true;
 }
 var colorPreviewWindow = null;
-
+	
 function openViewQuestionWindow(itemNumber)
 {
-//alert("hiiiiiiiiiiiii"+itemNumber);
+
 	var param = "?param=";
 	param = param + itemNumber ;
-	/*var srcCtrl = document.getElementById("question_bgrdColor");
-	var index = srcCtrl.selectedIndex;
-	param = param + srcCtrl.options[index].text + ",";*/
 	
-
    	var location = "viewQuestionWindow.do" + param;
-    
+    var theTop=(screen.height/2)-(600/2);
+	var theLeft=(screen.width/2)-(800/2);
 	var windowName = "ViewQuestionWindow"; 
-    ViewQuestionWindow = window.open(location, windowName,'toolbar=no,location=no,directories=no,status=yes,scrollbars=no,menubar=no,resizable=yes,width=800px, height=600px');
+    ViewQuestionWindow = window.open(location, windowName,"toolbar=no,location=no,directories=no,status=no,scrollbars=no,menubar=no,maximize=no,resizable=no,width=800px, height=600px,top="+ theTop +" ,left="+ theLeft);
     ViewQuestionWindow.focus();
     
     return false;
