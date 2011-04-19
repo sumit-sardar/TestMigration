@@ -9,15 +9,15 @@ import org.apache.beehive.controls.api.bean.ControlInterface;
 public interface ScoringControl 
 { 
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     java.lang.String scoreCompletedRostersForAdmin(java.lang.Integer testAdminId);
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     java.lang.String scoreCompletedRostersForProduct(java.lang.Integer productId);
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     java.lang.String invokeScoring(java.lang.String testRosterId);
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
     java.lang.String scoreCompletedRostersForCustomer(java.lang.Integer customerId);
 } 
