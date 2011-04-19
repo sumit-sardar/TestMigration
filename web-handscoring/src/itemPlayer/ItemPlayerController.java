@@ -30,6 +30,7 @@ import utils.MemoryCache;
 
 import com.ctb.bean.testAdmin.ItemData;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import com.sun.org.apache.xerces.internal.impl.io.MalformedByteSequenceException;
 
 
 @Jpf.Controller(nested = true)
@@ -159,15 +160,16 @@ public class ItemPlayerController extends PageFlowController {
             else 
             if (method.equals("getItem")) {        
           
-            ItemData item = this.testScoring.getItemXML(itemId);	
-      /*      String itemXML = new String(item.getItem());
-            itemXML = ItemPlayerUtils.doUTF8Chars(itemXML);
+      ItemData item = this.testScoring.getItemXML(itemId);	
+       // 	ItemData item = this.testScoring.getItemXML("9D_RE_Sample_A_copy");
+            String itemXML = new String(item.getItem());
+           itemXML = ItemPlayerUtils.doUTF8Chars(itemXML);
             
-           byte [] itemEncodedXML = itemXML.getBytes();*/
-           byte [] decryptedContent = item.getItem();
+           byte [] itemEncodedXML = itemXML.getBytes("UTF-8");
+         //  byte [] decryptedContent = item.getItem();
             org.jdom.Document itemDoc = null;
 			synchronized(aMemoryCache.saxBuilder) {
-					itemDoc = aMemoryCache.saxBuilder.build(new ByteArrayInputStream(decryptedContent));
+					itemDoc = aMemoryCache.saxBuilder.build(new ByteArrayInputStream(itemEncodedXML));
 			}
 			org.jdom.Element element = (org.jdom.Element) itemDoc.getRootElement();
 			element = element.getChild("assets");
@@ -181,8 +183,8 @@ public class ItemPlayerController extends PageFlowController {
 						String ext = mimeType.substring(mimeType
 								.lastIndexOf("/") + 1);
 						String b64data = element.getText();
+						b64data = ItemPlayerUtils.replaceAll(b64data,"&amp;#43;","+"); //To Escape Base64 special character "+"
 						byte[] imageData = Base64.decode(b64data);
-						System.out.println("imageData.length: " + imageData  + " :: " + imageId);
 						AssetInfo aAssetInfo = new AssetInfo();
 						aAssetInfo.setData(imageData);
 						aAssetInfo.setExt(ext);
@@ -190,7 +192,7 @@ public class ItemPlayerController extends PageFlowController {
 					}
 				}
 			}
-			String itemxml = updateItem(decryptedContent, assetMap);
+			String itemxml = updateItem(itemEncodedXML, assetMap);
 		
             System.out.println("**************************Item Xml**********************" + item.getItemId() + " :: " +  item.getItem().toString() + " ::  " + itemxml);
             
@@ -211,6 +213,9 @@ public class ItemPlayerController extends PageFlowController {
                       
             // return response to client
           //  this.writeResponse(result);
+        }
+        catch(MalformedByteSequenceException e){
+              	e.printStackTrace();
         }
         catch(Exception e) { 
             e.printStackTrace();

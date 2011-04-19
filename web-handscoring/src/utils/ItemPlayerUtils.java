@@ -57,7 +57,7 @@ public class ItemPlayerUtils {
 				else
 				{
 					isPreviousCharSpace = false;
-					retVal.append( "&#" ).append( intc ).append( ';' );
+					retVal.append( "&amp;#" ).append( intc ).append( ';' );
 				}
 			}
 		}
