@@ -16,6 +16,8 @@ if(isHidden){
 										blockUI();
 										$("#audioPlayer").hide();
 										$("#crText").hide();
+										
+										
 									},
 						url:		'beginCRResponseDisplay.do',
 						type:		'POST',
@@ -338,4 +340,8 @@ if(isHidden){
 	function rtrim(str, chars) {
 		chars = chars || "\\s";
 		return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
+	}
+	
+	function hideMessage(){
+		document.getElementById("messageSpan").innerHTML = "";
 	}

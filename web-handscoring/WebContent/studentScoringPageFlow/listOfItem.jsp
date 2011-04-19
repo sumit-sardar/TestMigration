@@ -306,7 +306,7 @@ function stopAudio(){
 					<td class="transparent alignRight" style="width: 10%;"><span>&nbsp;<b> Score :</b></span></td>
 					<td class="transparent" style="width: 90%;">
 
-					<div><netui:select tagId="pointsDropDown" datasource="actionForm.scorePoints" /></div>
+					<div><netui:select tagId="pointsDropDown" datasource="actionForm.scorePoints" onChange="hideMessage();"  /></div>
 					</td>
 				</tr>
 				<tr width="100%">
