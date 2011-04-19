@@ -19,7 +19,7 @@ import weblogic.ejbgen.JarSettings;
 @weblogic.ejbgen.MessageDriven(ejbName = "ScoreStudent", 
                                destinationJndiName = "ScoreStudentJMSQueue", 
                                destinationType = "javax.jms.Queue", 
-                               defaultTransaction = weblogic.ejbgen.MessageDriven.DefaultTransaction.REQUIRED, 
+                               defaultTransaction = weblogic.ejbgen.MessageDriven.DefaultTransaction.NOT_SUPPORTED, 
 	maxBeansInFreePool = "10"
 )
 public class ScoreStudent
