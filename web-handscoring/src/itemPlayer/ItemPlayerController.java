@@ -29,6 +29,7 @@ import utils.ItemPlayerUtils;
 import utils.MemoryCache;
 
 import com.ctb.bean.testAdmin.ItemData;
+import com.ctb.util.OASLogger;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import com.sun.org.apache.xerces.internal.impl.io.MalformedByteSequenceException;
 
@@ -218,7 +219,9 @@ public class ItemPlayerController extends PageFlowController {
               	e.printStackTrace();
         }
         catch(Exception e) { 
-            e.printStackTrace();
+        	OASLogger.getLogger("TestAdmin").error(
+					"Exception occurred while retrieving the item.", e); 
+             e.printStackTrace();
         }
         
         return null; 
