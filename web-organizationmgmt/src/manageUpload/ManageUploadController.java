@@ -52,6 +52,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+
+import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.ObjectMessage;
 import javax.jms.QueueConnection;
@@ -806,17 +808,19 @@ public class ManageUploadController extends PageFlowController
             	System.out.println("****************** start EXCEPTION in invokeService ***************** ");
             	System.out.println("getMethodName = " + e.getStackTrace()[0].getMethodName());
             	System.out.println(e.getMessage());
-            	System.out.println("****************** end EXCEPTION in invokeService ***************** ");
-            	/*
-                DataFileAudit dataFileAudit = new DataFileAudit();
-                dataFileAudit.setStatus("FL");
-                try{
-                    uploadDownloadManagement.updateAuditFileStatus(uploadFileId);
-                } catch (Exception se) {
-                    se.printStackTrace();
-                }
-                */
+                if (!"getConversationPhase".equals(e.getStackTrace()[0].getMethodName()) && (e.getMessage() != null) &&	
+                		(						   e.getClass().isInstance(new JMSException(""))) && (trycount >= 5)) {
+                	System.out.println("Set status to error!!!");
+	                DataFileAudit dataFileAudit = new DataFileAudit();
+	                dataFileAudit.setStatus("FL");
+	                try{
+	                    uploadDownloadManagement.updateAuditFileStatus(uploadFileId);
+	                } catch (Exception se) {
+	                    se.printStackTrace();
+	                }
+                }                
             	e.printStackTrace();
+            	System.out.println("****************** end EXCEPTION in invokeService ***************** ");
             	throw new RuntimeException(e);
             }
         }
