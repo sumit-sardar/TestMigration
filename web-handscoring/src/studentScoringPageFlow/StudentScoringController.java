@@ -1,5 +1,4 @@
 package studentScoringPageFlow;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -17,6 +16,7 @@ import utils.FilterSortPageUtils;
 import utils.JsonUtils;
 import utils.Message;
 import utils.MessageResourceBundle;
+import utils.ScoringPopupUtil;
 import utils.StudentProfileInformation;
 import utils.StudentSearchUtils;
 import utils.WebUtils;
@@ -26,7 +26,6 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
-import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.RubricViewData; //Added for rubric view
@@ -42,8 +41,6 @@ import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.ColumnSortEntry;
 import com.ctb.widgets.bean.PagerSummary;
-
-import utils.Message;
 
 
 
@@ -319,29 +316,11 @@ public class StudentScoringController extends PageFlowController {
 	})
 	protected Forward beginCRResponseDisplay(StudentScoringForm form){
 	
-		
-		String jsonResponse = "";
-		String itemType = getRequest().getParameter("itemType");
-		String itemId = getRequest().getParameter("itemId");
-		Integer itemSetId = Integer.valueOf(getRequest().getParameter("itemSetId"));
-		Integer testRosterId =  Integer.valueOf(getRequest().getParameter("rosterId"));
-		ScorableCRAnswerContent scr =  getIndividualCRResponse(this.userName,testRosterId,itemSetId,itemId, itemType );
-		
-		try {
-			jsonResponse = JsonUtils.getJson(scr, "answer",scr.getClass());
-		
 
-		//	getCRItemResponseForScoring
-		
-		   HttpServletResponse resp = this.getResponse();     
-		   resp.setContentType("application/json");
-           resp.flushBuffer();
-	        OutputStream stream = resp.getOutputStream();
-	        stream.write(jsonResponse.getBytes());
-	        stream.close();
-	        
+		try {
+			ScoringPopupUtil.processCRResponseDisplay(getRequest(), getResponse(), this.userName, this.testScoring, ScoringPopupUtil.CONTENT_TYPE_JSON) ;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			System.err.println("Exception while processing CR response.");
 			e.printStackTrace();
 		}
 	

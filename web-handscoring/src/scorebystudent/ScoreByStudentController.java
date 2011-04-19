@@ -17,6 +17,8 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import utils.FilterSortPageUtils;
 import utils.JsonUtils;
 import utils.MessageResourceBundle;
+import utils.ScoringPopupUtil;
+
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
@@ -590,29 +592,12 @@ public class ScoreByStudentController extends PageFlowController {
 
 	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "listOfItem.jsp") })
 	protected Forward beginCRResponseDisplay(ScoreByStudentForm form) {
-
-		String jsonResponse = "";
-		String itemType = getRequest().getParameter("itemType");
-		String itemId = getRequest().getParameter("itemId");
-		Integer itemSetId = Integer.valueOf(getRequest().getParameter(
-				"itemSetId"));
-		Integer testRosterId = Integer.valueOf(getRequest().getParameter(
-				"rosterId"));
-		ScorableCRAnswerContent scr = getIndividualCRResponse(this.userName,
-				testRosterId, itemSetId, itemId, itemType);
-
+		
 		try {
-			jsonResponse = JsonUtils.getJson(scr, "answer", scr.getClass());
-
-			// getCRItemResponseForScoring
-			HttpServletResponse resp = this.getResponse();
-			resp.setContentType("application/json");
-			resp.flushBuffer();
-			OutputStream stream = resp.getOutputStream();
-			stream.write(jsonResponse.getBytes());
-			stream.close();
-
+			ScoringPopupUtil.processCRResponseDisplay(getRequest(), getResponse(), this.userName, 
+					this.testScoring, ScoringPopupUtil.CONTENT_TYPE_JSON) ;
 		} catch (Exception e) {
+			System.err.println("Exception while processing CR response.");
 			e.printStackTrace();
 		}
 
