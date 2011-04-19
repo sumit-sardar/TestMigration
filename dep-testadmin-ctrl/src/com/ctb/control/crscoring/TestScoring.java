@@ -9,7 +9,6 @@ import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.RubricViewData; //Added for rubric view
 import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
 import com.ctb.bean.testAdmin.ScorableItemData;
-import com.ctb.bean.testAdmin.ItemData;
 import com.ctb.exception.CTBBusinessException;
 
 /**
@@ -39,7 +38,7 @@ public interface TestScoring {
 	 * @return RosterElementData
 	 * @throws CTBBusinessException
 	 */
-	public RosterElementData getAllStudentForTestSession(Integer testAdminID,
+	public RosterElementData getAllStudentForTestSession(Integer testAdminID, String userName,
 			FilterParams filter, PageParams page, SortParams sort
 			) throws CTBBusinessException;
 
@@ -147,15 +146,5 @@ public interface TestScoring {
 	 * @throws CTBBusinessException
 	 */
 	public RubricViewData[] getRubricDetailsData(String itemId) throws CTBBusinessException;
-
-	
-	/**
-	 * This method retrieves the item xml data for view the Item 
-	 * @param itemId - item id
-	 * @return ItemData
-	 * @throws CTBBusinessException
-	 */
-	public ItemData getItemXML(String itemId) throws CTBBusinessException;
-	
 
 }

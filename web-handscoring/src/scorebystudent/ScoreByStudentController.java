@@ -268,8 +268,8 @@ public class ScoreByStudentController extends PageFlowController {
 
 		RosterElementData reData = null;
 		try {
-			reData = testScoring.getAllStudentForTestSession(form
-					.getTestAdminId(), filter, page, sort);
+			reData = testScoring.getAllStudentForTestSession(
+					form.getTestAdminId(), form.getUserName(), filter, page, sort);
 		} catch (CTBBusinessException be) {
 			be.printStackTrace();
 		}
