@@ -480,7 +480,7 @@ public class TestScoringImpl implements TestScoring {
 		
 		catch (Exception e){
 			OASLogger.getLogger("TestAdmin").error(
-					"Exception occurred while saveing score.", e);
+					"Exception occurred while retrieving the item.", e);
 		}
 		return item;
 	}
