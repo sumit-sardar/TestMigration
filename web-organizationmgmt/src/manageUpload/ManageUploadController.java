@@ -809,8 +809,8 @@ public class ManageUploadController extends PageFlowController
             	System.out.println("getMethodName = " + e.getStackTrace()[0].getMethodName());
             	System.out.println(e.getMessage());
                 if (!"getConversationPhase".equals(e.getStackTrace()[0].getMethodName()) && (e.getMessage() != null) &&	
-                		(						   e.getClass().isInstance(new JMSException(""))) && (trycount >= 5)) {
-                	System.out.println("Set status to error!!!");
+                								  (e.getClass().isInstance(new JMSException(""))) && (trycount >= 5)) {
+                	System.out.println("Set status to error");
 	                DataFileAudit dataFileAudit = new DataFileAudit();
 	                dataFileAudit.setStatus("FL");
 	                try{
