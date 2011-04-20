@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import com.ctb.lexington.db.ConnectionFactory;
 import com.ctb.lexington.db.data.AdminData;
@@ -23,7 +24,7 @@ public class AdminCollector{
         try{	    
         	final String sql = "SELECT distinct count(distinct ros.student_id) as roster_count, " + 
         								"a.test_admin_id, " + 
-        								"a.LOGIN_START_DATE - 0.5, " + 
+        								"a.LOGIN_START_DATE, " + 
         								"a.LOGIN_END_DATE, " + 
         								"prog.PRODUCT_ID, " +
         								"pp.product_name, " + 
@@ -110,7 +111,10 @@ public class AdminCollector{
 	        	
 	        	details.setSessionId(SQLUtil.getLong(rs, "test_admin_id"));
 	        	details.setNumberOfStudents(SQLUtil.getLong(rs, "roster_count"));
-	        	details.setWindowStartDate(SQLUtil.getTimestamp(rs,"login_start_date"));
+	        	Timestamp tempTime = SQLUtil.getTimestamp(rs,"login_start_date");
+	        	long loginTime = tempTime.getTime() - (1000 * 60 * 60 * 12);
+	        	Timestamp loginStartDate = new Timestamp(loginTime);
+	        	details.setWindowStartDate(loginStartDate);
 	        	details.setWindowEndDate(SQLUtil.getTimestamp(rs,"login_end_date"));
 	        	
 	        	details.setProductId(SQLUtil.getLong(rs, "product_id"));
