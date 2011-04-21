@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 import org.jdom.CDATA;
@@ -31,6 +32,7 @@ import com.ctb.exception.testAdmin.StudentNotAddedToSessionException;
 import com.ctb.exception.testAdmin.TestAdminDataNotFoundException;
 import com.ctb.exception.testAdmin.TestElementDataNotFoundException;
 import com.ctb.util.Constants;
+import com.ctb.util.DateUtils;
 import com.ctb.util.OASLogger;
 import com.ctb.util.XMLUtils;
 
@@ -412,7 +414,10 @@ public class TestScoringImpl implements TestScoring {
 			}
 			for (ResponsePoints points : responsePoints) {
 				points.setCreatedBy(userId);
-				points.setCreattionDate(new Date());
+				Date creationDate = new Date();
+				creationDate = DateUtils.getAdjustedDate(creationDate,
+						TimeZone.getDefault().getID(), "GMT", creationDate);
+				points.setCreattionDate(creationDate);
 				points.setPoint(point);
 				Integer noOfRows = saveOrUpdateScore(points);
 				if(noOfRows > 0) {
