@@ -97,7 +97,7 @@ function stopAudio(){
 				if(playCompleted == true){			
 					formSave();
 				}else{
-					var confSave = confirm("Response is not completed yet.Are you sure you want to save?");
+					var confSave = confirm("Are you sure you want to score before listening to the entire response?");
 					if(confSave == true){
 						formSave();
 					}
