@@ -1,5 +1,8 @@
 package com.ctb.bean.testAdmin;
 
+import java.sql.Blob;
+import java.util.Date;
+
 import com.ctb.bean.CTBBean;
 
 /**
@@ -22,6 +25,9 @@ public class ScorableItem extends CTBBean {
 	private Integer dataPointId;
 	private String answered;
 	private String testItemType;
+	private Blob itemXml;
+	private Date createdDateTime;
+	
 	
 
 	/**
@@ -201,6 +207,34 @@ public class ScorableItem extends CTBBean {
 	 */
 	public void setTestItemType(String testItemType) {
 		this.testItemType = testItemType;
+	}
+
+	/**
+	 * @return the itemXml
+	 */
+	public Blob getItemXml() {
+		return itemXml;
+	}
+
+	/**
+	 * @param itemXml the itemXml to set
+	 */
+	public void setItemXml(Blob itemXml) {
+		this.itemXml = itemXml;
+	}
+
+	/**
+	 * @return the createdDateTime
+	 */
+	public Date getCreatedDateTime() {
+		return createdDateTime;
+	}
+
+	/**
+	 * @param createdDateTime the createdDateTime to set
+	 */
+	public void setCreatedDateTime(Date createdDateTime) {
+		this.createdDateTime = createdDateTime;
 	}
 
 	

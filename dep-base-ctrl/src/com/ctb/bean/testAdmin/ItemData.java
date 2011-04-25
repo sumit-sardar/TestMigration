@@ -1,9 +1,12 @@
 package com.ctb.bean.testAdmin;
 
+import java.util.Date;
+
 public class ItemData 
 {
     private String itemId;
     private byte [] item;
+    private Date createdDateTime;
     
     /**
 	 * @return Returns the itemId.
@@ -29,6 +32,18 @@ public class ItemData
 	 */
 	public void setItem(byte [] item) {
 		this.item = item;
+	}
+	/**
+	 * @return the createdDateTime
+	 */
+	public Date getCreatedDateTime() {
+		return createdDateTime;
+	}
+	/**
+	 * @param createdDateTime the createdDateTime to set
+	 */
+	public void setCreatedDateTime(Date createdDateTime) {
+		this.createdDateTime = createdDateTime;
 	}
 
  
