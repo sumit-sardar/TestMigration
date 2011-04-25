@@ -1,13 +1,13 @@
 package com.ctb.control.db.testAdmin; 
 
 
-import java.sql.Blob;
 import java.sql.SQLException;
 
 import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
 import com.ctb.bean.testAdmin.CustomerSDS;
+import com.ctb.bean.testAdmin.ScorableItem;
 
 /** 
  * Defines a new database control. 
@@ -43,6 +43,6 @@ public interface ADS extends JdbcControl
      * 
      * 
      */
-  @JdbcControl.SQL(statement = "select ITEM_RENDITION_XML as itemXml from AA_ITEM_DECRYPTED where AA_ITEM_ID= {itemId}")
-  	Blob getDecryptedItemXml(String itemId) throws SQLException;
+  @JdbcControl.SQL(statement = "select ITEM_RENDITION_XML as itemXml, CREATED_DATE_TIME as createdDateTime from AA_ITEM_DECRYPTED where AA_ITEM_ID= {itemId}")
+  	ScorableItem [] getDecryptedItemXml(String itemId) throws SQLException;
 }

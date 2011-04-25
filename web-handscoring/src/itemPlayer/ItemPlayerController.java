@@ -2,11 +2,11 @@ package itemPlayer;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +22,6 @@ import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
-import org.xml.sax.InputSource;
 
 import utils.AssetInfo;
 import utils.ItemPlayerUtils;
@@ -61,6 +60,8 @@ public class ItemPlayerController extends PageFlowController {
     private String firstName = null;
     private String lastName = null;
     private String fullName = null;
+	MemoryCache aMemoryCache = MemoryCache.getInstance();
+	HashMap assetMap = aMemoryCache.getAssetMap();
     
     // Uncomment this declaration to access Global.app.
     // 
@@ -144,13 +145,13 @@ public class ItemPlayerController extends PageFlowController {
     {
     	String OK = "<OK />";
         String ERROR = "<ERROR />";
-		MemoryCache aMemoryCache = MemoryCache.getInstance();
-		HashMap assetMap = aMemoryCache.getAssetMap();
+	
         String result = OK; 
         String method = getRequest().getParameter("method");
         String requestXml = getRequest().getParameter("requestXML");
         String itemId = getRequest().getParameter("itemNum");
         String imageId = getRequest().getParameter("imageId");
+        Date createdDateTime = null;
         try{
         
             if (method.equals("downloadItem"))
@@ -161,8 +162,9 @@ public class ItemPlayerController extends PageFlowController {
             else 
             if (method.equals("getItem")) {        
           
-      ItemData item = this.testScoring.getItemXML(itemId);	
-       // 	ItemData item = this.testScoring.getItemXML("9D_RE_Sample_A_copy");
+            ItemData item = this.testScoring.getItemXML(itemId);	
+            createdDateTime = item.getCreatedDateTime();
+        // 	ItemData item = this.testScoring.getItemXML("9D_RE_Sample_A_copy");
             String itemXML = new String(item.getItem());
            itemXML = ItemPlayerUtils.doUTF8Chars(itemXML);
             
@@ -179,23 +181,23 @@ public class ItemPlayerController extends PageFlowController {
 				for (int i = 0; i < imageList.size(); i++) {
 					element = (org.jdom.Element) imageList.get(i);
 					 imageId = element.getAttributeValue("id");
-					if (!assetMap.containsKey(imageId)) {
-						String mimeType = element.getAttributeValue("type");
-						String ext = mimeType.substring(mimeType
-								.lastIndexOf("/") + 1);
-						String b64data = element.getText();
-						b64data = ItemPlayerUtils.replaceAll(b64data,"&amp;#43;","+"); //To Escape Base64 special character "+"
-						byte[] imageData = Base64.decode(b64data);
-						AssetInfo aAssetInfo = new AssetInfo();
-						aAssetInfo.setData(imageData);
-						aAssetInfo.setExt(ext);
-						assetMap.put(imageId, aAssetInfo);
+					if (!assetMap.containsKey(imageId) ) {
+					createImageData(imageId, element, createdDateTime );
+						//System.out.println("inside if of image caching process");
+					}else {
+						AssetInfo aAssetInfo = 	(AssetInfo)assetMap.get(imageId);
+						System.out.println("else date: "+ aAssetInfo.getCreatedDateTime());
+						if(aAssetInfo.getCreatedDateTime().before(createdDateTime)){
+						updateImageData(imageId, element, createdDateTime, aAssetInfo );
+						}
+						
+						
 					}
 				}
 			}
 			String itemxml = updateItem(itemEncodedXML, assetMap);
 		
-            System.out.println("**************************Item Xml**********************" + item.getItemId() + " :: " +  item.getItem().toString() + " ::  " + itemxml);
+         //   System.out.println("**************************Item Xml**********************" + item.getItemId() + " :: " +  item.getItem().toString() + " ::  " + itemxml);
             
             
            HttpServletResponse resp = this.getResponse();     
@@ -282,7 +284,6 @@ public class ItemPlayerController extends PageFlowController {
      */
 	private String updateItem( byte[] itemBytes, HashMap assetMap ) throws Exception
     {
-		MemoryCache aMemoryCache = MemoryCache.getInstance();
 		org.jdom.Document itemDoc = null;
 		synchronized(aMemoryCache.saxBuilder) {
           itemDoc = aMemoryCache.saxBuilder.build( new ByteArrayInputStream( itemBytes ) );
@@ -333,6 +334,48 @@ public class ItemPlayerController extends PageFlowController {
         out.println(xml);            
         out.flush();
         out.close();        
+    }
+    
+    /***
+     * 
+     * Prepare Image content for Item Player
+     * 
+     * 
+     */
+    
+    private void createImageData(String imageId, Element element, Date createdDateTime){
+       	String mimeType = element.getAttributeValue("type");
+		String ext = mimeType.substring(mimeType
+				.lastIndexOf("/") + 1);
+		String b64data = element.getText();
+		b64data = ItemPlayerUtils.replaceAll(b64data,"&amp;#43;","+"); //To Escape Base64 special character "+"
+		byte[] imageData = Base64.decode(b64data);
+		AssetInfo aAssetInfo = new AssetInfo();
+		aAssetInfo.setData(imageData);
+		aAssetInfo.setCreatedDateTime(createdDateTime);
+		aAssetInfo.setExt(ext);
+		assetMap.put(imageId, aAssetInfo);
+    
+    }
+    /***
+     * 
+     * Update Image content for Item Player
+     * 
+     * 
+     */
+    
+    
+    private void updateImageData(String imageId, Element element, Date createdDateTime, AssetInfo aAssetInfo){
+       	String mimeType = element.getAttributeValue("type");
+		String ext = mimeType.substring(mimeType
+				.lastIndexOf("/") + 1);
+		String b64data = element.getText();
+		b64data = ItemPlayerUtils.replaceAll(b64data,"&amp;#43;","+"); //To Escape Base64 special character "+"
+		byte[] imageData = Base64.decode(b64data);
+		aAssetInfo.setData(imageData);
+		aAssetInfo.setCreatedDateTime(createdDateTime);
+		aAssetInfo.setExt(ext);
+		assetMap.put(imageId, aAssetInfo);
     }
 
      /**

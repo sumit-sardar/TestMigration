@@ -2,12 +2,12 @@ package com.ctb.control.crscoring;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 import org.jdom.CDATA;
@@ -32,7 +32,6 @@ import com.ctb.exception.testAdmin.StudentNotAddedToSessionException;
 import com.ctb.exception.testAdmin.TestAdminDataNotFoundException;
 import com.ctb.exception.testAdmin.TestElementDataNotFoundException;
 import com.ctb.util.Constants;
-import com.ctb.util.DateUtils;
 import com.ctb.util.OASLogger;
 import com.ctb.util.XMLUtils;
 
@@ -414,10 +413,7 @@ public class TestScoringImpl implements TestScoring {
 			}
 			for (ResponsePoints points : responsePoints) {
 				points.setCreatedBy(userId);
-				Date creationDate = new Date();
-				creationDate = DateUtils.getAdjustedDate(creationDate,
-						TimeZone.getDefault().getID(), "GMT", creationDate);
-				points.setCreattionDate(creationDate);
+				points.setCreattionDate(new Date());
 				points.setPoint(point);
 				Integer noOfRows = saveOrUpdateScore(points);
 				if(noOfRows > 0) {
@@ -464,10 +460,19 @@ public class TestScoringImpl implements TestScoring {
 	public ItemData getItemXML(String itemId) throws CTBBusinessException{
 		
 		ItemData item = new ItemData();
-		
+		Blob itemXml = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
+		
 		try{
-		InputStream is = ads.getDecryptedItemXml(itemId).getBinaryStream();
+			
+		ScorableItem [] scrItem = 	ads.getDecryptedItemXml(itemId);
+		if(scrItem != null && scrItem.length > 0){
+		itemXml = scrItem[0].getItemXml();
+		
+		}
+		if(itemXml != null){
+		InputStream is = itemXml.getBinaryStream();
 		boolean moreData = true;
 		while(moreData) {
 			byte [] buffer = new byte[128];
@@ -479,9 +484,9 @@ public class TestScoringImpl implements TestScoring {
 		}
 		item.setItem(baos.toByteArray());
 		item.setItemId(itemId);
-		
+		item.setCreatedDateTime(scrItem[0].getCreatedDateTime());
 		}
-		
+		}
 		
 		catch (Exception e){
 			OASLogger.getLogger("TestAdmin").error(

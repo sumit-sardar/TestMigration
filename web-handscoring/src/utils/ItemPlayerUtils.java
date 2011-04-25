@@ -67,7 +67,7 @@ public class ItemPlayerUtils {
 		//Defect# 64272: added for "<" Defect. 
 		s = s.replaceAll("&#x003C", "&LT;");
 		s = s.replaceAll("&lt;", "&LT;");
-		System.out.println("****ItemXML****" + s);
+		//System.out.println("****ItemXML****" + s);
 		return s;
 	}
 	
@@ -118,7 +118,6 @@ public class ItemPlayerUtils {
 				int endIndex = startIndex;
 				while (true) {
 					int ch = xml.charAt(endIndex);
-					System.out.println("CH" + ch);
 					if ((ch == 34) || (ch == 39) || (endIndex > xml.length()-1))
 						break;
 					endIndex++;

@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.Date;
+
 
 /**
  * @author wen-jin_chang
@@ -11,6 +13,7 @@ public class AssetInfo
 {
     public byte[] data;
     public String mimeType;
+    public Date createdDateTime;
     
     public AssetInfo()
     {
@@ -42,6 +45,20 @@ public class AssetInfo
     {
         return data;
     }
+
+	/**
+	 * @return the createdDateTime
+	 */
+	public Date getCreatedDateTime() {
+		return createdDateTime;
+	}
+
+	/**
+	 * @param createdDateTime the createdDateTime to set
+	 */
+	public void setCreatedDateTime(Date createdDateTime) {
+		this.createdDateTime = createdDateTime;
+	}
 
 }
 
