@@ -192,7 +192,7 @@ function openViewQuestionWindow(itemNumber)
     var theTop=(screen.height/2)-(600/2);
 	var theLeft=(screen.width/2)-(800/2);
 	var windowName = "ViewQuestionWindow"; 
-    ViewQuestionWindow = window.open(location, windowName,"toolbar=no,location=no,directories=no,status=no,scrollbars=no,menubar=no,maximize=no,resizable=no,width=800px, height=600px,top="+ theTop +" ,left="+ theLeft);
+    ViewQuestionWindow = window.open(location, windowName,"toolbar=no,location=no,directories=no,status=no,scrollbars=no,menubar=no,maximize=no,resizable=no,width=900px, height=700px,top="+ theTop +" ,left="+ theLeft);
     ViewQuestionWindow.focus();
     
     return false;
@@ -203,4 +203,6 @@ function closeViewQuestionWindow()
     if (ViewQuestionWindow != null)
         ViewQuestionWindow.close();
 }
+
+
 
