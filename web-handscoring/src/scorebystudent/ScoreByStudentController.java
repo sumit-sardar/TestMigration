@@ -17,6 +17,8 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import utils.FilterSortPageUtils;
 import utils.JsonUtils;
 import utils.MessageResourceBundle;
+import utils.ScoringPopupUtil;
+
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
