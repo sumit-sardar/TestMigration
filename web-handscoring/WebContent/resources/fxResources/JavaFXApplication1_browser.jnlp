@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="https://dagobah.mhe.mhc/">
+<jnlp spec="1.0+" codebase="">
     <information>
         <title>JavaFXApplication1</title>
         <vendor>jaivardhan_mehrotra</vendor>
-        <homepage href="https://dagobah.mhe.mhc/"/>
+        <homepage href=""/>
         <description>JavaFXApplication1</description>
         <icon kind="splash" href="http://dl.javafx.com/1.3/splash.png"/>
         <offline-allowed/>
@@ -17,5 +17,5 @@
     <applet-desc name="JavaFXApplication1" main-class="com.sun.javafx.runtime.adapter.Applet" progress-class="com.javafx.progressbar.ProgressManager" width="200" height="200">
         <param name="MainJavaFXScript" value="javafxapplication1.Main"/>
     </applet-desc>
-    <update check="background"/>
+    <update check="always"/>
 </jnlp>
