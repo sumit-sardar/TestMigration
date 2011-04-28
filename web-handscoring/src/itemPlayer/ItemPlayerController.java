@@ -60,6 +60,7 @@ public class ItemPlayerController extends PageFlowController {
     private String firstName = null;
     private String lastName = null;
     private String fullName = null;
+    private String itemSortNumber = null;
 	MemoryCache aMemoryCache = MemoryCache.getInstance();
 	HashMap assetMap = aMemoryCache.getAssetMap();
     
@@ -110,18 +111,19 @@ public class ItemPlayerController extends PageFlowController {
     {      
         String value = null;
         String param = (String)getSession().getAttribute("param");
-        System.out.println("param"+param);
-        if (param != null) {
+         String itemSortOrder = (String)getSession().getAttribute("itemSortNumber");
+         if (param != null && itemSortOrder != null) {
         	
             StringTokenizer tn = new StringTokenizer(param, ",");
            this.itemNumber = param;
+           this.itemSortNumber = itemSortOrder;
           //  int count = tn.countTokens();  
            // this.itemNumber = tn.nextToken();
             if ((this.itemNumber == null)) {           
                 this.itemNumber = "1";               
             }
-            this.getRequest().setAttribute("itemNumber", this.itemNumber);  
-            System.out.println("ViewQuestion " + this.itemNumber);
+            this.getRequest().setAttribute("itemNumber", this.itemNumber); 
+            this.getRequest().setAttribute("itemSortNumber",  this.itemSortNumber);           
         }
        
         return new Forward("success");
@@ -164,7 +166,8 @@ public class ItemPlayerController extends PageFlowController {
           
             ItemData item = this.testScoring.getItemXML(itemId);	
             createdDateTime = item.getCreatedDateTime();
-        // 	ItemData item = this.testScoring.getItemXML("9D_RE_Sample_A_copy");
+       System.out.println("Item XML Length: " + item.getItem().length);
+           // 	ItemData item = this.testScoring.getItemXML("9D_RE_Sample_A_copy");
             String itemXML = new String(item.getItem());
            itemXML = ItemPlayerUtils.doUTF8Chars(itemXML);
             
@@ -196,16 +199,16 @@ public class ItemPlayerController extends PageFlowController {
 				}
 			}
 			String itemxml = updateItem(itemEncodedXML, assetMap);
-		
+		//aMemoryCache.clearContent();
          //   System.out.println("**************************Item Xml**********************" + item.getItemId() + " :: " +  item.getItem().toString() + " ::  " + itemxml);
             
             
            HttpServletResponse resp = this.getResponse();     
  		   resp.setContentType("text/xml");
-            resp.flushBuffer();
- 	        OutputStream stream = resp.getOutputStream();
- 	        stream.write(itemxml.getBytes());
- 	        stream.close();
+           resp.flushBuffer();
+ 	       OutputStream stream = resp.getOutputStream();
+ 	       stream.write(itemxml.getBytes());
+ 	       stream.close();
            
             }
             else 
@@ -348,7 +351,7 @@ public class ItemPlayerController extends PageFlowController {
 		String ext = mimeType.substring(mimeType
 				.lastIndexOf("/") + 1);
 		String b64data = element.getText();
-		b64data = ItemPlayerUtils.replaceAll(b64data,"&amp;#43;","+"); //To Escape Base64 special character "+"
+		b64data = ItemPlayerUtils.replaceAll(b64data,"&#43;","+"); //To Escape Base64 special character "+"
 		byte[] imageData = Base64.decode(b64data);
 		AssetInfo aAssetInfo = new AssetInfo();
 		aAssetInfo.setData(imageData);
