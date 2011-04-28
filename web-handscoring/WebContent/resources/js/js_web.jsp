@@ -182,11 +182,11 @@ function disableRemoveStudentButton()
 }
 var colorPreviewWindow = null;
 	
-function openViewQuestionWindow(itemNumber)
+function openViewQuestionWindow(itemId,itemNumber)
 {
 
 	var param = "?param=";
-	param = param + itemNumber ;
+	param = param + itemId +"&itemSortNumber="+itemNumber  ;
 	
    	var location = "viewQuestionWindow.do" + param;
     var theTop=(screen.height/2)-(600/2);
