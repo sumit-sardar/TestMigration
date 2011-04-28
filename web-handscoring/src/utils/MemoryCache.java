@@ -10,17 +10,14 @@ public enum MemoryCache {
 	INSTANCE;
     static final long serialVersionUID = 1L;
 
-    private HashMap itemMap;
-    private HashMap assetMap;
-    public SAXBuilder saxBuilder;
-    private HashMap imageMap;
-    
+    private static HashMap itemMap = new HashMap();
+    private HashMap assetMap = new HashMap();
+    public SAXBuilder saxBuilder =  new SAXBuilder();
+    private HashMap imageMap = new HashMap();
  
-	private MemoryCache() {
-    
+    private MemoryCache() {
+    	System.out.println("MemoryCache");
         clearContent();
-        saxBuilder = new SAXBuilder();
-        this.imageMap = new HashMap();
     }
 
     public static MemoryCache getInstance() {
@@ -45,6 +42,7 @@ public enum MemoryCache {
      
     public void clearContent()
     {
+    	System.out.println("clear Content");
     	synchronized(this) {
     		itemMap = new HashMap();
     		assetMap = new HashMap();
