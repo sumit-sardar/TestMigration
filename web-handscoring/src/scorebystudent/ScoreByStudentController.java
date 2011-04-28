@@ -17,8 +17,6 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import utils.FilterSortPageUtils;
 import utils.JsonUtils;
 import utils.MessageResourceBundle;
-import utils.ScoringPopupUtil;
-
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
@@ -621,9 +619,12 @@ public class ScoreByStudentController extends PageFlowController {
 	}
 
 	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "/itemPlayer/ItemPlayerController.jpf") }, validationErrorForward = @Jpf.Forward(name = "failure", path = "logout.do"))
-	protected Forward viewQuestionWindow() {
+	protected Forward viewQuestionWindow()
+	{      
 		String param = getRequest().getParameter("param");
+		String itemSortNumber = getRequest().getParameter("itemSortNumber");
 		getSession().setAttribute("param", param);
+		getSession().setAttribute("itemSortNumber", itemSortNumber);
 
 		return new Forward("success");
 	}

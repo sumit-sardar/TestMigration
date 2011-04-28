@@ -337,7 +337,9 @@ public class StudentScoringController extends PageFlowController {
 	protected Forward viewQuestionWindow()
 	{      
 		String param = getRequest().getParameter("param");
+		String itemSortNumber = getRequest().getParameter("itemSortNumber");
 		getSession().setAttribute("param", param);
+		getSession().setAttribute("itemSortNumber", itemSortNumber);
 
 		return new Forward("success");
 	}
