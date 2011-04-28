@@ -6,11 +6,11 @@
                  
                  
 <%	
-	String itemNumber = (String)request.getAttribute("itemNumber");
-    
+	String itemSortNumber = (String)request.getAttribute("itemSortNumber");
+String itemNumber = (String)request.getAttribute("itemNumber");
         
     String previewUrl = request.getContextPath() + "/itemPlayer/index.jsp";
-    previewUrl += "?itemNumber=" + URLEncoder.encode(itemNumber, "UTF-8");
+    previewUrl += "?itemSortNumber=" + URLEncoder.encode(itemSortNumber, "UTF-8") + "&itemNumber=" + URLEncoder.encode(itemNumber,"UTF-8");
     
 
 %>
@@ -33,7 +33,7 @@
 
 <netui:form action="ViewQuestion">
 
-<input type="hidden" name="itemNumber" id="itemNumber" value="<%=itemNumber%>">
+<input type="hidden" name="itemNumber" id="itemNumber" value="<%=itemSortNumber%>">
 
 
 <table>

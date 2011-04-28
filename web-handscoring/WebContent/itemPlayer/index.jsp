@@ -44,6 +44,7 @@ function updateLDB()
 <%
     String eliminatorResource = "eliminator.swf";
 	String itemNumber = request.getParameter("itemNumber");
+	String itemSortNumber = request.getParameter("itemSortNumber");
 	String url = request.getRequestURL().toString().trim();
     int lastSlash = url.lastIndexOf("/");
     url = url.substring(0,lastSlash).trim();
@@ -60,7 +61,7 @@ function updateLDB()
     
 		//This method will include the required SWF file in the html page. The function exists in the embed.js file
   
-	  lzEmbed({url: 'ItemViewer.lzx.swf?lzt=swf&itemNum=<%=itemNumber%>&servletUrl=<%=url%>&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('includes/h.html?h='), bgcolor: '#6691B4"',  width: '100%', height: '100%'});
+	  lzEmbed({url: 'ItemViewer.lzx.swf?lzt=swf&itemNum=<%=itemNumber%>&visibleItemNum=<%=itemSortNumber%>&servletUrl=<%=url%>&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('includes/h.html?h='), bgcolor: '#6691B4"',  width: '100%', height: '100%'});
       lzHistEmbed('includes');
 	</SCRIPT>
 </BODY>
