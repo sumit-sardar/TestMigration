@@ -9,7 +9,7 @@ import java.util.Date;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class AssetInfo 
+public class AssetInfo implements java.io.Serializable
 {
     public byte[] data;
     public String mimeType;
