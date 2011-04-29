@@ -41,7 +41,6 @@ if(isHidden){
 											getAudioPlayer('audioPlayer');
 											openPopup(rowno, itemNumber);
 											
-											updateScore(rowno);
 										}
 										else{
 										document.getElementById("itemType").value = "CR";								
@@ -97,32 +96,35 @@ if(isHidden){
 				data:		param,
 				dataType:	'json',
 				success:	function(data, textStatus, XMLHttpRequest){	
-										
+								var subIframe = $('#subIframe'); 
+								var iFrameObj = subIframe.contents();
 								var questionNumber = $("#itemNumber").val();	
 								var counter = 0;
-								var rowCountRubric = $('#rubricTable tr').length;
-								var rowCountExemplar = $('#exemplarsTable tr').length;								
-								var cellCountExemplar = $('#exemplarsTable tr td').length;
+								var rowCountRubric = iFrameObj.find("#rubricTable tr").length;
+								
+								var rowCountExemplar = iFrameObj.find("#exemplarsTable tr").length;								
+								var cellCountExemplar = iFrameObj.find("#exemplarsTable tr td").length;		
 																
 								//Rows needs to be deleted, since dynamically new rows are added everytime
-								$('#rubricTable tr:not(:first)').remove();
-								$('#exemplarsTable tr:not(:first)').remove();
+								iFrameObj.find("#rubricTable tr:not(:first)").remove();
+								iFrameObj.find("#exemplarsTable tr:not(:first)").remove();
 								$("#rubricDialogID").css('height',350);
-								 
+								
 								 if(cellCountExemplar == 1)	 {
-								 	$('#rubricExemplarId').hide();
-								 	$("#exemplarNoDataId").show();
+								 	iFrameObj.find("#rubricExemplarId").hide();
+								 	iFrameObj.find("#exemplarNoDataId").show();
 								 } else {
-								 	$('#rubricExemplarId').show();
-								 	$("#exemplarNoDataId").hide();
+								 	iFrameObj.find("#rubricExemplarId").show();
+								 	iFrameObj.find("#exemplarNoDataId").hide();
 								 }
-								 								 
+								 	//alert(data.rubricData.entry);							 
 								 if(data.rubricData.entry) {
-								 	$("#rubricNoDataId").hide();
-								 	$("#rubricTableId").show();								 								 
+								 //	alert("...."+data.rubricData.entry);		
+								 	iFrameObj.find("#rubricNoDataId").hide();
+								 	iFrameObj.find("#rubricTableId").show();								 								 
 								 	for(var i=0;i<data.rubricData.entry.length;i++) {									
 										var description = handleSpecialCharacters(data.rubricData.entry[i].rubricDescription);								
-										$('#rubricTable tr:last').
+										iFrameObj.find("#rubricTable tr:last").
 											after('<tr><td><center><small>'+
 												data.rubricData.entry[i].score+
 													'</small></center></td><td><small>'+description+'</small></td></tr>');
@@ -130,7 +132,7 @@ if(isHidden){
 										if(data.rubricData.entry[i].rubricExplanation){
 											var explanation = handleSpecialCharacters(data.rubricData.entry[i].rubricExplanation);
 											var response = handleSpecialCharacters(data.rubricData.entry[i].sampleResponse);
-											$('#exemplarsTable tr:last').
+											iFrameObj.find("#exemplarsTable tr:last").
 												after('<tr><td><center><small>'+
 													data.rubricData.entry[i].score+
 														'</small></center></td><td><small>'+
@@ -141,16 +143,16 @@ if(isHidden){
 										} else {
 											counter++;
 											if(counter==data.rubricData.entry.length) {
-												$("#exemplarNoDataId").show();
-												$("#rubricExemplarId").hide();
+												iFrameObj.find("#exemplarNoDataId").show();
+												iFrameObj.find("#rubricExemplarId").hide();
 											}
 										}
 									}
 								} else {
-									$("#exemplarNoDataId").show();
-									$("#rubricNoDataId").show();
-									$("#rubricExemplarId").hide();
-									$("#rubricTableId").hide();									
+									iFrameObj.find("#exemplarNoDataId").show();
+									iFrameObj.find("#rubricNoDataId").show();
+									iFrameObj.find("#rubricExemplarId").hide();
+									iFrameObj.find("#rubricTableId").hide();									
 								}								
 								 $("#rubricDialogID").dialog({title:"Question "+questionNumber, resizable:false});
 								 if(data.rubricData.entry)
@@ -167,6 +169,104 @@ if(isHidden){
 			);
 		}	
 	}
+	
+	function ItemformSubmit(itemId, itemType, itemSetId, itemNumber, rowno, loginId) {
+
+var isHidden = $('#dialogID').is(':hidden');  
+if(isHidden){		
+			var param = "&itemId="+itemId+"&itemType="+itemType+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val();
+			document.getElementById("itemId").value = itemId;
+			document.getElementById("itemSetId").value = itemSetId;
+			document.getElementById("itemNumber").value = itemNumber;
+			document.getElementById("message").style.display = 'none';
+			if(rowno != null)
+				document.getElementById("rowNo").value = rowno;
+			
+			
+
+			$.ajax(
+				{
+						async:		true,
+						beforeSend:	function(){
+										blockUI();
+										$("#audioPlayer").hide();
+										$("#crText").hide();
+										
+										
+									},
+						url:		'beginCRResponseDisplay.do',
+						type:		'POST',
+						data:		param,
+						dataType:	'json',
+						success:	function(data, textStatus, XMLHttpRequest){	
+										var crTextResponse = "";
+										var isAudioItem = data.answer.isAudioItem;
+										var linebreak ="\n\n";
+										
+										if(isAudioItem){
+											document.getElementById("itemType").value = "AI";
+											var audioResponseString = data.answer.audioItemContent;
+											audioResponseString = audioResponseString.substr(13);
+											audioResponseString = audioResponseString.split("%3C%2F");
+											document.getElementById("audioResponseString").value = audioResponseString[0];
+											document.getElementById("pointsDropDown").setAttribute("disabled",true);
+											document.getElementById("Question").setAttribute("disabled",true);
+											//$("#crText").hide();
+											$("#audioPlayer").show();
+											getAudioPlayer('audioPlayer');
+											if(rowno != null){
+												openPopupForItem(loginId);
+												updateScore(rowno);
+											}
+											if(rowno == null){
+												openPopupForItem(loginId);
+												
+											}
+											
+										}
+										else{
+										document.getElementById("itemType").value = "CR";								
+											var crResponses =data.answer.cRItemContent.string.length;
+											for(var i = 0; i < crResponses; i++){
+											if( i == (crResponses-1)){
+											linebreak ="";
+											document.getElementById("pointsDropDown").removeAttribute("disabled");
+											document.getElementById("Question").removeAttribute("disabled");
+										}
+										 crTextResponse = crTextResponse + data.answer.cRItemContent.string[i] + linebreak;
+
+										}
+
+										
+										//$("#audioPlayer").hide();
+										$("#crText").show();
+										$("#crText").val(crTextResponse);
+										
+										if(rowno != null){
+												openPopupForItem(loginId);
+												updateScore(rowno);
+											}
+											if(rowno == null){
+												openPopupForItem(loginId);
+												
+											}
+										}									
+									},
+						error  :    function(XMLHttpRequest, textStatus, errorThrown){
+										//changes for defect #66003
+										window.location.href="/TestSessionInfoWeb/logout.do";
+										
+									},
+						complete :  function(){
+										//alert('after complete....');
+										unblockUI();
+									}
+				}
+			);
+			}
+			}
+	
+	
 	
 	function handleSpecialCharacters(s) {
 		s= s.replace(/&nbsp;/g,' ').split('');
@@ -260,7 +360,17 @@ if(isHidden){
 					);
 				}
 			}
-
+	
+	
+		function openPopupForItem( loginId) {
+				var maxPointsElement = document.getElementById("maxPoints");
+				var scoreCutOff = maxPointsElement.value;
+		        var titleString = "Item Scoring For "+ loginId ;
+		      $("#dialogID").dialog({title:titleString, resizable:false, beforeclose: function(event, ui) { stopAudio(); showScoreSelect("true");} });
+		        //$("#dialogID").dialog({title:titleString});
+		        updateMaxPoints(scoreCutOff);
+				
+		}
 		function openPopup(rowno, itemNumber) {
 				var maxPointsElement = document.getElementById("maxPoints"+rowno);
 		        var scoreCutOff = maxPointsElement.firstChild.nodeValue;

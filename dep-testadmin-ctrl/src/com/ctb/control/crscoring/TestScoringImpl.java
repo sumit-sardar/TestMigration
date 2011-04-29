@@ -141,7 +141,7 @@ public class TestScoringImpl implements TestScoring {
 	 */
 	@Override
 	public RosterElementData getAllStudentForTestSessionAndTD(
-			Integer testAdminID, Integer itemSetId, FilterParams filter,
+			Integer testAdminID, Integer itemSetId,String itemId, FilterParams filter,
 			PageParams page, SortParams sort) throws CTBBusinessException {
 		RosterElementData rosterElementData = new RosterElementData();
 		Integer pageSize = null;
@@ -151,8 +151,18 @@ public class TestScoringImpl implements TestScoring {
 				pageSize = new Integer(page.getPageSize());
 			}
 			RosterElement[] rosterElements = getAllStudentForTestSessionAndTD(
-					testAdminID, itemSetId);
+					testAdminID, itemSetId, itemId);
 			rosterElementData.setRosterElements(rosterElements, pageSize);
+			for (RosterElement rosterElement: rosterElements) {
+				 Integer scorePoints =  getScorePoints(itemSetId, itemId, rosterElement.getTestRosterId());
+				 if(scorePoints == null){
+					 rosterElement.setScoringStatus("IN");
+				 } else {
+					 rosterElement.setScoringStatus("CO"); 
+				 }
+				 rosterElement.setScorePoint(scorePoints);
+				//rosterElement.setScoringStatus(getScoringStatus(rosterElement.getTestRosterId(),itemSetId));
+            }
 			if (filter != null)
 				rosterElementData.applyFiltering(filter);
 			if (sort != null)
@@ -521,8 +531,8 @@ public class TestScoringImpl implements TestScoring {
 	 * @throws SQLException
 	 */
 	private RosterElement[] getAllStudentForTestSessionAndTD(
-			Integer testAdminID, Integer itemSetId) throws SQLException {
-		return scoring.getAllStudentForTestSessionAndTD(testAdminID, itemSetId);
+			Integer testAdminID, Integer itemSetId, String itemId) throws SQLException {
+		return scoring.getAllStudentForTestSessionAndTD(testAdminID, itemSetId, itemId);
 	}
 
 	/**
@@ -667,12 +677,23 @@ public class TestScoringImpl implements TestScoring {
 	 * @param testAdminId -
 	 *            testAdminId
 	 * @return - TestSession
+	 * @throws ScoringException 
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	TestSession getTestAdminDetails(Integer testAdminId) throws SQLException,
-			Exception {
-		TestSession testSession = scoring.getTestAdminDetails(testAdminId);
+	public TestSession getTestAdminDetails(Integer testAdminId) throws CTBBusinessException {
+		TestSession testSession = null;
+		try {
+			testSession = scoring.getTestAdminDetails(testAdminId);
+		} catch (Exception e) {
+			OASLogger.getLogger("TestAdmin").error(
+					"Exception occurred while getting testadmin details.", e);
+			ScoringException rde = new ScoringException(
+					"TestScoringImpl:testDetails");
+							
+			rde.setStackTrace(e.getStackTrace());
+			throw rde;
+		}
 		return testSession;
 	}
 
@@ -770,6 +791,11 @@ public class TestScoringImpl implements TestScoring {
 	 */
 	private String getScoringStatus(int rosterId, int itemSetIDTC) throws Exception{
 		return scoring.getScoringStatus(rosterId, itemSetIDTC);
+	}
+	
+	private Integer getScorePoints(Integer itemSetId, String itemId,
+			Integer testRosterId) throws Exception {
+		return scoring.getScorePoints(itemSetId, itemId, testRosterId);
 	}
 
 

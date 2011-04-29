@@ -10,7 +10,9 @@ import com.ctb.bean.testAdmin.RubricViewData; //Added for rubric view
 import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
 import com.ctb.bean.testAdmin.ScorableItemData;
 import com.ctb.bean.testAdmin.ItemData;
+import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.testAdmin.ScoringException;
 
 /**
  * Platform control provides functions related to CR item scoring.
@@ -62,9 +64,9 @@ public interface TestScoring {
 	 * @return RosterElementData
 	 * @throws CTBBusinessException
 	 */
-	public RosterElementData getAllStudentForTestSessionAndTD(Integer testAdminID, Integer itemSetId,
-			FilterParams filter, PageParams page, SortParams sort
-			) throws CTBBusinessException;
+	public RosterElementData getAllStudentForTestSessionAndTD(
+			Integer testAdminID, Integer itemSetId,String itemId, FilterParams filter,
+			PageParams page, SortParams sort) throws CTBBusinessException;
 
 	/**
 	 * Retrieves a filtered, sorted, paged list of items for a itemset and test
@@ -156,6 +158,8 @@ public interface TestScoring {
 	 * @throws CTBBusinessException
 	 */
 	public ItemData getItemXML(String itemId) throws CTBBusinessException;
+	
+	public TestSession getTestAdminDetails(Integer testAdminId) throws CTBBusinessException;
 	
 
 }

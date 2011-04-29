@@ -15,19 +15,10 @@ public class Message implements java.io.Serializable
    
 
     // get License
-    public static final String LICENSE_TITLE  = "Licenses Exceeded";
+    public static final String TEST_SESSION_TITLE  = "No Test Sessions";
     public static final String INVALID_CHARS  = "Please re-enter your string without these characters: !, @, #, $, %, ^";
     
-    public static final int MAX_LICENSE = 20;
-    public static final int MIN_LICENSE = 5;
-    public static final String LOW_LICENSE_COLOR = "RED";
-    public static final String MEDIUM_LICENSE_COLOR = "YELLOW";
-    public static final String HIGH_LICENSE_COLOR = "GREEN";
-     public static final int MAX_LICENSE_PERCENT = 100;
-    public static final int MIN_LICENSE_PERCENT = 0;
-    //START - Added for Deferred Defect 64306
-    public static final String INSUFFICENT_LICENSE_QUANTITY = "There are insufficient licenses available to schedule the number of tests requested.";
-    //END - Added for Deferred Defect 64306
+   
     public static final String REQUIRED_TEXT            = "Please enter/select this value to continue.";
     
     
