@@ -43,6 +43,7 @@ public class RosterElement extends CTBBean
   private String testCompletionStatusDesc; // For CR Soring 
   private String grade; // For CR Soring 
   private Integer itemSetIdTC; // For CR Soring 
+  private Integer scorePoint;
 
   
 
@@ -434,5 +435,17 @@ public class RosterElement extends CTBBean
 	 */
 	public void setItemSetIdTC(Integer itemSetIdTC) {
 		this.itemSetIdTC = itemSetIdTC;
+	}
+	/**
+	 * @return the scorePoint
+	 */
+	public Integer getScorePoint() {
+		return scorePoint;
+	}
+	/**
+	 * @param scorePoint the scorePoint to set
+	 */
+	public void setScorePoint(Integer scorePoint) {
+		this.scorePoint = scorePoint;
 	}
 } 
