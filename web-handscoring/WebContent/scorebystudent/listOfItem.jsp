@@ -182,10 +182,10 @@ function stopAudio(){
 						<tr class="sortable">
 							<ctb:tableSortColumnGroup columnDataSource="actionForm.itemSortColumn"
 								orderByDataSource="actionForm.itemSortOrderBy" anchorName="studentSearchResult">
-								<th class="sortable alignLeft" width="5%" nowrap><ctb:tableSortColumn value="ItemSetOrder">Item No</ctb:tableSortColumn></th>
+								<th class="sortable alignLeft" width="5%" nowrap><ctb:tableSortColumn value="ItemSetOrder">Item No.</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;View Rubric</th>
 								<th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="ItemSetName">Subtest Name</ctb:tableSortColumn></th>
-								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;ViewQuestion</th>
+								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;View Question</th>
 								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;Response</th>
 								<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="Answered">&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="ScoreStatus">Manual Scoring Status</ctb:tableSortColumn></th>
