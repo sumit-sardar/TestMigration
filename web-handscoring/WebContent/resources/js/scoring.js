@@ -1,3 +1,12 @@
+$(document).ready(function() {  
+       var questionNumber = $("#itemNumber").val();	
+	$("#rubricDialogID").dialog({   
+		 title:"Item No. "+questionNumber, 
+		 resizable:false,	              
+		 autoOpen : false			    
+ 	});
+});
+
 function formSubmit(itemId, itemType, itemSetId, itemNumber, rowno) {
 
 var isHidden = $('#dialogID').is(':hidden');  
@@ -75,7 +84,7 @@ if(isHidden){
 			);
 			}
 			}
-	
+	var data1;
 	function viewRubric (itemIdRubric, itemNumber) {
 	
 	var param = "&itemId="+itemIdRubric+"&itemNumber="+itemNumber;
@@ -83,10 +92,12 @@ if(isHidden){
 	$("#itemNumber").val(itemNumber);
 	
 	var isHidden = $('#rubricDialogID').is(':hidden');  
+	
+	
 	if(isHidden){
 		$.ajax(
 		{
-				async:		true,
+				async:		false,
 				beforeSend:	function(){
 								blockUI();
 
@@ -95,70 +106,23 @@ if(isHidden){
 				type:		'POST',
 				data:		param,
 				dataType:	'json',
-				success:	function(data, textStatus, XMLHttpRequest){	
-								var subIframe = $('#subIframe'); 
-								var iFrameObj = subIframe.contents();
-								var questionNumber = $("#itemNumber").val();	
-								var counter = 0;
-								var rowCountRubric = iFrameObj.find("#rubricTable tr").length;
-								
-								var rowCountExemplar = iFrameObj.find("#exemplarsTable tr").length;								
-								var cellCountExemplar = iFrameObj.find("#exemplarsTable tr td").length;		
-																
-								//Rows needs to be deleted, since dynamically new rows are added everytime
-								iFrameObj.find("#rubricTable tr:not(:first)").remove();
-								iFrameObj.find("#exemplarsTable tr:not(:first)").remove();
-								$("#rubricDialogID").css('height',350);
-								
-								 if(cellCountExemplar == 1)	 {
-								 	iFrameObj.find("#rubricExemplarId").hide();
-								 	iFrameObj.find("#exemplarNoDataId").show();
-								 } else {
-								 	iFrameObj.find("#rubricExemplarId").show();
-								 	iFrameObj.find("#exemplarNoDataId").hide();
-								 }
-								 	//alert(data.rubricData.entry);							 
-								 if(data.rubricData.entry) {
-								 //	alert("...."+data.rubricData.entry);		
-								 	iFrameObj.find("#rubricNoDataId").hide();
-								 	iFrameObj.find("#rubricTableId").show();								 								 
-								 	for(var i=0;i<data.rubricData.entry.length;i++) {									
-										var description = handleSpecialCharacters(data.rubricData.entry[i].rubricDescription);								
-										iFrameObj.find("#rubricTable tr:last").
-											after('<tr><td><center><small>'+
-												data.rubricData.entry[i].score+
-													'</small></center></td><td><small>'+description+'</small></td></tr>');
-
-										if(data.rubricData.entry[i].rubricExplanation){
-											var explanation = handleSpecialCharacters(data.rubricData.entry[i].rubricExplanation);
-											var response = handleSpecialCharacters(data.rubricData.entry[i].sampleResponse);
-											iFrameObj.find("#exemplarsTable tr:last").
-												after('<tr><td><center><small>'+
-													data.rubricData.entry[i].score+
-														'</small></center></td><td><small>'+
-															response+
-																'</small></td><td><small>'+
-																	explanation+
-																		'</small></td></tr>');																		
-										} else {
-											counter++;
-											if(counter==data.rubricData.entry.length) {
-												iFrameObj.find("#exemplarNoDataId").show();
-												iFrameObj.find("#rubricExemplarId").hide();
-											}
-										}
-									}
-								} else {
-									iFrameObj.find("#exemplarNoDataId").show();
-									iFrameObj.find("#rubricNoDataId").show();
-									iFrameObj.find("#rubricExemplarId").hide();
-									iFrameObj.find("#rubricTableId").hide();									
-								}								
-								 $("#rubricDialogID").dialog({title:"Question "+questionNumber, resizable:false});
+				success:	function(data, textStatus, XMLHttpRequest){									
+								 var questionNumber = $("#itemNumber").val();
+								 
+								 data1 = data;
+								 populateTable();
+								 
+								 //$("#rubricDialogID").dialog("open");
+								 $("#rubricDialogID").dialog({   
+									 title:"Item No. "+questionNumber, 
+									 resizable:false,
+									 autoOpen: true
+ 									});
 								 if(data.rubricData.entry)
 								 $("#rubricDialogID").css('height',350);
 								 else
-								 $("#rubricDialogID").css("height",'auto');								 						
+								 $("#rubricDialogID").css("height",'auto');	
+								 						 						
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							},
@@ -167,7 +131,72 @@ if(isHidden){
 							}
 				}
 			);
+			
 		}	
+	}
+	
+	function populateTable () {
+	
+		var subIframe = $('#subIframe'); 
+		var iFrameObj = subIframe.contents();
+											
+		var counter = 0;
+		var rowCountRubric = iFrameObj.find("#rubricTable tr").length;
+											
+		var rowCountExemplar = iFrameObj.find("#exemplarsTable tr").length;								
+		var cellCountExemplar = iFrameObj.find("#exemplarsTable tr td").length;		
+																			
+		//Rows needs to be deleted, since dynamically new rows are added everytime
+		iFrameObj.find("#rubricTable tr:not(:first)").remove();
+		iFrameObj.find("#exemplarsTable tr:not(:first)").remove();
+		$("#rubricDialogID").css('height',350);
+											
+											 if(cellCountExemplar == 1)	 {
+											 	iFrameObj.find("#rubricExemplarId").hide();
+											 	iFrameObj.find("#exemplarNoDataId").show();
+											 } else {
+											 	iFrameObj.find("#rubricExemplarId").show();
+											 	iFrameObj.find("#exemplarNoDataId").hide();
+											 }
+											 	//alert(data.rubricData.entry);							 
+											 if(data1.rubricData.entry) {
+											 	//alert("...."+data.rubricData.entry);		
+											 	iFrameObj.find("#rubricNoDataId").hide();
+											 	iFrameObj.find("#rubricTableId").show();								 								 
+											 	for(var i=0;i<data1.rubricData.entry.length;i++) {									
+													var description = handleSpecialCharacters(data1.rubricData.entry[i].rubricDescription);								
+													iFrameObj.find("#rubricTable tr:last").
+														after('<tr><td><center><small>'+
+															data1.rubricData.entry[i].score+
+																'</small></center></td><td><small>'+description+'</small></td></tr>');
+			
+													if(data1.rubricData.entry[i].rubricExplanation){
+														var explanation = handleSpecialCharacters(data1.rubricData.entry[i].rubricExplanation);
+														var response = handleSpecialCharacters(data1.rubricData.entry[i].sampleResponse);
+														iFrameObj.find("#exemplarsTable tr:last").
+															after('<tr><td><center><small>'+
+																data1.rubricData.entry[i].score+
+																	'</small></center></td><td><small>'+
+																		response+
+																			'</small></td><td><small>'+
+																				explanation+
+																					'</small></td></tr>');																		
+													} else {
+														counter++;
+														if(counter==data1.rubricData.entry.length) {
+															iFrameObj.find("#exemplarNoDataId").show();
+															iFrameObj.find("#rubricExemplarId").hide();
+														}
+													}
+												}
+											} else {
+												iFrameObj.find("#exemplarNoDataId").show();
+												iFrameObj.find("#rubricNoDataId").show();
+												iFrameObj.find("#rubricExemplarId").hide();
+												iFrameObj.find("#rubricTableId").hide();									
+											}										
+								  		  
+	
 	}
 	
 	function ItemformSubmit(itemId, itemType, itemSetId, itemNumber, rowno, loginId) {
@@ -313,7 +342,7 @@ if(isHidden){
 			if(optionValue == null || optionValue == "" ){
 				document.getElementById("message").style.display = 'inline';
 				var spanElement = document.getElementById("messageSpan");
-				spanElement.innerHTML = "Please select a valid Score";
+				spanElement.innerHTML = "<b> Please select a valid Score. </b>";
 			}
 		
 			if($("#pointsDropDown option:selected").val() != ''){
@@ -341,10 +370,10 @@ if(isHidden){
 														scoreStatusElement.innerHTML = "Complete"; 
 														document.getElementById("messageStatus").value = isSuccess;
 														document.getElementById("message").style.display = 'inline';	
-														spanElement.innerHTML = "<b> Item Scored Successfully </b>";
+														spanElement.innerHTML = "<b> Item scored successfully. </b>";
 													}
 													else{				
-														spanElement.innerHTML = "<b> Item Not Scored </b>";
+														spanElement.innerHTML = "<b> Item not scored. </b>";
 													}
 												
 											},
@@ -365,7 +394,7 @@ if(isHidden){
 		function openPopupForItem( loginId) {
 				var maxPointsElement = document.getElementById("maxPoints");
 				var scoreCutOff = maxPointsElement.value;
-		        var titleString = "Item Scoring For "+ loginId ;
+		        var titleString = "Scoring For "+ loginId ;
 		      $("#dialogID").dialog({title:titleString, resizable:false, beforeclose: function(event, ui) { stopAudio(); showScoreSelect("true");} });
 		        //$("#dialogID").dialog({title:titleString});
 		        updateMaxPoints(scoreCutOff);
@@ -374,7 +403,7 @@ if(isHidden){
 		function openPopup(rowno, itemNumber) {
 				var maxPointsElement = document.getElementById("maxPoints"+rowno);
 		        var scoreCutOff = maxPointsElement.firstChild.nodeValue;
-		        var titleString = "Item Scoring For Item No "+ itemNumber ;
+		        var titleString = "Scoring For Item No. "+ itemNumber ;
 		      $("#dialogID").dialog({title:titleString, resizable:false, beforeclose: function(event, ui) { stopAudio(); showScoreSelect("true");} });
 		        //$("#dialogID").dialog({title:titleString});
 		        updateMaxPoints(scoreCutOff);

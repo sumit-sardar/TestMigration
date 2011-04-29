@@ -222,17 +222,99 @@ public class ItemScoringController extends PageFlowController {
 		String actionElement = form.getActionElement();
 		if(form.getActionElement().equals(ACTION_DEFAULT)) 
 		{
-			String reqTestAdminId = getRequest().getParameter("testAdminId");
-			String reqItemSetId = getRequest().getParameter("itemSetId");
-			String reqItemId = getRequest().getParameter("itemId");
-			form.setSelectedItemNo(Integer.valueOf(getRequest().getParameter("itemSetOrder")));
-			form.setSelectedItemSetName(getRequest().getParameter("itemSetName"));
-			form.setSelectedMaxPoints(Integer.valueOf(getRequest().getParameter("maxPoints")));
-			form.setSelectedItemType(getRequest().getParameter("itemType"));
-			form.setTestAdminId(Integer.valueOf(reqTestAdminId));
-			form.setItemSetId(Integer.valueOf(reqItemSetId));
-			form.setItemId(reqItemId);
+			String testAdminId = getRequest().getParameter("testAdminId");
+			String itemSetId = getRequest().getParameter("itemSetId");
+			String itemId = getRequest().getParameter("itemId");
+			String itemType =getRequest().getParameter("itemType");
+			String itemSetName = getRequest().getParameter("itemSetName");
+			String itemSetOrder = getRequest().getParameter("itemSetOrder");
+			String maxPoints = getRequest().getParameter("maxPoints");
 			
+			if ( testAdminId == null || "".equals(testAdminId)) {
+				
+				if ((String)getRequest().getSession(false).getAttribute("testAdminId") != null) {
+					
+					testAdminId = (String)getRequest().getSession(false).getAttribute("testAdminId");
+				} 
+				
+			} else {
+				
+				getRequest().getSession(false).setAttribute("testAdminId", testAdminId);
+			}
+			if ( itemSetId == null || "".equals(itemSetId)) {
+				
+				if ((String)getRequest().getSession(false).getAttribute("itemSetId") != null) {
+					
+					itemSetId = (String)getRequest().getSession(false).getAttribute("itemSetId");
+				} 
+				
+			} else {
+				
+				getRequest().getSession(false).setAttribute("itemSetId", itemSetId);
+			}
+			if ( itemId == null || "".equals(itemId)) {
+				
+				if ((String)getRequest().getSession(false).getAttribute("itemId") != null) {
+					
+					itemId = (String)getRequest().getSession(false).getAttribute("itemId");
+				} 
+				
+			} else {
+				
+				getRequest().getSession(false).setAttribute("itemId", itemId);
+			}
+			if ( itemType == null || "".equals(itemType)) {
+				
+				if ((String)getRequest().getSession(false).getAttribute("itemType") != null) {
+					
+					itemType = (String)getRequest().getSession(false).getAttribute("itemType");
+				} 
+				
+			} else {
+				
+				getRequest().getSession(false).setAttribute("itemType", itemType);
+			}
+			if ( itemSetName == null || "".equals(itemSetName)) {
+				
+				if ((String)getRequest().getSession(false).getAttribute("itemSetName") != null) {
+					
+					itemSetName = (String)getRequest().getSession(false).getAttribute("itemSetName");
+				} 
+				
+			} else {
+				
+				getRequest().getSession(false).setAttribute("itemSetName", itemSetName);
+			}
+			if ( itemSetOrder == null || "".equals(itemSetOrder)) {
+				
+				if ((String)getRequest().getSession(false).getAttribute("itemSetOrder") != null) {
+					
+					itemSetOrder = (String)getRequest().getSession(false).getAttribute("itemSetOrder");
+				} 
+				
+			} else {
+				
+				getRequest().getSession(false).setAttribute("itemSetOrder", itemSetOrder);
+			}
+			
+			if ( maxPoints == null || "".equals(maxPoints)) {
+				
+				if ((String)getRequest().getSession(false).getAttribute("maxPoints") != null) {
+					
+					maxPoints = (String)getRequest().getSession(false).getAttribute("maxPoints");
+				} 
+				
+			} else {
+				
+				getRequest().getSession(false).setAttribute("maxPoints", maxPoints);
+			}
+			form.setTestAdminId(new Integer(testAdminId));
+			form.setItemSetId(Integer.valueOf(itemSetId));
+			form.setItemId(itemId);
+			form.setSelectedItemType(itemType);
+			form.setSelectedItemSetName(itemSetName);
+			form.setSelectedItemNo(Integer.valueOf(itemSetOrder));
+			form.setSelectedMaxPoints(Integer.valueOf(maxPoints));
 		}
 		if(form.getActionElement().equals(ACTION_DEFAULT)) {
 			form.setActionElement(ACTION_STUDENT_LIST);

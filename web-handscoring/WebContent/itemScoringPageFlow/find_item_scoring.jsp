@@ -63,11 +63,11 @@ template_find_student.jsp
     
     <tr class="sortable">
         <ctb:tableSortColumnGroup columnDataSource="actionForm.itemSortColumn" orderByDataSource="actionForm.itemSortOrderBy" id="itemSearchResult" anchorName="itemSearchResult">
-            <th class="sortable" width="5%" align="center" ><ctb:tableSortColumn value="ItemSetOrder">&nbsp;Item No</ctb:tableSortColumn></th>
+            <th class="sortable" width="5%" align="center" ><ctb:tableSortColumn value="ItemSetOrder">&nbsp;Item No.</ctb:tableSortColumn></th>
             <th class="sortable" width="20%" align="center" nowrap><ctb:tableSortColumn value="ItemSetName">Subtest Name</ctb:tableSortColumn></th>
 
             <th class="sortable" width="20%" align="center"><ctb:tableSortColumn value="ItemType">&nbsp;Item Type</ctb:tableSortColumn></th>
-            <th class="sortable" width="10%" align="center" >&nbsp;Maximum Marks</th>
+            <th class="sortable" width="10%" align="center" >&nbsp;Maximum Score</th>
           
         </ctb:tableSortColumnGroup>
     </tr>
