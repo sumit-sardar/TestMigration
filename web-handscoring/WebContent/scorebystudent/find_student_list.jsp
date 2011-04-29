@@ -128,7 +128,7 @@ template_find_student.jsp
        
         
         <td class="sortable">
-            <netui:span value="${container.item.studentId}"/>
+            <netui:span value="${container.item.extPin1}"/>
         </td>
         <td class="sortable">
             <netui:span value="${container.item.grade}"/>
