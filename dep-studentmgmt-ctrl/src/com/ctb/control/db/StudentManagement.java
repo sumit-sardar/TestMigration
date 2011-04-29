@@ -113,7 +113,8 @@ public interface StudentManagement extends JdbcControl
      * where
      * 	 stu.student_id = {studentId}::
      */
-    @JdbcControl.SQL(statement = "select  stu.student_id as id,  stu.user_name as loginId,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName, \t  concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.gender as gender,  stu.birthdate as birthDate,  stu.grade as grade,  stu.ext_pin1 as studentIdNumber,  stu.ext_pin2 as studentIdNumber2,  stu.created_by as createdBy from  student stu where \t stu.student_id = {studentId}", arrayMaxLength = 100000)
+     // (LLO82) StudentManagement Changes For LasLink product
+    @JdbcControl.SQL(statement = "select  stu.student_id as id,  stu.user_name as loginId,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName, \t  concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.gender as gender,  stu.birthdate as birthDate,  stu.grade as grade,  stu.ext_pin1 as studentIdNumber,  stu.ext_pin2 as studentIdNumber2, stu.test_purpose as testPurpose , stu.created_by as createdBy from  student stu where \t stu.student_id = {studentId}", arrayMaxLength = 100000)
     ManageStudent getManageStudent(int studentId) throws SQLException;
     
 
@@ -750,7 +751,8 @@ public interface StudentManagement extends JdbcControl
      * 	updated_Date_Time = {updatedDateTime}
      * where student_id = {student.id}::
      */
-    @JdbcControl.SQL(statement = "update student set  \tuser_name = {student.loginId}, \tfirst_name = {student.firstName}, \tmiddle_name = {student.middleName}, \tlast_name = {student.lastName}, \tgender = {student.gender}, \tbirthdate = {student.birthDate}, \tgrade = {student.grade}, \text_pin1 = {student.studentIdNumber}, \text_pin2 = {student.studentIdNumber2}, \tupdated_By = {updatedBy}, \tupdated_Date_Time = {updatedDateTime} where student_id = {student.id}")
+     // (LLO82) StudentManagement Changes For LasLink product
+    @JdbcControl.SQL(statement = "update student set  \tuser_name = {student.loginId}, \tfirst_name = {student.firstName}, \tmiddle_name = {student.middleName}, \tlast_name = {student.lastName}, \tgender = {student.gender}, \tbirthdate = {student.birthDate}, \tgrade = {student.grade}, \text_pin1 = {student.studentIdNumber}, \text_pin2 = {student.studentIdNumber2},test_purpose = {student.testPurpose}, \tupdated_By = {updatedBy}, \tupdated_Date_Time = {updatedDateTime} where student_id = {student.id}")
     void updateStudent(ManageStudent student, Integer updatedBy, Date updatedDateTime) throws SQLException;
 
     /**

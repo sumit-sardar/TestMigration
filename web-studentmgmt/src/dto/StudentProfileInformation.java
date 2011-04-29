@@ -28,6 +28,9 @@ public class StudentProfileInformation extends SanitizedFormField
     private Date birthdate;
     private String displayName;    
     private OrganizationNode[] organizationNodes;
+    //START- (LLO82) StudentManagement Changes For LasLink product
+    private String testPurpose;
+    //END- (LLO82) StudentManagement Changes For LasLink product
 
     private Integer createBy;
 
@@ -56,6 +59,9 @@ public class StudentProfileInformation extends SanitizedFormField
         this.year = "";
 
         this.createBy = null;
+        //START- (LLO82) StudentManagement Changes For LasLink product
+        this.testPurpose = "";
+        //END- (LLO82) StudentManagement Changes For LasLink product
     }
         
         
@@ -94,6 +100,14 @@ public class StudentProfileInformation extends SanitizedFormField
         }
         
         this.organizationNodes = student.getOrganizationNodes();
+        //START- (LLO82) StudentManagement Changes For LasLink product
+        if(student.getTestPurpose() != null) {
+        	this.testPurpose = student.getTestPurpose();
+        	if (this.testPurpose.equals("1")) this.testPurpose = "Initial Placement";
+            else
+            if (this.testPurpose.equals("2")) this.testPurpose = "Annual Assessment";
+        }
+       //END- (LLO82) StudentManagement Changes For LasLink product
     }
     
 
@@ -111,7 +125,11 @@ public class StudentProfileInformation extends SanitizedFormField
         copied.setStudentSecondNumber(this.studentSecondNumber);
         copied.setBirthdate(this.birthdate);
         copied.setOrganizationNodes(this.organizationNodes);
-        
+        //START- (LLO82) StudentManagement Changes For LasLink product
+        if(testPurpose != null) {
+        	copied.setTestPurpose(this.testPurpose);
+        }
+        //END- (LLO82) StudentManagement Changes For LasLink product
         return copied;       
     }
   
@@ -145,8 +163,13 @@ public class StudentProfileInformation extends SanitizedFormField
             orgNode.setOrgNodeId(node.getId());
             orgNodes[i] = orgNode;
         }
-        copied.setOrganizationNodes(orgNodes);    
-            
+        copied.setOrganizationNodes(orgNodes);  
+        //START- (LLO82) StudentManagement Changes For LasLink product
+        if(testPurpose != null) {
+        	if (this.testPurpose.equals("Initial Placement")) copied.setTestPurpose("1");
+        	else if (this.testPurpose.equals("Annual Assessment")) copied.setTestPurpose("2");
+        }
+        //END- (LLO82) StudentManagement Changes For LasLink product
         return copied;       
     }
     
@@ -390,5 +413,21 @@ public class StudentProfileInformation extends SanitizedFormField
             }
         }
         return str;
+	}
+
+
+	/**
+	 * @return the testPurpose
+	 */
+	public String getTestPurpose() {
+		return testPurpose;
+	}
+
+
+	/**
+	 * @param testPurpose the testPurpose to set
+	 */
+	public void setTestPurpose(String testPurpose) {
+		this.testPurpose = testPurpose;
 	}
 } 

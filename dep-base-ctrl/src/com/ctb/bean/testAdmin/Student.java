@@ -45,6 +45,7 @@ public class Student extends CTBBean
     private String udf;
     private String udf1;
     private String udf2;
+    private String testPurpose;
     
     public boolean equals(Object other) {
         if(this.extElmId != null) {
@@ -457,5 +458,19 @@ public class Student extends CTBBean
 	 */
 	public void setUdf2(String udf2) {
 		this.udf2 = udf2;
+	}
+
+	/**
+	 * @return the testPurpose
+	 */
+	public String getTestPurpose() {
+		return testPurpose;
+	}
+
+	/**
+	 * @param testPurpose the testPurpose to set
+	 */
+	public void setTestPurpose(String testPurpose) {
+		this.testPurpose = testPurpose;
 	}
 } 

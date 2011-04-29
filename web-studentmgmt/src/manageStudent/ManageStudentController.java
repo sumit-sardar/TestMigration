@@ -92,7 +92,10 @@ public class ManageStudentController extends PageFlowController
 	public String[] monthOptions = null;
 	public String[] dayOptions = null;
 	public String[] yearOptions = null;
-
+	//START- (LLO82) StudentManagement Changes For LasLink product
+	public String[] testPurposeOptions = null;
+	public boolean isLasLinkCustomer = false;
+	//END- (LLO82) StudentManagement Changes For LasLink product
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
@@ -326,7 +329,12 @@ public class ManageStudentController extends PageFlowController
 		form.setByStudentProfileVisible(Boolean.TRUE);
 
 		initGradeGenderOptions(ACTION_ADD_STUDENT, form, null, null);
-
+		//START- (LLO82) StudentManagement Changes For LasLink product
+		isLasLinkCustomer();
+		if(this.isLasLinkCustomer) {
+			initTestPurposeOptions(ACTION_ADD_STUDENT, form, null);
+	     }
+	     //END- (LLO82) StudentManagement Changes For LasLink product
 		form.getStudentProfile().setMonth(this.monthOptions[0]);
 		form.getStudentProfile().setDay(this.dayOptions[0]);
 		form.getStudentProfile().setYear(this.yearOptions[0]);
@@ -396,7 +404,13 @@ public class ManageStudentController extends PageFlowController
 
 		this.gradeOptions = getGradeOptions(ACTION_EDIT_STUDENT);
 		this.genderOptions = getGenderOptions(ACTION_EDIT_STUDENT);
-		getCustomerConfigurations();  
+		getCustomerConfigurations(); 
+		//START- (LLO82) StudentManagement Changes For LasLink product
+		isLasLinkCustomer();
+		if(this.isLasLinkCustomer){
+			this.testPurposeOptions = getTestPurposeOptions(ACTION_EDIT_STUDENT);
+	    }
+		 //END- (LLO82) StudentManagement Changes For LasLink product
 		return new Forward("success", form);
 	}
 
@@ -570,7 +584,7 @@ public class ManageStudentController extends PageFlowController
 				
 				//CR - GA2011CR001 - set value for FTE Mandatory Field
 				form.setMandatoryStudentId(isMandatoryStudentId);
-				
+				form.setLasLinkCustomer(isLasLinkCustomer);   //(LLO82) StudentManagement Changes For LasLink product
 				boolean result = form.verifyStudentInformation(this.selectedOrgNodes);
 				if (! result)
 				{           
@@ -2154,6 +2168,23 @@ public class ManageStudentController extends PageFlowController
 
 		return (String [])options.toArray(new String[0]);        
 	}
+	
+	/**
+	 * getTestPurposeOptions
+	 * // (LLO82) StudentManagement Changes For LasLink product
+	 */
+	private String [] getTestPurposeOptions(String action)
+	{
+		List options = new ArrayList();
+		
+		if ( action.equals(ACTION_ADD_STUDENT) || action.equals(ACTION_EDIT_STUDENT) )
+			options.add(FilterSortPageUtils.FILTERTYPE_SELECT_A_TESTPURPOSE);
+
+		options.add("Initial Placement");
+		options.add("Annual Assessment");
+		
+		return (String [])options.toArray(new String[0]);        
+	}
 
 
 	/**
@@ -2173,7 +2204,21 @@ public class ManageStudentController extends PageFlowController
 		else
 			form.getStudentProfile().setGender(this.genderOptions[0]);
 	}
-
+	
+	
+	/**
+	 * initTestPurposeOptions
+	 * // (LLO82) StudentManagement Changes For LasLink product
+	 */
+	private void initTestPurposeOptions(String action, ManageStudentForm form, String testPurpose)
+	{        
+		this.testPurposeOptions  = getTestPurposeOptions( action );
+		if (testPurpose != null)
+			form.getStudentProfile().setTestPurpose(testPurpose);
+		else
+			form.getStudentProfile().setTestPurpose(this.testPurposeOptions[0]);
+	}
+	
 	/**
 	 * clearStudentProfileSearch
 	 */
@@ -2207,7 +2252,7 @@ public class ManageStudentController extends PageFlowController
 	 */
 	private void setFormInfoOnRequest(ManageStudentForm form) {
 
-
+		this.getRequest().setAttribute("isLasLinkCustomer", this.isLasLinkCustomer);   // (LLO82) StudentManagement Changes For LasLink product
 		this.getRequest().setAttribute("pageMessage", form.getMessage());
 		this.getRequest().setAttribute("studentProfileData", form.getStudentProfile());
 		this.getSession().setAttribute("selectStudentIdInView",form.getSelectedStudentId());
@@ -2232,7 +2277,27 @@ public class ManageStudentController extends PageFlowController
                 
      }
                
+	//isLasLink customer
+	private void isLasLinkCustomer()
+    {               
+        
+        boolean isLasLinkCustomer = false;
 
+            
+			 for (int i=0; i < this.customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+            	//isLasLink customer
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("LASLINK_Customer") && cc.getDefaultValue().equals("T")	)
+                {
+                	isLasLinkCustomer = true;
+                    break;
+                } 
+            }
+       
+        this.isLasLinkCustomer = isLasLinkCustomer;
+       
+    }
 
 	/*
 	 * CR017- based on the value of customercofiguration and profileEditable flag set Value in profileEditable flag. 
@@ -2404,6 +2469,7 @@ public class ManageStudentController extends PageFlowController
 		private String isStudentId2Numeric = "AN";
 		private boolean studentIdConfigurable = false;
 		private boolean studentId2Configurable = false;
+		public boolean isLasLinkCustomer = false;   // (LLO82) StudentManagement Changes For LasLink product
 		
 		/**
 		 * @return the studentIdConfigurable
@@ -2879,6 +2945,15 @@ public class ManageStudentController extends PageFlowController
 					requiredFields = Message.buildErrorString(this.studentIdLabelName, requiredFieldCount, requiredFields);   
 				}
 			}
+			//START- (LLO82) StudentManagement Changes For LasLink product
+			if(this.isLasLinkCustomer) {
+				String studentTestPurpose = this.studentProfile.getTestPurpose();
+				if ( studentTestPurpose.equals(FilterSortPageUtils.FILTERTYPE_SELECT_A_TESTPURPOSE) ) {
+					requiredFieldCount += 1;            
+					requiredFields = Message.buildErrorString("Purpose of Test", requiredFieldCount, requiredFields);       
+				}
+			}
+			//END- (LLO82) StudentManagement Changes For LasLink product
 
 			if ( selectedOrgNodes.size() == 0 ) {
 				requiredFieldCount += 1;      
@@ -3071,6 +3146,20 @@ public class ManageStudentController extends PageFlowController
 		public void setIsStudentId2Numeric(String isStudentId2Numeric) {
 			this.isStudentId2Numeric = isStudentId2Numeric;
 		}
+
+		/**
+		 * @return the isLasLinkCustomer
+		 */
+		public boolean isLasLinkCustomer() {
+			return isLasLinkCustomer;
+		}
+
+		/**
+		 * @param isLasLinkCustomer the isLasLinkCustomer to set
+		 */
+		public void setLasLinkCustomer(boolean isLasLinkCustomer) {
+			this.isLasLinkCustomer = isLasLinkCustomer;
+		}
 		
 	}
 
@@ -3189,5 +3278,19 @@ public class ManageStudentController extends PageFlowController
 	 */
 	public void setStudentId2Configurable(boolean studentId2Configurable) {
 		this.studentId2Configurable = studentId2Configurable;
+	}
+
+	/**
+	 * @return the testPurposeOptions
+	 */
+	public String[] getTestPurposeOptions() {
+		return testPurposeOptions;
+	}
+
+	/**
+	 * @param testPurposeOptions the testPurposeOptions to set
+	 */
+	public void setTestPurposeOptions(String[] testPurposeOptions) {
+		this.testPurposeOptions = testPurposeOptions;
 	}
 }

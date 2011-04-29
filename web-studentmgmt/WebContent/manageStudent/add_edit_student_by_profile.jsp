@@ -13,7 +13,7 @@
 <%
     Boolean profileEditable = (Boolean)request.getAttribute("profileEditable"); 
 	Boolean isMandatoryBirthDate = (Boolean)request.getAttribute("isMandatoryBirthDate"); //GACRCT2010CR007 - Disable Mandatory Birth Date 
-	
+	Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 	//Start Change For CR - GA2011CR001
 	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); 
 	Boolean isStudentId2Configurable = (Boolean)request.getAttribute("isStudentId2Configurable"); 
@@ -157,6 +157,19 @@
         </c:if>            
         </td>
     </tr>
+     <c:if test="${isLasLinkCustomer}"> 
+     <tr class="transparent">
+        <td class="transparent alignRight" width="120"><span class="asterisk">*</span>&nbsp;<netui:content value="Purpose of Test:"/></td>
+        <td class="transparent">
+        <c:if test="${ profileEditable }">            
+            <netui:select optionsDataSource="${pageFlow.testPurposeOptions}" dataSource="actionForm.studentProfile.testPurpose" size="1" style="width:180px"/>
+        </c:if>            
+        <c:if test="${ !profileEditable }">            
+            <netui:select optionsDataSource="${pageFlow.testPurposeOptions}" dataSource="actionForm.studentProfile.testPurpose" size="1" style="width:180px" disabled="true"/>
+        </c:if>            
+        </td>                                
+    </tr>
+    </c:if>
     <tr class="transparent">
         <td class="transparent-top alignRight" width="120"><span class="asterisk">*</span>&nbsp;<netui:content value="Organization:"/></td>
         <td class="transparent-top">

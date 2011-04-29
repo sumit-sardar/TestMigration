@@ -32,6 +32,9 @@ public class FilterSortPageUtils
     public static final String FILTERTYPE_ANY_GENDER = "Any gender";
     public static final String FILTERTYPE_SELECT_A_GRADE = "Select a grade";
     public static final String FILTERTYPE_SELECT_A_GENDER = "Select a gender";
+    //START- (LLO82) StudentManagement Changes For LasLink product
+    public static final String FILTERTYPE_SELECT_A_TESTPURPOSE = "Select a purpose of test";
+    //END- (LLO82) StudentManagement Changes For LasLink product
     
     
     //sort 

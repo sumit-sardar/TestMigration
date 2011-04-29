@@ -12,6 +12,8 @@
 <%
    
 	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); //Change For CR - GA2011CR001
+	Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
+	
 %>
 
 
@@ -71,6 +73,12 @@
          </c:if>
         <td class="transparent"><netui:label value="${studentProfileData.studentNumber}"/></td>
     </tr>
+    <c:if test="${isLasLinkCustomer}"> 
+    <tr class="transparent">
+        <td class="transparent" width="80"><netui:content value="Purpose of Test:"/></td>
+        <td class="transparent"><netui:label value="${studentProfileData.testPurpose}"/></td>
+    </tr>
+    </c:if>
     <tr class="transparent">
         <td class="transparent-top" width="80"><netui:content value="Organization:"/></td>
         <td class="transparent-top">

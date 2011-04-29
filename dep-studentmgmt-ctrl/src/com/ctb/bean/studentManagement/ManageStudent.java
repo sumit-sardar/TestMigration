@@ -38,6 +38,22 @@ public class ManageStudent extends CTBBean
     private Integer itemCountCRAI;
     //END-Added for HandScoring
     
+    //START- (LLO82) StudentManagement Changes For LasLink product
+    private String testPurpose;
+    //END- (LLO82) StudentManagement Changes For LasLink product
+    
+	/**
+	 * @return the testPurpose
+	 */
+	public String getTestPurpose() {
+		return testPurpose;
+	}
+	/**
+	 * @param testPurpose the testPurpose to set
+	 */
+	public void setTestPurpose(String testPurpose) {
+		this.testPurpose = testPurpose;
+	}
 	/**
 	 * @return the accessCode
 	 */

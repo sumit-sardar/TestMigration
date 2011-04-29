@@ -1312,7 +1312,11 @@ public class StudentManagementImpl implements StudentManagement
 			student.setCreatedBy(userId);
 			student.setCreatedDateTime(new Date());
 			student.setCustomerId(user.getCustomer().getCustomerId());
-
+			//START- (LLO82) StudentManagement Changes For LasLink product
+			if(manageStudent.getTestPurpose() != null) {
+				student.setTestPurpose(manageStudent.getTestPurpose());
+			}
+			//END- (LLO82) StudentManagement Changes For LasLink product
 			//GACRCT2010CR007 - changed to generate 4 digit sequence number when provide student  date of birth is null.
 			String studentLoginIdSequence = "";
 			if(manageStudent.getBirthDate() == null)
