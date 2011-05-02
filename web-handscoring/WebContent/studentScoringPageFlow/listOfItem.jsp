@@ -181,8 +181,8 @@ function stopAudio(){
 								<th class="sortable alignLeft" width="5%" nowrap><ctb:tableSortColumn value="ItemSetOrder">Item No.</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;View Rubric</th>
 								<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="ItemSetName">Subtest Name</ctb:tableSortColumn></th>
-								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;View Question</th>
-								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;Response</th>
+								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;View Question&nbsp;&nbsp;</th>
+								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;Response&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
 								<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="Answered">Status</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="ScoreStatus">Manual Scoring Status</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;Maximum Score</th>
@@ -194,7 +194,6 @@ function stopAudio(){
 					<netui-data:repeaterItem>
                        <%  rowId = rowId+1; %>
 						<tr class="sortable">
-
 							<td class="sortable"><netui:span value="${container.item.itemSetOrder}" /></td>
 							<td class="sortable">
 							<netui-data:getData resultId="itemId" value="${container.item.itemId}" /> <%
@@ -208,8 +207,9 @@ function stopAudio(){
 							<a href="javascript:viewRubric('<%=itemId%>','<%=itemNumber%>')">View</a> 
 							<td class="sortable"><netui:span value="${container.item.itemSetName}" /></td>
 							<td class="sortable">
-							<input name="ViewQuestion" type="button" value="View Question"
-								onclick="openViewQuestionWindow('<%=itemId%>','<%=itemNumber%>'); return true;" /></td>
+								<a href="javascript:void(0)" onclick="openViewQuestionWindow('<%=itemId%>','<%=itemNumber%>'); return true;">View Question
+								</a>
+							</td>
 							<td class="sortable"><netui-data:getData resultId="itemtype" value="${container.item.itemType}" /> <%
  	String itemtype = (String) pageContext
  								.getAttribute("itemtype");
@@ -221,20 +221,29 @@ function stopAudio(){
 							
 							<netui-data:getData resultId="answered" value="${container.item.answered}" /> <c:if test="${itemtype =='AI'}">
 								<c:if test="${answered == 'NA'}">
-									<input type="button" value="Audio Response" disabled="true" />
+									<span>
+										<font color="#999999">
+											<u>Audio Response
+											</u>
+										</font>
+									</span>									
 								</c:if>
 								<c:if test="${answered == 'A'}">
-									<input type="button" value="Audio Response"
-										onclick="formSubmit('<%=itemId%>','<%=itemtype%>',<%=itemSetId%>,<%=itemNumber%>, <%=rowId%>)" />
+									<a href="javascript:void(0)" onclick="formSubmit('<%=itemId%>','<%=itemtype%>',<%=itemSetId%>,<%=itemNumber%>, <%=rowId%>)">Audio Response</a>
+									
 								</c:if>
 							</c:if> 
 							<c:if test="${itemtype =='CR'}">
 								<c:if test="${answered == 'NA'}">
-									<input type="button" value="Text Response" disabled="true" />
+									<span>
+										<font color="#999999">
+											<u>Text Response
+											</u>
+										</font>
+									</span>
 								</c:if>
 								<c:if test="${answered == 'A'}">
-									<input type="button" value="Text Response"
-										onclick="formSubmit('<%=itemId%>','<%=itemtype%>',<%=itemSetId%>,<%=itemNumber%>, <%=rowId%>)" />
+								<a href="javascript:void(0)" onclick="formSubmit('<%=itemId%>','<%=itemtype%>',<%=itemSetId%>,<%=itemNumber%>, <%=rowId%>)">Text Response</a>
 								</c:if>
 							</c:if>
 							</td>
