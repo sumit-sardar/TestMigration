@@ -131,15 +131,8 @@ template_find_student.jsp
 </p>
 <p align="right">
 
-  
-
- <%
-  
-  String url="/HandScoringWeb/itemScoringPageFlow/goto_student_list.do?"+ request.getQueryString();
-
- %>
-<netui:anchor formSubmit="true"  href='<%=url%>'  onClick="javascript:openViewQuestionWindow('${requestScope.itemId}','${requestScope.itemNo}');"><netui:content value="View Question"/></netui:anchor>
-
+ 
+<a href="javascript:void(0)" onclick="openViewQuestionWindow('${requestScope.itemId}','${requestScope.itemNo}'); return true;">View Question</a>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
 <netui:anchor formSubmit="true" href="javascript:viewRubric('${requestScope.itemId}',${requestScope.itemNo});"><netui:content value="View Rubric"/></netui:anchor>

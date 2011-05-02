@@ -230,85 +230,7 @@ public class ItemScoringController extends PageFlowController {
 			String itemSetOrder = getRequest().getParameter("itemSetOrder");
 			String maxPoints = getRequest().getParameter("maxPoints");
 			
-			if ( testAdminId == null || "".equals(testAdminId)) {
-				
-				if ((String)getRequest().getSession(false).getAttribute("testAdminId") != null) {
-					
-					testAdminId = (String)getRequest().getSession(false).getAttribute("testAdminId");
-				} 
-				
-			} else {
-				
-				getRequest().getSession(false).setAttribute("testAdminId", testAdminId);
-			}
-			if ( itemSetId == null || "".equals(itemSetId)) {
-				
-				if ((String)getRequest().getSession(false).getAttribute("itemSetId") != null) {
-					
-					itemSetId = (String)getRequest().getSession(false).getAttribute("itemSetId");
-				} 
-				
-			} else {
-				
-				getRequest().getSession(false).setAttribute("itemSetId", itemSetId);
-			}
-			if ( itemId == null || "".equals(itemId)) {
-				
-				if ((String)getRequest().getSession(false).getAttribute("itemId") != null) {
-					
-					itemId = (String)getRequest().getSession(false).getAttribute("itemId");
-				} 
-				
-			} else {
-				
-				getRequest().getSession(false).setAttribute("itemId", itemId);
-			}
-			if ( itemType == null || "".equals(itemType)) {
-				
-				if ((String)getRequest().getSession(false).getAttribute("itemType") != null) {
-					
-					itemType = (String)getRequest().getSession(false).getAttribute("itemType");
-				} 
-				
-			} else {
-				
-				getRequest().getSession(false).setAttribute("itemType", itemType);
-			}
-			if ( itemSetName == null || "".equals(itemSetName)) {
-				
-				if ((String)getRequest().getSession(false).getAttribute("itemSetName") != null) {
-					
-					itemSetName = (String)getRequest().getSession(false).getAttribute("itemSetName");
-				} 
-				
-			} else {
-				
-				getRequest().getSession(false).setAttribute("itemSetName", itemSetName);
-			}
-			if ( itemSetOrder == null || "".equals(itemSetOrder)) {
-				
-				if ((String)getRequest().getSession(false).getAttribute("itemSetOrder") != null) {
-					
-					itemSetOrder = (String)getRequest().getSession(false).getAttribute("itemSetOrder");
-				} 
-				
-			} else {
-				
-				getRequest().getSession(false).setAttribute("itemSetOrder", itemSetOrder);
-			}
-			
-			if ( maxPoints == null || "".equals(maxPoints)) {
-				
-				if ((String)getRequest().getSession(false).getAttribute("maxPoints") != null) {
-					
-					maxPoints = (String)getRequest().getSession(false).getAttribute("maxPoints");
-				} 
-				
-			} else {
-				
-				getRequest().getSession(false).setAttribute("maxPoints", maxPoints);
-			}
-			form.setTestAdminId(new Integer(testAdminId));
+		    form.setTestAdminId(new Integer(testAdminId));
 			form.setItemSetId(Integer.valueOf(itemSetId));
 			form.setItemId(itemId);
 			form.setSelectedItemType(itemType);
@@ -324,6 +246,7 @@ public class ItemScoringController extends PageFlowController {
 		actionElement = form.getActionElement();
 		form.resetValuesForAction(actionElement, ACTION_STUDENT_LIST);
 		TestSession ts = null;
+		String sortColoum = null;
 		RosterElementData reData = null;
 		form.validateValues();
 		initPagingSorting(form);
