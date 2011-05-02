@@ -49,7 +49,7 @@ if(isHidden){
 											$("#audioPlayer").show();
 											getAudioPlayer('audioPlayer');
 											openPopup(rowno, itemNumber);
-											
+											updateScore(rowno);
 										}
 										else{
 										document.getElementById("itemType").value = "CR";								
