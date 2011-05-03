@@ -27,7 +27,7 @@ template_find_student.jsp
 
 		<!-- title -->
 
-		<p><netui:content value="Scoring of Individual Student" /><br />
+		<p><netui:content value="${bundle.web['ItemList.window.subHeading']}" /><br />
 		</p>
 		
 		<netui:form action="findItemDetails">
