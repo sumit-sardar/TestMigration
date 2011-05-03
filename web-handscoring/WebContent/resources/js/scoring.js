@@ -49,7 +49,7 @@ if(isHidden){
 											$("#audioPlayer").show();
 											getAudioPlayer('audioPlayer');
 											openPopup(rowno, itemNumber);
-											updateScore(rowno);
+											updateScore(rowno);  //Changes for defect #66157
 										}
 										else{
 										document.getElementById("itemType").value = "CR";								
@@ -199,11 +199,13 @@ if(isHidden){
 	
 	}
 	
-	function ItemformSubmit(itemId, itemType, itemSetId, itemNumber, rowno, loginId) {
+	function ItemformSubmit(itemId, itemType, itemSetId, itemNumber, rowno, loginId ,rosterId) {
 
 var isHidden = $('#dialogID').is(':hidden');  
-if(isHidden){		
-			var param = "&itemId="+itemId+"&itemType="+itemType+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val();
+if(isHidden){
+			//changes for defect #66156 & #66159   
+			$("#rosterId").val(rosterId);		
+			var param = "&itemId="+itemId+"&itemType="+itemType+"&itemSetId="+itemSetId+"&rosterId="+rosterId;
 			document.getElementById("itemId").value = itemId;
 			document.getElementById("itemSetId").value = itemSetId;
 			document.getElementById("itemNumber").value = itemNumber;
@@ -394,7 +396,7 @@ if(isHidden){
 		function openPopupForItem( loginId) {
 				var maxPointsElement = document.getElementById("maxPoints");
 				var scoreCutOff = maxPointsElement.value;
-		        var titleString = "Scoring For "+ loginId ;
+		        var titleString = "Scoring for "+ loginId ;    //Changes for defect #66161 
 		      $("#dialogID").dialog({title:titleString, resizable:false, beforeclose: function(event, ui) { stopAudio(); showScoreSelect("true");} });
 		        //$("#dialogID").dialog({title:titleString});
 		        updateMaxPoints(scoreCutOff);
@@ -403,7 +405,7 @@ if(isHidden){
 		function openPopup(rowno, itemNumber) {
 				var maxPointsElement = document.getElementById("maxPoints"+rowno);
 		        var scoreCutOff = maxPointsElement.firstChild.nodeValue;
-		        var titleString = "Scoring For Item No. "+ itemNumber ;
+		        var titleString = "Scoring for Item No. "+ itemNumber ;   //Changes for defect #66161
 		      $("#dialogID").dialog({title:titleString, resizable:false, beforeclose: function(event, ui) { stopAudio(); showScoreSelect("true");} });
 		        //$("#dialogID").dialog({title:titleString});
 		        updateMaxPoints(scoreCutOff);
