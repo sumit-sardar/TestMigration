@@ -160,6 +160,7 @@ template_find_student.jsp
 <input type="hidden" id="audioResponseString" />
 <input type="hidden" id="rowNo" />
 <input type="hidden" id="loginId" />
+<input type="hidden" id="rosterId" />
 
 
 <!-- message -->
@@ -248,13 +249,19 @@ template_find_student.jsp
 					    <%  rowId = rowId+1; %>
 						<tr class="sortable">
 							<td class="sortable alignLeft">
+							<netui-data:getData resultId="rosterId" value="${container.item.testRosterId}" /><%
+								//changes for defect #66156 & #66159
+								Integer rosterId = (Integer) pageContext
+ 								.getAttribute("rosterId");
+ 								%>
 								<netui-data:getData resultId="loginId" value="${container.item.userName}" /> <%
  									String loginId = (String) pageContext
  								.getAttribute("loginId");
 							 %>
-							<a href="javascript:ItemformSubmit('${requestScope.itemId}','${actionForm.selectedItemType}',${actionForm.itemSetId},${requestScope.itemNo},<%=rowId%>,'<%=loginId%>');">
+							<a href="javascript:ItemformSubmit('${requestScope.itemId}','${actionForm.selectedItemType}',${actionForm.itemSetId},${requestScope.itemNo},<%=rowId%>,'<%=loginId%>',<%=rosterId %>);">
 								<netui:span  value="${container.item.userName}"/>
-								<input type="hidden" id="rosterId" value="${container.item.testRosterId}">
+								
+								
 							</a> 						
 							
 																
