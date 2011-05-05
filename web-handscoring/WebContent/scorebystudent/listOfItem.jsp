@@ -186,7 +186,7 @@ function stopAudio(){
 								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;View Rubric</th>
 								<th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="ItemSetName">Subtest Name</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;View Question&nbsp;&nbsp;</th>
-								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;Response&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;View Response&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
 								<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="Answered">&nbsp;&nbsp;Status&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="10%" nowrap><ctb:tableSortColumn value="ScoreStatus">Manual Scoring Status</ctb:tableSortColumn></th>
 								<th class="sortable alignLeft" width="5%" nowrap>&nbsp;&nbsp;Maximum Score</th>
