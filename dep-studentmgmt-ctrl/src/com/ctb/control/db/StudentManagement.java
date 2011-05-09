@@ -431,7 +431,7 @@ public interface StudentManagement extends JdbcControl
      * array-max-length="all"
      */
     @JdbcControl.SQL(statement = "select distinct  stu.student_id as id,  stu.user_name as loginId,  stu.first_name as firstName,  stu.middle_name as middleName,  stu.last_name as lastName, \t  concat(concat(stu.last_name, ', '), concat(stu.first_name, concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.gender as gender,  stu.birthdate as birthDate,  stu.grade as grade,  stu.ext_pin1 as studentIdNumber,  stu.ext_pin2 as studentIdNumber2,  stu.created_by as createdBy from  org_node_student ons,  student stu,  org_node node,  org_node_category onc,  org_node_ancestor ona,  user_role urole,  users where  ons.student_id = stu.student_id \t and ons.activation_status= 'AC' \t and stu.activation_status= 'AC' \t and ons.org_node_id = node.org_node_id  and ons.org_node_id = ona.org_node_id  \t and ona.ANCESTOR_ORG_NODE_ID = urole.org_node_id \t and urole.activation_status = 'AC' \t and users.user_id = urole.user_id \t and users.user_name = {userName} \t and onc.org_node_category_id = node.org_node_category_id  {sql: searchCriteria}",
-                     arrayMaxLength = 100000)
+                     arrayMaxLength = 0)
     ManageStudent [] getStudentsAtAndBelowUserTopNodeWithSearchCriteria(String userName, String searchCriteria) throws SQLException;
 
 
