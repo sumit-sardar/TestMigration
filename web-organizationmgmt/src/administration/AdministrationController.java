@@ -5,7 +5,10 @@ import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.UserNode;
+import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -95,11 +98,14 @@ public class AdministrationController extends PageFlowController
         customerHasScoring(); // For hand scoring changes
         this.getSession().setAttribute("hasUploadDownloadConfig", hasUploadDownloadConfig());
         this.getSession().setAttribute("hasProgramStatusConfig", hasProgramStatusConfig());
+        
         this.getSession().setAttribute("hasLicenseConfig", hasLicenseConfig());
         this.getSession().setAttribute("userHasReports", userHasReports());
+        this.getSession().setAttribute("isAdminUserAtLeafNode", isAdminUserAtLeafNode());
+        
         return new Forward("success");
     }
-    
+     
     /**
      * @jpf:action
      */
@@ -158,10 +164,26 @@ public class AdministrationController extends PageFlowController
      * @jpf:action
      */
 	@Jpf.Action()
+    protected Forward viewLicense()
+    {
+        try {
+            String url = "/OrganizationManagementWeb/manageLicense/beginViewLicense.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch( IOException ioe ) {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+
+    /**
+     * @jpf:action
+     */
+	@Jpf.Action()
     protected Forward manageLicense()
     {
         try {
-            String url = "/OrganizationManagementWeb/manageLicense/begin.do";
+            String url = "/OrganizationManagementWeb/manageLicense/beginManageLicense.do";
             getResponse().sendRedirect(url);
         } 
         catch( IOException ioe ) {
@@ -242,6 +264,30 @@ public class AdministrationController extends PageFlowController
         return hasProgramStatusConfig;
     }
 
+    /**
+     * isAdminUserAtLeafNode
+     */
+    private Boolean isAdminUserAtLeafNode()
+    {
+        Boolean isAdminUser = new Boolean(this.user.getRole().getRoleName().equals("Administrator"));
+        Boolean leafNode = Boolean.TRUE;
+    	
+    	try {
+			UserNodeData userTopNodes = this.userManagement.getTopUserNodesForUser(this.userName, null, null, null);		
+	        UserNode[] userNodes = userTopNodes.getUserNodes();   
+	        
+	        for (int i=0 ; i<userNodes.length ; i++) {
+	            UserNode userNode = userNodes[i];
+	            if (userNode.getChildNodeCount().intValue() > 0) {
+	            	leafNode = Boolean.FALSE;
+	            }
+	        }			
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+        return (isAdminUser && leafNode);
+    }
+        
     /**
      * hasLicenseConfig
      */

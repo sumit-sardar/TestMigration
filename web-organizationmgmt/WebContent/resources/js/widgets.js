@@ -1149,3 +1149,92 @@ function moveSelectedOption(elementId, moveDirection)
     
         return true;   
     }    
+
+    
+/************************* Manage Licenses ***********************/
+
+function isPositiveNumeric(sText) {
+    var ValidChars = "0123456789.";
+    var Char;
+
+    if (sText == "") {
+    	alert("Please input a number.");
+    	return false;	
+    }
+    for (i = 0; i < sText.length; i++) {
+        Char = sText.charAt(i);
+	if (ValidChars.indexOf(Char) == -1) {
+    	    alert("Invalid number.");
+	    return false;
+	}
+    }
+    
+    return true;
+}
+
+function updateAvailable(control) {
+
+    var avail_elm = document.getElementById("availId");
+    var total = avail_elm.innerHTML;
+    
+    var newValue = trimZero(control.value);
+    if (newValue != control.value) {
+    	control.value = newValue;
+    }
+    
+    var oldValue = control.id;
+    oldValue = oldValue.substr(3, oldValue.length); // remove 'id_'
+    
+    if (! isPositiveNumeric(newValue)) {
+    	control.value = oldValue; 
+    	return false;
+    }
+    
+    
+    var diff = newValue - oldValue;   
+    var result = total - diff;
+    if (result < 0) {
+    	alert("Not enough amount to allocate.");
+    	control.value = oldValue; 
+    	return false;
+    }
+    
+    avail_elm.innerHTML = result;
+    control.id = "id_" + newValue;
+
+    var paElt = getSafeElement('{actionForm.parentNodeAvailable}');
+    if( paElt ) {
+        paElt.value = result;
+    }
+    
+    if (newValue == 0) {
+    	control.style.width = "100";
+    	control.style.backgroundColor = "red";
+    	control.style.color = "white";
+    }
+    else {    	
+    	control.style.width = "100";
+    	control.style.backgroundColor = "";
+    	control.style.color = "";
+    }
+    
+    return true;
+}
+
+function trimZero(s)
+{
+	var index = 0;
+	while(index < (s.length-1) && s.charAt(index) == '0') {
+		index++;
+	} 
+	return s.substr(index, s.length);
+}
+   
+function verifyCancelLicenses(){
+    return confirm("Click 'OK' to quit editing license information. Any changes you've made will be lost.");
+}
+
+function verifySaveLicenses(){
+    return confirm("Click 'OK' to save your changes. Click 'Cancel' to continue to edit license information.");
+}
+    

@@ -51,12 +51,19 @@
   </c:if>
   <c:if test="${ sessionScope.hasLicenseConfig}"> 
     <p>
-    <netui:anchor action="manageLicense"><netui:content value="${bundle.web['license.title']}"/></netui:anchor>
-    <br/>
-    <netui:content value="${bundle.web['license.menu.message']}"/>
+  	<c:if test="${! sessionScope.isAdminUserAtLeafNode}"> 
+    	<netui:anchor action="manageLicense"><netui:content value="${bundle.web['manageLicense.title']}"/></netui:anchor>
+    	<br/>
+    	<netui:content value="${bundle.web['manageLicense.menu.message']}"/>
+  	</c:if>
+  	<c:if test="${sessionScope.isAdminUserAtLeafNode}"> 
+    	<netui:anchor action="viewLicense"><netui:content value="${bundle.web['license.title']}"/></netui:anchor>
+    	<br/>
+    	<netui:content value="${bundle.web['license.menu.message']}"/>
+  	</c:if>
     </p>
   </c:if>
- 
+  
 <!-- ********************************************************************************************************************* -->
 <!-- End Page Content -->
 <!-- ********************************************************************************************************************* -->

@@ -22,21 +22,15 @@ import dto.Message;
 import dto.NavigationPath;
 import dto.Organization;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
-
 import utils.FilterSortPageUtils;
 import utils.MessageResourceBundle;
 import utils.OrgFormUtils;
@@ -49,7 +43,7 @@ import utils.PermissionsUtils;
  * @jpf:controller
  *  */
 @Jpf.Controller()
-public class ManageLicenseController extends PageFlowController
+public class ViewLicenseController extends PageFlowController
 {
     static final long serialVersionUID = 1L;
 
@@ -91,32 +85,7 @@ public class ManageLicenseController extends PageFlowController
     public String[] productNameOptions = null;
     public String productName = null;
     
-    private List licenseNodeList = null;
-    
-    /**
-     * @jpf:action
-     * @jpf:forward name="success" path="manageLicense.do"
-     */
-    @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success",
-                     path = "manageLicense.do")
-    })
-    protected Forward begin()
-    {                
-        getUserDetails();
-        //Bulk Accommodation Changes
-        customerHasBulkAccommodation();
-        
-        customerHasScoring();//For hand scoring changes
-        ManageLicenseForm form = initialize();
-        
-        this.customerLicenses = getCustomerLicenses();
-                
-        initHierarchy(form);           
-             
-        return new Forward("success", form);        
-    }
-    
+
     /**
      * @jpf:action
      * @jpf:forward name="success" path="viewLicense.do"
@@ -125,14 +94,14 @@ public class ManageLicenseController extends PageFlowController
         @Jpf.Forward(name = "success",
                      path = "viewLicense.do")
     })
-    protected Forward beginViewLicense()
+    protected Forward begin()
     {                
         getUserDetails();
         //Bulk Accommodation Changes
         customerHasBulkAccommodation();
         
         customerHasScoring();//For hand scoring changes
-        ManageLicenseForm form = initialize();
+        ViewLicenseForm form = initialize();
         
         this.customerLicenses = getCustomerLicenses();
                 
@@ -140,60 +109,22 @@ public class ManageLicenseController extends PageFlowController
              
         return new Forward("success", form);        
     }
-
-    /**
-     * @jpf:action
-     * @jpf:forward name="success" path="manageLicense.do"
-     */
-    @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success",
-                     path = "manageLicense.do")
-    })
-    protected Forward beginManageLicense()
-    {                
-        getUserDetails();
-        //Bulk Accommodation Changes
-        customerHasBulkAccommodation();
-        
-        customerHasScoring();//For hand scoring changes
-        ManageLicenseForm form = initialize();
-        
-        this.customerLicenses = getCustomerLicenses();
-                
-        initHierarchy(form);           
-        
-        return new Forward("success", form);        
-    }
     
     /**
      * @jpf:action
-     * @jpf:forward name="success" path="view_license_leaf_node.jsp"
+     * @jpf:forward name="success" path="view_license.jsp"
      */
     @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success", path = "view_license_leaf_node.jsp")
+        @Jpf.Forward(name = "success", path = "view_license.jsp")
 		}
 	)
-    protected Forward viewLicense(ManageLicenseForm form)
+    protected Forward viewLicense(ViewLicenseForm form)
     {        
         handleOrganizationControl(form);
         
         return new Forward("success", form);
     }
 
-    /**
-     * @jpf:action
-     * @jpf:forward name="success" path="manage_license.jsp"
-     */
-    @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success", path = "manage_license.jsp")
-		}
-	)
-    protected Forward manageLicense(ManageLicenseForm form)
-    {        
-        handleOrganizationControl(form);
-        
-        return new Forward("success", form);
-    }
 	 
 /////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////// private methods//////////////////////////////////    
@@ -202,8 +133,7 @@ public class ManageLicenseController extends PageFlowController
     /**
      * handleOrganizationControl
      */
-    private void handleOrganizationControl(ManageLicenseForm form) {
-
+    private void handleOrganizationControl(ViewLicenseForm form) {
         String actionElement = form.getActionElement();
         String currentAction = form.getCurrentAction();
         
@@ -218,8 +148,6 @@ public class ManageLicenseController extends PageFlowController
             form.resetValuesForPathList();
         }
         
-        getLicenseValuesInForm(form);
-        
         if (actionElement.equals("setupOrgNodePath")) {
             String tempOrgNodeId = form.getCurrentAction();  
             
@@ -232,7 +160,7 @@ public class ManageLicenseController extends PageFlowController
             }
         }
         
-        int pageSize = FilterSortPageUtils.PAGESIZE_5;	
+        int pageSize = FilterSortPageUtils.PAGESIZE_5;
                       
         FilterParams filter = null;
         SortParams sort = null;
@@ -245,19 +173,18 @@ public class ManageLicenseController extends PageFlowController
            
         NodeData und = OrgPathListUtils.getOrganizationNodes(this.userName, 
                                 this.organizationManagement, orgNodeId, filter, page, sort);         
-        if( form.getOrgPageRequested() == null ||  und.getFilteredPages() == null) {        
-            form.setOrgPageRequested(new Integer(1));            
+        if( form.getOrgPageRequested() == null ||  und.getFilteredPages() == null) {
+            
+            form.setOrgPageRequested(new Integer(1));
+            
         }
-        else if ( form.getOrgPageRequested().intValue() > und.getFilteredPages().intValue() ) {            
-            form.setOrgPageRequested(und.getFilteredPages());        
+        else if ( form.getOrgPageRequested().intValue() > und.getFilteredPages().intValue() ) {
+            
+            form.setOrgPageRequested(und.getFilteredPages());
+        
         }
-         
+                
         List orgNodes = buildOrgNodeList(und);
-        
-        populateLicenseNodes(orgNodes);
-        
-        setLicenseValuesToForm(orgNodeId, orgNodes, form);
-
         String orgCategoryName = getOrgCategoryName(orgNodes);
         
         PagerSummary orgPagerSummary = OrgPathListUtils.buildOrgNodePagerSummary(
@@ -269,106 +196,16 @@ public class ManageLicenseController extends PageFlowController
         this.getRequest().setAttribute("orgPagerSummary", orgPagerSummary);
         this.getRequest().setAttribute("orgCategoryName", orgCategoryName);   
 
-        this.getRequest().setAttribute("multipleProducts", new Boolean(this.customerLicenses.length > 1));       
-        
-        this.getRequest().setAttribute("rootNode", new Boolean(orgNodeId.intValue() == 0));                  
-        this.getRequest().setAttribute("singleRootNode", new Boolean(orgNodes.size() == 1));                  
-        
+        this.getRequest().setAttribute("multipleProducts", new Boolean(this.customerLicenses.length > 1));                  
     }
 
-    /**
-     * getLicenseValuesInForm
-     */    
-    private void getLicenseValuesInForm(ManageLicenseForm form) {
-    	
-    	Integer parentNodeId = form.getParentNodeId();
-    	String parentNodeAvailable = form.getParentNodeAvailable();
-    	
-    	if ((parentNodeId != null) && (parentNodeAvailable != null)) {
-			LicenseNode nodeInList = findLicenseNode(parentNodeId);
-			if (nodeInList != null) {
-				nodeInList.setAvailable(parentNodeAvailable);
-			}    		
-    	}
-    	
-    	if (form.availableValues != null) {
-	    	for (int i=0 ; i<form.availableValues.length ; i++) {
-	    		String id = form.orgNodeIds[i];
-	    		String available = form.availableValues[i];
-	    		if ((id != null) && (available != null) && (id.length() > 0) && (available.length() > 0)) {
-	    			LicenseNode nodeInList = findLicenseNode(new Integer(id));
-	    			if (nodeInList != null) {
-	    				nodeInList.setAvailable(available);
-	    			}
-	    		}
-	    	}
-    	}
-    }
-
-    /**
-     * populateLicenseNodes
-     */    
-    private void populateLicenseNodes(List licenseNodes) {
-
-        for (int i = 0 ; i < licenseNodes.size() ; i++) {           
-        	LicenseNode node = (LicenseNode)licenseNodes.get(i);
-            LicenseNode nodeInList = findLicenseNode(node.getId());
-            if (nodeInList == null) {
-            	nodeInList = new LicenseNode(node);
-            	this.licenseNodeList.add(nodeInList);
-            }
-            else {
-            	node.updateNode(nodeInList);            
-            }
-        }
-        	
-    }
-
-
-    /**
-     * setLicenseValuesToForm
-     */    
-    private void setLicenseValuesToForm(Integer orgNodeId, List licenseNodes, ManageLicenseForm form) {
-
-    	if (orgNodeId.intValue() == 0) {
-    		LicenseNode node = (LicenseNode)licenseNodes.get(0);    
-    		orgNodeId = node.getId();        	
-    	}
-    	LicenseNode parentNode = findLicenseNode(orgNodeId);
-    	form.setParentLicenseNode(parentNode);
-    	form.setParentNodeId(parentNode.getId());
-    	form.setParentNodeAvailable(parentNode.getAvailable());
-    	
-        for (int i = 0 ; i < licenseNodes.size() ; i++) {           
-        	LicenseNode node = (LicenseNode)licenseNodes.get(i);
-        	form.orgNodeIds[i] = node.getId().toString();
-        	form.availableValues[i] = node.getAvailable();
-        }
-    }
-    
-     /**
-     * findLicenseNode
-     */    
-    private LicenseNode findLicenseNode(Integer id) {
-
-        for (int i = 0 ; i < this.licenseNodeList.size() ; i++) {           
-        	LicenseNode licenseNode = (LicenseNode)this.licenseNodeList.get(i);
-        	if (licenseNode.getId().intValue() == id.intValue()) {
-        		return licenseNode;
-        	}
-        }
-        return null;	
-    }
-    
     /**
      * buildOrgNodeList
      */    
     private List buildOrgNodeList(NodeData und) {
         ArrayList nodeList = new ArrayList();
         if ( und != null ) {  
-                        
-            CustomerLicense cl = getCustomerLicenseByProduct(this.productName);
-        	
+                              
             LicenseNode licenseNode = null;
             Node[] nodes = und.getNodes();     
             
@@ -377,7 +214,7 @@ public class ManageLicenseController extends PageFlowController
                 Node node = nodes[i];
                 if ( node != null ) {
                     
-                    OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(node.getOrgNodeId(), cl.getProductId(), cl.getSubtestModel());
+                    OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(node.getOrgNodeId());
                     
                     if (onli != null) {                              
                         licenseNode = new LicenseNode();
@@ -385,15 +222,11 @@ public class ManageLicenseController extends PageFlowController
                         licenseNode.setId(node.getOrgNodeId());   
                         licenseNode.setCategoryName(node.getOrgNodeCategoryName());
                         licenseNode.setChildrenNodeCount(node.getChildNodeCount());
-                        
+
                         licenseNode.setReserved(licenseNode.ConvertIntegerToString(onli.getLicReserved()));
                         licenseNode.setConsumed(licenseNode.ConvertIntegerToString(onli.getLicUsed()));
                         licenseNode.setAvailable(licenseNode.ConvertIntegerToString(onli.getLicPurchased()));
-                        licenseNode.setSubtestModel(cl.getSubtestModel());
-                        
-                        /* **************** FAKE available value ****************/
-                        licenseNode.setAvailable(licenseNode.ConvertIntegerToString(onli.getLicReserved()));
-                        
+                                            
                         nodeList.add(licenseNode);
                     }
                 }
@@ -403,63 +236,25 @@ public class ManageLicenseController extends PageFlowController
     }
 
     /**
-     * getLicenseNode
+     * getLicenseQuantitiesByOrg
      */    
-    private LicenseNode getLicenseNode(Integer orgNodeId) {
+    private OrgNodeLicenseInfo getLicenseQuantitiesByOrg(Integer orgNodeId) {
+        OrgNodeLicenseInfo onli = null;
         
-    	if (orgNodeId.intValue() == 0) {
-    		return new LicenseNode();
-    	}
-    	
-    	OrgNodeLicenseInfo onli = null;       
         CustomerLicense cl = getCustomerLicenseByProduct(this.productName);
-        
-        LicenseNode licenseNode = null;
         
         try {
             onli = this.licensing.getLicenseQuantitiesByOrg(this.userName, 
                                                             orgNodeId, 
                                                             cl.getProductId(), 
                                                             cl.getSubtestModel());
-            if (onli != null) {                              
-                licenseNode = new LicenseNode();
-                licenseNode.setId(orgNodeId);   
-                licenseNode.setReserved(licenseNode.ConvertIntegerToString(onli.getLicReserved()));
-                licenseNode.setConsumed(licenseNode.ConvertIntegerToString(onli.getLicUsed()));
-                licenseNode.setAvailable(licenseNode.ConvertIntegerToString(onli.getLicPurchased()));
-                licenseNode.setSubtestModel(cl.getSubtestModel());
-                
-                /* **************** FAKE available value ****************/
-                licenseNode.setAvailable(licenseNode.ConvertIntegerToString(onli.getLicReserved()+ 100));
-                 
-            }
-            
-        }    
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }
-        return licenseNode;
-    }
-
-    /**
-     * getLicenseQuantitiesByOrg
-     */    
-    private OrgNodeLicenseInfo getLicenseQuantitiesByOrg(Integer orgNodeId, Integer productId, String subtestModel) {
-        OrgNodeLicenseInfo onli = null;
-        
-        
-        try {
-            onli = this.licensing.getLicenseQuantitiesByOrg(this.userName, 
-                                                            orgNodeId, 
-                                                            productId, 
-                                                            subtestModel);
         }    
         catch (CTBBusinessException be) {
             be.printStackTrace();
         }
         return onli;
     }
-    
+
     /**
      * getOrgCategoryName
      */
@@ -483,19 +278,17 @@ public class ManageLicenseController extends PageFlowController
     /**
      * initHierarchy
      */
-    private void initHierarchy(ManageLicenseForm form)
+    private void initHierarchy(ViewLicenseForm form)
     {   
         this.orgNodePath = new ArrayList();
         form.setOrgNodeName("Top");
         form.setOrgNodeId(new Integer(0));
-                
-        this.licenseNodeList = new ArrayList();
     }
 
     /**
      * setupHierarchy
      */
-    private List setupHierarchy(Integer orgNodeId, ManageLicenseForm form)
+    private List setupHierarchy(Integer orgNodeId, ViewLicenseForm form)
     {
         List orgNodePath = new ArrayList();
         List nodeAncestors = new ArrayList();
@@ -549,10 +342,10 @@ public class ManageLicenseController extends PageFlowController
      /**
      * initialize
      */
-    private ManageLicenseForm initialize()
+    private ViewLicenseForm initialize()
     {                
         this.orgNodePath = new ArrayList();
-        ManageLicenseForm form = new ManageLicenseForm();
+        ViewLicenseForm form = new ViewLicenseForm();
         form.init();
         form.setCurrentAction(ACTION_CURRENT);
         this.getSession().setAttribute("userHasReports", userHasReports());
@@ -644,63 +437,19 @@ public class ManageLicenseController extends PageFlowController
         getSession().setAttribute("userName", this.userName);
     }
     
-    
-    /**
-     * @jpf:action
-     */
-	@Jpf.Action()
-    protected Forward goToSystemAdministration(ManageLicenseForm form)
-    {
-        try {
-            getResponse().sendRedirect("/OrganizationManagementWeb/administration/begin.do");
-        } catch( IOException ioe ) {
-            System.err.print(ioe.getStackTrace());
-        }
-        
-        return null;
-    }
-
-    /**
-     * @jpf:action
-     */
-	@Jpf.Action()
-    protected Forward saveLicenses(ManageLicenseForm form)
-    {
-		
-        getLicenseValuesInForm(form);
-		
-		// save here .....
-        for (int i = 0 ; i < this.licenseNodeList.size() ; i++) {           
-        	LicenseNode licenseNode = (LicenseNode)this.licenseNodeList.get(i);
-        	Integer id = licenseNode.getId();
-        	String name = licenseNode.getName();
-        	String available = licenseNode.getAvailable();
-        	System.out.println("id=" + id + "    name=" + name + "    available=" + available);
-        }
-
-        // return to system administration
-		goToSystemAdministration(form);		
-        return null;
-    }
-	
 /////////////////////////////////////////////////////////////////////////////////////////////
-/////// *********************** ManageLicenseForm ************* /////////////////////////////    
+/////// *********************** ViewLicenseForm ************* /////////////////////////////    
 /////////////////////////////////////////////////////////////////////////////////////////////    
     /**
      * FormData get and set methods may be overwritten by the Form Bean editor.
      */
-    public static class ManageLicenseForm extends SanitizedFormData
+    public static class ViewLicenseForm extends SanitizedFormData
     {
         private String actionElement;
         private String currentAction;
         
         private String orgNodeName;
         private Integer orgNodeId;
-        private String[] availableValues;
-        private String[] orgNodeIds;
-        private LicenseNode parentLicenseNode;
-        private Integer parentNodeId;
-        private String parentNodeAvailable;
         
         // org pager
         private String orgSortColumn;
@@ -718,7 +467,7 @@ public class ManageLicenseController extends PageFlowController
         private Message message;          
 
         
-        public ManageLicenseForm()
+        public ViewLicenseForm()
         {
         }
         
@@ -728,9 +477,6 @@ public class ManageLicenseController extends PageFlowController
             this.currentAction = global.Global.ACTION_DEFAULT;
             this.orgNodeName = "Top";
             this.orgNodeId = new Integer(0);
-            this.availableValues = new String[5];
-            this.orgNodeIds = new String[5];
-
             this.orgSortColumn = FilterSortPageUtils.ORGNODE_DEFAULT_SORT_COLUMN;
             this.orgSortOrderBy = FilterSortPageUtils.ASCENDING;      
             this.orgPageRequested = new Integer(1);                
@@ -744,16 +490,14 @@ public class ManageLicenseController extends PageFlowController
             this.message = null;  
         }   
 
-        public ManageLicenseForm createClone()
+        public ViewLicenseForm createClone()
         {   
-            ManageLicenseForm copied = new ManageLicenseForm();
+            ViewLicenseForm copied = new ViewLicenseForm();
 
             copied.setActionElement(this.actionElement);
             copied.setCurrentAction(this.currentAction);
             copied.setOrgNodeName(this.orgNodeName);
             copied.setOrgNodeId(this.orgNodeId);
-            copied.setAvailableValues(this.availableValues);
-            copied.setOrgNodeIds(this.orgNodeIds);
             copied.setOrgSortColumn(this.orgSortColumn);
             copied.setOrgSortOrderBy(this.orgSortOrderBy);
             copied.setOrgPageRequested(this.orgPageRequested);
@@ -858,6 +602,7 @@ public class ManageLicenseController extends PageFlowController
         {
             return this.orgNodeName;
         }
+        
         public void setOrgNodeId(Integer orgNodeId)
         {
             this.orgNodeId = orgNodeId;
@@ -866,58 +611,7 @@ public class ManageLicenseController extends PageFlowController
         {
             return this.orgNodeId;
         }
-        
-        public void setAvailableValues(String[] availableValues)
-        {
-            this.availableValues = availableValues;
-        }       
-        public String[] getAvailableValues()
-        {
-            if (this.availableValues == null || this.availableValues.length == 0) {
-                this.availableValues = new String[5];
-            }       	
-            return this.availableValues;
-        }
-        public void setOrgNodeIds(String[] orgNodeIds)
-        {
-            this.orgNodeIds = orgNodeIds;
-        }       
-        public String[] getOrgNodeIds()
-        {
-            if (this.orgNodeIds == null || this.orgNodeIds.length == 0) {
-                this.orgNodeIds = new String[5];
-            }       	
-            return this.orgNodeIds;
-        }
-        
-        public void setParentLicenseNode(LicenseNode node)
-        {
-            if (this.parentLicenseNode == null) {
-                this.parentLicenseNode = new LicenseNode();
-            }       	
-            this.parentLicenseNode = node;
-        }
-        
-        public Integer getParentNodeId() {
-			return parentNodeId;
-		}
-
-		public void setParentNodeId(Integer parentNodeId) {
-			this.parentNodeId = parentNodeId;
-		}
-
-		public String getParentNodeAvailable() {
-			return parentNodeAvailable;
-		}
-
-		public void setParentNodeAvailable(String parentNodeAvailable) {
-			this.parentNodeAvailable = parentNodeAvailable;
-		}
-
-		public LicenseNode getParentLicenseNode()
-        {
-            return this.parentLicenseNode;
-        }
+                       
         public void setOrgSortColumn(String orgSortColumn)
         {
             this.orgSortColumn = orgSortColumn;

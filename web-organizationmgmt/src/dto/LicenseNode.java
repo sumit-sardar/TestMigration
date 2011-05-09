@@ -18,8 +18,25 @@ public class LicenseNode implements java.io.Serializable
     private String consumed = null;
     private String available = null;
     private String licenseAfterLastPurchase = null;
+	private String subtestModel;        
     
-    public LicenseNode() {}
+    public LicenseNode() {
+    	this.id = new Integer(0);
+    	this.name = "Top";
+    	this.reserved = "0";
+    	this.consumed = "0";
+    	this.available = "0";   
+    	this.subtestModel = "";
+    }
+
+    public LicenseNode(LicenseNode node) {
+    	this.id = node.getId();
+    	this.name = node.getName();
+    	this.reserved = node.getReserved();
+    	this.consumed = node.getConsumed();
+    	this.available = node.getAvailable();
+    	this.subtestModel = node.getSubtestModel();
+    }
     
     /**
 	 * @return the productName
@@ -115,7 +132,18 @@ public class LicenseNode implements java.io.Serializable
 		this.licenseAfterLastPurchase = licenseAfterLastPurchase;
 	}
 
-     /**
+     public String getSubtestModel() {
+		return subtestModel;
+	}
+
+	public void setSubtestModel(String subtestModel) {	
+		if ("T".equalsIgnoreCase(subtestModel))
+			this.subtestModel = "Subtest";
+		else
+			this.subtestModel = "Session";
+	}
+
+	/**
      * makeCopy
      */
    public CustomerLicense makeCopy(ManageCustomerForm form) 
@@ -180,6 +208,11 @@ public class LicenseNode implements java.io.Serializable
         
     }
     
+    public void updateNode(LicenseNode node) {
+    	this.reserved = node.getReserved();
+    	this.consumed = node.getConsumed();
+    	this.available = node.getAvailable();
+    }
     
     
 } 
