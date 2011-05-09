@@ -253,13 +253,23 @@ function stopAudio(){
 								
 						
 							<%String scoreStatus= "scoreStatus"+rowId;%>
-							<td class="sortable"><span id='<%=scoreStatus%>'
-								 >${container.item.scoreStatus} </span></td>
+							<td class="sortable">
+							<!-- Changes for LLO-086-->
+								<c:if test="${isanswered =='A'}">
+									<span id='<%=scoreStatus%>'>${container.item.scoreStatus} 
+									</span>
+								</c:if>	 
+								<c:if test="${isanswered =='NA'}">
+									<span id='<%=scoreStatus%>'>Complete 
+									</span>
+								</c:if>	
+							</td>
 							<%String maxPoints= "maxPoints"+rowId;%>
 							<td class="sortable"><span id='<%=maxPoints%>'
 								>${container.item.maxPoints}</span></td>
 								
 							<td class="sortable">
+							 <netui-data:getData resultId="isAnswered" value="${container.item.answered}"/> 
 							<netui-data:getData resultId="isCompleted" value="${container.item.scoreStatus}" />
 							<%String scorePoints= "scorePoints"+rowId;%>
 							<c:if test="${isCompleted == 'Complete'}">
@@ -267,7 +277,13 @@ function stopAudio(){
 								${container.item.scorePoint}</span>
 							</c:if>
 							<c:if test="${isCompleted =='Incomplete'}">
-								<span id="<%=scorePoints%>"> -</span>
+								<c:if test="${isAnswered =='NA'}">  
+								<span id="<%=scorePoints%>"> 0</span><!-- Changes for LLO-086-->
+								</c:if>
+							
+								 <c:if test="${isAnswered =='A'}">  
+									<span id="<%=scorePoints%>"> -</span><!-- Changes for LLO-086-->
+								</c:if>
 							</c:if>
 							</td>
 						</tr>
