@@ -1868,6 +1868,9 @@ public interface OrgNode extends JdbcControl
 	@JdbcControl.SQL(statement = "select decode(count(1),0,'F','T') as isLasLinkCustomer from org_node org, customer_configuration config where org.org_node_id ={selectedOrgNodeId} and config.customer_Id = org.customer_Id   and config.customer_configuration_name = {ConfigName}  and config.default_value ='T'")
     String getlasLinkConfigForOrgNodes(Integer selectedOrgNodeId, String ConfigName) throws SQLException;
 	
+	@JdbcControl.SQL(statement = "SELECT DECODE(COUNT(1), 0, 'T', 'F') AS UNIQUEMDRNUMBER  FROM ORG_NODE ORG WHERE ORG.ORG_NODE_MDR_NUMBER = {selectedMdrNumber}")
+    String checkUniqueMdrNumberForOrgNodes(String selectedMdrNumber) throws SQLException;
+	
 	//END - Changes for LASLINK Customer
 	
 	
