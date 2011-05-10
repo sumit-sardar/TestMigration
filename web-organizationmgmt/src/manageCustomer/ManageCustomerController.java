@@ -38,6 +38,8 @@ import utils.CustomerSearchUtils;
 import utils.FilterSortPageUtils;
 import utils.MessageResourceBundle;
 import utils.PermissionsUtils;
+import utils.WebUtils;
+
 import com.ctb.util.CTBConstants;
 import global.Global;
 import java.io.IOException;
@@ -75,6 +77,13 @@ public class ManageCustomerController extends PageFlowController
      */
     @Control()
     private com.ctb.control.userManagement.UserManagement userManagement;
+    
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.db.OrgNode orgNode;
+   
 
     static final long serialVersionUID = 1L;
     
@@ -508,6 +517,19 @@ public class ManageCustomerController extends PageFlowController
         }
         //END- Changed For LASLINK Product
         boolean validInfo = CustomerFormUtils.verifyCustomerInformation(form, selectedCustomerId);	
+        //START- LLO-099 MDR Validation
+        if (validInfo) {
+        	
+        	if(form.getCustomerProfile().getCustomerTypeId().equals("LasLink Customer") || form.getCustomerProfile().getCustomerType().equals("LasLink Customer")) {
+                String validMDRNumber = validMDRNumber(form.getCustomerProfile().getMdrNumber()); 
+                if(validMDRNumber.equals("F"))
+                	validInfo = false;
+                String invalidString= Message.FIELD_MDRNUMBER +"<br/>"  + Message.INVALID__MDRNUMBER_FORMAT;
+                	form.setMessage(Message.INVALID_FORMAT_TITLE,invalidString ,
+                        Message.ERROR);
+                } 
+        }
+        //END- LLO-099 MDR Validation
         if (!validInfo)
         {
 
@@ -2048,8 +2070,25 @@ public class ManageCustomerController extends PageFlowController
     /////// *********************** ManageUploadForm ************* ////////////////////////////////    
     /////////////////////////////////////////////////////////////////////////////////////////////    
 
-
-
+	//START- LLO-099 MDR Validation
+    private String validMDRNumber(String mdrNumber) {
+        
+    	mdrNumber = mdrNumber.trim();
+        String mdrNumberFound ="F";
+        try {
+	        if ( mdrNumber != null && mdrNumber.length()>0 &&  !(mdrNumber.length()< 8)) {
+	            
+	        	mdrNumberFound = orgNode.checkUniqueMdrNumberForOrgNodes(mdrNumber);
+	           
+	        }         
+        }
+        catch (Exception e) {
+        }
+        
+        return mdrNumberFound;  
+        
+    }
+	//END -LLO-099 MDR Validation
     
     /**
      * FormData get and set methods may be overwritten by the Form Bean editor.

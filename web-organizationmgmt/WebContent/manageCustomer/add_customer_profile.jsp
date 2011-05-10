@@ -50,10 +50,10 @@
                 </c:if>
                 <td class="transparent">
 	             <c:if test="${!isLasLinkProduct}">
-                 <netui:textBox tagId="MDRNoTextBox" dataSource="actionForm.customerProfile.mdrNumber" maxlength="32" style="width:200px; display: none;"  />
+                 <netui:textBox tagId="MDRNoTextBox" dataSource="actionForm.customerProfile.mdrNumber" maxlength="8"  style="width:200px; display: none;"  onKeyPress="return constrainNumericChar(event);" />
                  </c:if>
                  <c:if test="${isLasLinkProduct}">
-                 <netui:textBox tagId="MDRNoTextBox" dataSource="actionForm.customerProfile.mdrNumber" maxlength="32" style="width:200px; display: block;"  />
+                 <netui:textBox tagId="MDRNoTextBox" dataSource="actionForm.customerProfile.mdrNumber" maxlength="8"  style="width:200px; display: block;"  onKeyPress="return constrainNumericChar(event);"/>
         		 </c:if>
                  
                  

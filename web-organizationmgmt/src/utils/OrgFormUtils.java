@@ -2,8 +2,12 @@ package utils;
 
 import com.ctb.bean.testAdmin.Role;
 import com.ctb.control.db.Roles;
+
+import dto.CustomerProfileInformation;
 import dto.Message;
 import java.sql.SQLException;
+
+import manageCustomer.ManageCustomerController.ManageCustomerForm;
 import manageOrganization.ManageOrganizationController.ManageOrganizationForm;
 
 
@@ -19,7 +23,13 @@ public class OrgFormUtils
             return false;
             
         }
-                
+        //LLO-099 MDR Validation
+        if ( verifyMinLength(form) ) {
+            
+            return false;
+        
+        }
+        
         if (isInvalidOrgInfo(form)){
             
             return false;
@@ -198,5 +208,45 @@ public class OrgFormUtils
      return userRole;
    }      
    
-    
+     //START- Changed For LASLINK Product
+   /**
+    * check for minlength
+    * @param form ManageOrganizationForm.
+    * @return boolean
+    */
+    public static boolean verifyMinLength(ManageOrganizationForm form) {
+
+  	  String invalidCharFields = "";
+  	  int invalidCharFieldCount = 0;
+  	  String invalidString = "";     
+	  	if(form.getSelectedOrgMdrNumber() != null){
+	  	  String mDRNumber = form.getSelectedOrgMdrNumber().trim();	
+	  			        if ((mDRNumber.length()> 0 ) && mDRNumber.length() < (new Integer(8)).intValue()) {
+	  			            
+	  			            invalidCharFieldCount += 1;            
+	  			            invalidCharFields = buildErrorString(Message.FIELD_MDRNUMBER, 
+	  			                                                 invalidCharFieldCount,
+	  			                                                 invalidCharFields);       
+	  			        
+	  			        }
+	  		      
+	  			
+	  		        if ( invalidCharFields.length() > 0) {
+	  		            
+	  		            invalidString = invalidCharFields + ("<br/>" 
+	  		                            + Message.INVALID__MINLENGTH_FORMAT);
+	  		            
+	  		        }	
+	  		        if ( invalidString != null && invalidString.length() > 0 ) {
+	  		            
+	  		            form.setMessage(Message.INVALID_FORMAT_TITLE, invalidString,
+	  		                                    Message.ERROR);
+	  		            return true;
+	  		            
+	  		        }
+	  	}
+  		        
+  		return false;   
+  	}
+    //END- Changed For LASLINK Product
 } 

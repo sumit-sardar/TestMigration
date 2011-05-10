@@ -123,6 +123,10 @@ public class Message implements java.io.Serializable
     public static final String FIELD_STATE = "State";
     //START - Changes for LASLINK PRODUCT 
     public static final String FIELD_MDRNUMBER = "MDR Number";
+    //LLO-099 MDR Validation
+    public static final String INVALID__MINLENGTH_FORMAT  = "Please enter valid  minimum length: 8 characters";
+    public static final String INVALID__MDRNUMBER_FORMAT  = "Please enter valid MDR Number, Provided value is associated with an existing organization";
+    
     //END - Changes for LASLINK PRODUCT 
     public static final String FIELD_CTB_CONTACT = "CTB Contact";
     public static final String FIELD_CTB_CONTACT_EMAIL = "CTB Contact Email";

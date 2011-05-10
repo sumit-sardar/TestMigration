@@ -81,6 +81,12 @@ public class CustomerFormUtils
             return false;
         
         }
+        //LLO-099 MDR Validation
+        if ( verifyMinLength(form) ) {
+            
+            return false;
+        
+        }
                 
         if ( isInvalidUserInfo(form) ){
         
@@ -229,6 +235,49 @@ public class CustomerFormUtils
         }
         return false;
     }
+     
+     /**
+	  * LLO-099 MDR Validation
+      * check for minlength
+      * @param form ManageCustomerForm.
+      * @param customerId Integer.
+      * @return String
+      */
+      public static boolean verifyMinLength(ManageCustomerForm form) {
+    	  CustomerProfileInformation customerProfile = form.getCustomerProfile();
+    	  String invalidCharFields = "";
+    	  int invalidCharFieldCount = 0;
+    	  String invalidString = "";      
+    			
+    	  	if(customerProfile.getCustomerTypeId().equals("LasLink Customer") || customerProfile.getCustomerType().equals("LasLink Customer")) {
+    		        //START- Changed For LASLINK Product
+    		            if ((customerProfile.getMdrNumber().length()> 0 ) && customerProfile.getMdrNumber().length() < (new Integer(8)).intValue()) {
+    			            
+    			            invalidCharFieldCount += 1;            
+    			            invalidCharFields = buildErrorString(Message.FIELD_MDRNUMBER, 
+    			                                                 invalidCharFieldCount,
+    			                                                 invalidCharFields);       
+    			        
+    			        }
+    		      
+    		        //END- Changed For LASLINK Product
+    			
+    		        if ( invalidCharFields.length() > 0) {
+    		            
+    		            invalidString = invalidCharFields + ("<br/>" 
+    		                            + Message.INVALID__MINLENGTH_FORMAT);
+    		            
+    		        }	
+    		        if ( invalidString != null && invalidString.length() > 0 ) {
+    		            
+    		            form.setMessage(Message.INVALID_FORMAT_TITLE, invalidString,
+    		                                    Message.ERROR);
+    		            return true;
+    		            
+    		        }
+    	  	}
+    		        return false;   
+    		}
     
     /**
      * check for valid field
@@ -328,18 +377,6 @@ public class CustomerFormUtils
                                                  invalidCharFields);       
         
         }
-        //START- Changed For LASLINK Product
-        if(customerProfile.getCustomerTypeId().equals("LasLink Customer") || customerProfile.getCustomerType().equals("LasLink Customer")) {
-	        if ( !WebUtils.validCustomerNameString(customerProfile.getMdrNumber()) ) {
-	            
-	            invalidCharFieldCount += 1;            
-	            invalidCharFields = buildErrorString(Message.FIELD_MDRNUMBER, 
-	                                                 invalidCharFieldCount,
-	                                                 invalidCharFields);       
-	        
-	        }
-        }
-        //END- Changed For LASLINK Product
         if ( !WebUtils.validCustomerNameString(customerProfile.getCtbContact()) ) {
             
             invalidCharFieldCount += 1;            

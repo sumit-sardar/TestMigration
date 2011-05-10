@@ -62,6 +62,14 @@ public class ManageOrganizationController extends PageFlowController
      */
     @Control()
     private com.ctb.control.userManagement.UserManagement userManagement;
+    
+    //START- Changed For LASLINK Product
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.db.OrgNode orgNode;
+    //END- Changed For LASLINK Product
 
     static final long serialVersionUID = 1L;
     
@@ -1086,8 +1094,18 @@ public class ManageOrganizationController extends PageFlowController
             validInfo = OrgFormUtils.verifyOrgInformation(form);
             
         }
-            
-        
+      //START- Changed For LASLINK Product  LLO-099 MDR Validation  
+        if (validInfo) {
+        	if(form.getSelectedOrgMdrNumber() != null){
+                String validMDRNumber = validMDRNumber(form.getSelectedOrgMdrNumber()); 
+                if(validMDRNumber.equals("F"))
+                	validInfo = false;
+                String invalidString= Message.FIELD_MDRNUMBER +"<br/>"  + Message.INVALID__MDRNUMBER_FORMAT;
+                	form.setMessage(Message.INVALID_FORMAT_TITLE,invalidString ,
+                        Message.ERROR);
+        	}
+        }
+      //END- Changed For LASLINK Product LLO-099 MDR Validation
         if (!validInfo)
         {           
         
@@ -2295,6 +2313,28 @@ public class ManageOrganizationController extends PageFlowController
     	}
         
     }
+    
+    //START- Changed For LASLINK Product
+    private String validMDRNumber(String mdrNumber) {
+        
+    	mdrNumber = mdrNumber.trim();
+        String mdrNumberFound ="F";
+        try {
+	        if ( mdrNumber != null && mdrNumber.length()>0 &&  !(mdrNumber.length()< 8)) {
+	            
+	        	mdrNumberFound = orgNode.checkUniqueMdrNumberForOrgNodes(mdrNumber);
+	           
+	        }         
+        }
+        catch (Exception e) {
+        }
+        
+        return mdrNumberFound;  
+        
+    }
+    //START- Changed For LASLINK Product
+    
+    
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
