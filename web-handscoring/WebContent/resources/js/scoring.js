@@ -111,15 +111,16 @@ if(isHidden){
 								 
 								 data1 = data;
 								 populateTable();
-								 
+								 var width = '55%';
 								 //$("#rubricDialogID").dialog("open");
 								 $("#rubricDialogID").dialog({   
 									 title:"Item No. "+questionNumber, 
 									 resizable:false,
-									 autoOpen: true
+									 autoOpen: true,
+									 width: width
  									});
 								 if(data.rubricData.entry)
-								 $("#rubricDialogID").css('height',350);
+								 $("#rubricDialogID").css('height',300);
 								 else
 								 $("#rubricDialogID").css("height",'auto');	
 								 						 						
@@ -149,7 +150,7 @@ if(isHidden){
 		//Rows needs to be deleted, since dynamically new rows are added everytime
 		iFrameObj.find("#rubricTable tr:not(:first)").remove();
 		iFrameObj.find("#exemplarsTable tr:not(:first)").remove();
-		$("#rubricDialogID").css('height',350);
+		$("#rubricDialogID").css('height',300);
 											
 											 if(cellCountExemplar == 1)	 {
 											 	iFrameObj.find("#rubricExemplarId").hide();
