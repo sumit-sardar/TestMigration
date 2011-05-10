@@ -36,6 +36,7 @@
 <netui:hidden dataSource="actionForm.customerProfile.mailingAddressId"/> 
 <netui:hidden dataSource="actionForm.customerProfile.customerTypeId"/>
 <netui:hidden dataSource="actionForm.customerProfile.customerType"/>
+<netui:hidden dataSource="actionForm.customerProfile.dbMdrNumber"/>
 <netui:hidden dataSource="actionForm.enableLicense"/> 
 <h1>
     <netui:content value="${pageFlow.pageTitle}"/>

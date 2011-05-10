@@ -47,6 +47,7 @@ public class CustomerProfileInformation extends SanitizedFormField
     private String actionPermission = PermissionsUtils.ENABLE_ALL_PERMISSION_TOKEN;
     //START - Changes for LASLINK PRODUCT 
     private String mdrNumber = "";
+    private String dbMdrNumber = "";
     //END - Changes for LASLINK PRODUCT 
     
 	/*
@@ -137,6 +138,7 @@ public class CustomerProfileInformation extends SanitizedFormField
         }
         //START - Changes for LASLINK PRODUCT 
         this.mdrNumber = customer.getMdrNumber();
+        this.dbMdrNumber = customer.getMdrNumber();
         //END - Changes for LASLINK PRODUCT 
     }
 
@@ -172,6 +174,7 @@ public class CustomerProfileInformation extends SanitizedFormField
         copied.setLevel(this.level);
         //START - Changes for LASLINK PRODUCT 
         copied.setMdrNumber(this.mdrNumber);
+        copied.setDbMdrNumber(this.mdrNumber);
         //END - Changes for LASLINK PRODUCT 
         return copied;       
     }
@@ -489,5 +492,19 @@ public class CustomerProfileInformation extends SanitizedFormField
         
         return ( phone1+phone2+phone3+phone4 );
     }
+
+	/**
+	 * @return the dbMdrNumber
+	 */
+	public String getDbMdrNumber() {
+		return dbMdrNumber;
+	}
+
+	/**
+	 * @param dbMdrNumber the dbMdrNumber to set
+	 */
+	public void setDbMdrNumber(String dbMdrNumber) {
+		this.dbMdrNumber = dbMdrNumber;
+	}
     
 } 

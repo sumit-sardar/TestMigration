@@ -59,6 +59,7 @@
 <netui:hidden dataSource="actionForm.selectedOrgNodeTypeId"/>
 <netui:hidden dataSource="actionForm.orgSortColumn"/>
 <netui:hidden dataSource="actionForm.orgSortOrderBy"/>
+<netui:hidden dataSource="actionForm.selectedDBOrgMdrNumber"/>
 
 
 <jsp:include page="/manageOrganization/show_message.jsp" />

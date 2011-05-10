@@ -44,6 +44,7 @@
 <netui:hidden dataSource="actionForm.tempOrgChildNodeId"/>
 <netui:hidden dataSource="actionForm.orgSortColumn"/>
 <netui:hidden dataSource="actionForm.orgSortOrderBy"/>
+<netui:hidden dataSource="actionForm.selectedDBOrgMdrNumber"/>
 
 
 

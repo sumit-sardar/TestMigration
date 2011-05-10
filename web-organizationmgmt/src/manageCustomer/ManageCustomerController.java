@@ -1148,6 +1148,20 @@ public class ManageCustomerController extends PageFlowController
         	form.isLasLinkProduct = this.savedForm.isLasLinkProduct;
             //validation for edit only as add validation already done
             boolean validInfo = CustomerFormUtils.verifyCustomerInformation(form, customerId);
+          //START- LLO-099 MDR Validation
+            if (validInfo) {
+            	if(form.getCustomerProfile().getCustomerTypeId().equals("LasLink Customer") || form.getCustomerProfile().getCustomerType().equals("LasLink Customer")) {
+            		if(!form.getCustomerProfile().getDbMdrNumber().equals(form.getCustomerProfile().getMdrNumber())) {
+	                    String validMDRNumber = validMDRNumber(form.getCustomerProfile().getMdrNumber()); 
+	                    if(validMDRNumber.equals("F"))
+	                    	validInfo = false;
+	                    String invalidString= Message.FIELD_MDRNUMBER +"<br/>"  + Message.INVALID__MDRNUMBER_FORMAT;
+	                    	form.setMessage(Message.INVALID_FORMAT_TITLE,invalidString ,
+	                            Message.ERROR);
+            		}
+                } 
+            }
+            //END- LLO-099 MDR Validation
             if (!validInfo)
             {
                 

@@ -1096,7 +1096,11 @@ public class ManageOrganizationController extends PageFlowController
         }
       //START- Changed For LASLINK Product  LLO-099 MDR Validation  
         if (validInfo) {
-        	if(form.getSelectedOrgMdrNumber() != null){
+        	 
+        	
+        	
+        	if(form.getSelectedOrgMdrNumber() != null && addOrganization){
+        		
                 String validMDRNumber = validMDRNumber(form.getSelectedOrgMdrNumber()); 
                 if(validMDRNumber.equals("F"))
                 	validInfo = false;
@@ -1104,6 +1108,16 @@ public class ManageOrganizationController extends PageFlowController
                 	form.setMessage(Message.INVALID_FORMAT_TITLE,invalidString ,
                         Message.ERROR);
         	}
+        	if(form.getSelectedOrgMdrNumber() != null && !addOrganization && !(form.getSelectedDBOrgMdrNumber().equals(form.getSelectedOrgMdrNumber()))){
+        		
+                String validMDRNumber = validMDRNumber(form.getSelectedOrgMdrNumber()); 
+                if(validMDRNumber.equals("F"))
+                	validInfo = false;
+                String invalidString= Message.FIELD_MDRNUMBER +"<br/>"  + Message.INVALID__MDRNUMBER_FORMAT;
+                	form.setMessage(Message.INVALID_FORMAT_TITLE,invalidString ,
+                        Message.ERROR);
+        	}
+        	
         }
       //END- Changed For LASLINK Product LLO-099 MDR Validation
         if (!validInfo)
@@ -1942,6 +1956,7 @@ public class ManageOrganizationController extends PageFlowController
             
             form.setSelectedOrgName(org.getOrgName());
             form.setSelectedOrgNodeCode(org.getOrgCode());
+            form.setSelectedDBOrgMdrNumber(org.getOrgMdrNumber());
             form.setSelectedOrgMdrNumber(org.getOrgMdrNumber());
             form.setSelectedOrgNodeType(org.getOrgType());
             form.setSelectedOrgNodeTypeId(org.getOrgTypeId());
@@ -2363,6 +2378,7 @@ public class ManageOrganizationController extends PageFlowController
 		private String selectedOrgName;
 		private String selectedOrgNodeCode;
 		private String selectedOrgMdrNumber;
+		private String selectedDBOrgMdrNumber;
         private String selectedOrgNodeType;
         private String selectedOrgNodeTypeId;
         private String selectedOrgNodeParent;
@@ -2852,6 +2868,20 @@ public class ManageOrganizationController extends PageFlowController
 		 */
 		public void setSelectedOrgMdrNumber(String selectedOrgMdrNumber) {
 			this.selectedOrgMdrNumber = selectedOrgMdrNumber;
+		}
+
+		/**
+		 * @return the selectedDBOrgMdrNumber
+		 */
+		public String getSelectedDBOrgMdrNumber() {
+			return selectedDBOrgMdrNumber;
+		}
+
+		/**
+		 * @param selectedDBOrgMdrNumber the selectedDBOrgMdrNumber to set
+		 */
+		public void setSelectedDBOrgMdrNumber(String selectedDBOrgMdrNumber) {
+			this.selectedDBOrgMdrNumber = selectedDBOrgMdrNumber;
 		}        
     }
 
