@@ -386,9 +386,9 @@ public class ManageLicenseController extends PageFlowController
                         licenseNode.setCategoryName(node.getOrgNodeCategoryName());
                         licenseNode.setChildrenNodeCount(node.getChildNodeCount());
                         
-                        licenseNode.setReserved(licenseNode.ConvertIntegerToString(onli.getLicReserved()));
-                        licenseNode.setConsumed(licenseNode.ConvertIntegerToString(onli.getLicUsed()));
-                        licenseNode.setAvailable(licenseNode.ConvertIntegerToString(onli.getLicPurchased()));
+                       	licenseNode.setReserved(licenseNode.ConvertIntegerToString(onli.getLicReserved()));
+                       	licenseNode.setConsumed(licenseNode.ConvertIntegerToString(onli.getLicUsed()));
+                        
                         licenseNode.setSubtestModel(cl.getSubtestModel());
                         
                         /* **************** FAKE available value ****************/

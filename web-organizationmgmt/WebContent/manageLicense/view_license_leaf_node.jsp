@@ -34,7 +34,7 @@
 
 <p>
 <table class="transparent">
-<tr class="transparent"><td class="transparent" width="100"><b>License Model:</b></td><td class="transparent"><netui:span value="${actionForm.parentLicenseNode.categoryName}" /></td></tr>
+<tr class="transparent"><td class="transparent" width="100"><b>License Model:</b></td><td class="transparent"><netui:span value="${actionForm.parentLicenseNode.subtestModel}" /></td></tr>
 <tr class="transparent"><td class="transparent" width="100"><b>Organization:</b></td><td class="transparent"><netui:span value="${actionForm.parentLicenseNode.name}" /></td></tr>
 <tr class="transparent"><td class="transparent" width="100"><b>Scheduled:</b></td><td class="transparent"><netui:span value="${actionForm.parentLicenseNode.reserved}" /></td></tr>
 <tr class="transparent"><td class="transparent" width="100"><b>Consumed:</b></td><td class="transparent"><netui:span value="${actionForm.parentLicenseNode.consumed}" /></td></tr>
