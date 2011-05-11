@@ -407,7 +407,9 @@ public class HomePageController extends PageFlowController
 
         try
         {
-            cls = this.licensing.getCustomerLicenseData(this.userName, null);
+           // cls = this.licensing.getCustomerLicenseData(this.userName, null);
+	   // getCustomerOrgNodeLicenseData() method needed to be call to get licences detail for all orgnode associated to a user for displaying widget in home page.
+            cls = this.licensing.getCustomerOrgNodeLicenseData(this.userName, null);
         }    
         catch (CTBBusinessException be)
         {

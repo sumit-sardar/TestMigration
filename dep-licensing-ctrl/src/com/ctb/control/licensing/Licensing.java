@@ -82,4 +82,10 @@ public interface Licensing
      */
     
     com.ctb.bean.testAdmin.CustomerLicense[] getCustomerLicenseData(java.lang.String userName, java.lang.Integer productId) throws com.ctb.exception.CTBBusinessException;
+    
+    // TABE BAUM 10: For calculation of total license
+    
+    com.ctb.bean.testAdmin.CustomerLicense[] getCustomerOrgNodeLicenseData(java.lang.String userName, java.lang.Integer productId) throws com.ctb.exception.CTBBusinessException;
+    
+
 } 

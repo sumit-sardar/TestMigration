@@ -160,6 +160,42 @@ public class LicensingImpl implements Licensing
         
     }
     
+    
+    public CustomerLicense[] getCustomerOrgNodeLicenseData(String userName, Integer productId) 
+    throws CTBBusinessException {
+	 try {   
+		 
+		 Customer customer = users.getCustomer(userName);  
+         Integer customerId = customer.getCustomerId();
+	     CustomerLicense[] customerLicense  = null;  
+	    
+	    if ( productId != null && productId.intValue() != 0 ) {
+	                
+	        validator.validateProduct(userName, productId, 
+	                "LicensingImpl.getCustomerLicenseData" );
+	                
+	        customerLicense =  this.license
+	                .getSelectedProductLicenseDetails(userName,productId, customerId);
+	                
+	        
+	    } else  {
+	        
+	        customerLicense =  this.license.getUserOrgNodeLicenseDetails(userName);        
+	    }
+	    
+	    return customerLicense;  
+	              
+	} catch (SQLException e ) {
+	    
+	    OrgLicenseDataNotFoundException lde = 
+	            new OrgLicenseDataNotFoundException("platformlicence.getCustomerLicenseData.E001");
+	            
+	    throw lde;
+	    
+	}
+	
+	}
+
     /**
      * This method is resposible to retrive customer license details by
      * passing customerId and productId

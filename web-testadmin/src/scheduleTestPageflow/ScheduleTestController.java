@@ -5603,6 +5603,10 @@ public class ScheduleTestController extends PageFlowController
     
         String  availableLicensePercent = null;
         Integer availableLicense = null;
+         // START - TABE BAUM 10: For calculation of total license 
+         
+        Integer consumedLicense = null;
+        Integer reservedLicense = null;
         boolean license_status_subtest = false;
         boolean license_status_admin = false;
         boolean licenseflag = false;
@@ -5614,10 +5618,10 @@ public class ScheduleTestController extends PageFlowController
         
         try {
     
-             cLicense = (CustomerLicense[])this.license.
-                    getCustomerLicenseData (this.userName,productId);
+            // cLicense = (CustomerLicense[])this.license.getCustomerLicenseData (this.userName,productId);
+            // getCustomerOrgNodeLicenseData() method needed to be call to get licences detail for selected product  for displaying licence bar in test scheduling page.
 
-        
+             cLicense = (CustomerLicense[])this.license.getCustomerOrgNodeLicenseData(this.userName, productId);       
         } catch (CTBBusinessException e) {
             
              e.printStackTrace();
@@ -5635,10 +5639,13 @@ public class ScheduleTestController extends PageFlowController
         if (cLicense != null && cLicense.length > 0) {
     
             availableLicense = cLicense[0].getAvailable();
-            Integer licenseAfterLastPurchase = cLicense[0].getLicenseAfterLastPurchase()!=null ? 
-                    cLicense[0].getLicenseAfterLastPurchase() : new Integer(0);
-    
-            if (cLicense[0].getSubtestModel().equals("T")) {
+            consumedLicense = cLicense[0].getConsumedLicense();
+            reservedLicense = cLicense[0].getReservedLicense();
+            
+            //Integer licenseAfterLastPurchase = cLicense[0].getLicenseAfterLastPurchase()!=null ? 
+             //       cLicense[0].getLicenseAfterLastPurchase() : new Integer(0);
+            
+           if (cLicense[0].getSubtestModel().equals("T")) {
     
                 license_status_subtest = true;
     
@@ -5651,7 +5658,11 @@ public class ScheduleTestController extends PageFlowController
     
             if (license_status_subtest || license_status_admin) {
     
-                double sum =  licenseAfterLastPurchase.doubleValue();
+            	
+                double sum = availableLicense+consumedLicense+reservedLicense; //licenseAfterLastPurchase.doubleValue();
+               
+                // END - TABE BAUM 10: For calculation of total license
+               
                 double availableLicPercent = Math.round(((availableLicense
                         .doubleValue()*100)/ sum ));
                 Integer availableLicensePercentage = new Integer(
