@@ -96,7 +96,7 @@
      <tr class="transparent">
         <td class="transparent alignRight" width="100"><span class="asterisk">*</span>&nbsp;<netui:content value="MDR Number:"/></td>
         <td class="transparent">
-                <netui:textBox dataSource="actionForm.selectedOrgMdrNumber" maxlength="8" style="width:180px" tabindex="3"  onKeyPress="return constrainNumericChar(event);"/>
+                <netui:textBox dataSource="actionForm.selectedOrgMdrNumber" maxlength="8" style="width:180px" tabindex="3"  onKeyPress="return constrainNumericChar(event);" onBlur="IsNumeric();" onKeyUp="IsNumeric();"/>
         </td>
     </tr>
     </c:if>

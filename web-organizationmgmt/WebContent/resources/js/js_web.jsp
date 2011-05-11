@@ -25,6 +25,28 @@ function constrainNumericChar(e)
     
     return results;
 }
+ function IsNumeric()
+   {
+   var element = document.getElementById("MDRNoTextBox");      
+   var strValidChars = "0123456789";
+   var strChar;
+   var strString = element.value;
+   var blnResult = true;
+
+   if (strString.length == 0) return false;
+
+   //  test strString consists of valid characters listed above
+   for (i = 0; i < strString.length && blnResult == true; i++)
+      {
+      strChar = strString.charAt(i);
+      if (strValidChars.indexOf(strChar) == -1)
+         {
+         	element.value = "";
+         	break;
+         }
+      }
+   
+   }
 
 function focusNextControl(element)
 {   
