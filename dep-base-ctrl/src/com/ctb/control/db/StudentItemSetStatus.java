@@ -412,10 +412,13 @@ public interface StudentItemSetStatus extends JdbcControl
      *     item_set_ancestor isa,
      *     item_set iset,
      *     item_set_parent isp,
-     *     student_item_Set_status siss
+     *     student_item_Set_status siss,
+     *     student stu
      * where
      *     siss.test_roster_id = ros.test_roster_id
      *     and ros.test_admin_id = adm.test_admin_id
+     *     and ros.student_id = stu.student_id
+     *     and stu.activation_status = 'AC'
      *     and adm.program_id = {programId}
      *     and adm.item_set_id = {itemSetId}
      *     and ona.ancestor_org_node_id = {orgNodeId}
@@ -437,7 +440,7 @@ public interface StudentItemSetStatus extends JdbcControl
      * group by itemSetId, status
      * order by itemSetId, status::
      */
-    @JdbcControl.SQL(statement = "select itemSetId, status, count (distinct rosterId) as rosterCount from ( select itemSetId, rosterId,  (case when count(*) = 1 then max(status) else 'Started' end) as status from ( select distinct  ros.test_roster_id as rosterId,  isp.parent_item_set_id as itemSetId,  decode(siss.completion_status, 'SC', 'Scheduled', 'CO', 'Completed', 'Started') as status,  count(*) as counter  from  test_roster ros,  test_admin adm,  org_node_ancestor ona,  item_set_ancestor isa,  item_set iset,  item_set_parent isp,  student_item_Set_status siss where  siss.test_roster_id = ros.test_roster_id  and ros.test_admin_id = adm.test_admin_id  and adm.program_id = {programId}  and adm.item_set_id = {itemSetId}  and ona.ancestor_org_node_id = {orgNodeId}  and ros.org_node_id = ona.org_node_id  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and iset.item_set_id = isa.item_set_id  and isa.ancestor_item_set_id = {itemSetId}  and iset.item_set_type = 'TD'  and isp.item_set_id = isa.item_set_id  and siss.item_set_id = isa.item_set_id  group by  ros.test_roster_id,  isp.parent_item_set_id,  decode(siss.completion_status, 'SC', 'Scheduled', 'CO', 'Completed', 'Started')  )  group by itemSetId, rosterId ) group by itemSetId, status order by itemSetId, status")
+    @JdbcControl.SQL(statement = "select itemSetId, status, count (distinct rosterId) as rosterCount from ( select itemSetId, rosterId,  (case when count(*) = 1 then max(status) else 'Started' end) as status from ( select distinct  ros.test_roster_id as rosterId,  isp.parent_item_set_id as itemSetId,  decode(siss.completion_status, 'SC', 'Scheduled', 'CO', 'Completed', 'Started') as status,  count(*) as counter  from  test_roster ros,  test_admin adm,  org_node_ancestor ona,  item_set_ancestor isa,  item_set iset,  item_set_parent isp,  student_item_Set_status siss, student stu where  siss.test_roster_id = ros.test_roster_id  and ros.test_admin_id = adm.test_admin_id and ros.student_id = stu.student_id and stu.activation_status = 'AC'  and adm.program_id = {programId}  and adm.item_set_id = {itemSetId}  and ona.ancestor_org_node_id = {orgNodeId}  and ros.org_node_id = ona.org_node_id  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and iset.item_set_id = isa.item_set_id  and isa.ancestor_item_set_id = {itemSetId}  and iset.item_set_type = 'TD'  and isp.item_set_id = isa.item_set_id  and siss.item_set_id = isa.item_set_id  group by  ros.test_roster_id,  isp.parent_item_set_id,  decode(siss.completion_status, 'SC', 'Scheduled', 'CO', 'Completed', 'Started')  )  group by itemSetId, rosterId ) group by itemSetId, status order by itemSetId, status")
     SubtestStatusCount [] getSubtestStatusCount(Integer programId, Integer orgNodeId, Integer itemSetId) throws SQLException;
 
     /**
