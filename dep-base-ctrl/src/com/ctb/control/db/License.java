@@ -8,6 +8,8 @@ import org.apache.beehive.controls.system.jdbc.JdbcControl;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.TestProduct;
 
+
+
 /** 
  * Defines a new database control. 
  * 
@@ -232,8 +234,13 @@ public interface License extends JdbcControl
     @JdbcControl.SQL(statement = "select  decode( count(cpl.customer_id),0,0,1)  from customer_product_license cpl where cpl.customer_id = {customerId} and cpl.product_id = {productId}")
     boolean isCustomerLicenseExist(Integer customerId, Integer productId) throws SQLException;
 
+    // TABE BAUM 10:  checks whether license exists for a particular orgnode of that customer
+    
+    @JdbcControl.SQL(statement = "select  decode( count(col.customer_id),0,0,1)  from customer_orgnode_license col where col.customer_id = {customerId} and col.product_id = {productId} and col.org_node_id = {orgNodeId}")
+    boolean isCustomerOrgNodeLicenseExist(Integer orgNodeId, Integer customerId, Integer productId) throws SQLException;
+
     /**
-     * @jc:sql statement::
+     * @jc:sql statement:: 
      * insert into customer_product_license
      *    (customer_id,
      *    product_id,
@@ -302,7 +309,7 @@ public interface License extends JdbcControl
     @JdbcControl.SQL(statement = "select distinct parentProduct.product_id as productId, parentProduct.Product_Description as productName, parentProduct.license_enabled as productLicenseEnabled from product prod, test_catalog cat, org_node_test_catalog ontc, product parentProduct where prod.activation_status = 'AC' and prod.product_id = cat.product_id and parentProduct.product_id = prod.parent_product_id and cat.activation_status = 'AC' and cat.test_catalog_id = ontc.test_catalog_id and ontc.activation_status = 'AC' and ontc.customer_id={customerId} ")
     TestProduct[] getParentProductId (Integer customerId) throws SQLException;
     
-    // TABE BAUM 10: For calculation of total license
+    // TABE BAUM 10: For calculation of total license 
     
      @JdbcControl.SQL(arrayMaxLength = 100000,statement = "select sum(col.available) as available,sum(col.consumed) as consumedLicense, sum(col.reserved) as reservedLicense,prd.product_id as productId,prd.product_name as productName,col.subtest_model as subtestModel from customer_orgnode_license col,product prd,org_node node,user_role role,users where prd.product_id = col.product_id and col.org_node_id = role.org_node_id and role.org_node_id = node.org_node_id and role.activation_status = 'AC' and node.activation_status = 'AC' and role.user_id = users.user_id and users.user_name = {username} group by prd.product_id, prd.product_name, col.subtest_model ")
      CustomerLicense [] getUserOrgNodeLicenseDetails(String username) throws SQLException;
@@ -311,4 +318,26 @@ public interface License extends JdbcControl
      
      @JdbcControl.SQL(arrayMaxLength = 100000,statement = "select sum(col.available) as available,  sum(col.consumed) as consumedLicense,  sum(col.reserved) as reservedLicense,  prd.product_id as productId,  prd.product_name as productName,  col.subtest_model as subtestModel    from customer_orgnode_license col,  product prd,  org_node node,  user_role role,  users   where col.product_id = {productId}     and prd.product_id = col.product_id     and col.org_node_id = role.org_node_id     and role.org_node_id = node.org_node_id     and role.activation_status = 'AC'     and node.activation_status = 'AC'     and role.user_id = users.user_id     and users.user_name = {userName}   group by prd.product_id, prd.product_name, col.subtest_model   UNION   select sum(col.available) as available,  sum(col.consumed) as consumedLicense,  sum(col.reserved) as reservedLicense,  prd.product_id as productId,  prd.product_name as productName,  col.subtest_model as subtestModel    from customer_orgnode_license col,  product prd,  org_node node,  user_role role,  users   where col.product_id = (SELECT pr.parent_product_id FROM product pr WHERE pr.product_id = {productId}  AND pr.LICENSE_ENABLED = 'T')     and prd.product_id = col.product_id     and col.org_node_id = role.org_node_id     and role.org_node_id = node.org_node_id     and role.activation_status = 'AC'     and node.activation_status = 'AC'     and role.user_id = users.user_id     and users.user_name = {userName}      AND NOT EXISTS       (SELECT cplicense.CUSTOMER_ID AS customerId,       cplicense.PRODUCT_ID  AS productId  FROM customer_orgnode_license cplicense, product prod WHERE prod.product_id = cplicense.PRODUCT_ID   AND cplicense.CUSTOMER_ID = {customerId}   AND cplicense.PRODUCT_ID = {productId})   group by prd.product_id, prd.product_name, col.subtest_model")
      CustomerLicense [] getSelectedProductLicenseDetails(String userName,Integer productId,Integer customerId) throws SQLException;
+
+  // TABE BAUM 10: For retriving  License Data from orgnodeid and productid
+     
+     @JdbcControl.SQL(arrayMaxLength = 100000,statement = "select available, consumed as consumedLicense ,reserved  as reservedLicense from customer_orgnode_license where org_node_id = {orgNodeId} and product_id= {productId}")
+     CustomerLicense [] getOrgnodeLicenseDetails(Integer orgNodeId,Integer productId) throws SQLException;
+
+  // TABE BAUM 10: For updating the edited available license field value in manage license page
+     
+     @JdbcControl.SQL(statement = "update customer_orgnode_license set available = {customerLicense.available} where org_node_id = {orgNodeId} and product_id = {customerLicense.productId} and customer_id = {customerLicense.customerId}")
+     void updateAvailableLicenseChange(CustomerLicense customerLicense,Integer orgNodeId) throws SQLException;
+  
+   // TABE BAUM 10 : Inserting license details into database for a particular organization who's entry is not there in the database table
+     
+     @JdbcControl.SQL(statement = "insert into customer_orgnode_license  (org_node_id ,customer_id,  product_id,  available,  reserved,  consumed, subtest_model) values ({orgNodeId},{customerLicense.customerId},  {customerLicense.productId},  {customerLicense.available},  {customerLicense.reservedLicense},  {customerLicense.consumedLicense}, {customerLicense.subtestModel}  ) ")
+     void addOrgNodeLicenses(CustomerLicense customerLicense,Integer orgNodeId) throws SQLException;
+  
+     // TABE BAUM 10:  For calculating the total consumed and reserved quantity by using ancestor orgnodeid 
+     
+     @JdbcControl.SQL(arrayMaxLength = 100000,statement = "select sum(col.consumed) as consumedLicense, sum(col.reserved) as reservedLicense from customer_orgnode_license col where  col.product_id = {productId}  and col.org_node_id in (select ona.org_node_Id    from org_node_ancestor ona, org_node org   where ona.ancestor_org_node_id = {orgNodeId} and org.org_node_id = ona.org_node_id)")
+     CustomerLicense [] getTotalConsumedReservedQuantityByAncestorOrgNode(Integer orgNodeId,Integer productId) throws SQLException;
+
 }
+

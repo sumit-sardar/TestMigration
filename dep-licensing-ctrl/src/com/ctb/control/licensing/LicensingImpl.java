@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
+import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerLicense;
@@ -112,6 +113,49 @@ public class LicensingImpl implements Licensing
         }
     }
     
+ // START- TABE BAUM 10: For retriving  License Data from orgnodeid and productid
+    /**
+     * @common:operation
+     */
+    public OrgNodeLicenseInfo getLicenseQuantitiesByOrgNodeIdAndProductId(String userName, Integer orgNodeId, Integer productId, String subtestFlag) throws CTBBusinessException
+    {
+      
+        	CustomerLicense [] cls=null;
+        	CustomerLicense [] cl=null;
+            OrgNodeLicenseInfo orgNodeLicenseInfo = new OrgNodeLicenseInfo();
+            Integer reservedCount = new Integer(0);
+            Integer consumedCount =  new Integer(0);
+            Integer availableCount =  new Integer(0);
+            orgNodeLicenseInfo.setOrgNodeId(orgNodeId);
+            
+            	try{
+            		
+                	cls = license.getOrgnodeLicenseDetails(orgNodeId,productId);
+                	cl = license.getTotalConsumedReservedQuantityByAncestorOrgNode(orgNodeId,productId);
+                	
+                }catch (SQLException e)
+                     {
+                         e.printStackTrace();
+                     }
+                if(cls != null && cl != null && cls.length > 0 && cl.length > 0) {
+                availableCount = cls[0].getAvailable();
+                if(cl[0].getConsumedLicense() != null && !(cl[0].getConsumedLicense().equals("")))
+                	consumedCount = cl[0].getConsumedLicense();
+                if(cl[0].getReservedLicense() != null && !(cl[0].getReservedLicense().equals("")))
+                	reservedCount = cl[0].getReservedLicense();
+                
+                }
+                
+                orgNodeLicenseInfo.setLicPurchased(availableCount);
+                orgNodeLicenseInfo.setLicReserved(reservedCount);
+                orgNodeLicenseInfo.setLicUsed(consumedCount);
+               
+                
+            return orgNodeLicenseInfo;
+        }
+        
+   // END -TABE BAUM 10: For retriving  License Data from orgnodeid and productid
+    
      /**
      * This method is resposible to retrive customer license details by
      * passing userName and productId
@@ -160,6 +204,7 @@ public class LicensingImpl implements Licensing
         
     }
     
+    //START - TABE BAUM 10: For retriving  orgNode License Data
     
     public CustomerLicense[] getCustomerOrgNodeLicenseData(String userName, Integer productId) 
     throws CTBBusinessException {
@@ -196,6 +241,8 @@ public class LicensingImpl implements Licensing
 	
 	}
 
+    // END-TABE BAUM 10: For retriving  orgNode License Data
+    
     /**
      * This method is resposible to retrive customer license details by
      * passing customerId and productId
@@ -304,6 +351,32 @@ public class LicensingImpl implements Licensing
          }       
                 
     }
+    /**
+     * This method is resposible to check the existance of customer license 
+     * by passing customerId and productId
+     * @return boolean
+     * @param Integer - customerId
+     * @param Integer - productId
+     * @throws CTBBusinessException 
+     */
+    
+    private boolean  isCustomerOrgnodeLicenseExist (Integer orgNodeId,
+			Integer customerId, Integer productId)
+            throws CTBBusinessException {
+         try {
+            
+            return this.license.isCustomerOrgNodeLicenseExist (orgNodeId, customerId, productId);
+            
+         } catch (SQLException se) {
+            
+            OrgLicenseDataNotFoundException lde = 
+                    new OrgLicenseDataNotFoundException("platformlicence.isCustomerLicenseExist.E0012");
+                    
+            throw lde;
+                     
+         }       
+                
+    }
     
     /**
      * This method is resposible to update the customer license details by 
@@ -367,4 +440,37 @@ public class LicensingImpl implements Licensing
                 
     }
     
+ // START - TABE BAUM 10: For updating the edited available license field value in manage license page and Inserting license details into database for a particular organization who's entry is not there in the database table
+    
+        public boolean saveOrUpdateOrgNodeLicenseDetail (CustomerLicense customerLicense,Integer orgNodeId) 
+    throws CTBBusinessException {
+ 
+    	try{
+    		if (isCustomerOrgnodeLicenseExist (orgNodeId,customerLicense.getCustomerId(),
+    				customerLicense.getProductId())) {
+    	        
+    	    
+    		this.license.updateAvailableLicenseChange(customerLicense, orgNodeId);
+    
+    		} else {
+    
+    		this.license.addOrgNodeLicenses(customerLicense,orgNodeId);
+    
+      }
+    	}catch (SQLException se) {
+          
+          LicenseUpdationException lue = 
+                  new LicenseUpdationException("platformlicence.updateCustomerLicenses.E0014");
+                  
+          throw lue;
+                   
+       }   
+    	
+    return true;
+}
+
+    
+     // END - TABE BAUM 10: For updating the edited available license field value in manage license page and Inserting license details into database for a particular organization who's entry is not there in the database table
+     
 } 
+  

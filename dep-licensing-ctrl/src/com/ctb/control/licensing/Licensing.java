@@ -83,9 +83,17 @@ public interface Licensing
     
     com.ctb.bean.testAdmin.CustomerLicense[] getCustomerLicenseData(java.lang.String userName, java.lang.Integer productId) throws com.ctb.exception.CTBBusinessException;
     
-    // TABE BAUM 10: For calculation of total license
+     // TABE BAUM 10: For retriving  orgNode License Data
     
     com.ctb.bean.testAdmin.CustomerLicense[] getCustomerOrgNodeLicenseData(java.lang.String userName, java.lang.Integer productId) throws com.ctb.exception.CTBBusinessException;
     
+    // TABE BAUM 10: For retriving  License Data from orgnodeid and productid
+    
+    com.ctb.bean.testAdmin.OrgNodeLicenseInfo getLicenseQuantitiesByOrgNodeIdAndProductId(java.lang.String userName, java.lang.Integer orgNodeId, java.lang.Integer productId, java.lang.String subtestFlag) throws com.ctb.exception.CTBBusinessException;
+
+   
+    // TABE BAUM 10: For updating the edited available license field value in manage license page and Inserting license details into database for a particular organization who's entry is not there in the database table
+   
+    boolean saveOrUpdateOrgNodeLicenseDetail(com.ctb.bean.testAdmin.CustomerLicense customerLicense ,java.lang.Integer orgNodeId) throws com.ctb.exception.CTBBusinessException;
 
 } 
