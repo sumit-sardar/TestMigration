@@ -26,6 +26,7 @@ public class Message implements java.io.Serializable
     public static final String INVALID_CUSTOMER_ID = "Please enter a valid Customer ID";
     public static final String INVALID_CHARS_TITLE = "One or more fields contain invalid characters or invalid values:"; 
     public static final String INVALID_FORMAT_TITLE = "One or more fields contain invalid formats or invalid values:"; 
+    public static final String INVALID_DUP_FORMAT_TITLE = "One or more fields contain invalid formats, duplicate or invalid values:"; 
     public static final String DUPLICATE_FRAMEWORK_ENTRY = "Please do not enter duplicate layers.";
     public static final String INVALID_FRAMEWORK_CHARS = "Please re-enter your string with these characters:  #, /, \\, -, ', (, ), &, +, comma, period, space";
     
@@ -124,8 +125,8 @@ public class Message implements java.io.Serializable
     //START - Changes for LASLINK PRODUCT 
     public static final String FIELD_MDRNUMBER = "MDR Number";
     //LLO-099 MDR Validation
-    public static final String INVALID__MINLENGTH_FORMAT  = "Please enter valid  minimum length: 8 characters";
-    public static final String INVALID__MDRNUMBER_FORMAT  = "Please enter valid MDR Number, Provided value is associated with an existing organization";
+    public static final String INVALID__MINLENGTH_FORMAT  = "Please enter valid  minimum length: 8 characters.";
+    public static final String INVALID__MDRNUMBER_FORMAT  = "Please re-enter your information with a unique combination of 0-9.";
     
     //END - Changes for LASLINK PRODUCT 
     public static final String FIELD_CTB_CONTACT = "CTB Contact";

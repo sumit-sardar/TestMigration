@@ -270,7 +270,7 @@ public class CustomerFormUtils
     		        }	
     		        if ( invalidString != null && invalidString.length() > 0 ) {
     		            
-    		            form.setMessage(Message.INVALID_FORMAT_TITLE, invalidString,
+    		            form.setMessage(Message.INVALID_DUP_FORMAT_TITLE, invalidString,
     		                                    Message.ERROR);
     		            return true;
     		            

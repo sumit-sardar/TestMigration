@@ -525,7 +525,7 @@ public class ManageCustomerController extends PageFlowController
                 if(validMDRNumber.equals("F"))
                 	validInfo = false;
                 String invalidString= Message.FIELD_MDRNUMBER +"<br/>"  + Message.INVALID__MDRNUMBER_FORMAT;
-                	form.setMessage(Message.INVALID_FORMAT_TITLE,invalidString ,
+                	form.setMessage(Message.INVALID_DUP_FORMAT_TITLE,invalidString ,
                         Message.ERROR);
                 } 
         }
@@ -1156,7 +1156,7 @@ public class ManageCustomerController extends PageFlowController
 	                    if(validMDRNumber.equals("F"))
 	                    	validInfo = false;
 	                    String invalidString= Message.FIELD_MDRNUMBER +"<br/>"  + Message.INVALID__MDRNUMBER_FORMAT;
-	                    	form.setMessage(Message.INVALID_FORMAT_TITLE,invalidString ,
+	                    	form.setMessage(Message.INVALID_DUP_FORMAT_TITLE,invalidString ,
 	                            Message.ERROR);
             		}
                 } 
