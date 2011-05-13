@@ -190,6 +190,13 @@ public class ManageLicenseController extends PageFlowController
 	)
     protected Forward manageLicense(ManageLicenseForm form)
     {        
+        String currentAction = form.getCurrentAction();
+        if (currentAction.equals("changeProduct")) {
+            saveLicenses(form);       
+            form = initialize();
+            initHierarchy(form);           
+        }
+        
         handleOrganizationControl(form);
         
         return new Forward("success", form);
@@ -206,7 +213,7 @@ public class ManageLicenseController extends PageFlowController
 
         String actionElement = form.getActionElement();
         String currentAction = form.getCurrentAction();
-        
+
         String orgNodeName = form.getOrgNodeName();
         Integer orgNodeId = form.getOrgNodeId(); 
         
@@ -368,7 +375,9 @@ public class ManageLicenseController extends PageFlowController
         if ( und != null ) {  
                         
             CustomerLicense cl = getCustomerLicenseByProduct(this.productName);
-        	
+System.out.println(this.productName + "  -  " + cl.getProductId());
+
+            
             LicenseNode licenseNode = null;
             Node[] nodes = und.getNodes();     
             
@@ -386,59 +395,17 @@ public class ManageLicenseController extends PageFlowController
                         licenseNode.setCategoryName(node.getOrgNodeCategoryName());
                         licenseNode.setChildrenNodeCount(node.getChildNodeCount());
                         
+                        licenseNode.setSubtestModel(cl.getSubtestModel());
                        	licenseNode.setReserved(licenseNode.ConvertIntegerToString(onli.getLicReserved()));
                        	licenseNode.setConsumed(licenseNode.ConvertIntegerToString(onli.getLicUsed()));
-                        
-                        licenseNode.setSubtestModel(cl.getSubtestModel());
-                        
-                        /* **************** FAKE available value ****************/
-                        licenseNode.setAvailable(licenseNode.ConvertIntegerToString(onli.getLicReserved()));
-                        
+                        licenseNode.setAvailable(licenseNode.ConvertIntegerToString(onli.getLicPurchased()));
+                                               
                         nodeList.add(licenseNode);
                     }
                 }
             }
         }
         return nodeList;
-    }
-
-    /**
-     * getLicenseNode
-     */    
-    private LicenseNode getLicenseNode(Integer orgNodeId) {
-        
-    	if (orgNodeId.intValue() == 0) {
-    		return new LicenseNode();
-    	}
-    	
-    	OrgNodeLicenseInfo onli = null;       
-        CustomerLicense cl = getCustomerLicenseByProduct(this.productName);
-        
-        LicenseNode licenseNode = null;
-        
-        try {
-            onli = this.licensing.getLicenseQuantitiesByOrg(this.userName, 
-                                                            orgNodeId, 
-                                                            cl.getProductId(), 
-                                                            cl.getSubtestModel());
-            if (onli != null) {                              
-                licenseNode = new LicenseNode();
-                licenseNode.setId(orgNodeId);   
-                licenseNode.setReserved(licenseNode.ConvertIntegerToString(onli.getLicReserved()));
-                licenseNode.setConsumed(licenseNode.ConvertIntegerToString(onli.getLicUsed()));
-                licenseNode.setAvailable(licenseNode.ConvertIntegerToString(onli.getLicPurchased()));
-                licenseNode.setSubtestModel(cl.getSubtestModel());
-                
-                /* **************** FAKE available value ****************/
-                licenseNode.setAvailable(licenseNode.ConvertIntegerToString(onli.getLicReserved()+ 100));
-                 
-            }
-            
-        }    
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }
-        return licenseNode;
     }
 
     /**
@@ -449,10 +416,17 @@ public class ManageLicenseController extends PageFlowController
         
         
         try {
+        	/*
             onli = this.licensing.getLicenseQuantitiesByOrg(this.userName, 
-                                                            orgNodeId, 
-                                                            productId, 
-                                                            subtestModel);
+                    orgNodeId, 
+                    productId, 
+                    subtestModel);
+            */
+            onli = this.licensing.getLicenseQuantitiesByOrgNodeIdAndProductId(this.userName, 
+										                    orgNodeId, 
+										                    productId, 
+										                    subtestModel);
+										                    
         }    
         catch (CTBBusinessException be) {
             be.printStackTrace();
@@ -664,9 +638,17 @@ public class ManageLicenseController extends PageFlowController
      * @jpf:action
      */
 	@Jpf.Action()
-    protected Forward saveLicenses(ManageLicenseForm form)
+    protected Forward goToSaveLicenses(ManageLicenseForm form)
     {
-		
+		saveLicenses(form);	
+		return goToSystemAdministration(form);		
+    }
+
+    /**
+     * saveLicenses
+     */
+    private void saveLicenses(ManageLicenseForm form)
+    {
         getLicenseValuesInForm(form);
 		
 		// save here .....
@@ -678,9 +660,6 @@ public class ManageLicenseController extends PageFlowController
         	System.out.println("id=" + id + "    name=" + name + "    available=" + available);
         }
 
-        // return to system administration
-		goToSystemAdministration(form);		
-        return null;
     }
 	
 /////////////////////////////////////////////////////////////////////////////////////////////

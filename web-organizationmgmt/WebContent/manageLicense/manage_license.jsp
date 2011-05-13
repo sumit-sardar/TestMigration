@@ -62,17 +62,19 @@ String style = styleNormal;
 
 
 <c:if test="${multipleProducts}">     
+<% if (rootNode.booleanValue()) { %>
 <p>
 <table class="transparent">
 <tr class="transparent">
-    <td class="transparent">Product:</td>
+    <td class="transparent"><b>Product:</b></td>
     <td class="transparent">
-        <netui:select dataSource="pageFlow.productName" optionsDataSource="${pageFlow.productNameOptions}" size="1" multiple="false" onChange="setElementValueAndSubmit('{currentAction}', 'changeProduct');">
+        <netui:select dataSource="pageFlow.productName" optionsDataSource="${pageFlow.productNameOptions}" size="1" multiple="false" onChange="verifyChangeProduct(this, '{actionForm.currentAction}', 'changeProduct');">
         </netui:select>
     </td>
 </tr>
 </table>
 </p>
+<% } %>     
 </c:if> 
 
 <p>
@@ -213,7 +215,7 @@ String style = styleNormal;
  
 <p>
 <br/>
-	<netui:button type="submit" value="${bundle.web['common.button.save']}" onClick="return verifySaveLicenses();" action="saveLicenses"/>&nbsp;	             
+	<netui:button type="submit" value="${bundle.web['common.button.save']}" onClick="return verifySaveLicenses();" action="goToSaveLicenses"/>&nbsp;	             
 	<netui:button type="submit" value="${bundle.web['common.button.cancel']}" onClick="return verifyCancelLicenses();" action="goToSystemAdministration"/>           
 </p>
 

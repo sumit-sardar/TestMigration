@@ -1229,6 +1229,19 @@ function trimZero(s)
 	} 
 	return s.substr(index, s.length);
 }
+
+function verifyChangeProduct(dropDown, elementId, value){
+
+//alert(dropDown.selectedIndex);
+
+    var result = confirm("The system will save your changes before switching to different product. Click 'OK' to switch to other product.");
+    if (result) {
+    	setElementValue( elementId, value, true );
+    }
+    else {
+    	dropDown.form.reset();
+    }
+}
    
 function verifyCancelLicenses(){
     return confirm("Click 'OK' to quit editing license information. Any changes you've made will be lost.");
@@ -1237,4 +1250,5 @@ function verifyCancelLicenses(){
 function verifySaveLicenses(){
     return confirm("Click 'OK' to save your changes. Click 'Cancel' to continue to edit license information.");
 }
+    
     
