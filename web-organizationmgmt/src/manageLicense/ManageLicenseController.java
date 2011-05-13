@@ -1,48 +1,33 @@
 package manageLicense;
-import org.apache.beehive.netui.pageflow.Forward;
-import org.apache.beehive.netui.pageflow.PageFlowController;
-import com.ctb.bean.request.FilterParams;
-import com.ctb.bean.request.PageParams;
-import com.ctb.bean.request.SortParams;
-import com.ctb.bean.testAdmin.Customer;
-import com.ctb.bean.testAdmin.CustomerConfiguration;
-import com.ctb.bean.testAdmin.CustomerLicense;
-import com.ctb.bean.testAdmin.Node;
-import com.ctb.bean.testAdmin.NodeData;
-import com.ctb.bean.testAdmin.OrgNodeCategory;
-import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
-import com.ctb.bean.testAdmin.User;
-import com.ctb.exception.CTBBusinessException;
-import com.ctb.util.CTBConstants;
-import com.ctb.util.web.sanitizer.SanitizedFormData;
-import com.ctb.widgets.bean.PagerSummary;
-import com.ctb.widgets.bean.PathListEntry;
-import dto.LicenseNode;
-import dto.Message;
-import dto.NavigationPath;
-import dto.Organization;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.beehive.controls.api.bean.Control;
+import org.apache.beehive.netui.pageflow.Forward;
+import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import utils.FilterSortPageUtils;
-import utils.MessageResourceBundle;
-import utils.OrgFormUtils;
-import utils.OrgNodeUtils;
 import utils.OrgPathListUtils;
-import utils.PermissionsUtils;
+
+import com.ctb.bean.request.FilterParams;
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.CustomerLicense;
+import com.ctb.bean.testAdmin.LicenseNodeData;
+import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.NodeData;
+import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
+import com.ctb.bean.testAdmin.User;
+import com.ctb.exception.CTBBusinessException;
+import com.ctb.util.web.sanitizer.SanitizedFormData;
+import com.ctb.widgets.bean.PagerSummary;
+
+import dto.LicenseNode;
+import dto.Message;
 
 
 /**
@@ -316,11 +301,14 @@ public class ManageLicenseController extends PageFlowController
      * populateLicenseNodes
      */    
     private void populateLicenseNodes(List licenseNodes) {
-
+    	CustomerLicense cl = getCustomerLicenseByProduct(this.productName);
+        Integer customerId = this.user.getCustomer().getCustomerId();
         for (int i = 0 ; i < licenseNodes.size() ; i++) {           
         	LicenseNode node = (LicenseNode)licenseNodes.get(i);
             LicenseNode nodeInList = findLicenseNode(node.getId());
             if (nodeInList == null) {
+            	node.setProductId(cl.getProductId());
+            	node.setCustomerId(customerId);
             	nodeInList = new LicenseNode(node);
             	this.licenseNodeList.add(nodeInList);
             }
@@ -375,9 +363,7 @@ public class ManageLicenseController extends PageFlowController
         if ( und != null ) {  
                         
             CustomerLicense cl = getCustomerLicenseByProduct(this.productName);
-System.out.println(this.productName + "  -  " + cl.getProductId());
-
-            
+        	
             LicenseNode licenseNode = null;
             Node[] nodes = und.getNodes();     
             
@@ -559,8 +545,9 @@ System.out.println(this.productName + "  -  " + cl.getProductId());
         CustomerLicense cl = null;
         
         try {
-            cls = this.licensing.getCustomerLicenseData(this.userName, null);
-            
+        	
+        	 cls = this.licensing.getCustomerOrgNodeLicenseData(this.userName, null);
+        	
             if ((cls != null) && (cls.length > 0)) {
                 
                 this.productNameOptions = new String[cls.length + 1];
@@ -650,16 +637,22 @@ System.out.println(this.productName + "  -  " + cl.getProductId());
     private void saveLicenses(ManageLicenseForm form)
     {
         getLicenseValuesInForm(form);
-		
-		// save here .....
-        for (int i = 0 ; i < this.licenseNodeList.size() ; i++) {           
-        	LicenseNode licenseNode = (LicenseNode)this.licenseNodeList.get(i);
-        	Integer id = licenseNode.getId();
-        	String name = licenseNode.getName();
-        	String available = licenseNode.getAvailable();
-        	System.out.println("id=" + id + "    name=" + name + "    available=" + available);
-        }
-
+        LicenseNodeData [] licenseNodeData= null;
+        LicenseNode licenseNode= new LicenseNode();
+        LicenseNode [] licenseNodeArr= null;
+        licenseNodeArr = new LicenseNode[this.licenseNodeList.size()]; 
+        this.licenseNodeList.toArray(licenseNodeArr); 
+        licenseNodeData = licenseNode.makelicenseNodeCopy(licenseNodeArr);
+        
+        	try{
+        		
+        		boolean result =this.licensing.saveOrUpdateOrgNodeLicenseDetail(licenseNodeData);
+        		
+       	}catch(CTBBusinessException e){
+        		
+        		e.printStackTrace();
+        	}
+   
     }
 	
 /////////////////////////////////////////////////////////////////////////////////////////////
