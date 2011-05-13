@@ -22,16 +22,11 @@ public class LicenseNodeData extends CTBBean
     	this.consumed = "0";
     	this.available = "0";   
     	this.subtestModel = "";
+    	this.productId = new Integer(0);
+    	this.customerId = new Integer(0);
     }
 
-    public LicenseNodeData(LicenseNodeData node) {
-    	this.orgNodeId = node.getOrgNodeId();
-    	this.reserved = node.getReserved();
-    	this.consumed = node.getConsumed();
-    	this.available = node.getAvailable();
-    	this.subtestModel = node.getSubtestModel();
-    }
-    
+  
    
    
     public Integer getProductId() {
@@ -63,52 +58,24 @@ public class LicenseNodeData extends CTBBean
 		return subtestModel;
 	}
 
-	public void setSubtestModel(String subtestModel) {	
-		if ("T".equalsIgnoreCase(subtestModel))
-			this.subtestModel = "Subtest";
-		else
-			this.subtestModel = "Session";
-	}
+	
 
 	
-    //Added for Defect 59260 and 59262
-     /**
-     * This method is responsible for converting String to Integer
-     * @param value
-     * @return Integer
-     */
     
-    public Integer ConvertStringToInteger (String value) {
-        
-        
-        return Integer.valueOf(value);
-        
-    } 
-    
-    /**
-     * This method is responsible for converting Integer to String
-     */
-    
-    public String ConvertIntegerToString (Integer value) {
-        
-        if (value != null) {
-            
-            return value.toString();
-            
-        } else {
-          
-            return null;   
-        }
-        
-    }
-    
-    public void updateNode(LicenseNodeData node) {
-    	this.reserved = node.getReserved();
-    	this.consumed = node.getConsumed();
-    	this.available = node.getAvailable();
-    }
+   
+   
 
 	
+
+	/**
+ * @param subtestModel the subtestModel to set
+ */
+public void setSubtestModel(String subtestModel) {
+	this.subtestModel = subtestModel;
+}
+
+
+
 
 	/**
 	 * @return the orgNodeId
