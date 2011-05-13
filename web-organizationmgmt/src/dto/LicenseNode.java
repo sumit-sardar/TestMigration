@@ -1,7 +1,9 @@
 package dto; 
 
-import com.ctb.bean.testAdmin.CustomerLicense;
 import manageCustomer.ManageCustomerController.ManageCustomerForm;
+
+import com.ctb.bean.testAdmin.CustomerLicense;
+import com.ctb.bean.testAdmin.LicenseNodeData;
 
 public class LicenseNode implements java.io.Serializable 
 { 
@@ -18,7 +20,8 @@ public class LicenseNode implements java.io.Serializable
     private String consumed = null;
     private String available = null;
     private String licenseAfterLastPurchase = null;
-	private String subtestModel;        
+	private String subtestModel;  
+	private Integer customerId = null;
     
     public LicenseNode() {
     	this.id = new Integer(0);
@@ -27,6 +30,8 @@ public class LicenseNode implements java.io.Serializable
     	this.consumed = "0";
     	this.available = "0";   
     	this.subtestModel = "";
+    	this.customerId =  new Integer(0);
+    	this.productId = new Integer(0);
     }
 
     public LicenseNode(LicenseNode node) {
@@ -36,6 +41,8 @@ public class LicenseNode implements java.io.Serializable
     	this.consumed = node.getConsumed();
     	this.available = node.getAvailable();
     	this.subtestModel = node.getSubtestModel();
+    	this.customerId = node.getCustomerId();
+    	this.productId = node.getProductId();
     }
     
     /**
@@ -178,6 +185,32 @@ public class LicenseNode implements java.io.Serializable
     }
     
     //Added for Defect 59260 and 59262
+   
+   
+   
+   
+   /**
+    * makeCopy
+    */
+  public LicenseNodeData[] makelicenseNodeCopy(LicenseNode [] licenseNode) 
+  {
+	  	LicenseNodeData [] copied = new LicenseNodeData[licenseNode.length];
+	  	
+        for(int i= 0; i < licenseNode.length ; i++) {
+        	LicenseNodeData  copiedData = new LicenseNodeData();
+        	copiedData.setAvailable(licenseNode[i].getAvailable());
+        	copiedData.setConsumed(licenseNode[i].getConsumed());
+        	copiedData.setCustomerId(licenseNode[i].getCustomerId());
+        	copiedData.setOrgNodeId(licenseNode[i].getId());
+        	copiedData.setProductId(licenseNode[i].getProductId());
+        	copiedData.setReserved(licenseNode[i].getReserved());
+        	copiedData.setSubtestModel(licenseNode[i].getSubtestModel());
+        	copied[i] = copiedData;
+        	
+        }     
+       return copied;       
+   }
+   
      /**
      * This method is responsible for converting String to Integer
      * @param value
@@ -213,6 +246,20 @@ public class LicenseNode implements java.io.Serializable
     	this.consumed = node.getConsumed();
     	this.available = node.getAvailable();
     }
+
+	/**
+	 * @return the customerId
+	 */
+	public Integer getCustomerId() {
+		return customerId;
+	}
+
+	/**
+	 * @param customerId the customerId to set
+	 */
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
+	}
     
     
 } 

@@ -6,6 +6,7 @@ import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
 import com.ctb.bean.testAdmin.CustomerLicense;
+import com.ctb.bean.testAdmin.LicenseNodeData;
 import com.ctb.bean.testAdmin.TestProduct;
 
 
@@ -236,8 +237,8 @@ public interface License extends JdbcControl
 
     // TABE BAUM 10:  checks whether license exists for a particular orgnode of that customer
     
-    @JdbcControl.SQL(statement = "select  decode( count(col.customer_id),0,0,1)  from customer_orgnode_license col where col.customer_id = {customerId} and col.product_id = {productId} and col.org_node_id = {orgNodeId}")
-    boolean isCustomerOrgNodeLicenseExist(Integer orgNodeId, Integer customerId, Integer productId) throws SQLException;
+    @JdbcControl.SQL(statement = "select  decode( count(col.customer_id),0,0,1)  from customer_orgnode_license col where col.customer_id = {licenseNodeData.customerId} and col.product_id = {licenseNodeData.productId} and col.org_node_id = {licenseNodeData.orgNodeId}")
+    boolean isCustomerOrgNodeLicenseExist(LicenseNodeData licenseNodeData) throws SQLException;
 
     /**
      * @jc:sql statement:: 
@@ -326,13 +327,13 @@ public interface License extends JdbcControl
 
   // TABE BAUM 10: For updating the edited available license field value in manage license page
      
-     @JdbcControl.SQL(statement = "update customer_orgnode_license set available = {customerLicense.available} where org_node_id = {orgNodeId} and product_id = {customerLicense.productId} and customer_id = {customerLicense.customerId}")
-     void updateAvailableLicenseChange(CustomerLicense customerLicense,Integer orgNodeId) throws SQLException;
+     @JdbcControl.SQL(statement = "update customer_orgnode_license set available = {licenseNodeData.available} where org_node_id = {licenseNodeData.orgNodeId} and product_id = {licenseNodeData.productId} and customer_id = {licenseNodeData.customerId}")
+     void updateAvailableLicenseChange(LicenseNodeData licenseNodeData) throws SQLException;
   
    // TABE BAUM 10 : Inserting license details into database for a particular organization who's entry is not there in the database table
      
-     @JdbcControl.SQL(statement = "insert into customer_orgnode_license  (org_node_id ,customer_id,  product_id,  available,  reserved,  consumed, subtest_model) values ({orgNodeId},{customerLicense.customerId},  {customerLicense.productId},  {customerLicense.available},  {customerLicense.reservedLicense},  {customerLicense.consumedLicense}, {customerLicense.subtestModel}  ) ")
-     void addOrgNodeLicenses(CustomerLicense customerLicense,Integer orgNodeId) throws SQLException;
+     @JdbcControl.SQL(statement = "insert into customer_orgnode_license  (org_node_id ,customer_id,  product_id,  available,  reserved,  consumed, subtest_model) values ({licenseNodeData.orgNodeId},{licenseNodeData.customerId},  {licenseNodeData.productId},  {licenseNodeData.available},  {licenseNodeData.reserved},  {licenseNodeData.consumed}, {licenseNodeData.subtestModel}  ) ")
+     void addOrgNodeLicenses(LicenseNodeData licenseNodeData) throws SQLException;
   
      // TABE BAUM 10:  For calculating the total consumed and reserved quantity by using ancestor orgnodeid 
      

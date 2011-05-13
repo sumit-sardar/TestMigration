@@ -94,6 +94,6 @@ public interface Licensing
    
     // TABE BAUM 10: For updating the edited available license field value in manage license page and Inserting license details into database for a particular organization who's entry is not there in the database table
    
-    boolean saveOrUpdateOrgNodeLicenseDetail(com.ctb.bean.testAdmin.CustomerLicense customerLicense ,java.lang.Integer orgNodeId) throws com.ctb.exception.CTBBusinessException;
+    boolean saveOrUpdateOrgNodeLicenseDetail(com.ctb.bean.testAdmin.LicenseNodeData [] licenseNodeData) throws com.ctb.exception.CTBBusinessException;
 
 } 

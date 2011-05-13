@@ -1,13 +1,12 @@
 package com.ctb.control.licensing; 
 
-import java.io.Serializable;
 import java.sql.SQLException;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
-import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerLicense;
+import com.ctb.bean.testAdmin.LicenseNodeData;
 import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
 import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.exception.CTBBusinessException;
@@ -360,12 +359,11 @@ public class LicensingImpl implements Licensing
      * @throws CTBBusinessException 
      */
     
-    private boolean  isCustomerOrgnodeLicenseExist (Integer orgNodeId,
-			Integer customerId, Integer productId)
+    private boolean  isCustomerOrgnodeLicenseExist (LicenseNodeData licenseNodeData)
             throws CTBBusinessException {
          try {
             
-            return this.license.isCustomerOrgNodeLicenseExist (orgNodeId, customerId, productId);
+            return this.license.isCustomerOrgNodeLicenseExist (licenseNodeData);
             
          } catch (SQLException se) {
             
@@ -440,23 +438,31 @@ public class LicensingImpl implements Licensing
                 
     }
     
+    
  // START - TABE BAUM 10: For updating the edited available license field value in manage license page and Inserting license details into database for a particular organization who's entry is not there in the database table
     
-        public boolean saveOrUpdateOrgNodeLicenseDetail (CustomerLicense customerLicense,Integer orgNodeId) 
+        public boolean saveOrUpdateOrgNodeLicenseDetail (LicenseNodeData [] licenseNodeData) 
     throws CTBBusinessException {
- 
+        	
     	try{
-    		if (isCustomerOrgnodeLicenseExist (orgNodeId,customerLicense.getCustomerId(),
-    				customerLicense.getProductId())) {
-    	        
-    	    
-    		this.license.updateAvailableLicenseChange(customerLicense, orgNodeId);
-    
-    		} else {
-    
-    		this.license.addOrgNodeLicenses(customerLicense,orgNodeId);
-    
-      }
+    		for(int i =0; i < licenseNodeData.length ; i++ ) {
+    			String isSubtestModel ="T";
+            	if(licenseNodeData[i].getSubtestModel().equals("Session")) {
+            		isSubtestModel = "F";
+            	}
+            	licenseNodeData[i].setSubtestModel(isSubtestModel);
+
+	    		if (isCustomerOrgnodeLicenseExist (licenseNodeData[i])) {
+	    	        
+	    	    
+	    		this.license.updateAvailableLicenseChange(licenseNodeData[i]);
+	    
+	    		} else {
+	    
+	    		this.license.addOrgNodeLicenses(licenseNodeData[i]);
+	    
+	    		}
+    		}
     	}catch (SQLException se) {
           
           LicenseUpdationException lue = 
