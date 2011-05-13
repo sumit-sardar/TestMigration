@@ -125,8 +125,10 @@ public class Message implements java.io.Serializable
     //START - Changes for LASLINK PRODUCT 
     public static final String FIELD_MDRNUMBER = "MDR Number";
     //LLO-099 MDR Validation
-    public static final String INVALID__MINLENGTH_FORMAT  = "Please enter valid  minimum length: 8 characters.";
-    public static final String INVALID__MDRNUMBER_FORMAT  = "Please re-enter your information with a unique combination of 0-9.";
+
+    public static final String INVALID__MDRNUMBER_FORMAT  = "Please re-enter your information with a unique 8-digit combination of 0-9.";
+
+
     
     //END - Changes for LASLINK PRODUCT 
     public static final String FIELD_CTB_CONTACT = "CTB Contact";

@@ -265,7 +265,7 @@ public class CustomerFormUtils
     		        if ( invalidCharFields.length() > 0) {
     		            
     		            invalidString = invalidCharFields + ("<br/>" 
-    		                            + Message.INVALID__MINLENGTH_FORMAT);
+    		                            + Message.INVALID__MDRNUMBER_FORMAT);
     		            
     		        }	
     		        if ( invalidString != null && invalidString.length() > 0 ) {
