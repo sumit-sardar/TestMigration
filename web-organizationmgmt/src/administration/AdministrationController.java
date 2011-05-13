@@ -295,7 +295,7 @@ public class AdministrationController extends PageFlowController
     {
         Boolean hasLicenseConfig = Boolean.FALSE;        
         try {
-            CustomerLicense[] cls = this.licensing.getCustomerLicenseData(this.userName, null);            
+            CustomerLicense[] cls = this.licensing.getCustomerOrgNodeLicenseData(this.userName, null);            
             hasLicenseConfig = new Boolean(cls.length > 0);
         }    
         catch (CTBBusinessException be) {

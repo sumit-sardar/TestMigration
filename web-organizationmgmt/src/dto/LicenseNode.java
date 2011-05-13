@@ -37,6 +37,8 @@ public class LicenseNode implements java.io.Serializable
     public LicenseNode(LicenseNode node) {
     	this.id = node.getId();
     	this.name = node.getName();
+    	this.subtestModel = node.getSubtestModel();
+    	this.productId = node.getProductId();
     	this.reserved = node.getReserved();
     	this.consumed = node.getConsumed();
     	this.available = node.getAvailable();

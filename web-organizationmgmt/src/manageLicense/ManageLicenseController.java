@@ -29,6 +29,27 @@ import com.ctb.widgets.bean.PagerSummary;
 import dto.LicenseNode;
 import dto.Message;
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.beehive.controls.api.bean.Control;
+import org.apache.beehive.netui.pageflow.annotations.Jpf;
+
+import utils.FilterSortPageUtils;
+import utils.MessageResourceBundle;
+import utils.OrgFormUtils;
+import utils.OrgNodeUtils;
+import utils.OrgPathListUtils;
+import utils.PermissionsUtils;
 
 /**
  * @jpf:controller
@@ -152,10 +173,10 @@ public class ManageLicenseController extends PageFlowController
     
     /**
      * @jpf:action
-     * @jpf:forward name="success" path="view_license_leaf_node.jsp"
+     * @jpf:forward name="success" path="view_license.jsp"
      */
     @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success", path = "view_license_leaf_node.jsp")
+        @Jpf.Forward(name = "success", path = "view_license.jsp")
 		}
 	)
     protected Forward viewLicense(ManageLicenseForm form)
@@ -325,20 +346,45 @@ public class ManageLicenseController extends PageFlowController
      */    
     private void setLicenseValuesToForm(Integer orgNodeId, List licenseNodes, ManageLicenseForm form) {
 
-    	if (orgNodeId.intValue() == 0) {
-    		LicenseNode node = (LicenseNode)licenseNodes.get(0);    
-    		orgNodeId = node.getId();        	
-    	}
-    	LicenseNode parentNode = findLicenseNode(orgNodeId);
-    	form.setParentLicenseNode(parentNode);
-    	form.setParentNodeId(parentNode.getId());
-    	form.setParentNodeAvailable(parentNode.getAvailable());
-    	
-        for (int i = 0 ; i < licenseNodes.size() ; i++) {           
-        	LicenseNode node = (LicenseNode)licenseNodes.get(i);
-        	form.orgNodeIds[i] = node.getId().toString();
-        	form.availableValues[i] = node.getAvailable();
-        }
+    	if (licenseNodes.size() > 0) {
+    		
+	    	LicenseNode node = null;
+	    	LicenseNode parentNode = null;
+	    	
+	    	if (orgNodeId.intValue() == 0) {
+	    		if (licenseNodes.size() == 1) {
+	    			node = (LicenseNode)licenseNodes.get(0);
+	    			parentNode = new LicenseNode(node);
+	    		}
+	    		else { 
+	    			int reserved = 0;
+	    			int consumed = 0;	    			
+	    	        for (int i = 0 ; i < licenseNodes.size() ; i++) {           
+	    	        	node = (LicenseNode)licenseNodes.get(i);
+	    	        	reserved += (new Integer(node.getReserved())).intValue();
+	    	        	consumed += (new Integer(node.getConsumed())).intValue();
+	    	        }
+	    	        node = (LicenseNode)licenseNodes.get(0);
+	    			parentNode = new LicenseNode(node);
+	    			parentNode.setReserved(new Integer(reserved).toString());
+	    			parentNode.setConsumed(new Integer(consumed).toString());
+	    			parentNode.setAvailable(new Integer(0).toString());	    			
+        		}
+	    	}
+	    	else {
+		    	parentNode = findLicenseNode(orgNodeId);
+	    	}
+
+	    	form.setParentLicenseNode(parentNode);
+	    	form.setParentNodeId(parentNode.getId());
+	    	form.setParentNodeAvailable(parentNode.getAvailable());
+	    	
+	        for (int i = 0 ; i < licenseNodes.size() ; i++) {           
+	        	node = (LicenseNode)licenseNodes.get(i);
+	        	form.orgNodeIds[i] = node.getId().toString();
+	        	form.availableValues[i] = node.getAvailable();
+	        }
+	    }
     }
     
      /**
@@ -381,6 +427,7 @@ public class ManageLicenseController extends PageFlowController
                         licenseNode.setCategoryName(node.getOrgNodeCategoryName());
                         licenseNode.setChildrenNodeCount(node.getChildNodeCount());
                         
+                        licenseNode.setProductId(cl.getProductId());
                         licenseNode.setSubtestModel(cl.getSubtestModel());
                        	licenseNode.setReserved(licenseNode.ConvertIntegerToString(onli.getLicReserved()));
                        	licenseNode.setConsumed(licenseNode.ConvertIntegerToString(onli.getLicUsed()));
@@ -402,12 +449,6 @@ public class ManageLicenseController extends PageFlowController
         
         
         try {
-        	/*
-            onli = this.licensing.getLicenseQuantitiesByOrg(this.userName, 
-                    orgNodeId, 
-                    productId, 
-                    subtestModel);
-            */
             onli = this.licensing.getLicenseQuantitiesByOrgNodeIdAndProductId(this.userName, 
 										                    orgNodeId, 
 										                    productId, 
@@ -634,25 +675,42 @@ public class ManageLicenseController extends PageFlowController
     /**
      * saveLicenses
      */
-    private void saveLicenses(ManageLicenseForm form)
+    private boolean saveLicenses(ManageLicenseForm form)
     {
+    	boolean result = false;
+    	
         getLicenseValuesInForm(form);
-        LicenseNodeData [] licenseNodeData= null;
-        LicenseNode licenseNode= new LicenseNode();
-        LicenseNode [] licenseNodeArr= null;
-        licenseNodeArr = new LicenseNode[this.licenseNodeList.size()]; 
-        this.licenseNodeList.toArray(licenseNodeArr); 
-        licenseNodeData = licenseNode.makelicenseNodeCopy(licenseNodeArr);
+		
+		Integer customerId = this.user.getCustomer().getCustomerId();       
+        int numberNodes = this.licenseNodeList.size();
+        LicenseNodeData [] licenseNodeDataList = new LicenseNodeData[numberNodes];
         
-        	try{
-        		
-        		boolean result =this.licensing.saveOrUpdateOrgNodeLicenseDetail(licenseNodeData);
-        		
-       	}catch(CTBBusinessException e){
-        		
-        		e.printStackTrace();
-        	}
-   
+        for (int i = 0 ; i < numberNodes ; i++) {           
+        	LicenseNode licenseNode = (LicenseNode)this.licenseNodeList.get(i);
+        	Integer orgNodeId = licenseNode.getId();
+        	String name = licenseNode.getName();
+        	String available = licenseNode.getAvailable();
+        	Integer productId = licenseNode.getProductId();
+        	String subtestModel = licenseNode.getSubtestModel();
+        	
+        	LicenseNodeData licenseNodeData = new LicenseNodeData();
+        	licenseNodeData.setProductId(productId);
+        	licenseNodeData.setAvailable(available);
+        	licenseNodeData.setOrgNodeId(orgNodeId);
+        	licenseNodeData.setSubtestModel(subtestModel);
+        	licenseNodeData.setCustomerId(customerId);
+        	licenseNodeDataList[i] = licenseNodeData;
+      	
+System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productId=" + productId + "    subtestModel=" + subtestModel + "    customerId=" + customerId + "    available=" + available);
+        }
+
+        try {
+			result = this.licensing.saveOrUpdateOrgNodeLicenseDetail(licenseNodeDataList);
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+        
+        return result;
     }
 	
 /////////////////////////////////////////////////////////////////////////////////////////////
