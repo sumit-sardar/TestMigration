@@ -98,7 +98,7 @@ public class ManageLicenseController extends PageFlowController
     public String productName = null;
     
     private List licenseNodeList = null;
-    
+    private String availablePool = "0";
     /**
      * @jpf:action
      * @jpf:forward name="success" path="manageLicense.do"
@@ -119,7 +119,8 @@ public class ManageLicenseController extends PageFlowController
         this.customerLicenses = getCustomerLicenses();
                 
         initHierarchy(form);           
-             
+        initLicenseData();
+        
         return new Forward("success", form);        
     }
     
@@ -143,6 +144,7 @@ public class ManageLicenseController extends PageFlowController
         this.customerLicenses = getCustomerLicenses();
                 
         initHierarchy(form);           
+        initLicenseData();
              
         return new Forward("success", form);        
     }
@@ -167,6 +169,7 @@ public class ManageLicenseController extends PageFlowController
         this.customerLicenses = getCustomerLicenses();
                 
         initHierarchy(form);           
+        initLicenseData();
         
         return new Forward("success", form);        
     }
@@ -201,6 +204,7 @@ public class ManageLicenseController extends PageFlowController
             saveLicenses(form);       
             form = initialize();
             initHierarchy(form);           
+            initLicenseData();
         }
         
         handleOrganizationControl(form);
@@ -277,6 +281,8 @@ public class ManageLicenseController extends PageFlowController
                                             und, form.getOrgPageRequested());        
         form.setOrgMaxPage(und.getFilteredPages());
 
+        form.setTopNodeEditing(new Boolean((orgNodeId.intValue() == 0) && (orgNodes.size() > 1)));
+
         this.getRequest().setAttribute("orgNodePath", this.orgNodePath);
         this.getRequest().setAttribute("orgNodes", orgNodes);        
         this.getRequest().setAttribute("orgPagerSummary", orgPagerSummary);
@@ -298,10 +304,15 @@ public class ManageLicenseController extends PageFlowController
     	String parentNodeAvailable = form.getParentNodeAvailable();
     	
     	if ((parentNodeId != null) && (parentNodeAvailable != null)) {
-			LicenseNode nodeInList = findLicenseNode(parentNodeId);
-			if (nodeInList != null) {
-				nodeInList.setAvailable(parentNodeAvailable);
-			}    		
+    		if (parentNodeId.intValue() > 0) { 
+				LicenseNode nodeInList = findLicenseNode(parentNodeId);
+				if (nodeInList != null) {
+					nodeInList.setAvailable(parentNodeAvailable);
+				}
+    		}
+    		else {
+    			this.availablePool = parentNodeAvailable;
+    		}
     	}
     	
     	if (form.availableValues != null) {
@@ -366,9 +377,10 @@ public class ManageLicenseController extends PageFlowController
 	    	        }
 	    	        node = (LicenseNode)licenseNodes.get(0);
 	    			parentNode = new LicenseNode(node);
+	    			parentNode.setId(orgNodeId);
 	    			parentNode.setReserved(new Integer(reserved).toString());
-	    			parentNode.setConsumed(new Integer(consumed).toString());
-	    			parentNode.setAvailable(new Integer(0).toString());	    			
+	    			parentNode.setConsumed(new Integer(consumed).toString());    			
+	    			parentNode.setAvailable(this.availablePool);	   		
         		}
 	    	}
 	    	else {
@@ -482,6 +494,15 @@ public class ManageLicenseController extends PageFlowController
 
 
     /**
+     * initLicenseData
+     */
+    private void initLicenseData()
+    {   
+        this.licenseNodeList = new ArrayList();
+        this.availablePool = "0";
+    }
+
+    /**
      * initHierarchy
      */
     private void initHierarchy(ManageLicenseForm form)
@@ -489,8 +510,6 @@ public class ManageLicenseController extends PageFlowController
         this.orgNodePath = new ArrayList();
         form.setOrgNodeName("Top");
         form.setOrgNodeId(new Integer(0));
-                
-        this.licenseNodeList = new ArrayList();
     }
 
     /**
@@ -731,6 +750,7 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
         private LicenseNode parentLicenseNode;
         private Integer parentNodeId;
         private String parentNodeAvailable;
+        private Boolean topNodeEditing;
         
         // org pager
         private String orgSortColumn;
@@ -772,6 +792,7 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
             this.orgListMaxPage = new Integer(1);    
             
             this.message = null;  
+            this.topNodeEditing = Boolean.FALSE;
         }   
 
         public ManageLicenseForm createClone()
@@ -1041,6 +1062,14 @@ System.out.println("orgNodeId=" + orgNodeId + "    name=" + name + "    productI
         {
             this.message = new Message(title, content, type);
         }
+
+		public Boolean getTopNodeEditing() {
+			return topNodeEditing;
+		}
+
+		public void setTopNodeEditing(Boolean topNodeEditing) {
+			this.topNodeEditing = topNodeEditing;
+		}
         
     }
 

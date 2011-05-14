@@ -42,6 +42,7 @@
 
 <netui:hidden dataSource="actionForm.parentNodeId"/> 
 <netui:hidden dataSource="actionForm.parentNodeAvailable"/> 
+<netui:hidden dataSource="actionForm.topNodeEditing"/> 
 
 <% 
 Boolean rootNode = (Boolean)request.getAttribute("rootNode");

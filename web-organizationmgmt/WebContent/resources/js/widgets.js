@@ -64,6 +64,11 @@ function setElementValue(elementId, value, submitForm) {
 }
 
 function setElementValueAndSubmit(elementId, value) {
+
+	if (! verifyTopEditing()) {
+		return false;
+	} 
+	
     setElementValue( elementId, value, true );
 }
 
@@ -1230,9 +1235,28 @@ function trimZero(s)
 	return s.substr(index, s.length);
 }
 
+function verifyTopEditing() {
+
+    var editingElm = getSafeElement("{actionForm.topNodeEditing}");
+    if ((editingElm != null) && (editingElm.value == 'true')) {    
+    	var actionElm = getSafeElement("{actionForm.actionElement}");
+    	if ((actionElm != null) && (actionElm.value == "{actionForm.orgNodeName}")) {
+    		var availElm = document.getElementById("availId");
+	    	if (availElm != null)  {
+	    		var available = availElm.innerHTML;
+	    		if (available > 0) {
+					alert("Available value must be distributed to zero.");    		
+					return false;
+	    		}
+    		}
+    	}
+    }	
+	return true;
+}
+ 
 function verifyChangeProduct(dropDown, elementId, value){
 
-//alert(dropDown.selectedIndex);
+	//alert(dropDown.selectedIndex);
 
     var result = confirm("The system will save your changes before switching to different product. Click 'OK' to switch to other product.");
     if (result) {
@@ -1248,6 +1272,11 @@ function verifyCancelLicenses(){
 }
 
 function verifySaveLicenses(){
+
+	if (! verifyTopEditing()) {
+		return false;
+	} 
+
     return confirm("Click 'OK' to save your changes. Click 'Cancel' to continue to edit license information.");
 }
     
