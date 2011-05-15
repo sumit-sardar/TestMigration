@@ -1163,15 +1163,15 @@ function isPositiveNumeric(sText) {
     var Char;
 
     if (sText == "") {
-    	alert("Please input a number.");
+    	alert("Enter a number that is 0 or greater.");
     	return false;	
     }
     for (i = 0; i < sText.length; i++) {
         Char = sText.charAt(i);
-	if (ValidChars.indexOf(Char) == -1) {
-    	    alert("Invalid number.");
-	    return false;
-	}
+		if (ValidChars.indexOf(Char) == -1) {
+	    	    alert("Enter a number that is 0 or greater.");
+		    return false;
+		}
     }
     
     return true;
@@ -1199,7 +1199,7 @@ function updateAvailable(control) {
     var diff = newValue - oldValue;   
     var result = total - diff;
     if (result < 0) {
-    	alert("Not enough amount to allocate.");
+    	alert("You do not have enough available licenses to allocate.");
     	control.value = oldValue; 
     	return false;
     }
