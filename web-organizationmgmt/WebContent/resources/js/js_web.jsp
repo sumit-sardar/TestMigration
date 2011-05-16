@@ -582,6 +582,7 @@ function enableMDRNoTextBox(enabled){
 	        MDRNoTextBox.style.display="none";
 	        MDRAsterisk.style.display="none";
 	        MdrLabel.style.display="none";
+	        MDRNoTextBox.value = ""; //Change for defect - 66235
 	    }
 	   	return true;
 }
