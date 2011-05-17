@@ -80,13 +80,21 @@ String style = styleNormal;
 
 <p>
 <table class="transparent">
-<tr class="transparent"><td class="transparent" width="100"><b>License Model:</b></td><td class="transparent"><netui:span value="${actionForm.parentLicenseNode.subtestModel}" /></td></tr>
+<tr class="transparent"><td class="transparent" width="*"><b>License Model:</b></td><td class="transparent" ><netui:span value="${actionForm.parentLicenseNode.subtestModel}" /></td></tr>
 <% if (! rootNode.booleanValue()) { %>
-<tr class="transparent"><td class="transparent" width="100"><b>Organization:</b></td><td class="transparent"><netui:span value="${actionForm.parentLicenseNode.name}" /></td></tr>
+<tr class="transparent"><td class="transparent" width="*"><b>Organization:</b></td><td class="transparent" ><netui:span value="${actionForm.parentLicenseNode.name}" /></td></tr>
 <% } %>     
-<tr class="transparent"><td class="transparent" width="100"><b>Scheduled:</b></td><td class="transparent"><netui:span value="${actionForm.parentLicenseNode.reserved}" /></td></tr>
-<tr class="transparent"><td class="transparent" width="100"><b>Consumed:</b></td><td class="transparent"><netui:span value="${actionForm.parentLicenseNode.consumed}" /></td></tr>
-<tr class="transparent"><td class="transparent" width="100"><b>Available:</b></td><td class="transparent"><netui:span tagId="availId" value="${actionForm.parentLicenseNode.available}" /></td></tr>
+<tr class="transparent"><td class="transparent" width="*"><b>Scheduled:</b></td><td class="transparent" ><netui:span value="${actionForm.parentLicenseNode.reserved}" /></td></tr>
+<tr class="transparent"><td class="transparent" width="*"><b>Consumed:</b></td><td class="transparent" ><netui:span value="${actionForm.parentLicenseNode.consumed}" /></td></tr>
+
+<netui-data:getData resultId="topNodeEditing" value="${actionForm.topNodeEditing}" />
+<% Boolean topNodeEditing = (Boolean)pageContext.getAttribute("topNodeEditing");  
+   if (topNodeEditing.booleanValue()) {	 
+%>
+<tr class="transparent"><td class="transparent" width="*"><b>Available to assign:</b></td><td class="transparent" ><netui:span tagId="availId" value="${actionForm.parentLicenseNode.available}" /></td></tr>
+<% } else {%>
+<tr class="transparent"><td class="transparent" width="*"><b>Available:</b></td><td class="transparent" ><netui:span tagId="availId" value="${actionForm.parentLicenseNode.available}" /></td></tr>
+<% } %>
 </table>
 </p>
 

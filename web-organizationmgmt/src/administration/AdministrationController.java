@@ -303,7 +303,7 @@ public class AdministrationController extends PageFlowController
         }        
         return hasLicenseConfig;
     }
-
+ 
 	//Bulk Accommodation
 	private Boolean customerHasBulkAccommodation()
     {               

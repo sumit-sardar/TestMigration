@@ -1240,16 +1240,14 @@ function verifyTopEditing() {
     var editingElm = getSafeElement("{actionForm.topNodeEditing}");
     if ((editingElm != null) && (editingElm.value == 'true')) {    
     	var actionElm = getSafeElement("{actionForm.actionElement}");
-    	if ((actionElm != null) && (actionElm.value == "{actionForm.orgNodeName}")) {
-    		var availElm = document.getElementById("availId");
-	    	if (availElm != null)  {
-	    		var available = availElm.innerHTML;
-	    		if (available > 0) {
-					alert("Available value must be distributed to zero.");    		
-					return false;
-	    		}
+   		var availElm = document.getElementById("availId");
+    	if (availElm != null)  {
+    		var available = availElm.innerHTML;
+    		if (available > 0) {
+				alert("\"Available to assign\" quantity must be distributed to zero.");    		
+				return false;
     		}
-    	}
+   		}
     }	
 	return true;
 }
