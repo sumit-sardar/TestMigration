@@ -687,7 +687,7 @@ public class ManageLicenseController extends PageFlowController
 	@Jpf.Action()
     protected Forward goToSaveLicenses(ManageLicenseForm form)
     {
-		//saveLicenses(form);	
+		saveLicenses(form);	
 		return goToSystemAdministration(form);		
     }
 
