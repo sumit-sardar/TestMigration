@@ -1256,7 +1256,7 @@ function verifyChangeProduct(dropDown, elementId, value){
 
 	//alert(dropDown.selectedIndex);
 
-    var result = confirm("The system will save your changes before switching to different product. Click 'OK' to switch to other product.");
+    var result = confirm("The system will save your changes before switching to different product. Click 'OK' to switch to other product. Click 'Cancel' to loose your changes.");
     if (result) {
     	setElementValue( elementId, value, true );
     }
