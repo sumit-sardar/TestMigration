@@ -390,12 +390,21 @@ public class ManageLicenseController extends PageFlowController
 	    	form.setParentLicenseNode(parentNode);
 	    	form.setParentNodeId(parentNode.getId());
 	    	form.setParentNodeAvailable(parentNode.getAvailable());
+	    	//START- Change for # 66295
+	    	String []tempOrgNodeIds = new String[5];
+	    	String []tempavailableValues = new String[5];
 	    	
 	        for (int i = 0 ; i < licenseNodes.size() ; i++) {           
 	        	node = (LicenseNode)licenseNodes.get(i);
-	        	form.orgNodeIds[i] = node.getId().toString();
-	        	form.availableValues[i] = node.getAvailable();
+	        	//form.orgNodeIds[i] = node.getId().toString();
+	        	//form.availableValues[i] = node.getAvailable();
+	        	tempOrgNodeIds[i] = node.getId().toString();
+	        	tempavailableValues[i] = node.getAvailable();
 	        }
+	        
+	       form.setOrgNodeIds(tempOrgNodeIds);
+	       form.setAvailableValues(tempavailableValues);
+	       //END- Change for # 66295
 	    }
     }
     
