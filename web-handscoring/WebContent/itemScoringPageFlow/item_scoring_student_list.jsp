@@ -24,6 +24,11 @@ function stopAudio(){
 	try {
         var myApp = document.getElementById("myApp");
        	myApp.script.stopAudio("");
+       	var subIframe = $('#iframeAudio');
+       	if(subIframe != '' || subIframe != null) {
+		$(subIframe).attr('src', "#");
+		}
+											
 	}catch (e) {
         
     }
@@ -75,7 +80,7 @@ function stopAudio(){
 	
 	
 	function getPlayCompleted(playStatus){
-		//alert("getPlayCompleted"+playStatus);
+		alert("getPlayCompleted in parent:"+playStatus);
 		/*try {
 			var myApp = document.getElementById("myApp"); 
 			if(playStatus == true && myApp.script.playCalledflag){			
@@ -90,8 +95,9 @@ function stopAudio(){
 	}
 	
 	function checkPlay(){
+		alert("playCompleted in checkplay : "+playCompleted);
 		if(document.getElementById("itemType").value == "AI"){			
-				if(playCompleted == true){			
+				if(playCompleted == "true"){			
 					formSave();
 				}else{
 					var confSave = confirm("Are you sure you want to score before listening to the entire response?");
@@ -102,6 +108,12 @@ function stopAudio(){
 		}else{
 			formSave();
 		}
+	}
+	
+	
+	function passAudioString(){
+	var audioResponseString = document.getElementById("audioResponseString").value;
+	return audioResponseString;
 	}
 	
 	
@@ -339,6 +351,11 @@ template_find_student.jsp
 						<script>
 							//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
 						</script>
+						
+					</div>
+					<div id="iframeDiv">
+					<iframe id="iframeAudio" src="about:blank" height="70" width="200" frameborder="0" scrolling="no">
+					</iframe>
 					</div>
 					</td>
 				</tr>

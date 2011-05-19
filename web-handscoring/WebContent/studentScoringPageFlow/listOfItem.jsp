@@ -12,8 +12,8 @@
 
 <script type="text/javascript" src="/HandScoringWeb/resources/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="/HandScoringWeb/resources/js/jquery-ui-1.8.10.custom.min.js"></script>
-<script type="text/javascript" src="/HandScoringWeb/resources/js/scoring.js"></script>
 <script src="/HandScoringWeb/resources/fxResources/dtfx.js"></script>
+<script type="text/javascript" src="/HandScoringWeb/resources/js/scoring.js"></script>
 <link type="text/css" href="/HandScoringWeb/resources/css/jquery-ui-1.8.10.custom.css" rel="stylesheet" />
 <link type="text/css" href="/HandScoringWeb/resources/css/style.css" rel="stylesheet" />
 
@@ -22,11 +22,12 @@ var playCompleted = false;
 function stopAudio(){
 	try {
         var myApp = document.getElementById("myApp");
-        //if(myApp.script.playCalledflag){
-        	myApp.script.stopAudio("");
-        //}
-        //myApp.script.stop.disable = true;
-        //myApp.script.pause.disable = true;
+       	myApp.script.stopAudio("");
+       	var subIframe = $('#iframeAudio');
+       	if(subIframe != '' || subIframe != null) {
+		$(subIframe).attr('src', "#");
+		}
+											
 	}catch (e) {
         
     }
@@ -44,8 +45,6 @@ function stopAudio(){
     	return stringFX;
 	}
 	
-	
-	
 	function getAudioPlayer(parentObj) {
 	  var fxstring = javafxString(
 	    {
@@ -62,7 +61,6 @@ function stopAudio(){
 	  playCompleted = false;
 	}
 
-
 	function showScoreSelect(disableStatus){
 		if(document.getElementById("itemType").value == "AI"){
 			if(disableStatus == "true"){
@@ -75,10 +73,8 @@ function stopAudio(){
 		}
 	}
 		
-	
-	
 	function getPlayCompleted(playStatus){
-		//alert("getPlayCompleted"+playStatus);
+		alert("getPlayCompleted in parent:"+playStatus);
 		/*try {
 			var myApp = document.getElementById("myApp"); 
 			if(playStatus == true && myApp.script.playCalledflag){			
@@ -93,8 +89,9 @@ function stopAudio(){
 	}
 	
 	function checkPlay(){
+		alert("playCompleted in checkplay : "+playCompleted);
 		if(document.getElementById("itemType").value == "AI"){			
-				if(playCompleted == true){			
+				if(playCompleted == "true"){			
 					formSave();
 				}else{
 					var confSave = confirm("Are you sure you want to score before listening to the entire response?");
@@ -106,6 +103,13 @@ function stopAudio(){
 			formSave();
 		}
 	}
+	
+	
+	function passAudioString(){
+	var audioResponseString = document.getElementById("audioResponseString").value;
+	return audioResponseString;
+	}
+	
 	
 </script>
 
@@ -243,7 +247,7 @@ function stopAudio(){
 									</span>
 								</c:if>
 								<c:if test="${answered == 'A'}">
-								<a href="javascript:void(0)" onclick="formSubmit('<%=itemId%>','<%=itemtype%>',<%=itemSetId%>,<%=itemNumber%>, <%=rowId%>)">Text Response</a>
+									<a href="javascript:void(0)" onclick="formSubmit('<%=itemId%>','<%=itemtype%>',<%=itemSetId%>,<%=itemNumber%>, <%=rowId%>)">Text Response</a>
 								</c:if>
 							</c:if>
 							</td>
@@ -308,9 +312,10 @@ function stopAudio(){
 				</ctb:message>
 			</c:if>
 			<br>
+			<p> <netui:button type="submit" value="${bundle.web['common.button.back']}" action="returnToFindStudent" /> </p>
 
 			<!-- buttons -->
-			<p><netui:button type="submit" value="Back" action="returnToFindStudent" /></p>
+			<!-- <p><netui:button type="submit" value="Back" action="" /></p> -->
 			<div id="dialogID"
 				style="display: none; width: 1000px; height: 1000px; overflow:visible; background-color: #FFFFCC; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 			<table border="0" width="100%">
@@ -324,6 +329,11 @@ function stopAudio(){
 						<script>
 							//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
 						</script>
+						
+					</div>
+					<div id="iframeDiv">
+					<iframe id="iframeAudio" src="about:blank" height="70" width="200" frameborder="0" scrolling="no">
+					</iframe>
 					</div>
 					</td>
 				</tr>
@@ -358,7 +368,6 @@ function stopAudio(){
 			<div class="scroll" id="rubricDialogID"
 				style="display: none; background-color: #FFFFCC; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 				<iframe id="subIframe" src="rubric.jsp" style=" background-color: #FFFFCC; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; width: 100%; height: 90%; " frameborder="0" scrollable="yes"></iframe>
-				
 			</div>						
 		</netui:form>
 		<!-- ********************************************************************************************************************* -->

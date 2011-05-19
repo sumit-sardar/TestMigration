@@ -15,7 +15,7 @@ if(isHidden){
 			document.getElementById("itemId").value = itemId;
 			document.getElementById("itemSetId").value = itemSetId;
 			document.getElementById("itemNumber").value = itemNumber;
-			document.getElementById("message").style.display = 'none';
+		//	document.getElementById("message").style.display = 'none';
 			document.getElementById("rowNo").value = rowno;
 
 			$.ajax(
@@ -46,13 +46,29 @@ if(isHidden){
 											document.getElementById("pointsDropDown").setAttribute("disabled",true);
 											document.getElementById("Question").setAttribute("disabled",true);
 											//$("#crText").hide();
-											$("#audioPlayer").show();
-											getAudioPlayer('audioPlayer');
+									
+											if(navigator.userAgent.indexOf('Win') != -1) {
+
+												$("#iframeDiv").hide();
+												var iframe = $("#iframeAudio");
+												$(iframe).attr('src', "about:blank");
+												
+												$("#audioPlayer").show();
+												getAudioPlayer('audioPlayer');
+											
+											}else {
+
+												$("#audioPlayer").hide();
+												$("#iframeDiv").show();
+												var iframe = $("#iframeAudio");
+												$(iframe).attr('src', "audioPlayer.jsp");
+											}
+											
 											openPopup(rowno, itemNumber);
 											updateScore(rowno);  //Changes for defect #66157
 										}
 										else{
-										document.getElementById("itemType").value = "CR";								
+											document.getElementById("itemType").value = "CR";								
 											var crResponses =data.answer.cRItemContent.string.length;
 											for(var i = 0; i < crResponses; i++){
 											if( i == (crResponses-1)){
@@ -244,8 +260,23 @@ if(isHidden){
 											document.getElementById("pointsDropDown").setAttribute("disabled",true);
 											document.getElementById("Question").setAttribute("disabled",true);
 											//$("#crText").hide();
-											$("#audioPlayer").show();
-											getAudioPlayer('audioPlayer');
+											if(navigator.userAgent.indexOf('Win') != -1) {
+
+												$("#iframeDiv").hide();
+												var iframe = $("#iframeAudio");
+												$(iframe).attr('src', "about:blank");
+												
+												$("#audioPlayer").show();
+												getAudioPlayer('audioPlayer');
+											
+											}else {
+
+												$("#audioPlayer").hide();
+												$("#iframeDiv").show();
+												var iframe = $("#iframeAudio");
+												$(iframe).attr('src', "audioPlayer.jsp");
+											}
+											
 											if(rowno != null){
 												openPopupForItem(loginId);
 												updateScore(rowno);
@@ -424,6 +455,8 @@ if(isHidden){
 			$("#blockDiv").css("cursor","normal");
 			$("#blockDiv").remove();
 		}
+		
+		
 		function closePopUp(){
 			//alert("closed");
 			stopAudio();
@@ -486,4 +519,8 @@ if(isHidden){
 	
 	function hideMessage(){
 		document.getElementById("messageSpan").innerHTML = "";
-	}
+	}		
+					
+	function isWindows() {
+		return navigator.userAgent.indexOf('Win') > -1;
+	}				

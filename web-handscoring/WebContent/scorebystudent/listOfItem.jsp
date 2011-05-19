@@ -21,8 +21,19 @@
 var playCompleted = false;
 function stopAudio(){
 	try {
-        var myApp = document.getElementById("myApp");
-       	myApp.script.stopAudio("");
+       	var subIframe = $('#iframeAudio');
+
+		if(isWindows()) {
+	        var myApp = document.getElementById("myApp");
+	       	myApp.script.stopAudio("");
+		}
+		else {
+			subIframe[0].contentWindow.stopAudio();
+			alert(subIframe);
+		}
+       	if(subIframe != '' || subIframe != null) {
+		$(subIframe).attr('src', "#");
+		}											
 	}catch (e) {
         
     }
@@ -74,7 +85,7 @@ function stopAudio(){
 	
 	
 	function getPlayCompleted(playStatus){
-		//alert("getPlayCompleted"+playStatus);
+		alert("getPlayCompleted in parent:"+playStatus);
 		/*try {
 			var myApp = document.getElementById("myApp"); 
 			if(playStatus == true && myApp.script.playCalledflag){			
@@ -89,8 +100,9 @@ function stopAudio(){
 	}
 	
 	function checkPlay(){
+		alert("playCompleted in checkplay : "+playCompleted);
 		if(document.getElementById("itemType").value == "AI"){			
-				if(playCompleted == true){			
+				if(playCompleted == "true"){			
 					formSave();
 				}else{
 					var confSave = confirm("Are you sure you want to score before listening to the entire response?");
@@ -104,13 +116,15 @@ function stopAudio(){
 	}
 	
 	
+	function passAudioString(){
+	var audioResponseString = document.getElementById("audioResponseString").value;
+	return audioResponseString;
+	}
+	
+	
 </script>
-<%
-	//Start Change For CR - GA2011CR001
-	//Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); 
-	//String []studentIdArrValue = (String[])request.getAttribute("studentIdArrValue");
-%>
-<netui-template:template templatePage="/resources/jsp/scoring_template.jsp">
+
+<netui-template:template templatePage="/resources/jsp/template.jsp">
 	<netui-template:setAttribute name="title" value="${bundle.web['individualStudentScoring.window.title']}" />
 	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.findStudent']}" />
 	<netui-template:section name="bodySection">
@@ -324,6 +338,11 @@ function stopAudio(){
 						<script>
 							//getAudioPlayer('audioPlayer');//javafx({archive: "JavaFXApplication1.jar",width: 250,height: 80,code: "javafxapplication1.Main",name: "fxApp",id: "fxApp"});
 						</script>
+						
+					</div>
+					<div id="iframeDiv">
+					<iframe id="iframeAudio" src="about:blank" height="70" width="200" frameborder="0" scrolling="no">
+					</iframe>
 					</div>
 					</td>
 				</tr>
