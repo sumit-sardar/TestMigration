@@ -22,12 +22,19 @@
 var playCompleted = false;
 function stopAudio(){
 	try {
-        var myApp = document.getElementById("myApp");
-       	myApp.script.stopAudio("");
-       	var subIframe = $('#iframeAudio');
-       	if(subIframe != '' || subIframe != null) {
-		$(subIframe).attr('src', "#");
+       var subIframe = $('#iframeAudio');
+
+		if(isWindows()) {
+	        var myApp = document.getElementById("myApp");
+	       	myApp.script.stopAudio("");
 		}
+		else {
+			subIframe[0].contentWindow.stopAudio();
+			//alert(subIframe);
+		}
+       	/*if(subIframe != '' || subIframe != null) {
+		$(subIframe).attr('src', "#");
+		}*/	
 											
 	}catch (e) {
         
@@ -80,7 +87,7 @@ function stopAudio(){
 	
 	
 	function getPlayCompleted(playStatus){
-		alert("getPlayCompleted in parent:"+playStatus);
+		//alert("getPlayCompleted in parent:"+playStatus);
 		/*try {
 			var myApp = document.getElementById("myApp"); 
 			if(playStatus == true && myApp.script.playCalledflag){			
@@ -90,14 +97,16 @@ function stopAudio(){
 			}
 		}catch (e) {}*/
 		playCompleted = playStatus;
-		stopAudio();//to retain the default state of player
+		if(isWindows()) {
+			stopAudio();//to retain the default state of player
+		}
 		//alert("inside getPlayCompleted");
 	}
 	
 	function checkPlay(){
-		alert("playCompleted in checkplay : "+playCompleted);
+		//alert("playCompleted in checkplay : "+playCompleted);
 		if(document.getElementById("itemType").value == "AI"){			
-				if(playCompleted == "true"){			
+				if(playCompleted == true){			
 					formSave();
 				}else{
 					var confSave = confirm("Are you sure you want to score before listening to the entire response?");
@@ -112,8 +121,8 @@ function stopAudio(){
 	
 	
 	function passAudioString(){
-	var audioResponseString = document.getElementById("audioResponseString").value;
-	return audioResponseString;
+		var audioResponseString = document.getElementById("audioResponseString").value;
+		return audioResponseString;
 	}
 	
 	

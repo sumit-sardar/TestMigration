@@ -15,7 +15,7 @@ if(isHidden){
 			document.getElementById("itemId").value = itemId;
 			document.getElementById("itemSetId").value = itemSetId;
 			document.getElementById("itemNumber").value = itemNumber;
-		//	document.getElementById("message").style.display = 'none';
+			document.getElementById("message").style.display = 'none';
 			document.getElementById("rowNo").value = rowno;
 
 			$.ajax(
@@ -25,7 +25,7 @@ if(isHidden){
 										blockUI();
 										$("#audioPlayer").hide();
 										$("#crText").hide();
-										
+										$("#iframeDiv").hide();
 										
 									},
 						url:		'beginCRResponseDisplay.do',
@@ -239,7 +239,7 @@ if(isHidden){
 										blockUI();
 										$("#audioPlayer").hide();
 										$("#crText").hide();
-										
+										$("#iframeDiv").hide();
 										
 									},
 						url:		'beginCRResponseDisplay.do',
@@ -523,4 +523,6 @@ if(isHidden){
 					
 	function isWindows() {
 		return navigator.userAgent.indexOf('Win') > -1;
-	}				
+	}	
+	
+				

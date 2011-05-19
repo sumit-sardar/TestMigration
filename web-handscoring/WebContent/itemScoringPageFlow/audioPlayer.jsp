@@ -9,9 +9,9 @@
 		var audioResponseString = sng;
 		var regExp = /\s+/g;
 		var stringFX = audioResponseString.replace(regExp,'');
-		var fxstring = '<applet CODEBASE = "/HandScoringWeb/resources/fxResources/" archive="audioPlayer.jar,jspeex.jar" code="com.audioPlayer.class" width="200"	height="60" name= "myApplet" id= "myApp"><PARAM name="byteString" value="'+stringFX+'" ></applet>';
+		var fxstring = '<applet CODEBASE = "/HandScoringWeb/resources/fxResources/" mayscript="true" scriptable="true" archive="audioPlayer.jar,jspeex.jar" code="com.audioPlayer.class" width="200"	height="60" name= "myApplet" id= "myApp"><PARAM name="byteString" value="'+stringFX+'" ></applet>';
 		document.getElementById(parentObj).innerHTML = fxstring;
-		playCompleted = false;
+		parent.playCompleted = false;
 	}
 	
 	function getAudioString() {
@@ -24,7 +24,7 @@
 	}
 	
 	function getPlayCompleted(playStatus){
-		alert("playStatus : "+playStatus);
+		//alert("playStatus : "+playStatus);
 		parent.getPlayCompleted(playStatus);
 	}
 	
@@ -33,7 +33,7 @@
 	}
 	
 	function stopAudio() {
-		alert(document.myApplet);
+		//alert(document.myApplet);
 		document.myApplet.stopAudio();
 	}
 	
