@@ -86,7 +86,7 @@ public class RegistrationController extends PageFlowController
      */
     @Control()
     private com.ctb.control.licensing.Licensing licensing;
-
+    
     private static final String ACTION_DEFAULT          = "defaultAction";
     private static final String ACTION_FIND_STUDENT     = "findStudentAction";
     private static final String ACTION_ADD_STUDENT      = "addStudentAction";
@@ -293,7 +293,6 @@ public class RegistrationController extends PageFlowController
         return form;  
     }
     
-
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** ENTER STUDENT ************* /////////////////////////////    
 /////////////////////////////////////////////////////////////////////////////////////////////    
@@ -333,20 +332,7 @@ public class RegistrationController extends PageFlowController
         this.getRequest().setAttribute("selectedTab", selectedTab);
         
         this.getRequest().setAttribute("testAdminName", this.scheduledSession.getTestSession().getTestAdminName());                        
-         
-         //License user stories Agile task
-        Integer productId = this.scheduledSession.getTestSession().getProductId();
-        CustomerLicense []customerLicense = getCustomerLicenses(productId) ;
-        if (customerLicense != null && customerLicense.length > 0)
-        {
-            
-            licenseSessionData = new LicenseSessionData();
-            this.licenseSessionData.setAvailable(customerLicense[0].getAvailable());
-            this.licenseSessionData.setLicenseAfterLastPurchase(customerLicense[0].getLicenseAfterLastPurchase()); 
-            this.getRequest().setAttribute("unlimitedLicenses", Boolean.TRUE); 
-        }
-        //End License user stories Agile task 
-         
+        
         setFormInfoOnRequest(form);                
         return new Forward("success", form);
     }
@@ -977,33 +963,6 @@ public class RegistrationController extends PageFlowController
                 ss.setStudentManifests(manifestArray);
                 roster = TestSessionUtils.addStudentToSession(this.scheduleTest, this.userName, ss, testAdminId);
             }
-            
-            //License user stories Agile task
-            Integer productId = this.scheduledSession.getTestSession().getProductId();
-            CustomerLicense[] customerLicense = getCustomerLicenses(productId);
-            if (customerLicense != null && customerLicense.length > 0)
-            {
-                
-                this.licenseSessionData.setAvailable(customerLicense[0].getAvailable());
-                this.licenseSessionData.setLicenseAfterLastPurchase(customerLicense[0].getLicenseAfterLastPurchase());   
-                int availableLicenses = this.licenseSessionData.getAvailable().intValue();
-                //Check to show the button "RegisterAnotherStudent" disable
-                if (availableLicenses <= 0)
-                {
-                    
-                    this.getRequest().setAttribute("DisableRegisterAnotherStudent", Boolean.TRUE);
-                            
-                }
-                else
-                {
-                    
-                    this.getRequest().setAttribute("DisableRegisterAnotherStudent", Boolean.FALSE); 
-                } 
-                   
-                this.getRequest().setAttribute("unlimitedLicenses", Boolean.TRUE); 
-               
-            }
-            //End of License user stories Agile task
             
             // set current into form before goto next step
             form.setStudentProfile(this.student);
@@ -2058,23 +2017,6 @@ public class RegistrationController extends PageFlowController
 
     }
     
-    /**
-     * getCustomerLicenses
-     */
-    private CustomerLicense[] getCustomerLicenses(Integer productId)
-    {
-        CustomerLicense[] cls = null;
-
-        try {
-            cls = this.licensing.getCustomerLicenseData(this.userName, productId);
-        }    
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }
-        
-        return cls;
-    }
-
 	public String[] getGradeOptions() {
 		return gradeOptions;
 	}
