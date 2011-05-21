@@ -48,30 +48,10 @@
 <netui-data:getData resultId="isTabeProduct" value="${requestScope.isTabeProduct}"/>
 <netui-data:getData resultId="hasStudentSelected" value="${requestScope.hasStudentSelected}"/>
 
-<!--change for license-->
-
-<netui-data:getData resultId="licenseConfig" value="${sessionScope.disableAvailableBarTestSeesion}"/>
-<netui-data:getData resultId="licenseAdminConfig" value="${sessionScope.disableAvailableBarSubtest}"/>
-<netui-data:getData resultId="displayLicenseBar" value="${sessionScope.displayLicenseBar}"/>
-<netui-data:getData resultId="licensebarColor" value="${pageFlow.licenseBarColor}"/>
-<netui:hidden dataSource="actionForm.licenseAvailable"/>
-<netui:hidden dataSource="actionForm.licensePercentage"/>
-<netui:span value="${actionForm.licenseAvailable}"/> 
 <netui:hidden dataSource="actionForm.testAdmin.productId"/>
 <!-- Non TABE -->
 <c:if test="${! isTabeProduct}"> 
 	<ctb:switch dataSource="${pageFlow.action}">
-	  <!--change for licnese-->
-	  <%!String color = "red";%>
-	  <c:if test="${licensebarColor =='RED'}"> 
-			<% color = "red";%>
-	  </c:if>
-	  <c:if test="${licensebarColor =='YELLOW'}"> 
-		<% color = "yellow";%>
-	  </c:if>
-	  <c:if test="${licensebarColor =='GREEN'}">
-		<% color = "green";%>
-	  </c:if>
 
 	<table width="100%" cellpadding="0" cellspacing="0" class="transparent">
 		<tr>
@@ -90,26 +70,7 @@
 			</td>
 			<td class="transparent"></td>
 			<td width="100%" rowspan="2" align="right" valign="top">
-				<c:if test="${displayLicenseBar}">
-					<table width="150" height="100%" cellpadding="0" cellspacing="2">
-						<tr bgcolor="green">
-							<td class="transparent-label" width="100%" height="100%" align="left" nowrap="" bgcolor="#FFFFFF"><netui:span value="${bundle.web['licenses.title']}"/></td>
-						</tr>
-						<tr>
-							<td height="100%" align="center" nowrap="" class="transparent" bgcolor="<%=color%>">
-								<c:if test="${licensebarColor =='RED'}"> 
-									<netui:span value="${actionForm.licensePercentage}" style="background-color:#ff0000;color:#ffffff;width:30px"/>
-								</c:if>
-								<c:if test="${licensebarColor =='YELLOW'}">
-									<netui:span value="${actionForm.licensePercentage}" style="background-color:#ffff00"/>
-								</c:if> 
-								<c:if test="${licensebarColor =='GREEN'}">
-									<netui:span value="${actionForm.licensePercentage}" style="background-color:#347C17;color:#ffffff"/>
-								</c:if>
-							</td>
-						</tr>
-					</table>
-				</c:if>
+			&nbsp;
 			</td>
 			<td rowspan="2">
 				<table width="25"><tr><td></td></tr></table>
@@ -127,17 +88,6 @@
 <!-- TABE -->
 <c:if test="${isTabeProduct}"> 
 	<ctb:switch dataSource="${pageFlow.action}">
-	<!--change for licnese-->
-	 <%!String color1 = "red";%>
-	  <c:if test="${licensebarColor =='RED'}"> 
-		<% color1 = "red";%>
-	  </c:if>
-	  <c:if test="${licensebarColor =='YELLOW'}"> 
-	    <% color1 = "yellow";%>
-	  </c:if>
-	  <c:if test="${licensebarColor =='GREEN'}">
-        <% color1 = "green";%>
-      </c:if>
 	<table width="100%" cellpadding="0" cellspacing="0" class="transparent">
 		<tr>
 			<td nowrap="">
@@ -155,26 +105,7 @@
 			</td>
 			<td class="transparent"></td>
 			<td width="100%" rowspan="2" align="right" valign="top">
-				<c:if test="${displayLicenseBar}">
-					<table width="150" height="100%" cellpadding="0" cellspacing="2">
-						<tr bgcolor="green">
-							<td class="transparent-label" width="100%" height="100%" align="left" nowrap="" bgcolor="#FFFFFF"><netui:span value="${bundle.web['licenses.title']}"/></td>
-						</tr>
-						<tr>
-							<td height="100%" align="center" nowrap="" class="transparent" bgcolor="<%=color1%>">
-								<c:if test="${licensebarColor =='RED'}"> 
-									<netui:span value="${actionForm.licensePercentage}" style="background-color:#ff0000;color:#ffffff;width:30px"/>
-								</c:if>
-								<c:if test="${licensebarColor =='YELLOW'}">
-									<netui:span value="${actionForm.licensePercentage}" style="background-color:#ffff00"/>
-								</c:if> 
-								<c:if test="${licensebarColor =='GREEN'}">
-									<netui:span value="${actionForm.licensePercentage}" style="background-color:#347C17;color:#ffffff"/>
-								</c:if>
-							</td>
-						</tr>
-					</table>
-				</c:if>
+			&nbsp;
 			</td>
 			<td rowspan="2">
 				<table width="25"><tr><td></td></tr></table>

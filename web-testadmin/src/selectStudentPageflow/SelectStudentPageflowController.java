@@ -9,6 +9,8 @@ import com.ctb.bean.request.FilterParams.FilterType;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.CustomerLicense;
+import com.ctb.bean.testAdmin.NodeData;
+import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
 import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SchedulingStudent;
 import com.ctb.bean.testAdmin.SchedulingStudentData;
@@ -29,8 +31,11 @@ import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.widgets.bean.ColumnSortEntry;
 import data.DuplicateAssignedStudentInfo;
 import data.Message;
+import data.OrganizationVO;
 import data.PathNode;
 import data.TestVO;
+
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -68,6 +73,7 @@ public class SelectStudentPageflowController extends PageFlowController
      */
     @Control()
     private com.ctb.control.licensing.Licensing license;
+
     
     public static final String ACTION_DEFAULT = "defaultAction";
     public static final String ACTION_CHANGE_ACCOMMODATION = "changeAccommodation";
@@ -108,9 +114,6 @@ public class SelectStudentPageflowController extends PageFlowController
     private List selectedStudents = null;
     private List originalSelectedStudents = null;
     public String licenseBarColor = null; 
-    public boolean licenseFlagForSession = false;
-    public boolean licenseFlagForSubTest = false;
-    boolean licenseflag = false;
     private int totalDuplicateStudentsInForm = 0;
     
     
@@ -494,9 +497,11 @@ public class SelectStudentPageflowController extends PageFlowController
             this.action = ACTION_VIEW_TEST;
         }
 
-        getAvailableLicense(form);
-        this.getSession().setAttribute("displayLicenseBar",
-                    new Boolean(licenseflag));
+        OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(this.selectedOrgNodeId);
+        boolean licenseflag = setupLicenseInfo(this.selectedOrgNodeId, selectedOrgNodeName, onli, form, actionElement);
+         
+        this.getSession().setAttribute("displayLicenseBar", new Boolean(licenseflag));
+        
         setFormInfoOnRequest(form);
         return new Forward("success", form);
     }
@@ -1032,8 +1037,6 @@ public class SelectStudentPageflowController extends PageFlowController
         boolean hasDuplicate = verifyDuplicateStudents();
         boolean isError = false;
         int duplicateStudentsNum = 0;
-
-        //License LM10
        
         
         if (hasDuplicate)
@@ -1042,12 +1045,8 @@ public class SelectStudentPageflowController extends PageFlowController
             duplicateStudentsNum = totalDuplicateStudentsInForm - dupStudentSize;
         }
      
-        if (!recheckLicenseAvailability(form, duplicateStudentsNum))
+        if (!verifyLicenseAvailability(form, duplicateStudentsNum))
         {
-           
-            form.setMessage(Message.LICENSE_TITLE, MessageResourceBundle.
-                    getMessage("platformlicence.getCustomerLicenseData.E001"), Message.ERROR);   
-            
             isError = true;
                     
         }
@@ -1419,174 +1418,187 @@ public class SelectStudentPageflowController extends PageFlowController
     }
     
     
-     //Change for licnese
-    private Integer getAvailableLicense(ScheduleTestController.ScheduleTestForm form) {
-    
-        CustomerLicense[] cLicense = null;
-        licenseflag = false;
+    /**
+     * getLicenseQuantitiesByOrg
+     */    
+    private OrgNodeLicenseInfo getLicenseQuantitiesByOrg(Integer orgNodeId) {
+    	
+        OrgNodeLicenseInfo onli = null;        
+        Integer productId = new Integer(4000); 				// FAKE
+    	String subtestModel = "T";							// FAKE
         
         try {
-    
-             cLicense = (CustomerLicense[])this.license.
-                    getCustomerLicenseData (this.userName,form.getTestAdmin().getProductId());
-
-        
-        } catch (CTBBusinessException e) {
-            
-             e.printStackTrace();
-        } 
-             
-        if (cLicense != null && cLicense.length > 0) {
-            
-            licenseflag = true;
-            if (cLicense[0].getSubtestModel().equals("T")) {
-            
-                licenseFlagForSubTest = true;
-            
-            } else if (cLicense[0].getSubtestModel().equals("F")) {
-            
-                licenseFlagForSession = true;
-            }
-                
-            if (licenseFlagForSession || licenseFlagForSubTest) {
-            
-                calculateAvailableLicense(cLicense,form);
-            }
-            
-           
-            return  cLicense[0].getAvailable();
-              
-        } else {
-            
-           
-            return null;
-            
+        	
+            onli = this.license.getLicenseQuantitiesByOrgNodeIdAndProductId(this.userName, 
+										                    orgNodeId, 
+										                    productId, 
+										                    subtestModel);
+										                    
+        }    
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
         }
+        
+        return onli;
+    }
+    
+    /**
+     * setupLicenseInfo
+     */
+    private boolean setupLicenseInfo(Integer orgNodeId, String orgNodeName, OrgNodeLicenseInfo onli, 
+    				ScheduleTestController.ScheduleTestForm form, String actionElement) {
+
+        boolean showLicense = false;    	
+                
+        if ((onli != null) && (orgNodeId != null) && (orgNodeId.intValue() > 0)) {
+            
+       		if (orgNodeId.intValue() != 45914) showLicense = true;	// FAKE
+				
+            if (showLicense) {
+                calculateAvailableLicenseByOrganization(orgNodeId, orgNodeName, onli, form, actionElement);
+            }
+        } 
+        
+    	return showLicense;
+    }
+    
+    
+    /**
+     * deductLicenseFromOrgNode
+     */
+    private Integer deductLicenseFromOrgNode(Integer orgNodeId, Integer availableLicense) {
+    	int available = availableLicense.intValue();
+        
+    	for (int i=0; i < this.selectedStudents.size(); i++) {
+            SessionStudent ss = (SessionStudent)this.selectedStudents.get(i);
+            if (ss.getOrgNodeId().intValue() == orgNodeId.intValue()) {
+            	available--;
+            }
+        }
+        
+        return new Integer(available);
+    }
+    
+    /**
+     * calculateAvailableLicenseByOrganization
+     */
+    private void calculateAvailableLicenseByOrganization(Integer orgNodeId, String orgNodeName, OrgNodeLicenseInfo onli, 
+    					ScheduleTestController.ScheduleTestForm form, String actionElement) {
+        
+    	Integer availableLicense = onli.getLicPurchased();
+    	Integer usedLicenses = usedLicensesInNode(orgNodeId);
+        double usedLicPercent = Math.round(((usedLicenses.doubleValue() * 100) / availableLicense.doubleValue() ));
+
+        if (usedLicenses.intValue() > availableLicense.intValue()) {
+        	Integer licenseNeeded = new Integer(usedLicenses.intValue() - availableLicense.intValue());
+			boolean stopIcon = actionElement.equals("selectStudentDone");
+		    setLicenseErrorMessage(form, orgNodeName, licenseNeeded, stopIcon);
+		}
+		
+        Integer usedLicensePercentage = new Integer(new Double(usedLicPercent).intValue());
+                 
+        String availableLicensePercent = "Used " + usedLicenses + " out of " + availableLicense + 
+                " licenses ("+ usedLicensePercentage.toString() + "%)";
+                       
+        if (usedLicensePercentage.intValue() >= 90 ) 
+    		licenseBarColor = Message.LOW_LICENSE_COLOR;
+        else 
+        if (usedLicensePercentage.intValue() >= 70) 
+           	licenseBarColor = Message.MEDIUM_LICENSE_COLOR;     
+        else 
+        	licenseBarColor = Message.HIGH_LICENSE_COLOR;
+        
+        form.setLicensePercentage(availableLicensePercent);
+        
     }
 
+    
     /**
-     * This function rechecks the license availability before selecting students 
-     * @param form
-     * @param duplicateStudentNum
-     * @return boolean
+     * getScheduledOrgNodes
      */
-    private boolean recheckLicenseAvailability(ScheduleTestController.ScheduleTestForm form,int duplicateStudentsNum) {
+    private List getScheduledOrgNodes() {
+    	ArrayList scheduledOrgNodes = new ArrayList();
         
-        ScheduleTestController parentPageFlow = (ScheduleTestController)PageFlowUtils.getNestingPageFlow(getRequest());
-        ScheduledSession scheduledSession= parentPageFlow.getScheduledSession();
-        List selectedSubtestList = parentPageFlow.defaultSubtests;
-        boolean result = true;
-        Integer availableLicense = null;
-        CustomerLicense[] cLicense = null;
-        
-        //no. of students selected
-        int numOfLicenseRequired = 0;
-        
-        availableLicense = getAvailableLicense(form);
-        this.getSession().setAttribute("displayLicenseBar",
-                    new Boolean(licenseflag));
-        
-        int noOfStudentsFromDB =  scheduledSession != null ?  scheduledSession.getStudents()!= null ?   
-                scheduledSession.getStudents().length : 0 : 0; 
-        
-        if(availableLicense != null) {
-        
-         /*As per discussion for LM10: Change LM10 to compare the extra 
-           added students with the available license count for both 
-           session and subtest model.
-           */
-          numOfLicenseRequired = form.getSelectedStudents().size() - 
-                    noOfStudentsFromDB - duplicateStudentsNum;
-   		  if (numOfLicenseRequired > 0 && availableLicense.intValue() < numOfLicenseRequired ) {
-                
-                 result = false;
-          }
+    	for (int i=0; i<this.selectedStudents.size(); i++) {
+            SessionStudent ss = (SessionStudent)this.selectedStudents.get(i);
+            boolean found = false;
+        	for (int j=0; j<scheduledOrgNodes.size(); j++) {
+        		OrganizationVO orgNode = (OrganizationVO)scheduledOrgNodes.get(j);
+                if (ss.getOrgNodeId().intValue() == orgNodeId.intValue()) {
+                	found = true;
+                }
+        	}
+        	if (! found) {
+        		OrganizationVO orgNode = new OrganizationVO(ss.getOrgNodeId(), ss.getOrgNodeName(), null, null);
+        		scheduledOrgNodes.add(orgNode);
+        	}
         }
         
-       /*if(availableLicense != null) {
-            
-            if (licenseFlagForSession) {
-               
-                numOfLicenseRequired = form.getSelectedStudents().size() - 
-                        noOfStudentsFromDB - duplicateStudentsNum;
-                        
-                if (availableLicense.intValue() < numOfLicenseRequired ) {
-                    
-                     result = false;
-                }
-            
-            }
-            else if (licenseFlagForSubTest) {
-                
-                //As per discussion for LM10 on 18/08/09
-                  numOfLicenseRequired = (form.getSelectedStudents().size()- 
-                                noOfStudentsFromDB - duplicateStudentsNum)
-                                        * selectedSubtestList.size();  
-                numOfLicenseRequired = form.getSelectedStudents().size() - 
-                        noOfStudentsFromDB - duplicateStudentsNum;
-                        
-                //if (availableLicense.intValue() < numOfLicenseRequired ) {
-                if ((numOfLicenseRequired > 0 && availableLicense.intValue() 
-                        < numOfLicenseRequired) || 
-                        availableLicense.intValue() <= 0 ) {
-                      
-                    result = false;
-                    
-                }
-                
-            }
-            
-        }
-        */
-    return result;
+        return scheduledOrgNodes;
+    }
+    
+    /**
+     * verifyLicenseAvailability
+     */
+    private boolean verifyLicenseAvailability(ScheduleTestController.ScheduleTestForm form, int duplicateStudentsNum) {
+        
+        List scheduledOrgNodes = getScheduledOrgNodes();
+    	for (int i=0; i<scheduledOrgNodes.size(); i++) {
+    		OrganizationVO orgNode = (OrganizationVO)scheduledOrgNodes.get(i);    		
+            OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(orgNode.getId());
+        	Integer availableLicense = onli.getLicPurchased();
+        	Integer usedLicenses = usedLicensesInNode(orgNode.getId());
+            if (usedLicenses.intValue() > availableLicense.intValue()) {
+            	Integer licenseNeeded = new Integer(usedLicenses.intValue() - availableLicense.intValue());
+    		    setLicenseErrorMessage(form, orgNode.getOrganizationName(), licenseNeeded, true);
+    			return false;
+    		}
+    	}
+        
+        return true;
                             
     }
     
     /**
-     * calculate availableLicense percentage
-     * value
+     * usedLicensesInNode
      */
-    
-    private void calculateAvailableLicense(CustomerLicense[] cLicense,ScheduleTestController.ScheduleTestForm form) {
+    private Integer usedLicensesInNode(Integer orgNodeId) {
+    	int usedLicenses = 0;
         
-        String  availableLicensePercent = null;
-        Integer availableLicense = null;
-        
-        availableLicense = cLicense[0].getAvailable();
-        double sum =  cLicense[0].getLicenseAfterLastPurchase().doubleValue();
-        double availableLicPercent = Math.round(((availableLicense
-                .doubleValue()*100)/ sum ));
-        Integer availableLicensePercentage = new Integer(
-                new Double(availableLicPercent).intValue());
-         
-         //For defect 59054     
-        availableLicensePercentage = availableLicensePercentage.intValue() >
-                Message.MAX_LICENSE_PERCENT ? new Integer(Message.MAX_LICENSE_PERCENT) : 
-                    availableLicensePercentage;
-        availableLicensePercentage = availableLicensePercentage.intValue() < 
-                Message.MIN_LICENSE_PERCENT ? new Integer(Message.MIN_LICENSE_PERCENT) : 
-                    availableLicensePercentage;              
-                
-        availableLicensePercent = "Available: "+ availableLicense + 
-                " ("+ availableLicensePercentage + "%)";
-        form.setLicensePercentage(availableLicensePercent);
-                       
-        if(availableLicensePercentage.intValue() < Message.MIN_LICENSE ) {
-            
-            licenseBarColor = Message.LOW_LICENSE_COLOR;
-            
-        } else if (availableLicensePercentage.intValue() < Message.MAX_LICENSE && 
-                availableLicensePercentage.intValue() >= Message.MIN_LICENSE )  {
-               
-               licenseBarColor = Message.MEDIUM_LICENSE_COLOR;     
-            
-        } else if (availableLicensePercentage.intValue() >= Message.MAX_LICENSE ) {
-            
-            licenseBarColor = Message.HIGH_LICENSE_COLOR;
+    	for (int i=0; i<this.selectedStudents.size(); i++) {
+            SessionStudent ss = (SessionStudent)this.selectedStudents.get(i);
+            if (ss.getOrgNodeId().intValue() == orgNodeId.intValue()) {
+            	usedLicenses++;
+            }
         }
         
-    }
+        int noOfStudentsFromDB = 0;
+        ScheduleTestController parentPageFlow = (ScheduleTestController)PageFlowUtils.getNestingPageFlow(getRequest());
+        ScheduledSession scheduledSession = parentPageFlow.getScheduledSession();
+        
+        if ((scheduledSession != null) &&  (scheduledSession.getStudents()!= null)) {
+        	SessionStudent[] students = scheduledSession.getStudents();
+        	if ((students != null && students.length > 0)) {
+        		for (int i=0 ;i<students.length ; i++) {
+                    SessionStudent ss = (SessionStudent)students[i];
+                    if (ss.getOrgNodeId().intValue() == orgNodeId.intValue()) {
+                    	noOfStudentsFromDB++;
+                    }       			
+        		}
+        	}
+        }
 
+        return new Integer(usedLicenses - noOfStudentsFromDB);
+    }
+    
+    private void setLicenseErrorMessage(ScheduleTestController.ScheduleTestForm form, String orgNodeName, 
+    									Integer licenseNeeded, boolean stopIcon) {
+        String errMsg = "<b>" + orgNodeName + "</b>: " + MessageResourceBundle.getMessage("Licence.Insufficient") +
+        				" You need <b>" + licenseNeeded.toString() + "</b> more licenses.";
+        String type = stopIcon? Message.ERROR : Message.ALERT;
+        form.setMessage(Message.LICENSE_TITLE, errMsg, type);       	
+    }
+    
 	public Boolean getOffGradeTestingDisabled() {
 		return offGradeTestingDisabled;
 	}

@@ -108,12 +108,6 @@ public class ScheduleTestController extends PageFlowController
     
     /**
      * @common:control
-     */
-    @Control()
-    private com.ctb.control.licensing.Licensing license;
-
-    /**
-     * @common:control
      */    
     @Control()
     private com.ctb.control.db.Users users;
@@ -136,8 +130,6 @@ public class ScheduleTestController extends PageFlowController
     private String [] formOptions = {FilterSortPageUtils.FILTERTYPE_SHOWALL};
     public String [] accommodationTypeOptions = {FilterSortPageUtils.STUDENTS_WITH_AND_WITHOUT_ACCOMMODATIONS, FilterSortPageUtils.STUDENTS_WITH_ACCOMMODATIONS, FilterSortPageUtils.STUDENTS_WITHOUT_ACCOMMODATIONS};
     public String [] selectedAccommodationsOptions = {"Calculator", "Color/Font", "ScreenReader", "TestPause", "UntimedTest"};
-    //License LM2 Config
-    public String licenseBarColor = null; 
     
     public String blankInputString = "";
     public List levelOptions = null;
@@ -651,26 +643,6 @@ public class ScheduleTestController extends PageFlowController
 
             Integer productId = tps[selectedProductIndex].getProductId();
 			
-			//Get license enabled Value
-            if (form.getTestAdmin() != null)
-            {
-            
-                form.getTestAdmin().setProductId(productId);
-            }
-            String licenseEnabled = tps[selectedProductIndex].getProductLicenseEnabled();
-            boolean productLicenseEnabled = false;
-            this.getSession().setAttribute("displayLicenseBar",
-                new Boolean(productLicenseEnabled));
-            if (licenseEnabled.equals("T"))
-            {
-               
-                productLicenseEnabled = true;
-                       
-                getAvailableLicense(productId, form);       
-               
-            }
-            //End of change for license
-            
             this.productType = TestSessionUtils.getProductType(tps[selectedProductIndex].getProductType());
             
             //Changes for defect in performance tuning    
@@ -1249,7 +1221,6 @@ public class ScheduleTestController extends PageFlowController
     
                 boolean foundProduct = false;
                 String productName = null;
-                boolean productLicenseEnabled = false;// for license managemnet
                 for (int i=0; i < tps.length && !foundProduct; i++)
                 {
                     if (productId.equals(tps[i].getProductId()))
@@ -1257,13 +1228,6 @@ public class ScheduleTestController extends PageFlowController
                         productName = tps[i].getProductName();
                         //for license Management
                    
-                        if (tps[i].getProductLicenseEnabled() != null && tps[i].getProductLicenseEnabled().equals("T"))
-                        {
-                            
-                            productLicenseEnabled = true;
-                           
-                        }
-                        
                         // populate grade and level for selected product
                         TestProduct prod = tps[i];
                         try {
@@ -1353,9 +1317,6 @@ public class ScheduleTestController extends PageFlowController
                         form.setEndDate(DateUtils.formatDateToDateString(loginEndDate));
                     }
                     
-                     //Change for license for copy test 
-                    this.getSession().setAttribute("displayLicenseBar",
-                            new Boolean(productLicenseEnabled));
                 }
 
                 
@@ -1420,8 +1381,6 @@ public class ScheduleTestController extends PageFlowController
 
                         }
 						
-						//in view test no license bare
-                        this.getSession().setAttribute("displayLicenseBar",new Boolean(false));
                     }
                     else
                     {
@@ -1567,9 +1526,6 @@ public class ScheduleTestController extends PageFlowController
                     if (msgBuf.length() > 0)
                         this.getRequest().setAttribute("informationMessage", msgBuf.toString());
 					
-                    //Change for license
-                    this.getSession().setAttribute("displayLicenseBar",
-                            new Boolean(productLicenseEnabled));
                     if (this.condition.getTestSessionExpired().booleanValue() && this.isTestSessionDataExported){
                     	this.getSession().setAttribute("isTestSessionDataExported",true);
                     }
@@ -1656,16 +1612,6 @@ public class ScheduleTestController extends PageFlowController
             }
             
         }
-        
-        //Change for License Management
-      
-        
-        if (!this.action.equals(this.ACTION_VIEW_TEST))
-        {
-            
-            getAvailableLicense(form.getTestAdmin().getProductId(), form);
-        }      
-      
         
         int numOfSubtests =0;
         if (this.defaultSubtests != null) 
@@ -2438,12 +2384,6 @@ public class ScheduleTestController extends PageFlowController
 
         prepareStudentInRoster(form);
         
-        //Change for license
-        if (!this.action.equals(this.ACTION_VIEW_TEST))
-        {
-            
-            getAvailableLicense(form.getTestAdmin().getProductId(), form);
-        }    
         setFormInfoOnRequest(form);
         return new Forward("success", form);
     }
@@ -3096,8 +3036,6 @@ public class ScheduleTestController extends PageFlowController
             this.addedStudentsCount = this.selectedStudents.size();
         form.setSelectedStudents(this.selectedStudents);
         form.setIsCopyTest(this.condition.getIsCopyTest());
-        //Change for license
-        getAvailableLicense(form.getTestAdmin().getProductId(), form);
            
         return new Forward("success", form);
     }
@@ -5596,108 +5534,6 @@ public class ScheduleTestController extends PageFlowController
         }
         return buf.toString();
     }
-	 //Change for license
-    private void getAvailableLicense(Integer productId,ScheduleTestForm form ) {
-    
-        CustomerLicense[] cLicense = null;
-    
-        String  availableLicensePercent = null;
-        Integer availableLicense = null;
-         // START - TABE BAUM 10: For calculation of total license 
-         
-        Integer consumedLicense = null;
-        Integer reservedLicense = null;
-        boolean license_status_subtest = false;
-        boolean license_status_admin = false;
-        boolean licenseflag = false;
-        
-        /*if (form.getTestAdmin()!= null ) {
-            
-            form.getTestAdmin().setProductId(productId);
-        }*/
-        
-        try {
-    
-            // cLicense = (CustomerLicense[])this.license.getCustomerLicenseData (this.userName,productId);
-            // getCustomerOrgNodeLicenseData() method needed to be call to get licences detail for selected product  for displaying licence bar in test scheduling page.
-
-             cLicense = (CustomerLicense[])this.license.getCustomerOrgNodeLicenseData(this.userName, productId);       
-        } catch (CTBBusinessException e) {
-            
-             e.printStackTrace();
-            if (e.getMessage().equals("platformlicence.getCustomerLicenseData.E001")) {
-
-                e.printStackTrace();
-                String msg = MessageResourceBundle.getMessage(e.getMessage());
-                String title = Message.LICENSE_TITLE;                        
-                form.setMessage(title, msg, Message.ERROR);
-                return;
-            }
-      
-        } 
-             
-        if (cLicense != null && cLicense.length > 0) {
-    
-            availableLicense = cLicense[0].getAvailable();
-            consumedLicense = cLicense[0].getConsumedLicense();
-            reservedLicense = cLicense[0].getReservedLicense();
-            
-            //Integer licenseAfterLastPurchase = cLicense[0].getLicenseAfterLastPurchase()!=null ? 
-             //       cLicense[0].getLicenseAfterLastPurchase() : new Integer(0);
-            
-           if (cLicense[0].getSubtestModel().equals("T")) {
-    
-                license_status_subtest = true;
-    
-            } else if (cLicense[0].getSubtestModel().equals("F")) {
-    
-                license_status_admin = true;
-            }
-            
-            licenseflag = true;
-    
-            if (license_status_subtest || license_status_admin) {
-    
-            	
-                double sum = availableLicense+consumedLicense+reservedLicense; //licenseAfterLastPurchase.doubleValue();
-               
-                // END - TABE BAUM 10: For calculation of total license
-               
-                double availableLicPercent = Math.round(((availableLicense
-                        .doubleValue()*100)/ sum ));
-                Integer availableLicensePercentage = new Integer(
-                        new Double(availableLicPercent).intValue());
-                  //For defect #59054         
-                availableLicensePercentage = availableLicensePercentage.intValue() > 
-                        Message.MAX_LICENSE_PERCENT ? new Integer(Message.MAX_LICENSE_PERCENT) : 
-                            availableLicensePercentage;
-                availableLicensePercentage = availableLicensePercentage.intValue() <
-                        Message.MIN_LICENSE_PERCENT ? new Integer(Message.MIN_LICENSE_PERCENT) : 
-                            availableLicensePercentage;              
-                
-                availableLicensePercent = "Available: "+ availableLicense + 
-                        " ("+ availableLicensePercentage + "%)";
-                form.setLicensePercentage(availableLicensePercent);
-                               
-                if(availableLicensePercentage.intValue() < Message.MIN_LICENSE ) {
-                    
-                    licenseBarColor = Message.LOW_LICENSE_COLOR;
-                    
-                } else if (availableLicensePercentage.intValue() < Message.MAX_LICENSE && 
-                        availableLicensePercentage.intValue() >= Message.MIN_LICENSE )  {
-                       
-                       licenseBarColor = Message.MEDIUM_LICENSE_COLOR;     
-                    
-                } else if (availableLicensePercentage.intValue() >= Message.MAX_LICENSE ) {
-                    
-                    licenseBarColor = Message.HIGH_LICENSE_COLOR;
-                }
-            } 
-        }
-            
-            this.getSession().setAttribute("displayLicenseBar",
-                new Boolean(licenseflag));     
-    }
 
 	public SubtestVO getLocatorSubtest() {
 		return locatorSubtest;
@@ -5710,10 +5546,6 @@ public class ScheduleTestController extends PageFlowController
 
 	public String[] getNameOptions() {
 		return nameOptions;
-	}
-
-	public String getLicenseBarColor() {
-		return licenseBarColor;
 	}
 
 	public String[] getAccommodationTypeOptions() {

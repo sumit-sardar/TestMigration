@@ -39,8 +39,6 @@
 
 <netui-data:getData resultId="licenseConfig" value="${sessionScope.disableAvailableBarTestSeesion}"/>
 <netui-data:getData resultId="licenseAdminConfig" value="${sessionScope.disableAvailableBarSubtest}"/>
-<netui-data:getData resultId="displayLicenseBar" value="${sessionScope.displayLicenseBar}"/>
-<netui-data:getData resultId="licensebarColor" value="${pageFlow.licenseBarColor}"/>
 <netui-data:getData resultId="isTestSessionDataExported" value="${sessionScope.isTestSessionDataExported}"/> <!--GACRCT2010CR006 OAS Export Automate-->
 
 <table border="0" cellpadding="0" cellspacing="0" width="100%">

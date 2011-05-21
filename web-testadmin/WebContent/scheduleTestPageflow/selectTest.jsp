@@ -51,11 +51,6 @@
 <netui-data:getData resultId="isTabeProduct" value="${requestScope.isTabeProduct}"/>
 
 <netui-data:getData resultId="productType" value="${requestScope.productType}"/>
-<!--Change For License-->
-
-<netui-data:getData  resultId="displayLicenseBar" value="${sessionScope.displayLicenseBar}"/>
-
-<netui-data:getData  resultId="licensebarColor" value="${pageFlow.licenseBarColor}"/>
 
 <netui:hidden tagId="actionElement" dataSource="actionForm.actionElement"/>
 <netui:hidden tagId="currentAction" dataSource="actionForm.currentAction"/>
@@ -92,19 +87,6 @@
 
 
 
-<!--change for licnese-->
- <%!String color = "red";%>
-  <c:if test="${licensebarColor =='RED'}"> 
-        <% color = "red";%>
-  </c:if>
-  <c:if test="${licensebarColor =='YELLOW'}"> 
-    <% color = "yellow";%>
-  </c:if>
-  <c:if test="${licensebarColor =='GREEN'}">
-    <% color = "green";%>
-  </c:if>
-
-
 <table width="100%" cellpadding="0" cellspacing="0" class="transparent">
     
 	<tr>
@@ -124,34 +106,7 @@
 		
 		<td width="65%" class="transparent"></td>
 		<td width="100%" rowspan="2" align="right" valign="top">
-
-			<c:if test="${displayLicenseBar}">
-				<table width="150" height="100%" cellpadding="0" cellspacing="2">
-					<tr >
-						<td  class="transparent-label" width="100%" height="100%" align="left" nowrap=""><netui:span value="${bundle.web['licenses.title']}"/></td>
-					</tr>
-
-					<tr>
-						<td class="transparent" height="100%" align="center" nowrap="" bgcolor="<%=color%>">
-							<c:if test="${licensebarColor =='RED'}"> 
-							
-								<netui:span value="${actionForm.licensePercentage}" style="background-color:#ff0000;color:#ffffff"/>
-							</c:if>
-							
-							<c:if test="${licensebarColor =='YELLOW'}">
-							
-								<netui:span value="${actionForm.licensePercentage}" style="background-color:#ffff00"/>
-							</c:if> 
-							
-							<c:if test="${licensebarColor =='GREEN'}">
-						 
-								<netui:span value="${actionForm.licensePercentage}" style="background-color:#347C17;color:#ffffff"/>
-							</c:if>
-						</td>
-					</tr>
-				</table>
-			</c:if>
-
+			&nbsp;
 		</td>
 
 		<td rowspan="2">
