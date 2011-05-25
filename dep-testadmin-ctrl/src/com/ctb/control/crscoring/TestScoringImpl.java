@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 import org.jdom.CDATA;
@@ -223,6 +225,7 @@ public class TestScoringImpl implements TestScoring {
 			SortParams sort) throws CTBBusinessException {
 		ScorableItemData scorableItemData = new ScorableItemData();
 		Integer pageSize = null;
+		Map<Integer, TreeMap<String, ScorableItem>> map = new TreeMap<Integer, TreeMap<String, ScorableItem>>();
 		try {
 
 			if (page != null) {
@@ -230,6 +233,14 @@ public class TestScoringImpl implements TestScoring {
 			}
 			ScorableItem[] rosterElements = getAllScorableCRItemsForTestRoster(
 					testRosterId, itemSetId);
+			//START: Changes for item set order
+			for(ScorableItem item: rosterElements ) {
+				if (!map.containsKey(item.getItemSetId())){
+					map.put(item.getItemSetId(), getAllScorableCRItemsForTD(item.getItemSetId()));
+				}
+				item.setItemSetOrder(map.get(item.getItemSetId()).get(item.getItemId()).getItemSetOrder());
+			}
+			//END: Changes for item set order
 			scorableItemData.setScorableItems(rosterElements, pageSize);
 			if (sort != null)
 				scorableItemData.applySorting(sort);
@@ -286,12 +297,21 @@ public class TestScoringImpl implements TestScoring {
 			Integer testAdminId) throws CTBBusinessException {
 		ScorableItemData scorableItemData = new ScorableItemData();
 		Integer pageSize = null;
+		Map<Integer, TreeMap<String, ScorableItem>> map = new TreeMap<Integer, TreeMap<String, ScorableItem>>();
 		try {
 
 			if (page != null) {
 				pageSize = new Integer(page.getPageSize());
 			}
 			ScorableItem[] rosterElements = getAllScorableCRItemsForItemSet(testAdminId);
+			//START: Changes for item set order
+			for(ScorableItem item: rosterElements ) {
+				if (!map.containsKey(item.getItemSetId())){
+					map.put(item.getItemSetId(), getAllScorableCRItemsForTD(item.getItemSetId()));
+				}
+				item.setItemSetOrder(map.get(item.getItemSetId()).get(item.getItemId()).getItemSetOrder());
+			}
+			//END: Changes for item set order
 			scorableItemData.setScorableItems(rosterElements, pageSize);
 			if (filter != null)
 				scorableItemData.applyFiltering(filter);
@@ -796,6 +816,18 @@ public class TestScoringImpl implements TestScoring {
 	private Integer getScorePoints(Integer itemSetId, String itemId,
 			Integer testRosterId) throws Exception {
 		return scoring.getScorePoints(itemSetId, itemId, testRosterId);
+	}
+	
+	private TreeMap<String, ScorableItem> getAllScorableCRItemsForTD(
+			 Integer itemSetIdTD) throws SQLException {
+		ScorableItem scorableItem[] = scoring.getAllScorableCRItemsForTD(itemSetIdTD);
+		TreeMap<String, ScorableItem> map = new TreeMap<String, ScorableItem>();
+		if (scorableItem!= null){
+			for (ScorableItem item : scorableItem){
+				map.put(item.getItemId(), item);
+			}
+		}
+		return map;
 	}
 
 

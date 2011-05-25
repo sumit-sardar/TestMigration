@@ -83,10 +83,19 @@ template_find_student.jsp
          <netui-data:getData resultId="itemSetName" value="${container.item.itemSetName}"/>
           <netui-data:getData resultId="maxPoints" value="${container.item.maxPoints}"/>
           <netui-data:getData resultId="itemType" value="${container.item.itemType}"/>
-        
+          <netui-data:getData resultId="countStudent" value="${container.item.studentCount}"/>
+			<c:if test="${countStudent > 0}">         
                    <netui:anchor href="goto_student_list.do?itemId=${container.item.itemId}&itemType=${container.item.itemType}&itemSetId=${container.item.itemSetId}&testAdminId=${actionForm.testAdminId}&itemSetOrder=${container.item.itemSetOrder}&itemSetName=${container.item.itemSetName}&maxPoints=${container.item.maxPoints}">
                         <netui:span value="${container.item.itemSetOrder}" defaultValue="&nbsp;"/>
                     </netui:anchor>
+            </c:if>
+            <c:if test="${countStudent <= 0}">         
+            	<font color="#999999">
+            		<u>
+            			<netui:span value="${container.item.itemSetOrder}" defaultValue="&nbsp;"/>
+            		</u>
+            	</font>
+            </c:if>
         </td>
           
         <td class="sortable" align="center">
