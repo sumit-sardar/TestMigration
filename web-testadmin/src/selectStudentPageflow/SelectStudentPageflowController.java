@@ -116,7 +116,7 @@ public class SelectStudentPageflowController extends PageFlowController
     public String licenseBarColor = null; 
     private int totalDuplicateStudentsInForm = 0;
     private boolean commitSelection = false;
-    
+    private boolean hasLicenseConfig = false;
     
     /**
      * This method represents the point of entry into the pageflow
@@ -135,7 +135,6 @@ public class SelectStudentPageflowController extends PageFlowController
 
     private void init(ScheduleTestController.ScheduleTestForm form) 
     {
-        //getUserPrincipal();
         java.security.Principal principal = getRequest().getUserPrincipal();
         this.userName = principal.toString();
         getSession().setAttribute("userName", this.userName);      
@@ -185,18 +184,9 @@ public class SelectStudentPageflowController extends PageFlowController
         setupOffGradeTesting(form);
         
         this.action = ACTION_SCHEDULE_TEST; // change for MQC defect  55837
+        
+        this.hasLicenseConfig = hasLicenseConfig();
     }
-    
-    /**
-     * 
-     */
-   /* private void getUserPrincipal()
-    {
-        java.security.Principal principal = getRequest().getUserPrincipal();
-        if (principal != null) 
-            this.userName = principal.toString();
-        getSession().setAttribute("userName", this.userName);
-    }*/
     
     /**
      * 
@@ -498,8 +488,11 @@ public class SelectStudentPageflowController extends PageFlowController
             this.action = ACTION_VIEW_TEST;
         }
 
-        OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(this.selectedOrgNodeId);
-        boolean licenseflag = setupLicenseInfo(this.selectedOrgNodeId, selectedOrgNodeName, onli, form, actionElement);
+        boolean licenseflag = false; 
+        if (this.hasLicenseConfig) {
+        	OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(this.selectedOrgNodeId);
+        	licenseflag = setupLicenseInfo(this.selectedOrgNodeId, selectedOrgNodeName, onli, form, actionElement);
+        }
          
         this.getSession().setAttribute("displayLicenseBar", new Boolean(licenseflag));
         
@@ -508,6 +501,23 @@ public class SelectStudentPageflowController extends PageFlowController
         this.commitSelection = false;
         
         return new Forward("success", form);
+    }
+    
+    
+    /**
+     * hasLicenseConfig
+     */
+    private Boolean hasLicenseConfig()
+    {
+        Boolean hasLicenseConfig = Boolean.FALSE;        
+        try {
+            CustomerLicense[] cls = this.license.getCustomerOrgNodeLicenseData(this.userName, null);            
+            hasLicenseConfig = new Boolean(cls.length > 0);
+        }    
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }        
+        return hasLicenseConfig;
     }
     
     private void setFormInfoOnRequest(ScheduleTestController.ScheduleTestForm form) {
@@ -1547,19 +1557,21 @@ public class SelectStudentPageflowController extends PageFlowController
      */
     private boolean verifyLicenseAvailability(ScheduleTestController.ScheduleTestForm form, int duplicateStudentsNum) {
         
-        List scheduledOrgNodes = getScheduledOrgNodes();
-    	for (int i=0; i<scheduledOrgNodes.size(); i++) {
-    		OrganizationVO orgNode = (OrganizationVO)scheduledOrgNodes.get(i);    		
-            OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(orgNode.getId());
-        	Integer availableLicense = onli.getLicPurchased();
-        	Integer usedLicenses = usedLicensesInNode(orgNode.getId());
-            if (usedLicenses.intValue() > availableLicense.intValue()) {
-            	Integer licenseNeeded = new Integer(usedLicenses.intValue() - availableLicense.intValue());
-    		    setLicenseErrorMessage(form, orgNode.getOrganizationName(), licenseNeeded, true);
-    			return false;
-    		}
+    	if (this.hasLicenseConfig) {
+	        List scheduledOrgNodes = getScheduledOrgNodes();
+	    	for (int i=0; i<scheduledOrgNodes.size(); i++) {
+	    		OrganizationVO orgNode = (OrganizationVO)scheduledOrgNodes.get(i);    		
+	            OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(orgNode.getId());
+	        	Integer availableLicense = onli.getLicPurchased();
+	        	Integer usedLicenses = usedLicensesInNode(orgNode.getId());
+	            if (usedLicenses.intValue() > availableLicense.intValue()) {
+	            	Integer licenseNeeded = new Integer(usedLicenses.intValue() - availableLicense.intValue());
+	    		    setLicenseErrorMessage(form, orgNode.getOrganizationName(), licenseNeeded, true);
+	    			return false;
+	    		}
+	    	}
     	}
-        
+    	
         return true;
                             
     }
