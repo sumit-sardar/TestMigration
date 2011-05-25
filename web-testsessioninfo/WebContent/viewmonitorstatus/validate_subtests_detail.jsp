@@ -31,6 +31,7 @@
 
     <netui-data:getData resultId="isTabeSession" value="${requestScope.isTabeSession}"/>
     <netui-data:getData resultId="isShowScores" value="${requestScope.isShowScores}"/>
+        <netui-data:getData resultId="isLaslinkSession" value="${requestScope.isLaslinkSession}"/>
     <netui-data:getData resultId="isShowToggleForCustomerFlag" value="${pageFlow.setCustomerFlagToogleButton}"/>
 
 <%
@@ -92,11 +93,15 @@
 
 <table class="transparent" width="100%">
         <tr class="sortable">
-            <td class="sortableGrey" colspan="<%= colSpan %>%>">
-                <netui:button type="button" tagId="toggleSubtestValidation" value="Toggle Validation" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'toggleSubtestValidation', this);" disabled="${requestScope.disableToogleButton}"/>           
-            <c:if test="${isShowToggleForCustomerFlag == 'true'}">                 
-                <netui:button type="button" tagId="toggleSubtestCustom" value="Toggle Custom" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'toggleSubtestCustom', this);" disabled="${requestScope.disableToogleButton}"/>           
-            </c:if>
+            <td class="sortableGrey" colspan="<%= colSpan %>">
+                <netui:button type="button" tagId="toggleSubtestValidation" value="Toggle Validation" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'toggleSubtestValidation', this);" disabled="${requestScope.disableToogleButton}"/>
+                  <c:if test="${isLaslinkSession == 'true'}"> 
+                 	<netui:button type="button" tagId="toggleSubtestExemption" value="Toggle Exemption" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'toggleSubtestExemption', this);" disabled="${requestScope.disableToogleButton}"/>           
+                  	<netui:button type="button" tagId="toggleSubtestAbsent" value="Toggle Absent" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'toggleSubtestAbsent', this);" disabled="${requestScope.disableToogleButton}"/>
+                </c:if>             
+            	<c:if test="${isShowToggleForCustomerFlag == 'true'}">                 
+                	<netui:button type="button" tagId="toggleSubtestCustom" value="Toggle Custom" onClick="setElementValueAndSubmit('{actionForm.currentAction}', 'toggleSubtestCustom', this);" disabled="${requestScope.disableToogleButton}"/>           
+            	</c:if>
             </td>
         </tr>
 <netui-data:repeater dataSource="requestScope.studentStatusSubtests">
@@ -108,19 +113,27 @@
             <th class="sortable alignLeft" height="25" width="*">
                 &nbsp;&nbsp;<netui:span value="${bundle.web['ViewSubtestDetails.text.subtestName']}"/>
             </th>
-<c:if test="${isTabeSession == 'true'}"> 
-            <th class="sortable alignCenter" height="25" width="6%">
-                &nbsp;&nbsp;<netui:span value="${bundle.web['ViewSubtestDetails.text.subtestLevel']}"/>
-            </th>
-</c:if>            
+			<c:if test="${isTabeSession == 'true'}"> 
+	            <th class="sortable alignCenter" height="25" width="6%">
+	                &nbsp;&nbsp;<netui:span value="${bundle.web['ViewSubtestDetails.text.subtestLevel']}"/>
+	            </th>
+			</c:if>            
             <th class="sortable alignCenter" height="25" width="10%">
                 &nbsp;&nbsp;<netui:span value="${bundle.web['ViewSubtestDetails.text.validationStatus']}"/>
             </th>
-<c:if test="${isShowToggleForCustomerFlag == 'true'}">                             
-            <th class="sortable alignCenter" height="25" width="10%">
-                &nbsp;&nbsp;<netui:span value="${bundle.web['ViewSubtestDetails.text.customStatus']}"/>
-            </th>
-</c:if>            
+            <c:if test="${isLaslinkSession == 'true'}"> 
+	            <th class="sortable alignCenter" height="25" width="10%">
+	            	&nbsp;&nbsp;<netui:span value="${bundle.web['common.column.testExemptions']}"/>
+	             </th>
+	            <th class="sortable alignCenter" height="25" width="10%">
+	            	&nbsp;&nbsp;<netui:span value="${bundle.web['common.column.Absent']}"/>
+	            </th> 
+            </c:if>    
+			<c:if test="${isShowToggleForCustomerFlag == 'true'}">                             
+	            <th class="sortable alignCenter" height="25" width="10%">
+	                &nbsp;&nbsp;<netui:span value="${bundle.web['ViewSubtestDetails.text.customStatus']}"/>
+	            </th>
+			</c:if>            
             <th class="sortable alignCenter" height="25" width="10%">
                 &nbsp;&nbsp;<netui:span value="${bundle.web['ViewSubtestDetails.text.subtestStatus']}"/>
             </th>
@@ -140,7 +153,7 @@
             <th class="sortable alignCenter" height="25" width="10%">
                 &nbsp;&nbsp;<netui:span value="Items to be Scored"/>
             </th>
-</c:if>            
+            </c:if>
         </tr>
     </netui-data:repeaterHeader>
     <netui-data:repeaterItem>    
@@ -156,18 +169,17 @@
     </c:if>
     <c:if test="${itemSetType != 'TS'}">      
         <tr class="sortable">
-        
-            <td class="sortable alignCenter">
+        	<td class="sortable alignCenter">
                 <netui:checkBoxGroup dataSource="actionForm.selectedItemSetIds">&nbsp;
-                    <netui:checkBoxOption value="${container.item.itemSetId}" onClick="enableDeselectAllTestButton('toggleSubtestValidation'); enableDeselectAllTestButton('toggleSubtestCustom');">&nbsp;
+                    <netui:checkBoxOption value="${container.item.itemSetId}" onClick="enableDeselectAllTestButton('toggleSubtestValidation'); enableDeselectAllTestButton('toggleSubtestCustom'); enableDeselectAllTestButton('toggleSubtestExemption'); enableDeselectAllTestButton('toggleSubtestAbsent');">&nbsp;
                     </netui:checkBoxOption>
                 </netui:checkBoxGroup>
             </td>
         
             <td class="sortable alignLeft"><netui:content value="${container.item.subtestName}" defaultValue="&nbsp;"/></td>
-<c:if test="${isTabeSession == 'true'}"> 
-            <td class="sortable alignCenter"><netui:span value="${container.item.level}" defaultValue="&nbsp;"/></td>
-</c:if>            
+			<c:if test="${isTabeSession == 'true'}"> 
+           		<td class="sortable alignCenter"><netui:span value="${container.item.level}" defaultValue="&nbsp;"/></td>
+			</c:if>            
             <td class="sortable alignCenter">
                 <ctb:switch dataSource="${container.item.validationStatus}">
                     <ctb:case value="Valid"><netui:span value="${container.item.validationStatus}" defaultValue="&nbsp;"/></ctb:case>
@@ -175,17 +187,32 @@
                     <ctb:case value="Partially Invalid"><font color="red"><netui:span value="${container.item.validationStatus}" defaultValue="&nbsp;"/></font></ctb:case>
                 </ctb:switch>                
             </td>
-<c:if test="${isShowToggleForCustomerFlag == 'true'}">                                         
-            <td class="sortable alignCenter"><netui:span value="${container.item.customStatus}" defaultValue="&nbsp;"/></td>
-</c:if>            
+             <c:if test="${isLaslinkSession == 'true'}">  
+	 			<td class="sortable alignCenter">
+	                <ctb:switch dataSource="${container.item.testExemptions}">
+	                    <ctb:case value="Y"><netui:span value="Yes" defaultValue="&nbsp;"/></ctb:case>
+	                    <ctb:case value="N"><netui:span value="No" defaultValue="&nbsp;"/></ctb:case>
+	                </ctb:switch>                
+	            </td>
+	            <td class="sortable alignCenter">
+	                <ctb:switch dataSource="${container.item.absent}">
+	                    <ctb:case value="Y"><netui:span value="Yes" defaultValue="&nbsp;"/></ctb:case>
+	                    <ctb:case value="N"><netui:span value="No" defaultValue="&nbsp;"/></ctb:case>
+	                 </ctb:switch>                
+	            </td>
+ 			</c:if>
+			<c:if test="${isShowToggleForCustomerFlag == 'true'}">                                         
+            	<td class="sortable alignCenter"><netui:span value="${container.item.customStatus}" defaultValue="&nbsp;"/></td>
+			</c:if>            
             <td class="sortable alignCenter"><netui:span value="${container.item.completionStatus}" defaultValue="&nbsp;"/></td>
             <td class="sortable alignCenter"><netui:span value="${container.item.startDate}" defaultValue="&nbsp;"/></td>
             <td class="sortable alignCenter"><netui:span value="${container.item.endDate}" defaultValue="&nbsp;"/></td>
-<c:if test="${isShowScores == 'true'}">             
-            <td class="sortable alignCenter"><netui:span value="${container.item.displayMaxScore}" defaultValue="&nbsp;"/></td>
-            <td class="sortable alignCenter"><netui:span value="${container.item.displayRawScore}" defaultValue="&nbsp;"/></td>
-            <td class="sortable alignCenter"><netui:span value="${container.item.displayUnScored}" defaultValue="&nbsp;"/></td>
-</c:if>            
+			<c:if test="${isShowScores == 'true'}">             
+            	<td class="sortable alignCenter"><netui:span value="${container.item.displayMaxScore}" defaultValue="&nbsp;"/></td>
+            	<td class="sortable alignCenter"><netui:span value="${container.item.displayRawScore}" defaultValue="&nbsp;"/></td>
+           		<td class="sortable alignCenter"><netui:span value="${container.item.displayUnScored}" defaultValue="&nbsp;"/></td>
+			</c:if>  
+ 			
         </tr>            
     </c:if>
     </netui-data:repeaterItem>

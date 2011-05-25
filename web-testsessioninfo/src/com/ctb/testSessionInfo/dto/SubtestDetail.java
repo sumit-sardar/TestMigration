@@ -27,7 +27,40 @@ public class SubtestDetail implements java.io.Serializable
     private String validationStatus = null;
     private String customStatus = null;
     
-    public SubtestDetail() 
+    //START- ADDED for LLO-109
+    private String testExemptions = null;
+    private String absent = null;
+    
+    /**
+	 * @return the testExemptions
+	 */
+	public String getTestExemptions() {
+		return testExemptions;
+	}
+
+	/**
+	 * @param testExemptions the testExemptions to set
+	 */
+	public void setTestExemptions(String testExemptions) {
+		this.testExemptions = testExemptions;
+	}
+
+	/**
+	 * @return the absent
+	 */
+	public String getAbsent() {
+		return absent;
+	}
+
+	/**
+	 * @param absent the absent to set
+	 */
+	public void setAbsent(String absent) {
+		this.absent = absent;
+	}
+	//END- ADDED for LLO-109
+	
+	public SubtestDetail() 
     {
     }
  

@@ -79,6 +79,9 @@ public class ViewMonitorStatusController extends PageFlowController
     private boolean showStudentReportButton = false;
     private List studentStatusSubtests = null;
     private List TABETestElements = null;
+    
+    //  Added for LLO-109 
+    public boolean isLasLinkCustomer = false;
    
  	// START- Added for CR GA2011CR001
 	CustomerConfiguration[] customerConfigurations = null;
@@ -406,11 +409,15 @@ public class ViewMonitorStatusController extends PageFlowController
         boolean isTabeSession = isTabeSession(testProduct.getProductType());
         
         boolean isTabeLocatorSession = isTabeLocatorSession(testProduct.getProductType());
-
+       
+        // START- Added for LLO-109 
+        isLasLinkCustomer();
+        boolean isLaslinkSession  = this.isLasLinkCustomer;
+        
         boolean testSessionCompleted = isTestSessionCompleted(testSession);
                                 
-        this.studentStatusSubtests = buildStudentStatusSubtests(re.getStudentId(), this.sessionId, testSessionCompleted, isTabeSession, isTabeLocatorSession);
-                
+        this.studentStatusSubtests = buildStudentStatusSubtests(re.getStudentId(), this.sessionId, testSessionCompleted, isTabeSession, isTabeLocatorSession, isLaslinkSession);       
+       
         String testGrade = getTestGrade(this.studentStatusSubtests);
         String testLevel = getTestLevel(this.studentStatusSubtests);
         
@@ -430,7 +437,7 @@ public class ViewMonitorStatusController extends PageFlowController
         
         getRequest().setAttribute("testCompletionStatus", FilterSortPageUtils.testStatus_CodeToString(re.getTestCompletionStatus()));
         getRequest().setAttribute("studentStatusSubtests", this.studentStatusSubtests);
-
+        getRequest().setAttribute("isLaslinkSession", new Boolean(isLaslinkSession));
         getRequest().setAttribute("isTabeSession", new Boolean(isTabeSession));
         
         boolean showStudentFeedback = false;
@@ -447,6 +454,10 @@ public class ViewMonitorStatusController extends PageFlowController
             numberColumn += 1;
         if (isShowScores)
             numberColumn += 3;
+        if (isLaslinkSession)
+        	numberColumn += 2;
+        	
+       // END- Added for LLO-109 
         if (validation)
         {
             numberColumn += 1;
@@ -550,6 +561,16 @@ public class ViewMonitorStatusController extends PageFlowController
         {
             toggleSubtestValidationStatus(form);
         }
+         // END- Added for LLO-109 
+        else if (currentAction.equals("toggleSubtestExemption"))
+        {
+        	toggleSubtestExemptionStatus(form);
+        }
+        else if (currentAction.equals("toggleSubtestAbsent"))
+        {
+        	toggleSubtestAbsentStatus(form);
+        }
+         // START- Added for LLO-109 
         else if (currentAction.equals("toggleSubtestCustom"))
         {
             toggleSubtestCustomerFlagStatus(form);
@@ -609,6 +630,29 @@ public class ViewMonitorStatusController extends PageFlowController
         return isValidationAllowed;
     }
     
+     // START- Added for LLO-109 
+  //isLasLink customer
+	private void isLasLinkCustomer()
+    {               
+        
+        boolean isLasLinkCustomer = false;
+
+            
+			 for (int i=0; i < this.customerConfigurations.length; i++)
+            {
+            	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+            	//isLasLink customer
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("LASLINK_Customer") && cc.getDefaultValue().equals("T")	)
+                {
+                	isLasLinkCustomer = true;
+                    break;
+                } 
+            }
+       
+        this.isLasLinkCustomer = isLasLinkCustomer;
+       
+    }
+     // END- Added for LLO-109 
     private boolean isSessionDetailsShowScores() 
     {               
         boolean showScores = false; 
@@ -734,7 +778,8 @@ public class ViewMonitorStatusController extends PageFlowController
         return subtestList;
     }
 
-    private List buildStudentStatusSubtests(Integer studentId, Integer testAdminId, boolean testSessionCompleted, boolean isTabeSession, boolean isTabeLocatorSession)
+ //  Added for LLO-109 
+    private List buildStudentStatusSubtests(Integer studentId, Integer testAdminId, boolean testSessionCompleted, boolean isTabeSession, boolean isTabeLocatorSession,boolean isLaslinkSession)
     {
         this.TABETestElements = null;        
         String userTimeZone = (String)getSession().getAttribute("userTimeZone"); 
@@ -838,7 +883,16 @@ public class ViewMonitorStatusController extends PageFlowController
                             String tdSubtestName = sd_TD.getSubtestName();
                             String sn = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
                                         tdSubtestName;
-                            sd_TD.setSubtestName(sn);   
+                            sd_TD.setSubtestName(sn);
+                               
+                            // START- Added for LLO-109 
+                            if(isLaslinkSession)
+                            {
+                               	sd_TD.setTestExemptions(sss.getTestExemptions());
+                            	sd_TD.setAbsent(sss.getAbsent());
+                             }
+                             // END- Added for LLO-109 
+                             
                             if (!isLocatorTD)
                             {                                
                                 subtestList.add(sd_TD);
@@ -1320,21 +1374,48 @@ public class ViewMonitorStatusController extends PageFlowController
             e.printStackTrace();
         }       
     }
-
+  // START- Added for LLO-109 
     private void toggleSubtestValidationStatus(ViewMonitorStatusForm form) 
     {        
         Integer testRosterId = form.getTestRosterId();
         Integer[] itemSetIds = getSelectedSubtestIds(form);
 
         try {    
-            this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds);
+            this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "ValidationStatus" );
         }
         catch (Exception e) {
             e.printStackTrace();
         }                
     }
     
-
+    
+    private void toggleSubtestExemptionStatus(ViewMonitorStatusForm form) 
+    {        
+        Integer testRosterId = form.getTestRosterId();
+        Integer[] itemSetIds = getSelectedSubtestIds(form);
+        
+        try {    
+            this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "ExemptionStatus" );
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }                
+    }
+     
+    
+    private void toggleSubtestAbsentStatus(ViewMonitorStatusForm form) 
+    {        
+        Integer testRosterId = form.getTestRosterId();
+        Integer[] itemSetIds = getSelectedSubtestIds(form);
+        
+        try {    
+            this.testSessionStatus.toggleSubtestValidationStatus(this.userName, testRosterId, itemSetIds, "AbsentStatus" );
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }                
+    }
+    // END- Added for LLO-109 
     private void toggleSubtestCustomerFlagStatus(ViewMonitorStatusForm form) 
     {
         Integer testRosterId = form.getTestRosterId();

@@ -841,15 +841,28 @@ public class TestSessionStatusImpl implements TestSessionStatus
 	 * @throws com.ctb.exception.CTBBusinessException
      * @common:operation
      */
-    public void toggleSubtestValidationStatus(String userName, Integer testRosterId, Integer [] itemSetIds) throws CTBBusinessException{
+    public void toggleSubtestValidationStatus(String userName, Integer testRosterId, Integer [] itemSetIds,String status) throws CTBBusinessException{
         validator.validateRoster(userName, testRosterId, "testAdmin.toggleSubtestValidationStatus");
+        //START- added for updating toggle values of validation ,exemption and absent status
         try {
             if (itemSetIds == null || itemSetIds.length == 0)
                 return;
-                
-            for (int i=0; i < itemSetIds.length; i++) {
-                studentItemSetStatus.toggleSubtestValidationStatus(testRosterId, itemSetIds[i]);
-            }
+             	if(status.equals("ValidationStatus")) {
+		            for (int i=0; i < itemSetIds.length; i++) {
+		            	studentItemSetStatus.toggleSubtestValidationStatus(testRosterId, itemSetIds[i]);
+		            }
+             	}
+             	else if(status.equals("ExemptionStatus")) {
+		            for (int i=0; i < itemSetIds.length; i++) {
+		            	studentItemSetStatus.toggleSubtestExemptionStatus(testRosterId, itemSetIds[i]);
+		            }
+             	}
+             	else if(status.equals("AbsentStatus")) {
+		            for (int i=0; i < itemSetIds.length; i++) {
+		            	studentItemSetStatus.toggleSubtestAbsentStatus(testRosterId, itemSetIds[i]);
+		            }
+             	}
+             	 //END- added for updating toggle values of validation ,exemption and absent status
             
             String newRosterStatus =studentItemSetStatus.getRosterValidationStatusFromSubtests(testRosterId);
             RosterElement rosterDetail = getRoster(testRosterId);

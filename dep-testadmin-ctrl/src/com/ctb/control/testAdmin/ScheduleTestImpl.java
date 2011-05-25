@@ -2355,16 +2355,18 @@ public class ScheduleTestImpl implements ScheduleTest
                             students = students + "," + String.valueOf(roster.getStudentId());
                         }
                         rosterCount++;
+                        //START -added for LLO-109 change
                         if(rosterCount >= 999) {
-                            siss.createNewStudentItemSetStatus(customerId, admins, students, subtestId, order, "F", "VA", "SC");
+                            siss.createNewStudentItemSetStatus(customerId, admins, students, subtestId, order, "F", "VA", "SC","N","N");
                             rosterCount = 0;
                             admins = "";
                             students = "";
                         }
                     }
                     if(!"".equals(admins) && !"".equals(students)) {
-                        siss.createNewStudentItemSetStatus(customerId, admins, students, subtestId, order, "F", "VA", "SC");
+                        siss.createNewStudentItemSetStatus(customerId, admins, students, subtestId, order, "F", "VA", "SC","N","N");
                     }
+                    //END - added for LLO-109 change
                 }
             }
         } catch (SQLException se) {
