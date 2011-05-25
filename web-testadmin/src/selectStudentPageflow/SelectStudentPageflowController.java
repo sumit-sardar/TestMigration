@@ -1508,6 +1508,7 @@ public class SelectStudentPageflowController extends PageFlowController
         else 
         	licenseBarColor = Message.HIGH_LICENSE_COLOR;
         
+        form.setLicenseAvailable(availableLicense);
         form.setLicensePercentage(availableLicensePercent);
         
     }

@@ -11,8 +11,6 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets" />
 <netui-data:declareBundle bundlePath="helpResources" name="help" />
 
-<!--Change MQC defect  55837 -->
-
 <%String templatePage = "/resources/jsp/template.jsp";%>
 <ctb:switch dataSource="${pageFlow.action}">
 	<ctb:case value="edit">
@@ -29,8 +27,6 @@
 	<netui-template:setAttribute name="title" value="${bundle.web['selectstudents.window.title']}" />
 	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.scheduleTestSessionSelectStudents']}" />
 	<netui-template:section name="bodySection">
-
-		<!--End of change for MQC defect  55837 -->
 
 		<!-- ********************************************************************************************************************* -->
 		<!-- Start Page Content -->
@@ -89,9 +85,7 @@
 
 			<ctb:switch dataSource="${actionForm.action}">
 
-
-
-				<!--change for licnese-->
+				<!-- license colors -->
 				<%!String color = "red";%>
 				<c:if test="${licensebarColor =='RED'}">
 					<% color = "red";%>
@@ -102,7 +96,6 @@
 				<c:if test="${licensebarColor =='GREEN'}">
 					<% color = "green";%>
 				</c:if>
-
 
 				<table width="100%" cellpadding="0" cellspacing="0" class="transparent">
 
@@ -121,11 +114,22 @@
 						</ctb:case> </ctb:switch> </font></td>
 
 						<td class="transparent"></td>
-						<td width="100%" rowspan="2" align="right" valign="top"><c:if test="${displayLicenseBar}">
+						<td width="100%" rowspan="2" align="right" valign="top">
+						
+						<!-- License section -->
+						<c:if test="${displayLicenseBar}">
 							<table width="150" height="100%" cellpadding="0" cellspacing="2">
 								<tr bgcolor="green">
-									<td class="transparent-label" width="100%" height="100%" align="left" nowrap="" bgcolor="#FFFFFF"><netui:span
-										value="${bundle.web['licenses.title']}" /></td>
+									<td class="transparent-label" width="100%" height="100%" align="left" nowrap="" bgcolor="#FFFFFF">
+									<netui:span	value="Licenses available: " /><b><netui:span value="${actionForm.licenseAvailable}" /></b>
+									</td>
+								</tr>
+
+								<tr bgcolor="green">
+									<td class="transparent-label" width="100%" height="100%" align="left" nowrap="" bgcolor="#FFFFFF">
+									<netui:span	value="For " />
+ 									<b><netui:span value="${requestScope.selectedOrgNodeName}" /></b>										
+									</td>
 								</tr>
 
 								<tr>
@@ -142,7 +146,8 @@
 									</c:if></td>
 								</tr>
 							</table>
-						</c:if></td>
+						</c:if>
+						</td>
 
 						<td rowspan="2">
 						<table width="25">
@@ -364,9 +369,7 @@
 				<c:if test="${nodeContainsStudents != null}">
 
 					<h4><img src="/TestAdministrationWeb/resources/images/legacy/step3_off.gif" border="0" height="15" width="15">&nbsp;
-					<netui:span value="${requestScope.selectedOrgNodeName}" />&nbsp;<netui:span
-						value="${bundle.web['selectstudents.student.studentText']}" /></h4>
-
+					<netui:span value="${requestScope.selectedOrgNodeName}" /></h4>
 
 					<c:if test="${hasStudentNodes != null}">
 						<p><netui:content value="${bundle.web['selectstudents.student.introtext']}" /></p>
