@@ -39,9 +39,38 @@ public class StudentSessionStatus extends CTBBean
     private String org_name;
 	private String testAccessCode;
 	private Integer orgNodeId;
-    
+	
+	//START- ADDED for LLO -109
+	private String testExemptions;
+	private String absent;
     
     /**
+	 * @return the testExemptions
+	 */
+	public String getTestExemptions() {
+		return testExemptions;
+	}
+	/**
+	 * @param testExemptions the testExemptions to set
+	 */
+	public void setTestExemptions(String testExemptions) {
+		this.testExemptions = testExemptions;
+	}
+	/**
+	 * @return the absent
+	 */
+	public String getAbsent() {
+		return absent;
+	}
+	/**
+	 * @param absent the absent to set
+	 */
+	public void setAbsent(String absent) {
+		this.absent = absent;
+	}
+	
+	//END- ADDED for LLO -109
+	/**
 	 * @return Returns the maxScore.
 	 */  
 	public Integer getMaxScore() {

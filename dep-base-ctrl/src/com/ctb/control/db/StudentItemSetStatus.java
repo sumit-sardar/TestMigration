@@ -54,8 +54,8 @@ public interface StudentItemSetStatus extends JdbcControl
      *      group by test_roster_id)::
      *          
     */ 
-    @JdbcControl.SQL(statement = "insert into student_item_set_status (  select distinct  test_roster_id, {itemSetId}, {completionStatus}, null, null,  {validationStatus}, null, null, null,  {timeExpired}, {order}, null, null, null, null, null, max(default_value) as default_value  from (  select distinct  test_roster_id, cc.default_value  from  test_roster,  customer_configuration cc  where  cc.customer_id = {customerId}  and cc.customer_configuration_name = 'Roster_Status_Flag'  and test_admin_id in ({sql: adminList})  and student_id in ({sql: studentList})  union  select distinct  test_roster_id, null as default_value  from  test_roster  where  test_admin_id in ({sql: adminList})  and student_id in ({sql: studentList}))  group by test_roster_id)")
-    void createNewStudentItemSetStatus(Integer customerId, String adminList, String studentList, Integer itemSetId, Integer order, String timeExpired, String validationStatus, String completionStatus) throws SQLException;
+   @JdbcControl.SQL(statement = "insert into student_item_set_status (  select distinct  test_roster_id, {itemSetId}, {completionStatus}, null, null,  {validationStatus}, null, null, null,  {timeExpired}, {order}, null, null, null, null, null,{exemption}, {absent}, max(default_value) as default_value  from (  select distinct  test_roster_id, cc.default_value  from  test_roster,  customer_configuration cc  where  cc.customer_id = {customerId}  and cc.customer_configuration_name = 'Roster_Status_Flag'  and test_admin_id in ({sql: adminList})  and student_id in ({sql: studentList})  union  select distinct  test_roster_id, null as default_value  from  test_roster  where  test_admin_id in ({sql: adminList})  and student_id in ({sql: studentList}))  group by test_roster_id)")
+    void createNewStudentItemSetStatus(Integer customerId, String adminList, String studentList, Integer itemSetId, Integer order, String timeExpired, String validationStatus, String completionStatus,String exemption, String absent) throws SQLException;
 
     /** 
      * @jc:sql statement::
@@ -145,6 +145,9 @@ public interface StudentItemSetStatus extends JdbcControl
      *          siss.UNSCORED as unscored,
      *          siss.RECOMMENDED_LEVEL as recommendedLevel,
      *          siss.CUSTOMER_FLAG_STATUS as customerFlagStatus
+     *          siss.TEST_EXEMPTIONS  as testExemption,
+                siss.ABSENT as absent
+     *          
      * from 
      *      student_item_set_status siss,
      *      test_roster ros 
@@ -154,7 +157,8 @@ public interface StudentItemSetStatus extends JdbcControl
      *      and ros.test_admin_id = {testAdminId}::
      *      array-max-length="all"
      */
-    @JdbcControl.SQL(statement = "select distinct  siss.TEST_ROSTER_ID as testRosterId,  siss.ITEM_SET_ID as itemSetId,  siss.COMPLETION_STATUS as completionStatus,  siss.START_DATE_TIME as startDateTime,  siss.COMPLETION_DATE_TIME as completionDateTime,  siss.VALIDATION_STATUS as validationStatus,  siss.VALIDATION_UPDATED_BY as validationUpdatedBy,  siss.VALIDATION_UPDATED_DATE_TIME as validationUpdatedDateTime,  siss.VALIDATION_UPDATED_NOTE as validationUpdatedNote,  siss.TIME_EXPIRED as timeExpired,  siss.ITEM_SET_ORDER as itemSetOrder,  siss.RAW_SCORE as rawScore,  siss.MAX_SCORE as maxScore,  siss.UNSCORED as unscored,  siss.RECOMMENDED_LEVEL as recommendedLevel,  siss.CUSTOMER_FLAG_STATUS as customerFlagStatus from  student_item_set_status siss,  test_roster ros  where  siss.test_roster_id = ros.test_roster_id  and ros.student_id = {studentId}  and ros.test_admin_id = {testAdminId}",
+     
+    @JdbcControl.SQL(statement = "select distinct  siss.TEST_ROSTER_ID as testRosterId,  siss.ITEM_SET_ID as itemSetId,  siss.COMPLETION_STATUS as completionStatus,  siss.START_DATE_TIME as startDateTime,  siss.COMPLETION_DATE_TIME as completionDateTime,  siss.VALIDATION_STATUS as validationStatus,  siss.VALIDATION_UPDATED_BY as validationUpdatedBy,  siss.VALIDATION_UPDATED_DATE_TIME as validationUpdatedDateTime,  siss.VALIDATION_UPDATED_NOTE as validationUpdatedNote,  siss.TIME_EXPIRED as timeExpired,  siss.ITEM_SET_ORDER as itemSetOrder,  siss.RAW_SCORE as rawScore,  siss.MAX_SCORE as maxScore,  siss.UNSCORED as unscored,  siss.RECOMMENDED_LEVEL as recommendedLevel,  siss.CUSTOMER_FLAG_STATUS as customerFlagStatus ,siss.EXEMPTIONS as testExemptions,siss.ABSENT as absent from  student_item_set_status siss,  test_roster ros  where  siss.test_roster_id = ros.test_roster_id  and ros.student_id = {studentId}  and ros.test_admin_id ={testAdminId}",
                      arrayMaxLength = 100000)
     StudentSessionStatus [] getStudentItemSetStatusesForRoster(Integer studentId, Integer testAdminId) throws SQLException;
 
@@ -497,6 +501,15 @@ public interface StudentItemSetStatus extends JdbcControl
      */
     @JdbcControl.SQL(statement = "update  student_item_set_status set  validation_status =  decode(  (select  validation_status  from  student_item_set_status  where  test_roster_id = {testRosterId}  and item_set_id = {itemSetId}  ),'VA','IN','VA') where  test_roster_id = {testRosterId}  and item_set_id = {itemSetId} ")
     void toggleSubtestValidationStatus(Integer testRosterId, Integer itemSetId) throws SQLException;
+
+//START -ADDED for toggling values of exemption and absent
+    @JdbcControl.SQL(statement = " update student_item_set_status siss  set siss.exemptions = decode((select exemptions from student_item_set_status where test_roster_id = {testRosterId} and item_set_id = {itemSetId}), 'Y', 'N', 'Y') where siss.test_roster_id = {testRosterId}  and siss.item_set_id = {itemSetId} ")
+    void toggleSubtestExemptionStatus(Integer testRosterId, Integer itemSetId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = " update student_item_set_status siss  set siss.absent = decode((select absent from student_item_set_status where test_roster_id = {testRosterId} and item_set_id = {itemSetId}), 'Y', 'N', 'Y') where siss.test_roster_id = {testRosterId}  and siss.item_set_id = {itemSetId} ")
+    void toggleSubtestAbsentStatus(Integer testRosterId, Integer itemSetId) throws SQLException;
+
+//END -ADDED for for toggling values of exemption and absent
 
     /**
      * @jc:sql statement::
