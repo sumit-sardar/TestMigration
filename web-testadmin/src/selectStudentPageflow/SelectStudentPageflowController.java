@@ -115,6 +115,7 @@ public class SelectStudentPageflowController extends PageFlowController
     private List originalSelectedStudents = null;
     public String licenseBarColor = null; 
     private int totalDuplicateStudentsInForm = 0;
+    private boolean commitSelection = false;
     
     
     /**
@@ -503,6 +504,9 @@ public class SelectStudentPageflowController extends PageFlowController
         this.getSession().setAttribute("displayLicenseBar", new Boolean(licenseflag));
         
         setFormInfoOnRequest(form);
+        
+        this.commitSelection = false;
+        
         return new Forward("success", form);
     }
     
@@ -1029,7 +1033,9 @@ public class SelectStudentPageflowController extends PageFlowController
     })
     public Forward selectStudentDone(ScheduleTestController.ScheduleTestForm form)
     {
-        commitSelection(form);
+        commitSelection(form);       
+        
+        this.commitSelection = true;
         
         form.setSelectedStudents(this.selectedStudents);
         resetFormOnReturn(form, "selectStudentDone");
@@ -1037,8 +1043,7 @@ public class SelectStudentPageflowController extends PageFlowController
         boolean hasDuplicate = verifyDuplicateStudents();
         boolean isError = false;
         int duplicateStudentsNum = 0;
-       
-        
+               
         if (hasDuplicate)
         {
             int dupStudentSize = getDuplicateStudents().size();
@@ -1491,8 +1496,7 @@ public class SelectStudentPageflowController extends PageFlowController
 
         if (usedLicenses.intValue() > availableLicense.intValue()) {
         	Integer licenseNeeded = new Integer(usedLicenses.intValue() - availableLicense.intValue());
-			boolean stopIcon = actionElement.equals("selectStudentDone");
-		    setLicenseErrorMessage(form, orgNodeName, licenseNeeded, stopIcon);
+		    setLicenseErrorMessage(form, orgNodeName, licenseNeeded, this.commitSelection);
 		}
 		
         Integer usedLicensePercentage = new Integer(new Double(usedLicPercent).intValue());
