@@ -161,7 +161,11 @@ public class OrganizationManagementImpl implements OrganizationManagement
                                   Node currentOrgnode)
                                   throws CTBBusinessException{
          Integer selectedOrgNodeId = null;
-         try {
+         
+         //START - changes for TABE BAUM to delete organization node and assign remaining license to top node
+        
+         Boolean isOrgNodeLicenseEntry = false;
+        try {
                 selectedOrgNodeId = currentOrgnode.getOrgNodeId();
                 if ( selectedOrgNodeId != null) {
                     
@@ -176,12 +180,34 @@ public class OrganizationManagementImpl implements OrganizationManagement
            
          try {
                 User loginUser = users.getUserDetails(userName);
-                Integer loginUserId = loginUser.getUserId();                    
+                Integer loginUserId = loginUser.getUserId(); 
+                Integer[] productIdList;
+                Integer customerId = orgNode.getCustomerIdbyOrgNode(selectedOrgNodeId);
                 currentOrgnode.setUpdatedDateTime(new Date());
+                
                 orgNode.inActivateTestCatalogForOrgId(selectedOrgNodeId,loginUserId);
                 orgNode.deleteOrgNodeParentForOrgNode(currentOrgnode);
                 orgNode.inActivateOrganization(currentOrgnode,loginUserId);
-                           
+                Node customerTopNode = orgNode.getTopOrgNodeForCustomer(customerId);
+                
+                productIdList = orgNode.getProductIdList(selectedOrgNodeId, customerId);
+                if(productIdList != null){
+                	isOrgNodeLicenseEntry =  orgNode.getOrgNodeLiceseEntryPresent(selectedOrgNodeId, customerId);
+               		if(isOrgNodeLicenseEntry)
+               		{
+               			for(int i=0;i< productIdList.length;i++) {
+		                	Integer availableLicense;
+		                	availableLicense = orgNode.getAvailableLicenseQuantityForOrgNode(selectedOrgNodeId,customerId,productIdList[i]);
+		                	 if (customerTopNode.getOrgNodeId() != null ) {
+		                	    orgNode.addDeletedNodeLicenseToTopNode(customerTopNode.getOrgNodeId(),availableLicense,productIdList[i]);
+		                	 }
+               			}
+                	    orgNode.deleteOrgNodeDetails(selectedOrgNodeId, customerId);
+	                }
+               }
+               
+              //END - changes for TABE BAUM to delete organization node and assign remaining license to top node
+                             
          } catch(SQLException se){
                 OrgDataDeletedException dataNotDeletedException = 
                                         new OrgDataDeletedException

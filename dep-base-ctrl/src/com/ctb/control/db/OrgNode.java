@@ -1873,5 +1873,23 @@ public interface OrgNode extends JdbcControl
 	
 	//END - Changes for LASLINK Customer
 	
+	//START - changes for TABE BAUM to delete organization node and assign remaining license to top node
+    
+	@JdbcControl.SQL(statement = "select count(*) from customer_orgnode_license where org_node_id = {selectedOrgNodeId} and customer_id= {customerId}")
+	Boolean getOrgNodeLiceseEntryPresent(Integer selectedOrgNodeId, Integer customerId) throws SQLException;
+
+	@JdbcControl.SQL(statement = "select available from customer_orgnode_license where org_node_id = {selectedOrgNodeId} and customer_id= {customerId}  and product_id= {productId}")
+	Integer getAvailableLicenseQuantityForOrgNode(Integer selectedOrgNodeId, Integer customerId, Integer productId) throws SQLException;
 	
+	@JdbcControl.SQL(statement = " update customer_orgnode_license con set con.available = ({availableLicense} + con.available) where con.org_node_id ={customerTopNodeId} and product_id= {productId}")
+	void addDeletedNodeLicenseToTopNode(Integer customerTopNodeId, Integer availableLicense, Integer productId) throws SQLException;
+	
+	@JdbcControl.SQL(statement = " delete from customer_orgnode_license where org_node_id = {selectedOrgNodeId} and customer_id= {customerId} ")
+	void deleteOrgNodeDetails(Integer selectedOrgNodeId, Integer customerId) throws SQLException;
+	
+	@JdbcControl.SQL(statement = "  select distinct product_id from customer_orgnode_license  where customer_id = {customerId} and org_node_id = {selectedOrgNodeId}")
+	Integer[] getProductIdList(Integer selectedOrgNodeId, Integer customerId) throws SQLException;
+
+	//END - changes for TABE BAUM to delete organization node and assign remaining license to top node
+    
 }
