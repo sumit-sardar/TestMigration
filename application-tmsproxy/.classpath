@@ -32,5 +32,6 @@
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/uuid-3.2.0.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/xbean.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/xerces.jar"/>
+	<classpathentry exported="true" kind="lib" path="remoteservlet/generated"/>
 	<classpathentry kind="output" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/classes"/>
 </classpath>
