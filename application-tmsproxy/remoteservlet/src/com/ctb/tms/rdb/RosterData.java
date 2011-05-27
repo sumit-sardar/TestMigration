@@ -126,13 +126,7 @@ public class RosterData
         if(accomData != null) {
             copyAccomodationsDataToResponse(loginResponse, accomData);
         }
-        boolean subtestsRemaining = false;
-        //boolean isReOpenEnabled = false;
-        //isReOpenEnabled = (loginRequest.getLoginRequest().getIsReopen() == null ||loginRequest.getLoginRequest().getIsReopen()=="" ? false : true);
-        //System.out.println("value Of Reopen"+loginRequest.getLoginRequest().getIsReopen()+"-----"+loginRequest.getLoginRequest().getUserName());
-        boolean moveOn = false;
-        
-        //START Change for Deferred defect 63502
+
         ConsolidatedRestartData restartData = null;
         if (loginResponse.getRestartFlag() && manifestData.length > 0 ){
         	restartData = loginResponse.addNewConsolidatedRestartData();
@@ -144,14 +138,10 @@ public class RosterData
                Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
                Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
                Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS.equals(manifestData[i].getCompletionStatus())) {
-                subtestsRemaining = true;
-                if(moveOn) {
-                	continue;
-                }
                 if(loginResponse.getRestartFlag()) {
                     manifestData[i].setTotalTime(TMSJDBC.getTotalElapsedTimeForSubtest(conn, testRosterId, manifestData[i].getId()));
                     int remSec = (manifestData[i].getScoDurationMinutes() * 60) - manifestData[i].getTotalTime();
-                    ItemResponseData [] itemResponseData = authenticator.getRestartItemResponses(testRosterId, manifestData[i].getId());
+                    ItemResponseData [] itemResponseData = TMSJDBC.getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
                     //START Change For deferred defect 63502
                     copyRestartDataToResponse(lsid, testRosterId, manifestData[i].getId(), loginResponse, itemResponseData, remSec, 
                     		Integer.parseInt(manifestData[i].getAdsid()), manifestData[i].getScratchpadContentStr(), restartData);
@@ -159,17 +149,10 @@ public class RosterData
                 }
             }
         }
-        if(!subtestsRemaining) {
-            response = TmssvcResponseDocument.Factory.newInstance();
-            loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
-            loginResponse.setLsid(lsid);
-            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_COMPLETED_STATUS);
-            throw new TestSessionCompletedException();
-        }
         copyManifestDataToResponse(loginResponse, manifestData, testRosterId, authData.getTestAdminId(), testAccessCode);
 
-        String tutorialResource = authenticator.getTutorialResource(testRosterId);
-        boolean wasTutorialTaken = authenticator.wasTutorialTaken(testRosterId);
+        String tutorialResource = TMSJDBC.getTutorialResource(conn, testRosterId);
+        boolean wasTutorialTaken = TMSJDBC.wasTutorialTaken(conn, testRosterId);
         if (tutorialResource!= null && !tutorialResource.trim().equals("")) {
             Tutorial tutorial =loginResponse.addNewTutorial();
             tutorial.setTutorialUrl(tutorialResource);

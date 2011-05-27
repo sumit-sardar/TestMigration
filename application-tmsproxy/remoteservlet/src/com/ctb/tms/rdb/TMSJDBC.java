@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import com.ctb.tms.bean.login.AccommodationsData;
 import com.ctb.tms.bean.login.AuthenticationData;
+import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.ManifestData;
 
 
@@ -29,7 +30,7 @@ public class TMSJDBC
     
     public static final String IS_ULTIMATE_ACCESS_CODE_SQL = "select  decode(count(siss.item_set_id), 0, 'T', 'F') from \t  student_item_set_status siss,  test_Admin_item_set tais,  item_set_parent isp where  tais.test_Admin_id = {testAdminId}  and siss.test_roster_id = {testRosterId}  and upper(tais.access_code) != upper({accessCode}) \t  and isp.parent_item_set_id = tais.item_set_id \t  and siss.item_set_id = isp.item_set_id \t  and siss.completion_status != 'CO'";
     
-    public static final String RESTART_RESPONSES_SQL = "select  ir.item_id as itemId,  ir.response_seq_num as responseSeqNum,  ir.student_marked as studentMarked,  i.item_type as itemType,  isi.item_sort_order as itemSortOrder,  ir.response as response,  icr.constructed_response as constructedResponse,  ir.response_elapsed_time as responseElapsedTime,  decode(ir.response, i.correct_answer, 1, 0) as score,  i.ads_item_id as eid from  item_response ir,  item i,  item_response_cr icr,  item_set_item isi where  ir.test_roster_id = {testRosterId}  and ir.item_set_id = {itemSetId}  and ir.item_id = i.item_id  and ir.item_set_id = isi.item_set_id  and ir.item_id = isi.item_id  and ir.response_seq_num =  (select  max(ir1.response_seq_num)  from  item_response ir1  where  ir1.item_set_id = ir.item_set_id  and ir1.item_id = ir.item_id  and ir1.test_roster_id = ir.test_roster_id) \t  AND ir.test_roster_id = icr.test_roster_id (+) \t  AND ir.item_set_id = icr.item_set_id (+) \t  AND ir.item_id = icr.item_id (+) order by  isi.item_sort_order";
+    public static final String RESTART_RESPONSES_SQL = "select  ir.item_id as itemId,  ir.response_seq_num as responseSeqNum,  ir.student_marked as studentMarked,  i.item_type as itemType,  isi.item_sort_order as itemSortOrder,  ir.response as response,  icr.constructed_response as constructedResponse,  ir.response_elapsed_time as responseElapsedTime,  decode(ir.response, i.correct_answer, 1, 0) as score,  i.ads_item_id as eid from  item_response ir,  item i,  item_response_cr icr,  item_set_item isi where  ir.test_roster_id = ?  and ir.item_set_id = ?  and ir.item_id = i.item_id  and ir.item_set_id = isi.item_set_id  and ir.item_id = isi.item_id  and ir.response_seq_num =  (select  max(ir1.response_seq_num)  from  item_response ir1  where  ir1.item_set_id = ir.item_set_id  and ir1.item_id = ir.item_id  and ir1.test_roster_id = ir.test_roster_id) \t  AND ir.test_roster_id = icr.test_roster_id (+) \t  AND ir.item_set_id = icr.item_set_id (+) \t  AND ir.item_id = icr.item_id (+) order by  isi.item_sort_order";
     
     public static final String TABE_LOCATOR_MANIFEST_SQL = "select  siss.item_Set_order as scoOrder, \t  iset.item_set_id as id, \t  iset.item_set_name as title, \t  siss.completion_status as completionStatus, \t  iset.asmt_hash as asmtHash, \t  iset.asmt_encryption_key as asmtEncryptionKey, \t  iset.item_encryption_key as itemEncryptionKey, \t  iset.ads_ob_asmt_id as adsid  from student_item_set_status siss, item_set iset where siss.item_set_id = iset.item_set_id and siss.test_roster_id = {testRosterId} and iset.item_set_level = 'L'";
 
@@ -37,9 +38,9 @@ public class TMSJDBC
     
     public static final String PRODUCT_LOGO_SQL = "select resource_uri  from PRODUCT_RESOURCE  where resource_type_code = 'TDCLOGO'  and product_id = {productId}";
     
-    public static final String TUTORIAL_RESOURCE_SQL = "select pr.resource_uri from product pp, product cp, product_resource pr where pp.product_id = cp.parent_product_id and pp.product_id = pr.product_id and pr.resource_type_code = 'TUTORIAL' and cp.product_id in ( select product_id from test_admin where test_admin_id in  (select test_admin_id from test_roster where test_roster_id = {testRosterId}))";
+    public static final String TUTORIAL_RESOURCE_SQL = "select pr.resource_uri from product pp, product cp, product_resource pr where pp.product_id = cp.parent_product_id and pp.product_id = pr.product_id and pr.resource_type_code = 'TUTORIAL' and cp.product_id in ( select product_id from test_admin where test_admin_id in  (select test_admin_id from test_roster where test_roster_id = ?))";
     
-    public static final String TUTORIAL_TAKEN_SQL = "select count(*) from test_roster tr, test_admin ta, student_tutorial_status sts where tr.test_admin_id = ta.test_admin_id and ta.product_id = sts.product_id and tr.student_id = sts.student_id and sts.completion_status = 'CO' and tr.test_roster_id = {testRosterId}";
+    public static final String TUTORIAL_TAKEN_SQL = "select count(*) as counter from test_roster tr, test_admin ta, student_tutorial_status sts where tr.test_admin_id = ta.test_admin_id and ta.product_id = sts.product_id and tr.student_id = sts.student_id and sts.completion_status = 'CO' and tr.test_roster_id = ?";
     
     public static final String SCRATCHPAD_CONTENT_SQL = "select scratchpad_content from student_item_set_status where test_roster_id = ? and item_set_id = ?";
     
@@ -94,7 +95,7 @@ public class TMSJDBC
     	ManifestData[] data = null;
     	PreparedStatement stmt1 = null;
     	try {
-			stmt1 = con.prepareStatement(SCRATCHPAD_CONTENT_SQL);
+			stmt1 = con.prepareStatement(MANIFEST_SQL);
 			stmt1.setInt(1, testRosterId);
 			stmt1.setString(2, testAccessCode);
 			ResultSet rs1 = stmt1.executeQuery();
@@ -142,7 +143,7 @@ public class TMSJDBC
     	Clob clob = null;
     	PreparedStatement stmt1 = null;
     	try {
-			stmt1 = con.prepareStatement(MANIFEST_SQL);
+			stmt1 = con.prepareStatement(SCRATCHPAD_CONTENT_SQL);
 			stmt1.setInt(1, testRosterId);
 			stmt1.setInt(2, itemSetId);
 			ResultSet rs1 = stmt1.executeQuery();
@@ -208,6 +209,89 @@ public class TMSJDBC
 			ResultSet rs1 = stmt1.executeQuery();
 			if (rs1.next()) {
 				result = rs1.getInt("totalTime");
+			}
+			rs1.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+		return result;
+	}
+    
+    public static ItemResponseData [] getRestartItemResponses(Connection con, int testRosterId, int itemSetId) {
+    	ItemResponseData[] data = null;
+    	PreparedStatement stmt1 = null;
+    	try {
+			stmt1 = con.prepareStatement(RESTART_RESPONSES_SQL);
+			stmt1.setInt(1, testRosterId);
+			stmt1.setInt(2, itemSetId);
+			ResultSet rs1 = stmt1.executeQuery();
+			ArrayList<ItemResponseData> dataList = new ArrayList<ItemResponseData>();
+			while (rs1.next()) {
+				ItemResponseData response = new ItemResponseData();
+				response.setConstructedResponse(rs1.getClob("constructed_response"));
+				response.setEid(rs1.getInt("eid"));
+				response.setItemId(rs1.getString("item_id"));
+				response.setItemSortOrder(rs1.getInt("item_sort_order"));
+				response.setItemType(rs1.getString("item_type"));
+				response.setResponse(rs1.getString("response"));
+				response.setResponseElapsedTime(rs1.getInt("response_elapsed_time"));
+				response.setResponseSeqNum(rs1.getInt("response_seq_num"));
+				response.setScore(rs1.getInt("score"));
+				response.setStudentMarked(rs1.getString("student_marked"));
+				dataList.add(response);
+			}
+			rs1.close();
+			data = (ItemResponseData[]) dataList.toArray();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+		return data;
+	}
+    
+    public static String getTutorialResource(Connection con, int testRosterId) {
+    	String result = "";
+    	PreparedStatement stmt1 = null;
+    	try {
+			stmt1 = con.prepareStatement(TUTORIAL_RESOURCE_SQL);
+			stmt1.setInt(1, testRosterId);
+			ResultSet rs1 = stmt1.executeQuery();
+			if (rs1.next()) {
+				result = rs1.getString("resource_uri");
+			}
+			rs1.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+		return result;
+	}
+    
+    public static boolean wasTutorialTaken(Connection con, int testRosterId) {
+    	boolean result = false;
+    	PreparedStatement stmt1 = null;
+    	try {
+			stmt1 = con.prepareStatement(TUTORIAL_TAKEN_SQL);
+			stmt1.setInt(1, testRosterId);
+			ResultSet rs1 = stmt1.executeQuery();
+			if (rs1.next()) {
+				result = rs1.getInt("counter") > 0;
 			}
 			rs1.close();
 		} catch (Exception e) {
