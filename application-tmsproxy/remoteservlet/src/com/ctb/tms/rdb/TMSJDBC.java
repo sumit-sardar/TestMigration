@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+import com.ctb.tms.bean.login.AccommodationsData;
 import com.ctb.tms.bean.login.AuthenticationData;
 import com.ctb.tms.bean.login.ManifestData;
 
@@ -24,7 +25,7 @@ public class TMSJDBC
     
     public static final String MANIFEST_SQL = "select scoOrder,  scoParentId,  adminForceLogout,  showStudentFeedback,  id,  title,  testTitle,  scoDurationMinutes,  0 as totalTime,  scoUnitType,  scoEntry,  completionStatus,  asmtHash,  asmtEncryptionKey,  itemEncryptionKey,  adsid,  randomDistractorStatus  from (select siss.item_Set_order as scoOrder,  isp.parent_item_Set_id as scoParentId,  ta.force_logout as adminForceLogout,  ta.show_student_feedback as showStudentFeedback,  iset.item_set_id as id,  iset.item_set_name as title,  test.item_set_name as testTitle,  iset.time_limit / 60 as scoDurationMinutes,  'SUBTEST' as scoUnitType,  'ab-initio' as scoEntry,  siss.completion_status as completionStatus,  iset.asmt_hash as asmtHash,  iset.asmt_encryption_key as asmtEncryptionKey,  iset.item_encryption_key as itemEncryptionKey,  iset.ads_ob_asmt_id as adsid,  ta.test_admin_id testid,  ta.random_distractor_status as randomDistractorStatus  from item_set_item  isi,  item_Set  iset,  item_set  test,  student_item_set_status siss,  test_roster  tr,  test_admin  ta,  item_set_parent  isp,  test_admin_item_set  tais  where isi.item_set_id = iset.item_set_id  and iset.item_set_id = siss.item_set_id  and iset.item_set_type = 'TD'  and siss.test_roster_id = tr.test_roster_id  and ta.test_admin_id = tr.test_admin_id  and isp.item_Set_id = iset.item_set_id  and tr.test_roster_id = ?  and tais.item_set_id = isp.parent_item_set_id  and test.item_set_id = ta.item_set_id  and upper(tais.access_code) = upper(?)  and tais.test_admin_id = ta.test_admin_id  group by siss.item_Set_order,  isp.parent_item_set_id,  ta.force_logout,  ta.show_student_feedback,  iset.item_Set_id,  iset.item_set_name,  test.item_set_name,  iset.time_limit,  isi.item_sort_order,  siss.completion_status,  iset.asmt_hash,  iset.asmt_encryption_key,  iset.item_encryption_key,  iset.ads_ob_asmt_id,  iset.item_set_level,  ta.test_admin_id,  ta.random_distractor_status)  group by scoOrder,  scoParentId,  adminForceLogout,  showStudentFeedback,  id,  title,  testTitle,  scoDurationMinutes,  scoUnitType,  scoEntry,  completionStatus,  asmtHash,  asmtEncryptionKey,  itemEncryptionKey,  adsid,  randomDistractorStatus  order by scoOrder";
     
-    public static final String SUBTEST_ELAPSED_TIME_SQL = "select  nvl(sum(max(resp.response_elapsed_time)), 0) as totalTime from  item_response resp where  resp.test_roster_id = {testRosterId}  and resp.item_set_id = {itemSetId} group by  resp.test_roster_id,  resp.item_set_id,  resp.item_id";
+    public static final String SUBTEST_ELAPSED_TIME_SQL = "select  nvl(sum(max(resp.response_elapsed_time)), 0) as totalTime from  item_response resp where  resp.test_roster_id = ?  and resp.item_set_id = ? group by  resp.test_roster_id,  resp.item_set_id,  resp.item_id";
     
     public static final String IS_ULTIMATE_ACCESS_CODE_SQL = "select  decode(count(siss.item_set_id), 0, 'T', 'F') from \t  student_item_set_status siss,  test_Admin_item_set tais,  item_set_parent isp where  tais.test_Admin_id = {testAdminId}  and siss.test_roster_id = {testRosterId}  and upper(tais.access_code) != upper({accessCode}) \t  and isp.parent_item_set_id = tais.item_set_id \t  and siss.item_set_id = isp.item_set_id \t  and siss.completion_status != 'CO'";
     
@@ -159,5 +160,65 @@ public class TMSJDBC
 			}
 		}
 		return clob;
+	}
+    
+    public static AccommodationsData getAccommodations(Connection con, int testRosterId) {
+    	AccommodationsData data = null;
+    	PreparedStatement stmt1 = null;
+    	try {
+			stmt1 = con.prepareStatement(ACCOMMODATIONS_SQL);
+			stmt1.setInt(1, testRosterId);
+			ResultSet rs1 = stmt1.executeQuery();
+			if (rs1.next()) {
+				data = new AccommodationsData();
+				data.setAnswerBackgroundColor(rs1.getString("answer_background_color"));
+				data.setAnswerFontColor(rs1.getString("answer_font_color"));
+				data.setAnswerFontSize(rs1.getInt("answer_font_size"));
+				data.setCalculator(rs1.getString("calculator"));
+				data.setHighlighter(rs1.getString("highlighter"));
+				data.setQuestionBackgroundColor(rs1.getString("question_background_color"));
+				data.setQuestionFontColor(rs1.getString("question_font_color"));
+				data.setQuestionFontSize(rs1.getInt("question_font_size"));
+				data.setScreenMagnifier(rs1.getString("screen_magnifier"));
+				data.setScreenReader(rs1.getString("screen_reader"));
+				data.setStudentId(rs1.getInt("student_id"));
+				data.setTestPause(rs1.getString("test_pause"));
+				data.setUntimedTest(rs1.getString("untimed_test"));
+			}
+			rs1.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+		return data;
+	}
+    
+    public static int getTotalElapsedTimeForSubtest(Connection con, int testRosterId, int itemSetId) {
+    	int result = 0;
+    	PreparedStatement stmt1 = null;
+    	try {
+			stmt1 = con.prepareStatement(SUBTEST_ELAPSED_TIME_SQL);
+			stmt1.setInt(1, testRosterId);
+			stmt1.setInt(2, itemSetId);
+			ResultSet rs1 = stmt1.executeQuery();
+			if (rs1.next()) {
+				result = rs1.getInt("totalTime");
+			}
+			rs1.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+		return result;
 	}
 }
