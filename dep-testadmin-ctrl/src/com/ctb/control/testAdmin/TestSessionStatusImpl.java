@@ -552,6 +552,54 @@ public class TestSessionStatusImpl implements TestSessionStatus
         }
     }
     
+    //START - TABE BAUM 20 Form Recommendation
+    public TestSessionData getRecommendedTestSessionsForOrgNode(String userName, Integer selectedProductId, Integer orgNodeId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+        validator.validateNode(userName, orgNodeId, "testAdmin.getTestSessionsForOrgNode");
+        try {
+            TestSessionData tsd = new TestSessionData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            TestSession [] sessions = testAdmin.getRecommendedTestSessionsForOrgNode(orgNodeId, selectedProductId);
+            tsd.setTestSessions(sessions, pageSize);
+            if(filter != null) tsd.applyFiltering(filter);
+            if(sort != null) tsd.applySorting(sort);
+            if(page != null) tsd.applyPaging(page);
+            sessions = tsd.getTestSessions();
+            for(int i=0;i<sessions.length;i++) {
+                if(sessions[i] != null) {
+                    TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(sessions[i]);
+                }
+            }
+            
+            return tsd;
+        } catch (SQLException se) {
+            TestAdminDataNotFoundException tae = new TestAdminDataNotFoundException("TestSessionStatusImpl: getTestSessionsForOrgNode: " + se.getMessage());
+            tae.setStackTrace(se.getStackTrace());
+            throw tae;         
+        }
+    }
+    
+    
+    public RosterElement[] getTestRosterForStudentIdAndOrgNode(Integer studentId, Integer orgNodeId) throws CTBBusinessException
+    {
+        try {
+            
+           
+            RosterElement [] rosterElement = roster.getTestRosterForStudentIdAndOrgNode(studentId);
+            
+            
+            return rosterElement;
+        } catch (SQLException se) {
+            TestAdminDataNotFoundException tae = new TestAdminDataNotFoundException("TestSessionStatusImpl: getTestSessionsForOrgNode: " + se.getMessage());
+            tae.setStackTrace(se.getStackTrace());
+            throw tae;         
+        }
+    }
+        //END - TABE BAUM 20 Form Recommendation
+        
     /**
      * Retrieves a filtered, sorted, paged list of org nodes that are children of the specified org node
 	 * @param userName - identifies the user

@@ -1,11 +1,16 @@
 
 package manageStudent;
 
+
+
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
@@ -16,6 +21,7 @@ import org.apache.struts.action.ActionMapping;
 
 import utils.DateUtils;
 import utils.FilterSortPageUtils;
+import utils.JsonStudentUtils;
 import utils.MessageResourceBundle;
 import utils.OrgNodeUtils;
 import utils.PermissionsUtils;
@@ -36,6 +42,7 @@ import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.StudentAccommodations;
+import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
@@ -77,6 +84,12 @@ public class ManageStudentController extends PageFlowController
 	private static final String ACTION_EDIT_STUDENT      = "editStudent";
 	private static final String ACTION_ADD_STUDENT       = "addStudent";
 	private static final String ACTION_DELETE_STUDENT    = "deleteStudent";
+	//START- FORM RECOMMENDATION
+	private static final String ACTION_FORM_RECOMMENDATION_STUDENT    = "goto_recommended_find_test_sessions";
+	private static final String ACTION_FORM_RECOMMENDATION_STUDENT_YES    = "goto_recommended_find_test_sessions_on_yes";
+	private static final String ACTION_FORM_RECOMMENDATION_STUDENT_NO    = "goto_recommended_find_test_sessions_on_no";
+	//END- FORM RECOMMENDATION
+	
 
 	private static final String MODULE_HIERARCHY               = "moduleHierarchy";
 	private static final String MODULE_STUDENT_PROFILE         = "moduleStudentProfile";
@@ -133,6 +146,12 @@ public class ManageStudentController extends PageFlowController
 	private boolean studentIdConfigurable = false;
 	private boolean studentId2Configurable = false;
 	//END- GACR005 
+	//START- FORM RECOMMENDATION
+	private String recommendedProduct = "NONE";
+	private Integer recommendedProductId = new Integer(0);
+	private Integer productId = new Integer(0);
+	//END- FORM RECOMMENDATION
+	
 
 
 	// student demographics
@@ -287,8 +306,27 @@ public class ManageStudentController extends PageFlowController
         getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
         return new Boolean(hasScoringConfigurable);
     }
+	//START- FORM RECOMMENDATION
+	 private Boolean canRegisterStudent() 
+	    {               
+	        String roleName = this.user.getRole().getRoleName();        
+	        boolean validCustomer = false; 
 
-
+	        for (int i=0; i < customerConfigurations.length; i++)
+	        {
+	            CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer"))
+	            {
+	                validCustomer = true; 
+	            }               
+	        }
+	        
+	        boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
+	        this.getSession().setAttribute("canRegisterStudent",(validCustomer && validUser));
+	        
+	        return new Boolean(validCustomer && validUser);
+	    }
+	    //END- FORM RECOMMENDATION
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** ADD - EDIT STUDENT ************* ////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -485,6 +523,97 @@ public class ManageStudentController extends PageFlowController
 		return new Forward("success");
 	}
 
+	//START- FORM RECOMMENDATION
+	
+	protected Forward goto_student_registration_popup(ManageStudentForm form){
+			
+		String jsonResponse = "";
+		Integer  studentId = new Integer(0);
+		if(getRequest().getParameter("studentId") != null && !getRequest().getParameter("studentId").equals("")){
+			studentId = Integer.valueOf(getRequest().getParameter("studentId"));
+		}
+		else {
+			studentId = this.savedForm.selectedStudentId;
+		}
+		
+		StudentSessionStatus [] scr =  getStudentPopUpDetails(studentId);
+		if(scr.length > 0) {
+			if(scr[0].getRecommendedProductId() != null && !scr[0].getRecommendedProductId().equals("")
+					&& scr[0].getProductId() != null && !scr[0].getProductId().equals("")) {
+				this.recommendedProductId = scr[0].getRecommendedProductId();
+				this.productId = scr[0].getProductId();
+			}
+		}
+		else {
+			this.recommendedProduct = "NONE";
+		}
+		try {
+			jsonResponse = JsonStudentUtils.getJson(scr, "studentSessionData",scr.getClass());
+			HttpServletResponse resp = this.getResponse();     
+			resp.setContentType("application/json");
+			resp.flushBuffer();
+	        OutputStream stream = resp.getOutputStream();
+	        stream.write(jsonResponse.getBytes());
+	        stream.close();
+	        
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;		
+	}
+	
+	 /**
+     * @jpf:action
+     */
+	@Jpf.Action()
+    protected Forward goto_recommended_find_test_sessions(ManageStudentForm form)
+    {
+        try {
+        	this.viewStudentFromSearch = true;             
+			this.savedForm = form.createClone();             
+			this.studentSearch = form.getStudentProfile().createClone(); 
+			String contextPath = "/TestSessionInfoWeb/viewtestsessions/goto_recommended_find_test_sessions.do";
+			String selectedProduct = "NONE";
+			if(this.recommendedProduct.equals("YES"))
+			{
+				selectedProduct = this.recommendedProductId.toString();
+			}
+			if(this.recommendedProduct.equals("NO"))
+			{
+				selectedProduct = this.productId.toString();
+			}
+			String selectedProductId = "selectedProductId=" +
+			selectedProduct;
+            String studentId = form.getSelectedStudentId().toString();
+            String selectedStudentId = "studentId=" +
+            studentId;            
+            String url = contextPath + "?" + selectedStudentId + "&" + selectedProductId;         
+            getResponse().sendRedirect(url);
+        } 
+        catch( IOException ioe ) {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+	
+	 /**
+     *getRubricDetails() for rubricView
+     */
+    private StudentSessionStatus[] getStudentPopUpDetails(Integer studentId){
+
+    	StudentSessionStatus [] StudentSessionStatus = null;
+    	try {	
+    		StudentSessionStatus = this.studentManagement.getStudentMostResentSessionDetail(studentId);
+    	}
+    	catch(CTBBusinessException be){
+    		be.printStackTrace();
+    	}
+    	return StudentSessionStatus;
+    }
+	
+	//END- FORM RECOMMENDATION
 	/**
 	 * handleAddOrEdit
 	 */
@@ -519,6 +648,7 @@ public class ManageStudentController extends PageFlowController
 		//Bulk Accommodation
 		customerHasBulkAccommodation();
 		customerHasScoring();//For hand scoring changes
+		canRegisterStudent(); ////FORM RECOMMENDATION
 
 		form.setCurrentAction(ACTION_DEFAULT);
 	}
@@ -1480,17 +1610,36 @@ public class ManageStudentController extends PageFlowController
 							@Jpf.Forward(name = "editStudent",
 									path = "beginEditStudent.do"), 
 									@Jpf.Forward(name = "deleteStudent",
-											path = "beginDeleteStudent.do")
+											path = "beginDeleteStudent.do"),
+											@Jpf.Forward(name = "goto_recommended_find_test_sessions",
+													path = "goto_recommended_find_test_sessions.do") 
 	}, 
 	validationErrorForward = @Jpf.Forward(name = "failure",
 			path = "logout.do"))
 			protected Forward findStudent(ManageStudentForm form)
-	{    
-		isGeorgiaCustomer(form);// Change For CR - GA2011CR001
+	{   
+		//START- FORM RECOMMENDATION
+		getUserDetails();
 		form.validateValues();
 
 		String currentAction = form.getCurrentAction();
 		String actionElement = form.getActionElement();
+		
+		form.resetValuesForAction(actionElement, ACTION_DEFAULT); 
+		if (currentAction.equals(ACTION_FORM_RECOMMENDATION_STUDENT)){
+			return new Forward(currentAction, form);
+		}
+		if (currentAction.equals(ACTION_FORM_RECOMMENDATION_STUDENT_YES)){
+			this.setRecommendedProduct("YES");
+			return new Forward(ACTION_FORM_RECOMMENDATION_STUDENT, form);
+		}
+		if (currentAction.equals(ACTION_FORM_RECOMMENDATION_STUDENT_NO)){
+			this.setRecommendedProduct("NO");
+			return new Forward(ACTION_FORM_RECOMMENDATION_STUDENT, form);
+		}
+		//END- FORM RECOMMENDATION
+		isGeorgiaCustomer(form);// Change For CR - GA2011CR001
+		
 
 		form.resetValuesForAction(actionElement, ACTION_FIND_STUDENT); 
 		if (currentAction.equals(ACTION_VIEW_STUDENT) || currentAction.equals(ACTION_EDIT_STUDENT) || currentAction.equals(ACTION_DELETE_STUDENT))
@@ -1566,6 +1715,7 @@ public class ManageStudentController extends PageFlowController
 		customerHasBulkAccommodation();
 		//scoring changes
 		customerHasScoring();//For hand scoring changes
+		canRegisterStudent();  //- FORM RECOMMENDATION
 		setFormInfoOnRequest(form);
 		return new Forward("success");
 	}
@@ -3293,4 +3443,48 @@ public class ManageStudentController extends PageFlowController
 	public void setTestPurposeOptions(String[] testPurposeOptions) {
 		this.testPurposeOptions = testPurposeOptions;
 	}
+
+	/**
+	 * @return the recommendedProduct
+	 */
+	public String getRecommendedProduct() {
+		return recommendedProduct;
+	}
+
+	/**
+	 * @param recommendedProduct the recommendedProduct to set
+	 */
+	public void setRecommendedProduct(String recommendedProduct) {
+		this.recommendedProduct = recommendedProduct;
+	}
+
+	/**
+	 * @return the recommendedProductId
+	 */
+	public Integer getRecommendedProductId() {
+		return recommendedProductId;
+	}
+
+	/**
+	 * @param recommendedProductId the recommendedProductId to set
+	 */
+	public void setRecommendedProductId(Integer recommendedProductId) {
+		this.recommendedProductId = recommendedProductId;
+	}
+
+	/**
+	 * @return the productId
+	 */
+	public Integer getProductId() {
+		return productId;
+	}
+
+	/**
+	 * @param productId the productId to set
+	 */
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
+
+	
 }

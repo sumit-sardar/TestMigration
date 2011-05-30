@@ -7,11 +7,14 @@
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
+<link href="/StudentManagementWeb/resources/css/legacy.css" type="text/css" rel="stylesheet" />
+<link href="/StudentManagementWeb/resources/css/widgets.css" type="text/css" rel="stylesheet" />
 
 
 <%
     Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); //Start Change For CR - GA2011CR001
 %>
+<input type="hidden" id="studentId" />
 
 <!--  studentList table -->
 <table class="sortable">
@@ -25,6 +28,10 @@
         <c:if test="${showDeleteButton == 'true'}">                 
             <netui:button tagId="Delete" type="submit" value="Delete" onClick="return verifyDeleteStudent();" disabled="${requestScope.disableButtons}"/>
         </c:if>
+        <c:if test="${sessionScope.canRegisterStudent}">
+			<netui:button tagId="RegisterStudent" type="button" value="Register Student" onclick="viewStudentDetail();" disabled="${requestScope.disableButtons}"/>
+        </c:if> 
+        
         </td>
     </tr>
         
@@ -55,7 +62,11 @@
     <tr class="sortable">
         <td class="sortable alignCenter">
             <netui:radioButtonGroup dataSource="actionForm.selectedStudentId">
-                &nbsp;<netui:radioButtonOption value="${container.item.studentId}" onClick="enableElementById('View'); enableElementById('Edit'); enableElementById('Delete'); setFocus('View');">&nbsp;</netui:radioButtonOption>                
+            <netui-data:getData resultId="studentId" value="${container.item.studentId}" />
+             <%
+ 				Integer studentId = (Integer) pageContext.getAttribute("studentId");
+             %>
+                &nbsp;<netui:radioButtonOption value="${container.item.studentId}" onClick="enableElementById('View'); enableElementById('Edit'); enableElementById('Delete'); enableElementById('RegisterStudent'); setFocus('View'); setStudentId(${studentId});">&nbsp;</netui:radioButtonOption>                
             </netui:radioButtonGroup>
         </td>        
         <td class="sortable">
@@ -88,3 +99,112 @@
 </netui-data:repeater>
     
 </table>
+
+			<div id="recommendedDialogID" style="display: none; position: absolute; height: 380; width: 300; background-color: #cccccc; font-family: Arial,Helvetica,Sans Serif;" >
+				<div style=" height: 10%; width: 100%">
+					<table cellpadding="2">
+						<tr>
+							<td style=" height: 100%; width: 10%; ">
+								<div  style=" height: 100%; width: 100%;">
+									<img id="icon" src="/StudentManagementWeb/resources/images/bullet_question.png" width="23" heigh="23" >
+								</div>
+							</td>
+							<td style="height: 100%; width: 80%;" align="center">
+								<div style=" height: 100%; width: 100%;  background-color: deepskyblue; " >
+									<span>
+										<font color="white" size="2">&nbsp;&nbsp; <b> Online Assessment System </b>&nbsp;&nbsp; 
+										</font>
+									</span>
+								</div>
+							</td>
+							<td style="height: 100%; width: 10%;">
+								<div style=" height: 100%; width: 100%;"> <font color="darkorange"><b>&nbsp;&nbsp;X&nbsp;&nbsp;</b></font>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div align="left" style=" font-size: 80%;">
+					<span >&nbsp; Student 
+					</span>
+					<b>
+						<span id="studentName"> 
+						</span>
+					</b>
+					<span>most recently took :
+					</span>
+				</div>
+				<br>
+				<div style=" font-size: 82%;">
+					<table style=" font-size: 80%;">
+						<tr>
+							<td width="30%">
+								<span>&nbsp; Session Name: 
+								</span>
+							</td>
+							<td>
+								<b>
+									<span id="sessionName"> 
+									</span>
+								</b>
+							</td>
+						</tr>
+						<tr>
+							<td width="30%">
+								<span>&nbsp; Test Name: 
+								</span>
+							</td>
+							<td>
+								<b>
+									<span id="testName" > 
+									</span>
+								</b>
+							</td>
+						</tr>
+						<tr>
+							<td width="30%">
+							</td>
+							<td>
+								<table id ="subtestList">
+									<tr><hr></tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td width="30%">
+								<span>&nbsp; CompletedDate: 
+								</span>
+							</td>
+							<td>
+								<b>
+									<span id="completedDate"> 
+									</span>
+								</b>
+							</td>
+						</tr>
+					</table>
+					<br>
+					
+
+					<div align="left" style=" font-size: 81.2%;">
+					<span>&nbsp; Do you want to register this student to the post-test?
+					</span>
+					<br>
+					<br>
+					<span>&nbsp;  Click <b>Yes</b> to use <b><span id="recommendedTest"></span></b>
+					</span>
+					<br>
+					<span>&nbsp; Click <b>No</b> to continue with the currently selected test.
+					</span>
+					</div>
+				</div>
+				<br>
+				<center>
+					<input type="submit" id="Yes" value="Yes">
+					<input type="submit" id="No"  value="No">
+				</center>
+			</div>
+
+
+
+

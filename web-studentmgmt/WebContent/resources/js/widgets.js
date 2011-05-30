@@ -1196,3 +1196,11 @@ function moveSelectedOption(elementId, moveDirection)
 	}
 	
 	
+	//START- FORM RECOMMENDATION
+	function setStudentId(studentId){
+
+	    document.getElementById("studentId").value = studentId;
+		
+	}
+	//END- FORM RECOMMENDATION
+	
