@@ -42,12 +42,20 @@
             <netui-data:getData resultId="isSelectable" value="${container.item.selectable}"/>
             <c:if test="${isSelectable == 'true'}">           
                 <netui:radioButtonGroup dataSource="actionForm.selectedStudentId">
-                    &nbsp;<netui:radioButtonOption value="${container.item.studentId}" onClick="enableElementById('nextToModify'); setFocus('nextToModify');">&nbsp;</netui:radioButtonOption>                
+                <netui-data:getData resultId="studentId" value="${container.item.studentId}" />
+	             <%
+	 				Integer studentId = (Integer) pageContext.getAttribute("studentId");
+	             %>
+                    &nbsp;<netui:radioButtonOption value="${container.item.studentId}" onClick="enableElementById('nextToModify'); setFocus('nextToModify'); setStudentId(${studentId});">&nbsp;</netui:radioButtonOption>                
                 </netui:radioButtonGroup>
             </c:if>
             <c:if test="${isSelectable == 'false'}">           
                 <netui:radioButtonGroup dataSource="actionForm.selectedStudentId" disabled="true">
-                    &nbsp;<netui:radioButtonOption value="${container.item.studentId}" onClick="enableElementById('nextToModify'); setFocus('nextToModify');">&nbsp;</netui:radioButtonOption>                
+                <netui-data:getData resultId="studentId" value="${container.item.studentId}" />
+	             <%
+	 				Integer studentId = (Integer) pageContext.getAttribute("studentId");
+	             %>
+                    &nbsp;<netui:radioButtonOption value="${container.item.studentId}" onClick="enableElementById('nextToModify'); setFocus('nextToModify'); setStudentId(${studentId});">&nbsp;</netui:radioButtonOption>                
                 </netui:radioButtonGroup>
             </c:if>            
         </td>        
@@ -81,5 +89,114 @@
 </netui-data:repeater>
     
 </table>
+
+
+<div id="recommendedDialogID" style="display: none; position: absolute; height: 380; width: 300; background-color: #cccccc; font-family: Arial,Helvetica,Sans Serif;" >
+				<div style=" height: 10%; width: 100%">
+					<table cellpadding="2">
+						<tr>
+							<td style=" height: 100%; width: 10%; ">
+								<div  style=" height: 100%; width: 100%;">
+									<img id="icon" src="/StudentRegistrationWeb/resources/images/bullet_question.png" width="23" heigh="23" >
+								</div>
+							</td>
+							<td style="height: 100%; width: 80%;" align="center">
+								<div style=" height: 100%; width: 100%;  background-color: deepskyblue; " >
+									<span>
+										<font color="white" size="2">&nbsp;&nbsp; <b> Online Assessment System </b>&nbsp;&nbsp; 
+										</font>
+									</span>
+								</div>
+							</td>
+							<td style="height: 100%; width: 10%;">
+								<div style=" height: 100%; width: 100%;"> <font color="darkorange"><b>&nbsp;&nbsp;X&nbsp;&nbsp;</b></font>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div align="left" style=" font-size: 80%;">
+					<span >&nbsp; Student 
+					</span>
+					<b>
+						<span id="studentName"> 
+						</span>
+					</b>
+					<span>most recently took :
+					</span>
+				</div>
+				<br>
+				<div style=" font-size: 82%;">
+					<table style=" font-size: 80%;">
+						<tr>
+							<td width="30%">
+								<span>&nbsp; Session Name: 
+								</span>
+							</td>
+							<td>
+								<b>
+									<span id="sessionName"> 
+									</span>
+								</b>
+							</td>
+						</tr>
+						<tr>
+							<td width="30%">
+								<span>&nbsp; Test Name: 
+								</span>
+							</td>
+							<td>
+								<b>
+									<span id="testName" > 
+									</span>
+								</b>
+							</td>
+						</tr>
+						
+						<tr>
+							<td width="30%">
+							</td>
+							<td>
+								<div style= "overflow-y:auto; height:100px">
+								<table id ="subtestList">
+									<tr><hr></tr>
+								</table>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td width="30%">
+								<span>&nbsp; CompletedDate: 
+								</span>
+							</td>
+							<td>
+								<b>
+									<span id="completedDate"> 
+									</span>
+								</b>
+							</td>
+						</tr>
+					</table>
+					<br>
+					
+
+					<div align="left" style=" font-size: 81.2%;">
+					<span>&nbsp; Do you want to register this student to the post-test?
+					</span>
+					<br>
+					<br>
+					<span>&nbsp;  Click <b>Yes</b> to use <b><span id="recommendedTest"></span></b>
+					</span>
+					<br>
+					<span>&nbsp; Click <b>No</b> to continue with the currently selected test.
+					</span>
+					</div>
+				</div>
+				<br>
+				<center>
+					<input type="submit" id="Yes" value="Yes">
+					<input type="submit" id="No"  value="No">
+				</center>
+			</div>
 
 

@@ -406,7 +406,16 @@ public interface OrgNode extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select  count (distinct adm.test_admin_id) as sessionCount from  org_node_ancestor ona,  test_admin adm where  adm.creator_org_node_id = ona.org_node_id  and adm.activation_status = 'AC'  and ona.ancestor_org_node_id = {orgNodeId}")
     Integer getSessionCountForAncestorNode(Integer orgNodeId) throws SQLException;      
-
+    
+    //START - TABE BAUM 020 Form Recommendation 
+	
+    @JdbcControl.SQL(statement = "select  count (distinct adm.test_admin_id) as sessionCount from  org_node_ancestor ona,  test_admin adm where  adm.creator_org_node_id = ona.org_node_id  and adm.activation_status = 'AC'  and ona.ancestor_org_node_id = {orgNodeId} and adm.test_admin_status = 'CU'")
+    Integer getRecommendedSessionCountForAncestorNode(Integer orgNodeId) throws SQLException;      
+    
+    @JdbcControl.SQL(statement = "select  count (distinct adm.test_admin_id) as sessionCount from  org_node_ancestor ona,  test_admin adm where  adm.creator_org_node_id = ona.org_node_id  and adm.activation_status = 'AC'  and ona.ancestor_org_node_id = {orgNodeId} and adm.test_admin_status = 'CU' and  adm.product_Id = {productId}")
+    Integer getRecommendedSessionCountForProductAncestorNode(Integer orgNodeId, Integer productId) throws SQLException;      
+	//END - TABE BAUM 020 Form Recommendation 
+	
     /**
      * @jc:sql statement::
      * select 

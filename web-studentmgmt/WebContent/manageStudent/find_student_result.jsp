@@ -165,9 +165,11 @@
 							<td width="30%">
 							</td>
 							<td>
+							<div style= "overflow-y:auto; height:100px">
 								<table id ="subtestList">
 									<tr><hr></tr>
 								</table>
+								</div>
 							</td>
 						</tr>
 						<tr>

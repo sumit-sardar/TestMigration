@@ -9,6 +9,7 @@ import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.CustomerTestResource;
 import com.ctb.bean.testAdmin.CustomerTestResourceData;
 import com.ctb.bean.testAdmin.RosterElement;
+import com.ctb.bean.testAdmin.SessionNodeData;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.exception.CTBBusinessException;
 
@@ -144,7 +145,11 @@ public interface TestSessionStatus
      */
     
     com.ctb.bean.testAdmin.SessionNodeData getTopSessionNodesForUser(java.lang.String userName, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+    //START - TABE BAUM 020 Form Recommendation 
+    com.ctb.bean.testAdmin.SessionNodeData getTopRecommendedSessionNodesForUser(java.lang.String userName,java.lang.Integer productId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 
+    com.ctb.bean.testAdmin.SessionNodeData getRecommendedSessionNodesForParent(String userName, Integer orgNodeId, Integer productId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException;
+    //END - TABE BAUM 020 Form Recommendation 
     /**
      * Retrieves a filtered, sorted, paged list of roster elements for the
      * specified test session.

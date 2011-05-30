@@ -6,13 +6,13 @@ $(document).ready(function() {
 	
 		var param = $("#studentId").val(); 
 		 $.unblockUI();  
-		 setElementValueAndSubmit('currentAction', 'goto_recommended_find_test_sessions_on_yes');    
+		 setElementValueAndSubmit('currentAction', 'goto_recommended_find_test_sessions');    
 		
 	});
 	     
 	   $('#No').click(function() {  
            $.unblockUI(); 
-           setElementValueAndSubmit('currentAction', 'goto_recommended_find_test_sessions_on_no');       
+           setElementValueAndSubmit('currentAction', 'toModifyTestFromFind');       
 		  
 		});  
 	}); 
@@ -56,7 +56,7 @@ function viewStudentDetail () {
 									$.blockUI({message: $('#recommendedDialogID'), css: { width: '0%' }});  
 								}else{
 									//$.unblockUI();
-									  setElementValueAndSubmit('currentAction', 'goto_recommended_find_test_sessions');
+									  setElementValueAndSubmit('currentAction', 'toModifyTestFromFind');
 							           
 								}
 								

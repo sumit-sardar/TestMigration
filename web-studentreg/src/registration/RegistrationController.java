@@ -1,60 +1,60 @@
 package registration;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+
+
+import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
-import com.ctb.bean.request.FilterParams;
-import com.ctb.bean.request.PageParams;
-import com.ctb.bean.request.SortParams;
-import com.ctb.bean.studentManagement.ManageStudent;
-import com.ctb.bean.studentManagement.ManageStudentData;
-import com.ctb.bean.studentManagement.OrganizationNode;
-import com.ctb.bean.studentManagement.OrganizationNodeData;
-import com.ctb.bean.testAdmin.Customer;
-import com.ctb.bean.testAdmin.CustomerReport;
-import com.ctb.bean.testAdmin.CustomerReportData;
-import com.ctb.bean.testAdmin.RosterElement;
-import com.ctb.bean.testAdmin.RosterElementData;
-import com.ctb.bean.testAdmin.ScheduledSession;
-import com.ctb.bean.testAdmin.SessionStudent;
-import com.ctb.bean.testAdmin.StudentManifest;
-import com.ctb.bean.testAdmin.StudentManifestData;
-import com.ctb.bean.testAdmin.StudentSessionStatus;
-import com.ctb.bean.testAdmin.TestElement;
-import com.ctb.bean.testAdmin.TestElementData;
-import com.ctb.bean.testAdmin.TestSession;
-import com.ctb.bean.testAdmin.User;
-import com.ctb.exception.CTBBusinessException;
-import com.ctb.exception.studentManagement.StudentDataCreationException;
-import com.ctb.util.web.sanitizer.SanitizedFormData;
-import com.ctb.widgets.bean.PagerSummary;
-import dto.Message;
-import dto.PathNode;
-import dto.StudentProfileInformation;
-import data.CustomerLicenseInfo;
-import data.SubtestVO;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
+
 import utils.DateUtils;
 import utils.FilterSortPageUtils;
+import utils.JsonStudentUtils;
+import utils.MessageResourceBundle;
 import utils.StudentPathListUtils;
 import utils.StudentSearchUtils;
 import utils.TABESubtestValidation;
 import utils.TestSessionUtils;
 import utils.WebUtils;
+
+import com.ctb.bean.request.FilterParams;
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
-import com.ctb.bean.testAdmin.CustomerLicense;
+import com.ctb.bean.studentManagement.ManageStudent;
+import com.ctb.bean.studentManagement.ManageStudentData;
+import com.ctb.bean.studentManagement.OrganizationNode;
+import com.ctb.bean.studentManagement.OrganizationNodeData;
+import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.RosterElement;
+import com.ctb.bean.testAdmin.ScheduledSession;
+import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.StudentAccommodations;
+import com.ctb.bean.testAdmin.StudentManifest;
+import com.ctb.bean.testAdmin.StudentManifestData;
+import com.ctb.bean.testAdmin.StudentSessionStatus;
+import com.ctb.bean.testAdmin.TestElement;
+import com.ctb.bean.testAdmin.TestSession;
+import com.ctb.bean.testAdmin.User;
+import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.studentManagement.StudentDataCreationException;
 import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
+import com.ctb.util.web.sanitizer.SanitizedFormData;
+import com.ctb.widgets.bean.PagerSummary;
+
+import data.CustomerLicenseInfo;
+import data.SubtestVO;
 import dto.LicenseSessionData;
-import utils.MessageResourceBundle;
+import dto.Message;
+import dto.PathNode;
+import dto.StudentProfileInformation;
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** RegistrationController ************* ///////////////////////
@@ -90,6 +90,12 @@ public class RegistrationController extends PageFlowController
     private static final String ACTION_DEFAULT          = "defaultAction";
     private static final String ACTION_FIND_STUDENT     = "findStudentAction";
     private static final String ACTION_ADD_STUDENT      = "addStudentAction";
+  //START- FORM RECOMMENDATION
+	private static final String ACTION_FORM_RECOMMENDATION_STUDENT       = "goto_recommended_find_test_sessions";
+	private static final String ACTION_FORM_TO_MODIFY_TEST    			 = "toModifyTestFromFind";
+	private static final String ACTION_FORM_RECOMMENDATION_STUDENT_NO    = "goto_recommended_find_test_sessions_on_no";
+	//END- FORM RECOMMENDATION
+	
 
     private static final String ACTION_APPLY_SEARCH     = "applySearch";
     private static final String ACTION_CLEAR_SEARCH     = "clearSearch";
@@ -144,9 +150,14 @@ public class RegistrationController extends PageFlowController
     
     //GACRCT2010CR007- Disable_Mandatory_Birth_Date according to customer cofiguration
     private boolean disableMandatoryBirthdate = false;
-    //START- Form Recommendation
+    ///START- FORM RECOMMENDATION
+    private Boolean  requestFromFindStudent = true;
     private boolean isFormRecommended = false;
-    //END- Form Recommendation
+    private Integer preTestAdminId = new Integer(0);
+    private Integer recommendedProductId = new Integer(0);
+	private Integer productId = new Integer(0);
+	//END- FORM RECOMMENDATION
+  
     /**
      * This method represents the point of entry into the pageflow
      * @jpf:action
@@ -181,11 +192,13 @@ public class RegistrationController extends PageFlowController
         
         TestSession testSession = this.scheduledSession.getTestSession();
         this.itemSetId = testSession.getItemSetId();
-
+        ///START- FORM RECOMMENDATION
+        if(this.savedForm != null && this.savedForm.testAdminId != null)
+        {preTestAdminId = this.savedForm.testAdminId;}
         this.savedForm = initData();
-
+        this.savedForm.setTestAdminId(preTestAdminId);
         initTestStructure(this.savedForm);
-
+       ///END- FORM RECOMMENDATION
         this.licenseInfo = new CustomerLicenseInfo(this.customerId, this.userName);
 
         this.getSession().setAttribute("userHasReports", userHasReports());
@@ -314,11 +327,26 @@ public class RegistrationController extends PageFlowController
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
-                     path = "enter_student.jsp")
+                     path = "enter_student.jsp"),
+                     @Jpf.Forward(name = "goto_recommended_find_test_sessions",
+								path = "goto_recommended_find_test_sessions.do"), 
+								@Jpf.Forward(name = "toModifyTestFromFind",
+										path = "toModifyTestFromFind.do") 
     })
     protected Forward enterStudent(RegistrationForm form)
     {   
-        
+        ///START- FORM RECOMMENDATION
+    	String currentAction = form.getCurrentAction();
+		String actionElement = form.getActionElement();
+		
+		form.resetValuesForAction(actionElement, ACTION_DEFAULT); 
+		if (currentAction.equals(ACTION_FORM_RECOMMENDATION_STUDENT)){
+			return new Forward(currentAction, form);
+		}
+		if (currentAction.equals(ACTION_FORM_TO_MODIFY_TEST)){
+			return new Forward(currentAction, form);
+		}
+		///END- FORM RECOMMENDATION
         String selectedTab = form.getSelectedTab();
         
         if (! selectedTab.equals(this.currentSelectedTab))
@@ -490,6 +518,11 @@ public class RegistrationController extends PageFlowController
          {
              form.setSelectedStudentId(new Integer(reqStudentId));
          }
+         String requestFromFindStudent = (String)this.getRequest().getParameter("requestFromFindStudent");
+         if (requestFromFindStudent != null && !requestFromFindStudent.equals(""))
+         {
+             this.setRequestFromFindStudent(new Boolean (requestFromFindStudent));
+         }
          //END- Form Recommendation             
         Integer studentId = form.getSelectedStudentId();
         if (studentId == null)
@@ -512,7 +545,7 @@ public class RegistrationController extends PageFlowController
                 
         this.searchInfo = form.getStudentProfile();
         this.savedForm = form.createClone();     
-        
+        this.savedForm.setTestAdminId(this.preTestAdminId);
         Integer itemSetId = this.scheduledSession.getTestSession().getItemSetId();
         Integer locatorItemSetId = null;
         if (this.locatorSubtest != null)
@@ -594,7 +627,91 @@ public class RegistrationController extends PageFlowController
         return new Forward("success", this.savedForm);
     }
 
+  //START- FORM RECOMMENDATION
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="listOfItem.jsp")
+	})
+	protected Forward goto_student_registration_popup(RegistrationForm form){
+			
+		String jsonResponse = "";
+		Integer  studentId = new Integer(0);
+		if(getRequest().getParameter("studentId") != null && !getRequest().getParameter("studentId").equals("")){
+			studentId = Integer.valueOf(getRequest().getParameter("studentId"));
+		}
+		else {
+			studentId = this.savedForm.selectedStudentId;
+		}
+		
+		StudentSessionStatus [] scr =  getStudentPopUpDetails(studentId);
+		if(scr.length > 0) {
+			if(scr[0].getRecommendedProductId() != null && !scr[0].getRecommendedProductId().equals("")
+					&& scr[0].getProductId() != null && !scr[0].getProductId().equals("")) {
+				this.recommendedProductId = scr[0].getRecommendedProductId();
+				this.productId = scr[0].getProductId();
+			}
+		}
+		try {
+			jsonResponse = JsonStudentUtils.getJson(scr, "studentSessionData",scr.getClass());
+			HttpServletResponse resp = this.getResponse();     
+			resp.setContentType("application/json");
+			resp.flushBuffer();
+	        OutputStream stream = resp.getOutputStream();
+	        stream.write(jsonResponse.getBytes());
+	        stream.close();
+	        
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;		
+	}
+	
+	/**
+     * @jpf:action
+     */
+	@Jpf.Action()
+    protected Forward goto_recommended_find_test_sessions(RegistrationForm form)
+    {
+        try {
+        	this.searchInfo = form.getStudentProfile();
+            this.savedForm = form.createClone();   
+            this.savedForm.setTestAdminId(this.testAdminId);
+            String contextPath = "/TestSessionInfoWeb/viewtestsessions/goto_recommended_find_test_sessions.do";
+			String selectedProduct = "NONE";
+			selectedProduct = this.recommendedProductId.toString();
+			String selectedProductId = "selectedProductId=" +
+			selectedProduct;
+            String studentId = form.getSelectedStudentId().toString();
+            String selectedStudentId = "studentId=" +
+            studentId;      
+            String requestFromFindStudent = "requestFromFindStudent=false";            
+            String url = contextPath + "?" + selectedStudentId + "&" + selectedProductId + "&" + requestFromFindStudent;         
+            getResponse().sendRedirect(url);
+        } 
+        catch( IOException ioe ) {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+	
+	 /**
+     *getRubricDetails() for rubricView
+     */
+    private StudentSessionStatus[] getStudentPopUpDetails(Integer studentId){
 
+    	StudentSessionStatus [] StudentSessionStatus = null;
+    	try {	
+    		StudentSessionStatus = this.studentManagement.getStudentMostResentSessionDetail(studentId);
+    	}
+    	catch(CTBBusinessException be){
+    		be.printStackTrace();
+    	}
+    	return StudentSessionStatus;
+    }
+	
+	//END- FORM RECOMMENDATION
     private void handleFindStudent(RegistrationForm form) 
     {
         form.validateValues();
@@ -854,15 +971,15 @@ public class RegistrationController extends PageFlowController
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
                      path = "enterStudent.do"),
-                     @Jpf.Forward(name = "goto_recommended_find_test_sessions",
-                             path = "goto_recommended_find_test_sessions.do")
+                     @Jpf.Forward(name = "go_back_to_recommended_find_test_sessions",
+                             path = "go_back_to_recommended_find_test_sessions.do")
     })
     protected Forward backToEnterStudent(RegistrationForm form)
     {
        //START- Form Recommendation
     	if(this.isFormRecommended){
     		
-    		return new Forward("goto_recommended_find_test_sessions", this.savedForm);
+    		return new Forward("go_back_to_recommended_find_test_sessions", this.savedForm);
     		
     	}
     	//END- Form Recommendation
@@ -875,18 +992,43 @@ public class RegistrationController extends PageFlowController
         return new Forward("success", this.savedForm);
     }
     
-    
+    ///START- FORM RECOMMENDATION
+    /**
+     * @jpf:action
+     * @jpf:forward name="success" path="enterStudent.do"
+     */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "success",
+                     path = "enterStudent.do")
+    })
+    protected Forward backToRegisterStudent(RegistrationForm form)
+    {	
+    	this.testAdminId = this.savedForm.testAdminId;
+        this.scheduledSession = TestSessionUtils.getTestSessionDataWithoutRoster(this.scheduleTest, this.userName, this.testAdminId);
+        TestSession testSession = this.scheduledSession.getTestSession();
+        this.itemSetId = testSession.getItemSetId();
+        initTestStructure(this.savedForm);
+        this.currentSelectedTab = ACTION_FIND_STUDENT;
+        this.savedForm.setMessage(null, null, null);
+        this.savedForm.setCurrentAction(ACTION_APPLY_SEARCH);
+        this.savedForm.setActionElement(ACTION_DEFAULT);
+        
+        return new Forward("success", this.savedForm);
+    }
+    ///END- FORM RECOMMENDATION
     //START- Form Recommendation
     /**
      * @jpf:action
      */
     @Jpf.Action()
-    protected Forward goto_recommended_find_test_sessions(RegistrationForm form)
+    protected Forward go_back_to_recommended_find_test_sessions(RegistrationForm form)
     {
         
     	try {
+    		String requestFromFindStudent = "requestFromFindStudent=" +
+			this.requestFromFindStudent;
         	String contextPath = "/TestSessionInfoWeb/viewtestsessions/goto_recommended_find_test_sessions.do";
-			String url = contextPath + "?" ;         
+			String url = contextPath + "?" + requestFromFindStudent ;         
             getResponse().sendRedirect(url);
         } 
         catch( IOException ioe ) {
@@ -1566,7 +1708,7 @@ public class RegistrationController extends PageFlowController
         private Boolean testStructureSectionVisible;
         private Boolean proctorSectionVisible;
         private Boolean reportSectionVisible;
-        
+        private Integer testAdminId; 
         private String autoLocator;
         private  boolean disableMandatoryBirthdate = false; //GACRCT2010CR007 - Disable Mandatory Birth Date
         
@@ -2088,7 +2230,21 @@ public class RegistrationController extends PageFlowController
 	            }
             }       
             return true;
-        }        
+        }
+
+		/**
+		 * @return the testAdminId
+		 */
+		public Integer getTestAdminId() {
+			return testAdminId;
+		}
+
+		/**
+		 * @param testAdminId the testAdminId to set
+		 */
+		public void setTestAdminId(Integer testAdminId) {
+			this.testAdminId = testAdminId;
+		}        
 
 
     }
@@ -2189,6 +2345,64 @@ public class RegistrationController extends PageFlowController
 		 */
 		public void setFormRecommended(boolean isFormRecommended) {
 			this.isFormRecommended = isFormRecommended;
+		}
+
+		
+
+		/**
+		 * @return the recommendedProductId
+		 */
+		public Integer getRecommendedProductId() {
+			return recommendedProductId;
+		}
+
+		/**
+		 * @param recommendedProductId the recommendedProductId to set
+		 */
+		public void setRecommendedProductId(Integer recommendedProductId) {
+			this.recommendedProductId = recommendedProductId;
+		}
+
+		/**
+		 * @return the productId
+		 */
+		public Integer getProductId() {
+			return productId;
+		}
+
+		/**
+		 * @param productId the productId to set
+		 */
+		public void setProductId(Integer productId) {
+			this.productId = productId;
+		}
+
+		/**
+		 * @return the requestFromFindStudent
+		 */
+		public Boolean isRequestFromFindStudent() {
+			return requestFromFindStudent;
+		}
+
+		/**
+		 * @param requestFromFindStudent the requestFromFindStudent to set
+		 */
+		public void setRequestFromFindStudent(Boolean requestFromFindStudent) {
+			this.requestFromFindStudent = requestFromFindStudent;
+		}
+
+		/**
+		 * @return the preTestAdminId
+		 */
+		public Integer getPreTestAdminId() {
+			return preTestAdminId;
+		}
+
+		/**
+		 * @param preTestAdminId the preTestAdminId to set
+		 */
+		public void setPreTestAdminId(Integer preTestAdminId) {
+			this.preTestAdminId = preTestAdminId;
 		}
     
 	

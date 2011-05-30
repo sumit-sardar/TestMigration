@@ -59,6 +59,9 @@ public class ViewTestSessionsController extends PageFlowController
      //START - form recommendation
     private Integer selectedStudentId = new Integer(0);
     private Integer selectedProductId = new Integer(0);
+    private boolean  requestFromFindStudent = true;
+    private Integer selectedSessionId = new Integer(0);
+    private Integer selectedOrgNodeId = new Integer(0);
      //END - form recommendation
  // customer configuration Change for HandScoring: score by student
 	CustomerConfiguration[] customerConfigurations = null;
@@ -282,7 +285,17 @@ public class ViewTestSessionsController extends PageFlowController
     	retrieveInfoFromSession();
     	 String studentId = (String)this.getRequest().getParameter("studentId");
     	 String selectedProductId = (String)this.getRequest().getParameter("selectedProductId");
-         if (studentId != null && selectedProductId != null)
+    	 String requestFromFindStudent = (String)this.getRequest().getParameter("requestFromFindStudent");
+    	 
+    	 if(requestFromFindStudent != null && !requestFromFindStudent.equals("")){
+    		 if(requestFromFindStudent.equals("false"))
+    		 	 this.requestFromFindStudent = false;
+    		 else
+    			 this.requestFromFindStudent = true;
+    	 }
+    	
+         if (studentId != null && selectedProductId != null 
+        		 && !studentId.equals("") && !selectedProductId.equals(""))
          {	 if(!(selectedProductId.equals("NONE")))
         		 this.setSelectedProductId(new Integer(selectedProductId));
              this.setSelectedStudentId(new Integer(studentId));
@@ -294,7 +307,9 @@ public class ViewTestSessionsController extends PageFlowController
          }
          if (form.orgNodeId == null)
          {
-        	 form.setOrgNodeId(new Integer(0));
+        	 
+        	 form.setOrgNodeId(this.selectedOrgNodeId);
+        	 form.setSessionId(this.selectedSessionId);
          }
    
     	String actionElement = form.getActionElement();            
@@ -330,7 +345,7 @@ public class ViewTestSessionsController extends PageFlowController
         PageParams page = FilterSortPageUtils.buildPageParams(form.getOrgPageRequested(), FilterSortPageUtils.PAGESIZE_5);
         SortParams sort = FilterSortPageUtils.buildSortParams(form.getOrgSortColumn(), form.getOrgSortOrderBy());
                      
-        SessionNodeData snd = getChildrenSessionOrgNodes(orgNodeId, filter, page, sort);
+        SessionNodeData snd = getRecommendedChildrenSessionOrgNodes(orgNodeId, this.selectedProductId, filter, page, sort);
         if (form.getOrgPageRequested().intValue() > snd.getFilteredPages().intValue())
         {
             form.setOrgPageRequested(snd.getFilteredPages());
@@ -439,7 +454,7 @@ public class ViewTestSessionsController extends PageFlowController
         
         form.setActionElement(ACTION_DEFAULT);   
         Integer selectedSessionId =  form.getSessionId();
-        if (selectedSessionId == null) 
+        if (selectedSessionId == null || sessionList.size()<= 0) 
             this.getRequest().setAttribute("disableNextButton", "true");
         else
             this.getRequest().setAttribute("disableNextButton", "false");
@@ -533,7 +548,8 @@ public class ViewTestSessionsController extends PageFlowController
     @Jpf.Action()
     protected Forward goto_register_student_ModifyTest(ViewTestSessionsForm form)
     {
-        
+        this.selectedSessionId = form.getSessionId();
+        this.selectedOrgNodeId = form.orgNodeId; 
         String contextPath = "/StudentRegistrationWeb/registration/begin.do";
         String studentId = this.getSelectedStudentId().toString();
         String selectedStudentId = "studentId=" +
@@ -541,7 +557,9 @@ public class ViewTestSessionsController extends PageFlowController
         String sessionId = form.getSessionId().toString();
         String testAdminId = "testAdminId=" +
                              sessionId;            
-        String url = contextPath + "?" + testAdminId + "&" + selectedStudentId;            
+        String requestFromFindStudent = "requestFromFindStudent=" +
+        this.requestFromFindStudent;            
+        String url = contextPath + "?" + testAdminId + "&" + selectedStudentId + "&" + requestFromFindStudent;       
             
         try
         {
@@ -560,13 +578,19 @@ public class ViewTestSessionsController extends PageFlowController
 	@Jpf.Action()
     protected Forward goto_to_find_student(ViewTestSessionsForm form)
     {
+		String contextPath = "";
         try {
-        	String contextPath = "/StudentManagementWeb/manageStudent/returnToFindStudent.do";
-        	 String studentId = this.getSelectedStudentId().toString();
-            String selectedStudentId = "studentId=" +
-            studentId;            
-            String url = contextPath + "?" + selectedStudentId;         
-            getResponse().sendRedirect(url);
+        	if(this.requestFromFindStudent) {
+        		contextPath = "/StudentManagementWeb/manageStudent/returnToFindStudent.do";
+        	}
+        	else {
+        		contextPath = "/StudentRegistrationWeb/registration/backToRegisterStudent.do";
+        	}
+        	String studentId = this.getSelectedStudentId().toString();
+    		String selectedStudentId = "studentId=" +
+    		studentId;            
+    		String url = contextPath + "?" + selectedStudentId;         
+    		getResponse().sendRedirect(url);
         } 
         catch( IOException ioe ) {
             System.err.print(ioe.getStackTrace());
@@ -600,6 +624,28 @@ public class ViewTestSessionsController extends PageFlowController
             snd = getTopSessionNodesForUser(filter, page, sort);
         else
             snd = getSessionNodesForParent(orgNodeId, filter, page, sort);
+        return snd;
+    }
+    
+    private SessionNodeData getRecommendedChildrenSessionOrgNodes(Integer orgNodeId,Integer selectedProductId, FilterParams filter, PageParams page, SortParams sort)
+    {    
+        SessionNodeData snd = null;
+        if ((orgNodeId == null) || (orgNodeId.intValue() <= 0)) {
+        	if ((selectedProductId == null) || (selectedProductId.intValue() <= 0))	{
+        		snd = getTopRecommendedSessionNodesForUser(null, filter, page, sort);
+        	}
+        	else  {
+        		snd = getTopRecommendedSessionNodesForUser(selectedProductId, filter, page, sort);
+        	}
+        }
+        else {
+        	if ((selectedProductId == null) || (selectedProductId.intValue() <= 0))	{
+        		snd = getRecommendedSessionNodesForParent(orgNodeId, null, filter, page, sort);
+        	}
+        	else {
+        		snd = getRecommendedSessionNodesForParent(orgNodeId, selectedProductId, filter, page, sort);
+        	}
+        }
         return snd;
     }
 
@@ -654,6 +700,20 @@ public class ViewTestSessionsController extends PageFlowController
         }
         return snd;
     }
+    
+    private SessionNodeData getTopRecommendedSessionNodesForUser(Integer productId,FilterParams filter, PageParams page, SortParams sort)
+    {
+        SessionNodeData snd = null;
+        try
+        {      
+            snd = this.testSessionStatus.getTopRecommendedSessionNodesForUser(this.userName, productId, filter, page, sort);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+        return snd;
+    }
 
     private SessionNodeData getSessionNodesForParent(Integer orgNodeId, FilterParams filter, PageParams page, SortParams sort)
     {    
@@ -661,6 +721,20 @@ public class ViewTestSessionsController extends PageFlowController
         try
         {      
             snd = this.testSessionStatus.getSessionNodesForParent(this.userName, orgNodeId, filter, page, sort);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }       
+        return snd;
+    }
+    
+    private SessionNodeData getRecommendedSessionNodesForParent(Integer orgNodeId,Integer productId, FilterParams filter, PageParams page, SortParams sort)
+    {    
+        SessionNodeData snd = null;    
+        try
+        {      
+            snd = this.testSessionStatus.getRecommendedSessionNodesForParent(this.userName, orgNodeId, productId, filter, page, sort);
         }
         catch (CTBBusinessException be)
         {
@@ -1452,6 +1526,42 @@ public class ViewTestSessionsController extends PageFlowController
 	 */
 	public void setSelectedProductId(Integer selectedProductId) {
 		this.selectedProductId = selectedProductId;
+	}
+	/**
+	 * @return the requestFromFindStudent
+	 */
+	public boolean isRequestFromFindStudent() {
+		return requestFromFindStudent;
+	}
+	/**
+	 * @param requestFromFindStudent the requestFromFindStudent to set
+	 */
+	public void setRequestFromFindStudent(boolean requestFromFindStudent) {
+		this.requestFromFindStudent = requestFromFindStudent;
+	}
+	/**
+	 * @return the selectedSessionId
+	 */
+	public Integer getSelectedSessionId() {
+		return selectedSessionId;
+	}
+	/**
+	 * @param selectedSessionId the selectedSessionId to set
+	 */
+	public void setSelectedSessionId(Integer selectedSessionId) {
+		this.selectedSessionId = selectedSessionId;
+	}
+	/**
+	 * @return the selectedOrgNodeId
+	 */
+	public Integer getSelectedOrgNodeId() {
+		return selectedOrgNodeId;
+	}
+	/**
+	 * @param selectedOrgNodeId the selectedOrgNodeId to set
+	 */
+	public void setSelectedOrgNodeId(Integer selectedOrgNodeId) {
+		this.selectedOrgNodeId = selectedOrgNodeId;
 	}
     
 }

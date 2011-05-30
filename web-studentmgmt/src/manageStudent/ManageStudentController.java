@@ -524,7 +524,10 @@ public class ManageStudentController extends PageFlowController
 	}
 
 	//START- FORM RECOMMENDATION
-	
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="listOfItem.jsp")
+	})
 	protected Forward goto_student_registration_popup(ManageStudentForm form){
 			
 		String jsonResponse = "";

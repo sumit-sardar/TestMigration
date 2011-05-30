@@ -675,6 +675,41 @@ public class TestSessionStatusImpl implements TestSessionStatus
         }
     }
     
+    //START - TABE BAUM 020 Form Recommendation 
+    public SessionNodeData getRecommendedSessionNodesForParent(String userName, Integer orgNodeId, Integer productId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+        validator.validateNode(userName, orgNodeId, "testAdmin.getSessionNodesForParent");
+        try {
+            SessionNodeData ond = new SessionNodeData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            Node [] nodes = orgNode.getOrgNodesByParent(orgNodeId);
+            SessionNode [] sessionNodes = new SessionNode [nodes.length];
+            for(int i=0;i<nodes.length;i++) {
+                sessionNodes[i] = new SessionNode(nodes[i]);                     
+            }
+            ond.setSessionNodes(sessionNodes, pageSize);
+            if(filter != null) ond.applyFiltering(filter);
+            if(sort != null) ond.applySorting(sort);
+            if(page != null) ond.applyPaging(page);
+            sessionNodes = ond.getSessionNodes();
+            for(int i=0;i<sessionNodes.length && sessionNodes[i] != null;i++) {
+            	if(productId != null )
+            		sessionNodes[i].setChildNodeCount(orgNode.getRecommendedSessionCountForProductAncestorNode(sessionNodes[i].getOrgNodeId(), productId));
+            	else
+            		sessionNodes[i].setSessionCount(orgNode.getRecommendedSessionCountForAncestorNode(sessionNodes[i].getOrgNodeId()));
+                
+            }
+            return ond;
+        } catch (SQLException se) {
+            OrgNodeDataNotFoundException one = new OrgNodeDataNotFoundException("TestSessionStatusImpl: getSessionNodesForParent: " + se.getMessage());
+            one.setStackTrace(se.getStackTrace());
+            throw one;
+        }
+    }
+    //END - TABE BAUM 020 Form Recommendation 
     /**
      * Retrieves a filtered, sorted, paged list of org nodes at which the specified user has a role defined
 	 * @param userName - identifies the user
@@ -748,6 +783,43 @@ public class TestSessionStatusImpl implements TestSessionStatus
         }
     }
     
+    //START - TABE BAUM 020 Form Recommendation 
+    public SessionNodeData getTopRecommendedSessionNodesForUser(String userName,Integer productId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+        validator.validate(userName, null, "testAdmin.getTopSessionNodesForUser");
+        try {
+            SessionNodeData ond = new SessionNodeData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            Node [] nodes = orgNode.getTopNodesForUser(userName);
+            SessionNode [] sessionNodes = new SessionNode [nodes.length];
+            for(int i=0;i<nodes.length;i++) {
+                sessionNodes[i] = new SessionNode(nodes[i]);                     
+            }
+            ond.setSessionNodes(sessionNodes, pageSize);
+            if(filter != null) ond.applyFiltering(filter);
+            if(sort != null) ond.applySorting(sort);
+            if(page != null) ond.applyPaging(page);
+            sessionNodes = ond.getSessionNodes();
+            for(int i=0;i<sessionNodes.length && sessionNodes[i] != null;i++) {
+            	if(productId != null)
+            		sessionNodes[i].setSessionCount(orgNode.getRecommendedSessionCountForProductAncestorNode(sessionNodes[i].getOrgNodeId(), productId));
+            	else
+            		sessionNodes[i].setSessionCount(orgNode.getRecommendedSessionCountForAncestorNode(sessionNodes[i].getOrgNodeId()));
+            		
+            	
+                sessionNodes[i].setChildNodeCount(orgNode.getOrgNodeCountByParent(sessionNodes[i].getOrgNodeId()));
+            }
+            return ond;
+        } catch (SQLException se) {
+            OrgNodeDataNotFoundException one = new OrgNodeDataNotFoundException("TestSessionStatusImpl: getTopSessionNodesForUser: " + se.getMessage());
+            one.setStackTrace(se.getStackTrace());
+            throw one;
+        }
+    }
+    //END - TABE BAUM 020 Form Recommendation 
     /**
      * Retrieves a filtered, sorted, paged list of roster elements for the specified test session.
 	 * @param userName - identifies the user

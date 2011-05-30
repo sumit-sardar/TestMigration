@@ -9,9 +9,14 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 
+<script type="text/javascript" src="/StudentRegistrationWeb/resources/js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="/StudentRegistrationWeb/resources/js/jquery-ui-1.8.10.custom.min.js"></script>
+<script type="text/javascript" src="/StudentRegistrationWeb/resources/js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="/StudentRegistrationWeb/resources/js/studentregistration.js"></script>
+
 <input type="hidden" name="firstFocusId" id="firstFocusId" value="{actionForm.studentProfile.studentNumber}" />
 
-
+<input type="hidden" id="studentId" />
 <table class="sortable">
     <tr class="sortable">
         <td class="sortableControls">
@@ -82,6 +87,7 @@
 <!-- buttons -->
 <p>
     <netui:button type="submit" value="Cancel" action="gotoHomePage" onClick="return verifyExitRegisterStudent();"/>
-    <netui:button tagId="nextToModify" type="submit" value="Next" action="toModifyTestFromFind" disabled="${requestScope.disableNextButton}"/>
+    <!-- netui:button tagId="nextToModify" type="submit" value="Next" action="toModifyTestFromFind" disabled="${requestScope.disableNextButton}"/-->
+    <netui:button tagId="nextToModify" type="button" value="Next" onclick="viewStudentDetail();" disabled="${requestScope.disableNextButton}"/>
 </p>
 
