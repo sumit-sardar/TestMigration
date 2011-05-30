@@ -7,6 +7,7 @@ import org.apache.beehive.controls.api.bean.ControlInterface;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.exception.CTBBusinessException;
 
 /** 
@@ -479,5 +480,7 @@ public interface StudentManagement
      */
     
     com.ctb.bean.studentManagement.ItemResponseData getStudentCrResponse(Integer testRosterId,String itemId) throws com.ctb.exception.CTBBusinessException;
+    
+    StudentSessionStatus[] getStudentMostResentSessionDetail(Integer studentId) throws  com.ctb.exception.CTBBusinessException;
     
 } 

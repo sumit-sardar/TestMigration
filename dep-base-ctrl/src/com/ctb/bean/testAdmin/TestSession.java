@@ -71,9 +71,27 @@ public class TestSession extends CTBBean
     private String licenseEnabled;
     private Integer testRosterId; //ISTEP CR 003
     private String scheduler;  //ISTEP CR 003
+    //START - TABE BAUM 020 Form Recommendation 
+	private Boolean isStudentInTestSession = false;
+    //END - TABE BAUM 020 Form Recommendation 
+	
    
    
     /**
+	 * @return the isStudentInTestSession
+	 */
+	public Boolean getIsStudentInTestSession() {
+		return isStudentInTestSession;
+	}
+
+	/**
+	 * @param isStudentInTestSession the isStudentInTestSession to set
+	 */
+	public void setIsStudentInTestSession(Boolean isStudentInTestSession) {
+		this.isStudentInTestSession = isStudentInTestSession;
+	}
+
+	/**
 	 * @return the scheduler
 	 */
 	public String getScheduler() {

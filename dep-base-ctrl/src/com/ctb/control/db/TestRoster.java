@@ -529,6 +529,9 @@ public interface TestRoster extends JdbcControl
     
     @JdbcControl.SQL(statement = "insert into  student_item_set_status (  TEST_ROSTER_ID,  ITEM_SET_ID,  COMPLETION_STATUS,  START_DATE_TIME,  COMPLETION_DATE_TIME,  VALIDATION_STATUS,  VALIDATION_UPDATED_BY,  VALIDATION_UPDATED_DATE_TIME,  VALIDATION_UPDATED_NOTE,  TIME_EXPIRED,  ITEM_SET_ORDER,  CUSTOMER_FLAG_STATUS  ) values (  {testRosterId},  {sss.itemSetId},  {sss.completionStatus},  {sss.startDateTime},  {sss.completionDateTime},  {sss.validationStatus},  {sss.validationUpdatedBy},  {sss.validationUpdatedDateTime},  {sss.validationUpdatedNote},  {sss.timeExpired},  {sss.itemSetOrder},  (select  cc.default_value  from  customer_configuration cc  where  cc.customer_id = {customerId}  and cc.customer_configuration_name = 'Roster_Status_Flag')  )")
     void createNewStudentItemSetStatusForRoster(Integer customerId, StudentSessionStatus sss, Integer testRosterId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "SELECT ROS.TEST_ROSTER_ID  AS TESTROSTERID,  ROS.TEST_ADMIN_ID  AS TESTADMINID, ROS.VALIDATION_STATUS AS VALIDATIONSTATUS,  ROS.STUDENT_ID  AS STUDENTID FROM TEST_ROSTER ROS, STUDENT STU, TEST_ADMIN TADMIN  WHERE ROS.STUDENT_ID = {studentId} AND ROS.ACTIVATION_STATUS = 'AC' AND STU.STUDENT_ID = ROS.STUDENT_ID  AND STU.ACTIVATION_STATUS = 'AC'  AND TADMIN.TEST_ADMIN_ID = ROS.TEST_ADMIN_ID  AND TADMIN.ACTIVATION_STATUS = 'AC'")
+    RosterElement[] getTestRosterForStudentIdAndOrgNode(Integer studentId) throws SQLException;
 
     static final long serialVersionUID = 1L;
 }

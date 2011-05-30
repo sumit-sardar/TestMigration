@@ -44,6 +44,16 @@ public class StudentSessionStatus extends CTBBean
 	private String testExemptions;
 	private String absent;
     
+	//START - TABE BAUM 020 Form Recommendation 
+	private String testSessionName;
+	private String productName;
+	private String itemSetType;
+	private Integer productId;
+	private Integer recommendedProductId;
+	private String recommendedProductName;
+	//END - TABE BAUM 020 Form Recommendation 
+	
+    
     /**
 	 * @return the testExemptions
 	 */
@@ -407,6 +417,78 @@ public class StudentSessionStatus extends CTBBean
 	 */
 	public void setItemSetLevel(String itemSetLevel) {
 		this.itemSetLevel = itemSetLevel;
+	}
+	/**
+	 * @return the testSessionName
+	 */
+	public String getTestSessionName() {
+		return testSessionName;
+	}
+	/**
+	 * @param testSessionName the testSessionName to set
+	 */
+	public void setTestSessionName(String testSessionName) {
+		this.testSessionName = testSessionName;
+	}
+	/**
+	 * @return the productName
+	 */
+	public String getProductName() {
+		return productName;
+	}
+	/**
+	 * @param productName the productName to set
+	 */
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+	/**
+	 * @return the itemSetType
+	 */
+	public String getItemSetType() {
+		return itemSetType;
+	}
+	/**
+	 * @param itemSetType the itemSetType to set
+	 */
+	public void setItemSetType(String itemSetType) {
+		this.itemSetType = itemSetType;
+	}
+	/**
+	 * @return the productId
+	 */
+	public Integer getProductId() {
+		return productId;
+	}
+	/**
+	 * @param productId the productId to set
+	 */
+	public void setProductId(Integer productId) {
+		this.productId = productId;
+	}
+	/**
+	 * @return the recommendedProductId
+	 */
+	public Integer getRecommendedProductId() {
+		return recommendedProductId;
+	}
+	/**
+	 * @param recommendedProductId the recommendedProductId to set
+	 */
+	public void setRecommendedProductId(Integer recommendedProductId) {
+		this.recommendedProductId = recommendedProductId;
+	}
+	/**
+	 * @return the recommendedProductName
+	 */
+	public String getRecommendedProductName() {
+		return recommendedProductName;
+	}
+	/**
+	 * @param recommendedProductName the recommendedProductName to set
+	 */
+	public void setRecommendedProductName(String recommendedProductName) {
+		this.recommendedProductName = recommendedProductName;
 	}
 
 } 

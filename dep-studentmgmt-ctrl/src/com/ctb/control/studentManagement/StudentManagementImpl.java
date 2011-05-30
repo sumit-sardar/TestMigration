@@ -39,6 +39,7 @@ import com.ctb.bean.testAdmin.StudentDemoGraphics;
 import com.ctb.bean.testAdmin.StudentDemographicDataBean;
 import com.ctb.bean.testAdmin.StudentNode;
 import com.ctb.bean.testAdmin.StudentNodeData;
+import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
@@ -2512,4 +2513,23 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
+	//START- TABE BAUM 20 Fprm Recommendation
+	public StudentSessionStatus[] getStudentMostResentSessionDetail(Integer studentId) throws CTBBusinessException{
+		
+		try{
+			StudentSessionStatus [] StudentSessionStatus = null;
+			
+			StudentSessionStatus = studentManagement.getStudentMostResentSessionDetail(studentId);
+			
+			return StudentSessionStatus;
+		}
+		catch(Exception e){
+			
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getStudentMostResentSessionDetail: " );
+			tee.setStackTrace(e.getStackTrace());
+			throw tee;
+		}
+		
+	}
+		//END- TABE BAUM 20 Fprm Recommendation
 } 
