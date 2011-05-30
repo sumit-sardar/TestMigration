@@ -144,7 +144,9 @@ public class RegistrationController extends PageFlowController
     
     //GACRCT2010CR007- Disable_Mandatory_Birth_Date according to customer cofiguration
     private boolean disableMandatoryBirthdate = false;
-    
+    //START- Form Recommendation
+    private boolean isFormRecommended = false;
+    //END- Form Recommendation
     /**
      * This method represents the point of entry into the pageflow
      * @jpf:action
@@ -152,7 +154,9 @@ public class RegistrationController extends PageFlowController
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
-                     path = "enterStudent.do")
+                     path = "enterStudent.do"),
+                     @Jpf.Forward(name = "toModifyTest",
+                    		 path = "toModifyTestFromFind.do")
     })
     protected Forward begin()
     {
@@ -191,6 +195,14 @@ public class RegistrationController extends PageFlowController
         //Bulk Accommodation
 		customerHasBulkAccommodation();
 		customerHasScoring();//For hand scoring changes
+		//START- Form Recommendation
+		String reqStudentId = (String)this.getRequest().getParameter("studentId");
+        if (reqStudentId != null && testAdminStr != null)
+        {
+        	this.isFormRecommended = true;
+        	return new Forward("toModifyTest", this.savedForm);
+        } 
+        //END- Form Recommendation 
         return new Forward("success", this.savedForm);
     }
 
@@ -343,10 +355,18 @@ public class RegistrationController extends PageFlowController
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
-                     path = "beginEnterMoreStudent.do")
+                     path = "beginEnterMoreStudent.do"),
+                      @Jpf.Forward(name = "goto_to_find_student",
+                    		  path = "goto_to_find_student.do")
     })
     protected Forward enterMoreStudent(RegistrationForm form)
-    {
+    {	//START- Form Recommendation
+    	if(this.isFormRecommended){
+    		
+    		return new Forward("goto_to_find_student", form);
+    		
+    	}
+    	//END- Form Recommendation
         return new Forward("success");
     }
         
@@ -464,8 +484,13 @@ public class RegistrationController extends PageFlowController
                      path = "enterStudent.do")
     })
     protected Forward toModifyTestFromFind(RegistrationForm form)
-    {
-                      
+    {	//START- Form Recommendation
+    	 String reqStudentId = (String)this.getRequest().getParameter("studentId");
+         if (reqStudentId != null)
+         {
+             form.setSelectedStudentId(new Integer(reqStudentId));
+         }
+         //END- Form Recommendation             
         Integer studentId = form.getSelectedStudentId();
         if (studentId == null)
         {
@@ -609,6 +634,27 @@ public class RegistrationController extends PageFlowController
             form.clearSearch();
         }
     }
+    //START- Form Recommendation
+    /**
+     * @jpf:action
+     */
+	@Jpf.Action()
+    protected Forward goto_to_find_student(RegistrationForm form)
+    {
+        try {
+        	String contextPath = "/StudentManagementWeb/manageStudent/returnToFindStudent.do";
+        	 String studentId = this.savedForm.getSelectedStudentId().toString();
+            String selectedStudentId = "studentId=" +
+            studentId;            
+            String url = contextPath + "?" + selectedStudentId;         
+            getResponse().sendRedirect(url);
+        } 
+        catch( IOException ioe ) {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+	//END- Form Recommendation
 
     private boolean setStudentsInSession(List studentList) 
     {
@@ -807,10 +853,19 @@ public class RegistrationController extends PageFlowController
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
-                     path = "enterStudent.do")
+                     path = "enterStudent.do"),
+                     @Jpf.Forward(name = "goto_recommended_find_test_sessions",
+                             path = "goto_recommended_find_test_sessions.do")
     })
     protected Forward backToEnterStudent(RegistrationForm form)
     {
+       //START- Form Recommendation
+    	if(this.isFormRecommended){
+    		
+    		return new Forward("goto_recommended_find_test_sessions", this.savedForm);
+    		
+    	}
+    	//END- Form Recommendation
         initTestStructure(this.savedForm);
         
         this.savedForm.setMessage(null, null, null);
@@ -819,6 +874,27 @@ public class RegistrationController extends PageFlowController
         
         return new Forward("success", this.savedForm);
     }
+    
+    
+    //START- Form Recommendation
+    /**
+     * @jpf:action
+     */
+    @Jpf.Action()
+    protected Forward goto_recommended_find_test_sessions(RegistrationForm form)
+    {
+        
+    	try {
+        	String contextPath = "/TestSessionInfoWeb/viewtestsessions/goto_recommended_find_test_sessions.do";
+			String url = contextPath + "?" ;         
+            getResponse().sendRedirect(url);
+        } 
+        catch( IOException ioe ) {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+    //END- Form Recommendation
 
     /**
      * @jpf:action
@@ -2100,6 +2176,20 @@ public class RegistrationController extends PageFlowController
         getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
         return new Boolean(hasScoringConfigurable);
     }
+
+		/**
+		 * @return the isFormRecommended
+		 */
+		public boolean isFormRecommended() {
+			return isFormRecommended;
+		}
+
+		/**
+		 * @param isFormRecommended the isFormRecommended to set
+		 */
+		public void setFormRecommended(boolean isFormRecommended) {
+			this.isFormRecommended = isFormRecommended;
+		}
     
 	
 	

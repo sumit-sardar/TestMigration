@@ -18,6 +18,7 @@ import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.OrganizationNode;
+import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.SessionNode;
 import com.ctb.bean.testAdmin.SessionNodeData;
 import com.ctb.bean.testAdmin.TestSession;
@@ -55,7 +56,10 @@ public class ViewTestSessionsController extends PageFlowController
         
     private String userName = null;
     private List orgNodePath = null;
-    
+     //START - form recommendation
+    private Integer selectedStudentId = new Integer(0);
+    private Integer selectedProductId = new Integer(0);
+     //END - form recommendation
  // customer configuration Change for HandScoring: score by student
 	CustomerConfiguration[] customerConfigurations = null;
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
@@ -259,6 +263,193 @@ public class ViewTestSessionsController extends PageFlowController
         
         return new Forward("success", form);
     }
+    
+     //START - form recommendation
+    /**
+     * @jpf:action
+     * @jpf:forward name="success" path="view_test_sessions.jsp"
+     * @jpf:forward name="sessionViewStatus" path="goto_view_session_monitor_status.do"
+     * @jpf:forward name="sessionEdit" path="goto_edit_session_information.do"
+     * @jpf:forward name="registerStudent" path="goto_register_student.do"
+     * @jpf:forward name="scoringByItem" path="goto_score_by_item.do"
+     */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "success",
+                     path = "recommended_find_test_sessions.jsp")
+    })
+    protected Forward goto_recommended_find_test_sessions(ViewTestSessionsForm form)
+    {
+    	retrieveInfoFromSession();
+    	 String studentId = (String)this.getRequest().getParameter("studentId");
+    	 String selectedProductId = (String)this.getRequest().getParameter("selectedProductId");
+         if (studentId != null && selectedProductId != null)
+         {	 if(!(selectedProductId.equals("NONE")))
+        		 this.setSelectedProductId(new Integer(selectedProductId));
+             this.setSelectedStudentId(new Integer(studentId));
+          	form.init();
+          	this.orgNodePath = new ArrayList();
+          	// change for handscoring
+           customerHasScoring();
+           this.getSession().setAttribute("orgNodePath", this.orgNodePath);
+         }
+         if (form.orgNodeId == null)
+         {
+        	 form.setOrgNodeId(new Integer(0));
+         }
+   
+    	String actionElement = form.getActionElement();            
+        String currentAction = form.getCurrentAction();  
+        
+        if(actionElement == null )
+        	form.setActionElement("defaultAction");
+        if(currentAction == null )
+        	form.setCurrentAction("defaultAction");
+        
+        actionElement = form.getActionElement();            
+        currentAction = form.getCurrentAction();  
+        
+        form.resetValuesForAction();        
+        form.validateValues();
+        
+        String orgNodeName = form.getOrgNodeName();
+        Integer orgNodeId = form.getOrgNodeId();   
+
+        if (this.orgNodePath == null) {
+        	this.orgNodePath = (List)this.getSession().getAttribute("orgNodePath");
+        	this.userName = (String)this.getSession().getAttribute("userName");	
+        }
+
+		boolean nodeChanged = PathListUtils.adjustOrgNodePath(this.orgNodePath, orgNodeId, orgNodeName);
+
+        if (nodeChanged)
+        {
+            form.resetValuesForPathList();
+        }
+        
+        FilterParams filter = null;
+        PageParams page = FilterSortPageUtils.buildPageParams(form.getOrgPageRequested(), FilterSortPageUtils.PAGESIZE_5);
+        SortParams sort = FilterSortPageUtils.buildSortParams(form.getOrgSortColumn(), form.getOrgSortOrderBy());
+                     
+        SessionNodeData snd = getChildrenSessionOrgNodes(orgNodeId, filter, page, sort);
+        if (form.getOrgPageRequested().intValue() > snd.getFilteredPages().intValue())
+        {
+            form.setOrgPageRequested(snd.getFilteredPages());
+        }
+        List orgNodes = buildSessionNodeList(snd);
+        String orgCategoryName = getOrgCategoryName(orgNodes);
+        
+        PagerSummary orgPagerSummary = buildSessionOrgNodePagerSummary(snd, form.getOrgPageRequested());        
+        
+        this.getRequest().setAttribute("orgNodePath", this.orgNodePath);
+        this.getRequest().setAttribute("orgNodes", orgNodes);        
+        this.getRequest().setAttribute("orgPagerSummary", orgPagerSummary);
+        this.getRequest().setAttribute("orgCategoryName", orgCategoryName);        
+
+        String selectedOrgNodeName = null;
+        if (nodeChanged || actionElement.equals("{actionForm.orgPageRequested}") || actionElement.equals("EnterKeyInvoked_tablePathListAnchor") || actionElement.equals("ButtonGoInvoked_tablePathListAnchor"))
+        {
+            if (orgNodes.size() > 0)
+            {
+                PathNode node = (PathNode)orgNodes.get(0);
+                form.setSelectedOrgNodeId(node.getId());
+                form.setSelectedOrgNodeName(node.getName());
+                selectedOrgNodeName = node.getName();
+            }
+        }
+        else
+        {
+            if (actionElement.equals("{actionForm.sessionFilterTab}") || actionElement.equals("{actionForm.sessionSortColumn}") || actionElement.equals("{actionForm.sessionPageRequested}") || actionElement.equals("{actionForm.sessionSortOrderBy}") || actionElement.equals("EnterKeyInvoked_tableSessionAnchor") || actionElement.equals("ButtonGoInvoked_tableSessionAnchor"))
+            {
+                selectedOrgNodeName = form.getSelectedOrgNodeName();
+                form.setSessionId(null);
+            }
+            if (actionElement.equals("{actionForm.actionElement}"))
+            {
+                PathNode node = PathListUtils.findOrgNode(orgNodes, form.getSelectedOrgNodeId());
+                if (node != null)
+                {
+                    form.setSelectedOrgNodeId(node.getId());
+                    form.setSelectedOrgNodeName(node.getName());
+                    selectedOrgNodeName = node.getName();
+                }
+            }
+        }
+        if (selectedOrgNodeName == null)
+        {
+            if (orgNodes.size() > 0)
+            {
+                PathNode node = (PathNode)orgNodes.get(0);
+                form.setSelectedOrgNodeId(node.getId());
+                form.setSelectedOrgNodeName(node.getName());
+            }
+        }
+        
+        
+        FilterParams sessionFilter = FilterSortPageUtils.buildFilterParams(FilterSortPageUtils.TESTSESSION_DEFAULT_FILTER_COLUMN, form.getSessionFilterTab());
+        PageParams sessionPage = FilterSortPageUtils.buildPageParams(form.getSessionPageRequested(), FilterSortPageUtils.PAGESIZE_5);
+        SortParams sessionSort = FilterSortPageUtils.buildSortParams(form.getSessionSortColumn(), form.getSessionSortOrderBy());
+        
+        TestSessionData tsd = getRecommendedTestSessionsForOrgNode(form.getSelectedOrgNodeId(),this.selectedProductId, sessionFilter, sessionPage, sessionSort);
+        RosterElement [] stl  =	getTestRosterForStudentIdAndOrgNode(this.selectedStudentId, form.getSelectedOrgNodeId());
+        
+        List sessionList = buildStudentTestSessionList(tsd, stl); 
+        String testSessionOrgCategoryName = getTestSessionOrgCategoryName(sessionList);
+        
+        PagerSummary sessionPagerSummary = buildSessionPagerSummary(tsd, form.getSessionPageRequested()); 
+        form.setSessionMaxPage(tsd.getFilteredPages());
+        
+        this.getRequest().setAttribute("sessionList", sessionList);
+        this.getRequest().setAttribute("sessionPagerSummary", sessionPagerSummary);
+        this.getRequest().setAttribute("testSessionOrgCategoryName", testSessionOrgCategoryName);        
+        
+        String sessionFilterTab = form.getSessionFilterTab();
+        Boolean isScoringConfigured =  (Boolean) getSession().getAttribute("isScoringConfigured");
+        Boolean canRegisterStudent =  (Boolean) getSession().getAttribute("canRegisterStudent");
+        
+        if( (canRegisterStudent) && !(sessionFilterTab.equalsIgnoreCase("PA")))
+        {
+        	this.getRequest().setAttribute("visibleRegisterStudent", Boolean.TRUE);
+        } 
+        else {
+        	this.getRequest().setAttribute("visibleRegisterStudent", Boolean.FALSE);
+        }
+        
+        
+        if( ((Boolean)isScoringConfigured) && !(sessionFilterTab.equalsIgnoreCase("FU")))
+        {
+        	this.getRequest().setAttribute("visiableScoreByStudent", Boolean.TRUE);
+        } 
+        else {
+        	this.getRequest().setAttribute("visiableScoreByStudent", Boolean.FALSE);
+        }
+
+        saveFormToSession(form);
+        
+        this.getSession().setAttribute("hasLicenseConfig", hasLicenseConfig());
+        
+		// get licenses
+        CustomerLicense[] customerLicenses = getCustomerLicenses();
+        if ((customerLicenses != null) && (customerLicenses.length > 0))
+        {
+            this.getRequest().setAttribute("customerLicenses", customerLicenses);
+        }
+        
+        //check avaliable license count for Register Student
+        registerStudentEnable(customerLicenses, sessionList);
+        
+        form.setActionElement(ACTION_DEFAULT);   
+        Integer selectedSessionId =  form.getSessionId();
+        if (selectedSessionId == null) 
+            this.getRequest().setAttribute("disableNextButton", "true");
+        else
+            this.getRequest().setAttribute("disableNextButton", "false");
+       
+        
+        this.getSession().setAttribute("orgNodePath", this.orgNodePath);
+        
+        return new Forward("success", form);
+    }
+     //END - form recommendation
 
     /**
      * @jpf:action
@@ -335,7 +526,55 @@ public class ViewTestSessionsController extends PageFlowController
         }
         return null;
     }
+     //START - form recommendation
+    /**
+     * @jpf:action
+     */
+    @Jpf.Action()
+    protected Forward goto_register_student_ModifyTest(ViewTestSessionsForm form)
+    {
+        
+        String contextPath = "/StudentRegistrationWeb/registration/begin.do";
+        String studentId = this.getSelectedStudentId().toString();
+        String selectedStudentId = "studentId=" +
+        studentId;  
+        String sessionId = form.getSessionId().toString();
+        String testAdminId = "testAdminId=" +
+                             sessionId;            
+        String url = contextPath + "?" + testAdminId + "&" + selectedStudentId;            
+            
+        try
+        {
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
     
+    /**
+     * @jpf:action
+     */
+	@Jpf.Action()
+    protected Forward goto_to_find_student(ViewTestSessionsForm form)
+    {
+        try {
+        	String contextPath = "/StudentManagementWeb/manageStudent/returnToFindStudent.do";
+        	 String studentId = this.getSelectedStudentId().toString();
+            String selectedStudentId = "studentId=" +
+            studentId;            
+            String url = contextPath + "?" + selectedStudentId;         
+            getResponse().sendRedirect(url);
+        } 
+        catch( IOException ioe ) {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+	
+     //END - form recommendation
     private void saveFormToSession(ViewTestSessionsForm form)
     {
         /*
@@ -443,6 +682,39 @@ public class ViewTestSessionsController extends PageFlowController
         }
         return tsd;
     }
+     //START - form recommendation
+    private TestSessionData getRecommendedTestSessionsForOrgNode(Integer orgNodeId, Integer selectedProductId, FilterParams filter, PageParams page, SortParams sort) 
+    {
+        TestSessionData tsd = new TestSessionData();                        
+        try
+        {     
+        	if ((selectedProductId == null) || (selectedProductId.intValue() <= 0))
+        		tsd = this.testSessionStatus.getTestSessionsForOrgNode(userName, orgNodeId, filter, page, sort);
+        	else
+        		tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, selectedProductId, orgNodeId, filter, page, sort);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+        return tsd;
+    }
+    
+    
+    private RosterElement[] getTestRosterForStudentIdAndOrgNode(Integer studentId, Integer orgNodeId) 
+    {
+    	RosterElement [] stl = null;                        
+        try
+        {      
+        	stl = this.testSessionStatus.getTestRosterForStudentIdAndOrgNode(studentId, orgNodeId);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+        return stl;
+    }
+     //END - form recommendation
 
     /**
      * getAncestorOrganizationNodesForOrgNode
@@ -541,7 +813,40 @@ public class ViewTestSessionsController extends PageFlowController
         }
         return sessionList;
     }
-    
+     //START - form recommendation
+    private List buildStudentTestSessionList(TestSessionData tsd, RosterElement [] stl) 
+    {
+        List sessionList = new ArrayList();                       
+        TestSession[] testsessions = tsd.getTestSessions(); 
+        for(int j=0; j < stl.length; j++){
+        	
+        	if (stl[j] != null) {
+        	for (int i=0; i < testsessions.length; i++)
+            {
+                TestSession ts = testsessions[i];
+                if (ts != null)
+                {
+                    if(stl[j].getTestAdminId().equals(testsessions[i].getTestAdminId())){
+                    	testsessions[i].setIsStudentInTestSession(true);
+                    }
+                    
+                }
+            }
+        }
+        }
+        
+        for (int i=0; i < testsessions.length; i++)
+        {
+            TestSession ts = testsessions[i];
+            if (ts != null)
+            {
+                TestSessionVO vo = new TestSessionVO(ts);
+                sessionList.add(vo);
+            }
+        }
+        return sessionList;
+    }
+     //END - form recommendation
     private PagerSummary buildSessionPagerSummary(TestSessionData tsd, Integer pageRequested) 
     {
         PagerSummary pagerSummary = new PagerSummary();
@@ -1123,6 +1428,30 @@ public class ViewTestSessionsController extends PageFlowController
 
 	public void setOrgNodePath(List orgNodePath) {
 		this.orgNodePath = orgNodePath;
+	}
+	/**
+	 * @return the selectedStudentId
+	 */
+	public Integer getSelectedStudentId() {
+		return selectedStudentId;
+	}
+	/**
+	 * @param selectedStudentId the selectedStudentId to set
+	 */
+	public void setSelectedStudentId(Integer selectedStudentId) {
+		this.selectedStudentId = selectedStudentId;
+	}
+	/**
+	 * @return the selectedProductId
+	 */
+	public Integer getSelectedProductId() {
+		return selectedProductId;
+	}
+	/**
+	 * @param selectedProductId the selectedProductId to set
+	 */
+	public void setSelectedProductId(Integer selectedProductId) {
+		this.selectedProductId = selectedProductId;
 	}
     
 }

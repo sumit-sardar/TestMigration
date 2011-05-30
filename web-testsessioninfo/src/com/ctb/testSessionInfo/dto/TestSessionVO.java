@@ -27,7 +27,9 @@ public class TestSessionVO implements java.io.Serializable
     private Integer productId = null;
     private Integer parentProductId = null;
     private String licenseEnabled = null;
-   
+    //START - form recommendation
+    private Boolean isStudentInTestSession = false;
+     //END - form recommendation
     
     public TestSessionVO() 
     {
@@ -54,6 +56,7 @@ public class TestSessionVO implements java.io.Serializable
          this.productId = ts.getProductId();  
          this.parentProductId = ts.getParentProductId();
          this.licenseEnabled = ts.getLicenseEnabled();
+         this.isStudentInTestSession = ts.getIsStudentInTestSession();   //START - form recommendation
         
     }     
     public String getAccessCode() {
@@ -201,6 +204,18 @@ public class TestSessionVO implements java.io.Serializable
 	 */
 	public void setLicenseEnabled(String licenseEnabled) {
 		this.licenseEnabled = licenseEnabled;
+	}
+	/**
+	 * @return the isStudentInTestSession
+	 */
+	public Boolean getIsStudentInTestSession() {
+		return isStudentInTestSession;
+	}
+	/**
+	 * @param isStudentInTestSession the isStudentInTestSession to set
+	 */
+	public void setIsStudentInTestSession(Boolean isStudentInTestSession) {
+		this.isStudentInTestSession = isStudentInTestSession;
 	}
    
                
