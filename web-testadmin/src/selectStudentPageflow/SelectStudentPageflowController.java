@@ -456,7 +456,8 @@ public class SelectStudentPageflowController extends PageFlowController
         
         this.getRequest().setAttribute("studentPagerSummary", studentPagerSummary);
 
-        this.getRequest().setAttribute("nodeContainsStudents", ssd.getTotalCount().intValue() > 0 ? "true" : null);
+        Boolean nodeContainsStudents = ssd.getTotalCount().intValue() > 0 ? Boolean.TRUE : null;
+        this.getRequest().setAttribute("nodeContainsStudents", nodeContainsStudents);
 
         setSelectedStudentOrgListToForm(form);                    
         setSelectedStudentCountToForm(form);
@@ -489,7 +490,7 @@ public class SelectStudentPageflowController extends PageFlowController
         }
 
         boolean licenseflag = false; 
-        if (this.hasLicenseConfig) {
+        if (this.hasLicenseConfig && (nodeContainsStudents != null)) {
         	OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(this.selectedOrgNodeId);
         	licenseflag = setupLicenseInfo(this.selectedOrgNodeId, selectedOrgNodeName, onli, form, actionElement);
         }
@@ -1438,9 +1439,10 @@ public class SelectStudentPageflowController extends PageFlowController
      */    
     private OrgNodeLicenseInfo getLicenseQuantitiesByOrg(Integer orgNodeId) {
     	
-        OrgNodeLicenseInfo onli = null;        
-        Integer productId = new Integer(4000); 				// FAKE
-    	String subtestModel = "T";							// FAKE
+        OrgNodeLicenseInfo onli = null;    
+        CustomerLicense[] customerLicenses = getCustomerLicenses();
+        Integer productId = customerLicenses[0].getProductId();
+        String subtestModel = customerLicenses[0].getSubtestModel();
         
         try {
         	
@@ -1458,6 +1460,25 @@ public class SelectStudentPageflowController extends PageFlowController
     }
     
     /**
+     * getCustomerLicenses
+     */
+    private CustomerLicense[] getCustomerLicenses()
+    {
+        CustomerLicense[] cls = null;
+
+        try
+        {
+            cls = this.license.getCustomerOrgNodeLicenseData(this.userName, null);
+        }    
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+     
+        return cls;
+    }
+    
+    /**
      * setupLicenseInfo
      */
     private boolean setupLicenseInfo(Integer orgNodeId, String orgNodeName, OrgNodeLicenseInfo onli, 
@@ -1466,12 +1487,8 @@ public class SelectStudentPageflowController extends PageFlowController
         boolean showLicense = false;    	
                 
         if ((onli != null) && (orgNodeId != null) && (orgNodeId.intValue() > 0)) {
-            
-       		if (orgNodeId.intValue() != 45914) showLicense = true;	// FAKE
-				
-            if (showLicense) {
-                calculateAvailableLicenseByOrganization(orgNodeId, orgNodeName, onli, form, actionElement);
-            }
+            calculateAvailableLicenseByOrganization(orgNodeId, orgNodeName, onli, form, actionElement);
+            showLicense = true;
         } 
         
     	return showLicense;
@@ -1580,16 +1597,41 @@ public class SelectStudentPageflowController extends PageFlowController
      * usedLicensesInNode
      */
     private Integer usedLicensesInNode(Integer orgNodeId) {
+    	
+    	List existingStudents = getExistingStudentsInSessionForOrgNode(orgNodeId);
+    	
     	int usedLicenses = 0;
         
     	for (int i=0; i<this.selectedStudents.size(); i++) {
             SessionStudent ss = (SessionStudent)this.selectedStudents.get(i);
             if (ss.getOrgNodeId().intValue() == orgNodeId.intValue()) {
-            	usedLicenses++;
+            	if (! isExistingStudent(ss.getStudentId(), existingStudents)) {
+            		usedLicenses++;
+            	}
             }
         }
         
-        int noOfStudentsFromDB = 0;
+        return new Integer(usedLicenses);
+    }
+
+    /**
+     * getExistingStudentsInSessionForOrgNode
+     */
+    private boolean isExistingStudent(Integer studentId, List existingStudents) {
+		for (int i=0; i<existingStudents.size(); i++) {
+	        SessionStudent ss = (SessionStudent)existingStudents.get(i);
+	        if (ss.getStudentId().intValue() == studentId.intValue()) {
+	        	return true;
+	        }
+	    }
+		return false;
+    }
+    /**
+     * getExistingStudentsInSessionForOrgNode
+     */
+    private List getExistingStudentsInSessionForOrgNode(Integer orgNodeId) {
+    	
+    	List result = new ArrayList();
         ScheduleTestController parentPageFlow = (ScheduleTestController)PageFlowUtils.getNestingPageFlow(getRequest());
         ScheduledSession scheduledSession = parentPageFlow.getScheduledSession();
         
@@ -1599,13 +1641,13 @@ public class SelectStudentPageflowController extends PageFlowController
         		for (int i=0 ;i<students.length ; i++) {
                     SessionStudent ss = (SessionStudent)students[i];
                     if (ss.getOrgNodeId().intValue() == orgNodeId.intValue()) {
-                    	noOfStudentsFromDB++;
+                    	result.add(ss);
                     }       			
         		}
         	}
         }
-
-        return new Integer(usedLicenses - noOfStudentsFromDB);
+        
+        return result;
     }
     
     private void setLicenseErrorMessage(ScheduleTestController.ScheduleTestForm form, String orgNodeName, 
