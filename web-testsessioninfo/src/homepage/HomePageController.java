@@ -362,9 +362,10 @@ public class HomePageController extends PageFlowController
 	        Node[] nodes = und.getNodes();     
 	        Node node = nodes[0];
 	        Integer orgNodeId = node.getOrgNodeId();
-	        Integer productId = this.customerLicenses[0].getProductId();
-	        String productName = this.customerLicenses[0].getProductName();
-	        String subtestModel = this.customerLicenses[0].getSubtestModel();
+	        CustomerLicense cusLicense = getCustomerLicenseByProduct();
+	        Integer productId = cusLicense.getProductId();
+	        String productName = cusLicense.getProductName();
+	        String subtestModel = cusLicense.getSubtestModel();
         
 	        OrgNodeLicenseInfo onli = this.licensing.getLicenseQuantitiesByOrgNodeIdAndProductId(this.userName, 
 										                    orgNodeId, 
@@ -382,6 +383,20 @@ public class HomePageController extends PageFlowController
         }
         
         return cl;
+    }
+    
+    /**
+     * getCustomerLicenseByProduct
+     */
+    private CustomerLicense getCustomerLicenseByProduct()
+    {
+        for (int i=0 ; i<this.customerLicenses.length ; i++) {
+            CustomerLicense license = (CustomerLicense)this.customerLicenses[i];
+            if (license.getProductId().intValue() == 4000) {
+                return license;
+            }
+        }
+        return this.customerLicenses[0];        
     }
     
      /*
