@@ -89,8 +89,7 @@ $.blockUI.defaults = {
 		textAlign:	'center',
 		color:		'#000',
 		border:		'3px solid #aaa',
-		backgroundColor:'#fff',
-		cursor:		'wait'
+		backgroundColor:'#fff'
 	},
 	
 	// minimal style set used when themes are used

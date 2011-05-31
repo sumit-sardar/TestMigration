@@ -400,11 +400,12 @@ public class ViewTestSessionsController extends PageFlowController
         }
         
         
-        FilterParams sessionFilter = FilterSortPageUtils.buildFilterParams(FilterSortPageUtils.TESTSESSION_DEFAULT_FILTER_COLUMN, form.getSessionFilterTab());
+        //FilterParams sessionFilter = FilterSortPageUtils.buildFilterParams(FilterSortPageUtils.TESTSESSION_DEFAULT_FILTER_COLUMN, form.getSessionFilterTab());
         PageParams sessionPage = FilterSortPageUtils.buildPageParams(form.getSessionPageRequested(), FilterSortPageUtils.PAGESIZE_5);
         SortParams sessionSort = FilterSortPageUtils.buildSortParams(form.getSessionSortColumn(), form.getSessionSortOrderBy());
         
-        TestSessionData tsd = getRecommendedTestSessionsForOrgNode(form.getSelectedOrgNodeId(),this.selectedProductId, sessionFilter, sessionPage, sessionSort);
+        TestSessionData tsd = getRecommendedTestSessionsForOrgNode(form.getSelectedOrgNodeId(),this.selectedProductId, null, sessionPage, sessionSort);
+        
         RosterElement [] stl  =	getTestRosterForStudentIdAndOrgNode(this.selectedStudentId, form.getSelectedOrgNodeId());
         
         List sessionList = buildStudentTestSessionList(tsd, stl); 
@@ -763,7 +764,7 @@ public class ViewTestSessionsController extends PageFlowController
         try
         {     
         	if ((selectedProductId == null) || (selectedProductId.intValue() <= 0))
-        		tsd = this.testSessionStatus.getTestSessionsForOrgNode(userName, orgNodeId, filter, page, sort);
+        		tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, null, orgNodeId, filter, page, sort);
         	else
         		tsd = this.testSessionStatus.getRecommendedTestSessionsForOrgNode(userName, selectedProductId, orgNodeId, filter, page, sort);
         }

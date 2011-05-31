@@ -89,114 +89,133 @@
 </netui-data:repeater>
     
 </table>
-
-
-<div id="recommendedDialogID" style="display: none; position: absolute; height: 380; width: 300; background-color: #cccccc; font-family: Arial,Helvetica,Sans Serif;" >
+<div id="recommendedDialogID" style="display: none; position: relative; height: 420; width: 340; background-color: #cccccc; font-family: Arial,Helvetica,Sans Serif;" >
 				<div style=" height: 10%; width: 100%">
-					<table cellpadding="2">
+					<table>
 						<tr>
-							<td style=" height: 100%; width: 10%; ">
-								<div  style=" height: 100%; width: 100%;">
-									<img id="icon" src="/StudentRegistrationWeb/resources/images/bullet_question.png" width="23" heigh="23" >
+							<td style=" height: 50%; width: 10%; ">
+								<div  style=" height:100%; width: 100%;">
+									<img id="icon" src="/StudentRegistrationWeb/resources/images/bullet_question.png" width="23" height="23" >
 								</div>
 							</td>
-							<td style="height: 100%; width: 80%;" align="center">
-								<div style=" height: 100%; width: 100%;  background-color: deepskyblue; " >
+							<td style="height: 50%; width: 85%;" valign="center">
+								<div style=" height: 100%; width: 100%;  background-color: #3399FF; " >
 									<span>
-										<font color="white" size="2">&nbsp;&nbsp; <b> Online Assessment System </b>&nbsp;&nbsp; 
+										<font color="#FFFFFF" size="4"><b>&nbsp; Online Assessment System &nbsp; </b> 
 										</font>
 									</span>
 								</div>
 							</td>
-							<td style="height: 100%; width: 10%;">
-								<div style=" height: 100%; width: 100%;"> <font color="darkorange"><b>&nbsp;&nbsp;X&nbsp;&nbsp;</b></font>
-								</div>
+							<td style="height: 100%; width: 5%;">
+								<a id="close" href="javascript:closePopup();" style="text-decoration:none;"> <font color="darkorange"><b>&nbsp;&nbsp;X&nbsp;&nbsp;</b></font></a>
+
 							</td>
 						</tr>
 					</table>
 				</div>
-				<div align="left" style=" font-size: 80%;">
-					<span >&nbsp; Student 
+				<div align="left" style=" font-size: 78%;">
+					<span >&nbsp;&nbsp;Student 
 					</span>
 					<b>
 						<span id="studentName"> 
 						</span>
 					</b>
-					<span>most recently took :
+					<span>&nbsp; most recently took :
 					</span>
 				</div>
 				<br>
-				<div style=" font-size: 82%;">
-					<table style=" font-size: 80%;">
+				<div width="100%">
+					<table  cellpadding="0" style="float:left;" width="95%">
 						<tr>
 							<td width="30%">
-								<span>&nbsp; Session Name: 
+								<span  style=" font-size: 78%;">&nbsp;Session Name: 
 								</span>
 							</td>
 							<td>
 								<b>
-									<span id="sessionName"> 
+									<span id="sessionName"  style=" font-size: 78%;"> 
 									</span>
 								</b>
 							</td>
 						</tr>
 						<tr>
 							<td width="30%">
-								<span>&nbsp; Test Name: 
+								<span  style=" font-size: 78%;">&nbsp;Test Name: 
 								</span>
 							</td>
 							<td>
 								<b>
-									<span id="testName" > 
+									<span id="testName"  style=" font-size: 78%;"> 
 									</span>
 								</b>
 							</td>
 						</tr>
-						
 						<tr>
 							<td width="30%">
 							</td>
 							<td>
-								<div style= "overflow-y:auto; height:100px">
+								<table width="100%">
+									<tr><hr size=1 /></tr>
+								</table>
+							</td>
+						</tr>
+
+						<tr>
+							<td width="30%">
+							</td>
+							<td>
+							<div style= "overflow-y:auto; height:100px">
 								<table id ="subtestList">
-									<tr><hr></tr>
+									<tr></tr>
 								</table>
 								</div>
 							</td>
 						</tr>
 						<tr>
 							<td width="30%">
-								<span>&nbsp; CompletedDate: 
+							</td>
+							<td>
+								<table width="100%">
+									<tr><hr size=1 /></tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td width="30%">
+								<span  style=" font-size: 78%;">&nbsp;CompletedDate: 
 								</span>
 							</td>
 							<td>
 								<b>
-									<span id="completedDate"> 
+									<span id="completedDate"  style=" font-size: 78%;"> 
 									</span>
 								</b>
 							</td>
 						</tr>
 					</table>
 					<br>
-					
 
-					<div align="left" style=" font-size: 81.2%;">
-					<span>&nbsp; Do you want to register this student to the post-test?
+
+					<div align="left">
+					<span  style=" font-size: 78%;">&nbsp;&nbsp;Do you want to register this student to the post-test?
 					</span>
 					<br>
 					<br>
-					<span>&nbsp;  Click <b>Yes</b> to use <b><span id="recommendedTest"></span></b>
+					<span style=" font-size: 78%;">&nbsp;&nbsp;Click <b>Yes</b> to use <b><span id="recommendedTest"></span></b>
 					</span>
 					<br>
-					<span>&nbsp; Click <b>No</b> to continue with the currently selected test.
+					<span style=" font-size: 78%;">&nbsp;&nbsp;Click <b>No</b> to continue with the currently selected test.
 					</span>
 					</div>
 				</div>
 				<br>
 				<center>
-					<input type="submit" id="Yes" value="Yes">
-					<input type="submit" id="No"  value="No">
+					<input type="submit" id="Yes" value="&nbsp;Yes&nbsp;">
+					<input type="submit" id="No"  value="&nbsp;No&nbsp;&nbsp;">
 				</center>
+				<br>
 			</div>
-
+			
+					
+					
 

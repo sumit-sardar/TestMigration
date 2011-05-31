@@ -12,10 +12,15 @@ $(document).ready(function() {
 	     
 	   $('#No').click(function() {  
            $.unblockUI(); 
-           setElementValueAndSubmit('currentAction', 'goto_recommended_find_test_sessions_on_no');       
+           setElementValueAndSubmit('currentAction', 'goto_recommended_find_test_sessions');       
 		  
 		});  
 	}); 
+	
+	
+	function closePopup(){
+	 $.unblockUI();  
+	}
 	
 function viewStudentDetail () {
 	
@@ -36,7 +41,7 @@ function viewStudentDetail () {
 								$("#studentName").text(data.studentSessionData.entry[0].studentName);
 								$("#sessionName").text(data.studentSessionData.entry[0].testSessionName);
 								$("#testName").text(data.studentSessionData.entry[0].productName);
-								$("#completedDate").text(data.studentSessionData.entry[0].completionDateTime);
+								$("#completedDate").text(data.studentSessionData.entry[0].completionDate);
 								$("#recommendedTest").text(data.studentSessionData.entry[0].recommendedProductName);
 								$("#recommendedProductId").val();
 		 
@@ -46,26 +51,26 @@ function viewStudentDetail () {
 								
 									for(var i=0;i<data.studentSessionData.entry.length;i++) {	
 									$("#subtestList tr:last").
-														after('<tr><td width="80%"><span><font size="1">'+
+														after('<tr><td width="90%"><span  style=" font-size: 75%;">'+
 															data.studentSessionData.entry[i].itemSetName+
-																'</font></span></td><td><span><font size="1">'+
+																'</span></td><td>&nbsp;</td><td align="right"><span style=" font-size: 75%;">'+
 																	data.studentSessionData.entry[i].itemSetLevel+
-																		'</font></span></td></tr>');
+																		'</span></td></tr>');
 									}									
-									//$.blockUI({ message: $('#recommendedDialogID')});	
-									$.blockUI({message: $('#recommendedDialogID'), css: { width: '0%' }});  
+									var popupHeight = $("#recommendedDialogID").height();
+									var popupWidth = $("#recommendedDialogID").width();
+	
+									$.blockUI({message: $('#recommendedDialogID'), css: { width: '0%', height: '0%',
+																							top: $(window).height()/2-popupHeight/2,
+																							left: $(window).width()/2-popupWidth/2}});  
 								}else{
-									//$.unblockUI();
 									  setElementValueAndSubmit('currentAction', 'goto_recommended_find_test_sessions');
 							           
 								}
-								
-								
-								 //$.unblockUI(); 
 										
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								alert("Error...");	
+								window.location.href="/TestSessionInfoWeb/logout.do";
 							}
 				
 				}

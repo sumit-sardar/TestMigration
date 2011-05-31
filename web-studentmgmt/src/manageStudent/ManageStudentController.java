@@ -583,10 +583,10 @@ public class ManageStudentController extends PageFlowController
 			{
 				selectedProduct = this.recommendedProductId.toString();
 			}
-			if(this.recommendedProduct.equals("NO"))
+			/*if(this.recommendedProduct.equals("NO"))
 			{
 				selectedProduct = this.productId.toString();
-			}
+			}*/
 			String selectedProductId = "selectedProductId=" +
 			selectedProduct;
             String studentId = form.getSelectedStudentId().toString();
@@ -1636,10 +1636,10 @@ public class ManageStudentController extends PageFlowController
 			this.setRecommendedProduct("YES");
 			return new Forward(ACTION_FORM_RECOMMENDATION_STUDENT, form);
 		}
-		if (currentAction.equals(ACTION_FORM_RECOMMENDATION_STUDENT_NO)){
-			this.setRecommendedProduct("NO");
+		/*if (currentAction.equals(ACTION_FORM_RECOMMENDATION_STUDENT_NO)){
+			this.setRecommendedProduct("NONE");
 			return new Forward(ACTION_FORM_RECOMMENDATION_STUDENT, form);
-		}
+		}*/
 		//END- FORM RECOMMENDATION
 		isGeorgiaCustomer(form);// Change For CR - GA2011CR001
 		

@@ -215,6 +215,7 @@ public class RegistrationController extends PageFlowController
         	this.isFormRecommended = true;
         	return new Forward("toModifyTest", this.savedForm);
         } 
+        this.isFormRecommended = false;
         //END- Form Recommendation 
         return new Forward("success", this.savedForm);
     }

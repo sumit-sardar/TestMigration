@@ -562,7 +562,14 @@ public class TestSessionStatusImpl implements TestSessionStatus
             if(page != null) {
                 pageSize = new Integer(page.getPageSize());
             }
-            TestSession [] sessions = testAdmin.getRecommendedTestSessionsForOrgNode(orgNodeId, selectedProductId);
+            TestSession [] sessions = null;
+            if(selectedProductId != null) {
+            	sessions = testAdmin.getRecommendedTestSessionsForOrgNode(orgNodeId, selectedProductId);
+            }
+            else {
+            	sessions = testAdmin.getAllTestSessionsForOrgNode(orgNodeId);
+            }
+            	
             tsd.setTestSessions(sessions, pageSize);
             if(filter != null) tsd.applyFiltering(filter);
             if(sort != null) tsd.applySorting(sort);

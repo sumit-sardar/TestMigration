@@ -39,6 +39,8 @@ public class StudentSessionStatus extends CTBBean
     private String org_name;
 	private String testAccessCode;
 	private Integer orgNodeId;
+	private String completionDate;
+    
 	
 	//START- ADDED for LLO -109
 	private String testExemptions;
@@ -489,6 +491,18 @@ public class StudentSessionStatus extends CTBBean
 	 */
 	public void setRecommendedProductName(String recommendedProductName) {
 		this.recommendedProductName = recommendedProductName;
+	}
+	/**
+	 * @return the completionDate
+	 */
+	public String getCompletionDate() {
+		return completionDate;
+	}
+	/**
+	 * @param completionDate the completionDate to set
+	 */
+	public void setCompletionDate(String completionDate) {
+		this.completionDate = completionDate;
 	}
 
 } 
