@@ -32,12 +32,13 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.TestingSe
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.TestingSessionData.LmsStudentAccommodations.StereotypeStyle;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Tutorial;
 
-import org.apache.commons.lang.time.DateUtils;
-
 import com.ctb.tms.bean.login.AccommodationsData;
 import com.ctb.tms.bean.login.AuthenticationData;
 import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.ManifestData;
+import com.ctb.tms.bean.login.RosterData;
+import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.bean.login.TestProduct;
 import com.ctb.tms.exception.testDelivery.AuthenticationFailureException;
 import com.ctb.tms.exception.testDelivery.KeyEnteredResponsesException;
 import com.ctb.tms.exception.testDelivery.LocatorSubtestNotCompletedException;
@@ -46,8 +47,9 @@ import com.ctb.tms.exception.testDelivery.TestSessionCompletedException;
 import com.ctb.tms.exception.testDelivery.TestSessionInProgressException;
 import com.ctb.tms.exception.testDelivery.TestSessionNotScheduledException;
 import com.ctb.tms.util.Constants;
+import com.ctb.tms.util.DateUtils;
 
-public class RosterData
+public class OASDBSource
 { 
 	private static volatile boolean haveDataSource = true;
 	private static String OASDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip:1521:oasr5t";
@@ -68,7 +70,14 @@ public class RosterData
 		}
 	}
 	
-    public String getRosterData(Connection conn, String username, String password, String testAccessCode)  throws Exception{
+	public StudentCredentials[] getActiveRosters(Connection conn) {
+		return TMSJDBC.getActiveRosters(conn);
+	}
+	
+    public RosterData getRosterData(Connection conn, StudentCredentials creds)  throws Exception {
+    	String username = creds.getUsername();
+    	String password = creds.getPassword();
+    	String testAccessCode = creds.getAccesscode();
     	TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance();
         LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
         loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.OK_STATUS);
@@ -97,7 +106,34 @@ public class RosterData
                 }
             }
         }
-            //validateAuthenticationData(testAccessCode, loginResponse, authData);
+            
+        if(authData.getRosterTestCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) ||
+        		authData.getRosterTestCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS)) {
+                loginResponse.setRestartFlag(true);
+            } else {
+            	loginResponse.setRestartFlag(false);
+            }
+        loginResponse.setRestartNumber(new BigInteger(String.valueOf(authData.getRestartNumber())));
+        
+            TestProduct testProduct = TMSJDBC.getProductForTestAdmin(conn, authData.getTestAdminId());
+            //AuthenticateStudent authenticator = authenticatorFactory.create();
+
+            if ("TB".equals(testProduct.getProductType())) {
+                for(int i = 0;i<manifestData.length;i++) {
+                    	if(!testAccessCode.equalsIgnoreCase(manifestData[i].getAccessCode()) &&
+                    			manifestData[i].getTitle().indexOf("locator") >= 0 &&
+                    			!manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
+                    		response = TmssvcResponseDocument.Factory.newInstance();
+            	            loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
+            	            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.LOCATOR_SUBTEST_NOT_COMPLETED_STATUS);
+                    	}
+                }
+            }
+            
+            String logoURI = TMSJDBC.getProductLogo(conn,testProduct.getProductId());
+            if (logoURI == null || "".equals(logoURI))
+                logoURI = "/resources/logo.swf";
+            loginResponse.addNewBranding().setTdclogo(logoURI);
 
 		 if (authData.getRandomDistractorSeedNumber() != null) {
 
@@ -112,8 +148,7 @@ public class RosterData
 			 if (manifestData[0].getRandomDistractorStatus() != null && 
 					 manifestData[0].getRandomDistractorStatus().equals("Y")) {
 
-				 Integer ranodmSeedNumber = 
-					 getRandomDistractorOfRoster(testRosterId);
+				 Integer ranodmSeedNumber = generateRandomNumber();
 
 				 loginResponse.setRandomDistractorSeedNumber(
 						 new BigInteger( String.valueOf(ranodmSeedNumber.intValue())));
@@ -149,7 +184,7 @@ public class RosterData
                 }
             }
         }
-        copyManifestDataToResponse(loginResponse, manifestData, testRosterId, authData.getTestAdminId(), testAccessCode);
+        copyManifestDataToResponse(conn, loginResponse, manifestData, testRosterId, authData.getTestAdminId(), testAccessCode);
 
         String tutorialResource = TMSJDBC.getTutorialResource(conn, testRosterId);
         boolean wasTutorialTaken = TMSJDBC.wasTutorialTaken(conn, testRosterId);
@@ -158,7 +193,10 @@ public class RosterData
             tutorial.setTutorialUrl(tutorialResource);
             tutorial.setDeliverTutorial(new BigInteger(wasTutorialTaken ? "0":"1"));
         }
-        return response.xmlText();
+        RosterData result = new RosterData();
+        result.setDocument(response);
+        result.setAuthData(authData);
+        return result;
     }
     
     //START Change for Deferred defect 63502
@@ -225,122 +263,7 @@ public class RosterData
                 ast.setCurEid(""+itemResponseData[i].getEid());
                 maxRSN = data.getResponseSeqNum();
             }
-
-//            ast.setCurEid(itemResponseData[i].getItemId());
         }
-    }
-/*    
-    private int getEid(String itemId, int adsAssessmentId) {
-        Integer eid = (Integer) SimpleCache.checkCache(CACHE_TYPE_ITEM_MAP, itemId);
-        if (eid == null) {
-            AssessmentDelivery  assessmentDelivery = assessmentDeliveryFactory.create();
-            OASLogger.getLogger("TestDelivery").debug("******* call ads.getItemIdEidMap adsAssessmentId="+adsAssessmentId+" itemId="+itemId);
-            ItemIdEidMap [] map = assessmentDelivery.getItemIdEidMap(adsAssessmentId);
-            for (int i=0; i < map.length; i++) {
-                SimpleCache.cacheResult(CACHE_TYPE_ITEM_MAP, map[i].getItemId(), new Integer(map[i].getEid()));
-                OASLogger.getLogger("TestDelivery").debug("******* save to cache itemId="+map[i].getItemId()+" eid="+map[i].getEid());
-            }
-            eid = (Integer) SimpleCache.checkCache(CACHE_TYPE_ITEM_MAP, itemId);
-        }
-        return eid.intValue();
-        
-        
-    }
-*/    
-    private void validateAuthenticationData(String testAccessCode, LoginResponse response, AuthenticationData authData) throws AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException, LocatorSubtestNotCompletedException, SQLException {
-        // were credentials correct?
-        if(authData == null) 
-            throw new AuthenticationFailureException();
-        // has someone already done key entry?
-        if(authData.getCaptureMethod() != null && !authData.getCaptureMethod().equals(Constants.RosterCaptureMethod.CAPTURE_METHOD_ONLINE))
-            throw new KeyEnteredResponsesException();  
-
-        TestProduct testProduct = product.getProductForTestAdmin(new Integer(authData.getTestAdminId()));
-        //AuthenticateStudent authenticator = authenticatorFactory.create();
-
-        boolean isTabe = false;
-        if ("TB".equals(testProduct.getProductType()))
-            isTabe = true;
-        if (isTabe) {
-            ManifestData [] locatorSubtests = authenticator.getTABELocatorManifest(authData.getTestRosterId());
-            boolean hasLocator = false;
-            if (locatorSubtests!= null && locatorSubtests.length >0)
-                hasLocator = true;
-            if (hasLocator) {
-                
-                ManifestData [] completeSubtests = authenticator.getManifestByRoster(authData.getTestRosterId());
-                if (!testAccessCode.equalsIgnoreCase(completeSubtests[0].getAccessCode()))
-                {
-                    for (int i=0; i<locatorSubtests.length; i++) {
-                        if (!"CO".equals(locatorSubtests[i].getCompletionStatus()))
-                            throw new LocatorSubtestNotCompletedException();
-                    }
-                          
-                }              
-            
-            }
-        }
-                               
-        // are we outside the test window?
-        Date now = new Date(System.currentTimeMillis());
-        now = DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), "GMT", now);
-
-        Date windowStartDateTime = (Date) authData.getWindowStartDate().clone();
-        windowStartDateTime.setHours(authData.getDailyStartTime().getHours());
-        windowStartDateTime.setMinutes(authData.getDailyStartTime().getMinutes());
-        windowStartDateTime.setSeconds(authData.getDailyStartTime().getSeconds());
-
-        Date windowEndDateTime = (Date) authData.getWindowEndDate().clone();
-        windowEndDateTime.setHours(authData.getDailyEndTime().getHours());
-        windowEndDateTime.setMinutes(authData.getDailyEndTime().getMinutes());
-        windowEndDateTime.setSeconds(authData.getDailyEndTime().getSeconds());
-        
-        TimeZone timeZone = TimeZone.getTimeZone(authData.getTimeZone());
-        int startDateOffset = timeZone.getOffset(windowStartDateTime.getTime());
-        int endDateOffset = timeZone.getOffset(windowEndDateTime.getTime());
-        int nowOffset = timeZone.getOffset(now.getTime());
-        
-        windowStartDateTime = new Date(windowStartDateTime.getTime() + startDateOffset - nowOffset);
-        windowEndDateTime = new Date(windowEndDateTime.getTime() + endDateOffset - nowOffset);
-
-        boolean dateBefore = now.compareTo(windowStartDateTime) < 0;
-        boolean dateAfter = now.compareTo(windowEndDateTime) > 0;
-
-        boolean timeBefore = DateUtils.timeBefore(now, windowStartDateTime) &&
-            !(DateUtils.timeBefore(windowEndDateTime, windowStartDateTime) && DateUtils.timeBefore(now, windowEndDateTime));
-        boolean timeAfter = DateUtils.timeAfter(now, windowEndDateTime) &&
-            !(DateUtils.timeAfter(windowStartDateTime, windowEndDateTime) && DateUtils.timeAfter(now, windowStartDateTime));
-/*
-        boolean timeBefore = DateUtils.timeBefore(now, authData.getDailyStartTime()) &&
-            !(DateUtils.timeBefore(authData.getDailyEndTime(), authData.getDailyStartTime()) && DateUtils.timeBefore(now, authData.getDailyEndTime()));
-        boolean timeAfter = DateUtils.timeAfter(now, authData.getDailyEndTime()) &&
-            !(DateUtils.timeAfter(authData.getDailyStartTime(), authData.getDailyEndTime()) && DateUtils.timeAfter(now, authData.getDailyStartTime()));
-*/
-        // does the roster have appropriate completion status?
-        String statusCode = authData.getRosterTestCompletionStatus();
-        if(statusCode.equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS))
-            throw new TestSessionCompletedException();
-        if(statusCode.equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS))
-            throw new TestSessionInProgressException();
-        if( dateBefore || dateAfter || timeBefore || timeAfter)
-            throw new OutsideTestWindowException();
-        if(!statusCode.equals(Constants.StudentTestCompletionStatus.SCHEDULED_STATUS) && 
-            !statusCode.equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) &&
-            !statusCode.equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS))
-            throw new TestSessionNotScheduledException();
-        // set restart flag if session was previously interrupted
-        if(statusCode.equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) ||
-            statusCode.equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS)) {
-            response.setRestartFlag(true);
-        } else {
-            response.setRestartFlag(false);
-        }
-        response.setRestartNumber(new BigInteger(String.valueOf(authData.getRestartNumber())));
-        
-        String logoURI = authenticator.getProductLogo(testProduct.getProductId());
-        if (logoURI == null || "".equals(logoURI))
-            logoURI = "/resources/logo.swf";
-        response.addNewBranding().setTdclogo(logoURI);
     }
     
     private void copyAuthenticationDataToResponse(LoginResponse response, AuthenticationData authData) throws AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException {
@@ -351,22 +274,6 @@ public class RosterData
         response.getTestingSessionData().getCmiCore().setStudentFirstName(authData.getStudentFirstName());
         response.getTestingSessionData().getCmiCore().setStudentMiddleName(authData.getStudentMiddleName());
     }
-    
-    /**
-	 *  Set  the Random Distractor in Login Response
-	 *  Add the logic to set and get seed no from 
-	 *  test_roster for TABE
-	 */
-    private Integer getRandomDistractorOfRoster(int testRosterId) 
-            throws SQLException  {
-
-		//AuthenticateStudent authenticator = authenticatorFactory.create();
-		Integer randomNumber = generateRandomNumber();
-		authenticator.updateTestRosterWithRDSeed(
-                testRosterId,randomNumber.intValue());
-		return randomNumber;
-
-	}
     
     private void copyAccomodationsDataToResponse(LoginResponse response, AccommodationsData accomData) {
         if(accomData != null) {
@@ -426,10 +333,10 @@ public class RosterData
         }
     }
     
-    private void copyManifestDataToResponse(LoginResponse response, ManifestData [] manifestData, int testRosterId, int testAdminId, String accessCode) throws SQLException {
+    private void copyManifestDataToResponse(Connection conn, LoginResponse response, ManifestData [] manifestData, int testRosterId, int testAdminId, String accessCode) throws SQLException {
         response.addNewManifest();
         Manifest manifest = response.getManifest();
-        String isUltimateAccessCode = authenticator.isUltimateAccessCode(new Integer(testRosterId), new Integer(testAdminId), accessCode);
+        String isUltimateAccessCode = TMSJDBC.isUltimateAccessCode(conn, testRosterId, testAdminId, accessCode);
         
         if(response.getRestartFlag()) {
 	        ArrayList a = new ArrayList();

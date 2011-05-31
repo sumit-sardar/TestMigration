@@ -10,6 +10,8 @@ import com.ctb.tms.bean.login.AccommodationsData;
 import com.ctb.tms.bean.login.AuthenticationData;
 import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.ManifestData;
+import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.bean.login.TestProduct;
 
 
 public class TMSJDBC
@@ -28,7 +30,7 @@ public class TMSJDBC
     
     public static final String SUBTEST_ELAPSED_TIME_SQL = "select  nvl(sum(max(resp.response_elapsed_time)), 0) as totalTime from  item_response resp where  resp.test_roster_id = ?  and resp.item_set_id = ? group by  resp.test_roster_id,  resp.item_set_id,  resp.item_id";
     
-    public static final String IS_ULTIMATE_ACCESS_CODE_SQL = "select  decode(count(siss.item_set_id), 0, 'T', 'F') from \t  student_item_set_status siss,  test_Admin_item_set tais,  item_set_parent isp where  tais.test_Admin_id = {testAdminId}  and siss.test_roster_id = {testRosterId}  and upper(tais.access_code) != upper({accessCode}) \t  and isp.parent_item_set_id = tais.item_set_id \t  and siss.item_set_id = isp.item_set_id \t  and siss.completion_status != 'CO'";
+    public static final String IS_ULTIMATE_ACCESS_CODE_SQL = "select  decode(count(siss.item_set_id), 0, 'T', 'F') from \t  student_item_set_status siss,  test_Admin_item_set tais,  item_set_parent isp where  tais.test_Admin_id = ?  and siss.test_roster_id = ?  and upper(tais.access_code) != upper(?) \t  and isp.parent_item_set_id = tais.item_set_id \t  and siss.item_set_id = isp.item_set_id \t  and siss.completion_status != 'CO'";
     
     public static final String RESTART_RESPONSES_SQL = "select  ir.item_id as itemId,  ir.response_seq_num as responseSeqNum,  ir.student_marked as studentMarked,  i.item_type as itemType,  isi.item_sort_order as itemSortOrder,  ir.response as response,  icr.constructed_response as constructedResponse,  ir.response_elapsed_time as responseElapsedTime,  decode(ir.response, i.correct_answer, 1, 0) as score,  i.ads_item_id as eid from  item_response ir,  item i,  item_response_cr icr,  item_set_item isi where  ir.test_roster_id = ?  and ir.item_set_id = ?  and ir.item_id = i.item_id  and ir.item_set_id = isi.item_set_id  and ir.item_id = isi.item_id  and ir.response_seq_num =  (select  max(ir1.response_seq_num)  from  item_response ir1  where  ir1.item_set_id = ir.item_set_id  and ir1.item_id = ir.item_id  and ir1.test_roster_id = ir.test_roster_id) \t  AND ir.test_roster_id = icr.test_roster_id (+) \t  AND ir.item_set_id = icr.item_set_id (+) \t  AND ir.item_id = icr.item_id (+) order by  isi.item_sort_order";
     
@@ -36,7 +38,7 @@ public class TMSJDBC
 
     public static final String MANIFEST_BY_ROSTER_SQL = "select \t  scoOrder, \t  scoParentId, \t  adminForceLogout, \t  showStudentFeedback, \t  id, \t  title, \t  testTitle, \t  scoDurationMinutes, \t  0 as totalTime, \t  scoUnitType, \t  scoEntry, \t  completionStatus, \t  asmtHash, \t  asmtEncryptionKey, \t  itemEncryptionKey, \t  adsid,  accessCode\t from (  select \t  siss.item_Set_order as scoOrder, \t  isp.parent_item_Set_id as scoParentId, \t  ta.force_logout as adminForceLogout, \t  ta.show_student_feedback as showStudentFeedback, \t  iset.item_set_id as id, \t  iset.item_set_name as title, \t  test.item_set_name as testTitle, \t  iset.time_limit / 60 as scoDurationMinutes, \t  'SUBTEST' as scoUnitType, \t  'ab-initio' as scoEntry, \t  siss.completion_status as completionStatus, \t  iset.asmt_hash as asmtHash, \t  iset.asmt_encryption_key as asmtEncryptionKey, \t  iset.item_encryption_key as itemEncryptionKey, \t  iset.ads_ob_asmt_id as adsid,  tais.access_code as accessCode  from  item_set_item isi,  item_Set iset,  item_set test,  student_item_set_status siss,  test_roster tr,  test_admin ta,  item_set_parent isp,  test_admin_item_set tais  where  isi.item_set_id = iset.item_set_id  and iset.item_set_id = siss.item_set_id  and iset.item_set_type = 'TD'  and siss.test_roster_id = tr.test_roster_id  and ta.test_admin_id = tr.test_admin_id  and isp.item_Set_id = iset.item_set_id  and tr.test_roster_id = {testRosterId}  and tais.item_set_id = isp.parent_item_set_id  and test.item_set_id = ta.item_set_id  and tais.test_admin_id = ta.test_admin_id  group by  siss.item_Set_order,  isp.parent_item_set_id,  ta.force_logout,  ta.show_student_feedback,  iset.item_Set_id,  iset.item_set_name,  test.item_set_name,  iset.time_limit,  isi.item_sort_order,  siss.completion_status,  iset.asmt_hash,  iset.asmt_encryption_key,  iset.item_encryption_key,  iset.ads_ob_asmt_id,  tais.access_code) group by scoOrder, \t  scoParentId, \t  adminForceLogout, \t  showStudentFeedback, \t  id, \t  title, \t  testTitle, \t  scoDurationMinutes, \t  scoUnitType, \t  scoEntry, \t  completionStatus, \t  asmtHash, \t  asmtEncryptionKey, \t  itemEncryptionKey, \t  adsid,  accessCode \torder by \t  scoOrder";
     
-    public static final String PRODUCT_LOGO_SQL = "select resource_uri  from PRODUCT_RESOURCE  where resource_type_code = 'TDCLOGO'  and product_id = {productId}";
+    public static final String PRODUCT_LOGO_SQL = "select resource_uri  from PRODUCT_RESOURCE  where resource_type_code = 'TDCLOGO'  and product_id = ?";
     
     public static final String TUTORIAL_RESOURCE_SQL = "select pr.resource_uri from product pp, product cp, product_resource pr where pp.product_id = cp.parent_product_id and pp.product_id = pr.product_id and pr.resource_type_code = 'TUTORIAL' and cp.product_id in ( select product_id from test_admin where test_admin_id in  (select test_admin_id from test_roster where test_roster_id = ?))";
     
@@ -48,6 +50,10 @@ public class TMSJDBC
 
     public static final String SPEECH_CONTROLLER_SQL = "select cconfig.default_value as speechControllerFlag  from test_roster  ros,  customer  cus,  customer_configuration cconfig,  student_accommodation  accom  where accom.screen_reader = 'T'  and accom.student_id = ros.student_id  and cconfig.customer_configuration_name = 'Allow_Speech_Controller'  and cconfig.customer_id = cus.customer_id  and cus.customer_id = ros.customer_id  and ros.test_roster_id = {testRosterId}";
 
+    public static final String TEST_PRODUCT_FOR_ADMIN_SQL = "select distinct  prod.product_id as productId,  prod.product_name as productName,  prod.version as version,  prod.product_description as productDescription,  prod.created_by as createdBy,  prod.created_date_time as createdDateTime,  prod.updated_by as updatedBy,  prod.updated_date_time as updatedDateTime,  prod.activation_status as activationStatus,  prod.product_type as productType,  prod.scoring_item_set_level as scoringItemSetLevel,  prod.preview_item_set_level as previewItemSetLevel,  prod.parent_product_id as parentProductId,  prod.ext_product_id as extProductId,  prod.content_area_level as contentAreaLevel,  prod.internal_display_name as internalDisplayName,  prod.sec_scoring_item_set_level as secScoringItemSetLevel,  prod.ibs_show_cms_id as ibsShowCmsId,  prod.printable as printable,  prod.scannable as scannable,  prod.keyenterable as keyenterable,  prod.branding_type_code as brandingTypeCode,  prod.acknowledgments_url as acknowledgmentsURL,  prod.show_student_feedback as showStudentFeedback,  prod.static_manifest as staticManifest,  prod.session_manifest as sessionManifest,  prod.subtests_selectable as subtestsSelectable,  prod.subtests_orderable as subtestsOrderable,  prod.subtests_levels_vary as subtestsLevelsVary,  cec.support_phone_number as supportPhoneNumber,  prod.off_grade_testing_disabled as offGradeTestingDisabled from  product prod, test_admin adm, customer_email_config cec where  prod.product_id = adm.product_id  and cec.customer_id (+) = adm.customer_id  and adm.test_admin_id = ?";
+    
+    public static final String ACTIVE_ROSTERS_SQL = "select distinct stu.user_name as username, tr.password as password, tais.access_code from test_roster tr, test_admin ta, test_admin_item_set tais, student stu where tr.test_completion_status in ('SC', 'IN', 'IS', 'IP') and sysdate > (TA.LOGIN_START_DATE - 3) and sysdate < (TA.LOGIN_END_DATE + 3) and tr.updated_date_time > sysdate - 180 and ta.updated_date_time > sysdate - 180 and ta.test_admin_id = tr.test_admin_id and tais.test_admin_id = ta.test_admin_id and stu.student_id = tr.student_id";
+    
     public static AuthenticationData [] authenticateStudent(Connection con, String username, String password) {
     	AuthenticationData[] data = null;
     	PreparedStatement stmt1 = null;
@@ -304,5 +310,134 @@ public class TMSJDBC
 			}
 		}
 		return result;
+	}
+    
+    public static TestProduct getProductForTestAdmin(Connection con, int testAdminId) {
+    	TestProduct data = null;
+    	PreparedStatement stmt1 = null;
+    	try {
+			stmt1 = con.prepareStatement(TEST_PRODUCT_FOR_ADMIN_SQL);
+			stmt1.setInt(1, testAdminId);
+			ResultSet rs1 = stmt1.executeQuery();
+			if (rs1.next()) {
+				data = new TestProduct();
+				data.setProductId(rs1.getInt("productId"));
+				data.setProductName(rs1.getString("productName"));
+				data.setVersion(rs1.getString("version"));
+				data.setProductDescription(rs1.getString("productDescription"));
+				data.setCreatedBy(rs1.getInt("createdBy"));
+				data.setCreatedDateTime(rs1.getDate("createdDateTime"));
+				data.setUpdatedBy(rs1.getInt("updatedBy"));
+				data.setUpdatedDateTime(rs1.getDate("updatedDateTime"));
+				data.setActivationStatus(rs1.getString("activationStatus"));
+				data.setProductType(rs1.getString("productType"));
+				data.setScoringItemSetLevel(rs1.getInt("scoringItemSetLevel"));
+				data.setPreviewItemSetLevel(rs1.getInt("previewItemSetLevel"));
+				data.setParentProductId(rs1.getInt("parentProductId"));
+				data.setExtProductId(rs1.getString("extProductId"));
+				data.setContentAreaLevel(rs1.getInt("contentAreaLevel"));
+				data.setInternalDisplayName(rs1.getString("internalDisplayName"));
+				data.setSecScoringItemSetLevel(rs1.getInt("secScoringItemSetLevel"));
+				data.setIbsShowCmsId(rs1.getString("ibsShowCmsId"));
+				data.setPrintable(rs1.getString("printable"));
+				data.setScannable(rs1.getString("scannable"));
+				data.setKeyenterable(rs1.getString("keyenterable"));
+				data.setBrandingTypeCode(rs1.getString("brandingTypeCode"));
+				data.setAcknowledgmentsURL(rs1.getString("acknowledgmentsURL"));
+				data.setShowStudentFeedback(rs1.getString("showStudentFeedback"));
+				data.setStaticManifest(rs1.getString("staticManifest"));
+				data.setSessionManifest(rs1.getString("sessionManifest"));
+				data.setSubtestsSelectable(rs1.getString("subtestsSelectable"));
+				data.setSubtestsOrderable(rs1.getString("subtestsOrderable"));
+				data.setSubtestsLevelsVary(rs1.getString("subtestsLevelsVary"));
+				data.setSupportPhoneNumber(rs1.getString("supportPhoneNumber"));
+				data.setOffGradeTestingDisabled(rs1.getString("offGradeTestingDisabled"));
+			}
+			rs1.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+		return data;
+	}
+    
+    public static String getProductLogo(Connection con, int productId) {
+    	String result = "";
+    	PreparedStatement stmt1 = null;
+    	try {
+			stmt1 = con.prepareStatement(PRODUCT_LOGO_SQL);
+			stmt1.setInt(1, productId);
+			ResultSet rs1 = stmt1.executeQuery();
+			if (rs1.next()) {
+				result = rs1.getString("resource_uri");
+			}
+			rs1.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+		return result;
+	}
+    
+    public static String isUltimateAccessCode(Connection con, int testAdminId, int testRosterId, String accessCode) {
+    	String result = "";
+    	PreparedStatement stmt1 = null;
+    	try {
+			stmt1 = con.prepareStatement(IS_ULTIMATE_ACCESS_CODE_SQL);
+			stmt1.setInt(1, testAdminId);
+			stmt1.setInt(2, testRosterId);
+			stmt1.setString(3, accessCode);
+			ResultSet rs1 = stmt1.executeQuery();
+			if (rs1.next()) {
+				result = rs1.getString(1);
+			}
+			rs1.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+		return result;
+	}
+    
+    public static StudentCredentials [] getActiveRosters(Connection con) {
+    	StudentCredentials[] data = null;
+    	PreparedStatement stmt1 = null;
+    	try {
+			stmt1 = con.prepareStatement(ACTIVE_ROSTERS_SQL);
+			ResultSet rs1 = stmt1.executeQuery();
+			ArrayList<StudentCredentials> dataList = new ArrayList<StudentCredentials>();
+			while (rs1.next()) {
+				StudentCredentials creds = new StudentCredentials();
+				creds.setUsername(rs1.getString("username"));
+				creds.setPassword(rs1.getString("password"));
+				creds.setAccesscode(rs1.getString("accesscode"));
+			}
+			rs1.close();
+			data = (StudentCredentials[]) dataList.toArray();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+		return data;
 	}
 }
