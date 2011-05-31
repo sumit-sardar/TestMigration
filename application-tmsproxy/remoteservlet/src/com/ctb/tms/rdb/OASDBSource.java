@@ -52,9 +52,9 @@ import com.ctb.tms.util.DateUtils;
 public class OASDBSource
 { 
 	private static volatile boolean haveDataSource = true;
-	private static String OASDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip:1521:oasr5t";
+	private static String OASDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip:1521:oasr5t1";
 	private static String OASDatabaseUser = "oas";
-	private static String OASDatabaseUserPassword = "qoasr5";
+	private static String OASDatabaseUserPassword = "oaspr5r";
 	private static String OASDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver";
 	
 	{
@@ -70,11 +70,11 @@ public class OASDBSource
 		}
 	}
 	
-	public StudentCredentials[] getActiveRosters(Connection conn) {
+	public static StudentCredentials[] getActiveRosters(Connection conn) {
 		return TMSJDBC.getActiveRosters(conn);
 	}
 	
-    public RosterData getRosterData(Connection conn, StudentCredentials creds)  throws Exception {
+    public static RosterData getRosterData(Connection conn, StudentCredentials creds)  throws Exception {
     	String username = creds.getUsername();
     	String password = creds.getPassword();
     	String testAccessCode = creds.getAccesscode();
@@ -200,7 +200,7 @@ public class OASDBSource
     }
     
     //START Change for Deferred defect 63502
-    private void copyRestartDataToResponse(String lsid, 
+    private static void copyRestartDataToResponse(String lsid, 
                                     int testRosterId, 
                                     int subtestItemSetId, 
                                     LoginResponse loginResponse, 
@@ -266,7 +266,7 @@ public class OASDBSource
         }
     }
     
-    private void copyAuthenticationDataToResponse(LoginResponse response, AuthenticationData authData) throws AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException {
+    private static void copyAuthenticationDataToResponse(LoginResponse response, AuthenticationData authData) throws AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException {
         response.addNewTestingSessionData();
         response.getTestingSessionData().addNewCmiCore();
         response.getTestingSessionData().getCmiCore().setStudentId(String.valueOf(authData.getStudentId()));
@@ -275,7 +275,7 @@ public class OASDBSource
         response.getTestingSessionData().getCmiCore().setStudentMiddleName(authData.getStudentMiddleName());
     }
     
-    private void copyAccomodationsDataToResponse(LoginResponse response, AccommodationsData accomData) {
+    private static void copyAccomodationsDataToResponse(LoginResponse response, AccommodationsData accomData) {
         if(accomData != null) {
             response.getTestingSessionData().addNewLmsStudentAccommodations();
             LmsStudentAccommodations accommodations = response.getTestingSessionData().getLmsStudentAccommodations();
@@ -333,7 +333,7 @@ public class OASDBSource
         }
     }
     
-    private void copyManifestDataToResponse(Connection conn, LoginResponse response, ManifestData [] manifestData, int testRosterId, int testAdminId, String accessCode) throws SQLException {
+    private static void copyManifestDataToResponse(Connection conn, LoginResponse response, ManifestData [] manifestData, int testRosterId, int testAdminId, String accessCode) throws SQLException {
         response.addNewManifest();
         Manifest manifest = response.getManifest();
         String isUltimateAccessCode = TMSJDBC.isUltimateAccessCode(conn, testRosterId, testAdminId, accessCode);
@@ -363,9 +363,8 @@ public class OASDBSource
 	            			+isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
         		continue;
         	}else{*/
-        		System.out.println("***** In Else");
-        		System.out.println("RestartFlag: "+response.getRestartFlag()+", isUltimateAccessCode: "
-	            			+isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
+        		//System.out.println("***** In Else");
+        		//System.out.println("RestartFlag: "+response.getRestartFlag()+", isUltimateAccessCode: " +isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
         		manifest.setTitle(data.getTestTitle());
 	            manifest.addNewSco();
 	            Sco sco = manifest.getScoArray(i);
@@ -482,14 +481,14 @@ public class OASDBSource
 				intValue() % 2 == 0 ? false:true;
 	}
     
-	private static Connection getOASConnection() throws Exception {
+	public static Connection getOASConnection() throws Exception {
 		Connection newConn = null;
 		try {    
 			InitialContext ctx = new InitialContext();    
 			javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup ("OASDataSource");    
 			newConn = ds.getConnection();
 			haveDataSource = true;
-			System.out.println("Using AMSDataSource for DB connection");
+			System.out.println("*****  Using OASDataSource for DB connection");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			haveDataSource = false;
@@ -502,7 +501,7 @@ public class OASDBSource
 			props.put("password", OASDatabaseUserPassword);
 			Driver driver = (Driver) Class.forName(OASDatabaseJDBCDriver).newInstance();
 			newConn = driver.connect(OASDatabaseURL, props);
-			System.out.println("Using local properties for DB connection");
+			System.out.println("*****  Using local properties for DB connection");
 		}
 
 		return newConn;

@@ -28,6 +28,10 @@
     <listener-class>com.ctb.tdc.web.listener.StartupListener</listener-class>
   </listener>
   
+  <listener>
+    <listener-class>com.ctb.tms.web.listener.TestDeliveryContextListener</listener-class>
+  </listener>
+  
   <servlet>
     <description>SpeechServlet</description>
     <display-name>SpeechServlet</display-name>

@@ -24,7 +24,7 @@ public class TMSJDBC
     
     public static final String AUTHENTICATE_STUDENT_SQL = "select  ros.test_roster_id as testRosterId,  stu.student_id as studentId,  stu.last_name as studentLastName,  stu.first_name as studentFirstName,  stu.middle_name as studentMiddleName,  ros.test_completion_status as rosterTestCompletionStatus,  adm.login_start_date as windowStartDate,  adm.login_end_date as windowEndDate,  adm.daily_login_start_time as dailyStartTime,  adm.daily_login_end_time as dailyEndTime,  adm.test_admin_status as testAdminStatus,  adm.time_zone AS timeZone,  ros.capture_method as captureMethod,  ros.restart_number as restartNumber,  ros.test_admin_id as testAdminId, \t  ros.random_distractor_seed as randomDistractorSeedNumber, \t  ros.tts_speed_status as ttsSpeedStatus from  student stu,  test_roster ros,  test_admin adm where  adm.test_admin_id = ros.test_admin_id  and ros.student_id = stu.student_id  and stu.activation_status = 'AC'  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and upper(stu.user_name) = upper(?)  and upper(ros.password) = upper(?)";
     
-    public static final String ACCOMMODATIONS_SQL = "select  accom.student_id as studentId,  accom.screen_magnifier as screenMagnifier,  accom.screen_reader as screenReader,  accom.calculator as calculator,  accom.test_pause as testPause,  accom.untimed_test as untimedTest,  accom.question_background_color as questionBackgroundColor,  accom.question_font_color as questionFontColor,  accom.question_font_size as questionFontSize,  accom.answer_background_color as answerBackgroundColor,  accom.answer_font_color as answerFontColor,  accom.answer_font_size as answerFontSize,  accom.highlighter as highlighter  from  test_roster ros,  student_accommodation accom  where  accom.student_id = ros.student_id  and ros.test_roster_id = {testRosterId}";
+    public static final String ACCOMMODATIONS_SQL = "select  accom.student_id as studentId,  accom.screen_magnifier as screenMagnifier,  accom.screen_reader as screenReader,  accom.calculator as calculator,  accom.test_pause as testPause,  accom.untimed_test as untimedTest,  accom.question_background_color as questionBackgroundColor,  accom.question_font_color as questionFontColor,  accom.question_font_size as questionFontSize,  accom.answer_background_color as answerBackgroundColor,  accom.answer_font_color as answerFontColor,  accom.answer_font_size as answerFontSize,  accom.highlighter as highlighter  from  test_roster ros,  student_accommodation accom  where  accom.student_id = ros.student_id  and ros.test_roster_id = ?";
     
     public static final String MANIFEST_SQL = "select scoOrder,  scoParentId,  adminForceLogout,  showStudentFeedback,  id,  title,  testTitle,  scoDurationMinutes,  0 as totalTime,  scoUnitType,  scoEntry,  completionStatus,  asmtHash,  asmtEncryptionKey,  itemEncryptionKey,  adsid,  randomDistractorStatus  from (select siss.item_Set_order as scoOrder,  isp.parent_item_Set_id as scoParentId,  ta.force_logout as adminForceLogout,  ta.show_student_feedback as showStudentFeedback,  iset.item_set_id as id,  iset.item_set_name as title,  test.item_set_name as testTitle,  iset.time_limit / 60 as scoDurationMinutes,  'SUBTEST' as scoUnitType,  'ab-initio' as scoEntry,  siss.completion_status as completionStatus,  iset.asmt_hash as asmtHash,  iset.asmt_encryption_key as asmtEncryptionKey,  iset.item_encryption_key as itemEncryptionKey,  iset.ads_ob_asmt_id as adsid,  ta.test_admin_id testid,  ta.random_distractor_status as randomDistractorStatus  from item_set_item  isi,  item_Set  iset,  item_set  test,  student_item_set_status siss,  test_roster  tr,  test_admin  ta,  item_set_parent  isp,  test_admin_item_set  tais  where isi.item_set_id = iset.item_set_id  and iset.item_set_id = siss.item_set_id  and iset.item_set_type = 'TD'  and siss.test_roster_id = tr.test_roster_id  and ta.test_admin_id = tr.test_admin_id  and isp.item_Set_id = iset.item_set_id  and tr.test_roster_id = ?  and tais.item_set_id = isp.parent_item_set_id  and test.item_set_id = ta.item_set_id  and upper(tais.access_code) = upper(?)  and tais.test_admin_id = ta.test_admin_id  group by siss.item_Set_order,  isp.parent_item_set_id,  ta.force_logout,  ta.show_student_feedback,  iset.item_Set_id,  iset.item_set_name,  test.item_set_name,  iset.time_limit,  isi.item_sort_order,  siss.completion_status,  iset.asmt_hash,  iset.asmt_encryption_key,  iset.item_encryption_key,  iset.ads_ob_asmt_id,  iset.item_set_level,  ta.test_admin_id,  ta.random_distractor_status)  group by scoOrder,  scoParentId,  adminForceLogout,  showStudentFeedback,  id,  title,  testTitle,  scoDurationMinutes,  scoUnitType,  scoEntry,  completionStatus,  asmtHash,  asmtEncryptionKey,  itemEncryptionKey,  adsid,  randomDistractorStatus  order by scoOrder";
     
@@ -52,7 +52,7 @@ public class TMSJDBC
 
     public static final String TEST_PRODUCT_FOR_ADMIN_SQL = "select distinct  prod.product_id as productId,  prod.product_name as productName,  prod.version as version,  prod.product_description as productDescription,  prod.created_by as createdBy,  prod.created_date_time as createdDateTime,  prod.updated_by as updatedBy,  prod.updated_date_time as updatedDateTime,  prod.activation_status as activationStatus,  prod.product_type as productType,  prod.scoring_item_set_level as scoringItemSetLevel,  prod.preview_item_set_level as previewItemSetLevel,  prod.parent_product_id as parentProductId,  prod.ext_product_id as extProductId,  prod.content_area_level as contentAreaLevel,  prod.internal_display_name as internalDisplayName,  prod.sec_scoring_item_set_level as secScoringItemSetLevel,  prod.ibs_show_cms_id as ibsShowCmsId,  prod.printable as printable,  prod.scannable as scannable,  prod.keyenterable as keyenterable,  prod.branding_type_code as brandingTypeCode,  prod.acknowledgments_url as acknowledgmentsURL,  prod.show_student_feedback as showStudentFeedback,  prod.static_manifest as staticManifest,  prod.session_manifest as sessionManifest,  prod.subtests_selectable as subtestsSelectable,  prod.subtests_orderable as subtestsOrderable,  prod.subtests_levels_vary as subtestsLevelsVary,  cec.support_phone_number as supportPhoneNumber,  prod.off_grade_testing_disabled as offGradeTestingDisabled from  product prod, test_admin adm, customer_email_config cec where  prod.product_id = adm.product_id  and cec.customer_id (+) = adm.customer_id  and adm.test_admin_id = ?";
     
-    public static final String ACTIVE_ROSTERS_SQL = "select distinct stu.user_name as username, tr.password as password, tais.access_code from test_roster tr, test_admin ta, test_admin_item_set tais, student stu where tr.test_completion_status in ('SC', 'IN', 'IS', 'IP') and sysdate > (TA.LOGIN_START_DATE - 3) and sysdate < (TA.LOGIN_END_DATE + 3) and tr.updated_date_time > sysdate - 180 and ta.updated_date_time > sysdate - 180 and ta.test_admin_id = tr.test_admin_id and tais.test_admin_id = ta.test_admin_id and stu.student_id = tr.student_id";
+    public static final String ACTIVE_ROSTERS_SQL = "select distinct stu.user_name as username, tr.password as password, tais.access_code as accesscode from test_roster tr, test_admin ta, test_admin_item_set tais, student stu where tr.test_completion_status in ('SC', 'IN', 'IS', 'IP') and sysdate > (TA.LOGIN_START_DATE - 3) and sysdate < (TA.LOGIN_END_DATE + 3) and tr.updated_date_time > sysdate - 180 and ta.updated_date_time > sysdate - 180 and ta.test_admin_id = tr.test_admin_id and tais.test_admin_id = ta.test_admin_id and stu.student_id = tr.student_id";
     
     public static AuthenticationData [] authenticateStudent(Connection con, String username, String password) {
     	AuthenticationData[] data = null;
@@ -66,23 +66,23 @@ public class TMSJDBC
 				data = new AuthenticationData[1];
 				AuthenticationData auth = new AuthenticationData();
 				data[0] = auth;
-				auth.setCaptureMethod(rs1.getString("capture_method"));
-				auth.setDailyEndTime(rs1.getDate("daily_end_time"));
-				auth.setDailyStartTime(rs1.getDate("daily_start_time"));
-				auth.setRandomDistractorSeedNumber(rs1.getInt("random_distractor_seed_number"));
-				auth.setRestartNumber(rs1.getInt("restart_number"));
-				auth.setRosterTestCompletionStatus(rs1.getString("test_completion_status"));
-				auth.setStudentFirstName(rs1.getString("student_first_name"));
-				auth.setStudentId(rs1.getInt("student_id"));
-				auth.setStudentLastName(rs1.getString("student_last_name"));
-				auth.setStudentMiddleName(rs1.getString("student_middle_name"));
-				auth.setTestAdminId(rs1.getInt("test_admin_id"));
-				auth.setTestAdminStatus(rs1.getString("test_admin_status"));
-				auth.setTestRosterId(rs1.getInt("test_roster_id"));
-				auth.setTimeZone(rs1.getString("time_zone"));
-				auth.setTtsSpeedStatus(rs1.getString("tts_speed_status"));
-				auth.setWindowEndDate(rs1.getDate("window_end_date"));
-				auth.setWindowStartDate(rs1.getDate("windows_start_date"));	
+				auth.setCaptureMethod(rs1.getString("captureMethod"));
+				auth.setDailyEndTime(rs1.getDate("dailyEndTime"));
+				auth.setDailyStartTime(rs1.getDate("dailyStartTime"));
+				auth.setRandomDistractorSeedNumber(rs1.getInt("randomDistractorSeedNumber"));
+				auth.setRestartNumber(rs1.getInt("restartNumber"));
+				auth.setRosterTestCompletionStatus(rs1.getString("rosterTestCompletionStatus"));
+				auth.setStudentFirstName(rs1.getString("studentFirstName"));
+				auth.setStudentId(rs1.getInt("studentId"));
+				auth.setStudentLastName(rs1.getString("studentLastName"));
+				auth.setStudentMiddleName(rs1.getString("studentMiddleName"));
+				auth.setTestAdminId(rs1.getInt("testAdminId"));
+				auth.setTestAdminStatus(rs1.getString("testAdminStatus"));
+				auth.setTestRosterId(rs1.getInt("testRosterId"));
+				auth.setTimeZone(rs1.getString("timeZone"));
+				auth.setTtsSpeedStatus(rs1.getString("ttsSpeedStatus"));
+				auth.setWindowEndDate(rs1.getDate("windowEndDate"));
+				auth.setWindowStartDate(rs1.getDate("windowStartDate"));	
 			}
 			rs1.close();
 		} catch (Exception e) {
@@ -108,31 +108,31 @@ public class TMSJDBC
 			ArrayList<ManifestData> dataList = new ArrayList<ManifestData>();
 			while (rs1.next()) {
 				ManifestData manifest = new ManifestData();
-				manifest.setAccessCode(rs1.getString("access_code"));
-				manifest.setAdminForceLogout(rs1.getString("admin_force_logout"));
+				manifest.setAccessCode(testAccessCode);
+				manifest.setAdminForceLogout(rs1.getString("adminForceLogout"));
 				manifest.setAdsid(rs1.getString("adsid"));
-				manifest.setAsmtEncryptionKey(rs1.getString("asmt_encryption_key"));
-				manifest.setAsmtHash(rs1.getString("asmt_hash"));
-				manifest.setCompletionStatus(rs1.getString("completion_status"));
+				manifest.setAsmtEncryptionKey(rs1.getString("asmtEncryptionKey"));
+				manifest.setAsmtHash(rs1.getString("asmtHash"));
+				manifest.setCompletionStatus(rs1.getString("completionStatus"));
 				manifest.setId(rs1.getInt("id"));
-				manifest.setItemEncryptionKey(rs1.getString("item_encryption_key"));
-				manifest.setRandomDistractorStatus(rs1.getString("random_distractor_status"));
-				manifest.setScoDurationMinutes(rs1.getInt("sco_duration_minutes"));
-				manifest.setScoEntry(rs1.getString("sco_entry"));
-				manifest.setScoOrder(rs1.getInt("sco_order"));
-				manifest.setScoParentId(rs1.getInt("sco_parent_id"));
-				manifest.setScoUnitQuestionOffset(rs1.getInt("sco_unit_question_offset"));
-				manifest.setScoUnitType(rs1.getString("sco_unit_type"));
+				manifest.setItemEncryptionKey(rs1.getString("itemEncryptionKey"));
+				manifest.setRandomDistractorStatus(rs1.getString("randomDistractorStatus"));
+				manifest.setScoDurationMinutes(rs1.getInt("scoDurationMinutes"));
+				manifest.setScoEntry(rs1.getString("scoEntry"));
+				manifest.setScoOrder(rs1.getInt("scoOrder"));
+				manifest.setScoParentId(rs1.getInt("scoParentId"));
+				//manifest.setScoUnitQuestionOffset(rs1.getInt("scoUnitQuestionOffset"));
+				manifest.setScoUnitType(rs1.getString("scoUnitType"));
 				//manifest.setScratchpadContent(rs1.getClob("scratchpad_content"));
 				//manifest.setScratchpadContentStr(rs1.getString("scratchpad_content"));
-				manifest.setShowStudentFeedback(rs1.getString("show_student_feedback"));
-				manifest.setTestTitle(rs1.getString("test_title"));
+				manifest.setShowStudentFeedback(rs1.getString("showStudentFeedback"));
+				manifest.setTestTitle(rs1.getString("testTitle"));
 				manifest.setTitle(rs1.getString("title"));
-				manifest.setTotalTime(rs1.getInt("total_time"));
+				manifest.setTotalTime(rs1.getInt("totalTime"));
 				dataList.add(manifest);
 			}
 			rs1.close();
-			data = (ManifestData[]) dataList.toArray();
+			data = (ManifestData[]) dataList.toArray(new ManifestData[0]);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -178,19 +178,19 @@ public class TMSJDBC
 			ResultSet rs1 = stmt1.executeQuery();
 			if (rs1.next()) {
 				data = new AccommodationsData();
-				data.setAnswerBackgroundColor(rs1.getString("answer_background_color"));
-				data.setAnswerFontColor(rs1.getString("answer_font_color"));
-				data.setAnswerFontSize(rs1.getInt("answer_font_size"));
+				data.setAnswerBackgroundColor(rs1.getString("answerBackgroundColor"));
+				data.setAnswerFontColor(rs1.getString("answerFontColor"));
+				data.setAnswerFontSize(rs1.getInt("answerFontSize"));
 				data.setCalculator(rs1.getString("calculator"));
 				data.setHighlighter(rs1.getString("highlighter"));
-				data.setQuestionBackgroundColor(rs1.getString("question_background_color"));
-				data.setQuestionFontColor(rs1.getString("question_font_color"));
-				data.setQuestionFontSize(rs1.getInt("question_font_size"));
-				data.setScreenMagnifier(rs1.getString("screen_magnifier"));
-				data.setScreenReader(rs1.getString("screen_reader"));
-				data.setStudentId(rs1.getInt("student_id"));
-				data.setTestPause(rs1.getString("test_pause"));
-				data.setUntimedTest(rs1.getString("untimed_test"));
+				data.setQuestionBackgroundColor(rs1.getString("questionBackgroundColor"));
+				data.setQuestionFontColor(rs1.getString("questionFontColor"));
+				data.setQuestionFontSize(rs1.getInt("questionFontSize"));
+				data.setScreenMagnifier(rs1.getString("screenMagnifier"));
+				data.setScreenReader(rs1.getString("screenReader"));
+				data.setStudentId(rs1.getInt("studentId"));
+				data.setTestPause(rs1.getString("testPause"));
+				data.setUntimedTest(rs1.getString("untimedTest"));
 			}
 			rs1.close();
 		} catch (Exception e) {
@@ -240,20 +240,20 @@ public class TMSJDBC
 			ArrayList<ItemResponseData> dataList = new ArrayList<ItemResponseData>();
 			while (rs1.next()) {
 				ItemResponseData response = new ItemResponseData();
-				response.setConstructedResponse(rs1.getClob("constructed_response"));
+				response.setConstructedResponse(rs1.getClob("constructedResponse"));
 				response.setEid(rs1.getInt("eid"));
-				response.setItemId(rs1.getString("item_id"));
-				response.setItemSortOrder(rs1.getInt("item_sort_order"));
-				response.setItemType(rs1.getString("item_type"));
+				response.setItemId(rs1.getString("itemId"));
+				response.setItemSortOrder(rs1.getInt("itemSortOrder"));
+				response.setItemType(rs1.getString("itemType"));
 				response.setResponse(rs1.getString("response"));
-				response.setResponseElapsedTime(rs1.getInt("response_elapsed_time"));
-				response.setResponseSeqNum(rs1.getInt("response_seq_num"));
+				response.setResponseElapsedTime(rs1.getInt("responseElapsedTime"));
+				response.setResponseSeqNum(rs1.getInt("responseSeqNum"));
 				response.setScore(rs1.getInt("score"));
-				response.setStudentMarked(rs1.getString("student_marked"));
+				response.setStudentMarked(rs1.getString("studentMarked"));
 				dataList.add(response);
 			}
 			rs1.close();
-			data = (ItemResponseData[]) dataList.toArray();
+			data = (ItemResponseData[]) dataList.toArray(new ItemResponseData[0]);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -426,9 +426,10 @@ public class TMSJDBC
 				creds.setUsername(rs1.getString("username"));
 				creds.setPassword(rs1.getString("password"));
 				creds.setAccesscode(rs1.getString("accesscode"));
+				dataList.add(creds);
 			}
 			rs1.close();
-			data = (StudentCredentials[]) dataList.toArray();
+			data = (StudentCredentials[]) dataList.toArray(new StudentCredentials[0]);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

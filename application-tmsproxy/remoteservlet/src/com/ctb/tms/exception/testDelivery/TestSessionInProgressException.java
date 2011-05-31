@@ -1,4 +1,4 @@
-package com.ctb.exception.testDelivery; 
+package com.ctb.tms.exception.testDelivery; 
 
 public class TestSessionInProgressException extends TestDeliveryException 
 { 
