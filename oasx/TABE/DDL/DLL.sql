@@ -16,3 +16,12 @@ CREATE TABLE customer_orgnode_license (
  CONSTRAINT pk_orgnid_custid_prodid primary key(org_node_id,customer_id,product_id)
   )
 /
+
+
+/* Two new columns added in table customer_orgnode_license for license email notification */
+
+ALTER TABLE customer_orgnode_license ADD license_after_last_purchase NUMBER
+/
+
+ALTER TABLE customer_orgnode_license ADD email_notify_flag VARCHAR2(1)
+/
