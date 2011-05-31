@@ -12,6 +12,9 @@ import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
+import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.NodeData;
+import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
 import com.ctb.bean.testAdmin.ProgramData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
@@ -66,6 +69,7 @@ public class HomePageController extends PageFlowController
     private CustomerReportData customerReportData = null;                
 
     public ReportManager reportManager = null;
+    private CustomerLicense[] customerLicenses = null;
     
     /**
      * This method represents the point of entry into the pageflow
@@ -234,10 +238,12 @@ public class HomePageController extends PageFlowController
 
 
         // get licenses
-        CustomerLicense[] customerLicenses = getCustomerLicenses();
-        if ((customerLicenses != null) && (customerLicenses.length > 0))
+        if (this.customerLicenses == null)
+        	this.customerLicenses = getCustomerLicenses();
+        
+        if ((this.customerLicenses != null) && (this.customerLicenses.length > 0))
         {
-            this.getRequest().setAttribute("customerLicenses", customerLicenses);
+            this.getRequest().setAttribute("customerLicenses", getLicenseQuantitiesByOrg());
             this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
         }
         else {
@@ -245,10 +251,10 @@ public class HomePageController extends PageFlowController
         }
 
         //check avaliable license count for Register Student
-        registerStudentEnable(customerLicenses, sessionList);
+        registerStudentEnable(this.customerLicenses, sessionList);
        
         //check avaliable license count for Register Student
-        registerStudentEnable(customerLicenses, proctorSessionList); 
+        registerStudentEnable(this.customerLicenses, proctorSessionList); 
         
         // get CTB broadcast messages
         List broadcastMessages = getBroadcastMessages(false);
@@ -342,6 +348,42 @@ public class HomePageController extends PageFlowController
             be.printStackTrace();
         }
     }
+    
+    
+    /**
+     * getLicenseQuantitiesByOrg
+     */    
+    private CustomerLicense getLicenseQuantitiesByOrg() {
+    	
+    	CustomerLicense cl = null;
+
+        try {
+	    	NodeData und = this.testSessionStatus.getTopNodesForUser(this.userName, null, null, null);
+	        Node[] nodes = und.getNodes();     
+	        Node node = nodes[0];
+	        Integer orgNodeId = node.getOrgNodeId();
+	        Integer productId = this.customerLicenses[0].getProductId();
+	        String productName = this.customerLicenses[0].getProductName();
+	        String subtestModel = this.customerLicenses[0].getSubtestModel();
+        
+	        OrgNodeLicenseInfo onli = this.licensing.getLicenseQuantitiesByOrgNodeIdAndProductId(this.userName, 
+										                    orgNodeId, 
+										                    productId, 
+										                    subtestModel);
+	        cl = new CustomerLicense();
+	        cl.setProductName(productName);
+	        cl.setReservedLicense(onli.getLicReserved());
+	        cl.setConsumedLicense(onli.getLicUsed());
+	        cl.setAvailable(onli.getLicPurchased());
+										                    
+        }    
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }
+        
+        return cl;
+    }
+    
      /*
       * START- added for Deferred defect #52645
       * 
@@ -407,8 +449,6 @@ public class HomePageController extends PageFlowController
 
         try
         {
-           // cls = this.licensing.getCustomerLicenseData(this.userName, null);
-	   // getCustomerOrgNodeLicenseData() method needed to be call to get licences detail for all orgnode associated to a user for displaying widget in home page.
             cls = this.licensing.getCustomerOrgNodeLicenseData(this.userName, null);
         }    
         catch (CTBBusinessException be)
