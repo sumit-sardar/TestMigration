@@ -180,12 +180,12 @@ public class TMSJDBC
 				data = new AccommodationsData();
 				data.setAnswerBackgroundColor(rs1.getString("answerBackgroundColor"));
 				data.setAnswerFontColor(rs1.getString("answerFontColor"));
-				data.setAnswerFontSize(rs1.getInt("answerFontSize"));
+				data.setAnswerFontSize(rs1.getFloat("answerFontSize"));
 				data.setCalculator(rs1.getString("calculator"));
 				data.setHighlighter(rs1.getString("highlighter"));
 				data.setQuestionBackgroundColor(rs1.getString("questionBackgroundColor"));
 				data.setQuestionFontColor(rs1.getString("questionFontColor"));
-				data.setQuestionFontSize(rs1.getInt("questionFontSize"));
+				data.setQuestionFontSize(rs1.getFloat("questionFontSize"));
 				data.setScreenMagnifier(rs1.getString("screenMagnifier"));
 				data.setScreenReader(rs1.getString("screenReader"));
 				data.setStudentId(rs1.getInt("studentId"));
