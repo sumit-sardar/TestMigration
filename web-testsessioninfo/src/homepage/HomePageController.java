@@ -358,25 +358,36 @@ public class HomePageController extends PageFlowController
     	CustomerLicense cl = null;
 
         try {
-	    	NodeData und = this.testSessionStatus.getTopNodesForUser(this.userName, null, null, null);
-	        Node[] nodes = und.getNodes();     
-	        Node node = nodes[0];
-	        Integer orgNodeId = node.getOrgNodeId();
+            int licReserved = 0;
+            int licUsed = 0;
+            int licPurchased = 0;
+        	
 	        CustomerLicense cusLicense = getCustomerLicenseByProduct();
 	        Integer productId = cusLicense.getProductId();
 	        String productName = cusLicense.getProductName();
 	        String subtestModel = cusLicense.getSubtestModel();
-        
-	        OrgNodeLicenseInfo onli = this.licensing.getLicenseQuantitiesByOrgNodeIdAndProductId(this.userName, 
-										                    orgNodeId, 
-										                    productId, 
-										                    subtestModel);
+        	
+	    	NodeData und = this.testSessionStatus.getTopNodesForUser(this.userName, null, null, null);
+	        Node[] nodes = und.getNodes();    
+	        
+	        for (int i=0 ; i<nodes.length ; i++) {
+		        Node node = nodes[i];
+		        Integer orgNodeId = node.getOrgNodeId();
+	        
+		        OrgNodeLicenseInfo onli = this.licensing.getLicenseQuantitiesByOrgNodeIdAndProductId(this.userName, 
+																				                    orgNodeId, 
+																				                    productId, 
+																				                    subtestModel);
+		        licReserved += onli.getLicReserved();
+		        licUsed += onli.getLicUsed();
+		        licPurchased += onli.getLicPurchased();
+	        }
+	        
 	        cl = new CustomerLicense();
 	        cl.setProductName(productName);
-	        cl.setReservedLicense(onli.getLicReserved());
-	        cl.setConsumedLicense(onli.getLicUsed());
-	        cl.setAvailable(onli.getLicPurchased());
-										                    
+	        cl.setReservedLicense(licReserved);
+	        cl.setConsumedLicense(licUsed);
+	        cl.setAvailable(licPurchased);
         }    
         catch (CTBBusinessException be) {
             be.printStackTrace();
