@@ -55,7 +55,9 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					e.printStackTrace();
 				} finally {
 					try {
-						conn.close();
+						if(conn != null) {
+							conn.close();
+						}
 						System.out.println("*****  Completed active roster check. Sleeping for " + checkFrequency + " seconds.");
 						Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000);
 					}catch (Exception ie) {
