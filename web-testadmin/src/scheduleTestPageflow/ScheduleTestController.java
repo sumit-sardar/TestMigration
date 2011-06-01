@@ -3727,7 +3727,7 @@ public class ScheduleTestController extends PageFlowController
        
         //Added for License
         private Integer licenseAvailable = null;
-    
+        private String licenseModel = null;    
         private String licensePercentage = null;
 		
        
@@ -4498,6 +4498,24 @@ public class ScheduleTestController extends PageFlowController
          */
         public void setLicensePercentage(String licensePercentage) {
             this.licensePercentage = licensePercentage;
+        }
+        /**
+         * @return the licenseModel
+         */
+        public String getLicenseModel() {
+        	if (this.licenseModel != null) {
+	        	if (this.licenseModel.equals("T"))
+	        		return "Subtest";
+	        	else
+	        		return "Session";
+        	}
+        	return null; 
+        }
+        /**
+         * @param licenseModel the licenseModel to set
+         */
+        public void setLicenseModel(String licenseModel) {
+            this.licenseModel = licenseModel;
         }
 		
     }

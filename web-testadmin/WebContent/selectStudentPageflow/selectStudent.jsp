@@ -121,6 +121,12 @@
 							<table width="150" height="100%" cellpadding="0" cellspacing="2">
 								<tr bgcolor="green">
 									<td class="transparent-label" width="100%" height="100%" align="left" nowrap="" bgcolor="#FFFFFF">
+									<netui:span	value="License model: " /><b><netui:span value="${actionForm.licenseModel}" /></b>
+									</td>
+								</tr>
+
+								<tr bgcolor="green">
+									<td class="transparent-label" width="100%" height="100%" align="left" nowrap="" bgcolor="#FFFFFF">
 									<netui:span	value="Licenses available: " /><b><netui:span value="${actionForm.licenseAvailable}" /></b>
 									</td>
 								</tr>

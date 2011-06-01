@@ -117,6 +117,7 @@ public class SelectStudentPageflowController extends PageFlowController
     private int totalDuplicateStudentsInForm = 0;
     private boolean commitSelection = false;
     private boolean hasLicenseConfig = false;
+    private CustomerLicense[] customerLicenses = null;
     
     /**
      * This method represents the point of entry into the pageflow
@@ -186,6 +187,9 @@ public class SelectStudentPageflowController extends PageFlowController
         this.action = ACTION_SCHEDULE_TEST; // change for MQC defect  55837
         
         this.hasLicenseConfig = hasLicenseConfig();
+        
+        this.customerLicenses = getCustomerLicenses();
+        
     }
     
     /**
@@ -1440,9 +1444,8 @@ public class SelectStudentPageflowController extends PageFlowController
     private OrgNodeLicenseInfo getLicenseQuantitiesByOrg(Integer orgNodeId) {
     	
         OrgNodeLicenseInfo onli = null;    
-        CustomerLicense[] customerLicenses = getCustomerLicenses();
-        Integer productId = customerLicenses[0].getProductId();
-        String subtestModel = customerLicenses[0].getSubtestModel();
+        Integer productId = this.customerLicenses[0].getProductId();
+        String subtestModel = this.customerLicenses[0].getSubtestModel();
         
         try {
         	
@@ -1540,8 +1543,9 @@ public class SelectStudentPageflowController extends PageFlowController
         	licenseBarColor = Message.HIGH_LICENSE_COLOR;
         
         form.setLicenseAvailable(availableLicense);
+        form.setLicenseModel(this.customerLicenses[0].getSubtestModel());
         form.setLicensePercentage(availableLicensePercent);
-        
+         
     }
 
     
@@ -1597,8 +1601,15 @@ public class SelectStudentPageflowController extends PageFlowController
      * usedLicensesInNode
      */
     private Integer usedLicensesInNode(Integer orgNodeId) {
-    	
+
     	List existingStudents = getExistingStudentsInSessionForOrgNode(orgNodeId);
+    	
+    	int licensePerSubtest = 1;
+        String subtestModel = this.customerLicenses[0].getSubtestModel();
+    	
+    	if (subtestModel.equals("T")) {
+            licensePerSubtest = getNumberOfSubtests();
+    	}
     	
     	int usedLicenses = 0;
         
@@ -1606,7 +1617,7 @@ public class SelectStudentPageflowController extends PageFlowController
             SessionStudent ss = (SessionStudent)this.selectedStudents.get(i);
             if (ss.getOrgNodeId().intValue() == orgNodeId.intValue()) {
             	if (! isExistingStudent(ss.getStudentId(), existingStudents)) {
-            		usedLicenses++;
+            		usedLicenses += licensePerSubtest;
             	}
             }
         }
@@ -1614,6 +1625,17 @@ public class SelectStudentPageflowController extends PageFlowController
         return new Integer(usedLicenses);
     }
 
+    /**
+     * getNumberOfSubtests
+     */
+    private int getNumberOfSubtests() {
+    	
+    	List result = new ArrayList();
+        ScheduleTestController parentPageFlow = (ScheduleTestController)PageFlowUtils.getNestingPageFlow(getRequest());
+        List subtests = parentPageFlow.defaultSubtests;
+        return subtests.size();
+    }
+    
     /**
      * getExistingStudentsInSessionForOrgNode
      */
@@ -1626,6 +1648,7 @@ public class SelectStudentPageflowController extends PageFlowController
 	    }
 		return false;
     }
+    
     /**
      * getExistingStudentsInSessionForOrgNode
      */
