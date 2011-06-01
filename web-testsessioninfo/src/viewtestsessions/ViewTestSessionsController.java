@@ -951,7 +951,7 @@ public class ViewTestSessionsController extends PageFlowController
         
         try
         {
-            cls = this.licensing.getCustomerLicenseData(this.userName, null);
+            cls = this.licensing.getCustomerOrgNodeLicenseData(this.userName, null);
         }    
         catch (CTBBusinessException be)
         {
@@ -970,7 +970,7 @@ public class ViewTestSessionsController extends PageFlowController
         
         try
         {
-            CustomerLicense[] cls = this.licensing.getCustomerLicenseData(this.userName, null);            
+            CustomerLicense[] cls = this.licensing.getCustomerOrgNodeLicenseData(this.userName, null);            
             hasLicenseConfig = new Boolean(cls.length > 0);
         }    
         catch (CTBBusinessException be)
