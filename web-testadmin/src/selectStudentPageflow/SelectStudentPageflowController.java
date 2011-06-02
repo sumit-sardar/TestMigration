@@ -8,6 +8,7 @@ import com.ctb.bean.request.FilterParams.FilterParam;
 import com.ctb.bean.request.FilterParams.FilterType;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
@@ -73,6 +74,9 @@ public class SelectStudentPageflowController extends PageFlowController
      */
     @Control()
     private com.ctb.control.licensing.Licensing license;
+    
+    @Control()
+    private com.ctb.control.db.Users users;
 
     
     public static final String ACTION_DEFAULT = "defaultAction";
@@ -118,8 +122,24 @@ public class SelectStudentPageflowController extends PageFlowController
     private boolean commitSelection = false;
     private boolean hasLicenseConfig = false;
     private CustomerLicense[] customerLicenses = null;
+    private User user = null; //change for defect 66353
+    
     
     /**
+	 * @return the user
+	 */
+	public User getUser() {
+		return user;
+	}
+
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	/**
      * This method represents the point of entry into the pageflow
      * @jpf:action
      * @jpf:forward name="success" path="selectStudent.do"
@@ -185,8 +205,8 @@ public class SelectStudentPageflowController extends PageFlowController
         setupOffGradeTesting(form);
         
         this.action = ACTION_SCHEDULE_TEST; // change for MQC defect  55837
-        
-        this.hasLicenseConfig = hasLicenseConfig();
+        //this.hasLicenseConfig = hasLicenseConfig();
+        this.hasLicenseConfig = hasLicenseConfiguration(); //change for defect 66353
         
         this.customerLicenses = getCustomerLicenses();
         
@@ -524,6 +544,48 @@ public class SelectStudentPageflowController extends PageFlowController
         }        
         return hasLicenseConfig;
     }
+    
+    //change for defect 66353
+
+	private Boolean hasLicenseConfiguration()
+    {    
+		
+		 try {
+			 this.user = this.scheduleTest.getUserDetails(this.userName, this.userName);
+	        }    
+	        catch (CTBBusinessException be) {
+	            be.printStackTrace();
+	        }        
+		Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasLicenseConfiguration = false;
+        
+        try
+        {      
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if(customerConfigurations != null  && customerConfigurations.length > 0) {
+		        for (int i=0; i < customerConfigurations.length; i++)
+		        {
+		        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+		            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
+		            		cc.getDefaultValue().equals("T")	) {
+		            	hasLicenseConfiguration = true;
+		                break;
+		            } 
+		        }
+			}
+       }
+        
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+        return new Boolean(hasLicenseConfiguration);
+    }
+    
+	
+    
+    
+    
+    
     
     private void setFormInfoOnRequest(ScheduleTestController.ScheduleTestForm form) {
     	this.getRequest().setAttribute("pageMessage", form.getMessage());

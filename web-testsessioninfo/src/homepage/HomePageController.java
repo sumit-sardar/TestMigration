@@ -25,6 +25,7 @@ import com.ctb.testSessionInfo.dto.ReportManager;
 import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,8 +71,24 @@ public class HomePageController extends PageFlowController
 
     public ReportManager reportManager = null;
     private CustomerLicense[] customerLicenses = null;
+    private boolean hasLicenseConfig = false;  //change for defect 66353
+    
     
     /**
+	 * @return the hasLicenseConfig
+	 */
+	public boolean isHasLicenseConfig() {
+		return hasLicenseConfig;
+	}
+
+	/**
+	 * @param hasLicenseConfig the hasLicenseConfig to set
+	 */
+	public void setHasLicenseConfig(boolean hasLicenseConfig) {
+		this.hasLicenseConfig = hasLicenseConfig;
+	}
+
+	/**
      * This method represents the point of entry into the pageflow
      * @jpf:action
      * @jpf:forward name="success" path="home_page.do"
@@ -244,12 +261,20 @@ public class HomePageController extends PageFlowController
         if ((this.customerLicenses != null) && (this.customerLicenses.length > 0))
         {
             this.getRequest().setAttribute("customerLicenses", getLicenseQuantitiesByOrg());
-            this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
+           // this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
         }
-        else {
+       /* else {
             this.getSession().setAttribute("hasLicenseConfig", new Boolean(false));        	
+        }*/
+       //START - change for defect 66353
+        this.hasLicenseConfig = hasLicenseConfiguration(customerConfigs); 
+        if(this.hasLicenseConfig) {
+        	 this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
+        } else {
+        	 this.getSession().setAttribute("hasLicenseConfig", new Boolean(false));  
         }
-
+       //END - change for defect 66353
+        
         //check avaliable license count for Register Student
         registerStudentEnable(this.customerLicenses, sessionList);
        
@@ -484,7 +509,26 @@ public class HomePageController extends PageFlowController
      
         return cls;
     }
+    
+   
+    //change for defect 66353
+    private Boolean hasLicenseConfiguration(CustomerConfiguration [] customerConfigs)
+    {               
+    	 boolean hasLicenseConfiguration = false;
 
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
+            		cc.getDefaultValue().equals("T")	) {
+            	hasLicenseConfiguration = true;
+                break;
+            } 
+        }
+       
+        return new Boolean(hasLicenseConfiguration);
+    }
+    
     private Boolean userHasReports() 
     {
         boolean hasReports = false;
