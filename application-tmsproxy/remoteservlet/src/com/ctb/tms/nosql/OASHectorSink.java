@@ -26,12 +26,15 @@ import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.ColumnQuery;
 import me.prettyprint.hector.api.query.QueryResult;
 
+import com.ctb.tms.bean.login.RosterData;
+import com.ctb.tms.bean.login.StudentCredentials;
+
 public class OASHectorSink {
 
-	public static void main(String [] args) {
-		Cluster cluster = HFactory.getOrCreateCluster("OASCluster", new CassandraHostConfigurator("localhost:9160"));
+	private static Cluster cluster = HFactory.getOrCreateCluster("OASCluster", new CassandraHostConfigurator("localhost:9160"));
+	
+	{
 		BasicKeyspaceDefinition kd = new BasicKeyspaceDefinition() {
-			
 			public Map<String, String> getStrategyOptions() {
 				Map<String, String> options = new HashMap<String, String>(2);
 				options.put("replication_factor", "1");
@@ -52,7 +55,7 @@ public class OASHectorSink {
 			
 			public List<ColumnFamilyDefinition> getCfDefs() {
 				BasicColumnFamilyDefinition rosterDataCF = new BasicColumnFamilyDefinition() {
-					
+				
 					public ComparatorType getSubComparatorType() {
 						return null;
 					}
@@ -137,7 +140,7 @@ public class OASHectorSink {
 							}
 							
 							public ByteBuffer getName() {
-								return ByteBuffer.wrap("username".getBytes());
+								return ByteBuffer.wrap("login-response".getBytes());
 							}
 							
 							public ColumnIndexType getIndexType() {
@@ -145,7 +148,7 @@ public class OASHectorSink {
 							}
 							
 							public String getIndexName() {
-								return "username-idx";
+								return "login-response-idx";
 							}
 						};
 						List<ColumnDefinition> cdList = new ArrayList<ColumnDefinition>();
@@ -158,8 +161,13 @@ public class OASHectorSink {
 				return cfList;
 			}
 		};
+		try {
+			cluster.dropKeyspace("OAS");
+		} catch (Exception e) {
+			// do nothing, KS doesn't exist
+		}
 		cluster.addKeyspace(new ThriftKsDef(kd));
-		
+		/*
 		Keyspace keyspace = HFactory.createKeyspace("OAS", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
@@ -169,5 +177,19 @@ public class OASHectorSink {
 		columnQuery.setColumnFamily("RosterData").setKey("jsmith").setName("username");
 		QueryResult<HColumn<String, String>> result = columnQuery.execute();
 		System.out.println(result.get().getValue());
+		*/
+	}
+	
+	public static void putRosterData(StudentCredentials creds, RosterData rosterData) {
+		Keyspace keyspace = HFactory.createKeyspace("OAS", cluster);
+		Serializer<String> stringSerializer = new StringSerializer();
+		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
+		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
+		mutator.insert(key, "RosterData", HFactory.createStringColumn("login-response", rosterData.getDocument().xmlText()));
+		
+		ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
+		columnQuery.setColumnFamily("RosterData").setKey(key).setName("login-response");
+		QueryResult<HColumn<String, String>> result = columnQuery.execute();
+		System.out.println("*****  Stored in Cassandra: " + result.get().getValue());
 	}
 }

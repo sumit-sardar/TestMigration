@@ -8,11 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
-import java.util.TimeZone;
 
 import javax.naming.InitialContext;
 
@@ -43,13 +41,11 @@ import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.bean.login.TestProduct;
 import com.ctb.tms.exception.testDelivery.AuthenticationFailureException;
 import com.ctb.tms.exception.testDelivery.KeyEnteredResponsesException;
-import com.ctb.tms.exception.testDelivery.LocatorSubtestNotCompletedException;
 import com.ctb.tms.exception.testDelivery.OutsideTestWindowException;
 import com.ctb.tms.exception.testDelivery.TestSessionCompletedException;
 import com.ctb.tms.exception.testDelivery.TestSessionInProgressException;
 import com.ctb.tms.exception.testDelivery.TestSessionNotScheduledException;
 import com.ctb.tms.util.Constants;
-import com.ctb.tms.util.DateUtils;
 
 public class OASDBSource
 { 
@@ -564,8 +560,8 @@ public class OASDBSource
 				AuthenticationData auth = new AuthenticationData();
 				data[0] = auth;
 				auth.setCaptureMethod(rs1.getString("captureMethod"));
-				auth.setDailyEndTime(rs1.getDate("dailyEndTime"));
-				auth.setDailyStartTime(rs1.getDate("dailyStartTime"));
+				auth.setDailyEndTime(rs1.getTimestamp("dailyEndTime"));
+				auth.setDailyStartTime(rs1.getTimestamp("dailyStartTime"));
 				auth.setRandomDistractorSeedNumber(rs1.getInt("randomDistractorSeedNumber"));
 				auth.setRestartNumber(rs1.getInt("restartNumber"));
 				auth.setRosterTestCompletionStatus(rs1.getString("rosterTestCompletionStatus"));
@@ -578,8 +574,8 @@ public class OASDBSource
 				auth.setTestRosterId(rs1.getInt("testRosterId"));
 				auth.setTimeZone(rs1.getString("timeZone"));
 				auth.setTtsSpeedStatus(rs1.getString("ttsSpeedStatus"));
-				auth.setWindowEndDate(rs1.getDate("windowEndDate"));
-				auth.setWindowStartDate(rs1.getDate("windowStartDate"));	
+				auth.setWindowEndDate(rs1.getTimestamp("windowEndDate"));
+				auth.setWindowStartDate(rs1.getTimestamp("windowStartDate"));	
 			}
 			rs1.close();
 		} catch (Exception e) {

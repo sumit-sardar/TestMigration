@@ -7,6 +7,7 @@ import javax.servlet.ServletContextEvent;
 
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.nosql.OASHectorSink;
 import com.ctb.tms.rdb.OASDBSource;
 
 public class TestDeliveryContextListener implements javax.servlet.ServletContextListener {
@@ -41,13 +42,11 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					for(int i=0;i<creds.length;i++) {
 						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
 						if(rosterMap.get(key) == null) {
+							// Get all data for an active roster from OAS DB
 							RosterData rosterData = OASDBSource.getRosterData(conn, creds[i]);
 							System.out.println("*****  Got roster data for " + key);
-							// Now put the roster data into Cassandra here
-							//
-							// 
-							//
-							//////////////////////////////////////////////
+							// Now put the roster data into Cassandra
+							OASHectorSink.putRosterData(creds[i], rosterData);
 							rosterMap.put(key, key);
 						}
 					}

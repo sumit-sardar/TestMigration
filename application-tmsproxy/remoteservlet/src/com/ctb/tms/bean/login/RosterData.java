@@ -1,5 +1,6 @@
 package com.ctb.tms.bean.login;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -8,7 +9,6 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
 
 import com.ctb.tms.exception.testDelivery.AuthenticationFailureException;
 import com.ctb.tms.exception.testDelivery.KeyEnteredResponsesException;
-import com.ctb.tms.exception.testDelivery.LocatorSubtestNotCompletedException;
 import com.ctb.tms.exception.testDelivery.OutsideTestWindowException;
 import com.ctb.tms.exception.testDelivery.TestSessionCompletedException;
 import com.ctb.tms.exception.testDelivery.TestSessionInProgressException;
@@ -19,7 +19,12 @@ import com.ctb.tms.util.DateUtils;
 public class RosterData {
 	TmssvcResponseDocument document;
 	AuthenticationData authData;
+	
 	public TmssvcResponseDocument getDocument() {
+		return this.document;
+	}
+	
+	public TmssvcResponseDocument getLoginDocument() {
 		TmssvcResponseDocument response = this.document;
 		try {
 			// were credentials correct?
@@ -101,6 +106,7 @@ public class RosterData {
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_NOT_SCHEDULED_OR_INTERRUPTED_STATUS); 
         } catch (Exception e) {
+        	e.printStackTrace();
             response = TmssvcResponseDocument.Factory.newInstance();
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.INTERNAL_SERVER_ERROR_STATUS);
