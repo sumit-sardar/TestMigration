@@ -1601,7 +1601,7 @@ public class SelectStudentPageflowController extends PageFlowController
         String availableLicensePercent = null;
         
         if (usedLicPercent > 100) { 
-        	availableLicensePercent = "Used " + usedLicenses + " out of " + availableLicense + " licenses (Over 100%)";
+        	availableLicensePercent = "Exceeds Licenses Available (over 100%)";
     		licenseBarColor = Message.LOW_LICENSE_COLOR;
         }
         else {
