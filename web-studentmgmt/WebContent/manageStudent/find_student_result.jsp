@@ -131,7 +131,7 @@
 						<span id="studentName"> 
 						</span>
 					</b>
-					<span> most recently took :
+					<span> &nbsp;most recently took :
 					</span>
 				</div>
 				<br>
