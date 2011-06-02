@@ -296,8 +296,12 @@ public class ViewTestSessionsController extends PageFlowController
     	
          if (studentId != null && selectedProductId != null 
         		 && !studentId.equals("") && !selectedProductId.equals(""))
-         {	 if(!(selectedProductId.equals("NONE")))
+         {	 if(!(selectedProductId.equals("NONE"))){
         		 this.setSelectedProductId(new Integer(selectedProductId));
+         		}
+         	else{
+         		this.setSelectedProductId(new Integer(0));  //change for defect - 66361
+         	}
              this.setSelectedStudentId(new Integer(studentId));
           	form.init();
           	this.orgNodePath = new ArrayList();

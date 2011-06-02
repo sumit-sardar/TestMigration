@@ -1630,6 +1630,7 @@ public class ManageStudentController extends PageFlowController
 		
 		form.resetValuesForAction(actionElement, ACTION_DEFAULT); 
 		if (currentAction.equals(ACTION_FORM_RECOMMENDATION_STUDENT)){
+			this.setRecommendedProduct("NONE");  //change for defect - 66361
 			return new Forward(currentAction, form);
 		}
 		if (currentAction.equals(ACTION_FORM_RECOMMENDATION_STUDENT_YES)){
