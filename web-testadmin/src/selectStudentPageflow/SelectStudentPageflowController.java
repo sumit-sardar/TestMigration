@@ -1522,25 +1522,39 @@ public class SelectStudentPageflowController extends PageFlowController
         
     	Integer availableLicense = onli.getLicPurchased();
     	Integer usedLicenses = usedLicensesInNode(orgNodeId);
-        double usedLicPercent = Math.round(((usedLicenses.doubleValue() * 100) / availableLicense.doubleValue() ));
-
+        double usedLicPercent = 101;
+        
+        if ((availableLicense.intValue() == 0) && (usedLicenses.intValue() == 0)) { 
+        	usedLicPercent = 0;
+        }
+        if (availableLicense.intValue() > 0) { 
+        	usedLicPercent = Math.round(((usedLicenses.doubleValue() * 100) / availableLicense.doubleValue() ));
+        }
+                
         if (usedLicenses.intValue() > availableLicense.intValue()) {
         	Integer licenseNeeded = new Integer(usedLicenses.intValue() - availableLicense.intValue());
 		    setLicenseErrorMessage(form, orgNodeName, licenseNeeded, this.commitSelection);
 		}
 		
-        Integer usedLicensePercentage = new Integer(new Double(usedLicPercent).intValue());
-                 
-        String availableLicensePercent = "Used " + usedLicenses + " out of " + availableLicense + 
-                " licenses ("+ usedLicensePercentage.toString() + "%)";
-                       
-        if (usedLicensePercentage.intValue() >= 90 ) 
+        String availableLicensePercent = null;
+        
+        if (usedLicPercent > 100) { 
+        	availableLicensePercent = "Used " + usedLicenses + " out of " + availableLicense + " licenses (Over 100%)";
     		licenseBarColor = Message.LOW_LICENSE_COLOR;
-        else 
-        if (usedLicensePercentage.intValue() >= 70) 
-           	licenseBarColor = Message.MEDIUM_LICENSE_COLOR;     
-        else 
-        	licenseBarColor = Message.HIGH_LICENSE_COLOR;
+        }
+        else {
+            Integer usedLicensePercentage = new Integer(new Double(usedLicPercent).intValue());
+        	
+        	availableLicensePercent = "Used " + usedLicenses + " out of " + availableLicense + 
+												" licenses ("+ usedLicensePercentage.toString() + "%)";        	
+	        if (usedLicensePercentage.intValue() >= 90 ) 
+	    		licenseBarColor = Message.LOW_LICENSE_COLOR;
+	        else 
+	        if (usedLicensePercentage.intValue() >= 70) 
+	           	licenseBarColor = Message.MEDIUM_LICENSE_COLOR;     
+	        else 
+	        	licenseBarColor = Message.HIGH_LICENSE_COLOR;
+        }
         
         form.setLicenseAvailable(availableLicense);
         form.setLicenseModel(this.customerLicenses[0].getSubtestModel());
