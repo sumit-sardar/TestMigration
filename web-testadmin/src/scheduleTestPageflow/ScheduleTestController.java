@@ -4741,9 +4741,15 @@ public class ScheduleTestController extends PageFlowController
         return this.showLevelOrGrade;
     }
     
-    
+    public String getProductType() {
+		return productType;
+	}
 
-////////////////////////////////////////////////////////////////////////////////////////
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////
     /*
     * copySubtestForms
     */

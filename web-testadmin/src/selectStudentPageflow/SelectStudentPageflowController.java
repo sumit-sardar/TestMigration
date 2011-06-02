@@ -204,10 +204,8 @@ public class SelectStudentPageflowController extends PageFlowController
         
         setupOffGradeTesting(form);
         
-        this.action = ACTION_SCHEDULE_TEST; // change for MQC defect  55837
-        //this.hasLicenseConfig = hasLicenseConfig();
-        this.hasLicenseConfig = hasLicenseConfiguration(); //change for defect 66353
-        
+        this.action = ACTION_SCHEDULE_TEST; 
+        this.hasLicenseConfig = hasLicenseConfiguration(); 
         this.customerLicenses = getCustomerLicenses();
         
     }
@@ -499,7 +497,6 @@ public class SelectStudentPageflowController extends PageFlowController
             
         form.setActionElement(ACTION_DEFAULT);    
         
-        // change for MQC defect  55837
         if (form.getAction().equals(ACTION_SCHEDULE_TEST))
         {
             this.action = ACTION_SCHEDULE_TEST;
@@ -514,7 +511,7 @@ public class SelectStudentPageflowController extends PageFlowController
         }
 
         boolean licenseflag = false; 
-        if (this.hasLicenseConfig && (nodeContainsStudents != null)) {
+        if (needHandleLicense() && (nodeContainsStudents != null)) {
         	OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(this.selectedOrgNodeId);
         	licenseflag = setupLicenseInfo(this.selectedOrgNodeId, selectedOrgNodeName, onli, form, actionElement);
         }
@@ -528,26 +525,15 @@ public class SelectStudentPageflowController extends PageFlowController
         return new Forward("success", form);
     }
     
-    
-    /**
-     * hasLicenseConfig
-     */
-    private Boolean hasLicenseConfig()
-    {
-        Boolean hasLicenseConfig = Boolean.FALSE;        
-        try {
-            CustomerLicense[] cls = this.license.getCustomerOrgNodeLicenseData(this.userName, null);            
-            hasLicenseConfig = new Boolean(cls.length > 0);
-        }    
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }        
-        return hasLicenseConfig;
+    private boolean needHandleLicense() {
+    	
+        ScheduleTestController parentPageFlow = (ScheduleTestController)PageFlowUtils.getNestingPageFlow(getRequest());
+        String productType = parentPageFlow.getProductType();
+        boolean nonLicenseProduct = (productType.equals("tabeLocatorProductType") || productType.equals("genericProductType"));
+    	return (this.hasLicenseConfig && (! nonLicenseProduct));
     }
     
-    //change for defect 66353
-
-	private Boolean hasLicenseConfiguration()
+ 	private Boolean hasLicenseConfiguration()
     {    
 		
 		 try {
@@ -1127,12 +1113,12 @@ public class SelectStudentPageflowController extends PageFlowController
             duplicateStudentsNum = totalDuplicateStudentsInForm - dupStudentSize;
         }
      
-        if (!verifyLicenseAvailability(form, duplicateStudentsNum))
-        {
-            isError = true;
-                    
+        if (needHandleLicense()) {
+	        if (!verifyLicenseAvailability(form, duplicateStudentsNum)) {
+	            isError = true;
+	        }
         }
-       
+        
         if (hasDuplicate)
         {    
             form.setCurrentAction(ACTION_DEFAULT);
@@ -1654,19 +1640,17 @@ public class SelectStudentPageflowController extends PageFlowController
      */
     private boolean verifyLicenseAvailability(ScheduleTestController.ScheduleTestForm form, int duplicateStudentsNum) {
         
-    	if (this.hasLicenseConfig) {
-	        List scheduledOrgNodes = getScheduledOrgNodes();
-	    	for (int i=0; i<scheduledOrgNodes.size(); i++) {
-	    		OrganizationVO orgNode = (OrganizationVO)scheduledOrgNodes.get(i);    		
-	            OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(orgNode.getId());
-	        	Integer availableLicense = onli.getLicPurchased();
-	        	Integer usedLicenses = usedLicensesInNode(orgNode.getId());
-	            if (usedLicenses.intValue() > availableLicense.intValue()) {
-	            	Integer licenseNeeded = new Integer(usedLicenses.intValue() - availableLicense.intValue());
-	    		    setLicenseErrorMessage(form, orgNode.getOrganizationName(), licenseNeeded, true);
-	    			return false;
-	    		}
-	    	}
+        List scheduledOrgNodes = getScheduledOrgNodes();
+    	for (int i=0; i<scheduledOrgNodes.size(); i++) {
+    		OrganizationVO orgNode = (OrganizationVO)scheduledOrgNodes.get(i);    		
+            OrgNodeLicenseInfo onli = getLicenseQuantitiesByOrg(orgNode.getId());
+        	Integer availableLicense = onli.getLicPurchased();
+        	Integer usedLicenses = usedLicensesInNode(orgNode.getId());
+            if (usedLicenses.intValue() > availableLicense.intValue()) {
+            	Integer licenseNeeded = new Integer(usedLicenses.intValue() - availableLicense.intValue());
+    		    setLicenseErrorMessage(form, orgNode.getOrganizationName(), licenseNeeded, true);
+    			return false;
+    		}
     	}
     	
         return true;
