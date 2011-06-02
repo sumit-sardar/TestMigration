@@ -89,7 +89,8 @@
 </netui-data:repeater>
     
 </table>
-<div id="recommendedDialogID" style="display: none; position: relative; height: 420; width: 340; background-color: #cccccc; font-family: Arial,Helvetica,Sans Serif;" >
+
+<div id="recommendedDialogID" style="display: none; position: relative; height: 490; width: 360; background-color: #cccccc; font-family: Arial,Helvetica,Sans Serif;" >
 				<div style=" height: 10%; width: 100%">
 					<table>
 						<tr>
@@ -114,13 +115,13 @@
 					</table>
 				</div>
 				<div align="left" style=" font-size: 78%;">
-					<span >&nbsp;&nbsp;Student 
+					<span >&nbsp;&nbsp;Student&nbsp; 
 					</span>
 					<b>
 						<span id="studentName"> 
 						</span>
 					</b>
-					<span>&nbsp; most recently took :
+					<span> most recently took :
 					</span>
 				</div>
 				<br>
@@ -164,8 +165,8 @@
 							<td width="30%">
 							</td>
 							<td>
-							<div style= "overflow-y:auto; height:100px">
-								<table id ="subtestList">
+							<div style= "overflow-y:auto; height:170px">
+								<table id ="subtestList"  width="100%">
 									<tr></tr>
 								</table>
 								</div>
@@ -182,7 +183,7 @@
 						</tr>
 						<tr>
 							<td width="30%">
-								<span  style=" font-size: 78%;">&nbsp;CompletedDate: 
+								<span  style=" font-size: 78%;">&nbsp;Completed Date: 
 								</span>
 							</td>
 							<td>
@@ -210,8 +211,8 @@
 				</div>
 				<br>
 				<center>
-					<input type="submit" id="Yes" value="&nbsp;Yes&nbsp;">
-					<input type="submit" id="No"  value="&nbsp;No&nbsp;&nbsp;">
+					<input type="button" id="Yes" value="&nbsp;Yes&nbsp;">
+					<input type="button" id="No"  value="&nbsp;No&nbsp;&nbsp;">
 				</center>
 				<br>
 			</div>
