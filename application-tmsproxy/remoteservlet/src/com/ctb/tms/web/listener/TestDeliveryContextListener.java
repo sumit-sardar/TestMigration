@@ -48,6 +48,8 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 							// Now put the roster data into Cassandra
 							OASHectorSink.putRosterData(creds[i], rosterData);
 							rosterMap.put(key, key);
+						} else {
+							System.out.println("*****  Already have roster data for " + key);
 						}
 					}
 				} catch (Exception e) {
