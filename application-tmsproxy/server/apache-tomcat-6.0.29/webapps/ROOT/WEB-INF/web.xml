@@ -33,11 +33,28 @@
   </listener>
   
   <servlet>
+    <description>TMSServlet</description>
+    <display-name>TMSServlet</display-name>
+    <servlet-name>TMSServlet</servlet-name>
+    <servlet-class>com.ctb.tms.web.servlet.TMSServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>TMSServlet</servlet-name>
+    <url-pattern>/TMS/*</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>SpeechServlet</description>
     <display-name>SpeechServlet</display-name>
     <servlet-name>SpeechServlet</servlet-name>
     <servlet-class>com.ctb.tdc.web.servlet.SpeechServlet</servlet-class>
   </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>SpeechServlet</servlet-name>
+    <url-pattern>/servlet/SpeechServlet.do</url-pattern>
+  </servlet-mapping>
   
   <servlet>
     <description>ContentServlet</description>
@@ -45,11 +62,6 @@
     <servlet-name>ContentServlet</servlet-name>
     <servlet-class>com.ctb.tdc.web.servlet.ContentServlet</servlet-class>
   </servlet>
-  
-  <servlet-mapping>
-    <servlet-name>SpeechServlet</servlet-name>
-    <url-pattern>/servlet/SpeechServlet.do</url-pattern>
-  </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>ContentServlet</servlet-name>

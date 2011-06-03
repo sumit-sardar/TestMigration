@@ -127,7 +127,7 @@ public class OASDBSource
 
     	// might be more than one roster for these creds, due to random passwords
     	AuthenticationData [] authDataArray = authenticateStudent(conn, username, password);
-    	System.out.print("1");
+    	//System.out.print("1");
         AuthenticationData authData = null;
         boolean authenticated = false;
         int testRosterId = -1;
@@ -139,11 +139,11 @@ public class OASDBSource
             lsid = String.valueOf(testRosterId) + ":" + testAccessCode;
             loginResponse.setLsid(lsid);
             manifestData = getManifest(conn, testRosterId, testAccessCode);
-            System.out.print("2");
+           // System.out.print("2");
             if(manifestData.length > 0) {
                 authenticated = true;
                 ScratchpadData [] scratchData = getScratchpadContent(conn, testRosterId);
-                System.out.print("3");
+                //System.out.print("3");
                 HashMap<Integer, Clob> scratchMap = new HashMap<Integer, Clob>(scratchData.length);
                 for (int i = 0; i < scratchData.length; i++) {
                 	scratchMap.put(new Integer(scratchData[i].getItemSetId()), scratchData[i].getScratchpadData());
@@ -163,7 +163,7 @@ public class OASDBSource
         loginResponse.setRestartNumber(new BigInteger(String.valueOf(authData.getRestartNumber())));
         
             TestProduct testProduct = getProductForTestAdmin(conn, authData.getTestAdminId());
-            System.out.print("4");
+            //System.out.print("4");
             //AuthenticateStudent authenticator = authenticatorFactory.create();
 
             if ("TB".equals(testProduct.getProductType())) {
@@ -179,7 +179,7 @@ public class OASDBSource
             }
             
             String logoURI = getProductLogo(conn,testProduct.getProductId());
-            System.out.print("5");
+            //System.out.print("5");
             if (logoURI == null || "".equals(logoURI))
                 logoURI = "/resources/logo.swf";
             loginResponse.addNewBranding().setTdclogo(logoURI);
@@ -206,7 +206,7 @@ public class OASDBSource
 		 }
         copyAuthenticationDataToResponse(loginResponse, authData);
         AccommodationsData accomData = getAccommodations(conn, testRosterId);
-        System.out.print("6");
+        //System.out.print("6");
         
         if(accomData != null) {
             copyAccomodationsDataToResponse(loginResponse, accomData);
@@ -227,10 +227,10 @@ public class OASDBSource
                 		(manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
                 		 manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS))) {
                     manifestData[i].setTotalTime(getTotalElapsedTimeForSubtest(conn, testRosterId, manifestData[i].getId()));
-                    System.out.print("7");
+                    //System.out.print("7");
                     int remSec = (manifestData[i].getScoDurationMinutes() * 60) - manifestData[i].getTotalTime();
                     ItemResponseData [] itemResponseData = getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
-                    System.out.print("8");
+                    //System.out.print("8");
                     //START Change For deferred defect 63502
                     copyRestartDataToResponse(lsid, testRosterId, manifestData[i].getId(), loginResponse, itemResponseData, remSec, 
                     		Integer.parseInt(manifestData[i].getAdsid()), manifestData[i].getScratchpadContentStr(), restartData);
@@ -241,9 +241,9 @@ public class OASDBSource
         copyManifestDataToResponse(conn, loginResponse, manifestData, testRosterId, authData.getTestAdminId(), testAccessCode);
 
         String tutorialResource = getTutorialResource(conn, testRosterId);
-        System.out.print("9");
+        //System.out.print("9");
         boolean wasTutorialTaken = wasTutorialTaken(conn, testRosterId);
-        System.out.print("10");
+        //System.out.print("10");
         if (tutorialResource!= null && !tutorialResource.trim().equals("")) {
             Tutorial tutorial =loginResponse.addNewTutorial();
             tutorial.setTutorialUrl(tutorialResource);

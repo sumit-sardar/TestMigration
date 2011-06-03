@@ -1,9 +1,15 @@
 package com.ctb.tms.bean.login; 
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class AuthenticationData 
+public class AuthenticationData implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private int testRosterId; 
 	private int studentId;
 	private String studentLastName;

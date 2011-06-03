@@ -1,5 +1,8 @@
 package com.ctb.tms.nosql;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +18,6 @@ import me.prettyprint.cassandra.service.ThriftKsDef;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
-import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.ddl.ColumnDefinition;
 import me.prettyprint.hector.api.ddl.ColumnFamilyDefinition;
 import me.prettyprint.hector.api.ddl.ColumnIndexType;
@@ -23,8 +25,7 @@ import me.prettyprint.hector.api.ddl.ColumnType;
 import me.prettyprint.hector.api.ddl.ComparatorType;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
-import me.prettyprint.hector.api.query.ColumnQuery;
-import me.prettyprint.hector.api.query.QueryResult;
+import sun.misc.BASE64Encoder;
 
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
@@ -141,7 +142,7 @@ public class OASHectorSink {
 						}
 						
 						public List<ColumnDefinition> getColumnMetadata() {
-							ColumnDefinition rosterCD = new ColumnDefinition() {
+							ColumnDefinition loginResponseCD = new ColumnDefinition() {
 								
 								public String getValidationClass() {
 									return "org.apache.cassandra.db.marshal.UTF8Type";
@@ -159,8 +160,27 @@ public class OASHectorSink {
 									return "login-response-idx";
 								}
 							};
+							ColumnDefinition authDataCD = new ColumnDefinition() {
+								
+								public String getValidationClass() {
+									return "org.apache.cassandra.db.marshal.BytesType";
+								}
+								
+								public ByteBuffer getName() {
+									return ByteBuffer.wrap("auth-data".getBytes());
+								}
+								
+								public ColumnIndexType getIndexType() {
+									return ColumnIndexType.KEYS;
+								}
+								
+								public String getIndexName() {
+									return "auth-data-idx";
+								}
+							};
 							List<ColumnDefinition> cdList = new ArrayList<ColumnDefinition>();
-							cdList.add(rosterCD);
+							cdList.add(loginResponseCD);
+							cdList.add(authDataCD);
 							return cdList;
 						}
 					};
@@ -184,20 +204,27 @@ public class OASHectorSink {
 			*/
 			System.out.println("*****  Created OAS keyspace.");
 		} catch (Exception e) {
+			// do nothing, keyspace already exists
 			e.printStackTrace();
 		}
 	}
 	
-	public static void putRosterData(StudentCredentials creds, RosterData rosterData) {
+	public static void putRosterData(StudentCredentials creds, RosterData rosterData) throws IOException {
 		Keyspace keyspace = HFactory.createKeyspace("OAS", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
 		mutator.insert(key, "RosterData", HFactory.createStringColumn("login-response", rosterData.getDocument().xmlText()));
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(baos);
+		oos.writeObject(rosterData.getAuthData());
+		byte [] bytes = baos.toByteArray();
+		String authData = new BASE64Encoder().encode(bytes);
+		mutator.insert(key, "RosterData", HFactory.createStringColumn("auth-data", authData));
 		
-		ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
-		columnQuery.setColumnFamily("RosterData").setKey(key).setName("login-response");
-		QueryResult<HColumn<String, String>> result = columnQuery.execute();
+		//ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
+		//columnQuery.setColumnFamily("RosterData").setKey(key).setName("login-response");
+		//QueryResult<HColumn<String, String>> result = columnQuery.execute();
 		//System.out.println("*****  Stored in Cassandra: " + result.get().getValue());
 	}
 }

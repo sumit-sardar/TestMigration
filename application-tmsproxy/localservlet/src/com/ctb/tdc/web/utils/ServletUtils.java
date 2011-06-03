@@ -87,15 +87,15 @@ public class ServletUtils {
 	public static final String URL_PERSISTENCE_SERVLET = "/servlet/PersistenceServlet";
 	public static final String URL_LOADCONTENT_SERVLET = "/servlet/LoadContentServlet";
 	public static final String URL_DOWNLOADCONTENT_SERVLET = "/servlet/DownloadContentServlet";
-	public static final String URL_WEBAPP_LOGIN = "/TestDeliveryWeb/CTB/login.do";
-	public static final String URL_WEBAPP_FEEDBACK = "/TestDeliveryWeb/CTB/feedback.do";
-	public static final String URL_WEBAPP_SAVE = "/TestDeliveryWeb/CTB/save.do";
-	public static final String URL_WEBAPP_UPLOAD_AUDIT_FILE = "/TestDeliveryWeb/CTB/uploadAuditFile.do";
-	public static final String URL_WEBAPP_WRITE_TO_AUDIT_FILE = "/TestDeliveryWeb/CTB/writeToAuditFile.do";
-	public static final String URL_WEBAPP_GET_STATUS_METHOD = "/TestDeliveryWeb/CTB/getStatus.do";
-	public static final String URL_WEBAPP_GET_LOAD_TEST_CONFIG = "/TestDeliveryWeb/CTB/getLoadTestConfig.do";
-	public static final String URL_WEBAPP_UPLOAD_STATISTICS = "/TestDeliveryWeb/CTB/uploadStatistics.do";
-	public static final String URL_WEBAPP_UPLOAD_SYSTEM_INFO = "/TestDeliveryWeb/CTB/uploadSystemInfo.do";
+	public static final String URL_WEBAPP_LOGIN = "/TMS/login";
+	public static final String URL_WEBAPP_FEEDBACK = "/TMS/feedback";
+	public static final String URL_WEBAPP_SAVE = "/TMS/save";
+	public static final String URL_WEBAPP_UPLOAD_AUDIT_FILE = "/TMS/uploadAuditFile";
+	public static final String URL_WEBAPP_WRITE_TO_AUDIT_FILE = "/TMS/writeToAuditFile";
+	public static final String URL_WEBAPP_GET_STATUS_METHOD = "/TMS/getStatus";
+	public static final String URL_WEBAPP_GET_LOAD_TEST_CONFIG = "/TMS/getLoadTestConfig";
+	public static final String URL_WEBAPP_UPLOAD_STATISTICS = "/TMS/uploadStatistics";
+	public static final String URL_WEBAPP_UPLOAD_SYSTEM_INFO = "/TMS/uploadSystemInfo";
 	
 //	methods
 	public static final String NONE_METHOD = "none";
@@ -165,6 +165,7 @@ public class ServletUtils {
 	 */
 	public static void writeResponse(HttpServletResponse response, String xml, String mseq) {
 		try {
+			System.out.println(xml);
 			//if((mseq == null || lastMseq == null) || !mseq.equals(lastMseq)) {
 				response.setContentType("text/xml");
 				response.setStatus(response.SC_OK);
