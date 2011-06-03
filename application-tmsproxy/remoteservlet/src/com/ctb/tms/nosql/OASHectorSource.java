@@ -24,7 +24,7 @@ public class OASHectorSource {
 	
 	private static Cluster cluster = HFactory.getOrCreateCluster("OASCluster", new CassandraHostConfigurator("localhost:9160"));
 	
-	public static RosterData getLoginResponse(StudentCredentials creds) throws XmlException, IOException, ClassNotFoundException {
+	public static RosterData getRosterData(StudentCredentials creds) throws XmlException, IOException, ClassNotFoundException {
 		RosterData result = new RosterData();
 		Keyspace keyspace = HFactory.createKeyspace("OAS", cluster);
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();

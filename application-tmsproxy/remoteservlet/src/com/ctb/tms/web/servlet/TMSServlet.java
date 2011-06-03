@@ -123,7 +123,7 @@ public class TMSServlet extends HttpServlet {
 		creds.setUsername(lr.getUserName());
 		creds.setPassword(lr.getPassword());
 		creds.setAccesscode(lr.getAccessCode());
-		RosterData rd = OASHectorSource.getLoginResponse(creds);
+		RosterData rd = OASHectorSource.getRosterData(creds);
 		return rd.getLoginDocument().xmlText();
 	}
 
