@@ -7,7 +7,7 @@
 
 # The name of the cluster. This is mainly used to prevent machines in
 # one logical cluster from joining another.
-cluster_name: 'Test Cluster'
+cluster_name: 'OASCluster'
 
 # You should always specify InitialToken when setting up a production
 # cluster for the first time, and often when adding capacity later.
@@ -27,7 +27,7 @@ initial_token:
 # an existing cluster of N, so if you are bringing up a cluster of
 # 10 machines with 3 seeds you would have to do it in stages.  Leaving
 # this off for the initial start simplifies that.
-auto_bootstrap: false
+auto_bootstrap: true
 
 # See http://wiki.apache.org/cassandra/HintedHandoff
 hinted_handoff_enabled: true

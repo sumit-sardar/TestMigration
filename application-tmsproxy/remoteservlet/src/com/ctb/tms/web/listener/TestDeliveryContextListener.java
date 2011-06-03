@@ -35,6 +35,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		
 		public void run() {
 			Connection conn = null;
+			new OASHectorSink();
 			while (true) {
 				try {
 					conn = OASDBSource.getOASConnection();
