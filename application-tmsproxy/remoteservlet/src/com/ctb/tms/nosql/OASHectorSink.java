@@ -162,7 +162,7 @@ public class OASHectorSink {
 			}
 		};
 		try {
-			cluster.dropKeyspace("OAS");
+			//cluster.dropKeyspace("OAS");
 		} catch (Exception e) {
 			// do nothing, KS doesn't exist
 		}
@@ -190,6 +190,6 @@ public class OASHectorSink {
 		ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
 		columnQuery.setColumnFamily("RosterData").setKey(key).setName("login-response");
 		QueryResult<HColumn<String, String>> result = columnQuery.execute();
-		System.out.println("*****  Stored in Cassandra: " + result.get().getValue());
+		//System.out.println("*****  Stored in Cassandra: " + result.get().getValue());
 	}
 }

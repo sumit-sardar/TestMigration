@@ -44,9 +44,10 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						if(rosterMap.get(key) == null) {
 							// Get all data for an active roster from OAS DB
 							RosterData rosterData = OASDBSource.getRosterData(conn, creds[i]);
-							System.out.println("*****  Got roster data for " + key);
+							System.out.print("*****  Got roster data for " + key + " . . . ");
 							// Now put the roster data into Cassandra
 							OASHectorSink.putRosterData(creds[i], rosterData);
+							System.out.print("stored.\n");
 							rosterMap.put(key, key);
 						} else {
 							System.out.println("*****  Already have roster data for " + key);

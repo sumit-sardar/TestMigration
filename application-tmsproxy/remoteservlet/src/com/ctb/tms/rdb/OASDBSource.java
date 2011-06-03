@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -37,6 +38,7 @@ import com.ctb.tms.bean.login.AuthenticationData;
 import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
+import com.ctb.tms.bean.login.ScratchpadData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.bean.login.TestProduct;
 import com.ctb.tms.exception.testDelivery.AuthenticationFailureException;
@@ -67,7 +69,7 @@ public class OASDBSource
 	private static final String PRODUCT_LOGO_SQL = "select resource_uri  from PRODUCT_RESOURCE  where resource_type_code = 'TDCLOGO'  and product_id = ?";    
 	private static final String TUTORIAL_RESOURCE_SQL = "select pr.resource_uri from product pp, product cp, product_resource pr where pp.product_id = cp.parent_product_id and pp.product_id = pr.product_id and pr.resource_type_code = 'TUTORIAL' and cp.product_id in ( select product_id from test_admin where test_admin_id in  (select test_admin_id from test_roster where test_roster_id = ?))";    
 	private static final String TUTORIAL_TAKEN_SQL = "select count(*) as counter from test_roster tr, test_admin ta, student_tutorial_status sts where tr.test_admin_id = ta.test_admin_id and ta.product_id = sts.product_id and tr.student_id = sts.student_id and sts.completion_status = 'CO' and tr.test_roster_id = ?";    
-	private static final String SCRATCHPAD_CONTENT_SQL = "select scratchpad_content from student_item_set_status where test_roster_id = ? and item_set_id = ?";
+	private static final String SCRATCHPAD_CONTENT_SQL = "select scratchpad_content, item_set_id from student_item_set_status where test_roster_id = ?";
 	private static final String UPDATE_TEST_ROSTER_WITH_RD_SEED_SQL = "update  test_roster set  random_distractor_seed = {rndNumber} where  test_roster_id = {testRosterId}";
 	private static final String SPEECH_CONTROLLER_SQL = "select cconfig.default_value as speechControllerFlag  from test_roster  ros,  customer  cus,  customer_configuration cconfig,  student_accommodation  accom  where accom.screen_reader = 'T'  and accom.student_id = ros.student_id  and cconfig.customer_configuration_name = 'Allow_Speech_Controller'  and cconfig.customer_id = cus.customer_id  and cus.customer_id = ros.customer_id  and ros.test_roster_id = {testRosterId}";
 	private static final String TEST_PRODUCT_FOR_ADMIN_SQL = "select distinct  prod.product_id as productId,  prod.product_name as productName,  prod.version as version,  prod.product_description as productDescription,  prod.created_by as createdBy,  prod.created_date_time as createdDateTime,  prod.updated_by as updatedBy,  prod.updated_date_time as updatedDateTime,  prod.activation_status as activationStatus,  prod.product_type as productType,  prod.scoring_item_set_level as scoringItemSetLevel,  prod.preview_item_set_level as previewItemSetLevel,  prod.parent_product_id as parentProductId,  prod.ext_product_id as extProductId,  prod.content_area_level as contentAreaLevel,  prod.internal_display_name as internalDisplayName,  prod.sec_scoring_item_set_level as secScoringItemSetLevel,  prod.ibs_show_cms_id as ibsShowCmsId,  prod.printable as printable,  prod.scannable as scannable,  prod.keyenterable as keyenterable,  prod.branding_type_code as brandingTypeCode,  prod.acknowledgments_url as acknowledgmentsURL,  prod.show_student_feedback as showStudentFeedback,  prod.static_manifest as staticManifest,  prod.session_manifest as sessionManifest,  prod.subtests_selectable as subtestsSelectable,  prod.subtests_orderable as subtestsOrderable,  prod.subtests_levels_vary as subtestsLevelsVary,  cec.support_phone_number as supportPhoneNumber,  prod.off_grade_testing_disabled as offGradeTestingDisabled from  product prod, test_admin adm, customer_email_config cec where  prod.product_id = adm.product_id  and cec.customer_id (+) = adm.customer_id  and adm.test_admin_id = ?";
@@ -125,6 +127,7 @@ public class OASDBSource
 
     	// might be more than one roster for these creds, due to random passwords
     	AuthenticationData [] authDataArray = authenticateStudent(conn, username, password);
+    	System.out.print("1");
         AuthenticationData authData = null;
         boolean authenticated = false;
         int testRosterId = -1;
@@ -136,13 +139,17 @@ public class OASDBSource
             lsid = String.valueOf(testRosterId) + ":" + testAccessCode;
             loginResponse.setLsid(lsid);
             manifestData = getManifest(conn, testRosterId, testAccessCode);
+            System.out.print("2");
             if(manifestData.length > 0) {
                 authenticated = true;
+                ScratchpadData [] scratchData = getScratchpadContent(conn, testRosterId);
+                System.out.print("3");
+                HashMap<Integer, Clob> scratchMap = new HashMap<Integer, Clob>(scratchData.length);
+                for (int i = 0; i < scratchData.length; i++) {
+                	scratchMap.put(new Integer(scratchData[i].getItemSetId()), scratchData[i].getScratchpadData());
+                }
                 for (int i = 0; i < manifestData.length; i++) {
-                    /*
-                     * Retrieve scratchpad contents for this subtest.
-                     */
-                    manifestData[i].setScratchpadContent(getScratchpadContent(conn, testRosterId, manifestData[i].getId()));
+                	manifestData[i].setScratchpadContent(scratchMap.get(new Integer(manifestData[i].getId())));
                 }
             }
         }
@@ -156,6 +163,7 @@ public class OASDBSource
         loginResponse.setRestartNumber(new BigInteger(String.valueOf(authData.getRestartNumber())));
         
             TestProduct testProduct = getProductForTestAdmin(conn, authData.getTestAdminId());
+            System.out.print("4");
             //AuthenticateStudent authenticator = authenticatorFactory.create();
 
             if ("TB".equals(testProduct.getProductType())) {
@@ -171,6 +179,7 @@ public class OASDBSource
             }
             
             String logoURI = getProductLogo(conn,testProduct.getProductId());
+            System.out.print("5");
             if (logoURI == null || "".equals(logoURI))
                 logoURI = "/resources/logo.swf";
             loginResponse.addNewBranding().setTdclogo(logoURI);
@@ -197,6 +206,7 @@ public class OASDBSource
 		 }
         copyAuthenticationDataToResponse(loginResponse, authData);
         AccommodationsData accomData = getAccommodations(conn, testRosterId);
+        System.out.print("6");
         
         if(accomData != null) {
             copyAccomodationsDataToResponse(loginResponse, accomData);
@@ -213,10 +223,14 @@ public class OASDBSource
                Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
                Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
                Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS.equals(manifestData[i].getCompletionStatus())) {
-                if(loginResponse.getRestartFlag()) {
+                if(loginResponse.getRestartFlag() && 
+                		(manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
+                		 manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS))) {
                     manifestData[i].setTotalTime(getTotalElapsedTimeForSubtest(conn, testRosterId, manifestData[i].getId()));
+                    System.out.print("7");
                     int remSec = (manifestData[i].getScoDurationMinutes() * 60) - manifestData[i].getTotalTime();
                     ItemResponseData [] itemResponseData = getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
+                    System.out.print("8");
                     //START Change For deferred defect 63502
                     copyRestartDataToResponse(lsid, testRosterId, manifestData[i].getId(), loginResponse, itemResponseData, remSec, 
                     		Integer.parseInt(manifestData[i].getAdsid()), manifestData[i].getScratchpadContentStr(), restartData);
@@ -227,7 +241,9 @@ public class OASDBSource
         copyManifestDataToResponse(conn, loginResponse, manifestData, testRosterId, authData.getTestAdminId(), testAccessCode);
 
         String tutorialResource = getTutorialResource(conn, testRosterId);
+        System.out.print("9");
         boolean wasTutorialTaken = wasTutorialTaken(conn, testRosterId);
+        System.out.print("10");
         if (tutorialResource!= null && !tutorialResource.trim().equals("")) {
             Tutorial tutorial =loginResponse.addNewTutorial();
             tutorial.setTutorialUrl(tutorialResource);
@@ -236,6 +252,7 @@ public class OASDBSource
         RosterData result = new RosterData();
         result.setDocument(response);
         result.setAuthData(authData);
+        System.out.print("\n");
         return result;
     }
     
@@ -555,7 +572,7 @@ public class OASDBSource
 			stmt1.setString(1, username);
 			stmt1.setString(2, password);
 			ResultSet rs1 = stmt1.executeQuery();
-			if (rs1.next()) {
+			while (rs1.next()) {
 				data = new AuthenticationData[1];
 				AuthenticationData auth = new AuthenticationData();
 				data[0] = auth;
@@ -638,18 +655,22 @@ public class OASDBSource
 		return data;
 	}
     
-	private static Clob getScratchpadContent(Connection con, int testRosterId, int itemSetId) {
-    	Clob clob = null;
+	private static ScratchpadData[] getScratchpadContent(Connection con, int testRosterId) {
+    	ScratchpadData[] data = null;
     	PreparedStatement stmt1 = null;
     	try {
 			stmt1 = con.prepareStatement(SCRATCHPAD_CONTENT_SQL);
 			stmt1.setInt(1, testRosterId);
-			stmt1.setInt(2, itemSetId);
 			ResultSet rs1 = stmt1.executeQuery();
-			if (rs1.next()) {
-				clob = rs1.getClob("scratchpad_content");
+			ArrayList<ScratchpadData> list = new ArrayList<ScratchpadData>();
+			while (rs1.next()) {
+				ScratchpadData scratch = new ScratchpadData();
+				scratch.setScratchpadData(rs1.getClob("scratchpad_content"));
+				scratch.setItemSetId(rs1.getInt("item_set_id"));
+				list.add(scratch);
 			}
 			rs1.close();
+			data = list.toArray(new ScratchpadData[0]);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -659,7 +680,7 @@ public class OASDBSource
 				// do nothing
 			}
 		}
-		return clob;
+		return data;
 	}
     
 	private static AccommodationsData getAccommodations(Connection con, int testRosterId) {
