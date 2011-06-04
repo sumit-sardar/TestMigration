@@ -83,9 +83,9 @@ String style = styleNormal;
 <tr class="transparent"><td class="transparent" width="*"><b>License Model:</b></td><td class="transparent" ><netui:span value="${actionForm.parentLicenseNode.subtestModel}" /></td></tr>
 <% if (! rootNode.booleanValue()) { %>
 <tr class="transparent"><td class="transparent" width="*"><b>Organization:</b></td><td class="transparent" ><netui:span value="${actionForm.parentLicenseNode.name}" /></td></tr>
-<% } %>     
 <tr class="transparent"><td class="transparent" width="*"><b>Scheduled:</b></td><td class="transparent" ><netui:span value="${actionForm.parentLicenseNode.reserved}" /></td></tr>
 <tr class="transparent"><td class="transparent" width="*"><b>Consumed:</b></td><td class="transparent" ><netui:span value="${actionForm.parentLicenseNode.consumed}" /></td></tr>
+<% } %>     
 
 <netui-data:getData resultId="topNodeEditing" value="${actionForm.topNodeEditing}" />
 <% Boolean topNodeEditing = (Boolean)pageContext.getAttribute("topNodeEditing");  

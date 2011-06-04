@@ -51,14 +51,47 @@
     <jsp:include page="/manageCustomer/show_message.jsp" />
 
 <p>
-    <netui:button type="submit" value="Save" action="addEditCustomerLicense"/>
-    <netui:button type="submit" value="Cancel" action="cancelCurrentAction"/>
-</p>
+<table class="simple">
+    <tr class="transparent">
 
-<p>
-    <ctb:showHideSection sectionId="moduleUserProfile" sectionTitle="License Information" sectionVisible="actionForm.byCustomerProfileVisible">
-        <jsp:include page="/manageCustomer/edit_customer_license_info.jsp" />
-    </ctb:showHideSection>
+<!-- column 1 -->
+<td class="transparent-top" width="310" valign="top">
+<table class="transparent">
+    <tr class="transparent">
+        <td class="transparent alignRight" width="110"><netui:content value="Customer Name:"/></td>
+        <td class="transparent"><netui:label value="${customerProfileData.name}"/></td>
+    </tr>   
+    <tr class="transparent">
+        <td class="transparent alignRight" width="110"><netui:content value="Product Name:"/></td>
+        <td class="transparent" nowrap><netui:label value="${licneseNodeData.productName}"/></td>
+    </tr>    
+</table>
+</td>
+
+<!-- column 2 -->
+<td class="transparent-top" width="*" valign="top">
+<table class="transparent">
+    <tr class="transparent">
+        <td class="transparent alignRight" width="150"><span class="asterisk">*</span>&nbsp;<netui:content value="Available:"/></td>
+        <td class="transparent">
+            <netui:textBox tagId="available" dataSource="actionForm.licenseNode.available" maxlength="9" style="width:100px" onKeyPress="return constrainNumericChar(event);"/>
+        </td>
+    </tr>
+    <tr class="transparent">
+        <td class="transparent alignRight" width="150"><netui:content value="Scheduled:"/></td>
+        <td class="transparent" nowrap><netui:label value="${licneseNodeData.reserved}"/></td>
+    </tr>
+    <tr class="transparent">
+        <td class="transparent alignRight" width="150" nowrap><netui:content value="Consumed:"/></td>
+        <td class="transparent" nowrap><netui:label value="${actionForm.licenseNode.consumed}"/>
+        </td>
+    </tr>
+</table>
+</td>
+
+
+</tr>
+</table>
 </p>
 <p>
     <netui:button type="submit" value="Save" action="addEditCustomerLicense"/>
