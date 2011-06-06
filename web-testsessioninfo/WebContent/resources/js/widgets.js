@@ -1187,3 +1187,85 @@ function moveSelectedOption(elementId, moveDirection)
     
         return true;   
     }    
+
+/************************* Multiple Selection For Report ***********************/
+
+function ajaxSelectAllCheckboxes() { 
+
+	var param = "&action="+$("#selectAll").val();	
+	
+		$.ajax({
+				async:			false,
+				beforeSend :	function(){
+								},
+				url:		'selectAllStudents.do',
+				type:		'POST',
+				data:		param,
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){	
+								alert("done");
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								window.location.href="/TestSessionInfoWeb/logout.do";
+							}
+				
+				}
+			);
+}
+
+function selectAllCheckboxes() { 
+    var total = 0;
+    var inputs = document.getElementsByTagName("input");
+    for(var i=0; i < inputs.length; i++) {
+        if(inputs[i].getAttribute("type") == "checkbox"){
+          inputs[i].checked=true;
+          total++;
+        }
+    }
+
+    var total_elm = document.getElementById("selectedRosterIds");
+    total_elm.innerHTML = total;
+
+    enableElementById('viewReport');
+    
+}
+
+
+function clearAllCheckboxes() { 
+    var d=document;
+    var inputs = document.getElementsByTagName("input");
+    for(var i=0; i < inputs.length; i++) {
+        if(inputs[i].getAttribute("type") == "checkbox"){
+          inputs[i].checked=false;
+        }
+    }
+
+    var total = 0;
+    var total_elm = document.getElementById("selectedRosterIds");
+    total_elm.innerHTML = total;
+    
+    disableElementById('viewReport');
+}
+
+
+function getRosterId(ctrl) { 
+    var elm = document.getElementById("selectedRosterIds");
+
+    var total_elm = document.getElementById("selectedRosterIds");
+    var total = parseInt(total_elm.innerHTML);
+
+    if (ctrl.checked == true) 
+       total = total + 1;
+    else
+       total = total - 1;
+    
+    total_elm.innerHTML = total;
+
+    if (total > 0)    
+        enableElementById('viewReport');
+    else
+        disableElementById('viewReport');
+}
+
+
+    

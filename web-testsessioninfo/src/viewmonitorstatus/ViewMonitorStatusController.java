@@ -1,4 +1,5 @@
 package viewmonitorstatus;
+
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import com.ctb.bean.request.FilterParams;
@@ -27,7 +28,10 @@ import com.ctb.testSessionInfo.dto.TestRosterVO;
 import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
 import com.ctb.testSessionInfo.utils.DateUtils;
+import com.ctb.testSessionInfo.utils.JsonUtils;
+
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
@@ -35,8 +39,12 @@ import com.ctb.widgets.bean.ColumnSortEntry;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
+
 
 /**
  * @jpf:controller
@@ -83,28 +91,23 @@ public class ViewMonitorStatusController extends PageFlowController
     //  Added for LLO-109 
     public boolean isLasLinkCustomer = false;
    
- 	// START- Added for CR GA2011CR001
 	CustomerConfiguration[] customerConfigurations = null;
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
 	private String studentIdLabelName = "Student ID";
-	// END- Added for CR GA2011CR001  
 	           
-    // Uncomment this declaration to access Global.app.
-    // 
-    //     protected global.Global globalApp;
-    // 
-
-    // For an example of page flow exception handling see the example "catch" and "exception-handler"
-    // annotations in {project}/WEB-INF/src/global/Global.app
-
+	private List selectedRosterIds = null;
+	private List rosterList = null;
+	
     /**
      * This method represents the point of entry into the pageflow
      * @jpf:action
      * @jpf:forward name="success" path="view_monitor_status.do"
      */ 
     @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success",
-                     path = "view_monitor_status.do")
+        @Jpf.Forward(name = "viewStatus",
+                     path = "view_monitor_status.do"),
+        @Jpf.Forward(name = "viewReport",
+        			 path = "view_report.do")
     })
     protected Forward begin()
     {
@@ -121,8 +124,13 @@ public class ViewMonitorStatusController extends PageFlowController
         this.studentStatusSubtests = new ArrayList();
                         
         this.showStudentReportButton = showStudentReportButton();
-                        
-        return new Forward("success", form);
+
+        this.selectedRosterIds = new ArrayList();
+        
+        if ("homepage_view_report".equals(this.callerId)) 
+            return new Forward("viewReport", form);
+        else
+        	return new Forward("viewStatus", form);
     }
 
     /**
@@ -161,13 +169,13 @@ public class ViewMonitorStatusController extends PageFlowController
         isGeorgiaCustomer(form);
         // END- Added for CR GA2011CR001
         RosterElementData red = getRosterForTestSession(this.sessionId, form);
-        List rosterList = buildRosterList(red);        
-        this.getRequest().setAttribute("rosterList", rosterList);
+        this.rosterList = buildRosterList(red);        
+        this.getRequest().setAttribute("rosterList", this.rosterList);
         
         PagerSummary pagerSummary = buildTestRosterPagerSummary(red, form.getPageRequested());
         this.getRequest().setAttribute("pagerSummary", pagerSummary);
 
-        prepareStudentSelection(rosterList, form.getTestRosterId());
+        prepareStudentSelection(this.rosterList, form.getTestRosterId());
         form.setMaxPage(red.getFilteredPages());
 
         getRequest().setAttribute("totalStudents", red.getTotalCount().toString());
@@ -196,7 +204,207 @@ public class ViewMonitorStatusController extends PageFlowController
         form.setActionElement("none");   
         return new Forward("success");
     }
-    // START- Added for CR GA2011CR001
+    
+    /**
+     * @jpf:action
+     * @jpf:forward name="viewIndividualReport" path="viewIndividualReport.do"
+     * @jpf:forward name="success" path="view_report.jsp"
+     */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "viewMultipleIndividualReports",
+                     path = "viewMultipleIndividualReports.do"), 
+        @Jpf.Forward(name = "success",
+                     path = "view_report.jsp")
+    })
+    protected Forward view_report(ViewMonitorStatusForm form)
+    {
+        String testAdminId = getRequest().getParameter("testAdminId");
+        if (testAdminId != null)
+            this.sessionId = Integer.valueOf(testAdminId);
+        form.resetValuesForAction();        
+        form.validateValues();
+        FormFieldValidator.validateFilterForm(form, getRequest());
+                
+        updateSelectedStudents(form);
+        
+        String forwardName = handleViewReportAction(form);
+        if (forwardName != null)
+        {                
+            this.savedForm = form.createClone();
+            return new Forward(forwardName, form);
+        }
+
+        RosterElementData red = getRosterForTestSessionForReport(this.sessionId, form, FilterSortPageUtils.PAGESIZE_10);
+        this.rosterList = buildRosterList(red);
+        
+        this.getRequest().setAttribute("rosterList", this.rosterList);
+        
+        PagerSummary pagerSummary = buildTestRosterPagerSummary(red, form.getPageRequested());
+        this.getRequest().setAttribute("pagerSummary", pagerSummary);
+
+        prepareSelectedRosters(this.rosterList, form);
+        form.setMaxPage(red.getFilteredPages());
+
+        getRequest().setAttribute("totalStudents", red.getTotalCount().toString());
+        getRequest().setAttribute("selectedRosterIds", new Integer(this.selectedRosterIds.size()));
+        
+        TestElementData ted = getTestElementsForTestSession(this.sessionId); 
+        
+        List subtestList = buildSubtestList(ted);
+        getRequest().setAttribute("subtestList", subtestList);
+                
+        Integer breakCount = ted.getBreakCount();
+        if ((breakCount != null) && (breakCount.intValue() > 0))
+        {
+            if (isSameAccessCode(subtestList)) 
+                getRequest().setAttribute("hasBreak", "singleAccesscode");
+            else
+                getRequest().setAttribute("hasBreak", "multiAccesscodes");
+        }
+        else
+        {
+            getRequest().setAttribute("hasBreak", "false");
+        }
+
+        TestSessionVO testSession = getTestSessionDetails(this.sessionId);
+        getRequest().setAttribute("testSession", testSession);
+
+        prepareViewReportButton();
+        
+        form.setActionElement("none");   
+        return new Forward("success");
+    }
+    
+    private String handleViewReportAction(ViewMonitorStatusForm form)
+    {
+        String forwardName = null;
+        String actionElement = form.getActionElement();
+        String currentAction = form.getCurrentAction();
+        
+        if (actionElement.equals("{actionForm.currentAction}"))
+        {
+            if (currentAction.equals("selectAll"))
+            {
+            	selectAllStudents();
+            }
+            if (currentAction.equals("deselectAll"))
+            {
+            	deselectAllStudents();
+            }
+            if (currentAction.equals("viewReport"))
+            {
+                forwardName = "viewMultipleIndividualReports";
+            }
+        }
+        return forwardName;
+    }
+    
+	private void selectAllStudents() {
+			
+		ViewMonitorStatusForm form = new ViewMonitorStatusForm();
+		form.setPageRequested(new Integer(1));
+		form.setSortColumn(FilterSortPageUtils.TESTROSTER_DEFAULT_SORT);
+		form.setSortOrderBy(FilterSortPageUtils.ASCENDING);
+		
+        RosterElementData red = getRosterForTestSessionForReport(this.sessionId, form, FilterSortPageUtils.MAX_RECORDS);
+        RosterElement[] rosterElements = red.getRosterElements();
+
+        this.selectedRosterIds = new ArrayList();
+        for (int i=0; i < rosterElements.length; i++) {
+            RosterElement rosterElt = rosterElements[i];
+            if (rosterElt != null) {
+        		this.selectedRosterIds.add(rosterElt.getTestRosterId());		    					
+            }
+        }   
+	}
+
+	private void deselectAllStudents() {
+		
+        this.selectedRosterIds = new ArrayList();
+	}
+	
+    private void updateSelectedStudents(ViewMonitorStatusForm form)
+    {
+    	String[] selectedTestRosterIds = form.getSelectedTestRosterIds();
+    	
+    	// remove unselected students from list
+    	if (selectedTestRosterIds[0] != null) {
+			for (int i=0 ; i<this.rosterList.size() ; i++) {
+				TestRosterVO vo = (TestRosterVO)this.rosterList.get(i);
+				for (int j=0 ; j<this.selectedRosterIds.size() ; j++) {
+					Integer id = (Integer)this.selectedRosterIds.get(j);
+					if (vo.getTestRosterId().intValue() == id.intValue()) {
+						this.selectedRosterIds.remove(j);
+						break;
+					}
+				}
+			}    	
+    	}
+    	
+    	// add select students to list
+    	if (selectedTestRosterIds[0] != null) {
+	    	for (int i=0 ; i<selectedTestRosterIds.length ; i++) {
+    			Integer rosterId = new Integer(selectedTestRosterIds[i]);
+    			
+	    		for (int j=0 ; j<this.rosterList.size() ; j++) {
+	    			TestRosterVO vo = (TestRosterVO)this.rosterList.get(j);
+	    			if (vo.getTestRosterId().intValue() == rosterId.intValue()) {
+	    				boolean found = false;
+	    				for (int k=0 ; k<this.selectedRosterIds.size() ; k++) {
+	    					Integer id = (Integer)this.selectedRosterIds.get(k);
+	    					if (id.intValue() == rosterId.intValue()) {
+	    						found = true;
+	    						break;
+	    					}
+	    				}
+	    				if (! found) {
+			    			this.selectedRosterIds.add(rosterId);		    					
+	    				}
+	    				break;
+	    			}
+	    		}
+	    	}
+    	}
+    }
+    
+    /**
+     * @jpf:action
+     * @jpf:forward name="report" path="/homepage/turnleaf_reports.jsp"
+     * @jpf:forward name="error" path="/error.jsp"
+     */
+	@Jpf.Action(
+		forwards = { 
+			@Jpf.Forward(name = "report", path = "/homepage/turnleaf_reports.jsp"), 
+			@Jpf.Forward(name = "error", path = "/error.jsp")
+		}
+	)
+    protected Forward viewMultipleIndividualReports(ViewMonitorStatusForm form)
+    {
+        try {
+        	if (this.userName == null) {
+        		 java.security.Principal principal = getRequest().getUserPrincipal();
+        	        if (principal != null) 
+        	            this.userName = principal.toString();  
+        	}
+        	
+        	Integer rosterId = null;
+        	for (int i=0 ; i<this.selectedRosterIds.size() ; i++) {
+        		rosterId = (Integer)this.selectedRosterIds.get(0);
+        	}
+        	
+            String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, rosterId);    
+            
+            this.getRequest().setAttribute("reportUrl", reportUrl);
+            this.getRequest().setAttribute("testAdminId", String.valueOf(this.sessionId));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Forward("error");
+        }
+                    
+        return new Forward("report");
+    }
+    
     /**
 	 * New method added for CR - GA2011CR001
 	 * isGeorgiaCustomer
@@ -1079,6 +1287,23 @@ public class ViewMonitorStatusController extends PageFlowController
         return red;
     }
 
+    private RosterElementData getRosterForTestSessionForReport(Integer sessionId, ViewMonitorStatusForm form, int pageSize) 
+    {
+        PageParams page = FilterSortPageUtils.buildPageParams(form.getPageRequested(), pageSize);
+        SortParams sort = FilterSortPageUtils.buildSortParams(form.getSortColumn(), form.getSortOrderBy());
+        
+        RosterElementData red = null;
+        try
+        {      
+            red = this.testSessionStatus.getRosterForTestSession(this.userName, sessionId, null, page, sort);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }        
+        return red;
+    }
+    
     private List buildRosterList(RosterElementData red)
     {
         List rosterList = new ArrayList();    
@@ -1108,6 +1333,18 @@ public class ViewMonitorStatusController extends PageFlowController
         return pagerSummary;
     }
 
+    private void prepareViewReportButton()
+    {            
+        Boolean disableViewReportButton = new Boolean(this.selectedRosterIds.size() == 0);
+        this.getRequest().setAttribute("disableViewReportButton", disableViewReportButton.toString());
+    	
+        Boolean disableSelectAllButton = new Boolean(this.rosterList.size() == 0);
+        this.getRequest().setAttribute("disableSelectAllButton", disableSelectAllButton.toString());
+
+        Boolean disableDeselectAllButton = new Boolean(this.rosterList.size() == 0);
+        this.getRequest().setAttribute("disableDeselectAllButton", disableDeselectAllButton.toString());
+    }
+     
     private void prepareStudentSelection(List rosterList, Integer testRosterId)
     {            
         boolean found = false;
@@ -1131,6 +1368,28 @@ public class ViewMonitorStatusController extends PageFlowController
             this.getRequest().setAttribute("disableRefreshButton", "true");
         else 
             this.getRequest().setAttribute("disableRefreshButton", "false");
+    }
+
+    private void prepareSelectedRosters(List rosterList, ViewMonitorStatusForm form)
+    {   
+    	List rosterIds = new ArrayList();
+    	
+        for (int i=0; i < rosterList.size(); i++) {
+            TestRosterVO vo = (TestRosterVO)rosterList.get(i);
+            for (int j=0 ; j<this.selectedRosterIds.size() ; j++) {
+            	Integer testRosterId = (Integer)this.selectedRosterIds.get(j);
+            	if (vo.getTestRosterId().intValue() == testRosterId.intValue()) {
+            		rosterIds.add(testRosterId.toString());
+            		break;
+            	}
+            }
+        }
+        
+    	String[] rosterIdStrs = new String[1];
+    	if (rosterIds.size() > 0) {
+    		rosterIdStrs = (String[]) rosterIds.toArray(new String[0]);
+    	}
+        form.setSelectedTestRosterIds(rosterIdStrs);
     }
 
     /**
@@ -1470,9 +1729,10 @@ public class ViewMonitorStatusController extends PageFlowController
         private String currentAction = null;
         
         private Integer maxPage = null;
-        // START- Added for CR GA2011CR001 
         private String studentIdLabelName = "Student ID";
-        // END- Added for CR GA2011CR001 
+        
+        private String[] selectedTestRosterIds = null;
+        
         public ViewMonitorStatusForm()
         {
         }
@@ -1493,7 +1753,10 @@ public class ViewMonitorStatusController extends PageFlowController
             
             this.testRosterFilter = new TestRosterFilter();   
             this.currentAction = "none";  
-            this.selectedItemSetIds = new String[1];       
+            this.selectedItemSetIds = new String[1];   
+            
+            this.selectedTestRosterIds = new String[1];
+            
         }
         
         public ViewMonitorStatusForm createClone()
@@ -1511,6 +1774,8 @@ public class ViewMonitorStatusController extends PageFlowController
             copied.setCurrentAction(this.currentAction);        
             copied.setMaxPage(this.maxPage);
             copied.setSelectedItemSetIds(this.selectedItemSetIds);
+            copied.setSelectedTestRosterIds(this.selectedTestRosterIds);
+            
             return copied;
         }
                 
@@ -1669,6 +1934,17 @@ public class ViewMonitorStatusController extends PageFlowController
             }                 
             return this.selectedItemSetIds;
         }
+        public void setSelectedTestRosterIds(String[] selectedTestRosterIds)
+        {
+            this.selectedTestRosterIds = selectedTestRosterIds;
+        }
+        public String[] getSelectedTestRosterIds()
+        {
+            if(this.selectedTestRosterIds == null || this.selectedTestRosterIds.length == 0) {
+                this.selectedTestRosterIds = new String[1];
+            }                 
+            return this.selectedTestRosterIds;
+        }
 
 		/**
 		 * @return the studentIdLabelName
@@ -1683,7 +1959,7 @@ public class ViewMonitorStatusController extends PageFlowController
 		public void setStudentIdLabelName(String studentIdLabelName) {
 			this.studentIdLabelName = studentIdLabelName;
 		}
-           
+
     }
 
 	public String getSetCustomerFlagToogleButton() {
@@ -1823,5 +2099,7 @@ public class ViewMonitorStatusController extends PageFlowController
 			CustomerConfiguration[] customerConfigurations) {
 		this.customerConfigurations = customerConfigurations;
 	}
+	
+	
 }
  

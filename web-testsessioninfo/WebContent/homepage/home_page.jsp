@@ -148,7 +148,7 @@
                 <td class="sortable alignCenter">
                     <c:if test="${enableUserRegisterStudent}">                
                     <netui:radioButtonGroup dataSource="actionForm.userSessionId">
-                        &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById('userSessionViewStatus'); enableElementById('userSessionEdit'); enableButton(this.alt,'userRegisterStudent');">&nbsp;</netui:radioButtonOption> <!-- Changes for RegisterAnotherStudent Button -->
+                        &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById('userSessionViewStatus'); enableElementById('userSessionEdit'); enableButton(this.alt,'userRegisterStudent'); enableButton(this.alt,'userViewReport');">&nbsp;</netui:radioButtonOption> <!-- Changes for RegisterAnotherStudent Button -->
                     </netui:radioButtonGroup>
                     </c:if>
                     <c:if test="${! enableUserRegisterStudent}">                
@@ -242,6 +242,7 @@
                     <netui:button styleClass="button" tagId="proctorSessionEdit" value="${bundle.widgets['button.edit']}" type="submit" action="goto_proctor_edit_session_information" disabled="${requestScope.proctorSessionDisableButton}"/>
                 <c:if test="${sessionScope.canRegisterStudent}">
                     <netui:button styleClass="button" tagId="proctorRegisterStudent" value="${bundle.widgets['button.registerStudent']}" type="submit" action="goto_protor_register_student" disabled="${requestScope.proctorSessionDisableButton}"/>
+                    <netui:button styleClass="button" tagId="proctorViewReport" value="${bundle.widgets['button.viewReport']}" type="submit" action="goto_view_report" disabled="${requestScope.userSessionDisableButton}"/>
                 </c:if>
                 </td>
             </tr>
@@ -270,7 +271,7 @@
             <td class="sortable alignCenter">
                 <c:if test="${enableProctorRegisterStudent}">                            
                 <netui:radioButtonGroup dataSource="actionForm.proctorSessionId">
-                    &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById('proctorSessionViewStatus'); enableElementById('proctorSessionEdit'); enableButton(this.alt,'proctorRegisterStudent');">&nbsp;</netui:radioButtonOption>
+                    &nbsp;<netui:radioButtonOption value="${container.item.testAdminId}" alt="${container.item.isRegisterStudentEnable}" onClick="enableElementById('proctorSessionViewStatus'); enableElementById('proctorSessionEdit'); enableButton(this.alt,'proctorRegisterStudent'); enableButton(this.alt,'proctorViewReport');" >&nbsp;</netui:radioButtonOption>
                 </netui:radioButtonGroup>
                 </c:if>
                 <c:if test="${! enableProctorRegisterStudent}">                            

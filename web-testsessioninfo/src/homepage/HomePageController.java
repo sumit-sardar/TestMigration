@@ -1091,7 +1091,7 @@ public class HomePageController extends PageFlowController
         return null;
     }
 
-    /**
+     /**
      * @jpf:action
      */
 	@Jpf.Action()
@@ -1108,7 +1108,25 @@ public class HomePageController extends PageFlowController
         }
         return null;
     }
+	
+	   /**
+     * @jpf:action
+     * @jpf:forward name="success" path="/viewmonitorstatus/ViewMonitorStatusController.jpf"
+     */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "success",
+                     path = "/viewmonitorstatus/ViewMonitorStatusController.jpf")
+    })
+    protected Forward goto_view_report(HomePageForm form)
+    {
+        String sessionId = form.getUserSessionId();
+        getSession().setAttribute("sessionId", sessionId);
+        getSession().setAttribute("callerId", "homepage_view_report");
+        
+        return new Forward("success");
+    }
 
+	
 	/**
      * FormData get and set methods may be overwritten by the Form Bean editor.
      */
