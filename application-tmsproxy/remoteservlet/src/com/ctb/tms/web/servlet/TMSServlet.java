@@ -1,12 +1,15 @@
 package com.ctb.tms.web.servlet;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import noNamespace.AdssvcRequestDocument;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest;
 import noNamespace.TmssvcRequestDocument;
 import noNamespace.TmssvcRequestDocument.TmssvcRequest.LoginRequest;
 
@@ -14,7 +17,10 @@ import com.bea.xml.XmlException;
 import com.ctb.tdc.web.utils.ServletUtils;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.nosql.OASHectorSink;
 import com.ctb.tms.nosql.OASHectorSource;
+import com.ctb.tms.rdb.ADSDBSource;
+import com.ctb.tms.rdb.OASDBSource;
 
 public class TMSServlet extends HttpServlet {
 
@@ -45,6 +51,10 @@ public class TMSServlet extends HttpServlet {
 			
 			if (method != null && method.equals(ServletUtils.LOGIN_METHOD))
 	            result = login(xml);
+			else if (method != null && method.equals(ServletUtils.GET_SUBTEST_METHOD))
+	            result = getSubtest(xml); 
+			else if (method != null && method.equals(ServletUtils.DOWNLOAD_ITEM_METHOD))
+	            result = downloadItem(xml); 
 	        else if (method != null && method.equals(ServletUtils.SAVE_METHOD))
 	            result = save(response, xml);        
 	        else if (method != null && method.equals(ServletUtils.FEEDBACK_METHOD))
@@ -80,8 +90,7 @@ public class TMSServlet extends HttpServlet {
 		return null;
 	}
 
-	private String save(HttpServletResponse response, String xml) {
-		// TODO Auto-generated method stub
+	private String save(HttpServletResponse response, String xml) throws XmlException {
 		return null;
 	}
 
@@ -95,11 +104,43 @@ public class TMSServlet extends HttpServlet {
 		RosterData rd = OASHectorSource.getRosterData(creds);
 		return rd.getLoginDocument().xmlText();
 	}
+	
+	public String getSubtest(String xml) throws XmlException
+	{
+		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
+		AdssvcRequest request = document.getAdssvcRequest();
+		
+		int subtestId = (new Integer(request.getGetSubtest().getSubtestid())).intValue();
+		String hash = request.getGetSubtest().getHash();
+		String subtest = ADSHectorSource.getSubtest(subtestId, hash);
+		if(subtest == null) {
+			Connection conn = null;
+			try {
+				conn = ADSDBSource.getADSConnection();
+				subtest = ADSDBSource.getSubtest(conn, subtestId, hash);
+			} finally {
+				if(conn != null) {
+					conn.close();
+				}
+			}
+			ADSHectorSink.putSubtest(subtestId, hash, subtest);
+		}
+		return subtest;
+	}
 
 	private String getMethod(HttpServletRequest request) {
     	String URI = request.getRequestURI();
     	String result = URI.substring(URI.lastIndexOf("/") + 1);
-		//System.out.println(result);
+		if(result.equals(ServletUtils.SAVE_METHOD)) {
+			String requestXML = request.getParameter("requestXML");
+			if(requestXML.indexOf("adssvc_request") >= 0) {
+				if (requestXML.indexOf("get_subtest") >= 0) 
+					result = ServletUtils.GET_SUBTEST_METHOD;
+				else if (requestXML.indexOf("download_item") >= 0) 
+                	result = ServletUtils.DOWNLOAD_ITEM_METHOD;
+			}
+		}       	
+        System.out.println(result);
     	return result;
 	}
 

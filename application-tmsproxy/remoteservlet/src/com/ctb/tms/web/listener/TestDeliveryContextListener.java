@@ -8,6 +8,7 @@ import javax.servlet.ServletContextEvent;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.OASHectorSink;
+import com.ctb.tms.nosql.OASHectorSource;
 import com.ctb.tms.rdb.OASDBSource;
 
 public class TestDeliveryContextListener implements javax.servlet.ServletContextListener {
@@ -42,16 +43,21 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					StudentCredentials[] creds = OASDBSource.getActiveRosters(conn);
 					for(int i=0;i<creds.length;i++) {
 						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
-						if(rosterMap.get(key) == null) {
-							// Get all data for an active roster from OAS DB
-							RosterData rosterData = OASDBSource.getRosterData(conn, creds[i]);
-							System.out.print("*****  Got roster data for " + key + " . . . ");
-							// Now put the roster data into Cassandra
-							OASHectorSink.putRosterData(creds[i], rosterData);
-							System.out.print("stored.\n");
-							rosterMap.put(key, key);
+						if(OASHectorSource.getRosterData(creds[i]).getAuthData() == null) {
+							if(rosterMap.get(key) == null) {
+								// Get all data for an active roster from OAS DB
+								RosterData rosterData = OASDBSource.getRosterData(conn, creds[i]);
+								System.out.print("*****  Got roster data for " + key + " . . . ");
+								// Now put the roster data into Cassandra
+								
+									OASHectorSink.putRosterData(creds[i], rosterData);
+									System.out.print("stored.\n");
+								rosterMap.put(key, key);
+							} else {
+								System.out.print("*****  Roster data for " + key + " already present.\n");
+							}
 						} else {
-							System.out.println("*****  Already have roster data for " + key);
+							System.out.print("*****  Roster data for " + key + " already present.\n");
 						}
 					}
 				} catch (Exception e) {

@@ -1,5 +1,7 @@
 package com.ctb.tms.rdb; 
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -15,10 +17,16 @@ import java.util.ResourceBundle;
 
 import javax.naming.InitialContext;
 
+import noNamespace.AdssvcRequestDocument;
+import noNamespace.AdssvcResponseDocument;
 import noNamespace.BaseType;
 import noNamespace.EntryType;
+import noNamespace.ErrorDocument;
 import noNamespace.StereotypeType;
 import noNamespace.TmssvcResponseDocument;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse.GetSubtest;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd;
@@ -558,7 +566,7 @@ public class OASDBSource
 			props.put("password", OASDatabaseUserPassword);
 			Driver driver = (Driver) Class.forName(OASDatabaseJDBCDriver).newInstance();
 			newConn = driver.connect(OASDatabaseURL, props);
-			System.out.println("*****  Using local properties for DB connection");
+			System.out.println("*****  Using local properties for OAS DB connection");
 		}
 
 		return newConn;
@@ -927,4 +935,5 @@ public class OASDBSource
 		}
 		return result;
 	}
+	
 } 
