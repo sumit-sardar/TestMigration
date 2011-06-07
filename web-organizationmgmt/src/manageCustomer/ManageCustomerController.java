@@ -511,7 +511,7 @@ public class ManageCustomerController extends PageFlowController
     {   
         Integer selectedCustomerId = form.getSelectedCustomerId();   
         //START- Changed For LASLINK Product
-        if(form.customerProfile.getCustomerTypeId() != null && form.customerProfile.getCustomerTypeId().equals("LasLink Customer"))
+        if(form.customerProfile.getCustomerTypeId() != null && (form.customerProfile.getCustomerTypeId().equals("LasLink Customer") || form.customerProfile.getCustomerTypeId().equals("LLEspanol Customer")))
         {
         	form.setIsLasLinkProduct(true);
         }
@@ -520,7 +520,7 @@ public class ManageCustomerController extends PageFlowController
         //START- LLO-099 MDR Validation
         if (validInfo) {
         	
-        	if(form.getCustomerProfile().getCustomerTypeId().equals("LasLink Customer") || form.getCustomerProfile().getCustomerType().equals("LasLink Customer")) {
+        	if(form.getCustomerProfile().getCustomerTypeId().equals("LasLink Customer") || form.getCustomerProfile().getCustomerType().equals("LasLink Customer") || form.getCustomerProfile().getCustomerTypeId().equals("LLEspanol Customer") || form.getCustomerProfile().getCustomerType().equals("LLEspanol Customer")) {
                 String validMDRNumber = validMDRNumber(form.getCustomerProfile().getMdrNumber()); 
                 if(validMDRNumber.equals("F"))
                 	validInfo = false;
@@ -1150,7 +1150,7 @@ public class ManageCustomerController extends PageFlowController
             boolean validInfo = CustomerFormUtils.verifyCustomerInformation(form, customerId);
           //START- LLO-099 MDR Validation
             if (validInfo) {
-            	if(form.getCustomerProfile().getCustomerTypeId().equals("LasLink Customer") || form.getCustomerProfile().getCustomerType().equals("LasLink Customer")) {
+            	if(form.getCustomerProfile().getCustomerTypeId().equals("LasLink Customer") || form.getCustomerProfile().getCustomerType().equals("LasLink Customer") || form.getCustomerProfile().getCustomerTypeId().equals("LLEspanol Customer") || form.getCustomerProfile().getCustomerType().equals("LLEspanol Customer")) {
             		if(!form.getCustomerProfile().getDbMdrNumber().equals(form.getCustomerProfile().getMdrNumber())) {
 	                    String validMDRNumber = validMDRNumber(form.getCustomerProfile().getMdrNumber()); 
 	                    if(validMDRNumber.equals("F"))
@@ -1622,10 +1622,14 @@ public class ManageCustomerController extends PageFlowController
         //not sure if this will be hard coded or from db?????
         customerOptions.put(CTBConstants.TABE_CUSTOMER,CTBConstants.TABE_CUSTOMER);
         customerOptions.put(CTBConstants.TERRANOVA_CUSTOMER,CTBConstants.TERRANOVA_CUSTOMER);
-        //START - Changes for LASLINK PRODUCT 
-        customerOptions.put(CTBConstants.OTHER_CUSTOMER,CTBConstants.OTHER_CUSTOMER);    
-        customerOptions.put(CTBConstants.LASLINK_CUSTOMER,CTBConstants.LASLINK_CUSTOMER);          
+        //START - Changes for LASLINK PRODUCT     
+        customerOptions.put(CTBConstants.LASLINK_CUSTOMER,CTBConstants.LASLINK_CUSTOMER);
         //END - Changes for LASLINK PRODUCT 
+        
+        //START - Changes for LLESPANOL PRODUCT 
+        customerOptions.put(CTBConstants.LLESPANOL_CUSTOMER,CTBConstants.LLESPANOL_CUSTOMER);
+        customerOptions.put(CTBConstants.OTHER_CUSTOMER,CTBConstants.OTHER_CUSTOMER);    
+        //END - Changes for LLESPANOL PRODUCT
     }
     
      private boolean isContains (String stateDesc) {
@@ -2006,7 +2010,7 @@ public class ManageCustomerController extends PageFlowController
         form.setSelectedCustomerName(customerProfile.getName());
         form.setSelectedCustomerId(Integer.valueOf(customerProfile.getId()));
         //START- Changed For LASLINK Product
-        if(customerProfile.getCustomerType() != null && customerProfile.getCustomerType().equals("LasLink Customer"))
+        if(customerProfile.getCustomerType() != null && (customerProfile.getCustomerType().equals("LasLink Customer") || customerProfile.getCustomerType().equals("LLEspanol Customer")))
         {
         	form.setIsLasLinkProduct(true);
         }

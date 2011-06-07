@@ -155,7 +155,7 @@ public class CustomerFormUtils
                                         requiredFieldCount, requiredFields);       
         }
         //START- Changed For LASLINK Product
-        if(customerProfile.getCustomerTypeId().equals("LasLink Customer") ||  customerProfile.getCustomerType().equals("LasLink Customer")) {
+        if(customerProfile.getCustomerTypeId().equals("LasLink Customer") ||  customerProfile.getCustomerType().equals("LasLink Customer") || customerProfile.getCustomerTypeId().equals("LLEspanol Customer") ||  customerProfile.getCustomerType().equals("LLEspanol Customer")) {
 	        String mDRNumber = customerProfile.getMdrNumber().trim();
 	        if ( mDRNumber == null || mDRNumber.length() == 0 ) {
 	                
@@ -249,7 +249,7 @@ public class CustomerFormUtils
     	  int invalidCharFieldCount = 0;
     	  String invalidString = "";      
     			
-    	  	if(customerProfile.getCustomerTypeId().equals("LasLink Customer") || customerProfile.getCustomerType().equals("LasLink Customer")) {
+    	  	if(customerProfile.getCustomerTypeId().equals("LasLink Customer") || customerProfile.getCustomerType().equals("LasLink Customer") || customerProfile.getCustomerTypeId().equals("LLEspanol Customer") || customerProfile.getCustomerType().equals("LLEspanol Customer")) {
     		        //START- Changed For LASLINK Product
     		            if ((customerProfile.getMdrNumber().length()> 0 ) && customerProfile.getMdrNumber().length() < (new Integer(8)).intValue()) {
     			            

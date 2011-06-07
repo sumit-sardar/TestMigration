@@ -25,8 +25,13 @@ public final class CTBConstants {
     public static final String OTHER_CUSTOMER = "Other Customer";
     //START - Changes for LASLINK PRODUCT 
     public static final String LASLINK_CUSTOMER = "LasLink Customer";
-    public static final String DB_LASLINK_CUSTOMER = "LASLINK_Customer";
+    public static final String DB_LASLINK_CUSTOMER = "LL_Customer";
     //END - Changes for LASLINK PRODUCT 
+    
+    //START - Changes for LLESPANOL PRODUCT 
+    public static final String LLESPANOL_CUSTOMER = "LLEspanol Customer";
+    public static final String DB_LLESPANOL_CUSTOMER = "LLESPANOL_Customer";
+    //END - Changes for LLESPANOL PRODUCT
     public static final Integer MAX_CTB_CUSTOMER = new Integer(10);
 	public static final int MAX_PAGE = 5;
     public static final int DEFAULT_STATE_CATEGORY_ID = 1000; 

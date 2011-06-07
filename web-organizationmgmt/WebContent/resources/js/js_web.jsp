@@ -563,7 +563,7 @@ function toogleMDRNoTextBox(elementId)
     //alert(dropDown);
 	//alert("..."+dropDown.options[dropDown.selectedIndex].value);
 	var selectedCustomerType = dropDown.options[dropDown.selectedIndex].value;
-	 if (selectedCustomerType == "LasLink Customer") 
+	 if (selectedCustomerType == "LasLink Customer" || selectedCustomerType == "LLEspanol Customer") 
 		enableMDRNoTextBox("true");
 	else 
 		enableMDRNoTextBox("false"); 

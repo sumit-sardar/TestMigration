@@ -303,6 +303,15 @@ public class CustomerManagementImpl implements CustomerManagement
                     
             }
             //END - Changes for LASLINK PRODUCT 
+            
+            //START - Changes for LLESPANOL PRODUCT 
+            else if(CTBConstants.LLESPANOL_CUSTOMER.equalsIgnoreCase
+                    (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
+               
+                customers.createLLEspanolCustomerConfiguration(customerId);
+                    
+            }
+            //END - Changes for LLESPANOL PRODUCT 
             else if(CTBConstants.OTHER_CUSTOMER.equalsIgnoreCase
                     (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
                 saveCustomerEmail(customer);
@@ -633,6 +642,17 @@ public class CustomerManagementImpl implements CustomerManagement
        			 }
        			//END - Changes For LASLINK Product
                 
+                //START - Changes For LLESPANOL Product
+                else if( customerConfigurations[0].getCustomerConfigurationName().equals(
+                        CTBConstants.DB_LLESPANOL_CUSTOMER)){
+                            
+                	customerConfigurations[0].setCustomerConfigurationName(
+                        CTBConstants.LLESPANOL_CUSTOMER);
+                                                    
+       			 }
+       			//END - Changes For LLESPANOL Product
+
+
                 customer.setCustomerConfiguration(customerConfigurations);
             } 
             

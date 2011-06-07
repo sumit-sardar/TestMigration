@@ -269,10 +269,10 @@ public interface Customer extends JdbcControl
      *           cc.created_date_time           as createdDateTime
      *      from customer_configuration cc
      *     where cc.customer_id = {customerId}
-     *     and cc.customer_configuration_name in ('TABE_Customer','TERRANOVA_Customer')::
+     *     and cc.customer_configuration_name in ('TABE_Customer','TERRANOVA_Customer','LL_Customer','LLESPANOL_Customer')::
      */
      //START - Changes for LASLINK Product
-    @JdbcControl.SQL(statement = "select  cc.customer_configuration_id  as customerConfigurationId,  cc.customer_configuration_name as customerConfigurationName,  cc.editable  as editable,  cc.default_value  as defaultValue,  cc.created_by  as createdBy,  cc.created_date_time  as createdDateTime  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name in ('TABE_Customer','TERRANOVA_Customer','LASLINK_Customer')")
+    @JdbcControl.SQL(statement = "select  cc.customer_configuration_id  as customerConfigurationId,  cc.customer_configuration_name as customerConfigurationName,  cc.editable  as editable,  cc.default_value  as defaultValue,  cc.created_by  as createdBy,  cc.created_date_time  as createdDateTime  from customer_configuration cc  where cc.customer_id = {customerId}  and cc.customer_configuration_name in ('TABE_Customer','TERRANOVA_Customer','LL_Customer','LLESPANOL_Customer')")
     com.ctb.bean.testAdmin.CustomerConfig[] getCustomerConfigurations(Integer customerId) throws SQLException;
 	//END - Changes for LASLINK Product
     /**
@@ -297,5 +297,11 @@ public interface Customer extends JdbcControl
     @JdbcControl.SQL(statement = "update org_node set org_node_mdr_number = {customer.mdrNumber}  where org_node_id = (select org.org_node_id from org_node org, org_node_category onc where onc.category_level = 1  and org.org_node_category_id = onc.org_node_category_id  and onc.customer_id = org.customer_id  and org.customer_id = {customer.customerId})")
     void updateCustomerTopNodeMdrNumber(com.ctb.bean.testAdmin.Customer customer) throws SQLException;
     //END - Changes for LASLINK Product
+    
+    
+    //START - Changes for LLESPANOL Product
+    @JdbcControl.SQL(statement = "call setup_llespanol_customer({CustomerId})")
+    void createLLEspanolCustomerConfiguration(Integer CustomerId) throws SQLException;
+    //END - Changes for LLESPANOL Product
     
 }
