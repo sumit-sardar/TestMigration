@@ -119,6 +119,7 @@
                         <netui:button styleClass="button" tagId="userSessionEdit" value="${bundle.widgets['button.edit']}" type="submit" action="goto_user_edit_session_information" disabled="${requestScope.userSessionDisableButton}"/>
                     <c:if test="${sessionScope.canRegisterStudent}">
                         <netui:button styleClass="button" tagId="userRegisterStudent" value="${bundle.widgets['button.registerStudent']}" type="submit" action="goto_user_register_student" disabled="${requestScope.userSessionDisableButton}"/>
+                        <netui:button styleClass="button" tagId="userViewReport" value="${bundle.widgets['button.viewReport']}" type="submit" action="goto_view_report" disabled="${requestScope.userSessionDisableButton}"/>
                     </c:if>
                     </td>
                 </tr>

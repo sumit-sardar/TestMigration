@@ -127,7 +127,7 @@ public class ViewMonitorStatusController extends PageFlowController
 
         this.selectedRosterIds = new ArrayList();
         
-        if ("homepage_view_report".equals(this.callerId)) 
+        if ("view_report".equals(this.callerId)) 
             return new Forward("viewReport", form);
         else
         	return new Forward("viewStatus", form);

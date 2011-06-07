@@ -104,6 +104,7 @@ public class ViewTestSessionsController extends PageFlowController
      * @jpf:forward name="sessionViewStatus" path="goto_view_session_monitor_status.do"
      * @jpf:forward name="sessionEdit" path="goto_edit_session_information.do"
      * @jpf:forward name="registerStudent" path="goto_register_student.do"
+     * @jpf:forward name="viewReport" path="goto_view_report.do"
      * @jpf:forward name="scoringByItem" path="goto_score_by_item.do"
      */
     @Jpf.Action(forwards = { 
@@ -115,6 +116,8 @@ public class ViewTestSessionsController extends PageFlowController
                 	 path = "goto_edit_session_information.do"),                     
         @Jpf.Forward(name = "registerStudent",
                    	 path = "goto_register_student.do"),
+        @Jpf.Forward(name = "viewReport",
+                   	 path = "goto_view_report.do"),
         @Jpf.Forward(name = "scoringByItem",
                      path = "goto_score_by_item.do"),
         @Jpf.Forward(name = "scoringByStudent",
@@ -129,6 +132,7 @@ public class ViewTestSessionsController extends PageFlowController
         if (currentAction.equals("sessionViewStatus") ||
             currentAction.equals("sessionEdit") ||
             currentAction.equals("registerStudent") ||
+            currentAction.equals("viewReport") ||
             currentAction.equals("scoringByItem") || 
             currentAction.equals("scoringByStudent")){
             return new Forward(currentAction, form);        	
@@ -494,6 +498,23 @@ public class ViewTestSessionsController extends PageFlowController
             System.err.print(ioe.getStackTrace());
         }
         return null;
+    }
+    
+	 /**
+     * @jpf:action
+     * @jpf:forward name="success" path="/viewmonitorstatus/ViewMonitorStatusController.jpf"
+     */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "success",
+                     path = "/viewmonitorstatus/ViewMonitorStatusController.jpf")
+    })
+    protected Forward goto_view_report(ViewTestSessionsForm form)
+    {
+        String sessionId = form.getSessionId().toString();
+        getSession().setAttribute("sessionId", sessionId);
+        getSession().setAttribute("callerId", "view_report");
+        
+        return new Forward("success");
     }
     
     //Change for HandScoring: score by student

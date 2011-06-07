@@ -1109,7 +1109,7 @@ public class HomePageController extends PageFlowController
         return null;
     }
 	
-	   /**
+	 /**
      * @jpf:action
      * @jpf:forward name="success" path="/viewmonitorstatus/ViewMonitorStatusController.jpf"
      */
@@ -1121,7 +1121,7 @@ public class HomePageController extends PageFlowController
     {
         String sessionId = form.getUserSessionId();
         getSession().setAttribute("sessionId", sessionId);
-        getSession().setAttribute("callerId", "homepage_view_report");
+        getSession().setAttribute("callerId", "view_report");
         
         return new Forward("success");
     }
