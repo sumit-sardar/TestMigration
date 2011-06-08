@@ -274,7 +274,7 @@ public class ADSHectorSink {
 			System.out.println("*****  Created ADS keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	

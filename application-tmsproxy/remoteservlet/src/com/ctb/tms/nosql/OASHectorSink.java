@@ -205,7 +205,7 @@ public class OASHectorSink {
 			System.out.println("*****  Created OAS keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
