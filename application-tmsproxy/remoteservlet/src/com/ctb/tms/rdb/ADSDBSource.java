@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -46,7 +47,7 @@ public class ADSDBSource {
 		}
 	}
 	
-	public static Connection getADSConnection() throws Exception {
+	public static Connection getADSConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Connection newConn = null;
 		try {    
 			InitialContext ctx = new InitialContext();    

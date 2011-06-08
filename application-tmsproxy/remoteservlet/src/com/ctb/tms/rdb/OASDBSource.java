@@ -546,7 +546,7 @@ public class OASDBSource
 				intValue() % 2 == 0 ? false:true;
 	}
     
-	public static Connection getOASConnection() throws Exception {
+	public static Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Connection newConn = null;
 		try {    
 			InitialContext ctx = new InitialContext();    

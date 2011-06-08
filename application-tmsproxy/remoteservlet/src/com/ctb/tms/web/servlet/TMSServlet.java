@@ -2,6 +2,7 @@ package com.ctb.tms.web.servlet;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,10 +18,10 @@ import com.bea.xml.XmlException;
 import com.ctb.tdc.web.utils.ServletUtils;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
-import com.ctb.tms.nosql.OASHectorSink;
+import com.ctb.tms.nosql.ADSHectorSink;
+import com.ctb.tms.nosql.ADSHectorSource;
 import com.ctb.tms.nosql.OASHectorSource;
 import com.ctb.tms.rdb.ADSDBSource;
-import com.ctb.tms.rdb.OASDBSource;
 
 public class TMSServlet extends HttpServlet {
 
@@ -105,7 +106,7 @@ public class TMSServlet extends HttpServlet {
 		return rd.getLoginDocument().xmlText();
 	}
 	
-	public String getSubtest(String xml) throws XmlException
+	public String getSubtest(String xml) throws XmlException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException
 	{
 		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
 		AdssvcRequest request = document.getAdssvcRequest();
@@ -124,6 +125,29 @@ public class TMSServlet extends HttpServlet {
 				}
 			}
 			ADSHectorSink.putSubtest(subtestId, hash, subtest);
+		}
+		return subtest;
+	}
+	
+	public String downloadItem(String xml) throws XmlException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException
+	{
+		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
+		AdssvcRequest request = document.getAdssvcRequest();
+		
+		int itemId = (new Integer(request.getDownloadItem().getItemid())).intValue();
+		String hash = request.getDownloadItem().getHash();
+		String subtest = ADSHectorSource.getItem(itemId, hash);
+		if(subtest == null) {
+			Connection conn = null;
+			try {
+				conn = ADSDBSource.getADSConnection();
+				subtest = ADSDBSource.getItem(conn, itemId, hash);
+			} finally {
+				if(conn != null) {
+					conn.close();
+				}
+			}
+			ADSHectorSink.putItem(itemId, hash, subtest);
 		}
 		return subtest;
 	}
