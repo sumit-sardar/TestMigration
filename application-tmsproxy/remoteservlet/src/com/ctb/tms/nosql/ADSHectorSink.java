@@ -57,7 +57,7 @@ public class ADSHectorSink {
 				}
 				
 				public List<ColumnFamilyDefinition> getCfDefs() {
-					BasicColumnFamilyDefinition rosterDataCF = new BasicColumnFamilyDefinition() {
+					BasicColumnFamilyDefinition subtestDataCF = new BasicColumnFamilyDefinition() {
 					
 						public ComparatorType getSubComparatorType() {
 							return null;
@@ -159,44 +159,8 @@ public class ADSHectorSink {
 							return cdList;
 						}
 					};
-					List<ColumnFamilyDefinition> cfList = new ArrayList<ColumnFamilyDefinition>();
-					cfList.add(new ThriftCfDef(rosterDataCF));
-					return cfList;
-				}
-			};
-	
-			
-			cluster.addKeyspace(new ThriftKsDef(kd));
-
-			System.out.println("*****  Created ADS keyspace 1.");
-		} catch (Exception e) {
-			// do nothing, keyspace already exists
-			e.printStackTrace();
-		}
-		
-		try {	
-			BasicKeyspaceDefinition kd1 = new BasicKeyspaceDefinition() {
-				public Map<String, String> getStrategyOptions() {
-					Map<String, String> options = new HashMap<String, String>(2);
-					options.put("replication_factor", "1");
-					return options;
-				}
-				
-				public String getStrategyClass() {
-					return "org.apache.cassandra.locator.SimpleStrategy";
-				}
-				
-				public int getReplicationFactor() {
-					return 1;
-				}
-				
-				public String getName() {
-					return "ADS";
-				}
-				
-				public List<ColumnFamilyDefinition> getCfDefs() {
-					BasicColumnFamilyDefinition rosterDataCF = new BasicColumnFamilyDefinition() {
-					
+					BasicColumnFamilyDefinition itemDataCF = new BasicColumnFamilyDefinition() {
+						
 						public ComparatorType getSubComparatorType() {
 							return null;
 						}
@@ -274,7 +238,7 @@ public class ADSHectorSink {
 						}
 						
 						public List<ColumnDefinition> getColumnMetadata() {
-							ColumnDefinition itemCD = new ColumnDefinition() {
+							ColumnDefinition subtestCD = new ColumnDefinition() {
 								
 								public String getValidationClass() {
 									return "org.apache.cassandra.db.marshal.UTF8Type";
@@ -293,19 +257,21 @@ public class ADSHectorSink {
 								}
 							};
 							List<ColumnDefinition> cdList = new ArrayList<ColumnDefinition>();
-							cdList.add(itemCD);
+							cdList.add(subtestCD);
 							return cdList;
 						}
 					};
 					List<ColumnFamilyDefinition> cfList = new ArrayList<ColumnFamilyDefinition>();
-					cfList.add(new ThriftCfDef(rosterDataCF));
+					cfList.add(new ThriftCfDef(subtestDataCF));
+					cfList.add(new ThriftCfDef(itemDataCF));
 					return cfList;
 				}
 			};
 	
-			cluster.addKeyspace(new ThriftKsDef(kd1));
 			
-			System.out.println("*****  Created ADS keyspace 2.");
+			cluster.addKeyspace(new ThriftKsDef(kd));
+
+			System.out.println("*****  Created ADS keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
 			e.printStackTrace();
