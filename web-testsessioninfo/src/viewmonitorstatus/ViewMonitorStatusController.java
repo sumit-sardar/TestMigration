@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.beehive.controls.api.bean.Control;
@@ -369,12 +370,12 @@ public class ViewMonitorStatusController extends PageFlowController
     
     /**
      * @jpf:action
-     * @jpf:forward name="report" path="/homepage/turnleaf_reports.jsp"
+     * @jpf:forward name="report" path="multiple_student_IPR.jsp"
      * @jpf:forward name="error" path="/error.jsp"
      */
 	@Jpf.Action(
 		forwards = { 
-			@Jpf.Forward(name = "report", path = "/homepage/turnleaf_reports.jsp"), 
+			@Jpf.Forward(name = "report", path = "multiple_student_IPR.jsp"), 
 			@Jpf.Forward(name = "error", path = "/error.jsp")
 		}
 	)
@@ -392,8 +393,10 @@ public class ViewMonitorStatusController extends PageFlowController
         		rosterId = (Integer)this.selectedRosterIds.get(0);
         	}
         	
-            String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, rosterId);    
+            //String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, rosterId);    
             
+        	String reportUrl = "/TestSessionInfoWeb/viewmonitorstatus/gotoTurnLeaf.do";
+        	
             this.getRequest().setAttribute("reportUrl", reportUrl);
             this.getRequest().setAttribute("testAdminId", String.valueOf(this.sessionId));
             
@@ -404,7 +407,22 @@ public class ViewMonitorStatusController extends PageFlowController
                     
         return new Forward("report");
     }
-    
+
+    /**
+     * @jpf:action
+     * @jpf:forward name="success" path="view_report"
+     */
+	@Jpf.Action(
+		forwards = { 
+			@Jpf.Forward(name = "success", path = "http://www.google.com")
+		}
+	)
+    protected Forward gotoTurnLeaf()
+    {
+        
+        return new Forward("success");
+    }
+	
     /**
 	 * New method added for CR - GA2011CR001
 	 * isGeorgiaCustomer

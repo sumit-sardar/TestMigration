@@ -1213,6 +1213,7 @@ function ajaxSelectAllCheckboxes() {
 			);
 }
 
+
 function selectAllCheckboxes() { 
     var total = 0;
     var inputs = document.getElementsByTagName("input");

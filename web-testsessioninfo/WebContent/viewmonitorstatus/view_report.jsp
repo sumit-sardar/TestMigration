@@ -10,8 +10,6 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
-<script type="text/javascript" src="/StudentRegistrationWeb/resources/js/jquery-1.4.4.min.js"></script>
-<script type="text/javascript" src="/StudentRegistrationWeb/resources/js/jquery-ui-1.8.10.custom.min.js"></script>
 
 <%
 
