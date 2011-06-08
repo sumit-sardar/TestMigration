@@ -7,6 +7,7 @@ import javax.servlet.ServletContextEvent;
 
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.nosql.ADSHectorSink;
 import com.ctb.tms.nosql.OASHectorSink;
 import com.ctb.tms.nosql.OASHectorSource;
 import com.ctb.tms.rdb.OASDBSource;
@@ -37,6 +38,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		public void run() {
 			Connection conn = null;
 			new OASHectorSink();
+			new ADSHectorSink();
 			while (true) {
 				try {
 					conn = OASDBSource.getOASConnection();

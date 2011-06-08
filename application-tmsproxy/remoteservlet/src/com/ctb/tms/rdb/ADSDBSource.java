@@ -51,10 +51,10 @@ public class ADSDBSource {
 		Connection newConn = null;
 		try {    
 			InitialContext ctx = new InitialContext();    
-			javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup ("OASDataSource");    
+			javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup ("ADSDataSource");    
 			newConn = ds.getConnection();
 			haveDataSource = true;
-			System.out.println("*****  Using OASDataSource for DB connection");
+			System.out.println("*****  Using ADSDataSource for DB connection");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			haveDataSource = false;
