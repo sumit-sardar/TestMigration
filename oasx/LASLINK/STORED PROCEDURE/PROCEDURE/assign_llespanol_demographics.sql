@@ -1,4 +1,4 @@
-create or replace procedure assign_laslink_demographics (las_customer_id integer)
+create or replace procedure assign_llespanol_demographics (las_customer_id integer)
 as
   g_id integer;
   counter integer;
@@ -12,21 +12,23 @@ begin
     values (g_id, las_customer_id, 'Ethnicity', 'Ethnicity', 'SINGLE', 1, 'T', 'T', 1, sysdate);
     
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'American Indian or Alaska Native', 'American Indian or Alaska Native', 1, 'T', 1, sysdate);
+    values (g_id, 'mexicano', 'mexicano', 1, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'African American or Black, Not Hispanic', 'African American or Black, Not Hispanic', 2, 'T', 1, sysdate);
+    values (g_id, 'mexicano-americano', 'mexicano-americano', 2, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'Asian', 'Asian', 3, 'T', 1, sysdate);
+    values (g_id, 'cubano', 'cubano', 3, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'Pacific Islander', 'Pacific Islander', 4, 'T', 1, sysdate);
+    values (g_id, 'cubano-mexicano', 'cubano-mexicano', 4, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'Hispanic or Latino', 'Hispanic or Latino', 5, 'T', 1, sysdate);
+    values (g_id, 'puertorriqueno', 'puertorriqueno', 5, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'White, Not Hispanic', 'White, Not Hispanic', 6, 'T', 1, sysdate);
+    values (g_id, 'dominicano', 'dominicano', 6, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'Multiethnic', 'Multiethnic', 7, 'T', 1, sysdate);
+    values (g_id, 'centroamericano', 'centroamericano', 7, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'Other', 'Other', 8, 'T', 1, sysdate);
+    values (g_id, 'sudaamericano', 'sudaamericano', 8, 'T', 1, sysdate);
+    insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
+    values (g_id, 'otro', 'otro', 9, 'T', 1, sysdate);
 
     -- HOME LANGUAGE
     select seq_customer_demographic_id.nextval into g_id from dual;
