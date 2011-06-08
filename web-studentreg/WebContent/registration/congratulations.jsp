@@ -73,6 +73,7 @@
 <netui:hidden dataSource="actionForm.studentMaxPage"/> 
 <netui:hidden dataSource="actionForm.selectedOrgNodeName"/> 
 
+<netui-data:getData resultId="showAccessCode" value="${requestScope.showAccessCode}"/>
 
 <input type="hidden" id="testAdminId" name="testAdminId" value="<%= testAdminId %>" />
 <input type="hidden" id="orgNodeId" name="orgNodeId" value="<%= orgNodeId %>" />
@@ -273,6 +274,13 @@
 
 
 <!-- report -->
+<c:if test="${showAccessCode}"> 
+<p>
+Do you want to print the Access Code in Individual Test Tickets and in Multiple Test Tickets?<br>
+<input type="radio" id="allow" name="individualAccess" value="Yes" onclick="accessCode()">Yes</input>
+<input type="radio" id="deny" name="individualAccess" value="No"  onclick="accessCode()">No</input>
+</p>
+</c:if>
 <p align="right">
     <netui:anchor href="#" onClick="return openTestTicketIndividual(this, document.getElementById('testAdminId').value, document.getElementById('orgNodeId').value, document.getElementById('studentId').value);">Individual Test Ticket</netui:anchor>
     &nbsp;<img src="/StudentRegistrationWeb/resources/images/misc/logo_pdf.gif" border="0">

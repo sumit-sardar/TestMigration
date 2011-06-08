@@ -132,6 +132,8 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     private boolean isMultiIndividualTkt = false;
     //END - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
     
+    private String accessAllow = null; // Changed for TABE BAUM - 028
+    
     //START - Added For  CR ISTEP2011CR007 (Multiple Test Ticket)
     protected boolean createStaticAboveTables() throws DocumentException, IOException {
         addTitle(UNADDITIONAL_Y);
@@ -171,7 +173,7 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
         this.isStudentIdConfigurable = (Boolean)args[8];
         this.studentIdLabelName = (String)args[9];
         //END - Changed for CR GA2011CR001
-        
+        this.accessAllow = (String)args[10]; // Added for TABE BAUM - 028
       //START - Changed for CR ISTEP2011CR007 (Multiple Test Ticket)
       	this.isMultiIndividualTkt = (Boolean)args[2];
         
@@ -375,12 +377,14 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
     }
  
     private void addLoginInstructions(float yValue) throws DocumentException{
-        this.staticTables.add( 
+        if(this.accessAllow.equals("false")) { //Changed for TABE BAUM - 028
+    	this.staticTables.add( 
             tableUtils.getBorderedTable(LOGIN_INSTRUCTIONS,
                                         LOGIN_WIDTH,
                                         LEFT_X,
                                         (LOGIN_INSTRUCTIONS_Y-yValue),
                                         LOGIN_INSTRUCTIONS_BORDER));
+        }
     }
     
     private void addWavingMan() throws DocumentException, IOException{
@@ -415,7 +419,11 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
         result[2] = PASSWORD_LABEL;
         result[3] = getPassword(student);
         result[4] = TEST_ACCESS_CODE_LABEL;
-        result[5] = " ";
+        // Changed for TABE BAUM - 028
+        if(this.accessAllow.equals("true"))
+        	result[5] = getAccessCode();
+        else
+        	result[5] = " ";
         return result;
     }
     private void addKeyboardShortcuts() throws DocumentException{
@@ -518,7 +526,11 @@ public class IndividualTestTicketsReportUtils extends ReportUtils
    }   
    private String getLoginId(TestRosterVO student){
         return getNonBlankString(student.getLoginName());
-   }   
+   }
+   //Added for TABE BAUM - 028
+   private String getAccessCode(){
+       return getNonBlankString(testAdmin.getAccessCode());
+  }  
    private String getTestName(){
         return getNonBlankString(testAdmin.getTestName());
    }   

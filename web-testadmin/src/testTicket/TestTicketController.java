@@ -147,6 +147,8 @@ public class TestTicketController extends PageFlowController
             String testAdminId = (String)getRequest().getParameter("testAdminId");
             String orgNodeId = (String)getRequest().getParameter("orgNodeId");
             String ticketType = (String)getRequest().getParameter("ticketType");  //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+            String accessAllow = (String)getRequest().getParameter("displayAccess"); // changed for TABE BAUM - 028
+          
             Integer sessionId = new Integer(testAdminId); 
             TestSessionData tsd = getTestSessionDetails(sessionId);
             ScheduledSession session = this.getScheduledSession(sessionId);
@@ -200,7 +202,8 @@ public class TestTicketController extends PageFlowController
                                 this.getRequest().getScheme(),
                                 Boolean.FALSE,
                                 this.isStudentIdConfigurable,
-                                this.studentIdLabelName});
+                                this.studentIdLabelName,
+                                accessAllow}); // Changed for TABE BAUM - 028
         }
         catch (IOException ie)
         {

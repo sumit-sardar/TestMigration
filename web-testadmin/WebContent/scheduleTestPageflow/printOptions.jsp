@@ -48,6 +48,8 @@
 <netui-data:getData resultId="isTabeProduct" value="${requestScope.isTabeProduct}"/>
 <netui-data:getData resultId="hasStudentSelected" value="${requestScope.hasStudentSelected}"/>
 
+<netui-data:getData resultId="showAccessCode" value="${requestScope.showAccessCode}"/>
+
 <netui:hidden dataSource="actionForm.testAdmin.productId"/>
 <!-- Non TABE -->
 <c:if test="${! isTabeProduct}"> 
@@ -350,6 +352,13 @@
 <h3><netui:span value="${bundle.web['printoptions.testSessionDocuments.title']}"/></h3>
 <p>
 <netui:content value="${bundle.web['printoptions.testSessionDocuments.message']}"/>
+<br>
+<c:if test="${showAccessCode}"> 
+Do you want to print the Access Code in Individual Test Tickets and in Multiple Test Tickets?<br>
+<input type="radio" id="allow" name="individualAccess" value="Yes" onclick="accessCode()">Yes</input>
+<input type="radio" id="deny" name="individualAccess" value="No"  onclick="accessCode()">No</input>
+
+</c:if>
 </p>
 <p>
 <netui:anchor href="#" onClick="return openTestTicketIndividual(this, document.getElementById('printTestAdminId').value, document.getElementById('printOrgNodeId').value);">Individual Test Tickets</netui:anchor>
@@ -357,6 +366,8 @@
 <img src="/TestAdministrationWeb/resources/images/logo_pdf.gif" border="0">
 <br/>
 <netui:content value="${bundle.web['printoptions.testSessionDocuments.message.testTickets']}"/>
+<br>
+
 </p>
 
 <!--START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)-->

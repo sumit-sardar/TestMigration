@@ -7,6 +7,7 @@
 <% response.setContentType("application/x-javascript"); %>
 
 var acknowledgmentsWindow = null;
+var displayAccessCode = false;   // changed for TABE BAUM - 028
 
 function setFocusFirstElement() { 
     var element = document.getElementById("firstFocusId");
@@ -153,6 +154,7 @@ function openTestTicket( ticketType, anchor, url, testAdminId, orgNodeId ) {
     anchor.href += "?testAdminId=" + testAdminId;
     anchor.href += "&orgNodeId=" + orgNodeId;
     anchor.href += "&ticketType=" + ticketType;    //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+    anchor.href += "&displayAccess=" + displayAccessCode;   // changed for TABE BAUM - 028
 //    var targetWindowName = ticketType + orgNodeId;
 //    anchor.target = targetWindowName;
     return true;
@@ -176,3 +178,9 @@ function disableRemoveStudentButton()
     return true;
 }
 
+// changed for TABE BAUM - 028
+function accessCode() {
+	
+	var checkAccess = document.getElementsByName("individualAccess");
+	displayAccessCode = checkAccess[0].checked;
+}

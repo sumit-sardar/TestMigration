@@ -2305,7 +2305,45 @@ public class ScheduleTestController extends PageFlowController
         return new Boolean(hasScoringConfigurable);
     }
     
+//changes for TABE BAUM - 028
 	
+	/**
+	 * This method checks whether customer is configured to display access code in individual 
+	 * and multiple testTicket or not.
+	 * @return Return Boolean 
+	 */
+	
+	
+	private Boolean customerHasAccessCode()
+    {               
+		Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasAccessCodeConfigurable = false;
+        
+        try
+        {      
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = users.getCustomerConfigurations(2);
+			}
+        
+
+        for (int i=0; i < customerConfigurations.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Print_Accesscode") && 
+            		cc.getDefaultValue().equals("T")	) {
+            	hasAccessCodeConfigurable = true;
+                break;
+            } 
+        }
+       }
+        
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+       
+        return new Boolean(hasAccessCodeConfigurable);
+    }
 	
 
     /**
@@ -2354,6 +2392,7 @@ public class ScheduleTestController extends PageFlowController
         this.getRequest().setAttribute("orgPagerSummary", orgPagerSummary);
         this.getRequest().setAttribute("orgCategoryName", orgCategoryName); 
         this.getRequest().setAttribute("showTicketLink", new Boolean(orgNodes.size() > 0)); 
+        this.getRequest().setAttribute("showAccessCode", customerHasAccessCode()); // Added for TABE BAUM - 028
 
         boolean nodeChanged = PathListUtils.adjustOrgNodePath(this.orgNodePath, this.orgNodeId, orgNodeName);
 

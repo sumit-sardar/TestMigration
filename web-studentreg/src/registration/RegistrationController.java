@@ -1483,6 +1483,7 @@ public class RegistrationController extends PageFlowController
         this.getRequest().setAttribute("endDate", endDate);
         this.getRequest().setAttribute("startTime", startTime);
         this.getRequest().setAttribute("endTime", endTime);
+        this.getRequest().setAttribute("showAccessCode", customerHasAccessCode()); // Added for TABE BAUM - 028
         
         if (this.locatorSubtest != null) {            
             this.getRequest().setAttribute("hasLocatorSubtest", Boolean.TRUE);
@@ -2333,6 +2334,33 @@ public class RegistrationController extends PageFlowController
         getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
         return new Boolean(hasScoringConfigurable);
     }
+	
+	//changes for TABE BAUM - 028
+	
+	/**
+	 * This method checks whether customer is configured to display access code in individual 
+	 * and multiple testTicket or not.
+	 * @return Return Boolean 
+	 */
+
+
+	private Boolean customerHasAccessCode()
+	{               
+	    
+	    boolean hasAccessCodeConfigurable = false;
+	
+	    for (int i=0; i < customerConfigurations.length; i++)
+	    {
+	    	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	        if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Print_Accesscode") && 
+	        		cc.getDefaultValue().equals("T")	) {
+	        	hasAccessCodeConfigurable = true;
+	            break;
+	        } 
+	    }
+	   
+	    return new Boolean(hasAccessCodeConfigurable);
+	}
 
 		/**
 		 * @return the isFormRecommended
