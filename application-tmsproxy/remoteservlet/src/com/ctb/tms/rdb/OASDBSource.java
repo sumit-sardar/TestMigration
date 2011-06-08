@@ -15,7 +15,9 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcResponseDocument;
@@ -549,9 +551,10 @@ public class OASDBSource
 	public static Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Connection newConn = null;
 		try {    
-			InitialContext ctx = new InitialContext();    
-			javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup ("OASDataSource");    
-			newConn = ds.getConnection();
+			Context initContext = new InitialContext();
+			Context envContext  = (Context)initContext.lookup("java:/comp/env");
+			DataSource ds = (DataSource)envContext.lookup("jdbc/OASDataSource");
+			newConn = ds.getConnection(); 
 			haveDataSource = true;
 			System.out.println("*****  Using OASDataSource for DB connection");
 		} catch (Exception e) {

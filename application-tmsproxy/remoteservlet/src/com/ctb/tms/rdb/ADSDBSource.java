@@ -11,7 +11,9 @@ import java.sql.SQLException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 import noNamespace.AdssvcResponseDocument;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse;
@@ -24,7 +26,7 @@ import com.ctb.tms.bean.delivery.SubtestData;
 
 public class ADSDBSource {
 	private static volatile boolean haveDataSource = true;
-	private static String ADSDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:adsr5t1";
+	private static String ADSDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1";
 	private static String ADSDatabaseUser = "ads";
 	private static String ADSDatabaseUserPassword = "adspr5r";
 	private static String ADSDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver";
@@ -50,9 +52,10 @@ public class ADSDBSource {
 	public static Connection getADSConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Connection newConn = null;
 		try {    
-			InitialContext ctx = new InitialContext();    
-			javax.sql.DataSource ds = (javax.sql.DataSource) ctx.lookup ("ADSDataSource");    
-			newConn = ds.getConnection();
+			Context initContext = new InitialContext();
+			Context envContext  = (Context)initContext.lookup("java:/comp/env");
+			DataSource ds = (DataSource)envContext.lookup("jdbc/ADSDataSource");
+			newConn = ds.getConnection();  
 			haveDataSource = true;
 			System.out.println("*****  Using ADSDataSource for DB connection");
 		} catch (Exception e) {

@@ -163,8 +163,9 @@ public class ContentServlet extends HttpServlet {
 
 			if (subtestId != null && !"".equals(subtestId.trim()) && !"undefined".equals(subtestId.trim())) {
 				
-				String filePath = ContentFile.getContentFolderPath() + subtestId
-						+ ContentFile.SUBTEST_FILE_EXTENSION;
+				//String filePath = ContentFile.getContentFolderPath() + subtestId + ContentFile.SUBTEST_FILE_EXTENSION;
+				
+				String filePath = subtestId + ContentFile.SUBTEST_FILE_EXTENSION;
 	
 				boolean validHash = false;
 				
@@ -219,25 +220,25 @@ public class ContentServlet extends HttpServlet {
 			} 
 		}
 		catch (HashMismatchException e) {
-			logger.error("Exception occured in getSubtest("+subtestId+") : "
+			System.out.println("Exception occured in getSubtest("+subtestId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.hashMismatch");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
 		}
 		catch (DecryptionException e) {
-			logger.error("Exception occured in getSubtest("+subtestId+") : "
+			System.out.println("Exception occured in getSubtest("+subtestId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.decryptionFailed");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
 		}
 		catch (TMSException e) {
-			logger.error("TMS Exception occured in getSubtest("+subtestId+") : "
+			System.out.println("TMS Exception occured in getSubtest("+subtestId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.getContentFailed");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
 		}
 		catch (Exception e) {
-			logger.error("Exception occured in getSubtest("+subtestId+") : "
+			System.out.println("Exception occured in getSubtest("+subtestId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.getContentFailed");                            
 			//ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
@@ -276,8 +277,9 @@ public class ContentServlet extends HttpServlet {
 			}
 		
 			if (itemId != null && !"".equals(itemId.trim())) {
-				String filePath = ContentFile.getContentFolderPath() + itemId
-						+ ContentFile.ITEM_FILE_EXTENSION;
+				//String filePath = ContentFile.getContentFolderPath() + itemId + ContentFile.ITEM_FILE_EXTENSION;
+				
+				String filePath = itemId + ContentFile.ITEM_FILE_EXTENSION;
 				
 				boolean hashValid = false;
 				try {

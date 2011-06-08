@@ -104,5 +104,22 @@
     <url-pattern>/servlet/LoadTestServlet.do</url-pattern>
   </servlet-mapping>
 
+     
+ <resource-ref>
+ 	<description>OAS Datasource</description>
+ 	<res-ref-name>jdbc/OASDataSource</res-ref-name>
+ 	<res-type>javax.sql.DataSource</res-type>
+ 	<res-auth>Container</res-auth>
+ </resource-ref>
+ 
+ <resource-ref>
+ 	<description>ADS Datasource</description>
+ 	<res-ref-name>jdbc/ADSDataSource</res-ref-name>
+ 	<res-type>javax.sql.DataSource</res-type>
+ 	<res-auth>Container</res-auth>
+ </resource-ref>
+
+ 
+  
 
 </web-app>
