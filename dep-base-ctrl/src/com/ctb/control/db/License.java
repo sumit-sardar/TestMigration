@@ -223,6 +223,9 @@ public interface License extends JdbcControl
     @JdbcControl.SQL(statement = "SELECT cplicense.CUSTOMER_ID  AS customerId,  cplicense.PRODUCT_ID  AS productId,  cplicense.AVAILABLE  AS available,  cplicense.RESERVED  AS reservedLicense,  cplicense.CONSUMED  AS consumedLicense,  cplicense.SUBTEST_MODEL  AS subtestModel,  cplicense.LICENSE_PERIOD_START AS licenseperiodStartdate,  cplicense.LICENSE_PERIOD_END  AS licenseperiodEnd,  cplicense.LICENSE_AFTER_LAST_PURCHASE  AS licenseAfterLastPurchase,  prod.product_description  AS productName  FROM customer_product_license cplicense,  product  prod  WHERE prod.product_id = cplicense.PRODUCT_ID  AND cplicense.CUSTOMER_ID = {customerId}  AND cplicense.PRODUCT_ID = {productId}  AND prod.LICENSE_ENABLED='T'  UNION  SELECT cplicense.CUSTOMER_ID  AS customerId,  cplicense.PRODUCT_ID  AS productId,  cplicense.AVAILABLE  AS available,  cplicense.RESERVED  AS reservedLicense,  cplicense.CONSUMED  AS consumedLicense,  cplicense.SUBTEST_MODEL  AS subtestModel,  cplicense.LICENSE_PERIOD_START AS licenseperiodStartdate,  cplicense.LICENSE_PERIOD_END  AS licenseperiodEnd,  cplicense.LICENSE_AFTER_LAST_PURCHASE  AS licenseAfterLastPurchase,  prod.product_description  AS productName  FROM customer_product_license cplicense,  product  prod  WHERE prod.product_id = cplicense.PRODUCT_ID  AND cplicense.PRODUCT_ID =  (SELECT pr.parent_product_id  FROM product pr  WHERE pr.product_id = {productId} \t\t\tAND pr.LICENSE_ENABLED='T')  AND cplicense.CUSTOMER_ID = {customerId}  AND prod.LICENSE_ENABLED='T'  AND NOT EXISTS (SELECT cplicense.CUSTOMER_ID  AS customerId,  cplicense.PRODUCT_ID  AS productId  FROM customer_product_license cplicense,  product  prod  WHERE prod.product_id = cplicense.PRODUCT_ID  AND cplicense.CUSTOMER_ID = {customerId}  AND cplicense.PRODUCT_ID = {productId})")
     CustomerLicense[] getProductLicenseDetails(Integer customerId, Integer productId) throws SQLException;
 
+    //CustomerLicense change
+    @JdbcControl.SQL(statement = "SELECT colicense.CUSTOMER_ID  AS customerId, colicense.PRODUCT_ID  AS productId, colicense.AVAILABLE AS available, colicense.RESERVED   AS reservedLicense, colicense.CONSUMED  AS consumedLicense,colicense.SUBTEST_MODEL AS subtestModel,colicense.LICENSE_AFTER_LAST_PURCHASE AS licenseAfterLastPurchase, prod.product_description AS productName FROM customer_orgnode_license colicense, product prod  WHERE prod.product_id = colicense.PRODUCT_ID    AND colicense.CUSTOMER_ID = {customerId}    AND colicense.PRODUCT_ID = {productId} AND colicense.ORG_NODE_ID = {orgNodeId}    AND prod.LICENSE_ENABLED = 'T' UNION SELECT colicense.CUSTOMER_ID  AS customerId, colicense.PRODUCT_ID  AS productId, colicense.AVAILABLE   AS available, colicense.RESERVED  AS reservedLicense, colicense.CONSUMED AS consumedLicense, colicense.SUBTEST_MODEL  AS subtestModel,colicense.LICENSE_AFTER_LAST_PURCHASE AS licenseAfterLastPurchase, prod.product_description AS productName   FROM customer_orgnode_license colicense, product prod  WHERE prod.product_id = colicense.PRODUCT_ID    AND colicense.PRODUCT_ID =        (SELECT pr.parent_product_id           FROM product pr          WHERE pr.product_id = {productId} AND pr.LICENSE_ENABLED = 'T')    AND colicense.CUSTOMER_ID = {customerId}  AND colicense.ORG_NODE_ID = {orgNodeId}   AND prod.LICENSE_ENABLED = 'T'    AND NOT EXISTS  (SELECT colicense.CUSTOMER_ID AS customerId, colicense.PRODUCT_ID AS productId  FROM customer_orgnode_license colicense, product prod          WHERE prod.product_id = colicense.PRODUCT_ID  AND colicense.CUSTOMER_ID = {customerId} AND colicense.PRODUCT_ID = {productId} AND colicense.ORG_NODE_ID = {orgNodeId})")
+    CustomerLicense[] getProductLicenseForCustomer(Integer orgNodeId, Integer customerId, Integer productId) throws SQLException;
 
     /**
      * @jc:sql statement::
@@ -232,8 +235,9 @@ public interface License extends JdbcControl
      *  where cpl.customer_id = {customerId}
      *  and cpl.product_id = {productId}::
      */
-    @JdbcControl.SQL(statement = "select  decode( count(cpl.customer_id),0,0,1)  from customer_product_license cpl where cpl.customer_id = {customerId} and cpl.product_id = {productId}")
-    boolean isCustomerLicenseExist(Integer customerId, Integer productId) throws SQLException;
+      //CustomerLicense change
+    @JdbcControl.SQL(statement = "select  decode( count(cpl.customer_id),0,0,1)  from customer_orgnode_license cpl where cpl.customer_id = {customerId} and cpl.product_id = {productId} and cpl.org_node_id = {orgNodeId}")
+    boolean isCustomerLicenseExist(Integer customerId, Integer productId, Integer orgNodeId) throws SQLException;
 
     // TABE BAUM 10:  checks whether license exists for a particular orgnode of that customer
     
@@ -260,8 +264,9 @@ public interface License extends JdbcControl
      *    {customerLicense.available}
      *    )::
      */
-    @JdbcControl.SQL(statement = "insert into customer_product_license  (customer_id,  product_id,  available,  reserved,  consumed,  email_notify_flag,  license_after_last_purchase  ) values (  {customerLicense.customerId},  {customerLicense.productId},  {customerLicense.available},  {customerLicense.reservedLicense},  {customerLicense.consumedLicense},  'T',  {customerLicense.available}  )")
-    void addCustomerLicense(CustomerLicense customerLicense) throws SQLException;
+      //CustomerLicense change
+    @JdbcControl.SQL(statement = "insert into customer_orgnode_license  ( org_node_id,customer_id,  product_id, available,  reserved,  consumed,  email_notify_flag,  license_after_last_purchase  ) values ( {orgNodeId}, {customerLicense.customerId},  {customerLicense.productId},  {customerLicense.available},  {customerLicense.reservedLicense},  {customerLicense.consumedLicense},  'T',  {customerLicense.available}  )")
+    void addCustomerLicense(CustomerLicense customerLicense, Integer orgNodeId) throws SQLException;
 
     /**
      * @jc:sql statement::
@@ -273,8 +278,9 @@ public interface License extends JdbcControl
      * where customer_id = {customerLicense.customerId} and 
      * product_id  = {customerLicense.productId}::
      */
-    @JdbcControl.SQL(statement = "update customer_product_license set available = {customerLicense.available}, consumed = {customerLicense.consumedLicense}, email_notify_flag = 'T', license_after_last_purchase = {customerLicense.available} where customer_id = {customerLicense.customerId} and  product_id  = {customerLicense.productId}")
-    void updateCustomerLicensewithAvailableChange(CustomerLicense customerLicense) throws SQLException;
+     //CustomerLicense change
+    @JdbcControl.SQL(statement = "update customer_orgnode_license set available = {customerLicense.available},email_notify_flag = 'T', license_after_last_purchase = {customerLicense.available} where customer_id = {customerLicense.customerId} and  product_id  = {customerLicense.productId} and org_node_id = {orgNodeId}")
+    void updateCustomerLicensewithAvailableChange(CustomerLicense customerLicense,Integer orgNodeId) throws SQLException;
 
     /**
      * @jc:sql statement::

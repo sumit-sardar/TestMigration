@@ -7,6 +7,7 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.LicenseNodeData;
+import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrgNodeLicenseInfo;
 import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.exception.CTBBusinessException;
@@ -47,7 +48,12 @@ public class LicensingImpl implements Licensing
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.Users users;
     
-
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.OrgNode orgNode;
+    
     static final long serialVersionUID = 1L;
 
     /**
@@ -263,12 +269,14 @@ public class LicensingImpl implements Licensing
              String customerName = customer.getCustomerName();
              TestProduct product = this.license.getParentProductId(customerId)[0]; 
              Integer productId =  product.getProductId();     
-             String productName = product.getProductName();   
-              
+             String productName = product.getProductName();
+              //CustomerLicense change
+             Node customerTopNode = orgNode.getTopOrgNodeForCustomer(customerId); 
+             Integer orgNodeId = customerTopNode.getOrgNodeId();
             if ( productId != null && productId.intValue() != 0 ) {
                         
                 customerLicense =  this.license
-                        .getProductLicenseDetails(customerId,productId);
+                        .getProductLicenseForCustomer(orgNodeId,customerId,productId);
              
             } 
             
@@ -308,20 +316,33 @@ public class LicensingImpl implements Licensing
      * @return boolean
      * @throws CTBBusinessException
      */
-     
+      //CustomerLicense change
     public boolean saveOrUpdateCustomerLicenses (CustomerLicense customerLicense) 
             throws CTBBusinessException {
+    	try{
+    		
+    	Node customerTopNode = orgNode.getTopOrgNodeForCustomer(customerLicense.getCustomerId()); 
+        Integer orgNodeId = customerTopNode.getOrgNodeId();
+    	
+            if (isCustomerLicenseExist(customerLicense.getCustomerId(),
+                customerLicense.getProductId(),orgNodeId)) {
+            
+                 return updateCustomerLicenses (customerLicense,orgNodeId);
+            
+              } else {
+            
+                 return addCustomerLicenses (customerLicense,orgNodeId);
+            
+                    } 
+          }catch (SQLException e ) {
+            
+            OrgLicenseDataNotFoundException lde = 
+                    new OrgLicenseDataNotFoundException("platformlicence.getTopOrgNodeForCustomer");
+                    
+            throw lde;
+            
+        }
          
-        if (isCustomerLicenseExist (customerLicense.getCustomerId(),
-                customerLicense.getProductId())) {
-            
-            return updateCustomerLicenses (customerLicense);
-            
-        } else {
-            
-            return addCustomerLicenses (customerLicense);
-            
-        }             
         
     }
     
@@ -333,12 +354,12 @@ public class LicensingImpl implements Licensing
      * @param Integer - productId
      * @throws CTBBusinessException 
      */
-    
-    private boolean  isCustomerLicenseExist (Integer customerId, Integer productId)
+     //CustomerLicense change
+    private boolean  isCustomerLicenseExist (Integer customerId, Integer productId,Integer orgNodeId)
             throws CTBBusinessException {
          try {
             
-            return this.license.isCustomerLicenseExist (customerId, productId);
+            return this.license.isCustomerLicenseExist (customerId, productId, orgNodeId);
             
          } catch (SQLException se) {
             
@@ -383,20 +404,21 @@ public class LicensingImpl implements Licensing
      * @param CustomerLicense - customerLicense
      * @throws CTBBusinessException
      */
-    
-    private boolean updateCustomerLicenses (CustomerLicense customerLicense) 
+     //CustomerLicense change
+    private boolean updateCustomerLicenses (CustomerLicense customerLicense,Integer orgNodeId) 
             throws CTBBusinessException {
         
         try {
-            
-            if (customerLicense.getAvailableLicenseChange()) {
+            this.license.updateCustomerLicensewithAvailableChange(customerLicense,orgNodeId);
+            // can be used in case when avaliable and consumed needed to be updated
+           /* if (customerLicense.getAvailableLicenseChange()) {
                 
                 this.license.updateCustomerLicensewithAvailableChange(customerLicense);
                 
             } else {
                 
                 this.license.updateCustomerLicensewithoutAvailableChange(customerLicense);
-            }
+            }*/
            
          } catch (SQLException se) {
             
@@ -418,12 +440,12 @@ public class LicensingImpl implements Licensing
      * @param CustomerLicense - customerLicense
      * @throws CTBBusinessException
      */
-    
-    private boolean addCustomerLicenses (CustomerLicense customerLicense)
+    //CustomerLicense change
+    private boolean addCustomerLicenses (CustomerLicense customerLicense, Integer orgNodeId)
             throws CTBBusinessException {
                 
         try {
-            this.license.addCustomerLicense(customerLicense);
+            this.license.addCustomerLicense(customerLicense, orgNodeId);
             
          } catch (SQLException se) {
             
