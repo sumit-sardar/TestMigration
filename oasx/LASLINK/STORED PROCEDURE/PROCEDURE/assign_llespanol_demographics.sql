@@ -18,15 +18,15 @@ begin
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
     values (g_id, 'cubano', 'cubano', 3, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'cubano-mexicano', 'cubano-mexicano', 4, 'T', 1, sysdate);
+    values (g_id, 'cubano-americano', 'cubano-americano', 4, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'puertorriqueno', 'puertorriqueno', 5, 'T', 1, sysdate);
+    values (g_id, 'puertorriqueño', 'puertorriqueño', 5, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
     values (g_id, 'dominicano', 'dominicano', 6, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
     values (g_id, 'centroamericano', 'centroamericano', 7, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'sudaamericano', 'sudaamericano', 8, 'T', 1, sysdate);
+    values (g_id, 'sudamericano', 'sudamericano', 8, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
     values (g_id, 'otro', 'otro', 9, 'T', 1, sysdate);
 
