@@ -222,21 +222,18 @@ public class OASDBSource
             copyAccomodationsDataToResponse(loginResponse, accomData);
         }
 
-        ConsolidatedRestartData restartData = null;
-        if (loginResponse.getRestartFlag() && manifestData.length > 0 ){
-        	restartData = loginResponse.addNewConsolidatedRestartData();
-        }
-        //END
+        boolean gotRestart = false;
         for(int i=0; i<manifestData.length ;i++) {
             if(Constants.StudentTestCompletionStatus.SCHEDULED_STATUS.equals(manifestData[i].getCompletionStatus()) ||
                Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS.equals(manifestData[i].getCompletionStatus()) ||
                Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
                Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
                Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS.equals(manifestData[i].getCompletionStatus())) {
-                if(loginResponse.getRestartFlag() && 
+                if(!gotRestart && loginResponse.getRestartFlag() && 
                 		(manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
                 		 manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS))) {
-                    manifestData[i].setTotalTime(getTotalElapsedTimeForSubtest(conn, testRosterId, manifestData[i].getId()));
+                	ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
+                	manifestData[i].setTotalTime(getTotalElapsedTimeForSubtest(conn, testRosterId, manifestData[i].getId()));
                     //System.out.print("7");
                     int remSec = (manifestData[i].getScoDurationMinutes() * 60) - manifestData[i].getTotalTime();
                     ItemResponseData [] itemResponseData = getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
@@ -245,6 +242,7 @@ public class OASDBSource
                     copyRestartDataToResponse(lsid, testRosterId, manifestData[i].getId(), loginResponse, itemResponseData, remSec, 
                     		Integer.parseInt(manifestData[i].getAdsid()), manifestData[i].getScratchpadContentStr(), restartData);
                     		//END
+                    gotRestart = true;
                 }
             }
         }

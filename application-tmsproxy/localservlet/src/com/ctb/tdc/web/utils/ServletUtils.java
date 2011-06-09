@@ -165,7 +165,7 @@ public class ServletUtils {
 	 */
 	public static void writeResponse(HttpServletResponse response, String xml, String mseq) {
 		try {
-			System.out.println(xml);
+			//System.out.println(xml);
 			//if((mseq == null || lastMseq == null) || !mseq.equals(lastMseq)) {
 				response.setContentType("text/xml");
 				response.setStatus(response.SC_OK);

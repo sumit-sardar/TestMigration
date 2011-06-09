@@ -94,7 +94,7 @@ public class LoadContentServlet extends HttpServlet {
             doGet(request, response);            
         }
         
-        logger.info("LoadContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+        System.out.println("LoadContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
     }
     
 	/**
@@ -127,7 +127,7 @@ public class LoadContentServlet extends HttpServlet {
         
         handleEvent(request, response, method, itemSetId, itemId, imageId);
         
-        logger.info("took " + (System.currentTimeMillis() - startTime) + "\n");
+        System.out.println("took " + (System.currentTimeMillis() - startTime) + "\n");
 	}
 
 
@@ -326,7 +326,7 @@ public class LoadContentServlet extends HttpServlet {
         }
         catch( Exception e )
         {
-            logger.error("Exception in loadSubtest() : " + ServletUtils.printStackTrace(e));
+        	System.out.println("Exception in loadSubtest() : " + ServletUtils.printStackTrace(e));
             result = false;
         }     
         return result;
@@ -428,7 +428,7 @@ public class LoadContentServlet extends HttpServlet {
         }
         catch( Exception e )
         {
-            logger.error("exception thrown in imageReady()");
+        	System.out.println("exception thrown in imageReady()");
         }
         return ready;
     }

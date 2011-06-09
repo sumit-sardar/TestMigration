@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import sun.misc.BASE64Encoder;
+
 import me.prettyprint.cassandra.model.BasicColumnFamilyDefinition;
 import me.prettyprint.cassandra.model.BasicKeyspaceDefinition;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -120,11 +122,11 @@ public class ADSHectorSink {
 						}
 						
 						public String getDefaultValidationClass() {
-							return "org.apache.cassandra.db.marshal.UTF8Type";
+							return "org.apache.cassandra.db.marshal.BytesType";
 						}
 						
 						public ComparatorType getComparatorType() {
-							return ComparatorType.UTF8TYPE;
+							return ComparatorType.BYTESTYPE;
 						}
 						
 						public String getComment() {
@@ -139,7 +141,7 @@ public class ADSHectorSink {
 							ColumnDefinition subtestCD = new ColumnDefinition() {
 								
 								public String getValidationClass() {
-									return "org.apache.cassandra.db.marshal.UTF8Type";
+									return "org.apache.cassandra.db.marshal.BytesType";
 								}
 								
 								public ByteBuffer getName() {
@@ -222,11 +224,11 @@ public class ADSHectorSink {
 						}
 						
 						public String getDefaultValidationClass() {
-							return "org.apache.cassandra.db.marshal.UTF8Type";
+							return "org.apache.cassandra.db.marshal.BytesType";
 						}
 						
 						public ComparatorType getComparatorType() {
-							return ComparatorType.UTF8TYPE;
+							return ComparatorType.BYTESTYPE;
 						}
 						
 						public String getComment() {
@@ -241,7 +243,7 @@ public class ADSHectorSink {
 							ColumnDefinition subtestCD = new ColumnDefinition() {
 								
 								public String getValidationClass() {
-									return "org.apache.cassandra.db.marshal.UTF8Type";
+									return "org.apache.cassandra.db.marshal.BytesType";
 								}
 								
 								public ByteBuffer getName() {
@@ -283,6 +285,7 @@ public class ADSHectorSink {
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
 		String key = itemSetId + ":" + hash;
+		//String encXML = new BASE64Encoder().encode(xml.getBytes());
 		mutator.insert(key, "Subtests", HFactory.createStringColumn("subtestXML", xml));
 	}
 	
@@ -291,6 +294,7 @@ public class ADSHectorSink {
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
 		String key = itemId + ":" + hash;
+		//String encXML = new BASE64Encoder().encode(xml.getBytes());
 		mutator.insert(key, "Items", HFactory.createStringColumn("itemXML", xml));
 	}
 }

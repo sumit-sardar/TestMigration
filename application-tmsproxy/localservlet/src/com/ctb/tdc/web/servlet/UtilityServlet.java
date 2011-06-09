@@ -97,7 +97,7 @@ public class UtilityServlet extends HttpServlet {
         	//exit();
         }    
         
-        logger.info("UtilityServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+        System.out.println("UtilityServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
     }
 	
 	public static synchronized void exit() {
@@ -329,8 +329,7 @@ public class UtilityServlet extends HttpServlet {
 		        myOutput.close();	
 	        
 	 } catch (Exception e) {
-		logger.error("Exception occured in getImage() : "
-				+ ServletUtils.printStackTrace(e));
+		 System.out.println("Exception occured in getImage() : " + ServletUtils.printStackTrace(e));
 		ServletUtils.writeResponse(response, ServletUtils.ERROR);
 	 }
    }

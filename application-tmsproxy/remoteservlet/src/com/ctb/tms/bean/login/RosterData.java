@@ -1,11 +1,12 @@
 package com.ctb.tms.bean.login;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.TimeZone;
 
 import noNamespace.TmssvcResponseDocument;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd;
 
 import com.ctb.tms.exception.testDelivery.AuthenticationFailureException;
 import com.ctb.tms.exception.testDelivery.KeyEnteredResponsesException;
@@ -111,6 +112,13 @@ public class RosterData {
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.INTERNAL_SERVER_ERROR_STATUS);
         }
+        /*ConsolidatedRestartData restartData = response.getTmssvcResponse().getLoginResponse().getConsolidatedRestartData();
+        if(restartData != null) {
+	        Tsd[] restartManifest = restartData.getTsdArray();
+	        if (restartManifest == null || restartManifest.length < 1) {
+	        	response.getTmssvcResponse().getLoginResponse().setConsolidatedRestartData(null);
+	        }
+        }*/
 		return response;
 	}
 	public void setDocument(TmssvcResponseDocument document) {

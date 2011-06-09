@@ -2,6 +2,8 @@ package com.ctb.tms.nosql;
 
 import java.io.IOException;
 
+import sun.misc.BASE64Decoder;
+
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.Keyspace;
@@ -28,6 +30,8 @@ public class ADSHectorSource {
 		} else {
 			System.out.println("*****  getSubtest: no subtest data found for " + key);
 		}
+		//byte [] bytes = new BASE64Decoder().decodeBuffer(result);
+		//result = new String(bytes);
 		return result;
 	}
 	
@@ -43,6 +47,8 @@ public class ADSHectorSource {
 		} else {
 			System.out.println("*****  getItem: no item data found for " + key);
 		}
+		//byte [] bytes = new BASE64Decoder().decodeBuffer(result);
+		//result = new String(bytes);
 		return result;
 	}
 

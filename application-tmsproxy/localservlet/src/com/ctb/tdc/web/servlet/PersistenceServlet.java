@@ -109,7 +109,7 @@ public class PersistenceServlet extends HttpServlet {
         String xml = ServletUtils.getXml(request);
         handleEvent(response, method, xml);    
         
-        logger.info("PersistenceServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+        System.out.println("PersistenceServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
 	}
 
     /**
@@ -128,7 +128,7 @@ public class PersistenceServlet extends HttpServlet {
                 
         // call method to perform an action only if servlet settings is valid
         if (! validSettings) {
-        	logger.error("PersistenceServlet: Invalid settings!");
+        	System.out.println("PersistenceServlet: Invalid settings!");
             result = ServletUtils.getServletSettingsErrorMessage();
         }
         else if (method != null && method.equals(ServletUtils.VERIFY_SETTINGS_METHOD))
@@ -152,7 +152,7 @@ public class PersistenceServlet extends HttpServlet {
         
         // return response to client
         if (result != null) {
-        	//System.out.println(result);
+        	System.out.println(result);
         	String mseq = ServletUtils.parseMseq(xml);
             ServletUtils.writeResponse(response, result, mseq);
         }
@@ -211,7 +211,7 @@ public class PersistenceServlet extends HttpServlet {
             }
         } 
         catch (Exception e) {
-        	logger.info("Exception occured in login() : " + ServletUtils.printStackTrace(e));
+        	System.out.println("Exception occured in login() : " + ServletUtils.printStackTrace(e));
             result = ServletUtils.buildXmlErrorMessage("", e.getMessage(), ""); 
         }
         return result;
@@ -253,7 +253,7 @@ public class PersistenceServlet extends HttpServlet {
         	}
         } 
         catch (Exception e) {
-            logger.error("Exception occured in feedback() : " + ServletUtils.printStackTrace(e));
+        	System.out.println("Exception occured in feedback() : " + ServletUtils.printStackTrace(e));
             result = ServletUtils.buildXmlErrorMessage("", e.getMessage(), ""); 
         }
         return result;
@@ -292,7 +292,7 @@ public class PersistenceServlet extends HttpServlet {
             }
         } 
         catch (Exception e) {
-            logger.error("mseq " + mseq + ": Exception occured in save() : " + e.getMessage());
+        	System.out.println("mseq " + mseq + ": Exception occured in save() : " + e.getMessage());
             e.printStackTrace();
             errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.noAck");
             result = ServletUtils.buildXmlErrorMessage("", errorMessage, ""); 
@@ -369,7 +369,7 @@ public class PersistenceServlet extends HttpServlet {
             result = ServletUtils.OK; // nothing return from TMS
         } 
         catch (Exception e) {
-            logger.error("Exception occured in writeToAuditFile() : " + ServletUtils.printStackTrace(e));
+        	System.out.println("Exception occured in writeToAuditFile() : " + ServletUtils.printStackTrace(e));
             errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.writeToAuditFileFailed");
             result = ServletUtils.buildXmlErrorMessage("", errorMessage, ""); 
         }
@@ -652,7 +652,7 @@ public class PersistenceServlet extends HttpServlet {
                 catch( Exception e )
                 {
                     errorMsg = ServletUtils.getErrorMessage( "tdc.servlet.error.noAck" );
-                    logger.error( errorMsg );
+                    System.out.println( errorMsg );
                     errorMsg = ServletUtils.buildXmlErrorMessage( "", errorMsg, "" );
                 }
             }
