@@ -79,7 +79,7 @@
     </tr>
     <tr class="transparent">
         <td class="transparent alignRight" width="150"><netui:content value="Scheduled:"/></td>
-        <td class="transparent" nowrap><netui:label value="${licneseNodeData.reserved}"/></td>
+        <td class="transparent" nowrap><netui:label value="${actionForm.licenseNode.reserved}"/></td>
     </tr>
     <tr class="transparent">
         <td class="transparent alignRight" width="150" nowrap><netui:content value="Consumed:"/></td>
@@ -95,9 +95,9 @@
 </p>
 <p>
     <netui:button type="submit" value="Save" action="addEditCustomerLicense"/>
-    <netui:button type="submit" value="Cancel" action="cancelCurrentAction"/>
+    <netui:button type="submit" value="Done" action="cancelCurrentAction"/>
 </p>
 </netui:form>
-
+ 
 </netui-template:section>
 </netui-template:template>

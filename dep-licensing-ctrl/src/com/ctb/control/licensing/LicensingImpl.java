@@ -265,6 +265,7 @@ public class LicensingImpl implements Licensing
             
                              
              CustomerLicense []customerLicense  = null;  
+             CustomerLicense [] cl=null;
              Customer customer = customers.getCustomerDetails(customerId);
              String customerName = customer.getCustomerName();
              TestProduct product = this.license.getParentProductId(customerId)[0]; 
@@ -277,12 +278,16 @@ public class LicensingImpl implements Licensing
                         
                 customerLicense =  this.license
                         .getProductLicenseForCustomer(orgNodeId,customerId,productId);
-             
-            } 
+                cl = license.getTotalConsumedReservedQuantityByAncestorOrgNode(orgNodeId,productId); 
+              } 
             
-            if (customerLicense != null && customerLicense.length > 0 ) {
-                customerLicense[0].setCustomerName(customerName);
-                return customerLicense[0];
+                if (customerLicense != null && customerLicense.length > 0 ) {
+                	 if (cl != null && cl.length > 0 ) {
+                		 customerLicense[0].setConsumedLicense(cl[0].getConsumedLicense());
+                		 customerLicense[0].setReservedLicense(cl[0].getReservedLicense());
+                	 }
+                	  customerLicense[0].setCustomerName(customerName);
+                	 return customerLicense[0];
                 
             } else {
                 
@@ -298,7 +303,7 @@ public class LicensingImpl implements Licensing
         } catch (SQLException e ) {
             
             OrgLicenseDataNotFoundException lde = 
-                    new OrgLicenseDataNotFoundException("platformlicence.addCustomerLicenses.E0014");
+                    new OrgLicenseDataNotFoundException("platformlicence.getCustomerLicenses.E0014");
                     
             throw lde;
             
