@@ -99,9 +99,15 @@ public class TMSServlet extends HttpServlet {
 		TmssvcRequestDocument document = TmssvcRequestDocument.Factory.parse(xml);
 		LoginRequest lr = document.getTmssvcRequest().getLoginRequest();
 		StudentCredentials creds = new StudentCredentials();
-		creds.setUsername("jared-john-1122");//lr.getUserName());
-		creds.setPassword("atone8");//lr.getPassword());
-		creds.setAccesscode("overhang84");//lr.getAccessCode());
+		if(lr.getUserName() == null || lr.getUserName().trim().length() < 1) {
+			creds.setUsername("jared-john-1122");//lr.getUserName());
+			creds.setPassword("atone8");//lr.getPassword());
+			creds.setAccesscode("overhang84");//lr.getAccessCode());
+		} else {
+			creds.setUsername(lr.getUserName());
+			creds.setPassword(lr.getPassword());
+			creds.setAccesscode(lr.getAccessCode());
+		}
 		RosterData rd = OASHectorSource.getRosterData(creds);
 		return rd.getLoginDocument().xmlText();
 	}
