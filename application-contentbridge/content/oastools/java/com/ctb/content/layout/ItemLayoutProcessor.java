@@ -2094,7 +2094,7 @@ public class ItemLayoutProcessor
             else if ( isSWF )
             {
                 SWFImageSizeDeterminer aImageDeterminer = new SWFImageSizeDeterminer( filePath );
-                aImageDeterminer.checkSize();
+               aImageDeterminer.checkSize();
                 lml.setAttribute( "height", String.valueOf( aImageDeterminer.getHeight() ) );
                 lml.setAttribute( "width", String.valueOf( aImageDeterminer.getWidth() ) );                   
             }
@@ -2745,6 +2745,7 @@ public class ItemLayoutProcessor
             manipulateMapping.put( "scratchpad", "scratchpad" );
             manipulateMapping.put( "required", "required" );
             manipulateMapping.put( "accommodated", "accommodated" );
+            manipulateMapping.put( "masking_ruler", "masking_ruler" );
         }
         if ( allManipulateMapping == null )
         {
@@ -2764,6 +2765,7 @@ public class ItemLayoutProcessor
             allManipulateMapping.put( "highlighter", "required" );
             allManipulateMapping.put( "straight_edge", "not provisioned" );
             allManipulateMapping.put( "scratchpad", "not provisioned" );
+            allManipulateMapping.put( "masking_ruler", "required" );
         }
     }
     
