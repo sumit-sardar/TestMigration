@@ -554,7 +554,7 @@ public class OASDBSource
 			DataSource ds = (DataSource)envContext.lookup("jdbc/OASDataSource");
 			newConn = ds.getConnection(); 
 			haveDataSource = true;
-			System.out.println("*****  Using OASDataSource for DB connection");
+			//System.out.println("*****  Using OASDataSource for DB connection");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			haveDataSource = false;
@@ -567,7 +567,7 @@ public class OASDBSource
 			props.put("password", OASDatabaseUserPassword);
 			Driver driver = (Driver) Class.forName(OASDatabaseJDBCDriver).newInstance();
 			newConn = driver.connect(OASDatabaseURL, props);
-			System.out.println("*****  Using local properties for OAS DB connection");
+			//System.out.println("*****  Using local properties for OAS DB connection");
 		}
 
 		return newConn;

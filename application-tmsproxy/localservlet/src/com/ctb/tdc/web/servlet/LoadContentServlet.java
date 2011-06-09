@@ -127,7 +127,7 @@ public class LoadContentServlet extends HttpServlet {
         
         handleEvent(request, response, method, itemSetId, itemId, imageId);
         
-        System.out.println("took " + (System.currentTimeMillis() - startTime) + "\n");
+        System.out.println("LoadContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
 	}
 
 

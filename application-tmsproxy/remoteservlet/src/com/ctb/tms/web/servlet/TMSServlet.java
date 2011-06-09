@@ -48,7 +48,7 @@ public class TMSServlet extends HttpServlet {
 		String result = ServletUtils.OK;
 		try {
 			String xml = request.getParameter("requestXML");
-			System.out.println(xml);
+			//System.out.println(xml);
 			
 			if (method != null && method.equals(ServletUtils.LOGIN_METHOD))
 	            result = login(xml);
@@ -164,7 +164,7 @@ public class TMSServlet extends HttpServlet {
                 	result = ServletUtils.DOWNLOAD_ITEM_METHOD;
 			}
 		}       	
-        System.out.println(result);
+        //System.out.println(result);
     	return result;
 	}
 

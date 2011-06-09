@@ -152,7 +152,7 @@ public class PersistenceServlet extends HttpServlet {
         
         // return response to client
         if (result != null) {
-        	System.out.println(result);
+        	//System.out.println(result);
         	String mseq = ServletUtils.parseMseq(xml);
             ServletUtils.writeResponse(response, result, mseq);
         }

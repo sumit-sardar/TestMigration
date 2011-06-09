@@ -170,7 +170,7 @@ public class ContentServlet extends HttpServlet {
 				
 				String filePath = subtestId + ContentFile.SUBTEST_FILE_EXTENSION;
 				
-				System.out.println("*****  subtest path: " + filePath);
+				//System.out.println("*****  subtest path: " + filePath);
 	
 				boolean validHash = false;
 				
@@ -181,7 +181,7 @@ public class ContentServlet extends HttpServlet {
 				}
 				
 				if (!validHash) {
-					System.out.println("*****  No valid local file, retrieving.");
+					//System.out.println("*****  No valid local file, retrieving.");
 					String result = "";
 					MemoryCache memoryCache = MemoryCache.getInstance();
 		        	int TMSRetryCount = memoryCache.getSrvSettings().getTmsMessageRetryCount();
@@ -216,7 +216,7 @@ public class ContentServlet extends HttpServlet {
 				}
 				byte[] decryptedContent = ContentFile.decryptFile(filePath, hash,
 						key);
-				System.out.println("***** decrypted subtest xml: " + new String(decryptedContent));
+				//System.out.println("***** decrypted subtest xml: " + new String(decryptedContent));
 				response.setContentType("text/xml");
 				int size = decryptedContent.length;
 				response.setContentLength(size);

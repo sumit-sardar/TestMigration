@@ -57,7 +57,7 @@ public class ADSDBSource {
 			DataSource ds = (DataSource)envContext.lookup("jdbc/ADSDataSource");
 			newConn = ds.getConnection();  
 			haveDataSource = true;
-			System.out.println("*****  Using ADSDataSource for DB connection");
+			//System.out.println("*****  Using ADSDataSource for DB connection");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 			haveDataSource = false;
@@ -70,7 +70,7 @@ public class ADSDBSource {
 			props.put("password", ADSDatabaseUserPassword);
 			Driver driver = (Driver) Class.forName(ADSDatabaseJDBCDriver).newInstance();
 			newConn = driver.connect(ADSDatabaseURL, props);
-			System.out.println("*****  Using local properties for ADS DB connection");
+			//System.out.println("*****  Using local properties for ADS DB connection");
 		}
 
 		return newConn;

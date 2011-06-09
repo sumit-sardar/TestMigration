@@ -202,7 +202,7 @@ public class OASHectorSink {
 			QueryResult<HColumn<String, String>> result = columnQuery.execute();
 			System.out.println(result.get().getValue());
 			*/
-			System.out.println("*****  Created OAS keyspace.");
+			//System.out.println("*****  Created OAS keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
 			//e.printStackTrace();
