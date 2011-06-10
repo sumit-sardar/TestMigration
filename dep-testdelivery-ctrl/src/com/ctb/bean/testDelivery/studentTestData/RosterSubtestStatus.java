@@ -13,7 +13,7 @@ public class RosterSubtestStatus
     private int lastMseq;
     private int rawScore;
     private String recommendedLevel;
-    private String scoreable;
+    private String scorable;
     
     public Date getUpdatedDateTime() {
         return this.updatedDateTime;
@@ -105,12 +105,12 @@ public class RosterSubtestStatus
 		this.recommendedLevel = recommendedLevel;
 	}
 
-	public String getScoreable() {
-		return scoreable;
+	public String getScorable() {
+		return scorable;
 	}
 
-	public void setScoreable(String scoreable) {
-		this.scoreable = scoreable;
+	public void setScorable(String scorable) {
+		this.scorable = scorable;
 	}
 	
 	

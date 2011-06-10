@@ -573,7 +573,7 @@ public class StudentTestDataImpl implements StudentTestData
                         if(!statusList[i].getSubtestCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
                             allSubtestsComplete = false;
                         }
-                        if(statusList[i].getScoreable().equals("T")) {
+                        if((statusList[i].getScorable() != null) && statusList[i].getScorable().equals("T")) {
                         	scorable = true;
                         }
                     }
@@ -870,7 +870,7 @@ public class StudentTestDataImpl implements StudentTestData
                 if(!statusList[i].getSubtestCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
                     allSubtestsComplete = false;
                 }
-                if(statusList[i].getScoreable().equals("T")) {
+                if((statusList[i].getScorable() != null) && statusList[i].getScorable().equals("T")) {
                 	scorable = true;
                 }
             }
