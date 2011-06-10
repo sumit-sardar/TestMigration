@@ -40,6 +40,7 @@ import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
+import com.ctb.bean.studentManagement.MusicFiles; // Added for Auditory Calming
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.StudentAccommodations;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
@@ -526,7 +527,7 @@ public class ManageStudentController extends PageFlowController
 	//START- FORM RECOMMENDATION
 	@Jpf.Action(forwards={
 			@Jpf.Forward(name = "success", 
-					path ="listOfItem.jsp")
+					path ="")
 	})
 	protected Forward goto_student_registration_popup(ManageStudentForm form){
 			
@@ -842,7 +843,15 @@ public class ManageStudentController extends PageFlowController
 		String importStudentEditable = this.user.getCustomer().getImportStudentEditable();
 		this.getRequest().setAttribute("importStudentEditable", importStudentEditable);       
 
-		this.getRequest().setAttribute("customerConfigurations", this.customerConfigurations);       
+		this.getRequest().setAttribute("customerConfigurations", this.customerConfigurations);    
+		
+		try{
+		MusicFiles[] musicList = this.studentManagement.getMusicFiles();	
+		this.getRequest().setAttribute("musicList", musicList);
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
 
 	}
 
@@ -1472,10 +1481,12 @@ public class ManageStudentController extends PageFlowController
 			this.accommodations.setFontSize(fontSize);
 		}
 		//Added for music files of Auditory Calming
-		String musicFiles = this.getRequest().getParameter("music_files");
-		if (musicFiles != null)
-		{
-			this.accommodations.setMusic_files(musicFiles);
+		if(this.accommodations.getAuditoryCalming()){
+			Integer musicFiles = Integer.parseInt(this.getRequest().getParameter("music_files"));
+			if (musicFiles != null)
+			{
+				this.accommodations.setMusic_files(musicFiles);
+			}
 		}
 	}
 

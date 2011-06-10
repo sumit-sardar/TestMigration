@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ page import="com.ctb.bean.studentManagement.CustomerConfiguration"%>
 <%@ page import="dto.StudentAccommodationsDetail"%>
+<%@ page import="com.ctb.bean.studentManagement.MusicFiles"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
@@ -16,12 +17,13 @@
     StudentAccommodationsDetail accommodations = (StudentAccommodationsDetail)request.getAttribute("accommodations");
     CustomerConfiguration[] customerConfigurations = (CustomerConfiguration[])request.getAttribute("customerConfigurations");
 	Boolean viewOnly = (Boolean) request.getAttribute("viewOnly");
+	MusicFiles[] musicList = (MusicFiles[])request.getAttribute("musicList");
 %>
 
 <input type="hidden" name="param" id="param" value="">
 
 
-<ctbweb:studentAccommodations accommodations="<%=accommodations%>" customerConfigurations="<%=customerConfigurations%>" viewOnly="<%=viewOnly%>" />
+<ctbweb:studentAccommodations accommodations="<%=accommodations%>" customerConfigurations="<%=customerConfigurations%>" viewOnly="<%=viewOnly%>" musicList="<%=musicList%>" />
 
 <br/>
 

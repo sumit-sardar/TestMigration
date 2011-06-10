@@ -238,9 +238,6 @@ function enableColorSettingsLink(enabled)
     var standartFont = document.getElementById("standartFont");
     var largeFont = document.getElementById("largeFont");
     var previewColor = document.getElementById("previewColor");
-    var maskingRuler = document.getElementById("Masking_Ruler");
-    var musicPlayer = document.getElementById("Auditory_Calming");
-    var audioFiles = document.getElementById('music_files');
     
     if (enabled == "true") {
         questionBg.removeAttribute("disabled");
@@ -250,10 +247,6 @@ function enableColorSettingsLink(enabled)
         standartFont.removeAttribute("disabled");
         largeFont.removeAttribute("disabled");
         previewColor.removeAttribute("disabled");
-        if(maskingRuler != null)
-	        maskingRuler.removeAttribute("disabled");
-	        
-	    musicPlayer.removeAttribute("disabled");
     }
     else {    
         questionBg.selectedIndex = 5;   
@@ -279,12 +272,7 @@ function enableColorSettingsLink(enabled)
         var standartFont = document.getElementById("standartFont");
         standartFont.checked = true;
         setFontSize('14px'); 
-        if(maskingRuler != null)
-        	maskingRuler.checked=false;
 
-        	musicPlayer.checked=false;
-        audioFiles.selectedIndex=0;
-        
         questionBg.setAttribute("disabled", "true");
         questionFor.setAttribute("disabled", "true");
         answerBg.setAttribute("disabled", "true");
@@ -292,10 +280,6 @@ function enableColorSettingsLink(enabled)
         standartFont.setAttribute("disabled", "true");
         largeFont.setAttribute("disabled", "true");
         previewColor.setAttribute("disabled", "true");
-        if(maskingRuler != null)
-        	maskingRuler.setAttribute("disabled", "true");
-        musicPlayer.setAttribute("disabled", "true");
-        audioFiles.setAttribute("disabled", "true");
     }
 
    	return true;
@@ -718,7 +702,13 @@ function verifyExitAddEditStudent(){
 
 
 function enableAudioFiles() {
-
+	
 	var audioFiles = document.getElementById('music_files');
-	audioFiles.removeAttribute("disabled");
+	var musicPlayer = document.getElementById('Auditory_Calming');
+	if(musicPlayer.checked)
+		audioFiles.removeAttribute("disabled");
+	else {
+		audioFiles.setAttribute("disabled", "true");
+		audioFiles.selectedIndex=0;
+	}
 }

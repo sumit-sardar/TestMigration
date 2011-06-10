@@ -43,7 +43,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
     
     private Boolean maskingRuler = Boolean.FALSE; // Added for Masking Ruler
     private Boolean auditoryCalming = Boolean.FALSE;// Added for Auditory Calming
-    private String music_files = null;// Added for Auditory Calming
+    private Integer music_files = 0;// Added for Auditory Calming
     
     public StudentAccommodationsDetail() {
     }
@@ -103,7 +103,6 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         
         if (sa.getMusicFile() != null){
         	this.music_files = sa.getMusicFile();
-        	this.colorFont = Boolean.TRUE;
         	this.auditoryCalming = Boolean.TRUE;
         }
     }
@@ -233,6 +232,9 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         copied.setAnswer_fontColor(this.answer_fontColor);
 
         copied.setFontSize(this.fontSize);
+        
+        //Added for Masking Ruler
+        copied.setMaskingRuler(this.maskingRuler);
 
         return copied;
     }
@@ -291,6 +293,34 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
     public void setUntimedTest(Boolean untimedTest) {
         this.untimedTest = untimedTest;
     }
+    
+    //START - Added for masking ruler and auditory calming
+    public Boolean getMaskingRuler() {
+		return maskingRuler;
+	}
+
+	public void setMaskingRuler(Boolean maskingRuler) {
+		this.maskingRuler = maskingRuler;
+	}
+
+	public Boolean getAuditoryCalming() {
+		return auditoryCalming;
+	}
+
+	public void setAuditoryCalming(Boolean auditoryCalming) {
+		this.auditoryCalming = auditoryCalming;
+	}
+
+	public Integer getMusic_files() {
+		return music_files;
+	}
+
+	public void setMusic_files(Integer music_files) {
+		this.music_files = music_files;
+	}
+	//END - Added for masking ruler and auditory calming
+
+    
     /**
 	 * @return Returns the highlighter.
 	 */
@@ -483,31 +513,6 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
 	public void setSelectedColorFont(String selectedColorFont) {
 		this.selectedColorFont = selectedColorFont;
 	}
-
-	public Boolean getMaskingRuler() {
-		return maskingRuler;
-	}
-
-	public void setMaskingRuler(Boolean maskingRuler) {
-		this.maskingRuler = maskingRuler;
-	}
-
-	public Boolean getAuditoryCalming() {
-		return auditoryCalming;
-	}
-
-	public void setAuditoryCalming(Boolean auditoryCalming) {
-		this.auditoryCalming = auditoryCalming;
-	}
-
-	public String getMusic_files() {
-		return music_files;
-	}
-
-	public void setMusic_files(String music_files) {
-		this.music_files = music_files;
-	}
-
 	//End Bulk Accommodation Changes
     
 }

@@ -15,6 +15,7 @@ import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.bean.studentManagement.StudentDemographicData;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
+import com.ctb.bean.studentManagement.MusicFiles; // Added for Auditory Calming
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.Student;
@@ -1054,5 +1055,8 @@ public interface StudentManagement extends JdbcControl
              arrayMaxLength = 100000)
      StudentSessionStatus [] getStudentMostResentSessionDetail(Integer studentId) throws SQLException;
 
-	
+     
+	//Added for Auditory Calming
+     @JdbcControl.SQL(statement = "select file_id as fileId, audio_file_name as audioFileName from music_file_list")
+     MusicFiles[] getMusicFilesList() throws SQLException;
 }

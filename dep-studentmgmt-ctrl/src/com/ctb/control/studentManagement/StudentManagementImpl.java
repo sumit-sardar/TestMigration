@@ -26,6 +26,7 @@ import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicData;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
+import com.ctb.bean.studentManagement.MusicFiles; // Added for Auditory Calming
 import com.ctb.bean.testAdmin.CustomerReport;
 import com.ctb.bean.testAdmin.CustomerReportData;
 import com.ctb.bean.testAdmin.Node;
@@ -2531,5 +2532,24 @@ public class StudentManagementImpl implements StudentManagement
 		}
 		
 	}
-		//END- TABE BAUM 20 Fprm Recommendation
+		//END- TABE BAUM 20 Form Recommendation
+	
+	
+	//Added for Auditory Calming
+	public MusicFiles[] getMusicFiles() throws CTBBusinessException {
+		
+		try{
+			MusicFiles [] musicFileList = null;
+			
+			musicFileList = studentManagement.getMusicFilesList();
+			
+			return musicFileList;
+		}
+		catch(Exception e){
+			
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getMusicFiles: " );
+			tee.setStackTrace(e.getStackTrace());
+			throw tee;
+		}
+	}
 } 

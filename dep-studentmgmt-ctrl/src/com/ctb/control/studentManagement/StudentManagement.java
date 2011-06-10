@@ -483,4 +483,8 @@ public interface StudentManagement
     
     StudentSessionStatus[] getStudentMostResentSessionDetail(Integer studentId) throws  com.ctb.exception.CTBBusinessException;
     
+    
+    // Added for Auditory Calming
+    
+    com.ctb.bean.studentManagement.MusicFiles[] getMusicFiles() throws com.ctb.exception.CTBBusinessException;
 } 
