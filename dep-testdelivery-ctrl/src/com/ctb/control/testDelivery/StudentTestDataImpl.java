@@ -573,7 +573,7 @@ public class StudentTestDataImpl implements StudentTestData
                         if(!statusList[i].getSubtestCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
                             allSubtestsComplete = false;
                         }
-                        if(isScorableItemSet(statusList[i].getItemSetId())) {
+                        if(statusList[i].getScoreable().equals("T")) {
                         	scorable = true;
                         }
                     }
@@ -854,6 +854,8 @@ public class StudentTestDataImpl implements StudentTestData
         try {
             boolean foundItemSet = false;
             boolean allSubtestsComplete = true;
+            boolean scorable = false;
+
             for(int i=0;i<statusList.length;i++) {
                 if(statusList[i].getItemSetId() == itemSetId) {
                      foundItemSet = true;
@@ -867,6 +869,9 @@ public class StudentTestDataImpl implements StudentTestData
                 }
                 if(!statusList[i].getSubtestCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
                     allSubtestsComplete = false;
+                }
+                if(statusList[i].getScoreable().equals("T")) {
+                	scorable = true;
                 }
             }
             if(!foundItemSet) {
@@ -886,7 +891,7 @@ public class StudentTestDataImpl implements StudentTestData
             saver.updateTestRosterTimeStampWithMseq(testRosterId, new Date(), mSeq);
             
             // if all subtests are complete, score the roster
-            if(allSubtestsComplete && isScorableItemSet(itemSetId)) {
+            if(allSubtestsComplete && scorable) {
                 // old Weblogic 8.1 JMS call
             	//scorer.sendObjectMessage(new Integer(testRosterId));
             	try{
@@ -910,292 +915,6 @@ public class StudentTestDataImpl implements StudentTestData
         }
     }
     
-    private static boolean isScorableItemSet(int itemSetId) {
-    	return
-    	itemSetId == 272434 ||
-    	itemSetId == 272443 ||
-    	itemSetId == 272452 ||
-    	itemSetId == 272461 ||
-    	itemSetId == 272470 ||
-    	itemSetId == 272479 ||
-    	itemSetId == 272488 ||
-    	itemSetId == 272498 ||
-    	itemSetId == 272507 ||
-    	itemSetId == 272516 ||
-    	itemSetId == 272525 ||
-    	itemSetId == 272534 ||
-    	itemSetId == 272543 ||
-    	itemSetId == 272552 ||
-    	itemSetId == 272436 ||
-    	itemSetId == 272445 ||
-    	itemSetId == 272454 ||
-    	itemSetId == 272463 ||
-    	itemSetId == 272472 ||
-    	itemSetId == 272481 ||
-    	itemSetId == 272490 ||
-    	itemSetId == 272500 ||
-    	itemSetId == 272509 ||
-    	itemSetId == 272518 ||
-    	itemSetId == 272527 ||
-    	itemSetId == 272536 ||
-    	itemSetId == 272545 ||
-    	itemSetId == 272554 ||
-    	itemSetId == 272440 ||
-    	itemSetId == 272449 ||
-    	itemSetId == 272458 ||
-    	itemSetId == 272467 ||
-    	itemSetId == 272476 ||
-    	itemSetId == 272485 ||
-    	itemSetId == 272494 ||
-    	itemSetId == 272504 ||
-    	itemSetId == 272513 ||
-    	itemSetId == 272522 ||
-    	itemSetId == 272531 ||
-    	itemSetId == 272540 ||
-    	itemSetId == 272549 ||
-    	itemSetId == 272558 ||
-    	itemSetId == 272438 ||
-    	itemSetId == 272447 ||
-    	itemSetId == 272456 ||
-    	itemSetId == 272465 ||
-    	itemSetId == 272474 ||
-    	itemSetId == 272483 ||
-    	itemSetId == 272492 ||
-    	itemSetId == 272502 ||
-    	itemSetId == 272511 ||
-    	itemSetId == 272520 ||
-    	itemSetId == 272529 ||
-    	itemSetId == 272538 ||
-    	itemSetId == 272547 ||
-    	itemSetId == 272556 ||
-    	itemSetId == 272306 ||
-    	itemSetId == 272315 ||
-    	itemSetId == 272324 ||
-    	itemSetId == 272333 ||
-    	itemSetId == 272342 ||
-    	itemSetId == 272351 ||
-    	itemSetId == 272360 ||
-    	itemSetId == 272370 ||
-    	itemSetId == 272379 ||
-    	itemSetId == 272388 ||
-    	itemSetId == 272397 ||
-    	itemSetId == 272406 ||
-    	itemSetId == 272415 ||
-    	itemSetId == 272424 ||
-    	itemSetId == 272308 ||
-    	itemSetId == 272317 ||
-    	itemSetId == 272326 ||
-    	itemSetId == 272335 ||
-    	itemSetId == 272344 ||
-    	itemSetId == 272353 ||
-    	itemSetId == 272362 ||
-    	itemSetId == 272372 ||
-    	itemSetId == 272381 ||
-    	itemSetId == 272390 ||
-    	itemSetId == 272399 ||
-    	itemSetId == 272408 ||
-    	itemSetId == 272417 ||
-    	itemSetId == 272426 ||
-    	itemSetId == 272310 ||
-    	itemSetId == 272319 ||
-    	itemSetId == 272328 ||
-    	itemSetId == 272337 ||
-    	itemSetId == 272346 ||
-    	itemSetId == 272355 ||
-    	itemSetId == 272364 ||
-    	itemSetId == 272374 ||
-    	itemSetId == 272383 ||
-    	itemSetId == 272392 ||
-    	itemSetId == 272401 ||
-    	itemSetId == 272410 ||
-    	itemSetId == 272419 ||
-    	itemSetId == 272428 ||
-    	itemSetId == 272312 ||
-    	itemSetId == 272321 ||
-    	itemSetId == 272330 ||
-    	itemSetId == 272339 ||
-    	itemSetId == 272348 ||
-    	itemSetId == 272357 ||
-    	itemSetId == 272366 ||
-    	itemSetId == 272376 ||
-    	itemSetId == 272385 ||
-    	itemSetId == 272394 ||
-    	itemSetId == 272403 ||
-    	itemSetId == 272412 ||
-    	itemSetId == 272421 ||
-    	itemSetId == 272430 ||
-    	itemSetId == 273982 ||
-    	itemSetId == 273967 ||
-    	itemSetId == 273969 ||
-    	itemSetId == 273984 ||
-    	itemSetId == 273971 ||
-    	itemSetId == 273986 ||
-    	itemSetId == 273988 ||
-    	itemSetId == 273973 ||
-    	itemSetId == 272223 ||
-    	itemSetId == 272225 ||
-    	itemSetId == 272227 ||
-    	itemSetId == 272229 ||
-    	itemSetId == 273904 ||
-    	itemSetId == 273914 ||
-    	itemSetId == 273917 ||
-    	itemSetId == 273919 ||
-    	itemSetId == 273908 ||
-    	itemSetId == 273921 ||
-    	itemSetId == 273924 ||
-    	itemSetId == 273926 ||
-    	itemSetId == 273890 ||
-    	itemSetId == 273896 ||
-    	itemSetId == 273899 ||
-    	itemSetId == 273941 ||
-    	itemSetId == 273912 ||
-    	itemSetId == 273928 ||
-    	itemSetId == 273931 ||
-    	itemSetId == 273933 ||
-    	itemSetId == 273894 ||
-    	itemSetId == 273943 ||
-    	itemSetId == 273946 ||
-    	itemSetId == 273948 ||
-    	itemSetId == 273952 ||
-    	itemSetId == 273954 ||
-    	itemSetId == 273957 ||
-    	itemSetId == 273959 ||
-    	itemSetId == 273937 ||
-    	itemSetId == 273939 ||
-    	itemSetId == 273962 ||
-    	itemSetId == 273964 ||
-    	itemSetId == 272222 ||
-    	itemSetId == 272224 ||
-    	itemSetId == 272226 ||
-    	itemSetId == 272228 ||
-    	itemSetId == 272305 ||
-    	itemSetId == 272307 ||
-    	itemSetId == 272309 ||
-    	itemSetId == 272311 ||
-    	itemSetId == 272314 ||
-    	itemSetId == 272316 ||
-    	itemSetId == 272318 ||
-    	itemSetId == 272320 ||
-    	itemSetId == 272323 ||
-    	itemSetId == 272325 ||
-    	itemSetId == 272327 ||
-    	itemSetId == 272329 ||
-    	itemSetId == 272332 ||
-    	itemSetId == 272334 ||
-    	itemSetId == 272336 ||
-    	itemSetId == 272338 ||
-    	itemSetId == 272341 ||
-    	itemSetId == 272343 ||
-    	itemSetId == 272345 ||
-    	itemSetId == 272347 ||
-    	itemSetId == 272350 ||
-    	itemSetId == 272352 ||
-    	itemSetId == 272354 ||
-    	itemSetId == 272356 ||
-    	itemSetId == 272359 ||
-    	itemSetId == 272361 ||
-    	itemSetId == 272363 ||
-    	itemSetId == 272365 ||
-    	itemSetId == 272369 ||
-    	itemSetId == 272371 ||
-    	itemSetId == 272373 ||
-    	itemSetId == 272375 ||
-    	itemSetId == 272378 ||
-    	itemSetId == 272380 ||
-    	itemSetId == 272382 ||
-    	itemSetId == 272384 ||
-    	itemSetId == 272387 ||
-    	itemSetId == 272389 ||
-    	itemSetId == 272391 ||
-    	itemSetId == 272393 ||
-    	itemSetId == 272396 ||
-    	itemSetId == 272398 ||
-    	itemSetId == 272400 ||
-    	itemSetId == 272402 ||
-    	itemSetId == 272405 ||
-    	itemSetId == 272407 ||
-    	itemSetId == 272409 ||
-    	itemSetId == 272411 ||
-    	itemSetId == 272414 ||
-    	itemSetId == 272416 ||
-    	itemSetId == 272418 ||
-    	itemSetId == 272420 ||
-    	itemSetId == 272423 ||
-    	itemSetId == 272425 ||
-    	itemSetId == 272427 ||
-    	itemSetId == 272429 ||
-    	itemSetId == 272433 ||
-    	itemSetId == 272435 ||
-    	itemSetId == 272437 ||
-    	itemSetId == 272439 ||
-    	itemSetId == 272442 ||
-    	itemSetId == 272444 ||
-    	itemSetId == 272446 ||
-    	itemSetId == 272448 ||
-    	itemSetId == 272451 ||
-    	itemSetId == 272453 ||
-    	itemSetId == 272455 ||
-    	itemSetId == 272457 ||
-    	itemSetId == 272460 ||
-    	itemSetId == 272462 ||
-    	itemSetId == 272464 ||
-    	itemSetId == 272466 ||
-    	itemSetId == 272469 ||
-    	itemSetId == 272471 ||
-    	itemSetId == 272473 ||
-    	itemSetId == 272475 ||
-    	itemSetId == 272478 ||
-    	itemSetId == 272480 ||
-    	itemSetId == 272482 ||
-    	itemSetId == 272484 ||
-    	itemSetId == 272487 ||
-    	itemSetId == 272489 ||
-    	itemSetId == 272491 ||
-    	itemSetId == 272493 ||
-    	itemSetId == 272497 ||
-    	itemSetId == 272499 ||
-    	itemSetId == 272501 ||
-    	itemSetId == 272503 ||
-    	itemSetId == 272506 ||
-    	itemSetId == 272508 ||
-    	itemSetId == 272510 ||
-    	itemSetId == 272512 ||
-    	itemSetId == 272515 ||
-    	itemSetId == 272517 ||
-    	itemSetId == 272519 ||
-    	itemSetId == 272521 ||
-    	itemSetId == 272524 ||
-    	itemSetId == 272526 ||
-    	itemSetId == 272528 ||
-    	itemSetId == 272530 ||
-    	itemSetId == 272533 ||
-    	itemSetId == 272535 ||
-    	itemSetId == 272537 ||
-    	itemSetId == 272539 ||
-    	itemSetId == 272542 ||
-    	itemSetId == 272544 ||
-    	itemSetId == 272546 ||
-    	itemSetId == 272548 ||
-    	itemSetId == 272551 ||
-    	itemSetId == 272553 ||
-    	itemSetId == 272555 ||
-    	itemSetId == 272557 ||
-    	itemSetId == 272592 ||
-    	itemSetId == 273889 ||
-    	itemSetId == 273893 ||
-    	itemSetId == 273898 ||
-    	itemSetId == 273903 ||
-    	itemSetId == 273907 ||
-    	itemSetId == 273911 ||
-    	itemSetId == 273916 ||
-    	itemSetId == 273923 ||
-    	itemSetId == 273930 ||
-    	itemSetId == 273936 ||
-    	itemSetId == 273945 ||
-    	itemSetId == 273951 ||
-    	itemSetId == 273956 ||
-    	itemSetId == 273961;
-    }
     
     private void invokeScoring(Integer testRosterId) throws Exception 
     {

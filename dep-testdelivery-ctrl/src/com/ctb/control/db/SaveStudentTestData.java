@@ -93,15 +93,20 @@ public interface SaveStudentTestData extends JdbcControl
      *      siss.raw_score as rawScore,
      *      siss.recommended_level as recommendedLevel,
      *      ros.updated_date_time as updatedDateTime,
-     *      ros.last_mseq as lastMseq
+     *      ros.last_mseq as lastMseq,
+     *      pr.scoreable as scoreable
      *  from
 	 *      student_item_set_status siss,
-     *      test_roster ros
+     *      test_roster ros,
+     *  	test_admin ta,
+     *		product pr
      *  where
 	 *      ros.test_roster_id = {testRosterId}
-	 *      and siss.test_roster_id = ros.test_roster_id::
+	 *      and siss.test_roster_id = ros.test_roster_id
+     *  	and ros.test_admin_id = ta.test_admin_id
+     *  	and pr.product_id = ta.product_id::
      */
-    @JdbcControl.SQL(statement = "select  ros.test_roster_id as testRosterId,  ros.test_completion_status as testCompletionStatus,  siss.item_set_id as itemSetId,  siss.completion_status as subtestCompletionStatus,  siss.raw_score as rawScore,  siss.recommended_level as recommendedLevel,  ros.updated_date_time as updatedDateTime,  ros.last_mseq as lastMseq from  student_item_set_status siss,  test_roster ros where  ros.test_roster_id = {testRosterId}  and siss.test_roster_id = ros.test_roster_id")
+    @JdbcControl.SQL(statement = "select ros.test_roster_id as testRosterId, ros.test_completion_status as testCompletionStatus, siss.item_set_id as itemSetId, siss.completion_status as subtestCompletionStatus, siss.raw_score as rawScore, siss.recommended_level as recommendedLevel, ros.updated_date_time as updatedDateTime, ros.last_mseq as lastMseq, pr.scannable as scoreable from student_item_set_status siss, test_roster ros, test_admin ta, product pr where ros.test_roster_id = {testRosterId} and siss.test_roster_id = ros.test_roster_id and ros.test_admin_id = ta.test_admin_id and pr.product_id = ta.product_id")
     RosterSubtestStatus [] getRosterSubtestStatus(int testRosterId) throws SQLException;
 
     /**
