@@ -29,7 +29,7 @@ public class StudentAccommodations extends CTBBean
     private String highlighter;
     private String maskingRuler;//Added for masking
     private String auditoryCalming;//Added for auditory calming
-    private String musicFile;//Added for auditory calming
+    private Integer musicFile;//Added for auditory calming
     
      /**
 	 * @return Returns the orgNodeId.
@@ -267,13 +267,13 @@ public class StudentAccommodations extends CTBBean
 	/**
 	 * @return Returns the musicFile.
 	 */
-	public String getMusicFile() {
+	public Integer getMusicFile() {
 		return musicFile;
 	}
 	/**
 	 * @param musicFile The musicFile to set.
 	 */
-	public void setMusicFile(String musicFile) {
+	public void setMusicFile(Integer musicFile) {
 		this.musicFile = musicFile;
 	}
 } 
