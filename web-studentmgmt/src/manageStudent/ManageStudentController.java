@@ -1428,13 +1428,17 @@ public class ManageStudentController extends PageFlowController
 		String testPause = getRequest().getParameter("test_pause");
 		String untimedTest = getRequest().getParameter("untimed_test");
 		String colorFont = getRequest().getParameter("colorFont");
+		String maskingRuler = getRequest().getParameter("Masking_Ruler"); //Added for Masking Ruler
+		String auditoryCalming = getRequest().getParameter("Auditory_Calming"); //Added for Auditory Calming
 
 		this.accommodations.setScreenReader(new Boolean(screenReader != null));
 		this.accommodations.setCalculator(new Boolean(calculator != null));
 		this.accommodations.setHighlighter(new Boolean(highlighter != null));
 		this.accommodations.setTestPause(new Boolean(testPause != null));
 		this.accommodations.setUntimedTest(new Boolean(untimedTest != null));
-		this.accommodations.setColorFont(new Boolean(colorFont != null));        
+		this.accommodations.setColorFont(new Boolean(colorFont != null));
+		this.accommodations.setAuditoryCalming(new Boolean(auditoryCalming != null));//Added for Auditory Calming
+		this.accommodations.setMaskingRuler(new Boolean(maskingRuler != null));//Added for Masking Ruler
 
 		setCustomerAccommodations(this.accommodations, false);
 
@@ -1467,6 +1471,12 @@ public class ManageStudentController extends PageFlowController
 		{
 			this.accommodations.setFontSize(fontSize);
 		}
+		//Added for music files of Auditory Calming
+		String musicFiles = this.getRequest().getParameter("music_files");
+		if (musicFiles != null)
+		{
+			this.accommodations.setMusic_files(musicFiles);
+		}
 	}
 
 	/**
@@ -1479,7 +1489,9 @@ public class ManageStudentController extends PageFlowController
 		this.accommodations.setTestPause(Boolean.FALSE);
 		this.accommodations.setUntimedTest(Boolean.FALSE);
 		this.accommodations.setHighlighter(Boolean.TRUE);
-		this.accommodations.setColorFont(Boolean.FALSE);        
+		this.accommodations.setColorFont(Boolean.FALSE);
+		this.accommodations.setAuditoryCalming(Boolean.FALSE);//Added for Auditory Calming
+		this.accommodations.setMaskingRuler(Boolean.FALSE);//Added for Masking Ruler
 
 		setCustomerAccommodations(this.accommodations, true);
 	}
@@ -1528,6 +1540,16 @@ public class ManageStudentController extends PageFlowController
 				if (ccName.equalsIgnoreCase("highlighter"))
 				{
 					sad.setHighlighter(Boolean.TRUE);
+				}
+				//Added for Masking Ruler
+				if (ccName.equalsIgnoreCase("Masking_Ruler"))
+				{
+					sad.setMaskingRuler(Boolean.TRUE);
+				}
+				//Added for Auditory Calming
+				if (ccName.equalsIgnoreCase("Auditory_Calming"))
+				{
+					sad.setAuditoryCalming(Boolean.TRUE);
 				}
 			}
 		}

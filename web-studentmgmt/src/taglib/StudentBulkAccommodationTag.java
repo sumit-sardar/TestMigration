@@ -339,20 +339,68 @@ public class StudentBulkAccommodationTag extends CTBTag
                     displayTableEnd();
         
                 displayCellEnd();
-                
-                
-                displayCellStart("transparent");
-                    disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue()); 
-                    if(selectedColorFont != null && selectedColorFont.equals("T")) {
-                    	writeToPage(buildPreviewButton("previewColor", "Preview", false));   
-                    } else {
-                    	writeToPage(buildPreviewButton("previewColor", "Preview", disabled));   
-                    }
-                     
-                displayCellEnd();
-                
+
             displayRowEnd();        
         displayTableEnd();
+        
+        
+     // Added for Auditory Calming
+		displayColorTableStart("300");
+			displayRowStart("transparent");
+				displayCellStart("transparent");
+					displayColorTableStart("160");
+						displayRowStart("transparent");
+							displayEmptyColumn("15");
+							displayTextColumn("Music Player:", "110");
+							displayCellStart("transparent-small");
+								field = "musicPlayer";
+								disabled = /*isDisabled(field) ||*/ (! this.accommodations.getColorFont().booleanValue());                            
+								checked = false;//fontSize.equals("1.5") ? true : false;
+								writeToPage(buildRadioButton(field, "musicPlayer", checked, disabled, "enableAudioFiles()", "musicPlayer"));   
+							displayCellEnd();
+						displayRowEnd();        
+					displayTableEnd();
+				displayCellEnd();
+				displayCellStart("transparent","","left");
+					field = "audio_files";
+					disabled = /*isDisabled(field) || */(! this.accommodations.getColorFont().booleanValue());                            
+					selection = null;//this.accommodations.getAnswer_bgrdColor();
+					displayAudioFiles(field, disabled, selection, null);    
+				displayCellEnd();
+			displayRowEnd();        
+		displayTableEnd();
+        
+        
+	// Added for Masking Ruler
+		displayColorTableStart("300");
+			displayRowStart("transparent");
+				displayCellStart("transparent");
+					displayColorTableStart("160");
+						displayRowStart("transparent");
+							displayEmptyColumn("15");
+							displayTextColumn("Masking Ruler:", "110");
+							displayCellStart("transparent-small");
+								field = "maskingRuler";
+								disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
+								checked = false;
+								if(isDisabled(field))
+									writeToPage(buildRadioButton(field, "masking", checked, disabled, null, "maskingRuler"));
+								else
+									writeToPage(buildRadioButton("invisible", "invisible", checked, disabled, null, "invisible"));
+							displayCellEnd();
+						displayRowEnd();        
+					displayTableEnd();
+				displayCellEnd();
+				displayCellStart("transparent");
+				 disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue()); 
+                 if(selectedColorFont != null && selectedColorFont.equals("T")) {
+                 	writeToPage(buildPreviewButton("previewColor", "Preview", false));   
+                 } else {
+                 	writeToPage(buildPreviewButton("previewColor", "Preview", disabled));   
+                 }    
+				displayCellEnd();
+			displayRowEnd();        
+		displayTableEnd();
         
     }
     
@@ -466,6 +514,23 @@ public class StudentBulkAccommodationTag extends CTBTag
             }
         writeToPage("</select>");
     }
+    
+// Added for auditory calming
+    
+    private void displayAudioFiles(String id, boolean disabled, String selection, String onChange) throws IOException 
+    {
+        String style = "width: 120px";
+        String disableStr = disabled ? "disabled" : "";
+        
+        writeToPage("<select id=\"" + id + "\" name=\"" + id + "\" style=\"" + style + "\" onchange=\"" + onChange + "\" " + disableStr + " >");
+            writeToPage(buildOption("Waves.mp3", selection));
+            writeToPage(buildOption("RunningWater.mp3", selection));
+            writeToPage(buildOption("GentleBlowingWind.mp3", selection));
+
+        writeToPage("</select>");
+    }
+    
+    
 	private String buildRadio(String id, String value, boolean checked, boolean disabled, String onClick) 
     {
 	    StringBuffer buf = new StringBuffer();
@@ -499,6 +564,22 @@ public class StudentBulkAccommodationTag extends CTBTag
         buf.append("</option>");
 	    return buf.toString();
 	}
+	
+	
+//Added for Masking and Auditory Calming
+	
+	private String buildRadioButton(String id, String value, boolean checked, boolean disabled, String onClick, String name) 
+    {
+	    StringBuffer buf = new StringBuffer();
+        buf.append("<input type=\"radio\" id=\"" + id + "\" name=\""+name+"\"value=\"" + value + "\" onClick=\"" + onClick + "\" ");
+        if (checked)
+            buf.append(" checked ");        
+        if (disabled)
+            buf.append(" disabled ");                
+        buf.append(" />");
+	    return buf.toString();
+	}
+
 
     private boolean isDisabled(String field) 
     {

@@ -41,6 +41,10 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
  
     private String fontSize = DEFAULT_ANSWER_FONTSIZE;
     
+    private Boolean maskingRuler = Boolean.FALSE; // Added for Masking Ruler
+    private Boolean auditoryCalming = Boolean.FALSE;// Added for Auditory Calming
+    private String music_files = null;// Added for Auditory Calming
+    
     public StudentAccommodationsDetail() {
     }
 
@@ -88,6 +92,19 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         if (sa.getQuestionFontSize() != null) {
             this.fontSize = sa.getQuestionFontSize();
             this.colorFont = Boolean.TRUE;
+        }
+        
+        //Added for Auditory Calming and Masking
+        if (sa.getAuditoryCalming() != null)
+            this.auditoryCalming = new Boolean(sa.getAuditoryCalming().equals("T"));
+        
+        if (sa.getMaskingRuler() != null)
+            this.maskingRuler = new Boolean(sa.getMaskingRuler().equals("T"));
+        
+        if (sa.getMusicFile() != null){
+        	this.music_files = sa.getMusicFile();
+        	this.colorFont = Boolean.TRUE;
+        	this.auditoryCalming = Boolean.TRUE;
         }
     }
 
@@ -173,6 +190,27 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         
         copied.setScreenMagnifier("");  // not used
         copied.setStudentGrade("");     // not used
+        
+        //START - Added for Auditory Calming and Masking Ruler
+        
+        if (this.auditoryCalming.booleanValue()) {
+            copied.setAuditoryCalming("T");
+            copied.setMusicFile(this.music_files);
+            hasData = true;
+        }
+        else {
+            copied.setAuditoryCalming("F");
+            copied.setMusicFile(null);
+        }
+        
+        if (this.maskingRuler.booleanValue()) {
+            copied.setMaskingRuler("T");
+            hasData = true;
+        }
+        else {
+            copied.setMaskingRuler("F");
+        }
+      //END - Added for Auditory Calming and Masking Ruler
         
         return copied;
     }
@@ -444,6 +482,30 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
 
 	public void setSelectedColorFont(String selectedColorFont) {
 		this.selectedColorFont = selectedColorFont;
+	}
+
+	public Boolean getMaskingRuler() {
+		return maskingRuler;
+	}
+
+	public void setMaskingRuler(Boolean maskingRuler) {
+		this.maskingRuler = maskingRuler;
+	}
+
+	public Boolean getAuditoryCalming() {
+		return auditoryCalming;
+	}
+
+	public void setAuditoryCalming(Boolean auditoryCalming) {
+		this.auditoryCalming = auditoryCalming;
+	}
+
+	public String getMusic_files() {
+		return music_files;
+	}
+
+	public void setMusic_files(String music_files) {
+		this.music_files = music_files;
 	}
 
 	//End Bulk Accommodation Changes

@@ -314,15 +314,66 @@ public class StudentAccommodationsTag extends CTBTag
                     displayTableEnd();
         
                 displayCellEnd();
-                
-                
-                displayCellStart("transparent");
-                    disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
-                    writeToPage(buildPreviewButton("previewColor", "Preview", disabled));    
-                displayCellEnd();
-                
             displayRowEnd();        
         displayTableEnd();
+        
+	// Added for Auditory Calming
+		displayColorTableStart("300");
+			displayRowStart("transparent");
+				displayCellStart("transparent");
+					displayColorTableStart("160");
+						displayRowStart("transparent");
+							displayEmptyColumn("15");
+							displayTextColumn("Music Player:", "110");
+							displayCellStart("transparent-small");
+								field = "Auditory_Calming";
+								disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
+								checked = false;
+								if(!isDisabled(field))
+									writeToPage(buildRadioButton(field, "Auditory_Calming", checked, disabled, "enableAudioFiles()"));
+								else
+									writeToPage(buildRadioButton("disabled", "disabled", checked, disabled, null));
+							displayCellEnd();
+						displayRowEnd();        
+					displayTableEnd();
+				displayCellEnd();
+				displayCellStart("transparent","","left");
+					field = "music_files";
+					disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
+					selection = null;
+					displayAudioFiles(field, disabled, selection, null);    
+				displayCellEnd();
+			displayRowEnd();        
+		displayTableEnd();
+        
+        
+	// Added for Masking Ruler
+		displayColorTableStart("300");
+			displayRowStart("transparent");
+				displayCellStart("transparent");
+					displayColorTableStart("160");
+						displayRowStart("transparent");
+							displayEmptyColumn("15");
+							displayTextColumn("Masking Ruler:", "110");
+							displayCellStart("transparent-small");
+								field = "Masking_Ruler";
+								disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
+								checked = false;
+								if(!isDisabled(field))
+									writeToPage(buildRadioButton(field, "Masking_Ruler", checked, disabled, null));
+								else
+									writeToPage(buildRadioButton("disabled", "disabled", checked, disabled, null));
+							    
+							displayCellEnd();
+						displayRowEnd();        
+					displayTableEnd();
+				displayCellEnd();
+				displayCellStart("transparent");
+					disabled = isDisabled(field) || (! this.accommodations.getColorFont().booleanValue());                            
+					writeToPage(buildPreviewButton("previewColor", "Preview", disabled));    
+				displayCellEnd();
+			displayRowEnd();        
+		displayTableEnd();
         
     }
     
@@ -411,6 +462,22 @@ public class StudentAccommodationsTag extends CTBTag
             }
         writeToPage("</select>");
     }
+    
+ // Added for auditory calming
+    
+    private void displayAudioFiles(String id, boolean disabled, String selection, String onChange) throws IOException 
+    {
+        String style = "width: 120px";
+        String disableStr = disabled ? "disabled" : "";
+        if(selection==null || selection.equals(""))
+        	selection="Waves.mp3";
+        writeToPage("<select id=\"" + id + "\" name=\"" + id + "\" style=\"" + style + "\" onchange=\"" + onChange + "\" " + disableStr + " >");
+            writeToPage(buildOption("Waves.mp3", selection));
+            writeToPage(buildOption("RunningWater.mp3", selection));
+            writeToPage(buildOption("GentleBlowingWind.mp3", selection));
+
+        writeToPage("</select>");
+    }
 
 	private String buildCheckbox(String id, boolean checked, boolean disabled, String onClick) 
     {
@@ -459,6 +526,20 @@ public class StudentAccommodationsTag extends CTBTag
         buf.append("</option>");
 	    return buf.toString();
 	}
+	
+	//Added for Masking and Auditory Calming
+	
+	private String buildRadioButton(String id, String value, boolean checked, boolean disabled, String onClick) 
+    {
+	    StringBuffer buf = new StringBuffer();
+        buf.append("<input type=\"radio\" id=\"" + id + "\" name=\""+id+"\"value=\"" + value + "\" onClick=\"" + onClick + "\" ");
+        if (checked)
+            buf.append(" checked ");        
+        if (disabled)
+            buf.append(" disabled ");                
+        buf.append(" />");
+	    return buf.toString();
+	}
 
     private boolean isDisabled(String field) 
     {
@@ -466,6 +547,7 @@ public class StudentAccommodationsTag extends CTBTag
             return true;
             
         boolean disabled = false;
+        int counter = 0; // Added for calming and masking. Specially, if configuration is not present with the customer at all.
         
         for (int i=0 ; i<this.customerConfigurations.length ; i++) {
             CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
@@ -473,10 +555,14 @@ public class StudentAccommodationsTag extends CTBTag
             String editable = cc.getEditable();
             
             if (ccName.equalsIgnoreCase(field)) {
+            	counter++;
                 if ((editable != null) && editable.equalsIgnoreCase("F"))
                     disabled = true;
             }
         }        
+        if(counter == 0 && (field.equals("Masking_Ruler") || field.equals("Auditory_Calming")))
+        	disabled=true;
+        
         return disabled;
     }
 }
