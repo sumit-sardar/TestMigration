@@ -25,3 +25,7 @@ ALTER TABLE customer_orgnode_license ADD license_after_last_purchase NUMBER
 
 ALTER TABLE customer_orgnode_license ADD email_notify_flag VARCHAR2(1)
 /
+
+/* New cloumn added for removing harcoded item set ids from TMS for scoring */
+ALTER TABLE product ADD( SCORABLE VARCHAR2(1))
+/
