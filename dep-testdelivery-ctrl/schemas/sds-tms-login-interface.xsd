@@ -664,6 +664,9 @@
 													name="rest_break" type="xs:boolean" use="optional"
 													default="0" />
 												<xs:attribute
+													name="masking_ruler" type="xs:boolean" use="optional"
+													default="0" />
+												<xs:attribute
 													name="highlighter" type="xs:boolean" use="optional"
 													default="0">
 													<xs:annotation>

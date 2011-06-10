@@ -622,6 +622,7 @@ public class StudentLoginImpl implements StudentLogin
             accommodations.setRestBreak( "T".equals(accomData.getTestPause()) ?  true : false );
             //set the boolean value in accommodations.setHighlighter depends upon wheather the highlighter is true or false.
             accommodations.setHighlighter("T".equals(accomData.getHighlighter()) ?  true : false );
+            accommodations.setMaskingRuler("T".equals(accomData.getMaskingRuler()) ? true : false );
             accommodations.addNewStereotypeStyle();
             StereotypeStyle directionsStereotype = accommodations.getStereotypeStyleArray(0);
             directionsStereotype.setStereotype(StereotypeType.DIRECTIONS);

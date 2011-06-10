@@ -15,6 +15,7 @@ public class AccomodationsData
 	private String answerFontColor;
 	private float answerFontSize;
     private String highlighter;
+    private String maskingRuler;
     
     /**
 	 * @return Returns the highlighter.
@@ -172,5 +173,17 @@ public class AccomodationsData
 	 */
 	public void setUntimedTest(String untimedTest) {
 		this.untimedTest = untimedTest;
+	}
+	/**
+	 * @return the maskingRuler
+	 */
+	public String getMaskingRuler() {
+		return maskingRuler;
+	}
+	/**
+	 * @param maskingRuler the maskingRuler to set
+	 */
+	public void setMaskingRuler(String maskingRuler) {
+		this.maskingRuler = maskingRuler;
 	}
 } 
