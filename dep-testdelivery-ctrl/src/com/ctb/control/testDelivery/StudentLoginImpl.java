@@ -634,7 +634,7 @@ public class StudentLoginImpl implements StudentLogin
             accommodations.setHighlighter("T".equals(accomData.getHighlighter()) ?  true : false );
             accommodations.setMaskingRuler("T".equals(accomData.getMaskingRuler()) ? true : false );
             accommodations.setAuditoryCalming("T".equals(accomData.getAuditoryCalming()) ? true : false );
-            accommodations.setMusicFileId(accomData.getMusicFileId());
+            accommodations.setMusicFileId(BigInteger.valueOf(accomData.getMusicFileId()));
             accommodations.addNewStereotypeStyle();
             StereotypeStyle directionsStereotype = accommodations.getStereotypeStyleArray(0);
             directionsStereotype.setStereotype(StereotypeType.DIRECTIONS);

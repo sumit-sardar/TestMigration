@@ -20,19 +20,19 @@ public class AccomodationsData
     private String maskingRuler;
     private String auditoryCalming;
     private byte[] musicFileData;
-    private BigInteger musicFileId;
+    private Integer musicFileId;
     
   
 	/**
 	 * @return the musicFileId
 	 */
-	public BigInteger getMusicFileId() {
+	public Integer getMusicFileId() {
 		return musicFileId;
 	}
 	/**
 	 * @param musicFileId the musicFileId to set
 	 */
-	public void setMusicFileId(BigInteger musicFileId) {
+	public void setMusicFileId(Integer musicFileId) {
 		this.musicFileId = musicFileId;
 	}
 	
