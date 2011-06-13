@@ -85,12 +85,16 @@ public class CTBController extends PageFlowController
         })
         protected Forward getMp3(TestForm test) throws IOException
         {   
+    	
+    		System.out.println("getMp3 fired");
     		HttpServletResponse resp = this.getResponse();     
     		byte [] musicFile = null;
     		resp.setContentType("audio/mpeg3");
     		
     		try {
 				musicFile = loginControl.studentMusicFile(test.getMusicId());
+				
+				System.out.println("getMp3 fired music file size" + musicFile.length);
 				resp.flushBuffer();
 				OutputStream stream = resp.getOutputStream();
 	    		stream.write(musicFile);
@@ -418,6 +422,10 @@ public class CTBController extends PageFlowController
     	String requestXML = null;
         try {
             // pull XML off of request
+        	
+        	if(test.getMusicId() != null){
+        		getMp3(test);
+        	}else{
            requestXML = this.getRequest().getParameter("RequestXML");
             if(requestXML == null) this.getRequest().getParameter("requestXML");
             if(requestXML == null) requestXML = test.getRequestXML();
@@ -453,7 +461,9 @@ public class CTBController extends PageFlowController
             // place response XML on request for use by JSP
             this.getRequest().setAttribute("responseXML", responseXML);
             this.getSession().invalidate();
-            return new Forward("index");
+           
+        	}
+        	 return new Forward("index");
         } catch (Exception e) {
             e.printStackTrace();
             OASLogger.debugStackTrace("TestDelivery", e.getStackTrace());

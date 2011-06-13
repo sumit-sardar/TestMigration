@@ -835,6 +835,8 @@ public class StudentLoginImpl implements StudentLogin
     
     public byte[] studentMusicFile(Integer musicId) throws CTBBusinessException, SQLException {
     	
+    	
+    	System.out.println("depTestdelivery studentMusicFile");
     
     	byte [] musicFile = null;
     	
@@ -843,7 +845,7 @@ public class StudentLoginImpl implements StudentLogin
 		InputStream is = authenticator.getMusicFileDetails(musicId).getBinaryStream();
 		boolean moreData = true;
 		while(moreData) {
-			byte [] buffer = new byte[128];
+			byte [] buffer = new byte[1024];
 			int read = 0;
 			try {
 				read = is.read(buffer);
@@ -857,6 +859,8 @@ public class StudentLoginImpl implements StudentLogin
 			}
 		}
 		musicFile = baos.toByteArray();
+		
+		System.out.println("music File "+ musicFile.length);
 		
     	//msStudentAccommodations musicFileData = response.getTestingSessionData().getLmsStudentAccommodations();
         
