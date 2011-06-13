@@ -1,20 +1,50 @@
 package com.ctb.control.testDelivery; 
 
-import com.bea.control.*;
-import java.io.Serializable;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.math.BigInteger;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
+import java.util.TimeZone;
+
+import javax.servlet.http.HttpServletResponse;
+
+import noNamespace.BaseType;
+import noNamespace.EntryType;
+import noNamespace.StereotypeType;
+import noNamespace.TmssvcRequestDocument;
+import noNamespace.TmssvcResponseDocument;
+import noNamespace.TmssvcRequestDocument.TmssvcRequest;
+import noNamespace.TmssvcRequestDocument.TmssvcRequest.LoginRequest;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Tutorial;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ast;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist.Ov;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist.Rv;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.Sco;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.Sco.ScoUnitType;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.TestingSessionData.LmsStudentAccommodations;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.TestingSessionData.LmsStudentAccommodations.StereotypeStyle;
+
 import org.apache.beehive.controls.api.bean.ControlImplementation;
-import org.apache.xmlbeans.XmlObject;
+
 import com.ctb.bean.testAdmin.TestProduct;
-import com.ctb.bean.testDelivery.assessmentDeliveryData.ItemIdEidMap;
 import com.ctb.bean.testDelivery.login.AccomodationsData;
 import com.ctb.bean.testDelivery.login.AuthenticationData;
 import com.ctb.bean.testDelivery.login.ItemResponseData;
 import com.ctb.bean.testDelivery.login.ManifestData;
-import com.ctb.control.db.AssessmentDeliveryDBBeanBeanInfo;
 import com.ctb.control.db.AuthenticateStudent;
-import com.ctb.control.db.AssessmentDeliveryDB;
-import com.ctb.control.db.AuthenticateStudentBean;
-import com.ctb.control.db.AuthenticateStudentBeanBeanInfo;
+import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testDelivery.AuthenticationFailureException;
 import com.ctb.exception.testDelivery.KeyEnteredResponsesException;
 import com.ctb.exception.testDelivery.LocatorSubtestNotCompletedException;
@@ -24,40 +54,7 @@ import com.ctb.exception.testDelivery.TestSessionInProgressException;
 import com.ctb.exception.testDelivery.TestSessionNotScheduledException;
 import com.ctb.util.DateUtils;
 import com.ctb.util.OASLogger;
-import com.ctb.util.SimpleCache;
 import com.ctb.util.testDelivery.Constants;
-import java.math.BigInteger;
-import java.sql.Clob;
-import java.util.Date;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.TimeZone;
-import java.util.logging.Level;
-
-import noNamespace.BaseType;
-import noNamespace.EntryType;
-import noNamespace.StereotypeType;
-import noNamespace.TmssvcRequestDocument;
-import noNamespace.TmssvcRequestDocument.TmssvcRequest;
-import noNamespace.TmssvcRequestDocument.TmssvcRequest.LoginRequest;
-import noNamespace.TmssvcResponseDocument;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.Sco;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.Sco.ScoUnitType;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Status.StatusCode;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.TestingSessionData.LmsStudentAccommodations;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.TestingSessionData.LmsStudentAccommodations.StereotypeStyle;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ast;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist.Ov;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist.Rv;
-//import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Sp;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Tutorial;
-//import weblogic.knex.jdom.CDATA;
 import com.ctb.web.listener.TestDeliveryContextListener;
 
 /**
@@ -90,6 +87,19 @@ public class StudentLoginImpl implements StudentLogin
      */
     @org.apache.beehive.controls.api.bean.Control()
    private AuthenticateStudent authenticator;
+    
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.Students students;
+    
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.Users users;
+    
     //private com.ctb.control.db.testDelivery.AuthenticateStudentFactory authenticatorFactory;
 
     static final long serialVersionUID = 1L;
@@ -116,7 +126,7 @@ public class StudentLoginImpl implements StudentLogin
 	            boolean authenticated = false;
 	            String testAccessCode = loginRequest.getLoginRequest().getAccessCode();
 	            int testRosterId = -1;
-	            String lsid = null;
+	            String lsid = null;              
 	            ManifestData [] manifestData = new ManifestData [0];
 	            for(int a=0;a<authDataArray.length && !authenticated;a++) {
 	                authData = authDataArray[a];
@@ -623,6 +633,8 @@ public class StudentLoginImpl implements StudentLogin
             //set the boolean value in accommodations.setHighlighter depends upon wheather the highlighter is true or false.
             accommodations.setHighlighter("T".equals(accomData.getHighlighter()) ?  true : false );
             accommodations.setMaskingRuler("T".equals(accomData.getMaskingRuler()) ? true : false );
+            accommodations.setAuditoryCalming("T".equals(accomData.getAuditoryCalming()) ? true : false );
+            accommodations.setMusicFileId(accomData.getMusicFileId());
             accommodations.addNewStereotypeStyle();
             StereotypeStyle directionsStereotype = accommodations.getStereotypeStyleArray(0);
             directionsStereotype.setStereotype(StereotypeType.DIRECTIONS);
@@ -818,4 +830,35 @@ public class StudentLoginImpl implements StudentLogin
 		return Integer.valueOf(String.valueOf(seed.charAt(seed.length() - 1))).
 				intValue() % 2 == 0 ? false:true;
 	}
+    
+    public byte[] studentMusicFile(Integer musicId) throws CTBBusinessException, SQLException {
+    	
+    
+    	byte [] musicFile = null;
+    	
+    	//musicFile = authenticator.getMusicFileDetails(musicId);
+    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		InputStream is = authenticator.getMusicFileDetails(musicId).getBinaryStream();
+		boolean moreData = true;
+		while(moreData) {
+			byte [] buffer = new byte[128];
+			int read = 0;
+			try {
+				read = is.read(buffer);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			moreData = read > 0;
+			if(moreData) {
+				baos.write(buffer, 0, read);
+			}
+		}
+		musicFile = baos.toByteArray();
+		
+    	//msStudentAccommodations musicFileData = response.getTestingSessionData().getLmsStudentAccommodations();
+        
+		return musicFile;
+    }   
+   
 } 

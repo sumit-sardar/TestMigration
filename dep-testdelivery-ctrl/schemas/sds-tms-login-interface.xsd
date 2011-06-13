@@ -667,6 +667,11 @@
 													name="masking_ruler" type="xs:boolean" use="optional"
 													default="0" />
 												<xs:attribute
+													name="auditory_calming" type="xs:boolean" use="optional"
+													default="0" />
+												<xs:attribute
+													name="music_file_id" type="xs:integer" use="optional" />
+												<xs:attribute
 													name="highlighter" type="xs:boolean" use="optional"
 													default="0">
 													<xs:annotation>

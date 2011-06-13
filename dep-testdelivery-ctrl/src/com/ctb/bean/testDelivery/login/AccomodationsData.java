@@ -1,5 +1,7 @@
 package com.ctb.bean.testDelivery.login; 
 
+import java.math.BigInteger;
+
 public class AccomodationsData 
 {
     private int studentId;
@@ -16,8 +18,25 @@ public class AccomodationsData
 	private float answerFontSize;
     private String highlighter;
     private String maskingRuler;
+    private String auditoryCalming;
+    private byte[] musicFileData;
+    private BigInteger musicFileId;
     
-    /**
+  
+	/**
+	 * @return the musicFileId
+	 */
+	public BigInteger getMusicFileId() {
+		return musicFileId;
+	}
+	/**
+	 * @param musicFileId the musicFileId to set
+	 */
+	public void setMusicFileId(BigInteger musicFileId) {
+		this.musicFileId = musicFileId;
+	}
+	
+	/**
 	 * @return Returns the highlighter.
 	 */
 	public String getHighlighter() {
@@ -186,4 +205,29 @@ public class AccomodationsData
 	public void setMaskingRuler(String maskingRuler) {
 		this.maskingRuler = maskingRuler;
 	}
+	/**
+	 * @return the auditoryCalming
+	 */
+	public String getAuditoryCalming() {
+		return auditoryCalming;
+	}
+	/**
+	 * @param auditoryCalming the auditoryCalming to set
+	 */
+	public void setAuditoryCalming(String auditoryCalming) {
+		this.auditoryCalming = auditoryCalming;
+	}
+	/**
+	 * @return the musicFileData
+	 */
+	public byte[] getMusicFileData() {
+		return musicFileData;
+	}
+	/**
+	 * @param musicFileData the musicFileData to set
+	 */
+	public void setMusicFileData(byte[] musicFileData) {
+		this.musicFileData = musicFileData;
+	}
+	
 } 

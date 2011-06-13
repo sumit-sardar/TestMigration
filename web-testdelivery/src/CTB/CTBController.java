@@ -1,6 +1,11 @@
 package CTB;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.Hashtable;
 import java.util.logging.Level;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.FormData;
@@ -18,6 +23,7 @@ import com.ctb.web.util.stgtms.CTBSaveRequestProcessor;
 import com.ctb.web.util.stgtms.CTBUploadAuditFileProcessor;
 import com.ctb.web.util.stgtms.CTBLoadTestRequestProcessor;
 import com.ctb.control.testDelivery.LoadTest;
+import com.ctb.exception.CTBBusinessException;
 
 /**
  * @jpf:controller
@@ -69,6 +75,37 @@ public class CTBController extends PageFlowController
     {   
         return handleTMSRequest(test);
     }
+    
+    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "index",
+                         path = "index.jsp"), 
+            @Jpf.Forward(name = "error",
+                         path = "error.jsp")
+        })
+        protected Forward getMp3(TestForm test) throws IOException
+        {   
+    		HttpServletResponse resp = this.getResponse();     
+    		byte [] musicFile = null;
+    		resp.setContentType("audio/mpeg3");
+    		
+    		try {
+				musicFile = loginControl.studentMusicFile(test.getMusicId());
+				resp.flushBuffer();
+				OutputStream stream = resp.getOutputStream();
+	    		stream.write(musicFile);
+	    		stream.close();
+			} catch (CTBBusinessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    		
+    		return null;
+        }
 
     /**
      * @jpf:action
@@ -432,6 +469,8 @@ public class CTBController extends PageFlowController
     public static class TestForm extends FormData
     {
         private String requestXML;
+        private Integer musicId;
+        
 
         public void setRequestXML(String requestXML)
         {
@@ -442,6 +481,20 @@ public class CTBController extends PageFlowController
         {
             return this.requestXML;
         }
+
+		/**
+		 * @return the musicId
+		 */
+		public Integer getMusicId() {
+			return musicId;
+		}
+
+		/**
+		 * @param musicId the musicId to set
+		 */
+		public void setMusicId(Integer musicId) {
+			this.musicId = musicId;
+		}
     }
 }
 

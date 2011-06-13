@@ -1,5 +1,6 @@
 package com.ctb.control.db; 
 
+import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.SQLException;
 import java.util.Date;
@@ -120,7 +121,9 @@ public interface AuthenticateStudent extends JdbcControl
      *        accom.answer_font_color as answerFontColor,
      *        accom.answer_font_size as answerFontSize,
      *        accom.highlighter as highlighter,
-     *        accom.Masking_Ruler as masking_ruler
+     *        accom.masking_ruler as masking_ruler,
+     *        decode(accom.music_file_id, NULL, 'F', 'T')as auditoryCalming,
+     *        accom.music_file_id as musicFileId
      *  from
      *      test_roster ros,
      *      student_accommodation accom
@@ -128,7 +131,7 @@ public interface AuthenticateStudent extends JdbcControl
      *       accom.student_id = ros.student_id
      *       and ros.test_roster_id = {testRosterId}
      */
-    @JdbcControl.SQL(statement = "select  accom.student_id as studentId,  accom.screen_magnifier as screenMagnifier,  accom.screen_reader as screenReader,  accom.calculator as calculator,  accom.test_pause as testPause,  accom.untimed_test as untimedTest,  accom.question_background_color as questionBackgroundColor,  accom.question_font_color as questionFontColor,  accom.question_font_size as questionFontSize,  accom.answer_background_color as answerBackgroundColor,  accom.answer_font_color as answerFontColor,  accom.answer_font_size as answerFontSize,  accom.highlighter as highlighter, accom.Masking_Ruler as maskingRuler  from  test_roster ros,  student_accommodation accom  where  accom.student_id = ros.student_id  and ros.test_roster_id = {testRosterId}")
+    @JdbcControl.SQL(statement = "select  accom.student_id as studentId,  accom.screen_magnifier as screenMagnifier,  accom.screen_reader as screenReader,  accom.calculator as calculator,  accom.test_pause as testPause,  accom.untimed_test as untimedTest,  accom.question_background_color as questionBackgroundColor,  accom.question_font_color as questionFontColor,  accom.question_font_size as questionFontSize,  accom.answer_background_color as answerBackgroundColor,  accom.answer_font_color as answerFontColor,  accom.answer_font_size as answerFontSize,  accom.highlighter as highlighter, accom.masking_ruler as maskingRuler, decode(accom.music_file_id, NULL, 'F', 'T')as auditoryCalming, accom.music_file_id as musicFileId  from  test_roster ros,  student_accommodation accom  where  accom.student_id = ros.student_id  and ros.test_roster_id = {testRosterId}")
     AccomodationsData getAccomodations(int testRosterId) throws SQLException;
 
     /**
@@ -497,4 +500,9 @@ public interface AuthenticateStudent extends JdbcControl
      */
     @JdbcControl.SQL(statement = "select cconfig.default_value as speechControllerFlag  from test_roster  ros,  customer  cus,  customer_configuration cconfig,  student_accommodation  accom  where accom.screen_reader = 'T'  and accom.student_id = ros.student_id  and cconfig.customer_configuration_name = 'Allow_Speech_Controller'  and cconfig.customer_id = cus.customer_id  and cus.customer_id = ros.customer_id  and ros.test_roster_id = {testRosterId}")
     String getSpeechControllerAccommodation(int testRosterId) throws SQLException;
+    
+    
+    @JdbcControl.SQL(statement = "select flist.audio_file as fileData from music_file_list flist where flist.file_id = {musicId}")
+    Blob getMusicFileDetails(Integer musicId) throws SQLException;
+     
 }
