@@ -1057,6 +1057,6 @@ public interface StudentManagement extends JdbcControl
 
      
 	//Added for Auditory Calming
-     @JdbcControl.SQL(statement = "select file_id as fileId, audio_file_name as audioFileName from music_file_list")
+     @JdbcControl.SQL(statement = "select file_id as fileId, audio_file_name as audioFileName from music_file_list order by audio_file_name asc")
      MusicFiles[] getMusicFilesList() throws SQLException;
 }
