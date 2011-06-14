@@ -97,7 +97,7 @@ public class UtilityServlet extends HttpServlet {
         	//exit();
         }    
         
-        System.out.println("UtilityServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+        //System.out.println("UtilityServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
     }
 	
 	public static synchronized void exit() {

@@ -23,6 +23,8 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	}
     
 	public void contextInitialized(ServletContextEvent sce) {
+		new OASHectorSink();
+		new ADSHectorSink();
 		System.out.print("*****  Starting active roster check background thread . . .");
 		TestDeliveryContextListener.rosterMap = new ConcurrentHashMap(10000);
 		TestDeliveryContextListener.rosterList = new RosterList();
@@ -37,8 +39,6 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		
 		public void run() {
 			Connection conn = null;
-			new OASHectorSink();
-			new ADSHectorSink();
 			while (true) {
 				try {
 					conn = OASDBSource.getOASConnection();

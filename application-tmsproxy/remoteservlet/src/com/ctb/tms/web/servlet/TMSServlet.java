@@ -15,6 +15,7 @@ import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Ts
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
 import noNamespace.AdssvcResponseDocument;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.NextSco;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.Status;
 import noNamespace.TmssvcRequestDocument;
 import noNamespace.TmssvcRequestDocument.TmssvcRequest.LoginRequest;
@@ -83,12 +84,10 @@ public class TMSServlet extends HttpServlet {
 	}
 
     private String writeToAuditFile(String xml) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	private String uploadAuditFile(String xml) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -103,17 +102,22 @@ public class TMSServlet extends HttpServlet {
 		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
         SaveTestingSessionData saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
 
+        //System.out.println(saveRequest.xmlText());
+        
         Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
         for(int i=0;i<tsda.length;i++) {
 		    Tsd tsd = tsda[i];
 		    String rosterId = tsd.getLsid().substring(0, tsd.getLsid().indexOf(":"));
 		    
+		    saveResponse.addNewTsd();
+	        saveResponse.getTsdArray(i).setLsid(tsd.getLsid());
+	        saveResponse.getTsdArray(i).setScid(tsd.getScid());
+	        saveResponse.getTsdArray(i).setMseq(tsd.getMseq());
+	        saveResponse.getTsdArray(i).setStatus(Status.OK);
+		    
 		    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
-		    	Ist[] ista = tsd.getIstArray();
-		    	for(int j=0;j<ista.length;j++) {
-		    		Ist ist = ista[j];
-		    		OASHectorSink.putItemResponse(rosterId, ist.getIid(), ist.xmlText());
-		    	}
+		    	OASHectorSink.putItemResponse(rosterId, tsd);
+
 		    }
 		    
 		    if(tsd.getLsvArray() != null && tsd.getLsvArray().length > 0) {
@@ -122,15 +126,17 @@ public class TMSServlet extends HttpServlet {
 		    
 		    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {
 		    	// test events
+		    	NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
+		    	// TODO: this is incorrect/hardcoded - should be next SCO for TABE auto-locator
+                nextSco.setId("-1");
+                // TODO: place roster on queue for RDBMS persistence
 		    }
 		    
-		    saveResponse.addNewTsd();
-	        saveResponse.getTsdArray(0).setLsid(tsd.getLsid());
-	        saveResponse.getTsdArray(0).setScid(tsd.getScid());
-	        saveResponse.getTsdArray(0).setMseq(tsd.getMseq());
-	        saveResponse.getTsdArray(0).setStatus(Status.OK);
+		    
         }
 	    
+        // TODO: implement correlation, sequence and subtest/roster status checks for security
+        
 		return responseDocument.xmlText();
 	}
 
@@ -148,6 +154,7 @@ public class TMSServlet extends HttpServlet {
 			creds.setAccesscode(lr.getAccessCode());
 		}
 		RosterData rd = OASHectorSource.getRosterData(creds);
+		// TODO: handle restart case by populating restart data from Cassandra-stored item responses
 		return rd.getLoginDocument().xmlText();
 	}
 	
@@ -209,7 +216,7 @@ public class TMSServlet extends HttpServlet {
                 	result = ServletUtils.DOWNLOAD_ITEM_METHOD;
 			}
 		}       	
-        System.out.println(result);
+        //System.out.println(result);
     	return result;
 	}
 

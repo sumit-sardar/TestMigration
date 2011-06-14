@@ -95,7 +95,7 @@ public class ContentServlet extends HttpServlet {
 			ServletUtils.writeResponse(response, ServletUtils.ERROR);
 		}
 		
-		System.out.println("ContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+		//System.out.println("ContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
 
 	}
 

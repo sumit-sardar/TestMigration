@@ -94,7 +94,7 @@ public class LoadContentServlet extends HttpServlet {
             doGet(request, response);            
         }
         
-        System.out.println("LoadContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+        //System.out.println("LoadContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
     }
     
 	/**

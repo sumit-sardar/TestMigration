@@ -109,7 +109,7 @@ public class PersistenceServlet extends HttpServlet {
         String xml = ServletUtils.getXml(request);
         handleEvent(response, method, xml);    
         
-        System.out.println("PersistenceServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+        //System.out.println("PersistenceServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
 	}
 
     /**
@@ -143,11 +143,11 @@ public class PersistenceServlet extends HttpServlet {
             result = save(response, xml);        
         else if (method != null && method.equals(ServletUtils.FEEDBACK_METHOD))
             result = feedback(xml);        
-        else if (method != null && method.equals(ServletUtils.UPLOAD_AUDIT_FILE_METHOD))
-            result = uploadAuditFile(xml);
-        else if (method != null && method.equals(ServletUtils.WRITE_TO_AUDIT_FILE_METHOD))
-            result = writeToAuditFile(xml);
-        else
+        else if (method != null && method.equals(ServletUtils.UPLOAD_AUDIT_FILE_METHOD)) {
+            //result = uploadAuditFile(xml);
+        } else if (method != null && method.equals(ServletUtils.WRITE_TO_AUDIT_FILE_METHOD)) {
+            //result = writeToAuditFile(xml);
+        } else
             result = ServletUtils.ERROR;    
         
         // return response to client
@@ -283,7 +283,7 @@ public class PersistenceServlet extends HttpServlet {
         	boolean hasResponse = ServletUtils.hasResponse(xml);
             
         	if(isEndSubtest || hasResponse) {
-        		save(xml);
+        		result = save(xml);
             }
 
             if(!isEndSubtest){

@@ -28,6 +28,7 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.ColumnQuery;
 import me.prettyprint.hector.api.query.QueryResult;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import sun.misc.BASE64Encoder;
 
 import com.ctb.tms.bean.login.RosterData;
@@ -206,7 +207,7 @@ public class OASHectorSink {
 			QueryResult<HColumn<String, String>> result = columnQuery.execute();
 			System.out.println(result.get().getValue());
 			*/
-			//System.out.println("*****  Created OAS keyspace.");
+			System.out.println("*****  Created OAS keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
 			//e.printStackTrace();
@@ -364,7 +365,7 @@ public class OASHectorSink {
 			System.out.println("*****  Created Responses keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
@@ -387,13 +388,13 @@ public class OASHectorSink {
 		//System.out.println("*****  Stored in Cassandra: " + result.get().getValue());
 	}
 	
-	public static void putItemResponse(String testRosterId, String itemId, String xml) throws IOException {
+	public static void putItemResponse(String testRosterId, Tsd tsd) throws IOException {
 		Keyspace keyspace = HFactory.createKeyspace("Responses", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
 		String key = testRosterId;
-		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-id", itemId));
-		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-response", xml));
+		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-id", tsd.getIstArray(0).getIid()));
+		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-response", tsd.xmlText()));
 
 		
 		ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
