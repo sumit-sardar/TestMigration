@@ -163,6 +163,7 @@ public interface TestSessionStatus
      */
     
     com.ctb.bean.testAdmin.RosterElementData getRosterForTestSession(java.lang.String userName, java.lang.Integer testAdminId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+    com.ctb.bean.testAdmin.RosterElementData getReportableRosterForTestSession(java.lang.String userName, java.lang.Integer testAdminId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 
     /**
      * Retrieves a roster elements by testRosterId

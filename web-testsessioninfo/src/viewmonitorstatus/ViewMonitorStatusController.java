@@ -235,7 +235,7 @@ public class ViewMonitorStatusController extends PageFlowController
             return new Forward(forwardName, form);
         }
 
-        RosterElementData red = getRosterForTestSessionForReport(this.sessionId, form, FilterSortPageUtils.PAGESIZE_10);
+        RosterElementData red = getReportableRosterForTestSession(this.sessionId, form, FilterSortPageUtils.PAGESIZE_10);
         this.rosterList = buildRosterList(red);
         
         this.getRequest().setAttribute("rosterList", this.rosterList);
@@ -307,7 +307,7 @@ public class ViewMonitorStatusController extends PageFlowController
 		form.setSortColumn(FilterSortPageUtils.TESTROSTER_DEFAULT_SORT);
 		form.setSortOrderBy(FilterSortPageUtils.ASCENDING);
 		
-        RosterElementData red = getRosterForTestSessionForReport(this.sessionId, form, FilterSortPageUtils.MAX_RECORDS);
+        RosterElementData red = getReportableRosterForTestSession(this.sessionId, form, FilterSortPageUtils.MAX_RECORDS);
         RosterElement[] rosterElements = red.getRosterElements();
 
         this.selectedRosterIds = new ArrayList();
@@ -1305,7 +1305,7 @@ public class ViewMonitorStatusController extends PageFlowController
         return red;
     }
 
-    private RosterElementData getRosterForTestSessionForReport(Integer sessionId, ViewMonitorStatusForm form, int pageSize) 
+    private RosterElementData getReportableRosterForTestSession(Integer sessionId, ViewMonitorStatusForm form, int pageSize) 
     {
         PageParams page = FilterSortPageUtils.buildPageParams(form.getPageRequested(), pageSize);
         SortParams sort = FilterSortPageUtils.buildSortParams(form.getSortColumn(), form.getSortOrderBy());
@@ -1313,7 +1313,7 @@ public class ViewMonitorStatusController extends PageFlowController
         RosterElementData red = null;
         try
         {      
-            red = this.testSessionStatus.getRosterForTestSession(this.userName, sessionId, null, page, sort);
+            red = this.testSessionStatus.getReportableRosterForTestSession(this.userName, sessionId, null, page, sort);
         }
         catch (CTBBusinessException be)
         {
@@ -1339,7 +1339,7 @@ public class ViewMonitorStatusController extends PageFlowController
         }
         return rosterList;
     }
-    
+
     private PagerSummary buildTestRosterPagerSummary(RosterElementData red, Integer pageRequested)
     {
         PagerSummary pagerSummary = new PagerSummary();

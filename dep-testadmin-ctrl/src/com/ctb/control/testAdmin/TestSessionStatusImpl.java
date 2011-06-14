@@ -859,6 +859,27 @@ public class TestSessionStatusImpl implements TestSessionStatus
         }
     }     
 
+    public RosterElementData getReportableRosterForTestSession(String userName, Integer testAdminId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+    // validator.validateAdmin(userName, testAdminId, "testAdmin.getRosterElementsForTestSession");
+        try {
+            RosterElementData red = new RosterElementData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            red.setRosterElements(roster.getReportableRosterForTestSession(testAdminId), pageSize);
+            if(filter != null) red.applyFiltering(filter);
+            if(sort != null) red.applySorting(sort);
+            if(page != null) red.applyPaging(page);
+            return red;
+        } catch (SQLException se) {
+            RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: getRosterElementsForTestSession: " + se.getMessage());
+            rde.setStackTrace(se.getStackTrace());
+            throw rde;  
+        }
+    }     
+    
     /**
      * Retrieves a roster elements by testRosterId
      * @param testRosterId - identifies the test roster
