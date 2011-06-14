@@ -11,6 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
+import noNamespace.AdssvcResponseDocument;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.Status;
 import noNamespace.TmssvcRequestDocument;
 import noNamespace.TmssvcRequestDocument.TmssvcRequest.LoginRequest;
 
@@ -20,6 +25,7 @@ import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.ADSHectorSink;
 import com.ctb.tms.nosql.ADSHectorSource;
+import com.ctb.tms.nosql.OASHectorSink;
 import com.ctb.tms.nosql.OASHectorSource;
 import com.ctb.tms.rdb.ADSDBSource;
 
@@ -91,8 +97,41 @@ public class TMSServlet extends HttpServlet {
 		return null;
 	}
 
-	private String save(HttpServletResponse response, String xml) throws XmlException {
-		return null;
+	private String save(HttpServletResponse response, String xml) throws XmlException, IOException {
+		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
+		AdssvcRequest saveRequest = document.getAdssvcRequest();
+		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
+        SaveTestingSessionData saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
+
+        Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
+        for(int i=0;i<tsda.length;i++) {
+		    Tsd tsd = tsda[i];
+		    String rosterId = tsd.getLsid().substring(0, tsd.getLsid().indexOf(":"));
+		    
+		    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
+		    	Ist[] ista = tsd.getIstArray();
+		    	for(int j=0;j<ista.length;j++) {
+		    		Ist ist = ista[j];
+		    		OASHectorSink.putItemResponse(rosterId, ist.getIid(), ist.xmlText());
+		    	}
+		    }
+		    
+		    if(tsd.getLsvArray() != null && tsd.getLsvArray().length > 0) {
+		    	// subtest events
+		    }
+		    
+		    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {
+		    	// test events
+		    }
+		    
+		    saveResponse.addNewTsd();
+	        saveResponse.getTsdArray(0).setLsid(tsd.getLsid());
+	        saveResponse.getTsdArray(0).setScid(tsd.getScid());
+	        saveResponse.getTsdArray(0).setMseq(tsd.getMseq());
+	        saveResponse.getTsdArray(0).setStatus(Status.OK);
+        }
+	    
+		return responseDocument.xmlText();
 	}
 
 	private String login(String xml) throws XmlException, IOException, ClassNotFoundException {
@@ -170,7 +209,7 @@ public class TMSServlet extends HttpServlet {
                 	result = ServletUtils.DOWNLOAD_ITEM_METHOD;
 			}
 		}       	
-        //System.out.println(result);
+        System.out.println(result);
     	return result;
 	}
 

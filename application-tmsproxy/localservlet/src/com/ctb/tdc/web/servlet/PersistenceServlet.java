@@ -281,14 +281,13 @@ public class PersistenceServlet extends HttpServlet {
         	boolean isEndSubtest = ServletUtils.isEndSubtest(xml);
 
         	boolean hasResponse = ServletUtils.hasResponse(xml);
-            if (hasResponse) {
-            	AuditFile.log(ServletUtils.createAuditVO(xml, hasResponse));
+            
+        	if(isEndSubtest || hasResponse) {
+        		save(xml);
             }
 
             if(!isEndSubtest){
             	result = ServletUtils.OK;
-            } else {
-            	result = save(xml);
             }
         } 
         catch (Exception e) {

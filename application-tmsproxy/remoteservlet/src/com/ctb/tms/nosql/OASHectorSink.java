@@ -18,6 +18,7 @@ import me.prettyprint.cassandra.service.ThriftKsDef;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
+import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.ddl.ColumnDefinition;
 import me.prettyprint.hector.api.ddl.ColumnFamilyDefinition;
 import me.prettyprint.hector.api.ddl.ColumnIndexType;
@@ -25,6 +26,8 @@ import me.prettyprint.hector.api.ddl.ColumnType;
 import me.prettyprint.hector.api.ddl.ComparatorType;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
+import me.prettyprint.hector.api.query.ColumnQuery;
+import me.prettyprint.hector.api.query.QueryResult;
 import sun.misc.BASE64Encoder;
 
 import com.ctb.tms.bean.login.RosterData;
@@ -37,6 +40,7 @@ public class OASHectorSink {
 	{
 		try {
 			//cluster.dropKeyspace("OAS");
+			//cluster.dropKeyspace("Responses");
 			//System.out.println("*****  Dropped OAS keyspace.");
 		} catch (Exception e) {
 			// do nothing, KS doesn't exist
@@ -207,6 +211,161 @@ public class OASHectorSink {
 			// do nothing, keyspace already exists
 			//e.printStackTrace();
 		}
+		
+		try {
+			BasicKeyspaceDefinition kd = new BasicKeyspaceDefinition() {
+				public Map<String, String> getStrategyOptions() {
+					Map<String, String> options = new HashMap<String, String>(2);
+					options.put("replication_factor", "1");
+					return options;
+				}
+				
+				public String getStrategyClass() {
+					return "org.apache.cassandra.locator.SimpleStrategy";
+				}
+				
+				public int getReplicationFactor() {
+					return 1;
+				}
+				
+				public String getName() {
+					return "Responses";
+				}
+				
+				public List<ColumnFamilyDefinition> getCfDefs() {
+					BasicColumnFamilyDefinition rosterDataCF = new BasicColumnFamilyDefinition() {
+					
+						public ComparatorType getSubComparatorType() {
+							return null;
+						}
+						
+						public double getRowCacheSize() {
+							return 0;
+						}
+						
+						public int getRowCacheSavePeriodInSeconds() {
+							return 0;
+						}
+						
+						public double getReadRepairChance() {
+							return 0;
+						}
+						
+						public String getName() {
+							return "ResponseData";
+						}
+						
+						public int getMinCompactionThreshold() {
+							return 4;
+						}
+						
+						public int getMemtableThroughputInMb() {
+							return 10;
+						}
+						
+						public double getMemtableOperationsInMillions() {
+							return 0.1;
+						}
+						
+						public int getMemtableFlushAfterMins() {
+							return 60;
+						}
+						
+						public int getMaxCompactionThreshold() {
+							return 32;
+						}
+						
+						public String getKeyspaceName() {
+							return "Responses";
+						}
+						
+						public double getKeyCacheSize() {
+							return 0.01;
+						}
+						
+						public int getKeyCacheSavePeriodInSeconds() {
+							return 3600;
+						}
+						
+						public int getId() {
+							return 1;
+						}
+						
+						public int getGcGraceSeconds() {
+							return 0;
+						}
+						
+						public String getDefaultValidationClass() {
+							return "org.apache.cassandra.db.marshal.UTF8Type";
+						}
+						
+						public ComparatorType getComparatorType() {
+							return ComparatorType.UTF8TYPE;
+						}
+						
+						public String getComment() {
+							return "OAS TMS Item response data";
+						}
+						
+						public ColumnType getColumnType() {
+							return ColumnType.STANDARD;
+						}
+						
+						public List<ColumnDefinition> getColumnMetadata() {
+							ColumnDefinition itemIdCD = new ColumnDefinition() {
+								
+								public String getValidationClass() {
+									return "org.apache.cassandra.db.marshal.UTF8Type";
+								}
+								
+								public ByteBuffer getName() {
+									return ByteBuffer.wrap("item-id".getBytes());
+								}
+								
+								public ColumnIndexType getIndexType() {
+									return ColumnIndexType.KEYS;
+								}
+								
+								public String getIndexName() {
+									return "item-id-idx";
+								}
+							};
+							ColumnDefinition itemResponseCD = new ColumnDefinition() {
+								
+								public String getValidationClass() {
+									return "org.apache.cassandra.db.marshal.UTF8Type";
+								}
+								
+								public ByteBuffer getName() {
+									return ByteBuffer.wrap("item-response".getBytes());
+								}
+								
+								public ColumnIndexType getIndexType() {
+									return ColumnIndexType.KEYS;
+								}
+								
+								public String getIndexName() {
+									return "item-response-idx";
+								}
+							};
+							List<ColumnDefinition> cdList = new ArrayList<ColumnDefinition>();
+							cdList.add(itemIdCD);
+							cdList.add(itemResponseCD);
+							return cdList;
+						}
+					};
+					List<ColumnFamilyDefinition> cfList = new ArrayList<ColumnFamilyDefinition>();
+					cfList.add(new ThriftCfDef(rosterDataCF));
+					return cfList;
+				}
+			};
+	
+			cluster.addKeyspace(new ThriftKsDef(kd));
+			System.out.println("*****  Created Responses keyspace.");
+		} catch (Exception e) {
+			// do nothing, keyspace already exists
+			e.printStackTrace();
+		}
 	}
 	
 	public static void putRosterData(StudentCredentials creds, RosterData rosterData) throws IOException {
@@ -226,5 +385,20 @@ public class OASHectorSink {
 		//columnQuery.setColumnFamily("RosterData").setKey(key).setName("login-response");
 		//QueryResult<HColumn<String, String>> result = columnQuery.execute();
 		//System.out.println("*****  Stored in Cassandra: " + result.get().getValue());
+	}
+	
+	public static void putItemResponse(String testRosterId, String itemId, String xml) throws IOException {
+		Keyspace keyspace = HFactory.createKeyspace("Responses", cluster);
+		Serializer<String> stringSerializer = new StringSerializer();
+		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
+		String key = testRosterId;
+		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-id", itemId));
+		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-response", xml));
+
+		
+		ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
+		columnQuery.setColumnFamily("ResponseData").setKey(key).setName("item-response");
+		QueryResult<HColumn<String, String>> result = columnQuery.execute();
+		System.out.println("*****  Stored in Cassandra: " + result.get().getValue());
 	}
 }

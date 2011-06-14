@@ -143,7 +143,7 @@ public class OASDBSource
         int testRosterId = -1;
         String lsid = null;
         ManifestData [] manifestData = new ManifestData [0];
-        for(int a=0;a<authDataArray.length && !authenticated;a++) {
+        for(int a=0;authDataArray != null && a<authDataArray.length && !authenticated;a++) {
             authData = authDataArray[a];
             testRosterId = authData.getTestRosterId();
             lsid = String.valueOf(testRosterId) + ":" + testAccessCode;
@@ -163,105 +163,108 @@ public class OASDBSource
                 }
             }
         }
-            
-        if(authData.getRosterTestCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) ||
-        		authData.getRosterTestCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS)) {
-                loginResponse.setRestartFlag(true);
-            } else {
-            	loginResponse.setRestartFlag(false);
-            }
-        loginResponse.setRestartNumber(new BigInteger(String.valueOf(authData.getRestartNumber())));
-        
-            TestProduct testProduct = getProductForTestAdmin(conn, authData.getTestAdminId());
-            //System.out.print("4");
-            //AuthenticateStudent authenticator = authenticatorFactory.create();
-
-            if ("TB".equals(testProduct.getProductType())) {
-                for(int i = 0;i<manifestData.length;i++) {
-                    	if(!testAccessCode.equalsIgnoreCase(manifestData[i].getAccessCode()) &&
-                    			manifestData[i].getTitle().indexOf("locator") >= 0 &&
-                    			!manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
-                    		response = TmssvcResponseDocument.Factory.newInstance();
-            	            loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
-            	            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.LOCATOR_SUBTEST_NOT_COMPLETED_STATUS);
-                    	}
-                }
-            }
-            
-            String logoURI = getProductLogo(conn,testProduct.getProductId());
-            //System.out.print("5");
-            if (logoURI == null || "".equals(logoURI))
-                logoURI = "/resources/logo.swf";
-            loginResponse.addNewBranding().setTdclogo(logoURI);
-
-		 if (authData.getRandomDistractorSeedNumber() != null) {
-
-
-			 loginResponse.setRandomDistractorSeedNumber(
-					 new BigInteger(String.valueOf( authData.
-							 getRandomDistractorSeedNumber())));
-
-
-		 }  else {
-
-			 if (manifestData[0].getRandomDistractorStatus() != null && 
-					 manifestData[0].getRandomDistractorStatus().equals("Y")) {
-
-				 Integer ranodmSeedNumber = generateRandomNumber();
-
+        if(authData != null) {    
+	        if(authData.getRosterTestCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) ||
+	        		authData.getRosterTestCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS)) {
+	                loginResponse.setRestartFlag(true);
+	            } else {
+	            	loginResponse.setRestartFlag(false);
+	            }
+	        	loginResponse.setRestartNumber(new BigInteger(String.valueOf(authData.getRestartNumber())));
+	        
+	            TestProduct testProduct = getProductForTestAdmin(conn, authData.getTestAdminId());
+	            //System.out.print("4");
+	            //AuthenticateStudent authenticator = authenticatorFactory.create();
+	
+	            if ("TB".equals(testProduct.getProductType())) {
+	                for(int i = 0;i<manifestData.length;i++) {
+	                    	if(!testAccessCode.equalsIgnoreCase(manifestData[i].getAccessCode()) &&
+	                    			manifestData[i].getTitle().indexOf("locator") >= 0 &&
+	                    			!manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
+	                    		response = TmssvcResponseDocument.Factory.newInstance();
+	            	            loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
+	            	            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.LOCATOR_SUBTEST_NOT_COMPLETED_STATUS);
+	                    	}
+	                }
+	            }
+	            
+	            String logoURI = getProductLogo(conn,testProduct.getProductId());
+	            //System.out.print("5");
+	            if (logoURI == null || "".equals(logoURI))
+	                logoURI = "/resources/logo.swf";
+	            loginResponse.addNewBranding().setTdclogo(logoURI);
+	
+	            if (authData.getRandomDistractorSeedNumber() != null) {
+	
+	
 				 loginResponse.setRandomDistractorSeedNumber(
-						 new BigInteger( String.valueOf(ranodmSeedNumber.intValue())));
+						 new BigInteger(String.valueOf( authData.
+								 getRandomDistractorSeedNumber())));
+	
+	
+			 }  else {
+	
+				 if (manifestData[0].getRandomDistractorStatus() != null && 
+						 manifestData[0].getRandomDistractorStatus().equals("Y")) {
+	
+					 Integer ranodmSeedNumber = generateRandomNumber();
+	
+					 loginResponse.setRandomDistractorSeedNumber(
+							 new BigInteger( String.valueOf(ranodmSeedNumber.intValue())));
+				 }
+	
 			 }
-
-		 }
-        copyAuthenticationDataToResponse(loginResponse, authData);
-        AccommodationsData accomData = getAccommodations(conn, testRosterId);
-        //System.out.print("6");
-        
-        if(accomData != null) {
-            copyAccomodationsDataToResponse(loginResponse, accomData);
+	        copyAuthenticationDataToResponse(loginResponse, authData);
+	        AccommodationsData accomData = getAccommodations(conn, testRosterId);
+	        //System.out.print("6");
+	        
+	        if(accomData != null) {
+	            copyAccomodationsDataToResponse(loginResponse, accomData);
+	        }
+	
+	        boolean gotRestart = false;
+	        for(int i=0; i<manifestData.length ;i++) {
+	            if(Constants.StudentTestCompletionStatus.SCHEDULED_STATUS.equals(manifestData[i].getCompletionStatus()) ||
+	               Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS.equals(manifestData[i].getCompletionStatus()) ||
+	               Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
+	               Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
+	               Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS.equals(manifestData[i].getCompletionStatus())) {
+	                if(!gotRestart && loginResponse.getRestartFlag() && 
+	                		(manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
+	                		 manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS))) {
+	                	ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
+	                	manifestData[i].setTotalTime(getTotalElapsedTimeForSubtest(conn, testRosterId, manifestData[i].getId()));
+	                    //System.out.print("7");
+	                    int remSec = (manifestData[i].getScoDurationMinutes() * 60) - manifestData[i].getTotalTime();
+	                    ItemResponseData [] itemResponseData = getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
+	                    //System.out.print("8");
+	                    //START Change For deferred defect 63502
+	                    copyRestartDataToResponse(lsid, testRosterId, manifestData[i].getId(), loginResponse, itemResponseData, remSec, 
+	                    		Integer.parseInt(manifestData[i].getAdsid()), manifestData[i].getScratchpadContentStr(), restartData);
+	                    		//END
+	                    gotRestart = true;
+	                }
+	            }
+	        }
+	        copyManifestDataToResponse(conn, loginResponse, manifestData, testRosterId, authData.getTestAdminId(), testAccessCode);
+	
+	        String tutorialResource = getTutorialResource(conn, testRosterId);
+	        //System.out.print("9");
+	        boolean wasTutorialTaken = wasTutorialTaken(conn, testRosterId);
+	        //System.out.print("10");
+	        if (tutorialResource!= null && !tutorialResource.trim().equals("")) {
+	            Tutorial tutorial =loginResponse.addNewTutorial();
+	            tutorial.setTutorialUrl(tutorialResource);
+	            tutorial.setDeliverTutorial(new BigInteger(wasTutorialTaken ? "0":"1"));
+	        }
+	        RosterData result = new RosterData();
+	        result.setDocument(response);
+	        result.setAuthData(authData);
+	        System.out.print("\n");
+	        return result;
+        } else {
+        	return null;
         }
-
-        boolean gotRestart = false;
-        for(int i=0; i<manifestData.length ;i++) {
-            if(Constants.StudentTestCompletionStatus.SCHEDULED_STATUS.equals(manifestData[i].getCompletionStatus()) ||
-               Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS.equals(manifestData[i].getCompletionStatus()) ||
-               Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
-               Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS.equals(manifestData[i].getCompletionStatus()) ||
-               Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS.equals(manifestData[i].getCompletionStatus())) {
-                if(!gotRestart && loginResponse.getRestartFlag() && 
-                		(manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
-                		 manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS))) {
-                	ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
-                	manifestData[i].setTotalTime(getTotalElapsedTimeForSubtest(conn, testRosterId, manifestData[i].getId()));
-                    //System.out.print("7");
-                    int remSec = (manifestData[i].getScoDurationMinutes() * 60) - manifestData[i].getTotalTime();
-                    ItemResponseData [] itemResponseData = getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
-                    //System.out.print("8");
-                    //START Change For deferred defect 63502
-                    copyRestartDataToResponse(lsid, testRosterId, manifestData[i].getId(), loginResponse, itemResponseData, remSec, 
-                    		Integer.parseInt(manifestData[i].getAdsid()), manifestData[i].getScratchpadContentStr(), restartData);
-                    		//END
-                    gotRestart = true;
-                }
-            }
-        }
-        copyManifestDataToResponse(conn, loginResponse, manifestData, testRosterId, authData.getTestAdminId(), testAccessCode);
-
-        String tutorialResource = getTutorialResource(conn, testRosterId);
-        //System.out.print("9");
-        boolean wasTutorialTaken = wasTutorialTaken(conn, testRosterId);
-        //System.out.print("10");
-        if (tutorialResource!= null && !tutorialResource.trim().equals("")) {
-            Tutorial tutorial =loginResponse.addNewTutorial();
-            tutorial.setTutorialUrl(tutorialResource);
-            tutorial.setDeliverTutorial(new BigInteger(wasTutorialTaken ? "0":"1"));
-        }
-        RosterData result = new RosterData();
-        result.setDocument(response);
-        result.setAuthData(authData);
-        System.out.print("\n");
-        return result;
     }
     
     //START Change for Deferred defect 63502
