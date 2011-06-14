@@ -1059,4 +1059,9 @@ public interface StudentManagement extends JdbcControl
 	//Added for Auditory Calming
      @JdbcControl.SQL(statement = "select file_id as fileId, audio_file_name as audioFileName from music_file_list order by audio_file_name asc")
      MusicFiles[] getMusicFilesList() throws SQLException;
+     
+   //Added for TABE BAUM - 028
+     
+     @JdbcControl.SQL(statement = "select enforce_break from test_admin where test_admin_id = {testAdminId}")
+     String hasMultipleAccessCode(int testAdminId) throws SQLException;
 }

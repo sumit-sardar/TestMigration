@@ -487,4 +487,9 @@ public interface StudentManagement
     // Added for Auditory Calming
     
     com.ctb.bean.studentManagement.MusicFiles[] getMusicFiles() throws com.ctb.exception.CTBBusinessException;
-} 
+    
+    //Added for TABE-BAUM 028
+    String hasMultipleAccessCode(int testAdminId) throws com.ctb.exception.CTBBusinessException;
+} 	
+
+

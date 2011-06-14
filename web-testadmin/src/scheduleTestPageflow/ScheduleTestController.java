@@ -2318,9 +2318,11 @@ public class ScheduleTestController extends PageFlowController
     {               
 		Integer customerId = this.user.getCustomer().getCustomerId();
         boolean hasAccessCodeConfigurable = false;
-        
+        String hasBreak = "T";
         try
-        {      
+        {  
+        	hasBreak = users.hasMultipleAccessCode(this.getTestAdminId());
+        	
 			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
 			if (customerConfigurations == null || customerConfigurations.length == 0) {
 				customerConfigurations = users.getCustomerConfigurations(2);
@@ -2341,8 +2343,10 @@ public class ScheduleTestController extends PageFlowController
         catch (SQLException se) {
         	se.printStackTrace();
 		}
-       
-        return new Boolean(hasAccessCodeConfigurable);
+       if(hasBreak.equals("F") && hasAccessCodeConfigurable)
+    	   return true;
+       else
+    	   return false;
     }
 	
 

@@ -2552,4 +2552,20 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
+	
+	// Added for TABE BAUM - 028
+	public String hasMultipleAccessCode(int testAdminId) throws CTBBusinessException {
+		
+		try{
+			String hasbreak = studentManagement.hasMultipleAccessCode(testAdminId);
+			
+			return hasbreak;
+		}
+		catch(Exception e){
+			
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: hasMultipleAccessCode: " );
+			tee.setStackTrace(e.getStackTrace());
+			throw tee;
+		}
+	}
 } 

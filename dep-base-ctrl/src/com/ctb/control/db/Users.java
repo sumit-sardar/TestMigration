@@ -905,5 +905,11 @@ public interface Users extends JdbcControl
     
     @JdbcControl.SQL(statement = "select  customer_configuration_value as customerConfigurationValue,  customer_configuration_id as customerConfigurationId,  sort_order sortOrder from customer_configuration_value where customer_configuration_id = {customerConfigurationId} order by sort_order, customer_configuration_value")
     CustomerConfigurationValue [] getCustomerConfigurationValues(int customerConfigurationId) throws SQLException;
+    
+    //Added for TABE BAUM - 028
+    
+    @JdbcControl.SQL(statement = "select enforce_break from test_admin where test_admin_id = {testAdminId}")
+    String hasMultipleAccessCode(int testAdminId) throws SQLException;
+
 
 }

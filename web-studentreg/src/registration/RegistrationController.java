@@ -2348,7 +2348,7 @@ public class RegistrationController extends PageFlowController
 	{               
 	    
 	    boolean hasAccessCodeConfigurable = false;
-	
+	    String hasBreak = "T";
 	    for (int i=0; i < customerConfigurations.length; i++)
 	    {
 	    	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
@@ -2358,6 +2358,19 @@ public class RegistrationController extends PageFlowController
 	            break;
 	        } 
 	    }
+	    
+	    try {
+	    	hasBreak = this.studentManagement.hasMultipleAccessCode(this.testAdminId);
+	    	
+	    	if(hasBreak.equals("F") && hasAccessCodeConfigurable)
+	    		hasAccessCodeConfigurable = true;
+	    	else
+	    		hasAccessCodeConfigurable = false;
+	    }
+	    catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
 	   
 	    return new Boolean(hasAccessCodeConfigurable);
 	}
