@@ -395,11 +395,5 @@ public class OASHectorSink {
 		String key = testRosterId;
 		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-id", tsd.getIstArray(0).getIid()));
 		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-response", tsd.xmlText()));
-
-		
-		ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
-		columnQuery.setColumnFamily("ResponseData").setKey(key).setName("item-response");
-		QueryResult<HColumn<String, String>> result = columnQuery.execute();
-		System.out.println("*****  Stored in Cassandra: " + result.get().getValue());
 	}
 }

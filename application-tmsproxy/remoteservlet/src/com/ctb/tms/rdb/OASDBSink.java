@@ -68,7 +68,7 @@ public class OASDBSink {
 		return newConn;
 	}
 	
-	public void putItemResponse(Connection conn, String testRosterId, Tsd tsd) {
+	public static void putItemResponse(Connection conn, String testRosterId, Tsd tsd) {
 		Ist[] ista = tsd.getIstArray();
 		for(int j=0;j<ista.length;j++) {
 	        Ist ist = ista[j];
@@ -115,7 +115,7 @@ public class OASDBSink {
 		}
 	}
 
-	private void storeResponse(Connection con, int testRosterId, int itemSetId, String itemId, String response, float duration, BigInteger mseq, String studentMarked) {
+	private static void storeResponse(Connection con, int testRosterId, int itemSetId, String itemId, String response, float duration, BigInteger mseq, String studentMarked) {
 		PreparedStatement stmt1 = null;
     	try {
 			stmt1 = con.prepareStatement(STORE_RESPONSE_SQL);
@@ -140,7 +140,7 @@ public class OASDBSink {
 		}
 	}
 	
-	private void storeCRResponse(Connection conn, int testRosterId, int subtestId, String itemId, String response, float duration, BigInteger mseq, String studentMarked) {
+	private static void storeCRResponse(Connection conn, int testRosterId, int subtestId, String itemId, String response, float duration, BigInteger mseq, String studentMarked) {
 		// TODO: implement CR response persistence
 	}
 }
