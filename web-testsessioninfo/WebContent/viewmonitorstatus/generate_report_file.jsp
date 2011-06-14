@@ -19,54 +19,95 @@ Integer selectedRosterIds = (Integer)request.getAttribute("selectedRosterIds");
 
 %>
 <netui-template:template templatePage="/resources/jsp/template.jsp">
-    <netui-template:setAttribute name="title" value="${bundle.web['viewMonitorStatus.window.title']}"/>
-    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.viewStatus']}"/>
+    <netui-template:setAttribute name="title" value="${bundle.web['generateReportFile.window.title']}"/>
+    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.generateReportFile']}"/>
 <netui-template:section name="bodySection">
 
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
              
-<h1><netui:content value="${bundle.web['viewProfileReport.title']}"/>: <netui:span value="${requestScope.testSession.testAdminName}"/></h1>
-<p><netui:content value="${bundle.web['viewProfileReport.title.message']}"/></p>
+<h1><netui:content value="${bundle.web['generateReportFile.title']}"/>: <netui:span value="${requestScope.testSession.testAdminName}"/></h1>
+<p><netui:content value="${bundle.web['generateReportFile.title.message']}"/></p>
 
 
 
 <h2><netui:content value="${bundle.web['viewMonitorStatus.testDetails.title']}"/></h2>
+
+<netui:form action="generate_report_file">
+
 <table class="transparent">
 
 <tr class="transparent">
-    <td class="transparent">
-        <netui:content value="${bundle.web['viewMonitorStatus.testDetails.testAccessCode']}"/>: 
-    </td>
-    <td class="transparent">
-        <div class="formValue"><netui:span value="${requestScope.testSession.accessCode}" styleClass="formValue"/></div>
-    </td>
-</tr>
+	<td class="transparent" width="45%">
+		<table class="transparent">
 
-<tr class="transparent">
-    <td class="transparent">
-        <netui:content value="${bundle.web['viewMonitorStatus.testDetails.totalStudents']}"/>: 
-    </td>
-    <td class="transparent">    
-        <div class="formValue"><netui:span value="${requestScope.totalStudents}" styleClass="formValue"/></div>
-    </td>
-</tr>
+			<tr class="transparent">
+			    <td class="transparent">
+			        <netui:content value="${bundle.web['viewMonitorStatus.testDetails.testAccessCode']}"/>: 
+			    </td>
+			    <td class="transparent">
+			        <div class="formValue"><netui:span value="${requestScope.testSession.accessCode}" styleClass="formValue"/></div>
+			    </td>
+			</tr>
 
-<tr class="transparent">
-    <td class="transparent">
-        <netui:content value="Total Selected Students:"/>: 
-    </td>
-    <td class="transparent">    
-        <div class="formValue"><span class="formValue" id="selectedRosterIds"><%= selectedRosterIds %></span></div>
-    </td>
-</tr>
+			<tr class="transparent">
+			    <td class="transparent">
+			        <netui:content value="${bundle.web['viewMonitorStatus.testDetails.totalStudents']}"/>: 
+			    </td>
+			    <td class="transparent">    
+			        <div class="formValue"><netui:span value="${requestScope.totalStudents}" styleClass="formValue"/></div>
+			    </td>
+			</tr>
 
+			<tr class="transparent">
+			    <td class="transparent">
+			        <netui:content value="Total Selected Students:"/>: 
+			    </td>
+			    <td class="transparent">    
+			        <div class="formValue"><span class="formValue" id="selectedRosterIds"><%= selectedRosterIds %></span></div>
+			    </td>
+			</tr>
+		</table>
+	</td>
+
+	<td class="transparent" width="10%">&nbsp;</td>
+
+	<td class="transparent" width="45%">
+		<table class="transparent">
+		<tr class="transparent">
+			<td class="transparent">
+				*Generated File Name:
+			</td>
+			<td class="transparent">
+                <netui:textBox tagId="fileName" dataSource="pageFlow.fileName"  style="width:200px;" />
+			</td>
+		</tr>
+
+		<tr class="transparent">
+			<td class="transparent">
+				*Generated File Type:
+			</td>
+			<td class="transparent">
+        <netui:select dataSource="pageFlow.fileType" optionsDataSource="${pageFlow.fileTypeOptions}" style="width:200px;" />
+ 			</td>
+		</tr>
+
+		<tr class="transparent">
+			<td class="transparent">
+				Email:
+			</td>
+			<td class="transparent">
+                <netui:textBox tagId="email" dataSource="pageFlow.userEmail" style="width:200px;" />
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
 </table><br/>
 
  
 
-<netui:form action="view_report">
     <netui:hidden dataSource="actionForm.actionElement"/>
     <netui:hidden dataSource="actionForm.currentAction"/>
     <netui:hidden dataSource="actionForm.maxPage"/>
@@ -90,7 +131,6 @@ Integer selectedRosterIds = (Integer)request.getAttribute("selectedRosterIds");
                 <td class="tableFilter">
                     <netui:button styleClass="button" tagId="selectAll" value="Select All" type="submit" onClick="setElementValue('{actionForm.currentAction}', 'selectAll');" disabled="${requestScope.disableSelectAllButton}" />&nbsp;                                 
                     <netui:button styleClass="button" tagId="deselectAll" value="Deselect All" type="submit" onClick="setElementValue('{actionForm.currentAction}', 'deselectAll');" disabled="${requestScope.disableDeselectAllButton}" />&nbsp;                                 
-                    <netui:button styleClass="button" tagId="viewReport" value="View Report" type="submit" onClick="setElementValue('{actionForm.currentAction}', 'viewReport');" disabled="${requestScope.disableViewReportButton}" />&nbsp;                                 
                 </td>
             </tr>
             </table>
@@ -163,7 +203,9 @@ Integer selectedRosterIds = (Integer)request.getAttribute("selectedRosterIds");
 </table>
     
 <p>
-<br><netui:button type="submit" value="${bundle.web['common.button.home']}" action="redirect_to_homepage"/>           
+<br>
+<netui:button type="submit" value="${bundle.web['common.button.home']}" action="redirect_to_homepage"/>&nbsp;           
+<netui:button styleClass="button" tagId="generateReportFile" value="Generate Report" type="button" onClick="return validateInfo();" disabled="${requestScope.disableGenerateReportFileButton}" />&nbsp;                                 
 </p>
 
 </netui:form>

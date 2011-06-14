@@ -1227,7 +1227,7 @@ function selectAllCheckboxes() {
     var total_elm = document.getElementById("selectedRosterIds");
     total_elm.innerHTML = total;
 
-    enableElementById('viewReport');
+    enableElementById('generateReportFile');
     
 }
 
@@ -1245,7 +1245,7 @@ function clearAllCheckboxes() {
     var total_elm = document.getElementById("selectedRosterIds");
     total_elm.innerHTML = total;
     
-    disableElementById('viewReport');
+    disableElementById('generateReportFile');
 }
 
 
@@ -1263,10 +1263,64 @@ function getRosterId(ctrl) {
     total_elm.innerHTML = total;
 
     if (total > 0)    
-        enableElementById('viewReport');
+        enableElementById('generateReportFile');
     else
-        disableElementById('viewReport');
+        disableElementById('generateReportFile');
 }
 
+function validateInfo() {
+    
+    if (! validateFileName()) {
+        return true;
+    }
+    
+    if (! validateEmail()) {
+        return true;
+    }
+    
+	setElementValue('{actionForm.currentAction}', 'generateReportFile', true);   
+    
+    return true;
+}
+
+function validateFileName() {
+    
+    var element = document.getElementById("fileName");
+    var filename = element.value;
+    
+    if (filename.length == 0) {
+        alert ("File name required.");      
+        return false;
+    }
+    
+    var extension = filename.substr(filename.length-4, filename.length);
+    if (extension.toLowerCase() != ".zip") {
+        alert ("Invalid extension.");      
+        return false;
+    }
+    
+    var invalid = (/[^a-z0-9/./_/-]/gi.test(filename));
+    if (invalid) {
+        alert ("Invalid file name.");      
+        return false;
+    }
+    
+    return true;
+}
+
+
+
+function validateEmail() {   
+    var element = document.getElementById("email");
+    var email = element.value;
+
+    var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;   
+    if (! emailPattern.test(email)) {
+        alert ("Invalid email.");      
+        return false;
+    }
+    
+    return true;
+}  
 
     

@@ -26,8 +26,6 @@
     String testAdminId = (String)request.getAttribute("testAdminId");
 %>
 
-<input type="text" name="something" value="sometext" />
-
 <table style="border-collapse: collapse; border-style: none; border-width: 0px; width: 100%; height: 100%; margin: 0px; padding: 0px; ">
 
 <tr>

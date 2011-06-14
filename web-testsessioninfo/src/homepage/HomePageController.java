@@ -290,7 +290,8 @@ public class HomePageController extends PageFlowController
          
         this.getSession().setAttribute("userHasReports", userHasReports());
 
-        this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
+        Boolean canRegisterStudent = canRegisterStudent(customerConfigs);
+        this.getSession().setAttribute("canRegisterStudent", canRegisterStudent);
         
         String userSessionFilterTab = form.getUserSessionFilterTab();
         if (userSessionFilterTab.equalsIgnoreCase("PA"))
@@ -300,6 +301,10 @@ public class HomePageController extends PageFlowController
         else
         {
             this.getRequest().setAttribute("enableUserRegisterStudent", Boolean.TRUE);
+        }
+        if (canRegisterStudent.booleanValue() && (userSessionFilterTab.equalsIgnoreCase("CU") || userSessionFilterTab.equalsIgnoreCase("PA")))
+        {
+            //this.getRequest().setAttribute("showUserGenerateReportFile", Boolean.TRUE);
         }
         
         String proctorSessionFilterTab = form.getProctorSessionFilterTab();
@@ -311,6 +316,11 @@ public class HomePageController extends PageFlowController
         {
             this.getRequest().setAttribute("enableProctorRegisterStudent", Boolean.TRUE);
         }
+        if (canRegisterStudent.booleanValue() && (proctorSessionFilterTab.equalsIgnoreCase("CU") || proctorSessionFilterTab.equalsIgnoreCase("PA")))
+        {
+            //this.getRequest().setAttribute("showProctorGenerateReportFile", Boolean.TRUE);
+        }
+        
         //Bulk Accommodation
         this.getSession().setAttribute("isBulkAccommodationConfigured", customerHasBulkAccommodation(customerConfigs));
       //For hand scoring changes
@@ -1117,15 +1127,31 @@ public class HomePageController extends PageFlowController
         @Jpf.Forward(name = "success",
                      path = "/viewmonitorstatus/ViewMonitorStatusController.jpf")
     })
-    protected Forward goto_view_report(HomePageForm form)
+    protected Forward goto_generate_report_file_user(HomePageForm form)
     {
         String sessionId = form.getUserSessionId();
         getSession().setAttribute("sessionId", sessionId);
-        getSession().setAttribute("callerId", "view_report");
+        getSession().setAttribute("callerId", "generate_report_file");
         
         return new Forward("success");
     }
 
+	 /**
+     * @jpf:action
+     * @jpf:forward name="success" path="/viewmonitorstatus/ViewMonitorStatusController.jpf"
+     */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "success",
+                     path = "/viewmonitorstatus/ViewMonitorStatusController.jpf")
+    })
+    protected Forward goto_generate_report_file_proctor(HomePageForm form)
+    {
+        String sessionId = form.getProctorSessionId();
+        getSession().setAttribute("sessionId", sessionId);
+        getSession().setAttribute("callerId", "generate_report_file");
+        
+        return new Forward("success");
+    }
 	
 	/**
      * FormData get and set methods may be overwritten by the Form Bean editor.

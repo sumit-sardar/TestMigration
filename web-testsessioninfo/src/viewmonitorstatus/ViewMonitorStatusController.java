@@ -98,6 +98,10 @@ public class ViewMonitorStatusController extends PageFlowController
 	           
 	private List selectedRosterIds = null;
 	private List rosterList = null;
+    private String fileName = null;
+    private String fileType = null;
+    private String userEmail = null;
+    private List fileTypeOptions = null;    
 	
     /**
      * This method represents the point of entry into the pageflow
@@ -107,8 +111,8 @@ public class ViewMonitorStatusController extends PageFlowController
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "viewStatus",
                      path = "view_monitor_status.do"),
-        @Jpf.Forward(name = "viewReport",
-        			 path = "view_report.do")
+        @Jpf.Forward(name = "generateReportFile",
+        			 path = "generate_report_file.do")
     })
     protected Forward begin()
     {
@@ -116,9 +120,8 @@ public class ViewMonitorStatusController extends PageFlowController
         this.testRosterFilter = new TestRosterFilter();            
         ViewMonitorStatusForm form = new ViewMonitorStatusForm();
         form.init();
-        // START- Added for CR GA2011CR001
         getCustomerConfigurations();  
-        // END- Added for CR GA2011CR001
+
         this.sessionDetailsShowScores = isSessionDetailsShowScores();
 
         this.subtestValidationAllowed = isSubtestValidationAllowed();
@@ -128,10 +131,13 @@ public class ViewMonitorStatusController extends PageFlowController
 
         this.selectedRosterIds = new ArrayList();
         
-        if ("view_report".equals(this.callerId)) 
-            return new Forward("viewReport", form);
-        else
+        if ("generate_report_file".equals(this.callerId)) {   
+        	initGenerateReportFile();
+            return new Forward("generateReportFile", form);
+        }
+        else {
         	return new Forward("viewStatus", form);
+        }
     }
 
     /**
@@ -173,7 +179,7 @@ public class ViewMonitorStatusController extends PageFlowController
         this.rosterList = buildRosterList(red);        
         this.getRequest().setAttribute("rosterList", this.rosterList);
         
-        PagerSummary pagerSummary = buildTestRosterPagerSummary(red, form.getPageRequested());
+        PagerSummary pagerSummary = buildTestRosterPagerSummary(red, form.getPageRequested(), false);
         this.getRequest().setAttribute("pagerSummary", pagerSummary);
 
         prepareStudentSelection(this.rosterList, form.getTestRosterId());
@@ -209,15 +215,15 @@ public class ViewMonitorStatusController extends PageFlowController
     /**
      * @jpf:action
      * @jpf:forward name="viewIndividualReport" path="viewIndividualReport.do"
-     * @jpf:forward name="success" path="view_report.jsp"
+     * @jpf:forward name="success" path="generate_report_file.jsp"
      */
     @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "viewMultipleIndividualReports",
-                     path = "viewMultipleIndividualReports.do"), 
+        @Jpf.Forward(name = "generateReportFile",
+                     path = "generateReportFile.do"), 
         @Jpf.Forward(name = "success",
-                     path = "view_report.jsp")
+                     path = "generate_report_file.jsp")
     })
-    protected Forward view_report(ViewMonitorStatusForm form)
+    protected Forward generate_report_file(ViewMonitorStatusForm form)
     {
         String testAdminId = getRequest().getParameter("testAdminId");
         if (testAdminId != null)
@@ -228,7 +234,7 @@ public class ViewMonitorStatusController extends PageFlowController
                 
         updateSelectedStudents(form);
         
-        String forwardName = handleViewReportAction(form);
+        String forwardName = handleGenerateReportFileAction(form);
         if (forwardName != null)
         {                
             this.savedForm = form.createClone();
@@ -240,7 +246,7 @@ public class ViewMonitorStatusController extends PageFlowController
         
         this.getRequest().setAttribute("rosterList", this.rosterList);
         
-        PagerSummary pagerSummary = buildTestRosterPagerSummary(red, form.getPageRequested());
+        PagerSummary pagerSummary = buildTestRosterPagerSummary(red, form.getPageRequested(), true);
         this.getRequest().setAttribute("pagerSummary", pagerSummary);
 
         prepareSelectedRosters(this.rosterList, form);
@@ -270,13 +276,13 @@ public class ViewMonitorStatusController extends PageFlowController
         TestSessionVO testSession = getTestSessionDetails(this.sessionId);
         getRequest().setAttribute("testSession", testSession);
 
-        prepareViewReportButton();
+        prepareGenerateReportFileButton();
         
         form.setActionElement("none");   
-        return new Forward("success");
+        return new Forward("success", form);
     }
     
-    private String handleViewReportAction(ViewMonitorStatusForm form)
+    private String handleGenerateReportFileAction(ViewMonitorStatusForm form)
     {
         String forwardName = null;
         String actionElement = form.getActionElement();
@@ -292,12 +298,33 @@ public class ViewMonitorStatusController extends PageFlowController
             {
             	deselectAllStudents();
             }
-            if (currentAction.equals("viewReport"))
+            if (currentAction.equals("generateReportFile"))
             {
-                forwardName = "viewMultipleIndividualReports";
+                forwardName = "generateReportFile";
             }
         }
         return forwardName;
+    }
+
+    private void initGenerateReportFile() {
+    	
+		try {
+			User user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
+			Date currentDate = new Date();
+			String strDate = DateUtils.formatDateToDateString(currentDate);
+			strDate = strDate.replace('/', '_');
+			String fileName = user.getUserName() + "_" + strDate + ".zip";
+	    	setFileName(fileName);
+	    	setUserEmail(user.getEmail());
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+    	
+        this.fileTypeOptions = new ArrayList();
+        this.fileTypeOptions.add("One file for all students");
+        this.fileTypeOptions.add("One file per student");
+    	setFileType((String)this.fileTypeOptions.get(0));
+        
     }
     
 	private void selectAllStudents() {
@@ -379,7 +406,7 @@ public class ViewMonitorStatusController extends PageFlowController
 			@Jpf.Forward(name = "error", path = "/error.jsp")
 		}
 	)
-    protected Forward viewMultipleIndividualReports(ViewMonitorStatusForm form)
+    protected Forward generateReportFile(ViewMonitorStatusForm form)
     {
         try {
         	if (this.userName == null) {
@@ -410,7 +437,7 @@ public class ViewMonitorStatusController extends PageFlowController
 
     /**
      * @jpf:action
-     * @jpf:forward name="success" path="view_report"
+     * @jpf:forward name="success" path="http://www.google.com"
      */
 	@Jpf.Action(
 		forwards = { 
@@ -1340,21 +1367,22 @@ public class ViewMonitorStatusController extends PageFlowController
         return rosterList;
     }
 
-    private PagerSummary buildTestRosterPagerSummary(RosterElementData red, Integer pageRequested)
+    private PagerSummary buildTestRosterPagerSummary(RosterElementData red, Integer pageRequested, boolean isReport)
     {
         PagerSummary pagerSummary = new PagerSummary();
         pagerSummary.setCurrentPage(pageRequested);
         pagerSummary.setTotalObjects(red.getTotalCount());
         pagerSummary.setTotalPages(red.getFilteredPages());
-        pagerSummary.setTotalFilteredObjects(red.getFilteredCount());        
+        if (! isReport)
+        	pagerSummary.setTotalFilteredObjects(red.getFilteredCount());        
         
         return pagerSummary;
     }
 
-    private void prepareViewReportButton()
+    private void prepareGenerateReportFileButton()
     {            
-        Boolean disableViewReportButton = new Boolean(this.selectedRosterIds.size() == 0);
-        this.getRequest().setAttribute("disableViewReportButton", disableViewReportButton.toString());
+        Boolean disableGenerateReportFileButton = new Boolean(this.selectedRosterIds.size() == 0);
+        this.getRequest().setAttribute("disableGenerateReportFileButton", disableGenerateReportFileButton.toString());
     	
         Boolean disableSelectAllButton = new Boolean(this.rosterList.size() == 0);
         this.getRequest().setAttribute("disableSelectAllButton", disableSelectAllButton.toString());
@@ -2117,6 +2145,40 @@ public class ViewMonitorStatusController extends PageFlowController
 			CustomerConfiguration[] customerConfigurations) {
 		this.customerConfigurations = customerConfigurations;
 	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getFileType() {
+		return fileType;
+	}
+
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+
+	public String getUserEmail() {
+		return userEmail;
+	}
+
+	public void setUserEmail(String userEmail) {
+		this.userEmail = userEmail;
+	}
+
+	public List getFileTypeOptions() {
+		return fileTypeOptions;
+	}
+
+	public void setFileTypeOptions(List fileTypeOptions) {
+		this.fileTypeOptions = fileTypeOptions;
+	}
+
+	
 	
 	
 }
