@@ -353,10 +353,11 @@
 <p>
 <netui:content value="${bundle.web['printoptions.testSessionDocuments.message']}"/>
 <br>
+<br>
 <c:if test="${showAccessCode}"> 
-Do you want to print the Access Code in Individual Test Tickets and in Multiple Test Tickets?<br>
+<netui:content value="${bundle.web['printoptions.testSessionDocuments.message.displayAccessCode']}"/><br>
 <input type="radio" id="allow" name="individualAccess" value="Yes" onclick="accessCode()">Yes</input>
-<input type="radio" id="deny" name="individualAccess" value="No"  onclick="accessCode()">No</input>
+<input type="radio" id="deny" name="individualAccess" value="No" onclick="accessCode()" checked="checked">No</input>
 
 </c:if>
 </p>
