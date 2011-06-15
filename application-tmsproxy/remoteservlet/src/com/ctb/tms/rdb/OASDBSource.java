@@ -1,7 +1,5 @@
 package com.ctb.tms.rdb; 
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -19,16 +17,10 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import noNamespace.AdssvcRequestDocument;
-import noNamespace.AdssvcResponseDocument;
 import noNamespace.BaseType;
 import noNamespace.EntryType;
-import noNamespace.ErrorDocument;
 import noNamespace.StereotypeType;
 import noNamespace.TmssvcResponseDocument;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest;
-import noNamespace.AdssvcResponseDocument.AdssvcResponse;
-import noNamespace.AdssvcResponseDocument.AdssvcResponse.GetSubtest;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd;
@@ -260,6 +252,9 @@ public class OASDBSource
 	        RosterData result = new RosterData();
 	        result.setDocument(response);
 	        result.setAuthData(authData);
+	        com.ctb.tms.bean.login.Manifest manifest = new com.ctb.tms.bean.login.Manifest();
+	        manifest.setManifest(manifestData);
+	        result.setManifest(manifest);
 	        System.out.print("\n");
 	        return result;
         } else {

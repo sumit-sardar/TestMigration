@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
 import noNamespace.AdssvcResponseDocument;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.NextSco;
@@ -22,6 +21,8 @@ import noNamespace.TmssvcRequestDocument.TmssvcRequest.LoginRequest;
 
 import com.bea.xml.XmlException;
 import com.ctb.tdc.web.utils.ServletUtils;
+import com.ctb.tms.bean.login.Manifest;
+import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.ADSHectorSink;
@@ -97,7 +98,7 @@ public class TMSServlet extends HttpServlet {
 		return null;
 	}
 
-	private String save(HttpServletResponse response, String xml) throws XmlException, IOException {
+	private String save(HttpServletResponse response, String xml) throws XmlException, IOException, ClassNotFoundException {
 		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
 		AdssvcRequest saveRequest = document.getAdssvcRequest();
 		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
@@ -128,8 +129,16 @@ public class TMSServlet extends HttpServlet {
 		    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {
 		    	// test events
 		    	NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
-		    	// TODO: this is incorrect/hardcoded - should be next SCO for TABE auto-locator
-                nextSco.setId("-1");
+		    	Manifest manifest = OASHectorSource.getManifest(rosterId);
+		    	ManifestData[] manifestData = manifest.getManifest();
+		    	int nextScoIndex = 0;
+		    	for(int j=0;j<manifestData.length;j++) {
+		    		if(manifestData[j].getId() == Integer.parseInt(tsd.getScid())) {
+		    			nextScoIndex = j+1;
+		    			break;
+		    		}
+		    	}
+                nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
                 // TODO: place roster on queue for RDBMS persistence
                 TestDeliveryContextListener.enqueueRoster(rosterId);
 		    }

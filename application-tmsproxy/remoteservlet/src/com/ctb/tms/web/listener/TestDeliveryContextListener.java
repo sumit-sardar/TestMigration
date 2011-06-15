@@ -70,7 +70,10 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 								System.out.print("*****  Got roster data for " + key + " . . . ");
 								// Now put the roster data into Cassandra
 								if(rosterData != null) {
+									String lsid = rosterData.getDocument().getTmssvcResponse().getLoginResponse().getLsid();
+									String testRosterId = lsid.substring(0, lsid.indexOf(":"));
 									OASHectorSink.putRosterData(creds[i], rosterData);
+									OASHectorSink.putManifestData(testRosterId, rosterData.getManifest());
 									System.out.print("stored.\n");
 								} else {
 									System.out.print("NOT stored.\n");

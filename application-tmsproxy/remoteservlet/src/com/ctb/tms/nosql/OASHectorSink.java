@@ -18,7 +18,6 @@ import me.prettyprint.cassandra.service.ThriftKsDef;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
-import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.ddl.ColumnDefinition;
 import me.prettyprint.hector.api.ddl.ColumnFamilyDefinition;
 import me.prettyprint.hector.api.ddl.ColumnIndexType;
@@ -26,11 +25,10 @@ import me.prettyprint.hector.api.ddl.ColumnType;
 import me.prettyprint.hector.api.ddl.ComparatorType;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
-import me.prettyprint.hector.api.query.ColumnQuery;
-import me.prettyprint.hector.api.query.QueryResult;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import sun.misc.BASE64Encoder;
 
+import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 
@@ -40,9 +38,8 @@ public class OASHectorSink {
 	
 	{
 		try {
-			//cluster.dropKeyspace("OAS");
-			cluster.dropKeyspace("Responses");
-			//System.out.println("*****  Dropped OAS keyspace.");
+			//cluster.dropKeyspace("AuthData");
+			//cluster.dropKeyspace("TestData");
 		} catch (Exception e) {
 			// do nothing, KS doesn't exist
 		}
@@ -64,7 +61,7 @@ public class OASHectorSink {
 				}
 				
 				public String getName() {
-					return "OAS";
+					return "AuthData";
 				}
 				
 				public List<ColumnFamilyDefinition> getCfDefs() {
@@ -111,7 +108,7 @@ public class OASHectorSink {
 						}
 						
 						public String getKeyspaceName() {
-							return "OAS";
+							return "AuthData";
 						}
 						
 						public double getKeyCacheSize() {
@@ -139,7 +136,7 @@ public class OASHectorSink {
 						}
 						
 						public String getComment() {
-							return "OAS TMS Roster data";
+							return "OAS TMS Auth data";
 						}
 						
 						public ColumnType getColumnType() {
@@ -207,7 +204,7 @@ public class OASHectorSink {
 			QueryResult<HColumn<String, String>> result = columnQuery.execute();
 			System.out.println(result.get().getValue());
 			*/
-			System.out.println("*****  Created OAS keyspace.");
+			System.out.println("*****  Created AuthData keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
 			//e.printStackTrace();
@@ -230,7 +227,7 @@ public class OASHectorSink {
 				}
 				
 				public String getName() {
-					return "Responses";
+					return "TestData";
 				}
 				
 				public List<ColumnFamilyDefinition> getCfDefs() {
@@ -277,7 +274,7 @@ public class OASHectorSink {
 						}
 						
 						public String getKeyspaceName() {
-							return "Responses";
+							return "TestData";
 						}
 						
 						public double getKeyCacheSize() {
@@ -305,7 +302,7 @@ public class OASHectorSink {
 						}
 						
 						public String getComment() {
-							return "OAS TMS Item response data";
+							return "OAS TMS test data";
 						}
 						
 						public ColumnType getColumnType() {
@@ -374,14 +371,136 @@ public class OASHectorSink {
 							return cdList;
 						}
 					};
+					BasicColumnFamilyDefinition manifestDataCF = new BasicColumnFamilyDefinition() {
+						
+						public ComparatorType getSubComparatorType() {
+							return null;
+						}
+						
+						public double getRowCacheSize() {
+							return 0;
+						}
+						
+						public int getRowCacheSavePeriodInSeconds() {
+							return 0;
+						}
+						
+						public double getReadRepairChance() {
+							return 0;
+						}
+						
+						public String getName() {
+							return "ManifestData";
+						}
+						
+						public int getMinCompactionThreshold() {
+							return 4;
+						}
+						
+						public int getMemtableThroughputInMb() {
+							return 10;
+						}
+						
+						public double getMemtableOperationsInMillions() {
+							return 0.1;
+						}
+						
+						public int getMemtableFlushAfterMins() {
+							return 60;
+						}
+						
+						public int getMaxCompactionThreshold() {
+							return 32;
+						}
+						
+						public String getKeyspaceName() {
+							return "TestData";
+						}
+						
+						public double getKeyCacheSize() {
+							return 0.01;
+						}
+						
+						public int getKeyCacheSavePeriodInSeconds() {
+							return 3600;
+						}
+						
+						public int getId() {
+							return 1;
+						}
+						
+						public int getGcGraceSeconds() {
+							return 0;
+						}
+						
+						public String getDefaultValidationClass() {
+							return "org.apache.cassandra.db.marshal.UTF8Type";
+						}
+						
+						public ComparatorType getComparatorType() {
+							return ComparatorType.UTF8TYPE;
+						}
+						
+						public String getComment() {
+							return "OAS TMS test data";
+						}
+						
+						public ColumnType getColumnType() {
+							return ColumnType.STANDARD;
+						}
+						
+						public List<ColumnDefinition> getColumnMetadata() {
+							ColumnDefinition rosterIdCD = new ColumnDefinition() {
+								
+								public String getValidationClass() {
+									return "org.apache.cassandra.db.marshal.UTF8Type";
+								}
+								
+								public ByteBuffer getName() {
+									return ByteBuffer.wrap("roster-id".getBytes());
+								}
+								
+								public ColumnIndexType getIndexType() {
+									return ColumnIndexType.KEYS;
+								}
+								
+								public String getIndexName() {
+									return "roster-id-idx";
+								}
+							};
+							ColumnDefinition manifestCD = new ColumnDefinition() {
+								
+								public String getValidationClass() {
+									return "org.apache.cassandra.db.marshal.UTF8Type";
+								}
+								
+								public ByteBuffer getName() {
+									return ByteBuffer.wrap("manifest".getBytes());
+								}
+								
+								public ColumnIndexType getIndexType() {
+									return ColumnIndexType.KEYS;
+								}
+								
+								public String getIndexName() {
+									return "manifest-idx";
+								}
+							};
+							List<ColumnDefinition> cdList = new ArrayList<ColumnDefinition>();
+							cdList.add(rosterIdCD);
+							cdList.add(manifestCD);
+							return cdList;
+						}
+					};
 					List<ColumnFamilyDefinition> cfList = new ArrayList<ColumnFamilyDefinition>();
 					cfList.add(new ThriftCfDef(rosterDataCF));
+					cfList.add(new ThriftCfDef(manifestDataCF));
 					return cfList;
 				}
 			};
 	
 			cluster.addKeyspace(new ThriftKsDef(kd));
-			System.out.println("*****  Created Responses keyspace.");
+			System.out.println("*****  Created TestData keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
 			//e.printStackTrace();
@@ -389,7 +508,7 @@ public class OASHectorSink {
 	}
 	
 	public static void putRosterData(StudentCredentials creds, RosterData rosterData) throws IOException {
-		Keyspace keyspace = HFactory.createKeyspace("OAS", cluster);
+		Keyspace keyspace = HFactory.createKeyspace("AuthData", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
@@ -407,8 +526,21 @@ public class OASHectorSink {
 		//System.out.println("*****  Stored in Cassandra: " + result.get().getValue());
 	}
 	
+	public static void putManifestData(String testRosterId, Manifest manifest) throws IOException {
+		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
+		Serializer<String> stringSerializer = new StringSerializer();
+		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
+		String key = testRosterId;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(baos);
+		oos.writeObject(manifest);
+		byte [] bytes = baos.toByteArray();
+		String manifestData = new BASE64Encoder().encode(bytes);
+		mutator.insert(key, "ManifestData", HFactory.createStringColumn("manifest", manifestData));
+	}
+	
 	public static void putItemResponse(String testRosterId, Tsd tsd) throws IOException {
-		Keyspace keyspace = HFactory.createKeyspace("Responses", cluster);
+		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
 		String key = testRosterId + ":" + tsd.getMseq();
@@ -424,7 +556,7 @@ public class OASHectorSink {
 	}
 	
 	public static void deleteItemResponse(String testRosterId, String mseq) throws IOException {
-		Keyspace keyspace = HFactory.createKeyspace("Responses", cluster);
+		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
 		String key = testRosterId + ":" + mseq;

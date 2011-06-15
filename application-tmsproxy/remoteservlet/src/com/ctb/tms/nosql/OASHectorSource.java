@@ -18,13 +18,13 @@ import me.prettyprint.hector.api.beans.Row;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.ColumnQuery;
 import me.prettyprint.hector.api.query.QueryResult;
-import me.prettyprint.hector.api.query.RangeSlicesQuery;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import noNamespace.TmssvcResponseDocument;
 import sun.misc.BASE64Decoder;
 
 import com.bea.xml.XmlException;
 import com.ctb.tms.bean.login.AuthenticationData;
+import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 
@@ -34,7 +34,7 @@ public class OASHectorSource {
 	
 	public static RosterData getRosterData(StudentCredentials creds) throws XmlException, IOException, ClassNotFoundException {
 		RosterData result = new RosterData();
-		Keyspace keyspace = HFactory.createKeyspace("OAS", cluster);
+		Keyspace keyspace = HFactory.createKeyspace("AuthData", cluster);
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
 		ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
 		columnQuery.setColumnFamily("RosterData").setKey(key).setName("login-response");
@@ -56,12 +56,27 @@ public class OASHectorSource {
 		}
 		return result;
 	}
-
 	
+	public static Manifest getManifest(String testRosterId) throws XmlException, IOException, ClassNotFoundException {
+		Manifest manifest = null;
+		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
+		String key = testRosterId;
+		ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
+		columnQuery.setColumnFamily("ManifestData").setKey(key).setName("manifest");
+		QueryResult<HColumn<String, String>> qr = columnQuery.execute();
+		if(qr != null && qr.get() != null) {
+			String manifestData = columnQuery.execute().get().getValue();
+			byte [] bytes = new BASE64Decoder().decodeBuffer(manifestData);
+			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			manifest = (Manifest) ois.readObject();
+		}
+		return manifest;
+	}
 
 	public static Tsd[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
 		ArrayList<Tsd> resulta = new ArrayList<Tsd>();
-		Keyspace keyspace = HFactory.createKeyspace("Responses", cluster);
+		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		IndexedSlicesQuery<String, String, String> indexedSlicesQuery =
 		HFactory.createIndexedSlicesQuery(keyspace, stringSerializer, stringSerializer, stringSerializer);

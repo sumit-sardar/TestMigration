@@ -1,12 +1,15 @@
 package com.ctb.tms.bean.login; 
 
-import java.io.Reader;
+import java.io.Serializable;
 import java.sql.Clob;
-import java.sql.SQLException;
 
-public class ManifestData 
+public class ManifestData implements Serializable
 {
-    private int scoOrder;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int scoOrder;
 	private int scoParentId;
 	private String adminForceLogout;
     private String showStudentFeedback;

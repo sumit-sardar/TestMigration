@@ -5,8 +5,6 @@ import java.util.TimeZone;
 
 import noNamespace.TmssvcResponseDocument;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd;
 
 import com.ctb.tms.exception.testDelivery.AuthenticationFailureException;
 import com.ctb.tms.exception.testDelivery.KeyEnteredResponsesException;
@@ -20,6 +18,7 @@ import com.ctb.tms.util.DateUtils;
 public class RosterData {
 	TmssvcResponseDocument document;
 	AuthenticationData authData;
+	Manifest manifest;
 	
 	public TmssvcResponseDocument getDocument() {
 		return this.document;
@@ -129,6 +128,14 @@ public class RosterData {
 	}
 	public void setAuthData(AuthenticationData authData) {
 		this.authData = authData;
+	}
+
+	public Manifest getManifest() {
+		return manifest;
+	}
+
+	public void setManifest(Manifest manifest) {
+		this.manifest = manifest;
 	}
 	
 }
