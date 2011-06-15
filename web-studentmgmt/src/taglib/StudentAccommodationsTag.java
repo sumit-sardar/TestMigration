@@ -480,7 +480,7 @@ public class StudentAccommodationsTag extends CTBTag
 
         writeToPage("<select id=\"" + id + "\" name=\"" + id + "\" onchange=\"" + onChange + "\" " + disableStr + " >");
 	        	for(int i=0;i<this.musicList.length;i++)
-	        		writeToPage(buildMusicOption(musicList[i].getAudioFileName(), selection, musicList[i].getFileId()));
+	        		writeToPage(buildMusicOption(musicList[i].getAudioFileName(), selection, musicList[i].getFileId().toString()));
         writeToPage("</select>");
     }
 
@@ -532,7 +532,7 @@ public class StudentAccommodationsTag extends CTBTag
 	    return buf.toString();
 	}
 	
-	private String buildMusicOption(String value, String sel, Integer id) {
+	private String buildMusicOption(String value, String sel, String id) {
 	    StringBuffer buf = new StringBuffer(); 
         buf.append("<option value=\"" + id + "\"");
         if ((id.toString()).equalsIgnoreCase(sel))

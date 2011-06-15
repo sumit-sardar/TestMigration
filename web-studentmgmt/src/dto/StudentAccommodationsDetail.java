@@ -102,7 +102,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
             this.maskingRuler = new Boolean(sa.getMaskingRuler().equals("T"));
         
         if (sa.getMusicFile() != null){
-        	this.music_files = sa.getMusicFile();
+        	this.music_files = Integer.parseInt(sa.getMusicFile());
         	this.auditoryCalming = Boolean.TRUE;
         }
     }
@@ -194,7 +194,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         
         if (this.auditoryCalming.booleanValue()) {
             copied.setAuditoryCalming("T");
-            copied.setMusicFile(this.music_files);
+            copied.setMusicFile(this.music_files.toString());
             hasData = true;
         }
         else {
