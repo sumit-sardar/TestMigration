@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import me.prettyprint.cassandra.model.IndexedSlicesQuery;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.hector.api.Cluster;
@@ -18,6 +19,7 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.ColumnQuery;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import noNamespace.TmssvcResponseDocument;
 import sun.misc.BASE64Decoder;
 
@@ -57,20 +59,27 @@ public class OASHectorSource {
 
 	
 
-	public static String[] getItemResponses(String testRosterId) {
-		ArrayList<String> resulta = new ArrayList<String>();
+	public static Tsd[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
+		ArrayList<Tsd> resulta = new ArrayList<Tsd>();
 		Keyspace keyspace = HFactory.createKeyspace("Responses", cluster);
-		String key = testRosterId;
 		Serializer<String> stringSerializer = new StringSerializer();
-		RangeSlicesQuery<String, String, String> rangeSlicesQuery = HFactory.createRangeSlicesQuery(keyspace, stringSerializer, stringSerializer, stringSerializer); 
-        rangeSlicesQuery.setColumnFamily("ResponseData"); 
-        rangeSlicesQuery.setKeys(key, key); 
-        rangeSlicesQuery.setRange("", "", false, 2); 
-        QueryResult<OrderedRows<String, String, String>> result = rangeSlicesQuery.execute(); 
-        Iterator<Row<String, String, String>> it = result.get().iterator();
+		IndexedSlicesQuery<String, String, String> indexedSlicesQuery =
+		HFactory.createIndexedSlicesQuery(keyspace, stringSerializer, stringSerializer, stringSerializer);
+		indexedSlicesQuery.addEqualsExpression("roster-id", testRosterId);
+		indexedSlicesQuery.setColumnNames("item-response");
+		indexedSlicesQuery.setColumnFamily("ResponseData");
+		indexedSlicesQuery.setStartKey("");
+		QueryResult<OrderedRows<String, String, String>> result = indexedSlicesQuery.execute();
+		Iterator<Row<String, String, String>> it = result.get().iterator();
         while(it.hasNext()) {
-        	resulta.add(it.next().getColumnSlice().getColumnByName("item-response").getValue());
+        	String tsdString = it.next().getColumnSlice().getColumnByName("item-response").getValue();
+        	byte [] bytes = new BASE64Decoder().decodeBuffer(tsdString);
+			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			Tsd tsd = (Tsd) ois.readObject();
+			resulta.add(tsd);
+			//System.out.println(tsd.xmlText());
         }
-        return resulta.toArray(new String[0]);
+        return resulta.toArray(new Tsd[0]);
 	}
 }

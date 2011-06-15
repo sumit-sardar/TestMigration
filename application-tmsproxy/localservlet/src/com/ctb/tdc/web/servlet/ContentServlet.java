@@ -162,6 +162,9 @@ public class ContentServlet extends HttpServlet {
 				subtestId = document.getAdssvcRequest().getGetSubtest().getSubtestid();
 				hash = document.getAdssvcRequest().getGetSubtest().getHash();
 				key = document.getAdssvcRequest().getGetSubtest().getKey();
+				if(subtestId == null) {
+					subtestId = ServletUtils.getSubtestId(request);
+				}
 			}
 
 			if (subtestId != null && !"".equals(subtestId.trim()) && !"undefined".equals(subtestId.trim())) {
@@ -226,6 +229,7 @@ public class ContentServlet extends HttpServlet {
 				myOutput.close();
 			} else {
 				System.out.println("*****  No subtest id provided!");
+				System.out.println(xml);
 			}
 		}
 		catch (HashMismatchException e) {

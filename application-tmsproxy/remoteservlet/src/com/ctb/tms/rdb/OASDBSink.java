@@ -26,7 +26,7 @@ public class OASDBSink {
 	private static String OASDatabaseUserPassword = "oaspr5r";
 	private static String OASDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver";
 	
-	private static final String STORE_RESPONSE_SQL = "insert into item_response (  item_response_id,  test_roster_id,  \t\titem_set_id,  \t\titem_id,  \t\tresponse,  \t\tresponse_method,  \t\tresponse_elapsed_time,  \t\tresponse_seq_num,  \t\text_answer_choice_id,  \tstudent_marked,  \t\tcreated_by) \tvalues  (SEQ_ITEM_RESPONSE_ID.NEXTVAL,  {testRosterId},  {itemSetId},  {itemId},  {response},  'M',  {elapsedTime},  {responseSeqNum},  {answerChoiceId},  {studentMarked},  6)";
+	private static final String STORE_RESPONSE_SQL = "insert into item_response (  item_response_id,  test_roster_id,  \t\titem_set_id,  \t\titem_id,  \t\tresponse,  \t\tresponse_method,  \t\tresponse_elapsed_time,  \t\tresponse_seq_num,  \t\text_answer_choice_id,  \tstudent_marked,  \t\tcreated_by) \tvalues  (SEQ_ITEM_RESPONSE_ID.NEXTVAL,  ?,  ?,  ?,  ?,  'M',  ?,  ?,  ?,  ?,  6)";
 	
 	{
 		try {
@@ -68,7 +68,7 @@ public class OASDBSink {
 		return newConn;
 	}
 	
-	public static void putItemResponse(Connection conn, String testRosterId, Tsd tsd) {
+	public static void putItemResponse(Connection conn, String testRosterId, Tsd tsd) throws NumberFormatException, Exception {
 		Ist[] ista = tsd.getIstArray();
 		for(int j=0;j<ista.length;j++) {
 	        Ist ist = ista[j];
@@ -115,7 +115,7 @@ public class OASDBSink {
 		}
 	}
 
-	private static void storeResponse(Connection con, int testRosterId, int itemSetId, String itemId, String response, float duration, BigInteger mseq, String studentMarked) {
+	private static void storeResponse(Connection con, int testRosterId, int itemSetId, String itemId, String response, float duration, BigInteger mseq, String studentMarked) throws Exception {
 		PreparedStatement stmt1 = null;
     	try {
 			stmt1 = con.prepareStatement(STORE_RESPONSE_SQL);
@@ -130,7 +130,12 @@ public class OASDBSink {
 
 			stmt1.executeUpdate();
 		} catch (Exception e) {
-			e.printStackTrace();
+			if(e.getMessage().indexOf("unique constraint") >= 0 ) {
+				// do nothing, dupe response
+			} else {
+				e.printStackTrace();
+				throw(e);
+			}
 		} finally {
 			try {
 				if(stmt1 != null) stmt1.close();

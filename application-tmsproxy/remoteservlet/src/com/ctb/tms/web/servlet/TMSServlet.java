@@ -29,6 +29,7 @@ import com.ctb.tms.nosql.ADSHectorSource;
 import com.ctb.tms.nosql.OASHectorSink;
 import com.ctb.tms.nosql.OASHectorSource;
 import com.ctb.tms.rdb.ADSDBSource;
+import com.ctb.tms.web.listener.TestDeliveryContextListener;
 
 public class TMSServlet extends HttpServlet {
 
@@ -130,6 +131,7 @@ public class TMSServlet extends HttpServlet {
 		    	// TODO: this is incorrect/hardcoded - should be next SCO for TABE auto-locator
                 nextSco.setId("-1");
                 // TODO: place roster on queue for RDBMS persistence
+                TestDeliveryContextListener.enqueueRoster(rosterId);
 		    }
 		    
 		    
@@ -145,9 +147,9 @@ public class TMSServlet extends HttpServlet {
 		LoginRequest lr = document.getTmssvcRequest().getLoginRequest();
 		StudentCredentials creds = new StudentCredentials();
 		if(lr.getUserName() == null || lr.getUserName().trim().length() < 1) {
-			creds.setUsername("jared-john-1122");//lr.getUserName());
-			creds.setPassword("atone8");//lr.getPassword());
-			creds.setAccesscode("overhang84");//lr.getAccessCode());
+			creds.setUsername("ALEXANDRIA-WELSING-0306");//lr.getUserName());
+			creds.setPassword("faun24");//lr.getPassword());
+			creds.setAccesscode("2011tabe9");//lr.getAccessCode());
 		} else {
 			creds.setUsername(lr.getUserName());
 			creds.setPassword(lr.getPassword());

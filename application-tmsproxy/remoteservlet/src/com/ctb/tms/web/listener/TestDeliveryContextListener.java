@@ -25,6 +25,10 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	private static ConcurrentHashMap rosterMap;
 	private static ConcurrentLinkedQueue<String> rosterQueue;
 	
+	public static void enqueueRoster(String rosterId) {
+		rosterQueue.add(rosterId);
+	}
+	
 	public void contextDestroyed(ServletContextEvent sce) {
 		TestDeliveryContextListener.rosterList.stop();
 	}
@@ -109,11 +113,11 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					while(!rosterQueue.isEmpty()) {
 						String testRosterId = rosterQueue.poll();
 						if(testRosterId != null) {
-							String[] responses = OASHectorSource.getItemResponses(testRosterId);
+							Tsd[] responses = OASHectorSource.getItemResponses(testRosterId);
 							for(int i=0;i<responses.length;i++) {
-								String response = responses[i];
-								Tsd tsd = Tsd.
+								Tsd tsd = responses[i];
 								OASDBSink.putItemResponse(conn, testRosterId, tsd);
+								OASHectorSink.deleteItemResponse(testRosterId, String.valueOf(tsd.getMseq()));
 							}
 						}
 					}

@@ -41,7 +41,7 @@ public class OASHectorSink {
 	{
 		try {
 			//cluster.dropKeyspace("OAS");
-			//cluster.dropKeyspace("Responses");
+			cluster.dropKeyspace("Responses");
 			//System.out.println("*****  Dropped OAS keyspace.");
 		} catch (Exception e) {
 			// do nothing, KS doesn't exist
@@ -331,6 +331,24 @@ public class OASHectorSink {
 									return "item-id-idx";
 								}
 							};
+							ColumnDefinition rosterIdCD = new ColumnDefinition() {
+								
+								public String getValidationClass() {
+									return "org.apache.cassandra.db.marshal.UTF8Type";
+								}
+								
+								public ByteBuffer getName() {
+									return ByteBuffer.wrap("roster-id".getBytes());
+								}
+								
+								public ColumnIndexType getIndexType() {
+									return ColumnIndexType.KEYS;
+								}
+								
+								public String getIndexName() {
+									return "roster-id-idx";
+								}
+							};
 							ColumnDefinition itemResponseCD = new ColumnDefinition() {
 								
 								public String getValidationClass() {
@@ -351,6 +369,7 @@ public class OASHectorSink {
 							};
 							List<ColumnDefinition> cdList = new ArrayList<ColumnDefinition>();
 							cdList.add(itemIdCD);
+							cdList.add(rosterIdCD);
 							cdList.add(itemResponseCD);
 							return cdList;
 						}
@@ -392,8 +411,23 @@ public class OASHectorSink {
 		Keyspace keyspace = HFactory.createKeyspace("Responses", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
-		String key = testRosterId;
+		String key = testRosterId + ":" + tsd.getMseq();
 		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-id", tsd.getIstArray(0).getIid()));
-		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-response", tsd.xmlText()));
+		mutator.insert(key, "ResponseData", HFactory.createStringColumn("roster-id", testRosterId));
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(baos);
+		oos.writeObject(tsd);
+		byte [] bytes = baos.toByteArray();
+		String tsdData = new BASE64Encoder().encode(bytes);
+		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-response", tsdData));
+		//System.out.println(tsd.xmlText());
+	}
+	
+	public static void deleteItemResponse(String testRosterId, String mseq) throws IOException {
+		Keyspace keyspace = HFactory.createKeyspace("Responses", cluster);
+		Serializer<String> stringSerializer = new StringSerializer();
+		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
+		String key = testRosterId + ":" + mseq;
+		mutator.delete(key, "ResponseData", null, stringSerializer);
 	}
 }
