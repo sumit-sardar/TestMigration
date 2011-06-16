@@ -1,0 +1,108 @@
+FRAMEWORK_CODE,EXTENDED_FLAG,PRODUCT_INTERNAL_DISPLAY_NAME,NORM_YEAR,CONTENT_AREA,TEST_LEVEL,TEST_FORM,GRADE,NORM_GROUP,AGE_CATEGORY,SOURCE_SCORE_TYPE_CODE,DEST_SCORE_TYPE_CODE,SOURCE_SCORE_VALUE,DEST_SCORE_VALUE
+TABE,,TABE Battery,2000,Reading,L,9,,,,NSC,SCL,32,515
+TABE,,TABE Battery,2000,Reading,L,9,,,,NSC,SEM,25,22
+TABE,,TABE Battery,2000,Reading,L,9,,,,SCL,GE,319,1.5
+TABE,,TABE Battery,2000,Reading,L,9,,,A,SCL,NP,380,10
+TABE,,TABE Battery,2000,Reading,L,9,,,A,SCL,NCE,380,23
+TABE,,TABE Battery,2000,Reading,L,9,,,A,SCL,NS,380,2
+TABE,,TABE Battery,2000,Reading,L,9,,,J,SCL,NP,380,9
+TABE,,TABE Battery,2000,Reading,L,9,,,J,SCL,NCE,380,22
+TABE,,TABE Battery,2000,Reading,L,9,,,J,SCL,NS,380,2
+TABE,+,TABE Battery,2000,Reading,L,9,,,,SCL,GE,514,4.9
+
+
+TABE,,TABE Battery,2000,Math Computation,E,9,,,,NSC,SCL,30,435
+TABE,,TABE Battery,2000,Math Computation,E,9,,,,NSC,SEM,30,13
+TABE,,TABE Battery,2000,Math Computation,E,9,,,,SCL,GE,435,3.9
+TABE,,TABE Battery,2000,Math Computation,E,9,,,A,SCL,NP,435,19
+TABE,,TABE Battery,2000,Math Computation,E,9,,,A,SCL,NCE,435,32
+TABE,,TABE Battery,2000,Math Computation,E,9,,,A,SCL,NS,435,3
+TABE,,TABE Battery,2000,Math Computation,E,9,,,J,SCL,NP,435,20
+TABE,,TABE Battery,2000,Math Computation,E,9,,,J,SCL,NCE,435,33
+TABE,,TABE Battery,2000,Math Computation,E,9,,,J,SCL,NS,435,3
+TABE,+,TABE Battery,2000,Math Computation,E,9,,,,SCL,GE,546,6.9
+
+# Table 73
+TABE,,TABE Battery,2000,Applied Mathematics,E,9,,,,NSC,SCL,30,445
+TABE,,TABE Battery,2000,Applied Mathematics,E,9,,,,NSC,SEM,30,15
+TABE,,TABE Battery,2000,Applied Mathematics,E,9,,,,SCL,GE,445,4.0
+TABE,,TABE Battery,2000,Applied Mathematics,E,9,,,A,SCL,NP,445,22
+TABE,,TABE Battery,2000,Applied Mathematics,E,9,,,A,SCL,NCE,445,34
+TABE,,TABE Battery,2000,Applied Mathematics,E,9,,,A,SCL,NS,445,3
+TABE,,TABE Battery,2000,Applied Mathematics,E,9,,,J,SCL,NP,445,18
+TABE,,TABE Battery,2000,Applied Mathematics,E,9,,,J,SCL,NCE,445,31
+TABE,,TABE Battery,2000,Applied Mathematics,E,9,,,J,SCL,NS,445,3
+TABE,+,TABE Battery,2000,Applied Mathematics,E,9,,,,SCL,GE,541,6.9
+
+TABE,,TABE Battery,2000,Language,E,9,,,,NSC,SCL,50,545
+TABE,,TABE Battery,2000,Language,E,9,,,,NSC,SEM,50,18
+TABE,,TABE Battery,2000,Language,E,9,,,,SCL,GE,545,6.9
+TABE,,TABE Battery,2000,Language,E,9,,,A,SCL,NP,545,70
+TABE,,TABE Battery,2000,Language,E,9,,,A,SCL,NCE,545,61
+TABE,,TABE Battery,2000,Language,E,9,,,A,SCL,NS,545,6
+TABE,,TABE Battery,2000,Language,E,9,,,J,SCL,NP,545,64
+TABE,,TABE Battery,2000,Language,E,9,,,J,SCL,NCE,545,58
+TABE,,TABE Battery,2000,Language,E,9,,,J,SCL,NS,545,6
+
+TABE,,TABE Battery,2000,Applied Mathematics,D,9,,,,NSC,SCL,30,557
+TABE,,TABE Battery,2000,Applied Mathematics,D,9,,,,NSC,SEM,30,19
+TABE,,TABE Battery,2000,Applied Mathematics,D,9,,,,SCL,GE,557,8.8
+TABE,,TABE Battery,2000,Applied Mathematics,D,9,,,A,SCL,NP,557,75
+TABE,,TABE Battery,2000,Applied Mathematics,D,9,,,A,SCL,NCE,557,64
+TABE,,TABE Battery,2000,Applied Mathematics,D,9,,,A,SCL,NS,557,6
+TABE,,TABE Battery,2000,Applied Mathematics,D,9,,,J,SCL,NP,557,72
+TABE,,TABE Battery,2000,Applied Mathematics,D,9,,,J,SCL,NCE,557,62
+TABE,,TABE Battery,2000,Applied Mathematics,D,9,,,J,SCL,NS,557,6
+
+#Table 135
+TABE,,,2000,Total Mathematics,,9,,,A,SCL,NP,571,84
+TABE,,,2000,Total Mathematics,,9,,,A,SCL,NS,571,7
+TABE,,,2000,Total Mathematics,,9,,,J,SCL,NP,574,84
+TABE,,,2000,Total Mathematics,,9,,,J,SCL,NS,574,7
+
+TABE,,,2000,Total Mathematics,,9,,,A,SCL,NP,533,67
+TABE,,,2000,Total Mathematics,,9,,,A,SCL,NS,533,6
+TABE,,,2000,Total Mathematics,,9,,,J,SCL,NP,537,67
+TABE,,,2000,Total Mathematics,,9,,,J,SCL,NS,537,6
+
+TABE,,,2000,Total Mathematics,,9,,,A,SCL,NP,529,65
+TABE,,,2000,Total Mathematics,,9,,,A,SCL,NS,529,6
+TABE,,,2000,Total Mathematics,,9,,,J,SCL,NP,534,65
+TABE,,,2000,Total Mathematics,,9,,,J,SCL,NS,534,6
+
+#Table 136
+TABE,,,2000,Total Mathematics,,9,,,A,SCL,NCE,620,85
+TABE,,,2000,Total Mathematics,,9,,,J,SCL,NCE,616,85
+
+
+#Table 134
+TABE,,TABE Survey,2000,Total Mathematics,A,9,,,,SCL,GE,536,7.4
+TABE,+,TABE Survey,2000,Total Mathematics,A,9,,,,SCL,GE,619,12.9
+
+#Table 137
+TABE,,,2000,Total Battery,,9,,,A,SCL,NP,538,68
+TABE,,,2000,Total Battery,,9,,,A,SCL,NS,538,6
+TABE,,,2000,Total Battery,,9,,,J,SCL,NP,542,68
+TABE,,,2000,Total Battery,,9,,,J,SCL,NS,542,6
+
+TABE,,,2000,Total Battery,,9,,,A,SCL,NP,538,68
+TABE,,,2000,Total Battery,,9,,,A,SCL,NS,538,6
+TABE,,,2000,Total Battery,,9,,,J,SCL,NP,542,68
+TABE,,,2000,Total Battery,,9,,,J,SCL,NS,542,6
+
+#Table 138
+TABE,,,2000,Total Battery,,9,,,A,SCL,NCE,599,79
+TABE,,,2000,Total Battery,,9,,,J,SCL,NCE,601,79
+
+#Table 139
+TABE,,,2000,Total Battery,,9,,,,SCL,GE,278,0.6
+TABE,,,2000,Total Battery,,9,,,,SCL,GE,344,1.7
+TABE,+,,2000,Total Battery,,9,,,,SCL,GE,614,12.9
+
+#Table 140
+TABE,,,2000,Reading,,9,,,,SCL,EGEDRD,435,300
+TABE,,,2000,Total Mathematics,,9,,,,SCL,EGEDMA,475,330
+TABE,,,2000,Language,,9,,,,SCL,EGEDWR,500,380
+TABE,,,2000,Reading,,9,,,,SCL,EGEDSO,475,330
+TABE,,,2000,Reading,,9,,,,SCL,EGEDSC,475,330
+TABE,,,2000,Total Battery,,9,,,,SCL,EGEDAV,500,370
