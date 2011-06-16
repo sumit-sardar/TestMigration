@@ -1,6 +1,7 @@
 create or replace procedure setup_llespanol_customer (cust_id integer)
 as
     cc_id integer;
+    counter integer;
 begin
 
     -- customer_configuration
@@ -116,13 +117,15 @@ Insert into OAS.CUSTOMER_CONFIGURATION
     'T', 1, TO_DATE('04/12/2011 23:43:32', 'MM/DD/YYYY HH24:MI:SS'));
     
 Insert into OAS.CUSTOMER_CONFIGURATION_VALUE
-   (CUSTOMER_CONFIGURATION_VALUE, CUSTOMER_CONFIGURATION_ID, SORT_ORDER)
- Values
-   ('4', cc_id, NULL);
-Insert into OAS.CUSTOMER_CONFIGURATION_VALUE
-   (CUSTOMER_CONFIGURATION_VALUE, CUSTOMER_CONFIGURATION_ID, SORT_ORDER)
- Values
-   ('5', cc_id, NULL);    
+     (CUSTOMER_CONFIGURATION_VALUE, CUSTOMER_CONFIGURATION_ID, SORT_ORDER)
+   Values
+     ('KG', cc_id, NULL); 
+     
+  for counter in 1..12
+  loop
+      insert into OAS.CUSTOMER_CONFIGURATION_VALUE (CUSTOMER_CONFIGURATION_VALUE, CUSTOMER_CONFIGURATION_ID, SORT_ORDER) 
+      values (counter, cc_id, NULL);   
+  end loop;  
     
 -- customer_demographics
 delete from customer_demographic_value where customer_demographic_id in (
@@ -242,9 +245,8 @@ Insert into PROGRAM
    (CUSTOMER_ID, PRODUCT_ID, PROGRAM_ID, PROGRAM_NAME, PROGRAM_START_DATE, PROGRAM_END_DATE, NORMS_GROUP, NORMS_YEAR, ACTIVATION_STATUS, CREATED_DATE_TIME, UPDATED_DATE_TIME)
  Values
    (cust_id, 7000, cust_id, (select customer_name from customer where customer_id = cust_id) || ' Program', 
-    sysdate, sysdate + 365, '19', '2000', 'AC', 
+    sysdate, sysdate + 365, '19', '2011', 'AC', 
     sysdate, sysdate); 
     
 
 end;
-/
