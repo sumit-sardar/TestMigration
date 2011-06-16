@@ -68,9 +68,18 @@ public class DefaultScoreRecordWriter implements ScoreRecordWriter {
 
         if (normsData.getSourceScoreType() != null) // source score type can be null for PValue
             scoreRecord.putValue(Column.SOURCE_SCORE_TYPE, normsData.getSourceScoreType().getSQLValue());
-        scoreRecord.putValue(Column.SOURCE_SCORE_VALUE, sourceScore);
+        
+        if(normsData.getDestScoreType().getTypeString().equalsIgnoreCase(ScoreType.PERFORMANCE_LEVEL.getTypeString())){
+        	scoreRecord.putValue(Column.SOURCE_SCORE_VALUE, filter.filterScore(targetScore));
+        	scoreRecord.putValue(Column.DEST_SCORE_VALUE, sourceScore);
+        }
+        	
+        else {
+        	scoreRecord.putValue(Column.SOURCE_SCORE_VALUE, sourceScore);
+        	scoreRecord.putValue(Column.DEST_SCORE_VALUE, filter.filterScore(targetScore));
+        }
+
         scoreRecord.putValue(Column.DEST_SCORE_TYPE, normsData.getDestScoreType().getSQLValue());
-        scoreRecord.putValue(Column.DEST_SCORE_VALUE, filter.filterScore(targetScore));
 
         //set age category for nce, ns and np tabe scores
         String ageCategory = null;
