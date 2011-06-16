@@ -52,7 +52,7 @@ public class R2DocumentBuilder extends SAXBuilder {
     public Document build(InputStream inputStream) throws JDOMException, IOException {
 
         // Ensure encoding is read as UTF-8
-        InputStreamReader isr = new InputStreamReader(inputStream);
+        InputStreamReader isr = new InputStreamReader(inputStream, "ISO-8859-1");
 
         // do pre-parse munging
         InputStream is = null;
