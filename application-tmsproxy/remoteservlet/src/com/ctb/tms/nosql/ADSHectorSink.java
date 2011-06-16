@@ -273,7 +273,7 @@ public class ADSHectorSink {
 			
 			cluster.addKeyspace(new ThriftKsDef(kd));
 
-			//System.out.println("*****  Created ADS keyspace.");
+			System.out.println("*****  Created ADS keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
 			//e.printStackTrace();
