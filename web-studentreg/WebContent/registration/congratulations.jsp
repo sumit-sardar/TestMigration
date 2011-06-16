@@ -276,7 +276,7 @@
 <!-- report -->
 <c:if test="${showAccessCode}"> 
 <p>
-<netui:content value="Do you want to print the Test Access Code on your Individual and Multiple Test Tickets?"/><br>
+<netui:content value="Do you want to print the Test Access Code on your Individual or Multiple Test Tickets?"/><br>
 <input type="radio" id="allow" name="individualAccess" value="Yes" onclick="accessCode()">Yes</input>
 <input type="radio" id="deny" name="individualAccess" value="No"  onclick="accessCode()" checked="checked">No</input>
 </p>

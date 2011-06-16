@@ -351,15 +351,14 @@
 
 <h3><netui:span value="${bundle.web['printoptions.testSessionDocuments.title']}"/></h3>
 <p>
-<netui:content value="${bundle.web['printoptions.testSessionDocuments.message']}"/>
-<br>
-<br>
 <c:if test="${showAccessCode}"> 
-<netui:content value="${bundle.web['printoptions.testSessionDocuments.message.displayAccessCode']}"/><br>
+<netui:content value="${bundle.web['printoptions.testSessionDocuments.message.displayAccessCode']}"/>
 <input type="radio" id="allow" name="individualAccess" value="Yes" onclick="accessCode()">Yes</input>
 <input type="radio" id="deny" name="individualAccess" value="No" onclick="accessCode()" checked="checked">No</input>
-
 </c:if>
+<br>
+<br>
+<netui:content value="${bundle.web['printoptions.testSessionDocuments.message']}"/><br>
 </p>
 <p>
 <netui:anchor href="#" onClick="return openTestTicketIndividual(this, document.getElementById('printTestAdminId').value, document.getElementById('printOrgNodeId').value);">Individual Test Tickets</netui:anchor>
