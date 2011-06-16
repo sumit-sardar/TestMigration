@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.ctb.dto">
+	<class name="CustomerDemographic" table="customer_demographic">
+		<id name="customerDemographicId" type="int" column="customer_demographic_id">
+			<generator class="assigned" />
+		</id>
+		<property name="customerId">
+			<column name="customer_id" />
+		</property>
+				
+		<property name="labelName">
+			<column name="label_name" />
+		</property>
+		<set name ="customerDemographicValue" table="customer_demographic_value" inverse="true" outer-join="true" cascade = "all-delete-orphan" >
+			<key column="customer_demographic_id"/>
+			<one-to-many class = "CustomerDemographicValue"/>
+		</set>
+
+		 
+
+		
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping package="com.ctb.dto">
+	<class name="TestAdmin" table="TEST_ADMIN">
+		<id name="testAdminId" type="int" column="TEST_ADMIN_ID">
+			<generator class="assigned" />
+		</id>
+
+
+		<property name="testCatalogId">
+			<column name="TEST_CATALOG_ID" />
+		</property>
+		<property name="preferedForm">
+			<column name="PREFERED_FORM" />
+		</property>
+			<property name="productId">
+			<column name="PRODUCT_ID" />
+		</property>
+		
+	
+		<set name="testCatalog" table="TEST_CATALOG"
+			inverse="true" cascade="all-delete-orphan">
+
+			<key column="TEST_CATALOG_ID" />
+			<one-to-many class="TestCatalog" />
+
+		</set>
+
+		
+
+	</class>
+
+
+
+
+</hibernate-mapping>
+

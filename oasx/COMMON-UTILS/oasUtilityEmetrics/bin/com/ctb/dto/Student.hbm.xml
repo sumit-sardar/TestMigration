@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.ctb.dto">
+	<class name="Student" table="student" >
+		<id name="studentId" type="int" column="STUDENT_ID">
+			<generator class="assigned" />
+		</id>
+
+		<property name="firstName">
+			<column name="FIRST_NAME" />
+		</property>
+		<property name="lastName">
+			<column name="LAST_NAME" />
+		</property>
+			<property name="middleName">
+			<column name="MIDDLE_NAME" />
+		</property>
+		<property name="birthDate">
+			<column name="BIRTHDATE" />
+		</property>
+		<property name="gender">
+			<column name="GENDER" />
+		</property>
+		<property name="grade">
+			<column name="GRADE" />
+		</property>
+		<property name="customerId">
+			<column name="CUSTOMER_ID" />
+		</property>
+		<property name="testPurpose">
+			<column name="TEST_PURPOSE" />
+		</property>
+		<property name="extStudentId">
+			<column name ="EXT_PIN1" />
+		</property>
+
+		
+		
+		<set name ="studentContact" table = "student_contact" inverse="true"  cascade = "all-delete-orphan">
+		
+			<key column="STUDENT_ID"/>
+			<one-to-many class = "StudentContact"/>
+		</set>
+		<set name ="studentDemographic" table="student_demographic_data" inverse="true"  cascade = "all-delete-orphan">
+		
+		<key column="STUDENT_ID"/>
+		<one-to-many class = "StudentDemographic"/>
+		
+		</set>
+
+		
+		<!-- Roster -->
+		
+		 
+		 
+
+		
+	</class>
+</hibernate-mapping>

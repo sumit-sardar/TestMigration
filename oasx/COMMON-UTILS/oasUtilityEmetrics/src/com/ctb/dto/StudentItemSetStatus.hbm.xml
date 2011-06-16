@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.ctb.dto">
+	<class name="StudentItemSetStatus" table="student_item_set_status">
+		
+		
+		<id name="itemSetId" type="int" column="ITEM_SET_ID">
+			<generator class="assigned" />
+		</id>
+
+				
+		<property name="validationStatus" column="VALIDATION_STATUS" />
+
+		<property name="exemptions" column="EXEMPTIONS" />
+
+		<property name="absent" column="ABSENT" />
+		
+		<many-to-one name = "testRoster" column = "TEST_ROSTER_ID"/>
+
+	</class>
+
+
+</hibernate-mapping>

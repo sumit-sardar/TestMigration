@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.ctb.dto">
+    <class name="StudentContact" table="STUDENT_CONTACT">
+      <meta attribute="class-description">This class contains the student's address
+           details.</meta>
+        <id name="studentContactId" type="int" column="STUDENT_CONTACT_ID">
+            <generator class="native" />
+        </id>
+		<property name="city" type="string" column="CITY" />
+		<property name="state" type="string" column="STATEPR" />
+		<many-to-one name = "student" column = "STUDENT_ID"/>
+		
+    </class>
+</hibernate-mapping>

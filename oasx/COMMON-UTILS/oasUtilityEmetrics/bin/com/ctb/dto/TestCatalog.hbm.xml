@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping package="com.ctb.dto">
+	<class name="TestCatalog" table="TEST_Catalog">
+		<id name="testCatalogId" type="int" column="TEST_CATALLOG_ID">
+			<generator class="assigned" />
+		</id>
+
+
+		<property name="testCatalogName">
+			<column name="TEST_NAME" />
+		</property>
+		<property name="testLevel">
+			<column name="TEST_LEVEL" />
+		</property>
+		
+			<property name="testDate">
+			<column name="CREATED_DATE_TIME" />
+		</property>
+
+		
+
+	</class>
+
+
+
+
+</hibernate-mapping>
+

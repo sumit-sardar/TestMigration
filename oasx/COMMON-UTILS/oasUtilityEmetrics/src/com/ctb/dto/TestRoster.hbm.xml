@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+
+<hibernate-mapping package="com.ctb.dto">
+	<class name="TestRoster" table="TEST_ROSTER">
+		<id name="testRosterId" type="int" column="TEST_ROSTER_ID">
+			<generator class="assigned" />
+		</id>
+
+
+		<property name="activationStatus">
+			<column name="ACTIVATION_STATUS" />
+		</property>
+		<property name="testCompletionStatus">
+			<column name="TEST_COMPLETION_STATUS" />
+		</property>
+
+		<property name="customerId" column="CUSTOMER_ID" />
+
+
+		<set name="studentItemSetStatus" table="student_item_set_status"
+			inverse="true"  cascade="all-delete-orphan">
+
+			<key column="TEST_ROSTER_ID" />
+			<one-to-many class="StudentItemSetStatus" />
+
+		</set>
+		<property name="studentId">
+			<column name="STUDENT_ID" />
+		</property>
+		
+
+	</class>
+
+
+
+
+</hibernate-mapping>
+
