@@ -333,12 +333,12 @@ public interface License extends JdbcControl
 
   // TABE BAUM 10: For updating the edited available license field value in manage license page
      
-     @JdbcControl.SQL(statement = "update customer_orgnode_license set available = {licenseNodeData.available} where org_node_id = {licenseNodeData.orgNodeId} and product_id = {licenseNodeData.productId} and customer_id = {licenseNodeData.customerId}")
+     @JdbcControl.SQL(statement = "update customer_orgnode_license set available = {licenseNodeData.available},email_notify_flag = 'T' where org_node_id = {licenseNodeData.orgNodeId} and product_id = {licenseNodeData.productId} and customer_id = {licenseNodeData.customerId}")
      void updateAvailableLicenseChange(LicenseNodeData licenseNodeData) throws SQLException;
   
    // TABE BAUM 10 : Inserting license details into database for a particular organization who's entry is not there in the database table
      
-     @JdbcControl.SQL(statement = "insert into customer_orgnode_license  (org_node_id ,customer_id,  product_id,  available,  reserved,  consumed, subtest_model) values ({licenseNodeData.orgNodeId},{licenseNodeData.customerId},  {licenseNodeData.productId},  {licenseNodeData.available},  {licenseNodeData.reserved},  {licenseNodeData.consumed}, {licenseNodeData.subtestModel}  ) ")
+     @JdbcControl.SQL(statement = "insert into customer_orgnode_license (org_node_id ,customer_id,  product_id,  available,  reserved,  consumed, subtest_model, license_after_last_purchase, email_notify_flag) values ({licenseNodeData.orgNodeId},{licenseNodeData.customerId},  {licenseNodeData.productId},  {licenseNodeData.available}, {licenseNodeData.reserved}, {licenseNodeData.consumed}, {licenseNodeData.subtestModel}, {licenseNodeData.available}, 'T' ) ")
      void addOrgNodeLicenses(LicenseNodeData licenseNodeData) throws SQLException;
   
      // TABE BAUM 10:  For calculating the total consumed and reserved quantity by using ancestor orgnodeid 
