@@ -33,6 +33,8 @@ BEGIN
   FOR R1 IN CURSOR_GET_TD_INFO(PRODUCT_ID) LOOP
   V_PARAMETER :='ITEM_SET_FORM:'||R1.ITEM_SET_FORM||'ITEM_SET_LEVEL:'||R1.ITEM_SET_LEVEL||'GRADE:'||R1.GRADE||'CONTENT_AREA_NAME:'||R1.CONTENT_AREA_NAME;
    
+   IF( R1.GRADE IS NULL ) THEN 
+   
     SELECT DISTINCT SCORE_LOOKUP_ID
       INTO V_SCORE_LOOKUP_ID
       FROM SCORE_LOOKUP
@@ -60,6 +62,56 @@ BEGIN
       (SCORE_LOOKUP_ID, ITEM_SET_ID)
     VALUES
       (V_SCORE_LOOKUP_ID, R1.ITEM_SET_ID);
+     
+     SELECT DISTINCT SCORE_LOOKUP_ID
+       INTO V_SCORE_LOOKUP_ID
+       FROM SCORE_LOOKUP
+      WHERE TEST_FORM =
+            decode(R1.ITEM_SET_FORM, 'Español', 'S', R1.ITEM_SET_FORM)
+        AND TEST_LEVEL = decode(upper(R1.ITEM_SET_LEVEL),
+                                'K',   '1',
+                                '1',   '1',
+                                '2-3', '2',
+                                '4-5', '3',
+                                '6-8', '4',
+                                '9-12','5',
+                                R1.ITEM_SET_LEVEL)
+        AND GRADE IS NULL
+        AND CONTENT_AREA = R1.CONTENT_AREA_NAME;
+    IF SQL%FOUND THEN 
+     INSERT INTO SCORE_LOOKUP_ITEM_SET
+       (SCORE_LOOKUP_ID, ITEM_SET_ID)
+     VALUES
+       (V_SCORE_LOOKUP_ID, R1.ITEM_SET_ID);
+
+    END IF;   
+   
+  
+  
+  ELSE
+  
+  SELECT DISTINCT SCORE_LOOKUP_ID
+    INTO V_SCORE_LOOKUP_ID
+    FROM SCORE_LOOKUP
+   WHERE TEST_FORM =
+         decode(R1.ITEM_SET_FORM, 'Español', 'S', R1.ITEM_SET_FORM)
+     AND TEST_LEVEL = decode(upper(R1.ITEM_SET_LEVEL),
+                             'K',  '1',
+                             '1',  '1',
+                             '2-3','2',
+                             '4-5','3',
+                             '6-8','4',
+                             '9-12','5',
+                             R1.ITEM_SET_LEVEL)
+     AND GRADE = R1.GRADE 
+     AND CONTENT_AREA = R1.CONTENT_AREA_NAME;
+  
+  INSERT INTO SCORE_LOOKUP_ITEM_SET
+    (SCORE_LOOKUP_ID, ITEM_SET_ID)
+  VALUES
+    (V_SCORE_LOOKUP_ID, R1.ITEM_SET_ID);
+      
+  END IF;
   
   /*MERGE INTO SCORE_LOOKUP_ITEM_SET
        USING (SELECT V_SCORE_LOOKUP_ID V_SCORE_LOOKUP_ID,
