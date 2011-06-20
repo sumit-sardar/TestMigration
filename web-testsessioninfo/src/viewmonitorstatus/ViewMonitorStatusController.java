@@ -417,7 +417,8 @@ public class ViewMonitorStatusController extends PageFlowController
         	
         	Integer rosterId = null;
         	for (int i=0 ; i<this.selectedRosterIds.size() ; i++) {
-        		rosterId = (Integer)this.selectedRosterIds.get(0);
+        		rosterId = (Integer)this.selectedRosterIds.get(i);
+        		System.out.println("rosterId = " + rosterId.toString());
         	}
         	
             //String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, rosterId);    
