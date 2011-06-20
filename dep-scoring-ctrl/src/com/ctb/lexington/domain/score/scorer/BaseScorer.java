@@ -15,8 +15,6 @@ import javax.naming.NamingException;
 
 import com.ctb.lexington.data.ItemVO;
 import com.ctb.lexington.db.data.CurriculumData;
-import com.ctb.lexington.db.data.CurriculumData.ContentArea;
-import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.data.ReportingLevels;
 import com.ctb.lexington.db.data.ScoreMoveData;
 import com.ctb.lexington.db.data.StsTestResultFactData;
@@ -26,6 +24,8 @@ import com.ctb.lexington.db.data.StudentItemScoreDetails;
 import com.ctb.lexington.db.data.StudentScoreSummaryData;
 import com.ctb.lexington.db.data.StudentScoreSummaryDetails;
 import com.ctb.lexington.db.data.TestRosterRecord;
+import com.ctb.lexington.db.data.CurriculumData.ContentArea;
+import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.mapper.AbstractDBMapper;
 import com.ctb.lexington.db.mapper.ObjectiveMapper;
 import com.ctb.lexington.db.mapper.TestRosterMapper;
@@ -33,6 +33,7 @@ import com.ctb.lexington.db.utils.DataSourceFactory;
 import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.collector.TestResultDataCollector;
 import com.ctb.lexington.domain.score.controller.TestResultController;
+import com.ctb.lexington.domain.score.controller.llcontroller.LLTestResultController;
 import com.ctb.lexington.domain.score.controller.tbcontroller.TBTestResultController;
 import com.ctb.lexington.domain.score.controller.tvcontroller.TVTestResultController;
 import com.ctb.lexington.domain.score.event.AssessmentEndedEvent;
@@ -83,7 +84,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
     protected ScoreMoveData resultHolder;
     private boolean hasAssessmentEndedEvent = false;
     private SqlMapSession iBatisSession;
-
+    private SubtestObjectiveCollectionEvent subtestObjectives = null;
     public SqlMapSession getIbatisSession() {
     	return this.iBatisSession;
     }
@@ -120,8 +121,9 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         // Gather item/obj/subtest context for resultHolder
         // TODO: Rather than listenting to these context events,
         // it may be better to get this info in the collectors
-        channel.subscribe(this, SubtestObjectiveCollectionEvent.class);
         channel.subscribe(this, SubtestItemCollectionEvent.class);
+        channel.subscribe(this, SubtestObjectiveCollectionEvent.class);
+        
 
         // place subtest scores into result holder
         channel.subscribe(this, ContentAreaRawScoreEvent.class);
@@ -232,6 +234,12 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
                     controller = new TVTestResultController(getIRSConnection(), resultHolder, getReportingLevels(event.getTestRosterId()));
                     controller.run(getRosterValidationStatus(event.getTestRosterId()));
                 }
+                 //START-  For Laslink Scoring
+                else if(this instanceof LLScorer) {
+                    controller = new LLTestResultController(getIRSConnection(), resultHolder, getReportingLevels(event.getTestRosterId()));
+                    controller.run(getRosterValidationStatus(event.getTestRosterId()));
+                }
+                 //END- For Laslink Scoring
                 System.out.println("***** SCORING: BaseScorer: handleAssessmentEndedEvent: finished persistence");
                 forceCloseAllConnections(false);
             } catch (Exception e) {
@@ -381,51 +389,78 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
 
     //TODO: this should probably move into collectors/controllers
     public void onEvent(SubtestObjectiveCollectionEvent event) throws CTBSystemException {
+    	 this.subtestObjectives = event;
         StudentItemScoreData studentItemScoreData = getResultHolder().getStudentItemScoreData();
         StudentScoreSummaryData studentScoreSummaryData = getResultHolder()
                 .getStudentScoreSummaryData();
         Iterator iter = event.getReportingLevelObjectiveKeysetIterator();
         while (iter.hasNext()) {
             String itemId = (String) iter.next();
-            StudentItemScoreDetails itemDetail = studentItemScoreData.get(itemId);
-            Objective primary = event.getPrimaryReportingLevelObjective(itemId);
-            Objective secondary = event.getSecondaryReportingLevelObjective(itemId);
-            itemDetail.setReportItemSetId(primary.getId());
-            itemDetail.setReportItemSetName(primary.getName());
-            if (secondary != null) {
-                itemDetail.setDetailReportItemSetId(secondary.getId());
-                itemDetail.setDetailReportItemSetName(secondary.getName());
-            } else {
-                itemDetail.setDetailReportItemSetId(primary.getId());
-                itemDetail.setDetailReportItemSetName(primary.getName());
+             //START- For Laslink Scoring
+            List<Objective> primaryList = event.getPrimaryReportingLevelObjective(itemId);
+            List<Objective> secondaryList = event.getSecondaryReportingLevelObjective(itemId);
+            StudentItemScoreDetails itemDetail = null;
+            
+            for(Objective primary:primaryList){
+            	itemDetail = studentItemScoreData.get(itemId+primary.getName());
+            	itemDetail.setReportItemSetId(primary.getId());
+                itemDetail.setReportItemSetName(primary.getName());
             }
+            
+            if (!secondaryList.isEmpty()) {
+            	  for(Objective secondary:secondaryList){
+            		  for(Objective primary:primaryList){
+            		  itemDetail = studentItemScoreData.get(itemId+primary.getName()); 
+            		  itemDetail.setDetailReportItemSetId(secondary.getId());
+                      itemDetail.setDetailReportItemSetName(secondary.getName());
+            		  }
+                      
+            	  }
+            } else {
+            	for(Objective primary:primaryList){
+            		itemDetail = studentItemScoreData.get(itemId+primary.getName());
+            		itemDetail.setDetailReportItemSetId(primary.getId());
+                    itemDetail.setDetailReportItemSetName(primary.getName());
+                }
+            }
+            for(Objective primary:primaryList){
             StudentScoreSummaryDetails summaryDetail = studentScoreSummaryData.get(primary.getId());
 
             summaryDetail.setReportItemSetName(primary.getName());
+            }
+             //END For Laslink Scoring
         }
     }
 
     public void onEvent(final SubtestItemCollectionEvent event) {
         copyScoreHistoryFromOasToAts(getResultHolder(), event.getItems().iterator(), event
-                .getItemSetName());
+                .getItemSetName(),subtestObjectives);
     }
 
     public static final void copyScoreHistoryFromOasToAts(final ScoreMoveData scoreMoveData,
-            final Iterator subtestItemCollectionData, final String itemSetName) {
+            final Iterator subtestItemCollectionData, final String itemSetName,SubtestObjectiveCollectionEvent subtestObjectives) {
         final StudentItemScoreData studentItemScoreData = scoreMoveData.getStudentItemScoreData();
 
         while (subtestItemCollectionData.hasNext()) {
             final ItemVO item = (ItemVO) subtestItemCollectionData.next();
-
-            final StudentItemScoreDetails detail = studentItemScoreData.get(item.getItemId());
-            detail.setTestItemNum(item.getItemSortOrder());
-            detail.setCorrectAnswer(item.getCorrectAnswer());
-            detail.setMaxPoints(item.getMaxPoints());
-            detail.setMinPoints(item.getMinPoints());
-            detail.setItemType(item.getItemType());
-            detail.setTestItemSetName(itemSetName);
-            detail.setTestItemSetId(item.getItemSetId());
-            detail.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
+            try {
+             //START-  For Laslink Scoring
+            	 List<Objective> primaryList = subtestObjectives.getPrimaryReportingLevelObjective(item.getItemId());
+            	  for(Objective primary:primaryList){
+	            	 final StudentItemScoreDetails detail = studentItemScoreData.get(item.getItemId() + primary.getName() );
+	                 detail.setTestItemNum(item.getItemSortOrder());
+	                 detail.setCorrectAnswer(item.getCorrectAnswer());
+	                 detail.setMaxPoints(item.getMaxPoints());
+	                 detail.setMinPoints(item.getMinPoints());
+	                 detail.setItemType(item.getItemType());
+	                 detail.setTestItemSetName(itemSetName);
+	                 detail.setTestItemSetId(item.getItemSetId());
+	                 detail.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
+            	  }
+            } catch (CTBSystemException e){
+        		
+        	}
+            //END- For Laslink Scoring
         }
     }
 

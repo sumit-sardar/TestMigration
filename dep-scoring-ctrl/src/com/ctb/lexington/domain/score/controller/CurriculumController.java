@@ -141,6 +141,9 @@ public class CurriculumController {
             IrsItemDimData item = iMapper.findByOASItemIdAndSecObjId(newItem.getOasItemid(), newItem.getSecObjid());
             if(item == null) {
                 // insert new item record
+                 // For Laslink Scoring
+            	if(newItem.getItemType().equals("CR"))
+            		newItem.setCorrectResponse("N/A");
                 item = iMapper.insert(newItem);
             } else {
                 if(!newItem.equals(item)) {

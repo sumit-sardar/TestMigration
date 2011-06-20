@@ -31,7 +31,7 @@ public class SubtestContentAreaItemCollectionCalculator extends Calculator {
         final IndexMap itemsByContentArea = new IndexMap(String.class, ItemContentArea.class,
                 new IndexMap.Mapper() {
                     public Object getKeyFor(final Object value) {
-                        return ((ItemContentArea) value).getItemId();
+                        return (((ItemContentArea) value).getItemId()+ ((ItemContentArea) value).getContentAreaName());
                     }
                 });
 

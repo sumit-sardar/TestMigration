@@ -1,22 +1,24 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import com.ctb.lexington.data.ItemVO;
-import com.ctb.lexington.db.data.CurriculumData.ContentArea;
 import com.ctb.lexington.db.data.StudentItemScoreData;
 import com.ctb.lexington.db.data.StudentItemScoreDetails;
-import com.ctb.lexington.db.utils.DatabaseHelper;
+import com.ctb.lexington.db.data.CurriculumData.ContentArea;
+import com.ctb.lexington.domain.score.event.Objective;
 import com.ctb.lexington.domain.score.event.SubtestEndedEvent;
 import com.ctb.lexington.domain.score.event.SubtestEvent;
 import com.ctb.lexington.domain.score.event.SubtestInvalidEvent;
 import com.ctb.lexington.domain.score.event.SubtestItemCollectionEvent;
+import com.ctb.lexington.domain.score.event.SubtestObjectiveCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestValidEvent;
 import com.ctb.lexington.domain.score.event.common.Channel;
 import com.ctb.lexington.domain.score.scorer.Scorer;
-import java.util.Collection;
+import com.ctb.lexington.exception.CTBSystemException;
 
 /**
  * <p>
@@ -47,7 +49,7 @@ public class SubtestValidationCalculator extends Calculator {
     //private SubtestItemCollectionEvent subtestItemCollectionEvent;
     private Collection items = null;
     private String subtestName = null;
-
+    private SubtestObjectiveCollectionEvent subtestObjectives = null;
     /**
      * Constructs a new <code>SubtestValidationCalculator</code> with the given <var>channel
      * </var> and <var>scorer </var>.
@@ -59,10 +61,15 @@ public class SubtestValidationCalculator extends Calculator {
         super(channel, scorer);
 
         channel.subscribe(this, SubtestItemCollectionEvent.class);
+        channel.subscribe(this, SubtestObjectiveCollectionEvent.class);
+        mustPrecede(SubtestItemCollectionEvent.class, SubtestObjectiveCollectionEvent.class);
         mustPrecede(SubtestItemCollectionEvent.class, SubtestEndedEvent.class);
         channel.subscribe(this, SubtestEndedEvent.class);
     }
-
+    
+    public void onEvent(SubtestObjectiveCollectionEvent event) {
+        this.subtestObjectives = event;
+    }
     public void onEvent(final SubtestEndedEvent event) {
     	// We want only content areas that are part of this subtest
         List contentAreaNames = extractContentAreaNames(new Long(event.getItemSetId().intValue()));
@@ -117,22 +124,24 @@ public class SubtestValidationCalculator extends Calculator {
         for (Iterator iter = this.items.iterator(); iter.hasNext();) {
             final ItemVO item = (ItemVO) iter.next();
 
-            if (!isItemToCheck(item))
+          /*  if (!isItemToCheck(item))
                 continue;
-
+           */
             final String itemId = item.getItemId();
-
-            if (!hasItemScoreDetails(studentData, itemId))
+            try{
+            List<Objective> primaryList = subtestObjectives.getPrimaryReportingLevelObjective(itemId);
+            
+            for(Objective primary:primaryList){
+            if (!hasItemScoreDetails(studentData, itemId+primary.getName()))
                 throw new IllegalStateException("Missing item score details: " + itemId);
 
-            final StudentItemScoreDetails detail = studentData.get(itemId);
-
+            final StudentItemScoreDetails detail = studentData.get(itemId + primary.getName());
             if (!hasResponse(detail))
                 continue;
-
+            if(ItemVO.ITEM_TYPE_SR.equals(item.getItemType())){
             if (isCorrectAnswer(detail)) {
                 ++correctAnswers;
-
+            }
                 if (answeredEnoughCorrectly(correctAnswers))
                     return true;
             }
@@ -146,6 +155,11 @@ public class SubtestValidationCalculator extends Calculator {
                 if (attemptedEnoughItems(attemptedItems))
                     return true;
             }
+            }
+            } catch(CTBSystemException e){
+            	
+            }
+            
         }
 
         return false;

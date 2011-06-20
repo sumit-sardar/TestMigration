@@ -12,8 +12,10 @@ public class ScoreLookupMapper extends AbstractDBMapper {
     private static final String FIND_SCORE_BY_ITEM_SET = "findScoreLookupForItemSet";
     private static final String FIND_SCORE_BY_UNIQUE_KEY_AND_ITEM_SET = "findScoreLookupForItemSetAndUniqueKey";
     private static final String FIND_SCORE_BY_UNIQUE_KEY_AND_FRAMEWORK_CODE = "findScoreLookupForFrameworkCode";
+    private static final String FINF_SCORE_BY_UNIQUE_KEY_AND_FRAMEWORK_CODE_AGAIN = "findScoreLookupForFrameworkCodeAgain";  // For Laslink Scoring 
     private static final String FIND_TV_COMPOSITE_SCORE = "findTerraNovaCompositeScore";
     private static final String FIND_TV_PERFORMANCE_LEVEL = "findTerraNovaPerformanceLevel";
+    private static final String FIND_LL_PERFORMANCE_LEVEL = "findLasLinkPerformanceLevel";  // For Laslink Scoring
 
     public ScoreLookupMapper(final Connection conn) {
         super(conn);
@@ -66,8 +68,20 @@ public class ScoreLookupMapper extends AbstractDBMapper {
         template.setContentArea(contentArea);
         template.setNormGroup(normGroup);
         template.setAgeCategory(ageCategory);
+  // For Laslink Scoring
+        ScoreLookupRecord results =  (ScoreLookupRecord) find(FIND_SCORE_BY_UNIQUE_KEY_AND_FRAMEWORK_CODE, template);
 
-        return (ScoreLookupRecord) find(FIND_SCORE_BY_UNIQUE_KEY_AND_FRAMEWORK_CODE, template);
+        if(results != null ) {
+            return (ScoreLookupRecord) results;
+        } else {
+        	results =  (ScoreLookupRecord) find(FINF_SCORE_BY_UNIQUE_KEY_AND_FRAMEWORK_CODE_AGAIN, template);
+        	if(results != null ) {
+        		return (ScoreLookupRecord) results;
+        	}else {
+        		return null;
+        	}
+        }
+        
     }
 
     public ScoreLookupRecord findTerraNovaCompositeScore(final String sourceScoreTypeCode,
@@ -90,6 +104,21 @@ public class ScoreLookupMapper extends AbstractDBMapper {
         template.setContentArea(contentArea);
 
         final ScoreLookupRecord perfLevel = (ScoreLookupRecord) find(FIND_TV_PERFORMANCE_LEVEL,
+                template);
+        if (null != perfLevel && null != perfLevel.getDestScoreValue())
+            return perfLevel.getDestScoreValue();
+        else
+            return new BigDecimal("1");
+    }
+      // For Laslink Scoring
+    public BigDecimal findLasLinkPerformanceLevel(final BigDecimal sourceScoreValue,
+            final String testLevel, final String contentArea) {
+        final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,
+                sourceScoreValue, null);
+        template.setTestLevel(testLevel);
+        template.setContentArea(contentArea);
+
+        final ScoreLookupRecord perfLevel = (ScoreLookupRecord) find(FIND_LL_PERFORMANCE_LEVEL,
                 template);
         if (null != perfLevel && null != perfLevel.getDestScoreValue())
             return perfLevel.getDestScoreValue();

@@ -44,7 +44,20 @@ public class ResponseCorrectCalculator extends AbstractResponseCalculator {
                     channel.send(new IncorrectResponseEvent(event));
                 }
             }
+        }else {
+        	// TODO: how do we handle CR item responses?
+        	 if (ItemVO.ITEM_TYPE_CR.equals(sicEvent.getType(itemId))) {
+        		 final Integer pointsObtained = event.getPointsObtained();
+                 if (pointsObtained != null) {
+                 	if (pointsObtained > 0) {
+                 		 channel.send(new CorrectResponseEvent(event));
+                     } else {
+                     	channel.send(new IncorrectResponseEvent(event));
+                     }
+                 } else {
+                     channel.send(new NoResponseEvent(event));
+                 }
+             }
         }
-        // TODO: how do we handle CR item responses?
     }
 }

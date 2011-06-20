@@ -15,7 +15,10 @@ public final class ProductType extends StringConstant {
     public static final ProductType RESEARCH_STUDY = new ProductType("RS", "ResearchStudy");
     public static final ProductType TERRANOVA_RESEARCH = new ProductType("TN", "TerraNova");
     public static final ProductType TABE_LOCATOR = new ProductType("TL", "TABE Locator");
-
+    public static final ProductType LASLINK = new ProductType("LL", "LasLink");
+    
+    //Need to add one entry for Laslink
+    
     private ProductType(final String code, final String description) {
         super(code, description);
         ALL_LEVELS.put(code, this);

@@ -2,6 +2,7 @@ package com.ctb.lexington.domain.score.scorer.calculator;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.ctb.lexington.domain.score.event.Objective;
@@ -63,14 +64,25 @@ public class ObjectiveRawScoreCalculator extends Calculator {
     public void onEvent(PointEvent event) throws CTBSystemException {
         validateItemSetBeingProcessed(event.getItemSetId(), "Response received for wrong itemset.");
 
-        Objective primaryObjective = subtestObjectives.getPrimaryReportingLevelObjective(event
+        List<Objective> primaryObjectiveList = subtestObjectives.getPrimaryReportingLevelObjective(event
                 .getItemId());
-        setItemPointsForObjectiveSet(primaryObjectives, primaryObjective, event);
+        
+        for (Objective primaryObjective : primaryObjectiveList) {
+        	
+        	setItemPointsForObjectiveSet(primaryObjectives, primaryObjective, event);
+        }
+        
+        
 
-        Objective secondaryObjective = subtestObjectives.getSecondaryReportingLevelObjective(event
+        List<Objective> secondaryObjectiveList = subtestObjectives.getSecondaryReportingLevelObjective(event
                 .getItemId());
-        if (secondaryObjective != null)
-            setItemPointsForObjectiveSet(secondaryObjectives, secondaryObjective, event);
+        if (!secondaryObjectiveList.isEmpty())
+        	
+        	for (Objective secondaryObjective : secondaryObjectiveList) {
+        		
+        		setItemPointsForObjectiveSet(secondaryObjectives, secondaryObjective, event);
+        	}
+            
     
         final Long testRosterId = event.getTestRosterId();
         //calculateAndSendRawScoreEvent(testRosterId, primaryObjectives, Objective.PRIMARY, new Long(event.getItemSetId().longValue()));
@@ -128,6 +140,7 @@ public class ObjectiveRawScoreCalculator extends Calculator {
             }
 
             int pointsPossible = getPointsPossibleFor(objectiveId);
+            //System.out.println("objectiveId==>"+objectiveId);
             channel.send(new ObjectiveRawScoreEvent(testRosterId, objectiveId, objectiveLevel,
                     pointsPossible, pointsObtained, pointsAttempted, ScorerHelper.calculatePercentage(
                             pointsObtained, pointsPossible), subtestId));

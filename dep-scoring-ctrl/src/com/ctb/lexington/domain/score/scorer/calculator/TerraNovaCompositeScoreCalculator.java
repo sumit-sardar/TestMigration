@@ -161,7 +161,7 @@ public class TerraNovaCompositeScoreCalculator extends AbstractDerivedScoreCalcu
 	                    nationalStanine, nationalPercentile, this.normGroup, this.normYear,
                         null, null, null, null, null, null, new Long(totalCompositePointsObtained), 
                         new Long(totalCompositePointsAttempted), new Long(totalCompositePointsPossible), 
-                        new Long(Math.round(((float) totalCompositePointsObtained / (float) totalCompositePointsPossible) * 100)), validScore));
+                        new Long(Math.round(((float) totalCompositePointsObtained / (float) totalCompositePointsPossible) * 100)), validScore, null));
 	            compositeScoresPublished = true;
             }
         }

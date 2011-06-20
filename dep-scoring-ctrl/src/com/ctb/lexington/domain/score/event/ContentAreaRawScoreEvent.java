@@ -1,5 +1,7 @@
 package com.ctb.lexington.domain.score.event;
 
+import java.util.Map;
+
 import com.ctb.lexington.domain.score.event.common.Event;
 
 public class ContentAreaRawScoreEvent extends Event {
@@ -8,15 +10,23 @@ public class ContentAreaRawScoreEvent extends Event {
     private final int percentObtained;
     private final int pointsPossible;
     private final String contentAreaName;
+    private final Map contentAreaMap; // For Laslink Scoring
+    private final int itemSetId; // For Laslink Scoring
 
-    public ContentAreaRawScoreEvent(final Long testRosterId, final String contentAreaName, final int pointsObtained,
-            final int pointsAttempted, final int percentObtained, final int pointsPossible) {
+   
+ // For Laslink Scoring
+	public ContentAreaRawScoreEvent(final Long testRosterId, final String contentAreaName, final int pointsObtained,
+            final int pointsAttempted, final int percentObtained, final int pointsPossible, final Map contentAreaMap, 
+            final int itemSetId) {
         super(testRosterId);
         this.pointsObtained = pointsObtained;
         this.pointsAttempted = pointsAttempted;
         this.contentAreaName = contentAreaName;
         this.percentObtained = percentObtained;
         this.pointsPossible = pointsPossible;
+        this.contentAreaMap = contentAreaMap; // For Laslink Scoring
+        this.itemSetId = itemSetId; // For Laslink Scoring
+        
     }
 
     /**
@@ -47,4 +57,20 @@ public class ContentAreaRawScoreEvent extends Event {
     public int getPointsPossible() {
         return pointsPossible;
     }
+    
+
+	/**
+	 * @return the contentAreaMap
+	 */
+	public Map getContentAreaMap() {
+		return contentAreaMap;
+	}
+
+	/**
+	 * @return the itemSetId
+	 */
+	public int getItemSetId() {
+		return itemSetId;
+	}
+
 }

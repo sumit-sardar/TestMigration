@@ -19,6 +19,7 @@ import com.ctb.lexington.domain.teststructure.ScoreLookupCode;
 public abstract class AbstractDerivedScoreCalculator extends Calculator {
     protected Integer pItemSetId;
     protected String pTestForm;
+    protected String pDupTestForm;
     protected String pTestLevel;
     protected String pGrade;
     protected String pNormGroup;
@@ -47,7 +48,8 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
 
     public void onEvent(SubtestStartedEvent event) {
         pItemSetId = event.getItemSetId();
-        pTestForm = "%"; // event.getItemSetForm();
+        pTestForm  = "%"; 
+        pDupTestForm =  event.getItemSetForm();
         pTestLevel = event.getItemSetLevel();
         pNormGroup = event.getNormGroup();
         pRecommendedLevel = event.getRecommendedLevel();
@@ -119,7 +121,18 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
             closeConnection(conn);
         }
     }
-
+     // START For Laslink Scoring
+    protected BigDecimal getLasLinkPerformanceLevel(String contentArea, String testLevel,
+            BigDecimal sourceScoreValue) {
+        final Connection conn = getOASConnection();
+        try {
+            return getScoreLookupHelper().getLasLinkPerformanceLevel(sourceScoreValue,
+                    contentArea, testLevel, conn);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+	// END For Laslink Scoring
     protected Connection getOASConnection() {
         try {
             return scorer.getOASConnection();

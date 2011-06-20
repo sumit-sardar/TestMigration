@@ -160,7 +160,8 @@ public class AdminController {
             "TB".equals(data.getAssessmentType())?1:
             "TL".equals(data.getAssessmentType())?1:
             "TN".equals(data.getAssessmentType())?2:
-            "TV".equals(data.getAssessmentType())?2:3));
+            "TV".equals(data.getAssessmentType())?2:
+            "LL".equals(data.getAssessmentType())?4:3)); // For Laslink Scoring
         programData.setNormsGroup(
             "6".equals(data.getNormsGroup())?"Fall":
             "18".equals(data.getNormsGroup())?"Winter":
@@ -200,7 +201,8 @@ public class AdminController {
             "TB".equals(data.getAssessmentType())?1:
             "TL".equals(data.getAssessmentType())?1:
             "TN".equals(data.getAssessmentType())?2:
-            "TV".equals(data.getAssessmentType())?2:3));
+            "TV".equals(data.getAssessmentType())?2:
+            "LL".equals(data.getAssessmentType())?4:3)); // For Laslink Scoring
     	return productData;
     }
     
@@ -215,7 +217,8 @@ public class AdminController {
             "TB".equals(data.getAssessmentType())?1:
             "TL".equals(data.getAssessmentType())?1:
             "TN".equals(data.getAssessmentType())?2:
-            "TV".equals(data.getAssessmentType())?2:3));
+            "TV".equals(data.getAssessmentType())?2:
+            "LL".equals(data.getAssessmentType())?4:3)); // For Laslink Scoring
         
         // this is WRONG!!! what if they didn't complete any content area?
         String form = "N/A";
@@ -228,7 +231,10 @@ public class AdminController {
                                           "10".equals(form)?2:
                                           "B".equals(form)?4:
                                           "G".equals(form)?5:
-                                          "1".equals(form)?4:3));
+                                          "1".equals(form)?4:
+                                          "A".equals(form)?7:
+                                          "B".equals(form)?8:
+                                          ("Espa?ol".equals(form)|| "Espanol".equals(form) || "Español".equals(form))?9:10)); // For Laslink Scoring
         if("TV".equals(data.getAssessmentType())) {
             assessmentData.setLevelid(                                  
                                           new Long(
@@ -242,6 +248,17 @@ public class AdminController {
                                             "19-20".equals(level)?13:
                                             "19/20".equals(level)?13:
                                             "20".equals(level)?14:15));
+        } 
+         // For Laslink Scoring
+       else if("LL".equals(data.getAssessmentType())) {
+            assessmentData.setLevelid(                                  
+                                          new Long(
+                                        	"K".equals(level)?16:
+                                        	"1".equals(level)?17:
+                                        	"2-3".equals(level)?18:
+                                        	"4-5".equals(level)?19:
+                                        	"6-8".equals(level)?20:
+                                        	"9-12".equals(level)?21:22 ));
         } else {
             assessmentData.setLevelid(new Long(6));
         }

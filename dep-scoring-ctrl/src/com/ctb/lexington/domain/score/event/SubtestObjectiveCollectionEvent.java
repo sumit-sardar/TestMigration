@@ -1,10 +1,12 @@
 package com.ctb.lexington.domain.score.event;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
 
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.util.SafeHashMap;
@@ -76,7 +78,7 @@ public class SubtestObjectiveCollectionEvent extends SubtestEvent {
      * @param itemId
      * @return
      */
-    public Objective getPrimaryReportingLevelObjective(final String itemId) throws CTBSystemException {
+    public List<Objective> getPrimaryReportingLevelObjective(final String itemId) throws CTBSystemException { // For Laslink Scoring
         if (!reportingLevelObjectives.containsKey(itemId))
             throw new CTBSystemException(null, "Item with ID " + itemId + " is above the primary reporting level");
         objectivesRead = true;
@@ -96,7 +98,7 @@ public class SubtestObjectiveCollectionEvent extends SubtestEvent {
      * @param itemId
      * @return
      */
-    public Objective getSecondaryReportingLevelObjective(final String itemId) {
+    public List<Objective> getSecondaryReportingLevelObjective(final String itemId) { // For Laslink Scoring
         objectivesRead = true;
         final ObjectivePair objectivePair = (ObjectivePair) reportingLevelObjectives.get(itemId);
         if(objectivePair == null) return null;
@@ -107,8 +109,8 @@ public class SubtestObjectiveCollectionEvent extends SubtestEvent {
      * ObjectivePair ensures there is exactly one primary and secondary objective for a given item.
      */
     private static class ObjectivePair {
-        private Objective primary;
-        private Objective secondary;
+        private List<Objective> primary = new ArrayList() ; // For Laslink Scoring
+        private List<Objective> secondary = new ArrayList(); // For Laslink Scoring
     }
 
     /*
@@ -118,7 +120,7 @@ public class SubtestObjectiveCollectionEvent extends SubtestEvent {
     private static interface Accessor {
         String getReportingLevel();
 
-        Objective get(final ObjectivePair pair);
+        List<Objective>get(final ObjectivePair pair); // For Laslink Scoring
 
         void set(final ObjectivePair pair, final Objective objective);
     }
@@ -128,12 +130,12 @@ public class SubtestObjectiveCollectionEvent extends SubtestEvent {
             return Objective.PRIMARY;
         }
 
-        public Objective get(final ObjectivePair pair) {
+        public List<Objective> get(final ObjectivePair pair) { // For Laslink Scoring
             return pair.primary;
         }
 
         public void set(final ObjectivePair pair, final Objective objective) {
-            pair.primary = objective;
+            pair.primary.add(objective); // For Laslink Scoring
         }
     };
 
@@ -142,12 +144,12 @@ public class SubtestObjectiveCollectionEvent extends SubtestEvent {
             return Objective.SECONDARY;
         }
 
-        public Objective get(final ObjectivePair pair) {
+        public List<Objective> get(final ObjectivePair pair) { // For Laslink Scoring
             return pair.secondary;
         }
 
         public void set(final ObjectivePair pair, final Objective objective) {
-            pair.secondary = objective;
+            pair.secondary.add(objective);     // For Laslink Scoring
         }
     };
 
@@ -159,10 +161,10 @@ public class SubtestObjectiveCollectionEvent extends SubtestEvent {
 
         final ObjectivePair pair = getObjectivePairForKey(itemId);
 
-        if (accessor.get(pair) != null) {
+       /* if (!accessor.get(pair).isEmpty()) {
             throw new IllegalStateException("Duplicate " + accessor.getReportingLevel()
                     + " objective for: " + itemId);
-        }
+        } */
 
         accessor.set(pair, objective);
     }
@@ -173,9 +175,14 @@ public class SubtestObjectiveCollectionEvent extends SubtestEvent {
         final Set objectives = new HashSet();
 
         for (final Iterator it = reportingLevelObjectives.values().iterator(); it.hasNext();) {
-            final Objective objective = selector.get((ObjectivePair) it.next());
-            if (objective != null) {
-                objectives.add(objective);
+         // START- For Laslink Scoring
+            final List<Objective> objectiveList = selector.get((ObjectivePair) it.next());
+            if (!objectiveList.isEmpty()) {
+            	for (Objective objective : objectiveList) {
+            		
+            		objectives.add(objective);
+            	}
+            //END-  For Laslink Scoring     
             }
         }
 

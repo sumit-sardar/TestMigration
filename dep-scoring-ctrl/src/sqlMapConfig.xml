@@ -69,4 +69,11 @@
     <sqlMap resource="maps/tvfactmaps/IrsTVPrimObjFact.xml"/>
     <sqlMap resource="maps/tvfactmaps/IrsTVContentAreaFact.xml"/>
     <sqlMap resource="maps/tvfactmaps/IrsTVCompositeFact.xml"/> 
+    <sqlMap resource="maps/llfactmaps/IrsLLCompositeFact.xml"/> 
+    <sqlMap resource="maps/llfactmaps/IrsLLContentAreaFact.xml"/> 
+    <sqlMap resource="maps/llfactmaps/IrsLLPrimObjFact.xml"/> 
+    <sqlMap resource="maps/llfactmaps/IrsLLSecObjFact.xml"/> 
+    <sqlMap resource="maps/llfactmaps/IrsLLItemFact.xml"/> 
+     
+    
 </sqlMapConfig>

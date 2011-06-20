@@ -2,6 +2,7 @@ package com.ctb.lexington.domain.score.scorer.calculator;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -72,8 +73,9 @@ public class ObjectiveNumberCorrectCalculator extends Calculator {
         channel.subscribe(this, SubtestItemCollectionEvent.class);
         // HACKTAG: Since we are handling events depth-first, we cannot validate state here
         // since the sicEvent has not reached this instance yet!
-        //mustPrecede(SubtestItemCollectionEvent.class, SubtestObjectiveCollectionEvent.class);
+        
         channel.subscribe(this, SubtestObjectiveCollectionEvent.class);
+        mustPrecede(SubtestItemCollectionEvent.class, SubtestObjectiveCollectionEvent.class);
         channel.subscribe(this, ResponseReceivedEvent.class);
         // HACKTAG: Since we are handling events depth-first, we cannot validate state here
         // since the sicEvent has not reached this instance yet!
@@ -119,32 +121,53 @@ public class ObjectiveNumberCorrectCalculator extends Calculator {
     public void onEvent(ResponseReceivedEvent event) throws CTBSystemException {
         validateItemSetBeingProcessed(event.getItemSetId(), "Response received for wrong itemset.");
 
-        Objective primaryReportingLevelObjective = subtestObjectives
+        List<Objective> primaryReportingLevelObjectiveList = subtestObjectives
                 .getPrimaryReportingLevelObjective(event.getItemId());
-        Objective secondaryReportingLevelObjective = subtestObjectives
+        List<Objective> secondaryReportingLevelObjectiveList = subtestObjectives
                 .getSecondaryReportingLevelObjective(event.getItemId());
 
         if (sicEvent.isAttempted(event)) {
-            addItemToObjectiveSet(primaryObjectivesAttempted, primaryReportingLevelObjective
-                    .getId(), event.getItemId());
-            removeItemFromObjectiveSet(primaryObjectivesUnattempted, primaryReportingLevelObjective
-                    .getId(), event.getItemId());
-            if (secondaryReportingLevelObjective != null) {
-                addItemToObjectiveSet(secondaryObjectivesAttempted,
-                        secondaryReportingLevelObjective.getId(), event.getItemId());
-                removeItemFromObjectiveSet(secondaryObjectivesUnattempted,
-                        secondaryReportingLevelObjective.getId(), event.getItemId());
+        	
+        	for (Objective primaryReportingLevelObjective :primaryReportingLevelObjectiveList) {
+        		
+        		addItemToObjectiveSet(primaryObjectivesAttempted, primaryReportingLevelObjective
+                        .getId(), event.getItemId());
+                removeItemFromObjectiveSet(primaryObjectivesUnattempted, primaryReportingLevelObjective
+                        .getId(), event.getItemId());
+        	}
+            
+            if (!secondaryReportingLevelObjectiveList.isEmpty()) {
+            	
+            	for (Objective secondaryReportingLevelObjective :secondaryReportingLevelObjectiveList) {
+            		
+            		 addItemToObjectiveSet(secondaryObjectivesAttempted,
+                             secondaryReportingLevelObjective.getId(), event.getItemId());
+                     removeItemFromObjectiveSet(secondaryObjectivesUnattempted,
+                             secondaryReportingLevelObjective.getId(), event.getItemId());
+            		
+            	}
+               
             }
         } else {
-            addItemToObjectiveSet(primaryObjectivesUnattempted, primaryReportingLevelObjective
-                    .getId(), event.getItemId());
-            removeItemFromObjectiveSet(primaryObjectivesAttempted, primaryReportingLevelObjective
-                    .getId(), event.getItemId());
-            if (secondaryReportingLevelObjective != null) {
-                addItemToObjectiveSet(secondaryObjectivesUnattempted,
-                        secondaryReportingLevelObjective.getId(), event.getItemId());
-                removeItemFromObjectiveSet(secondaryObjectivesAttempted,
-                        secondaryReportingLevelObjective.getId(), event.getItemId());
+        	
+        	for (Objective primaryReportingLevelObjective :primaryReportingLevelObjectiveList) {
+        		
+        		addItemToObjectiveSet(primaryObjectivesUnattempted, primaryReportingLevelObjective
+                        .getId(), event.getItemId());
+                removeItemFromObjectiveSet(primaryObjectivesAttempted, primaryReportingLevelObjective
+                        .getId(), event.getItemId());
+        	}
+            
+            if (!secondaryReportingLevelObjectiveList.isEmpty()) {
+            	
+            	for (Objective secondaryReportingLevelObjective :secondaryReportingLevelObjectiveList) {
+            		
+            		addItemToObjectiveSet(secondaryObjectivesUnattempted,
+                            secondaryReportingLevelObjective.getId(), event.getItemId());
+                    removeItemFromObjectiveSet(secondaryObjectivesAttempted,
+                            secondaryReportingLevelObjective.getId(), event.getItemId());
+            	}
+                
             }
         }
     }
@@ -152,38 +175,57 @@ public class ObjectiveNumberCorrectCalculator extends Calculator {
     public void onEvent(CorrectResponseEvent event) throws CTBSystemException {
         validateItemSetBeingProcessed(event.getItemSetId(), "Response received for wrong itemset.");
 
-        addItemToObjectiveSet(primaryObjectivesCorrect, subtestObjectives
-                .getPrimaryReportingLevelObjective(event.getItemId()).getId(), event.getItemId());
-        removeItemFromObjectiveSet(primaryObjectivesIncorrect, subtestObjectives
-                .getPrimaryReportingLevelObjective(event.getItemId()).getId(), event.getItemId());
+        List<Objective> primaryReportingLevelObjectiveList = subtestObjectives
+        .getPrimaryReportingLevelObjective(event.getItemId());
+        
+        List<Objective> secondaryReportingLevelObjectiveList = subtestObjectives
+        .getSecondaryReportingLevelObjective(event.getItemId());
+        
+        for (Objective primaryReportingLevelObjective :primaryReportingLevelObjectiveList) {
+        	
+        	 addItemToObjectiveSet(primaryObjectivesCorrect, primaryReportingLevelObjective.getId(), event.getItemId());
+             removeItemFromObjectiveSet(primaryObjectivesIncorrect, primaryReportingLevelObjective.getId(), event.getItemId());
+        }
+       
 
-        Objective secondaryReportingLevelObjective = subtestObjectives
-                .getSecondaryReportingLevelObjective(event.getItemId());
-        if (secondaryReportingLevelObjective != null) {
-            addItemToObjectiveSet(secondaryObjectivesCorrect, secondaryReportingLevelObjective
-                    .getId(), event.getItemId());
-            removeItemFromObjectiveSet(secondaryObjectivesIncorrect,
-                    secondaryReportingLevelObjective.getId(), event.getItemId());
+        
+        if (!secondaryReportingLevelObjectiveList.isEmpty()) {
+        	
+        	for (Objective secondaryReportingLevelObjective :secondaryReportingLevelObjectiveList) {
+	            addItemToObjectiveSet(secondaryObjectivesCorrect, secondaryReportingLevelObjective
+	                    .getId(), event.getItemId());
+	            removeItemFromObjectiveSet(secondaryObjectivesIncorrect,
+	                    secondaryReportingLevelObjective.getId(), event.getItemId());
+        	}
         }
     }
 
     public void onEvent(IncorrectResponseEvent event) throws CTBSystemException {
         validateItemSetBeingProcessed(event.getItemSetId(), "Response received for wrong itemset.");
 
-        Objective primaryReportingLevelObjective = subtestObjectives
+        List<Objective> primaryReportingLevelObjectiveList = subtestObjectives
                 .getPrimaryReportingLevelObjective(event.getItemId());
-        addItemToObjectiveSet(primaryObjectivesIncorrect, primaryReportingLevelObjective.getId(),
-                event.getItemId());
-        removeItemFromObjectiveSet(primaryObjectivesCorrect,
-                primaryReportingLevelObjective.getId(), event.getItemId());
+        for (Objective primaryReportingLevelObjective :primaryReportingLevelObjectiveList) {
+        	
+        	 addItemToObjectiveSet(primaryObjectivesIncorrect, primaryReportingLevelObjective.getId(),
+                     event.getItemId());
+             removeItemFromObjectiveSet(primaryObjectivesCorrect,
+                     primaryReportingLevelObjective.getId(), event.getItemId());
+        }
+       
 
-        Objective secondaryReportingLevelObjective = subtestObjectives
+        List<Objective> secondaryReportingLevelObjectiveList = subtestObjectives
                 .getSecondaryReportingLevelObjective(event.getItemId());
-        if (secondaryReportingLevelObjective != null) {
-            addItemToObjectiveSet(secondaryObjectivesIncorrect, secondaryReportingLevelObjective
-                    .getId(), event.getItemId());
-            removeItemFromObjectiveSet(secondaryObjectivesCorrect, secondaryReportingLevelObjective
-                    .getId(), event.getItemId());
+        if (!secondaryReportingLevelObjectiveList.isEmpty()) {
+        	
+        	for (Objective secondaryReportingLevelObjective :secondaryReportingLevelObjectiveList) {
+        		
+        		addItemToObjectiveSet(secondaryObjectivesIncorrect, secondaryReportingLevelObjective
+                        .getId(), event.getItemId());
+                removeItemFromObjectiveSet(secondaryObjectivesCorrect, secondaryReportingLevelObjective
+                        .getId(), event.getItemId());
+        	}
+            
         }
     }
 

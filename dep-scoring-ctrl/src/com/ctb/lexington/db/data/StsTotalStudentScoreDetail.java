@@ -32,6 +32,7 @@ public class StsTotalStudentScoreDetail implements Persistent, ValidatedScoreRec
     private Long pointsPossible;
     private String validScore;
     private Long recommendedLevelId;
+    private BigDecimal proficencyLevel;   //Added for LASLINK Scoring
 
     public Long getRecommendedLevelId() {
         return recommendedLevelId;
@@ -248,5 +249,19 @@ public class StsTotalStudentScoreDetail implements Persistent, ValidatedScoreRec
     public void setPointsPossible(Long pointsPossible) {
         this.pointsPossible = pointsPossible;
     }
+
+	/**
+	 * @return the proficencyLevel
+	 */
+	public BigDecimal getProficencyLevel() {
+		return proficencyLevel;
+	}
+
+	/**
+	 * @param proficencyLevel the proficencyLevel to set
+	 */
+	public void setProficencyLevel(BigDecimal proficencyLevel) {
+		this.proficencyLevel = proficencyLevel;
+	}
 
 }

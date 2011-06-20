@@ -272,7 +272,7 @@ public class TABECompositeScoreCalculator extends AbstractDerivedScoreCalculator
                     scores.expectedSocialStudiesGed, scores.expectedScienceGed,
                     scores.expectedAverageGed, scores.getPointsObtained(), scores
                             .getPointsAttempted(), scores.getPointsPossible(), scores
-                            .getPercentObtained(), scores.validScore));
+                            .getPercentObtained(), scores.validScore, null));
         }
     }
 

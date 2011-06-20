@@ -24,6 +24,7 @@ public class SubtestContentAreaCompositeScoreEvent extends Event {
     private final Long percentObtained;
     private final Long pointsPossible;
     private final String validScore;
+    private final BigDecimal proficencyLevel; // For Laslink Scoring
 
     public SubtestContentAreaCompositeScoreEvent(final Long testRosterId, final String type,
             final BigDecimal scaleScore, final BigDecimal normalCurveEquivalent,
@@ -33,7 +34,7 @@ public class SubtestContentAreaCompositeScoreEvent extends Event {
             final BigDecimal expectedWritingGed, final BigDecimal expectedSocialStudiesGed,
             final BigDecimal expectedScienceGed, final BigDecimal expectedAverageGed,
             final Long pointsObtained, final Long pointsAttempted, final Long pointsPossible,
-            final Long percentObtained, final String validScore) {
+            final Long percentObtained, final String validScore, final BigDecimal proficencyLevel) {
         super(testRosterId);
         this.scaleScore = scaleScore;
         this.type = type;
@@ -54,6 +55,7 @@ public class SubtestContentAreaCompositeScoreEvent extends Event {
         this.pointsPossible = pointsPossible;
         this.percentObtained = percentObtained;
         this.validScore = validScore;
+        this.proficencyLevel = proficencyLevel;  // For Laslink Scoring
     }
 
     public BigDecimal getScaleScore() {
@@ -142,4 +144,11 @@ public class SubtestContentAreaCompositeScoreEvent extends Event {
         return (expectedAverageGed != null || expectedMathGed != null || expectedReadingGed != null
                 || expectedScienceGed != null || expectedSocialStudiesGed != null || expectedWritingGed != null);
     }
+
+	/**
+	 * @return the proficencyLevel
+	 */
+	public BigDecimal getProficencyLevel() {
+		return proficencyLevel;
+	}
 }

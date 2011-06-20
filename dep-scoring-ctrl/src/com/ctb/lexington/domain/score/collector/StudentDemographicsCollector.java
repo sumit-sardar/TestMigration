@@ -4,11 +4,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import com.ctb.lexington.db.ConnectionFactory;
 import com.ctb.lexington.db.data.StudentDemographicData;
-import com.ctb.lexington.db.irsdata.IrsDemographicData;
 import com.ctb.lexington.util.SQLUtil;
 
 /**
@@ -49,8 +50,17 @@ public class StudentDemographicsCollector{
 	        rs = ps.executeQuery();
 	        while (rs.next()) {
                 if(SQLUtil.getString(rs, "label_code") != null) {
+                	/*if(researchMap.containsKey(SQLUtil.getString(rs, "label_code"))){
+                		ArrayList list =  (ArrayList)researchMap.get(SQLUtil.getString(rs, "label_code"));
+                		list.add(SQLUtil.getString(rs, "value_name"));
+                		researchMap.put(SQLUtil.getString(rs, "label_code"), list);
+                }else {
+                	ArrayList Value = new ArrayList();
+                	Value.add(SQLUtil.getString(rs, "value_name"));
+                	researchMap.put(SQLUtil.getString(rs, "label_code"), Value);*/
                     researchMap.put(SQLUtil.getString(rs, "label_code"), SQLUtil.getString(rs, "value_name"));
                 }
+               // }
                 gender = SQLUtil.getString(rs,"gender");
 	        }
 	        data.setResearchData(researchMap);

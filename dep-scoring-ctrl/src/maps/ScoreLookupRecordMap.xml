@@ -163,6 +163,89 @@
         </isNotNull>
     </select>
 
+
+	 <select id="findScoreLookupForFrameworkCodeAgain" parameterClass="com.ctb.lexington.db.record.ScoreLookupRecord" resultClass="com.ctb.lexington.db.record.ScoreLookupRecord">
+        SELECT FL.SOURCE_SCORE_TYPE_CODE as sourceScoreTypeCode,
+            FL.DEST_SCORE_TYPE_CODE as destScoreTypeCode,
+            FL.SOURCE_SCORE_VALUE as sourceScoreValue,
+            FL.DEST_SCORE_VALUE as destScoreValue,
+            FL.TEST_FORM as testForm,
+            FL.TEST_LEVEL as testLevel,
+            FL.GRADE as grade,
+            FL.CONTENT_AREA as contentArea,
+            FL.NORM_GROUP as normGroup,
+            FL.NORM_YEAR as normYear,
+            FL.AGE_CATEGORY as ageCategory,
+            FL.EXTENDED_FLAG as extendedFlag
+             FROM (
+        SELECT DISTINCT
+            SL.SOURCE_SCORE_TYPE_CODE,
+            SL.DEST_SCORE_TYPE_CODE,
+            SL.SOURCE_SCORE_VALUE,
+            SL.DEST_SCORE_VALUE,
+            SL.TEST_FORM,
+            SL.TEST_LEVEL,
+            SL.GRADE,
+            SL.CONTENT_AREA,
+            SL.NORM_GROUP,
+            SL.NORM_YEAR,
+            SL.AGE_CATEGORY,
+            SL.EXTENDED_FLAG
+        FROM
+            SCORE_LOOKUP SL
+        WHERE
+                SL.FRAMEWORK_CODE = #frameworkCode:VARCHAR#
+            AND SL.SOURCE_SCORE_TYPE_CODE = #sourceScoreTypeCode:VARCHAR#
+            AND SL.DEST_SCORE_TYPE_CODE = #destScoreTypeCode:VARCHAR#
+            AND SL.SOURCE_SCORE_VALUE &gt;= #sourceScoreValue:NUMERIC#
+            AND
+        <isNull property="testForm">
+            SL.TEST_FORM IS NULL
+        </isNull>
+        <isNotNull property="testForm">
+            SL.TEST_FORM = #testForm:VARCHAR#
+        </isNotNull>
+            AND
+        <isNull property="testLevel">
+            SL.TEST_LEVEL IS NULL
+        </isNull>
+        <isNotNull property="testLevel">
+            SL.TEST_LEVEL = #testLevel:VARCHAR#
+        </isNotNull>
+            AND
+        <isNull property="grade">
+            SL.GRADE IS NULL
+        </isNull>
+        <isNotNull property="grade">
+            (SL.GRADE = #grade:VARCHAR# OR SL.GRADE = '0')
+        </isNotNull>
+            AND
+        <isNull property="contentArea">
+            SL.CONTENT_AREA IS NULL
+        </isNull>
+        <isNotNull property="contentArea">
+            SL.CONTENT_AREA = #contentArea:VARCHAR#
+        </isNotNull>
+            AND
+        <isNull property="normGroup">
+            SL.NORM_GROUP IS NULL
+        </isNull>
+        <isNotNull property="normGroup">
+            SL.NORM_GROUP = #normGroup:VARCHAR#
+        </isNotNull>
+            AND
+        <isNull property="ageCategory">
+            SL.AGE_CATEGORY IS NULL
+        </isNull>
+        <isNotNull property="ageCategory">
+            (SL.AGE_CATEGORY = #ageCategory:VARCHAR#
+             OR SL.AGE_CATEGORY IS NULL)
+        </isNotNull>
+        ORDER BY SL.SOURCE_SCORE_VALUE ) FL
+        
+        WHERE ROWNUM <![CDATA[ = 1  ]]> 
+    </select>
+    
     <select id="findTerraNovaCompositeScore" parameterClass="com.ctb.lexington.db.record.ScoreLookupRecord" resultClass="com.ctb.lexington.db.record.ScoreLookupRecord">
         <![CDATA[
         SELECT DISTINCT
@@ -212,6 +295,24 @@
     </select>
 
     <select id="findTerraNovaPerformanceLevel" parameterClass="com.ctb.lexington.db.record.ScoreLookupRecord" resultClass="com.ctb.lexington.db.record.ScoreLookupRecord">
+        <![CDATA[
+        SELECT
+            MAX(SL.DEST_SCORE_VALUE) as destScoreValue
+        FROM
+            SCORE_LOOKUP SL
+        WHERE
+            SL.SOURCE_SCORE_TYPE_CODE = 'SCL'
+            AND SL.DEST_SCORE_TYPE_CODE = 'PL'
+            AND SL.SOURCE_SCORE_VALUE <= #sourceScoreValue:NUMERIC#
+            AND CONTENT_AREA = #contentArea:VARCHAR#
+        ]]>
+        <isNotNull property="testLevel" prepend="and ">
+            SL.TEST_LEVEL = #testLevel:VARCHAR#
+        </isNotNull>
+    </select>
+    
+    
+    <select id="findLasLinkPerformanceLevel" parameterClass="com.ctb.lexington.db.record.ScoreLookupRecord" resultClass="com.ctb.lexington.db.record.ScoreLookupRecord">
         <![CDATA[
         SELECT
             MAX(SL.DEST_SCORE_VALUE) as destScoreValue

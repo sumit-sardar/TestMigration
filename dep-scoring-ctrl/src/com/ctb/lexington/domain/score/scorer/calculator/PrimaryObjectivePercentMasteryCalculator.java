@@ -1,17 +1,19 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
-import java.util.HashMap;
 
 import com.ctb.lexington.data.ItemContentArea;
 import com.ctb.lexington.db.utils.DatabaseHelper;
+import com.ctb.lexington.domain.score.event.AssessmentEndedEvent;
+import com.ctb.lexington.domain.score.event.Objective;
 import com.ctb.lexington.domain.score.event.ObjectivePrimaryNumberCorrectEvent;
 import com.ctb.lexington.domain.score.event.PrimaryObjectivePercentMasteryEvent;
 import com.ctb.lexington.domain.score.event.SubtestContentAreaItemCollectionEvent;
-import com.ctb.lexington.domain.score.event.AssessmentEndedEvent;
 import com.ctb.lexington.domain.score.event.SubtestObjectiveCollectionEvent;
 import com.ctb.lexington.domain.score.event.common.EventChannel;
 import com.ctb.lexington.domain.score.scorer.Scorer;
@@ -91,9 +93,11 @@ public class PrimaryObjectivePercentMasteryCalculator extends Calculator {
         for (Iterator iterator = subtest.scaicEvent.getItemContentAreasFor(contentArea).iterator(); iterator
                 .hasNext();) {
             ItemContentArea itemContentArea = (ItemContentArea) iterator.next();
-
-            result.add(subtest.socEvent.getPrimaryReportingLevelObjective(itemContentArea.getItemId())
-                    .getId());
+            
+            List<Objective> primaryReportingLevelObjectiveList = subtest.socEvent.getPrimaryReportingLevelObjective(itemContentArea.getItemId());
+            for(Objective primaryReportingLevelObjective: primaryReportingLevelObjectiveList ){
+            result.add(primaryReportingLevelObjective.getId());
+        	}
         }
 
         return result;
@@ -114,6 +118,7 @@ public class PrimaryObjectivePercentMasteryCalculator extends Calculator {
         private Long contentAreaId;
         private Collection objectiveIds;
         private Set primaryObjectivesMastered = new HashSet();
+        
         private int primaryObjectiveCount = 0;
 
         private int calculatePercentMastery() {

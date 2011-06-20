@@ -1,7 +1,9 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,13 +13,16 @@ import com.ctb.lexington.domain.score.event.ContentAreaNumberCorrectEvent;
 import com.ctb.lexington.domain.score.event.CorrectResponseEvent;
 import com.ctb.lexington.domain.score.event.IncorrectResponseEvent;
 import com.ctb.lexington.domain.score.event.NoResponseEvent;
+import com.ctb.lexington.domain.score.event.Objective;
 import com.ctb.lexington.domain.score.event.ResponseEvent;
 import com.ctb.lexington.domain.score.event.ResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.SubtestContentAreaItemCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestEndedEvent;
 import com.ctb.lexington.domain.score.event.SubtestItemCollectionEvent;
+import com.ctb.lexington.domain.score.event.SubtestObjectiveCollectionEvent;
 import com.ctb.lexington.domain.score.event.common.Channel;
 import com.ctb.lexington.domain.score.scorer.Scorer;
+import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.util.SafeHashMap;
 
 /**
@@ -32,11 +37,13 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
     protected final Map contentAreaAnswers = new SafeHashMap(String.class, ContentAreaAnswers.class);
     protected Map itemsByContentArea = new SafeHashMap(String.class, ItemContentArea.class);
     private SubtestItemCollectionEvent sicEvent;
+    private SubtestObjectiveCollectionEvent subtestObjectives = null;
 
     public ContentAreaNumberCorrectCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
-
+        channel.subscribe(this, SubtestObjectiveCollectionEvent.class);
         channel.subscribe(this, SubtestContentAreaItemCollectionEvent.class);
+       // mustPrecede(SubtestObjectiveCollectionEvent.class, SubtestContentAreaItemCollectionEvent.class);
         //TODO: Uncomment this when we can handle multiple predecessors for an event
         //mustPrecede(SubtestContentAreaItemCollectionEvent.class, ResponseReceivedEvent.class);
         channel.subscribe(this, CorrectResponseEvent.class);
@@ -48,7 +55,11 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
         channel.subscribe(this, SubtestEndedEvent.class);
         mustPrecede(SubtestContentAreaItemCollectionEvent.class, SubtestEndedEvent.class);
     }
-
+    
+    public void onEvent(SubtestObjectiveCollectionEvent event) {
+        this.subtestObjectives = event;
+    }
+    
     public void onEvent(SubtestItemCollectionEvent event) {
         super.onEvent(event);
 
@@ -90,41 +101,71 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
     public void onEvent(ResponseReceivedEvent event) {
         validateItemSetId(event.getItemSetId());
 
-        final ContentAreaAnswers summary = getSummaryForContentArea(event);
+        
+        // START For Laslink Scoring
+        final List<ContentAreaAnswers> summaryList = getSummaryForContentArea(event);
         final String itemId = event.getItemId();
-        if (sicEvent.isAttempted(event)) {
-            summary.attemptedAnswers.add(itemId);
-            summary.unattemptedAnswers.remove(itemId);
-        } else {
-            summary.attemptedAnswers.remove(itemId);
-            summary.unattemptedAnswers.add(itemId);
+        for (ContentAreaAnswers summary : summaryList) {
+	        if (sicEvent.isAttempted(event)) {
+	            summary.attemptedAnswers.add(itemId);
+	            summary.unattemptedAnswers.remove(itemId);
+	        } else {
+	            summary.attemptedAnswers.remove(itemId);
+	            summary.unattemptedAnswers.add(itemId);
+	        }
+	        // END For Laslink Scoring
         }
     }
 
-    private ContentAreaAnswers getSummaryForContentArea(ResponseEvent event) {
-        final ItemContentArea itemContentArea = (ItemContentArea) itemsByContentArea.get(event
-                .getItemId());
-        return getContentAreaByName(itemContentArea.getContentAreaName());
+    private List <ContentAreaAnswers> getSummaryForContentArea(ResponseEvent event) {
+       // START For Laslink Scoring
+       List <ContentAreaAnswers> contentAreaAnswersList =  new ArrayList() ;
+    	try{
+	    	List<Objective> primaryReportingLevelObjectiveList = subtestObjectives
+	        .getPrimaryReportingLevelObjective(event.getItemId());
+	    	for (Objective primaryReportingLevelObjective :primaryReportingLevelObjectiveList) {
+	    		final ItemContentArea itemContentArea = (ItemContentArea) itemsByContentArea.get(event
+	                .getItemId() + primaryReportingLevelObjective
+	                .getName());
+	    		contentAreaAnswersList.add( getContentAreaByName(itemContentArea.getContentAreaName()));
+	       
+	    	}
+    	} catch (CTBSystemException e){
+    		
+    	}
+    	
+    	 return contentAreaAnswersList;
+    	 // END For Laslink Scoring
     }
 
     public void onEvent(CorrectResponseEvent event) {
-        final ContentAreaAnswers summary = getSummaryForContentArea(event);
-        summary.correctAnswers.add(event.getItemId());
-        summary.incorrectAnswers.remove(event.getItemId());
+    	 //  For Laslink Scoring
+        final List<ContentAreaAnswers> summaryList = getSummaryForContentArea(event);
+        for (ContentAreaAnswers summary : summaryList) {
+        	 summary.correctAnswers.add(event.getItemId());
+             summary.incorrectAnswers.remove(event.getItemId());
+    	}
     }
-
+     //  For Laslink Scoring
+  
     public void onEvent(IncorrectResponseEvent event) {
-        final ContentAreaAnswers summary = getSummaryForContentArea(event);
-        summary.incorrectAnswers.add(event.getItemId());
-        summary.correctAnswers.remove(event.getItemId());
+        
+        final List<ContentAreaAnswers> summaryList = getSummaryForContentArea(event);
+        for (ContentAreaAnswers summary : summaryList) {
+        	 summary.incorrectAnswers.add(event.getItemId());
+             summary.correctAnswers.remove(event.getItemId());
+    	}
     }
-
+ //  For Laslink Scoring
     public void onEvent(NoResponseEvent event) {
-        final ContentAreaAnswers summary = getSummaryForContentArea(event);
-        summary.incorrectAnswers.remove(event.getItemId());
-        summary.correctAnswers.remove(event.getItemId());
+      
+        final List<ContentAreaAnswers> summaryList = getSummaryForContentArea(event);
+        for (ContentAreaAnswers summary : summaryList) {
+        	summary.incorrectAnswers.remove(event.getItemId());
+            summary.correctAnswers.remove(event.getItemId());
+    	}
     }
-
+ //  For Laslink Scoring
     public void onEvent(SubtestEndedEvent event) {
         Iterator iter = contentAreaAnswers.values().iterator();
         while (iter.hasNext()) {
