@@ -70,8 +70,10 @@ public class DefaultScoreRecordWriter implements ScoreRecordWriter {
             scoreRecord.putValue(Column.SOURCE_SCORE_TYPE, normsData.getSourceScoreType().getSQLValue());
         
         if(normsData.getDestScoreType().getTypeString().equalsIgnoreCase(ScoreType.PERFORMANCE_LEVEL.getTypeString())){
+        	Integer updatedSourceScore = new Integer(((Integer) sourceScore).intValue()+1);
+        
         	scoreRecord.putValue(Column.SOURCE_SCORE_VALUE, filter.filterScore(targetScore));
-        	scoreRecord.putValue(Column.DEST_SCORE_VALUE, sourceScore);
+        	scoreRecord.putValue(Column.DEST_SCORE_VALUE, updatedSourceScore);
         }
         	
         else {
