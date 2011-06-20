@@ -27,15 +27,24 @@ CREATE OR REPLACE PROCEDURE POPULATE_SCORE_LOOKUP_ITEM_SET(PRODUCT_ID IN NUMBER)
        AND SUBTEST_ISET.ACTIVATION_STATUS = 'AC';
 
   V_SCORE_LOOKUP_ID SCORE_LOOKUP.SCORE_LOOKUP_ID%TYPE;
-
+  V_PARAMETER VARCHAR2(20000);
 BEGIN
 
   FOR R1 IN CURSOR_GET_TD_INFO(PRODUCT_ID) LOOP
+  V_PARAMETER :='ITEM_SET_FORM:'||R1.ITEM_SET_FORM||'ITEM_SET_LEVEL:'||R1.ITEM_SET_LEVEL||'GRADE:'||R1.GRADE||'CONTENT_AREA_NAME:'||R1.CONTENT_AREA_NAME;
+   
     SELECT DISTINCT SCORE_LOOKUP_ID
       INTO V_SCORE_LOOKUP_ID
       FROM SCORE_LOOKUP
-     WHERE TEST_FORM = R1.ITEM_SET_FORM
-       AND TEST_LEVEL = R1.ITEM_SET_LEVEL
+     WHERE TEST_FORM = decode (R1.ITEM_SET_FORM,'Español','S',R1.ITEM_SET_FORM)
+       AND TEST_LEVEL = decode(upper(R1.ITEM_SET_LEVEL),
+                              'K',  '1',
+                              '1',  '1',
+                              '2-3','2',
+                              '4-5','3',
+                              '6-8','4',
+                              '9-12','5',
+                              R1.ITEM_SET_LEVEL)
        AND GRADE = nvl(R1.GRADE,
                        decode(upper(R1.ITEM_SET_LEVEL),
                               'K',  '1',
@@ -72,8 +81,8 @@ EXCEPTION
   WHEN OTHERS THEN
     ROLLBACK;
     raise_application_error(-20001,
-                            'An error was encountered - ' || SQLCODE ||
-                            ' -ERROR- ' || SQLERRM);
+                            'An error was encountered - PARAMETER ['|| V_PARAMETER||'] ' || SQLCODE ||
+                            ' -ERROR- ' || SQLERRM || 'PARAMETER');
   
 END POPULATE_SCORE_LOOKUP_ITEM_SET;
 /
