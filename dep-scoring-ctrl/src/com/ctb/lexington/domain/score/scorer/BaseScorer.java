@@ -338,8 +338,13 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
             details.setPointsObtained(new Long(details.getPointsObtained().intValue() + event.getPointsObtained()));
         }
         details.setPointsPossible(new Long(event.getPointsPossible()));
-                     
-        details.calculatePercentObtained();
+        
+        // Added for Laslink Product
+        String productType = getResultHolder().getAdminData().getAssessmentType();
+        if(productType.equals("LL") || productType.equals("ll"))
+        	details.calculatePercentObtainedForFirstDecimal();
+        else
+        	details.calculatePercentObtained();
         details.setSubtestId(event.getSubtestId());
     }
 
@@ -363,7 +368,12 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         } else {
             factDetails.setPointsPossible(new Long(event.getPointsPossible()));
         }
-        factDetails.calculatePercentObtained();
+     // Added for Laslink Product
+        String productType = getResultHolder().getAdminData().getAssessmentType();
+        if(productType.equals("LL") || productType.equals("ll"))
+        	factDetails.calculatePercentObtainedForFirstDecimal();
+        else
+        	factDetails.calculatePercentObtained();
         
     }
 

@@ -8,7 +8,7 @@ import com.ctb.lexington.domain.teststructure.PerformanceLevel;
 public class SubtestContentAreaCompositeAndDerivedScore {
 	private  int pointsObtained;
     private  int pointsAttempted;
-    private  int percentObtained;
+    private  float percentObtained;
     private  int pointsPossible;
     private  int proficencyLevelCode;
     private  String proficencyLevelDescription;
@@ -66,13 +66,13 @@ public class SubtestContentAreaCompositeAndDerivedScore {
 	/**
 	 * @return the percentObtained
 	 */
-	public int getPercentObtained() {
+	public float getPercentObtained() {
 		return percentObtained;
 	}
 	/**
 	 * @param percentObtained the percentObtained to set
 	 */
-	public void setPercentObtained(int percentObtained) {
+	public void setPercentObtained(float percentObtained) {
 		this.percentObtained = percentObtained;
 	}
 	/**

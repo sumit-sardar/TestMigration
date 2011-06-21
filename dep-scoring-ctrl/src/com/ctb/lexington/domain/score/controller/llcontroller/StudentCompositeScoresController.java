@@ -44,21 +44,18 @@ public class StudentCompositeScoresController {
 	            ArrayList facts = new ArrayList();
 	            for(int i=0;i<composites.length;i++) {
 	               StsTotalStudentScoreDetail total = totalData.get(composites[i].getCompositeName());
-	              // && ("T".equals(total.getValidScore()) || "Y".equals(total.getValidScore())|| "F".equals(total.getValidScore()) || "N".equals(total.getValidScore()))
-	               if(total != null )  {
+	               if(total != null  && ("T".equals(total.getValidScore()) || "Y".equals(total.getValidScore())))  {
 	            	   IrsLLCompositeFactData newFact = new IrsLLCompositeFactData();
 	                   newFact.setAssessmentid(context.getAssessmentId());
 	                   newFact.setCompositeid(composites[i].getCompositeId());
 	                   newFact.setCurrentResultid(context.getCurrentResultId());
 	                   newFact.setGradeid(context.getGradeId());
-	                  // newFact.setNormalCurveEquivalent((total.getNormalCurveEquivalent()==null)?null:new Long(total.getNormalCurveEquivalent().longValue()));
 	                   newFact.setNrsLevelid(new Long(0));
 	                   newFact.setOrgNodeid(context.getOrgNodeId());
 	                   newFact.setPointsAttempted(total.getPointsAttempted());
 	                   newFact.setPointsObtained(total.getPointsObtained());
-	                   newFact.setPointsPossible(composites[i].getCompositePointsPossible());
+	                   newFact.setPointsPossible(total.getPointsPossible());
 	                   newFact.setProgramid(context.getProgramId());
-	                   //newFact.setRecLevelid((total.getRecommendedLevelId() == null)?new Long(6):total.getRecommendedLevelId());
 	                   newFact.setScaleScore((total.getScaleScore()==null)?null:new Long(total.getScaleScore().longValue()));
 	                   newFact.setProficencyLevel((total.getProficencyLevel()==null)?null:new Long(total.getProficencyLevel().longValue()));
 	                   newFact.setNormalCurveEquivalent((total.getNormalCurveEquivalent()==null)?null:new Long(total.getNormalCurveEquivalent().longValue()));

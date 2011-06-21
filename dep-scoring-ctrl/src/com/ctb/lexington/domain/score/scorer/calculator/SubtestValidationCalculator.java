@@ -30,7 +30,8 @@ import com.ctb.lexington.exception.CTBSystemException;
  * </ul>
  * <p>
  * These rules apply <strong>only </strong> for online tests, not for key entry or scan score, and
- * they apply <strong>only </strong> to <em>SR</em> items.
+ * they apply <strong>only </strong> to <em>SR</em> items. But after introduction of laslink product, it is 
+ * also done for CR items.
  * </p>
  * 
  * @todo Need to check capture method since key entry isn't restricted the way online is
@@ -117,16 +118,20 @@ public class SubtestValidationCalculator extends Calculator {
 
     private boolean isValid() {
         final StudentItemScoreData studentData = scorer.getResultHolder().getStudentItemScoreData();
-        
+        //Added for Laslink Product
+        String productType = scorer.getResultHolder().getAdminData().getAssessmentType();
+        if(productType.equals("LL") || productType.equals("ll")) {
+        	return true;
+        }
         int attemptedItems = 0;
         int correctAnswers = 0;
 
         for (Iterator iter = this.items.iterator(); iter.hasNext();) {
             final ItemVO item = (ItemVO) iter.next();
 
-          /*  if (!isItemToCheck(item))
+            if (!isItemToCheck(item))
                 continue;
-           */
+           
             final String itemId = item.getItemId();
             try{
             List<Objective> primaryList = subtestObjectives.getPrimaryReportingLevelObjective(itemId);

@@ -41,4 +41,26 @@ public final class ScorerHelper {
 
         return sumAsInt;
     }
+    
+    // Added for LasLink Product
+    /**
+     * Calculates the ratio of <var>count</var> to <var>total</var> as an
+     * integral percentage (quotient), the framtional portion (remainder) is
+     * discarded.
+     *
+     * @param count the numerator
+     * @param total the denominator
+     *
+     * @return the percentage ratio
+     */
+    public static float calculatePercentForFirstDecimal(int count, final int total, final int roundTo) {
+        // NB -- Must cast "count * 100" to float to ensure proper input for
+        // round, else the result is too low for the boundary case of XX.5
+        int p = (int)Math.pow(10,roundTo);
+        count = count * p;
+        float tmp = Math.round((count * 100) / total);
+        return tmp/p;
+
+    }
+    
 }

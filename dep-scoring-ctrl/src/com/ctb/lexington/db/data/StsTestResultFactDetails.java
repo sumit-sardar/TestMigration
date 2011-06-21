@@ -103,6 +103,7 @@ public class StsTestResultFactDetails implements Persistent, ValidatedScoreRecor
     private Long pointsPossible;
     private Long pointsObtained;
     private Long percentObtained;
+    private Float decimalPercentObtained; //for laslink scoring to store percent obtained in decimal form
     private Long pointsAttempted;
     private String itemSetLevel;
     private BigDecimal nationalPercentile;
@@ -326,6 +327,12 @@ public class StsTestResultFactDetails implements Persistent, ValidatedScoreRecor
         setPercentObtained(new Long(ScorerHelper.calculatePercentage(
                 getPointsObtained().intValue(),
                 pointsPossible.intValue())));
+    }
+    
+    public void calculatePercentObtainedForFirstDecimal() {
+        setDecimalPercentObtained(new Float(ScorerHelper.calculatePercentForFirstDecimal(
+                getPointsObtained().intValue(),
+                pointsPossible.intValue(),1)));
     }
 
     public BigDecimal getScaleScore() {
@@ -950,5 +957,19 @@ public class StsTestResultFactDetails implements Persistent, ValidatedScoreRecor
 	 */
 	public void setContentAreaName(String contentAreaName) {
 		this.contentAreaName = contentAreaName;
+	}
+
+	/**
+	 * @return the decimalPercentObtained
+	 */
+	public Float getDecimalPercentObtained() {
+		return decimalPercentObtained;
+	}
+
+	/**
+	 * @param decimalPercentObtained the decimalPercentObtained to set
+	 */
+	public void setDecimalPercentObtained(Float decimalPercentObtained) {
+		this.decimalPercentObtained = decimalPercentObtained;
 	}
 }

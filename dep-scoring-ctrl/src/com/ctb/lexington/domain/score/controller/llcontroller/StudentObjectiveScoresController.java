@@ -64,7 +64,7 @@ public class StudentObjectiveScoresController {
         for(int i=0;i<prims.length;i++) {
             PrimaryObjective prim = currData.getPrimObjById(prims[i].getPrimaryObjectiveId());
             StudentScoreSummaryDetails details = studentScoreSummaryData.get(prims[i].getPrimaryObjectiveId());
-            if(details != null /*&& !"F".equals(details.getAtsArchive())*/) {
+            if(details != null && !"F".equals(details.getAtsArchive())) {
             	IrsLLPrimObjFactData primObjFact = new IrsLLPrimObjFactData();
                 primObjFact.setPrimObjid(new Long(Long.parseLong(String.valueOf(prims[i].getProductId()) + String.valueOf(prims[i].getPrimaryObjectiveId()))));
                 primObjFact.setPointsObtained(details.getPointsObtained());
@@ -79,7 +79,7 @@ public class StudentObjectiveScoresController {
                                                     "Not Mastered".equals(details.getMasteryLevel())?1:
                                                     "Partially Mastered".equals(details.getMasteryLevel())?2:
                                                     "Mastered".equals(details.getMasteryLevel())?3:4 ));
-                primObjFact.setPercentObtained(details.getPercentObtained());
+                primObjFact.setPercentObtained(details.getDecimalPercentObtained());
                 primObjFact.setPointsAttempted(details.getPointsAttempted());
                     
                 // dim ids from context
@@ -134,7 +134,7 @@ public class StudentObjectiveScoresController {
         for(int i=0;i<secs.length;i++) {
             SecondaryObjective sec = currData.getSecObjById(secs[i].getSecondaryObjectiveId());
             StudentScoreSummaryDetails details = studentScoreSummaryData.get(secs[i].getSecondaryObjectiveId());
-            if(details != null /*&& !"F".equals(details.getAtsArchive())*/) {
+            if(details != null && !"F".equals(details.getAtsArchive())) {
             	IrsLLSecObjFactData secObjFact = new IrsLLSecObjFactData();
                 secObjFact.setSecObjid(new Long(Long.parseLong(String.valueOf(secs[i].getProductId()) + String.valueOf(secs[i].getSecondaryObjectiveId()))));
                 secObjFact.setPointsObtained(details.getPointsObtained());
@@ -143,7 +143,7 @@ public class StudentObjectiveScoresController {
                                                     "Not Mastered".equals(details.getMasteryLevel())?1:
                                                     "Partially Mastered".equals(details.getMasteryLevel())?2:
                                                     "Mastered".equals(details.getMasteryLevel())?3:4 ));
-                secObjFact.setPercentObtained(details.getPercentObtained());
+                secObjFact.setPercentObtained(details.getDecimalPercentObtained());
                 secObjFact.setPointsAttempted(details.getPointsAttempted());
 
                 // dim ids from context

@@ -43,7 +43,7 @@ public class IrsLLContentAreaFactData implements Persistent{
     private Date testCompletionTimestamp;
     private Long assessmentid;
     private Long pointsAttempted;
-    private Long percentObtained;
+    private Float percentObtained;
     private Long pointsObtained;
     private Long pointsPossible;
     private Long subjectid;
@@ -307,17 +307,23 @@ public class IrsLLContentAreaFactData implements Persistent{
         this.pointsAttempted = pointsAttempted;
     }
 
-    public Long getPercentObtained() {
-        return percentObtained;
-    }
-
-    public void setPercentObtained(Long percentObtained) {
-        this.percentObtained = percentObtained;
-    }
-
     
 
-    public Long getPointsObtained() {
+    /**
+	 * @return the percentObtained
+	 */
+	public Float getPercentObtained() {
+		return percentObtained;
+	}
+
+	/**
+	 * @param percentObtained the percentObtained to set
+	 */
+	public void setPercentObtained(Float percentObtained) {
+		this.percentObtained = percentObtained;
+	}
+
+	public Long getPointsObtained() {
         return pointsObtained;
     }
 

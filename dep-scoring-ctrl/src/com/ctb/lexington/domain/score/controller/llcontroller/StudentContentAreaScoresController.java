@@ -54,8 +54,8 @@ public class StudentContentAreaScoresController {
         ArrayList facts = new ArrayList();
             for(int i=0;i<contentAreas.length;i++) {
                StsTestResultFactDetails fact = factData.get(contentAreas[i].getContentAreaName());
-               if(fact != null /*&&
-                    ("T".equals(fact.getValidScore()) || "Y".equals(fact.getValidScore()))*/) {
+               if(fact != null &&
+                    ("T".equals(fact.getValidScore()) || "Y".equals(fact.getValidScore()))) {
                    StudentSubtestScoresDetails subtest = subtestData.get(contentAreas[i].getSubtestId());
                    IrsLLContentAreaFactData newFact = new IrsLLContentAreaFactData();
                    newFact.setAssessmentid(context.getAssessmentId());
@@ -78,7 +78,7 @@ public class StudentContentAreaScoresController {
                    newFact.setNormalCurveEquivalent((fact.getNormalCurveEquivalent()==null)?null:new Long(fact.getNormalCurveEquivalent().longValue()));
                    newFact.setOrgNodeid(context.getOrgNodeId());
                    newFact.setPercentageMastery((fact.getPercentObjectiveMastery()==null)?null:fact.getPercentObjectiveMastery());
-                   newFact.setPercentObtained(fact.getPercentObtained());
+                   newFact.setPercentObtained(fact.getDecimalPercentObtained());
                    newFact.setPointsAttempted(fact.getPointsAttempted());
                    newFact.setPointsObtained(fact.getPointsObtained());
                    newFact.setPointsPossible(fact.getPointsPossible());

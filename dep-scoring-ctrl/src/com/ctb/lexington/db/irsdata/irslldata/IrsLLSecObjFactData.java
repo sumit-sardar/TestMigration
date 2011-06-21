@@ -34,7 +34,7 @@ public class IrsLLSecObjFactData implements Persistent{
     private Long attr9id;
     private Long attr8id;
     private Long pointsAttempted;
-    private Long percentObtained;
+    private Float percentObtained;
     private Long masteryLevelid;
     private Date testStartTimestamp;
     private Date testCompletionTimestamp;
@@ -245,15 +245,21 @@ public class IrsLLSecObjFactData implements Persistent{
         this.pointsAttempted = pointsAttempted;
     }
 
-    public Long getPercentObtained() {
-        return percentObtained;
-    }
+    /**
+	 * @return the percentObtained
+	 */
+	public Float getPercentObtained() {
+		return percentObtained;
+	}
 
-    public void setPercentObtained(Long percentObtained) {
-        this.percentObtained = percentObtained;
-    }
+	/**
+	 * @param percentObtained the percentObtained to set
+	 */
+	public void setPercentObtained(Float percentObtained) {
+		this.percentObtained = percentObtained;
+	}
 
-    public Long getMasteryLevelid() {
+	public Long getMasteryLevelid() {
         return masteryLevelid;
     }
 

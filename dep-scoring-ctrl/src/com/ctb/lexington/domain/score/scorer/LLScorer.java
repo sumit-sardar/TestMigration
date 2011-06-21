@@ -111,7 +111,7 @@ public class LLScorer extends STScorer {
              factDetails.setPointsPossible( new Long(subtestContentAreaCompositeAndDerivedScore.getPointsPossible()));
              factDetails.setPerformanceLevelCode(String.valueOf(subtestContentAreaCompositeAndDerivedScore.getProficencyLevelCode()));
              factDetails.setPerformanceLevel(subtestContentAreaCompositeAndDerivedScore.getProficencyLevelDescription());
-             factDetails.setPercentObtained(new Long(subtestContentAreaCompositeAndDerivedScore.getPercentObtained()));
+             factDetails.setDecimalPercentObtained(new Float(subtestContentAreaCompositeAndDerivedScore.getPercentObtained()));
     	 }
         
 

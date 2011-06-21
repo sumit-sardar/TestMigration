@@ -18,6 +18,7 @@ public class StudentScoreSummaryDetails implements Persistent, Comparable {
     private Long pointsPossible;
     private Long pointsObtained;
     private Long percentObtained;
+    private Float decimalPercentObtained;//for laslink scoring to store percent obtained in decimal form
     private Long pointsAttempted;
     private Long numOfItems;
     private String masteryLevel;
@@ -31,6 +32,12 @@ public class StudentScoreSummaryDetails implements Persistent, Comparable {
         setPercentObtained(new Long(ScorerHelper.calculatePercentage(
                 getPointsObtained().intValue(),
                 pointsPossible.intValue())));
+    }
+    
+    public void calculatePercentObtainedForFirstDecimal() {
+        setDecimalPercentObtained(new Float(ScorerHelper.calculatePercentForFirstDecimal(
+                getPointsObtained().intValue(),
+                pointsPossible.intValue(),1)));
     }
 	
 	/**
@@ -223,4 +230,20 @@ public class StudentScoreSummaryDetails implements Persistent, Comparable {
 	public void setATSCurriculumDimId(Long curriculumDimId) {
 		ATSCurriculumDimId = curriculumDimId;
 	}
+
+	/**
+	 * @return the decimalPercentObtained
+	 */
+	public Float getDecimalPercentObtained() {
+		return decimalPercentObtained;
+	}
+
+	/**
+	 * @param decimalPercentObtained the decimalPercentObtained to set
+	 */
+	public void setDecimalPercentObtained(Float decimalPercentObtained) {
+		this.decimalPercentObtained = decimalPercentObtained;
+	}
+
+	
 }
