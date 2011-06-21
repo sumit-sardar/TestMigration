@@ -51,6 +51,13 @@ public class ScoreByStudentController extends PageFlowController {
 	@Control()
 	private com.ctb.control.crscoring.TestScoring testScoring;
 
+
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
+    
 	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.CRScoring scoring;
 	private static final String ACTION_DEFAULT = "defaultAction";
@@ -226,6 +233,10 @@ public class ScoreByStudentController extends PageFlowController {
 		form.setItemMaxPage(sid.getFilteredPages());
 		try {
 			ts = scoring.getTestAdminDetails(form.getTestAdminId());
+			// start- added for  Process Scores   button changes
+			String completionStatus = scoring.getScoringStatus(form.getRosterId(),form.getItemSetIdTC());
+   		    this.getRequest().setAttribute("completionStatus", completionStatus);
+			// end- added for  Process Scores  button changes
 			form.setTestAccessCode(ts.getAccessCode());
 			form.setTestSessionName(ts.getTestAdminName());
 		} catch (Exception e) {
@@ -682,7 +693,21 @@ public class ScoreByStudentController extends PageFlowController {
 
 		return null;
 	}
+	
+// start-added for  Process Scores  button changes
+ 	@Jpf.Action()
+public Forward rescoreStudent(ScoreByStudentForm form) {
+	 Integer testRosterId = form.getRosterId();
 
+        try {    
+            this.testSessionStatus.rescoreStudent(testRosterId);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }                
+	return null;
+}
+// end- added for  Process Scores  button changes
 	public static class ScoreByStudentForm extends SanitizedFormData {
 
 		private static final long serialVersionUID = 1L;

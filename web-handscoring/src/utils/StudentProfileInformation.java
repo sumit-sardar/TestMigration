@@ -20,6 +20,7 @@ public class StudentProfileInformation extends SanitizedFormField
     static final long serialVersionUID = 1L;
     
     private Integer studentId;
+    private String studentExported;
     private String userName;
     private String firstName;
     private String middleName;
@@ -51,6 +52,7 @@ public class StudentProfileInformation extends SanitizedFormField
 
     public StudentProfileInformation() {
         this.studentId = new Integer(0);
+        this.studentExported="";
         this.userName = "";
         this.firstName = "";
         this.middleName = "";
@@ -575,5 +577,21 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setItemCountCRAI(Integer itemCountCRAI) {
 		this.itemCountCRAI = itemCountCRAI;
+	}
+
+
+	/**
+	 * @return the studentExported
+	 */
+	public String getStudentExported() {
+		return studentExported;
+	}
+
+
+	/**
+	 * @param studentExported the studentExported to set
+	 */
+	public void setStudentExported(String studentExported) {
+		this.studentExported = studentExported;
 	}
 } 

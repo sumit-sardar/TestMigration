@@ -387,7 +387,9 @@ public interface TestSessionStatus
      */
     
     void toggleSubtestValidationStatus(java.lang.String userName, java.lang.Integer testRosterId, java.lang.Integer[] itemSetIds, java.lang.String status) throws com.ctb.exception.CTBBusinessException;
-
+    
+    //added for Process Scores  button 
+    void rescoreStudent(java.lang.Integer testRosterId)throws com.ctb.exception.CTBBusinessException;
     /**
      * Toggle the customer flag status for the specified test roster.
      * @param testRosterId - identifies the test roster

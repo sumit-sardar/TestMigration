@@ -1034,8 +1034,26 @@ public class TestSessionStatusImpl implements TestSessionStatus
             throw rde;  
         }
     }
+    //added for  Process Scores  button
+    public void rescoreStudent(Integer testRosterId) throws CTBBusinessException{
+    	
+    	 try {
+    		 // new Weblogic 10.3 JMS call
+             invokeScoring(testRosterId);
+    	 }catch (SQLException se) {
+             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl: RosterNot found : " + se.getMessage());
+             rde.setStackTrace(se.getStackTrace());
+             throw rde;  
+         }
+         catch (Exception se) {
+             RosterDataNotFoundException rde = new RosterDataNotFoundException("TestSessionStatusImpl:  RosterNot found : " + se.getMessage());
+             rde.setStackTrace(se.getStackTrace());
+             throw rde;  
+         }
+    }
     
-    private void invokeScoring(Integer testRosterId) throws Exception 
+    
+         private void invokeScoring(Integer testRosterId) throws Exception 
     {
 		getResourceValue();
 	    InitialContext ic = QueueSend.getInitialContext(jndiFactory,jmsURL,jmsPrincipal,jmsCredentials);

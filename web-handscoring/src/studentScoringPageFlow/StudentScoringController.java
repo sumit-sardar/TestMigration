@@ -65,7 +65,15 @@ public class StudentScoringController extends PageFlowController {
      */
     @Control()
     private com.ctb.control.crscoring.TestScoring testScoring;
-        
+     
+
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
+    
+    
     @org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.CRScoring scoring;
 	
@@ -267,11 +275,14 @@ public class StudentScoringController extends PageFlowController {
          form.setItemMaxPage(sid.getFilteredPages());
          try{
     		 TestSession testSession = scoring.getTestAdminDetails(form.getTestAdminId());
+    		 // start- added for  Process Scores  button changes
+    		 String completionStatus = scoring.getScoringStatus(form.getRosterId(),form.getItemSetIdTC());
     		 this.getRequest().setAttribute("testSessionName", testSession.getTestAdminName());
+    		 this.getRequest().setAttribute("completionStatus", completionStatus);
     	}catch(Exception e){
     			 e.printStackTrace();
     	}
-        
+              // end- added for  Process Scores  button changes
          this.getRequest().setAttribute("itemList", itemList);
          this.getRequest().setAttribute("itemPagerSummary", itemPagerSummary);
          this.getRequest().setAttribute("accessCode", form.getAccessCode());
@@ -999,8 +1010,21 @@ public class StudentScoringController extends PageFlowController {
 
 		return msData;
 	}
-	
-	
+		
+	// start- added for  Process Scores  button changes
+	 	@Jpf.Action()
+	public Forward rescoreStudent(StudentScoringForm form) {
+		 Integer testRosterId = form.getRosterId();
+
+	        try {    
+	            this.testSessionStatus.rescoreStudent(testRosterId);
+	        }
+	        catch (Exception e) {
+	            e.printStackTrace();
+	        }                
+		return null;
+	}
+	// end- added for  Process Scores  button changes
 	public static class StudentScoringForm extends SanitizedFormData
 	{
 		private Integer selectedStudentId;

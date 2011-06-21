@@ -184,6 +184,19 @@ function stopAudio(){
 			</table>
 			<br />
 			<table class="sortable" width="100%">
+			<tr class="sortable">
+            <td class="sortableControls" colspan="9">
+                <table class="tableFilter">
+                <tr class="tableFilter">
+                    <td class="tableFilter">  
+                           
+                        <netui:button type="submit" tagId="rescoreStudent" value="${bundle.widgets['button.rescoreStudent']}" action="rescoreStudent" disabled="${!requestScope.completionStatus}"/>
+                                                   
+                    </td>
+                </tr>
+                </table>
+            </td>
+        </tr>
 			<% int rowId = 0; %>
 				<netui-data:repeater dataSource="requestScope.itemList">
 					<netui-data:repeaterHeader>

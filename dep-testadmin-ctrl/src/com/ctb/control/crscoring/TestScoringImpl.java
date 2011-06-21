@@ -82,10 +82,10 @@ public class TestScoringImpl implements TestScoring {
 				pageSize = new Integer(page.getPageSize());
 			}
 			RosterElement[] rosterElements = getAllStudentForTestSession(testAdminID, userName);
-			//Change for HandScoring: score by student
-			for (RosterElement rosterElement: rosterElements) {
+			//Change for HandScoring: score by student to avoid multiple database hit for checking student status
+			/*for (RosterElement rosterElement: rosterElements) {
 				rosterElement.setScoringStatus(getScoringStatus(rosterElement.getTestRosterId(),rosterElement.getItemSetIdTC()));
-            }
+            }*/
 			rosterElementData.setRosterElements(rosterElements, pageSize);
 			if (filter != null)
 				rosterElementData.applyFiltering(filter);
