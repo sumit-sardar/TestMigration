@@ -345,7 +345,7 @@ where
 delete from program where customer_id = cust_id and product_id = 7000;
 
 Insert into PROGRAM
-   (CUSTOMER_ID, PRODUCT_ID, PROGRAM_ID, PROGRAM_NAME, PROGRAM_START_DATE, PROGRAM_END_DATE, NORMS_GROUP, NORMS_sYEAR, ACTIVATION_STATUS, CREATED_DATE_TIME, UPDATED_DATE_TIME)
+   (CUSTOMER_ID, PRODUCT_ID, PROGRAM_ID, PROGRAM_NAME, PROGRAM_START_DATE, PROGRAM_END_DATE, NORMS_GROUP, NORMS_YEAR, ACTIVATION_STATUS, CREATED_DATE_TIME, UPDATED_DATE_TIME)
  Values
    (cust_id, 7000, cust_id, (select customer_name from customer where customer_id = cust_id) || ' Program', 
     sysdate, sysdate + 365, NULL, '2011', 'AC', 
