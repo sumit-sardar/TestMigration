@@ -32,3 +32,9 @@ ALTER TABLE student_accomodation ADD music_file_id VARCHAR2(200)
 /
 ALTER TABLE student_accomodation ADD masking_ruler VARCHAR2(2)
 /
+
+
+/* coloum 'student exported 'added for process scores 
+
+ALTER TABLE test_roster ADD student_exported VARCHAR2(1)
+/
