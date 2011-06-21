@@ -544,9 +544,17 @@ public class ManageStudentController extends PageFlowController
 		if(scr.length > 0) {
 			if(scr[0].getRecommendedProductId() != null && !scr[0].getRecommendedProductId().equals("")
 					&& scr[0].getProductId() != null && !scr[0].getProductId().equals("")) {
-				this.recommendedProductId = scr[0].getRecommendedProductId();
-				this.productId = scr[0].getProductId();
+				 // start -change for form reccomodation if non tabe product
+				  if(scr[0].getProductId() == 4010 || scr[0].getProductId() == 4009 || scr[0].getProductId() == 4011 || scr[0].getProductId() == 4012){
+							this.recommendedProductId = scr[0].getRecommendedProductId();
+				            this.productId = scr[0].getProductId();
+				   
+				}
+				  else{
+					  this.recommendedProduct = "NONE"; 
+				  }
 			}
+			 // end -change for form reccomodation if non tabe product
 		}
 		else {
 			this.recommendedProduct = "NONE";
