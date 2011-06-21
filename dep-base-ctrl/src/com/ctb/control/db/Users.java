@@ -149,7 +149,7 @@ public interface Users extends JdbcControl
      *      array-max-length="all"
      */
     @JdbcControl.SQL(statement = "select distinct  users.user_id as userId,  users.user_name as userName,  users.display_user_name as displayUserName,  users.password,  users.first_name as firstName,  users.middle_name as middleName,  users.last_name as lastName,  users.preferred_name as preferredName,  users.prefix,  users.suffix,  users.time_zone as timeZone,  users.email,  users.password_hint_question_id as passwordHintQuestionId,  users.password_expiration_date as passwordExpirationDate,  users.password_hint_answer as passwordHintAnswer,  users.address_id as addressId,  users.active_session as activeSession,  users.reset_password as resetPassword,  users.last_login_date_time as lastLoginDateTime,  users.ext_pin1 as extPin1,  users.ext_pin2 as extPin2,  users.ext_pin3 as extPin3,  users.ext_school_id as extSchoolId,  users.created_by as createdBy,  users.created_date_time as CreatedDateTime,  users.updated_by as updatedBy,  users.updated_date_time as updatedDateTime,  users.activation_status as activationStatus,  users.data_import_history_id as dataImportHistoryId,  users.display_new_message as displayNewMessage from  user_role urole,  users where  urole.user_id = users.user_id  and urole.org_node_id = {orgNodeId}  and users.activation_status = 'AC'  and urole.activation_status = 'AC'",
-                     arrayMaxLength = 100000)
+                     arrayMaxLength = 0, fetchSize=500)
     User [] getUsersForOrgNode(Integer orgNodeId) throws SQLException;
 
     /**
