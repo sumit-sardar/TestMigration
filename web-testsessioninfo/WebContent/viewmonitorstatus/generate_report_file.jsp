@@ -62,7 +62,7 @@ Integer selectedRosterIds = (Integer)request.getAttribute("selectedRosterIds");
 
 			<tr class="transparent">
 			    <td class="transparent">
-			        <netui:content value="Total Selected Students:"/>: 
+			        <netui:content value="Total Selected Students"/>: 
 			    </td>
 			    <td class="transparent">    
 			        <div class="formValue"><span class="formValue" id="selectedRosterIds"><%= selectedRosterIds %></span></div>
@@ -77,7 +77,7 @@ Integer selectedRosterIds = (Integer)request.getAttribute("selectedRosterIds");
 		<table class="transparent">
 		<tr class="transparent">
 			<td class="transparent">
-				*Generated File Name:
+				*Report File Name:
 			</td>
 			<td class="transparent">
                 <netui:textBox tagId="fileName" dataSource="pageFlow.fileName"  style="width:200px;" />
@@ -86,7 +86,7 @@ Integer selectedRosterIds = (Integer)request.getAttribute("selectedRosterIds");
 
 		<tr class="transparent">
 			<td class="transparent">
-				*Generated File Type:
+				*Report File Type:
 			</td>
 			<td class="transparent">
         <netui:select dataSource="pageFlow.fileType" optionsDataSource="${pageFlow.fileTypeOptions}" style="width:200px;" />
@@ -205,7 +205,7 @@ Integer selectedRosterIds = (Integer)request.getAttribute("selectedRosterIds");
 <p>
 <br>
 <netui:button type="submit" value="${bundle.web['common.button.home']}" action="redirect_to_homepage"/>&nbsp;           
-<netui:button styleClass="button" tagId="generateReportFile" value="Generate Report" type="button" onClick="return validateInfo();" disabled="${requestScope.disableGenerateReportFileButton}" />&nbsp;                                 
+<netui:button styleClass="button" tagId="generateReportFile" value="View Report" type="button" onClick="return validateInfo();" disabled="${requestScope.disableGenerateReportFileButton}" />&nbsp;                                 
 </p>
 
 </netui:form>

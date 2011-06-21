@@ -415,7 +415,11 @@ public class ViewMonitorStatusController extends PageFlowController
         	            this.userName = principal.toString();  
         	}
         	
-        	Integer rosterId = null;
+    		System.out.println("fileName = " + this.fileName);
+    		System.out.println("fileType = " + this.fileType);
+    		System.out.println("userEmail = " + this.userEmail);
+
+    		Integer rosterId = null;
         	for (int i=0 ; i<this.selectedRosterIds.size() ; i++) {
         		rosterId = (Integer)this.selectedRosterIds.get(i);
         		System.out.println("rosterId = " + rosterId.toString());
