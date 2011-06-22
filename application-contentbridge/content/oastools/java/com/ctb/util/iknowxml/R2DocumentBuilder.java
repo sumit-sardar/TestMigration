@@ -3,6 +3,7 @@ package com.ctb.util.iknowxml;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
 
 import org.apache.commons.lang.*;
 import org.jdom.*;
@@ -51,8 +52,10 @@ public class R2DocumentBuilder extends SAXBuilder {
      */
     public Document build(InputStream inputStream) throws JDOMException, IOException {
 
-        // Ensure encoding is read as UTF-8
-        InputStreamReader isr = new InputStreamReader(inputStream, "ISO-8859-1");
+    	System.setProperty("file.encoding", "ISO-8859-1");
+        // Ensure encoding is read as UTF-8: 
+        //encoding UTF-8 is removed to support spanish character
+        InputStreamReader isr = new InputStreamReader(inputStream);
 
         // do pre-parse munging
         InputStream is = null;
