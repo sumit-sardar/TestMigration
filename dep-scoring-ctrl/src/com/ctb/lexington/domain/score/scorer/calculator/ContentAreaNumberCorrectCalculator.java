@@ -37,13 +37,11 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
     protected final Map contentAreaAnswers = new SafeHashMap(String.class, ContentAreaAnswers.class);
     protected Map itemsByContentArea = new SafeHashMap(String.class, ItemContentArea.class);
     private SubtestItemCollectionEvent sicEvent;
-    private SubtestObjectiveCollectionEvent subtestObjectives = null;
+    private Set contenAreaSet = new HashSet();
 
     public ContentAreaNumberCorrectCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
-        channel.subscribe(this, SubtestObjectiveCollectionEvent.class);
         channel.subscribe(this, SubtestContentAreaItemCollectionEvent.class);
-       // mustPrecede(SubtestObjectiveCollectionEvent.class, SubtestContentAreaItemCollectionEvent.class);
         //TODO: Uncomment this when we can handle multiple predecessors for an event
         //mustPrecede(SubtestContentAreaItemCollectionEvent.class, ResponseReceivedEvent.class);
         channel.subscribe(this, CorrectResponseEvent.class);
@@ -56,9 +54,6 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
         mustPrecede(SubtestContentAreaItemCollectionEvent.class, SubtestEndedEvent.class);
     }
     
-    public void onEvent(SubtestObjectiveCollectionEvent event) {
-        this.subtestObjectives = event;
-    }
     
     public void onEvent(SubtestItemCollectionEvent event) {
         super.onEvent(event);
@@ -67,16 +62,18 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
     }
 
     public void onEvent(SubtestContentAreaItemCollectionEvent event) {
+    	
         itemSetId = event.getItemSetId();
         itemsByContentArea = event.getItemContentAreasByItemId();
-
+        contenAreaSet = new HashSet();
         for (final Iterator it = itemsByContentArea.values().iterator(); it.hasNext();) {
             final ItemContentArea itemContentArea = (ItemContentArea) it.next();
             final ContentAreaAnswers currentAreaAnswers = getContentAreaAnswersByName(itemContentArea);
-
             currentAreaAnswers.incrementNumberOfItems();
             // NOTE: Assume all to be unattempted till we receive a response event
             currentAreaAnswers.unattemptedAnswers.add(itemContentArea.getItemId());
+            contenAreaSet.add(itemContentArea.getContentAreaName());
+
         }
     }
 
@@ -120,20 +117,18 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
     private List <ContentAreaAnswers> getSummaryForContentArea(ResponseEvent event) {
        // START For Laslink Scoring
        List <ContentAreaAnswers> contentAreaAnswersList =  new ArrayList() ;
-    	try{
-	    	List<Objective> primaryReportingLevelObjectiveList = subtestObjectives
-	        .getPrimaryReportingLevelObjective(event.getItemId());
-	    	for (Objective primaryReportingLevelObjective :primaryReportingLevelObjectiveList) {
-	    		final ItemContentArea itemContentArea = (ItemContentArea) itemsByContentArea.get(event
-	                .getItemId() + primaryReportingLevelObjective
-	                .getName());
-	    		contentAreaAnswersList.add( getContentAreaByName(itemContentArea.getContentAreaName()));
+    	Iterator itr = contenAreaSet.iterator();
+	    	while(itr.hasNext()) {
+	    		String contentArea = (String)itr.next();
+	    		System.out.println("contentArea==>"+contentArea);
+	    		 if(itemsByContentArea.containsKey(event.getItemId() + contentArea)){
+	    			 final ItemContentArea itemContentArea = (ItemContentArea) itemsByContentArea.get(event
+	    		                .getItemId() + contentArea);
+	    		    		contentAreaAnswersList.add( getContentAreaByName(itemContentArea.getContentAreaName()));
+	    	    }
+	    		
 	       
 	    	}
-    	} catch (CTBSystemException e){
-    		
-    	}
-    	
     	 return contentAreaAnswersList;
     	 // END For Laslink Scoring
     }

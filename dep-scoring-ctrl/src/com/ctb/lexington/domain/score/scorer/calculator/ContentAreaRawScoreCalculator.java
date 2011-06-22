@@ -2,9 +2,11 @@ package com.ctb.lexington.domain.score.scorer.calculator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.ctb.lexington.data.ItemContentArea;
 import com.ctb.lexington.domain.score.event.ContentAreaRawScoreEvent;
@@ -28,7 +30,7 @@ public class ContentAreaRawScoreCalculator extends Calculator {
     private final Map contentAreas = new SafeHashMap(String.class, Map.class);
     private final Map possibleMap = new SafeHashMap(String.class, Integer.class);
     private SubtestContentAreaItemCollectionEvent subtestContentArea = null;
-    private SubtestObjectiveCollectionEvent subtestObjectives = null;
+    private Set contenAreaSet = new HashSet();
     
     /**
      * Constructor for ContentAreaRawScoreCalculator.
@@ -38,25 +40,21 @@ public class ContentAreaRawScoreCalculator extends Calculator {
      */
     public ContentAreaRawScoreCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
-        channel.subscribe(this, SubtestObjectiveCollectionEvent.class);
         channel.subscribe(this, SubtestContentAreaItemCollectionEvent.class);
-        //mustPrecede(SubtestObjectiveCollectionEvent.class, SubtestContentAreaItemCollectionEvent.class);
         channel.subscribe(this, PointEvent.class);
         channel.subscribe(this, SubtestEndedEvent.class);
         mustPrecede(SubtestContentAreaItemCollectionEvent.class, PointEvent.class);
         mustPrecede(SubtestContentAreaItemCollectionEvent.class, SubtestEndedEvent.class);
     }
-    
-    public void onEvent(SubtestObjectiveCollectionEvent event) {
-        this.subtestObjectives = event;
-    }
+   
     
     public void onEvent(SubtestContentAreaItemCollectionEvent event) {
         subtestContentArea = event;
-
+        contenAreaSet = new HashSet();
         Iterator iter = event.getContentAreaNames().iterator();
         while (iter.hasNext()) {
             String contentAreaName = (String) iter.next();
+            contenAreaSet.add(contentAreaName);
             contentAreas.put(contentAreaName, new HashMap()); // nulls permitted as values
             Map itemContentAreaMap = event.getItemContentAreasByItemId();
             Iterator itemContentAreaIter = itemContentAreaMap.values().iterator();
@@ -122,17 +120,16 @@ public class ContentAreaRawScoreCalculator extends Calculator {
  //  For Laslink Scoring
     private List<String> getItemContentAreaFor(final PointEvent event) {
     	List <String> ContentAreaNameList =  new ArrayList() ;
-    	try{
-	    	List<Objective> primaryReportingLevelObjectiveList = subtestObjectives
-	        .getPrimaryReportingLevelObjective(event.getItemId());
-	    	for (Objective primaryReportingLevelObjective :primaryReportingLevelObjectiveList) {
+    	Iterator itr = contenAreaSet.iterator();
+	    	while(itr.hasNext()) {
+	    		String contentArea = (String)itr.next();
+	    		System.out.println("contentArea==>...."+contentArea);
+	    		 if(subtestContentArea.getItemContentAreasByItemId().containsKey(event.getItemId() + contentArea)){
 	    		 ContentAreaNameList.add( ((ItemContentArea) subtestContentArea.getItemContentAreasByItemId().get(
-	    	                event.getItemId()+ primaryReportingLevelObjective.getName())).getContentAreaName());
+	    	                event.getItemId()+ contentArea)).getContentAreaName());
+	    		 }
 	       
 	    	}
-    	} catch (CTBSystemException e){
-    		
-    	}
         return ContentAreaNameList;
     }
  //  For Laslink Scoring

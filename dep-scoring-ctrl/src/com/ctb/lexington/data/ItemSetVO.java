@@ -133,6 +133,10 @@ public class ItemSetVO implements Persistent, Serializable
     protected Integer originalCreatedBy = null;
     
     protected String recommendedLevel   = null;
+    
+    protected String validationStatus   = null;
+    protected String exemptions   = null;
+    protected String absent   = null;
 
     public ItemSetVO() { }
 
@@ -638,5 +642,29 @@ public class ItemSetVO implements Persistent, Serializable
     {
         return( isItemSetTypeCTBtest( itemSetType ));
     }
+
+	public String getValidationStatus() {
+		return validationStatus;
+	}
+
+	public void setValidationStatus(String validationStatus) {
+		this.validationStatus = validationStatus;
+	}
+
+	public String getExemptions() {
+		return exemptions;
+	}
+
+	public void setExemptions(String exemptions) {
+		this.exemptions = exemptions;
+	}
+
+	public String getAbsent() {
+		return absent;
+	}
+
+	public void setAbsent(String absent) {
+		this.absent = absent;
+	}
 
 }

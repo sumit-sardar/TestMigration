@@ -14,6 +14,7 @@ public class SubtestContentAreaCompositeAndDerivedScore {
     private  String proficencyLevelDescription;
     private  String contentAreaName;
     private  int scaleScore;
+    private  String validScore;
    
 	/**
 	 * @return the proficencyLevelCode
@@ -111,6 +112,18 @@ public class SubtestContentAreaCompositeAndDerivedScore {
 	 */
 	public void setScaleScore(int scaleScore) {
 		this.scaleScore = scaleScore;
+	}
+	/**
+	 * @return the validScore
+	 */
+	public String getValidScore() {
+		return validScore;
+	}
+	/**
+	 * @param validScore the validScore to set
+	 */
+	public void setValidScore(String validScore) {
+		this.validScore = validScore;
 	}
     
     

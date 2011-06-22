@@ -28,4 +28,17 @@
             and prod.product_id = adm.product_id
             AND (iset.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL')
     </select>
+    
+    <select id="findSubtestValidationByRosterIdAndItemSetId" parameterClass="com.ctb.lexington.data.StudentItemSetStatusRecord" resultClass="com.ctb.lexington.data.ItemSetVO">
+        SELECT
+            siss.VALIDATION_STATUS as validationStatus,
+            siss.EXEMPTIONS as exemptions,
+            siss.ABSENT as absent
+        FROM
+            STUDENT_ITEM_SET_STATUS siss
+        WHERE
+        	siss.item_set_id = #itemSetId:NUMERIC#
+            and siss.TEST_ROSTER_ID = #testRosterId:NUMERIC#
+    </select>
+    
 </sqlMap>

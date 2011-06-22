@@ -1,5 +1,6 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -9,6 +10,8 @@ import com.ctb.lexington.data.ItemVO;
 import com.ctb.lexington.db.data.StudentItemScoreData;
 import com.ctb.lexington.db.data.StudentItemScoreDetails;
 import com.ctb.lexington.db.data.CurriculumData.ContentArea;
+import com.ctb.lexington.db.mapper.StudentItemSetStatusMapper;
+import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.event.Objective;
 import com.ctb.lexington.domain.score.event.SubtestEndedEvent;
 import com.ctb.lexington.domain.score.event.SubtestEvent;
@@ -51,6 +54,10 @@ public class SubtestValidationCalculator extends Calculator {
     private Collection items = null;
     private String subtestName = null;
     private SubtestObjectiveCollectionEvent subtestObjectives = null;
+    private Long testRosterId;
+    private Integer ItemSetId;
+    
+    
     /**
      * Constructs a new <code>SubtestValidationCalculator</code> with the given <var>channel
      * </var> and <var>scorer </var>.
@@ -75,6 +82,8 @@ public class SubtestValidationCalculator extends Calculator {
     	// We want only content areas that are part of this subtest
         List contentAreaNames = extractContentAreaNames(new Long(event.getItemSetId().intValue()));
         final SubtestEvent publishedEvent;
+        this.testRosterId = event.getTestRosterId();
+        this.ItemSetId = event.getItemSetId();
 
         if (isValid()) {
             publishedEvent = new SubtestValidEvent(
@@ -121,7 +130,27 @@ public class SubtestValidationCalculator extends Calculator {
         //Added for Laslink Product
         String productType = scorer.getResultHolder().getAdminData().getAssessmentType();
         if(productType.equals("LL") || productType.equals("ll")) {
-        	return true;
+        	String valid = "IN";
+        	
+        	Connection conn = null;
+            try {
+                conn = scorer.getOASConnection();
+                StudentItemSetStatusMapper mapper = new StudentItemSetStatusMapper(conn);
+                valid = mapper.getSubtestValidationStatusForTestRosterAndItemSetId(this.testRosterId, 
+                		DatabaseHelper.asLong(this.ItemSetId));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    scorer.close(true, conn);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        	if(valid.equals("VA"))
+        		return true;
+        	else
+        		return false;
         }
         int attemptedItems = 0;
         int correctAnswers = 0;

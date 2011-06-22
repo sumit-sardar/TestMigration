@@ -72,7 +72,10 @@
             subtest.ORIGINAL_CREATED_BY as originalCreatedBy,
             subtest.EXT_TST_ITEM_SET_ID as extTstItemSetId,
 			status.ITEM_SET_ORDER as itemSetOrder,
-            status.recommended_level as recommendedLevel
+            status.recommended_level as recommendedLevel,
+            status.validation_status as validationStatus,
+            status.exemptions as exemptions,
+            status.absent as absent
         FROM
             ITEM_SET subtest,
             TEST_ROSTER tr,
