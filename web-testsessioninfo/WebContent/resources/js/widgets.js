@@ -1295,13 +1295,13 @@ function validateFileName() {
     
     var extension = filename.substr(filename.length-4, filename.length);
     if (extension.toLowerCase() != ".zip") {
-        alert ("Invalid extension.");      
+		alert ("Invalid File Name Extension. File Name must use a '.zip' extension.");      
         return false;
     }
     
     var invalid = (/[^a-z0-9/./_/-]/gi.test(filename));
     if (invalid) {
-        alert ("Invalid file name.");      
+		alert ("Invalid File Name. Valid characters are: a-z, A-Z, 0-9, '.' (period), '_' (underscore), and '-' (dash). Valid File Name must use a '.zip' extension.");      
         return false;
     }
     
@@ -1316,7 +1316,7 @@ function validateEmail() {
 
     var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;   
     if (! emailPattern.test(email)) {
-        alert ("Invalid email.");      
+		alert("Invalid Email. Valid characters are a-z, A-Z, 0-9, and for user name, '.' (period), '_' (underscore), and '-' (dash). Domain name must contain from 2 - 4 valid characters.");
         return false;
     }
     
