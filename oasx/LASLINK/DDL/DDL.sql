@@ -34,7 +34,7 @@ ALTER TABLE student_accomodation ADD masking_ruler VARCHAR2(2)
 /
 
 
-/* coloum 'student exported 'added for process scores 
+/* coloum 'student exported 'added for process scores  */
 
 ALTER TABLE test_roster ADD student_exported VARCHAR2(1)
 /
@@ -47,4 +47,7 @@ create table AA_ITEM_DECRYPTED
   ITEM_RENDITION_XML BLOB,
   CREATED_DATE_TIME  DATE default sysdate not null
 )
+/
+
+alter table student_accommodation add magnifying_glass varchar2(2)
 /
