@@ -293,3 +293,140 @@ insert into ATTR24_DIM (attr24id, NAME, TYPE, product_typeId)
 insert into ATTR24_DIM (attr24id, NAME, TYPE, product_typeId) 
     values (10, '9', 'SPECIAL CODES', 4)
 /
+
+
+--ATTR2_DIM
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (17, 'American Indian or Alaska Native', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (18, 'African American or Black, Not Hispanic', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (19, 'Asian', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (20, 'Pacific Islander', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (21, 'Hispanic or Latino', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (22, 'White, Not Hispanic', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (23, 'Multiethnic', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (24, 'Other', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (25, 'mexicano', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (26, 'mexicano-americano', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (27, 'cubano', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (28, 'cubano-americano', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (29, 'puertorriqueño', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (30, 'dominicano', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (31, 'centroamericano', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (32, 'sudamericano', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (33, 'otro', 'Ethnicity', 4)
+/
+insert into attr2_dim (attr2id, name, type, product_typeid)
+values (34, 'N/A', 'Ethnicity', 4)
+/
+
+
+-- Inserting Accommodations
+
+insert into attr9_dim (attr9id, name, type, product_typeid) values (5,'Yes','Screen Magnifier',4)
+/
+insert into attr9_dim (attr9id, name, type, product_typeid) values (6,'No','Screen Magnifier',4)
+/
+
+insert into attr11_dim (attr11id, name, type, product_typeid) values (5,'Yes','Screen Reader',4)
+/
+insert into attr11_dim (attr11id, name, type, product_typeid) values (6,'No','Screen Reader',4)
+/
+
+insert into attr12_dim (attr12id, name, type, product_typeid) values (5,'Yes','Calculator',4)
+/
+insert into attr12_dim (attr12id, name, type, product_typeid) values (6,'No','Calculator',4)
+/
+
+insert into attr13_dim (attr13id, name, type, product_typeid) values (5,'Yes','Allow Pause',4)
+/
+insert into attr13_dim (attr13id, name, type, product_typeid) values (6,'No','Allow Pause',4)
+/
+
+insert into attr14_dim (attr14id, name, type, product_typeid) values (5,'Yes','Untimed Test',4)
+/
+insert into attr14_dim (attr14id, name, type, product_typeid) values (6,'No','Untimed Test',4)
+/
+
+insert into attr15_dim (attr15id, name, type, product_typeid) values (5,'Yes','Adjusted Colors',4)
+/
+insert into attr15_dim (attr15id, name, type, product_typeid) values (6,'No','Adjusted Colors',4)
+/
+
+insert into attr16_dim (attr16id, name, type, product_typeid) values (5,'Yes','Adjusted Font Size',4)
+/
+insert into attr16_dim (attr16id, name, type, product_typeid) values (6,'No','Adjusted Font Size',4)
+/
+
+insert into attr35_dim (attr35id, name, type, product_typeid) values (1,'Yes','Auditory Calming',4)
+/
+insert into attr35_dim (attr35id, name, type, product_typeid) values (2,'No','Auditory Calming',4)
+/
+
+insert into attr36_dim (attr36id, name, type, product_typeid) values (1,'Yes','Masking Ruler',4)
+/
+insert into attr36_dim (attr36id, name, type, product_typeid) values (2,'No','Masking Ruler',4)
+/
+
+insert into attr37_dim (attr37id, name, type, product_typeid) values (1,'Yes','Magnifying Glass',4)
+/
+insert into attr37_dim (attr37id, name, type, product_typeid) values (2,'No','Magnifying Glass',4)
+/
+
+insert into attr19_dim (attr19id, name, type, product_typeid) values (122,'N/A','USA School Enrollment',4)
+/
+
+insert into attr17_dim (attr17id, name, type, product_typeid) values (1,'00','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (2,'01','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (3,'02','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (4,'03','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (5,'04','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (6,'05','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (7,'06','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (8,'07','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (9,'08','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (10,'09','Home Language',4)
+/
+
+insert into attr17_dim (attr17id, name, type, product_typeid) values (101,'N/A','Home Language',4)
+/
