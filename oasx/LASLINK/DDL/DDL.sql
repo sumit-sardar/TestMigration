@@ -38,3 +38,13 @@ ALTER TABLE student_accomodation ADD masking_ruler VARCHAR2(2)
 
 ALTER TABLE test_roster ADD student_exported VARCHAR2(1)
 /
+
+/* New Table was created for keeping the Decrypted Item Xml in ADS Database for 
+Item Player */
+create table AA_ITEM_DECRYPTED
+(
+  AA_ITEM_ID         VARCHAR2(32) not null,
+  ITEM_RENDITION_XML BLOB,
+  CREATED_DATE_TIME  DATE default sysdate not null
+)
+/
