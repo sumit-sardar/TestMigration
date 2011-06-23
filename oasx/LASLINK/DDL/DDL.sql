@@ -51,3 +51,8 @@ create table AA_ITEM_DECRYPTED
 
 alter table student_accommodation add magnifying_glass varchar2(2)
 /
+
+/* New cloumn added for storing the test purpose of student*/
+
+ALTER TABLE STUDENT ADD TEST_PURPOSE VARCHAR2(4)
+/
