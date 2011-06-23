@@ -1287,9 +1287,15 @@ function validateFileName() {
     
     var element = document.getElementById("fileName");
     var filename = element.value;
+	filename = filename.trim();
     
     if (filename.length == 0) {
         alert ("File name required.");      
+        return false;
+    }
+
+    if (filename.length <= 4) {
+		alert ("Invalid File Name. Valid characters are: a-z, A-Z, 0-9, '.' (period), '_' (underscore), and '-' (dash). Valid File Name must use a '.zip' extension.");      
         return false;
     }
     
@@ -1298,6 +1304,7 @@ function validateFileName() {
 		alert ("Invalid File Name Extension. File Name must use a '.zip' extension.");      
         return false;
     }
+
     
     var invalid = (/[^a-z0-9/./_/-]/gi.test(filename));
     if (invalid) {
@@ -1313,7 +1320,11 @@ function validateFileName() {
 function validateEmail() {   
     var element = document.getElementById("email");
     var email = element.value;
-
+	email = email.trim();
+	
+	if (email.length == 0) 
+		return true;
+	
     var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;   
     if (! emailPattern.test(email)) {
 		alert("Invalid Email. Valid characters are a-z, A-Z, 0-9, and for user name, '.' (period), '_' (underscore), and '-' (dash). Domain name must contain from 2 - 4 valid characters.");

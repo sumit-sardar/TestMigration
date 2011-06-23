@@ -20,10 +20,12 @@
 
 
 <%
-    List reportList = (List)request.getAttribute("reportList");
-    String selectedReport = (String)request.getAttribute("selectedReport");
     String reportUrl = (String)request.getAttribute("reportUrl");
-    String testAdminId = (String)request.getAttribute("testAdminId");
+
+	List reportList = (List)request.getAttribute("reportList");
+	String selectedReport = (String)request.getAttribute("selectedReport");
+	String testAdminId = (String)request.getAttribute("testAdminId");
+	String showReporNavigation = (String)request.getAttribute("showReporNavigation");
 %>
 
 <table style="border-collapse: collapse; border-style: none; border-width: 0px; width: 100%; height: 100%; margin: 0px; padding: 0px; ">
@@ -42,8 +44,8 @@
 </tr>
 
 
-
 <!-- TURNLEAF REPORT LIST -->
+<% if (showReporNavigation == "true") { %>
 <tr>
     <td>
         <table class="reportNavLayout">
@@ -55,8 +57,7 @@
         </table>
     </td>
 </tr>
-
-
+<% } %>
 
 <!-- TURNLEAF REPORT CONTENT -->
 <tr>

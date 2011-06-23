@@ -102,6 +102,7 @@ public class AdministrationController extends PageFlowController
         this.getSession().setAttribute("hasLicenseConfig", hasLicenseConfig());
         this.getSession().setAttribute("userHasReports", userHasReports());
         this.getSession().setAttribute("isAdminUserAtLeafNode", isAdminUserAtLeafNode());
+        this.getSession().setAttribute("canGenerateReportFile", canGenerateReportFile());
         
         return new Forward("success");
     }
@@ -193,6 +194,22 @@ public class AdministrationController extends PageFlowController
     }
 
     /**
+     * @jpf:action
+     */
+	@Jpf.Action()
+    protected Forward generateReportFile()
+    {
+        try {
+            String url = "/TestSessionInfoWeb/viewmonitorstatus/gotoReportRepository.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch( IOException ioe ) {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+	
+    /**
      * getUserDetails
      */
     private void getUserDetails()
@@ -212,6 +229,33 @@ public class AdministrationController extends PageFlowController
         } 
         
         getSession().setAttribute("userName", this.userName);
+    }
+    
+    /**
+     * canGenerateReportFile
+     */
+    private Boolean canGenerateReportFile() 
+    {
+        boolean validCustomer = false; 
+        boolean isAdminUser = this.user.getRole().getRoleName().equals("Administrator");
+        Integer customerId = this.user.getCustomer().getCustomerId();
+        
+        try
+        {      
+            CustomerConfiguration [] customerConfigs = users.getCustomerConfigurations(customerId.intValue());
+            for (int i=0; i < customerConfigs.length; i++)
+            {
+                CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+                if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer")) {
+                    validCustomer = true; 
+                }               
+            }
+        }
+        catch (Exception be) {
+            be.printStackTrace();
+        }
+    	
+        return new Boolean(validCustomer && isAdminUser);
     }
     
     /**

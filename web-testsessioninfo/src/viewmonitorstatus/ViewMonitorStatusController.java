@@ -402,7 +402,7 @@ public class ViewMonitorStatusController extends PageFlowController
      */
 	@Jpf.Action(
 		forwards = { 
-			@Jpf.Forward(name = "report", path = "multiple_student_IPR.jsp"), 
+			@Jpf.Forward(name = "success", path = "multiple_student_IPR.jsp"), 
 			@Jpf.Forward(name = "error", path = "/error.jsp")
 		}
 	)
@@ -427,17 +427,35 @@ public class ViewMonitorStatusController extends PageFlowController
         	
             //String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, rosterId);    
             
-        	String reportUrl = "/TestSessionInfoWeb/viewmonitorstatus/gotoTurnLeaf.do";
-        	
+        	String reportUrl = "/TestSessionInfoWeb/viewmonitorstatus/temporaryGotoTurnLeaf.do";
             this.getRequest().setAttribute("reportUrl", reportUrl);
             this.getRequest().setAttribute("testAdminId", String.valueOf(this.sessionId));
+            this.getRequest().setAttribute("showReporNavigation", "true");
             
         } catch (Exception e) {
             e.printStackTrace();
             return new Forward("error");
         }
                     
-        return new Forward("report");
+        return new Forward("success");
+    }
+
+    /**
+     * @jpf:action
+     * @jpf:forward name="success" path="http://www.google.com"
+     */
+	@Jpf.Action(
+		forwards = { 
+			@Jpf.Forward(name = "success", path = "multiple_student_IPR.jsp")
+		}
+	)
+    protected Forward gotoReportRepository()
+    {
+    	String reportUrl = "/TestSessionInfoWeb/viewmonitorstatus/temporaryGotoTurnLeaf.do";
+        this.getRequest().setAttribute("reportUrl", reportUrl);
+        this.getRequest().setAttribute("showReporNavigation", "false");
+        
+        return new Forward("success");
     }
 
     /**
@@ -449,7 +467,7 @@ public class ViewMonitorStatusController extends PageFlowController
 			@Jpf.Forward(name = "success", path = "http://www.google.com")
 		}
 	)
-    protected Forward gotoTurnLeaf()
+    protected Forward temporaryGotoTurnLeaf()
     {
         
         return new Forward("success");
