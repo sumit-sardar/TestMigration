@@ -39,7 +39,7 @@ public class StudentDemographicsCollector{
 			"order by label_code"; 
       
         final String accommodationSql = "select sa.screen_magnifier, sa.screen_reader, sa.CALCULATOR, sa.TEST_PAUSE, " +
-        	"sa.UNTIMED_TEST, sa.QUESTION_BACKGROUND_COLOR, sa.QUESTION_FONT_COLOR, sa.QUESTION_FONT_SIZE " +
+        	"sa.UNTIMED_TEST, sa.QUESTION_BACKGROUND_COLOR, sa.QUESTION_FONT_COLOR, sa.QUESTION_FONT_SIZE, sa.MUSIC_FILE_ID, sa.MASKING_RULER, sa.MAGNIFYING_GLASS " +
         	"from student_accommodation sa, test_roster tr " +
         	"where sa.STUDENT_ID = tr.STUDENT_ID and tr.TEST_ROSTER_ID =?";
 
@@ -50,17 +50,17 @@ public class StudentDemographicsCollector{
 	        rs = ps.executeQuery();
 	        while (rs.next()) {
                 if(SQLUtil.getString(rs, "label_code") != null) {
-                	/*if(researchMap.containsKey(SQLUtil.getString(rs, "label_code"))){
-                		ArrayList list =  (ArrayList)researchMap.get(SQLUtil.getString(rs, "label_code"));
+                	if(researchMap.containsKey(SQLUtil.getString(rs, "label_code"))){
+                		ArrayList<String> list =  (ArrayList)researchMap.get(SQLUtil.getString(rs, "label_code"));
                 		list.add(SQLUtil.getString(rs, "value_name"));
                 		researchMap.put(SQLUtil.getString(rs, "label_code"), list);
-                }else {
-                	ArrayList Value = new ArrayList();
-                	Value.add(SQLUtil.getString(rs, "value_name"));
-                	researchMap.put(SQLUtil.getString(rs, "label_code"), Value);*/
-                    researchMap.put(SQLUtil.getString(rs, "label_code"), SQLUtil.getString(rs, "value_name"));
+	                }else {
+	                	ArrayList<String> Value = new ArrayList();
+	                	Value.add(SQLUtil.getString(rs, "value_name"));
+	                	researchMap.put(SQLUtil.getString(rs, "label_code"), Value);
+	                    //researchMap.put(SQLUtil.getString(rs, "label_code"), SQLUtil.getString(rs, "value_name"));
+	                }
                 }
-               // }
                 gender = SQLUtil.getString(rs,"gender");
 	        }
 	        data.setResearchData(researchMap);
@@ -83,6 +83,9 @@ public class StudentDemographicsCollector{
         		data.setQuestionBGColor(SQLUtil.getString(rs, "QUESTION_BACKGROUND_COLOR"));
         		data.setQuestionFontColor(SQLUtil.getString(rs, "QUESTION_FONT_COLOR"));
         		data.setQuestionFontSize(SQLUtil.getString(rs, "QUESTION_FONT_SIZE"));
+        		data.setMusicFileId(SQLUtil.getString(rs, "MUSIC_FILE_ID")); // Added for Laslink
+        		data.setMaskingRuler(SQLUtil.getString(rs, "MASKING_RULER")); // Added for Laslink
+        		data.setMagnifyingGlass(SQLUtil.getString(rs, "MAGNIFYING_GLASS")); // Added for Laslink
         		}
         }finally {
             SQLUtil.close(rs);

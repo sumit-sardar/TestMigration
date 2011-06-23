@@ -123,7 +123,6 @@ public class ContentAreaRawScoreCalculator extends Calculator {
     	Iterator itr = contenAreaSet.iterator();
 	    	while(itr.hasNext()) {
 	    		String contentArea = (String)itr.next();
-	    		System.out.println("contentArea==>...."+contentArea);
 	    		 if(subtestContentArea.getItemContentAreasByItemId().containsKey(event.getItemId() + contentArea)){
 	    		 ContentAreaNameList.add( ((ItemContentArea) subtestContentArea.getItemContentAreasByItemId().get(
 	    	                event.getItemId()+ contentArea)).getContentAreaName());

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -124,43 +125,65 @@ public class TBTestResultController implements TestResultController {
     		final IrsDemographicData details = new IrsDemographicData();
     		Map rd = data.getResearchData();
         
-    		String ELL = (String) rd.get("ELL");
-    		details.setAttr1Id(new Long(("Yes".equals(ELL) || ("Y".equals(ELL)))?1:
-                                    ("True".equals(ELL) || ("T".equals(ELL)))?1:2));
+    		if(rd.containsKey("ELL")) {
+    		ArrayList<String> lell = (ArrayList<String>)rd.get("ELL");
+	    		String ELL = lell.toString();
+	    		details.setAttr1Id(new Long(("Yes".equals(ELL) || ("Y".equals(ELL)))?1:
+	                                    ("True".equals(ELL) || ("T".equals(ELL)))?1:2));
+    		}
     	 
-    		String ethnicity = (String) rd.get("Ethnicity");
-    		details.setAttr2Id(new Long(("Asian or Pacific Islander".equals(ethnicity))?1:
-                                    ("Asian/Pacific Islander".equals(ethnicity))?1:
-                                    ("American Indian or Alaska Native".equals(ethnicity))?2:
-                                    ("African American or Black".equals(ethnicity))?3:
-                                    ("Hispanic or Latino".equals(ethnicity))?4:
-                                    ("Caucasian".equals(ethnicity))?5:
-                                    ("Multi-ethnic".equals(ethnicity))?6:7));
+    		if(rd.containsKey("Ethnicity")) {
+    		ArrayList<String> lethnicity = (ArrayList<String>)rd.get("Ethnicity");
+	    		String ethnicity = lethnicity.toString();
+	    		details.setAttr2Id(new Long(("Asian or Pacific Islander".equals(ethnicity))?1:
+	                                    ("Asian/Pacific Islander".equals(ethnicity))?1:
+	                                    ("American Indian or Alaska Native".equals(ethnicity))?2:
+	                                    ("African American or Black".equals(ethnicity))?3:
+	                                    ("Hispanic or Latino".equals(ethnicity))?4:
+	                                    ("Caucasian".equals(ethnicity))?5:
+	                                    ("Multi-ethnic".equals(ethnicity))?6:7));
+    		}
         
-    		String freelunch = (String) rd.get("Free Lunch");
-    		details.setAttr3Id(new Long(("Yes".equals(freelunch) || ("Y".equals(freelunch)))?1:
-                                    ("True".equals(freelunch) || ("T".equals(freelunch)))?1:2));
+    		if(rd.containsKey("Free Lunch")) {
+    		ArrayList<String> lunch = (ArrayList<String>)rd.get("Free Lunch");
+	    		String freelunch = lunch.toString();
+	    		details.setAttr3Id(new Long(("Yes".equals(freelunch) || ("Y".equals(freelunch)))?1:
+	                                    ("True".equals(freelunch) || ("T".equals(freelunch)))?1:2));
+    		}
     		details.setAttr4Id(new Long(("Male".equals(data.getGender()))?1:
     								("Female".equals(data.getGender()))?2:
                                     ("M".equals(data.getGender()))?1:
                                     ("F".equals(data.getGender()))?2:3));
+
     	
-    		String iep = (String) rd.get("IEP");
-    		details.setAttr5Id(new Long(("Yes".equals(iep) || ("Y".equals(iep)))?1:
-                                    ("True".equals(iep) || ("T".equals(iep)))?1:2));
+    		if(rd.containsKey("IEP")) {
+    		ArrayList<String> iepl = (ArrayList<String>)rd.get("IEP");
+	    			String iep = iepl.toString();
+	    		details.setAttr5Id(new Long(("Yes".equals(iep) || ("Y".equals(iep)))?1:
+	                                    ("True".equals(iep) || ("T".equals(iep)))?1:2));
+    		}
                                     
-    		String lfstat = (String) rd.get("Labor Force Status");
-    		details.setAttr6Id(new Long(("Employed".equals(lfstat))?1:
-                                    ("Unemployed".equals(lfstat))?2:
-                                    ("Not in Labor Force".equals(lfstat))?3:4));
+    		if(rd.containsKey("Labor Force Status")) {
+    		ArrayList<String> labour = (ArrayList<String>)rd.get("Labor Force Status");
+    			String lfstat = labour.toString();
+	    		details.setAttr6Id(new Long(("Employed".equals(lfstat))?1:
+	                                    ("Unemployed".equals(lfstat))?2:
+	                                    ("Not in Labor Force".equals(lfstat))?3:4));
+    		}
     	
-    		String lep = (String) rd.get("LEP");
-    		details.setAttr7Id(new Long(("Yes".equals(lep) || ("Y".equals(lep)))?1:
-                                    ("True".equals(lep) || ("T".equals(lep)))?1:2));
+    		if(rd.containsKey("LEP")) {
+    		ArrayList<String> llep = (ArrayList<String>)rd.get("LEP");
+    			String lep = llep.toString();
+    			details.setAttr7Id(new Long(("Yes".equals(lep) || ("Y".equals(lep)))?1:
+                                    	("True".equals(lep) || ("T".equals(lep)))?1:2));
+    		}
         
-    		String migrant = (String) rd.get("Migrant");
-    		details.setAttr8Id(new Long(("Yes".equals(migrant) || "Y".equals(migrant))?1:
-                                    ("True".equals(migrant) || "T".equals(migrant))?1:2));
+    		if(rd.containsKey("Migrant")) {
+    		ArrayList<String> mig = (ArrayList<String>)rd.get("Migrant");
+    			String migrant = mig.toString();
+    			details.setAttr8Id(new Long(("Yes".equals(migrant) || "Y".equals(migrant))?1:
+                                    	("True".equals(migrant) || "T".equals(migrant))?1:2));
+    		}
         
     		details.setAttr9Id(new Long(("Y".equals(data.getScreenMagnifier()))?1:
             					("T".equals(data.getScreenMagnifier()))?1:2));
@@ -175,9 +198,12 @@ public class TBTestResultController implements TestResultController {
     		details.setAttr15Id(new Long((data.getQuestionBGColor() != null || data.getQuestionFontColor() != null)?1:2));
     		details.setAttr16Id(new Long((data.getQuestionFontSize() != null)?1:2));
     	
-    		String sec504 = (String) rd.get("Section 504");
-    		details.setAttr10Id(new Long(("Yes".equals(sec504) || "Y".equals(sec504))?1:
-                                    ("True".equals(sec504) || "T".equals(sec504))?1:2));
+    		if(rd.containsKey("Section 504")) {
+    		ArrayList<String> section = (ArrayList<String>)rd.get("Section 504");
+    			String sec504 = section.toString();
+    			details.setAttr10Id(new Long(("Yes".equals(sec504) || "Y".equals(sec504))?1:
+                                    	("True".equals(sec504) || "T".equals(sec504))?1:2));
+    		}
          
     	 return details;
     }

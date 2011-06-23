@@ -17,14 +17,7 @@ public class IrsLLContentAreaFactData implements Persistent{
     private Long formid;
     private Long sessionid;
     private Long levelid;
-    private Long attr1id;
-    private Long attr7id;
-    private Long attr4id;
     private Long attr2id;
-    private Long attr5id;
-    private Long attr6id;
-    private Long attr3id;
-    private Long attr10id;
     private Long attr11id;
     private Long attr12id;
     private Long attr13id;
@@ -33,7 +26,6 @@ public class IrsLLContentAreaFactData implements Persistent{
     private Long attr16id;
     private Long gradeid;
     private Long attr9id;
-    private Long attr8id;
     private Long scaleScore;
     private Long proficencyLevel;
     private Long normalCurveEquivalent;
@@ -49,6 +41,28 @@ public class IrsLLContentAreaFactData implements Persistent{
     private Long subjectid;
     private Long programid;
     private Long currentResultid;
+ // Added for LasLink - START 
+	private Long attr17id; // HOME_LANGUAGE
+	private Long attr18id; // MOBILITY
+	private Long attr19id; // USA_SCHOOL_ENROLLMENT
+	private String attr20id; // PROGRAM_PARTICIPATION
+	private String attr21id; // SPECIAL_EDUCATION
+	private Long attr22id; // DISABILITY
+	private String attr23id; // ACCOMMODATIONS
+	private Long attr25id; // SPECIAL_CODES-K
+	private Long attr26id; // SPECIAL_CODES-L
+	private Long attr27id; // SPECIAL_CODES-M
+	private Long attr28id; // SPECIAL_CODES-N
+	private Long attr29id; // SPECIAL_CODES-O
+	private Long attr30id; // SPECIAL_CODES-P
+	private Long attr31id; // SPECIAL_CODES-Q
+	private Long attr32id; // SPECIAL_CODES-R
+	private Long attr33id; // SPECIAL_CODES-S
+	private Long attr34id; // SPECIAL_CODES-T
+	private Long attr35id; // MUSIC_FILE_ID
+	private Long attr36id; // MASKING_RULER
+	private Long attr37id; // MAGNIFYING_GLASS
+	// Added for LasLink - END
     
     public boolean equals(Object arg0) {
 			return 
@@ -57,14 +71,7 @@ public class IrsLLContentAreaFactData implements Persistent{
                 studentid.equals(((IrsLLContentAreaFactData)arg0).getStudentid()) &&
                 formid.equals(((IrsLLContentAreaFactData)arg0).getFormid()) &&
                 sessionid.equals(((IrsLLContentAreaFactData)arg0).getSessionid()) &&
-                attr1id.equals(((IrsLLContentAreaFactData)arg0).getAttr1id()) &&
-                attr7id.equals(((IrsLLContentAreaFactData)arg0).getAttr7id()) &&
-                attr4id.equals(((IrsLLContentAreaFactData)arg0).getAttr4id()) &&
                 attr2id.equals(((IrsLLContentAreaFactData)arg0).getAttr2id()) &&
-                attr5id.equals(((IrsLLContentAreaFactData)arg0).getAttr5id()) &&
-                attr6id.equals(((IrsLLContentAreaFactData)arg0).getAttr6id()) &&
-                attr3id.equals(((IrsLLContentAreaFactData)arg0).getAttr3id()) &&
-                attr10id.equals(((IrsLLContentAreaFactData)arg0).getAttr10id()) &&
                 attr11id.equals(((IrsLLContentAreaFactData)arg0).getAttr11id()) &&
                 attr12id.equals(((IrsLLContentAreaFactData)arg0).getAttr12id()) &&
                 attr13id.equals(((IrsLLContentAreaFactData)arg0).getAttr13id()) &&
@@ -73,7 +80,6 @@ public class IrsLLContentAreaFactData implements Persistent{
                 attr16id.equals(((IrsLLContentAreaFactData)arg0).getAttr16id()) &&
                 gradeid.equals(((IrsLLContentAreaFactData)arg0).getGradeid()) &&
                 attr9id.equals(((IrsLLContentAreaFactData)arg0).getAttr9id()) &&
-                attr8id.equals(((IrsLLContentAreaFactData)arg0).getAttr8id()) &&
                 scaleScore.equals(((IrsLLContentAreaFactData)arg0).getScaleScore()) &&
                 proficencyLevel.equals(((IrsLLContentAreaFactData)arg0).getProficencyLevel()) &&
                 normalCurveEquivalent.equals(((IrsLLContentAreaFactData)arg0).getNormalCurveEquivalent()) &&
@@ -86,7 +92,27 @@ public class IrsLLContentAreaFactData implements Persistent{
                 programid.equals(((IrsLLContentAreaFactData)arg0).getProgramid()) &&
                 currentResultid.equals(((IrsLLContentAreaFactData)arg0).getCurrentResultid()) &&
                 pointsAttempted.equals(((IrsLLContentAreaFactData)arg0).getPointsAttempted()) &&
-                pointsObtained.equals(((IrsLLContentAreaFactData)arg0).getPointsObtained()); 
+                pointsObtained.equals(((IrsLLContentAreaFactData)arg0).getPointsObtained()) &&
+                attr17id.equals(((IrsLLContentAreaFactData)arg0).getAttr17id()) &&
+                attr18id.equals(((IrsLLContentAreaFactData)arg0).getAttr18id()) &&
+                attr19id.equals(((IrsLLContentAreaFactData)arg0).getAttr19id()) &&
+                attr20id.equals(((IrsLLContentAreaFactData)arg0).getAttr20id()) &&
+                attr21id.equals(((IrsLLContentAreaFactData)arg0).getAttr21id()) &&
+                attr22id.equals(((IrsLLContentAreaFactData)arg0).getAttr22id()) &&
+                attr23id.equals(((IrsLLContentAreaFactData)arg0).getAttr23id()) &&
+                attr25id.equals(((IrsLLContentAreaFactData)arg0).getAttr25id()) &&
+                attr26id.equals(((IrsLLContentAreaFactData)arg0).getAttr26id()) &&
+                attr27id.equals(((IrsLLContentAreaFactData)arg0).getAttr27id()) &&
+                attr28id.equals(((IrsLLContentAreaFactData)arg0).getAttr28id()) &&
+                attr29id.equals(((IrsLLContentAreaFactData)arg0).getAttr29id()) &&
+                attr30id.equals(((IrsLLContentAreaFactData)arg0).getAttr30id()) &&
+                attr31id.equals(((IrsLLContentAreaFactData)arg0).getAttr31id()) &&
+                attr32id.equals(((IrsLLContentAreaFactData)arg0).getAttr32id()) &&
+                attr33id.equals(((IrsLLContentAreaFactData)arg0).getAttr33id()) &&
+                attr34id.equals(((IrsLLContentAreaFactData)arg0).getAttr34id()) &&
+                attr35id.equals(((IrsLLContentAreaFactData)arg0).getAttr35id()) &&
+                attr36id.equals(((IrsLLContentAreaFactData)arg0).getAttr36id()) &&
+                attr37id.equals(((IrsLLContentAreaFactData)arg0).getAttr37id());
                 
     }
 
@@ -158,68 +184,12 @@ public class IrsLLContentAreaFactData implements Persistent{
         this.levelid = levelid;
     }
 
-    public Long getAttr1id() {
-        return attr1id;
-    }
-
-    public void setAttr1id(Long attr1id) {
-        this.attr1id = attr1id;
-    }
-
-    public Long getAttr7id() {
-        return attr7id;
-    }
-
-    public void setAttr7id(Long attr7id) {
-        this.attr7id = attr7id;
-    }
-
-    public Long getAttr4id() {
-        return attr4id;
-    }
-
-    public void setAttr4id(Long attr4id) {
-        this.attr4id = attr4id;
-    }
-
     public Long getAttr2id() {
         return attr2id;
     }
 
     public void setAttr2id(Long attr2id) {
         this.attr2id = attr2id;
-    }
-
-    public Long getAttr5id() {
-        return attr5id;
-    }
-
-    public void setAttr5id(Long attr5id) {
-        this.attr5id = attr5id;
-    }
-
-    public Long getAttr6id() {
-        return attr6id;
-    }
-
-    public void setAttr6id(Long attr6id) {
-        this.attr6id = attr6id;
-    }
-
-    public Long getAttr3id() {
-        return attr3id;
-    }
-
-    public void setAttr3id(Long attr3id) {
-        this.attr3id = attr3id;
-    }
-
-    public Long getAttr10id() {
-        return attr10id;
-    }
-
-    public void setAttr10id(Long attr10id) {
-        this.attr10id = attr10id;
     }
 
     public Long getGradeid() {
@@ -237,15 +207,6 @@ public class IrsLLContentAreaFactData implements Persistent{
     public void setAttr9id(Long attr9id) {
         this.attr9id = attr9id;
     }
-
-    public Long getAttr8id() {
-        return attr8id;
-    }
-
-    public void setAttr8id(Long attr8id) {
-        this.attr8id = attr8id;
-    }
-
     
     public Long getScaleScore() {
         return scaleScore;
@@ -425,5 +386,165 @@ public class IrsLLContentAreaFactData implements Persistent{
 	 */
 	public void setProficencyLevel(Long proficencyLevel) {
 		this.proficencyLevel = proficencyLevel;
+	}
+
+	public Long getAttr17id() {
+		return attr17id;
+	}
+
+	public void setAttr17id(Long attr17id) {
+		this.attr17id = attr17id;
+	}
+
+	public Long getAttr18id() {
+		return attr18id;
+	}
+
+	public void setAttr18id(Long attr18id) {
+		this.attr18id = attr18id;
+	}
+
+	public Long getAttr19id() {
+		return attr19id;
+	}
+
+	public void setAttr19id(Long attr19id) {
+		this.attr19id = attr19id;
+	}
+
+	public String getAttr20id() {
+		return attr20id;
+	}
+
+	public void setAttr20id(String attr20id) {
+		this.attr20id = attr20id;
+	}
+
+	public String getAttr21id() {
+		return attr21id;
+	}
+
+	public void setAttr21id(String attr21id) {
+		this.attr21id = attr21id;
+	}
+
+	public Long getAttr22id() {
+		return attr22id;
+	}
+
+	public void setAttr22id(Long attr22id) {
+		this.attr22id = attr22id;
+	}
+
+	public String getAttr23id() {
+		return attr23id;
+	}
+
+	public void setAttr23id(String attr23id) {
+		this.attr23id = attr23id;
+	}
+
+	public Long getAttr25id() {
+		return attr25id;
+	}
+
+	public void setAttr25id(Long attr25id) {
+		this.attr25id = attr25id;
+	}
+
+	public Long getAttr26id() {
+		return attr26id;
+	}
+
+	public void setAttr26id(Long attr26id) {
+		this.attr26id = attr26id;
+	}
+
+	public Long getAttr27id() {
+		return attr27id;
+	}
+
+	public void setAttr27id(Long attr27id) {
+		this.attr27id = attr27id;
+	}
+
+	public Long getAttr28id() {
+		return attr28id;
+	}
+
+	public void setAttr28id(Long attr28id) {
+		this.attr28id = attr28id;
+	}
+
+	public Long getAttr29id() {
+		return attr29id;
+	}
+
+	public void setAttr29id(Long attr29id) {
+		this.attr29id = attr29id;
+	}
+
+	public Long getAttr30id() {
+		return attr30id;
+	}
+
+	public void setAttr30id(Long attr30id) {
+		this.attr30id = attr30id;
+	}
+
+	public Long getAttr31id() {
+		return attr31id;
+	}
+
+	public void setAttr31id(Long attr31id) {
+		this.attr31id = attr31id;
+	}
+
+	public Long getAttr32id() {
+		return attr32id;
+	}
+
+	public void setAttr32id(Long attr32id) {
+		this.attr32id = attr32id;
+	}
+
+	public Long getAttr33id() {
+		return attr33id;
+	}
+
+	public void setAttr33id(Long attr33id) {
+		this.attr33id = attr33id;
+	}
+
+	public Long getAttr34id() {
+		return attr34id;
+	}
+
+	public void setAttr34id(Long attr34id) {
+		this.attr34id = attr34id;
+	}
+
+	public Long getAttr35id() {
+		return attr35id;
+	}
+
+	public void setAttr35id(Long attr35id) {
+		this.attr35id = attr35id;
+	}
+
+	public Long getAttr36id() {
+		return attr36id;
+	}
+
+	public void setAttr36id(Long attr36id) {
+		this.attr36id = attr36id;
+	}
+
+	public Long getAttr37id() {
+		return attr37id;
+	}
+
+	public void setAttr37id(Long attr37id) {
+		this.attr37id = attr37id;
 	}
 }

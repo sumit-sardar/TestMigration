@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -134,13 +135,17 @@ public class TVTestResultController implements TestResultController {
     		final IrsDemographicData details = new IrsDemographicData();
     		Map rd = data.getResearchData();
         
-    		String ELL = (String) rd.get("ELL");
-    		details.setAttr1Id(new Long(("Yes".equals(ELL) || ("Y".equals(ELL)))?3:
+    		if(rd.containsKey("ELL")) {
+    			ArrayList<String> lell = (ArrayList<String>)rd.get("ELL");
+	    		String ELL = lell.toString();
+	    		details.setAttr1Id(new Long(("Yes".equals(ELL) || ("Y".equals(ELL)))?3:
                                     ("True".equals(ELL) || ("T".equals(ELL)))?3:4));
+    		}
     	 
-    		String ethnicity = (String) rd.get("Ethnicity");
-            
-            details.setAttr2Id(new Long(("African American or Black, Not Hispanic".equals(ethnicity))?8:
+    		if(rd.containsKey("Ethnicity")) {
+    			ArrayList<String> lethnicity = (ArrayList<String>)rd.get("Ethnicity");
+	    		String ethnicity = lethnicity.toString();
+	    		details.setAttr2Id(new Long(("African American or Black, Not Hispanic".equals(ethnicity))?8:
                               ("American Indian or Alaska Native".equals(ethnicity))?9:
                               ("Asian".equals(ethnicity))?10:
                               ("Pacific Islander".equals(ethnicity))?11:
@@ -148,28 +153,41 @@ public class TVTestResultController implements TestResultController {
                               ("White, Not Hispanic".equals(ethnicity))?13:
                               ("Multi-ethnic".equals(ethnicity))?14:
                               ("Other".equals(ethnicity))?15:16));
-        
-    		String freelunch = (String) rd.get("Free Lunch");
-    		details.setAttr3Id(new Long(("Yes".equals(freelunch) || ("Y".equals(freelunch)))?3:
+    		}
+    		
+    		if(rd.containsKey("Free Lunch")) {
+    			ArrayList<String> lunch = (ArrayList<String>)rd.get("Free Lunch");
+	    		String freelunch = lunch.toString();
+	    		details.setAttr3Id(new Long(("Yes".equals(freelunch) || ("Y".equals(freelunch)))?3:
                                     ("True".equals(freelunch) || ("T".equals(freelunch)))?3:4));
+    		}
     		details.setAttr4Id(new Long(("Male".equals(data.getGender()))?5:
     								("Female".equals(data.getGender()))?4:
                                     ("M".equals(data.getGender()))?5:
                                     ("F".equals(data.getGender()))?4:6));
     	
-    		String iep = (String) rd.get("IEP");
-    		details.setAttr5Id(new Long(("Yes".equals(iep) || ("Y".equals(iep)))?3:
+    		if(rd.containsKey("IEP")) {
+    			ArrayList<String> iepl = (ArrayList<String>)rd.get("IEP");
+	    			String iep = iepl.toString();
+	    			details.setAttr5Id(new Long(("Yes".equals(iep) || ("Y".equals(iep)))?3:
                                     ("True".equals(iep) || ("T".equals(iep)))?3:4));
+    		}
                                     
     		details.setAttr6Id(new Long(9));
-    	
-    		String lep = (String) rd.get("LEP");
-    		details.setAttr7Id(new Long(("Yes".equals(lep) || ("Y".equals(lep)))?3:
+    		
+    		if(rd.containsKey("LEP")) {
+    			ArrayList<String> llep = (ArrayList<String>)rd.get("LEP");
+    			String lep = llep.toString();
+    			details.setAttr7Id(new Long(("Yes".equals(lep) || ("Y".equals(lep)))?3:
                                     ("True".equals(lep) || ("T".equals(lep)))?3:4));
-        
-    		String migrant = (String) rd.get("Migrant");
-    		details.setAttr8Id(new Long(("Yes".equals(migrant) || "Y".equals(migrant))?3:
+    		}
+    		
+    		if(rd.containsKey("Migrant")) {        
+    			ArrayList<String> mig = (ArrayList<String>)rd.get("Migrant");
+    			String migrant = mig.toString();
+    			details.setAttr8Id(new Long(("Yes".equals(migrant) || "Y".equals(migrant))?3:
                                     ("True".equals(migrant) || "T".equals(migrant))?3:4));
+    		}
         
     		details.setAttr9Id(new Long(("Y".equals(data.getScreenMagnifier()))?3:
             					("T".equals(data.getScreenMagnifier()))?3:4));
@@ -184,9 +202,12 @@ public class TVTestResultController implements TestResultController {
     		details.setAttr15Id(new Long((data.getQuestionBGColor() != null || data.getQuestionFontColor() != null)?3:4));
     		details.setAttr16Id(new Long((data.getQuestionFontSize() != null)?3:4));
     	
-    		String sec504 = (String) rd.get("Section 504");
-    		details.setAttr10Id(new Long(("Yes".equals(sec504) || "Y".equals(sec504))?3:
+    		if(rd.containsKey("Section 504")) { 
+    			ArrayList<String> section = (ArrayList<String>)rd.get("Section 504");
+    			String sec504 = section.toString();
+    			details.setAttr10Id(new Long(("Yes".equals(sec504) || "Y".equals(sec504))?3:
                                     ("True".equals(sec504) || "T".equals(sec504))?3:4));
+    		}
          
     	 return details;
     }

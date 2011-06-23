@@ -43,7 +43,7 @@ public class StudentObjectiveScoresController {
         for(int i=0;i<pfacts.length;i++) {
         	IrsLLPrimObjFactData newFact = pfacts[i];
             poMapper.delete(newFact);
-            if(new Long(1).equals(contextData.getCurrentResultId()))  {
+            if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 poMapper.insert(newFact);
             }
         }
@@ -52,7 +52,7 @@ public class StudentObjectiveScoresController {
         for(int i=0;i<sfacts.length;i++) {
         	IrsLLSecObjFactData newFact = sfacts[i];
             soMapper.delete(newFact);
-            if(new Long(1).equals(contextData.getCurrentResultId()))  {
+            if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 soMapper.insert(newFact);
             }
         }
@@ -105,25 +105,46 @@ public class StudentObjectiveScoresController {
                 Timestamp subtestTime = testData.getBySubtestId(prim.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
                 if(subtestTime == null) subtestTime = contextData.getTestCompletionTimestamp();
                 primObjFact.setTestCompletionTimestamp(subtestTime);  
-                primObjFact.setAttr1id(contextData.getDemographicData().getAttr1Id());
-                primObjFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
-                primObjFact.setAttr3id(contextData.getDemographicData().getAttr3Id());
-                primObjFact.setAttr4id(contextData.getDemographicData().getAttr4Id());
-                primObjFact.setAttr5id(contextData.getDemographicData().getAttr5Id());
-                primObjFact.setAttr6id(contextData.getDemographicData().getAttr6Id());
-                primObjFact.setAttr7id(contextData.getDemographicData().getAttr7Id());
-                primObjFact.setAttr8id(contextData.getDemographicData().getAttr8Id());
+                /* primObjFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
                 primObjFact.setAttr9id(contextData.getDemographicData().getAttr9Id());
-                primObjFact.setAttr10id(contextData.getDemographicData().getAttr10Id());
                 primObjFact.setAttr11id(contextData.getDemographicData().getAttr11Id());
                 primObjFact.setAttr12id(contextData.getDemographicData().getAttr12Id());
                 primObjFact.setAttr13id(contextData.getDemographicData().getAttr13Id());
                 primObjFact.setAttr14id(contextData.getDemographicData().getAttr14Id());
                 primObjFact.setAttr15id(contextData.getDemographicData().getAttr15Id());
                 primObjFact.setAttr16id(contextData.getDemographicData().getAttr16Id());
+                primObjFact.setAttr17id(contextData.getDemographicData().getAttr17Id());
+                primObjFact.setAttr18id(contextData.getDemographicData().getAttr18Id());
+                primObjFact.setAttr19id(contextData.getDemographicData().getAttr19Id());
+                primObjFact.setAttr20id(contextData.getDemographicData().getAttr20Id());
+                primObjFact.setAttr21id(contextData.getDemographicData().getAttr21Id());
+                primObjFact.setAttr22id(contextData.getDemographicData().getAttr22Id());
+                primObjFact.setAttr23id(contextData.getDemographicData().getAttr23Id());
+                primObjFact.setAttr25id(contextData.getDemographicData().getAttr25Id());
+                primObjFact.setAttr26id(contextData.getDemographicData().getAttr26Id());
+                primObjFact.setAttr27id(contextData.getDemographicData().getAttr27Id());
+                primObjFact.setAttr28id(contextData.getDemographicData().getAttr28Id());
+                primObjFact.setAttr29id(contextData.getDemographicData().getAttr29Id());
+                primObjFact.setAttr30id(contextData.getDemographicData().getAttr30Id());
+                primObjFact.setAttr31id(contextData.getDemographicData().getAttr31Id());
+                primObjFact.setAttr32id(contextData.getDemographicData().getAttr32Id());
+                primObjFact.setAttr33id(contextData.getDemographicData().getAttr33Id());
+                primObjFact.setAttr34id(contextData.getDemographicData().getAttr34Id());
+                primObjFact.setAttr35id(contextData.getDemographicData().getAttr35Id());
+                primObjFact.setAttr36id(contextData.getDemographicData().getAttr36Id());
+                primObjFact.setAttr37id(contextData.getDemographicData().getAttr37Id());*/
                 
                 primaries.add(primObjFact);
+            } else {
+            	IrsLLPrimObjFactData primObjFact = new IrsLLPrimObjFactData();
+            	primObjFact.setSessionid(contextData.getSessionId());
+                primObjFact.setStudentid(contextData.getStudentId());
+                primObjFact.setCurrentResultid(new Long (2));
+                primObjFact.setPrimObjid(new Long(Long.parseLong(String.valueOf(prims[i].getProductId()) + String.valueOf(prims[i].getPrimaryObjectiveId()))));
+                primaries.add(primObjFact);
+                
             }
+            
         }
         return (IrsLLPrimObjFactData[]) primaries.toArray(new IrsLLPrimObjFactData[0]);
     }
@@ -169,26 +190,47 @@ public class StudentObjectiveScoresController {
                 Timestamp subtestTime = testData.getBySubtestId(sec.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
                 if(subtestTime == null) subtestTime = contextData.getTestCompletionTimestamp();
                 secObjFact.setTestCompletionTimestamp(subtestTime);  
-                secObjFact.setAttr1id(contextData.getDemographicData().getAttr1Id());
-                secObjFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
-                secObjFact.setAttr3id(contextData.getDemographicData().getAttr3Id());
-                secObjFact.setAttr4id(contextData.getDemographicData().getAttr4Id());
-                secObjFact.setAttr5id(contextData.getDemographicData().getAttr5Id());
-                secObjFact.setAttr6id(contextData.getDemographicData().getAttr6Id());
-                secObjFact.setAttr7id(contextData.getDemographicData().getAttr7Id());
-                secObjFact.setAttr8id(contextData.getDemographicData().getAttr8Id());
+                /*secObjFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
                 secObjFact.setAttr9id(contextData.getDemographicData().getAttr9Id());
-                secObjFact.setAttr10id(contextData.getDemographicData().getAttr10Id());
                 secObjFact.setAttr11id(contextData.getDemographicData().getAttr11Id());
                 secObjFact.setAttr12id(contextData.getDemographicData().getAttr12Id());
                 secObjFact.setAttr13id(contextData.getDemographicData().getAttr13Id());
                 secObjFact.setAttr14id(contextData.getDemographicData().getAttr14Id());
                 secObjFact.setAttr15id(contextData.getDemographicData().getAttr15Id());
                 secObjFact.setAttr16id(contextData.getDemographicData().getAttr16Id());
+                secObjFact.setAttr17id(contextData.getDemographicData().getAttr17Id());
+                secObjFact.setAttr18id(contextData.getDemographicData().getAttr18Id());
+                secObjFact.setAttr19id(contextData.getDemographicData().getAttr19Id());
+                secObjFact.setAttr20id(contextData.getDemographicData().getAttr20Id());
+                secObjFact.setAttr21id(contextData.getDemographicData().getAttr21Id());
+                secObjFact.setAttr22id(contextData.getDemographicData().getAttr22Id());
+                secObjFact.setAttr23id(contextData.getDemographicData().getAttr23Id());
+                secObjFact.setAttr25id(contextData.getDemographicData().getAttr25Id());
+                secObjFact.setAttr26id(contextData.getDemographicData().getAttr26Id());
+                secObjFact.setAttr27id(contextData.getDemographicData().getAttr27Id());
+                secObjFact.setAttr28id(contextData.getDemographicData().getAttr28Id());
+                secObjFact.setAttr29id(contextData.getDemographicData().getAttr29Id());
+                secObjFact.setAttr30id(contextData.getDemographicData().getAttr30Id());
+                secObjFact.setAttr31id(contextData.getDemographicData().getAttr31Id());
+                secObjFact.setAttr32id(contextData.getDemographicData().getAttr32Id());
+                secObjFact.setAttr33id(contextData.getDemographicData().getAttr33Id());
+                secObjFact.setAttr34id(contextData.getDemographicData().getAttr34Id());
+                secObjFact.setAttr35id(contextData.getDemographicData().getAttr35Id());
+                secObjFact.setAttr36id(contextData.getDemographicData().getAttr36Id());
+                secObjFact.setAttr37id(contextData.getDemographicData().getAttr37Id());*/
+                
+                
                 
                 secObjFact.setSubtestName(sec.getSubtestName());
             
                 secondaries.add(secObjFact);
+            } else {
+            	IrsLLSecObjFactData secObjFact = new IrsLLSecObjFactData();
+            	secObjFact.setSessionid(contextData.getSessionId());
+            	secObjFact.setStudentid(contextData.getStudentId());
+            	secObjFact.setCurrentResultid(new Long (2));
+            	secObjFact.setSecObjid(new Long(Long.parseLong(String.valueOf(secs[i].getProductId()) + String.valueOf(secs[i].getSecondaryObjectiveId()))));
+            	secondaries.add(secObjFact);
             }
         }
         return (IrsLLSecObjFactData[]) secondaries.toArray(new IrsLLSecObjFactData[0]);

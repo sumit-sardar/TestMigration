@@ -21,6 +21,9 @@ public class StudentDemographicData{
 	private String questionBGColor;
 	private String questionFontColor;
 	private String questionFontSize;
+	private String musicFileId; // Added for Laslink
+	private String maskingRuler; // Added for Laslink
+	private String magnifyingGlass; // Added for Laslink
 
 	public String getCustomer() {
 		return customer;
@@ -135,5 +138,23 @@ public class StudentDemographicData{
 	}
 	public void setSection504(String section504) {
 		this.section504 = section504;
+	}
+	public String getMusicFileId() {
+		return musicFileId;
+	}
+	public void setMusicFileId(String musicFileId) {
+		this.musicFileId = musicFileId;
+	}
+	public String getMaskingRuler() {
+		return maskingRuler;
+	}
+	public void setMaskingRuler(String maskingRuler) {
+		this.maskingRuler = maskingRuler;
+	}
+	public String getMagnifyingGlass() {
+		return magnifyingGlass;
+	}
+	public void setMagnifyingGlass(String magnifyingGlass) {
+		this.magnifyingGlass = magnifyingGlass;
 	}
 }

@@ -41,7 +41,7 @@ public class StudentItemScoresController {
         for(int i=0;i<facts.length;i++) {
         	IrsLLItemFactData newFact = facts[i];
             ifMapper.delete(newFact);
-            if(new Long(1).equals(contextData.getCurrentResultId()))  {
+            if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 ifMapper.insert(newFact);
             }
             //System.out.println("***** SCORING: StudentItemScoresController: Persisted item fact: " + newFact.getItemid());
@@ -89,25 +89,46 @@ public class StudentItemScoresController {
 	                Timestamp subtestTime = testData.getBySubtestId(item.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
                     if(subtestTime == null) subtestTime = contextData.getTestCompletionTimestamp();
                     itemFact.setTestCompletionTimestamp(subtestTime);  
-                    itemFact.setAttr1id(contextData.getDemographicData().getAttr1Id());
-	                itemFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
-	                itemFact.setAttr3id(contextData.getDemographicData().getAttr3Id());
-	                itemFact.setAttr4id(contextData.getDemographicData().getAttr4Id());
-	                itemFact.setAttr5id(contextData.getDemographicData().getAttr5Id());
-	                itemFact.setAttr6id(contextData.getDemographicData().getAttr6Id());
-	                itemFact.setAttr7id(contextData.getDemographicData().getAttr7Id());
-	                itemFact.setAttr8id(contextData.getDemographicData().getAttr8Id());
+	               /* itemFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
 	                itemFact.setAttr9id(contextData.getDemographicData().getAttr9Id());
-	                itemFact.setAttr10id(contextData.getDemographicData().getAttr10Id());
 	                itemFact.setAttr11id(contextData.getDemographicData().getAttr11Id());
 	                itemFact.setAttr12id(contextData.getDemographicData().getAttr12Id());
 	                itemFact.setAttr13id(contextData.getDemographicData().getAttr13Id());
 	                itemFact.setAttr14id(contextData.getDemographicData().getAttr14Id());
 	                itemFact.setAttr15id(contextData.getDemographicData().getAttr15Id());
 	                itemFact.setAttr16id(contextData.getDemographicData().getAttr16Id());
+	                itemFact.setAttr17id(contextData.getDemographicData().getAttr17Id());
+	                itemFact.setAttr18id(contextData.getDemographicData().getAttr18Id());
+	                itemFact.setAttr19id(contextData.getDemographicData().getAttr19Id());
+	                itemFact.setAttr20id(contextData.getDemographicData().getAttr20Id());
+	                itemFact.setAttr21id(contextData.getDemographicData().getAttr21Id());
+	                itemFact.setAttr22id(contextData.getDemographicData().getAttr22Id());
+	                itemFact.setAttr23id(contextData.getDemographicData().getAttr23Id());
+	                itemFact.setAttr25id(contextData.getDemographicData().getAttr25Id());
+	                itemFact.setAttr26id(contextData.getDemographicData().getAttr26Id());
+	                itemFact.setAttr27id(contextData.getDemographicData().getAttr27Id());
+	                itemFact.setAttr28id(contextData.getDemographicData().getAttr28Id());
+	                itemFact.setAttr29id(contextData.getDemographicData().getAttr29Id());
+	                itemFact.setAttr30id(contextData.getDemographicData().getAttr30Id());
+	                itemFact.setAttr31id(contextData.getDemographicData().getAttr31Id());
+	                itemFact.setAttr32id(contextData.getDemographicData().getAttr32Id());
+	                itemFact.setAttr33id(contextData.getDemographicData().getAttr33Id());
+	                itemFact.setAttr34id(contextData.getDemographicData().getAttr34Id());
+	                itemFact.setAttr35id(contextData.getDemographicData().getAttr35Id());
+	                itemFact.setAttr36id(contextData.getDemographicData().getAttr36Id());
+	                itemFact.setAttr37id(contextData.getDemographicData().getAttr37Id());*/
+	                
 	                itemFact.setSubtestName(item.getSubtestName());
 	                itemFacts.add(itemFact);
+                } else {
+	                IrsLLItemFactData itemFact = new IrsLLItemFactData();
+	                itemFact.setItemid(item.getItemId());
+	                itemFact.setSessionid(contextData.getSessionId());
+	                itemFact.setStudentid(contextData.getStudentId());
+	                itemFact.setCurrentResultid(new Long (2));
+	                itemFacts.add(itemFact);
                 }
+                
             }
         return (IrsLLItemFactData[]) itemFacts.toArray(new IrsLLItemFactData[0]);
     }

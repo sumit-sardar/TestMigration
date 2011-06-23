@@ -18,6 +18,28 @@ public class IrsDemographicData{
 	private Long attr14Id;
 	private Long attr15Id;
 	private Long attr16Id;
+	// Added for LasLink - START 
+	private Long attr17Id; // HOME_LANGUAGE
+	private Long attr18Id; // MOBILITY
+	private Long attr19Id; // USA_SCHOOL_ENROLLMENT
+	private String attr20Id; // PROGRAM_PARTICIPATION
+	private String attr21Id; // SPECIAL_EDUCATION
+	private Long attr22Id; // DISABILITY
+	private String attr23Id; // ACCOMMODATIONS
+	private Long attr25Id; // SPECIAL_CODES-K
+	private Long attr26Id; // SPECIAL_CODES-L
+	private Long attr27Id; // SPECIAL_CODES-M
+	private Long attr28Id; // SPECIAL_CODES-N
+	private Long attr29Id; // SPECIAL_CODES-O
+	private Long attr30Id; // SPECIAL_CODES-P
+	private Long attr31Id; // SPECIAL_CODES-Q
+	private Long attr32Id; // SPECIAL_CODES-R
+	private Long attr33Id; // SPECIAL_CODES-S
+	private Long attr34Id; // SPECIAL_CODES-T
+	private Long attr35Id; // SPECIAL_CODES-T
+	private Long attr36Id; // SPECIAL_CODES-T
+	private Long attr37Id; // SPECIAL_CODES-T
+	// Added for LasLink - END
 		
 
 	/**
@@ -211,5 +233,125 @@ public class IrsDemographicData{
 	 */
 	public void setAttr16Id(Long attr16Id) {
 		this.attr16Id = attr16Id;
+	}
+	public Long getAttr17Id() {
+		return attr17Id;
+	}
+	public void setAttr17Id(Long attr17Id) {
+		this.attr17Id = attr17Id;
+	}
+	public Long getAttr18Id() {
+		return attr18Id;
+	}
+	public void setAttr18Id(Long attr18Id) {
+		this.attr18Id = attr18Id;
+	}
+	public Long getAttr19Id() {
+		return attr19Id;
+	}
+	public void setAttr19Id(Long attr19Id) {
+		this.attr19Id = attr19Id;
+	}
+	public String getAttr20Id() {
+		return attr20Id;
+	}
+	public void setAttr20Id(String attr20Id) {
+		this.attr20Id = attr20Id;
+	}
+	public String getAttr21Id() {
+		return attr21Id;
+	}
+	public void setAttr21Id(String attr21Id) {
+		this.attr21Id = attr21Id;
+	}
+	public Long getAttr22Id() {
+		return attr22Id;
+	}
+	public void setAttr22Id(Long attr22Id) {
+		this.attr22Id = attr22Id;
+	}
+	public String getAttr23Id() {
+		return attr23Id;
+	}
+	public void setAttr23Id(String attr23Id) {
+		this.attr23Id = attr23Id;
+	}
+	public Long getAttr34Id() {
+		return attr34Id;
+	}
+	public void setAttr34Id(Long attr34Id) {
+		this.attr34Id = attr34Id;
+	}
+	public Long getAttr25Id() {
+		return attr25Id;
+	}
+	public void setAttr25Id(Long attr25Id) {
+		this.attr25Id = attr25Id;
+	}
+	public Long getAttr26Id() {
+		return attr26Id;
+	}
+	public void setAttr26Id(Long attr26Id) {
+		this.attr26Id = attr26Id;
+	}
+	public Long getAttr27Id() {
+		return attr27Id;
+	}
+	public void setAttr27Id(Long attr27Id) {
+		this.attr27Id = attr27Id;
+	}
+	public Long getAttr28Id() {
+		return attr28Id;
+	}
+	public void setAttr28Id(Long attr28Id) {
+		this.attr28Id = attr28Id;
+	}
+	public Long getAttr29Id() {
+		return attr29Id;
+	}
+	public void setAttr29Id(Long attr29Id) {
+		this.attr29Id = attr29Id;
+	}
+	public Long getAttr30Id() {
+		return attr30Id;
+	}
+	public void setAttr30Id(Long attr30Id) {
+		this.attr30Id = attr30Id;
+	}
+	public Long getAttr31Id() {
+		return attr31Id;
+	}
+	public void setAttr31Id(Long attr31Id) {
+		this.attr31Id = attr31Id;
+	}
+	public Long getAttr32Id() {
+		return attr32Id;
+	}
+	public void setAttr32Id(Long attr32Id) {
+		this.attr32Id = attr32Id;
+	}
+	public Long getAttr33Id() {
+		return attr33Id;
+	}
+	public void setAttr33Id(Long attr33Id) {
+		this.attr33Id = attr33Id;
+	}
+	public Long getAttr35Id() {
+		return attr35Id;
+	}
+	public void setAttr35Id(Long attr35Id) {
+		this.attr35Id = attr35Id;
+	}
+	public Long getAttr36Id() {
+		return attr36Id;
+	}
+	public void setAttr36Id(Long attr36Id) {
+		this.attr36Id = attr36Id;
+	}
+	public Long getAttr37Id() {
+		return attr37Id;
+	}
+	public void setAttr37Id(Long attr37Id) {
+		this.attr37Id = attr37Id;
 	}
 }

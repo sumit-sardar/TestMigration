@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import com.ctb.lexington.data.ItemSetVO;
 import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.data.CurriculumData;
@@ -41,6 +45,10 @@ public class LLTestResultController implements TestResultController {
 	 private Connection conn;
 	 private ScoreMoveData data;
 	 private ReportingLevels reportingLevels;
+	Integer count;
+	Boolean present = false;
+	Long attrValue;
+	String attrMultipleValue = "";
 	 
 	 
 	 public LLTestResultController(Connection conn, ScoreMoveData data, ReportingLevels reportingLevels) {
@@ -56,68 +64,405 @@ public class LLTestResultController implements TestResultController {
 		final IrsDemographicData details = new IrsDemographicData();
 		Map rd = data.getResearchData();
     
-		String ELL = (String) rd.get("ELL");
-		details.setAttr1Id(new Long(("Yes".equals(ELL) || ("Y".equals(ELL)))?1:
-                                ("True".equals(ELL) || ("T".equals(ELL)))?1:2));
-	 
-		String ethnicity = (String) rd.get("Ethnicity");
-		details.setAttr2Id(new Long(("Asian or Pacific Islander".equals(ethnicity))?1:
-                                ("Asian/Pacific Islander".equals(ethnicity))?1:
-                                ("American Indian or Alaska Native".equals(ethnicity))?2:
-                                ("African American or Black".equals(ethnicity))?3:
-                                ("Hispanic or Latino".equals(ethnicity))?4:
-                                ("Caucasian".equals(ethnicity))?5:
-                                ("Multi-ethnic".equals(ethnicity))?6:7));
-    
-		String freelunch = (String) rd.get("Free Lunch");
-		details.setAttr3Id(new Long(("Yes".equals(freelunch) || ("Y".equals(freelunch)))?1:
-                                ("True".equals(freelunch) || ("T".equals(freelunch)))?1:2));
-		details.setAttr4Id(new Long(("Male".equals(data.getGender()))?1:
-								("Female".equals(data.getGender()))?2:
-                                ("M".equals(data.getGender()))?1:
-                                ("F".equals(data.getGender()))?2:3));
-	
-		String iep = (String) rd.get("IEP");
-		details.setAttr5Id(new Long(("Yes".equals(iep) || ("Y".equals(iep)))?1:
-                                ("True".equals(iep) || ("T".equals(iep)))?1:2));
-                                
-		String lfstat = (String) rd.get("Labor Force Status");
-		details.setAttr6Id(new Long(("Employed".equals(lfstat))?1:
-                                ("Unemployed".equals(lfstat))?2:
-                                ("Not in Labor Force".equals(lfstat))?3:4));
-	
-		String lep = (String) rd.get("LEP");
-		details.setAttr7Id(new Long(("Yes".equals(lep) || ("Y".equals(lep)))?1:
-                                ("True".equals(lep) || ("T".equals(lep)))?1:2));
-    
-		String migrant = (String) rd.get("Migrant");
-		details.setAttr8Id(new Long(("Yes".equals(migrant) || "Y".equals(migrant))?1:
-                                ("True".equals(migrant) || "T".equals(migrant))?1:2));
-    
-		details.setAttr9Id(new Long(("Y".equals(data.getScreenMagnifier()))?1:
-        					("T".equals(data.getScreenMagnifier()))?1:2));
-		details.setAttr11Id(new Long(("Y".equals(data.getScreenReader()))?1:
-							("T".equals(data.getScreenReader()))?1:2));
-		details.setAttr12Id(new Long(("Y".equals(data.getCalculator()))?1:
-							("T".equals(data.getCalculator()))?1:2));
-		details.setAttr13Id(new Long(("Y".equals(data.getTestPause()))?1:
-							("T".equals(data.getTestPause()))?1:2));
-		details.setAttr14Id(new Long(("Y".equals(data.getUntimedTest()))?1:
-							("T".equals(data.getUntimedTest()))?1:2));
-		details.setAttr15Id(new Long((data.getQuestionBGColor() != null || data.getQuestionFontColor() != null)?1:2));
-		details.setAttr16Id(new Long((data.getQuestionFontSize() != null)?1:2));
-	
-		String sec504 = (String) rd.get("Section 504");
-		details.setAttr10Id(new Long(("Yes".equals(sec504) || "Y".equals(sec504))?1:
-                                ("True".equals(sec504) || "T".equals(sec504))?1:2));
+		// Ethnicity
+		if(rd.containsKey("Ethnicity")) {
+			ArrayList<String> Ethnicity = (ArrayList<String>)rd.get("Ethnicity");
+			String ethnicity = Ethnicity.toString();
+			details.setAttr2Id(new Long(("American Indian or Alaska Native".equals(ethnicity))?17:
+                                ("African American or Black, Not Hispanic".equals(ethnicity))?18:
+                                ("Asian".equals(ethnicity))?19:
+                                ("Pacific Islander".equals(ethnicity))?20:
+                                ("Hispanic or Latino".equals(ethnicity))?21:
+                                ("White, Not Hispanic".equals(ethnicity))?22:
+                                ("Multiethnic".equals(ethnicity))?23:
+                                ("Other".equals(ethnicity))?24:
+                                ("mexicano".equals(ethnicity))?25:
+                                ("mexicano-americano".equals(ethnicity))?26:
+                                ("cubano".equals(ethnicity))?27:
+                                ("cubano-americano".equals(ethnicity))?28:
+                                ("puertorriqueño".equals(ethnicity))?29:
+                                ("dominicano".equals(ethnicity))?30:
+                                ("centroamericano".equals(ethnicity))?31:
+                                ("sudamericano".equals(ethnicity))?32:
+                                ("otro".equals(ethnicity))?33:34));
+		}
+		
+		// Home Language
+		if(rd.containsKey("Home Language")) {
+			ArrayList<String> Home_Language = (ArrayList<String>)rd.get("Home Language");
+			String homeLanguage = Home_Language.toString();
+			attrValue = new Long(("00".equals(homeLanguage))?1:
+				            	("01".equals(homeLanguage))?2:
+				                ("02".equals(homeLanguage))?3:
+				                ("03".equals(homeLanguage))?4:
+				                ("04".equals(homeLanguage))?5:
+				                ("05".equals(homeLanguage))?6:
+				                ("06".equals(homeLanguage))?7:
+				                ("07".equals(homeLanguage))?8:
+				                ("08".equals(homeLanguage))?9:
+				                ("09".equals(homeLanguage))?10:11);
+
+			for(count=10; count<=99; count++) {
+				if(homeLanguage.equals(count.toString())){
+					attrValue = new Long(count+1);
+					present = true;
+					break;
+				}
+			}
+			if(!present)
+				attrValue = new Long(101);		
+			details.setAttr17Id(attrValue);
+		}
+		
+		
+		// Mobility
+		if(rd.containsKey("Mobility")) {
+			ArrayList<String> Mobility = (ArrayList<String>)rd.get("Mobility");
+				String mobility = Mobility.toString(); 	
+	    	attrValue = (new Long(("K".equals(mobility) || ("k".equals(mobility)))?1:2));
+			present = false;
+			for(count=1; count<=12; count++) {
+				if(mobility.equals(count.toString())){
+					attrValue = new Long(count+1);
+					present = true;
+					break;
+				}
+			}
+			if(!present)
+				attrValue = new Long(13);		
+			details.setAttr18Id(attrValue);
+		}
+		
+		
+		// USA School Enrollment
+		if(rd.containsKey("USA School Enrollment")) {
+			ArrayList<String> USASchoolEnrollment = (ArrayList<String>)rd.get("USA School Enrollment");
+			String enrollment = USASchoolEnrollment.toString(); 	
+			present = false;
+			for(count=1900; count<=2020; count++) {
+				if(enrollment.equals(count.toString())){
+					attrValue = new Long(count-1899);
+					present = true;
+					break;
+				}
+			}
+			if(!present)
+				attrValue = new Long(count-1899);		
+			details.setAttr19Id(attrValue);
+		}
+		
+		
+		//Program Participation
+		if(rd.containsKey("Program Participation")) {
+			ArrayList<String> ProgramParticipation = (ArrayList<String>)rd.get("Program Participation");
+			String[] programParticipation = new String[ProgramParticipation.size()];
+			for(int i=0; i<ProgramParticipation.size();i++){
+					programParticipation[i] = ProgramParticipation.get(i).toString();
+			}
+			
+			present = false;
+			for(int i=0;i<programParticipation.length;i++){
+				if(programParticipation[i].equals("ESEA Title 1")){
+					attrMultipleValue = attrMultipleValue + ",1";
+					present = true;
+				}
+				if(programParticipation[i].equals("English Language Learner (ESEA Title III)")){
+					attrMultipleValue = attrMultipleValue + ",2";
+					present = true;
+				}
+				if(programParticipation[i].equals("Gifted and Talented")){
+					attrMultipleValue = attrMultipleValue + ",3";
+					present = true;
+				}
+				if(programParticipation[i].equals("Indian Education")){
+					attrMultipleValue = attrMultipleValue + ",4";
+					present = true;
+				}
+				if(programParticipation[i].equals("Migrant Education")){
+					attrMultipleValue = attrMultipleValue + ",5";
+					present = true;
+				}
+			}
+			if(!present)
+				attrMultipleValue = "6";
+			else
+			{
+				if(attrMultipleValue.startsWith(","))
+					attrMultipleValue = attrMultipleValue.substring(1);
+			}
+			details.setAttr20Id(attrMultipleValue);
+		}
+		
+		
+		// Special Education
+		if(rd.containsKey("Special Education")) {
+			ArrayList<String> SpecialEducation = (ArrayList<String>)rd.get("Special Education");
+			String[] specialEducation = new String[SpecialEducation.size()];
+			for(int i=0; i<SpecialEducation.size();i++)
+				specialEducation[i] = SpecialEducation.get(i).toString();
+			present = false;
+			attrMultipleValue = "";
+			for(int i=0;i<specialEducation.length;i++){
+				if(specialEducation[i].equals("IEP")){
+					attrMultipleValue = attrMultipleValue + ",1";
+					present = true;
+				}
+				if(specialEducation[i].equals("504")){
+					attrMultipleValue = attrMultipleValue + ",2";
+					present = true;
+				}
+			}
+			if(!present)
+				attrMultipleValue = "3";
+			else
+			{
+				if(attrMultipleValue.startsWith(","))
+					attrMultipleValue = attrMultipleValue.substring(1);
+			}
+			details.setAttr21Id(attrMultipleValue);
+		}
+		
+		
+		//Disability
+		if(rd.containsKey("Disability")) {
+			ArrayList<String> Disability = (ArrayList<String>)rd.get("Disability");
+			String disability = Disability.toString();
+			details.setAttr22Id(new Long(("A".equals(disability))?1:
+	                                ("D".equals(disability))?2:
+	                                ("HI".equals(disability))?3:
+	                                ("MU".equals(disability))?4:
+	                                ("OI".equals(disability))?5:
+	                                ("OHI".equals(disability))?6:
+	                                ("SED".equals(disability))?7:
+	                                ("LN".equals(disability))?8:
+	                                ("SLI".equals(disability))?9:
+	                                ("TBI".equals(disability))?10:
+	                                ("VI".equals(disability))?11:
+	                                ("ME".equals(disability))?12:12));
+		}
+		
+		
+		//Accommodations
+		if(rd.containsKey("Accommodations")) {
+			ArrayList<String> Accommodations = (ArrayList<String>)rd.get("Accommodations");
+			String[] accommodations = new String[Accommodations.size()];
+			for(int i=0; i<Accommodations.size();i++)
+				accommodations[i] = Accommodations.get(i).toString();
+			present = false;
+			attrMultipleValue = "";
+			for(int i=0;i<accommodations.length;i++){
+				if(accommodations[i].equals("DC-S")){
+					attrMultipleValue = attrMultipleValue + ",1";
+					present = true;
+				}
+				if(accommodations[i].equals("DC-L")){
+					attrMultipleValue = attrMultipleValue + ",2";
+					present = true;
+				}
+				if(accommodations[i].equals("DC-RD")){
+					attrMultipleValue = attrMultipleValue + ",3";
+					present = true;
+				}
+				if(accommodations[i].equals("DC-WR")){
+					attrMultipleValue = attrMultipleValue + ",4";
+					present = true;
+				}
+				if(accommodations[i].equals("RQE-S")){
+					attrMultipleValue = attrMultipleValue + ",5";
+					present = true;
+				}
+				if(accommodations[i].equals("RQE-L")){
+					attrMultipleValue = attrMultipleValue + ",6";
+					present = true;
+				}
+				if(accommodations[i].equals("RQE-RD")){
+					attrMultipleValue = attrMultipleValue + ",7";
+					present = true;
+				}
+				if(accommodations[i].equals("RQE-WR")){
+					attrMultipleValue = attrMultipleValue + ",8";
+					present = true;
+				}
+				if(accommodations[i].equals("RPE-S")){
+					attrMultipleValue = attrMultipleValue + ",9";
+					present = true;
+				}
+				if(accommodations[i].equals("RPE-L")){
+					attrMultipleValue = attrMultipleValue + ",10";
+					present = true;
+				}
+				if(accommodations[i].equals("RPE-RD")){
+					attrMultipleValue = attrMultipleValue + ",11";
+					present = true;
+				}
+				if(accommodations[i].equals("RPE-WR")){
+					attrMultipleValue = attrMultipleValue + ",12";
+					present = true;
+				}
+				if(accommodations[i].equals("RSR-S")){
+					attrMultipleValue = attrMultipleValue + ",13";
+					present = true;
+				}
+				if(accommodations[i].equals("RSR-L")){
+					attrMultipleValue = attrMultipleValue + ",14";
+					present = true;
+				}
+				if(accommodations[i].equals("RSR-RD")){
+					attrMultipleValue = attrMultipleValue + ",15";
+					present = true;
+				}
+				if(accommodations[i].equals("RSR-WR")){
+					attrMultipleValue = attrMultipleValue + ",16";
+					present = true;
+				}
+				if(accommodations[i].equals("SA-S")){
+					attrMultipleValue = attrMultipleValue + ",17";
+					present = true;
+				}
+				if(accommodations[i].equals("SA-L")){
+					attrMultipleValue = attrMultipleValue + ",18";
+					present = true;
+				}
+				if(accommodations[i].equals("SA-RD")){
+					attrMultipleValue = attrMultipleValue + ",19";
+					present = true;
+				}
+				if(accommodations[i].equals("SA-WR")){
+					attrMultipleValue = attrMultipleValue + ",20";
+					present = true;
+				}
+				if(accommodations[i].equals("ASM-S")){
+					attrMultipleValue = attrMultipleValue + ",21";
+					present = true;
+				}
+				if(accommodations[i].equals("ASM-L")){
+					attrMultipleValue = attrMultipleValue + ",22";
+					present = true;
+				}
+				if(accommodations[i].equals("ASM-RD")){
+					attrMultipleValue = attrMultipleValue + ",23";
+					present = true;
+				}
+				if(accommodations[i].equals("ASM-WR")){
+					attrMultipleValue = attrMultipleValue + ",24";
+					present = true;
+				}
+				if(accommodations[i].equals("RDNL-S")){
+					attrMultipleValue = attrMultipleValue + ",25";
+					present = true;
+				}
+				if(accommodations[i].equals("RDNL-L")){
+					attrMultipleValue = attrMultipleValue + ",26";
+					present = true;
+				}
+				if(accommodations[i].equals("RDNL-RD")){
+					attrMultipleValue = attrMultipleValue + ",27";
+					present = true;
+				}
+				if(accommodations[i].equals("RDNL-WR")){
+					attrMultipleValue = attrMultipleValue + ",28";
+					present = true;
+				}
+			}
+			if(!present)
+				attrMultipleValue = "29";
+			else
+			{
+				if(attrMultipleValue.startsWith(","))
+					attrMultipleValue = attrMultipleValue.substring(1);
+			}
+			details.setAttr23Id(attrMultipleValue);
+		}
+		
+		
+		// Special Codes
+		String specialCode = null;
+		if(rd.containsKey("SPECIAL CODES-K")) {		
+			ArrayList<String> K = (ArrayList<String>)rd.get("SPECIAL CODES-K");
+			specialCode = K.toString();
+			details.setAttr25Id(new Long(calculateValue(specialCode)));
+		}
+		if(rd.containsKey("SPECIAL CODES-L")) {	
+			ArrayList<String> L = (ArrayList<String>)rd.get("SPECIAL CODES-L");
+			specialCode = L.toString();
+			details.setAttr26Id(new Long(calculateValue(specialCode)));
+		}
+		if(rd.containsKey("SPECIAL CODES-M")) {	
+			ArrayList<String> M = (ArrayList<String>)rd.get("SPECIAL CODES-M");
+			specialCode = M.toString();
+			details.setAttr27Id(new Long(calculateValue(specialCode)));
+		}
+		if(rd.containsKey("SPECIAL CODES-N")) {	
+			ArrayList<String> N = (ArrayList<String>)rd.get("SPECIAL CODES-N");
+			specialCode = N.toString();
+			details.setAttr28Id(new Long(calculateValue(specialCode)));
+		}
+		if(rd.containsKey("SPECIAL CODES-O")) {	
+			ArrayList<String> O = (ArrayList<String>)rd.get("SPECIAL CODES-O");
+			specialCode = O.toString();
+			details.setAttr29Id(new Long(calculateValue(specialCode)));
+		}
+		if(rd.containsKey("SPECIAL CODES-P")) {	
+			ArrayList<String> P = (ArrayList<String>)rd.get("SPECIAL CODES-P");
+			specialCode = P.toString();
+			details.setAttr30Id(new Long(calculateValue(specialCode)));
+		}
+		if(rd.containsKey("SPECIAL CODES-Q")) {	
+			ArrayList<String> Q = (ArrayList<String>)rd.get("SPECIAL CODES-Q");
+			specialCode = Q.toString();
+			details.setAttr31Id(new Long(calculateValue(specialCode)));
+		}
+		if(rd.containsKey("SPECIAL CODES-R")) {	
+			ArrayList<String> R = (ArrayList<String>)rd.get("SPECIAL CODES-R");
+			specialCode = R.toString();
+			details.setAttr32Id(new Long(calculateValue(specialCode)));
+		}
+		if(rd.containsKey("SPECIAL CODES-S")) {	
+			ArrayList<String> S = (ArrayList<String>)rd.get("SPECIAL CODES-S");
+			specialCode = S.toString();
+			details.setAttr33Id(new Long(calculateValue(specialCode)));
+		}
+		if(rd.containsKey("SPECIAL CODES-T")) {	
+			ArrayList<String> T = (ArrayList<String>)rd.get("SPECIAL CODES-T");
+			specialCode = T.toString();
+			details.setAttr34Id(new Long(calculateValue(specialCode)));
+		}
+		
+		details.setAttr9Id(new Long(("Y".equals(data.getScreenMagnifier()))?4:
+        					("T".equals(data.getScreenMagnifier()))?4:5));
+		details.setAttr11Id(new Long(("Y".equals(data.getScreenReader()))?4:
+							("T".equals(data.getScreenReader()))?4:5));
+		details.setAttr12Id(new Long(("Y".equals(data.getCalculator()))?4:
+							("T".equals(data.getCalculator()))?4:5));
+		details.setAttr13Id(new Long(("Y".equals(data.getTestPause()))?4:
+							("T".equals(data.getTestPause()))?4:5));
+		details.setAttr14Id(new Long(("Y".equals(data.getUntimedTest()))?4:
+							("T".equals(data.getUntimedTest()))?4:5));
+		details.setAttr15Id(new Long((data.getQuestionBGColor() != null || data.getQuestionFontColor() != null)?4:5));
+		details.setAttr16Id(new Long((data.getQuestionFontSize() != null)?4:5));
+		details.setAttr35Id(new Long((data.getMusicFileId() != null)?1:2));
+		details.setAttr36Id(new Long(("Y".equals(data.getMaskingRuler()))?1:
+			("T".equals(data.getMaskingRuler()))?1:2));
+		details.setAttr37Id(new Long(("Y".equals(data.getMagnifyingGlass()))?1:
+			("T".equals(data.getMagnifyingGlass()))?1:2));		
      
 	 return details;
 	}
+	
+	public int calculateValue(String code) {
+		for(int i=0;i<9;i++) {
+			if(Integer.parseInt(code) == i)
+				return i+1;
+		}
+		return 11;
+	}
+	
+	
 
 	@Override
 	public void run(ValidationStatus rosterValidationStatus)
 			throws IOException, DataException, CTBSystemException, SQLException {
-		IrsDemographicData demographicData = getIrsDemographics(data.getDemographicData());
+		//IrsDemographicData demographicData = getIrsDemographics(data.getDemographicData());
         OrgNodeData orgNodeData = data.getOrgNodeData();
         StudentData studentData = data.getStudentData();
         AdminData adminData = data.getAdminData();
@@ -181,7 +526,7 @@ public class LLTestResultController implements TestResultController {
         context.setAssessmentId(adminData.getAssessmentId());
         context.setAssessmentType(adminData.getAssessmentType());
         context.setProgramId(adminData.getProgramId());
-      context.setDemographicData(demographicData);
+      //context.setDemographicData(demographicData);
         
         new CurriculumController(conn, curriculumData, adminData, context).run();
         System.out.println("***** SCORING: Persisted dimension data.");

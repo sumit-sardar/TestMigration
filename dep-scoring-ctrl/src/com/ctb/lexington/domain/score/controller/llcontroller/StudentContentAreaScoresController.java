@@ -42,7 +42,7 @@ public class StudentContentAreaScoresController {
         for(int i=0;i<facts.length;i++) {
         	IrsLLContentAreaFactData newFact = facts[i];
             mapper.delete(newFact);
-            if(new Long(1).equals(context.getCurrentResultId()))  {
+            if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 System.out.println("LLCAFact record currency: " + mapper.isLLCAFactCurrent(newFact));
                 mapper.insert(newFact);
             }
@@ -92,22 +92,41 @@ public class StudentContentAreaScoresController {
                    Timestamp subtestTime = testData.getBySubtestId(contentAreas[i].getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
                    if(subtestTime == null) subtestTime = context.getTestCompletionTimestamp();
                    newFact.setTestCompletionTimestamp(subtestTime);
-                   newFact.setAttr1id(context.getDemographicData().getAttr1Id());
-                   newFact.setAttr2id(context.getDemographicData().getAttr2Id());
-                   newFact.setAttr3id(context.getDemographicData().getAttr3Id());
-                   newFact.setAttr4id(context.getDemographicData().getAttr4Id());
-                   newFact.setAttr5id(context.getDemographicData().getAttr5Id());
-                   newFact.setAttr6id(context.getDemographicData().getAttr6Id());
-                   newFact.setAttr7id(context.getDemographicData().getAttr7Id());
-                   newFact.setAttr8id(context.getDemographicData().getAttr8Id());
+                  /* newFact.setAttr2id(context.getDemographicData().getAttr2Id());
                    newFact.setAttr9id(context.getDemographicData().getAttr9Id());
-                   newFact.setAttr10id(context.getDemographicData().getAttr10Id());
                    newFact.setAttr11id(context.getDemographicData().getAttr11Id());
                    newFact.setAttr12id(context.getDemographicData().getAttr12Id());
                    newFact.setAttr13id(context.getDemographicData().getAttr13Id());
                    newFact.setAttr14id(context.getDemographicData().getAttr14Id());
                    newFact.setAttr15id(context.getDemographicData().getAttr15Id());
                    newFact.setAttr16id(context.getDemographicData().getAttr16Id());
+                   newFact.setAttr17id(context.getDemographicData().getAttr17Id());
+                   newFact.setAttr18id(context.getDemographicData().getAttr18Id());
+                   newFact.setAttr19id(context.getDemographicData().getAttr19Id());
+                   newFact.setAttr20id(context.getDemographicData().getAttr20Id());
+                   newFact.setAttr21id(context.getDemographicData().getAttr21Id());
+                   newFact.setAttr22id(context.getDemographicData().getAttr22Id());
+                   newFact.setAttr23id(context.getDemographicData().getAttr23Id());
+                   newFact.setAttr25id(context.getDemographicData().getAttr25Id());
+                   newFact.setAttr26id(context.getDemographicData().getAttr26Id());
+                   newFact.setAttr27id(context.getDemographicData().getAttr27Id());
+                   newFact.setAttr28id(context.getDemographicData().getAttr28Id());
+                   newFact.setAttr29id(context.getDemographicData().getAttr29Id());
+                   newFact.setAttr30id(context.getDemographicData().getAttr30Id());
+                   newFact.setAttr31id(context.getDemographicData().getAttr31Id());
+                   newFact.setAttr32id(context.getDemographicData().getAttr32Id());
+                   newFact.setAttr33id(context.getDemographicData().getAttr33Id());
+                   newFact.setAttr34id(context.getDemographicData().getAttr34Id());
+                   newFact.setAttr35id(context.getDemographicData().getAttr35Id());
+                   newFact.setAttr36id(context.getDemographicData().getAttr36Id());
+                   newFact.setAttr37id(context.getDemographicData().getAttr37Id());*/
+                   facts.add(newFact);
+               } else {
+            	   IrsLLContentAreaFactData newFact = new IrsLLContentAreaFactData();
+            	   newFact.setSessionid(context.getSessionId());
+                   newFact.setStudentid(context.getStudentId());
+                   newFact.setContentAreaid(contentAreas[i].getContentAreaId());
+                   newFact.setCurrentResultid(new Long (2));
                    facts.add(newFact);
                }
             }

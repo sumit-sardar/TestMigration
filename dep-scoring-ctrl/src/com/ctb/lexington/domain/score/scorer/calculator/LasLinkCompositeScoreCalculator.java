@@ -287,8 +287,11 @@ public class LasLinkCompositeScoreCalculator extends AbstractDerivedScoreCalcula
 	    			 new BigDecimal(oralCompositeScores.pointsObtained), ScoreLookupCode.SUBTEST_NUMBER_CORRECT,
 	                 ScoreLookupCode.SCALED_SCORE, pTestLevel, null);
 	    	if(oralScaleScore != null) {
+	    		oralCompositeScores.scaleScore = oralScaleScore;
 	    		contentAreaScaleScore.put(ORAL_CONTENT_AREA_NAME, oralScaleScore.intValue());
-	    	}
+	    	} 
+    	} else {
+    		contentAreaScaleScore.put(ORAL_CONTENT_AREA_NAME, new Integer (0));
     	}
     	
     }
@@ -302,9 +305,12 @@ public class LasLinkCompositeScoreCalculator extends AbstractDerivedScoreCalcula
 	    			  new BigDecimal(comprehensionCompositeScores.pointsObtained), ScoreLookupCode.SUBTEST_NUMBER_CORRECT,
 	                 ScoreLookupCode.SCALED_SCORE, pTestLevel, null);
 	    	 if(ComprehensionScaleScore != null) {
-	    	 contentAreaScaleScore.put(COMPREHENSIVE_CONTENT_AREA_NAME, ComprehensionScaleScore.intValue());
+	    		 comprehensionCompositeScores.scaleScore = ComprehensionScaleScore; 
+	    		 contentAreaScaleScore.put(COMPREHENSIVE_CONTENT_AREA_NAME, ComprehensionScaleScore.intValue());
 	    	 }
-    	 }
+    	 } else {
+	    	 contentAreaScaleScore.put(COMPREHENSIVE_CONTENT_AREA_NAME, new Integer (0));
+	    	}
     } 
     
     
@@ -368,12 +374,12 @@ public class LasLinkCompositeScoreCalculator extends AbstractDerivedScoreCalcula
 	         
 	    	if(OverallScaleScore != null) {
 	    		contentAreaScaleScore.put(OVERALL_CONTENT_AREA_NAME, OverallScaleScore.intValue());
+	    		overallCompositeScores.scaleScore = OverallScaleScore;
 	    		overallCompositeScores.validScore = CTBConstants.VALID_SCORE;
 	    	}
     	 }
     	 if(count == 0){
     		 overallCompositeScores.validScore = CTBConstants.INVALID_SCORE;
-    		 System.out.println("PUBLISHED---->"+overallCompositeScores.validScore);
     	 }
     }
     
@@ -473,8 +479,11 @@ public class LasLinkCompositeScoreCalculator extends AbstractDerivedScoreCalcula
               	  subtestContentAreaCompositeAndDerived.setPercentObtained(oralCompositeScores.getPercentObtained());
               	  subtestContentAreaCompositeAndDerived.setContentAreaName(contentArea);
               	subtestContentAreaCompositeAndDerived.setValidScore(oralCompositeScores.validScore) ; 
-              	 System.out.println(subtestContentAreaCompositeAndDerived.getValidScore());
-              } 
+              	
+              } else if(contentArea.equals(ORAL_CONTENT_AREA_NAME)&& oralCompositeScores.validScore.equals(CTBConstants.INVALID_SCORE)){
+            	  subtestContentAreaCompositeAndDerived.setContentAreaName(contentArea);
+            	  subtestContentAreaCompositeAndDerived.setValidScore(oralCompositeScores.validScore) ; 
+              }
               
               if(contentArea.equals(COMPREHENSIVE_CONTENT_AREA_NAME) && comprehensionCompositeScores.validScore.equals(CTBConstants.VALID_SCORE)){
             	  subtestContentAreaCompositeAndDerived.setScaleScore(scaleScore);
@@ -487,8 +496,12 @@ public class LasLinkCompositeScoreCalculator extends AbstractDerivedScoreCalcula
               	  subtestContentAreaCompositeAndDerived.setPercentObtained(comprehensionCompositeScores.getPercentObtained());
             	  subtestContentAreaCompositeAndDerived.setContentAreaName(contentArea);
             	  subtestContentAreaCompositeAndDerived.setValidScore(comprehensionCompositeScores.validScore) ; 
-            	  System.out.println(subtestContentAreaCompositeAndDerived.getValidScore());
-              } 
+            	  
+              } else if (contentArea.equals(COMPREHENSIVE_CONTENT_AREA_NAME) && comprehensionCompositeScores.validScore.equals(CTBConstants.INVALID_SCORE)){
+            	  subtestContentAreaCompositeAndDerived.setContentAreaName(contentArea);
+            	  subtestContentAreaCompositeAndDerived.setValidScore(comprehensionCompositeScores.validScore) ; 
+               }
+              
               if (contentAreaDerivedScoreEvents.containsKey(contentArea)) {
                   ContentAreaDerivedScoreEvent derivedScoreEvent = (ContentAreaDerivedScoreEvent) contentAreaDerivedScoreEvents.get(contentArea);
                   subtestContentAreaCompositeAndDerived.setScaleScore(derivedScoreEvent.getScaleScore().intValue());
@@ -508,7 +521,6 @@ public class LasLinkCompositeScoreCalculator extends AbstractDerivedScoreCalcula
 	          		subtestContentAreaCompositeAndDerived.setValidScore(CTBConstants.VALID_SCORE) ; 
 	          	  else
 	          		subtestContentAreaCompositeAndDerived.setValidScore(CTBConstants.INVALID_SCORE) ;
-	          	  System.out.println(subtestContentAreaCompositeAndDerived.getValidScore());
               }
               
             

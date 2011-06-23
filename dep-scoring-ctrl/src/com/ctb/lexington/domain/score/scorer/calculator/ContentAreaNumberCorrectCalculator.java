@@ -120,7 +120,6 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
     	Iterator itr = contenAreaSet.iterator();
 	    	while(itr.hasNext()) {
 	    		String contentArea = (String)itr.next();
-	    		System.out.println("contentArea==>"+contentArea);
 	    		 if(itemsByContentArea.containsKey(event.getItemId() + contentArea)){
 	    			 final ItemContentArea itemContentArea = (ItemContentArea) itemsByContentArea.get(event
 	    		                .getItemId() + contentArea);
