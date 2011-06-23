@@ -1287,9 +1287,8 @@ function validateFileName() {
     
     var element = document.getElementById("fileName");
     var filename = element.value;
-	filename = filename.trim();
     
-    if (filename.length == 0) {
+    if ((filename == null) || (filename.length == 0)) {
         alert ("File name required.");      
         return false;
     }
@@ -1320,10 +1319,10 @@ function validateFileName() {
 function validateEmail() {   
     var element = document.getElementById("email");
     var email = element.value;
-	email = email.trim();
 	
-	if (email.length == 0) 
+    if ((email == null) || (email.length == 0)) {
 		return true;
+	}
 	
     var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$/;   
     if (! emailPattern.test(email)) {
