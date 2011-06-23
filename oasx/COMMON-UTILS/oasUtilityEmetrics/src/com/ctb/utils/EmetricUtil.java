@@ -131,7 +131,7 @@ public class EmetricUtil {
 		
 		if (grade.startsWith("K")) {
 			
-			return grade;
+			return "KG";
 		
 		}else{
 			grade = String.format("%2s", grade).replace(' ',
