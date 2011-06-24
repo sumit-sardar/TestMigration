@@ -233,7 +233,7 @@ public class ScheduleTestController extends PageFlowController
     	   	
         init(form);
 		
-		customerHasScoring();//For hand scoring changes
+		// customerHasScoring(); //For hand scoring changes //Commented: TAS Scalability Part III
         
         this.action = ACTION_SCHEDULE_TEST;
         
