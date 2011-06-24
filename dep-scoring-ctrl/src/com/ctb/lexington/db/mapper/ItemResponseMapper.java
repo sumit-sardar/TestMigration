@@ -32,7 +32,7 @@ public class ItemResponseMapper extends AbstractDBMapper {
     }
     
     public List findItemResponsesByRoster(final Long testRosterId) throws CTBSystemException {
-        String sql = "SELECT " +
+        String sql = "SELECT DISTINCT " +
     "IR.ITEM_RESPONSE_ID as itemResponseId, " +
     "IR.ITEM_SET_ID as itemSetId, " +
     "IR.TEST_ROSTER_ID as testRosterId, " +
@@ -47,8 +47,8 @@ public class ItemResponseMapper extends AbstractDBMapper {
     "IR.CREATED_BY as createdBy, " +
     "IRP.POINTS as points, " +
     "IRP.CONDITION_CODE_ID as conditionCodeId, " +
-    "IRP.COMMENTS as comments, " +
-    "IRC.CONSTRUCTED_RESPONSE as constructedResponse " +
+    "IRP.COMMENTS as comments " +
+   // "IRC.CONSTRUCTED_RESPONSE as constructedResponse " + TO AVOID MULTI DATA POINT ENTRY
 "FROM " +
     "ITEM_RESPONSE IR, " +
     "ITEM_RESPONSE_CR IRC, " +
@@ -91,7 +91,7 @@ public class ItemResponseMapper extends AbstractDBMapper {
         		ItemResponseVO response = new ItemResponseVO();
         		response.setItemId(SQLUtil.getString(rs, "itemId"));
         		response.setItemSetId(SQLUtil.getInteger(rs, "itemSetId"));
-        		response.setConstructedResponse(SQLUtil.getClob(rs, "constructedResponse"));
+        		//response.setConstructedResponse(SQLUtil.getClob(rs, "constructedResponse"));
         		responses.add(response);
         	}
         } catch (SQLException e) {

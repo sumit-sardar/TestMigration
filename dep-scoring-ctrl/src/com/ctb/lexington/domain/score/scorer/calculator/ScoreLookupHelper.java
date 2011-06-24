@@ -51,11 +51,11 @@ public class ScoreLookupHelper {
         }
     }
     
-    public BigDecimal getLasLinkPerformanceLevel(BigDecimal sourceScoreValue, String contentArea,
-            String testLevel, Connection conn) {
+    public BigDecimal getLasLinkPerformanceLevel(String frameworkCode, BigDecimal sourceScoreValue, String contentArea,
+            String testLevel, String grade, String testForm, Connection conn) {
         try {
             final ScoreLookupMapper mapper = new ScoreLookupMapper(conn);
-            return mapper.findLasLinkPerformanceLevel(sourceScoreValue, testLevel, contentArea);
+            return mapper.findLasLinkPerformanceLevel(frameworkCode, sourceScoreValue, testLevel, contentArea, grade, testForm);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

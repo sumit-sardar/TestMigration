@@ -105,7 +105,7 @@ public class StudentObjectiveScoresController {
                 Timestamp subtestTime = testData.getBySubtestId(prim.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
                 if(subtestTime == null) subtestTime = contextData.getTestCompletionTimestamp();
                 primObjFact.setTestCompletionTimestamp(subtestTime);  
-                /* primObjFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
+                 primObjFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
                 primObjFact.setAttr9id(contextData.getDemographicData().getAttr9Id());
                 primObjFact.setAttr11id(contextData.getDemographicData().getAttr11Id());
                 primObjFact.setAttr12id(contextData.getDemographicData().getAttr12Id());
@@ -132,7 +132,7 @@ public class StudentObjectiveScoresController {
                 primObjFact.setAttr34id(contextData.getDemographicData().getAttr34Id());
                 primObjFact.setAttr35id(contextData.getDemographicData().getAttr35Id());
                 primObjFact.setAttr36id(contextData.getDemographicData().getAttr36Id());
-                primObjFact.setAttr37id(contextData.getDemographicData().getAttr37Id());*/
+                primObjFact.setAttr37id(contextData.getDemographicData().getAttr37Id());
                 
                 primaries.add(primObjFact);
             } else {
@@ -190,7 +190,7 @@ public class StudentObjectiveScoresController {
                 Timestamp subtestTime = testData.getBySubtestId(sec.getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
                 if(subtestTime == null) subtestTime = contextData.getTestCompletionTimestamp();
                 secObjFact.setTestCompletionTimestamp(subtestTime);  
-                /*secObjFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
+                secObjFact.setAttr2id(contextData.getDemographicData().getAttr2Id());
                 secObjFact.setAttr9id(contextData.getDemographicData().getAttr9Id());
                 secObjFact.setAttr11id(contextData.getDemographicData().getAttr11Id());
                 secObjFact.setAttr12id(contextData.getDemographicData().getAttr12Id());
@@ -217,7 +217,7 @@ public class StudentObjectiveScoresController {
                 secObjFact.setAttr34id(contextData.getDemographicData().getAttr34Id());
                 secObjFact.setAttr35id(contextData.getDemographicData().getAttr35Id());
                 secObjFact.setAttr36id(contextData.getDemographicData().getAttr36Id());
-                secObjFact.setAttr37id(contextData.getDemographicData().getAttr37Id());*/
+                secObjFact.setAttr37id(contextData.getDemographicData().getAttr37Id());
                 
                 
                 

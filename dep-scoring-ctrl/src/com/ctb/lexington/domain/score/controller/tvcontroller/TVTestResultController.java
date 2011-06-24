@@ -135,16 +135,18 @@ public class TVTestResultController implements TestResultController {
     		final IrsDemographicData details = new IrsDemographicData();
     		Map rd = data.getResearchData();
         
+    		details.setAttr1Id(new Long(4));
     		if(rd.containsKey("ELL")) {
     			ArrayList<String> lell = (ArrayList<String>)rd.get("ELL");
-	    		String ELL = lell.toString();
+	    		String ELL = lell.get(0);
 	    		details.setAttr1Id(new Long(("Yes".equals(ELL) || ("Y".equals(ELL)))?3:
                                     ("True".equals(ELL) || ("T".equals(ELL)))?3:4));
     		}
     	 
+    		details.setAttr2Id(new Long(16));
     		if(rd.containsKey("Ethnicity")) {
     			ArrayList<String> lethnicity = (ArrayList<String>)rd.get("Ethnicity");
-	    		String ethnicity = lethnicity.toString();
+	    		String ethnicity = lethnicity.get(0);
 	    		details.setAttr2Id(new Long(("African American or Black, Not Hispanic".equals(ethnicity))?8:
                               ("American Indian or Alaska Native".equals(ethnicity))?9:
                               ("Asian".equals(ethnicity))?10:
@@ -155,9 +157,10 @@ public class TVTestResultController implements TestResultController {
                               ("Other".equals(ethnicity))?15:16));
     		}
     		
+    		details.setAttr3Id(new Long(4));
     		if(rd.containsKey("Free Lunch")) {
     			ArrayList<String> lunch = (ArrayList<String>)rd.get("Free Lunch");
-	    		String freelunch = lunch.toString();
+	    		String freelunch = lunch.get(0);
 	    		details.setAttr3Id(new Long(("Yes".equals(freelunch) || ("Y".equals(freelunch)))?3:
                                     ("True".equals(freelunch) || ("T".equals(freelunch)))?3:4));
     		}
@@ -166,25 +169,28 @@ public class TVTestResultController implements TestResultController {
                                     ("M".equals(data.getGender()))?5:
                                     ("F".equals(data.getGender()))?4:6));
     	
+    		details.setAttr5Id(new Long(4));
     		if(rd.containsKey("IEP")) {
     			ArrayList<String> iepl = (ArrayList<String>)rd.get("IEP");
-	    			String iep = iepl.toString();
+	    			String iep = iepl.get(0);
 	    			details.setAttr5Id(new Long(("Yes".equals(iep) || ("Y".equals(iep)))?3:
                                     ("True".equals(iep) || ("T".equals(iep)))?3:4));
     		}
                                     
     		details.setAttr6Id(new Long(9));
     		
+    		details.setAttr7Id(new Long(4));
     		if(rd.containsKey("LEP")) {
     			ArrayList<String> llep = (ArrayList<String>)rd.get("LEP");
-    			String lep = llep.toString();
+    			String lep = llep.get(0);
     			details.setAttr7Id(new Long(("Yes".equals(lep) || ("Y".equals(lep)))?3:
                                     ("True".equals(lep) || ("T".equals(lep)))?3:4));
     		}
     		
+    		details.setAttr8Id(new Long(4));
     		if(rd.containsKey("Migrant")) {        
     			ArrayList<String> mig = (ArrayList<String>)rd.get("Migrant");
-    			String migrant = mig.toString();
+    			String migrant = mig.get(0);
     			details.setAttr8Id(new Long(("Yes".equals(migrant) || "Y".equals(migrant))?3:
                                     ("True".equals(migrant) || "T".equals(migrant))?3:4));
     		}
@@ -202,9 +208,10 @@ public class TVTestResultController implements TestResultController {
     		details.setAttr15Id(new Long((data.getQuestionBGColor() != null || data.getQuestionFontColor() != null)?3:4));
     		details.setAttr16Id(new Long((data.getQuestionFontSize() != null)?3:4));
     	
+    		details.setAttr10Id(new Long(4));
     		if(rd.containsKey("Section 504")) { 
     			ArrayList<String> section = (ArrayList<String>)rd.get("Section 504");
-    			String sec504 = section.toString();
+    			String sec504 = section.get(0);
     			details.setAttr10Id(new Long(("Yes".equals(sec504) || "Y".equals(sec504))?3:
                                     ("True".equals(sec504) || "T".equals(sec504))?3:4));
     		}

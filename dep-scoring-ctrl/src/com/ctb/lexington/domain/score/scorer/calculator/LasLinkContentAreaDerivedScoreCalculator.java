@@ -18,6 +18,7 @@ import com.ctb.lexington.util.SafeHashMap;
  * @author TCS
 */
 public class LasLinkContentAreaDerivedScoreCalculator extends AbstractDerivedScoreCalculator {
+    private static final String LASLINK_FRAMEWORK_CODE = "LLEAB";
     public LasLinkContentAreaDerivedScoreCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
         channel.subscribe(this, ContentAreaRawScoreEvent.class);
@@ -39,14 +40,14 @@ public class LasLinkContentAreaDerivedScoreCalculator extends AbstractDerivedSco
     	final Integer subtestId = DatabaseHelper.asInteger(event.getSubtestId());
         
          
-         if("K".equals(pTestLevel) || "1".equals(pTestLevel)) {
+       /*  if("K".equals(pTestLevel) || "1".equals(pTestLevel)) {
              pTestLevel = "1";
          }
          if( "2-3".equals(pTestLevel) ){  pTestLevel = "2"; }
          if( "4-5".equals(pTestLevel) ){  pTestLevel = "3"; }
          if( "6-8".equals(pTestLevel) ){  pTestLevel = "4"; }
          if( "9-12".equals(pTestLevel) ){ pTestLevel = "5"; }
-         
+         */
          if ("A".equals(pDupTestForm) || "B".equals(pDupTestForm)) { 
         	 pTestForm = pDupTestForm;
          }
@@ -70,8 +71,8 @@ public class LasLinkContentAreaDerivedScoreCalculator extends AbstractDerivedSco
 				ScoreLookupCode.SCALED_SCORE,
 				null );
         
-        final BigDecimal proficencyLevelValue = getLasLinkPerformanceLevel(event.getContentAreaName(),
-                pTestLevel, scaleScore);
+        final BigDecimal proficencyLevelValue = getLasLinkPerformanceLevel(LASLINK_FRAMEWORK_CODE, event.getContentAreaName(),
+                pTestLevel, scaleScore, pGrade, pTestForm);
        final PerformanceLevel proficencyLevel = PerformanceLevel.getByCode(String
                 .valueOf(proficencyLevelValue));
         

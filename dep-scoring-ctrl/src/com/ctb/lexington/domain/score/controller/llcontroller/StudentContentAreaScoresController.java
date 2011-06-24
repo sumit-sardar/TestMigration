@@ -92,7 +92,7 @@ public class StudentContentAreaScoresController {
                    Timestamp subtestTime = testData.getBySubtestId(contentAreas[i].getSubtestId()).getSubtestCompletionTimestamp(adminData.getTimeZone());
                    if(subtestTime == null) subtestTime = context.getTestCompletionTimestamp();
                    newFact.setTestCompletionTimestamp(subtestTime);
-                  /* newFact.setAttr2id(context.getDemographicData().getAttr2Id());
+                   newFact.setAttr2id(context.getDemographicData().getAttr2Id());
                    newFact.setAttr9id(context.getDemographicData().getAttr9Id());
                    newFact.setAttr11id(context.getDemographicData().getAttr11Id());
                    newFact.setAttr12id(context.getDemographicData().getAttr12Id());
@@ -119,7 +119,7 @@ public class StudentContentAreaScoresController {
                    newFact.setAttr34id(context.getDemographicData().getAttr34Id());
                    newFact.setAttr35id(context.getDemographicData().getAttr35Id());
                    newFact.setAttr36id(context.getDemographicData().getAttr36Id());
-                   newFact.setAttr37id(context.getDemographicData().getAttr37Id());*/
+                   newFact.setAttr37id(context.getDemographicData().getAttr37Id());
                    facts.add(newFact);
                } else {
             	   IrsLLContentAreaFactData newFact = new IrsLLContentAreaFactData();

@@ -63,11 +63,11 @@ public class LLTestResultController implements TestResultController {
 	public IrsDemographicData getIrsDemographics(StudentDemographicData data) {
 		final IrsDemographicData details = new IrsDemographicData();
 		Map rd = data.getResearchData();
-    
 		// Ethnicity
+		details.setAttr2Id(new Long(34));
 		if(rd.containsKey("Ethnicity")) {
 			ArrayList<String> Ethnicity = (ArrayList<String>)rd.get("Ethnicity");
-			String ethnicity = Ethnicity.toString();
+			String ethnicity = Ethnicity.get(0);
 			details.setAttr2Id(new Long(("American Indian or Alaska Native".equals(ethnicity))?17:
                                 ("African American or Black, Not Hispanic".equals(ethnicity))?18:
                                 ("Asian".equals(ethnicity))?19:
@@ -88,9 +88,11 @@ public class LLTestResultController implements TestResultController {
 		}
 		
 		// Home Language
+		details.setAttr17Id(new Long(101));
 		if(rd.containsKey("Home Language")) {
+			present = false;
 			ArrayList<String> Home_Language = (ArrayList<String>)rd.get("Home Language");
-			String homeLanguage = Home_Language.toString();
+			String homeLanguage = Home_Language.get(0);
 			attrValue = new Long(("00".equals(homeLanguage))?1:
 				            	("01".equals(homeLanguage))?2:
 				                ("02".equals(homeLanguage))?3:
@@ -101,51 +103,66 @@ public class LLTestResultController implements TestResultController {
 				                ("07".equals(homeLanguage))?8:
 				                ("08".equals(homeLanguage))?9:
 				                ("09".equals(homeLanguage))?10:11);
-
-			for(count=10; count<=99; count++) {
-				if(homeLanguage.equals(count.toString())){
-					attrValue = new Long(count+1);
-					present = true;
-					break;
+			if(attrValue.intValue() == 11) {
+				for(count=10; count<=99; count++) {
+					if(homeLanguage.equals(count.toString())){
+						attrValue = new Long(count+1);
+						present = true;
+						break;
+					}
 				}
+				if(!present)
+					attrValue = new Long(101);
 			}
-			if(!present)
-				attrValue = new Long(101);		
 			details.setAttr17Id(attrValue);
 		}
 		
 		
 		// Mobility
+		details.setAttr18Id(new Long(13));
 		if(rd.containsKey("Mobility")) {
 			ArrayList<String> Mobility = (ArrayList<String>)rd.get("Mobility");
-				String mobility = Mobility.toString(); 	
+				String mobility = Mobility.get(0); 	
 	    	attrValue = (new Long(("K".equals(mobility) || ("k".equals(mobility)))?1:2));
 			present = false;
-			for(count=1; count<=12; count++) {
-				if(mobility.equals(count.toString())){
-					attrValue = new Long(count+1);
+			if(attrValue.intValue() == 2){
+				if(Integer.valueOf(mobility).intValue()> 0 && Integer.valueOf(mobility).intValue() <=12) {
+					int value = Integer.valueOf(mobility).intValue();
+					attrValue = new Long(value+1);
 					present = true;
-					break;
 				}
+				/*for(count=1; count<=12; count++) {
+					if(mobility.equals(count.toString())){
+						attrValue = new Long(count+1);
+						present = true;
+						break;
+					}
+				}*/
+				if(!present)
+					attrValue = new Long(13);		
 			}
-			if(!present)
-				attrValue = new Long(13);		
 			details.setAttr18Id(attrValue);
 		}
 		
 		
 		// USA School Enrollment
+		details.setAttr19Id(new Long(122));
 		if(rd.containsKey("USA School Enrollment")) {
 			ArrayList<String> USASchoolEnrollment = (ArrayList<String>)rd.get("USA School Enrollment");
-			String enrollment = USASchoolEnrollment.toString(); 	
+			String enrollment = USASchoolEnrollment.get(0); 	
 			present = false;
-			for(count=1900; count<=2020; count++) {
+			if(Integer.valueOf(enrollment).intValue()> 1899 && Integer.valueOf(enrollment).intValue() <=2020) {
+				int value = Integer.valueOf(enrollment).intValue();
+				attrValue = new Long(value-1899);
+				present = true;
+			}
+			/*for(count=1900; count<=2020; count++) {
 				if(enrollment.equals(count.toString())){
 					attrValue = new Long(count-1899);
 					present = true;
 					break;
 				}
-			}
+			}*/
 			if(!present)
 				attrValue = new Long(count-1899);		
 			details.setAttr19Id(attrValue);
@@ -153,6 +170,7 @@ public class LLTestResultController implements TestResultController {
 		
 		
 		//Program Participation
+		details.setAttr20Id("6");
 		if(rd.containsKey("Program Participation")) {
 			ArrayList<String> ProgramParticipation = (ArrayList<String>)rd.get("Program Participation");
 			String[] programParticipation = new String[ProgramParticipation.size()];
@@ -161,6 +179,7 @@ public class LLTestResultController implements TestResultController {
 			}
 			
 			present = false;
+			attrMultipleValue = "";
 			for(int i=0;i<programParticipation.length;i++){
 				if(programParticipation[i].equals("ESEA Title 1")){
 					attrMultipleValue = attrMultipleValue + ",1";
@@ -195,6 +214,7 @@ public class LLTestResultController implements TestResultController {
 		
 		
 		// Special Education
+		details.setAttr21Id("3");
 		if(rd.containsKey("Special Education")) {
 			ArrayList<String> SpecialEducation = (ArrayList<String>)rd.get("Special Education");
 			String[] specialEducation = new String[SpecialEducation.size()];
@@ -224,9 +244,10 @@ public class LLTestResultController implements TestResultController {
 		
 		
 		//Disability
+		details.setAttr22Id(new Long(13));
 		if(rd.containsKey("Disability")) {
 			ArrayList<String> Disability = (ArrayList<String>)rd.get("Disability");
-			String disability = Disability.toString();
+			String disability = Disability.get(0);
 			details.setAttr22Id(new Long(("A".equals(disability))?1:
 	                                ("D".equals(disability))?2:
 	                                ("HI".equals(disability))?3:
@@ -238,11 +259,12 @@ public class LLTestResultController implements TestResultController {
 	                                ("SLI".equals(disability))?9:
 	                                ("TBI".equals(disability))?10:
 	                                ("VI".equals(disability))?11:
-	                                ("ME".equals(disability))?12:12));
+	                                ("ME".equals(disability))?12:13));
 		}
 		
 		
 		//Accommodations
+		details.setAttr23Id("29");
 		if(rd.containsKey("Accommodations")) {
 			ArrayList<String> Accommodations = (ArrayList<String>)rd.get("Accommodations");
 			String[] accommodations = new String[Accommodations.size()];
@@ -376,55 +398,65 @@ public class LLTestResultController implements TestResultController {
 		
 		
 		// Special Codes
-		String specialCode = null;
+		Integer specialCode = null;
+		details.setAttr25Id(new Long(11));
 		if(rd.containsKey("SPECIAL CODES-K")) {		
-			ArrayList<String> K = (ArrayList<String>)rd.get("SPECIAL CODES-K");
-			specialCode = K.toString();
+			ArrayList K = (ArrayList)rd.get("SPECIAL CODES-K");
+			specialCode = Integer.valueOf((String)K.get(0));
 			details.setAttr25Id(new Long(calculateValue(specialCode)));
 		}
+		details.setAttr26Id(new Long(11));
 		if(rd.containsKey("SPECIAL CODES-L")) {	
-			ArrayList<String> L = (ArrayList<String>)rd.get("SPECIAL CODES-L");
-			specialCode = L.toString();
+			ArrayList L = (ArrayList)rd.get("SPECIAL CODES-L");
+			specialCode = Integer.valueOf((String)L.get(0));
 			details.setAttr26Id(new Long(calculateValue(specialCode)));
 		}
+		details.setAttr27Id(new Long(11));
 		if(rd.containsKey("SPECIAL CODES-M")) {	
-			ArrayList<String> M = (ArrayList<String>)rd.get("SPECIAL CODES-M");
-			specialCode = M.toString();
+			ArrayList M = (ArrayList)rd.get("SPECIAL CODES-M");
+			specialCode = Integer.valueOf((String)M.get(0));
 			details.setAttr27Id(new Long(calculateValue(specialCode)));
 		}
+		details.setAttr28Id(new Long(11));
 		if(rd.containsKey("SPECIAL CODES-N")) {	
-			ArrayList<String> N = (ArrayList<String>)rd.get("SPECIAL CODES-N");
-			specialCode = N.toString();
+			ArrayList N = (ArrayList)rd.get("SPECIAL CODES-N");
+			specialCode = Integer.valueOf((String)N.get(0));
 			details.setAttr28Id(new Long(calculateValue(specialCode)));
 		}
+		details.setAttr29Id(new Long(11));
 		if(rd.containsKey("SPECIAL CODES-O")) {	
-			ArrayList<String> O = (ArrayList<String>)rd.get("SPECIAL CODES-O");
-			specialCode = O.toString();
+			ArrayList O = (ArrayList)rd.get("SPECIAL CODES-O");
+			specialCode = Integer.valueOf((String)O.get(0));
 			details.setAttr29Id(new Long(calculateValue(specialCode)));
 		}
+		details.setAttr30Id(new Long(11));
 		if(rd.containsKey("SPECIAL CODES-P")) {	
-			ArrayList<String> P = (ArrayList<String>)rd.get("SPECIAL CODES-P");
-			specialCode = P.toString();
+			ArrayList P = (ArrayList)rd.get("SPECIAL CODES-P");
+			specialCode = Integer.valueOf((String)P.get(0));
 			details.setAttr30Id(new Long(calculateValue(specialCode)));
 		}
+		details.setAttr31Id(new Long(11));
 		if(rd.containsKey("SPECIAL CODES-Q")) {	
-			ArrayList<String> Q = (ArrayList<String>)rd.get("SPECIAL CODES-Q");
-			specialCode = Q.toString();
+			ArrayList Q = (ArrayList)rd.get("SPECIAL CODES-Q");
+			specialCode = Integer.valueOf((String)Q.get(0));
 			details.setAttr31Id(new Long(calculateValue(specialCode)));
 		}
+		details.setAttr32Id(new Long(11));
 		if(rd.containsKey("SPECIAL CODES-R")) {	
-			ArrayList<String> R = (ArrayList<String>)rd.get("SPECIAL CODES-R");
-			specialCode = R.toString();
+			ArrayList R = (ArrayList)rd.get("SPECIAL CODES-R");
+			specialCode = Integer.valueOf((String)R.get(0));
 			details.setAttr32Id(new Long(calculateValue(specialCode)));
 		}
+		details.setAttr33Id(new Long(11));
 		if(rd.containsKey("SPECIAL CODES-S")) {	
-			ArrayList<String> S = (ArrayList<String>)rd.get("SPECIAL CODES-S");
-			specialCode = S.toString();
+			ArrayList S = (ArrayList)rd.get("SPECIAL CODES-S");
+			specialCode = Integer.valueOf((String)S.get(0));
 			details.setAttr33Id(new Long(calculateValue(specialCode)));
 		}
+		details.setAttr34Id(new Long(11));
 		if(rd.containsKey("SPECIAL CODES-T")) {	
-			ArrayList<String> T = (ArrayList<String>)rd.get("SPECIAL CODES-T");
-			specialCode = T.toString();
+			ArrayList T = (ArrayList)rd.get("SPECIAL CODES-T");
+			specialCode = Integer.valueOf((String)T.get(0));
 			details.setAttr34Id(new Long(calculateValue(specialCode)));
 		}
 		
@@ -449,10 +481,9 @@ public class LLTestResultController implements TestResultController {
 	 return details;
 	}
 	
-	public int calculateValue(String code) {
-		for(int i=0;i<9;i++) {
-			if(Integer.parseInt(code) == i)
-				return i+1;
+	public int calculateValue(int code) {
+		if(code >= 0 && code < 10){
+			return ++code;
 		}
 		return 11;
 	}
@@ -462,7 +493,7 @@ public class LLTestResultController implements TestResultController {
 	@Override
 	public void run(ValidationStatus rosterValidationStatus)
 			throws IOException, DataException, CTBSystemException, SQLException {
-		//IrsDemographicData demographicData = getIrsDemographics(data.getDemographicData());
+		IrsDemographicData demographicData = getIrsDemographics(data.getDemographicData());
         OrgNodeData orgNodeData = data.getOrgNodeData();
         StudentData studentData = data.getStudentData();
         AdminData adminData = data.getAdminData();
@@ -526,9 +557,9 @@ public class LLTestResultController implements TestResultController {
         context.setAssessmentId(adminData.getAssessmentId());
         context.setAssessmentType(adminData.getAssessmentType());
         context.setProgramId(adminData.getProgramId());
-      //context.setDemographicData(demographicData);
+        context.setDemographicData(demographicData);
         
-        new CurriculumController(conn, curriculumData, adminData, context).run();
+      //  new CurriculumController(conn, curriculumData, adminData, context).run();
         System.out.println("***** SCORING: Persisted dimension data.");
         
         // persist scores

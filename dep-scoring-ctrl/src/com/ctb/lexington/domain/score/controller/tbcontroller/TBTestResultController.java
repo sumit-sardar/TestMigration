@@ -125,16 +125,18 @@ public class TBTestResultController implements TestResultController {
     		final IrsDemographicData details = new IrsDemographicData();
     		Map rd = data.getResearchData();
         
+    		details.setAttr1Id(new Long(2));
     		if(rd.containsKey("ELL")) {
     		ArrayList<String> lell = (ArrayList<String>)rd.get("ELL");
-	    		String ELL = lell.toString();
+	    		String ELL = lell.get(0);
 	    		details.setAttr1Id(new Long(("Yes".equals(ELL) || ("Y".equals(ELL)))?1:
 	                                    ("True".equals(ELL) || ("T".equals(ELL)))?1:2));
     		}
     	 
+    		details.setAttr2Id(new Long(7));
     		if(rd.containsKey("Ethnicity")) {
     		ArrayList<String> lethnicity = (ArrayList<String>)rd.get("Ethnicity");
-	    		String ethnicity = lethnicity.toString();
+	    		String ethnicity = lethnicity.get(0);
 	    		details.setAttr2Id(new Long(("Asian or Pacific Islander".equals(ethnicity))?1:
 	                                    ("Asian/Pacific Islander".equals(ethnicity))?1:
 	                                    ("American Indian or Alaska Native".equals(ethnicity))?2:
@@ -144,9 +146,10 @@ public class TBTestResultController implements TestResultController {
 	                                    ("Multi-ethnic".equals(ethnicity))?6:7));
     		}
         
+    		details.setAttr3Id(new Long(2));
     		if(rd.containsKey("Free Lunch")) {
     		ArrayList<String> lunch = (ArrayList<String>)rd.get("Free Lunch");
-	    		String freelunch = lunch.toString();
+	    		String freelunch = lunch.get(0);
 	    		details.setAttr3Id(new Long(("Yes".equals(freelunch) || ("Y".equals(freelunch)))?1:
 	                                    ("True".equals(freelunch) || ("T".equals(freelunch)))?1:2));
     		}
@@ -156,31 +159,35 @@ public class TBTestResultController implements TestResultController {
                                     ("F".equals(data.getGender()))?2:3));
 
     	
+    		details.setAttr5Id(new Long(2));
     		if(rd.containsKey("IEP")) {
     		ArrayList<String> iepl = (ArrayList<String>)rd.get("IEP");
-	    			String iep = iepl.toString();
+	    			String iep = iepl.get(0);
 	    		details.setAttr5Id(new Long(("Yes".equals(iep) || ("Y".equals(iep)))?1:
 	                                    ("True".equals(iep) || ("T".equals(iep)))?1:2));
     		}
                                     
+    		details.setAttr6Id(new Long(4));
     		if(rd.containsKey("Labor Force Status")) {
     		ArrayList<String> labour = (ArrayList<String>)rd.get("Labor Force Status");
-    			String lfstat = labour.toString();
+    			String lfstat = labour.get(0);
 	    		details.setAttr6Id(new Long(("Employed".equals(lfstat))?1:
 	                                    ("Unemployed".equals(lfstat))?2:
 	                                    ("Not in Labor Force".equals(lfstat))?3:4));
     		}
     	
+    		details.setAttr7Id(new Long(2));
     		if(rd.containsKey("LEP")) {
     		ArrayList<String> llep = (ArrayList<String>)rd.get("LEP");
-    			String lep = llep.toString();
+    			String lep = llep.get(0);
     			details.setAttr7Id(new Long(("Yes".equals(lep) || ("Y".equals(lep)))?1:
                                     	("True".equals(lep) || ("T".equals(lep)))?1:2));
     		}
         
+    		details.setAttr8Id(new Long(2));
     		if(rd.containsKey("Migrant")) {
     		ArrayList<String> mig = (ArrayList<String>)rd.get("Migrant");
-    			String migrant = mig.toString();
+    			String migrant = mig.get(0);
     			details.setAttr8Id(new Long(("Yes".equals(migrant) || "Y".equals(migrant))?1:
                                     	("True".equals(migrant) || "T".equals(migrant))?1:2));
     		}
@@ -198,9 +205,10 @@ public class TBTestResultController implements TestResultController {
     		details.setAttr15Id(new Long((data.getQuestionBGColor() != null || data.getQuestionFontColor() != null)?1:2));
     		details.setAttr16Id(new Long((data.getQuestionFontSize() != null)?1:2));
     	
+    		details.setAttr10Id(new Long(2));
     		if(rd.containsKey("Section 504")) {
     		ArrayList<String> section = (ArrayList<String>)rd.get("Section 504");
-    			String sec504 = section.toString();
+    			String sec504 = section.get(0);
     			details.setAttr10Id(new Long(("Yes".equals(sec504) || "Y".equals(sec504))?1:
                                     	("True".equals(sec504) || "T".equals(sec504))?1:2));
     		}

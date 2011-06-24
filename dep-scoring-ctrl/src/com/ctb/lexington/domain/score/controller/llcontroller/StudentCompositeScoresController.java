@@ -64,7 +64,7 @@ public class StudentCompositeScoresController {
 	                   newFact.setStudentid(context.getStudentId());
 	                   newFact.setTestStartTimestamp(context.getTestStartTimestamp());
 	                   newFact.setTestCompletionTimestamp(context.getTestCompletionTimestamp());
-	                  /* newFact.setAttr2id(context.getDemographicData().getAttr2Id());
+	                   newFact.setAttr2id(context.getDemographicData().getAttr2Id());
 	                   newFact.setAttr9id(context.getDemographicData().getAttr9Id());
 	                   newFact.setAttr11id(context.getDemographicData().getAttr11Id());
 	                   newFact.setAttr12id(context.getDemographicData().getAttr12Id());
@@ -91,7 +91,7 @@ public class StudentCompositeScoresController {
 	                   newFact.setAttr34id(context.getDemographicData().getAttr34Id());
 	                   newFact.setAttr35id(context.getDemographicData().getAttr35Id());
 	                   newFact.setAttr36id(context.getDemographicData().getAttr36Id());
-	                   newFact.setAttr37id(context.getDemographicData().getAttr37Id());*/
+	                   newFact.setAttr37id(context.getDemographicData().getAttr37Id());
 	                   if (currData.getContentAreas().length > 0) {
 	                        newFact.setFormid(new Long("A".equals(currData.getContentAreas()[0].getSubtestForm())?7:
 	                                          "B".equals(currData.getContentAreas()[0].getSubtestForm())?8:

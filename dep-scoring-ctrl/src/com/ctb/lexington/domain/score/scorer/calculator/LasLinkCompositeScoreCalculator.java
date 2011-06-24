@@ -181,13 +181,13 @@ public class LasLinkCompositeScoreCalculator extends AbstractDerivedScoreCalcula
     }
 
     public void onEvent(AssessmentEndedEvent event) {
-    	 if("K".equals(pTestLevel) || "1".equals(pTestLevel)) {
+    	 /*if("K".equals(pTestLevel) || "1".equals(pTestLevel)) {
              pTestLevel = "1";
          }
          if( "2-3".equals(pTestLevel) ){  pTestLevel = "2"; }
          if( "4-5".equals(pTestLevel) ){  pTestLevel = "3"; }
          if( "6-8".equals(pTestLevel) ){  pTestLevel = "4"; }
-         if( "9-12".equals(pTestLevel)){  pTestLevel = "5"; }
+         if( "9-12".equals(pTestLevel)){  pTestLevel = "5"; }*/
         
         if ("A".equals(pDupTestForm) || "B".equals(pDupTestForm)) { 
         	 pTestForm = pDupTestForm;
@@ -366,7 +366,7 @@ public class LasLinkCompositeScoreCalculator extends AbstractDerivedScoreCalcula
 	      	  
 	         }
 	         if(count != 0 )  {
-	        	 OverallScaleScore = OverallScaleScore.divide(new BigDecimal(count.toString()),BigDecimal.ROUND_HALF_UP);
+	        	 OverallScaleScore = OverallScaleScore.divide(new BigDecimal(count.toString()),BigDecimal.ROUND_FLOOR);
 	         }
 	         
 	         if(count == 0 ) 

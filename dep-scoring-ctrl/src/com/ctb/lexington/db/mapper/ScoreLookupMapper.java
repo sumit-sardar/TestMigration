@@ -111,12 +111,15 @@ public class ScoreLookupMapper extends AbstractDBMapper {
             return new BigDecimal("1");
     }
       // For Laslink Scoring
-    public BigDecimal findLasLinkPerformanceLevel(final BigDecimal sourceScoreValue,
-            final String testLevel, final String contentArea) {
+    public BigDecimal findLasLinkPerformanceLevel(final String frameworkCode, final BigDecimal sourceScoreValue,
+            final String testLevel, final String contentArea, final String grade, final String testForm) {
         final ScoreLookupRecord template = new ScoreLookupRecord(null, null, null,
                 sourceScoreValue, null);
         template.setTestLevel(testLevel);
         template.setContentArea(contentArea);
+        template.setGrade(grade);
+        template.setTestForm(testForm);
+        template.setFrameworkCode(frameworkCode);
 
         final ScoreLookupRecord perfLevel = (ScoreLookupRecord) find(FIND_LL_PERFORMANCE_LEVEL,
                 template);
