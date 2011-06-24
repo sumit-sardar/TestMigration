@@ -430,3 +430,91 @@ insert into attr17_dim (attr17id, name, type, product_typeid) values (10,'09','H
 
 insert into attr17_dim (attr17id, name, type, product_typeid) values (101,'N/A','Home Language',4)
 /
+
+
+
+insert into attr24_dim (attr24id, name, type, product_typeid)
+values (11,'N/A', 'SPECIAL CODES', 4)
+/
+
+insert into attr25_dim (attr25id, name, type, product_typeid)
+select * from attr24_dim
+/
+
+insert into attr26_dim (attr26id, name, type, product_typeid)
+select * from attr24_dim
+/
+
+insert into attr27_dim (attr27id, name, type, product_typeid)
+select * from attr24_dim
+/
+
+insert into attr28_dim (attr28id, name, type, product_typeid)
+select * from attr24_dim
+/
+
+insert into attr29_dim (attr29id, name, type, product_typeid)
+select * from attr24_dim
+/
+
+insert into attr30_dim (attr30id, name, type, product_typeid)
+select * from attr24_dim
+/
+
+insert into attr31_dim (attr31id, name, type, product_typeid)
+select * from attr24_dim
+/
+
+insert into attr32_dim (attr32id, name, type, product_typeid)
+select * from attr24_dim
+/
+
+insert into attr33_dim (attr33id, name, type, product_typeid)
+select * from attr24_dim
+/
+
+
+update attr24_dim set type = 'SPECIAL CODE T'
+/
+update attr25_dim set type = 'SPECIAL CODE K'
+/
+update attr26_dim set type = 'SPECIAL CODE L'
+/
+update attr27_dim set type = 'SPECIAL CODE M'
+/
+update attr28_dim set type = 'SPECIAL CODE N'
+/
+update attr29_dim set type = 'SPECIAL CODE O'
+/
+update attr30_dim set type = 'SPECIAL CODE P'
+/
+update attr31_dim set type = 'SPECIAL CODE Q'
+/
+update attr32_dim set type = 'SPECIAL CODE R'
+/
+update attr33_dim set type = 'SPECIAL CODE S'
+/
+
+
+insert into attr18_dim (attr18id,name,type,product_typeid)
+values(14,'N/A','MOBILITY',4)
+/
+
+insert into attr22_dim (attr22id,name,type,product_typeid)
+values(13,'N/A','DISABILITY',4)
+/
+
+update attr22_dim set type = 'DISABILITY' where attr22id = 11
+/
+
+insert into ATTR20_DIM (attr20id, NAME, TYPE, product_typeId) 
+values (6, 'N/A', 'PROGRAM_PARTICIPATION', 4)
+/
+    
+insert into ATTR21_DIM (attr21id, NAME, TYPE, product_typeId) 
+values (3, 'N/A', 'SPECIAL_EDUCATION', 4)
+/
+    
+insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
+values (29, 'N/A', 'ACCOMMODATIONS', 4)
+/
