@@ -176,6 +176,7 @@ public class StudentTestDataImpl implements StudentTestData
                         if(responseQueue) {
                             OASLogger.getLogger("TestDelivery").debug("message from tsd queue");
                             processItemResponseEvents(testRosterId, statusList, itemSetId, tsd.getIstArray(), mSeq, 0, false);
+                            System.out.println("before processTestEvents in save method");
                             processTestEvents(testRosterId, itemSetId, tsd.getLevArray(), tsd.getLsvArray(), statusList);
                         } else {
                             if(statusList.length < 1) {
@@ -336,6 +337,7 @@ public class StudentTestDataImpl implements StudentTestData
                     processHeartbeat(Integer.parseInt(testRosterId), tsd.getAstArray(), tsd.getMseq().intValue());
                     processItemResponseEvents(testRosterId, statusList, itemSetId, tsd.getIstArray(), mSeq, tsd.getCid().intValue(), true);
                     int nextSubtestId = processSubtestEvents(testRosterId, statusList, itemSetId, tsd.getLevArray(), tsd.getLsvArray(), tsd.getMseq().intValue(), accessCode);
+                    System.out.println("before processTestEvents in ctbSave method");
                     processTestEvents(testRosterId, itemSetId, tsd.getLevArray(), tsd.getLsvArray(), statusList);
                     if (nextSubtestId >0) {
                         NextSco nextSco = saveResponse.getTsdArray(0).addNewNextSco();
@@ -561,6 +563,8 @@ public class StudentTestDataImpl implements StudentTestData
     
     
     private void processTestEvents(String testRosterId, String itemSetId, Lev [] leva, Lsv [] lsva,  RosterSubtestStatus [] statusList) throws TestDeliveryException, InvalidTestRosterIdException, InvalidItemSetIdException, InvalidSubtestEventException {
+        System.out.println("processTestEvents called : testRosterId : "+testRosterId+" : itemSetId : "+itemSetId);
+
         if(leva != null) {
             for(int j=0;j<leva.length;j++) {
                 Lev lev = leva[j];
@@ -577,10 +581,14 @@ public class StudentTestDataImpl implements StudentTestData
                         	scorable = true;
                         }
                     }
+                    System.out.println("before if of !allSubtestsComplete && scorable in processTestEvents : allSubtestsComplete : "+allSubtestsComplete+" : scorable : "+scorable);
                     if(!allSubtestsComplete && scorable) {
                         // old Weblogic 8.1 JMS call
                     	// scorer.sendObjectMessage(new Integer(testRosterId));
                     	try{
+                            System.out.println("in if of !allSubtestsComplete && scorable in processTestEvents");
+                            System.out.println("in processTestEvents before invokeScoring called for testRosterId : "+testRosterId); 
+
                     		// new Weblogic 10.3 JMS call
                     		invokeScoring(new Integer(testRosterId));
                     	} catch (Exception se) {
@@ -852,6 +860,7 @@ public class StudentTestDataImpl implements StudentTestData
     
     private int stopSubtest(int testRosterId, RosterSubtestStatus [] statusList, int itemSetId, boolean timeout, int mSeq, String accessCode) throws TestDeliveryException, InvalidTestRosterIdException, InvalidItemSetIdException, InvalidSubtestEventException {
         try {
+        	System.out.println("stopSubtest in StudentTestDataImpl : testRosterId : "+testRosterId+" : itemSetId : "+itemSetId);
             boolean foundItemSet = false;
             boolean allSubtestsComplete = true;
             boolean scorable = false;
@@ -889,12 +898,16 @@ public class StudentTestDataImpl implements StudentTestData
             
             //also update test roster here.
             saver.updateTestRosterTimeStampWithMseq(testRosterId, new Date(), mSeq);
+
+            System.out.println("before if allSubtestsComplete && scorable of stopSubtest in StudentTestDataImpl : allSubtestsComplete : "+allSubtestsComplete+" : scorable : "+scorable);
             
             // if all subtests are complete, score the roster
             if(allSubtestsComplete && scorable) {
                 // old Weblogic 8.1 JMS call
             	//scorer.sendObjectMessage(new Integer(testRosterId));
             	try{
+                    System.out.println("in if of !allSubtestsComplete && scorable in stopSubtest");
+                    System.out.println("in stopSubtest before invokeScoring called for testRosterId : "+testRosterId); 
             		// new Weblogic 10.3 JMS call
             		invokeScoring(new Integer(testRosterId));
             	} catch (Exception se) {
@@ -918,6 +931,7 @@ public class StudentTestDataImpl implements StudentTestData
     
     private void invokeScoring(Integer testRosterId) throws Exception 
     {
+    	System.out.println("invokeScoring called...: for testRosterId : "+testRosterId);
 		getResourceValue();
 	    InitialContext ic = QueueSend.getInitialContext(jndiFactory,jmsURL,jmsPrincipal,jmsCredentials);
 	    QueueSend qs = new QueueSend();
@@ -1080,6 +1094,9 @@ public class StudentTestDataImpl implements StudentTestData
                             // old Weblogic 8.1 JMS call
                         	// scorer.sendObjectMessage(new Integer(testRosterId));
                         	try{
+                                System.out.println("in if of Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(newStatus) in interruptTest");
+                                System.out.println("in interruptTest before invokeScoring called for testRosterId : "+testRosterId); 
+
                         		// new Weblogic 10.3 JMS call
                         		invokeScoring(new Integer(testRosterId));
                         	} catch (Exception se) {
