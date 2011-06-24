@@ -1209,3 +1209,666 @@ alter table laslink_sec_obj_fact add attr36id number references attr36_dim(attr3
 /
 alter table laslink_sec_obj_fact add attr37id number references attr37_dim(attr37id)
 /
+
+
+alter table laslink_composite_fact drop column attr20id
+/ 
+alter table laslink_composite_fact drop column attr21id
+/
+alter table laslink_composite_fact drop column attr23id
+/
+alter table laslink_composite_fact add attr20id varchar2(60)
+/
+alter table laslink_composite_fact add attr21id varchar2(60)
+/
+alter table laslink_composite_fact add attr23id varchar2(60)
+/
+             
+alter table laslink_content_area_fact drop column attr20id
+/
+alter table laslink_content_area_fact drop column attr21id
+/
+alter table laslink_content_area_fact drop column attr23id
+/
+alter table laslink_content_area_fact add attr20id varchar2(60)
+/
+alter table laslink_content_area_fact add attr21id varchar2(60)
+/
+alter table laslink_content_area_fact add attr23id varchar2(60)
+/
+             
+alter table laslink_item_fact drop column attr20id
+/
+alter table laslink_item_fact drop column attr21id
+/
+alter table laslink_item_fact drop column attr23id
+/
+alter table laslink_item_fact add attr20id varchar2(60)
+/
+alter table laslink_item_fact add attr21id varchar2(60)
+/
+alter table laslink_item_fact add attr23id varchar2(60)
+/
+             
+alter table laslink_prim_obj_fact drop column attr20id
+/
+alter table laslink_prim_obj_fact drop column attr21id
+/
+alter table laslink_prim_obj_fact drop column attr23id
+/
+alter table laslink_prim_obj_fact add attr20id varchar2(60)
+/
+alter table laslink_prim_obj_fact add attr21id varchar2(60)
+/
+alter table laslink_prim_obj_fact add attr23id varchar2(60)
+/
+             
+alter table laslink_sec_obj_fact drop column attr20id
+/
+alter table laslink_sec_obj_fact drop column attr21id
+/
+alter table laslink_sec_obj_fact drop column attr23id
+/
+alter table laslink_sec_obj_fact add attr20id varchar2(60)
+/
+alter table laslink_sec_obj_fact add attr21id varchar2(60)
+/
+alter table laslink_sec_obj_fact add attr23id varchar2(60)
+/
+
+
+create table ATTR25_DIM
+(
+  ATTR25ID        NUMBER not NULL ,
+  NAME           VARCHAR2(64) not null,
+  TYPE           VARCHAR2(32),
+  PRODUCT_TYPEID NUMBER default 4 not NULL REFERENCES PRODUCT_TYPE_DIM(PRODUCT_TYPEID),
+  CONSTRAINT XPKSPECIALCODEK_DIM primary key (ATTR25ID)
+)
+/
+
+create table ATTR26_DIM
+(
+  ATTR26ID        NUMBER not NULL ,
+  NAME           VARCHAR2(64) not null,
+  TYPE           VARCHAR2(32),
+  PRODUCT_TYPEID NUMBER default 4 not NULL REFERENCES PRODUCT_TYPE_DIM(PRODUCT_TYPEID),
+  CONSTRAINT XPKSPECIALCODEL_DIM primary key (ATTR26ID)
+)
+/
+
+create table ATTR27_DIM
+(
+  ATTR27ID        NUMBER not NULL ,
+  NAME           VARCHAR2(64) not null,
+  TYPE           VARCHAR2(32),
+  PRODUCT_TYPEID NUMBER default 4 not NULL REFERENCES PRODUCT_TYPE_DIM(PRODUCT_TYPEID),
+  CONSTRAINT XPKSPECIALCODEM_DIM primary key (ATTR27ID)
+)
+/
+
+create table ATTR28_DIM
+(
+  ATTR28ID        NUMBER not NULL ,
+  NAME           VARCHAR2(64) not null,
+  TYPE           VARCHAR2(32),
+  PRODUCT_TYPEID NUMBER default 4 not NULL REFERENCES PRODUCT_TYPE_DIM(PRODUCT_TYPEID),
+  CONSTRAINT XPKSPECIALCODEN_DIM primary key (ATTR28ID)
+)
+/
+
+create table ATTR29_DIM
+(
+  ATTR29ID        NUMBER not NULL ,
+  NAME           VARCHAR2(64) not null,
+  TYPE           VARCHAR2(32),
+  PRODUCT_TYPEID NUMBER default 4 not NULL REFERENCES PRODUCT_TYPE_DIM(PRODUCT_TYPEID),
+  CONSTRAINT XPKSPECIALCODEO_DIM primary key (ATTR29ID)
+)
+/
+
+create table ATTR30_DIM
+(
+  ATTR30ID        NUMBER not NULL ,
+  NAME           VARCHAR2(64) not null,
+  TYPE           VARCHAR2(32),
+  PRODUCT_TYPEID NUMBER default 4 not NULL REFERENCES PRODUCT_TYPE_DIM(PRODUCT_TYPEID),
+  CONSTRAINT XPKSPECIALCODEP_DIM primary key (ATTR30ID)
+)
+/
+
+create table ATTR31_DIM
+(
+  ATTR31ID        NUMBER not NULL ,
+  NAME           VARCHAR2(64) not null,
+  TYPE           VARCHAR2(32),
+  PRODUCT_TYPEID NUMBER default 4 not NULL REFERENCES PRODUCT_TYPE_DIM(PRODUCT_TYPEID),
+  CONSTRAINT XPKSPECIALCODEQ_DIM primary key (ATTR31ID)
+)
+/
+
+create table ATTR32_DIM
+(
+  ATTR32ID        NUMBER not NULL ,
+  NAME           VARCHAR2(64) not null,
+  TYPE           VARCHAR2(32),
+  PRODUCT_TYPEID NUMBER default 4 not NULL REFERENCES PRODUCT_TYPE_DIM(PRODUCT_TYPEID),
+  CONSTRAINT XPKSPECIALCODER_DIM primary key (ATTR32ID)
+)
+/
+
+create table ATTR33_DIM
+(
+  ATTR33ID        NUMBER not NULL ,
+  NAME           VARCHAR2(64) not null,
+  TYPE           VARCHAR2(32),
+  PRODUCT_TYPEID NUMBER default 4 not NULL REFERENCES PRODUCT_TYPE_DIM(PRODUCT_TYPEID),
+  CONSTRAINT XPKSPECIALCODES primary key (ATTR33ID)
+)
+/
+
+
+alter table laslink_composite_fact drop column attr25id
+/
+alter table laslink_composite_fact drop column attr26id
+/
+alter table laslink_composite_fact drop column attr27id
+/
+alter table laslink_composite_fact drop column attr28id
+/
+alter table laslink_composite_fact drop column attr29id
+/
+alter table laslink_composite_fact drop column attr30id
+/
+alter table laslink_composite_fact drop column attr31id
+/
+alter table laslink_composite_fact drop column attr32id
+/
+alter table laslink_composite_fact drop column attr33id
+/
+alter table laslink_composite_fact drop column attr34id
+/
+alter table laslink_composite_fact add attr34id number references attr24_dim(attr24id)
+/
+alter table laslink_composite_fact add attr25id number references attr25_dim(attr25id)
+/
+alter table laslink_composite_fact add attr26id number references attr26_dim(attr26id)
+/
+alter table laslink_composite_fact add attr27id number references attr27_dim(attr27id)
+/
+alter table laslink_composite_fact add attr28id number references attr28_dim(attr28id)
+/
+alter table laslink_composite_fact add attr29id number references attr29_dim(attr29id)
+/
+alter table laslink_composite_fact add attr30id number references attr30_dim(attr30id)
+/
+alter table laslink_composite_fact add attr31id number references attr31_dim(attr31id)
+/
+alter table laslink_composite_fact add attr32id number references attr32_dim(attr32id)
+/
+alter table laslink_composite_fact add attr33id number references attr33_dim(attr33id)
+/
+
+
+alter table laslink_content_area_fact drop column attr25id
+/
+alter table laslink_content_area_fact drop column attr26id
+/
+alter table laslink_content_area_fact drop column attr27id
+/
+alter table laslink_content_area_fact drop column attr28id
+/
+alter table laslink_content_area_fact drop column attr29id
+/
+alter table laslink_content_area_fact drop column attr30id
+/
+alter table laslink_content_area_fact drop column attr31id
+/
+alter table laslink_content_area_fact drop column attr32id
+/
+alter table laslink_content_area_fact drop column attr33id
+/
+alter table laslink_content_area_fact drop column attr34id
+/
+alter table laslink_content_area_fact add attr34id number references attr24_dim(attr24id)
+/
+alter table laslink_content_area_fact add attr25id number references attr25_dim(attr25id)
+/
+alter table laslink_content_area_fact add attr26id number references attr26_dim(attr26id)
+/
+alter table laslink_content_area_fact add attr27id number references attr27_dim(attr27id)
+/
+alter table laslink_content_area_fact add attr28id number references attr28_dim(attr28id)
+/
+alter table laslink_content_area_fact add attr29id number references attr29_dim(attr29id)
+/
+alter table laslink_content_area_fact add attr30id number references attr30_dim(attr30id)
+/
+alter table laslink_content_area_fact add attr31id number references attr31_dim(attr31id)
+/
+alter table laslink_content_area_fact add attr32id number references attr32_dim(attr32id)
+/
+alter table laslink_content_area_fact add attr33id number references attr33_dim(attr33id)
+/
+
+
+alter table laslink_item_fact drop column attr25id
+/
+alter table laslink_item_fact drop column attr26id
+/
+alter table laslink_item_fact drop column attr27id
+/
+alter table laslink_item_fact drop column attr28id
+/
+alter table laslink_item_fact drop column attr29id
+/
+alter table laslink_item_fact drop column attr30id
+/
+alter table laslink_item_fact drop column attr31id
+/
+alter table laslink_item_fact drop column attr32id
+/
+alter table laslink_item_fact drop column attr33id
+/
+alter table laslink_item_fact drop column attr34id
+/
+alter table laslink_item_fact add attr34id number references attr24_dim(attr24id)
+/
+alter table laslink_item_fact add attr25id number references attr25_dim(attr25id)
+/
+alter table laslink_item_fact add attr26id number references attr26_dim(attr26id)
+/
+alter table laslink_item_fact add attr27id number references attr27_dim(attr27id)
+/
+alter table laslink_item_fact add attr28id number references attr28_dim(attr28id)
+/
+alter table laslink_item_fact add attr29id number references attr29_dim(attr29id)
+/
+alter table laslink_item_fact add attr30id number references attr30_dim(attr30id)
+/
+alter table laslink_item_fact add attr31id number references attr31_dim(attr31id)
+/
+alter table laslink_item_fact add attr32id number references attr32_dim(attr32id)
+/
+alter table laslink_item_fact add attr33id number references attr33_dim(attr33id)
+/
+
+
+alter table laslink_prim_obj_fact drop column attr25id
+/
+alter table laslink_prim_obj_fact drop column attr26id
+/
+alter table laslink_prim_obj_fact drop column attr27id
+/
+alter table laslink_prim_obj_fact drop column attr28id
+/
+alter table laslink_prim_obj_fact drop column attr29id
+/
+alter table laslink_prim_obj_fact drop column attr30id
+/
+alter table laslink_prim_obj_fact drop column attr31id
+/
+alter table laslink_prim_obj_fact drop column attr32id
+/
+alter table laslink_prim_obj_fact drop column attr33id
+/
+alter table laslink_prim_obj_fact drop column attr34id
+/
+alter table laslink_prim_obj_fact add attr34id number references attr24_dim(attr24id)
+/
+alter table laslink_prim_obj_fact add attr25id number references attr25_dim(attr25id)
+/
+alter table laslink_prim_obj_fact add attr26id number references attr26_dim(attr26id)
+/
+alter table laslink_prim_obj_fact add attr27id number references attr27_dim(attr27id)
+/
+alter table laslink_prim_obj_fact add attr28id number references attr28_dim(attr28id)
+/
+alter table laslink_prim_obj_fact add attr29id number references attr29_dim(attr29id)
+/
+alter table laslink_prim_obj_fact add attr30id number references attr30_dim(attr30id)
+/
+alter table laslink_prim_obj_fact add attr31id number references attr31_dim(attr31id)
+/
+alter table laslink_prim_obj_fact add attr32id number references attr32_dim(attr32id)
+/
+alter table laslink_prim_obj_fact add attr33id number references attr33_dim(attr33id)
+/
+
+
+
+alter table laslink_sec_obj_fact drop column attr25id
+/
+alter table laslink_sec_obj_fact drop column attr26id
+/
+alter table laslink_sec_obj_fact drop column attr27id
+/
+alter table laslink_sec_obj_fact drop column attr28id
+/
+alter table laslink_sec_obj_fact drop column attr29id
+/
+alter table laslink_sec_obj_fact drop column attr30id
+/
+alter table laslink_sec_obj_fact drop column attr31id
+/
+alter table laslink_sec_obj_fact drop column attr32id
+/
+alter table laslink_sec_obj_fact drop column attr33id
+/
+alter table laslink_sec_obj_fact drop column attr34id
+/
+alter table laslink_sec_obj_fact add attr34id number references attr24_dim(attr24id)
+/
+alter table laslink_sec_obj_fact add attr25id number references attr25_dim(attr25id)
+/
+alter table laslink_sec_obj_fact add attr26id number references attr26_dim(attr26id)
+/
+alter table laslink_sec_obj_fact add attr27id number references attr27_dim(attr27id)
+/
+alter table laslink_sec_obj_fact add attr28id number references attr28_dim(attr28id)
+/
+alter table laslink_sec_obj_fact add attr29id number references attr29_dim(attr29id)
+/
+alter table laslink_sec_obj_fact add attr30id number references attr30_dim(attr30id)
+/
+alter table laslink_sec_obj_fact add attr31id number references attr31_dim(attr31id)
+/
+alter table laslink_sec_obj_fact add attr32id number references attr32_dim(attr32id)
+/
+alter table laslink_sec_obj_fact add attr33id number references attr33_dim(attr33id)
+/
+
+
+alter table laslink_composite_fact modify attr2id number default 34
+/
+alter table laslink_composite_fact modify attr9id number default 6
+/
+alter table laslink_composite_fact modify attr11id number default 6
+/
+alter table laslink_composite_fact modify attr12id number default 6
+/
+alter table laslink_composite_fact modify attr13id number default 6
+/
+alter table laslink_composite_fact modify attr14id number default 6
+/
+alter table laslink_composite_fact modify attr15id number default 6
+/
+alter table laslink_composite_fact modify attr16id number default 6
+/
+alter table laslink_composite_fact modify attr17id number default 101
+/
+alter table laslink_composite_fact modify attr18id number default 14
+/
+alter table laslink_composite_fact modify attr19id number default 122
+/
+alter table laslink_composite_fact modify attr22id number default 13
+/
+alter table laslink_composite_fact modify attr35id number default 2
+/
+alter table laslink_composite_fact modify attr36id number default 2
+/
+alter table laslink_composite_fact modify attr37id number default 2
+/
+alter table laslink_composite_fact modify attr20id varchar2(60) default 6
+/
+alter table laslink_composite_fact modify attr21id varchar2(60) default 3
+/
+alter table laslink_composite_fact modify attr23id varchar2(60) default 29
+/
+alter table laslink_composite_fact modify attr25id number default 11
+/
+alter table laslink_composite_fact modify attr26id number default 11
+/
+alter table laslink_composite_fact modify attr27id number default 11
+/
+alter table laslink_composite_fact modify attr28id number default 11
+/
+alter table laslink_composite_fact modify attr29id number default 11
+/
+alter table laslink_composite_fact modify attr30id number default 11
+/
+alter table laslink_composite_fact modify attr31id number default 11
+/
+alter table laslink_composite_fact modify attr32id number default 11
+/
+alter table laslink_composite_fact modify attr33id number default 11
+/
+alter table laslink_composite_fact modify attr34id number default 11
+/
+
+
+
+alter table laslink_content_area_fact modify attr2id number default 34
+/
+alter table laslink_content_area_fact modify attr9id number default 6
+/
+alter table laslink_content_area_fact modify attr11id number default 6
+/
+alter table laslink_content_area_fact modify attr12id number default 6
+/
+alter table laslink_content_area_fact modify attr13id number default 6
+/
+alter table laslink_content_area_fact modify attr14id number default 6
+/
+alter table laslink_content_area_fact modify attr15id number default 6
+/
+alter table laslink_content_area_fact modify attr16id number default 6
+/
+alter table laslink_content_area_fact modify attr17id number default 101
+/
+alter table laslink_content_area_fact modify attr18id number default 14
+/
+alter table laslink_content_area_fact modify attr19id number default 122
+/
+alter table laslink_content_area_fact modify attr22id number default 13
+/
+alter table laslink_content_area_fact modify attr35id number default 2
+/
+alter table laslink_content_area_fact modify attr36id number default 2
+/
+alter table laslink_content_area_fact modify attr37id number default 2
+/
+alter table laslink_content_area_fact modify attr20id varchar2(60) default 6
+/
+alter table laslink_content_area_fact modify attr21id varchar2(60) default 3
+/
+alter table laslink_content_area_fact modify attr23id varchar2(60) default 29
+/
+alter table laslink_content_area_fact modify attr25id number default 11
+/
+alter table laslink_content_area_fact modify attr26id number default 11
+/
+alter table laslink_content_area_fact modify attr27id number default 11
+/
+alter table laslink_content_area_fact modify attr28id number default 11
+/
+alter table laslink_content_area_fact modify attr29id number default 11
+/
+alter table laslink_content_area_fact modify attr30id number default 11
+/
+alter table laslink_content_area_fact modify attr31id number default 11
+/
+alter table laslink_content_area_fact modify attr32id number default 11
+/
+alter table laslink_content_area_fact modify attr33id number default 11
+/
+alter table laslink_content_area_fact modify attr34id number default 11
+/
+
+
+
+alter table laslink_item_fact modify attr2id number default 34
+/
+alter table laslink_item_fact modify attr9id number default 6
+/
+alter table laslink_item_fact modify attr11id number default 6
+/
+alter table laslink_item_fact modify attr12id number default 6
+/
+alter table laslink_item_fact modify attr13id number default 6
+/
+alter table laslink_item_fact modify attr14id number default 6
+/
+alter table laslink_item_fact modify attr15id number default 6
+/
+alter table laslink_item_fact modify attr16id number default 6
+/
+alter table laslink_item_fact modify attr17id number default 101
+/
+alter table laslink_item_fact modify attr18id number default 14
+/
+alter table laslink_item_fact modify attr19id number default 122
+/
+alter table laslink_item_fact modify attr22id number default 13
+/
+alter table laslink_item_fact modify attr35id number default 2
+/
+alter table laslink_item_fact modify attr36id number default 2
+/
+alter table laslink_item_fact modify attr37id number default 2
+/
+alter table laslink_item_fact modify attr20id varchar2(60) default 6
+/
+alter table laslink_item_fact modify attr21id varchar2(60) default 3
+/
+alter table laslink_item_fact modify attr23id varchar2(60) default 29
+/
+alter table laslink_item_fact modify attr25id number default 11
+/
+alter table laslink_item_fact modify attr26id number default 11
+/
+alter table laslink_item_fact modify attr27id number default 11
+/
+alter table laslink_item_fact modify attr28id number default 11
+/
+alter table laslink_item_fact modify attr29id number default 11
+/
+alter table laslink_item_fact modify attr30id number default 11
+/
+alter table laslink_item_fact modify attr31id number default 11
+/
+alter table laslink_item_fact modify attr32id number default 11
+/
+alter table laslink_item_fact modify attr33id number default 11
+/
+alter table laslink_item_fact modify attr34id number default 11
+/
+
+
+
+alter table laslink_prim_obj_fact modify attr2id number default 34
+/
+alter table laslink_prim_obj_fact modify attr9id number default 6
+/
+alter table laslink_prim_obj_fact modify attr11id number default 6
+/
+alter table laslink_prim_obj_fact modify attr12id number default 6
+/
+alter table laslink_prim_obj_fact modify attr13id number default 6
+/
+alter table laslink_prim_obj_fact modify attr14id number default 6
+/
+alter table laslink_prim_obj_fact modify attr15id number default 6
+/
+alter table laslink_prim_obj_fact modify attr16id number default 6
+/
+alter table laslink_prim_obj_fact modify attr17id number default 101
+/
+alter table laslink_prim_obj_fact modify attr18id number default 14
+/
+alter table laslink_prim_obj_fact modify attr19id number default 122
+/
+alter table laslink_prim_obj_fact modify attr22id number default 13
+/
+alter table laslink_prim_obj_fact modify attr35id number default 2
+/
+alter table laslink_prim_obj_fact modify attr36id number default 2
+/
+alter table laslink_prim_obj_fact modify attr37id number default 2
+/
+alter table laslink_prim_obj_fact modify attr20id varchar2(60) default 6
+/
+alter table laslink_prim_obj_fact modify attr21id varchar2(60) default 3
+/
+alter table laslink_prim_obj_fact modify attr23id varchar2(60) default 29
+/
+alter table laslink_prim_obj_fact modify attr25id number default 11
+/
+alter table laslink_prim_obj_fact modify attr26id number default 11
+/
+alter table laslink_prim_obj_fact modify attr27id number default 11
+/
+alter table laslink_prim_obj_fact modify attr28id number default 11
+/
+alter table laslink_prim_obj_fact modify attr29id number default 11
+/
+alter table laslink_prim_obj_fact modify attr30id number default 11
+/
+alter table laslink_prim_obj_fact modify attr31id number default 11
+/
+alter table laslink_prim_obj_fact modify attr32id number default 11
+/
+alter table laslink_prim_obj_fact modify attr33id number default 11
+/
+alter table laslink_prim_obj_fact modify attr34id number default 11
+/
+
+
+
+
+alter table laslink_sec_obj_fact modify attr2id number default 34
+/
+alter table laslink_sec_obj_fact modify attr9id number default 6
+/
+alter table laslink_sec_obj_fact modify attr11id number default 6
+/
+alter table laslink_sec_obj_fact modify attr12id number default 6
+/
+alter table laslink_sec_obj_fact modify attr13id number default 6
+/
+alter table laslink_sec_obj_fact modify attr14id number default 6
+/
+alter table laslink_sec_obj_fact modify attr15id number default 6
+/
+alter table laslink_sec_obj_fact modify attr16id number default 6
+/
+alter table laslink_sec_obj_fact modify attr17id number default 101
+/
+alter table laslink_sec_obj_fact modify attr18id number default 14
+/
+alter table laslink_sec_obj_fact modify attr19id number default 122
+/
+alter table laslink_sec_obj_fact modify attr22id number default 13
+/
+alter table laslink_sec_obj_fact modify attr35id number default 2
+/
+alter table laslink_sec_obj_fact modify attr36id number default 2
+/
+alter table laslink_sec_obj_fact modify attr37id number default 2
+/
+alter table laslink_sec_obj_fact modify attr20id varchar2(60) default 6
+/
+alter table laslink_sec_obj_fact modify attr21id varchar2(60) default 3
+/
+alter table laslink_sec_obj_fact modify attr23id varchar2(60) default 29
+/
+alter table laslink_sec_obj_fact modify attr25id number default 11
+/
+alter table laslink_sec_obj_fact modify attr26id number default 11
+/
+alter table laslink_sec_obj_fact modify attr27id number default 11
+/
+alter table laslink_sec_obj_fact modify attr28id number default 11
+/
+alter table laslink_sec_obj_fact modify attr29id number default 11
+/
+alter table laslink_sec_obj_fact modify attr30id number default 11
+/
+alter table laslink_sec_obj_fact modify attr31id number default 11
+/
+alter table laslink_sec_obj_fact modify attr32id number default 11
+/
+alter table laslink_sec_obj_fact modify attr33id number default 11
+/
+alter table laslink_sec_obj_fact modify attr34id number default 11
+/
