@@ -20,6 +20,8 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.request.FilterParams.FilterParam;
 import com.ctb.bean.request.FilterParams.FilterType;
+import com.ctb.bean.request.SortParams.SortParam;
+import com.ctb.bean.request.SortParams.SortType;
 import com.ctb.bean.request.testAdmin.FormAssignmentCount;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.EditCopyStatus;
@@ -54,6 +56,7 @@ import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.exception.request.InvalidFilterFieldException;
 import com.ctb.exception.testAdmin.CustomerConfigurationDataNotFoundException;
 import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
 import com.ctb.exception.testAdmin.InvalidNoOfProgramsException;
@@ -72,6 +75,7 @@ import com.ctb.exception.testAdmin.TransactionTimeoutException;
 import com.ctb.exception.testAdmin.UserDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.util.SimpleCache;
+import com.ctb.util.request.Filterer;
 import com.ctb.util.testAdmin.AccessCodeGenerator;
 import com.ctb.util.testAdmin.PasswordGenerator;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
@@ -667,6 +671,19 @@ public class ScheduleTestImpl implements ScheduleTest
     public SessionStudentData getSessionStudentsForOrgNode(String userName, Integer orgNodeId, Integer testAdminId, Integer testItemSetId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
     {
         validator.validateNode(userName, orgNodeId, "testAdmin.getSessionStudentsForOrgNode");
+        String searchOrder = " ";
+        String searchFilter = " ";
+               
+        
+        searchOrder = getOrderString(sort);
+        System.out.println("searchOrder:"+searchOrder);
+        if(filter!=null){
+        	searchFilter = getFilterString(filter);
+        }
+        System.out.println("searchFilter :"+searchFilter);
+        
+        searchOrder = " main "+ searchFilter +  searchOrder;
+        System.out.println("Final String:"+searchOrder);
         try {
             SessionStudentData std = new SessionStudentData();
             Integer pageSize = null;
@@ -683,7 +700,7 @@ public class ScheduleTestImpl implements ScheduleTest
             //    SimpleCache.cacheResult("SESSION_STUDENTS", cacheKey, cacheObj);
             //}
             //SchedulingStudent [] scstudents = cacheObj.scstudents;
-            SessionStudent [] scstudents = students.getSchedulingStudentsForOrgNode(orgNodeId, userName, testItemSetId, testAdminId);
+            SessionStudent [] scstudents = students.getSchedulingStudentsForOrgNodeByOrder(orgNodeId, userName, testItemSetId, testAdminId, searchOrder);
             sstudents = new SessionStudent[scstudents.length];
             for(int i=0;i<scstudents.length;i++) {
                 sstudents[i] = scstudents[i];
@@ -724,8 +741,8 @@ public class ScheduleTestImpl implements ScheduleTest
                 }
             }
             std.setSessionStudents(sstudents, pageSize);
-            if(filter != null) std.applyFiltering(filter);
-            if(sort != null) std.applySorting(sort);
+            /*if(filter != null) std.applyFiltering(filter);
+            if(sort != null) std.applySorting(sort); */
             if(page != null) std.applyPaging(page);
             return std;
         } catch (SQLException se) {
@@ -735,7 +752,108 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
-    /**
+    private String getOrderString(SortParams sort) {
+    	 String searchOrder = " order by lastName";
+        if (sort != null){
+        	SortParam [] params = sort.getSortParams();
+        	
+        	if(params!=null && params.length>0) {
+        		SortParam  param = params[0];
+        		SortType type = param.getType();
+        		String field = param.getField();
+        		if (field.equalsIgnoreCase("FirstName")){
+        			searchOrder = " order by firstName ";
+        		} else if (field.equalsIgnoreCase("LastName")){
+        			searchOrder = " order by lastName ";
+        		} else if (field.equalsIgnoreCase("MiddleName")){
+        			searchOrder = " order by middleName ";
+        		} else if (field.equalsIgnoreCase("Grade")){
+        			searchOrder = " order by grade ";
+        		} else if (field.equalsIgnoreCase("Calculator")){
+        			searchOrder = " order by calculator ";
+        		} else if (field.equalsIgnoreCase("HasColorFontAccommodations")){
+        			searchOrder = " order by hasColorFontAccommodations ";
+        		} else if (field.equalsIgnoreCase("TestPause")){
+        			searchOrder = " order by testPause ";
+        		} else if (field.equalsIgnoreCase("ScreenReader")){
+        			searchOrder = " order by screenReader ";
+        		} else if (field.equalsIgnoreCase("UntimedTest")){
+        			searchOrder = " order by untimedTest ";
+        		} else if (field.equalsIgnoreCase("UntimedTest")){
+        			searchOrder = " order by untimedTest ";
+        		}
+        		
+        		if ((type.equals(SortType.ALPHADESC)) || (type.equals(SortType.NUMDESC))){
+        			searchOrder += " desc ";
+        		}
+        	}
+        	
+        } 
+		return searchOrder;
+	}
+
+	private String getFilterString(FilterParams params) throws InvalidFilterFieldException {
+		String filterString=" ";
+		boolean isWhereAdded= false;
+		boolean isAndAdd= true;
+		
+		
+		ArrayList <String> list = new ArrayList<String>();
+		
+		for( FilterParam param : params.getFilterParams()) {
+            try {
+              	String operation = "=";
+            	FilterType operationType = param.getType(); 
+            	if(operationType.equals(FilterType.NOTEQUAL)){
+            		operation = " != ";
+            	}else if(operationType.equals(FilterType.EQUALS)){
+            		operation = " = ";
+            	} else {
+            		throw new Exception("Filter operation ["+operationType.getType()+ "] not supported.");
+            	}
+            		
+            	
+            	if (param.getField().equalsIgnoreCase("StudentGrade")){
+            		list.add(" grade "+ operation +" '"+(param.getArgument())[0]+"' ");
+            	}else if (param.getField().equalsIgnoreCase("Calculator")){
+            		list.add(" calculator "+ operation +" '"+(param.getArgument())[0]+"' ");
+            	}else if (param.getField().equalsIgnoreCase("HasColorFontAccommodations")){
+            		list.add(" hasColorFontAccommodations "+ operation +" '"+(((String)(param.getArgument())[0]).equalsIgnoreCase("true")? "t":"f")+"'");	
+            	}else if (param.getField().equalsIgnoreCase("TestPause")){
+					list.add(" testPause "+ operation +" '"+(param.getArgument())[0]+"' ");	
+            	}else if (param.getField().equalsIgnoreCase("UntimedTest")){
+					list.add(" untimedTest "+ operation +" '"+(param.getArgument())[0]+"' ");	
+            	}else if (param.getField().equalsIgnoreCase("ScreenReader")){
+            		list.add(" screenReader "+ operation +" '"+(param.getArgument())[0]+"' ");
+            	} else 
+            		throw new Exception("Search filter ["+param.getField()+ "] not found.");
+               
+            } catch (Exception e) {
+                InvalidFilterFieldException ife = new InvalidFilterFieldException(e.getMessage());
+                ife.setStackTrace(e.getStackTrace());
+                throw ife;
+            }
+        }
+		
+		for( String val : list){
+			if (!isWhereAdded){
+				filterString += " where ";
+				isAndAdd = false;
+        		isWhereAdded= true;
+			} else {
+        		isAndAdd = true;
+        	}
+        	if(isAndAdd){
+        		filterString += " and ";
+        	}
+        	filterString+=val;
+		}
+		
+		
+		return filterString;
+	}
+
+	/**
      * Retrieves a sorted, filtered, paged list of users at the specified org node.
      * @common:operation
      * @param userName - identifies the user
