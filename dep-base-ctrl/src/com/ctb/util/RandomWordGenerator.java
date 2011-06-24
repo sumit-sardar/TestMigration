@@ -22,6 +22,11 @@ public class RandomWordGenerator extends Object
     static final long serialVersionUID = 1L;
     //constants, etc...
     private static final String TRACE_TAG = "RandomWordFactory";
+    
+    static USwordListVolume1 volume1 = new USwordListVolume1();
+    static USwordListVolume2 volume2 = new USwordListVolume2();
+    static USwordListVolume3 volume3 = new USwordListVolume3();
+    static USwordListVolume4 volume4 = new USwordListVolume4();
 
     public final static class Dictionary {
         public static final String FOURCHAR_LATIN_DICTIONARY = "FourCharWordList";
@@ -104,16 +109,16 @@ public class RandomWordGenerator extends Object
                 int i = rnd.nextInt( MAX_VOLUMES );
                 switch (i) {
                     case 0:
-                        wordArray = USwordListVolume1.WORDS;
+                        wordArray = volume1.WORDS;
                         break;
                     case 1:
-                        wordArray = USwordListVolume2.WORDS;
+                        wordArray = volume2.WORDS;
                         break;
                     case 2:
-                        wordArray = USwordListVolume3.WORDS;
+                        wordArray = volume3.WORDS;
                         break;
                     case 3:
-                        wordArray = USwordListVolume4.WORDS;
+                        wordArray = volume4.WORDS;
                         break;
                 }
             }else{
