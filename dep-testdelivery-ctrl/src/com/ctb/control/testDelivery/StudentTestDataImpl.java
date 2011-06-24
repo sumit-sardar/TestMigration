@@ -933,12 +933,14 @@ public class StudentTestDataImpl implements StudentTestData
     {
     	System.out.println("invokeScoring called...: for testRosterId : "+testRosterId);
 		getResourceValue();
-	    InitialContext ic = QueueSend.getInitialContext(jndiFactory,jmsURL,jmsPrincipal,jmsCredentials);
+		System.out.println("in invokeScoring jndiFactory,jmsURL,jmsPrincipal,jmsCredentials...: "+jndiFactory+" : "+jmsURL+" : "+jmsPrincipal+" : "+jmsCredentials+" : for testRosterId : "+testRosterId);
+		InitialContext ic = QueueSend.getInitialContext(jndiFactory,jmsURL,jmsPrincipal,jmsCredentials);
 	    QueueSend qs = new QueueSend();
 	    qs.init(ic, jmsFactory, jmsQueue);
 	    qs.readAndSend(qs,testRosterId);
 	    qs.close();
 	    ic.close();
+	    System.out.println("invokeScoring finished...: for testRosterId : "+testRosterId);
 	  }
     
     private void getResourceValue() throws Exception {
