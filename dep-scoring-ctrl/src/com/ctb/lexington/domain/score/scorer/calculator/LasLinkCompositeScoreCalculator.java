@@ -561,12 +561,14 @@ public class LasLinkCompositeScoreCalculator extends AbstractDerivedScoreCalcula
         return contentAreaDerivedScoreEvents.keySet().contains(contentAreaName);
     }
     
-    	Long getPercentObtainedForSubtest( int pointsObtained, int pointsPossible) {
+    	Float getPercentObtainedForSubtest( int pointsObtained, int pointsPossible) {
         if (pointsPossible == 0)
             return null;
 
-        float percent = ((float) pointsObtained / (float) pointsPossible) * 100;
-        return new Long(Math.round(percent));
+        int p = (int)Math.pow(10, 1);
+        pointsObtained = pointsObtained * p;
+        float percent = Math.round(((float) pointsObtained / (float) pointsPossible) * 100 );
+        return percent/p;
     	}
 
 
