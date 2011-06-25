@@ -394,7 +394,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
 		        }
 	   	  	}
     	 } catch(CTBSystemException e){
-    		 e.printStackTrace();
+    		
     		 
     	 }
     }
@@ -409,7 +409,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
 		        
 	   	  	}
     	 }catch(CTBSystemException e){
-    		 e.printStackTrace();
+    		
     		 
     	 }
     }
