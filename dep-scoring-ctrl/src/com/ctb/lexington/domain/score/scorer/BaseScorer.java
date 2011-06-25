@@ -378,23 +378,40 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
     }
 
     public void onEvent(ResponseReceivedEvent event) {
-        StudentItemScoreDetails detail = getResultHolder().getStudentItemScoreData().get(
-                event.getItemId());
-        detail.setItemResponseId(event.getItemResponseId());
-        detail.setItemElapsedTime(DatabaseHelper.asLong(event.getResponseElapsedTime()));
-        detail.setResponse(event.getResponse());
-        detail.setComments(event.getComments());
-        if (event.getConditionCodeId() != null) {
-            detail.setConditionCodeId(DatabaseHelper.asLong(event.getConditionCodeId()));
-        } else {
-        	detail.setConditionCodeId(null);
-        }
+    	 try {
+	    	 List<Objective> primaryList = subtestObjectives.getPrimaryReportingLevelObjective(event.getItemId());
+	   	  	for(Objective primary:primaryList){
+		        StudentItemScoreDetails detail = getResultHolder().getStudentItemScoreData().get(
+		                event.getItemId() + primary.getName() );
+		        detail.setItemResponseId(event.getItemResponseId());
+		        detail.setItemElapsedTime(DatabaseHelper.asLong(event.getResponseElapsedTime()));
+		        detail.setResponse(event.getResponse());
+		        detail.setComments(event.getComments());
+		        if (event.getConditionCodeId() != null) {
+		            detail.setConditionCodeId(DatabaseHelper.asLong(event.getConditionCodeId()));
+		        } else {
+		        	detail.setConditionCodeId(null);
+		        }
+	   	  	}
+    	 } catch(CTBSystemException e){
+    		 e.printStackTrace();
+    		 
+    	 }
     }
 
     public void onEvent(PointEvent event) {
-        StudentItemScoreDetails detail = getResultHolder().getStudentItemScoreData().get(
-                event.getItemId());
-        detail.setPoints(event.getPointsObtained());
+    	 try {
+	    	 List<Objective> primaryList = subtestObjectives.getPrimaryReportingLevelObjective(event.getItemId());
+	   	  	for(Objective primary:primaryList){
+		        StudentItemScoreDetails detail = getResultHolder().getStudentItemScoreData().get(
+		                event.getItemId()+ primary.getName());
+		        detail.setPoints(event.getPointsObtained() );
+		        
+	   	  	}
+    	 }catch(CTBSystemException e){
+    		 e.printStackTrace();
+    		 
+    	 }
     }
 
     //TODO: this should probably move into collectors/controllers
@@ -468,7 +485,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
 	                 detail.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
             	  }
             } catch (CTBSystemException e){
-        		
+            	 e.printStackTrace();
         	}
             //END- For Laslink Scoring
         }

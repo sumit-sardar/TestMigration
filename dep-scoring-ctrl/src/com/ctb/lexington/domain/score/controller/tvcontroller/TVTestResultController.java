@@ -177,7 +177,7 @@ public class TVTestResultController implements TestResultController {
                                     ("True".equals(iep) || ("T".equals(iep)))?3:4));
     		}
                                     
-    		details.setAttr6Id(new Long(9));
+    		details.setAttr6Id(new Long(8));
     		
     		details.setAttr7Id(new Long(4));
     		if(rd.containsKey("LEP")) {

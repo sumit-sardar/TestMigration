@@ -4,6 +4,7 @@ import com.ctb.lexington.db.data.AdminData;
 import com.ctb.lexington.db.data.ContextData;
 import com.ctb.lexington.db.data.CurriculumData;
 import com.ctb.lexington.db.data.CurriculumData.Item;
+import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.data.StudentItemResponseData;
 import com.ctb.lexington.db.data.StudentItemResponseDetails;
 import java.sql.Connection;
@@ -115,22 +116,25 @@ public class StudentItemScoresController {
                 } else {
                     itemFact.setNationalAverage(new BigDecimal(-1.0));
                 }
-                
-                StudentItemScoreDetails scoreDetails = studentItemScoreData.get(item.getOasItemId());
-                if(scoreDetails != null && !"F".equals(scoreDetails.getAtsArchive())) {
-	                itemFact.setItemResponseTimestamp(scoreDetails.getCreatedDateTime());
-	                itemFact.setPointsObtained(scoreDetails.getPoints() == null?null:new Long(scoreDetails.getPoints().intValue()));
-	                itemFact.setResponseid(new Long(
-	                                            "A".equals(scoreDetails.getResponse())?1:
-	                                            "B".equals(scoreDetails.getResponse())?2:
-	                                            "C".equals(scoreDetails.getResponse())?3:
-	                                            "D".equals(scoreDetails.getResponse())?4:
-	                                            "E".equals(scoreDetails.getResponse())?5:6));
-                } else {
-                    itemFact.setItemResponseTimestamp(new Timestamp(System.currentTimeMillis()));
-	                itemFact.setPointsObtained(null);
-	                itemFact.setResponseid(new Long(6));
-                    itemFact.setCurrentResultid(new Long(2));
+                PrimaryObjective [] prims = currData.getPrimaryObjectives();
+                for(int j=0;j<prims.length;j++) {
+    				String contentAreaName = prims[j].getPrimaryObjectiveName();
+	                StudentItemScoreDetails scoreDetails = studentItemScoreData.get(item.getOasItemId()+ contentAreaName);
+	                if(scoreDetails != null && scoreDetails.getAtsArchive()!= null && !"F".equals(scoreDetails.getAtsArchive())) {
+	                	itemFact.setItemResponseTimestamp(scoreDetails.getCreatedDateTime());
+		                itemFact.setPointsObtained(scoreDetails.getPoints() == null?null:new Long(scoreDetails.getPoints().intValue()));
+		                itemFact.setResponseid(new Long(
+		                                            "A".equals(scoreDetails.getResponse())?1:
+		                                            "B".equals(scoreDetails.getResponse())?2:
+		                                            "C".equals(scoreDetails.getResponse())?3:
+		                                            "D".equals(scoreDetails.getResponse())?4:
+		                                            "E".equals(scoreDetails.getResponse())?5:6));
+	                } else if (scoreDetails != null && scoreDetails.getAtsArchive()!= null && "F".equals(scoreDetails.getAtsArchive())){
+	                	itemFact.setItemResponseTimestamp(new Timestamp(System.currentTimeMillis()));
+		                itemFact.setPointsObtained(null);
+		                itemFact.setResponseid(new Long(6));
+	                    itemFact.setCurrentResultid(new Long(2));
+	                }
                 }
                 itemFacts.add(itemFact);
             }
