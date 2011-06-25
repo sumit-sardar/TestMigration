@@ -485,7 +485,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
 	                 detail.setCreatedDateTime(new Timestamp(System.currentTimeMillis()));
             	  }
             } catch (CTBSystemException e){
-            	 e.printStackTrace();
+            	
         	}
             //END- For Laslink Scoring
         }
