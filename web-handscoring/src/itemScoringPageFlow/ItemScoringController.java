@@ -34,6 +34,7 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
+import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.RosterElementData;
@@ -610,11 +611,13 @@ public class ItemScoringController extends PageFlowController {
 		//System.out.println("user.getUserId(), itemId, itemSetId, testRosterId, score :: "+user.getUserId() + itemId +  itemSetId +  testRosterId +  score);
 	try {
 		 Boolean isSuccess = this.testScoring.saveOrUpdateScore(user.getUserId(), itemId, itemSetId, testRosterId, score);
-			
-		 
-		 
-		 jsonMessageResponse = JsonUtils.getJson(isSuccess, "SaveStatus",isSuccess.getClass());
-			
+		 //Start- added for  Process Scores  button
+		 String completionStatus = new String("FromItem");
+		 ManageStudent ms = new ManageStudent();
+		 ms.setIsSuccess(isSuccess);
+		 ms.setCompletionStatus(completionStatus);
+		 jsonMessageResponse = JsonUtils.getJson(ms, "SaveStatus",ms.getClass());
+	     //End - added for  Process Scores  button		
 			//System.out.println("jsonResponse:==>"+jsonMessageResponse);
 			//	getCRItemResponseForScoring
 			

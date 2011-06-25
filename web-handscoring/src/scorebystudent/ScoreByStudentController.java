@@ -26,6 +26,7 @@ import com.ctb.bean.request.SortParams.SortParam;
 import com.ctb.bean.request.SortParams.SortType;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
+import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
@@ -234,8 +235,14 @@ public class ScoreByStudentController extends PageFlowController {
 		try {
 			ts = scoring.getTestAdminDetails(form.getTestAdminId());
 			// start- added for  Process Scores   button changes
-			String completionStatus = scoring.getScoringStatus(form.getRosterId(),form.getItemSetIdTC());
-   		    this.getRequest().setAttribute("completionStatus", completionStatus);
+			String completionStatus = scoring.getScoringStatus(form.getTestRosterId(),form.getItemSetIdTC());
+			Boolean scoringButton = false;
+			if(completionStatus.equals("CO")){
+				 scoringButton = false;
+			}else{
+				 scoringButton = true;
+			}
+   		    this.getRequest().setAttribute("scoringButton", scoringButton);
 			// end- added for  Process Scores  button changes
 			form.setTestAccessCode(ts.getAccessCode());
 			form.setTestSessionName(ts.getTestAdminName());
@@ -654,13 +661,19 @@ public class ScoreByStudentController extends PageFlowController {
 		Integer testRosterId = Integer.valueOf(getRequest().getParameter(
 				"rosterId"));
 		Integer score = Integer.valueOf(getRequest().getParameter("score"));
+		Integer itemSetIdTC = Integer.valueOf(getRequest().getParameter("itemSetIdTC"));
 		try {
 			Boolean isSuccess = this.testScoring.saveOrUpdateScore(user
 					.getUserId(), itemId, itemSetId, testRosterId, score);
-
-			jsonMessageResponse = JsonUtils.getJson(isSuccess, "SaveStatus",
-					isSuccess.getClass());
-
+			// start- added for  Process Scores   button changes
+			
+			 String completionStatus = scoring.getScoringStatus(testRosterId,itemSetIdTC);
+			 ManageStudent ms = new ManageStudent();
+			 ms.setIsSuccess(isSuccess);
+			 ms.setCompletionStatus(completionStatus);
+			 jsonMessageResponse = JsonUtils.getJson(ms, "SaveStatus",ms.getClass());
+          // end - added for  Process Scores   button changes
+			
 			HttpServletResponse resp = this.getResponse();
 			resp.setContentType("application/json");
 			resp.flushBuffer();
@@ -695,9 +708,12 @@ public class ScoreByStudentController extends PageFlowController {
 	}
 	
 // start-added for  Process Scores  button changes
- 	@Jpf.Action()
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "beginDisplayStudItemList.do")
+	})
 public Forward rescoreStudent(ScoreByStudentForm form) {
-	 Integer testRosterId = form.getRosterId();
+	 Integer testRosterId = form.getTestRosterId();
 
         try {    
             this.testSessionStatus.rescoreStudent(testRosterId);
@@ -705,7 +721,7 @@ public Forward rescoreStudent(ScoreByStudentForm form) {
         catch (Exception e) {
             e.printStackTrace();
         }                
-	return null;
+        return new Forward("success");
 }
 // end- added for  Process Scores  button changes
 	public static class ScoreByStudentForm extends SanitizedFormData {
@@ -1128,6 +1144,7 @@ public Forward rescoreStudent(ScoreByStudentForm form) {
 			this.testRosterId = testRosterId;
 		}
 
+		
 	}
 
 	public String getPageTitle() {

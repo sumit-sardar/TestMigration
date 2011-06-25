@@ -36,7 +36,13 @@ public class ManageStudent extends CTBBean
     private String accessCode;
     private String testAdminId;
     private Integer itemCountCRAI;
-    //END-Added for HandScoring
+    //END-Added for HandScoring  
+    
+    //Start- added for  Process Scores  button
+    private Boolean isSuccess;
+    private String completionStatus;
+    //end - added for  Process Scores  button
+   
     
     //START- (LLO82) StudentManagement Changes For LasLink product
     private String testPurpose;
@@ -311,6 +317,30 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setItemCountCRAI(Integer itemCountCRAI) {
 		this.itemCountCRAI = itemCountCRAI;
+	}
+	/**
+	 * @return the isSuccess
+	 */
+	public Boolean getIsSuccess() {
+		return isSuccess;
+	}
+	/**
+	 * @param isSuccess the isSuccess to set
+	 */
+	public void setIsSuccess(Boolean isSuccess) {
+		this.isSuccess = isSuccess;
+	}
+	/**
+	 * @return the completionStatus
+	 */
+	public String getCompletionStatus() {
+		return completionStatus;
+	}
+	/**
+	 * @param completionStatus the completionStatus to set
+	 */
+	public void setCompletionStatus(String completionStatus) {
+		this.completionStatus = completionStatus;
 	}
     
 } 

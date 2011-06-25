@@ -370,8 +370,10 @@ if(isHidden){
 			var itemSetId = document.getElementById("itemSetId").value  ;
 			var itemNumber = document.getElementById("itemNumber").value;
 			var rowno = document.getElementById("rowNo").value;
-			var param = "&itemId="+itemId+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val() + "&score="+$("#pointsDropDown option:selected").val();    
 			var optionValue = $("#pointsDropDown option:selected").val();
+			var itemSetIdTC = document.getElementById("itemSetIdTC").value;
+			var param = "&itemId="+itemId+"&itemSetId="+itemSetId+"&rosterId="+$("#rosterId").val() + "&score="+$("#pointsDropDown option:selected").val()+ "&itemSetIdTC="+itemSetIdTC;    
+			
 			
 			if(optionValue == null || optionValue == "" ){
 				document.getElementById("message").style.display = 'inline';
@@ -394,10 +396,20 @@ if(isHidden){
 								dataType:	'json',
 								success:	function(data, textStatus, XMLHttpRequest){	
 													
-													var isSuccess = data.boolean;	
+													var isSuccess = data.SaveStatus.isSuccess;	
+													
+													var completionStatus = null;
+													var processScores;
+													if(data.SaveStatus.completionStatus!=null && data.SaveStatus.completionStatus != "FromItem" )
+													{
+													 completionStatus = data.SaveStatus.completionStatus;
+													 processScores = document.getElementById("rescoreStudent");
+													
+													}
 													var spanElement = document.getElementById("messageSpan");
 													var scorePointsElement = document.getElementById("scorePoints"+rowno);
 													var scoreStatusElement = document.getElementById("scoreStatus"+rowno);
+								                      
 													
 													if(isSuccess){
 														scorePointsElement.firstChild.nodeValue = $("#pointsDropDown option:selected").val();
@@ -405,10 +417,16 @@ if(isHidden){
 														document.getElementById("messageStatus").value = isSuccess;
 														document.getElementById("message").style.display = 'inline';	
 														spanElement.innerHTML = "<b> Item scored successfully. </b>";
+												        if(completionStatus !=null && completionStatus=="CO")
+												        {
+												        
+												          processScores.removeAttribute("disabled"); 
+												        }
 													}
 													else{				
 														spanElement.innerHTML = "<b> Item not scored. </b>";
 													}
+													
 												
 											},
 								error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -520,9 +538,12 @@ if(isHidden){
 	function hideMessage(){
 		document.getElementById("messageSpan").innerHTML = "";
 	}		
-					
+	function enable(){
+	document.getElementById("rescoreStudent").setAttribute("disabled",false);
+	}
+				
 	function isWindows() {
 		return navigator.userAgent.indexOf('Win') > -1;
 	}	
 	
-				
+	

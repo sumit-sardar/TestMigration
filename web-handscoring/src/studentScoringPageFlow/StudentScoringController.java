@@ -26,12 +26,14 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
+import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.RubricViewData; //Added for rubric view
 import com.ctb.bean.testAdmin.ScorableCRAnswerContent;
 import com.ctb.bean.testAdmin.ScorableItem;
 import com.ctb.bean.testAdmin.ScorableItemData;
+import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.bean.testAdmin.TestProductData;
 import com.ctb.bean.testAdmin.TestSession;
@@ -277,8 +279,15 @@ public class StudentScoringController extends PageFlowController {
     		 TestSession testSession = scoring.getTestAdminDetails(form.getTestAdminId());
     		 // start- added for  Process Scores  button changes
     		 String completionStatus = scoring.getScoringStatus(form.getRosterId(),form.getItemSetIdTC());
+    		 Boolean scoringButton = false;
+ 			 if(completionStatus.equals("CO")){
+ 				 scoringButton = false;
+ 			 }else{
+ 				 scoringButton = true;
+ 			 }
+    		 this.getRequest().setAttribute("scoringButton", scoringButton);
     		 this.getRequest().setAttribute("testSessionName", testSession.getTestAdminName());
-    		 this.getRequest().setAttribute("completionStatus", completionStatus);
+    		 
     	}catch(Exception e){
     			 e.printStackTrace();
     	}
@@ -368,13 +377,18 @@ public class StudentScoringController extends PageFlowController {
 		Integer itemSetId = Integer.valueOf(getRequest().getParameter("itemSetId"));
 		Integer testRosterId =  Integer.valueOf(getRequest().getParameter("rosterId"));
 		Integer score = Integer.valueOf(getRequest().getParameter("score"));
+		// start- added for  Process Scores   button changes
+			
+		Integer itemSetIdTC = Integer.valueOf(getRequest().getParameter("itemSetIdTC"));
 		//System.out.println("user.getUserId(), itemId, itemSetId, testRosterId, score :: "+user.getUserId() + itemId +  itemSetId +  testRosterId +  score);
 	try {
 		 Boolean isSuccess = this.testScoring.saveOrUpdateScore(user.getUserId(), itemId, itemSetId, testRosterId, score);
-			
-		 
-		 
-		 jsonMessageResponse = JsonUtils.getJson(isSuccess, "SaveStatus",isSuccess.getClass());
+		 String completionStatus = scoring.getScoringStatus(testRosterId,itemSetIdTC);
+		 ManageStudent ms = new ManageStudent();
+		 ms.setIsSuccess(isSuccess);
+		 ms.setCompletionStatus(completionStatus);
+		 jsonMessageResponse = JsonUtils.getJson(ms, "SaveStatus",ms.getClass());
+		// end - added for  Process Scores   button changes
 			
 			//System.out.println("jsonResponse:==>"+jsonMessageResponse);
 			//	getCRItemResponseForScoring
@@ -1010,9 +1024,14 @@ public class StudentScoringController extends PageFlowController {
 
 		return msData;
 	}
-		
+	
+	
+	
 	// start- added for  Process Scores  button changes
-	 	@Jpf.Action()
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "beginDisplayStudItemList.do")
+	})
 	public Forward rescoreStudent(StudentScoringForm form) {
 		 Integer testRosterId = form.getRosterId();
 
@@ -1022,7 +1041,7 @@ public class StudentScoringController extends PageFlowController {
 	        catch (Exception e) {
 	            e.printStackTrace();
 	        }                
-		return null;
+	        return new Forward("success");
 	}
 	// end- added for  Process Scores  button changes
 	public static class StudentScoringForm extends SanitizedFormData
@@ -1044,6 +1063,11 @@ public class StudentScoringController extends PageFlowController {
 		private Integer studentPageRequested;
 		private Integer studentMaxPage;
 		
+		// for  Process Scores   button changes
+		private Integer totalItems;
+		private Boolean isSuccess;
+	    private String completionStatus;
+	    
 		//item pager
 		private String itemSortColumn ;
 	    private String itemSortOrderBy;
@@ -1392,6 +1416,48 @@ public class StudentScoringController extends PageFlowController {
 		 */
 		public void setScorePoints(Integer scorePoints) {
 			this.scorePoints = scorePoints;
+		}
+
+		/**
+		 * @return the totalItems
+		 */
+		public Integer getTotalItems() {
+			return totalItems;
+		}
+
+		/**
+		 * @param totalItems the totalItems to set
+		 */
+		public void setTotalItems(Integer totalItems) {
+			this.totalItems = totalItems;
+		}
+
+		/**
+		 * @return the isSuccess
+		 */
+		public Boolean getIsSuccess() {
+			return isSuccess;
+		}
+
+		/**
+		 * @param isSuccess the isSuccess to set
+		 */
+		public void setIsSuccess(Boolean isSuccess) {
+			this.isSuccess = isSuccess;
+		}
+
+		/**
+		 * @return the completionStatus
+		 */
+		public String getCompletionStatus() {
+			return completionStatus;
+		}
+
+		/**
+		 * @param completionStatus the completionStatus to set
+		 */
+		public void setCompletionStatus(String completionStatus) {
+			this.completionStatus = completionStatus;
 		}  
 		
 	}

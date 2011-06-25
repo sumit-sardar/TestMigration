@@ -136,8 +136,10 @@ function stopAudio(){
 		<!-- ********************************************************************************************************************* -->
 
 		<h1><netui:content value="${bundle.web['individualStudentScoring.title']}" /></h1>
-		<p><netui:content value="${bundle.web['individualStudentScoring.title.message']}" /></p>
+		<p><netui:content value="${bundle.web['individualStudentScoring.title.message']}" />
+		 <netui:content value="${bundle.web['ProcessScore.title.message']}" /></p>
 
+		
 		<netui:form action="beginDisplayStudItemList">
 			<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement" />
 			<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction" />
@@ -158,7 +160,8 @@ function stopAudio(){
 			<input type="hidden" id="itemType" />
 			<input type="hidden" id="audioResponseString" />
 			<input type="hidden" id="rowNo" />
-
+			<input type="hidden" id="itemSetIdTC"/>
+            
 			<h2><netui:content value="${bundle.web['individualStudentScoring.StudentDetails.title']}" /></h2>
 			<table class="transparent" width="100%">
 
@@ -197,7 +200,7 @@ function stopAudio(){
                 <tr class="tableFilter">
                     <td class="tableFilter">  
                            
-                        <netui:button type="submit" tagId="rescoreStudent" value="${bundle.widgets['button.rescoreStudent']}" action="rescoreStudent" disabled="${!requestScope.completionStatus}"/>
+                        <netui:button type="submit" tagId="rescoreStudent" value="${bundle.widgets['button.rescoreStudent']}" action="rescoreStudent" disabled="${requestScope.scoringButton}"/>
                                                    
                     </td>
                 </tr>

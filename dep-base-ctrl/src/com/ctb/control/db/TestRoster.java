@@ -421,12 +421,13 @@ public interface TestRoster extends JdbcControl
      *      org_node_id = {re.orgNodeId},
      *      test_completion_status = {re.testCompletionStatus},
      *      customer_flag_status = {re.customerFlagStatus},
-     *      validation_status = {re.validationStatus}
+     *      validation_status = {re.validationStatus},
+     *      scoring_status = {re.scoringStatus}
      * where 
      *     test_admin_id = {re.testAdminId}
      *     and student_id = {re.studentId}::
      */
-    @JdbcControl.SQL(statement = "update  test_roster set  form_assignment = {re.formAssignment},  org_node_id = {re.orgNodeId},  test_completion_status = {re.testCompletionStatus},  customer_flag_status = {re.customerFlagStatus},  validation_status = {re.validationStatus} where  test_admin_id = {re.testAdminId}  and student_id = {re.studentId}")
+    @JdbcControl.SQL(statement = "update  test_roster set  form_assignment = {re.formAssignment},  org_node_id = {re.orgNodeId},  test_completion_status = {re.testCompletionStatus},  customer_flag_status = {re.customerFlagStatus},  validation_status = {re.validationStatus}, scoring_status = {re.scoringStatus} where  test_admin_id = {re.testAdminId}  and student_id = {re.studentId}")
     void updateTestRoster(RosterElement re) throws SQLException;
     
     /**

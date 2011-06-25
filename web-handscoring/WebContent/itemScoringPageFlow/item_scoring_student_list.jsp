@@ -182,6 +182,7 @@ template_find_student.jsp
 <input type="hidden" id="rowNo" />
 <input type="hidden" id="loginId" />
 <input type="hidden" id="rosterId" />
+<input type="hidden" id="itemSetIdTC"/>
 
 
 <!-- message -->
