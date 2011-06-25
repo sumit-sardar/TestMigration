@@ -559,7 +559,7 @@ public class LLTestResultController implements TestResultController {
         context.setProgramId(adminData.getProgramId());
         context.setDemographicData(demographicData);
         
-      //  new CurriculumController(conn, curriculumData, adminData, context).run();
+        new CurriculumController(conn, curriculumData, adminData, context).run();
         System.out.println("***** SCORING: Persisted dimension data.");
         
         // persist scores
