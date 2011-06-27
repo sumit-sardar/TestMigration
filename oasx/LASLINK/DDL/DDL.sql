@@ -71,3 +71,35 @@ BEGIN
   EXECUTE IMMEDIATE 'ALTER TABLE ITEM_RESPONSE_POINTS ADD CONSTRAINT PK_ITEM_RESPONSE_POINTS  PRIMARY KEY(ITEM_RESPONSE_ID, ITEM_RESPONSE_POINTS_SEQ_NUM, DATAPOINT_ID)';
 END;
 /
+
+
+/*Creating table ITEM_RUBRIC_DATA and ITEM_RUBRIC_EXEMPLARS for insrting rubric datas for handScoring*/
+
+create table ITEM_RUBRIC_DATA
+(
+  ITEM_ID            VARCHAR2(32) not null,
+  SCORE              INTEGER not null,
+  RUBRIC_DESCRIPTION VARCHAR2(1000),
+  primary key (ITEM_ID, SCORE)
+)
+/
+
+
+create table ITEM_RUBRIC_EXEMPLARS
+(
+  ITEM_ID            VARCHAR2(32) not null,
+  SCORE              INTEGER not null,
+  SAMPLE_RESPONSE    VARCHAR2(1000),
+  RUBRIC_EXPLANATION VARCHAR2(1000)
+)
+/
+
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table ITEM_RUBRIC_EXEMPLARS
+  add primary key (ITEM_ID, SCORE)
+/
+
+alter table ITEM_RUBRIC_EXEMPLARS
+  add foreign key (ITEM_ID, SCORE)
+  references ITEM_RUBRIC_DATA (ITEM_ID, SCORE)
+/
