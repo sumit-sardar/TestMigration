@@ -705,7 +705,8 @@ create table LASLINK_SEC_OBJ_FACT
   TEST_COMPLETION_TIMESTAMP DATE,
   TEST_START_TIMESTAMP      DATE,
   POINTS_POSSIBLE           NUMBER
-)/
+)
+/
 
 
 -- Create/Recreate primary, unique and foreign key constraints 
