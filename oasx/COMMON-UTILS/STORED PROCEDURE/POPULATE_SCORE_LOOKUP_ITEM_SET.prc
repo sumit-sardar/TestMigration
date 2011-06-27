@@ -34,13 +34,13 @@ BEGIN
   V_PARAMETER :='ITEM_SET_FORM:'||R1.ITEM_SET_FORM||'ITEM_SET_LEVEL:'||R1.ITEM_SET_LEVEL||'GRADE:'||R1.GRADE||'CONTENT_AREA_NAME:'||R1.CONTENT_AREA_NAME;
    
    IF( R1.GRADE IS NULL ) THEN 
-   
+    /*
     SELECT DISTINCT SCORE_LOOKUP_ID
       INTO V_SCORE_LOOKUP_ID
       FROM SCORE_LOOKUP
      WHERE TEST_FORM = decode (R1.ITEM_SET_FORM,'Español','S',R1.ITEM_SET_FORM)
        AND TEST_LEVEL = decode(upper(R1.ITEM_SET_LEVEL),
-                              'K',  '1',
+                              'K',  'K',
                               '1',  '1',
                               '2-3','2',
                               '4-5','3',
@@ -49,7 +49,7 @@ BEGIN
                               R1.ITEM_SET_LEVEL)
        AND GRADE = nvl(R1.GRADE,
                        decode(upper(R1.ITEM_SET_LEVEL),
-                              'K',  '1',
+                              'K',  'K',
                               '1',  '1',
                               '2-3','2',
                               '4-5','3',
@@ -62,14 +62,14 @@ BEGIN
       (SCORE_LOOKUP_ID, ITEM_SET_ID)
     VALUES
       (V_SCORE_LOOKUP_ID, R1.ITEM_SET_ID);
-     
+     */
      SELECT DISTINCT SCORE_LOOKUP_ID
        INTO V_SCORE_LOOKUP_ID
        FROM SCORE_LOOKUP
       WHERE TEST_FORM =
             decode(R1.ITEM_SET_FORM, 'Español', 'S', R1.ITEM_SET_FORM)
         AND TEST_LEVEL = decode(upper(R1.ITEM_SET_LEVEL),
-                                'K',   '1',
+                                'K',   'K',
                                 '1',   '1',
                                 '2-3', '2',
                                 '4-5', '3',
@@ -96,7 +96,7 @@ BEGIN
    WHERE TEST_FORM =
          decode(R1.ITEM_SET_FORM, 'Español', 'S', R1.ITEM_SET_FORM)
      AND TEST_LEVEL = decode(upper(R1.ITEM_SET_LEVEL),
-                             'K',  '1',
+                             'K',  'K',
                              '1',  '1',
                              '2-3','2',
                              '4-5','3',
