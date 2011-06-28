@@ -1038,11 +1038,12 @@ public class TestSessionStatusImpl implements TestSessionStatus
     public void rescoreStudent(Integer testRosterId) throws CTBBusinessException{
     	
     	try {
-    		 
-    		 RosterElement rosterDetail = getRoster(testRosterId);
+    		 //Start-  Defect #66489 and #66499 (Editing and Ending Test Session)
+    		/* RosterElement rosterDetail = getRoster(testRosterId);
     		 String newScoringStatus = "CO";
     		 rosterDetail.setScoringStatus(newScoringStatus);
-             roster.updateTestRoster(rosterDetail);
+             roster.updateTestRoster(rosterDetail);*/
+             //End- Defect #66489 and #66499 (Editing and Ending Test Session)
            
     		 // new Weblogic 10.3 JMS call
              invokeScoring(testRosterId);
