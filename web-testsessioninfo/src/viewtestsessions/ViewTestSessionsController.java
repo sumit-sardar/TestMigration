@@ -512,7 +512,7 @@ public class ViewTestSessionsController extends PageFlowController
     {
         String sessionId = form.getSessionId().toString();
         getSession().setAttribute("sessionId", sessionId);
-        getSession().setAttribute("callerId", "view_report");
+        getSession().setAttribute("callerId", "generate_report_file");
         
         return new Forward("success");
     }
