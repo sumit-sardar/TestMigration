@@ -115,7 +115,8 @@ public interface StudentAccommodation extends JdbcControl
      *      accom.ANSWER_FONT_COLOR as answerFontColor,
      *      accom.ANSWER_FONT_SIZE as answerFontSize,
      *      accom.MASKING_RULER as maskingRuler, 
-     *      accom.MUSIC_FILE_ID as musicFile
+     *      accom.MUSIC_FILE_ID as musicFile,
+     *      accom.MAGNIFYING_GLASS as magnifyingGlass
      * from
      *      student_accommodation accom,
      *      student stu
@@ -124,7 +125,7 @@ public interface StudentAccommodation extends JdbcControl
      *      and stu.activation_status = 'AC'
      * 	 and stu.student_id = {studentId}::
      */
-    @JdbcControl.SQL(statement = "select  distinct stu.STUDENT_ID as studentId,  stu.grade as studentGrade,  accom.SCREEN_MAGNIFIER as screenMagnifier,  accom.SCREEN_READER as screenReader,  accom.CALCULATOR as calculator,  accom.TEST_PAUSE as testPause,  accom.UNTIMED_TEST as untimedTest,  accom.HIGHLIGHTER as highlighter,  accom.QUESTION_BACKGROUND_COLOR as questionBackgroundColor,  accom.QUESTION_FONT_COLOR as questionFontColor,  accom.QUESTION_FONT_SIZE as questionFontSize,  accom.ANSWER_BACKGROUND_COLOR as answerBackgroundColor,  accom.ANSWER_FONT_COLOR as answerFontColor,  accom.ANSWER_FONT_SIZE as answerFontSize, accom.MASKING_RULER as maskingRuler, accom.MUSIC_FILE_ID as musicFile from  student_accommodation accom,  student stu where  accom.student_id (+) = stu.student_id  and stu.activation_status = 'AC' \t and stu.student_id = {studentId}")
+    @JdbcControl.SQL(statement = "select  distinct stu.STUDENT_ID as studentId,  stu.grade as studentGrade,  accom.SCREEN_MAGNIFIER as screenMagnifier,  accom.SCREEN_READER as screenReader,  accom.CALCULATOR as calculator,  accom.TEST_PAUSE as testPause,  accom.UNTIMED_TEST as untimedTest,  accom.HIGHLIGHTER as highlighter,  accom.QUESTION_BACKGROUND_COLOR as questionBackgroundColor,  accom.QUESTION_FONT_COLOR as questionFontColor,  accom.QUESTION_FONT_SIZE as questionFontSize,  accom.ANSWER_BACKGROUND_COLOR as answerBackgroundColor,  accom.ANSWER_FONT_COLOR as answerFontColor,  accom.ANSWER_FONT_SIZE as answerFontSize, accom.MASKING_RULER as maskingRuler, accom.MUSIC_FILE_ID as musicFile, accom.MAGNIFYING_GLASS as magnifyingGlass from  student_accommodation accom,  student stu where  accom.student_id (+) = stu.student_id  and stu.activation_status = 'AC' \t and stu.student_id = {studentId}")
     StudentAccommodations getStudentAccommodations(Integer studentId) throws SQLException;
 
     /**
@@ -145,7 +146,8 @@ public interface StudentAccommodation extends JdbcControl
      * 		ANSWER_FONT_COLOR,
      * 		ANSWER_FONT_SIZE ,
      * 		MASKING_RULER,
-     * 		MUSIC_FILE_ID
+     * 		MUSIC_FILE_ID,
+     * 		MAGNIFYING_GLASS
      * 	   )
      * 	   values (
      *  	{accom.studentId},
@@ -162,11 +164,12 @@ public interface StudentAccommodation extends JdbcControl
      * 		{accom.answerFontColor},
      * 		{accom.answerFontSize}, 
      * 		{accom.maskingRuler},
-     * 		{accom.musicFile}
+     * 		{accom.musicFile},
+     * 		{accom.magnifyingGlass}
      * 		)
      * ::
      */
-    @JdbcControl.SQL(statement = "insert into  \t  student_accommodation ( \t\tSTUDENT_ID, \t\tSCREEN_MAGNIFIER, \t\tSCREEN_READER, \t\tCALCULATOR, \t\tTEST_PAUSE, \t\tUNTIMED_TEST, \t\tHIGHLIGHTER, \t\tQUESTION_BACKGROUND_COLOR, \t\tQUESTION_FONT_COLOR, \t\tQUESTION_FONT_SIZE, \t\tANSWER_BACKGROUND_COLOR, \t\tANSWER_FONT_COLOR, \t\tANSWER_FONT_SIZE, MASKING_RULER, MUSIC_FILE_ID ) \t  values (  \t{accom.studentId}, \t\t{accom.screenMagnifier}, \t\t{accom.screenReader}, \t\t{accom.calculator}, \t\t{accom.testPause}, \t\t{accom.untimedTest}, \t\t{accom.highlighter}, \t\t{accom.questionBackgroundColor}, \t\t{accom.questionFontColor}, \t\t{accom.questionFontSize}, \t\t{accom.answerBackgroundColor}, \t\t{accom.answerFontColor}, \t\t{accom.answerFontSize}, {accom.maskingRuler}, {accom.musicFile})")
+    @JdbcControl.SQL(statement = "insert into  \t  student_accommodation ( \t\tSTUDENT_ID, \t\tSCREEN_MAGNIFIER, \t\tSCREEN_READER, \t\tCALCULATOR, \t\tTEST_PAUSE, \t\tUNTIMED_TEST, \t\tHIGHLIGHTER, \t\tQUESTION_BACKGROUND_COLOR, \t\tQUESTION_FONT_COLOR, \t\tQUESTION_FONT_SIZE, \t\tANSWER_BACKGROUND_COLOR, \t\tANSWER_FONT_COLOR, \t\tANSWER_FONT_SIZE, MASKING_RULER, MUSIC_FILE_ID, MAGNIFYING_GLASS ) \t  values (  \t{accom.studentId}, \t\t{accom.screenMagnifier}, \t\t{accom.screenReader}, \t\t{accom.calculator}, \t\t{accom.testPause}, \t\t{accom.untimedTest}, \t\t{accom.highlighter}, \t\t{accom.questionBackgroundColor}, \t\t{accom.questionFontColor}, \t\t{accom.questionFontSize}, \t\t{accom.answerBackgroundColor}, \t\t{accom.answerFontColor}, \t\t{accom.answerFontSize}, {accom.maskingRuler}, {accom.musicFile}, {accom.magnifyingGlass})")
     void createStudentAccommodations(StudentAccommodations accom) throws SQLException;
 
     /**
@@ -187,10 +190,11 @@ public interface StudentAccommodation extends JdbcControl
      * 		ANSWER_FONT_COLOR={accom.answerFontColor},
      * 		ANSWER_FONT_SIZE={accom.answerFontSize}, 
      * 		MASKING_RULER = {accom.maskingRuler}, 
-     * 		MUSIC_FILE_ID = {accom.musicFile} 
+     * 		MUSIC_FILE_ID = {accom.musicFile},
+     * 		MAGNIFYING_GLASS = {accom.magnifyingGlass} 
      * where STUDENT_ID = {accom.studentId}::
      */
-    @JdbcControl.SQL(statement = "update  \t  student_accommodation  set \t\t \t\tSCREEN_MAGNIFIER={accom.screenMagnifier}, \t\tSCREEN_READER={accom.screenReader}, \t\tCALCULATOR={accom.calculator}, \t\tTEST_PAUSE={accom.testPause}, \t\tUNTIMED_TEST={accom.untimedTest}, \t\tHIGHLIGHTER={accom.highlighter}, \t\tQUESTION_BACKGROUND_COLOR={accom.questionBackgroundColor}, \t\tQUESTION_FONT_COLOR={accom.questionFontColor}, \t\tQUESTION_FONT_SIZE={accom.questionFontSize}, \t\tANSWER_BACKGROUND_COLOR={accom.answerBackgroundColor}, \t\tANSWER_FONT_COLOR={accom.answerFontColor}, \t\tANSWER_FONT_SIZE={accom.answerFontSize}, MASKING_RULER = {accom.maskingRuler}, MUSIC_FILE_ID = {accom.musicFile}  where STUDENT_ID = {accom.studentId}")
+    @JdbcControl.SQL(statement = "update  \t  student_accommodation  set \t\t \t\tSCREEN_MAGNIFIER={accom.screenMagnifier}, \t\tSCREEN_READER={accom.screenReader}, \t\tCALCULATOR={accom.calculator}, \t\tTEST_PAUSE={accom.testPause}, \t\tUNTIMED_TEST={accom.untimedTest}, \t\tHIGHLIGHTER={accom.highlighter}, \t\tQUESTION_BACKGROUND_COLOR={accom.questionBackgroundColor}, \t\tQUESTION_FONT_COLOR={accom.questionFontColor}, \t\tQUESTION_FONT_SIZE={accom.questionFontSize}, \t\tANSWER_BACKGROUND_COLOR={accom.answerBackgroundColor}, \t\tANSWER_FONT_COLOR={accom.answerFontColor}, \t\tANSWER_FONT_SIZE={accom.answerFontSize}, MASKING_RULER = {accom.maskingRuler}, MUSIC_FILE_ID = {accom.musicFile}, MAGNIFYING_GLASS = {accom.magnifyingGlass}  where STUDENT_ID = {accom.studentId}")
     void updateStudentAccommodations(StudentAccommodations accom) throws SQLException;
 
     /**

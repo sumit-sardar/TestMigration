@@ -30,6 +30,7 @@ public class StudentAccommodations extends CTBBean
     private String maskingRuler;//Added for masking
     private String auditoryCalming;//Added for auditory calming
     private String musicFile;//Added for auditory calming
+    private String magnifyingGlass;//Added for magnifier
     
      /**
 	 * @return Returns the orgNodeId.
@@ -275,5 +276,17 @@ public class StudentAccommodations extends CTBBean
 	 */
 	public void setMusicFile(String musicFile) {
 		this.musicFile = musicFile;
+	}
+	/**
+	 * @return Returns the magnifyingGlass.
+	 */
+	public String getMagnifyingGlass() {
+		return magnifyingGlass;
+	}
+	/**
+	 * @param magnifyingGlass The magnifyingGlass to set.
+	 */
+	public void setMagnifyingGlass(String magnifyingGlass) {
+		this.magnifyingGlass = magnifyingGlass;
 	}
 } 
