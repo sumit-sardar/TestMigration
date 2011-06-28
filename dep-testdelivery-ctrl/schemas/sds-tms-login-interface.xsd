@@ -688,6 +688,23 @@
 														</xs:documentation>
 													</xs:annotation>
 												</xs:attribute>
+												<xs:attribute
+													name="magnifying_glass" type="xs:boolean" use="optional"
+													default="0">
+													<xs:annotation>
+														<xs:documentation>
+															Indicates
+															whether the
+															magnifying
+															glass is
+															required or
+															not by the
+															special
+															accommodation
+															student.
+														</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
 											</xs:complexType>
 										</xs:element>
 									</xs:sequence>

@@ -168,6 +168,17 @@ public class StudentAccommodationsTag extends CTBTag
     	        disabled = isDisabled(field);
     	        displayControlRow(field, description, checked, disabled, null);                        
     	        displayTextRow("Allow student to use a ruler like image for masking.", "20");
+    	        
+    	   displayEmptyRow("2");
+           displayEmptyRow("2");
+                
+           // Magnifying Glass
+	           field = "Magnifying_Glass";
+	           description = "<b>Magnifying Glass</b>:";
+	           checked = this.accommodations.getMagnifyingGlass().booleanValue();
+	           disabled = isDisabled(field);
+	           displayControlRow(field, description, checked, disabled, null);                        
+	           displayTextRow("Allow student to use a magnifier to enlarge selected portion of the screen.", "20");
 
         
             displayEmptyRow("2");
@@ -549,7 +560,7 @@ public class StudentAccommodationsTag extends CTBTag
             return true;
             
         boolean disabled = false;
-        int counter = 0; // Added for calming and masking. Specially, if configuration is not present with the customer at all.
+        int counter = 0; // Added for magnifier, calming and masking. Specially, if configuration is not present with the customer at all.
         
         for (int i=0 ; i<this.customerConfigurations.length ; i++) {
             CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
@@ -562,7 +573,8 @@ public class StudentAccommodationsTag extends CTBTag
                     disabled = true;
             }
         }        
-        if(counter == 0 && (field.equals("Masking_Ruler") || field.equals("Auditory_Calming")))
+        if(counter == 0 && (field.equals("Masking_Ruler") || field.equals("Auditory_Calming")
+        		|| field.equals("Magnifying_Glass")))
         	disabled=true;
         
         return disabled;

@@ -1447,6 +1447,7 @@ public class ManageStudentController extends PageFlowController
 		String colorFont = getRequest().getParameter("colorFont");
 		String maskingRuler = getRequest().getParameter("Masking_Ruler"); //Added for Masking Ruler
 		String auditoryCalming = getRequest().getParameter("Auditory_Calming"); //Added for Auditory Calming
+		String magnifyingGlass = getRequest().getParameter("Magnifying_Glass"); //Added for Magnifying Glass
 
 		this.accommodations.setScreenReader(new Boolean(screenReader != null));
 		this.accommodations.setCalculator(new Boolean(calculator != null));
@@ -1456,6 +1457,7 @@ public class ManageStudentController extends PageFlowController
 		this.accommodations.setColorFont(new Boolean(colorFont != null));
 		this.accommodations.setAuditoryCalming(new Boolean(auditoryCalming != null));//Added for Auditory Calming
 		this.accommodations.setMaskingRuler(new Boolean(maskingRuler != null));//Added for Masking Ruler
+		this.accommodations.setMagnifyingGlass(new Boolean(magnifyingGlass != null));//Added for Magnifying Glass
 
 		setCustomerAccommodations(this.accommodations, false);
 
@@ -1511,6 +1513,7 @@ public class ManageStudentController extends PageFlowController
 		this.accommodations.setColorFont(Boolean.FALSE);
 		this.accommodations.setAuditoryCalming(Boolean.FALSE);//Added for Auditory Calming
 		this.accommodations.setMaskingRuler(Boolean.FALSE);//Added for Masking Ruler
+		this.accommodations.setMagnifyingGlass(Boolean.FALSE);//Added for Magnifying Glass
 
 		setCustomerAccommodations(this.accommodations, true);
 	}
@@ -1569,6 +1572,11 @@ public class ManageStudentController extends PageFlowController
 				if (ccName.equalsIgnoreCase("Auditory_Calming"))
 				{
 					sad.setAuditoryCalming(Boolean.TRUE);
+				}
+				//Added for Magnifying Glass
+				if (ccName.equalsIgnoreCase("Magnifying_Glass"))
+				{
+					sad.setMagnifyingGlass(Boolean.TRUE);
 				}
 			}
 		}

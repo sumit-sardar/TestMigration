@@ -21,6 +21,7 @@ public class AccomodationsData
     private String auditoryCalming;
     private byte[] musicFileData;
     private Integer musicFileId;
+    private String magnifyingGlass;//Added for magnifier
     
   
 	/**
@@ -228,6 +229,18 @@ public class AccomodationsData
 	 */
 	public void setMusicFileData(byte[] musicFileData) {
 		this.musicFileData = musicFileData;
+	}
+	/**
+	 * @return the magnifyingGlass
+	 */
+	public String getMagnifyingGlass() {
+		return magnifyingGlass;
+	}
+	/**
+	 * @param magnifyingGlass the magnifyingGlass to set
+	 */
+	public void setMagnifyingGlass(String magnifyingGlass) {
+		this.magnifyingGlass = magnifyingGlass;
 	}
 	
 } 

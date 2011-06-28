@@ -633,6 +633,8 @@ public class StudentLoginImpl implements StudentLogin
             //set the boolean value in accommodations.setHighlighter depends upon wheather the highlighter is true or false.
             accommodations.setHighlighter("T".equals(accomData.getHighlighter()) ?  true : false );
             accommodations.setMaskingRuler("T".equals(accomData.getMaskingRuler()) ? true : false );
+            //Changes for magnifying glass user story
+            accommodations.setMagnifyingGlass("T".equals(accomData.getMagnifyingGlass()) ? true : false );
             accommodations.setAuditoryCalming("T".equals(accomData.getAuditoryCalming()) ? true : false );
             if(accomData.getMusicFileId() != null){
             	accommodations.setMusicFileId(BigInteger.valueOf(accomData.getMusicFileId()));
