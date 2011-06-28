@@ -41,7 +41,7 @@
   
   <servlet-mapping>
     <servlet-name>TMSServlet</servlet-name>
-    <url-pattern>/TMS/*</url-pattern>
+    <url-pattern>/TestDeliveryWeb/CTB/*</url-pattern>
   </servlet-mapping>
   
   <servlet>

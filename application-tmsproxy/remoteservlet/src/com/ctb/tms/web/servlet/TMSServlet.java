@@ -59,19 +59,19 @@ public class TMSServlet extends HttpServlet {
 			String xml = request.getParameter("requestXML");
 			//System.out.println(xml);
 			
-			if (method != null && method.equals(ServletUtils.LOGIN_METHOD))
+			if (method != null && method.startsWith(ServletUtils.LOGIN_METHOD))
 	            result = login(xml);
-			else if (method != null && method.equals(ServletUtils.GET_SUBTEST_METHOD))
+			else if (method != null && method.startsWith(ServletUtils.GET_SUBTEST_METHOD))
 	            result = getSubtest(xml); 
-			else if (method != null && method.equals(ServletUtils.DOWNLOAD_ITEM_METHOD))
+			else if (method != null && method.startsWith(ServletUtils.DOWNLOAD_ITEM_METHOD))
 	            result = downloadItem(xml); 
-	        else if (method != null && method.equals(ServletUtils.SAVE_METHOD))
+	        else if (method != null && method.startsWith(ServletUtils.SAVE_METHOD))
 	            result = save(response, xml);        
-	        else if (method != null && method.equals(ServletUtils.FEEDBACK_METHOD))
+	        else if (method != null && method.startsWith(ServletUtils.FEEDBACK_METHOD))
 	            result = feedback(xml);        
-	        else if (method != null && method.equals(ServletUtils.UPLOAD_AUDIT_FILE_METHOD))
+	        else if (method != null && method.startsWith(ServletUtils.UPLOAD_AUDIT_FILE_METHOD))
 	            result = uploadAuditFile(xml);
-	        else if (method != null && method.equals(ServletUtils.WRITE_TO_AUDIT_FILE_METHOD))
+	        else if (method != null && method.startsWith(ServletUtils.WRITE_TO_AUDIT_FILE_METHOD))
 	            result = writeToAuditFile(xml);
 	        else
 	            result = ServletUtils.ERROR;   
@@ -218,7 +218,7 @@ public class TMSServlet extends HttpServlet {
 	private String getMethod(HttpServletRequest request) {
     	String URI = request.getRequestURI();
     	String result = URI.substring(URI.lastIndexOf("/") + 1);
-		if(result.equals(ServletUtils.SAVE_METHOD)) {
+		if(result.startsWith(ServletUtils.SAVE_METHOD)) {
 			String requestXML = request.getParameter("requestXML");
 			if(requestXML.indexOf("adssvc_request") >= 0) {
 				if (requestXML.indexOf("get_subtest") >= 0) 
