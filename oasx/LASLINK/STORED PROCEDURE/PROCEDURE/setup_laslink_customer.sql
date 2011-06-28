@@ -119,7 +119,7 @@ Insert into OAS.CUSTOMER_CONFIGURATION
   Insert into OAS.CUSTOMER_CONFIGURATION_VALUE
      (CUSTOMER_CONFIGURATION_VALUE, CUSTOMER_CONFIGURATION_ID, SORT_ORDER)
    Values
-     ('KG', cc_id, NULL); 
+     ('K', cc_id, NULL); 
      
   for counter in 1..12
   loop
