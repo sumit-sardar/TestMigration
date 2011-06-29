@@ -28,9 +28,13 @@ import me.prettyprint.hector.api.mutation.Mutator;
 
 public class ADSHectorSink {
 
-	private static Cluster cluster = HFactory.getOrCreateCluster("OASCluster", new CassandraHostConfigurator("localhost:9160"));
+	private static Cluster cluster;
 	
 	{
+		CassandraHostConfigurator chc = new CassandraHostConfigurator("localhost:9160");
+		chc.setRetryDownedHostsDelayInSeconds(10);
+		cluster = HFactory.getOrCreateCluster("OASCluster", chc);
+
 		try {
 			//cluster.dropKeyspace("ADS");
 			//System.out.println("*****  Dropped ADS keyspace.");

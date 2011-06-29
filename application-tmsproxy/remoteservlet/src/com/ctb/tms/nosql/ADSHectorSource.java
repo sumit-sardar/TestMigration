@@ -16,7 +16,13 @@ import com.bea.xml.XmlException;
 
 public class ADSHectorSource {
 	
-	private static Cluster cluster = HFactory.getOrCreateCluster("OASCluster", new CassandraHostConfigurator("localhost:9160"));
+	private static Cluster cluster;
+	
+	{
+		CassandraHostConfigurator chc = new CassandraHostConfigurator("localhost:9160");
+		chc.setRetryDownedHostsDelayInSeconds(10);
+		cluster = HFactory.getOrCreateCluster("OASCluster", chc);
+	}
 	
 	public static String getSubtest(int itemSetId, String hash) throws XmlException, IOException, ClassNotFoundException {
 		String result = null;

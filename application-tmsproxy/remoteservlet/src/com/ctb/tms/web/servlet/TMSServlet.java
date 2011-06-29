@@ -104,7 +104,7 @@ public class TMSServlet extends HttpServlet {
 		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
         SaveTestingSessionData saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
 
-        //System.out.println(saveRequest.xmlText());
+        //System.out.println(">>>>> " + saveRequest.xmlText());
         
         Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
         for(int i=0;i<tsda.length;i++) {
@@ -138,7 +138,9 @@ public class TMSServlet extends HttpServlet {
 		    			break;
 		    		}
 		    	}
-                nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
+		    	if(nextScoIndex < manifestData.length) {
+                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
+		    	}
                 // TODO: place roster on queue for RDBMS persistence
                 TestDeliveryContextListener.enqueueRoster(rosterId);
 		    }
@@ -147,7 +149,7 @@ public class TMSServlet extends HttpServlet {
         }
 	    
         // TODO: implement correlation, sequence and subtest/roster status checks for security
-        
+        //System.out.println("<<<<< " + responseDocument.xmlText());
 		return responseDocument.xmlText();
 	}
 
@@ -156,9 +158,9 @@ public class TMSServlet extends HttpServlet {
 		LoginRequest lr = document.getTmssvcRequest().getLoginRequest();
 		StudentCredentials creds = new StudentCredentials();
 		if(lr.getUserName() == null || lr.getUserName().trim().length() < 1) {
-			creds.setUsername("ALEXANDRIA-WELSING-0306");//lr.getUserName());
-			creds.setPassword("faun24");//lr.getPassword());
-			creds.setAccesscode("2011tabe9");//lr.getAccessCode());
+			creds.setUsername("PT-STUDENT1460604");//lr.getUserName());
+			creds.setPassword("dime79");//lr.getPassword());
+			creds.setAccesscode("ptest1");//lr.getAccessCode());
 		} else {
 			creds.setUsername(lr.getUserName());
 			creds.setPassword(lr.getPassword());

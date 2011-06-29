@@ -34,9 +34,13 @@ import com.ctb.tms.bean.login.StudentCredentials;
 
 public class OASHectorSink {
 
-	private static Cluster cluster = HFactory.getOrCreateCluster("OASCluster", new CassandraHostConfigurator("localhost:9160"));
+	private static Cluster cluster;
 	
 	{
+		CassandraHostConfigurator chc = new CassandraHostConfigurator("localhost:9160");
+		chc.setRetryDownedHostsDelayInSeconds(10);
+		cluster = HFactory.getOrCreateCluster("OASCluster", chc);
+
 		try {
 			//cluster.dropKeyspace("AuthData");
 			//cluster.dropKeyspace("TestData");

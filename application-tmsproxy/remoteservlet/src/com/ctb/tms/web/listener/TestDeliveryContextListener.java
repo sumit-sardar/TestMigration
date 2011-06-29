@@ -11,6 +11,7 @@ import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Ts
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.ADSHectorSink;
+import com.ctb.tms.nosql.ADSHectorSource;
 import com.ctb.tms.nosql.OASHectorSink;
 import com.ctb.tms.nosql.OASHectorSource;
 import com.ctb.tms.rdb.OASDBSink;
@@ -35,7 +36,9 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
     
 	public void contextInitialized(ServletContextEvent sce) {
 		new OASHectorSink();
+		new OASHectorSource();
 		new ADSHectorSink();
+		new ADSHectorSource();
 		
 		System.out.print("*****  Starting active roster check background thread . . .");
 		TestDeliveryContextListener.rosterMap = new ConcurrentHashMap(10000);
@@ -80,10 +83,10 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 								}
 								rosterMap.put(key, key);
 							} else {
-								System.out.print("*****  Roster data for " + key + " already present.\n");
+								//System.out.print("*****  Roster data for " + key + " already present.\n");
 							}
 						} else {
-							System.out.print("*****  Roster data for " + key + " already present.\n");
+							//System.out.print("*****  Roster data for " + key + " already present.\n");
 						}
 					}
 				} catch (Exception e) {
