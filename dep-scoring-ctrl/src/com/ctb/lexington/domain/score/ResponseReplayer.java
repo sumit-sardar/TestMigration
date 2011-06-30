@@ -217,11 +217,11 @@ public class ResponseReplayer {
         final List events = new ArrayList();
 
         addSubtestStartedEvent(subtestStatus.getTestRosterId(), normGroup, ageCategory, events, itemSet);
-        if(itemSet.getAbsent() != null && itemSet.getExemptions() != null){
+       /* if(itemSet.getAbsent() != null && itemSet.getExemptions() != null){
         	if(itemSet.getValidationStatus().equals("VA") && itemSet.getAbsent().equals("N") && itemSet.getExemptions().equals("N"))
         		addResponseEvents(subtestStatus.getTestRosterId(), events, itemSet, itemResponseMapper);
-        } else 
-        		addResponseEvents(subtestStatus.getTestRosterId(), events, itemSet, itemResponseMapper);
+        } else */
+        	addResponseEvents(subtestStatus.getTestRosterId(), events, itemSet, itemResponseMapper);
         	
         addSubtestEndedEvent(events, itemSet, requireSubtestsComplete, subtestStatus);
 
