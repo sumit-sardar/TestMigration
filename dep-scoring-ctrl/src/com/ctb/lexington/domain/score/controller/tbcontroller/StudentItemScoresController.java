@@ -59,7 +59,8 @@ public class StudentItemScoresController {
                 PrimaryObjective [] prims = currData.getPrimaryObjectives();
                 for(int j=0;j<prims.length;j++) {
     				String contentAreaName = prims[j].getPrimaryObjectiveName();
-	                StudentItemScoreDetails scoreDetails = studentItemScoreData.get(item.getOasItemId()+ contentAreaName);
+    				if(studentItemScoreData.contains(item.getOasItemId()+ contentAreaName)) {
+    				StudentItemScoreDetails scoreDetails = studentItemScoreData.get(item.getOasItemId()+ contentAreaName);
 	                if(scoreDetails != null && scoreDetails.getAtsArchive()!= null && !"F".equals(scoreDetails.getAtsArchive())) {
 	                	IrsTABEItemFactData itemFact = new IrsTABEItemFactData();
 		                itemFact.setItemid(item.getItemId());
@@ -112,6 +113,7 @@ public class StudentItemScoresController {
 		                itemFact.setSubtestName(item.getSubtestName());
 		                itemFacts.add(itemFact);
 	                }
+                }
                 }
             }
         return (IrsTABEItemFactData[]) itemFacts.toArray(new IrsTABEItemFactData[0]);

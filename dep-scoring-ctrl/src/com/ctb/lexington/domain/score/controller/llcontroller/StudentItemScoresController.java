@@ -59,8 +59,8 @@ public class StudentItemScoresController {
 			for(int j=0;j<prims.length;j++) {
 				String contentAreaName = prims[j].getPrimaryObjectiveName();
 				if(!contentAreaName.equals("Oral") && !contentAreaName.equals("Comprehension")){
+					if(studentItemScoreData.contains(item.getOasItemId()+ contentAreaName)) {
 					StudentItemScoreDetails scoreDetails = studentItemScoreData.get(item.getOasItemId()+ contentAreaName);
-					
 					if(scoreDetails != null && scoreDetails.getAtsArchive()!= null &&!"F".equals(scoreDetails.getAtsArchive())) {
 						IrsLLItemFactData itemFact = new IrsLLItemFactData();
 						itemFact.setItemid(item.getItemId());
@@ -135,6 +135,7 @@ public class StudentItemScoresController {
 						itemFact.setCurrentResultid(new Long (2));
 						itemFacts.add(itemFact);
 					}
+				}
 				}
 
 			}
