@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse.WriteToAuditFile;
 import noNamespace.AdssvcResponseDocument;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.NextSco;
@@ -85,8 +86,27 @@ public class TMSServlet extends HttpServlet {
 		}
 	}
 
-    private String writeToAuditFile(String xml) {
-		return null;
+    private String writeToAuditFile(String xml) throws XmlException {
+    	AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
+		AdssvcRequest saveRequest = document.getAdssvcRequest();
+		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
+        WriteToAuditFile saveResponse = responseDocument.addNewAdssvcResponse().addNewWriteToAuditFile();
+
+        System.out.println(">>>>> " + saveRequest.xmlText());
+        
+        Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
+        for(int i=0;i<tsda.length;i++) {
+		    Tsd tsd = tsda[i];
+		    String rosterId = tsd.getLsid().substring(0, tsd.getLsid().indexOf(":"));
+		    
+		    saveResponse.addNewTsd();
+	        saveResponse.getTsd().setLsid(tsd.getLsid());
+	        saveResponse.getTsd().setScid(tsd.getScid());
+	        saveResponse.getTsd().setStatus(WriteToAuditFile.Tsd.Status.OK); 
+        }
+	    
+        System.out.println("<<<<< " + responseDocument.xmlText());
+		return responseDocument.xmlText();
 	}
 
 	private String uploadAuditFile(String xml) {

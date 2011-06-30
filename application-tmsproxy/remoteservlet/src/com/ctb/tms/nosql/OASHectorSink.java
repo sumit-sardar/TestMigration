@@ -38,6 +38,7 @@ public class OASHectorSink {
 	
 	{
 		CassandraHostConfigurator chc = new CassandraHostConfigurator("localhost:9160");
+		chc.setRetryDownedHosts(true);
 		chc.setRetryDownedHostsDelayInSeconds(10);
 		cluster = HFactory.getOrCreateCluster("OASCluster", chc);
 
