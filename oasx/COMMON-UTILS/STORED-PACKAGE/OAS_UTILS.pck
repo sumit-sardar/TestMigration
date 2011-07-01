@@ -54,6 +54,7 @@ CREATE OR REPLACE PACKAGE BODY OAS_UTILS IS
                        and SISS.validation_status = 'VA' 
                        AND SISS.ABSENT <> 'Y' 
                        AND SISS.EXEMPTIONS <> 'Y'
+                       AND SISS.ITEM_SET_ID = ita.item_set_id
                        and ita.item_set_id = irs.item_set_id
                        and it.item_id = irs.item_id
                        and ((upper(it.item_type) = 'CR' and
