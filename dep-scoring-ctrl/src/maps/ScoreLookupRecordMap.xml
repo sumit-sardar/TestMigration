@@ -316,14 +316,14 @@
     <select id="findLasLinkPerformanceLevel" parameterClass="com.ctb.lexington.db.record.ScoreLookupRecord" resultClass="com.ctb.lexington.db.record.ScoreLookupRecord">
         <![CDATA[
         SELECT
-            MAX(SL.DEST_SCORE_VALUE) as destScoreValue
+            MIN(SL.DEST_SCORE_VALUE) as destScoreValue
         FROM
             SCORE_LOOKUP SL
         WHERE
         	SL.FRAMEWORK_CODE = #frameworkCode:VARCHAR#
             AND SL.SOURCE_SCORE_TYPE_CODE = 'SCL'
             AND SL.DEST_SCORE_TYPE_CODE = 'PL'
-            AND SL.SOURCE_SCORE_VALUE <= #sourceScoreValue:NUMERIC#
+            AND SL.SOURCE_SCORE_VALUE >= #sourceScoreValue:NUMERIC#
             AND SL.CONTENT_AREA = #contentArea:VARCHAR#
             AND SL.GRADE = #grade:VARCHAR#
             AND SL.TEST_FORM = #testForm:VARCHAR#
