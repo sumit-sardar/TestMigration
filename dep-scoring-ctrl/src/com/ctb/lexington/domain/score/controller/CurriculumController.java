@@ -147,6 +147,8 @@ public class CurriculumController {
                 item = iMapper.insert(newItem);
             } else {
                 if(!newItem.equals(item)) {
+                	if(newItem.getItemType().equals("CR"))
+                		newItem.setCorrectResponse("N/A");
                     // update existing item record
                     newItem.setItemid(item.getItemid());
                     iMapper.update(newItem);
