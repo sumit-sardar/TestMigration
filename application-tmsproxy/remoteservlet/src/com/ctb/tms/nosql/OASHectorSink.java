@@ -53,7 +53,7 @@ public class OASHectorSink {
 			BasicKeyspaceDefinition kd = new BasicKeyspaceDefinition() {
 				public Map<String, String> getStrategyOptions() {
 					Map<String, String> options = new HashMap<String, String>(2);
-					options.put("replication_factor", "1");
+					options.put("replication_factor", "2");
 					return options;
 				}
 				
@@ -212,14 +212,14 @@ public class OASHectorSink {
 			System.out.println("*****  Created AuthData keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		try {
 			BasicKeyspaceDefinition kd = new BasicKeyspaceDefinition() {
 				public Map<String, String> getStrategyOptions() {
 					Map<String, String> options = new HashMap<String, String>(2);
-					options.put("replication_factor", "1");
+					options.put("replication_factor", "2");
 					return options;
 				}
 				
@@ -508,7 +508,7 @@ public class OASHectorSink {
 			System.out.println("*****  Created TestData keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	

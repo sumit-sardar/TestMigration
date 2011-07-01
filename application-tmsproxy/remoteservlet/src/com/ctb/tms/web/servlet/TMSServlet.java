@@ -12,11 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lev;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.WriteToAuditFile;
 import noNamespace.AdssvcResponseDocument;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.NextSco;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.Status;
+import noNamespace.LmsEventType;
 import noNamespace.TmssvcRequestDocument;
 import noNamespace.TmssvcRequestDocument.TmssvcRequest.LoginRequest;
 
@@ -92,7 +94,7 @@ public class TMSServlet extends HttpServlet {
 		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
         WriteToAuditFile saveResponse = responseDocument.addNewAdssvcResponse().addNewWriteToAuditFile();
 
-        System.out.println(">>>>> " + saveRequest.xmlText());
+        //System.out.println(">>>>> " + saveRequest.xmlText());
         
         Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
         for(int i=0;i<tsda.length;i++) {
@@ -105,7 +107,7 @@ public class TMSServlet extends HttpServlet {
 	        saveResponse.getTsd().setStatus(WriteToAuditFile.Tsd.Status.OK); 
         }
 	    
-        System.out.println("<<<<< " + responseDocument.xmlText());
+        //System.out.println("<<<<< " + responseDocument.xmlText());
 		return responseDocument.xmlText();
 	}
 
@@ -147,22 +149,28 @@ public class TMSServlet extends HttpServlet {
 		    }
 		    
 		    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {
-		    	// test events
-		    	NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
-		    	Manifest manifest = OASHectorSource.getManifest(rosterId);
-		    	ManifestData[] manifestData = manifest.getManifest();
-		    	int nextScoIndex = 0;
-		    	for(int j=0;j<manifestData.length;j++) {
-		    		if(manifestData[j].getId() == Integer.parseInt(tsd.getScid())) {
-		    			nextScoIndex = j+1;
-		    			break;
-		    		}
+		    	if(tsd.getLevArray()[0].getE() == null || !LmsEventType.TERMINATED.equals(tsd.getLevArray()[0].getE())) {
+			    	try {
+			    		// test events
+				    	NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
+				    	Manifest manifest = OASHectorSource.getManifest(rosterId);
+				    	ManifestData[] manifestData = manifest.getManifest();
+				    	int nextScoIndex = 0;
+				    	for(int j=0;j<manifestData.length;j++) {
+				    		if(manifestData[j].getId() == Integer.parseInt(tsd.getScid())) {
+				    			nextScoIndex = j+1;
+				    			break;
+				    		}
+				    	}
+				    	if(nextScoIndex < manifestData.length) {
+		                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
+				    	}
+			    	} catch (Exception e) {
+			    		// do nothing
+			    	}
+	                // TODO: place roster on queue for RDBMS persistence
+	                TestDeliveryContextListener.enqueueRoster(rosterId);
 		    	}
-		    	if(nextScoIndex < manifestData.length) {
-                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
-		    	}
-                // TODO: place roster on queue for RDBMS persistence
-                TestDeliveryContextListener.enqueueRoster(rosterId);
 		    }
 		    
 		    

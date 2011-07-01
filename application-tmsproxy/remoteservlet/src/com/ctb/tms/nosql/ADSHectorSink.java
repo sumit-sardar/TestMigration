@@ -47,7 +47,7 @@ public class ADSHectorSink {
 			BasicKeyspaceDefinition kd = new BasicKeyspaceDefinition() {
 				public Map<String, String> getStrategyOptions() {
 					Map<String, String> options = new HashMap<String, String>(2);
-					options.put("replication_factor", "1");
+					options.put("replication_factor", "2");
 					return options;
 				}
 				
@@ -281,7 +281,7 @@ public class ADSHectorSink {
 			System.out.println("*****  Created ADS keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 	
