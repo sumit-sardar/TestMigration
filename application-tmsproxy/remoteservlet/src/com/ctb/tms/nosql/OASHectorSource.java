@@ -100,7 +100,7 @@ public class OASHectorSource {
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			Tsd tsd = (Tsd) ois.readObject();
 			resulta.add(tsd);
-			//System.out.println(tsd.xmlText());
+			//System.out.println("##### Got response record for roster " + testRosterId + ": " + tsd.xmlText());
         }
         return resulta.toArray(new Tsd[0]);
 	}

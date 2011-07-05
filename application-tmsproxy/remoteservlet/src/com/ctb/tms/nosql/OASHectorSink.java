@@ -3,6 +3,7 @@ package com.ctb.tms.nosql;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -557,14 +558,17 @@ public class OASHectorSink {
 		byte [] bytes = baos.toByteArray();
 		String tsdData = new BASE64Encoder().encode(bytes);
 		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-response", tsdData));
-		//System.out.println(tsd.xmlText());
+		//System.out.println("##### Stored response record for key " + key + ": " + tsd.xmlText());
 	}
 	
-	public static void deleteItemResponse(String testRosterId, String mseq) throws IOException {
+	public static void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException {
 		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
 		String key = testRosterId + ":" + mseq;
-		mutator.delete(key, "ResponseData", null, stringSerializer);
+		mutator.delete(key, "ResponseData", "item-response", stringSerializer);
+		mutator.delete(key, "ResponseData", "item-id", stringSerializer);
+		mutator.delete(key, "ResponseData", "roster-id", stringSerializer);
+		//System.out.println("##### Deleted response record for key " + key);
 	}
 }

@@ -123,7 +123,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 							for(int i=0;i<responses.length;i++) {
 								Tsd tsd = responses[i];
 								OASDBSink.putItemResponse(conn, testRosterId, tsd);
-								OASHectorSink.deleteItemResponse(testRosterId, String.valueOf(tsd.getMseq()));
+								OASHectorSink.deleteItemResponse(testRosterId, tsd.getMseq());
 							}
 						}
 					}

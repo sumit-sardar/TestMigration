@@ -129,6 +129,7 @@ public class OASDBSink {
 			stmt1.setString(8, studentMarked);
 
 			stmt1.executeUpdate();
+			//System.out.println("$$$$$ Stored response record in DB for roster " + testRosterId + ", mseq " + mseq);
 		} catch (Exception e) {
 			if(e.getMessage().indexOf("unique constraint") >= 0 ) {
 				// do nothing, dupe response
