@@ -639,6 +639,7 @@ public class StudentLoginImpl implements StudentLogin
             if(accomData.getMusicFileId() != null){
             	accommodations.setMusicFileId(BigInteger.valueOf(accomData.getMusicFileId()));
             }
+            accommodations.setExtendedTime("T".equals(accomData.getExtendedTime()) ? true : false );
             accommodations.addNewStereotypeStyle();
             StereotypeStyle directionsStereotype = accommodations.getStereotypeStyleArray(0);
             directionsStereotype.setStereotype(StereotypeType.DIRECTIONS);

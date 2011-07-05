@@ -705,6 +705,9 @@
 														</xs:documentation>
 													</xs:annotation>
 												</xs:attribute>
+												<xs:attribute
+													name="extended_time" type="xs:boolean" use="optional"
+													default="0" />
 											</xs:complexType>
 										</xs:element>
 									</xs:sequence>

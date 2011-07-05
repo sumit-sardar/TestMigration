@@ -124,7 +124,8 @@ public interface AuthenticateStudent extends JdbcControl
      *        accom.masking_ruler as masking_ruler,
      *        accom.magnifying_glass as magnifyingGlass
      *        decode(accom.music_file_id, NULL, 'F', 'T')as auditoryCalming,
-     *        accom.music_file_id as musicFileId
+     *        accom.music_file_id as musicFileId,
+     *        accom.extended_time as extendedTime
      *  from
      *      test_roster ros,
      *      student_accommodation accom
@@ -133,7 +134,7 @@ public interface AuthenticateStudent extends JdbcControl
      *       and ros.test_roster_id = {testRosterId}
      */
     //Changes for magnifying glass user story
-    @JdbcControl.SQL(statement = "select  accom.student_id as studentId,  accom.screen_magnifier as screenMagnifier,  accom.screen_reader as screenReader,  accom.calculator as calculator,  accom.test_pause as testPause,  accom.untimed_test as untimedTest,  accom.question_background_color as questionBackgroundColor,  accom.question_font_color as questionFontColor,  accom.question_font_size as questionFontSize,  accom.answer_background_color as answerBackgroundColor,  accom.answer_font_color as answerFontColor,  accom.answer_font_size as answerFontSize,  accom.highlighter as highlighter, accom.masking_ruler as maskingRuler,accom.magnifying_glass as magnifyingGlass, decode(accom.music_file_id, NULL, 'F', 'T')as auditoryCalming, accom.music_file_id as musicFileId  from  test_roster ros,  student_accommodation accom  where  accom.student_id = ros.student_id  and ros.test_roster_id = {testRosterId}")
+    @JdbcControl.SQL(statement = "select  accom.student_id as studentId,  accom.screen_magnifier as screenMagnifier,  accom.screen_reader as screenReader,  accom.calculator as calculator,  accom.test_pause as testPause,  accom.untimed_test as untimedTest,  accom.question_background_color as questionBackgroundColor,  accom.question_font_color as questionFontColor,  accom.question_font_size as questionFontSize,  accom.answer_background_color as answerBackgroundColor,  accom.answer_font_color as answerFontColor,  accom.answer_font_size as answerFontSize,  accom.highlighter as highlighter, accom.masking_ruler as maskingRuler,accom.magnifying_glass as magnifyingGlass, decode(accom.music_file_id, NULL, 'F', 'T')as auditoryCalming, accom.music_file_id as musicFileId, accom.extended_time as extendedTime  from  test_roster ros,  student_accommodation accom  where  accom.student_id = ros.student_id  and ros.test_roster_id = {testRosterId}")
     AccomodationsData getAccomodations(int testRosterId) throws SQLException;
 
     /**

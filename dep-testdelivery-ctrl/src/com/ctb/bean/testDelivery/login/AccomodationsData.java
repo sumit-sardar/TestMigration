@@ -22,6 +22,7 @@ public class AccomodationsData
     private byte[] musicFileData;
     private Integer musicFileId;
     private String magnifyingGlass;//Added for magnifier
+    private String extendedTime;
     
   
 	/**
@@ -241,6 +242,18 @@ public class AccomodationsData
 	 */
 	public void setMagnifyingGlass(String magnifyingGlass) {
 		this.magnifyingGlass = magnifyingGlass;
+	}
+	/**
+	 * @return the extendedTime
+	 */
+	public String getExtendedTime() {
+		return extendedTime;
+	}
+	/**
+	 * @param extendedTime the extendedTime to set
+	 */
+	public void setExtendedTime(String extendedTime) {
+		this.extendedTime = extendedTime;
 	}
 	
 } 
