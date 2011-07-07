@@ -130,7 +130,7 @@ public class StudentItemScoresController {
 		                                            "C".equals(scoreDetails.getResponse())?3:
 		                                            "D".equals(scoreDetails.getResponse())?4:
 		                                            "E".equals(scoreDetails.getResponse())?5:6));
-	                } else if (scoreDetails != null && scoreDetails.getAtsArchive()!= null && "F".equals(scoreDetails.getAtsArchive())){
+	                } else { // change for defect # 66542
 	                	itemFact.setItemResponseTimestamp(new Timestamp(System.currentTimeMillis()));
 		                itemFact.setPointsObtained(null);
 		                itemFact.setResponseid(new Long(6));
