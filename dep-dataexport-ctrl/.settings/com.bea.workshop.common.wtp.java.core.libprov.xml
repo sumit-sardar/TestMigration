@@ -1,0 +1,6 @@
+<install-record>
+  <entry>
+    <facet id="wls.logging"/>
+    <provider id="j2ee-library-provider-wls.logging-ear"/>
+  </entry>
+</install-record>
