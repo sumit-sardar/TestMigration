@@ -29,3 +29,12 @@ ALTER TABLE customer_orgnode_license ADD email_notify_flag VARCHAR2(1)
 /* New cloumn added for removing harcoded item set ids from TMS for scoring */
 ALTER TABLE product ADD( SCORABLE VARCHAR2(1))
 /
+
+/* New column extended_time added in table student_accomodation for student pacing */
+ALTER TABLE student_accommodation ADD extended_time VARCHAR2(2)
+/
+
+
+/* New coloum extended_time added in test_roster for student pacing */
+ALTER TABLE test_roster ADD extended_time NUMBER(2,1)
+/
