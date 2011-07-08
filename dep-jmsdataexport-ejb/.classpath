@@ -9,5 +9,8 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/dep-jmsdataexport-ctrl"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/application-dataexport"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dep-dataexport-ctrl"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

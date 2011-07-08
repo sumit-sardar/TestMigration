@@ -4,6 +4,7 @@
   <fixed facet="jst.ejb"/>
   <fixed facet="jst.java"/>
   <installed facet="jst.java" version="6.0"/>
-  <installed facet="jst.ejb" version="3.0"/>
+  <installed facet="jst.ejb" version="2.1"/>
   <installed facet="java.apt" version="5.0"/>
+  <installed facet="wlw.ejb" version="10.3"/>
 </faceted-project>
