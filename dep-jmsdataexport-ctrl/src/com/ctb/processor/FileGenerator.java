@@ -300,7 +300,7 @@ public class FileGenerator {
 				/*Student st = (Student) oasSession.get(Student.class, roster
 						.getStudentId());*/
 				Student st = roster.getStudent();
-				System.out.println("Student id " + roster.getStudentId());
+				//System.out.println("Student id " + roster.getStudentId());
 				//roster.setStudent(st);
 				// System.out.println("Date Of birth" + st.getBirthDate());
 
@@ -367,7 +367,7 @@ public class FileGenerator {
 				rosterList.add(ros);
 			}
 			
-			System.out.println("populateCustomer");
+			//System.out.println("populateCustomer");
 		}finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -399,7 +399,7 @@ public class FileGenerator {
 	
 			}
 			
-			System.out.println("getStudent");
+			//System.out.println("getStudent");
 		}finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -426,7 +426,7 @@ public class FileGenerator {
 				studentDemographicSet.add(studentDemographic);
 			}
 
-			System.out.println("getStudentDemographic:"+studentId+"::"+studentDemographicSet);
+			//System.out.println("getStudentDemographic:"+studentId+"::"+studentDemographicSet);
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -451,7 +451,7 @@ public class FileGenerator {
 	
 			}
 			
-			System.out.println("getstudentContact");
+			//System.out.println("getstudentContact");
 		}finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -475,7 +475,7 @@ public class FileGenerator {
 				orderFile.setCustomerContact(EmetricUtil.truncate(rs.getString(4), new Integer(64)));
 			}
 			
-			System.out.println("populateCustomer");
+			//System.out.println("populateCustomer");
 		}finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -501,7 +501,7 @@ public class FileGenerator {
 				myList.add(cd)	;
 			}
 			
-			System.out.println("getCustomerDemographic:"+myList);
+			//System.out.println("getCustomerDemographic:"+myList);
 		}finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -527,7 +527,7 @@ public class FileGenerator {
 			}
 			
 			
-			System.out.println("customerDemographicValue");
+			//System.out.println("customerDemographicValue");
 		}finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -561,7 +561,7 @@ public class FileGenerator {
 				myList.add(cd)	;
 			}
 			
-			System.out.println("myList");
+			//System.out.println("myList");
 		}finally {
 			SqlUtil.close(ps, rs);
 			
@@ -636,8 +636,7 @@ public class FileGenerator {
 		}
 		for (CustomerDemographic customerDem : cd) {
 			set2.put(customerDem.getLabelName(), customerDem);
-			System.out.println("customerDem.getLabelName:: "
-					+ customerDem.getLabelName());
+			//System.out.println("customerDem.getLabelName:: "	+ customerDem.getLabelName());
 		}
 
 		for (Map.Entry<String, StudentDemographic> entry : set1.entrySet()) {
@@ -1012,7 +1011,7 @@ public class FileGenerator {
 			}
 			
 			
-			System.out.println("createOrganization");
+			//System.out.println("createOrganization");
 		}finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -1173,7 +1172,7 @@ public class FileGenerator {
 				orderFile.setTestDate(EmetricUtil.truncate(tfil.getTestDate(),
 						new Integer(8)));
 			
-			System.out.println("createTestSessionDetails");
+			//System.out.println("createTestSessionDetails");
 		}finally {
 			SqlUtil.close(ps, rs);
 		}
