@@ -12,6 +12,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/wls-commonslogging-bridge-war/exact/1.0"/>
-	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/jsf/exact/1.2"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

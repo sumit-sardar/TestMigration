@@ -61,4 +61,9 @@
         <specification-version>1.1</specification-version>
         <exact-match>true</exact-match>
     </library-ref>
+    <library-ref>
+        <library-name>wls-commonslogging-bridge-war</library-name>
+        <specification-version>1.0</specification-version>
+        <exact-match>true</exact-match>
+    </library-ref>
 </weblogic-web-app>
