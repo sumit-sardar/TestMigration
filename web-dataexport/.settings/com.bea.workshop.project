@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-project guid="web-dataexport_130fcab4e5a_2aa7b174523d2fb" version="5">
-	<web-app guid="web-dataexport_130fcab4e6a_8eda153bf3b4d051">
+<web-project guid="web-dataexport_130f9e01ace_ca19a0e0ae3aecec" version="5">
+	<web-app guid="web-dataexport_130f9e01ace_3f9cc005790a5364">
 		<web-app-type>com.m7.webapp.java</web-app-type>
 		<folder-mapping project-name="web-dataexport" project-uri="WebContent" web-app-uri="/"/>
 	</web-app>

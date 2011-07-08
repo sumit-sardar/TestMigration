@@ -3,6 +3,8 @@
 	<name>web-dataexport</name>
 	<comment></comment>
 	<projects>
+		<project>dep-dataexport-ctrl</project>
+		<project>dep-base-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
