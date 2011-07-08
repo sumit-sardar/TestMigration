@@ -3,10 +3,19 @@
 	<name>web-dataexport</name>
 	<comment></comment>
 	<projects>
-		<project>dep-dataexport-ctrl</project>
 		<project>dep-base-ctrl</project>
+		<project>dep-dataexport-ctrl</project>
+		<project>dep-exportdata-ctrl</project>
+		<project>dep-jmstestadmin-ctrl</project>
+		<project>dep-weblib-taglib</project>
+		<project>dep-weblib-webutils</project>
 	</projects>
 	<buildSpec>
+		<buildCommand>
+			<name>com.bea.workshop.controls.core.AssemblyPublishCleaner</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>

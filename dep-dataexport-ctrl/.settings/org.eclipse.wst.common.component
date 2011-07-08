@@ -3,6 +3,5 @@
     <wb-module deploy-name="dep-dataexport-ctrl">
         <wb-resource deploy-path="/" source-path="/src"/>
         <wb-resource deploy-path="/" source-path="/.apt_src"/>
-        <wb-resource deploy-path="/" source-path="/build/assembly/.src"/>
     </wb-module>
 </project-modules>
