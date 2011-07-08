@@ -10,5 +10,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/wls-commonslogging-bridge/exact/1.0"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dep-base-ctrl"/>
+	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/application-dataexport"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
