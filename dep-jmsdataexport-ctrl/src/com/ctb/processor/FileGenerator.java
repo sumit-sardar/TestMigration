@@ -34,6 +34,8 @@ import com.ctb.dto.SpecialCodes;
 import com.ctb.dto.Student;
 import com.ctb.dto.StudentContact;
 import com.ctb.dto.StudentDemographic;
+import com.ctb.dto.SubSkillNumberCorrect;
+import com.ctb.dto.SubSkillPercentCorrect;
 import com.ctb.dto.TestRoster;
 import com.ctb.dto.Tfil;
 import com.ctb.utils.EmetricUtil;
@@ -102,6 +104,14 @@ public class FileGenerator {
 	private String studentDemographicSql = " select STUDENT_DEMOGRAPHIC_DATA_ID , CUSTOMER_DEMOGRAPHIC_ID , VALUE_NAME from student_demographic_data sdd where sdd.student_id = ? ";
 		
 	private String customerDemographiValuecsql="select value_name,customer_demographic_id  from customer_demographic_value  where customer_demographic_id =?";
+	private String subSkillItemAreaInformation = "select tad.product_id || iset.item_set_id subskill_id,"
+		+ " iset.item_set_name from test_admin tad,product,item_set_category icat,item_set iset"
+		+ " where tad.test_admin_id = ? and icat.item_set_category_level = 4 and tad.product_id = product.product_id"
+		+ " and product.parent_product_id = icat.framework_product_id and iset.item_set_category_id = icat.item_set_category_id";
+
+	private String subSkillIrsInformation = "select sec_objid, sessionid, percent_obtained, points_obtained  from laslink_sec_obj_fact "
+		+ " where studentid = ? and sessionid = ?";
+	
 	private int districtElementNumber = 0;
 	private int schoolElementNumber = 0;
 	private int classElementNumber = 0;
@@ -110,6 +120,7 @@ public class FileGenerator {
 	private String customerState = null;
 	private String testDate = null;
 
+	private HashMap<Integer, String> subSkillAreaScoreInfo = new HashMap<Integer, String>();
 	
 
 	
@@ -316,6 +327,8 @@ public class FileGenerator {
 
 				// added for Skill Area Score
 				createSkillAreaScoreInformation(irscon,tfil, roster);
+				
+				createSubSkillAreaScoreInformation(oascon,irscon, tfil, roster);
 
 				tfilList.add(tfil);
 				studentCount++;
@@ -1535,7 +1548,154 @@ public class FileGenerator {
 		tfil.setSkillAreaPercentCorrect(pc);
 	}
 
+	private void createSubSkillAreaScoreInformation(Connection oasCon,Connection irsCon, Tfil tfil,
+			TestRoster roster) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		PreparedStatement ps2 = null;
+		ResultSet rs2 = null;
+		SubSkillNumberCorrect subNumCorrect = new SubSkillNumberCorrect();
+		SubSkillPercentCorrect subPercCorrect = new SubSkillPercentCorrect();
+		String subSkillName;
+		HashMap<Integer, Integer> pointsObtained = new HashMap<Integer, Integer>();
+		HashMap<Integer, Integer> percentObtained = new HashMap<Integer, Integer>();
 
+		/* String[] skillAreaScoreInfoOverAll = new String[2]; */
+		// if(subSkillAreaScoreInfo.size() > 0){
+		// if(!containSubskillKey(subSkillAreaScoreInfo,
+		// roster.getTestAdminId()){
+		try {
+			ps2 = oasCon.prepareStatement(subSkillItemAreaInformation);
+			ps2.setInt(1, roster.getTestAdminId());
+			rs2 = ps2.executeQuery();
+			while (rs2.next()) {
+
+				subSkillAreaScoreInfo.put(rs2.getInt(1), rs2.getString(2));
+			}
+
+		} finally {
+			SqlUtil.close(ps2, rs2);
+		}
+
+		try {
+			ps = irsCon.prepareStatement(subSkillIrsInformation);
+			ps.setInt(1, roster.getStudentId());
+			ps.setInt(2, roster.getTestAdminId());
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				percentObtained.put(rs.getInt(1), rs.getInt(3));
+				pointsObtained.put(rs.getInt(1), rs.getInt(4));
+
+			}
+
+		} finally {
+			SqlUtil.close(ps, rs);
+		}
+
+		for (Integer x : percentObtained.keySet()) {
+			subSkillName = subSkillAreaScoreInfo.get(x);
+
+			if (subSkillName.equalsIgnoreCase("Speak in Words")) {
+				subPercCorrect.setSpeakInWords(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Speak in Sentences")) {
+				subPercCorrect.setSpeakSentences(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Make Conversation")) {
+				subPercCorrect.setMakeConversations(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Tell a Story")) {
+				subPercCorrect.setTellAStory(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Listen for Information")) {
+				subPercCorrect.setListenForInformation(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Listen in the Classroom")) {
+				subPercCorrect.setListenInTheClassroom(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Listen and Comprehend")) {
+				subPercCorrect.setListenAndComprehend(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Analyze Words")) {
+				subPercCorrect.setAnalyzeWords(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Read Words")) {
+				subPercCorrect.setReadWords(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Read for Understanding")) {
+				subPercCorrect.setReadForUnderStanding(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Use Conventions")) {
+				subPercCorrect.setUseConventions(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Write About")) {
+				subPercCorrect.setWriteAbout(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Write Why")) {
+				subPercCorrect.setWriteWhy(percentObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Write in Detail")) {
+				subPercCorrect.setWriteInDetail(percentObtained.get(x)
+						.toString());
+			}
+		}
+		
+		
+		tfil.setSubSkillPercentCorrect(subPercCorrect);
+		
+		for (Integer x : pointsObtained.keySet()) {
+			subSkillName = subSkillAreaScoreInfo.get(x);
+
+			if (subSkillName.equalsIgnoreCase("Speak in Words")) {
+				subNumCorrect.setSpeakInWords(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Speak in Sentences")) {
+				subNumCorrect.setSpeakSentences(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Make Conversation")) {
+				subNumCorrect.setMakeConversations(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Tell a Story")) {
+				subNumCorrect.setTellAStory(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Listen for Information")) {
+				subNumCorrect.setListenForInformation(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Listen in the Classroom")) {
+				subNumCorrect.setListenInTheClassroom(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Listen and Comprehend")) {
+				subNumCorrect.setListenAndComprehend(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Analyze Words")) {
+				subNumCorrect.setAnalyzeWords(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Read Words")) {
+				subNumCorrect.setReadWords(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Read for Understanding")) {
+				subNumCorrect.setReadForUnderStanding(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Use Conventions")) {
+				subNumCorrect.setUseConventions(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Write About")) {
+				subNumCorrect.setWriteAbout(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Write Why")) {
+				subNumCorrect.setWriteWhy(pointsObtained.get(x)
+						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Write in Detail")) {
+				subNumCorrect.setWriteInDetail(pointsObtained.get(x)
+						.toString());
+			}
+		}
+		tfil.setSubSkillNumberCorrect(subNumCorrect);
+
+		// }
+		// }
+
+	}
 
 
 	private void prepareOrderFile(OrderFile orderFile, String fileName) throws IOException {
