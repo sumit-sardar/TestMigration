@@ -1,0 +1,614 @@
+/* IE/win fix, fixes disappearing background-color on tables */
+/* #content table { border-right: 1px solid #fff; } */
+table {
+    background-color: #996;
+    margin: 0 0 0 0;
+}
+
+table.auto { width: auto !important; }
+
+th, td {
+    line-height: 14px;
+    background-color: #fff;
+    color: #333;
+}
+
+th {
+    font: bold 13px/16px Arial, Helvetica, sans-serif;
+	vertical-align: middle;
+}
+
+td.matchedStudentInRoster {
+	background-color: #CC9;
+	color: white;
+}
+ 
+td.handEnterScores {
+	background-color: #CC9;
+	color: #000000;
+}
+
+td.scanStudentNumber {
+	background-color: #99C;
+	color: white;
+}
+
+font.cr-student-title{
+	color: #369;
+    font: bold 18px/22px Helvetica, Arial, sans-serif;
+}
+
+font.cr-student-name{
+	color: gray;
+    font: bold 18px/22px Helvetica, Arial, sans-serif;
+}
+
+td.subtitle-cell {
+	font-size: 12px;
+	font-weight: normal;
+    border-top: 1px solid #996;
+    border-right: 1px solid #996;
+    border-left: 1px solid #996;
+    border-bottom: 1px solid #996;
+	color: #333;
+	background-color: #ffc;
+}
+
+td.cr-question {
+    font: bold 12px/14px Helvetica, Arial, sans-serif;
+    border-top: 1px solid #996;
+    border-left: 1px solid #996;
+    color: #333;
+    background-color: #cc9 !important;
+}
+
+td.cr-bordered {
+	font-size: 12px;
+	font-weight: normal;
+    border-top: 1px solid #996;
+    border-left: 1px solid #996;
+    border-right: 1px solid #996;
+    border-bottom: 1px solid #996;
+}
+
+td.cr-onlineitem {
+    border-top: 1px solid #996;
+    border-right: 1px solid #996;
+    color: #333;
+    background-color: #cc9 !important;
+}
+
+td.cr-answer {
+    font: bold 12px/14px Helvetica, Arial, sans-serif;
+    border-right: 1px solid #996;
+    border-left: 1px solid #996;
+    color: #333;
+    background-color: #ffc !important;
+}
+
+.title th,
+.title td {
+	font-size: 12px;
+	font-weight: normal;
+    color: #333;
+    background-color: #cc9 !important;
+}
+
+.subtitle th,
+.subtitle td {
+	font-size: 11px;
+	font-weight: normal;
+    color: #333;
+    background-color: #ffc !important;
+}
+
+.cia_table th,
+.cia_table td {
+	font-size: 11px;
+	font-weight: normal;
+    color: #333;
+    background-color: #cc9 !important;
+}
+
+.republish td
+{ 
+    background-color: #F5F5F5 !important;
+}
+ 
+.breadcrumbs-table
+{ 
+    margin: 0 0px; 
+}
+
+td.breadcrumbs-table 
+{
+    line-height: 24px;
+    vertical-align: baseline;
+}
+ 
+td.breadcrumbs-header
+{
+    line-height: 24px;
+    vertical-align: baseline;
+    color: #666;
+    background-color: #cc9 !important;
+    border-bottom: 1px solid #996;
+}
+
+.breadcrumbs-title
+{ 
+    margin: 0 0px; 
+}
+
+td.breadcrumbs-title
+{
+    line-height: 20px;
+    vertical-align: baseline;
+	font-size: 11px;
+	font-weight: normal;
+    color: #996;
+    background-color: #ffc !important;
+    border-bottom: 1px solid #996;
+}
+
+td.breadcrumbs-odd 
+{
+    line-height: 24px;
+    color: #333;
+    background-color: #ffffff !important;
+}
+
+td.breadcrumbs-even
+{
+    line-height: 24px;
+    color: #333;
+    background-color: #F5F5F5;
+}
+
+td.breadcrumbs-item_highlighted 
+{
+    color: #333;
+    background-color: #F5F5F5 !important;
+}
+
+td.item_highlighted 
+{
+    color: #333;
+    background-color: #cc9 !important;
+}
+
+td.common-header
+{
+    line-height: 22px;
+    vertical-align: baseline;
+    color: #666;
+    background-color: #cc9 !important;
+}
+
+.tree-table
+{ 
+    margin: 0 0px; 
+    background-color: #ffffff;
+    border-top: 1px solid #996;
+    border-left: 1px solid #996;
+}
+
+.tree-table td
+{
+    vertical-align: baseline;
+    border-right: 1px solid #996;
+}
+
+.tree-table .tree-image-cell
+{
+    font-weight: bold;
+    border-right: none;
+    background-color: #ffc !important;
+    color: #660  !important;
+}
+
+td.top-line {
+	font-weight: bold;
+	border-top: 1px solid #996;
+    border-right: none;
+    border-left: none;
+    border-bottom: none
+    background-color: #fff !important;
+}
+
+td.header-cell {
+    border-top:       1px solid #996;
+    border-right:     1px solid #996;
+    border-left:      1px solid #996;
+    background-color: #ffc !important;
+    color: #333  !important;
+}
+
+td.no-right-border {
+    border-top:    1px solid #996;
+    border-right:  none;
+    border-left:   1px solid #996;
+    border-bottom: 1px solid #996;
+}
+
+td.no-left-border {
+    border-top:    1px solid #996;
+    border-right:  1px solid #996;
+    border-left:   none;
+    border-bottom: 1px solid #996;
+}
+
+td.no-side-border {
+    border-top:    1px solid #996;
+    border-right:  none;
+    border-left:   none;
+    border-bottom: 1px solid #996;
+}
+
+td.no-top-border {
+    border-top:    none;
+    border-right:  1px solid #996;
+    border-left:   1px solid #996;
+    border-bottom: 1px solid #996;
+}
+
+td.no-bottom-border {
+    border-top:    1px solid #996;
+    border-right:  1px solid #996;
+    border-left:   1px solid #996;
+    border-bottom: none;
+}
+
+td.no-vertical-border {
+    border-top:    none;
+    border-right:  1px solid #996;
+    border-left:   1px solid #996;
+    border-bottom: none;
+}
+
+td.remove-right-border {
+    border-right: none;
+}
+
+td.remove-left-border {
+    border-left: none;
+}
+
+.tree-table .tree-image-cell-white
+{
+    font-weight: bold;
+    border-right: none;
+    background-color: #fff !important;
+}
+
+.tree-table .tree-input-cell-white
+{
+    border-right: none;
+    background-color: #fff !important;
+}
+
+.tree-table .tree-closed-image-cell
+{
+    border-right: none;
+    background-color: #fff !important;
+    color: #660  !important;
+}
+
+
+td.hilite,
+tr.hilite td {
+    background-color: #ffc !important;
+}
+
+td.invalid-hilite,
+tr.invalid-hilite td{
+        color: #000;
+	background-color: #f00;
+}
+
+td.tree-hilite,
+tr.tree-hilite td {
+    background-color: #ffc !important;
+}
+
+td.tree-hilite-selected,
+tr.tree-hilite-selected td {
+	background-color: #ffc !important;
+	color: #669  !important;
+	font-weight: bold;
+	
+}
+
+td.tree-hilite-bold,
+tr.tree-hilite-bold td {
+	background-color: #ffc !important;
+	color: #660  !important;
+	font-weight: bold;
+	
+}
+
+td.tree
+tr.tree {
+        font-weight: bold !important;
+}
+
+td.tree-left
+{
+    font-weight: bold !important;
+    border-right: none;
+}
+
+
+th.title {
+	font-size: 13px !important;
+	color: #660 !important;
+}
+
+td.filter {
+    background-color: #ffc !important;
+}
+
+.subhead th,
+.subhead td,
+.messages td,
+.schedule td {
+	font-size: 11px;
+	font-weight: normal;
+    color: #996;
+    background-color: #ffc !important;
+}
+
+.subhead-line th,
+.subhead-line tr,
+.subhead-line td,
+.messages-line td,
+.schedule-line td {
+	font-size: 11px;
+	font-weight: bold;
+    color: #996;
+    background-color: #ffc !important;
+    border-bottom: 1px solid #CC9; 
+}
+
+td.subhead-dark {
+	font-size: 11px;
+	font-weight: normal;
+    color: #000;
+    background-color: #ffc !important;
+}
+
+.subhead h3 { margin: 0 0px; }
+
+.messages td {
+    color: #000;
+}
+
+/* table headers that contain tabs musn't have padding */
+th.tab-container {
+	padding: 0;
+	position: relative;
+}
+
+/* re-build the padding */
+th.tab-container .title {
+	font-weight: bold;
+	line-height: 16px;
+	margin: 5px 5px 0 5px;
+}
+
+.tab-container p {
+	margin: 1em 5px;
+	font-size: 11px;
+	line-height: 13px;
+}
+
+/* tabset is a table element, in which a th contains the contents of the tab */
+.tabset {
+	width: auto;
+	margin: 0 0 0 5px;
+	position: relative;
+}
+
+.tabset th {
+    text-align: center !important;
+    padding: 4px 22px;
+    cursor: pointer;  /* Mozilla */
+    cursor: hand;     /* IE      */
+    color: #cc9;
+}
+
+.tabset th a:link,
+.tabset th a:visited,
+.tabset th a:active {
+	text-decoration: none;
+    font: bold 13px/16px Arial, Helvetica, sans-serif;
+    color: #cc9;
+}
+
+.tabset .active { 
+    background-color: #ffc; 
+    cursor: auto;
+    color: #663;
+}
+
+.tabset .spacer { width: 4px; }
+
+.choose table td { padding-left: 0; }
+.choose table th { font-weight: bold !important; }
+
+.monitor th { font: inherit; }
+.monitor .subhead th { font-weight: bold !important; }
+.monitor .subhead td { color: #000 !important; }
+
+.finished td { color: #663; }
+
+th.bordered, td.bordered { border-top: 1px solid #663; }
+.test-info th { text-align: right !important; }
+
+
+.header-row { 
+    border-bottom: 1px solid #CC9; 
+}
+
+.no-margin {
+    margin: 0 0px;
+}
+
+.no-border {
+    border-style: none;
+}
+
+.worksheet
+{
+    background-color: #ffffff;
+    border: 1px solid #996;
+}
+
+.worksheet td
+{
+     border-bottom: 1px solid #996;
+     border-right: 1px solid #996;
+}
+
+.item-divider td
+{
+    font-size: 11px;
+    font-weight: bold;
+    color: #000;
+    background-color: #ffc !important;
+}
+
+.group-item-row
+{
+    border-bottom: none;
+}
+
+.group-item-table p 
+{
+    margin: 0 0 0 14px;
+}
+
+.group-item td
+{
+    border-bottom: none;
+}
+
+.cr-item
+{
+    background-color: #F0F0F0;
+}
+
+.present td
+{
+    background-color: #F0F0F0;
+}
+
+.testnametitlerow th,
+.testnametitlerow td
+{
+    font-size: 11px;
+    font-weight: normal;
+    color: #666;
+    background-color: #cc9 !important;
+}
+
+.find-student { background-color: transparent !important; }
+.find-student th, .edit-student th { text-align: right; }
+.edit-student th.bordered { text-align: left; }
+.edit-student select { margin: 0; }
+.special
+{ color: #000; background-color: #ffc}
+
+/* Key-Entry related classes */
+    .scored-student td {
+        background-color: #F0F0F0;
+    }
+
+    .scoring-spacer td {
+        height: 2px;
+        background-color: #ccc;
+    }
+
+    .scoring-spacer img { vertical-align: baseline; }
+
+    .scoring.question-number {
+            text-align: center;
+            font: bold 13px;
+        color: #fff;
+        background-color: #000 !important;
+    }
+
+    .answers td {
+        text-align: center; 
+        padding-top: 4px;
+    }
+
+    .scoring.highlighted td{
+        background-color: #F0F0F0;
+    }
+
+    .scoring.online-selected {
+        background-color: #999999 !important;
+        color: white;
+        font-weight: bold;
+    }
+/* END Key-Entry related classes */
+
+.contextbar tr
+.contextbar th,
+.contextbar td {
+	font-size: 11px;
+	font-weight: normal;
+    color: black;
+    background-color: #ffc !important;
+}
+
+.contextbar h3 { margin: 0 0px;
+color: black;
+
+}
+ 
+
+/* Enter Student Data section */
+.demographic table { }
+.demographic tr    { }
+.demographic th    { background-color: #ffc !important; color: #666; font-size: 11px; font-weight: normal; padding-left: 4px; }
+.demographic td    { padding-left: 10px; }
+
+/* Downloads : Software section */
+.downloads table    { }
+.downloads tr       { }
+.downloads th       { background-color: #ffc !important; border-color: #996; border-style: solid; border-width: 1px; color: #333 !important; font-size: 8pt; padding: 5px; }
+.downloads td       { font-size: 8pt; margins: 0px; padding: 5px; }
+.downloadsFullCell  { border-color: #996; border-style: solid; border-width: 0px 1px 1px 1px; font-size: 8pt; margins: 0px; padding: 5px; text-align: left; }
+.downloadsLeftCell  { border-color: #996; border-style: solid; border-width: 0px 0px 1px 1px; font-size: 8pt; margins: 0px; padding: 5px; text-align: left; }
+.downloadsRightCell { border-color: #996; border-style: solid; border-width: 0px 1px 1px 0px; font-size: 8pt; margins: 0px; padding: 5px; text-align: right; }
+
+.hilight-gray tr,
+.hilight-gray th,
+.hilight-gray td {
+	font-size: 11px;
+	font-weight: normal;
+    color: #000000;
+    background-color: #E3E3E3 !important;
+}
+
+.filter table,
+.filter tr,
+.filter th,
+.filter td {
+	background-color: #CC9;
+	color: #000000;
+    margin: 0 0 0 0;
+}
+  
+.hes_subhead th,
+.hes_subhead td {
+    font-family: helvetica, arial, sans serif;
+	font-size: 8pt;
+	font-style: normal;
+    color: #663;
+    background-color: #ffc !important;
+}
+        
+  
