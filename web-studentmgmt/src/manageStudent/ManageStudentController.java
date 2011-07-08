@@ -1448,6 +1448,7 @@ public class ManageStudentController extends PageFlowController
 		String maskingRuler = getRequest().getParameter("Masking_Ruler"); //Added for Masking Ruler
 		String auditoryCalming = getRequest().getParameter("Auditory_Calming"); //Added for Auditory Calming
 		String magnifyingGlass = getRequest().getParameter("Magnifying_Glass"); //Added for Magnifying Glass
+		String extendedTime = getRequest().getParameter("Extended_Time"); //Added for Student Pacing
 
 		this.accommodations.setScreenReader(new Boolean(screenReader != null));
 		this.accommodations.setCalculator(new Boolean(calculator != null));
@@ -1458,6 +1459,7 @@ public class ManageStudentController extends PageFlowController
 		this.accommodations.setAuditoryCalming(new Boolean(auditoryCalming != null));//Added for Auditory Calming
 		this.accommodations.setMaskingRuler(new Boolean(maskingRuler != null));//Added for Masking Ruler
 		this.accommodations.setMagnifyingGlass(new Boolean(magnifyingGlass != null));//Added for Magnifying Glass
+		this.accommodations.setExtendedTime(new Boolean(extendedTime != null)); //Added for Student Pacing
 
 		setCustomerAccommodations(this.accommodations, false);
 
@@ -1514,6 +1516,7 @@ public class ManageStudentController extends PageFlowController
 		this.accommodations.setAuditoryCalming(Boolean.FALSE);//Added for Auditory Calming
 		this.accommodations.setMaskingRuler(Boolean.FALSE);//Added for Masking Ruler
 		this.accommodations.setMagnifyingGlass(Boolean.FALSE);//Added for Magnifying Glass
+		this.accommodations.setExtendedTime(Boolean.FALSE); //Added for Student Pacing
 
 		setCustomerAccommodations(this.accommodations, true);
 	}
@@ -1577,6 +1580,11 @@ public class ManageStudentController extends PageFlowController
 				if (ccName.equalsIgnoreCase("Magnifying_Glass"))
 				{
 					sad.setMagnifyingGlass(Boolean.TRUE);
+				}
+				//Added for student pacing
+				if (ccName.equalsIgnoreCase("Extended_Time"))
+				{
+					sad.setExtendedTime(Boolean.TRUE);
 				}
 			}
 		}

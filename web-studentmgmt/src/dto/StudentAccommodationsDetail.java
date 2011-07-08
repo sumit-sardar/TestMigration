@@ -45,6 +45,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
     private Boolean auditoryCalming = Boolean.FALSE;// Added for Auditory Calming
     private Integer music_files = 0;// Added for Auditory Calming
     private Boolean magnifyingGlass = Boolean.FALSE; // Added for Magnifying Glass
+    private Boolean extendedTime = Boolean.FALSE; // Added for Student Pacing
     
     public StudentAccommodationsDetail() {
     }
@@ -95,7 +96,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
             this.colorFont = Boolean.TRUE;
         }
         
-        //Added for Auditory Calming and Masking and Magnifier
+        //Added for Auditory Calming and Masking and Magnifier and student pacing
         if (sa.getAuditoryCalming() != null)
             this.auditoryCalming = new Boolean(sa.getAuditoryCalming().equals("T"));
         
@@ -109,6 +110,9 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         
         if (sa.getMagnifyingGlass() != null)
             this.magnifyingGlass = new Boolean(sa.getMagnifyingGlass().equals("T"));
+        
+        if (sa.getExtendedTime() != null)
+            this.extendedTime = new Boolean(sa.getExtendedTime().equals("T"));
     }
 
     public StudentAccommodations makeCopy(Integer studentId) 
@@ -194,7 +198,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         copied.setScreenMagnifier("");  // not used
         copied.setStudentGrade("");     // not used
         
-        //START - Added for Auditory Magnifier, Calming and Masking Ruler
+        //START - Added for Auditory Magnifier, Calming, Masking Ruler and student pacing
         
         if (this.auditoryCalming.booleanValue()) {
             copied.setAuditoryCalming("T");
@@ -221,7 +225,15 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         else {
             copied.setMagnifyingGlass("F");
         }
-      //END - Added for Magnifier, Auditory Calming and Masking Ruler
+        
+        if (this.extendedTime.booleanValue()) {
+            copied.setExtendedTime("T");
+            hasData = true;
+        }
+        else {
+            copied.setExtendedTime("F");
+        }
+      //END - Added for Magnifier, Auditory Calming and Masking Ruler and student pacing
         
         return copied;
     }
@@ -248,6 +260,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         //Added for Masking Ruler and magnifier
         copied.setMaskingRuler(this.maskingRuler);
         copied.setMagnifyingGlass(this.magnifyingGlass);
+        copied.setExtendedTime(this.extendedTime);//Added for student pacing
 
         return copied;
     }
@@ -535,6 +548,20 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
 		this.selectedColorFont = selectedColorFont;
 	}
 	//End Bulk Accommodation Changes
+
+	/**
+	 * @return the extendedTime
+	 */
+	public Boolean getExtendedTime() {
+		return extendedTime;
+	}
+
+	/**
+	 * @param extendedTime the extendedTime to set
+	 */
+	public void setExtendedTime(Boolean extendedTime) {
+		this.extendedTime = extendedTime;
+	}
 
 	
     

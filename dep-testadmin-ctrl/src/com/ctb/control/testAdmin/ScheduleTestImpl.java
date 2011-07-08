@@ -1699,6 +1699,7 @@ public class ScheduleTestImpl implements ScheduleTest
     	UserTransaction userTrans = null;
     	boolean transanctionFlag = false;
     	Integer thisTestAdminId = null;
+    	Double extendedTimeValue = 0.0;
     	try {
             Integer userId = users.getUserIdForName(userName);
             Integer customerId = users.getCustomerIdForName(userName);
@@ -1720,17 +1721,27 @@ public class ScheduleTestImpl implements ScheduleTest
             int txTimeOut = transactionTimeOut.intValue();
             userTrans.setTransactionTimeout(txTimeOut);
             //END- Changed for deferred defect 64446
-			userTrans.begin();
+            
+            // Start changes for Student Pacing
+			CustomerConfigurationValue [] customerConfigurationValues = customerConfigurations.getCustomerConfigurationValue(customerId,"Extended_Time");				
+			if (customerConfigurationValues != null && customerConfigurationValues.length > 0) 
+            {
+				extendedTimeValue = new Double (customerConfigurationValues[0].getCustomerConfigurationValue());
+            }
+			// End changes for Student Pacing
 			
-            if(testAdminId == null) {
-                session.setTestAdminId(createNewTestAdminRecord(userId, customerId, session));
+            
+			userTrans.begin();
+			if(testAdminId == null) {
+				
+				session.setTestAdminId(createNewTestAdminRecord(userId, customerId, session));
                 ArrayList subtests = createTestAdminItemSetRecords(newSession);
-                createTestRosters(userName, userId, subtests, newSession);
+                createTestRosters(userName, userId, subtests, newSession, extendedTimeValue);
                 createProctorAssignments(true, userId, newSession);
             } else {
                 updateTestAdminRecord(userId, session);
                 ArrayList subtests = updateTestAdminItemSetRecords(newSession);
-                updateTestRosters(userName, userId, subtests, newSession, session.getItemSetId());
+                updateTestRosters(userName, userId, subtests, newSession, session.getItemSetId(), extendedTimeValue);
                 updateProctorAssignments(userName, userId, newSession);
             }
             
@@ -2127,7 +2138,7 @@ public class ScheduleTestImpl implements ScheduleTest
         }
     }
     
-    private void createTestRosters(String userName, Integer userId, ArrayList subtests, ScheduledSession newSession) throws CTBBusinessException {
+    private void createTestRosters(String userName, Integer userId, ArrayList subtests, ScheduledSession newSession, Double extendedTimeValue) throws CTBBusinessException {
         try{
             Integer productId = newSession.getTestSession().getProductId();
             TestProduct testProduct = product.getProduct(productId);
@@ -2150,6 +2161,15 @@ public class ScheduleTestImpl implements ScheduleTest
             for(int j=0;scheduledStudents != null && j<scheduledStudents.length;j++) {
                 SessionStudent student = scheduledStudents[j];
                 Integer restrictedAdmin = new Integer(-1);
+                
+                // Start changes for Student Pacing
+                Double rosterExtendedTime = null;
+                String extendedTimeAccom = "F";
+                if(student.getExtendedTimeAccom() != null){
+                	extendedTimeAccom = student.getExtendedTimeAccom();
+                }
+                // End changes for Student Pacing
+                
                 if(testRestricted) {
                     restrictedAdmin = students.isTestRestrictedForStudent(userName, student.getStudentId(), newSession.getTestSession().getItemSetId());
                 }
@@ -2182,6 +2202,15 @@ public class ScheduleTestImpl implements ScheduleTest
                     //roster.setTestRosterId(testRosterId);
                     roster.setValidationStatus("VA");
                     roster.setCustomerFlagStatus(defaultCustomerFlagStatus);
+                    
+                    // Start changes for Student Pacing
+                    if(extendedTimeValue > 0){
+                    	if(extendedTimeAccom != null && extendedTimeAccom.equalsIgnoreCase("T"))
+                    		rosterExtendedTime = extendedTimeValue;
+                    }
+                    roster.setExtendedTime(rosterExtendedTime);
+                    // End changes for Student Pacing
+                    
                     try {
                         rosters.createNewTestRoster(roster);
                     } catch (SQLException se) {
@@ -2240,7 +2269,7 @@ public class ScheduleTestImpl implements ScheduleTest
         return subtests;
     }
     
-    private void updateTestRosters(String userName, Integer userId, ArrayList subtests, ScheduledSession newSession, Integer itemSetId) throws CTBBusinessException {
+    private void updateTestRosters(String userName, Integer userId, ArrayList subtests, ScheduledSession newSession, Integer itemSetId, Double extendedTimeValue) throws CTBBusinessException {
         try {
             Integer productId = newSession.getTestSession().getProductId();
             TestProduct testProduct = product.getProduct(productId);
@@ -2274,6 +2303,15 @@ public class ScheduleTestImpl implements ScheduleTest
                 re.setOrgNodeId(newUnit.getOrgNodeId());
                 re.setStudentId(newUnit.getStudentId());
                 re.setTestAdminId(newSession.getTestSession().getTestAdminId());
+                
+                // Start changes for Student Pacing
+                Double rosterExtendedTime = null;
+                String extendedTimeAccom = "F";
+                if(newUnit.getExtendedTimeAccom() != null){
+                	extendedTimeAccom = newUnit.getExtendedTimeAccom();
+                }
+                // End changes for Student Pacing
+                
                 if(oldUnit == null) {
                     re.setOverrideTestWindow("F");
                     re.setStudentId(newUnit.getStudentId());
@@ -2299,6 +2337,14 @@ public class ScheduleTestImpl implements ScheduleTest
                     }
                     re.setFormAssignment(form);
                     re.setCustomerFlagStatus(defaultCustomerFlagStatus);
+                    
+                    // Start changes for Student Pacing
+                    if(extendedTimeValue > 0){
+                    	if(extendedTimeAccom != null && extendedTimeAccom.equalsIgnoreCase("T"))
+                    		rosterExtendedTime = extendedTimeValue;
+                    }
+                    re.setExtendedTime(rosterExtendedTime);
+                    // End changes for Student Pacing
                     try {
                         rosters.createNewTestRoster(re);
                     } catch (SQLException se) {

@@ -151,4 +151,8 @@ public interface CustomerConfigurations extends JdbcControl
     @JdbcControl.SQL(statement = "select cc.default_value from customer_configuration cc  where cc.customer_id = {customerId} and cc.customer_configuration_name = 'Roster_Status_Flag'")
     String getDefaulCustomerFlagStatus(Integer customerId) throws SQLException;
     
+    @JdbcControl.SQL(statement = "select  ccvalue.customer_configuration_value as customerConfigurationValue, ccvalue.customer_configuration_id as customerConfigurationId,  ccvalue.sort_order as sortOrder from customer_configuration cc, customer_configuration_value ccvalue where cc.customer_configuration_id = ccvalue.customer_configuration_id and cc.customer_configuration_name = {configurationName} and cc.customer_id= {customerId}")
+    CustomerConfigurationValue [] getCustomerConfigurationValue(int customerId, String configurationName) throws SQLException;
+    
+    
 }

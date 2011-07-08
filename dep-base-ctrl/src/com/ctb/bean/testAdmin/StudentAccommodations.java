@@ -31,8 +31,24 @@ public class StudentAccommodations extends CTBBean
     private String auditoryCalming;//Added for auditory calming
     private String musicFile;//Added for auditory calming
     private String magnifyingGlass;//Added for magnifier
+    private String extendedTime; // Added for student pacing
     
+    // Start changes for student pacing
      /**
+	 * @return the extendedTime
+	 */
+	public String getExtendedTime() {
+		return extendedTime;
+	}
+	/**
+	 * @param extendedTime the extendedTime to set
+	 */
+	public void setExtendedTime(String extendedTime) {
+		this.extendedTime = extendedTime;
+	}
+	// End changes for student pacing
+	
+	/**
 	 * @return Returns the orgNodeId.
 	 */
 	public Integer getOrgNodeId() {

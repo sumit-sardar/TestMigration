@@ -44,7 +44,7 @@ public class RosterElement extends CTBBean
   private String grade; // For CR Soring 
   private Integer itemSetIdTC; // For CR Soring 
   private Integer scorePoint;
-
+  private Double extendedTime; // Added for Student Pacing
   
 
 	/**
@@ -448,4 +448,20 @@ public class RosterElement extends CTBBean
 	public void setScorePoint(Integer scorePoint) {
 		this.scorePoint = scorePoint;
 	}
+	
+	// Start changes for Student Pacing
+	/**
+	 * @return the extendedTime
+	 */
+	public Double getExtendedTime() {
+		return extendedTime;
+	}
+	/**
+	 * @param extendedTime the extendedTime to set
+	 */
+	public void setExtendedTime(Double extendedTime) {
+		this.extendedTime = extendedTime;
+	}
+	// End changes for Student Pacing
+	
 } 

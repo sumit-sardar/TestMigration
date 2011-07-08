@@ -34,6 +34,7 @@ public class SchedulingStudent extends Student
     private EditCopyStatus status;
     private Integer priorAdmin;
     private String highLighter; /* 51931 Deferred Defect For HighLighter*/
+    private String extendedTimeAccom; // Added for Student Pacing
     
    	public Integer getPriorAdmin() {
         return this.priorAdmin;
@@ -323,4 +324,20 @@ public class SchedulingStudent extends Student
 	public void setHighLighter(String highLighter) {
 		this.highLighter = highLighter;
 	}
+
+	// Start Changes for Student Pacing
+	/**
+	 * @return the extendedTime
+	 */
+	public String getExtendedTimeAccom() {
+		return extendedTimeAccom;
+	}
+
+	/**
+	 * @param extendedTime the extendedTime to set
+	 */
+	public void setExtendedTimeAccom(String extendedTimeAccom) {
+		this.extendedTimeAccom = extendedTimeAccom;
+	}
+	// End changes for Student Pacing
 } 

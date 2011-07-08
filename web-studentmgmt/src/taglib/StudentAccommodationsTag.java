@@ -394,6 +394,17 @@ public class StudentAccommodationsTag extends CTBTag
 				displayCellEnd();
 			displayRowEnd();        
 		displayTableEnd();
+		
+	     // Student Pacing
+		displayTableStart("transparent");
+	        field = "Extended_Time";
+	        description = "<b>Extended Time</b>:";
+	        checked = this.accommodations.getExtendedTime().booleanValue();
+	        disabled = isDisabled(field);
+	        displayControlRow(field, description, checked, disabled, null);                        
+	        displayTextRow("Allow student to extend the test time.", "20");
+        displayTableEnd();
+        
         
     }
     
@@ -574,7 +585,7 @@ public class StudentAccommodationsTag extends CTBTag
             }
         }        
         if(counter == 0 && (field.equals("Masking_Ruler") || field.equals("Auditory_Calming")
-        		|| field.equals("Magnifying_Glass")))
+        		|| field.equals("Magnifying_Glass")|| field.equals("Extended_Time")))
         	disabled=true;
         
         return disabled;

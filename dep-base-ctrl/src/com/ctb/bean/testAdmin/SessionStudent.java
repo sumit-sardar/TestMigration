@@ -84,6 +84,7 @@ public class SessionStudent extends SchedulingStudent
         setOrgNodeCategoryName(student.getOrgNodeCategoryName());
         setStatus(student.getStatus());
         setHighLighter(student.getHighLighter()); /* 51931 Deferred Defect For HighLighter*/
+        setExtendedTimeAccom(student.getExtendedTimeAccom()); // Added for Student Pacing
     }
     
     /**
