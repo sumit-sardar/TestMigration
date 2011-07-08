@@ -37,7 +37,7 @@ public class JMSRecever extends GenericMessageDrivenBean implements
 	public void onMessage(Message msg) {
 		// IMPORTANT: Add your code here
 		try {
-			System.out.println("JMs hello world.............");
+			//System.out.println("JMs hello world.............");
 			/*ScheduledSessionVO scheduledSessionVO =(ScheduledSessionVO)((ObjectMessage)msg).getObject();
 			Users users = scheduledSessionVO.getUsers();
 			String userName = scheduledSessionVO.getUserName();
@@ -46,7 +46,7 @@ public class JMSRecever extends GenericMessageDrivenBean implements
 			if (object.getClass().getName().indexOf(classExportDataVO)>0){*/
 			Integer object = (Integer)((ObjectMessage)msg).getObject();
 			
-				System.out.println("JMS Emetric data world............."+object);
+				//System.out.println("JMS Emetric data world............."+object);
 				//ExportDataVO vo = (ExportDataVO)object;
 				//System.out.println("CustomerId:"+vo.getCustomerId());
 				ReportingDataProcessor processor = new ReportingDataProcessor();
