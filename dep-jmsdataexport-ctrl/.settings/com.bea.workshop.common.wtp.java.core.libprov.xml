@@ -1,5 +1,13 @@
 <install-record>
   <entry>
+    <facet id="workshop.beehive.controls"/>
+    <provider id="j2ee-library-provider-beehive.controls-10.0-util"/>
+  </entry>
+  <entry>
+    <facet id="wls.controls"/>
+    <provider id="j2ee-library-provider-wls.controls-10.0-util"/>
+  </entry>
+  <entry>
     <facet id="wls.logging"/>
     <provider id="j2ee-library-provider-wls.logging-ear"/>
   </entry>
