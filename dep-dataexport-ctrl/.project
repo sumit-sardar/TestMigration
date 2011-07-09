@@ -3,8 +3,15 @@
 	<name>dep-dataexport-ctrl</name>
 	<comment></comment>
 	<projects>
+		<project>dep-base-ctrl</project>
+		<project>dep-jmsdataexport-ctrl</project>
 	</projects>
 	<buildSpec>
+		<buildCommand>
+			<name>com.bea.workshop.controls.core.AssemblyPublishCleaner</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
 			<arguments>
