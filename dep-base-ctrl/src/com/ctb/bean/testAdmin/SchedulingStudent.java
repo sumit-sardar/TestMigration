@@ -43,7 +43,7 @@ public class SchedulingStudent extends Student
     public void setPriorAdmin(Integer priorAdmin) {
         this.priorAdmin = priorAdmin;
     }
-  
+   // added for student pacing
     public String getHasAccommodations() {
         String result = "false";
         if( "T".equals(this.screenMagnifier) ||
@@ -52,6 +52,7 @@ public class SchedulingStudent extends Student
             "T".equals(this.testPause) ||
             "T".equals(this.untimedTest) ||
             "T".equals(this.highLighter) ||
+            "T".equals(this.extendedTimeAccom) ||
             this.questionBackgroundColor != null ||
             this.questionFontColor != null ||
             this.questionFontSize != null ||

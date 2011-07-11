@@ -16,6 +16,8 @@ public class TestSummaryVO implements java.io.Serializable
     private Integer colorFont = null;
     private Integer pause = null;
     private Integer untimed = null;
+    //Start- added for student pacing
+    private Integer extendedTimeAccom = null;
     private Boolean supportAccommodations = null;
     
     /* 51931 Deferred Defect For HighLighter*/
@@ -29,7 +31,8 @@ public class TestSummaryVO implements java.io.Serializable
                          Integer colorFont,
                          Integer pause,
                          Integer untimed,
-                         Integer highLighter) {
+                         Integer highLighter,
+                         Integer extendedTimeAccom) {
         this.total = total;
         this.accommodated = accommodated;
         this.calculator = calculator;
@@ -38,6 +41,8 @@ public class TestSummaryVO implements java.io.Serializable
         this.pause = pause;
         this.untimed = untimed;
         this.highLighter = highLighter;
+        this.extendedTimeAccom = extendedTimeAccom; 
+        // end- added for student pacing
         this.supportAccommodations = Boolean.TRUE;
     }
     /* 51931 Deferred Defect For HighLighter*/     
@@ -50,6 +55,8 @@ public class TestSummaryVO implements java.io.Serializable
         this.pause = src.getPause();
         this.untimed = src.getUntimed();
         this.highLighter = src.highLighter;
+        //added for student pacing
+        this.extendedTimeAccom = src.extendedTimeAccom;
         this.supportAccommodations = Boolean.TRUE;
     }
 
@@ -109,5 +116,19 @@ public class TestSummaryVO implements java.io.Serializable
         this.highLighter = highLighter;
     }
     
+    //Start- added for student pacing
+	/**
+	 * @return the extendedTimeAccom
+	 */
+	public Integer getExtendedTimeAccom() {
+		return extendedTimeAccom;
+	}
+	/**
+	 * @param extendedTimeAccom the extendedTimeAccom to set
+	 */
+	public void setExtendedTimeAccom(Integer extendedTimeAccom) {
+		this.extendedTimeAccom = extendedTimeAccom;
+	}
+    //end- added for student pacing
     
 } 

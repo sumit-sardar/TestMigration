@@ -672,7 +672,12 @@ public class TestTicketController extends PageFlowController
             /* 51931 Deferred Defect For HighLighter*/
             if(stringToBoolean(student.getHighLighter())){
                 accommodationList.add("Highlighter");
+            }  
+            //Start- added for student pacing          
+            if(stringToBoolean(student.getExtendedTimeAccom())){
+                accommodationList.add("Extended Time");
             }
+            //end- added for student pacing
         }
         
         String[] accommodations = new String[accommodationList.size()];
@@ -736,6 +741,7 @@ public class TestTicketController extends PageFlowController
         int pause = 0;
         int untimed = 0;
         int highLighter = 0; /* 51931 Deferred Defect For HighLighter*/
+        int extendedTimeAccom = 0; //Added for student pacing 
         for(Iterator it = rosterList.iterator(); it.hasNext();){
             TestRosterVO roster = (TestRosterVO)it.next();
             if(stringToBoolean(roster.getHasAccommodations())){
@@ -760,6 +766,11 @@ public class TestTicketController extends PageFlowController
             if(stringToBoolean(roster.getHighLighter())){
                 highLighter++;
             }
+            //Start- added for student pacing
+            if(stringToBoolean(roster.getExtendedTimeAccom())){
+            	extendedTimeAccom++;
+            }
+            //end- added for student pacing
         }
         /* 51931 Deferred Defect For HighLighter*/
         return new TestSummaryVO(new Integer(total),
@@ -769,8 +780,9 @@ public class TestTicketController extends PageFlowController
                                  new Integer (colorFont),
                                  new Integer (pause),
                                  new Integer (untimed),
-                                 new Integer (highLighter));
-     } 
+                                 new Integer (highLighter),
+                                 new Integer (extendedTimeAccom));
+     } // added for student pacing
     
  // START- Added for CR GA2011CR001
     /**

@@ -1337,6 +1337,19 @@ public class RegistrationController extends PageFlowController
                     stuAcc.setHighlighter("F");
                 }
             }
+            //Start: For Student Pacing
+            if (ccName.equalsIgnoreCase("extended_time"))
+            {
+                if (defaultValue.equalsIgnoreCase("T"))
+                {
+                    stuAcc.setExtendedTime("T");
+                }
+                else
+                {
+                    stuAcc.setExtendedTime("F");
+                }
+            }
+            //End: For Student Pacing
         }
         return stuAcc;
     }

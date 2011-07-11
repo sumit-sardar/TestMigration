@@ -27,6 +27,8 @@ public class TestRosterVO implements java.io.Serializable
     private String testPause = null;
     private String untimedTest = null;
     private String highLighter = null; /* 51931 Deferred Defect For HighLighter*/
+    private String extendedTimeAccom = null; // added for student pacing
+    
     public TestRosterVO()
     {
     }
@@ -172,4 +174,19 @@ public class TestRosterVO implements java.io.Serializable
     public String getHighLighter(){
         return this.highLighter;
     }
+    
+    // Start- added for student pacing
+	/**
+	 * @return the extendedTimeAccom
+	 */
+	public String getExtendedTimeAccom() {
+		return extendedTimeAccom;
+	}
+	/**
+	 * @param extendedTimeAccom the extendedTimeAccom to set
+	 */
+	public void setExtendedTimeAccom(String extendedTimeAccom) {
+		this.extendedTimeAccom = extendedTimeAccom;
+	}
+	// end- added for student pacing
 } 

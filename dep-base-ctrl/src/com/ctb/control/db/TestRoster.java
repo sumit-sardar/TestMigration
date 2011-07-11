@@ -579,5 +579,9 @@ public interface TestRoster extends JdbcControl
     @JdbcControl.SQL(statement = "SELECT ROS.TEST_ROSTER_ID  AS TESTROSTERID,  ROS.TEST_ADMIN_ID  AS TESTADMINID, ROS.VALIDATION_STATUS AS VALIDATIONSTATUS,  ROS.STUDENT_ID  AS STUDENTID FROM TEST_ROSTER ROS, STUDENT STU, TEST_ADMIN TADMIN  WHERE ROS.STUDENT_ID = {studentId} AND ROS.ACTIVATION_STATUS = 'AC' AND STU.STUDENT_ID = ROS.STUDENT_ID  AND STU.ACTIVATION_STATUS = 'AC'  AND TADMIN.TEST_ADMIN_ID = ROS.TEST_ADMIN_ID  AND TADMIN.ACTIVATION_STATUS = 'AC'")
     RosterElement[] getTestRosterForStudentIdAndOrgNode(Integer studentId) throws SQLException;
 
+    // added for student pacing
+    @JdbcControl.SQL(statement = "select extended_time as extendedTime from student_accommodation where student_id = {studentId}")
+    String getExtendedTimeAccomForStudent(Integer studentId) throws SQLException;
+
     static final long serialVersionUID = 1L;
 }

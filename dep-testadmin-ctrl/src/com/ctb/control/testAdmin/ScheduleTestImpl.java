@@ -1699,7 +1699,7 @@ public class ScheduleTestImpl implements ScheduleTest
     	UserTransaction userTrans = null;
     	boolean transanctionFlag = false;
     	Integer thisTestAdminId = null;
-    	Double extendedTimeValue = 0.0;
+    	Double extendedTimeValue = 0.0; // Added for Student Pacing
     	try {
             Integer userId = users.getUserIdForName(userName);
             Integer customerId = users.getCustomerIdForName(userName);
@@ -2708,12 +2708,23 @@ public class ScheduleTestImpl implements ScheduleTest
     	UserTransaction userTrans = null;
     	boolean transanctionFlag = false;
         RosterElement roster = new RosterElement(); 
+        Double extendedTimeValue = 0.0;// added for student pacing
         
+    
         try{  
             TestSession testSession = admins.getTestAdminDetails(testAdminId);
             Integer userId = users.getUserIdForName(userName);
             Integer customerId = testSession.getCustomerId();
             String defaultCustomerFlagStatus = customerConfigurations.getDefaulCustomerFlagStatus(customerId);
+            
+            // Start changes for Student Pacing
+    		CustomerConfigurationValue [] customerConfigurationValues = customerConfigurations.getCustomerConfigurationValue(customerId,"Extended_Time");				
+    		if (customerConfigurationValues != null && customerConfigurationValues.length > 0) 
+            {
+    			extendedTimeValue = new Double (customerConfigurationValues[0].getCustomerConfigurationValue());
+            }
+    		// End changes for Student Pacing
+            
             String form = testSession.getFormAssignmentMethod();
             Integer productId = testSession.getProductId();
                        
@@ -2721,8 +2732,21 @@ public class ScheduleTestImpl implements ScheduleTest
 			userTrans.begin();
             
             if(sessionStudent != null){                       
-                Student student =(Student) sessionStudent;
-                Integer studentId = student.getStudentId();  
+                Student student =(Student) sessionStudent; 
+                Integer studentId = student.getStudentId(); 
+                
+                // Start changes for Student Pacing
+                Double rosterExtendedTime = null;
+                String extendedTimeAccom = "F";
+                String studentExtendedTimeAccom = rosters.getExtendedTimeAccomForStudent(studentId);
+
+                if(studentExtendedTimeAccom != null){
+                	extendedTimeAccom = studentExtendedTimeAccom;
+                }
+                
+                // End changes for Student Pacing
+                
+                
                 roster.setActivationStatus("AC");
                 roster.setCreatedBy(userId);
                 roster.setCreatedDateTime(new Date());
@@ -2740,6 +2764,14 @@ public class ScheduleTestImpl implements ScheduleTest
                 roster.setTestCompletionStatus("SC");
                 roster.setValidationStatus("VA");
                 roster.setCustomerFlagStatus(defaultCustomerFlagStatus);
+                
+                // Start changes for Student Pacing
+                if(extendedTimeValue > 0){
+                	if(extendedTimeAccom != null && extendedTimeAccom.equalsIgnoreCase("T"))
+                		rosterExtendedTime = extendedTimeValue;
+                }
+                 roster.setExtendedTime(rosterExtendedTime);
+                // End changes for Student Pacing
             
                 try {
                         rosters.createNewTestRoster(roster);

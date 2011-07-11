@@ -46,8 +46,27 @@ public class Student extends CTBBean
     private String udf1;
     private String udf2;
     private String testPurpose;
+    private String extendedTimeAccom; // Added for Student PAcing
     
-    public boolean equals(Object other) {
+    
+    // Start changes for Student Pacing
+    /**
+	 * @return the extendedTimeAccom
+	 */
+	public String getExtendedTimeAccom() {
+		return extendedTimeAccom;
+	}
+
+	/**
+	 * @param extendedTimeAccom the extendedTimeAccom to set
+	 */
+	public void setExtendedTimeAccom(String extendedTimeAccom) {
+		this.extendedTimeAccom = extendedTimeAccom;
+	}
+	
+	// End changes for Student Pacing
+
+	public boolean equals(Object other) {
         if(this.extElmId != null) {
             return this.extElmId.equals(((Student)other).extElmId);
         } else if(this.studentId != null) {

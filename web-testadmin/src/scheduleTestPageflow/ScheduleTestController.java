@@ -4874,6 +4874,7 @@ public class ScheduleTestController extends PageFlowController
         int untimed = 0;
 		/* 51931 Deferred Defect For HighLighter*/
 		int highLigther = 0;
+		int extendedTime = 0;// added for student pacing
         SessionStudent[] students = scheduledSession.getStudents();
         total = students.length;
         for(int i=0; i<students.length; i++){
@@ -4900,6 +4901,11 @@ public class ScheduleTestController extends PageFlowController
            if(stringToBoolean(student.getHighLighter())){
                 highLigther++;
             }
+           //Start- added for student pacing
+           if(stringToBoolean(student.getExtendedTimeAccom())){
+        	   extendedTime++;
+           }
+           //end- added for student pacing
         }
         return new TestSummaryVO(new Integer(total),
                                  new Integer (accommodated),
@@ -4909,7 +4915,8 @@ public class ScheduleTestController extends PageFlowController
                                  new Integer (pause),
                                  new Integer (untimed),
 								/* 51931 Deferred Defect For HighLighter*/
-								 new Integer (highLigther)); 
+								 new Integer (highLigther),
+								 new Integer (extendedTime)); 
      } 
     
     private boolean stringToBoolean(String in)
