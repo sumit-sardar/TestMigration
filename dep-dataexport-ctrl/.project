@@ -3,6 +3,8 @@
 	<name>dep-dataexport-ctrl</name>
 	<comment></comment>
 	<projects>
+		<project>dep-base-ctrl</project>
+		<project>dep-jmsdataexport-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
