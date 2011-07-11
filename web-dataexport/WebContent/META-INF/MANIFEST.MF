@@ -1,20 +1,5 @@
 Manifest-Version: 1.0
-Class-Path: APP-INF/lib/commons-codec.jar 
- APP-INF/lib/commons-httpclient-3.0.1.jar 
- APP-INF/lib/commons-logging.jar 
- APP-INF/lib/jdom.jar 
- APP-INF/lib/jl1.0.jar 
- APP-INF/lib/log4j.jar 
- APP-INF/lib/weblogic-jdbc-control.jar 
- APP-INF/lib/antlr-2.7.6.jar 
- APP-INF/lib/cglib2.jar 
- APP-INF/lib/commons-beanutils-1.6.1.jar 
- APP-INF/lib/commons-collections-2.1.jar 
- APP-INF/lib/commons-lang-1.0.1.jar 
- APP-INF/lib/dom4j.jar 
- APP-INF/lib/hibernate3.jar 
- APP-INF/lib/jta.jar 
- APP-INF/lib/log4j-1.2.8.jar 
+Class-Path: APP-INF/lib/weblogic-jdbc-control.jar 
  dep-jmsdataexport-ejb.jar 
  dep-jmsdataexport-ctrl.jar 
  dep-dataexport-ctrl.jar
