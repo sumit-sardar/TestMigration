@@ -42,8 +42,6 @@ public interface DataExportManagement
     boolean userHasReports(java.lang.String userName, java.lang.Integer customerId) throws com.ctb.exception.CTBBusinessException;
 
 
-	void initGenerateReportTask(String userName, Integer customerId)throws com.ctb.exception.CTBBusinessException;
-	
 	
 } 	
 

@@ -6,11 +6,9 @@ import org.apache.beehive.controls.api.bean.ControlImplementation;
 
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
-import com.ctb.exception.JmsConnectionException.CustomJMSConnectionException;
 import com.ctb.exception.dataExportManagement.CustomerReportDataNotFoundException;
 import com.ctb.exception.dataExportManagement.UserDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
-import com.ctb.util.jmsutils.ExportDataJMSUtil;
 
 /**
  * @author John_Wang
@@ -124,17 +122,7 @@ public class DataExportManagementImpl implements DataExportManagement
 	}
 	
 
-	public void initGenerateReportTask(String userName, Integer customerId)
-			throws CTBBusinessException {
-		System.out.println("Hi initGenerateReportTask  .....  ");
-		ExportDataJMSUtil util  = new ExportDataJMSUtil();
-		try {
-			util.initGenerateReportTask( userName, customerId);
-		} catch (CustomJMSConnectionException e) {
-			e.printStackTrace();
-		}
-		System.out.println("Bye initGenerateReportTask  .....  ");
-	}
+	
 
 	
 	
