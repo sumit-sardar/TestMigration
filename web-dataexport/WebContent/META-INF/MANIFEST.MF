@@ -1,6 +1,3 @@
 Manifest-Version: 1.0
-Class-Path: APP-INF/lib/weblogic-jdbc-control.jar 
- dep-jmsdataexport-ejb.jar 
- dep-jmsdataexport-ctrl.jar 
- dep-dataexport-ctrl.jar
+Class-Path: APP-INF/lib/weblogic-jdbc-control.jar
 

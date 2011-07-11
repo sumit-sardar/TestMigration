@@ -4,8 +4,6 @@
 	<comment></comment>
 	<projects>
 		<project>web-dataexport</project>
-		<project>dep-jmsdataexport-ejb</project>
-		<project>dep-jmsdataexport-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

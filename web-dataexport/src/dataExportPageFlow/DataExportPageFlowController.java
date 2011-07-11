@@ -6,6 +6,7 @@ import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import com.ctb.bean.testAdmin.User;
+import com.ctb.control.dataExportManagement.DataExportManagement;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.jmsutils.ExportDataJMSUtil;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
@@ -29,7 +30,7 @@ public class DataExportPageFlowController extends PageFlowController {
 	public String action = ACTION_EXPORT_DATA;
 
 	@Control
-	private com.ctb.control.dataExportManagement.DataExportManagement dataExportManagement;
+	private DataExportManagement dataExportManagement;
 
 	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "index.jsp") })
 	protected Forward begin() {

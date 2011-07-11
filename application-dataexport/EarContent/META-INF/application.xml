@@ -8,7 +8,4 @@
 			<context-root>DataExportWeb</context-root>
 		</web>
 	</module>
-	<module id="EjbModule_1309946649664">
-		<ejb>dep-jmsdataexport-ejb.jar</ejb>
-	</module>
 </application>

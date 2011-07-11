@@ -21,8 +21,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/dep-dataexport-ctrl"/>
 	<classpathentry kind="src" path="/dep-weblib-webutils"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dep-weblib-taglib"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/dep-testadmin-ctrl"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/dep-base-ctrl"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/weblogic-controls-10.0/exact/10.0"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/dep-jmsdataexport-ctrl"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

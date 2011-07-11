@@ -56,7 +56,7 @@ public class XmlMetadataReader {
 		InputStream schemaFileInputStream = getClass().getClassLoader().getResourceAsStream(SCHEMA_CLASSPATH);
 
 		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-		docBuilderFactory.setAttribute(ATTRIBUTE_JAXP_SCHEMA_LANGUAGE, XMLConstants.W3C_XML_SCHEMA_NS_URI);
+		//docBuilderFactory.setAttribute(ATTRIBUTE_JAXP_SCHEMA_LANGUAGE, XMLConstants.W3C_XML_SCHEMA_NS_URI);
 		docBuilderFactory.setAttribute(ATTRIBUTE_JAXP_SCHEMA_SOURCE, schemaFileInputStream);
 		docBuilderFactory.setValidating(true);
 		docBuilderFactory.setNamespaceAware(true);
