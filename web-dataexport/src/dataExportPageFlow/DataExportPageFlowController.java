@@ -1,9 +1,11 @@
 package dataExportPageFlow;
 
 import org.apache.beehive.controls.api.bean.Control;
+import org.apache.beehive.netui.pageflow.FormData;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
+import org.apache.beehive.netui.pageflow.internal.BaseActionForm;
 
 import com.ctb.bean.testAdmin.User;
 import com.ctb.control.dataExportManagement.DataExportManagement;
@@ -90,7 +92,7 @@ public class DataExportPageFlowController extends PageFlowController {
 		}
 	}
 
-	public static class DataExportForm extends SanitizedFormData {
+	public static class DataExportForm extends BaseActionForm {
 		private static final long serialVersionUID = 1L;
 		private String actionElement;
 		private String currentAction;
