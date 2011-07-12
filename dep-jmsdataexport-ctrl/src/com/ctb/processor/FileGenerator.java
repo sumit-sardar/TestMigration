@@ -1100,12 +1100,7 @@ public class FileGenerator {
 			SqlUtil.close(ps, rs);
 		}
 		
-		if (tfil.getTestInvalidationSpeaking().equalsIgnoreCase("1")) {
-			ss.setSpeaking("INV");
-			po.setSpeaking("INV");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
-		} else if (tfil.getTestingExemptionsSpeaking().equalsIgnoreCase("1")) {
+		if (tfil.getTestingExemptionsSpeaking().equalsIgnoreCase("1")) {
 			ss.setSpeaking("EXM");
 			po.setSpeaking("EXM");
 			isComprehensionPopulated = false;
@@ -1113,6 +1108,11 @@ public class FileGenerator {
 		} else if (tfil.getAbsentSpeaking().equalsIgnoreCase("1")) {
 			ss.setSpeaking("ABS");
 			po.setSpeaking("ABS");
+			isComprehensionPopulated = false;
+			isOralPopulated = false;
+		} else if (tfil.getTestInvalidationSpeaking().equalsIgnoreCase("1")) {
+			ss.setSpeaking("INV");
+			po.setSpeaking("INV");
 			isComprehensionPopulated = false;
 			isOralPopulated = false;
 		} else {
@@ -1125,12 +1125,7 @@ public class FileGenerator {
 			}
 		}
 
-		if (tfil.getTestInvalidationListening().equalsIgnoreCase("1")) {
-			ss.setListening("INV");
-			po.setListening("INV");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
-		} else if (tfil.getTestingExemptionsListening().equalsIgnoreCase("1")) {
+		if (tfil.getTestingExemptionsListening().equalsIgnoreCase("1")) {
 			ss.setListening("EXM");
 			po.setListening("EXM");
 			isComprehensionPopulated = false;
@@ -1138,6 +1133,11 @@ public class FileGenerator {
 		} else if (tfil.getAbsentListening().equalsIgnoreCase("1")) {
 			ss.setListening("ABS");
 			po.setListening("ABS");
+			isComprehensionPopulated = false;
+			isOralPopulated = false;
+		} else if (tfil.getTestInvalidationListening().equalsIgnoreCase("1")) {
+			ss.setListening("INV");
+			po.setListening("INV");
 			isComprehensionPopulated = false;
 			isOralPopulated = false;
 		} else {
@@ -1150,12 +1150,7 @@ public class FileGenerator {
 			}
 		}
 
-		if (tfil.getTestInvalidationReading().equalsIgnoreCase("1")) {
-			ss.setReading("INV");
-			po.setReading("INV");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
-		} else if (tfil.getTestingExemptionsReading().equalsIgnoreCase("1")) {
+		if (tfil.getTestingExemptionsReading().equalsIgnoreCase("1")) {
 			ss.setReading("EXM");
 			po.setReading("EXM");
 			isComprehensionPopulated = false;
@@ -1165,7 +1160,12 @@ public class FileGenerator {
 			po.setReading("ABS");
 			isComprehensionPopulated = false;
 			isOralPopulated = false;
-		} else {
+		} else if (tfil.getTestInvalidationReading().equalsIgnoreCase("1")) {
+			ss.setReading("INV");
+			po.setReading("INV");
+			isComprehensionPopulated = false;
+			isOralPopulated = false;
+		}  else {
 			Object[] val = treeMap.get("reading");
 			if (val != null) {
 				ss.setReading(val[1].toString());
@@ -1175,12 +1175,7 @@ public class FileGenerator {
 			}
 		}
 
-		if (tfil.getTestInvalidationWriting().equalsIgnoreCase("1")) {
-			ss.setWriting("INV");
-			po.setWriting("INV");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
-		} else if (tfil.getTestingExemptionsWriting().equalsIgnoreCase("1")) {
+		if (tfil.getTestingExemptionsWriting().equalsIgnoreCase("1")) {
 			ss.setWriting("EXM");
 			po.setWriting("EXM");
 			isComprehensionPopulated = false;
@@ -1190,7 +1185,12 @@ public class FileGenerator {
 			po.setWriting("ABS");
 			isComprehensionPopulated = false;
 			isOralPopulated = false;
-		} else {
+		} else if (tfil.getTestInvalidationWriting().equalsIgnoreCase("1")) {
+			ss.setWriting("INV");
+			po.setWriting("INV");
+			isComprehensionPopulated = false;
+			isOralPopulated = false;
+		}  else {
 			Object[] val = treeMap.get("writing");
 			if (val != null) {
 				ss.setWriting(val[1].toString());
