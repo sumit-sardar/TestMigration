@@ -142,6 +142,14 @@ public class EmetricUtil {
 	
 	public static String getFormatedString(String val, int len){
 		 if(val != null){
+			 val = String.format("%"+len+"s", val).replace(" ", "0");
+			 return val;
+		 }
+		
+		return val;
+	}
+	public static String getFormatedStringProficiency(String val, int len){
+		 if(val != null){
 			 val = String.format("%"+len+"s", val);
 			 return val;
 		 }

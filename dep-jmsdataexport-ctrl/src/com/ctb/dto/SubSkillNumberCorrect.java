@@ -1,26 +1,28 @@
 package com.ctb.dto;
 
+import com.ctb.utils.EmetricUtil;
+
 
 
 
 public class SubSkillNumberCorrect
 {
 	
-	private String speakInWords;
-	private String speakSentences;
-	private String makeConversations;
-	private String tellAStory;
-	private String listenForInformation;
-	private String listenInTheClassroom;
-	private String listenAndComprehend;
-	private String analyzeWords;
-	private String readWords;
-	private String readForUnderStanding;
-	private String useConventions;
-	private String writeAbout;
-	private String writeWhy;
-	private String writeInDetail;
-	private String unused;
+	private String speakInWords = "";
+	private String speakSentences= "";
+	private String makeConversations= "";
+	private String tellAStory= "";
+	private String listenForInformation= "";
+	private String listenInTheClassroom= "";
+	private String listenAndComprehend= "";
+	private String analyzeWords= "";
+	private String readWords= "";
+	private String readForUnderStanding= "";
+	private String useConventions= "";
+	private String writeAbout= "";
+	private String writeWhy= "";
+	private String writeInDetail= "";
+	private String unused= "";
 	public String getSpeakInWords() {
 		return speakInWords;
 	}
@@ -110,5 +112,27 @@ public class SubSkillNumberCorrect
 	}
 	public void setUnused(String unused) {
 		this.unused = unused;
+	}
+	public String toString(){
+		String val="";
+		val += EmetricUtil.getFormatedString(speakInWords, 3)
+		+EmetricUtil.getFormatedString(speakSentences, 3) 
+		+EmetricUtil.getFormatedString(makeConversations, 3) 
+		+EmetricUtil.getFormatedString(tellAStory, 3)
+		+EmetricUtil.getFormatedString(listenForInformation, 3) 
+		+EmetricUtil.getFormatedString(listenInTheClassroom, 3) 
+		+EmetricUtil.getFormatedString(listenAndComprehend, 3) 
+		+EmetricUtil.getFormatedString(analyzeWords, 3) 
+		+EmetricUtil.getFormatedString(readWords, 3) 
+		+EmetricUtil.getFormatedString(readForUnderStanding, 3) 
+		+EmetricUtil.getFormatedString(useConventions, 3) 
+		+EmetricUtil.getFormatedString(writeAbout, 3) 
+		+EmetricUtil.getFormatedString(writeWhy, 3) 
+		+EmetricUtil.getFormatedString(writeInDetail, 3) 
+		+EmetricUtil.getFormatedString(unused, 9);
+	
+
+		return val;
+		
 	}
 }
