@@ -3,6 +3,8 @@
 	<name>application-dataexportprocessor</name>
 	<comment></comment>
 	<projects>
+		<project>dep-jmsdataexport-ejb</project>
+		<project>dep-jmsdataexport-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
