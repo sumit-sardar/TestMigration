@@ -172,7 +172,7 @@ public class FileGenerator {
 
 		OrderFile orderFile = new OrderFile();
 		List<Tfil> myList = createList(orderFile);
-		String localFilePath = ExtractUtil.getDetail("irsExportdataLocalRepository");
+		String localFilePath = ExtractUtil.getDetail("oas.exportdata.filepath");
 		String fileName = customerState + "_" + testDate + "_"
 		+ customerId + "_" + orderFile.getOrgTestingProgram() + "_"
 		+ orderFile.getCustomerName().trim() + "_" + group + "_"
