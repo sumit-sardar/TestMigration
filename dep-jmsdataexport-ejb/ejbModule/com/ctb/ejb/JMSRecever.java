@@ -20,7 +20,7 @@ import com.ctb.processor.ReportingDataProcessor;
  */
 @JarSettings(createTables = JarSettings.CreateTables.CREATE_ONLY)
 @weblogic.ejbgen.MessageDriven(ejbName = "JMSRecever", 
-                               destinationJndiName = "queueoas", 
+                               destinationJndiName = "expDistributedQueue", 
                                destinationType = "javax.jms.Queue", 
                                defaultTransaction = weblogic.ejbgen.MessageDriven.DefaultTransaction.NOT_SUPPORTED, 
 	maxBeansInFreePool = "10"
@@ -37,21 +37,10 @@ public class JMSRecever extends GenericMessageDrivenBean implements
 	public void onMessage(Message msg) {
 		// IMPORTANT: Add your code here
 		try {
-			//System.out.println("JMs hello world.............");
-			/*ScheduledSessionVO scheduledSessionVO =(ScheduledSessionVO)((ObjectMessage)msg).getObject();
-			Users users = scheduledSessionVO.getUsers();
-			String userName = scheduledSessionVO.getUserName();
-			Integer userId = users.getUserIdForName(userName);*/
-			/*Object object = ((ObjectMessage)msg).getObject();
-			if (object.getClass().getName().indexOf(classExportDataVO)>0){*/
+
 			Integer object = (Integer)((ObjectMessage)msg).getObject();
-			
-				//System.out.println("JMS Emetric data world............."+object);
-				//ExportDataVO vo = (ExportDataVO)object;
-				//System.out.println("CustomerId:"+vo.getCustomerId());
-				ReportingDataProcessor processor = new ReportingDataProcessor();
-				processor.process(object);
-			/*}*/
+			ReportingDataProcessor processor = new ReportingDataProcessor();
+			processor.process(object);
 			
 		} catch (Exception e) {
 			
