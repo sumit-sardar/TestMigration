@@ -162,10 +162,8 @@ public class FileGenerator {
 		} catch (FFPojoException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -174,13 +172,17 @@ public class FileGenerator {
 
 		OrderFile orderFile = new OrderFile();
 		List<Tfil> myList = createList(orderFile);
-		String localFilePath = ExtractUtil.getDetail("oas.exportdata.filepath");
-		String fileName = localFilePath+File.separator + customerState + "_" + testDate + "_"
+		String localFilePath = ExtractUtil.getDetail("irsExportdataLocalRepository");
+		String fileName = File.separator + customerState + "_" + testDate + "_"
 		+ customerId + "_" + orderFile.getOrgTestingProgram() + "_"
 		+ orderFile.getCustomerName().trim() + "_" + group + "_"
 		+ DATAFILE + "_" + fileDateOutputFormat.format(new Date())
 		+ ".dat";
-		File file = new File(fileName);
+		if(!(new File(localFilePath)).exists()){
+			File f = new File(localFilePath);
+			f.mkdirs();
+		}
+		File file = new File(localFilePath,fileName);
 		FlatFileWriter ffWriter = null;
 		try{
 			ffWriter = new FileSystemFlatFileWriter(file, true);
@@ -191,7 +193,7 @@ public class FileGenerator {
 					new Integer(100)).substring(1, fileName.length()));
 			System.out.println("Completed Writing");
 			System.out.println("Preparing Order File");
-			prepareOrderFile(orderFile, fileName);
+			prepareOrderFile(orderFile, localFilePath, fileName);
 		} finally {
 			if(ffWriter!=null){
 				ffWriter.close();
@@ -1697,15 +1699,15 @@ public class FileGenerator {
 	}
 
 
-	private void prepareOrderFile(OrderFile orderFile, String fileName) throws IOException {
+	private void prepareOrderFile(OrderFile orderFile, String filedir, String fileName) throws IOException {
 
 		String orderFileName = fileName.substring(0, fileName.length() - 23);
 
-		orderFileName = orderFileName + "ORDERFILE_"
+		orderFileName =  "ORDERFILE_"
 		+ fileDateOutputFormat.format(new Date()) + ".csv";
 		FileWriter writer = null;
 		try {
-			writer = new FileWriter(orderFileName);
+			writer = new FileWriter(new File(filedir,orderFileName ));
 
 			writer.append("CUST_ID");
 			writer.append(',');

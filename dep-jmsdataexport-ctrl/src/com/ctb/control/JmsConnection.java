@@ -1,6 +1,9 @@
 package com.ctb.control;
 
 
+import java.util.Hashtable;
+import java.util.ResourceBundle;
+
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.jms.Queue;
@@ -14,7 +17,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import com.ctb.exception.JmsConnectionException.CustomJMSConnectionException;
-import com.ctb.utils.Constants;
 
 /**
  * This class will be taking responsibility to generate JMS connection related objects
@@ -22,6 +24,7 @@ import com.ctb.utils.Constants;
  *
  */
 
+@SuppressWarnings("unchecked")
 public abstract class JmsConnection {
 
 	private static Context jndiContext = null;
@@ -34,13 +37,34 @@ public abstract class JmsConnection {
 	 */
 
 	static {
-
+		ResourceBundle rb = null;
+		String providerurl = null;
+		String principal = null;
+		String credentials = null;
+		String jndifactory = null;
 		try {
-			jndiContext = new InitialContext ();
+			//jndiContext = new InitialContext ();
+			rb = ResourceBundle.getBundle("security");
+			providerurl = rb.getString("irsExportdataJmsProviderurl");
+			principal = rb.getString("jmsPrincipal");
+			credentials = rb.getString("jmsCredentials");
+			jndifactory = rb.getString("jndiFactory");
+
+			Hashtable env = new Hashtable();
+            env.put(Context.INITIAL_CONTEXT_FACTORY,jndifactory);
+            env.put(Context.PROVIDER_URL,providerurl);
+            env.put("java.naming.security.principal", principal);
+    	    env.put("java.naming.security.credentials", credentials);
+    	    System.out.println("env"+env);
+    	    //System.out.println("providerurl["+providerurl+"] principal["+principal+"]credentials"+credentials+"]jndifactory["+jndifactory+"]");
+            jndiContext = new InitialContext(env);
+            
 		}  catch (NamingException e) {
 			System.out.println("Could not create JNDI API context: " + e.toString());
+			System.out.println("providerurl["+providerurl+"] principal["+principal+"]credentials"+credentials+"]jndifactory["+jndifactory+"]");
 		} catch (Exception e) {
 			System.out.println("JNDI API lookup failed: " + e.toString());
+			System.out.println("providerurl["+providerurl+"] principal["+principal+"]credentials"+credentials+"]jndifactory["+jndifactory+"]");
 			e.printStackTrace();
 		}
 
@@ -58,14 +82,17 @@ public abstract class JmsConnection {
 	throws CustomJMSConnectionException{
 
 		QueueConnectionFactory queueConnectionFactory = null;
+		ResourceBundle rb = ResourceBundle.getBundle("security");
+		String irsConnectionFactory = rb.getString("irsExportdataJmsConnectionfactory");
 		try {
 
-			queueConnectionFactory = (QueueConnectionFactory) jndiContext.lookup(
-					Constants.OASConnFactory);
+			queueConnectionFactory = (QueueConnectionFactory) jndiContext.lookup(irsConnectionFactory);
 
 		} catch (NamingException e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("Could not create JNDI API context: " + e.toString());
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("JNDI API lookup failed: " + e.toString());
 		}
 
@@ -83,14 +110,18 @@ public abstract class JmsConnection {
 	private Queue getQueue () throws CustomJMSConnectionException{
 
 		Queue jmsQueue = null;
+		ResourceBundle rb = ResourceBundle.getBundle("security");
+		String irsqueue = rb.getString("irsExportdataJmsQueue");
 		try {
 
-			jmsQueue = (Queue) jndiContext.lookup(Constants.OASQueue);
+			jmsQueue = (Queue) jndiContext.lookup(irsqueue);
 
 
 		} catch (NamingException e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("Could not create JNDI API context: " + e.toString());
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("JNDI API lookup failed: " + e.toString());
 		}
 
@@ -115,8 +146,10 @@ public abstract class JmsConnection {
 			queueConnection = queueConnectionFactory.createQueueConnection();
 			
 		} catch (JMSException e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("Could not create JNDI API context: " + e.toString());
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("JNDI API lookup failed: " + e.toString());
 		}
 		
@@ -140,8 +173,10 @@ public abstract class JmsConnection {
 				queueConnection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
 			
 		} catch (JMSException e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("Could not create JNDI API context: " + e.toString());
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("JNDI API lookup failed: " + e.toString());
 		}
 		
@@ -166,8 +201,10 @@ public abstract class JmsConnection {
 			queueSender = queueSession.createSender(jmsQueue); 
 
 		} catch (JMSException e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("Could not create JNDI API context: " + e.toString());
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("JNDI API lookup failed: " + e.toString());
 		}
 
@@ -190,6 +227,7 @@ public abstract class JmsConnection {
 			if (queueConnection != null)
 				queueConnection.close();
 		} catch (JMSException e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("Queue connection exception..."+e.toString());
 		}
 
@@ -215,8 +253,10 @@ public abstract class JmsConnection {
 			closeJmsConnection (queueConnection,queueSession );
 
 		} catch (JMSException e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("Could not create JNDI API context: " + e.toString());
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new CustomJMSConnectionException ("JNDI API lookup failed: " + e.toString());
 		}
 		

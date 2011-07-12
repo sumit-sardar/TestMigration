@@ -6,11 +6,12 @@ import java.util.ResourceBundle;
 	public class ExtractUtil extends ResourceBundle {
 
 		private static ResourceBundle rb;
+		
 		static {
 			rb = ResourceBundle.getBundle("config");
 		}
 		
-		
+				
 		public static String getDetail(String key){
 			return rb.getString(key);
 			
