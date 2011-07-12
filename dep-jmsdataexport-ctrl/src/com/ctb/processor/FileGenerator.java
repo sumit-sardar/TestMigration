@@ -120,7 +120,7 @@ public class FileGenerator {
 	private String customerState = null;
 	private String testDate = null;
 
-	private HashMap<Integer, String> subSkillAreaScoreInfo = new HashMap<Integer, String>();
+	private HashMap<String, String> subSkillAreaScoreInfo = new HashMap<String, String>();
 	
 
 	
@@ -1569,7 +1569,7 @@ public class FileGenerator {
 			rs2 = ps2.executeQuery();
 			while (rs2.next()) {
 
-				subSkillAreaScoreInfo.put(rs2.getInt(1), rs2.getString(2));
+				subSkillAreaScoreInfo.put(rs2.getString(1), rs2.getString(2));
 			}
 
 		} finally {
@@ -1592,7 +1592,7 @@ public class FileGenerator {
 		}
 
 		for (Integer x : percentObtained.keySet()) {
-			subSkillName = subSkillAreaScoreInfo.get(x);
+			subSkillName = subSkillAreaScoreInfo.get(x.toString());
 
 			if (subSkillName.equalsIgnoreCase("Speak in Words")) {
 				subPercCorrect.setSpeakInWords(percentObtained.get(x)
