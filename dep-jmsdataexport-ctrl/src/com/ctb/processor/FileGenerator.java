@@ -1643,7 +1643,7 @@ public class FileGenerator {
 		tfil.setSubSkillPercentCorrect(subPercCorrect);
 		
 		for (Integer x : pointsObtained.keySet()) {
-			subSkillName = subSkillAreaScoreInfo.get(x);
+			subSkillName = subSkillAreaScoreInfo.get(x.toString());
 
 			if (subSkillName.equalsIgnoreCase("Speak in Words")) {
 				subNumCorrect.setSpeakInWords(pointsObtained.get(x)
