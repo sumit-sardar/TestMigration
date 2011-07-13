@@ -73,13 +73,13 @@ public class ProficiencyLevels
 	public String toString(){
 		
 		String val="";
-		val += EmetricUtil.getFormatedString(speaking, 1)
-		+EmetricUtil.getFormatedString(listening, 1) 
-		+EmetricUtil.getFormatedString(reading, 1) 
-		+EmetricUtil.getFormatedString(writing, 1) 
-		+EmetricUtil.getFormatedString(overall, 1) 
-		+EmetricUtil.getFormatedString(comprehension, 1) 
-		+EmetricUtil.getFormatedString(oral, 1) ;
+		val += EmetricUtil.getFormatedStringProficiency(speaking, 1)
+		+EmetricUtil.getFormatedStringProficiency(listening, 1) 
+		+EmetricUtil.getFormatedStringProficiency(reading, 1) 
+		+EmetricUtil.getFormatedStringProficiency(writing, 1) 
+		+EmetricUtil.getFormatedStringProficiency(overall, 1) 
+		+EmetricUtil.getFormatedStringProficiency(comprehension, 1) 
+		+EmetricUtil.getFormatedStringProficiency(oral, 1) ;
 
 		return val;
 		

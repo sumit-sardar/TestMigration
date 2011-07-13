@@ -113,20 +113,20 @@ public class SubSkillPercentCorrect
 	}
 	public String toString(){
 		String val="";
-		val += EmetricUtil.getFormatedString(speakInWords, 5)
-		+EmetricUtil.getFormatedString(speakSentences, 5) 
-		+EmetricUtil.getFormatedString(makeConversations, 5) 
-		+EmetricUtil.getFormatedString(tellAStory, 5)
-		+EmetricUtil.getFormatedString(listenForInformation, 5) 
-		+EmetricUtil.getFormatedString(listenInTheClassroom, 5) 
-		+EmetricUtil.getFormatedString(listenAndComprehend, 5) 
-		+EmetricUtil.getFormatedString(analyzeWords, 5) 
-		+EmetricUtil.getFormatedString(readWords, 5) 
-		+EmetricUtil.getFormatedString(readForUnderStanding, 5) 
-		+EmetricUtil.getFormatedString(useConventions, 5) 
-		+EmetricUtil.getFormatedString(writeAbout, 5) 
-		+EmetricUtil.getFormatedString(writeWhy, 5) 
-		+EmetricUtil.getFormatedString(writeInDetail, 5) 
+		val += EmetricUtil.getNumberFormatedString(speakInWords)
+		+EmetricUtil.getNumberFormatedString(speakSentences) 
+		+EmetricUtil.getNumberFormatedString(makeConversations) 
+		+EmetricUtil.getNumberFormatedString(tellAStory)
+		+EmetricUtil.getNumberFormatedString(listenForInformation) 
+		+EmetricUtil.getNumberFormatedString(listenInTheClassroom) 
+		+EmetricUtil.getNumberFormatedString(listenAndComprehend) 
+		+EmetricUtil.getNumberFormatedString(analyzeWords) 
+		+EmetricUtil.getNumberFormatedString(readWords) 
+		+EmetricUtil.getNumberFormatedString(readForUnderStanding) 
+		+EmetricUtil.getNumberFormatedString(useConventions) 
+		+EmetricUtil.getNumberFormatedString(writeAbout) 
+		+EmetricUtil.getNumberFormatedString(writeWhy) 
+		+EmetricUtil.getNumberFormatedString(writeInDetail) 
 		+EmetricUtil.getFormatedString(unused,65);
 	
 

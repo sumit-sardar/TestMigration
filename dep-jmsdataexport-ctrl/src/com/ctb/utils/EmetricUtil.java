@@ -1,6 +1,7 @@
 package com.ctb.utils;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -148,12 +149,43 @@ public class EmetricUtil {
 		
 		return val;
 	}
+	
+	public static String getFormatedNumberCorrectString(String val, int len){
+		if(val != null && val.trim().length()!=0){
+			val = String.format("%"+len+"s", val).replace(" ", "0");
+			return val;
+		}else{
+			val = "";
+			val = String.format("%"+len+"s", val);
+			return val;
+		}
+	}
+	
 	public static String getFormatedStringProficiency(String val, int len){
-		 if(val != null){
-			 val = String.format("%"+len+"s", val);
-			 return val;
-		 }
-		
+		if(val != null){
+			val = String.format("%"+len+"s", val);
+			return val;
+		}else {
+			val = "";
+			val = String.format("%"+len+"s", val);
+			return val;
+		}
+
+	}
+	
+	public static String getNumberFormatedString(String val) {
+		if (val != null && val.trim().length() != 0) {
+			DecimalFormat df = new DecimalFormat("###.0");
+			try {
+				val = df.format(Double.parseDouble(val.trim()));
+			} catch (NumberFormatException e) {
+				val = "0.0";
+			}
+		} else {
+			val = "0.0";
+		}
+
+		val = String.format("%5s", val);
 		return val;
 	}
 	

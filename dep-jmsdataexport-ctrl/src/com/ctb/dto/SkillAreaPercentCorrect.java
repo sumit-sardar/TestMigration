@@ -56,10 +56,10 @@ public class SkillAreaPercentCorrect
 	}
 	public String toString(){
 		String val="";
-		val += EmetricUtil.getFormatedString(speaking, 5)
-		+EmetricUtil.getFormatedString(listening, 5) 
-		+EmetricUtil.getFormatedString(reading, 5) 
-		+EmetricUtil.getFormatedString(writing, 5) 
+		val += EmetricUtil.getNumberFormatedString(speaking)
+		+EmetricUtil.getNumberFormatedString(listening) 
+		+EmetricUtil.getNumberFormatedString(reading) 
+		+EmetricUtil.getNumberFormatedString(writing) 
 		+EmetricUtil.getFormatedString(unused, 15);
 		
 

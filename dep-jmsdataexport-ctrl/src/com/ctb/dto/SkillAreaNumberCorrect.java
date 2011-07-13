@@ -56,11 +56,11 @@ public class SkillAreaNumberCorrect
 	}
 	public String toString(){
 		String val="";
-		val += EmetricUtil.getFormatedString(speaking, 3)
-		+EmetricUtil.getFormatedString(listening, 3) 
-		+EmetricUtil.getFormatedString(reading, 3) 
-		+EmetricUtil.getFormatedString(writing, 3) 
-		+EmetricUtil.getFormatedString(unused, 9);
+		val += EmetricUtil.getFormatedNumberCorrectString(speaking, 3)
+		+EmetricUtil.getFormatedNumberCorrectString(listening, 3) 
+		+EmetricUtil.getFormatedNumberCorrectString(reading, 3) 
+		+EmetricUtil.getFormatedNumberCorrectString(writing, 3) 
+		+EmetricUtil.getFormatedNumberCorrectString(unused, 9);
 	
 
 		return val;
