@@ -1081,7 +1081,7 @@ public class FileGenerator {
 						treeMap.put(rs.getString(1).toString().trim().toLowerCase(),val );
 
 					}else if(rs.getString(1).toString().trim().equalsIgnoreCase("reading")){
-						treeMap.put(rs.getString(1).toString().trim(),val );
+						treeMap.put(rs.getString(1).toString().trim().toLowerCase(),val );
 
 					}else if(rs.getString(1).toString().trim().equalsIgnoreCase("writing")){
 						treeMap.put(rs.getString(1).toString().trim().toLowerCase(),val );
