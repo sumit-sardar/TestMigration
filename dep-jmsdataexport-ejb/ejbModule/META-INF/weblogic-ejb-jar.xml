@@ -12,7 +12,7 @@
       <pool>
         <max-beans-in-free-pool>10</max-beans-in-free-pool>
       </pool>
-      <destination-jndi-name>queueoas</destination-jndi-name>
+      <destination-jndi-name>expDistributedQueue</destination-jndi-name>
     </message-driven-descriptor>
   </weblogic-enterprise-bean>
 </weblogic-ejb-jar>
