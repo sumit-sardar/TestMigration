@@ -175,7 +175,7 @@ public class EmetricUtil {
 	
 	public static String getNumberFormatedString(String val) {
 		if (val != null && val.trim().length() != 0) {
-			DecimalFormat df = new DecimalFormat("###.0");
+			DecimalFormat df = new DecimalFormat("##0.0");
 			try {
 				val = df.format(Double.parseDouble(val.trim()));
 			} catch (NumberFormatException e) {
