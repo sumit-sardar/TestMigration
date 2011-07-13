@@ -672,9 +672,10 @@ public class TestTicketController extends PageFlowController
             /* 51931 Deferred Defect For HighLighter*/
             if(stringToBoolean(student.getHighLighter())){
                 accommodationList.add("Highlighter");
-            }  
+            } 
+            
             //Start- added for student pacing          
-            if(stringToBoolean(student.getExtendedTimeAccom())){
+            if(convertStringToBoolean(student.getExtendedTimeAccom()) ){
                 accommodationList.add("Extended Time");
             }
             //end- added for student pacing
@@ -696,6 +697,17 @@ public class TestTicketController extends PageFlowController
         }
         return result;
     }
+    //Start- added for student pacing  
+    private boolean convertStringToBoolean(String in){
+        boolean result = true;
+        if(in == null ||
+           in.toLowerCase().equals("false") ||
+           in.toLowerCase().equals("f")     ||
+           in.equals("")){
+            result = false;
+        }
+        return result;
+    }//End- added for student pacing  
     private String getTestSessionDuration(TestAdminVO testAdmin)
     {
         int totalTime = 0;
