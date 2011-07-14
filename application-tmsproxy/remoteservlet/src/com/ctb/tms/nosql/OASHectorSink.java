@@ -33,11 +33,15 @@ import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 
-public class OASHectorSink {
+public class OASHectorSink implements OASNoSQLSink {
 
 	private static Cluster cluster;
 	
-	{
+	protected OASHectorSink () {
+		
+	}
+	
+	static {
 		CassandraHostConfigurator chc = new CassandraHostConfigurator("localhost:9160");
 		chc.setRetryDownedHosts(true);
 		chc.setRetryDownedHostsDelayInSeconds(10);
@@ -513,7 +517,7 @@ public class OASHectorSink {
 		}
 	}
 	
-	public static void putRosterData(StudentCredentials creds, RosterData rosterData) throws IOException {
+	public void putRosterData(StudentCredentials creds, RosterData rosterData) throws IOException {
 		Keyspace keyspace = HFactory.createKeyspace("AuthData", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
@@ -532,7 +536,7 @@ public class OASHectorSink {
 		//System.out.println("*****  Stored in Cassandra: " + result.get().getValue());
 	}
 	
-	public static void putManifestData(String testRosterId, Manifest manifest) throws IOException {
+	public void putManifestData(String testRosterId, Manifest manifest) throws IOException {
 		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
@@ -545,7 +549,7 @@ public class OASHectorSink {
 		mutator.insert(key, "ManifestData", HFactory.createStringColumn("manifest", manifestData));
 	}
 	
-	public static void putItemResponse(String testRosterId, Tsd tsd) throws IOException {
+	public void putItemResponse(String testRosterId, Tsd tsd) throws IOException {
 		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
@@ -561,7 +565,7 @@ public class OASHectorSink {
 		//System.out.println("##### Stored response record for key " + key + ": " + tsd.xmlText());
 	}
 	
-	public static void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException {
+	public void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException {
 		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);

@@ -14,18 +14,22 @@ import me.prettyprint.hector.api.query.QueryResult;
 
 import com.bea.xml.XmlException;
 
-public class ADSHectorSource {
+public class ADSHectorSource implements ADSNoSQLSource{
 	
 	private static Cluster cluster;
 	
-	{
+	protected ADSHectorSource () {
+		
+	}
+	
+	static {
 		CassandraHostConfigurator chc = new CassandraHostConfigurator("localhost:9160");
 		chc.setRetryDownedHosts(true);
 		chc.setRetryDownedHostsDelayInSeconds(10);
 		cluster = HFactory.getOrCreateCluster("OASCluster", chc);
 	}
 	
-	public static String getSubtest(int itemSetId, String hash) throws XmlException, IOException, ClassNotFoundException {
+	public String getSubtest(int itemSetId, String hash) throws XmlException, IOException, ClassNotFoundException {
 		String result = null;
 		Keyspace keyspace = HFactory.createKeyspace("ADS", cluster);
 		String key = itemSetId + ":" + hash;
@@ -42,7 +46,7 @@ public class ADSHectorSource {
 		return result;
 	}
 	
-	public static String getItem(int itemId, String hash) throws XmlException, IOException, ClassNotFoundException {
+	public String getItem(int itemId, String hash) throws XmlException, IOException, ClassNotFoundException {
 		String result = null;
 		Keyspace keyspace = HFactory.createKeyspace("ADS", cluster);
 		String key = itemId + ":" + hash;

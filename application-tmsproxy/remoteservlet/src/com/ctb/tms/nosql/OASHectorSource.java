@@ -28,18 +28,22 @@ import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 
-public class OASHectorSource {
+public class OASHectorSource implements OASNoSQLSource {
 	
 	private static Cluster cluster;
 	
-	{
+	protected OASHectorSource () {
+		
+	}
+	
+	static {
 		CassandraHostConfigurator chc = new CassandraHostConfigurator("localhost:9160");
 		chc.setRetryDownedHosts(true);
 		chc.setRetryDownedHostsDelayInSeconds(10);
 		cluster = HFactory.getOrCreateCluster("OASCluster", chc);
 	}	
 	
-	public static RosterData getRosterData(StudentCredentials creds) throws XmlException, IOException, ClassNotFoundException {
+	public RosterData getRosterData(StudentCredentials creds) throws XmlException, IOException, ClassNotFoundException {
 		RosterData result = new RosterData();
 		Keyspace keyspace = HFactory.createKeyspace("AuthData", cluster);
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
@@ -64,7 +68,7 @@ public class OASHectorSource {
 		return result;
 	}
 	
-	public static Manifest getManifest(String testRosterId) throws XmlException, IOException, ClassNotFoundException {
+	public Manifest getManifest(String testRosterId) throws XmlException, IOException, ClassNotFoundException {
 		Manifest manifest = null;
 		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
 		String key = testRosterId;
@@ -81,7 +85,7 @@ public class OASHectorSource {
 		return manifest;
 	}
 
-	public static Tsd[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
+	public Tsd[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
 		ArrayList<Tsd> resulta = new ArrayList<Tsd>();
 		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();

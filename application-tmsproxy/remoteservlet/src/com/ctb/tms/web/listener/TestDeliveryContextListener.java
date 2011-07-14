@@ -12,8 +12,13 @@ import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.ADSHectorSink;
 import com.ctb.tms.nosql.ADSHectorSource;
+import com.ctb.tms.nosql.ADSNoSQLSink;
+import com.ctb.tms.nosql.ADSNoSQLSource;
 import com.ctb.tms.nosql.OASHectorSink;
 import com.ctb.tms.nosql.OASHectorSource;
+import com.ctb.tms.nosql.OASNoSQLSink;
+import com.ctb.tms.nosql.OASNoSQLSource;
+import com.ctb.tms.nosql.StorageFactory;
 import com.ctb.tms.rdb.OASDBSink;
 import com.ctb.tms.rdb.OASDBSource;
 
@@ -35,27 +40,31 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	}
     
 	public void contextInitialized(ServletContextEvent sce) {
-		new OASHectorSink();
-		new OASHectorSource();
-		new ADSHectorSink();
-		new ADSHectorSource();
+		
+		OASNoSQLSource oasSource = StorageFactory.getOASSource();
+		OASNoSQLSink oasSink = StorageFactory.getOASSink();
 		
 		System.out.print("*****  Starting active roster check background thread . . .");
 		TestDeliveryContextListener.rosterMap = new ConcurrentHashMap(10000);
-		TestDeliveryContextListener.rosterList = new RosterList();
+		TestDeliveryContextListener.rosterList = new RosterList(oasSource, oasSink);
 		TestDeliveryContextListener.rosterList.start();
 		System.out.println(" started.");
 		
 		System.out.print("*****  Starting response queue persistence thread . . .");
 		TestDeliveryContextListener.rosterQueue = new ConcurrentLinkedQueue<String>();
-		TestDeliveryContextListener.responseQueue = new ResponseQueue();
+		TestDeliveryContextListener.responseQueue = new ResponseQueue(oasSource, oasSink);
 		TestDeliveryContextListener.responseQueue.start();
 		System.out.println(" started.");
 	}
 	
 	private static class RosterList extends Thread {
 		
-		public RosterList() {	
+		OASNoSQLSource oasSource;
+		OASNoSQLSink oasSink;
+		
+		public RosterList(OASNoSQLSource oasSource, OASNoSQLSink oasSink) {	
+			this.oasSource = oasSource;
+			this.oasSink = oasSink;
 		}
 		
 		public void run() {
@@ -66,7 +75,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					StudentCredentials[] creds = OASDBSource.getActiveRosters(conn);
 					for(int i=0;i<creds.length;i++) {
 						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
-						if(OASHectorSource.getRosterData(creds[i]).getAuthData() == null) {
+						if(oasSource.getRosterData(creds[i]).getAuthData() == null) {
 							if(rosterMap.get(key) == null) {
 								// Get all data for an active roster from OAS DB
 								RosterData rosterData = OASDBSource.getRosterData(conn, creds[i]);
@@ -75,8 +84,8 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 								if(rosterData != null) {
 									String lsid = rosterData.getDocument().getTmssvcResponse().getLoginResponse().getLsid();
 									String testRosterId = lsid.substring(0, lsid.indexOf(":"));
-									OASHectorSink.putRosterData(creds[i], rosterData);
-									OASHectorSink.putManifestData(testRosterId, rosterData.getManifest());
+									oasSink.putRosterData(creds[i], rosterData);
+									oasSink.putManifestData(testRosterId, rosterData.getManifest());
 									System.out.print("stored.\n");
 								} else {
 									System.out.print("NOT stored.\n");
@@ -108,7 +117,12 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	
 	private static class ResponseQueue extends Thread {
 		
-		public ResponseQueue() {	
+		OASNoSQLSource oasSource;
+		OASNoSQLSink oasSink;
+		
+		public ResponseQueue(OASNoSQLSource oasSource, OASNoSQLSink oasSink) {	
+			this.oasSource = oasSource;
+			this.oasSink = oasSink;
 		}
 		
 		public void run() {
@@ -119,11 +133,11 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					while(!rosterQueue.isEmpty()) {
 						String testRosterId = rosterQueue.poll();
 						if(testRosterId != null) {
-							Tsd[] responses = OASHectorSource.getItemResponses(testRosterId);
+							Tsd[] responses = oasSource.getItemResponses(testRosterId);
 							for(int i=0;i<responses.length;i++) {
 								Tsd tsd = responses[i];
 								OASDBSink.putItemResponse(conn, testRosterId, tsd);
-								OASHectorSink.deleteItemResponse(testRosterId, tsd.getMseq());
+								oasSink.deleteItemResponse(testRosterId, tsd.getMseq());
 							}
 						}
 					}

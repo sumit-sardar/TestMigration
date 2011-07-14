@@ -12,12 +12,11 @@ import javax.servlet.http.HttpServletResponse;
 import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lev;
-import noNamespace.AdssvcResponseDocument.AdssvcResponse.WriteToAuditFile;
 import noNamespace.AdssvcResponseDocument;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.NextSco;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.Status;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse.WriteToAuditFile;
 import noNamespace.LmsEventType;
 import noNamespace.TmssvcRequestDocument;
 import noNamespace.TmssvcRequestDocument.TmssvcRequest.LoginRequest;
@@ -30,21 +29,31 @@ import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.ADSHectorSink;
 import com.ctb.tms.nosql.ADSHectorSource;
+import com.ctb.tms.nosql.ADSNoSQLSink;
+import com.ctb.tms.nosql.ADSNoSQLSource;
 import com.ctb.tms.nosql.OASHectorSink;
 import com.ctb.tms.nosql.OASHectorSource;
+import com.ctb.tms.nosql.OASNoSQLSink;
+import com.ctb.tms.nosql.OASNoSQLSource;
+import com.ctb.tms.nosql.StorageFactory;
 import com.ctb.tms.rdb.ADSDBSource;
 import com.ctb.tms.web.listener.TestDeliveryContextListener;
 
 public class TMSServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	
+	OASNoSQLSource oasSource = StorageFactory.getOASSource();
+	OASNoSQLSink oasSink = StorageFactory.getOASSink();
+	ADSNoSQLSource adsSource = StorageFactory.getADSSource();
+	ADSNoSQLSink adsSink = StorageFactory.getADSSink();
 
 	public TMSServlet() {
 		super();
 	}
 
     public void init() throws ServletException {
-        // do nothing
+		// do nothing
     }
 
 	public void destroy() {
@@ -140,7 +149,7 @@ public class TMSServlet extends HttpServlet {
 	        saveResponse.getTsdArray(i).setStatus(Status.OK);
 		    
 		    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
-		    	OASHectorSink.putItemResponse(rosterId, tsd);
+		    	oasSink.putItemResponse(rosterId, tsd);
 
 		    }
 		    
@@ -153,7 +162,7 @@ public class TMSServlet extends HttpServlet {
 			    	try {
 			    		// test events
 				    	NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
-				    	Manifest manifest = OASHectorSource.getManifest(rosterId);
+				    	Manifest manifest = oasSource.getManifest(rosterId);
 				    	ManifestData[] manifestData = manifest.getManifest();
 				    	int nextScoIndex = 0;
 				    	for(int j=0;j<manifestData.length;j++) {
@@ -194,7 +203,7 @@ public class TMSServlet extends HttpServlet {
 			creds.setPassword(lr.getPassword());
 			creds.setAccesscode(lr.getAccessCode());
 		}
-		RosterData rd = OASHectorSource.getRosterData(creds);
+		RosterData rd = oasSource.getRosterData(creds);
 		// TODO: handle restart case by populating restart data from Cassandra-stored item responses
 		return rd.getLoginDocument().xmlText();
 	}
@@ -206,7 +215,7 @@ public class TMSServlet extends HttpServlet {
 		
 		int subtestId = (new Integer(request.getGetSubtest().getSubtestid())).intValue();
 		String hash = request.getGetSubtest().getHash();
-		String subtest = ADSHectorSource.getSubtest(subtestId, hash);
+		String subtest = adsSource.getSubtest(subtestId, hash);
 		if(subtest == null) {
 			Connection conn = null;
 			try {
@@ -217,7 +226,7 @@ public class TMSServlet extends HttpServlet {
 					conn.close();
 				}
 			}
-			ADSHectorSink.putSubtest(subtestId, hash, subtest);
+			adsSink.putSubtest(subtestId, hash, subtest);
 		}
 		return subtest;
 	}
@@ -229,7 +238,7 @@ public class TMSServlet extends HttpServlet {
 		
 		int itemId = (new Integer(request.getDownloadItem().getItemid())).intValue();
 		String hash = request.getDownloadItem().getHash();
-		String subtest = ADSHectorSource.getItem(itemId, hash);
+		String subtest = adsSource.getItem(itemId, hash);
 		if(subtest == null) {
 			Connection conn = null;
 			try {
@@ -240,7 +249,7 @@ public class TMSServlet extends HttpServlet {
 					conn.close();
 				}
 			}
-			ADSHectorSink.putItem(itemId, hash, subtest);
+			adsSink.putItem(itemId, hash, subtest);
 		}
 		return subtest;
 	}

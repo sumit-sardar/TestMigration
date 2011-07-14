@@ -26,11 +26,15 @@ import me.prettyprint.hector.api.ddl.ComparatorType;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 
-public class ADSHectorSink {
+public class ADSHectorSink implements ADSNoSQLSink {
 
 	private static Cluster cluster;
 	
-	{
+	protected ADSHectorSink () {
+		
+	}
+	
+	static {
 		CassandraHostConfigurator chc = new CassandraHostConfigurator("localhost:9160");
 		chc.setRetryDownedHosts(true);
 		chc.setRetryDownedHostsDelayInSeconds(10);
@@ -285,7 +289,7 @@ public class ADSHectorSink {
 		}
 	}
 	
-	public static void putSubtest(int itemSetId, String hash, String xml) throws IOException {
+	public void putSubtest(int itemSetId, String hash, String xml) throws IOException {
 		Keyspace keyspace = HFactory.createKeyspace("ADS", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
@@ -294,7 +298,7 @@ public class ADSHectorSink {
 		mutator.insert(key, "Subtests", HFactory.createStringColumn("subtestXML", xml));
 	}
 	
-	public static void putItem(int itemId, String hash, String xml) throws IOException {
+	public void putItem(int itemId, String hash, String xml) throws IOException {
 		Keyspace keyspace = HFactory.createKeyspace("ADS", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
