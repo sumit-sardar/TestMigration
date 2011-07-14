@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,8 +26,10 @@ import org.ffpojo.file.writer.FlatFileWriter;
 import com.ctb.dto.Accomodations;
 import com.ctb.dto.CustomerDemographic;
 import com.ctb.dto.CustomerDemographicValue;
+import com.ctb.dto.ItemResponsesGRT;
 import com.ctb.dto.OrderFile;
 import com.ctb.dto.ProficiencyLevels;
+import com.ctb.dto.RostersItem;
 import com.ctb.dto.ScaleScores;
 import com.ctb.dto.SkillAreaNumberCorrect;
 import com.ctb.dto.SkillAreaPercentCorrect;
@@ -67,51 +70,70 @@ public class FileGenerator {
 
 	private static String testRosterDetails = " select distinct siss.VALIDATION_STATUS as validationStatus,"
 		+ " siss.ITEM_SET_ORDER as itemSetOrder,siss.EXEMPTIONS as testExemptions,"
-		+ " siss.ABSENT as absent,iss.item_set_name as itemSetName from student_item_set_status siss,"
+		+ " siss.ABSENT as absent,decode (iss.item_set_name,'HABLANDO','Speaking','ESCUCHANDO', 'Listening','LECTURA','Reading','ESCRITURA','Writing',iss.item_set_name) as itemSetName from student_item_set_status siss,"
 		+ " test_roster ros, item_set iss where iss.item_set_id = siss.item_set_id and "
 		+ " siss.test_roster_id = ros.test_roster_id and ros.student_id = ? "
 		+ " and ros.test_roster_id = ? order by siss.item_set_order";
 
-	private static String scoreSkilAreaSQL = "select careadim.name as name,    careafct.scale_score as scale_score,     careafct.proficency_level as proficency_level, " 
-		+" careafct.points_obtained as points_obtained,     careafct.percent_obtained as percent_obtained"
-		+" from laslink_content_area_fact careafct, content_area_dim careadim "
-		+" where careafct.content_areaid = careadim.content_areaid"
-		+" and content_area_type = 'LL CONTENT AREA'"
-		+" and careafct.studentid = :studentId "
-		+" and careafct.sessionid = :sessionId";
+	private static String scoreSkilAreaSQL = "select careadim.name as name,    careafct.scale_score as scale_score,     careafct.proficency_level as proficency_level, "
+		+ " careafct.points_obtained as points_obtained,     careafct.percent_obtained as percent_obtained"
+		+ " from laslink_content_area_fact careafct, content_area_dim careadim "
+		+ " where careafct.content_areaid = careadim.content_areaid"
+		+ " and content_area_type = 'LL CONTENT AREA'"
+		+ " and careafct.studentid = :studentId "
+		+ " and careafct.sessionid = :sessionId";
 
-	private static String scoreSkilAreaOverAllSQL = " Select compfact.scale_score, compfact.proficency_level " +
-	"from laslink_composite_fact compfact  " +
-	"where compfact.studentid = :studentId " +
-	"and compfact.sessionid = :sessionId";
-	private String customerDemographicsql = "select this_.customer_demographic_id as customer_demographic_id, " +
-			" this_.customer_id as customer_id, this_.label_name  as label_name  " +
-			"from customer_demographic this_ where this_.customer_id = ?";
-	private String customerDemographicsqlWithLevel = "select this_.customer_demographic_id as customer_demographic_id, " +
-		" this_.customer_id as customer_id, this_.label_name  as label_name  from customer_demographic this_ " +
-		"where this_.customer_id = ? and label_name = 'Accommodations' ";
-	private String customersql = "select STATEPR as state,CONTACT_EMAIL as email, CONTACT_PHONE as phone,CONTACT_NAME as contact from Customer where CUSTOMER_ID = ? "; 
-	private String testRosterSql =  " select this_.TEST_ROSTER_ID    as TEST_ROSTER_ID, this_.ACTIVATION_STATUS  as ACTIVATION_STATUS,   this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS," +
-			"  this_.CUSTOMER_ID            as CUSTOMER_ID, this_.STUDENT_ID  as STUDENT_ID, this_.TEST_ADMIN_ID   as TEST_ADMIN_ID  " +
-			" from TEST_ROSTER this_  " +
-			"where this_.CUSTOMER_ID = ?  and this_.ACTIVATION_STATUS = 'AC' " +
-			"and this_.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')";
-	
+	private static String scoreSkilAreaOverAllSQL = " Select compfact.scale_score, compfact.proficency_level "
+		+ "from laslink_composite_fact compfact  "
+		+ "where compfact.studentid = :studentId "
+		+ "and compfact.sessionid = :sessionId";
+	private String customerDemographicsql = "select this_.customer_demographic_id as customer_demographic_id, "
+		+ " this_.customer_id as customer_id, this_.label_name  as label_name  "
+		+ "from customer_demographic this_ where this_.customer_id = ?";
+	private String customerDemographicsqlWithLevel = "select this_.customer_demographic_id as customer_demographic_id, "
+		+ " this_.customer_id as customer_id, this_.label_name  as label_name  from customer_demographic this_ "
+		+ "where this_.customer_id = ? and label_name = 'Accommodations' ";
+	private String customersql = "select STATEPR as state,CONTACT_EMAIL as email, CONTACT_PHONE as phone,CONTACT_NAME as contact from Customer where CUSTOMER_ID = ? ";
+	private String testRosterSql = " select this_.TEST_ROSTER_ID    as TEST_ROSTER_ID, this_.ACTIVATION_STATUS  as ACTIVATION_STATUS,   this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS,"
+		+ "  this_.CUSTOMER_ID            as CUSTOMER_ID, this_.STUDENT_ID  as STUDENT_ID, this_.TEST_ADMIN_ID   as TEST_ADMIN_ID  "
+		+ " from TEST_ROSTER this_  "
+		+ "where this_.CUSTOMER_ID = ?  and this_.ACTIVATION_STATUS = 'AC' "
+		+ "and this_.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')";
+
 	private String studentSql = "  select student0_.STUDENT_ID   as STUDENT_ID, student0_.FIRST_NAME   as FIRST_NAME,  student0_.LAST_NAME    as LAST_NAME,  student0_.MIDDLE_NAME  as MIDDLE_NAME,  student0_.BIRTHDATE    as BIRTHDATE,  student0_.GENDER       as GENDER,  student0_.GRADE  as GRADE0,   student0_.CUSTOMER_ID  as CUSTOMER_ID,   student0_.TEST_PURPOSE as TEST_PURPOSE,   student0_.EXT_PIN1  as EXT_PIN1  from student student0_   where student0_.STUDENT_ID = ? ";
-		
+
 	private String studentContactSql = " select studentcon0_.STUDENT_ID  as STUDENT_ID, studentcon0_.STUDENT_CONTACT_ID as STUDENT_CONTACT_ID, studentcon0_.CITY  as CITY,   studentcon0_.STATEPR  as STATEPR,   studentcon0_.STUDENT_ID  as STUDENT_ID  from STUDENT_CONTACT studentcon0_  where studentcon0_.STUDENT_ID = ?";
-	
+
 	private String studentDemographicSql = " select STUDENT_DEMOGRAPHIC_DATA_ID , CUSTOMER_DEMOGRAPHIC_ID , VALUE_NAME from student_demographic_data sdd where sdd.student_id = ? ";
-		
-	private String customerDemographiValuecsql="select value_name,customer_demographic_id  from customer_demographic_value  where customer_demographic_id =?";
-	private String subSkillItemAreaInformation = "select tad.product_id || iset.item_set_id subskill_id,"
+
+	private String customerDemographiValuecsql = "select value_name,customer_demographic_id  from customer_demographic_value  where customer_demographic_id =?";
+	private String subSkillItemAreaInformation1 = "select tad.product_id || iset.item_set_id subskill_id,"
 		+ " iset.item_set_name from test_admin tad,product,item_set_category icat,item_set iset"
 		+ " where tad.test_admin_id = ? and icat.item_set_category_level = 4 and tad.product_id = product.product_id"
 		+ " and product.parent_product_id = icat.framework_product_id and iset.item_set_category_id = icat.item_set_category_id";
 
+	private String subSkillItemAreaInformation = "select tad.product_id || iset.item_set_id subskill_id,iset.item_set_name, "
+		+ " iset1.item_set_name itemCategory from test_admin tad, product, item_set_category icat, item_set iset,item_set iset1,"
+		+ " item_set_parent isp where tad.test_admin_id = ? and icat.item_set_category_level = 4 and"
+		+ " tad.product_id = product.product_id and product.parent_product_id = icat.framework_product_id"
+		+ " and iset.item_set_category_id = icat.item_set_category_id and isp.item_set_id = iset.item_set_id"
+		+ " and iset1.item_set_id = isp.parent_item_set_id";
+
 	private String subSkillIrsInformation = "select sec_objid, sessionid, percent_obtained, points_obtained  from laslink_sec_obj_fact "
 		+ " where studentid = ? and sessionid = ?";
-	
+
+	private String rosterAllItemDetails = " select distinct item.item_id as oasItemId,   tdisi.item_sort_order as itemIndex,   item.item_type as itemType,   item.correct_answer as itemCorrectResponse,   td.item_set_id as subtestId,   td.item_set_name as subtestName "
+		+ " from   item,   item_set sec,   item_Set_category seccat,   item_set_ancestor secisa,   item_Set_item secisi,   item_set td,   item_set_ancestor tdisa,   item_set_item tdisi,   datapoint dp,   test_roster ros,   test_Admin adm,   test_catalog tc,   product prod "
+		+ " where   ros.test_roster_id = ?   and adm.test_admin_id = ros.test_admin_id   and tc.test_catalog_id = adm.test_catalog_id   and prod.product_id = tc.product_id   and item.ACTIVATION_STATUS = 'AC'   and tc.ACTIVATION_STATUS = 'AC'  "
+		+ " and sec.item_Set_id = secisa.ancestor_item_Set_id   and sec.item_set_type = 'RE'   and secisa.item_set_id = secisi.item_Set_id   and item.item_id = secisi.item_id   and tdisi.item_id = item.item_id   and td.item_set_id = tdisi.item_set_id   and td.item_set_type = 'TD' "
+		+ " and tdisa.item_set_id = td.item_set_id   and adm.item_set_id = tdisa.ancestor_item_set_id   and seccat.item_Set_category_id = sec.item_set_category_id   and seccat.item_set_category_level = prod.sec_scoring_item_Set_level   and dp.item_id = item.item_id   and td.sample = 'F' "
+		+ " AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL')   and seccat.framework_product_id = prod.PARENT_PRODUCT_ID group by   sec.item_set_id,   item.item_id,   tdisi.item_sort_order,   item.item_type,   item.correct_answer,   td.item_set_id,   td.item_set_name   "
+		+ " order by   td.item_set_id,   tdisi.item_sort_order";
+	private String rosterAllSRItemsResponseDetails = " select irp.item_id, irp.response from item_response irp,  (select item_id, item_set_id, max(response_seq_num) maxseqnum   from item_response   where test_roster_id = ?  and response is not null  group by item_id, item_set_id ) derived  "
+		+ " where irp.item_id = derived.item_id    and irp.item_set_id = derived.item_set_id    and irp.response_seq_num = derived.maxseqnum    and irp.test_roster_id = ? ";
+	private String rosterAllCRItemsResponseDetails = " select distinct response.item_id,points    from item_response_points irps,  (select irp.item_id, irp.item_response_id     from item_response irp,  (select item_id,    item_set_id,     test_roster_id,    max(response_seq_num) maxseqnum  "
+		+ "  from item_response  where test_roster_id = ?   and response is null     group by item_id, item_set_id, test_roster_id) derived   where irp.item_id = derived.item_id     and irp.item_set_id = derived.item_set_id   and irp.response_seq_num = derived.maxseqnum    and irp.test_roster_id = derived.test_roster_id    and irp.test_roster_id = ? ) response   where response.item_response_id = irps.item_response_id ";
+
 	private int districtElementNumber = 0;
 	private int schoolElementNumber = 0;
 	private int classElementNumber = 0;
@@ -120,16 +142,19 @@ public class FileGenerator {
 	private String customerState = null;
 	private String testDate = null;
 
+	private static final String blank = "";
 	private HashMap<String, String> subSkillAreaScoreInfo = new HashMap<String, String>();
-	
+	private HashMap<String, String> subSkillAreaItemCategory = new HashMap<String, String>();
 
-	
 	private static final String group = "GOAS";
 	private static final String DATAFILE = "DATAFILE";
+	private boolean isInvalidSpeaking = false;
+	private boolean isInvalidListeing = false;
+	private boolean isInvalidReading = false;
+	private boolean isInvalidWriting = false;
 
 	private Integer customerId = new Integer(ExtractUtil
 			.getDetail("oas.customerId"));
-	//private static Integer customerId = null;
 
 	public static void main(String[] args) {
 		FileGenerator example = new FileGenerator();
@@ -182,7 +207,7 @@ public class FileGenerator {
 			File f = new File(localFilePath);
 			f.mkdirs();
 		}
-		File file = new File(localFilePath,fileName);
+		File file = new File(localFilePath, fileName);
 		FlatFileWriter ffWriter = null;
 		try{
 			ffWriter = new FileSystemFlatFileWriter(file, true);
@@ -224,7 +249,7 @@ public class FileGenerator {
 		Integer studentCount = 0;
 		Connection oascon = null;
 		Connection irscon = null;
-		
+
 		try {
 			oascon = SqlUtil.openOASDBcon();
 			irscon = SqlUtil.openIRSDBcon();
@@ -242,66 +267,126 @@ public class FileGenerator {
 						.getLabelName());
 			}
 
-			myrosterList= getTestRoster(oascon);
+			myrosterList = getTestRoster(oascon);
 			populateCustomer(oascon, orderFile);
 			for (TestRoster roster : myrosterList) {
 				Tfil tfil = new Tfil();
-	
+
 				Student st = roster.getStudent();
-		
 
 				setStudentList(tfil, st);
 
 				// Accomodations
-				Accomodations accomodations = createAccomodations(st
+			Accomodations accomodations = createAccomodations(st
 						.getStudentDemographic(), setAccomodation,
 						customerDemographic, tfil);
 				tfil.setAccomodations(accomodations);
 
 				tfil.setModelLevel(customerModelLevelValue);
 				tfil.setState(this.customerState);
-
+				//System.out.println("roster id "+ roster.getTestRosterId() +" : : "+ roster.getTestAdminId());
 				// org node
 				createOrganization(oascon, tfil, roster.getStudentId(),
 						districtMap, schoolMap, classMap, orderFile);
 				// create test Session
-				createTestSessionDetails(oascon, tfil, roster
-						.getTestRosterId(), orderFile);
+				createTestSessionDetails(oascon, tfil,
+						roster.getTestRosterId(), orderFile);
 				// create studentItemSetstatus
 				createStudentItemStatusDetails(oascon, tfil, roster
 						.getTestRosterId(), roster.getStudentId());
 
 				// added for Skill Area Score
-				createSkillAreaScoreInformation(irscon,tfil, roster);
-				
-				createSubSkillAreaScoreInformation(oascon,irscon, tfil, roster);
+				createSkillAreaScoreInformation(irscon, tfil, roster);
 
+				createSubSkillAreaScoreInformation(oascon, irscon, tfil, roster);
+				//getItemResponseGrt(oascon, roster);
 				tfilList.add(tfil);
 				studentCount++;
 			}
 			/** ***************** */
 			orderFile.setCaseCount(studentCount.toString());
-			//oasSession.close();
+
 		} finally {
 			SqlUtil.close(oascon);
 			SqlUtil.close(irscon);
-			
+
 		}
 		// throw again the first exception
 		return tfilList;
 	}
 
-	
-	
-	private List<TestRoster> getTestRoster(Connection con) throws SQLException {
-		PreparedStatement ps = null ;
+	private void getItemResponseGrt(Connection oascon, TestRoster roster)
+	throws SQLException {
+		Map<String, TreeMap<String, TreeMap<String, LinkedList<RostersItem>>>> allitem = new TreeMap<String, TreeMap<String, TreeMap<String, LinkedList<RostersItem>>>>();
+		PreparedStatement ps = null;
 		ResultSet rs = null;
-		 List<TestRoster> rosterList = new ArrayList<TestRoster>();
-		try{
+		Map<String, RostersItem> srValueMap = new TreeMap<String, RostersItem>();
+		Map<String, RostersItem> crValueMap = new TreeMap<String, RostersItem>();
+		try {
+			ps = oascon.prepareStatement(rosterAllItemDetails);
+			ps.setInt(1, roster.getTestRosterId());
+			rs = ps.executeQuery();
+			rs.setFetchSize(500);
+			while (rs.next()) {
+
+				RostersItem item = new RostersItem();
+				item.setItemId(rs.getString(1));
+				item.setItemIndx(rs.getString(2));
+				item.setItemType(rs.getString(3));
+				item.setItemResponse(rs.getString(4));
+				// skiping 5th entry as we do not required
+				item.setItemDescriptio(rs.getString(6));
+				populateMap(allitem, item, srValueMap, crValueMap);
+
+			}
+
+			// System.out.println("populateCustomer");
+		} finally {
+			SqlUtil.close(ps, rs);
+		}
+
+	}
+
+	private void populateMap(
+			Map<String, TreeMap<String, TreeMap<String, LinkedList<RostersItem>>>> allitem,
+			RostersItem item, Map<String, RostersItem> srValueMap,
+			Map<String, RostersItem> crValueMap) {
+		TreeMap<String, RostersItem> val = null;
+		String itemDesc = item.getItemDescriptio().toUpperCase();
+		String itemtype = item.getItemType().toUpperCase();
+
+		if (allitem.get(itemDesc) != null) {
+			TreeMap<String, TreeMap<String, LinkedList<RostersItem>>> descmap = allitem
+			.get(itemDesc);
+			if (descmap.get(itemtype) != null) {
+
+			} else {
+				TreeMap<String, RostersItem> innerval = new TreeMap<String, RostersItem>();
+			}
+
+		} else {
+			TreeMap<String, TreeMap<String, LinkedList<RostersItem>>> descmap = new TreeMap<String, TreeMap<String, LinkedList<RostersItem>>>();
+			TreeMap<String, LinkedList<RostersItem>> typeMap = new TreeMap<String, LinkedList<RostersItem>>();
+			LinkedList<RostersItem> roster = new LinkedList<RostersItem>();
+			roster.add(item);
+			typeMap.put(itemtype, roster);
+			descmap.put(itemtype, typeMap);
+			allitem.put(itemDesc, descmap);
+
+		}
+
+	}
+
+	private List<TestRoster> getTestRoster(Connection con) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<TestRoster> rosterList = new ArrayList<TestRoster>();
+		try {
 			ps = con.prepareStatement(testRosterSql);
 			ps.setInt(1, customerId);
-			rs = ps.executeQuery(); rs.setFetchSize(500);
-			while (rs.next()){
+			rs = ps.executeQuery();
+			rs.setFetchSize(500);
+			while (rs.next()) {
 				TestRoster ros = new TestRoster();
 				ros.setTestRosterId(rs.getInt(1));
 				ros.setActivationStatus(rs.getString(2));
@@ -309,26 +394,27 @@ public class FileGenerator {
 				ros.setCustomerId(customerId);
 				ros.setStudentId(rs.getInt(5));
 				ros.setTestAdminId(rs.getInt(6));
-				ros.setStudent(getStudent(con,rs.getInt(5))); 
+				ros.setStudent(getStudent(con, rs.getInt(5)));
 				rosterList.add(ros);
 			}
-			
-			//System.out.println("populateCustomer");
-		}finally {
+
+			// System.out.println("populateCustomer");
+		} finally {
 			SqlUtil.close(ps, rs);
 		}
 		return rosterList;
 	}
 
-	private Student getStudent(Connection con, int studentId) throws SQLException {
+	private Student getStudent(Connection con, int studentId)
+	throws SQLException {
 		Student std = null;
-		PreparedStatement ps = null ;
-		ResultSet rs = null;		
-		try{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
 			ps = con.prepareStatement(studentSql);
 			ps.setInt(1, studentId);
 			rs = ps.executeQuery();
-			if (rs.next()){
+			if (rs.next()) {
 				std = new Student();
 				std.setStudentId(studentId);
 				std.setFirstName(rs.getString(2));
@@ -340,16 +426,18 @@ public class FileGenerator {
 				std.setCustomerId(customerId);
 				std.setTestPurpose(rs.getString(9));
 				std.setExtStudentId(rs.getString(10));
-				std.setStudentContact(getStudentContact(con,studentId ));
-				std.setStudentDemographic(getStudentDemographic(con,studentId ));
-	
+				std.setStudentContact(getStudentContact(con, studentId));
+				std
+				.setStudentDemographic(getStudentDemographic(con,
+						studentId));
+
 			}
-			
-			//System.out.println("getStudent");
-		}finally {
+
+			// System.out.println("getStudent");
+		} finally {
 			SqlUtil.close(ps, rs);
 		}
-		
+
 		return std;
 	}
 
@@ -372,7 +460,7 @@ public class FileGenerator {
 				studentDemographicSet.add(studentDemographic);
 			}
 
-			//System.out.println("getStudentDemographic:"+studentId+"::"+studentDemographicSet);
+			// System.out.println("getStudentDemographic:"+studentId+"::"+studentDemographicSet);
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -380,136 +468,142 @@ public class FileGenerator {
 		return studentDemographicSet;
 	}
 
-	private Set<StudentContact> getStudentContact(Connection con, int studentId) throws SQLException {
+	private Set<StudentContact> getStudentContact(Connection con, int studentId)
+	throws SQLException {
 		Set<StudentContact> studentContact = new HashSet<StudentContact>();
-		PreparedStatement ps = null ;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
-		try{
+		try {
 			ps = con.prepareStatement(studentContactSql);
 			ps.setInt(1, studentId);
 			rs = ps.executeQuery();
-			while (rs.next()){
+			while (rs.next()) {
 				StudentContact sdentCon = new StudentContact();
 				sdentCon.setStudentContactId(rs.getInt(2));
 				sdentCon.setCity(rs.getString(3));
 				sdentCon.setState(rs.getString(4));
 				studentContact.add(sdentCon);
-	
+
 			}
-			
-			//System.out.println("getstudentContact");
-		}finally {
+
+			// System.out.println("getstudentContact");
+		} finally {
 			SqlUtil.close(ps, rs);
 		}
-		
+
 		return studentContact;
 	}
 
-	private void populateCustomer(Connection con, OrderFile orderFile) throws SQLException {
-		PreparedStatement ps = null ;
+	private void populateCustomer(Connection con, OrderFile orderFile)
+	throws SQLException {
+		PreparedStatement ps = null;
 		ResultSet rs = null;
-		try{
+		try {
 			ps = con.prepareStatement(customersql);
 			ps.setInt(1, customerId);
 			rs = ps.executeQuery();
-			while (rs.next()){
+			while (rs.next()) {
 				this.customerState = rs.getString(1);
 				orderFile.setCustomerStateAbbrevation(rs.getString(1));
-				orderFile.setCustomerEmail(EmetricUtil.truncate(rs.getString(2), new Integer(64)));
+				orderFile.setCustomerEmail(EmetricUtil.truncate(
+						rs.getString(2), new Integer(64)));
 				orderFile.setCustomerPhone(EmetricUtil.truncate(EmetricUtil
 						.convertPhoneNumber(rs.getString(3)), new Integer(21)));
-				orderFile.setCustomerContact(EmetricUtil.truncate(rs.getString(4), new Integer(64)));
+				orderFile.setCustomerContact(EmetricUtil.truncate(rs
+						.getString(4), new Integer(64)));
 			}
-			
-			//System.out.println("populateCustomer");
-		}finally {
+
+			// System.out.println("populateCustomer");
+		} finally {
 			SqlUtil.close(ps, rs);
 		}
 	}
 
-	private List<CustomerDemographic> getCustomerDemographic(Connection con) throws SQLException  {
+	private List<CustomerDemographic> getCustomerDemographic(Connection con)
+	throws SQLException {
 		List<CustomerDemographic> myList = new ArrayList<CustomerDemographic>();
-		/*Criteria crit = session.createCriteria(CustomerDemographic.class);
-		crit.add(Expression.eq("customerId", customerId));
-		myList = crit.list();*/
-		PreparedStatement ps = null ;
+		/*
+		 * Criteria crit = session.createCriteria(CustomerDemographic.class);
+		 * crit.add(Expression.eq("customerId", customerId)); myList =
+		 * crit.list();
+		 */
+		PreparedStatement ps = null;
 		ResultSet rs = null;
-		try{
+		try {
 			ps = con.prepareStatement(customerDemographicsql);
 			ps.setInt(1, customerId);
 			rs = ps.executeQuery();
-			while (rs.next()){
+			while (rs.next()) {
 				CustomerDemographic cd = new CustomerDemographic();
 				cd.setCustomerDemographicId(rs.getInt(1));
 				cd.setCustomerId(rs.getInt(2));
 				cd.setLabelName(rs.getString(3));
-				cd.setCustomerDemographicValue(getCustomerDemographicValue(con, rs.getInt(1)));
-				myList.add(cd)	;
+				cd.setCustomerDemographicValue(getCustomerDemographicValue(con,
+						rs.getInt(1)));
+				myList.add(cd);
 			}
-			
-			//System.out.println("getCustomerDemographic:"+myList);
-		}finally {
+
+			// System.out.println("getCustomerDemographic:"+myList);
+		} finally {
 			SqlUtil.close(ps, rs);
 		}
-		
+
 		return myList;
 	}
-	
-	
 
-	private Set<CustomerDemographicValue> getCustomerDemographicValue(Connection con, int customerDemographicId) throws SQLException {
-		PreparedStatement ps = null ;
+	private Set<CustomerDemographicValue> getCustomerDemographicValue(
+			Connection con, int customerDemographicId) throws SQLException {
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Set<CustomerDemographicValue> customerDemographicValue = new HashSet<CustomerDemographicValue>();
-		try{
+		try {
 			ps = con.prepareStatement(customerDemographiValuecsql);
 			ps.setInt(1, customerDemographicId);
 			rs = ps.executeQuery();
-			while (rs.next()){
+			while (rs.next()) {
 				CustomerDemographicValue cdv = new CustomerDemographicValue();
 				cdv.setValueName(rs.getString(1));
 				cdv.setCustomerDemographicId(rs.getInt(2));
 				customerDemographicValue.add(cdv);
 			}
-			
-			
-			//System.out.println("customerDemographicValue");
-		}finally {
+
+			// System.out.println("customerDemographicValue");
+		} finally {
 			SqlUtil.close(ps, rs);
 		}
-		
+
 		return customerDemographicValue;
-		
+
 	}
 
-	private List<CustomerDemographic> getCustomerLeveledDemographicValue(Connection con) throws SQLException {
+	private List<CustomerDemographic> getCustomerLeveledDemographicValue(
+			Connection con) throws SQLException {
 
 		List<CustomerDemographic> myList = new ArrayList<CustomerDemographic>();
-		PreparedStatement ps = null ;
-		ResultSet rs = null ;
-		try{
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
 			ps = con.prepareStatement(customerDemographicsqlWithLevel);
 			ps.setInt(1, customerId);
 			rs = ps.executeQuery();
-			while (rs.next()){
+			while (rs.next()) {
 				CustomerDemographic cd = new CustomerDemographic();
-				
+
 				cd.setCustomerDemographicId(rs.getInt(1));
 				cd.setCustomerId(rs.getInt(2));
 				cd.setLabelName(rs.getString(3));
-				cd.setCustomerDemographicValue(getCustomerDemographicValue(con, rs.getInt(1)));
-				myList.add(cd)	;
+				cd.setCustomerDemographicValue(getCustomerDemographicValue(con,
+						rs.getInt(1)));
+				myList.add(cd);
 			}
-			
-			//System.out.println("myList");
-		}finally {
+
+			// System.out.println("myList");
+		} finally {
 			SqlUtil.close(ps, rs);
-			
+
 		}
-		
+
 		return myList;
-		
-		
 
 	}
 
@@ -576,7 +670,8 @@ public class FileGenerator {
 		}
 		for (CustomerDemographic customerDem : cd) {
 			set2.put(customerDem.getLabelName(), customerDem);
-			//System.out.println("customerDem.getLabelName:: "	+ customerDem.getLabelName());
+			// System.out.println("customerDem.getLabelName:: " +
+			// customerDem.getLabelName());
 		}
 
 		for (Map.Entry<String, StudentDemographic> entry : set1.entrySet()) {
@@ -663,11 +758,13 @@ public class FileGenerator {
 				tfil.setEthinicity("8");
 			} else if (studentDemo.getValueName().startsWith("mexicano")) {
 				tfil.setEthinicity("1");
-			} else if (studentDemo.getValueName().startsWith("mexicano-americano")) {
+			} else if (studentDemo.getValueName().startsWith(
+			"mexicano-americano")) {
 				tfil.setEthinicity("2");
 			} else if (studentDemo.getValueName().startsWith("cubano")) {
 				tfil.setEthinicity("3");
-			} else if (studentDemo.getValueName().startsWith("cubano-americano")) {
+			} else if (studentDemo.getValueName()
+					.startsWith("cubano-americano")) {
 				tfil.setEthinicity("4");
 			} else if (studentDemo.getValueName().startsWith("puertorrique")) {
 				tfil.setEthinicity("5");
@@ -677,7 +774,7 @@ public class FileGenerator {
 				tfil.setEthinicity("7");
 			} else if (studentDemo.getValueName().startsWith("sudamericano")) {
 				tfil.setEthinicity("8");
-			}else if (studentDemo.getValueName().startsWith("otro")) {
+			} else if (studentDemo.getValueName().startsWith("otro")) {
 				tfil.setEthinicity("9");
 			}
 		}
@@ -744,11 +841,12 @@ public class FileGenerator {
 	}
 
 	private void generateModelLevel(Connection conn) throws SQLException {
-		/*Query query1 = session.createSQLQuery(customerModelLevel).addScalar(
-				"modelLevel", Hibernate.STRING).setInteger("customerId",
-						customerId);
-
-		this.customerModelLevelValue = query1.uniqueResult().toString();*/
+		/*
+		 * Query query1 = session.createSQLQuery(customerModelLevel).addScalar(
+		 * "modelLevel", Hibernate.STRING).setInteger("customerId", customerId);
+		 * 
+		 * this.customerModelLevelValue = query1.uniqueResult().toString();
+		 */
 		String modelLevel = "";
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -756,23 +854,24 @@ public class FileGenerator {
 			ps = conn.prepareStatement(customerModelLevel);
 			ps.setInt(1, customerId);
 			rs = ps.executeQuery();
-			if(rs.next()){
+			if (rs.next()) {
 				modelLevel = rs.getString(1);
 			}
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
-		
-		this.customerModelLevelValue=  modelLevel;
+
+		this.customerModelLevelValue = modelLevel;
 	}
 
 	private void createOrganization(Connection con, Tfil tfil,
 			Integer studentId, HashMap<String, Integer> districtMap,
 			HashMap<String, Integer> schoolMap,
-			HashMap<String, Integer> classMap, OrderFile orderFile) throws SQLException {
+			HashMap<String, Integer> classMap, OrderFile orderFile)
+	throws SQLException {
 
 		TreeMap<Integer, String> organizationMap = new TreeMap<Integer, String>();
-	
+
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -790,19 +889,21 @@ public class FileGenerator {
 				}
 
 			}
-			
-			//Entry<Integer, String> lastEntry = organizationMap.lastEntry();
+
+			// Entry<Integer, String> lastEntry = organizationMap.lastEntry();
 			Integer organizationMapSize = organizationMap.size();
 			rs.beforeFirst();
-			
+
 			while (rs.next()) {
 				if (rs.getString(4).equalsIgnoreCase("root")
 						|| rs.getString(4).equalsIgnoreCase("CTB")) {
 					// do nothing
 				} else if (rs.getString(5) != null
 						&& new Integer(organizationMapSize - 2).toString() != null
-						&& rs.getString(5).equalsIgnoreCase(
-								new Integer(organizationMapSize - 2).toString())) {
+						&& rs.getString(5)
+						.equalsIgnoreCase(
+								new Integer(organizationMapSize - 2)
+								.toString())) {
 					tfil.setElementNameA(rs.getString(4).toString());
 
 					Integer integer = districtMap.get(rs.getString(4));
@@ -811,7 +912,8 @@ public class FileGenerator {
 						districtMap.put(rs.getString(4), integer);
 
 					}
-					tfil.setElementNumberA(String.valueOf(districtMap.get(rs.getString(4))));
+					tfil.setElementNumberA(String.valueOf(districtMap.get(rs
+							.getString(4))));
 					if (rs.getString(3) != null)
 						tfil.setElementSpecialCodesA(rs.getString(3));
 					tfil.setOrganizationId("XX" + rs.getString(1));
@@ -822,8 +924,10 @@ public class FileGenerator {
 
 				} else if (rs.getString(5) != null
 						&& new Integer(organizationMapSize - 1).toString() != null
-						&& rs.getString(5).toString().equalsIgnoreCase(
-								new Integer(organizationMapSize - 1).toString())) {
+						&& rs.getString(5).toString()
+						.equalsIgnoreCase(
+								new Integer(organizationMapSize - 1)
+								.toString())) {
 					tfil.setElementNameB(rs.getString(4));
 
 					Integer integer = schoolMap.get(rs.getString(4));
@@ -832,7 +936,8 @@ public class FileGenerator {
 						schoolMap.put(rs.getString(4), integer);
 
 					}
-					tfil.setElementNumberB(String.valueOf(schoolMap.get(rs.getString(4))));
+					tfil.setElementNumberB(String.valueOf(schoolMap.get(rs
+							.getString(4))));
 					if (rs.getString(3) != null)
 						tfil.setElementSpecialCodesB(rs.getString(3));
 					tfil.setElementStructureLevelB("02");
@@ -850,7 +955,8 @@ public class FileGenerator {
 						classMap.put(rs.getString(4), integer);
 
 					}
-					tfil.setElementNumberC(String.valueOf(classMap.get(rs.getString(4))));
+					tfil.setElementNumberC(String.valueOf(classMap.get(rs
+							.getString(4))));
 					if (rs.getString(3) != null)
 						tfil.setElementSpecialCodesC(rs.getString(3));
 					tfil.setElementStructureLevelC("03");
@@ -858,14 +964,12 @@ public class FileGenerator {
 
 				}
 			}
-			
-			
-			//System.out.println("createOrganization");
-		}finally {
+
+			// System.out.println("createOrganization");
+		} finally {
 			SqlUtil.close(ps, rs);
 		}
-		
-		
+
 		// For defect Fix 66410
 		if (tfil.getElementNameB() == null) {
 			tfil.setElementNameB(tfil.getElementNameC());
@@ -904,146 +1008,153 @@ public class FileGenerator {
 
 	private void createTestSessionDetails(Connection con, Tfil tfil,
 			Integer rosterId, OrderFile orderFile) throws SQLException {
-	
-		PreparedStatement ps = null ;
-		ResultSet rs = null ;
-		try{
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
 			ps = con.prepareStatement(testSessionSQl);
 			ps.setInt(1, rosterId);
 			rs = ps.executeQuery();
-			while (rs.next()){
+			while (rs.next()) {
 
 				if (rs.getString(1).equalsIgnoreCase("A")) {
 					tfil.setTestName("LAS Links");
 					tfil.setTestForm("A");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), new Integer(10)).toUpperCase());
+								tfil.getTestName(), new Integer(10))
+								.toUpperCase());
 				} else if (rs.getString(1).equalsIgnoreCase("B")) {
 					tfil.setTestName("LAS Links");
 					tfil.setTestForm("B");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), new Integer(10)).toUpperCase());
+								tfil.getTestName(), new Integer(10))
+								.toUpperCase());
 				} else if (rs.getString(1).equalsIgnoreCase("Espanol")) {
 					tfil.setTestName("LAS Links Español");
 					tfil.setTestForm("S");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), new Integer(10)).toUpperCase());
+								tfil.getTestName(), new Integer(10))
+								.toUpperCase());
 				} else if (rs.getString(1).startsWith("Esp")) {
 					tfil.setTestName("LAS Links Español");
 					tfil.setTestForm("S");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), new Integer(10)).toUpperCase());
+								tfil.getTestName(), new Integer(10))
+								.toUpperCase());
 				}
 
-				if (rs.getString(2) != null && rs.getString(2).toString().equals("K")) {
+				if (rs.getString(2) != null
+						&& rs.getString(2).toString().equals("K")) {
 					tfil.setTestLevel("1");
-				} else if (rs.getString(2) != null && rs.getString(2).toString().equals("1")) {
+				} else if (rs.getString(2) != null
+						&& rs.getString(2).toString().equals("1")) {
 					tfil.setTestLevel("1");
-				} else if (rs.getString(2) != null && rs.getString(2).toString().equals("2-3")) {
+				} else if (rs.getString(2) != null
+						&& rs.getString(2).toString().equals("2-3")) {
 					tfil.setTestLevel("2");
-				} else if (rs.getString(2) != null && rs.getString(2).toString().equals("4-5")) {
+				} else if (rs.getString(2) != null
+						&& rs.getString(2).toString().equals("4-5")) {
 					tfil.setTestLevel("3");
-				} else if (rs.getString(2) != null && rs.getString(2).toString().equals("6-8")) {
+				} else if (rs.getString(2) != null
+						&& rs.getString(2).toString().equals("6-8")) {
 					tfil.setTestLevel("4");
-				} else if (rs.getString(2) != null && rs.getString(2).toString().equals("9-12")) {
+				} else if (rs.getString(2) != null
+						&& rs.getString(2).toString().equals("9-12")) {
 					tfil.setTestLevel("5");
 				}
 				tfil.setTestDate(rs.getString(3).toString());
 				this.testDate = rs.getString(3).toString();
 				tfil.setDateTestingCompleted(rs.getString(4).toString());
-				
-				
+
 			}
-			
+
 			if (orderFile.getTestDate() == null)
 				orderFile.setTestDate(EmetricUtil.truncate(tfil.getTestDate(),
 						new Integer(8)));
-			
-			//System.out.println("createTestSessionDetails");
-		}finally {
+
+			// System.out.println("createTestSessionDetails");
+		} finally {
 			SqlUtil.close(ps, rs);
 		}
-		
-		
+
 	}
 
 	private void createStudentItemStatusDetails(Connection con, Tfil tfil,
 			Integer rosterId, Integer studentId) throws SQLException {
-				
-		PreparedStatement ps = null ;
-		ResultSet rs = null ;
-		try{
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
 			ps = con.prepareStatement(testRosterDetails);
 			ps.setInt(1, studentId);
 			ps.setInt(2, rosterId);
 			rs = ps.executeQuery();
-			while (rs.next()){
+			while (rs.next()) {
 
 				if (rs.getString(5).equalsIgnoreCase("Speaking")) {
 					tfil.setTestInvalidationSpeaking(rs.getString(1)
 							.equalsIgnoreCase("IN") ? "1" : " ");
 					tfil.setTestingExemptionsSpeaking(rs.getString(3)
 							.equalsIgnoreCase("Y") ? "1" : " ");
-					tfil
-					.setAbsentSpeaking(rs.getString(4).equalsIgnoreCase(
-					"Y") ? "1" : " ");
-				} else if (rs.getString(5).toString().equalsIgnoreCase("Listening")) {
-					tfil.setTestInvalidationListening(rs.getString(1).toString()
-							.equalsIgnoreCase("IN") ? "1" : " ");
-					tfil.setTestingExemptionsListening(rs.getString(3).toString()
+					tfil.setAbsentSpeaking(rs.getString(4)
 							.equalsIgnoreCase("Y") ? "1" : " ");
-					tfil
-					.setAbsentListening(rs.getString(4).toString().equalsIgnoreCase(
-					"Y") ? "1" : " ");
-				} else if (rs.getString(5).toString().equalsIgnoreCase("Reading")) {
+				} else if (rs.getString(5).toString().equalsIgnoreCase(
+				"Listening")) {
+					tfil.setTestInvalidationListening(rs.getString(1)
+							.toString().equalsIgnoreCase("IN") ? "1" : " ");
+					tfil.setTestingExemptionsListening(rs.getString(3)
+							.toString().equalsIgnoreCase("Y") ? "1" : " ");
+					tfil.setAbsentListening(rs.getString(4).toString()
+							.equalsIgnoreCase("Y") ? "1" : " ");
+				} else if (rs.getString(5).toString().equalsIgnoreCase(
+				"Reading")) {
 					tfil.setTestInvalidationReading(rs.getString(1).toString()
 							.equalsIgnoreCase("IN") ? "1" : " ");
 					tfil.setTestingExemptionsReading(rs.getString(3).toString()
 							.equalsIgnoreCase("Y") ? "1" : " ");
-					tfil
-					.setAbsentReading(rs.getString(4).toString().equalsIgnoreCase(
-					"Y") ? "1" : " ");
-				} else if (rs.getString(5).toString().equalsIgnoreCase("Writing")) {
+					tfil.setAbsentReading(rs.getString(4).toString()
+							.equalsIgnoreCase("Y") ? "1" : " ");
+				} else if (rs.getString(5).toString().equalsIgnoreCase(
+				"Writing")) {
 					tfil.setTestInvalidationWriting(rs.getString(1).toString()
 							.equalsIgnoreCase("IN") ? "1" : " ");
 					tfil.setTestingExemptionsWriting(rs.getString(3).toString()
 							.equalsIgnoreCase("Y") ? "1" : " ");
-					tfil
-					.setAbsentWriting(rs.getString(4).toString().equalsIgnoreCase(
-					"Y") ? "1" : " ");
+					tfil.setAbsentWriting(rs.getString(4).toString()
+							.equalsIgnoreCase("Y") ? "1" : " ");
 				}
 			}
-			
+
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
-		
-		
+
 	}
-
-
 
 	private void createSkillAreaScoreInformation(Connection con, Tfil tfil,
 			TestRoster roster) throws SQLException {
 		TreeMap<String, Object[]> treeMap = new TreeMap<String, Object[]>();
-		boolean isComprehensionPopulated= true;
-		boolean isOralPopulated= true;
-
+		boolean isComprehensionPopulated = true;
+		boolean isOralPopulated = true;
+		Integer speaking = 0;
+		Integer listening = 0;
+		Integer reading = 0;
+		Integer writing = 0;
 
 		ProficiencyLevels pl = new ProficiencyLevels();
 		ScaleScores ss = new ScaleScores();
-		SkillAreaNumberCorrect po =  new SkillAreaNumberCorrect();
+		SkillAreaNumberCorrect po = new SkillAreaNumberCorrect();
 		SkillAreaPercentCorrect pc = new SkillAreaPercentCorrect();
-		
-		PreparedStatement ps = null ;
-		ResultSet rs = null ;
-		PreparedStatement ps2 = null ;
-		ResultSet rs2 = null ;
-		/*String[] skillAreaScoreInfoOverAll =  new String[2];*/
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		PreparedStatement ps2 = null;
+		ResultSet rs2 = null;
+		/* String[] skillAreaScoreInfoOverAll = new String[2]; */
 		try {
 			ps2 = con.prepareStatement(scoreSkilAreaOverAllSQL);
 			ps2.setInt(1, roster.getStudentId());
@@ -1068,29 +1179,41 @@ public class FileGenerator {
 			ps.setInt(2, roster.getTestAdminId());
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				if(rs.getString(1)!=null){
+				if (rs.getString(1) != null) {
 					Object[] val = new Object[5];
-					val[1]= rs.getString(2);
-					val[2]= rs.getString(3);
-					val[3]= rs.getString(4);
-					val[4]= rs.getString(5);
+					val[1] = rs.getString(2);
+					val[2] = rs.getString(3);
+					val[3] = rs.getString(4);
+					val[4] = rs.getString(5);
 
-					if(rs.getString(1).toString().trim().equalsIgnoreCase("speaking")){
-						treeMap.put(rs.getString(1).toString().trim().toLowerCase(),val );
-					} else if(rs.getString(1).toString().trim().equalsIgnoreCase("listening")){
-						treeMap.put(rs.getString(1).toString().trim().toLowerCase(),val );
+					if (rs.getString(1).toString().trim().equalsIgnoreCase(
+					"speaking")) {
+						treeMap.put(rs.getString(1).toString().trim()
+								.toLowerCase(), val);
+					} else if (rs.getString(1).toString().trim()
+							.equalsIgnoreCase("listening")) {
+						treeMap.put(rs.getString(1).toString().trim()
+								.toLowerCase(), val);
 
-					}else if(rs.getString(1).toString().trim().equalsIgnoreCase("reading")){
-						treeMap.put(rs.getString(1).toString().trim().toLowerCase(),val );
+					} else if (rs.getString(1).toString().trim()
+							.equalsIgnoreCase("reading")) {
+						treeMap.put(rs.getString(1).toString().trim()
+								.toLowerCase(), val);
 
-					}else if(rs.getString(1).toString().trim().equalsIgnoreCase("writing")){
-						treeMap.put(rs.getString(1).toString().trim().toLowerCase(),val );
+					} else if (rs.getString(1).toString().trim()
+							.equalsIgnoreCase("writing")) {
+						treeMap.put(rs.getString(1).toString().trim()
+								.toLowerCase(), val);
 
-					}else if(rs.getString(1).toString().trim().equalsIgnoreCase("comprehension")){
-						treeMap.put(rs.getString(1).toString().trim().toLowerCase(),val );
+					} else if (rs.getString(1).toString().trim()
+							.equalsIgnoreCase("comprehension")) {
+						treeMap.put(rs.getString(1).toString().trim()
+								.toLowerCase(), val);
 
-					}else if(rs.getString(1).toString().trim().equalsIgnoreCase("oral")){
-						treeMap.put(rs.getString(1).toString().trim().toLowerCase(),val );
+					} else if (rs.getString(1).toString().trim()
+							.equalsIgnoreCase("oral")) {
+						treeMap.put(rs.getString(1).toString().trim()
+								.toLowerCase(), val);
 
 					}
 				}
@@ -1099,22 +1222,16 @@ public class FileGenerator {
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
-		
+
 		if (tfil.getTestingExemptionsSpeaking().equalsIgnoreCase("1")) {
 			ss.setSpeaking("EXM");
-			po.setSpeaking("EXM");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
+			speaking++;
 		} else if (tfil.getAbsentSpeaking().equalsIgnoreCase("1")) {
 			ss.setSpeaking("ABS");
-			po.setSpeaking("ABS");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
+			speaking++;
 		} else if (tfil.getTestInvalidationSpeaking().equalsIgnoreCase("1")) {
 			ss.setSpeaking("INV");
-			po.setSpeaking("INV");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
+			speaking++;
 		} else {
 			Object[] val = treeMap.get("speaking");
 			if (val != null) {
@@ -1127,19 +1244,13 @@ public class FileGenerator {
 
 		if (tfil.getTestingExemptionsListening().equalsIgnoreCase("1")) {
 			ss.setListening("EXM");
-			po.setListening("EXM");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
+			listening++;
 		} else if (tfil.getAbsentListening().equalsIgnoreCase("1")) {
 			ss.setListening("ABS");
-			po.setListening("ABS");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
+			listening++;
 		} else if (tfil.getTestInvalidationListening().equalsIgnoreCase("1")) {
 			ss.setListening("INV");
-			po.setListening("INV");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
+			listening++;
 		} else {
 			Object[] val = treeMap.get("listening");
 			if (val != null) {
@@ -1152,20 +1263,14 @@ public class FileGenerator {
 
 		if (tfil.getTestingExemptionsReading().equalsIgnoreCase("1")) {
 			ss.setReading("EXM");
-			po.setReading("EXM");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
+			reading++;
 		} else if (tfil.getAbsentReading().equalsIgnoreCase("1")) {
 			ss.setReading("ABS");
-			po.setReading("ABS");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
+			reading++;
 		} else if (tfil.getTestInvalidationReading().equalsIgnoreCase("1")) {
 			ss.setReading("INV");
-			po.setReading("INV");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
-		}  else {
+			reading++;
+		} else {
 			Object[] val = treeMap.get("reading");
 			if (val != null) {
 				ss.setReading(val[1].toString());
@@ -1177,20 +1282,14 @@ public class FileGenerator {
 
 		if (tfil.getTestingExemptionsWriting().equalsIgnoreCase("1")) {
 			ss.setWriting("EXM");
-			po.setWriting("EXM");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
+			writing++;
 		} else if (tfil.getAbsentWriting().equalsIgnoreCase("1")) {
 			ss.setWriting("ABS");
-			po.setWriting("ABS");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
+			writing++;
 		} else if (tfil.getTestInvalidationWriting().equalsIgnoreCase("1")) {
 			ss.setWriting("INV");
-			po.setWriting("INV");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
-		}  else {
+			writing++;
+		} else {
 			Object[] val = treeMap.get("writing");
 			if (val != null) {
 				ss.setWriting(val[1].toString());
@@ -1200,29 +1299,73 @@ public class FileGenerator {
 			}
 		}
 
+		if (speaking > 0) {
+			po.setSpeaking("");
+			pl.setSpeaking("");
+			pc.setSpeaking("");
+			isComprehensionPopulated = false;
+			isOralPopulated = false;
+			isInvalidSpeaking = true;
 
-		if(isComprehensionPopulated){
+		}
+		if (listening > 0) {
+			po.setListening("");
+			pl.setListening("");
+			pc.setListening("");
+			isComprehensionPopulated = false;
+			isOralPopulated = false;
+			isInvalidListeing = true;
+		}
+		if (reading > 0) {
+			po.setReading("");
+			pl.setReading("");
+			pc.setReading("");
+			isComprehensionPopulated = false;
+			isOralPopulated = false;
+			isInvalidReading = true;
+		}
+		if (writing > 0) {
+			po.setWriting("");
+			pl.setWriting("");
+			pc.setWriting("");
+			isComprehensionPopulated = false;
+			isOralPopulated = false;
+			isInvalidWriting = true;
+		}
+		if (isComprehensionPopulated) {
 			Object[] val = treeMap.get("comprehension");
-			if(val!=null){
-				ss.setComprehension(val[1].toString());
-				pl.setComprehension(val[2].toString());
+			if (val != null) {
+				if (listening > 0 || reading > 0 ) {
+					ss.setComprehension("N/A");
+				} else if (writing > 0 || speaking > 0) {
+					ss.setComprehension("");
+				} else {
+					ss.setComprehension(val[1].toString());
+					pl.setComprehension(val[2].toString());
+				}
+
 			} else {
 				ss.setComprehension("N/A");
 			}
-			
+
 		} else {
 			ss.setComprehension("N/A");
 		}
 
-		if(isOralPopulated){
+		if (isOralPopulated) {
 			Object[] val = treeMap.get("oral");
-			if(val!=null){
-				ss.setOral(val[1].toString());
-				pl.setOral(val[2].toString());
+			if (val != null) {
+				if (speaking > 0 || listening > 0) {
+					ss.setOral("N/A");
+				} else if (writing > 0 || reading > 0) {
+					ss.setOral("");
+				} else {
+					ss.setOral(val[1].toString());
+					pl.setOral(val[2].toString());
+				}
 			} else {
 				ss.setOral("N/A");
 			}
-			
 
 		} else {
 			ss.setOral("N/A");
@@ -1234,8 +1377,9 @@ public class FileGenerator {
 		tfil.setSkillAreaPercentCorrect(pc);
 	}
 
-	private void createSubSkillAreaScoreInformation(Connection oasCon,Connection irsCon, Tfil tfil,
-			TestRoster roster) throws SQLException {
+	private void createSubSkillAreaScoreInformation(Connection oasCon,
+			Connection irsCon, Tfil tfil, TestRoster roster)
+	throws SQLException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		PreparedStatement ps2 = null;
@@ -1243,8 +1387,14 @@ public class FileGenerator {
 		SubSkillNumberCorrect subNumCorrect = new SubSkillNumberCorrect();
 		SubSkillPercentCorrect subPercCorrect = new SubSkillPercentCorrect();
 		String subSkillName;
+		String subSkillCategoryName;
 		HashMap<String, String> pointsObtained = new HashMap<String, String>();
 		HashMap<String, String> percentObtained = new HashMap<String, String>();
+		
+		boolean subSpeakingInvalid = false;
+		boolean subListeningInvalid = false;
+		boolean subReadingInvalid = false;
+		boolean subWritingInvalid = false;
 
 		try {
 			ps2 = oasCon.prepareStatement(subSkillItemAreaInformation);
@@ -1253,12 +1403,15 @@ public class FileGenerator {
 			while (rs2.next()) {
 
 				subSkillAreaScoreInfo.put(rs2.getString(1), rs2.getString(2));
+				subSkillAreaItemCategory.put(rs2.getString(2), rs2.getString(3));
+
 			}
 
 		} finally {
 			SqlUtil.close(ps2, rs2);
 		}
-
+		
+		
 		try {
 			ps = irsCon.prepareStatement(subSkillIrsInformation);
 			ps.setInt(1, roster.getStudentId());
@@ -1276,107 +1429,116 @@ public class FileGenerator {
 
 		for (String x : percentObtained.keySet()) {
 			subSkillName = subSkillAreaScoreInfo.get(x);
-
-			if (subSkillName.equalsIgnoreCase("Speak in Words")) {
+			
+			
+			if (subSkillName.equalsIgnoreCase("Speak in Words") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subPercCorrect.setSpeakInWords(percentObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Speak in Sentences")) {
+			} else if (subSkillName.equalsIgnoreCase("Speak in Sentences")  && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subPercCorrect.setSpeakSentences(percentObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Make Conversation")) {
+			} else if (subSkillName.equalsIgnoreCase("Make Conversation") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subPercCorrect.setMakeConversations(percentObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Tell a Story")) {
-				subPercCorrect.setTellAStory(percentObtained.get(x)
-						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Tell a Story") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
+				subPercCorrect.setTellAStory(percentObtained.get(x).toString());
 			} else if (subSkillName.equalsIgnoreCase("Listen for Information")) {
 				subPercCorrect.setListenForInformation(percentObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Listen in the Classroom")) {
+			} else if (subSkillName.equalsIgnoreCase("Listen in the Classroom") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subPercCorrect.setListenInTheClassroom(percentObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Listen and Comprehend")) {
+			} else if (subSkillName.equalsIgnoreCase("Listen and Comprehend") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subPercCorrect.setListenAndComprehend(percentObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Analyze Words")) {
+			} else if (subSkillName.equalsIgnoreCase("Analyze Words") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subPercCorrect.setAnalyzeWords(percentObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Read Words")) {
-				subPercCorrect.setReadWords(percentObtained.get(x)
-						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Read Words") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
+				subPercCorrect.setReadWords(percentObtained.get(x).toString());
 			} else if (subSkillName.equalsIgnoreCase("Read for Understanding")) {
 				subPercCorrect.setReadForUnderStanding(percentObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Use Conventions")) {
+			} else if (subSkillName.equalsIgnoreCase("Use Conventions") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subPercCorrect.setUseConventions(percentObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Write About")) {
-				subPercCorrect.setWriteAbout(percentObtained.get(x)
-						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Write Why")) {
-				subPercCorrect.setWriteWhy(percentObtained.get(x)
-						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Write in Detail")) {
+			} else if (subSkillName.equalsIgnoreCase("Write About") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
+				subPercCorrect.setWriteAbout(percentObtained.get(x).toString());
+			} else if (subSkillName.equalsIgnoreCase("Write Why") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
+				subPercCorrect.setWriteWhy(percentObtained.get(x).toString());
+			} else if (subSkillName.equalsIgnoreCase("Write in Detail") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subPercCorrect.setWriteInDetail(percentObtained.get(x)
 						.toString());
 			}
 		}
-		
-		
+
 		tfil.setSubSkillPercentCorrect(subPercCorrect);
-		
+
 		for (String x : pointsObtained.keySet()) {
 			subSkillName = subSkillAreaScoreInfo.get(x);
 
-			if (subSkillName.equalsIgnoreCase("Speak in Words")) {
-				subNumCorrect.setSpeakInWords(pointsObtained.get(x)
-						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Speak in Sentences")) {
+			if (subSkillName.equalsIgnoreCase("Speak in Words") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
+				subNumCorrect.setSpeakInWords(pointsObtained.get(x).toString());
+			} else if (subSkillName.equalsIgnoreCase("Speak in Sentences") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subNumCorrect.setSpeakSentences(pointsObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Make Conversation")) {
+			} else if (subSkillName.equalsIgnoreCase("Make Conversation") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subNumCorrect.setMakeConversations(pointsObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Tell a Story")) {
-				subNumCorrect.setTellAStory(pointsObtained.get(x)
-						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Listen for Information")) {
+			} else if (subSkillName.equalsIgnoreCase("Tell a Story") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
+				subNumCorrect.setTellAStory(pointsObtained.get(x).toString());
+			} else if (subSkillName.equalsIgnoreCase("Listen for Information") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subNumCorrect.setListenForInformation(pointsObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Listen in the Classroom")) {
+			} else if (subSkillName.equalsIgnoreCase("Listen in the Classroom") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subNumCorrect.setListenInTheClassroom(pointsObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Listen and Comprehend")) {
+			} else if (subSkillName.equalsIgnoreCase("Listen and Comprehend") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subNumCorrect.setListenAndComprehend(pointsObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Analyze Words")) {
-				subNumCorrect.setAnalyzeWords(pointsObtained.get(x)
-						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Read Words")) {
-				subNumCorrect.setReadWords(pointsObtained.get(x)
-						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Read for Understanding")) {
+			} else if (subSkillName.equalsIgnoreCase("Analyze Words") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
+				subNumCorrect.setAnalyzeWords(pointsObtained.get(x).toString());
+			} else if (subSkillName.equalsIgnoreCase("Read Words") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
+				subNumCorrect.setReadWords(pointsObtained.get(x).toString());
+			} else if (subSkillName.equalsIgnoreCase("Read for Understanding") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subNumCorrect.setReadForUnderStanding(pointsObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Use Conventions")) {
+			} else if (subSkillName.equalsIgnoreCase("Use Conventions") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subNumCorrect.setUseConventions(pointsObtained.get(x)
 						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Write About")) {
-				subNumCorrect.setWriteAbout(pointsObtained.get(x)
-						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Write Why")) {
-				subNumCorrect.setWriteWhy(pointsObtained.get(x)
-						.toString());
-			} else if (subSkillName.equalsIgnoreCase("Write in Detail")) {
-				subNumCorrect.setWriteInDetail(pointsObtained.get(x)
-						.toString());
+			} else if (subSkillName.equalsIgnoreCase("Write About") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
+				subNumCorrect.setWriteAbout(pointsObtained.get(x).toString());
+			} else if (subSkillName.equalsIgnoreCase("Write Why") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
+				subNumCorrect.setWriteWhy(pointsObtained.get(x).toString());
+			} else if (subSkillName.equalsIgnoreCase("Write in Detail") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
+				subNumCorrect
+				.setWriteInDetail(pointsObtained.get(x).toString());
 			}
 		}
 		tfil.setSubSkillNumberCorrect(subNumCorrect);
 	}
 
+	private boolean fillValidSubSkillScore(String skillName, HashMap<String, String> subSkillCategory){
+		String skill;
+		skill = subSkillCategory.get(skillName);
+		
+		if(skill.equalsIgnoreCase("Speaking") && isInvalidSpeaking){
+			return false;
+		}else if(skill.equalsIgnoreCase("Listening") && isInvalidListeing){
+			return false;
+		}else if(skill.equalsIgnoreCase("Reading") && isInvalidReading){
+			return false;
+		}else if(skill.equalsIgnoreCase("Writing") && isInvalidWriting){
+			return false;
+		}else{
+			return true;
+		}
 
-	private void prepareOrderFile(OrderFile orderFile, String filedir, String fileName) throws IOException {
+
+	}
+
+	private void prepareOrderFile(OrderFile orderFile, String filedir,
+			String fileName) throws IOException {
 
 		String orderFileName = fileName.substring(0, fileName.length() - 23);
 
@@ -1384,7 +1546,7 @@ public class FileGenerator {
 		+ fileDateOutputFormat.format(new Date()) + ".csv";
 		FileWriter writer = null;
 		try {
-			writer = new FileWriter(new File(filedir,orderFileName ));
+			writer = new FileWriter(new File(filedir, orderFileName));
 
 			writer.append("CUST_ID");
 			writer.append(',');

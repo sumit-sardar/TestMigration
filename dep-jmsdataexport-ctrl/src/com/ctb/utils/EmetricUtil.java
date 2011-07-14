@@ -2,12 +2,14 @@ package com.ctb.utils;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EmetricUtil {
 	private static final DateFormat birthDateFormat = new SimpleDateFormat(
-			"yyyy-MM-dd");
+	"yyyy-MM-dd");
 
 	public static String calculateAge(Date birthDate) {
 		Integer totalMonths = 0;
@@ -22,10 +24,10 @@ public class EmetricUtil {
 		int dd2 = Integer.parseInt(currentDate.substring(8, 10));
 		int mm2 = Integer.parseInt(currentDate.substring(5, 7));
 		int yy2 = Integer.parseInt(currentDate.substring(0, 4));
-		@SuppressWarnings("unused")
 		int day = 0;
 		int year = 0;
 		int mm3 = 0;
+		int k = 0;
 		if (mm1 > mm2) {
 			year = yy2 - yy1 - 1;
 			mm3 = 12 + mm2 - mm1;
@@ -55,8 +57,8 @@ public class EmetricUtil {
 			} else {
 				phoneNumber = String.format("%03d-%03d-%04d Ext:", new Integer(
 						phoneNumber.substring(0, 3)), new Integer(phoneNumber
-						.substring(3, 6)), new Integer(phoneNumber.substring(6,
-						phoneNumber.length())));
+								.substring(3, 6)), new Integer(phoneNumber.substring(6,
+										phoneNumber.length())));
 				return phoneNumber;
 
 			}
@@ -142,12 +144,28 @@ public class EmetricUtil {
 	}
 	
 	public static String getFormatedString(String val, int len){
-		 if(val != null){
-			 val = String.format("%"+len+"s", val).replace(" ", "0");
-			 return val;
-		 }
+		if(val != null && val.trim().length() !=0){
+			val = String.format("%"+len+"s", val).replace(" ", "0");
+			return val;
+		}else{
+			val = "";
+			val = String.format("%"+len+"s", val);
+			return val;
+		}
+
 		
-		return val;
+	}
+	public static String getFormatedStringScaleScore(String val, int len){
+		if(val != null && val.trim().length() !=0){
+			val = String.format("%"+len+"s", val).replace(" ", "0");
+			return val;
+		}else{
+			val = "";
+			val = String.format("%"+len+"s", val).replace(" ", "0");
+			return val;
+		}
+
+		
 	}
 	
 	public static String getFormatedNumberCorrectString(String val, int len){
@@ -182,7 +200,7 @@ public class EmetricUtil {
 				val = "0.0";
 			}
 		} else {
-			val = "0.0";
+			val = "";
 		}
 
 		val = String.format("%5s", val);

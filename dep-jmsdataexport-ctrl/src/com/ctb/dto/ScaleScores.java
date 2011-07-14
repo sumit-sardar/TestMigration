@@ -74,13 +74,13 @@ public class ScaleScores
 	
 	public String toString(){
 		String val="";
-		val += EmetricUtil.getFormatedString(speaking, 3)
-		+EmetricUtil.getFormatedString(listening, 3) 
-		+EmetricUtil.getFormatedString(reading, 3) 
-		+EmetricUtil.getFormatedString(writing, 3) 
-		+EmetricUtil.getFormatedString(overall, 3) 
-		+EmetricUtil.getFormatedString(comprehension, 3) 
-		+EmetricUtil.getFormatedString(oral, 3) ;
+		val += EmetricUtil.getFormatedStringScaleScore(speaking, 3)
+		+EmetricUtil.getFormatedStringScaleScore(listening, 3) 
+		+EmetricUtil.getFormatedStringScaleScore(reading, 3) 
+		+EmetricUtil.getFormatedStringScaleScore(writing, 3) 
+		+EmetricUtil.getFormatedStringScaleScore(overall, 3) 
+		+EmetricUtil.getFormatedStringScaleScore(comprehension, 3) 
+		+EmetricUtil.getFormatedStringScaleScore(oral, 3) ;
 
 		return val;
 		

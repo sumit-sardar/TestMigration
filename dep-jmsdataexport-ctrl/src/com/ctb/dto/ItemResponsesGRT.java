@@ -5,20 +5,12 @@ package com.ctb.dto;
 
 public class ItemResponsesGRT
 {
-	
-	private String itemResponses;
 	private String speakingMCItems;
 	private String speakingCRItems;
 	private String listeningMCItems;
 	private String readingMCItems;
 	private String writingMCItems;
 	private String writingCRItems;
-	public String getItemResponses() {
-		return itemResponses;
-	}
-	public void setItemResponses(String itemResponses) {
-		this.itemResponses = itemResponses;
-	}
 	public String getSpeakingMCItems() {
 		return speakingMCItems;
 	}
