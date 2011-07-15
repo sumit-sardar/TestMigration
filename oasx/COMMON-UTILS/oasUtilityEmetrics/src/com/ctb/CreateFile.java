@@ -123,15 +123,15 @@ public class CreateFile {
 		+ " where studentid = ? and sessionid = ?";
 
 	
-	private String rosterAllItemDetails = " select distinct item.item_id as oasItemId,   tdisi.item_sort_order as itemIndex,   item.item_type as itemType,   item.correct_answer as itemCorrectResponse,   td.item_set_id as subtestId,  " +
-	"  decode (td.item_set_name,'HABLANDO','Speaking','ESCUCHANDO', 'Listening','LECTURA','Reading','ESCRITURA','Writing', td.item_set_name) as subtestName," +
-	" decode(nvl(sis.validation_status, 'IN' ),'IN', 'NC',(decode(nvl(sis.exemptions,'N'),'Y', 'NC',((decode(nvl(sis.absent,'N'),'Y', 'NC','CO') ))) )) valid  " +
+	private String rosterAllItemDetails = " select dd.*, valid from  ( select distinct item.item_id as oasItemId,   tdisi.item_sort_order as itemIndex,   item.item_type as itemType,   item.correct_answer as itemCorrectResponse,   td.item_set_id as subtestId,  " +
+	"  decode (td.item_set_name,'HABLANDO','Speaking','ESCUCHANDO', 'Listening','LECTURA','Reading','ESCRITURA','Writing', td.item_set_name) as subtestName " +
 	" from   item,   item_set sec,   item_Set_category seccat,   item_set_ancestor secisa,   item_Set_item secisi,   item_set td,   item_set_ancestor tdisa,   item_set_item tdisi,   datapoint dp,   test_roster ros,   test_Admin adm,   test_catalog tc,   product prod,  student_item_set_status sis " +
 	" where   ros.test_roster_id = ?   and adm.test_admin_id = ros.test_admin_id   and tc.test_catalog_id = adm.test_catalog_id   and prod.product_id = tc.product_id   and item.ACTIVATION_STATUS = 'AC'   and tc.ACTIVATION_STATUS = 'AC'  " +
 	" and sec.item_Set_id = secisa.ancestor_item_Set_id   and sec.item_set_type = 'RE'   and secisa.item_set_id = secisi.item_Set_id   and item.item_id = secisi.item_id   and tdisi.item_id = item.item_id   and td.item_set_id = tdisi.item_set_id   and td.item_set_type = 'TD' " +
 	" and tdisa.item_set_id = td.item_set_id   and adm.item_set_id = tdisa.ancestor_item_set_id   and seccat.item_Set_category_id = sec.item_set_category_id   and seccat.item_set_category_level = prod.sec_scoring_item_Set_level   and dp.item_id = item.item_id   and td.sample = 'F' " +
 	" AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL')   and seccat.framework_product_id = prod.PARENT_PRODUCT_ID  and sis.test_roster_id  = ros.test_roster_id   " +
-	" order by   td.item_set_id,   tdisi.item_sort_order";
+	" ) dd , ( select sis.item_set_id , decode(nvl(sis.validation_status, 'IN'), 'IN', 'NC', (decode(nvl(sis.exemptions, 'N'), 'Y',  'NC', ((decode(nvl(sis.absent, 'N'), 'Y', 'NC', 'CO')))))) valid from student_item_set_status sis where test_roster_id = ?" +
+	" )dd1 where dd.subtestId = dd1.item_set_id order by subtestId, itemIndex";
 
 	private String rosterAllSRItemsResponseDetails = " select irp.item_id, irp.response from item_response irp,  (select item_response.item_id item_id, item_set_id, max(response_seq_num) maxseqnum   from item_response , item  where test_roster_id = ?  and item_response.item_id =item.item_id and item.item_type = 'SR'and item.ACTIVATION_STATUS = 'AC' group by item_response.item_id, item_set_id ) derived  " +
 	" where irp.item_id = derived.item_id    and irp.item_set_id = derived.item_set_id    and irp.response_seq_num = derived.maxseqnum    and irp.test_roster_id = ? ";
@@ -217,10 +217,9 @@ public class CreateFile {
 
 		OrderFile orderFile = new OrderFile();
 		List<Tfil> myList = createList(orderFile);
-		String localFilePath = ExtractUtil
-		.getDetail("oas.exportdata.filepath");
-		String fileName = customerState + "_" + testDate + "_" + customerId
-		+ "_" + orderFile.getOrgTestingProgram() + "_"
+		String localFilePath = ExtractUtil.getDetail("oas.exportdata.filepath");
+		String fileName = customerState + "_" + testDate + "_" 
+		+ customerId + "_" + orderFile.getOrgTestingProgram() + "_"
 		+ orderFile.getCustomerName().trim() + "_" + group + "_"
 		+ DATAFILE + "_" + fileDateOutputFormat.format(new Date())
 		+ ".dat";
@@ -340,6 +339,7 @@ public class CreateFile {
 			TestRoster roster, Tfil tfil) throws SQLException {
 		Map<String, TreeMap<String, LinkedList<RostersItem>>> allItems = getItemResponseGrt(
 				oascon, roster);
+		//System.out.println("roster"+roster.getTestRosterId());
 		ItemResponsesGRT responsesGRT = new ItemResponsesGRT();
 		String speakingMCItems = "";
 		String speakingCRItems = "";
@@ -446,6 +446,7 @@ public class CreateFile {
 			TreeMap<String, LinkedList<RostersItem>> speakingitem) {
 		LinkedList<RostersItem> itemlist = speakingitem.get("CR");
 		for (RostersItem item : itemlist) {
+			//System.out.println(item);
 			if (item.isItemValidateForScoring()
 					&& (item.getStudentResponse() != null && item
 							.getStudentResponse().trim().length() > 0)) {
@@ -495,7 +496,9 @@ public class CreateFile {
 		try{
 			ps = oascon.prepareStatement(rosterAllItemDetails);
 			ps.setInt(1, roster.getTestRosterId());
-			rs = ps.executeQuery(); rs.setFetchSize(500);
+			ps.setInt(2, roster.getTestRosterId());
+			rs = ps.executeQuery(); 
+			rs.setFetchSize(500);
 			while (rs.next()){
 				
 				RostersItem item = new RostersItem();
@@ -593,7 +596,8 @@ public class CreateFile {
 		try{
 			ps = con.prepareStatement(testRosterSql);
 			ps.setInt(1, customerId);
-			rs = ps.executeQuery(); rs.setFetchSize(500);
+			rs = ps.executeQuery(); 
+			rs.setFetchSize(500);
 			while (rs.next()){
 				TestRoster ros = new TestRoster();
 				ros.setTestRosterId(rs.getInt(1));
@@ -1348,6 +1352,9 @@ public class CreateFile {
 		TreeMap<String, Object[]> treeMap = new TreeMap<String, Object[]>();
 		boolean isComprehensionPopulated = true;
 		boolean isOralPopulated = true;
+		boolean isScaleOverall = true;
+		boolean isProficiencyLevelOverall = true;
+		
 		Integer speaking = 0;
 		Integer listening = 0;
 		Integer reading = 0;
@@ -1360,7 +1367,8 @@ public class CreateFile {
 		ScaleScores ss = new ScaleScores();
 		SkillAreaNumberCorrect po = new SkillAreaNumberCorrect();
 		SkillAreaPercentCorrect pc = new SkillAreaPercentCorrect();
-
+		String scaleScoreOverall;
+		String profLevelScoreOverall;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		PreparedStatement ps2 = null;
@@ -1372,12 +1380,12 @@ public class CreateFile {
 			ps2.setInt(2, roster.getTestAdminId());
 			rs2 = ps2.executeQuery();
 			if (rs2.next()) {
-				ss.setOverall(rs2.getString(1));
-				pl.setOverall(rs2.getString(2));
+				scaleScoreOverall = rs2.getString(1);
+				profLevelScoreOverall = rs2.getString(2);
 
 			} else {
-				ss.setOverall("N/A");
-				pl.setOverall(" ");
+				scaleScoreOverall = "";
+				profLevelScoreOverall ="";
 			}
 
 		} finally {
@@ -1514,9 +1522,10 @@ public class CreateFile {
 			po.setSpeaking("");
 			pl.setSpeaking("");
 			pc.setSpeaking("");
-			isComprehensionPopulated = false;
 			isOralPopulated = false;
 			isInvalidSpeaking = true;
+			isProficiencyLevelOverall = false;
+			isScaleOverall = false;
 
 		}
 		if (listening > 0) {
@@ -1526,37 +1535,34 @@ public class CreateFile {
 			isComprehensionPopulated = false;
 			isOralPopulated = false;
 			isInvalidListeing = true;
+			isProficiencyLevelOverall = false;
+			isScaleOverall = false;
 		}
 		if (reading > 0) {
 			po.setReading("");
 			pl.setReading("");
 			pc.setReading("");
 			isComprehensionPopulated = false;
-			isOralPopulated = false;
 			isInvalidReading = true;
+			isProficiencyLevelOverall = false;
+			isScaleOverall = false;
 		}
 		if (writing > 0) {
 			po.setWriting("");
 			pl.setWriting("");
 			pc.setWriting("");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
 			isInvalidWriting = true;
+			isProficiencyLevelOverall = false;
+			isScaleOverall = false;
 		}
 		if (isComprehensionPopulated) {
 			Object[] val = treeMap.get("comprehension");
 			if (val != null) {
-				if (listening > 0 || reading > 0 ) {
-					ss.setComprehension("N/A");
-				} else if (writing > 0 || speaking > 0) {
-					ss.setComprehension("");
-				} else {
 					ss.setComprehension(val[1].toString());
 					pl.setComprehension(val[2].toString());
 				}
-
-			} else {
-				ss.setComprehension("N/A");
+			 else {
+				ss.setComprehension(" ");
 			}
 
 		} else {
@@ -1566,21 +1572,38 @@ public class CreateFile {
 		if (isOralPopulated) {
 			Object[] val = treeMap.get("oral");
 			if (val != null) {
-				if (speaking > 0 || listening > 0) {
-					ss.setOral("N/A");
-				} else if (writing > 0 || reading > 0) {
-					ss.setOral("");
-				} else {
-					ss.setOral(val[1].toString());
-					pl.setOral(val[2].toString());
-				}
+				ss.setOral(val[1].toString());
+				pl.setOral(val[2].toString());
 			} else {
-				ss.setOral("N/A");
+				ss.setOral(" ");
 			}
-
 		} else {
 			ss.setOral("N/A");
 		}
+		
+		if (isScaleOverall) {
+
+			if(scaleScoreOverall == null){
+				scaleScoreOverall= "";
+			}
+			ss.setOverall(scaleScoreOverall);
+
+		} else {
+			ss.setOverall("N/A");
+		}
+		
+		if (isProficiencyLevelOverall) {
+
+			if(profLevelScoreOverall == null){
+				profLevelScoreOverall= "";
+			}
+			pl.setOverall(profLevelScoreOverall);
+
+
+		} else {
+			pl.setOverall("");
+		}		
+		
 
 		tfil.setScaleScores(ss);
 		tfil.setProficiencyLevels(pl);
@@ -1601,11 +1624,7 @@ public class CreateFile {
 		String subSkillCategoryName;
 		HashMap<String, String> pointsObtained = new HashMap<String, String>();
 		HashMap<String, String> percentObtained = new HashMap<String, String>();
-		
-		boolean subSpeakingInvalid = false;
-		boolean subListeningInvalid = false;
-		boolean subReadingInvalid = false;
-		boolean subWritingInvalid = false;
+	
 
 		try {
 			ps2 = oasCon.prepareStatement(subSkillItemAreaInformation);
@@ -1653,7 +1672,7 @@ public class CreateFile {
 						.toString());
 			} else if (subSkillName.equalsIgnoreCase("Tell a Story") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subPercCorrect.setTellAStory(percentObtained.get(x).toString());
-			} else if (subSkillName.equalsIgnoreCase("Listen for Information")) {
+			} else if (subSkillName.equalsIgnoreCase("Listen for Information")&& fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory)) {
 				subPercCorrect.setListenForInformation(percentObtained.get(x)
 						.toString());
 			} else if (subSkillName.equalsIgnoreCase("Listen in the Classroom") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
@@ -1667,7 +1686,7 @@ public class CreateFile {
 						.toString());
 			} else if (subSkillName.equalsIgnoreCase("Read Words") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subPercCorrect.setReadWords(percentObtained.get(x).toString());
-			} else if (subSkillName.equalsIgnoreCase("Read for Understanding")) {
+			} else if (subSkillName.equalsIgnoreCase("Read for Understanding")&& fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory)) {
 				subPercCorrect.setReadForUnderStanding(percentObtained.get(x)
 						.toString());
 			} else if (subSkillName.equalsIgnoreCase("Use Conventions") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
