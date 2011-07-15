@@ -161,7 +161,7 @@ public class EmetricUtil {
 			return val;
 		}else{
 			val = "";
-			val = String.format("%"+len+"s", val).replace(" ", "0");
+			val = String.format("%"+len+"s", val);
 			return val;
 		}
 
@@ -205,6 +205,16 @@ public class EmetricUtil {
 
 		val = String.format("%5s", val);
 		return val;
+
+	}
+	
+	public static String getFormatedStringwithBlankValue(String val, int len){
+		if(val == null){
+			val = "";
+		}
+		val = String.format("%"+len+"s", val);
+		return val;
+
 	}
 	
 

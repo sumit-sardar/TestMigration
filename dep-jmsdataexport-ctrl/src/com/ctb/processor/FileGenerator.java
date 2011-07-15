@@ -122,18 +122,27 @@ public class FileGenerator {
 	private String subSkillIrsInformation = "select sec_objid, sessionid, percent_obtained, points_obtained  from laslink_sec_obj_fact "
 		+ " where studentid = ? and sessionid = ?";
 
-	private String rosterAllItemDetails = " select distinct item.item_id as oasItemId,   tdisi.item_sort_order as itemIndex,   item.item_type as itemType,   item.correct_answer as itemCorrectResponse,   td.item_set_id as subtestId,   td.item_set_name as subtestName "
-		+ " from   item,   item_set sec,   item_Set_category seccat,   item_set_ancestor secisa,   item_Set_item secisi,   item_set td,   item_set_ancestor tdisa,   item_set_item tdisi,   datapoint dp,   test_roster ros,   test_Admin adm,   test_catalog tc,   product prod "
-		+ " where   ros.test_roster_id = ?   and adm.test_admin_id = ros.test_admin_id   and tc.test_catalog_id = adm.test_catalog_id   and prod.product_id = tc.product_id   and item.ACTIVATION_STATUS = 'AC'   and tc.ACTIVATION_STATUS = 'AC'  "
-		+ " and sec.item_Set_id = secisa.ancestor_item_Set_id   and sec.item_set_type = 'RE'   and secisa.item_set_id = secisi.item_Set_id   and item.item_id = secisi.item_id   and tdisi.item_id = item.item_id   and td.item_set_id = tdisi.item_set_id   and td.item_set_type = 'TD' "
-		+ " and tdisa.item_set_id = td.item_set_id   and adm.item_set_id = tdisa.ancestor_item_set_id   and seccat.item_Set_category_id = sec.item_set_category_id   and seccat.item_set_category_level = prod.sec_scoring_item_Set_level   and dp.item_id = item.item_id   and td.sample = 'F' "
-		+ " AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL')   and seccat.framework_product_id = prod.PARENT_PRODUCT_ID group by   sec.item_set_id,   item.item_id,   tdisi.item_sort_order,   item.item_type,   item.correct_answer,   td.item_set_id,   td.item_set_name   "
-		+ " order by   td.item_set_id,   tdisi.item_sort_order";
-	private String rosterAllSRItemsResponseDetails = " select irp.item_id, irp.response from item_response irp,  (select item_id, item_set_id, max(response_seq_num) maxseqnum   from item_response   where test_roster_id = ?  and response is not null  group by item_id, item_set_id ) derived  "
-		+ " where irp.item_id = derived.item_id    and irp.item_set_id = derived.item_set_id    and irp.response_seq_num = derived.maxseqnum    and irp.test_roster_id = ? ";
-	private String rosterAllCRItemsResponseDetails = " select distinct response.item_id,points    from item_response_points irps,  (select irp.item_id, irp.item_response_id     from item_response irp,  (select item_id,    item_set_id,     test_roster_id,    max(response_seq_num) maxseqnum  "
-		+ "  from item_response  where test_roster_id = ?   and response is null     group by item_id, item_set_id, test_roster_id) derived   where irp.item_id = derived.item_id     and irp.item_set_id = derived.item_set_id   and irp.response_seq_num = derived.maxseqnum    and irp.test_roster_id = derived.test_roster_id    and irp.test_roster_id = ? ) response   where response.item_response_id = irps.item_response_id ";
+	
+	private String rosterAllItemDetails = " select dd.*, valid from  ( select distinct item.item_id as oasItemId,   tdisi.item_sort_order as itemIndex,   item.item_type as itemType,   item.correct_answer as itemCorrectResponse,   td.item_set_id as subtestId,  " +
+	"  decode (td.item_set_name,'HABLANDO','Speaking','ESCUCHANDO', 'Listening','LECTURA','Reading','ESCRITURA','Writing', td.item_set_name) as subtestName " +
+	" from   item,   item_set sec,   item_Set_category seccat,   item_set_ancestor secisa,   item_Set_item secisi,   item_set td,   item_set_ancestor tdisa,   item_set_item tdisi,   datapoint dp,   test_roster ros,   test_Admin adm,   test_catalog tc,   product prod,  student_item_set_status sis " +
+	" where   ros.test_roster_id = ?   and adm.test_admin_id = ros.test_admin_id   and tc.test_catalog_id = adm.test_catalog_id   and prod.product_id = tc.product_id   and item.ACTIVATION_STATUS = 'AC'   and tc.ACTIVATION_STATUS = 'AC'  " +
+	" and sec.item_Set_id = secisa.ancestor_item_Set_id   and sec.item_set_type = 'RE'   and secisa.item_set_id = secisi.item_Set_id   and item.item_id = secisi.item_id   and tdisi.item_id = item.item_id   and td.item_set_id = tdisi.item_set_id   and td.item_set_type = 'TD' " +
+	" and tdisa.item_set_id = td.item_set_id   and adm.item_set_id = tdisa.ancestor_item_set_id   and seccat.item_Set_category_id = sec.item_set_category_id   and seccat.item_set_category_level = prod.sec_scoring_item_Set_level   and dp.item_id = item.item_id   and td.sample = 'F' " +
+	" AND (td.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL')   and seccat.framework_product_id = prod.PARENT_PRODUCT_ID  and sis.test_roster_id  = ros.test_roster_id   " +
+	" ) dd , ( select sis.item_set_id , decode(nvl(sis.validation_status, 'IN'), 'IN', 'NC', (decode(nvl(sis.exemptions, 'N'), 'Y',  'NC', ((decode(nvl(sis.absent, 'N'), 'Y', 'NC', 'CO')))))) valid from student_item_set_status sis where test_roster_id = ?" +
+	" )dd1 where dd.subtestId = dd1.item_set_id order by subtestId, itemIndex";
 
+	private String rosterAllSRItemsResponseDetails = " select irp.item_id, irp.response from item_response irp,  (select item_response.item_id item_id, item_set_id, max(response_seq_num) maxseqnum   from item_response , item  where test_roster_id = ?  and item_response.item_id =item.item_id and item.item_type = 'SR'and item.ACTIVATION_STATUS = 'AC' group by item_response.item_id, item_set_id ) derived  " +
+	" where irp.item_id = derived.item_id    and irp.item_set_id = derived.item_set_id    and irp.response_seq_num = derived.maxseqnum    and irp.test_roster_id = ? ";
+
+	private String rosterAllCRItemsResponseDetails = " select distinct response.item_id,points    from item_response_points irps,  (select irp.item_id, irp.item_response_id     from item_response irp,  " +
+	" (select item_response.item_id,    item_set_id,     test_roster_id,    max(response_seq_num) maxseqnum  " +
+	"  from item_response , item where test_roster_id = ?   and item_response.item_id =item.item_id and item.item_type = 'CR' and item.ACTIVATION_STATUS = 'AC' " +
+	"  group by item_response.item_id, item_set_id, test_roster_id) derived   where irp.item_id = derived.item_id     and irp.item_set_id = derived.item_set_id   and irp.response_seq_num = derived.maxseqnum    and irp.test_roster_id = derived.test_roster_id    and irp.test_roster_id = ? ) response   where response.item_response_id = irps.item_response_id ";
+
+	
+	
 	private int districtElementNumber = 0;
 	private int schoolElementNumber = 0;
 	private int classElementNumber = 0;
@@ -155,7 +164,18 @@ public class FileGenerator {
 
 	private Integer customerId = new Integer(ExtractUtil
 			.getDetail("oas.customerId"));
-
+	static TreeMap<String, String> wrongMap = new TreeMap<String, String>();
+	
+	
+	static {
+		
+		wrongMap.put("A", "1");
+		wrongMap.put("B", "2");
+		wrongMap.put("C", "3");
+		wrongMap.put("D", "4");
+	}
+	
+	
 	public static void main(String[] args) {
 		FileGenerator example = new FileGenerator();
 		try {
@@ -299,7 +319,7 @@ public class FileGenerator {
 				createSkillAreaScoreInformation(irscon, tfil, roster);
 
 				createSubSkillAreaScoreInformation(oascon, irscon, tfil, roster);
-				//getItemResponseGrt(oascon, roster);
+				//createItemResponseInformation(oascon, roster,tfil); // for emetric research analysis
 				tfilList.add(tfil);
 				studentCount++;
 			}
@@ -315,78 +335,270 @@ public class FileGenerator {
 		return tfilList;
 	}
 
-	private void getItemResponseGrt(Connection oascon, TestRoster roster)
-	throws SQLException {
-		Map<String, TreeMap<String, TreeMap<String, LinkedList<RostersItem>>>> allitem = new TreeMap<String, TreeMap<String, TreeMap<String, LinkedList<RostersItem>>>>();
-		PreparedStatement ps = null;
+	private void createItemResponseInformation(Connection oascon,
+			TestRoster roster, Tfil tfil) throws SQLException {
+		Map<String, TreeMap<String, LinkedList<RostersItem>>> allItems = getItemResponseGrt(
+				oascon, roster);
+		//System.out.println("roster"+roster.getTestRosterId());
+		ItemResponsesGRT responsesGRT = new ItemResponsesGRT();
+		String speakingMCItems = "";
+		String speakingCRItems = "";
+		
+		String listeningMCItems = "";
+		String readingMCItems = "";
+		
+		String writingMCItems = "";
+		String writingCRItems = "";
+		
+
+		/*******************************************************
+		 * speaking
+		 *******************************************************/
+		if (allItems.get("SPEAKING") != null) {
+			TreeMap<String, LinkedList<RostersItem>> speakingitem = allItems
+					.get("SPEAKING");
+			
+			/// for sr items
+			if (speakingitem.get("SR") != null) {
+				speakingMCItems = constractSRItemResponseString(speakingMCItems, speakingitem); 
+			}
+
+			responsesGRT.setSpeakingMCItems(speakingMCItems);
+
+			if (speakingitem.get("CR") != null) {
+				speakingCRItems = constractCRItemResponseString(speakingCRItems, speakingitem); 
+    		}
+
+			responsesGRT.setSpeakingCRItems(speakingCRItems);
+
+		} else {
+			responsesGRT.setSpeakingMCItems("");
+			responsesGRT.setSpeakingMCItems("");
+		}
+		
+
+		/*******************************************************
+		 * listening
+		 *******************************************************/
+		if (allItems.get("LISTENING") != null) {
+			TreeMap<String, LinkedList<RostersItem>> listeningitem = allItems
+					.get("LISTENING");
+			// / for sr items
+			if (listeningitem.get("SR") != null) {
+				listeningMCItems = constractSRItemResponseString(listeningMCItems, listeningitem); 
+			}
+
+			responsesGRT.setListeningMCItems(listeningMCItems);
+
+		} else {
+			responsesGRT.setListeningMCItems("");
+		}
+		
+	
+		/*******************************************************
+		 * reading
+		 *******************************************************/
+		if (allItems.get("READING") != null) {
+			TreeMap<String, LinkedList<RostersItem>> readingitem = allItems
+					.get("READING");
+			// / for sr items
+			if (readingitem.get("SR") != null) {
+				readingMCItems = constractSRItemResponseString(readingMCItems, readingitem); 
+			}
+
+			responsesGRT.setReadingMCItems(readingMCItems);
+
+		} else {
+			responsesGRT.setReadingMCItems("");
+		}
+		
+		/*******************************************************
+		 * speaking
+		 *******************************************************/
+		if (allItems.get("WRITING") != null) {
+			TreeMap<String, LinkedList<RostersItem>> writingitem = allItems
+					.get("WRITING");
+			
+			/// for sr items
+			if (writingitem.get("SR") != null) {
+				writingMCItems = constractSRItemResponseString(writingMCItems, writingitem); 
+			}
+
+			responsesGRT.setWritingMCItems(writingMCItems);
+
+			if (writingitem.get("CR") != null) {
+				writingCRItems = constractCRItemResponseString(writingCRItems, writingitem); 
+    		}
+
+			responsesGRT.setWritingCRItems(writingCRItems);
+
+		} else {
+			responsesGRT.setWritingMCItems("");
+			responsesGRT.setWritingCRItems("");
+		}
+
+		
+		tfil.setItemResponseGRT(responsesGRT);
+	}
+	
+
+	private String constractCRItemResponseString(String speakingCRItems,
+			TreeMap<String, LinkedList<RostersItem>> speakingitem) {
+		LinkedList<RostersItem> itemlist = speakingitem.get("CR");
+		for (RostersItem item : itemlist) {
+			//System.out.println(item);
+			if (item.isItemValidateForScoring()
+					&& (item.getStudentResponse() != null && item
+							.getStudentResponse().trim().length() > 0)) {
+				speakingCRItems+=item.getStudentResponse();	
+			} else {
+				speakingCRItems += " ";
+			}
+		}
+		return speakingCRItems;
+	}
+	
+	
+
+	private String constractSRItemResponseString(String speakingMCItems, TreeMap<String, LinkedList<RostersItem>> speakingitem ) {
+		LinkedList<RostersItem> itemlist = speakingitem.get("SR");
+		for (RostersItem item : itemlist) {
+			//System.out.println(item);
+			if (item.isItemValidateForScoring()
+					&& (item.getStudentResponse() != null && item
+							.getStudentResponse().trim().length() > 0)) {
+				if (!item.getItemCorrectResponse().equalsIgnoreCase(
+						item.getStudentResponse())) {
+					speakingMCItems += wrongMap.get(item
+							.getStudentResponse().trim());
+				} else {
+					speakingMCItems += item.getStudentResponse().trim();
+				}
+
+			} else {
+				speakingMCItems += " ";
+			}
+		}
+		
+		return speakingMCItems;
+
+	}
+	
+	
+	
+
+	private Map<String,TreeMap<String,  LinkedList<RostersItem>>> getItemResponseGrt(Connection oascon, TestRoster roster) throws SQLException {
+		Map<String,TreeMap<String,  LinkedList<RostersItem>>> allitem =  new TreeMap<String,TreeMap<String,  LinkedList<RostersItem>>> ();
+		PreparedStatement ps = null ;
 		ResultSet rs = null;
-		Map<String, RostersItem> srValueMap = new TreeMap<String, RostersItem>();
-		Map<String, RostersItem> crValueMap = new TreeMap<String, RostersItem>();
-		try {
+		 Map<String,RostersItem> srValueMap = new TreeMap<String,RostersItem>();
+		 Map<String,RostersItem> crValueMap = new TreeMap<String,RostersItem>();
+		try{
 			ps = oascon.prepareStatement(rosterAllItemDetails);
 			ps.setInt(1, roster.getTestRosterId());
-			rs = ps.executeQuery();
+			ps.setInt(2, roster.getTestRosterId());
+			rs = ps.executeQuery(); 
 			rs.setFetchSize(500);
-			while (rs.next()) {
-
+			while (rs.next()){
+				
 				RostersItem item = new RostersItem();
 				item.setItemId(rs.getString(1));
 				item.setItemIndx(rs.getString(2));
 				item.setItemType(rs.getString(3));
-				item.setItemResponse(rs.getString(4));
-				// skiping 5th entry as we do not required
+				item.setItemCorrectResponse(rs.getString(4));
+				item.setItemSetIdTD(rs.getString(5));				
 				item.setItemDescriptio(rs.getString(6));
-				populateMap(allitem, item, srValueMap, crValueMap);
-
+				item.setItemValidationStatusForScoring(rs.getString(7));
+				populateMap(allitem, item, srValueMap,crValueMap );
 			}
-
-			// System.out.println("populateCustomer");
-		} finally {
+			
+			//System.out.println("populateCustomer");
+		}finally {
 			SqlUtil.close(ps, rs);
 		}
-
+		
+		
+		try{
+			ps = oascon.prepareStatement(rosterAllSRItemsResponseDetails);
+			ps.setInt(1, roster.getTestRosterId());
+			ps.setInt(2, roster.getTestRosterId());
+			rs = ps.executeQuery(); rs.setFetchSize(500);
+			while (rs.next()){
+				RostersItem  item= srValueMap.get(rs.getString(1));
+				item.setStudentResponse(rs.getString(2));
+			}
+			
+			//System.out.println("populateCustomer");
+		}finally {
+			SqlUtil.close(ps, rs);
+		}
+		
+		
+		try{
+			ps = oascon.prepareStatement(rosterAllCRItemsResponseDetails);
+			ps.setInt(1, roster.getTestRosterId());
+			ps.setInt(2, roster.getTestRosterId());
+			rs = ps.executeQuery(); rs.setFetchSize(500);
+			while (rs.next()){
+				RostersItem  item= crValueMap.get(rs.getString(1));
+				item.setStudentResponse(rs.getString(2));
+			}
+			
+			//System.out.println("populateCustomer");
+		}finally {
+			SqlUtil.close(ps, rs);
+		}
+		
+		return allitem;
 	}
+	
+
 
 	private void populateMap(
-			Map<String, TreeMap<String, TreeMap<String, LinkedList<RostersItem>>>> allitem,
+			Map<String, TreeMap<String, LinkedList<RostersItem>>> allitem,
 			RostersItem item, Map<String, RostersItem> srValueMap,
 			Map<String, RostersItem> crValueMap) {
-		TreeMap<String, RostersItem> val = null;
+
 		String itemDesc = item.getItemDescriptio().toUpperCase();
 		String itemtype = item.getItemType().toUpperCase();
-
+		if (item.getItemType().trim().equalsIgnoreCase("CR")) {
+			crValueMap.put(item.getItemId(), item);
+		} else {
+			srValueMap.put(item.getItemId(), item);
+		}
 		if (allitem.get(itemDesc) != null) {
-			TreeMap<String, TreeMap<String, LinkedList<RostersItem>>> descmap = allitem
-			.get(itemDesc);
-			if (descmap.get(itemtype) != null) {
-
+			TreeMap<String, LinkedList<RostersItem>> descMap = allitem
+					.get(itemDesc);
+			if (descMap.get(itemtype) != null) {
+				LinkedList<RostersItem> rostersItemList = descMap.get(itemtype);
+				rostersItemList.add(item);
 			} else {
-				TreeMap<String, RostersItem> innerval = new TreeMap<String, RostersItem>();
+				LinkedList<RostersItem> rostersItemList = new LinkedList<RostersItem>();
+				descMap.put(itemtype, rostersItemList);
+				rostersItemList.add(item);
 			}
 
 		} else {
-			TreeMap<String, TreeMap<String, LinkedList<RostersItem>>> descmap = new TreeMap<String, TreeMap<String, LinkedList<RostersItem>>>();
 			TreeMap<String, LinkedList<RostersItem>> typeMap = new TreeMap<String, LinkedList<RostersItem>>();
-			LinkedList<RostersItem> roster = new LinkedList<RostersItem>();
-			roster.add(item);
-			typeMap.put(itemtype, roster);
-			descmap.put(itemtype, typeMap);
-			allitem.put(itemDesc, descmap);
-
+			allitem.put(itemDesc, typeMap);
+			LinkedList<RostersItem> rostersItemList = new LinkedList<RostersItem>();
+			typeMap.put(itemtype, rostersItemList);
+			rostersItemList.add(item);
 		}
 
 	}
 
+
 	private List<TestRoster> getTestRoster(Connection con) throws SQLException {
-		PreparedStatement ps = null;
+		PreparedStatement ps = null ;
 		ResultSet rs = null;
-		List<TestRoster> rosterList = new ArrayList<TestRoster>();
-		try {
+		 List<TestRoster> rosterList = new ArrayList<TestRoster>();
+		try{
 			ps = con.prepareStatement(testRosterSql);
 			ps.setInt(1, customerId);
-			rs = ps.executeQuery();
+			rs = ps.executeQuery(); 
 			rs.setFetchSize(500);
-			while (rs.next()) {
+			while (rs.next()){
 				TestRoster ros = new TestRoster();
 				ros.setTestRosterId(rs.getInt(1));
 				ros.setActivationStatus(rs.getString(2));
@@ -394,12 +606,12 @@ public class FileGenerator {
 				ros.setCustomerId(customerId);
 				ros.setStudentId(rs.getInt(5));
 				ros.setTestAdminId(rs.getInt(6));
-				ros.setStudent(getStudent(con, rs.getInt(5)));
+				ros.setStudent(getStudent(con,rs.getInt(5))); 
 				rosterList.add(ros);
 			}
-
-			// System.out.println("populateCustomer");
-		} finally {
+			
+			//System.out.println("populateCustomer");
+		}finally {
 			SqlUtil.close(ps, rs);
 		}
 		return rosterList;
@@ -1140,16 +1352,23 @@ public class FileGenerator {
 		TreeMap<String, Object[]> treeMap = new TreeMap<String, Object[]>();
 		boolean isComprehensionPopulated = true;
 		boolean isOralPopulated = true;
+		boolean isScaleOverall = true;
+		boolean isProficiencyLevelOverall = true;
+		
 		Integer speaking = 0;
 		Integer listening = 0;
 		Integer reading = 0;
 		Integer writing = 0;
-
+		isInvalidSpeaking = false;
+		isInvalidListeing = false;
+		isInvalidReading = false;
+		isInvalidWriting = false;
 		ProficiencyLevels pl = new ProficiencyLevels();
 		ScaleScores ss = new ScaleScores();
 		SkillAreaNumberCorrect po = new SkillAreaNumberCorrect();
 		SkillAreaPercentCorrect pc = new SkillAreaPercentCorrect();
-
+		String scaleScoreOverall;
+		String profLevelScoreOverall;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		PreparedStatement ps2 = null;
@@ -1161,12 +1380,12 @@ public class FileGenerator {
 			ps2.setInt(2, roster.getTestAdminId());
 			rs2 = ps2.executeQuery();
 			if (rs2.next()) {
-				ss.setOverall(rs2.getString(1));
-				pl.setOverall(rs2.getString(2));
+				scaleScoreOverall = rs2.getString(1);
+				profLevelScoreOverall = rs2.getString(2);
 
 			} else {
-				ss.setOverall("N/A");
-				pl.setOverall(" ");
+				scaleScoreOverall = "";
+				profLevelScoreOverall ="";
 			}
 
 		} finally {
@@ -1303,9 +1522,10 @@ public class FileGenerator {
 			po.setSpeaking("");
 			pl.setSpeaking("");
 			pc.setSpeaking("");
-			isComprehensionPopulated = false;
 			isOralPopulated = false;
 			isInvalidSpeaking = true;
+			isProficiencyLevelOverall = false;
+			isScaleOverall = false;
 
 		}
 		if (listening > 0) {
@@ -1315,37 +1535,34 @@ public class FileGenerator {
 			isComprehensionPopulated = false;
 			isOralPopulated = false;
 			isInvalidListeing = true;
+			isProficiencyLevelOverall = false;
+			isScaleOverall = false;
 		}
 		if (reading > 0) {
 			po.setReading("");
 			pl.setReading("");
 			pc.setReading("");
 			isComprehensionPopulated = false;
-			isOralPopulated = false;
 			isInvalidReading = true;
+			isProficiencyLevelOverall = false;
+			isScaleOverall = false;
 		}
 		if (writing > 0) {
 			po.setWriting("");
 			pl.setWriting("");
 			pc.setWriting("");
-			isComprehensionPopulated = false;
-			isOralPopulated = false;
 			isInvalidWriting = true;
+			isProficiencyLevelOverall = false;
+			isScaleOverall = false;
 		}
 		if (isComprehensionPopulated) {
 			Object[] val = treeMap.get("comprehension");
 			if (val != null) {
-				if (listening > 0 || reading > 0 ) {
-					ss.setComprehension("N/A");
-				} else if (writing > 0 || speaking > 0) {
-					ss.setComprehension("");
-				} else {
 					ss.setComprehension(val[1].toString());
 					pl.setComprehension(val[2].toString());
 				}
-
-			} else {
-				ss.setComprehension("N/A");
+			 else {
+				ss.setComprehension(" ");
 			}
 
 		} else {
@@ -1355,21 +1572,38 @@ public class FileGenerator {
 		if (isOralPopulated) {
 			Object[] val = treeMap.get("oral");
 			if (val != null) {
-				if (speaking > 0 || listening > 0) {
-					ss.setOral("N/A");
-				} else if (writing > 0 || reading > 0) {
-					ss.setOral("");
-				} else {
-					ss.setOral(val[1].toString());
-					pl.setOral(val[2].toString());
-				}
+				ss.setOral(val[1].toString());
+				pl.setOral(val[2].toString());
 			} else {
-				ss.setOral("N/A");
+				ss.setOral(" ");
 			}
-
 		} else {
 			ss.setOral("N/A");
 		}
+		
+		if (isScaleOverall) {
+
+			if(scaleScoreOverall == null){
+				scaleScoreOverall= "";
+			}
+			ss.setOverall(scaleScoreOverall);
+
+		} else {
+			ss.setOverall("N/A");
+		}
+		
+		if (isProficiencyLevelOverall) {
+
+			if(profLevelScoreOverall == null){
+				profLevelScoreOverall= "";
+			}
+			pl.setOverall(profLevelScoreOverall);
+
+
+		} else {
+			pl.setOverall("");
+		}		
+		
 
 		tfil.setScaleScores(ss);
 		tfil.setProficiencyLevels(pl);
@@ -1391,10 +1625,10 @@ public class FileGenerator {
 		HashMap<String, String> pointsObtained = new HashMap<String, String>();
 		HashMap<String, String> percentObtained = new HashMap<String, String>();
 		
-		isInvalidSpeaking = false;
-		isInvalidListeing = false;
-		isInvalidReading = false;
-		isInvalidWriting = false;
+		//isInvalidSpeaking = false;
+		//isInvalidListeing = false;
+		//isInvalidReading = false;
+		//isInvalidWriting = false;
 
 		try {
 			ps2 = oasCon.prepareStatement(subSkillItemAreaInformation);
@@ -1442,7 +1676,7 @@ public class FileGenerator {
 						.toString());
 			} else if (subSkillName.equalsIgnoreCase("Tell a Story") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subPercCorrect.setTellAStory(percentObtained.get(x).toString());
-			} else if (subSkillName.equalsIgnoreCase("Listen for Information")) {
+			} else if (subSkillName.equalsIgnoreCase("Listen for Information")&& fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory)) {
 				subPercCorrect.setListenForInformation(percentObtained.get(x)
 						.toString());
 			} else if (subSkillName.equalsIgnoreCase("Listen in the Classroom") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
@@ -1456,7 +1690,7 @@ public class FileGenerator {
 						.toString());
 			} else if (subSkillName.equalsIgnoreCase("Read Words") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {
 				subPercCorrect.setReadWords(percentObtained.get(x).toString());
-			} else if (subSkillName.equalsIgnoreCase("Read for Understanding")) {
+			} else if (subSkillName.equalsIgnoreCase("Read for Understanding")&& fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory)) {
 				subPercCorrect.setReadForUnderStanding(percentObtained.get(x)
 						.toString());
 			} else if (subSkillName.equalsIgnoreCase("Use Conventions") && fillValidSubSkillScore(subSkillName,subSkillAreaItemCategory) ) {

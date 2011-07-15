@@ -2,10 +2,13 @@ package com.ctb.dto;
 
 public class RostersItem {
 	private String itemId = "";
+	private String itemSetIdTD = "";
 	private String itemType = "";
 	private String itemIndx = "";
-	private String itemResponse = "";
+	private String itemCorrectResponse = "";
+	private String studentResponse = "";
 	private String itemDescriptio = "";
+	private Boolean isItemValidateForScoring = false;
 	
 	/**
 	 * @return the itemId
@@ -45,18 +48,6 @@ public class RostersItem {
 		this.itemIndx = itemIndx;
 	}
 	/**
-	 * @return the itemResponse
-	 */
-	public String getItemResponse() {
-		return itemResponse;
-	}
-	/**
-	 * @param itemResponse the itemResponse to set
-	 */
-	public void setItemResponse(String itemResponse) {
-		this.itemResponse = itemResponse;
-	}
-	/**
 	 * @return the itemDescriptio
 	 */
 	public String getItemDescriptio() {
@@ -67,6 +58,69 @@ public class RostersItem {
 	 */
 	public void setItemDescriptio(String itemDescriptio) {
 		this.itemDescriptio = itemDescriptio;
+	}
+	/**
+	 * @return the itemSetIdTD
+	 */
+	public String getItemSetIdTD() {
+		return itemSetIdTD;
+	}
+	/**
+	 * @param itemSetIdTD the itemSetIdTD to set
+	 */
+	public void setItemSetIdTD(String itemSetIdTD) {
+		this.itemSetIdTD = itemSetIdTD;
+	}
+	/**
+	 * @return the itemCorrectResponse
+	 */
+	public String getItemCorrectResponse() {
+		return itemCorrectResponse;
+	}
+	/**
+	 * @param itemCorrectResponse the itemCorrectResponse to set
+	 */
+	public void setItemCorrectResponse(String itemCorrectResponse) {
+		this.itemCorrectResponse = itemCorrectResponse;
+	}
+	/**
+	 * @return the studentResponse
+	 */
+	public String getStudentResponse() {
+		return studentResponse;
+	}
+	/**
+	 * @param studentResponse the studentResponse to set
+	 */
+	public void setStudentResponse(String studentResponse) {
+		this.studentResponse = studentResponse;
+	}
+	/**
+	 * @return the itemValidationStatus
+	 */
+	public boolean isItemValidateForScoring() {
+		return isItemValidateForScoring;
+	}
+	/**
+	 * @param itemValidationStatus the itemValidationStatus to set
+	 */
+	public void setItemValidationStatusForScoring(String itemValidationStatus) {
+		if(itemValidationStatus.equalsIgnoreCase("NC"))
+			this.isItemValidateForScoring = false;
+		else
+			this.isItemValidateForScoring = true;
+	}
+	
+	
+	@Override
+	public String toString() {
+		
+		String val = "itemId["+itemId+"] itemSetIdTD:["+itemSetIdTD+"]itemType:["
+		+itemType+"] itemCorrectResponse:["+itemCorrectResponse+"] studentResponse:["+studentResponse
+		+"] itemDescription["+ itemDescriptio+"] isItemValidateForScoring:["+isItemValidateForScoring;
+		
+		
+		return val;
 	}
 
 }
