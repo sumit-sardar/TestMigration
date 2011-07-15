@@ -161,7 +161,7 @@ public class EmetricUtil {
 			return val;
 		}else{
 			val = "";
-			val = String.format("%"+len+"s", val).replace(" ", "0");
+			val = String.format("%"+len+"s", val);
 			return val;
 		}
 
