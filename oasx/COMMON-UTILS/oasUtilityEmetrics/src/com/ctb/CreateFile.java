@@ -305,7 +305,7 @@ public class CreateFile {
 
 				tfil.setModelLevel(customerModelLevelValue);
 				tfil.setState(this.customerState);
-				System.out.println("roster id "+ roster.getTestRosterId() +" : : "+ roster.getTestAdminId());
+				//System.out.println("roster id "+ roster.getTestRosterId() +" : : "+ roster.getTestAdminId());
 				// org node
 				createOrganization(oascon, tfil, roster.getStudentId(),
 						districtMap, schoolMap, classMap, orderFile);
@@ -462,7 +462,7 @@ public class CreateFile {
 	private String constractSRItemResponseString(String speakingMCItems, TreeMap<String, LinkedList<RostersItem>> speakingitem ) {
 		LinkedList<RostersItem> itemlist = speakingitem.get("SR");
 		for (RostersItem item : itemlist) {
-			System.out.println(item);
+			//System.out.println(item);
 			if (item.isItemValidateForScoring()
 					&& (item.getStudentResponse() != null && item
 							.getStudentResponse().trim().length() > 0)) {
