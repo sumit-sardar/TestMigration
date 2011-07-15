@@ -1391,10 +1391,10 @@ public class FileGenerator {
 		HashMap<String, String> pointsObtained = new HashMap<String, String>();
 		HashMap<String, String> percentObtained = new HashMap<String, String>();
 		
-		boolean subSpeakingInvalid = false;
-		boolean subListeningInvalid = false;
-		boolean subReadingInvalid = false;
-		boolean subWritingInvalid = false;
+		isInvalidSpeaking = false;
+		isInvalidListeing = false;
+		isInvalidReading = false;
+		isInvalidWriting = false;
 
 		try {
 			ps2 = oasCon.prepareStatement(subSkillItemAreaInformation);
