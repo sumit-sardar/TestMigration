@@ -59,7 +59,7 @@ public class ItemResponsesGRT
 		val += EmetricUtil.getFormatedStringwithBlankValue(readingMCItems,35 );
 		val += EmetricUtil.getFormatedStringwithBlankValue(writingMCItems,20 );
 		val += EmetricUtil.getFormatedStringwithBlankValue(writingCRItems,5 );
-		val += EmetricUtil.getFormatedStringwithBlankValue(" ",25 );
+		val += EmetricUtil.getFormatedStringwithBlankValue("",25 );
 		
 		return val;
 	}

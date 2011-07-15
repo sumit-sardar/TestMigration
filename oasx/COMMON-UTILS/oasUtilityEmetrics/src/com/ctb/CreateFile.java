@@ -271,8 +271,8 @@ public class CreateFile {
 		Connection irscon = null;
 
 		try {
-			oascon = SqlUtil.openOASDBcon();
-			irscon = SqlUtil.openIRSDBcon();
+			oascon = SqlUtil.openOASDBconnectionForResearch();
+			irscon = SqlUtil.openIRSDBconnectionForResearch();
 			generateModelLevel(oascon);
 			customerDemoList = getCustomerDemographic(oascon);
 			Set<CustomerDemographic> set = new HashSet<CustomerDemographic>(
