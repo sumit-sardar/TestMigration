@@ -43,7 +43,7 @@ public class SchedulingStudent extends Student
     public void setPriorAdmin(Integer priorAdmin) {
         this.priorAdmin = priorAdmin;
     }
-   // added for student pacing
+   // added for student pacing defect #66602
     public String getHasAccommodations() {
         String result = "false";
         if( "T".equals(this.screenMagnifier) ||
@@ -53,6 +53,8 @@ public class SchedulingStudent extends Student
             "T".equals(this.untimedTest) ||
             "T".equals(this.highLighter) ||
             "T".equals(this.extendedTimeAccom) ||
+            (this.extendedTimeAccom != null &&
+            !this.extendedTimeAccom.equals("")) ||
             this.questionBackgroundColor != null ||
             this.questionFontColor != null ||
             this.questionFontSize != null ||
