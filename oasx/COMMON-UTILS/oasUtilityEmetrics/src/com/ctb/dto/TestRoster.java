@@ -17,6 +17,7 @@ public class TestRoster implements Serializable{
 	private Student student;
 	private Integer customerId;
 	private Integer studentId;
+	private Integer  testAdminId;
 	//private Integer orgNodeId;
 	private Set<StudentItemSetStatus> studentItemSetStatus = new HashSet<StudentItemSetStatus> ();
 	
@@ -109,6 +110,18 @@ public class TestRoster implements Serializable{
 	 */
 	public void setStudentId(Integer studentId) {
 		this.studentId = studentId;
+	}
+	/**
+	 * @return the testAdminId
+	 */
+	public Integer getTestAdminId() {
+		return testAdminId;
+	}
+	/**
+	 * @param testAdminId the testAdminId to set
+	 */
+	public void setTestAdminId(Integer testAdminId) {
+		this.testAdminId = testAdminId;
 	}
 	
 	

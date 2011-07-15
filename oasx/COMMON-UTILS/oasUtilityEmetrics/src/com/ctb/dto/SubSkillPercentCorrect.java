@@ -1,24 +1,26 @@
 package com.ctb.dto;
 
+import com.ctb.utils.EmetricUtil;
+
 
 
 public class SubSkillPercentCorrect 
 {
-	private String speakInWords;
-	private String speakSentences;
-	private String makeConversations;
-	private String tellAStory;
-	private String listenForInformation;
-	private String listenInTheClassroom;
-	private String listenAndComprehend;
-	private String analyzeWords;
-	private String readWords;
-	private String readForUnderStanding;
-	private String useConventions;
-	private String writeAbout;
-	private String writeWhy;
-	private String writeInDetail;
-	private String unused;
+	private String speakInWords= "";
+	private String speakSentences= "";
+	private String makeConversations= "";
+	private String tellAStory= "";
+	private String listenForInformation= "";
+	private String listenInTheClassroom= "";
+	private String listenAndComprehend= "";
+	private String analyzeWords= "";
+	private String readWords= "";
+	private String readForUnderStanding= "";
+	private String useConventions= "";
+	private String writeAbout= "";
+	private String writeWhy= "";
+	private String writeInDetail= "";
+	private String unused= "";
 	public String getSpeakInWords() {
 		return speakInWords;
 	}
@@ -108,5 +110,27 @@ public class SubSkillPercentCorrect
 	}
 	public void setUnused(String unused) {
 		this.unused = unused;
+	}
+	public String toString(){
+		String val="";
+		val += EmetricUtil.getNumberFormatedString(speakInWords)
+		+EmetricUtil.getNumberFormatedString(speakSentences) 
+		+EmetricUtil.getNumberFormatedString(makeConversations) 
+		+EmetricUtil.getNumberFormatedString(tellAStory)
+		+EmetricUtil.getNumberFormatedString(listenForInformation) 
+		+EmetricUtil.getNumberFormatedString(listenInTheClassroom) 
+		+EmetricUtil.getNumberFormatedString(listenAndComprehend) 
+		+EmetricUtil.getNumberFormatedString(analyzeWords) 
+		+EmetricUtil.getNumberFormatedString(readWords) 
+		+EmetricUtil.getNumberFormatedString(readForUnderStanding) 
+		+EmetricUtil.getNumberFormatedString(useConventions) 
+		+EmetricUtil.getNumberFormatedString(writeAbout) 
+		+EmetricUtil.getNumberFormatedString(writeWhy) 
+		+EmetricUtil.getNumberFormatedString(writeInDetail) 
+		+EmetricUtil.getFormatedString(unused,65);
+	
+
+		return val;
+		
 	}
 }

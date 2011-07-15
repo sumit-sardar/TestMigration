@@ -1,16 +1,18 @@
 package com.ctb.dto;
 
+import com.ctb.utils.EmetricUtil;
+
 
 
 
 public class SkillAreaNumberCorrect 
 {
 
-	private String speaking;
-	private String listening;
-	private String reading;
-	private String writing;
-	private String unused;
+	private String speaking= "";
+	private String listening= "";
+	private String reading= "";
+	private String writing= "";
+	private String unused= "";
 		
 
 	public String getSpeaking() {
@@ -51,6 +53,18 @@ public class SkillAreaNumberCorrect
 
 	public void setUnused(String unused) {
 		this.unused = unused;
+	}
+	public String toString(){
+		String val="";
+		val += EmetricUtil.getFormatedNumberCorrectString(speaking, 3)
+		+EmetricUtil.getFormatedNumberCorrectString(listening, 3) 
+		+EmetricUtil.getFormatedNumberCorrectString(reading, 3) 
+		+EmetricUtil.getFormatedNumberCorrectString(writing, 3) 
+		+EmetricUtil.getFormatedNumberCorrectString(unused, 9);
+	
+
+		return val;
+		
 	}
 }
 

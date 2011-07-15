@@ -1,16 +1,18 @@
 package com.ctb.dto;
 
+import com.ctb.utils.EmetricUtil;
+
 
 public class ProficiencyLevels 
 {
 	
-	private String speaking;
-	private String listening;
-	private String reading;
-	private String writing;
-	private String overall;
-	private String comprehension;
-	private String oral;
+	private String speaking ="";
+	private String listening="";
+	private String reading="";
+	private String writing="";
+	private String overall="";
+	private String comprehension="";
+	private String oral="";
 
 	public String getSpeaking() {
 		return speaking;
@@ -68,5 +70,19 @@ public class ProficiencyLevels
 		this.oral = oral;
 	}
 	
+	public String toString(){
+		
+		String val="";
+		val += EmetricUtil.getFormatedStringProficiency(speaking, 1)
+		+EmetricUtil.getFormatedStringProficiency(listening, 1) 
+		+EmetricUtil.getFormatedStringProficiency(reading, 1) 
+		+EmetricUtil.getFormatedStringProficiency(writing, 1) 
+		+EmetricUtil.getFormatedStringProficiency(overall, 1) 
+		+EmetricUtil.getFormatedStringProficiency(comprehension, 1) 
+		+EmetricUtil.getFormatedStringProficiency(oral, 1) ;
+
+		return val;
+		
+	}
 	
 }

@@ -1,24 +1,18 @@
 package com.ctb.dto;
 
+import com.ctb.utils.EmetricUtil;
+
 
 
 
 public class ItemResponsesGRT
 {
-	
-	private String itemResponses;
 	private String speakingMCItems;
 	private String speakingCRItems;
 	private String listeningMCItems;
 	private String readingMCItems;
 	private String writingMCItems;
 	private String writingCRItems;
-	public String getItemResponses() {
-		return itemResponses;
-	}
-	public void setItemResponses(String itemResponses) {
-		this.itemResponses = itemResponses;
-	}
 	public String getSpeakingMCItems() {
 		return speakingMCItems;
 	}
@@ -55,4 +49,19 @@ public class ItemResponsesGRT
 	public void setWritingCRItems(String writingCRItems) {
 		this.writingCRItems = writingCRItems;
 	}
+	@Override
+	public String toString() {
+		String val = "";
+		
+		val += EmetricUtil.getFormatedStringwithBlankValue(speakingMCItems,10 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(speakingCRItems,10 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(listeningMCItems,20 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(readingMCItems,35 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(writingMCItems,20 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(writingCRItems,5 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(" ",25 );
+		
+		return val;
+	}
+	
 }

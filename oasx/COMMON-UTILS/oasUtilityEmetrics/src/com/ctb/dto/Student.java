@@ -1,7 +1,5 @@
 package com.ctb.dto;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,135 +21,157 @@ public class Student {
 	private Integer customerId;
 	private String testPurpose;
 	private String extStudentId;
-	
+
 	private Set<StudentContact> studentContact = new HashSet<StudentContact>();
 	private Set<StudentDemographic> studentDemographic = new HashSet<StudentDemographic>();
 	private Set<TestRoster> studentRoster = new HashSet<TestRoster>();
 	private Accomodations accomodations;
-	
 
-
-	
 	/**
 	 * @return the studentroster
 	 */
 	public Set<TestRoster> getStudentRoster() {
 		return studentRoster;
 	}
+
 	/**
-	 * @param studentroster the studentroster to set
+	 * @param studentroster
+	 *            the studentroster to set
 	 */
 	public void setStudentRoster(Set<TestRoster> studentRoster) {
 		this.studentRoster = studentRoster;
 	}
+
 	/**
 	 * @return the studentId
 	 */
-	
+
 	public Integer getStudentId() {
 		return studentId;
 	}
+
 	/**
-	 * @param studentId the studentId to set
+	 * @param studentId
+	 *            the studentId to set
 	 */
 	public void setStudentId(Integer studentId) {
 		this.studentId = studentId;
 	}
+
 	/**
 	 * @return the firstName
 	 */
-	@PositionalField(initialPosition = 325, finalPosition =339)
+	@PositionalField(initialPosition = 325, finalPosition = 339)
 	public String getFirstName() {
 		return firstName;
 	}
+
 	/**
-	 * @param firstName the firstName to set
+	 * @param firstName
+	 *            the firstName to set
 	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
+
 	/**
 	 * @return the middleName
 	 */
-	@PositionalField(initialPosition = 340, finalPosition =340)
+	@PositionalField(initialPosition = 340, finalPosition = 340)
 	public String getMiddleName() {
 		return middleName;
 	}
+
 	/**
-	 * @param middleName the middleName to set
+	 * @param middleName
+	 *            the middleName to set
 	 */
 	public void setMiddleName(String middleName) {
 		this.middleName = middleName;
 	}
+
 	/**
 	 * @return the lastName
 	 */
-	@PositionalField(initialPosition = 305, finalPosition =324)
+	@PositionalField(initialPosition = 305, finalPosition = 324)
 	public String getLastName() {
 		return lastName;
 	}
+
 	/**
-	 * @param lastName the lastName to set
+	 * @param lastName
+	 *            the lastName to set
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+
 	/**
 	 * @return the birthDate
 	 */
-	@PositionalField(initialPosition = 341, finalPosition =352)
+	@PositionalField(initialPosition = 341, finalPosition = 352)
 	public Date getBirthDate() {
-		
+
 		return birthDate;
 	}
+
 	/**
-	 * @param birthDate the birthDate to set
+	 * @param birthDate
+	 *            the birthDate to set
 	 */
 	public void setBirthDate(Date birthDate) {
-		/*if(birthDate!= null){
-			System.out.println("BirthDate" + birthDate);
-		String DATE_FORMAT = "MMDDYY"; 
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		sdf.format(birthDate);
-		System.out.println("BirthDate" + birthDate);
-		}*/
+		/*
+		 * if(birthDate!= null){ System.out.println("BirthDate" + birthDate);
+		 * String DATE_FORMAT = "MMDDYY"; SimpleDateFormat sdf = new
+		 * SimpleDateFormat(DATE_FORMAT); sdf.format(birthDate);
+		 * System.out.println("BirthDate" + birthDate); }
+		 */
 		this.birthDate = birthDate;
-		
+
 	}
+
 	/**
 	 * @return the ethnicity
 	 */
 	public String getEthnicity() {
 		return ethnicity;
 	}
+
 	/**
-	 * @param ethnicity the ethnicity to set
+	 * @param ethnicity
+	 *            the ethnicity to set
 	 */
 	public void setEthnicity(String ethnicity) {
 		this.ethnicity = ethnicity;
 	}
+
 	/**
 	 * @return the gender
 	 */
-	@PositionalField(initialPosition = 353, finalPosition =353)
+	@PositionalField(initialPosition = 353, finalPosition = 353)
 	public String getGender() {
 		return gender;
 	}
+
 	/**
-	 * @param gender the gender to set
+	 * @param gender
+	 *            the gender to set
 	 */
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
+
 	/**
 	 * @return the grade
 	 */
-	@PositionalField(initialPosition = 77, finalPosition =78)
+	@PositionalField(initialPosition = 77, finalPosition = 78)
 	public String getGrade() {
 		return grade;
 	}
+
 	/**
-	 * @param grade the grade to set
+	 * @param grade
+	 *            the grade to set
 	 */
 	public void setGrade(String grade) {
 		this.grade = grade;
@@ -163,8 +183,10 @@ public class Student {
 	public String getTestPurpose() {
 		return testPurpose;
 	}
+
 	/**
-	 * @param testPurpose the testPurpose to set
+	 * @param testPurpose
+	 *            the testPurpose to set
 	 */
 	public void setTestPurpose(String testPurpose) {
 		this.testPurpose = testPurpose;
@@ -176,66 +198,76 @@ public class Student {
 	public Integer getCustomerId() {
 		return customerId;
 	}
+
 	/**
-	 * @param customerId the customerId to set
+	 * @param customerId
+	 *            the customerId to set
 	 */
 	public void setCustomerId(Integer customerId) {
 		this.customerId = customerId;
 	}
+
 	/**
 	 * @return the studentContact
 	 */
-	@PositionalField(initialPosition = 79, finalPosition =110)
+	@PositionalField(initialPosition = 79, finalPosition = 110)
 	public Set<StudentContact> getStudentContact() {
 		return studentContact;
 	}
-	
+
 	/**
-	 * @param studentContact the studentContact to set
+	 * @param studentContact
+	 *            the studentContact to set
 	 */
 	public void setStudentContact(Set<StudentContact> studentContact) {
 		this.studentContact = studentContact;
 	}
+
 	/**
 	 * @return the studentDemographic
 	 */
-	
+
 	public Set<StudentDemographic> getStudentDemographic() {
 		return studentDemographic;
 	}
+
 	/**
-	 * @param studentDemographic the studentDemographic to set
+	 * @param studentDemographic
+	 *            the studentDemographic to set
 	 */
 	public void setStudentDemographic(Set<StudentDemographic> studentDemographic) {
 		this.studentDemographic = studentDemographic;
 	}
+
 	/**
 	 * @return the accomodations
 	 */
-	@PositionalField(initialPosition = 423, finalPosition =506)
+	@PositionalField(initialPosition = 423, finalPosition = 506)
 	public Accomodations getAccomodations() {
 		return accomodations;
 	}
+
 	/**
-	 * @param accomodations the accomodations to set
+	 * @param accomodations
+	 *            the accomodations to set
 	 */
 	public void setAccomodations(Accomodations accomodations) {
 		this.accomodations = accomodations;
 	}
+
 	/**
 	 * @return the extStudentId
 	 */
 	public String getExtStudentId() {
 		return extStudentId;
 	}
+
 	/**
-	 * @param extStudentId the extStudentId to set
+	 * @param extStudentId
+	 *            the extStudentId to set
 	 */
 	public void setExtStudentId(String extStudentId) {
 		this.extStudentId = extStudentId;
 	}
 
-	
-
-	
 }

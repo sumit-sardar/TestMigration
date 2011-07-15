@@ -1,12 +1,15 @@
 package com.ctb.utils;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class EmetricUtil {
 	private static final DateFormat birthDateFormat = new SimpleDateFormat(
-			"yyyy-MM-dd");
+	"yyyy-MM-dd");
 
 	public static String calculateAge(Date birthDate) {
 		Integer totalMonths = 0;
@@ -54,8 +57,8 @@ public class EmetricUtil {
 			} else {
 				phoneNumber = String.format("%03d-%03d-%04d Ext:", new Integer(
 						phoneNumber.substring(0, 3)), new Integer(phoneNumber
-						.substring(3, 6)), new Integer(phoneNumber.substring(6,
-						phoneNumber.length())));
+								.substring(3, 6)), new Integer(phoneNumber.substring(6,
+										phoneNumber.length())));
 				return phoneNumber;
 
 			}
@@ -138,6 +141,80 @@ public class EmetricUtil {
 			'0');
 		}
 		return grade;
+	}
+	
+	public static String getFormatedString(String val, int len){
+		if(val != null && val.trim().length() !=0){
+			val = String.format("%"+len+"s", val).replace(" ", "0");
+			return val;
+		}else{
+			val = "";
+			val = String.format("%"+len+"s", val);
+			return val;
+		}
+
+		
+	}
+	public static String getFormatedStringScaleScore(String val, int len){
+		if(val != null && val.trim().length() !=0){
+			val = String.format("%"+len+"s", val).replace(" ", "0");
+			return val;
+		}else{
+			val = "";
+			val = String.format("%"+len+"s", val).replace(" ", "0");
+			return val;
+		}
+
+		
+	}
+	
+	public static String getFormatedNumberCorrectString(String val, int len){
+		if(val != null && val.trim().length()!=0){
+			val = String.format("%"+len+"s", val).replace(" ", "0");
+			return val;
+		}else{
+			val = "";
+			val = String.format("%"+len+"s", val);
+			return val;
+		}
+	}
+	
+	public static String getFormatedStringProficiency(String val, int len){
+		if(val != null){
+			val = String.format("%"+len+"s", val);
+			return val;
+		}else {
+			val = "";
+			val = String.format("%"+len+"s", val);
+			return val;
+		}
+
+	}
+	
+	public static String getNumberFormatedString(String val) {
+		if (val != null && val.trim().length() != 0) {
+			DecimalFormat df = new DecimalFormat("##0.0");
+			try {
+				val = df.format(Double.parseDouble(val.trim()));
+			} catch (NumberFormatException e) {
+				val = "0.0";
+			}
+		} else {
+			val = "";
+		}
+
+		val = String.format("%5s", val);
+		return val;
+
+	}
+	
+	public static String getFormatedStringwithBlankValue(String val, int len){
+		if(val == null){
+			val = "";
+		}
+		val = String.format("%"+len+"s", val);
+		return val;
+
 	}
 	
 

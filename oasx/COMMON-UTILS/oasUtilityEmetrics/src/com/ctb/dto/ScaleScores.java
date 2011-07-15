@@ -1,18 +1,20 @@
 package com.ctb.dto;
 
+import com.ctb.utils.EmetricUtil;
+
 
 
 
 public class ScaleScores 
 {
 
-	private String speaking;
-	private String listening;
-	private String reading;
-	private String writing;
-	private String overall;
-	private String comprehension;
-	private String oral;
+	private String speaking = "";
+	private String listening= "";
+	private String reading= "";
+	private String writing= "";
+	private String overall= "";
+	private String comprehension= "";
+	private String oral= "";
 
 	public String getSpeaking() {
 		return speaking;
@@ -68,6 +70,20 @@ public class ScaleScores
 
 	public void setOral(String oral) {
 		this.oral = oral;
+	}
+	
+	public String toString(){
+		String val="";
+		val += EmetricUtil.getFormatedStringScaleScore(speaking, 3)
+		+EmetricUtil.getFormatedStringScaleScore(listening, 3) 
+		+EmetricUtil.getFormatedStringScaleScore(reading, 3) 
+		+EmetricUtil.getFormatedStringScaleScore(writing, 3) 
+		+EmetricUtil.getFormatedStringScaleScore(overall, 3) 
+		+EmetricUtil.getFormatedStringScaleScore(comprehension, 3) 
+		+EmetricUtil.getFormatedStringScaleScore(oral, 3) ;
+
+		return val;
+		
 	}
 	
 	
