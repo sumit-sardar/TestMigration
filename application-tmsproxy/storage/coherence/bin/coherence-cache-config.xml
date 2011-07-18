@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE cache-config SYSTEM "cache-config.dtd">
+
+<cache-config>
+    <caching-scheme-mapping>
+        <!--    Caches with any name will be created as tiered.    -->
+        <cache-mapping>
+                <cache-name>*</cache-name>
+                <scheme-name>TieredScheme</scheme-name>
+        </cache-mapping>
+    </caching-scheme-mapping>
+    <caching-schemes>  
+    	<!--        Limited-size memory scheme definition -->
+        <local-scheme>
+        	<scheme-name>LimitedMemoryScheme</scheme-name>
+        	<high-units>100000</high-units>
+        </local-scheme>       
+        <!--        Local Disk storage scheme definition -->
+        <external-scheme>
+        	<scheme-name>DiskPersistentScheme</scheme-name>
+        	<lh-file-manager>
+        		<directory>.</directory>
+        		<file-name>{cache-name}.store</file-name>
+        	</lh-file-manager>
+        </external-scheme>      
+        <!--        Default Distributed caching scheme.        -->
+        <distributed-scheme>            
+            <scheme-name>DistributedScheme</scheme-name>
+            <service-name>PartitionedCache</service-name>            
+            <backing-map-scheme>                
+                <external-scheme>                    
+                    <scheme-ref>DiskPersistentScheme</scheme-ref>
+                </external-scheme>
+            </backing-map-scheme>
+            <backup-count>1</backup-count>
+        </distributed-scheme>
+        <!--        2-tier (memory, disk) scheme definition -->
+        <near-scheme>
+        	<scheme-name>TieredScheme</scheme-name>
+        	<front-scheme>    
+        		<local-scheme>
+        			<scheme-ref>LimitedMemoryScheme</scheme-ref>
+        		</local-scheme>  
+        	</front-scheme>  
+        	<back-scheme>
+				<distributed-scheme>
+					<scheme-ref>DistributedScheme</scheme-ref>
+				</distributed-scheme>
+			</back-scheme>
+		</near-scheme> 
+    </caching-schemes>
+</cache-config>

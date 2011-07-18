@@ -156,6 +156,9 @@ set LOGGING_MANAGER=-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogMa
 :noJuliManager
 set JAVA_OPTS=%JAVA_OPTS% %LOGGING_MANAGER%
 
+set coherence_home=%~dp0\..\..\..\storage\coherence
+set JAVA_OPTS=-Dtangosol.coherence.cacheconfig=%coherence_home%\bin\coherence-cache-config.xml %JAVA_OPTS%
+
 rem ----- Execute The Requested Command ---------------------------------------
 
 echo Using CATALINA_BASE:   "%CATALINA_BASE%"

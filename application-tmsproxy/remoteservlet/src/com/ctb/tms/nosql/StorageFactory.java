@@ -5,7 +5,7 @@ public class StorageFactory {
 	private static final String CASSANDRA = "CASSANDRA";
 	private static final String COHERENCE = "COHERENCE";
 	
-	private static String store = CASSANDRA;
+	private static String store = COHERENCE;
 	
 	private static OASNoSQLSource oasSource;
 	private static OASNoSQLSink oasSink;
@@ -15,7 +15,8 @@ public class StorageFactory {
 	public static OASNoSQLSource getOASSource() {
 		if(oasSource == null) {
 			if(COHERENCE.equals(store)) {
-				//
+				System.out.println("*****  Using OASCoherenceSource");
+				oasSource = new OASCoherenceSource();
 			} else if (CASSANDRA.equals(store)) {
 				oasSource = new OASHectorSource();
 			} else {
@@ -29,7 +30,8 @@ public class StorageFactory {
 	public static OASNoSQLSink getOASSink() {
 		if(oasSink == null) {
 			if(COHERENCE.equals(store)) {
-				//
+				System.out.println("*****  Using OASCoherenceSink");
+				oasSink = new OASCoherenceSink();
 			} else if (CASSANDRA.equals(store)) {
 				oasSink = new OASHectorSink();
 			} else {
@@ -43,7 +45,8 @@ public class StorageFactory {
 	public static ADSNoSQLSource getADSSource() {
 		if(adsSource == null) {
 			if(COHERENCE.equals(store)) {
-				//
+				System.out.println("*****  Using ADSCoherenceSource");
+				adsSource = new ADSCoherenceSource();
 			} else if (CASSANDRA.equals(store)) {
 				adsSource = new ADSHectorSource();
 			} else {
@@ -57,7 +60,8 @@ public class StorageFactory {
 	public static ADSNoSQLSink getADSSink() {
 		if(adsSink == null) {
 			if(COHERENCE.equals(store)) {
-				//
+				System.out.println("*****  Using ADSCoherenceSink");
+				adsSink = new ADSCoherenceSink();
 			} else if (CASSANDRA.equals(store)) {
 				adsSink = new ADSHectorSink();
 			} else {

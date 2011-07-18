@@ -195,7 +195,7 @@ public class TMSServlet extends HttpServlet {
 		LoginRequest lr = document.getTmssvcRequest().getLoginRequest();
 		StudentCredentials creds = new StudentCredentials();
 		if(lr.getUserName() == null || lr.getUserName().trim().length() < 1) {
-			creds.setUsername("PT-STUDENT1460604");//lr.getUserName());
+			creds.setUsername("PT-STUDENT1459034");//lr.getUserName());
 			creds.setPassword("dime79");//lr.getPassword());
 			creds.setAccesscode("ptest1");//lr.getAccessCode());
 		} else {

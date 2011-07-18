@@ -1,5 +1,6 @@
 package com.ctb.tms.bean.login;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -15,7 +16,7 @@ import com.ctb.tms.exception.testDelivery.TestSessionNotScheduledException;
 import com.ctb.tms.util.Constants;
 import com.ctb.tms.util.DateUtils;
 
-public class RosterData {
+public class RosterData implements Serializable {
 	TmssvcResponseDocument document;
 	AuthenticationData authData;
 	Manifest manifest;

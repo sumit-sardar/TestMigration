@@ -40,21 +40,25 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	}
     
 	public void contextInitialized(ServletContextEvent sce) {
-		
-		OASNoSQLSource oasSource = StorageFactory.getOASSource();
-		OASNoSQLSink oasSink = StorageFactory.getOASSink();
-		
-		System.out.print("*****  Starting active roster check background thread . . .");
-		TestDeliveryContextListener.rosterMap = new ConcurrentHashMap(10000);
-		TestDeliveryContextListener.rosterList = new RosterList(oasSource, oasSink);
-		TestDeliveryContextListener.rosterList.start();
-		System.out.println(" started.");
-		
-		System.out.print("*****  Starting response queue persistence thread . . .");
-		TestDeliveryContextListener.rosterQueue = new ConcurrentLinkedQueue<String>();
-		TestDeliveryContextListener.responseQueue = new ResponseQueue(oasSource, oasSink);
-		TestDeliveryContextListener.responseQueue.start();
-		System.out.println(" started.");
+		System.out.println("*****  Context Listener Startup");
+		try {
+			OASNoSQLSource oasSource = StorageFactory.getOASSource();
+			OASNoSQLSink oasSink = StorageFactory.getOASSink();
+			
+			System.out.print("*****  Starting active roster check background thread . . .");
+			TestDeliveryContextListener.rosterMap = new ConcurrentHashMap(10000);
+			TestDeliveryContextListener.rosterList = new RosterList(oasSource, oasSink);
+			TestDeliveryContextListener.rosterList.start();
+			System.out.println(" started.");
+			
+			System.out.print("*****  Starting response queue persistence thread . . .");
+			TestDeliveryContextListener.rosterQueue = new ConcurrentLinkedQueue<String>();
+			TestDeliveryContextListener.responseQueue = new ResponseQueue(oasSource, oasSink);
+			TestDeliveryContextListener.responseQueue.start();
+			System.out.println(" started.");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private static class RosterList extends Thread {
@@ -75,10 +79,11 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					StudentCredentials[] creds = OASDBSource.getActiveRosters(conn);
 					for(int i=0;i<creds.length;i++) {
 						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
-						if(oasSource.getRosterData(creds[i]).getAuthData() == null) {
+						RosterData rosterData = oasSource.getRosterData(creds[i]);
+						if(rosterData == null || rosterData.getAuthData() == null) {
 							if(rosterMap.get(key) == null) {
 								// Get all data for an active roster from OAS DB
-								RosterData rosterData = OASDBSource.getRosterData(conn, creds[i]);
+								rosterData = OASDBSource.getRosterData(conn, creds[i]);
 								System.out.print("*****  Got roster data for " + key + " . . . ");
 								// Now put the roster data into Cassandra
 								if(rosterData != null) {
