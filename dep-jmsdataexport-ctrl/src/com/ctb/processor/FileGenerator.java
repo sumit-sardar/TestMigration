@@ -1350,6 +1350,7 @@ public class FileGenerator {
 	private void createSkillAreaScoreInformation(Connection con, Tfil tfil,
 			TestRoster roster) throws SQLException {
 		TreeMap<String, Object[]> treeMap = new TreeMap<String, Object[]>();
+		HashMap<String,String> contentAreaFact = new HashMap<String, String>();
 		boolean isComprehensionPopulated = true;
 		boolean isOralPopulated = true;
 		boolean isScaleOverall = true;
@@ -1409,31 +1410,32 @@ public class FileGenerator {
 					"speaking")) {
 						treeMap.put(rs.getString(1).toString().trim()
 								.toLowerCase(), val);
+						contentAreaFact.put("speaking",rs.getString(1).toString().trim().toLowerCase());
 					} else if (rs.getString(1).toString().trim()
 							.equalsIgnoreCase("listening")) {
 						treeMap.put(rs.getString(1).toString().trim()
 								.toLowerCase(), val);
-
+						contentAreaFact.put("listening",rs.getString(1).toString().trim().toLowerCase());
 					} else if (rs.getString(1).toString().trim()
 							.equalsIgnoreCase("reading")) {
 						treeMap.put(rs.getString(1).toString().trim()
 								.toLowerCase(), val);
-
+						contentAreaFact.put("reading",rs.getString(1).toString().trim().toLowerCase());
 					} else if (rs.getString(1).toString().trim()
 							.equalsIgnoreCase("writing")) {
 						treeMap.put(rs.getString(1).toString().trim()
 								.toLowerCase(), val);
-
+						contentAreaFact.put("writing",rs.getString(1).toString().trim().toLowerCase());
 					} else if (rs.getString(1).toString().trim()
 							.equalsIgnoreCase("comprehension")) {
 						treeMap.put(rs.getString(1).toString().trim()
 								.toLowerCase(), val);
-
+						contentAreaFact.put("comprehension",rs.getString(1).toString().trim().toLowerCase());
 					} else if (rs.getString(1).toString().trim()
 							.equalsIgnoreCase("oral")) {
 						treeMap.put(rs.getString(1).toString().trim()
 								.toLowerCase(), val);
-
+						contentAreaFact.put("oral",rs.getString(1).toString().trim().toLowerCase());
 					}
 				}
 			}
@@ -1555,55 +1557,78 @@ public class FileGenerator {
 			isProficiencyLevelOverall = false;
 			isScaleOverall = false;
 		}
-		if (isComprehensionPopulated) {
-			Object[] val = treeMap.get("comprehension");
-			if (val != null) {
+		
+		if(contentAreaFact.containsKey("listening") && contentAreaFact.containsKey("reading")){
+			if (isComprehensionPopulated) {
+				Object[] val = treeMap.get("comprehension");
+				if (val != null) {
 					ss.setComprehension(val[1].toString());
 					pl.setComprehension(val[2].toString());
 				}
-			 else {
-				ss.setComprehension(" ");
-			}
+				else {
+					ss.setComprehension(" ");
+				}
 
-		} else {
-			ss.setComprehension("N/A");
-		}
-
-		if (isOralPopulated) {
-			Object[] val = treeMap.get("oral");
-			if (val != null) {
-				ss.setOral(val[1].toString());
-				pl.setOral(val[2].toString());
 			} else {
-				ss.setOral(" ");
+				ss.setComprehension("N/A");
 			}
-		} else {
-			ss.setOral("N/A");
+		}
+		else{
+			ss.setComprehension(" ");
+			pl.setComprehension(" ");
+		}
+
+		if(contentAreaFact.containsKey("speaking") && contentAreaFact.containsKey("listening")){
+			if (isOralPopulated) {
+				Object[] val = treeMap.get("oral");
+				if (val != null) {
+					ss.setOral(val[1].toString());
+					pl.setOral(val[2].toString());
+				} else {
+					ss.setOral(" ");
+				}
+			} else {
+				ss.setOral("N/A");
+			}
+		}
+		else{
+			ss.setOral(" ");
+			pl.setOral(" ");
 		}
 		
-		if (isScaleOverall) {
+		if(contentAreaFact.containsKey("listening") && contentAreaFact.containsKey("reading") && contentAreaFact.containsKey("speaking") && contentAreaFact.containsKey("writing") ){
+			if (isScaleOverall ) {
 
-			if(scaleScoreOverall == null){
-				scaleScoreOverall= "";
+				if(scaleScoreOverall == null){
+					scaleScoreOverall= "";
+				}
+				ss.setOverall(scaleScoreOverall);
+
+			} else {
+				ss.setOverall("N/A");
 			}
-			ss.setOverall(scaleScoreOverall);
 
-		} else {
-			ss.setOverall("N/A");
 		}
-		
-		if (isProficiencyLevelOverall) {
+		else{
+			ss.setOverall(" ");
+		}
+		if(contentAreaFact.containsKey("listening") && contentAreaFact.containsKey("reading") && contentAreaFact.containsKey("speaking") && contentAreaFact.containsKey("writing") ){
+			if (isProficiencyLevelOverall ) {
 
-			if(profLevelScoreOverall == null){
-				profLevelScoreOverall= "";
-			}
-			pl.setOverall(profLevelScoreOverall);
+				if(profLevelScoreOverall == null){
+					profLevelScoreOverall= "";
+				}
+				pl.setOverall(profLevelScoreOverall);
 
 
-		} else {
-			pl.setOverall("");
-		}		
-		
+			} else {
+				pl.setOverall("");
+			}	
+		}
+		else{
+			ss.setOverall(" ");
+		}
+
 
 		tfil.setScaleScores(ss);
 		tfil.setProficiencyLevels(pl);
