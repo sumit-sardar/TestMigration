@@ -46,6 +46,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
     private Integer music_files = 0;// Added for Auditory Calming
     private Boolean magnifyingGlass = Boolean.FALSE; // Added for Magnifying Glass
     private Boolean extendedTime = Boolean.FALSE; // Added for Student Pacing
+    private Boolean maskingTool = Boolean.FALSE; // Added for Masking Answers
     
     public StudentAccommodationsDetail() {
     }
@@ -113,6 +114,9 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         
         if (sa.getExtendedTime() != null)
             this.extendedTime = new Boolean(sa.getExtendedTime().equals("T"));
+        
+        if (sa.getMaskingTool() != null)
+            this.maskingTool = new Boolean(sa.getMaskingTool().equals("T"));
     }
 
     public StudentAccommodations makeCopy(Integer studentId) 
@@ -198,7 +202,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         copied.setScreenMagnifier("");  // not used
         copied.setStudentGrade("");     // not used
         
-        //START - Added for Auditory Magnifier, Calming, Masking Ruler and student pacing
+        //START - Added for Auditory Magnifier, Calming, Masking Ruler and student pacing and masking answer
         
         if (this.auditoryCalming.booleanValue()) {
             copied.setAuditoryCalming("T");
@@ -233,7 +237,15 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         else {
             copied.setExtendedTime("F");
         }
-      //END - Added for Magnifier, Auditory Calming and Masking Ruler and student pacing
+        
+        if (this.maskingTool.booleanValue()) {
+            copied.setMaskingTool("T");
+            hasData = true;
+        }
+        else {
+            copied.setMaskingTool("F");
+        }
+      //END - Added for Magnifier, Auditory Calming and Masking Ruler and student pacing and masking answer
         
         return copied;
     }
@@ -261,6 +273,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         copied.setMaskingRuler(this.maskingRuler);
         copied.setMagnifyingGlass(this.magnifyingGlass);
         copied.setExtendedTime(this.extendedTime);//Added for student pacing
+        copied.setMaskingTool(this.maskingTool);// Added for masking answers
 
         return copied;
     }
@@ -320,7 +333,7 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
         this.untimedTest = untimedTest;
     }
     
-    //START - Added for magnifier, masking ruler and auditory calming
+    //START - Added for magnifier, masking ruler and auditory calming and masking answers
     public Boolean getMaskingRuler() {
 		return maskingRuler;
 	}
@@ -352,7 +365,15 @@ public class StudentAccommodationsDetail implements java.io.Serializable {
 	public void setMagnifyingGlass(Boolean magnifyingGlass) {
 		this.magnifyingGlass = magnifyingGlass;
 	}
-	//END - Added for magnifier, masking ruler and auditory calming
+	
+	public Boolean getMaskingTool() {
+		return maskingTool;
+	}
+
+	public void setMaskingTool(Boolean maskingTool) {
+		this.maskingTool = maskingTool;
+	}
+	//END - Added for magnifier, masking ruler and auditory calming and masking answers
 
     
     /**

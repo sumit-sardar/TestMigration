@@ -106,3 +106,7 @@ alter table ITEM_RUBRIC_EXEMPLARS
 
 CREATE BITMAP INDEX IDX_STUDENT_EXPORTED ON TEST_ROSTER(NVL(STUDENT_EXPORTED, 'F'))
 /
+
+/*student_accommodation table altered to add new accommodation maskingTool*/
+alter table student_accommodation add masking_tool varchar2(2)
+/

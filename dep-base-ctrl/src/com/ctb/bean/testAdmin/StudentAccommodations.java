@@ -32,6 +32,7 @@ public class StudentAccommodations extends CTBBean
     private String musicFile;//Added for auditory calming
     private String magnifyingGlass;//Added for magnifier
     private String extendedTime; // Added for student pacing
+    private String maskingTool; // Added for masking answers
     
     // Start changes for student pacing
      /**
@@ -304,5 +305,17 @@ public class StudentAccommodations extends CTBBean
 	 */
 	public void setMagnifyingGlass(String magnifyingGlass) {
 		this.magnifyingGlass = magnifyingGlass;
+	}
+	/**
+	 * @return Returns the maskingTool.
+	 */
+	public String getMaskingTool() {
+		return maskingTool;
+	}
+	/**
+	 * @param maskingTool The maskingTool to set.
+	 */
+	public void setMaskingTool(String maskingTool) {
+		this.maskingTool = maskingTool;
 	}
 } 

@@ -403,6 +403,17 @@ public class StudentAccommodationsTag extends CTBTag
 	        disabled = isDisabled(field);
 	        displayControlRow(field, description, checked, disabled, null);                        
 	        displayTextRow("Allow student to extend the test time.", "20");
+	        displayEmptyRow("2");
+        displayTableEnd();
+        
+        // Masking Answers
+		displayTableStart("transparent");
+	        field = "Masking_Tool";
+	        description = "<b>Masking Tool</b>:";
+	        checked = this.accommodations.getMaskingTool().booleanValue();
+	        disabled = isDisabled(field);
+	        displayControlRow(field, description, checked, disabled, null);                        
+	        displayTextRow("Allow student to block out/mask any or all answer choices in an item.", "20");
         displayTableEnd();
         
         
@@ -571,7 +582,7 @@ public class StudentAccommodationsTag extends CTBTag
             return true;
             
         boolean disabled = false;
-        int counter = 0; // Added for magnifier, calming and masking. Specially, if configuration is not present with the customer at all.
+        int counter = 0; // Added for magnifier, calming,  masking, pacing. Specially, if configuration is not present with the customer at all.
         
         for (int i=0 ; i<this.customerConfigurations.length ; i++) {
             CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
@@ -585,7 +596,8 @@ public class StudentAccommodationsTag extends CTBTag
             }
         }        
         if(counter == 0 && (field.equals("Masking_Ruler") || field.equals("Auditory_Calming")
-        		|| field.equals("Magnifying_Glass")|| field.equals("Extended_Time")))
+        		|| field.equals("Magnifying_Glass") || field.equals("Extended_Time") 
+        		|| field.equals("Masking_Tool")))
         	disabled=true;
         
         return disabled;

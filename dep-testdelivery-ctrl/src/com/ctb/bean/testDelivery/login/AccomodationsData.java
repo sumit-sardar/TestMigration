@@ -23,6 +23,7 @@ public class AccomodationsData
     private Integer musicFileId;
     private String magnifyingGlass;//Added for magnifier
     private String extendedTime;
+    private String maskingTool;//Added for masking Answers
     
   
 	/**
@@ -254,6 +255,18 @@ public class AccomodationsData
 	 */
 	public void setExtendedTime(String extendedTime) {
 		this.extendedTime = extendedTime;
+	}
+	/**
+	 * @return the maskingTool
+	 */
+	public String getMaskingTool() {
+		return maskingTool;
+	}
+	/**
+	 * @param maskingTool the maskingTool to set
+	 */
+	public void setMaskingTool(String maskingTool) {
+		this.maskingTool = maskingTool;
 	}
 	
 } 
