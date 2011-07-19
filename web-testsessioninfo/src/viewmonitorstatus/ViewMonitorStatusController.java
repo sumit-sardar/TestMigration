@@ -419,15 +419,19 @@ public class ViewMonitorStatusController extends PageFlowController
     		System.out.println("fileType = " + this.fileType);
     		System.out.println("userEmail = " + this.userEmail);
 
+    		Integer[] testRosterIds = new Integer[this.selectedRosterIds.size()];
+    		
     		Integer rosterId = null;
         	for (int i=0 ; i<this.selectedRosterIds.size() ; i++) {
         		rosterId = (Integer)this.selectedRosterIds.get(i);
         		System.out.println("rosterId = " + rosterId.toString());
+        		testRosterIds[i] = rosterId;
         	}
         	
             //String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, rosterId);    
+            String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, testRosterIds);    
             
-        	String reportUrl = "/TestSessionInfoWeb/viewmonitorstatus/temporaryGotoTurnLeaf.do";
+        	//String reportUrl = "/TestSessionInfoWeb/viewmonitorstatus/temporaryGotoTurnLeaf.do";
             this.getRequest().setAttribute("reportUrl", reportUrl);
             this.getRequest().setAttribute("testAdminId", String.valueOf(this.sessionId));
             this.getRequest().setAttribute("showReporNavigation", "true");

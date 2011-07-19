@@ -426,6 +426,16 @@ public interface TestSessionStatus
      */
 	
     java.lang.String getIndividualReportUrl(java.lang.String userName, java.lang.Integer testRosterId) throws com.ctb.exception.CTBBusinessException;
+
+    /**
+     * Retrieves the set of online reports available to a user's customer
+     * @param userName - identifies the user
+     * @param testRosterIds - list of the test rosters
+     * @return String
+     * @throws com.ctb.exception.CTBBusinessException
+     */
+	
+    java.lang.String getIndividualReportUrl(java.lang.String userName, java.lang.Integer[] testRosterIds) throws com.ctb.exception.CTBBusinessException;
     
     /**
      * New method added for CR - GA2011CR001

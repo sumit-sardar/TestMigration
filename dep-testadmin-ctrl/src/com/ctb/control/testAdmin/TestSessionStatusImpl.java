@@ -280,6 +280,77 @@ public class TestSessionStatusImpl implements TestSessionStatus
         return reportURL;
     }
     
+    
+    /**
+     * Retrieves the set of online reports available to a user's customer
+     * @common:operation
+     * @param userName - identifies the user
+     * @param testRosterIds - list of the test roster
+     * @return String
+	 * @throws com.ctb.exception.CTBBusinessException
+     */
+    public String getIndividualReportUrl(String userName, Integer[] testRosterIds) throws CTBBusinessException {
+        String reportURL = null;
+        
+        try {
+        	Integer testRosterId = testRosterIds[0];
+            RosterElement re = roster.getRosterElement(testRosterId);
+            TestSession session = testAdmin.getTestAdminDetails(re.getTestAdminId());
+            String orgNodeId = String.valueOf(session.getCreatorOrgNodeId());
+            String sessionId = String.valueOf(re.getTestAdminId());
+            String programId = String.valueOf(session.getProgramId());
+            String testId = String.valueOf(session.getTestCatalogId());
+            String systemKey = null;
+            String customerKey = null;
+            String orgCategoryLevel = null;
+            String studentId = "";
+            String studentName = "";
+            
+        	for (int i=0 ; i<testRosterIds.length ; i++) {
+            	testRosterId = testRosterIds[i];
+                re = roster.getRosterElement(testRosterId);
+	            studentId += String.valueOf(re.getStudentId());
+	            studentName += re.getLastName() + ", " + re.getFirstName();
+	            if (i<testRosterIds.length) {
+	            	studentId += ";";
+	            	studentName += ";";
+	            }
+        	}            
+        	
+            CustomerReport [] cr = reportBridge.getReportAssignmentsForProgram(session.getProgramId(), session.getCreatorOrgNodeId());
+            for (int i=0; i < cr.length; i++) {
+                String report = cr[i].getReportUrl();
+                if(cr[i].getReportName().indexOf("IndividualProfile") >= 0) {
+                    reportURL = report;
+                    systemKey = cr[i].getSystemKey();
+                    customerKey = cr[i].getCustomerKey();
+                    orgCategoryLevel = String.valueOf(cr[i].getCategoryLevel());
+                }
+            }
+            String encryptedProgramId = DESUtils.encrypt(String.valueOf(programId), systemKey);
+            String paramsPlainText = 
+                "Timestamp="+(new Date()).toString()+
+                "&LevelId="+orgCategoryLevel+
+                "&NodeInstanceId="+orgNodeId+
+                "&CurrentTestSessionId="+sessionId+
+                "&CurrentStudentId="+studentId+
+                "&CurrentStudentName="+studentName;
+            
+            System.out.println("No encrypted URL: " + reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+paramsPlainText);
+            
+            String encryptedParams = DESUtils.encrypt(paramsPlainText, customerKey);
+            reportURL = reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+encryptedParams+"&RunReport=1";
+            
+            
+        } catch (SQLException se) {
+            CustomerReportDataNotFoundException tee = new CustomerReportDataNotFoundException("ScheduleTestImpl: getIndividualReportUrl: " + se.getMessage());
+            tee.setStackTrace(se.getStackTrace());
+            throw tee;
+        }
+        System.out.println("*****  final URL: " + reportURL);
+        return reportURL;
+    }
+    
     /**
      * Retrieves the set of programs available to a user's customer
      * @common:operation
