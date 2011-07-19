@@ -255,7 +255,8 @@ public class AdministrationController extends PageFlowController
             be.printStackTrace();
         }
     	
-        return new Boolean(validCustomer && isAdminUser);
+        return Boolean.FALSE;	// Disable multiple selection IPR for now
+        //return new Boolean(validCustomer && isAdminUser);
     }
     
     /**
