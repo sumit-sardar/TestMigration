@@ -1,11 +1,12 @@
 #!/bin/sh
 
-PATH=/local/apps/oas/proto/jre1.6.0_26/bin:$PATH
+PATH=./jre1.6.0_26/bin:$PATH
 export PATH
-JAVA_HOME=/local/apps/oas/proto/jre1.6.0_26
+JAVA_HOME=./jre1.6.0_26
 export JAVA_HOME
-JRE_HOME=/local/apps/oas/proto/jre1.6.0_26
+JRE_HOME=./jre1.6.0_26
 export JRE_HOME
 java -version
-/local/apps/oas/proto/server/apache-tomcat-6.0.29/bin/startup.sh
+rm ./server/apache-tomcat-6.0.29/logs/catalina.out
+./server/apache-tomcat-6.0.29/bin/startup.sh
 

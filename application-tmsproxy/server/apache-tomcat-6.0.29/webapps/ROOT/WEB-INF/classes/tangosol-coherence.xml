@@ -90,7 +90,7 @@ to find specific notes on changes suggested for production use.
       the value too high can utilize unnecessary bandwidth on other LAN segments
       and can even cause the OS or network devices to disable multicast traffic.
       -->
-      <time-to-live system-property="tangosol.coherence.ttl">4</time-to-live>
+      <time-to-live system-property="tangosol.coherence.ttl">1</time-to-live>
 
       <priority>8</priority>
 

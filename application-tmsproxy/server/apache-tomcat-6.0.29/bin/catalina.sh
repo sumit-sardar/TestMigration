@@ -220,10 +220,6 @@ else
   JAVA_OPTS="$JAVA_OPTS $LOGGING_MANAGER"
 fi
 
-COHERENCE_HOME="$CATALINA_HOME/../../storage/coherence"
-JAVA_OPTS="-Dtangosol.coherence.cacheconfig=$COHERENCE_HOME/bin/coherence-cache-config.xml $JAVA_OPTS"
-
-
 # ----- Execute The Requested Command -----------------------------------------
 
 # Bugzilla 37848: only output this if we have a TTY
