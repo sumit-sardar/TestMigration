@@ -82,6 +82,15 @@ public class TestClientPageFlowController extends PageFlowController
         String timeLimit = globalApp.currentDeliverableUnitBean.getTimeLimit();
         if (timeLimit == null)
             timeLimit = "0";
+        //Changes for pacing
+        if(globalApp.extendedTime.equals("true")) {
+        	double time = Double.parseDouble(timeLimit);
+            time = time * 1.5;
+            Double timeLim = new Double(time);
+            timeLimit = timeLim.toString();
+            System.out.println(timeLimit);
+        }
+        
 		String speedValue = "";
         if (!globalApp.screenReader.equals("false") && !globalApp.speedAdjustment.equals("false"))
         {
