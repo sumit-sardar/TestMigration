@@ -134,6 +134,30 @@
                                 </td>
                                 <td>&nbsp;</td>
                             </tr>
+                                   <tr valign="top">
+                                <td>
+                                <netui:checkBox dataSource="actionForm.auditoryCalming"/>Auditory Calming
+                                </td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr valign="top">
+                                <td>
+                                <netui:checkBox dataSource="actionForm.maskingRuler"/>Masking Ruler
+                                </td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr valign="top">
+                                <td>
+                                <netui:checkBox dataSource="actionForm.magnifyingGlass"/>Magnifying Glass
+                                </td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr valign="top">
+                                <td>
+                                <netui:checkBox dataSource="actionForm.extendedTime"/>Extended Time
+                                </td>
+                                <td>&nbsp;</td>
+                            </tr>
                         </table>
                     </td>
                 </tr>

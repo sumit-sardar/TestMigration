@@ -107,6 +107,12 @@ public class TestClientPageFlowController extends PageFlowController
                           globalApp.highlighter +
                           "\" rest_break=\"" +
                           globalApp.rest_break + 
+                          "\" magnifying_glass=\"" +
+                          globalApp.magnifyingGlass +
+                          "\" masking_ruler=\"" +
+                          globalApp.maskingRuler +
+                          "\" auditory_calming=\"" +
+                          globalApp.auditoryCalming +
                           "\"><stereotype_style stereotype=\"directions\" bgcolor=\"" +
                           questionBgColor +
                           "\" font_color=\"" +
@@ -294,6 +300,13 @@ public class TestClientPageFlowController extends PageFlowController
     		
     		if (filename == null || "".equals(filename.trim())) 
     			throw new Exception("No filename in request.");
+
+    		
+    		//String resourcePath = getSession().getServletContext().getRealPath("resources");    //removed -because not working for .ear files
+    		//String resourcePath = getServletContext().getResource("/resources").getPath().substring(1);
+    		//resourcePath = resourcePath.substring(0, (resourcePath.length() - 1));
+    		//System.out.println("getSession().getServletContext()==>  "+getSession().getServletContext());
+
     	//	String resourcePath = getSession().getServletContext().getRealPath("resources");    //removed -because not working for .ear files
     		String resourcePath = getUserImageFolderPath();
     		String filePath = resourcePath + "/" + filename;

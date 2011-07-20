@@ -193,6 +193,7 @@ public class ContentReviewPageFlowController extends PageFlowController
     public String getUserFolderPath() throws Exception
     {
         String userFolderPath = null;
+        //forReal = false;
         
         if (forReal)
             userFolderPath = "/export/data/contentdemo/" +
@@ -380,6 +381,11 @@ public class ContentReviewPageFlowController extends PageFlowController
             globalApp.questionFontSize = form.questionFontSize;
             globalApp.rest_break = form.rest_break;
             globalApp.eliminatorResource = form.eliminatorResource;
+            
+            globalApp.auditoryCalming = form.auditoryCalming;
+            globalApp.maskingRuler = form.maskingRuler;
+            globalApp.magnifyingGlass = form.magnifyingGlass;
+            globalApp.extendedTime = form.extendedTime;
                 
             setCurrentSubtest(this.subtestTitle);
             getRequest().setAttribute("eliminatorResource", form.eliminatorResource);
@@ -583,6 +589,11 @@ public class ContentReviewPageFlowController extends PageFlowController
         private String questionFontSize; // = "1";
         private int deliverableUnit = 1;
         private String eliminatorResource="/ContentReviewWeb/resources/eliminator.swf";
+        private String auditoryCalming  = "false";
+        private String maskingRuler    	= "false";
+        private String magnifyingGlass  = "false";
+        private String extendedTime     = "false";
+        
 
         /**
          * @return Returns the answerBgColor.
@@ -784,8 +795,55 @@ public class ContentReviewPageFlowController extends PageFlowController
         {
             return this.eliminatorResource;
         }
-              
-        
+        /**
+         * @return Returns the auditoryCalming.
+         */
+		public String getAuditoryCalming() {
+			return auditoryCalming;
+		}
+		/**
+         * @param auditoryCalming The auditoryCalming to set.
+         */
+		public void setAuditoryCalming(String auditoryCalming) {
+			this.auditoryCalming = auditoryCalming;
+		}
+		/**
+         * @return Returns the maskingRuler.
+         */
+		public String getMaskingRuler() {
+			return maskingRuler;
+		}
+		/**
+         * @param maskingRuler The maskingRuler to set.
+         */
+		public void setMaskingRuler(String maskingRuler) {
+			this.maskingRuler = maskingRuler;
+		}
+		/**
+         * @return Returns the magnifyingGlass.
+         */
+		public String getMagnifyingGlass() {
+			return magnifyingGlass;
+		}
+		/**
+         * @param magnifyingGlass The magnifyingGlass to set.
+         */
+		public void setMagnifyingGlass(String magnifyingGlass) {
+			this.magnifyingGlass = magnifyingGlass;
+		}
+		/**
+         * @return Returns the extendedTime.
+         */
+		public String getExtendedTime() {
+			return extendedTime;
+		}
+		/**
+         * @param extendedTime The extendedTime to set.
+         */
+		public void setExtendedTime(String extendedTime) {
+			this.extendedTime = extendedTime;
+		}
+                     
     }
 
 	public String getUserName() {

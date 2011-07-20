@@ -40,6 +40,12 @@ public class Global extends GlobalApp
     public String questionBgColor;
     public String questionFontSize;
     
+    //Changes for new accommodations added
+    public String maskingRuler  = "0";
+    public String magnifyingGlass  = "0";
+    public String auditoryCalming  = "0";
+    public String extendedTime  = "0";
+    
     public String userFolder;
     
     public String eliminatorResource = "/ContentReviewWeb/resources/eliminator.swf";
