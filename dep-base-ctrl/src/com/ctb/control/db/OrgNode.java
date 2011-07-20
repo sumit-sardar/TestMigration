@@ -1898,7 +1898,11 @@ public interface OrgNode extends JdbcControl
 	
 	@JdbcControl.SQL(statement = "  select distinct product_id from customer_orgnode_license  where customer_id = {customerId} and org_node_id = {selectedOrgNodeId}")
 	Integer[] getProductIdList(Integer selectedOrgNodeId, Integer customerId) throws SQLException;
-
-	//END - changes for TABE BAUM to delete organization node and assign remaining license to top node
+    //END - changes for TABE BAUM to delete organization node and assign remaining license to top node
     
+    // LLO- 118 - Change for Ematrix UI
+	@JdbcControl.SQL(statement = "select count(*) from users u,user_role urole,org_node orgnode,org_node_category onc where u.user_id = urole.user_id and urole.org_node_id = orgnode.org_node_id and orgnode.org_node_category_id = onc.org_node_category_id and onc.category_level = 1 and u.user_name = {userName}")
+	Boolean checkTopOrgNodeUser(String userName) throws SQLException;
+
+	
 }
