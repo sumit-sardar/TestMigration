@@ -58,7 +58,8 @@ public final class ScorerHelper {
         // round, else the result is too low for the boundary case of XX.5
         int p = (int)Math.pow(10,roundTo);
         count = count * p;
-        float tmp = Math.round((count * 100) / total);
+        //Changed for defect - #66544
+        float tmp = Math.round(((float) count / (float) total) * 100 );
         return tmp/p;
 
     }
