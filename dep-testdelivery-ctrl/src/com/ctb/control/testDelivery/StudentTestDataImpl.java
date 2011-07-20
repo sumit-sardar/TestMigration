@@ -745,6 +745,7 @@ public class StudentTestDataImpl implements StudentTestData
                             String xmlResponse = ist.getRvArray(0).getVArray(0).xmlText();
                             String response = "";
                             String studentMarked = ist.getMrk() ? "T" : "F";
+                            String audioItem = ist.getAudioItem() ? "T" : "F";
                             if(xmlResponse != null && xmlResponse.length() > 0) {
                                 // strip xml
                                 int start = xmlResponse.indexOf(">");
@@ -765,11 +766,12 @@ public class StudentTestDataImpl implements StudentTestData
                                         response = response.substring(0, end);
                                 }
                             }
+                            //System.out.println("audioItem1 :"+audioItem+":"+ist.getAudioItem());
                             if(responseType.equals(BaseType.IDENTIFIER)) {
                                 storeResponse(Integer.parseInt(testRosterId), Integer.parseInt(itemSetId), ist.getIid(), response, ist.getDur(), null, mSeq, isCTB, studentMarked);
                                 cacheArg = testRosterId + ":" + itemSetId + ":" + ist.getIid() + ":" + response + ":" + ist.getDur() + ":" + null + ":" + mSeq + ":" + studentMarked;
                             } else if(responseType.equals(BaseType.STRING)) {
-                                storeCRResponse(Integer.parseInt(testRosterId), Integer.parseInt(itemSetId), ist.getIid(), response, ist.getDur(), null, mSeq, isCTB, studentMarked);
+                                storeCRResponse(Integer.parseInt(testRosterId), Integer.parseInt(itemSetId), ist.getIid(), response, ist.getDur(), null, mSeq, isCTB, studentMarked, audioItem);
                                 cacheArg = testRosterId + ":" + itemSetId + ":" + ist.getIid() + ":" + null + ":" + ist.getDur() + ":" + null + ":" + mSeq + ":" + studentMarked;
                             }
                          }
@@ -1147,7 +1149,7 @@ public class StudentTestDataImpl implements StudentTestData
         }
     }
         
-    private void storeCRResponse(int testRosterId, int itemSetId, String itemId, String response, float elapsedTime, String answerChoiceId, int mSeq, boolean isCTB, String studentMarked) throws InvalidTestRosterIdException, InvalidItemSetIdException, InvalidItemResponseException {
+    private void storeCRResponse(int testRosterId, int itemSetId, String itemId, String response, float elapsedTime, String answerChoiceId, int mSeq, boolean isCTB, String studentMarked, String audioItem) throws InvalidTestRosterIdException, InvalidItemSetIdException, InvalidItemResponseException {
         try {
             storeResponse(testRosterId, itemSetId, itemId, null, elapsedTime, null, mSeq, isCTB, studentMarked);
             if (isCTB) {
@@ -1161,8 +1163,10 @@ public class StudentTestDataImpl implements StudentTestData
 */              
             	// changes for not updating the response of an audio item if 
             	// the incoming response is null
-            	
-            	if(saver.checkAudioItem(itemId)== 1){
+            	//System.out.println("response:"+response);
+            	//System.out.println("audioItem 2:"+audioItem);
+            	if(audioItem == "T"){
+            		System.out.println("audioItem 3:"+audioItem);
             		if(response.length()== 0){
             			if(saver.checkCRResponseExists(itemId, testRosterId)== 0){
             				saver.deleteCRResponse(testRosterId, itemSetId, itemId);
@@ -1174,6 +1178,7 @@ public class StudentTestDataImpl implements StudentTestData
             		}
             		
             	}else{
+            		//System.out.println("audioItem 4:"+audioItem);
                     saver.deleteCRResponse(testRosterId, itemSetId, itemId);
                     saver.storeCRResponse(testRosterId, itemSetId, itemId, response);
             	}

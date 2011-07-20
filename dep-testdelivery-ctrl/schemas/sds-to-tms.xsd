@@ -449,6 +449,11 @@ allowed values: not_attempted, completed, incomplete, and unknown</xs:documentat
 														<xs:documentation>Answered.  0=false, 1=true.</xs:documentation>
 													</xs:annotation>
 												</xs:attribute>
+												<xs:attribute name="audioItem" type="xs:boolean" use="optional" default="0">
+													<xs:annotation>
+														<xs:documentation>Audio Item.  0=false, 1=true.</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
 											</xs:complexType>
 										</xs:element>
 									</xs:sequence>
