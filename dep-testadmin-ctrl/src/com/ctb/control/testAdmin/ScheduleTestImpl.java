@@ -1755,13 +1755,13 @@ public class ScheduleTestImpl implements ScheduleTest
         		e1.printStackTrace();
         	}
     		CTBBusinessException ctbe = null;
-            String message = se.getMessage();
-            if(message.indexOf("Insufficient available license quantity") >=0) {
+            String message = se.getMessage().toLowerCase();
+            if(message.indexOf("insufficient available license quantity") >=0) {
                 ctbe = new InsufficientLicenseQuantityException("Insufficient available license quantity");
             }
             //START- Changed for deferred defect 64446
             else{
-            	if(message.indexOf("Transaction timed out") >=0) {
+            	if(message.indexOf("transaction timed out") >=0) {
 					System.out.println("Transaction timed out:"+message);
                     ctbe = new TransactionTimeoutException("Transaction timed out");
                 }
@@ -2845,8 +2845,8 @@ public class ScheduleTestImpl implements ScheduleTest
         		e1.printStackTrace();
         	}
             CTBBusinessException ctbe = null;
-            String message = se.getMessage();
-            if(message.indexOf("Insufficient available license quantity") >=0) {
+            String message = se.getMessage().toLowerCase();
+            if(message.indexOf("insufficient available license quantity") >=0) {
                 ctbe = new InsufficientLicenseQuantityException("Insufficient available license quantity");
             } else {
                 ctbe = new StudentNotAddedToSessionException("ScheduleTestImpl: addStudentToSession: " + message);
@@ -2949,8 +2949,8 @@ public class ScheduleTestImpl implements ScheduleTest
 	         		e1.printStackTrace();
 	         	}
      	 CTBBusinessException muf = null;
-     	 String message = se.getMessage();
-     	 if(message.indexOf("Insufficient available license quantity") >=0) {
+     	 String message = se.getMessage().toLowerCase();
+     	 if(message.indexOf("insufficient available license quantity") >=0) {
      		 muf = new InsufficientLicenseQuantityException("Insufficient available license quantity");
           } else {
          	 muf = new ManifestUpdateFailException("ScheduleTestImpl: getManifestForRoster: " + se.getMessage());
