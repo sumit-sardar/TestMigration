@@ -5,4 +5,19 @@
         <wls:param-name>webapp.encoding.default</wls:param-name>
         <wls:param-value>UTF-8</wls:param-value>
     </wls:application-param>
+    <wls:library-ref>
+        <wls:library-name>wls-commonslogging-bridge</wls:library-name>
+        <wls:specification-version>1.0</wls:specification-version>
+        <wls:exact-match>true</wls:exact-match>
+    </wls:library-ref>
+    <wls:library-ref>
+        <wls:library-name>beehive-controls-1.0.1-10.0</wls:library-name>
+        <wls:specification-version>1.0</wls:specification-version>
+        <wls:exact-match>true</wls:exact-match>
+    </wls:library-ref>
+    <wls:library-ref>
+        <wls:library-name>weblogic-controls-10.0</wls:library-name>
+        <wls:specification-version>10.0</wls:specification-version>
+        <wls:exact-match>true</wls:exact-match>
+    </wls:library-ref>
 </wls:weblogic-application>
