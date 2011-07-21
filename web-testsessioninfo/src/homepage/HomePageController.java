@@ -61,7 +61,12 @@ public class HomePageController extends PageFlowController
     @Control()
     private com.ctb.control.licensing.Licensing licensing;
    
-    
+   // LLO- 118 - Change for Ematrix UI
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.OrgNode orgnode;
+
+	
+	
     private String userName = null;
     private User user = null;
     private UserNodeData userTopNodes = null;
@@ -72,7 +77,8 @@ public class HomePageController extends PageFlowController
     public ReportManager reportManager = null;
     private CustomerLicense[] customerLicenses = null;
     private boolean hasLicenseConfig = false;  //change for defect 66353
-    
+    // LLO- 118 - Change for Ematrix UI
+	private boolean isTopLevelUser = false;
     
     /**
 	 * @return the hasLicenseConfig
@@ -106,7 +112,7 @@ public class HomePageController extends PageFlowController
     protected Forward begin()
     {        
     	getLoggedInUserPrincipal();   
-    	
+    	isTopLevelUser();
         getUserDetails();
                          
         HomePageForm form = new HomePageForm();
@@ -304,7 +310,7 @@ public class HomePageController extends PageFlowController
         }
         if (canRegisterStudent.booleanValue() && (userSessionFilterTab.equalsIgnoreCase("CU") || userSessionFilterTab.equalsIgnoreCase("PA")))
         {
-            this.getRequest().setAttribute("showUserGenerateReportFile", Boolean.TRUE);
+            //this.getRequest().setAttribute("showUserGenerateReportFile", Boolean.TRUE);
         }
         
         String proctorSessionFilterTab = form.getProctorSessionFilterTab();
@@ -318,7 +324,7 @@ public class HomePageController extends PageFlowController
         }
         if (canRegisterStudent.booleanValue() && (proctorSessionFilterTab.equalsIgnoreCase("CU") || proctorSessionFilterTab.equalsIgnoreCase("PA")))
         {
-            this.getRequest().setAttribute("showProctorGenerateReportFile", Boolean.TRUE);
+            //this.getRequest().setAttribute("showProctorGenerateReportFile", Boolean.TRUE);
         }
         
         //Bulk Accommodation
@@ -330,7 +336,22 @@ public class HomePageController extends PageFlowController
         
         return new Forward("success", form);
     }
-  
+     //LLO- 118 - Change for Ematrix UI
+    private void isTopLevelUser(){
+		
+		boolean isUserTopLevel = false;
+		try {
+			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);
+			this.isTopLevelUser = isUserTopLevel;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//this.getRequest().setAttribute("isTopLevelUser",isUserTopLevel);
+		this.getSession().setAttribute("isTopLevelUser",this.isTopLevelUser);
+		
+	}
+    
     private void getLoggedInUserPrincipal()
     {
         java.security.Principal principal = getRequest().getUserPrincipal();
