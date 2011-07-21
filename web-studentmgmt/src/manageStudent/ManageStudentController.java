@@ -5,6 +5,7 @@ package manageStudent;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,11 +37,11 @@ import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
+import com.ctb.bean.studentManagement.MusicFiles;
 import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
-import com.ctb.bean.studentManagement.MusicFiles; // Added for Auditory Calming
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.StudentAccommodations;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
@@ -77,7 +78,10 @@ public class ManageStudentController extends PageFlowController
 
 	@Control()
 	private com.ctb.control.studentManagement.StudentManagement studentManagement;
-
+	
+    // LLO- 118 - Change for Ematrix UI
+	@Control()
+	private com.ctb.control.db.OrgNode orgnode;
 
 	private static final String ACTION_DEFAULT           = "defaultAction";
 	private static final String ACTION_FIND_STUDENT      = "findStudent";
@@ -328,6 +332,28 @@ public class ManageStudentController extends PageFlowController
 	        return new Boolean(validCustomer && validUser);
 	    }
 	    //END- FORM RECOMMENDATION
+	 
+	 //LLO- 118 - Change for Ematrix UI
+	    private void isTopLevelUser(){
+			
+			boolean isUserTopLevel = false;
+			boolean isLaslinkUserTopLevel = false;
+			boolean isLaslinkUser = false;
+			isLaslinkUser = this.isLasLinkCustomer;
+			try {
+				if(isLaslinkUser) {
+					isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+					if(isUserTopLevel){
+						isLaslinkUserTopLevel = true;				
+					}
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+		}
+	    
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** ADD - EDIT STUDENT ************* ////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -661,6 +687,8 @@ public class ManageStudentController extends PageFlowController
 		customerHasBulkAccommodation();
 		customerHasScoring();//For hand scoring changes
 		canRegisterStudent(); ////FORM RECOMMENDATION
+		isLasLinkCustomer();
+		isTopLevelUser();
 
 		form.setCurrentAction(ACTION_DEFAULT);
 	}
@@ -1785,6 +1813,8 @@ public class ManageStudentController extends PageFlowController
 		//scoring changes
 		customerHasScoring();//For hand scoring changes
 		canRegisterStudent();  //- FORM RECOMMENDATION
+		isLasLinkCustomer();
+		isTopLevelUser();
 		setFormInfoOnRequest(form);
 		return new Forward("success");
 	}

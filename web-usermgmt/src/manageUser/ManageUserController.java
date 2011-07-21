@@ -95,6 +95,10 @@ public class ManageUserController extends PageFlowController
     @Control()
     private com.ctb.control.userManagement.OrgNodeHierarchy orgNodeHierarchy;
     
+    // LLO- 118 - Change for Ematrix UI
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.OrgNode orgnode;
+
 
     private static final String ACTION_DEFAULT        = "defaultAction";
     private static final String ACTION_FIND_USER      = "findUser";
@@ -173,10 +177,26 @@ public class ManageUserController extends PageFlowController
     
     /*Changed for DEx defect # 57562 & 57563*/
     private boolean isLoginWithoutTimezone = false;
+    // LLO- 118 - Change for Ematrix UI
+	private boolean isTopLevelUser = false;
+	private boolean islaslinkCustomer = false;
     
     
-    
-    public List getUserList() {
+    /**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
+	}
+
+	public List getUserList() {
 		return userList;
 	}
 
@@ -404,11 +424,33 @@ public class ManageUserController extends PageFlowController
 
         this.navPath.addCurrentAction(ACTION_FIND_USER);
         
+        isTopLevelUser(); //LLO- 118 - Change for Ematrix UI
         setFormInfoOnRequest(form);
         
         return new Forward("success");
     }
 
+    //LLO- 118 - Change for Ematrix UI
+    private void isTopLevelUser(){
+		
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		isLaslinkUser = this.islaslinkCustomer;
+		try {
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+	}
+    
     /**
      * initSearch
      */
@@ -1983,7 +2025,7 @@ public class ManageUserController extends PageFlowController
     	//Bulk Accommodation
     	customerHasBulkAccommodation();
     	customerHasScoring();//For hand scoring changes
-
+    	isTopLevelUser();
         this.orgNodePath = new ArrayList();
         this.currentOrgNodesInPathList = new HashMap();
         this.currentOrgNodeIds = new Integer[0];
@@ -3092,7 +3134,7 @@ public class ManageUserController extends PageFlowController
     {               
 		Integer customerId = this.user.getCustomer().getCustomerId();
         boolean hasScoringConfigurable = false;
-        
+        boolean isLaslinkCustomer = false;
         try
         {      
 			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
@@ -3110,17 +3152,20 @@ public class ManageUserController extends PageFlowController
             	getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
                 break;
             } 
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+    				&& cc.getDefaultValue().equals("T")) {
+    			isLaslinkCustomer = true;
+    			break;
+            }
         }
        }
-        
         catch (SQLException se) {
         	se.printStackTrace();
 		}
-       
+        this.setIslaslinkCustomer(isLaslinkCustomer);
+        getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
         return new Boolean(hasScoringConfigurable);
     }
-    
-	
 	
 
 }

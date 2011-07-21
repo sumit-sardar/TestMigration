@@ -9,7 +9,26 @@ public class ManageTestSessionData extends CTBBeanData
 { 
 	
     static final long serialVersionUID = 1L;
+    private Integer totalExportedStudentCount = 0;
+    private Integer scheduledStudentCount = 0;
+	private Integer notTakenStudentCount = 0;
+	private Integer notCompletedStudentCount = 0;
+	
     /**
+	 * @return the totalExportedStudentCount
+	 */
+	public Integer getTotalExportedStudentCount() {
+		return totalExportedStudentCount;
+	}
+
+	/**
+	 * @param totalExportedStudentCount the totalExportedStudentCount to set
+	 */
+	public void setTotalExportedStudentCount(Integer totalExportedStudentCount) {
+		this.totalExportedStudentCount = totalExportedStudentCount;
+	}
+
+	/**
 	 * Gets the array of ManageStudent beans
 	 * @return array of ManageStudents
 	 */
@@ -30,4 +49,46 @@ public class ManageTestSessionData extends CTBBeanData
         this.setBeans(testSessions, pageSize);
    
    }
+
+	/**
+	 * @return the scheduledStudentCount
+	 */
+	public Integer getScheduledStudentCount() {
+		return scheduledStudentCount;
+	}
+
+	/**
+	 * @param scheduledStudentCount the scheduledStudentCount to set
+	 */
+	public void setScheduledStudentCount(Integer scheduledStudentCount) {
+		this.scheduledStudentCount = scheduledStudentCount;
+	}
+
+	/**
+	 * @return the notTakenStudentCount
+	 */
+	public Integer getNotTakenStudentCount() {
+		return notTakenStudentCount;
+	}
+
+	/**
+	 * @param notTakenStudentCount the notTakenStudentCount to set
+	 */
+	public void setNotTakenStudentCount(Integer notTakenStudentCount) {
+		this.notTakenStudentCount = notTakenStudentCount;
+	}
+
+	/**
+	 * @return the notCompletedStudentCount
+	 */
+	public Integer getNotCompletedStudentCount() {
+		return notCompletedStudentCount;
+	}
+
+	/**
+	 * @param notCompletedStudentCount the notCompletedStudentCount to set
+	 */
+	public void setNotCompletedStudentCount(Integer notCompletedStudentCount) {
+		this.notCompletedStudentCount = notCompletedStudentCount;
+	}
 }

@@ -30,7 +30,7 @@ template_find_student.jsp
 		</p>
 
 		<!-- start form -->
-		<netui:form action="getStudentNotToBeExported">
+		<netui:form action="gotoSummary">
 			<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement" />
 			<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction" />
 			<br />
@@ -60,14 +60,7 @@ template_find_student.jsp
 							<netui:span value="${pageFlow.notCompletedStudentCount}" styleClass="formValueLarge" />
 							</td>
 						</tr>						
-						<tr class="transparent">
-							<td class="transparent">Total Incomplete Scored Student:</td>
-							<td class="transparent">
-							<netui:span value="${pageFlow.unscoredStudentCount}" styleClass="formValueLarge" />
-							</td>
-						</tr>
-
-
+					
 					</table>
 			</br>
 			</br>

@@ -34,11 +34,20 @@ public class ManageDownloadController extends PageFlowController
     @Control()
     private com.ctb.control.uploadDownloadManagement.UploadDownloadManagement downLoadManagement;
 
+ // LLO- 118 - Change for Ematrix UI
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.OrgNode orgnode;
+	
     static final long serialVersionUID = 1L;
     
     private String userName = null;
     private ManageDownloadForm savedForm = null;
     private User user = null;
+    
+    // LLO- 118 - Change for Ematrix UI
+	private boolean isTopLevelUser = false;
+	private boolean islaslinkCustomer = false;
+  
     
     private static final String ACTION_DEFAULT = "defaultAction";
 
@@ -100,9 +109,30 @@ public class ManageDownloadController extends PageFlowController
     })
     protected Forward manageDownload(ManageDownloadForm form)
     {  
+    	isTopLevelUser(); //LLO- 118 - Change for Ematrix UI
         return new Forward("success", form);
     }
-
+    
+  //LLO- 118 - Change for Ematrix UI
+    private void isTopLevelUser(){
+		
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		isLaslinkUser = this.islaslinkCustomer;
+		try {
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+	}
     /**
      * @jpf:action
      * @jpf:forward name="error" path="manage_download.jsp"
@@ -364,12 +394,12 @@ public class ManageDownloadController extends PageFlowController
 	 * This method checks whether customer is configured to access the scoring feature or not.
 	 * @return Return Boolean 
 	 */
-	
+
 	private Boolean customerHasScoring()
     {               
 		Integer customerId = this.user.getCustomer().getCustomerId();
         boolean hasScoringConfigurable = false;
-        
+        boolean isLaslinkCustomer = false;
         try
         {      
 			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
@@ -387,15 +417,34 @@ public class ManageDownloadController extends PageFlowController
             	getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
                 break;
             } 
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+    				&& cc.getDefaultValue().equals("T")) {
+    			isLaslinkCustomer = true;
+    			break;
+            }
         }
-       }
-        
-        catch (SQLException se) {
+        }catch (SQLException se) {
         	se.printStackTrace();
 		}
-       
+        this.setIslaslinkCustomer(isLaslinkCustomer);
+        getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
         return new Boolean(hasScoringConfigurable);
     }
-    
+
+	/**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
+	}
+	
+
 	
 }

@@ -86,6 +86,21 @@ public class ItemScoringController extends PageFlowController {
 	// customer configuration
 	CustomerConfiguration[] customerConfigurations = null;
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
+	private boolean islaslinkCustomer = false;
+
+	/**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
+	}
 
 	/**
 	 * Callback that is invoked when this controller instance is created.
@@ -367,6 +382,7 @@ public class ItemScoringController extends PageFlowController {
 	private Boolean customerHasScoring() {
 
 		boolean hasScoringConfigurable = false;
+		 boolean isLaslinkCustomer = false;
 		for (CustomerConfiguration cc : customerConfigurations) {
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase(
 					"Configurable_Hand_Scoring")
@@ -374,8 +390,13 @@ public class ItemScoringController extends PageFlowController {
 				hasScoringConfigurable = true;
 				break;
 			}
+			 if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+						&& cc.getDefaultValue().equals("T")) {
+					isLaslinkCustomer = true;
+					break;
+	            }
 		}
-
+		 this.setIslaslinkCustomer(isLaslinkCustomer);
 		getSession()
 				.setAttribute("isScoringConfigured", hasScoringConfigurable);
 		return new Boolean(hasScoringConfigurable);

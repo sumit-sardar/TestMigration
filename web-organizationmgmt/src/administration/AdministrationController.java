@@ -64,7 +64,31 @@ public class AdministrationController extends PageFlowController
     @Control()
     private com.ctb.control.userManagement.UserManagement userManagement;
     
+    
+ // LLO- 118 - Change for Ematrix UI
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.OrgNode orgnode;
+
+	
+	 // LLO- 118 - Change for Ematrix UI
+	private boolean isTopLevelUser = false;
+	private boolean islaslinkCustomer = false;
+    
     /**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
+	}
+
+	/**
      * @jpf:action
      */
     @Jpf.Action()
@@ -103,10 +127,31 @@ public class AdministrationController extends PageFlowController
         this.getSession().setAttribute("userHasReports", userHasReports());
         this.getSession().setAttribute("isAdminUserAtLeafNode", isAdminUserAtLeafNode());
         this.getSession().setAttribute("canGenerateReportFile", canGenerateReportFile());
-        
+        isTopLevelUser(); //LLO- 118 - Change for Ematrix UI
         return new Forward("success");
     }
-     
+    
+  //LLO- 118 - Change for Ematrix UI
+    private void isTopLevelUser(){
+		
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		isLaslinkUser = this.islaslinkCustomer;
+		try {
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+	}
+    
     /**
      * @jpf:action
      */
@@ -391,7 +436,7 @@ public class AdministrationController extends PageFlowController
     {               
 		Integer customerId = this.user.getCustomer().getCustomerId();
         boolean hasScoringConfigurable = false;
-        
+        boolean isLaslinkCustomer = false;
         try
         {      
 			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
@@ -408,16 +453,21 @@ public class AdministrationController extends PageFlowController
             	hasScoringConfigurable = true;
                   break;
             } 
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+    				&& cc.getDefaultValue().equals("T")) {
+    			isLaslinkCustomer = true;
+    			break;
+            }
         }
        }
-        
         catch (SQLException se) {
         	se.printStackTrace();
 		}
+        this.setIslaslinkCustomer(isLaslinkCustomer);
         getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
         return new Boolean(hasScoringConfigurable);
     }
-    
+	
 	
        
 

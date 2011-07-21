@@ -101,6 +101,10 @@ public class ManageOrganizationController extends PageFlowController
     private Boolean isLasLinkCustomerSelected = false;
     CustomerConfiguration[] customerConfigurations = null;
     
+    // LLO- 118 - Change for Ematrix UI
+	private boolean isTopLevelUser = false;
+    
+    
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
 	//END - Changes for LASLINK PRODUCT 
     // navigation
@@ -166,9 +170,11 @@ public class ManageOrganizationController extends PageFlowController
     {        
         getUserDetails();
         getCustomerConfigurations();
+        isLasLinkCustomer();
         //For Bulk Accommodation
         customerHasBulkAccommodation();
         customerHasScoring();//For hand scoring changes
+        isTopLevelUser(); 
         this.savedForm = initialize(globalApp.ACTION_DEFAULT);
         String orgNodeIdString = (String)this.getRequest().getAttribute("orgNodeId");
         String orgNodeName = (String)this.getRequest().getAttribute("orgNodeName");
@@ -223,6 +229,7 @@ public class ManageOrganizationController extends PageFlowController
         //For Bulk Accommodation
         customerHasBulkAccommodation();
         customerHasScoring();//for scoring changes
+        isTopLevelUser(); 
         this.savedForm = initialize(globalApp.ACTION_FIND_ORGANIZATION);
         initHierarchy(this.savedForm);                
         this.globalApp.navPath.reset(globalApp.ACTION_FIND_ORGANIZATION);
@@ -330,7 +337,28 @@ public class ManageOrganizationController extends PageFlowController
         this.getRequest().setAttribute("isFindOrganization",Boolean.TRUE);
         return new Forward("success", form);
     }
-
+    
+    //LLO- 118 - Change for Ematrix UI
+    private void isTopLevelUser(){
+		
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		isLaslinkUser = this.isLasLinkCustomer;
+		try {
+			if(isLaslinkUser) {
+				isUserTopLevel = orgNode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+	}
+    
 	 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** VIEW ORGANIZATION ************* //////////////////////////////////    
@@ -816,6 +844,7 @@ public class ManageOrganizationController extends PageFlowController
         //For Bulk Accommodation
         customerHasBulkAccommodation();
         customerHasScoring();//For hand scoring changes
+        isTopLevelUser(); 
         this.savedForm = initialize(globalApp.ACTION_ADD_ORGANIZATION);
         initHierarchy(this.savedForm);                
         this.globalApp.navPath.reset(globalApp.ACTION_ADD_ORGANIZATION);

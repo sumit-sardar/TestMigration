@@ -151,6 +151,7 @@ function stopAudio(){
 			<netui:hidden tagId="testAccessCode" dataSource="actionForm.testAccessCode" />
 			<netui:hidden tagId="testSessionName" dataSource="actionForm.testSessionName" />
 			<netui:hidden tagId="loginName" dataSource="actionForm.loginName" />
+			<netui:hidden tagId="isDataExportFlow" dataSource="actionForm.isDataExportFlow" />
 
 			<netui:hidden dataSource="actionForm.itemMaxPage" />
 			<input type="hidden" id="itemSetId" />

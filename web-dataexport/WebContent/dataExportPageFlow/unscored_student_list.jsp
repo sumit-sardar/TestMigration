@@ -81,7 +81,7 @@ template_find_student.jsp
 									<c:if test="${!isStudentIdConfigurable}">
 										<th class="sortable alignLeft" width="20%" nowrap>Student ID</th>
 									</c:if>
-									<!-- th class="sortable alignLeft" width="10%" nowrap>Scoring Status</th> -->
+									<th class="sortable alignLeft" width="10%" nowrap>Scoring Status</th> 
 								</ctb:tableSortColumnGroup>
 							</tr>
 
@@ -101,7 +101,7 @@ template_find_student.jsp
 
 								<td class="sortable"><netui:span value="${container.item.grade}" /></td>
 								<td class="sortable"><netui:span value="${container.item.studentIdNumber}" /></td>
-								<!-- td class="sortable"><netui:span value="${container.item.scoringStatus}" /></td> -->
+								<td class="sortable"><netui:span value="Incomplete" /></td> 
 							</tr>
 
 						</netui-data:repeaterItem>
@@ -131,7 +131,7 @@ template_find_student.jsp
 			</br>
 
 			<netui:button type="submit" value="${bundle.web['common.button.back']}" action="backToPreviousPage" />
-			<netui:button type="submit" value="${bundle.web['common.button.next']}" action="gotoSummary" />
+			
 
 		</netui:form>
 

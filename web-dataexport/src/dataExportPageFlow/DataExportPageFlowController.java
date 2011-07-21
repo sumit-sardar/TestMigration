@@ -67,6 +67,7 @@ public class DataExportPageFlowController extends PageFlowController {
 	private Integer notCompletedStudentCount = 0;
 	private String  previousPage = "StudentForExport";   
 	private String  pageId = "1";
+	private boolean islaslinkCustomer = false;
 	
 
 	private DataExportForm savedForm;
@@ -130,7 +131,11 @@ public class DataExportPageFlowController extends PageFlowController {
 			form.setTestSessionStudentMaxPage(mtsData.getFilteredPages());
 			this.getRequest().setAttribute("testSessionList", testSessionList);
 			this.getRequest().setAttribute("testSessionPagerSummary",testSessionPagerSummary);
-			this.setTotalStudentCount(mtsData.getTotalCount());
+			this.setTotalStudentCount(mtsData.getTotalExportedStudentCount());
+			this.scheduledStudentCount = mtsData.getScheduledStudentCount();
+			this.notTakenStudentCount = mtsData.getNotTakenStudentCount();
+			this.notCompletedStudentCount = mtsData.getNotCompletedStudentCount();
+			
 		}
 		this.pageTitle = "Data Export: Test Session With Students";
 		this.savedForm = form.createClone();
@@ -139,7 +144,7 @@ public class DataExportPageFlowController extends PageFlowController {
 	}
 	
 	
-	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "student_not_exported.jsp"),
+	/*@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "student_not_exported.jsp"),
 									@Jpf.Forward(name = "validate", path = "validateAndConfirm.do") }, 
 			validationErrorForward = @Jpf.Forward(name = "failure", path = "logout.do"))
 	public Forward getStudentNotToBeExported(DataExportForm form) {
@@ -188,7 +193,7 @@ public class DataExportPageFlowController extends PageFlowController {
 		form.setCurrentAction(ACTION_DEFAULT);
 		return forward;
 	}
-	
+	*/
 	
 	@Jpf.Action(forwards = {
 			@Jpf.Forward(name = "validate", path = "unscored_student_list.jsp"),
@@ -236,9 +241,9 @@ public class DataExportPageFlowController extends PageFlowController {
 				if(pageId == "1"){
 					previousPage = "StudentForExport";
 				}
-				else if(pageId == "2"){
+				/*else if(pageId == "2"){
 					previousPage = "StudentNotToBeExported";
-				}
+				}*/
 			}			
 			
 			forward = new Forward("validate",form);
@@ -414,7 +419,7 @@ public class DataExportPageFlowController extends PageFlowController {
 	}
 	
 	
-	
+/*	
 	private ManageStudentData getIncompleteRosterUnexportedStudents(DataExportForm form) {
 		String actionElement = form.getActionElement();
 		
@@ -429,7 +434,7 @@ public class DataExportPageFlowController extends PageFlowController {
 				page, sort);
 		
 		return msData;
-	}
+	}*/
 	
 	private ManageStudentData getAllUnscoredUnexportedStudents(DataExportForm form) {
 		String actionElement = form.getActionElement();
@@ -484,6 +489,7 @@ public class DataExportPageFlowController extends PageFlowController {
 		}
 
 		getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
+		this.setIslaslinkCustomer(isLaslinkCustomer);
 		getSession().setAttribute("isLaslinkCustomer", isLaslinkCustomer);
 		return new Boolean(hasScoringConfigurable);
 	}
@@ -580,11 +586,13 @@ public class DataExportPageFlowController extends PageFlowController {
 		boolean isUserTopLevel = false;
 		boolean isLaslinkUserTopLevel = false;
 		boolean isLaslinkUser = false;
-		isLaslinkUser = (Boolean)getSession().getAttribute("isLaslinkCustomer");
+		isLaslinkUser = this.islaslinkCustomer;
 		try {
-			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
-			if(isUserTopLevel && isLaslinkUser){
-				isLaslinkUserTopLevel = true;				
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -1217,6 +1225,20 @@ public class DataExportPageFlowController extends PageFlowController {
 	 */
 	public void setPreviousPage(String previousPage) {
 		this.previousPage = previousPage;
+	}
+
+	/**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
 	}
 
 	

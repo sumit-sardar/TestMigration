@@ -118,6 +118,12 @@ public class ScheduleTestController extends PageFlowController
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.ItemSet itemSet;
     
+    
+    // LLO- 118 - Change for Ematrix UI
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.OrgNode orgnode;
+
+    
     public static final String ACTION_SCHEDULE_TEST = "schedule";
     public static final String ACTION_VIEW_TEST = "view";
     public static final String ACTION_EDIT_TEST = "edit";
@@ -205,8 +211,26 @@ public class ScheduleTestController extends PageFlowController
     //Changes for defect in performance tuning
     private boolean gradeFlag = false;
     
+    // LLO- 118 - Change for Ematrix UI
+	private boolean isTopLevelUser = false;
+	private boolean islaslinkCustomer = false;
     
-    public String [] getFormOptions() {
+    
+    /**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
+	}
+
+	public String [] getFormOptions() {
 		return formOptions;
 	}
 
@@ -882,11 +906,32 @@ public class ScheduleTestController extends PageFlowController
         
         this.getRequest().setAttribute("hasMultipleSubtests", new Boolean(hasMultipleSubtests));
 
-        form.setActionElement(ACTION_DEFAULT);   
+        form.setActionElement(ACTION_DEFAULT); 
+        isTopLevelUser(); //LLO- 118 - Change for Ematrix UI
         setFormInfoOnRequest(form);
         return new Forward("selectTest", form);
         
     }
+  //LLO- 118 - Change for Ematrix UI
+    private void isTopLevelUser(){
+		
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		isLaslinkUser = this.islaslinkCustomer;
+		try {
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+	}
     
     private void setFormInfoOnRequest(ScheduleTestForm form) {
 
@@ -2277,7 +2322,7 @@ public class ScheduleTestController extends PageFlowController
     {               
 		Integer customerId = this.user.getCustomer().getCustomerId();
         boolean hasScoringConfigurable = false;
-        
+        boolean isLaslinkCustomer = false;
         try
         {      
 			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
@@ -2292,18 +2337,25 @@ public class ScheduleTestController extends PageFlowController
             if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
             		cc.getDefaultValue().equals("T")	) {
             	hasScoringConfigurable = true;
+            	getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
                 break;
             } 
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+    				&& cc.getDefaultValue().equals("T")) {
+    			isLaslinkCustomer = true;
+    			break;
+            }
         }
        }
-        
         catch (SQLException se) {
         	se.printStackTrace();
 		}
-       
+        this.setIslaslinkCustomer(isLaslinkCustomer);
         getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
         return new Boolean(hasScoringConfigurable);
     }
+
+
     
 //changes for TABE BAUM - 028
 	

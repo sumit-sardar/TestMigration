@@ -61,6 +61,10 @@ public class ScoreByStudentController extends PageFlowController {
     
 	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.CRScoring scoring;
+	
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.OrgNode orgnode;
+	
 	private static final String ACTION_DEFAULT = "defaultAction";
 	private static final String ACTION_ITEM_LIST = "getItemByStudent";
 	private static final String ACTION_FIND_STUDENT = "findStudent";
@@ -83,6 +87,7 @@ public class ScoreByStudentController extends PageFlowController {
 	// customer configuration
 	CustomerConfiguration[] customerConfigurations = null;
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
+	private boolean islaslinkCustomer = false;
 
 	/**
 	 * Callback that is invoked when this controller instance is created.
@@ -201,6 +206,11 @@ public class ScoreByStudentController extends PageFlowController {
 		String currentAction = form.getCurrentAction();
 		String actionElement = form.getActionElement();
 		if (currentAction.equals(ACTION_DEFAULT)) {
+			getUserDetails();
+			isGeorgiaCustomer(form);
+			customerHasBulkAccommodation();
+			customerHasScoring();
+			isTopLevelUser();
 			form.setUserName((String) getSession().getAttribute("userName"));
 			form.setTestAdminId(Integer.valueOf(this.getRequest().getParameter(
 					"testAdminId")));
@@ -209,6 +219,9 @@ public class ScoreByStudentController extends PageFlowController {
 			form.setLoginName(this.getRequest().getParameter("loginName"));
 			form.setTestRosterId(Integer.valueOf(this.getRequest()
 					.getParameter("testRosterId")));
+			form.setIsDataExportFlow(this.getRequest().
+					getParameter("dataExport"));
+			
 		}
 		if (form.getActionElement().equals(ACTION_DEFAULT)) {
 			form.setCurrentAction(ACTION_ITEM_LIST);
@@ -264,13 +277,50 @@ public class ScoreByStudentController extends PageFlowController {
 	 * @jpf:action
 	 * @jpf:forward name="success" path="findStudent.do"
 	 */
-	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "findStudent.do") })
+	@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "findStudent.do"),
+			@Jpf.Forward(name = "successExport", path = "goto_export_student_list.do")})
 	protected Forward returnToFindStudent(ScoreByStudentForm form) {
-		savedForm.setCurrentAction(ACTION_FIND_STUDENT);
-		savedForm.setActionElement(ACTION_FIND_STUDENT);
-		savedForm.setTestAdminId(form.getTestAdminId());
-		return new Forward("success", this.savedForm);
+		Forward forward;
+		
+		if(form.getIsDataExportFlow().equalsIgnoreCase("T"))
+		{
+			
+			forward = new Forward("successExport");
+		}
+		else
+		{
+			savedForm.setCurrentAction(ACTION_FIND_STUDENT);
+			savedForm.setActionElement(ACTION_FIND_STUDENT);
+			savedForm.setTestAdminId(form.getTestAdminId());
+			forward = new Forward("success", this.savedForm);
+		}
+		return forward;
 	}
+	
+	/**
+     * @jpf:action
+     */
+    @Jpf.Action()
+    protected Forward goto_export_student_list()
+    {
+        try
+        {
+            String contextPath = "/DataExportWeb/dataExportPageFlow/returnToFindStudent.do";
+           /* String loginName = this.getRequest().getParameter("loginName");
+            String testAdminId = this.getRequest().getParameter("testAdminId");
+            String testRosterId = this.getRequest().getParameter("testRosterId");
+            String itemSetIdTC = this.getRequest().getParameter("itemSetIdTC");*/
+            
+            String url = contextPath + "?itemBack=T";
+            
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    } 
 
 	/**
 	 * findStudentForTestSession
@@ -378,6 +428,7 @@ public class ScoreByStudentController extends PageFlowController {
 	private Boolean customerHasScoring() {
 
 		boolean hasScoringConfigurable = false;
+		boolean isLaslinkCustomer = false;
 		for (CustomerConfiguration cc : customerConfigurations) {
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase(
 					"Configurable_Hand_Scoring")
@@ -385,11 +436,38 @@ public class ScoreByStudentController extends PageFlowController {
 				hasScoringConfigurable = true;
 				break;
 			}
-		}
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+				isLaslinkCustomer = true;
+				break;
+            }
 
+		}
+		this.setIslaslinkCustomer(isLaslinkCustomer);
 		getSession()
 				.setAttribute("isScoringConfigured", hasScoringConfigurable);
 		return new Boolean(hasScoringConfigurable);
+	}
+	
+	 //LLO- 118 - Change for Ematrix UI
+    private void isTopLevelUser(){
+		
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		isLaslinkUser = this.islaslinkCustomer;
+		try {
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
 	}
 
 	/**
@@ -716,7 +794,8 @@ public Forward rescoreStudent(ScoreByStudentForm form) {
 	 Integer testRosterId = form.getTestRosterId();
 
         try {    
-            this.testSessionStatus.rescoreStudent(testRosterId);
+            //this.testSessionStatus.rescoreStudent(testRosterId);
+        	  this.getRequest().setAttribute("processScoreResult", MessageResourceBundle.getMessage("processScoreResult"));   
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -760,6 +839,7 @@ public Forward rescoreStudent(ScoreByStudentForm form) {
 		private Integer itemSetId;
 		// student profile
 		private String loginName;
+		private String isDataExportFlow;
 
 		/**
 		 * @return the itemSetId
@@ -867,6 +947,10 @@ public Forward rescoreStudent(ScoreByStudentForm form) {
 				this.itemPageRequested = new Integer(this.itemMaxPage
 						.intValue());
 
+			}
+			
+			if(this.isDataExportFlow == null){				
+				this.setIsDataExportFlow("F");
 			}
 
 		}
@@ -1144,6 +1228,20 @@ public Forward rescoreStudent(ScoreByStudentForm form) {
 			this.testRosterId = testRosterId;
 		}
 
+		/**
+		 * @return the isDataExportFlow
+		 */
+		public String getIsDataExportFlow() {
+			return isDataExportFlow;
+		}
+
+		/**
+		 * @param isDataExportFlow the isDataExportFlow to set
+		 */
+		public void setIsDataExportFlow(String isDataExportFlow) {
+			this.isDataExportFlow = isDataExportFlow;
+		}
+
 		
 	}
 
@@ -1228,6 +1326,20 @@ public Forward rescoreStudent(ScoreByStudentForm form) {
 	 */
 	public void setSavedForm(ScoreByStudentForm savedForm) {
 		this.savedForm = savedForm;
+	}
+
+	/**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
 	}
 
 }

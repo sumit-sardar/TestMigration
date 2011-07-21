@@ -79,8 +79,23 @@ public class HomePageController extends PageFlowController
     private boolean hasLicenseConfig = false;  //change for defect 66353
     // LLO- 118 - Change for Ematrix UI
 	private boolean isTopLevelUser = false;
+	private boolean islaslinkCustomer = false;
     
     /**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
+	}
+
+	/**
 	 * @return the hasLicenseConfig
 	 */
 	public boolean isHasLicenseConfig() {
@@ -112,7 +127,7 @@ public class HomePageController extends PageFlowController
     protected Forward begin()
     {        
     	getLoggedInUserPrincipal();   
-    	isTopLevelUser();
+    	//isTopLevelUser();
         getUserDetails();
                          
         HomePageForm form = new HomePageForm();
@@ -332,6 +347,8 @@ public class HomePageController extends PageFlowController
       //For hand scoring changes
         this.getSession().setAttribute("isScoringConfigured", customerHasScoring(customerConfigs));
         
+        isTopLevelUser();
+        
         form.setActionElement("none");   
         
         return new Forward("success", form);
@@ -340,16 +357,21 @@ public class HomePageController extends PageFlowController
     private void isTopLevelUser(){
 		
 		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		isLaslinkUser = this.islaslinkCustomer;
 		try {
-			isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);
-			this.isTopLevelUser = isUserTopLevel;
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//this.getRequest().setAttribute("isTopLevelUser",isUserTopLevel);
-		this.getSession().setAttribute("isTopLevelUser",this.isTopLevelUser);
-		
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
 	}
     
     private void getLoggedInUserPrincipal()
@@ -650,6 +672,7 @@ public class HomePageController extends PageFlowController
     {               
         Integer customerId = this.user.getCustomer().getCustomerId();
         boolean hasScoringConfigurable = false;
+        boolean isLaslinkCustomer = false;
 
         for (int i=0; i < customerConfigs.length; i++)
         {
@@ -659,9 +682,17 @@ public class HomePageController extends PageFlowController
             	hasScoringConfigurable = true;
                 break;
             } 
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+				isLaslinkCustomer = true;
+				break;
+            }
+
         }
-       
+        this.setIslaslinkCustomer(isLaslinkCustomer);
         return new Boolean(hasScoringConfigurable);
+        
+ 
     }
     
     

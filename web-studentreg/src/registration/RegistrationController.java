@@ -2,6 +2,7 @@ package registration;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +88,11 @@ public class RegistrationController extends PageFlowController
     @Control()
     private com.ctb.control.licensing.Licensing licensing;
     
+ // LLO- 118 - Change for Ematrix UI
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.OrgNode orgnode;
+
+    
     private static final String ACTION_DEFAULT          = "defaultAction";
     private static final String ACTION_FIND_STUDENT     = "findStudentAction";
     private static final String ACTION_ADD_STUDENT      = "addStudentAction";
@@ -158,6 +164,10 @@ public class RegistrationController extends PageFlowController
 	private Integer productId = new Integer(0);
 	//END- FORM RECOMMENDATION
   
+	 // LLO- 118 - Change for Ematrix UI
+	private boolean isTopLevelUser = false;
+	private boolean islaslinkCustomer = false;
+    
     /**
      * This method represents the point of entry into the pageflow
      * @jpf:action
@@ -373,11 +383,32 @@ public class RegistrationController extends PageFlowController
         this.getRequest().setAttribute("selectedTab", selectedTab);
         
         this.getRequest().setAttribute("testAdminName", this.scheduledSession.getTestSession().getTestAdminName());                        
-        
+        isTopLevelUser(); //LLO- 118 - Change for Ematrix UI
         setFormInfoOnRequest(form);                
         return new Forward("success", form);
     }
 
+    //LLO- 118 - Change for Ematrix UI
+    private void isTopLevelUser(){
+		
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		isLaslinkUser = this.islaslinkCustomer;
+		try {
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+	}
+    
     /**
      * @jpf:action
      * @jpf:forward name="success" path="beginEnterMoreStudent.do"
@@ -2329,11 +2360,12 @@ public class RegistrationController extends PageFlowController
 		 */
 	
 
+
 	private Boolean customerHasScoring()
     {               
         
         boolean hasScoringConfigurable = false;
-
+        boolean isLaslinkCustomer = false;
         for (int i=0; i < customerConfigurations.length; i++)
         {
         	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
@@ -2341,9 +2373,14 @@ public class RegistrationController extends PageFlowController
             		cc.getDefaultValue().equals("T")	) {
             	hasScoringConfigurable = true;
                 break;
-            } 
+            }
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+    				&& cc.getDefaultValue().equals("T")) {
+    			isLaslinkCustomer = true;
+    			break;
+            }
         }
-       
+        this.setIslaslinkCustomer(isLaslinkCustomer);
         getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
         return new Boolean(hasScoringConfigurable);
     }
@@ -2458,6 +2495,20 @@ public class RegistrationController extends PageFlowController
 		 */
 		public void setPreTestAdminId(Integer preTestAdminId) {
 			this.preTestAdminId = preTestAdminId;
+		}
+
+		/**
+		 * @return the islaslinkCustomer
+		 */
+		public boolean isIslaslinkCustomer() {
+			return islaslinkCustomer;
+		}
+
+		/**
+		 * @param islaslinkCustomer the islaslinkCustomer to set
+		 */
+		public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+			this.islaslinkCustomer = islaslinkCustomer;
 		}
     
 	

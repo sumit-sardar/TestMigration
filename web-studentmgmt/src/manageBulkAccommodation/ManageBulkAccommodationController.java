@@ -1,6 +1,7 @@
 
 package manageBulkAccommodation;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -70,6 +71,8 @@ public class ManageBulkAccommodationController extends PageFlowController
 	@Control()
 	private com.ctb.control.studentManagement.StudentManagement studentManagement;
 
+	@Control()
+	private com.ctb.control.db.OrgNode orgnode;
 	
 	private static final String ACTION_DEFAULT           = "defaultAction";
 	public static final String ACTION_CHANGE_ACCOMMODATION = "changeAccommodation";
@@ -122,6 +125,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 	// student accommodations
 	public StudentAccommodationsDetail accommodations = null;
+	private boolean islaslinkCustomer = false;
 
 	// misc
 	public String pageTitle = null;
@@ -238,9 +242,32 @@ public class ManageBulkAccommodationController extends PageFlowController
 		this.getSession().setAttribute("userHasReports", userHasReports());
 		customerHasBulkAccommodation();
 		customerHasScoring();//For hand scoring changes
+		isTopLevelUser();
 		copySelectedStudents(savedForm);
 
 		return this.savedForm;
+	}
+	
+	
+	//LLO- 118 - Change for Ematrix UI
+    private void isTopLevelUser(){
+		
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		isLaslinkUser = this.islaslinkCustomer;
+		try {
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
 	}
 	/**
 	 * userHasReports
@@ -276,7 +303,7 @@ public class ManageBulkAccommodationController extends PageFlowController
     {               
         
         boolean hasScoringConfigurable = false;
-
+        boolean isLaslinkCustomer = false;
         for (int i=0; i < customerConfigurations.length; i++)
         {
         	 CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
@@ -285,7 +312,13 @@ public class ManageBulkAccommodationController extends PageFlowController
             	hasScoringConfigurable = true;
                 break;
             } 
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+    				&& cc.getDefaultValue().equals("T")) {
+    			isLaslinkCustomer = true;
+    			break;
+            }
         }
+        this.setIslaslinkCustomer(isLaslinkCustomer);
         getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
        
         return new Boolean(hasScoringConfigurable);
@@ -1187,6 +1220,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 		customerHasBulkAccommodation();
 		//scoring changes
 		customerHasScoring();//For hand scoring changes
+		isTopLevelUser();
 		form.setCustomerConfigurations(this.customerConfigurations);
 		this.getRequest().setAttribute("customerConfigurations", customerConfigurations);
 		this.savedForm = form;
@@ -3174,6 +3208,26 @@ public class ManageBulkAccommodationController extends PageFlowController
 	 */
 	public void setDemographicValues3(String[] demographicValues3) {
 		this.demographicValues3 = demographicValues3;
+	}
+
+
+
+
+	/**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+
+
+
+
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
 	}
 }
 

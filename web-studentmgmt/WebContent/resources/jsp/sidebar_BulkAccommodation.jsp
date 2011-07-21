@@ -99,8 +99,18 @@
 <h1>Workstation Setup</h1>
 <ul>
     <li><a href="/TestSessionInfoWeb/downloadclient/DownloadClientController.jpf" onclick="return verifyBulkAccommodation();"><span>Install Software</span></a></li>
-    <li><a href="/TestSessionInfoWeb/downloadtest/DownloadTestController.jpf" onclick="return verifyBulkAccommodationverifyBulkAccommodationverifyBulkAccommodation();"><span>Download Test</span></a></li>
+    <li><a href="/TestSessionInfoWeb/downloadtest/DownloadTestController.jpf" onclick="return verifyBulkAccommodation();"><span>Download Test</span></a></li>
 </ul>
+</ctb:auth>
+<ctb:auth roles="Administrator">
+<c:if test="${ sessionScope.isTopLevelUser }">
+<h1>Reports</h1>
+<ul>
+    <li><a href="/DataExportWeb/dataExportPageFlow/begin.do" onclick="return verifyBulkAccommodation();"><span>Data Export</span></a></li>
+    <li><a href="/DataExportWeb/dataExportPageFlow/beginViewStatus.do" onclick="return verifyBulkAccommodation();"><span>View Status</span></a></li>
+    
+</ul>
+ </c:if>
 </ctb:auth>
 
 
