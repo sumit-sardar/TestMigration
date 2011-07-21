@@ -1,2 +1,4 @@
 Manifest-Version: 1.0
+Class-Path: dep-jmsdataexport-ctrl.jar 
+ dep-base-ctrl.jar
 

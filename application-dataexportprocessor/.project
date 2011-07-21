@@ -5,6 +5,7 @@
 	<projects>
 		<project>dep-jmsdataexport-ejb</project>
 		<project>dep-jmsdataexport-ctrl</project>
+		<project>dep-base-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
