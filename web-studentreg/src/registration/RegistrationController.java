@@ -219,6 +219,7 @@ public class RegistrationController extends PageFlowController
 		customerHasBulkAccommodation();
 		customerHasScoring();//For hand scoring changes
 		//START- Form Recommendation
+		isTopLevelUser();
 		String reqStudentId = (String)this.getRequest().getParameter("studentId");
         if (reqStudentId != null && testAdminStr != null)
         {

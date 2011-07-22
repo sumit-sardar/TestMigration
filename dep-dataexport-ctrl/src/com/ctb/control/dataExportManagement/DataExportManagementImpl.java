@@ -1,6 +1,9 @@
 package com.ctb.control.dataExportManagement;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 
@@ -23,9 +26,6 @@ import com.ctb.exception.dataExportManagement.JobDataNotFoundException;
 import com.ctb.exception.dataExportManagement.StudentDataNotFoundException;
 import com.ctb.exception.dataExportManagement.UserDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
-import com.ctb.util.DateUtils;
-import java.util.Date;
-import java.util.Hashtable;
 
 /**
  * @author John_Wang
@@ -347,14 +347,18 @@ public class DataExportManagementImpl implements DataExportManagement
 		Integer scheduledValue = new Integer(0);
 		Integer studentStopValue = new Integer(0);
 		Integer systemStopValue = new Integer(0);
-		Integer endedSystemStopValue = new Integer(0);
+		Integer endedStudentStopValue = new Integer(0);
 		Integer pageSize = null;
 		Integer totalExportedStudentCount =  new Integer(0);
 		Integer scheduledStudentCount = new Integer(0);
 		Integer notTakenStudentCount = new Integer(0);
 		Integer notCompletedStudentCount = new Integer(0);
-		
-		
+		Integer systemStopCountFromIncompleteCount = new Integer(0);
+		List toBeExportedStudentRosterList = new ArrayList();
+		Boolean hasCompleteValue = false;
+	    Hashtable rostersToIndexHash = null;
+	    Hashtable rosterIdTorosterId = null;
+	    
 		if(page != null) {
 			pageSize = new Integer(page.getPageSize());
 		}
@@ -371,26 +375,78 @@ public class DataExportManagementImpl implements DataExportManagement
 				scheduledValue = new Integer(0);
 				studentStopValue = new Integer(0);
 				systemStopValue = new Integer(0);
-				endedSystemStopValue = new Integer(0);
-				 completeValue = dataExportManagement.getCompletedSubtestUnexportedStudentsForTestSession(customerId,testSessions[i].getTestAdminId()); 
+				endedStudentStopValue = new Integer(0);
 				
+				systemStopCountFromIncompleteCount = new Integer(0);
+				Integer[] completeValueRosterList = dataExportManagement.getCompletedSubtestUnexportedStudentsForTestSession(customerId,testSessions[i].getTestAdminId()); 
+				if(completeValueRosterList != null)
+				{
+					completeValue = completeValueRosterList.length;
+					for(int j=0; j<completeValue; j++){
+						toBeExportedStudentRosterList.add(completeValueRosterList[j]);
+						hasCompleteValue = true;
+					}
+				}
 				if(testSessions[i].getStatus().equals("PA")){
-					Integer systemStopCountFromIncompleteCount = dataExportManagement.getSystemStopCountFromInCompleteForTestSession(customerId, testSessions[i].getTestAdminId());
-				    notTakenValue = dataExportManagement.getNotTakenSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
-				    incompleteValue = dataExportManagement.getInCompleteSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
-				    endedSystemStopValue = incompleteValue - systemStopCountFromIncompleteCount;
+					notTakenValue = dataExportManagement.getNotTakenSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
+				    Integer[] systemStopCountFromIncompleteCountRosterList = dataExportManagement.getSystemStopCountFromInCompleteForTestSession(customerId, testSessions[i].getTestAdminId());
+				    Integer[] incompleteValueRosterList = dataExportManagement.getInCompleteSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
+				    
+				    
+				    
+				    List result = new ArrayList();   
+				    rostersToIndexHash = new Hashtable();
+				    if(systemStopCountFromIncompleteCountRosterList != null){
+				    	systemStopCountFromIncompleteCount = systemStopCountFromIncompleteCountRosterList.length;
+					    	for (int j=0; j< systemStopCountFromIncompleteCountRosterList.length; j++) {
+						            Integer rosterId   = systemStopCountFromIncompleteCountRosterList[j];
+						            result.add(rosterId);
+						        }
+						     if(incompleteValueRosterList != null){
+						    	 incompleteValue = incompleteValueRosterList.length;
+						    		 for(int k=0;k < incompleteValue;k++){
+						    			if( !result.contains(incompleteValueRosterList[k])) {
+						    				toBeExportedStudentRosterList.add(incompleteValueRosterList[k]);
+						    			}
+						    		 } 
+						     }
+				    }else{
+				    	if(incompleteValueRosterList != null){
+				    		 incompleteValue = incompleteValueRosterList.length;
+				    		
+							 for(int j= 0 ; j < incompleteValue; j++){
+								 toBeExportedStudentRosterList.add(incompleteValueRosterList[j]);	
+							}
+				    	} 
+				    	
+				    }
+				    endedStudentStopValue = incompleteValue - systemStopCountFromIncompleteCount;
 				    toBeExportedValue = completeValue + incompleteValue - systemStopCountFromIncompleteCount;
 				    notTakenStudentCount = notTakenStudentCount +  notTakenValue;
-				}else{
-					scheduledValue = dataExportManagement.getScheduledSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
-					studentStopValue = dataExportManagement.getStudentStopSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
-				    systemStopValue = dataExportManagement.getSystemStopSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
-					
-					toBeExportedValue = completeValue + studentStopValue;
-					totalExportedStudentCount = totalExportedStudentCount + toBeExportedValue;
-					scheduledStudentCount = scheduledStudentCount + scheduledValue;
+		            
+				   
 				}
-				notCompletedStudentCount  = notCompletedStudentCount + systemStopValue + endedSystemStopValue;
+				   
+				else{
+					scheduledValue = dataExportManagement.getScheduledSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
+					Integer[] studentStopValueRosterList = dataExportManagement.getStudentStopSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
+				    systemStopValue = dataExportManagement.getSystemStopSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
+				   	if(studentStopValueRosterList != null){
+						 studentStopValue = studentStopValueRosterList.length;
+						
+							for(int j= 0; j< studentStopValue; j++){
+								 toBeExportedStudentRosterList.add(studentStopValueRosterList[j]);	
+							}
+							
+						
+					}
+					 toBeExportedValue = completeValue + studentStopValue;
+					 totalExportedStudentCount = totalExportedStudentCount + toBeExportedValue;
+					 scheduledStudentCount = scheduledStudentCount + scheduledValue;
+				  }
+					 
+				
+				notCompletedStudentCount  = notCompletedStudentCount + studentStopValue + endedStudentStopValue;
 				testSessions[i].setComplete(completeValue);
 				testSessions[i].setScheduled(scheduledValue);
 				testSessions[i].setNotTaken(notTakenValue);
@@ -398,14 +454,16 @@ public class DataExportManagementImpl implements DataExportManagement
 				testSessions[i].setStudentStop(studentStopValue);
 				testSessions[i].setSystemStop(systemStopValue);
 				testSessions[i].setToBeExported(toBeExportedValue);
+				
 					
 			}
 			mtsd.setTotalExportedStudentCount(totalExportedStudentCount);
 			mtsd.setScheduledStudentCount(scheduledStudentCount);
 			mtsd.setNotTakenStudentCount(notTakenStudentCount);
 			mtsd.setNotCompletedStudentCount(notCompletedStudentCount);
+			mtsd.setToBeExportedStudentRosterList(toBeExportedStudentRosterList);
 			mtsd.setManageTestSessions(testSessions, pageSize);
-			testSessions = mtsd.getManageTestSessions();
+		    testSessions = mtsd.getManageTestSessions();
 			
 			mtsd.setManageTestSessions(testSessions, pageSize);
 			if(filter != null) mtsd.applyFiltering(filter);

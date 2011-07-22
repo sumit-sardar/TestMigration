@@ -120,6 +120,7 @@ public class AdministrationController extends PageFlowController
         //for Bulk Accommodation
         customerHasBulkAccommodation();
         customerHasScoring(); // For hand scoring changes
+        isTopLevelUser();
         this.getSession().setAttribute("hasUploadDownloadConfig", hasUploadDownloadConfig());
         this.getSession().setAttribute("hasProgramStatusConfig", hasProgramStatusConfig());
         

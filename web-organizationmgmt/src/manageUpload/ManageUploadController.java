@@ -91,7 +91,11 @@ public class ManageUploadController extends PageFlowController
     @Control()
     private com.ctb.control.db.Users users;
     
-   
+    
+    // LLO- 118 - Change for Ematrix UI
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.OrgNode orgnode;
+
     
     static final long serialVersionUID = 1L;
     
@@ -140,9 +144,27 @@ public class ManageUploadController extends PageFlowController
 	@Control
 	private UploadDownloadManagementServiceControl uploadDownloadManagementServiceControl;
 
+	 
+    // LLO- 118 - Change for Ematrix UI
+	private boolean isTopLevelUser = false;
+	private boolean islaslinkCustomer = false;
     
     
     /**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
+	}
+
+	/**
      * @jpf:action
      * @jpf:forward name="success" path="beginManageUpload.do"
      */
@@ -169,6 +191,7 @@ public class ManageUploadController extends PageFlowController
         //Bulk Accommodation Changes
         customerHasBulkAccommodation();
         customerHasScoring();//For hand scoring changes
+        isTopLevelUser();
         this.savedForm = initialize();
         
         return new Forward("success", this.savedForm);
@@ -1312,7 +1335,7 @@ public class ManageUploadController extends PageFlowController
     {               
 		Integer customerId = this.user.getCustomer().getCustomerId();
         boolean hasScoringConfigurable = false;
-        
+        boolean isLaslinkCustomer = false;
         try
         {      
 			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
@@ -1330,16 +1353,42 @@ public class ManageUploadController extends PageFlowController
             	getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
                 break;
             } 
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+				isLaslinkCustomer = true;
+				break;
+            }
+            
         }
        }
         
         catch (SQLException se) {
         	se.printStackTrace();
 		}
-       
+        this.setIslaslinkCustomer(isLaslinkCustomer);
         return new Boolean(hasScoringConfigurable);
     }
     
-	
+	 //LLO- 118 - Change for Ematrix UI
+    private void isTopLevelUser(){
+		
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		isLaslinkUser = this.islaslinkCustomer;
+		try {
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+	}
+
     
 }

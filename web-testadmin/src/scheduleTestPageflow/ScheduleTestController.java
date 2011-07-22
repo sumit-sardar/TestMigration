@@ -385,6 +385,7 @@ public class ScheduleTestController extends PageFlowController
         this.stateScheduler = new StateScheduler();
         
         customerHasScoring();//For hand scoring changes for defect # 65988
+        isTopLevelUser();
     }    
 
 

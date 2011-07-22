@@ -1500,6 +1500,7 @@ public class ManageCustomerController extends PageFlowController
         //Bulk Accommodation Changes
         customerHasBulkAccommodation();
         customerHasScoring(); // For hand scoring changes
+        isTopLevelUser();
         this.savedForm = new ManageCustomerForm();
         this.savedForm.init(action);
         this.globalApp.navPath = new NavigationPath();

@@ -1,6 +1,8 @@
 
 package com.ctb.bean.dataExportManagement; 
 
+import java.util.List; //LLO- 118 - Change for Ematrix UI
+
 import com.ctb.bean.CTBBean;
 import com.ctb.bean.CTBBeanData;
 
@@ -13,8 +15,23 @@ public class ManageTestSessionData extends CTBBeanData
     private Integer scheduledStudentCount = 0;
 	private Integer notTakenStudentCount = 0;
 	private Integer notCompletedStudentCount = 0;
+    private List toBeExportedStudentRosterList; //LLO- 118 - Change for Ematrix UI
 	
     /**
+	 * @return the toBeExportedStudentRosterList
+	 */
+	public List getToBeExportedStudentRosterList() {
+		return toBeExportedStudentRosterList;
+	}
+
+	/**
+	 * @param toBeExportedStudentRosterList the toBeExportedStudentRosterList to set
+	 */
+	public void setToBeExportedStudentRosterList(List toBeExportedStudentRosterList) {
+		this.toBeExportedStudentRosterList = toBeExportedStudentRosterList;
+	}
+
+	/**
 	 * @return the totalExportedStudentCount
 	 */
 	public Integer getTotalExportedStudentCount() {

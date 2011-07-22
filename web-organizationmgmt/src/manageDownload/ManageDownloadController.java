@@ -94,6 +94,7 @@ public class ManageDownloadController extends PageFlowController
         //Bulk Accommodation Changes
         customerHasBulkAccommodation();
         customerHasScoring();//For hand scoring changes
+        isTopLevelUser();
         this.savedForm = initialize();
         
         return new Forward("success", this.savedForm);

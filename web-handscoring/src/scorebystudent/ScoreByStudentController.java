@@ -127,6 +127,7 @@ public class ScoreByStudentController extends PageFlowController {
 		isGeorgiaCustomer(form);
 		customerHasBulkAccommodation();
 		customerHasScoring();
+		isTopLevelUser();
 
 		return new Forward("success", form);
 	}

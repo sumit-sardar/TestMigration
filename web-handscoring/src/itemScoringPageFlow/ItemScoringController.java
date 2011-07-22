@@ -64,6 +64,9 @@ public class ItemScoringController extends PageFlowController {
 
 	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.CRScoring scoring;
+	
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.OrgNode orgnode;
 
 	private static final String ACTION_DEFAULT         = "defaultAction";
 	private static final String ACTION_SCORE_BY_ITEM   = "scoreByItem";
@@ -157,6 +160,7 @@ public class ItemScoringController extends PageFlowController {
 		isGeorgiaCustomer(form);
 		customerHasBulkAccommodation();
 		customerHasScoring();
+		isTopLevelUser();
 		return new Forward("success", form);
 	}
 
@@ -402,6 +406,27 @@ public class ItemScoringController extends PageFlowController {
 		return new Boolean(hasScoringConfigurable);
 	}
 	
+	 //LLO- 118 - Change for Ematrix UI
+    private void isTopLevelUser(){
+		
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		isLaslinkUser = this.islaslinkCustomer;
+		try {
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+	}
+
 	/**
 	 * getCustomerConfigurations
 	 */

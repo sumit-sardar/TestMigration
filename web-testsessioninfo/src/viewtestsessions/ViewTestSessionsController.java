@@ -1,6 +1,7 @@
 package viewtestsessions;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +54,11 @@ public class ViewTestSessionsController extends PageFlowController
     @Control()
     private com.ctb.control.licensing.Licensing licensing;
     
+    // LLO- 118 - Change for Ematrix UI
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.OrgNode orgnode;
+
+    
         
     private String userName = null;
     private List orgNodePath = null;
@@ -66,6 +72,11 @@ public class ViewTestSessionsController extends PageFlowController
  // customer configuration Change for HandScoring: score by student
 	CustomerConfiguration[] customerConfigurations = null;
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
+	 
+    // LLO- 118 - Change for Ematrix UI
+	private boolean isTopLevelUser = false;
+	private boolean islaslinkCustomer = false;
+    
     
          
     public static final String ACTION_DEFAULT = "defaultAction";
@@ -93,6 +104,7 @@ public class ViewTestSessionsController extends PageFlowController
         }
      // change for handscoring
         customerHasScoring();
+        isTopLevelUser();
         this.getSession().setAttribute("orgNodePath", this.orgNodePath);
         
         return new Forward("success", form);
@@ -311,6 +323,7 @@ public class ViewTestSessionsController extends PageFlowController
           	this.orgNodePath = new ArrayList();
           	// change for handscoring
            customerHasScoring();
+           isTopLevelUser();
            this.getSession().setAttribute("orgNodePath", this.orgNodePath);
          }
          if (form.orgNodeId == null)
@@ -967,6 +980,26 @@ public class ViewTestSessionsController extends PageFlowController
         return pagerSummary;
     }
     
+    //LLO- 118 - Change for Ematrix UI
+    private void isTopLevelUser(){
+		
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		isLaslinkUser = this.islaslinkCustomer;
+		try {
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+	}
     /**
      * getCustomerLicenses
      */
@@ -1183,6 +1216,7 @@ public class ViewTestSessionsController extends PageFlowController
     private Boolean customerHasScoring() {
     	getCustomerConfigurations();
 		boolean hasScoringConfigurable = false;
+		boolean isLaslinkCustomer = false;
 		for (CustomerConfiguration cc : customerConfigurations) {
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase(
 					"Configurable_Hand_Scoring")
@@ -1190,13 +1224,18 @@ public class ViewTestSessionsController extends PageFlowController
 				hasScoringConfigurable = true;
 				break;
 			}
-		}
-
-		getSession()
-				.setAttribute("isScoringConfigured", hasScoringConfigurable);
-		return new Boolean(hasScoringConfigurable);
-	}
-    
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+    				&& cc.getDefaultValue().equals("T")) {
+    			isLaslinkCustomer = true;
+    			break;
+            }
+        }
+        this.setIslaslinkCustomer(isLaslinkCustomer);
+        getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
+        return new Boolean(hasScoringConfigurable);
+    }
+	
+		
     /**
      * Changes For cr hand scoring score by student
 	 * getCustomerConfigurations
@@ -1588,6 +1627,18 @@ public class ViewTestSessionsController extends PageFlowController
 	 */
 	public void setSelectedOrgNodeId(Integer selectedOrgNodeId) {
 		this.selectedOrgNodeId = selectedOrgNodeId;
+	}
+	/**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
 	}
     
 }

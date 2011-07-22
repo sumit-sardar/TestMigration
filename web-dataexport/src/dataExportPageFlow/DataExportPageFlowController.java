@@ -58,17 +58,16 @@ public class DataExportPageFlowController extends PageFlowController {
 	private static final String ACTION_VALIDATE_SEARCH = "validateStudent";
 	private static final String ACTION_CURRENT_ELEMENT = "{actionForm.currentAction}";
 	private boolean searchApplied = false;
-	private Hashtable productNameToIndexHash = null;
-	private Hashtable productIdToProductName = null;
 	private Integer totalStudentCount = 0;
 	private Integer unscoredStudentCount = 0;
 	private Integer scheduledStudentCount = 0;
 	private Integer notTakenStudentCount = 0;
 	private Integer notCompletedStudentCount = 0;
+	private List toBeExportedStudentRosterList;
 	private String  previousPage = "StudentForExport";   
 	private String  pageId = "1";
 	private boolean islaslinkCustomer = false;
-	
+	ArrayList toBeExportedRosterList = new ArrayList();
 
 	private DataExportForm savedForm;
 	
@@ -135,6 +134,7 @@ public class DataExportPageFlowController extends PageFlowController {
 			this.scheduledStudentCount = mtsData.getScheduledStudentCount();
 			this.notTakenStudentCount = mtsData.getNotTakenStudentCount();
 			this.notCompletedStudentCount = mtsData.getNotCompletedStudentCount();
+			this.toBeExportedStudentRosterList = mtsData.getToBeExportedStudentRosterList();
 			
 		}
 		this.pageTitle = "Data Export: Test Session With Students";
@@ -144,56 +144,6 @@ public class DataExportPageFlowController extends PageFlowController {
 	}
 	
 	
-	/*@Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "student_not_exported.jsp"),
-									@Jpf.Forward(name = "validate", path = "validateAndConfirm.do") }, 
-			validationErrorForward = @Jpf.Forward(name = "failure", path = "logout.do"))
-	public Forward getStudentNotToBeExported(DataExportForm form) {
-		Forward forward;
-		form.validateValues();
-
-		String currentAction = form.getCurrentAction();
-		String actionElement = form.getActionElement();
-		form.resetValuesForAction(actionElement); 
-		ManageStudentData msData = null;
-		
-		msData = getIncompleteRosterUnexportedStudents(form);
-		
-		if ((msData != null) && (msData.getFilteredCount().intValue() == 0)) {
-			this.getRequest().setAttribute("searchResultEmpty",	MessageResourceBundle.getMessage("unexportStudentSearchResultEmpty"));
-		}else{
-			this.getRequest().removeAttribute("searchResultEmpty");
-			
-		}
-		
-		if ((msData != null) && (msData.getFilteredCount().intValue() > 0)) {
-			//2
-			List studentList = DataExportSearchUtils.buildExportStudentList(msData);
-			this.scheduledStudentCount =msData.getScheduledStudentCount();
-			this.notTakenStudentCount = msData.getNotTakenStudentCount();
-			this.notCompletedStudentCount = msData.getNotCompletedStudentCount();
-			PagerSummary studentPagerSummary = DataExportSearchUtils.buildStudentPagerSummary(msData, form.getStudentPageRequested());
-			form.setStudentMaxPage(msData.getFilteredPages());
-			
-			this.getRequest().setAttribute("studentList", studentList);
-			this.getRequest().setAttribute("studentPagerSummary",studentPagerSummary);
-			
-			this.pageTitle = "Data Export: List Of Incomplete Students";
-			previousPage = "StudentNotToBeExported";
-			pageId = "2";
-			forward = new Forward("success",form);
-		}
-		else {		
-			previousPage = "StudentForExport";	
-			pageId = "1";
-			forward = new Forward("validate",form);
-			
-		}	
-		
-		this.savedForm = form.createClone();
-		form.setCurrentAction(ACTION_DEFAULT);
-		return forward;
-	}
-	*/
 	
 	@Jpf.Action(forwards = {
 			@Jpf.Forward(name = "validate", path = "unscored_student_list.jsp"),
@@ -333,6 +283,17 @@ public class DataExportPageFlowController extends PageFlowController {
     	return null;
     	
     }
+    
+    /*@Jpf.Action(forwards = { @Jpf.Forward(name = "StudentForExport", path = "getStudentForExport.do"),
+			@Jpf.Forward(name = "validateAndConfirm", path = "validateAndConfirm.do")})
+	protected Forward submitJob(DataExportForm form) {
+	
+	
+	
+	return null;
+	
+	}*/
+    
     @Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "getExportStatus.do") })
 	protected Forward beginViewStatus() {
 		retrieveInfoFromSession();
@@ -418,23 +379,6 @@ public class DataExportPageFlowController extends PageFlowController {
 		return mtsData;
 	}
 	
-	
-/*	
-	private ManageStudentData getIncompleteRosterUnexportedStudents(DataExportForm form) {
-		String actionElement = form.getActionElement();
-		
-		PageParams page = FilterSortPageUtils.buildPageParams(form.getTestSessionStudentPageRequested(), FilterSortPageUtils.PAGESIZE_10);
-		SortParams sort = FilterSortPageUtils.buildStudentSortParams(form.getTestSessionStudentSortColumn(), form.getTestSessionStudentSortOrderBy());
-		FilterParams filter = FilterSortPageUtils.buildFilterParams(null);
-
-		ManageStudentData msData = null;		
-		
-		msData = DataExportSearchUtils.getIncompleteRosterUnexportedStudents(
-				this.dataexportManagement, this.customerId, filter,
-				page, sort);
-		
-		return msData;
-	}*/
 	
 	private ManageStudentData getAllUnscoredUnexportedStudents(DataExportForm form) {
 		String actionElement = form.getActionElement();
@@ -1239,6 +1183,20 @@ public class DataExportPageFlowController extends PageFlowController {
 	 */
 	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
 		this.islaslinkCustomer = islaslinkCustomer;
+	}
+
+	/**
+	 * @return the toBeExportedStudentRosterList
+	 */
+	public List getToBeExportedStudentRosterList() {
+		return toBeExportedStudentRosterList;
+	}
+
+	/**
+	 * @param toBeExportedStudentRosterList the toBeExportedStudentRosterList to set
+	 */
+	public void setToBeExportedStudentRosterList(List toBeExportedStudentRosterList) {
+		this.toBeExportedStudentRosterList = toBeExportedStudentRosterList;
 	}
 
 	

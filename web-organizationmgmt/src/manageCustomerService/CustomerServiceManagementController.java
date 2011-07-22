@@ -1030,6 +1030,7 @@ public class CustomerServiceManagementController extends PageFlowController {
 		//Bulk Accommodation Changes
 		customerHasBulkAccommodation();
 		customerHasScoring();//For hand scoring changes
+		isTopLevelUser();
 		this.studentsOnPage = new HashMap<String,StudentSessionStatusVO>();
 		this.studentsOnPageList = new HashMap<String,StudentSessionStatusVO>();
 		this.selectedStudents = new HashMap<String,StudentSessionStatusVO>();

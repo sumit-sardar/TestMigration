@@ -122,6 +122,7 @@ public class ManageLicenseController extends PageFlowController
         customerHasBulkAccommodation();
         
         customerHasScoring();//For hand scoring changes
+        isTopLevelUser();
         ManageLicenseForm form = initialize();
         
         this.customerLicenses = getCustomerLicenses();
@@ -147,6 +148,7 @@ public class ManageLicenseController extends PageFlowController
         customerHasBulkAccommodation();
         
         customerHasScoring();//For hand scoring changes
+        isTopLevelUser();
         ManageLicenseForm form = initialize();
         
         this.customerLicenses = getCustomerLicenses();
@@ -172,6 +174,7 @@ public class ManageLicenseController extends PageFlowController
         customerHasBulkAccommodation();
         
         customerHasScoring();//For hand scoring changes
+        isTopLevelUser();
         ManageLicenseForm form = initialize();
         
         this.customerLicenses = getCustomerLicenses();
