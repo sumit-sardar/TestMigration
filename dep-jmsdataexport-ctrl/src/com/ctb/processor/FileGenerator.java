@@ -41,6 +41,8 @@ import com.ctb.dto.SubSkillNumberCorrect;
 import com.ctb.dto.SubSkillPercentCorrect;
 import com.ctb.dto.TestRoster;
 import com.ctb.dto.Tfil;
+import com.ctb.exception.CTBBusinessException;
+import com.ctb.utils.Configuration;
 import com.ctb.utils.EmetricUtil;
 import com.ctb.utils.ExtractUtil;
 import com.ctb.utils.SqlUtil;
@@ -56,11 +58,12 @@ public class FileGenerator {
 		+ " where    ons.org_node_id = ona.org_node_id   and  ons.student_id =  ? "
 		+ " and onc.org_node_category_id = node.org_node_category_id   and node.org_node_id = ona.ancestor_org_node_id";
 
-	// Defect Fix for 66423
+	// Defect Fix for 66423 and timeZobe defect
 	private static String testSessionSQl = "select tad.preferred_form as form, tc.test_level as testLevel,"
-		+ " to_Char(roster.start_date_time,'MMDDYY') as testDate,to_Char(roster.completion_date_time,'MMDDYYYY')  as dateTestingCompleted"
-		+ " from test_admin tad, test_roster roster,test_catalog tc"
+		+ " to_Char(new_time(roster.start_date_time, 'GMT', tzc.time_zone_code),'MMDDYY') as testDate,to_Char(new_time(roster.completion_date_time,'GMT',tzc.time_zone_code),'MMDDYYYY')  as dateTestingCompleted"
+		+ " from test_admin tad, test_roster roster,test_catalog tc,time_zone_code tzc"
 		+ " where tad.test_admin_id = roster.test_admin_id"
+		+ " and tad.time_zone = tzc.time_zone "
 		+ " and roster.test_completion_status in ('CO','IS','IC')"
 		+ " and tc.test_catalog_id = tad.test_catalog_id"
 		+ " and roster.test_roster_id = ? ";
@@ -99,6 +102,12 @@ public class FileGenerator {
 		+ " from TEST_ROSTER this_  "
 		+ "where this_.CUSTOMER_ID = ?  and this_.ACTIVATION_STATUS = 'AC' "
 		+ "and this_.TEST_COMPLETION_STATUS in ('CO', 'IS', 'IC')";
+	
+	private String  testRosterByIDSql = " select this_.TEST_ROSTER_ID   as TEST_ROSTER_ID,  this_.ACTIVATION_STATUS  as ACTIVATION_STATUS,  this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS, this_.CUSTOMER_ID as CUSTOMER_ID,  this_.STUDENT_ID   as STUDENT_ID,  this_.TEST_ADMIN_ID  as TEST_ADMIN_ID  from TEST_ROSTER this_   where this_.TEST_ROSTER_ID IN( <#ROSTER_ID_LIST#> )";
+	private String  testRosterWithStudentByRosterIDSql = " select this_.TEST_ROSTER_ID   as TEST_ROSTER_ID,  this_.ACTIVATION_STATUS  as ACTIVATION_STATUS,  this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS, this_.STUDENT_ID   as STUDENT_ID,  this_.TEST_ADMIN_ID  as TEST_ADMIN_ID " +
+			" , student0_.FIRST_NAME   as FIRST_NAME,  student0_.LAST_NAME    as LAST_NAME,  student0_.MIDDLE_NAME  as MIDDLE_NAME,  student0_.BIRTHDATE    as BIRTHDATE,  student0_.GENDER       as GENDER,  student0_.GRADE  as GRADE0,  student0_.TEST_PURPOSE as TEST_PURPOSE,   student0_.EXT_PIN1  as EXT_PIN1" +
+			"  from TEST_ROSTER this_ , student student0_  " +
+			" where this_.STUDENT_ID = student0_.STUDENT_ID  and this_.TEST_ROSTER_ID IN( <#ROSTER_ID_LIST#> )";
 
 	private String studentSql = "  select student0_.STUDENT_ID   as STUDENT_ID, student0_.FIRST_NAME   as FIRST_NAME,  student0_.LAST_NAME    as LAST_NAME,  student0_.MIDDLE_NAME  as MIDDLE_NAME,  student0_.BIRTHDATE    as BIRTHDATE,  student0_.GENDER       as GENDER,  student0_.GRADE  as GRADE0,   student0_.CUSTOMER_ID  as CUSTOMER_ID,   student0_.TEST_PURPOSE as TEST_PURPOSE,   student0_.EXT_PIN1  as EXT_PIN1  from student student0_   where student0_.STUDENT_ID = ? ";
 
@@ -107,6 +116,7 @@ public class FileGenerator {
 	private String studentDemographicSql = " select STUDENT_DEMOGRAPHIC_DATA_ID , CUSTOMER_DEMOGRAPHIC_ID , VALUE_NAME from student_demographic_data sdd where sdd.student_id = ? ";
 
 	private String customerDemographiValuecsql = "select value_name,customer_demographic_id  from customer_demographic_value  where customer_demographic_id =?";
+	@SuppressWarnings("unused")
 	private String subSkillItemAreaInformation1 = "select tad.product_id || iset.item_set_id subskill_id,"
 		+ " iset.item_set_name from test_admin tad,product,item_set_category icat,item_set iset"
 		+ " where tad.test_admin_id = ? and icat.item_set_category_level = 4 and tad.product_id = product.product_id"
@@ -151,6 +161,7 @@ public class FileGenerator {
 	private String customerState = null;
 	private String testDate = null;
 
+	@SuppressWarnings("unused")
 	private static final String blank = "";
 	private HashMap<String, String> subSkillAreaScoreInfo = new HashMap<String, String>();
 	private HashMap<String, String> subSkillAreaItemCategory = new HashMap<String, String>();
@@ -165,6 +176,7 @@ public class FileGenerator {
 	private Integer customerId = new Integer(ExtractUtil
 			.getDetail("oas.customerId"));
 	static TreeMap<String, String> wrongMap = new TreeMap<String, String>();
+	private List<String> fileNameList;	
 	
 	
 	static {
@@ -176,72 +188,82 @@ public class FileGenerator {
 	}
 	
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) throws CTBBusinessException {
 		FileGenerator example = new FileGenerator();
-		try {
+
 			System.out.println("Making TXT from POJO...");
+			example.fileNameList = new ArrayList<String>();
 			example.writeToText();
 
 			System.out.println("END !");
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (FFPojoException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+		
+	}*/
 	
-	public void execute (int customerId){
-		try {
+	public void execute (int customerId, List<String> fileNameList,  List<String> formettedTestRoster) throws CTBBusinessException{
+
 			this.customerId = customerId;
-			System.out.println("Making TXT from POJO...");
-			writeToText();
+			this.fileNameList = fileNameList;
+			System.out.println("File generation started.");
+			writeToText( formettedTestRoster);
+			System.out.println("File generation completed.");
 
-			System.out.println("END !");
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (FFPojoException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
-	private void writeToText() throws IOException, FFPojoException, SQLException,Exception {
-
+	private void writeToText( List<String> formettedTestRoster) throws CTBBusinessException  {
+		
+		FlatFileWriter ffWriter = null;
 		OrderFile orderFile = new OrderFile();
-		List<Tfil> myList = createList(orderFile);
-		String localFilePath = ExtractUtil.getDetail("oas.exportdata.filepath");
-		String fileName = customerState + "_" + testDate + "_"
+		System.out.println("Collecting data for report....");
+		List<Tfil> myList = createList(orderFile,  formettedTestRoster);
+		System.out.println("Data collected .");
+		String localFilePath = Configuration.getLocalFilePath();
+		String  formatedDate = fileDateOutputFormat.format(new Date()) ;
+		
+		String dataFileName = customerState + "_" + testDate + "_"
 		+ customerId + "_" + orderFile.getOrgTestingProgram() + "_"
 		+ orderFile.getCustomerName().trim() + "_" + group + "_"
-		+ DATAFILE + "_" + fileDateOutputFormat.format(new Date())
-		+ ".dat";
+		+ DATAFILE + "_" + formatedDate	+ ".dat";
+		
+		String orderFileName = dataFileName.substring(0, dataFileName.length() - 23);
+		orderFileName = orderFileName + "ORDERFILE_"+ formatedDate + ".csv";
+		
+		
+		
 		if(!(new File(localFilePath)).exists()){
 			File f = new File(localFilePath);
 			f.mkdirs();
 		}
-		File file = new File(localFilePath, fileName);
-		FlatFileWriter ffWriter = null;
+		fileNameList.add(new File(localFilePath, dataFileName).getAbsolutePath());
+		fileNameList.add(new File(localFilePath, orderFileName).getAbsolutePath());
+		
+		
+		File file = new File(localFilePath, dataFileName);
+		
 		try{
+			System.out.println("Preparing Data File.");
 			ffWriter = new FileSystemFlatFileWriter(file, true);
 			ffWriter.writeRecordList(myList);
 			ffWriter.close();
-			System.out.println("Export file successfully generated:["+fileName+"]");
-			orderFile.setDataFileName(EmetricUtil.truncate(fileName,
-					new Integer(100)).substring(1, fileName.length()));
-			System.out.println("Completed Writing");
-			System.out.println("Preparing Order File");
-			prepareOrderFile(orderFile, localFilePath, fileName);
+			//System.out.println("Export file successfully generated:["+dataFileName+"]");
+			orderFile.setDataFileName(EmetricUtil.truncate(dataFileName,
+					100).substring(1, dataFileName.length()));
+			System.out.println("Data File ["+dataFileName+"] created.");
+			
+			System.out.println("Preparing Order File.");
+			prepareOrderFile(orderFile, localFilePath, orderFileName);
+			System.out.println("Order File ["+orderFileName+"] created.");
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("IOException while writing into data file:"+e.getMessage());
+		} catch (FFPojoException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("IOException while writing into data file:"+e.getMessage());
 		} finally {
 			if(ffWriter!=null){
-				ffWriter.close();
+				try {
+					ffWriter.close();
+				} catch (IOException e) {
+				}
 			}
 		}
 		
@@ -257,7 +279,7 @@ public class FileGenerator {
 	 * return myList; }
 	 */
 
-	private List<Tfil> createList(OrderFile orderFile) throws Exception {
+	private List<Tfil> createList(OrderFile orderFile,  List<String> formettedTestRoster) throws CTBBusinessException {
 		List<TestRoster> myrosterList = new ArrayList<TestRoster>();
 		List<CustomerDemographic> customerAccomList = new ArrayList<CustomerDemographic>();
 		List<CustomerDemographic> customerDemoList = new ArrayList<CustomerDemographic>();
@@ -286,43 +308,52 @@ public class FileGenerator {
 				customerDemographic.put(c.getCustomerDemographicId(), c
 						.getLabelName());
 			}
-
-			myrosterList = getTestRoster(oascon);
 			populateCustomer(oascon, orderFile);
-			for (TestRoster roster : myrosterList) {
-				Tfil tfil = new Tfil();
+			//myrosterList = getTestRoster(oascon);
+			for (String rosterIdIn : formettedTestRoster) {
+				//System.out.println("111:"+rosterIdIn);
+				myrosterList = getTestRosterFromID(oascon, rosterIdIn);
+				for (TestRoster roster : myrosterList) {
+					Tfil tfil = new Tfil();
 
-				Student st = roster.getStudent();
+					Student st = roster.getStudent();
 
-				setStudentList(tfil, st);
+					setStudentList(tfil, st);
 
-				// Accomodations
-			Accomodations accomodations = createAccomodations(st
-						.getStudentDemographic(), setAccomodation,
-						customerDemographic, tfil);
-				tfil.setAccomodations(accomodations);
+					// Accomodations
+					Accomodations accomodations = createAccomodations(st
+							.getStudentDemographic(), setAccomodation,
+							customerDemographic, tfil);
+					tfil.setAccomodations(accomodations);
 
-				tfil.setModelLevel(customerModelLevelValue);
-				tfil.setState(this.customerState);
-				//System.out.println("roster id "+ roster.getTestRosterId() +" : : "+ roster.getTestAdminId());
-				// org node
-				createOrganization(oascon, tfil, roster.getStudentId(),
-						districtMap, schoolMap, classMap, orderFile);
-				// create test Session
-				createTestSessionDetails(oascon, tfil,
-						roster.getTestRosterId(), orderFile);
-				// create studentItemSetstatus
-				createStudentItemStatusDetails(oascon, tfil, roster
-						.getTestRosterId(), roster.getStudentId());
+					tfil.setModelLevel(customerModelLevelValue);
+					tfil.setState(this.customerState);
+					// System.out.println("roster id "+ roster.getTestRosterId()
+					// +" : : "+ roster.getTestAdminId());
+					// org node
+					createOrganization(oascon, tfil, roster.getStudentId(),
+							districtMap, schoolMap, classMap, orderFile);
+					// create test Session
+					createTestSessionDetails(oascon, tfil, roster
+							.getTestRosterId(), orderFile);
+					// create studentItemSetstatus
+					createStudentItemStatusDetails(oascon, tfil, roster
+							.getTestRosterId(), roster.getStudentId());
 
-				// added for Skill Area Score
-				createSkillAreaScoreInformation(irscon, tfil, roster);
+					// added for Skill Area Score
+					createSkillAreaScoreInformation(irscon, tfil, roster);
 
-				createSubSkillAreaScoreInformation(oascon, irscon, tfil, roster);
-				//createItemResponseInformation(oascon, roster,tfil); // for emetric research analysis
-				tfilList.add(tfil);
-				studentCount++;
+					createSubSkillAreaScoreInformation(oascon, irscon, tfil,
+							roster);
+					// createItemResponseInformation(oascon, roster,tfil); //
+					// for emetric research analysis
+					tfilList.add(tfil);
+					studentCount++;
+				}
 			}
+			
+			
+			
 			/** ***************** */
 			orderFile.setCaseCount(studentCount.toString());
 
@@ -335,8 +366,9 @@ public class FileGenerator {
 		return tfilList;
 	}
 
+	@SuppressWarnings("unused")
 	private void createItemResponseInformation(Connection oascon,
-			TestRoster roster, Tfil tfil) throws SQLException {
+			TestRoster roster, Tfil tfil) throws CTBBusinessException  {
 		Map<String, TreeMap<String, LinkedList<RostersItem>>> allItems = getItemResponseGrt(
 				oascon, roster);
 		//System.out.println("roster"+roster.getTestRosterId());
@@ -487,7 +519,7 @@ public class FileGenerator {
 	
 	
 
-	private Map<String,TreeMap<String,  LinkedList<RostersItem>>> getItemResponseGrt(Connection oascon, TestRoster roster) throws SQLException {
+	private Map<String,TreeMap<String,  LinkedList<RostersItem>>> getItemResponseGrt(Connection oascon, TestRoster roster) throws CTBBusinessException {
 		Map<String,TreeMap<String,  LinkedList<RostersItem>>> allitem =  new TreeMap<String,TreeMap<String,  LinkedList<RostersItem>>> ();
 		PreparedStatement ps = null ;
 		ResultSet rs = null;
@@ -513,6 +545,9 @@ public class FileGenerator {
 			}
 			
 			//System.out.println("populateCustomer");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at getItemResponseGrt:"+e.getMessage());
 		}finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -529,6 +564,9 @@ public class FileGenerator {
 			}
 			
 			//System.out.println("populateCustomer");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at getItemResponseGrt1:"+e.getMessage());
 		}finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -545,6 +583,10 @@ public class FileGenerator {
 			}
 			
 			//System.out.println("populateCustomer");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at getItemResponseGrt2:"+e.getMessage());
+			
 		}finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -589,7 +631,8 @@ public class FileGenerator {
 	}
 
 
-	private List<TestRoster> getTestRoster(Connection con) throws SQLException {
+	@SuppressWarnings("unused")
+	private List<TestRoster> getTestRoster(Connection con) throws CTBBusinessException {
 		PreparedStatement ps = null ;
 		ResultSet rs = null;
 		 List<TestRoster> rosterList = new ArrayList<TestRoster>();
@@ -608,17 +651,81 @@ public class FileGenerator {
 				ros.setTestAdminId(rs.getInt(6));
 				ros.setStudent(getStudent(con,rs.getInt(5))); 
 				rosterList.add(ros);
+			
 			}
 			
 			//System.out.println("populateCustomer");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at getTestRoster:"+e.getMessage());
 		}finally {
 			SqlUtil.close(ps, rs);
 		}
 		return rosterList;
 	}
+	
+	
+	private List<TestRoster> getTestRosterFromID(Connection con,
+			String rosterIdIn) throws CTBBusinessException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<TestRoster> rosterList = new ArrayList<TestRoster>();
+
+		String testRosterByIDSqlUpdated = testRosterWithStudentByRosterIDSql.replace(
+				"<#ROSTER_ID_LIST#>", rosterIdIn);
+		//System.out.println(testRosterByIDSqlUpdated);
+
+		try {
+			ps = con.prepareStatement(testRosterByIDSqlUpdated);
+			rs = ps.executeQuery();
+			rs.setFetchSize(500);
+			while (rs.next()) {
+				TestRoster ros = new TestRoster();
+				Student std = new Student();
+				ros.setTestRosterId(rs.getInt(1));
+				ros.setActivationStatus(rs.getString(2));
+				ros.setTestCompletionStatus(rs.getString(3));
+				ros.setCustomerId(customerId);
+				ros.setStudentId(rs.getInt(4));
+				std.setStudentId(rs.getInt(4));
+				ros.setTestAdminId(rs.getInt(5));
+				ros.setStudent(std);
+				
+				
+				
+				std.setFirstName(rs.getString(6));
+				std.setLastName(rs.getString(7));
+				std.setMiddleName(rs.getString(8));
+				std.setBirthDate(rs.getDate(9));
+				std.setGender(rs.getString(10));
+				std.setGrade(rs.getString(11));
+				std.setCustomerId(customerId);
+				std.setTestPurpose(rs.getString(12));
+				std.setExtStudentId(rs.getString(13));
+				
+				std.setStudentContact(getStudentContact(con, std.getStudentId()));
+				std
+				.setStudentDemographic(getStudentDemographic(con,std.getStudentId()));
+				
+				
+				rosterList.add(ros);
+			}
+
+			// System.out.println("populateCustomer");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at getTestRoster:"
+					+ e.getMessage());
+		} finally {
+			SqlUtil.close(ps, rs);
+		}
+
+		return rosterList;
+	}
 
 	private Student getStudent(Connection con, int studentId)
-	throws SQLException {
+	throws  CTBBusinessException {
 		Student std = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -646,6 +753,9 @@ public class FileGenerator {
 			}
 
 			// System.out.println("getStudent");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at getStudent:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -654,7 +764,7 @@ public class FileGenerator {
 	}
 
 	private Set<StudentDemographic> getStudentDemographic(Connection con,
-			int studentId) throws SQLException {
+			int studentId) throws CTBBusinessException {
 		Set<StudentDemographic> studentDemographicSet = new HashSet<StudentDemographic>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -673,6 +783,10 @@ public class FileGenerator {
 			}
 
 			// System.out.println("getStudentDemographic:"+studentId+"::"+studentDemographicSet);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at getStudentDemographic:"+e.getMessage());
+			
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -680,8 +794,7 @@ public class FileGenerator {
 		return studentDemographicSet;
 	}
 
-	private Set<StudentContact> getStudentContact(Connection con, int studentId)
-	throws SQLException {
+	private Set<StudentContact> getStudentContact(Connection con, int studentId) throws CTBBusinessException {
 		Set<StudentContact> studentContact = new HashSet<StudentContact>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -699,6 +812,9 @@ public class FileGenerator {
 			}
 
 			// System.out.println("getstudentContact");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at getStudentContact:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -706,8 +822,7 @@ public class FileGenerator {
 		return studentContact;
 	}
 
-	private void populateCustomer(Connection con, OrderFile orderFile)
-	throws SQLException {
+	private void populateCustomer(Connection con, OrderFile orderFile) throws CTBBusinessException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
@@ -718,21 +833,23 @@ public class FileGenerator {
 				this.customerState = rs.getString(1);
 				orderFile.setCustomerStateAbbrevation(rs.getString(1));
 				orderFile.setCustomerEmail(EmetricUtil.truncate(
-						rs.getString(2), new Integer(64)));
+						rs.getString(2), 64));
 				orderFile.setCustomerPhone(EmetricUtil.truncate(EmetricUtil
-						.convertPhoneNumber(rs.getString(3)), new Integer(21)));
+						.convertPhoneNumber(rs.getString(3)), 21));
 				orderFile.setCustomerContact(EmetricUtil.truncate(rs
-						.getString(4), new Integer(64)));
+						.getString(4), 64));
 			}
 
 			// System.out.println("populateCustomer");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at populateCustomer:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
 	}
 
-	private List<CustomerDemographic> getCustomerDemographic(Connection con)
-	throws SQLException {
+	private List<CustomerDemographic> getCustomerDemographic(Connection con) throws CTBBusinessException {
 		List<CustomerDemographic> myList = new ArrayList<CustomerDemographic>();
 		/*
 		 * Criteria crit = session.createCriteria(CustomerDemographic.class);
@@ -756,6 +873,9 @@ public class FileGenerator {
 			}
 
 			// System.out.println("getCustomerDemographic:"+myList);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at getCustomerDemographic:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -764,7 +884,7 @@ public class FileGenerator {
 	}
 
 	private Set<CustomerDemographicValue> getCustomerDemographicValue(
-			Connection con, int customerDemographicId) throws SQLException {
+			Connection con, int customerDemographicId) throws CTBBusinessException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Set<CustomerDemographicValue> customerDemographicValue = new HashSet<CustomerDemographicValue>();
@@ -780,6 +900,9 @@ public class FileGenerator {
 			}
 
 			// System.out.println("customerDemographicValue");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at getCustomerDemographicValue:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -789,7 +912,7 @@ public class FileGenerator {
 	}
 
 	private List<CustomerDemographic> getCustomerLeveledDemographicValue(
-			Connection con) throws SQLException {
+			Connection con) throws CTBBusinessException {
 
 		List<CustomerDemographic> myList = new ArrayList<CustomerDemographic>();
 		PreparedStatement ps = null;
@@ -810,6 +933,9 @@ public class FileGenerator {
 			}
 
 			// System.out.println("myList");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at getCustomerLeveledDemographicValue:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps, rs);
 
@@ -899,7 +1025,7 @@ public class FileGenerator {
 						try {
 							accomodations.getClass().getMethod("set" + string,
 									String.class).invoke(accomodations,
-											new String("1"));
+											"1");
 						} catch (Exception e) {
 							e.printStackTrace();
 
@@ -1052,7 +1178,7 @@ public class FileGenerator {
 		}
 	}
 
-	private void generateModelLevel(Connection conn) throws SQLException {
+	private void generateModelLevel(Connection conn) throws CTBBusinessException  {
 		/*
 		 * Query query1 = session.createSQLQuery(customerModelLevel).addScalar(
 		 * "modelLevel", Hibernate.STRING).setInteger("customerId", customerId);
@@ -1069,6 +1195,9 @@ public class FileGenerator {
 			if (rs.next()) {
 				modelLevel = rs.getString(1);
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at generateModelLevel:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -1079,8 +1208,7 @@ public class FileGenerator {
 	private void createOrganization(Connection con, Tfil tfil,
 			Integer studentId, HashMap<String, Integer> districtMap,
 			HashMap<String, Integer> schoolMap,
-			HashMap<String, Integer> classMap, OrderFile orderFile)
-	throws SQLException {
+			HashMap<String, Integer> classMap, OrderFile orderFile) throws CTBBusinessException {
 
 		TreeMap<Integer, String> organizationMap = new TreeMap<Integer, String>();
 
@@ -1138,7 +1266,7 @@ public class FileGenerator {
 						&& new Integer(organizationMapSize - 1).toString() != null
 						&& rs.getString(5).toString()
 						.equalsIgnoreCase(
-								new Integer(organizationMapSize - 1)
+								Integer.valueOf(organizationMapSize - 1)
 								.toString())) {
 					tfil.setElementNameB(rs.getString(4));
 
@@ -1178,6 +1306,9 @@ public class FileGenerator {
 			}
 
 			// System.out.println("createOrganization");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at createOrganization:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -1214,12 +1345,12 @@ public class FileGenerator {
 			orderFile.setOrgTestingProgram(tfil.getOrganizationId());
 		if (orderFile.getCustomerName() == null)
 			orderFile.setCustomerName(EmetricUtil.truncate(tfil
-					.getElementNameA(), new Integer(30)));
+					.getElementNameA(), 30));
 
 	}
 
 	private void createTestSessionDetails(Connection con, Tfil tfil,
-			Integer rosterId, OrderFile orderFile) throws SQLException {
+			Integer rosterId, OrderFile orderFile) throws CTBBusinessException {
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -1234,28 +1365,28 @@ public class FileGenerator {
 					tfil.setTestForm("A");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), new Integer(10))
+								tfil.getTestName(), 10)
 								.toUpperCase());
 				} else if (rs.getString(1).equalsIgnoreCase("B")) {
 					tfil.setTestName("LAS Links");
 					tfil.setTestForm("B");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), new Integer(10))
+								tfil.getTestName(), 10)
 								.toUpperCase());
 				} else if (rs.getString(1).equalsIgnoreCase("Espanol")) {
 					tfil.setTestName("LAS Links Español");
 					tfil.setTestForm("S");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), new Integer(10))
+								tfil.getTestName(), 10)
 								.toUpperCase());
 				} else if (rs.getString(1).startsWith("Esp")) {
 					tfil.setTestName("LAS Links Español");
 					tfil.setTestForm("S");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), new Integer(10))
+								tfil.getTestName(),10)
 								.toUpperCase());
 				}
 
@@ -1286,9 +1417,12 @@ public class FileGenerator {
 
 			if (orderFile.getTestDate() == null)
 				orderFile.setTestDate(EmetricUtil.truncate(tfil.getTestDate(),
-						new Integer(8)));
+						8));
 
 			// System.out.println("createTestSessionDetails");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at createTestSessionDetails:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -1296,7 +1430,7 @@ public class FileGenerator {
 	}
 
 	private void createStudentItemStatusDetails(Connection con, Tfil tfil,
-			Integer rosterId, Integer studentId) throws SQLException {
+			Integer rosterId, Integer studentId) throws CTBBusinessException {
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -1341,6 +1475,9 @@ public class FileGenerator {
 				}
 			}
 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at createStudentItemStatusDetails:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -1348,7 +1485,7 @@ public class FileGenerator {
 	}
 
 	private void createSkillAreaScoreInformation(Connection con, Tfil tfil,
-			TestRoster roster) throws SQLException {
+			TestRoster roster) throws CTBBusinessException {
 		TreeMap<String, Object[]> treeMap = new TreeMap<String, Object[]>();
 		HashMap<String,String> contentAreaFact = new HashMap<String, String>();
 		boolean isComprehensionPopulated = true;
@@ -1389,6 +1526,9 @@ public class FileGenerator {
 				profLevelScoreOverall ="";
 			}
 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at createSkillAreaScoreInformation:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps2, rs2);
 		}
@@ -1440,6 +1580,9 @@ public class FileGenerator {
 				}
 			}
 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at createSkillAreaScoreInformation1:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -1637,8 +1780,7 @@ public class FileGenerator {
 	}
 
 	private void createSubSkillAreaScoreInformation(Connection oasCon,
-			Connection irsCon, Tfil tfil, TestRoster roster)
-	throws SQLException {
+			Connection irsCon, Tfil tfil, TestRoster roster) throws CTBBusinessException {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		PreparedStatement ps2 = null;
@@ -1646,14 +1788,10 @@ public class FileGenerator {
 		SubSkillNumberCorrect subNumCorrect = new SubSkillNumberCorrect();
 		SubSkillPercentCorrect subPercCorrect = new SubSkillPercentCorrect();
 		String subSkillName;
+		@SuppressWarnings("unused")
 		String subSkillCategoryName;
 		HashMap<String, String> pointsObtained = new HashMap<String, String>();
 		HashMap<String, String> percentObtained = new HashMap<String, String>();
-		
-		//isInvalidSpeaking = false;
-		//isInvalidListeing = false;
-		//isInvalidReading = false;
-		//isInvalidWriting = false;
 
 		try {
 			ps2 = oasCon.prepareStatement(subSkillItemAreaInformation);
@@ -1666,6 +1804,9 @@ public class FileGenerator {
 
 			}
 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at createSubSkillAreaScoreInformation:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps2, rs2);
 		}
@@ -1682,6 +1823,9 @@ public class FileGenerator {
 
 			}
 
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("SQLException at createSubSkillAreaScoreInformation1:"+e.getMessage());
 		} finally {
 			SqlUtil.close(ps, rs);
 		}
@@ -1797,12 +1941,8 @@ public class FileGenerator {
 	}
 
 	private void prepareOrderFile(OrderFile orderFile, String filedir,
-			String fileName) throws IOException {
+			String orderFileName) throws IOException {
 
-		String orderFileName = fileName.substring(0, fileName.length() - 23);
-
-		orderFileName = orderFileName + "ORDERFILE_"
-		+ fileDateOutputFormat.format(new Date()) + ".csv";
 		FileWriter writer = null;
 		try {
 			writer = new FileWriter(new File(filedir, orderFileName));

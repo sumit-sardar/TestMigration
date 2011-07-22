@@ -110,3 +110,28 @@ CREATE BITMAP INDEX IDX_STUDENT_EXPORTED ON TEST_ROSTER(NVL(STUDENT_EXPORTED, 'F
 /*student_accommodation table altered to add new accommodation maskingTool*/
 alter table student_accommodation add masking_tool varchar2(2)
 /
+
+create table job_status (status_id number, status_name varchar2(200), constraint PK_JOB_STATUS primary key(status_id))
+/
+
+create table data_export 
+(
+export_id number, 
+student_count number not null, 
+created_date_time date not null, 
+status number references job_status(status_id) not null, 
+created_by varchar2(200) not null, 
+last_update_time date, 
+last_update_status number references job_status(status_id), 
+message varchar2(1000), constraint PK_DATA_EXPORT  primary key(export_id),
+constraint FK_JOB_STATUS foreign key(status) references job_status(status_id),
+constraint FK_JOB_STATUS_LAST foreign key(last_update_status) references job_status(status_id)
+)
+/
+create sequence SEQ_EXPORT_ID
+minvalue 1
+maxvalue 99999999999999999999999
+start with 1
+increment by 1
+cache 20
+/
