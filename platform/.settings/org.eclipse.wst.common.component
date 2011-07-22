@@ -33,5 +33,8 @@
         <dependent-module archiveName="dep-testdelivery-ctrl.jar" deploy-path="/" handle="module:/resource/dep-testdelivery-ctrl/dep-testdelivery-ctrl">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="dep-dataexport-ctrl.jar" deploy-path="/" handle="module:/resource/dep-dataexport-ctrl/dep-dataexport-ctrl">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
     </wb-module>
 </project-modules>

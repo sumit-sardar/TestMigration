@@ -13,6 +13,7 @@
 		<project>dep-weblib-taglib</project>
 		<project>dep-weblib-webutils</project>
 		<project>platform-weblib</project>
+		<project>dep-dataexport-ctrl</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
