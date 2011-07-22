@@ -1,6 +1,7 @@
 package com.ctb.utils;
 
 import java.util.Enumeration;
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 	public class ExtractUtil extends ResourceBundle {
@@ -8,12 +9,21 @@ import java.util.ResourceBundle;
 		private static ResourceBundle rb;
 		
 		static {
-			rb = ResourceBundle.getBundle("config");
+			rb = ResourceBundle.getBundle("irs-security");
 		}
 		
 				
 		public static String getDetail(String key){
-			return rb.getString(key);
+			String val = "";
+			try{
+				val = rb.getString(key);
+			} catch (MissingResourceException e){
+				System.err.println("No value for the given key ["+key+"] is found");
+			} catch (Exception e){
+				System.err.println("Unexpected exception while reading property file");
+				e.printStackTrace();
+			}
+			return val.trim();
 			
 		}
 				

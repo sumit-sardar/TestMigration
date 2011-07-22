@@ -9,6 +9,7 @@ import weblogic.ejb.GenericMessageDrivenBean;
 import weblogic.ejbgen.JarSettings;
 
 import com.ctb.processor.ReportingDataProcessor;
+import com.ctb.util.jmsutils.ExportDataVO;
 
 
 
@@ -38,9 +39,9 @@ public class JMSRecever extends GenericMessageDrivenBean implements
 		// IMPORTANT: Add your code here
 		try {
 
-			Integer object = (Integer)((ObjectMessage)msg).getObject();
+			ExportDataVO object = (ExportDataVO)((ObjectMessage)msg).getObject();
 			ReportingDataProcessor processor = new ReportingDataProcessor();
-			processor.process(object);
+			processor.process(object.getCustomerId(), object.getUserId(), object.getUserName(),object.getJobId(), object.getTestroster());
 			
 		} catch (Exception e) {
 			

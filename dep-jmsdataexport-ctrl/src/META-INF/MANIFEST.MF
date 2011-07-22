@@ -1,4 +1,6 @@
 Manifest-Version: 1.0
 Class-Path: APP-INF/lib/weblogic-jdbc-control.jar 
- APP-INF/lib/edtftpj-1.5.1.jar
+ APP-INF/lib/edtftpj-1.5.1.jar 
+ APP-INF/lib/jsch-0.1.24.jar 
+ APP-INF/lib/jzlib-1.0.7.jar
 
