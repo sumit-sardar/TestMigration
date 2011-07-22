@@ -2,16 +2,16 @@ package com.ctb.dto;
 
 public class SpecialCodes {
 
-	private String specialCodeK = new String(" ");
-	private String specialCodeL = new String(" ");
-	private String specialCodeM = new String(" ");
-	private String specialCodeN = new String(" ");
-	private String specialCodeO = new String(" ");
-	private String specialCodeP = new String(" ");
-	private String specialCodeQ = new String(" ");
-	private String specialCodeR = new String(" ");
-	private String specialCodeS = new String(" ");
-	private String specialCodeT = new String(" ");
+	private String specialCodeK = " ";
+	private String specialCodeL = " ";
+	private String specialCodeM = " ";
+	private String specialCodeN = " ";
+	private String specialCodeO = " ";
+	private String specialCodeP = " ";
+	private String specialCodeQ = " ";
+	private String specialCodeR = " ";
+	private String specialCodeS = " ";
+	private String specialCodeT = " ";
 
 	@Override
 	public String toString() {

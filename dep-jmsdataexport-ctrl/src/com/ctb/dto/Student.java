@@ -1,5 +1,6 @@
 package com.ctb.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,8 +9,9 @@ import org.ffpojo.metadata.positional.annotation.PositionalField;
 import org.ffpojo.metadata.positional.annotation.PositionalRecord;
 
 @PositionalRecord
-public class Student {
+public class Student implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	private Integer studentId;
 	private String lastName;
 	private String firstName;

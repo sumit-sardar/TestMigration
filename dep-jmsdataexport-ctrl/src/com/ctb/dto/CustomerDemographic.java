@@ -69,10 +69,13 @@ public class CustomerDemographic {
 	}
 	
 	public boolean equals( Object obj )	{
+		if(obj==null)
+			return false;
+		else {
+			CustomerDemographic cusDemo = (CustomerDemographic)obj;
+			return this.getCustomerDemographicId().equals(cusDemo.getCustomerDemographicId()) ;
+		}
 		
-		CustomerDemographic cusDemo = (CustomerDemographic)obj;
-		
-		return this.getCustomerDemographicId() == cusDemo.getCustomerDemographicId();
 	}
 	
 	public int hashCode()	{		

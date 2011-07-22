@@ -1,34 +1,38 @@
 package com.ctb.dto;
 
-public class Accomodations {
-	private String DC_S= new String(" ");
-	private String RQE_S= new String(" ");
-	private String RPE_S= new String(" ");
-	private String RSR_S= new String(" ");
-	private String SA_S= new String(" ");
-	private String ASM_S= new String(" ");
-	private String RDNL_S= new String(" ");
-	private String DC_L= new String(" ");
-	private String RQE_L= new String(" ");
-	private String RPE_L= new String(" ");
-	private String RSR_L= new String(" ");
-	private String SA_L= new String(" ");
-	private String ASM_L= new String(" ");
-	private String RDNL_L= new String(" ");
-	private String DC_RD= new String(" ");
-	private String RQE_RD= new String(" ");
-	private String RPE_RD= new String(" ");
-	private String RSR_RD= new String(" ");
-	private String SA_RD= new String(" ");
-	private String ASM_RD= new String(" ");
-	private String RDNL_RD= new String(" ");
-	private String DC_WR= new String(" ");
-	private String RQE_WR= new String(" ");
-	private String RPE_WR= new String(" ");
-	private String RSR_WR= new String(" ");
-	private String SA_WR= new String(" ");
-	private String ASM_WR= new String(" ");
-	private String RDNL_WR= new String(" ");
+import java.io.Serializable;
+
+public class Accomodations implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	private String DC_S= " ";
+	private String RQE_S= " ";
+	private String RPE_S= " ";
+	private String RSR_S= " ";
+	private String SA_S= " ";
+	private String ASM_S= " ";
+	private String RDNL_S= " ";
+	private String DC_L= " ";
+	private String RQE_L= " ";
+	private String RPE_L= " ";
+	private String RSR_L= " ";
+	private String SA_L= " ";
+	private String ASM_L= " ";
+	private String RDNL_L= " ";
+	private String DC_RD= " ";
+	private String RQE_RD= " ";
+	private String RPE_RD= " ";
+	private String RSR_RD= " ";
+	private String SA_RD= " ";
+	private String ASM_RD= " ";
+	private String RDNL_RD= " ";
+	private String DC_WR= " ";
+	private String RQE_WR= " ";
+	private String RPE_WR= " ";
+	private String RSR_WR= " ";
+	private String SA_WR= " ";
+	private String ASM_WR= " ";
+	private String RDNL_WR= " ";
 	
 	@Override
 	public String toString(){
