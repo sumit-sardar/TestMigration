@@ -56,11 +56,12 @@ public class CreateFile {
 		+ " where    ons.org_node_id = ona.org_node_id   and  ons.student_id =  ? "
 		+ " and onc.org_node_category_id = node.org_node_category_id   and node.org_node_id = ona.ancestor_org_node_id";
 
-	// Defect Fix for 66423
+	// Defect Fix for 66423 && For Time Zone
 	private static String testSessionSQl = "select tad.preferred_form as form, tc.test_level as testLevel,"
-		+ " to_Char(roster.start_date_time,'MMDDYY') as testDate,to_Char(roster.completion_date_time,'MMDDYYYY')  as dateTestingCompleted"
-		+ " from test_admin tad, test_roster roster,test_catalog tc"
+		+ " to_Char(new_time(roster.start_date_time, 'GMT', tzc.time_zone_code),'MMDDYY') as testDate,to_Char(new_time(roster.completion_date_time,'GMT',tzc.time_zone_code),'MMDDYYYY')  as dateTestingCompleted"
+		+ " from test_admin tad, test_roster roster,test_catalog tc,time_zone_code tzc"
 		+ " where tad.test_admin_id = roster.test_admin_id"
+		+ " and tad.time_zone = tzc.time_zone "
 		+ " and roster.test_completion_status in ('CO','IS','IC')"
 		+ " and tc.test_catalog_id = tad.test_catalog_id"
 		+ " and roster.test_roster_id = ? ";
