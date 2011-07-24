@@ -18,6 +18,9 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
+/**
+ * @author TCS This class provides interface to transfer file via FTP and SFTP
+ */
 public class FileTransporter {
 
 	public static FileTransporter transporter;
@@ -25,16 +28,18 @@ public class FileTransporter {
 	static final String TRANSPORT_TYPE_SFTP = "SFTP";
 	static final String TRANSPORT_TYPE_SCP = "SCP";
 
-	private FileTransporter(){
+	private FileTransporter() {
 		super();
-		
+
 	}
-	
 
 	protected Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException();
 	}
-	
+
+	/**
+	 * @return FileTransporter
+	 */
 	static FileTransporter getInstance() {
 
 		if (transporter == null) {
@@ -43,19 +48,25 @@ public class FileTransporter {
 		return transporter;
 	}
 
+	/**
+	 * @param transportType
+	 * @param fileList
+	 * @throws CTBBusinessException
+	 * This is generic method used to transfer file. Based on key it uses FTP or SFTP protocol. 
+	 */
 	public void transferFile(String transportType, List<String> fileList)
 			throws CTBBusinessException {
-			if (transportType != null
-					&& transportType.equalsIgnoreCase(TRANSPORT_TYPE_FTP)) {
-				doFtp(fileList);
-			} else if (transportType != null
-					&& (transportType.equalsIgnoreCase(TRANSPORT_TYPE_SFTP) || transportType
-							.equalsIgnoreCase(TRANSPORT_TYPE_SCP))) {
-				doSftp(fileList);
-			} else {
-				throw new CTBBusinessException("Protocol [" + transportType
-						+ "] is not valid.");
-			}		
+		if (transportType != null
+				&& transportType.equalsIgnoreCase(TRANSPORT_TYPE_FTP)) {
+			doFtp(fileList);
+		} else if (transportType != null
+				&& (transportType.equalsIgnoreCase(TRANSPORT_TYPE_SFTP) || transportType
+						.equalsIgnoreCase(TRANSPORT_TYPE_SCP))) {
+			doSftp(fileList);
+		} else {
+			throw new CTBBusinessException("Protocol [" + transportType
+					+ "] is not valid.");
+		}
 
 	}
 
@@ -64,25 +75,25 @@ public class FileTransporter {
 		String destinationPath = Configuration.getFtpFilepath();
 		FTPClient ftpClient = new FTPClient();
 		try {
-				ftpClient.setRemoteHost(Configuration.getFtphost());
-			
+			ftpClient.setRemoteHost(Configuration.getFtphost());
+
 			ftpClient.connect();
-	
+
 			ftpClient.login(Configuration.getFtpuser(), Configuration
 					.getFtppassword());
 			ftpClient.setType(FTPTransferType.BINARY);
 			for (String sourceFile : fileList) {
 				sourceFile = sourceFile.replaceAll("%20", " ");
-	
 				String compressedFile = sourceFile + ".gz";
 				String filename = getfileName(compressedFile);
 				CompressUtil.gzipFile(sourceFile, compressedFile);
-	
-				String destination = destinationPath + File.separator + filename;
+
+				String destination = destinationPath + File.separator
+						+ filename;
 				destination = destination.replaceAll("%20", " ");
 				ftpClient.put(compressedFile, destination);
 				new File(compressedFile).delete();
-	
+
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -96,7 +107,7 @@ public class FileTransporter {
 
 	}
 
-	private void doSftp(List<String> fileList) throws CTBBusinessException  {
+	private void doSftp(List<String> fileList) throws CTBBusinessException {
 
 		JSch jsch = new JSch();
 		Session session = null;
@@ -124,16 +135,19 @@ public class FileTransporter {
 			sftpChannel = (ChannelSftp) channel;
 
 			for (String sourceFileWithPath : fileList) {
-				System.out.println("File transfer started for file "+getfileName(sourceFileWithPath));
+				System.out.println("File transfer started for file "
+						+ getfileName(sourceFileWithPath));
 				sourceFileWithPath = sourceFileWithPath.replaceAll("%20", " ");
-				String sourceCompressedFileWithPath = sourceFileWithPath + ".gz";
+				String sourceCompressedFileWithPath = sourceFileWithPath
+						+ ".gz";
 				String filename = getfileName(sourceCompressedFileWithPath);
-				CompressUtil.gzipFile(sourceFileWithPath,sourceCompressedFileWithPath);
-				String destinationFileWithPath = destinationPath + File.separator + filename;
-				destinationFileWithPath = destinationFileWithPath.replaceAll("%20", " ");
+				CompressUtil.gzipFile(sourceFileWithPath,
+						sourceCompressedFileWithPath);
+				String destinationFileWithPath = destinationPath
+						+ File.separator + filename;
+				destinationFileWithPath = destinationFileWithPath.replaceAll(
+						"%20", " ");
 				sftpChannel.cd(destinationPath);
-				//System.out.println(sftpChannel.pwd());
-				//System.out.println(new File(sourceCompressedFileWithPath).exists());
 				sftpChannel.put(sourceCompressedFileWithPath, filename);
 				for (Object o : sftpChannel.ls(destinationPath)) {
 					String val = String.valueOf(o);
@@ -146,9 +160,10 @@ public class FileTransporter {
 					}
 
 				}
-				System.out.println("File transfer is completed for file "+getfileName(sourceFileWithPath));
+				System.out.println("File transfer is completed for file "
+						+ getfileName(sourceFileWithPath));
 			}
-			
+
 		} catch (JSchException e) {
 			e.printStackTrace();
 			throw new CTBBusinessException(
@@ -157,9 +172,8 @@ public class FileTransporter {
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new CTBBusinessException(
-			"Transfer failed:IOException occurred while transfering file.");
+					"Transfer failed:IOException occurred while transfering file.");
 
-			
 		} catch (SftpException e) {
 			e.printStackTrace();
 			throw new CTBBusinessException(
@@ -183,21 +197,17 @@ public class FileTransporter {
 		return file;
 	}
 
-	/*public static void main(String[] args) throws IOException, SftpException {
-
-		List<String> fileList = new ArrayList<String>();
-		;
-		File f = new File("C:/emetric/1");
-		File[] fileArray = f.listFiles();
-		for (File ff : fileArray) {
-			fileList.add(ff.getPath());
-		}
-
-		FileTransporter transporter = new FileTransporter();
-
-		transporter.doSftp(fileList);
-
-	}*/
-
+	/*
+	 * public static void main(String[] args) throws IOException, SftpException {
+	 * 
+	 * List<String> fileList = new ArrayList<String>(); ; File f = new
+	 * File("C:/emetric/1"); File[] fileArray = f.listFiles(); for (File ff :
+	 * fileArray) { fileList.add(ff.getPath()); }
+	 * 
+	 * FileTransporter transporter = new FileTransporter();
+	 * 
+	 * transporter.doSftp(fileList);
+	 *  }
+	 */
 
 }

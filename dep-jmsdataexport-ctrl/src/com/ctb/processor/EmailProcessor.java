@@ -18,6 +18,11 @@ import com.ctb.db.EmailProcessorDao;
 import com.ctb.utils.CTBConstants;
 import com.ctb.utils.Configuration;
 
+/**
+ * @author TCS
+ * This class used to perform email notification.
+ *
+ */
 public class EmailProcessor {
 	
 	
@@ -37,6 +42,12 @@ public class EmailProcessor {
 	
 	
 
+	/**
+	 * @param userName user name 
+	 * @param jobid submitted job id
+	 * @param message job status
+	 * This method is used send email notification to the user about the submitted job status.
+	 */
 	public void processEmail(String userName, int jobid, String message) {
 
 		String to = null;
@@ -51,33 +62,19 @@ public class EmailProcessor {
 			user = emailProcessorDao.getUserDetails(userName);
 			 to = user.getEmail();
 
-			// testing
-			//to = "subhendu.nandi@tcs.com";
 
-			// testing
 			// System.out.println("to:"+to+", userId:"+userId);
 
-			System.out.println("content0:" + content);
+			//System.out.println("content0:" + content);
 			content = content.replaceAll(
 					CTBConstants.EMAIL_PLACEHOLDER_JOB_ID, String.valueOf(jobid))
 					.replaceAll(
 							CTBConstants.EMAIL_CONTENT_PLACEHOLDER_JOB_STATUS,
 							message);
-			System.out.println("content1:" + content);
-			
-			System.out.println("subject0:" + subject);
 			subject = subject.replaceAll(CTBConstants.EMAIL_PLACEHOLDER_JOB_ID, String.valueOf(jobid) );
-			System.out.println("subject1:" + subject);
-			System.out.println("replyTo:"+replyTo);
-			System.out.println("To:"+to);
-			
-			
-
 			InitialContext ic = new InitialContext();
 			// the properties were configured in WebLogic through the console
 			Session session = (Session) ic.lookup("UserManagementMail");
-
-			// / subhendu remove
 
 			/*
 			 * Properties props = new Properties();
@@ -107,19 +104,19 @@ public class EmailProcessor {
 			Transport.send(msg);
 
 		} catch (NamingException se) {
-			System.out.println("Job confirmation mail failed for job " + jobid
+			System.err.println("Job confirmation mail failed for job " + jobid
 					+ ". " + se.getMessage());
 			se.printStackTrace();
 		} catch (AddressException se) {
-			System.out.println("Job confirmation mail failed for job " + jobid
+			System.err.println("Job confirmation mail failed for job " + jobid
 					+ ". " + se.getMessage());
 			se.printStackTrace();
 		} catch (MessagingException se) {
-			System.out.println("Job confirmation mail failed for job " + jobid
+			System.err.println("Job confirmation mail failed for job " + jobid
 					+ ". " + se.getMessage());
 			se.printStackTrace();
 		} catch (Exception se) {
-			System.out.println("Job confirmation mail failed for job " + jobid
+			System.err.println("Job confirmation mail failed for job " + jobid
 					+ ". " + se.getMessage());
 			se.printStackTrace();
 			// throw be;
@@ -127,6 +124,11 @@ public class EmailProcessor {
 
 	}
 
+	/**
+	 * @param jobid
+	 * @param fileNameList file names to be copied manually
+	 * T his method is used send email to devloper to copy the file manually.
+	 */
 	public void processEmail(Integer jobid, List<String> fileNameList) {
 		String to = Configuration.getDevloperEmailId();
 		String content = Configuration.getDevloperEmailBody();
@@ -157,22 +159,22 @@ public class EmailProcessor {
 			Transport.send(msg);
 
 		} catch (NamingException se) {
-			System.out
+			System.err
 					.println("FTP failure notification mail is failed for job "
 							+ jobid + ". " + se.getMessage());
 			se.printStackTrace();
 		} catch (AddressException se) {
-			System.out
+			System.err
 					.println("FTP failure notification mail is failed for job "
 							+ jobid + ". " + se.getMessage());
 			se.printStackTrace();
 		} catch (MessagingException se) {
-			System.out
+			System.err
 					.println("FTP failure notification mail is failed for job "
 							+ jobid + ". " + se.getMessage());
 			se.printStackTrace();
 		} catch (Exception se) {
-			System.out
+			System.err
 					.println("FTP failure notification mail is failed for job "
 							+ jobid + ". " + se.getMessage());
 			se.printStackTrace();
