@@ -304,16 +304,16 @@ public class TestSessionStatusImpl implements TestSessionStatus
             String customerKey = null;
             String orgCategoryLevel = null;
             String studentId = "";
-            String studentName = "";
+            //String studentName = "";
             
         	for (int i=0 ; i<testRosterIds.length ; i++) {
             	testRosterId = testRosterIds[i];
                 re = roster.getRosterElement(testRosterId);
 	            studentId += String.valueOf(re.getStudentId());
-	            studentName += re.getLastName() + ", " + re.getFirstName();
-	            if (i<testRosterIds.length) {
-	            	studentId += ";";
-	            	studentName += ";";
+	            //studentName += re.getLastName() + ", " + re.getFirstName();
+	            if (i<testRosterIds.length-1) {
+	            	studentId += ",";
+	            	//studentName += ";";
 	            }
         	}            
         	
@@ -321,7 +321,8 @@ public class TestSessionStatusImpl implements TestSessionStatus
             for (int i=0; i < cr.length; i++) {
                 String report = cr[i].getReportUrl();
                 if(cr[i].getReportName().indexOf("IndividualProfile") >= 0) {
-                    reportURL = report;
+                    //reportURL = report;
+                    reportURL = "http://tldevoasreporting/openapi/ReportService.svc/Profile";
                     systemKey = cr[i].getSystemKey();
                     customerKey = cr[i].getCustomerKey();
                     orgCategoryLevel = String.valueOf(cr[i].getCategoryLevel());
@@ -333,14 +334,14 @@ public class TestSessionStatusImpl implements TestSessionStatus
                 "&LevelId="+orgCategoryLevel+
                 "&NodeInstanceId="+orgNodeId+
                 "&CurrentTestSessionId="+sessionId+
-                "&CurrentStudentId="+studentId+
-                "&CurrentStudentName="+studentName;
+                "&CurrentStudentId="+studentId;
+                //"&CurrentStudentName="+studentName;
             
-            System.out.println("No encrypted URL: " + reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+paramsPlainText);
+            System.out.println("No encrypted URL: " + reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+paramsPlainText+"&RunReport=1");
             
             String encryptedParams = DESUtils.encrypt(paramsPlainText, customerKey);
             reportURL = reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+encryptedParams+"&RunReport=1";
-            
+             
             
         } catch (SQLException se) {
             CustomerReportDataNotFoundException tee = new CustomerReportDataNotFoundException("ScheduleTestImpl: getIndividualReportUrl: " + se.getMessage());
