@@ -1026,7 +1026,6 @@ public class StudentScoringController extends PageFlowController {
 	}
 	
 	
-	
 	// start- added for  Process Scores  button changes
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
@@ -1035,8 +1034,10 @@ public class StudentScoringController extends PageFlowController {
 	public Forward rescoreStudent(StudentScoringForm form) {
 		 Integer testRosterId = form.getRosterId();
 
-	        try {    
-	            this.testSessionStatus.rescoreStudent(testRosterId);
+	        try { 
+	              this.testSessionStatus.rescoreStudent(testRosterId);
+	              //Change for LLO-136  Hand-entered score conformation
+	        	  this.getRequest().setAttribute("processScoreResult", MessageResourceBundle.getMessage("processScoreResult"));   
 	        }
 	        catch (Exception e) {
 	            e.printStackTrace();

@@ -138,6 +138,12 @@ function stopAudio(){
 		<h1><netui:content value="${bundle.web['individualStudentScoring.title']}" /></h1>
 		<p><netui:content value="${bundle.web['individualStudentScoring.title.message']}" />
 		 <netui:content value="${bundle.web['ProcessScore.title.message']}" /></p>
+		 <c:if test="${processScoreResult != null}">
+				<ctb:message title="Process Scores" style="informationMessage">
+					<netui:content value="${requestScope.processScoreResult}" />
+				</ctb:message>
+			</c:if>
+			<br>
 
 		
 		<netui:form action="beginDisplayStudItemList">

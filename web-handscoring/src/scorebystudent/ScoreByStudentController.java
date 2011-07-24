@@ -795,8 +795,9 @@ public Forward rescoreStudent(ScoreByStudentForm form) {
 	 Integer testRosterId = form.getTestRosterId();
 
         try {    
-            //this.testSessionStatus.rescoreStudent(testRosterId);
-        	  this.getRequest().setAttribute("processScoreResult", MessageResourceBundle.getMessage("processScoreResult"));   
+            this.testSessionStatus.rescoreStudent(testRosterId);
+            //Change for LL0-136 Hand-entered score conformation
+	        this.getRequest().setAttribute("processScoreResult", MessageResourceBundle.getMessage("processScoreResult"));     
         }
         catch (Exception e) {
             e.printStackTrace();
