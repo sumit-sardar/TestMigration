@@ -33,7 +33,7 @@ template_find_student.jsp
 		<netui:form action="gotoSummary">
 			<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement" />
 			<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction" />
-			<netui-data:getData resultId="jobId" value="requestScope.jobId" /> 
+			<netui-data:getData resultId="jobId" value="${requestScope.jobId}" />   
  								
 			<br />
 				<h2><netui:content value="${bundle.web['dataexport.window.subHeading']}" /></h2>
@@ -62,11 +62,11 @@ template_find_student.jsp
 							<netui:span value="${pageFlow.notCompletedStudentCount}" styleClass="formValueLarge" />
 							</td>
 						</tr>		
-					<c:if test="${jobId != null"}>
+					<c:if test="${jobId != null}">
 						<tr class="transparent">
 							<td class="transparent">Job Id:</td>
 							<td class="transparent">
-							<netui:span value="requestScope.jobId" styleClass="formValueLarge" />
+							<netui:span value="${requestScope.jobId}" styleClass="formValueLarge" />
 							</td>
 						</tr>					
 					 </c:if>
