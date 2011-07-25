@@ -26,14 +26,14 @@ public class Configuration {
 		ftppassword = ExtractUtil.getDetail("oas.exportdata.ftppassword");
 		ftpFilepath = ExtractUtil.getDetail("oas.exportdata.remote.ftp.filestore");
 		
-		devloperEmailId = ExtractUtil.getDetail("oas.exportdata.ftp.failure.emil.to");
-		devloperEmailSubject = ExtractUtil.getDetail("oas.exportdata.ftp.failure.emil.subject");
-		devloperEmailBody = ExtractUtil.getDetail("oas.exportdata.ftp.failure.emil.body");
-		devloperEmailReplyTo = ExtractUtil.getDetail("oas.exportdata.ftp.failure.emil.replyTo");
+		devloperEmailId = ExtractUtil.getDetail("oas.exportdata.ftp.failure.email.to");
+		devloperEmailSubject = ExtractUtil.getDetail("oas.exportdata.ftp.failure.email.subject");
+		devloperEmailBody = ExtractUtil.getDetail("oas.exportdata.ftp.failure.email.body");
+		devloperEmailReplyTo = ExtractUtil.getDetail("oas.exportdata.ftp.failure.email.replyTo");
 
-		userEmailSubject = ExtractUtil.getDetail("oas.exportdata.user.emil.subject");
-		userEmailBody = ExtractUtil.getDetail("oas.exportdata.user.emil.body");
-		userEmailReplyTo = ExtractUtil.getDetail("oas.exportdata.user.emil.replyTo");
+		userEmailSubject = ExtractUtil.getDetail("oas.exportdata.user.email.subject");
+		userEmailBody = ExtractUtil.getDetail("oas.exportdata.user.email.body");
+		userEmailReplyTo = ExtractUtil.getDetail("oas.exportdata.user.email.replyTo");
 
 	}
 
