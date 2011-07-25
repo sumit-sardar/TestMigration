@@ -665,7 +665,7 @@ public class DataExportPageFlowController extends PageFlowController {
 			this.unscoredStudentMaxPage = new Integer(1);
 			
 			this.jobSortColumn = FilterSortPageUtils.JOB_DEFAULT_SORT_COLUMN;
-			this.jobSortOrderBy = FilterSortPageUtils.ASCENDING;      
+			this.jobSortOrderBy = FilterSortPageUtils.DESCENDING;      
 			this.jobPageRequested = new Integer(1);       
 			this.jobMaxPage = new Integer(1);
 		} 
@@ -764,7 +764,7 @@ public class DataExportPageFlowController extends PageFlowController {
 				this.jobSortColumn = FilterSortPageUtils.JOB_DEFAULT_SORT_COLUMN;
 
 			if (this.jobSortOrderBy == null)
-				this.jobSortOrderBy = FilterSortPageUtils.ASCENDING;
+				this.jobSortOrderBy = FilterSortPageUtils.DESCENDING;
 
 			if (this.jobPageRequested == null) {
 				this.jobPageRequested = new Integer(1);

@@ -42,8 +42,8 @@ template_find_student.jsp
 									orderByDataSource="actionForm.jobSortOrderBy" anchorName="jobSearchResult">
 									<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="JobId">Job ID</ctb:tableSortColumn></th>
 									<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="CreatedDateTime">Job Submission Date</ctb:tableSortColumn></th>
-									<th class="sortable alignLeft" width="20%" nowrap><ctb:tableSortColumn value="StudentCount">Student Count</ctb:tableSortColumn></th>
-									<th class="sortable alignLeft" width="5%" nowrap><ctb:tableSortColumn value="JobStatus">Job Status</ctb:tableSortColumn></th>
+									<th class="sortable alignLeft" width="20%" nowrap>&nbsp;Student Count&nbsp;</th>
+									<th class="sortable alignLeft" width="5%" nowrap>&nbsp;Job Status&nbsp;</th>
 									
 
 								</ctb:tableSortColumnGroup>
