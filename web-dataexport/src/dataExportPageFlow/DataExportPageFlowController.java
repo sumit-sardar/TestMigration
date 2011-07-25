@@ -163,14 +163,14 @@ public class DataExportPageFlowController extends PageFlowController {
 		ManageStudentData msData = null;
 		msData = getAllUnscoredUnexportedStudents(form);	
 		
-		if ((msData != null) && (msData.getFilteredCount().intValue() == 0)) {
+		if ((msData != null) && (msData.getFilteredCount() !=null && msData.getFilteredCount().intValue() == 0)) {
 			this.getRequest().setAttribute("searchResultEmpty",	MessageResourceBundle.getMessage("unscoredStudentSearchResultEmpty"));
 		}else{
 			this.getRequest().removeAttribute("searchResultEmpty");
 			
 		}
 		
-		if ((msData != null) && (msData.getFilteredCount().intValue() > 0)) {
+		if ((msData != null) && (msData.getFilteredCount() !=null && msData.getFilteredCount().intValue() > 0)) {
 			//3
 			
 			List studentList = DataExportSearchUtils.buildExportStudentList(msData);
