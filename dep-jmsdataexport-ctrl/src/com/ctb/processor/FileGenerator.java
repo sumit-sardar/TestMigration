@@ -173,8 +173,7 @@ public class FileGenerator {
 	private boolean isInvalidReading = false;
 	private boolean isInvalidWriting = false;
 
-	private Integer customerId = new Integer(ExtractUtil
-			.getDetail("oas.customerId"));
+	private Integer customerId = 0;
 	static TreeMap<String, String> wrongMap = new TreeMap<String, String>();
 	private List<String> fileNameList;	
 	
