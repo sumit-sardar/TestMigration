@@ -74,7 +74,7 @@ template_find_student.jsp
 			</br>
 			</br>
 			<netui:button type="submit" value="${bundle.web['common.button.back']}" action="backToPreviousPage"/>
-			<netui:button type="submit" value="Submit"/>
+			<netui:button type="submit" value="Submit" action="submitJob"/>
 			<netui:button type="submit" value="${bundle.web['common.button.cancel']}"/></p>
 		</netui:form>
    <c:if test="${submitJobResult != null}">
