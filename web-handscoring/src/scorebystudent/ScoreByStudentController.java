@@ -435,12 +435,12 @@ public class ScoreByStudentController extends PageFlowController {
 					"Configurable_Hand_Scoring")
 					&& cc.getDefaultValue().equals("T")) {
 				hasScoringConfigurable = true;
-				break;
+				//break;
 			}
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
 					&& cc.getDefaultValue().equals("T")) {
 				isLaslinkCustomer = true;
-				break;
+				//break;
             }
 
 		}

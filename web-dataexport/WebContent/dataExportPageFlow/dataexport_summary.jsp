@@ -33,7 +33,7 @@ template_find_student.jsp
 		<netui:form action="gotoSummary">
 			<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement" />
 			<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction" />
-			<netui-data:getData resultId="jobId" value="${requestScope.jobId}" />   
+			<netui-data:getData resultId="jobId" value="${requestScope.jobId}" /> 
  								
 			<br />
 				<h2><netui:content value="${bundle.web['dataexport.window.subHeading']}" /></h2>
@@ -66,23 +66,34 @@ template_find_student.jsp
 						<tr class="transparent">
 							<td class="transparent">Job Id:</td>
 							<td class="transparent">
-							<netui:span value="${requestScope.jobId}" styleClass="formValueLarge" />
+							<netui:span value= "${jobId}" styleClass="formValueLarge" />
 							</td>
 						</tr>					
 					 </c:if>
 					</table>
 			</br>
 			</br>
+			<c:if test="${jobId == null}">
 			<netui:button type="submit" value="${bundle.web['common.button.back']}" action="backToPreviousPage"/>
+			<c:if test="${pageFlow.totalStudentCount > 0 }">
 			<netui:button type="submit" value="Submit" action="submitJob"/>
-			<netui:button type="submit" value="${bundle.web['common.button.cancel']}"/></p>
-		</netui:form>
-   <c:if test="${submitJobResult != null}">
+			</c:if>
+			<c:if test="${pageFlow.totalStudentCount <= 0 }">
+			<netui:button type="submit" value="Submit" action="submitJob" disabled="true"/>
+			</c:if>
+			<netui:button type="submit" value="${bundle.web['common.button.cancel']}" action="goto_home"/></p>
+			</c:if>
+			<c:if test="${submitJobResult != null}">
 				<ctb:message title="Export Job Successfully Submited." style="informationMessage">
 					<netui:content value="${requestScope.submitJobResult}" />
 				</ctb:message>
 			</c:if>
 			<br>
+			<c:if test="${jobId != null}">
+			<netui:button type="submit" value="View Status" action="getExportStatus"/>
+			</c:if>
+		</netui:form>
+   			
 
 		<!-- ********************************************************************************************************************* -->
 		<!-- End Page Content -->

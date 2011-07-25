@@ -95,7 +95,7 @@ public class DataExportSearchUtils {
         }
         return studentList;
     }
-    /*##############################################*/
+  
     public static List buildTestSessionsWithStudentToBeExportedList(ManageTestSessionData mstData) 
     {
         ArrayList testSessionList = new ArrayList();
@@ -104,11 +104,6 @@ public class DataExportSearchUtils {
             for (int i=0 ; i<testSessions.length ; i++) {
             	ManageTestSession testSession = (ManageTestSession)testSessions[i];
                 if (testSession != null) {
-                	//System.out.println("==>1"+student.getTestSessionName());
-                   // StudentProfileInformation studentDetail = new StudentProfileInformation(student);
-                   // System.out.println("==>2"+studentDetail.getTestSessionName());
-                	/*if(testSession.getTestCompletionStatus() != null)
-                		testSession.setTestCompletionStatus(testStatus_CodeToString(testSession.getTestCompletionStatus()));*/
                 	testSessionList.add(testSession);
                 }
             }
@@ -182,13 +177,13 @@ public class DataExportSearchUtils {
 	}
 	
 
-	public static ManageStudentData getAllUnscoredUnexportedStudents(DataExportManagement deManagement, Integer customerId, FilterParams filter, PageParams page,
+	public static ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExportedStudentRosterList,DataExportManagement deManagement, Integer customerId, FilterParams filter, PageParams page,
 			SortParams sort) {
 
 		 ManageStudentData msData = null;
 	        
 	        try {    
-	            msData = deManagement.getAllUnscoredUnexportedStudents(customerId, filter, page, sort);
+	            msData = deManagement.getAllUnscoredUnexportedStudentsDetail(toBeExportedStudentRosterList,customerId, filter, page, sort);
 	        }
 	        catch (CTBBusinessException be) {
 	            be.printStackTrace();

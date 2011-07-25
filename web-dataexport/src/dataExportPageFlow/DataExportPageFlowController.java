@@ -113,7 +113,7 @@ public class DataExportPageFlowController extends PageFlowController {
 		String actionElement = form.getActionElement();
 		form.resetValuesForAction(actionElement); 
 		ManageTestSessionData mtsData = null;
-		
+		int emptyTestSessionList = 0;
 		mtsData = getTestSessionsWithStudentsToBeExported(form);
 		
 		if ((mtsData != null) && (mtsData.getFilteredCount().intValue() == 0)) {
@@ -126,10 +126,11 @@ public class DataExportPageFlowController extends PageFlowController {
 		if ((mtsData != null) && (mtsData.getFilteredCount().intValue() > 0)) {
 			
 			List testSessionList = DataExportSearchUtils.buildTestSessionsWithStudentToBeExportedList(mtsData);
-			
+			int testSessionlistSize = testSessionList.size();
 			PagerSummary testSessionPagerSummary = DataExportSearchUtils.buildTestSessionPagerSummary(mtsData, form.getTestSessionStudentPageRequested());
 			form.setTestSessionStudentMaxPage(mtsData.getFilteredPages());
 			this.getRequest().setAttribute("testSessionList", testSessionList);
+			this.getRequest().setAttribute("testSessionlistSize", testSessionlistSize);
 			this.getRequest().setAttribute("testSessionPagerSummary",testSessionPagerSummary);
 			this.setTotalStudentCount(mtsData.getTotalExportedStudentCount());
 			this.scheduledStudentCount = mtsData.getScheduledStudentCount();
@@ -402,11 +403,10 @@ public class DataExportPageFlowController extends PageFlowController {
 		SortParams sort = FilterSortPageUtils.buildStudentSortParams(form.getTestSessionStudentSortColumn(), form.getTestSessionStudentSortOrderBy());
 		FilterParams filter = FilterSortPageUtils.buildFilterParams(null);
 
-		ManageStudentData msData = null;		
+		ManageStudentData msData = null;
+		List toBeExportedStudentRosterList = this.toBeExportedStudentRosterList;
+		msData = DataExportSearchUtils.getAllUnscoredUnexportedStudentsDetail(toBeExportedStudentRosterList,this.dataexportManagement, customerId, filter, page, sort);
 		
-		msData = DataExportSearchUtils.getAllUnscoredUnexportedStudents(
-				this.dataexportManagement, this.customerId, filter,
-				page, sort);
 		
 		return msData;
 	}

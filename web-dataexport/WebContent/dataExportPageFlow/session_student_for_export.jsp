@@ -35,6 +35,8 @@ template_find_student.jsp
 		<netui:form action="getStudentForExport">
 			<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement" />
 			<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction" />
+			<netui-data:getData resultId="testSessionlistSize" value="${requestScope.testSessionlistSize}" /> 
+			
 			<br />
 			<c:if test="${testSessionList != null}">
 				<p>
@@ -95,7 +97,12 @@ template_find_student.jsp
 				</table>
 				</br>
 				</br>
+				<c:if test="${testSessionlistSize > 0}">
 				<netui:button type="submit" value="${bundle.web['common.button.next']}" action="validateAndConfirm" />
+				</c:if>
+				<c:if test="${testSessionlistSize <= 0}">
+				<netui:button type="submit" value="${bundle.web['common.button.next']}" action="validateAndConfirm"  disabled="true"/>
+				</c:if>
 				</p>
 			</c:if>
 			</br>

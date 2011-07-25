@@ -274,26 +274,45 @@ public class DataExportManagementImpl implements DataExportManagement
 	}
 
 	
-	@Override
-	public ManageStudentData getAllUnscoredUnexportedStudents(Integer customerId, FilterParams filter, PageParams page,	SortParams sort) throws CTBBusinessException{
+
+
+public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExportedStudentRosterList,Integer customerId, FilterParams filter, PageParams page,	SortParams sort) throws CTBBusinessException{
 		
 		ManageStudentData std = new ManageStudentData();
 		ManageStudent [] students = null;
 		Integer pageSize = null;
+		Integer rosterId = new Integer(0);
+		String scoringStatus;
+		int studentCount = 0;
 		if(page != null) {
 			pageSize = new Integer(page.getPageSize());
 		}
         
-        try {
-			students = dataExportManagement.getAllUnscoredUnexportedStudents(customerId);
-			
+       try {
+    	   if(toBeExportedStudentRosterList.size() > 0) {
+        	for(int i=0;i < toBeExportedStudentRosterList.size();i++){
+        		rosterId = (Integer)toBeExportedStudentRosterList.get(i);
+        		
+        		scoringStatus = dataExportManagement.getScoringStatusFromRoster(rosterId);
+    			if(scoringStatus.equals("IN")){
+    				
+    				students[studentCount] = dataExportManagement.getAllUnscoredUnexportedStudentsDetail(rosterId);
+    				studentCount++;	
+        			}
+    			
+            	}
+        	
+        	if(studentCount == 0 )	
+        		students = new ManageStudent[0];
+        		
 			std.setManageStudents(students, pageSize);
-			/*students = std.getManageStudents();
+			students = std.getManageStudents();
 			
-			 std.setManageStudents(students, pageSize);*/
+			 std.setManageStudents(students, pageSize);
 			if(filter != null) std.applyFiltering(filter);
 			if(sort != null) std.applySorting(sort);
 			if(page != null) std.applyPaging(page);
+    	   }
 		} catch (SQLException e) {
 			StudentDataNotFoundException tee = new StudentDataNotFoundException("DataExportManagementImpl: findStudentsByCustomerId: " + e.getMessage());
 			tee.setStackTrace(e.getStackTrace());

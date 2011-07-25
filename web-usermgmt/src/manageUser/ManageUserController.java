@@ -3150,12 +3150,12 @@ public class ManageUserController extends PageFlowController
             		cc.getDefaultValue().equals("T")	) {
             	hasScoringConfigurable = true;
             	getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
-                break;
+               // break;
             } 
             if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
     				&& cc.getDefaultValue().equals("T")) {
     			isLaslinkCustomer = true;
-    			break;
+    			// break;
             }
         }
        }

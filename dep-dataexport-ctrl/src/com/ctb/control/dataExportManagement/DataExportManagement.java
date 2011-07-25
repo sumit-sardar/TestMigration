@@ -3,6 +3,7 @@ package com.ctb.control.dataExportManagement;
 
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.beehive.controls.api.bean.ControlInterface;
 
@@ -76,9 +77,8 @@ public interface DataExportManagement
 	ManageStudentData getIncompleteRosterUnexportedStudents(Integer customerId, FilterParams filter, PageParams page,	SortParams sort)throws com.ctb.exception.CTBBusinessException;
 	
 	
-	ManageStudentData getAllUnscoredUnexportedStudents(Integer customerId, FilterParams filter, PageParams page,	SortParams sort)throws com.ctb.exception.CTBBusinessException;
-	
-	
+	ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExportedStudentRosterList,Integer customerId, FilterParams filter, PageParams page,	SortParams sort)throws com.ctb.exception.CTBBusinessException;
+
 	ManageJobData getDataExportJobStatus(Integer userId, FilterParams filter, PageParams page, SortParams sort) throws com.ctb.exception.CTBBusinessException;
 	
 	
