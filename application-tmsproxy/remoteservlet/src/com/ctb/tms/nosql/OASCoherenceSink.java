@@ -44,24 +44,12 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	}
 	
 	public void putItemResponse(String testRosterId, Tsd tsd) throws IOException {
-		String key = testRosterId;
-		ArrayList<Tsd> responseA = (ArrayList<Tsd>) responseCache.get(key);
-		if(responseA == null) responseA = new ArrayList<Tsd>();
-		responseA.add(tsd);
-		responseCache.put(key, responseA);
+		String key = testRosterId + ":" + tsd.getMseq();
+		responseCache.put(key, tsd);
 	}
 	
 	public void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException {
-		String key = testRosterId;
-		ArrayList<Tsd> responseA = (ArrayList<Tsd>) responseCache.get(key);
-		ArrayList<Tsd> newResponseA = new ArrayList<Tsd>();
-		Iterator<Tsd> it = responseA.iterator();
-		while(it.hasNext()) {
-			Tsd tsd = it.next();
-			if(!tsd.getMseq().equals(mseq)) {
-				newResponseA.add(tsd);
-			}
-		}
-		responseCache.put(key, newResponseA);
+		String key = testRosterId + ":" + mseq;
+		responseCache.remove(key);
 	}
 }

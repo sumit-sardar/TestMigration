@@ -139,7 +139,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						String testRosterId = rosterQueue.poll();
 						if(testRosterId != null) {
 							Tsd[] responses = oasSource.getItemResponses(testRosterId);
-							for(int i=0;i<responses.length;i++) {
+							for(int i=0;responses != null && i<responses.length;i++) {
 								Tsd tsd = responses[i];
 								OASDBSink.putItemResponse(conn, testRosterId, tsd);
 								oasSink.deleteItemResponse(testRosterId, tsd.getMseq());

@@ -1,7 +1,9 @@
 package com.ctb.tms.nosql;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
@@ -11,6 +13,10 @@ import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
+import com.tangosol.util.Filter;
+import com.tangosol.util.ValueExtractor;
+import com.tangosol.util.extractor.ReflectionExtractor;
+import com.tangosol.util.filter.ContainsFilter;
 
 public class OASCoherenceSource implements OASNoSQLSource {
 	
@@ -27,6 +33,9 @@ public class OASCoherenceSource implements OASNoSQLSource {
 			rosterCache = CacheFactory.getCache("OASRosterCache"); 
 			manifestCache = CacheFactory.getCache("OASManifestCache");
 			responseCache = CacheFactory.getCache("OASResponseCache");
+			
+			ValueExtractor extractor = new ReflectionExtractor("getLsid"); 
+			responseCache.addIndex(extractor, false, null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -44,7 +53,22 @@ public class OASCoherenceSource implements OASNoSQLSource {
 
 	public Tsd[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
 		String key = testRosterId;
-		ArrayList<Tsd> responseA = (ArrayList<Tsd>) responseCache.get(key);
-        return responseA.toArray(new Tsd[0]);
+		Filter filter = new ContainsFilter("getLsid", key); 
+		Set setKeys = responseCache.keySet(filter); 
+		Map mapResult = responseCache.getAll(setKeys); 
+		if(mapResult != null) {
+			int size = mapResult.size();
+			System.out.println("*****  Found " + size + " responses for roster " + testRosterId);
+			Tsd[] tsda = new Tsd[size];
+			Iterator it = mapResult.keySet().iterator();
+			int i = 0;
+			while(it.hasNext()) {
+				tsda[i] = (Tsd) mapResult.get(it.next());
+				i++;
+			}
+			return tsda;
+		} else {
+			return null;
+		}
 	}
 }
