@@ -32,6 +32,7 @@ import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.util.jmsutils.ExportDataJMSUtil;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.PagerSummary;
 
@@ -63,7 +64,7 @@ public class DataExportPageFlowController extends PageFlowController {
 	private Integer scheduledStudentCount = 0;
 	private Integer notTakenStudentCount = 0;
 	private Integer notCompletedStudentCount = 0;
-	private List toBeExportedStudentRosterList;
+	private List<Integer> toBeExportedStudentRosterList;
 	private String  previousPage = "StudentForExport";   
 	private String  pageId = "1";
 	private boolean islaslinkCustomer = false;
@@ -290,7 +291,17 @@ public class DataExportPageFlowController extends PageFlowController {
 	   
 	   Integer userId = user.getUserId();
 	   Integer studentCount = this.toBeExportedStudentRosterList.size();
-	   Integer jobId = DataExportSearchUtils.getSubmitJobIdAndStartExport(this.dataexportManagement,userId,studentCount);	
+	   Integer jobId = DataExportSearchUtils.getSubmitJobIdAndStartExport(this.dataexportManagement,userId,studentCount);
+	   
+	   ExportDataJMSUtil exportDataJMSUtil = null;
+		 try {
+			 exportDataJMSUtil = new ExportDataJMSUtil ();
+		     System.out.println("Exported Roster List:"+this.toBeExportedStudentRosterList);
+			 exportDataJMSUtil.initGenerateReportTask (userName, customerId, userId, jobId, this.toBeExportedStudentRosterList);
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+
 	   this.getRequest().setAttribute("jobId", jobId);
 	   this.getRequest().setAttribute("submitJobResult", MessageResourceBundle.getMessage("submitJobResult"));     
        
@@ -403,8 +414,8 @@ public class DataExportPageFlowController extends PageFlowController {
 	private ManageJobData getDataExportJobStatus(DataExportForm form) {
 		String actionElement = form.getActionElement();
 		Integer userId = user.getUserId();
-		PageParams page = FilterSortPageUtils.buildPageParams(form.getTestSessionStudentPageRequested(), FilterSortPageUtils.PAGESIZE_10);
-		SortParams sort = FilterSortPageUtils.buildJobSortParams(form.getTestSessionStudentSortColumn(), form.getTestSessionStudentSortOrderBy());
+		PageParams page = FilterSortPageUtils.buildPageParams(form.getJobPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+		SortParams sort = FilterSortPageUtils.buildJobSortParams(form.getJobSortColumn(), form.getJobSortOrderBy());
 		FilterParams filter = FilterSortPageUtils.buildFilterParams(null);
 
 		ManageJobData msData = null;		
@@ -426,13 +437,13 @@ public class DataExportPageFlowController extends PageFlowController {
 					"Configurable_Hand_Scoring")
 					&& cc.getDefaultValue().equals("T")) {
 				hasScoringConfigurable = true;
-				break;
+				//break;
 			}
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase(
 					"Laslink_Customer")
 					&& cc.getDefaultValue().equals("T")) {
 				isLaslinkCustomer = true;
-				break;
+				//break;
 			}
 		}
 
