@@ -85,7 +85,7 @@
 </ul>
 </ctb:auth>
 <ctb:auth roles="Administrator">
-<c:if test="${ sessionScope.isTopLevelUser }">
+<c:if test="${ sessionScope.isTopLevelUser}">
 <h1>Reports</h1>
 <ul>
     <li><a href="/DataExportWeb/dataExportPageFlow/begin.do" onclick="return verifyExitScoringStudent();"><span>Data Export</span></a></li>
