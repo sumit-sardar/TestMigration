@@ -284,6 +284,7 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 		Integer rosterId = new Integer(0);
 		String scoringStatus;
 		int studentCount = 0;
+		List<ManageStudent> manageStudentlist = new ArrayList<ManageStudent>();
 		if(page != null) {
 			pageSize = new Integer(page.getPageSize());
 		}
@@ -296,7 +297,8 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
         		scoringStatus = dataExportManagement.getScoringStatusFromRoster(rosterId);
     			if(scoringStatus.equals("IN")){
     				
-    				students[studentCount] = dataExportManagement.getAllUnscoredUnexportedStudentsDetail(rosterId);
+    				//students[studentCount] = dataExportManagement.getAllUnscoredUnexportedStudentsDetail(rosterId);
+    				manageStudentlist.add( dataExportManagement.getAllUnscoredUnexportedStudentsDetail(rosterId));
     				studentCount++;	
         			}
     			
@@ -304,6 +306,9 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
         	
         	if(studentCount == 0 )	
         		students = new ManageStudent[0];
+        	else {
+        		students = (ManageStudent[]) manageStudentlist.toArray(new ManageStudent[manageStudentlist.size()]);
+        	}
         		
 			std.setManageStudents(students, pageSize);
 			students = std.getManageStudents();
