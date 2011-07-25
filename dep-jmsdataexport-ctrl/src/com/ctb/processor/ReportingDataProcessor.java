@@ -16,8 +16,7 @@ public class ReportingDataProcessor {
 		int invalidJobstattus = -1;
 		String message  = "Job processing started.";
 		List<String> formettedTestRoster = getFormettedTestRoster(rosterIdIn);
-		//int jobId = 1; // subhendu change this
-		//String user_name = "siddh_laslink"; 
+		
 		boolean fileGenerationFailed = true;
 		System.out.println("Received Job ID:"+jobId);
 		System.out.println("Received TestRosterList:"+rosterIdIn);
