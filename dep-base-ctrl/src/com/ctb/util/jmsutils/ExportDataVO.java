@@ -2,6 +2,7 @@ package com.ctb.util.jmsutils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ExportDataVO implements Serializable {
 
@@ -14,7 +15,7 @@ public class ExportDataVO implements Serializable {
 	private Integer userId;
 	private String userName;
 	private Integer jobId;
-	private ArrayList<Integer>  testroster= new ArrayList<Integer>();
+	private List<Integer>  testroster= new ArrayList<Integer>();
 	
 
 	/**
@@ -62,14 +63,14 @@ public class ExportDataVO implements Serializable {
 	/**
 	 * @return the testroster
 	 */
-	public ArrayList<Integer> getTestroster() {
+	public List<Integer> getTestroster() {
 		return testroster;
 	}
 
 	/**
 	 * @param testroster the testroster to set
 	 */
-	public void setTestroster(ArrayList<Integer> testroster) {
+	public void setTestroster(List<Integer> testroster) {
 		this.testroster = testroster;
 	}
 

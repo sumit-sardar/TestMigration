@@ -354,7 +354,7 @@ public class DataExportManagementImpl implements DataExportManagement
 		Integer notTakenStudentCount = new Integer(0);
 		Integer notCompletedStudentCount = new Integer(0);
 		Integer systemStopCountFromIncompleteCount = new Integer(0);
-		List toBeExportedStudentRosterList = new ArrayList();
+		List<Integer> toBeExportedStudentRosterList = new ArrayList<Integer>();
 		Boolean hasCompleteValue = false;
 	    Hashtable rostersToIndexHash = null;
 	    Hashtable rosterIdTorosterId = null;

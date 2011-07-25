@@ -15,19 +15,19 @@ public class ManageTestSessionData extends CTBBeanData
     private Integer scheduledStudentCount = 0;
 	private Integer notTakenStudentCount = 0;
 	private Integer notCompletedStudentCount = 0;
-    private List toBeExportedStudentRosterList; //LLO- 118 - Change for Ematrix UI
+    private List<Integer> toBeExportedStudentRosterList; //LLO- 118 - Change for Ematrix UI
 	
     /**
 	 * @return the toBeExportedStudentRosterList
 	 */
-	public List getToBeExportedStudentRosterList() {
+	public List<Integer> getToBeExportedStudentRosterList() {
 		return toBeExportedStudentRosterList;
 	}
 
 	/**
 	 * @param toBeExportedStudentRosterList the toBeExportedStudentRosterList to set
 	 */
-	public void setToBeExportedStudentRosterList(List toBeExportedStudentRosterList) {
+	public void setToBeExportedStudentRosterList(List<Integer> toBeExportedStudentRosterList) {
 		this.toBeExportedStudentRosterList = toBeExportedStudentRosterList;
 	}
 

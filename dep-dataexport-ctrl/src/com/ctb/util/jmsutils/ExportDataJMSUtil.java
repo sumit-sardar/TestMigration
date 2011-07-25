@@ -1,6 +1,7 @@
 package com.ctb.util.jmsutils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.jms.ObjectMessage;
 
@@ -12,7 +13,7 @@ public class ExportDataJMSUtil extends JmsConnection {
 	private ExportDataVO exportDataVO = new ExportDataVO ();
 	
 	
-	public void initGenerateReportTask ( String users, Integer customerId, Integer userId, int jobId, ArrayList<Integer>  testroster) 
+	public void initGenerateReportTask ( String users, Integer customerId, Integer userId, int jobId, List<Integer>  testroster) 
 			throws CustomJMSConnectionException{
 		
 		exportDataVO.setCustomerId(customerId);
