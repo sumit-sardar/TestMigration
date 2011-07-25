@@ -269,15 +269,15 @@ public class FilterSortPageUtils
         SortParams sort = new SortParams();
                 
         SortType sortType = sortOrderBy.equals(ColumnSortEntry.ASCENDING) ? SortType.ALPHAASC : SortType.ALPHADESC;
-        SortParam[] sortParams = new SortParam[2];
+        SortParam[] sortParams = new SortParam[1];
         
         sortParams[0] = new SortParam(sortName, sortType);
         
-        String secondarySortName = STUDENT_DEFAULT_SORT_COLUMN;
+        /*String secondarySortName = STUDENT_DEFAULT_SORT_COLUMN;
         if (sortName.equals(STUDENT_DEFAULT_SORT_COLUMN))
              secondarySortName = LOGIN_NAME_SORT;
              
-        sortParams[1] = new SortParam(secondarySortName, sortType);
+        sortParams[1] = new SortParam(secondarySortName, sortType);*/
         sort.setSortParams(sortParams);
         
         return sort;
