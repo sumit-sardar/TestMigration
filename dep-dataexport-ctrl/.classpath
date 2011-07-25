@@ -13,7 +13,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/weblogic-controls-10.0/exact/10.0"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.j2eelib/wls-commonslogging-bridge/exact/1.0"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/dep-base-ctrl"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/platform"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/dep-jmsdataexport-ctrl"/>
 	<classpathentry kind="output" path="build/classes"/>
