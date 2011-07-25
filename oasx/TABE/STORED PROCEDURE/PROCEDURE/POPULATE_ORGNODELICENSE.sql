@@ -16,7 +16,10 @@ CREATE OR REPLACE PROCEDURE POPULATE_ORGNODELICENSE IS
 
   --To get list of all product assigned to a customer
   CURSOR GETCUSTOMERPRODUCTLICENSE(VCUSTOMERID INTEGER) IS
-    SELECT * FROM CUSTOMER_PRODUCT_LICENSE WHERE CUSTOMER_ID = VCUSTOMERID;
+    SELECT *
+      FROM CUSTOMER_PRODUCT_LICENSE
+     WHERE CUSTOMER_ID = VCUSTOMERID
+       AND PRODUCT_ID = 4000;
 
   -- To get all Orgnode of customer along with childnode count to identify leaf node
   CURSOR GETCUSTOMERORGNODE(VCUSTOMERID INTEGER, TOPORGNODECATEGORYID ORG_NODE_CATEGORY.ORG_NODE_CATEGORY_ID%TYPE) IS
@@ -78,7 +81,9 @@ BEGIN
                (SELECT MIN(ONC1.CATEGORY_LEVEL)
                   FROM ORG_NODE_CATEGORY ONC1
                  WHERE ONC.CUSTOMER_ID = ONC1.CUSTOMER_ID
-                   AND ONC1.ACTIVATION_STATUS = 'AC')
+                   AND ONC1.ACTIVATION_STATUS = 'AC'
+                   AND ONC1.IS_GROUP = 'F')
+           AND ONC.IS_GROUP = 'F'
            AND ONC.ACTIVATION_STATUS = 'AC'
            AND ROWNUM < 2;
       EXCEPTION
@@ -162,47 +167,65 @@ BEGIN
               
                 IF (PRODUCTLICENSE.SUBTEST_MODEL = 'T') THEN
                   --Calulate reserved license count  for subtest model based on customerId, orgnodeId and customer ProductId.
-                  SELECT COUNT(SISS.TEST_ROSTER_ID)
+                  SELECT COUNT(1)
                     INTO SUBTESTMODELCOUNT
-                    FROM TEST_ADMIN              TADMIN,
-                         TEST_ROSTER             TR,
-                         PRODUCT                 PROD,
-                         STUDENT_ITEM_SET_STATUS SISS
-                   WHERE TADMIN.CUSTOMER_ID = VCUSTOMERID
-                     AND TADMIN.ACTIVATION_STATUS = 'AC'
-                     AND TADMIN.TEST_ADMIN_STATUS IN ('CU', 'FU')
-                     AND TR.TEST_ADMIN_ID = TADMIN.TEST_ADMIN_ID
-                     AND TR.ACTIVATION_STATUS = 'AC'
-                     AND TR.TEST_COMPLETION_STATUS = 'SC'
-                     AND TR.ORG_NODE_ID = NODE.ORGNODEID
-                     AND SISS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID
-                     AND PROD.PRODUCT_ID = TADMIN.PRODUCT_ID
-                     AND (PRODUCTLICENSE.PRODUCT_ID = PROD.PRODUCT_ID OR
-                         PRODUCTLICENSE.PRODUCT_ID =
-                         PROD.PARENT_PRODUCT_ID);
+                    FROM (SELECT DISTINCT ISP.PARENT_ITEM_SET_ID,
+                                          TR.TEST_ROSTER_ID
+                            FROM TEST_ADMIN              TADMIN,
+                                 TEST_ROSTER             TR,
+                                 PRODUCT                 PROD,
+                                 STUDENT_ITEM_SET_STATUS SISS,
+                                 ITEM_SET                ISET,
+                                 ITEM_SET_PARENT         ISP
+                          
+                           WHERE TADMIN.CUSTOMER_ID = VCUSTOMERID
+                             AND TADMIN.TEST_ADMIN_STATUS IN ('CU', 'FU')
+                             AND TR.TEST_ADMIN_ID = TADMIN.TEST_ADMIN_ID
+                             AND TR.TEST_COMPLETION_STATUS NOT IN
+                                 ('NT', 'IC', 'CO')
+                             AND TR.ORG_NODE_ID = NODE.ORGNODEID
+                             AND SISS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID
+                             AND SISS.COMPLETION_STATUS = 'SC'
+                             AND SISS.ITEM_SET_ID = ISET.ITEM_SET_ID
+                             AND ISET.ITEM_SET_LEVEL != 'L'
+                             AND ISET.SAMPLE = 'F'
+                             AND ISET.ITEM_SET_ID = ISP.ITEM_SET_ID
+                             AND PROD.PRODUCT_ID = TADMIN.PRODUCT_ID
+                             AND (PRODUCTLICENSE.PRODUCT_ID =
+                                 PROD.PRODUCT_ID OR PRODUCTLICENSE.PRODUCT_ID =
+                                 PROD.PARENT_PRODUCT_ID)
+                             AND PROD.LICENSE_ENABLED = 'T');
                 
                   RESERVEDLICENSECOUNT := SUBTESTMODELCOUNT;
                   SUBTESTMODELCOUNT    := 0;
-                  
+                
                   --Calulate consumed license count  for subtest model based on customerId, orgnodeId and customer ProductId.
-                  SELECT COUNT(SISS.TEST_ROSTER_ID)
+                
+                  SELECT COUNT(1)
                     INTO SUBTESTMODELCOUNT
-                    FROM TEST_ADMIN              TADMIN,
-                         TEST_ROSTER             TR,
-                         PRODUCT                 PROD,
-                         STUDENT_ITEM_SET_STATUS SISS
-                   WHERE TADMIN.CUSTOMER_ID = VCUSTOMERID
-                     AND TADMIN.ACTIVATION_STATUS = 'AC'
-                     AND TR.TEST_ADMIN_ID = TADMIN.TEST_ADMIN_ID
-                     AND TR.ACTIVATION_STATUS = 'AC'
-                     AND TR.TEST_COMPLETION_STATUS NOT IN ('SC', 'NT')
-                     AND TR.ORG_NODE_ID = NODE.ORGNODEID
-                     AND SISS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID
-                     AND SISS.COMPLETION_STATUS NOT IN ('SC', 'NT')
-                     AND PROD.PRODUCT_ID = TADMIN.PRODUCT_ID
-                     AND (PRODUCTLICENSE.PRODUCT_ID = PROD.PRODUCT_ID OR
-                         PRODUCTLICENSE.PRODUCT_ID =
-                         PROD.PARENT_PRODUCT_ID);
+                    FROM (SELECT TR.TEST_ROSTER_ID, ISP.PARENT_ITEM_SET_ID
+                            FROM TEST_ADMIN              TADMIN,
+                                 TEST_ROSTER             TR,
+                                 PRODUCT                 PROD,
+                                 STUDENT_ITEM_SET_STATUS SISS,
+                                 ITEM_SET                ISET,
+                                 ITEM_SET_PARENT         ISP
+                           WHERE TADMIN.CUSTOMER_ID = VCUSTOMERID
+                             AND TR.TEST_ADMIN_ID = TADMIN.TEST_ADMIN_ID
+                             AND TR.TEST_COMPLETION_STATUS NOT IN
+                                 ('SC', 'NT')
+                             AND TR.ORG_NODE_ID = NODE.ORGNODEID
+                             AND SISS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID
+                             AND SISS.COMPLETION_STATUS NOT IN ('SC', 'NT')
+                             AND SISS.ITEM_SET_ID = ISET.ITEM_SET_ID
+                             AND ISET.ITEM_SET_LEVEL != 'L'
+                             AND ISET.SAMPLE = 'F'
+                             AND ISET.ITEM_SET_ID = ISP.ITEM_SET_ID
+                             AND PROD.PRODUCT_ID = TADMIN.PRODUCT_ID
+                             AND (PRODUCTLICENSE.PRODUCT_ID =
+                                 PROD.PRODUCT_ID OR PRODUCTLICENSE.PRODUCT_ID =
+                                 PROD.PARENT_PRODUCT_ID)
+                             AND PROD.LICENSE_ENABLED = 'T');
                 
                   CONSUMEDLICENSECOUNT := SUBTESTMODELCOUNT;
                 ELSE
@@ -211,34 +234,51 @@ BEGIN
                     INTO SESSIONMODELCOUNT
                     FROM TEST_ADMIN TADMIN, TEST_ROSTER TR, PRODUCT PROD
                    WHERE TADMIN.CUSTOMER_ID = VCUSTOMERID
-                     AND TADMIN.ACTIVATION_STATUS = 'AC'
                      AND TADMIN.TEST_ADMIN_STATUS IN ('CU', 'FU')
                      AND TR.TEST_ADMIN_ID = TADMIN.TEST_ADMIN_ID
-                     AND TR.ACTIVATION_STATUS = 'AC'
-                     AND TR.TEST_COMPLETION_STATUS = 'SC'
+                     AND TR.TEST_COMPLETION_STATUS IN
+                         ('SC', 'IP', 'IN', 'IS')
+                     AND 0 =
+                         (SELECT COUNT(DISTINCT SISS.ITEM_SET_ID)
+                            FROM STUDENT_ITEM_SET_STATUS SISS, ITEM_SET ISET
+                           WHERE SISS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID
+                             AND ISET.ITEM_SET_ID = SISS.ITEM_SET_ID
+                             AND ISET.ITEM_SET_LEVEL != 'L'
+                             AND ISET.SAMPLE = 'F'
+                             AND SISS.COMPLETION_STATUS NOT IN ('NT', 'SC'))
                      AND TR.ORG_NODE_ID = NODE.ORGNODEID
                      AND PROD.PRODUCT_ID = TADMIN.PRODUCT_ID
                      AND (PRODUCTLICENSE.PRODUCT_ID = PROD.PRODUCT_ID OR
                          PRODUCTLICENSE.PRODUCT_ID =
-                         PROD.PARENT_PRODUCT_ID);
+                         PROD.PARENT_PRODUCT_ID)
+                     AND PROD.LICENSE_ENABLED = 'T';
                 
                   RESERVEDLICENSECOUNT := SESSIONMODELCOUNT;
                   SESSIONMODELCOUNT    := 0;
-                  
+                
                   --Calulate consumed license count  for session model based on customerId, orgnodeId and customer ProductId
-                  SELECT COUNT(DISTINCT TEST_ROSTER_ID)
+                  SELECT COUNT(DISTINCT TR.TEST_ROSTER_ID)
                     INTO SESSIONMODELCOUNT
-                    FROM TEST_ADMIN TADMIN, TEST_ROSTER TR, PRODUCT PROD
+                    FROM TEST_ADMIN              TADMIN,
+                         TEST_ROSTER             TR,
+                         PRODUCT                 PROD,
+                         STUDENT_ITEM_SET_STATUS SISS,
+                         ITEM_SET                ISET
+                  
                    WHERE TADMIN.CUSTOMER_ID = VCUSTOMERID
-                     AND TADMIN.ACTIVATION_STATUS = 'AC'
                      AND TR.TEST_ADMIN_ID = TADMIN.TEST_ADMIN_ID
-                     AND TR.ACTIVATION_STATUS = 'AC'
                      AND TR.TEST_COMPLETION_STATUS NOT IN ('SC', 'NT')
                      AND TR.ORG_NODE_ID = NODE.ORGNODEID
                      AND PROD.PRODUCT_ID = TADMIN.PRODUCT_ID
                      AND (PRODUCTLICENSE.PRODUCT_ID = PROD.PRODUCT_ID OR
                          PRODUCTLICENSE.PRODUCT_ID =
-                         PROD.PARENT_PRODUCT_ID);
+                         PROD.PARENT_PRODUCT_ID)
+                     AND PROD.LICENSE_ENABLED = 'T'
+                     AND SISS.TEST_ROSTER_ID = TR.TEST_ROSTER_ID
+                     AND ISET.ITEM_SET_ID = SISS.ITEM_SET_ID
+                     AND ISET.ITEM_SET_LEVEL != 'L'
+                     AND ISET.SAMPLE = 'F'
+                     AND SISS.COMPLETION_STATUS NOT IN ('NT', 'SC');
                 
                   CONSUMEDLICENSECOUNT := SESSIONMODELCOUNT;
                 
