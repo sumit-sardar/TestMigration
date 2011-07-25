@@ -33,6 +33,8 @@ template_find_student.jsp
 		<netui:form action="gotoSummary">
 			<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement" />
 			<netui:hidden tagId="currentAction" dataSource="actionForm.currentAction" />
+			<netui-data:getData resultId="jobId" value="requestScope.jobId" /> 
+ 								
 			<br />
 				<h2><netui:content value="${bundle.web['dataexport.window.subHeading']}" /></h2>
 					<table class="transparent" width="100%">
@@ -59,8 +61,15 @@ template_find_student.jsp
 							<td class="transparent">
 							<netui:span value="${pageFlow.notCompletedStudentCount}" styleClass="formValueLarge" />
 							</td>
-						</tr>						
-					
+						</tr>		
+					<c:if test="${jobId != null"}>
+						<tr class="transparent">
+							<td class="transparent">Job Id:</td>
+							<td class="transparent">
+							<netui:span value="requestScope.jobId" styleClass="formValueLarge" />
+							</td>
+						</tr>					
+					 </c:if>
 					</table>
 			</br>
 			</br>
@@ -68,6 +77,12 @@ template_find_student.jsp
 			<netui:button type="submit" value="Submit"/>
 			<netui:button type="submit" value="${bundle.web['common.button.cancel']}"/></p>
 		</netui:form>
+   <c:if test="${submitJobResult != null}">
+				<ctb:message title="Export Job Successfully Submited." style="informationMessage">
+					<netui:content value="${requestScope.submitJobResult}" />
+				</ctb:message>
+			</c:if>
+			<br>
 
 		<!-- ********************************************************************************************************************* -->
 		<!-- End Page Content -->

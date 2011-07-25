@@ -284,15 +284,19 @@ public class DataExportPageFlowController extends PageFlowController {
     	
     }
     
-    /*@Jpf.Action(forwards = { @Jpf.Forward(name = "StudentForExport", path = "getStudentForExport.do"),
-			@Jpf.Forward(name = "validateAndConfirm", path = "validateAndConfirm.do")})
+    @Jpf.Action(forwards = {
+			@Jpf.Forward(name = "success", path = "dataexport_summary.jsp")})
 	protected Forward submitJob(DataExportForm form) {
+	   
+	   Integer userId = user.getUserId();
+	   Integer studentCount = this.toBeExportedStudentRosterList.size();
+	   Integer jobId = DataExportSearchUtils.getSubmitJobIdAndStartExport(this.dataexportManagement,userId,studentCount);	
+	   this.getRequest().setAttribute("jobId", jobId);
+	   this.getRequest().setAttribute("submitJobResult", MessageResourceBundle.getMessage("submitJobResult"));     
+       
+	   return new Forward("success",form);
 	
-	
-	
-	return null;
-	
-	}*/
+	}
     
     @Jpf.Action(forwards = { @Jpf.Forward(name = "success", path = "getExportStatus.do") })
 	protected Forward beginViewStatus() {

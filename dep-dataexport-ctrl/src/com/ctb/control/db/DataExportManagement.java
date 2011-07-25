@@ -112,6 +112,10 @@ public interface DataExportManagement extends JdbcControl
 
     @JdbcControl.SQL(statement = " select distinct roster.test_roster_id as toatalCount from test_roster roster, student_item_set_status sis where roster.customer_id = {customerId} and roster.test_admin_id = {testAdminId} and roster.test_completion_status = 'IC' and sis.test_roster_id = roster.test_roster_id and sis.completion_status = 'IN'" , arrayMaxLength=0, fetchSize = 50000) 
     Integer[] getSystemStopCountFromInCompleteForTestSession(Integer customerId,Integer testAdminId)throws SQLException;
+    @JdbcControl.SQL(statement = " SELECT SEQ_EXPORT_ID.NEXTVAL as job_id from DUAL") 
+	Integer getJobId()throws SQLException;
+    @JdbcControl.SQL(statement = " insert into data_export   (export_id,    student_count, created_date_time, status, created_by, last_update_time, last_update_status,  message) values  ({jobId}, {studentCount}, sysdate, 1, {userId}, sysdate, 1, 'Job submitted')")
+	void addJob(Integer jobId, Integer studentCount, Integer userId);
 
     
 }

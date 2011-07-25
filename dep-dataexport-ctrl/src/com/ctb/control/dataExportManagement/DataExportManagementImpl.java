@@ -479,6 +479,28 @@ public class DataExportManagementImpl implements DataExportManagement
 
         return mtsd;
 	}
+	
+
+	@Override
+	public Integer getSubmitJobIdAndStartExport(Integer userId,
+			Integer studentCount) throws CTBBusinessException {
+		Integer jobId = null;
+		try {
+			jobId = dataExportManagement.getJobId();
+			
+			dataExportManagement.addJob(jobId, studentCount, userId);
+
+		} catch (SQLException e) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException(
+					"DataExportManagementImpl: getSubmitJobIdAndStartExport: "
+							+ e.getMessage());
+			tee.setStackTrace(e.getStackTrace());
+			throw tee;
+		}
+
+		return jobId;
+
+	}
 } 
 
 	

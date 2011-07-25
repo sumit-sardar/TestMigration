@@ -140,20 +140,16 @@ public class DataExportSearchUtils {
         return jobList;
     }
    
-
-	/*public static ManageStudentData getCompletedSubtestUnexportedStudents(DataExportManagement deManagement, Integer customerId, FilterParams filter, PageParams page,
-			SortParams sort) {
-
-		 ManageStudentData msData = null;
-	        
+    public static Integer getSubmitJobIdAndStartExport(DataExportManagement deManagement,Integer userId,Integer studentCount){
+    	Integer jobId = null;
 	        try {    
-	            msData = deManagement.getCompletedSubtestUnexportedStudents(customerId, filter, page, sort);
+	        	 jobId = deManagement.getSubmitJobIdAndStartExport(userId,studentCount);
 	        }
 	        catch (CTBBusinessException be) {
 	            be.printStackTrace();
-	        }        
-	        return msData;
-	}*/
+	        } 
+	        return jobId;
+	}
 	
 	
 	public static ManageTestSessionData getTestSessionsWithUnexportedStudents(DataExportManagement deManagement, Integer customerId, FilterParams filter, PageParams page,
