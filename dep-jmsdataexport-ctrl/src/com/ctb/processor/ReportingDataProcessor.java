@@ -19,8 +19,8 @@ public class ReportingDataProcessor {
 		//int jobId = 1; // subhendu change this
 		//String user_name = "siddh_laslink"; 
 		boolean fileGenerationFailed = true;
-		
-		System.out.println(rosterIdIn);
+		System.out.println("Received Job ID:"+jobId);
+		System.out.println("Received TestRosterList:"+rosterIdIn);
 		
 		try{
 			
@@ -68,6 +68,7 @@ public class ReportingDataProcessor {
 			notifyUserByEmail(userName, jobId, "completed");
 			
 		} catch (Exception e){
+			System.err.print("Exception occurred for job id:"+jobId);
 			e.printStackTrace();
 			
 			
