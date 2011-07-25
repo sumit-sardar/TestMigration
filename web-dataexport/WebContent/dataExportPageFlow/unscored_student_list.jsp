@@ -42,11 +42,11 @@ template_find_student.jsp
 
 				<tr class="transparent">
 					<td class="transparent">Total Students Being Exported:</td>
-					<td class="transparent"><netui:span value="${pageFlow.totalStudentCount}" styleClass="formValueLarge" /></td>
+					<td class="transparent"><div class="formValueLarge"><netui:span value="${pageFlow.totalStudentCount}" styleClass="formValueLarge" /></div></td>
 				</tr>
 				<tr class="transparent">
 					<td class="transparent">Total Incomplete Scored Student:</td>
-					<td class="transparent"><netui:span value="${pageFlow.unscoredStudentCount}" styleClass="formValueLarge" /></td>
+					<td class="transparent"><div class="formValueLarge"><netui:span value="${pageFlow.unscoredStudentCount}" styleClass="formValueLarge" /></div></td>
 				</tr>
 			</table>
 			<br />

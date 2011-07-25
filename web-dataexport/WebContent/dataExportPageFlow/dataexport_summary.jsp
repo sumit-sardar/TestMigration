@@ -41,32 +41,32 @@ template_find_student.jsp
 						<tr class="transparent">
 							<td class="transparent">Total Students Being Exported:</td>
 							<td class="transparent">
-							<netui:span value="${pageFlow.totalStudentCount}" styleClass="formValueLarge" />
+							<div class="formValueLarge"><netui:span value="${pageFlow.totalStudentCount}" styleClass="formValueLarge" /></div>
 							</td>
 						</tr>
 						<tr class="transparent">
 							<td class="transparent">Total Students Scheduled:</td>
 							<td class="transparent">
-							<netui:span value="${pageFlow.scheduledStudentCount}" styleClass="formValueLarge" />
+							<div class="formValueLarge"><netui:span value="${pageFlow.scheduledStudentCount}" styleClass="formValueLarge" /></div>
 							</td>
 						</tr>
 						<tr class="transparent">
 							<td class="transparent">Total Students Not Taken:</td>
 							<td class="transparent">
-							<netui:span value="${pageFlow.notTakenStudentCount}" styleClass="formValueLarge" />
+							<div class="formValueLarge"><netui:span value="${pageFlow.notTakenStudentCount}" styleClass="formValueLarge" /></div>
 							</td>
 						</tr>
 						<tr class="transparent">
 							<td class="transparent">Total Students Not Completed:</td>
 							<td class="transparent">
-							<netui:span value="${pageFlow.notCompletedStudentCount}" styleClass="formValueLarge" />
+							<div class="formValueLarge"><netui:span value="${pageFlow.notCompletedStudentCount}" styleClass="formValueLarge" /></div>
 							</td>
 						</tr>		
 					<c:if test="${jobId != null}">
 						<tr class="transparent">
 							<td class="transparent">Job Id:</td>
 							<td class="transparent">
-							<netui:span value= "${jobId}" styleClass="formValueLarge" />
+							<div class="formValueLarge"><netui:span value= "${jobId}" styleClass="formValueLarge" /></div>
 							</td>
 						</tr>					
 					 </c:if>
