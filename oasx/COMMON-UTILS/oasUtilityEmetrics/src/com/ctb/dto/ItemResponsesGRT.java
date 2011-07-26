@@ -53,8 +53,8 @@ public class ItemResponsesGRT
 	public String toString() {
 		String val = "";
 		
-		val += EmetricUtil.getFormatedStringwithBlankValue(speakingMCItems,10 );
-		val += EmetricUtil.getFormatedStringwithBlankValue(speakingCRItems,10 );
+		//val += EmetricUtil.getFormatedStringwithBlankValue(speakingMCItems,10 );
+		val += EmetricUtil.getFormatedStringwithBlankValue(speakingCRItems,20 );
 		val += EmetricUtil.getFormatedStringwithBlankValue(listeningMCItems,20 );
 		val += EmetricUtil.getFormatedStringwithBlankValue(readingMCItems,35 );
 		val += EmetricUtil.getFormatedStringwithBlankValue(writingMCItems,20 );
