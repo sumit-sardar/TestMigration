@@ -114,16 +114,17 @@ public class FileTransporter {
 		ChannelSftp sftpChannel = null;
 		Properties properties = new Properties();
 		properties.put("StrictHostKeyChecking", "no");
-		properties.put("compression.s2c", "zlib@openssh.com,zlib,none");
-		properties.put("compression.c2s", "zlib@openssh.com,zlib,none");
-		properties.put("compression_level", "9");
-		// properties.put("compression.s2c", "none");
-		// properties.put("compression.c2s", "none");
+		//properties.put("compression.s2c", "zlib@openssh.com,zlib,none");
+		//properties.put("compression.c2s", "zlib@openssh.com,zlib,none");
+		//properties.put("compression_level", "9");
+		 properties.put("compression.s2c", "none");
+		 properties.put("compression.c2s", "none");
 
 		String destinationPath = Configuration.getFtpFilepath();
 		String ftpHost = Configuration.getFtphost();
 		String ftpUser = Configuration.getFtpuser();
 		String ftpPass = Configuration.getFtppassword();
+		System.out.println("Connecting to server:"+ftpHost);
 		try {
 			session = jsch.getSession(ftpUser, ftpHost, 22);
 			session.setConfig(properties);
@@ -154,7 +155,7 @@ public class FileTransporter {
 					if (val.endsWith(filename)) {
 						new File(sourceCompressedFileWithPath)
 								.renameTo(new File(sourceCompressedFileWithPath
-										+ ".transfered"));
+										+ ".transferred"));
 						if (new File(sourceFileWithPath).exists())
 							new File(sourceFileWithPath).delete();
 					}
