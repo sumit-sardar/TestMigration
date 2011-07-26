@@ -411,7 +411,7 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 						hasCompleteValue = true;
 					}
 				}
-				if(testSessions[i].getStatus().equals("PA")){
+			//	if(testSessions[i].getStatus().equals("PA")){
 					notTakenValue = dataExportManagement.getNotTakenSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
 				    Integer[] systemStopCountFromIncompleteCountRosterList = dataExportManagement.getSystemStopCountFromInCompleteForTestSession(customerId, testSessions[i].getTestAdminId());
 				    Integer[] incompleteValueRosterList = dataExportManagement.getInCompleteSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
@@ -445,13 +445,13 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 				    	
 				    }
 				    endedStudentStopValue = incompleteValue - systemStopCountFromIncompleteCount;
-				    toBeExportedValue = completeValue + incompleteValue - systemStopCountFromIncompleteCount;
+				   // toBeExportedValue = completeValue + incompleteValue - systemStopCountFromIncompleteCount;
 				    notTakenStudentCount = notTakenStudentCount +  notTakenValue;
 		            
 				   
-				}
+			//	}
 				   
-				else{
+			//	else{
 					scheduledValue = dataExportManagement.getScheduledSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
 					Integer[] studentStopValueRosterList = dataExportManagement.getStudentStopSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
 				    systemStopValue = dataExportManagement.getSystemStopSubtestUnexportedStudentsForTestSession(customerId, testSessions[i].getTestAdminId());
@@ -464,12 +464,12 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 							
 						
 					}
-					 toBeExportedValue = completeValue + studentStopValue;
-					 totalExportedStudentCount = totalExportedStudentCount + toBeExportedValue;
+					// toBeExportedValue = completeValue + studentStopValue;
 					 scheduledStudentCount = scheduledStudentCount + scheduledValue;
-				  }
+					 toBeExportedValue = completeValue + incompleteValue - systemStopCountFromIncompleteCount + studentStopValue;
+				//  }
 					 
-				
+				totalExportedStudentCount = totalExportedStudentCount + toBeExportedValue;
 				notCompletedStudentCount  = notCompletedStudentCount + studentStopValue + endedStudentStopValue;
 				testSessions[i].setComplete(completeValue);
 				testSessions[i].setScheduled(scheduledValue);
