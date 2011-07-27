@@ -14,12 +14,14 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import com.ctb.tms.bean.login.AuthenticationData;
+import com.ctb.tms.bean.login.RosterData;
+import com.ctb.tms.bean.login.StudentCredentials;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
 import noNamespace.BaseType;
 
-public class OASDBSink {
+public class OASOracleSink implements OASRDBSink {
 	private static volatile boolean haveDataSource = true;
 	private static String OASDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1";
 	private static String OASDatabaseUser = "oas";
@@ -41,7 +43,7 @@ public class OASDBSink {
 		}
 	}
 	
-	public static Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Connection newConn = null;
 		try {    
 			Context initContext = new InitialContext();
@@ -68,7 +70,7 @@ public class OASDBSink {
 		return newConn;
 	}
 	
-	public static void putItemResponse(Connection conn, String testRosterId, Tsd tsd) throws NumberFormatException, Exception {
+	public void putItemResponse(Connection conn, String testRosterId, Tsd tsd) throws NumberFormatException, Exception {
 		Ist[] ista = tsd.getIstArray();
 		for(int j=0;j<ista.length;j++) {
 	        Ist ist = ista[j];
@@ -148,5 +150,20 @@ public class OASDBSink {
 	
 	private static void storeCRResponse(Connection conn, int testRosterId, int subtestId, String itemId, String response, float duration, BigInteger mseq, String studentMarked) {
 		// TODO: implement CR response persistence
+	}
+
+	public void putActiveRosters(Connection con, StudentCredentials[] credsA) {
+		// do nothing
+		
+	}
+
+	public void putRosterData(Connection conn, StudentCredentials creds,
+			RosterData rosterData) throws Exception {
+		// do nothing
+		
+	}
+
+	public void shutdown() {
+		// do nothing
 	}
 }

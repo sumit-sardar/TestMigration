@@ -24,7 +24,7 @@ import noNamespace.ErrorDocument;
 import com.ctb.tms.bean.delivery.ItemData;
 import com.ctb.tms.bean.delivery.SubtestData;
 
-public class ADSDBSource {
+public class ADSOracleSource implements ADSRDBSource {
 	private static volatile boolean haveDataSource = true;
 	private static String ADSDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1";
 	private static String ADSDatabaseUser = "ads";
@@ -45,11 +45,12 @@ public class ADSDBSource {
 			ADSDatabaseUserPassword = rb.getString("ads.db.password");
 			haveDataSource = true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("***** No ADS DB connection info specified in env.properties, using static defaults");
+			//e.printStackTrace();
 		}
 	}
 	
-	public static Connection getADSConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+	public Connection getADSConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Connection newConn = null;
 		try {    
 			Context initContext = new InitialContext();
@@ -76,7 +77,7 @@ public class ADSDBSource {
 		return newConn;
 	}
 	
-	public static String getSubtest(Connection conn, int subtestId, String hash) {
+	public String getSubtest(Connection conn, int subtestId, String hash) {
 		AdssvcResponseDocument responseDoc = AdssvcResponseDocument.Factory.newInstance();
 		AdssvcResponse adssvcResponse = responseDoc.addNewAdssvcResponse();
 		GetSubtest getSubtest = adssvcResponse.addNewGetSubtest();
@@ -111,7 +112,7 @@ public class ADSDBSource {
 		return responseDoc.xmlText();
 	}
 	
-	public static String getItem(Connection conn, int itemId, String hash) {
+	public String getItem(Connection conn, int itemId, String hash) {
 		AdssvcResponseDocument responseDoc = AdssvcResponseDocument.Factory.newInstance();
 		AdssvcResponse adssvcResponse = responseDoc.addNewAdssvcResponse();
 		DownloadItem downloadItem = adssvcResponse.addNewDownloadItem();
@@ -243,5 +244,9 @@ public class ADSDBSource {
 			}
 		}
 		return data;
+	}
+
+	public void shutdown() {
+		// do nothing
 	}
 }

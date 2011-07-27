@@ -27,26 +27,26 @@ import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
-import com.ctb.tms.nosql.ADSHectorSink;
-import com.ctb.tms.nosql.ADSHectorSource;
 import com.ctb.tms.nosql.ADSNoSQLSink;
 import com.ctb.tms.nosql.ADSNoSQLSource;
-import com.ctb.tms.nosql.OASHectorSink;
-import com.ctb.tms.nosql.OASHectorSource;
+import com.ctb.tms.nosql.NoSQLStorageFactory;
 import com.ctb.tms.nosql.OASNoSQLSink;
 import com.ctb.tms.nosql.OASNoSQLSource;
-import com.ctb.tms.nosql.StorageFactory;
-import com.ctb.tms.rdb.ADSDBSource;
+import com.ctb.tms.rdb.ADSRDBSink;
+import com.ctb.tms.rdb.ADSRDBSource;
+import com.ctb.tms.rdb.RDBStorageFactory;
 import com.ctb.tms.web.listener.TestDeliveryContextListener;
 
 public class TMSServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	OASNoSQLSource oasSource = StorageFactory.getOASSource();
-	OASNoSQLSink oasSink = StorageFactory.getOASSink();
-	ADSNoSQLSource adsSource = StorageFactory.getADSSource();
-	ADSNoSQLSink adsSink = StorageFactory.getADSSink();
+	OASNoSQLSource oasSource = NoSQLStorageFactory.getOASSource();
+	OASNoSQLSink oasSink = NoSQLStorageFactory.getOASSink();
+	ADSNoSQLSource adsSource = NoSQLStorageFactory.getADSSource();
+	ADSNoSQLSink adsSink = NoSQLStorageFactory.getADSSink();
+	
+	ADSRDBSource adsDBSource = RDBStorageFactory.getADSSource();
 
 	public TMSServlet() {
 		super();
@@ -219,8 +219,12 @@ public class TMSServlet extends HttpServlet {
 		if(subtest == null) {
 			Connection conn = null;
 			try {
-				conn = ADSDBSource.getADSConnection();
-				subtest = ADSDBSource.getSubtest(conn, subtestId, hash);
+				conn = adsDBSource.getADSConnection();
+				subtest = adsDBSource.getSubtest(conn, subtestId, hash);
+				if("true".equals(RDBStorageFactory.copytosink)) {
+					ADSRDBSink adsDBSink = RDBStorageFactory.getADSSink();
+					adsDBSink.putSubtest(adsDBSink.getADSConnection(), subtestId, subtest);
+				}
 			} finally {
 				if(conn != null) {
 					conn.close();
@@ -238,20 +242,24 @@ public class TMSServlet extends HttpServlet {
 		
 		int itemId = (new Integer(request.getDownloadItem().getItemid())).intValue();
 		String hash = request.getDownloadItem().getHash();
-		String subtest = adsSource.getItem(itemId, hash);
-		if(subtest == null) {
+		String item = adsSource.getItem(itemId, hash);
+		if(item == null) {
 			Connection conn = null;
 			try {
-				conn = ADSDBSource.getADSConnection();
-				subtest = ADSDBSource.getItem(conn, itemId, hash);
+				conn = adsDBSource.getADSConnection();
+				item = adsDBSource.getItem(conn, itemId, hash);
+				if("true".equals(RDBStorageFactory.copytosink)) {
+					ADSRDBSink adsDBSink = RDBStorageFactory.getADSSink();
+					adsDBSink.putItem(adsDBSink.getADSConnection(), itemId, item);
+				}
 			} finally {
 				if(conn != null) {
 					conn.close();
 				}
 			}
-			adsSink.putItem(itemId, hash, subtest);
+			adsSink.putItem(itemId, hash, item);
 		}
-		return subtest;
+		return item;
 	}
 
 	private String getMethod(HttpServletRequest request) {

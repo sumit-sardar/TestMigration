@@ -1,23 +1,31 @@
 package com.ctb.tms.nosql;
 
-public class StorageFactory {
+import java.util.ResourceBundle;
+
+public class NoSQLStorageFactory {
 
 	private static final String CASSANDRA = "CASSANDRA";
 	private static final String COHERENCE = "COHERENCE";
 	
-	private static String store = COHERENCE;
+	private static String nosqlstore = COHERENCE;
 	
 	private static OASNoSQLSource oasSource;
 	private static OASNoSQLSink oasSink;
 	private static ADSNoSQLSource adsSource;
 	private static ADSNoSQLSink adsSink;
 	
+	{
+		ResourceBundle rb = ResourceBundle.getBundle("storage");
+		nosqlstore = rb.getString("storage.nosql.store");
+	}
+	
 	public static OASNoSQLSource getOASSource() {
 		if(oasSource == null) {
-			if(COHERENCE.equals(store)) {
+			if(COHERENCE.equals(nosqlstore)) {
 				System.out.println("*****  Using OASCoherenceSource");
 				oasSource = new OASCoherenceSource();
-			} else if (CASSANDRA.equals(store)) {
+			} else if (CASSANDRA.equals(nosqlstore)) {
+				System.out.println("*****  Using OASHectorSource");
 				oasSource = new OASHectorSource();
 			} else {
 				// default to Cassandra
@@ -29,10 +37,11 @@ public class StorageFactory {
 	
 	public static OASNoSQLSink getOASSink() {
 		if(oasSink == null) {
-			if(COHERENCE.equals(store)) {
+			if(COHERENCE.equals(nosqlstore)) {
 				System.out.println("*****  Using OASCoherenceSink");
 				oasSink = new OASCoherenceSink();
-			} else if (CASSANDRA.equals(store)) {
+			} else if (CASSANDRA.equals(nosqlstore)) {
+				System.out.println("*****  Using OASHectorSink");
 				oasSink = new OASHectorSink();
 			} else {
 				// default to Cassandra
@@ -44,10 +53,11 @@ public class StorageFactory {
 	
 	public static ADSNoSQLSource getADSSource() {
 		if(adsSource == null) {
-			if(COHERENCE.equals(store)) {
+			if(COHERENCE.equals(nosqlstore)) {
 				System.out.println("*****  Using ADSCoherenceSource");
 				adsSource = new ADSCoherenceSource();
-			} else if (CASSANDRA.equals(store)) {
+			} else if (CASSANDRA.equals(nosqlstore)) {
+				System.out.println("*****  Using ADSHectorSource");
 				adsSource = new ADSHectorSource();
 			} else {
 				// default to Cassandra
@@ -59,10 +69,11 @@ public class StorageFactory {
 	
 	public static ADSNoSQLSink getADSSink() {
 		if(adsSink == null) {
-			if(COHERENCE.equals(store)) {
+			if(COHERENCE.equals(nosqlstore)) {
 				System.out.println("*****  Using ADSCoherenceSink");
 				adsSink = new ADSCoherenceSink();
-			} else if (CASSANDRA.equals(store)) {
+			} else if (CASSANDRA.equals(nosqlstore)) {
+				System.out.println("*****  Using ADSHectorSink");
 				adsSink = new ADSHectorSink();
 			} else {
 				// default to Cassandra
