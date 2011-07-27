@@ -92,7 +92,7 @@
 
 <ctb:auth roles="Administrator">
 <c:if test="${ sessionScope.isTopLevelUser}">
-<h1>Export</h1>
+<h1>Reports</h1>
 <ul>
     <li><span class="navleft-unclickable">Data Export</span></li>
     <li><a href="/DataExportWeb/dataExportPageFlow/beginViewStatus.do"><span>View Status</span></a></li>
