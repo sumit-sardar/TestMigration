@@ -70,8 +70,8 @@ template_find_student.jsp
 							<tr class="sortable">
 
 								<td class="sortable"><netui:content value="${container.item.testSessionName}" /></td>
-								<td class="sortable"><netui:content value="${container.item.startDate}" /></td>
-                                <td class="sortable"><netui:span value="${container.item.endDate}" /></td>
+								<td class="sortable"><netui:span value="${container.item.startDate}" defaultValue="&nbsp;"><netui:formatDate pattern="MM/dd/yy"/></netui:span></td>
+                                <td class="sortable"><netui:span value="${container.item.endDate}" defaultValue="&nbsp;"><netui:formatDate pattern="MM/dd/yy"/></netui:span></td>                         
                                 <td class="sortable"><netui:span value="${container.item.toBeExported}" /></td>
                                 <td class="sortable"><netui:span value="${container.item.complete}" /></td>
 								<td class="sortable"><netui:span value="${container.item.scheduled}" /></td>

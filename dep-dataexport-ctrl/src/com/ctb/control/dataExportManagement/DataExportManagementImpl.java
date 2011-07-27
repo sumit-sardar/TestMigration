@@ -13,11 +13,11 @@ import com.ctb.bean.dataExportManagement.ManageJob;
 import com.ctb.bean.dataExportManagement.ManageJobData;
 import com.ctb.bean.dataExportManagement.ManageStudent;
 import com.ctb.bean.dataExportManagement.ManageStudentData;
-import com.ctb.bean.dataExportManagement.ManageTestSession;
-import com.ctb.bean.dataExportManagement.ManageTestSessionData;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.ManageTestSession;
+import com.ctb.bean.testAdmin.ManageTestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.dataExportManagement.CustomerConfigurationDataNotFoundException;
@@ -26,7 +26,7 @@ import com.ctb.exception.dataExportManagement.JobDataNotFoundException;
 import com.ctb.exception.dataExportManagement.StudentDataNotFoundException;
 import com.ctb.exception.dataExportManagement.UserDataNotFoundException;
 import com.ctb.exception.validation.ValidationException;
-
+import com.ctb.util.testAdmin.TestAdminStatusComputer;
 /**
  * @author John_Wang
  *
@@ -391,7 +391,8 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
         	testSessions = dataExportManagement.getTestSessionForExportWithStudents(customerId);
         	
 			for (int i = 0; i <testSessions.length; i++ ){
-				
+				TestAdminStatusComputer.adjustSessionTimesToLocalTimeZoneForExport(testSessions[i]);
+		         
 				toBeExportedValue = new Integer(0);
 				completeValue = new Integer(0); 
 				notTakenValue = new Integer(0);
@@ -525,6 +526,8 @@ public ManageStudentData getAllUnscoredUnexportedStudentsDetail(List toBeExporte
 		return jobId;
 
 	}
+	
+	
 } 
 
 	

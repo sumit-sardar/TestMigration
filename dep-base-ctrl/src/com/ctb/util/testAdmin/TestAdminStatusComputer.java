@@ -1,9 +1,11 @@
 package com.ctb.util.testAdmin; 
 
+import java.util.Date;
+
 import com.ctb.bean.testAdmin.ActiveSession;
+import com.ctb.bean.testAdmin.ManageTestSession;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.util.DateUtils;
-import java.util.Date;
 
 public class TestAdminStatusComputer 
 { 
@@ -98,6 +100,41 @@ public class TestAdminStatusComputer
         testSession.setLoginStartDate(adjustedStartDate);
         testSession.setLoginEndDate(adjustedEndDate);
     }
+    
+    //Change for defect #66657
+    public static void adjustSessionTimesToLocalTimeZoneForExport(ManageTestSession testSession) {
+        Date originalStartTime = testSession.getDailyLoginStartTime();
+        Date startOffSetDate = concatinateDateTime(testSession.getStartDate(), originalStartTime);
+        Date adjustedStartTime = DateUtils.getAdjustedDate(testSession.getDailyLoginStartTime(), "GMT", testSession.getTimeZone(), startOffSetDate);
+        
+        Date originalEndTime = testSession.getDailyLoginEndTime();
+        Date endOffSetDate = concatinateDateTime(testSession.getEndDate(), originalEndTime);
+        Date adjustedEndTime = DateUtils.getAdjustedDate(testSession.getDailyLoginEndTime(), "GMT", testSession.getTimeZone(), endOffSetDate);
+        
+        Date originalStartDate = testSession.getStartDate();
+        Date adjustedStartDate = DateUtils.getAdjustedDate(testSession.getStartDate(), "GMT", testSession.getTimeZone(), startOffSetDate);
+        
+        Date originalEndDate = testSession.getEndDate();
+        Date adjustedEndDate = DateUtils.getAdjustedDate(testSession.getEndDate(), "GMT", testSession.getTimeZone(), endOffSetDate);
+        
+        if(DateUtils.dateAfter(adjustedStartTime, originalStartTime))
+            adjustedStartDate.setTime(adjustedStartDate.getTime() + DateUtils.daysToMillis(1));
+        else if(DateUtils.dateBefore(adjustedStartTime, originalStartTime))
+            adjustedStartDate.setTime(adjustedStartDate.getTime() - DateUtils.daysToMillis(1));
+
+        if(DateUtils.dateAfter(adjustedEndTime, originalEndTime))
+            adjustedEndDate.setTime(adjustedEndDate.getTime() + DateUtils.daysToMillis(1));
+        else if(DateUtils.dateBefore(adjustedEndTime, originalEndTime))
+            adjustedEndDate.setTime(adjustedEndDate.getTime() - DateUtils.daysToMillis(1));
+
+        testSession.setDailyLoginStartTime(adjustedStartTime);
+        testSession.setDailyLoginEndTime(adjustedEndTime);
+        testSession.setStartDate(adjustedStartDate);
+        testSession.setEndDate(adjustedEndDate);
+    }
+    
+    
+    
     
     public static void setTestSessionStatus(TestSession session) {
         Date now = new Date();

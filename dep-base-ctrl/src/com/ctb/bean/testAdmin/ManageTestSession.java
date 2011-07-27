@@ -1,4 +1,4 @@
-package com.ctb.bean.dataExportManagement;
+package com.ctb.bean.testAdmin;
 
 import com.ctb.bean.CTBBean;
 import com.ctb.bean.CTBBeanData;
@@ -10,8 +10,8 @@ public class ManageTestSession extends CTBBean{
 	
 	 static final long serialVersionUID = 1L;
 	    private String testSessionName;
-	    private String startDate;
-	    private String endDate;
+	    private Date startDate;
+	    private Date endDate;
 	    private String status;
 	    private Integer testAdminId;
 	    private Integer toBeExported;
@@ -21,7 +21,46 @@ public class ManageTestSession extends CTBBean{
 	    private Integer systemStop;
 	    private Integer notTaken;
 	    private Integer incomplete;
+	    private Date dailyLoginStartTime;
+	    private Date dailyLoginEndTime;
+	    private String timeZone;
 	   
+		/**
+		 * @return the dailyLoginStartTime
+		 */
+		public Date getDailyLoginStartTime() {
+			return dailyLoginStartTime;
+		}
+		/**
+		 * @param dailyLoginStartTime the dailyLoginStartTime to set
+		 */
+		public void setDailyLoginStartTime(Date dailyLoginStartTime) {
+			this.dailyLoginStartTime = dailyLoginStartTime;
+		}
+		/**
+		 * @return the dailyLoginEndTime
+		 */
+		public Date getDailyLoginEndTime() {
+			return dailyLoginEndTime;
+		}
+		/**
+		 * @param dailyLoginEndTime the dailyLoginEndTime to set
+		 */
+		public void setDailyLoginEndTime(Date dailyLoginEndTime) {
+			this.dailyLoginEndTime = dailyLoginEndTime;
+		}
+		/**
+		 * @return the timeZone
+		 */
+		public String getTimeZone() {
+			return timeZone;
+		}
+		/**
+		 * @param timeZone the timeZone to set
+		 */
+		public void setTimeZone(String timeZone) {
+			this.timeZone = timeZone;
+		}
 		/**
 		 * @return the testSessionName
 		 */
@@ -34,29 +73,29 @@ public class ManageTestSession extends CTBBean{
 		public void setTestSessionName(String testSessionName) {
 			this.testSessionName = testSessionName;
 		}
+		
 		/**
 		 * @return the startDate
 		 */
-		public String getStartDate() {
+		public Date getStartDate() {
 			return startDate;
 		}
 		/**
 		 * @param startDate the startDate to set
 		 */
-		public void setStartDate(String startDate) {
+		public void setStartDate(Date startDate) {
 			this.startDate = startDate;
 		}
-	
 		/**
 		 * @return the endDate
 		 */
-		public String getEndDate() {
+		public Date getEndDate() {
 			return endDate;
 		}
 		/**
 		 * @param endDate the endDate to set
 		 */
-		public void setEndDate(String endDate) {
+		public void setEndDate(Date endDate) {
 			this.endDate = endDate;
 		}
 		/**

@@ -1,7 +1,6 @@
 package com.ctb.control.db; 
 
 import java.sql.SQLException;
-import java.util.Date;
 
 import org.apache.beehive.controls.api.bean.ControlExtension;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
@@ -10,10 +9,7 @@ import com.ctb.bean.dataExportManagement.CustomerConfiguration;
 import com.ctb.bean.dataExportManagement.CustomerConfigurationValue;
 import com.ctb.bean.dataExportManagement.ManageJob;
 import com.ctb.bean.dataExportManagement.ManageStudent;
-import com.ctb.bean.dataExportManagement.ManageTestSession;
-import com.ctb.bean.testAdmin.RosterElement;
-import com.ctb.bean.testAdmin.SessionStudent;
-import com.ctb.bean.testAdmin.Student;
+import com.ctb.bean.testAdmin.ManageTestSession;
 
 /** 
  * Defines a new database control. 
@@ -89,7 +85,7 @@ public interface DataExportManagement extends JdbcControl
     @JdbcControl.SQL(statement = " select distinct export.export_id as jobId, export.student_count as studentCount, to_char(export.created_date_time, 'MM/DD/YYYY') as createdDateTime, status.status_name as jobStatus, export.created_by as createdBy, export.last_update_time as lastUpdateTime, export.last_update_status as lastUpdateStatus, export.message from data_export export, job_status status where export.status = status.status_id and export.created_by = {userId}" , arrayMaxLength=0, fetchSize = 50000) 
 	ManageJob[] getDataExportJobStatus(Integer userId)throws SQLException;
     
-    @JdbcControl.SQL(statement = " select DISTINCT tadmin.test_admin_id as testAdminId,tadmin.test_admin_name as testSessionName,To_Char(tadmin.login_start_date, 'MM/DD/YYYY') as startDate,To_Char(tadmin.login_end_date, 'MM/DD/YYYY') as endDate,tadmin.test_admin_status as status from  test_admin tadmin, program prog where tadmin.login_start_date BETWEEN prog.program_start_date and prog.program_end_date and tadmin.login_end_date BETWEEN prog.program_start_date and prog.program_end_date and tadmin.program_id = prog.program_id and prog.activation_status = 'AC' and prog.customer_id = {customerId}" , arrayMaxLength=0, fetchSize = 50000) 
+    @JdbcControl.SQL(statement = " select DISTINCT tadmin.test_admin_id as testAdminId,tadmin.test_admin_name as testSessionName,tadmin.login_start_date as startDate,tadmin.login_end_date as endDate,tadmin.test_admin_status as status, tadmin.daily_login_start_time as dailyLoginStartTime, tadmin.daily_login_end_time as dailyLoginEndTime, tadmin.time_zone as timeZone from  test_admin tadmin, program prog where tadmin.login_start_date BETWEEN prog.program_start_date and prog.program_end_date and tadmin.login_end_date BETWEEN prog.program_start_date and prog.program_end_date and tadmin.program_id = prog.program_id and prog.activation_status = 'AC' and prog.customer_id = {customerId}" , arrayMaxLength=0, fetchSize = 50000) 
     ManageTestSession[] getTestSessionForExportWithStudents(Integer customerId)throws SQLException;
     
     @JdbcControl.SQL(statement = " select distinct roster.test_roster_id as rosterId from test_roster  roster where roster.customer_id = {customerId} and nvl(roster.student_exported, 'F') = 'F' and roster.activation_status = 'AC' and roster.test_completion_status = 'CO'and roster.test_admin_id = {testAdminId}" , arrayMaxLength=0, fetchSize = 50000) 

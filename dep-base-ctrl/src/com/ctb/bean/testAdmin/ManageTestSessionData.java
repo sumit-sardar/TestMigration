@@ -1,5 +1,4 @@
-
-package com.ctb.bean.dataExportManagement; 
+package com.ctb.bean.testAdmin;
 
 import java.util.List; //LLO- 118 - Change for Ematrix UI
 

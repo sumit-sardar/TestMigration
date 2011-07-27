@@ -2,18 +2,17 @@
 package utils;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import com.ctb.bean.request.FilterParams;
-import com.ctb.bean.request.PageParams;
-import com.ctb.bean.request.SortParams;
 import com.ctb.bean.dataExportManagement.ManageJob;
 import com.ctb.bean.dataExportManagement.ManageJobData;
 import com.ctb.bean.dataExportManagement.ManageStudent;
 import com.ctb.bean.dataExportManagement.ManageStudentData;
-import com.ctb.bean.dataExportManagement.ManageTestSession;
-import com.ctb.bean.dataExportManagement.ManageTestSessionData;
+import com.ctb.bean.request.FilterParams;
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.ManageTestSession;
+import com.ctb.bean.testAdmin.ManageTestSessionData;
 import com.ctb.control.dataExportManagement.DataExportManagement;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.widgets.bean.PagerSummary;
@@ -59,7 +58,6 @@ public class DataExportSearchUtils {
         return pagerSummary;
     } 
     
-    /*############################################################*/
     
     /**
      * buildTestSessionPagerSummary
