@@ -2,10 +2,12 @@ package com.ctb.utils;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class EmetricUtil {
 	private static final DateFormat birthDateFormat = new SimpleDateFormat(
@@ -215,6 +217,36 @@ public class EmetricUtil {
 		val = String.format("%"+len+"s", val);
 		return val;
 
+	}
+	//For TimeZone Conversion
+	public static String getTimeZone(String Val,String Timezon, boolean dateType)
+	{ 
+
+		String newDate=null;
+		try{
+			String str_date=Val+" "+"GMT";
+			DateFormat formatter ; 
+			Date date ; 
+			formatter = new SimpleDateFormat("MMddyyyy HH:mm:ss zzz");
+			date = (Date)formatter.parse(str_date);  
+			TimeZone tz = TimeZone.getTimeZone(Timezon);
+			formatter.setTimeZone(tz);
+			Date tempDate = (Date)formatter.parse(formatter.format(date));
+			if(dateType){
+				formatter = new SimpleDateFormat("MMddyy");
+			}
+			else{
+				formatter = new SimpleDateFormat("MMddyyyy");
+			}
+			newDate = formatter.format(tempDate);
+
+		}       
+		catch (ParseException e)
+		{System.out.println("Exception :"+e);    
+
+		}
+
+		return newDate;
 	}
 	
 
