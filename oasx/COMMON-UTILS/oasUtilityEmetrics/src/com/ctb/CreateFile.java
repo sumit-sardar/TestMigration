@@ -57,11 +57,10 @@ public class CreateFile {
 		+ " and onc.org_node_category_id = node.org_node_category_id   and node.org_node_id = ona.ancestor_org_node_id";
 
 	// Defect Fix for 66423 && For Time Zone
-	private static String testSessionSQl = "select tad.preferred_form as form, tc.test_level as testLevel,"
-		+ " to_Char(new_time(roster.start_date_time, 'GMT', tzc.time_zone_code),'MMDDYY') as testDate,to_Char(new_time(roster.completion_date_time,'GMT',tzc.time_zone_code),'MMDDYYYY')  as dateTestingCompleted"
-		+ " from test_admin tad, test_roster roster,test_catalog tc,time_zone_code tzc"
+	private static String testSessionSQl = "select tad.preferred_form as form, tc.test_level as testLevel,tad.time_zone as timezone,"
+		+ " to_Char((roster.start_date_time),'MMDDYY HH:MI:SS') as testDate,to_Char((roster.completion_date_time),'MMDDYYYY HH:MI:SS')  as dateTestingCompleted"
+		+ " from test_admin tad, test_roster roster,test_catalog tc"
 		+ " where tad.test_admin_id = roster.test_admin_id"
-		+ " and tad.time_zone = tzc.time_zone "
 		+ " and roster.test_completion_status in ('CO','IS','IC')"
 		+ " and tc.test_catalog_id = tad.test_catalog_id"
 		+ " and roster.test_roster_id = ? ";
@@ -1279,9 +1278,14 @@ public class CreateFile {
 						&& rs.getString(2).toString().equals("9-12")) {
 					tfil.setTestLevel("5");
 				}
-				tfil.setTestDate(rs.getString(3).toString());
-				this.testDate = rs.getString(3).toString();
-				tfil.setDateTestingCompleted(rs.getString(4).toString());
+				if(rs.getString(4) != null){
+				tfil.setTestDate(EmetricUtil.getTimeZone(rs.getString(4).toString(),rs.getString(3).toString(),true));
+				}
+				this.testDate = tfil.getTestDate();
+				if(rs.getString(5) != null){
+				tfil.setDateTestingCompleted(EmetricUtil.getTimeZone(rs.getString(5).toString(),rs.getString(3).toString(),false));
+				}
+
 
 			}
 
