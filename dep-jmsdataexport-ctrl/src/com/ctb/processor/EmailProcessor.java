@@ -13,7 +13,7 @@ import javax.mail.internet.MimeMessage;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import com.ctb.bean.testAdmin.User;
+
 import com.ctb.db.EmailProcessorDao;
 import com.ctb.utils.CTBConstants;
 import com.ctb.utils.Configuration;
@@ -51,7 +51,7 @@ public class EmailProcessor {
 	public void processEmail(String userName, int jobid, String message) {
 
 		String to = null;
-		 User user = null;
+		 //User user = null;
 		 String content = Configuration.getUserEmailBody();
 		 String subject = Configuration.getUserEmailSubject();
 		 String replyTo = Configuration.getUserEmailReplyTo();
@@ -59,10 +59,10 @@ public class EmailProcessor {
 		try {
 
 			EmailProcessorDao emailProcessorDao = new EmailProcessorDao();
-			user = emailProcessorDao.getUserDetails(userName);
-			 to = user.getEmail();
-
-
+			/*user = emailProcessorDao.getUserDetails(userName);
+			 to = user.getEmail();*/
+			 to = emailProcessorDao.getCustomerEmailByUserName(userName);
+             System.out.println("Sending job status mail to ["+to+"].");
 			// System.out.println("to:"+to+", userId:"+userId);
 
 			//System.out.println("content0:" + content);

@@ -37,7 +37,7 @@ public class EmailProcessorDao implements EmailProcessorSQL {
 			con.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new CTBBusinessException("getCustomerEmailByUserName:failed");
+			throw new CTBBusinessException("EmailProcessorDao:getCustomerEmailByUserName failed");
 			
 		} finally {
 			SqlUtil.close(con, ps, rs);
@@ -66,12 +66,35 @@ public class EmailProcessorDao implements EmailProcessorSQL {
 			con.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new CTBBusinessException("getUserDetails:failed");
+			throw new CTBBusinessException("EmailProcessorDao:getUserDetails failed");
 		} finally {
 			SqlUtil.close(con, ps, rs);
 		}
 		return user;
 
+	}
+
+	public String getCustomerEmailByUserName(String userName) throws CTBBusinessException {
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String customerEmail = null;
+		try {
+			con = SqlUtil.openOASDBcon();
+			ps = con.prepareStatement(GET_CUSTOMER_EMAIL_BY_USER_NAME);
+			ps.setString(1, userName);
+			rs = ps.executeQuery();
+			if (rs.next()) { 
+				customerEmail = rs.getString(1);
+			}
+		}catch (SQLException e) {
+			e.printStackTrace();
+			throw new CTBBusinessException("EmailProcessorDao:getCustomerEmailByUserName failed");
+		} finally {
+			SqlUtil.close(con, ps, rs);
+		}
+		return customerEmail;
+		
 	}
 
 }
