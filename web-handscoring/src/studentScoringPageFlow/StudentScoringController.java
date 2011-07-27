@@ -1,5 +1,6 @@
 package studentScoringPageFlow;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -75,6 +76,9 @@ public class StudentScoringController extends PageFlowController {
     @Control()
     private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
     
+	@org.apache.beehive.controls.api.bean.Control()
+	private com.ctb.control.db.OrgNode orgnode;
+
     
     @org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.CRScoring scoring;
@@ -119,7 +123,22 @@ public class StudentScoringController extends PageFlowController {
 	// customer configuration
 	CustomerConfiguration[] customerConfigurations = null;
 	CustomerConfigurationValue[] customerConfigurationsValue = null;
+	private boolean islaslinkCustomer = false;// For defect #66662
 	
+	/**
+	 * @return the islaslinkCustomer
+	 */
+	public boolean isIslaslinkCustomer() {
+		return islaslinkCustomer;
+	}
+
+	/**
+	 * @param islaslinkCustomer the islaslinkCustomer to set
+	 */
+	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
+		this.islaslinkCustomer = islaslinkCustomer;
+	}
+
 	/**
 	 * Callback that is invoked when this controller instance is created.
 	 */
@@ -164,7 +183,7 @@ public class StudentScoringController extends PageFlowController {
 		StudentScoringForm form = initialize(ACTION_FIND_STUDENT);
 		this.searchApplied = false;
 		initGradeGenderStatusTestNameOptions(ACTION_FIND_STUDENT, form, null, null ,null, null);
-		
+		isTopLevelUser(); //For defect #66662
 		return new Forward("success", form);
 	}
 	
@@ -363,7 +382,38 @@ public class StudentScoringController extends PageFlowController {
 
 		return new Forward("success");
 	}
-	
+
+	//For defect #66662
+   private void isTopLevelUser(){
+	 
+	    boolean isLaslinkCustomer = false;
+		boolean isUserTopLevel = false;
+		boolean isLaslinkUserTopLevel = false;
+		boolean isLaslinkUser = false;
+		try {
+		for (CustomerConfiguration cc : customerConfigurations) {
+			 if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+						&& cc.getDefaultValue().equals("T")) {
+					isLaslinkCustomer = true;
+	            }
+		}
+		    this.setIslaslinkCustomer(isLaslinkCustomer);
+		     isLaslinkUser = this.islaslinkCustomer;
+		
+			if(isLaslinkUser) {
+				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
+				if(isUserTopLevel){
+					isLaslinkUserTopLevel = true;				
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+	}
+
 	
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
