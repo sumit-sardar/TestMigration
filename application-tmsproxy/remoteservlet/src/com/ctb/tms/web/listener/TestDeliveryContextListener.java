@@ -80,15 +80,16 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		
 		public void run() {
 			Connection conn = null;
+			Connection sinkConn = null;
 			while (true) {
 				try {
-					Connection sinkConn = null;
 					conn = oasDBSource.getOASConnection();
 					StudentCredentials[] creds = oasDBSource.getActiveRosters(conn);
 					if("true".equals(RDBStorageFactory.copytosink)) {
 						sinkConn = oasDBSink.getOASConnection();
 						oasDBSink.putActiveRosters(sinkConn, creds);
 						sinkConn.commit();
+						sinkConn.close();
 					}
 					for(int i=0;i<creds.length;i++) {
 						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
@@ -98,8 +99,10 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 								// Get all data for an active roster from OAS DB
 								rosterData = oasDBSource.getRosterData(conn, creds[i]);
 								if("true".equals(RDBStorageFactory.copytosink)) {
+									sinkConn = oasDBSink.getOASConnection();
 									oasDBSink.putRosterData(sinkConn, creds[i], rosterData);
 									sinkConn.commit();
+									sinkConn.close();
 								}
 								System.out.print("*****  Got roster data for " + key + " . . . ");
 								// Now put the roster data into Cassandra
@@ -126,6 +129,9 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					try {
 						if(conn != null) {
 							conn.close();
+						}
+						if(sinkConn != null) {
+							sinkConn.close();
 						}
 						System.out.println("*****  Completed active roster check. Sleeping for " + checkFrequency + " seconds.");
 						Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000);

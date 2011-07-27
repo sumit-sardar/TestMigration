@@ -223,7 +223,10 @@ public class TMSServlet extends HttpServlet {
 				subtest = adsDBSource.getSubtest(conn, subtestId, hash);
 				if("true".equals(RDBStorageFactory.copytosink)) {
 					ADSRDBSink adsDBSink = RDBStorageFactory.getADSSink();
-					adsDBSink.putSubtest(adsDBSink.getADSConnection(), subtestId, subtest);
+					Connection sinkConn = adsDBSink.getADSConnection();
+					adsDBSink.putSubtest(sinkConn, subtestId, subtest);
+					sinkConn.commit();
+					sinkConn.close();
 				}
 			} finally {
 				if(conn != null) {
@@ -250,7 +253,10 @@ public class TMSServlet extends HttpServlet {
 				item = adsDBSource.getItem(conn, itemId, hash);
 				if("true".equals(RDBStorageFactory.copytosink)) {
 					ADSRDBSink adsDBSink = RDBStorageFactory.getADSSink();
-					adsDBSink.putItem(adsDBSink.getADSConnection(), itemId, item);
+					Connection sinkConn = adsDBSink.getADSConnection();
+					adsDBSink.putItem(sinkConn, itemId, item);
+					sinkConn.commit();
+					sinkConn.close();
 				}
 			} finally {
 				if(conn != null) {

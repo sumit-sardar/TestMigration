@@ -1,15 +1,18 @@
 package com.ctb.tms.rdb;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ADSHSQLSource implements ADSRDBSource {
+	
 	public Connection getADSConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		Class.forName("org.hsqldb.jdbcDriver");
-		return DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/oas", "SA", "");
+		return HSQLSetup.getADSConnection();
+	}
+	
+	public void shutdown() {
+		HSQLSetup.shutdown();
 	}
 	
 	private static final String GET_SUBTEST_SQL = "select * from subtest where subtest_id = ?";
@@ -57,23 +60,5 @@ public class ADSHSQLSource implements ADSRDBSource {
 			}
 		}
 		return result;
-	}
-
-	public void shutdown() {
-		Connection conn = null;
-		try {
-			conn = getADSConnection();
-			PreparedStatement ps = conn.prepareStatement("SHUTDOWN");
-			ps.executeUpdate();
-			conn.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if(conn != null) conn.close();
-			} catch (Exception e) {
-				// do nothing
-			}
-		}
 	}
 }

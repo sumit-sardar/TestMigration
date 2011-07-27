@@ -3,7 +3,6 @@ package com.ctb.tms.rdb;
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,51 +15,12 @@ import com.ctb.tms.bean.login.StudentCredentials;
 
 public class OASHSQLSource implements OASRDBSource
 { 
-	{
-		Connection conn = null;
-		try {
-			conn = getOASConnection();
-			PreparedStatement ps = conn.prepareStatement("CREATE TEXT TABLE STUDENT (user_name VARCHAR(32), password VARCHAR(32), access_code VARCHAR(32))");
-			ps.executeUpdate();
-			ps = conn.prepareStatement("SET TABLE STUDENT SOURCE 'student;fs=|;cache_rows=0'");
-			ps.executeUpdate();
-			ps = conn.prepareStatement("CREATE TEXT TABLE ROSTER (user_name VARCHAR(32), password VARCHAR(32), access_code VARCHAR(32), roster VARCHAR(65535))");
-			ps.executeUpdate();
-			ps = conn.prepareStatement("SET TABLE ROSTER SOURCE 'roster;fs=|;cache_rows=0'");
-			ps.executeUpdate();
-			conn.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if(conn != null) conn.close();
-			} catch (Exception e) {
-				// do nothing
-			}
-		}
+	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		return HSQLSetup.getOASConnection();
 	}
 	
 	public void shutdown() {
-		Connection conn = null;
-		try {
-			conn = getOASConnection();
-			PreparedStatement ps = conn.prepareStatement("SHUTDOWN");
-			ps.executeUpdate();
-			conn.commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if(conn != null) conn.close();
-			} catch (Exception e) {
-				// do nothing
-			}
-		}
-	}
-	
-	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		Class.forName("org.hsqldb.jdbcDriver");
-		return DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/oas", "SA", "");
+		HSQLSetup.shutdown();
 	}
 	
 	private static final String GET_STUDENTS_SQL = "select * from student";
