@@ -460,5 +460,11 @@ public interface TestSessionStatus
      */
     CustomerTestResourceData getCustomerTestResources(java.lang.String userName, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
     
+
+    /**   
+     * @param userName
+     * @throws com.ctb.exception.CTBBusinessException
+     */
+    java.lang.String authUser(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
     
 } 

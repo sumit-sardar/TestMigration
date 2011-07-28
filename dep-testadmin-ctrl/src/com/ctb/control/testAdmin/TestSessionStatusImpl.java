@@ -310,10 +310,8 @@ public class TestSessionStatusImpl implements TestSessionStatus
             	testRosterId = testRosterIds[i];
                 re = roster.getRosterElement(testRosterId);
 	            studentId += String.valueOf(re.getStudentId());
-	            //studentName += re.getLastName() + ", " + re.getFirstName();
 	            if (i<testRosterIds.length-1) {
 	            	studentId += ",";
-	            	//studentName += ";";
 	            }
         	}            
         	
@@ -322,7 +320,8 @@ public class TestSessionStatusImpl implements TestSessionStatus
                 String report = cr[i].getReportUrl();
                 if(cr[i].getReportName().indexOf("IndividualProfile") >= 0) {
                     //reportURL = report;
-                    reportURL = "http://tldevoasreporting/openapi/ReportService.svc/Profile";
+                    //reportURL = "http://tldevoasreporting/openapi/ReportService.svc/Profile";
+                    reportURL = "http://tlqaoas/openapi/ReportService.svc/Profile";
                     systemKey = cr[i].getSystemKey();
                     customerKey = cr[i].getCustomerKey();
                     orgCategoryLevel = String.valueOf(cr[i].getCategoryLevel());
@@ -335,7 +334,6 @@ public class TestSessionStatusImpl implements TestSessionStatus
                 "&NodeInstanceId="+orgNodeId+
                 "&CurrentTestSessionId="+sessionId+
                 "&CurrentStudentId="+studentId;
-                //"&CurrentStudentName="+studentName;
             
             System.out.println("No encrypted URL: " + reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+paramsPlainText+"&RunReport=1");
             
@@ -350,6 +348,51 @@ public class TestSessionStatusImpl implements TestSessionStatus
         }
         System.out.println("*****  final URL: " + reportURL);
         return reportURL;
+    }
+    
+    
+    /**
+     */
+    public String authUser(String userName) throws CTBBusinessException {
+    	String result = "";
+        try {
+            User user = users.getUserDetails(userName);
+            Integer [] topOrgNodeIds = orgNode.getTopOrgNodeIdsForUser(userName);
+            Integer orgNodeId = topOrgNodeIds[0];
+            ProgramData pd = getProgramsForUser(userName, null, null, null);
+        	Program[] pgs = pd.getPrograms();
+        	Program pg = pgs[0];
+        	Integer programId = pg.getProgramId();
+        	
+            String systemKey = null;
+            String customerKey = null;
+        	
+            CustomerReport [] cr = reportBridge.getReportAssignmentsForProgram(programId, orgNodeId);
+            for (int i=0; i < cr.length; i++) {
+                String report = cr[i].getReportUrl();
+                if(cr[i].getReportName().indexOf("IndividualProfile") >= 0) {
+                    systemKey = cr[i].getSystemKey();
+                    customerKey = cr[i].getCustomerKey();
+                }
+            }
+            String encryptedProgramId = DESUtils.encrypt(String.valueOf(programId), systemKey);
+            String paramsPlainText = 
+                "Timestamp="+(new Date()).toString()+
+                "&NodeInstanceId="+orgNodeId;
+                       
+            String encryptedParams = DESUtils.encrypt(paramsPlainText, customerKey);
+            
+            result = encryptedProgramId + "|" + encryptedParams;
+        	
+        } catch (SQLException se) {
+            CustomerReportDataNotFoundException tee = new CustomerReportDataNotFoundException("ScheduleTestImpl: getCustomerReportData: " + se.getMessage());
+            tee.setStackTrace(se.getStackTrace());
+            throw tee;
+        }
+        
+        System.out.println("*****  result: " + result);
+        
+        return result;
     }
     
     /**
