@@ -243,10 +243,10 @@ public class AdministrationController extends PageFlowController
      * @jpf:action
      */
 	@Jpf.Action()
-    protected Forward generateReportFile()
+    protected Forward reportQueue()
     {
         try {
-            String url = "/TestSessionInfoWeb/viewmonitorstatus/gotoReportRepository.do";
+            String url = "/TestSessionInfoWeb/viewmonitorstatus/reportQueue.do";
             getResponse().sendRedirect(url);
         } 
         catch( IOException ioe ) {
@@ -301,8 +301,7 @@ public class AdministrationController extends PageFlowController
             be.printStackTrace();
         }
     	
-        return Boolean.FALSE;	// Disable multiple selection IPR for now
-        //return new Boolean(validCustomer && isAdminUser);
+        return new Boolean(validCustomer && isAdminUser);
     }
     
     /**

@@ -65,7 +65,7 @@
   </c:if>
   <c:if test="${ sessionScope.canGenerateReportFile}"> 
     <p>
-    <netui:anchor action="generateReportFile"><netui:content value="${bundle.web['generatereport.title']}"/></netui:anchor>
+    <netui:anchor action="reportQueue"><netui:content value="${bundle.web['generatereport.title']}"/></netui:anchor>
     <br/>
     <netui:content value="${bundle.web['generatereport.text']}"/>
     </p>
