@@ -32,6 +32,7 @@ import com.ctb.testSessionInfo.utils.JsonUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.List;
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
@@ -39,6 +40,7 @@ import com.ctb.widgets.bean.ColumnSortEntry;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -420,18 +422,14 @@ public class ViewMonitorStatusController extends PageFlowController
     		System.out.println("userEmail = " + this.userEmail);
 
     		Integer[] testRosterIds = new Integer[this.selectedRosterIds.size()];
-    		
-    		Integer rosterId = null;
         	for (int i=0 ; i<this.selectedRosterIds.size() ; i++) {
-        		rosterId = (Integer)this.selectedRosterIds.get(i);
+        		Integer rosterId = (Integer)this.selectedRosterIds.get(i);
         		System.out.println("rosterId = " + rosterId.toString());
         		testRosterIds[i] = rosterId;
         	}
-        	
-            //String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, rosterId);    
+    		
             String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, testRosterIds);    
             
-        	//String reportUrl = "/TestSessionInfoWeb/viewmonitorstatus/temporaryGotoTurnLeaf.do";
             this.getRequest().setAttribute("reportUrl", reportUrl);
             this.getRequest().setAttribute("testAdminId", String.valueOf(this.sessionId));
             this.getRequest().setAttribute("showReporNavigation", "true");
@@ -446,35 +444,70 @@ public class ViewMonitorStatusController extends PageFlowController
 
     /**
      * @jpf:action
-     * @jpf:forward name="success" path="http://www.google.com"
+     * @jpf:forward name="success" path="report_queue.jsp"
      */
 	@Jpf.Action(
 		forwards = { 
-			@Jpf.Forward(name = "success", path = "multiple_student_IPR.jsp")
+			@Jpf.Forward(name = "success", path = "report_queue.jsp")
 		}
 	)
-    protected Forward gotoReportRepository()
+    protected Forward reportQueue()
     {
-    	String reportUrl = "/TestSessionInfoWeb/viewmonitorstatus/temporaryGotoTurnLeaf.do";
-        this.getRequest().setAttribute("reportUrl", reportUrl);
-        this.getRequest().setAttribute("showReporNavigation", "false");
+    	//String url = "http://www.google.com";
+    	String url = "http://tlqaoas/openapi/ReportQueue.aspx";
+        this.getRequest().setAttribute("url", url);
         
         return new Forward("success");
     }
 
     /**
      * @jpf:action
-     * @jpf:forward name="success" path="http://www.google.com"
+     * @jpf:forward name="success" path="report_queue.jsp"
      */
 	@Jpf.Action(
 		forwards = { 
-			@Jpf.Forward(name = "success", path = "http://www.google.com")
+			@Jpf.Forward(name = "success", path = "report_queue.jsp")
 		}
 	)
-    protected Forward temporaryGotoTurnLeaf()
+    protected Forward authUser()
     {
-        
-        return new Forward("success");
+    	HttpServletResponse resp = this.getResponse();
+    	HttpServletRequest req = this.getRequest();
+    	
+    	resp.setContentType("application/x-javascript");  
+    	//resp.setContentType("text/x-json");  
+    	
+        String callback = req.getParameter("callback");
+		String username = this.getRequest().getParameter("username");
+	    String password = this.getRequest().getParameter("password");
+
+        PrintWriter out;
+		try {
+			out = resp.getWriter();
+	        if(callback != null) {
+	            out.println(callback + "(");
+	        }
+
+			String result = this.testSessionStatus.authUser(username);
+			StringTokenizer st = new StringTokenizer(result, "|"); 
+			String sys = st.nextToken(); 
+			String params = st.nextToken(); 
+			
+	        out.println("{" +
+	                "\"sys\": \"" + sys + "\", " +
+	                "\"params\": \"" + params + "\"}");
+
+	        if(callback != null) {
+	          out.println(");");
+	        }
+	        out.flush();
+	        
+	        
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
     }
 	
     /**
