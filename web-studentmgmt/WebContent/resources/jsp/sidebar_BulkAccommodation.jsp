@@ -104,7 +104,7 @@
 </ctb:auth>
 <ctb:auth roles="Administrator">
 <c:if test="${ sessionScope.isTopLevelUser }">
-<h1>Reports</h1>
+<h1>Export</h1>
 <ul>
     <li><a href="/DataExportWeb/dataExportPageFlow/begin.do" onclick="return verifyBulkAccommodation();"><span>Data Export</span></a></li>
     <li><a href="/DataExportWeb/dataExportPageFlow/beginViewStatus.do" onclick="return verifyBulkAccommodation();"><span>View Status</span></a></li>
