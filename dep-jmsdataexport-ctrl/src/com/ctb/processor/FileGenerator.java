@@ -60,7 +60,7 @@ public class FileGenerator {
 
 	// Defect Fix for 66423 and timeZobe defect
 		private static String testSessionSQl = "select tad.preferred_form as form, tc.test_level as testLevel,tad.time_zone as timezone,"
-		+ " to_Char((roster.start_date_time),'MMDDYY HH:MI:SS') as testDate,to_Char((roster.completion_date_time),'MMDDYYYY HH:MI:SS')  as dateTestingCompleted"
+		+ " to_Char((roster.start_date_time),'MMDDYY HH24:MI:SS') as testDate,to_Char((roster.completion_date_time),'MMDDYYYY HH24:MI:SS')  as dateTestingCompleted"
 		+ " from test_admin tad, test_roster roster,test_catalog tc"
 		+ " where tad.test_admin_id = roster.test_admin_id"
 		+ " and roster.test_completion_status in ('CO','IS','IC')"
