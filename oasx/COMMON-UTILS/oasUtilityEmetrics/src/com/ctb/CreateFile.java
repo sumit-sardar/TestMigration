@@ -1248,14 +1248,14 @@ public class CreateFile {
 					tfil.setTestForm("S");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), new Integer(10))
+								"ESPANOL", new Integer(10))
 								.toUpperCase());
 				} else if (rs.getString(1).startsWith("Esp")) {
 					tfil.setTestName("LAS Links Español");
 					tfil.setTestForm("S");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), new Integer(10))
+								"ESPANOL", new Integer(10))
 								.toUpperCase());
 				}
 
