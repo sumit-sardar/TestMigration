@@ -234,9 +234,11 @@ public class EmetricUtil {
 			Date tempDate = (Date)formatter.parse(formatter.format(date));
 			if(dateType){
 				formatter = new SimpleDateFormat("MMddyy");
+				formatter.setTimeZone(tz);
 			}
 			else{
 				formatter = new SimpleDateFormat("MMddyyyy");
+				formatter.setTimeZone(tz);
 			}
 			newDate = formatter.format(tempDate);
 
