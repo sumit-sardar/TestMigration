@@ -217,33 +217,34 @@ public class EmetricUtil {
 
 	}
 	//For TimeZone Conversion
-	public static String getTimeZone(String Val,String Timezon, boolean dateType)
-	{ 
-		
-		 String newDate=null;
-		try{
-			 String str_date=Val+" "+"GMT";
-			 DateFormat formatter ; 
-			 Date date ; 
-			 formatter = new SimpleDateFormat("MMddyyyy HH:mm:ss zzz");
-    		 date = (Date)formatter.parse(str_date);  
-			 TimeZone tz = TimeZone.getTimeZone(Timezon);
-			 formatter.setTimeZone(tz);
-			 Date tempDate = (Date)formatter.parse(formatter.format(date));
-			 if(dateType){
-				 formatter = new SimpleDateFormat("MMddyy");
-			 }
-			 else{
-				 formatter = new SimpleDateFormat("MMddyyyy");
-			 }
+	public static String getTimeZone(String Val, String Timezon,
+			boolean dateType) {
+
+		String newDate = null;
+		try {
+			String str_date = Val + " " + "GMT";
+			DateFormat formatter;
+			Date date;
+			formatter = new SimpleDateFormat("MMddyyyy HH:mm:ss zzz");
+			date = (Date) formatter.parse(str_date);
+			TimeZone tz = TimeZone.getTimeZone(Timezon);
+			formatter.setTimeZone(tz);
+			System.out.println(formatter.format(date));
+			Date tempDate = (Date) formatter.parse(formatter.format(date));
+			if (dateType) {
+				formatter = new SimpleDateFormat("MMddyy HH:mm:ss");
+				formatter.setTimeZone(tz);
+			} else {
+				formatter = new SimpleDateFormat("MMddyyyy HH:mm:ss");
+				formatter.setTimeZone(tz);
+			}
 			newDate = formatter.format(tempDate);
-		       
-}       
-			  catch (ParseException e)
-			  {System.out.println("Exception :"+e);    
-			  
-			  }
-		
+
+		} catch (ParseException e) {
+			System.out.println("Exception :" + e);
+
+		}
+
 		return newDate;
 	}
 	
