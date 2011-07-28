@@ -413,7 +413,7 @@ public class StudentAccommodationsTag extends CTBTag
 	        checked = this.accommodations.getMaskingTool().booleanValue();
 	        disabled = isDisabled(field);
 	        displayControlRow(field, description, checked, disabled, null);                        
-	        displayTextRow("Allow student to block out/mask any or all answer choices in an item.", "20");
+	        displayTextRow("Allow student to block out/mask any or all answer choices in a question.", "20");
         displayTableEnd();
         
         
