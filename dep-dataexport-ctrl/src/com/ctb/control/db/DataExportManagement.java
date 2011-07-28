@@ -97,17 +97,22 @@ public interface DataExportManagement extends JdbcControl
     @JdbcControl.SQL(statement = " select count (distinct roster.test_roster_id) as rosterId from test_roster  roster where roster.customer_id = {customerId} and nvl(roster.student_exported, 'F') = 'F' and roster.activation_status = 'AC' and roster.test_completion_status = 'NT'and roster.test_admin_id = {testAdminId}" , arrayMaxLength=0, fetchSize = 50000) 
 	Integer getNotTakenSubtestUnexportedStudentsForTestSession(Integer customerId,Integer testAdminId)throws SQLException;
 
-    @JdbcControl.SQL(statement = " select distinct roster.test_roster_id as rosterId from test_roster  roster where roster.customer_id = {customerId} and nvl(roster.student_exported, 'F') = 'F' and roster.activation_status = 'AC' and roster.test_completion_status = 'IC'and roster.test_admin_id = {testAdminId}" , arrayMaxLength=0, fetchSize = 50000) 
+    @JdbcControl.SQL(statement = " SELECT DISTINCT ROSTER.TEST_ROSTER_ID AS ROSTERID FROM TEST_ROSTER ROSTER, STUDENT_ITEM_SET_STATUS SIS WHERE ROSTER.CUSTOMER_ID = {customerId} AND NVL(ROSTER.STUDENT_EXPORTED, 'F') = 'F' AND ROSTER.ACTIVATION_STATUS = 'AC' AND ROSTER.TEST_COMPLETION_STATUS = 'IC' AND ROSTER.TEST_ADMIN_ID = {testAdminId} AND SIS.TEST_ROSTER_ID = ROSTER.TEST_ROSTER_ID   AND EXISTS (SELECT 1  FROM STUDENT_ITEM_SET_STATUS SISS WHERE SISS.COMPLETION_STATUS IN ('CO', 'IS') AND SISS.TEST_ROSTER_ID = ROSTER.TEST_ROSTER_ID) AND NOT EXISTS (SELECT 1 FROM STUDENT_ITEM_SET_STATUS SI WHERE SI.COMPLETION_STATUS = 'IN' AND SI.TEST_ROSTER_ID = ROSTER.TEST_ROSTER_ID)" , arrayMaxLength=0, fetchSize = 50000) 
     Integer[] getInCompleteSubtestUnexportedStudentsForTestSession(Integer customerId,Integer testAdminId)throws SQLException;
 
-    @JdbcControl.SQL(statement = " select distinct roster.test_roster_id as rosterId from test_roster  roster where roster.customer_id = {customerId} and nvl(roster.student_exported, 'F') = 'F' and roster.activation_status = 'AC' and roster.test_completion_status = 'IS'and roster.test_admin_id = {testAdminId}" , arrayMaxLength=0, fetchSize = 50000) 
-	Integer[] getStudentStopSubtestUnexportedStudentsForTestSession(Integer customerId,Integer testAdminId)throws SQLException;
-
+    @JdbcControl.SQL(statement = " select count (distinct roster.test_roster_id)as rosterId from test_roster  roster where roster.customer_id = {customerId} and nvl(roster.student_exported, 'F') = 'F' and roster.activation_status = 'AC' and roster.test_completion_status = 'IS'and roster.test_admin_id = {testAdminId}" , arrayMaxLength=0, fetchSize = 50000) 
+	Integer getStudentStopSubtestUnexportedStudentsForTestSession(Integer customerId,Integer testAdminId)throws SQLException;
+    
+    @JdbcControl.SQL(statement = " SELECT DISTINCT ROSTER.TEST_ROSTER_ID AS ROSTERID FROM TEST_ROSTER ROSTER, Student_Item_Set_Status  siss WHERE ROSTER.CUSTOMER_ID = {customerId} AND NVL(ROSTER.STUDENT_EXPORTED, 'F') = 'F' AND ROSTER.ACTIVATION_STATUS = 'AC' AND ROSTER.TEST_COMPLETION_STATUS = 'IS' AND siss.test_roster_id = ROSTER.test_roster_id  AND siss.completion_status  = 'CO' AND ROSTER.TEST_ADMIN_ID = {testAdminId}" , arrayMaxLength=0, fetchSize = 50000) 
+	Integer[] getStudentStopToBeExportedSubtestUnexportedStudentsForTestSession(Integer customerId,Integer testAdminId)throws SQLException;
+    
+    
     @JdbcControl.SQL(statement = " select count (distinct roster.test_roster_id) as rosterId from test_roster  roster where roster.customer_id = {customerId} and nvl(roster.student_exported, 'F') = 'F' and roster.activation_status = 'AC' and roster.test_completion_status = 'IN'and roster.test_admin_id = {testAdminId}" , arrayMaxLength=0, fetchSize = 50000) 
 	Integer getSystemStopSubtestUnexportedStudentsForTestSession(Integer customerId,Integer testAdminId)throws SQLException;
 
-    @JdbcControl.SQL(statement = " select distinct roster.test_roster_id as toatalCount from test_roster roster, student_item_set_status sis where roster.customer_id = {customerId} and roster.test_admin_id = {testAdminId} and roster.test_completion_status = 'IC' and sis.test_roster_id = roster.test_roster_id and sis.completion_status = 'IN'" , arrayMaxLength=0, fetchSize = 50000) 
-    Integer[] getSystemStopCountFromInCompleteForTestSession(Integer customerId,Integer testAdminId)throws SQLException;
+    @JdbcControl.SQL(statement = " select count (distinct roster.test_roster_id) as rosterId from test_roster roster, student_item_set_status sis where roster.customer_id = {customerId} and roster.test_admin_id = {testAdminId} and roster.test_completion_status = 'IC' and sis.test_roster_id = roster.test_roster_id and sis.completion_status = 'IN'" , arrayMaxLength=0, fetchSize = 50000) 
+    Integer getSystemStopCountFromInCompleteForTestSession(Integer customerId,Integer testAdminId)throws SQLException;
+    
     @JdbcControl.SQL(statement = " SELECT SEQ_EXPORT_ID.NEXTVAL as job_id from DUAL") 
 	Integer getJobId()throws SQLException;
     
