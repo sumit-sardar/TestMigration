@@ -465,6 +465,6 @@ public interface TestSessionStatus
      * @param userName
      * @throws com.ctb.exception.CTBBusinessException
      */
-    java.lang.String authUser(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
+    java.lang.String getReportParams(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
     
 } 

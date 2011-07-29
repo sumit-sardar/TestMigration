@@ -304,7 +304,6 @@ public class TestSessionStatusImpl implements TestSessionStatus
             String customerKey = null;
             String orgCategoryLevel = null;
             String studentId = "";
-            //String studentName = "";
             
         	for (int i=0 ; i<testRosterIds.length ; i++) {
             	testRosterId = testRosterIds[i];
@@ -320,7 +319,6 @@ public class TestSessionStatusImpl implements TestSessionStatus
                 String report = cr[i].getReportUrl();
                 if(cr[i].getReportName().indexOf("IndividualProfile") >= 0) {
                     //reportURL = report;
-                    //reportURL = "http://tldevoasreporting/openapi/ReportService.svc/Profile";
                     reportURL = "http://tlqaoas/openapi/ReportService.svc/Profile";
                     systemKey = cr[i].getSystemKey();
                     customerKey = cr[i].getCustomerKey();
@@ -335,7 +333,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
                 "&CurrentTestSessionId="+sessionId+
                 "&CurrentStudentId="+studentId;
             
-            System.out.println("No encrypted URL: " + reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+paramsPlainText+"&RunReport=1");
+            //System.out.println("No encrypted URL: " + reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+paramsPlainText+"&RunReport=1");
             
             String encryptedParams = DESUtils.encrypt(paramsPlainText, customerKey);
             reportURL = reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+encryptedParams+"&RunReport=1";
@@ -346,14 +344,14 @@ public class TestSessionStatusImpl implements TestSessionStatus
             tee.setStackTrace(se.getStackTrace());
             throw tee;
         }
-        System.out.println("*****  final URL: " + reportURL);
+        //System.out.println("Report URL: " + reportURL);
         return reportURL;
     }
     
     
     /**
      */
-    public String authUser(String userName) throws CTBBusinessException {
+    public String getReportParams(String userName) throws CTBBusinessException {
     	String result = "";
         try {
             User user = users.getUserDetails(userName);
@@ -366,18 +364,20 @@ public class TestSessionStatusImpl implements TestSessionStatus
         	
             String systemKey = null;
             String customerKey = null;
+            String orgCategoryLevel = null;
         	
             CustomerReport [] cr = reportBridge.getReportAssignmentsForProgram(programId, orgNodeId);
             for (int i=0; i < cr.length; i++) {
-                String report = cr[i].getReportUrl();
                 if(cr[i].getReportName().indexOf("IndividualProfile") >= 0) {
                     systemKey = cr[i].getSystemKey();
                     customerKey = cr[i].getCustomerKey();
+                    orgCategoryLevel = String.valueOf(cr[i].getCategoryLevel());
                 }
             }
             String encryptedProgramId = DESUtils.encrypt(String.valueOf(programId), systemKey);
             String paramsPlainText = 
                 "Timestamp="+(new Date()).toString()+
+                "&LevelId="+orgCategoryLevel+
                 "&NodeInstanceId="+orgNodeId;
                        
             String encryptedParams = DESUtils.encrypt(paramsPlainText, customerKey);
@@ -390,7 +390,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
             throw tee;
         }
         
-        System.out.println("*****  result: " + result);
+        //System.out.println("Report parms: " + result);
         
         return result;
     }
