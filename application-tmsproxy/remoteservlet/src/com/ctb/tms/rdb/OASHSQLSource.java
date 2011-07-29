@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import sun.misc.BASE64Decoder;
 
@@ -23,8 +24,10 @@ public class OASHSQLSource implements OASRDBSource
 		HSQLSetup.shutdown();
 	}
 	
-	private static final String GET_STUDENTS_SQL = "select * from student";
+	private static final String GET_STUDENTS_SQL = "select * from roster";
 	private static final String GET_ROSTER_SQL = "select * from roster where user_name = ? and password = ? and access_code = ?";
+	
+	private static HashMap rosterMap = new HashMap(100000);
 	
 	public StudentCredentials [] getActiveRosters(Connection conn) {
 		ArrayList results = new ArrayList();
@@ -37,6 +40,12 @@ public class OASHSQLSource implements OASRDBSource
 				creds.setUsername(rs.getString("user_name"));
 				creds.setPassword(rs.getString("password"));
 				creds.setAccesscode(rs.getString("access_code"));
+				String rosterString = rs.getString("roster");
+		    	byte [] bytes = new BASE64Decoder().decodeBuffer(rosterString);
+				ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+				ObjectInputStream ois = new ObjectInputStream(bais);
+				RosterData roster = (RosterData) ois.readObject();
+				rosterMap.put(creds, roster);
 				results.add(creds);
 			}
 		} catch (Exception e) {
@@ -52,31 +61,6 @@ public class OASHSQLSource implements OASRDBSource
 	}
 	
     public RosterData getRosterData(Connection conn, StudentCredentials creds)  throws Exception {
-    	RosterData roster = null;
-		
-		PreparedStatement stmt1 = null;
-    	try {
-			stmt1 = conn.prepareStatement(GET_ROSTER_SQL);
-			stmt1.setString(1, creds.getUsername());
-			stmt1.setString(2, creds.getPassword());
-			stmt1.setString(3, creds.getAccesscode());
-			ResultSet rs = stmt1.executeQuery();
-			if(rs.next()) {
-				String rosterString = rs.getString("roster");
-		    	byte [] bytes = new BASE64Decoder().decodeBuffer(rosterString);
-				ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-				ObjectInputStream ois = new ObjectInputStream(bais);
-				roster = (RosterData) ois.readObject();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if(stmt1 != null) stmt1.close();
-			} catch (Exception e) {
-				// do nothing
-			}
-		}
-		return roster;
+    	return (RosterData) rosterMap.get(creds);
     }
 } 
