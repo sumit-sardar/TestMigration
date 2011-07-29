@@ -244,7 +244,7 @@ public class FileGenerator {
 			ffWriter.close();
 			//System.out.println("Export file successfully generated:["+dataFileName+"]");
 			orderFile.setDataFileName(EmetricUtil.truncate(dataFileName,
-					100).substring(1, dataFileName.length()));
+					100).substring(0, dataFileName.length()));
 			System.out.println("Data File ["+dataFileName+"] created.");
 			
 			System.out.println("Preparing Order File.");
