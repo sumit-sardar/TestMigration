@@ -56,7 +56,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 public class ViewMonitorStatusController extends PageFlowController
 {
     static final long serialVersionUID = 1L;
-
+    
     /**
      * @common:control
      */
@@ -453,9 +453,28 @@ public class ViewMonitorStatusController extends PageFlowController
 	)
     protected Forward reportQueue()
     {
-    	//String url = "http://www.google.com";
-    	String url = "http://tlqaoas/openapi/ReportQueue.aspx";
-        this.getRequest().setAttribute("url", url);
+        try {
+        	if (this.userName == null) {
+       		 java.security.Principal principal = getRequest().getUserPrincipal();
+       	        if (principal != null) 
+       	            this.userName = principal.toString();  
+        	}
+        	
+			String reportParam = this.testSessionStatus.getReportParams(this.userName);
+			StringTokenizer st = new StringTokenizer(reportParam, "|"); 
+			String sys = st.nextToken(); 
+			String parms = st.nextToken(); 
+
+        	String url = "http://tlqaoas/openapi/RequestQueue.aspx";
+            String reportUrl = url + "?sys=" + sys + "&parms="+ parms;
+            
+            //System.out.println("Report Queue URL: " + reportUrl);
+            
+            this.getRequest().setAttribute("url", reportUrl);
+			
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}    
         
         return new Forward("success");
     }
@@ -488,14 +507,14 @@ public class ViewMonitorStatusController extends PageFlowController
 	            out.println(callback + "(");
 	        }
 
-			String result = this.testSessionStatus.authUser(username);
-			StringTokenizer st = new StringTokenizer(result, "|"); 
+			String reportParam = this.testSessionStatus.getReportParams(username);
+			StringTokenizer st = new StringTokenizer(reportParam, "|"); 
 			String sys = st.nextToken(); 
-			String params = st.nextToken(); 
+			String parms = st.nextToken(); 
 			
 	        out.println("{" +
 	                "\"sys\": \"" + sys + "\", " +
-	                "\"params\": \"" + params + "\"}");
+	                "\"parms\": \"" + parms + "\"}");
 
 	        if(callback != null) {
 	          out.println(");");
