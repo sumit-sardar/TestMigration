@@ -435,7 +435,7 @@ public interface TestSessionStatus
      * @throws com.ctb.exception.CTBBusinessException
      */
 	
-    java.lang.String getIndividualReportUrl(java.lang.String userName, java.lang.Integer[] testRosterIds) throws com.ctb.exception.CTBBusinessException;
+    java.lang.String getIndividualReportUrl(java.lang.String userName, java.lang.Integer[] testRosterIds, java.lang.String fileName, java.lang.String fileType, java.lang.String email) throws com.ctb.exception.CTBBusinessException;
     
     /**
      * New method added for CR - GA2011CR001

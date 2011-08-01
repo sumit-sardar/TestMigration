@@ -289,7 +289,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
      * @return String
 	 * @throws com.ctb.exception.CTBBusinessException
      */
-    public String getIndividualReportUrl(String userName, Integer[] testRosterIds) throws CTBBusinessException {
+    public String getIndividualReportUrl(String userName, Integer[] testRosterIds, String fileName, String fileType, String email) throws CTBBusinessException {
         String reportURL = null;
         
         try {
@@ -304,6 +304,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
             String customerKey = null;
             String orgCategoryLevel = null;
             String studentId = "";
+            fileType = "One file for all students".equals(fileType) ? "1" : "2";
             
         	for (int i=0 ; i<testRosterIds.length ; i++) {
             	testRosterId = testRosterIds[i];
@@ -328,12 +329,15 @@ public class TestSessionStatusImpl implements TestSessionStatus
             String encryptedProgramId = DESUtils.encrypt(String.valueOf(programId), systemKey);
             String paramsPlainText = 
                 "Timestamp="+(new Date()).toString()+
+                "&FileName="+fileName+
+                "&FileType="+fileType+
+                "&Email="+email+
                 "&LevelId="+orgCategoryLevel+
                 "&NodeInstanceId="+orgNodeId+
                 "&CurrentTestSessionId="+sessionId+
                 "&CurrentStudentId="+studentId;
             
-            //System.out.println("No encrypted URL: " + reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+paramsPlainText+"&RunReport=1");
+            System.out.println("No encrypted URL: " + reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+paramsPlainText+"&RunReport=1");
             
             String encryptedParams = DESUtils.encrypt(paramsPlainText, customerKey);
             reportURL = reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+encryptedParams+"&RunReport=1";
@@ -344,7 +348,8 @@ public class TestSessionStatusImpl implements TestSessionStatus
             tee.setStackTrace(se.getStackTrace());
             throw tee;
         }
-        //System.out.println("Report URL: " + reportURL);
+        
+        System.out.println("Report URL: " + reportURL);
         return reportURL;
     }
     

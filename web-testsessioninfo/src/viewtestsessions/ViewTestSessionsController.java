@@ -116,7 +116,7 @@ public class ViewTestSessionsController extends PageFlowController
      * @jpf:forward name="sessionViewStatus" path="goto_view_session_monitor_status.do"
      * @jpf:forward name="sessionEdit" path="goto_edit_session_information.do"
      * @jpf:forward name="registerStudent" path="goto_register_student.do"
-     * @jpf:forward name="viewReport" path="goto_view_report.do"
+     * @jpf:forward name="generateReportFile" path="goto_generate_report_file.do"
      * @jpf:forward name="scoringByItem" path="goto_score_by_item.do"
      */
     @Jpf.Action(forwards = { 
@@ -128,8 +128,8 @@ public class ViewTestSessionsController extends PageFlowController
                 	 path = "goto_edit_session_information.do"),                     
         @Jpf.Forward(name = "registerStudent",
                    	 path = "goto_register_student.do"),
-        @Jpf.Forward(name = "viewReport",
-                   	 path = "goto_view_report.do"),
+        @Jpf.Forward(name = "generateReportFile",
+                   	 path = "goto_generate_report_file.do"),
         @Jpf.Forward(name = "scoringByItem",
                      path = "goto_score_by_item.do"),
         @Jpf.Forward(name = "scoringByStudent",
@@ -144,7 +144,7 @@ public class ViewTestSessionsController extends PageFlowController
         if (currentAction.equals("sessionViewStatus") ||
             currentAction.equals("sessionEdit") ||
             currentAction.equals("registerStudent") ||
-            currentAction.equals("viewReport") ||
+            currentAction.equals("generateReportFile") ||
             currentAction.equals("scoringByItem") || 
             currentAction.equals("scoringByStudent")){
             return new Forward(currentAction, form);        	
@@ -279,6 +279,11 @@ public class ViewTestSessionsController extends PageFlowController
         form.setActionElement(ACTION_DEFAULT);   
         
         this.getSession().setAttribute("orgNodePath", this.orgNodePath);
+        
+        if (canRegisterStudent.booleanValue() && (sessionFilterTab.equalsIgnoreCase("CU") || sessionFilterTab.equalsIgnoreCase("PA")))
+        {
+            this.getRequest().setAttribute("showGenerateReportFile", Boolean.TRUE);
+        }
         
         return new Forward("success", form);
     }
@@ -521,7 +526,7 @@ public class ViewTestSessionsController extends PageFlowController
         @Jpf.Forward(name = "success",
                      path = "/viewmonitorstatus/ViewMonitorStatusController.jpf")
     })
-    protected Forward goto_view_report(ViewTestSessionsForm form)
+    protected Forward goto_generate_report_file(ViewTestSessionsForm form)
     {
         String sessionId = form.getSessionId().toString();
         getSession().setAttribute("sessionId", sessionId);

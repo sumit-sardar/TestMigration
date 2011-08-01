@@ -428,7 +428,7 @@ public class ViewMonitorStatusController extends PageFlowController
         		testRosterIds[i] = rosterId;
         	}
     		
-            String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, testRosterIds);    
+            String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, testRosterIds, this.fileName, this.fileType, this.userEmail);    
             
             this.getRequest().setAttribute("reportUrl", reportUrl);
             this.getRequest().setAttribute("testAdminId", String.valueOf(this.sessionId));
