@@ -1470,6 +1470,18 @@ public class SelectStudentPageflowController extends PageFlowController
             User user = this.scheduleTest.getUserDetails(this.userName, this.userName);
             Integer customerId = user.getCustomer().getCustomerId();
             grades =  this.scheduleTest.getGradesForCustomer(this.userName, customerId);
+            
+            // FAKE grades for LasLink, need to configure values in customer_configuration_value table
+            if (customerId.intValue() == 9773) {
+            	grades = new String[6];
+            	grades[0] = "1";
+            	grades[1] = "2-3";
+            	grades[2] = "4-5";
+            	grades[3] = "6-8";
+            	grades[4] = "9-12";
+            	grades[5] = "K";
+            }
+            
         }
         catch (CTBBusinessException be) {
             be.printStackTrace();

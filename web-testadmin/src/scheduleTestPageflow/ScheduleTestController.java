@@ -631,6 +631,12 @@ public class ScheduleTestController extends PageFlowController
             try {
 				prod.setLevels(itemSet.getLevelsForProduct(prod.getProductId()));
 	            prod.setGrades(itemSet.getGradesForProduct(prod.getProductId()));
+	            
+	            // get grades for LasLink
+	            if (isLasLinkProduct(prod.getProductType())) {
+		            prod.setGrades(itemSet.getLevelsForProduct(prod.getProductId()));
+	            }
+	            
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -928,7 +934,6 @@ public class ScheduleTestController extends PageFlowController
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
@@ -970,11 +975,18 @@ public class ScheduleTestController extends PageFlowController
                         TestElement te = tes[j];
                         if (te.getItemSetId().intValue() == testId.intValue())
                         {
-                            if (te.getGrade() != null)
-                            {
-                                form.setSelectedGrade(te.getGrade());
-                                return Boolean.TRUE;                                
-                            }
+                        	if (isLasLinkProduct(tp.getProductType())) {
+	                            if (te.getItemSetLevel() != null) {
+	                                form.setSelectedGrade(te.getItemSetLevel());
+	                                return Boolean.TRUE;                                
+	                            }
+                        	}
+                        	else {
+	                            if (te.getGrade() != null) {
+	                                form.setSelectedGrade(te.getGrade());
+	                                return Boolean.TRUE;                                
+	                            }
+                        	}
                         }
                     }
                 }
@@ -985,6 +997,10 @@ public class ScheduleTestController extends PageFlowController
     }
     
 
+    private boolean isLasLinkProduct(String productType) {
+    	return "LL".equals(productType);
+    }
+    
     private boolean isOffGradeTestingContainStudents(TestProduct tp, TestElementData ted, Integer testId) 
     {
         if (tp.getOffGradeTestingDisabled().equals("T") && (this.selectedStudents != null) && (this.selectedStudents.size() > 0))
