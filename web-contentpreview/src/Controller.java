@@ -1112,9 +1112,8 @@ public class Controller extends PageFlowController
             QAReviewMessage = null;       
             String folder = getRequest().getParameter( "state1" );
             String testName = getRequest().getParameter( "testname1" );
-            EditorReview.sendToCQA( editorReviewFile, testName, folder
-                       //         , "dagobah.mhe.mhc", "oasuser", "oasuser123", "https://dagobah.mhe.mhc/" );
-                                    , "geonosis.mhe.mhc", "oasuser", "oasuser123" );
+            EditorReview.sendToCQA( editorReviewFile, testName, folder, "nj09mhe5338.mhe.mhc", "oasuser", "oasuser123" );
+            EditorReview.sendToCQA( editorReviewFile, testName, folder, "nj09mhe5339.mhe.mhc", "oasuser", "oasuser123" );
             QAReviewMessage = "QA is updated.";
             getRequest().setAttribute( "testTitle", this.assessmentTitle );
             System.gc();
