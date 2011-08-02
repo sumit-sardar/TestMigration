@@ -235,7 +235,7 @@ public class CreateFile {
 			ffWriter.close();
 			System.out.println("Export file successfully generated:["+fileName+"]");
 			orderFile.setDataFileName(EmetricUtil.truncate(fileName,
-					new Integer(100)).substring(1, fileName.length()));
+					new Integer(100)).substring(0, fileName.length()));
 			System.out.println("Completed Writing");
 			System.out.println("Preparing Order File");
 			prepareOrderFile(orderFile, localFilePath, fileName);
