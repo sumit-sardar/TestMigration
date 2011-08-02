@@ -103,6 +103,7 @@ public class SelectStudentPageflowController extends PageFlowController
     public List dupStudentList = null;
     public List pageDuplicateStudentList = null;     
     public Boolean offGradeTestingDisabled = Boolean.FALSE;
+    public Boolean blockOffGradeTesting = Boolean.FALSE;
 
     private String userName;    
     private List orgNodePath = null;
@@ -217,11 +218,16 @@ public class SelectStudentPageflowController extends PageFlowController
     {
         ScheduleTestController parentPageFlow = (ScheduleTestController)PageFlowUtils.getNestingPageFlow(getRequest());
         this.offGradeTestingDisabled = parentPageFlow.condition.getOffGradeTestingDisabled();
-      
+        this.blockOffGradeTesting = this.offGradeTestingDisabled;
+        
         if (this.offGradeTestingDisabled.booleanValue())
         {
-            this.selectedGrade = form.getSelectedGrade();            
+            this.selectedGrade = form.getSelectedGrade();   
             List gradeList = parentPageFlow.getGradeList();
+            if (parentPageFlow.isLaslinkCustomer()) {
+                gradeList = getCustomGrade(this.selectedGrade);
+                this.offGradeTestingDisabled = Boolean.FALSE; 
+            }
             this.gradeOptions = (String [])gradeList.toArray(new String[0]);
         }
         else
@@ -229,6 +235,29 @@ public class SelectStudentPageflowController extends PageFlowController
             this.selectedGrade = FilterSortPageUtils.FILTERTYPE_SHOWALL;        
             form.setSelectedGrade(this.selectedGrade);
         }
+        
+    }
+    
+    private List getCustomGrade(String selectedGrade)
+    {
+    	ArrayList list = new ArrayList();
+    	list.add(selectedGrade);
+
+    	if (selectedGrade.indexOf("-") < 0) {
+        	return list;
+        }
+        
+		StringTokenizer st = new StringTokenizer(selectedGrade, "-"); 
+        String start = st.nextToken();
+        String end = st.nextToken();
+        
+        int startNum = new Integer(start).intValue();
+        int endNum = new Integer(end).intValue();
+        
+        for (int i=startNum ; i<=endNum ; i++) {
+        	list.add(new Integer(i).toString());
+        }
+        return list;
     }
     
     /**
@@ -421,15 +450,14 @@ public class SelectStudentPageflowController extends PageFlowController
         if (this.selectedGrade != null && !this.selectedGrade.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
         {
             ScheduleTestController parentPageFlow = (ScheduleTestController)PageFlowUtils.getNestingPageFlow(getRequest());
-            boolean laslinkCustomer = parentPageFlow.isIslaslinkCustomer();
+            boolean laslinkCustomer = parentPageFlow.isLaslinkCustomer();
             if (laslinkCustomer && (this.selectedGrade.indexOf("-") > 0)) {
-    			StringTokenizer st = new StringTokenizer(this.selectedGrade, "-"); 
-	            String [] arg1 = new String[1];
-	            arg1[0] = st.nextToken();
-	            filters.add(new FilterParam("StudentGrade", arg1, FilterType.EQUALS));            	
-	            String [] arg2 = new String[1];
-	            arg2[0] = st.nextToken();
-	            filters.add(new FilterParam("StudentGrade", arg2, FilterType.EQUALS));            	
+                List grades = getCustomGrade(this.selectedGrade);
+                for (int i=1 ; i<grades.size() ; i++) {
+    	            String [] arg = new String[1];
+    	            arg[0] = (String)grades.get(i);
+    	            filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));            	                	
+                }
             }
             else {
 	            String [] arg = new String[1];
@@ -1483,18 +1511,6 @@ public class SelectStudentPageflowController extends PageFlowController
             User user = this.scheduleTest.getUserDetails(this.userName, this.userName);
             Integer customerId = user.getCustomer().getCustomerId();
             grades =  this.scheduleTest.getGradesForCustomer(this.userName, customerId);
-            
-            // FAKE grades for LasLink, need to configure values in customer_configuration_value table
-            if (customerId.intValue() == 9773) {
-            	grades = new String[6];
-            	grades[0] = "1";
-            	grades[1] = "2-3";
-            	grades[2] = "4-5";
-            	grades[3] = "6-8";
-            	grades[4] = "9-12";
-            	grades[5] = "K";
-            }
-            
         }
         catch (CTBBusinessException be) {
             be.printStackTrace();
@@ -1770,6 +1786,10 @@ public class SelectStudentPageflowController extends PageFlowController
 		return offGradeTestingDisabled;
 	}
 
+	public Boolean getBlockOffGradeTesting() {
+		return blockOffGradeTesting;
+	}
+	
 	public String getLicenseBarColor() {
 		return licenseBarColor;
 	}

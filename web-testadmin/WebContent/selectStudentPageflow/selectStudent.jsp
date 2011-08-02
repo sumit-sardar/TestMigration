@@ -79,6 +79,7 @@
 
 			<netui-data:getData resultId="showAccommodations" value="${actionForm.showAccommodations}" />
 			<netui-data:getData resultId="offGradeTestingDisabled" value="${pageFlow.offGradeTestingDisabled}" />
+			<netui-data:getData resultId="blockOffGradeTesting" value="${pageFlow.blockOffGradeTesting}" />
 			<netui-data:getData resultId="displayLicenseBar" value="${sessionScope.displayLicenseBar}" />
 			<netui-data:getData resultId="licensebarColor" value="${pageFlow.licenseBarColor}" />
 
@@ -245,10 +246,16 @@
 						<td class="transparent" style="vertical-align: top" width="40%"><img
 							src="/TestAdministrationWeb/resources/images/legacy/step1_off.gif" border="0" height="15" width="15">&nbsp;
 						<b><netui:span value="${bundle.web['selectstudents.filter.title']}" /></b>
-						<p><netui:span value="${bundle.web['selectstudents.filter.introtext']}" /> <c:if
+						<p><netui:span value="${bundle.web['selectstudents.filter.introtext']}" /> 
+						<c:if
 							test="${offGradeTestingDisabled}">
 							<netui:span value="${bundle.web['selectstudents.selectStudents.gradePreselected']}" />
-						</c:if></p>
+						</c:if>
+						<c:if
+							test="${blockOffGradeTesting}">
+							<netui:span value="${bundle.web['selectstudents.selectStudents.gradePreselected']}" />
+						</c:if>
+						</p>
 						<table class="sortable">
 							<tr class="sortableControls">
 

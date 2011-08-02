@@ -213,21 +213,21 @@ public class ScheduleTestController extends PageFlowController
     
     // LLO- 118 - Change for Ematrix UI
 	private boolean isTopLevelUser = false;
-	private boolean islaslinkCustomer = false;
+	private boolean laslinkCustomer = false;
     
     
     /**
 	 * @return the islaslinkCustomer
 	 */
-	public boolean isIslaslinkCustomer() {
-		return islaslinkCustomer;
+	public boolean isLaslinkCustomer() {
+		return laslinkCustomer;
 	}
 
 	/**
 	 * @param islaslinkCustomer the islaslinkCustomer to set
 	 */
-	public void setIslaslinkCustomer(boolean islaslinkCustomer) {
-		this.islaslinkCustomer = islaslinkCustomer;
+	public void setIslaslinkCustomer(boolean laslinkCustomer) {
+		this.laslinkCustomer = laslinkCustomer;
 	}
 
 	public String [] getFormOptions() {
@@ -925,7 +925,7 @@ public class ScheduleTestController extends PageFlowController
 		boolean isUserTopLevel = false;
 		boolean isLaslinkUserTopLevel = false;
 		boolean isLaslinkUser = false;
-		isLaslinkUser = this.islaslinkCustomer;
+		isLaslinkUser = this.laslinkCustomer;
 		try {
 			if(isLaslinkUser) {
 				isUserTopLevel = orgnode.checkTopOrgNodeUser(this.userName);	
