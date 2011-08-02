@@ -217,7 +217,7 @@ public class FileGenerator {
 		String localFilePath = Configuration.getLocalFilePath();
 		String  formatedDate = fileDateOutputFormat.format(new Date()) ;
 		
-		String dataFileName = customerState + "_" + testDate + "_"
+		String dataFileName = customerState + "_" + testDate.substring(0,6) + "_"
 		+ customerId + "_" + orderFile.getOrgTestingProgram() + "_"
 		+ orderFile.getCustomerName().trim() + "_" + group + "_"
 		+ DATAFILE + "_" + formatedDate	+ ".dat";
