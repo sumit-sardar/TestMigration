@@ -138,6 +138,9 @@ public class OrderFile {
 	 * @param testDate the testDate to set
 	 */
 	public void setTestDate(String testDate) {
+		if(testDate.length()>6){
+			testDate = testDate.substring(0,6);
+		}
 		testDate=String.format("%6s", testDate).replace(' ', '0');
 		this.testDate = testDate;
 	}
