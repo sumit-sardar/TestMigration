@@ -218,7 +218,7 @@ public class CreateFile {
 		OrderFile orderFile = new OrderFile();
 		List<Tfil> myList = createList(orderFile);
 		String localFilePath = ExtractUtil.getDetail("oas.exportdata.filepath");
-		String fileName = customerState + "_" + testDate + "_" 
+		String fileName = customerState + "_" + testDate.substring(0,6) + "_" 
 		+ customerId + "_" + orderFile.getOrgTestingProgram() + "_"
 		+ orderFile.getCustomerName().trim() + "_" + group + "_"
 		+ DATAFILE + "_" + fileDateOutputFormat.format(new Date())
