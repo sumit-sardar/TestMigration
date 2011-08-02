@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="remoteservlet/src"/>
+	<classpathentry kind="src" path="etc"/>
 	<classpathentry kind="src" path="localservlet/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/lib/servlet-api.jar"/>
@@ -30,7 +31,6 @@
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/speech.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/uuid-3.2.0.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/xbean.jar"/>
 	<classpathentry exported="true" kind="lib" path="remoteservlet/generated"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/coherence.jar"/>
 	<classpathentry kind="output" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/classes"/>

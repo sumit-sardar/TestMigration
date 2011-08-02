@@ -15,8 +15,10 @@ public class NoSQLStorageFactory {
 	private static ADSNoSQLSink adsSink;
 	
 	{
-		ResourceBundle rb = ResourceBundle.getBundle("storage");
-		nosqlstore = rb.getString("storage.nosql.store");
+		synchronized(NoSQLStorageFactory.class) {
+			ResourceBundle rb = ResourceBundle.getBundle("storage");
+			nosqlstore = rb.getString("storage.nosql.store");
+		}
 	}
 	
 	public static OASNoSQLSource getOASSource() {
@@ -29,6 +31,7 @@ public class NoSQLStorageFactory {
 				oasSource = new OASHectorSource();
 			} else {
 				// default to Cassandra
+				System.out.println("*****  Using OASHectorSource");
 				oasSource = new OASHectorSource();
 			}
 		}
@@ -45,6 +48,7 @@ public class NoSQLStorageFactory {
 				oasSink = new OASHectorSink();
 			} else {
 				// default to Cassandra
+				System.out.println("*****  Using OASHectorSink");
 				oasSink = new OASHectorSink();
 			}
 		}

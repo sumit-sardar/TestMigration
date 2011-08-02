@@ -2,6 +2,8 @@ package com.ctb.tms.rdb;
 
 import java.util.ResourceBundle;
 
+import com.ctb.tms.nosql.NoSQLStorageFactory;
+
 public class RDBStorageFactory {
 
 	private static final String ORACLE = "ORACLE";
@@ -21,13 +23,15 @@ public class RDBStorageFactory {
 	private static ADSRDBSink adsSink;
 	
 	static {
-		ResourceBundle rb = ResourceBundle.getBundle("storage");
-		oassource = rb.getString("storage.rdb.source");
-		oassink = rb.getString("storage.rdb.sink");
-		adssource = rb.getString("storage.rdb.source");
-		adssink = rb.getString("storage.rdb.sink");
-		
-		copytosink = rb.getString("storage.rdb.copytosink");
+		synchronized(RDBStorageFactory.class) {
+			ResourceBundle rb = ResourceBundle.getBundle("storage");
+			oassource = rb.getString("storage.rdb.source");
+			oassink = rb.getString("storage.rdb.sink");
+			adssource = rb.getString("storage.rdb.source");
+			adssink = rb.getString("storage.rdb.sink");
+			
+			copytosink = rb.getString("storage.rdb.copytosink");
+		}
 	}
 	
 	public static OASRDBSource getOASSource() {
