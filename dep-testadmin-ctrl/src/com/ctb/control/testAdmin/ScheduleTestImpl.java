@@ -796,6 +796,7 @@ public class ScheduleTestImpl implements ScheduleTest
 		String filterString=" ";
 		boolean isWhereAdded= false;
 		boolean isAndAdd= true;
+		int gradeCount = 0;
 		
 		
 		ArrayList <String> list = new ArrayList<String>();
@@ -815,6 +816,7 @@ public class ScheduleTestImpl implements ScheduleTest
             	
             	if (param.getField().equalsIgnoreCase("StudentGrade")){
             		list.add(" grade "+ operation +" '"+(param.getArgument())[0]+"' ");
+            		gradeCount++;
             	}else if (param.getField().equalsIgnoreCase("Calculator")){
             		list.add(" calculator "+ operation +" '"+(param.getArgument())[0]+"' ");
             	}else if (param.getField().equalsIgnoreCase("HasColorFontAccommodations")){
@@ -834,6 +836,24 @@ public class ScheduleTestImpl implements ScheduleTest
                 throw ife;
             }
         }
+		
+		if (gradeCount > 1) {
+			String value = "(";
+			for (int i=list.size()-1 ; i>=0 ; i--) {
+				String val = list.get(i);
+				int index = val.indexOf("grade");
+				if (index >= 0) {
+					value += val;
+					gradeCount--;
+					if (gradeCount >= 1) {
+						value += " or ";
+					}
+					list.remove(i);
+				}
+			}
+			value += ")";
+			list.add(value);			
+		}
 		
 		for( String val : list){
 			if (!isWhereAdded){

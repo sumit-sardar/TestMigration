@@ -420,9 +420,22 @@ public class SelectStudentPageflowController extends PageFlowController
         filters = new ArrayList();
         if (this.selectedGrade != null && !this.selectedGrade.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
         {
-            String [] arg = new String[1];
-            arg[0] = this.selectedGrade;
-            filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));
+            ScheduleTestController parentPageFlow = (ScheduleTestController)PageFlowUtils.getNestingPageFlow(getRequest());
+            boolean laslinkCustomer = parentPageFlow.isIslaslinkCustomer();
+            if (laslinkCustomer && (this.selectedGrade.indexOf("-") > 0)) {
+    			StringTokenizer st = new StringTokenizer(this.selectedGrade, "-"); 
+	            String [] arg1 = new String[1];
+	            arg1[0] = st.nextToken();
+	            filters.add(new FilterParam("StudentGrade", arg1, FilterType.EQUALS));            	
+	            String [] arg2 = new String[1];
+	            arg2[0] = st.nextToken();
+	            filters.add(new FilterParam("StudentGrade", arg2, FilterType.EQUALS));            	
+            }
+            else {
+	            String [] arg = new String[1];
+	            arg[0] = this.selectedGrade;
+	            filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));
+            }            
         }
         if (this.selectedFormOperand != null && this.selectedFormOperand.equals(FilterSortPageUtils.STUDENTS_WITH_ACCOMMODATIONS))
         {
