@@ -214,9 +214,24 @@ public class ScheduleTestController extends PageFlowController
     // LLO- 118 - Change for Ematrix UI
 	private boolean isTopLevelUser = false;
 	private boolean laslinkCustomer = false;
+	 private String itemSetLevel;
     
     
     /**
+	 * @return the itemSetLevel
+	 */
+	public String getItemSetLevel() {
+		return itemSetLevel;
+	}
+
+	/**
+	 * @param itemSetLevel the itemSetLevel to set
+	 */
+	public void setItemSetLevel(String itemSetLevel) {
+		this.itemSetLevel = itemSetLevel;
+	}
+
+	/**
 	 * @return the islaslinkCustomer
 	 */
 	public boolean isLaslinkCustomer() {
@@ -977,6 +992,7 @@ public class ScheduleTestController extends PageFlowController
                         {
                         	if (isLasLinkProduct(tp.getProductType())) {
 	                            if (te.getItemSetLevel() != null) {
+	                            	this.setItemSetLevel(te.getItemSetLevel());
 	                                form.setSelectedGrade(te.getItemSetLevel());
 	                                return Boolean.TRUE;                                
 	                            }
@@ -1615,6 +1631,10 @@ public class ScheduleTestController extends PageFlowController
         { // when schedule/edit test
         
             
+        	if(this.laslinkCustomer && this.getItemSetLevel() != null){
+        		 form.setSelectedGrade(this.getItemSetLevel());
+        	}
+        	
             TestVO selectedTest = getTestById(this.getSelectedTestId());
             if (form.getTestAdmin().getSessionName() == null || form.getTestAdmin().getSessionName().trim().equals(""))
             {

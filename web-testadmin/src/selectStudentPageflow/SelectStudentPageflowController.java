@@ -226,7 +226,7 @@ public class SelectStudentPageflowController extends PageFlowController
             List gradeList = parentPageFlow.getGradeList();
             if (parentPageFlow.isLaslinkCustomer()) {
                 gradeList = getCustomGrade(this.selectedGrade);
-                this.offGradeTestingDisabled = Boolean.FALSE; 
+              this.offGradeTestingDisabled = Boolean.FALSE; 
             }
             this.gradeOptions = (String [])gradeList.toArray(new String[0]);
         }
@@ -310,10 +310,14 @@ public class SelectStudentPageflowController extends PageFlowController
         }
         if (currentAction.equals(ACTION_CLEAR))
         {
-            if (! this.offGradeTestingDisabled.booleanValue())
-            {            
-                this.selectedGrade = FilterSortPageUtils.FILTERTYPE_SHOWALL;
-                form.setSelectedGrade(this.selectedGrade);            
+        	
+            if (! this.offGradeTestingDisabled.booleanValue()) { 
+            	if (!this.blockOffGradeTesting)   {          
+            		this.selectedGrade = FilterSortPageUtils.FILTERTYPE_SHOWALL;
+            		form.setSelectedGrade(this.selectedGrade);  
+            	} else {
+            		form.setSelectedGrade(this.gradeOptions[0]);
+            	}
             }
             this.selectedFormOperand = FilterSortPageUtils.STUDENTS_WITH_AND_WITHOUT_ACCOMMODATIONS;
             form.setAccommodationOperand(this.selectedFormOperand);
