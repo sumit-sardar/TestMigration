@@ -4,6 +4,8 @@ import com.bea.control.*;
 import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
 import com.ctb.bean.testAdmin.TestProduct; 
+import com.ctb.bean.testAdmin.UserParentProductResource;
+
 import java.sql.SQLException; 
 import org.apache.beehive.controls.api.bean.ControlExtension;
 
@@ -190,6 +192,48 @@ TestProduct [] getTestCatalogForUser(String userName) throws SQLException;
      */
     @JdbcControl.SQL(statement = "select distinct  prod.product_id as productId,  prod.product_name as productName,  prod.version as version,  prod.product_description as productDescription,  prod.created_by as createdBy,  prod.created_date_time as createdDateTime,  prod.updated_by as updatedBy,  prod.updated_date_time as updatedDateTime,  prod.activation_status as activationStatus,  prod.product_type as productType,  prod.scoring_item_set_level as scoringItemSetLevel,  prod.preview_item_set_level as previewItemSetLevel,  prod.parent_product_id as parentProductId,  prod.ext_product_id as extProductId,  prod.content_area_level as contentAreaLevel,  prod.internal_display_name as internalDisplayName,  prod.sec_scoring_item_set_level as secScoringItemSetLevel,  prod.ibs_show_cms_id as ibsShowCmsId,  prod.printable as printable,  prod.scannable as scannable,  prod.keyenterable as keyenterable,  prod.branding_type_code as brandingTypeCode,  prod.acknowledgments_url as acknowledgmentsURL,  prod.show_student_feedback as showStudentFeedback,  prod.static_manifest as staticManifest,  prod.session_manifest as sessionManifest,  prod.subtests_selectable as subtestsSelectable,  prod.subtests_orderable as subtestsOrderable,  prod.subtests_levels_vary as subtestsLevelsVary,  prod.off_grade_testing_disabled as offGradeTestingDisabled from  product prod where  prod.product_id  = {testProductId}", arrayMaxLength = 100000)
     TestProduct getProduct(Integer testProductId) throws SQLException;
+    
+    
+    /**
+     * @jc:sql statement::
+     * select distinct 
+     * 		product.product_id as productId, 
+     * 		product.product_description as productDescription, 
+     * 		pr.resource_type_code as resourceTypeCode, 
+     * 		pr.resource_uri as resourceURI 
+     * from 
+     * 		product, 
+     * 		product_resource pr 
+     * where 
+     * 		product.product_id = pr.product_id 
+     * 		and pr.resource_type_code = {resourceTypeCode} 
+     * 		and product.product_id in ( 
+     * 		select distinct 
+     * 			parent_product_id 
+     * 		from 
+     * 			product 
+     * 		where product_id in (
+     * 			select distinct 
+     * 				prod.product_id as productId 
+     * 			from 
+     * 				product prod, 
+     * 				test_catalog cat, 
+     * 				org_node_test_catalog ontc, 
+     * 				user_role urole, 
+     * 				users 
+     * 			where 
+     * 				prod.activation_status = 'AC' 
+     * 				and prod.product_id = cat.product_id 
+     * 				and cat.activation_status = 'AC' 
+     * 				and cat.test_catalog_id = ontc.test_catalog_id 
+     * 				and ontc.activation_status = 'AC' 
+     * 				and urole.org_node_id = ontc.org_node_id 
+     * 				and urole.activation_status = 'AC' 
+     * 				and users.user_id = urole.user_id 
+     * 				and users.user_name = {userName}))
+     */
+    @JdbcControl.SQL(statement = "select distinct product.product_id as productId, product.product_description as productDescription, pr.resource_type_code as resourceTypeCode, pr.resource_uri as resourceURI from product, product_resource pr where product.product_id = pr.product_id and pr.resource_type_code = {resourceTypeCode} and product.product_id in ( select distinct parent_product_id from product where product_id in (select distinct prod.product_id as productId from product prod, test_catalog cat, org_node_test_catalog ontc, user_role urole, users where prod.activation_status = 'AC' and prod.product_id = cat.product_id and cat.activation_status = 'AC' and cat.test_catalog_id = ontc.test_catalog_id and ontc.activation_status = 'AC' and urole.org_node_id = ontc.org_node_id and urole.activation_status = 'AC' and users.user_id = urole.user_id and users.user_name = {userName}))")
+    UserParentProductResource[] getParentProductListForUser(String userName, String resourceTypeCode) throws SQLException;
 
 
     static final long serialVersionUID = 1L;

@@ -11,6 +11,8 @@ import javax.naming.InitialContext;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 
+import weblogic.logging.NonCatalogLogger;
+
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
@@ -48,10 +50,12 @@ import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
+import com.ctb.bean.testAdmin.UserParentProductResource;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.CustomerConfigurationDataNotFoundException;
 import com.ctb.exception.testAdmin.CustomerReportDataNotFoundException;
 import com.ctb.exception.testAdmin.OrgNodeDataNotFoundException;
+import com.ctb.exception.testAdmin.ProductDataNotFoundException;
 import com.ctb.exception.testAdmin.RosterDataNotFoundException;
 import com.ctb.exception.testAdmin.StudentSessionStatusNotFoundException;
 import com.ctb.exception.testAdmin.TestAdminDataNotFoundException;
@@ -61,6 +65,7 @@ import com.ctb.exception.testAdmin.UserProgramsNotFoundException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.util.DESUtils;
 import com.ctb.util.DateUtils;
+import com.ctb.util.OASLogger;
 import com.ctb.util.SQLutils;
 import com.ctb.util.testAdmin.TestAdminStatusComputer;
 import com.ctb.control.jms.QueueSend;
@@ -1887,5 +1892,59 @@ public class TestSessionStatusImpl implements TestSessionStatus
          }
      }
    
-    
+     // Change for OAS – Alternate URL - Part I-TAS
+     /**
+      *  Alternate URL -Download Installer
+      * Each CustomerTestResource
+      * object contains a list of all CustomerTestResource.
+ 	  * @param userName - identifies the user
+ 	  * @param resourceTypeCode - identifies the resource(OS) type code
+      * @return String (Uri of corresponding product and OS)
+ 	  * @throws com.ctb.exception.CTBBusinessException
+      * @common:operation
+      */
+     public String getParentResourceUriForUser(String userName, String resourceTypeCode) 
+     		throws CTBBusinessException {
+    	 
+    	 NonCatalogLogger logger =OASLogger.getLogger(this.getClass().getName());
+    	 logger.info("Entering getParentResourceUriForUser()");
+    	 String uri = "";
+    	 String productType = "";   	 
+    	 // In future if new parent products are added, then add here in this array also.
+    	 String[] priorityArray = {"ISTEP", "GA-CRCT", "LLEAB", "TerraNova", "TABE"}; // Product list.
+    	 int newOrder = 0;
+    	 int oldOrder = priorityArray.length;
+    	 try {    		
+    		 UserParentProductResource[] ppResourceList = product.getParentProductListForUser(userName, resourceTypeCode);
+    		 if (ppResourceList != null) {
+				if (ppResourceList.length == 1)
+					uri = ppResourceList[0].getResourceURI();
+				else { // For a customer having more than one product
+					for (int i = 0; i < ppResourceList.length; i++) {
+						productType = ppResourceList[i].getProductDescription();
+						for (int j = 0; j < priorityArray.length; j++) {
+							if (productType != null && productType.startsWith(priorityArray[j])) {
+								newOrder = j;
+								break;
+							}
+						}
+						if (newOrder < oldOrder) {
+							oldOrder = newOrder;
+							uri = ppResourceList[i].getResourceURI();
+						}
+					}
+				}
+			}
+    	 } catch (SQLException se) {
+             ProductDataNotFoundException rde = new ProductDataNotFoundException("TestSessionStatusImpl: getParentResourceUriForUser: " + se.getMessage());
+             rde.setStackTrace(se.getStackTrace());
+             throw rde;  
+         }
+    	 catch (Exception se) {
+    		 CTBBusinessException rde = new CTBBusinessException("TestSessionStatusImpl: getParentResourceUriForUser: " + se.getMessage());
+             rde.setStackTrace(se.getStackTrace());
+             throw rde;   		 
+    	 }
+    	 return uri;
+     }
 } 

@@ -467,4 +467,13 @@ public interface TestSessionStatus
      */
     java.lang.String getReportParams(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
     
+    
+    
+    /**   
+     * @param userName
+     * @param resourceTypeCode
+     * @throws com.ctb.exception.CTBBusinessException
+     */
+    String getParentResourceUriForUser(java.lang.String userName, java.lang.String resourceTypeCode) throws com.ctb.exception.CTBBusinessException;
+    
 } 
