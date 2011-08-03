@@ -756,6 +756,18 @@ public class ManageStudentController extends PageFlowController
 				form.setMandatoryStudentId(isMandatoryStudentId);
 				form.setLasLinkCustomer(isLasLinkCustomer);   //(LLO82) StudentManagement Changes For LasLink product
 				boolean result = form.verifyStudentInformation(this.selectedOrgNodes);
+				//START-  TABE-BAUM 060: Unique Student ID
+				if(result){
+					if (isValidationForUniqueStudentIDRequired(form)) {
+						result = validateUniqueStudentId(isCreateNew, form);
+						if (!result) {
+							form.setMessage(Message.VALIDATE_STUDENT_ID_TITLE,
+									Message.STUDENT_ID_UNUNIQUE_ERROR, Message.ERROR);
+						}
+
+					}
+				}
+				// END- TABE-BAUM 060: Unique Student ID
 				if (! result)
 				{           
 					form.setActionElement(ACTION_DEFAULT);
@@ -814,6 +826,61 @@ public class ManageStudentController extends PageFlowController
 			this.savedForm = form.createClone();    
 		}
 		return new Forward("success");
+	}
+
+	
+	/*
+	 * Added for TABE-BAUM 060: Unique Student ID. 
+	 * This method validate unique student ID. 
+	 * @param isCreateNew boolean new student
+	 * @param form RegistrationForm
+	 * @return boolean isStudentIdUnique
+	 */
+	private boolean validateUniqueStudentId(boolean isCreateNew,
+			ManageStudentForm form) {
+		
+		boolean isStudentIdUnique = false;
+		try {
+			isStudentIdUnique = this.studentManagement.validateUniqueStudentId(
+					isCreateNew, customerId, form.getSelectedStudentId(), form
+							.getStudentProfile().getStudentNumber());
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+		return isStudentIdUnique;
+	}
+
+
+	/*
+	 * Added for TABE-BAUM 060: Unique Student ID. 
+	 * This method checks unique student ID validation is required or not. 
+	 * @param form RegistrationForm
+	 * @return true if Student ID is unique
+	 */
+	private boolean isValidationForUniqueStudentIDRequired(
+			ManageStudentForm form) {
+		
+		boolean validateUniqueStudentID = false;
+		if (form.getStudentProfile().getStudentNumber() == null
+				|| form.getStudentProfile().getStudentNumber().trim().length() == 0) {
+			return false;
+		}
+		if (this.customerConfigurations != null) {
+			for (CustomerConfiguration customerConfiguration : customerConfigurations) {
+				if (customerConfiguration.getCustomerConfigurationName().trim()
+						.equalsIgnoreCase("Unique_Student_ID")) {
+					if (customerConfiguration.getDefaultValue() != null
+							&& customerConfiguration.getDefaultValue().trim()
+									.equalsIgnoreCase("T")) {
+						validateUniqueStudentID = true;
+						break;
+					}
+				}
+
+			}
+		}
+		
+		return validateUniqueStudentID;
 	}
 
 	/**

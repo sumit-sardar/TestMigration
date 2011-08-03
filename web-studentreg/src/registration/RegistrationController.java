@@ -621,6 +621,13 @@ public class RegistrationController extends PageFlowController
         //GACRCT2010CR007- set value for disableMandatoryBirthdate in  form.
         form.setDisableMandatoryBirthdate(disableMandatoryBirthdate);
         boolean result = form.verifyStudentInformation(studentProfile, selectedOrgNodeId);
+        
+        //START-  TABE-BAUM 060: Unique Student ID
+        if (result){
+        	result = validateUniqueStudentID(form);
+        }
+        //END- TABE-BAUM 060: Unique Student ID
+        
         if (! result)
         {           
             form.setActionElement(ACTION_DEFAULT);
@@ -828,7 +835,29 @@ public class RegistrationController extends PageFlowController
         return inSession;
     }
 
+//
+    /*
+	 *  Added for TABE-BAUM 060: Unique Student ID. This method validated the
+	 *  unique student id for a customer.
+	 *  @param form RegistrationForm
+	 *  @return true if Student ID is unique
+	 */
+	private boolean validateUniqueStudentID(RegistrationForm form) {
+		boolean isUniqueStudentId = true;
 
+		// form.validateValues();
+		if (isValidationForUniqueStudentIDRequired(form)) {
+			if (!validateUniqueStudentId(true, form)) {
+				form.setMessage(Message.VALIDATE_STUDENT_ID_TITLE,
+						Message.STUDENT_ID_UNUNIQUE_ERROR, Message.ERROR);
+				form.setActionElement(ACTION_DEFAULT);
+				form.setCurrentAction(ACTION_DEFAULT);
+				isUniqueStudentId = false;
+			}
+		} 
+		return isUniqueStudentId;
+	}
+    
     private void handleAddStudent(RegistrationForm form) 
     {
         form.validateValues();
@@ -880,7 +909,57 @@ public class RegistrationController extends PageFlowController
     
     
 
-            
+    /*
+	 * Added for TABE-BAUM 060: Unique Student ID. 
+	 * This method validate unique student ID. 
+	 * @param isCreateNew boolean new student
+	 * @param form RegistrationForm
+	 * @return boolean isStudentIdUnique
+	 */
+	private boolean validateUniqueStudentId(boolean isCreateNew,
+			RegistrationForm form) {
+		boolean isStudentIdUnique = false;
+		try {
+			isStudentIdUnique = this.studentManagement.validateUniqueStudentId(
+					isCreateNew, customerId, form.getSelectedStudentId(), form
+							.getStudentProfile().getStudentNumber());
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+		return isStudentIdUnique;
+	}
+
+
+	/*
+	 * Added for TABE-BAUM 060: Unique Student ID. 
+	 * This method checks unique student ID validation is required or not. 
+	 * @param form RegistrationForm
+	 * @return true if Student ID is unique
+	 */
+	private boolean isValidationForUniqueStudentIDRequired(RegistrationForm form) {
+		boolean validateUniqueStudentID = false;
+		if (form.getStudentProfile() == null
+				|| form.getStudentProfile().getStudentNumber() == null
+				|| form.getStudentProfile().getStudentNumber().trim().length() == 0) {
+			return false;
+		} else if (this.customerConfigurations != null) {
+			for (CustomerConfiguration customerConfiguration : customerConfigurations) {
+				if (customerConfiguration.getCustomerConfigurationName().trim()
+						.equalsIgnoreCase("Unique_Student_ID")) {
+					if (customerConfiguration.getDefaultValue() != null
+							&& customerConfiguration.getDefaultValue().trim()
+									.equalsIgnoreCase("T")) {
+						validateUniqueStudentID = true;
+						break;
+					}
+				}
+
+			}
+		}
+
+		return validateUniqueStudentID;
+	}
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** MODIFY TEST ************* /////////////////////////////    
 /////////////////////////////////////////////////////////////////////////////////////////////    
@@ -1086,6 +1165,18 @@ public class RegistrationController extends PageFlowController
     {
         try
         {
+        	//START- TABE-BAUM 060: Unique Student ID
+            if ( this.savedForm.getSelectedStudentId() == null)
+            {
+            	if (!validateUniqueStudentID(savedForm)){
+            		this.savedForm.setMessage(Message.VALIDATE_STUDENT_ID_TITLE, Message.STUDENT_ID_UNUNIQUE_ERROR_AT_SAVE, Message.ERROR);	
+            		this.savedForm.setActionElement(ACTION_DEFAULT);
+            		this.savedForm.setCurrentAction(ACTION_DEFAULT);                 
+					return new Forward("error", this.savedForm);
+            	}
+            }
+          //END- TABE-BAUM 060: Unique Student ID 
+            
             this.studentOrgId = this.studentOrgNodes[0].getOrgNodeId();
             String orgNodeName = form.getSelectedOrgNodeName();
             if ((orgNodeName != null) && (this.orgNodeNames.size() > 1))

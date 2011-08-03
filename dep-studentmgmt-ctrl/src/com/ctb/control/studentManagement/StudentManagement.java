@@ -490,6 +490,9 @@ public interface StudentManagement
     
     //Added for TABE-BAUM 028
     String hasMultipleAccessCode(int testAdminId) throws com.ctb.exception.CTBBusinessException;
+   
+   //Added for TABE-BAUM 060: Unique Student ID
+	boolean validateUniqueStudentId(Boolean isCreateNew, Integer customerId , Integer studentId, String studentIDNumber)throws com.ctb.exception.CTBBusinessException;
 } 	
 
 

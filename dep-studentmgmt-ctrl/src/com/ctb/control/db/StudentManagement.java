@@ -1064,4 +1064,8 @@ public interface StudentManagement extends JdbcControl
      
      @JdbcControl.SQL(statement = "select enforce_break from test_admin where test_admin_id = {testAdminId}")
      String hasMultipleAccessCode(int testAdminId) throws SQLException;
+     
+     //Added for TABE-BAUM 060: Unique Student ID
+     @JdbcControl.SQL(statement = "  select count(1) as total from student where customer_id = {customerId} and  ext_Pin1 = {studentNumber} {sql: searchCriteria} " )
+	 Integer validateUniqueStudentId(Integer customerId, String studentNumber, String searchCriteria)throws SQLException;
 }

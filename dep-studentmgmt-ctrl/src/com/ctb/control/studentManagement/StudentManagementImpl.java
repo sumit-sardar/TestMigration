@@ -2568,4 +2568,36 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
+
+
+	/* Added for TABE-BAUM 060: Unique Student ID
+	 * @see com.ctb.control.studentManagement.StudentManagement#validateUniqueStudentId(java.lang.Boolean, java.lang.Integer, java.lang.Integer, java.lang.String)
+	 */
+	@Override
+	public boolean validateUniqueStudentId(Boolean isCreateNew, Integer customerId ,
+					Integer studentId, String studentIDNumber) throws CTBBusinessException {
+		
+		boolean isIDUnique = false;
+		Integer totalStudent = 0;
+		String searchCriteria = "";
+		//System.out.println("isCreateNew:"+isCreateNew+"customerId:"+customerId+"studentIDNumber:"+studentIDNumber+"studentId:"+studentId);
+		if (!isCreateNew){
+			searchCriteria = " and student_id <> "+ studentId;
+		}
+
+		try{
+			totalStudent = studentManagement.validateUniqueStudentId(customerId, studentIDNumber, searchCriteria);
+			if( totalStudent==0){
+				isIDUnique = true;
+			} 
+			
+		}
+		catch(Exception e){
+			
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: validateUniqueStudentId: " );
+			tee.setStackTrace(e.getStackTrace());
+			throw tee;
+		}
+		return isIDUnique;
+	}
 } 
