@@ -38,37 +38,37 @@ insert into job_status values (11, 'PROCESSING')
 insert into resource_type values ('TDCINSTLIN', 'Test Delivery Client Installation For Linux')
 /
 
-insert into product_resource values (4000, 'TDCINSTPC', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe')
+insert into product_resource values (4000, 'TDCINSTPC', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe')
 /
-insert into product_resource values (4000, 'TDCINSTMAC', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip')
+insert into product_resource values (4000, 'TDCINSTMAC', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip')
 /
-insert into product_resource values (4000, 'TDCINSTLIN', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin')
-/
-
-insert into product_resource values (7000, 'TDCINSTPC', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe')
-/
-insert into product_resource values (7000, 'TDCINSTMAC', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip')
-/
-insert into product_resource values (7000, 'TDCINSTLIN', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin')
+insert into product_resource values (4000, 'TDCINSTLIN', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin')
 /
 
-insert into product_resource values (6100, 'TDCINSTPC', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe')
+insert into product_resource values (7000, 'TDCINSTPC', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe')
 /
-insert into product_resource values (6100, 'TDCINSTMAC', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip')
+insert into product_resource values (7000, 'TDCINSTMAC', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip')
 /
-insert into product_resource values (6100, 'TDCINSTLIN', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin')
-/
-
-insert into product_resource values (3500, 'TDCINSTPC', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe')
-/
-insert into product_resource values (3500, 'TDCINSTMAC', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip')
-/
-insert into product_resource values (3500, 'TDCINSTLIN', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin')
+insert into product_resource values (7000, 'TDCINSTLIN', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin')
 /
 
-insert into product_resource values (15, 'TDCINSTPC', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe')
+insert into product_resource values (6100, 'TDCINSTPC', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe')
 /
-insert into product_resource values (15, 'TDCINSTMAC', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip')
+insert into product_resource values (6100, 'TDCINSTMAC', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip')
 /
-insert into product_resource values (15, 'TDCINSTLIN', 'http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin')
+insert into product_resource values (6100, 'TDCINSTLIN', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin')
+/
+
+insert into product_resource values (3500, 'TDCINSTPC', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe')
+/
+insert into product_resource values (3500, 'TDCINSTMAC', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip')
+/
+insert into product_resource values (3500, 'TDCINSTLIN', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin')
+/
+
+insert into product_resource values (15, 'TDCINSTPC', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe')
+/
+insert into product_resource values (15, 'TDCINSTMAC', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip')
+/
+insert into product_resource values (15, 'TDCINSTLIN', 'http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin')
 /
