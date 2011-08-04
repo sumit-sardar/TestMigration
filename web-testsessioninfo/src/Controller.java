@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
+import com.ctb.bean.testAdmin.User;
+import com.ctb.testSessionInfo.utils.JsonUtils;
+
 /**
  * This is the default controller for a blank web application.
  *
@@ -70,6 +73,25 @@ public class Controller extends PageFlowController
         
 		try {
 
+			User user = this.testSessionStatus.getUserDetails(username, username);
+			
+			if (user == null) {
+		        out.println("{Invalid username}");
+		        out.flush();			
+		        return null;
+			}
+			
+			String userPassword = user.getPassword();
+			System.out.println(userPassword);
+			String encodePassword = JsonUtils.encodePassword(password);
+			System.out.println(encodePassword);
+
+			if (! userPassword.equals(encodePassword)) {
+		        out.println("{Invalid password}");
+		        out.flush();			
+		        return null;
+			}
+			
 			String reportParam = this.testSessionStatus.getReportParams(username);
 			StringTokenizer st = new StringTokenizer(reportParam, "|"); 
 			String sys = st.nextToken(); 
