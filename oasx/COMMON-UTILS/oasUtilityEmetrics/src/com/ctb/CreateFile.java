@@ -93,7 +93,7 @@ public class CreateFile {
 	private String customerDemographicsqlWithLevel = "select this_.customer_demographic_id as customer_demographic_id, "
 		+ " this_.customer_id as customer_id, this_.label_name  as label_name  from customer_demographic this_ "
 		+ "where this_.customer_id = ? and label_name = 'Accommodations' ";
-	private String customersql = "select STATEPR as state,CONTACT_EMAIL as email, CONTACT_PHONE as phone,CONTACT_NAME as contact from Customer where CUSTOMER_ID = ? ";
+	private String customersql = "select cust.STATEPR as state,addr.CITY as CITY, cust.CONTACT_EMAIL as email, cust.CONTACT_PHONE as phone,cust.CONTACT_NAME as contact from Customer cust, Address addr where CUSTOMER_ID = ? and cust.billing_address_id = addr.address_id";
 	private String testRosterSql = " select this_.TEST_ROSTER_ID    as TEST_ROSTER_ID, this_.ACTIVATION_STATUS  as ACTIVATION_STATUS,   this_.TEST_COMPLETION_STATUS as TEST_COMPLETION_STATUS,"
 		+ "  this_.CUSTOMER_ID            as CUSTOMER_ID, this_.STUDENT_ID  as STUDENT_ID, this_.TEST_ADMIN_ID   as TEST_ADMIN_ID  "
 		+ " from TEST_ROSTER this_  "
@@ -149,6 +149,7 @@ public class CreateFile {
 	private int studentElementNumber = 0;
 	private String customerModelLevelValue = null;
 	private String customerState = null;
+	private String customerCity = null;
 	private String testDate = null;
 
 	private static final String blank = "";
@@ -304,6 +305,7 @@ public class CreateFile {
 
 				tfil.setModelLevel(customerModelLevelValue);
 				tfil.setState(this.customerState);
+				tfil.setCity(this.customerCity);
 				//System.out.println("roster id "+ roster.getTestRosterId() +" : : "+ roster.getTestAdminId());
 				// org node
 				createOrganization(oascon, tfil, roster.getStudentId(),
@@ -716,13 +718,14 @@ public class CreateFile {
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				this.customerState = rs.getString(1);
+				this.customerCity = rs.getString(2);
 				orderFile.setCustomerStateAbbrevation(rs.getString(1));
 				orderFile.setCustomerEmail(EmetricUtil.truncate(
-						rs.getString(2), new Integer(64)));
+						rs.getString(3), new Integer(64)));
 				orderFile.setCustomerPhone(EmetricUtil.truncate(EmetricUtil
-						.convertPhoneNumber(rs.getString(3)), new Integer(21)));
+						.convertPhoneNumber(rs.getString(4)), new Integer(21)));
 				orderFile.setCustomerContact(EmetricUtil.truncate(rs
-						.getString(4), new Integer(64)));
+						.getString(5), new Integer(64)));
 			}
 
 			// System.out.println("populateCustomer");
@@ -942,11 +945,6 @@ public class CreateFile {
 
 		tfil.setPurposeOfTestp(st.getTestPurpose());
 
-		for (StudentContact contact : st.getStudentContact()) {
-			tfil.setCity(contact.getCity());
-			// tfil.setState(contact.getState());
-
-		}
 	}
 
 	private void setEthnicity(Set<StudentDemographic> sd, Tfil tfil) {
