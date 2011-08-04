@@ -18,7 +18,7 @@ public class EmetricUtil {
 		StringBuffer sb = new StringBuffer();
 		sb.append(birthDate);
 		String currentDate = birthDateFormat.format(new Date());
-		System.out.println("Age:sb :   " + sb.toString());
+		//System.out.println("Age:sb :   " + sb.toString());
 		int dd1 = Integer.parseInt(sb.toString().substring(8, 10));
 		int mm1 = Integer.parseInt(sb.toString().substring(5, 7));
 		int yy1 = Integer.parseInt(sb.toString().substring(0, 4));

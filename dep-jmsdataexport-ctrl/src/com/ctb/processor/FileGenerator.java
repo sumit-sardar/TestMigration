@@ -314,7 +314,7 @@ public class FileGenerator {
 				myrosterList = getTestRosterFromID(oascon, rosterIdIn);
 				for (TestRoster roster : myrosterList) {
 					
-					System.out.println("Processing started for roster:"+roster);
+					System.out.println("Processing started for roster:"+roster.getTestRosterId());
 					Tfil tfil = new Tfil();
 
 					Student st = roster.getStudent();
@@ -341,7 +341,7 @@ public class FileGenerator {
 					// create studentItemSetstatus
 					createStudentItemStatusDetails(oascon, tfil, roster
 							.getTestRosterId(), roster.getStudentId());
-					System.out.println("Processing score for roster:"+roster);
+					System.out.println("Processing scoring information for roster:"+roster.getTestRosterId());
 					// added for Skill Area Score
 					createSkillAreaScoreInformation(irscon, tfil, roster);
 
@@ -351,7 +351,7 @@ public class FileGenerator {
 					// for emetric research analysis
 					tfilList.add(tfil);
 					studentCount++;
-					System.out.println("Processing completed for roster:"+roster);
+					System.out.println("Processing completed for roster:"+roster.getTestRosterId());
 				}
 			}
 			
