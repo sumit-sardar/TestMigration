@@ -417,7 +417,7 @@ if(isHidden){
 														document.getElementById("messageStatus").value = isSuccess;
 														document.getElementById("message").style.display = 'inline';	
 														spanElement.innerHTML = "<b> Item scored successfully. </b>";
-												        if(completionStatus !=null && completionStatus=="CO")
+												        if(completionStatus !=null && completionStatus=="CO" && processScores != null)    // END- Change for  #66660 enhancement
 												        {
 												        
 												          processScores.removeAttribute("disabled"); 

@@ -28,8 +28,23 @@ public class ScorableItem extends CTBBean {
 	private Blob itemXml;
 	private Date createdDateTime;
 	private Integer studentCount; // Added for making items disabled if no students are present
+	private Integer itemSetIdTC;     // Change for  #66660 enhancement
 	
 	
+
+	/**
+	 * @return the itemSetIdTC
+	 */
+	public Integer getItemSetIdTC() {
+		return itemSetIdTC;
+	}
+
+	/**
+	 * @param itemSetIdTC the itemSetIdTC to set
+	 */
+	public void setItemSetIdTC(Integer itemSetIdTC) {
+		this.itemSetIdTC = itemSetIdTC;
+	}
 
 	/**
 	 * @return the studentCount
