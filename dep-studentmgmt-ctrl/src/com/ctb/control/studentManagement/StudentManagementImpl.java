@@ -2586,7 +2586,7 @@ public class StudentManagementImpl implements StudentManagement
 		}
 
 		try{
-			totalStudent = studentManagement.validateUniqueStudentId(customerId, studentIDNumber, searchCriteria);
+			totalStudent = studentManagement.validateUniqueStudentId(customerId, studentIDNumber.trim(), searchCriteria);
 			if( totalStudent==0){
 				isIDUnique = true;
 			} 

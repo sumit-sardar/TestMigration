@@ -625,6 +625,10 @@ public class RegistrationController extends PageFlowController
         //START-  TABE-BAUM 060: Unique Student ID
         if (result){
         	result = validateUniqueStudentID(form);
+        	form.setMessage(Message.VALIDATE_STUDENT_ID_TITLE,
+					Message.STUDENT_ID_UNUNIQUE_ERROR, Message.ERROR);
+			form.setActionElement(ACTION_DEFAULT);
+			form.setCurrentAction(ACTION_DEFAULT);
         }
         //END- TABE-BAUM 060: Unique Student ID
         
@@ -848,10 +852,6 @@ public class RegistrationController extends PageFlowController
 		// form.validateValues();
 		if (isValidationForUniqueStudentIDRequired(form)) {
 			if (!validateUniqueStudentId(true, form)) {
-				form.setMessage(Message.VALIDATE_STUDENT_ID_TITLE,
-						Message.STUDENT_ID_UNUNIQUE_ERROR, Message.ERROR);
-				form.setActionElement(ACTION_DEFAULT);
-				form.setCurrentAction(ACTION_DEFAULT);
 				isUniqueStudentId = false;
 			}
 		} 

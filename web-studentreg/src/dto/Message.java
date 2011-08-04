@@ -49,8 +49,8 @@ public class Message implements java.io.Serializable
     
     //START-  TABE-BAUM 060: Unique Student ID
     public static final String VALIDATE_STUDENT_ID_TITLE      = "Student ID:";
-	public static final String STUDENT_ID_UNUNIQUE_ERROR = "Please re-enter your studentId information with an unique value.";
-	public static final String STUDENT_ID_UNUNIQUE_ERROR_AT_SAVE = "Please press back button to re-enter your studentId information with an unique value.";
+	public static final String STUDENT_ID_UNUNIQUE_ERROR = "Please re-enter your Student ID information with an unique value.";
+	public static final String STUDENT_ID_UNUNIQUE_ERROR_AT_SAVE = "Please press back button to re-enter your Student ID information with an unique value.";
     //END- TABE-BAUM 060: Unique Student ID
     
     public Message()

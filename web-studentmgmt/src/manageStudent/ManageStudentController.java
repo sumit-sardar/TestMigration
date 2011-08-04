@@ -757,16 +757,25 @@ public class ManageStudentController extends PageFlowController
 				form.setLasLinkCustomer(isLasLinkCustomer);   //(LLO82) StudentManagement Changes For LasLink product
 				boolean result = form.verifyStudentInformation(this.selectedOrgNodes);
 				//START-  TABE-BAUM 060: Unique Student ID
-				if(result){
+				if (result) {
 					if (isValidationForUniqueStudentIDRequired(form)) {
 						result = validateUniqueStudentId(isCreateNew, form);
 						if (!result) {
-							form.setMessage(Message.VALIDATE_STUDENT_ID_TITLE,
-									Message.STUDENT_ID_UNUNIQUE_ERROR, Message.ERROR);
-						}
-
+						String messageTitle = studentIdConfigurable ? Message.VALIDATE_STUDENT_ID_TITLE
+								.replace("<#studentId#>", studentIdLabelName)
+								: Message.VALIDATE_STUDENT_ID_TITLE.replace(
+										"<#studentId#>",
+										Message.DEFAULT_STUDENT_ID_LABEL);
+						String content = studentIdConfigurable ? Message.STUDENT_ID_UNUNIQUE_ERROR
+								.replace("<#studentId#>", studentIdLabelName)
+								: Message.STUDENT_ID_UNUNIQUE_ERROR.replace(
+										"<#studentId#>",
+										Message.DEFAULT_STUDENT_ID_LABEL);
+						form.setMessage(messageTitle, content, Message.ERROR);
 					}
-				}
+	
+					}
+			}
 				// END- TABE-BAUM 060: Unique Student ID
 				if (! result)
 				{           
@@ -861,7 +870,7 @@ public class ManageStudentController extends PageFlowController
 			ManageStudentForm form) {
 		
 		boolean validateUniqueStudentID = false;
-		if (form.getStudentProfile().getStudentNumber() == null
+		if (form.getStudentProfile()==null || form.getStudentProfile().getStudentNumber() == null
 				|| form.getStudentProfile().getStudentNumber().trim().length() == 0) {
 			return false;
 		}
