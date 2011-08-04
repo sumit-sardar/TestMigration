@@ -163,6 +163,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 	private String isStudentId2Numeric = "AN";
     //END- GACR005
     // END
+	
+	//For TABE-BAUM Unique Student Id
+	private boolean isStudentIdMandatory = false;
+	
     static final long serialVersionUID = 1L;
 
     /**
@@ -2915,7 +2919,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             orgNode ,  orgNodeCate, 
             users,customerdb,
             uploadDataFile, organizationManagement,
-            studentManagement,userManagement, dataFileAudit,students,userTopOrgNode,valueForStudentId,valueForStudentId2);
+            studentManagement,userManagement, dataFileAudit,students,userTopOrgNode,valueForStudentId,valueForStudentId2,isStudentIdMandatory);
                                     
                                     
         uploadStudent.run();
@@ -3250,6 +3254,11 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 					
 					this.valueForStudentId = getDefaultValue(valueForStudentId, CTBConstants.STUDENT_ID);
 					
+				}
+			   //For TABE-BAUM Unique Student Id
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Unique_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
+				{
+					this.isStudentIdMandatory = true;
 				}
 
 

@@ -712,6 +712,20 @@ public interface Students extends JdbcControl
      * end changes for CR - ISTEP-33
      * 
     */
+    
+    /**
+     * @jc:sql statement::
+	 * SELECT
+	 * DECODE(COUNT(1), 0, 'T', 'F') AS UNIQUESTUDENTID
+	 * FROM STUDENT STU 
+	 * WHERE trim(STU.EXT_PIN1) = {studentId} 
+	 * AND STU.CUSTOMER_ID = {customerId} AND STU.ACTIVATION_STATUS = 'AC'" 
+	 *  
+	 * */   
+	
+	//Changes for TABE BAUM - Unique Student Id
+	@JdbcControl.SQL(statement = "SELECT DECODE(COUNT(1), 0, 'T', 'F') AS UNIQUESTUDENTID  FROM STUDENT STU WHERE trim(STU.EXT_PIN1) = {studentId} AND STU.CUSTOMER_ID = {customerId} AND STU.ACTIVATION_STATUS = 'AC'") // change for defect - 66238
+    String checkUniqueStudentId(String studentId, Integer customerId) throws SQLException;
 	
 	static final long serialVersionUID = 1L;
 

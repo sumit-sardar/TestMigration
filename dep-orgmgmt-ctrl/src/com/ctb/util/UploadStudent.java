@@ -174,6 +174,8 @@ public class UploadStudent extends BatchProcessor.Process
 	private String isStudentId2Numeric = "AN";
 	//END- GACR005
 
+	//For TABE-BAUM Unique Student Id
+	private boolean isStudentIdMandatoryBaum = false;
 
 	public UploadStudent ( String serverFilePath,String username, 
 			InputStream uploadedStream , 
@@ -187,7 +189,7 @@ public class UploadStudent extends BatchProcessor.Process
 			StudentManagement studentManagement,
 			UserManagement userManagement, DataFileAudit dataFileAudit,
 			com.ctb.control.db.Students students,
-			Node []userTopOrgNode,String []valueForStudentId,String []valueForStudentId2 ) {
+			Node []userTopOrgNode,String []valueForStudentId,String []valueForStudentId2, boolean isStudentIdMandatoryBaum ) {
 
 
 
@@ -232,9 +234,12 @@ public class UploadStudent extends BatchProcessor.Process
 		this.addresses = addresses;
 		this.serverFilePath = serverFilePath;
 		this.userTopOrgNode = userTopOrgNode;
+		//For TABE-BAUM Unique Student Id 
+		//For checking student is unique or not
+		this.isStudentIdMandatoryBaum = isStudentIdMandatoryBaum;
 
 		//Changes for GA2011CR001
-		if( valueForStudentId != null){
+		if ( valueForStudentId != null){
 			this.isStudentIdConfigurable = true;
 			this.studentIdLabel = valueForStudentId[0]!=null ? valueForStudentId[0]: CTBConstants.STUDENT_ID;
 			this.maxlengthStudentID = valueForStudentId[1];
@@ -245,7 +250,7 @@ public class UploadStudent extends BatchProcessor.Process
 		}
 		
 		//Changes for GA2011CR001  
-		if( valueForStudentId2 != null){
+		if ( valueForStudentId2 != null){
 			this.isStudentId2Configurable = true;
 			this.studentId2Label = valueForStudentId2[0]!=null ? valueForStudentId2[0]: CTBConstants.STUDENT_ID2;
 			this.maxlengthStudentId2 = valueForStudentId2[1];
@@ -254,6 +259,10 @@ public class UploadStudent extends BatchProcessor.Process
 			
 
 		}
+		
+		//For TABE-BAUM Unique Student Id 
+		//For checking required Field
+		this.isStudentIdMandatory = isStudentIdMandatoryBaum;
 		// Initialize the list of color, get the customer configuration entries of customer, 
 
 		initList();
@@ -278,6 +287,7 @@ public class UploadStudent extends BatchProcessor.Process
 		HashMap hierarchyErrorMap = new HashMap();
 		HashMap leafNodeErrorMap = new HashMap();
 		HashMap blankRowMap = new HashMap();
+		
 		boolean isBlankRow = true;
 
 		String strHeaderValue = "";
@@ -1122,6 +1132,13 @@ public class UploadStudent extends BatchProcessor.Process
 
 					logicalErrorList.add(CTBConstants.ANSWER_FONT_COLOR);
 
+				}
+				//For TABE-BAUM Unique Student Id
+				if (this.isStudentIdMandatoryBaum && cellHeader.getStringCellValue().
+						equals(CTBConstants.STUDENT_ID)
+						&& !isStudentIdUnique(strCell)){
+					
+					logicalErrorList.add(CTBConstants.STUDENT_ID);
 				}
 			}
 
@@ -5266,6 +5283,30 @@ public class UploadStudent extends BatchProcessor.Process
 		return value;
 	}
 
+	/**
+	 * Included for TABE BAUM Student Unique Id
+	 * 
+	 * For checking whether the student id is unique or not
+	 * @param value
+	 * @return
+	 */
+	private boolean isStudentIdUnique(String value){ 
+		String status = null;
+		
+		try{
+			status = this.students.checkUniqueStudentId(value.trim(), this.customerId);
+					
+			if (status.equalsIgnoreCase("T")){
+				return true;
+			}
+		
+			
+		}
+		catch(SQLException se){
+			se.printStackTrace();
+		}
+		 return false;
+	}
 
 
 
