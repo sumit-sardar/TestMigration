@@ -67,6 +67,10 @@ public class ItemScoringController extends PageFlowController {
 	
 	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.OrgNode orgnode;
+	
+	@Control()
+    private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
+	
 
 	private static final String ACTION_DEFAULT         = "defaultAction";
 	private static final String ACTION_SCORE_BY_ITEM   = "scoreByItem";
@@ -83,6 +87,7 @@ public class ItemScoringController extends PageFlowController {
 	private String  testAccessCode= null;
 	private String testSessionName=null;
 	private String studentIdLabelName = "Student ID";
+	private Integer itemSetIdTC = null;   		 //  Change for  #66660 enhancement to invoke scoring after completion of handscoring
 
 	private ItemScoringForm savedForm = null;
 	private boolean studentIdConfigurable = false;
@@ -196,6 +201,12 @@ public class ItemScoringController extends PageFlowController {
 		SortParams sort = FilterSortPageUtils.buildSortParams(form.getItemSortColumn(), form.getItemSortOrderBy(), null, null);
 		ScorableItemData siData = null;
 		siData = ItemScoringUtils.getItemsByTestSession(testScoring, null, page, sort, form.testAdminId);
+		 //  Change for  #66660 enhancement to invoke scoring after completion of handscoring
+		if(siData != null){
+			if(siData.getScorableItems()[0].getItemSetIdTC() != null)
+				this.setItemSetIdTC( siData.getScorableItems()[0].getItemSetIdTC());
+		}
+		
 		List itemList = ItemScoringUtils.buildItemList(siData);
 
 		try {
@@ -211,7 +222,7 @@ public class ItemScoringController extends PageFlowController {
 		form.setTestAdminId(form.testAdminId);
 		form.setItemMaxPage(siData.getFilteredPages());
 		PagerSummary itemPagerSummary = ItemScoringUtils.buildItemPagerSummary(siData, form.getItemPageRequested());  
-		getRequest().setAttribute("itemList", itemList);
+		this.getRequest().setAttribute("itemList", itemList);
 		this.getRequest().setAttribute("itemPagerSummary", itemPagerSummary);
 
 		this.pageTitle  = "List Of Items";
@@ -654,20 +665,20 @@ public class ItemScoringController extends PageFlowController {
 		Integer itemSetId = Integer.valueOf(getRequest().getParameter("itemSetId"));
 		Integer testRosterId =  Integer.valueOf(getRequest().getParameter("rosterId"));
 		Integer score = Integer.valueOf(getRequest().getParameter("score"));
-		//System.out.println("user.getUserId(), itemId, itemSetId, testRosterId, score :: "+user.getUserId() + itemId +  itemSetId +  testRosterId +  score);
+		
 	try {
 		 Boolean isSuccess = this.testScoring.saveOrUpdateScore(user.getUserId(), itemId, itemSetId, testRosterId, score);
-		 //Start- added for  Process Scores  button
-		 String completionStatus = new String("FromItem");
+		  //String completionStatus = new String("FromItem");
+		 String completionStatus = scoring.getScoringStatus(testRosterId,this.itemSetIdTC);
+		 //  Change for  #66660 enhancement to invoke scoring after completion of handscoring
+		 if (completionStatus.equals("CO")) {
+			 this.testSessionStatus.rescoreStudent(testRosterId);
+		 }
 		 ManageStudent ms = new ManageStudent();
 		 ms.setIsSuccess(isSuccess);
 		 ms.setCompletionStatus(completionStatus);
 		 jsonMessageResponse = JsonUtils.getJson(ms, "SaveStatus",ms.getClass());
-	     //End - added for  Process Scores  button		
-			//System.out.println("jsonResponse:==>"+jsonMessageResponse);
-			//	getCRItemResponseForScoring
-			
-			   HttpServletResponse resp = this.getResponse();     
+	     	   HttpServletResponse resp = this.getResponse();     
 			   resp.setContentType("application/json");
 	           resp.flushBuffer();
 		        OutputStream stream = resp.getOutputStream();
@@ -1313,5 +1324,19 @@ public class ItemScoringController extends PageFlowController {
 	 */
 	public void setStudentIdConfigurable(boolean studentIdConfigurable) {
 		this.studentIdConfigurable = studentIdConfigurable;
+	}
+
+	/**
+	 * @return the itemSetIdTC
+	 */
+	public Integer getItemSetIdTC() {
+		return itemSetIdTC;
+	}
+
+	/**
+	 * @param itemSetIdTC the itemSetIdTC to set
+	 */
+	public void setItemSetIdTC(Integer itemSetIdTC) {
+		this.itemSetIdTC = itemSetIdTC;
 	}
 }
