@@ -497,33 +497,41 @@ public class ViewMonitorStatusController extends PageFlowController
     	//resp.setContentType("text/x-json");  
     	
         String callback = req.getParameter("callback");
-		String username = this.getRequest().getParameter("username");
-	    String password = this.getRequest().getParameter("password");
+		String username = req.getParameter("username");
+	    String password = req.getParameter("password");
 
-        PrintWriter out;
+        PrintWriter out = null;
 		try {
 			out = resp.getWriter();
-	        if(callback != null) {
-	            out.println(callback + "(");
-	        }
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+		try {
 
 			String reportParam = this.testSessionStatus.getReportParams(username);
 			StringTokenizer st = new StringTokenizer(reportParam, "|"); 
 			String sys = st.nextToken(); 
 			String parms = st.nextToken(); 
+
+	        if (callback != null) {
+	            out.println(callback + "(");
+	        }
 			
 	        out.println("{" +
 	                "\"sys\": \"" + sys + "\", " +
 	                "\"parms\": \"" + parms + "\"}");
 
-	        if(callback != null) {
-	          out.println(");");
+	        if (callback != null) {
+	          out.println(")");
 	        }
 	        out.flush();
 	        
 	        
 		} catch (Exception e) {
 			e.printStackTrace();
+	        out.println("{ERROR}");
+	        out.flush();			
 		}
 		
 		return null;
