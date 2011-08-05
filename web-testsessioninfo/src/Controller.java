@@ -76,7 +76,7 @@ public class Controller extends PageFlowController
 			User user = this.testSessionStatus.getUserDetails(username, username);
 			
 			if (user == null) {
-		        out.println("{Invalid username}");
+		        out.println("{\"Error\":\"Invalid Username\"}");
 		        out.flush();			
 		        return null;
 			}
@@ -87,7 +87,7 @@ public class Controller extends PageFlowController
 			System.out.println(encodePassword);
 
 			if (! userPassword.equals(encodePassword)) {
-		        out.println("{Invalid password}");
+		        out.println("{\"Error\":\"Invalid Password\"}");
 		        out.flush();			
 		        return null;
 			}
