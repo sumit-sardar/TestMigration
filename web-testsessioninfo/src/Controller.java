@@ -102,8 +102,8 @@ public class Controller extends PageFlowController
 	        }
 			
 	        out.println("{" +
-	                "\"sys\": \"" + sys + "\", " +
-	                "\"parms\": \"" + parms + "\"}");
+	                "\"sys\":\"" + sys + "\", " +
+	                "\"parms\":\"" + parms + "\"}");
 
 	        if (callback != null) {
 	          out.println(")");
@@ -113,7 +113,7 @@ public class Controller extends PageFlowController
 	        
 		} catch (Exception e) {
 			e.printStackTrace();
-	        out.println("{ERROR}");
+	        out.println("{\"Error\":\"" + e.getMessage() + "\"}");
 	        out.flush();			
 		}
 		
