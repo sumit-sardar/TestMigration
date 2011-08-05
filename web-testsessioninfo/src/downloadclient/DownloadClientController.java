@@ -99,15 +99,15 @@ public class DownloadClientController extends PageFlowController
         
         // should not get here anyway
         if (resourceTypeCode.equals("TDCINSTPC")) 
-            return "http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe";
+            return "http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe";
         else            
         if (resourceTypeCode.equals("TDCINSTMAC")) 
-            return "http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip";        
+            return "http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip";        
         else            
         if (resourceTypeCode.equals("TDCINSTLIN")) 
-            return "http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin";        
+            return "http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin";        
         else            
-        return "http://www.oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe";
+        return "http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe";
     }
     
 }
