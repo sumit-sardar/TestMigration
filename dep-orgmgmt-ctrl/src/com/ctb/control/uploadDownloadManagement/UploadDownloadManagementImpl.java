@@ -165,7 +165,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
     // END
 	
 	//For TABE-BAUM Unique Student Id
-	private boolean isStudentIdMandatory = false;
+	private boolean isStudentIdUnique = false;
 	
     static final long serialVersionUID = 1L;
 
@@ -2919,7 +2919,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             orgNode ,  orgNodeCate, 
             users,customerdb,
             uploadDataFile, organizationManagement,
-            studentManagement,userManagement, dataFileAudit,students,userTopOrgNode,valueForStudentId,valueForStudentId2,isStudentIdMandatory);
+            studentManagement,userManagement, dataFileAudit,students,userTopOrgNode,valueForStudentId,valueForStudentId2,isStudentIdUnique);
                                     
                                     
         uploadStudent.run();
@@ -3258,7 +3258,7 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
 			   //For TABE-BAUM Unique Student Id
 				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Unique_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
 				{
-					this.isStudentIdMandatory = true;
+					this.isStudentIdUnique = true;
 				}
 
 

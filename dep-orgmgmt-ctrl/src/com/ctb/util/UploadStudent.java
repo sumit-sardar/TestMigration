@@ -175,7 +175,7 @@ public class UploadStudent extends BatchProcessor.Process
 	//END- GACR005
 
 	//For TABE-BAUM Unique Student Id
-	private boolean isStudentIdMandatoryBaum = false;
+	private boolean isStudentIdUnique = false;
 
 	public UploadStudent ( String serverFilePath,String username, 
 			InputStream uploadedStream , 
@@ -189,7 +189,7 @@ public class UploadStudent extends BatchProcessor.Process
 			StudentManagement studentManagement,
 			UserManagement userManagement, DataFileAudit dataFileAudit,
 			com.ctb.control.db.Students students,
-			Node []userTopOrgNode,String []valueForStudentId,String []valueForStudentId2, boolean isStudentIdMandatoryBaum ) {
+			Node []userTopOrgNode,String []valueForStudentId,String []valueForStudentId2, boolean isStudentIdUnique ) {
 
 
 
@@ -236,7 +236,7 @@ public class UploadStudent extends BatchProcessor.Process
 		this.userTopOrgNode = userTopOrgNode;
 		//For TABE-BAUM Unique Student Id 
 		//For checking student is unique or not
-		this.isStudentIdMandatoryBaum = isStudentIdMandatoryBaum;
+		this.isStudentIdUnique = isStudentIdUnique;
 
 		//Changes for GA2011CR001
 		if ( valueForStudentId != null){
@@ -260,9 +260,6 @@ public class UploadStudent extends BatchProcessor.Process
 
 		}
 		
-		//For TABE-BAUM Unique Student Id 
-		//For checking required Field
-		this.isStudentIdMandatory = isStudentIdMandatoryBaum;
 		// Initialize the list of color, get the customer configuration entries of customer, 
 
 		initList();
@@ -1134,7 +1131,7 @@ public class UploadStudent extends BatchProcessor.Process
 
 				}
 				//For TABE-BAUM Unique Student Id
-				if (this.isStudentIdMandatoryBaum && cellHeader.getStringCellValue().
+				if (this.isStudentIdUnique && cellHeader.getStringCellValue().
 						equals(CTBConstants.STUDENT_ID)
 						&& !isStudentIdUnique(strCell)){
 					
@@ -5292,20 +5289,23 @@ public class UploadStudent extends BatchProcessor.Process
 	 */
 	private boolean isStudentIdUnique(String value){ 
 		String status = null;
-		
-		try{
-			status = this.students.checkUniqueStudentId(value.trim(), this.customerId);
-					
-			if (status.equalsIgnoreCase("T")){
-				return true;
+		if (value != null){
+			try{
+				status = this.students.checkUniqueStudentId(value.trim(), this.customerId);
+
+				if (status.equalsIgnoreCase("T")){
+					return true;
+				}
 			}
-		
-			
+			catch(SQLException se){
+				se.printStackTrace();
+			}
 		}
-		catch(SQLException se){
-			se.printStackTrace();
+		else{
+			return true;
 		}
-		 return false;
+
+		return false;
 	}
 
 
