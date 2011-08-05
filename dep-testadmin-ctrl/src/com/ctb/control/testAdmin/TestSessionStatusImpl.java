@@ -1911,7 +1911,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
     	 String uri = "";
     	 String productType = "";   	 
     	 // In future if new parent products are added, then add here in this array also.
-    	 String[] priorityArray = {"ISTEP", "GA-CRCT", "LLEAB", "TerraNova", "TABE"}; // Product list.
+    	 String[] priorityArray = {"GA-CRCT", "ISTEP", "LLEAB", "TerraNova", "TABE"}; // Product list.
     	 int newOrder = 0;
     	 int oldOrder = priorityArray.length;
     	 try {    		
