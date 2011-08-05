@@ -135,7 +135,7 @@ public class DataExportPageFlowController extends PageFlowController {
 			this.toBeExportedStudentRosterList = mtsData.getToBeExportedStudentRosterList();
 			
 		}
-		this.pageTitle = "Data Export: Test Session With Students";
+		this.pageTitle = "Export Data: Test Sessions with Students";
 		this.savedForm = form.createClone();
 		form.setCurrentAction(ACTION_DEFAULT);
 		return new Forward("success",form);
@@ -183,7 +183,7 @@ public class DataExportPageFlowController extends PageFlowController {
 			this.getRequest().setAttribute("unscoredStudentPagerSummary",unscoredStudentPagerSummary);
 			this.setUnscoredStudentCount(msData.getTotalCount());
 			
-			this.pageTitle = "Data Export: Student Scoring Incomplete";
+			this.pageTitle = "Export Data: Student Scoring Incomplete";
 			
 			if(previousPage == "UnscoredStudent"){
 				if(pageId == "1"){
@@ -199,7 +199,7 @@ public class DataExportPageFlowController extends PageFlowController {
 		} else {		
 			
 			this.setUnscoredStudentCount(0);
-			this.pageTitle = "Data Export: Summary";
+			this.pageTitle = "Export Data: Summary";
 			
 			this.savedForm = form.createClone();
 			form.setCurrentAction(ACTION_DEFAULT);				
@@ -346,7 +346,7 @@ public class DataExportPageFlowController extends PageFlowController {
 			this.getRequest().setAttribute("jobPagerSummary",jobPagerSummary);
 			this.setTotalStudentCount(msData.getTotalCount());
 		}
-		this.pageTitle = "Data Export: View Status";
+		this.pageTitle = "Export Data: View Status";
 		this.savedForm = form.createClone();
 		form.setCurrentAction(ACTION_DEFAULT);
 		return new Forward("success",form);

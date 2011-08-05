@@ -94,7 +94,7 @@
 <c:if test="${ sessionScope.isTopLevelUser }">
 <h1>Export</h1>
 <ul>
-    <li><a href="/DataExportWeb/dataExportPageFlow/begin.do" onclick="return verifyExitAddOrganization();"><span>Data Export</span></a></li>
+    <li><a href="/DataExportWeb/dataExportPageFlow/begin.do" onclick="return verifyExitAddOrganization();"><span>Export Data</span></a></li>
     <li><a href="/DataExportWeb/dataExportPageFlow/beginViewStatus.do" onclick="return verifyExitAddOrganization();"><span>View Status</span></a></li>
     
 </ul>

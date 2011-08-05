@@ -23,7 +23,7 @@ template_find_student.jsp
 		<!-- Start Page Content -->
 		<!-- ********************************************************************************************************************* -->
 		<h1><netui:content value="${pageFlow.pageTitle}" /></h1>
-
+        <p><netui:content value="${bundle.web['dataexport.viewStatus.title.message']}" /><br />
 		<!-- start form -->
 		<netui:form action="getExportStatus">
 			<netui:hidden tagId="actionElement" dataSource="actionForm.actionElement" />
