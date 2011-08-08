@@ -1,9 +1,11 @@
 package com.ctb.tms.nosql;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Iterator;
+
+import sun.misc.BASE64Encoder;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
@@ -35,7 +37,12 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	
 	public void putRosterData(StudentCredentials creds, RosterData rosterData) throws IOException {
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
-		rosterCache.put(key, rosterData);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(baos);
+		oos.writeObject(rosterData);
+		byte [] bytes = baos.toByteArray();
+		String data = new BASE64Encoder().encode(bytes);
+		rosterCache.put(key, data);
 	}
 	
 	public void putManifestData(String testRosterId, Manifest manifest) throws IOException {

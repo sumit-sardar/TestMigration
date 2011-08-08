@@ -39,7 +39,8 @@ public class OASOracleSink implements OASRDBSink {
 			OASDatabaseUserPassword = rb.getString("oas.db.password");
 			haveDataSource = true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("***** No OAS DB connection info specified in env.properties, using static defaults");
+			//e.printStackTrace();
 		}
 	}
 	

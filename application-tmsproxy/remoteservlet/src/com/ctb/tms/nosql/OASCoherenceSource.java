@@ -1,13 +1,18 @@
 package com.ctb.tms.nosql;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import sun.misc.BASE64Decoder;
+
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
 import com.bea.xml.XmlException;
+import com.ctb.tms.bean.login.AuthenticationData;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
@@ -43,7 +48,15 @@ public class OASCoherenceSource implements OASNoSQLSource {
 	
 	public RosterData getRosterData(StudentCredentials creds) throws XmlException, IOException, ClassNotFoundException {
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
-		return (RosterData) rosterCache.get(key);
+		RosterData result = null;
+		String data = (String) rosterCache.get(key);
+		if(data != null) {
+			byte [] bytes = new BASE64Decoder().decodeBuffer(data);
+			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+			ObjectInputStream ois = new ObjectInputStream(bais);
+			result = (RosterData) ois.readObject();
+		}
+		return result; 
 	}
 	
 	public Manifest getManifest(String testRosterId) throws XmlException, IOException, ClassNotFoundException {

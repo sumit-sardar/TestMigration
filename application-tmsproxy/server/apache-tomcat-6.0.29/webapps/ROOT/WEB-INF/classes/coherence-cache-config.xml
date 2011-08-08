@@ -33,6 +33,7 @@
                 </external-scheme>
             </backing-map-scheme>
             <backup-count>1</backup-count>
+            <autostart>true</autostart>
         </distributed-scheme>
         <!--        2-tier (memory, disk) scheme definition -->
         <near-scheme>

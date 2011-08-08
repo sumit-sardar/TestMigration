@@ -220,6 +220,9 @@ else
   JAVA_OPTS="$JAVA_OPTS $LOGGING_MANAGER"
 fi
 
+JAVA_OPTS="-Xms2048m -Xmx2048m -Dtangosol.coherence.mode=prod -Dtangosol.coherence.distributed.localstorage=false $JAVA_OPTS"
+CLASSPATH=":/local/apps/cohoas01/coherence/oas/config:/local/apps/coherence/coh361/coherence/lib/coherence.jar:/local/apps/cohoas01/coherence/oas/lib/tangosol.jar:$CLASSPATH"
+
 # ----- Execute The Requested Command -----------------------------------------
 
 # Bugzilla 37848: only output this if we have a TTY
