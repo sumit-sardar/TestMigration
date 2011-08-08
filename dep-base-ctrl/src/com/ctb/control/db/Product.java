@@ -235,6 +235,19 @@ TestProduct [] getTestCatalogForUser(String userName) throws SQLException;
     @JdbcControl.SQL(statement = "select distinct product.product_id as productId, product.product_description as productDescription, pr.resource_type_code as resourceTypeCode, pr.resource_uri as resourceURI from product, product_resource pr where product.product_id = pr.product_id and pr.resource_type_code = {resourceTypeCode} and product.product_id in ( select distinct parent_product_id from product where product_id in (select distinct prod.product_id as productId from product prod, test_catalog cat, org_node_test_catalog ontc, user_role urole, users where prod.activation_status = 'AC' and prod.product_id = cat.product_id and cat.activation_status = 'AC' and cat.test_catalog_id = ontc.test_catalog_id and ontc.activation_status = 'AC' and urole.org_node_id = ontc.org_node_id and urole.activation_status = 'AC' and users.user_id = urole.user_id and users.user_name = {userName}))")
     UserParentProductResource[] getParentProductListForUser(String userName, String resourceTypeCode) throws SQLException;
 
-
+    
+    /**
+     * @jc:sql statement::
+     * select 
+     * 		resource_uri
+     * from
+     * 		product_resource
+     * where
+     * 		product_id = {productId}
+     * 		and resource_type_code = {resourceTypeCode}
+     */
+    @JdbcControl.SQL(statement = "select resource_uri from product_resource where product_id = {productId} and resource_type_code = {resourceTypeCode}")
+    String getDemoInstallerUri(String resourceTypeCode, Integer productId) throws SQLException;
+    
     static final long serialVersionUID = 1L;
 }

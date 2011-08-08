@@ -1934,6 +1934,9 @@ public class TestSessionStatusImpl implements TestSessionStatus
 						}
 					}
 				}
+			} 
+    		 if(uri.equals("")) {
+				uri = product.getDemoInstallerUri(resourceTypeCode, 100);
 			}
     	 } catch (SQLException se) {
              ProductDataNotFoundException rde = new ProductDataNotFoundException("TestSessionStatusImpl: getParentResourceUriForUser: " + se.getMessage());

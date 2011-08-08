@@ -86,28 +86,15 @@ public class DownloadClientController extends PageFlowController
     {
     	NonCatalogLogger logger =OASLogger.getLogger(this.getClass().getName());
    	 	logger.info("Entering getdownloadURI()");
+   	 	String uri = "";
         try {      
             //Changes for OAS – Alternate URL - Part I-TAS
-            String uri = this.testSessionStatus.getParentResourceUriForUser(this.userName, resourceTypeCode);
-            if(uri != null && !uri.equals(""))
-            	return uri;
-
+        	uri = this.testSessionStatus.getParentResourceUriForUser(this.userName, resourceTypeCode);
         }    
         catch( CTBBusinessException e ) {
             System.err.print(e.getStackTrace());
         }
-        
-        // should not get here anyway
-        if (resourceTypeCode.equals("TDCINSTPC")) 
-            return "http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe";
-        else            
-        if (resourceTypeCode.equals("TDCINSTMAC")) 
-            return "http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.zip";        
-        else            
-        if (resourceTypeCode.equals("TDCINSTLIN")) 
-            return "http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.bin";        
-        else            
-        return "http://oas.ctb.com/downloadfiles/InstallOnlineAsmt.exe";
+        return uri;
     }
     
 }
