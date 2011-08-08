@@ -623,13 +623,14 @@ public class RegistrationController extends PageFlowController
         boolean result = form.verifyStudentInformation(studentProfile, selectedOrgNodeId);
         
         //START-  TABE-BAUM 060: Unique Student ID
-        if (result){
+        // removed this validation as this is already being done before the congratulations page
+        /*if (result){
         	result = validateUniqueStudentID(form);
         	form.setMessage(Message.VALIDATE_STUDENT_ID_TITLE,
 					Message.STUDENT_ID_UNUNIQUE_ERROR, Message.ERROR);
 			form.setActionElement(ACTION_DEFAULT);
 			form.setCurrentAction(ACTION_DEFAULT);
-        }
+        }*/
         //END- TABE-BAUM 060: Unique Student ID
         
         if (! result)
