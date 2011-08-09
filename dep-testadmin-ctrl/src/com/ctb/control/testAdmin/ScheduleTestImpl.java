@@ -1875,7 +1875,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 session.setFormAssignmentMethod(formAssignmentOverride);
             }
             session.setProgramId(admins.getProgramIdForCustomerAndProduct(session.getCustomerId(), session.getProductId(), session.getLoginStartDate())[0]);
-            //admins.getConnection().setAutoCommit(false);
+            admins.getConnection().setAutoCommit(false);
             admins.updateTestAdmin(session);
         } catch (SQLException se) {
             SessionCreationException sce = new SessionCreationException("ScheduleTestImpl: updateTestAdmin: " + se.getMessage());
