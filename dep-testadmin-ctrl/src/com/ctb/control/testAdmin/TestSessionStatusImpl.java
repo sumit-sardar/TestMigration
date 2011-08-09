@@ -325,7 +325,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
                 String report = cr[i].getReportUrl();
                 if(cr[i].getReportName().indexOf("IndividualProfile") >= 0) {
                     //reportURL = report;
-                    reportURL = "http://tlqaoas/openapi/ReportService.svc/Profile";
+                    reportURL = "https://tlqaoas/openapi/ReportService.svc/Profile";
                     systemKey = cr[i].getSystemKey();
                     customerKey = cr[i].getCustomerKey();
                     orgCategoryLevel = String.valueOf(cr[i].getCategoryLevel());
