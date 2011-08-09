@@ -59,11 +59,11 @@ public class FileGenerator {
 		+ " and onc.org_node_category_id = node.org_node_category_id   and node.org_node_id = ona.ancestor_org_node_id";
 
 	// Defect Fix for 66423 and timeZobe defect
-		private static String testSessionSQl = "select tad.preferred_form as form, tc.test_level as testLevel,tad.time_zone as timezone,"
-		+ " to_Char((roster.start_date_time),'MMDDYY HH24:MI:SS') as testDate,to_Char((roster.completion_date_time),'MMDDYYYY HH24:MI:SS')  as dateTestingCompleted"
-		+ " from test_admin tad, test_roster roster,test_catalog tc"
-		+ " where tad.test_admin_id = roster.test_admin_id"
-		+ " and roster.test_completion_status in ('CO','IS','IC')"
+	private static String testSessionSQl = "select tad.preferred_form as form, tc.test_level as testLevel,tad.time_zone as timezone,"
+		+ " to_Char((roster.start_date_time),'MMDDYY HH24:MI:SS') as testDate,to_Char((roster.completion_date_time),'MMDDYYYY HH24:MI:SS')  as dateTestingCompleted,  to_Char(nvl(prg.program_start_date, ''),'MMDDYYYY HH24:MI:SS')  as programStartDate"
+		+ " from test_admin tad, test_roster roster,test_catalog tc, program prg "
+		+ "	where prg.program_id = tad.program_id(+)"
+	    + " and  tad.test_admin_id = roster.test_admin_id and roster.test_completion_status in ('CO','IS','IC')"
 		+ " and tc.test_catalog_id = tad.test_catalog_id"
 		+ " and roster.test_roster_id = ? ";
 
@@ -160,7 +160,8 @@ public class FileGenerator {
 	private String customerState = null;
 	private String customerCity = null;
 	private String testDate = null;
-
+	private String programDate = null;
+	
 	@SuppressWarnings("unused")
 	private static final String blank = "";
 	private HashMap<String, String> subSkillAreaScoreInfo = new HashMap<String, String>();
@@ -314,7 +315,7 @@ public class FileGenerator {
 				myrosterList = getTestRosterFromID(oascon, rosterIdIn);
 				for (TestRoster roster : myrosterList) {
 					
-					System.out.println("Processing started for roster:"+roster.getTestRosterId());
+					System.out.println("Processing started for roster:"+roster);
 					Tfil tfil = new Tfil();
 
 					Student st = roster.getStudent();
@@ -341,7 +342,7 @@ public class FileGenerator {
 					// create studentItemSetstatus
 					createStudentItemStatusDetails(oascon, tfil, roster
 							.getTestRosterId(), roster.getStudentId());
-					System.out.println("Processing scoring information for roster:"+roster.getTestRosterId());
+					System.out.println("Processing score for roster:"+roster);
 					// added for Skill Area Score
 					createSkillAreaScoreInformation(irscon, tfil, roster);
 
@@ -351,7 +352,7 @@ public class FileGenerator {
 					// for emetric research analysis
 					tfilList.add(tfil);
 					studentCount++;
-					System.out.println("Processing completed for roster:"+roster.getTestRosterId());
+					System.out.println("Processing completed for roster:"+roster);
 				}
 			}
 			
@@ -1360,32 +1361,32 @@ public class FileGenerator {
 			while (rs.next()) {
 
 				if (rs.getString(1).equalsIgnoreCase("A")) {
-					tfil.setTestName("LAS Links");
+					tfil.setTestName("LAS LINKS OPERATIONAL");
 					tfil.setTestForm("A");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), 10)
+								"LAS Links", new Integer(10))
 								.toUpperCase());
 				} else if (rs.getString(1).equalsIgnoreCase("B")) {
-					tfil.setTestName("LAS Links");
+					tfil.setTestName("LAS LINKS OPERATIONAL");
 					tfil.setTestForm("B");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), 10)
+								"LAS Links", new Integer(10))
 								.toUpperCase());
 				} else if (rs.getString(1).equalsIgnoreCase("Espanol")) {
-					tfil.setTestName("LAS Links Español");
+					tfil.setTestName("LAS LINKS OPERATIONAL");
 					tfil.setTestForm("S");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								"ESPANOL", 10)
+								"ESPANOL", new Integer(10))
 								.toUpperCase());
 				} else if (rs.getString(1).startsWith("Esp")) {
-					tfil.setTestName("LAS Links Español");
+					tfil.setTestName("LAS LINKS OPERATIONAL");
 					tfil.setTestForm("S");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								"ESPANOL",10)
+								"ESPANOL", new Integer(10))
 								.toUpperCase());
 				}
 
@@ -1416,12 +1417,18 @@ public class FileGenerator {
 				if(rs.getString(5) != null){
 				tfil.setDateTestingCompleted(EmetricUtil.getTimeZone(rs.getString(5).toString(),rs.getString(3).toString(),false));
 				}
+				
+				if(rs.getString(6) != null && this.programDate == null){
+					this.programDate = EmetricUtil.getTimeZone(rs.getString(6).toString(),rs.getString(3).toString(),true);
+				}
+
 
 			}
 
-			if (orderFile.getTestDate() == null)
-				orderFile.setTestDate(EmetricUtil.truncate(tfil.getTestDate(),
-						8));
+			if (orderFile.getTestDate() == null && this.programDate != null){
+				orderFile.setTestDate(this.programDate.substring(0, 6));
+			}
+
 
 			// System.out.println("createTestSessionDetails");
 		} catch (SQLException e) {
