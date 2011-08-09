@@ -1034,10 +1034,17 @@ public class ScheduleTestController extends PageFlowController
                             TestElement te = tes[j];
                             if (te.getItemSetId().intValue() == testId.intValue())
                             {
-                                if (te.getGrade() != null)
-                                {
-                                    return true;                                
-                                }
+                              //Change for defect regarding no message displayed while choosing different test and present test has students scheduled.  
+                            	if (isLasLinkProduct(tp.getProductType())) {
+    	                            if (te.getItemSetLevel() != null) {
+    	                            	return true;    
+    	                            }
+                            	}
+                            	else {
+    	                            if (te.getGrade() != null) {
+    	                            	return true;                      
+    	                            }
+                            	}
                             }
                         }
                     }
