@@ -248,11 +248,7 @@
 						<b><netui:span value="${bundle.web['selectstudents.filter.title']}" /></b>
 						<p><netui:span value="${bundle.web['selectstudents.filter.introtext']}" /> 
 						<c:if
-							test="${offGradeTestingDisabled}">
-							<netui:span value="${bundle.web['selectstudents.selectStudents.gradePreselected']}" />
-						</c:if>
-						<c:if
-							test="${blockOffGradeTesting}">
+							test="${offGradeTestingDisabled || blockOffGradeTesting}">
 							<netui:span value="${bundle.web['selectstudents.selectStudents.gradePreselected']}" />
 						</c:if>
 						</p>

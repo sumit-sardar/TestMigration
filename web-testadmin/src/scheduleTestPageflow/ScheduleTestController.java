@@ -1318,6 +1318,12 @@ public class ScheduleTestController extends PageFlowController
                         try {
             				prod.setLevels(itemSet.getLevelsForProduct(prod.getProductId()));
             	            prod.setGrades(itemSet.getGradesForProduct(prod.getProductId()));
+            	            
+            	            // get grades for LasLink
+            	            if (isLasLinkProduct(prod.getProductType())) {
+            		            prod.setGrades(itemSet.getLevelsForProduct(prod.getProductId()));
+            	            }
+
             			} catch (SQLException e) {
             				e.printStackTrace();
             			}
