@@ -1411,6 +1411,7 @@ public class ScheduleTestImpl implements ScheduleTest
      */
     public Integer createNewTestSession(String userName, ScheduledSession newSession) throws CTBBusinessException {
     	UserTransaction userTrans = null;
+    	boolean transFailed = false;
     	try {
             userTrans = getTransaction();
             //START- Changed for deferred defect 64446
@@ -1434,10 +1435,13 @@ public class ScheduleTestImpl implements ScheduleTest
 	        if(newSession.getTestSession().getTestAdminId() != null)
 	            throw new SessionCreationException("testAdmin: createNewTestSession: cannot create a session with existing session id: " + newSession.getTestSession().getTestAdminId());
 	        return writeTestSession(userName, newSession);
+    	} catch (Exception e) {
+    		transFailed = true;
+    		throw e;
     	} finally {
 			try {
 				System.out.println("finally");
-				closeTransaction(userTrans,transanctionFlag);
+				closeTransaction(userTrans,transFailed);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1455,6 +1459,7 @@ public class ScheduleTestImpl implements ScheduleTest
      */
     public Integer updateTestSession(String userName, ScheduledSession newSession) throws CTBBusinessException {
     	UserTransaction userTrans = null;
+    	boolean transFailed = false;
     	try {
             userTrans = getTransaction();
             //START- Changed for deferred defect 64446
@@ -1478,10 +1483,13 @@ public class ScheduleTestImpl implements ScheduleTest
 	        if(newSession.getTestSession().getTestAdminId() == null)
 	            throw new SessionCreationException("testAdmin: updateTestSession: cannot update a session with null session id.");
 	        return writeTestSession(userName, newSession);
+    	} catch (Exception e) {
+    		transFailed = true;
+    		throw e;
     	} finally {
 			try {
 				System.out.println("finally");
-				closeTransaction(userTrans,transanctionFlag);
+				closeTransaction(userTrans,transFailed);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1777,7 +1785,6 @@ public class ScheduleTestImpl implements ScheduleTest
 
     private Integer writeTestSession(String userName, ScheduledSession newSession) throws CTBBusinessException {
         
-    	boolean transanctionFlag = false;
     	Integer thisTestAdminId = null;
     	Double extendedTimeValue = 0.0; // Added for Student Pacing
     	try {
@@ -1810,8 +1817,7 @@ public class ScheduleTestImpl implements ScheduleTest
             thisTestAdminId = session.getTestAdminId();
             
         } catch (Exception se) {
-        	transanctionFlag = true;
-    		CTBBusinessException ctbe = null;
+        	CTBBusinessException ctbe = null;
             String message = se.getMessage().toLowerCase();
             if(message.indexOf("insufficient available license quantity") >=0) {
                 ctbe = new InsufficientLicenseQuantityException("Insufficient available license quantity");
@@ -1872,7 +1878,7 @@ public class ScheduleTestImpl implements ScheduleTest
             }  
             if(programIds != null && programIds.length ==1)
                 session.setProgramId(programIds[0]);
-            admins.getConnection.setAutoCommit(false);
+            admins.getConnection().setAutoCommit(false);
             admins.createNewTestAdmin(session);
             return testAdminId;
         } catch (SQLException se) {
