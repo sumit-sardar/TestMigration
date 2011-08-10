@@ -1814,10 +1814,10 @@ public class ScheduleTestImpl implements ScheduleTest
                 createTestRosters(userName, userId, subtests, newSession, extendedTimeValue);
                 createProctorAssignments(true, userId, newSession);
             } else {
-                updateTestAdminRecord(userId, session);
                 ArrayList subtests = updateTestAdminItemSetRecords(newSession);
                 updateTestRosters(userName, userId, subtests, newSession, session.getItemSetId(), extendedTimeValue);
                 updateProctorAssignments(userName, userId, newSession);
+                updateTestAdminRecord(userId, session);
             }
             
             thisTestAdminId = session.getTestAdminId();
