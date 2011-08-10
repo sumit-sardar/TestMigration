@@ -1875,7 +1875,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 session.setFormAssignmentMethod(formAssignmentOverride);
             }
             session.setProgramId(admins.getProgramIdForCustomerAndProduct(session.getCustomerId(), session.getProductId(), session.getLoginStartDate())[0]);
-            //admins.getConnection().setAutoCommit(false);
+            admins.getConnection().setAutoCommit(false);
             admins.updateTestAdmin(session);
         } catch (SQLException se) {
             SessionCreationException sce = new SessionCreationException("ScheduleTestImpl: updateTestAdmin: " + se.getMessage());
@@ -2021,7 +2021,7 @@ public class ScheduleTestImpl implements ScheduleTest
                             throw new SessionCreationException("ScheduleTestImpl: updateTestAdminItemSetRecords: attempted to update a test element which has already been taken");    
                         }
                     } else {
-                    	//tais.getConnection().setAutoCommit(false);                    	
+                    	tais.getConnection().setAutoCommit(false);                    	
                         tais.updateTestAdminItemSet(se);
                     }
                     oldMap.remove(newUnit.getItemSetId());                   
@@ -2082,7 +2082,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     se.setTestAdminId(newSession.getTestSession().getTestAdminId());
                     if(!"T".equals(se.getTested())) {
                         if(oldMap.containsKey(sm1.getItemSetId())){
-                        	//tais.getConnection().setAutoCommit(false);
+                        	tais.getConnection().setAutoCommit(false);
                             tais.updateTestAdminItemSet(se);
                             oldMap.remove(sm1.getItemSetId());
                         }else{
@@ -2450,7 +2450,7 @@ public class ScheduleTestImpl implements ScheduleTest
                         !re.getTestCompletionStatus().equals(oldUnit.getTestCompletionStatus()) ||
                         !re.getValidationStatus().equals(oldUnit.getValidationStatus()) ||
                         (re.getCustomerFlagStatus() != null && !re.getCustomerFlagStatus().equals(oldUnit.getCustomerFlagStatus()))  ) {
-                    	//rosters.getConnection().setAutoCommit(false);
+                    	rosters.getConnection().setAutoCommit(false);
                         rosters.updateTestRoster(re);
                     }
                     oldMap.remove(newUnit.getStudentId());
