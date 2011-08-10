@@ -54,7 +54,8 @@ public class SchedulingStudent extends Student
             "T".equals(this.highLighter) ||
             "T".equals(this.extendedTimeAccom) ||
             (this.extendedTimeAccom != null &&
-            !this.extendedTimeAccom.equals("")) ||
+            !this.extendedTimeAccom.equals("") &&
+            !this.extendedTimeAccom.equals("F")) || // change for defect #66723
             this.questionBackgroundColor != null ||
             this.questionFontColor != null ||
             this.questionFontSize != null ||
