@@ -465,7 +465,7 @@ public class ViewMonitorStatusController extends PageFlowController
 			String sys = st.nextToken(); 
 			String parms = st.nextToken(); 
 
-        	String url = "http://tlqaoas/openapi/RequestQueue.aspx";
+        	String url = "https://tlqaoas/openapi/RequestQueue.aspx";
             String reportUrl = url + "?sys=" + sys + "&parms="+ parms;
             
             //System.out.println("Report Queue URL: " + reportUrl);
