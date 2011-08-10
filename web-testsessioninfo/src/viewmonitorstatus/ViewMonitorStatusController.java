@@ -470,10 +470,6 @@ public class ViewMonitorStatusController extends PageFlowController
             
             System.out.println("Report Queue URL: " + reportUrl);
               
-//reportUrl = "https://tlqaoas.mhe.mhc/Reporting/TABE/IndividualProfile.aspx?TestID=86645&sys=fnbir%2BWySNE%3D&parms=%2B%2Fck398SzA7pbfrdpbcZhQykMSaBxyHvjtX9o2J%2BBjgFP5HiNRRaEioFSLQYHsx5NdbzYipPbLiof2MrbvDLPEI1IMZz2g3Y6Lw2Tk8VIsMjytGEyYlBiuQriyHNuQXLvRcuB7oj1A080MgegxrjHBC51o3l02lpgzVQpAW2TpmInsv2kHiTEPo205efjLRCviNNghKifaQDjcuLAAHYZA%3D%3D&RunReport=1";
-//reportUrl = "http://tlqaoas/openapi/RequestQueue.aspx?sys=fnbir%2BWySNE%3D&parms=%2B%2Fck398SzA7pbfrdpbcZhQykMSaBxyHvxJovKkV%2FdzoFP5HiNRRaEioFSLQYHsx5NdbzYipPbLiof2MrbvDLPCdKjQGd0bCk";
-
-             
             this.getRequest().setAttribute("reportUrl", reportUrl);
 		
 		} catch (CTBBusinessException e) {
