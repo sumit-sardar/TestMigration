@@ -325,7 +325,8 @@ public class HomePageController extends PageFlowController
         }
         if (canRegisterStudent.booleanValue() && (userSessionFilterTab.equalsIgnoreCase("CU") || userSessionFilterTab.equalsIgnoreCase("PA")))
         {
-            this.getRequest().setAttribute("showUserGenerateReportFile", Boolean.TRUE);
+            // comment out generate PDF in 9.0 release
+            // this.getRequest().setAttribute("showUserGenerateReportFile", Boolean.TRUE);
         }
         
         String proctorSessionFilterTab = form.getProctorSessionFilterTab();
@@ -339,7 +340,8 @@ public class HomePageController extends PageFlowController
         }
         if (canRegisterStudent.booleanValue() && (proctorSessionFilterTab.equalsIgnoreCase("CU") || proctorSessionFilterTab.equalsIgnoreCase("PA")))
         {
-            this.getRequest().setAttribute("showProctorGenerateReportFile", Boolean.TRUE);
+            // comment out generate PDF in 9.0 release
+            // this.getRequest().setAttribute("showProctorGenerateReportFile", Boolean.TRUE);
         }
         
         //Bulk Accommodation

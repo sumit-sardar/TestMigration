@@ -127,7 +127,8 @@ public class AdministrationController extends PageFlowController
         this.getSession().setAttribute("hasLicenseConfig", hasLicenseConfig());
         this.getSession().setAttribute("userHasReports", userHasReports());
         this.getSession().setAttribute("isAdminUserAtLeafNode", isAdminUserAtLeafNode());
-        this.getSession().setAttribute("canGenerateReportFile", canGenerateReportFile());
+        // comment out generate PDF in 9.0 release
+        //this.getSession().setAttribute("canGenerateReportFile", canGenerateReportFile());
         isTopLevelUser(); //LLO- 118 - Change for Ematrix UI
         return new Forward("success");
     }

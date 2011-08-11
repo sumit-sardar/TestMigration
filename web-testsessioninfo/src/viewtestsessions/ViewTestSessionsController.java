@@ -282,7 +282,8 @@ public class ViewTestSessionsController extends PageFlowController
         
         if (canRegisterStudent.booleanValue() && (sessionFilterTab.equalsIgnoreCase("CU") || sessionFilterTab.equalsIgnoreCase("PA")))
         {
-            this.getRequest().setAttribute("showGenerateReportFile", Boolean.TRUE);
+            // comment out generate PDF in 9.0 release
+            // this.getRequest().setAttribute("showGenerateReportFile", Boolean.TRUE);
         }
         
         return new Forward("success", form);
