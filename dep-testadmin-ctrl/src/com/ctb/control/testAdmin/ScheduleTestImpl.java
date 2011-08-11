@@ -1417,7 +1417,7 @@ public class ScheduleTestImpl implements ScheduleTest
 	        return writeTestSession(userName, newSession);
     	} catch (Exception e) {
     		String message = e.getMessage().toLowerCase();
-            CTBBusinessException ctbe = new SessionCreationException("ScheduleTestImpl: writeTestSession: " + message);
+            CTBBusinessException ctbe = new SessionCreationException(message);
             ctbe.setStackTrace(e.getStackTrace());
     		throw ctbe;
     	}
@@ -1441,7 +1441,7 @@ public class ScheduleTestImpl implements ScheduleTest
 	        return writeTestSession(userName, newSession);
     	} catch (Exception e) {
     		String message = e.getMessage().toLowerCase();
-            CTBBusinessException ctbe = new SessionCreationException("ScheduleTestImpl: writeTestSession: " + message);
+            CTBBusinessException ctbe = new SessionCreationException(message);
             ctbe.setStackTrace(e.getStackTrace());
     		throw ctbe;
     	}
