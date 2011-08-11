@@ -92,7 +92,6 @@ import com.ctb.util.testAdmin.TestFormSelector;
  * @editor-info:code-gen control-interface="true"
  */
 @ControlImplementation(isTransient=true)
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class ScheduleTestImpl implements ScheduleTest
 { 
     /**
