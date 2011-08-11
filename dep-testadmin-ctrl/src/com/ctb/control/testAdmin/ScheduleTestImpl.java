@@ -1759,10 +1759,11 @@ public class ScheduleTestImpl implements ScheduleTest
                 createTestRosters(userName, userId, subtests, newSession, extendedTimeValue);
                 createProctorAssignments(true, userId, newSession);
             } else {
+            	updateTestAdminRecord(userId, session);
                 ArrayList subtests = updateTestAdminItemSetRecords(newSession);
                 updateTestRosters(userName, userId, subtests, newSession, session.getItemSetId(), extendedTimeValue);
                 updateProctorAssignments(userName, userId, newSession);
-                updateTestAdminRecord(userId, session);
+                writeTestAdminRecord(userId, session);
             }
             
             thisTestAdminId = session.getTestAdminId();
@@ -1863,7 +1864,15 @@ public class ScheduleTestImpl implements ScheduleTest
                 session.setFormAssignmentMethod(formAssignmentOverride);
             }
             session.setProgramId(admins.getProgramIdForCustomerAndProduct(session.getCustomerId(), session.getProductId(), session.getLoginStartDate())[0]);
-            //admins.getConnection().setAutoCommit(false);
+        } catch (SQLException se) {
+            SessionCreationException sce = new SessionCreationException("ScheduleTestImpl: updateTestAdmin: " + se.getMessage());
+            sce.setStackTrace(se.getStackTrace());
+            throw sce;
+        }
+    }
+    
+    private void writeTestAdminRecord(Integer userId, TestSession session) throws SessionCreationException {
+        try {
             admins.updateTestAdmin(session);
         } catch (SQLException se) {
             SessionCreationException sce = new SessionCreationException("ScheduleTestImpl: updateTestAdmin: " + se.getMessage());
