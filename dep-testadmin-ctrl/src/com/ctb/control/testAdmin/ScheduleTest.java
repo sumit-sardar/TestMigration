@@ -17,7 +17,6 @@ import org.apache.beehive.controls.api.bean.ControlInterface;
  * @author Nate_Cohen, John_Wang
  */
 @ControlInterface()
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public interface ScheduleTest 
 { 
 
