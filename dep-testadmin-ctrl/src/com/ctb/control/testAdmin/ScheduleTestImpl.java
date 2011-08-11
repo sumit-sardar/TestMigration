@@ -11,7 +11,6 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 import javax.naming.InitialContext;
-import javax.transaction.UserTransaction;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
 
@@ -93,6 +92,7 @@ import com.ctb.util.testAdmin.TestFormSelector;
  * @editor-info:code-gen control-interface="true"
  */
 @ControlImplementation(isTransient=true)
+@TransactionAttribute(TransactionAttributeType.REQUIRED)
 public class ScheduleTestImpl implements ScheduleTest
 { 
     /**
@@ -1410,45 +1410,18 @@ public class ScheduleTestImpl implements ScheduleTest
      * @throws com.ctb.exception.CTBBusinessException
      */
     public Integer createNewTestSession(String userName, ScheduledSession newSession) throws CTBBusinessException {
-    	UserTransaction userTrans = null;
-    	boolean transFailed = false;
     	try {
-            userTrans = getTransaction();
-            //START- Changed for deferred defect 64446
-
-            Float transactionTimeOut = new Float(5) * 60;
-            System.out.println("transactionTimeOut==>"+transactionTimeOut);
-            try{
-            	String testSessionTransactionTimeOut = rb.getString("testSessionTransactionTimeOutMinutes");
-            	transactionTimeOut = new Float(testSessionTransactionTimeOut) * 60;
-            }
-            catch(Exception ex){
-            	transactionTimeOut = new Float(5) * 60;
-            }
-            int txTimeOut = transactionTimeOut.intValue();
-            userTrans.setTransactionTimeout(txTimeOut);
-            //END- Changed for deferred defect 64446
-			userTrans.begin();
-
 	    	validator.validateAdmin(userName, newSession.getTestSession().getTestAdminId(), "testAdmin.createNewTestSession");
 	        validator.validateItemSet(userName, newSession.getTestSession().getItemSetId(), "testAdmin.createNewTestSession");
 	        if(newSession.getTestSession().getTestAdminId() != null)
 	            throw new SessionCreationException("testAdmin: createNewTestSession: cannot create a session with existing session id: " + newSession.getTestSession().getTestAdminId());
 	        return writeTestSession(userName, newSession);
     	} catch (Exception e) {
-    		transFailed = true;
     		String message = e.getMessage().toLowerCase();
             CTBBusinessException ctbe = new SessionCreationException("ScheduleTestImpl: writeTestSession: " + message);
             ctbe.setStackTrace(e.getStackTrace());
     		throw ctbe;
-    	} finally {
-			try {
-				System.out.println("finally");
-				closeTransaction(userTrans,transFailed);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+    	}
     }
         
     /**
@@ -1461,45 +1434,18 @@ public class ScheduleTestImpl implements ScheduleTest
      * @throws com.ctb.exception.CTBBusinessException
      */
     public Integer updateTestSession(String userName, ScheduledSession newSession) throws CTBBusinessException {
-    	UserTransaction userTrans = null;
-    	boolean transFailed = false;
     	try {
-            userTrans = getTransaction();
-            //START- Changed for deferred defect 64446
-
-            Float transactionTimeOut = new Float(5) * 60;
-            System.out.println("transactionTimeOut==>"+transactionTimeOut);
-            try{
-            	String testSessionTransactionTimeOut = rb.getString("testSessionTransactionTimeOutMinutes");
-            	transactionTimeOut = new Float(testSessionTransactionTimeOut) * 60;
-            }
-            catch(Exception ex){
-            	transactionTimeOut = new Float(5) * 60;
-            }
-            int txTimeOut = transactionTimeOut.intValue();
-            userTrans.setTransactionTimeout(txTimeOut);
-            //END- Changed for deferred defect 64446
-			userTrans.begin();
-			
 			validator.validateAdmin(userName, newSession.getTestSession().getTestAdminId(), "testAdmin.updateTestSession");
 	        validator.validateItemSet(userName, newSession.getTestSession().getItemSetId(), "testAdmin.updateTestSession");
 	        if(newSession.getTestSession().getTestAdminId() == null)
 	            throw new SessionCreationException("testAdmin: updateTestSession: cannot update a session with null session id.");
 	        return writeTestSession(userName, newSession);
     	} catch (Exception e) {
-    		transFailed = true;
     		String message = e.getMessage().toLowerCase();
             CTBBusinessException ctbe = new SessionCreationException("ScheduleTestImpl: writeTestSession: " + message);
             ctbe.setStackTrace(e.getStackTrace());
     		throw ctbe;
-    	} finally {
-			try {
-				System.out.println("finally");
-				closeTransaction(userTrans,transFailed);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+    	}
     }
     
     /**
@@ -1735,15 +1681,15 @@ public class ScheduleTestImpl implements ScheduleTest
     public void deleteTestSession(String userName, Integer testAdminId) throws CTBBusinessException {
         validator.validateAdmin(userName, testAdminId, "testAdmin.deleteTestSession");
         try {
-        	siss.getConnection().setAutoCommit(false);
+        	//siss.getConnection().setAutoCommit(false);
             siss.deleteStudentItemSetStatusesForAdmin(testAdminId);
-            rosters.getConnection().setAutoCommit(false);
+            //rosters.getConnection().setAutoCommit(false);
             rosters.deleteTestRostersForAdmin(testAdminId);
-            tais.getConnection().setAutoCommit(false);
+            //tais.getConnection().setAutoCommit(false);
             tais.deleteTestAdminItemSetsForAdmin(testAdminId);
-            taur.getConnection().setAutoCommit(false);
+            //taur.getConnection().setAutoCommit(false);
             taur.deleteTestAdminUserRolesForAdmin(testAdminId);
-            admins.getConnection().setAutoCommit(false);
+            //admins.getConnection().setAutoCommit(false);
             admins.deleteTestAdmin(testAdminId);
         } catch (SQLException se) {
             CTBBusinessException cbe = new SessionDeletionException("ScheduleTestImpl: deleteTestSession: " + se.getMessage());
@@ -1827,6 +1773,7 @@ public class ScheduleTestImpl implements ScheduleTest
             String message = se.getMessage().toLowerCase();
             if(message.indexOf("insufficient available license quantity") >=0) {
                 ctbe = new InsufficientLicenseQuantityException("Insufficient available license quantity");
+                ctbe.setStackTrace(se.getStackTrace());
             }
             //START- Changed for deferred defect 64446
             else{
@@ -1884,7 +1831,7 @@ public class ScheduleTestImpl implements ScheduleTest
             }  
             if(programIds != null && programIds.length ==1)
                 session.setProgramId(programIds[0]);
-            admins.getConnection().setAutoCommit(false);
+            //admins.getConnection().setAutoCommit(false);
             admins.createNewTestAdmin(session);
             return testAdminId;
         } catch (SQLException se) {
@@ -1905,7 +1852,7 @@ public class ScheduleTestImpl implements ScheduleTest
             TestSession oldSession = admins.getTestAdminDetails(session.getTestAdminId());
             if(!oldSession.getItemSetId().equals(session.getItemSetId())) {
                 // existing form assignments are invalid if test has changed
-            	rosters.getConnection().setAutoCommit(false);
+            	//rosters.getConnection().setAutoCommit(false);
                 rosters.clearFormAssignmentsForAdmin(session.getTestAdminId());
             }
             Date loginStartOverride = session.getOverrideLoginStartDate();
@@ -1917,7 +1864,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 session.setFormAssignmentMethod(formAssignmentOverride);
             }
             session.setProgramId(admins.getProgramIdForCustomerAndProduct(session.getCustomerId(), session.getProductId(), session.getLoginStartDate())[0]);
-            admins.getConnection().setAutoCommit(false);
+            //admins.getConnection().setAutoCommit(false);
             admins.updateTestAdmin(session);
         } catch (SQLException se) {
             SessionCreationException sce = new SessionCreationException("ScheduleTestImpl: updateTestAdmin: " + se.getMessage());
@@ -1954,7 +1901,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 se.setTestAdminId(newSession.getTestSession().getTestAdminId());
                 se.setItemSetForm(te.getItemSetForm()); ///tabe form
                 se.setSessionDefault(te.getSessionDefault()); //sessionDefault
-                tais.getConnection().setAutoCommit(false);
+                //tais.getConnection().setAutoCommit(false);
                 tais.createNewTestAdminItemSet(se);
                 String cacheKey = String.valueOf(te.getItemSetId()) + "|TD";
                 TestElementCacheObject cacheObj = (TestElementCacheObject) SimpleCache.checkCache5min("TEST_ELEMENT", cacheKey);
@@ -2056,7 +2003,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 se.setSessionDefault(newUnit.getSessionDefault()); //sessionDefault
                 se.setTestAdminId(newSession.getTestSession().getTestAdminId());
                 if(oldUnit == null) {
-                	tais.getConnection().setAutoCommit(false);
+                	//tais.getConnection().setAutoCommit(false);
                     tais.createNewTestAdminItemSet(se);
                 } else {
                     if("T".equals(oldUnit.getTested())) {
@@ -2065,7 +2012,7 @@ public class ScheduleTestImpl implements ScheduleTest
                             throw new SessionCreationException("ScheduleTestImpl: updateTestAdminItemSetRecords: attempted to update a test element which has already been taken");    
                         }
                     } else {
-                    	tais.getConnection().setAutoCommit(false);                    	
+                    	//tais.getConnection().setAutoCommit(false);                    	
                         tais.updateTestAdminItemSet(se);
                     }
                     oldMap.remove(newUnit.getItemSetId());                   
@@ -2126,11 +2073,11 @@ public class ScheduleTestImpl implements ScheduleTest
                     se.setTestAdminId(newSession.getTestSession().getTestAdminId());
                     if(!"T".equals(se.getTested())) {
                         if(oldMap.containsKey(sm1.getItemSetId())){
-                        	tais.getConnection().setAutoCommit(false);
+                        	//tais.getConnection().setAutoCommit(false);
                             tais.updateTestAdminItemSet(se);
                             oldMap.remove(sm1.getItemSetId());
                         }else{
-                        	tais.getConnection().setAutoCommit(false);
+                        	//tais.getConnection().setAutoCommit(false);
                             tais.createNewTestAdminItemSet(se); 
                         }
                     }else{
@@ -2146,7 +2093,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 if("T".equals(oldUnit.getTested())) {
                     throw new SessionCreationException("ScheduleTestImpl: updateTestAdminItemSetRecords: attempted to remove a test element which has already been taken");  
                 } else {
-                	tais.getConnection().setAutoCommit(false);
+                	//tais.getConnection().setAutoCommit(false);
                     tais.deleteTestAdminItemSet(oldUnit);
                 }
             }
@@ -2173,7 +2120,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     proctor.setRoleId(new Integer(1004));
                     proctor.setTestAdminId(testAdminId);
                     proctor.setUserId(proctors[k].getUserId());
-                    taur.getConnection().setAutoCommit(false);
+                    //taur.getConnection().setAutoCommit(false);
                     taur.createNewTestAdminUserRole(proctor);
                     if(newSession.getTestSession().getCreatedBy().equals(proctors[k].getUserName()) || userId.equals(proctors[k].getUserId())) {
                         addedDefaultProctor = true;
@@ -2188,7 +2135,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 proctor.setRoleId(new Integer(1004));
                 proctor.setTestAdminId(testAdminId);
                 proctor.setUserId(userId);
-                taur.getConnection().setAutoCommit(false);
+                //taur.getConnection().setAutoCommit(false);
                 taur.createNewTestAdminUserRole(proctor);
             }
         } catch (SQLException se) {
@@ -2200,7 +2147,7 @@ public class ScheduleTestImpl implements ScheduleTest
     
     private void updateProctorAssignments(String userName, Integer userId, ScheduledSession newSession) throws SessionCreationException{
         try {
-        	taur.getConnection().setAutoCommit(false);
+        	//taur.getConnection().setAutoCommit(false);
             taur.deleteTestAdminUserRolesForAdmin(newSession.getTestSession().getTestAdminId());
             createProctorAssignments(false, userId, newSession);
         } catch (SQLException se) {
@@ -2284,7 +2231,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     // End changes for Student Pacing
                     
                     try {
-                    	rosters.getConnection().setAutoCommit(false);
+                    	//rosters.getConnection().setAutoCommit(false);
                         rosters.createNewTestRoster(roster);
                     } catch (SQLException se) {
                         boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
@@ -2293,7 +2240,7 @@ public class ScheduleTestImpl implements ScheduleTest
                             validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
                         }
                         roster.setPassword(password);
-                        rosters.getConnection().setAutoCommit(false);
+                        //rosters.getConnection().setAutoCommit(false);
                         rosters.createNewTestRoster(roster);
                     }
                     StudentSubtestAssignment newAssignment = new StudentSubtestAssignment();
@@ -2420,7 +2367,7 @@ public class ScheduleTestImpl implements ScheduleTest
                     re.setExtendedTime(rosterExtendedTime);
                     // End changes for Student Pacing
                     try {
-                    	rosters.getConnection().setAutoCommit(false);
+                    	//rosters.getConnection().setAutoCommit(false);
                         rosters.createNewTestRoster(re);
                     } catch (SQLException se) {
                         boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
@@ -2429,7 +2376,7 @@ public class ScheduleTestImpl implements ScheduleTest
                             validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
                         }
                         re.setPassword(password);
-                        rosters.getConnection().setAutoCommit(false);
+                        //rosters.getConnection().setAutoCommit(false);
                         rosters.createNewTestRoster(re);
                     }
                     re = rosters.getRosterElementForStudentAndAdmin(re.getStudentId(), testAdminId);
@@ -2503,7 +2450,7 @@ public class ScheduleTestImpl implements ScheduleTest
                         !re.getTestCompletionStatus().equals(oldUnit.getTestCompletionStatus()) ||
                         !re.getValidationStatus().equals(oldUnit.getValidationStatus()) ||
                         (re.getCustomerFlagStatus() != null && !re.getCustomerFlagStatus().equals(oldUnit.getCustomerFlagStatus()))  ) {
-                    	rosters.getConnection().setAutoCommit(false);
+                    	//rosters.getConnection().setAutoCommit(false);
                         rosters.updateTestRoster(re);
                     }
                     oldMap.remove(newUnit.getStudentId());
@@ -2531,9 +2478,9 @@ public class ScheduleTestImpl implements ScheduleTest
                 } else {
                     // can only remove rosters to which editing user has permission
                     if(students.isStudentEditableByUser(userName, oldUnit.getStudentId()).intValue() > 0 ? true : false) {
-                    	siss.getConnection().setAutoCommit(false);
+                    	//siss.getConnection().setAutoCommit(false);
                     	siss.deleteStudentItemSetStatusesForRoster(oldUnit.getTestRosterId());
-                    	rosters.getConnection().setAutoCommit(false);
+                    	//rosters.getConnection().setAutoCommit(false);
                     	rosters.deleteTestRoster(oldUnit);
                     }
                 }
@@ -2600,7 +2547,7 @@ public class ScheduleTestImpl implements ScheduleTest
                         rosterCount++;
                         //START -added for LLO-109 change
                         if(rosterCount >= 999) {
-                        	siss.getConnection().setAutoCommit(false);
+                        	//siss.getConnection().setAutoCommit(false);
                             siss.createNewStudentItemSetStatus(customerId, admins, students, subtestId, order, "F", "VA", "SC","N","N");
                             rosterCount = 0;
                             admins = "";
@@ -2608,7 +2555,7 @@ public class ScheduleTestImpl implements ScheduleTest
                         }
                     }
                     if(!"".equals(admins) && !"".equals(students)) {
-                    	siss.getConnection().setAutoCommit(false);
+                    	//siss.getConnection().setAutoCommit(false);
                         siss.createNewStudentItemSetStatus(customerId, admins, students, subtestId, order, "F", "VA", "SC","N","N");
                     }
                     //END - added for LLO-109 change
@@ -2626,7 +2573,7 @@ public class ScheduleTestImpl implements ScheduleTest
             Iterator manifestIterator = manifests.iterator();
             while(manifestIterator.hasNext()) {
                 StudentSubtestAssignment assignment = (StudentSubtestAssignment) manifestIterator.next();
-                siss.getConnection().setAutoCommit(false);
+                //siss.getConnection().setAutoCommit(false);
                 siss.deleteStudentItemSetStatusesForRoster(assignment.getTestRosterId());
             }
             createStudentItemSetStatusRecords(customerId, manifests);
@@ -2785,18 +2732,11 @@ public class ScheduleTestImpl implements ScheduleTest
      public RosterElement addStudentToSession(String userName, com.ctb.bean.testAdmin.SessionStudent sessionStudent, Integer testAdminId)throws com.ctb.exception.CTBBusinessException
      {       
        // validator.validate(userName,testAdminId,"addStudentToSession");
-        
-    	
-    	UserTransaction userTrans = null;
-    	boolean transanctionFlag = false;
         RosterElement roster = new RosterElement(); 
         Double extendedTimeValue = 0.0;// added for student pacing
         
     
         try{  
-            userTrans = getTransaction();
-			userTrans.begin();
-			
             TestSession testSession = admins.getTestAdminDetails(testAdminId);
             Integer userId = users.getUserIdForName(userName);
             Integer customerId = testSession.getCustomerId();
@@ -2856,7 +2796,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 // End changes for Student Pacing
             
                 try {
-                	rosters.getConnection().setAutoCommit(false);
+                	//rosters.getConnection().setAutoCommit(false);
                     rosters.createNewTestRoster(roster);
                 } catch (SQLException se) {
                     boolean validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
@@ -2865,7 +2805,7 @@ public class ScheduleTestImpl implements ScheduleTest
                         validPassword = rosters.getRosterCountForPassword(password).intValue() == 0;
                     }
                     roster.setPassword(password);
-                    rosters.getConnection().setAutoCommit(false);
+                    //rosters.getConnection().setAutoCommit(false);
                     rosters.createNewTestRoster(roster);
                 }                
                 
@@ -2898,7 +2838,7 @@ public class ScheduleTestImpl implements ScheduleTest
                                 sss.setValidationUpdatedDateTime(new Date());
                                 sss.setValidationUpdatedNote("");
                                 //for defect #-  65787
-                                rosters.getConnection().setAutoCommit(false);
+                                //rosters.getConnection().setAutoCommit(false);
                                 rosters.createNewStudentItemSetStatusForRoster(customerId, sss,rosterId);
                                 subtestOrder++;
                             }
@@ -2923,9 +2863,7 @@ public class ScheduleTestImpl implements ScheduleTest
                 }      */          
                 return roster;
         } catch (Exception se) {
-        	transanctionFlag = true;
-
-            CTBBusinessException ctbe = null;
+        	CTBBusinessException ctbe = null;
             String message = se.getMessage().toLowerCase();
             if(message.indexOf("insufficient available license quantity") >=0) {
                 ctbe = new InsufficientLicenseQuantityException("Insufficient available license quantity");
@@ -2935,13 +2873,6 @@ public class ScheduleTestImpl implements ScheduleTest
             }
             throw ctbe;
         }
-        finally{
-		try {
-			closeTransaction(userTrans,transanctionFlag);
-			} catch (Exception e) {
-			e.printStackTrace();
-			}
-		}
      } 
  
     /**
@@ -2960,12 +2891,8 @@ public class ScheduleTestImpl implements ScheduleTest
      public RosterElement updateManifestForRoster(java.lang.String userName,java.lang.Integer studentId,java.lang.Integer stdentOrgNodeId,java.lang.Integer testAdminId, com.ctb.bean.testAdmin.StudentManifestData studentManifestData) throws com.ctb.exception.CTBBusinessException
      {
        // validator.validate(userName,studentId,"updateManifestForRoster");
-        //START -Added for deferred defect #64306 and #64308
-        UserTransaction userTrans = null;
-    	boolean transanctionFlag = false;   
+        //START -Added for deferred defect #64306 and #64308  
         try{	
-        		userTrans = getTransaction();
-        		userTrans.begin();
         //END -Added for deferred defect #64306 and #64308        		
                  Integer  userId  = users.getUserIdForName(userName);     
                  Integer customerId = users.getCustomerIdForName(userName);            
@@ -2981,12 +2908,12 @@ public class ScheduleTestImpl implements ScheduleTest
                         OrgNodeStudent orgNodeStd =  orgNodeStudent.getValidStudentOrgNode(studentId,stdentOrgNodeId);
                         if(orgNodeStd.getOrgNodeId() != null){
                             roster.setOrgNodeId(orgNodeStd.getOrgNodeId());
-                            rosters.getConnection().setAutoCommit(false);
+                            //rosters.getConnection().setAutoCommit(false);
                             rosters.updateTestRoster(roster);
                          }
                     }                   
                     Integer rosterId = roster.getTestRosterId();
-                    siss.getConnection().setAutoCommit(false);
+                    //siss.getConnection().setAutoCommit(false);
                     siss.deleteStudentItemSetStatusesForRoster(rosterId);
                     StudentManifest[] studentManifests = studentManifestData.getStudentManifests();  
                     checkTestAdminItemSets(testAdminId,studentManifests);
@@ -3012,7 +2939,7 @@ public class ScheduleTestImpl implements ScheduleTest
                                 sss.setValidationUpdatedBy(userId);
                                 sss.setValidationUpdatedDateTime(new Date());
                                 sss.setValidationUpdatedNote("");
-                                siss.getConnection().setAutoCommit(false);
+                                //siss.getConnection().setAutoCommit(false);
                                 siss.createNewStudentItemSetStatusForRoster(customerId, sss, rosterId);
                                 subtestOrder++;
                             }                            
@@ -3025,7 +2952,6 @@ public class ScheduleTestImpl implements ScheduleTest
          //START- Added for deferred defect #64306 and #64308
          
          catch(Exception se){
-        	 transanctionFlag = true;
 
      	 CTBBusinessException muf = null;
      	 String message = se.getMessage().toLowerCase();
@@ -3037,15 +2963,6 @@ public class ScheduleTestImpl implements ScheduleTest
           }
          throw muf; 
          }
-         finally{
-
- 			try {
- 				System.out.println("finally");
- 				closeTransaction(userTrans,transanctionFlag);
- 			} catch (Exception e) {
- 				e.printStackTrace();
- 			}
- 		}
         //END- Added for deferred defect #64306 and #64308   
      }  
      
@@ -3062,9 +2979,9 @@ public class ScheduleTestImpl implements ScheduleTest
            // validator.validate(userName,studentId,"deleteAddedStudentFormSession");
         try{            
             RosterElement re  = rosters.getRosterElementForStudentAndAdmin(studentId,testAdminId);
-            siss.getConnection().setAutoCommit(false);
+            //siss.getConnection().setAutoCommit(false);
             siss.deleteStudentItemSetStatusesForRoster(re.getTestRosterId());
-            rosters.getConnection().setAutoCommit(false);
+            //rosters.getConnection().setAutoCommit(false);
             rosters.deleteTestRoster(re);            
         }catch(SQLException se){
             CTBBusinessException cbe = new RosterDataNotFoundException("ScheduleTestImpl: deleteAddedStudentFromSession: " + se.getMessage());
@@ -3270,7 +3187,7 @@ public class ScheduleTestImpl implements ScheduleTest
                             se.setAccessCode(code);
                         }                        
                     }
-                    tais.getConnection().setAutoCommit(false);
+                    //tais.getConnection().setAutoCommit(false);
                     tais.createNewTestAdminItemSet(se);
                     itemSetOrder++; 
                 }else{
@@ -3282,7 +3199,7 @@ public class ScheduleTestImpl implements ScheduleTest
                while(sessionSubtestItr.hasNext()){
                     ScheduleElement se = (ScheduleElement)sessionSubtestItr.next();
                     if ("F".equals(se.getSessionDefault())){
-                    	tais.getConnection().setAutoCommit(false);
+                    	//tais.getConnection().setAutoCommit(false);
                         tais.deleteTestAdminItemSet(se);
                     }
                }
@@ -3302,7 +3219,7 @@ public class ScheduleTestImpl implements ScheduleTest
                for(int i=0;i<scheduleElements.length;i++){                
                     ScheduleElement se = scheduleElements[i];                    
                     se.setItemSetOrder(new Integer(i+1));
-                    tais.getConnection().setAutoCommit(false);
+                    //tais.getConnection().setAutoCommit(false);
                     tais.updateTestAdminItemSetOrder(se);
                }    
             }   
@@ -3336,48 +3253,5 @@ public class ScheduleTestImpl implements ScheduleTest
         }
         return orderedSubtests;
     }
-    
-    /**
-	 * This method return UserTransaction instance
-	 * @return UserTransaction
-	 */
-
-    private UserTransaction getTransaction() {
-
-		UserTransaction userTransaction = null;
-		try {
-
-			InitialContext init = new InitialContext ();
-			userTransaction = (UserTransaction)init.lookup("javax.transaction.UserTransaction");
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-		}
-
-		return userTransaction;
-	}
-
-	/**
-	 * This method is used to close the transaction
-	 * @param userTransaction
-	 */
-
-    private void closeTransaction (UserTransaction userTransaction, boolean flag) {
-		try {
-			System.out.println("Close transaction");
-			if(userTransaction != null && !flag) {
-				System.out.println("Commit transaction");
-				userTransaction.commit();
-			} else if (userTransaction != null) {
-				System.out.println("Rollback transaction");
-				userTransaction.rollback();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-
-	}
     
 } 
