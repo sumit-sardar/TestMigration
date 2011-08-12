@@ -30,9 +30,14 @@ import com.ctb.testSessionInfo.dto.TestSessionVO;
 import com.ctb.testSessionInfo.utils.DateUtils;
 import com.ctb.testSessionInfo.utils.JsonUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
@@ -41,6 +46,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -404,7 +411,7 @@ public class ViewMonitorStatusController extends PageFlowController
      */
 	@Jpf.Action(
 		forwards = { 
-			@Jpf.Forward(name = "success", path = "multiple_student_IPR.jsp"), 
+			@Jpf.Forward(name = "success", path = "report_queue.jsp"), 
 			@Jpf.Forward(name = "error", path = "/error.jsp")
 		}
 	)
@@ -416,11 +423,8 @@ public class ViewMonitorStatusController extends PageFlowController
         	        if (principal != null) 
         	            this.userName = principal.toString();  
         	}
-        	
-    		System.out.println("fileName = " + this.fileName);
-    		System.out.println("fileType = " + this.fileType);
-    		System.out.println("userEmail = " + this.userEmail);
 
+        	String reportUrl = null;        	
     		Integer[] testRosterIds = new Integer[this.selectedRosterIds.size()];
         	for (int i=0 ; i<this.selectedRosterIds.size() ; i++) {
         		Integer rosterId = (Integer)this.selectedRosterIds.get(i);
@@ -428,11 +432,29 @@ public class ViewMonitorStatusController extends PageFlowController
         		testRosterIds[i] = rosterId;
         	}
     		
-            String reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, testRosterIds, this.fileName, this.fileType, this.userEmail);    
+            reportUrl = this.testSessionStatus.getIndividualReportUrl(this.userName, testRosterIds, this.fileName, this.fileType, this.userEmail);    
             
+            try {
+	    		URL url = new URL(reportUrl);
+	    		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	    		connection.setRequestMethod("GET");
+	    		connection.setDoOutput(true);
+	    		connection.setDoInput(true);
+	    		connection.setUseCaches(false);
+	    		//System.out.println(connection.getResponseCode());
+    		
+            } catch (Exception e) { }
+            
+			String reportParam = this.testSessionStatus.getReportParams(this.userName);
+			StringTokenizer st = new StringTokenizer(reportParam, "|"); 
+			String sys = st.nextToken(); 
+			String parms = st.nextToken(); 
+
+			String url = this.testSessionStatus.getReportOpenAPI_URL("RequestQueue");
+            reportUrl = url + "?sys=" + sys + "&parms="+ parms;
+              
             this.getRequest().setAttribute("reportUrl", reportUrl);
-            this.getRequest().setAttribute("testAdminId", String.valueOf(this.sessionId));
-            this.getRequest().setAttribute("showReporNavigation", "true");
+            System.out.println("RequestQueue URL: " + reportUrl);
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -465,12 +487,11 @@ public class ViewMonitorStatusController extends PageFlowController
 			String sys = st.nextToken(); 
 			String parms = st.nextToken(); 
 
-        	String url = "https://tlqaoas.mhe.mhc/openapi/RequestQueue.aspx";
+			String url = this.testSessionStatus.getReportOpenAPI_URL("RequestQueue");
             String reportUrl = url + "?sys=" + sys + "&parms="+ parms;
-            
-            System.out.println("Report Queue URL: " + reportUrl);
               
             this.getRequest().setAttribute("reportUrl", reportUrl);
+            System.out.println("RequestQueue URL: " + reportUrl);
 		
 		} catch (CTBBusinessException e) {
 			e.printStackTrace();
@@ -479,63 +500,6 @@ public class ViewMonitorStatusController extends PageFlowController
         return new Forward("success");
     }
 
-    /**
-     * @jpf:action
-     * @jpf:forward name="success" path="report_queue.jsp"
-     */
-	@Jpf.Action(
-		forwards = { 
-			@Jpf.Forward(name = "success", path = "report_queue.jsp")
-		}
-	)
-    protected Forward authUser()
-    {
-    	HttpServletResponse resp = this.getResponse();
-    	HttpServletRequest req = this.getRequest();
-    	
-    	resp.setContentType("application/x-javascript");  
-    	//resp.setContentType("text/x-json");  
-    	
-        String callback = req.getParameter("callback");
-		String username = req.getParameter("username");
-	    String password = req.getParameter("password");
-
-        PrintWriter out = null;
-		try {
-			out = resp.getWriter();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        
-		try {
-
-			String reportParam = this.testSessionStatus.getReportParams(username);
-			StringTokenizer st = new StringTokenizer(reportParam, "|"); 
-			String sys = st.nextToken(); 
-			String parms = st.nextToken(); 
-
-	        if (callback != null) {
-	            out.println(callback + "(");
-	        }
-			
-	        out.println("{" +
-	                "\"sys\": \"" + sys + "\", " +
-	                "\"parms\": \"" + parms + "\"}");
-
-	        if (callback != null) {
-	          out.println(")");
-	        }
-	        out.flush();
-	        
-	        
-		} catch (Exception e) {
-			e.printStackTrace();
-	        out.println("{ERROR}");
-	        out.flush();			
-		}
-		
-		return null;
-    }
 	
     /**
 	 * New method added for CR - GA2011CR001
