@@ -94,6 +94,27 @@ public interface CustomerReportBridge extends JdbcControl
    
     /**
      * @jc:sql statement::
+     * select 
+     *     bridge.CUSTOMER_ID as customerId,
+     *     bridge.REPORT_NAME as reportName,
+     *     bridge.DISPLAY_NAME as displayName,
+     *     bridge.DESCRIPTION as description,
+     *     bridge.SYSTEM_KEY as systemKey,
+     *     bridge.CUSTOMER_KEY as customerKey,
+     *     bridge.REPORT_URL as reportUrl,
+     *     bridge.PRODUCT_ID as productId,
+     * from 
+     *      customer_report_bridge bridge
+     * where 
+     *     bridge.report_name = {reportName}::
+     *     array-max-length="all"
+     */
+    @JdbcControl.SQL(statement = "select bridge.CUSTOMER_ID as customerId,  bridge.REPORT_NAME as reportName,  bridge.DISPLAY_NAME as displayName,  bridge.DESCRIPTION as description,  bridge.SYSTEM_KEY as systemKey,  bridge.CUSTOMER_KEY as customerKey,  bridge.REPORT_URL as reportUrl,  bridge.PRODUCT_ID as productId  from  customer_report_bridge bridge where bridge.report_name = {reportName}",
+                     arrayMaxLength = 100000)
+    CustomerReport getReportOpenAPI(String reportName) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
      * select distinct
      *     pr.PROGRAM_ID as programId, 
      *     pr.PRODUCT_ID as productId,
