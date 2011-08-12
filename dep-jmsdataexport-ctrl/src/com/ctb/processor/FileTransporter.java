@@ -72,7 +72,10 @@ public class FileTransporter {
 
 	private void doFtp(List<String> fileList) throws CTBBusinessException {
 
-		String destinationPath = Configuration.getFtpFilepath();
+		String destinationPathDataFile = Configuration.getFtpDataFilepath();
+		String destinationPathOrderFile = Configuration.getFtpOrderFilepath();
+		String destination;
+		Integer i =0;
 		FTPClient ftpClient = new FTPClient();
 		try {
 			ftpClient.setRemoteHost(Configuration.getFtphost());
@@ -82,18 +85,25 @@ public class FileTransporter {
 			ftpClient.login(Configuration.getFtpuser(), Configuration
 					.getFtppassword());
 			ftpClient.setType(FTPTransferType.BINARY);
+			
 			for (String sourceFile : fileList) {
 				sourceFile = sourceFile.replaceAll("%20", " ");
 				String compressedFile = sourceFile + ".gz";
 				String filename = getfileName(compressedFile);
 				CompressUtil.gzipFile(sourceFile, compressedFile);
-
-				String destination = destinationPath + File.separator
-						+ filename;
+				if( i > 0){
+					destination = destinationPathOrderFile + File.separator
+					+ filename;
+				}
+				else {
+					destination = destinationPathDataFile + File.separator
+					+ filename;
+				}
+				 
 				destination = destination.replaceAll("%20", " ");
 				ftpClient.put(compressedFile, destination);
 				new File(compressedFile).delete();
-
+				i++;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -120,13 +130,17 @@ public class FileTransporter {
 		 properties.put("compression.s2c", "none");
 		 properties.put("compression.c2s", "none");
 
-		String destinationPath = Configuration.getFtpFilepath();
+		String destinationPathDataFile = Configuration.getFtpDataFilepath();
+		String destinationPathOrderFile = Configuration.getFtpOrderFilepath();
+		String destinationPath;
 		String ftpHost = Configuration.getFtphost();
 		String ftpUser = Configuration.getFtpuser();
 		String ftpPass = Configuration.getFtppassword();
+		int ftpPort = Configuration.getFtpFilePort();
+		Integer i =0;
 		System.out.println("Connecting to server:"+ftpHost);
 		try {
-			session = jsch.getSession(ftpUser, ftpHost, 22);
+			session = jsch.getSession(ftpUser, ftpHost, ftpPort);
 			session.setConfig(properties);
 			session.setPassword(ftpPass);
 
@@ -144,6 +158,13 @@ public class FileTransporter {
 				String filename = getfileName(sourceCompressedFileWithPath);
 				CompressUtil.gzipFile(sourceFileWithPath,
 						sourceCompressedFileWithPath);
+				if ( i > 0){
+					destinationPath = destinationPathOrderFile;
+				} 
+				else{
+					destinationPath = destinationPathDataFile;
+				}
+				
 				String destinationFileWithPath = destinationPath
 						+ File.separator + filename;
 				destinationFileWithPath = destinationFileWithPath.replaceAll(
@@ -163,6 +184,7 @@ public class FileTransporter {
 				}
 				System.out.println("File transfer is completed for file "
 						+ getfileName(sourceFileWithPath));
+				i++;
 			}
 
 		} catch (JSchException e) {

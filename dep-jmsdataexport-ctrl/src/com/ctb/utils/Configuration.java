@@ -6,7 +6,9 @@ public class Configuration {
 	static String ftphost = "";
 	static String ftpuser = "";
 	static String ftppassword = "";
-	static String ftpFilepath = "";
+	static String ftpDataFilepath = "";
+	static String ftpOrderFilepath = "";
+	static Integer ftpFilePort = 0;
 	
 	static String devloperEmailId = "";
 	static String devloperEmailSubject = "";
@@ -24,7 +26,9 @@ public class Configuration {
 		ftphost = ExtractUtil.getDetail("oas.exportdata.ftphost");
 		ftpuser = ExtractUtil.getDetail("oas.exportdata.ftpuser");
 		ftppassword = ExtractUtil.getDetail("oas.exportdata.ftppassword");
-		ftpFilepath = ExtractUtil.getDetail("oas.exportdata.remote.ftp.filestore");
+		ftpDataFilepath = ExtractUtil.getDetail("oas.exportdata.remote.ftp.datafile.filestore");
+		ftpOrderFilepath = ExtractUtil.getDetail("oas.exportdata.remote.ftp.orderfile.filestore");
+		ftpFilePort = new Integer(ExtractUtil.getDetail("oas.exportdata.remote.ftp.port"));
 		
 		devloperEmailId = ExtractUtil.getDetail("oas.exportdata.ftp.failure.email.to");
 		devloperEmailSubject = ExtractUtil.getDetail("oas.exportdata.ftp.failure.email.subject");
@@ -70,9 +74,7 @@ public class Configuration {
 	/**
 	 * @return the filepath
 	 */
-	public static String getFtpFilepath() {
-		return ftpFilepath;
-	}
+
 
 	/**
 	 * @return the devloperEmailId
@@ -123,4 +125,28 @@ public class Configuration {
 		return userEmailReplyTo;
 	}
 
+	/**
+	 * @return the ftpDataFilepath
+	 */
+	public static String getFtpDataFilepath() {
+		return ftpDataFilepath;
+	}
+
+	/**
+	 * @return the ftpOrderFilepath
+	 */
+	public static String getFtpOrderFilepath() {
+		return ftpOrderFilepath;
+	}
+
+	/**
+	 * @return the ftpFilePort
+	 */
+	public static Integer getFtpFilePort() {
+		return ftpFilePort;
+	}
+
+
+
+	
 }
