@@ -322,15 +322,17 @@ public class TestSessionStatusImpl implements TestSessionStatus
         	
             CustomerReport [] cr = reportBridge.getReportAssignmentsForProgram(session.getProgramId(), session.getCreatorOrgNodeId());
             for (int i=0; i < cr.length; i++) {
-                String report = cr[i].getReportUrl();
                 if(cr[i].getReportName().indexOf("IndividualProfile") >= 0) {
-                    //reportURL = report;
-                    reportURL = "https://tlqaoas.mhe.mhc/openapi/ReportService.svc/Profile";
                     systemKey = cr[i].getSystemKey();
                     customerKey = cr[i].getCustomerKey();
                     orgCategoryLevel = String.valueOf(cr[i].getCategoryLevel());
+                    break;
                 }
             }
+            
+            CustomerReport crOpenAPI = reportBridge.getReportOpenAPI("ReportService");
+            reportURL = crOpenAPI.getReportUrl();
+            
             String encryptedProgramId = DESUtils.encrypt(String.valueOf(programId), systemKey);
             String paramsPlainText = 
                 "Timestamp="+(new Date()).toString()+
@@ -342,7 +344,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
                 "&CurrentTestSessionId="+sessionId+
                 "&CurrentStudentId="+studentId;
             
-            System.out.println("No encrypted URL: " + reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+paramsPlainText+"&RunReport=1");
+            //System.out.println("No encrypted URL: " + reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+paramsPlainText+"&RunReport=1");
             
             String encryptedParams = DESUtils.encrypt(paramsPlainText, customerKey);
             reportURL = reportURL +"?TestID="+testId+"&sys="+encryptedProgramId+"&parms="+encryptedParams+"&RunReport=1";
@@ -354,7 +356,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
             throw tee;
         }
         
-        System.out.println("Report URL: " + reportURL);
+        System.out.println("ReportService URL: " + reportURL);
         return reportURL;
     }
     
@@ -384,6 +386,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
                     orgCategoryLevel = String.valueOf(cr[i].getCategoryLevel());
                 }
             }
+            
             String encryptedProgramId = DESUtils.encrypt(String.valueOf(programId), systemKey);
             String paramsPlainText = 
                 "Timestamp="+(new Date()).toString()+
@@ -400,9 +403,21 @@ public class TestSessionStatusImpl implements TestSessionStatus
             throw tee;
         }
         
-        //System.out.println("Report parms: " + result);
-        
         return result;
+    }
+
+    /**
+     */
+    public String getReportOpenAPI_URL(String reportName) throws CTBBusinessException {
+    	String reportURL = "";
+        try {
+        	
+            CustomerReport crOpenAPI = reportBridge.getReportOpenAPI(reportName);
+            reportURL = crOpenAPI.getReportUrl();
+        	
+        } catch (Exception e) {}
+        
+        return reportURL;
     }
     
     /**

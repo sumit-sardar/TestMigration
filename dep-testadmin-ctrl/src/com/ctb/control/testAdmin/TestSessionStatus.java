@@ -468,6 +468,10 @@ public interface TestSessionStatus
     java.lang.String getReportParams(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
     
     
+    /**   
+     * @throws com.ctb.exception.CTBBusinessException
+     */
+    java.lang.String getReportOpenAPI_URL(java.lang.String reportName) throws com.ctb.exception.CTBBusinessException;
     
     /**   
      * @param userName
