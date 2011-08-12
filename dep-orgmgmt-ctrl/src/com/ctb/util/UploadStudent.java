@@ -176,6 +176,7 @@ public class UploadStudent extends BatchProcessor.Process
 
 	//For TABE-BAUM Unique Student Id
 	private boolean isStudentIdUnique = false;
+	//store student IDs for checking duplicacy
 	private ArrayList studentIdList = new ArrayList();
 	
 	public UploadStudent ( String serverFilePath,String username, 
@@ -1110,7 +1111,7 @@ public class UploadStudent extends BatchProcessor.Process
 						equals(CTBConstants.QUESTION_FONT_COLOR)
 						&& !strCell.trim().equals("")
 						&& !isValidColorCombination(msBackGroundColor,strCell)){
-
+					
 					logicalErrorList.add(CTBConstants.QUESTION_FONT_COLOR);
 				}
 
@@ -1137,7 +1138,9 @@ public class UploadStudent extends BatchProcessor.Process
 
 					if(isStudentIdUnique(strCell) && !studentIdList.contains(strCell.trim())) {
 System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.contains(strCell.trim()));
-						studentIdList.add(strCell.trim());
+						if(logicalErrorList.size() == 0) {//if there is no logical error in the row, add studentId to studentIdList  
+							studentIdList.add(strCell.trim());
+						}
 					} else {
 						logicalErrorList.add(CTBConstants.STUDENT_ID);
 					}
