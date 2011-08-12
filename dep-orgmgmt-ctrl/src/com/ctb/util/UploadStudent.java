@@ -176,7 +176,8 @@ public class UploadStudent extends BatchProcessor.Process
 
 	//For TABE-BAUM Unique Student Id
 	private boolean isStudentIdUnique = false;
-
+	private ArrayList studentIdList = new ArrayList();
+	
 	public UploadStudent ( String serverFilePath,String username, 
 			InputStream uploadedStream , 
 			StudentFileRow []studentFileRowHeader,
@@ -1132,10 +1133,14 @@ public class UploadStudent extends BatchProcessor.Process
 				}
 				//For TABE-BAUM Unique Student Id
 				if (this.isStudentIdUnique && cellHeader.getStringCellValue().
-						equals(CTBConstants.STUDENT_ID)
-						&& !isStudentIdUnique(strCell)){
-					
-					logicalErrorList.add(CTBConstants.STUDENT_ID);
+						equals(CTBConstants.STUDENT_ID)){
+
+					if(isStudentIdUnique(strCell) && !studentIdList.contains(strCell.trim())) {
+System.out.println("studentIdList.contains(strCell.trim()) : "+studentIdList.contains(strCell.trim()));
+						studentIdList.add(strCell.trim());
+					} else {
+						logicalErrorList.add(CTBConstants.STUDENT_ID);
+					}
 				}
 			}
 
