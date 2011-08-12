@@ -13,7 +13,7 @@
 <netui-template:template templatePage="/resources/jsp/template_manage_license.jsp">
 
 <netui-template:setAttribute name="title" value="${bundle.web['manageLicense.window.title']}"/>
-<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.testLicense']}"/>
+<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.NodeLicense']}"/>
 <netui-template:section name="bodySection">
  
 <!-- ********************************************************************************************************************* -->

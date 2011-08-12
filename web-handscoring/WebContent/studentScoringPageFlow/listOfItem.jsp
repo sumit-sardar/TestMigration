@@ -124,7 +124,7 @@ function stopAudio(){
 
 <netui-template:template templatePage="/resources/jsp/template.jsp">
 	<netui-template:setAttribute name="title" value="${bundle.web['individualStudentScoring.window.title']}" />
-	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.findStudent']}" />
+	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.handScoring']}" />
 	<netui-template:section name="bodySection">
 
 		<!-- ********************************************************************************************************************* -->
