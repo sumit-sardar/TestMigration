@@ -16,7 +16,7 @@ template_find_job.jsp
 -->
 
 	<netui-template:setAttribute name="title" value="${bundle.web['dataexports.window.title']}" />
-	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.findStudent']}" />
+	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.dataExport']}" />
 	<netui-template:section name="bodySection">
 
 		<!-- ********************************************************************************************************************* -->
