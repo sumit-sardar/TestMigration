@@ -75,7 +75,7 @@ public class ObjectiveNumberCorrectCalculator extends Calculator {
         // since the sicEvent has not reached this instance yet!
         
         channel.subscribe(this, SubtestObjectiveCollectionEvent.class);
-        mustPrecede(SubtestItemCollectionEvent.class, SubtestObjectiveCollectionEvent.class);
+        //mustPrecede(SubtestItemCollectionEvent.class, SubtestObjectiveCollectionEvent.class);
         channel.subscribe(this, ResponseReceivedEvent.class);
         // HACKTAG: Since we are handling events depth-first, we cannot validate state here
         // since the sicEvent has not reached this instance yet!

@@ -70,7 +70,7 @@ public class SubtestValidationCalculator extends Calculator {
 
         channel.subscribe(this, SubtestItemCollectionEvent.class);
         channel.subscribe(this, SubtestObjectiveCollectionEvent.class);
-        mustPrecede(SubtestItemCollectionEvent.class, SubtestObjectiveCollectionEvent.class);
+       // mustPrecede(SubtestItemCollectionEvent.class, SubtestObjectiveCollectionEvent.class);
         mustPrecede(SubtestItemCollectionEvent.class, SubtestEndedEvent.class);
         channel.subscribe(this, SubtestEndedEvent.class);
     }
