@@ -135,7 +135,7 @@ public class TMSServlet extends HttpServlet {
 		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
         SaveTestingSessionData saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
 
-        //System.out.println(">>>>> " + saveRequest.xmlText());
+        System.out.println(">>>>> " + xml);
         
         Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
         for(int i=0;i<tsda.length;i++) {
@@ -149,18 +149,18 @@ public class TMSServlet extends HttpServlet {
 	        saveResponse.getTsdArray(i).setStatus(Status.OK);
 		    
 		    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
+		    	// response events
 		    	oasSink.putItemResponse(rosterId, tsd);
-
 		    }
 		    
 		    if(tsd.getLsvArray() != null && tsd.getLsvArray().length > 0) {
-		    	// subtest events
+		    	// test events
 		    }
 		    
 		    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {
 		    	if(tsd.getLevArray()[0].getE() == null || !LmsEventType.TERMINATED.equals(tsd.getLevArray()[0].getE())) {
 			    	try {
-			    		// test events
+			    		// subtest events
 				    	NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
 				    	Manifest manifest = oasSource.getManifest(rosterId);
 				    	ManifestData[] manifestData = manifest.getManifest();
@@ -177,8 +177,8 @@ public class TMSServlet extends HttpServlet {
 			    	} catch (Exception e) {
 			    		// do nothing
 			    	}
-	                // TODO: place roster on queue for RDBMS persistence
-	                TestDeliveryContextListener.enqueueRoster(rosterId);
+	                // Coherence write-behind will handle response persistence
+	                //TestDeliveryContextListener.enqueueRoster(rosterId);
 		    	}
 		    }
 		    

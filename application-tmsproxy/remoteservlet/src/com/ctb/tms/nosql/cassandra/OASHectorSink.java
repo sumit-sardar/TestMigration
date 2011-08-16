@@ -1,4 +1,4 @@
-package com.ctb.tms.nosql;
+package com.ctb.tms.nosql.cassandra;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,12 +32,13 @@ import sun.misc.BASE64Encoder;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.nosql.OASNoSQLSink;
 
 public class OASHectorSink implements OASNoSQLSink {
 
 	private static Cluster cluster;
 	
-	protected OASHectorSink () {
+	public OASHectorSink () {
 		
 	}
 	

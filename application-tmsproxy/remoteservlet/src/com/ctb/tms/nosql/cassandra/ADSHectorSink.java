@@ -1,4 +1,4 @@
-package com.ctb.tms.nosql;
+package com.ctb.tms.nosql.cassandra;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import sun.misc.BASE64Encoder;
 
 import me.prettyprint.cassandra.model.BasicColumnFamilyDefinition;
 import me.prettyprint.cassandra.model.BasicKeyspaceDefinition;
@@ -26,11 +24,13 @@ import me.prettyprint.hector.api.ddl.ComparatorType;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 
+import com.ctb.tms.nosql.ADSNoSQLSink;
+
 public class ADSHectorSink implements ADSNoSQLSink {
 
 	private static Cluster cluster;
 	
-	protected ADSHectorSink () {
+	public ADSHectorSink () {
 		
 	}
 	

@@ -1,4 +1,4 @@
-package com.ctb.tms.rdb;
+package com.ctb.tms.rdb.oracle;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -23,6 +23,7 @@ import noNamespace.ErrorDocument;
 
 import com.ctb.tms.bean.delivery.ItemData;
 import com.ctb.tms.bean.delivery.SubtestData;
+import com.ctb.tms.rdb.ADSRDBSource;
 
 public class ADSOracleSource implements ADSRDBSource {
 	private static volatile boolean haveDataSource = true;

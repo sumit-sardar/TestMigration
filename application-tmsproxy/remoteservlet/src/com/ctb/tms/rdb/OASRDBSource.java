@@ -11,6 +11,8 @@ public interface OASRDBSource
 	public StudentCredentials [] getActiveRosters(Connection con);
 	
     public RosterData getRosterData(Connection conn, StudentCredentials creds)  throws Exception;
+    
+    public RosterData getRosterData(Connection conn, String key) throws Exception;
 
     public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException;
 	

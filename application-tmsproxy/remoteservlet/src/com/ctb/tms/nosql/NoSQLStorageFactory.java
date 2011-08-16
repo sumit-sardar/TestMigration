@@ -2,6 +2,15 @@ package com.ctb.tms.nosql;
 
 import java.util.ResourceBundle;
 
+import com.ctb.tms.nosql.cassandra.ADSHectorSink;
+import com.ctb.tms.nosql.cassandra.ADSHectorSource;
+import com.ctb.tms.nosql.cassandra.OASHectorSink;
+import com.ctb.tms.nosql.cassandra.OASHectorSource;
+import com.ctb.tms.nosql.coherence.ADSCoherenceSink;
+import com.ctb.tms.nosql.coherence.ADSCoherenceSource;
+import com.ctb.tms.nosql.coherence.OASCoherenceSink;
+import com.ctb.tms.nosql.coherence.OASCoherenceSource;
+
 public class NoSQLStorageFactory {
 
 	private static final String CASSANDRA = "CASSANDRA";

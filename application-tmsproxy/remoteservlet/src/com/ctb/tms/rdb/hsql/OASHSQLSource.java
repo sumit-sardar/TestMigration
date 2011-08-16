@@ -1,4 +1,4 @@
-package com.ctb.tms.rdb; 
+package com.ctb.tms.rdb.hsql; 
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
@@ -13,6 +13,7 @@ import sun.misc.BASE64Decoder;
 
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.rdb.OASRDBSource;
 
 public class OASHSQLSource implements OASRDBSource
 { 
@@ -59,6 +60,21 @@ public class OASHSQLSource implements OASRDBSource
 		}
 		return (StudentCredentials[]) results.toArray(new StudentCredentials[0]);
 	}
+	
+	public RosterData getRosterData(Connection conn, String key)  throws Exception {
+		String username = key.substring(0, key.indexOf(":"));
+    	key = key.substring(key.indexOf(":") + 1, key.length());
+    	String password = key.substring(0, key.indexOf(":"));
+    	key = key.substring(key.indexOf(":") + 1, key.length());
+    	String accessCode = key;
+    	
+    	StudentCredentials creds = new StudentCredentials();
+    	creds.setUsername(username);
+    	creds.setPassword(password);
+    	creds.setAccesscode(accessCode);
+    	
+		return (RosterData) rosterMap.get(creds);
+    }
 	
     public RosterData getRosterData(Connection conn, StudentCredentials creds)  throws Exception {
     	return (RosterData) rosterMap.get(creds);

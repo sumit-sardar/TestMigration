@@ -1,10 +1,9 @@
-package com.ctb.tms.rdb;
+package com.ctb.tms.rdb.oracle;
 
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -13,13 +12,15 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import com.ctb.tms.bean.login.AuthenticationData;
-import com.ctb.tms.bean.login.RosterData;
-import com.ctb.tms.bean.login.StudentCredentials;
-
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
 import noNamespace.BaseType;
+
+import com.ctb.tms.bean.login.Manifest;
+import com.ctb.tms.bean.login.ManifestData;
+import com.ctb.tms.bean.login.RosterData;
+import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.rdb.OASRDBSink;
 
 public class OASOracleSink implements OASRDBSink {
 	private static volatile boolean haveDataSource = true;
@@ -29,6 +30,7 @@ public class OASOracleSink implements OASRDBSink {
 	private static String OASDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver";
 	
 	private static final String STORE_RESPONSE_SQL = "insert into item_response (  item_response_id,  test_roster_id,  \t\titem_set_id,  \t\titem_id,  \t\tresponse,  \t\tresponse_method,  \t\tresponse_elapsed_time,  \t\tresponse_seq_num,  \t\text_answer_choice_id,  \tstudent_marked,  \t\tcreated_by) \tvalues  (SEQ_ITEM_RESPONSE_ID.NEXTVAL,  ?,  ?,  ?,  ?,  'M',  ?,  ?,  ?,  ?,  6)";
+	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set completion_status = ? where test_roster_id = ? and item_set_id = ?";
 	
 	{
 		try {
@@ -71,7 +73,7 @@ public class OASOracleSink implements OASRDBSink {
 		return newConn;
 	}
 	
-	public void putItemResponse(Connection conn, String testRosterId, Tsd tsd) throws NumberFormatException, Exception {
+	public void putItemResponse(Connection conn, String testRosterId, Tsd tsd) throws NumberFormatException, Exception {		
 		Ist[] ista = tsd.getIstArray();
 		for(int j=0;j<ista.length;j++) {
 	        Ist ist = ista[j];
@@ -108,6 +110,7 @@ public class OASOracleSink implements OASRDBSink {
 	                    } else if(responseType.equals(BaseType.STRING)) {
 	                        storeCRResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked);
 	                    }
+	            		System.out.println("***** Persisted response for roster: " + testRosterId + ", item: " + ist.getIid() + ". Response was: " + response);
 	                 }
 	            }else{ 
 	                String response = "";                   
@@ -140,6 +143,30 @@ public class OASOracleSink implements OASRDBSink {
 				e.printStackTrace();
 				throw(e);
 			}
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+	}
+	
+	public void putManifest(Connection conn, String testRosterId, Manifest manifest) throws Exception {
+		PreparedStatement stmt1 = null;
+    	try {
+    		ManifestData [] subtests = manifest.getManifest();
+    		for(int i=0;i<subtests.length;i++) {
+    			ManifestData subtest = subtests[i];
+    			stmt1 = conn.prepareStatement(SUBTEST_STATUS_SQL);
+    			stmt1.setString(1, subtest.getCompletionStatus());
+    			stmt1.setString(2, testRosterId);
+    			stmt1.setInt(3, subtest.getId());
+    		}
+			stmt1.executeUpdate();
+			// TODO: update roster status as well
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			try {
 				if(stmt1 != null) stmt1.close();

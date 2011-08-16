@@ -36,8 +36,8 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	public void contextDestroyed(ServletContextEvent sce) {
 		oasDBSource.shutdown();
 		oasDBSink.shutdown();
-		TestDeliveryContextListener.rosterList.stop();
-		TestDeliveryContextListener.responseQueue.stop();
+		//TestDeliveryContextListener.rosterList.stop();
+		//TestDeliveryContextListener.responseQueue.stop();
 	}
     
 	public void contextInitialized(ServletContextEvent sce) {
@@ -46,17 +46,18 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 			OASNoSQLSource oasSource = NoSQLStorageFactory.getOASSource();
 			OASNoSQLSink oasSink = NoSQLStorageFactory.getOASSink();
 			
-			System.out.print("*****  Starting active roster check background thread . . .");
+			/* System.out.print("*****  Starting active roster check background thread . . .");
 			TestDeliveryContextListener.rosterMap = new ConcurrentHashMap(10000);
 			TestDeliveryContextListener.rosterList = new RosterList(oasSource, oasSink, oasDBSource, oasDBSink);
 			TestDeliveryContextListener.rosterList.start();
-			System.out.println(" started.");
+			System.out.println(" started.");*/
 			
-			System.out.print("*****  Starting response queue persistence thread . . .");
+			// response persistence should be handled by cache store implementation
+			/* System.out.print("*****  Starting response queue persistence thread . . .");
 			TestDeliveryContextListener.rosterQueue = new ConcurrentLinkedQueue<String>();
 			TestDeliveryContextListener.responseQueue = new ResponseQueue(oasSource, oasSink, oasDBSource, oasDBSink);
 			TestDeliveryContextListener.responseQueue.start();
-			System.out.println(" started.");
+			System.out.println(" started."); */
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

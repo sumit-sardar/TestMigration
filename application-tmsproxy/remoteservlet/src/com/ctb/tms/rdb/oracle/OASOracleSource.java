@@ -1,4 +1,4 @@
-package com.ctb.tms.rdb; 
+package com.ctb.tms.rdb.oracle; 
 
 import java.math.BigInteger;
 import java.sql.Clob;
@@ -49,6 +49,7 @@ import com.ctb.tms.exception.testDelivery.OutsideTestWindowException;
 import com.ctb.tms.exception.testDelivery.TestSessionCompletedException;
 import com.ctb.tms.exception.testDelivery.TestSessionInProgressException;
 import com.ctb.tms.exception.testDelivery.TestSessionNotScheduledException;
+import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.util.Constants;
 
 public class OASOracleSource implements OASRDBSource
@@ -119,10 +120,26 @@ public class OASOracleSource implements OASRDBSource
 		return data;
 	}
 	
+	public RosterData getRosterData(Connection conn, String key)  throws Exception {
+		String username = key.substring(0, key.indexOf(":"));
+    	key = key.substring(key.indexOf(":") + 1, key.length());
+    	String password = key.substring(0, key.indexOf(":"));
+    	key = key.substring(key.indexOf(":") + 1, key.length());
+    	String accessCode = key;
+
+    	StudentCredentials creds = new StudentCredentials();
+    	creds.setUsername(username);
+    	creds.setPassword(password);
+    	creds.setAccesscode(accessCode);
+    	
+    	return getRosterData(conn, creds);
+	}
+	
     public RosterData getRosterData(Connection conn, StudentCredentials creds)  throws Exception {
     	String username = creds.getUsername();
     	String password = creds.getPassword();
-    	String testAccessCode = creds.getAccesscode();
+    	String accessCode = creds.getAccesscode();
+    	
     	TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance();
         LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
         loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.OK_STATUS);
@@ -139,9 +156,9 @@ public class OASOracleSource implements OASRDBSource
         for(int a=0;authDataArray != null && a<authDataArray.length && !authenticated;a++) {
             authData = authDataArray[a];
             testRosterId = authData.getTestRosterId();
-            lsid = String.valueOf(testRosterId) + ":" + testAccessCode;
+            lsid = String.valueOf(testRosterId) + ":" + accessCode;
             loginResponse.setLsid(lsid);
-            manifestData = getManifest(conn, testRosterId, testAccessCode);
+            manifestData = getManifest(conn, testRosterId, accessCode);
            // System.out.print("2");
             if(manifestData.length > 0) {
                 authenticated = true;
@@ -171,7 +188,7 @@ public class OASOracleSource implements OASRDBSource
 	
 	            if ("TB".equals(testProduct.getProductType())) {
 	                for(int i = 0;i<manifestData.length;i++) {
-	                    	if(!testAccessCode.equalsIgnoreCase(manifestData[i].getAccessCode()) &&
+	                    	if(!accessCode.equalsIgnoreCase(manifestData[i].getAccessCode()) &&
 	                    			manifestData[i].getTitle().indexOf("locator") >= 0 &&
 	                    			!manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
 	                    		response = TmssvcResponseDocument.Factory.newInstance();
@@ -239,7 +256,7 @@ public class OASOracleSource implements OASRDBSource
 	                }
 	            }
 	        }
-	        copyManifestDataToResponse(conn, loginResponse, manifestData, testRosterId, authData.getTestAdminId(), testAccessCode);
+	        copyManifestDataToResponse(conn, loginResponse, manifestData, testRosterId, authData.getTestAdminId(), accessCode);
 	
 	        String tutorialResource = getTutorialResource(conn, testRosterId);
 	        //System.out.print("9");

@@ -1,9 +1,11 @@
-package com.ctb.tms.rdb;
+package com.ctb.tms.rdb.hsql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import com.ctb.tms.rdb.ADSRDBSource;
 
 public class ADSHSQLSource implements ADSRDBSource {
 	

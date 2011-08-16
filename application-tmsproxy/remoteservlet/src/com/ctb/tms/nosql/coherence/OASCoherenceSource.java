@@ -1,4 +1,4 @@
-package com.ctb.tms.nosql;
+package com.ctb.tms.nosql.coherence;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -7,15 +7,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import sun.misc.BASE64Decoder;
 
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
-
 import com.bea.xml.XmlException;
-import com.ctb.tms.bean.login.AuthenticationData;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.nosql.OASNoSQLSource;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 import com.tangosol.util.Filter;
@@ -29,7 +28,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 	private static NamedCache manifestCache;
 	private static NamedCache responseCache;
 	
-	protected OASCoherenceSource () {
+	public OASCoherenceSource () {
 		
 	}
 	

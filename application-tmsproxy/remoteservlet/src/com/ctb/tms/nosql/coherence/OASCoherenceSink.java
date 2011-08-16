@@ -1,17 +1,17 @@
-package com.ctb.tms.nosql;
+package com.ctb.tms.nosql.coherence;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
 
-import sun.misc.BASE64Encoder;
-
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
+import sun.misc.BASE64Encoder;
 
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.nosql.OASNoSQLSink;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 
@@ -21,7 +21,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	private static NamedCache manifestCache;
 	private static NamedCache responseCache;
 	
-	protected OASCoherenceSink () {
+	public OASCoherenceSink () {
 		
 	}
 	

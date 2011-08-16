@@ -10,11 +10,10 @@
         </cache-mapping>
     </caching-scheme-mapping>
     <caching-schemes>  
-    	<!--        Limited-size memory scheme definition -->
-        <local-scheme>
-        	<scheme-name>LimitedMemoryScheme</scheme-name>
-        	<high-units>100000</high-units>
-        </local-scheme>       
+    	<!--        heap-limited memory scheme definition -->
+    	<local-scheme>
+   			<scheme-name>MemoryScheme</scheme-name>
+		</local-scheme>      
         <!--        Local Disk storage scheme definition -->
         <external-scheme>
         	<scheme-name>DiskPersistentScheme</scheme-name>
@@ -22,25 +21,46 @@
         		<directory>.</directory>
         		<file-name>{cache-name}.store</file-name>
         	</lh-file-manager>
-        </external-scheme>      
+        </external-scheme>
+        <!--        Oracle backing store scheme definition -->
+        <read-write-backing-map-scheme>
+		  <scheme-name>DBScheme</scheme-name>
+		  <internal-cache-scheme>
+		    <local-scheme>
+		      <scheme-ref>MemoryScheme</scheme-ref>
+		    </local-scheme>
+		  </internal-cache-scheme>
+		  <cachestore-scheme>
+		    <class-scheme>
+		      <class-name>com.ctb.tms.nosql.coherence.OracleCacheStore</class-name>
+		      <init-params>
+		        <init-param>
+		          <param-type>java.lang.String</param-type>
+		          <param-value>{cache-name}</param-value>
+		        </init-param>
+		      </init-params>
+		    </class-scheme>
+		  </cachestore-scheme>
+		  <write-delay>3s</write-delay>
+		</read-write-backing-map-scheme>
         <!--        Default Distributed caching scheme.        -->
         <distributed-scheme>            
             <scheme-name>DistributedScheme</scheme-name>
             <service-name>PartitionedCache</service-name>            
             <backing-map-scheme>                
-                <external-scheme>                    
-                    <scheme-ref>DiskPersistentScheme</scheme-ref>
-                </external-scheme>
+                <read-write-backing-map-scheme>                    
+                    <scheme-ref>DBScheme</scheme-ref>
+                </read-write-backing-map-scheme>
             </backing-map-scheme>
             <backup-count>1</backup-count>
             <autostart>true</autostart>
         </distributed-scheme>
-        <!--        2-tier (memory, disk) scheme definition -->
+        <!--        2-tier (memory, disk/db) scheme definition -->
         <near-scheme>
         	<scheme-name>TieredScheme</scheme-name>
         	<front-scheme>    
         		<local-scheme>
-        			<scheme-ref>LimitedMemoryScheme</scheme-ref>
+        			<scheme-ref>MemoryScheme</scheme-ref>
         		</local-scheme>  
         	</front-scheme>  
         	<back-scheme>

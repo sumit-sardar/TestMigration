@@ -1,4 +1,4 @@
-package com.ctb.tms.rdb;
+package com.ctb.tms.rdb.hsql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -41,6 +41,12 @@ public class HSQLSetup {
 				System.out.println("***** HSQLDB - RESPONSE table exists");
 			}
 			try {
+				ps = conn.prepareStatement("CREATE TEXT TABLE MANIFEST (test_roster_id VARCHAR(32), item_set_id VARCHAR(32), completion_status VARCHAR(32))");
+				ps.executeUpdate();
+			} catch (Exception e) {
+				System.out.println("***** HSQLDB - MANIFEST table exists");
+			}
+			try {
 				ps = conn.prepareStatement("SET TABLE STUDENT SOURCE 'student;fs=|'");
 				ps.executeUpdate();
 			} catch (Exception e) {
@@ -54,6 +60,12 @@ public class HSQLSetup {
 			}
 			try {
 				ps = conn.prepareStatement("SET TABLE RESPONSE SOURCE 'response;fs=|'");
+				ps.executeUpdate();
+			} catch (Exception e) {
+				// do nothing
+			}
+			try {
+				ps = conn.prepareStatement("SET TABLE MANIFEST SOURCE 'manifest;fs=|'");
 				ps.executeUpdate();
 			} catch (Exception e) {
 				// do nothing

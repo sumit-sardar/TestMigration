@@ -1,7 +1,9 @@
-package com.ctb.tms.rdb;
+package com.ctb.tms.rdb.oracle;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import com.ctb.tms.rdb.ADSRDBSink;
 
 public class ADSOracleSink implements ADSRDBSink {
 	public Connection getADSConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {

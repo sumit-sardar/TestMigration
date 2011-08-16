@@ -1,4 +1,4 @@
-package com.ctb.tms.nosql;
+package com.ctb.tms.nosql.cassandra;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -27,12 +27,13 @@ import com.ctb.tms.bean.login.AuthenticationData;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.nosql.OASNoSQLSource;
 
 public class OASHectorSource implements OASNoSQLSource {
 	
 	private static Cluster cluster;
 	
-	protected OASHectorSource () {
+	public OASHectorSource () {
 		
 	}
 	

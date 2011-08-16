@@ -1,7 +1,8 @@
-package com.ctb.tms.nosql;
+package com.ctb.tms.nosql.coherence;
 
 import java.io.IOException;
 
+import com.ctb.tms.nosql.ADSNoSQLSink;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 
@@ -10,7 +11,7 @@ public class ADSCoherenceSink implements ADSNoSQLSink {
 	private static NamedCache itemCache;
 	private static NamedCache itemSetCache;
 	
-	protected ADSCoherenceSink () {
+	public ADSCoherenceSink () {
 		
 	}
 	

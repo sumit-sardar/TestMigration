@@ -1,8 +1,9 @@
-package com.ctb.tms.nosql;
+package com.ctb.tms.nosql.coherence;
 
 import java.io.IOException;
 
 import com.bea.xml.XmlException;
+import com.ctb.tms.nosql.ADSNoSQLSource;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 
@@ -11,7 +12,7 @@ public class ADSCoherenceSource implements ADSNoSQLSource{
 	private static NamedCache itemCache;
 	private static NamedCache itemSetCache;
 	
-	protected ADSCoherenceSource () {
+	public ADSCoherenceSource () {
 		
 	}
 	

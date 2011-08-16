@@ -1,8 +1,10 @@
-package com.ctb.tms.rdb;
+package com.ctb.tms.rdb.hsql;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
+import com.ctb.tms.rdb.ADSRDBSink;
 
 public class ADSHSQLSink implements ADSRDBSink {
 	
