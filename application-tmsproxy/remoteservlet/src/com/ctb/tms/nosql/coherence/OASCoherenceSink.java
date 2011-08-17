@@ -37,12 +37,13 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	
 	public void putRosterData(StudentCredentials creds, RosterData rosterData) throws IOException {
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		/*ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
 		oos.writeObject(rosterData);
 		byte [] bytes = baos.toByteArray();
 		String data = new BASE64Encoder().encode(bytes);
-		rosterCache.put(key, data);
+		rosterCache.put(key, data); */
+		rosterCache.put(key, rosterData);
 	}
 	
 	public void putManifestData(String testRosterId, Manifest manifest) throws IOException {

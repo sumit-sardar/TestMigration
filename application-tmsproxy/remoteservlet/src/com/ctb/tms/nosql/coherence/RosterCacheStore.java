@@ -33,16 +33,17 @@ public class RosterCacheStore implements CacheStore {
 
     public Object load(Object oKey) {
     	Connection conn = null;
-    	String result = null;
+    	RosterData result = null;
     	try {
 	    	OASRDBSource source = RDBStorageFactory.getOASSource();
 	    	conn = source.getOASConnection();
 	    	RosterData rosterData = source.getRosterData(conn, (String) oKey);
-	    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    	/*ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(rosterData);
 			byte [] bytes = baos.toByteArray();
-			result = new BASE64Encoder().encode(bytes);
+			result = new BASE64Encoder().encode(bytes);*/
+	    	result = rosterData;
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {
@@ -77,12 +78,12 @@ public class RosterCacheStore implements CacheStore {
     		while(it.hasNext()) {
     			Object key = it.next();
 		    	RosterData rosterData = source.getRosterData(conn, (String) key);
-		    	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		    	/*ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ObjectOutputStream oos = new ObjectOutputStream(baos);
 				oos.writeObject(rosterData);
 				byte [] bytes = baos.toByteArray();
-				String value = new BASE64Encoder().encode(bytes);
-		    	result.put(key, value);
+				String value = new BASE64Encoder().encode(bytes);*/
+		    	result.put(key, rosterData);
     		}
     	} catch (Exception e) {
     		e.printStackTrace();

@@ -52,14 +52,15 @@ public class OASCoherenceSource implements OASNoSQLSource {
 	
 	public RosterData getRosterData(StudentCredentials creds) throws XmlException, IOException, ClassNotFoundException {
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
-		RosterData result = null;
+		/*RosterData result = null;
 		String data = (String) rosterCache.get(key);
 		if(data != null) {
 			byte [] bytes = new BASE64Decoder().decodeBuffer(data);
 			ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			result = (RosterData) ois.readObject();
-		}
+		}*/
+		RosterData result = (RosterData) rosterCache.get(key);
 		return result; 
 	}
 	
