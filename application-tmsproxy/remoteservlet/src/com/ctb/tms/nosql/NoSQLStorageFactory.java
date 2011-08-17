@@ -2,6 +2,8 @@ package com.ctb.tms.nosql;
 
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import com.ctb.tms.nosql.cassandra.ADSHectorSink;
 import com.ctb.tms.nosql.cassandra.ADSHectorSource;
 import com.ctb.tms.nosql.cassandra.OASHectorSink;
@@ -23,6 +25,8 @@ public class NoSQLStorageFactory {
 	private static ADSNoSQLSource adsSource;
 	private static ADSNoSQLSink adsSink;
 	
+	static Logger logger = Logger.getLogger(NoSQLStorageFactory.class);
+	
 	{
 		synchronized(NoSQLStorageFactory.class) {
 			ResourceBundle rb = ResourceBundle.getBundle("storage");
@@ -33,14 +37,14 @@ public class NoSQLStorageFactory {
 	public static OASNoSQLSource getOASSource() {
 		if(oasSource == null) {
 			if(COHERENCE.equals(nosqlstore)) {
-				System.out.println("*****  Using OASCoherenceSource");
+				logger.info("*****  Using OASCoherenceSource");
 				oasSource = new OASCoherenceSource();
 			} else if (CASSANDRA.equals(nosqlstore)) {
-				System.out.println("*****  Using OASHectorSource");
+				logger.info("*****  Using OASHectorSource");
 				oasSource = new OASHectorSource();
 			} else {
 				// default to Cassandra
-				System.out.println("*****  Using OASHectorSource");
+				logger.info("*****  Using OASHectorSource");
 				oasSource = new OASHectorSource();
 			}
 		}
@@ -50,14 +54,14 @@ public class NoSQLStorageFactory {
 	public static OASNoSQLSink getOASSink() {
 		if(oasSink == null) {
 			if(COHERENCE.equals(nosqlstore)) {
-				System.out.println("*****  Using OASCoherenceSink");
+				logger.info("*****  Using OASCoherenceSink");
 				oasSink = new OASCoherenceSink();
 			} else if (CASSANDRA.equals(nosqlstore)) {
-				System.out.println("*****  Using OASHectorSink");
+				logger.info("*****  Using OASHectorSink");
 				oasSink = new OASHectorSink();
 			} else {
 				// default to Cassandra
-				System.out.println("*****  Using OASHectorSink");
+				logger.info("*****  Using OASHectorSink");
 				oasSink = new OASHectorSink();
 			}
 		}
@@ -67,14 +71,15 @@ public class NoSQLStorageFactory {
 	public static ADSNoSQLSource getADSSource() {
 		if(adsSource == null) {
 			if(COHERENCE.equals(nosqlstore)) {
-				System.out.println("*****  Using ADSCoherenceSource");
+				logger.info("*****  Using ADSCoherenceSource");
 				adsSource = new ADSCoherenceSource();
 			} else if (CASSANDRA.equals(nosqlstore)) {
-				System.out.println("*****  Using ADSHectorSource");
+				logger.info("*****  Using ADSHectorSource");
 				adsSource = new ADSHectorSource();
 			} else {
 				// default to Cassandra
 				adsSource = new ADSHectorSource();
+				logger.info("*****  Using ADSHectorSource");
 			}
 		}
 		return adsSource;
@@ -83,14 +88,15 @@ public class NoSQLStorageFactory {
 	public static ADSNoSQLSink getADSSink() {
 		if(adsSink == null) {
 			if(COHERENCE.equals(nosqlstore)) {
-				System.out.println("*****  Using ADSCoherenceSink");
+				logger.info("*****  Using ADSCoherenceSink");
 				adsSink = new ADSCoherenceSink();
 			} else if (CASSANDRA.equals(nosqlstore)) {
-				System.out.println("*****  Using ADSHectorSink");
+				logger.info("*****  Using ADSHectorSink");
 				adsSink = new ADSHectorSink();
 			} else {
 				// default to Cassandra
 				adsSink = new ADSHectorSink();
+				logger.info("*****  Using ADSHectorSink");
 			}
 		}
 		return adsSink;

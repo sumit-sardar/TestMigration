@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import me.prettyprint.cassandra.model.BasicColumnFamilyDefinition;
 import me.prettyprint.cassandra.model.BasicKeyspaceDefinition;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -37,6 +39,7 @@ import com.ctb.tms.nosql.OASNoSQLSink;
 public class OASHectorSink implements OASNoSQLSink {
 
 	private static Cluster cluster;
+	static Logger logger = Logger.getLogger(OASHectorSink.class);
 	
 	public OASHectorSink () {
 		
@@ -213,9 +216,9 @@ public class OASHectorSink implements OASNoSQLSink {
 			ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
 			columnQuery.setColumnFamily("RosterData").setKey("jsmith").setName("username");
 			QueryResult<HColumn<String, String>> result = columnQuery.execute();
-			System.out.println(result.get().getValue());
+			logger.info(result.get().getValue());
 			*/
-			System.out.println("*****  Created AuthData keyspace.");
+			logger.info("*****  Created AuthData keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
 			e.printStackTrace();
@@ -511,7 +514,7 @@ public class OASHectorSink implements OASNoSQLSink {
 			};
 	
 			cluster.addKeyspace(new ThriftKsDef(kd));
-			System.out.println("*****  Created TestData keyspace.");
+			logger.info("*****  Created TestData keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
 			e.printStackTrace();
@@ -534,7 +537,7 @@ public class OASHectorSink implements OASNoSQLSink {
 		//ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
 		//columnQuery.setColumnFamily("RosterData").setKey(key).setName("login-response");
 		//QueryResult<HColumn<String, String>> result = columnQuery.execute();
-		//System.out.println("*****  Stored in Cassandra: " + result.get().getValue());
+		//logger.info("*****  Stored in Cassandra: " + result.get().getValue());
 	}
 	
 	public void putManifestData(String testRosterId, Manifest manifest) throws IOException {
@@ -563,7 +566,7 @@ public class OASHectorSink implements OASNoSQLSink {
 		byte [] bytes = baos.toByteArray();
 		String tsdData = new BASE64Encoder().encode(bytes);
 		mutator.insert(key, "ResponseData", HFactory.createStringColumn("item-response", tsdData));
-		//System.out.println("##### Stored response record for key " + key + ": " + tsd.xmlText());
+		//logger.info("##### Stored response record for key " + key + ": " + tsd.xmlText());
 	}
 	
 	public void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException {
@@ -574,6 +577,6 @@ public class OASHectorSink implements OASNoSQLSink {
 		mutator.delete(key, "ResponseData", "item-response", stringSerializer);
 		mutator.delete(key, "ResponseData", "item-id", stringSerializer);
 		mutator.delete(key, "ResponseData", "roster-id", stringSerializer);
-		//System.out.println("##### Deleted response record for key " + key);
+		//logger.info("##### Deleted response record for key " + key);
 	}
 }

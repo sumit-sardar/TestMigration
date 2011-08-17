@@ -69,7 +69,7 @@ public class TMSServlet extends HttpServlet {
 		String result = ServletUtils.OK;
 		try {
 			String xml = request.getParameter("requestXML");
-			//System.out.println("***** Remote servlet request: " + xml);
+			//logger.debug("***** Remote servlet request: " + xml);
 			
 			if (method != null && method.startsWith(ServletUtils.LOGIN_METHOD))
 	            result = login(xml);
@@ -103,7 +103,7 @@ public class TMSServlet extends HttpServlet {
 		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
         WriteToAuditFile saveResponse = responseDocument.addNewAdssvcResponse().addNewWriteToAuditFile();
 
-        //System.out.println(">>>>> " + saveRequest.xmlText());
+        //logger.debug(">>>>> " + saveRequest.xmlText());
         
         Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
         for(int i=0;i<tsda.length;i++) {
@@ -116,7 +116,7 @@ public class TMSServlet extends HttpServlet {
 	        saveResponse.getTsd().setStatus(WriteToAuditFile.Tsd.Status.OK); 
         }
 	    
-        //System.out.println("<<<<< " + responseDocument.xmlText());
+        //logger.debug("<<<<< " + responseDocument.xmlText());
 		return responseDocument.xmlText();
 	}
 
@@ -157,7 +157,7 @@ public class TMSServlet extends HttpServlet {
 		    
 		    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {
 		    	LmsEventType.Enum eventType = tsd.getLevArray()[0].getE();
-    			//System.out.println("***** Got subtest event type: " + eventType.toString());
+    			//logger.debug("***** Got subtest event type: " + eventType.toString());
 		    	if(tsd.getLevArray()[0].getE() == null || !LmsEventType.TERMINATED.equals(eventType)) {
 			    	try {
 			    		Manifest manifest = oasSource.getManifest(rosterId);
@@ -297,7 +297,7 @@ public class TMSServlet extends HttpServlet {
                 	result = ServletUtils.DOWNLOAD_ITEM_METHOD;
 			}
 		}       	
-        //System.out.println(result);
+        //logger.debug(result);
     	return result;
 	}
 

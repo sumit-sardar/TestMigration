@@ -52,7 +52,7 @@ public class OASHectorSource implements OASNoSQLSource {
 		columnQuery.setColumnFamily("RosterData").setKey(key).setName("login-response");
 		QueryResult<HColumn<String, String>> qr = columnQuery.execute();
 		if(qr != null && qr.get() != null) {
-			//System.out.println("*****  Login: found roster data for " + key);
+			//logger.info("*****  Login: found roster data for " + key);
 			String loginResponse = qr.get().getValue();
 			result.setDocument(TmssvcResponseDocument.Factory.parse(loginResponse));
 			columnQuery = HFactory.createStringColumnQuery(keyspace);
@@ -64,7 +64,7 @@ public class OASHectorSource implements OASNoSQLSource {
 			AuthenticationData authData = (AuthenticationData) ois.readObject();
 			result.setAuthData(authData);
 		} else {
-			//System.out.println("*****  Login: no roster data found for " + key);
+			//logger.info("*****  Login: no roster data found for " + key);
 		}
 		return result;
 	}
@@ -105,7 +105,7 @@ public class OASHectorSource implements OASNoSQLSource {
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			Tsd tsd = (Tsd) ois.readObject();
 			resulta.add(tsd);
-			//System.out.println("##### Got response record for roster " + testRosterId + ": " + tsd.xmlText());
+			//logger.info("##### Got response record for roster " + testRosterId + ": " + tsd.xmlText());
         }
         return resulta.toArray(new Tsd[0]);
 	}

@@ -4,12 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
-import java.util.ResourceBundle;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -20,6 +17,8 @@ import noNamespace.AdssvcResponseDocument.AdssvcResponse;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.DownloadItem;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.GetSubtest;
 import noNamespace.ErrorDocument;
+
+import org.apache.log4j.Logger;
 
 import com.ctb.tms.bean.delivery.ItemData;
 import com.ctb.tms.bean.delivery.SubtestData;
@@ -37,6 +36,8 @@ public class ADSOracleSource implements ADSRDBSource {
 	private static final String GET_ITEM_SQL = "SELECT ob_item_pkg_id AS itemId, hash FROM OB_ITEM_PKG  WHERE ob_item_pkg_id = ?";
 	private static final String GET_ITEM_BLOB_SQL = "SELECT item_rendition_xml_encr as itemBlob  FROM OB_ITEM_PKG  WHERE ob_item_pkg_id = ?";
 	
+	static Logger logger = Logger.getLogger(ADSOracleSource.class);
+	
 	/* {
 		try {
 			ResourceBundle rb = ResourceBundle.getBundle("env");
@@ -46,7 +47,7 @@ public class ADSOracleSource implements ADSRDBSource {
 			ADSDatabaseUserPassword = rb.getString("ads.db.password");
 			haveDataSource = true;
 		} catch (Exception e) {
-			System.out.println("***** No ADS DB connection info specified in env.properties, using static defaults");
+			logger.info("***** No ADS DB connection info specified in env.properties, using static defaults");
 			//e.printStackTrace();
 		}
 	} */
@@ -59,9 +60,9 @@ public class ADSOracleSource implements ADSRDBSource {
 			DataSource ds = (DataSource)envContext.lookup("jdbc/ADSDataSource");
 			newConn = ds.getConnection();  
 			haveDataSource = true;
-			//System.out.println("*****  Using ADSDataSource for DB connection");
+			//logger.info("*****  Using ADSDataSource for DB connection");
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 			haveDataSource = false;
 		}
 
@@ -72,7 +73,7 @@ public class ADSOracleSource implements ADSRDBSource {
 			props.put("password", ADSDatabaseUserPassword);
 			Driver driver = (Driver) Class.forName(ADSDatabaseJDBCDriver).newInstance();
 			newConn = driver.connect(ADSDatabaseURL, props);
-			//System.out.println("*****  Using local properties for ADS DB connection");
+			//logger.info("*****  Using local properties for ADS DB connection");
 		} */
 
 		return newConn;

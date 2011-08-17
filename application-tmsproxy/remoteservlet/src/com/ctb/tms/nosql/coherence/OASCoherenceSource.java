@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
+
+import org.apache.log4j.Logger;
+
 import sun.misc.BASE64Decoder;
 
 import com.bea.xml.XmlException;
@@ -27,6 +30,8 @@ public class OASCoherenceSource implements OASNoSQLSource {
 	private static NamedCache rosterCache;
 	private static NamedCache manifestCache;
 	private static NamedCache responseCache;
+	
+	static Logger logger = Logger.getLogger(OASCoherenceSource.class);
 	
 	public OASCoherenceSource () {
 		
@@ -70,7 +75,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 		Map mapResult = responseCache.getAll(setKeys); 
 		if(mapResult != null) {
 			int size = mapResult.size();
-			System.out.println("*****  Found " + size + " responses for roster " + testRosterId);
+			logger.info("*****  Found " + size + " responses for roster " + testRosterId);
 			Tsd[] tsda = new Tsd[size];
 			Iterator it = mapResult.keySet().iterator();
 			int i = 0;

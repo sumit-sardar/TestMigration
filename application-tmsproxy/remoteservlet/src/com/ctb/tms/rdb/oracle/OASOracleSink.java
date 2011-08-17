@@ -2,11 +2,8 @@ package com.ctb.tms.rdb.oracle;
 
 import java.math.BigInteger;
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Properties;
-import java.util.ResourceBundle;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -15,6 +12,8 @@ import javax.sql.DataSource;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
 import noNamespace.BaseType;
+
+import org.apache.log4j.Logger;
 
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
@@ -32,6 +31,8 @@ public class OASOracleSink implements OASRDBSink {
 	private static final String STORE_RESPONSE_SQL = "insert into item_response (  item_response_id,  test_roster_id,  \t\titem_set_id,  \t\titem_id,  \t\tresponse,  \t\tresponse_method,  \t\tresponse_elapsed_time,  \t\tresponse_seq_num,  \t\text_answer_choice_id,  \tstudent_marked,  \t\tcreated_by) \tvalues  (SEQ_ITEM_RESPONSE_ID.NEXTVAL,  ?,  ?,  ?,  ?,  'M',  ?,  ?,  ?,  ?,  6)";
 	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set completion_status = ? where test_roster_id = ? and item_set_id = ?";
 	
+	static Logger logger = Logger.getLogger(OASOracleSink.class);
+	
 	/* {
 		try {
 			ResourceBundle rb = ResourceBundle.getBundle("env");
@@ -41,7 +42,7 @@ public class OASOracleSink implements OASRDBSink {
 			OASDatabaseUserPassword = rb.getString("oas.db.password");
 			haveDataSource = true;
 		} catch (Exception e) {
-			System.out.println("***** No OAS DB connection info specified in env.properties, using static defaults");
+			logger.info("***** No OAS DB connection info specified in env.properties, using static defaults");
 			//e.printStackTrace();
 		}
 	} */
@@ -54,9 +55,9 @@ public class OASOracleSink implements OASRDBSink {
 			DataSource ds = (DataSource)envContext.lookup("jdbc/OASDataSource");
 			newConn = ds.getConnection(); 
 			haveDataSource = true;
-			//System.out.println("*****  Using OASDataSource for DB connection");
+			//logger.info("*****  Using OASDataSource for DB connection");
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 			haveDataSource = false;
 		}
 
@@ -67,7 +68,7 @@ public class OASOracleSink implements OASRDBSink {
 			props.put("password", OASDatabaseUserPassword);
 			Driver driver = (Driver) Class.forName(OASDatabaseJDBCDriver).newInstance();
 			newConn = driver.connect(OASDatabaseURL, props);
-			//System.out.println("*****  Using local properties for OAS DB connection");
+			//logger.info("*****  Using local properties for OAS DB connection");
 		} */
 
 		return newConn;
@@ -110,7 +111,7 @@ public class OASOracleSink implements OASRDBSink {
 	                    } else if(responseType.equals(BaseType.STRING)) {
 	                        storeCRResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked);
 	                    }
-	            		System.out.println("***** Persisted response for roster: " + testRosterId + ", item: " + ist.getIid() + ". Response was: " + response);
+	                    logger.debug("***** Persisted response for roster: " + testRosterId + ", item: " + ist.getIid() + ". Response was: " + response);
 	                 }
 	            }else{ 
 	                String response = "";                   
@@ -135,7 +136,7 @@ public class OASOracleSink implements OASRDBSink {
 			stmt1.setString(8, studentMarked);
 
 			stmt1.executeUpdate();
-			//System.out.println("$$$$$ Stored response record in DB for roster " + testRosterId + ", mseq " + mseq);
+			//logger.info("$$$$$ Stored response record in DB for roster " + testRosterId + ", mseq " + mseq);
 		} catch (Exception e) {
 			if(e.getMessage().indexOf("unique constraint") >= 0 ) {
 				// do nothing, dupe response
@@ -163,7 +164,7 @@ public class OASOracleSink implements OASRDBSink {
     			stmt1.setString(2, testRosterId);
     			stmt1.setInt(3, subtest.getId());
     			stmt1.executeUpdate();
-    			System.out.println("***** Updated subtest status for roster: " + testRosterId + ", subtest: " + subtest.getId() + ". Status is: " + subtest.getCompletionStatus());
+    			logger.debug("***** Updated subtest status for roster: " + testRosterId + ", subtest: " + subtest.getId() + ". Status is: " + subtest.getCompletionStatus());
     		}
 			// TODO: update roster status as well
 		} catch (Exception e) {

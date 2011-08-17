@@ -95,7 +95,7 @@ public class ContentServlet extends HttpServlet {
 			ServletUtils.writeResponse(response, ServletUtils.ERROR);
 		}
 		
-		//System.out.println("ContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+		logger.debug("ContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
 
 	}
 
@@ -172,8 +172,6 @@ public class ContentServlet extends HttpServlet {
 				//String filePath = ContentFile.getContentFolderPath() + subtestId + ContentFile.SUBTEST_FILE_EXTENSION;
 				
 				String filePath = subtestId + ContentFile.SUBTEST_FILE_EXTENSION;
-				
-				//System.out.println("*****  subtest path: " + filePath);
 	
 				boolean validHash = false;
 				
@@ -184,7 +182,6 @@ public class ContentServlet extends HttpServlet {
 				}
 				
 				if (!validHash) {
-					//System.out.println("*****  No valid local file, retrieving.");
 					String result = "";
 					MemoryCache memoryCache = MemoryCache.getInstance();
 		        	int TMSRetryCount = memoryCache.getSrvSettings().getTmsMessageRetryCount();
@@ -219,7 +216,6 @@ public class ContentServlet extends HttpServlet {
 				}
 				byte[] decryptedContent = ContentFile.decryptFile(filePath, hash,
 						key);
-				//System.out.println("***** decrypted subtest xml: " + new String(decryptedContent));
 				response.setContentType("text/xml");
 				int size = decryptedContent.length;
 				response.setContentLength(size);
@@ -228,30 +224,30 @@ public class ContentServlet extends HttpServlet {
 				myOutput.flush();
 				myOutput.close();
 			} else {
-				System.out.println("*****  No subtest id provided!");
-				System.out.println(xml);
+				logger.debug("*****  No subtest id provided!");
+				logger.debug(xml);
 			}
 		}
 		catch (HashMismatchException e) {
-			System.out.println("Exception occured in getSubtest("+subtestId+") : "
+			logger.error("Exception occured in getSubtest("+subtestId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.hashMismatch");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
 		}
 		catch (DecryptionException e) {
-			System.out.println("Exception occured in getSubtest("+subtestId+") : "
+			logger.error("Exception occured in getSubtest("+subtestId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.decryptionFailed");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
 		}
 		catch (TMSException e) {
-			System.out.println("TMS Exception occured in getSubtest("+subtestId+") : "
+			logger.error("TMS Exception occured in getSubtest("+subtestId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.getContentFailed");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
 		}
 		catch (Exception e) {
-			System.out.println("Exception occured in getSubtest("+subtestId+") : "
+			logger.error("Exception occured in getSubtest("+subtestId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.getContentFailed");                            
 			//ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
@@ -347,13 +343,13 @@ public class ContentServlet extends HttpServlet {
 			} 
 		}
 		catch (TMSException e) {
-			System.out.println("TMS Exception occured in downloadItem("+itemId+") : "
+			logger.error("TMS Exception occured in downloadItem("+itemId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.getContentFailed");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
 		}
 		catch (XmlException e) {
-			System.out.println("XML Exception occured in downloadItem("+itemId+") : "
+			logger.error("XML Exception occured in downloadItem("+itemId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.getContentFailed");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
@@ -397,10 +393,7 @@ public class ContentServlet extends HttpServlet {
 
 				itemId = getAttributeValue("itemid", xml);
 				hash = getAttributeValue("hash", xml);
-				key = getAttributeValue("key", xml);
-				
-//System.out.println("itemId="+itemId+" hash="+hash+" key="+key);				
-			
+				key = getAttributeValue("key", xml);		
 			}
 
 			if (itemId == null || "".equals(itemId.trim())) // invalid item id
@@ -443,19 +436,19 @@ public class ContentServlet extends HttpServlet {
 
 		} 
 		catch (HashMismatchException e) {
-			System.out.println("Exception occured in getItem("+itemId+") : "
+			logger.error("Exception occured in getItem("+itemId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.hashMismatch");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
 		}
 		catch (DecryptionException e) {
-			System.out.println("Exception occured in getItem("+itemId+") : "
+			logger.error("Exception occured in getItem("+itemId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.decryptionFailed");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
 		}
 		catch (Exception e) {
-			System.out.println("Exception occured in getItem("+itemId+") : "
+			logger.error("Exception occured in getItem("+itemId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.getContentFailed");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
@@ -533,7 +526,7 @@ public class ContentServlet extends HttpServlet {
             myOutput.flush();
             myOutput.close();				
 		} catch (Exception e) {
-			System.out.println("Exception occured in getImage() : "
+			logger.error("Exception occured in getImage() : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.getContentFailed");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
@@ -577,7 +570,7 @@ public class ContentServlet extends HttpServlet {
 
 	        
 	 } catch (Exception e) {
-		 System.out.println("Exception occured in getLocalResource() : "
+		 logger.error("Exception occured in getLocalResource() : "
 				+ ServletUtils.printStackTrace(e));
 		ServletUtils.writeResponse(response, ServletUtils.ERROR);
 	 }

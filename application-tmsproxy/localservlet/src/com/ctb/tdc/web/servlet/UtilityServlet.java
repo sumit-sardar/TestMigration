@@ -97,7 +97,7 @@ public class UtilityServlet extends HttpServlet {
         	//exit();
         }    
         
-        //System.out.println("UtilityServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+        //logger.debug("UtilityServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
     }
 	
 	public static synchronized void exit() {
@@ -296,12 +296,8 @@ public class UtilityServlet extends HttpServlet {
 				
 				String filePath = this.RESOURCE_FOLDER_PATH + File.separator  + filename;
 				          
-				//System.out.println("Image filepath : " + filePath);
-                int index= filename.lastIndexOf(".");
-                //System.out.println(index);
-				String ext = filename.substring(filename.lastIndexOf(".")+1);
-				//String ext = filename.substring(filename.lastIndexOf("."),3);
-				//System.out.println("ext" + ext);
+				int index= filename.lastIndexOf(".");
+                String ext = filename.substring(filename.lastIndexOf(".")+1);
 				AssetInfo assetInfo = new AssetInfo();
 				assetInfo.setExt(ext);
 				String mimeType = assetInfo.getMIMEType();
@@ -329,7 +325,7 @@ public class UtilityServlet extends HttpServlet {
 		        myOutput.close();	
 	        
 	 } catch (Exception e) {
-		 System.out.println("Exception occured in getImage() : " + ServletUtils.printStackTrace(e));
+		logger.error("Exception occured in getImage() : " + ServletUtils.printStackTrace(e));
 		ServletUtils.writeResponse(response, ServletUtils.ERROR);
 	 }
    }

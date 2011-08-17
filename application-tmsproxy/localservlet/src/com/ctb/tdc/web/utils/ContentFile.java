@@ -94,7 +94,7 @@ public class ContentFile
         }
         	
         else {
-        	//System.out.println("check: " + hash + "  actual: " + Crypto.generateHash(buffer));
+        	//logger.error("check: " + hash + "  actual: " + Crypto.generateHash(buffer));
         	return false;
         } 	
     }
@@ -130,15 +130,12 @@ public class ContentFile
     
     public static void main(String[] argv) {
     	try {
-    		System.out.println(argv[0] + " " + argv[1]);
     		byte[] infile = readFromFile(argv[0]);
     		//String hash = AeSimpleMD5.MD5(new String(infile));
     		String hash = Crypto.generateHash(infile);
-    		System.out.println(hash);
     		byte[] bytes = decryptFile(argv[0], hash, argv[1]);
     		FileOutputStream fos = new FileOutputStream("c:\\itemout.txt");
     		fos.write(bytes);
-    		System.out.println(new String(bytes));
     	} catch (Exception e) {
     		e.printStackTrace();
     	}

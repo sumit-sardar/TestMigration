@@ -3,15 +3,12 @@ package com.ctb.tms.rdb.oracle;
 import java.math.BigInteger;
 import java.sql.Clob;
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.Random;
-import java.util.ResourceBundle;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -34,6 +31,8 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.TestingSessionData.LmsStudentAccommodations;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.TestingSessionData.LmsStudentAccommodations.StereotypeStyle;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Tutorial;
+
+import org.apache.log4j.Logger;
 
 import com.ctb.tms.bean.login.AccommodationsData;
 import com.ctb.tms.bean.login.AuthenticationData;
@@ -59,6 +58,8 @@ public class OASOracleSource implements OASRDBSource
 	private static String OASDatabaseUser = "oas";
 	private static String OASDatabaseUserPassword = "oaspr5r";
 	private static String OASDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver"; */
+	
+	static Logger logger = Logger.getLogger(OASOracleSource.class);
 	
 	private static final String ROSTER_COMPLETION_STATUS_SQL = "update  test_roster set  test_completion_status = {status},  restart_number = {restartNumber},  start_date_time = nvl(start_date_time,{timestamp}),  last_login_date_time = {timestamp},  capture_method = {captureMethod},  updated_date_time = {timestamp},  last_mseq = {mseq},  correlation_id = null where  test_roster_id = {testRosterId}";
 	private static final String AUTHENTICATE_STUDENT_SQL = "select  ros.test_roster_id as testRosterId,  stu.student_id as studentId,  stu.last_name as studentLastName,  stu.first_name as studentFirstName,  stu.middle_name as studentMiddleName,  ros.test_completion_status as rosterTestCompletionStatus,  adm.login_start_date as windowStartDate,  adm.login_end_date as windowEndDate,  adm.daily_login_start_time as dailyStartTime,  adm.daily_login_end_time as dailyEndTime,  adm.test_admin_status as testAdminStatus,  adm.time_zone AS timeZone,  ros.capture_method as captureMethod,  ros.restart_number as restartNumber,  ros.test_admin_id as testAdminId, \t  ros.random_distractor_seed as randomDistractorSeedNumber, \t  ros.tts_speed_status as ttsSpeedStatus from  student stu,  test_roster ros,  test_admin adm where  adm.test_admin_id = ros.test_admin_id  and ros.student_id = stu.student_id  and stu.activation_status = 'AC'  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and upper(stu.user_name) = upper(?)  and upper(ros.password) = upper(?)";    
@@ -87,7 +88,7 @@ public class OASOracleSource implements OASRDBSource
 			OASDatabaseUserPassword = rb.getString("oas.db.password");
 			haveDataSource = true;
 		} catch (Exception e) {
-			System.out.println("***** No OAS DB connection info specified in env.properties, using static defaults");
+			logger.info("***** No OAS DB connection info specified in env.properties, using static defaults");
 			//e.printStackTrace();
 		}
 	} */
@@ -100,9 +101,9 @@ public class OASOracleSource implements OASRDBSource
 			DataSource ds = (DataSource)envContext.lookup("jdbc/OASDataSource");
 			newConn = ds.getConnection(); 
 			haveDataSource = true;
-			//System.out.println("*****  Using OASDataSource for DB connection");
+			//logger.info("*****  Using OASDataSource for DB connection");
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 			haveDataSource = false;
 		}
 
@@ -113,7 +114,7 @@ public class OASOracleSource implements OASRDBSource
 			props.put("password", OASDatabaseUserPassword);
 			Driver driver = (Driver) Class.forName(OASDatabaseJDBCDriver).newInstance();
 			newConn = driver.connect(OASDatabaseURL, props);
-			//System.out.println("*****  Using local properties for OAS DB connection");
+			//logger.info("*****  Using local properties for OAS DB connection");
 		} */
 
 		return newConn;
@@ -174,8 +175,7 @@ public class OASOracleSource implements OASRDBSource
 
     	// might be more than one roster for these creds, due to random passwords
     	AuthenticationData [] authDataArray = authenticateStudent(conn, username, password);
-    	//System.out.print("1");
-        AuthenticationData authData = null;
+    	AuthenticationData authData = null;
         boolean authenticated = false;
         int testRosterId = -1;
         String lsid = null;
@@ -186,11 +186,9 @@ public class OASOracleSource implements OASRDBSource
             lsid = String.valueOf(testRosterId) + ":" + accessCode;
             loginResponse.setLsid(lsid);
             manifestData = getManifest(conn, testRosterId, accessCode);
-           // System.out.print("2");
             if(manifestData.length > 0) {
                 authenticated = true;
                 ScratchpadData [] scratchData = getScratchpadContent(conn, testRosterId);
-                //System.out.print("3");
                 HashMap<Integer, Clob> scratchMap = new HashMap<Integer, Clob>(scratchData.length);
                 for (int i = 0; i < scratchData.length; i++) {
                 	scratchMap.put(new Integer(scratchData[i].getItemSetId()), scratchData[i].getScratchpadData());
@@ -210,7 +208,6 @@ public class OASOracleSource implements OASRDBSource
 	        	loginResponse.setRestartNumber(new BigInteger(String.valueOf(authData.getRestartNumber())));
 	        
 	            TestProduct testProduct = getProductForTestAdmin(conn, authData.getTestAdminId());
-	            //System.out.print("4");
 	            //AuthenticateStudent authenticator = authenticatorFactory.create();
 	
 	            if ("TB".equals(testProduct.getProductType())) {
@@ -226,7 +223,6 @@ public class OASOracleSource implements OASRDBSource
 	            }
 	            
 	            String logoURI = getProductLogo(conn,testProduct.getProductId());
-	            //System.out.print("5");
 	            if (logoURI == null || "".equals(logoURI))
 	                logoURI = "/resources/logo.swf";
 	            loginResponse.addNewBranding().setTdclogo(logoURI);
@@ -253,7 +249,6 @@ public class OASOracleSource implements OASRDBSource
 			 }
 	        copyAuthenticationDataToResponse(loginResponse, authData);
 	        AccommodationsData accomData = getAccommodations(conn, testRosterId);
-	        //System.out.print("6");
 	        
 	        if(accomData != null) {
 	            copyAccomodationsDataToResponse(loginResponse, accomData);
@@ -271,10 +266,8 @@ public class OASOracleSource implements OASRDBSource
 	                		 manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS))) {
 	                	ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
 	                	manifestData[i].setTotalTime(getTotalElapsedTimeForSubtest(conn, testRosterId, manifestData[i].getId()));
-	                    //System.out.print("7");
 	                    int remSec = (manifestData[i].getScoDurationMinutes() * 60) - manifestData[i].getTotalTime();
 	                    ItemResponseData [] itemResponseData = getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
-	                    //System.out.print("8");
 	                    //START Change For deferred defect 63502
 	                    copyRestartDataToResponse(lsid, testRosterId, manifestData[i].getId(), loginResponse, itemResponseData, remSec, 
 	                    		Integer.parseInt(manifestData[i].getAdsid()), manifestData[i].getScratchpadContentStr(), restartData);
@@ -286,9 +279,7 @@ public class OASOracleSource implements OASRDBSource
 	        copyManifestDataToResponse(conn, loginResponse, manifestData, testRosterId, authData.getTestAdminId(), accessCode);
 	
 	        String tutorialResource = getTutorialResource(conn, testRosterId);
-	        //System.out.print("9");
 	        boolean wasTutorialTaken = wasTutorialTaken(conn, testRosterId);
-	        //System.out.print("10");
 	        if (tutorialResource!= null && !tutorialResource.trim().equals("")) {
 	            Tutorial tutorial =loginResponse.addNewTutorial();
 	            tutorial.setTutorialUrl(tutorialResource);
@@ -300,7 +291,6 @@ public class OASOracleSource implements OASRDBSource
 	        com.ctb.tms.bean.login.Manifest manifest = new com.ctb.tms.bean.login.Manifest();
 	        manifest.setManifest(manifestData);
 	        result.setManifest(manifest);
-	        System.out.print("\n");
 	        return result;
         } else {
         	return null;
@@ -464,15 +454,10 @@ public class OASOracleSource implements OASRDBSource
         
         for(int i=0;i<manifestData.length;i++) {
         	ManifestData data = manifestData[i];
-        /*	if(response.getRestartFlag() && "T".equals(isUltimateAccessCode) 
+        	/*	if(response.getRestartFlag() && "T".equals(isUltimateAccessCode) 
         				&& Constants.StudentTestCompletionStatus.COMPLETED_STATUS.equals(data.getCompletionStatus())){
-	            System.out.println("***** In If");
-	            System.out.println("RestartFlag: "+response.getRestartFlag()+", isUltimateAccessCode: "
-	            			+isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
         		continue;
         	}else{*/
-        		//System.out.println("***** In Else");
-        		//System.out.println("RestartFlag: "+response.getRestartFlag()+", isUltimateAccessCode: " +isUltimateAccessCode+", CompletionStatus: "+data.getCompletionStatus());
         		manifest.setTitle(data.getTestTitle());
 	            manifest.addNewSco();
 	            Sco sco = manifest.getScoArray(i);

@@ -5,7 +5,11 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
 public class HSQLSetup {
+	
+	static Logger logger = Logger.getLogger(HSQLSetup.class);
 	
 	public static Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Class.forName("org.hsqldb.jdbcDriver");
@@ -26,25 +30,25 @@ public class HSQLSetup {
 				ps = conn.prepareStatement("CREATE TEXT TABLE STUDENT (user_name VARCHAR(32), password VARCHAR(32), access_code VARCHAR(32))");
 				ps.executeUpdate();
 			} catch (Exception e) {
-				System.out.println("***** HSQLDB - STUDENT table exists");
+				logger.info("***** HSQLDB - STUDENT table exists");
 			}
 			try {
 				ps = conn.prepareStatement("CREATE TEXT TABLE ROSTER (user_name VARCHAR(32), password VARCHAR(32), access_code VARCHAR(32), roster VARCHAR(65535))");
 				ps.executeUpdate();
 			} catch (Exception e) {
-				System.out.println("***** HSQLDB - ROSTER table exists");
+				logger.info("***** HSQLDB - ROSTER table exists");
 			}
 			try {
 				ps = conn.prepareStatement("CREATE TEXT TABLE RESPONSE (test_roster_id VARCHAR(32), item_id VARCHAR(32), seq_num VARCHAR(32), response VARCHAR(32))");
 				ps.executeUpdate();
 			} catch (Exception e) {
-				System.out.println("***** HSQLDB - RESPONSE table exists");
+				logger.info("***** HSQLDB - RESPONSE table exists");
 			}
 			try {
 				ps = conn.prepareStatement("CREATE TEXT TABLE MANIFEST (test_roster_id VARCHAR(32), item_set_id VARCHAR(32), completion_status VARCHAR(32))");
 				ps.executeUpdate();
 			} catch (Exception e) {
-				System.out.println("***** HSQLDB - MANIFEST table exists");
+				logger.info("***** HSQLDB - MANIFEST table exists");
 			}
 			try {
 				ps = conn.prepareStatement("SET TABLE STUDENT SOURCE 'student;fs=|'");
@@ -74,13 +78,13 @@ public class HSQLSetup {
 				ps = conn.prepareStatement("CREATE TEXT TABLE SUBTEST (subtest_id VARCHAR(32), subtest VARCHAR(65535))");
 				ps.executeUpdate();
 			} catch (Exception e) {
-				System.out.println("***** HSQLDB - SUBTEST table exists");
+				logger.info("***** HSQLDB - SUBTEST table exists");
 			}
 			try {
 				ps = conn.prepareStatement("CREATE TEXT TABLE ITEM (item_id VARCHAR(32), item VARCHAR(65535))");
 				ps.executeUpdate();
 			} catch (Exception e) {
-				System.out.println("***** HSQLDB - ITEM table exists");
+				logger.info("***** HSQLDB - ITEM table exists");
 			}
 			try {
 				ps = conn.prepareStatement("SET TABLE SUBTEST SOURCE 'subtest;fs=|'");

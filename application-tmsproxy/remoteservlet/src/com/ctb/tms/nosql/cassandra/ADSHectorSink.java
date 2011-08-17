@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import me.prettyprint.cassandra.model.BasicColumnFamilyDefinition;
 import me.prettyprint.cassandra.model.BasicKeyspaceDefinition;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -24,11 +26,13 @@ import me.prettyprint.hector.api.ddl.ComparatorType;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 
+import com.ctb.tdc.web.utils.LoadTestUtils;
 import com.ctb.tms.nosql.ADSNoSQLSink;
 
 public class ADSHectorSink implements ADSNoSQLSink {
 
 	private static Cluster cluster;
+	static Logger logger = Logger.getLogger(ADSHectorSink.class);
 	
 	public ADSHectorSink () {
 		
@@ -42,7 +46,7 @@ public class ADSHectorSink implements ADSNoSQLSink {
 
 		try {
 			//cluster.dropKeyspace("ADS");
-			//System.out.println("*****  Dropped ADS keyspace.");
+			//logger.info("*****  Dropped ADS keyspace.");
 		} catch (Exception e) {
 			// do nothing, KS doesn't exist
 		}
@@ -282,7 +286,7 @@ public class ADSHectorSink implements ADSNoSQLSink {
 			
 			cluster.addKeyspace(new ThriftKsDef(kd));
 
-			System.out.println("*****  Created ADS keyspace.");
+			logger.info("*****  Created ADS keyspace.");
 		} catch (Exception e) {
 			// do nothing, keyspace already exists
 			e.printStackTrace();

@@ -115,7 +115,6 @@ public class LoadTestServlet extends HttpServlet{
 		 //START Changes for defect 65267
 		
 		this.networkServiceUtility = request.getParameter("NetworkUitlity") != null ? request.getParameter("NetworkUitlity") : "No";
-		//System.out.println("networkServiceUtility..........." + this.networkServiceUtility);
 		//END
 		if(!MarkerFile.fileExists()){
 			
@@ -349,7 +348,6 @@ public class LoadTestServlet extends HttpServlet{
         			    strContent = new StringBuffer("");
 			        	
         			    Integer retryCount	= 0;
-			        	//System.out.println("Request counter = " + requestCounter.toString());
 			        	//create post method with url based on method		    		
 			    		if ((method = LoadTestUtils.getAttributeValue("method",xml)) == null)
 			    			method = ServletUtils.LOGIN_METHOD;

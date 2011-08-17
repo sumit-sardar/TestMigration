@@ -8,6 +8,8 @@ import javax.servlet.ServletContextEvent;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
+import org.apache.log4j.Logger;
+
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.NoSQLStorageFactory;
@@ -25,6 +27,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	private static ResponseQueue responseQueue;
 	private static ConcurrentHashMap rosterMap;
 	private static ConcurrentLinkedQueue<String> rosterQueue;
+	static Logger logger = Logger.getLogger(TestDeliveryContextListener.class);
 	
 	OASRDBSource oasDBSource = RDBStorageFactory.getOASSource();
 	OASRDBSink oasDBSink = RDBStorageFactory.getOASSink();
@@ -41,23 +44,23 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	}
     
 	public void contextInitialized(ServletContextEvent sce) {
-		System.out.println("*****  Context Listener Startup");
+		logger.info("*****  Context Listener Startup");
 		try {
 			OASNoSQLSource oasSource = NoSQLStorageFactory.getOASSource();
 			OASNoSQLSink oasSink = NoSQLStorageFactory.getOASSink();
 			
-			/* System.out.print("*****  Starting active roster check background thread . . .");
+			/* logger.info("*****  Starting active roster check background thread . . .");
 			TestDeliveryContextListener.rosterMap = new ConcurrentHashMap(10000);
 			TestDeliveryContextListener.rosterList = new RosterList(oasSource, oasSink, oasDBSource, oasDBSink);
 			TestDeliveryContextListener.rosterList.start();
-			System.out.println(" started.");*/
+			logger.info(" started.");*/
 			
 			// response persistence should be handled by cache store implementation
-			/* System.out.print("*****  Starting response queue persistence thread . . .");
+			/* logger.info("*****  Starting response queue persistence thread . . .");
 			TestDeliveryContextListener.rosterQueue = new ConcurrentLinkedQueue<String>();
 			TestDeliveryContextListener.responseQueue = new ResponseQueue(oasSource, oasSink, oasDBSource, oasDBSink);
 			TestDeliveryContextListener.responseQueue.start();
-			System.out.println(" started."); */
+			logger.info(" started."); */
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -105,23 +108,23 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 									sinkConn.commit();
 									sinkConn.close();
 								}
-								System.out.print("*****  Got roster data for " + key + " . . . ");
+								logger.info("*****  Got roster data for " + key + " . . . ");
 								// Now put the roster data into Cassandra
 								if(rosterData != null) {
 									String lsid = rosterData.getDocument().getTmssvcResponse().getLoginResponse().getLsid();
 									String testRosterId = lsid.substring(0, lsid.indexOf(":"));
 									oasSink.putRosterData(creds[i], rosterData);
 									oasSink.putManifestData(testRosterId, rosterData.getManifest());
-									System.out.print("stored.\n");
+									logger.info("stored.\n");
 								} else {
-									System.out.print("NOT stored.\n");
+									logger.info("NOT stored.\n");
 								}
 								rosterMap.put(key, key);
 							} else {
-								//System.out.print("*****  Roster data for " + key + " already present.\n");
+								//logger.info("*****  Roster data for " + key + " already present.\n");
 							}
 						} else {
-							//System.out.print("*****  Roster data for " + key + " already present.\n");
+							//logger.info("*****  Roster data for " + key + " already present.\n");
 						}
 					}
 				} catch (Exception e) {
@@ -134,7 +137,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						if(sinkConn != null) {
 							sinkConn.close();
 						}
-						System.out.println("*****  Completed active roster check. Sleeping for " + checkFrequency + " seconds.");
+						logger.info("*****  Completed active roster check. Sleeping for " + checkFrequency + " seconds.");
 						Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000);
 					}catch (Exception ie) {
 						// do nothing
@@ -183,7 +186,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						if(conn != null) {
 							conn.close();
 						}
-						System.out.println("*****  Completed response queue persistence. Sleeping for " + postFrequency + " seconds.");
+						logger.info("*****  Completed response queue persistence. Sleeping for " + postFrequency + " seconds.");
 						Thread.sleep(TestDeliveryContextListener.postFrequency * 1000);
 					}catch (Exception ie) {
 						// do nothing

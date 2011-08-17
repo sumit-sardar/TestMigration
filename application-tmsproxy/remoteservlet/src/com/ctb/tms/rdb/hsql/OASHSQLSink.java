@@ -7,6 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
+
+import org.apache.log4j.Logger;
+
 import sun.misc.BASE64Encoder;
 
 import com.ctb.tms.bean.login.Manifest;
@@ -16,6 +19,8 @@ import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.rdb.OASRDBSink;
 
 public class OASHSQLSink implements OASRDBSink {
+	
+	static Logger logger = Logger.getLogger(OASHSQLSink.class);
 	
 	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		return HSQLSetup.getOASConnection();
@@ -86,7 +91,7 @@ public class OASHSQLSink implements OASRDBSink {
 			String rdString = new BASE64Encoder().encode(bytes);
 			stmt1.setString(4, rdString);
 			stmt1.executeUpdate();
-			System.out.println("*****  Stored to HSQL DB: " + creds.getUsername());
+			logger.info("*****  Stored to HSQL DB: " + creds.getUsername());
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

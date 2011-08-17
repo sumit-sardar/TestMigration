@@ -2,6 +2,8 @@ package com.ctb.tms.rdb;
 
 import java.util.ResourceBundle;
 
+import org.apache.log4j.Logger;
+
 import com.ctb.tms.rdb.hsql.ADSHSQLSink;
 import com.ctb.tms.rdb.hsql.ADSHSQLSource;
 import com.ctb.tms.rdb.hsql.OASHSQLSink;
@@ -29,6 +31,8 @@ public class RDBStorageFactory {
 	private static ADSRDBSource adsSource;
 	private static ADSRDBSink adsSink;
 	
+	static Logger logger = Logger.getLogger(RDBStorageFactory.class);
+	
 	static {
 		synchronized(RDBStorageFactory.class) {
 			ResourceBundle rb = ResourceBundle.getBundle("storage");
@@ -44,13 +48,14 @@ public class RDBStorageFactory {
 	public static OASRDBSource getOASSource() {
 		if(oasSource == null) {
 			if(HSQL.equals(oassource)) {
-				System.out.println("*****  Using OASHSQLSource");
+				logger.info("*****  Using OASHSQLSource");
 				oasSource = new OASHSQLSource();
 			} else if (ORACLE.equals(oassource)) {
-				System.out.println("*****  Using OASOracleSource");
+				logger.info("*****  Using OASOracleSource");
 				oasSource = new OASOracleSource();
 			} else {
 				// default to Oracle
+				logger.info("*****  Using OASOracleSource");
 				oasSource = new OASOracleSource();
 			}
 		}
@@ -60,13 +65,14 @@ public class RDBStorageFactory {
 	public static OASRDBSink getOASSink() {
 		if(oasSink == null) {
 			if(HSQL.equals(oassink)) {
-				System.out.println("*****  Using OASHSQLSink");
+				logger.info("*****  Using OASHSQLSink");
 				oasSink = new OASHSQLSink();
 			} else if (ORACLE.equals(oassink)) {
-				System.out.println("*****  Using OASOracleSink");
+				logger.info("*****  Using OASOracleSink");
 				oasSink = new OASOracleSink();
 			} else {
 				// default to Oracle
+				logger.info("*****  Using OASOracleSink");
 				oasSink = new OASOracleSink();
 			}
 		}
@@ -76,13 +82,14 @@ public class RDBStorageFactory {
 	public static ADSRDBSource getADSSource() {
 		if(adsSource == null) {
 			if(HSQL.equals(adssource)) {
-				System.out.println("*****  Using ADSHSQLSource");
+				logger.info("*****  Using ADSHSQLSource");
 				adsSource = new ADSHSQLSource();
 			} else if (ORACLE.equals(adssource)) {
-				System.out.println("*****  Using ADSOracleSource");
+				logger.info("*****  Using ADSOracleSource");
 				adsSource = new ADSOracleSource();
 			} else {
 				// default to Oracle
+				logger.info("*****  Using ADSOracleSource");
 				adsSource = new ADSOracleSource();
 			}
 		}
@@ -92,13 +99,14 @@ public class RDBStorageFactory {
 	public static ADSRDBSink getADSSink() {
 		if(adsSink == null) {
 			if(HSQL.equals(adssink)) {
-				System.out.println("*****  Using ADSHSQLSink");
+				logger.info("*****  Using ADSHSQLSink");
 				adsSink = new ADSHSQLSink();
 			} else if (ORACLE.equals(adssink)) {
-				System.out.println("*****  Using ADSOracleSink");
+				logger.info("*****  Using ADSOracleSink");
 				adsSink = new ADSOracleSink();
 			} else {
 				// default to Oracle
+				logger.info("*****  Using ADSOracleSink");
 				adsSink = new ADSOracleSink();
 			}
 		}

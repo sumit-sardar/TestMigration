@@ -59,7 +59,7 @@ public class DownloadContentServlet extends HttpServlet {
         if (method.equals(ServletUtils.DOWNLOAD_CONTENT_METHOD))
             downloadContent(response, itemSetId, encryptionKey);
         
-        //System.out.println("DownloadContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+        logger.debug("DownloadContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
 	}
 
 	/**

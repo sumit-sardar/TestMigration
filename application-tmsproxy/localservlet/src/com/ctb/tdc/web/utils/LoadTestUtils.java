@@ -24,6 +24,10 @@ import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 import java.util.zip.Adler32;
 
+import org.apache.log4j.Logger;
+
+import com.ctb.tdc.web.servlet.LoadContentServlet;
+
 
 public class LoadTestUtils {
 
@@ -31,6 +35,7 @@ public class LoadTestUtils {
     public static final String LOAD_TEST_EXTENSION = "_ld.log";
     public static final String LOAD_TEST_FOLDER = "/data/LoadTest";
     public static final String LOAD_TEST_LOGIN_FILE = "loginRequests.log";
+    static Logger logger = Logger.getLogger(LoadTestUtils.class);
 	
     public static String getLoginFileName() {
     	String fullFileName = null;
@@ -81,7 +86,7 @@ public class LoadTestUtils {
 			out.close();
 		}
 		catch(IOException e){
-			System.out.println("Error :" + e);
+			logger.error("Error :" + e);
 		}
 	}
 	

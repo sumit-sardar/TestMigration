@@ -2,6 +2,8 @@ package com.ctb.tms.nosql.cassandra;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.Keyspace;
@@ -16,6 +18,7 @@ import com.ctb.tms.nosql.ADSNoSQLSource;
 public class ADSHectorSource implements ADSNoSQLSource{
 	
 	private static Cluster cluster;
+	static Logger logger = Logger.getLogger(ADSHectorSource.class);
 	
 	public ADSHectorSource () {
 		
@@ -38,7 +41,7 @@ public class ADSHectorSource implements ADSNoSQLSource{
 		if(qr != null && qr.get() != null) {
 			result = qr.get().getValue();
 		} else {
-			System.out.println("*****  getSubtest: no subtest data found for " + key);
+			logger.info("*****  getSubtest: no subtest data found for " + key);
 		}
 		//byte [] bytes = new BASE64Decoder().decodeBuffer(result);
 		//result = new String(bytes);
@@ -55,7 +58,7 @@ public class ADSHectorSource implements ADSNoSQLSource{
 		if(qr != null && qr.get() != null) {
 			result = qr.get().getValue();
 		} else {
-			System.out.println("*****  getItem: no item data found for " + key);
+			logger.info("*****  getItem: no item data found for " + key);
 		}
 		//byte [] bytes = new BASE64Decoder().decodeBuffer(result);
 		//result = new String(bytes);
