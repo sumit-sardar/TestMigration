@@ -104,6 +104,8 @@ public class PersistenceServlet extends HttpServlet {
 			throws ServletException, IOException {    
         String method = ServletUtils.getMethod(request);
         
+        //System.out.println("***** Local Servlet method: " + method);
+        
         long startTime = System.currentTimeMillis();
         
         String xml = ServletUtils.getXml(request);
@@ -126,6 +128,8 @@ public class PersistenceServlet extends HttpServlet {
         String result = ServletUtils.OK;
         boolean validSettings = ServletUtils.validateServletSettings();
                 
+        //System.out.println("***** Local servlet request: " + xml);
+        
         // call method to perform an action only if servlet settings is valid
         if (! validSettings) {
         	System.out.println("PersistenceServlet: Invalid settings!");
@@ -282,9 +286,9 @@ public class PersistenceServlet extends HttpServlet {
 
         	boolean hasResponse = ServletUtils.hasResponse(xml);
             
-        	if(isEndSubtest || hasResponse) {
+        	//if(isEndSubtest || hasResponse) {
         		result = save(xml);
-            }
+            //}
 
             if(!isEndSubtest){
             	result = ServletUtils.OK;

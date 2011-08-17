@@ -24,15 +24,15 @@ import com.ctb.tms.rdb.OASRDBSink;
 
 public class OASOracleSink implements OASRDBSink {
 	private static volatile boolean haveDataSource = true;
-	private static String OASDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1";
+	/* private static String OASDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1";
 	private static String OASDatabaseUser = "oas";
 	private static String OASDatabaseUserPassword = "oaspr5r";
-	private static String OASDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver";
+	private static String OASDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver"; */
 	
 	private static final String STORE_RESPONSE_SQL = "insert into item_response (  item_response_id,  test_roster_id,  \t\titem_set_id,  \t\titem_id,  \t\tresponse,  \t\tresponse_method,  \t\tresponse_elapsed_time,  \t\tresponse_seq_num,  \t\text_answer_choice_id,  \tstudent_marked,  \t\tcreated_by) \tvalues  (SEQ_ITEM_RESPONSE_ID.NEXTVAL,  ?,  ?,  ?,  ?,  'M',  ?,  ?,  ?,  ?,  6)";
 	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set completion_status = ? where test_roster_id = ? and item_set_id = ?";
 	
-	{
+	/* {
 		try {
 			ResourceBundle rb = ResourceBundle.getBundle("env");
 			OASDatabaseJDBCDriver = rb.getString("oas.db.driver");
@@ -44,7 +44,7 @@ public class OASOracleSink implements OASRDBSink {
 			System.out.println("***** No OAS DB connection info specified in env.properties, using static defaults");
 			//e.printStackTrace();
 		}
-	}
+	} */
 	
 	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Connection newConn = null;
@@ -60,7 +60,7 @@ public class OASOracleSink implements OASRDBSink {
 			haveDataSource = false;
 		}
 
-		if(!haveDataSource) {
+		/* if(!haveDataSource) {
 			// no OASDataSource available, falling back on local properties
 			Properties props = new Properties();
 			props.put("user", OASDatabaseUser);
@@ -68,7 +68,7 @@ public class OASOracleSink implements OASRDBSink {
 			Driver driver = (Driver) Class.forName(OASDatabaseJDBCDriver).newInstance();
 			newConn = driver.connect(OASDatabaseURL, props);
 			//System.out.println("*****  Using local properties for OAS DB connection");
-		}
+		} */
 
 		return newConn;
 	}
@@ -162,8 +162,9 @@ public class OASOracleSink implements OASRDBSink {
     			stmt1.setString(1, subtest.getCompletionStatus());
     			stmt1.setString(2, testRosterId);
     			stmt1.setInt(3, subtest.getId());
+    			stmt1.executeUpdate();
+    			System.out.println("***** Updated subtest status for roster: " + testRosterId + ", subtest: " + subtest.getId() + ". Status is: " + subtest.getCompletionStatus());
     		}
-			stmt1.executeUpdate();
 			// TODO: update roster status as well
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -55,10 +55,10 @@ import com.ctb.tms.util.Constants;
 public class OASOracleSource implements OASRDBSource
 { 
 	private static volatile boolean haveDataSource = true;
-	private static String OASDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1";
+	/* private static String OASDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1";
 	private static String OASDatabaseUser = "oas";
 	private static String OASDatabaseUserPassword = "oaspr5r";
-	private static String OASDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver";
+	private static String OASDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver"; */
 	
 	private static final String ROSTER_COMPLETION_STATUS_SQL = "update  test_roster set  test_completion_status = {status},  restart_number = {restartNumber},  start_date_time = nvl(start_date_time,{timestamp}),  last_login_date_time = {timestamp},  capture_method = {captureMethod},  updated_date_time = {timestamp},  last_mseq = {mseq},  correlation_id = null where  test_roster_id = {testRosterId}";
 	private static final String AUTHENTICATE_STUDENT_SQL = "select  ros.test_roster_id as testRosterId,  stu.student_id as studentId,  stu.last_name as studentLastName,  stu.first_name as studentFirstName,  stu.middle_name as studentMiddleName,  ros.test_completion_status as rosterTestCompletionStatus,  adm.login_start_date as windowStartDate,  adm.login_end_date as windowEndDate,  adm.daily_login_start_time as dailyStartTime,  adm.daily_login_end_time as dailyEndTime,  adm.test_admin_status as testAdminStatus,  adm.time_zone AS timeZone,  ros.capture_method as captureMethod,  ros.restart_number as restartNumber,  ros.test_admin_id as testAdminId, \t  ros.random_distractor_seed as randomDistractorSeedNumber, \t  ros.tts_speed_status as ttsSpeedStatus from  student stu,  test_roster ros,  test_admin adm where  adm.test_admin_id = ros.test_admin_id  and ros.student_id = stu.student_id  and stu.activation_status = 'AC'  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and upper(stu.user_name) = upper(?)  and upper(ros.password) = upper(?)";    
@@ -78,7 +78,7 @@ public class OASOracleSource implements OASRDBSource
 	private static final String TEST_PRODUCT_FOR_ADMIN_SQL = "select distinct  prod.product_id as productId,  prod.product_name as productName,  prod.version as version,  prod.product_description as productDescription,  prod.created_by as createdBy,  prod.created_date_time as createdDateTime,  prod.updated_by as updatedBy,  prod.updated_date_time as updatedDateTime,  prod.activation_status as activationStatus,  prod.product_type as productType,  prod.scoring_item_set_level as scoringItemSetLevel,  prod.preview_item_set_level as previewItemSetLevel,  prod.parent_product_id as parentProductId,  prod.ext_product_id as extProductId,  prod.content_area_level as contentAreaLevel,  prod.internal_display_name as internalDisplayName,  prod.sec_scoring_item_set_level as secScoringItemSetLevel,  prod.ibs_show_cms_id as ibsShowCmsId,  prod.printable as printable,  prod.scannable as scannable,  prod.keyenterable as keyenterable,  prod.branding_type_code as brandingTypeCode,  prod.acknowledgments_url as acknowledgmentsURL,  prod.show_student_feedback as showStudentFeedback,  prod.static_manifest as staticManifest,  prod.session_manifest as sessionManifest,  prod.subtests_selectable as subtestsSelectable,  prod.subtests_orderable as subtestsOrderable,  prod.subtests_levels_vary as subtestsLevelsVary,  cec.support_phone_number as supportPhoneNumber,  prod.off_grade_testing_disabled as offGradeTestingDisabled from  product prod, test_admin adm, customer_email_config cec where  prod.product_id = adm.product_id  and cec.customer_id (+) = adm.customer_id  and adm.test_admin_id = ?";
 	private static final String ACTIVE_ROSTERS_SQL = "select distinct stu.user_name as username, tr.password as password, tais.access_code as accesscode from test_roster tr, test_admin ta, test_admin_item_set tais, student stu where tr.test_completion_status in ('SC', 'IN', 'IS', 'IP') and sysdate > (TA.LOGIN_START_DATE - 3) and sysdate < (TA.LOGIN_END_DATE + 3) and ((tr.updated_date_time > sysdate - 30 and ta.updated_date_time > sysdate - 30) OR (stu.user_name > 'pt-student1450000' and stu.user_name < 'pt-student1500000') OR (tr.updated_date_time is null and ta.updated_date_time > sysdate - 30)) and ta.test_admin_id = tr.test_admin_id and tais.test_admin_id = ta.test_admin_id and stu.student_id = tr.student_id";
 	
-	{
+	/* {
 		try {
 			ResourceBundle rb = ResourceBundle.getBundle("env");
 			OASDatabaseJDBCDriver = rb.getString("oas.db.driver");
@@ -90,6 +90,33 @@ public class OASOracleSource implements OASRDBSource
 			System.out.println("***** No OAS DB connection info specified in env.properties, using static defaults");
 			//e.printStackTrace();
 		}
+	} */
+	
+	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		Connection newConn = null;
+		try {    
+			Context initContext = new InitialContext();
+			Context envContext  = (Context)initContext.lookup("java:/comp/env");
+			DataSource ds = (DataSource)envContext.lookup("jdbc/OASDataSource");
+			newConn = ds.getConnection(); 
+			haveDataSource = true;
+			//System.out.println("*****  Using OASDataSource for DB connection");
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			haveDataSource = false;
+		}
+
+		/* if(!haveDataSource) {
+			// no OASDataSource available, falling back on local properties
+			Properties props = new Properties();
+			props.put("user", OASDatabaseUser);
+			props.put("password", OASDatabaseUserPassword);
+			Driver driver = (Driver) Class.forName(OASDatabaseJDBCDriver).newInstance();
+			newConn = driver.connect(OASDatabaseURL, props);
+			//System.out.println("*****  Using local properties for OAS DB connection");
+		} */
+
+		return newConn;
 	}
 	
 	public StudentCredentials [] getActiveRosters(Connection con) {
@@ -560,33 +587,6 @@ public class OASOracleSource implements OASRDBSource
 
 		return Integer.valueOf(String.valueOf(seed.charAt(seed.length() - 1))).
 				intValue() % 2 == 0 ? false:true;
-	}
-    
-	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		Connection newConn = null;
-		try {    
-			Context initContext = new InitialContext();
-			Context envContext  = (Context)initContext.lookup("java:/comp/env");
-			DataSource ds = (DataSource)envContext.lookup("jdbc/OASDataSource");
-			newConn = ds.getConnection(); 
-			haveDataSource = true;
-			//System.out.println("*****  Using OASDataSource for DB connection");
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			haveDataSource = false;
-		}
-
-		if(!haveDataSource) {
-			// no OASDataSource available, falling back on local properties
-			Properties props = new Properties();
-			props.put("user", OASDatabaseUser);
-			props.put("password", OASDatabaseUserPassword);
-			Driver driver = (Driver) Class.forName(OASDatabaseJDBCDriver).newInstance();
-			newConn = driver.connect(OASDatabaseURL, props);
-			//System.out.println("*****  Using local properties for OAS DB connection");
-		}
-
-		return newConn;
 	}
 	        
 	private static AuthenticationData [] authenticateStudent(Connection con, String username, String password) {

@@ -69,7 +69,7 @@ public class TMSServlet extends HttpServlet {
 		String result = ServletUtils.OK;
 		try {
 			String xml = request.getParameter("requestXML");
-			//System.out.println(xml);
+			//System.out.println("***** Remote servlet request: " + xml);
 			
 			if (method != null && method.startsWith(ServletUtils.LOGIN_METHOD))
 	            result = login(xml);
@@ -134,8 +134,6 @@ public class TMSServlet extends HttpServlet {
 		AdssvcRequest saveRequest = document.getAdssvcRequest();
 		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
         SaveTestingSessionData saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
-
-        System.out.println(">>>>> " + xml);
         
         Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
         for(int i=0;i<tsda.length;i++) {
@@ -158,24 +156,40 @@ public class TMSServlet extends HttpServlet {
 		    }
 		    
 		    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {
-		    	if(tsd.getLevArray()[0].getE() == null || !LmsEventType.TERMINATED.equals(tsd.getLevArray()[0].getE())) {
+		    	LmsEventType.Enum eventType = tsd.getLevArray()[0].getE();
+    			//System.out.println("***** Got subtest event type: " + eventType.toString());
+		    	if(tsd.getLevArray()[0].getE() == null || !LmsEventType.TERMINATED.equals(eventType)) {
 			    	try {
-			    		// subtest events
-				    	NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
-				    	Manifest manifest = oasSource.getManifest(rosterId);
+			    		Manifest manifest = oasSource.getManifest(rosterId);
 				    	ManifestData[] manifestData = manifest.getManifest();
 				    	int nextScoIndex = 0;
-				    	for(int j=0;j<manifestData.length;j++) {
+				    	int j;
+				    	for(j=0;j<manifestData.length;j++) {
 				    		if(manifestData[j].getId() == Integer.parseInt(tsd.getScid())) {
 				    			nextScoIndex = j+1;
 				    			break;
 				    		}
 				    	}
-				    	if(nextScoIndex < manifestData.length) {
-		                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
-				    	}
+			    		if(LmsEventType.LMS_INITIALIZE.equals(eventType)) {
+			    			manifestData[j].setCompletionStatus("IP");
+			    		} else if(LmsEventType.STU_PAUSE.equals(eventType)) {
+			    			manifestData[j].setCompletionStatus("SP");
+			    		} else if(LmsEventType.STU_RESUME.equals(eventType)) {
+			    			manifestData[j].setCompletionStatus("IP");
+			    		} else if(LmsEventType.STU_STOP.equals(eventType)) {
+			    			manifestData[j].setCompletionStatus("IS");
+			    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
+			    			manifestData[j].setCompletionStatus("CO");
+					    	NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
+					    	
+					    	if(nextScoIndex < manifestData.length) {
+			                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
+					    	}
+			    		}
+			    		manifest.setManifest(manifestData);
+			    		oasSink.putManifestData(rosterId, manifest);
 			    	} catch (Exception e) {
-			    		// do nothing
+			    		e.printStackTrace();
 			    	}
 	                // Coherence write-behind will handle response persistence
 	                //TestDeliveryContextListener.enqueueRoster(rosterId);
@@ -186,7 +200,7 @@ public class TMSServlet extends HttpServlet {
         }
 	    
         // TODO: implement correlation, sequence and subtest/roster status checks for security
-        //System.out.println("<<<<< " + responseDocument.xmlText());
+
 		return responseDocument.xmlText();
 	}
 
@@ -204,6 +218,9 @@ public class TMSServlet extends HttpServlet {
 			creds.setAccesscode(lr.getAccessCode());
 		}
 		RosterData rd = oasSource.getRosterData(creds);
+		Manifest manifest = rd.getManifest();
+		String testRosterId = String.valueOf(rd.getAuthData().getTestRosterId());
+		oasSink.putManifestData(testRosterId, manifest);
 		// TODO: handle restart case by populating restart data from Cassandra-stored item responses
 		return rd.getLoginDocument().xmlText();
 	}

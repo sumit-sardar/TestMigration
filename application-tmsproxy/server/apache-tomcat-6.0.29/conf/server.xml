@@ -43,6 +43,17 @@
               description="User database that can be updated and saved"
               factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
               pathname="conf/tomcat-users.xml" />
+
+    <Resource name="jdbc/OASDataSource" auth="Container" 
+     	type="javax.sql.DataSource" driverClassName="oracle.jdbc.driver.OracleDriver" 
+     	url="jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1" 
+     	username="oas" password="oaspr5r" />
+     	
+    <Resource name="jdbc/ADSDataSource" auth="Container" 
+     	type="javax.sql.DataSource" driverClassName="oracle.jdbc.driver.OracleDriver" 
+     	url="jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1" 
+     	username="ads" password="adspr5r" />
+              
   </GlobalNamingResources>
 
   <!-- A "Service" is a collection of one or more "Connectors" that share

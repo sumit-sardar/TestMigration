@@ -27,17 +27,17 @@ import com.ctb.tms.rdb.ADSRDBSource;
 
 public class ADSOracleSource implements ADSRDBSource {
 	private static volatile boolean haveDataSource = true;
-	private static String ADSDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1";
+	/* private static String ADSDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1";
 	private static String ADSDatabaseUser = "ads";
 	private static String ADSDatabaseUserPassword = "adspr5r";
-	private static String ADSDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver";
+	private static String ADSDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver"; */
 	
 	private static final String GET_SUBTEST_SQL = "SELECT ob_asmt_id AS subtestId,  \tasmt_hash as hash FROM OB_ASMT  WHERE ob_asmt_id = ?";
 	private static final String GET_SUBTEST_BLOB_SQL = "SELECT  asmt_manifest_encr AS subtestBlob FROM OB_ASMT  WHERE ob_asmt_id = ?";
 	private static final String GET_ITEM_SQL = "SELECT ob_item_pkg_id AS itemId, hash FROM OB_ITEM_PKG  WHERE ob_item_pkg_id = ?";
 	private static final String GET_ITEM_BLOB_SQL = "SELECT item_rendition_xml_encr as itemBlob  FROM OB_ITEM_PKG  WHERE ob_item_pkg_id = ?";
 	
-	{
+	/* {
 		try {
 			ResourceBundle rb = ResourceBundle.getBundle("env");
 			ADSDatabaseJDBCDriver = rb.getString("ads.db.driver");
@@ -49,7 +49,7 @@ public class ADSOracleSource implements ADSRDBSource {
 			System.out.println("***** No ADS DB connection info specified in env.properties, using static defaults");
 			//e.printStackTrace();
 		}
-	}
+	} */
 	
 	public Connection getADSConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		Connection newConn = null;
@@ -65,7 +65,7 @@ public class ADSOracleSource implements ADSRDBSource {
 			haveDataSource = false;
 		}
 
-		if(!haveDataSource) {
+		/* if(!haveDataSource) {
 			// no OASDataSource available, falling back on local properties
 			Properties props = new Properties();
 			props.put("user", ADSDatabaseUser);
@@ -73,7 +73,7 @@ public class ADSOracleSource implements ADSRDBSource {
 			Driver driver = (Driver) Class.forName(ADSDatabaseJDBCDriver).newInstance();
 			newConn = driver.connect(ADSDatabaseURL, props);
 			//System.out.println("*****  Using local properties for ADS DB connection");
-		}
+		} */
 
 		return newConn;
 	}
