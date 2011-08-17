@@ -22,6 +22,7 @@ import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
 import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.log4j.Logger;
 
+import com.ctb.tdc.web.dto.ServletSettings;
 import com.ctb.tdc.web.dto.StateVO;
 import com.ctb.tdc.web.utils.AuditFile;
 import com.ctb.tdc.web.utils.MemoryCache;
@@ -78,7 +79,10 @@ public class PersistenceServlet extends HttpServlet {
      * @throws IOException if an error occurred
      */
     public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {    
+            throws ServletException, IOException {  
+        
+    	setTMSURL(request);
+    	
         //String method = request.getParameter("method");   // this line use with test.html
         String method = null;                               // this line is for release        
         if ((method != null) && (! method.equals(ServletUtils.NONE_METHOD))) {    
@@ -90,6 +94,12 @@ public class PersistenceServlet extends HttpServlet {
         }
     }
 
+    private void setTMSURL(HttpServletRequest request) {
+    	ServletSettings settings = MemoryCache.getInstance().getSrvSettings();
+    	settings.setTmsHost("http://" + request.getLocalAddr());
+    	settings.setTmsPort(request.getLocalPort());
+    }
+    
 	/**
 	 * The doGet method of the servlet. <br>
 	 *
@@ -101,7 +111,10 @@ public class PersistenceServlet extends HttpServlet {
 	 * @throws IOException if an error occurred
 	 */
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {    
+			throws ServletException, IOException {   
+		
+		setTMSURL(request);
+		
         String method = ServletUtils.getMethod(request);
         
         //logger.debug("***** Local Servlet method: " + method);

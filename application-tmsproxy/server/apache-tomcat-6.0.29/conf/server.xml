@@ -43,16 +43,6 @@
               description="User database that can be updated and saved"
               factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
               pathname="conf/tomcat-users.xml" />
-
-    <Resource name="jdbc/oasDataSource" auth="Container" 
-     	type="javax.sql.DataSource" driverClassName="oracle.jdbc.driver.OracleDriver" 
-     	url="jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1" 
-     	username="oas" password="oaspr5r" />
-     	
-    <Resource name="jdbc/adsDataSource" auth="Container" 
-     	type="javax.sql.DataSource" driverClassName="oracle.jdbc.driver.OracleDriver" 
-     	url="jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1" 
-     	username="ads" password="adspr5r" />
               
   </GlobalNamingResources>
 

@@ -25,12 +25,6 @@ import com.ctb.tms.bean.delivery.SubtestData;
 import com.ctb.tms.rdb.ADSRDBSource;
 
 public class ADSOracleSource implements ADSRDBSource {
-	private static volatile boolean haveDataSource = true;
-	/* private static String ADSDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1";
-	private static String ADSDatabaseUser = "ads";
-	private static String ADSDatabaseUserPassword = "adspr5r";
-	private static String ADSDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver"; */
-	
 	private static final String GET_SUBTEST_SQL = "SELECT ob_asmt_id AS subtestId,  \tasmt_hash as hash FROM OB_ASMT  WHERE ob_asmt_id = ?";
 	private static final String GET_SUBTEST_BLOB_SQL = "SELECT  asmt_manifest_encr AS subtestBlob FROM OB_ASMT  WHERE ob_asmt_id = ?";
 	private static final String GET_ITEM_SQL = "SELECT ob_item_pkg_id AS itemId, hash FROM OB_ITEM_PKG  WHERE ob_item_pkg_id = ?";
@@ -38,45 +32,8 @@ public class ADSOracleSource implements ADSRDBSource {
 	
 	static Logger logger = Logger.getLogger(ADSOracleSource.class);
 	
-	/* {
-		try {
-			ResourceBundle rb = ResourceBundle.getBundle("env");
-			ADSDatabaseJDBCDriver = rb.getString("ads.db.driver");
-			ADSDatabaseURL = rb.getString("ads.db.url");
-			ADSDatabaseUser = rb.getString("ads.db.user");
-			ADSDatabaseUserPassword = rb.getString("ads.db.password");
-			haveDataSource = true;
-		} catch (Exception e) {
-			logger.info("***** No ADS DB connection info specified in env.properties, using static defaults");
-			//e.printStackTrace();
-		}
-	} */
-	
 	public Connection getADSConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		Connection newConn = null;
-		try {    
-			Context initContext = new InitialContext();
-			Context envContext  = (Context)initContext.lookup("java:/comp/env");
-			DataSource ds = (DataSource)envContext.lookup("jdbc/adsDataSource");
-			newConn = ds.getConnection();  
-			haveDataSource = true;
-			//logger.info("*****  Using ADSDataSource for DB connection");
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			haveDataSource = false;
-		}
-
-		/* if(!haveDataSource) {
-			// no OASDataSource available, falling back on local properties
-			Properties props = new Properties();
-			props.put("user", ADSDatabaseUser);
-			props.put("password", ADSDatabaseUserPassword);
-			Driver driver = (Driver) Class.forName(ADSDatabaseJDBCDriver).newInstance();
-			newConn = driver.connect(ADSDatabaseURL, props);
-			//logger.info("*****  Using local properties for ADS DB connection");
-		} */
-
-		return newConn;
+		return OracleSetup.getADSConnection();
 	}
 	
 	public String getSubtest(Connection conn, int subtestId, String hash) {

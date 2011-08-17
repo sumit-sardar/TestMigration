@@ -21,57 +21,14 @@ import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.rdb.OASRDBSink;
 
-public class OASOracleSink implements OASRDBSink {
-	private static volatile boolean haveDataSource = true;
-	/* private static String OASDatabaseURL = "jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1";
-	private static String OASDatabaseUser = "oas";
-	private static String OASDatabaseUserPassword = "oaspr5r";
-	private static String OASDatabaseJDBCDriver = "oracle.jdbc.driver.OracleDriver"; */
-	
+public class OASOracleSink implements OASRDBSink {	
 	private static final String STORE_RESPONSE_SQL = "insert into item_response (  item_response_id,  test_roster_id,  \t\titem_set_id,  \t\titem_id,  \t\tresponse,  \t\tresponse_method,  \t\tresponse_elapsed_time,  \t\tresponse_seq_num,  \t\text_answer_choice_id,  \tstudent_marked,  \t\tcreated_by) \tvalues  (SEQ_ITEM_RESPONSE_ID.NEXTVAL,  ?,  ?,  ?,  ?,  'M',  ?,  ?,  ?,  ?,  6)";
 	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set completion_status = ? where test_roster_id = ? and item_set_id = ?";
 	
 	static Logger logger = Logger.getLogger(OASOracleSink.class);
 	
-	/* {
-		try {
-			ResourceBundle rb = ResourceBundle.getBundle("env");
-			OASDatabaseJDBCDriver = rb.getString("oas.db.driver");
-			OASDatabaseURL = rb.getString("oas.db.url");
-			OASDatabaseUser = rb.getString("oas.db.user");
-			OASDatabaseUserPassword = rb.getString("oas.db.password");
-			haveDataSource = true;
-		} catch (Exception e) {
-			logger.info("***** No OAS DB connection info specified in env.properties, using static defaults");
-			//e.printStackTrace();
-		}
-	} */
-	
 	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
-		Connection newConn = null;
-		try {    
-			Context initContext = new InitialContext();
-			Context envContext  = (Context)initContext.lookup("java:/comp/env");
-			DataSource ds = (DataSource)envContext.lookup("jdbc/oasDataSource");
-			newConn = ds.getConnection(); 
-			haveDataSource = true;
-			//logger.info("*****  Using OASDataSource for DB connection");
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-			haveDataSource = false;
-		}
-
-		/* if(!haveDataSource) {
-			// no OASDataSource available, falling back on local properties
-			Properties props = new Properties();
-			props.put("user", OASDatabaseUser);
-			props.put("password", OASDatabaseUserPassword);
-			Driver driver = (Driver) Class.forName(OASDatabaseJDBCDriver).newInstance();
-			newConn = driver.connect(OASDatabaseURL, props);
-			//logger.info("*****  Using local properties for OAS DB connection");
-		} */
-
-		return newConn;
+		return OracleSetup.getOASConnection();
 	}
 	
 	public void putItemResponse(Connection conn, String testRosterId, Tsd tsd) throws NumberFormatException, Exception {		

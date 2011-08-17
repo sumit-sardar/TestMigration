@@ -49,11 +49,11 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 			OASNoSQLSource oasSource = NoSQLStorageFactory.getOASSource();
 			OASNoSQLSink oasSink = NoSQLStorageFactory.getOASSink();
 			
-			/* logger.info("*****  Starting active roster check background thread . . .");
+			logger.info("*****  Starting active roster check background thread . . .");
 			TestDeliveryContextListener.rosterMap = new ConcurrentHashMap(10000);
 			TestDeliveryContextListener.rosterList = new RosterList(oasSource, oasSink, oasDBSource, oasDBSink);
 			TestDeliveryContextListener.rosterList.start();
-			logger.info(" started.");*/
+			logger.info(" started.");
 			
 			// response persistence should be handled by cache store implementation
 			/* logger.info("*****  Starting response queue persistence thread . . .");

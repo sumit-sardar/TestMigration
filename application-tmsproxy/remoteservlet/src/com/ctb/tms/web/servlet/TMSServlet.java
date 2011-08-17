@@ -138,65 +138,65 @@ public class TMSServlet extends HttpServlet {
         Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
         for(int i=0;i<tsda.length;i++) {
 		    Tsd tsd = tsda[i];
-		    String rosterId = tsd.getLsid().substring(0, tsd.getLsid().indexOf(":"));
-		    
-		    saveResponse.addNewTsd();
-	        saveResponse.getTsdArray(i).setLsid(tsd.getLsid());
-	        saveResponse.getTsdArray(i).setScid(tsd.getScid());
-	        saveResponse.getTsdArray(i).setMseq(tsd.getMseq());
-	        saveResponse.getTsdArray(i).setStatus(Status.OK);
-		    
-		    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
-		    	// response events
-		    	oasSink.putItemResponse(rosterId, tsd);
-		    }
-		    
-		    if(tsd.getLsvArray() != null && tsd.getLsvArray().length > 0) {
-		    	// test events
-		    }
-		    
-		    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {
-		    	LmsEventType.Enum eventType = tsd.getLevArray()[0].getE();
-    			//logger.debug("***** Got subtest event type: " + eventType.toString());
-		    	if(tsd.getLevArray()[0].getE() == null || !LmsEventType.TERMINATED.equals(eventType)) {
-			    	try {
-			    		Manifest manifest = oasSource.getManifest(rosterId);
-				    	ManifestData[] manifestData = manifest.getManifest();
-				    	int nextScoIndex = 0;
-				    	int j;
-				    	for(j=0;j<manifestData.length;j++) {
-				    		if(manifestData[j].getId() == Integer.parseInt(tsd.getScid())) {
-				    			nextScoIndex = j+1;
-				    			break;
-				    		}
-				    	}
-			    		if(LmsEventType.LMS_INITIALIZE.equals(eventType)) {
-			    			manifestData[j].setCompletionStatus("IP");
-			    		} else if(LmsEventType.STU_PAUSE.equals(eventType)) {
-			    			manifestData[j].setCompletionStatus("SP");
-			    		} else if(LmsEventType.STU_RESUME.equals(eventType)) {
-			    			manifestData[j].setCompletionStatus("IP");
-			    		} else if(LmsEventType.STU_STOP.equals(eventType)) {
-			    			manifestData[j].setCompletionStatus("IS");
-			    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
-			    			manifestData[j].setCompletionStatus("CO");
-					    	NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
-					    	
-					    	if(nextScoIndex < manifestData.length) {
-			                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
+		    if(tsd.getLsid() != null && !(tsd.getLsid().length() < 1) && !"undefined".equals(tsd.getLsid())) {
+			    String rosterId = tsd.getLsid().substring(0, tsd.getLsid().indexOf(":"));
+			    
+			    saveResponse.addNewTsd();
+		        saveResponse.getTsdArray(i).setLsid(tsd.getLsid());
+		        saveResponse.getTsdArray(i).setScid(tsd.getScid());
+		        saveResponse.getTsdArray(i).setMseq(tsd.getMseq());
+		        saveResponse.getTsdArray(i).setStatus(Status.OK);
+			    
+			    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
+			    	// response events
+			    	oasSink.putItemResponse(rosterId, tsd);
+			    }
+			    
+			    if(tsd.getLsvArray() != null && tsd.getLsvArray().length > 0) {
+			    	// test events
+			    }
+			    
+			    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {
+			    	LmsEventType.Enum eventType = tsd.getLevArray()[0].getE();
+	    			//logger.debug("***** Got subtest event type: " + eventType.toString());
+			    	if(tsd.getLevArray()[0].getE() == null || !LmsEventType.TERMINATED.equals(eventType)) {
+				    	try {
+				    		Manifest manifest = oasSource.getManifest(rosterId);
+					    	ManifestData[] manifestData = manifest.getManifest();
+					    	int nextScoIndex = 0;
+					    	int j;
+					    	for(j=0;j<manifestData.length;j++) {
+					    		if(manifestData[j].getId() == Integer.parseInt(tsd.getScid())) {
+					    			nextScoIndex = j+1;
+					    			break;
+					    		}
 					    	}
-			    		}
-			    		manifest.setManifest(manifestData);
-			    		oasSink.putManifestData(rosterId, manifest);
-			    	} catch (Exception e) {
-			    		e.printStackTrace();
+				    		if(LmsEventType.LMS_INITIALIZE.equals(eventType)) {
+				    			manifestData[j].setCompletionStatus("IP");
+				    		} else if(LmsEventType.STU_PAUSE.equals(eventType)) {
+				    			manifestData[j].setCompletionStatus("SP");
+				    		} else if(LmsEventType.STU_RESUME.equals(eventType)) {
+				    			manifestData[j].setCompletionStatus("IP");
+				    		} else if(LmsEventType.STU_STOP.equals(eventType)) {
+				    			manifestData[j].setCompletionStatus("IS");
+				    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
+				    			manifestData[j].setCompletionStatus("CO");
+						    	NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
+						    	
+						    	if(nextScoIndex < manifestData.length) {
+				                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
+						    	}
+				    		}
+				    		manifest.setManifest(manifestData);
+				    		oasSink.putManifestData(rosterId, manifest);
+				    	} catch (Exception e) {
+				    		e.printStackTrace();
+				    	}
+		                // Coherence write-behind will handle response persistence
+		                //TestDeliveryContextListener.enqueueRoster(rosterId);
 			    	}
-	                // Coherence write-behind will handle response persistence
-	                //TestDeliveryContextListener.enqueueRoster(rosterId);
-		    	}
+			    }
 		    }
-		    
-		    
         }
 	    
         // TODO: implement correlation, sequence and subtest/roster status checks for security

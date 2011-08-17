@@ -32,13 +32,13 @@
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
 
-	<Resource name="jdbc/OASDataSource" auth="Container"
+	<Resource name="oasDataSource" auth="Container"
               type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
               url="jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1"
               username="oas" password="oaspr5r" maxActive="20" maxIdle="10"
               maxWait="-1"/>
               
-    <Resource name="jdbc/ADSDataSource" auth="Container"
+    <Resource name="adsDataSource" auth="Container"
               type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
               url="jdbc:oracle:thin:@nj09mhe0393-vip.mhe.mhc:1521:oasr5t1"
               username="ads" password="adspr5r" maxActive="20" maxIdle="10"
