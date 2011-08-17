@@ -402,7 +402,7 @@ public class StudentAccommodationsTag extends CTBTag
 	        checked = this.accommodations.getExtendedTime().booleanValue();
 	        disabled = isDisabled(field);
 	        displayControlRow(field, description, checked, disabled, null);                        
-	        displayTextRow("Allow student to extend the test time.", "20");
+	        displayTextRow("Allow student to time and a half extra.", "20");
 	        displayEmptyRow("2");
         displayTableEnd();
         
