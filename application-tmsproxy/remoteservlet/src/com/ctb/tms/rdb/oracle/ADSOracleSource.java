@@ -57,7 +57,7 @@ public class ADSOracleSource implements ADSRDBSource {
 		try {    
 			Context initContext = new InitialContext();
 			Context envContext  = (Context)initContext.lookup("java:/comp/env");
-			DataSource ds = (DataSource)envContext.lookup("jdbc/ADSDataSource");
+			DataSource ds = (DataSource)envContext.lookup("jdbc/adsDataSource");
 			newConn = ds.getConnection();  
 			haveDataSource = true;
 			//logger.info("*****  Using ADSDataSource for DB connection");

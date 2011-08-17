@@ -1,0 +1,12 @@
+<?xml version="1.0" ?> 
+<project name="application-tmsproxy" default="war">
+
+	<target name="war">
+		<war destfile="tms.war" webxml="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/web.xml">
+			<fileset dir="server/apache-tomcat-6.0.29/webapps/ROOT/"/>
+			<!-- <lib dir="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib"/>
+			<classes dir="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/classes"/> -->
+		</war>
+	</target>
+	
+</project>

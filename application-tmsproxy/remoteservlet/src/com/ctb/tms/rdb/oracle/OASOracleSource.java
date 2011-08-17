@@ -98,7 +98,7 @@ public class OASOracleSource implements OASRDBSource
 		try {    
 			Context initContext = new InitialContext();
 			Context envContext  = (Context)initContext.lookup("java:/comp/env");
-			DataSource ds = (DataSource)envContext.lookup("jdbc/OASDataSource");
+			DataSource ds = (DataSource)envContext.lookup("jdbc/oasDataSource");
 			newConn = ds.getConnection(); 
 			haveDataSource = true;
 			//logger.info("*****  Using OASDataSource for DB connection");
