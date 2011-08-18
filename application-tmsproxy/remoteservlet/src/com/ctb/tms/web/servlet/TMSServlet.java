@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
@@ -32,6 +34,7 @@ import com.ctb.tms.nosql.ADSNoSQLSource;
 import com.ctb.tms.nosql.NoSQLStorageFactory;
 import com.ctb.tms.nosql.OASNoSQLSink;
 import com.ctb.tms.nosql.OASNoSQLSource;
+import com.ctb.tms.nosql.coherence.OASCoherenceSource;
 import com.ctb.tms.rdb.ADSRDBSink;
 import com.ctb.tms.rdb.ADSRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
@@ -47,6 +50,8 @@ public class TMSServlet extends HttpServlet {
 	ADSNoSQLSink adsSink = NoSQLStorageFactory.getADSSink();
 	
 	ADSRDBSource adsDBSource = RDBStorageFactory.getADSSource();
+	
+	static Logger logger = Logger.getLogger(TMSServlet.class);
 
 	public TMSServlet() {
 		super();
@@ -105,16 +110,13 @@ public class TMSServlet extends HttpServlet {
 
         //logger.debug(">>>>> " + saveRequest.xmlText());
         
-        Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
-        for(int i=0;i<tsda.length;i++) {
-		    Tsd tsd = tsda[i];
-		    String rosterId = tsd.getLsid().substring(0, tsd.getLsid().indexOf(":"));
+        AdssvcRequestDocument.AdssvcRequest.WriteToAuditFile.Tsd tsd = saveRequest.getWriteToAuditFile().getTsd();
+        String rosterId = tsd.getLsid().substring(0, tsd.getLsid().indexOf(":"));
 		    
-		    saveResponse.addNewTsd();
-	        saveResponse.getTsd().setLsid(tsd.getLsid());
-	        saveResponse.getTsd().setScid(tsd.getScid());
-	        saveResponse.getTsd().setStatus(WriteToAuditFile.Tsd.Status.OK); 
-        }
+	    saveResponse.addNewTsd();
+        saveResponse.getTsd().setLsid(tsd.getLsid());
+        saveResponse.getTsd().setScid(tsd.getScid());
+        saveResponse.getTsd().setStatus(WriteToAuditFile.Tsd.Status.OK); 
 	    
         //logger.debug("<<<<< " + responseDocument.xmlText());
 		return responseDocument.xmlText();

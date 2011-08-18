@@ -72,7 +72,9 @@ public class ResponseCacheStore implements CacheStore {
     		while(it.hasNext()) {
 	    		String key = (String) it.next();
 	    		Tsd value = (Tsd) mapEntries.get(key);
-			    sink.putItemResponse(conn, key, value);
+	    		String testRosterId = key;
+	    		testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
+			    sink.putItemResponse(conn, testRosterId, value);
     		}
     	} catch (Exception e) {
     		e.printStackTrace();
