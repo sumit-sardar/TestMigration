@@ -131,40 +131,40 @@ insert into ATTR21_DIM (attr21id, NAME, TYPE, product_typeId)
 
 --ATTR22_DIM 
 insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId) 
-    values (1, 'A', 'DISABILITY', 4)
+    values (1, 'Autism', 'DISABILITY', 4)
 /
 insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId) 
-    values (2, 'D', 'DISABILITY', 4)
+    values (2, 'Deafness', 'DISABILITY', 4)
 /
 insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId) 
-    values (3, 'HI', 'DISABILITY', 4)
+    values (3, 'Hearing Impairment', 'DISABILITY', 4)
 /
 insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId) 
-    values (4, 'MU', 'DISABILITY', 4)
+    values (4, 'Multiple Disabilities', 'DISABILITY', 4)
 /
 insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId) 
-    values (5, 'OI', 'DISABILITY', 4)
+    values (5, 'Orthopedic Impairment', 'DISABILITY', 4)
 /
 insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId) 
-    values (6, 'OHI', 'DISABILITY', 4)
+    values (6, 'Other Health Impairments', 'DISABILITY', 4)
 /
 insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId) 
-    values (7, 'SED', 'DISABILITY', 4)
+    values (7, 'Serious Emotional Disturbance', 'DISABILITY', 4)
 /
 insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId) 
-    values (8, 'LN', 'DISABILITY', 4)
+    values (8, 'Learning Disability', 'DISABILITY', 4)
 /
 insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId) 
-    values (9, 'SLI', 'DISABILITY', 4);
+    values (9, 'Speech or Language Impairment', 'DISABILITY', 4);
 /
 insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId) 
-    values (10, 'TBI', 'DISABILITY', 4)
+    values (10, 'Traumatic Brain Injury', 'DISABILITY', 4)
 /
 insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId) 
-    values (11, 'VI', 'DISABILITYI', 4)
+    values (11, 'Visual Impairment', 'DISABILITYI', 4)
 /
 insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId) 
-    values (12, 'ME', 'DISABILITY', 4)
+    values (12, 'Mental Retardation', 'DISABILITY', 4)
 /
 
 
@@ -407,27 +407,130 @@ insert into attr37_dim (attr37id, name, type, product_typeid) values (2,'No','Ma
 insert into attr19_dim (attr19id, name, type, product_typeid) values (122,'N/A','USA School Enrollment',4)
 /
 
-insert into attr17_dim (attr17id, name, type, product_typeid) values (1,'00','Home Language',4)
+insert into attr17_dim (attr17id, name, type, product_typeid) values (1,'English','Home Language',4)
 /
-insert into attr17_dim (attr17id, name, type, product_typeid) values (2,'01','Home Language',4)
+insert into attr17_dim (attr17id, name, type, product_typeid) values (2,'Albanian','Home Language',4)
 /
-insert into attr17_dim (attr17id, name, type, product_typeid) values (3,'02','Home Language',4)
+insert into attr17_dim (attr17id, name, type, product_typeid) values (3,'Amharic','Home Language',4)
 /
-insert into attr17_dim (attr17id, name, type, product_typeid) values (4,'03','Home Language',4)
+insert into attr17_dim (attr17id, name, type, product_typeid) values (4,'Arabic','Home Language',4)
 /
-insert into attr17_dim (attr17id, name, type, product_typeid) values (5,'04','Home Language',4)
+insert into attr17_dim (attr17id, name, type, product_typeid) values (5,'Armenian','Home Language',4)
 /
-insert into attr17_dim (attr17id, name, type, product_typeid) values (6,'05','Home Language',4)
+insert into attr17_dim (attr17id, name, type, product_typeid) values (6,'Assyrian','Home Language',4)
 /
-insert into attr17_dim (attr17id, name, type, product_typeid) values (7,'06','Home Language',4)
+insert into attr17_dim (attr17id, name, type, product_typeid) values (8,'Bengali','Home Language',4)
 /
-insert into attr17_dim (attr17id, name, type, product_typeid) values (8,'07','Home Language',4)
+insert into attr17_dim (attr17id, name, type, product_typeid) values (9,'Bosnian','Home Language',4)
 /
-insert into attr17_dim (attr17id, name, type, product_typeid) values (9,'08','Home Language',4)
+insert into attr17_dim (attr17id, name, type, product_typeid) values (10,'Burmese','Home Language',4)
 /
-insert into attr17_dim (attr17id, name, type, product_typeid) values (10,'09','Home Language',4)
+insert into attr17_dim (attr17id, name, type, product_typeid) values (12,'Cantonese','Home Language',4)
 /
-
+insert into attr17_dim (attr17id, name, type, product_typeid) values (13,'Cebuano (Visayan)','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (14,'Chaldean','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (15,'Chamorro (Guamanian)','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (16,'Chaozhou (Chaochow)','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (17,'Croatian','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (19,'Dutch','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (22,'Farsi (Persian)','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (23,'Filipino (Pilipino or Tagalog)','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (24,'French','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (25,'French Creole','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (27,'German','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (28,'Greek','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (29,'Gujarati','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (31,'Hebrew','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (32,'Hindi','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (33,'Hmong','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (34,'Hungarian','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (36,'Ilocano','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (37,'Indonesian','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (38,'Italian','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (40,'Japanese','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (42,'Khmer (Cambodian)','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (43,'Khmu','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (44,'Korean','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (45,'Kurdish','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (47,'Lahu','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (48,'Lao','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (50,'Mai Mai','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (51,'Mandarin (Putonghua)','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (52,'Marshallese','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (53,'Mien (Yao)','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (54,'Mixteco','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (60,'Pashto','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (61,'Polish','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (62,'Portuguese','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (63,'Punjabi','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (66,'Rumanian','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (67,'Russian','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (69,'Samoan','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (70,'Serbo-Croatian (Serbian)','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (71,'Somali','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (72,'Spanish','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (74,'Taiwanese','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (75,'Thai','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (76,'Tigrinya','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (77,'Toishanese','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (78,'Tongan','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (79,'Turkish','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (81,'Ukrainian','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (82,'Urdu','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (84,'Vietnamese','Home Language',4)
+/
+insert into attr17_dim (attr17id, name, type, product_typeid) values (100,'All Other Languages Not Listed','Home Language',4)
+/
 insert into attr17_dim (attr17id, name, type, product_typeid) values (101,'N/A','Home Language',4)
 /
 
