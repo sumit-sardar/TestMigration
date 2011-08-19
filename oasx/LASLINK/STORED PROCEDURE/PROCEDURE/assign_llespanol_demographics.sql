@@ -3,6 +3,7 @@ as
   g_id integer;
   counter integer;
   sortCounter integer;
+  jvalue varchar2(200);
 begin
 
      -- ETHNICITY
@@ -37,31 +38,36 @@ begin
     values (g_id, las_customer_id, 'Home Language', 'Home Language', 'SINGLE', 2, 'T', 'T', 1, sysdate);
     
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, '00', '00', 1, 'T', 1, sysdate);
+    values (g_id, 'English', '00', 1, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, '01', '01', 2, 'T', 1, sysdate);
+    values (g_id, 'Albanian', '01', 2, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, '02', '02', 3, 'T', 1, sysdate);
+    values (g_id, 'Amharic', '02', 3, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, '03', '03', 4, 'T', 1, sysdate);
+    values (g_id, 'Arabic', '03', 4, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, '04', '04', 5, 'T', 1, sysdate);
+    values (g_id, 'Armenian', '04', 5, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, '05', '05', 6, 'T', 1, sysdate);
+    values (g_id, 'Assyrian', '05', 6, 'T', 1, sysdate);
+    /*insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
+    values (g_id, '06', '06', 7, 'T', 1, sysdate);*/
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, '06', '06', 7, 'T', 1, sysdate);
+    values (g_id, 'Bengali', '07', 8, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, '07', '07', 8, 'T', 1, sysdate);
+    values (g_id, 'Bosnian', '08', 9, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, '08', '08', 9, 'T', 1, sysdate);
-    insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, '09', '09', 10, 'T', 1, sysdate);
+    values (g_id, 'Burmese', '09', 10, 'T', 1, sysdate);
+      
       
     for counter in 10..99
     loop
-    sortCounter := counter + 1;
-    insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, counter, counter, sortCounter, 'T', 1, sysdate);    
+    
+     jvalue := LabelName(counter);
+       if jvalue IS NOT NULL  THEN
+         sortCounter := counter + 1;
+         insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
+         values (g_id, jvalue, counter, sortCounter, 'T', 1, sysdate);  
+       END IF;  
     end loop;
       
       
@@ -139,29 +145,29 @@ begin
     values (g_id, las_customer_id, 'Disability', 'Disability', 'SINGLE', 7, 'T', 'T', 1, sysdate);
     
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'A', 'A', 1, 'T', 1, sysdate);
+    values (g_id, 'Autism', 'A', 1, 'T', 1, sysdate);
      insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'D', 'D', 2, 'T', 1, sysdate);
+    values (g_id, 'Deafness', 'D', 2, 'T', 1, sysdate);
      insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'HI', 'HI', 3, 'T', 1, sysdate);
+    values (g_id, 'Hearing Impairment', 'HI', 3, 'T', 1, sysdate);
      insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'MU', 'MU', 4, 'T', 1, sysdate);
+    values (g_id, 'Multiple Disabilities', 'MU', 4, 'T', 1, sysdate);
      insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'OI', 'OI', 5, 'T', 1, sysdate);
+    values (g_id, 'Orthopedic Impairment', 'OI', 5, 'T', 1, sysdate);
      insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'OHI', 'OHI', 6, 'T', 1, sysdate);
+    values (g_id, 'Other Health Impairments', 'OHI', 6, 'T', 1, sysdate);
      insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'SED', 'SED', 7, 'T', 1, sysdate);
+    values (g_id, 'Serious Emotional Disturbance', 'SED', 7, 'T', 1, sysdate);
      insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'LN', 'LN', 8, 'T', 1, sysdate);
+    values (g_id, 'Learning Disability', 'LN', 8, 'T', 1, sysdate);
      insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'SLI', 'SLI', 9, 'T', 1, sysdate); 
+    values (g_id, 'Speech or Language Impairment', 'SLI', 9, 'T', 1, sysdate); 
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'TBI', 'TBI', 10, 'T', 1, sysdate);
+    values (g_id, 'Traumatic Brain Injury', 'TBI', 10, 'T', 1, sysdate);
      insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'VI', 'VI', 11, 'T', 1, sysdate);
+    values (g_id, 'Visual Impairment', 'VI', 11, 'T', 1, sysdate);
      insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'ME', 'ME', 12, 'T', 1, sysdate);
+    values (g_id, 'Mental Retardation', 'ME', 12, 'T', 1, sysdate);
     
     
     --ACCOMMODATIONS
