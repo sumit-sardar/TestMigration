@@ -517,6 +517,7 @@ public class StudentManagementImpl implements StudentManagement
 						studentDemographicData.setStudentId(studentId);
 						studentDemographicData.setCustomerDemographicId(studentDemographics[i].getId());
 						studentDemographicData.setValueName(studentDemographicValues[j].getValueName());
+						studentDemographicData.setValue(studentDemographicValues[j].getValueCode());  // Changes for code entry in student_demographic_data table
 						studentDemographicData.setCreatedBy(userId);
 						studentDemographicData.setCreatedDateTime(now);
 						studentManagement.createStudentDemographicData(studentDemographicData);
