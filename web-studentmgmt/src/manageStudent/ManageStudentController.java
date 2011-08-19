@@ -3271,13 +3271,13 @@ public class ManageStudentController extends PageFlowController
 				}
 			}
 			//START- (LLO82) StudentManagement Changes For LasLink product
-			if(this.isLasLinkCustomer) {
+			/*if(this.isLasLinkCustomer) {
 				String studentTestPurpose = this.studentProfile.getTestPurpose();
 				if ( studentTestPurpose.equals(FilterSortPageUtils.FILTERTYPE_SELECT_A_TESTPURPOSE) ) {
 					requiredFieldCount += 1;            
 					requiredFields = Message.buildErrorString("Purpose of Test", requiredFieldCount, requiredFields);       
 				}
-			}
+			}*/
 			//END- (LLO82) StudentManagement Changes For LasLink product
 
 			if ( selectedOrgNodes.size() == 0 ) {

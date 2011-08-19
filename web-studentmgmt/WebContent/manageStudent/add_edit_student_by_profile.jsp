@@ -159,7 +159,7 @@
     </tr>
      <c:if test="${isLasLinkCustomer}"> 
      <tr class="transparent">
-        <td class="transparent alignRight" width="120"><span class="asterisk">*</span>&nbsp;<netui:content value="Purpose of Test:"/></td>
+        <td class="transparent alignRight" width="120">&nbsp;<netui:content value="Purpose of Test:"/></td>
         <td class="transparent">
         <c:if test="${ profileEditable }">            
             <netui:select optionsDataSource="${pageFlow.testPurposeOptions}" dataSource="actionForm.studentProfile.testPurpose" size="1" style="width:180px"/>
