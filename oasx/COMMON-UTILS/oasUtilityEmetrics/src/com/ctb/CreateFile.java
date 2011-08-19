@@ -58,10 +58,10 @@ public class CreateFile {
 
 	// Defect Fix for 66423 && For Time Zone
 	private static String testSessionSQl = "select tad.preferred_form as form, tc.test_level as testLevel,tad.time_zone as timezone,"
-		+ " to_Char((roster.start_date_time),'MMDDYY HH24:MI:SS') as testDate,to_Char((roster.completion_date_time),'MMDDYYYY HH24:MI:SS')  as dateTestingCompleted"
-		+ " from test_admin tad, test_roster roster,test_catalog tc"
-		+ " where tad.test_admin_id = roster.test_admin_id"
-		+ " and roster.test_completion_status in ('CO','IS','IC')"
+		+ " to_Char((roster.start_date_time),'MMDDYY HH24:MI:SS') as testDate,to_Char((roster.completion_date_time),'MMDDYYYY HH24:MI:SS')  as dateTestingCompleted,  to_Char(nvl(prg.program_start_date, ''),'MMDDYYYY HH24:MI:SS')  as programStartDate"
+		+ " from test_admin tad, test_roster roster,test_catalog tc, program prg "
+		+ "	where prg.program_id = tad.program_id(+)"
+	    + " and  tad.test_admin_id = roster.test_admin_id and roster.test_completion_status in ('CO','IS','IC')"
 		+ " and tc.test_catalog_id = tad.test_catalog_id"
 		+ " and roster.test_roster_id = ? ";
 
@@ -104,7 +104,7 @@ public class CreateFile {
 
 	private String studentContactSql = " select studentcon0_.STUDENT_ID  as STUDENT_ID, studentcon0_.STUDENT_CONTACT_ID as STUDENT_CONTACT_ID, studentcon0_.CITY  as CITY,   studentcon0_.STATEPR  as STATEPR,   studentcon0_.STUDENT_ID  as STUDENT_ID  from STUDENT_CONTACT studentcon0_  where studentcon0_.STUDENT_ID = ?";
 
-	private String studentDemographicSql = " select STUDENT_DEMOGRAPHIC_DATA_ID , CUSTOMER_DEMOGRAPHIC_ID , VALUE_NAME from student_demographic_data sdd where sdd.student_id = ? ";
+	private String studentDemographicSql = " select STUDENT_DEMOGRAPHIC_DATA_ID , CUSTOMER_DEMOGRAPHIC_ID , VALUE_NAME, VALUE from student_demographic_data sdd where sdd.student_id = ? ";
 
 	private String customerDemographiValuecsql = "select value_name,customer_demographic_id  from customer_demographic_value  where customer_demographic_id =?";
 	private String subSkillItemAreaInformation1 = "select tad.product_id || iset.item_set_id subskill_id,"
@@ -151,6 +151,7 @@ public class CreateFile {
 	private String customerState = null;
 	private String customerCity = null;
 	private String testDate = null;
+	private String programDate = null;
 
 	private static final String blank = "";
 	private HashMap<String, String> subSkillAreaScoreInfo = new HashMap<String, String>();
@@ -292,9 +293,9 @@ public class CreateFile {
 			populateCustomer(oascon, orderFile);
 			for (TestRoster roster : myrosterList) {
 				Tfil tfil = new Tfil();
-
+				
 				Student st = roster.getStudent();
-
+				System.out.println("Studnet Id"+ st.getStudentId() +" :: "+ roster.getTestRosterId());
 				setStudentList(tfil, st);
 
 				// Accomodations
@@ -670,7 +671,7 @@ public class CreateFile {
 				studentDemographic.setStudentId(studentId);
 				studentDemographic.setCustomerDemographicId(rs.getInt(2));
 				studentDemographic.setValueName(rs.getString(3));
-
+				studentDemographic.setValue(rs.getString(4));
 				studentDemographicSet.add(studentDemographic);
 			}
 
@@ -846,7 +847,7 @@ public class CreateFile {
 				} else if (customerDemoName.equalsIgnoreCase("Disability")) {
 					setDisabilityCode(sd, tfil);
 				} else if (customerDemoName.startsWith("Home")) {
-					tfil.setHomeLanguage(studentDem.getValueName());
+					tfil.setHomeLanguage(studentDem.getValue());
 				} else if (customerDemoName.startsWith("USA")) {
 					tfil.setUsaSchoolEnrollment(studentDem.getValueName());
 				} else if (customerDemoName.startsWith("Program")) {
@@ -993,29 +994,29 @@ public class CreateFile {
 	private void setDisabilityCode(Set<StudentDemographic> sd, Tfil tfil) {
 
 		for (StudentDemographic studentDemo : sd) {
-			if (studentDemo.getValueName().equalsIgnoreCase("A")) {
+			if (studentDemo.getValueName().equalsIgnoreCase("Autism")) {
 				tfil.setDisability("1");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("D")) {
+			} else if (studentDemo.getValueName().startsWith("Deaf")) {
 				tfil.setDisability("2");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("HI")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Hearing Impairment")) {
 				tfil.setDisability("3");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("MU")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Multiple Disabilities")) {
 				tfil.setDisability("4");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("OI")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Orthopedic Impairment")) {
 				tfil.setDisability("5");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("OHI")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Other Health Impairments")) {
 				tfil.setDisability("6");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("SED")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Serious Emotional Disturbance")) {
 				tfil.setDisability("7");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("LN")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Learning Disability")) {
 				tfil.setDisability("8");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("SLI")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Speech or Language Impairment")) {
 				tfil.setDisability("9");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("TBI")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Traumatic Brain Injury")) {
 				tfil.setDisability("A");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("VI")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Visual Impairment")) {
 				tfil.setDisability("B");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("ME")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Mental Retardation")) {
 				tfil.setDisability("C");
 			}
 		}
@@ -1228,28 +1229,28 @@ public class CreateFile {
 			while (rs.next()) {
 
 				if (rs.getString(1).equalsIgnoreCase("A")) {
-					tfil.setTestName("LAS Links");
+					tfil.setTestName("LAS LINKS OPERATIONAL");
 					tfil.setTestForm("A");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), new Integer(10))
+								"LAS Links", new Integer(10))
 								.toUpperCase());
 				} else if (rs.getString(1).equalsIgnoreCase("B")) {
-					tfil.setTestName("LAS Links");
+					tfil.setTestName("LAS LINKS OPERATIONAL");
 					tfil.setTestForm("B");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
-								tfil.getTestName(), new Integer(10))
+								"LAS Links", new Integer(10))
 								.toUpperCase());
 				} else if (rs.getString(1).equalsIgnoreCase("Espanol")) {
-					tfil.setTestName("LAS Links Español");
+					tfil.setTestName("LAS LINKS OPERATIONAL");
 					tfil.setTestForm("S");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
 								"ESPANOL", new Integer(10))
 								.toUpperCase());
 				} else if (rs.getString(1).startsWith("Esp")) {
-					tfil.setTestName("LAS Links Español");
+					tfil.setTestName("LAS LINKS OPERATIONAL");
 					tfil.setTestForm("S");
 					if (orderFile.getTestName1() == null)
 						orderFile.setTestName1(EmetricUtil.truncate(
@@ -1283,13 +1284,16 @@ public class CreateFile {
 				if(rs.getString(5) != null){
 				tfil.setDateTestingCompleted(EmetricUtil.getTimeZone(rs.getString(5).toString(),rs.getString(3).toString(),false));
 				}
+				
+				if(rs.getString(6) != null && this.programDate == null){
+					this.programDate = EmetricUtil.getTimeZone(rs.getString(6).toString(),rs.getString(3).toString(),true);
+				}
 
 
 			}
 
 			if (orderFile.getTestDate() == null)
-				orderFile.setTestDate(EmetricUtil.truncate(tfil.getTestDate(),
-						new Integer(8)));
+				orderFile.setTestDate(this.programDate.substring(0, 6));
 
 			// System.out.println("createTestSessionDetails");
 		} finally {
