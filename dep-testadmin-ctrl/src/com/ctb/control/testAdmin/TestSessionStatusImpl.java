@@ -1943,7 +1943,7 @@ public class TestSessionStatusImpl implements TestSessionStatus
 								break;
 							}
 						}
-						if (newOrder < oldOrder) {
+						if (newOrder < oldOrder && newOrder != 0) { // changed for defect #66762
 							oldOrder = newOrder;
 							uri = ppResourceList[i].getResourceURI();
 						}
