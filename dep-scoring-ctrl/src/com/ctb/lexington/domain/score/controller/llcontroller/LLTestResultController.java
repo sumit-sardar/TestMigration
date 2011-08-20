@@ -427,19 +427,19 @@ public class LLTestResultController implements TestResultController {
 					attrMultipleValue = attrMultipleValue + ",24";
 					present = true;
 				}
-				if(accommodations[i].equals("RDNL - Speaking")){
+				if(accommodations[i].equals("Read directions in native lang - Speaking")){
 					attrMultipleValue = attrMultipleValue + ",25";
 					present = true;
 				}
-				if(accommodations[i].equals("RDNL - Listening")){
+				if(accommodations[i].equals("Read directions in native lang - Listening")){
 					attrMultipleValue = attrMultipleValue + ",26";
 					present = true;
 				}
-				if(accommodations[i].equals("RDNL - Reading")){
+				if(accommodations[i].equals("Read directions in native lang - Reading")){
 					attrMultipleValue = attrMultipleValue + ",27";
 					present = true;
 				}
-				if(accommodations[i].equals("RDNL - Reading")){
+				if(accommodations[i].equals("Read directions in native lang - Writing")){
 					attrMultipleValue = attrMultipleValue + ",28";
 					present = true;
 				}
