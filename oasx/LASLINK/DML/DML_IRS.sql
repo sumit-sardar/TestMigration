@@ -171,94 +171,94 @@ insert into ATTR22_DIM (attr22id, NAME, TYPE, product_typeId)
 
 --ATTR23_DIM 
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (1, 'DC-S', 'ACCOMMODATIONS', 4)
+    values (1, 'Clarify directions in English - Speaking', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (2, 'DC-L', 'ACCOMMODATIONS-L', 4)
+    values (2, 'Clarify directions in English - Listening', 'ACCOMMODATIONS-L', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (3, 'DC-RD', 'ACCOMMODATIONS', 4)
+    values (3, 'Clarify directions in English - Reading', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (4, 'DC-WR', 'ACCOMMODATIONS', 4)
+    values (4, 'Clarify directions in English - Writing', 'ACCOMMODATIONS', 4)
 /
         
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (5, 'RQE-S', 'ACCOMMODATIONS', 4)
+    values (5, 'Read questions/text in English - Speaking', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (6, 'RQE-L', 'ACCOMMODATIONS', 4)
+    values (6, 'Read questions/text in English - Listening', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (7, 'RQE-RD', 'ACCOMMODATIONS', 4)
+    values (7, 'Read questions/text in English - Reading', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (8, 'RQE-WR', 'ACCOMMODATIONS', 4)
-/
-    
-insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (9, 'RPE-S', 'ACCOMMODATIONS', 4)
-/
-insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (10, 'RPE-L', 'ACCOMMODATIONS', 4)
-/
-insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (11, 'RPE-RD', 'ACCOMMODATIONS', 4)
-/
-insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (12, 'RPE-WR', 'ACCOMMODATIONS', 4)
+    values (8, 'Read questions/text in English - Writing', 'ACCOMMODATIONS', 4)
 /
     
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (13, 'RSR-S', 'ACCOMMODATIONS', 4)
+    values (9, 'Rephrase questions in English - Speaking', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (14, 'RSR-L', 'ACCOMMODATIONS', 4)
+    values (10, 'Rephrase questions in English - Listening', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (15, 'RSR-RD', 'ACCOMMODATIONS', 4)
+    values (11, 'Rephrase questions in English - Reading', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (16, 'RSR-WR', 'ACCOMMODATIONS', 4)
-/
-    
-insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (17, 'SA-S', 'ACCOMMODATIONS', 4)
-/
-insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (18, 'SA-L', 'ACCOMMODATIONS', 4)
-/
-insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (19, 'SA-RD', 'ACCOMMODATIONS', 4)
-/
-insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (20, 'SA-WR', 'ACCOMMODATIONS', 4)
+    values (12, 'Rephrase questions in English - Writing', 'ACCOMMODATIONS', 4)
 /
     
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (21, 'ASM-S', 'ACCOMMODATIONS', 4)
+    values (13, 'Use scribe to record responses - Speaking', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (22, 'ASM-L', 'ACCOMMODATIONS', 4)
+    values (14, 'Use scribe to record responses - Listening', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (23, 'ASM-RD', 'ACCOMMODATIONS', 4)
+    values (15, 'Use scribe to record responses - Reading', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (24, 'ASM-WR', 'ACCOMMODATIONS', 4)
+    values (16, 'Use scribe to record responses - Writing', 'ACCOMMODATIONS', 4)
 /
     
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (25, 'RDNL-S', 'ACCOMMODATIONS', 4)
+    values (17, 'Spelling aids provided - Speaking', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (26, 'RDNL-L', 'ACCOMMODATIONS', 4)
+    values (18, 'Spelling aids provided - Listening', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (27, 'RDNL-RD', 'ACCOMMODATIONS', 4)
+    values (19, 'Spelling aids provided - Reading', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (28, 'RDNL-WR', 'ACCOMMODATIONS', 4)
+    values (20, 'Spelling aids provided - Writing', 'ACCOMMODATIONS', 4)
+/
+    
+insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
+    values (21, 'Mark responses in Student Book - Speaking', 'ACCOMMODATIONS', 4)
+/
+insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
+    values (22, 'Mark responses in Student Book - Listening', 'ACCOMMODATIONS', 4)
+/
+insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
+    values (23, 'Mark responses in Student Book - Reading', 'ACCOMMODATIONS', 4)
+/
+insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
+    values (24, 'Mark responses in Student Book - Writing', 'ACCOMMODATIONS', 4)
+/
+    
+insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
+    values (25, 'RDNL - Speaking', 'ACCOMMODATIONS', 4)
+/
+insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
+    values (26, 'RDNL - Listening', 'ACCOMMODATIONS', 4)
+/
+insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
+    values (27, 'RDNL - Reading', 'ACCOMMODATIONS', 4)
+/
+insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
+    values (28, 'RDNL - Writing', 'ACCOMMODATIONS', 4)
 /
 
 
