@@ -176,68 +176,69 @@ begin
     insert into customer_demographic (customer_demographic_id, customer_id, label_code, label_name, value_cardinality, sort_order, import_editable, visible, created_by, created_date_time) 
     values (g_id, las_customer_id, 'Accommodations', 'Accommodations', 'MULTIPLE', 21, 'T', 'T', 1, sysdate);
     
+     
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'DC-S', 'DC-S', 1, 'T', 1, sysdate);
+    values (g_id, 'Clarify directions in English - Speaking', 'DC-S', 1, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'DC-L', 'DC-L', 2, 'T', 1, sysdate);
+    values (g_id, 'Clarify directions in English - Listening', 'DC-L', 2, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'DC-RD', 'DC-RD', 3, 'T', 1, sysdate);
+    values (g_id, 'Clarify directions in English - Reading', 'DC-RD', 3, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'DC-WR', 'DC-RW', 4, 'T', 1, sysdate);
+    values (g_id, 'Clarify directions in English - Writing', 'DC-WR', 4, 'T', 1, sysdate);
         
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RQE-S', 'RQE-S', 5, 'T', 1, sysdate);
+    values (g_id, 'Read questions/text in English - Speaking', 'RQE-S', 5, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RQE-L', 'RQE-L', 6, 'T', 1, sysdate);
+    values (g_id, 'Read questions/text in English - Listening', 'RQE-L', 6, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RQE-RD', 'RQE-RD', 7, 'T', 1, sysdate);
+    values (g_id, 'Read questions/text in English - Reading', 'RQE-RD', 7, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RQE-WR', 'RQE-RW', 8, 'T', 1, sysdate);
+    values (g_id, 'Read questions/text in English - Writing', 'RQE-WR', 8, 'T', 1, sysdate);
     
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RPE-S', 'RPE-S', 9, 'T', 1, sysdate);
+    values (g_id, 'Rephrase questions in English - Speaking', 'RPE-S', 9, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RPE-L', 'RPE-L', 10, 'T', 1, sysdate);
+    values (g_id, 'Rephrase questions in English - Listening', 'RPE-L', 10, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RPE-RD', 'RPE-RD', 11, 'T', 1, sysdate);
+    values (g_id, 'Rephrase questions in English - Reading', 'RPE-RD', 11, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RPE-WR', 'RPE-RW', 12, 'T', 1, sysdate);
+    values (g_id, 'Rephrase questions in English - Writing', 'RPE-WR', 12, 'T', 1, sysdate);
     
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RSR-S', 'RSR-S', 13, 'T', 1, sysdate);
+    values (g_id, 'Use scribe to record responses - Speaking', 'RSR-S', 13, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RSR-L', 'RSR-L', 14, 'T', 1, sysdate);
+    values (g_id, 'Use scribe to record responses - Listening', 'RSR-L', 14, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RSR-RD', 'RSR-RD', 15, 'T', 1, sysdate);
+    values (g_id, 'Use scribe to record responses - Reading', 'RSR-RD', 15, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RSR-WR', 'RSR-RW', 16, 'T', 1, sysdate);
+    values (g_id, 'Use scribe to record responses - Writing', 'RSR-WR', 16, 'T', 1, sysdate);
     
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'SA-S', 'SA-S', 17, 'T', 1, sysdate);
+    values (g_id, 'Spelling aids provided - Speaking', 'SA-S', 17, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'SA-L', 'SA-L', 18, 'T', 1, sysdate);
+    values (g_id, 'Spelling aids provided - Listening', 'SA-L', 18, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'SA-RD', 'SA-RD', 19, 'T', 1, sysdate);
+    values (g_id, 'Spelling aids provided - Reading', 'SA-RD', 19, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'SA-WR', 'SA-RW', 20, 'T', 1, sysdate);
+    values (g_id, 'Spelling aids provided - Writing', 'SA-WR', 20, 'T', 1, sysdate);
     
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'ASM-S', 'ASM-S', 21, 'T', 1, sysdate);
+    values (g_id, 'Mark responses in Student Book - Speaking', 'ASM-S', 21, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'ASM-L', 'ASM-L', 22, 'T', 1, sysdate);
+    values (g_id, 'Mark responses in Student Book - Listening', 'ASM-L', 22, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'ASM-RD', 'ASM-RD', 23, 'T', 1, sysdate);
+    values (g_id, 'Mark responses in Student Book - Reading', 'ASM-RD', 23, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'ASM-WR', 'ASM-RW', 24, 'T', 1, sysdate);
+    values (g_id, 'Mark responses in Student Book - Writing', 'ASM-WR', 24, 'T', 1, sysdate);
     
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RDNL-S', 'RDNL-S', 25, 'T', 1, sysdate);
+    values (g_id, 'RDNL - Speaking', 'RDNL-S', 25, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RDNL-L', 'RDNL-L', 26, 'T', 1, sysdate);
+    values (g_id, 'RDNL - Listening', 'RDNL-L', 26, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RDNL-RD', 'RDNL-RD', 27, 'T', 1, sysdate);
+    values (g_id, 'RDNL - Reading', 'RDNL-RD', 27, 'T', 1, sysdate);
     insert into customer_demographic_value (customer_demographic_id, value_name, value_code, sort_order, visible, created_by, created_date_time) 
-    values (g_id, 'RDNL-WR', 'RDNL-RW', 28, 'T', 1, sysdate);
+    values (g_id, 'RDNL - Writing', 'RDNL-WR', 28, 'T', 1, sysdate);
     
     
     --SPECIAL CODES
