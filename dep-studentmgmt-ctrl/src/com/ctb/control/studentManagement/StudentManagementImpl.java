@@ -560,6 +560,7 @@ public class StudentManagementImpl implements StudentManagement
 						studentDemographicData.setStudentId(studentId);
 						studentDemographicData.setCustomerDemographicId(studentDemographics[i].getId());
 						studentDemographicData.setValueName(studentDemographicValues[j].getValueName());
+						studentDemographicData.setValue(studentDemographicValues[j].getValueCode());
 						studentDemographicData.setCreatedBy(userId);
 						studentDemographicData.setCreatedDateTime(now);
 						studentManagement.createStudentDemographicData(studentDemographicData);
@@ -621,6 +622,7 @@ public class StudentManagementImpl implements StudentManagement
 						studentDemographicData.setStudentId(studentId);
 						studentDemographicData.setCustomerDemographicId(studentDemographics[i].getId());
 						studentDemographicData.setValueName(studentDemographicValues[j].getValueName());
+						studentDemographicData.setValue(studentDemographicValues[j].getValueCode());
 						studentDemographicData.setCreatedBy(userId);
 						studentDemographicData.setCreatedDateTime(now);
 						studentManagement.createStudentDemographicData(studentDemographicData);
@@ -684,6 +686,7 @@ public class StudentManagementImpl implements StudentManagement
 						studentDemographicData.setStudentId(studentId);
 						studentDemographicData.setCustomerDemographicId(studentDemographics[i].getId());
 						studentDemographicData.setValueName(studentDemographicValues[j].getValueName());
+						studentDemographicData.setValue(studentDemographicValues[j].getValueCode());
 						studentDemographicData.setCreatedBy(userId);
 						studentDemographicData.setCreatedDateTime(now);
 						studentManagement.createStudentDemographicData(studentDemographicData);
