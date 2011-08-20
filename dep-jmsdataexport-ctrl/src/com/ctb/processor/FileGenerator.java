@@ -114,7 +114,7 @@ public class FileGenerator {
 
 	private String studentDemographicSql = " select STUDENT_DEMOGRAPHIC_DATA_ID , CUSTOMER_DEMOGRAPHIC_ID , VALUE_NAME, VALUE from student_demographic_data sdd where sdd.student_id = ? ";
 
-	private String customerDemographiValuecsql = "select value_name,customer_demographic_id  from customer_demographic_value  where customer_demographic_id =?";
+	private String customerDemographiValuecsql = "select value_name,value_code,customer_demographic_id  from customer_demographic_value  where customer_demographic_id =?";
 	@SuppressWarnings("unused")
 	private String subSkillItemAreaInformation1 = "select tad.product_id || iset.item_set_id subskill_id,"
 		+ " iset.item_set_name from test_admin tad,product,item_set_category icat,item_set iset"
@@ -900,7 +900,8 @@ public class FileGenerator {
 			while (rs.next()) {
 				CustomerDemographicValue cdv = new CustomerDemographicValue();
 				cdv.setValueName(rs.getString(1));
-				cdv.setCustomerDemographicId(rs.getInt(2));
+				cdv.setValueCode(rs.getString(2));
+				cdv.setCustomerDemographicId(rs.getInt(3));
 				customerDemographicValue.add(cdv);
 			}
 
@@ -961,7 +962,7 @@ public class FileGenerator {
 		SpecialCodes specialCodes = new SpecialCodes();
 		// For Defect Fix 66411
 		for (StudentDemographic studentDem : sd) {
-			set1.put(studentDem.getValueName(), studentDem);
+			set1.put(studentDem.getValue(), studentDem);
 			studentDemographic.put(studentDem.getCustomerDemographicId(),
 					studentDem.getValueName());
 			if (customerDemographic.containsKey(studentDem
@@ -986,25 +987,25 @@ public class FileGenerator {
 					tfil.setMobilityGrade(EmetricUtil.formatGrade(studentDem
 							.getValueName()));
 				} else if (customerDemoName.endsWith("S-K")) {
-					specialCodes.setSpecialCodeK(studentDem.getValue());
+					specialCodes.setSpecialCodeK(studentDem.getValueName());
 				} else if (customerDemoName.endsWith("S-L")) {
-					specialCodes.setSpecialCodeL(studentDem.getValue());
+					specialCodes.setSpecialCodeL(studentDem.getValueName());
 				} else if (customerDemoName.endsWith("S-M")) {
-					specialCodes.setSpecialCodeM(studentDem.getValue());
+					specialCodes.setSpecialCodeM(studentDem.getValueName());
 				} else if (customerDemoName.endsWith("S-N")) {
-					specialCodes.setSpecialCodeN(studentDem.getValue());
+					specialCodes.setSpecialCodeN(studentDem.getValueName());
 				} else if (customerDemoName.endsWith("S-O")) {
-					specialCodes.setSpecialCodeO(studentDem.getValue());
+					specialCodes.setSpecialCodeO(studentDem.getValueName());
 				} else if (customerDemoName.endsWith("S-P")) {
-					specialCodes.setSpecialCodeP(studentDem.getValue());
+					specialCodes.setSpecialCodeP(studentDem.getValueName());
 				} else if (customerDemoName.endsWith("S-Q")) {
-					specialCodes.setSpecialCodeQ(studentDem.getValue());
+					specialCodes.setSpecialCodeQ(studentDem.getValueName());
 				} else if (customerDemoName.endsWith("S-R")) {
-					specialCodes.setSpecialCodeR(studentDem.getValue());
+					specialCodes.setSpecialCodeR(studentDem.getValueName());
 				} else if (customerDemoName.endsWith("S-S")) {
-					specialCodes.setSpecialCodeS(studentDem.getValue());
+					specialCodes.setSpecialCodeS(studentDem.getValueName());
 				} else if (customerDemoName.endsWith("S-T")) {
-					specialCodes.setSpecialCodeT(studentDem.getValue());
+					specialCodes.setSpecialCodeT(studentDem.getValueName());
 				}
 
 			}
@@ -1023,9 +1024,9 @@ public class FileGenerator {
 				Set<CustomerDemographicValue> set = entry1.getValue()
 				.getCustomerDemographicValue();
 				for (CustomerDemographicValue value : set) {
-					if (value.getValueName().trim().equalsIgnoreCase(
+					if (value.getValueCode().trim().equalsIgnoreCase(
 							entry.getKey().trim())) {
-						String string = value.getValueName().replace('-', '_');
+						String string = value.getValueCode().replace('-', '_');
 
 						try {
 							accomodations.getClass().getMethod("set" + string,

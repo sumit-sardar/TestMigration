@@ -4,6 +4,7 @@ public class CustomerDemographicValue {
 
 	private Integer customerDemographicId;
 	private String valueName;
+	private String valueCode;
 	private CustomerDemographic customerDemographic;
 	
 	@Override
@@ -24,6 +25,18 @@ public class CustomerDemographicValue {
 	 */
 	public void setValueName(String valueName) {
 		this.valueName = valueName;
+	}
+	/**
+	 * @return the valueCode
+	 */
+	public String getValueCode() {
+		return valueCode;
+	}
+	/**
+	 * @param valueCode the valueCode to set
+	 */
+	public void setValueCode(String valueCode) {
+		this.valueCode = valueCode;
 	}
 	/**
 	 * @return the customerDemographicId
