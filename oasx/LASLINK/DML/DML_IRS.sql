@@ -174,7 +174,7 @@ insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId)
     values (1, 'Clarify directions in English - Speaking', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
-    values (2, 'Clarify directions in English - Listening', 'ACCOMMODATIONS-L', 4)
+    values (2, 'Clarify directions in English - Listening', 'ACCOMMODATIONS', 4)
 /
 insert into ATTR23_DIM (attr23id, NAME, TYPE, product_typeId) 
     values (3, 'Clarify directions in English - Reading', 'ACCOMMODATIONS', 4)
