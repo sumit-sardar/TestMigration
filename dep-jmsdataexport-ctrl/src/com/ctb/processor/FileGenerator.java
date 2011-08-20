@@ -112,7 +112,7 @@ public class FileGenerator {
 
 	private String studentContactSql = " select studentcon0_.STUDENT_ID  as STUDENT_ID, studentcon0_.STUDENT_CONTACT_ID as STUDENT_CONTACT_ID, studentcon0_.CITY  as CITY,   studentcon0_.STATEPR  as STATEPR,   studentcon0_.STUDENT_ID  as STUDENT_ID  from STUDENT_CONTACT studentcon0_  where studentcon0_.STUDENT_ID = ?";
 
-	private String studentDemographicSql = " select STUDENT_DEMOGRAPHIC_DATA_ID , CUSTOMER_DEMOGRAPHIC_ID , VALUE_NAME from student_demographic_data sdd where sdd.student_id = ? ";
+	private String studentDemographicSql = " select STUDENT_DEMOGRAPHIC_DATA_ID , CUSTOMER_DEMOGRAPHIC_ID , VALUE_NAME, VALUE from student_demographic_data sdd where sdd.student_id = ? ";
 
 	private String customerDemographiValuecsql = "select value_name,customer_demographic_id  from customer_demographic_value  where customer_demographic_id =?";
 	@SuppressWarnings("unused")
@@ -782,7 +782,7 @@ public class FileGenerator {
 				studentDemographic.setStudentId(studentId);
 				studentDemographic.setCustomerDemographicId(rs.getInt(2));
 				studentDemographic.setValueName(rs.getString(3));
-
+				studentDemographic.setValue(rs.getString(4));
 				studentDemographicSet.add(studentDemographic);
 			}
 
@@ -974,7 +974,7 @@ public class FileGenerator {
 				} else if (customerDemoName.equalsIgnoreCase("Disability")) {
 					setDisabilityCode(sd, tfil);
 				} else if (customerDemoName.startsWith("Home")) {
-					tfil.setHomeLanguage(studentDem.getValueName());
+					tfil.setHomeLanguage(studentDem.getValue());
 				} else if (customerDemoName.startsWith("USA")) {
 					tfil.setUsaSchoolEnrollment(studentDem.getValueName());
 				} else if (customerDemoName.startsWith("Program")) {
@@ -1121,29 +1121,29 @@ public class FileGenerator {
 	private void setDisabilityCode(Set<StudentDemographic> sd, Tfil tfil) {
 
 		for (StudentDemographic studentDemo : sd) {
-			if (studentDemo.getValueName().equalsIgnoreCase("A")) {
+			if (studentDemo.getValueName().equalsIgnoreCase("Autism")) {
 				tfil.setDisability("1");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("D")) {
+			} else if (studentDemo.getValueName().startsWith("Deaf")) {
 				tfil.setDisability("2");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("HI")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Hearing Impairment")) {
 				tfil.setDisability("3");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("MU")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Multiple Disabilities")) {
 				tfil.setDisability("4");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("OI")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Orthopedic Impairment")) {
 				tfil.setDisability("5");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("OHI")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Other Health Impairments")) {
 				tfil.setDisability("6");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("SED")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Serious Emotional Disturbance")) {
 				tfil.setDisability("7");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("LN")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Learning Disability")) {
 				tfil.setDisability("8");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("SLI")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Speech or Language Impairment")) {
 				tfil.setDisability("9");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("TBI")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Traumatic Brain Injury")) {
 				tfil.setDisability("A");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("VI")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Visual Impairment")) {
 				tfil.setDisability("B");
-			} else if (studentDemo.getValueName().equalsIgnoreCase("ME")) {
+			} else if (studentDemo.getValueName().equalsIgnoreCase("Mental Retardation")) {
 				tfil.setDisability("C");
 			}
 		}
