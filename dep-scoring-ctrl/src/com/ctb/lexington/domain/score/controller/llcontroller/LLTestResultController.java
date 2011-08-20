@@ -93,17 +93,74 @@ public class LLTestResultController implements TestResultController {
 			present = false;
 			ArrayList<String> Home_Language = (ArrayList<String>)rd.get("Home Language");
 			String homeLanguage = Home_Language.get(0);
-			attrValue = new Long(("00".equals(homeLanguage))?1:
-				            	("01".equals(homeLanguage))?2:
-				                ("02".equals(homeLanguage))?3:
-				                ("03".equals(homeLanguage))?4:
-				                ("04".equals(homeLanguage))?5:
-				                ("05".equals(homeLanguage))?6:
-				                ("06".equals(homeLanguage))?7:
-				                ("07".equals(homeLanguage))?8:
-				                ("08".equals(homeLanguage))?9:
-				                ("09".equals(homeLanguage))?10:11);
-			if(attrValue.intValue() == 11) {
+			attrValue = new Long(("English".equals(homeLanguage))?1:
+				            	("Albanian".equals(homeLanguage))?2:
+				                ("Amharic".equals(homeLanguage))?3:
+				                ("Arabic".equals(homeLanguage))?4:
+				                ("Armenian".equals(homeLanguage))?5:
+				                ("Assyrian".equals(homeLanguage))?6:
+				                ("Bengali".equals(homeLanguage))?8:
+				                ("Bosnian".equals(homeLanguage))?8:
+				                ("Burmese".equals(homeLanguage))?10:
+				                ("Cantonese".equals(homeLanguage))?12:
+				                ("Cebuano (Visayan)".equals(homeLanguage))?13:
+				                ("Chaldean".equals(homeLanguage))?14:
+				                ("Chamorro (Guamanian)".equals(homeLanguage))?15:
+				                ("Chaozhou (Chaochow)".equals(homeLanguage))?16:
+				                ("Croatian".equals(homeLanguage))?17:
+				                ("Dutch".equals(homeLanguage))?19:
+				                ("Farsi (Persian)".equals(homeLanguage))?22:
+				                ("Filipino (Pilipino or Tagalog)".equals(homeLanguage))?23:
+				                ("French".equals(homeLanguage))?24:
+						        ("French Creole".equals(homeLanguage))?25:
+						        ("German".equals(homeLanguage))?27:
+						        ("Greek".equals(homeLanguage))?28:
+						        ("Gujarati".equals(homeLanguage))?29:
+						        ("Hebrew".equals(homeLanguage))?31:
+						        ("Hindi".equals(homeLanguage))?32:
+						        ("Hmong".equals(homeLanguage))?33:
+						        ("Hungarian".equals(homeLanguage))?34:
+						        ("Ilocano".equals(homeLanguage))?36:
+						        ("Indonesian".equals(homeLanguage))?37:
+						        ("Italian".equals(homeLanguage))?38:
+						        ("Japanese".equals(homeLanguage))?40:
+						        ("Khmer (Cambodian)".equals(homeLanguage))?42:
+						        ("Khmu".equals(homeLanguage))?43:
+						        ("Korean".equals(homeLanguage))?44:
+						        ("Kurdish".equals(homeLanguage))?45:	
+						        ("Lahu".equals(homeLanguage))?47:
+						        ("Lao".equals(homeLanguage))?48:
+						        ("Home Language".equals(homeLanguage))?50:
+						        ("Mandarin (Putonghua)".equals(homeLanguage))?51:
+						        ("Marshallese".equals(homeLanguage))?52:
+						        ("Mien (Yao)".equals(homeLanguage))?53:
+						        ("Mixteco".equals(homeLanguage))?54:
+						        ("Pashto".equals(homeLanguage))?60:
+						        ("Polish".equals(homeLanguage))?161:
+						        ("Portuguese".equals(homeLanguage))?62:
+						        ("Punjabi".equals(homeLanguage))?63:
+						        ("Rumanian".equals(homeLanguage))?66:
+						        ("Russian".equals(homeLanguage))?67:
+						        ("Samoan".equals(homeLanguage))?69:
+						        ("Serbo-Croatian (Serbian)".equals(homeLanguage))?70:
+						        ("Somali".equals(homeLanguage))?71:
+						        ("Spanish".equals(homeLanguage))?72:
+						        ("Taiwanese".equals(homeLanguage))?74:
+								("Thai".equals(homeLanguage))?75:
+								("Tigrinya".equals(homeLanguage))?76:
+								("Toishanese".equals(homeLanguage))?77:
+								("Tongan".equals(homeLanguage))?78:
+								("Turkish".equals(homeLanguage))?79:
+								("Ukrainian".equals(homeLanguage))?81:
+								("Urdu".equals(homeLanguage))?82:
+								("Vietnamese".equals(homeLanguage))?84:
+						        ("All Other Languages Not Listed".equals(homeLanguage))?100:101);
+			
+			
+			
+			
+			
+			/*if(attrValue.intValue() == 11) {
 				for(count=10; count<=99; count++) {
 					if(homeLanguage.equals(count.toString())){
 						attrValue = new Long(count+1);
@@ -114,6 +171,7 @@ public class LLTestResultController implements TestResultController {
 				if(!present)
 					attrValue = new Long(101);
 			}
+			 */	
 			details.setAttr17Id(attrValue);
 		}
 		
@@ -248,18 +306,18 @@ public class LLTestResultController implements TestResultController {
 		if(rd.containsKey("Disability")) {
 			ArrayList<String> Disability = (ArrayList<String>)rd.get("Disability");
 			String disability = Disability.get(0);
-			details.setAttr22Id(new Long(("A".equals(disability))?1:
-	                                ("D".equals(disability))?2:
-	                                ("HI".equals(disability))?3:
-	                                ("MU".equals(disability))?4:
-	                                ("OI".equals(disability))?5:
-	                                ("OHI".equals(disability))?6:
-	                                ("SED".equals(disability))?7:
-	                                ("LN".equals(disability))?8:
-	                                ("SLI".equals(disability))?9:
-	                                ("TBI".equals(disability))?10:
-	                                ("VI".equals(disability))?11:
-	                                ("ME".equals(disability))?12:13));
+			details.setAttr22Id(new Long(("Autism".equals(disability))?1:
+	                                ("Deafness".equals(disability))?2:
+	                                ("Hearing Impairment".equals(disability))?3:
+	                                ("Multiple Disabilities".equals(disability))?4:
+	                                ("Orthopedic Impairment".equals(disability))?5:
+	                                ("Other Health Impairments".equals(disability))?6:
+	                                ("Serious Emotional Disturbance".equals(disability))?7:
+	                                ("Learning Disability".equals(disability))?8:
+	                                ("Speech or Language Impairment".equals(disability))?9:
+	                                ("Traumatic Brain Injury".equals(disability))?10:
+	                                ("Visual Impairment".equals(disability))?11:
+	                                ("Mental Retardation".equals(disability))?12:13));
 		}
 		
 		
@@ -273,115 +331,115 @@ public class LLTestResultController implements TestResultController {
 			present = false;
 			attrMultipleValue = "";
 			for(int i=0;i<accommodations.length;i++){
-				if(accommodations[i].equals("DC-S")){
+				if(accommodations[i].equals("Clarify directions in English - Speaking")){
 					attrMultipleValue = attrMultipleValue + ",1";
 					present = true;
 				}
-				if(accommodations[i].equals("DC-L")){
+				if(accommodations[i].equals("Clarify directions in English - Listening")){
 					attrMultipleValue = attrMultipleValue + ",2";
 					present = true;
 				}
-				if(accommodations[i].equals("DC-RD")){
+				if(accommodations[i].equals("Clarify directions in English - Reading")){
 					attrMultipleValue = attrMultipleValue + ",3";
 					present = true;
 				}
-				if(accommodations[i].equals("DC-WR")){
+				if(accommodations[i].equals("Clarify directions in English - Writing")){
 					attrMultipleValue = attrMultipleValue + ",4";
 					present = true;
 				}
-				if(accommodations[i].equals("RQE-S")){
+				if(accommodations[i].equals("Read questions/text in English - Speaking")){
 					attrMultipleValue = attrMultipleValue + ",5";
 					present = true;
 				}
-				if(accommodations[i].equals("RQE-L")){
+				if(accommodations[i].equals("Read questions/text in English - Listening")){
 					attrMultipleValue = attrMultipleValue + ",6";
 					present = true;
 				}
-				if(accommodations[i].equals("RQE-RD")){
+				if(accommodations[i].equals("Read questions/text in English - Reading")){
 					attrMultipleValue = attrMultipleValue + ",7";
 					present = true;
 				}
-				if(accommodations[i].equals("RQE-WR")){
+				if(accommodations[i].equals("Read questions/text in English - Writing")){
 					attrMultipleValue = attrMultipleValue + ",8";
 					present = true;
 				}
-				if(accommodations[i].equals("RPE-S")){
+				if(accommodations[i].equals("Rephrase questions in English - Speaking")){
 					attrMultipleValue = attrMultipleValue + ",9";
 					present = true;
 				}
-				if(accommodations[i].equals("RPE-L")){
+				if(accommodations[i].equals("Rephrase questions in English - Listening")){
 					attrMultipleValue = attrMultipleValue + ",10";
 					present = true;
 				}
-				if(accommodations[i].equals("RPE-RD")){
+				if(accommodations[i].equals("Rephrase questions in English - Reading")){
 					attrMultipleValue = attrMultipleValue + ",11";
 					present = true;
 				}
-				if(accommodations[i].equals("RPE-WR")){
+				if(accommodations[i].equals("Rephrase questions in English - Writing")){
 					attrMultipleValue = attrMultipleValue + ",12";
 					present = true;
 				}
-				if(accommodations[i].equals("RSR-S")){
+				if(accommodations[i].equals("Use scribe to record responses - Speaking")){
 					attrMultipleValue = attrMultipleValue + ",13";
 					present = true;
 				}
-				if(accommodations[i].equals("RSR-L")){
+				if(accommodations[i].equals("Use scribe to record responses - Listening")){
 					attrMultipleValue = attrMultipleValue + ",14";
 					present = true;
 				}
-				if(accommodations[i].equals("RSR-RD")){
+				if(accommodations[i].equals("Use scribe to record responses - Reading")){
 					attrMultipleValue = attrMultipleValue + ",15";
 					present = true;
 				}
-				if(accommodations[i].equals("RSR-WR")){
+				if(accommodations[i].equals("Use scribe to record responses - Writing")){
 					attrMultipleValue = attrMultipleValue + ",16";
 					present = true;
 				}
-				if(accommodations[i].equals("SA-S")){
+				if(accommodations[i].equals("Spelling aids provided - Speaking")){
 					attrMultipleValue = attrMultipleValue + ",17";
 					present = true;
 				}
-				if(accommodations[i].equals("SA-L")){
+				if(accommodations[i].equals("Spelling aids provided - Listening")){
 					attrMultipleValue = attrMultipleValue + ",18";
 					present = true;
 				}
-				if(accommodations[i].equals("SA-RD")){
+				if(accommodations[i].equals("Spelling aids provided - Reading")){
 					attrMultipleValue = attrMultipleValue + ",19";
 					present = true;
 				}
-				if(accommodations[i].equals("SA-WR")){
+				if(accommodations[i].equals("Spelling aids provided - Writing")){
 					attrMultipleValue = attrMultipleValue + ",20";
 					present = true;
 				}
-				if(accommodations[i].equals("ASM-S")){
+				if(accommodations[i].equals("Mark responses in Student Book - Speaking")){
 					attrMultipleValue = attrMultipleValue + ",21";
 					present = true;
 				}
-				if(accommodations[i].equals("ASM-L")){
+				if(accommodations[i].equals("Mark responses in Student Book - Listening")){
 					attrMultipleValue = attrMultipleValue + ",22";
 					present = true;
 				}
-				if(accommodations[i].equals("ASM-RD")){
+				if(accommodations[i].equals("Mark responses in Student Book - Reading")){
 					attrMultipleValue = attrMultipleValue + ",23";
 					present = true;
 				}
-				if(accommodations[i].equals("ASM-WR")){
+				if(accommodations[i].equals("Mark responses in Student Book - Writing")){
 					attrMultipleValue = attrMultipleValue + ",24";
 					present = true;
 				}
-				if(accommodations[i].equals("RDNL-S")){
+				if(accommodations[i].equals("RDNL - Speaking")){
 					attrMultipleValue = attrMultipleValue + ",25";
 					present = true;
 				}
-				if(accommodations[i].equals("RDNL-L")){
+				if(accommodations[i].equals("RDNL - Listening")){
 					attrMultipleValue = attrMultipleValue + ",26";
 					present = true;
 				}
-				if(accommodations[i].equals("RDNL-RD")){
+				if(accommodations[i].equals("RDNL - Reading")){
 					attrMultipleValue = attrMultipleValue + ",27";
 					present = true;
 				}
-				if(accommodations[i].equals("RDNL-WR")){
+				if(accommodations[i].equals("RDNL - Reading")){
 					attrMultipleValue = attrMultipleValue + ",28";
 					present = true;
 				}
