@@ -986,25 +986,25 @@ public class FileGenerator {
 					tfil.setMobilityGrade(EmetricUtil.formatGrade(studentDem
 							.getValueName()));
 				} else if (customerDemoName.endsWith("S-K")) {
-					specialCodes.setSpecialCodeK(studentDem.getValueName());
+					specialCodes.setSpecialCodeK(studentDem.getValue());
 				} else if (customerDemoName.endsWith("S-L")) {
-					specialCodes.setSpecialCodeL(studentDem.getValueName());
+					specialCodes.setSpecialCodeL(studentDem.getValue());
 				} else if (customerDemoName.endsWith("S-M")) {
-					specialCodes.setSpecialCodeM(studentDem.getValueName());
+					specialCodes.setSpecialCodeM(studentDem.getValue());
 				} else if (customerDemoName.endsWith("S-N")) {
-					specialCodes.setSpecialCodeN(studentDem.getValueName());
+					specialCodes.setSpecialCodeN(studentDem.getValue());
 				} else if (customerDemoName.endsWith("S-O")) {
-					specialCodes.setSpecialCodeO(studentDem.getValueName());
+					specialCodes.setSpecialCodeO(studentDem.getValue());
 				} else if (customerDemoName.endsWith("S-P")) {
-					specialCodes.setSpecialCodeP(studentDem.getValueName());
+					specialCodes.setSpecialCodeP(studentDem.getValue());
 				} else if (customerDemoName.endsWith("S-Q")) {
-					specialCodes.setSpecialCodeQ(studentDem.getValueName());
+					specialCodes.setSpecialCodeQ(studentDem.getValue());
 				} else if (customerDemoName.endsWith("S-R")) {
-					specialCodes.setSpecialCodeR(studentDem.getValueName());
+					specialCodes.setSpecialCodeR(studentDem.getValue());
 				} else if (customerDemoName.endsWith("S-S")) {
-					specialCodes.setSpecialCodeS(studentDem.getValueName());
+					specialCodes.setSpecialCodeS(studentDem.getValue());
 				} else if (customerDemoName.endsWith("S-T")) {
-					specialCodes.setSpecialCodeT(studentDem.getValueName());
+					specialCodes.setSpecialCodeT(studentDem.getValue());
 				}
 
 			}
