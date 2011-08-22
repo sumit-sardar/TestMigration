@@ -962,7 +962,9 @@ public class FileGenerator {
 		SpecialCodes specialCodes = new SpecialCodes();
 		// For Defect Fix 66411
 		for (StudentDemographic studentDem : sd) {
-			set1.put(studentDem.getValue(), studentDem);
+			if (studentDem.getValue() != null){
+				set1.put(studentDem.getValue(), studentDem);
+			}
 			studentDemographic.put(studentDem.getCustomerDemographicId(),
 					studentDem.getValueName());
 			if (customerDemographic.containsKey(studentDem
@@ -1031,7 +1033,8 @@ public class FileGenerator {
 						try {
 							accomodations.getClass().getMethod("set" + string,
 									String.class).invoke(accomodations,
-											"1");
+									"1");
+							break;
 						} catch (Exception e) {
 							e.printStackTrace();
 
