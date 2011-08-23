@@ -167,7 +167,7 @@ public class StudentAccommodationsTag extends CTBTag
     	        checked = this.accommodations.getMaskingRuler().booleanValue();
     	        disabled = isDisabled(field);
     	        displayControlRow(field, description, checked, disabled, null);                        
-    	        displayTextRow("Allow student to use a ruler like image for masking.", "20");
+    	        displayTextRow("Allow student to use a ruler like image for blocking.", "20");
     	        
     	   displayEmptyRow("2");
            displayEmptyRow("2");
