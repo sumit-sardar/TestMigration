@@ -122,7 +122,8 @@ public interface DataExportManagement extends JdbcControl
     @JdbcControl.SQL(statement = " select OAS_UTILS.GET_SCORING_STATUS_BY_ROSTER({rosterId}) as scoringStatus from dual ")
     String getScoringStatusFromRoster(Integer rosterId)throws SQLException;
 
-    @JdbcControl.SQL(statement = "select  ros.test_roster_id as rosterId, stu.student_id as id, stu.user_name as loginId, concat(concat(stu.last_name, ', '),   concat(stu.first_name,          concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.grade as grade,  tadmin.test_admin_name as testSessionName, tadmin.item_set_id as itemSetIdTC ,  tadmin.test_admin_id as testAdminId  from test_roster ros,student stu , test_admin tadmin where ros.test_roster_id = {rosterId} and ros.activation_status = 'AC' and ros.student_id = stu.student_id and ros.test_admin_id = tadmin.test_admin_id ")
+    //Modified for student id blank defect
+    @JdbcControl.SQL(statement = "select  ros.test_roster_id as rosterId, stu.student_id as id, stu.user_name as loginId, concat(concat(stu.last_name, ', '),   concat(stu.first_name,          concat(' ', stu.MIDDLE_NAME))) as studentName,  stu.grade as grade,STU.EXT_PIN1 AS studentIdNumber, tadmin.test_admin_name as testSessionName, tadmin.item_set_id as itemSetIdTC ,  tadmin.test_admin_id as testAdminId  from test_roster ros,student stu , test_admin tadmin where ros.test_roster_id = {rosterId} and ros.activation_status = 'AC' and ros.student_id = stu.student_id and ros.test_admin_id = tadmin.test_admin_id ")
     ManageStudent getAllUnscoredUnexportedStudentsDetail(Integer rosterId)throws SQLException;
 
     
