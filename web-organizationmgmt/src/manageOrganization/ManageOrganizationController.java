@@ -688,10 +688,12 @@ public class ManageOrganizationController extends PageFlowController
     })
     protected Forward editOrganization(ManageOrganizationForm form)
     {
+    	String lasLinkConfigForOrgNodes  = "F";
         try
-        {
-        	 //START- Changed For LASLINK Product
-        	 String lasLinkConfigForOrgNodes = OrgPathListUtils.isOrgNodeForLasLinkCustomer(form.getSelectedOrgNodeId(), organizationManagement);
+        {	
+        		//Changes for defect #66780
+        	lasLinkConfigForOrgNodes = OrgPathListUtils.isOrgNodeForLasLinkCustomer(form.getSelectedOrgChildNodeId(), organizationManagement);
+        	
              if(lasLinkConfigForOrgNodes != null && lasLinkConfigForOrgNodes.equals("T")) {
              	this.isLasLinkCustomerSelected = true;
              }
