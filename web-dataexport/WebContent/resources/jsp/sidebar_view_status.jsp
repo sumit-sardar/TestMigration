@@ -14,8 +14,8 @@
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator">
     <h1>Tests</h1>
     <ul>
-        <li><a href="/TestAdministrationWeb/scheduleTestPageflow/ScheduleTestController.jpf" onclick="return verifyExitStudentExport();"><span>Schedule Test Session</span></a></li>
-        <li><a href="/TestSessionInfoWeb/viewtestsessions/ViewTestSessionsController.jpf" onclick="return verifyExitStudentExport();"><span>Find Test Session</span></a></li>
+        <li><a href="/TestAdministrationWeb/scheduleTestPageflow/ScheduleTestController.jpf" ><span>Schedule Test Session</span></a></li>
+        <li><a href="/TestSessionInfoWeb/viewtestsessions/ViewTestSessionsController.jpf" ><span>Find Test Session</span></a></li>
     </ul>
 </ctb:auth>
 
@@ -24,12 +24,12 @@
 <h1>Students</h1>
 <ul>
 <ctb:auth roles="Administrator, Administrative Coordinator">
-    <li><a href="/StudentManagementWeb/manageStudent/beginAddStudent.do" onclick="return verifyExitStudentExport();"><span>Add Student</span></a></li>
+    <li><a href="/StudentManagementWeb/manageStudent/beginAddStudent.do" ><span>Add Student</span></a></li>
 </ctb:auth>
-    <li><a href="/StudentManagementWeb/manageStudent/beginFindStudent.do" onclick="return verifyExitStudentExport();"><span>Find Student</span></a></li>
+    <li><a href="/StudentManagementWeb/manageStudent/beginFindStudent.do" ><span>Find Student</span></a></li>
 <ctb:auth roles="Administrator, Administrative Coordinator">
 	<c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
-		<li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" onclick="return verifyExitStudentExport();"><span>Edit Accommodations</span></a></li>
+		<li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Accommodations</span></a></li>
 	</c:if>
 </ctb:auth>      
 </ul>
@@ -39,8 +39,8 @@
 <ctb:auth roles="root, Account Manager, Administrator">
 <h1>Users</h1>
 <ul>
-    <li><a href="/UserManagementWeb/manageUser/beginAddUser.do" onclick="return verifyExitStudentExport();"><span>Add User</span></a></li>
-    <li><a href="/UserManagementWeb/manageUser/beginFindUser.do" onclick="return verifyExitStudentExport();"><span>Find User</span></a></li>
+    <li><a href="/UserManagementWeb/manageUser/beginAddUser.do" ><span>Add User</span></a></li>
+    <li><a href="/UserManagementWeb/manageUser/beginFindUser.do" ><span>Find User</span></a></li>
 </ul>
 </ctb:auth>
 
@@ -48,8 +48,8 @@
 <ctb:auth roles="root, Account Manager, Administrator">
 <h1>Organizations</h1>
 <ul>
-    <li><a href="/OrganizationManagementWeb/manageOrganization/beginAddOrganization.do" onclick="return verifyExitStudentExport();"><span>Add Organization</span></a></li>
-    <li><a href="/OrganizationManagementWeb/manageOrganization/beginFindOrganization.do" onclick="return verifyExitStudentExport();"><span>Find Organization</span></a></li>
+    <li><a href="/OrganizationManagementWeb/manageOrganization/beginAddOrganization.do" ><span>Add Organization</span></a></li>
+    <li><a href="/OrganizationManagementWeb/manageOrganization/beginFindOrganization.do" ><span>Find Organization</span></a></li>
 </ul>
 </ctb:auth>
 
@@ -66,7 +66,7 @@
 <ctb:auth roles="root, Account Manager">
 <h1>Tests</h1>
 <ul>
-    <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf" onclick="return verifyExitStudentExport();"><span>Reset Test Session</span></a></li>
+    <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf" ><span>Reset Test Session</span></a></li>
 </ul>
 </ctb:auth>
 
@@ -74,7 +74,7 @@
 	<c:if test="${ sessionScope.isScoringConfigured}"> 
 <h1>Score</h1>
    <ul>   
-        <li><a href="/HandScoringWeb/studentScoringPageFlow/beginIndivStudentScoring.do" onclick="return verifyExitStudentExport();" ><span>Student Scoring</span></a></li>
+        <li><a href="/HandScoringWeb/studentScoringPageFlow/beginIndivStudentScoring.do" ><span>Student Scoring</span></a></li>
     </ul>
    </c:if>
 </ctb:auth>
@@ -82,8 +82,8 @@
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
 <h1>Workstation Setup</h1>
 <ul>
-    <li><a href="/TestSessionInfoWeb/downloadclient/DownloadClientController.jpf" onclick="return verifyExitStudentExport();"><span>Install Software</span></a></li>
-    <li><a href="/TestSessionInfoWeb/downloadtest/DownloadTestController.jpf" onclick="return verifyExitStudentExport();"><span>Download Test</span></a></li>
+    <li><a href="/TestSessionInfoWeb/downloadclient/DownloadClientController.jpf" ><span>Install Software</span></a></li>
+    <li><a href="/TestSessionInfoWeb/downloadtest/DownloadTestController.jpf" ><span>Download Test</span></a></li>
 </ul>
 </ctb:auth>
 

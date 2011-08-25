@@ -24,7 +24,7 @@
 
     <jsp:include page="/resources/jsp/header.jsp" />
     
-    <jsp:include page="/resources/jsp/navigation.jsp" />
+    <jsp:include page="/resources/jsp/view_status_navigation.jsp" />
     
     <table class="legacyBodyLayout">
     <tr>

@@ -95,7 +95,7 @@
 <h1>Export</h1>
 <ul>
     <li><span class="navleft-unclickable">Export Data</span></li>
-    <li><a href="/DataExportWeb/dataExportPageFlow/beginViewStatus.do"><span>View Status</span></a></li>
+    <li><a href="/DataExportWeb/dataExportPageFlow/beginViewStatus.do" onclick="return verifyExitStudentExport();"><span>View Status</span></a></li>
     
 </ul>
  </c:if>
