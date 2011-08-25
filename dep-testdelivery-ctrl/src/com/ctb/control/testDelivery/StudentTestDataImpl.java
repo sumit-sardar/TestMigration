@@ -720,8 +720,13 @@ public class StudentTestDataImpl implements StudentTestData
                 for(int i=0;i<statusList.length;i++) {
                     if(statusList[i].getItemSetId() == Integer.parseInt(itemSetId)) {
                          foundItemSet = true;
-                         if(!(statusList[i].getTestCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
-                              statusList[i].getTestCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {
+                         String status = statusList[i].getTestCompletionStatus();
+                         if(status.equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS)) {
+                        	 statusList[i].setSubtestCompletionStatus(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS);
+                        	 saver.updateSubtestCompletionStatus(Integer.parseInt(testRosterId), Integer.parseInt(itemSetId), status, status);
+                         }
+                         if(!(status.equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
+                        	  status.equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {
                             // this subtest is not in progress, can't persist responses
                             OASLogger.getLogger("TestDelivery").debug("startSubtest: no scheduled SISS records for roster: " + testRosterId);
                             throw new InvalidSubtestEventException();
