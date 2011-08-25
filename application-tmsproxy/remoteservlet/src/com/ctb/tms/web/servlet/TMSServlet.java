@@ -149,7 +149,20 @@ public class TMSServlet extends HttpServlet {
 		        saveResponse.getTsdArray(i).setMseq(tsd.getMseq());
 		        saveResponse.getTsdArray(i).setStatus(Status.OK);
 			    
+	    		Manifest manifest = oasSource.getManifest(rosterId);
+		    	ManifestData[] manifestData = manifest.getManifest();
+		    	int nextScoIndex = 0;
+		    	int j;
+		    	for(j=0;j<manifestData.length;j++) {
+		    		if(manifestData[j].getId() == Integer.parseInt(tsd.getScid())) {
+		    			nextScoIndex = j+1;
+		    			break;
+		    		}
+		    	}
+		        
 			    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
+			    	// keep IP status if we're receiving heartbeats or responses
+			    	manifestData[j].setCompletionStatus("IP");
 			    	// response events
 			    	oasSink.putItemResponse(rosterId, tsd);
 			    }
@@ -163,16 +176,6 @@ public class TMSServlet extends HttpServlet {
 	    			//logger.debug("***** Got subtest event type: " + eventType.toString());
 			    	if(tsd.getLevArray()[0].getE() == null || !LmsEventType.TERMINATED.equals(eventType)) {
 				    	try {
-				    		Manifest manifest = oasSource.getManifest(rosterId);
-					    	ManifestData[] manifestData = manifest.getManifest();
-					    	int nextScoIndex = 0;
-					    	int j;
-					    	for(j=0;j<manifestData.length;j++) {
-					    		if(manifestData[j].getId() == Integer.parseInt(tsd.getScid())) {
-					    			nextScoIndex = j+1;
-					    			break;
-					    		}
-					    	}
 				    		if(LmsEventType.LMS_INITIALIZE.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("IP");
 				    		} else if(LmsEventType.STU_PAUSE.equals(eventType)) {
@@ -189,15 +192,16 @@ public class TMSServlet extends HttpServlet {
 				                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
 						    	}
 				    		}
-				    		manifest.setManifest(manifestData);
-				    		oasSink.putManifestData(rosterId, manifest);
 				    	} catch (Exception e) {
 				    		e.printStackTrace();
 				    	}
-		                // Coherence write-behind will handle response persistence
+		                // Cache write-behind will handle response persistence
 		                //TestDeliveryContextListener.enqueueRoster(rosterId);
 			    	}
 			    }
+			    // always update manifest to override interrupter via write-behind if still receiving events
+	    		manifest.setManifest(manifestData);
+	    		oasSink.putManifestData(rosterId, manifest);
 		    }
         }
 	    
@@ -223,7 +227,7 @@ public class TMSServlet extends HttpServlet {
 		Manifest manifest = rd.getManifest();
 		String testRosterId = String.valueOf(rd.getAuthData().getTestRosterId());
 		oasSink.putManifestData(testRosterId, manifest);
-		// TODO: handle restart case by populating restart data from Cassandra-stored item responses
+		// TODO: handle restart case by populating restart data from cache-stored item responses
 		return rd.getLoginDocument().xmlText();
 	}
 	
