@@ -452,12 +452,12 @@ public class AdministrationController extends PageFlowController
             if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
             		cc.getDefaultValue().equals("T")	) {
             	hasScoringConfigurable = true;
-                  break;
+                 // break;  //changes for defect #66784
             } 
             if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
     				&& cc.getDefaultValue().equals("T")) {
     			isLaslinkCustomer = true;
-    			break;
+    			//break;  //changes for defect #66784
             }
         }
        }

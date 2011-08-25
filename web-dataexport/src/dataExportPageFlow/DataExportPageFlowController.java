@@ -94,6 +94,7 @@ public class DataExportPageFlowController extends PageFlowController {
 	public Forward beginDataExport() {	
 		
 		DataExportForm form = initialize(ACTION_FIND_STUDENT);
+		customerHasBulkAccommodation(); //added for defect #66784
 		customerHasScoring();
 		isTopLevelLaslinkUser();
 		return new Forward("success", form);
@@ -310,6 +311,7 @@ public class DataExportPageFlowController extends PageFlowController {
 	protected Forward beginViewStatus() {
 		retrieveInfoFromSession();
 		DataExportForm form = initialize(ACTION_FIND_STUDENT);
+		customerHasBulkAccommodation(); //added for defect #66784
 		customerHasScoring();
 		isTopLevelLaslinkUser();
 		return new Forward("success",form);
@@ -449,6 +451,28 @@ public class DataExportPageFlowController extends PageFlowController {
 		return new Boolean(hasScoringConfigurable);
 	}
 	
+	/**
+	 * Bulk Accommodation //added for defect #66784
+	 */
+	private Boolean customerHasBulkAccommodation() 
+	{
+		boolean hasBulkStudentConfigurable = false;
+			 //Bulk Accommodation
+		 for (int i=0; i < this.customerConfigurations.length; i++) {
+			 
+	           CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+	            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+	    	        		cc.getDefaultValue().equals("T")) {
+	                	hasBulkStudentConfigurable = true; 
+	                	break;
+	             }
+	      }
+			
+	    getSession().setAttribute("isBulkAccommodationConfigured", hasBulkStudentConfigurable);
+	            
+	 	
+		return new Boolean(hasBulkStudentConfigurable);           
+	}
 	
 
 	/**
