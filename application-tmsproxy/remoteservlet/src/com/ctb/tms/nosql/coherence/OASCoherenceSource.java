@@ -1,8 +1,6 @@
 package com.ctb.tms.nosql.coherence;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -10,8 +8,6 @@ import java.util.Set;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
 import org.apache.log4j.Logger;
-
-import sun.misc.BASE64Decoder;
 
 import com.bea.xml.XmlException;
 import com.ctb.tms.bean.login.Manifest;
@@ -23,7 +19,7 @@ import com.tangosol.net.NamedCache;
 import com.tangosol.util.Filter;
 import com.tangosol.util.ValueExtractor;
 import com.tangosol.util.extractor.ReflectionExtractor;
-import com.tangosol.util.filter.ContainsFilter;
+import com.tangosol.util.filter.GreaterEqualsFilter;
 
 public class OASCoherenceSource implements OASNoSQLSource {
 	
@@ -71,7 +67,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 
 	public Tsd[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
 		String key = testRosterId;
-		Filter filter = new ContainsFilter("getLsid", key); 
+		Filter filter = new GreaterEqualsFilter("getLsid", key); 
 		Set setKeys = responseCache.keySet(filter); 
 		Map mapResult = responseCache.getAll(setKeys); 
 		if(mapResult != null) {

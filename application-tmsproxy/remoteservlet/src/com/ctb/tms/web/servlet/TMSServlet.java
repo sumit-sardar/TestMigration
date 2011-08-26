@@ -1,6 +1,7 @@
 package com.ctb.tms.web.servlet;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -8,8 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
 
 import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest;
@@ -22,9 +21,15 @@ import noNamespace.AdssvcResponseDocument.AdssvcResponse.WriteToAuditFile;
 import noNamespace.LmsEventType;
 import noNamespace.TmssvcRequestDocument;
 import noNamespace.TmssvcRequestDocument.TmssvcRequest.LoginRequest;
+import noNamespace.TmssvcResponseDocument;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData;
+
+import org.apache.log4j.Logger;
 
 import com.bea.xml.XmlException;
 import com.ctb.tdc.web.utils.ServletUtils;
+import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
@@ -34,11 +39,10 @@ import com.ctb.tms.nosql.ADSNoSQLSource;
 import com.ctb.tms.nosql.NoSQLStorageFactory;
 import com.ctb.tms.nosql.OASNoSQLSink;
 import com.ctb.tms.nosql.OASNoSQLSource;
-import com.ctb.tms.nosql.coherence.OASCoherenceSource;
 import com.ctb.tms.rdb.ADSRDBSink;
 import com.ctb.tms.rdb.ADSRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
-import com.ctb.tms.web.listener.TestDeliveryContextListener;
+import com.ctb.tms.util.Constants;
 
 public class TMSServlet extends HttpServlet {
 
@@ -206,11 +210,11 @@ public class TMSServlet extends HttpServlet {
         }
 	    
         // TODO: implement correlation, sequence and subtest/roster status checks for security
-
+        // TODO: update roster status, lastMseq, restartNumber, start/end times, etc. on test events
 		return responseDocument.xmlText();
 	}
 
-	private String login(String xml) throws XmlException, IOException, ClassNotFoundException {
+	private String login(String xml) throws XmlException, IOException, ClassNotFoundException, SQLException {
 		TmssvcRequestDocument document = TmssvcRequestDocument.Factory.parse(xml);
 		LoginRequest lr = document.getTmssvcRequest().getLoginRequest();
 		StudentCredentials creds = new StudentCredentials();
@@ -224,11 +228,42 @@ public class TMSServlet extends HttpServlet {
 			creds.setAccesscode(lr.getAccessCode());
 		}
 		RosterData rd = oasSource.getRosterData(creds);
-		Manifest manifest = rd.getManifest();
 		String testRosterId = String.valueOf(rd.getAuthData().getTestRosterId());
-		oasSink.putManifestData(testRosterId, manifest);
-		// TODO: handle restart case by populating restart data from cache-stored item responses
-		return rd.getLoginDocument().xmlText();
+		Manifest manifest = oasSource.getManifest(testRosterId);
+		if(manifest == null) {
+			manifest = rd.getManifest();
+			oasSink.putManifestData(testRosterId, manifest);
+		} else {
+			rd.setManifest(manifest);
+		}
+		TmssvcResponseDocument response = rd.getLoginDocument();
+		LoginResponse loginResponse = response.getTmssvcResponse().getLoginResponse();
+		BigInteger restart = loginResponse.getRestartNumber();
+		if(restart == null) restart = BigInteger.valueOf(0);
+		int restartCount = restart.intValue();
+		logger.debug("Restart count: " + restartCount);
+		if(restartCount > 0) {
+			ManifestData[] manifesta = manifest.getManifest();
+			boolean gotRestart = false;
+	        for(int i=0; i<manifesta.length ;i++) {
+	            if(!gotRestart && (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
+	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS) ||
+	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
+	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {
+                	ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
+                	Tsd[] irt = oasSource.getItemResponses(testRosterId);
+                	ItemResponseData [] ird = RosterData.generateItemResponseData(manifesta[i], irt);
+                    RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
+                    gotRestart = true;
+                }
+	        }
+	        if(gotRestart) {
+	        	loginResponse.setRestartFlag(true);
+	        }
+		}
+		loginResponse.setRestartNumber(BigInteger.valueOf(restartCount + 1));
+		oasSink.putRosterData(creds, rd);
+		return response.xmlText();
 	}
 	
 	public String getSubtest(String xml) throws XmlException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException

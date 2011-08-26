@@ -10,7 +10,7 @@ public class ItemResponseData
     private String studentMarked;
     private String itemType;
     private String response;
-    private Clob constructedResponse;
+    private String constructedResponse;
     private int responseElapsedTime;
     private int eid;
     private int score;
@@ -126,13 +126,13 @@ public class ItemResponseData
 	/**
 	 * @return the constructedResponse
 	 */
-	public Clob getConstructedResponse() {
+	public String getConstructedResponse() {
 		return constructedResponse;
 	}
 	/**
 	 * @param constructedResponse the constructedResponse to set
 	 */
-	public void setConstructedResponse(Clob constructedResponse) {
+	public void setConstructedResponse(String constructedResponse) {
 		this.constructedResponse = constructedResponse;
 	}
 

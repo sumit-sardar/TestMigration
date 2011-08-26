@@ -228,13 +228,8 @@ public class OASOracleSource implements OASRDBSource
 	                		(manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
 	                		 manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS))) {
 	                	ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
-	                	manifestData[i].setTotalTime(getTotalElapsedTimeForSubtest(conn, testRosterId, manifestData[i].getId()));
-	                    int remSec = (manifestData[i].getScoDurationMinutes() * 60) - manifestData[i].getTotalTime();
-	                    ItemResponseData [] itemResponseData = getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
-	                    //START Change For deferred defect 63502
-	                    copyRestartDataToResponse(lsid, testRosterId, manifestData[i].getId(), loginResponse, itemResponseData, remSec, 
-	                    		Integer.parseInt(manifestData[i].getAdsid()), manifestData[i].getScratchpadContentStr(), restartData);
-	                    		//END
+	                	ItemResponseData [] itemResponseData = getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
+	                    RosterData.generateRestartData(loginResponse, manifestData[i], itemResponseData, restartData);
 	                    gotRestart = true;
 	                }
 	            }
@@ -261,71 +256,7 @@ public class OASOracleSource implements OASRDBSource
     }
     
     //START Change for Deferred defect 63502
-    private static void copyRestartDataToResponse(String lsid, 
-                                    int testRosterId, 
-                                    int subtestItemSetId, 
-                                    LoginResponse loginResponse, 
-                                    ItemResponseData [] itemResponseData, 
-                                    int remSec, 
-                                    int adsAssessmentId, 
-                                    String scratchpadContent,
-                                    ConsolidatedRestartData restartData ) throws SQLException
-    {
-    //END
-        //ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
-        Tsd tsd = restartData.addNewTsd();        
-        tsd.setScid(String.valueOf(subtestItemSetId));
-        tsd.setLsid(lsid);
-        if (scratchpadContent == null) scratchpadContent = "";
-     //   tsd.addSp("<![CDATA[" + scratchpadContent + "]]>");
-        tsd.addSp(scratchpadContent);
-        Ast ast = tsd.addNewAst();
-        ast.setRemSec(Float.parseFloat(String.valueOf(remSec)));
-        int maxRSN = 0;
-        for(int i=0;i<itemResponseData.length;i++) {
-            ItemResponseData data = itemResponseData[i];
-            tsd.addNewIst();
-            Ist ist = tsd.getIstArray(i);
-            ist.setIid(data.getItemId());
-//            ist.setEid(String.valueOf(data.getResponseSeqNum()));
-            ist.setEid(""+data.getEid());
-            ist.setCst(Ist.Cst.UNKNOWN);
-            ist.setMrk("T".equals(data.getStudentMarked())?"1":"0");
-//            ist.setAwd("1");
-            ist.setDur(data.getResponseElapsedTime());
-            Rv rv = ist.addNewRv();
-            if ("SR".equals(data.getItemType())) {
-                rv.setT(BaseType.IDENTIFIER);
-                rv.setV(data.getResponse());
-            }
-            else { 
-                rv.setT(BaseType.STRING);
-                String crResponse = "";
-                Clob crResponseClob = data.getConstructedResponse();
-                if (crResponseClob != null) {
-                    int length = (int) crResponseClob.length();
-                    crResponse = crResponseClob.getSubString(1, length);
-                }
-                rv.setV(crResponse);
-            }
-            rv.setN("RESPONSE");
-            
-            
-            Ov ov = ist.addNewOv();
-            ov.setN("SCORE");
-            ov.setT(BaseType.INTEGER);
-            
-            if ("SR".equals(data.getItemType()))
-                ov.setV(""+data.getScore());
-            else
-                ov.setV("");
-
-            if(data.getResponseSeqNum() > maxRSN) {
-                ast.setCurEid(""+itemResponseData[i].getEid());
-                maxRSN = data.getResponseSeqNum();
-            }
-        }
-    }
+    
     
     private static void copyAuthenticationDataToResponse(LoginResponse response, AuthenticationData authData) throws AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException {
         response.addNewTestingSessionData();
@@ -727,7 +658,7 @@ public class OASOracleSource implements OASRDBSource
 			ArrayList<ItemResponseData> dataList = new ArrayList<ItemResponseData>();
 			while (rs1.next()) {
 				ItemResponseData response = new ItemResponseData();
-				response.setConstructedResponse(rs1.getClob("constructedResponse"));
+				response.setConstructedResponse(rs1.getString("constructedResponse"));
 				response.setEid(rs1.getInt("eid"));
 				response.setItemId(rs1.getString("itemId"));
 				response.setItemSortOrder(rs1.getInt("itemSortOrder"));
