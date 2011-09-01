@@ -295,17 +295,7 @@ public class PersistenceServlet extends HttpServlet {
         String mseq = ServletUtils.parseMseq(xml); 
         
         try {
-        	boolean isEndSubtest = ServletUtils.isEndSubtest(xml);
-
-        	boolean hasResponse = ServletUtils.hasResponse(xml);
-            
-        	//if(isEndSubtest || hasResponse) {
-        		result = save(xml);
-            //}
-
-            if(!isEndSubtest){
-            	result = ServletUtils.OK;
-            }
+        	result = save(xml);
         } 
         catch (Exception e) {
         	logger.error("mseq " + mseq + ": Exception occured in save() : " + e.getMessage());
@@ -327,32 +317,21 @@ public class PersistenceServlet extends HttpServlet {
         if (memoryCache.getSrvSettings().isTmsPersist()) {
         	// message was added to pending list in cache,
             // send save request to TMS
-        	int TMSRetryCount = memoryCache.getSrvSettings().getTmsMessageRetryCount();
-        	int TMSRetryInterval = memoryCache.getSrvSettings().getTmsMessageRetryInterval();
-        	int expansion = memoryCache.getSrvSettings().getTmsMessageRetryExpansionFactor();
         	String tmsResponse = "";
-        	int i = 1;
-        	while(TMSRetryCount > 0) {
-        		//logger.info("mseq " + mseq + ": persistence request");
-        		tmsResponse = ServletUtils.httpClientSendRequest(ServletUtils.SAVE_METHOD, xml);
-                
-                // if OK return from TMS, set acknowledge state
-                if (ServletUtils.isStatusOK(tmsResponse)) {
-                    TMSRetryCount = 0;
-                }
-                else {
-                    //logger.error("mseq " + mseq + ": TMS returns error in save() : " + tmsResponse);
-                    if (TMSRetryCount > 1) {
-                    	//logger.error("mseq " + mseq + ": Retrying message: " + xml);
-                    	Thread.sleep(TMSRetryInterval * ServletUtils.SECOND * i);	
-                    }
-                    TMSRetryCount--;
-                }
-                i = i*expansion;
-        	}
-            if(isEndSubtest){
-            	result = tmsResponse;
-            }
+			
+			//logger.info("mseq " + mseq + ": persistence request");
+			tmsResponse = ServletUtils.httpClientSendRequest(ServletUtils.SAVE_METHOD, xml);
+			if (isEndSubtest) {
+				result = tmsResponse;
+			} else {
+				if (ServletUtils.isStatusOK(tmsResponse)) {
+					logger.debug("OK response from TMS: " + tmsResponse);
+					result = ServletUtils.OK;
+				} else {
+					result = tmsResponse;
+					logger.debug("Non-OK response from TMS: " + tmsResponse);
+				}
+			}
         }
         return result;
     }

@@ -3,6 +3,7 @@ package com.ctb.tms.web.servlet;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 
 import javax.servlet.ServletException;
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Rv;
 import noNamespace.AdssvcResponseDocument;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.NextSco;
@@ -34,6 +37,8 @@ import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
+import com.ctb.tms.exception.testDelivery.InvalidCorrelationIdException;
+import com.ctb.tms.exception.testDelivery.TestSessionCompletedException;
 import com.ctb.tms.nosql.ADSNoSQLSink;
 import com.ctb.tms.nosql.ADSNoSQLSource;
 import com.ctb.tms.nosql.NoSQLStorageFactory;
@@ -102,7 +107,7 @@ public class TMSServlet extends HttpServlet {
 	        	ServletUtils.writeResponse(response, result);
 	        }
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 
@@ -131,11 +136,11 @@ public class TMSServlet extends HttpServlet {
 	}
 
 	private String feedback(String xml) {
-		// TODO Auto-generated method stub
+		// TODO: implement feedback response
 		return null;
 	}
 
-	private String save(HttpServletResponse response, String xml) throws XmlException, IOException, ClassNotFoundException {
+	private String save(HttpServletResponse response, String xml) throws XmlException, IOException, ClassNotFoundException, InvalidCorrelationIdException {
 		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
 		AdssvcRequest saveRequest = document.getAdssvcRequest();
 		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
@@ -164,7 +169,23 @@ public class TMSServlet extends HttpServlet {
 		    		}
 		    	}
 		        
+		    	manifest.setRosterLastMseq(tsd.getMseq().intValue());
+		    	
 			    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
+			    	int rosterCid = manifest.getRosterCorrelationId();
+			    	int thisCid = tsd.getCid().intValue();
+			    	logger.debug("Cached CID: " + rosterCid + ", this message CID: " + thisCid);
+			    	if(rosterCid != 0 && rosterCid != thisCid) {
+			    		responseDocument = AdssvcResponseDocument.Factory.newInstance();
+			            saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
+			            noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd errorTsd = saveResponse.addNewTsd();
+			            errorTsd.setStatus(Status.INVALID_CID);
+			            errorTsd.addNewError();
+			            errorTsd.getError().setMethod("save_testing_session_data");
+			            errorTsd.getError().setStatus("invalid_cid");
+			            errorTsd.getError().setErrorElement(tsd.toString());
+			            return responseDocument.xmlText();
+			    	}
 			    	// keep IP status if we're receiving heartbeats or responses
 			    	manifestData[j].setCompletionStatus("IP");
 			    	// response events
@@ -182,14 +203,20 @@ public class TMSServlet extends HttpServlet {
 				    	try {
 				    		if(LmsEventType.LMS_INITIALIZE.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("IP");
+				    			manifest.setRosterCompletionStatus("IP");
+				    			manifest.setRosterCorrelationId(tsd.getCid().intValue());
 				    		} else if(LmsEventType.STU_PAUSE.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("SP");
+				    			manifest.setRosterCompletionStatus("SP");
 				    		} else if(LmsEventType.STU_RESUME.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("IP");
+				    			manifest.setRosterCompletionStatus("IP");
 				    		} else if(LmsEventType.STU_STOP.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("IS");
+				    			manifest.setRosterCompletionStatus("IS");
 				    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("CO");
+				    			manifest.setRosterCompletionStatus("CO");
 						    	NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
 						    	
 						    	if(nextScoIndex < manifestData.length) {
@@ -201,6 +228,8 @@ public class TMSServlet extends HttpServlet {
 				    	}
 		                // Cache write-behind will handle response persistence
 		                //TestDeliveryContextListener.enqueueRoster(rosterId);
+			    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
+			    		manifest.setRosterEndTime(new Date(System.currentTimeMillis()));
 			    	}
 			    }
 			    // always update manifest to override interrupter via write-behind if still receiving events
@@ -211,6 +240,8 @@ public class TMSServlet extends HttpServlet {
 	    
         // TODO: implement correlation, sequence and subtest/roster status checks for security
         // TODO: update roster status, lastMseq, restartNumber, start/end times, etc. on test events
+        // TODO: handle TABE auto-locator
+        // TODO: handle random distractor seed
 		return responseDocument.xmlText();
 	}
 
@@ -232,7 +263,6 @@ public class TMSServlet extends HttpServlet {
 		Manifest manifest = oasSource.getManifest(testRosterId);
 		if(manifest == null) {
 			manifest = rd.getManifest();
-			oasSink.putManifestData(testRosterId, manifest);
 		} else {
 			rd.setManifest(manifest);
 		}
@@ -261,7 +291,15 @@ public class TMSServlet extends HttpServlet {
 	        	loginResponse.setRestartFlag(true);
 	        }
 		}
-		loginResponse.setRestartNumber(BigInteger.valueOf(restartCount + 1));
+		int newRestartCount = restartCount + 1;
+		loginResponse.setRestartNumber(BigInteger.valueOf(newRestartCount));
+		manifest.setRosterRestartNumber(newRestartCount);
+		if(manifest.getRosterStartTime() == null) {
+			manifest.setRosterStartTime(new Date(System.currentTimeMillis()));
+		}
+		manifest.setRosterCompletionStatus("IP");
+		manifest.setRosterCorrelationId(0);
+		oasSink.putManifestData(testRosterId, manifest);
 		oasSink.putRosterData(creds, rd);
 		return response.xmlText();
 	}

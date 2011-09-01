@@ -2,6 +2,7 @@ package com.ctb.tms.bean.login;
 
 import java.io.Serializable;
 import java.sql.Clob;
+import java.sql.Date;
 
 public class ManifestData implements Serializable
 {
@@ -32,7 +33,7 @@ public class ManifestData implements Serializable
     //Change For Random Distractor
     private String randomDistractorStatus;
     
-    /**
+	/**
 	 * @return Returns the adsid.
 	 */
 	public String getAdsid() {

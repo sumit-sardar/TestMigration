@@ -79,7 +79,10 @@ public class RosterData implements Serializable {
 	        if(statusCode.equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS))
 	            throw new TestSessionCompletedException();
 	        if(statusCode.equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS))
-	            throw new TestSessionInProgressException();
+	            // do nothing on IP status, allow zero-time restart
+	        	//throw new TestSessionInProgressException();
+	        	statusCode = Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS;
+	        	authData.setRosterTestCompletionStatus(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS);
 	        if( dateBefore || dateAfter || timeBefore || timeAfter)
 	            throw new OutsideTestWindowException();
 	        if(!statusCode.equals(Constants.StudentTestCompletionStatus.SCHEDULED_STATUS) && 
@@ -102,10 +105,6 @@ public class RosterData implements Serializable {
             response = TmssvcResponseDocument.Factory.newInstance();
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_COMPLETED_STATUS); 
-        } catch (TestSessionInProgressException afe) {
-            response = TmssvcResponseDocument.Factory.newInstance();
-            LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
-            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_IN_PROGRESS_STATUS); 
         } catch (TestSessionNotScheduledException afe) {
             response = TmssvcResponseDocument.Factory.newInstance();
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();

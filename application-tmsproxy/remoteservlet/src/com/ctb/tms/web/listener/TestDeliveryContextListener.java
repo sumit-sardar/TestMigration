@@ -109,12 +109,12 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 									sinkConn.close();
 								}
 								logger.info("*****  Got roster data for " + key + " . . . ");
-								// Now put the roster data into Cassandra
+								// Now put the roster data into Coherence
 								if(rosterData != null) {
 									String lsid = rosterData.getDocument().getTmssvcResponse().getLoginResponse().getLsid();
 									String testRosterId = lsid.substring(0, lsid.indexOf(":"));
 									oasSink.putRosterData(creds[i], rosterData);
-									oasSink.putManifestData(testRosterId, rosterData.getManifest());
+									//oasSink.putManifestData(testRosterId, rosterData.getManifest());
 									logger.info("stored.\n");
 								} else {
 									logger.info("NOT stored.\n");
