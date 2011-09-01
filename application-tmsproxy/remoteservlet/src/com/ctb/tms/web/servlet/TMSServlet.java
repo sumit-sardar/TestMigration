@@ -238,8 +238,8 @@ public class TMSServlet extends HttpServlet {
 		    }
         }
 	    
-        // TODO: implement correlation, sequence and subtest/roster status checks for security
-        // TODO: update roster status, lastMseq, restartNumber, start/end times, etc. on test events
+        // TODO (complete): implement correlation, sequence and subtest/roster status checks for security
+        // TODO (complete): update roster status, lastMseq, restartNumber, start/end times, etc. on test events
         // TODO: handle TABE auto-locator
         // TODO: handle random distractor seed
 		return responseDocument.xmlText();
