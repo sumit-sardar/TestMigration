@@ -703,7 +703,7 @@ public class StudentTestDataImpl implements StudentTestData
         return nextSubtestId;
     }
     
-    private void processItemResponseEvents(String testRosterId, RosterSubtestStatus [] statusList, String itemSetId, Ist [] ista, int mSeq, int cid, boolean isCTB) throws InvalidTestRosterIdException, InvalidItemSetIdException, InvalidItemResponseException, InvalidSubtestEventException, InvalidCorrelationIdException {
+    private void processItemResponseEvents(String testRosterId, RosterSubtestStatus [] statusList, String itemSetId, Ist [] ista, int mSeq, int cid, boolean isCTB) throws InvalidTestRosterIdException, InvalidItemSetIdException, InvalidItemResponseException, InvalidSubtestEventException, InvalidCorrelationIdException, SQLException {
         String cacheArg = null;
     	if(ista != null && ista.length > 0) {
             if(isCTB) {
