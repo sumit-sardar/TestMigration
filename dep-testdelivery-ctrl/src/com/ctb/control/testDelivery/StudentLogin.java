@@ -14,10 +14,6 @@ public interface StudentLogin
 { 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    noNamespace.TmssvcResponseDocument login(noNamespace.TmssvcRequestDocument document);
-
-
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     noNamespace.TmssvcResponseDocument ctbLogin(noNamespace.TmssvcRequestDocument document);
     
     public byte[] studentMusicFile(Integer musicId) throws CTBBusinessException, SQLException;
