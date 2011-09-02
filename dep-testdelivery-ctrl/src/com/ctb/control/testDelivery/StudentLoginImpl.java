@@ -574,8 +574,10 @@ public class StudentLoginImpl implements StudentLogin
         if(statusCode.equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS))
             throw new TestSessionCompletedException();
         if(statusCode.equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS))
-            // change for ISTEPCR025: do nothing, allow login to in-progress session
+            // do nothing on IP status, allow zero-time restart
         	//throw new TestSessionInProgressException();
+        	statusCode = Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS;
+        	authData.setRosterTestCompletionStatus(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS);
         if( dateBefore || dateAfter || timeBefore || timeAfter)
             throw new OutsideTestWindowException();
         if(!statusCode.equals(Constants.StudentTestCompletionStatus.SCHEDULED_STATUS) && 
