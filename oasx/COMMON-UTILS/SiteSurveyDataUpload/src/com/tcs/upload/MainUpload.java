@@ -64,6 +64,9 @@ public class MainUpload {
 					//update data 
 					 CSVFileReader.updateSiteSurvey(rowData, con);
 					 
+				} else {
+					String[] stmtArr =  CSVFileReader.getSiteDetail(rowData, rowData[1], con);
+					CSVFileReader.insertSiteSurvey(stmtArr, con);
 				}
 				
 				
