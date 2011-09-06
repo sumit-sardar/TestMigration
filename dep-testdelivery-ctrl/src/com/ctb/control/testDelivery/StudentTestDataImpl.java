@@ -335,7 +335,7 @@ public class StudentTestDataImpl implements StudentTestData
                     // process Heartbeat
                     processHeartbeat(Integer.parseInt(testRosterId), tsd.getAstArray(), tsd.getMseq().intValue());
                     processItemResponseEvents(testRosterId, statusList, itemSetId, tsd.getIstArray(), mSeq, tsd.getCid().intValue(), true);
-                    int nextSubtestId = processSubtestEvents(testRosterId, statusList, itemSetId, tsd.getLevArray(), tsd.getLsvArray(), tsd.getMseq().intValue(), accessCode);
+                    int nextSubtestId = processSubtestEvents(testRosterId, statusList, itemSetId, tsd.getLevArray(), tsd.getLsvArray(), tsd.getMseq().intValue(), tsd.getCid().intValue(), accessCode);
                     processTestEvents(testRosterId, itemSetId, tsd.getLevArray(), tsd.getLsvArray(), statusList);
                     if (nextSubtestId >0) {
                         NextSco nextSco = saveResponse.getTsdArray(0).addNewNextSco();
