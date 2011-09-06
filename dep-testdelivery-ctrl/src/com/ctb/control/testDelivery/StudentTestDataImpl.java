@@ -833,7 +833,8 @@ public class StudentTestDataImpl implements StudentTestData
                      foundItemSet = true;
                      if(!statusList[i].getSubtestCompletionStatus().equals(Constants.StudentTestCompletionStatus.SCHEDULED_STATUS) &&
                         !statusList[i].getSubtestCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS) &&
-                        !statusList[i].getSubtestCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS)) {
+                        !statusList[i].getSubtestCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) &&
+                        !statusList[i].getSubtestCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS)) {
                         // this subtest is not in a startable state
                         OASLogger.getLogger("TestDelivery").debug("startSubtest: no scheduled SISS records for roster: " + testRosterId);
                         throw new InvalidSubtestEventException();
