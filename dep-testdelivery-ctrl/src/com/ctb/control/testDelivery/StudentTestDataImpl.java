@@ -187,7 +187,7 @@ public class StudentTestDataImpl implements StudentTestData
                             if(tsd.getMseq().intValue() > lastMseq) {
                                 OASLogger.getLogger("TestDelivery").debug("message from lms queue");
                                 processItemResponseEvents(testRosterId, statusList, itemSetId, tsd.getIstArray(), mSeq, 0, false);
-                                processSubtestEvents(testRosterId, statusList, itemSetId, tsd.getLevArray(), tsd.getLsvArray(), tsd.getMseq().intValue(), null);
+                                processSubtestEvents(testRosterId, statusList, itemSetId, tsd.getLevArray(), tsd.getLsvArray(), tsd.getMseq().intValue(), 0, null);
                             } else {
                                 OASLogger.getLogger("TestDelivery").debug("ignoring message from lms queue, this mseq: " + tsd.getMseq().intValue() + " is less than last mseq: " + lastMseq);
                             }
