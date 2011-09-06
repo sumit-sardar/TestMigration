@@ -110,7 +110,7 @@ public class StudentLoginImpl implements StudentLogin
     /**
      * @common:operation
      */
-/*    public TmssvcResponseDocument login(TmssvcRequestDocument document)
+    public TmssvcResponseDocument login(TmssvcRequestDocument document)
     {
         TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance();
         LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
@@ -199,7 +199,7 @@ public class StudentLoginImpl implements StudentLogin
         	loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.SERVER_BUSY_STATUS);
         }
         return response;
-    }*/
+    }
     
     /**
      * @common:operation
@@ -574,10 +574,7 @@ public class StudentLoginImpl implements StudentLogin
         if(statusCode.equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS))
             throw new TestSessionCompletedException();
         if(statusCode.equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS))
-            // do nothing on IP status, allow zero-time restart
-        	//throw new TestSessionInProgressException();
-        	statusCode = Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS;
-        	authData.setRosterTestCompletionStatus(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS);
+            throw new TestSessionInProgressException();
         if( dateBefore || dateAfter || timeBefore || timeAfter)
             throw new OutsideTestWindowException();
         if(!statusCode.equals(Constants.StudentTestCompletionStatus.SCHEDULED_STATUS) && 
@@ -749,6 +746,7 @@ public class StudentLoginImpl implements StudentLogin
 	            sco.setAsmtEncryptionKey(data.getAsmtEncryptionKey());
 	            sco.setItemEncryptionKey(data.getItemEncryptionKey());
 	            sco.setAdsid(data.getAdsid());
+	            sco.setFwdOnly("T".equals(data.getForwardOnly()) ? true : false);
 	            int hours = (int) Math.floor(data.getTotalTime() / 3600);
 	            int minutes = (int) Math.floor((data.getTotalTime() - (hours * 3600)) / 60);
 	            int seconds = data.getTotalTime() - (hours * 3600) - (minutes * 60);

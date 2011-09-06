@@ -28,6 +28,7 @@ public class ManifestData
     private String scratchpadContentStr;
     //Change For Random Distractor
     private String randomDistractorStatus;
+    private String forwardOnly;
     
     /**
 	 * @return Returns the adsid.
@@ -299,4 +300,16 @@ public class ManifestData
 	 public void setRandomDistractorStatus(String randomDistractorStatus) {
 		 this.randomDistractorStatus = randomDistractorStatus;
 	 }
+	/**
+	 * @return the forwardOnly
+	 */
+	public String getForwardOnly() {
+		return forwardOnly;
+	}
+	/**
+	 * @param forwardOnly the forwardOnly to set
+	 */
+	public void setForwardOnly(String forwardOnly) {
+		this.forwardOnly = forwardOnly;
+	}
 } 
