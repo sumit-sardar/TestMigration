@@ -62,12 +62,12 @@ public interface AuthenticateStudent extends JdbcControl
      *     capture_method = {captureMethod},
      *     updated_date_time = {timestamp},
      *     last_mseq = {mseq},
-     *     correlation_id = null
+     *     correlation_id = decode({reset_cid}, 'T', null, correlation_id)
      * where
      *      test_roster_id = {testRosterId}::
      */
-    @JdbcControl.SQL(statement = "update  test_roster set  test_completion_status = {status},  restart_number = {restartNumber},  start_date_time = nvl(start_date_time,{timestamp}),  last_login_date_time = {timestamp},  capture_method = {captureMethod},  updated_date_time = {timestamp},  last_mseq = {mseq},  correlation_id = null where  test_roster_id = {testRosterId}")
-    void setRosterCompletionStatus(int testRosterId, String status, String captureMethod, int restartNumber, Date timestamp, int mseq);
+    @JdbcControl.SQL(statement = "update  test_roster set  test_completion_status = {status},  restart_number = {restartNumber},  start_date_time = nvl(start_date_time,{timestamp}),  last_login_date_time = {timestamp},  capture_method = {captureMethod},  updated_date_time = {timestamp},  last_mseq = {mseq},  correlation_id = decode({reset_cid}, 'T', null, correlation_id) where  test_roster_id = {testRosterId}")
+    void setRosterCompletionStatus(int testRosterId, String status, String captureMethod, int restartNumber, Date timestamp, int mseq, String reset_cid);
 
     /**
      * @jc:sql statement::

@@ -373,7 +373,7 @@ public class StudentLoginImpl implements StudentLogin
 	                    tutorial.setTutorialUrl(tutorialResource);
 	                    tutorial.setDeliverTutorial(new BigInteger(wasTutorialTaken ? "0":"1"));
 	                }
-	                authenticator.setRosterCompletionStatus(testRosterId, Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS, "ON", loginResponse.getRestartNumber().intValue() + 1, new Date(), -1);
+	                authenticator.setRosterCompletionStatus(testRosterId, Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS, "ON", loginResponse.getRestartNumber().intValue() + 1, new Date(), -1, "T");
 	            }
 	        } catch (AuthenticationFailureException afe) {
 	            response = TmssvcResponseDocument.Factory.newInstance();
