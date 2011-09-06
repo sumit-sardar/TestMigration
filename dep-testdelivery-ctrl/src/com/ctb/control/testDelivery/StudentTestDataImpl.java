@@ -592,7 +592,7 @@ public class StudentTestDataImpl implements StudentTestData
         }
     }
     
-    private  int processSubtestEvents(String testRosterId, RosterSubtestStatus [] statusList, String itemSetId, Lev [] leva, Lsv [] lsva, int mseq, String accessCode) throws TestDeliveryException, InvalidTestRosterIdException, InvalidItemSetIdException, InvalidSubtestEventException {
+    private  int processSubtestEvents(String testRosterId, RosterSubtestStatus [] statusList, String itemSetId, Lev [] leva, Lsv [] lsva, int mseq, int cid, String accessCode) throws TestDeliveryException, InvalidTestRosterIdException, InvalidItemSetIdException, InvalidSubtestEventException {
         boolean timeout = false;
         int nextSubtestId = -1;
         if(lsva != null) {
@@ -674,6 +674,12 @@ public class StudentTestDataImpl implements StudentTestData
             for(int j=0;j<leva.length;j++) {
                 Lev lev = leva[j];
                 if (lev.getE().equals(LmsEventType.LMS_INITIALIZE)) {
+                	Integer cidInRoster = saver.getCorrelationIdForRoster(Integer.valueOf(testRosterId));
+                    if (cidInRoster == null) {
+                        saver.setCorrelationIdForRoster(Integer.valueOf(testRosterId), new Integer(cid));
+                    } else if (cidInRoster.intValue() != cid) {
+                        throw new InvalidCorrelationIdException();
+                    }
                     OASLogger.getLogger("TestDelivery").debug("handling lms initialize message");
                     startSubtest(Integer.parseInt(testRosterId), statusList, Integer.parseInt(itemSetId), mseq);
                 } else if (lev.getE().equals(LmsEventType.LMS_FINISH)) {
@@ -710,9 +716,10 @@ public class StudentTestDataImpl implements StudentTestData
                 //validate correlation
                 Integer cidInRoster = saver.getCorrelationIdForRoster(Integer.valueOf(testRosterId));
                 
-                if (cidInRoster == null)
-                    saver.setCorrelationIdForRoster(Integer.valueOf(testRosterId), new Integer(cid));
-                else if (cidInRoster.intValue() != cid)
+                //if (cidInRoster == null)
+                //    saver.setCorrelationIdForRoster(Integer.valueOf(testRosterId), new Integer(cid));
+                //else 
+                if (cidInRoster.intValue() != cid)
                     throw new InvalidCorrelationIdException();
                 
                 // must check subtest status now that response events originate from client, to prevent spoofing
