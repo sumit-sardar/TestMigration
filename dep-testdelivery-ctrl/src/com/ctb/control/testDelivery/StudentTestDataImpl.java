@@ -722,6 +722,7 @@ public class StudentTestDataImpl implements StudentTestData
                          foundItemSet = true;
                          String status = statusList[i].getTestCompletionStatus();
                          if(status.equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS)) {
+                        	 status = Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS;
                         	 statusList[i].setSubtestCompletionStatus(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS);
                         	 saver.updateSubtestCompletionStatus(Integer.parseInt(testRosterId), Integer.parseInt(itemSetId), status, status);
                         	 authenticator.setRosterCompletionStatus(Integer.parseInt(testRosterId), status, "ON", mSeq%1000000, new Date(System.currentTimeMillis()), mSeq);
