@@ -719,7 +719,7 @@ public class StudentTestDataImpl implements StudentTestData
                 //if (cidInRoster == null)
                 //    saver.setCorrelationIdForRoster(Integer.valueOf(testRosterId), new Integer(cid));
                 //else 
-                if (cidInRoster.intValue() != cid)
+                if (cidInRoster != null && cidInRoster.intValue() != cid)
                     throw new InvalidCorrelationIdException();
                 
                 // must check subtest status now that response events originate from client, to prevent spoofing
