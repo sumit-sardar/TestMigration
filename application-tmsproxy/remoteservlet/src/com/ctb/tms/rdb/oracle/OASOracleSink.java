@@ -20,8 +20,8 @@ import com.ctb.tms.rdb.OASRDBSink;
 
 public class OASOracleSink implements OASRDBSink {	
 	private static final String STORE_RESPONSE_SQL = "insert into item_response (  item_response_id,  test_roster_id,  \t\titem_set_id,  \t\titem_id,  \t\tresponse,  \t\tresponse_method,  \t\tresponse_elapsed_time,  \t\tresponse_seq_num,  \t\text_answer_choice_id,  \tstudent_marked,  \t\tcreated_by) \tvalues  (SEQ_ITEM_RESPONSE_ID.NEXTVAL,  ?,  ?,  ?,  ?,  'M',  ?,  ?,  ?,  ?,  6)";
-	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set completion_status = ? where test_roster_id = ? and item_set_id = ?";
-	private static final String ROSTER_STATUS_SQL = "update  test_roster set  test_completion_status = ?,  restart_number = ?,  start_date_time = nvl(start_date_time,?),  last_login_date_time = ?, updated_date_time = ?,  completion_date_time = ?, last_mseq = ?,  correlation_id = ? where  test_roster_id = ?";
+	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set completion_status = ?, raw_score = ?, max_score = ?, unscored = ? where test_roster_id = ? and item_set_id = ?";
+	private static final String ROSTER_STATUS_SQL = "update  test_roster set  test_completion_status = ?,  restart_number = ?,  start_date_time = nvl(start_date_time,?),  last_login_date_time = ?, updated_date_time = ?,  completion_date_time = ?, last_mseq = ?,  correlation_id = ?, random_distractor_seed = ? where  test_roster_id = ?";
 	
 	static Logger logger = Logger.getLogger(OASOracleSink.class);
 	
@@ -116,8 +116,11 @@ public class OASOracleSink implements OASRDBSink {
     			ManifestData subtest = subtests[i];
     			stmt1 = conn.prepareStatement(SUBTEST_STATUS_SQL);
     			stmt1.setString(1, subtest.getCompletionStatus());
-    			stmt1.setString(2, testRosterId);
-    			stmt1.setInt(3, subtest.getId());
+    			stmt1.setInt(2, subtest.getRawScore());
+    			stmt1.setInt(3, subtest.getMaxScore());
+    			stmt1.setInt(4, subtest.getUnscored());
+    			stmt1.setString(5, testRosterId);
+    			stmt1.setInt(6, subtest.getId());
     			stmt1.executeUpdate();
     			logger.debug("***** Updated subtest status for roster: " + testRosterId + ", subtest: " + subtest.getId() + ". Status is: " + subtest.getCompletionStatus());
     		}
@@ -131,7 +134,8 @@ public class OASOracleSink implements OASRDBSink {
     		stmt1.setDate(6, manifest.getRosterEndTime());
     		stmt1.setInt(7, manifest.getRosterLastMseq());
     		stmt1.setInt(8, manifest.getRosterCorrelationId());
-    		stmt1.setString(9, testRosterId);
+    		stmt1.setInt(9, manifest.getRandomDistractorSeed());
+    		stmt1.setString(10, testRosterId);
     		stmt1.executeUpdate();
 			logger.debug("***** Updated roster status for roster: " + testRosterId + ". Status is: " + manifest.getRosterCompletionStatus());
 		} catch (Exception e) {

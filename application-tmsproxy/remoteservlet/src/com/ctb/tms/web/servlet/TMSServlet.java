@@ -1,6 +1,7 @@
 package com.ctb.tms.web.servlet;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.Date;
@@ -14,14 +15,16 @@ import javax.servlet.http.HttpServletResponse;
 import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Rv;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv.CmiCore.Exit;
 import noNamespace.AdssvcResponseDocument;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.NextSco;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.Status;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.WriteToAuditFile;
 import noNamespace.LmsEventType;
+import noNamespace.StudentFeedbackDataDocument;
+import noNamespace.StudentFeedbackDataDocument.StudentFeedbackData;
 import noNamespace.TmssvcRequestDocument;
 import noNamespace.TmssvcRequestDocument.TmssvcRequest.LoginRequest;
 import noNamespace.TmssvcResponseDocument;
@@ -38,7 +41,6 @@ import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.exception.testDelivery.InvalidCorrelationIdException;
-import com.ctb.tms.exception.testDelivery.TestSessionCompletedException;
 import com.ctb.tms.nosql.ADSNoSQLSink;
 import com.ctb.tms.nosql.ADSNoSQLSource;
 import com.ctb.tms.nosql.NoSQLStorageFactory;
@@ -108,6 +110,8 @@ public class TMSServlet extends HttpServlet {
 	        }
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			result = ServletUtils.ERROR;
+			ServletUtils.writeResponse(response, result);
 		}
 	}
 
@@ -135,9 +139,36 @@ public class TMSServlet extends HttpServlet {
 		return null;
 	}
 
-	private String feedback(String xml) {
-		// TODO: implement feedback response
-		return null;
+	private String feedback(String xml) throws XmlException, IOException, ClassNotFoundException {
+		// TODO (complete): implement feedback response
+		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
+		AdssvcRequest saveRequest = document.getAdssvcRequest();
+
+        StudentFeedbackDataDocument response = StudentFeedbackDataDocument.Factory.newInstance();
+        StudentFeedbackData feedbackResponse = response.addNewStudentFeedbackData();
+        
+        String lsid = saveRequest.getGetFeedbackData().getLsid();
+        String testRosterId = lsid.substring(0, lsid.indexOf(":"));
+        
+        Manifest manifest = oasSource.getManifest(testRosterId);
+    	ManifestData[] feedback = manifest.getManifest();
+
+        feedbackResponse.addNewTestingSessionData().setStudentName(manifest.getStudentName());
+        feedbackResponse.addNewTitle().setId(String.valueOf(feedback[0].getScoParentId()));
+        feedbackResponse.getTitle().setName(feedback[0].getTestTitle());
+        feedbackResponse.setLsid(lsid);
+        feedbackResponse.setStatus("OK");
+        feedbackResponse.addNewLms();
+        for(int i=0;i<feedback.length;i++) {
+            feedbackResponse.getTitle().addNewSco().setId(String.valueOf(feedback[i].getId()));
+            feedbackResponse.getTitle().getScoArray()[i].setTitle(feedback[i].getTitle());
+            feedbackResponse.getTitle().getScoArray()[i].setSeq(String.valueOf(feedback[i].getScoOrder()));
+            feedbackResponse.getLms().addNewSco().setScid(String.valueOf(feedback[i].getId()));
+            feedbackResponse.getLms().getScoArray()[i].addNewLsv().addNewCmiCore().setScoreRaw(new BigDecimal(feedback[i].getRawScore()));
+            feedbackResponse.getLms().getScoArray()[i].getLsv().getCmiCore().setScoreMax(new BigDecimal(feedback[i].getMaxScore()));
+            feedbackResponse.getLms().getScoArray()[i].getLsv().addNewExtCore().setNumberOfUnscoredItems(new BigInteger(String.valueOf(feedback[i].getUnscored())));
+        }
+        return response.xmlText();
 	}
 
 	private String save(HttpServletResponse response, String xml) throws XmlException, IOException, ClassNotFoundException, InvalidCorrelationIdException {
@@ -165,6 +196,7 @@ public class TMSServlet extends HttpServlet {
 		    	for(j=0;j<manifestData.length;j++) {
 		    		if(manifestData[j].getId() == Integer.parseInt(tsd.getScid())) {
 		    			nextScoIndex = j+1;
+		    			// TODO: fix next subtest selection for TABE auto-locator
 		    			break;
 		    		}
 		    	}
@@ -194,6 +226,33 @@ public class TMSServlet extends HttpServlet {
 			    
 			    if(tsd.getLsvArray() != null && tsd.getLsvArray().length > 0) {
 			    	// test events
+			    	Lsv[] lsva = tsd.getLsvArray();
+			    	// TODO (complete): capture subtest raw scores against manifest record, persist to backing store
+			    	int raw = -1;
+		            int max = -1;
+		            int unscored = -1;
+		            boolean timeout = false;
+		            for(int k=0;k<lsva.length;i++) {
+		                Lsv lsv = lsva[k];
+		                if(lsv.getCmiCore() != null) {
+		                    if(lsv.getCmiCore().getExit() != null) {
+		                        timeout = lsv.getCmiCore().getExit().equals(Exit.TIME_OUT);
+		                    }
+		                    // collect subtest score stuff here, put in SISS
+		                    if(lsv.getCmiCore().getScoreRaw() != null) {
+		                        raw = lsv.getCmiCore().getScoreRaw().intValue();
+		                        max = lsv.getCmiCore().getScoreMax().intValue();
+		                    }
+		                }
+		                if(lsv.getExtCore() != null && lsv.getExtCore().getNumberOfUnscoredItems() != null) {
+		                    unscored = lsv.getExtCore().getNumberOfUnscoredItems().intValue();
+		                }
+		            }
+		            if(raw > -1 && max > -1 && unscored > -1) {
+		                manifestData[j].setRawScore(raw);
+		                manifestData[j].setMaxScore(max);
+		                manifestData[j].setUnscored(unscored);
+		            }
 			    }
 			    
 			    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {
@@ -240,8 +299,6 @@ public class TMSServlet extends HttpServlet {
 	    
         // TODO (complete): implement correlation, sequence and subtest/roster status checks for security
         // TODO (complete): update roster status, lastMseq, restartNumber, start/end times, etc. on test events
-        // TODO: handle TABE auto-locator
-        // TODO: handle random distractor seed
 		return responseDocument.xmlText();
 	}
 
@@ -293,12 +350,15 @@ public class TMSServlet extends HttpServlet {
 		}
 		int newRestartCount = restartCount + 1;
 		loginResponse.setRestartNumber(BigInteger.valueOf(newRestartCount));
+        // TODO (complete): handle random distractor seed
+		loginResponse.setRandomDistractorSeedNumber(BigInteger.valueOf(manifest.getRandomDistractorSeed()));
 		manifest.setRosterRestartNumber(newRestartCount);
 		if(manifest.getRosterStartTime() == null) {
 			manifest.setRosterStartTime(new Date(System.currentTimeMillis()));
 		}
 		manifest.setRosterCompletionStatus("IP");
 		manifest.setRosterCorrelationId(0);
+		manifest.setStudentName(rd.getAuthData().getStudentFirstName() + " " + rd.getAuthData().getStudentLastName());
 		oasSink.putManifestData(testRosterId, manifest);
 		oasSink.putRosterData(creds, rd);
 		return response.xmlText();

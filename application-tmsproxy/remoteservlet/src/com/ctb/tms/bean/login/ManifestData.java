@@ -30,9 +30,29 @@ public class ManifestData implements Serializable
     private String accessCode;
     transient private Clob scratchpadContent;
     private String scratchpadContentStr;
-    //Change For Random Distractor
     private String randomDistractorStatus;
+    private int rawScore;
+    private int maxScore;
+    private int unscored;
     
+	public int getRawScore() {
+		return rawScore;
+	}
+	public void setRawScore(int rawScore) {
+		this.rawScore = rawScore;
+	}
+	public int getMaxScore() {
+		return maxScore;
+	}
+	public void setMaxScore(int maxScore) {
+		this.maxScore = maxScore;
+	}
+	public int getUnscored() {
+		return unscored;
+	}
+	public void setUnscored(int unscored) {
+		this.unscored = unscored;
+	}
 	/**
 	 * @return Returns the adsid.
 	 */
