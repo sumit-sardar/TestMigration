@@ -2,7 +2,8 @@ package com.ctb.tms.nosql.coherence;
 
 import java.io.IOException;
 
-import com.bea.xml.XmlException;
+import org.apache.xmlbeans.XmlException;
+
 import com.ctb.tms.nosql.ADSNoSQLSource;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;

@@ -15,6 +15,27 @@ public class AccommodationsData
 	private String answerFontColor;
 	private float answerFontSize;
     private String highlighter;
+    private String maskingRuler;
+    private String auditoryCalming;
+    private byte[] musicFileData;
+    private Integer musicFileId;
+    private String magnifyingGlass;//Added for magnifier
+    private String extendedTime;
+    private String maskingTool;//Added for masking Answers
+    
+  
+	/**
+	 * @return the musicFileId
+	 */
+	public Integer getMusicFileId() {
+		return musicFileId;
+	}
+	/**
+	 * @param musicFileId the musicFileId to set
+	 */
+	public void setMusicFileId(Integer musicFileId) {
+		this.musicFileId = musicFileId;
+	}
     
     /**
 	 * @return Returns the highlighter.
@@ -173,4 +194,78 @@ public class AccommodationsData
 	public void setUntimedTest(String untimedTest) {
 		this.untimedTest = untimedTest;
 	}
+	
+	/**
+	 * @return the maskingRuler
+	 */
+	public String getMaskingRuler() {
+		return maskingRuler;
+	}
+	/**
+	 * @param maskingRuler the maskingRuler to set
+	 */
+	public void setMaskingRuler(String maskingRuler) {
+		this.maskingRuler = maskingRuler;
+	}
+	/**
+	 * @return the auditoryCalming
+	 */
+	public String getAuditoryCalming() {
+		return auditoryCalming;
+	}
+	/**
+	 * @param auditoryCalming the auditoryCalming to set
+	 */
+	public void setAuditoryCalming(String auditoryCalming) {
+		this.auditoryCalming = auditoryCalming;
+	}
+	/**
+	 * @return the musicFileData
+	 */
+	public byte[] getMusicFileData() {
+		return musicFileData;
+	}
+	/**
+	 * @param musicFileData the musicFileData to set
+	 */
+	public void setMusicFileData(byte[] musicFileData) {
+		this.musicFileData = musicFileData;
+	}
+	/**
+	 * @return the magnifyingGlass
+	 */
+	public String getMagnifyingGlass() {
+		return magnifyingGlass;
+	}
+	/**
+	 * @param magnifyingGlass the magnifyingGlass to set
+	 */
+	public void setMagnifyingGlass(String magnifyingGlass) {
+		this.magnifyingGlass = magnifyingGlass;
+	}
+	/**
+	 * @return the extendedTime
+	 */
+	public String getExtendedTime() {
+		return extendedTime;
+	}
+	/**
+	 * @param extendedTime the extendedTime to set
+	 */
+	public void setExtendedTime(String extendedTime) {
+		this.extendedTime = extendedTime;
+	}
+	/**
+	 * @return the maskingTool
+	 */
+	public String getMaskingTool() {
+		return maskingTool;
+	}
+	/**
+	 * @param maskingTool the maskingTool to set
+	 */
+	public void setMaskingTool(String maskingTool) {
+		this.maskingTool = maskingTool;
+	}
+
 } 

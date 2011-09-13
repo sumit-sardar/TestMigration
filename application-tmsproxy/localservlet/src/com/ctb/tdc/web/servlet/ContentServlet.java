@@ -20,10 +20,10 @@ import noNamespace.AdssvcResponseDocument;
 import noNamespace.ErrorDocument;
 
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlException;
 import org.bouncycastle.util.encoders.Base64;
 import org.jdom.output.XMLOutputter;
 
-import com.bea.xml.XmlException;
 import com.ctb.tdc.web.exception.DecryptionException;
 import com.ctb.tdc.web.exception.HashMismatchException;
 import com.ctb.tdc.web.exception.TMSException;

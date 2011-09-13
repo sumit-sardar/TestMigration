@@ -27,12 +27,13 @@
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/libthrift-0.5.0.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/log4j.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/perf4j-0.9.12.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/Schemas.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/speech.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/uuid-3.2.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="remoteservlet/generated"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/coherence.jar"/>
+	<classpathentry kind="lib" path="C:/bea/wlserver_10.3/server/lib/wlclient.jar"/>
+	<classpathentry kind="lib" path="C:/bea/wlserver_10.3/server/lib/wljmsclient.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/xbean.jar"/>
+	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/schemas.jar"/>
 	<classpathentry kind="output" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/classes"/>
 </classpath>

@@ -14,6 +14,7 @@ public class ItemResponseData
     private int responseElapsedTime;
     private int eid;
     private int score;
+    private String answerArea;
     
 	/**
 	 * @param itemId The itemId to set.
@@ -135,5 +136,19 @@ public class ItemResponseData
 	public void setConstructedResponse(String constructedResponse) {
 		this.constructedResponse = constructedResponse;
 	}
+	
+	/**
+	 * @return the answerArea
+	 */
+	public String getAnswerArea() {
+		return answerArea;
+	}
+	/**
+	 * @param answerArea the answerArea to set
+	 */
+	public void setAnswerArea(String answerArea) {
+		this.answerArea = answerArea;
+	}
+
 
 } 

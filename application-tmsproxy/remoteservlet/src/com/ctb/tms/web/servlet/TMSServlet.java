@@ -1,12 +1,15 @@
 package com.ctb.tms.web.servlet;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ResourceBundle;
 
+import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,8 +35,9 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData;
 
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlException;
 
-import com.bea.xml.XmlException;
+import com.ctb.tdc.web.utils.ContentFile;
 import com.ctb.tdc.web.utils.ServletUtils;
 import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.Manifest;
@@ -50,6 +54,7 @@ import com.ctb.tms.rdb.ADSRDBSink;
 import com.ctb.tms.rdb.ADSRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.ctb.tms.util.Constants;
+import com.ctb.tms.util.JMSUtils;
 
 public class TMSServlet extends HttpServlet {
 
@@ -101,8 +106,11 @@ public class TMSServlet extends HttpServlet {
 	            result = uploadAuditFile(xml);
 	        else if (method != null && method.startsWith(ServletUtils.WRITE_TO_AUDIT_FILE_METHOD))
 	            result = writeToAuditFile(xml);
-	        else
+	        else if(method.toLowerCase().indexOf("mp3") >= 0) {
+	        	getMp3(request, response);
+	        } else {
 	            result = ServletUtils.ERROR;   
+	        }
 			
 	        // return response to client
 	        if (result != null) {
@@ -114,6 +122,24 @@ public class TMSServlet extends HttpServlet {
 			ServletUtils.writeResponse(response, result);
 		}
 	}
+	
+	private void getMp3(HttpServletRequest request, HttpServletResponse response) throws IOException
+    {   
+		byte [] musicFile = null;
+		response.setContentType("audio/mpeg3");
+		
+		try {
+			String musicId = request.getParameter("musicId");
+			String resource = request.getRealPath("/resources/audio" + musicId + ".mp3");
+		    musicFile = ContentFile.readFromFile(resource);
+			OutputStream stream = response.getOutputStream();
+    		stream.write(musicFile);
+    		response.flushBuffer();
+    		stream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
 
     private String writeToAuditFile(String xml) throws XmlException {
     	AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
@@ -172,6 +198,8 @@ public class TMSServlet extends HttpServlet {
 	}
 
 	private String save(HttpServletResponse response, String xml) throws XmlException, IOException, ClassNotFoundException, InvalidCorrelationIdException {
+		logger.debug(xml);
+		
 		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
 		AdssvcRequest saveRequest = document.getAdssvcRequest();
 		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
@@ -289,6 +317,9 @@ public class TMSServlet extends HttpServlet {
 		                //TestDeliveryContextListener.enqueueRoster(rosterId);
 			    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
 			    		manifest.setRosterEndTime(new Date(System.currentTimeMillis()));
+			    		if("T".equals(manifestData[j].getScorable())) {
+			    			JMSUtils.sendMessage(rosterId);
+			            }
 			    	}
 			    }
 			    // always update manifest to override interrupter via write-behind if still receiving events
@@ -337,10 +368,13 @@ public class TMSServlet extends HttpServlet {
 	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS) ||
 	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
 	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {
-                	ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
+                	
                 	Tsd[] irt = oasSource.getItemResponses(testRosterId);
-                	ItemResponseData [] ird = RosterData.generateItemResponseData(manifesta[i], irt);
-                    RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
+                	if(irt != null && irt.length > 0) {
+	                	ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
+	                	ItemResponseData [] ird = RosterData.generateItemResponseData(manifesta[i], irt);
+	                    RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
+                	}
                     gotRestart = true;
                 }
 	        }
@@ -361,6 +395,9 @@ public class TMSServlet extends HttpServlet {
 		manifest.setStudentName(rd.getAuthData().getStudentFirstName() + " " + rd.getAuthData().getStudentLastName());
 		oasSink.putManifestData(testRosterId, manifest);
 		oasSink.putRosterData(creds, rd);
+		
+		logger.debug(response.xmlText());
+		
 		return response.xmlText();
 	}
 	
@@ -425,8 +462,8 @@ public class TMSServlet extends HttpServlet {
 	}
 
 	private String getMethod(HttpServletRequest request) {
-    	String URI = request.getRequestURI();
-    	String result = URI.substring(URI.lastIndexOf("/") + 1);
+    	String uri = request.getRequestURI();
+    	String result = uri.substring(uri.lastIndexOf("/") + 1);
 		if(result.startsWith(ServletUtils.SAVE_METHOD)) {
 			String requestXML = request.getParameter("requestXML");
 			if(requestXML.indexOf("adssvc_request") >= 0) {

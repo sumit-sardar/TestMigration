@@ -20,7 +20,7 @@ public class Manifest implements Serializable {
     private int rosterRestartNumber;
     private String studentName;
     private Integer randomDistractorSeed;
-    
+
 	public Integer getRandomDistractorSeed() {
 		if(this.randomDistractorSeed == null) {
 			this.randomDistractorSeed = generateRandomNumber();

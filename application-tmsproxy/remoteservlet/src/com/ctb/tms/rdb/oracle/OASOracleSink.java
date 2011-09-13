@@ -20,6 +20,8 @@ import com.ctb.tms.rdb.OASRDBSink;
 
 public class OASOracleSink implements OASRDBSink {	
 	private static final String STORE_RESPONSE_SQL = "insert into item_response (  item_response_id,  test_roster_id,  \t\titem_set_id,  \t\titem_id,  \t\tresponse,  \t\tresponse_method,  \t\tresponse_elapsed_time,  \t\tresponse_seq_num,  \t\text_answer_choice_id,  \tstudent_marked,  \t\tcreated_by) \tvalues  (SEQ_ITEM_RESPONSE_ID.NEXTVAL,  ?,  ?,  ?,  ?,  'M',  ?,  ?,  ?,  ?,  6)";
+	private static final String DELETE_CR_RESPONSE_SQL = "delete from item_response_cr where test_roster_id = ? and item_set_id = ? and item_id = ?";
+	private static final String STORE_CR_RESPONSE_SQL = "insert into item_response_cr (  test_roster_id,  item_set_id, item_id, constructed_response) values (?,  ?,  ?,  ?)";
 	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set completion_status = ?, raw_score = ?, max_score = ?, unscored = ? where test_roster_id = ? and item_set_id = ?";
 	private static final String ROSTER_STATUS_SQL = "update  test_roster set  test_completion_status = ?,  restart_number = ?,  start_date_time = nvl(start_date_time,?),  last_login_date_time = ?, updated_date_time = ?,  completion_date_time = ?, last_mseq = ?,  correlation_id = ?, random_distractor_seed = ? where  test_roster_id = ?";
 	
@@ -41,6 +43,7 @@ public class OASOracleSink implements OASRDBSink {
 	                    String xmlResponse = ist.getRvArray(0).getVArray(0).xmlText();
 	                    String response = "";
 	                    String studentMarked = ist.getMrk() ? "T" : "F";
+	                    String audioItem = ist.getAudioItem() ? "T" : "F";
 	                    if(xmlResponse != null && xmlResponse.length() > 0) {
 	                        // strip xml
 	                        int start = xmlResponse.indexOf(">");
@@ -149,8 +152,38 @@ public class OASOracleSink implements OASRDBSink {
 		}
 	}
 	
-	private static void storeCRResponse(Connection conn, int testRosterId, int subtestId, String itemId, String response, float duration, BigInteger mseq, String studentMarked) {
-		// TODO: implement CR response persistence
+	private static void storeCRResponse(Connection conn, int testRosterId, int itemSetId, String itemId, String response, float duration, BigInteger mseq, String studentMarked) throws Exception {
+		PreparedStatement stmt1 = null;
+    	try {
+			stmt1 = conn.prepareStatement(DELETE_CR_RESPONSE_SQL);
+			stmt1.setInt(1, testRosterId);
+			stmt1.setInt(2, itemSetId);
+			stmt1.setString(3, itemId);
+			
+			stmt1.executeUpdate();
+			
+			stmt1 = conn.prepareStatement(STORE_CR_RESPONSE_SQL);
+			stmt1.setInt(1, testRosterId);
+			stmt1.setInt(2, itemSetId);
+			stmt1.setString(3, itemId);
+			stmt1.setString(4, response);
+
+			stmt1.executeUpdate();
+			//logger.info("$$$$$ Stored CR response record in DB for roster " + testRosterId + ", mseq " + mseq);
+		} catch (Exception e) {
+			if(e.getMessage().indexOf("unique constraint") >= 0 ) {
+				// do nothing, dupe response
+			} else {
+				e.printStackTrace();
+				throw(e);
+			}
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
 	}
 
 	public void putActiveRosters(Connection con, StudentCredentials[] credsA) {

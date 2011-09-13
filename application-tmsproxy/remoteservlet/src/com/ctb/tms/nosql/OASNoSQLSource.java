@@ -4,7 +4,8 @@ import java.io.IOException;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
-import com.bea.xml.XmlException;
+import org.apache.xmlbeans.XmlException;
+
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;

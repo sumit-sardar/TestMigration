@@ -2,8 +2,6 @@ package com.ctb.tms.nosql.cassandra;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
-
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.Keyspace;
@@ -12,7 +10,9 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.ColumnQuery;
 import me.prettyprint.hector.api.query.QueryResult;
 
-import com.bea.xml.XmlException;
+import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlException;
+
 import com.ctb.tms.nosql.ADSNoSQLSource;
 
 public class ADSHectorSource implements ADSNoSQLSource{

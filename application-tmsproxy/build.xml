@@ -1,11 +1,16 @@
 <?xml version="1.0" ?> 
 <project name="application-tmsproxy" default="war">
 
+	<path id="xmlbean.class.path">
+		<pathelement path="server\apache-tomcat-6.0.29\webapps\ROOT\WEB-INF\lib\xbean.jar"/>
+	</path>
+	
+	<taskdef name="xmlbean" classname="org.apache.xmlbeans.impl.tool.XMLBean" classpathref="xmlbean.class.path"/>
+	
 	<target name="war">
+		<xmlbean schema="schemas" destfile="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/schemas.jar" classpathref="xmlbean.class.path"/>
 		<war destfile="tms.war" webxml="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/web.xml">
 			<fileset dir="server/apache-tomcat-6.0.29/webapps/ROOT/"/>
-			<!-- <lib dir="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib"/>
-			<classes dir="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/classes"/> -->
 		</war>
 	</target>
 	

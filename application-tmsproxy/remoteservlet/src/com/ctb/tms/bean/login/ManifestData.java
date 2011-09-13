@@ -34,7 +34,15 @@ public class ManifestData implements Serializable
     private int rawScore;
     private int maxScore;
     private int unscored;
+    private String forwardOnly;
+    private String scorable;
     
+	public String getScorable() {
+		return scorable;
+	}
+	public void setScorable(String scorable) {
+		this.scorable = scorable;
+	}
 	public int getRawScore() {
 		return rawScore;
 	}
@@ -323,4 +331,18 @@ public class ManifestData implements Serializable
 	 public void setRandomDistractorStatus(String randomDistractorStatus) {
 		 this.randomDistractorStatus = randomDistractorStatus;
 	 }
+	 
+		/**
+		 * @return the forwardOnly
+		 */
+		public String getForwardOnly() {
+			return forwardOnly;
+		}
+		/**
+		 * @param forwardOnly the forwardOnly to set
+		 */
+		public void setForwardOnly(String forwardOnly) {
+			this.forwardOnly = forwardOnly;
+		}
+
 } 
