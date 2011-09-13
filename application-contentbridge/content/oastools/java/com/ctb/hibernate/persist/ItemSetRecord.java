@@ -37,6 +37,7 @@ public class ItemSetRecord {
     private java.util.Date updatedDateTime;
     private String version;
     private Long contentSize;
+    private String forwardOnly;
 
     /**
      * @hibernate.property
@@ -313,6 +314,15 @@ public class ItemSetRecord {
         return contentSize;
     }
     
+    /**
+     * @hibernate.property
+     * column="FORWARD_ONLY"
+     * not-null="true"
+     */
+	public String getForwardOnly() {
+		return forwardOnly;
+	}
+    
     public void setContentSize( Long contentSize_) {
         this.contentSize = contentSize_;
     }
@@ -432,5 +442,9 @@ public class ItemSetRecord {
     public void setVersion(String version) {
         this.version = version;
     }
+
+	public void setForwardOnly(String forwardOnly) {
+		this.forwardOnly = forwardOnly;
+	}
 
 }

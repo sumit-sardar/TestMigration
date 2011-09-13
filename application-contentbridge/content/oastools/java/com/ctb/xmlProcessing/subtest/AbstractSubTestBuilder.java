@@ -31,6 +31,7 @@ public abstract class AbstractSubTestBuilder implements XMLConstants {
         String scoreLookupId;
         String scoreTypeCode;
         String contentArea;
+        String forwardOnly = "F";
 
         boolean isTD = rootElement.getName().equals( ELEMENT_NAME_TD );
         if (!rootElement.getName().equals( ELEMENT_NAME_TS ) && !isTD ) {
@@ -49,8 +50,11 @@ public abstract class AbstractSubTestBuilder implements XMLConstants {
         
         grade = BuilderUtils.extractAttributeOptional(rootElement, GRADE);
         itemSetLevel = BuilderUtils.extractAttributeOptional(rootElement, LEVEL );
-        if ( isTD )
-            timeLimit = BuilderUtils.extractIntegerAttributeMandatory(rootElement, TIME_LIMIT) * 60;
+        if ( isTD ) {
+        	forwardOnly = BuilderUtils.extractAttributeMandatory(rootElement, FORWARD_ONLY);
+        	timeLimit = BuilderUtils.extractIntegerAttributeMandatory(rootElement, TIME_LIMIT) * 60;
+        }
+
         else
         {
             String TSTimeLimit = BuilderUtils.extractAttributeOptional(rootElement, TIME_LIMIT);
@@ -72,7 +76,7 @@ public abstract class AbstractSubTestBuilder implements XMLConstants {
 
         SubTestHolder testHolder = new SubTestHolder(frameworkCode, productDisplayName,
                 extTstItemSetId, testName, version, itemSetLevel, grade, timeLimit, breakTime,
-                itemSetDisplayName, itemSetDescription, itemSetForm, scoreLookupId, scoreTypeCode, contentArea, startItemNumber);
+                itemSetDisplayName, itemSetDescription, itemSetForm, scoreLookupId, scoreTypeCode, contentArea, startItemNumber,forwardOnly);
         
         testHolder.setSample( BuilderUtils.extractAttributeOptional( rootElement, "Type").equals( "sample" ) );
 

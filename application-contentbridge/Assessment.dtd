@@ -72,6 +72,7 @@ CHANGE HISTORY:
 	Form 			CDATA #REQUIRED
 	StartItemNumber		CDATA #IMPLIED
 	TimeLimit 		CDATA #IMPLIED
+	ForwardOnly (T | F) "F"
 >
 <!-- ===========================================================================
 	Element: RandomizationBlock
@@ -329,7 +330,7 @@ answer -->
 
 <!ELEMENT Manipulative EMPTY>
 <!ATTLIST Manipulative
-    	Type 		(oneeighth_inch_ruler | cm_ruler | mm_ruler | half_inch_ruler | protractor | standard_calculator | formula_card | FCAT_formula_card | TN_formula_card | straight_edge |scientific_calculator | scratchpad) #REQUIRED
+    	Type 		(oneeighth_inch_ruler | cm_ruler | mm_ruler | half_inch_ruler | protractor | standard_calculator | formula_card | FCAT_formula_card | TN_formula_card | straight_edge |scientific_calculator | scratchpad | masking_ruler) #REQUIRED
 	Provision 	(required | accommodated ) "required"
 >
 

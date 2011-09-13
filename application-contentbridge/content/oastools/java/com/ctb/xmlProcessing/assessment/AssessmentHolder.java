@@ -30,6 +30,7 @@ public class AssessmentHolder implements ItemSet {
     private List subTestIds = new ArrayList();
     public Boolean isAddOn = Boolean.FALSE;
     private List itemSampleSets = new ArrayList();
+    private String forwardOnly = "F";
 
 
     public AssessmentHolder(Long productId, String frameworkCode, String productDisplayName,
@@ -156,4 +157,18 @@ public class AssessmentHolder implements ItemSet {
     public String getContentArea() {
         return contentArea;
     }
+
+	/**
+	 * @return the forwardOnly
+	 */
+	public String getForwardOnly() {
+		return forwardOnly;
+	}
+
+	/**
+	 * @param forwardOnly the forwardOnly to set
+	 */
+	public void setForwardOnly(String forwardOnly) {
+		this.forwardOnly = forwardOnly;
+	}
 }

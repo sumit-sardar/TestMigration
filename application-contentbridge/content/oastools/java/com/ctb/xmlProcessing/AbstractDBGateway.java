@@ -107,6 +107,7 @@ public class AbstractDBGateway {
         itemSet.setVersion(itemSetHolder.getVersion());
         itemSet.setItemSetType(itemSetType);
         itemSet.setItemSetId(itemSetId);
+        itemSet.setForwardOnly(itemSetHolder.getForwardOnly());
         if ( itemSetHolder instanceof SubTestHolder )
         {
             SubTestHolder aSubTestHolder = ( SubTestHolder )itemSetHolder;

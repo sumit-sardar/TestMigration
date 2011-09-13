@@ -30,5 +30,7 @@ public interface ItemSet {
 	String getProductDisplayName();
 	
 	String getContentArea();
+	
+	String getForwardOnly();
 
 }

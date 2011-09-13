@@ -72,6 +72,7 @@ CHANGE HISTORY:
 	Form 			CDATA #REQUIRED
 	StartItemNumber		CDATA #IMPLIED
 	TimeLimit 		CDATA #IMPLIED
+	ForwardOnly (T | F) "F"
 >
 <!-- ===========================================================================
 	Element: RandomizationBlock
