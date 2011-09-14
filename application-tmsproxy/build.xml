@@ -5,10 +5,32 @@
 		<pathelement path="server\apache-tomcat-6.0.29\webapps\ROOT\WEB-INF\lib\xbean.jar"/>
 	</path>
 	
+	<path id="build.class.path">
+		<fileset dir="server\apache-tomcat-6.0.29\webapps\ROOT\WEB-INF\lib">
+		    <include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+	<path id="source.path">
+		<pathelement path="remoteservlet/src"/>
+		<pathelement path="localservlet/src"/>
+	</path>
+	
 	<taskdef name="xmlbean" classname="org.apache.xmlbeans.impl.tool.XMLBean" classpathref="xmlbean.class.path"/>
 	
-	<target name="war">
-		<xmlbean schema="schemas" destfile="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/schemas.jar" classpathref="xmlbean.class.path"/>
+	<target name="generate">
+			<xmlbean schema="schemas" destfile="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/schemas.jar" classpathref="xmlbean.class.path"/>
+	</target>
+	
+	<target name="build" depends="generate">
+		<javac classpathref="build.class.path" destdir="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/classes">
+			<src path="remoteservlet/src" />
+			<src path="localservlet/src" />
+			<include name="**/*.java" />
+		</javac>
+	</target>
+	
+	<target name="war" depends="build">
 		<war destfile="tms.war" webxml="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/web.xml">
 			<fileset dir="server/apache-tomcat-6.0.29/webapps/ROOT/"/>
 		</war>
