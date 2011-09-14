@@ -154,7 +154,7 @@ set JAVA_OPTS=%JAVA_OPTS% %LOGGING_CONFIG%
 if not "%LOGGING_MANAGER%" == "" goto noJuliManager
 set LOGGING_MANAGER=-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
 :noJuliManager
-set JAVA_OPTS=%JAVA_OPTS% %LOGGING_MANAGER%
+set JAVA_OPTS=-Xms1024m -Xmx2048m %JAVA_OPTS% %LOGGING_MANAGER%
 
 rem ----- Execute The Requested Command ---------------------------------------
 
