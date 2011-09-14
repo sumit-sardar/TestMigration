@@ -25,9 +25,17 @@ public class AuthenticationData implements Serializable
 	private String testAdminStatus;
 	private int testAdminId;
 	private String timeZone;
+	private String lastAccessCode;
 
+
+	public String getLastAccessCode() {
+		return lastAccessCode;
+	}
+	public void setLastAccessCode(String lastAccessCode) {
+		this.lastAccessCode = lastAccessCode;
+	}
+	
 	//Changes for RD 
-
 	private Integer randomDistractorSeedNumber;
 
 	//Change for TTS-Sppech controller

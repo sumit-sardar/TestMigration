@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import sun.misc.BASE64Decoder;
 
+import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.rdb.OASRDBSource;
@@ -76,7 +77,17 @@ public class OASHSQLSource implements OASRDBSource
 		return (RosterData) rosterMap.get(creds);
     }
 	
+	public ManifestData [] getManifest(Connection con, int testRosterId, String testAccessCode) throws Exception {
+		// not properly implemented for HSQLSource
+		return null;
+	}
+	
     public RosterData getRosterData(Connection conn, StudentCredentials creds)  throws Exception {
     	return (RosterData) rosterMap.get(creds);
+    }
+    
+    public RosterData getRosterData(Connection conn, int testRosterId)  throws Exception {
+    	//not correctly implemented for HSQL source
+    	return null;
     }
 } 

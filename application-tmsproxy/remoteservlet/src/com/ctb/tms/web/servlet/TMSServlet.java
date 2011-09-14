@@ -218,6 +218,9 @@ public class TMSServlet extends HttpServlet {
 		        saveResponse.getTsdArray(i).setStatus(Status.OK);
 			    
 	    		Manifest manifest = oasSource.getManifest(rosterId);
+	    		if(manifest.getRosterCompletionStatus() == null) {
+	    			manifest.setRosterCompletionStatus("IP");
+	    		}
 		    	ManifestData[] manifestData = manifest.getManifest();
 		    	int nextScoIndex = 0;
 		    	int j;
@@ -245,6 +248,9 @@ public class TMSServlet extends HttpServlet {
 			            errorTsd.getError().setStatus("invalid_cid");
 			            errorTsd.getError().setErrorElement(tsd.toString());
 			            return responseDocument.xmlText();
+			    	} else if(rosterCid == 0) {
+			    		rosterCid = thisCid;
+			    		manifest.setRosterCorrelationId(thisCid);
 			    	}
 			    	// keep IP status if we're receiving heartbeats or responses
 			    	manifestData[j].setCompletionStatus("IP");

@@ -3,13 +3,16 @@ package com.ctb.tms.nosql.coherence;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
 import com.ctb.tms.bean.login.Manifest;
+import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.rdb.OASRDBSink;
+import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.tangosol.net.cache.CacheStore;
 
@@ -27,8 +30,22 @@ public class ManifestCacheStore implements CacheStore {
 	// ----- CacheStore Interface -----
 
     public Object load(Object oKey) {
-    	// do nothing, response data is write-only
-    	return null;
+    	Connection conn = null;
+    	Manifest result = null;
+    	try {
+	    	OASRDBSource source = RDBStorageFactory.getOASSource();
+	    	conn = source.getOASConnection();
+	    	result = source.getRosterData(conn, Integer.parseInt((String) oKey)).getManifest();
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	} finally {
+    		try {
+    			if(conn != null) conn.close();
+    		} catch (SQLException sqe) {
+    			// do nothing
+    		}
+    	}
+    	return result;
     }
 
     public void store(Object oKey, Object oValue) {
@@ -59,8 +76,32 @@ public class ManifestCacheStore implements CacheStore {
 	}
 
 	public Map loadAll(Collection colKeys) {
-		// do nothing, response data is write-only
-    	return null;
+		Connection conn = null;
+    	Map result = new HashMap(colKeys.size());
+    	try {
+    		Iterator it = colKeys.iterator();
+    		OASRDBSource source = RDBStorageFactory.getOASSource();
+	    	conn = source.getOASConnection();
+    		while(it.hasNext()) {
+    			Object key = it.next();
+		    	Manifest manifest = source.getRosterData(conn, Integer.parseInt((String) key)).getManifest();
+		    	/*ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ObjectOutputStream oos = new ObjectOutputStream(baos);
+				oos.writeObject(rosterData);
+				byte [] bytes = baos.toByteArray();
+				String value = new BASE64Encoder().encode(bytes);*/
+		    	result.put(key, manifest);
+    		}
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	} finally {
+    		try {
+    			if(conn != null) conn.close();
+    		} catch (SQLException sqe) {
+    			// do nothing
+    		}
+    	}
+    	return result;
 	}
 
 	public void storeAll(Map mapEntries) {
