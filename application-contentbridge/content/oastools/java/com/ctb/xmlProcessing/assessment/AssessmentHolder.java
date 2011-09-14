@@ -31,6 +31,7 @@ public class AssessmentHolder implements ItemSet {
     public Boolean isAddOn = Boolean.FALSE;
     private List itemSampleSets = new ArrayList();
     private String forwardOnly = "F";
+    private String adaptive = "F";
 
 
     public AssessmentHolder(Long productId, String frameworkCode, String productDisplayName,
@@ -170,5 +171,19 @@ public class AssessmentHolder implements ItemSet {
 	 */
 	public void setForwardOnly(String forwardOnly) {
 		this.forwardOnly = forwardOnly;
+	}
+
+	/**
+	 * @param adaptive the adaptive to set
+	 */
+	public void setAdaptive(String adaptive) {
+		this.adaptive = adaptive;
+	}
+
+	/**
+	 * @return the adaptive
+	 */
+	public String getAdaptive() {
+		return adaptive;
 	}
 }

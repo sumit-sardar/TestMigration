@@ -73,6 +73,7 @@ CHANGE HISTORY:
 	StartItemNumber		CDATA #IMPLIED
 	TimeLimit 		CDATA #IMPLIED
 	ForwardOnly (T | F) "F"
+	Adaptive (T | F) "F"
 >
 <!-- ===========================================================================
 	Element: RandomizationBlock

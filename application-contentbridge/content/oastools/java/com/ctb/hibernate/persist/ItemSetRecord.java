@@ -38,6 +38,7 @@ public class ItemSetRecord {
     private String version;
     private Long contentSize;
     private String forwardOnly;
+    private String adaptive;
 
     /**
      * @hibernate.property
@@ -322,6 +323,15 @@ public class ItemSetRecord {
 	public String getForwardOnly() {
 		return forwardOnly;
 	}
+	
+    /**
+     * @hibernate.property
+     * column="ADAPTIVE"
+     * not-null="true"
+     */
+	public String getAdaptive() {
+		return adaptive;
+	}
     
     public void setContentSize( Long contentSize_) {
         this.contentSize = contentSize_;
@@ -445,6 +455,14 @@ public class ItemSetRecord {
 
 	public void setForwardOnly(String forwardOnly) {
 		this.forwardOnly = forwardOnly;
+	}
+
+	
+	/**
+	 * @param adaptive the adaptive to set
+	 */
+	public void setAdaptive(String adaptive) {
+		this.adaptive = adaptive;
 	}
 
 }
