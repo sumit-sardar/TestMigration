@@ -34,6 +34,7 @@ public class SystemInfoFile {
 		File f = new File(tdcHome + LOAD_TEST_FOLDER + SYSTEM_INFO_FILE);
 		if(f.exists()){
 			fileExists = true;
+			System.out.println("system info file exists");
 		}		
 		return fileExists;
 	}

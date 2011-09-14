@@ -94,10 +94,10 @@ public class UtilityServlet extends HttpServlet {
         if (method.equals("exit")) {
         	logger.info("Exit called");
         	
-        	//exit();
+        	exit();
         }    
         
-        //logger.debug("UtilityServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+        logger.info("UtilityServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
     }
 	
 	public static synchronized void exit() {
@@ -217,10 +217,6 @@ public class UtilityServlet extends HttpServlet {
         if (tmsAckRequired != null) {
             srvSettings.setTmsAckRequired(tmsAckRequired.equals("true"));
         }
-        String tmsAckMaxLostMessage = request.getParameter("tmsAckMaxLostMessage");
-        if (tmsAckMaxLostMessage != null) {
-            srvSettings.setTmsAckMaxLostMessage(Integer.parseInt(tmsAckMaxLostMessage));
-        }
         String proxyHost = request.getParameter("proxyHost");
         if (proxyHost != null) {
             srvSettings.setProxyHost(proxyHost);
@@ -238,8 +234,7 @@ public class UtilityServlet extends HttpServlet {
             srvSettings.setProxyPassword(proxyPassword);
         }
         
-        memoryCache.setSrvSettings(srvSettings);
-        memoryCache.setStateMap(new HashMap());        
+        memoryCache.setSrvSettings(srvSettings);       
         memoryCache.setLoaded(true);
     }
     
@@ -296,8 +291,12 @@ public class UtilityServlet extends HttpServlet {
 				
 				String filePath = this.RESOURCE_FOLDER_PATH + File.separator  + filename;
 				          
-				int index= filename.lastIndexOf(".");
-                String ext = filename.substring(filename.lastIndexOf(".")+1);
+				//System.out.println("Image filepath : " + filePath);
+                int index= filename.lastIndexOf(".");
+                //System.out.println(index);
+				String ext = filename.substring(filename.lastIndexOf(".")+1);
+				//String ext = filename.substring(filename.lastIndexOf("."),3);
+				//System.out.println("ext" + ext);
 				AssetInfo assetInfo = new AssetInfo();
 				assetInfo.setExt(ext);
 				String mimeType = assetInfo.getMIMEType();
@@ -325,7 +324,8 @@ public class UtilityServlet extends HttpServlet {
 		        myOutput.close();	
 	        
 	 } catch (Exception e) {
-		logger.error("Exception occured in getImage() : " + ServletUtils.printStackTrace(e));
+		logger.error("Exception occured in getImage() : "
+				+ ServletUtils.printStackTrace(e));
 		ServletUtils.writeResponse(response, ServletUtils.ERROR);
 	 }
    }

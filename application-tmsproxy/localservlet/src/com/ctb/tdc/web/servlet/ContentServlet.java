@@ -3,7 +3,9 @@ package com.ctb.tdc.web.servlet;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -20,7 +22,6 @@ import noNamespace.AdssvcResponseDocument;
 import noNamespace.ErrorDocument;
 
 import org.apache.log4j.Logger;
-import org.apache.xmlbeans.XmlException;
 import org.bouncycastle.util.encoders.Base64;
 import org.jdom.output.XMLOutputter;
 
@@ -76,26 +77,25 @@ public class ContentServlet extends HttpServlet {
 		
 		long startTime = System.currentTimeMillis();
 		
-		try {
-			if (method.equals(ServletUtils.GET_SUBTEST_METHOD)) {
-				getSubtest(request, response);
-			} else if (method.equals(ServletUtils.DOWNLOAD_ITEM_METHOD)) {
-				downloadItem(request, response);
-			} else if (method.equals(ServletUtils.GET_ITEM_METHOD)) {
-				getItem(request, response);
-			} else if (method.equals(ServletUtils.GET_IMAGE_METHOD)) {
-				getImage(request, response);
-			} else if (method.equals(ServletUtils.GET_LOCALRESOURCE_METHOD)) {
-			     getLocalResource(request,response);
-			} else {
-				ServletUtils.writeResponse(response, ServletUtils.ERROR);
-			}
-		} catch (Exception e){
-			e.printStackTrace();
+		if (method.equals(ServletUtils.GET_SUBTEST_METHOD)) {
+			getSubtest(request, response);
+		} else if (method.equals(ServletUtils.DOWNLOAD_ITEM_METHOD)) {
+			downloadItem(request, response);
+		} else if (method.equals(ServletUtils.GET_ITEM_METHOD)) {
+			getItem(request, response);
+		} else if (method.equals(ServletUtils.GET_IMAGE_METHOD)) {
+			getImage(request, response);
+		}
+		else if (method.equals(ServletUtils.GET_LOCALRESOURCE_METHOD)) {
+		     getLocalResource(request,response);
+		}else if (method.equals(ServletUtils.GET_MUSIC_DATA_METHOD)) {
+			getMusicData(request,response);
+		}
+		else {
 			ServletUtils.writeResponse(response, ServletUtils.ERROR);
 		}
 		
-		logger.debug("ContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+		logger.info("ContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
 
 	}
 
@@ -162,16 +162,12 @@ public class ContentServlet extends HttpServlet {
 				subtestId = document.getAdssvcRequest().getGetSubtest().getSubtestid();
 				hash = document.getAdssvcRequest().getGetSubtest().getHash();
 				key = document.getAdssvcRequest().getGetSubtest().getKey();
-				if(subtestId == null) {
-					subtestId = ServletUtils.getSubtestId(request);
-				}
 			}
 
 			if (subtestId != null && !"".equals(subtestId.trim()) && !"undefined".equals(subtestId.trim())) {
 				
-				//String filePath = ContentFile.getContentFolderPath() + subtestId + ContentFile.SUBTEST_FILE_EXTENSION;
-				
-				String filePath = subtestId + ContentFile.SUBTEST_FILE_EXTENSION;
+				String filePath = ContentFile.getContentFolderPath() + subtestId
+						+ ContentFile.SUBTEST_FILE_EXTENSION;
 	
 				boolean validHash = false;
 				
@@ -183,29 +179,14 @@ public class ContentServlet extends HttpServlet {
 				
 				if (!validHash) {
 					String result = "";
-					MemoryCache memoryCache = MemoryCache.getInstance();
-		        	int TMSRetryCount = memoryCache.getSrvSettings().getTmsMessageRetryCount();
-		        	int TMSRetryInterval = memoryCache.getSrvSettings().getTmsMessageRetryInterval();
-		        	int expansion = memoryCache.getSrvSettings().getTmsMessageRetryExpansionFactor();
 					AdssvcResponseDocument document = null;
 					ErrorDocument.Error error = null;
-					int i = 1;
-					while (TMSRetryCount > 0) {
-						//logger.info("***** downloadSubtest " + subtestId);
-						result = ServletUtils.httpClientSendRequest(ServletUtils.GET_SUBTEST_METHOD, xml);
-						document = AdssvcResponseDocument.Factory.parse(result);
-						error = document.getAdssvcResponse().getGetSubtest().getError();
-						if (error != null) {
-							if(TMSRetryCount > 1) {
-								//logger.error("Retrying message: " + xml);
-								Thread.sleep(TMSRetryInterval * ServletUtils.SECOND * i);
-							}
-							TMSRetryCount--;
-						} else {
-							TMSRetryCount = 0;
-						}
-						i = i*expansion;
-					}
+
+					//logger.info("***** downloadSubtest " + subtestId);
+					result = ServletUtils.httpClientSendRequest(ServletUtils.GET_SUBTEST_METHOD, xml);
+					document = AdssvcResponseDocument.Factory.parse(result);
+					error = document.getAdssvcResponse().getGetSubtest().getError();
+
 					if (error != null) {
 						throw new TMSException(error.getErrorDetail());
 					}
@@ -223,10 +204,7 @@ public class ContentServlet extends HttpServlet {
 				myOutput.write(decryptedContent);
 				myOutput.flush();
 				myOutput.close();
-			} else {
-				logger.debug("*****  No subtest id provided!");
-				logger.debug(xml);
-			}
+			} 
 		}
 		catch (HashMismatchException e) {
 			logger.error("Exception occured in getSubtest("+subtestId+") : "
@@ -286,9 +264,8 @@ public class ContentServlet extends HttpServlet {
 			}
 		
 			if (itemId != null && !"".equals(itemId.trim())) {
-				//String filePath = ContentFile.getContentFolderPath() + itemId + ContentFile.ITEM_FILE_EXTENSION;
-				
-				String filePath = itemId + ContentFile.ITEM_FILE_EXTENSION;
+				String filePath = ContentFile.getContentFolderPath() + itemId
+						+ ContentFile.ITEM_FILE_EXTENSION;
 				
 				boolean hashValid = false;
 				try {
@@ -298,32 +275,13 @@ public class ContentServlet extends HttpServlet {
 				}
 				
 				if (!hashValid) {
-					MemoryCache memoryCache = MemoryCache.getInstance();
-		        	int TMSRetryCount = memoryCache.getSrvSettings().getTmsMessageRetryCount();
-		        	int TMSRetryInterval = memoryCache.getSrvSettings().getTmsMessageRetryInterval();
-		        	int expansion = memoryCache.getSrvSettings().getTmsMessageRetryExpansionFactor();
 					int errorIndex = 0;
 					String result = "";
 					int i = 1;
-					while (TMSRetryCount > 0) {
-						//logger.info("***** downloadItem " + itemId);
-						result = ServletUtils.httpClientSendRequest(ServletUtils.DOWNLOAD_ITEM_METHOD, xml);
-						errorIndex = result.indexOf("<ERROR>");
-						if (errorIndex >= 0) {
-							if(TMSRetryCount > 1) {
-								//logger.error("Retrying message: " + xml);
-								try {
-									Thread.sleep(TMSRetryInterval * ServletUtils.SECOND * i);
-								} catch (InterruptedException ie) {
-									// do nothing
-								}
-							}
-							TMSRetryCount--;
-						} else {
-							TMSRetryCount = 0;
-						}
-						i = i*expansion;
-					}
+					//logger.info("***** downloadItem " + itemId);
+					result = ServletUtils.httpClientSendRequest(ServletUtils.DOWNLOAD_ITEM_METHOD, xml);
+					errorIndex = result.indexOf("<ERROR>");
+
 					if (errorIndex >= 0) {
 						throw new TMSException(result);
 					}
@@ -348,8 +306,8 @@ public class ContentServlet extends HttpServlet {
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.getContentFailed");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
 		}
-		catch (XmlException e) {
-			logger.error("XML Exception occured in downloadItem("+itemId+") : "
+		catch (Exception e) {
+			logger.error("Exception occured in downloadItem("+itemId+") : "
 					+ ServletUtils.printStackTrace(e));
             String errorMessage = ServletUtils.getErrorMessage("tdc.servlet.error.getContentFailed");                            
 			ServletUtils.writeResponse(response, ServletUtils.buildXmlErrorMessage("", errorMessage, ""));
@@ -393,14 +351,16 @@ public class ContentServlet extends HttpServlet {
 
 				itemId = getAttributeValue("itemid", xml);
 				hash = getAttributeValue("hash", xml);
-				key = getAttributeValue("key", xml);		
+				key = getAttributeValue("key", xml);
+				
+//System.out.println("itemId="+itemId+" hash="+hash+" key="+key);				
+			
 			}
 
 			if (itemId == null || "".equals(itemId.trim())) // invalid item id
 				throw new Exception("No item id in request.");
-			//String filePath = ContentFile.getContentFolderPath() + itemId + ContentFile.ITEM_FILE_EXTENSION;
-			
-			String filePath = itemId + ContentFile.ITEM_FILE_EXTENSION;
+			String filePath = ContentFile.getContentFolderPath() + itemId
+					+ ContentFile.ITEM_FILE_EXTENSION;
 			
 			byte[] decryptedContent = ContentFile.decryptFile(filePath, hash,
 					key);
@@ -489,7 +449,7 @@ public class ContentServlet extends HttpServlet {
 	 * 
 	 */
 	private void getImage(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+		HttpServletResponse response) throws IOException {
 		MemoryCache aMemoryCache = MemoryCache.getInstance();
 		HashMap assetMap = aMemoryCache.getAssetMap();
 
@@ -570,7 +530,7 @@ public class ContentServlet extends HttpServlet {
 
 	        
 	 } catch (Exception e) {
-		 logger.error("Exception occured in getLocalResource() : "
+		logger.error("Exception occured in getLocalResource() : "
 				+ ServletUtils.printStackTrace(e));
 		ServletUtils.writeResponse(response, ServletUtils.ERROR);
 	 }
@@ -605,5 +565,43 @@ public class ContentServlet extends HttpServlet {
 	public static final String TDC_HOME = "tdc.home";
 	public static final String RESOURCE_FOLDER_PATH = System.getProperty(TDC_HOME) + File.separator + 
 		                             "webapp" + File.separator + "resources";
+	
+	private String getMusicData(HttpServletRequest request,HttpServletResponse response) throws IOException{
+		String musicId = request.getParameter("musicId");
+		String filePath = this.RESOURCE_FOLDER_PATH + File.separator  + "music_" + musicId+".mp3";
+		System.out.println("musicId :"+musicId);
+		System.out.println("filePath :"+filePath);
+		PrintWriter out = null;
+		String result = null;
+		File f1 = new File(filePath);
+/*		if(f1.exists()){
+			System.out.println("F1.exists");
+			out = response.getWriter();
+			out.write("<result>File_Downloaded</result>");
+			out.flush();
+		}else{
+*/
+		if(!f1.exists()){
+			System.out.println("Else part");
+			try {
+				InputStream input = ServletUtils.httpClientSendRequestBlob(ServletUtils.LOAD_MUSIC_DATA_METHOD, musicId);
+				
+				FileOutputStream os= new FileOutputStream(filePath);
+	            byte[] buffer = new byte[1024];
+				for (int length = 0; (length = input.read(buffer)) != -1;) {
+						os.write(buffer, 0, length);
+				}
+				os.close();
+			} catch (Exception e) {
+				result = ServletUtils.buildXmlErrorMessage("", e.getMessage(), "");
+			}
+		}
 
+		out = response.getWriter();
+		out.write("<result>File_Downloaded</result>");
+		out.flush();
+
+		return result;
+
+	}
 }

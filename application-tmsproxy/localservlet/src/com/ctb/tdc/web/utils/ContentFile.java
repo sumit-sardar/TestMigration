@@ -94,7 +94,7 @@ public class ContentFile
         }
         	
         else {
-        	//logger.error("check: " + hash + "  actual: " + Crypto.generateHash(buffer));
+        	//System.out.println("check: " + hash + "  actual: " + Crypto.generateHash(buffer));
         	return false;
         } 	
     }
@@ -130,12 +130,15 @@ public class ContentFile
     
     public static void main(String[] argv) {
     	try {
+    		System.out.println(argv[0] + " " + argv[1]);
     		byte[] infile = readFromFile(argv[0]);
     		//String hash = AeSimpleMD5.MD5(new String(infile));
     		String hash = Crypto.generateHash(infile);
+    		System.out.println(hash);
     		byte[] bytes = decryptFile(argv[0], hash, argv[1]);
     		FileOutputStream fos = new FileOutputStream("c:\\itemout.txt");
     		fos.write(bytes);
+    		System.out.println(new String(bytes));
     	} catch (Exception e) {
     		e.printStackTrace();
     	}
@@ -225,10 +228,12 @@ public class ContentFile
     
     public static String getContentFolderPath() 
     {
-//	    String tdcHome = System.getProperty(ContentFile.TDC_HOME);
-//	    String filePath = tdcHome + ContentFile.CONTENT_FOLDER;
-//	    return filePath;
-    	return CONTENT_FOLDER_PATH;
+    	String tdchome = System.getProperty(TDC_HOME);
+    	if(tdchome == null || "null".equals(tdchome)) {
+    		return "";
+    	} else {
+    		return CONTENT_FOLDER_PATH;
+    	}
     } 
     
 }

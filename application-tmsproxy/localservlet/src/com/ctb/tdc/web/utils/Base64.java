@@ -124,6 +124,7 @@ public class Base64
 		// pre-set byte array size.
 		bytes = new byte[3 * (buf.length() / 4)];
 		//int len = 3 * (buf.length() % 4); 
+		//System.out.println("Size of Bytes array: " + len);
 		int index = 0;
 		
 		// Now decode each group

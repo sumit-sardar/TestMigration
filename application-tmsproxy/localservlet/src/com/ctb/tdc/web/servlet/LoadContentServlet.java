@@ -94,7 +94,7 @@ public class LoadContentServlet extends HttpServlet {
             doGet(request, response);            
         }
         
-        logger.debug("LoadContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+        logger.info("LoadContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
     }
     
 	/**
@@ -127,7 +127,7 @@ public class LoadContentServlet extends HttpServlet {
         
         handleEvent(request, response, method, itemSetId, itemId, imageId);
         
-        logger.debug("LoadContentServlet: " + method + " took " + (System.currentTimeMillis() - startTime) + "\n");
+        logger.info("took " + (System.currentTimeMillis() - startTime) + "\n");
 	}
 
 
@@ -326,7 +326,7 @@ public class LoadContentServlet extends HttpServlet {
         }
         catch( Exception e )
         {
-        	logger.error("Exception in loadSubtest() : " + ServletUtils.printStackTrace(e));
+            logger.error("Exception in loadSubtest() : " + ServletUtils.printStackTrace(e));
             result = false;
         }     
         return result;
@@ -428,7 +428,7 @@ public class LoadContentServlet extends HttpServlet {
         }
         catch( Exception e )
         {
-        	logger.error("exception thrown in imageReady()");
+            logger.error("exception thrown in imageReady()");
         }
         return ready;
     }
@@ -496,7 +496,7 @@ public class LoadContentServlet extends HttpServlet {
             if ( totalRead >= imageSize )
                 done = true;
             else
-                logger.debug( "Reading " + fileName );
+                System.out.println( "Reading " + fileName );
         }
         ImageContentPiece aImageContentPiece = new ImageContentPiece();
         aImageContentPiece.size = imageSize;
