@@ -1,5 +1,7 @@
 package com.ctb.tms.rdb.oracle; 
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -739,7 +741,7 @@ public class OASOracleSource implements OASRDBSource
 				response.setResponseSeqNum(rs1.getInt("responseSeqNum"));
 				response.setScore(rs1.getInt("score"));
 				response.setStudentMarked(rs1.getString("studentMarked"));
-				response.setConstructedResponse(rs1.getString("constructedResponse"));
+				response.setConstructedResponse(clobToString(rs1.getClob("constructedResponse")));
 				dataList.add(response);
 			}
 			rs1.close();
@@ -756,6 +758,20 @@ public class OASOracleSource implements OASRDBSource
 		logger.debug("Found " + data.length + " item responses in db for subtest " + itemSetId);
 		return data;
 	}
+	
+	private static String clobToString(Clob clb) throws IOException, SQLException {
+		if (clb == null) return  "";
+	            
+	    StringBuffer str = new StringBuffer();
+	    String strng;
+	    
+	    BufferedReader bufferRead = new BufferedReader(clb.getCharacterStream());
+	   
+	    while ((strng=bufferRead .readLine())!=null) str.append(strng);
+	    
+	    return str.toString();     
+	}
+
     
 	private static String getTutorialResource(Connection con, int testRosterId) {
     	String result = "";
