@@ -540,11 +540,11 @@ public class OASHectorSink implements OASNoSQLSink {
 		//logger.info("*****  Stored in Cassandra: " + result.get().getValue());
 	}
 	
-	public void putManifestData(String testRosterId, Manifest manifest) throws IOException {
+	public void putManifestData(String testRosterId, String accessCode, Manifest manifest) throws IOException {
 		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
 		Serializer<String> stringSerializer = new StringSerializer();
 		Mutator<String> mutator = HFactory.createMutator(keyspace, stringSerializer);
-		String key = testRosterId;
+		String key = testRosterId + ":" + accessCode;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
 		oos.writeObject(manifest);

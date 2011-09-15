@@ -28,7 +28,7 @@ import com.ctb.tms.util.DateUtils;
 public class RosterData implements Serializable {
 	TmssvcResponseDocument document;
 	AuthenticationData authData;
-	Manifest manifest;
+	//Manifest manifest;
 	
 	public TmssvcResponseDocument getDocument() {
 		return this.document;
@@ -134,13 +134,13 @@ public class RosterData implements Serializable {
 		this.authData = authData;
 	}
 
-	public Manifest getManifest() {
+	/*public Manifest getManifest() {
 		return manifest;
 	}
 
 	public void setManifest(Manifest manifest) {
 		this.manifest = manifest;
-	}
+	}*/
 	
 	public static void generateRestartData(LoginResponse loginResponse, ManifestData manifestData, ItemResponseData [] itemResponseData, ConsolidatedRestartData restartData) throws SQLException {
 		Tsd tsd = restartData.addNewTsd();        

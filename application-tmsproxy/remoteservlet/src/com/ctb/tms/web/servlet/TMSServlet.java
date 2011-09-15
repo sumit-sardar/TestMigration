@@ -175,8 +175,9 @@ public class TMSServlet extends HttpServlet {
         
         String lsid = saveRequest.getGetFeedbackData().getLsid();
         String testRosterId = lsid.substring(0, lsid.indexOf(":"));
+        String accessCode = lsid.substring(lsid.indexOf(":") + 1, lsid.length());
         
-        Manifest manifest = oasSource.getManifest(testRosterId);
+        Manifest manifest = oasSource.getManifest(testRosterId, accessCode);
     	ManifestData[] feedback = manifest.getManifest();
 
         feedbackResponse.addNewTestingSessionData().setStudentName(manifest.getStudentName());
@@ -210,6 +211,7 @@ public class TMSServlet extends HttpServlet {
 		    Tsd tsd = tsda[i];
 		    if(tsd.getLsid() != null && !(tsd.getLsid().length() < 1) && !"undefined".equals(tsd.getLsid())) {
 			    String rosterId = tsd.getLsid().substring(0, tsd.getLsid().indexOf(":"));
+			    String accessCode = tsd.getLsid().substring(tsd.getLsid().indexOf(":") + 1, tsd.getLsid().length());
 			    
 			    saveResponse.addNewTsd();
 		        saveResponse.getTsdArray(i).setLsid(tsd.getLsid());
@@ -217,7 +219,7 @@ public class TMSServlet extends HttpServlet {
 		        saveResponse.getTsdArray(i).setMseq(tsd.getMseq());
 		        saveResponse.getTsdArray(i).setStatus(Status.OK);
 			    
-	    		Manifest manifest = oasSource.getManifest(rosterId);
+	    		Manifest manifest = oasSource.getManifest(rosterId, accessCode);
 	    		if(manifest.getRosterCompletionStatus() == null) {
 	    			manifest.setRosterCompletionStatus("IP");
 	    		}
@@ -330,7 +332,7 @@ public class TMSServlet extends HttpServlet {
 			    }
 			    // always update manifest to override interrupter via write-behind if still receiving events
 	    		manifest.setManifest(manifestData);
-	    		oasSink.putManifestData(rosterId, manifest);
+	    		oasSink.putManifestData(rosterId, accessCode, manifest);
 		    }
         }
 	    
@@ -354,12 +356,12 @@ public class TMSServlet extends HttpServlet {
 		}
 		RosterData rd = oasSource.getRosterData(creds);
 		String testRosterId = String.valueOf(rd.getAuthData().getTestRosterId());
-		Manifest manifest = oasSource.getManifest(testRosterId);
-		if(manifest == null) {
+		Manifest manifest = oasSource.getManifest(testRosterId, creds.getAccesscode());
+		/*if(manifest == null) {
 			manifest = rd.getManifest();
 		} else {
 			rd.setManifest(manifest);
-		}
+		}*/
 		TmssvcResponseDocument response = rd.getLoginDocument();
 		LoginResponse loginResponse = response.getTmssvcResponse().getLoginResponse();
 		BigInteger restart = loginResponse.getRestartNumber();
@@ -399,7 +401,7 @@ public class TMSServlet extends HttpServlet {
 		manifest.setRosterCompletionStatus("IP");
 		manifest.setRosterCorrelationId(0);
 		manifest.setStudentName(rd.getAuthData().getStudentFirstName() + " " + rd.getAuthData().getStudentLastName());
-		oasSink.putManifestData(testRosterId, manifest);
+		oasSink.putManifestData(testRosterId, creds.getAccesscode(), manifest);
 		oasSink.putRosterData(creds, rd);
 		
 		logger.debug(response.xmlText());

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
 import com.ctb.tms.bean.login.Manifest;
@@ -14,10 +16,12 @@ import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.rdb.OASRDBSink;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
+import com.ctb.tms.rdb.oracle.OASOracleSink;
 import com.tangosol.net.cache.CacheStore;
 
 public class ManifestCacheStore implements CacheStore {
 	
+	static Logger logger = Logger.getLogger(ManifestCacheStore.class);
 	
 	public ManifestCacheStore(String cacheName) {
 		this();
@@ -32,10 +36,14 @@ public class ManifestCacheStore implements CacheStore {
     public Object load(Object oKey) {
     	Connection conn = null;
     	Manifest result = null;
+    	String key = (String) oKey;
+    	String rosterId = key.substring(0, key.indexOf(":"));
+	    String accessCode = key.substring(key.indexOf(":") + 1, key.length());
+
     	try {
 	    	OASRDBSource source = RDBStorageFactory.getOASSource();
 	    	conn = source.getOASConnection();
-	    	result = source.getRosterData(conn, Integer.parseInt((String) oKey)).getManifest();
+	    	result = source.getManifest(conn, rosterId, accessCode);
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {
@@ -51,11 +59,14 @@ public class ManifestCacheStore implements CacheStore {
     public void store(Object oKey, Object oValue) {
     	Connection conn = null;
     	try {
-    		String testRosterId = (String) oKey;
+    		String key = (String) oKey;
+        	String rosterId = key.substring(0, key.indexOf(":"));
+    	    String accessCode = key.substring(key.indexOf(":") + 1, key.length());
+    	    logger.debug("Storing manifest to DB for roster " + rosterId + ", accessCode " + accessCode);
     		Manifest manifest = (Manifest) oValue;
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
-		    sink.putManifest(conn, testRosterId, manifest);
+		    sink.putManifest(conn, rosterId, manifest);
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {
@@ -83,13 +94,11 @@ public class ManifestCacheStore implements CacheStore {
     		OASRDBSource source = RDBStorageFactory.getOASSource();
 	    	conn = source.getOASConnection();
     		while(it.hasNext()) {
-    			Object key = it.next();
-		    	Manifest manifest = source.getRosterData(conn, Integer.parseInt((String) key)).getManifest();
-		    	/*ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				ObjectOutputStream oos = new ObjectOutputStream(baos);
-				oos.writeObject(rosterData);
-				byte [] bytes = baos.toByteArray();
-				String value = new BASE64Encoder().encode(bytes);*/
+    			Object oKey = it.next();
+    			String key = (String) oKey;
+    	    	String rosterId = key.substring(0, key.indexOf(":"));
+    		    String accessCode = key.substring(key.indexOf(":") + 1, key.length());
+    		    Manifest manifest = source.getManifest(conn, rosterId, accessCode);
 		    	result.put(key, manifest);
     		}
     	} catch (Exception e) {
@@ -111,9 +120,12 @@ public class ManifestCacheStore implements CacheStore {
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
     		while(it.hasNext()) {
-	    		String key = (String) it.next();
+	    		Object oKey = it.next();
+    			String key = (String) oKey;
+    	    	String rosterId = key.substring(0, key.indexOf(":"));
+    		    String accessCode = key.substring(key.indexOf(":") + 1, key.length());
 	    		Manifest value = (Manifest) mapEntries.get(key);
-			    sink.putManifest(conn, key, value);
+			    sink.putManifest(conn, rosterId, value);
     		}
     	} catch (Exception e) {
     		e.printStackTrace();

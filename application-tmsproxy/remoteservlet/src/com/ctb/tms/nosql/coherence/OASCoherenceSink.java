@@ -46,8 +46,8 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		rosterCache.put(key, rosterData);
 	}
 	
-	public void putManifestData(String testRosterId, Manifest manifest) throws IOException {
-		String key = testRosterId;
+	public void putManifestData(String testRosterId, String accessCode, Manifest manifest) throws IOException {
+		String key = testRosterId + ":" + accessCode;
 		manifestCache.put(key, manifest);
 	}
 	

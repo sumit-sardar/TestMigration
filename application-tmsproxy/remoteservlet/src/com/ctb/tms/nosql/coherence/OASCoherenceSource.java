@@ -60,8 +60,8 @@ public class OASCoherenceSource implements OASNoSQLSource {
 		return result; 
 	}
 	
-	public Manifest getManifest(String testRosterId) throws XmlException, IOException, ClassNotFoundException {
-		String key = testRosterId;
+	public Manifest getManifest(String testRosterId, String accessCode) throws XmlException, IOException, ClassNotFoundException {
+		String key = testRosterId + ":" + accessCode;
 		return (Manifest) manifestCache.get(key);
 	}
 

@@ -71,10 +71,10 @@ public class OASHectorSource implements OASNoSQLSource {
 		return result;
 	}
 	
-	public Manifest getManifest(String testRosterId) throws XmlException, IOException, ClassNotFoundException {
+	public Manifest getManifest(String testRosterId, String accessCode) throws XmlException, IOException, ClassNotFoundException {
 		Manifest manifest = null;
 		Keyspace keyspace = HFactory.createKeyspace("TestData", cluster);
-		String key = testRosterId;
+		String key = testRosterId + ":" + accessCode;
 		ColumnQuery<String, String, String> columnQuery = HFactory.createStringColumnQuery(keyspace);
 		columnQuery.setColumnFamily("ManifestData").setKey(key).setName("manifest");
 		QueryResult<HColumn<String, String>> qr = columnQuery.execute();
