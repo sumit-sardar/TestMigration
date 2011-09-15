@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -58,6 +59,16 @@ public class ContentFile
     public static byte[] readFromFile( String filePath ) throws IOException
     {
         BufferedInputStream aFileInputStream = new BufferedInputStream(new FileInputStream( filePath ));
+        int size = aFileInputStream.available();
+        byte[] buffer = new byte[ size ];
+        aFileInputStream.read( buffer );
+        aFileInputStream.close();
+        return buffer;
+    }
+    
+    public static byte[] readFromStream( InputStream is ) throws IOException
+    {
+        BufferedInputStream aFileInputStream = new BufferedInputStream(is);
         int size = aFileInputStream.available();
         byte[] buffer = new byte[ size ];
         aFileInputStream.read( buffer );

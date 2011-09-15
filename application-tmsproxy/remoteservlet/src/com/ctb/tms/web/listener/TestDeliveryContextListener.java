@@ -98,9 +98,9 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					}
 					for(int i=0;i<creds.length;i++) {
 						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
-						RosterData rosterData = oasSource.getRosterData(creds[i]);
-						if(rosterData == null || rosterData.getAuthData() == null) {
-							if(rosterMap.get(key) == null) {
+						if(rosterMap.get(key) == null) {
+							RosterData rosterData = oasSource.getRosterData(creds[i]);
+							if(rosterData == null || rosterData.getAuthData() == null) {
 								// Get all data for an active roster from OAS DB
 								rosterData = oasDBSource.getRosterData(conn, creds[i]);
 								Manifest manifest = oasDBSource.getManifest(conn, String.valueOf(rosterData.getAuthData().getTestRosterId()), creds[i].getAccesscode());
@@ -123,12 +123,12 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 								} else {
 									logger.info("NOT stored.\n");
 								}
-								rosterMap.put(key, key);
 							} else {
-								//logger.info("*****  Roster data for " + key + " already present.\n");
+								logger.info("*****  Roster data for " + key + " already present.\n");
 							}
+							rosterMap.put(key, key);
 						} else {
-							//logger.info("*****  Roster data for " + key + " already present.\n");
+							logger.info("*****  Roster data for " + key + " already present.\n");
 						}
 					}
 				} catch (Exception e) {

@@ -1,15 +1,14 @@
 package com.ctb.tms.web.servlet;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.util.ResourceBundle;
 
-import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -130,8 +129,9 @@ public class TMSServlet extends HttpServlet {
 		
 		try {
 			String musicId = request.getParameter("musicId");
-			String resource = request.getRealPath("/resources/audio" + musicId + ".mp3");
-		    musicFile = ContentFile.readFromFile(resource);
+			String resource = "/resources/audio" + musicId + ".mp3";
+			InputStream is = getServletContext().getResourceAsStream(resource);
+		    musicFile = ContentFile.readFromStream(is);
 			OutputStream stream = response.getOutputStream();
     		stream.write(musicFile);
     		response.flushBuffer();

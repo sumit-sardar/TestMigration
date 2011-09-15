@@ -38,7 +38,9 @@
 	
 	<target name="war" depends="build">
 		<war destfile="tms.war" webxml="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/web.xml">
-			<fileset dir="server/apache-tomcat-6.0.29/webapps/ROOT/"/>
+			<fileset dir="server/apache-tomcat-6.0.29/webapps/ROOT/">
+				<exclude name="**/security.properties"/>
+			</fileset>
 		</war>
 	</target>
 	
