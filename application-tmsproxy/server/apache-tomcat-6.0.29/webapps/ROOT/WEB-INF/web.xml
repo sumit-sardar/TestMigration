@@ -69,6 +69,42 @@
   </servlet-mapping>
   
   <servlet>
+    <description>TuningUtilityContentServlet</description>
+    <display-name>TuningUtilityContentServlet</display-name>
+    <servlet-name>TContentServlet</servlet-name>
+    <servlet-class>com.ctb.tdc.web.servlet.TuningUtilityContentServlet</servlet-class>
+  </servlet> 
+   
+   <servlet-mapping>
+    <servlet-name>TContentServlet</servlet-name>
+    <url-pattern>/servlet/TuningUtilityContentServlet.do</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+		<description>SoundRecorder</description>
+		<display-name>SoundRecorder</display-name>
+		<servlet-name>SoundRecorder</servlet-name>
+		<servlet-class>com.ctb.tdc.web.servlet.SoundRecorder</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>SoundRecorder</servlet-name>
+		<url-pattern>/servlet/SoundRecorder.do</url-pattern>
+	</servlet-mapping>
+
+  <servlet>
+    <description>TuningUtilitySoundRecorder</description>
+    <display-name>TuningUtilitySoundRecorder</display-name>
+    <servlet-name>TSoundRecorder</servlet-name>
+    <servlet-class>com.ctb.tdc.web.servlet.TuningUtilitySoundRecorder</servlet-class>
+  </servlet> 
+  
+  <servlet-mapping>
+    <servlet-name>TSoundRecorder</servlet-name>
+    <url-pattern>/servlet/TuningUtilitySoundRecorder.do</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <description>PersistenceServlet</description>
     <display-name>PersistenceServlet</display-name>
     <servlet-name>PersistenceServlet</servlet-name>

@@ -10,6 +10,7 @@ import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Ts
 
 import org.apache.log4j.Logger;
 
+import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.NoSQLStorageFactory;
@@ -102,9 +103,11 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 							if(rosterMap.get(key) == null) {
 								// Get all data for an active roster from OAS DB
 								rosterData = oasDBSource.getRosterData(conn, creds[i]);
+								Manifest manifest = oasDBSource.getManifest(conn, String.valueOf(rosterData.getAuthData().getTestRosterId()), creds[i].getAccesscode());
 								if("true".equals(RDBStorageFactory.copytosink)) {
 									sinkConn = oasDBSink.getOASConnection();
 									oasDBSink.putRosterData(sinkConn, creds[i], rosterData);
+									oasDBSink.putManifest(sinkConn, String.valueOf(rosterData.getAuthData().getTestRosterId()), manifest);
 									sinkConn.commit();
 									sinkConn.close();
 								}
@@ -114,6 +117,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 									String lsid = rosterData.getDocument().getTmssvcResponse().getLoginResponse().getLsid();
 									String testRosterId = lsid.substring(0, lsid.indexOf(":"));
 									oasSink.putRosterData(creds[i], rosterData);
+									oasSink.putManifestData(testRosterId, creds[i].getAccesscode(), manifest);
 									//oasSink.putManifestData(testRosterId, rosterData.getManifest());
 									logger.info("stored.\n");
 								} else {
