@@ -170,9 +170,8 @@ public class RosterData implements Serializable {
 				rv.setT(BaseType.STRING);
 				String crResponse = "";
 				String crResponseClob = data.getConstructedResponse();
-				if (crResponseClob != null) {
-					int length = (int) crResponseClob.length();
-					crResponse = crResponseClob.substring(1, length);
+				if (crResponseClob != null && crResponseClob.length() > 0) {
+					crResponse = crResponseClob.substring(1, crResponseClob.length());
 				}
 				rv.setV(crResponse);
 			}
