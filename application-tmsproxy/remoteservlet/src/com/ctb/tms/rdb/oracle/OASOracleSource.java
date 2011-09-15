@@ -767,7 +767,7 @@ public class OASOracleSource implements OASRDBSource
 	    
 	    BufferedReader bufferRead = new BufferedReader(clb.getCharacterStream());
 	   
-	    while ((strng=bufferRead .readLine())!=null) str.append(strng);
+	    while ((strng=bufferRead.readLine())!=null) str.append(strng);
 	    
 	    return str.toString();     
 	}
