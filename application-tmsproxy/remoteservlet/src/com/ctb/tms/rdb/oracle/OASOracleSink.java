@@ -70,7 +70,7 @@ public class OASOracleSink implements OASRDBSink {
 	                    	storeResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), null, ist.getDur(), tsd.getMseq(), studentMarked);
 	                        storeCRResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked);
 	                    }
-	                    logger.debug("***** Persisted response for roster: " + testRosterId + ", item: " + ist.getIid() + ". Response was: " + response);
+	                    logger.info("OASOracleSink: Stored response records in DB for roster " + testRosterId + ", mseq " + tsd.getMseq());
 	                 }
 	            }else{ 
 	                String response = "";                   
@@ -95,7 +95,7 @@ public class OASOracleSink implements OASRDBSink {
 			stmt1.setString(8, studentMarked);
 
 			stmt1.executeUpdate();
-			//logger.info("$$$$$ Stored response record in DB for roster " + testRosterId + ", mseq " + mseq);
+			//logger.debug("$$$$$ Stored response record in DB for roster " + testRosterId + ", mseq " + mseq);
 		} catch (Exception e) {
 			if(e.getMessage().indexOf("unique constraint") >= 0 ) {
 				// do nothing, dupe response
@@ -126,7 +126,7 @@ public class OASOracleSink implements OASRDBSink {
     			stmt1.setString(5, testRosterId);
     			stmt1.setInt(6, subtest.getId());
     			stmt1.executeUpdate();
-    			logger.debug("***** Updated subtest status for roster: " + testRosterId + ", subtest: " + subtest.getId() + ". Status is: " + subtest.getCompletionStatus());
+    			logger.info("OASOracleSink: Updated subtest status for roster: " + testRosterId + ", subtest: " + subtest.getId() + ". Status is: " + subtest.getCompletionStatus());
     		}
     		stmt1.close();
     		stmt1 = conn.prepareStatement(ROSTER_STATUS_SQL);
@@ -141,7 +141,7 @@ public class OASOracleSink implements OASRDBSink {
     		stmt1.setInt(9, manifest.getRandomDistractorSeed());
     		stmt1.setString(10, testRosterId);
     		stmt1.executeUpdate();
-			logger.debug("***** Updated roster status for roster: " + testRosterId + ". Status is: " + manifest.getRosterCompletionStatus());
+			logger.info("OASOracleSink: Updated roster status for roster: " + testRosterId + ". Status is: " + manifest.getRosterCompletionStatus());
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -170,7 +170,7 @@ public class OASOracleSink implements OASRDBSink {
 			stmt1.setString(4, response);
 
 			stmt1.executeUpdate();
-			//logger.info("$$$$$ Stored CR response record in DB for roster " + testRosterId + ", mseq " + mseq);
+			logger.debug("OASOracleSink: Stored CR response record in DB for roster " + testRosterId + ", mseq " + mseq);
 		} catch (Exception e) {
 			if(e.getMessage().indexOf("unique constraint") >= 0 ) {
 				// do nothing, dupe response

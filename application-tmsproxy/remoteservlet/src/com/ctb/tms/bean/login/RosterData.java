@@ -5,10 +5,10 @@ import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.TimeZone;
 
-import org.apache.log4j.Logger;
-
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData;
 import noNamespace.BaseType;
 import noNamespace.TmssvcResponseDocument;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
@@ -19,15 +19,15 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Consolida
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist.Ov;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist.Rv;
 
+import org.apache.log4j.Logger;
+
 import com.ctb.tms.exception.testDelivery.AuthenticationFailureException;
 import com.ctb.tms.exception.testDelivery.KeyEnteredResponsesException;
 import com.ctb.tms.exception.testDelivery.OutsideTestWindowException;
 import com.ctb.tms.exception.testDelivery.TestSessionCompletedException;
-import com.ctb.tms.exception.testDelivery.TestSessionInProgressException;
 import com.ctb.tms.exception.testDelivery.TestSessionNotScheduledException;
 import com.ctb.tms.util.Constants;
 import com.ctb.tms.util.DateUtils;
-import com.ctb.tms.web.servlet.TMSServlet;
 
 public class RosterData implements Serializable {
 	TmssvcResponseDocument document;
@@ -205,41 +205,63 @@ public class RosterData implements Serializable {
 	
 	public static ItemResponseData[] generateItemResponseData(ManifestData manifest, noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd[] tsda) {
 		ArrayList irdList = new ArrayList();
+		HashMap itemMap = new HashMap(tsda.length);
 		for(int i=0;i<tsda.length;i++) {
+			logger.debug("generateItemResponseData: Tsd " + i);
 			noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd tsd = tsda[i];
 			if(manifest.getId() == Integer.parseInt(tsd.getScid())) {
 				noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist[] ista = tsd.getIstArray();
-				for(int j=0;j<ista.length;j++) {
-					noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist ist = ista[j];
-			     //   if(ist != null && ist.getRvArray(0) != null && ist.getRvArray(0).getVArray(0) != null) {
-			        if(ist != null && ist.getRvArray() != null && ist.getRvArray().length >0 ) {
-			            if( ist.getRvArray(0).getVArray() != null && ist.getRvArray(0).getVArray().length >0){
-			                if(ist.getRvArray(0).getVArray(0) != null){
-			                    BaseType.Enum responseType = ist.getRvArray(0).getT();
-			                    String xmlResponse = ist.getRvArray(0).getVArray(0);
-			                    String response = "";
-			                    String studentMarked = ist.getMrk() ? "T" : "F";
-			                    if(xmlResponse != null && xmlResponse.length() > 0) {
-			                        // strip xml
-			                        int start = xmlResponse.indexOf(">");
-			                        if(start >= 0) {
-			                            response = xmlResponse.substring(start + 1);
-			                            int end = response.lastIndexOf("</");
-			                            if(end != -1)
-			                                response = response.substring(0, end);
-			                        } else {
-			                            response = xmlResponse;
-			                        }
-			                        // strip CDATA
-			                        start = response.indexOf("[CDATA[");
-			                        if(start >= 0) {
-			                            response = response.substring(start + 7);
-			                            int end = response.lastIndexOf("]]");
-			                            if(end != -1)
-			                                response = response.substring(0, end);
-			                        }
-			                    }
-			                    ItemResponseData ird = new ItemResponseData();
+				//for(int j=0;j<ista.length;j++) {	
+					//logger.debug("generateItemResponseData: Ist " + j);
+					SaveTestingSessionData.Tsd.Ist ist = ista[0];
+					BigInteger mapMseq = (BigInteger) itemMap.get(ist.getIid());
+					if(mapMseq == null || tsd.getMseq().intValue() > mapMseq.intValue()) {
+						itemMap.put(ist.getIid(), tsd.getMseq());
+						//   if(ist != null && ist.getRvArray(0) != null && ist.getRvArray(0).getVArray(0) != null) {
+				        if(ist != null && ist.getRvArray() != null && ist.getRvArray().length >0 ) {
+				            if( ist.getRvArray(0).getVArray() != null && ist.getRvArray(0).getVArray().length >0){
+				                if(ist.getRvArray(0).getVArray(0) != null){
+				                    BaseType.Enum responseType = ist.getRvArray(0).getT();
+				                    String xmlResponse = ist.getRvArray(0).getVArray(0);
+				                    String response = "";
+				                    String studentMarked = ist.getMrk() ? "T" : "F";
+				                    if(xmlResponse != null && xmlResponse.length() > 0) {
+				                        // strip xml
+				                        int start = xmlResponse.indexOf(">");
+				                        if(start >= 0) {
+				                            response = xmlResponse.substring(start + 1);
+				                            int end = response.lastIndexOf("</");
+				                            if(end != -1)
+				                                response = response.substring(0, end);
+				                        } else {
+				                            response = xmlResponse;
+				                        }
+				                        // strip CDATA
+				                        start = response.indexOf("[CDATA[");
+				                        if(start >= 0) {
+				                            response = response.substring(start + 7);
+				                            int end = response.lastIndexOf("]]");
+				                            if(end != -1)
+				                                response = response.substring(0, end);
+				                        }
+				                    }
+				                    ItemResponseData ird = new ItemResponseData();
+			                    	ird.setEid(Integer.parseInt(ist.getEid()));
+			                    	ird.setItemId(ist.getIid());
+			                    	ird.setResponse(response);
+			                    	ird.setResponseElapsedTime((int)ist.getDur());
+			                    	ird.setResponseSeqNum(tsd.getMseq().intValue());
+			                    	ird.setStudentMarked(studentMarked);
+			                    	ird.setConstructedResponse(response);
+			                    	// TODO: fix this
+			                    	ird.setItemType("SR");
+			                    	irdList.add(ird);
+			                    	logger.debug("RosterData: added restart item response record " + ird.getResponseSeqNum());
+				                 }
+				            } else { 
+				                String response = "";                   
+				                String studentMarked = ist.getMrk() ? "T" : "F";
+				                ItemResponseData ird = new ItemResponseData();
 		                    	ird.setEid(Integer.parseInt(ist.getEid()));
 		                    	ird.setItemId(ist.getIid());
 		                    	ird.setResponse(response);
@@ -251,25 +273,10 @@ public class RosterData implements Serializable {
 		                    	ird.setItemType("SR");
 		                    	irdList.add(ird);
 		                    	logger.debug("RosterData: added restart item response record " + ird.getResponseSeqNum());
-			                 }
-			            } else { 
-			                String response = "";                   
-			                String studentMarked = ist.getMrk() ? "T" : "F";
-			                ItemResponseData ird = new ItemResponseData();
-	                    	ird.setEid(Integer.parseInt(ist.getEid()));
-	                    	ird.setItemId(ist.getIid());
-	                    	ird.setResponse(response);
-	                    	ird.setResponseElapsedTime((int)ist.getDur());
-	                    	ird.setResponseSeqNum(tsd.getMseq().intValue());
-	                    	ird.setStudentMarked(studentMarked);
-	                    	ird.setConstructedResponse(response);
-	                    	// TODO: fix this
-	                    	ird.setItemType("SR");
-	                    	irdList.add(ird);
-	                    	logger.debug("RosterData: added restart item response record " + ird.getResponseSeqNum());
-			            }       
-			        }
-				}
+				            }       
+				        }
+					}
+				//}
 			}
 		}
 		return (ItemResponseData[]) irdList.toArray(new ItemResponseData[0]);

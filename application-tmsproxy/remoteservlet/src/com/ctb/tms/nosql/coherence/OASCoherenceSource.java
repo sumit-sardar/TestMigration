@@ -72,7 +72,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 		Map mapResult = responseCache.getAll(setKeys); 
 		if(mapResult != null) {
 			int size = mapResult.size();
-			logger.info("*****  Found " + size + " responses for roster " + testRosterId);
+			logger.debug("*****  Found " + size + " responses for roster " + testRosterId);
 			Tsd[] tsda = new Tsd[size];
 			Iterator it = mapResult.keySet().iterator();
 			int i = 0;

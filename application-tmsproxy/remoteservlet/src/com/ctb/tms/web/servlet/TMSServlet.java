@@ -201,7 +201,7 @@ public class TMSServlet extends HttpServlet {
 	}
 
 	private String save(HttpServletResponse response, String xml) throws XmlException, IOException, ClassNotFoundException, InvalidCorrelationIdException {
-		logger.debug(xml);
+		//logger.debug(xml);
 		
 		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
 		AdssvcRequest saveRequest = document.getAdssvcRequest();
@@ -260,6 +260,7 @@ public class TMSServlet extends HttpServlet {
 			    	manifestData[j].setCompletionStatus("IP");
 			    	// response events
 			    	oasSink.putItemResponse(rosterId, tsd);
+			    	logger.info("TMSServlet: save: cached response for roster " + rosterId + ", message " + tsd.getMseq()); 
 			    }
 			    
 			    if(tsd.getLsvArray() != null && tsd.getLsvArray().length > 0) {
@@ -329,12 +330,14 @@ public class TMSServlet extends HttpServlet {
 			    		manifest.setRosterEndTime(new Date(System.currentTimeMillis()));
 			    		if("T".equals(manifestData[j].getScorable())) {
 			    			JMSUtils.sendMessage(rosterId);
+			    			logger.info("TMSServlet: save: sent scoring message for roster " + rosterId);
 			            }
 			    	}
 			    }
 			    // always update manifest to override interrupter via write-behind if still receiving events
 	    		manifest.setManifest(manifestData);
 	    		oasSink.putManifestData(rosterId, accessCode, manifest);
+	    		logger.info("TMSServlet: save: updated manifest for roster " + rosterId);
 		    }
         }
 	    
@@ -394,6 +397,7 @@ public class TMSServlet extends HttpServlet {
                 	restartData = loginResponse.getConsolidatedRestartData();
                 	RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
                     gotRestart = true;
+                    logger.info("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
                 }
 	        }
 	        if(gotRestart) {
@@ -441,7 +445,7 @@ public class TMSServlet extends HttpServlet {
 				newrv.addV(rv.getV());
 			}
 			newtsda[i] = newtsd;
-			logger.debug("convertTsdType: added response " + ist.getMseq());
+			//logger.debug("convertTsdType: added response " + ist.getMseq());
 		}
 		return newtsda;
 	}
