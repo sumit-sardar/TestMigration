@@ -3,10 +3,20 @@ package manageStudent;
 
 
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,14 +30,19 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
 
+import utils.Base;
+import utils.BaseTree;
 import utils.DateUtils;
 import utils.FilterSortPageUtils;
 import utils.JsonStudentUtils;
 import utils.MessageResourceBundle;
 import utils.OrgNodeUtils;
+import utils.Organization;
 import utils.PermissionsUtils;
+import utils.Row;
 import utils.StudentPathListUtils;
 import utils.StudentSearchUtils;
+import utils.TreeData;
 import utils.WebUtils;
 
 import com.ctb.bean.request.FilterParams;
@@ -46,6 +61,7 @@ import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.StudentAccommodations;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
 import com.ctb.exception.studentManagement.StudentDataDeletionException;
@@ -53,6 +69,7 @@ import com.ctb.util.studentManagement.DeleteStudentStatus;
 import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.PagerSummary;
+import com.google.gson.Gson;
 
 import dto.Message;
 import dto.PathNode;
@@ -104,7 +121,7 @@ public class ManageStudentController extends PageFlowController
 
 	private static final String ACTION_APPLY_SEARCH   = "applySearch";
 	private static final String ACTION_CLEAR_SEARCH   = "clearSearch";
-
+	public static String CONTENT_TYPE_JSON = "application/json";
 	public String[] gradeOptions = null;
 	public String[] genderOptions = null;
 	public String[] monthOptions = null;
@@ -150,6 +167,7 @@ public class ManageStudentController extends PageFlowController
 	private String isStudentId2Numeric = "AN";
 	private boolean studentIdConfigurable = false;
 	private boolean studentId2Configurable = false;
+	private ArrayList<Organization> completeOrgNodeList;
 	//END- GACR005 
 	//START- FORM RECOMMENDATION
 	private String recommendedProduct = "NONE";
@@ -1746,14 +1764,14 @@ public class ManageStudentController extends PageFlowController
 	 */
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
-					path = "findStudent.do")
+					path = "findStudentHierarchy.do")
 	})
 	protected Forward beginFindStudent()
 	{
 		ManageStudentForm form = initialize(ACTION_FIND_STUDENT);
 		form.setSelectedStudentId(null); 
 
-		form.setSelectedTab(MODULE_STUDENT_PROFILE);        
+		form.setSelectedTab(MODULE_HIERARCHY);        
 
 		this.searchApplied = false;
 
@@ -1918,6 +1936,208 @@ public class ManageStudentController extends PageFlowController
 	 */
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
+					path = "student_hierarchy.jsp")
+	}, 
+	validationErrorForward = @Jpf.Forward(name = "failure",
+			path = "logout.do"))
+			protected Forward findStudentHierarchy(ManageStudentForm form)
+	{   
+		getUserDetails();
+		form.validateValues();
+		customerHasBulkAccommodation();
+		customerHasScoring();
+		canRegisterStudent();
+		isLasLinkCustomer();
+		isTopLevelUser();
+		this.getRequest().setAttribute("isFindStudent", Boolean.TRUE);
+		setFormInfoOnRequest(form);
+		return new Forward("success");
+	}
+	
+	
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="find_student_hierarchy.jsp")
+	})
+	protected Forward userOrgNodeHierarchyList(ManageStudentForm form){
+	
+	 String jsonTree = "";
+	 HttpServletRequest req = getRequest();
+	 HttpServletResponse resp = getResponse();
+	 OutputStream stream = null;
+	 String contentType = CONTENT_TYPE_JSON;
+		try {
+			BaseTree baseTree = new BaseTree ();
+			
+			ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
+			UserNodeData associateNode = StudentPathListUtils.populateAssociateNode(this.userName,this.studentManagement);
+			ArrayList<Organization> selectedList  = StudentPathListUtils.buildassoOrgNodehierarchyList(associateNode);	
+			ArrayList <Integer> orgIDList = new ArrayList <Integer>();
+			ArrayList<TreeData> data = new ArrayList<TreeData>();
+			
+			UserNodeData und = StudentPathListUtils.OrgNodehierarchy(this.userName, 
+                    this.studentManagement, selectedList.get(0).getOrgNodeId());   
+			ArrayList<Organization> orgNodesList = StudentPathListUtils.buildOrgNodehierarchyList(und, orgIDList,completeOrgNodeList);	
+			
+			jsonTree = generateTree(orgNodesList);
+			
+			for (int i= 0; i < selectedList.size(); i++) {
+				
+				if (i == 0) {
+					
+					preTreeProcess (data,orgNodesList);
+					
+				} else {
+					
+					Integer nodeId = selectedList.get (i).getOrgNodeId();
+					if (orgIDList.contains(nodeId)) {
+							continue;
+					} else {
+						
+						orgIDList = new ArrayList <Integer>();
+						UserNodeData undloop = StudentPathListUtils.OrgNodehierarchy(this.userName, 
+			                    this.studentManagement,nodeId);   
+						ArrayList<Organization> orgNodesListloop = StudentPathListUtils.buildOrgNodehierarchyList(undloop, orgIDList, completeOrgNodeList);	
+						preTreeProcess (data,orgNodesListloop);
+					}
+				}
+				
+							
+			}
+			this.completeOrgNodeList = new ArrayList<Organization>();
+			this.completeOrgNodeList = completeOrgNodeList;
+			Gson gson = new Gson();
+			baseTree.setData(data);
+			jsonTree = gson.toJson(baseTree);
+			//System.out.println(jsonTree);
+			
+			
+			try {
+				
+				resp.setContentType(contentType);
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(jsonTree.getBytes());
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Exception while processing CR response.");
+			e.printStackTrace();
+		}
+	
+		return null;
+		
+	}
+
+	
+	 @Jpf.Action(forwards={
+				@Jpf.Forward(name = "success", 
+						path ="find_user_by_hierarchy.jsp")
+		})
+		protected Forward getStudentForSelectedOrgNodeGrid(ManageStudentForm form){
+		
+		 String jsonTree = "";
+		 HttpServletRequest req = getRequest();
+		 HttpServletResponse resp = getResponse();
+		 String treeOrgNodeId = getRequest().getParameter("treeOrgNodeId");
+		 OutputStream stream = null;
+		 String contentType = CONTENT_TYPE_JSON;
+		 List studentList = new ArrayList(0);
+		 String json = "";
+		 ObjectOutput output = null;
+			try {
+				System.out.println ("db process time Start:"+new Date());
+		        ManageStudentData msData = findStudentByHierarchy(form);
+		        System.out.println ("db process time End:"+new Date());
+				/*try{
+				  System.out.println("List serialization start.......");
+					OutputStream file = new FileOutputStream( "C:/studentList.ser" );
+		    		 OutputStream buffer = new BufferedOutputStream( file );
+		    	      output = new ObjectOutputStream( buffer );
+		    	      output.writeObject(studentList);
+		    	  System.out.println("List serialization end.......");
+				} finally {
+					
+					output.close();
+				}*/
+				  if ((msData != null) && (msData.getFilteredCount().intValue() > 0))
+			        {
+					   System.out.println ("List process time Start:"+new Date());
+			           studentList = StudentSearchUtils.buildStudentList(msData);
+			           System.out.println ("List process time End:"+new Date());
+			        }
+				        Base base = new Base();
+			    		base.setPage("1");
+			    		base.setRecords("10");
+			    		base.setTotal("2");
+			    		List <Row> rows = new ArrayList<Row>();
+			    		String fName=null,lName=null,address=null ,email= null,role= null;
+			    		
+			    		System.out.println("just b4 gson");	
+			    		Gson gson = new Gson();
+			    		 System.out.println ("Json process time Start:"+new Date());
+			    		base.setStudentProfileInformation(studentList);
+		    	    	json = gson.toJson(base);
+		    	    	System.out.println ("Json process time End:"+new Date());
+				    	
+			    		
+			    		/*InputStream file = new FileInputStream( "C:/studentList.ser" );
+			    	      InputStream buffer = new BufferedInputStream( file );
+			    	      ObjectInput input = new ObjectInputStream ( buffer );
+
+			    	      try{
+			    	       
+			    	    	  studentList = (List)input.readObject();
+			    	    	  if (studentList.size() > 0) {
+			    	    		  
+			    	    		System.out.println("Deserialize list......");
+			    	    	  }
+			    	    	  base.setStudentProfileInformation(studentList);
+			    	    	  System.out.println ("Json process time Start:"+new Date());
+					    	  json = gson.toJson(base);
+					    	  System.out.println ("Json process time End:"+new Date());
+			    	      }
+			    	      finally{
+			    	    	  input.close();
+			    	      }*/
+			    	     
+			    		//System.out.println(json);
+			    		try{
+			    		resp.setContentType("application/json");
+			    		stream = resp.getOutputStream();
+			    		resp.flushBuffer();
+			    		stream.write(json.getBytes());
+				
+			    		}
+				
+			    		 finally{
+			 				if (stream!=null){
+			 					stream.close();
+			 				}
+			 			}
+					
+					
+				
+			} catch (Exception e) {
+				System.err.println("Exception while processing CR response.");
+				e.printStackTrace();
+			}
+			
+			return null;
+			
+		}
+		
+	 
+
+	/**
+	 * @jpf:action
+	 * @jpf:forward name="success" path="findStudent.do"
+	 */
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
 					path = "findStudent.do")
 	})
 	protected Forward returnToFindStudent(ManageStudentForm form)
@@ -1937,6 +2157,50 @@ public class ManageStudentController extends PageFlowController
 		this.copyOfOrgNodeId = this.savedForm.getSelectedOrgNodeId();
 		setFormInfoOnRequest(this.savedForm);
 		return new Forward("success", this.savedForm);
+	}
+	
+	
+	
+	 
+    private String generateTree (ArrayList<Organization> orgNodesList) throws Exception{	
+    	
+		List<Integer> selectedList = new ArrayList<Integer>();
+		selectedList.add(new Integer(119378));
+		Organization org = orgNodesList.get(0);
+		TreeData td = new TreeData ();
+		td.setData(org.getOrgName());
+		td.getAttr().setId(org.getOrgNodeId().toString());
+		treeProcess (org,orgNodesList,td);
+		BaseTree baseTree = new BaseTree ();
+		baseTree.getData().add(td);
+		Gson gson = new Gson();
+		
+		String json = gson.toJson(baseTree);
+		
+		return json;
+	}
+	
+	private static void treeProcess (Organization org,List<Organization> list,TreeData td) {
+		
+		for (Organization tempOrg : list) {
+			if (org.getOrgNodeId().equals(tempOrg.getOrgParentNodeId())) {
+				TreeData tempData = new TreeData ();
+				tempData.setData(tempOrg.getOrgName());
+				tempData.getAttr().setId(tempOrg.getOrgNodeId().toString());
+				td.getChildren().add(tempData);
+				treeProcess (tempOrg,list,tempData);
+			}
+		}
+	}
+	
+	private static void preTreeProcess (ArrayList<TreeData> data,ArrayList<Organization> orgList) {
+		
+		Organization org = orgList.get(0);
+		TreeData td = new TreeData ();
+		td.setData(org.getOrgName());
+		td.getAttr().setId(org.getOrgNodeId().toString());
+		treeProcess (org,orgList,td);
+		data.add(td);
 	}
 
 	/**
@@ -2040,6 +2304,44 @@ public class ManageStudentController extends PageFlowController
 			{
 				form.setSelectedOrgNodeId(null);
 			}
+		}
+
+		return msData;
+	}
+
+
+	/**
+	 * findByHierarchy
+	 */
+	private ManageStudentData findStudentByHierarchy(ManageStudentForm form)
+	{      
+		String treeOrgNodeId = getRequest().getParameter("treeOrgNodeId");
+		if(treeOrgNodeId != null)
+        	form.setSelectedOrgNodeId(Integer.parseInt(treeOrgNodeId));
+		ManageStudentData msData = null;
+		String actionElement = form.getActionElement();
+		String currentAction = form.getCurrentAction();
+
+		form.resetValuesForAction(actionElement, ACTION_FIND_STUDENT);        
+
+		String orgNodeName = form.getOrgNodeName();
+		Integer orgNodeId = form.getOrgNodeId();   
+		FilterParams filter = null;
+	    PageParams page = null;
+	    SortParams sort = null;
+		
+		List orgNodes = new ArrayList<Organization>();
+        if( this.completeOrgNodeList != null) {
+        	orgNodes = this.completeOrgNodeList;
+        }
+ 
+		this.pageMessage = "";
+		Integer selectedOrgNodeId = form.getSelectedOrgNodeId();
+		if (selectedOrgNodeId != null)
+		{
+			sort = FilterSortPageUtils.buildStudentSortParams(form.getStudentSortColumn(), form.getStudentSortOrderBy());
+			msData = StudentSearchUtils.searchStudentsByOrgNode(this.userName, this.studentManagement, selectedOrgNodeId, filter, page, sort);
+			
 		}
 
 		return msData;
@@ -2834,7 +3136,7 @@ public class ManageStudentController extends PageFlowController
 			this.actionElement = ACTION_DEFAULT;
 			this.currentAction = ACTION_DEFAULT;
 
-			this.selectedTab = MODULE_STUDENT_PROFILE;
+			this.selectedTab = MODULE_HIERARCHY;
 
 			clearSearch();
 			clearSectionVisibility();
@@ -3659,6 +3961,20 @@ public class ManageStudentController extends PageFlowController
 	 */
 	public void setProductId(Integer productId) {
 		this.productId = productId;
+	}
+
+	/**
+	 * @return the completeOrgNodeList
+	 */
+	public ArrayList<Organization> getCompleteOrgNodeList() {
+		return completeOrgNodeList;
+	}
+
+	/**
+	 * @param completeOrgNodeList the completeOrgNodeList to set
+	 */
+	public void setCompleteOrgNodeList(ArrayList<Organization> completeOrgNodeList) {
+		this.completeOrgNodeList = completeOrgNodeList;
 	}
 
 	

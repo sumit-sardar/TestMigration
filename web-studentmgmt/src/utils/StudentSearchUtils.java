@@ -133,7 +133,7 @@ public class StudentSearchUtils
     {    
         ManageStudentData msData = null;
         try {    
-            msData = studentManagement.findStudentsForOrgNode(userName, orgNodeId, filter, page, sort);
+            msData = studentManagement.findStudentsForOrgNode(userName, orgNodeId, sort);
         }
         catch (CTBBusinessException be) {
             be.printStackTrace();

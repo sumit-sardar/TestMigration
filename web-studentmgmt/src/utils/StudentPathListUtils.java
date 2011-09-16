@@ -1,25 +1,26 @@
 package utils; 
 
-import com.ctb.bean.request.FilterParams;
-import com.ctb.bean.request.PageParams;
-import com.ctb.bean.request.SortParams;
-import com.ctb.bean.studentManagement.OrganizationNode;
-import com.ctb.bean.studentManagement.OrganizationNodeData;
-//bulk accommodation
-import com.ctb.bean.testAdmin.StudentNodeData;
-import com.ctb.control.studentManagement.StudentManagement;
-//bulk accommodation
-//import com.ctb.control.testAdmin.ScheduleTest;
-import com.ctb.exception.CTBBusinessException;
-import com.ctb.widgets.bean.PagerSummary;
-import com.ctb.widgets.bean.PathListEntry;
-import dto.PathNode;
-import dto.StudentProfileInformation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import com.ctb.bean.request.FilterParams;
+import com.ctb.bean.request.PageParams;
+import com.ctb.bean.request.SortParams;
+import com.ctb.bean.studentManagement.OrganizationNode;
+import com.ctb.bean.studentManagement.OrganizationNodeData;
+import com.ctb.bean.testAdmin.StudentNodeData;
+import com.ctb.bean.testAdmin.UserNode;
+import com.ctb.bean.testAdmin.UserNodeData;
+import com.ctb.control.studentManagement.StudentManagement;
+import com.ctb.exception.CTBBusinessException;
+import com.ctb.widgets.bean.PagerSummary;
+import com.ctb.widgets.bean.PathListEntry;
+
+import dto.PathNode;
+import dto.StudentProfileInformation;
 
 
 public class StudentPathListUtils 
@@ -442,6 +443,18 @@ public class StudentPathListUtils
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** PRIVATE METHODS ************* /////////////////////////////    
 /////////////////////////////////////////////////////////////////////////////////////////////    
+	 /**
+     * getTopOrganizationNodesForUser
+     */    
+    private static UserNodeData getTopAssoOrganizationNodesForUser(String userName, StudentManagement studentManagement, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+        UserNodeData ond = null;   
+        ond = studentManagement.getTopUserNodesForUser(userName, 
+                                                    filter, 
+                                                    page, 
+                                                    sort);
+        return ond;
+    }
     
     
     /**
@@ -472,6 +485,87 @@ public class StudentPathListUtils
             be.printStackTrace();
         }       
         return ond;
+    }
+    
+    /**
+     * getOrganizationNodes
+     */    
+    public static UserNodeData populateAssociateNode(String userName, 
+    										StudentManagement studentManagement 
+                                           ) throws CTBBusinessException
+    {    
+    	UserNodeData ond = null;
+      //  if ((orgNodeId == null) || (orgNodeId.intValue() <= 0))
+            ond = getTopAssoOrganizationNodesForUser(userName, 
+            									studentManagement, 
+                                                null, null, null);
+       
+        return ond;
+    }
+    
+   
+    /**
+     * buildOrgNodeList
+     */    
+    public static ArrayList<Organization>  buildassoOrgNodehierarchyList(UserNodeData und) 
+    {
+        ArrayList<Organization> nodeList = new ArrayList<Organization> ();
+        if (und != null) {                    
+        	Organization pathNode = null;
+        	UserNode[] nodes = und.getUserNodes();     
+            for (int i = 0 ; i < nodes.length ; i++) {
+            	UserNode node = (UserNode)nodes[i];
+                if (node != null) {
+                    pathNode = new Organization();
+                    pathNode.setOrgName(node.getOrgNodeName());
+                    pathNode.setOrgNodeId(node.getOrgNodeId());   
+                    pathNode.setOrgCategoryLevel(node.getCategoryLevel());
+                    pathNode.setOrgParentNodeId(node.getParentOrgNodeId());
+                    nodeList.add(pathNode);
+                }
+            }
+        }
+        return nodeList;
+    }
+    
+    /**
+     * getOrganizationNodes
+     */    
+    public static UserNodeData OrgNodehierarchy(String userName, 
+    											StudentManagement studentManagement, Integer associatedNodeId) throws CTBBusinessException {    
+    	UserNodeData und = null;
+       
+    	und = studentManagement.OrgNodehierarchy(userName, associatedNodeId);
+    	
+      
+        return und;
+    }
+    
+    
+    /**
+     * buildOrgNodeList
+     */    
+    public static ArrayList<Organization> buildOrgNodehierarchyList(UserNodeData und, ArrayList<Integer> orgIDList,  ArrayList<Organization> completeOrgNodeList) 
+    {
+        ArrayList<Organization> nodeList = new ArrayList<Organization>();
+        if (und != null) {                    
+        	Organization pathNode = null;
+        	UserNode[] nodes = und.getUserNodes();  
+            for (int i = 0 ; i < nodes.length ; i++) {
+            	UserNode node = (UserNode)nodes[i];
+                if (node != null) {
+                    pathNode = new Organization();
+                    pathNode.setOrgName(node.getOrgNodeName());
+                    pathNode.setOrgNodeId(node.getOrgNodeId());   
+                    pathNode.setOrgCategoryLevel(node.getCategoryLevel());
+                    pathNode.setOrgParentNodeId(node.getParentOrgNodeId());
+                    nodeList.add(pathNode);
+                    completeOrgNodeList.add(pathNode);
+                    orgIDList.add(node.getOrgNodeId());
+                }
+            }
+        }
+        return nodeList;
     }
     
     
