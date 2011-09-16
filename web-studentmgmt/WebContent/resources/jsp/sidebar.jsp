@@ -20,20 +20,10 @@
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
 <h1>Students</h1>
 <ul>
-<ctb:auth roles="Administrator, Administrative Coordinator">
-    <c:if test="${ requestScope.isAddStudent }">
-        <li><span class="navleft-unclickable">Add Student</span></li>
+   <c:if test="${requestScope.isFindStudent }">
+        <li><span class="navleft-unclickable">Student Management</span></li>
     </c:if>
-    <c:if test="${ !requestScope.isAddStudent }">    
-    <li><a href="/StudentManagementWeb/manageStudent/beginAddStudent.do" ><span>Add Student</span></a></li>
-    </c:if>
-</ctb:auth>
-    <c:if test="${ requestScope.isFindStudent }">
-        <li><span class="navleft-unclickable">Find Student</span></li>
-    </c:if>
-    <c:if test="${ !requestScope.isFindStudent }">    
-    <li><a href="/StudentManagementWeb/manageStudent/beginFindStudent.do" ><span>Find Student</span></a></li>
-    </c:if>
+    
 <ctb:auth roles="Administrator, Administrative Coordinator">
 	<c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
 	        <li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Accommodations</span></a></li>

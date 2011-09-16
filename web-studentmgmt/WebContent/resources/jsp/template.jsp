@@ -12,13 +12,23 @@
     <link href="<%=request.getContextPath()%>/resources/css/legacy.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/widgets.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/autosuggest.css" type="text/css" rel="stylesheet" />
+    <link href="<%=request.getContextPath()%>/resources/css/jquery-ui-1.8.14.custom.css" type="text/css" rel="stylesheet" />
+    <link href="<%=request.getContextPath()%>/resources/css/ui.jqgrid.css" type="text/css" rel="stylesheet" />
+    <link href="<%=request.getContextPath()%>/resources/css/tabaccordion.css" type="text/css" rel="stylesheet" />
     
-    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-latest.js"></script>
+ 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.4.4.min.js"></script>
+ 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-ui-1.8.14.custom.min.js"></script>
+ 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>   
-  
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>	
+	
   </head>
 
-  <body onload="setFocusFirstElement();" onunload="closeColorPreviewWindow();">
+  <body onload="populateTree();setFocusFirstElement();" onunload="closeColorPreviewWindow();">
     
     <jsp:include page="/resources/jsp/header.jsp" />
     
