@@ -20,7 +20,9 @@ import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Ts
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Rv;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv.CmiCore;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv.CmiCore.Exit;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv.ExtCore;
 import noNamespace.AdssvcResponseDocument;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.NextSco;
@@ -38,6 +40,7 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Consolida
 
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlOptions;
 
 import com.ctb.tdc.web.utils.ContentFile;
 import com.ctb.tdc.web.utils.ServletUtils;
@@ -129,7 +132,9 @@ public class TMSServlet extends HttpServlet {
 	}
 	
 	private String verifySettings(String xml) {
-		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
+		XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
+		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
         TmsStatus status = responseDocument.addNewAdssvcResponse().addNewTmsStatus();
         status.setStatus(TmsStatus.Status.OK);
     	return responseDocument.xmlText();
@@ -155,9 +160,11 @@ public class TMSServlet extends HttpServlet {
     }
 
     private String writeToAuditFile(String xml) throws XmlException {
-    	AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
+    	XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
+    	AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml, xmlOptions);
 		AdssvcRequest saveRequest = document.getAdssvcRequest();
-		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
+		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
         WriteToAuditFile saveResponse = responseDocument.addNewAdssvcResponse().addNewWriteToAuditFile();
 
         //logger.debug(">>>>> " + saveRequest.xmlText());
@@ -180,10 +187,12 @@ public class TMSServlet extends HttpServlet {
 
 	private String feedback(String xml) throws XmlException, IOException, ClassNotFoundException {
 		// TODO (complete): implement feedback response
-		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
+		XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
+		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml, xmlOptions);
 		AdssvcRequest saveRequest = document.getAdssvcRequest();
 
-        StudentFeedbackDataDocument response = StudentFeedbackDataDocument.Factory.newInstance();
+        StudentFeedbackDataDocument response = StudentFeedbackDataDocument.Factory.newInstance(xmlOptions);
         StudentFeedbackData feedbackResponse = response.addNewStudentFeedbackData();
         
         String lsid = saveRequest.getGetFeedbackData().getLsid();
@@ -212,11 +221,11 @@ public class TMSServlet extends HttpServlet {
 	}
 
 	private String save(HttpServletResponse response, String xml) throws XmlException, IOException, ClassNotFoundException, InvalidCorrelationIdException {
-		//logger.debug(xml);
-		
-		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
+		XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
+		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml, xmlOptions);
 		AdssvcRequest saveRequest = document.getAdssvcRequest();
-		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
+		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
         SaveTestingSessionData saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
         
         Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
@@ -240,7 +249,7 @@ public class TMSServlet extends HttpServlet {
 		    	int nextScoIndex = 0;
 		    	int j;
 		    	for(j=0;j<manifestData.length;j++) {
-		    		if(manifestData[j].getId() == Integer.parseInt(tsd.getScid())) {
+		    		if(!"TERMINATOR".equals(tsd.getScid()) && (manifestData[j].getId() == Integer.parseInt(tsd.getScid()))) {
 		    			nextScoIndex = j+1;
 		    			// TODO: fix next subtest selection for TABE auto-locator
 		    			break;
@@ -254,7 +263,7 @@ public class TMSServlet extends HttpServlet {
 			    	int thisCid = tsd.getCid().intValue();
 			    	logger.debug("Cached CID: " + rosterCid + ", this message CID: " + thisCid);
 			    	if(rosterCid != 0 && rosterCid != thisCid) {
-			    		responseDocument = AdssvcResponseDocument.Factory.newInstance();
+			    		responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
 			            saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
 			            noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd errorTsd = saveResponse.addNewTsd();
 			            errorTsd.setStatus(Status.INVALID_CID);
@@ -282,20 +291,28 @@ public class TMSServlet extends HttpServlet {
 		            int max = -1;
 		            int unscored = -1;
 		            boolean timeout = false;
-		            for(int k=0;k<lsva.length;i++) {
-		                Lsv lsv = lsva[k];
-		                if(lsv.getCmiCore() != null) {
-		                    if(lsv.getCmiCore().getExit() != null) {
-		                        timeout = lsv.getCmiCore().getExit().equals(Exit.TIME_OUT);
+		            for(int k=0;k<lsva.length;k++) {
+		                Lsv lsv = (Lsv) lsva[k];
+		                CmiCore cmi = lsv.getCmiCore();
+		                if(cmi != null) {
+		                	Exit.Enum exit = cmi.getExit();
+		                    if(exit != null) {
+		                        timeout = exit.equals(Exit.TIME_OUT);
 		                    }
 		                    // collect subtest score stuff here, put in SISS
-		                    if(lsv.getCmiCore().getScoreRaw() != null) {
-		                        raw = lsv.getCmiCore().getScoreRaw().intValue();
-		                        max = lsv.getCmiCore().getScoreMax().intValue();
+		                    BigDecimal cmiraw = cmi.getScoreRaw();
+		                    BigDecimal cmimax = cmi.getScoreMax();
+		                    if(cmiraw != null) {
+		                        raw = cmiraw.intValue();
+		                        max = cmimax.intValue();
 		                    }
 		                }
-		                if(lsv.getExtCore() != null && lsv.getExtCore().getNumberOfUnscoredItems() != null) {
-		                    unscored = lsv.getExtCore().getNumberOfUnscoredItems().intValue();
+		                ExtCore ext = lsv.getExtCore();
+		                if(ext != null) {
+		                	BigInteger extunscored = ext.getNumberOfUnscoredItems();
+		                	if(extunscored != null) {
+		                		unscored = extunscored.intValue();
+		                	}
 		                }
 		            }
 		            if(raw > -1 && max > -1 && unscored > -1) {
@@ -326,9 +343,9 @@ public class TMSServlet extends HttpServlet {
 				    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("CO");
 				    			manifest.setRosterCompletionStatus("CO");
-						    	NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
 						    	
 						    	if(nextScoIndex < manifestData.length) {
+						    		NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
 				                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
 						    	}
 				    		}
@@ -339,7 +356,7 @@ public class TMSServlet extends HttpServlet {
 		                //TestDeliveryContextListener.enqueueRoster(rosterId);
 			    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
 			    		manifest.setRosterEndTime(new Date(System.currentTimeMillis()));
-			    		if("T".equals(manifestData[j].getScorable())) {
+			    		if("T".equals(manifestData[0].getScorable())) {
 			    			JMSUtils.sendMessage(rosterId);
 			    			logger.info("TMSServlet: save: sent scoring message for roster " + rosterId);
 			            }
@@ -358,7 +375,9 @@ public class TMSServlet extends HttpServlet {
 	}
 
 	private String login(String xml) throws XmlException, IOException, ClassNotFoundException, SQLException {
-		TmssvcRequestDocument document = TmssvcRequestDocument.Factory.parse(xml);
+		XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
+		TmssvcRequestDocument document = TmssvcRequestDocument.Factory.parse(xml, xmlOptions);
 		LoginRequest lr = document.getTmssvcRequest().getLoginRequest();
 		StudentCredentials creds = new StudentCredentials();
 		if(lr.getUserName() == null || lr.getUserName().trim().length() < 1) {
@@ -393,7 +412,7 @@ public class TMSServlet extends HttpServlet {
 	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
 	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {        	
 	            	Tsd[] irt = null;
-	            	ConsolidatedRestartData restartData = loginResponse.getConsolidatedRestartData();
+	            	ConsolidatedRestartData restartData = loginResponse.getConsolidatedRestartDataArray(0);
 	            	irt = oasSource.getItemResponses(testRosterId);
 	            	boolean responsesInCache = (irt != null && irt.length > 0);
 	            	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
@@ -404,8 +423,8 @@ public class TMSServlet extends HttpServlet {
 	                    }
                 	}
                 	ItemResponseData [] ird = RosterData.generateItemResponseData(manifesta[i], irt);
-                	loginResponse.setConsolidatedRestartData(ConsolidatedRestartData.Factory.newInstance());
-                	restartData = loginResponse.getConsolidatedRestartData();
+                	loginResponse.setConsolidatedRestartDataArray(0, ConsolidatedRestartData.Factory.newInstance(xmlOptions));
+                	restartData = loginResponse.getConsolidatedRestartDataArray(0);
                 	RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
                     gotRestart = true;
                     logger.info("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
@@ -439,7 +458,9 @@ public class TMSServlet extends HttpServlet {
 		Tsd[] newtsda = new Tsd[tsd.getIstArray().length];
 		ConsolidatedRestartData.Tsd.Ist[] ista = tsd.getIstArray();
 		for(int i=0;i<ista.length;i++) {
-			Tsd newtsd = Tsd.Factory.newInstance();
+			XmlOptions xmlOptions = new XmlOptions(); 
+	        xmlOptions = xmlOptions.setUnsynchronized();
+			Tsd newtsd = Tsd.Factory.newInstance(xmlOptions);
 			newtsd.setScid(tsd.getScid());
 			newtsd.setLsid(tsd.getLsid());
 			ConsolidatedRestartData.Tsd.Ist ist = ista[i];
@@ -463,7 +484,9 @@ public class TMSServlet extends HttpServlet {
 	
 	public String getSubtest(String xml) throws XmlException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException
 	{
-		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
+		XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
+		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml, xmlOptions);
 		AdssvcRequest request = document.getAdssvcRequest();
 		
 		int subtestId = (new Integer(request.getGetSubtest().getSubtestid())).intValue();
@@ -493,7 +516,9 @@ public class TMSServlet extends HttpServlet {
 	
 	public String downloadItem(String xml) throws XmlException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException
 	{
-		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml);
+		XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
+		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml, xmlOptions);
 		AdssvcRequest request = document.getAdssvcRequest();
 		
 		int itemId = (new Integer(request.getDownloadItem().getItemid())).intValue();

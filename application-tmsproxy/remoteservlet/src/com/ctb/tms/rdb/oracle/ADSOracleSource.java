@@ -19,6 +19,7 @@ import noNamespace.AdssvcResponseDocument.AdssvcResponse.GetSubtest;
 import noNamespace.ErrorDocument;
 
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlOptions;
 
 import com.ctb.tms.bean.delivery.ItemData;
 import com.ctb.tms.bean.delivery.SubtestData;
@@ -37,7 +38,9 @@ public class ADSOracleSource implements ADSRDBSource {
 	}
 	
 	public String getSubtest(Connection conn, int subtestId, String hash) {
-		AdssvcResponseDocument responseDoc = AdssvcResponseDocument.Factory.newInstance();
+		XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
+		AdssvcResponseDocument responseDoc = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
 		AdssvcResponse adssvcResponse = responseDoc.addNewAdssvcResponse();
 		GetSubtest getSubtest = adssvcResponse.addNewGetSubtest();
 		getSubtest.setSubtestid(""+subtestId);
@@ -72,7 +75,9 @@ public class ADSOracleSource implements ADSRDBSource {
 	}
 	
 	public String getItem(Connection conn, int itemId, String hash) {
-		AdssvcResponseDocument responseDoc = AdssvcResponseDocument.Factory.newInstance();
+		XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
+		AdssvcResponseDocument responseDoc = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
 		AdssvcResponse adssvcResponse = responseDoc.addNewAdssvcResponse();
 		DownloadItem downloadItem = adssvcResponse.addNewDownloadItem();
 		downloadItem.setItemid(""+itemId);

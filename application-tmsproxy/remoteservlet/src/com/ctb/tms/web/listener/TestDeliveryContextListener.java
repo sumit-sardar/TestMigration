@@ -100,32 +100,8 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
 						if(rosterMap.get(key) == null) {
 							RosterData rosterData = oasSource.getRosterData(creds[i]);
-							if(rosterData == null || rosterData.getAuthData() == null) {
-								// Get all data for an active roster from OAS DB
-								rosterData = oasDBSource.getRosterData(conn, creds[i]);
-								Manifest manifest = oasDBSource.getManifest(conn, String.valueOf(rosterData.getAuthData().getTestRosterId()), creds[i].getAccesscode());
-								if("true".equals(RDBStorageFactory.copytosink)) {
-									sinkConn = oasDBSink.getOASConnection();
-									oasDBSink.putRosterData(sinkConn, creds[i], rosterData);
-									oasDBSink.putManifest(sinkConn, String.valueOf(rosterData.getAuthData().getTestRosterId()), manifest);
-									sinkConn.commit();
-									sinkConn.close();
-								}
-								logger.info("*****  Got roster data for " + key + " . . . ");
-								// Now put the roster data into Coherence
-								if(rosterData != null) {
-									String lsid = rosterData.getDocument().getTmssvcResponse().getLoginResponse().getLsid();
-									String testRosterId = lsid.substring(0, lsid.indexOf(":"));
-									oasSink.putRosterData(creds[i], rosterData);
-									oasSink.putManifestData(testRosterId, creds[i].getAccesscode(), manifest);
-									//oasSink.putManifestData(testRosterId, rosterData.getManifest());
-									logger.info("stored.\n");
-								} else {
-									logger.info("NOT stored.\n");
-								}
-							} else {
-								logger.debug("*****  Roster data for " + key + " already present.\n");
-							}
+							Manifest manifest = oasSource.getManifest(String.valueOf(rosterData.getAuthData().getTestRosterId()), creds[i].getAccesscode());
+							logger.info("*****  Got roster data for " + key);
 							rosterMap.put(key, key);
 						} else {
 							logger.debug("*****  Roster data for " + key + " already present.\n");

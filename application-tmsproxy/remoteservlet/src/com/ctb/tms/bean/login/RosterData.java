@@ -20,6 +20,7 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Consolida
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist.Rv;
 
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlOptions;
 
 import com.ctb.tms.exception.testDelivery.AuthenticationFailureException;
 import com.ctb.tms.exception.testDelivery.KeyEnteredResponsesException;
@@ -41,6 +42,8 @@ public class RosterData implements Serializable {
 	}
 	
 	public TmssvcResponseDocument getLoginDocument() {
+		XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
 		TmssvcResponseDocument response = this.document;
 		try {
 			// were credentials correct?
@@ -96,28 +99,28 @@ public class RosterData implements Serializable {
 	            !statusCode.equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS))
 	            throw new TestSessionNotScheduledException();
 		} catch (AuthenticationFailureException afe) {
-            response = TmssvcResponseDocument.Factory.newInstance();
+            response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.AUTHENTICATION_FAILURE_STATUS); 
         } catch (KeyEnteredResponsesException afe) {
-            response = TmssvcResponseDocument.Factory.newInstance();
+            response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.KEY_ENTERED_RESPONSES_STATUS); 
         } catch (OutsideTestWindowException afe) {
-            response = TmssvcResponseDocument.Factory.newInstance();
+            response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.OUTSIDE_TEST_WINDOW_STATUS); 
         } catch (TestSessionCompletedException afe) {
-            response = TmssvcResponseDocument.Factory.newInstance();
+            response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_COMPLETED_STATUS); 
         } catch (TestSessionNotScheduledException afe) {
-            response = TmssvcResponseDocument.Factory.newInstance();
+            response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_NOT_SCHEDULED_OR_INTERRUPTED_STATUS); 
         } catch (Exception e) {
         	e.printStackTrace();
-            response = TmssvcResponseDocument.Factory.newInstance();
+            response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.INTERNAL_SERVER_ERROR_STATUS);
         }

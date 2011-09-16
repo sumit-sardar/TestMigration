@@ -966,7 +966,7 @@
 								</xs:complexType>
 							</xs:element>
 							<xs:element
-								name="consolidated_restart_data">
+								name="consolidated_restart_data" maxOccurs="unbounded">
 								<xs:annotation>
 									<xs:documentation>
 										Element for restart data.

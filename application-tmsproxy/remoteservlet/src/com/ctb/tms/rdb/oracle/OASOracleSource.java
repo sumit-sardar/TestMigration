@@ -25,6 +25,7 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.TestingSe
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Tutorial;
 
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlOptions;
 
 import com.ctb.tms.bean.login.AccommodationsData;
 import com.ctb.tms.bean.login.AuthenticationData;
@@ -129,7 +130,9 @@ public class OASOracleSource implements OASRDBSource
     }
     
     private static RosterData generateRosterData (Connection conn, AuthenticationData [] authDataArray, String accessCode) throws SQLException, AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException {
-    	TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance();
+    	XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
+    	TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
         LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
         loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.OK_STATUS);
         response.getTmssvcResponse().setMethod("login_response");
@@ -177,7 +180,7 @@ public class OASOracleSource implements OASRDBSource
 	                    	if(!accessCode.equalsIgnoreCase(manifestData[i].getAccessCode()) &&
 	                    			manifestData[i].getTitle().indexOf("locator") >= 0 &&
 	                    			!manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
-	                    		response = TmssvcResponseDocument.Factory.newInstance();
+	                    		response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
 	            	            loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
 	            	            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.LOCATOR_SUBTEST_NOT_COMPLETED_STATUS);
 	                    	}
