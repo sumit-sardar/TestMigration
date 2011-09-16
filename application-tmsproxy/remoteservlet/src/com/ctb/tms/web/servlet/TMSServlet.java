@@ -110,7 +110,7 @@ public class TMSServlet extends HttpServlet {
 	            result = writeToAuditFile(xml);
 	        else if(method.toLowerCase().indexOf("mp3") >= 0)
 	        	getMp3(request, response);
-	        else if (method != null && method.startsWith(ServletUtils.VERIFY_SETTINGS_METHOD)) {
+	        else if (method != null && method.startsWith(ServletUtils.GET_STATUS_METHOD)) {
 	        	result = verifySettings(xml);
 	        }
 			else {
