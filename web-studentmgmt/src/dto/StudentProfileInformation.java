@@ -28,6 +28,7 @@ public class StudentProfileInformation extends SanitizedFormField
     private Date birthdate;
     private String displayName;    
     private OrganizationNode[] organizationNodes;
+    private String  orgNodeNamesStr;
     //START- (LLO82) StudentManagement Changes For LasLink product
     private String testPurpose;
     //END- (LLO82) StudentManagement Changes For LasLink product
@@ -100,6 +101,7 @@ public class StudentProfileInformation extends SanitizedFormField
         }
         
         this.organizationNodes = student.getOrganizationNodes();
+        this.orgNodeNamesStr = getOrgNodeNamesString();
         //START- (LLO82) StudentManagement Changes For LasLink product
         if(student.getTestPurpose() != null) {
         	this.testPurpose = student.getTestPurpose();
@@ -429,5 +431,21 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setTestPurpose(String testPurpose) {
 		this.testPurpose = testPurpose;
+	}
+
+
+	/**
+	 * @return the orgNodeNamesStr
+	 */
+	public String getOrgNodeNamesStr() {
+		return orgNodeNamesStr;
+	}
+
+
+	/**
+	 * @param orgNodeNamesStr the orgNodeNamesStr to set
+	 */
+	public void setOrgNodeNamesStr(String orgNodeNamesStr) {
+		this.orgNodeNamesStr = orgNodeNamesStr;
 	}
 } 
