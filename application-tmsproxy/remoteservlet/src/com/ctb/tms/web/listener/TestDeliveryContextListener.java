@@ -124,11 +124,11 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 									logger.info("NOT stored.\n");
 								}
 							} else {
-								logger.info("*****  Roster data for " + key + " already present.\n");
+								logger.debug("*****  Roster data for " + key + " already present.\n");
 							}
 							rosterMap.put(key, key);
 						} else {
-							logger.info("*****  Roster data for " + key + " already present.\n");
+							logger.debug("*****  Roster data for " + key + " already present.\n");
 						}
 					}
 				} catch (Exception e) {
