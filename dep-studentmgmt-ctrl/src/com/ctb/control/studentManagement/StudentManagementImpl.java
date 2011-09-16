@@ -43,6 +43,8 @@ import com.ctb.bean.testAdmin.StudentNodeData;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.UserNode;
+import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.CustomerConfigurationDataNotFoundException;
 import com.ctb.exception.studentManagement.CustomerDemographicDataNotFoundException;
@@ -2604,4 +2606,125 @@ public class StudentManagementImpl implements StudentManagement
 		}
 		return isIDUnique;
 	}
+	
+	 public UserNodeData OrgNodehierarchy(String userName, Integer associatedNodeId) 
+	    throws CTBBusinessException {                                                         
+
+
+			try {
+				validator.validateUser(userName, userName, "UserManagementImpl.OrgNodehierarchy");
+			} catch (ValidationException ve) {
+			 
+				throw ve;
+			 
+			}
+			
+			try {
+				UserNodeData usnd = new UserNodeData();
+				Integer pageSize = null;
+			
+				UserNode[] usernodes = orgNode.OrgNodehierarchy(associatedNodeId);
+				usnd.setUserNodes(usernodes,pageSize);
+			 
+			
+			 return usnd;
+			} catch (SQLException se) {
+			 OrgNodeDataNotFoundException dataNotFound = 
+			                             new OrgNodeDataNotFoundException
+			                                     ("FindUser.Failed");
+			                                                            
+			 dataNotFound.setStackTrace(se.getStackTrace());
+			 throw dataNotFound;
+			} catch (Exception e) {
+			 OrgNodeDataNotFoundException dataNotFound = 
+			                             new OrgNodeDataNotFoundException
+			                                     ("FindUser.Failed");
+			                                                            
+			 dataNotFound.setStackTrace(e.getStackTrace());
+			 throw dataNotFound;
+			}
+		}
+		
+		
+			
+	 public UserNodeData getTopUserNodesForUser(String userName,
+			FilterParams filter, PageParams page, SortParams sort)
+			throws CTBBusinessException {
+
+		try {
+			validator.validateUser(userName, userName,
+					"StudentManagementImpl.getTopUserNodesForUser");
+		} catch (ValidationException ve) {
+
+			throw ve;
+
+		}
+
+		try {
+			UserNodeData usnd = new UserNodeData();
+			Integer pageSize = null;
+			if (page != null) {
+				pageSize = new Integer(page.getPageSize());
+			}
+
+			UserNode[] usernodes = orgNode.getTopUserNodesForUser(userName);
+			usnd.setUserNodes(usernodes, pageSize);
+			if (filter != null) {
+				usnd.applyFiltering(filter);
+			}
+			if (sort != null) {
+				usnd.applySorting(sort);
+			}
+			if (page != null) {
+				usnd.applyPaging(page);
+			}
+
+			return usnd;
+		} catch (SQLException se) {
+			OrgNodeDataNotFoundException dataNotFound = new OrgNodeDataNotFoundException(
+					"FindUser.Failed");
+
+			dataNotFound.setStackTrace(se.getStackTrace());
+			throw dataNotFound;
+		} catch (CTBBusinessException be) {
+			OrgNodeDataNotFoundException dataNotFound = new OrgNodeDataNotFoundException(
+					"FindUser.Failed");
+
+			dataNotFound.setStackTrace(be.getStackTrace());
+			throw dataNotFound;
+		} catch (Exception e) {
+			OrgNodeDataNotFoundException dataNotFound = new OrgNodeDataNotFoundException(
+					"FindUser.Failed");
+
+			dataNotFound.setStackTrace(e.getStackTrace());
+			throw dataNotFound;
+		}
+	}
+
+	public ManageStudentData findStudentsForOrgNode(String userName, Integer orgNodeId, SortParams sort) throws CTBBusinessException
+	{
+		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.findStudentsForOrgNode");
+		try {
+			ManageStudentData std = new ManageStudentData();
+			Integer pageSize = null;
+			
+			ManageStudent [] students = studentManagement.getStudentsForSelectedOrgNode(userName, orgNodeId);
+			std.setManageStudents(students, pageSize);
+			if(sort != null) std.applySorting(sort);
+			
+			students = std.getManageStudents();
+			for (int i=0; i <students.length; i++) {
+				if (students[i] != null) {
+					OrganizationNode [] orgNodes = studentManagement.getAssignedOrganizationNodesForStudentAtAndBelowOrgNode(students[i].getId().intValue(), orgNodeId);
+					students[i].setOrganizationNodes(orgNodes);
+				}
+			}
+			return std;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: findStudentsForOrgNode: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
+		
 } 
