@@ -25,6 +25,7 @@ import noNamespace.AdssvcResponseDocument;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.NextSco;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.Status;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse.TmsStatus;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.WriteToAuditFile;
 import noNamespace.LmsEventType;
 import noNamespace.StudentFeedbackDataDocument;
@@ -107,9 +108,12 @@ public class TMSServlet extends HttpServlet {
 	            result = uploadAuditFile(xml);
 	        else if (method != null && method.startsWith(ServletUtils.WRITE_TO_AUDIT_FILE_METHOD))
 	            result = writeToAuditFile(xml);
-	        else if(method.toLowerCase().indexOf("mp3") >= 0) {
+	        else if(method.toLowerCase().indexOf("mp3") >= 0)
 	        	getMp3(request, response);
-	        } else {
+	        else if (method != null && method.startsWith(ServletUtils.VERIFY_SETTINGS_METHOD)) {
+	        	result = verifySettings(xml);
+	        }
+			else {
 	            result = ServletUtils.ERROR;   
 	        }
 			
@@ -122,6 +126,13 @@ public class TMSServlet extends HttpServlet {
 			result = ServletUtils.ERROR;
 			ServletUtils.writeResponse(response, result);
 		}
+	}
+	
+	private String verifySettings(String xml) {
+		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance();
+        TmsStatus status = responseDocument.addNewAdssvcResponse().addNewTmsStatus();
+        status.setStatus(TmsStatus.Status.OK);
+    	return responseDocument.xmlText();
 	}
 	
 	private void getMp3(HttpServletRequest request, HttpServletResponse response) throws IOException
