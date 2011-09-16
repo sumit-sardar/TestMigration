@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Rv;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv.CmiCore.Exit;
 import noNamespace.AdssvcResponseDocument;
@@ -375,14 +377,22 @@ public class TMSServlet extends HttpServlet {
 	            if(!gotRestart && (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
 	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS) ||
 	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
-	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {
-                	
-                	Tsd[] irt = oasSource.getItemResponses(testRosterId);
-                	if(irt != null && irt.length > 0) {
-	                	ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
-	                	ItemResponseData [] ird = RosterData.generateItemResponseData(manifesta[i], irt);
-	                    RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
+	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {        	
+	            	Tsd[] irt = null;
+	            	ConsolidatedRestartData restartData = loginResponse.getConsolidatedRestartData();
+	            	irt = oasSource.getItemResponses(testRosterId);
+	            	boolean responsesInCache = (irt != null && irt.length > 0);
+	            	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
+                	if (!responsesInCache && responsesInRD) {
+                		irt = convertTsdType(restartData.getTsdArray(0));
+                		for(int j=0;j<irt.length;j++) {
+	                    	oasSink.putItemResponse(testRosterId, irt[j]);
+	                    }
                 	}
+                	ItemResponseData [] ird = RosterData.generateItemResponseData(manifesta[i], irt);
+                	loginResponse.setConsolidatedRestartData(ConsolidatedRestartData.Factory.newInstance());
+                	restartData = loginResponse.getConsolidatedRestartData();
+                	RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
                     gotRestart = true;
                 }
 	        }
@@ -404,9 +414,36 @@ public class TMSServlet extends HttpServlet {
 		oasSink.putManifestData(testRosterId, creds.getAccesscode(), manifest);
 		oasSink.putRosterData(creds, rd);
 		
-		logger.debug(response.xmlText());
+		//logger.debug(response.xmlText());
 		
 		return response.xmlText();
+	}
+	
+	private Tsd[] convertTsdType(ConsolidatedRestartData.Tsd tsd) {
+		//return tsd.changeType(Tsd.type);
+		Tsd[] newtsda = new Tsd[tsd.getIstArray().length];
+		ConsolidatedRestartData.Tsd.Ist[] ista = tsd.getIstArray();
+		for(int i=0;i<ista.length;i++) {
+			Tsd newtsd = Tsd.Factory.newInstance();
+			newtsd.setScid(tsd.getScid());
+			newtsd.setLsid(tsd.getLsid());
+			ConsolidatedRestartData.Tsd.Ist ist = ista[i];
+			Ist newist = newtsd.addNewIst();
+			newist.setIid(ist.getIid());
+			newist.setDur(ist.getDur());
+			newist.setMrk(ist.getMrk().equals("T")?true:false);
+			newist.setEid(ist.getEid());
+			newtsd.setMseq(ist.getMseq());
+			ConsolidatedRestartData.Tsd.Ist.Rv[] rva = ist.getRvArray();
+			for(int j=0;j<rva.length;j++) {
+				ConsolidatedRestartData.Tsd.Ist.Rv rv = rva[j];
+				Rv newrv = newist.addNewRv();
+				newrv.addV(rv.getV());
+			}
+			newtsda[i] = newtsd;
+			logger.debug("convertTsdType: added response " + ist.getMseq());
+		}
+		return newtsda;
 	}
 	
 	public String getSubtest(String xml) throws XmlException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException

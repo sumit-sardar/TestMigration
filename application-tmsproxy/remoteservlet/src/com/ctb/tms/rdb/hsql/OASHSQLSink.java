@@ -42,7 +42,7 @@ public class OASHSQLSink implements OASRDBSink {
 			stmt1.setString(1, testRosterId);
 			stmt1.setString(2, tsd.getIstArray()[0].getIid());
 			stmt1.setInt(3, tsd.getMseq().intValue());
-			stmt1.setString(4, tsd.getIstArray()[0].getRvArray()[0].getVArray()[0].xmlText());
+			stmt1.setString(4, tsd.getIstArray()[0].getRvArray()[0].getVArray()[0]);
 			stmt1.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,10 +1,13 @@
 package com.ctb.tms.bean.login;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimeZone;
+
+import org.apache.log4j.Logger;
 
 import noNamespace.BaseType;
 import noNamespace.TmssvcResponseDocument;
@@ -24,11 +27,14 @@ import com.ctb.tms.exception.testDelivery.TestSessionInProgressException;
 import com.ctb.tms.exception.testDelivery.TestSessionNotScheduledException;
 import com.ctb.tms.util.Constants;
 import com.ctb.tms.util.DateUtils;
+import com.ctb.tms.web.servlet.TMSServlet;
 
 public class RosterData implements Serializable {
 	TmssvcResponseDocument document;
 	AuthenticationData authData;
 	//Manifest manifest;
+	
+	static Logger logger = Logger.getLogger(RosterData.class);
 	
 	public TmssvcResponseDocument getDocument() {
 		return this.document;
@@ -160,6 +166,7 @@ public class RosterData implements Serializable {
 			ist.setCst(Ist.Cst.UNKNOWN);
 			ist.setMrk("T".equals(data.getStudentMarked())?"1":"0");
 			ist.setDur(data.getResponseElapsedTime());
+			ist.setMseq(BigInteger.valueOf(data.getResponseSeqNum()));
 			totalDur = totalDur + data.getResponseElapsedTime();
 			Rv rv = ist.addNewRv();
 			if ("SR".equals(data.getItemType())) {
@@ -209,7 +216,7 @@ public class RosterData implements Serializable {
 			            if( ist.getRvArray(0).getVArray() != null && ist.getRvArray(0).getVArray().length >0){
 			                if(ist.getRvArray(0).getVArray(0) != null){
 			                    BaseType.Enum responseType = ist.getRvArray(0).getT();
-			                    String xmlResponse = ist.getRvArray(0).getVArray(0).xmlText();
+			                    String xmlResponse = ist.getRvArray(0).getVArray(0);
 			                    String response = "";
 			                    String studentMarked = ist.getMrk() ? "T" : "F";
 			                    if(xmlResponse != null && xmlResponse.length() > 0) {
@@ -243,6 +250,7 @@ public class RosterData implements Serializable {
 		                    	// TODO: fix this
 		                    	ird.setItemType("SR");
 		                    	irdList.add(ird);
+		                    	logger.debug("RosterData: added restart item response record " + ird.getResponseSeqNum());
 			                 }
 			            } else { 
 			                String response = "";                   
@@ -257,7 +265,8 @@ public class RosterData implements Serializable {
 	                    	ird.setConstructedResponse(response);
 	                    	// TODO: fix this
 	                    	ird.setItemType("SR");
-	                    	irdList.add(ird);                                          
+	                    	irdList.add(ird);
+	                    	logger.debug("RosterData: added restart item response record " + ird.getResponseSeqNum());
 			            }       
 			        }
 				}

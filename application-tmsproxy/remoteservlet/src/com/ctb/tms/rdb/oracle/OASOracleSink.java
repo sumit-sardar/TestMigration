@@ -40,7 +40,7 @@ public class OASOracleSink implements OASRDBSink {
 	            if( ist.getRvArray(0).getVArray() != null && ist.getRvArray(0).getVArray().length >0){
 	                if(ist.getRvArray(0).getVArray(0) != null){
 	                    BaseType.Enum responseType = ist.getRvArray(0).getT();
-	                    String xmlResponse = ist.getRvArray(0).getVArray(0).xmlText();
+	                    String xmlResponse = ist.getRvArray(0).getVArray(0);
 	                    String response = "";
 	                    String studentMarked = ist.getMrk() ? "T" : "F";
 	                    String audioItem = ist.getAudioItem() ? "T" : "F";
@@ -67,6 +67,7 @@ public class OASOracleSink implements OASRDBSink {
 	                    if(responseType.equals(BaseType.IDENTIFIER)) {
 	                        storeResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked);
 	                    } else if(responseType.equals(BaseType.STRING)) {
+	                    	storeResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), null, ist.getDur(), tsd.getMseq(), studentMarked);
 	                        storeCRResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked);
 	                    }
 	                    logger.debug("***** Persisted response for roster: " + testRosterId + ", item: " + ist.getIid() + ". Response was: " + response);

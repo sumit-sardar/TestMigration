@@ -879,7 +879,7 @@ allowed values: not_attempted, completed, incomplete, and unknown</xs:documentat
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="v">
+	<xs:element name="v" type="xs:string">
 		<xs:annotation>
 			<xs:documentation>Value of Variable. Multiple value elements are used to hold the value of variables with multiple/ordered cardinality. </xs:documentation>
 		</xs:annotation>

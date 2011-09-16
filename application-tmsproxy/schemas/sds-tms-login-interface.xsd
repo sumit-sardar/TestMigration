@@ -1334,6 +1334,8 @@
 																	</xs:documentation>
 																</xs:annotation>
 															</xs:attribute>
+															<xs:attribute 
+																name="mseq" type="xs:integer" use="required" />
 														</xs:complexType>
 													</xs:element>
 													<xs:element
