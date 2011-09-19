@@ -283,8 +283,9 @@
 				'.jstree-rtl li a ins { margin-right:0px; margin-left:3px; } ';
 		}
 		// Correct IE 7 (shifts anchor nodes onhover)
-		if(/msie/.test(u) && parseInt(v, 10) == 7) { 
-			css_string += '.jstree li a { border-width:0 !important; padding:0px 2px !important; } ';
+		if(/msie/.test(u) && (parseInt(v, 10) == 7 ||parseInt(v, 10) == 8)) { 
+			css_string += '.jstree li a { border-width:0 !important; padding:0px 2px !important; } ' +
+			'li.jstree-closed ul { display:none !important; } ';
 		}
 		$.vakata.css.add_sheet({ str : css_string });
 	});
