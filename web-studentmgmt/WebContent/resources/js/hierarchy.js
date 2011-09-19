@@ -7,7 +7,7 @@ function populateTree() {
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
-						//blockUI();
+						
 						$.blockUI({ message: null }); 
 					},
 		url:		'userOrgNodeHierarchyList.do',
@@ -15,19 +15,17 @@ function populateTree() {
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){	
 						//alert('in');
-						unblockUI();
+						$.unblockUI();  
 						createSingleNodeSelectedTree (data);
 						$("#searchheader").css("visibility","visible");	
 												
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-						//unblockUI();
-						 $.unblockUI();  
+						$.unblockUI();  
 						window.location.href="/TestSessionInfoWeb/logout.do";
 						
 					},
 		complete :  function(){
-						//unblockUI();
 						 $.unblockUI();  
 					}
 	});
@@ -35,7 +33,7 @@ function populateTree() {
 }
 
 function blockUI(){	
-	$("body").append('<div id="blockDiv" style="background:url(/StudentManagementWeb/resources/images/transparent.gif);position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"><img src="/StudentManagementWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/></div>');
+	$("body").append('<div id="blockDiv" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"><img src="/StudentManagementWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/></div>');
 	$("#blockDiv").css("cursor","wait");		
 }
 			
