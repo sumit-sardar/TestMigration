@@ -192,7 +192,7 @@ public class OASOracleSource implements OASRDBSource
 	                logoURI = "/resources/logo.swf";
 	            loginResponse.addNewBranding().setTdclogo(logoURI);
 	
-	            if (authData.getRandomDistractorSeedNumber() != null) {
+	        /* if (authData.getRandomDistractorSeedNumber() != null) {
 	
 	
 				 loginResponse.setRandomDistractorSeedNumber(
@@ -202,16 +202,14 @@ public class OASOracleSource implements OASRDBSource
 	
 			 }  else {
 	
-				 if (manifestData[0].getRandomDistractorStatus() != null && 
-						 manifestData[0].getRandomDistractorStatus().equals("Y")) {
+				 if ("Y".equals(manifestData[0].getRandomDistractorStatus())) {
 	
 					 Integer ranodmSeedNumber = generateRandomNumber();
 	
-					 loginResponse.setRandomDistractorSeedNumber(
-							 new BigInteger( String.valueOf(ranodmSeedNumber.intValue())));
+					 loginResponse.setRandomDistractorSeedNumber(new BigInteger( String.valueOf(ranodmSeedNumber.intValue())));
 				 }
 	
-			 }
+			 } */
 	        copyAuthenticationDataToResponse(loginResponse, authData);
 	        AccommodationsData accomData = getAccommodations(conn, testRosterId);
 	        

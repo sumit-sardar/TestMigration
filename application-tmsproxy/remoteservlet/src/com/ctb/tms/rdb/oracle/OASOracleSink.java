@@ -22,7 +22,7 @@ public class OASOracleSink implements OASRDBSink {
 	private static final String STORE_RESPONSE_SQL = "insert into item_response (  item_response_id,  test_roster_id,  \t\titem_set_id,  \t\titem_id,  \t\tresponse,  \t\tresponse_method,  \t\tresponse_elapsed_time,  \t\tresponse_seq_num,  \t\text_answer_choice_id,  \tstudent_marked,  \t\tcreated_by) \tvalues  (SEQ_ITEM_RESPONSE_ID.NEXTVAL,  ?,  ?,  ?,  ?,  'M',  ?,  ?,  ?,  ?,  6)";
 	private static final String DELETE_CR_RESPONSE_SQL = "delete from item_response_cr where test_roster_id = ? and item_set_id = ? and item_id = ?";
 	private static final String STORE_CR_RESPONSE_SQL = "insert into item_response_cr (  test_roster_id,  item_set_id, item_id, constructed_response) values (?,  ?,  ?,  ?)";
-	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set completion_status = ?, raw_score = ?, max_score = ?, unscored = ? where test_roster_id = ? and item_set_id = ?";
+	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set completion_status = ?, raw_score = ?, max_score = ?, unscored = ?, start_date_time = ?, completion_date_time = ? where test_roster_id = ? and item_set_id = ?";
 	private static final String ROSTER_STATUS_SQL = "update  test_roster set  test_completion_status = ?,  restart_number = ?,  start_date_time = nvl(start_date_time,?),  last_login_date_time = ?, updated_date_time = ?,  completion_date_time = ?, last_mseq = ?,  correlation_id = ?, random_distractor_seed = ? where  test_roster_id = ?";
 	
 	static Logger logger = Logger.getLogger(OASOracleSink.class);
@@ -95,7 +95,7 @@ public class OASOracleSink implements OASRDBSink {
 			stmt1.setString(8, studentMarked);
 
 			stmt1.executeUpdate();
-			//logger.debug("$$$$$ Stored response record in DB for roster " + testRosterId + ", mseq " + mseq);
+			logger.debug("OASOracleSink: Stored response record in DB for roster " + testRosterId + ", mseq " + mseq + ", response: " + response);
 		} catch (Exception e) {
 			if(e.getMessage().indexOf("unique constraint") >= 0 ) {
 				// do nothing, dupe response
@@ -123,8 +123,10 @@ public class OASOracleSink implements OASRDBSink {
     			stmt1.setInt(2, subtest.getRawScore());
     			stmt1.setInt(3, subtest.getMaxScore());
     			stmt1.setInt(4, subtest.getUnscored());
-    			stmt1.setString(5, testRosterId);
-    			stmt1.setInt(6, subtest.getId());
+    			stmt1.setDate(5, new Date(subtest.getStartTime()));
+    			stmt1.setDate(6, new Date(subtest.getEndTime()));
+    			stmt1.setString(7, testRosterId);
+    			stmt1.setInt(8, subtest.getId());
     			stmt1.executeUpdate();
     			logger.info("OASOracleSink: Updated subtest status for roster: " + testRosterId + ", subtest: " + subtest.getId() + ". Status is: " + subtest.getCompletionStatus());
     		}
@@ -138,7 +140,11 @@ public class OASOracleSink implements OASRDBSink {
     		stmt1.setDate(6, manifest.getRosterEndTime());
     		stmt1.setInt(7, manifest.getRosterLastMseq());
     		stmt1.setInt(8, manifest.getRosterCorrelationId());
-    		stmt1.setInt(9, manifest.getRandomDistractorSeed());
+    		if("Y".equals(subtests[0].getRandomDistractorStatus())) {
+    			stmt1.setInt(9, manifest.getRandomDistractorSeed());
+    		} else {
+    			stmt1.setObject(9, null);
+    		}
     		stmt1.setString(10, testRosterId);
     		stmt1.executeUpdate();
 			logger.info("OASOracleSink: Updated roster status for roster: " + testRosterId + ". Status is: " + manifest.getRosterCompletionStatus());

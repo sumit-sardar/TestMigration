@@ -68,7 +68,9 @@ public class AuthenticationData implements Serializable
 	 * @param randomDistractorSeedNumber
 	 */
 	public void setRandomDistractorSeedNumber(Integer randomDistractorSeedNumber) {
-		this.randomDistractorSeedNumber = randomDistractorSeedNumber;
+		if(randomDistractorSeedNumber != null && !(0 == randomDistractorSeedNumber.intValue())) {
+			this.randomDistractorSeedNumber = randomDistractorSeedNumber;
+		}
 	}
 
 	/**

@@ -36,7 +36,21 @@ public class ManifestData implements Serializable
     private int unscored;
     private String forwardOnly;
     private String scorable;
+    private long startTime;
+    private long endTime;
     
+	public long getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+	public long getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(long endTime) {
+		this.endTime = endTime;
+	}
 	public String getScorable() {
 		return scorable;
 	}

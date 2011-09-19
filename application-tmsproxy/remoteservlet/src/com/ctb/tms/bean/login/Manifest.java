@@ -22,59 +22,11 @@ public class Manifest implements Serializable {
     private Integer randomDistractorSeed;
 
 	public Integer getRandomDistractorSeed() {
-		if(this.randomDistractorSeed == null) {
-			this.randomDistractorSeed = generateRandomNumber();
-		}
 		return randomDistractorSeed;
 	}
-
-	private static Integer generateRandomNumber () {
-		final String NUM_ARRAY   = "1234567890";
-		String alphaNumArray = NUM_ARRAY;
-		int index = 0;
-		Random rnd = new Random();
-		boolean validRandom = false;
-		String seed = "";
-		while(!validRandom) {
-			for(int i = 0; i < 3; i++) {
-				index = rnd.nextInt();
-				if (index < 0) {
-					index = index * -1;
-				}
-				// make sure the index is a value within the length of our array
-				if(index != 0) {
-					index = index % alphaNumArray.length();
-				}
-				seed = seed.concat(String.valueOf(alphaNumArray.charAt(index)));
-			}
-			if (isNumOdd(seed)) {
-				validRandom = true;
-				if(verifyContainsCharFrom(NUM_ARRAY,seed)) {
-					validRandom = true;
-				}
-			} else {
-				seed = "";
-			}
-		}
-		return Integer.valueOf(seed);
-	}
 	
-    private static boolean verifyContainsCharFrom(String charArray,String seed) {
-		boolean verified = false;
-		int j = 0;
-		while(!verified && (j < seed.length())) {
-			if(charArray.indexOf(String.valueOf(seed.charAt(j))) != -1) {
-				verified = true;
-			}
-			j++;
-		}
-		return verified;
-	}
-    
-    private static boolean isNumOdd(String seed) {
-
-		return Integer.valueOf(String.valueOf(seed.charAt(seed.length() - 1))).
-				intValue() % 2 == 0 ? false:true;
+	public void setRandomDistractorSeed(Integer randomDistractorSeed) {
+		this.randomDistractorSeed = randomDistractorSeed;
 	}
     
     public String getStudentName() {

@@ -101,6 +101,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						if(rosterMap.get(key) == null) {
 							RosterData rosterData = oasSource.getRosterData(creds[i]);
 							Manifest manifest = oasSource.getManifest(String.valueOf(rosterData.getAuthData().getTestRosterId()), creds[i].getAccesscode());
+							manifest.setRandomDistractorSeed(rosterData.getAuthData().getRandomDistractorSeedNumber());
 							logger.info("*****  Got roster data for " + key);
 							rosterMap.put(key, key);
 						} else {

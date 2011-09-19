@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -231,6 +232,7 @@ public class TMSServlet extends HttpServlet {
         Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
         for(int i=0;i<tsda.length;i++) {
 		    Tsd tsd = tsda[i];
+		    logger.debug("TMSServlet: save tsd: " + tsd);
 		    if(tsd.getLsid() != null && !(tsd.getLsid().length() < 1) && !"undefined".equals(tsd.getLsid())) {
 			    String rosterId = tsd.getLsid().substring(0, tsd.getLsid().indexOf(":"));
 			    String accessCode = tsd.getLsid().substring(tsd.getLsid().indexOf(":") + 1, tsd.getLsid().length());
@@ -280,7 +282,7 @@ public class TMSServlet extends HttpServlet {
 			    	manifestData[j].setCompletionStatus("IP");
 			    	// response events
 			    	oasSink.putItemResponse(rosterId, tsd);
-			    	logger.info("TMSServlet: save: cached response for roster " + rosterId + ", message " + tsd.getMseq()); 
+			    	logger.debug("TMSServlet: save: cached response for roster " + rosterId + ", message " + tsd.getMseq() + ": " + tsd.xmlText()); 
 			    }
 			    
 			    if(tsd.getLsvArray() != null && tsd.getLsvArray().length > 0) {
@@ -330,6 +332,7 @@ public class TMSServlet extends HttpServlet {
 				    		if(LmsEventType.LMS_INITIALIZE.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("IP");
 				    			manifest.setRosterCompletionStatus("IP");
+				    			manifestData[j].setStartTime(System.currentTimeMillis());
 				    			manifest.setRosterCorrelationId(tsd.getCid().intValue());
 				    		} else if(LmsEventType.STU_PAUSE.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("SP");
@@ -342,8 +345,7 @@ public class TMSServlet extends HttpServlet {
 				    			manifest.setRosterCompletionStatus("IS");
 				    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("CO");
-				    			manifest.setRosterCompletionStatus("CO");
-						    	
+				    			manifestData[j].setEndTime(System.currentTimeMillis());
 						    	if(nextScoIndex < manifestData.length) {
 						    		NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
 				                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
@@ -356,6 +358,7 @@ public class TMSServlet extends HttpServlet {
 		                //TestDeliveryContextListener.enqueueRoster(rosterId);
 			    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
 			    		manifest.setRosterEndTime(new Date(System.currentTimeMillis()));
+			    		manifest.setRosterCompletionStatus("IS");
 			    		if("T".equals(manifestData[0].getScorable())) {
 			    			JMSUtils.sendMessage(rosterId);
 			    			logger.info("TMSServlet: save: sent scoring message for roster " + rosterId);
@@ -434,23 +437,86 @@ public class TMSServlet extends HttpServlet {
 	        	loginResponse.setRestartFlag(true);
 	        }
 		}
-		int newRestartCount = restartCount + 1;
-		loginResponse.setRestartNumber(BigInteger.valueOf(newRestartCount));
         // TODO (complete): handle random distractor seed
-		loginResponse.setRandomDistractorSeedNumber(BigInteger.valueOf(manifest.getRandomDistractorSeed()));
-		manifest.setRosterRestartNumber(newRestartCount);
+		if (rd.getAuthData().getRandomDistractorSeedNumber() != null) {
+			 loginResponse.setRandomDistractorSeedNumber(new BigInteger(String.valueOf( rd.getAuthData().getRandomDistractorSeedNumber())));
+		 }  else {
+			 if ("Y".equals(manifest.getManifest()[0].getRandomDistractorStatus())) {
+				 Integer seed = manifest.getRandomDistractorSeed();
+				 if(seed == null) {
+					 seed = generateRandomNumber();
+					 manifest.setRandomDistractorSeed(seed);
+				 }
+				 rd.getAuthData().setRandomDistractorSeedNumber(seed);
+				 loginResponse.setRandomDistractorSeedNumber(BigInteger.valueOf(seed));
+			 }
+		 }
+		
 		if(manifest.getRosterStartTime() == null) {
 			manifest.setRosterStartTime(new Date(System.currentTimeMillis()));
 		}
 		manifest.setRosterCompletionStatus("IP");
 		manifest.setRosterCorrelationId(0);
 		manifest.setStudentName(rd.getAuthData().getStudentFirstName() + " " + rd.getAuthData().getStudentLastName());
+		String result = response.xmlText();
+		int newRestartCount = restartCount + 1;
+		manifest.setRosterRestartNumber(newRestartCount);
+		loginResponse.setRestartNumber(BigInteger.valueOf(restartCount));
 		oasSink.putManifestData(testRosterId, creds.getAccesscode(), manifest);
 		oasSink.putRosterData(creds, rd);
 		
-		//logger.debug(response.xmlText());
+		logger.debug(response.xmlText());
 		
-		return response.xmlText();
+		return result;
+	}
+	
+	private static Integer generateRandomNumber () {
+		final String NUM_ARRAY   = "1234567890";
+		String alphaNumArray = NUM_ARRAY;
+		int index = 0;
+		Random rnd = new Random();
+		boolean validRandom = false;
+		String seed = "";
+		while(!validRandom) {
+			for(int i = 0; i < 3; i++) {
+				index = rnd.nextInt();
+				if (index < 0) {
+					index = index * -1;
+				}
+				// make sure the index is a value within the length of our array
+				if(index != 0) {
+					index = index % alphaNumArray.length();
+				}
+				seed = seed.concat(String.valueOf(alphaNumArray.charAt(index)));
+			}
+			if (isNumOdd(seed)) {
+				validRandom = true;
+				if(verifyContainsCharFrom(NUM_ARRAY,seed)) {
+					validRandom = true;
+				}
+			} else {
+				seed = "";
+			}
+		}
+		return Integer.valueOf(seed);
+	}
+	
+	private static boolean verifyContainsCharFrom(String charArray,String seed) {
+		boolean verified = false;
+		int j = 0;
+		while(!verified && (j < seed.length())) {
+			if(charArray.indexOf(String.valueOf(seed.charAt(j))) != -1) {
+				verified = true;
+			}
+			j++;
+		}
+		return verified;
+	}
+    
+    private static boolean isNumOdd(String seed) {
+
+		return Integer.valueOf(String.valueOf(seed.charAt(seed.length() - 1))).
+				intValue() % 2 == 0 ? false:true;
 	}
 	
 	private Tsd[] convertTsdType(ConsolidatedRestartData.Tsd tsd) {
