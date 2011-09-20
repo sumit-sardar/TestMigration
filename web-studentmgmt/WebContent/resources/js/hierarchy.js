@@ -113,10 +113,12 @@ function populateGrid() {
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			caption:"Search Result",
 			loadComplete: function () {
+				if ($('#list2').getGridParam('records') === 0) {
+            	$('#sp_1_pager2').text("1");
+            	}
 				$.unblockUI();  
 				$("#list2").setGridParam({datatype:'local'});
 				var tdList = ("#pager2_left table.ui-pg-table  td");
-				//alert(tdList.length);
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}

@@ -11,10 +11,7 @@
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
 <netui-template:template templatePage="/resources/jsp/template.jsp">
-<script type="text/javascript" src="/StudentManagementWeb/resources/js/jquery-1.4.4.min.js"></script>
-<script type="text/javascript" src="/StudentManagementWeb/resources/js/jquery-ui-1.8.10.custom.min.js"></script>
 
-<script type="text/javascript" src="/StudentManagementWeb/resources/js/studentregistration.js"></script>
 
 <!-- 
 template_find_student.jsp

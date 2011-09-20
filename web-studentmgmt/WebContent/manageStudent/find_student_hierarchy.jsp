@@ -1,12 +1,15 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
-<%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
-<%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
+   
 
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
- 
-<netui-data:declareBundle bundlePath="oasResources" name="oas"/>
-<netui-data:declareBundle bundlePath="webResources" name="web"/>
-<netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
+<script type="text/javascript" src="/StudentManagementWeb/resources/js/studentregistration.js"></script>	
+
+
+
+
 
 <table class="sortable">
 
@@ -24,8 +27,8 @@
 	    <tr class="transparent">
 	        <td class="transparent"  valign="middle">
 	      	<div  id= "searchheader" style="visibility:hidden; background:#990000; height:25px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;Student Search</div>
-	    	<!--<script>call();</script>
-       		 --><div id = "orgNodeHierarchy" style="overflow:auto; height: 270px;  width: 250px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
+	    	<script>populateTree();</script>
+       		 <div id = "orgNodeHierarchy" style="overflow:auto; height: 270px;  width: 250px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
 				
 			</div> 
 			
