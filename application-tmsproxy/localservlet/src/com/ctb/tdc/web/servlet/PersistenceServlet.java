@@ -124,6 +124,16 @@ public class PersistenceServlet extends HttpServlet {
 				+ (System.currentTimeMillis() - startTime) + "\n");
 	}
 
+	private static boolean saveQueue = false;
+	
+	private static synchronized boolean isSaveQueue() {
+		return saveQueue;
+	}
+	
+	private static synchronized void setSaveQueue(boolean value) {
+		saveQueue = value;
+	}
+	
 	/**
 	 * The handleEvent method of the servlet. <br>
 	 * 
@@ -133,6 +143,7 @@ public class PersistenceServlet extends HttpServlet {
 	 * @param String method
 	 * @param String xml
 	 * @throws IOException 
+	 * @throws InterruptedException 
 	 */
 	private void handleEvent(HttpServletResponse response, String method,
 			String xml, HttpServletRequest request) throws IOException {
@@ -146,9 +157,27 @@ public class PersistenceServlet extends HttpServlet {
 			result = verifyServletSettings();
 		} else if (method != null && method.equals(ServletUtils.LOGIN_METHOD))
 			result = login(xml);
-		else if (method != null && method.equals(ServletUtils.SAVE_METHOD))
-			result = save(response, xml, request);
-		else if (method != null && method.equals(ServletUtils.FEEDBACK_METHOD))
+		else if (method != null && method.equals(ServletUtils.SAVE_METHOD)) {
+			synchronized(PersistenceServlet.class) {
+				if(!isSaveQueue()) {
+					setSaveQueue(true);
+					String mseq = ServletUtils.parseMseq(xml);
+					ServletUtils.writeResponse(response, result, mseq);
+					save(response, xml, request);
+					setSaveQueue(false);
+					return;
+				} else {
+					while(isSaveQueue()) {
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException ie) {
+							// do nothing
+						}
+					}
+					result = save(response, xml, request);
+				}
+			}
+		} else if (method != null && method.equals(ServletUtils.FEEDBACK_METHOD))
 			result = feedback(xml);
 		else if (method != null
 				&& method.equals(ServletUtils.UPLOAD_AUDIT_FILE_METHOD))
@@ -208,9 +237,7 @@ public class PersistenceServlet extends HttpServlet {
 			String userHome = System.getProperty("user.home");
 			//Performing the FlashCookie Copy operation to avoid the flash security pop-up
 
-			File flashCookieSource = new File(getServletContext().getRealPath(
-					"/")
-					+ "//settings.sol");
+			File flashCookieSource = new File(getServletContext().getRealPath("/") + "//settings.sol");
 			//System.out.println("flash Cookie Source exists" + flashCookieSource.exists());
 			InputStream in = null;
 			try {

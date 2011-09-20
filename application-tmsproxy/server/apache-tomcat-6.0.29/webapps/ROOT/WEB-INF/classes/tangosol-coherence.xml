@@ -691,7 +691,7 @@ to find specific notes on changes suggested for production use.
     Note: Setting this value to 'local-only', 'remote-only or 'all' will require the
     javax.management.* classes be available on the classpath.
     -->
-    <managed-nodes system-property="tangosol.coherence.management">none</managed-nodes>
+    <managed-nodes system-property="tangosol.coherence.management">all</managed-nodes>
 
     <!--
     Note: Setting this value to 'true' will require the Enterprise Edition license.
