@@ -415,16 +415,20 @@ public class TMSServlet extends HttpServlet {
 	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
 	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {        	
 	            	Tsd[] irt = null;
-	            	ConsolidatedRestartData restartData = loginResponse.getConsolidatedRestartDataArray(0);
+	            	ConsolidatedRestartData restartData = null;
 	            	irt = oasSource.getItemResponses(testRosterId);
 	            	boolean responsesInCache = (irt != null && irt.length > 0);
-	            	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
-                	if (!responsesInCache && responsesInRD) {
-                		irt = convertTsdType(restartData.getTsdArray(0));
-                		for(int j=0;j<irt.length;j++) {
-	                    	oasSink.putItemResponse(testRosterId, irt[j]);
-	                    }
-                	}
+	            	ConsolidatedRestartData[] crda = loginResponse.getConsolidatedRestartDataArray();
+	            	if(crda != null && crda.length > 0) {
+		            	restartData = loginResponse.getConsolidatedRestartDataArray(0);
+		            	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
+	                	if (!responsesInCache && responsesInRD) {
+	                		irt = convertTsdType(restartData.getTsdArray(0));
+	                		for(int j=0;j<irt.length;j++) {
+		                    	oasSink.putItemResponse(testRosterId, irt[j]);
+		                    }
+	                	}
+	            	}
                 	ItemResponseData [] ird = RosterData.generateItemResponseData(manifesta[i], irt);
                 	loginResponse.setConsolidatedRestartDataArray(0, ConsolidatedRestartData.Factory.newInstance(xmlOptions));
                 	restartData = loginResponse.getConsolidatedRestartDataArray(0);
