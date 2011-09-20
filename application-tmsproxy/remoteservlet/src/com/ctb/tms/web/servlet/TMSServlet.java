@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -38,6 +39,7 @@ import noNamespace.TmssvcRequestDocument.TmssvcRequest.LoginRequest;
 import noNamespace.TmssvcResponseDocument;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.Sco;
 
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
@@ -402,45 +404,54 @@ public class TMSServlet extends HttpServlet {
 		}*/
 		TmssvcResponseDocument response = rd.getLoginDocument();
 		LoginResponse loginResponse = response.getTmssvcResponse().getLoginResponse();
+       	Sco[] scoa = loginResponse.getManifest().getScoArray();
+       	HashMap scomap = new HashMap(scoa.length);
+       	for (int h=0;h<scoa.length;h++) {
+       		scomap.put(scoa[h].getId(), scoa[h]);
+       	}
 		BigInteger restart = loginResponse.getRestartNumber();
 		if(restart == null) restart = BigInteger.valueOf(0);
 		int restartCount = restart.intValue();
 		logger.debug("Restart count: " + restartCount);
-		if(restartCount > 0) {
-			ManifestData[] manifesta = manifest.getManifest();
-			boolean gotRestart = false;
-	        for(int i=0; i<manifesta.length ;i++) {
-	            if(!gotRestart && (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
-	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS) ||
-	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
-	            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {        	
-	            	Tsd[] irt = null;
-	            	ConsolidatedRestartData restartData = null;
-	            	irt = oasSource.getItemResponses(testRosterId);
-	            	boolean responsesInCache = (irt != null && irt.length > 0);
-	            	ConsolidatedRestartData[] crda = loginResponse.getConsolidatedRestartDataArray();
-	            	if(crda != null && crda.length > 0) {
-		            	restartData = loginResponse.getConsolidatedRestartDataArray(0);
-		            	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
-	                	if (!responsesInCache && responsesInRD) {
-	                		irt = convertTsdType(restartData.getTsdArray(0));
-	                		for(int j=0;j<irt.length;j++) {
-		                    	oasSink.putItemResponse(testRosterId, irt[j]);
-		                    }
-	                	}
-	            	}
-                	ItemResponseData [] ird = RosterData.generateItemResponseData(manifesta[i], irt);
-                	loginResponse.setConsolidatedRestartDataArray(0, ConsolidatedRestartData.Factory.newInstance(xmlOptions));
-                	restartData = loginResponse.getConsolidatedRestartDataArray(0);
-                	RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
-                    gotRestart = true;
-                    logger.info("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
-                }
-	        }
-	        if(gotRestart) {
-	        	loginResponse.setRestartFlag(true);
-	        }
-		}
+
+		ManifestData[] manifesta = manifest.getManifest();
+		boolean gotRestart = false;
+        for(int i=0; i<manifesta.length ;i++) {
+            if(restartCount > 0 && !gotRestart && (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
+            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS) ||
+            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
+            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {        	
+            	Tsd[] irt = null;
+            	ConsolidatedRestartData restartData = null;
+            	irt = oasSource.getItemResponses(testRosterId);
+            	boolean responsesInCache = (irt != null && irt.length > 0);
+            	ConsolidatedRestartData[] crda = loginResponse.getConsolidatedRestartDataArray();
+            	if(crda != null && crda.length > 0) {
+	            	restartData = loginResponse.getConsolidatedRestartDataArray(0);
+	            	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
+                	if (!responsesInCache && responsesInRD) {
+                		irt = convertTsdType(restartData.getTsdArray(0));
+                		for(int j=0;j<irt.length;j++) {
+	                    	oasSink.putItemResponse(testRosterId, irt[j]);
+	                    }
+                	}
+            	}
+            	ItemResponseData [] ird = RosterData.generateItemResponseData(manifesta[i], irt);
+            	loginResponse.setConsolidatedRestartDataArray(0, ConsolidatedRestartData.Factory.newInstance(xmlOptions));
+            	restartData = loginResponse.getConsolidatedRestartDataArray(0);
+            	RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
+                gotRestart = true;
+                logger.info("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
+            } 
+            if (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
+            	scomap.remove(String.valueOf(manifesta[i].getId()));
+            }
+        }
+        loginResponse.getManifest().setScoArray((Sco[])scomap.values().toArray(new Sco[0]));
+        if(gotRestart) {
+        	loginResponse.setRestartFlag(true);
+        }
+
         // TODO (complete): handle random distractor seed
 		if (rd.getAuthData().getRandomDistractorSeedNumber() != null) {
 			 loginResponse.setRandomDistractorSeedNumber(new BigInteger(String.valueOf( rd.getAuthData().getRandomDistractorSeedNumber())));
@@ -465,7 +476,8 @@ public class TMSServlet extends HttpServlet {
 		String result = response.xmlText();
 		int newRestartCount = restartCount + 1;
 		manifest.setRosterRestartNumber(newRestartCount);
-		loginResponse.setRestartNumber(BigInteger.valueOf(restartCount));
+		loginResponse.setRestartNumber(BigInteger.valueOf(newRestartCount));
+		rd.getAuthData().setRestartNumber(newRestartCount);
 		oasSink.putManifestData(testRosterId, creds.getAccesscode(), manifest);
 		oasSink.putRosterData(creds, rd);
 		

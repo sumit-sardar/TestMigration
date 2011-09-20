@@ -18,6 +18,7 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Consolida
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist.Ov;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist.Rv;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.Sco;
 
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlOptions;
