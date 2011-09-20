@@ -614,6 +614,7 @@ public class TMSServlet extends HttpServlet {
 
 	private String getMethod(HttpServletRequest request) {
     	String uri = request.getRequestURI();
+    	logger.info(uri);
     	String result = uri.substring(uri.lastIndexOf("/") + 1);
 		if(result.startsWith(ServletUtils.SAVE_METHOD)) {
 			String requestXML = request.getParameter("requestXML");
