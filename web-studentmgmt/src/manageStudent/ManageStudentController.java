@@ -1976,7 +1976,7 @@ public class ManageStudentController extends PageFlowController
 			ArrayList<TreeData> data = new ArrayList<TreeData>();
 			
 			UserNodeData und = StudentPathListUtils.OrgNodehierarchy(this.userName, 
-                    this.studentManagement, selectedList.get(0).getOrgNodeId());   
+                    this.studentManagement, selectedList.get(0).getOrgNodeId()); 
 			ArrayList<Organization> orgNodesList = StudentPathListUtils.buildOrgNodehierarchyList(und, orgIDList,completeOrgNodeList);	
 			
 			jsonTree = generateTree(orgNodesList);
@@ -2004,8 +2004,7 @@ public class ManageStudentController extends PageFlowController
 				
 							
 			}
-			this.completeOrgNodeList = new ArrayList<Organization>();
-			this.completeOrgNodeList = completeOrgNodeList;
+			
 			Gson gson = new Gson();
 			baseTree.setData(data);
 			jsonTree = gson.toJson(baseTree);
@@ -2164,8 +2163,8 @@ public class ManageStudentController extends PageFlowController
 	 
     private String generateTree (ArrayList<Organization> orgNodesList) throws Exception{	
     	
-		List<Integer> selectedList = new ArrayList<Integer>();
-		selectedList.add(new Integer(119378));
+		//List<Integer> selectedList = new ArrayList<Integer>();
+		//selectedList.add(new Integer(119378));
 		Organization org = orgNodesList.get(0);
 		TreeData td = new TreeData ();
 		td.setData(org.getOrgName());
@@ -2330,11 +2329,6 @@ public class ManageStudentController extends PageFlowController
 	    PageParams page = null;
 	    SortParams sort = null;
 		
-		List orgNodes = new ArrayList<Organization>();
-        if( this.completeOrgNodeList != null) {
-        	orgNodes = this.completeOrgNodeList;
-        }
- 
 		this.pageMessage = "";
 		Integer selectedOrgNodeId = form.getSelectedOrgNodeId();
 		if (selectedOrgNodeId != null)
