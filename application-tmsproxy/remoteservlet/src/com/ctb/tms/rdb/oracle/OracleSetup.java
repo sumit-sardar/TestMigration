@@ -81,7 +81,7 @@ public class OracleSetup {
 			ps.executeQuery();
 			logger.info("***** Using Tomcat JNDI syntax");
 		} catch (Exception e) {
-			logger.error("Couldn't lookup oasDataSource or execute test SQL using Tomcat JNDI syntax: " + e.getMessage(), e);
+			logger.error("Couldn't lookup oasDataSource or execute test SQL using Tomcat JNDI syntax: " + e.getMessage());
 			useTomcatJNDI = false;
 		} finally {
 			try {
@@ -99,7 +99,7 @@ public class OracleSetup {
 				ps.executeQuery();
 				logger.info("***** Using Weblogic JNDI syntax");
 			} catch (Exception e) {
-				logger.error("Couldn't lookup oasDataSource or execute test SQL using Weblogic JNDI syntax: " + e.getMessage(), e);
+				logger.error("Couldn't lookup oasDataSource or execute test SQL using Weblogic JNDI syntax: " + e.getMessage());
 				useWeblogicJNDI = false;
 			} finally {
 				try {

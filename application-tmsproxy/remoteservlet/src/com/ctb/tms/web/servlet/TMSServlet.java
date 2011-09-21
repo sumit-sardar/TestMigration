@@ -8,7 +8,7 @@ import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -351,6 +351,9 @@ public class TMSServlet extends HttpServlet {
 						    	if(nextScoIndex < manifestData.length) {
 						    		NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
 				                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
+				                	logger.debug("Selected next sco: " + manifestData[nextScoIndex].getId());
+						    	} else {
+						    		logger.debug("Selected next sco index " + nextScoIndex + " is greater than manifest length: " + manifestData.length);
 						    	}
 				    		}
 				    	} catch (Exception e) {
@@ -405,16 +408,19 @@ public class TMSServlet extends HttpServlet {
 		TmssvcResponseDocument response = rd.getLoginDocument();
 		LoginResponse loginResponse = response.getTmssvcResponse().getLoginResponse();
        	Sco[] scoa = loginResponse.getManifest().getScoArray();
-       	HashMap scomap = new HashMap(scoa.length);
+       	logger.debug("Initial manifest size: " + scoa.length);
+       	/*LinkedHashMap scomap = new LinkedHashMap(scoa.length);
        	for (int h=0;h<scoa.length;h++) {
        		scomap.put(scoa[h].getId(), scoa[h]);
-       	}
+       		logger.debug("Added Sco " + scoa[h].getId() + " to scomap.");
+       	}*/
 		BigInteger restart = loginResponse.getRestartNumber();
 		if(restart == null) restart = BigInteger.valueOf(0);
 		int restartCount = restart.intValue();
 		logger.debug("Restart count: " + restartCount);
 
 		ManifestData[] manifesta = manifest.getManifest();
+		ArrayList newmanifest = new ArrayList();
 		boolean gotRestart = false;
         for(int i=0; i<manifesta.length ;i++) {
             if(restartCount > 0 && !gotRestart && (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
@@ -444,10 +450,27 @@ public class TMSServlet extends HttpServlet {
                 logger.info("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
             } 
             if (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
-            	scomap.remove(String.valueOf(manifesta[i].getId()));
+            	//scomap.remove(String.valueOf(manifesta[i].getId()));
+            	//logger.debug("found completed sco: " + String.valueOf(manifesta[i].getId()));
+            	int g;
+            	for(g=0;g<scoa.length;g++) {
+            		//logger.debug("rd id: " + scoa[g].getId() + ", manifest id: " + String.valueOf(manifesta[i].getId()));
+            		if(scoa[g].getId().equals(String.valueOf(manifesta[i].getId()))) {
+            			break;
+            		}
+            	}
+            	if(g<scoa.length) {
+	            	//logger.debug("removing Sco " + g + " from manifest");
+	            	loginResponse.getManifest().removeSco(g);
+	            	logger.debug("removed Sco " + manifesta[i].getId() + " from scomap.");
+            	}
+            } else {
+            	newmanifest.add(manifesta[i]);
             }
         }
-        loginResponse.getManifest().setScoArray((Sco[])scomap.values().toArray(new Sco[0]));
+        manifest.setManifest((ManifestData[])newmanifest.toArray(new ManifestData[0]));
+        //loginResponse.getManifest().setScoArray((Sco[])scomap.values().toArray(new Sco[0]));
+        //logger.debug("Final manifest: " + loginResponse.getManifest().xmlText());
         if(gotRestart) {
         	loginResponse.setRestartFlag(true);
         }
