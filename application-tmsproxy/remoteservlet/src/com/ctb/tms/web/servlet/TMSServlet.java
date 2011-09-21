@@ -98,7 +98,7 @@ public class TMSServlet extends HttpServlet {
 		String result = ServletUtils.OK;
 		try {
 			String xml = request.getParameter("requestXML");
-			//logger.debug("***** Remote servlet request: " + xml);
+			logger.debug("***** Remote servlet request: " + xml);
 			
 			if (method != null && method.startsWith(ServletUtils.LOGIN_METHOD))
 	            result = login(xml);
@@ -125,6 +125,7 @@ public class TMSServlet extends HttpServlet {
 			
 	        // return response to client
 	        if (result != null) {
+	        	logger.debug("***** response: " + result);
 	        	ServletUtils.writeResponse(response, result);
 	        }
 		} catch (Exception e) {
