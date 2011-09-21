@@ -215,7 +215,7 @@ public class ManageStudentController extends PageFlowController
 	{        
 		getUserDetails();
 
-		this.orgNodePath = new ArrayList();
+		/*this.orgNodePath = new ArrayList();
 		this.currentOrgNodesInPathList = new HashMap();
 		this.currentOrgNodeIds = new Integer[0];
 		this.selectedOrgNodes = new ArrayList();
@@ -223,11 +223,11 @@ public class ManageStudentController extends PageFlowController
 		this.monthOptions = DateUtils.getMonthOptions();
 		this.dayOptions = DateUtils.getDayOptions();
 		this.yearOptions = DateUtils.getYearOptions();
-
+*/
 		this.savedForm = new ManageStudentForm();
 		this.savedForm.init( action );
 
-		this.getSession().setAttribute("userHasReports", userHasReports());
+		this.getRequest().setAttribute("userHasReports", userHasReports());
 
 		return this.savedForm;
 	}
@@ -295,8 +295,8 @@ public class ManageStudentController extends PageFlowController
 	             }
 	      }
 			
-	    getSession().setAttribute("isBulkAccommodationConfigured", hasBulkStudentConfigurable);
-	            
+	    //getSession().setAttribute("isBulkAccommodationConfigured", hasBulkStudentConfigurable);
+		 this.getRequest().setAttribute("isBulkAccommodationConfigured", hasBulkStudentConfigurable);
 	 	
 		return new Boolean(hasBulkStudentConfigurable);           
 	}
@@ -326,7 +326,8 @@ public class ManageStudentController extends PageFlowController
             } 
         }
        
-        getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
+       // getSession().setAttribute("isScoringConfigured", hasScoringConfigurable);
+        this.getRequest().setAttribute("isScoringConfigured", hasScoringConfigurable);
         return new Boolean(hasScoringConfigurable);
     }
 	//START- FORM RECOMMENDATION
@@ -345,8 +346,8 @@ public class ManageStudentController extends PageFlowController
 	        }
 	        
 	        boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
-	        this.getSession().setAttribute("canRegisterStudent",(validCustomer && validUser));
-	        
+	       // this.getSession().setAttribute("canRegisterStudent",(validCustomer && validUser));
+	        this.getRequest().setAttribute("canRegisterStudent",(validCustomer && validUser));
 	        return new Boolean(validCustomer && validUser);
 	    }
 	    //END- FORM RECOMMENDATION
@@ -369,7 +370,8 @@ public class ManageStudentController extends PageFlowController
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+			//getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
+			this.getRequest().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
 		}
 	    
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -1764,24 +1766,45 @@ public class ManageStudentController extends PageFlowController
 	 */
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
-					path = "findStudentHierarchy.do")
+					path = "findStudentHierarchy.do"),
+					@Jpf.Forward(name = "moveTo",
+							path = "goto_studentOperation.do")
 	})
 	protected Forward beginFindStudent()
-	{
-		ManageStudentForm form = initialize(ACTION_FIND_STUDENT);
+	{	
+		return new Forward("moveTo");
+		
+		/*ManageStudentForm form = initialize(ACTION_FIND_STUDENT);
 		form.setSelectedStudentId(null); 
 
 		form.setSelectedTab(MODULE_HIERARCHY);        
 
 		this.searchApplied = false;
 
-		initGradeGenderOptions(ACTION_FIND_STUDENT, form, null, null);
+		//initGradeGenderOptions(ACTION_FIND_STUDENT, form, null, null);
 
 		form.setSelectedOrgNodeId(null);
 
-		return new Forward("success", form);
+		return new Forward("success", form);*/
 	}
-
+	
+	
+	 /**
+     * @jpf:action
+     */
+	@Jpf.Action()
+    protected Forward goto_studentOperation ()
+    {
+		try{
+			String contextPath = "/StudentManagementWeb/studentOperation/beginFindStudent.do";
+	        String url = contextPath;         
+	        getResponse().sendRedirect(url);
+	 		} 
+		    catch( IOException ioe ) {
+		        System.err.print(ioe.getStackTrace());
+		    }
+		    return null;
+    }
 
 
 	/**
@@ -1942,15 +1965,15 @@ public class ManageStudentController extends PageFlowController
 			path = "logout.do"))
 			protected Forward findStudentHierarchy(ManageStudentForm form)
 	{   
-		getUserDetails();
-		form.validateValues();
+		//getUserDetails();
+		//form.validateValues();
 		customerHasBulkAccommodation();
 		customerHasScoring();
 		canRegisterStudent();
 		isLasLinkCustomer();
 		isTopLevelUser();
 		this.getRequest().setAttribute("isFindStudent", Boolean.TRUE);
-		setFormInfoOnRequest(form);
+		//setFormInfoOnRequest(form);
 		return new Forward("success");
 	}
 	
@@ -2916,8 +2939,8 @@ public class ManageStudentController extends PageFlowController
                 } 
             }
        
-        this.isLasLinkCustomer = isLasLinkCustomer;
-       
+        //this.isLasLinkCustomer = isLasLinkCustomer;
+        this.getRequest().setAttribute("isLasLinkCustomer", isLasLinkCustomer);  
     }
 
 	/*

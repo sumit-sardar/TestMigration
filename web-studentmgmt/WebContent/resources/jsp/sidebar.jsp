@@ -25,7 +25,7 @@
     </c:if>
     
 <ctb:auth roles="Administrator, Administrative Coordinator">
-	<c:if test="${ sessionScope.isBulkAccommodationConfigured}">    
+	<c:if test="${ requestScope.isBulkAccommodationConfigured}">    
 	        <li><a href="/StudentManagementWeb/manageBulkAccommodation/beginAddBulkStudent.do" ><span>Edit Accommodations</span></a></li>
 	</c:if>
 </ctb:auth>      
@@ -66,7 +66,7 @@
     <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf"><span>Reset Test Session</span></a></li>
 </ul>
 </ctb:auth>
- <c:if test="${ sessionScope.isScoringConfigured}">    
+ <c:if test="${ requestScope.isScoringConfigured}">    
 <ctb:auth roles="Administrator, Administrative Coordinator, Coordinator, Proctor">
 <h1>Score</h1>
 <ul>
@@ -85,7 +85,7 @@
 </ul>
 </ctb:auth>
 <ctb:auth roles="Administrator">
-<c:if test="${ sessionScope.isTopLevelUser }">
+<c:if test="${ requestScope.isTopLevelUser }">
 <h1>Export</h1>
 <ul>
     <li><a href="/DataExportWeb/dataExportPageFlow/begin.do" ><span>Export Data</span></a></li>

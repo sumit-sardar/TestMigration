@@ -22,6 +22,10 @@
         <filter-name>NoCacheFilter</filter-name>
         <url-pattern>/manageBulkAccommodation/*</url-pattern>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>NoCacheFilter</filter-name>
+        <url-pattern>/studentOperation/*</url-pattern>
+    </filter-mapping>
     <servlet>
         <description/>
         <servlet-name>action</servlet-name>
@@ -108,6 +112,7 @@
             <description>Protect any resources within the following Page Flow.</description>
             <url-pattern>/manageStudent/*</url-pattern>
             <url-pattern>/manageBulkAccommodation/*</url-pattern>
+            <url-pattern>/studentOperation/*</url-pattern>
             <http-method>POST</http-method>
             <http-method>GET</http-method>
         </web-resource-collection>

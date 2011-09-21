@@ -12,7 +12,7 @@
             <table class="legacyNavLinks floatLeft">
             <tr>
                 <td><netui:anchor action="homepage">home</netui:anchor></td>
-                <c:if test="${ sessionScope.userHasReports}">                
+                <c:if test="${ requestScope.userHasReports}">                
                 <td>| <a href="/TestSessionInfoWeb/homepage/viewReports.do" >reports</a></td>
                 </c:if>
                 <td>| <a href="/UserManagementWeb/manageUser/beginMyProfile.do" >my profile</a></td>
