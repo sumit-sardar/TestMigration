@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -363,10 +364,10 @@ public class TMSServlet extends HttpServlet {
 		                // Cache write-behind will handle response persistence
 		                //TestDeliveryContextListener.enqueueRoster(rosterId);
 			    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
-			    		manifest.setRosterEndTime(new Date(System.currentTimeMillis()));
+			    		manifest.setRosterEndTime(new Timestamp(System.currentTimeMillis()));
 			    		manifest.setRosterCompletionStatus("IS");
 			    		if("T".equals(manifestData[0].getScorable())) {
-			    			JMSUtils.sendMessage(rosterId);
+			    			JMSUtils.sendMessage(Integer.valueOf(rosterId));
 			    			logger.info("TMSServlet: save: sent scoring message for roster " + rosterId);
 			            }
 			    	}
@@ -401,14 +402,13 @@ public class TMSServlet extends HttpServlet {
 		RosterData rd = oasSource.getRosterData(creds);
 		String testRosterId = String.valueOf(rd.getAuthData().getTestRosterId());
 		Manifest manifest = oasSource.getManifest(testRosterId, creds.getAccesscode());
-		/*if(manifest == null) {
-			manifest = rd.getManifest();
-		} else {
-			rd.setManifest(manifest);
-		}*/
+
 		TmssvcResponseDocument response = rd.getLoginDocument();
 		LoginResponse loginResponse = response.getTmssvcResponse().getLoginResponse();
-       	Sco[] scoa = loginResponse.getManifest().getScoArray();
+       	Sco[] scoa = new Sco[0];
+       	if (loginResponse.getManifest() != null) {
+       		scoa = loginResponse.getManifest().getScoArray();
+       	}
        	logger.debug("Initial manifest size: " + scoa.length);
        	/*LinkedHashMap scomap = new LinkedHashMap(scoa.length);
        	for (int h=0;h<scoa.length;h++) {
@@ -444,6 +444,9 @@ public class TMSServlet extends HttpServlet {
                 	}
             	}
             	ItemResponseData [] ird = RosterData.generateItemResponseData(manifesta[i], irt);
+            	if(loginResponse.getConsolidatedRestartDataArray() == null || loginResponse.getConsolidatedRestartDataArray().length == 0) {
+            		loginResponse.addNewConsolidatedRestartData();
+            	}
             	loginResponse.setConsolidatedRestartDataArray(0, ConsolidatedRestartData.Factory.newInstance(xmlOptions));
             	restartData = loginResponse.getConsolidatedRestartDataArray(0);
             	RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
@@ -492,7 +495,7 @@ public class TMSServlet extends HttpServlet {
 		 }
 		
 		if(manifest.getRosterStartTime() == null) {
-			manifest.setRosterStartTime(new Date(System.currentTimeMillis()));
+			manifest.setRosterStartTime(new Timestamp(System.currentTimeMillis()));
 		}
 		manifest.setRosterCompletionStatus("IP");
 		manifest.setRosterCorrelationId(0);

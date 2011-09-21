@@ -1,8 +1,7 @@
 package com.ctb.tms.bean.login;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.util.Random;
+import java.sql.Timestamp;
 
 public class Manifest implements Serializable {
 
@@ -12,8 +11,8 @@ public class Manifest implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private ManifestData[] manifest;
 	
-	private Date rosterStartTime;
-    private Date rosterEndTime;
+	private Timestamp rosterStartTime;
+    private Timestamp rosterEndTime;
     private int rosterLastMseq;
     private int rosterCorrelationId = 0;
     private String rosterCompletionStatus;
@@ -41,16 +40,16 @@ public class Manifest implements Serializable {
 	public void setRosterRestartNumber(int rosterRestartNumber) {
 		this.rosterRestartNumber = rosterRestartNumber;
 	}
-	public Date getRosterStartTime() {
+	public Timestamp getRosterStartTime() {
 		return rosterStartTime;
 	}
-	public void setRosterStartTime(Date rosterStartTime) {
+	public void setRosterStartTime(Timestamp rosterStartTime) {
 		this.rosterStartTime = rosterStartTime;
 	}
-	public Date getRosterEndTime() {
+	public Timestamp getRosterEndTime() {
 		return rosterEndTime;
 	}
-	public void setRosterEndTime(Date rosterEndTime) {
+	public void setRosterEndTime(Timestamp rosterEndTime) {
 		this.rosterEndTime = rosterEndTime;
 	}
 	public int getRosterLastMseq() {

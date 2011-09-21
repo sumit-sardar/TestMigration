@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
@@ -123,8 +124,16 @@ public class OASOracleSink implements OASRDBSink {
     			stmt1.setInt(2, subtest.getRawScore());
     			stmt1.setInt(3, subtest.getMaxScore());
     			stmt1.setInt(4, subtest.getUnscored());
-    			stmt1.setDate(5, new Date(subtest.getStartTime()));
-    			stmt1.setDate(6, new Date(subtest.getEndTime()));
+    			if(subtest.getStartTime() > 0) {
+    				stmt1.setTimestamp(5, new Timestamp(subtest.getStartTime()));
+    			} else {
+    				stmt1.setTimestamp(5, null);
+    			}
+    			if(subtest.getEndTime() > 0) {
+    				stmt1.setTimestamp(6, new Timestamp(subtest.getEndTime()));
+    			} else {
+    				stmt1.setTimestamp(6, null);
+    			}
     			stmt1.setString(7, testRosterId);
     			stmt1.setInt(8, subtest.getId());
     			stmt1.executeUpdate();
@@ -134,10 +143,10 @@ public class OASOracleSink implements OASRDBSink {
     		stmt1 = conn.prepareStatement(ROSTER_STATUS_SQL);
     		stmt1.setString(1, manifest.getRosterCompletionStatus());
     		stmt1.setInt(2, manifest.getRosterRestartNumber());
-    		stmt1.setDate(3, manifest.getRosterStartTime());
-    		stmt1.setDate(4, manifest.getRosterStartTime());
-    		stmt1.setDate(5, new Date(System.currentTimeMillis()));
-    		stmt1.setDate(6, manifest.getRosterEndTime());
+    		stmt1.setTimestamp(3, manifest.getRosterStartTime());
+    		stmt1.setTimestamp(4, manifest.getRosterStartTime());
+    		stmt1.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+    		stmt1.setTimestamp(6, manifest.getRosterEndTime());
     		stmt1.setInt(7, manifest.getRosterLastMseq());
     		stmt1.setInt(8, manifest.getRosterCorrelationId());
     		if("Y".equals(subtests[0].getRandomDistractorStatus())) {

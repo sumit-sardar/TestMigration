@@ -1,5 +1,6 @@
 package com.ctb.tms.util;
 
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.ResourceBundle;
 
@@ -35,7 +36,7 @@ public class JMSUtils {
 	    jmsCredentials = rb.getString("jmsCredentials");
 	}
        
-    public static void sendMessage(String messageValue) {
+    public static void sendMessage(Serializable messageValue) {
     	try {
 			InitialContext ctx = null;
 			QueueConnectionFactory qcf = null;
