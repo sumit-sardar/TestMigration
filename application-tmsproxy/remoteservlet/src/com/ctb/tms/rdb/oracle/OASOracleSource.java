@@ -251,6 +251,7 @@ public class OASOracleSource implements OASRDBSource
 	        result.setAuthData(authData);
 	        com.ctb.tms.bean.login.Manifest manifest = new com.ctb.tms.bean.login.Manifest();
 	        manifest.setManifest(manifestData);
+	        manifest.setTestRosterId(String.valueOf(testRosterId));
 	        //result.setManifest(manifest);
 	        //logger.debug(response.xmlText());
 	        return result;
@@ -574,6 +575,8 @@ public class OASOracleSource implements OASRDBSource
 	public com.ctb.tms.bean.login.Manifest getManifest(Connection con, String testRosterId, String testAccessCode) throws AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException, SQLException {
 		com.ctb.tms.bean.login.Manifest manifest = new com.ctb.tms.bean.login.Manifest();
 		manifest.setManifest(getManifestData(con, testRosterId, testAccessCode));
+		manifest.setTestRosterId(testRosterId);
+		manifest.setAccessCode(testAccessCode);
 		return manifest;
 	}
 	

@@ -111,4 +111,9 @@ public class OASHectorSource implements OASNoSQLSource {
         }
         return resulta.toArray(new Tsd[0]);
 	}
+	
+	public Manifest[] getAllManifests(String testRosterId) throws IOException, ClassNotFoundException {
+		// not properly implemented for Cassandra
+		return null;
+	}
 }

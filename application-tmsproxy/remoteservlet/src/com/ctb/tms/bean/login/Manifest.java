@@ -11,6 +11,8 @@ public class Manifest implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private ManifestData[] manifest;
 	
+	private String testRosterId;
+	private String accessCode;
 	private Timestamp rosterStartTime;
     private Timestamp rosterEndTime;
     private int rosterLastMseq;
@@ -19,6 +21,22 @@ public class Manifest implements Serializable {
     private int rosterRestartNumber;
     private String studentName;
     private Integer randomDistractorSeed;
+    
+	public String getTestRosterId() {
+		return testRosterId;
+	}
+
+	public void setTestRosterId(String testRosterId) {
+		this.testRosterId = testRosterId;
+	}
+	
+	public String getAccessCode() {
+		return accessCode;
+	}
+
+	public void setAccessCode(String accessCode) {
+		this.accessCode = accessCode;
+	}
 
 	public Integer getRandomDistractorSeed() {
 		return randomDistractorSeed;

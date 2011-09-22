@@ -19,6 +19,7 @@ import com.tangosol.net.NamedCache;
 import com.tangosol.util.Filter;
 import com.tangosol.util.ValueExtractor;
 import com.tangosol.util.extractor.ReflectionExtractor;
+import com.tangosol.util.filter.EqualsFilter;
 import com.tangosol.util.filter.GreaterEqualsFilter;
 
 public class OASCoherenceSource implements OASNoSQLSource {
@@ -81,6 +82,27 @@ public class OASCoherenceSource implements OASNoSQLSource {
 				i++;
 			}
 			return tsda;
+		} else {
+			return null;
+		}
+	}
+	
+	public Manifest[] getAllManifests(String testRosterId) throws IOException, ClassNotFoundException {
+		String key = testRosterId;
+		Filter filter = new EqualsFilter("getTestRosterId", key); 
+		Set setKeys = manifestCache.keySet(filter); 
+		Map mapResult = manifestCache.getAll(setKeys); 
+		if(mapResult != null) {
+			int size = mapResult.size();
+			logger.debug("*****  Found " + size + " manifests for roster " + testRosterId);
+			Manifest[] manifesta = new Manifest[size];
+			Iterator it = mapResult.keySet().iterator();
+			int i = 0;
+			while(it.hasNext()) {
+				manifesta[i] = (Manifest) mapResult.get(it.next());
+				i++;
+			}
+			return manifesta;
 		} else {
 			return null;
 		}

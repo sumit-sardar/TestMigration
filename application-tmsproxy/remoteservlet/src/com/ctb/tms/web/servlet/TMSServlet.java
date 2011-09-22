@@ -281,6 +281,7 @@ public class TMSServlet extends HttpServlet {
 			    	} else if(rosterCid == 0) {
 			    		rosterCid = thisCid;
 			    		manifest.setRosterCorrelationId(thisCid);
+			    		updateCID(rosterId, thisCid);
 			    	}
 			    	// keep IP status if we're receiving heartbeats or responses
 			    	manifestData[j].setCompletionStatus("IP");
@@ -338,6 +339,7 @@ public class TMSServlet extends HttpServlet {
 				    			manifest.setRosterCompletionStatus("IP");
 				    			manifestData[j].setStartTime(System.currentTimeMillis());
 				    			manifest.setRosterCorrelationId(tsd.getCid().intValue());
+				    			updateCID(rosterId, tsd.getCid().intValue());
 				    		} else if(LmsEventType.STU_PAUSE.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("SP");
 				    			manifest.setRosterCompletionStatus("SP");
@@ -361,11 +363,27 @@ public class TMSServlet extends HttpServlet {
 				    	} catch (Exception e) {
 				    		e.printStackTrace();
 				    	}
-		                // Cache write-behind will handle response persistence
-		                //TestDeliveryContextListener.enqueueRoster(rosterId);
 			    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
 			    		manifest.setRosterEndTime(new Timestamp(System.currentTimeMillis()));
-			    		manifest.setRosterCompletionStatus("IS");
+			    		Manifest[] allManifests = oasSource.getAllManifests(rosterId);
+			    		boolean allComplete = true;
+			    		for(int m=0;m<allManifests.length;m++) {
+			    			ManifestData[] mda = allManifests[m].getManifest();
+			    			for(int n=0;n<mda.length;n++) {
+				    			if(!"CO".equals(mda[n].getCompletionStatus())) {
+				    				allComplete = false;
+				    				break;
+				    			}
+			    			}
+			    			if(!allComplete) {
+			    				break;
+			    			}
+			    		}
+			    		if(allComplete) {
+			    			manifest.setRosterCompletionStatus("CO");
+			    		} else {
+			    			manifest.setRosterCompletionStatus("IS");
+			    		}
 			    		if("T".equals(manifestData[0].getScorable())) {
 			    			JMSUtils.sendMessage(Integer.valueOf(rosterId));
 			    			logger.info("TMSServlet: save: sent scoring message for roster " + rosterId);
@@ -382,6 +400,17 @@ public class TMSServlet extends HttpServlet {
         // TODO (complete): implement correlation, sequence and subtest/roster status checks for security
         // TODO (complete): update roster status, lastMseq, restartNumber, start/end times, etc. on test events
 		return responseDocument.xmlText();
+	}
+	
+	private void updateCID(String testRosterId, int cid) throws IOException, ClassNotFoundException {
+		// necessary to kick out same student using different access code . . .
+		Manifest[] allManifests = oasSource.getAllManifests(testRosterId);
+		logger.debug("Found " + allManifests.length + " manifests for roster " + testRosterId);
+		for(int m=0;m<allManifests.length;m++) {
+			allManifests[m].setRosterCorrelationId(cid);
+			oasSink.putManifestData(allManifests[m].getTestRosterId(), allManifests[m].getAccessCode(), allManifests[m]);
+			logger.debug("Set CID: " + cid + ", for manifest: " + allManifests[m].getAccessCode());
+		}
 	}
 
 	private String login(String xml) throws XmlException, IOException, ClassNotFoundException, SQLException {
@@ -657,7 +686,7 @@ public class TMSServlet extends HttpServlet {
 
 	private String getMethod(HttpServletRequest request) {
     	String uri = request.getRequestURI();
-    	logger.info(uri);
+    	logger.debug(uri);
     	String result = uri.substring(uri.lastIndexOf("/") + 1);
 		if(result.startsWith(ServletUtils.SAVE_METHOD)) {
 			String requestXML = request.getParameter("requestXML");
