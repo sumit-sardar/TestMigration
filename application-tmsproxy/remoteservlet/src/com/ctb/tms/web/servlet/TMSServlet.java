@@ -6,10 +6,11 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -64,6 +65,9 @@ import com.ctb.tms.rdb.ADSRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.ctb.tms.util.Constants;
 import com.ctb.tms.util.JMSUtils;
+import com.ctb.tms.util.TabeLocatorUtils;
+import com.ctb.tms.util.TabeLocatorUtils.RecommendedSubtestLevel;
+import com.ctb.tms.util.TabeLocatorUtils.RosterSubtestStatus;
 
 public class TMSServlet extends HttpServlet {
 
@@ -225,7 +229,7 @@ public class TMSServlet extends HttpServlet {
         return response.xmlText();
 	}
 
-	private String save(HttpServletResponse response, String xml) throws XmlException, IOException, ClassNotFoundException, InvalidCorrelationIdException {
+	private String save(HttpServletResponse response, String xml) throws XmlException, IOException, ClassNotFoundException, InvalidCorrelationIdException, SQLException {
 		XmlOptions xmlOptions = new XmlOptions(); 
         xmlOptions = xmlOptions.setUnsynchronized();
 		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml, xmlOptions);
@@ -251,7 +255,7 @@ public class TMSServlet extends HttpServlet {
 	    		if(manifest.getRosterCompletionStatus() == null) {
 	    			manifest.setRosterCompletionStatus("IP");
 	    		}
-		    	ManifestData[] manifestData = manifest.getManifest();
+		    	ManifestData[] manifestData = manifest.getManifest();	
 		    	int nextScoIndex = 0;
 		    	int j;
 		    	for(j=0;j<manifestData.length;j++) {
@@ -281,7 +285,7 @@ public class TMSServlet extends HttpServlet {
 			    	} else if(rosterCid == 0) {
 			    		rosterCid = thisCid;
 			    		manifest.setRosterCorrelationId(thisCid);
-			    		updateCID(rosterId, thisCid);
+			    		updateCID(rosterId, thisCid, accessCode);
 			    	}
 			    	// keep IP status if we're receiving heartbeats or responses
 			    	manifestData[j].setCompletionStatus("IP");
@@ -339,7 +343,7 @@ public class TMSServlet extends HttpServlet {
 				    			manifest.setRosterCompletionStatus("IP");
 				    			manifestData[j].setStartTime(System.currentTimeMillis());
 				    			manifest.setRosterCorrelationId(tsd.getCid().intValue());
-				    			updateCID(rosterId, tsd.getCid().intValue());
+				    			updateCID(rosterId, tsd.getCid().intValue(), accessCode);
 				    		} else if(LmsEventType.STU_PAUSE.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("SP");
 				    			manifest.setRosterCompletionStatus("SP");
@@ -402,12 +406,79 @@ public class TMSServlet extends HttpServlet {
 		return responseDocument.xmlText();
 	}
 	
-	private void updateCID(String testRosterId, int cid) throws IOException, ClassNotFoundException {
+	private void handleTabeLocator(String testRosterId) throws SQLException, IOException, ClassNotFoundException {
+        logger.debug("##### handleTabeLocator: In handleTabeLocator");
+		RosterSubtestStatus [] locatorSubtests = null;
+        ArrayList rssList = new ArrayList();
+        Manifest[] manifesta = oasSource.getAllManifests(testRosterId);
+        logger.debug("##### handleTabeLocator: found " + manifesta.length + " manifests for roster " + testRosterId);
+        for(int i=0;i<manifesta.length;i++) {
+        	Manifest manifest = manifesta[i];
+        	ManifestData[] mda = manifest.getManifest();
+        	logger.debug("##### handleTabeLocator: manifest " + i + " length: " + mda.length);
+        	for(int j=0;j<mda.length;j++) {
+        		ManifestData md = mda[j];
+        		if("L".equals(md.getLevel())) {
+        			logger.debug("##### handleTabeLocator: md " + i + "-" + j + " is locator");
+        			RosterSubtestStatus rss = new RosterSubtestStatus();
+        			rss.setItemSetId(md.getId());
+        			rss.setItemSetName(md.getTitle());
+        			rss.setSubtestCompletionStatus(md.getCompletionStatus());
+        			rss.setRawScore(md.getRawScore());
+        			rssList.add(rss);
+        			logger.debug("##### handleTabeLocator: added rss: " + rss.getItemSetName() + ":" + rss.getSubtestCompletionStatus() + ":" + rss.getRawScore());
+        		}
+        	}
+        }
+        locatorSubtests = (RosterSubtestStatus[]) rssList.toArray(new RosterSubtestStatus[0]);
+        HashMap recommendedMap = TabeLocatorUtils.calculateRecommendSubtestLevel(locatorSubtests);
+        logger.debug("##### handleTabeLocator: calculated " + recommendedMap.keySet().size() + " recommended levels");
+        for(int i=0;i<manifesta.length;i++) {
+        	Manifest manifest = manifesta[i];
+        	ManifestData[] mda = manifest.getManifest();
+        	ArrayList newmanifest = new ArrayList();
+        	for(int j=0;j<mda.length;j++) {
+        		ManifestData md = mda[j];
+        		String subtestName = mda[j].getTitle().replaceAll(" Locator ", " ").replaceAll(" Sample Question", "");
+        		logger.debug("##### handleTabeLocator: checking recommended level for " + subtestName);
+        		RecommendedSubtestLevel rsl = (RecommendedSubtestLevel) recommendedMap.get(subtestName.trim());
+        		if(rsl != null) {
+	        		if("L".equals(md.getLevel())) {
+	        			md.setRecommendedLevel(rsl.getRecommendedLevel());
+	        			newmanifest.add(md);
+	        			logger.debug("##### handleTabeLocator: set recommended level for locator subtest: " + md.getId());
+	        		} else {
+	        			if (rsl.getRecommendedLevel().equals(md.getLevel())) {
+	        				newmanifest.add(md);
+	        				logger.debug("##### handleTabeLocator: found recommended subtest, id: " + md.getId());
+	        			}
+	        		}
+        		} else {
+        			logger.debug("##### handleTabeLocator: no level in map for " + subtestName);
+        			// no recommendation for this content area yet
+        			newmanifest.add(md);
+        		}
+        	}
+        	manifest.setManifest((ManifestData[]) newmanifest.toArray(new ManifestData[0]));
+        	oasSink.putManifestData(testRosterId, manifest.getAccessCode(), manifest);
+        }
+    }
+	
+	private void updateCID(String testRosterId, int cid, String currentAccessCode) throws IOException, ClassNotFoundException {
 		// necessary to kick out same student using different access code . . .
 		Manifest[] allManifests = oasSource.getAllManifests(testRosterId);
 		logger.debug("Found " + allManifests.length + " manifests for roster " + testRosterId);
 		for(int m=0;m<allManifests.length;m++) {
 			allManifests[m].setRosterCorrelationId(cid);
+			if("IP".equals(allManifests[m].getRosterCompletionStatus()) && !currentAccessCode.equals(allManifests[m].getAccessCode())) {
+				ManifestData[] mda = allManifests[m].getManifest();
+				for(int n=0;n<mda.length;n++) {
+					if("IP".equals(mda[n].getCompletionStatus())) {
+						mda[n].setCompletionStatus("IN");
+					}
+				}
+				allManifests[m].setRosterCompletionStatus("IN");
+			}
 			oasSink.putManifestData(allManifests[m].getTestRosterId(), allManifests[m].getAccessCode(), allManifests[m]);
 			logger.debug("Set CID: " + cid + ", for manifest: " + allManifests[m].getAccessCode());
 		}
@@ -429,8 +500,20 @@ public class TMSServlet extends HttpServlet {
 			creds.setAccesscode(lr.getAccessCode());
 		}
 		RosterData rd = oasSource.getRosterData(creds);
+		if(rd == null) {
+			TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
+            LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
+            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.AUTHENTICATION_FAILURE_STATUS);
+            return response.xmlText();
+		}
 		String testRosterId = String.valueOf(rd.getAuthData().getTestRosterId());
 		Manifest manifest = oasSource.getManifest(testRosterId, creds.getAccesscode());
+		// TODO: only do this when auto-locator function is needed
+		ManifestData md = manifest.getManifest()[0];
+		if("TB".equals(md.getProduct()) || "TL".equals(md.getProduct())) {
+    		handleTabeLocator(testRosterId);
+    		manifest = oasSource.getManifest(testRosterId, creds.getAccesscode());
+    	}
 
 		TmssvcResponseDocument response = rd.getLoginDocument();
 		LoginResponse loginResponse = response.getTmssvcResponse().getLoginResponse();

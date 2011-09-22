@@ -38,7 +38,35 @@ public class ManifestData implements Serializable
     private String scorable;
     private long startTime;
     private long endTime;
+    private String form;
+    private String level;
+    private String product;
+    private String recommendedLevel;
     
+	public String getRecommendedLevel() {
+		return recommendedLevel;
+	}
+	public void setRecommendedLevel(String recommendedLevel) {
+		this.recommendedLevel = recommendedLevel;
+	}
+	public String getForm() {
+		return form;
+	}
+	public void setForm(String form) {
+		this.form = form;
+	}
+	public String getLevel() {
+		return level;
+	}
+	public void setLevel(String level) {
+		this.level = level;
+	}
+	public String getProduct() {
+		return product;
+	}
+	public void setProduct(String product) {
+		this.product = product;
+	}
 	public long getStartTime() {
 		return startTime;
 	}
