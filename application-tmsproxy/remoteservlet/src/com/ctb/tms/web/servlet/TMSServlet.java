@@ -535,6 +535,12 @@ public class TMSServlet extends HttpServlet {
 		}
 		String testRosterId = String.valueOf(rd.getAuthData().getTestRosterId());
 		Manifest manifest = oasSource.getManifest(testRosterId, creds.getAccesscode());
+		if(manifest == null || manifest.getManifest().length < 1) {
+			TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
+            LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
+            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.AUTHENTICATION_FAILURE_STATUS);
+            return response.xmlText();
+		}
 		// TODO: only do this when auto-locator function is needed
 		ManifestData md = manifest.getManifest()[0];
 		if(("TB".equals(md.getProduct()) || "TL".equals(md.getProduct()) 
