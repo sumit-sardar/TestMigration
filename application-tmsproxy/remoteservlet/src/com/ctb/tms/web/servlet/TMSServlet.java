@@ -376,6 +376,13 @@ public class TMSServlet extends HttpServlet {
 				    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("CO");
 				    			manifestData[j].setEndTime(System.currentTimeMillis());
+				    			if(("TB".equals(manifestData[j].getProduct()) || "TL".equals(manifestData[j].getProduct()) 
+				    			   && manifestData.length > 8 && "L".equals(manifestData[j].getLevel()))) {
+				    				// we just completed a locator subtest of a single-TAC auto-located TABE assessment
+				    	    		handleTabeLocator(rosterId);
+				    	    		manifest = oasSource.getManifest(rosterId, accessCode);
+				    	    		manifestData = manifest.getManifest();
+				    	    	}
 						    	if(nextScoIndex < manifestData.length) {
 						    		NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
 				                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
@@ -389,7 +396,7 @@ public class TMSServlet extends HttpServlet {
 				    	}
 			    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
 			    		manifest.setRosterEndTime(new Timestamp(System.currentTimeMillis()));
-			    		Manifest[] allManifests = oasSource.getAllManifests(rosterId);
+			    		/*Manifest[] allManifests = oasSource.getAllManifests(rosterId);
 			    		boolean allComplete = true;
 			    		for(int m=0;m<allManifests.length;m++) {
 			    			ManifestData[] mda = allManifests[m].getManifest();
@@ -405,9 +412,9 @@ public class TMSServlet extends HttpServlet {
 			    		}
 			    		if(allComplete) {
 			    			manifest.setRosterCompletionStatus("CO");
-			    		} else {
+			    		} else {*/
 			    			manifest.setRosterCompletionStatus("IS");
-			    		}
+			    		//}
 			    		if("T".equals(manifestData[0].getScorable())) {
 			    			JMSUtils.sendMessage(Integer.valueOf(rosterId));
 			    			logger.info("TMSServlet: save: sent scoring message for roster " + rosterId);
@@ -459,7 +466,7 @@ public class TMSServlet extends HttpServlet {
         	ArrayList newmanifest = new ArrayList();
         	for(int j=0;j<mda.length;j++) {
         		ManifestData md = mda[j];
-        		String subtestName = mda[j].getTitle().replaceAll(" Locator ", " ").replaceAll(" Sample Question", "");
+        		String subtestName = mda[j].getTitle().replaceAll(" Locator ", " ").replaceAll(" Sample Question", "").replaceAll(" Sample Questions", "");;
         		logger.debug("##### handleTabeLocator: checking recommended level for " + subtestName);
         		RecommendedSubtestLevel rsl = (RecommendedSubtestLevel) recommendedMap.get(subtestName.trim());
         		if(rsl != null) {
@@ -530,9 +537,18 @@ public class TMSServlet extends HttpServlet {
 		Manifest manifest = oasSource.getManifest(testRosterId, creds.getAccesscode());
 		// TODO: only do this when auto-locator function is needed
 		ManifestData md = manifest.getManifest()[0];
-		if("TB".equals(md.getProduct()) || "TL".equals(md.getProduct())) {
+		if(("TB".equals(md.getProduct()) || "TL".equals(md.getProduct()) 
+		   && manifest.getManifest().length == 8) && !"L".equals(md.getLevel())) {
+			// we're in a non-locator section of a multi-TAC auto-located TABE assessment
     		handleTabeLocator(testRosterId);
     		manifest = oasSource.getManifest(testRosterId, creds.getAccesscode());
+    		if(manifest.getManifest().length == 8) {
+    			// manifest hasn't been shortened, must not have completed relevant locator subtest
+    			TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
+                LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
+                loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.LOCATOR_SUBTEST_NOT_COMPLETED_STATUS);
+                return response.xmlText();
+    		}
     	}
 
 		TmssvcResponseDocument response = rd.getLoginDocument();

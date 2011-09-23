@@ -26,7 +26,7 @@ public class OASOracleSink implements OASRDBSink {
 	private static final String DELETE_CR_RESPONSE_SQL = "delete from item_response_cr where test_roster_id = ? and item_set_id = ? and item_id = ?";
 	private static final String STORE_CR_RESPONSE_SQL = "insert into item_response_cr (  test_roster_id,  item_set_id, item_id, constructed_response) values (?,  ?,  ?,  ?)";
 	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set completion_status = ?, raw_score = ?, max_score = ?, unscored = ?, start_date_time = ?, completion_date_time = ?, recommended_level = ? , ability_score = ?, sem_score = ?, objective_score = ? where test_roster_id = ? and item_set_id = ?";
-	private static final String ROSTER_STATUS_SQL = "update  test_roster set  test_completion_status = NVL(?, test_completion_status),  restart_number = ?,  start_date_time = nvl(start_date_time,?),  last_login_date_time = ?, updated_date_time = ?,  completion_date_time = ?, last_mseq = ?,  correlation_id = ?, random_distractor_seed = ? where  test_roster_id = ?";
+	private static final String ROSTER_STATUS_SQL = "update  test_roster ros set test_completion_Status = decode((select count(*) from student_item_set_status where test_roster_id = ros.test_roster_id and completion_Status != 'CO'), 0, 'CO', NVL(?, test_completion_status)),  restart_number = ?,  start_date_time = nvl(start_date_time,?),  last_login_date_time = ?, updated_date_time = ?,  completion_date_time = ?, last_mseq = ?,  correlation_id = ?, random_distractor_seed = ? where  test_roster_id = ?";
 	private static final String CR_RESPONSE_EXISTS_SQL = "select COUNT(1) as responseCount from item_response_cr WHERE item_id = ? and test_roster_id = ?";
 	
 	static Logger logger = Logger.getLogger(OASOracleSink.class);
@@ -156,8 +156,12 @@ public class OASOracleSink implements OASRDBSink {
     		stmt1.setTimestamp(6, manifest.getRosterEndTime());
     		stmt1.setInt(7, manifest.getRosterLastMseq());
     		stmt1.setInt(8, manifest.getRosterCorrelationId());
-    		if(subtests[0] != null && "Y".equals(subtests[0].getRandomDistractorStatus())) {
-    			stmt1.setInt(9, manifest.getRandomDistractorSeed());
+    		Integer seed = null;
+    		if(manifest.getRandomDistractorSeed() != null && subtests[0] != null && "Y".equals(subtests[0].getRandomDistractorStatus())) {
+    			seed = manifest.getRandomDistractorSeed().intValue();
+    		}
+    		if(seed != null) {
+    			stmt1.setInt(9, seed);
     		} else {
     			stmt1.setObject(9, null);
     		}
@@ -223,6 +227,8 @@ public class OASOracleSink implements OASRDBSink {
 		} finally {
 			try {
 				if(stmt1 != null) stmt1.close();
+				if(stmt2 != null) stmt2.close();
+				if(stmt3 != null) stmt3.close();
 			} catch (Exception e) {
 				// do nothing
 			}

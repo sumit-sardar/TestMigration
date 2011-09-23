@@ -107,6 +107,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						} else {
 							logger.debug("*****  Roster data for " + key + " already present.\n");
 						}
+						Thread.sleep(10);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
