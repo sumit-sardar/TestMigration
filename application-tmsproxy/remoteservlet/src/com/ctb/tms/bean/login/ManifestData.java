@@ -42,6 +42,10 @@ public class ManifestData implements Serializable
     private String level;
     private String product;
     private String recommendedLevel;
+    private String adaptive;
+    private double abilityScore;
+    private double semScore;
+    private double objectiveScore;
     
 	public String getRecommendedLevel() {
 		return recommendedLevel;
@@ -78,6 +82,55 @@ public class ManifestData implements Serializable
 	}
 	public void setEndTime(long endTime) {
 		this.endTime = endTime;
+	}
+	
+	/**
+	 * @return the abilityScore
+	 */
+	public double getAbilityScore() {
+		return abilityScore;
+	}
+	/**
+	 * @param abilityScore the abilityScore to set
+	 */
+	public void setAbilityScore(double abilityScore) {
+		this.abilityScore = abilityScore;
+	}
+	/**
+	 * @return the semScore
+	 */
+	public double getSemScore() {
+		return semScore;
+	}
+	/**
+	 * @param semScore the semScore to set
+	 */
+	public void setSemScore(double semScore) {
+		this.semScore = semScore;
+	}
+	/**
+	 * @return the objectiveScore
+	 */
+	public double getObjectiveScore() {
+		return objectiveScore;
+	}
+	/**
+	 * @param objectiveScore the objectiveScore to set
+	 */
+	public void setObjectiveScore(double objectiveScore) {
+		this.objectiveScore = objectiveScore;
+	}
+	/**
+	 * @return the adaptive
+	 */
+	public String getAdaptive() {
+		return adaptive;
+	}
+	/**
+	 * @param adaptive the adaptive to set
+	 */
+	public void setAdaptive(String adaptive) {
+		this.adaptive = adaptive;
 	}
 	public String getScorable() {
 		return scorable;

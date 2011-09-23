@@ -4,7 +4,9 @@ import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
@@ -23,8 +25,9 @@ public class OASOracleSink implements OASRDBSink {
 	private static final String STORE_RESPONSE_SQL = "insert into item_response (  item_response_id,  test_roster_id,  \t\titem_set_id,  \t\titem_id,  \t\tresponse,  \t\tresponse_method,  \t\tresponse_elapsed_time,  \t\tresponse_seq_num,  \t\text_answer_choice_id,  \tstudent_marked,  \t\tcreated_by) \tvalues  (SEQ_ITEM_RESPONSE_ID.NEXTVAL,  ?,  ?,  ?,  ?,  'M',  ?,  ?,  ?,  ?,  6)";
 	private static final String DELETE_CR_RESPONSE_SQL = "delete from item_response_cr where test_roster_id = ? and item_set_id = ? and item_id = ?";
 	private static final String STORE_CR_RESPONSE_SQL = "insert into item_response_cr (  test_roster_id,  item_set_id, item_id, constructed_response) values (?,  ?,  ?,  ?)";
-	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set completion_status = ?, raw_score = ?, max_score = ?, unscored = ?, start_date_time = ?, completion_date_time = ?, recommended_level = ? where test_roster_id = ? and item_set_id = ?";
+	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set completion_status = ?, raw_score = ?, max_score = ?, unscored = ?, start_date_time = ?, completion_date_time = ?, recommended_level = ? , ability_score = ?, sem_score = ?, objective_score = ? where test_roster_id = ? and item_set_id = ?";
 	private static final String ROSTER_STATUS_SQL = "update  test_roster set  test_completion_status = NVL(?, test_completion_status),  restart_number = ?,  start_date_time = nvl(start_date_time,?),  last_login_date_time = ?, updated_date_time = ?,  completion_date_time = ?, last_mseq = ?,  correlation_id = ?, random_distractor_seed = ? where  test_roster_id = ?";
+	private static final String CR_RESPONSE_EXISTS_SQL = "select COUNT(1) as responseCount from item_response_cr WHERE item_id = ? and test_roster_id = ?";
 	
 	static Logger logger = Logger.getLogger(OASOracleSink.class);
 	
@@ -69,7 +72,7 @@ public class OASOracleSink implements OASRDBSink {
 	                        storeResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked);
 	                    } else if(responseType.equals(BaseType.STRING)) {
 	                    	storeResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), null, ist.getDur(), tsd.getMseq(), studentMarked);
-	                        storeCRResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked);
+	                        storeCRResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked, audioItem);
 	                    }
 	                    logger.info("OASOracleSink: Stored response records in DB for roster " + testRosterId + ", mseq " + tsd.getMseq());
 	                 }
@@ -134,9 +137,12 @@ public class OASOracleSink implements OASRDBSink {
     			} else {
     				stmt1.setTimestamp(6, null);
     			}
-    			stmt1.setString(7, subtest.getRecommendedLevel());
-       			stmt1.setString(8, testRosterId);
-    			stmt1.setInt(9, subtest.getId());
+    			stmt1.setString(7, subtest.getRecommendedLevel());       			
+    			stmt1.setDouble(8, subtest.getAbilityScore());
+    			stmt1.setDouble(9, subtest.getSemScore());
+    			stmt1.setDouble(10, subtest.getObjectiveScore());
+    			stmt1.setString(11, testRosterId);
+    			stmt1.setInt(12, subtest.getId());
     			stmt1.executeUpdate();
     			logger.info("OASOracleSink: Updated subtest status for roster: " + testRosterId + ", subtest: " + subtest.getId() + ". Status is: " + subtest.getCompletionStatus());
     		}
@@ -169,23 +175,43 @@ public class OASOracleSink implements OASRDBSink {
 		}
 	}
 	
-	private static void storeCRResponse(Connection conn, int testRosterId, int itemSetId, String itemId, String response, float duration, BigInteger mseq, String studentMarked) throws Exception {
+	private static void storeCRResponse(Connection conn, int testRosterId, int itemSetId, String itemId, String response, float duration, BigInteger mseq, String studentMarked, String audioItem) throws Exception {
 		PreparedStatement stmt1 = null;
+		PreparedStatement stmt2 = null;
+		PreparedStatement stmt3 = null;
     	try {
 			stmt1 = conn.prepareStatement(DELETE_CR_RESPONSE_SQL);
 			stmt1.setInt(1, testRosterId);
 			stmt1.setInt(2, itemSetId);
-			stmt1.setString(3, itemId);
+			stmt1.setString(3, itemId);		
 			
-			stmt1.executeUpdate();
+			stmt2 = conn.prepareStatement(STORE_CR_RESPONSE_SQL);
+			stmt2.setInt(1, testRosterId);
+			stmt2.setInt(2, itemSetId);
+			stmt2.setString(3, itemId);
+			stmt2.setString(4, response);
 			
-			stmt1 = conn.prepareStatement(STORE_CR_RESPONSE_SQL);
-			stmt1.setInt(1, testRosterId);
-			stmt1.setInt(2, itemSetId);
-			stmt1.setString(3, itemId);
-			stmt1.setString(4, response);
+			
+			if(audioItem == "T"){
+				if(response.length()== 0){
+					stmt3 = conn.prepareStatement(CR_RESPONSE_EXISTS_SQL);
+					stmt3.setString(1, itemId);
+					stmt3.setInt(2, testRosterId);
+					ResultSet rs1 = stmt3.executeQuery();
+        			if(rs1.getInt("responseCount") == 0){
+        				stmt1.executeUpdate();
+        				stmt2.executeUpdate();        				
+        			}
+				}else{
+					stmt1.executeUpdate();
+    				stmt2.executeUpdate();
+				}
+			}else{
+				stmt1.executeUpdate();
+				stmt2.executeUpdate();
+			}
 
-			stmt1.executeUpdate();
+			
 			logger.debug("OASOracleSink: Stored CR response record in DB for roster " + testRosterId + ", mseq " + mseq);
 		} catch (Exception e) {
 			if(e.getMessage().indexOf("unique constraint") >= 0 ) {
