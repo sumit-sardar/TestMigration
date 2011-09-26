@@ -434,54 +434,54 @@ public class TMSServlet extends HttpServlet {
 	}
 	
 	private void handleTabeLocator(String testRosterId) throws SQLException, IOException, ClassNotFoundException {
-        logger.debug("##### handleTabeLocator: In handleTabeLocator");
+        logger.warn("##### handleTabeLocator: In handleTabeLocator");
 		RosterSubtestStatus [] locatorSubtests = null;
         ArrayList rssList = new ArrayList();
         Manifest[] manifesta = oasSource.getAllManifests(testRosterId);
-        logger.debug("##### handleTabeLocator: found " + manifesta.length + " manifests for roster " + testRosterId);
+        logger.warn("##### handleTabeLocator: found " + manifesta.length + " manifests for roster " + testRosterId);
         for(int i=0;i<manifesta.length;i++) {
         	Manifest manifest = manifesta[i];
         	ManifestData[] mda = manifest.getManifest();
-        	logger.debug("##### handleTabeLocator: manifest " + i + " length: " + mda.length);
+        	logger.warn("##### handleTabeLocator: manifest " + i + " length: " + mda.length);
         	for(int j=0;j<mda.length;j++) {
         		ManifestData md = mda[j];
         		if("L".equals(md.getLevel())) {
-        			logger.debug("##### handleTabeLocator: md " + i + "-" + j + " is locator");
+        			logger.warn("##### handleTabeLocator: md " + i + "-" + j + " is locator");
         			RosterSubtestStatus rss = new RosterSubtestStatus();
         			rss.setItemSetId(md.getId());
         			rss.setItemSetName(md.getTitle());
         			rss.setSubtestCompletionStatus(md.getCompletionStatus());
         			rss.setRawScore(md.getRawScore());
         			rssList.add(rss);
-        			logger.debug("##### handleTabeLocator: added rss: " + rss.getItemSetName() + ":" + rss.getSubtestCompletionStatus() + ":" + rss.getRawScore());
+        			logger.warn("##### handleTabeLocator: added rss: " + rss.getItemSetName() + ":" + rss.getSubtestCompletionStatus() + ":" + rss.getRawScore());
         		}
         	}
         }
         locatorSubtests = (RosterSubtestStatus[]) rssList.toArray(new RosterSubtestStatus[0]);
         HashMap recommendedMap = TabeLocatorUtils.calculateRecommendSubtestLevel(locatorSubtests);
-        logger.debug("##### handleTabeLocator: calculated " + recommendedMap.keySet().size() + " recommended levels");
+        logger.warn("##### handleTabeLocator: calculated " + recommendedMap.keySet().size() + " recommended levels");
         for(int i=0;i<manifesta.length;i++) {
         	Manifest manifest = manifesta[i];
         	ManifestData[] mda = manifest.getManifest();
         	ArrayList newmanifest = new ArrayList();
         	for(int j=0;j<mda.length;j++) {
         		ManifestData md = mda[j];
-        		String subtestName = mda[j].getTitle().replaceAll(" Locator ", " ").replaceAll(" Sample Question", "").replaceAll(" Sample Questions", "");;
-        		logger.debug("##### handleTabeLocator: checking recommended level for " + subtestName);
+        		String subtestName = mda[j].getTitle().replaceAll(" Locator ", " ").replaceAll(" Sample Questions", "").replaceAll(" Sample Question", "").trim();
+        		logger.warn("##### handleTabeLocator: checking recommended level for " + subtestName);
         		RecommendedSubtestLevel rsl = (RecommendedSubtestLevel) recommendedMap.get(subtestName.trim());
         		if(rsl != null) {
 	        		if("L".equals(md.getLevel())) {
 	        			md.setRecommendedLevel(rsl.getRecommendedLevel());
 	        			newmanifest.add(md);
-	        			logger.debug("##### handleTabeLocator: set recommended level for locator subtest: " + md.getId());
+	        			logger.warn("##### handleTabeLocator: set recommended level for locator subtest: " + md.getId());
 	        		} else {
 	        			if (rsl.getRecommendedLevel().equals(md.getLevel())) {
 	        				newmanifest.add(md);
-	        				logger.debug("##### handleTabeLocator: found recommended subtest, id: " + md.getId());
+	        				logger.warn("##### handleTabeLocator: found recommended subtest, id: " + md.getId());
 	        			}
 	        		}
         		} else {
-        			logger.debug("##### handleTabeLocator: no level in map for " + subtestName);
+        			logger.warn("##### handleTabeLocator: no level in map for " + subtestName);
         			// no recommendation for this content area yet
         			newmanifest.add(md);
         		}
