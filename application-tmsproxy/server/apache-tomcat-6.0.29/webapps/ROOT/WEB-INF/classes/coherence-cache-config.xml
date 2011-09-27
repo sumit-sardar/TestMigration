@@ -41,7 +41,7 @@
 		      </init-params>
 		    </class-scheme>
 		  </cachestore-scheme>
-		  <write-delay>3s</write-delay>
+		  <write-delay>10s</write-delay>
 		</read-write-backing-map-scheme>
         <!--        Default Distributed caching scheme.        -->
         <distributed-scheme>            
