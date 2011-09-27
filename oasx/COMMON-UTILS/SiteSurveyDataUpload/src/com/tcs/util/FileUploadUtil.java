@@ -47,6 +47,19 @@ public class FileUploadUtil {
     		 stmt += "TECH_COORD_PHONE ='"+rowData[10]+"',";
     	 
     	 if (!stmt.equals("")){
+                 
+                 //Change for updating contact_status in database
+                 String val = "T";
+
+    		 if(rowData[7] == null || rowData[8] == null || rowData[3] == null || rowData[4] == null  
+    				 || rowData[5] == null || rowData[9] == null || rowData[6] == null || rowData[10] == null 
+    				 || rowData[7].equals("") || rowData[8].equals("") || rowData[3].equals("") || rowData[4].equals("")
+    				 || rowData[5].equals("") || rowData[9].equals("") || rowData[6].equals("") || rowData[10].equals("")){
+    			 
+    			  val = "F";
+    		 }
+    			 stmt += "CONTACT_STATUS ='"+val+"',";
+    			 
     		 
     		 //remove the last comma
     		 stmt= stmt.substring(0,stmt.length()-1);
@@ -116,9 +129,22 @@ public class FileUploadUtil {
     		 value+= "'" + siteDataDetail.getPath() + "',";
     	 }
     	 
-    	 
+					
     	 if (!stmt.equals("") && !value.equals("")){
     		 
+                 //Change for inserting contact_status along with other field data as false in database
+
+    		 String val = "T";
+    		 if(rowData[7] == null || rowData[8] == null || rowData[3] == null || rowData[4] == null  
+    				 || rowData[5] == null || rowData[9] == null || rowData[6] == null || rowData[10] == null 
+    				 || rowData[7].equals("") || rowData[8].equals("") || rowData[3].equals("") || rowData[4].equals("")
+    				 || rowData[5].equals("") || rowData[9].equals("") || rowData[6].equals("") || rowData[10].equals("")){
+    			 
+    			  val = "F";
+    		 }
+    			 stmt += "CONTACT_STATUS , ENROLLMENT_STATUS, NETWORK_STATUS, WORKSTATION_STATUS, READINESS_STATUS,";
+    			 value+= "'" + val + "','F' ,'F' ,'F' ,'F',";
+    			 
     		 //remove the last comma
     		 stmt= stmt.substring(0,stmt.length()-1);
     		 value= value.substring(0,value.length()-1);
