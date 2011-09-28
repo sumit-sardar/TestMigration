@@ -21,6 +21,20 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>   
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.blockUI.min.js"></script>
+	<script type="text/javascript">
+	var SelectedUserId;
+	
+		$(document).ready(function(){
+			  
+               $("#trail").click(function(){
+              	  $(".panel").slideToggle("slow");
+			  });
+			
+		});
+		
+	</script>
+	
+	
 	
    </head>
 

@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
-   
+<%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>   
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
@@ -29,7 +29,7 @@
 	        <td class="transparent"  valign="middle">
 	      	<div  id= "searchheader" style="visibility:hidden; background:#990000; height:25px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;Student Search</div>
 	    	<script>populateTree();</script>
-       		 <div id = "orgNodeHierarchy" style="overflow:auto; height: 270px;  width: 250px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
+       		 <div id = "orgNodeHierarchy" style="visibility:hidden; background:#ffffee; overflow:auto; height: 270px;  width: 250px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
 				
 			</div> 
 			
@@ -50,3 +50,4 @@
 </table>
 </br>
 </br>
+<jsp:include page="/studentOperation/add_edit_student_detail.jsp" />

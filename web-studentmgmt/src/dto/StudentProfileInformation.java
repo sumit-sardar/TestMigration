@@ -158,11 +158,17 @@ public class StudentProfileInformation extends SanitizedFormField
         else if (this.gender.equals("Female")) copied.setGender("F");
         else copied.setGender("U");
 
-        OrganizationNode[] orgNodes = new OrganizationNode[ selectedOrgNodes.size() ];        
+        /*OrganizationNode[] orgNodes = new OrganizationNode[ selectedOrgNodes.size() ];        
         for (int i=0 ; i<selectedOrgNodes.size() ; i++) {
             PathNode node = (PathNode)selectedOrgNodes.get(i);
             OrganizationNode orgNode = new OrganizationNode();
             orgNode.setOrgNodeId(node.getId());
+            orgNodes[i] = orgNode;
+        }*/
+        OrganizationNode[] orgNodes = new OrganizationNode[ selectedOrgNodes.size() ];        
+        for (int i=0 ; i<selectedOrgNodes.size() ; i++) {
+            OrganizationNode orgNode = new OrganizationNode();
+            orgNode.setOrgNodeId((Integer)selectedOrgNodes.get(i));
             orgNodes[i] = orgNode;
         }
         copied.setOrganizationNodes(orgNodes);  

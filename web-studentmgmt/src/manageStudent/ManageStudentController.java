@@ -215,7 +215,7 @@ public class ManageStudentController extends PageFlowController
 	{        
 		getUserDetails();
 
-		/*this.orgNodePath = new ArrayList();
+		this.orgNodePath = new ArrayList();
 		this.currentOrgNodesInPathList = new HashMap();
 		this.currentOrgNodeIds = new Integer[0];
 		this.selectedOrgNodes = new ArrayList();
@@ -223,7 +223,7 @@ public class ManageStudentController extends PageFlowController
 		this.monthOptions = DateUtils.getMonthOptions();
 		this.dayOptions = DateUtils.getDayOptions();
 		this.yearOptions = DateUtils.getYearOptions();
-*/
+
 		this.savedForm = new ManageStudentForm();
 		this.savedForm.init( action );
 
