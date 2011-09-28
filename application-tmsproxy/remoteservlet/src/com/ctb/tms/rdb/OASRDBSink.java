@@ -14,7 +14,7 @@ public interface OASRDBSink {
 	
 	public void putItemResponse(Connection conn, String testRosterId, Tsd tsd) throws NumberFormatException, Exception;
 
-	public void putManifest(Connection conn, String testRosterId, Manifest manifest) throws Exception;
+	public void putManifest(Connection conn, String testRosterId, Manifest[] manifest) throws Exception;
 	
 	public void putActiveRosters(Connection con, StudentCredentials [] credsA);
 	

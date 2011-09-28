@@ -15,7 +15,7 @@ public interface OASRDBSource
     
     public RosterData getRosterData(Connection conn, String key) throws Exception;
 
-    public Manifest getManifest(Connection conn, String testRosterId, String accessCode) throws Exception;
+    public Manifest[] getManifest(Connection conn, String testRosterId) throws Exception;
     
     public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException;
     

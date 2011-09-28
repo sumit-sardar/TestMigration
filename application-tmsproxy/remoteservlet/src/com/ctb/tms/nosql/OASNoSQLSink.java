@@ -13,7 +13,9 @@ public interface OASNoSQLSink {
 
 	public void putRosterData(StudentCredentials creds, RosterData rosterData) throws IOException;
 	
-	public void putManifestData(String testRosterId, String accessCode, Manifest manifest) throws IOException;
+	public void putManifest(String testRosterId, String accessCode, Manifest manifest) throws IOException;
+	
+	public void putAllManifests(String testRosterId, Manifest[] manifests) throws IOException ;
 	
 	public void putItemResponse(String testRosterId, Tsd tsd) throws IOException;
 	

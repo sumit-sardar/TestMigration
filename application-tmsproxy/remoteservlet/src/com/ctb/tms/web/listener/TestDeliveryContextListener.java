@@ -19,29 +19,53 @@ import com.ctb.tms.nosql.OASNoSQLSource;
 import com.ctb.tms.rdb.OASRDBSink;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
+import com.ctb.tms.util.JMSUtils;
 
 public class TestDeliveryContextListener implements javax.servlet.ServletContextListener {
 	
 	private static int checkFrequency = 30;
-	private static int postFrequency = 3;
-	private static RosterList rosterList;
-	private static ResponseQueue responseQueue;
+	private static int postFrequency = 5;
+	private static RosterThread rosterThread;
+	private static ScoringThread scoringThread;
 	private static ConcurrentHashMap rosterMap;
-	private static ConcurrentLinkedQueue<String> rosterQueue;
+	private static ConcurrentLinkedQueue<ScoringMessage> rosterQueue;
 	static Logger logger = Logger.getLogger(TestDeliveryContextListener.class);
 	
 	OASRDBSource oasDBSource = RDBStorageFactory.getOASSource();
 	OASRDBSink oasDBSink = RDBStorageFactory.getOASSink();
+
+	public static class ScoringMessage {
+		private long timestamp;
+		private String testRosterId;
+		
+		public ScoringMessage(long timestamp, String testRosterId) {
+			this.timestamp = timestamp;
+			this.testRosterId = testRosterId;
+		}
+		
+		public long getTimestamp() {
+			return timestamp;
+		}
+		public void setTimestamp(long timestamp) {
+			this.timestamp = timestamp;
+		}
+		public String getTestRosterId() {
+			return testRosterId;
+		}
+		public void setTestRosterId(String testRosterId) {
+			this.testRosterId = testRosterId;
+		}
+	}
 	
-	public static void enqueueRoster(String rosterId) {
-		rosterQueue.add(rosterId);
+	public static void enqueueRoster(ScoringMessage message) {
+		rosterQueue.add(message);
 	}
 	
 	public void contextDestroyed(ServletContextEvent sce) {
 		oasDBSource.shutdown();
 		oasDBSink.shutdown();
-		//TestDeliveryContextListener.rosterList.stop();
-		//TestDeliveryContextListener.responseQueue.stop();
+		TestDeliveryContextListener.rosterThread.stop();
+		TestDeliveryContextListener.scoringThread.stop();
 	}
     
 	public void contextInitialized(ServletContextEvent sce) {
@@ -52,22 +76,21 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 			
 			logger.info("*****  Starting active roster check background thread . . .");
 			TestDeliveryContextListener.rosterMap = new ConcurrentHashMap(10000);
-			TestDeliveryContextListener.rosterList = new RosterList(oasSource, oasSink, oasDBSource, oasDBSink);
-			TestDeliveryContextListener.rosterList.start();
+			TestDeliveryContextListener.rosterThread = new RosterThread(oasSource, oasSink, oasDBSource, oasDBSink);
+			TestDeliveryContextListener.rosterThread.start();
 			logger.info(" started.");
 			
-			// response persistence should be handled by cache store implementation
-			/* logger.info("*****  Starting response queue persistence thread . . .");
-			TestDeliveryContextListener.rosterQueue = new ConcurrentLinkedQueue<String>();
-			TestDeliveryContextListener.responseQueue = new ResponseQueue(oasSource, oasSink, oasDBSource, oasDBSink);
-			TestDeliveryContextListener.responseQueue.start();
-			logger.info(" started."); */
+			logger.info("*****  Starting scoring queue thread . . .");
+			TestDeliveryContextListener.rosterQueue = new ConcurrentLinkedQueue<ScoringMessage>();
+			TestDeliveryContextListener.scoringThread = new ScoringThread();
+			TestDeliveryContextListener.scoringThread.start();
+			logger.info(" started.");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private static class RosterList extends Thread {
+	private static class RosterThread extends Thread {
 		
 		OASNoSQLSource oasSource;
 		OASNoSQLSink oasSink;
@@ -75,7 +98,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		OASRDBSource oasDBSource;
 		OASRDBSink oasDBSink;
 		
-		public RosterList(OASNoSQLSource oasSource, OASNoSQLSink oasSink, OASRDBSource oasDBSource, OASRDBSink oasDBSink) {	
+		public RosterThread(OASNoSQLSource oasSource, OASNoSQLSink oasSink, OASRDBSource oasDBSource, OASRDBSink oasDBSink) {	
 			this.oasSource = oasSource;
 			this.oasSink = oasSink;
 			
@@ -100,9 +123,17 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
 						if(rosterMap.get(key) == null) {
 							RosterData rosterData = oasSource.getRosterData(creds[i]);
-							Manifest manifest = oasSource.getManifest(String.valueOf(rosterData.getAuthData().getTestRosterId()), creds[i].getAccesscode());
-							manifest.setRandomDistractorSeed(rosterData.getAuthData().getRandomDistractorSeedNumber());
-							logger.info("*****  Got roster data for " + key);
+							if(rosterData != null && rosterData.getAuthData() != null) {
+								Manifest manifest = oasSource.getManifest(String.valueOf(rosterData.getAuthData().getTestRosterId()), creds[i].getAccesscode());
+								if(manifest != null) {
+									manifest.setRandomDistractorSeed(rosterData.getAuthData().getRandomDistractorSeedNumber());
+									logger.info("*****  Got roster data for " + key);
+								} else {
+									logger.info("*****  No valid manifest in DB for " + key);
+								}
+							} else {
+								logger.info("*****  No valid manifest in DB for " + key);
+							}
 							rosterMap.put(key, key);
 						} else {
 							logger.debug("*****  Roster data for " + key + " already present.\n");
@@ -129,47 +160,28 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		}
 	}
 	
-	private static class ResponseQueue extends Thread {
-		
-		OASNoSQLSource oasSource;
-		OASNoSQLSink oasSink;
-		
-		OASRDBSource oasDBSource;
-		OASRDBSink oasDBSink;
-		
-		public ResponseQueue(OASNoSQLSource oasSource, OASNoSQLSink oasSink, OASRDBSource oasDBSource, OASRDBSink oasDBSink) {	
-			this.oasSource = oasSource;
-			this.oasSink = oasSink;
-			
-			this.oasDBSource = oasDBSource;
-			this.oasDBSink = oasDBSink;
+	private static class ScoringThread extends Thread {
+		public ScoringThread() {	
 		}
 		
 		public void run() {
-			Connection conn = null;
 			while (true) {
 				try {
-					conn = oasDBSink.getOASConnection();
 					while(!rosterQueue.isEmpty()) {
-						String testRosterId = rosterQueue.poll();
-						if(testRosterId != null) {
-							Tsd[] responses = oasSource.getItemResponses(testRosterId);
-							for(int i=0;responses != null && i<responses.length;i++) {
-								Tsd tsd = responses[i];
-								oasDBSink.putItemResponse(conn, testRosterId, tsd);
-								oasSink.deleteItemResponse(testRosterId, tsd.getMseq());
-							}
+						ScoringMessage message = rosterQueue.peek();
+						if(message != null && (System.currentTimeMillis() - message.timestamp) > 60000 ) {
+							message = rosterQueue.poll();
+							JMSUtils.sendMessage(Integer.valueOf(message.getTestRosterId()));
+							logger.info("*****  Sent scoring message for roster " + message.getTestRosterId());
+						} else {
+							Thread.sleep(1000);
 						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
 					try {
-						if(conn != null) {
-							conn.close();
-						}
-						logger.info("*****  Completed response queue persistence. Sleeping for " + postFrequency + " seconds.");
-						Thread.sleep(TestDeliveryContextListener.postFrequency * 1000);
+						Thread.sleep(1000);
 					}catch (Exception ie) {
 						// do nothing
 					}

@@ -1,12 +1,10 @@
 package com.ctb.tms.nosql.coherence;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
-import sun.misc.BASE64Encoder;
 
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
@@ -46,9 +44,28 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		rosterCache.put(key, rosterData);
 	}
 	
-	public void putManifestData(String testRosterId, String accessCode, Manifest manifest) throws IOException {
-		String key = testRosterId + ":" + accessCode;
-		manifestCache.put(key, manifest);
+	public void putManifest(String testRosterId, String accessCode, Manifest manifest) throws IOException {
+		String key = testRosterId;
+		Manifest[] manifests = (Manifest[]) manifestCache.get(key);
+		ArrayList newManifests = new ArrayList();
+		boolean foundManifest = false;
+		for(int i=0;i<manifests.length;i++) {
+			if(accessCode.equals(manifests[i].getAccessCode())) {
+				newManifests.add(manifest);
+				foundManifest = true;
+			} else {
+				newManifests.add(manifests[i]);
+			}
+		}
+		if(!foundManifest) {
+			newManifests.add(manifest);
+		}
+		manifestCache.put(key, (Manifest[]) newManifests.toArray(new Manifest[0]));
+	}
+	
+	public void putAllManifests(String testRosterId, Manifest[] manifests) throws IOException {
+		String key = testRosterId;
+		manifestCache.put(key, manifests);
 	}
 	
 	public void putItemResponse(String testRosterId, Tsd tsd) throws IOException {

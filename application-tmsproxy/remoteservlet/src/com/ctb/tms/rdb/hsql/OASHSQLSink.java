@@ -103,19 +103,23 @@ public class OASHSQLSink implements OASRDBSink {
 		}
 	}
 	
-	public void putManifest(Connection conn, String testRosterId, Manifest manifest) throws Exception {
+	public void putManifest(Connection conn, String testRosterId, Manifest manifests[]) throws Exception {
 		PreparedStatement stmt1 = null;
     	try {
-    		ManifestData [] subtests = manifest.getManifest();
-    		for(int i=0;i<subtests.length;i++) {
-    			ManifestData subtest = subtests[i];
-    			stmt1 = conn.prepareStatement(SUBTEST_STATUS_SQL);
-    			stmt1.setString(1, testRosterId);
-    			stmt1.setInt(2, subtest.getId());
-    			stmt1.setString(3, subtest.getCompletionStatus());
-    		}
-			stmt1.executeUpdate();
-			// TODO: update roster status as well
+			for(int k=0;k<manifests.length;k++) {
+				Manifest manifest = manifests[k];
+	
+	    		ManifestData [] subtests = manifest.getManifest();
+	    		for(int i=0;i<subtests.length;i++) {
+	    			ManifestData subtest = subtests[i];
+	    			stmt1 = conn.prepareStatement(SUBTEST_STATUS_SQL);
+	    			stmt1.setString(1, testRosterId);
+	    			stmt1.setInt(2, subtest.getId());
+	    			stmt1.setString(3, subtest.getCompletionStatus());
+	    		}
+				stmt1.executeUpdate();
+				// TODO: update roster status as well
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

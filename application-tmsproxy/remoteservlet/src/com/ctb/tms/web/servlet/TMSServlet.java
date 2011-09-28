@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Random;
 
 import javax.servlet.ServletException;
@@ -46,6 +45,7 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
+import org.apache.xmlbeans.impl.values.XmlValueDisconnectedException;
 
 import com.ctb.tdc.web.utils.ContentFile;
 import com.ctb.tdc.web.utils.ServletUtils;
@@ -64,10 +64,11 @@ import com.ctb.tms.rdb.ADSRDBSink;
 import com.ctb.tms.rdb.ADSRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.ctb.tms.util.Constants;
-import com.ctb.tms.util.JMSUtils;
 import com.ctb.tms.util.TabeLocatorUtils;
 import com.ctb.tms.util.TabeLocatorUtils.RecommendedSubtestLevel;
 import com.ctb.tms.util.TabeLocatorUtils.RosterSubtestStatus;
+import com.ctb.tms.web.listener.TestDeliveryContextListener;
+import com.ctb.tms.web.listener.TestDeliveryContextListener.ScoringMessage;
 
 public class TMSServlet extends HttpServlet {
 
@@ -246,7 +247,7 @@ public class TMSServlet extends HttpServlet {
 		    logger.debug("TMSServlet: save tsd: " + tsd);
 		    if(tsd.getLsid() != null && !(tsd.getLsid().length() < 1) && !"undefined".equals(tsd.getLsid())) {
 			    String rosterId = tsd.getLsid().substring(0, tsd.getLsid().indexOf(":"));
-			    String accessCode = tsd.getLsid().substring(tsd.getLsid().indexOf(":") + 1, tsd.getLsid().length());
+			    String accessCode = tsd.getLsid().substring(tsd.getLsid().indexOf(":") + 1, tsd.getLsid().length()).toUpperCase();
 			    
 			    saveResponse.addNewTsd();
 		        saveResponse.getTsdArray(i).setLsid(tsd.getLsid());
@@ -425,14 +426,14 @@ public class TMSServlet extends HttpServlet {
 			    			manifest.setRosterCompletionStatus("IS");
 			    		//}
 			    		if("T".equals(manifestData[0].getScorable())) {
-			    			JMSUtils.sendMessage(Integer.valueOf(rosterId));
+			    			TestDeliveryContextListener.enqueueRoster(new ScoringMessage(System.currentTimeMillis(), rosterId));
 			    			logger.info("TMSServlet: save: sent scoring message for roster " + rosterId);
 			            }
 			    	}
 			    }
 			    // always update manifest to override interrupter via write-behind if still receiving events
 	    		manifest.setManifest(manifestData);
-	    		oasSink.putManifestData(rosterId, accessCode, manifest);
+	    		oasSink.putManifest(rosterId, accessCode, manifest);
 	    		logger.info("TMSServlet: save: updated manifest for roster " + rosterId);
 		    }
         }
@@ -496,8 +497,8 @@ public class TMSServlet extends HttpServlet {
         		}
         	}
         	manifest.setManifest((ManifestData[]) newmanifest.toArray(new ManifestData[0]));
-        	oasSink.putManifestData(testRosterId, manifest.getAccessCode(), manifest);
         }
+        oasSink.putAllManifests(testRosterId, manifesta);
     }
 	
 	private void updateCID(String testRosterId, int cid, String currentAccessCode) throws IOException, ClassNotFoundException {
@@ -515,9 +516,9 @@ public class TMSServlet extends HttpServlet {
 				}
 				allManifests[m].setRosterCompletionStatus("IN");
 			}
-			oasSink.putManifestData(allManifests[m].getTestRosterId(), allManifests[m].getAccessCode(), allManifests[m]);
 			logger.debug("Set CID: " + cid + ", for manifest: " + allManifests[m].getAccessCode());
 		}
+		oasSink.putAllManifests(testRosterId, allManifests);
 	}
 
 	private String login(String xml) throws XmlException, IOException, ClassNotFoundException, SQLException {
@@ -533,7 +534,7 @@ public class TMSServlet extends HttpServlet {
 		} else {
 			creds.setUsername(lr.getUserName());
 			creds.setPassword(lr.getPassword());
-			creds.setAccesscode(lr.getAccessCode());
+			creds.setAccesscode(lr.getAccessCode().toUpperCase());
 		}
 		RosterData rd = oasSource.getRosterData(creds);
 		if(rd == null) {
@@ -621,8 +622,12 @@ public class TMSServlet extends HttpServlet {
             	//logger.debug("found completed sco: " + String.valueOf(manifesta[i].getId()));
             	int g;
             	for(g=0;g<scoa.length;g++) {
-            		//logger.debug("rd id: " + scoa[g].getId() + ", manifest id: " + String.valueOf(manifesta[i].getId()));
-            		if(scoa[g].getId().equals(String.valueOf(manifesta[i].getId()))) {
+            		try {
+	            		//logger.debug("rd id: " + scoa[g].getId() + ", manifest id: " + String.valueOf(manifesta[i].getId()));
+	            		if(scoa[g].getId().equals(String.valueOf(manifesta[i].getId()))) {
+	            			break;
+	            		}
+            		} catch (XmlValueDisconnectedException xe) {
             			break;
             		}
             	}
@@ -635,7 +640,14 @@ public class TMSServlet extends HttpServlet {
             	newmanifest.add(manifesta[i]);
             }
         }
-        manifest.setManifest((ManifestData[])newmanifest.toArray(new ManifestData[0]));
+        if(newmanifest.size() < 1) {
+			response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
+            loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
+            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_COMPLETED_STATUS);
+            return response.xmlText();
+		} else {
+			manifest.setManifest((ManifestData[])newmanifest.toArray(new ManifestData[0]));
+		}
         //loginResponse.getManifest().setScoArray((Sco[])scomap.values().toArray(new Sco[0]));
         //logger.debug("Final manifest: " + loginResponse.getManifest().xmlText());
         if(gotRestart) {
@@ -668,7 +680,7 @@ public class TMSServlet extends HttpServlet {
 		manifest.setRosterRestartNumber(newRestartCount);
 		loginResponse.setRestartNumber(BigInteger.valueOf(newRestartCount));
 		rd.getAuthData().setRestartNumber(newRestartCount);
-		oasSink.putManifestData(testRosterId, creds.getAccesscode(), manifest);
+		oasSink.putManifest(testRosterId, creds.getAccesscode(), manifest);
 		oasSink.putRosterData(creds, rd);
 		
 		logger.debug(response.xmlText());

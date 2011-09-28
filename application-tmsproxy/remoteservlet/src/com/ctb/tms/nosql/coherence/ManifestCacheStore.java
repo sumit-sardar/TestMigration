@@ -35,15 +35,12 @@ public class ManifestCacheStore implements CacheStore {
 
     public Object load(Object oKey) {
     	Connection conn = null;
-    	Manifest result = null;
+    	Manifest[] result = null;
     	String key = (String) oKey;
-    	String rosterId = key.substring(0, key.indexOf(":"));
-	    String accessCode = key.substring(key.indexOf(":") + 1, key.length());
-
     	try {
 	    	OASRDBSource source = RDBStorageFactory.getOASSource();
 	    	conn = source.getOASConnection();
-	    	result = source.getManifest(conn, rosterId, accessCode);
+	    	result = source.getManifest(conn, key);
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {
@@ -60,13 +57,11 @@ public class ManifestCacheStore implements CacheStore {
     	Connection conn = null;
     	try {
     		String key = (String) oKey;
-        	String rosterId = key.substring(0, key.indexOf(":"));
-    	    String accessCode = key.substring(key.indexOf(":") + 1, key.length());
-    	    logger.debug("Storing manifest to DB for roster " + rosterId + ", accessCode " + accessCode);
-    		Manifest manifest = (Manifest) oValue;
+    	    logger.debug("Storing manifest to DB for roster " + key);
+    		Manifest[] manifest = (Manifest[]) oValue;
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
-		    sink.putManifest(conn, rosterId, manifest);
+		    sink.putManifest(conn, key, manifest);
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {
@@ -96,9 +91,7 @@ public class ManifestCacheStore implements CacheStore {
     		while(it.hasNext()) {
     			Object oKey = it.next();
     			String key = (String) oKey;
-    	    	String rosterId = key.substring(0, key.indexOf(":"));
-    		    String accessCode = key.substring(key.indexOf(":") + 1, key.length());
-    		    Manifest manifest = source.getManifest(conn, rosterId, accessCode);
+    		    Manifest[] manifest = source.getManifest(conn, key);
 		    	result.put(key, manifest);
     		}
     	} catch (Exception e) {
@@ -122,10 +115,8 @@ public class ManifestCacheStore implements CacheStore {
     		while(it.hasNext()) {
 	    		Object oKey = it.next();
     			String key = (String) oKey;
-    	    	String rosterId = key.substring(0, key.indexOf(":"));
-    		    String accessCode = key.substring(key.indexOf(":") + 1, key.length());
-	    		Manifest value = (Manifest) mapEntries.get(key);
-			    sink.putManifest(conn, rosterId, value);
+	    		Manifest[] value = (Manifest[]) mapEntries.get(key);
+			    sink.putManifest(conn, key, value);
     		}
     	} catch (Exception e) {
     		e.printStackTrace();

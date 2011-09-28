@@ -77,7 +77,7 @@ public class OASHSQLSource implements OASRDBSource
 		return (RosterData) rosterMap.get(creds);
     }
 	
-	public Manifest getManifest(Connection con, String testRosterId, String testAccessCode) throws Exception {
+	public Manifest[] getManifest(Connection con, String testRosterId) throws Exception {
 		// not properly implemented for HSQLSource
 		return null;
 	}

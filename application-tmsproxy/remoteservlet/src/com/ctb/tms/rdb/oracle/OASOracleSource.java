@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
 
 import noNamespace.EntryType;
@@ -55,9 +56,9 @@ public class OASOracleSource implements OASRDBSource
 	static Logger logger = Logger.getLogger(OASOracleSource.class);
 	
 	private static final String AUTHENTICATE_STUDENT_SQL = "select  ros.test_roster_id as testRosterId,  stu.student_id as studentId,  stu.last_name as studentLastName,  stu.first_name as studentFirstName,  stu.middle_name as studentMiddleName,  ros.test_completion_status as rosterTestCompletionStatus,  adm.login_start_date as windowStartDate,  adm.login_end_date as windowEndDate,  adm.daily_login_start_time as dailyStartTime,  adm.daily_login_end_time as dailyEndTime,  adm.test_admin_status as testAdminStatus,  adm.time_zone AS timeZone,  ros.capture_method as captureMethod,  ros.restart_number as restartNumber,  ros.test_admin_id as testAdminId, \t  ros.random_distractor_seed as randomDistractorSeedNumber, \t  ros.tts_speed_status as ttsSpeedStatus from  student stu,  test_roster ros,  test_admin adm where  adm.test_admin_id = ros.test_admin_id  and ros.student_id = stu.student_id  and stu.activation_status = 'AC'  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and upper(stu.user_name) = upper(?)  and upper(ros.password) = upper(?)";    
-	private static final String REAUTHENTICATE_STUDENT_SQL = "select  tais.access_code as accessCode, ros.test_roster_id as testRosterId,  stu.student_id as studentId,  stu.last_name as studentLastName,  stu.first_name as studentFirstName,  stu.middle_name as studentMiddleName,  ros.test_completion_status as rosterTestCompletionStatus,  adm.login_start_date as windowStartDate,  adm.login_end_date as windowEndDate,  adm.daily_login_start_time as dailyStartTime,  adm.daily_login_end_time as dailyEndTime,  adm.test_admin_status as testAdminStatus,  adm.time_zone AS timeZone,  ros.capture_method as captureMethod,  ros.restart_number as restartNumber,  ros.test_admin_id as testAdminId, ros.random_distractor_seed as randomDistractorSeedNumber,  ros.tts_speed_status as ttsSpeedStatus from  student stu,  test_roster ros,  test_admin adm, test_admin_item_set tais, student_item_set_status siss, item_set_ancestor isa where  adm.test_admin_id = ros.test_admin_id  and ros.student_id = stu.student_id  and stu.activation_status = 'AC'  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and tais.test_admin_id = adm.test_admin_id and tais.item_set_id = isa.ancestor_item_set_id and isa.item_set_id = siss.item_set_id and siss.test_roster_id = ros.test_roster_id and ros.test_roster_id = ? and tais.access_code = ?";    
+	private static final String REAUTHENTICATE_STUDENT_SQL = "select  upper(tais.access_code) as accessCode, ros.test_roster_id as testRosterId,  stu.student_id as studentId,  stu.last_name as studentLastName,  stu.first_name as studentFirstName,  stu.middle_name as studentMiddleName,  ros.test_completion_status as rosterTestCompletionStatus,  adm.login_start_date as windowStartDate,  adm.login_end_date as windowEndDate,  adm.daily_login_start_time as dailyStartTime,  adm.daily_login_end_time as dailyEndTime,  adm.test_admin_status as testAdminStatus,  adm.time_zone AS timeZone,  ros.capture_method as captureMethod,  ros.restart_number as restartNumber,  ros.test_admin_id as testAdminId, ros.random_distractor_seed as randomDistractorSeedNumber,  ros.tts_speed_status as ttsSpeedStatus from  student stu,  test_roster ros,  test_admin adm, test_admin_item_set tais, student_item_set_status siss, item_set_ancestor isa where  adm.test_admin_id = ros.test_admin_id  and ros.student_id = stu.student_id  and stu.activation_status = 'AC'  and ros.activation_status = 'AC'  and adm.activation_status = 'AC'  and tais.test_admin_id = adm.test_admin_id and tais.item_set_id = isa.ancestor_item_set_id and isa.item_set_id = siss.item_set_id and siss.test_roster_id = ros.test_roster_id and ros.test_roster_id = ? and upper(tais.access_code) = upper(?)";    
 	private static final String ACCOMMODATIONS_SQL = "select  accom.student_id as studentId,  accom.screen_magnifier as screenMagnifier,  accom.screen_reader as screenReader,  accom.calculator as calculator,  accom.test_pause as testPause,  accom.untimed_test as untimedTest,  accom.question_background_color as questionBackgroundColor,  accom.question_font_color as questionFontColor,  accom.question_font_size as questionFontSize,  accom.answer_background_color as answerBackgroundColor,  accom.answer_font_color as answerFontColor,  accom.answer_font_size as answerFontSize,  accom.highlighter as highlighter, accom.masking_ruler as maskingRuler,accom.magnifying_glass as magnifyingGlass, decode(accom.music_file_id, NULL, 'F', 'T')as auditoryCalming, accom.music_file_id as musicFileId, accom.extended_time as extendedTime, accom.masking_tool as maskingTool from  test_roster ros,  student_accommodation accom  where  accom.student_id = ros.student_id  and ros.test_roster_id = ?";    
-	private static final String MANIFEST_SQL = "select scoOrder,  scoParentId,  adminForceLogout,  showStudentFeedback,  id,  title,  testTitle,  scoDurationMinutes,  0 as totalTime,  scoUnitType,  scoEntry,  completionStatus,  asmtHash,  asmtEncryptionKey,  itemEncryptionKey,  adsid,  randomDistractorStatus, forwardOnly, scorable,product,subtestForm, subtestLevel, adaptive from (select siss.item_Set_order as scoOrder,  isp.parent_item_Set_id as scoParentId,  ta.force_logout as adminForceLogout,  ta.show_student_feedback as showStudentFeedback,  iset.item_set_id as id,  iset.item_set_name as title,  test.item_set_name as testTitle,  decode(nvl(tr.extended_time,0),0,iset.time_limit / 60,(iset.time_limit * tr.extended_time) / 60) as scoDurationMinutes,  'SUBTEST' as scoUnitType,  'ab-initio' as scoEntry,  siss.completion_status as completionStatus,  iset.asmt_hash as asmtHash,  iset.asmt_encryption_key as asmtEncryptionKey,  iset.item_encryption_key as itemEncryptionKey,  iset.ads_ob_asmt_id as adsid,  ta.test_admin_id testid,  ta.random_distractor_status as randomDistractorStatus, iset.forward_only as forwardOnly, pr.scorable as scorable, pr.product_type as product, iset.item_set_form as subtestForm, iset.item_set_level as subtestLevel, iset.adaptive as adaptive from item_set_item  isi,  item_Set  iset,  item_set  test,  student_item_set_status siss,  test_roster  tr,  test_admin  ta,  item_set_parent  isp,  test_admin_item_set  tais, product pr where isi.item_set_id = iset.item_set_id  and iset.item_set_id = siss.item_set_id  and iset.item_set_type = 'TD'  and siss.test_roster_id = tr.test_roster_id  and ta.test_admin_id = tr.test_admin_id  and isp.item_Set_id = iset.item_set_id  and tr.test_roster_id = ?  and tais.item_set_id = isp.parent_item_set_id  and test.item_set_id = ta.item_set_id  and upper(tais.access_code) = upper(?)  and tais.test_admin_id = ta.test_admin_id and pr.product_id = ta.product_id group by siss.item_Set_order,  isp.parent_item_set_id,  ta.force_logout,  ta.show_student_feedback,  iset.item_Set_id,  iset.item_set_name,  test.item_set_name,  iset.time_limit,  isi.item_sort_order,  siss.completion_status,  iset.asmt_hash,  iset.asmt_encryption_key,  iset.item_encryption_key,  iset.ads_ob_asmt_id,  iset.item_set_level,  ta.test_admin_id,  ta.random_distractor_status, tr.extended_time, iset.forward_only, scorable,pr.product_type, iset.item_set_form, iset.item_set_level, iset.adaptive)  group by scoOrder,  scoParentId,  adminForceLogout,  showStudentFeedback,  id,  title,  testTitle,  scoDurationMinutes,  scoUnitType,  scoEntry,  completionStatus,  asmtHash,  asmtEncryptionKey,  itemEncryptionKey,  adsid,  randomDistractorStatus, forwardOnly, scorable,product, subtestForm, subtestLevel, adaptive order by scoOrder";
+	private static final String MANIFEST_SQL = "select scoOrder,  scoParentId,  adminForceLogout,  showStudentFeedback,  id,  title,  testTitle,  scoDurationMinutes,  0 as totalTime,  scoUnitType,  scoEntry,  completionStatus,  asmtHash,  asmtEncryptionKey,  itemEncryptionKey,  adsid,  randomDistractorStatus, forwardOnly, scorable,product,subtestForm, subtestLevel, adaptive, accessCode from (select siss.item_Set_order as scoOrder,  isp.parent_item_Set_id as scoParentId,  ta.force_logout as adminForceLogout,  ta.show_student_feedback as showStudentFeedback,  iset.item_set_id as id,  iset.item_set_name as title,  test.item_set_name as testTitle,  decode(nvl(tr.extended_time,0),0,iset.time_limit / 60,(iset.time_limit * tr.extended_time) / 60) as scoDurationMinutes,  'SUBTEST' as scoUnitType,  'ab-initio' as scoEntry,  siss.completion_status as completionStatus,  iset.asmt_hash as asmtHash,  iset.asmt_encryption_key as asmtEncryptionKey,  iset.item_encryption_key as itemEncryptionKey,  iset.ads_ob_asmt_id as adsid,  ta.test_admin_id testid,  ta.random_distractor_status as randomDistractorStatus, iset.forward_only as forwardOnly, pr.scorable as scorable, pr.product_type as product, iset.item_set_form as subtestForm, iset.item_set_level as subtestLevel, iset.adaptive as adaptive, upper(tais.access_code) as accessCode from item_set_item  isi,  item_Set  iset,  item_set  test,  student_item_set_status siss,  test_roster  tr,  test_admin  ta,  item_set_parent  isp,  test_admin_item_set  tais, product pr where isi.item_set_id = iset.item_set_id  and iset.item_set_id = siss.item_set_id  and iset.item_set_type = 'TD'  and siss.test_roster_id = tr.test_roster_id  and ta.test_admin_id = tr.test_admin_id  and isp.item_Set_id = iset.item_set_id  and tr.test_roster_id = ?  and tais.item_set_id = isp.parent_item_set_id  and test.item_set_id = ta.item_set_id and tais.test_admin_id = ta.test_admin_id and pr.product_id = ta.product_id group by siss.item_Set_order,  isp.parent_item_set_id,  ta.force_logout,  ta.show_student_feedback,  iset.item_Set_id,  iset.item_set_name,  test.item_set_name,  iset.time_limit,  isi.item_sort_order,  siss.completion_status,  iset.asmt_hash,  iset.asmt_encryption_key,  iset.item_encryption_key,  iset.ads_ob_asmt_id,  iset.item_set_level,  ta.test_admin_id,  ta.random_distractor_status, tr.extended_time, iset.forward_only, scorable,pr.product_type, iset.item_set_form, iset.item_set_level, iset.adaptive, tais.access_code)  group by scoOrder,  scoParentId,  adminForceLogout,  showStudentFeedback,  id,  title,  testTitle,  scoDurationMinutes,  scoUnitType,  scoEntry,  completionStatus,  asmtHash,  asmtEncryptionKey,  itemEncryptionKey,  adsid,  randomDistractorStatus, forwardOnly, scorable,product, subtestForm, subtestLevel, adaptive, accessCode order by scoOrder";
 	private static final String SUBTEST_ELAPSED_TIME_SQL = "select  nvl(sum(max(resp.response_elapsed_time)), 0) as totalTime from  item_response resp where  resp.test_roster_id = ?  and resp.item_set_id = ? group by  resp.test_roster_id,  resp.item_set_id,  resp.item_id";
 	private static final String IS_ULTIMATE_ACCESS_CODE_SQL = "select  decode(count(siss.item_set_id), 0, 'T', 'F') from \t  student_item_set_status siss,  test_Admin_item_set tais,  item_set_parent isp where  tais.test_Admin_id = ?  and siss.test_roster_id = ?  and upper(tais.access_code) != upper(?) \t  and isp.parent_item_set_id = tais.item_set_id \t  and siss.item_set_id = isp.item_set_id \t  and siss.completion_status != 'CO'";
 	private static final String RESTART_RESPONSES_SQL = "select  ir.item_id as itemId,  ir.response_seq_num as responseSeqNum,  ir.student_marked as studentMarked,  i.item_type as itemType,  isi.item_sort_order as itemSortOrder,  ir.response as response, TO_CLOB(decode (i.answer_area,'AudioItem', decode(length(icr.constructed_response),'','',ir.test_roster_id || '_' || ir.item_id), DBMS_LOB.SUBSTR(icr.constructed_response, 0, 3999))) as constructedResponse, ir.response_elapsed_time as responseElapsedTime,  decode(ir.response, i.correct_answer, 1, 0) as score,  i.ads_item_id as eid from  item_response ir,  item i,  item_response_cr icr,  item_set_item isi where  ir.test_roster_id = ?  and ir.item_set_id = ?  and ir.item_id = i.item_id  and ir.item_set_id = isi.item_set_id  and ir.item_id = isi.item_id  and ir.response_seq_num =  (select  max(ir1.response_seq_num)  from  item_response ir1  where  ir1.item_set_id = ir.item_set_id  and ir1.item_id = ir.item_id  and ir1.test_roster_id = ir.test_roster_id) \t  AND ir.test_roster_id = icr.test_roster_id (+) \t  AND ir.item_set_id = icr.item_set_id (+) \t  AND ir.item_id = icr.item_id (+) order by  ir.response_seq_num asc"; //isi.item_sort_order";
@@ -70,7 +71,7 @@ public class OASOracleSource implements OASRDBSource
 	//private static final String UPDATE_TEST_ROSTER_WITH_RD_SEED_SQL = "update  test_roster set  random_distractor_seed = {rndNumber} where  test_roster_id = {testRosterId}";
 	//private static final String SPEECH_CONTROLLER_SQL = "select cconfig.default_value as speechControllerFlag  from test_roster  ros,  customer  cus,  customer_configuration cconfig,  student_accommodation  accom  where accom.screen_reader = 'T'  and accom.student_id = ros.student_id  and cconfig.customer_configuration_name = 'Allow_Speech_Controller'  and cconfig.customer_id = cus.customer_id  and cus.customer_id = ros.customer_id  and ros.test_roster_id = {testRosterId}";
 	private static final String TEST_PRODUCT_FOR_ADMIN_SQL = "select distinct  prod.product_id as productId,  prod.product_name as productName,  prod.version as version,  prod.product_description as productDescription,  prod.created_by as createdBy,  prod.created_date_time as createdDateTime,  prod.updated_by as updatedBy,  prod.updated_date_time as updatedDateTime,  prod.activation_status as activationStatus,  prod.product_type as productType,  prod.scoring_item_set_level as scoringItemSetLevel,  prod.preview_item_set_level as previewItemSetLevel,  prod.parent_product_id as parentProductId,  prod.ext_product_id as extProductId,  prod.content_area_level as contentAreaLevel,  prod.internal_display_name as internalDisplayName,  prod.sec_scoring_item_set_level as secScoringItemSetLevel,  prod.ibs_show_cms_id as ibsShowCmsId,  prod.printable as printable,  prod.scannable as scannable,  prod.keyenterable as keyenterable,  prod.branding_type_code as brandingTypeCode,  prod.acknowledgments_url as acknowledgmentsURL,  prod.show_student_feedback as showStudentFeedback,  prod.static_manifest as staticManifest,  prod.session_manifest as sessionManifest,  prod.subtests_selectable as subtestsSelectable,  prod.subtests_orderable as subtestsOrderable,  prod.subtests_levels_vary as subtestsLevelsVary,  cec.support_phone_number as supportPhoneNumber,  prod.off_grade_testing_disabled as offGradeTestingDisabled from  product prod, test_admin adm, customer_email_config cec where  prod.product_id = adm.product_id  and cec.customer_id (+) = adm.customer_id  and adm.test_admin_id = ?";
-	private static final String ACTIVE_ROSTERS_SQL = "select distinct stu.user_name as username, tr.password as password, tais.access_code as accesscode from test_roster tr, test_admin ta, test_admin_item_set tais, student stu where tr.test_completion_status in ('SC', 'IN', 'IS', 'IP') and sysdate > (TA.LOGIN_START_DATE - 3) and sysdate < (TA.LOGIN_END_DATE + 3) and ((tr.updated_date_time > sysdate - 30 and ta.updated_date_time > sysdate - 30) OR (stu.user_name > 'pt-student1450000' and stu.user_name < 'pt-student1500000') OR (tr.updated_date_time is null and ta.updated_date_time > sysdate - 30)) and ta.test_admin_id = tr.test_admin_id and tais.test_admin_id = ta.test_admin_id and stu.student_id = tr.student_id";
+	private static final String ACTIVE_ROSTERS_SQL = "select distinct stu.user_name as username, tr.password as password, upper(tais.access_code) as accesscode from test_roster tr, test_admin ta, test_admin_item_set tais, student stu, student_item_Set_Status siss, item_set_parent isp where tr.test_completion_status in ('SC', 'IN', 'IS', 'IP') and sysdate > (TA.LOGIN_START_DATE - 3) and sysdate < (TA.LOGIN_END_DATE + 3) and ((tr.updated_date_time > sysdate - 30 and ta.updated_date_time > sysdate - 30) OR (stu.user_name > 'pt-student1450000' and stu.user_name < 'pt-student1500000') OR (tr.updated_date_time is null and ta.updated_date_time > sysdate - 30))  and ta.test_admin_id = tr.test_admin_id and tais.test_admin_id = ta.test_admin_id and stu.student_id = tr.student_id and siss.test_roster_id = tr.test_roster_id and tais.item_set_id = isp.parent_item_Set_id and siss.item_set_id = isp.item_Set_id";
 	
 	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		return OracleSetup.getOASConnection();
@@ -129,7 +130,7 @@ public class OASOracleSource implements OASRDBSource
     	return generateRosterData(conn, authDataArray, accessCode);
     }
     
-    private static RosterData generateRosterData (Connection conn, AuthenticationData [] authDataArray, String accessCode) throws SQLException, AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException {
+    private RosterData generateRosterData (Connection conn, AuthenticationData [] authDataArray, String accessCode) throws SQLException, AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException {
     	XmlOptions xmlOptions = new XmlOptions(); 
         xmlOptions = xmlOptions.setUnsynchronized();
     	TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
@@ -147,8 +148,8 @@ public class OASOracleSource implements OASRDBSource
             testRosterId = authData.getTestRosterId();
             lsid = String.valueOf(testRosterId) + ":" + accessCode;
             loginResponse.setLsid(lsid);
-            manifestData = getManifestData(conn, String.valueOf(testRosterId), accessCode);
-            if(manifestData.length > 0) {
+            manifestData = getManifest(conn, String.valueOf(testRosterId), accessCode);
+            if(manifestData != null && manifestData.length > 0) {
                 authenticated = true;
                 ScratchpadData [] scratchData = getScratchpadContent(conn, testRosterId);
                 HashMap<Integer, Clob> scratchMap = new HashMap<Integer, Clob>(scratchData.length);
@@ -158,6 +159,8 @@ public class OASOracleSource implements OASRDBSource
                 for (int i = 0; i < manifestData.length; i++) {
                 	manifestData[i].setScratchpadContent(scratchMap.get(new Integer(manifestData[i].getId())));
                 }
+            } else {
+            	return null;
             }
         }
         if(authData != null) {    
@@ -573,26 +576,36 @@ public class OASOracleSource implements OASRDBSource
 		return data;
 	}
 	
-	public com.ctb.tms.bean.login.Manifest getManifest(Connection con, String testRosterId, String testAccessCode) throws AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException, SQLException {
-		com.ctb.tms.bean.login.Manifest manifest = new com.ctb.tms.bean.login.Manifest();
-		manifest.setManifest(getManifestData(con, testRosterId, testAccessCode));
-		manifest.setTestRosterId(testRosterId);
-		manifest.setAccessCode(testAccessCode);
-		return manifest;
+	private ManifestData[] getManifest(Connection con, String testRosterId, String accessCode) {
+		logger.debug("Looking for manifest for roster " + testRosterId + ", accessCode " + accessCode);
+		com.ctb.tms.bean.login.Manifest[] manifests = getManifest(con, testRosterId);
+		for(int i=0;i<manifests.length;i++) {
+			com.ctb.tms.bean.login.Manifest manifest = manifests[i];
+			logger.debug("     Comparing access code: " + manifest.getAccessCode());
+			if(accessCode.equalsIgnoreCase(manifest.getAccessCode())) {
+				logger.debug("     Found matching manifest! ");
+				return manifest.getManifest();
+			}
+		}
+		return null;
 	}
 	
-	private static ManifestData[] getManifestData(Connection con, String testRosterId, String testAccessCode) {
-    	ManifestData[] data = null;
+	public com.ctb.tms.bean.login.Manifest[] getManifest(Connection con, String testRosterId) {
+    	com.ctb.tms.bean.login.Manifest[] manifests = null;
     	PreparedStatement stmt1 = null;
+    	HashMap<String,ArrayList> manifestMap = new HashMap<String,ArrayList>(10);
     	try {
 			stmt1 = con.prepareStatement(MANIFEST_SQL);
 			stmt1.setString(1, testRosterId);
-			stmt1.setString(2, testAccessCode);
 			ResultSet rs1 = stmt1.executeQuery();
-			ArrayList<ManifestData> dataList = new ArrayList<ManifestData>();
 			while (rs1.next()) {
+				String accessCode = rs1.getString("accessCode");
+				ArrayList<ManifestData> dataList = manifestMap.get(accessCode);
+				if(dataList == null) {
+					dataList = new ArrayList<ManifestData>();
+				}
 				ManifestData manifest = new ManifestData();
-				manifest.setAccessCode(testAccessCode);
+				manifest.setAccessCode(accessCode);
 				manifest.setAdminForceLogout(rs1.getString("adminForceLogout"));
 				manifest.setAdsid(rs1.getString("adsid"));
 				manifest.setAsmtEncryptionKey(rs1.getString("asmtEncryptionKey"));
@@ -620,9 +633,23 @@ public class OASOracleSource implements OASRDBSource
 				manifest.setForm(rs1.getString("subtestForm"));
 				manifest.setLevel(rs1.getString("subtestLevel"));
 				dataList.add(manifest);
+				manifestMap.put(accessCode, dataList);
 			}
 			rs1.close();
-			data = (ManifestData[]) dataList.toArray(new ManifestData[0]);
+			manifests = new com.ctb.tms.bean.login.Manifest[manifestMap.keySet().size()];
+			Iterator<String> it = manifestMap.keySet().iterator();
+			int i=0;
+			while(it.hasNext()) {
+				String accessCode = it.next();
+				ArrayList<ManifestData> manifestList = manifestMap.get(accessCode);
+				ManifestData[] data = (ManifestData[]) manifestList.toArray(new ManifestData[0]);
+				com.ctb.tms.bean.login.Manifest manifest = new com.ctb.tms.bean.login.Manifest();
+				manifest.setManifest(data);
+				manifest.setTestRosterId(testRosterId);
+				manifest.setAccessCode(accessCode);
+				manifests[i] = manifest;
+				i++;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -632,7 +659,7 @@ public class OASOracleSource implements OASRDBSource
 				// do nothing
 			}
 		}
-		return data;
+		return manifests;
 	}
     
 	private static ScratchpadData[] getScratchpadContent(Connection con, int testRosterId) {

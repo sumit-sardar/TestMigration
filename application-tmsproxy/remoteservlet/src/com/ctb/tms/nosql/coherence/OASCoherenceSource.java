@@ -62,8 +62,17 @@ public class OASCoherenceSource implements OASNoSQLSource {
 	}
 	
 	public Manifest getManifest(String testRosterId, String accessCode) throws XmlException, IOException, ClassNotFoundException {
-		String key = testRosterId + ":" + accessCode;
-		return (Manifest) manifestCache.get(key);
+		/*String key = testRosterId + ":" + accessCode;
+		return (Manifest) manifestCache.get(key); */
+		String key = testRosterId;
+		Manifest[] manifests = (Manifest[]) manifestCache.get(key);
+		for(int i=0;i<manifests.length;i++) {
+			Manifest manifest = manifests[i];
+			if(accessCode.equals(manifest.getAccessCode())) {
+				return manifest;
+			}
+		}
+		return null;
 	}
 
 	public Tsd[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
@@ -88,7 +97,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 	}
 	
 	public Manifest[] getAllManifests(String testRosterId) throws IOException, ClassNotFoundException {
-		String key = testRosterId;
+		/* String key = testRosterId;
 		Filter filter = new EqualsFilter("getTestRosterId", key); 
 		Set setKeys = manifestCache.keySet(filter); 
 		Map mapResult = manifestCache.getAll(setKeys); 
@@ -105,6 +114,8 @@ public class OASCoherenceSource implements OASNoSQLSource {
 			return manifesta;
 		} else {
 			return null;
-		}
+		} */
+		String key = testRosterId;
+		return (Manifest[]) manifestCache.get(key);
 	}
 }
