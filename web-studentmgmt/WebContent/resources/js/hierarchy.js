@@ -280,7 +280,7 @@ function fillDropDown( elementId, optionList) {
 	}
 	
 	function studentDetailSubmit(){
-		alert($("#addEditStudentDetail *").serialize());
+	//	alert($("#addEditStudentDetail *").serialize());
 	
 			
 					$.ajax(
@@ -297,7 +297,7 @@ function fillDropDown( elementId, optionList) {
 								data:		$("#addEditStudentDetail *").serialize(),
 								dataType:	'json',
 								success:	function(data, textStatus, XMLHttpRequest){	
-												alert("data : " + data);
+												//alert("data : " + data);
 												var errorFlag = data.errorFlag;
 												var successFlag = data.successFlag;
 												if(successFlag) {
