@@ -45,7 +45,7 @@ public class ManifestData implements Serializable
     private String adaptive;
     private double abilityScore;
     private double semScore;
-    private double objectiveScore;
+    private String objectiveScore;
     
 	public String getRecommendedLevel() {
 		return recommendedLevel;
@@ -111,13 +111,13 @@ public class ManifestData implements Serializable
 	/**
 	 * @return the objectiveScore
 	 */
-	public double getObjectiveScore() {
+	public String getObjectiveScore() {
 		return objectiveScore;
 	}
 	/**
 	 * @param objectiveScore the objectiveScore to set
 	 */
-	public void setObjectiveScore(double objectiveScore) {
+	public void setObjectiveScore(String objectiveScore) {
 		this.objectiveScore = objectiveScore;
 	}
 	/**

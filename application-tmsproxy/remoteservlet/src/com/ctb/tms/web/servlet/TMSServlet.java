@@ -226,7 +226,7 @@ public class TMSServlet extends HttpServlet {
             feedbackResponse.getLms().getScoArray()[i].getLsv().getCmiCore().setScoreMax(new BigDecimal(feedback[i].getMaxScore()));
             feedbackResponse.getLms().getScoArray()[i].getLsv().getCmiCore().setScoreAbility(new BigDecimal(feedback[i].getAbilityScore()));
             feedbackResponse.getLms().getScoArray()[i].getLsv().getCmiCore().setScoreSem(new BigDecimal(feedback[i].getSemScore()));
-            feedbackResponse.getLms().getScoArray()[i].getLsv().getCmiCore().setScoreObjective(new BigDecimal(feedback[i].getObjectiveScore()));
+            feedbackResponse.getLms().getScoArray()[i].getLsv().getCmiCore().setScoreObjective(feedback[i].getObjectiveScore());
             feedbackResponse.getLms().getScoArray()[i].getLsv().addNewExtCore().setNumberOfUnscoredItems(new BigInteger(String.valueOf(feedback[i].getUnscored())));
         }
         return response.xmlText();
@@ -306,7 +306,7 @@ public class TMSServlet extends HttpServlet {
 		            int unscored = -1;
 		            double ability = 0;
                     double sem = 0;
-                    double obj = 0;                    
+                    String obj = null;                    
 		            boolean timeout = false;
 		            for(int k=0;k<lsva.length;k++) {
 		                Lsv lsv = (Lsv) lsva[k];
@@ -319,9 +319,18 @@ public class TMSServlet extends HttpServlet {
 		                    // collect subtest score stuff here, put in SISS
 		                    BigDecimal cmiraw = cmi.getScoreRaw();
 		                    BigDecimal cmimax = cmi.getScoreMax();
-		                    BigDecimal cmiability = cmi.getScoreAbility();
-		                    BigDecimal cmisem = cmi.getScoreSem();		                    
-		                    BigDecimal cmiobjetive = cmi.getScoreObjective(); 
+		                    BigDecimal cmiability = new BigDecimal(0);
+		                    BigDecimal cmisem =  new BigDecimal(0);
+		                    String cmiobjetive = "";
+		                    
+		                    if(cmi.getScoreAbility() != null)
+		                    	cmiability = cmi.getScoreAbility();
+		                    
+		                    if(cmi.getScoreSem() != null)
+		                    	cmisem = cmi.getScoreSem();
+		                    
+		                    if(cmi.getScoreObjective() != null)
+		                    	cmiobjetive = cmi.getScoreObjective(); 
 		                    
 		                    if(cmiraw != null) {
 		                        raw = cmiraw.intValue();
@@ -330,7 +339,7 @@ public class TMSServlet extends HttpServlet {
 		                    if(cmiability != null) {
 	                            ability = cmiability.doubleValue();
 	                            sem = cmisem.doubleValue();
-	                            obj = cmiobjetive.doubleValue();
+	                            obj = cmiobjetive.toString();
 	                        }
 		                }
 		                ExtCore ext = lsv.getExtCore();

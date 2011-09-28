@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
@@ -121,6 +122,7 @@ public class OASOracleSink implements OASRDBSink {
 		PreparedStatement stmt1 = null;
 		PreparedStatement stmt2 = null;
 		PreparedStatement stmt3 = null;
+		DecimalFormat df = new DecimalFormat("#.##");
     	try {
     		String subtestList = "";
     		ManifestData [] subtests = manifest.getManifest();
@@ -152,10 +154,10 @@ public class OASOracleSink implements OASRDBSink {
     			} else {
     				stmt1.setTimestamp(6, null);
     			}
-    			stmt1.setString(7, subtest.getRecommendedLevel());       			
-    			stmt1.setDouble(8, subtest.getAbilityScore());
-    			stmt1.setDouble(9, subtest.getSemScore());
-    			stmt1.setDouble(10, subtest.getObjectiveScore());
+    			stmt1.setString(7, subtest.getRecommendedLevel());
+				stmt1.setString(8, df.format(subtest.getAbilityScore()));
+    			stmt1.setString(9, df.format(subtest.getSemScore()));
+    			stmt1.setString(10, subtest.getObjectiveScore());
     			stmt1.setString(11, testRosterId);
     			stmt1.setInt(12, subtest.getId());
     			stmt1.executeUpdate();

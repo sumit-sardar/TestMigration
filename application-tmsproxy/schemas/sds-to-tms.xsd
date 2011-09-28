@@ -168,7 +168,7 @@
 																				<xs:documentation>Standard Error of Measurment</xs:documentation>
 																			</xs:annotation>
 																		</xs:attribute>
-																		<xs:attribute name="score.objective" type="xs:decimal" use="optional">
+																		<xs:attribute name="score.objective" type="xs:string" use="optional">
 																			<xs:annotation>
 																				<xs:documentation>Objective Score</xs:documentation>
 																			</xs:annotation>
@@ -294,7 +294,7 @@ Testing session data is designed to be "idempotent", meaning that receiving and 
 																	<xs:documentation>Standard Error of Measurment</xs:documentation>
 																</xs:annotation>
 															</xs:attribute>
-															<xs:attribute name="score.objective" type="xs:decimal" use="optional">
+															<xs:attribute name="score.objective" type="xs:string" use="optional">
 																<xs:annotation>
 																	<xs:documentation> Objective Score</xs:documentation>
 																</xs:annotation>
@@ -1014,7 +1014,7 @@ allowed values: not_attempted, completed, incomplete, and unknown</xs:documentat
 															<xs:attribute name="score.max" type="xs:decimal" use="required"/>
 															<xs:attribute name="score.ability" type="xs:decimal" use="optional"/>
 															<xs:attribute name="score.sem" type="xs:decimal" use="optional"/>
-															<xs:attribute name="score.objective" type="xs:decimal" use="optional"/>
+															<xs:attribute name="score.objective" type="xs:string" use="optional"/>
 															
 														</xs:complexType>
 													</xs:element>
