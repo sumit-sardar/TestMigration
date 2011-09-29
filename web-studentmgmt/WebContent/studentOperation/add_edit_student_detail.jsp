@@ -14,17 +14,36 @@
 	}
 
 %>
+<input type="hidden" id="isMandatoryBirthDate"  value = <%=isMandatoryBirthDate %> />
+<input type="hidden" id="isMandatoryStudentId" value = <%=isMandatoryStudentId %> />
+<input type="hidden" id="isStudentIdConfigurable" value = <%=isStudentIdConfigurable %> />
+<input type="hidden" id="isStudentId2Configurable" value = <%=isStudentId2Configurable %> />
+<input type="hidden" id="studentIdLabelName"  value = <%=studentIdArrValue[0] %> />
+<input type="hidden" id="isStudentIdNumeric" value = <%=studentIdArrValue[4] %> />
+<input type="hidden" id="studentIdMinLength" value = <%=studentIdArrValue[3] %> />
+<input type="hidden" id="studentId2LabelName"  value = <%=studentId2ArrValue[0] %> />
+<input type="hidden" id="isStudentId2Numeric" value = <%=studentId2ArrValue[3] %> />
+<input type="hidden" id="studentId2MinLength" value = <%=studentId2ArrValue[2] %> />
+
+
 
 <div id="addEditStudentDetail"
 	style="display: none; background-color: #FFFFCC; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<div id="displayMessage" style="display:none; width:100%; height:25px; background-color: #CCCC99; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
+	<div id="displayMessage" style="display:none; width:100%; height:55px; background-color: #FFFFEE; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
+		<div id="title">
+		</div>
+		<div id= "content">
+		</div>
+		<div id= "message">
+		</div>
+		
 	</div>
+	
 <ul id="accordion">
 
 	<li>
-	<div
-		style=" width:170px; background-color: #CCCC99; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">Student Information</div>
-	<div>
+	<div	style=" width:170px; background-color: #CCCC99; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">Student Information</div>
+	<div style="background-color: #FFFFFF">
 	
 <table class="transparent">
 	<tbody>
@@ -52,13 +71,13 @@
 				<% }%>
 				Date of  Birth:</td>
 				<td nowrap="" class="transparent">    
-					<select style="width: 60px;"   id="monthOptions" name="monthOptions">		
+					<select style="width: 65px;"   id="monthOptions" name="monthOptions">		
 					</select>
 					        
-					<select style="width: 45px;"  id="dayOptions" name="dayOptions">
+					<select style="width: 50px;"  id="dayOptions" name="dayOptions">
 					</select>
 					
-					<select style="width: 68px;"  id="yearOptions" name="yearOptions">
+					<select style="width: 73px;"  id="yearOptions" name="yearOptions">
 					</select>
 		        </td>                    
    
@@ -167,30 +186,28 @@
 		<div
 		style=" width:170px; background-color: #CCCC99; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">Student Additional Information</div>
 		<div>
-		<div>
+		<div style="background-color: #FFFFFF">
 			 <jsp:include page="/studentOperation/add_edit_student_by_demographic.jsp" />
 		</div>
 	</li>
 	
 	<li>
 	<div>
-	<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable">
+	<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%">
 		<tbody>
-			<tr>
-				<td width="100%" colspan="2">
-				   <hr style="margin: 1px;" class="ui-widget-content">
-				</td>
-			</tr>
-			<tr id="Act_Buttons" >
-				<td  id="preButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-left" id="pData" href="javascript:void(0)"><span
+			
+			<tr id="Act_Buttons" align="center">
+				<td  width="0%" id="preButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-left" id="pData" href="javascript:void(0)"><span
 					class="ui-icon ui-icon-triangle-1-w"></span></a></td><td id="nextButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-right" id="nData"
 					href="javascript:void(0)"><span class="ui-icon ui-icon-triangle-1-e"></span></a></td>
 					<td>&nbsp;</td>
-				<td ><a id="sData" href="javascript:studentDetailSubmit();"><div
-					style="background-color: #CCCC99; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-					Submit</div></a></td><td><a id="cData" href="javascript:closePopUp();"><div
-					style="background-color: #CCCC99; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-					Cancel</div></a></td>
+				<td  width="100%">
+					<center>
+					<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:studentDetailSubmit(); return false;" class="buttonPopup">
+					<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onCancel(); return false;" class="buttonPopup">
+					</center>
+					<br>
+				</td>
 			</tr>
 			<tr class="binfo" style="display: none;">
 				<td colspan="2" class="bottominfo"></td>

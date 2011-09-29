@@ -10,6 +10,9 @@ var yearOptions = [];
 var monthOptions = []; 
 var orgTreeHierarchy;
 var assignedOrgNodeIds ;
+var customerDemographicValue;
+var isValueChanged = false;
+
 			
 function populateTree() {
 	
@@ -51,6 +54,28 @@ function blockUI(){
 function unblockUI(){
 	$("#blockDiv").css("cursor","normal");
 	$("#blockDiv").remove();
+}
+
+function overlayblockUI(){	
+	$("body").append('<div id="blDiv" style="position: absolute;top:0;left:0;width:100%;height:100%;z-index:10"></div>');
+	$("#blDiv").css("cursor","wait");		
+						
+}
+
+function overlayunblockUI(){
+	$("#blDiv").css("cursor","normal");
+	$("#blDiv").remove(); 
+}
+
+function confirmationblockUI(){	
+	$("body").append('<div id="conDiv" style="opacity: 0.6; background-color: #000000;position: absolute;top:0;left:0;width:100%;height:100%;z-index:10"></div>');
+	$("#conDiv").css("cursor","wait");		
+						
+}
+
+function confirmationunblockUI(){
+	$("#conDiv").css("cursor","normal");
+	$("#conDiv").remove(); 
 }
 
 function createSingleNodeSelectedTree(jsondata) {
@@ -115,6 +140,10 @@ function createMultiNodeSelectedTree(jsondata) {
 				currentlySelectedNode =  currentlySelectedNode + " , " + checked_ids[i].text ;
 				//assignedOrgNodeIds = checked_ids[i].attr("id") +"," + assignedOrgNodeIds;
 				$("#selectedOrgNodesName").text(currentlySelectedNode);
+				if(currentlySelectedNode.length > 0 )
+					$("#notSelectedOrgNodes").css("visibility","hidden");	
+				else
+					$("#notSelectedOrgNodes").css("visibility","visible");	
 			}
 		});
    
@@ -195,7 +224,12 @@ function createMultiNodeSelectedTree(jsondata) {
 
 
 function AddStudentDetail(){
-		
+	if(!(gradeOptions.length > 0 
+		&& genderOptions.length > 0
+			&& dayOptions.length > 0
+				&& monthOptions.length > 0 
+					&& yearOptions.length > 0)){
+	
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -207,7 +241,8 @@ function AddStudentDetail(){
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){	
 						//alert('in');
-						$.unblockUI();  
+						$.unblockUI();
+						overlayblockUI(); 
 						gradeOptions = data.gradeOptions;
 						genderOptions = data.genderOptions;
 						dayOptions = data.dayOptions; 
@@ -218,24 +253,14 @@ function AddStudentDetail(){
 						fillDropDown("dayOptions", dayOptions);
 						fillDropDown("monthOptions", monthOptions);
 						fillDropDown("yearOptions", yearOptions);
-						//$("#studentFirstName").attr("disabled", "disabled");
-						$("#studentFirstName").val("");
-						$("#studentMiddleName").val("");
-						$("#studentLastName").val("");
-						$("#monthOptions").val("");
-						$("#dayOptions").val("");
-						$("#yearOptions").val("");
-						$("#genderOptions").val("");
-						$("#gradeOptions").val("");
-						$("#studentExternalId").val("");
-						$("#studentExternalId2").val("");
-						
-			
+						customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
 						$("#addEditStudentDetail").dialog({  
 													title:"Add Record",  
 												 	resizable:false,
 												 	autoOpen: true,
-												 	width: '800px'
+												 	width: '800px',
+												 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		 	
 												 	});	
 						$('#accordion ul:eq(0)').show(); 						
 					},
@@ -249,11 +274,38 @@ function AddStudentDetail(){
 					}
 	});
 
-		
-	
+	} else {
+		reset();
+		overlayblockUI(); 
+		$("#addEditStudentDetail").dialog({  
+			title:"Add Record",  
+		 	resizable:false,
+		 	autoOpen: true,
+		 	width: '800px',
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});	
+		 	
+		 	
+		$('#accordion ul:eq(0)').show(); 		
+	}	
+	//$('#addEditStudentDetail .ui-dialog-titlebar-close').hide();
 	
 }
-
+    function reset() {
+       jQuery.each(customerDemographicValue, function(i, field){         
+      		$("#"+field.name).val(field.value);
+       });  
+       var checkBoxfields = $(":checkbox"); 
+       for(var i=0; i < checkBoxfields.length; i++){
+			$(checkBoxfields).eq(i).attr('checked', false); 
+		} 
+		var radiofields = $(":radio"); 
+       for (var i=0; i<radiofields.length; i++) {
+			if (radiofields[i].value== "None") { 
+				radiofields[i].checked = true;
+			}
+		}
+   }
 
 
 			
@@ -271,18 +323,53 @@ function fillDropDown( elementId, optionList) {
 
 
 
-	function closePopUp(){
-		$("#addEditStudentDetail").dialog("close");
+	function closePopUp(dailogId){
+		$("#"+dailogId).dialog("close");
+		overlayunblockUI();
 	}
 	
-	function ser() {
+	function closeConfirmationPopup() {
+		closePopUp('confirmationPopup');
+		closePopUp('addEditStudentDetail');
+	}
 	
+	function onCancel() {
+		isValueChanged = false;
+		var radiofields = $(":radio"); 
+       	for (var i=0; i<radiofields.length; i++) {
+			if (radiofields[i].value != "None" && radiofields[i].checked == true) { 
+				isValueChanged = true;
+				break;
+			}
+		}
+		if(!isValueChanged) {
+		   var checkBoxfields = $(":checkbox"); 
+	       for(var i=0; i < checkBoxfields.length; i++){
+	       		if($(checkBoxfields).eq(i).attr('checked')== true) {
+					isValueChanged = true;
+					break;
+					}
+			} 
+		}
+		
+		if(isValueChanged) {
+		overlayblockUI();
+		$("#confirmationPopup").dialog({  
+			title:"Confirmation Alert",  
+		 	resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});	
+			 $("#confirmationPopup").css('height',100);
+		} else {
+			closePopUp('addEditStudentDetail');
+		}
 	}
 	
 	function studentDetailSubmit(){
-	//	alert($("#addEditStudentDetail *").serialize());
-	
-			
+	 var validflag = VerifyStudentDetail();
+	if(validflag) {
 					$.ajax(
 						{
 								async:		true,
@@ -298,6 +385,7 @@ function fillDropDown( elementId, optionList) {
 								dataType:	'json',
 								success:	function(data, textStatus, XMLHttpRequest){	
 												//alert("data : " + data);
+												unblockUI();
 												var errorFlag = data.errorFlag;
 												var successFlag = data.successFlag;
 												if(successFlag) {
@@ -319,7 +407,9 @@ function fillDropDown( elementId, optionList) {
 						}
 					);
 	
-	
+	} else {
+			document.getElementById('displayMessage').style.display = "block";
+	}
 	}
 	
 	

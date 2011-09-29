@@ -1284,3 +1284,12 @@ table.p table.pager .textField {
     text-align: left;
     padding: 3px;
 }
+
+.buttonPopup {
+	background-color: #CCCC99;
+	font-family: Arial, Verdana, Sans Serif; !important
+	font-size: 12px; !important
+	font-style: normal; 
+	font-weight: normal;
+	height: 30px;
+}

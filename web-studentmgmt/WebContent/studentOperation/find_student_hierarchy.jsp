@@ -3,6 +3,7 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifystudentinfo.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
 <script type="text/javascript" src="/StudentManagementWeb/resources/js/studentregistration.js"></script>
 
@@ -51,3 +52,24 @@
 </br>
 </br>
 <jsp:include page="/studentOperation/add_edit_student_detail.jsp" />
+<div id="confirmationPopup"
+	style="display: none; background-color: #FFFFCC; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table>
+		<tr>
+			<td colspan="2">
+			<p>You have not saved this student. Are you sure you want to cancel?</p>
+			</td>
+		</tr>
+		<tr>
+		<td >
+				<center>
+					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="buttonPopup">
+					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="buttonPopup">
+				</center>
+			<br>
+		</td>
+		
+		</tr>
+		
+	</table>
+</div>

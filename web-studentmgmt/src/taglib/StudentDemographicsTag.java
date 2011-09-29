@@ -238,7 +238,7 @@ public class StudentDemographicsTag extends CTBTag
 	    displayRowStart();
             displayCellStart("transparent-small");
                 writeToPage(getSpaces(8));
-				writeToPage("<select name=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+				writeToPage("<select name=\"" + name + "\" id=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
 		        writeToPage(option("Please Select", true));
 			    for (i=0 ; i<values.length ; i++) {
 			        StudentDemographicValue sdv = (StudentDemographicValue)values[i];
