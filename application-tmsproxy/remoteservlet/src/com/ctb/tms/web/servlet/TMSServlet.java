@@ -27,6 +27,7 @@ import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Ts
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv.CmiCore.Exit;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv.ExtCore;
 import noNamespace.AdssvcResponseDocument;
+import noNamespace.AdssvcResponseDocument.AdssvcResponse.CompleteTutorial;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.NextSco;
 import noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd.Status;
@@ -55,6 +56,7 @@ import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.exception.testDelivery.InvalidCorrelationIdException;
+import com.ctb.tms.exception.testDelivery.InvalidTestRosterIdException;
 import com.ctb.tms.nosql.ADSNoSQLSink;
 import com.ctb.tms.nosql.ADSNoSQLSource;
 import com.ctb.tms.nosql.NoSQLStorageFactory;
@@ -120,6 +122,8 @@ public class TMSServlet extends HttpServlet {
 	            result = uploadAuditFile(xml);
 	        else if (method != null && method.startsWith(ServletUtils.WRITE_TO_AUDIT_FILE_METHOD))
 	            result = writeToAuditFile(xml);
+	        else if (method != null && method.startsWith(ServletUtils.COMPLETE_TUTORIAL_METHOD))
+	            result = completeTutorial(xml);
 	        else if(method.toLowerCase().indexOf("mp3") >= 0)
 	        	getMp3(request, response);
 	        else if (method != null && method.startsWith(ServletUtils.GET_STATUS_METHOD)) {
@@ -149,6 +153,51 @@ public class TMSServlet extends HttpServlet {
         status.setStatus(TmsStatus.Status.OK);
     	return responseDocument.xmlText();
 	}
+	
+	private String completeTutorial(String xml) throws XmlException {
+    	XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
+        AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml, xmlOptions);
+		AdssvcRequest saveRequest = document.getAdssvcRequest();
+        AdssvcResponseDocument response = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
+        CompleteTutorial saveResponse = response.addNewAdssvcResponse().addNewCompleteTutorial();
+        
+        String lsid = saveRequest.getCompleteTutorial().getLsid();
+        String testRosterId = "-1";
+        String accessCode = null;
+        if(lsid.indexOf(":") >= 0) {
+            testRosterId = lsid.substring(0, lsid.indexOf(":"));
+            accessCode = lsid.substring(lsid.indexOf(":")+1,lsid.length());
+        }
+        int mSeq = saveRequest.getCompleteTutorial().getMseq().intValue();
+        saveResponse.setLsid(lsid);
+        saveResponse.setMseq(new BigInteger(String.valueOf(mSeq)));
+        saveResponse.setStatus(noNamespace.AdssvcResponseDocument.AdssvcResponse.CompleteTutorial.Status.OK);
+        try {
+            // make sure we have a usable test roster id
+            if(testRosterId == null || testRosterId.trim().equals("") || testRosterId.trim().equals("-1")) {
+                throw new InvalidTestRosterIdException();
+            } else {
+                try {
+                    Integer.parseInt(testRosterId);
+                } catch (Exception e) {
+                    throw new InvalidTestRosterIdException();
+                }
+            }
+            
+            Manifest manifest = oasSource.getManifest(testRosterId, accessCode);
+            
+            if (manifest.getTutorialTaken()==null) {
+                manifest.setTutorialTaken("TRUE");
+                oasSink.putManifest(testRosterId, accessCode, manifest);
+            }
+        } catch (InvalidTestRosterIdException itre) {
+            saveResponse.setStatus(noNamespace.AdssvcResponseDocument.AdssvcResponse.CompleteTutorial.Status.INVALID_LSID);
+        } catch (Exception tde) {
+            saveResponse.setStatus(noNamespace.AdssvcResponseDocument.AdssvcResponse.CompleteTutorial.Status.OTHER_ERROR);
+        }
+        return response.xmlText();
+    }
 	
 	private void getMp3(HttpServletRequest request, HttpServletResponse response) throws IOException
     {   
@@ -675,6 +724,14 @@ public class TMSServlet extends HttpServlet {
 		manifest.setRosterRestartNumber(newRestartCount);
 		loginResponse.setRestartNumber(BigInteger.valueOf(newRestartCount));
 		rd.getAuthData().setRestartNumber(newRestartCount);
+		if(loginResponse.getTutorial() != null) {
+			if(manifest.getTutorialTaken() == null) {
+				manifest.setTutorialTaken(0==loginResponse.getTutorial().getDeliverTutorial().intValue()?"TRUE":null);
+			} else {
+				int tut = "TRUE".equals(manifest.getTutorialTaken())?0:1;
+				loginResponse.getTutorial().setDeliverTutorial(BigInteger.valueOf(tut));
+			}
+		}
 		oasSink.putManifest(testRosterId, creds.getAccesscode(), manifest);
 		oasSink.putRosterData(creds, rd);
 		
@@ -836,6 +893,8 @@ public class TMSServlet extends HttpServlet {
 					result = ServletUtils.GET_SUBTEST_METHOD;
 				else if (requestXML.indexOf("download_item") >= 0) 
                 	result = ServletUtils.DOWNLOAD_ITEM_METHOD;
+				else if (requestXML.indexOf("complete_tutorial") >= 0)
+					result = ServletUtils.COMPLETE_TUTORIAL_METHOD;
 			}
 		}       	
         //logger.debug(result);

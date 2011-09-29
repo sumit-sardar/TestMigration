@@ -42,6 +42,7 @@ import com.ctb.tms.exception.testDelivery.OutsideTestWindowException;
 import com.ctb.tms.exception.testDelivery.TestSessionCompletedException;
 import com.ctb.tms.exception.testDelivery.TestSessionInProgressException;
 import com.ctb.tms.exception.testDelivery.TestSessionNotScheduledException;
+import com.ctb.tms.nosql.NoSQLStorageFactory;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.util.Constants;
 
@@ -66,7 +67,7 @@ public class OASOracleSource implements OASRDBSource
 	//private static final String MANIFEST_BY_ROSTER_SQL = "select \t  scoOrder, \t  scoParentId, \t  adminForceLogout, \t  showStudentFeedback, \t  id, \t  title, \t  testTitle, \t  scoDurationMinutes, \t  0 as totalTime, \t  scoUnitType, \t  scoEntry, \t  completionStatus, \t  asmtHash, \t  asmtEncryptionKey, \t  itemEncryptionKey, \t  adsid,  accessCode\t from (  select \t  siss.item_Set_order as scoOrder, \t  isp.parent_item_Set_id as scoParentId, \t  ta.force_logout as adminForceLogout, \t  ta.show_student_feedback as showStudentFeedback, \t  iset.item_set_id as id, \t  iset.item_set_name as title, \t  test.item_set_name as testTitle, \t  iset.time_limit / 60 as scoDurationMinutes, \t  'SUBTEST' as scoUnitType, \t  'ab-initio' as scoEntry, \t  siss.completion_status as completionStatus, \t  iset.asmt_hash as asmtHash, \t  iset.asmt_encryption_key as asmtEncryptionKey, \t  iset.item_encryption_key as itemEncryptionKey, \t  iset.ads_ob_asmt_id as adsid,  tais.access_code as accessCode  from  item_set_item isi,  item_Set iset,  item_set test,  student_item_set_status siss,  test_roster tr,  test_admin ta,  item_set_parent isp,  test_admin_item_set tais  where  isi.item_set_id = iset.item_set_id  and iset.item_set_id = siss.item_set_id  and iset.item_set_type = 'TD'  and siss.test_roster_id = tr.test_roster_id  and ta.test_admin_id = tr.test_admin_id  and isp.item_Set_id = iset.item_set_id  and tr.test_roster_id = {testRosterId}  and tais.item_set_id = isp.parent_item_set_id  and test.item_set_id = ta.item_set_id  and tais.test_admin_id = ta.test_admin_id  group by  siss.item_Set_order,  isp.parent_item_set_id,  ta.force_logout,  ta.show_student_feedback,  iset.item_Set_id,  iset.item_set_name,  test.item_set_name,  iset.time_limit,  isi.item_sort_order,  siss.completion_status,  iset.asmt_hash,  iset.asmt_encryption_key,  iset.item_encryption_key,  iset.ads_ob_asmt_id,  tais.access_code) group by scoOrder, \t  scoParentId, \t  adminForceLogout, \t  showStudentFeedback, \t  id, \t  title, \t  testTitle, \t  scoDurationMinutes, \t  scoUnitType, \t  scoEntry, \t  completionStatus, \t  asmtHash, \t  asmtEncryptionKey, \t  itemEncryptionKey, \t  adsid,  accessCode \torder by \t  scoOrder";   
 	private static final String PRODUCT_LOGO_SQL = "select resource_uri  from PRODUCT_RESOURCE  where resource_type_code = 'TDCLOGO'  and product_id = ?";    
 	private static final String TUTORIAL_RESOURCE_SQL = "select pr.resource_uri from product pp, product cp, product_resource pr where pp.product_id = cp.parent_product_id and pp.product_id = pr.product_id and pr.resource_type_code = 'TUTORIAL' and cp.product_id in ( select product_id from test_admin where test_admin_id in  (select test_admin_id from test_roster where test_roster_id = ?))";    
-	private static final String TUTORIAL_TAKEN_SQL = "select count(*) as counter from test_roster tr, test_admin ta, student_tutorial_status sts where tr.test_admin_id = ta.test_admin_id and ta.product_id = sts.product_id and tr.student_id = sts.student_id and sts.completion_status = 'CO' and tr.test_roster_id = ?";    
+	private static final String TUTORIAL_TAKEN_SQL = "select count(*) as counter from test_roster tr, test_admin ta, student_tutorial_status sts where tr.test_admin_id = ta.test_admin_id and tr.student_id = sts.student_id and sts.completion_status = 'CO' and tr.test_roster_id = ?";    
 	private static final String SCRATCHPAD_CONTENT_SQL = "select scratchpad_content, item_set_id from student_item_set_status where test_roster_id = ?";
 	//private static final String UPDATE_TEST_ROSTER_WITH_RD_SEED_SQL = "update  test_roster set  random_distractor_seed = {rndNumber} where  test_roster_id = {testRosterId}";
 	//private static final String SPEECH_CONTROLLER_SQL = "select cconfig.default_value as speechControllerFlag  from test_roster  ros,  customer  cus,  customer_configuration cconfig,  student_accommodation  accom  where accom.screen_reader = 'T'  and accom.student_id = ros.student_id  and cconfig.customer_configuration_name = 'Allow_Speech_Controller'  and cconfig.customer_id = cus.customer_id  and cus.customer_id = ros.customer_id  and ros.test_roster_id = {testRosterId}";
@@ -120,7 +121,7 @@ public class OASOracleSource implements OASRDBSource
     	return getRosterData(conn, creds);
 	}
 	
-    public RosterData getRosterData(Connection conn, StudentCredentials creds)  throws Exception {
+    private RosterData getRosterData(Connection conn, StudentCredentials creds)  throws Exception {
     	String username = creds.getUsername();
     	String password = creds.getPassword();
     	String accessCode = creds.getAccesscode();
@@ -130,7 +131,7 @@ public class OASOracleSource implements OASRDBSource
     	return generateRosterData(conn, authDataArray, accessCode);
     }
     
-    private RosterData generateRosterData (Connection conn, AuthenticationData [] authDataArray, String accessCode) throws SQLException, AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException {
+    private RosterData generateRosterData (Connection conn, AuthenticationData [] authDataArray, String accessCode) throws SQLException, AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException, IOException, ClassNotFoundException {
     	XmlOptions xmlOptions = new XmlOptions(); 
         xmlOptions = xmlOptions.setUnsynchronized();
     	TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
@@ -243,8 +244,8 @@ public class OASOracleSource implements OASRDBSource
 	        copyManifestDataToResponse(conn, loginResponse, manifestData, testRosterId, authData.getTestAdminId(), accessCode);
 	
 	        String tutorialResource = getTutorialResource(conn, testRosterId);
-	        boolean wasTutorialTaken = wasTutorialTaken(conn, testRosterId);
 	        if (tutorialResource!= null && !tutorialResource.trim().equals("")) {
+	        	boolean wasTutorialTaken = wasTutorialTaken(conn, testRosterId);
 	            Tutorial tutorial =loginResponse.addNewTutorial();
 	            tutorial.setTutorialUrl(tutorialResource);
 	            tutorial.setDeliverTutorial(new BigInteger(wasTutorialTaken ? "0":"1"));
@@ -576,7 +577,7 @@ public class OASOracleSource implements OASRDBSource
 		return data;
 	}
 	
-	private ManifestData[] getManifest(Connection con, String testRosterId, String accessCode) {
+	private ManifestData[] getManifest(Connection con, String testRosterId, String accessCode) throws IOException, ClassNotFoundException {
 		logger.debug("Looking for manifest for roster " + testRosterId + ", accessCode " + accessCode);
 		com.ctb.tms.bean.login.Manifest[] manifests = getManifest(con, testRosterId);
 		for(int i=0;i<manifests.length;i++) {

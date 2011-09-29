@@ -21,7 +21,18 @@ public class Manifest implements Serializable {
     private int rosterRestartNumber;
     private String studentName;
     private Integer randomDistractorSeed;
+    private String tutorialTaken;
     
+    
+    
+	public String getTutorialTaken() {
+		return tutorialTaken;
+	}
+
+	public void setTutorialTaken(String tutorialTaken) {
+		this.tutorialTaken = tutorialTaken;
+	}
+
 	public String getTestRosterId() {
 		return testRosterId;
 	}
