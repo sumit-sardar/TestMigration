@@ -7,7 +7,7 @@ body {
 	padding:0px; 
 	margin:0px;
 }
-
+ 
 .bodyContent {
     padding: 0px; 
     width: 100%;
@@ -118,12 +118,29 @@ a.footer:hover {
 	text-decoration: underline;
 }
 
+table.simple {
+    padding: 0px; 
+}
+
+tr.simple {
+}
+
+td.simple {
+}
+
+
 table.simpleBody {
     border-collapse: collapse; 
     border-style: none; 
     padding: 0px; 
     width: 100%;
 	color:#003399; 
+}
+
+tr.simpleBody {
+}
+
+td.simpleBody {
 }
 
 table.simpleBlock {
@@ -250,3 +267,28 @@ input:focus {
     border:1px solid rgba(0,0,255, 0.8); 
 }
 
+.treeHeader {
+	background-color: #5cadcc; 
+	color: #ffffff; 
+	font-family: Lucida Grande, Lucida Sans, Arial, sans-serif; 
+	font-size: 1.0em;
+	font-style: normal;  
+	font-weight: bold; 
+	vertical-align:middle;
+	padding: 5px 5px 5px 5px;
+}
+
+.treeBody {
+	font-family: Arial, Helvetica, Sans Serif; 
+	font-size: 12px;  
+	font-style: normal;  
+	font-weight: normal; 	
+	background-color: #ffffff; 
+    width: 250px; 
+    height: 270px; 
+    border-color: #c5dbec; 
+    border-style: solid; 
+    border-width: 1px; 
+	padding: 0px;
+    
+}

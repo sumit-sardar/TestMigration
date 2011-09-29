@@ -270,12 +270,12 @@ input:focus {
 .treeHeader {
 	background-color: #5cadcc; 
 	color: #ffffff; 
-	font-family: Arial, Helvetica, Sans Serif; 
-	font-size: 12px;  
+	font-family: Lucida Grande, Lucida Sans, Arial, sans-serif; 
+	font-size: 1.0em;
 	font-style: normal;  
 	font-weight: bold; 
 	vertical-align:middle;
-	padding: 5px;
+	padding: 5px 5px 5px 5px;
 }
 
 .treeBody {

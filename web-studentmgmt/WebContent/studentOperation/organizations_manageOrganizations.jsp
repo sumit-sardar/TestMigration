@@ -19,10 +19,8 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
-<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifystudentinfo.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
-<script type="text/javascript" src="/StudentManagementWeb/resources/js/studentregistration.js"></script>
- 
+<
     
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
@@ -37,7 +35,7 @@
 	<table class="simple">
 	
 	    <tr class="simple">
-	        <td class="simple" style="background-color : #ffffff">
+	        <td class="simple" style="background-color : #ffffff" valign="top">
 	        
 		      	<div  id="searchheader" class="treeHeader">
 		      		&nbsp;Organization Search
@@ -54,7 +52,7 @@
 			 
 			 <td class="simple" width="10px">&nbsp;</td>
 			  
-			 <td class="simple">
+			 <td class="simple" valign="top">
 		    	<table id="list2" ></table>
 				<div id="pager2"  ></div>
 	         </td>
