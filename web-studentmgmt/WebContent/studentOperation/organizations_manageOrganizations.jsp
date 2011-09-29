@@ -20,7 +20,7 @@
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
-<
+
     
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
@@ -37,7 +37,7 @@
 	    <tr class="simple">
 	        <td class="simple" style="background-color : #ffffff" valign="top">
 	        
-		      	<div  id="searchheader" class="treeHeader">
+		      	<div id="searchheader" class="treeHeader">
 		      		&nbsp;Organization Search
 		      	</div>
 			      	

@@ -145,7 +145,7 @@ public class HomePageController extends PageFlowController
         	if ("true".equals(OldUI))
         		return new Forward("success", form);
         	else
-        		return new Forward("assessments", form);
+        		return new Forward("assessments");
         }
     }
 
@@ -164,45 +164,45 @@ public class HomePageController extends PageFlowController
             @Jpf.Forward(name = "studentScoringLink", path = "assessments_studentScoring.do"),
             @Jpf.Forward(name = "programStatusLink", path = "assessments_programStatus.do")
         }) 
-    protected Forward assessments(HomePageForm form)
+    protected Forward assessments()
     {
     	String menuId = (String)this.getRequest().getParameter("menuId");    	
     	String forwardName = (menuId != null) ? menuId : "sessionsLink";
     	System.out.println(forwardName);
     	
-        return new Forward(forwardName, form);
+        return new Forward(forwardName);
     }
 
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "assessments_sessions.jsp") 
         }) 
-    protected Forward assessments_sessions(HomePageForm form)
+    protected Forward assessments_sessions()
     {
-        return new Forward("success", form);
+        return new Forward("success");
     }
 
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "assessments_scheduleSession.jsp") 
         }) 
-    protected Forward assessments_scheduleSession(HomePageForm form)
+    protected Forward assessments_scheduleSession()
     {
-        return new Forward("success", form);
+        return new Forward("success");
     }
 
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "assessments_studentScoring.jsp") 
         }) 
-    protected Forward assessments_studentScoring(HomePageForm form)
+    protected Forward assessments_studentScoring()
     {
-        return new Forward("success", form);
+        return new Forward("success");
     }
 
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "assessments_programStatus.jsp") 
         }) 
-    protected Forward assessments_programStatus(HomePageForm form)
+    protected Forward assessments_programStatus()
     {
-        return new Forward("success", form);
+        return new Forward("success");
     }
     
     
@@ -217,17 +217,17 @@ public class HomePageController extends PageFlowController
             @Jpf.Forward(name = "studentsLink", path = "organizations_manageStudents.do"),
             @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do")
         }) 
-    protected Forward organizations(HomePageForm form)
+    protected Forward organizations()
     {
     	String menuId = (String)this.getRequest().getParameter("menuId");    	
     	String forwardName = (menuId != null) ? menuId : "organizationsLink";
     	System.out.println(forwardName);
     	
-        return new Forward(forwardName, form);
+        return new Forward(forwardName);
     }
     
     @Jpf.Action()
-    protected Forward organizations_manageOrganizations(HomePageForm form)
+    protected Forward organizations_manageOrganizations()
     {
         try
         {
@@ -242,7 +242,7 @@ public class HomePageController extends PageFlowController
     }
     
     @Jpf.Action()
-    protected Forward organizations_manageStudents(HomePageForm form)
+    protected Forward organizations_manageStudents()
     {
         try
         {
@@ -257,7 +257,7 @@ public class HomePageController extends PageFlowController
     }
 
     @Jpf.Action()
-    protected Forward organizations_manageUsers(HomePageForm form)
+    protected Forward organizations_manageUsers()
     {
         try
         {
@@ -279,9 +279,9 @@ public class HomePageController extends PageFlowController
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "reports.jsp") 
         }) 
-    protected Forward reports(HomePageForm form)
+    protected Forward reports()
     {
-        return new Forward("success", form);
+        return new Forward("success");
     }
 
     
@@ -295,53 +295,53 @@ public class HomePageController extends PageFlowController
             @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
             @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do"),
         }) 
-    protected Forward services(HomePageForm form)
+    protected Forward services()
     {
     	String menuId = (String)this.getRequest().getParameter("menuId");    	
     	String forwardName = (menuId != null) ? menuId : "manageLicensesLink";
     	System.out.println(forwardName);
     	
-        return new Forward(forwardName, form);
+        return new Forward(forwardName);
     }
     
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "services_manageLicenses.jsp") 
         }) 
-    protected Forward services_manageLicenses(HomePageForm form)
+    protected Forward services_manageLicenses()
     {
-        return new Forward("success", form);
+        return new Forward("success");
     }
     
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "services_installSoftware.jsp") 
         }) 
-    protected Forward services_installSoftware(HomePageForm form)
+    protected Forward services_installSoftware()
     {
-        return new Forward("success", form);
+        return new Forward("success");
     }
 
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "services_downloadTest.jsp") 
         }) 
-    protected Forward services_downloadTest(HomePageForm form)
+    protected Forward services_downloadTest()
     {
-        return new Forward("success", form);
+        return new Forward("success");
     }
     
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "services_uploadData.jsp") 
         }) 
-    protected Forward services_uploadData(HomePageForm form)
+    protected Forward services_uploadData()
     {
-        return new Forward("success", form);
+        return new Forward("success");
     }
     
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "services_downloadData.jsp") 
         }) 
-    protected Forward services_downloadData(HomePageForm form)
+    protected Forward services_downloadData()
     {
-        return new Forward("success", form);
+        return new Forward("success");
     }
     
     /**
@@ -350,27 +350,6 @@ public class HomePageController extends PageFlowController
     @Jpf.Action()
     protected Forward broadcastMessage()
     {
-    	/*
-		String jsonResponse = "";
-		String itemId = getRequest().getParameter("itemId");
-		
-		String scr = "Tai Truong";
-		
-		try {
-				jsonResponse = JsonUtils.getJson(scr, "String", scr.getClass());
-
-				HttpServletResponse resp = this.getResponse();     
-				resp.setContentType("application/json");
-				resp.flushBuffer();
-				OutputStream stream = resp.getOutputStream();
-				stream.write(jsonResponse.getBytes());
-				stream.close();
-	        
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    	*/
-    	
         return null;
     }
 
@@ -384,6 +363,9 @@ public class HomePageController extends PageFlowController
         return null;
     }
     
+    /////////////////////////////////////////////////////////////////////////////////////////////    
+    ///////////////////////////// END OF NEW NAVIGATION ACTIONS ///////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////    
     
     
     /**

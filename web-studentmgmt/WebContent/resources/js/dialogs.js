@@ -51,7 +51,7 @@ function viewMyProfile() {
 		{
 				async:		false,
 				beforeSend:	function(){
-								showLoadingProgress();
+								//showLoadingProgress();
 							},
 				url:		'myProfile.do',
 				type:		'POST',
@@ -79,7 +79,7 @@ function viewMyProfile() {
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							},
 				complete :  function(){
-								hideLoadingProgress();
+								//hideLoadingProgress();
 							}
 				}
 			);
