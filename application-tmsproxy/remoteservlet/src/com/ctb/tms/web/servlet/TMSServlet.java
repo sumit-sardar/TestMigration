@@ -527,15 +527,10 @@ public class TMSServlet extends HttpServlet {
 		TmssvcRequestDocument document = TmssvcRequestDocument.Factory.parse(xml, xmlOptions);
 		LoginRequest lr = document.getTmssvcRequest().getLoginRequest();
 		StudentCredentials creds = new StudentCredentials();
-		if(lr.getUserName() == null || lr.getUserName().trim().length() < 1) {
-			creds.setUsername("PT-STUDENT1459034");//lr.getUserName());
-			creds.setPassword("dime79");//lr.getPassword());
-			creds.setAccesscode("ptest1");//lr.getAccessCode());
-		} else {
-			creds.setUsername(lr.getUserName());
-			creds.setPassword(lr.getPassword());
-			creds.setAccesscode(lr.getAccessCode().toUpperCase());
-		}
+		creds.setUsername(lr.getUserName());
+		creds.setPassword(lr.getPassword());
+		creds.setAccesscode(lr.getAccessCode().toUpperCase());
+		
 		RosterData rd = oasSource.getRosterData(creds);
 		if(rd == null) {
 			TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
