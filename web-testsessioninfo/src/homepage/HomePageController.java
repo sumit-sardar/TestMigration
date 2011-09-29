@@ -212,26 +212,12 @@ public class HomePageController extends PageFlowController
     /**
      * ORGANIZATIONS actions
      */    
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
-            @Jpf.Forward(name = "studentsLink", path = "organizations_manageStudents.do"),
-            @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do")
-        }) 
+    @Jpf.Action()
     protected Forward organizations()
     {
-    	String menuId = (String)this.getRequest().getParameter("menuId");    	
-    	String forwardName = (menuId != null) ? menuId : "organizationsLink";
-    	System.out.println(forwardName);
-    	
-        return new Forward(forwardName);
-    }
-    
-    @Jpf.Action()
-    protected Forward organizations_manageOrganizations()
-    {
         try
         {
-            String url = "/StudentManagementWeb/studentOperation/organizations.do?menuId=organizationsLink";
+            String url = "/StudentManagementWeb/studentOperation/organizations.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -240,37 +226,6 @@ public class HomePageController extends PageFlowController
         }
         return null;
     }
-    
-    @Jpf.Action()
-    protected Forward organizations_manageStudents()
-    {
-        try
-        {
-            String url = "/StudentManagementWeb/studentOperation/organizations.do?menuId=studentsLink";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
-    }
-
-    @Jpf.Action()
-    protected Forward organizations_manageUsers()
-    {
-        try
-        {
-            String url = "/StudentManagementWeb/studentOperation/organizations.do?menuId=usersLink";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
-    }
-
     
     
     /**

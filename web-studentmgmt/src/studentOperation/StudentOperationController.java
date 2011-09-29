@@ -1,5 +1,6 @@
 package studentOperation;
 
+import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.sql.SQLException;
@@ -1417,51 +1418,20 @@ public class StudentOperationController extends PageFlowController {
 	/**
 	 * ASSESSMENTS actions
 	 */    
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "sessionsLink", path = "assessments_sessions.do"),
-	        @Jpf.Forward(name = "scheduleSessionLink", path = "assessments_scheduleSession.do"),
-	        @Jpf.Forward(name = "studentScoringLink", path = "assessments_studentScoring.do"),
-	        @Jpf.Forward(name = "programStatusLink", path = "assessments_programStatus.do")
-	    }) 
+    @Jpf.Action()
 	protected Forward assessments()
 	{
-		String menuId = (String)this.getRequest().getParameter("menuId");    	
-		String forwardName = (menuId != null) ? menuId : "sessionsLink";
-		
-	    return new Forward(forwardName);
+        try
+        {
+            String url = "/TestSessionInfoWeb/homepage/assessments.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
 	}
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
-	    }) 
-	protected Forward assessments_sessions()
-	{
-	    return new Forward("success"); 
-	}
-	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
-	    }) 
-	protected Forward assessments_scheduleSession()
-	{
-	    return new Forward("success");
-	}
-	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
-	    }) 
-	protected Forward assessments_studentScoring()
-	{
-	    return new Forward("success");
-	}
-	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
-	    }) 
-	protected Forward assessments_programStatus()
-	{
-	    return new Forward("success");
-	}
-			
 			
 	/**
 	 * ORGANIZATIONS actions
@@ -1503,7 +1473,7 @@ public class StudentOperationController extends PageFlowController {
 	}
 	
 	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
+	        @Jpf.Forward(name = "success", path = "organizations_manageUsers.jsp") 
 	    }) 
 	protected Forward organizations_manageUsers()
 	{
