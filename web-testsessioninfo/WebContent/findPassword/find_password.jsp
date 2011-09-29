@@ -1,16 +1,27 @@
 <%@ page import="java.io.*, java.util.*"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <%
     String errorMsg = (String)request.getAttribute("errorMsg");
 %>
 
 <html>
+
 <head>
   <title>Get New Password</title>
-  <link href="<%=request.getContextPath()%>/resources/css/R1_stylesheet.css" rel="stylesheet" type="text/css">
-  <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>  
+  
+	<link href="<%=request.getContextPath()%>/resources/css/jquery-ui-1.8.16.custom.css" rel="stylesheet" type="text/css" />
+	<link href="<%=request.getContextPath()%>/resources/css/main.css" rel="stylesheet" type="text/css" />
+	<link href="<%=request.getContextPath()%>/resources/css/roundCorners.css" rel="stylesheet" type="text/css" />
+          
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.6.2.min.js"></script>
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.blockUI.min.js"></script>    
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.corners.js"></script> 
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/main.js"></script>    
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/sanitize.js"></script>    
+  	  
 </head>
 <body leftmargin="0" topmargin="0">
 
@@ -25,34 +36,47 @@ function ignoreEnterKey( e ) {
 }
 </script>
 
-<!-- H E A D E R -->
-<table border="0" cellpadding="0" cellspacing="0" width="100%"><!--table 1 start-->
-<tr valign="bottom">
-  <td align="left" width="176"><img src="<%=request.getContextPath()%>/resources/images/ctb_logo.gif" width="176" height="71" border="0" alt="CTB/McGraw-Hill" /></td>
-  <td><IMG height=24 src="<%=request.getContextPath()%>/resources/images/transparent.gif" width=75 border=0></td>
-</tr>
-</table>
-<!-- H E A D E R -->
+<!-- MAIN BODY -->
 
-<table border="0" cellpadding="0" cellspacing="0" width="100%" class="bgwhite"><!--table 3 (menu/body) start-->
-<tr valign="top">
-	<td width="50"><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="50"></td>
-	<td width="700">
-	
+<table  class="simpleBody">
+ 
+	<tr>
+		<td align="center" valign="top" >
+			<table class="bodyLayout">
 
-<!-- BEGIN   M A I N    B O D Y     CONTENT ******************************** -->
-<table border="0" cellspacing="0" cellpadding="0">
+				<!-- HEADER SECTION -->
+				<tr class="bodyLayout">
+					<td>
+					 
+						<table class="headerLayout" >
+							<tr>
+								<td align="left" width="70%"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+
+
+				<!-- BODY SECTION -->
+				<tr>
+				  	<td align="left" valign="top">
+
+<div class="feature">
+
+      	<div class="feature" style="background-color: #ffffff; border:1px; padding: 5px;">
+      	
+<table class="simpleBlock">
 <tr>
-    <td>
-        <!--Begin content-->
-        <!--Begin content-->
+    <td width="500"  style="padding-left: 80px;">
+        <!-- Begin content-->
         <form method="post" name="findpassword" action="getPassword.do">
-            <table border="0" cellspacing="0" cellpadding="5">
+		
+        <table class="simpleBlock" width="100%" cellpadding="5">
             <tr>
                 <td colspan="2">
-                    <span class="headerart">Get New Password</span><br/>
-                    Required fields are marked by a blue asterisk <span class="asterisk">*</span>.
-                    <br/><br/>
+                <br/><h1>Get new Password</h1>
+                Required fields are marked by a blue asterisk <span class="asterisk">*</span>. 
+                <br/><br/>
                 </td>
             </tr>
             
@@ -66,7 +90,7 @@ function ignoreEnterKey( e ) {
                                 <img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="32" height="32">
                             </td>
                             <td align="center">
-                                <font color="red"><span><%= errorMsg %></span></font>
+                                <font style="color: red; font-size:12px; font-weight:bold"><span><%= errorMsg %></span></font>
                             </td>
                         </tr>
                     </table>
@@ -75,62 +99,91 @@ function ignoreEnterKey( e ) {
                 </td>
             </tr>
 <% } %>            
-            <tr>
-                <td width="100" align="right">Username:</td>
-                <td width="*" align="left"><netui:span value="${pageFlow.user.userName}"/></td>
-            </tr>
-            <tr>
-                <td width="100" align="right">Hint:</td>
-                <td width="*" align="left"><netui:span value="${pageFlow.user.passwordHintQuestion}"/></td>
-            </tr>
-            <tr>
-                <td width="100" align="right"><span class="asterisk">*</span> Hint Answer:</td>
-                <td width="*" align="left">
-                    <netui:textBox dataSource="pageFlow.hintAnswer" maxlength="255" style="width: 200px" onKeyPress="return ignoreEnterKey( event );"/>
-                </td>
-            </tr>
-            <tr>
-                <td width="100" align="right"><span class="asterisk">*</span> Email:</td>
-                <td width="*" align="left">
-                    <netui:textBox dataSource="pageFlow.email" maxlength="64" style="width: 200px" onKeyPress="return ignoreEnterKey( event );"/>
-                </td>
-            </tr>
             
-            <tr>
-                <td colspan="2">
-                    <br/>
-                    <netui:button type="submit" value="Cancel" action="backToLogin"/>
-                    <netui:button type="submit" value="Get New Password" action="getPassword"/>
+            <tr height="32">
+                <td width="80" align="right"><b>Username:</b></td>
+                <td><netui:span value="${pageFlow.user.userName}"/></td>
+            </tr>
+            <tr height="32">
+                <td width="80" align="right"><b>Hint:</b></td>
+                <td><netui:span value="${pageFlow.user.passwordHintQuestion}"/></td>
+            </tr>
+            <tr height="32">
+                <td width="80" align="right"><b>* Hint Answer:</b></td>
+                <td>
+                    <netui:textBox dataSource="pageFlow.hintAnswer" maxlength="255" style="width: 180px" onKeyPress="return ignoreEnterKey( event );"/>
+                </td>
+            </tr>
+            <tr height="32">
+                <td width="80" align="right"><b>Email:</b></td>
+                <td>
+                    <netui:textBox dataSource="pageFlow.email" maxlength="64" style="width: 180px" onKeyPress="return ignoreEnterKey( event );"/>
+                </td>
+            </tr>
+            <tr height="32">
+                <td>&nbsp;</td>
+                <td>                  
+                	<a href="#" onclick="gotoAction('backToLogin.do');" class="rounded {transparent} button">Cancel</a>
+                	&nbsp;                	
+                	<a href="#" onclick="gotoAction('getPassword.do');" class="rounded {transparent} button">Get New Password</a>                	
                 </td>
             </tr>
             </table>
         </form>
+        <br>
+        <!--End content-->
     </td>
+
 </tr>
+
+
+
 </table>
 <!--end main table-->
-
-<!-- END   M A I N    B O D Y     CONTENT ******************************** -->
-	</td>
-</tr>
-</table>
+<br/>
+</div>
+</div>
 
 
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-<tr>
-    <td class="bgtaupe">
-    <br>
-    <img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="12" height="1" border="0" />
-    <span class="smlight">Copyright &copy; 2006 by CTB/McGraw-Hill LLC. All rights reserved. &nbsp; 
-    Subject to <a href="<%=request.getContextPath()%>/resources/html/terms_of_use.html" onClick="return openTermsOfUseWindow('<%=request.getContextPath()%>/resources/html/terms_of_use.html')" class="smlight">Terms of Use</a>. &nbsp; 
-    Read our <a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onClick="return openPrivacyPolicyWindow('<%=request.getContextPath()%>/resources/html/privacy_policy.html')" class="smlight">Privacy Policy Online</a>. &nbsp; 
-    Review <a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="return openCOPPAWindow('<%=request.getContextPath()%>/resources/html/coppa_policy.html')" class="smlight">COPPA Policy</a>.<br />
-    <img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="1" height="6" border="0" alt="" /></span>
-    </td>
-</tr>
-<tr>
-    <td><img src="<%=request.getContextPath()%>/resources/images/mh_logo_v2.jpg" width="221" height="16" border="0" /></td>
-</tr>
+
+					</td>
+				</tr>
+			
+
+
+				<!-- FOOTER SECTION -->
+				<tr>
+				  <td align="left" valign="top">
+				  
+					<table class="footerLayout">
+					  <tr>
+						<td class="footerLayout">
+						    <span>
+						        Copyright &copy; 2008 by CTB/McGraw-Hill LLC. All rights reserved.
+						    </span>
+						
+						    <span>
+						        Subject to <a href="/html/terms_of_use.html" onClick="showTermsOfUseWindow(this.href); return false;">Terms of Use</a>.
+						    </span>
+						
+						    <span>
+						        Read our <a href="/html/privacy_policy.html" onClick="showPrivacyPolicyWindow(this.href); return false;">Privacy Policy Online</a>.
+						    </span>
+						
+						    <span>
+						        Review <a href="/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;">COPPA Policy</a>.
+						    </span>
+						</td>
+					  </tr>
+					</table>
+				  </td>
+				</tr>
+
+			</table>
+		</td>
+	</tr>
+
+
 </table>
 
 </body>

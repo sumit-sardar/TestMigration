@@ -109,3 +109,8 @@
 </ul>
  </c:if>
 </ctb:auth>
+
+<h1>New TAS UI</h1>
+<ul>
+    <li><a href="/TestSessionInfoWeb/homepage/HomePageController.jpf"><span>New Landing Page</span></a></li>
+</ul>

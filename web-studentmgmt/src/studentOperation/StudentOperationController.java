@@ -1409,6 +1409,192 @@ public class StudentOperationController extends PageFlowController {
 	}
 
 
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////    
+	///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////    
+	
+	/**
+	 * ASSESSMENTS actions
+	 */    
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "sessionsLink", path = "assessments_sessions.do"),
+	        @Jpf.Forward(name = "scheduleSessionLink", path = "assessments_scheduleSession.do"),
+	        @Jpf.Forward(name = "studentScoringLink", path = "assessments_studentScoring.do"),
+	        @Jpf.Forward(name = "programStatusLink", path = "assessments_programStatus.do")
+	    }) 
+	protected Forward assessments()
+	{
+		String menuId = (String)this.getRequest().getParameter("menuId");    	
+		String forwardName = (menuId != null) ? menuId : "sessionsLink";
+		
+	    return new Forward(forwardName);
+	}
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
+	    }) 
+	protected Forward assessments_sessions()
+	{
+	    return new Forward("success"); 
+	}
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
+	    }) 
+	protected Forward assessments_scheduleSession()
+	{
+	    return new Forward("success");
+	}
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
+	    }) 
+	protected Forward assessments_studentScoring()
+	{
+	    return new Forward("success");
+	}
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
+	    }) 
+	protected Forward assessments_programStatus()
+	{
+	    return new Forward("success");
+	}
+			
+			
+	/**
+	 * ORGANIZATIONS actions
+	 */    
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
+	        @Jpf.Forward(name = "studentsLink", path = "organizations_manageStudents.do"),
+	        @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do")
+	    }) 
+	protected Forward organizations()
+	{
+		String menuId = (String)this.getRequest().getParameter("menuId");    	
+		String forwardName = (menuId != null) ? menuId : "organizationsLink";
+		System.out.println(forwardName);
+		
+	    return new Forward(forwardName);
+	}
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "organizations_manageOrganizations.jsp") 
+	    }) 
+	protected Forward organizations_manageOrganizations()
+	{
+		initialize();
+		this.getRequest().setAttribute("isFindStudent", Boolean.FALSE);
+
+		return new Forward("success");
+	}
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "organizations_manageStudents.jsp") 
+	    }) 
+	protected Forward organizations_manageStudents()
+	{
+		initialize();
+		this.getRequest().setAttribute("isFindStudent", Boolean.TRUE);
+		
+	    return new Forward("success");
+	}
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
+	    }) 
+	protected Forward organizations_manageUsers()
+	{
+		initialize();
+		this.getRequest().setAttribute("isFindStudent", Boolean.FALSE);
+		
+	    return new Forward("success");
+	}
+
+	/**
+	 * SERVICES actions
+	 */    
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "manageLicensesLink", path = "services_manageLicenses.do"),
+	        @Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
+	        @Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
+	        @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
+	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do"),
+	    }) 
+	protected Forward services()
+	{
+		String menuId = (String)this.getRequest().getParameter("menuId");    	
+		String forwardName = (menuId != null) ? menuId : "manageLicensesLink";
+		System.out.println(forwardName);
+		
+	    return new Forward(forwardName);
+	}
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
+	    }) 
+	protected Forward services_manageLicenses()
+	{
+	    return new Forward("success");
+	}
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
+	    }) 
+	protected Forward services_installSoftware()
+	{
+	    return new Forward("success");
+	}
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
+	    }) 
+	protected Forward services_downloadTest()
+	{
+	    return new Forward("success");
+	}
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
+	    }) 
+	protected Forward services_uploadData()
+	{
+	    return new Forward("success");
+	}
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
+	    }) 
+	protected Forward services_downloadData()
+	{
+	    return new Forward("success");
+	}
+
+	/**
+	 * BROADCAST MESSAGE actions
+	 */    
+	/**
+	 * @jpf:action
+	 */
+	@Jpf.Action()
+	protected Forward broadcastMessage()
+	{
+	    return null;
+	}
+	
+	
+	/**
+	 * MYPROFILE actions
+	 */    
+	@Jpf.Action()
+	protected Forward myProfile()
+	{
+	    return null;
+	}
+
+	
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** MANAGESTUDENTFORM ************* /////////////////////////////    

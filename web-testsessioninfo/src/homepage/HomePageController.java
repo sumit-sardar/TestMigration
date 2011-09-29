@@ -117,12 +117,10 @@ public class HomePageController extends PageFlowController
      * @jpf:forward name="editTimeZone" path="setTimeZone.do"
      */
     @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success",
-                     path = "home_page.do"), 
-        @Jpf.Forward(name = "resetPassword",
-                     path = "resetPassword.do"), 
-        @Jpf.Forward(name = "editTimeZone",
-                     path = "setTimeZone.do")
+        @Jpf.Forward(name = "success", path = "home_page.do"), 
+        @Jpf.Forward(name = "resetPassword", path = "resetPassword.do"), 
+        @Jpf.Forward(name = "editTimeZone", path = "setTimeZone.do"),
+        @Jpf.Forward(name = "assessments", path = "assessments.do")
     })
     protected Forward begin()
     {        
@@ -143,10 +141,251 @@ public class HomePageController extends PageFlowController
         }
         else
         {
-            return new Forward("success", form);
+        	String OldUI = this.getRequest().getParameter("OldUI");
+        	if ("true".equals(OldUI))
+        		return new Forward("success", form);
+        	else
+        		return new Forward("assessments", form);
         }
     }
 
+    
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////    
+    ///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////    
+    
+    /**
+     * ASSESSMENTS actions
+     */    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "sessionsLink", path = "assessments_sessions.do"),
+            @Jpf.Forward(name = "scheduleSessionLink", path = "assessments_scheduleSession.do"),
+            @Jpf.Forward(name = "studentScoringLink", path = "assessments_studentScoring.do"),
+            @Jpf.Forward(name = "programStatusLink", path = "assessments_programStatus.do")
+        }) 
+    protected Forward assessments(HomePageForm form)
+    {
+    	String menuId = (String)this.getRequest().getParameter("menuId");    	
+    	String forwardName = (menuId != null) ? menuId : "sessionsLink";
+    	System.out.println(forwardName);
+    	
+        return new Forward(forwardName, form);
+    }
+
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "assessments_sessions.jsp") 
+        }) 
+    protected Forward assessments_sessions(HomePageForm form)
+    {
+        return new Forward("success", form);
+    }
+
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "assessments_scheduleSession.jsp") 
+        }) 
+    protected Forward assessments_scheduleSession(HomePageForm form)
+    {
+        return new Forward("success", form);
+    }
+
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "assessments_studentScoring.jsp") 
+        }) 
+    protected Forward assessments_studentScoring(HomePageForm form)
+    {
+        return new Forward("success", form);
+    }
+
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "assessments_programStatus.jsp") 
+        }) 
+    protected Forward assessments_programStatus(HomePageForm form)
+    {
+        return new Forward("success", form);
+    }
+    
+    
+    
+    
+    
+    /**
+     * ORGANIZATIONS actions
+     */    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
+            @Jpf.Forward(name = "studentsLink", path = "organizations_manageStudents.do"),
+            @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do")
+        }) 
+    protected Forward organizations(HomePageForm form)
+    {
+    	String menuId = (String)this.getRequest().getParameter("menuId");    	
+    	String forwardName = (menuId != null) ? menuId : "organizationsLink";
+    	System.out.println(forwardName);
+    	
+        return new Forward(forwardName, form);
+    }
+    
+    @Jpf.Action()
+    protected Forward organizations_manageOrganizations(HomePageForm form)
+    {
+        try
+        {
+            String url = "/StudentManagementWeb/studentOperation/organizations.do?menuId=organizationsLink";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+    
+    @Jpf.Action()
+    protected Forward organizations_manageStudents(HomePageForm form)
+    {
+        try
+        {
+            String url = "/StudentManagementWeb/studentOperation/organizations.do?menuId=studentsLink";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+
+    @Jpf.Action()
+    protected Forward organizations_manageUsers(HomePageForm form)
+    {
+        try
+        {
+            String url = "/StudentManagementWeb/studentOperation/organizations.do?menuId=usersLink";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+
+    
+    
+    /**
+     * REPORTS actions
+     */    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "reports.jsp") 
+        }) 
+    protected Forward reports(HomePageForm form)
+    {
+        return new Forward("success", form);
+    }
+
+    
+    /**
+     * SERVICES actions
+     */    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "manageLicensesLink", path = "services_manageLicenses.do"),
+            @Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
+            @Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
+            @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
+            @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do"),
+        }) 
+    protected Forward services(HomePageForm form)
+    {
+    	String menuId = (String)this.getRequest().getParameter("menuId");    	
+    	String forwardName = (menuId != null) ? menuId : "manageLicensesLink";
+    	System.out.println(forwardName);
+    	
+        return new Forward(forwardName, form);
+    }
+    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "services_manageLicenses.jsp") 
+        }) 
+    protected Forward services_manageLicenses(HomePageForm form)
+    {
+        return new Forward("success", form);
+    }
+    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "services_installSoftware.jsp") 
+        }) 
+    protected Forward services_installSoftware(HomePageForm form)
+    {
+        return new Forward("success", form);
+    }
+
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "services_downloadTest.jsp") 
+        }) 
+    protected Forward services_downloadTest(HomePageForm form)
+    {
+        return new Forward("success", form);
+    }
+    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "services_uploadData.jsp") 
+        }) 
+    protected Forward services_uploadData(HomePageForm form)
+    {
+        return new Forward("success", form);
+    }
+    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "services_downloadData.jsp") 
+        }) 
+    protected Forward services_downloadData(HomePageForm form)
+    {
+        return new Forward("success", form);
+    }
+    
+    /**
+     * BROADCAST MESSAGE actions
+     */    
+    @Jpf.Action()
+    protected Forward broadcastMessage()
+    {
+    	/*
+		String jsonResponse = "";
+		String itemId = getRequest().getParameter("itemId");
+		
+		String scr = "Tai Truong";
+		
+		try {
+				jsonResponse = JsonUtils.getJson(scr, "String", scr.getClass());
+
+				HttpServletResponse resp = this.getResponse();     
+				resp.setContentType("application/json");
+				resp.flushBuffer();
+				OutputStream stream = resp.getOutputStream();
+				stream.write(jsonResponse.getBytes());
+				stream.close();
+	        
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	*/
+    	
+        return null;
+    }
+
+    
+    /**
+     * MYPROFILE actions
+     */    
+    @Jpf.Action()
+    protected Forward myProfile()
+    {
+        return null;
+    }
+    
+    
+    
     /**
      * @jpf:action
      */
@@ -370,7 +609,6 @@ public class HomePageController extends PageFlowController
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		getSession().setAttribute("isTopLevelUser",isLaslinkUserTopLevel);	
