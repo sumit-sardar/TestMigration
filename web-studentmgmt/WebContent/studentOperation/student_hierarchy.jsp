@@ -10,7 +10,7 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
-<netui-template:template templatePage="/resources/jsp/template.jsp">
+<netui-template:template templatePage="/resources/jsp/oas_template.jsp">
 
 
 <!-- 

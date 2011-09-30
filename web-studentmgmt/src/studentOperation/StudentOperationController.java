@@ -388,6 +388,11 @@ public class StudentOperationController extends PageFlowController {
 	})
 	protected Forward saveAddEditStudent(ManageStudentForm form)
 	{   
+		String jsonResponse = "";
+		OutputStream stream = null;
+		HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		
 		StudentProfileInformation studentProfile = null;
 		studentProfile = new StudentProfileInformation();
 		studentProfile.setFirstName(getRequest().getParameter("studentFirstName"));
@@ -400,9 +405,16 @@ public class StudentOperationController extends PageFlowController {
 		studentProfile.setGrade(getRequest().getParameter("gradeOptions"));
 		studentProfile.setStudentNumber(getRequest().getParameter("studentExternalId2"));
 		studentProfile.setStudentSecondNumber(getRequest().getParameter("studentExternalId"));
-		//getRequest().getParameter("assignedOrgNode");
-		List <Integer> selectedOrgNodes = new ArrayList <Integer>();
-		selectedOrgNodes.add(118641);
+		boolean studentIdConfigurable = new Boolean(getRequest().getParameter("studentIdConfigurable"));
+		String studentIdLabelName = getRequest().getParameter("studentIdLabelName");
+		String assignedOrgNodeIds = getRequest().getParameter("assignedOrgNodeIds");
+		String[] assignedOrgNodeId = assignedOrgNodeIds.split(",");
+		List <Integer> selectedOrgNodes = new ArrayList <Integer>(assignedOrgNodeId.length);
+		for (int i = assignedOrgNodeId.length - 1; i >= 0; i--) {
+			selectedOrgNodes.add( new Integer(assignedOrgNodeId[i].trim()));
+		}
+		//selectedOrgNodes.add(118641);
+		MessageInfo messageInfo = new MessageInfo();
 		Integer studentId = form.getSelectedStudentId();
 
 		/*if ( studentId == null) {
@@ -415,11 +427,6 @@ public class StudentOperationController extends PageFlowController {
 
 
 		//this.selectedOrgNodes = StudentPathListUtils.buildSelectedOrgNodes(this.currentOrgNodesInPathList, this.currentOrgNodeIds, this.selectedOrgNodes);
-		//form.setDisableMandatoryBirthdate(disableMandatoryBirthdate);
-		//form.setMandatoryStudentId(isMandatoryStudentId);
-		//form.setLasLinkCustomer(isLasLinkCustomer);   //(LLO82) StudentManagement Changes For LasLink product
-		//boolean result = form.verifyStudentInformation(this.selectedOrgNodes);
-		//START-  TABE-BAUM 060: Unique Student ID
 		boolean result = true;
 		try {
 			CustomerConfiguration[]  customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);
@@ -428,7 +435,7 @@ public class StudentOperationController extends PageFlowController {
 				if (isValidationForUniqueStudentIDRequired(studentProfile, customerConfigurations)) {
 					result = validateUniqueStudentId(isCreateNew, null, studentProfile);
 					if (!result) {
-						/*String messageTitle = studentIdConfigurable ? Message.VALIDATE_STUDENT_ID_TITLE
+						String messageTitle = studentIdConfigurable ? Message.VALIDATE_STUDENT_ID_TITLE
 								.replace("<#studentId#>", studentIdLabelName)
 								: Message.VALIDATE_STUDENT_ID_TITLE.replace(
 										"<#studentId#>",
@@ -438,29 +445,32 @@ public class StudentOperationController extends PageFlowController {
 								: Message.STUDENT_ID_UNUNIQUE_ERROR.replace(
 										"<#studentId#>",
 										Message.DEFAULT_STUDENT_ID_LABEL);
-						form.setMessage(messageTitle, content, Message.ERROR);*/
+								messageInfo = createMessageInfo(messageInfo, messageTitle, content, Message.ERROR, true, false );
 					}
 
 				}
 			}
 			if (! result)
 			{           
-				return new Forward("error", form);
+				creatGson( req, resp, stream, messageInfo );
+				return null;
 			}        
 			Boolean isMultiOrgAssociationValid = isMultiOrgAssociationValid(customerConfigurations);
 			if(result && !isMultiOrgAssociationValid){
 				if ( selectedOrgNodes.size() > 1 ) {
-				//if ( 2 > 1 ) {
-					if (isCreateNew)
-						form.setMessage(Message.ADD_TITLE, Message.STUDENT_ASSIGNMENT_ERROR, Message.ERROR);
-					else
-						form.setMessage(Message.EDIT_TITLE, Message.STUDENT_ASSIGNMENT_ERROR, Message.ERROR);
-
-					return new Forward("error", form);
+					if (isCreateNew) {
+						messageInfo = createMessageInfo(messageInfo, Message.ADD_TITLE, Message.STUDENT_ASSIGNMENT_ERROR, Message.ERROR, true, false );
+						//form.setMessage(Message.ADD_TITLE, Message.STUDENT_ASSIGNMENT_ERROR, Message.ERROR);
+					}
+					else {
+						messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.STUDENT_ASSIGNMENT_ERROR, Message.ERROR, true, false );
+						//form.setMessage(Message.EDIT_TITLE, Message.STUDENT_ASSIGNMENT_ERROR, Message.ERROR);
+					}
+					creatGson( req, resp, stream, messageInfo );
+					return null;
 				}  
 			}
 			if(result) {
-				//END- Added for CR  ISTEP2011CR017
 				studentId = saveStudentProfileInformation(isCreateNew, studentProfile, studentId, selectedOrgNodes);
 	
 	
@@ -478,53 +488,39 @@ public class StudentOperationController extends PageFlowController {
 			}
 
 
-			/*
+			
 			if (isCreateNew)
 			{
-				if (studentId != null) 
-					form.setMessage(Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION);
-				else 
-					form.setMessage(Message.ADD_TITLE, Message.ADD_ERROR, Message.INFORMATION);
+				if (studentId != null)  {
+					
+					messageInfo = createMessageInfo(messageInfo, Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION, false, true );
+					//form.setMessage(Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION);
+				}
+				else  {
+					
+					messageInfo = createMessageInfo(messageInfo, Message.ADD_TITLE, Message.ADD_ERROR, Message.INFORMATION, true, false );
+					//form.setMessage(Message.ADD_TITLE, Message.ADD_ERROR, Message.INFORMATION);
+				}
+				
+				
 			}
 			else
 			{
-				if (studentId != null) 
-					form.setMessage(Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION);
-				else 
-					form.setMessage(Message.EDIT_TITLE, Message.EDIT_ERROR, Message.INFORMATION);
-			}*/
+				if (studentId != null) {
+					messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION, false, true );
+					//form.setMessage(Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION);
+				}
+				else  {
+					messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.EDIT_ERROR, Message.INFORMATION, true, false );
+					//form.setMessage(Message.EDIT_TITLE, Message.EDIT_ERROR, Message.INFORMATION);
+				}
+			}
 		}
 		catch (CTBBusinessException be) {
 			be.printStackTrace();
 		}	
-
-		String jsonResponse = "";
-		OutputStream stream = null;
-		HttpServletRequest req = getRequest();
-		HttpServletResponse resp = getResponse();
-		try {
-			MessageInfo MessageInfo = new MessageInfo();
-			MessageInfo.setSuccessFlag(true);
-			
-			try {
-				Gson gson = new Gson();
-				String json = gson.toJson(MessageInfo);
-				resp.setContentType("application/json");
-				resp.flushBuffer();
-				stream = resp.getOutputStream();
-				stream.write(json.getBytes());
-
-			} finally{
-				if (stream!=null){
-					stream.close();
-				}
-			}
-		}
-		catch (Exception e) {
-			System.err.println("Exception while retrieving optionList.");
-			e.printStackTrace();
-		}
-		return null;
+			creatGson( req, resp, stream, messageInfo );
+			return null;
 		
 	}
 
@@ -558,7 +554,39 @@ public class StudentOperationController extends PageFlowController {
 		//this.savedForm.gradeOptions = getGradeOptions(ACTION_EDIT_STUDENT);
 		//this.savedForm.genderOptions = getGenderOptions(ACTION_EDIT_STUDENT);
 	}
+	
+	private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputStream stream, MessageInfo messageInfo ){
+		
+		try {
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(messageInfo);
+				resp.setContentType("application/json");
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes());
 
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+			
+		}
+		catch (Exception e) {
+			System.err.println("Exception while retrieving optionList.");
+			e.printStackTrace();
+		}
+	}
+	
+	private MessageInfo createMessageInfo(MessageInfo messageInfo, String messageTitle, String content, String type, boolean errorflag, boolean successFlag){
+		messageInfo.setTitle(messageTitle);
+		messageInfo.setContent(content);
+		messageInfo.setType(type);
+		messageInfo.setErrorFlag(errorflag);
+		messageInfo.setSuccessFlag(successFlag);
+		return messageInfo;
+	}
 
 	/**
 	 * saveStudentProfileInformation
@@ -957,7 +985,7 @@ public class StudentOperationController extends PageFlowController {
 
 	/**
 	 * initGradeGenderOptions
-	 */
+	 *//*
 	private void initGradeGenderOptions(String action, StudentOperationForm form, String grade, String gender)
 	{      
 		String[] gradeOptions = null;
@@ -980,7 +1008,7 @@ public class StudentOperationController extends PageFlowController {
 		else
 			form.getStudentProfile().setGender(genderOptions[0]);
 	}
-
+*/
 
 	/**
 	 * getGradeOptions
@@ -1575,49 +1603,6 @@ public class StudentOperationController extends PageFlowController {
 	public static class StudentOperationForm extends SanitizedFormData
 	{
 
-		public String[] gradeOptions = null;
-		public String[] genderOptions = null;
-		// student profile
-		private StudentProfileInformation studentProfile;
-
-		/**
-		 * @return the studentProfile
-		 */
-		public StudentProfileInformation getStudentProfile() {
-			if (this.studentProfile == null) this.studentProfile = new StudentProfileInformation();
-
-			return this.studentProfile;
-		}
-		/**
-		 * @param studentProfile the studentProfile to set
-		 */
-		public void setStudentProfile(StudentProfileInformation studentProfile) {
-			this.studentProfile = studentProfile;
-		}
-		/**
-		 * @return the gradeOptions
-		 */
-		public String[] getGradeOptions() {
-			return gradeOptions;
-		}
-		/**
-		 * @param gradeOptions the gradeOptions to set
-		 */
-		public void setGradeOptions(String[] gradeOptions) {
-			this.gradeOptions = gradeOptions;
-		}
-		/**
-		 * @return the genderOptions
-		 */
-		public String[] getGenderOptions() {
-			return genderOptions;
-		}
-		/**
-		 * @param genderOptions the genderOptions to set
-		 */
-		public void setGenderOptions(String[] genderOptions) {
-			this.genderOptions = genderOptions;
-		}
-	}
+	}	
 }
 

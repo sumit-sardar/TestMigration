@@ -66,14 +66,14 @@ function VerifyStudentDetail(){
 				requiredFieldCount += 1;            
 				requiredFields = buildErrorString("Gender", requiredFieldCount, requiredFields);       
 			}
-			if(isMandatoryBirthdate) {
+			if(isMandatoryBirthdate == "true") {
 				if (!allSelected(month, day, year)) {
 					requiredFieldCount += 1;            
 					requiredFields = buildErrorString("Date of Birth", requiredFieldCount, requiredFields);       
 				}
 			}
 			
-			if(isMandatoryStudentId){
+			if(isMandatoryStudentId == "true"){
 				var externalStudentNumber = trim(studentNumber);
 				if ( externalStudentNumber.length==0) {
 					requiredFieldCount += 1;     
@@ -99,30 +99,30 @@ function VerifyStudentDetail(){
 				return false;
 			}
 			
-			/*var invalidCharFields = verifyCreateStudentName(firstName, lastName, middleName);                
+			var invalidCharFields = verifyCreateStudentName(firstName, lastName, middleName);                
 			if (invalidCharFields.length > 0) {
-				invalidCharFields += ("<br/>" + INVALID_NAME_CHARS);
-				setMessage(getMessage("invalid_char_message"), invalidCharFields, "errorMessage");
+				//invalidCharFields += ("<br/>" + INVALID_NAME_CHARS);
+				setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
 				return false;
 			}
 			invalidCharFields = verifyCreateStudentNumber(studentNumber, studentSecondNumber, studentIdLabelName, studentId2LabelName,studentIdConfigurable, studentId2Configurable  );                
 			if (invalidCharFields.length > 0) {
-				invalidCharFields += ("<br/>" + INVALID_NUMBER_CHARS);
-				setMessage(invalid_char_message, invalidCharFields, "errorMessage");
+				//invalidCharFields += ("<br/>" + INVALID_NUMBER_CHARS);
+				setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NUMBER_CHARS);
 				return false;
 			}
 		
 			invalidCharFields = verifyAlphaNumericStudentNumber(studentNumber, studentSecondNumber, studentIdLabelName, studentId2LabelName, isStudentIdNumeric, isStudentId2Numeric,studentIdConfigurable, this.studentId2Configurable  );                
 			if (invalidCharFields.length > 0) {
-				invalidCharFields += ("<br/>" + INVALID_ALPHANUMBER_CHARS);
-				setMessage(invalid_char_message, invalidCharFields, "errorMessage");
+				//invalidCharFields += ("<br/>" + INVALID_ALPHANUMBER_CHARS);
+				setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_ALPHANUMBER_CHARS);
 				return false;
 			}
 			
 			invalidCharFields = verifyConfigurableStudentNumber(studentNumber, studentSecondNumber, studentIdLabelName,studentId2LabelName, isStudentIdNumeric, isStudentId2Numeric);                
 			if (invalidCharFields.length > 0) {
-				invalidCharFields += ("<br/>" + INVALID_NUMBER_FORMAT);
-				setMessage(invalid_char_message, invalidCharFields, "errorMessage");
+				//invalidCharFields += ("<br/>" + INVALID_NUMBER_FORMAT);
+				setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NUMBER_FORMAT);
 					return false;
 			}
 			
@@ -130,22 +130,22 @@ function VerifyStudentDetail(){
 			if (invalidCharFields.length > 0) {
 				var str = [];
 				str = invalidCharFields.split(",");
-				invalidCharFields += ("<br/>" + INVALID_STUDENT_MINLENGTH_FORMAT);  
-				for(var temp :  str){
-					if(trim(temp)== studentIdLabelName)
-						invalidCharFields += ("<br/>" + studentIdLabelName +" - " + studentIdMinLength + " characters");  
-					if(trim(temp)==studentId2LabelName)
-						invalidCharFields += ("<br/>" + studentId2LabelName +" - " + studentId2MinLength+ " characters");  
+				var invalidFields = INVALID_STUDENT_MINLENGTH_FORMAT;  
+				for(var temp=0; temp< str.length; temp++){
+					if(trim(str[temp])== studentIdLabelName)
+						invalidFields += (" " + studentIdLabelName +" - " + studentIdMinLength + " characters");  
+					if(trim(str[temp])==studentId2LabelName)
+						invalidFields += (" " + studentId2LabelName +" - " + studentId2MinLength+ " characters");  
 				}
 		
-				setMessage(invalid_char_message, invalidCharFields, "errorMessage");
+				setMessage(invalid_char_message, invalidCharFields, "errorMessage" , invalidFields);
 					return false;
 				}
 						
-			if(isMandatoryBirthdate && !allSelected(month, day, year)) {
+			if(isMandatoryBirthdate == "true" && !allSelected(month, day, year)) {
 				if (!noneSelected(month, day, year)) {
-					invalidCharFields += INVALID_DATE;
-					setMessage(invalid_birthdate, invalidCharFields,"errorMessage");
+					//invalidCharFields += INVALID_DATE;
+					setMessage(invalid_birthdate, invalidCharFields,"errorMessage",INVALID_DATE);
 					return false;
 					      
 				}
@@ -154,11 +154,11 @@ function VerifyStudentDetail(){
 			if (allSelected(month, day, year)) {
 				var isDateValid = validateDateValues(year, month, day);
 				if (isDateValid != 0) {
-					invalidCharFields += INVALID_DATE;
-					setMessage(invalid_birthdate, invalidCharFields, "errorMessage");
+					//invalidCharFields += INVALID_DATE;
+					setMessage(invalid_birthdate, invalidCharFields, "errorMessage", INVALID_DATE);
 					return false;
 				}
-			}*/
+			}
 			return true;			
 													
   }
@@ -196,6 +196,12 @@ function VerifyStudentDetail(){
 			$("#message").text(message);
 		}	
 		
+		function setMessageMain(title, content, type, message){
+			$("#titleMain").text(title);
+			$("#contentMain").text(content);
+			$("#messageMain").text(message);
+		}
+		
 	 function allSelected(month, day, year){
     	if (month == null || day == null || year == null)
     		return false;
@@ -204,7 +210,304 @@ function VerifyStudentDetail(){
         else
             return true;    
     }
-	
-     
-    
+	function verifyCreateStudentName(firstName, lastName, middleName) {
+        var invalidCharFields = "";
+        var invalidCharFieldCount = 0;
 
+        if (! validNameString(firstName) ) {
+            invalidCharFieldCount += 1;            
+            invalidCharFields = buildErrorString("First Name", invalidCharFieldCount, invalidCharFields);       
+        }
+        
+        if (! validNameString(lastName) ) {
+            invalidCharFieldCount += 1;            
+            invalidCharFields = buildErrorString("Last Name", invalidCharFieldCount, invalidCharFields);       
+        }
+
+        if (! validNameString(middleName) ) {
+            invalidCharFieldCount += 1;            
+            invalidCharFields = buildErrorString("Middle Name", invalidCharFieldCount, invalidCharFields);       
+        }
+    
+        return invalidCharFields;
+    }
+  
+   function validNameString(str){
+        var characters = [];
+        characters = toCharArray(str);
+        for (var i=0 ; i<characters.length ; i++) {
+            var character = characters[i];
+            if (! validNameCharacter(character))
+                return false;
+        }
+        return !requestHasInvalidParameters(str);
+    }
+    
+    function toCharArray(str){
+       var charArr=new Array();
+       for(var i=0;i<str.length;i++){
+            charArr[i]= str.charAt(i);
+            }
+            return charArr;
+            
+      }
+       
+     function validNameCharacter(str){
+        var ch = toascii(str);
+        var A_Z = ((ch >= 65) && (ch <= 90));
+        var a_z = ((ch >= 97) && (ch <= 122));
+        var zero_nine = ((ch >= 48) && (ch <= 57));
+        var validChar = ((ch == '/') || 
+                             (ch == '\'') || 
+                             (ch == '-') || 
+                             (ch == '\\') || 
+                             (ch == '.') || 
+                             (ch == '(') || 
+                             (ch == ')') || 
+                             (ch == '&') || 
+                             (ch == '+') || 
+                             (ch == ',') || 
+                             (ch == ' '));
+        
+        return (zero_nine || A_Z || a_z || validChar);
+    }
+    
+    function requestHasInvalidParameters(str){
+       
+        var invalidChars = [];
+        invalidChars [0] = "<script>";
+		invalidChars [1] = "javascript:";
+        
+            for( var i=0; i<invalidChars.length; i++ )
+            {
+                if ( str.indexOf(invalidChars[i]) != -1 )
+                {
+                    return true;                
+                }
+            }
+          
+        return false;
+    }
+        function verifyCreateStudentNumber(studentNumber, studentSecondNumber, studentIdLabelName, studentId2LabelName, studentIdConfigurable, studentId2Configurable ){
+		var invalidCharFields = "";
+		var invalidCharFieldCount = 0;
+		if(!studentIdConfigurable == "true") {
+			if (studentNumber != "") {
+				if (! validTextString(studentNumber) ) {
+					invalidCharFieldCount += 1;            
+					invalidCharFields = buildErrorString(studentIdLabelName, invalidCharFieldCount, invalidCharFields);       //Changed for GA2011CR001
+				}
+			}
+		}
+		
+		if(!studentId2Configurable == "true") {
+			if (studentSecondNumber != "") {
+				if (! validTextString(studentSecondNumber) ) {
+					invalidCharFieldCount += 1;            
+					invalidCharFields = buildErrorString(studentId2LabelName, invalidCharFieldCount, invalidCharFields);      //Changed for GA2011CR001 
+				}
+			}
+		}
+		
+		
+		return invalidCharFields;
+	}
+	
+	function validTextString(str){
+        var characters = [];
+         characters = toCharArray(str);
+        for (var i=0 ; i<characters.length ; i++) {
+            var character = characters[i];
+            if (! validTextCharacter(character))
+                return false;
+        }
+        return !requestHasInvalidParameters(str);
+    }
+    
+    function validTextCharacter(str){
+        var ch = toascii(str);
+        var zero_nine = ((ch >= 48) && (ch <= 57));
+        var A_Z = ((ch >= 65) && (ch <= 90));
+        var a_z = ((ch >= 97) && (ch <= 122));
+        var validChar = (ch == ' ');
+        
+        return (zero_nine || A_Z || a_z || validChar);
+    } 
+    
+function verifyAlphaNumericStudentNumber(studentNumber, studentSecondNumber, studentIdLabelName, studentId2LabelName,isStudentIdNumeric,isStudentId2Numeric,studentIdConfigurable, studentId2Configurable ){
+		var invalidCharFields = "";
+		var invalidCharFieldCount = 0;
+		if(studentIdConfigurable == "true" && isStudentIdNumeric == "AN") {
+			if (studentNumber != "") {
+				if (! validAlphaNumericString(studentNumber) ) {
+					invalidCharFieldCount += 1;            
+					invalidCharFields = buildErrorString(studentIdLabelName, invalidCharFieldCount, invalidCharFields);      
+				}
+			}
+		}
+		
+		if(studentId2Configurable == "true" && isStudentId2Numeric == "AN") {
+			if (studentSecondNumber != "") {
+				if (! validAlphaNumericString(studentSecondNumber) ) {
+					invalidCharFieldCount += 1;            
+					invalidCharFields = buildErrorString(studentId2LabelName, invalidCharFieldCount, invalidCharFields);    
+				}
+			}
+		}
+		return invalidCharFields;
+	}
+	
+	function validAlphaNumericString(str){
+        var characters = [];
+        characters = toCharArray(str);
+        for (var i=0 ; i<characters.length ; i++) {
+            var character = characters[i];
+            if (! validAlphaNumericCharacter(character))
+                return false;
+        }
+        return !requestHasInvalidParameters(str);
+    }
+    
+     function validAlphaNumericCharacter(str){
+        var ch = toascii(str);
+        var zero_nine = ((ch >= 48) && (ch <= 57));
+        var A_Z = ((ch >= 65) && (ch <= 90));
+        var a_z = ((ch >= 97) && (ch <= 122));
+       
+        return (zero_nine || A_Z || a_z );
+    }
+   
+    function verifyConfigurableStudentNumber(studentNumber,studentSecondNumber,studentIdLabelName,studentId2LabelName, isStudentIdNumeric, isStudentId2Numeric){
+		var invalidCharFields = "";
+		var invalidCharFieldCount = 0;
+		if(isStudentIdNumeric == "NU") {
+			if (studentNumber != "") {
+				if (! validNumber(studentNumber) ) {
+					invalidCharFieldCount += 1;            
+					invalidCharFields = buildErrorString(studentIdLabelName, invalidCharFieldCount, invalidCharFields);      
+				}
+			}
+		}
+		
+		if(isStudentId2Numeric == "NU") {
+			if (studentSecondNumber != "") {
+				if (! validNumber(studentSecondNumber) ) {
+					invalidCharFieldCount += 1;            
+					invalidCharFields = buildErrorString(studentId2LabelName, invalidCharFieldCount, invalidCharFields);     
+				}
+			}
+		}
+
+		return invalidCharFields;
+	}
+	
+	function validNumber(str){
+		str = trim(str);
+		var characters = [];
+		characters = toCharArray(str);
+
+		for (var i=0 ; i<characters.length ; i++) {
+			var character = characters[i];
+			if (!((character >= 48) && (character <= 57))) {
+				return false;
+			}
+		} 
+		return true;
+	}
+	
+	function verifyMinLengthStudentNumber(studentNumber,studentSecondNumber,studentIdLabelName, studentId2LabelName,studentIdMinLength,studentId2MinLength){
+		var invalidCharFields = "";
+		var invalidCharFieldCount = 0;
+		
+		if (studentNumber != "") {
+			if ((studentNumber.length > 0 ) && studentNumber.length < parseInt(studentIdMinLength)) {     
+				invalidCharFieldCount += 1;            
+				invalidCharFields = buildErrorString(studentIdLabelName, invalidCharFieldCount, invalidCharFields);       
+			}
+		}
+		if (studentSecondNumber != "") {
+			if ((studentSecondNumber.length > 0 ) && studentSecondNumber.length < parseInt(studentId2MinLength)) {     
+				invalidCharFieldCount += 1;            
+				invalidCharFields = buildErrorString(studentId2LabelName, invalidCharFieldCount, invalidCharFields);      
+			}
+		}
+
+		return invalidCharFields;
+	}
+	
+	function noneSelected(month, day, year){
+        if (month == "" && day == "" && year == "")
+            return true;
+        else
+            return false;    
+    } 	
+    
+    /*function validateDateValues(year, month,day){
+        var i = 0;
+        var y = parseInt(year) - 1900;                          
+        var m = parseInt(monthStringToNumber(month)) - 1;       
+        var d = parseInt(day);                                
+        
+       var date = null;
+                
+       date = new Date(y, m, d);
+        
+        var y2 = date.getYear();
+        if (y2 != y)
+            return 1;
+
+        var m2 = date.getMonth();
+        if (m2 != m)
+            return 1;
+
+        var d2 = date.getDate();
+        if (d2 != d)
+            return 1;
+            
+        return 0;
+    } 
+       
+       function monthStringToNumber(month){
+        if (month == "Jan") return "01";
+        if (month == "Feb") return "02";
+        if (month == "Mar") return "03";
+        if (month == "Apr") return "04";
+        if (month == "May") return "05";
+        if (month == "Jun") return "06";
+        if (month == "Jul") return "07";
+        if (month == "Aug") return "08";
+        if (month == "Sep") return "09";
+        if (month == "Oct") return "10";
+        if (month == "Nov") return "11";
+        if (month == "Dec") return "12";
+        return "";        
+    }*/
+    
+    function validateDateValues(year, month,day){
+    
+		var monthfield= month;
+		var dayfield= day;
+		var yearfield= year;
+		var dayobj = new Date(yearfield, monthfield-1, dayfield)
+		if ((dayobj.getMonth()+1!=monthfield)||(dayobj.getDate()!=dayfield)||(dayobj.getFullYear()!=yearfield))
+		  return 0;
+		else
+		 return 1;
+	}
+
+	function toascii (c){
+	c = c . charAt (0);
+	var i;
+	for (i = 0; i < 256; ++ i)
+	{
+		var h = i . toString (16);
+		if (h . length == 1)
+			h = "0" + h;
+		h = "%" + h;
+		h = unescape (h);
+
+		if (h == c)
+			break;
+	}
+	return i;
+}

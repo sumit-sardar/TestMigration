@@ -31,6 +31,10 @@
 			  });
 			
 		});
+		$(function(){
+				// Accordion
+				$("#accordion").accordion({ header: "h3" });
+		});
 		
 	</script>
 	

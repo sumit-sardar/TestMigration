@@ -16,9 +16,13 @@
 <table class="sortable">
 
     <tr class="sortable">
-        <td style="background-color : #CCCC99">
+        <td style="background-color : #2E6E9E">
         
-      
+      	<div id="displayMessageMain" style="display:none; width:100%; height:55px; background-color: #FFFFEE; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
+			<div id="titleMain"></div>
+			<div id= "contentMain">	</div>
+			<div id= "messageMain">	</div>
+		</div>
 		
 	 <table class="transparent">
 		<tr class="transparent">
@@ -28,7 +32,7 @@
    	 	</tr>
 	    <tr class="transparent">
 	        <td class="transparent"  valign="middle">
-	      	<div  id= "searchheader" style="visibility:hidden; background:#990000; height:25px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;Student Search</div>
+	      	<div  id= "searchheader" style="visibility:hidden; background:#4297D7; height:25px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;Student Search</div>
 	    	<script>populateTree();</script>
        		 <div id = "orgNodeHierarchy" style="visibility:hidden; background:#ffffee; overflow:auto; height: 270px;  width: 250px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
 				
@@ -53,7 +57,7 @@
 </br>
 <jsp:include page="/studentOperation/add_edit_student_detail.jsp" />
 <div id="confirmationPopup"
-	style="display: none; background-color: #FFFFCC; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table>
 		<tr>
 			<td colspan="2">
@@ -63,8 +67,8 @@
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="buttonPopup">
-					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="buttonPopup">
+					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">
+					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
 				</center>
 			<br>
 		</td>

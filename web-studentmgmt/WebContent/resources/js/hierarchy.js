@@ -9,9 +9,10 @@ var dayOptions = [];
 var yearOptions = []; 
 var monthOptions = []; 
 var orgTreeHierarchy;
-var assignedOrgNodeIds ;
+var assignedOrgNodeIds = "116778";
 var customerDemographicValue;
 var isValueChanged = false;
+
 
 			
 function populateTree() {
@@ -127,18 +128,31 @@ function createMultiNodeSelectedTree(jsondata) {
         },
         
 			"plugins" : [ "themes", "json_data", "checkbox"]
-		
 			
     });
- 		 $("#innerID").delegate("a","click", function(e) {
+    
+    	/*	$("#innerID li").not(".jstree-leaf").each(function() {
+	    		  $("a ins.jstree-checkbox", this).first().hide();
+	     
+	  		 }); */
+    
+    
+ 		$("#innerID").delegate("li","click", function(e) {
+	 		/* $("#innerID li").not(".jstree-leaf").each(function() {
+	    		  $("a ins.jstree-checkbox", this).first().hide();
+	     
+	  		 }); */
 		 	var checked_ids = [];
 			var currentlySelectedNode ="";
 			assignedOrgNodeIds = "";
-			checked_ids = $("#innerID .jstree-checked a");
+			checked_ids = $("#innerID .jstree-checked li");
 			for(var i= 0; i<checked_ids.length; i++){
-				//alert(checked_ids[i].attr("id"));
-				currentlySelectedNode =  currentlySelectedNode + " , " + checked_ids[i].text ;
-				//assignedOrgNodeIds = checked_ids[i].attr("id") +"," + assignedOrgNodeIds;
+				currentlySelectedNode =  currentlySelectedNode + " , " + checked_ids.eq(i).find("a:first").text() ;
+				/*if(i==0)
+					assignedOrgNodeIds = checked_ids.eq(i).attr("id");
+				else
+					assignedOrgNodeIds = checked_ids.eq(i).attr("id") +"," + assignedOrgNodeIds; */
+					
 				$("#selectedOrgNodesName").text(currentlySelectedNode);
 				if(currentlySelectedNode.length > 0 )
 					$("#notSelectedOrgNodes").css("visibility","hidden");	
@@ -224,6 +238,9 @@ function createMultiNodeSelectedTree(jsondata) {
 
 
 function AddStudentDetail(){
+
+document.getElementById('displayMessage').style.display = "none";	
+document.getElementById('displayMessageMain').style.display = "none";	
 	if(!(gradeOptions.length > 0 
 		&& genderOptions.length > 0
 			&& dayOptions.length > 0
@@ -262,7 +279,9 @@ function AddStudentDetail(){
 												 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		 	
 												 	});	
-						$('#accordion ul:eq(0)').show(); 						
+							 $("#Student_Information").css("height",'auto');
+							 $("#Student_Additional_Information").css("height",'auto');
+							 		
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -285,8 +304,9 @@ function AddStudentDetail(){
 		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 			});	
 		 	
-		 	
-		$('#accordion ul:eq(0)').show(); 		
+		 	$("#Student_Information").css("height",'auto');
+			$("#Student_Additional_Information").css("height",'auto');
+		
 	}	
 	//$('#addEditStudentDetail .ui-dialog-titlebar-close').hide();
 	
@@ -334,14 +354,35 @@ function fillDropDown( elementId, optionList) {
 	}
 	
 	function onCancel() {
-		isValueChanged = false;
-		var radiofields = $(":radio"); 
-       	for (var i=0; i<radiofields.length; i++) {
-			if (radiofields[i].value != "None" && radiofields[i].checked == true) { 
-				isValueChanged = true;
-				break;
+		
+			isValueChanged = false;
+		if($("#studentFirstName").val()!= "" 
+			|| $("#studentMiddleName").val()!= ""
+			|| $("#studentLastName").val()!= ""
+			|| $("#studentExternalId").val()!= ""
+			|| $("#studentExternalId2").val()!= ""
+			|| $("#genderOptions").val() != "Select a gender"
+			|| $("#gradeOptions").val() != "Select a grade" ) {
+			isValueChanged = true;	
+			}
+		if(!isValueChanged) {	
+			var radiofields = $(":radio"); 
+	       	for (var i=0; i<radiofields.length; i++) {
+				if (radiofields[i].value != "None" && radiofields[i].checked == true) { 
+					isValueChanged = true;
+					break;
+				}
 			}
 		}
+		/*if(!isValueChanged) {
+			var selectfields = $(":select");
+			for (var i=0; i<selectfields.length; i++) {
+				if (selectfields[i].value != "Select a grade" && selectfields[i].value != "Select a gender" && selectfields[i].value != "Please Select") { 
+					isValueChanged = true;
+					break;
+				}
+			}
+		}*/
 		if(!isValueChanged) {
 		   var checkBoxfields = $(":checkbox"); 
 	       for(var i=0; i < checkBoxfields.length; i++){
@@ -381,20 +422,22 @@ function fillDropDown( elementId, optionList) {
 											},
 								url:		'saveAddEditStudent.do',
 								type:		'POST',
-								data:		$("#addEditStudentDetail *").serialize(),
+								data:		$("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" + $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val(),
 								dataType:	'json',
 								success:	function(data, textStatus, XMLHttpRequest){	
-												//alert("data : " + data);
 												unblockUI();
 												var errorFlag = data.errorFlag;
 												var successFlag = data.successFlag;
 												if(successFlag) {
-													document.getElementById('displayMessage').innerHTML = "Student Added Successfully";
-        											document.getElementById('displayMessage').style.display = "block";	
+													closePopUp('addEditStudentDetail');
+													setMessageMain(data.title, data.content, data.type, "");
+													document.getElementById('displayMessageMain').style.display = "block";	
+													
         										}
         										else{
-        											document.getElementById('displayMessage').innerHTML = "Student Not Added ";
+        											setMessage(data.title, data.content, data.type, "");
         											document.getElementById('displayMessage').style.display = "block";	
+        											
         										}
 																								
 											},
