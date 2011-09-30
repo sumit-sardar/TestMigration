@@ -9,7 +9,6 @@ function viewBroadcastMessage() {
 		{
 				async:		false,
 				beforeSend:	function(){
-								blockBackground();
 							},
 				url:		'broadcastMessage.do',
 				type:		'POST',
@@ -20,8 +19,10 @@ function viewBroadcastMessage() {
 								// Broadcast Dialog			
 								$('#broadcastMsgDialogId').dialog({
 									autoOpen: true,
+									modal: true,
 								    title:"Broadcast Message", 
 									width: 600,
+									resizable: false,
 									buttons: {
 										"Close": function() { 
 											releaseBackground();
@@ -51,7 +52,6 @@ function viewMyProfile() {
 		{
 				async:		false,
 				beforeSend:	function(){
-								blockBackground();
 							},
 				url:		'myProfile.do',
 				type:		'POST',
@@ -63,8 +63,9 @@ function viewMyProfile() {
 								$('#myProfileDialogId').dialog({
 									autoOpen: true,
 								    title:"My Profile", 
+									modal: true,
 									width: 600,
-									height: 400,
+									resizable: false,
 									buttons: {
 										"Ok": function() { 
 											releaseBackground();

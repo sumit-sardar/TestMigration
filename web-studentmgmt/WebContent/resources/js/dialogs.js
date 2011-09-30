@@ -1,4 +1,4 @@
-
+ 
 function viewBroadcastMessage() {
 	
 	var param = "param";
@@ -9,7 +9,6 @@ function viewBroadcastMessage() {
 		{
 				async:		false,
 				beforeSend:	function(){
-								//showLoadingProgress();
 							},
 				url:		'broadcastMessage.do',
 				type:		'POST',
@@ -20,10 +19,13 @@ function viewBroadcastMessage() {
 								// Broadcast Dialog			
 								$('#broadcastMsgDialogId').dialog({
 									autoOpen: true,
+									modal: true,
 								    title:"Broadcast Message", 
 									width: 600,
+									resizable: false,
 									buttons: {
 										"Close": function() { 
+											releaseBackground();
 											$(this).dialog("close"); 
 										}
 									}
@@ -33,7 +35,6 @@ function viewBroadcastMessage() {
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							},
 				complete :  function(){
-								//hideLoadingProgress();
 							}
 				}
 			);
@@ -51,7 +52,6 @@ function viewMyProfile() {
 		{
 				async:		false,
 				beforeSend:	function(){
-								//showLoadingProgress();
 							},
 				url:		'myProfile.do',
 				type:		'POST',
@@ -63,13 +63,16 @@ function viewMyProfile() {
 								$('#myProfileDialogId').dialog({
 									autoOpen: true,
 								    title:"My Profile", 
+									modal: true,
 									width: 600,
-									height: 400,
+									resizable: false,
 									buttons: {
 										"Ok": function() { 
+											releaseBackground();
 											$(this).dialog("close"); 
 										},
 										"Cancel": function() { 
+											releaseBackground();
 											$(this).dialog("close"); 
 										}
 									}
@@ -79,9 +82,17 @@ function viewMyProfile() {
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							},
 				complete :  function(){
-								//hideLoadingProgress();
 							}
 				}
 			);
 	}	
 }
+
+function blockBackground(){	
+	$("body").append('<div id="bkgDiv" style="opacity: 0.5; background-color: #d0e5f5;position: absolute;top:0;left:0;width:100%;height:100%;z-index:10"></div>');
+}
+
+function releaseBackground(){
+	$("#bkgDiv").remove();
+}
+

@@ -232,11 +232,15 @@ public class HomePageController extends PageFlowController
      * REPORTS actions
      */    
     @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "reports.jsp") 
+            @Jpf.Forward(name = "success", path = "reports.jsp"), 
+            @Jpf.Forward(name = "viewReports", path = "viewReports.do") 
+            
         }) 
     protected Forward reports()
     {
+    	System.out.println("reports.do");
         return new Forward("success");
+        //return new Forward("viewReports");
     }
 
     
