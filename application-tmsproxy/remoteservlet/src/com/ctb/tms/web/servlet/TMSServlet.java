@@ -435,8 +435,7 @@ public class TMSServlet extends HttpServlet {
 				    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("CO");
 				    			manifestData[j].setEndTime(System.currentTimeMillis());
-				    			if(("TB".equals(manifestData[j].getProduct()) || "TL".equals(manifestData[j].getProduct()) 
-				    			   && manifestData.length > 8 && "L".equals(manifestData[j].getLevel()))) {
+				    			if(("TB".equals(manifestData[j].getProduct()) && manifestData.length > 8 && "L".equals(manifestData[j].getLevel()))) {
 				    				// we just completed a locator subtest of a single-TAC auto-located TABE assessment
 				    	    		handleTabeLocator(rosterId);
 				    	    		manifest = oasSource.getManifest(rosterId, accessCode);
@@ -454,6 +453,12 @@ public class TMSServlet extends HttpServlet {
 				    		e.printStackTrace();
 				    	}
 			    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
+			    		if(("TL".equals(manifestData[j].getProduct()) && manifestData.length == 8 && "L".equals(manifestData[j].getLevel()))) {
+		    				// we just completed the locator assessment
+		    	    		handleTabeLocator(rosterId);
+		    	    		manifest = oasSource.getManifest(rosterId, accessCode);
+		    	    		manifestData = manifest.getManifest();
+				    	}
 			    		manifest.setRosterEndTime(new Timestamp(System.currentTimeMillis()));
 			    		/*Manifest[] allManifests = oasSource.getAllManifests(rosterId);
 			    		boolean allComplete = true;
@@ -597,8 +602,7 @@ public class TMSServlet extends HttpServlet {
 		}
 		// TODO: only do this when auto-locator function is needed
 		ManifestData md = manifest.getManifest()[0];
-		if(("TB".equals(md.getProduct()) || "TL".equals(md.getProduct()) 
-		   && manifest.getManifest().length == 8) && !"L".equals(md.getLevel())) {
+		if(("TB".equals(md.getProduct()) && manifest.getManifest().length == 8) && !"L".equals(md.getLevel())) {
 			// we're in a non-locator section of a multi-TAC auto-located TABE assessment
     		handleTabeLocator(testRosterId);
     		manifest = oasSource.getManifest(testRosterId, creds.getAccesscode());
