@@ -1519,7 +1519,7 @@ public class StudentOperationController extends PageFlowController {
 	        @Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
 	        @Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
 	        @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
-	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do"),
+	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do")
 	    }) 
 	protected Forward services()
 	{
