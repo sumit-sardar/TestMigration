@@ -2,9 +2,9 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
 
-<table class="headerLayout" >
+<table class="headerLayout">
 	<tr>
-		<td align="left" width="70%"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
+		<td align="left" width="70%" style="padding: 5px 0px 0px 5px;"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
 		<td align="left" width="30%">
 			<table border="0" cellpadding="0" cellspacing="0">
 			<tr height="22">
@@ -43,6 +43,6 @@
 
 
 <!-- BLOCK DIV -->
-<div id="blockDiv" style="display:none; background-color: #d0e5f5;; opacity:0.5; position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999">
+<div id="blockDiv" style="display:none; background-color: #d0e5f5; opacity:0.5; position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999">
 	<img src="<%=request.getContextPath()%>/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/>
 </div>

@@ -4,7 +4,7 @@
 
 <table class="headerLayout" >
 	<tr>
-		<td align="left" width="70%"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
+		<td align="left" width="70%" style="padding: 5px 0px 0px 5px;"><img src="<%=request.getContextPath()%>/resources/images/ctb_oas_logo.png"></td>
 		<td align="left" width="30%">
 			<table border="0" cellpadding="0" cellspacing="0">
 			<tr height="22">

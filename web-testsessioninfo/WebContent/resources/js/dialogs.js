@@ -9,7 +9,7 @@ function viewBroadcastMessage() {
 		{
 				async:		false,
 				beforeSend:	function(){
-								//showLoadingProgress();
+								blockBackground();
 							},
 				url:		'broadcastMessage.do',
 				type:		'POST',
@@ -24,6 +24,7 @@ function viewBroadcastMessage() {
 									width: 600,
 									buttons: {
 										"Close": function() { 
+											releaseBackground();
 											$(this).dialog("close"); 
 										}
 									}
@@ -33,7 +34,6 @@ function viewBroadcastMessage() {
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							},
 				complete :  function(){
-								//hideLoadingProgress();
 							}
 				}
 			);
@@ -51,7 +51,7 @@ function viewMyProfile() {
 		{
 				async:		false,
 				beforeSend:	function(){
-								//showLoadingProgress();
+								blockBackground();
 							},
 				url:		'myProfile.do',
 				type:		'POST',
@@ -67,9 +67,11 @@ function viewMyProfile() {
 									height: 400,
 									buttons: {
 										"Ok": function() { 
+											releaseBackground();
 											$(this).dialog("close"); 
 										},
 										"Cancel": function() { 
+											releaseBackground();
 											$(this).dialog("close"); 
 										}
 									}
@@ -79,9 +81,17 @@ function viewMyProfile() {
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							},
 				complete :  function(){
-								//hideLoadingProgress();
 							}
 				}
 			);
 	}	
 }
+
+function blockBackground(){	
+	$("body").append('<div id="bkgDiv" style="opacity: 0.5; background-color: #d0e5f5;position: absolute;top:0;left:0;width:100%;height:100%;z-index:10"></div>');
+}
+
+function releaseBackground(){
+	$("#bkgDiv").remove();
+}
+
