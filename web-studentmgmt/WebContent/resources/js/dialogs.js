@@ -13,9 +13,13 @@ function viewBroadcastMessage() {
 				url:		'broadcastMessage.do',
 				type:		'POST',
 				data:		param,
-				dataType:	'json',
+				dataType:	'html',
 				success:	function(data, textStatus, XMLHttpRequest){									
 								 	
+								//alert(data);
+    							var broadcastMsgBody = document.getElementById("broadcastMsgBody");
+    							//broadcastMsgBody.innerHTML = data;
+									 	
 								// Broadcast Dialog			
 								$('#broadcastMsgDialogId').dialog({
 									autoOpen: true,
@@ -25,7 +29,8 @@ function viewBroadcastMessage() {
 									resizable: false,
 									buttons: {
 										"Close": function() { 
-											releaseBackground();
+    										var broadcastMsgBody = document.getElementById("broadcastMsgBody");
+    										//broadcastMsgBody.innerHTML = "";
 											$(this).dialog("close"); 
 										}
 									}
@@ -59,6 +64,8 @@ function viewMyProfile() {
 				dataType:	'json',
 				success:	function(data, textStatus, XMLHttpRequest){									
 								 	
+								//alert(data.entry);
+								 	
 								// My Profile Dialog			
 								$('#myProfileDialogId').dialog({
 									autoOpen: true,
@@ -68,11 +75,9 @@ function viewMyProfile() {
 									resizable: false,
 									buttons: {
 										"Ok": function() { 
-											releaseBackground();
 											$(this).dialog("close"); 
 										},
 										"Cancel": function() { 
-											releaseBackground();
 											$(this).dialog("close"); 
 										}
 									}

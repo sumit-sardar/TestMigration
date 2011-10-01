@@ -14,12 +14,14 @@
     <link href="<%=request.getContextPath()%>/resources/css/ui.jqgrid.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/tabaccordion.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/autosuggest.css" type="text/css" rel="stylesheet" />
-
+    
     <link href="<%=request.getContextPath()%>/resources/css/roundCorners.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/main.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/menu.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/tabs.css" type="text/css" rel="stylesheet" />
- 
+    
+    <link href="<%=request.getContextPath()%>/resources/css/widgets.css" type="text/css" rel="stylesheet" />
+    
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.6.2.min.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-ui-1.8.16.custom.min.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.blockUI.min.js"></script>
@@ -32,7 +34,20 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>        
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>   
+  	
+	<script type="text/javascript">
+	var SelectedUserId;
+	
+		$(document).ready(function(){
+			  
+               $("#trail").click(function(){
+              	  $(".panel").slideToggle("slow");
+			  });
+			
+		});
+		
+	</script>
      
 </head>
 

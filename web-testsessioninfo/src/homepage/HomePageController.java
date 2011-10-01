@@ -25,19 +25,24 @@ import com.ctb.testSessionInfo.dto.ReportManager;
 import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
+import com.ctb.testSessionInfo.utils.JsonUtils;
 import com.ctb.testSessionInfo.utils.PermissionsUtils;
 import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import org.apache.struts.action.ActionErrors;
 import org.apache.struts.action.ActionMapping;
+
 
 import com.ctb.testSessionInfo.utils.DateUtils;
       
@@ -306,10 +311,12 @@ public class HomePageController extends PageFlowController
     /**
      * BROADCAST MESSAGE actions
      */    
-    @Jpf.Action()
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "broadcastMessage.jsp") 
+        }) 
     protected Forward broadcastMessage()
     {
-        return null;
+        return new Forward("success");
     }
 
     
@@ -319,6 +326,23 @@ public class HomePageController extends PageFlowController
     @Jpf.Action()
     protected Forward myProfile()
     {
+		String jsonResponse = "";
+		String scr = "Tai Truong";
+		
+		try {
+			jsonResponse = JsonUtils.getJsonString (scr, "String", scr.getClass());
+
+			HttpServletResponse resp = this.getResponse();     
+			resp.setContentType("application/json");
+			resp.flushBuffer();
+	        OutputStream stream = resp.getOutputStream();
+	        stream.write(jsonResponse.getBytes());
+	        stream.close();
+	        
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    	
         return null;
     }
     
