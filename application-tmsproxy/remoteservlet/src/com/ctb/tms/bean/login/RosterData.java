@@ -208,7 +208,7 @@ public class RosterData implements Serializable {
 	}
 	
 	public static ItemResponseData[] generateItemResponseData(ManifestData manifest, noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd[] tsda) {
-		ArrayList irdList = new ArrayList();
+		HashMap irdMap = new HashMap(tsda.length);
 		HashMap itemMap = new HashMap(tsda.length);
 		for(int i=0;i<tsda.length;i++) {
 			logger.debug("generateItemResponseData: Tsd " + i);
@@ -259,7 +259,7 @@ public class RosterData implements Serializable {
 			                    	ird.setConstructedResponse(response);
 			                    	// TODO: fix this
 			                    	ird.setItemType("SR");
-			                    	irdList.add(ird);
+			                    	irdMap.put(ird.getItemId(), ird);
 			                    	logger.debug("RosterData: added restart item response record " + ird.getResponseSeqNum());
 				                 }
 				            } else { 
@@ -275,7 +275,7 @@ public class RosterData implements Serializable {
 		                    	ird.setConstructedResponse(response);
 		                    	// TODO: fix this
 		                    	ird.setItemType("SR");
-		                    	irdList.add(ird);
+		                    	irdMap.put(ird.getItemId(), ird);
 		                    	logger.debug("RosterData: added restart item response record " + ird.getResponseSeqNum());
 				            }       
 				        }
@@ -283,6 +283,6 @@ public class RosterData implements Serializable {
 				//}
 			}
 		}
-		return (ItemResponseData[]) irdList.toArray(new ItemResponseData[0]);
+		return (ItemResponseData[]) irdMap.values().toArray(new ItemResponseData[0]);
 	}
 }

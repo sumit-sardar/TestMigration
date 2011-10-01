@@ -314,7 +314,7 @@ public class TMSServlet extends HttpServlet {
 		    	for(j=0;j<manifestData.length;j++) {
 		    		if(!"TERMINATOR".equals(tsd.getScid()) && (manifestData[j].getId() == Integer.parseInt(tsd.getScid()))) {
 		    			nextScoIndex = j+1;
-		    			// TODO: fix next subtest selection for TABE auto-locator
+		    			// TODO (complete): fix next subtest selection for TABE auto-locator
 		    			break;
 		    		}
 		    	}
@@ -643,6 +643,7 @@ public class TMSServlet extends HttpServlet {
             	Tsd[] irt = null;
             	ConsolidatedRestartData restartData = null;
             	irt = oasSource.getItemResponses(testRosterId);
+            	logger.info("TMSServlet: found " + irt.length + " responses in cache.");
             	boolean responsesInCache = (irt != null && irt.length > 0);
             	ConsolidatedRestartData[] crda = loginResponse.getConsolidatedRestartDataArray();
             	if(crda != null && crda.length > 0) {
