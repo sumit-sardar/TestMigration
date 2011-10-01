@@ -547,7 +547,7 @@ public class StudentOperationController extends PageFlowController {
 	{        
 		getUserDetails();
 		StudentOperationForm  form = new StudentOperationForm();
-		addEditDemographics(form);
+		addEditDemographics();
 		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);  
 		
 		//initGradeGenderOptions(ACTION_ADD_STUDENT, savedForm, null, null);
@@ -707,7 +707,9 @@ public class StudentOperationController extends PageFlowController {
 	private void getStudentDemographicsFromRequest() 
 	{
 		String param = null, paramValue = null;
-
+		if(this.demographics == null)
+			addEditDemographics();
+		
 		for (int i=0; i < this.demographics.size(); i++)
 		{
 			StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
@@ -857,7 +859,7 @@ public class StudentOperationController extends PageFlowController {
 	/**
 	 * addEditDemographics
 	 */
-	private void addEditDemographics(StudentOperationForm form)
+	private void addEditDemographics()
 	{	
 		List demographics = null;
 		//Integer studentId = form.getStudentProfile().getStudentId();
@@ -973,7 +975,7 @@ public class StudentOperationController extends PageFlowController {
 
 		if (selectedOrgNodeId != null)
 		{
-			sort = FilterSortPageUtils.buildStudentSortParams(FilterSortPageUtils.STUDENT_DEFAULT_SORT_COLUMN, FilterSortPageUtils.ASCENDING);
+			sort = FilterSortPageUtils.buildStudentSortParams(FilterSortPageUtils.LAST_NAME_SORT, FilterSortPageUtils.ASCENDING);
 			msData = StudentSearchUtils.searchStudentsByOrgNode(this.userName, this.studentManagement, selectedOrgNodeId, filter, page, sort);
 
 		}

@@ -406,9 +406,9 @@ function verifyAlphaNumericStudentNumber(studentNumber, studentSecondNumber, stu
 		var characters = [];
 		characters = toCharArray(str);
 
-		for (var i=0 ; i<characters.length ; i++) {
-			var character = characters[i];
-			if (!((character >= 48) && (character <= 57))) {
+		for (var i=0 ; i<str.length ; i++) {
+		var charCode = str.charCodeAt(i);
+			if (!((charCode >= 48) && (charCode <= 57))) {
 				return false;
 			}
 		} 

@@ -37,7 +37,7 @@
 		</div>
 	<div id="accordion" style="padding-left:14px; width:98%;">
 			
-			<div>
+			<div title="Student_Information_div">
 				<h3><a href="#">Student Information</a></h3>
 				
 					<div id="Student_Information" style="background-color: #FFFFFF;">
@@ -180,7 +180,7 @@
 							</div>
 				
 			</div>
-			<div>
+			<div title="Student Additional Information_div">
 				<h3><a href="#">Student Additional Information</a></h3>
 				<div id="Student_Additional_Information">
 					<jsp:include page="/studentOperation/add_edit_student_by_demographic.jsp" />
