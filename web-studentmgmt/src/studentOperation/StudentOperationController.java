@@ -1511,6 +1511,17 @@ public class StudentOperationController extends PageFlowController {
 	    return new Forward("success");
 	}
 
+    /**
+     * REPORTS actions
+     */    
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "blankPage.jsp")
+        }) 
+    protected Forward reports()
+    {
+        return new Forward("success");
+    }
+	
 	/**
 	 * SERVICES actions
 	 */    
