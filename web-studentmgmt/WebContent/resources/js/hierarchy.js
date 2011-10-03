@@ -10,7 +10,7 @@ var yearOptions = [];
 var monthOptions = []; 
 var testPurposeOptions = [];
 var orgTreeHierarchy;
-var assignedOrgNodeIds;
+var assignedOrgNodeIds = "";
 var customerDemographicValue;
 var isValueChanged = false;
 var leafNodeCategoryId;
