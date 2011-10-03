@@ -11,11 +11,11 @@ var invalid_birthdate = "Invalid Date of Birth:";
 
 var grade; var gender; var day; var year; var month; 
 var firstName;var middleName;var lastName;var studentExternalId;var studentExternalId2;
-var studentNumber;var selectedOrgNodes = [];var studentSecondNumber;var studentIdLabelName;
+var studentNumber;var selectedOrgNodes ;var studentSecondNumber;var studentIdLabelName;
 var studentId2LabelName;var studentIdConfigurable;var studentId2Configurable;
 var isStudentIdNumeric; var isStudentId2Numeric; var studentIdMinLength; var studentId2MinLength;
 
-function VerifyStudentDetail(){
+function VerifyStudentDetail(assignedOrgNodeIds){
                        // alert($("#isMandatoryBirthDate").val());
 						
 						var requiredFields = "";
@@ -32,7 +32,7 @@ function VerifyStudentDetail(){
 						grade = $("#gradeOptions").val();
 						studentNumber = $("#studentExternalId").val();
 						studentSecondNumber = $("#studentExternalId2").val();
-						/*selectedOrgNodes = *;*/
+						selectedOrgNodes = assignedOrgNodeIds;
                         studentIdLabelName = $("#studentIdLabelName").val();
                         studentId2LabelName = $("#studentId2LabelName").val();
 						studentIdConfigurable = $("#isStudentIdConfigurable").val();
@@ -81,7 +81,7 @@ function VerifyStudentDetail(){
 				}
 			}
 
-			if ( selectedOrgNodes.size == 0 ) {
+			if ( selectedOrgNodes.length == "" ) {
 				requiredFieldCount += 1;      
 				requiredFields = buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
 			}        

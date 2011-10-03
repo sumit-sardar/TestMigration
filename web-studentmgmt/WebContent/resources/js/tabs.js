@@ -1,10 +1,9 @@
-/*
+
   $(document).ready(function(){
     $('table', $('#featureTabsContainer .tab')[0]).each(function(){$('.native').hide();});
     $('#featureTabsContainer').show();
     tab(0);
   });
-*/
   
 function tab(n) {
     $('#featureTabsContainer .tab').removeClass('tab_selected');

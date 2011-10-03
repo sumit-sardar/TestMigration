@@ -493,13 +493,15 @@ public interface StudentManagement
    
    //Added for TABE-BAUM 060: Unique Student ID
 	boolean validateUniqueStudentId(Boolean isCreateNew, Integer customerId , Integer studentId, String studentIDNumber)throws com.ctb.exception.CTBBusinessException;
+
     
 	com.ctb.bean.testAdmin.UserNodeData OrgNodehierarchy(java.lang.String userName, Integer associatedNodeId) throws com.ctb.exception.CTBBusinessException;
     
 	com.ctb.bean.testAdmin.UserNodeData getTopUserNodesForUser(java.lang.String userName, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 	
 	com.ctb.bean.studentManagement.ManageStudentData findStudentsForOrgNode(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
-
+	
+	java.lang.Integer getLeafNodeCategoryId(String userName, Integer customerId) throws com.ctb.exception.CTBBusinessException;
 } 	
 
 

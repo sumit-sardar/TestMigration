@@ -568,5 +568,18 @@ public class StudentPathListUtils
         return nodeList;
     }
     
+    /**
+     * getOrganizationNodes
+     */    
+    public static Integer getLeafNodeCategoryId(String userName, Integer customerId,
+    											StudentManagement studentManagement) throws CTBBusinessException {    
+    	Integer leafNodeCategoryId = new Integer(0);
+       
+    	leafNodeCategoryId = studentManagement.getLeafNodeCategoryId(userName, customerId);
+    	
+      
+        return leafNodeCategoryId;
+    }
+    
     
 } 

@@ -4,6 +4,7 @@ public class Attribute {
 	
 	private String id;
 	private String checked = "false";
+	private String categoryID;
 
 		
 	public String getChecked() {
@@ -20,6 +21,20 @@ public class Attribute {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return the categoryID
+	 */
+	public String getCategoryID() {
+		return categoryID;
+	}
+
+	/**
+	 * @param categoryID the categoryID to set
+	 */
+	public void setCategoryID(String categoryID) {
+		this.categoryID = categoryID;
 	}
 
 }

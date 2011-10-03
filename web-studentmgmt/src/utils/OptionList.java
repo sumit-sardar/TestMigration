@@ -9,6 +9,8 @@ public class OptionList {
 	public String[] monthOptions = null;
 	public String[] dayOptions = null;
 	public String[] yearOptions = null;
+	public String[] testPurposeOptions = null;
+	
 	private boolean profileEditable = true;
 	/**
 	 * @return the profileEditable
@@ -81,6 +83,18 @@ public class OptionList {
 	 */
 	public void setGenderOptions(String[] genderOptions) {
 		this.genderOptions = genderOptions;
+	}
+	/**
+	 * @return the testPurposeOptions
+	 */
+	public String[] getTestPurposeOptions() {
+		return testPurposeOptions;
+	}
+	/**
+	 * @param testPurposeOptions the testPurposeOptions to set
+	 */
+	public void setTestPurposeOptions(String[] testPurposeOptions) {
+		this.testPurposeOptions = testPurposeOptions;
 	}
 	
 	

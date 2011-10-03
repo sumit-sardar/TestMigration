@@ -8,11 +8,12 @@ var genderOptions = [];
 var dayOptions = []; 
 var yearOptions = []; 
 var monthOptions = []; 
+var testPurposeOptions = [];
 var orgTreeHierarchy;
-var assignedOrgNodeIds = "116778";
+var assignedOrgNodeIds;
 var customerDemographicValue;
 var isValueChanged = false;
-
+var leafNodeCategoryId;
 
 			
 function populateTree() {
@@ -29,8 +30,9 @@ function populateTree() {
 		success:	function(data, textStatus, XMLHttpRequest){	
 						//alert('in');
 						$.unblockUI();  
+						leafNodeCategoryId = data.leafNodeCategoryId;
 						orgTreeHierarchy = data;
-						createSingleNodeSelectedTree (data);
+						createSingleNodeSelectedTree (orgTreeHierarchy);
 						$("#searchheader").css("visibility","visible");	
 						$("#orgNodeHierarchy").css("visibility","visible");	
 												
@@ -100,7 +102,11 @@ function createSingleNodeSelectedTree(jsondata) {
  		  	if(!gridloaded) {
  		  		gridloaded = true;
  		  		populateTreeSelect();
-				populateGrid();
+ 		  		var hideAccommodation = $("#supportAccommodations").val();
+ 		  		if(hideAccommodation == "false")
+ 		  			populateGridWithoutAccommodation();
+ 		  		else
+					populateGrid();
 				
 				}
 			else
@@ -126,45 +132,63 @@ function createMultiNodeSelectedTree(jsondata) {
 			"progressive_unload" : true
 			
         },
-        
-			"plugins" : [ "themes", "json_data", "checkbox"]
-			
-    });
+        "ui" : {  
+	           "select_limit" : 1
+         	}, 
+ 			"plugins" : [ "themes", "json_data", "checkbox"]
+   });
     
-    	/*	$("#innerID li").not(".jstree-leaf").each(function() {
+    	$("#innerID li").not(".jstree-leaf").each(function() {
+    			var orgcategorylevel = $(this).attr("categoryid");
+    			if(orgcategorylevel != leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
-	     
-	  		 }); */
-    
-    
+	    		  }
+	  	});
+    	
  		$("#innerID").delegate("li","click", function(e) {
-	 		/* $("#innerID li").not(".jstree-leaf").each(function() {
+	 		$("#innerID li").not(".jstree-leaf").each(function() {
+    			var orgcategorylevel = $(this).attr("categoryid");
+    			if(orgcategorylevel != leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
-	     
-	  		 }); */
-		 	var checked_ids = [];
-			var currentlySelectedNode ="";
-			//assignedOrgNodeIds = "";
-			assignedOrgNodeIds = "116778";
-			checked_ids = $("#innerID .jstree-checked li");
-			for(var i= 0; i<checked_ids.length; i++){
-				currentlySelectedNode =  currentlySelectedNode + " , " + checked_ids.eq(i).find("a:first").text() ;
-				/*if(i==0)
-					assignedOrgNodeIds = checked_ids.eq(i).attr("id");
-				else
-					assignedOrgNodeIds = checked_ids.eq(i).attr("id") +"," + assignedOrgNodeIds; */
-					
-				$("#selectedOrgNodesName").text(currentlySelectedNode);
-				if(currentlySelectedNode.length > 0 )
-					$("#notSelectedOrgNodes").css("visibility","hidden");	
-				else
-					$("#notSelectedOrgNodes").css("visibility","visible");	
-			}
+	    		  }
+	  		});
+	  		
+	  	
+		 	var currentlySelectedNode ="";
+			assignedOrgNodeIds = "";
+			$("#innerID").find(".jstree-checked").each(function(i, element){
+				
+				var orgcategorylevel = $(element).attr("categoryid");
+				if(orgcategorylevel == leafNodeCategoryId) {
+					if(currentlySelectedNode=="") {
+						currentlySelectedNode = $(element).text();
+					} else {
+						currentlySelectedNode = currentlySelectedNode + " , " + $(element).text(); 
+					}
+	
+		    		if(assignedOrgNodeIds=="") {
+						assignedOrgNodeIds = $(element).attr("id");
+					} else {
+						assignedOrgNodeIds = $(element).attr("id") +"," + assignedOrgNodeIds; 
+					}
+	    		}
+				
+			});
+				if(currentlySelectedNode.length > 0 ) {
+					$("#notSelectedOrgNodes").css("visibility","hidden");
+					$("#selectedOrgNodesName").text(currentlySelectedNode);	
+				} else {
+					$("#notSelectedOrgNodes").css("visibility","visible");
+					$("#selectedOrgNodesName").text("");	
+				}
+		
+		
 		});
    
 }
 		function populateTreeSelect() {
-		
+			$("#notSelectedOrgNodes").css("visibility","visible");
+			$("#selectedOrgNodesName").text("");	
 			createMultiNodeSelectedTree (orgTreeHierarchy);
 			
 		}
@@ -186,21 +210,22 @@ function createMultiNodeSelectedTree(jsondata) {
 }		
 			
 	function populateGrid() {
-
+	var studentIdTitle = $("#studentIdLabelName").val();
          $("#list2").jqGrid({         
           url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
 	     datatype: "json",         
-          colNames:['Last Name','First Name', 'Middle Name', 'Grade','Organization', 'Gender', 'Login ID', 'Student ID'],
+          colNames:['Last Name','First Name', 'Middle Name', 'Grade','Organization', 'Gender', 'Accommodation', 'Login ID', studentIdTitle],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'middleName',index:'middleName', width:100, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'grade',index:'grade',editable: true, width:70, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:150, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:110, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'gender',index:'gender', width:80, editable: true, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'userName',index:'userName',editable: true, width:200, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'studentNumber',index:'studentNumber',editable: true, width:120, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'hasAccommodations',index:'hasAccommodations', width:150, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'userName',index:'userName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentNumber',index:'studentNumber',editable: true, width:100, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",records: function(obj) { return obj.studentProfileInformation.length; } },
@@ -225,7 +250,7 @@ function createMultiNodeSelectedTree(jsondata) {
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
-				//$("#list2").setLabel("Student ID",$("#studentIdLabelName").val(),{'font-weight': 'bold'});
+				 
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -235,12 +260,62 @@ function createMultiNodeSelectedTree(jsondata) {
 	 });
 			jQuery("#list2").jqGrid('navGrid','#pager2',{});  
 			$('.ui-jqgrid-titlebar-close',"#list2").remove();
-			//jQuery("#list2").jqGrid('setLabel',7,$("#studentIdLabelName").val()); 
-			
-			
-
 			
 	}
+	
+	
+	function populateGridWithoutAccommodation() {
+	var studentIdTitle = $("#studentIdLabelName").val();
+         $("#list2").jqGrid({         
+          url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
+		 type:   'POST',
+	     datatype: "json",         
+          colNames:['Last Name','First Name', 'Middle Name', 'Grade','Organization', 'Gender', 'Login ID', studentIdTitle],
+		   	colModel:[
+		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'firstName',index:'firstName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'middleName',index:'middleName', width:100, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'grade',index:'grade',editable: true, width:70, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:150, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'gender',index:'gender', width:80, editable: true, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'userName',index:'userName',editable: true, width:200, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentNumber',index:'studentNumber',editable: true, width:120, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: space:nowrap;' } }
+		   	
+		   	],
+		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",records: function(obj) { return obj.studentProfileInformation.length; } },
+		   	 
+			rowNum:10,
+			loadonce:true, 
+			multiselect:false,
+			pager: '#pager2', 
+			sortname: 'lastName', 
+			viewrecords: true, 
+			sortorder: "asc",
+			//height: "500px",  
+			editurl: 'getStudentForSelectedOrgNodeGrid.do',
+			caption:"Search Result",
+			loadComplete: function () {
+				if ($('#list2').getGridParam('records') === 0) {
+            	$('#sp_1_pager2').text("1");
+            	}
+				$.unblockUI();  
+				$("#list2").setGridParam({datatype:'local'});
+				var tdList = ("#pager2_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				 
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();  
+						window.location.href="/TestSessionInfoWeb/logout.do";
+						
+					}
+	 });
+			jQuery("#list2").jqGrid('navGrid','#pager2',{});  
+			$('.ui-jqgrid-titlebar-close',"#list2").remove();
+	}
+	
 
 
 function AddStudentDetail(){
@@ -259,7 +334,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 						
 						$.blockUI({ message: null }); 
 					},
-		url:		'getOptionList.do',
+		url:		'getOptionList.do?isLasLinkCustomer='+$("#isLasLinkCustomer").val(), 
 		type:		'POST',
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){	
@@ -271,13 +346,16 @@ document.getElementById('displayMessageMain').style.display = "none";
 						dayOptions = data.dayOptions; 
 						monthOptions = data.monthOptions;
 						yearOptions = data.yearOptions; 
+						testPurposeOptions = data.testPurposeOptions;
 						fillDropDown("gradeOptions", gradeOptions);
 						fillDropDown("genderOptions", genderOptions);
 						fillDropDown("dayOptions", dayOptions);
 						fillDropDown("monthOptions", monthOptions);
 						fillDropDown("yearOptions", yearOptions);
+						if($("#isLasLinkCustomer").val() =="true")
+							fillDropDown("testPurposeOptions", testPurposeOptions);
 						customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
-						 $('#accordion').accordion('select','Student_Information_div');
+						// $('#accordion').accordion('activate','Student_Information_div');
 						$("#addEditStudentDetail").dialog({  
 													title:"Add Record",  
 												 	resizable:false,
@@ -302,8 +380,9 @@ document.getElementById('displayMessageMain').style.display = "none";
 
 	} else {
 		reset();
+		if($("#isLasLinkCustomer").val() =="true")
+			fillDropDown("testPurposeOptions", testPurposeOptions);
 		overlayblockUI(); 
-		 $('#accordion').accordion('select','Student_Information_div');
 		$("#addEditStudentDetail").dialog({  
 			title:"Add Record",  
 		 	resizable:false,
@@ -311,12 +390,9 @@ document.getElementById('displayMessageMain').style.display = "none";
 		 	width: '800px',
 		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 			});	
-		 	
 		 	$("#Student_Information").css("height",'auto');
 			$("#Student_Additional_Information").css("height",'auto');
-		
 	}	
-	//$('#addEditStudentDetail .ui-dialog-titlebar-close').hide();
 	
 }
     function reset() {
@@ -352,8 +428,10 @@ function fillDropDown( elementId, optionList) {
 
 
 	function closePopUp(dailogId){
+		$('#accordion').accordion('activate', 0 );
 		$("#"+dailogId).dialog("close");
 		overlayunblockUI();
+		populateTreeSelect();
 	}
 	
 	function closeConfirmationPopup() {
@@ -417,7 +495,7 @@ function fillDropDown( elementId, optionList) {
 	}
 	
 	function studentDetailSubmit(){
-	 var validflag = VerifyStudentDetail();
+	 var validflag = VerifyStudentDetail(assignedOrgNodeIds);
 	if(validflag) {
 					$.ajax(
 						{
@@ -462,6 +540,9 @@ function fillDropDown( elementId, optionList) {
 			document.getElementById('displayMessage').style.display = "block";
 	}
 	}
+	
+	
+	
 	
 	
 	

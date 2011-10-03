@@ -2606,6 +2606,7 @@ public class StudentManagementImpl implements StudentManagement
 		}
 		return isIDUnique;
 	}
+
 	
 	 public UserNodeData OrgNodehierarchy(String userName, Integer associatedNodeId) 
 	    throws CTBBusinessException {                                                         
@@ -2726,5 +2727,19 @@ public class StudentManagementImpl implements StudentManagement
 			throw tee;
 		}
 	}
+	public Integer getLeafNodeCategoryId(String userName, Integer customerId) throws CTBBusinessException
+	{
+		Integer leafNodeCategoryId = new Integer(0);
+		try {
+			leafNodeCategoryId = orgNode.getLeafNodeCategoryId(customerId);
+		}
+		catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getLeafNodeCategoryId: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+		return leafNodeCategoryId;
+	}
 		
+
 } 

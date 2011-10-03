@@ -12,8 +12,11 @@
 			isMandatoryStudentId = true;
 		}
 	}
+	Boolean supportAccommodations = (Boolean)request.getAttribute("supportAccommodations");
+	
 
 %>
+<input type="hidden" id="isLasLinkCustomer"  value = '<%=isLasLinkCustomer %>' />
 <input type="hidden" id="isMandatoryBirthDate"  value = '<%=isMandatoryBirthDate %>' />
 <input type="hidden" id="isMandatoryStudentId" value = '<%=isMandatoryStudentId %>' />
 <input type="hidden" id="isStudentIdConfigurable" value = '<%=isStudentIdConfigurable %>' />
@@ -24,6 +27,7 @@
 <input type="hidden" id="studentId2LabelName"  value = '<%=studentId2ArrValue[0] %>' />
 <input type="hidden" id="isStudentId2Numeric" value = '<%=studentId2ArrValue[3] %>' />
 <input type="hidden" id="studentId2MinLength" value = '<%=studentId2ArrValue[2] %>' />
+<input type="hidden" id="supportAccommodations" value = '<%=supportAccommodations %>' />
 
 
 
@@ -35,9 +39,9 @@
 			<div id= "content">	</div>
 			<div id= "message">	</div>
 		</div>
-	<div id="accordion" style="padding-left:14px; width:98%;">
+	<div id="accordion" style="padding-left:10px; width:99.5%;">
 			
-			<div title="Student_Information_div">
+			<div title="Student_Information">
 				<h3><a href="#">Student Information</a></h3>
 				
 					<div id="Student_Information" style="background-color: #FFFFFF;">
@@ -124,8 +128,11 @@
 									<%if(isLasLinkCustomer) { %>
 									 <tr class="transparent">
 										<td nowrap="" width="110" class="transparent alignRight">Purpose of Test:</td>
-										<td class="transparent"><input type="text" style="width: 200px;"  id="testPurpose" name="testPurpose"></td>
-															   
+										
+										<td nowrap="" class="transparent">    
+											<select style="width: 200px;"   id="testPurposeOptions" name="testPurposeOptions">		
+											</select>
+										</td>       					   
 									</tr>
 								   <%} %>
 								   	<tr style="display: table-row;" id="message" class="transparent">
@@ -180,7 +187,7 @@
 							</div>
 				
 			</div>
-			<div title="Student Additional Information_div">
+			<div title="Student Additional Information">
 				<h3><a href="#">Student Additional Information</a></h3>
 				<div id="Student_Additional_Information">
 					<jsp:include page="/studentOperation/add_edit_student_by_demographic.jsp" />

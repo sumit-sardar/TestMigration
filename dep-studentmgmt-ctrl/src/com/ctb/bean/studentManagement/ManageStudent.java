@@ -1,8 +1,9 @@
 package com.ctb.bean.studentManagement; 
 
-import com.ctb.bean.CTBBean;
 import java.util.Date;
-import java.util.List;
+
+import com.ctb.bean.CTBBean;
+import com.ctb.bean.testAdmin.StudentAccommodations;
 
 /**
  * Data bean representing the partial contents of the OAS.STUDENT table 
@@ -36,6 +37,26 @@ public class ManageStudent extends CTBBean
     private String accessCode;
     private String testAdminId;
     private Integer itemCountCRAI;
+    private String screenMagnifier;
+    private String screenReader;
+    private String calculator; 
+    private String testPause;
+    private String untimedTest;
+    private String questionBackgroundColor;
+    private String questionFontColor;
+    private String questionFontSize;
+    private String answerBackgroundColor;
+    private String answerFontColor;
+    private String answerFontSize;
+    private String colorFontAccommodation;
+    private String colorFont;//bulk accommodation new field
+    private String highlighter;
+    private String maskingRuler;//Added for masking
+    private String auditoryCalming;//Added for auditory calming
+    private String musicFile;//Added for auditory calming
+    private String magnifyingGlass;//Added for magnifier
+    private String extendedTime; // Added for student pacing
+    private String maskingTool;
     //END-Added for HandScoring  
     
     //Start- added for  Process Scores  button
@@ -342,6 +363,247 @@ public class ManageStudent extends CTBBean
 	public void setCompletionStatus(String completionStatus) {
 		this.completionStatus = completionStatus;
 	}
+	/**
+	 * @return the screenMagnifier
+	 */
+	public String getScreenMagnifier() {
+		return screenMagnifier;
+	}
+	/**
+	 * @param screenMagnifier the screenMagnifier to set
+	 */
+	public void setScreenMagnifier(String screenMagnifier) {
+		this.screenMagnifier = screenMagnifier;
+	}
+	/**
+	 * @return the screenReader
+	 */
+	public String getScreenReader() {
+		return screenReader;
+	}
+	/**
+	 * @param screenReader the screenReader to set
+	 */
+	public void setScreenReader(String screenReader) {
+		this.screenReader = screenReader;
+	}
+	/**
+	 * @return the calculator
+	 */
+	public String getCalculator() {
+		return calculator;
+	}
+	/**
+	 * @param calculator the calculator to set
+	 */
+	public void setCalculator(String calculator) {
+		this.calculator = calculator;
+	}
+	/**
+	 * @return the testPause
+	 */
+	public String getTestPause() {
+		return testPause;
+	}
+	/**
+	 * @param testPause the testPause to set
+	 */
+	public void setTestPause(String testPause) {
+		this.testPause = testPause;
+	}
+	/**
+	 * @return the untimedTest
+	 */
+	public String getUntimedTest() {
+		return untimedTest;
+	}
+	/**
+	 * @param untimedTest the untimedTest to set
+	 */
+	public void setUntimedTest(String untimedTest) {
+		this.untimedTest = untimedTest;
+	}
+	/**
+	 * @return the questionBackgroundColor
+	 */
+	public String getQuestionBackgroundColor() {
+		return questionBackgroundColor;
+	}
+	/**
+	 * @param questionBackgroundColor the questionBackgroundColor to set
+	 */
+	public void setQuestionBackgroundColor(String questionBackgroundColor) {
+		this.questionBackgroundColor = questionBackgroundColor;
+	}
+	/**
+	 * @return the questionFontColor
+	 */
+	public String getQuestionFontColor() {
+		return questionFontColor;
+	}
+	/**
+	 * @param questionFontColor the questionFontColor to set
+	 */
+	public void setQuestionFontColor(String questionFontColor) {
+		this.questionFontColor = questionFontColor;
+	}
+	/**
+	 * @return the questionFontSize
+	 */
+	public String getQuestionFontSize() {
+		return questionFontSize;
+	}
+	/**
+	 * @param questionFontSize the questionFontSize to set
+	 */
+	public void setQuestionFontSize(String questionFontSize) {
+		this.questionFontSize = questionFontSize;
+	}
+	/**
+	 * @return the answerBackgroundColor
+	 */
+	public String getAnswerBackgroundColor() {
+		return answerBackgroundColor;
+	}
+	/**
+	 * @param answerBackgroundColor the answerBackgroundColor to set
+	 */
+	public void setAnswerBackgroundColor(String answerBackgroundColor) {
+		this.answerBackgroundColor = answerBackgroundColor;
+	}
+	/**
+	 * @return the answerFontColor
+	 */
+	public String getAnswerFontColor() {
+		return answerFontColor;
+	}
+	/**
+	 * @param answerFontColor the answerFontColor to set
+	 */
+	public void setAnswerFontColor(String answerFontColor) {
+		this.answerFontColor = answerFontColor;
+	}
+	/**
+	 * @return the answerFontSize
+	 */
+	public String getAnswerFontSize() {
+		return answerFontSize;
+	}
+	/**
+	 * @param answerFontSize the answerFontSize to set
+	 */
+	public void setAnswerFontSize(String answerFontSize) {
+		this.answerFontSize = answerFontSize;
+	}
+	/**
+	 * @return the colorFontAccommodation
+	 */
+	public String getColorFontAccommodation() {
+		return colorFontAccommodation;
+	}
+	/**
+	 * @param colorFontAccommodation the colorFontAccommodation to set
+	 */
+	public void setColorFontAccommodation(String colorFontAccommodation) {
+		this.colorFontAccommodation = colorFontAccommodation;
+	}
+	/**
+	 * @return the colorFont
+	 */
+	public String getColorFont() {
+		return colorFont;
+	}
+	/**
+	 * @param colorFont the colorFont to set
+	 */
+	public void setColorFont(String colorFont) {
+		this.colorFont = colorFont;
+	}
+	/**
+	 * @return the highlighter
+	 */
+	public String getHighlighter() {
+		return highlighter;
+	}
+	/**
+	 * @param highlighter the highlighter to set
+	 */
+	public void setHighlighter(String highlighter) {
+		this.highlighter = highlighter;
+	}
+	/**
+	 * @return the maskingRuler
+	 */
+	public String getMaskingRuler() {
+		return maskingRuler;
+	}
+	/**
+	 * @param maskingRuler the maskingRuler to set
+	 */
+	public void setMaskingRuler(String maskingRuler) {
+		this.maskingRuler = maskingRuler;
+	}
+	/**
+	 * @return the auditoryCalming
+	 */
+	public String getAuditoryCalming() {
+		return auditoryCalming;
+	}
+	/**
+	 * @param auditoryCalming the auditoryCalming to set
+	 */
+	public void setAuditoryCalming(String auditoryCalming) {
+		this.auditoryCalming = auditoryCalming;
+	}
+	/**
+	 * @return the musicFile
+	 */
+	public String getMusicFile() {
+		return musicFile;
+	}
+	/**
+	 * @param musicFile the musicFile to set
+	 */
+	public void setMusicFile(String musicFile) {
+		this.musicFile = musicFile;
+	}
+	/**
+	 * @return the magnifyingGlass
+	 */
+	public String getMagnifyingGlass() {
+		return magnifyingGlass;
+	}
+	/**
+	 * @param magnifyingGlass the magnifyingGlass to set
+	 */
+	public void setMagnifyingGlass(String magnifyingGlass) {
+		this.magnifyingGlass = magnifyingGlass;
+	}
+	/**
+	 * @return the extendedTime
+	 */
+	public String getExtendedTime() {
+		return extendedTime;
+	}
+	/**
+	 * @param extendedTime the extendedTime to set
+	 */
+	public void setExtendedTime(String extendedTime) {
+		this.extendedTime = extendedTime;
+	}
+	/**
+	 * @return the maskingTool
+	 */
+	public String getMaskingTool() {
+		return maskingTool;
+	}
+	/**
+	 * @param maskingTool the maskingTool to set
+	 */
+	public void setMaskingTool(String maskingTool) {
+		this.maskingTool = maskingTool;
+	}
+	
     
 } 
 

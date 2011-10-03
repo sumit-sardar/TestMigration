@@ -186,6 +186,7 @@ public class StudentOperationController extends PageFlowController {
 			ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
 			UserNodeData associateNode = StudentPathListUtils.populateAssociateNode(this.userName,this.studentManagement);
 			ArrayList<Organization> selectedList  = StudentPathListUtils.buildassoOrgNodehierarchyList(associateNode);	
+			Integer leafNodeCategoryId = StudentPathListUtils.getLeafNodeCategoryId(this.userName,this.customerId, this.studentManagement);
 			ArrayList <Integer> orgIDList = new ArrayList <Integer>();
 			ArrayList<TreeData> data = new ArrayList<TreeData>();
 
@@ -221,6 +222,7 @@ public class StudentOperationController extends PageFlowController {
 
 			Gson gson = new Gson();
 			baseTree.setData(data);
+			baseTree.setLeafNodeCategoryId(leafNodeCategoryId);
 			jsonTree = gson.toJson(baseTree);
 			//System.out.println(jsonTree);
 
@@ -350,16 +352,22 @@ public class StudentOperationController extends PageFlowController {
 	protected Forward getOptionList(StudentOperationForm form){
 		String jsonResponse = "";
 		OutputStream stream = null;
+		Boolean isLasLinkCustomer = new Boolean(getRequest().getParameter("isLasLinkCustomer"));
 		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		try {
+			if(isLasLinkCustomer) {
+				getTestPurposeOptions(ACTION_ADD_STUDENT);
+		     }
 			OptionList optionList = new OptionList();
 			optionList.setGradeOptions(getGradeOptions(ACTION_ADD_STUDENT));
 			optionList.setGenderOptions(getGenderOptions(ACTION_ADD_STUDENT));
 			optionList.setMonthOptions( DateUtils.getMonthOptions());
 			optionList.setDayOptions(DateUtils.getDayOptions());
 			optionList.setYearOptions(DateUtils.getYearOptions());
+			optionList.setTestPurposeOptions(getTestPurposeOptions(ACTION_ADD_STUDENT));
 			optionList.setProfileEditable(true);
+			
 			try {
 				Gson gson = new Gson();
 				String json = gson.toJson(optionList);
@@ -403,6 +411,7 @@ public class StudentOperationController extends PageFlowController {
 		studentProfile.setYear(getRequest().getParameter("yearOptions"));
 		studentProfile.setGender(getRequest().getParameter("genderOptions"));
 		studentProfile.setGrade(getRequest().getParameter("gradeOptions"));
+		studentProfile.setTestPurpose(getRequest().getParameter("testPurposeOptions"));
 		studentProfile.setStudentNumber(getRequest().getParameter("studentExternalId2"));
 		studentProfile.setStudentSecondNumber(getRequest().getParameter("studentExternalId"));
 		boolean studentIdConfigurable = new Boolean(getRequest().getParameter("studentIdConfigurable"));
@@ -940,7 +949,25 @@ public class StudentOperationController extends PageFlowController {
 			}
 		}
 	}
+	
+	/**
+	 * getTestPurposeOptions
+	 * // (LLO82) StudentManagement Changes For LasLink product
+	 */
+	private String [] getTestPurposeOptions(String action)
+	{
+		List options = new ArrayList();
+		
+		if ( action.equals(ACTION_ADD_STUDENT) || action.equals(ACTION_EDIT_STUDENT) )
+			options.add(FilterSortPageUtils.FILTERTYPE_SELECT_A_TESTPURPOSE);
 
+		options.add("Initial Placement");
+		options.add("Annual Assessment");
+		
+		return (String [])options.toArray(new String[0]);        
+	}
+	
+	
 	/**
 	 * isProfileEditable
 	 */
@@ -1072,6 +1099,16 @@ public class StudentOperationController extends PageFlowController {
 		{	if(this.userName != null ) {
 			this.user = this.studentManagement.getUserDetails(this.userName, this.userName);     
 			this.customerId = user.getCustomer().getCustomerId();
+			Customer customer = this.user.getCustomer();
+			Boolean supportAccommodations = Boolean.TRUE;   
+            String hideAccommodations = customer.getHideAccommodations();
+            if ((hideAccommodations != null) && hideAccommodations.equalsIgnoreCase("T"))
+            {
+                supportAccommodations = Boolean.FALSE;
+            }
+            this.getRequest().setAttribute("supportAccommodations", supportAccommodations); 
+            
+            
 		}
 		}
 		catch (CTBBusinessException be)
@@ -1142,6 +1179,8 @@ public class StudentOperationController extends PageFlowController {
 		//START- GACR005 
 		String []valueForStudentId = new String[8] ;
 		String []valueForStudentId2 = new String[8] ;
+		valueForStudentId[0] = "Student ID";
+		valueForStudentId2[0] = "Student ID 2";
 		//END- GACR005 
 		for (int i=0; i < customerConfigurations.length; i++)
 		{
@@ -1406,6 +1445,7 @@ public class StudentOperationController extends PageFlowController {
 		TreeData td = new TreeData ();
 		td.setData(org.getOrgName());
 		td.getAttr().setId(org.getOrgNodeId().toString());
+		td.getAttr().setCategoryID(org.getOrgCategoryLevel().toString());
 		treeProcess (org,orgNodesList,td);
 		BaseTree baseTree = new BaseTree ();
 		baseTree.getData().add(td);
@@ -1423,6 +1463,7 @@ public class StudentOperationController extends PageFlowController {
 				TreeData tempData = new TreeData ();
 				tempData.setData(tempOrg.getOrgName());
 				tempData.getAttr().setId(tempOrg.getOrgNodeId().toString());
+				tempData.getAttr().setCategoryID(tempOrg.getOrgCategoryLevel().toString());
 				td.getChildren().add(tempData);
 				treeProcess (tempOrg,list,tempData);
 			}
