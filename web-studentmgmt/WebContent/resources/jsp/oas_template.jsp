@@ -120,7 +120,7 @@
 									<a href="#" id="organizationsLink" onClick="gotoMenuAction('organizations.do', 'organizationsLink');"><b>Organizations</b></a>						
 								</td>
 								<td class="toolbar" width="120">
-									<a href="#" id="studentsLink" onClick="gotoMenuAction('organizations.do', 'studentsLink');"><b>Students</b></a>						
+									<a href="#" id="studentsLink" onClick="gotoMenuAction('beginFindStudent.do', 'studentsLink');"><b>Students</b></a>						
 								</td>
 								<td class="toolbar" width="120">
 									<a href="#" id="usersLink" onClick="gotoMenuAction('organizations.do', 'usersLink');"><b>Users</b></a>						
