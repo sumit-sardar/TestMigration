@@ -334,6 +334,9 @@ public class TMSServlet extends HttpServlet {
 			            errorTsd.getError().setMethod("save_testing_session_data");
 			            errorTsd.getError().setStatus("invalid_cid");
 			            errorTsd.getError().setErrorElement(tsd.toString());
+			            manifest.setRosterCompletionStatus("IN");
+			            manifestData[j].setCompletionStatus("IN");
+			            oasSink.putManifest(rosterId, accessCode, manifest);
 			            return responseDocument.xmlText();
 			    	} else if(rosterCid == 0) {
 			    		rosterCid = thisCid;
@@ -435,7 +438,7 @@ public class TMSServlet extends HttpServlet {
 				    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("CO");
 				    			manifestData[j].setEndTime(System.currentTimeMillis());
-				    			if(("TB".equals(manifestData[j].getProduct()) && manifestData.length > 8 && "L".equals(manifestData[j].getLevel()))) {
+				    			if(j < manifestData.length && ("TB".equals(manifestData[j].getProduct()) && manifestData.length > 8 && "L".equals(manifestData[j].getLevel()))) {
 				    				// we just completed a locator subtest of a single-TAC auto-located TABE assessment
 				    	    		handleTabeLocator(rosterId);
 				    	    		manifest = oasSource.getManifest(rosterId, accessCode);
@@ -453,24 +456,17 @@ public class TMSServlet extends HttpServlet {
 				    		e.printStackTrace();
 				    	}
 			    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
-			    		if(("TL".equals(manifestData[j].getProduct()) && manifestData.length == 8 && "L".equals(manifestData[j].getLevel()))) {
+			    		if(j < manifestData.length && ("TL".equals(manifestData[j].getProduct()) && manifestData.length == 8 && "L".equals(manifestData[j].getLevel()))) {
 		    				// we just completed the locator assessment
 		    	    		handleTabeLocator(rosterId);
 		    	    		manifest = oasSource.getManifest(rosterId, accessCode);
 		    	    		manifestData = manifest.getManifest();
 				    	}
 			    		manifest.setRosterEndTime(new Timestamp(System.currentTimeMillis()));
-			    		/*Manifest[] allManifests = oasSource.getAllManifests(rosterId);
-			    		boolean allComplete = true;
-			    		for(int m=0;m<allManifests.length;m++) {
-			    			ManifestData[] mda = allManifests[m].getManifest();
-			    			for(int n=0;n<mda.length;n++) {
-				    			if(!"CO".equals(mda[n].getCompletionStatus())) {
-				    				allComplete = false;
-				    				break;
-				    			}
-			    			}
-			    			if(!allComplete) {
+			    		/*boolean allComplete = true;
+			    		for(int n=0;n<manifestData.length;n++) {
+			    			if(!"CO".equals(manifestData[n].getCompletionStatus())) {
+			    				allComplete = false;
 			    				break;
 			    			}
 			    		}
@@ -487,6 +483,9 @@ public class TMSServlet extends HttpServlet {
 			    }
 			    // always update manifest to override interrupter via write-behind if still receiving events
 	    		manifest.setManifest(manifestData);
+	    		if(manifest.getRosterCompletionStatus() == null) {
+	    			manifest.setRosterCompletionStatus("IP");
+	    		}
 	    		oasSink.putManifest(rosterId, accessCode, manifest);
 	    		logger.info("TMSServlet: save: updated manifest for roster " + rosterId);
 		    }
@@ -606,7 +605,7 @@ public class TMSServlet extends HttpServlet {
 			// we're in a non-locator section of a multi-TAC auto-located TABE assessment
     		handleTabeLocator(testRosterId);
     		manifest = oasSource.getManifest(testRosterId, creds.getAccesscode());
-    		if(manifest.getManifest().length == 8) {
+    		if(manifest.getManifest().length >= 8) {
     			// manifest hasn't been shortened, must not have completed relevant locator subtest
     			TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
                 LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();

@@ -2,6 +2,7 @@ package com.ctb.tms.nosql.coherence;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
@@ -60,7 +61,26 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		if(!foundManifest) {
 			newManifests.add(manifest);
 		}
-		manifestCache.put(key, (Manifest[]) newManifests.toArray(new Manifest[0]));
+		manifests = (Manifest[]) newManifests.toArray(new Manifest[0]);
+		Timestamp latestStartTime = new Timestamp(0);
+		String rosterStatus = "";
+		boolean allcoManifest = true;
+		for(int i=0;i<manifests.length;i++) {
+			if(manifests[i].getRosterStartTime() == null) {
+				manifests[i].setRosterStartTime(new Timestamp(1));
+			}
+			if(manifests[i].getRosterStartTime().after(latestStartTime)) {
+				rosterStatus = manifest.getRosterCompletionStatus();
+				latestStartTime = manifest.getRosterStartTime();
+				if(!"CO".equals(rosterStatus)) {
+					allcoManifest = false;
+				} else if(!allcoManifest) {
+					rosterStatus = "IS";
+				}
+			}
+			manifests[i].setRosterCompletionStatus(rosterStatus);
+		}
+		manifestCache.put(key, manifests);
 	}
 	
 	public void putAllManifests(String testRosterId, Manifest[] manifests) throws IOException {
