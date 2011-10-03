@@ -55,6 +55,23 @@ body {
 	font-weight: bold;
 }
 
+
+.legacyBodyLayout {
+    border-collapse: collapse;
+    border-style: none;
+    border-width: 0px;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+}
+
+#legacyBody {
+    background-color: #fff;
+    padding: 20px;
+    vertical-align: top;
+}
+
+
 h1 { 
     color: #476cb5;
     font-family: Helvetica, Arial, Sans-Serif;
