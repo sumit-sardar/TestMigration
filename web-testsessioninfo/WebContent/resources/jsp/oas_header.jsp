@@ -37,12 +37,17 @@
 <!-- Broadcast Message Dialog -->
 <div id="broadcastMsgDialogId" style="display: none; background-color: #d4ecff; padding: 10px;">
 	<div class="feature" style="padding: 10px;" id="broadcastMsgBody">
+		<div id="broadcastMsgContent">
+		</div>
 	</div>
 </div>
  
 <!-- My profile Dialog -->
 <div id="myProfileDialogId" style="display: none; background-color: #d4ecff; padding: 10px;">
 	<div class="feature" style="padding: 10px;">
+		<div id="displayName"></div><br/>
+		<div id="fileName"></div><br/>
+		<div id="size"></div><br/>
 	</div>
 </div>
 

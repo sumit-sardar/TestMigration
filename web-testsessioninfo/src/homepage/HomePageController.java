@@ -21,6 +21,7 @@ import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.testSessionInfo.dto.FileInfo;
 import com.ctb.testSessionInfo.dto.ReportManager;
 import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
@@ -45,6 +46,7 @@ import org.apache.struts.action.ActionMapping;
 
 
 import com.ctb.testSessionInfo.utils.DateUtils;
+import com.google.gson.Gson;
       
 /**
  * @jpf:controller
@@ -268,6 +270,22 @@ public class HomePageController extends PageFlowController
         return new Forward(forwardName);
     }
     
+    /****
+    @Jpf.Action()
+    protected Forward services_manageLicenses()
+    {
+        try
+        {
+            String url = "/OrganizationManagementWeb/manageLicense/services.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+    ****/
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "services_manageLicenses.jsp") 
         }) 
@@ -326,17 +344,17 @@ public class HomePageController extends PageFlowController
     @Jpf.Action()
     protected Forward myProfile()
     {
-		String jsonResponse = "";
-		String scr = "Tai Truong";
+    	FileInfo info = new FileInfo("display name", "file name", "size");
+		OutputStream stream = null;
 		
 		try {
-			jsonResponse = JsonUtils.getJsonString (scr, "String", scr.getClass());
-
 			HttpServletResponse resp = this.getResponse();     
+			Gson gson = new Gson();
+			String json = gson.toJson(info);
 			resp.setContentType("application/json");
 			resp.flushBuffer();
-	        OutputStream stream = resp.getOutputStream();
-	        stream.write(jsonResponse.getBytes());
+	        stream = resp.getOutputStream();
+	        stream.write(json.getBytes());
 	        stream.close();
 	        
 		} catch (Exception e) {

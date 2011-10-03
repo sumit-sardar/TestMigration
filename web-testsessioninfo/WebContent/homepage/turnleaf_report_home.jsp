@@ -1,7 +1,6 @@
 <%@ page import="java.io.*, java.util.*"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
-<%@ taglib uri="ctb-web.tld" prefix="ctbweb"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
@@ -12,8 +11,8 @@
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
-<netui-template:template templatePage="/resources/jsp/report_template.jsp">
-    <netui-template:setAttribute name="title" value="${bundle.web['reports.window.title']}"/>
+<netui-template:template templatePage="/resources/jsp/oas_template.jsp">
+    <netui-template:setAttribute name="title" value="${bundle.web['homepage.window.title']}"/>
     <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.home']}"/>
 <netui-template:section name="bodySection">
  
@@ -37,9 +36,11 @@
 <c:if test="${multipleProgram || multipleOrganizations}"> 
     <netui:content value="Select program and/or organization to view a list of associated reports. Click a report name to view the report."/>
 </c:if>
-        
 </p>
- 
+
+
+<netui:form action="reports">
+
 <p>
 <table class="transparent">
 <tr class="transparent">
@@ -66,18 +67,30 @@
 </tr>    
 </table>    
 </p>
- 
+
 
 <!-- TURNLEAF REPORT LIST -->
 <div id="reportlists" style="height: 500px">
     <jsp:include page="turnleaf_report_list.jsp" />  
 </div>
 
-<img width="0" height="0" border="0" id="TLLogout"  src="<%= System.getProperty("TLLogoutURL") %>?fncv=<%= System.currentTimeMillis() %>" />
+
+</netui:form>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	selectTab("reports", null);
+});
+</script>
+
+<!-- 
+<img width="0" height="0" border="0" id="TLLogout"  src="< %= System.getProperty("TLLogoutURL") %>?fncv=< %= System.currentTimeMillis() %>" />
+-->
 
 <!-- ********************************************************************************************************************* -->
 <!-- End Page Content -->
 <!-- ********************************************************************************************************************* -->
     </netui-template:section>
 </netui-template:template>
+
 

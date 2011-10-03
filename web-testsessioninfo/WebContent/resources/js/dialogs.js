@@ -1,6 +1,10 @@
  
 function viewBroadcastMessage() {
 	
+	alert("viewBroadcastMessage");
+	return false;
+	
+	
 	var param = "param";
 	var isHidden = true; // $('#broadcastMsgDialogId').is(':hidden');  
 	
@@ -16,9 +20,7 @@ function viewBroadcastMessage() {
 				dataType:	'html',
 				success:	function(data, textStatus, XMLHttpRequest){									
 								 	
-								//alert(data);
-    							var broadcastMsgBody = document.getElementById("broadcastMsgBody");
-    							//broadcastMsgBody.innerHTML = data;
+								$('#broadcastMsgContent').html(data);
 									 	
 								// Broadcast Dialog			
 								$('#broadcastMsgDialogId').dialog({
@@ -29,8 +31,6 @@ function viewBroadcastMessage() {
 									resizable: false,
 									buttons: {
 										"Close": function() { 
-    										var broadcastMsgBody = document.getElementById("broadcastMsgBody");
-    										//broadcastMsgBody.innerHTML = "";
 											$(this).dialog("close"); 
 										}
 									}
@@ -49,6 +49,9 @@ function viewBroadcastMessage() {
 
 function viewMyProfile() {
 	
+	alert("viewMyProfile");
+	return false;
+	
 	var param = "param";
 	var isHidden = true; // $('#myProfileDialogId').is(':hidden');  
 	
@@ -64,7 +67,9 @@ function viewMyProfile() {
 				dataType:	'json',
 				success:	function(data, textStatus, XMLHttpRequest){									
 								 	
-								//alert(data.entry);
+								$('#displayName').html(data.displayName);
+								$('#fileName').html(data.fileName);
+								$('#size').html(data.size);
 								 	
 								// My Profile Dialog			
 								$('#myProfileDialogId').dialog({

@@ -56,7 +56,7 @@
 <body leftmargin="0" topmargin="0" onload="document.getElementById('j_username').focus();">
 
 <!-- BLOCK DIV -->
-<div id="blockDiv" style="display:none; background-color: #d0e5f5;; opacity:0.5; position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999">
+<div id="blockDiv" style="display:none; background-color: #000; opacity:0.3; position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999">
 	<img src="<%=request.getContextPath()%>/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/>
 </div>
 
@@ -129,7 +129,7 @@
             <tr>
                 <td>&nbsp;</td>
                 <td>
-                	<a href="#" onclick="document.location = '/TestSessionInfoWeb/findPassword/FindPasswordController.jpf?username=' + document.getElementById('j_username').value" class="rounded {transparent} button">Get New Password</a>                	
+                	<a href="#" onclick="showLoadingProgress(); document.location = '/TestSessionInfoWeb/findPassword/FindPasswordController.jpf?username=' + document.getElementById('j_username').value" class="rounded {transparent} button">Get New Password</a>                	
                 </td> 
             </tr>
             </table>
