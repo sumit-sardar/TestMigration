@@ -17,6 +17,7 @@ var leafNodeCategoryId;
 
 
 
+
 function UIBlock(){
 	$.blockUI({ message: '<img src="/StudentManagementWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#d0e5f5', opacity:  0.8, width:'0px',  top:  ($(window).height() - 0) /2 + 'px', left: ($(window).width() - 0) /2 + 'px' 
 	}, overlayCSS:  {  backgroundColor: '#d0e5f5', opacity:  0.6 }, baseZ:1050}); 
@@ -397,11 +398,34 @@ document.getElementById('displayMessageMain').style.display = "none";
     function reset() {
        jQuery.each(customerDemographicValue, function(i, field){         
       		$("#"+field.name).val(field.value);
+      		
        });  
+       var customerValCheckbox = [];
+	   var counter=0;
        var checkBoxfields = $(":checkbox"); 
-       for(var i=0; i < checkBoxfields.length; i++){
-			$(checkBoxfields).eq(i).attr('checked', false); 
-		} 
+	       for(var i=0; i < checkBoxfields.length; i++){
+		       for(var j=0; j<customerDemographicValue.length; j++) {
+			       	if($(checkBoxfields).eq(i).attr('name') == customerDemographicValue[j].name) {
+			       			customerValCheckbox[counter] =  customerDemographicValue[j].name;
+							counter++;
+					}
+		       	}
+			} 
+			if(!isValueChanged && customerValCheckbox.length > 0) {
+				 for(var i=0; i < checkBoxfields.length; i++){
+			       for(var j=0; j<customerValCheckbox.length; j++) {
+				       	if(!isExist( $(checkBoxfields).eq(i).attr('name') ,customerValCheckbox)) { //
+				       			$(checkBoxfields).eq(i).attr('checked', false); 
+				       			
+						}
+			       	}
+				} 
+			}
+			if(!isValueChanged && customerValCheckbox.length == 0) {
+				 for(var i=0; i < checkBoxfields.length; i++){
+					$(checkBoxfields).eq(i).attr('checked', false); 
+				}
+			}
 		var radiofields = $(":radio"); 
        for (var i=0; i<radiofields.length; i++) {
 			if (radiofields[i].value== "None") { 
@@ -511,7 +535,7 @@ function fillDropDown( elementId, optionList) {
 			if(!isValueChanged && customerValCheckbox.length > 0) {
 				 for(var i=0; i < checkBoxfields.length; i++){
 			       for(var j=0; j<customerValCheckbox.length; j++) {
-				       	if(!($(checkBoxfields).eq(i).attr('name') == customerValCheckbox[j])) { //
+				       	if(!isExist( $(checkBoxfields).eq(i).attr('name') ,customerValCheckbox)) { //
 				       			if($(checkBoxfields).eq(i).attr('checked')== true)
 				       			{
 				       				isValueChanged = true;
@@ -549,6 +573,16 @@ function fillDropDown( elementId, optionList) {
 			closePopUp('addEditStudentDetail');
 		}
 	}
+	
+	function isExist(val, customerValCheckbox){
+		for(var i=0; i < customerValCheckbox.length; i++){
+			if(val == customerValCheckbox[i]){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	
 	function studentDetailSubmit(){
 	 var validflag = VerifyStudentDetail(assignedOrgNodeIds);
