@@ -496,7 +496,7 @@ public class StudentOperationController extends PageFlowController {
 	
 				if (studentId != null)
 				{
-					result = saveStudentAccommodations(isCreateNew, studentProfile, studentId);
+					result = saveStudentAccommodations(isCreateNew, studentProfile, studentId, customerConfigurations);
 				}
 
 			}
@@ -560,9 +560,10 @@ public class StudentOperationController extends PageFlowController {
 	private void initialize()
 	{        
 		getUserDetails();
+		CustomerConfiguration[] customerConfigurations = getCustomerConfigurations();  
 		StudentOperationForm  form = new StudentOperationForm();
 		addEditDemographics();
-		addEditAccommodations(); 
+		addEditAccommodations(customerConfigurations); 
 		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);  
 		try{
 			MusicFiles[] musicList = this.studentManagement.getMusicFiles();	
@@ -1094,13 +1095,13 @@ public class StudentOperationController extends PageFlowController {
 		}        
 		getSession().setAttribute("userName", this.userName);
 
-		getCustomerConfigurations();             
+		           
 	}
 
 	/**
 	 * getCustomerConfigurations
 	 */
-	private void getCustomerConfigurations()
+	private CustomerConfiguration[] getCustomerConfigurations()
 	{
 		CustomerConfiguration[] customerConfigurations = null;
 		try {
@@ -1120,6 +1121,7 @@ public class StudentOperationController extends PageFlowController {
 		catch (CTBBusinessException be) {
 			be.printStackTrace();
 		}
+		return customerConfigurations;
 	}
 
 
@@ -1464,14 +1466,14 @@ public class StudentOperationController extends PageFlowController {
 	/**
 	 * addEditAccommodations
 	 */
-	private void addEditAccommodations()
+	private void addEditAccommodations(CustomerConfiguration[] customerConfigurations)
 	{
 		Integer studentId = 0;
 		boolean studentImported  = false;
 		 
 		if (accommodations == null)
 		{
-			accommodations = getStudentAccommodations(studentId);
+			accommodations = getStudentAccommodations(studentId, customerConfigurations);
 		}
 		else
 		{
@@ -1485,7 +1487,7 @@ public class StudentOperationController extends PageFlowController {
 	/**
 	 * getStudentAccommodations
 	 */
-	private StudentAccommodationsDetail getStudentAccommodations(Integer studentId)
+	private StudentAccommodationsDetail getStudentAccommodations(Integer studentId, CustomerConfiguration[] customerConfigurations)
 	{
 		StudentAccommodationsDetail accommodations = new StudentAccommodationsDetail();
 
@@ -1503,7 +1505,7 @@ public class StudentOperationController extends PageFlowController {
 		}
 		else
 		{
-			setCustomerAccommodations(accommodations, true);
+			setCustomerAccommodations(accommodations, true, customerConfigurations);
 		}
 
 	  accommodations.convertHexToText();
@@ -1514,10 +1516,10 @@ public class StudentOperationController extends PageFlowController {
 	/**
 	 * setCustomerAccommodations
 	 */
-	private void setCustomerAccommodations(StudentAccommodationsDetail sad, boolean isSetDefaultValue) 
+	private void setCustomerAccommodations(StudentAccommodationsDetail sad, boolean isSetDefaultValue,  CustomerConfiguration[] customerConfigurations) 
 	{        
-		try{
-		   CustomerConfiguration[]  customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);
+		
+		   
 		// set checked value if there is configuration for this customer
 		  for (int i=0; i < customerConfigurations.length; i++)
 		  {
@@ -1585,22 +1587,20 @@ public class StudentOperationController extends PageFlowController {
 		}
 		  this.getRequest().setAttribute("customerConfigurations", customerConfigurations);    
 			
-	}catch (CTBBusinessException be) {
-		be.printStackTrace();
-	}	
+	
 }
 	/**
 	 * saveStudentAccommodation
 	 */
 
-	private boolean saveStudentAccommodations(boolean isCreateNew, StudentProfileInformation studentProfile, Integer studentId)
+	private boolean saveStudentAccommodations(boolean isCreateNew, StudentProfileInformation studentProfile, Integer studentId, CustomerConfiguration[]  customerConfigurations)
 	{
 			String hideAccommodations = this.user.getCustomer().getHideAccommodations();
 
 		if (hideAccommodations.equalsIgnoreCase("T"))         
-			getStudentDefaultAccommodations();
+			getStudentDefaultAccommodations(customerConfigurations);
 		else
-			getStudentAccommodationsFromRequest();
+			getStudentAccommodationsFromRequest(customerConfigurations);
 
 		StudentAccommodations sa = this.accommodations.makeCopy(studentId);
 
@@ -1645,7 +1645,7 @@ public class StudentOperationController extends PageFlowController {
 	/**
 	 * getStudentAccommodationsFromRequest
 	 */
-	private void getStudentAccommodationsFromRequest() 
+	private void getStudentAccommodationsFromRequest(CustomerConfiguration[]  customerConfigurations) 
 	{
 		// first get values from request
 		String screenReader = getRequest().getParameter("screen_reader");
@@ -1671,8 +1671,10 @@ public class StudentOperationController extends PageFlowController {
 		this.accommodations.setMagnifyingGlass(new Boolean(magnifyingGlass != null));//Added for Magnifying Glass
 		this.accommodations.setExtendedTime(new Boolean(extendedTime != null)); //Added for Student Pacing
 		this.accommodations.setMaskingTool(new Boolean(maskingTool != null)); // Added for Masking Answers
-
-		setCustomerAccommodations(this.accommodations, false);
+		if(this.accommodations == null)
+			addEditAccommodations(customerConfigurations);
+		
+		setCustomerAccommodations(this.accommodations, false, customerConfigurations);
 
 		String question_bgrdColor = this.getRequest().getParameter("question_bgrdColor");
 		if (question_bgrdColor != null)
@@ -1716,7 +1718,7 @@ public class StudentOperationController extends PageFlowController {
 	/**
 	 * getStudentDefaultAccommodations
 	 */
-	private void getStudentDefaultAccommodations() 
+	private void getStudentDefaultAccommodations(CustomerConfiguration[]  customerConfigurations) 
 	{
 		this.accommodations.setScreenReader(Boolean.FALSE);
 		this.accommodations.setCalculator(Boolean.FALSE);
@@ -1730,7 +1732,7 @@ public class StudentOperationController extends PageFlowController {
 		this.accommodations.setExtendedTime(Boolean.FALSE); //Added for Student Pacing
 		this.accommodations.setMaskingTool(Boolean.FALSE); // Added for Masking Answers
 
-		setCustomerAccommodations(this.accommodations, true);
+		setCustomerAccommodations(this.accommodations, true, customerConfigurations);
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////    

@@ -19,7 +19,7 @@ var leafNodeCategoryId;
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/StudentManagementWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#d0e5f5', opacity:  0.8, width:'0px',  top:  ($(window).height() - 0) /2 + 'px', left: ($(window).width() - 0) /2 + 'px' 
-	}, overlayCSS:  {  backgroundColor: '#d0e5f5', opacity:  0.6 }, baseZ: 1050}); 
+	}, overlayCSS:  {  backgroundColor: '#d0e5f5', opacity:  0.6 }, baseZ:1050}); 
 }
 
 
@@ -57,6 +57,16 @@ function populateTree() {
 }
 
 
+function overlayblockUI(){	
+	$("body").append('<div id="blDiv" style="opacity: 0.6; background-color: #d0e5f5;position: absolute;top:0;left:0;width:100%;height:100%;z-index:10"></div>');
+	$("#blDiv").css("cursor","wait");		
+						
+}
+
+function overlayunblockUI(){
+	$("#blDiv").css("cursor","normal");
+	$("#blDiv").remove(); 
+}
 
 
 
@@ -320,6 +330,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 						//alert('in');
 						$.unblockUI();
 						//UIBlock();
+						//overlayblockUI(); 
 						gradeOptions = data.gradeOptions;
 						genderOptions = data.genderOptions;
 						dayOptions = data.dayOptions; 
@@ -339,6 +350,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 												 	resizable:false,
 												 	autoOpen: true,
 												 	width: '800px',
+												 	modal: true,
 												 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		 	
 												 	});	 
@@ -367,11 +379,13 @@ document.getElementById('displayMessageMain').style.display = "none";
 		if($("#isLasLinkCustomer").val() =="true")
 			fillDropDown("testPurposeOptions", testPurposeOptions);
 		//UIBlock(); 
+		//overlayblockUI(); 
 		$("#addEditStudentDetail").dialog({  
 			title:"Add Record",  
 		 	resizable:false,
 		 	autoOpen: true,
 		 	width: '800px',
+		 	modal: true,
 		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 			});	
 		 	$("#Student_Information").css("height",'auto');
@@ -427,7 +441,9 @@ function fillDropDown( elementId, optionList) {
 			populateTreeSelect();
 		}
 		$("#"+dailogId).dialog("close");
-		$.unblockUI();  
+		//$.unblockUI(); 
+		//overlayunblockUI();
+		 
 	}
 	
 	function closeConfirmationPopup() {
@@ -476,15 +492,17 @@ function fillDropDown( elementId, optionList) {
 		}
 		
 		if(isValueChanged) {
-		UIBlock();
+		//UIBlock();
 		$("#confirmationPopup").dialog({  
 			title:"Confirmation Alert",  
 		 	resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',
+		 	modal: true,
 		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 			});	
 			 $("#confirmationPopup").css('height',100);
+			  
 		} else {
 			closePopUp('addEditStudentDetail');
 		}

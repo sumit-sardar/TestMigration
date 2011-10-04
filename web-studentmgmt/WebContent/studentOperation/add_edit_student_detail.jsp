@@ -47,10 +47,6 @@
 					</td>
 				</tr>
 			</table>
-			
-			
-			
-			
 		</div>
 	<div id="accordion" style="padding-left:10px; width:99.5%;">
 			
@@ -207,9 +203,9 @@
 				</div>
 			</div>
 			<div title="Student Accommodation Information">
-				<h3><a href="#">Accommodation</a></h3>
+				<h3><a href="#">Specific Accommodation</a></h3>
 				<div id="Student_Accommodation_Information">
-					<jsp:include page="/studentOperation/add_edit_student_by_accomodation.jsp" />
+					<jsp:include page="/studentOperation/add_edit_student_by_accommodation.jsp" />
 				</div>
 			</div>
 			
