@@ -133,43 +133,21 @@ function createMultiNodeSelectedTree(jsondata) {
 				
 	        },
 	        "ui" : {  
-		           "select_limit" : 1,
-		           "theme_name" : "checkbox"
+		           "select_limit" : 1
 	         	},
 	         	 
-	        "checkbox": {
-	        		"override_ui":true,
-	        		"two_state": true,
-					"checked_parent_open" : true
-	        	},
-
 			"core" : {
 					"animation" : 200
-				},
-
-			"themes" : {
-					"theme" : "apple",
-					"dots" : false,
-					"icons" : true
 				},
 					        
 	 		"plugins" : [ "themes", "json_data", "checkbox", "ui"]
 	   })
-	   
-	   .bind("select_node", function (event, data) { 
-			// `data.rslt.obj` is the jquery extended node that was clicked
-			alert(data.rslt.obj.attr("id"));
-		})
-	   
+	   	   
 	   .bind("change_state", function (e, data) { 
 			// `data.rslt.obj` is the jquery extended node that was clicked
 			//alert("change_state.................");
 		})
-		
-		.bind("check_node uncheck_node", function (e, data) {
-			alert("check_node.....");
-		});
-    
+		    
     	$("#innerID li").not(".jstree-leaf").each(function() {
     			var orgcategorylevel = $(this).attr("categoryid");
     			if(orgcategorylevel != leafNodeCategoryId) {
