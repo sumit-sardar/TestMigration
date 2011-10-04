@@ -36,6 +36,12 @@ template_find_student.jsp
         <jsp:include page="/studentOperation/find_student_hierarchy.jsp" />
 
 </netui:form>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	selectTab("organizations", "studentsLink");
+});
+</script>
         
 <!-- ********************************************************************************************************************* -->
 <!-- End Page Content -->

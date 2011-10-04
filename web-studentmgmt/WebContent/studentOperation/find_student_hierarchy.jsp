@@ -16,7 +16,7 @@
 <table class="sortable">
 
     <tr class="sortable">
-        <td style="background-color : #2E6E9E">
+        <td style="border-color : #2E6E9E">
         
       	<div id="displayMessageMain" style="display:none; width:100%; height:55px; background-color: #FFFFEE; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
 			<div id="titleMain"></div>

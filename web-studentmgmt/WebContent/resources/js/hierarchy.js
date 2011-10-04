@@ -124,19 +124,51 @@ function createMultiNodeSelectedTree(jsondata) {
      //   $('#innerID').jstree("check_node", "#118638"); 
      });  
 
+	  $("#innerID").jstree({
 
-  $("#innerID").jstree({
-        "json_data" : {	             
-            "data" : jsondata.data,
-			"progressive_render" : true,
-			"progressive_unload" : true
-			
-        },
-        "ui" : {  
-	           "select_limit" : 1
-         	}, 
- 			"plugins" : [ "themes", "json_data", "checkbox"]
-   });
+	        "json_data" : {	             
+	            "data" : jsondata.data,
+				"progressive_render" : true,
+				"progressive_unload" : true
+				
+	        },
+	        "ui" : {  
+		           "select_limit" : 1,
+		           "theme_name" : "checkbox"
+	         	},
+	         	 
+	        "checkbox": {
+	        		"override_ui":true,
+	        		"two_state": true,
+					"checked_parent_open" : true
+	        	},
+
+			"core" : {
+					"animation" : 200
+				},
+
+			"themes" : {
+					"theme" : "apple",
+					"dots" : false,
+					"icons" : true
+				},
+					        
+	 		"plugins" : [ "themes", "json_data", "checkbox", "ui"],
+	   })
+	   
+	   .bind("select_node", function (event, data) { 
+			// `data.rslt.obj` is the jquery extended node that was clicked
+			alert(data.rslt.obj.attr("id"));
+		})
+	   
+	   .bind("change_state", function (e, data) { 
+			// `data.rslt.obj` is the jquery extended node that was clicked
+			//alert("change_state.................");
+		})
+		
+		.bind("check_node uncheck_node", function (e, data) {
+			alert("check_node.....");
+		});
     
     	$("#innerID li").not(".jstree-leaf").each(function() {
     			var orgcategorylevel = $(this).attr("categoryid");
@@ -153,7 +185,6 @@ function createMultiNodeSelectedTree(jsondata) {
 	    		  }
 	  		});
 	  		
-	  	
 		 	var currentlySelectedNode ="";
 			assignedOrgNodeIds = "";
 			$("#innerID").find(".jstree-checked").each(function(i, element){
