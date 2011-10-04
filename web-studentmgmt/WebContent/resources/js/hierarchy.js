@@ -112,8 +112,7 @@ function createMultiNodeSelectedTree(jsondata) {
 
      //   $('#innerID').jstree("check_node", "#118638"); 
      });  
-
-
+	
   $("#innerID").jstree({
         "json_data" : {	             
             "data" : jsondata.data,
@@ -125,9 +124,10 @@ function createMultiNodeSelectedTree(jsondata) {
 	           "select_limit" : 1
          	}, 
  			"plugins" : [ "themes", "json_data", "checkbox"]
-   });
-    
-    	$("#innerID li").not(".jstree-leaf").each(function() {
+   }); 
+
+   	
+   		$("#innerID li").not(".jstree-leaf").each(function() {
     			var orgcategorylevel = $(this).attr("categoryid");
     			if(orgcategorylevel != leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
@@ -416,6 +416,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 				
 			}
 		}
+		enableColorSettingsLink("false");
 		
    }
 
@@ -466,7 +467,7 @@ function fillDropDown( elementId, optionList) {
 		if(!isValueChanged) {	
 			var radiofields = $(":radio"); 
 	       	for (var i=0; i<radiofields.length; i++) {
-				if (radiofields[i].value != "None" && radiofields[i].checked == true) { 
+				if (radiofields[i].value != "None" && radiofields[i].checked == true && radiofields[i].checked != ""  && radiofields[i].disabled == false && radiofields[i].getAttribute("disabled") == null) { 
 					isValueChanged = true;
 					break;
 				}
@@ -475,20 +476,61 @@ function fillDropDown( elementId, optionList) {
 		if(!isValueChanged) {
 			var selectfields = $("option:selected");
 			for (var i=0; i<selectfields.length; i++) {
-				if (selectfields[i].value != "" && selectfields[i].value != "Select a grade" && selectfields[i].value != "Select a gender" && selectfields[i].value != "Please Select") { 
+				if (selectfields[i].value != "" 
+					&& selectfields[i].value != "Select a grade" 
+					&& selectfields[i].value != "Select a gender" 
+					&& selectfields[i].value != "Please Select"
+					&& selectfields[i].value != "Select a purpose of test"
+					&& selectfields[i].value != "White"
+					&& selectfields[i].value != "Black"
+					&& selectfields[i].value != "Light yellow"
+					&& selectfields[i].value != "1"
+					&& selectfields[i].getAttribute("disabled") == null) { 
 					isValueChanged = true;
 					break;
 				}
 			}
 		}
 		if(!isValueChanged) {
+		var customerValCheckbox = [];
+			var counter=0;
 		   var checkBoxfields = $(":checkbox"); 
 	       for(var i=0; i < checkBoxfields.length; i++){
-	       		if($(checkBoxfields).eq(i).attr('checked')== true) {
-					isValueChanged = true;
-					break;
+		       for(var j=0; j<customerDemographicValue.length; j++) {
+			       	if($(checkBoxfields).eq(i).attr('name') == customerDemographicValue[j].name) {
+			       			if($(checkBoxfields).eq(i).attr('checked')== false)
+			       			{
+			       				isValueChanged = true;
+			       				break;
+			       			}
+			       			customerValCheckbox[counter] =  customerDemographicValue[j].name;
+							counter++;
 					}
+		       	}
 			} 
+			if(!isValueChanged && customerValCheckbox.length > 0) {
+				 for(var i=0; i < checkBoxfields.length; i++){
+			       for(var j=0; j<customerValCheckbox.length; j++) {
+				       	if(!($(checkBoxfields).eq(i).attr('name') == customerValCheckbox[j])) { //
+				       			if($(checkBoxfields).eq(i).attr('checked')== true)
+				       			{
+				       				isValueChanged = true;
+				       				break;
+				       			}
+				       			
+						}
+			       	}
+				} 
+			}
+			if(!isValueChanged && customerValCheckbox.length == 0) {
+				 for(var i=0; i < checkBoxfields.length; i++){
+					if($(checkBoxfields).eq(i).attr('checked')== true) {
+						isValueChanged = true;
+						break;
+					}
+				}
+			}
+			
 		}
 		
 		if(isValueChanged) {

@@ -48,7 +48,7 @@
 				</tr>
 			</table>
 		</div>
-	<div id="accordion" style="padding-left:10px; width:99.5%;">
+	<div id="accordion" style="width:99.5%;">
 			
 			<div title="Student_Information">
 				<h3><a href="#">Student Information</a></h3>

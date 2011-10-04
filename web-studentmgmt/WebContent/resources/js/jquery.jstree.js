@@ -2268,16 +2268,14 @@
 				obj = this._get_node(obj);
 				state = (state === false || state === true) ? state : obj.hasClass("jstree-checked");
 				if(state) { 
-					//obj.find("li").andSelf().removeClass("jstree-checked jstree-undetermined").addClass("jstree-unchecked"); }
-					obj.removeClass("jstree-checked jstree-undetermined").addClass("jstree-unchecked");
-				}
+				obj.andSelf().removeClass("jstree-checked jstree-undetermined").addClass("jstree-unchecked");
+				 }
 				else { 
-					//obj.find("li").andSelf().removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked"); 
-					obj.removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked");
+					obj.andSelf().removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked"); 
 					if(this.data.ui) { this.data.ui.last_selected = obj; }
 					this.data.checkbox.last_selected = obj;
 				}
-				/*obj.parentsUntil(".jstree", "li").each(function () {
+				obj.parentsUntil(".jstree", "li").each(function () {
 					var $this = $(this);
 					if(state) {
 						if($this.children("ul").children(".jstree-checked, .jstree-undetermined").length) {
@@ -2297,7 +2295,7 @@
 							$this.removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked");
 						}
 					}
-				});*/
+				});
 				if(this.data.ui) { this.data.ui.selected = this.get_checked(); }
 				this.__callback(obj);
 			},
@@ -2309,14 +2307,12 @@
 			},
 			check_all : function () {
 				var _this = this;
-				return;//removing this feature
 				this.get_container().children("ul").children("li").each(function () {
 					_this.check_node(this, false);
 				});
 			},
 			uncheck_all : function () {
 				var _this = this;
-				return;//removing this feature
 				this.get_container().children("ul").children("li").each(function () {
 					_this.change_state(this, true);
 				});
@@ -2339,7 +2335,6 @@
 			hide_checkboxes : function () { this.get_container().children("ul").addClass("jstree-no-checkboxes"); },
 
 			_repair_state : function (obj) {
-				return;
 				obj = this._get_node(obj);
 				if(!obj.length) { return; }
 				var a = obj.find("> ul > .jstree-checked").length,
