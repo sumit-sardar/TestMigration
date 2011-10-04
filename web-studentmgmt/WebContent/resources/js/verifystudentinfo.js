@@ -153,7 +153,7 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 						
 			if (allSelected(month, day, year)) {
 				var isDateValid = validateDateValues(year, month, day);
-				if (isDateValid != 0) {
+				if (isDateValid == 0) {
 					//invalidCharFields += INVALID_DATE;
 					setMessage(invalid_birthdate, invalidCharFields, "errorMessage", INVALID_DATE);
 					return false;
@@ -194,6 +194,8 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 			$("#title").text(title);
 			$("#content").text(content);
 			$("#message").text(message);
+			//$('#messageType').attr ('src', '/StudentManagementWeb/resources/images/messaging/icon_error.gif');
+			
 		}	
 		
 		function setMessageMain(title, content, type, message){
@@ -442,32 +444,72 @@ function verifyAlphaNumericStudentNumber(studentNumber, studentSecondNumber, stu
             return false;    
     } 	
     
-    /*function validateDateValues(year, month,day){
-        var i = 0;
-        var y = parseInt(year) - 1900;                          
-        var m = parseInt(monthStringToNumber(month)) - 1;       
-        var d = parseInt(day);                                
-        
-       var date = null;
-                
-       date = new Date(y, m, d);
-        
-        var y2 = date.getYear();
-        if (y2 != y)
-            return 1;
-
-        var m2 = date.getMonth();
-        if (m2 != m)
-            return 1;
-
-        var d2 = date.getDate();
-        if (d2 != d)
-            return 1;
-            
-        return 0;
-    } 
-       
-       function monthStringToNumber(month){
+    function validateDateValues(y, m,d){
+        var field = d; 
+        field += ("-" + monthStringToNumber(m)); 
+        field += ("-" + y);
+		var checkstr = "0123456789";
+		var DateField = field;
+		var Datevalue = "";
+		var DateTemp = "";
+		var day;
+		var month;
+		var year;
+		var leap = 0;
+		var i;
+	    DateValue = DateField;
+	   /* Delete all chars except 0..9 */
+	   for (i = 0; i < DateValue.length; i++) {
+		  if (checkstr.indexOf(DateValue.substr(i,1)) >= 0) {
+		     DateTemp = DateTemp + DateValue.substr(i,1);
+		  }
+	   }
+	   DateValue = DateTemp;
+	   /* Always change date to 8 digits - string*/
+	   /* if year is entered as 2-digit / always assume 20xx */
+	   if (DateValue.length == 6) {
+	      DateValue = DateValue.substr(0,4) + '20' + DateValue.substr(4,2); }
+	   if (DateValue.length != 8) {
+	      return 0;}
+	   /* year is wrong if year = 0000 */
+	   year = DateValue.substr(4,4);
+	   if (year == 0) {
+	      return 0;
+	   }
+	   /* Validation of month*/
+	   month = DateValue.substr(2,2);
+	   if ((month < 1) || (month > 12)) {
+	      return 0;
+	   }
+	   /* Validation of day*/
+	   day = DateValue.substr(0,2);
+	   if (day < 1) {
+	     return 0;
+	   }
+	   /* Validation leap-year / february / day */
+	   if ((year % 4 == 0) || (year % 100 == 0) || (year % 400 == 0)) {
+	      leap = 1;
+	   }
+	   if ((month == 2) && (leap == 1) && (day > 29)) {
+	      return 0;
+	   }
+	   if ((month == 2) && (leap != 1) && (day > 28)) {
+	      return 0;
+	   }
+	   /* Validation of other months */
+	   if ((day > 31) && ((month == "01") || (month == "03") || (month == "05") || (month == "07") || (month == "08") || (month == "10") || (month == "12"))) {
+	      return 0;
+	   }
+	   if ((day > 30) && ((month == "04") || (month == "06") || (month == "09") || (month == "11"))) {
+	      return 0;
+	   }
+	    else {
+	     
+	    return 1;
+	   }
+	}
+	
+    function monthStringToNumber(month){
         if (month == "Jan") return "01";
         if (month == "Feb") return "02";
         if (month == "Mar") return "03";
@@ -481,19 +523,7 @@ function verifyAlphaNumericStudentNumber(studentNumber, studentSecondNumber, stu
         if (month == "Nov") return "11";
         if (month == "Dec") return "12";
         return "";        
-    }*/
-    
-    function validateDateValues(year, month,day){
-    
-		var monthfield= month;
-		var dayfield= day;
-		var yearfield= year;
-		var dayobj = new Date(yearfield, monthfield-1, dayfield)
-		if ((dayobj.getMonth()+1!=monthfield)||(dayobj.getDate()!=dayfield)||(dayobj.getFullYear()!=yearfield))
-		  return 0;
-		else
-		 return 1;
-	}
+    }
 
 	function toascii (c){
 	c = c . charAt (0);

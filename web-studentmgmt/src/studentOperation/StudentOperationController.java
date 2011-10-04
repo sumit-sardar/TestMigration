@@ -39,9 +39,11 @@ import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
+import com.ctb.bean.studentManagement.MusicFiles;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.StudentAccommodations;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
@@ -50,6 +52,7 @@ import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.google.gson.Gson;
 
 import dto.Message;
+import dto.StudentAccommodationsDetail;
 import dto.StudentProfileInformation;
 
 @Jpf.Controller()
@@ -66,6 +69,8 @@ public class StudentOperationController extends PageFlowController {
 	private Integer customerId = null;
 	private User user = null;
 	List demographics = null;
+	// student accommodations
+	public StudentAccommodationsDetail accommodations = null;
 
 
 
@@ -412,8 +417,8 @@ public class StudentOperationController extends PageFlowController {
 		studentProfile.setGender(getRequest().getParameter("genderOptions"));
 		studentProfile.setGrade(getRequest().getParameter("gradeOptions"));
 		studentProfile.setTestPurpose(getRequest().getParameter("testPurposeOptions"));
-		studentProfile.setStudentNumber(getRequest().getParameter("studentExternalId2"));
-		studentProfile.setStudentSecondNumber(getRequest().getParameter("studentExternalId"));
+		studentProfile.setStudentNumber(getRequest().getParameter("studentExternalId"));
+		studentProfile.setStudentSecondNumber(getRequest().getParameter("studentExternalId2"));
 		boolean studentIdConfigurable = new Boolean(getRequest().getParameter("studentIdConfigurable"));
 		String studentIdLabelName = getRequest().getParameter("studentIdLabelName");
 		String assignedOrgNodeIds = getRequest().getParameter("assignedOrgNodeIds");
@@ -482,7 +487,7 @@ public class StudentOperationController extends PageFlowController {
 			if(result) {
 				studentId = saveStudentProfileInformation(isCreateNew, studentProfile, studentId, selectedOrgNodes);
 	
-	
+				System.out.println("studentId==>"+studentId + "studentProfile.setFirstName" + studentProfile.getFirstName());	
 				String demographicVisible = this.user.getCustomer().getDemographicVisible();
 				if ((studentId != null) && demographicVisible.equalsIgnoreCase("T"))
 				{
@@ -557,8 +562,14 @@ public class StudentOperationController extends PageFlowController {
 		getUserDetails();
 		StudentOperationForm  form = new StudentOperationForm();
 		addEditDemographics();
+		addEditAccommodations(); 
 		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);  
-		
+		try{
+			MusicFiles[] musicList = this.studentManagement.getMusicFiles();	
+			this.getRequest().setAttribute("musicList", musicList);
+		}catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
 		//initGradeGenderOptions(ACTION_ADD_STUDENT, savedForm, null, null);
 		//this.savedForm.gradeOptions = getGradeOptions(ACTION_EDIT_STUDENT);
 		//this.savedForm.genderOptions = getGenderOptions(ACTION_EDIT_STUDENT);
@@ -629,40 +640,6 @@ public class StudentOperationController extends PageFlowController {
 
 		return studentId;
 	}
-
-	/**
-	 * saveStudentAccommodation
-	 */
-	private boolean saveStudentAccommodations(boolean isCreateNew, StudentProfileInformation studentProfile, Integer studentId)
-	{
-		/*String hideAccommodations = this.user.getCustomer().getHideAccommodations();
-
-		if (hideAccommodations.equalsIgnoreCase("T"))         
-			getStudentDefaultAccommodations();
-		else
-			getStudentAccommodationsFromRequest();
-
-		StudentAccommodations sa = this.accommodations.makeCopy(studentId);
-
-		if (isCreateNew)
-		{
-			if (sa != null)
-			{
-				createStudentAccommodations(studentId, sa);
-			}
-		}
-		else
-		{
-			if (sa != null)
-				updateStudentAccommodations(studentId, sa);
-			else
-				deleteStudentAccommodations(studentId);
-		}
-		this.accommodations = null;
-		 */
-		return true;
-	}
-
 
 
 	/**
@@ -1480,8 +1457,282 @@ public class StudentOperationController extends PageFlowController {
 		data.add(td);
 	}
 
-
+    /////////////////////////////////////////////////////////////////////////////////////////////    
+	///////////////////////////// ACCOMODATION ///////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////    
 	
+	/**
+	 * addEditAccommodations
+	 */
+	private void addEditAccommodations()
+	{
+		Integer studentId = 0;
+		boolean studentImported  = false;
+		 
+		if (accommodations == null)
+		{
+			accommodations = getStudentAccommodations(studentId);
+		}
+		else
+		{
+			//getStudentAccommodationsFromRequest();
+		}
+		this.getRequest().setAttribute("accommodations", this.accommodations);   
+        
+		
+	}
+
+	/**
+	 * getStudentAccommodations
+	 */
+	private StudentAccommodationsDetail getStudentAccommodations(Integer studentId)
+	{
+		StudentAccommodationsDetail accommodations = new StudentAccommodationsDetail();
+
+		 if ((studentId != null) && (studentId.intValue() > 0))
+		{
+			/*try
+			{    
+				StudentAccommodations sa = this.studentManagement.getStudentAccommodations(this.userName, studentId);
+				accommodations = new StudentAccommodationsDetail(sa);
+			}
+			catch (CTBBusinessException be)
+			{
+				be.printStackTrace();
+			} */
+		}
+		else
+		{
+			setCustomerAccommodations(accommodations, true);
+		}
+
+	  accommodations.convertHexToText();
+
+
+		return accommodations;
+	}
+	/**
+	 * setCustomerAccommodations
+	 */
+	private void setCustomerAccommodations(StudentAccommodationsDetail sad, boolean isSetDefaultValue) 
+	{        
+		try{
+		   CustomerConfiguration[]  customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);
+		// set checked value if there is configuration for this customer
+		  for (int i=0; i < customerConfigurations.length; i++)
+		  {
+			CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+			String ccName = cc.getCustomerConfigurationName();
+			String defaultValue = cc.getDefaultValue() != null ? cc.getDefaultValue() : "F";
+			String editable = cc.getEditable() != null ? cc.getEditable() : "F";
+
+			if (isSetDefaultValue)
+				editable = "F";
+
+			if (defaultValue.equalsIgnoreCase("T") && editable.equalsIgnoreCase("F"))
+			{
+
+				if (ccName.equalsIgnoreCase("screen_reader"))
+				{
+					sad.setScreenReader(Boolean.TRUE);
+				}
+
+				if (ccName.equalsIgnoreCase("calculator"))
+				{
+					sad.setCalculator(Boolean.TRUE);
+				}
+
+				if (ccName.equalsIgnoreCase("test_pause"))
+				{
+					sad.setTestPause(Boolean.TRUE);
+				}
+
+				if (ccName.equalsIgnoreCase("untimed_test"))
+				{
+					sad.setUntimedTest(Boolean.TRUE);
+				}
+
+				if (ccName.equalsIgnoreCase("highlighter"))
+				{
+					sad.setHighlighter(Boolean.TRUE);
+				}
+				//Added for Masking Ruler
+				if (ccName.equalsIgnoreCase("Masking_Ruler"))
+				{
+					sad.setMaskingRuler(Boolean.TRUE);
+				}
+				//Added for Auditory Calming
+				if (ccName.equalsIgnoreCase("Auditory_Calming"))
+				{
+					sad.setAuditoryCalming(Boolean.TRUE);
+				}
+				//Added for Magnifying Glass
+				if (ccName.equalsIgnoreCase("Magnifying_Glass"))
+				{
+					sad.setMagnifyingGlass(Boolean.TRUE);
+				}
+				//Added for student pacing
+				if (ccName.equalsIgnoreCase("Extended_Time"))
+				{
+					sad.setExtendedTime(Boolean.TRUE);
+				}
+				//Added for Masking Answers
+				if (ccName.equalsIgnoreCase("Masking_Tool"))
+				{
+					sad.setMaskingTool(Boolean.TRUE);
+				}
+			}
+		}
+		  this.getRequest().setAttribute("customerConfigurations", customerConfigurations);    
+			
+	}catch (CTBBusinessException be) {
+		be.printStackTrace();
+	}	
+}
+	/**
+	 * saveStudentAccommodation
+	 */
+
+	private boolean saveStudentAccommodations(boolean isCreateNew, StudentProfileInformation studentProfile, Integer studentId)
+	{
+			String hideAccommodations = this.user.getCustomer().getHideAccommodations();
+
+		if (hideAccommodations.equalsIgnoreCase("T"))         
+			getStudentDefaultAccommodations();
+		else
+			getStudentAccommodationsFromRequest();
+
+		StudentAccommodations sa = this.accommodations.makeCopy(studentId);
+
+		if (isCreateNew)
+		{
+			if (sa != null)
+			{
+				createStudentAccommodations(studentId, sa);
+			}
+		}
+		else
+		{
+			/*if (sa != null)
+				updateStudentAccommodations(studentId, sa);
+			else
+				deleteStudentAccommodations(studentId);*/
+		}
+		this.accommodations = null;
+
+		return true;
+	}
+
+
+	/**
+	 * createStudentAccommodations
+	 */
+	private void createStudentAccommodations(Integer studentId, StudentAccommodations sa)
+	{
+		if ((studentId != null) && (studentId.intValue() > 0))
+		{
+			try
+			{    
+				this.studentManagement.createStudentAccommodations(this.userName, sa);
+			}
+			catch (CTBBusinessException be)
+			{
+				be.printStackTrace();
+			}        
+		}
+	}
+	
+	/**
+	 * getStudentAccommodationsFromRequest
+	 */
+	private void getStudentAccommodationsFromRequest() 
+	{
+		// first get values from request
+		String screenReader = getRequest().getParameter("screen_reader");
+		String calculator = getRequest().getParameter("calculator");
+		String highlighter = getRequest().getParameter("highlighter");
+		String testPause = getRequest().getParameter("test_pause");
+		String untimedTest = getRequest().getParameter("untimed_test");
+		String colorFont = getRequest().getParameter("colorFont");
+		String maskingRuler = getRequest().getParameter("Masking_Ruler"); //Added for Masking Ruler
+		String auditoryCalming = getRequest().getParameter("Auditory_Calming"); //Added for Auditory Calming
+		String magnifyingGlass = getRequest().getParameter("Magnifying_Glass"); //Added for Magnifying Glass
+		String extendedTime = getRequest().getParameter("Extended_Time"); //Added for Student Pacing
+		String maskingTool = getRequest().getParameter("Masking_Tool"); // Added for Masking Answers
+
+		this.accommodations.setScreenReader(new Boolean(screenReader != null));
+		this.accommodations.setCalculator(new Boolean(calculator != null));
+		this.accommodations.setHighlighter(new Boolean(highlighter != null));
+		this.accommodations.setTestPause(new Boolean(testPause != null));
+		this.accommodations.setUntimedTest(new Boolean(untimedTest != null));
+		this.accommodations.setColorFont(new Boolean(colorFont != null));
+		this.accommodations.setAuditoryCalming(new Boolean(auditoryCalming != null));//Added for Auditory Calming
+		this.accommodations.setMaskingRuler(new Boolean(maskingRuler != null));//Added for Masking Ruler
+		this.accommodations.setMagnifyingGlass(new Boolean(magnifyingGlass != null));//Added for Magnifying Glass
+		this.accommodations.setExtendedTime(new Boolean(extendedTime != null)); //Added for Student Pacing
+		this.accommodations.setMaskingTool(new Boolean(maskingTool != null)); // Added for Masking Answers
+
+		setCustomerAccommodations(this.accommodations, false);
+
+		String question_bgrdColor = this.getRequest().getParameter("question_bgrdColor");
+		if (question_bgrdColor != null)
+		{
+			this.accommodations.setQuestion_bgrdColor(question_bgrdColor);
+		}
+
+		String question_fontColor = this.getRequest().getParameter("question_fontColor");
+		if (question_fontColor != null)
+		{
+			this.accommodations.setQuestion_fontColor(question_fontColor);
+		}
+
+		String answer_bgrdColor = this.getRequest().getParameter("answer_bgrdColor");
+		if (answer_bgrdColor != null)
+		{
+			this.accommodations.setAnswer_bgrdColor(answer_bgrdColor);
+		}
+
+		String answer_fontColor = this.getRequest().getParameter("answer_fontColor");
+		if (answer_fontColor != null)
+		{
+			this.accommodations.setAnswer_fontColor(answer_fontColor);
+		}
+
+		String fontSize = this.getRequest().getParameter("fontSize");
+		if (fontSize != null)
+		{
+			this.accommodations.setFontSize(fontSize);
+		}
+		//Added for music files of Auditory Calming
+		if(this.accommodations.getAuditoryCalming()){
+			Integer musicFiles = Integer.parseInt(this.getRequest().getParameter("music_files"));
+			if (musicFiles != null)
+			{
+				this.accommodations.setMusic_files(musicFiles);
+			}
+		}
+	}
+
+	/**
+	 * getStudentDefaultAccommodations
+	 */
+	private void getStudentDefaultAccommodations() 
+	{
+		this.accommodations.setScreenReader(Boolean.FALSE);
+		this.accommodations.setCalculator(Boolean.FALSE);
+		this.accommodations.setTestPause(Boolean.FALSE);
+		this.accommodations.setUntimedTest(Boolean.FALSE);
+		this.accommodations.setHighlighter(Boolean.TRUE);
+		this.accommodations.setColorFont(Boolean.FALSE);
+		this.accommodations.setAuditoryCalming(Boolean.FALSE);//Added for Auditory Calming
+		this.accommodations.setMaskingRuler(Boolean.FALSE);//Added for Masking Ruler
+		this.accommodations.setMagnifyingGlass(Boolean.FALSE);//Added for Magnifying Glass
+		this.accommodations.setExtendedTime(Boolean.FALSE); //Added for Student Pacing
+		this.accommodations.setMaskingTool(Boolean.FALSE); // Added for Masking Answers
+
+		setCustomerAccommodations(this.accommodations, true);
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////    
 	///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////    

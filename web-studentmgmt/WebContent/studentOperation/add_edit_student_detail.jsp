@@ -35,9 +35,22 @@
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	
 	<div id="displayMessage" style="display:none; width:100%; height:55px; background-color: #FFFFEE; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
-			<div id="title"></div>
-			<div id= "content">	</div>
-			<div id= "message">	</div>
+			<table>
+				<tr>
+					<td rowspan="3"><div id= "messageType">	</div></td>
+					<td>
+						<table>
+							<tr><td><div id="title"></div></td></tr>
+							<tr><td><div id= "content">	</div></td></tr>
+							<tr><td><div id= "message">	</div></td></tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			
+			
+			
+			
 		</div>
 	<div id="accordion" style="padding-left:10px; width:99.5%;">
 			
@@ -75,10 +88,10 @@
 											<select style="width: 65px;"   id="monthOptions" name="monthOptions">		
 											</select>
 													
-											<select style="width: 50px;"  id="dayOptions" name="dayOptions">
+											<select style="width: 65px;"  id="dayOptions" name="dayOptions">
 											</select>
 											
-											<select style="width: 73px;"  id="yearOptions" name="yearOptions">
+											<select style="width: 65px;"  id="yearOptions" name="yearOptions">
 											</select>
 										</td>                    
 						   
@@ -138,10 +151,10 @@
 								   	<tr style="display: table-row;" id="message" class="transparent">
 								   		<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Organization:</td>
 										<td class="transparent-small">
-											<div id="notSelectedOrgNodes" style="width:200px; visibility:visible;"><font color="gray">None selected. Use the control on the right to
+											<div id="notSelectedOrgNodes" style="width:200px; visibility:visible; padding-left: 4px"><font color="gray">None selected. Use the control on the right to
 											select.</font>
 											</div>
-											<div id="selectedOrgNodesName" style="width:200px"></div>
+											<div id="selectedOrgNodesName" style="width:200px, padding-left: 4px"></div>
 										
 										</td>
 									</tr>
@@ -193,11 +206,17 @@
 					<jsp:include page="/studentOperation/add_edit_student_by_demographic.jsp" />
 				</div>
 			</div>
+			<div title="Student Accommodation Information">
+				<h3><a href="#">Accommodation</a></h3>
+				<div id="Student_Accommodation_Information">
+					<jsp:include page="/studentOperation/add_edit_student_by_accomodation.jsp" />
+				</div>
+			</div>
 			
 			<div>
 	<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%">
 		<tbody>
-			
+			<br>
 			<tr id="Act_Buttons" align="center">
 				<td  width="0%" id="preButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-left" id="pData" href="javascript:void(0)"><span
 					class="ui-icon ui-icon-triangle-1-w"></span></a></td><td id="nextButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-right" id="nData"

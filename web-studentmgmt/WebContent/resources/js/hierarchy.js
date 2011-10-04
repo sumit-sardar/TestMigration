@@ -15,14 +15,21 @@ var customerDemographicValue;
 var isValueChanged = false;
 var leafNodeCategoryId;
 
+
+
+function UIBlock(){
+	$.blockUI({ message: '<img src="/StudentManagementWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#d0e5f5', opacity:  0.8, width:'0px',  top:  ($(window).height() - 0) /2 + 'px', left: ($(window).width() - 0) /2 + 'px' 
+	}, overlayCSS:  {  backgroundColor: '#d0e5f5', opacity:  0.6 }, baseZ: 1050}); 
+}
+
+
 			
 function populateTree() {
 	
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
-						
-						$.blockUI({ message: null }); 
+						UIBlock();
 					},
 		url:		'userOrgNodeHierarchyList.do',
 		type:		'POST',
@@ -49,37 +56,9 @@ function populateTree() {
 
 }
 
-function blockUI(){	
-	$("body").append('<div id="blockDiv" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"><img src="/StudentManagementWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/></div>');
-	$("#blockDiv").css("cursor","wait");		
-}
-			
-function unblockUI(){
-	$("#blockDiv").css("cursor","normal");
-	$("#blockDiv").remove();
-}
 
-function overlayblockUI(){	
-	$("body").append('<div id="blDiv" style="position: absolute;top:0;left:0;width:100%;height:100%;z-index:10"></div>');
-	$("#blDiv").css("cursor","wait");		
-						
-}
 
-function overlayunblockUI(){
-	$("#blDiv").css("cursor","normal");
-	$("#blDiv").remove(); 
-}
 
-function confirmationblockUI(){	
-	$("body").append('<div id="conDiv" style="opacity: 0.6; background-color: #000000;position: absolute;top:0;left:0;width:100%;height:100%;z-index:10"></div>');
-	$("#conDiv").css("cursor","wait");		
-						
-}
-
-function confirmationunblockUI(){
-	$("#conDiv").css("cursor","normal");
-	$("#conDiv").remove(); 
-}
 
 function createSingleNodeSelectedTree(jsondata) {
 	   $("#orgNodeHierarchy").jstree({
@@ -98,7 +77,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
   			var SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
- 		     $.blockUI({ message: null }); 
+ 		     UIBlock();
  		  	if(!gridloaded) {
  		  		gridloaded = true;
  		  		populateTreeSelect();
@@ -223,7 +202,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		   		{name:'grade',index:'grade',editable: true, width:70, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr', width:110, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'gender',index:'gender', width:80, editable: true, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'hasAccommodations',index:'hasAccommodations', width:150, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'hasAccommodations',index:'hasAccommodations', width:125, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'userName',index:'userName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentNumber',index:'studentNumber',editable: true, width:100, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	
@@ -332,7 +311,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 		async:		true,
 		beforeSend:	function(){
 						
-						$.blockUI({ message: null }); 
+						UIBlock();
 					},
 		url:		'getOptionList.do?isLasLinkCustomer='+$("#isLasLinkCustomer").val(), 
 		type:		'POST',
@@ -340,7 +319,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 		success:	function(data, textStatus, XMLHttpRequest){	
 						//alert('in');
 						$.unblockUI();
-						overlayblockUI(); 
+						//UIBlock();
 						gradeOptions = data.gradeOptions;
 						genderOptions = data.genderOptions;
 						dayOptions = data.dayOptions; 
@@ -355,7 +334,6 @@ document.getElementById('displayMessageMain').style.display = "none";
 						if($("#isLasLinkCustomer").val() =="true")
 							fillDropDown("testPurposeOptions", testPurposeOptions);
 						customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
-						// $('#accordion').accordion('activate','Student_Information_div');
 						$("#addEditStudentDetail").dialog({  
 													title:"Add Record",  
 												 	resizable:false,
@@ -363,26 +341,32 @@ document.getElementById('displayMessageMain').style.display = "none";
 												 	width: '800px',
 												 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		 	
-												 	});	
+												 	});	 
 							 $("#Student_Information").css("height",'auto');
 							 $("#Student_Additional_Information").css("height",'auto');
+							 $("#Student_Accommodation_Information").css("height",'auto');
+							 
+							/*var popupHeight = $("#addEditStudentDetail").height();
+							var popupWidth = $("#addEditStudentDetail").width();
+	
+							$.blockUI({message: $('#addEditStudentDetail'), css: { width: '0%', height: '0%', border: '0px', backgroundColor: '#d0e5f5', opacity:  0.8,
+																							top: $(window).height()/2-popupHeight/2,
+																							left: $(window).width()/2-popupWidth/2}});  */
 							 		
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
 						window.location.href="/TestSessionInfoWeb/logout.do";
 						
-					},
-		complete :  function(){
-						 $.unblockUI();  
 					}
+		
 	});
 
 	} else {
 		reset();
 		if($("#isLasLinkCustomer").val() =="true")
 			fillDropDown("testPurposeOptions", testPurposeOptions);
-		overlayblockUI(); 
+		//UIBlock(); 
 		$("#addEditStudentDetail").dialog({  
 			title:"Add Record",  
 		 	resizable:false,
@@ -392,6 +376,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 			});	
 		 	$("#Student_Information").css("height",'auto');
 			$("#Student_Additional_Information").css("height",'auto');
+			$("#Student_Accommodation_Information").css("height",'auto');
 	}	
 	
 }
@@ -409,6 +394,15 @@ document.getElementById('displayMessageMain').style.display = "none";
 				radiofields[i].checked = true;
 			}
 		}
+		var selectfields = $("option:selected");
+		for (var i=0; i<selectfields.length; i++) {
+			if (selectfields[i].value != "" && selectfields[i].value != "Select a grade" &&
+					 selectfields[i].value != "Select a gender" && selectfields[i].value != "Please Select") { 
+				selectfields[i].value = "";
+				
+			}
+		}
+		
    }
 
 
@@ -428,10 +422,12 @@ function fillDropDown( elementId, optionList) {
 
 
 	function closePopUp(dailogId){
-		$('#accordion').accordion('activate', 0 );
+		if(dailogId == 'addEditStudentDetail') {
+			$('#accordion').accordion('activate', 0 );
+			populateTreeSelect();
+		}
 		$("#"+dailogId).dialog("close");
-		overlayunblockUI();
-		populateTreeSelect();
+		$.unblockUI();  
 	}
 	
 	function closeConfirmationPopup() {
@@ -460,15 +456,15 @@ function fillDropDown( elementId, optionList) {
 				}
 			}
 		}
-		/*if(!isValueChanged) {
-			var selectfields = $(":select");
+		if(!isValueChanged) {
+			var selectfields = $("option:selected");
 			for (var i=0; i<selectfields.length; i++) {
-				if (selectfields[i].value != "Select a grade" && selectfields[i].value != "Select a gender" && selectfields[i].value != "Please Select") { 
+				if (selectfields[i].value != "" && selectfields[i].value != "Select a grade" && selectfields[i].value != "Select a gender" && selectfields[i].value != "Please Select") { 
 					isValueChanged = true;
 					break;
 				}
 			}
-		}*/
+		}
 		if(!isValueChanged) {
 		   var checkBoxfields = $(":checkbox"); 
 	       for(var i=0; i < checkBoxfields.length; i++){
@@ -480,7 +476,7 @@ function fillDropDown( elementId, optionList) {
 		}
 		
 		if(isValueChanged) {
-		overlayblockUI();
+		UIBlock();
 		$("#confirmationPopup").dialog({  
 			title:"Confirmation Alert",  
 		 	resizable:false,
@@ -503,7 +499,7 @@ function fillDropDown( elementId, optionList) {
 								beforeSend:	function(){
 											
 												
-												blockUI();
+												UIBlock();
 												//alert('before send....');
 											},
 								url:		'saveAddEditStudent.do',
@@ -511,14 +507,14 @@ function fillDropDown( elementId, optionList) {
 								data:		$("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" + $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val(),
 								dataType:	'json',
 								success:	function(data, textStatus, XMLHttpRequest){	
-												unblockUI();
+												$.unblockUI();  
 												var errorFlag = data.errorFlag;
 												var successFlag = data.successFlag;
 												if(successFlag) {
 													closePopUp('addEditStudentDetail');
 													setMessageMain(data.title, data.content, data.type, "");
 													document.getElementById('displayMessageMain').style.display = "block";	
-													
+													assignedOrgNodeIds = "";
         										}
         										else{
         											setMessage(data.title, data.content, data.type, "");
@@ -528,10 +524,11 @@ function fillDropDown( elementId, optionList) {
 																								
 											},
 								error  :    function(XMLHttpRequest, textStatus, errorThrown){
+													$.unblockUI();  
 												window.location.href="/TestSessionInfoWeb/logout.do";
 											},
 								complete :  function(){
-												unblockUI();
+												$.unblockUI();  
 											}
 						}
 					);
