@@ -453,7 +453,7 @@ public class TMSServlet extends HttpServlet {
 				    		e.printStackTrace();
 				    	}
 			    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
-			    		if(j < manifestData.length && ("TL".equals(manifestData[j].getProduct()) && manifestData.length == 8 && "L".equals(manifestData[j].getLevel()))) {
+			    		if(j < manifestData.length && (("TL".equals(manifestData[j].getProduct()) || "TB".equals(manifestData[j].getProduct())) && "L".equals(manifestData[j].getLevel()))) {
 		    				// we just completed the locator assessment
 		    	    		handleTabeLocator(rosterId);
 		    	    		manifest = oasSource.getManifest(rosterId, accessCode);
@@ -597,19 +597,14 @@ public class TMSServlet extends HttpServlet {
             return response.xmlText();
 		}
 		
-		// TODO: only do this when auto-locator function is needed
 		ManifestData md = manifest.getManifest()[0];
 		if(("TB".equals(md.getProduct()) && manifest.getManifest().length == 8) && !"L".equals(md.getLevel())) {
 			// we're in a non-locator section of a multi-TAC auto-located TABE assessment
-    		handleTabeLocator(testRosterId);
-    		manifest = oasSource.getManifest(testRosterId, creds.getAccesscode());
-    		if(manifest.getManifest().length >= 8) {
-    			// manifest hasn't been shortened, must not have completed relevant locator subtest
-    			TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
-                LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
-                loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.LOCATOR_SUBTEST_NOT_COMPLETED_STATUS);
-                return response.xmlText();
-    		}
+    		// manifest hasn't been shortened, must not have completed relevant locator subtest
+			TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
+            LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
+            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.LOCATOR_SUBTEST_NOT_COMPLETED_STATUS);
+            return response.xmlText();
     	}
 
 		TmssvcResponseDocument response = rd.getLoginDocument();
@@ -837,6 +832,7 @@ public class TMSServlet extends HttpServlet {
 		int subtestId = (new Integer(request.getGetSubtest().getSubtestid())).intValue();
 		String hash = request.getGetSubtest().getHash();
 		String subtest = adsSource.getSubtest(subtestId, hash);
+		// TODO: get from Coherence read-through.
 		if(subtest == null) {
 			Connection conn = null;
 			try {
@@ -869,6 +865,7 @@ public class TMSServlet extends HttpServlet {
 		int itemId = (new Integer(request.getDownloadItem().getItemid())).intValue();
 		String hash = request.getDownloadItem().getHash();
 		String item = adsSource.getItem(itemId, hash);
+		// TODO: get from Coherence read-through.
 		if(item == null) {
 			Connection conn = null;
 			try {
