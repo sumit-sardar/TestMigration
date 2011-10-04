@@ -20,7 +20,7 @@
     <link href="<%=request.getContextPath()%>/resources/css/menu.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/tabs.css" type="text/css" rel="stylesheet" />
     
-	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.6.2.min.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-ui-1.8.16.custom.min.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.blockUI.min.js"></script>
     
@@ -120,7 +120,7 @@
 									<a href="#" id="organizationsLink" onClick="gotoMenuAction('organizations.do', 'organizationsLink');"><b>Organizations</b></a>						
 								</td>
 								<td class="toolbar" width="120">
-									<a href="#" id="studentsLink" onClick="gotoMenuAction('beginFindStudent.do', 'studentsLink');"><b>Students</b></a>						
+									<a href="#" id="studentsLink" onClick="gotoMenuAction('organizations.do', 'studentsLink');"><b>Students</b></a>						
 								</td>
 								<td class="toolbar" width="120">
 									<a href="#" id="usersLink" onClick="gotoMenuAction('organizations.do', 'usersLink');"><b>Users</b></a>						

@@ -1786,13 +1786,10 @@ public class StudentOperationController extends PageFlowController {
 	}
 	
 	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "organizations_manageStudents.jsp") 
+	        @Jpf.Forward(name = "success", path = "beginFindStudent.do") 
 	    }) 
 	protected Forward organizations_manageStudents()
 	{
-		initialize();
-		this.getRequest().setAttribute("isFindStudent", Boolean.TRUE);
-		
 	    return new Forward("success");
 	}
 	
