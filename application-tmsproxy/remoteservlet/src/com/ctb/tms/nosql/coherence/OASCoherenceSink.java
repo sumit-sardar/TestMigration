@@ -5,12 +5,15 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
+
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.OASNoSQLSink;
+import com.ctb.tms.web.servlet.TMSServlet;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 
@@ -19,6 +22,8 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	private static NamedCache rosterCache;
 	private static NamedCache manifestCache;
 	private static NamedCache responseCache;
+	
+	static Logger logger = Logger.getLogger(OASCoherenceSink.class);
 	
 	public OASCoherenceSink () {
 		
@@ -69,9 +74,10 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			if(manifests[i].getRosterStartTime() == null) {
 				manifests[i].setRosterStartTime(new Timestamp(1));
 			}
+			logger.debug("comparing " + manifests[i].getRosterStartTime() + " to " + latestStartTime);
 			if(manifests[i].getRosterStartTime().after(latestStartTime)) {
-				rosterStatus = manifest.getRosterCompletionStatus();
-				latestStartTime = manifest.getRosterStartTime();
+				rosterStatus = manifests[i].getRosterCompletionStatus();
+				latestStartTime = manifests[i].getRosterStartTime();
 				if(!"CO".equals(rosterStatus)) {
 					allcoManifest = false;
 				} else if(!allcoManifest) {

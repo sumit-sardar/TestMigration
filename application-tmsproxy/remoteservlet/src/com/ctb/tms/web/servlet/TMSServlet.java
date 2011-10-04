@@ -106,7 +106,7 @@ public class TMSServlet extends HttpServlet {
 		String result = ServletUtils.OK;
 		try {
 			String xml = request.getParameter("requestXML");
-			//logger.warn("***** Remote servlet request: " + xml);
+			logger.warn("***** Remote servlet request: " + xml);
 			
 			if (method != null && method.startsWith(ServletUtils.LOGIN_METHOD))
 	            result = login(xml);
@@ -135,7 +135,7 @@ public class TMSServlet extends HttpServlet {
 			
 	        // return response to client
 	        if (result != null) {
-	        	logger.debug("***** response: " + result);
+	        	logger.warn("***** response: " + result);
 	        	ServletUtils.writeResponse(response, result);
 	        }
 		} catch (Exception e) {
@@ -721,7 +721,6 @@ public class TMSServlet extends HttpServlet {
 			manifest.setRosterStartTime(new Timestamp(System.currentTimeMillis()));
 		}
 		manifest.setRosterCompletionStatus("IP");
-		manifest.setRosterCorrelationId(0);
 		manifest.setStudentName(rd.getAuthData().getStudentFirstName() + " " + rd.getAuthData().getStudentLastName());
 		String result = response.xmlText();
 		int newRestartCount = restartCount + 1;
