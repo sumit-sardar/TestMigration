@@ -68,6 +68,14 @@
 								</xs:documentation>
 							</xs:annotation>
 						</xs:attribute>
+						<xs:attribute name="cid"
+							type="xs:string" use="required">
+							<xs:annotation>
+								<xs:documentation>
+									Correlation id used to prevent multiple logins with same credentials
+								</xs:documentation>
+							</xs:annotation>
+						</xs:attribute>
 						<xs:attribute name="is_reopen" type="xs:string" use="optional">
 							<xs:annotation>
 								<xs:documentation>is_reopen is  a boolean flag to indicated where the test client supports student with more than one intrupted state</xs:documentation>

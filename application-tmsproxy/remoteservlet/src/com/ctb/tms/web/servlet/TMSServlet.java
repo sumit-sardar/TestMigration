@@ -106,7 +106,7 @@ public class TMSServlet extends HttpServlet {
 		String result = ServletUtils.OK;
 		try {
 			String xml = request.getParameter("requestXML");
-			logger.debug("***** Remote servlet request: " + xml);
+			//logger.warn("***** Remote servlet request: " + xml);
 			
 			if (method != null && method.startsWith(ServletUtils.LOGIN_METHOD))
 	            result = login(xml);
@@ -318,31 +318,28 @@ public class TMSServlet extends HttpServlet {
 		    			break;
 		    		}
 		    	}
+		    	
+		    	int rosterCid = manifest.getRosterCorrelationId();
+		    	int thisCid = tsd.getCid().intValue();
+		    	logger.debug("Cached CID: " + rosterCid + ", this message CID: " + thisCid);
+		    	if(rosterCid != thisCid) {
+		    		responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
+		            saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
+		            noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd errorTsd = saveResponse.addNewTsd();
+		            errorTsd.setStatus(Status.INVALID_CID);
+		            errorTsd.addNewError();
+		            errorTsd.getError().setMethod("save_testing_session_data");
+		            errorTsd.getError().setStatus("invalid_cid");
+		            errorTsd.getError().setErrorElement(tsd.toString());
+		            manifest.setRosterCompletionStatus("IN");
+		            manifestData[j].setCompletionStatus("IN");
+		            oasSink.putManifest(rosterId, accessCode, manifest);
+		            return responseDocument.xmlText();
+		    	}
 		        
 		    	manifest.setRosterLastMseq(tsd.getMseq().intValue());
 		    	
 			    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
-			    	int rosterCid = manifest.getRosterCorrelationId();
-			    	int thisCid = tsd.getCid().intValue();
-			    	logger.debug("Cached CID: " + rosterCid + ", this message CID: " + thisCid);
-			    	if(rosterCid != 0 && rosterCid != thisCid) {
-			    		responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
-			            saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
-			            noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd errorTsd = saveResponse.addNewTsd();
-			            errorTsd.setStatus(Status.INVALID_CID);
-			            errorTsd.addNewError();
-			            errorTsd.getError().setMethod("save_testing_session_data");
-			            errorTsd.getError().setStatus("invalid_cid");
-			            errorTsd.getError().setErrorElement(tsd.toString());
-			            manifest.setRosterCompletionStatus("IN");
-			            manifestData[j].setCompletionStatus("IN");
-			            oasSink.putManifest(rosterId, accessCode, manifest);
-			            return responseDocument.xmlText();
-			    	} else if(rosterCid == 0) {
-			    		rosterCid = thisCid;
-			    		manifest.setRosterCorrelationId(thisCid);
-			    		updateCID(rosterId, thisCid, accessCode);
-			    	}
 			    	// keep IP status if we're receiving heartbeats or responses
 			    	manifestData[j].setCompletionStatus("IP");
 			    	// response events
@@ -599,6 +596,7 @@ public class TMSServlet extends HttpServlet {
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.AUTHENTICATION_FAILURE_STATUS);
             return response.xmlText();
 		}
+		
 		// TODO: only do this when auto-locator function is needed
 		ManifestData md = manifest.getManifest()[0];
 		if(("TB".equals(md.getProduct()) && manifest.getManifest().length == 8) && !"L".equals(md.getLevel())) {
@@ -630,6 +628,13 @@ public class TMSServlet extends HttpServlet {
 		if(restart == null) restart = BigInteger.valueOf(0);
 		int restartCount = restart.intValue();
 		logger.debug("Restart count: " + restartCount);
+		
+		int thisCid = Integer.parseInt(lr.getCid());
+		manifest.setRosterCorrelationId(thisCid);
+		if(restartCount > 0) {
+			// try to optimize by only setting cid on other manifests if they've been accessed - this may be risky
+			updateCID(testRosterId, thisCid, creds.getAccesscode());
+		}
 
 		ManifestData[] manifesta = manifest.getManifest();
 		ArrayList newmanifest = new ArrayList();
