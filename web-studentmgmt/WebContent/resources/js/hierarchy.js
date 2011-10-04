@@ -124,30 +124,20 @@ function createMultiNodeSelectedTree(jsondata) {
      //   $('#innerID').jstree("check_node", "#118638"); 
      });  
 
-	  $("#innerID").jstree({
 
-	        "json_data" : {	             
-	            "data" : jsondata.data,
-				"progressive_render" : true,
-				"progressive_unload" : true
-				
-	        },
-	        "ui" : {  
-		           "select_limit" : 1
-	         	},
-	         	 
-			"core" : {
-					"animation" : 200
-				},
-					        
-	 		"plugins" : [ "themes", "json_data", "checkbox", "ui"]
-	   })
-	   	   
-	   .bind("change_state", function (e, data) { 
-			// `data.rslt.obj` is the jquery extended node that was clicked
-			//alert("change_state.................");
-		})
-		    
+  $("#innerID").jstree({
+        "json_data" : {	             
+            "data" : jsondata.data,
+			"progressive_render" : true,
+			"progressive_unload" : true
+			
+        },
+        "ui" : {  
+	           "select_limit" : 1
+         	}, 
+ 			"plugins" : [ "themes", "json_data", "checkbox"]
+   });
+    
     	$("#innerID li").not(".jstree-leaf").each(function() {
     			var orgcategorylevel = $(this).attr("categoryid");
     			if(orgcategorylevel != leafNodeCategoryId) {
@@ -163,6 +153,7 @@ function createMultiNodeSelectedTree(jsondata) {
 	    		  }
 	  		});
 	  		
+	  	
 		 	var currentlySelectedNode ="";
 			assignedOrgNodeIds = "";
 			$("#innerID").find(".jstree-checked").each(function(i, element){
