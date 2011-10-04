@@ -1116,7 +1116,7 @@ public class StudentOperationController extends PageFlowController {
 			this.getRequest().setAttribute("userHasReports", userHasReports());
 			this.getRequest().setAttribute("isMandatoryBirthDate", isMandatoryBirthDate(customerConfigurations));
 			isGeorgiaCustomer(customerConfigurations);
-			
+			this.getRequest().setAttribute("customerConfigurations", customerConfigurations);    
 		}
 		catch (CTBBusinessException be) {
 			be.printStackTrace();
@@ -1585,7 +1585,7 @@ public class StudentOperationController extends PageFlowController {
 				}
 			}
 		}
-		  this.getRequest().setAttribute("customerConfigurations", customerConfigurations);    
+		  
 			
 	
 }
