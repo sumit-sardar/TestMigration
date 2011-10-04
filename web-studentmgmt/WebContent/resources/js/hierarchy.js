@@ -153,7 +153,7 @@ function createMultiNodeSelectedTree(jsondata) {
 					"icons" : true
 				},
 					        
-	 		"plugins" : [ "themes", "json_data", "checkbox", "ui"],
+	 		"plugins" : [ "themes", "json_data", "checkbox", "ui"]
 	   })
 	   
 	   .bind("select_node", function (event, data) { 
