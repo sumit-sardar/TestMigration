@@ -52,9 +52,4 @@
 </div>
 
 
-<!-- BLOCK DIV -->
-<div id="blockDiv" style="display:none; background-color: #d0e5f5; opacity:0.5; position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999">
-	<img src="<%=request.getContextPath()%>/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/>
-</div>
-
 

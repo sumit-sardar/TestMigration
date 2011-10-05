@@ -1,7 +1,7 @@
 
 function submitPage()
 {
-	showLoadingProgress();
+	UIBlock();
 	
     document.body.style.cursor = 'wait';
    	document.forms[0].submit();
@@ -10,7 +10,7 @@ function submitPage()
   
 function gotoAction(action)
 {
-	showLoadingProgress();
+	UIBlock();
 
     document.body.style.cursor = 'wait';
     if (action != null) {
@@ -21,7 +21,7 @@ function gotoAction(action)
  
 function gotoMenuAction(action, menuId)
 {
-	showLoadingProgress();
+	UIBlock();
 	
     document.body.style.cursor = 'wait';
     if (action != null) {
@@ -32,21 +32,10 @@ function gotoMenuAction(action, menuId)
     }
    	document.forms[0].submit();
 }    
-
-function showLoadingProgress()
+ 
+function UIBlock()
 {	
-	var blockDiv = document.getElementById("blockDiv");
-	if (blockDiv != null) {
-		blockDiv.style.display = "block";
-    	document.body.style.cursor = 'wait';
-	}
+	$.blockUI({ message: '<img src="/TestSessionInfoWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'0px',  top:  ($(window).height() - 0) /2 + 'px', left: ($(window).width() - 0) /2 + 'px' 
+	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 
 }
 	
-function hideLoadingProgress()
-{
-	var blockDiv = document.getElementById("blockDiv");
-	if (blockDiv != null) {
-		blockDiv.style.display = "none";
-    	document.body.style.cursor = 'default';
-	}
-}

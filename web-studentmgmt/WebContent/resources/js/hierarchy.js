@@ -19,8 +19,8 @@ var leafNodeCategoryId;
 
 
 function UIBlock(){
-	$.blockUI({ message: '<img src="/StudentManagementWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#d0e5f5', opacity:  0.8, width:'0px',  top:  ($(window).height() - 0) /2 + 'px', left: ($(window).width() - 0) /2 + 'px' 
-	}, overlayCSS:  {  backgroundColor: '#d0e5f5', opacity:  0.6 }, baseZ:1050}); 
+	$.blockUI({ message: '<img src="/StudentManagementWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'0px',  top:  ($(window).height() - 0) /2 + 'px', left: ($(window).width() - 0) /2 + 'px' 
+	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 
 }
 
 
