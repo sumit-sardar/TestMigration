@@ -1724,7 +1724,11 @@ public class StudentOperationController extends PageFlowController {
 		}
 		//Added for music files of Auditory Calming
 		if(this.accommodations.getAuditoryCalming()){
-			Integer musicFiles = Integer.parseInt(this.getRequest().getParameter("music_files"));
+			String selecteMusicFile = this.getRequest().getParameter("music_files");
+			if(selecteMusicFile.equals("")) {
+				selecteMusicFile = "1";
+			}
+			Integer musicFiles = Integer.parseInt(selecteMusicFile);
 			if (musicFiles != null)
 			{
 				this.accommodations.setMusic_files(musicFiles);

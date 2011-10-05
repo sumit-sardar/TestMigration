@@ -2238,14 +2238,10 @@
 						this._prepare_checkboxes();
 					}, this))
 				.delegate("a", "click.jstree", $.proxy(function (e) {
-						if(this._get_node(e.target).attr("categoryid") != "undefined" &&  this._get_node(e.target).attr("categoryid")== leafNodeCategoryId){
-						if(this._get_node(e.target).hasClass("jstree-checked")) { 
-						this.uncheck_node(e.target); 
-						}
-						else {
-						 this.check_node(e.target);
-						  }
-						  }
+					if(this._get_node(e.target).attr("categoryid") != "undefined" &&  this._get_node(e.target).attr("categoryid")== leafNodeCategoryId){
+						if(this._get_node(e.target).hasClass("jstree-checked")) { this.uncheck_node(e.target); }
+						else { this.check_node(e.target); }
+					}
 						if(this.data.ui) { this.save_selected(); }
 						if(this.data.cookies) { this.save_cookie("select_node"); }
 						e.preventDefault();
@@ -2273,11 +2269,9 @@
 			change_state : function (obj, state) {
 				obj = this._get_node(obj);
 				state = (state === false || state === true) ? state : obj.hasClass("jstree-checked");
-				if(state) { 
-				obj.andSelf().removeClass("jstree-checked jstree-undetermined").addClass("jstree-unchecked");
-				 }
+				if(state) { obj.find("li").andSelf().removeClass("jstree-checked jstree-undetermined").addClass("jstree-unchecked"); }
 				else { 
-					obj.andSelf().removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked"); 
+					obj.find("li").andSelf().removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked"); 
 					if(this.data.ui) { this.data.ui.last_selected = obj; }
 					this.data.checkbox.last_selected = obj;
 				}
@@ -2303,7 +2297,7 @@
 					}
 				});
 				if(this.data.ui) { this.data.ui.selected = this.get_checked(); }
-				//this.__callback(obj);
+				this.__callback(obj);
 			},
 			check_node : function (obj) {
 				this.change_state(obj, false);

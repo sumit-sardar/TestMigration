@@ -34,7 +34,7 @@
 	        <td class="transparent"  valign="middle">
 	      	<div  id= "searchheader" style="visibility:hidden; background:#4297D7; height:25px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;Student Search</div>
 	    	<script>populateTree();</script>
-       		 <div id = "orgNodeHierarchy" style="visibility:hidden; background:#ffffee; overflow:auto; height: 270px;  width: 200px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
+       		 <div id = "orgNodeHierarchy" style="visibility:hidden; background:#ffffee; overflow:auto; height: 485px;  width: 200px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
 				
 			</div> 
 			
@@ -47,6 +47,11 @@
 			
 		 </td>
 	    </tr>
+	    <tr class="transparent">
+	        <td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;
+	             
+	        </td>
+   	 	</tr>
 	</table>
 	
 

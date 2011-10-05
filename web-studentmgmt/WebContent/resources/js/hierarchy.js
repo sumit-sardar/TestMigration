@@ -14,6 +14,7 @@ var assignedOrgNodeIds = "";
 var customerDemographicValue;
 var isValueChanged = false;
 var leafNodeCategoryId;
+var SelectedOrgNodeId;
 
 
 
@@ -86,7 +87,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	    });
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
-  			var SelectedOrgNodeId = $(this).parent().attr("id");
+  			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
  		     UIBlock();
  		  	if(!gridloaded) {
@@ -110,8 +111,10 @@ function createSingleNodeSelectedTree(jsondata) {
 function createMultiNodeSelectedTree(jsondata) {
 
 	$("#innerID").bind("loaded.jstree", function (event, data) {  
+		$('#innerID').jstree('open_node', '#'+SelectedOrgNodeId); 
 
-     //   $('#innerID').jstree("check_node", "#118638"); 
+		
+        //$('#innerID').jstree("check_node", '#'+SelectedOrgNodeId); 
      });  
 	
   $("#innerID").jstree({
@@ -220,14 +223,14 @@ function createMultiNodeSelectedTree(jsondata) {
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",records: function(obj) { return obj.studentProfileInformation.length; } },
 		   	 
-			rowNum:10,
+			rowNum:20,
 			loadonce:true, 
 			multiselect:false,
 			pager: '#pager2', 
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			//height: "500px",  
+			height: 370,  
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			caption:"Search Result",
 			onPaging: function() {
@@ -286,14 +289,14 @@ function createMultiNodeSelectedTree(jsondata) {
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",records: function(obj) { return obj.studentProfileInformation.length; } },
 		   	 
-			rowNum:10,
+			rowNum:20,
 			loadonce:true, 
 			multiselect:false,
 			pager: '#pager2', 
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			//height: "500px",  
+			height: 370,  
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			caption:"Search Result",
 			onPaging: function() {
@@ -420,6 +423,8 @@ document.getElementById('displayMessageMain').style.display = "none";
 	
 }
     function reset() {
+    	assignedOrgNodeIds = "";
+    	
        jQuery.each(customerDemographicValue, function(i, field){         
       		$("#"+field.name).val(field.value);
       		
@@ -579,6 +584,11 @@ function fillDropDown( elementId, optionList) {
 				}
 			}
 			
+		}
+		if(!isValueChanged){
+			if(assignedOrgNodeIds != ""){
+				isValueChanged = true;
+			}
 		}
 		
 		if(isValueChanged) {

@@ -203,7 +203,7 @@
 				</div>
 			</div>
 			<div>
-				<h3><a href="#">Specific Accommodation</a></h3>
+				<h3><a href="#">Specific Accommodations</a></h3>
 				<div id="Student_Accommodation_Information">
 					<jsp:include page="/studentOperation/add_edit_student_by_accommodation.jsp" />
 				</div>
