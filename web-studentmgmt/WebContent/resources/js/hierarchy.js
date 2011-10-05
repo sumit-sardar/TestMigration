@@ -205,7 +205,7 @@ function createMultiNodeSelectedTree(jsondata) {
           url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
 	     datatype: "json",         
-          colNames:['Last Name','First Name', 'Middle Name', 'Grade','Organization', 'Gender', 'Accommodation', 'Login ID', studentIdTitle],
+          colNames:['Last Name','First Name', 'M.I.', 'Grade','Organization', 'Gender', 'Accommodation', 'Login ID', studentIdTitle],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -230,6 +230,18 @@ function createMultiNodeSelectedTree(jsondata) {
 			//height: "500px",  
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			caption:"Search Result",
+			onPaging: function() {
+				var reqestedPage = parseInt($('#list2').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_pager2').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#list2').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#list2').setGridParam({"page": minPageSize});
+				}
+				
+			},
 			loadComplete: function () {
 				if ($('#list2').getGridParam('records') === 0) {
             	$('#sp_1_pager2').text("1");
@@ -260,7 +272,7 @@ function createMultiNodeSelectedTree(jsondata) {
           url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
 	     datatype: "json",         
-          colNames:['Last Name','First Name', 'Middle Name', 'Grade','Organization', 'Gender', 'Login ID', studentIdTitle],
+          colNames:['Last Name','First Name', 'M.I.', 'Grade','Organization', 'Gender', 'Login ID', studentIdTitle],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -411,7 +423,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 					}
 		       	}
 			} 
-			if(!isValueChanged && customerValCheckbox.length > 0) {
+			if(customerValCheckbox.length > 0) {
 				 for(var i=0; i < checkBoxfields.length; i++){
 			       for(var j=0; j<customerValCheckbox.length; j++) {
 				       	if(!isExist( $(checkBoxfields).eq(i).attr('name') ,customerValCheckbox)) { //
@@ -421,7 +433,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 			       	}
 				} 
 			}
-			if(!isValueChanged && customerValCheckbox.length == 0) {
+			if(customerValCheckbox.length == 0) {
 				 for(var i=0; i < checkBoxfields.length; i++){
 					$(checkBoxfields).eq(i).attr('checked', false); 
 				}

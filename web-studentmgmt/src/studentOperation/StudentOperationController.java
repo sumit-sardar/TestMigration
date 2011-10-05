@@ -1647,6 +1647,9 @@ public class StudentOperationController extends PageFlowController {
 	 */
 	private void getStudentAccommodationsFromRequest(CustomerConfiguration[]  customerConfigurations) 
 	{
+		if(this.accommodations == null)
+			addEditAccommodations(customerConfigurations);
+		
 		// first get values from request
 		String screenReader = getRequest().getParameter("screen_reader");
 		String calculator = getRequest().getParameter("calculator");
@@ -1671,8 +1674,6 @@ public class StudentOperationController extends PageFlowController {
 		this.accommodations.setMagnifyingGlass(new Boolean(magnifyingGlass != null));//Added for Magnifying Glass
 		this.accommodations.setExtendedTime(new Boolean(extendedTime != null)); //Added for Student Pacing
 		this.accommodations.setMaskingTool(new Boolean(maskingTool != null)); // Added for Masking Answers
-		if(this.accommodations == null)
-			addEditAccommodations(customerConfigurations);
 		
 		setCustomerAccommodations(this.accommodations, false, customerConfigurations);
 

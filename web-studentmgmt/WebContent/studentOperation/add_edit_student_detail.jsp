@@ -50,7 +50,7 @@
 		</div>
 	<div id="accordion" style="width:99.5%;">
 			
-			<div title="Student_Information">
+			<div>
 				<h3><a href="#">Student Information</a></h3>
 				
 					<div id="Student_Information" style="background-color: #FFFFFF;">
@@ -196,13 +196,13 @@
 							</div>
 				
 			</div>
-			<div title="Student Additional Information">
+			<div>
 				<h3><a href="#">Student Additional Information</a></h3>
 				<div id="Student_Additional_Information">
 					<jsp:include page="/studentOperation/add_edit_student_by_demographic.jsp" />
 				</div>
 			</div>
-			<div title="Student Accommodation Information">
+			<div>
 				<h3><a href="#">Specific Accommodation</a></h3>
 				<div id="Student_Accommodation_Information">
 					<jsp:include page="/studentOperation/add_edit_student_by_accommodation.jsp" />
