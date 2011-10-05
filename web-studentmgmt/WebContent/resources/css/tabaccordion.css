@@ -3,6 +3,8 @@
 	list-style: none;
 	padding: 0 0 0 0;
 	width: 100%;
+	overflow: auto;
+	height: 300px;
 }
 #accordion div {
 	display: block;
@@ -15,6 +17,8 @@
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	border-radius: 10px;
+	overflow: auto;
+	height: 300px;
 }
 
 #accordion a {

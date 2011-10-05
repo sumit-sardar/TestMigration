@@ -34,7 +34,7 @@
 <div id="addEditStudentDetail"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	
-	<div id="displayMessage" style="display:none; width:100%; height:55px; background-color: #FFFFEE; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
+	<div id="displayMessage" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 1px solid #A6C9E2;">
 			<table>
 				<tr>
 					<td rowspan="3"><div id= "messageType">	</div></td>
@@ -48,6 +48,7 @@
 				</tr>
 			</table>
 		</div>
+		<br>
 	<div id="accordion" style="width:99.5%;">
 			
 			<div>
@@ -87,7 +88,7 @@
 											<select style="width: 65px;"  id="dayOptions" name="dayOptions">
 											</select>
 											
-											<select style="width: 65px;"  id="yearOptions" name="yearOptions">
+											<select style="width: 66px;"  id="yearOptions" name="yearOptions">
 											</select>
 										</td>                    
 						   
@@ -95,7 +96,7 @@
 									<tr class="transparent">
 										<td width="110" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Gender:</td>
 										<td class="transparent">
-										 <select id="genderOptions"  name="genderOptions" style="width: 200px;">
+										 <select id="genderOptions"  name="genderOptions" style="width: 202px;">
 										 </select> 
 										</td>
 
@@ -103,7 +104,7 @@
 									<tr class="transparent">
 										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Grade:</td>
 										<td class="transparent">  
-											<select id="gradeOptions" name="gradeOptions" style="width: 200px;">
+											<select id="gradeOptions" name="gradeOptions" style="width: 202px;">
 											</select> 
 										</td>
 									</tr>
@@ -198,13 +199,13 @@
 			</div>
 			<div>
 				<h3><a href="#">Student Additional Information</a></h3>
-				<div id="Student_Additional_Information">
+				<div id="Student_Additional_Information" >
 					<jsp:include page="/studentOperation/add_edit_student_by_demographic.jsp" />
 				</div>
 			</div>
 			<div>
 				<h3><a href="#">Specific Accommodations</a></h3>
-				<div id="Student_Accommodation_Information">
+				<div id="Student_Accommodation_Information" >
 					<jsp:include page="/studentOperation/add_edit_student_by_accommodation.jsp" />
 				</div>
 			</div>

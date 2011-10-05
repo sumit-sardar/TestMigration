@@ -18,7 +18,7 @@
     <tr class="sortable">
         <td style="border-color : #2E6E9E">
         
-      	<div id="displayMessageMain" style="display:none; width:100%; height:55px; background-color: #FFFFEE; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
+      	<div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 1px solid #A6C9E2;">
 			<div id="titleMain"></div>
 			<div id= "contentMain">	</div>
 			<div id= "messageMain">	</div>

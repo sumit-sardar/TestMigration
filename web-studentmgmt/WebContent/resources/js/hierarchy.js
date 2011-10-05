@@ -20,7 +20,7 @@ var SelectedOrgNodeId;
 
 
 function UIBlock(){
-	$.blockUI({ message: '<img src="/StudentManagementWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'0px',  top:  ($(window).height() - 0) /2 + 'px', left: ($(window).width() - 0) /2 + 'px' 
+	$.blockUI({ message: '<img src="/StudentManagementWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
 	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 
 }
 
@@ -381,10 +381,13 @@ document.getElementById('displayMessageMain').style.display = "none";
 												 	modal: true,
 												 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		 	
-												 	});	 
-							 $("#Student_Information").css("height",'auto');
-							 $("#Student_Additional_Information").css("height",'auto');
-							 $("#Student_Accommodation_Information").css("height",'auto');
+												 	});	
+												 	 
+							 $("#Student_Information").css("height",'300px');
+							 $("#Student_Additional_Information").css("height",'300px');
+							 $("#Student_Additional_Information").css("overflow",'auto');
+							 $("#Student_Accommodation_Information").css("height",'300px');
+							 $("#Student_Accommodation_Information").css("overflow",'auto');
 							 
 							/*var popupHeight = $("#addEditStudentDetail").height();
 							var popupWidth = $("#addEditStudentDetail").width();
@@ -416,9 +419,12 @@ document.getElementById('displayMessageMain').style.display = "none";
 		 	modal: true,
 		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 			});	
-		 	$("#Student_Information").css("height",'auto');
-			$("#Student_Additional_Information").css("height",'auto');
-			$("#Student_Accommodation_Information").css("height",'auto');
+		 	$("#Student_Information").css("height",'300px');
+		 	$("#Student_Information").css("overflow",'auto');
+			$("#Student_Additional_Information").css("height",'300px');
+			$("#Student_Additional_Information").css("overflow",'auto');
+			$("#Student_Accommodation_Information").css("height",'300px');
+			$("#Student_Accommodation_Information").css("overflow",'auto');
 	}	
 	
 }
@@ -492,6 +498,8 @@ function fillDropDown( elementId, optionList) {
 	function closePopUp(dailogId){
 		if(dailogId == 'addEditStudentDetail') {
 			$('#accordion').accordion('activate', 0 );
+			$('#Student_Additional_Information').hide();
+			$('#Student_Accommodation_Information').hide();
 			populateTreeSelect();
 		}
 		$("#"+dailogId).dialog("close");
