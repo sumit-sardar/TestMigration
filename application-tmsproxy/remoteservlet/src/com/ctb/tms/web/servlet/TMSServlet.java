@@ -334,8 +334,12 @@ public class TMSServlet extends HttpServlet {
 		            errorTsd.getError().setMethod("save_testing_session_data");
 		            errorTsd.getError().setStatus("invalid_cid");
 		            errorTsd.getError().setErrorElement(tsd.toString());
-		            manifest.setRosterCompletionStatus("IN");
-		            manifestData[j].setCompletionStatus("IN");
+		            if(!"CO".equals(manifest.getRosterCompletionStatus())) {
+		            	manifest.setRosterCompletionStatus("IN");
+		            }
+		            if(!"CO".equals(manifestData[j].getCompletionStatus())) {
+		            	manifestData[j].setCompletionStatus("IN");
+		            }
 		            oasSink.putManifest(rosterId, accessCode, manifest);
 		            return responseDocument.xmlText();
 		    	}
