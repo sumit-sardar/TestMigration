@@ -2238,8 +2238,14 @@
 						this._prepare_checkboxes();
 					}, this))
 				.delegate("a", "click.jstree", $.proxy(function (e) {
-						if(this._get_node(e.target).hasClass("jstree-checked")) { this.uncheck_node(e.target); }
-						else { this.check_node(e.target); }
+						if(this._get_node(e.target).attr("categoryid") != "undefined" &&  this._get_node(e.target).attr("categoryid")== leafNodeCategoryId){
+						if(this._get_node(e.target).hasClass("jstree-checked")) { 
+						this.uncheck_node(e.target); 
+						}
+						else {
+						 this.check_node(e.target);
+						  }
+						  }
 						if(this.data.ui) { this.save_selected(); }
 						if(this.data.cookies) { this.save_cookie("select_node"); }
 						e.preventDefault();
@@ -2297,7 +2303,7 @@
 					}
 				});
 				if(this.data.ui) { this.data.ui.selected = this.get_checked(); }
-				this.__callback(obj);
+				//this.__callback(obj);
 			},
 			check_node : function (obj) {
 				this.change_state(obj, false);
