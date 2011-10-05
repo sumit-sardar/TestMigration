@@ -538,6 +538,22 @@ public class StudentOperationController extends PageFlowController {
 		
 	}
 
+	//Added for color font preview button
+	/**
+	 * @jpf:action
+	 * @jpf:forward name="success" path="/previewer/PreviewerController.jpf"
+	 */
+	@Jpf.Action(forwards = { 
+			@Jpf.Forward(name = "success",
+					path = "/previewer/PreviewerController.jpf")
+	})
+	protected Forward colorFontPreview()
+	{      
+		String param = getRequest().getParameter("param");
+		getSession().setAttribute("param", param);
+
+		return new Forward("success");
+	}
 
 
 	/**

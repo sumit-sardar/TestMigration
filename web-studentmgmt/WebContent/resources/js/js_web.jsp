@@ -172,11 +172,11 @@ function openColorPreviewWindow()
     else
         param = param + "1.5" + ",";
 
-	var firstName = document.getElementById("firstName").value;
+	var firstName = document.getElementById("studentFirstName").value;
     firstName = encodeString(firstName);
     param = param + firstName + ",";
         
-	var lastName = document.getElementById("lastName").value;
+	var lastName = document.getElementById("studentLastName").value;
     lastName = encodeString(lastName);
     param = param + lastName + ",";
 
