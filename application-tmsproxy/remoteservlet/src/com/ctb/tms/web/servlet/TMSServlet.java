@@ -322,7 +322,10 @@ public class TMSServlet extends HttpServlet {
 		    	int rosterCid = manifest.getRosterCorrelationId();
 		    	int thisCid = tsd.getCid().intValue();
 		    	logger.debug("Cached CID: " + rosterCid + ", this message CID: " + thisCid);
-		    	if(rosterCid != thisCid) {
+		    	if(rosterCid == 0) {
+		    		manifest.setRosterCorrelationId(thisCid);
+					updateCID(rosterId, thisCid, accessCode);
+		    	} else if(rosterCid != thisCid) {
 		    		responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
 		            saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
 		            noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd errorTsd = saveResponse.addNewTsd();
@@ -435,7 +438,7 @@ public class TMSServlet extends HttpServlet {
 				    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("CO");
 				    			manifestData[j].setEndTime(System.currentTimeMillis());
-				    			if(j < manifestData.length && ("TB".equals(manifestData[j].getProduct()) && manifestData.length > 8 && "L".equals(manifestData[j].getLevel()))) {
+				    			if(j < manifestData.length && (("TB".equals(manifestData[j].getProduct()) || "TL".equals(manifestData[j].getProduct())) && "L".equals(manifestData[j].getLevel()))) {
 				    				// we just completed a locator subtest of a single-TAC auto-located TABE assessment
 				    	    		handleTabeLocator(rosterId);
 				    	    		manifest = oasSource.getManifest(rosterId, accessCode);
@@ -453,12 +456,6 @@ public class TMSServlet extends HttpServlet {
 				    		e.printStackTrace();
 				    	}
 			    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
-			    		if(j < manifestData.length && (("TL".equals(manifestData[j].getProduct()) || "TB".equals(manifestData[j].getProduct())) && "L".equals(manifestData[j].getLevel()))) {
-		    				// we just completed the locator assessment
-		    	    		handleTabeLocator(rosterId);
-		    	    		manifest = oasSource.getManifest(rosterId, accessCode);
-		    	    		manifestData = manifest.getManifest();
-				    	}
 			    		manifest.setRosterEndTime(new Timestamp(System.currentTimeMillis()));
 			    		/*boolean allComplete = true;
 			    		for(int n=0;n<manifestData.length;n++) {
@@ -624,11 +621,16 @@ public class TMSServlet extends HttpServlet {
 		int restartCount = restart.intValue();
 		logger.debug("Restart count: " + restartCount);
 		
-		int thisCid = Integer.parseInt(lr.getCid());
-		manifest.setRosterCorrelationId(thisCid);
-		if(restartCount > 0) {
-			// try to optimize by only setting cid on other manifests if they've been accessed - this may be risky
-			updateCID(testRosterId, thisCid, creds.getAccesscode());
+		if(lr.getCid() != null) {
+			int thisCid = Integer.parseInt(lr.getCid());
+			manifest.setRosterCorrelationId(thisCid);
+			if(restartCount > 0) {
+				// try to optimize by only setting cid on other manifests if they've been accessed - this may be risky
+				updateCID(testRosterId, thisCid, creds.getAccesscode());
+			}
+		} else {
+			manifest.setRosterCorrelationId(0);
+			updateCID(testRosterId, 0, creds.getAccesscode());
 		}
 
 		ManifestData[] manifesta = manifest.getManifest();

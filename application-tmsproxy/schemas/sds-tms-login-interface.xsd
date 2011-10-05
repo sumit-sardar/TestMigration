@@ -69,7 +69,7 @@
 							</xs:annotation>
 						</xs:attribute>
 						<xs:attribute name="cid"
-							type="xs:string" use="required">
+							type="xs:string" use="optional">
 							<xs:annotation>
 								<xs:documentation>
 									Correlation id used to prevent multiple logins with same credentials
