@@ -216,7 +216,7 @@ public class OASOracleSink implements OASRDBSink {
 				}
     		}
     	} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			try {
 				if(stmt1 != null) stmt1.close();

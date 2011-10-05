@@ -67,24 +67,29 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			newManifests.add(manifest);
 		}
 		manifests = (Manifest[]) newManifests.toArray(new Manifest[0]);
-		Timestamp latestStartTime = new Timestamp(0);
+		int latestMseq = 0;
+		int restartCount = 0;
 		String rosterStatus = "";
 		boolean allcoManifest = true;
 		for(int i=0;i<manifests.length;i++) {
-			if(manifests[i].getRosterStartTime() == null) {
-				manifests[i].setRosterStartTime(new Timestamp(1));
-			}
-			logger.debug("comparing " + manifests[i].getRosterStartTime() + " to " + latestStartTime);
-			if(manifests[i].getRosterStartTime().after(latestStartTime)) {
+			logger.debug("comparing " + manifests[i].getRosterLastMseq() + " to " + latestMseq);
+			if(manifests[i].getRosterLastMseq() > latestMseq) {
 				rosterStatus = manifests[i].getRosterCompletionStatus();
-				latestStartTime = manifests[i].getRosterStartTime();
+				latestMseq = manifests[i].getRosterLastMseq();
 				if(!"CO".equals(rosterStatus)) {
 					allcoManifest = false;
 				} else if(!allcoManifest) {
 					rosterStatus = "IS";
 				}
 			}
+			if(manifests[i].getRosterRestartNumber() > restartCount) {
+				restartCount = manifests[i].getRosterRestartNumber();
+			}
+		}
+		for(int i=0;i<manifests.length;i++) {
 			manifests[i].setRosterCompletionStatus(rosterStatus);
+			manifests[i].setRosterRestartNumber(restartCount);
+			manifests[i].setRosterLastMseq(latestMseq);
 		}
 		manifestCache.put(key, manifests);
 	}
