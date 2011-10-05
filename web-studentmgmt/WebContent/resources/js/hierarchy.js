@@ -143,7 +143,7 @@ function createMultiNodeSelectedTree(jsondata) {
 	    		  }
 	  		});
 	  		
-	  	
+	  	if($(this).attr("categoryid") == leafNodeCategoryId){
 		 	var currentlySelectedNode ="";
 			assignedOrgNodeIds = "";
 			$("#innerID").find(".jstree-checked").each(function(i, element){
@@ -172,7 +172,7 @@ function createMultiNodeSelectedTree(jsondata) {
 					$("#selectedOrgNodesName").text("");	
 				}
 		
-		
+			}
 		});
    
 }
@@ -204,7 +204,7 @@ function createMultiNodeSelectedTree(jsondata) {
          $("#list2").jqGrid({         
           url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
-	     datatype: "json",         
+		 datatype: "json",         
           colNames:['Last Name','First Name', 'M.I.', 'Grade','Organization', 'Gender', 'Accommodation', 'Login ID', studentIdTitle],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -271,7 +271,7 @@ function createMultiNodeSelectedTree(jsondata) {
          $("#list2").jqGrid({         
           url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
-	     datatype: "json",         
+		 datatype: "json",         
           colNames:['Last Name','First Name', 'M.I.', 'Grade','Organization', 'Gender', 'Login ID', studentIdTitle],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -296,6 +296,18 @@ function createMultiNodeSelectedTree(jsondata) {
 			//height: "500px",  
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			caption:"Search Result",
+			onPaging: function() {
+				var reqestedPage = parseInt($('#list2').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_pager2').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#list2').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#list2').setGridParam({"page": minPageSize});
+				}
+				
+			},
 			loadComplete: function () {
 				if ($('#list2').getGridParam('records') === 0) {
             	$('#sp_1_pager2').text("1");
