@@ -6,29 +6,18 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/bcprov-jdk14-130.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/cassandra-all-0.7.4.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/cassandra-javautils-0.7.0.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/commons-codec.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/commons-httpclient-3.0.1.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/commons-logging.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/commons-pool-1.5.3.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/CommunicatorS.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/ctb-webutils.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/DExCrypto.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/FastInfoset-1.2.2.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/guava-r08.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/hector-core-0.7.0-29.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/high-scale-lib-1.1.1.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/jdom.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/jl1.0.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/jsapi.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/jul-to-slf4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/libthrift-0.5.0.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/log4j.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/perf4j-0.9.12.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/slf4j-api-1.6.1.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/speech.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/uuid-3.2.0.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/coherence.jar"/>
 	<classpathentry kind="lib" path="C:/bea/wlserver_10.3/server/lib/wlclient.jar"/>
@@ -39,6 +28,7 @@
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/httpclient-cache-4.1.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/httpcore-4.1.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/httpmime-4.1.jar"/>
-	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/jspeex.jar"/>
+	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/ctb-webutils.jar"/>
+	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/CommunicatorS.jar"/>
 	<classpathentry kind="output" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/classes"/>
 </classpath>

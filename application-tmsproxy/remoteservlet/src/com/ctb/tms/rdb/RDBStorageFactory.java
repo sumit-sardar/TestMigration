@@ -4,10 +4,6 @@ import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
-import com.ctb.tms.rdb.hsql.ADSHSQLSink;
-import com.ctb.tms.rdb.hsql.ADSHSQLSource;
-import com.ctb.tms.rdb.hsql.OASHSQLSink;
-import com.ctb.tms.rdb.hsql.OASHSQLSource;
 import com.ctb.tms.rdb.oracle.ADSOracleSink;
 import com.ctb.tms.rdb.oracle.ADSOracleSource;
 import com.ctb.tms.rdb.oracle.OASOracleSink;
@@ -47,10 +43,7 @@ public class RDBStorageFactory {
 	
 	public static OASRDBSource getOASSource() {
 		if(oasSource == null) {
-			if(HSQL.equals(oassource)) {
-				logger.info("*****  Using OASHSQLSource");
-				oasSource = new OASHSQLSource();
-			} else if (ORACLE.equals(oassource)) {
+			if (ORACLE.equals(oassource)) {
 				logger.info("*****  Using OASOracleSource");
 				oasSource = new OASOracleSource();
 			} else {
@@ -64,10 +57,7 @@ public class RDBStorageFactory {
 	
 	public static OASRDBSink getOASSink() {
 		if(oasSink == null) {
-			if(HSQL.equals(oassink)) {
-				logger.info("*****  Using OASHSQLSink");
-				oasSink = new OASHSQLSink();
-			} else if (ORACLE.equals(oassink)) {
+			if (ORACLE.equals(oassink)) {
 				logger.info("*****  Using OASOracleSink");
 				oasSink = new OASOracleSink();
 			} else {
@@ -81,10 +71,7 @@ public class RDBStorageFactory {
 	
 	public static ADSRDBSource getADSSource() {
 		if(adsSource == null) {
-			if(HSQL.equals(adssource)) {
-				logger.info("*****  Using ADSHSQLSource");
-				adsSource = new ADSHSQLSource();
-			} else if (ORACLE.equals(adssource)) {
+			if (ORACLE.equals(adssource)) {
 				logger.info("*****  Using ADSOracleSource");
 				adsSource = new ADSOracleSource();
 			} else {
@@ -98,10 +85,7 @@ public class RDBStorageFactory {
 	
 	public static ADSRDBSink getADSSink() {
 		if(adsSink == null) {
-			if(HSQL.equals(adssink)) {
-				logger.info("*****  Using ADSHSQLSink");
-				adsSink = new ADSHSQLSink();
-			} else if (ORACLE.equals(adssink)) {
+			if (ORACLE.equals(adssink)) {
 				logger.info("*****  Using ADSOracleSink");
 				adsSink = new ADSOracleSink();
 			} else {
