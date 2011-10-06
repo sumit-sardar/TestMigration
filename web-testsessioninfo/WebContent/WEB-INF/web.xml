@@ -69,7 +69,7 @@
         <load-on-startup>2</load-on-startup>
     </servlet>
     <session-config>
-        <session-timeout>2000</session-timeout>
+        <session-timeout>20</session-timeout>
     </session-config>
     <mime-mapping>
         <extension>css</extension>
