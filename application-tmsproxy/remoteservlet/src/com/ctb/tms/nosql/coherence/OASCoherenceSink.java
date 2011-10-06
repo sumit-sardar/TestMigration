@@ -67,7 +67,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			newManifests.add(manifest);
 		}
 		manifests = (Manifest[]) newManifests.toArray(new Manifest[0]);
-		int latestMseq = 0;
+		int latestMseq = -1;
 		int restartCount = 0;
 		String rosterStatus = "";
 		boolean allcoManifest = true;
