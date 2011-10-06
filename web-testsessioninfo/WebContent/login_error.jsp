@@ -129,16 +129,28 @@
             
             <tr height="32">
                 <td width="65px" align="right"><b>Username:</b></td>
-                <td><input type="text" id="j_username" name="j_username" value="<%= username %>" maxlength="32" style="width: 180px" /></td>
+                <td>
+                	<input type="text" id="j_username" name="j_username" value="<%= username %>" 
+                	maxlength="32" style="width: 180px" tabindex="1"
+                	onkeypress="return handleEnterKey(event, this);" />
+                </td>
             </tr>
             <tr height="32">
                 <td width="65px" align="right"><b>Password:</b></td>
-                <td><input type="password" id="j_password" name="j_password" value="<%= password %>"  maxlength="32" style="width: 180px" /></td>
+                <td>
+                	<input type="password" id="j_password" name="j_password" value="<%= password %>"  
+                	maxlength="32" style="width: 180px" tabindex="2"
+                	onkeypress="return handleEnterKey(event, this);" />
+                </td>
             </tr>
             <tr height="32">
                 <td>&nbsp;</td>
                 <td>                  
-                	<a href="#" onclick="submitPage();" class="rounded {transparent} button">Log In</a>                	
+                	<a href="#" onclick="submitPage();" class="rounded {transparent} button" tabindex="3"
+                	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
+                	onkeypress="return handleEnterKey(event, this);" >
+                	Log In
+                	</a>                	
                 </td>
             </tr>
             <tr height="32"> 
@@ -156,7 +168,12 @@
             <tr>
                 <td>&nbsp;</td>
                 <td>
-                	<a href="#" onclick="document.location = '/TestSessionInfoWeb/findPassword/FindPasswordController.jpf?username=' + document.getElementById('j_username').value" class="rounded {transparent} button">Get New Password</a>                	
+                	<a href="#" onclick="showLoading(); document.location = '/TestSessionInfoWeb/findPassword/FindPasswordController.jpf?username=' + document.getElementById('j_username').value" 
+                	class="rounded {transparent} button" tabindex="4"
+                	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
+                	onkeypress="return handleEnterKey(event, this);" >
+                	Get New Password
+                	</a>                	
                 </td> 
             </tr>
             </table>

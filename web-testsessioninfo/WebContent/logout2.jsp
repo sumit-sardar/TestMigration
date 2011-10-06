@@ -118,8 +118,12 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2">      
-                	<a href="#" onclick="submitPage();" class="rounded {transparent} button">Log In</a>
+                <td colspan="2">                  
+                	<a href="#" onclick="submitPage();" class="rounded {transparent} button" tabindex="0"
+                	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
+                	onkeypress="return handleEnterKey(event, this);" >
+                	Log In
+                	</a>                	
                 </td>
             </tr>
             </table>

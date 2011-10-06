@@ -38,3 +38,27 @@ function showLoading()
 		left: ($(window).width() - 0) /2 + 'px'}}); 				 
 }
 	
+
+function handleEnterKey( e, element ) {
+    var keyId = (window.event) ? event.keyCode : e.which;
+    var keyValue = String.fromCharCode( keyId );
+    var regExp = /\d/;
+    var results = false;
+    
+    if ( keyId == 13 ) {
+        element.form.submit();
+        return false;
+    }
+         
+    return true;
+}
+
+
+function handleFocus( e, element ) {
+	element.className = "buttonFocus";
+}
+
+function handleBlur( e, element ) {
+	element.className = "button";
+}
+	

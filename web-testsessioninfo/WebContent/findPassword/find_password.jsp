@@ -111,21 +111,29 @@ function ignoreEnterKey( e ) {
             <tr height="32">
                 <td width="80" align="right"><b>* Hint Answer:</b></td>
                 <td>
-                    <netui:textBox dataSource="pageFlow.hintAnswer" maxlength="255" style="width: 180px" onKeyPress="return ignoreEnterKey( event );"/>
+                    <netui:textBox dataSource="pageFlow.hintAnswer" maxlength="255" style="width: 180px" tabindex="1" onKeyPress="return ignoreEnterKey( event );"/>
                 </td>
             </tr>
             <tr height="32">
                 <td width="80" align="right"><b>Email:</b></td>
                 <td>
-                    <netui:textBox dataSource="pageFlow.email" maxlength="64" style="width: 180px" onKeyPress="return ignoreEnterKey( event );"/>
+                    <netui:textBox dataSource="pageFlow.email" maxlength="64" style="width: 180px" tabindex="2" onKeyPress="return ignoreEnterKey( event );"/>
                 </td>
             </tr>
             <tr height="32">
                 <td>&nbsp;</td>
-                <td>                  
-                	<a href="#" onclick="gotoAction('backToLogin.do');" class="rounded {transparent} button">Cancel</a>
+                <td>    
+                	<a href="#" onclick="gotoAction('backToLogin.do');" class="rounded {transparent} button" tabindex="3"
+                	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
+                	onkeypress="return handleEnterKey(event, this);" >
+                	Cancel
+                	</a>                	
                 	&nbsp;                	
-                	<a href="#" onclick="gotoAction('getPassword.do');" class="rounded {transparent} button">Get New Password</a>                	
+                	<a href="#" onclick="gotoAction('getPassword.do');" class="rounded {transparent} button" tabindex="3"
+                	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
+                	onkeypress="return handleEnterKey(event, this);" >
+                	Get New Password
+                	</a>                	
                 </td>
             </tr>
             </table>
