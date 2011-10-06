@@ -552,6 +552,23 @@ public class TMSServlet extends HttpServlet {
         oasSink.putAllManifests(testRosterId, manifesta);
     }
 	
+	private boolean checkForIncompleteTabeLocatorSubtests(String testRosterId) throws SQLException, IOException, ClassNotFoundException {
+        Manifest[] manifesta = oasSource.getAllManifests(testRosterId);
+        for(int i=0;i<manifesta.length;i++) {
+        	Manifest manifest = manifesta[i];
+        	ManifestData[] mda = manifest.getManifest();
+        	for(int j=0;j<mda.length;j++) {
+        		ManifestData md = mda[j];
+        		if("L".equals(md.getLevel())) {
+        			if(!"CO".equals(md.getCompletionStatus())) {
+        				return true;
+        			}
+        		}
+        	}
+        }
+        return false;
+    }
+	
 	private void updateCID(String testRosterId, int cid, String currentAccessCode) throws IOException, ClassNotFoundException {
 		// necessary to kick out same student using different access code . . .
 		Manifest[] allManifests = oasSource.getAllManifests(testRosterId);
@@ -599,9 +616,9 @@ public class TMSServlet extends HttpServlet {
 		}
 		
 		ManifestData md = manifest.getManifest()[0];
-		if(("TB".equals(md.getProduct()) && manifest.getManifest().length == 8) && !"L".equals(md.getLevel())) {
+		if("TB".equals(md.getProduct()) && !"L".equals(md.getLevel()) && checkForIncompleteTabeLocatorSubtests(testRosterId)) {
 			// we're in a non-locator section of a multi-TAC auto-located TABE assessment
-    		// manifest hasn't been shortened, must not have completed relevant locator subtest
+    		// and have not completed relevant locator subtest
 			TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
             LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.LOCATOR_SUBTEST_NOT_COMPLETED_STATUS);

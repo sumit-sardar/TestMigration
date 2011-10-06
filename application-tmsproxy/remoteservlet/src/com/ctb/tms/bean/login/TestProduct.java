@@ -43,7 +43,14 @@ public class TestProduct
     private String subtestsLevelsVary;
     private String supportPhoneNumber;
     private String offGradeTestingDisabled;
+    private String logoURI;
     
+	public String getLogoURI() {
+		return logoURI;
+	}
+	public void setLogoURI(String logoURI) {
+		this.logoURI = logoURI;
+	}
 	//License
     private String productLicenseEnabled;
     
