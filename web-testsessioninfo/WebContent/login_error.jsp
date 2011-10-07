@@ -115,7 +115,7 @@
                     <table>
                         <tr>
                             <td valign="center">
-                                <img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="32" height="32">&nbsp;&nbsp;
+                                <img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
                             </td>
                             <td valign="center">
                                 <font style="color: red; font-size:12px; font-weight:bold"><span><%= errorMsg %></span></font>

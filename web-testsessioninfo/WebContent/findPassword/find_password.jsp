@@ -87,7 +87,7 @@ function ignoreEnterKey( e ) {
                     <table>
                         <tr>
                             <td align="center">
-                                <img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="32" height="32">
+                                <img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">
                             </td>
                             <td align="center">
                                 <font style="color: red; font-size:12px; font-weight:bold"><span><%= errorMsg %></span></font>
