@@ -121,7 +121,16 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					}
 					for(int i=0;i<creds.length;i++) {
 						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
-						if(rosterMap.get(key) == null) {
+						Long mapManifestHash = (Long)rosterMap.get(key);
+						if(mapManifestHash == null || !mapManifestHash.equals(creds[i].getManifestHash())) {
+							if (mapManifestHash != null && !mapManifestHash.equals(creds[i].getManifestHash())) {
+								RosterData rosterData = oasSource.getRosterData(creds[i]);
+								if(rosterData != null && rosterData.getAuthData() != null) {
+									oasSink.deleteAllManifests(String.valueOf(rosterData.getAuthData().getTestRosterId()));
+								}
+								oasSink.deleteRosterData(creds[i]);
+								logger.info("*****  Manifest changed for " + key + ", removing old manifest data from cache");
+							}
 							RosterData rosterData = oasSource.getRosterData(creds[i]);
 							if(rosterData != null && rosterData.getAuthData() != null) {
 								Manifest manifest = oasSource.getManifest(String.valueOf(rosterData.getAuthData().getTestRosterId()), creds[i].getAccesscode());
@@ -129,12 +138,12 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 									manifest.setRandomDistractorSeed(rosterData.getAuthData().getRandomDistractorSeedNumber());
 									logger.info("*****  Got roster data for " + key);
 								} else {
-									logger.info("*****  No valid manifest in DB for " + key);
+									logger.debug("*****  No valid manifest in DB for " + key);
 								}
 							} else {
-								logger.info("*****  No valid manifest in DB for " + key);
+								logger.debug("*****  No valid manifest in DB for " + key);
 							}
-							rosterMap.put(key, key);
+							rosterMap.put(key, creds[i].getManifestHash());
 						} else {
 							logger.debug("*****  Roster data for " + key + " already present.\n");
 						}
@@ -172,7 +181,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						if(message != null && (System.currentTimeMillis() - message.timestamp) > 60000 ) {
 							message = rosterQueue.poll();
 							JMSUtils.sendMessage(Integer.valueOf(message.getTestRosterId()));
-							logger.info("*****  Sent scoring message for roster " + message.getTestRosterId());
+							logger.debug("*****  Sent scoring message for roster " + message.getTestRosterId());
 						} else {
 							Thread.sleep(1000);
 						}

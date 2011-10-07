@@ -4,6 +4,15 @@ public class StudentCredentials {
 	private String username;
 	private String password;
 	private String accesscode;
+	
+	private Long manifestHash;
+	
+	public Long getManifestHash() {
+		return manifestHash;
+	}
+	public void setManifestHash(Long manifestHash) {
+		this.manifestHash = manifestHash;
+	}
 	public String getUsername() {
 		return username.toUpperCase();
 	}

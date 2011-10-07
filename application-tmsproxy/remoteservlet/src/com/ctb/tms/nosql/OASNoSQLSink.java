@@ -3,6 +3,8 @@ package com.ctb.tms.nosql;
 import java.io.IOException;
 import java.math.BigInteger;
 
+import org.apache.xmlbeans.XmlException;
+
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
 import com.ctb.tms.bean.login.Manifest;
@@ -20,4 +22,8 @@ public interface OASNoSQLSink {
 	public void putItemResponse(String testRosterId, Tsd tsd) throws IOException;
 	
 	public void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException;
+	
+	public void deleteAllManifests(String testRosterId) throws XmlException, IOException, ClassNotFoundException;
+
+	public void deleteRosterData(StudentCredentials creds) throws IOException;
 }

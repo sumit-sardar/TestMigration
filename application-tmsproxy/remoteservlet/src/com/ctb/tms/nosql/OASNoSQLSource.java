@@ -15,7 +15,7 @@ public interface OASNoSQLSource {
 	public RosterData getRosterData(StudentCredentials creds) throws XmlException, IOException, ClassNotFoundException;
 	
 	public Manifest getManifest(String testRosterId, String accessCode) throws XmlException, IOException, ClassNotFoundException;
-
+	
 	public Tsd[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException;
 	
 	public Manifest[] getAllManifests(String testRosterId) throws IOException, ClassNotFoundException;

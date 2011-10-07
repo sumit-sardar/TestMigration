@@ -78,7 +78,7 @@ public class OASOracleSink implements OASRDBSink {
 	                    	storeResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), null, ist.getDur(), tsd.getMseq(), studentMarked);
 	                        storeCRResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked, audioItem);
 	                    }
-	                    logger.info("OASOracleSink: Stored response records in DB for roster " + testRosterId + ", mseq " + tsd.getMseq());
+	                    logger.debug("OASOracleSink: Stored response records in DB for roster " + testRosterId + ", mseq " + tsd.getMseq());
 	                 }
 	            }else{ 
 	                String response = "";                   
@@ -167,7 +167,7 @@ public class OASOracleSink implements OASRDBSink {
 	    			stmt1.setString(11, testRosterId);
 	    			stmt1.setInt(12, subtest.getId());
 	    			stmt1.executeUpdate();
-	    			logger.info("OASOracleSink: Updated subtest status for roster: " + testRosterId + ", subtest: " + subtest.getId() + ". Status is: " + subtest.getCompletionStatus());
+	    			logger.debug("OASOracleSink: Updated subtest status for roster: " + testRosterId + ", subtest: " + subtest.getId() + ". Status is: " + subtest.getCompletionStatus());
 	    			stmt1.close();
 	    			stmt1 = null;
 	    		}
@@ -193,7 +193,7 @@ public class OASOracleSink implements OASRDBSink {
 	    		stmt2.executeUpdate();
 	    		stmt2.close();
 	    		stmt2 = null;
-				logger.info("OASOracleSink: Updated roster status for roster: " + testRosterId + ". Status is: " + manifest.getRosterCompletionStatus());
+				logger.debug("OASOracleSink: Updated roster status for roster: " + testRosterId + ". Status is: " + manifest.getRosterCompletionStatus());
 				if("TB".equals(subtests[0].getProduct()) || "TL".equals(subtests[0].getProduct())) {
 					stmt3 = conn.prepareStatement(SUBTEST_CLEANUP_SQL.replaceAll("itemSetIdList", subtestList));
 		    		stmt3.setString(1, testRosterId);

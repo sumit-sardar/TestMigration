@@ -475,7 +475,7 @@ public class TMSServlet extends HttpServlet {
 			    		//}
 			    		if("T".equals(manifestData[0].getScorable())) {
 			    			TestDeliveryContextListener.enqueueRoster(new ScoringMessage(System.currentTimeMillis(), rosterId));
-			    			logger.info("TMSServlet: save: sent scoring message for roster " + rosterId);
+			    			logger.debug("TMSServlet: save: sent scoring message for roster " + rosterId);
 			            }
 			    	}
 			    }
@@ -485,7 +485,7 @@ public class TMSServlet extends HttpServlet {
 	    			manifest.setRosterCompletionStatus("IP");
 	    		}
 	    		oasSink.putManifest(rosterId, accessCode, manifest);
-	    		logger.info("TMSServlet: save: updated manifest for roster " + rosterId);
+	    		logger.debug("TMSServlet: save: updated manifest for roster " + rosterId);
 		    }
         }
 	    
@@ -665,7 +665,7 @@ public class TMSServlet extends HttpServlet {
             	Tsd[] irt = null;
             	ConsolidatedRestartData restartData = null;
             	irt = oasSource.getItemResponses(testRosterId);
-            	logger.info("TMSServlet: found " + irt.length + " responses in cache.");
+            	logger.debug("TMSServlet: found " + irt.length + " responses in cache.");
             	boolean responsesInCache = (irt != null && irt.length > 0);
             	ConsolidatedRestartData[] crda = loginResponse.getConsolidatedRestartDataArray();
             	if(crda != null && crda.length > 0) {
@@ -686,7 +686,7 @@ public class TMSServlet extends HttpServlet {
             	restartData = loginResponse.getConsolidatedRestartDataArray(0);
             	RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
                 gotRestart = true;
-                logger.info("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
+                logger.debug("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
             } 
             if (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
             	//scomap.remove(String.valueOf(manifesta[i].getId()));

@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlException;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
@@ -107,5 +108,15 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	public void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException {
 		String key = testRosterId + ":" + mseq;
 		responseCache.remove(key);
+	}
+	
+	public void deleteAllManifests(String testRosterId) throws XmlException, IOException, ClassNotFoundException {
+		String key = testRosterId;
+		manifestCache.remove(key);
+	}
+
+	public void deleteRosterData(StudentCredentials creds) throws IOException {
+		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
+		rosterCache.remove(key);
 	}
 }
