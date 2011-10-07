@@ -115,7 +115,7 @@ function ignoreEnterKey( e ) {
                 </td>
             </tr>
             <tr height="32">
-                <td width="80" align="right"><b>Email:</b></td>
+                <td width="80" align="right"><b>* Email:</b></td>
                 <td>
                     <netui:textBox dataSource="pageFlow.email" maxlength="64" style="width: 180px" tabindex="2" onKeyPress="return ignoreEnterKey( event );"/>
                 </td>
