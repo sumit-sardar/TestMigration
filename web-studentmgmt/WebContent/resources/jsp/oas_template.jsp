@@ -3,8 +3,6 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
 <html>
 
   <head>
@@ -30,6 +28,13 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/dialogs.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.corners.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
+    
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifystudentinfo.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
+	<script type="text/javascript" src="/StudentManagementWeb/resources/js/studentregistration.js"></script>
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>   

@@ -199,13 +199,13 @@
 			</div>
 			<div>
 				<h3><a href="#">Student Additional Information</a></h3>
-				<div id="Student_Additional_Information" >
-					<jsp:include page="/studentOperation/add_edit_student_by_demographic.jsp" />
+				<div id="Student_Additional_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
+					<jsp:include page="/studentOperation/add_edit_student_by_demographic.jsp" />				
 				</div>
 			</div>
 			<div>
 				<h3><a href="#">Specific Accommodations</a></h3>
-				<div id="Student_Accommodation_Information" >
+				<div id="Student_Accommodation_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
 					<jsp:include page="/studentOperation/add_edit_student_by_accommodation.jsp" />
 				</div>
 			</div>

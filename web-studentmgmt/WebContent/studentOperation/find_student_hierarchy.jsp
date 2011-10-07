@@ -1,16 +1,5 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>   
-<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
-<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifystudentinfo.js"></script>
-<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
-<script type="text/javascript" src="/StudentManagementWeb/resources/js/studentregistration.js"></script>
-
-	
-
-
-
 
 
 <table class="sortable">
