@@ -20,6 +20,8 @@
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.corners.js"></script> 
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/main.js"></script>    
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>    
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>    
   	<script type="text/javascript" src="<%=request.getContextPath()%>/sanitize.js"></script>    
   	  
 </head>
@@ -171,15 +173,15 @@ function ignoreEnterKey( e ) {
 						    </span>
 						
 						    <span>
-						        Subject to <a href="/html/terms_of_use.html" onClick="showTermsOfUseWindow(this.href); return false;">Terms of Use</a>.
+						        Subject to <a href="<%=request.getContextPath()%>/resources/html/terms_of_use.html" onClick="showTermsOfUseWindow(this.href); return false;">Terms of Use</a>.
 						    </span>
 						
 						    <span>
-						        Read our <a href="/html/privacy_policy.html" onClick="showPrivacyPolicyWindow(this.href); return false;">Privacy Policy Online</a>.
+						        Read our <a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onClick="showPrivacyPolicyWindow(this.href); return false;">Privacy Policy Online</a>.
 						    </span>
 						
 						    <span>
-						        Review <a href="/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;">COPPA Policy</a>.
+						        Review <a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;">COPPA Policy</a>.
 						    </span>
 						</td>
 					  </tr>
