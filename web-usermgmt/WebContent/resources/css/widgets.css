@@ -286,7 +286,7 @@ table.simple {
     border-collapse: collapse; 
     border-color: #996; 
     border-style: solid; 
-    border-width: 1px; 
+    border-width: 0px; 
     width: 100%;
 }
 
@@ -1283,4 +1283,13 @@ table.p table.pager .textField {
     font-size: 11px;
     text-align: left;
     padding: 3px;
+}
+
+.buttonPopup {
+	background-color: #CCCC99;
+	font-family: Arial, Verdana, Sans Serif; !important
+	font-size: 12px; !important
+	font-style: normal; 
+	font-weight: normal;
+	height: 30px;
 }

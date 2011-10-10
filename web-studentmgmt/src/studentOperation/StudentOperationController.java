@@ -1814,15 +1814,19 @@ public class StudentOperationController extends PageFlowController {
 	    return new Forward("success");
 	}
 	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "organizations_manageUsers.jsp") 
-	    }) 
+    @Jpf.Action()
 	protected Forward organizations_manageUsers()
 	{
-		initialize();
-		this.getRequest().setAttribute("isFindStudent", Boolean.FALSE);
-		
-	    return new Forward("success");
+        try
+        {
+            String url = "/UserManagementWeb/userOperation/organizations.do?menuId=usersLink";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
 	}
 
     /**
@@ -1862,22 +1866,6 @@ public class StudentOperationController extends PageFlowController {
 	    return new Forward(forwardName);
 	}
 	
-	/***
-    @Jpf.Action()
-	protected Forward services_manageLicenses()
-	{
-        try
-        {
-            String url = "/OrganizationManagementWeb/manageLicense/services.do";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
-	}
-	***/
     @Jpf.Action(forwards = { 
             @Jpf.Forward(name = "success", path = "blankPage.jsp") 
         }) 
