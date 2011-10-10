@@ -1,4 +1,3 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -12,11 +11,6 @@
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
-
-
-<!-- 
-template_find_student.jsp
--->
 
 <netui-template:setAttribute name="title" value="${bundle.web['findstudent.window.title']}"/>
 <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.findStudent']}"/>
