@@ -127,7 +127,14 @@ function createMultiNodeSelectedTree(jsondata) {
         "ui" : {  
 	           "select_limit" : 1
          	}, 
- 			"plugins" : [ "themes", "json_data", "checkbox"]
+		
+		"themes" : {
+			"theme" : "apple",
+			"dots" : false,
+			"icons" : true
+		},         	
+         	
+		"plugins" : [ "themes", "json_data", "checkbox"]
    }); 
 
    	
