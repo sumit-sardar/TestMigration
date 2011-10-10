@@ -79,6 +79,11 @@ function createSingleNodeSelectedTree(jsondata) {
 				"progressive_render" : true,
 				"progressive_unload" : true
 	        },
+            "themes" : {
+			    "theme" : "apple",
+			    "dots" : false,
+			    "icons" : true
+			},       
 	        "ui" : {  
 	           "select_limit" : 1
          	}, 

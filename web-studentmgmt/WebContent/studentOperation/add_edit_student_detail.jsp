@@ -175,7 +175,7 @@
 												<tr>
 													<td >
 														<div  id="innerID" 
-																style="background:#ffffee; overflow:auto; height: 235px;  width: 350px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal; position: absolute;">
+																style="overflow:auto; height: 235px;  width: 350px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal; position: absolute;">
 														</div>
 													
 													</td>
