@@ -8,22 +8,38 @@ function submitPage()
   
 function gotoAction(action)
 {
-	showLoading();
+	//alert(document.forms[0].action + " - " + action);
+
     if (action != null) {
+    	/*
+    	if (document.forms[0].action.indexOf(action) >= 0) {
+    		alert("ooop");
+    		return;
+    	}
+    	*/
     	document.forms[0].action = action;
     }
+	showLoading();
    	document.forms[0].submit();
 }    
  
 function gotoMenuAction(action, menuId)
 {	
-	showLoading();
+	//alert(document.forms[0].action + " - " + action);
+
     if (action != null) {
+    	/*
+    	if (document.forms[0].action.indexOf(action) >= 0) {
+    		alert("ooop");
+    		return;
+    	}
+    	*/
     	if (menuId != null) {
     		action = action + "?menuId=" + menuId;
     	}
     	document.forms[0].action = action;
     }
+	showLoading();
    	document.forms[0].submit();
 }    
  

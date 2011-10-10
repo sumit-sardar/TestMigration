@@ -53,6 +53,8 @@
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.corners.js"></script> 
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
   	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/main.js"></script>    
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>    
+  	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>    
 
   
   	<script type="text/javascript">
@@ -151,11 +153,11 @@
         </tr>
         <tr>
             <td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0"></td>
-            <td><a href="html/privacy_policy.html" onclick="return openPrivacyPolicyWindow('html/privacy_policy.html');" >Read our Privacy Policy</a></td>
+            <td><a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onclick="return openPrivacyPolicyWindow(this.href);" >Read our Privacy Policy</a></td>
         </tr>
         <tr>  
             <td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0"></td>
-            <td><a href="html/coppa_policy.html" onClick="return openCOPPAWindow('/TestSessionInfoWeb/resources/html/coppa_policy.html');">Review COPPA Policies</a> and its requirements for parental consents to collect or use personal information concerning children. </td>
+            <td><a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="return openCOPPAWindow('this.href');">Review COPPA Policies</a> and its requirements for parental consents to collect or use personal information concerning children. </td>
         </tr>
         </table>
         <!--End privacy Statement-->
@@ -218,15 +220,15 @@
 						    </span>
 						
 						    <span>
-						        Subject to <a href="/html/terms_of_use.html" onClick="showTermsOfUseWindow(this.href); return false;">Terms of Use</a>.
+						        Subject to <a href="<%=request.getContextPath()%>/resources/html/terms_of_use.html" onClick="showTermsOfUseWindow(this.href); return false;">Terms of Use</a>.
 						    </span>
 						
 						    <span>
-						        Read our <a href="/html/privacy_policy.html" onClick="showPrivacyPolicyWindow(this.href); return false;">Privacy Policy Online</a>.
+						        Read our <a href="<%=request.getContextPath()%>/resources/html/privacy_policy.html" onClick="showPrivacyPolicyWindow(this.href); return false;">Privacy Policy Online</a>.
 						    </span>
 						
 						    <span>
-						        Review <a href="/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;">COPPA Policy</a>.
+						        Review <a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="showCOPPAWindow(this.href); return false;">COPPA Policy</a>.
 						    </span>
 						</td>
 					  </tr>
