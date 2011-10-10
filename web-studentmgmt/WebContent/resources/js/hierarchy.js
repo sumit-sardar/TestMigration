@@ -14,7 +14,7 @@ var assignedOrgNodeIds = "";
 var customerDemographicValue;
 var isValueChanged = false;
 var leafNodeCategoryId;
-var SelectedOrgNodeId;
+var SelectedOrgNodeId=[];
 
 
 
@@ -87,12 +87,13 @@ function createSingleNodeSelectedTree(jsondata) {
 	    });
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
-  			SelectedOrgNodeId = $(this).parent().attr("id");
- 		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
+  			SelectedOrgNodeId = [];
+  			SelectedOrgNodeId.push($(this).parent().attr("id"));
+ 		    $("#treeOrgNodeId").val($(this).parent().attr("id"));
  		     UIBlock();
  		  	if(!gridloaded) {
  		  		gridloaded = true;
- 		  		populateTreeSelect();
+ 		  		//populateTreeSelect();
  		  		var hideAccommodation = $("#supportAccommodations").val();
  		  		if(hideAccommodation == "false")
  		  			populateGridWithoutAccommodation();
@@ -110,35 +111,40 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 function createMultiNodeSelectedTree(jsondata) {
 
-	$("#innerID").bind("loaded.jstree", function (event, data) {  
-		$('#innerID').jstree('open_node', '#'+SelectedOrgNodeId); 
-
-		
-        //$('#innerID').jstree("check_node", '#'+SelectedOrgNodeId); 
-     });  
+	if($("#innerID ul").length>0){
+	 	jQuery.jstree._reference("#innerID").destroy();
+	}
 	
-  $("#innerID").jstree({
-        "json_data" : {	             
-            "data" : jsondata.data,
-			"progressive_render" : true,
-			"progressive_unload" : true
-			
-        },
-        "ui" : {  
-	           "select_limit" : 1
-         	}, 
-		
-		"themes" : {
-			"theme" : "apple",
-			"dots" : false,
-			"icons" : true
-		},         	
-         	
-		"plugins" : [ "themes", "json_data", "checkbox"]
-   }); 
+ 	$("#innerID").bind("loaded.jstree", function (event, data) { 
+  		 for(var count =0;count<SelectedOrgNodeId.length;count++){
+  		 		$("#"+SelectedOrgNodeId[count],"#innerID").parentsUntil("#innerID",".jstree-closed:has(#" +SelectedOrgNodeId[count]+")").each(function (){
+		  		$("#innerID").jstree("open_node", this); 
+			});
+  		 }
+  		
+  	
+		$("#innerID li").not(".jstree-le").each(function() {
+    			var orgcategorylevel = $(this).attr("categoryid");
+    			if(orgcategorylevel != leafNodeCategoryId) {
+	    		  $("a ins.jstree-checkbox", this).first().hide();
+	    		  }
+	  	}); 		
+	  }).jstree({
+	        "json_data" : {	             
+	            "data" : jsondata.data,
+				"progressive_render" : false,
+				"progressive_unload" : false
+				
+	        },  
+	            "themes" : {
+			    "theme" : "apple",
+			    "dots" : false,
+			    "icons" : true
+			},       
+	 			"plugins" : [ "themes", "json_data", "ui", "checkbox"]
+	   });	
 
-   	
-   		$("#innerID li").not(".jstree-leaf").each(function() {
+   		$("#innerID li").not(".jstree-le").each(function() {
     			var orgcategorylevel = $(this).attr("categoryid");
     			if(orgcategorylevel != leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
@@ -357,6 +363,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 		beforeSend:	function(){
 						
 						UIBlock();
+						populateTreeSelect();
 					},
 		url:		'getOptionList.do?isLasLinkCustomer='+$("#isLasLinkCustomer").val(), 
 		type:		'POST',
@@ -395,14 +402,6 @@ document.getElementById('displayMessageMain').style.display = "none";
 							 $("#Student_Additional_Information").css("overflow",'auto');
 							 $("#Student_Accommodation_Information").css("height",'300px');
 							 $("#Student_Accommodation_Information").css("overflow",'auto');
-							 
-							/*var popupHeight = $("#addEditStudentDetail").height();
-							var popupWidth = $("#addEditStudentDetail").width();
-	
-							$.blockUI({message: $('#addEditStudentDetail'), css: { width: '0%', height: '0%', border: '0px', backgroundColor: '#d0e5f5', opacity:  0.8,
-																							top: $(window).height()/2-popupHeight/2,
-																							left: $(window).width()/2-popupWidth/2}});  */
-							 		
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -437,6 +436,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 }
     function reset() {
     	assignedOrgNodeIds = "";
+    	populateTreeSelect();
     	
        jQuery.each(customerDemographicValue, function(i, field){         
       		$("#"+field.name).val(field.value);
@@ -507,7 +507,7 @@ function fillDropDown( elementId, optionList) {
 			$('#accordion').accordion('activate', 0 );
 			$('#Student_Additional_Information').hide();
 			$('#Student_Accommodation_Information').hide();
-			populateTreeSelect();
+			//populateTreeSelect();
 		}
 		$("#"+dailogId).dialog("close");
 		//$.unblockUI(); 
