@@ -259,17 +259,17 @@ function VerifyStudentDetail(assignedOrgNodeIds){
         var A_Z = ((ch >= 65) && (ch <= 90));
         var a_z = ((ch >= 97) && (ch <= 122));
         var zero_nine = ((ch >= 48) && (ch <= 57));
-        var validChar = ((ch == '/') || 
-                             (ch == '\'') || 
-                             (ch == '-') || 
-                             (ch == '\\') || 
-                             (ch == '.') || 
-                             (ch == '(') || 
-                             (ch == ')') || 
-                             (ch == '&') || 
-                             (ch == '+') || 
-                             (ch == ',') || 
-                             (ch == ' '));
+        var validChar = ((str == '/') || 
+                         (str == '\'') || 
+                         (str == '-') || 
+                         (str == '\\') || 
+                         (str == '.') || 
+                         (str == '(') || 
+                         (str == ')') || 
+                         (str == '&') || 
+                         (str == '+') || 
+                         (str == ',') || 
+                         (str == ' '));
         
         return (zero_nine || A_Z || a_z || validChar);
     }
