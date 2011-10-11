@@ -2569,6 +2569,98 @@ public class UserManagementImpl implements UserManagement
 		return  totalAssignedOrgnode;
     }
     //END- Added for Deferred Defect 60566
+    
+    public UserNodeData OrgNodehierarchy(String userName, Integer associatedNodeId) 
+    throws CTBBusinessException {                                                         
+
+
+		try {
+			validator.validateUser(userName, userName, "UserManagementImpl.OrgNodehierarchy");
+		} catch (ValidationException ve) {
+		 
+			throw ve;
+		 
+		}
+		
+		try {
+			UserNodeData usnd = new UserNodeData();
+			Integer pageSize = null;
+		
+			UserNode[] usernodes = orgNode.OrgNodehierarchy(associatedNodeId);
+			usnd.setUserNodes(usernodes,pageSize);
+		 
+		
+		 return usnd;
+		} catch (SQLException se) {
+		 OrgNodeDataNotFoundException dataNotFound = 
+		                             new OrgNodeDataNotFoundException
+		                                     ("FindUser.Failed");
+		                                                            
+		 dataNotFound.setStackTrace(se.getStackTrace());
+		 throw dataNotFound;
+		} catch (Exception e) {
+		 OrgNodeDataNotFoundException dataNotFound = 
+		                             new OrgNodeDataNotFoundException
+		                                     ("FindUser.Failed");
+		                                                            
+		 dataNotFound.setStackTrace(e.getStackTrace());
+		 throw dataNotFound;
+		}
+	}
+    
+    public UserNodeData OrgNodehierarchyForParent(String userName) 
+    throws CTBBusinessException {                                                         
+
+
+		try {
+			validator.validateUser(userName, userName, "UserManagementImpl.OrgNodehierarchy");
+		} catch (ValidationException ve) {
+		 
+			throw ve;
+		 
+		}
+		
+		try {
+			UserNodeData usnd = new UserNodeData();
+			Integer pageSize = null;
+		
+			UserNode[] usernodes = orgNode.OrgNodehierarchyForParent(userName);
+			usnd.setUserNodes(usernodes,pageSize);
+		 
+		
+		 return usnd;
+		} catch (SQLException se) {
+		 OrgNodeDataNotFoundException dataNotFound = 
+		                             new OrgNodeDataNotFoundException
+		                                     ("FindUser.Failed");
+		                                                            
+		 dataNotFound.setStackTrace(se.getStackTrace());
+		 throw dataNotFound;
+		} catch (Exception e) {
+		 OrgNodeDataNotFoundException dataNotFound = 
+		                             new OrgNodeDataNotFoundException
+		                                     ("FindUser.Failed");
+		                                                            
+		 dataNotFound.setStackTrace(e.getStackTrace());
+		 throw dataNotFound;
+		}
+	}
+
+    public Integer getLeafNodeCategoryId(String userName, Integer customerId) throws CTBBusinessException
+	{
+		Integer leafNodeCategoryId = new Integer(0);
+		try {
+			leafNodeCategoryId = orgNode.getLeafNodeCategoryId(customerId);
+		}
+		catch (SQLException se) {
+			UserDataNotFoundException dataNotfoundException = 
+                new UserDataNotFoundException("UserManagementImpl: getLeafNodeCategoryId: " + se.getMessage());
+			dataNotfoundException.setStackTrace(se.getStackTrace());
+			throw dataNotfoundException;
+		}
+		return leafNodeCategoryId;
+	}
+
 }
         
  
