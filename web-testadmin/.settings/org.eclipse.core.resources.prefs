@@ -1,4 +1,4 @@
-#Fri Oct 30 12:18:49 PDT 2009
+#Tue Oct 11 14:22:54 PDT 2011
 eclipse.preferences.version=1
 encoding//WebContent/error.jsp=UTF-8
 encoding//WebContent/error401.jsp=ISO-8859-1
@@ -7,6 +7,7 @@ encoding//WebContent/resources/jsp/editNavigation.jsp=ISO-8859-1
 encoding//WebContent/resources/jsp/editSidebar.jsp=ISO-8859-1
 encoding//WebContent/resources/jsp/header.jsp=ISO-8859-1
 encoding//WebContent/resources/jsp/navigation.jsp=ISO-8859-1
+encoding//WebContent/resources/jsp/oas_template.jsp=ISO-8859-1
 encoding//WebContent/resources/jsp/sidebar.jsp=ISO-8859-1
 encoding//WebContent/resources/jsp/viewNavigation.jsp=ISO-8859-1
 encoding//WebContent/resources/jsp/viewSidebar.jsp=ISO-8859-1

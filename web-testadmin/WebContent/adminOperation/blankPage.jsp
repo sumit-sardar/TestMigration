@@ -12,20 +12,20 @@
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
-	<netui-template:setAttribute name="title" value="${bundle.web['finduser.window.title']}"/>
-	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.findUser']}"/>
+	<netui-template:setAttribute name="title" value="${bundle.web['selecttest.window.title']}"/>
+	<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.scheduleTestSessionSelectTest']}"/>
 <netui-template:section name="bodySection">
  
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
   
-<netui:form action="beginFindUser">
+<netui:form action="begin">
 
 <table width="100%" border="0">
 <tr>
 <td>
-    <h1><netui:content value="Manage User"/></h1>
+    <h1><netui:content value="Organizations: Blank Page"/></h1>
 </td>
 </tr>
 <tr height="400" align="center">

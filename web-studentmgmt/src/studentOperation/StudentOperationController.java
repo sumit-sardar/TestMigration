@@ -1768,7 +1768,7 @@ public class StudentOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/TestSessionInfoWeb/homepage/assessments.do";
+            String url = "/TestSessionInfoWeb/sessionOperation/assessments.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -1789,21 +1789,24 @@ public class StudentOperationController extends PageFlowController {
 	protected Forward organizations()
 	{
 		String menuId = (String)this.getRequest().getParameter("menuId");    	
-		String forwardName = (menuId != null) ? menuId : "organizationsLink";
-		System.out.println(forwardName);
+		String forwardName = (menuId != null) ? menuId : "studentsLink";
 		
 	    return new Forward(forwardName);
 	}
 	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "organizations_manageOrganizations.jsp") 
-	    }) 
+    @Jpf.Action()
 	protected Forward organizations_manageOrganizations()
 	{
-		initialize();
-		this.getRequest().setAttribute("isFindStudent", Boolean.FALSE);
-
-		return new Forward("success");
+        try
+        {
+            String url = "/OrganizationManagementWeb/orgOperation/organizations.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
 	}
 	
 	@Jpf.Action(forwards = { 
@@ -1819,7 +1822,7 @@ public class StudentOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/UserManagementWeb/userOperation/organizations.do?menuId=usersLink";
+            String url = "/UserManagementWeb/userOperation/organizations.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -1837,7 +1840,25 @@ public class StudentOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/TestSessionInfoWeb/homepage/reports.do";
+            String url = "/TestSessionInfoWeb/sessionOperation/reports.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+	
+    /**
+     * SERVICES actions
+     */    
+	@Jpf.Action()
+    protected Forward services()
+    {
+        try
+        {
+            String url = "/OrganizationManagementWeb/orgOperation/services.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -1848,68 +1869,6 @@ public class StudentOperationController extends PageFlowController {
     }
 	
 	/**
-	 * SERVICES actions
-	 */    
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "manageLicensesLink", path = "services_manageLicenses.do"),
-	        @Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
-	        @Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
-	        @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
-	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do")
-	    }) 
-	protected Forward services()
-	{
-		String menuId = (String)this.getRequest().getParameter("menuId");    	
-		String forwardName = (menuId != null) ? menuId : "manageLicensesLink";
-		System.out.println(forwardName);
-		
-	    return new Forward(forwardName);
-	}
-	
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "blankPage.jsp") 
-        }) 
-    protected Forward services_manageLicenses()
-    {
-        return new Forward("success");
-    }
-	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
-	    }) 
-	protected Forward services_installSoftware()
-	{
-	    return new Forward("success");
-	}
-	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
-	    }) 
-	protected Forward services_downloadTest()
-	{
-	    return new Forward("success");
-	}
-	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
-	    }) 
-	protected Forward services_uploadData()
-	{
-	    return new Forward("success");
-	}
-	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "blankPage.jsp") 
-	    }) 
-	protected Forward services_downloadData()
-	{
-	    return new Forward("success");
-	}
-
-	/**
-	 * BROADCAST MESSAGE actions
-	 */    
-	/**
 	 * @jpf:action
 	 */
 	@Jpf.Action()
@@ -1919,9 +1878,6 @@ public class StudentOperationController extends PageFlowController {
 	}
 	
 	
-	/**
-	 * MYPROFILE actions
-	 */    
 	@Jpf.Action()
 	protected Forward myProfile()
 	{
