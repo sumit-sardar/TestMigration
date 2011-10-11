@@ -40,10 +40,13 @@ function selectLink(menuId, select)
 	if (menuId != null) {
 		var menu = document.getElementById(menuId);
 		if (menu != null) {
-			if (select)
+			if (select) {
 				menu.className = "selected";
-			else 
+				menu.onclick = "return true;";				
+			}
+			else { 
 				menu.className = "normal";
+			}
 		}
 	}
 }

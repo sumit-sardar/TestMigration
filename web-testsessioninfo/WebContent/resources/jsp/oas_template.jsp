@@ -77,10 +77,10 @@
 					  <div id="featureTabsBody">
 					  
 					    <div id="featureTabsContainer">
-					      <a href="#" onClick="gotoAction('assessments.do');" class="tab rounded {top transparent}">Assessments</a>
-					      <a href="#" onClick="gotoAction('organizations.do');" class="tab rounded {top transparent}">Organizations</a>
-					      <a href="#" onClick="gotoAction('reports.do');" class="tab rounded {top transparent}">Reports</a>
-					      <a href="#" onClick="gotoAction('services.do');" class="tab rounded {top transparent}">Services</a>
+					      <a href="#" id="assessmentsTabLink" onClick="gotoAction('assessments.do');" class="tab rounded {top transparent}">Assessments</a>
+					      <a href="#" id="organizationsTabLink" onClick="gotoAction('organizations.do');" class="tab rounded {top transparent}">Organizations</a>
+					      <a href="#" id="reportsTabLink" onClick="gotoAction('reports.do');" class="tab rounded {top transparent}">Reports</a>
+					      <a href="#" id="servicesTabLink" onClick="gotoAction('services.do');" class="tab rounded {top transparent}">Services</a>
 					    </div>
 
 
@@ -93,9 +93,6 @@
 							<tr class="toolbar">
 								<td class="toolbar" width="120">
 									<a href="#" id="sessionsLink" onClick="gotoMenuAction('assessments.do', 'sessionsLink');"><b>Sessions</b></a>						
-								</td>
-								<td class="toolbar" width="120">
-									<a href="#" id="scheduleSessionLink" onClick="gotoMenuAction('assessments.do', 'scheduleSessionLink');"><b>Schedule Session</b></a>						
 								</td>
 								<td class="toolbar" width="120">
 									<a href="#" id="studentScoringLink" onClick="gotoMenuAction('assessments.do', 'studentScoringLink');"><b>Student Scoring</b></a>						

@@ -1,10 +1,3 @@
-/*
-  $(document).ready(function(){
-    $('table', $('#featureTabsContainer .tab')[0]).each(function(){$('.native').hide();});
-    $('#featureTabsContainer').show();
-    tab(0);
-  });
-*/
   
 function tab(n) {
     $('#featureTabsContainer .tab').removeClass('tab_selected');
@@ -47,6 +40,7 @@ function selectTab(tabId, menuId) {
 	$('#featureTabsContainer').show();
 	activateTab(tabIndex);
 	activateMenu(tabIndex, menuId);
+	disableTabLink(tabIndex);
 }
 
 function activateTab(tabIndex) {
@@ -97,3 +91,27 @@ function getTabIndex(tabId) {
 	return tabIndex;
 }
 
+function disableTabLink(tabIndex) {
+	tabId = getTabLinkId(tabIndex);
+	var tabLink = document.getElementById(tabId);
+	tabLink.onclick = "return true;";
+}
+
+function getTabLinkId(tabIndex) {
+	var tabId = 0;
+	switch(tabIndex) {
+		case 0:
+			tabId = "assessmentsTabLink";
+			break;
+		case 1:
+			tabId = "organizationsTabLink";
+			break;
+		case 2:
+			tabId = "reportsTabLink";
+			break;
+		case 3:
+			tabId = "servicesTabLink";
+			break;
+	}
+	return tabId;
+}

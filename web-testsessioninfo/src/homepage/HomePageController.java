@@ -156,75 +156,15 @@ public class HomePageController extends PageFlowController
         }
     }
 
-    
-    
-    /////////////////////////////////////////////////////////////////////////////////////////////    
-    ///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////    
-    
     /**
-     * ASSESSMENTS actions
-     */    
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "sessionsLink", path = "assessments_sessions.do"),
-            @Jpf.Forward(name = "scheduleSessionLink", path = "assessments_scheduleSession.do"),
-            @Jpf.Forward(name = "studentScoringLink", path = "assessments_studentScoring.do"),
-            @Jpf.Forward(name = "programStatusLink", path = "assessments_programStatus.do")
-        }) 
+     * @jpf:action
+     */
+    @Jpf.Action()
     protected Forward assessments()
-    {
-    	String menuId = (String)this.getRequest().getParameter("menuId");    	
-    	String forwardName = (menuId != null) ? menuId : "sessionsLink";
-    	System.out.println(forwardName);
-    	
-        return new Forward(forwardName);
-    }
-
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "assessments_sessions.jsp") 
-        }) 
-    protected Forward assessments_sessions()
-    {
-        return new Forward("success");
-    }
-
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "assessments_scheduleSession.jsp") 
-        }) 
-    protected Forward assessments_scheduleSession()
-    {
-        return new Forward("success");
-    }
-
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "assessments_studentScoring.jsp") 
-        }) 
-    protected Forward assessments_studentScoring()
-    {
-        return new Forward("success");
-    }
-
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "assessments_programStatus.jsp") 
-        }) 
-    protected Forward assessments_programStatus()
-    {
-        return new Forward("success");
-    }
-    
-    
-    
-    
-    
-    /**
-     * ORGANIZATIONS actions
-     */    
-    @Jpf.Action()
-    protected Forward organizations()
-    {
+    {               
         try
         {
-            String url = "/StudentManagementWeb/studentOperation/organizations.do";
+            String url = "/TestSessionInfoWeb/sessionOperation/assessments.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -233,141 +173,6 @@ public class HomePageController extends PageFlowController
         }
         return null;
     }
-    
-    
-    /**
-     * REPORTS actions
-     */    
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "reports.jsp"), 
-            @Jpf.Forward(name = "viewReports", path = "viewReports.do") 
-            
-        }) 
-    protected Forward reports()
-    {
-    	System.out.println("reports.do");
-        return new Forward("success");
-        //return new Forward("viewReports");
-    }
-
-    
-    /**
-     * SERVICES actions
-     */    
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "manageLicensesLink", path = "services_manageLicenses.do"),
-            @Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
-            @Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
-            @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
-            @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do")
-        }) 
-    protected Forward services()
-    {
-    	String menuId = (String)this.getRequest().getParameter("menuId");    	
-    	String forwardName = (menuId != null) ? menuId : "manageLicensesLink";
-    	System.out.println(forwardName);
-    	
-        return new Forward(forwardName);
-    }
-    
-    /****
-    @Jpf.Action()
-    protected Forward services_manageLicenses()
-    {
-        try
-        {
-            String url = "/OrganizationManagementWeb/manageLicense/services.do";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
-    }
-    ****/
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "services_manageLicenses.jsp") 
-        }) 
-    protected Forward services_manageLicenses()
-    {
-        return new Forward("success");
-    }
-    
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "services_installSoftware.jsp") 
-        }) 
-    protected Forward services_installSoftware()
-    {
-        return new Forward("success");
-    }
-
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "services_downloadTest.jsp") 
-        }) 
-    protected Forward services_downloadTest()
-    {
-        return new Forward("success");
-    }
-    
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "services_uploadData.jsp") 
-        }) 
-    protected Forward services_uploadData()
-    {
-        return new Forward("success");
-    }
-    
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "services_downloadData.jsp") 
-        }) 
-    protected Forward services_downloadData()
-    {
-        return new Forward("success");
-    }
-    
-    /**
-     * BROADCAST MESSAGE actions
-     */    
-    @Jpf.Action(forwards = { 
-            @Jpf.Forward(name = "success", path = "broadcastMessage.jsp") 
-        }) 
-    protected Forward broadcastMessage()
-    {
-        return new Forward("success");
-    }
-
-    
-    /**
-     * MYPROFILE actions
-     */    
-    @Jpf.Action()
-    protected Forward myProfile()
-    {
-    	FileInfo info = new FileInfo("display name", "file name", "size");
-		OutputStream stream = null;
-		
-		try {
-			HttpServletResponse resp = this.getResponse();     
-			Gson gson = new Gson();
-			String json = gson.toJson(info);
-			resp.setContentType("application/json");
-			resp.flushBuffer();
-	        stream = resp.getOutputStream();
-	        stream.write(json.getBytes());
-	        stream.close();
-	        
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    	
-        return null;
-    }
-    
-    /////////////////////////////////////////////////////////////////////////////////////////////    
-    ///////////////////////////// END OF NEW NAVIGATION ACTIONS ///////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////    
-    
     
     /**
      * @jpf:action
