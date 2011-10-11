@@ -15,6 +15,8 @@ var customerDemographicValue;
 var isValueChanged = false;
 var leafNodeCategoryId;
 var SelectedOrgNodeId;
+var SelectedOrgNode;
+var SelectedOrgNodes = [];
 
 
 
@@ -44,7 +46,7 @@ function populateTree() {
 						createSingleNodeSelectedTree (orgTreeHierarchy);
 						$("#searchheader").css("visibility","visible");	
 						$("#orgNodeHierarchy").css("visibility","visible");	
-												
+
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -92,6 +94,8 @@ function createSingleNodeSelectedTree(jsondata) {
 	    });
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
+	    	SelectedOrgNode = $(this).parent();
+	    	SelectedOrgNodes = SelectedOrgNode.parentsUntil(".jstree","li");
   			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
  		     UIBlock();
@@ -107,8 +111,10 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 			else
 				gridReload();
-		});
-	   
+				
+		//open tree nodes from root to the clicked node		
+		openTreeNodes();
+});
 }
 
 
@@ -116,8 +122,9 @@ function createSingleNodeSelectedTree(jsondata) {
 function createMultiNodeSelectedTree(jsondata) {
 
 	$("#innerID").bind("loaded.jstree", function (event, data) {  
-		$('#innerID').jstree('open_node', '#'+SelectedOrgNodeId); 
 
+		$('#innerID').jstree('open_node', '#'+SelectedOrgNodeId); 
+		
 		
         //$('#innerID').jstree("check_node", '#'+SelectedOrgNodeId); 
      });  
@@ -189,7 +196,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		
 			}
 		});
-   
+		
 }
 		function populateTreeSelect() {
 			$("#notSelectedOrgNodes").css("visibility","visible");
@@ -431,6 +438,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 			$("#Student_Accommodation_Information").css("overflow",'auto');
 	}	
 	
+	//openTreeNodes();
 }
     function reset() {
     	assignedOrgNodeIds = "";
@@ -678,7 +686,22 @@ function fillDropDown( elementId, optionList) {
 	}
 	}
 	
+	function openTreeNodes() {
+		//open tree nodes from root to the clicked node		
+		for(var i = SelectedOrgNodes.length - 1; i >= 0; --i)
+		{
+			var tmpNode = SelectedOrgNodes[i].id;
+			$('#innerID').jstree('open_node', "#"+tmpNode); 
+			if(i == 0) {
+				//scrollTree($("#"+tmpNode));
+			}
+		}
+	}
 	
+//	function scrollTree(node) {
+//		TmpNode = node;
+//		$("#innerID").scrollTop(node[0].offSetTop);
+//	}
 	
 	
 	
