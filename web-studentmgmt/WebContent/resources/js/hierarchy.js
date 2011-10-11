@@ -101,7 +101,7 @@ function createSingleNodeSelectedTree(jsondata) {
  		     UIBlock();
  		  	if(!gridloaded) {
  		  		gridloaded = true;
- 		  		populateTreeSelect();
+ 		  		//populateTreeSelect();
  		  		var hideAccommodation = $("#supportAccommodations").val();
  		  		if(hideAccommodation == "false")
  		  			populateGridWithoutAccommodation();
@@ -111,46 +111,43 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 			else
 				gridReload();
-				
-		//open tree nodes from root to the clicked node		
-		openTreeNodes();
-});
+		});
+	   
 }
 
 
 	
 function createMultiNodeSelectedTree(jsondata) {
 
-	$("#innerID").bind("loaded.jstree", function (event, data) {  
-
-		$('#innerID').jstree('open_node', '#'+SelectedOrgNodeId); 
-		
-		
-        //$('#innerID').jstree("check_node", '#'+SelectedOrgNodeId); 
-     });  
+	if($("#innerID ul").length>0){
+	 	jQuery.jstree._reference("#innerID").destroy();
+	}
 	
-  $("#innerID").jstree({
-        "json_data" : {	             
-            "data" : jsondata.data,
-			"progressive_render" : true,
-			"progressive_unload" : true
-			
-        },
-        "ui" : {  
-	           "select_limit" : 1
-         	}, 
-		
-		"themes" : {
-			"theme" : "apple",
-			"dots" : false,
-			"icons" : true
-		},         	
-         	
-		"plugins" : [ "themes", "json_data", "checkbox"]
-   }); 
+ 	$("#innerID").bind("loaded.jstree", function (event, data) { 
+ 			openTreeNodes();
+ 	
+		$("#innerID li").not(".jstree-le").each(function() {
+    			var orgcategorylevel = $(this).attr("categoryid");
+    			if(orgcategorylevel != leafNodeCategoryId) {
+	    		  $("a ins.jstree-checkbox", this).first().hide();
+	    		}
+	  	}); 		
+	  }).jstree({
+	        "json_data" : {	             
+	            "data" : jsondata.data,
+				"progressive_render" : true,
+				"progressive_unload" : true
+				
+	        },  
+	            "themes" : {
+			    "theme" : "apple",
+			    "dots" : false,
+			    "icons" : true
+			},       
+	 			"plugins" : [ "themes", "json_data", "ui", "checkbox"]
+	   });	
 
-   	
-   		$("#innerID li").not(".jstree-leaf").each(function() {
+   		$("#innerID li").not(".jstree-le").each(function() {
     			var orgcategorylevel = $(this).attr("categoryid");
     			if(orgcategorylevel != leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
@@ -158,7 +155,7 @@ function createMultiNodeSelectedTree(jsondata) {
 	  	});
     	
  		$("#innerID").delegate("li","click", function(e) {
-	 		$("#innerID li").not(".jstree-leaf").each(function() {
+	 		$("#innerID li").not(".jstree-le").each(function() {
     			var orgcategorylevel = $(this).attr("categoryid");
     			if(orgcategorylevel != leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
@@ -369,6 +366,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 		beforeSend:	function(){
 						
 						UIBlock();
+						populateTreeSelect();
 					},
 		url:		'getOptionList.do?isLasLinkCustomer='+$("#isLasLinkCustomer").val(), 
 		type:		'POST',
@@ -438,10 +436,10 @@ document.getElementById('displayMessageMain').style.display = "none";
 			$("#Student_Accommodation_Information").css("overflow",'auto');
 	}	
 	
-	//openTreeNodes();
 }
     function reset() {
     	assignedOrgNodeIds = "";
+    	populateTreeSelect();
     	
        jQuery.each(customerDemographicValue, function(i, field){         
       		$("#"+field.name).val(field.value);
@@ -479,14 +477,12 @@ document.getElementById('displayMessageMain').style.display = "none";
 				radiofields[i].checked = true;
 			}
 		}
-		var selectfields = $("option:selected");
-		for (var i=0; i<selectfields.length; i++) {
-			if (selectfields[i].value != "" && selectfields[i].value != "Select a grade" &&
-					 selectfields[i].value != "Select a gender" && selectfields[i].value != "Please Select") { 
-				selectfields[i].value = "";
-				
-			}
+		//change for defect #67004
+		var allSelects = $("#addEditStudentDetail select");
+		for(var count = 0; count < allSelects.length ; count++) {
+			$(allSelects[count]).find("option:eq(0)").attr("selected","true");
 		}
+		
 		enableColorSettingsLink("false");
 		
    }
@@ -512,11 +508,10 @@ function fillDropDown( elementId, optionList) {
 			$('#accordion').accordion('activate', 0 );
 			$('#Student_Additional_Information').hide();
 			$('#Student_Accommodation_Information').hide();
-			populateTreeSelect();
+			//populateTreeSelect();
 		}
 		$("#"+dailogId).dialog("close");
-		//$.unblockUI(); 
-		//overlayunblockUI();
+		
 		 
 	}
 	
@@ -547,18 +542,10 @@ function fillDropDown( elementId, optionList) {
 			}
 		}
 		if(!isValueChanged) {
-			var selectfields = $("option:selected");
-			for (var i=0; i<selectfields.length; i++) {
-				if (selectfields[i].value != "" 
-					&& selectfields[i].value != "Select a grade" 
-					&& selectfields[i].value != "Select a gender" 
-					&& selectfields[i].value != "Please Select"
-					&& selectfields[i].value != "Select a purpose of test"
-					&& selectfields[i].value != "White"
-					&& selectfields[i].value != "Black"
-					&& selectfields[i].value != "Light yellow"
-					&& selectfields[i].value != "1"
-					&& selectfields[i].getAttribute("disabled") == null) { 
+			var allSelects = $("#addEditStudentDetail select");
+			for(var count = 0; count < allSelects.length ; count++) {
+				var selectedInd = $(allSelects[count]).attr("selectedIndex");
+				if(selectedInd != 0 && ($(allSelects[count]).attr("disabled") == null  || $(allSelects[count]).attr("disabled") == false)) {
 					isValueChanged = true;
 					break;
 				}
@@ -688,20 +675,14 @@ function fillDropDown( elementId, optionList) {
 	
 	function openTreeNodes() {
 		//open tree nodes from root to the clicked node		
-		for(var i = SelectedOrgNodes.length - 1; i >= 0; --i)
-		{
-			var tmpNode = SelectedOrgNodes[i].id;
-			$('#innerID').jstree('open_node', "#"+tmpNode); 
-			if(i == 0) {
-				//scrollTree($("#"+tmpNode));
-			}
-		}
+		for(var count = SelectedOrgNodes.length - 1; count >= 0; --count) {
+  		 		var tmpNode = SelectedOrgNodes[count].id;
+				$('#innerID').jstree('open_node', "#"+tmpNode); 
+			
+  		 }
 	}
 	
-//	function scrollTree(node) {
-//		TmpNode = node;
-//		$("#innerID").scrollTop(node[0].offSetTop);
-//	}
+
 	
 	
 	
