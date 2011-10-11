@@ -36,6 +36,7 @@ public class UserProfileInformation extends SanitizedFormField
     private PasswordInformation userPassword = new PasswordInformation();
     private Integer addressId = new Integer(0);
     private String actionPermission = PermissionsUtils.VIEW_ONLY_PERMISSION_TOKEN;
+    private String  orgNodeNamesStr;
     /**
      * ext_pin1 is added for DEX CR
      */
@@ -75,6 +76,7 @@ public class UserProfileInformation extends SanitizedFormField
                     user.getPasswordHintQuestionId().toString());
             this.userPassword.setHintAnswer(user.getPasswordHintAnswer());
         }
+        this.orgNodeNamesStr = getOrgNodeNamesString();
     }
 
 
@@ -428,6 +430,18 @@ public class UserProfileInformation extends SanitizedFormField
             }
         }
         return str;
+	}
+	/**
+	 * @return the orgNodeNamesStr
+	 */
+	public String getOrgNodeNamesStr() {
+		return orgNodeNamesStr;
+	}
+	/**
+	 * @param orgNodeNamesStr the orgNodeNamesStr to set
+	 */
+	public void setOrgNodeNamesStr(String orgNodeNamesStr) {
+		this.orgNodeNamesStr = orgNodeNamesStr;
 	}    
 
     
