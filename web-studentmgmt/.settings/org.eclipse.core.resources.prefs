@@ -1,11 +1,14 @@
-#Thu Sep 29 10:04:07 PDT 2011
+#Tue Oct 04 11:22:01 PDT 2011
 eclipse.preferences.version=1
 encoding//.staging/manageStudent/add_edit_student_by_accommodation.jsp=UTF-8
 encoding//WebContent/manageStudent/add_edit_student_by_accommodation.jsp=UTF-8
 encoding//WebContent/resources/jsp/oas_header.jsp=ISO-8859-1
 encoding//WebContent/resources/jsp/oas_template.jsp=ISO-8859-1
 encoding//WebContent/resources/jsp/template.jsp=UTF-8
+encoding//WebContent/studentOperation/add_edit_student_by_accommodation.jsp=UTF-8
 encoding//WebContent/studentOperation/blankPage.jsp=UTF-8
 encoding//WebContent/studentOperation/find_student_hierarchy.jsp=UTF-8
 encoding//WebContent/studentOperation/organizations_manageOrganizations.jsp=UTF-8
 encoding//WebContent/studentOperation/organizations_manageStudents.jsp=UTF-8
+encoding//WebContent/studentOperation/organizations_manageUsers.jsp=UTF-8
+encoding//WebContent/studentOperation/student_hierarchy.jsp=UTF-8

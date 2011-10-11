@@ -395,4 +395,7 @@
   <entry time="2011-03-31 23:14:33 UTC">
     <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
   </entry>
+  <entry time="2011-10-11 18:02:18 UTC">
+    <upgrade-participant pluginId="com.bea.workshop.common.wtp.core" pluginVersion="1.2.0.20080711173356" class="com.bea.workshop.common.wtp.core.upgrade.internal.J2EEComponentClasspathUpgradeParticipant"/>
+  </entry>
 </upgrade-log>
