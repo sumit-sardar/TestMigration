@@ -124,14 +124,15 @@ function createMultiNodeSelectedTree(jsondata) {
 	}
 	
  	$("#innerID").bind("loaded.jstree", function (event, data) { 
- 			openTreeNodes();
+ 			//openTreeNodes();
  	
-		$("#innerID li").not(".jstree-le").each(function() {
+/*		$("#innerID li").not(".jstree-le").each(function() {
     			var orgcategorylevel = $(this).attr("categoryid");
     			if(orgcategorylevel != leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
 	    		}
-	  	}); 		
+
+	  	}); */
 	  }).jstree({
 	        "json_data" : {	             
 	            "data" : jsondata.data,
