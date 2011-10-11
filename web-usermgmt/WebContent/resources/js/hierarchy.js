@@ -51,7 +51,12 @@ function createSingleNodeSelectedTree(jsondata) {
 	        },
 	        "ui" : {  
 	           "select_limit" : 1
-         	}, 
+         	},
+         	"themes" : {
+				"theme" : "apple",
+				"dots" : false,
+				"icons" : true
+			},  
 				"plugins" : [ "themes", "json_data", "ui"]  
 				
 	    });
