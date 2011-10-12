@@ -285,10 +285,10 @@ function createMultiNodeSelectedTree(jsondata) {
 				 
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
-						$.unblockUI();  
-						window.location.href="/TestSessionInfoWeb/logout.do";
+				$.unblockUI();  
+				window.location.href="/TestSessionInfoWeb/logout.do";
 						
-					}
+			}
 	 });
 			jQuery("#list2").jqGrid('navGrid','#pager2',{});  
 			
@@ -406,7 +406,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 												 	autoOpen: true,
 												 	width: '800px',
 												 	modal: true,
-												 	open: function(event, ui) { }
+												 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 		 											});	
 						setPopupPosition();	
 					},
@@ -422,16 +422,13 @@ document.getElementById('displayMessageMain').style.display = "none";
 		reset();
 		if($("#isLasLinkCustomer").val() =="true")
 			fillDropDown("testPurposeOptions", testPurposeOptions);
-		//UIBlock(); 
-		//overlayblockUI(); 
-		
 		$("#addEditStudentDetail").dialog({  
 			title:"Add Student",  
 		 	resizable:false,
 		 	autoOpen: true,
 		 	width: '800px',
 		 	modal: true,
-		 	open: function(event, ui) {  }
+		 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 		 	});	
 		setPopupPosition();	
 	}	
@@ -447,10 +444,8 @@ document.getElementById('displayMessageMain').style.display = "none";
 				$("#Student_Information").css("overflow",'auto');
 				$("#Student_Additional_Information").css("height",'300px');
 				$("#Student_Additional_Information").css("overflow",'auto');
-				$("#Student_Additional_Information").scrollTop(0);
 				$("#Student_Accommodation_Information").css("height",'300px');
 				$("#Student_Accommodation_Information").css("overflow",'auto');
-				$("#Student_Accommodation_Information").scrollTop(0);
 	}
 	
     function reset() {
@@ -523,9 +518,11 @@ function fillDropDown( elementId, optionList) {
 	function closePopUp(dailogId){
 		if(dailogId == 'addEditStudentDetail') {
 			$('#accordion').accordion('activate', 0 );
+			$("#Student_Additional_Information").scrollTop(0);
+			$("#Student_Accommodation_Information").scrollTop(0);
 			$('#Student_Additional_Information').hide();
 			$('#Student_Accommodation_Information').hide();
-			//populateTreeSelect();
+			
 		}
 		$("#"+dailogId).dialog("close");
 		
