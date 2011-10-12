@@ -249,7 +249,7 @@ function createMultiNodeSelectedTree(jsondata) {
 			sortorder: "asc",
 			height: 370,  
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
-			caption:"Search Result",
+			caption:"Student List",
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
@@ -281,7 +281,6 @@ function createMultiNodeSelectedTree(jsondata) {
 					}
 	 });
 			jQuery("#list2").jqGrid('navGrid','#pager2',{});  
-			$('.ui-jqgrid-titlebar-close',"#list2").remove();
 			
 	}
 	
@@ -315,7 +314,7 @@ function createMultiNodeSelectedTree(jsondata) {
 			sortorder: "asc",
 			height: 370,  
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
-			caption:"Search Result",
+			caption:"Student List",
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
@@ -347,7 +346,7 @@ function createMultiNodeSelectedTree(jsondata) {
 					}
 	 });
 			jQuery("#list2").jqGrid('navGrid','#pager2',{});  
-			$('.ui-jqgrid-titlebar-close',"#list2").remove();
+			
 	}
 	
 
@@ -392,20 +391,14 @@ document.getElementById('displayMessageMain').style.display = "none";
 							fillDropDown("testPurposeOptions", testPurposeOptions);
 						customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
 						$("#addEditStudentDetail").dialog({  
-													title:"Add Record",  
+													title:"Add Student",  
 												 	resizable:false,
 												 	autoOpen: true,
 												 	width: '800px',
 												 	modal: true,
-												 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
-		 	
-												 	});	
-												 	 
-							 $("#Student_Information").css("height",'300px');
-							 $("#Student_Additional_Information").css("height",'300px');
-							 $("#Student_Additional_Information").css("overflow",'auto');
-							 $("#Student_Accommodation_Information").css("height",'300px');
-							 $("#Student_Accommodation_Information").css("overflow",'auto');
+												 	open: function(event, ui) { }
+		 											});	
+						setPopupPosition();	
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -421,23 +414,35 @@ document.getElementById('displayMessageMain').style.display = "none";
 			fillDropDown("testPurposeOptions", testPurposeOptions);
 		//UIBlock(); 
 		//overlayblockUI(); 
+		
 		$("#addEditStudentDetail").dialog({  
-			title:"Add Record",  
+			title:"Add Student",  
 		 	resizable:false,
 		 	autoOpen: true,
 		 	width: '800px',
 		 	modal: true,
-		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
-			});	
-		 	$("#Student_Information").css("height",'300px');
-		 	$("#Student_Information").css("overflow",'auto');
-			$("#Student_Additional_Information").css("height",'300px');
-			$("#Student_Additional_Information").css("overflow",'auto');
-			$("#Student_Accommodation_Information").css("height",'300px');
-			$("#Student_Accommodation_Information").css("overflow",'auto');
+		 	open: function(event, ui) {  }
+		 	});	
+		setPopupPosition();	
 	}	
 	
 }
+
+	function setPopupPosition(){
+				var toppos = ($(window).height() - 610) /2 + 'px';
+				var leftpos = ($(window).width() - 760) /2 + 'px';
+				$("#addEditStudentDetail").parent().css("top",toppos);
+				$("#addEditStudentDetail").parent().css("left",leftpos);		 	 
+				$("#Student_Information").css("height",'300px');
+				$("#Student_Information").css("overflow",'auto');
+				$("#Student_Additional_Information").css("height",'300px');
+				$("#Student_Additional_Information").css("overflow",'auto');
+				$("#Student_Additional_Information").scrollTop(0);
+				$("#Student_Accommodation_Information").css("height",'300px');
+				$("#Student_Accommodation_Information").css("overflow",'auto');
+				$("#Student_Accommodation_Information").scrollTop(0);
+	}
+	
     function reset() {
     	assignedOrgNodeIds = "";
     	populateTreeSelect();
@@ -462,8 +467,9 @@ document.getElementById('displayMessageMain').style.display = "none";
 			       for(var j=0; j<customerValCheckbox.length; j++) {
 				       	if(!isExist( $(checkBoxfields).eq(i).attr('name') ,customerValCheckbox)) { //
 				       			$(checkBoxfields).eq(i).attr('checked', false); 
-				       			
-						}
+				    	} else {
+				    			$(checkBoxfields).eq(i).attr('checked', true); 
+				    	}
 			       	}
 				} 
 			}
