@@ -12,8 +12,9 @@
 <netui-data:declareBundle bundlePath="helpResources" name="help"/>
 
 <netui-template:template templatePage="/resources/jsp/oas_template.jsp">
-    <netui-template:setAttribute name="title" value="${bundle.web['findorg.window.title']}"/>
-    <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.findOrganization']}"/>
+<netui-template:setAttribute name="title" value="${bundle.web['upload.window.title']}"/>
+<netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.uploadData']}"/>
+<netui-template:setAttribute name="templateHelpLink" value="${bundle.help['help.topic.howToUseTemplate']}"/>
 <netui-template:section name="bodySection">
  
 <!-- ********************************************************************************************************************* -->
@@ -22,13 +23,13 @@
 
 
 
-<netui:form action="services_downloadTest">
+<netui:form action="services_uploadData">
 
 
 <table width="100%" border="0">
 <tr>
 <td>
-    <h1><netui:content value="Services: Download Test"/></h1>
+    <h1><netui:content value="Services: Upload Data"/></h1>
 </td>
 </tr>
 <tr height="400" align="center">
@@ -43,7 +44,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	selectTab("services", "downloadTestLink");
+	selectTab("services", "uploadDataLink");
 });
 </script>
 

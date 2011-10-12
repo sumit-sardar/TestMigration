@@ -1,22 +1,28 @@
-package orgOperation;
+package downloadOperation;
 
 import java.io.IOException;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
-import com.ctb.util.web.sanitizer.SanitizedFormData;
-
 @Jpf.Controller()
-public class OrgOperationController extends PageFlowController {
+public class DownloadOperationController extends PageFlowController {
 	private static final long serialVersionUID = 1L;
+
+	
 
 	private String userName = null;
 	private Integer customerId = null;
 
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
 
 	/**
 	 * @return the userName
@@ -58,22 +64,18 @@ public class OrgOperationController extends PageFlowController {
 			this.userName = (String)getSession().getAttribute("userName");
 	}
 	
-	/**
-	 * @jpf:action
-	 * @jpf:forward name="success" path="organizations.do"
-	 */
-	@Jpf.Action(forwards = { 
-			@Jpf.Forward(name = "success",
-					path = "organizations.do")
-	})
-	protected Forward begin()
-	{
-		getUserDetails();
-		
-		return new Forward("success");
-	}
-	
-	
+    /**
+     * @jpf:action
+     * @jpf:forward name="success" path="uploadData.jsp"
+     */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "success", path = "downloadData.jsp")
+    })
+    protected Forward begin()
+    {    	
+
+   		return new Forward("success");
+    }
 	
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////    
@@ -97,38 +99,16 @@ public class OrgOperationController extends PageFlowController {
         }
         return null;
 	}
-			
-	/**
-	 * ORGANIZATIONS actions
-	 */    
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
-	        @Jpf.Forward(name = "studentsLink", path = "organizations_manageStudents.do"),
-	        @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do")
-	    }) 
-	protected Forward organizations()
-	{
-		String menuId = (String)this.getRequest().getParameter("menuId");    	
-		String forwardName = (menuId != null) ? menuId : "organizationsLink";
-		
-	    return new Forward(forwardName);
-	}
 	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "manageOrganizations.jsp") 
-	    }) 
-	protected Forward organizations_manageOrganizations()
-	{
-		getUserDetails();		
-		return new Forward("success");
-	}
-	
+    /**
+     * ORGANIZATIONS actions
+     */    
     @Jpf.Action()
-	protected Forward organizations_manageStudents()
-	{
+    protected Forward organizations()
+    {
         try
         {
-            String url = "/StudentManagementWeb/studentOperation/organizations.do";
+            String url = "/OrganizationManagementWeb/orgOperation/organizations.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -136,23 +116,8 @@ public class OrgOperationController extends PageFlowController {
             System.err.print(ioe.getStackTrace());
         }
         return null;
-	}
-	
-    @Jpf.Action()
-	protected Forward organizations_manageUsers()
-	{
-        try
-        {
-            String url = "/UserManagementWeb/userOperation/organizations.do";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
-	}
-
+    }
+    
     /**
      * REPORTS actions
      */    
@@ -184,7 +149,7 @@ public class OrgOperationController extends PageFlowController {
 	protected Forward services()
 	{
 		String menuId = (String)this.getRequest().getParameter("menuId");    	
-		String forwardName = (menuId != null) ? menuId : "manageLicensesLink";
+		String forwardName = (menuId != null) ? menuId : "downloadDataLink";
 		
 	    return new Forward(forwardName);
 	}
@@ -224,7 +189,7 @@ public class OrgOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/TestSessionInfoWeb/testContentOperation/begin.do";
+            String url = "/OrganizationManagementWeb/testContentOperation/begin.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -249,19 +214,12 @@ public class OrgOperationController extends PageFlowController {
         return null;
 	}
 	
-    @Jpf.Action()
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "begin.do") 
+	    }) 
 	protected Forward services_downloadData()
 	{
-        try
-        {
-            String url = "/OrganizationManagementWeb/downloadOperation/begin.do";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
+	    return new Forward("success");
 	}
     
 	/**
@@ -284,6 +242,5 @@ public class OrgOperationController extends PageFlowController {
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// END OF NEW NAVIGATION ACTIONS ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    
-
-
+	
 }

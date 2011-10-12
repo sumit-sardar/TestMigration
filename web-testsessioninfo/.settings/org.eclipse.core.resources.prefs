@@ -1,4 +1,4 @@
-#Mon Oct 10 20:13:46 PDT 2011
+#Wed Oct 12 10:31:25 PDT 2011
 eclipse.preferences.version=1
 encoding//WebContent/downloadtest/download_zippedFile.jsp=UTF-8
 encoding//WebContent/findPassword/find_password.jsp=ISO-8859-1
@@ -17,3 +17,5 @@ encoding//WebContent/resources/jsp/sidebar.jsp=ISO-8859-1
 encoding//WebContent/resources/jsp/template.jsp=UTF-8
 encoding//WebContent/resources/jsp/template_download.jsp=UTF-8
 encoding//WebContent/sessionOperation/reports.jsp=UTF-8
+encoding//WebContent/softwareOperation/installSoftware.jsp=UTF-8
+encoding//WebContent/testContentOperation/downloadTest.jsp=UTF-8
