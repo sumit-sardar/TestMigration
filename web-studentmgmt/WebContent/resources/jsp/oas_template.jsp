@@ -57,6 +57,11 @@
 		
 		
 	</script>
+	<style>
+	.ui-jqgrid-titlebar-close{
+		display:none !important;   //change to hide the circle-triangle in top
+	}
+	</style>
      
 </head>
 
