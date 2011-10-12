@@ -115,8 +115,12 @@
         <table class="simpleBlock" width="100%" cellpadding="5">
             <tr>
                 <td colspan="2">
-                <h1>You have successfully logged out.<br/>Click "Log In" to log in again.</h1>
-                <br/><br/>
+	                <h1>
+	                	<%= message %>
+	                	<br/>
+	                	Click "Log In" to log in again.
+	                </h1>
+                <br/><br/>                
                 </td>
             </tr>
             <tr>
