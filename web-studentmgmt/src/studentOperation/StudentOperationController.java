@@ -399,7 +399,7 @@ public class StudentOperationController extends PageFlowController {
 			@Jpf.Forward(name = "success", 
 					path ="find_user_by_hierarchy.jsp")
 	})
-	protected Forward saveAddEditStudent(ManageStudentForm form)
+	protected Forward saveAddEditStudent(StudentOperationForm form)
 	{   
 		String jsonResponse = "";
 		OutputStream stream = null;
@@ -429,7 +429,7 @@ public class StudentOperationController extends PageFlowController {
 		}
 		//selectedOrgNodes.add(118641);
 		MessageInfo messageInfo = new MessageInfo();
-		Integer studentId = form.getSelectedStudentId();
+		Integer studentId = null;
 
 		/*if ( studentId == null) {
 
