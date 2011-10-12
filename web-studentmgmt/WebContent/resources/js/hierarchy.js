@@ -119,14 +119,12 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 function createMultiNodeSelectedTree(jsondata) {
 
-	if($("#innerID ul").length>0){
-	 	jQuery.jstree._reference("#innerID").destroy();
-	}
+	
 	
  	$("#innerID").bind("loaded.jstree", function (event, data) { 
  			//openTreeNodes();
  	
-/*		$("#innerID li").not(".jstree-le").each(function() {
+	/*		$("#innerID li").not(".jstree-le").each(function() {
     			var orgcategorylevel = $(this).attr("categoryid");
     			if(orgcategorylevel != leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
@@ -154,6 +152,18 @@ function createMultiNodeSelectedTree(jsondata) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
 	    		  }
 	  	});
+	  	
+	  	if($("#innerID ul").length>0){
+		 	//jQuery.jstree._reference("#innerID").destroy();
+		 	openTreeNodes();
+	 	
+			$("#innerID li").not(".jstree-le").each(function() {
+	    			var orgcategorylevel = $(this).attr("categoryid");
+	    			if(orgcategorylevel != leafNodeCategoryId) {
+		    		  $("a ins.jstree-checkbox", this).first().hide();
+		    		}
+		    });		
+		}
     	
  		$("#innerID").delegate("li","click", function(e) {
 	 		$("#innerID li").not(".jstree-le").each(function() {
@@ -291,7 +301,7 @@ function createMultiNodeSelectedTree(jsondata) {
           url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
 		 datatype: "json",         
-          colNames:['Last Name','First Name', 'M.I.', 'Grade','Organization', 'Gender', 'Login ID', studentIdTitle],
+          colNames:['Last Name','First Name', 'Middle Initial', 'Grade','Organization', 'Gender', 'Login ID', studentIdTitle],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
