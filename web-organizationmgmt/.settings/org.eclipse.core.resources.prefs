@@ -1,4 +1,4 @@
-#Tue Oct 11 15:25:49 PDT 2011
+#Tue Oct 11 15:30:21 PDT 2011
 eclipse.preferences.version=1
 encoding//.staging/manageUpload/manage_upload.jsp=UTF-8
 encoding//WebContent/manageCustomer/add_customer.jsp=UTF-8
@@ -24,4 +24,5 @@ encoding//WebContent/orgOperation/services_downloadData.jsp=UTF-8
 encoding//WebContent/orgOperation/services_downloadTest.jsp=UTF-8
 encoding//WebContent/orgOperation/services_installSoftware.jsp=UTF-8
 encoding//WebContent/orgOperation/services_uploadData.jsp=UTF-8
+encoding//WebContent/resources/jsp/oas_header.jsp=ISO-8859-1
 encoding//WebContent/resources/jsp/oas_template.jsp=ISO-8859-1
