@@ -496,6 +496,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 		}
 		
 		enableColorSettingsLink("false");
+		enableAudioFiles();
 		
    }
 
@@ -518,6 +519,7 @@ function fillDropDown( elementId, optionList) {
 	function closePopUp(dailogId){
 		if(dailogId == 'addEditStudentDetail') {
 			$('#accordion').accordion('activate', 0 );
+			$("#Student_Information").scrollTop(0);
 			$("#Student_Additional_Information").scrollTop(0);
 			$("#Student_Accommodation_Information").scrollTop(0);
 			$('#Student_Additional_Information').hide();
@@ -623,6 +625,11 @@ function fillDropDown( elementId, optionList) {
 		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 			});	
 			 $("#confirmationPopup").css('height',100);
+			 var toppos = ($(window).height() - 290) /2 + 'px';
+			 var leftpos = ($(window).width() - 410) /2 + 'px';
+			 $("#confirmationPopup").parent().css("top",toppos);
+			 $("#confirmationPopup").parent().css("left",leftpos);		 	 
+				
 			  
 		} else {
 			closePopUp('addEditStudentDetail');
