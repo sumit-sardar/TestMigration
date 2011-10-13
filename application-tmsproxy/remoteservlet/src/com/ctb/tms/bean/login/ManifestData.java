@@ -46,7 +46,14 @@ public class ManifestData implements Serializable
     private double abilityScore;
     private double semScore;
     private String objectiveScore;
+    private String contentURI;
     
+	public String getContentURI() {
+		return contentURI;
+	}
+	public void setContentURI(String contentURI) {
+		this.contentURI = contentURI;
+	}
 	public String getRecommendedLevel() {
 		return recommendedLevel;
 	}

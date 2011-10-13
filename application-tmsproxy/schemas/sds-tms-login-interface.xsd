@@ -946,6 +946,18 @@
 														</xs:documentation>
 													</xs:annotation>
 												</xs:attribute>
+												<xs:attribute name="contentURI"
+													type="xs:string" use="optional">
+													<xs:annotation>
+														<xs:documentation>
+															content uri. This
+															is the
+															unique subject of
+															the
+															sub-test.
+														</xs:documentation>
+													</xs:annotation>
+												</xs:attribute>
 											</xs:complexType>
 										</xs:element>
 										<xs:element name="feedback">
