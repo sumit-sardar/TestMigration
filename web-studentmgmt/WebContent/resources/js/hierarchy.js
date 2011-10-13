@@ -155,7 +155,7 @@ function createMultiNodeSelectedTree(jsondata) {
 	  	
 	  	if($("#innerID ul").length>0){
 		 	//jQuery.jstree._reference("#innerID").destroy();
-		 	openTreeNodes();
+		 	//openTreeNodes();
 	 	
 			$("#innerID li").not(".jstree-le").each(function() {
 	    			var orgcategorylevel = $(this).attr("categoryid");
