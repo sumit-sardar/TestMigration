@@ -18,6 +18,8 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import utils.Base;
 import utils.BaseTree;
 import utils.FilterSortPageUtils;
+import utils.MessageInfo;
+import utils.MessageResourceBundle;
 import utils.Organization;
 import utils.TreeData;
 import utils.UserPathListUtils;
@@ -34,6 +36,9 @@ import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.google.gson.Gson;
+
+import dto.Message;
+import dto.UserProfileInformation;
 
 
 @Jpf.Controller()
@@ -297,7 +302,6 @@ public class UserOperationController extends PageFlowController
 			ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
 			UserNodeData associateNode = UserPathListUtils.populateAssociateNode(this.userName,this.userManagement);
 			ArrayList<Organization> selectedList  = UserPathListUtils.buildassoOrgNodehierarchyList(associateNode);	
-			Integer leafNodeCategoryId = UserPathListUtils.getLeafNodeCategoryId(this.userName,this.customerId, this.userManagement);
 			ArrayList <Integer> orgIDList = new ArrayList <Integer>();
 			ArrayList<TreeData> data = new ArrayList<TreeData>();
 
@@ -333,7 +337,6 @@ public class UserOperationController extends PageFlowController
 
 			Gson gson = new Gson();
 			baseTree.setData(data);
-			baseTree.setLeafNodeCategoryId(leafNodeCategoryId);
 			jsonTree = gson.toJson(baseTree);
 		
 
@@ -412,6 +415,98 @@ public class UserOperationController extends PageFlowController
 			
 		}
 	 
+	 
+	 @Jpf.Action(forwards={
+				@Jpf.Forward(name = "success", 
+						path ="find_user_by_hierarchy.jsp")
+		})
+		protected Forward saveAddEditUser(userOperationForm form)
+		{   
+			String jsonResponse = "";
+			OutputStream stream = null;
+			HttpServletRequest req = getRequest();
+			HttpServletResponse resp = getResponse();
+			
+			UserProfileInformation userProfile = null;
+			userProfile = new UserProfileInformation();
+			userProfile.setFirstName(getRequest().getParameter("userFirstName"));
+			userProfile.setMiddleName(getRequest().getParameter("userMiddleName"));
+			userProfile.setLastName(getRequest().getParameter("userLastName"));
+			userProfile.setEmail(getRequest().getParameter("userEmail"));
+			userProfile.setTimeZone(getRequest().getParameter("timeZone"));
+			userProfile.setRoleId(getRequest().getParameter("roleId"));
+			userProfile.setExtPin1(getRequest().getParameter("userExternalId"));
+			userProfile.getUserContact().setAddressLine1(getRequest().getParameter("addressLine1"));
+			userProfile.getUserContact().setAddressLine2(getRequest().getParameter("addressLine2"));
+			userProfile.getUserContact().setCity(getRequest().getParameter("city"));
+			userProfile.getUserContact().setState(getRequest().getParameter("state"));
+			userProfile.getUserContact().setZipCode1(getRequest().getParameter("zipCode1"));
+			userProfile.getUserContact().setZipCode2(getRequest().getParameter("zipCode2"));
+			userProfile.getUserContact().setPrimaryPhone1(getRequest().getParameter("primaryPhone1"));
+			userProfile.getUserContact().setPrimaryPhone2(getRequest().getParameter("primaryPhone2"));
+			userProfile.getUserContact().setPrimaryPhone3(getRequest().getParameter("primaryPhone3"));
+			userProfile.getUserContact().setPrimaryPhone4(getRequest().getParameter("primaryPhone4"));
+			userProfile.getUserContact().setSecondaryPhone1(getRequest().getParameter("secondaryPhone1"));
+			userProfile.getUserContact().setSecondaryPhone2(getRequest().getParameter("secondaryPhone2"));
+			userProfile.getUserContact().setSecondaryPhone3(getRequest().getParameter("secondaryPhone3"));
+			userProfile.getUserContact().setFaxNumber1(getRequest().getParameter("faxNumber1"));
+			userProfile.getUserContact().setFaxNumber2(getRequest().getParameter("faxNumber2"));
+			userProfile.getUserContact().setFaxNumber3(getRequest().getParameter("faxNumber3"));
+			
+			String assignedOrgNodeIds = getRequest().getParameter("assignedOrgNodeIds");
+			String[] assignedOrgNodeId = assignedOrgNodeIds.split(",");
+			List <Integer> selectedOrgNodes = new ArrayList <Integer>(assignedOrgNodeId.length);
+			for (int i = assignedOrgNodeId.length - 1; i >= 0; i--) {
+				selectedOrgNodes.add( new Integer(assignedOrgNodeId[i].trim()));
+			}
+			//selectedOrgNodes.add(118641);
+			MessageInfo messageInfo = new MessageInfo();
+			String userName = null;
+
+			boolean isCreateNew = userName == null ? true : false;
+
+
+			//this.selectedOrgNodes = StudentPathListUtils.buildSelectedOrgNodes(this.currentOrgNodesInPathList, this.currentOrgNodeIds, this.selectedOrgNodes);
+			boolean result = true;
+			try {
+				CustomerConfiguration[]  customerConfigurations = this.users.getCustomerConfigurations(this.customerId);
+				userName = saveUserProfileInformation(isCreateNew, userProfile, userName, selectedOrgNodes);
+			       
+				
+				if (isCreateNew)
+				{
+					if (userName != null)  {
+						
+						messageInfo = createMessageInfo(messageInfo, Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION, false, true );
+						//form.setMessage(Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION);
+					}
+					else  {
+						
+						messageInfo = createMessageInfo(messageInfo, Message.ADD_TITLE, Message.ADD_ERROR, Message.INFORMATION, true, false );
+						//form.setMessage(Message.ADD_TITLE, Message.ADD_ERROR, Message.INFORMATION);
+					}
+					
+					
+				}
+				else
+				{
+					if (userName != null) {
+						messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION, false, true );
+						//form.setMessage(Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION);
+					}
+					else  {
+						messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.EDIT_ERROR, Message.INFORMATION, true, false );
+						
+					}
+				}
+		}
+			catch (SQLException be) {
+				be.printStackTrace();
+			}	
+				creatGson( req, resp, stream, messageInfo );
+				return null;
+			
+		}
 		
 	 /**
 	     * findByHierarchy
@@ -438,8 +533,69 @@ public class UserOperationController extends PageFlowController
 			return uData;
 		}
 	        
+	    /**
+	     * saveUserProfileInformation
+	     */
+	    private String saveUserProfileInformation(boolean isCreateNew, 
+	    								UserProfileInformation userProfile, 
+	                                    String userName, 
+	                                    List selectedOrgNodes)
+	    {        
+	        
+	        User user = userProfile.makeCopy(userName, selectedOrgNodes);
+	        String title = null;
+	        String username = user.getUserName();
+	        try {                    
+	            if (isCreateNew) {
+	                username = this.userManagement.createUser(this.userName, user);
+	            } 
+	        } 
+	        catch (CTBBusinessException be) {
+	            be.printStackTrace();
+	            username = null;
+	        }            
+	        catch (Exception e) {
+	            e.printStackTrace();
+	            username = null;
+	        }
+	                
+	        return username;
+	    }
 	    
-	    
+
+		private MessageInfo createMessageInfo(MessageInfo messageInfo, String messageTitle, String content, String type, boolean errorflag, boolean successFlag){
+			messageInfo.setTitle(messageTitle);
+			messageInfo.setContent(content);
+			messageInfo.setType(type);
+			messageInfo.setErrorFlag(errorflag);
+			messageInfo.setSuccessFlag(successFlag);
+			return messageInfo;
+		}
+		
+		
+		private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputStream stream, MessageInfo messageInfo ){
+			
+			try {
+				try {
+					Gson gson = new Gson();
+					String json = gson.toJson(messageInfo);
+					resp.setContentType("application/json");
+					resp.flushBuffer();
+					stream = resp.getOutputStream();
+					stream.write(json.getBytes());
+
+				} finally{
+					if (stream!=null){
+						stream.close();
+					}
+				}
+				
+			}
+			catch (Exception e) {
+				System.err.println("Exception while retrieving optionList.");
+				e.printStackTrace();
+			}
+		}
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////    
 	///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////

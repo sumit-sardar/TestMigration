@@ -49,6 +49,7 @@
 </br>
 </br>
 
+<jsp:include page="/userOperation/add_edit_user_detail.jsp" />
 			
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
@@ -63,6 +64,29 @@
 				<center>
 					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">
 					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
+				</center>
+			<br>
+		</td>
+		
+		</tr>
+		
+	</table>
+</div>
+
+
+<div id="EmailWarning"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table>
+		<tr>
+			<td colspan="2">
+			<p>Put mail content here</p>
+			</td>
+		</tr>
+		<tr>
+		<td >
+				<center>
+					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeEmailWarningPopup(); return false;" class="ui-widget-header">
+					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('EmailWarning'); return false;" class="ui-widget-header">
 				</center>
 			<br>
 		</td>

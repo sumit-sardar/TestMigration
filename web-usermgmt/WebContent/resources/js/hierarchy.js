@@ -4,8 +4,8 @@ var idarray =[];
 var gridloaded = false;
 var leafNodeCategoryId;
 var orgTreeHierarchy;
-var SelectedOrgNodeId;
-
+var SelectedOrgNodeId ;
+var assignedOrgNodeIds ="108784";
 function populateTree() {
 	
 	$.ajax({
@@ -83,7 +83,7 @@ function createSingleNodeSelectedTree(jsondata) {
 function createMultiNodeSelectedTree(jsondata) {
 
 	$("#innerID").bind("loaded.jstree", function (event, data) {  
-		 $('#innerID').jstree('open_node', '#'+SelectedOrgNodeId);   
+		//$('#innerID').jstree('open_node', $('#'+SelectedOrgNodeId).parent());   
      });  
 
 
@@ -177,7 +177,8 @@ function populateGrid() {
 			sortorder: "desc",
 			height: 370,  
 			editurl: 'userOrgNodeHierarchyGrid.do',
-			caption:"Search Result",
+			caption:"User List",
+			toolbar: [true,"top"],
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
@@ -209,9 +210,13 @@ function populateGrid() {
 					}
 	 });
 			jQuery("#list2").jqGrid('navGrid','#pager2',{});  
-			$('.ui-jqgrid-titlebar-close',"#list2").remove();
+			   $("#t_list2").append("<input type='button' value=' Change Password ' onclick='javascript:changePwdForUser(); return false;' class='ui-widget-header' style='height:20px;font-size:-3'/>"); 
 			
 			
+}
+
+function changePwdForUser(){
+
 }
 
  function gridReload(){ 
@@ -252,29 +257,39 @@ function populateGrid() {
 	
 	}
 	
-	function userDetailAdd(){
-	$("#userFirstName").val("");	
-	$("#userLastName").val("");	
-	$("#userMiddleName").val("");		
-	$("#userEmail").val("");		
-	$("#userExternalId").val("");		
-	$("#addressLine1").val("");		
-	$("#addressLine2").val("");		
-	$("#city").val("");
-	$("#secondaryPhone4").val("");	
-	$("#faxNumber1").val("");	
-	$("#faxNumber2").val("");	
-	$("#faxNumber3").val("");		
-	$("#preButton").css("visibility","hidden");	
-	$("#nextButton").css("visibility","hidden");	
-	$("#editUserDetail").dialog({  
-								title:"Add Record",  
+	function AddUserDetail(){
+		
+	/*$("#preButton").css("visibility","hidden");	
+	$("#nextButton").css("visibility","hidden");*/	
+	document.getElementById('displayMessage').style.display = "none";	
+	document.getElementById('displayMessageMain').style.display = "none";	
+	reset();
+	$("#addEditUserDetail").dialog({  
+								title:"Add User",  
 							 	resizable:false,
 							 	autoOpen: true,
-							 	width: '600px'
+							 	width: '800px',
+							 	modal: true,
+							 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 							 	});	
-	$('#accordion ul:eq(0)').show();
+							 	
+	setPopupPosition();						 	
 	}
+	
+	
+	function setPopupPosition(){
+				var toppos = ($(window).height() - 610) /2 + 'px';
+				var leftpos = ($(window).width() - 760) /2 + 'px';
+				$("#addEditUserDetail").parent().css("top",toppos);
+				$("#addEditUserDetail").parent().css("left",leftpos);		 	 
+				$("#User_Information").css("height",'300px');
+				$("#User_Information").css("overflow",'auto');
+				$("#Contact_Information").css("height",'300px');
+				$("#Contact_Information").css("overflow",'auto');
+				
+	}
+	
+	
 	
 	function disablenextprev(selectedPosition,maxlength) {
                     selectedPosition == 0 ? $("#pData").addClass("ui-state-disabled") : $("#pData").removeClass("ui-state-disabled");
@@ -296,20 +311,193 @@ function populateGrid() {
 		$("#editUserDetail").dialog("close");
 	}
 	
+	
 	function userDetailSubmit(){
-		$("#"+SelectedUserId+" td:eq(2)").text($("#userEmail").val());
-		//$("#"+SelectedUserId+" td").each(function() { 
-		//    alert($(this).attr('title'));
-		//});
+	// var validflag = VerifyStudentDetail(assignedOrgNodeIds);
+	var validflag = true;
+	if(validflag){
+		isEmailProvided();
+	}else {
+		document.getElementById('displayMessage').style.display = "block";
+	}
 	}
 	
 	
+	function saveUserDetail(){
+				$.ajax(
+						{
+								async:		true,
+								beforeSend:	function(){
+											
+												
+												UIBlock();
+												//alert('before send....');
+											},
+								url:		'saveAddEditUser.do',
+								type:		'POST',
+								data:		$("#addEditUserDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds ,
+								dataType:	'json',
+								success:	function(data, textStatus, XMLHttpRequest){	
+												$.unblockUI();  
+												var errorFlag = data.errorFlag;
+												var successFlag = data.successFlag;
+												if(successFlag) {
+													closePopUp('addEditUserDetail');
+													setMessageMain(data.title, data.content, data.type, "");
+													document.getElementById('displayMessageMain').style.display = "block";	
+													assignedOrgNodeIds = "";
+        										}
+        										else{
+        											setMessage(data.title, data.content, data.type, "");
+        											document.getElementById('displayMessage').style.display = "block";	
+        											
+        										}
+																								
+											},
+								error  :    function(XMLHttpRequest, textStatus, errorThrown){
+													$.unblockUI();  
+												window.location.href="/TestSessionInfoWeb/logout.do";
+											},
+								complete :  function(){
+												$.unblockUI();  
+											}
+						}
+					);
+	}
 	
 	
+	 function reset() {
+		$("#userFirstName").val("");	
+		$("#userLastName").val("");	
+		$("#userMiddleName").val("");		
+		$("#userEmail").val("");
+		$("#userExternalId").val("");		
+		$("#addressLine1").val("");		
+		$("#addressLine2").val("");		
+		$("#city").val("");
+		$("#state").val("");
+		$("#zipCode1").val("");
+		$("#zipCode2").val("");
+		$("#primaryPhone1").val("");
+		$("#primaryPhone2").val("");
+		$("#primaryPhone3").val("");
+		$("#primaryPhone4").val("");
+		$("#secondaryPhone1").val("");
+		$("#secondaryPhone2").val("");
+		$("#secondaryPhone3").val("");
+		$("#faxNumber1").val("");	
+		$("#faxNumber2").val("");	
+		$("#faxNumber3").val("");
+		
+		var allSelects = $("#addEditUserDetail select");
+		for(var count = 0; count < allSelects.length ; count++) {
+			$(allSelects[count]).find("option:eq(0)").attr("selected","true");
+		}	
+	 }
 	
 	
+	function onCancel() {
+		
+		isValueChanged = false;
+		if($("#userFirstName").val()!= "" 
+			|| $("#userLastName").val()!= ""
+			|| $("#userMiddleName").val()!= ""
+			|| $("#userEmail").val()!= ""
+			|| $("#userExternalId").val()!= ""
+			|| $("#addressLine1").val() != ""
+			|| $("#addressLine2").val() != ""
+			|| $("#city").val()!= ""
+			|| $("#state").val()!= ""
+			|| $("#zipCode1").val()!= ""
+			|| $("#zipCode2").val()!= ""
+			|| $("#primaryPhone1").val() != ""
+			|| $("#primaryPhone2").val() != ""
+			|| $("#primaryPhone3").val()!= ""
+			|| $("#primaryPhone4").val()!= ""
+			|| $("#secondaryPhone1").val()!= ""
+			|| $("#secondaryPhone2").val()!= ""
+			|| $("#secondaryPhone3").val() != ""
+			|| $("#faxNumber1").val() != "" 
+			|| $("#faxNumber2").val()!= ""
+			|| $("#faxNumber3").val()!= "") {
+			isValueChanged = true;	
+			}
+		
+		if(!isValueChanged) {
+			var allSelects = $("#addEditUserDetail select");
+			for(var count = 0; count < allSelects.length ; count++) {
+				var selectedInd = $(allSelects[count]).attr("selectedIndex");
+				if(selectedInd != 0 && ($(allSelects[count]).attr("disabled") == null  || $(allSelects[count]).attr("disabled") == false)) {
+					isValueChanged = true;
+					break;
+				}
+			}
+		}
+		
+		if(!isValueChanged){
+			if(assignedOrgNodeIds != ""){
+				isValueChanged = true;
+			}
+		}
+		
+		if(isValueChanged) {
+		$("#confirmationPopup").dialog({  
+			title:"Confirmation Alert",  
+		 	resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});	
+			 $("#confirmationPopup").css('height',100);
+			  
+		} else {
+			closePopUp('addEditUserDetail');
+		}
+	}
 	
 	
+	function closePopUp(dailogId){
+		if(dailogId == 'addEditUserDetail') {
+			$('#accordion').accordion('activate', 0 );
+			$("#User_Information").scrollTop(0);
+			$("#Contact_Information").scrollTop(0);
+			$('#Contact_Information').hide();
+		
+			
+		}
+		$("#"+dailogId).dialog("close");
+		
+		 
+	}
+	
+	function closeConfirmationPopup() {
+		closePopUp('confirmationPopup');
+		closePopUp('addEditUserDetail');
+	}
+	
+	function closeEmailWarningPopup() {
+		closePopUp('EmailWarning');
+		saveUserDetail();
+		
+	}
+	
+	function isEmailProvided(){
+		
+		if($("#userEmail").val()== "") {
+			$("#EmailWarning").dialog({  
+			title:"Email Alert",  
+		 	resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});	
+			 $("#EmailWarning").css('height',100);
+		
+		}
+	
+	}
 	
 
 

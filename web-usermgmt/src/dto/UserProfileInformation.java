@@ -8,6 +8,7 @@ import utils.StringUtils;
 
 import com.ctb.bean.testAdmin.Address;
 import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.OrganizationNode;
 import com.ctb.bean.testAdmin.Role;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.util.web.sanitizer.SanitizedFormField;
@@ -162,12 +163,17 @@ public class UserProfileInformation extends SanitizedFormField
         }
         
         
-        //User Organization Information
-        Node[] orgNodes = new Node[ selectedOrgNodes.size() ];        
+       /* Node[] orgNodes = new Node[ selectedOrgNodes.size() ];        
         for (int i=0 ; i<selectedOrgNodes.size() ; i++) {
             PathNode node = (PathNode)selectedOrgNodes.get(i);
             Node orgNode = new Node();
             orgNode.setOrgNodeId(node.getId());
+            orgNodes[i] = orgNode;
+        }*/
+        OrganizationNode[] orgNodes = new OrganizationNode[ selectedOrgNodes.size() ];        
+        for (int i=0 ; i<selectedOrgNodes.size() ; i++) {
+            OrganizationNode orgNode = new OrganizationNode();
+            orgNode.setOrgNodeId((Integer)selectedOrgNodes.get(i));
             orgNodes[i] = orgNode;
         }
         copied.setOrganizationNodes(orgNodes);    
