@@ -18,7 +18,7 @@ var SelectedOrgNodeId;
 var SelectedOrgNode;
 var SelectedOrgNodes = [];
 var optionList = [];
-var StudentList;
+var studentList;
 
 
 
@@ -156,7 +156,10 @@ function createMultiNodeSelectedTree(jsondata) {
 	  	if($(this).attr("categoryid") == leafNodeCategoryId){
 		 	var currentlySelectedNode ="";
 			assignedOrgNodeIds = "";
-			$(this).find(".jstree-checked").each(function(i, element){
+			$("#innerID").find(".jstree-checked").each(function(i, element){
+				
+				var orgcategorylevel = $(element).attr("categoryid");
+				if(orgcategorylevel == leafNodeCategoryId) {
 					if(currentlySelectedNode=="") {
 						currentlySelectedNode = $(element).text();
 					} else {
@@ -168,6 +171,8 @@ function createMultiNodeSelectedTree(jsondata) {
 					} else {
 						assignedOrgNodeIds = $(element).attr("id") +"," + assignedOrgNodeIds; 
 					}
+	    		}
+				
 			});
 				if(currentlySelectedNode.length > 0 ) {
 					$("#notSelectedOrgNodes").css("visibility","hidden");
@@ -223,7 +228,10 @@ function createMultiNodeSelectedTree(jsondata) {
 		   		{name:'studentNumber',index:'studentNumber',editable: true, width:100, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	
 		   	],
-		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",records: function(obj) { return obj.studentProfileInformation.length; } },
+		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
+		   	records: function(obj) { 
+		   	studentList = obj;
+		   	return obj.studentProfileInformation.length; } },
 		   	 
 			rowNum:20,
 			loadonce:true, 
@@ -257,8 +265,7 @@ function createMultiNodeSelectedTree(jsondata) {
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
-				//StudentList = $("#list2").getGridParam('userData');
-				 
+				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -289,7 +296,10 @@ function createMultiNodeSelectedTree(jsondata) {
 		   		{name:'studentNumber',index:'studentNumber',editable: true, width:120, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: space:nowrap;' } }
 		   	
 		   	],
-		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",records: function(obj) { return obj.studentProfileInformation.length; } },
+		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
+		   	records: function(obj) { 
+		   	studentList = obj;
+		   	return obj.studentProfileInformation.length; } },
 		   	 
 			rowNum:20,
 			loadonce:true, 
@@ -693,19 +703,16 @@ function fillDropDown( elementId, optionList) {
 	document.getElementById('displayMessage').style.display = "none";	
 	document.getElementById('displayMessageMain').style.display = "none";	
 	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
-	var obj = jQuery.parseJSON('{"id":'+rowid+'}'); 
-	$("#state").autocomplete({  
-     source: function(req, response) {  
-        var re = $.ui.autocomplete.escapeRegex(req.term);  
-        var matcher = new RegExp( "^" + re, "i" );  
-        response($.grep(states, function(item){return matcher.test(item.label); }) );  
-        },  
-      minLength: 2,  
-      select: function(event, ui) {  
-         $('#state_id').val(ui.item.id);  
-          $('#abbrev').val(ui.item.abbrev);  
-      }  
-	}); 
+	var createBy ;
+      for(var i=0;i<studentList.studentProfileInformation.length;i++) {
+      if(rowid == studentList.studentProfileInformation[i].studentId) {
+       		createBy = studentList.studentProfileInformation[i].createBy;
+       		break;
+       		}
+       }
+	
+	
+      
 		
 	
 	
