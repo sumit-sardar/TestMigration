@@ -265,11 +265,14 @@ public class ManageUserController extends PageFlowController
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
-                     path = "findUser.do")
+                     path = "findUser.do"),
+                     @Jpf.Forward(name = "moveTo",
+ 							path = "goto_userOperation.do")
     })
     protected Forward beginFindUser()
-    {
-    	ManageUserForm form = initialize(ACTION_FIND_USER);
+    {	
+    	return new Forward("moveTo");
+    	/*ManageUserForm form = initialize(ACTION_FIND_USER);
        
         form.setSelectedUserId(null); 
         form.setSelectedUserName(null);
@@ -286,7 +289,24 @@ public class ManageUserController extends PageFlowController
         this.navPath.reset(ACTION_FIND_USER);
         
                     
-        return new Forward("success", form);                      
+        return new Forward("success", form);    */                  
+    }
+    
+    /**
+     * @jpf:action
+     */
+	@Jpf.Action()
+    protected Forward goto_userOperation ()
+    {
+		try{
+			String contextPath = "/UserManagementWeb/userOperation/beginFindUser.do";
+	        String url = contextPath;         
+	        getResponse().sendRedirect(url);
+	 		} 
+		    catch( IOException ioe ) {
+		        System.err.print(ioe.getStackTrace());
+		    }
+		    return null;
     }
     
     /**
