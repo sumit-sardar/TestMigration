@@ -6,7 +6,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import com.ctb.contentcreator.bin.Configuration;
@@ -32,7 +35,6 @@ public class ZippedFileSeparatorThread extends StopableThread {
 
 	public void run() {
 		String zippedFileName = itemSetTD.getAdsid() + "$" + itemSetTD.getHash() ;
-		//String zippedFileName = configuration.getLocalFilePath()+File.separator+itemSetTD.getAdsid() + "$" + itemSetTD.getHash() + ".zip";
 		String trackerFileName = itemSetTD.getAdsid() + "$"	+ itemSetTD.getHash() + ".xml";
 		try {
 			ftpProcessorThread.start();
@@ -71,7 +73,6 @@ public class ZippedFileSeparatorThread extends StopableThread {
 			if (count > minFileLength) {
 				ColsableHelper.close(output);
 				queue.put( fileName);
-				//System.out.println(":::::: XXX  :::::::"+fileName);
 				
 				if (!isfileTracked) {
 					//fileName = getFilename(subtestidValue, indx);
@@ -93,7 +94,6 @@ public class ZippedFileSeparatorThread extends StopableThread {
 		ColsableHelper.close(output);
 		ColsableHelper.close(input);
 		queue.put( fileName);
-		//System.out.println(":::::: XXX  :::::::"+fileName);
 
 		if (!isfileTracked) {
 
@@ -113,21 +113,26 @@ public class ZippedFileSeparatorThread extends StopableThread {
 
 	private String generateTracker(String subtestidValue, Map trackerMap,
 			Map trackerIDMap) {
+		SimpleDateFormat format =  new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss zzz");
+		format.setTimeZone(TimeZone.getTimeZone("GMT"));
+
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-		xml += "<ContentTracker>";
-		xml += "<CraetedDate>" + System.currentTimeMillis() + "</CraetedDate>";
+		xml += "<content_tracker>";
+		xml += "<created_date>" + format.format(new Date()) + "</created_date>";
 		Integer start = new Integer(1);
+
 		do {
-			xml += "<Tracker>";
-			xml += "<SequenceNo>" + start.intValue() + "</SequenceNo>";
-			xml += "<Value>" + trackerMap.get(start) + "</Value>";
+			
+			xml += "<tracker ";
+			xml += "sequence_number = \"" + start.intValue()+ "\" ";
+			xml += " value = \"" + trackerMap.get(start)+ "\" ";
 			start = (Integer) trackerIDMap.get(start);
-			xml += "<Next>"
-					+ ((start == null) ? "NULL" : String.valueOf(start))
-					+ "</Next>";
-			xml += "</Tracker>";
+			xml +=  " next = \"" + ((start == null) ? "NULL" : String.valueOf(start)) + "\" ";;
+			xml += ">"	;
+				
+			xml += "</tracker>";
 		} while (start != null);
-		xml += "</ContentTracker>";
+		xml += "</content_tracker>";
 
 		return xml;
 	}
