@@ -18,6 +18,11 @@
         <filter-name>NoCacheFilter</filter-name>
         <url-pattern>/manageUser/*</url-pattern>
     </filter-mapping>
+      <filter-mapping>
+        <filter-name>NoCacheFilter</filter-name>
+        <url-pattern>/userOperation/*</url-pattern>
+    </filter-mapping>
+  
     <servlet>
         <description/>
         <servlet-name>action</servlet-name>
@@ -94,6 +99,7 @@
             <web-resource-name>UserManagementWeb</web-resource-name>
             <description>Protect any resources within the following Page Flow.</description>
             <url-pattern>/manageUser/*</url-pattern>
+               <url-pattern>/userOperation/*</url-pattern>
             <http-method>POST</http-method>
             <http-method>GET</http-method>
         </web-resource-collection>

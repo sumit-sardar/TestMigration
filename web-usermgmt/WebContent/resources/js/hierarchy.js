@@ -172,7 +172,7 @@ function populateGrid() {
 			loadonce:true, 
 			multiselect:false,
 			pager: '#pager2', 
-			sortname: 'empId', 
+			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "desc",
 			height: 370,  
