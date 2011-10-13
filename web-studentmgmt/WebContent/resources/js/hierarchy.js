@@ -17,6 +17,8 @@ var leafNodeCategoryId;
 var SelectedOrgNodeId;
 var SelectedOrgNode;
 var SelectedOrgNodes = [];
+var optionList = [];
+var StudentList;
 
 
 
@@ -46,7 +48,7 @@ function populateTree() {
 						createSingleNodeSelectedTree (orgTreeHierarchy);
 						$("#searchheader").css("visibility","visible");	
 						$("#orgNodeHierarchy").css("visibility","visible");	
-
+												
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -94,14 +96,14 @@ function createSingleNodeSelectedTree(jsondata) {
 	    });
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
-	    	SelectedOrgNode = $(this).parent();
-	    	SelectedOrgNodes = SelectedOrgNode.parentsUntil(".jstree","li");
+	    	//SelectedOrgNode = $(this).parent();
+	    	//SelectedOrgNodes = SelectedOrgNode.parentsUntil(".jstree","li");
   			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
  		     UIBlock();
  		  	if(!gridloaded) {
  		  		gridloaded = true;
- 		  		//populateTreeSelect();
+ 		  		populateTreeSelect();
  		  		var hideAccommodation = $("#supportAccommodations").val();
  		  		if(hideAccommodation == "false")
  		  			populateGridWithoutAccommodation();
@@ -121,17 +123,7 @@ function createMultiNodeSelectedTree(jsondata) {
 
 	
 	
- 	$("#innerID").bind("loaded.jstree", function (event, data) { 
- 			//openTreeNodes();
- 	
-	/*		$("#innerID li").not(".jstree-le").each(function() {
-    			var orgcategorylevel = $(this).attr("categoryid");
-    			if(orgcategorylevel != leafNodeCategoryId) {
-	    		  $("a ins.jstree-checkbox", this).first().hide();
-	    		}
-
-	  	}); */
-	  }).jstree({
+ 	$("#innerID").jstree({
 	        "json_data" : {	             
 	            "data" : jsondata.data,
 				"progressive_render" : true,
@@ -146,28 +138,16 @@ function createMultiNodeSelectedTree(jsondata) {
 	 			"plugins" : [ "themes", "json_data", "ui", "checkbox"]
 	   });	
 
-   		$("#innerID li").not(".jstree-le").each(function() {
-    			var orgcategorylevel = $(this).attr("categoryid");
-    			if(orgcategorylevel != leafNodeCategoryId) {
-	    		  $("a ins.jstree-checkbox", this).first().hide();
-	    		  }
-	  	});
-	  	
+   		
 	  	if($("#innerID ul").length>0){
 		 	//jQuery.jstree._reference("#innerID").destroy();
 		 	//openTreeNodes();
-	 	
-			$("#innerID li").not(".jstree-le").each(function() {
-	    			var orgcategorylevel = $(this).attr("categoryid");
-	    			if(orgcategorylevel != leafNodeCategoryId) {
-		    		  $("a ins.jstree-checkbox", this).first().hide();
-		    		}
-		    });		
-		}
+	 	}
+    	hideCheckBox();
     	
  		$("#innerID").delegate("li","click", function(e) {
-	 		$("#innerID li").not(".jstree-le").each(function() {
-    			var orgcategorylevel = $(this).attr("categoryid");
+ 			$(this).find("li").each(function(i, element) {
+    			var orgcategorylevel = $(element).attr("categoryid");
     			if(orgcategorylevel != leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
 	    		  }
@@ -176,10 +156,7 @@ function createMultiNodeSelectedTree(jsondata) {
 	  	if($(this).attr("categoryid") == leafNodeCategoryId){
 		 	var currentlySelectedNode ="";
 			assignedOrgNodeIds = "";
-			$("#innerID").find(".jstree-checked").each(function(i, element){
-				
-				var orgcategorylevel = $(element).attr("categoryid");
-				if(orgcategorylevel == leafNodeCategoryId) {
+			$(this).find(".jstree-checked").each(function(i, element){
 					if(currentlySelectedNode=="") {
 						currentlySelectedNode = $(element).text();
 					} else {
@@ -191,8 +168,6 @@ function createMultiNodeSelectedTree(jsondata) {
 					} else {
 						assignedOrgNodeIds = $(element).attr("id") +"," + assignedOrgNodeIds; 
 					}
-	    		}
-				
 			});
 				if(currentlySelectedNode.length > 0 ) {
 					$("#notSelectedOrgNodes").css("visibility","hidden");
@@ -282,6 +257,7 @@ function createMultiNodeSelectedTree(jsondata) {
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
+				//StudentList = $("#list2").getGridParam('userData');
 				 
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
@@ -376,7 +352,6 @@ document.getElementById('displayMessageMain').style.display = "none";
 		beforeSend:	function(){
 						
 						UIBlock();
-						populateTreeSelect();
 					},
 		url:		'getOptionList.do?isLasLinkCustomer='+$("#isLasLinkCustomer").val(), 
 		type:		'POST',
@@ -450,7 +425,6 @@ document.getElementById('displayMessageMain').style.display = "none";
 	
     function reset() {
     	assignedOrgNodeIds = "";
-    	populateTreeSelect();
     	
        jQuery.each(customerDemographicValue, function(i, field){         
       		$("#"+field.name).val(field.value);
@@ -524,7 +498,7 @@ function fillDropDown( elementId, optionList) {
 			$("#Student_Accommodation_Information").scrollTop(0);
 			$('#Student_Additional_Information').hide();
 			$('#Student_Accommodation_Information').hide();
-			
+			populateTreeSelect();
 		}
 		$("#"+dailogId).dialog("close");
 		
@@ -703,9 +677,100 @@ function fillDropDown( elementId, optionList) {
   		 }
 	}
 	
+	function hideCheckBox(){
+		$("#innerID li").not(".jstree-le").each(function() {
+    			var orgcategorylevel = $(this).attr("categoryid");
+    			if(orgcategorylevel != leafNodeCategoryId) {
+	    		  $("a ins.jstree-checkbox", this).first().hide();
+	    		  }
+	  	});
+	
+	}
 
+
+	function editStudentDetail(){
+/*
+	document.getElementById('displayMessage').style.display = "none";	
+	document.getElementById('displayMessageMain').style.display = "none";	
+	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+	var obj = jQuery.parseJSON('{"id":'+rowid+'}'); 
+	$("#state").autocomplete({  
+     source: function(req, response) {  
+        var re = $.ui.autocomplete.escapeRegex(req.term);  
+        var matcher = new RegExp( "^" + re, "i" );  
+        response($.grep(states, function(item){return matcher.test(item.label); }) );  
+        },  
+      minLength: 2,  
+      select: function(event, ui) {  
+         $('#state_id').val(ui.item.id);  
+          $('#abbrev').val(ui.item.abbrev);  
+      }  
+	}); 
+		
 	
 	
+	$.ajax({
+		async:		true,
+		beforeSend:	function(){
+						UIBlock();
+					},
+		url:		'getStudentDataForSelectedStudent.do?&studentID='+rowid +'&createBy='+createBy , 
+		type:		'POST',
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){	
+						$.unblockUI();
+						gradeOptions = data.optionList.gradeOptions;
+						genderOptions = data.optionList.genderOptions;
+						dayOptions = data.optionList.dayOptions; 
+						monthOptions = data.optionList.monthOptions;
+						yearOptions = data.optionList.yearOptions; 
+						testPurposeOptions = data.optionList.testPurposeOptions;
+						fillDropDown("gradeOptions", gradeOptions);
+						fillDropDown("genderOptions", genderOptions);
+						fillDropDown("dayOptions", dayOptions);
+						fillDropDown("monthOptions", monthOptions);
+						fillDropDown("yearOptions", yearOptions);
+						if($("#isLasLinkCustomer").val() =="true")
+							fillDropDown("testPurposeOptions", testPurposeOptions);
+							
+						$("#studentFirstName").val(data.firstName);
+						$("#studentMiddleName").val(data.middleName);
+						$("#studentLastName").val(data.lastName);
+						$("#monthOptions").val(data.month);
+						$("#dayOptions").val(data.day);
+						$("#yearOptions").val(data.year);
+						$("#genderOptions").val(data.gender);
+						$("#gradeOptions").val(data.grade);
+						$("#studentExternalId").val(data.studentNumber);
+						$("#studentExternalId2").val(data.studentSecondNumber);
+						if($("#isLasLinkCustomer").val() == "true")
+							$("#testPurposeOptions").val(data.testPurpose);
+						
+						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
+						$("#addEditStudentDetail").dialog({  
+													title:"Edit Student",  
+												 	resizable:false,
+												 	autoOpen: true,
+												 	width: '800px',
+												 	modal: true,
+												 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		 	
+												 	});	
+												 	 
+							 setPopupPosition();
+							 
+							
+							 		
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();  
+						window.location.href="/TestSessionInfoWeb/logout.do";
+						
+					}
+		
+	});
+	*/
+}
 	
 	
 	
