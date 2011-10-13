@@ -98,5 +98,12 @@ abstract public class Config {
             return false;
         return defaultValue;
     }
-
+ //START: for content download 
+	/**
+	 * @return the file
+	 */
+	public File getFile() {
+		return file;
+	}
+//END: for content download 
 }

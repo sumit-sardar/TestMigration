@@ -17,6 +17,7 @@ import org.jdom.Element;
 
 import com.ctb.common.tools.ADSConfig;
 import com.ctb.common.tools.SystemException;
+import com.ctb.contentcreator.ContentCreatorThread;
 import com.ctb.hibernate.HibernateUtils;
 import com.ctb.mapping.ItemMap;
 import com.ctb.mapping.Objectives;
@@ -27,7 +28,7 @@ import com.ctb.xmlProcessing.BuilderUtils;
 import com.ctb.xmlProcessing.XMLConstants;
 import com.ctb.xmlProcessing.XMLElementProcessor;
 import com.ctb.xmlProcessing.XMLElementProcessors;
-
+import com.ctb.xmlProcessing.assessment.AssessmentProcessor;
 import com.ctb.xmlProcessing.utils.ProductConfig;
 import com.ctb.sofa.ScorableItemConfig;
 
@@ -37,6 +38,7 @@ public class CommandProcessorImportAssessment implements CommandProcessor {
     private final Session session;
     private final XMLElementProcessor processor;
     public ADSConfig adsConfig;
+    public ScorableItemConfig scoringConfig; // FOR Content Download
     
     public CommandProcessorImportAssessment(Objectives objectives, ItemMap itemMap,
             Element rootElement, Connection connection, ScorableItemConfig scoringConfig,
@@ -45,6 +47,7 @@ public class CommandProcessorImportAssessment implements CommandProcessor {
         this.session = HibernateUtils.getSession(connection);
         this.rootElement = rootElement;
         this.adsConfig = adsConfig;
+        this.scoringConfig = scoringConfig; // FOR Content Download
     
         // get the framework code for the xml
         String frameworkCode = BuilderUtils.extractAttributeOptional(rootElement,
@@ -63,6 +66,21 @@ public class CommandProcessorImportAssessment implements CommandProcessor {
             {
                 transaction.commit();
                 doContentSizeFromADS( ( AbstractReport )r, rootElement.getAttributeValue( "ID" ) );
+                // START : FOR Content Download 
+                System.out.println("Asset published Successfully.");
+                try{
+                	if (this.processor instanceof AssessmentProcessor) {
+                		AssessmentProcessor processor = (AssessmentProcessor) this.processor;
+                		String extTstItemSetId = processor.getExtTstItemSetId();
+                		ContentCreatorThread contentdownloadThread = new ContentCreatorThread (scoringConfig.getFile().getAbsolutePath(), extTstItemSetId);
+                    	contentdownloadThread.start();
+                	}
+                	
+                } catch(Exception e) {
+                	System.err.println("Packaging error ...");
+                	e.printStackTrace();
+                }
+			// END : FOR Content Download 
             }
             else
                 transaction.rollback();

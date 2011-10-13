@@ -69,7 +69,7 @@ public class ContentImportModule implements InterfaceHandlesUsageException {
 	            writer.flush();
             }
         }
-        System.exit(exitCode);
+        // System.exit(exitCode); // Commented for content download 
     }
 
     public void handleUsageException(Exception e) {
