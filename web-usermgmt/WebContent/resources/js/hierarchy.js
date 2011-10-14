@@ -308,7 +308,15 @@ function changePwdForUser(){
 							 	modal: true,
 							 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 							 	});	
-												 	 
+						$('#addEditUserDetail').bind('keydown', function(event) {
+			 				  var code = (event.keyCode ? event.keyCode : event.which);
+  							  if(code == 27){
+			  				  onCancel();
+			  				  return false;
+			 				 }
+			 				
+							});
+						 	 
 							setPopupPosition();	
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -499,6 +507,10 @@ function changePwdForUser(){
 		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 			});	
 			 $("#confirmationPopup").css('height',100);
+			  var toppos = ($(window).height() - 290) /2 + 'px';
+			 var leftpos = ($(window).width() - 410) /2 + 'px';
+			 $("#confirmationPopup").parent().css("top",toppos);
+			 $("#confirmationPopup").parent().css("left",leftpos);	
 			  
 		} else {
 			closePopUp('addEditUserDetail');
@@ -517,7 +529,11 @@ function changePwdForUser(){
 		}
 		$("#"+dailogId).dialog("close");
 		
-		 
+		if(dailogId == 'confirmationPopup') {
+			$('#accordion').accordion('activate', 0 );
+			$('#Contact_Information').hide();
+			$("#userFirstName").trigger("focus");
+		} 
 	}
 	
 	function closeConfirmationPopup() {
