@@ -194,7 +194,6 @@ function populateGrid() {
 			height: 370,  
 			editurl: 'userOrgNodeHierarchyGrid.do',
 			caption:"User List",
-			toolbar: [true,"top"],
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
@@ -226,9 +225,7 @@ function populateGrid() {
 					}
 	 });
 			jQuery("#list2").jqGrid('navGrid','#pager2',{});  
-			   $("#t_list2").append("<input type='button' value=' Change Password ' onclick='javascript:changePwdForUser(); return false;' class='ui-widget-header' style='height:20px;font-size:-3'/>"); 
-			
-			
+			 
 }
 
 function changePwdForUser(){

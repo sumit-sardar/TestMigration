@@ -11,22 +11,34 @@
 			<div id= "contentMain">	</div>
 			<div id= "messageMain">	</div>
 		</div>
-		
-	 <table class="transparent">
-		<tr class="transparent">
-	        <td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;
+		<table  width="100%"> 
+			<tr class="transparent">
+	        	<td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;
 	             
 	        </td>
-   	 	</tr>
-	    <tr class="transparent">
+   	 		</tr>
+		   <tr  width="100%" >
+		       <td   width="100%" align="right">
+	     	       <!-- <input style="padding: 2px;" class="ui-corner-top ui-corner-right ui-corner-tr ui-corner-tl ui-widget-header" onclick="javascript:changePwdForUser(); return false;" value=" Change Password " type="button">-->
+	     	        <input style="padding: 2px; background: url(&quot;images/ui-bg_glass_85_dfeffc_1x400.png&quot;) repeat-x scroll 50% 50% rgb(223, 239, 252);" class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" onclick="javascript:changePwdForUser(); return false;" value=" Change Password " type="button">
+	     	   </td>
+		   </tr>
+		 </table>
+		 </td>
+		 </tr> 
+		 <tr>
+		 <td>
+		 <table>
+		  
+	      <tr class="transparent">
 	        <td class="transparent"  valign="middle">
 	      	<div  id= "searchheader" class="ui-corner-top ui-corner-right ui-corner-tr ui-corner-tl ui-widget-header " style="visibility:hidden;  height:25px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;User Search</div>
-	    	<script>populateTree();</script>
-	    	<div id = "orgNodeHierarchy"  style="visibility:hidden; border: 1px solid #A6C9E2; overflow:auto; height: 485px;  width: 200px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
+	    	  <script>populateTree();</script>
+	    	  <div id = "orgNodeHierarchy"  style="visibility:hidden; border: 1px solid #A6C9E2; overflow:auto; height: 485px;  width: 200px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
 				
 			</div> 
 			
-		 </td>
+		    </td>
 		 	<td class="transparent" width="20px">&nbsp;</td>
 		 	 <td >
 	      
@@ -40,7 +52,7 @@
 	             
 	        </td>
    	 	</tr>
-	</table>
+	     </table>
 	
 
         </td>
