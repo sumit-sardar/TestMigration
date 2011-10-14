@@ -531,7 +531,11 @@ function fillDropDown( elementId, optionList) {
 			
 		$("#"+dailogId).dialog("close");
 		if(dailogId == 'confirmationPopup') {
-			 $('#studentFirstName').trigger("focus");		
+			$('#accordion').accordion('activate', 0 );
+			$('#Student_Additional_Information').hide();
+			$('#Student_Accommodation_Information').hide();
+			$('#studentFirstName').trigger("focus");
+			 		
 		}
 		 
 	}
