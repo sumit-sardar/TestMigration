@@ -52,10 +52,13 @@ public class OrgOperationController extends PageFlowController {
 	private void getUserDetails()
 	{
 		java.security.Principal principal = getRequest().getUserPrincipal();
-		if (principal != null) 
+		if (principal != null) {
 			this.userName = principal.toString();
-		else            
+	        getSession().setAttribute("userName", this.userName);		
+		}
+		else {           
 			this.userName = (String)getSession().getAttribute("userName");
+		}
 	}
 	
 	/**
