@@ -32,7 +32,7 @@
 		  
 	      <tr class="transparent">
 	        <td class="transparent"  valign="middle">
-	      	<div  id= "searchheader" class="ui-corner-top ui-corner-right ui-corner-tr ui-corner-tl ui-widget-header " style="visibility:hidden;  height:25px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;User Search</div>
+	      	<div  id= "searchheader" class="ui-corner-top ui-corner-tr ui-corner-tl ui-widget-header " style="visibility:hidden;  height:25px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;User Search</div>
 	    	  <script>populateTree();</script>
 	    	  <div id = "orgNodeHierarchy"  style="visibility:hidden; border: 1px solid #A6C9E2; overflow:auto; height: 485px;  width: 200px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
 				
