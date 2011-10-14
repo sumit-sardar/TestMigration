@@ -26,8 +26,8 @@ function VerifyUserDetail(assignedOrgNodeIds){
      firstName = $("#userFirstName").val();
 	 middleName = $("#userMiddleName").val();
 	 lastName = $("#userLastName").val();
-	 userRole = $("#roleId").val();
-	 timeZone = $("#timeZone").val();
+	 userRole = $("#roleOptions").val();
+	 timeZone = $("#timeZoneOptions").val();
 	 userEmail = $("#userEmail").val();
 	 selectedOrgNodes = assignedOrgNodeIds;
 	 firstName = trim(firstName);
@@ -36,7 +36,7 @@ function VerifyUserDetail(assignedOrgNodeIds){
 	 addressLine1 = $("#addressLine1").val();
 	 addressLine2 = $("#addressLine2").val();
 	 city = $("#city").val();	
-	 state = $("#state").val();
+	 state = $("#stateOptions").val();
 	 zipCode1 = $("#zipCode1").val();
 	 zipCode2 = $("#zipCode2").val();
 	 primaryPhone1 = $("#primaryPhone1").val();
@@ -60,12 +60,12 @@ function VerifyUserDetail(assignedOrgNodeIds){
 				requiredFieldCount += 1;            
 				requiredFields = buildErrorString("Last Name", requiredFieldCount, requiredFields);       
 			}
-	if ( userRole == "") {
+	if ( userRole == "-1") {
 				requiredFieldCount += 1;            
 				requiredFields = buildErrorString("Role", requiredFieldCount, requiredFields);       
 			}
 
-   if ( timeZone == "" ) {
+   if ( timeZone == "-1" ) {
 				requiredFieldCount += 1;            
 				requiredFields = buildErrorString("TimeZone", requiredFieldCount, requiredFields);       
 			}  

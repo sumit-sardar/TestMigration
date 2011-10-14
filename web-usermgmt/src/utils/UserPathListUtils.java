@@ -638,6 +638,7 @@ public class UserPathListUtils
                     pathNode.setOrgNodeId(node.getOrgNodeId());   
                     pathNode.setOrgCategoryLevel(node.getCategoryLevel());
                     pathNode.setOrgParentNodeId(node.getParentOrgNodeId());
+					pathNode.setCustomerId(node.getCustomerId());
                     nodeList.add(pathNode);
                 }
             }
@@ -662,6 +663,7 @@ public class UserPathListUtils
                     pathNode.setOrgNodeId(node.getOrgNodeId());   
                     pathNode.setOrgCategoryLevel(node.getCategoryLevel());
                     pathNode.setOrgParentNodeId(node.getParentOrgNodeId());
+                    pathNode.setCustomerId(node.getCustomerId());
                     nodeList.add(pathNode);
                     completeOrgNodeList.add(pathNode);
                     orgIDList.add(node.getOrgNodeId());

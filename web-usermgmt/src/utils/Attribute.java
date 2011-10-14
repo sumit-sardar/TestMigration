@@ -5,6 +5,7 @@ public class Attribute {
 	private String id;
 	private String checked = "false";
 	private String categoryID;
+	private String customerId;
 		
 	/**
 	 * @return the categoryID
@@ -34,6 +35,20 @@ public class Attribute {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return the customerId
+	 */
+	public String getCustomerId() {
+		return customerId;
+	}
+
+	/**
+	 * @param customerId the customerId to set
+	 */
+	public void setCustomerId(String customerId) {
+		this.customerId = customerId;
 	}
 
 }

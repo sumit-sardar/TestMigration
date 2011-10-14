@@ -173,7 +173,8 @@ public class UserProfileInformation extends SanitizedFormField
         OrganizationNode[] orgNodes = new OrganizationNode[ selectedOrgNodes.size() ];        
         for (int i=0 ; i<selectedOrgNodes.size() ; i++) {
             OrganizationNode orgNode = new OrganizationNode();
-            orgNode.setOrgNodeId((Integer)selectedOrgNodes.get(i));
+            Node node = (Node) selectedOrgNodes.get(i);
+            orgNode.setOrgNodeId(node.getOrgNodeId());
             orgNodes[i] = orgNode;
         }
         copied.setOrganizationNodes(orgNodes);    

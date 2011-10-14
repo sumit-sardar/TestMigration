@@ -22,7 +22,7 @@
 	        <td class="transparent"  valign="middle">
 	      	<div  id= "searchheader" class="ui-corner-top ui-corner-right ui-corner-tr ui-corner-tl ui-widget-header " style="visibility:hidden;  height:25px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;User Search</div>
 	    	<script>populateTree();</script>
-	    	<div id = "orgNodeHierarchy"  style="border: 1px solid #A6C9E2; overflow:auto; height: 485px;  width: 200px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
+	    	<div id = "orgNodeHierarchy"  style="visibility:hidden; border: 1px solid #A6C9E2; overflow:auto; height: 485px;  width: 200px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
 				
 			</div> 
 			
@@ -79,14 +79,14 @@
 	<table>
 		<tr>
 			<td colspan="2">
-			<p>Put mail content here</p>
+			<p>An email address was not provided for this new user. Therefore, the welcome email message with login information cannot be sent directly to the user. Do you want to add an email address now?</p>
 			</td>
 		</tr>
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeEmailWarningPopup(); return false;" class="ui-widget-header">
-					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('EmailWarning'); return false;" class="ui-widget-header">
+					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closePopUp('EmailWarning'); return false;" class="ui-widget-header">
+					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closeEmailWarningPopup(); return false;" class="ui-widget-header">
 				</center>
 			<br>
 		</td>

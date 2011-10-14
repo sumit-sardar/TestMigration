@@ -55,33 +55,17 @@
 									<tr class="transparent">
 										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Time Zone:</td>
 										<td class="transparent">
-											<select style="width: 200px;"   id="timeZone" name="timeZone">	
-											<option style="width: 200px;" selected="" value="">Select a time zone</option>
-											<option style="width: 200px;" value="America/Los_Angeles">Pacific</option>
-											<option style="width: 200px;" value="America/Denver">Mountain</option>
-											<option style="width: 200px;" value="America/Phoenix">Phoenix</option>
-											<option style="width: 200px;" value="America/Chicago">Central</option>
-											<option style="width: 200px;" value="America/Indianapolis">Indianapolis</option>
-											<option style="width: 200px;" value="America/New_York">Eastern</option>
-											<option style="width: 200px;" value="GMT">Greenwich Mean</option>
-											<option style="width: 200px;" value="Pacific/Honolulu">Hawaii</option>
-											<option style="width: 200px;" value="America/Adak">Aleutian</option>
-											<option style="width: 200px;" value="America/Anchorage">Alaska</option>	
-											</select> 
+											<select id="timeZoneOptions"  name="timeZoneOptions" style="width: 202px;"></select>
 										</td>
 									</tr>
 									<tr class="transparent">
 										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Role:</td>
 										<td class="transparent">
-											<select style="width: 200px;"  id="roleId" name="roleId">	
-										 	<option style="width: 200px;" selected="" value="">Select a role</option>
-											<option style="width: 200px;" value="1005">Administrator</option>
-											<option style="width: 200px;" value="1016">Administrative Coordinator</option>
-											<option style="width: 200px;" value="1006">Coordinator</option>
-											<option style="width: 200px;" value="1009">Proctor</option>
-										</select></td>
+											<select id="roleOptions"  name="roleOptions" style="width: 202px;"></select>
+										</td>
 						
 									</tr>
+									<!--ext_pin1 is added for DEX CR-->
 									
 									<tr class="transparent">
 										<td nowrap="" width="110" class="transparent alignRight">External User Id:</td>
@@ -166,68 +150,8 @@
 										<tr class="transparent">
 											<td width="110" class="transparent alignRight">State:</td>
 											<td class="transparent">
-												<select style="width: 200px;"  id="state" name="state"> 
-												<option style="width: 200px;" selected="" value="">Select a state</option>
-												<option style="width: 200px;" value="AL">Alabama</option>
-												<option style="width: 200px;" value="AK">Alaska</option>
-												<option style="width: 200px;" value="AZ">Arizona</option>
-												<option style="width: 200px;" value="AR">Arkansas</option>
-												<option style="width: 200px;" value="CA">California</option>
-												<option style="width: 200px;" value="CO">Colorado</option>
-												<option style="width: 200px;" value="CT">Connecticut</option>
-												<option style="width: 200px;" value="DE">Delaware</option>
-												<option style="width: 200px;" value="DC">District of Columbia</option>
-												<option style="width: 200px;" value="FL">Florida</option>
-												<option style="width: 200px;" value="GA">Georgia</option>
-												<option style="width: 200px;" value="HI">Hawaii</option>
-												<option style="width: 200px;" value="ID">Idaho</option>
-												<option style="width: 200px;" value="IL">Illinois</option>
-												<option style="width: 200px;" value="IN">Indiana</option>
-												<option style="width: 200px;" value="IA">Iowa</option>
-												<option style="width: 200px;" value="KS">Kansas</option>
-												<option style="width: 200px;" value="KY">Kentucky</option>
-												<option style="width: 200px;" value="LA">Louisiana</option>
-												<option style="width: 200px;" value="ME">Maine</option>
-												<option style="width: 200px;" value="MD">Maryland</option>
-												<option style="width: 200px;" value="MA">Massachusetts</option>
-												<option style="width: 200px;" value="MI">Michigan</option>
-												<option style="width: 200px;" value="MN">Minnesota</option>
-												<option style="width: 200px;" value="MS">Mississippi</option>
-												<option style="width: 200px;" value="MO">Missouri</option>
-												<option style="width: 200px;" value="MT">Montana</option>
-												<option style="width: 200px;" value="NE">Nebraska</option>
-												<option style="width: 200px;" value="NV">Nevada</option>
-												<option style="width: 200px;" value="NH">New Hampshire</option>
-												<option style="width: 200px;" value="NJ">New Jersey</option>
-												<option style="width: 200px;" value="NM">New Mexico</option>
-												<option style="width: 200px;" value="NY">New York</option>
-												<option style="width: 200px;" value="NC">North Carolina</option>
-												<option style="width: 200px;" value="ND">North Dakota</option>
-												<option style="width: 200px;" value="OH">Ohio</option>
-												<option style="width: 200px;" value="OK">Oklahoma</option>
-												<option style="width: 200px;" value="OR">Oregon</option>
-												<option style="width: 200px;" value="PA">Pennsylvania</option>
-												<option style="width: 200px;" value="RI">Rhode Island</option>
-												<option style="width: 200px;" value="SC">South Carolina</option>
-												<option style="width: 200px;" value="SD">South Dakota</option>
-												<option style="width: 200px;" value="TN">Tennessee</option>
-												<option style="width: 200px;" value="TX">Texas</option>
-												<option style="width: 200px;" value="UT">Utah</option>
-												<option style="width: 200px;" value="VT">Vermont</option>
-												<option style="width: 200px;" value="VA">Virginia</option>
-												<option style="width: 200px;" value="WA">Washington</option>
-												<option style="width: 200px;" value="WV">West Virginia</option>
-												<option style="width: 200px;" value="WI">Wisconsin</option>
-												<option style="width: 200px;" value="WY">Wyoming</option>
-												<option style="width: 200px;" value="AS">American Samoa</option>
-												<option style="width: 200px;" value="FM">F.S. of Micronesia</option>
-												<option style="width: 200px;" value="GU">Guam</option>
-												<option style="width: 200px;" value="MH">Marshall Islands</option>
-												<option style="width: 200px;" value="MP">North Mariana Islands</option>
-												<option style="width: 200px;" value="PW">Palau</option>
-												<option style="width: 200px;" value="PR">Puerto Rico</option>
-												<option style="width: 200px;" value="VI">Virgin Islands</option>
-											</select></td>
+												<select id="stateOptions"  name="stateOptions" style="width: 202px;"></select>	
+											</td>
 										</tr>
 										<tr class="transparent">
 											<td width="110" class="transparent alignRight">Zip:</td>

@@ -19,7 +19,7 @@ import utils.Base;
 import utils.BaseTree;
 import utils.FilterSortPageUtils;
 import utils.MessageInfo;
-import utils.MessageResourceBundle;
+import utils.OptionList;
 import utils.Organization;
 import utils.TreeData;
 import utils.UserPathListUtils;
@@ -30,10 +30,15 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.OrganizationNode;
+import com.ctb.bean.testAdmin.Role;
+import com.ctb.bean.testAdmin.TimeZones;
+import com.ctb.bean.testAdmin.USState;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.util.userManagement.CTBConstants;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.google.gson.Gson;
 
@@ -65,6 +70,7 @@ public class UserOperationController extends PageFlowController
     private static final String ACTION_DEFAULT        = "defaultAction";
     private static final String ACTION_FIND_USER      = "findUser";
     private static final String ACTION_CHANGE_PASSWORD = "changePassword";
+    private static final String ACTION_ADD_USER       = "addUser";
     public static String CONTENT_TYPE_JSON = "application/json";
     
 	private String userName = null;
@@ -420,26 +426,68 @@ public class UserOperationController extends PageFlowController
 				@Jpf.Forward(name = "success", 
 						path ="find_user_by_hierarchy.jsp")
 		})
+		protected Forward getOptionList(userOperationForm form){
+			String jsonResponse = "";
+			OutputStream stream = null;
+			Boolean isLasLinkCustomer = new Boolean(getRequest().getParameter("isLasLinkCustomer"));
+			HttpServletRequest req = getRequest();
+			HttpServletResponse resp = getResponse();
+			try {
+				
+				OptionList optionList = new OptionList();
+				optionList.setRoleOptions(getRoleOptions(ACTION_ADD_USER));
+				optionList.setTimeZoneOptions(getTimeZoneOptions(ACTION_ADD_USER));
+				optionList.setStateOptions(getStateOptions(ACTION_ADD_USER));
+				
+				
+				try {
+					Gson gson = new Gson();
+					String json = gson.toJson(optionList);
+					resp.setContentType("application/json");
+					resp.flushBuffer();
+					stream = resp.getOutputStream();
+					stream.write(json.getBytes());
+
+				} finally{
+					if (stream!=null){
+						stream.close();
+					}
+				}
+			}
+			catch (Exception e) {
+				System.err.println("Exception while retrieving optionList.");
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+	 
+	 
+	 @Jpf.Action(forwards={
+				@Jpf.Forward(name = "success", 
+						path ="find_user_by_hierarchy.jsp")
+		})
 		protected Forward saveAddEditUser(userOperationForm form)
 		{   
 			String jsonResponse = "";
 			OutputStream stream = null;
 			HttpServletRequest req = getRequest();
 			HttpServletResponse resp = getResponse();
-			
+			MessageInfo messageInfo = new MessageInfo();
+			String userName = null;
 			UserProfileInformation userProfile = null;
 			userProfile = new UserProfileInformation();
 			userProfile.setFirstName(getRequest().getParameter("userFirstName"));
 			userProfile.setMiddleName(getRequest().getParameter("userMiddleName"));
 			userProfile.setLastName(getRequest().getParameter("userLastName"));
 			userProfile.setEmail(getRequest().getParameter("userEmail"));
-			userProfile.setTimeZone(getRequest().getParameter("timeZone"));
-			userProfile.setRoleId(getRequest().getParameter("roleId"));
+			userProfile.setTimeZone(getRequest().getParameter("timeZoneOptions"));
+			userProfile.setRoleId(getRequest().getParameter("roleOptions"));
 			userProfile.setExtPin1(getRequest().getParameter("userExternalId"));
 			userProfile.getUserContact().setAddressLine1(getRequest().getParameter("addressLine1"));
 			userProfile.getUserContact().setAddressLine2(getRequest().getParameter("addressLine2"));
 			userProfile.getUserContact().setCity(getRequest().getParameter("city"));
-			userProfile.getUserContact().setState(getRequest().getParameter("state"));
+			userProfile.getUserContact().setState(getRequest().getParameter("stateOptions"));
 			userProfile.getUserContact().setZipCode1(getRequest().getParameter("zipCode1"));
 			userProfile.getUserContact().setZipCode2(getRequest().getParameter("zipCode2"));
 			userProfile.getUserContact().setPrimaryPhone1(getRequest().getParameter("primaryPhone1"));
@@ -455,50 +503,75 @@ public class UserOperationController extends PageFlowController
 			
 			String assignedOrgNodeIds = getRequest().getParameter("assignedOrgNodeIds");
 			String[] assignedOrgNodeId = assignedOrgNodeIds.split(",");
-			List <Integer> selectedOrgNodes = new ArrayList <Integer>(assignedOrgNodeId.length);
+			ArrayList<OrganizationNode> selectedOrgNodes = new ArrayList<OrganizationNode>();
 			for (int i = assignedOrgNodeId.length - 1; i >= 0; i--) {
-				selectedOrgNodes.add( new Integer(assignedOrgNodeId[i].trim()));
+				 String [] values = assignedOrgNodeId[i].split("\\|");
+				 OrganizationNode orgNode = new OrganizationNode();
+				 orgNode.setOrgNodeId(Integer.parseInt(values[0].trim()));
+				 orgNode.setCustomerId(Integer.parseInt(values[1].trim()));
+				 selectedOrgNodes.add(orgNode);
+				
 			}
+			//Check if logged in user is an AddAdministrator
+			boolean isAdmin = isAddAdministrator();
+			if (isAdmin){
+				userProfile.setRole(CTBConstants.ROLE_NAME_ADMINISTRATOR);
+			}
+			
+			boolean validInfo = true;
+			
+			if (validInfo) {
+				String requiredFields = "";
+	            validInfo = verifyUserCreationPermission( selectedOrgNodes);
+	            if(!validInfo){
+	            	
+					requiredFields += ("<br/>" + Message.USER_CREATION_ERROR);
+					messageInfo = createMessageInfo(messageInfo, Message.USER_CREATION_TITLE, requiredFields, Message.ERROR, true, false );
+					
+	            }
+	         } 
+			
 			//selectedOrgNodes.add(118641);
-			MessageInfo messageInfo = new MessageInfo();
-			String userName = null;
-
+			
+			
 			boolean isCreateNew = userName == null ? true : false;
 
-
-			//this.selectedOrgNodes = StudentPathListUtils.buildSelectedOrgNodes(this.currentOrgNodesInPathList, this.currentOrgNodeIds, this.selectedOrgNodes);
 			boolean result = true;
 			try {
-				CustomerConfiguration[]  customerConfigurations = this.users.getCustomerConfigurations(this.customerId);
-				userName = saveUserProfileInformation(isCreateNew, userProfile, userName, selectedOrgNodes);
-			       
 				
-				if (isCreateNew)
-				{
-					if (userName != null)  {
-						
-						messageInfo = createMessageInfo(messageInfo, Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION, false, true );
-						//form.setMessage(Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION);
-					}
-					else  {
-						
-						messageInfo = createMessageInfo(messageInfo, Message.ADD_TITLE, Message.ADD_ERROR, Message.INFORMATION, true, false );
-						//form.setMessage(Message.ADD_TITLE, Message.ADD_ERROR, Message.INFORMATION);
-					}
+				
+				if(validInfo) {
+					CustomerConfiguration[]  customerConfigurations = this.users.getCustomerConfigurations(this.customerId);
+					userName = saveUserProfileInformation(isCreateNew, userProfile, userName, selectedOrgNodes);
+				       
 					
-					
-				}
-				else
-				{
-					if (userName != null) {
-						messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION, false, true );
-						//form.setMessage(Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION);
-					}
-					else  {
-						messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.EDIT_ERROR, Message.INFORMATION, true, false );
+					if (isCreateNew)
+					{
+						if (userName != null)  {
+							
+							messageInfo = createMessageInfo(messageInfo, Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION, false, true );
+							//form.setMessage(Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION);
+						}
+						else  {
+							
+							messageInfo = createMessageInfo(messageInfo, Message.ADD_TITLE, Message.ADD_ERROR, Message.INFORMATION, true, false );
+							//form.setMessage(Message.ADD_TITLE, Message.ADD_ERROR, Message.INFORMATION);
+						}
+						
 						
 					}
-				}
+					else
+					{
+						if (userName != null) {
+							messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION, false, true );
+							//form.setMessage(Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION);
+						}
+						else  {
+							messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.EDIT_ERROR, Message.INFORMATION, true, false );
+							
+						}
+					}
+			}
 		}
 			catch (SQLException be) {
 				be.printStackTrace();
@@ -771,6 +844,7 @@ public class UserOperationController extends PageFlowController
 				tempData.setData(tempOrg.getOrgName());
 				tempData.getAttr().setId(tempOrg.getOrgNodeId().toString());
 				tempData.getAttr().setCategoryID(tempOrg.getOrgCategoryLevel().toString());
+				tempData.getAttr().setCustomerId(tempOrg.getCustomerId().toString());
 				td.getChildren().add(tempData);
 				treeProcess (tempOrg,list,tempData);
 			}
@@ -836,8 +910,130 @@ public class UserOperationController extends PageFlowController
 	{
 
 	}
-
-
-
 	
+	// Added on Oct-13
+	public boolean isAddAdministrator(){
+		return false;
+	}
+
+	public boolean verifyUserCreationPermission (List<OrganizationNode> selectedOrgNodes) {
+
+		for (int i = 0; i < selectedOrgNodes.size(); i++) {
+			OrganizationNode selectedPathNode = (OrganizationNode)selectedOrgNodes.get(i);
+
+			for (int j = 0; j < selectedOrgNodes.size() && i!=j; j++) {
+				
+				OrganizationNode pathNode = (OrganizationNode)selectedOrgNodes.get(j);
+				if (pathNode != null ) {
+
+					if ( selectedPathNode.getCustomerId().intValue() != pathNode.getCustomerId().intValue() ) {
+						//form.setMessage(Message.USER_CREATION_TITLE, requiredFields, Message.ERROR);
+						return false;
+					}
+				}
+			}
+		}
+		
+		
+		return true;
+	}
+	
+	private String [] getRoleOptions(String action)
+    {        
+		Role[] roles = null;
+		
+		try {
+			roles =  this.userManagement.getRoles();
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+		
+		
+		List<String> roleOptions = new ArrayList<String>();
+        /*if (action.equals(ACTION_FIND_USER)) {
+            roleOptions.add(Message.ANY_ROLE);
+        }*/
+        if (action.equals(ACTION_ADD_USER)) {	
+            roleOptions.add(-1 + "|"+Message.SELECT_ROLE);
+        }
+        
+        try {
+            if (roles != null) {
+                for (int i = 0; i < roles.length ; i++) {
+                    roleOptions.add(roles[i].getRoleId()+"|"+roles[i].getRoleName());
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return roleOptions.toArray( new String[roleOptions.size()]);
+    }
+	
+	private String [] getTimeZoneOptions(String action)
+    {        
+		TimeZones[] timeZones = null;
+		
+		try {
+			timeZones =  this.userManagement.getTimeZones();
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+		
+		
+		List<String> timeZoneOptions = new ArrayList<String>();
+        /*if (action.equals(ACTION_FIND_USER)) {
+            roleOptions.add(Message.ANY_ROLE);
+        }*/
+        if (action.equals(ACTION_ADD_USER)) {	
+        	timeZoneOptions.add(-1 + "|"+Message.SELECT_TIME_ZONE);
+        }
+        
+        try {
+            if (timeZones != null) {
+                for (int i = 0; i < timeZones.length ; i++) {
+                	timeZoneOptions.add(timeZones[i].getTimeZone()+"|"+timeZones[i].getTimeZoneDesc());
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return timeZoneOptions.toArray( new String[timeZoneOptions.size()]);
+    }
+	
+	private String [] getStateOptions(String action)
+    {        
+		USState[] usStates = null;
+		
+		try {
+			usStates =  this.userManagement.getStates();
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+		
+		
+		List<String> stateOptions = new ArrayList<String>();
+        /*if (action.equals(ACTION_FIND_USER)) {
+            roleOptions.add(Message.ANY_ROLE);
+        }*/
+        if (action.equals(ACTION_ADD_USER)) {	
+        	stateOptions.add(-1 + "|"+Message.SELECT_STATE);
+        }
+        
+        try {
+            if (stateOptions != null) {
+                for (int i = 0; i < usStates.length ; i++) {
+                	stateOptions.add(usStates[i].getStatePr()+"|"+usStates[i].getStatePrDesc());
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stateOptions.toArray( new String[stateOptions.size()]);
+    }
 }

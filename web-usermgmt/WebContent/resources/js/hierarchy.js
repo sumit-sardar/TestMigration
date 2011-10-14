@@ -6,6 +6,11 @@ var gridloaded = false;
 var orgTreeHierarchy;
 var SelectedOrgNodeId ;
 var assignedOrgNodeIds ="108784";
+
+var roleOptions=[];
+var timeZoneOptions=[];
+var stateOptions=[];
+
 function populateTree() {
 	
 	$.ajax({
@@ -118,9 +123,9 @@ function createMultiNodeSelectedTree(jsondata) {
 					}
 	
 		    		if(assignedOrgNodeIds=="") {
-						assignedOrgNodeIds = $(element).attr("id");
+						assignedOrgNodeIds = $(element).attr("id")+ "|" + $(element).attr("customerId");
 					} else {
-						assignedOrgNodeIds = $(element).attr("id") +"," + assignedOrgNodeIds; 
+						assignedOrgNodeIds = $(element).attr("id")+ "|" + $(element).attr("customerId") +"," + assignedOrgNodeIds;
 					}
 	    		
 				
@@ -275,7 +280,30 @@ function changePwdForUser(){
 	document.getElementById('displayMessage').style.display = "none";	
 	document.getElementById('displayMessageMain').style.display = "none";	
 	reset();
-	$("#addEditUserDetail").dialog({  
+	
+	$.ajax({
+		async:		true,
+		beforeSend:	function(){
+						
+						UIBlock();
+					},
+		url:		'getOptionList.do?isLasLinkCustomer='+$("#isLasLinkCustomer").val(), 
+		type:		'POST',
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){	
+						//alert('in');
+						$.unblockUI();
+						//UIBlock();
+						//overlayblockUI(); 
+						roleOptions = data.roleOptions;
+						timeZoneOptions=data.timeZoneOptions;
+						stateOptions=data.stateOptions;
+						fillDropDown("roleOptions", roleOptions);
+						fillDropDown("timeZoneOptions", timeZoneOptions);
+						fillDropDown("stateOptions", stateOptions);
+						
+						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
+						$("#addEditUserDetail").dialog({  
 								title:"Add User",  
 							 	resizable:false,
 							 	autoOpen: true,
@@ -283,8 +311,19 @@ function changePwdForUser(){
 							 	modal: true,
 							 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 							 	});	
+												 	 
+							setPopupPosition();	
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();  
+						window.location.href="/TestSessionInfoWeb/logout.do";
+						
+					}
+		
+	});
+	
 							 	
-	setPopupPosition();						 	
+						 	
 	}
 	
 	
@@ -324,8 +363,8 @@ function changePwdForUser(){
 	
 	
 	function userDetailSubmit(){
-	// var validflag = VerifyStudentDetail(assignedOrgNodeIds);
-	var validflag = true;
+	var validflag = VerifyUserDetail(assignedOrgNodeIds);
+	//var validflag = true;
 	if(validflag){
 		isEmailProvided();
 	}else {
@@ -509,9 +548,22 @@ function changePwdForUser(){
 			 $("#EmailWarning").css('height',100);
 		
 		}
-	
+		else
+			saveUserDetail();
 	}
 	
+function fillDropDown( elementId, optionList) {
+	var ddl = document.getElementById(elementId);
+	var optionHtml = "" ;
+	for(var i = 0; i < optionList.length; i++ ) {
+	     //alert( optionList[i]);
+	     //alert( optionList[i].split(":"));
+	     var val = optionList[i].split("|");
+	     
+		optionHtml += "<option  value='"+ val[0]+"'>"+ val[1]+"</option>";	
+	}
+	$(ddl).html(optionHtml);
+}
 
 
 
