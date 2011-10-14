@@ -2,7 +2,7 @@
 var gridjsondata;
 var idarray =[];
 var gridloaded = false;
-var leafNodeCategoryId;
+
 var orgTreeHierarchy;
 var SelectedOrgNodeId ;
 var assignedOrgNodeIds ="108784";
@@ -18,7 +18,6 @@ function populateTree() {
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){	
 						$.unblockUI(); 
-						leafNodeCategoryId = data.leafNodeCategoryId;
 						orgTreeHierarchy = data;
 						createSingleNodeSelectedTree (orgTreeHierarchy);
 						$("#searchheader").css("visibility","visible");	
@@ -106,22 +105,34 @@ function createMultiNodeSelectedTree(jsondata) {
 		"plugins" : [ "themes", "json_data", "checkbox"]
     });
     
-    
-    
-		
-		
-		 $("#innerID").delegate("a","click", function(e) {
-		 	
-		 	var checked_ids = [];
-			var currentlySelectedNode ="";
-			var checked_ids = $("#innerID .jstree-checked a");
-			for(var i= 0; i<checked_ids.length; i++){
-				currentlySelectedNode = currentlySelectedNode + checked_ids[i].text();
-				 $("#selectedOrgNodesName").text(currentlySelectedNode);
-			}
-		
-  			
-  		
+     
+		$("#innerID").delegate("li","click", function(e) {
+ 			var currentlySelectedNode ="";
+			assignedOrgNodeIds = "";
+			$("#innerID").find(".jstree-checked").each(function(i, element){
+				
+					if(currentlySelectedNode=="") {
+						currentlySelectedNode = $(element).text();
+					} else {
+						currentlySelectedNode = currentlySelectedNode + " , " + $(element).text(); 
+					}
+	
+		    		if(assignedOrgNodeIds=="") {
+						assignedOrgNodeIds = $(element).attr("id");
+					} else {
+						assignedOrgNodeIds = $(element).attr("id") +"," + assignedOrgNodeIds; 
+					}
+	    		
+				
+			});
+				if(currentlySelectedNode.length > 0 ) {
+					$("#notSelectedOrgNodes").css("visibility","hidden");
+					$("#selectedOrgNodesName").text(currentlySelectedNode);	
+				} else {
+					$("#notSelectedOrgNodes").css("visibility","visible");
+					$("#selectedOrgNodesName").text("");	
+				}
+			
 		});
     
     
@@ -385,6 +396,7 @@ function changePwdForUser(){
 		$("#secondaryPhone1").val("");
 		$("#secondaryPhone2").val("");
 		$("#secondaryPhone3").val("");
+		$("#secondaryPhone4").val("");
 		$("#faxNumber1").val("");	
 		$("#faxNumber2").val("");	
 		$("#faxNumber3").val("");
@@ -417,6 +429,7 @@ function changePwdForUser(){
 			|| $("#secondaryPhone1").val()!= ""
 			|| $("#secondaryPhone2").val()!= ""
 			|| $("#secondaryPhone3").val() != ""
+			|| $("#secondaryPhone4").val() != ""
 			|| $("#faxNumber1").val() != "" 
 			|| $("#faxNumber2").val()!= ""
 			|| $("#faxNumber3").val()!= "") {

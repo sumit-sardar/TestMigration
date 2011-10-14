@@ -2238,13 +2238,12 @@
 						this._prepare_checkboxes();
 					}, this))
 				.delegate("a", "click.jstree", $.proxy(function (e) {
-					if(this._get_node(e.target).attr("categoryid") != "undefined" &&  this._get_node(e.target).attr("categoryid")== leafNodeCategoryId){
 						if(this._get_node(e.target).hasClass("jstree-checked")) { this.uncheck_node(e.target); }
 						else { this.check_node(e.target); }
-					}
+					
 						if(this.data.ui) { this.save_selected(); }
 						if(this.data.cookies) { this.save_cookie("select_node"); }
-						e.preventDefault();
+						e.preventDefault();					
 					}, this));
 		},
 		__destroy : function () {
@@ -2271,11 +2270,12 @@
 				state = (state === false || state === true) ? state : obj.hasClass("jstree-checked");
 				if(state) { obj.find("li").andSelf().removeClass("jstree-checked jstree-undetermined").addClass("jstree-unchecked"); }
 				else { 
-					obj.find("li").andSelf().removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked"); 
+					//obj.find("li").andSelf().removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked"); 
+					obj.removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked"); 
 					if(this.data.ui) { this.data.ui.last_selected = obj; }
 					this.data.checkbox.last_selected = obj;
 				}
-				obj.parentsUntil(".jstree", "li").each(function () {
+				/*obj.parentsUntil(".jstree", "li").each(function () {
 					var $this = $(this);
 					if(state) {
 						if($this.children("ul").children(".jstree-checked, .jstree-undetermined").length) {
@@ -2295,7 +2295,7 @@
 							$this.removeClass("jstree-unchecked jstree-undetermined").addClass("jstree-checked");
 						}
 					}
-				});
+				});*/
 				if(this.data.ui) { this.data.ui.selected = this.get_checked(); }
 				this.__callback(obj);
 			},

@@ -6,6 +6,7 @@ public class Organization {
 	private Integer orgParentNodeId;
 	private String orgName;
 	private Integer orgCategoryLevel;
+	private Integer customerId;
 	public Integer getOrgNodeId() {
 		return orgNodeId;
 	}
@@ -47,6 +48,18 @@ public class Organization {
 		int hash = orgNodeId;
 
 		return hash;
+	}
+	/**
+	 * @return the customerId
+	 */
+	public Integer getCustomerId() {
+		return customerId;
+	}
+	/**
+	 * @param customerId the customerId to set
+	 */
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
 	}
 
 }

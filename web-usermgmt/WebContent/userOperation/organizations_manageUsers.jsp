@@ -19,6 +19,7 @@
  
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyuserinfo.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
 <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
 

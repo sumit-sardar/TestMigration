@@ -82,7 +82,13 @@
 										</select></td>
 						
 									</tr>
-									<!--ext_pin1 is added for DEX CR-->
+									
+									<tr class="transparent">
+										<td nowrap="" width="110" class="transparent alignRight">External User Id:</td>
+										<td class="transparent"><input type="text" style="width: 200px;" maxlength="20" id="userExternalId" name="userExternalId"></td>
+									</tr>
+										
+														<!--ext_pin1 is added for DEX CR-->
 									
 								   	<tr style="display: table-row;" id="message" class="transparent">
 								   		<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Organization:</td>
