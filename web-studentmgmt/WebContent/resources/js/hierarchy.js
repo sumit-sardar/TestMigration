@@ -19,6 +19,7 @@ var SelectedOrgNode;
 var SelectedOrgNodes = [];
 var optionList = [];
 var studentList;
+var isAddStudent = true;
 
 
 
@@ -348,7 +349,7 @@ function createMultiNodeSelectedTree(jsondata) {
 
 
 function AddStudentDetail(){
-
+isAddStudent = true;
 document.getElementById('displayMessage').style.display = "none";	
 document.getElementById('displayMessageMain').style.display = "none";	
 	if(!(gradeOptions.length > 0 
@@ -393,6 +394,15 @@ document.getElementById('displayMessageMain').style.display = "none";
 												 	modal: true,
 												 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 		 											});	
+						$('#addEditStudentDetail').bind('keydown', function(event) {
+		 						  //alert("key up 2");
+ 							var code = (event.keyCode ? event.keyCode : event.which);
+ 							if(code == 27){
+		  				  	onCancel();
+		  				 	return false;
+		 				 }
+		 				
+						});
 						setPopupPosition();	
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -415,6 +425,15 @@ document.getElementById('displayMessageMain').style.display = "none";
 		 	modal: true,
 		 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 		 	});	
+		 	$('#addEditStudentDetail').bind('keydown', function(event) {
+		 						  //alert("key up 2");
+ 							var code = (event.keyCode ? event.keyCode : event.which);
+ 							if(code == 27){
+		  				  	onCancel();
+		  				 	return false;
+		 				 }
+		 				
+						});
 		setPopupPosition();	
 	}	
 	
@@ -489,7 +508,6 @@ document.getElementById('displayMessageMain').style.display = "none";
 
 function fillDropDown( elementId, optionList) {
 	var ddl = document.getElementById(elementId);
-	//var theOption = new Option;
 	var optionHtml = "";
 	for(var i = 0; i < optionList.length; i++) {
 		optionHtml += "<option  value='"+optionList[i]+"'>"+optionList[i]+"</option>";	
@@ -510,8 +528,11 @@ function fillDropDown( elementId, optionList) {
 			$('#Student_Accommodation_Information').hide();
 			populateTreeSelect();
 		}
+			
 		$("#"+dailogId).dialog("close");
-		
+		if(dailogId == 'confirmationPopup') {
+			 $('#studentFirstName').trigger("focus");		
+		}
 		 
 	}
 	
@@ -631,6 +652,25 @@ function fillDropDown( elementId, optionList) {
 	
 	
 	function studentDetailSubmit(){
+	/*
+	var param;
+	if(isAddStudent)
+		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
+		 $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val() + 
+		 "&isAddStudent=" + $("#isAddStudent").val()+'&createBy='+createBy ;
+	else{
+		var selectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
+		var createBy ;
+	      for(var i=0;i<studentList.studentProfileInformation.length;i++) {
+	      if(rowid == studentList.studentProfileInformation[i].studentId) {
+	       		createBy = studentList.studentProfileInformation[i].createBy;
+	       		break;
+	       		}
+	       }
+		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
+			 $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val()+
+			  "&selectedStudentId=" + $("#selectedStudentId").val() + "&isAddStudent=" + $("#isAddStudent").val() +'&createBy='+createBy ;
+	}*/
 	 var validflag = VerifyStudentDetail(assignedOrgNodeIds);
 	if(validflag) {
 					$.ajax(
@@ -699,7 +739,8 @@ function fillDropDown( elementId, optionList) {
 
 
 	function editStudentDetail(){
-/*
+	/*
+	isAddStudent = false;
 	document.getElementById('displayMessage').style.display = "none";	
 	document.getElementById('displayMessageMain').style.display = "none";	
 	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
@@ -710,12 +751,6 @@ function fillDropDown( elementId, optionList) {
        		break;
        		}
        }
-	
-	
-      
-		
-	
-	
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -752,7 +787,7 @@ function fillDropDown( elementId, optionList) {
 						$("#studentExternalId2").val(data.studentSecondNumber);
 						if($("#isLasLinkCustomer").val() == "true")
 							$("#testPurposeOptions").val(data.testPurpose);
-						
+						$.unblockUI();  
 						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
 						$("#addEditStudentDetail").dialog({  
 													title:"Edit Student",  
