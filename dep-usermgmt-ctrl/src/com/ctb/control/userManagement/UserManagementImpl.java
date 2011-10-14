@@ -2569,6 +2569,7 @@ public class UserManagementImpl implements UserManagement
 		return  totalAssignedOrgnode;
     }
     //END- Added for Deferred Defect 60566
+
     
     public UserNodeData OrgNodehierarchy(String userName, Integer associatedNodeId) 
     throws CTBBusinessException {                                                         
@@ -2646,6 +2647,10 @@ public class UserManagementImpl implements UserManagement
 		}
 	}
 
+
+
+
+ 
     public Integer getLeafNodeCategoryId(String userName, Integer customerId) throws CTBBusinessException
 	{
 		Integer leafNodeCategoryId = new Integer(0);
@@ -2660,6 +2665,7 @@ public class UserManagementImpl implements UserManagement
 		}
 		return leafNodeCategoryId;
 	}
+
 
 }
         
