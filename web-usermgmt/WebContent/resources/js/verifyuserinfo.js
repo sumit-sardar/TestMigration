@@ -29,7 +29,7 @@ function VerifyUserDetail(assignedOrgNodeIds){
 	 userRole = $("#roleOptions").val();
 	 timeZone = $("#timeZoneOptions").val();
 	 userEmail = $("#userEmail").val();
-	 selectedOrgNodes = assignedOrgNodeIds;
+	 selectedOrgNodes = trim(assignedOrgNodeIds);
 	 firstName = trim(firstName);
 	 middleName = trim(middleName);
 	 lastName =  trim(lastName); 
@@ -60,15 +60,21 @@ function VerifyUserDetail(assignedOrgNodeIds){
 				requiredFieldCount += 1;            
 				requiredFields = buildErrorString("Last Name", requiredFieldCount, requiredFields);       
 			}
-	if ( userRole == "-1") {
-				requiredFieldCount += 1;            
-				requiredFields = buildErrorString("Role", requiredFieldCount, requiredFields);       
-			}
 
    if ( timeZone == "-1" ) {
 				requiredFieldCount += 1;            
 				requiredFields = buildErrorString("TimeZone", requiredFieldCount, requiredFields);       
 			}  
+
+	if ( userRole == "-1") {
+				requiredFieldCount += 1;            
+				requiredFields = buildErrorString("Role", requiredFieldCount, requiredFields);       
+			}
+
+   if ( selectedOrgNodes == "" ) {
+			requiredFieldCount += 1;            
+			requiredFields = buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
+		} 
 			
    //if ( selectedOrgNodes.length == "" ) {
 	//			requiredFieldCount += 1;      
@@ -110,12 +116,16 @@ if(userEmail != "") {
      setMessage(INVALID_FORMAT_TITLE, invalidString,"errorMessage");
      return false;
  } 
-  if (isInvalidUserContact()){
+ 
+ 
+ var val = isInvalidUserContact();
+  if (val){
             return false;
-        }
+   }
+   
      return true;	
 			
-	  }
+}
 	  
   function isInvalidUserContact()
     {
@@ -152,7 +162,7 @@ if(userEmail != "") {
             invalidNumFields += "Primary Phone";
         }
         
-        if (isInvalidSecondaryPhone(secondaryPhone1,secondaryPhone2,secondaryPhone3)){
+        if (isInvalidSecondaryPhone(secondaryPhone1,secondaryPhone2,secondaryPhone3,secondaryPhone4)){
             if(invalidNumFields!="" && invalidNumFields.length>0){
                invalidNumFields += ", ";
             }

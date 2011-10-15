@@ -5,7 +5,8 @@ var gridloaded = false;
 
 var orgTreeHierarchy;
 var SelectedOrgNodeId ;
-var assignedOrgNodeIds ="108784";
+//var assignedOrgNodeIds ="108784";
+var assignedOrgNodeIds="";
 
 var roleOptions=[];
 var timeZoneOptions=[];
@@ -463,7 +464,7 @@ function changePwdForUser(){
 			|| $("#addressLine1").val() != ""
 			|| $("#addressLine2").val() != ""
 			|| $("#city").val()!= ""
-			|| $("#state").val()!= ""
+			|| $("#stateOptions").val()!= "-1"
 			|| $("#zipCode1").val()!= ""
 			|| $("#zipCode2").val()!= ""
 			|| $("#primaryPhone1").val() != ""
@@ -559,6 +560,10 @@ function changePwdForUser(){
 		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 			});	
 			 $("#EmailWarning").css('height',100);
+			 //var toppos = ($(window).height() - 290) /2 + 'px';
+			 //var leftpos = ($(window).width() - 410) /2 + 'px';
+			 //$("#confirmationPopup").parent().css("top",toppos);
+			 //$("#confirmationPopup").parent().css("left",leftpos);	
 		
 		}
 		else

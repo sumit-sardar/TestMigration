@@ -497,6 +497,7 @@ public class UserOperationController extends PageFlowController
 			userProfile.getUserContact().setSecondaryPhone1(getRequest().getParameter("secondaryPhone1"));
 			userProfile.getUserContact().setSecondaryPhone2(getRequest().getParameter("secondaryPhone2"));
 			userProfile.getUserContact().setSecondaryPhone3(getRequest().getParameter("secondaryPhone3"));
+			userProfile.getUserContact().setSecondaryPhone4(getRequest().getParameter("secondaryPhone4"));
 			userProfile.getUserContact().setFaxNumber1(getRequest().getParameter("faxNumber1"));
 			userProfile.getUserContact().setFaxNumber2(getRequest().getParameter("faxNumber2"));
 			userProfile.getUserContact().setFaxNumber3(getRequest().getParameter("faxNumber3"));
