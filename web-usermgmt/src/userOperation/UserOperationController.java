@@ -833,6 +833,7 @@ public class UserOperationController extends PageFlowController
 		TreeData td = new TreeData ();
 		td.setData(org.getOrgName());
 		td.getAttr().setId(org.getOrgNodeId().toString());
+		td.getAttr().setCustomerId(org.getCustomerId().toString());
 		treeProcess (org,orgList,td);
 		data.add(td);
 	}
