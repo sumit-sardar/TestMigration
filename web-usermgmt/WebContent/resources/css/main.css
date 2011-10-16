@@ -292,3 +292,21 @@ input:focus {
 	padding: 0px;
     
 }
+
+#orgNodeHierarchy ul {
+	float: left;
+	clear: both;
+}
+
+#orgNodeHierarchy li {
+	clear: both;
+}	
+
+#innerID ul {
+	float: left;
+	clear: both;
+}
+
+#innerID li {
+	clear: both;
+}	
