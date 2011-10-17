@@ -168,6 +168,7 @@ function populateTreeSelect() {
 			
 function populateGrid() {
 
+		document.getElementById('changePW').style.display = "block";	
          $("#list2").jqGrid({         
          url:'userOrgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
