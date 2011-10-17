@@ -24,12 +24,14 @@ import utils.Organization;
 import utils.TreeData;
 import utils.UserPathListUtils;
 import utils.UserSearchUtils;
+import utils.WebUtils;
 
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.OrganizationNode;
 import com.ctb.bean.testAdmin.Role;
 import com.ctb.bean.testAdmin.TimeZones;
@@ -43,6 +45,7 @@ import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.google.gson.Gson;
 
 import dto.Message;
+import dto.PathNode;
 import dto.UserProfileInformation;
 
 
@@ -181,6 +184,7 @@ public class UserOperationController extends PageFlowController
             this.user = this.userManagement.getUser(this.userName, 
                                                this.userName);
             this.customerId = this.user.getCustomer().getCustomerId();
+            
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -471,6 +475,10 @@ public class UserOperationController extends PageFlowController
 		{   
 			String jsonResponse = "";
 			OutputStream stream = null;
+			boolean validateAgain = true;
+			boolean validInfo = false;
+			String message = "";
+			String requiredFields = null;
 			HttpServletRequest req = getRequest();
 			HttpServletResponse resp = getResponse();
 			MessageInfo messageInfo = new MessageInfo();
@@ -505,6 +513,7 @@ public class UserOperationController extends PageFlowController
 			String assignedOrgNodeIds = getRequest().getParameter("assignedOrgNodeIds");
 			String[] assignedOrgNodeId = assignedOrgNodeIds.split(",");
 			ArrayList<OrganizationNode> selectedOrgNodes = new ArrayList<OrganizationNode>();
+			try {
 			for (int i = assignedOrgNodeId.length - 1; i >= 0; i--) {
 				 String [] values = assignedOrgNodeId[i].split("\\|");
 				 OrganizationNode orgNode = new OrganizationNode();
@@ -513,24 +522,73 @@ public class UserOperationController extends PageFlowController
 				 selectedOrgNodes.add(orgNode);
 				
 			}
+			} catch (NumberFormatException ne ) {
+				ne.printStackTrace();
+				validateAgain = false;
+				requiredFields = "Organization Assignment";
+				message = requiredFields + (Message.REQUIRED_TEXT);
+				messageInfo = createMessageInfo(messageInfo, Message.MISSING_REQUIRED_FIELDS, message, Message.ERROR, true, false );
+			}
 			//Check if logged in user is an AddAdministrator
 			boolean isAdmin = isAddAdministrator();
 			if (isAdmin){
 				userProfile.setRole(CTBConstants.ROLE_NAME_ADMINISTRATOR);
 			}
 			
-			boolean validInfo = true;
+			// Future use
+			boolean isLoginUser = false;
+			//String selectedUserName = "";
+			//boolean isLoginUser = isLoggedInUser(selectedUserName);
 			
-			if (validInfo) {
-				String requiredFields = "";
-	            validInfo = verifyUserCreationPermission( selectedOrgNodes);
-	            if(!validInfo){
-	            	
-					requiredFields += ("<br/>" + Message.USER_CREATION_ERROR);
-					messageInfo = createMessageInfo(messageInfo, Message.USER_CREATION_TITLE, requiredFields, Message.ERROR, true, false );
+			requiredFields = requiredfieldMissing(userProfile, selectedOrgNodes, isLoginUser, userName );
+			
+			if( requiredFields != null){
+				validateAgain = false;
+				if ( requiredFields.indexOf(",") > 0){
+					message = requiredFields + (" <br/> " + Message.REQUIRED_TEXT_MULTIPLE);
+					messageInfo = createMessageInfo(messageInfo, Message.MISSING_REQUIRED_FIELDS, message, Message.ERROR, true, false );
+				}
+				else {
+					message = requiredFields + (" <br/> " + Message.REQUIRED_TEXT);
+					messageInfo = createMessageInfo(messageInfo, Message.MISSING_REQUIRED_FIELD, message, Message.ERROR, true, false );
+
+				}
+			}
+			
+			if (validateAgain){
+				String isInvalidUserInfo = isInvalidUserInfo(userProfile);
+				if( isInvalidUserInfo != null ) {
+					validateAgain = false;
+					message = isInvalidUserInfo + (" <br/> " + Message.REQUIRED_TEXT);
+					messageInfo = createMessageInfo(messageInfo, Message.INVALID_FORMAT_TITLE, message, Message.ERROR, true, false );
+				}
+			}
+			
+			if(validateAgain){
+				 validInfo = verifyUserInformation(userProfile, selectedOrgNodes, isLoginUser, userName, this.user );
+				 if(!validInfo){
+					 if (requiredFields == null ) {
+						 requiredFields = "";
+					 }
+						requiredFields += (Message.ADMIN_CREATION_ERROR);
+						messageInfo = createMessageInfo(messageInfo, Message.ADMIN_CREATION_TITLE, requiredFields, Message.ERROR, true, false );
+					}
 					
-	            }
-	         } 
+					if (validInfo) {
+			            validInfo = verifyUserCreationPermission( selectedOrgNodes);
+			            if(!validInfo){
+			            	 if (requiredFields == null ) {
+								 requiredFields = "";
+							 }
+							requiredFields += (Message.USER_CREATION_ERROR);
+							messageInfo = createMessageInfo(messageInfo, Message.USER_CREATION_TITLE, requiredFields, Message.ERROR, true, false );
+							
+			            }
+			         } 
+			}
+			
+						
+			
 			
 			//selectedOrgNodes.add(118641);
 			
@@ -915,7 +973,16 @@ public class UserOperationController extends PageFlowController
 	
 	// Added on Oct-13
 	public boolean isAddAdministrator(){
-		return false;
+
+		if(this.user == null){
+			try {
+				this.user = this.users.getUserDetails(this.userName);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return this.user.getRole().getRoleName().equalsIgnoreCase(CTBConstants.ROLE_NAME_ADMINISTRATOR);
 	}
 
 	public boolean verifyUserCreationPermission (List<OrganizationNode> selectedOrgNodes) {
@@ -1038,4 +1105,161 @@ public class UserOperationController extends PageFlowController
         }
         return stateOptions.toArray( new String[stateOptions.size()]);
     }
+	
+	 public static boolean verifyUserInformation(UserProfileInformation form, List<OrganizationNode> selectedOrgNodes, boolean isLoginUser, String userName, User user)	    
+	    {                    
+	        
+	      /*  if ( isRequiredfieldMissing(form, selectedOrgNodes, isLoginUser, userName) ) {
+	            return false;
+	        }
+	                
+	        if (isInvalidUserInfo(form)){
+	            return false;
+	        } */          									   
+	        
+	        if ( user.getRole().getRoleId().intValue() == Integer.parseInt(form.getRoleId()) &&
+	        		user.getUserId().intValue() != form.getUserId().intValue()){
+	        	if ( !verifyAdminCreationPermission
+	                    (form, user.getOrganizationNodes(), selectedOrgNodes) ) {
+	                return false;
+	            }  
+	        }
+	          
+	        /*if (isInvalidUserContact(form)){
+	            return false;
+	        }*/
+	        return true;
+	    }
+	 
+	 public static boolean verifyAdminCreationPermission (UserProfileInformation form, Node []loginUserNodes, List<OrganizationNode> selectedOrgNodes)
+	    {
+	        String requiredFields = "";
+	        for (int i = 0; i < loginUserNodes.length; i++) {
+	            
+	            Integer loginUserNodeId = loginUserNodes[i].getOrgNodeId();
+	            
+	            for (int j = 0; j < selectedOrgNodes.size(); j++) {
+	                
+	            	OrganizationNode pathNode = (OrganizationNode)selectedOrgNodes.get(j);
+	                Integer selectedUserNodeId = pathNode.getOrgNodeId();
+	                
+	                if (loginUserNodeId.intValue() == selectedUserNodeId.intValue()) {
+	                    //requiredFields += ("<br/>" + Message.ADMIN_CREATION_ERROR);
+	                    //form.setMessage(Message.ADMIN_CREATION_TITLE, requiredFields, Message.ERROR);
+	                    return false;
+	                }
+	                
+	            }
+	           
+	        }
+	        return true;
+	    }
+	 
+	 private boolean isLoggedInUser(String selectedUserName)
+	    {
+	        String loggedInUserName = this.user.getUserName(); 
+	                      
+	        if ((loggedInUserName != null) 
+	                && (selectedUserName != null) 
+	                && loggedInUserName.equals(selectedUserName)) {
+	            return true;
+	        }
+	        return false;
+	    }
+	 
+	 public static String requiredfieldMissing(UserProfileInformation form, List<OrganizationNode> selectedOrgNodes, boolean isLoginUser, String userName)
+	    {
+	        
+	        // check for required fields
+	        String requiredFields = null;
+	        int requiredFieldCount = 0;
+	        
+	        String firstName = form.getFirstName().trim();
+	        if ( firstName.length() == 0 ) {
+	            requiredFieldCount += 1;            
+	            requiredFields = Message.buildErrorString(Message.FIELD_FIRST_NAME, requiredFieldCount, requiredFields);       
+	        }
+	                
+	        String lastName = form.getLastName().trim();
+	        if ( lastName.length() == 0 ) {
+	            requiredFieldCount += 1;            
+	            requiredFields = Message.buildErrorString(Message.FIELD_LAST_NAME, requiredFieldCount, requiredFields);       
+	        }
+	        
+	        //Time Zone is mandetory
+	        String timeZone = form.getTimeZone().trim();
+	        if ( timeZone== null || timeZone.length() == 0 ) {
+	            requiredFieldCount += 1;            
+	            requiredFields = Message.buildErrorString(Message.FIELD_TIME_ZONE, requiredFieldCount, requiredFields);       
+	        }
+	        
+	        // for add user
+	        if(userName == null || "".equals(userName)){
+	            
+	            //Role is mandetory
+	            String role = form.getRoleId().trim();
+	            if ( role==null || role.length() == 0 ) {
+	                requiredFieldCount += 1;            
+	                requiredFields = Message.buildErrorString(Message.FIELD_ROLE, requiredFieldCount, requiredFields);       
+	            }
+	        }
+	        
+	        if(!isLoginUser){							 
+	             if ( selectedOrgNodes.size() == 0 ) {
+	                requiredFieldCount += 1;      
+	                requiredFields = Message.buildErrorString(Message.FIELD_ORG_ASSIGNMENT, requiredFieldCount, requiredFields);       
+	            }   
+	        }
+	        
+	        return requiredFields;
+	    }
+	 
+	 
+	 public static String isInvalidUserInfo(UserProfileInformation form)
+	    {
+
+		    String invalidString = null;        
+	        String invalidCharFields = verifyUserInfo(form);
+	                       
+	        if (invalidCharFields != null && invalidCharFields.length() > 0) {
+	            invalidString = invalidCharFields + ("<br/>" + Message.INVALID_NAME_CHARS);
+	        }			
+		 
+	        String email = form.getEmail(); 
+	        boolean validEmail = WebUtils.validEmail(email);  
+	       
+	        if (!validEmail) {
+	            if(invalidString!=null && invalidString.length()>0){
+	               invalidString += ("<br/>");
+	            } else {
+	            	invalidString = "";
+	            }
+	            invalidString += Message.FIELD_EMAIL + ("<br/>" + Message.INVALID_EMAIL);
+	        } 
+	            
+	        return invalidString;   
+	    }
+	 
+	 public static String verifyUserInfo(UserProfileInformation userProfile)
+	    {
+	        String invalidCharFields = null;
+	        int invalidCharFieldCount = 0;
+
+	        if (! WebUtils.validNameString(userProfile.getFirstName()) ) {
+	            invalidCharFieldCount += 1;            
+	            invalidCharFields = Message.buildErrorString(Message.FIELD_FIRST_NAME, invalidCharFieldCount, invalidCharFields);       
+	        }
+	        
+	        if (! WebUtils.validNameString(userProfile.getMiddleName()) ) {
+	            invalidCharFieldCount += 1;            
+	            invalidCharFields = Message.buildErrorString(Message.FIELD_MIDDLE_NAME, invalidCharFieldCount, invalidCharFields);       
+	        }
+	        
+	        if (! WebUtils.validNameString(userProfile.getLastName()) ) {
+	            invalidCharFieldCount += 1;            
+	            invalidCharFields = Message.buildErrorString(Message.FIELD_LAST_NAME, invalidCharFieldCount, invalidCharFields);       
+	        }
+	            
+	        return invalidCharFields;
+	    }
 }

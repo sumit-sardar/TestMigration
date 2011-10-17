@@ -155,7 +155,7 @@ function  searchUser(){
 }
 
 function populateTreeSelect() {
-			//$("#notSelectedOrgNodes").css("visibility","visible");
+			$("#notSelectedOrgNodes").css("visibility","visible");
 			$("#selectedOrgNodesName").text("");	
 			createMultiNodeSelectedTree (orgTreeHierarchy);	
 
@@ -365,9 +365,7 @@ function changePwdForUser(){
            });
 	}
 	
-	function closePopUp(){
-		$("#editUserDetail").dialog("close");
-	}
+	
 	
 	
 	function userDetailSubmit(){
@@ -527,13 +525,15 @@ function changePwdForUser(){
 			$("#User_Information").scrollTop(0);
 			$("#Contact_Information").scrollTop(0);
 			$('#Contact_Information').hide();
-		
+			populateTreeSelect();
 			
 		}
 		$("#"+dailogId).dialog("close");
 		
 		if(dailogId == 'confirmationPopup') {
 			$('#accordion').accordion('activate', 0 );
+			$("#User_Information").scrollTop(0);
+			$("#Contact_Information").scrollTop(0);
 			$('#Contact_Information').hide();
 			$("#userFirstName").trigger("focus");
 		} 
