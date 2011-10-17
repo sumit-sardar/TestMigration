@@ -69,7 +69,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	        "json_data" : {	             
 	            "data" : jsondata.data,
 				"progressive_render" : true,
-				"progressive_unload" : true
+				"progressive_unload" : false
 	        },
 	        "ui" : {  
 	           "select_limit" : 1
