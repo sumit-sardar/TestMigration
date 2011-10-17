@@ -95,12 +95,11 @@ function createMultiNodeSelectedTree(jsondata) {
   $("#innerID").jstree({
         "json_data" : {	             
             "data" : jsondata.data,
-			"progressive_render" : true,
-			"progressive_unload" : true
+			"progressive_render" : true
         },
-        "ui" : {  
-           "select_limit" : 1
-        	}, 
+        "checkbox" : {
+        "two_state" : true
+        }, 
         	
 			"themes" : {
 			"theme" : "apple",
@@ -111,40 +110,42 @@ function createMultiNodeSelectedTree(jsondata) {
 		"plugins" : [ "themes", "json_data", "checkbox"]
     });
     
-     
-		$("#innerID").delegate("li","click", function(e) {
- 			var currentlySelectedNode ="";
-			assignedOrgNodeIds = "";
-			$("#innerID").find(".jstree-checked").each(function(i, element){
+    $("#innerID").bind("change_state.jstree", function (e, d) { 
+    	var currentlySelectedNode ="";
+    	assignedOrgNodeIds = "";
+        if ((d.args[0].tagName == "A" || d.args[0].tagName == "INS")){
+		$("#innerID").find(".jstree-checked").each(function(i, element){
 				
 					if(currentlySelectedNode=="") {
-						currentlySelectedNode = $(element).text();
+						
+						currentlySelectedNode = getText(element);
 					} else {
-						currentlySelectedNode = currentlySelectedNode + " , " + $(element).text(); 
+						currentlySelectedNode = currentlySelectedNode + " , " + getText(element);
+					
 					}
-	
 		    		if(assignedOrgNodeIds=="") {
 						assignedOrgNodeIds = $(element).attr("id")+ "|" + $(element).attr("customerId");
 					} else {
 						assignedOrgNodeIds = $(element).attr("id")+ "|" + $(element).attr("customerId") +"," + assignedOrgNodeIds;
 					}
-	    		
-				
 			});
-				if(currentlySelectedNode.length > 0 ) {
+			
+			if(currentlySelectedNode.length > 0 ) {
 					$("#notSelectedOrgNodes").css("visibility","hidden");
 					$("#selectedOrgNodesName").text(currentlySelectedNode);	
 				} else {
 					$("#notSelectedOrgNodes").css("visibility","visible");
 					$("#selectedOrgNodesName").text("");	
 				}
-			
-		});
-    
-    
-   
+        	}
+        });
 }
 
+
+function getText(element){
+var elementText  = element.children[1].childNodes[2].data;
+return elementText;
+}
 
 function  searchUser(){
 	SelectedOrgNodeId= $("#orgNodeHierarchy a.jstree-clicked").parent().attr("id");
