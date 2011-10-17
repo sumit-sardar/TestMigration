@@ -22,6 +22,20 @@ var studentList;
 var isAddStudent = true;
 
 
+$(document).bind('keydown', function(event) {
+		
+	      var code = (event.keyCode ? event.keyCode : event.which);
+	      if(code == 27){
+	      		if(gradeOptions.length > 0 
+					&& genderOptions.length > 0
+						&& dayOptions.length > 0
+							&& monthOptions.length > 0 
+								&& yearOptions.length > 0){
+	      			onCancel();
+	      		}
+	            return false;
+	      }
+	  });
 
 
 function UIBlock(){
@@ -392,10 +406,11 @@ document.getElementById('displayMessageMain').style.display = "none";
 												 	autoOpen: true,
 												 	width: '800px',
 												 	modal: true,
+												 	closeOnEscape: false,
 												 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 		 											});	
 						$('#addEditStudentDetail').bind('keydown', function(event) {
-		 						  //alert("key up 2");
+							
  							var code = (event.keyCode ? event.keyCode : event.which);
  							if(code == 27){
 		  				  	onCancel();
@@ -423,6 +438,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 		 	autoOpen: true,
 		 	width: '800px',
 		 	modal: true,
+		 	closeOnEscape: false,
 		 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 		 	});	
 		 	$('#addEditStudentDetail').bind('keydown', function(event) {
@@ -529,14 +545,17 @@ function fillDropDown( elementId, optionList) {
 			populateTreeSelect();
 		}
 			
-		$("#"+dailogId).dialog("close");
+		
 		if(dailogId == 'confirmationPopup') {
 			$('#accordion').accordion('activate', 0 );
+			$("#Student_Information").scrollTop(0);
+			$("#Student_Additional_Information").scrollTop(0);
+			$("#Student_Accommodation_Information").scrollTop(0);
 			$('#Student_Additional_Information').hide();
 			$('#Student_Accommodation_Information').hide();
-			$('#studentFirstName').trigger("focus");
-			 		
+			$('#studentFirstName').trigger("focus");		
 		}
+		$("#"+dailogId).dialog("close");
 		 
 	}
 	
