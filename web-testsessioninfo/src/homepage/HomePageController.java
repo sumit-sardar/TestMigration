@@ -118,41 +118,56 @@ public class HomePageController extends PageFlowController
 
 	/**
      * This method represents the point of entry into the pageflow
-     * @jpf:action
-     * @jpf:forward name="success" path="home_page.do"
-     * @jpf:forward name="resetPassword" path="resetPassword.do"
-     * @jpf:forward name="editTimeZone" path="setTimeZone.do"
      */
     @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success", path = "home_page.do"), 
+        @Jpf.Forward(name = "home_page", path = "home_page.do"), 
+        @Jpf.Forward(name = "home_page_new_UI", path = "home_page_new_UI.do"),
         @Jpf.Forward(name = "resetPassword", path = "resetPassword.do"), 
+        @Jpf.Forward(name = "resetPassword_new_UI", path = "resetPassword_new_UI.do"), 
         @Jpf.Forward(name = "editTimeZone", path = "setTimeZone.do"),
-        @Jpf.Forward(name = "assessments", path = "assessments.do")
+        @Jpf.Forward(name = "editTimeZone_new_UI", path = "setTimeZone_new_UI.do")
     })
     protected Forward begin()
     {        
     	getLoggedInUserPrincipal();   
-    	//isTopLevelUser();
-        getUserDetails();
-                         
-        HomePageForm form = new HomePageForm();
-        form.init();
+    	getUserDetails();            
 
+        // temporary direct to old/new UI here
+        boolean usingOldUI = false;
+    	String OldUI = this.getRequest().getParameter("OldUI");
+    	if ("true".equals(OldUI))
+    		usingOldUI = true;
+    	if ("tai_state".equals(this.userName))
+    		usingOldUI = true;
+    	        
         if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword()))
         {
-            return new Forward("resetPassword", form);
+        	if (usingOldUI) {       	
+        		return new Forward("resetPassword");
+        	}
+        	else {
+        		return new Forward("resetPassword_new_UI");
+        	}
         }
         else if (this.user.getTimeZone() == null)
         {
-            return new Forward("editTimeZone", form);            
+        	if (usingOldUI) {        	
+        		return new Forward("editTimeZone");
+        	}
+        	else {
+        		return new Forward("editTimeZone_new_UI");
+        	}
         }
         else
         {
-        	String OldUI = this.getRequest().getParameter("OldUI");
-        	if ("true".equals(OldUI))
-        		return new Forward("success", form);
-        	else
-        		return new Forward("assessments");
+        	if (usingOldUI) {       	
+            	HomePageForm form = new HomePageForm();
+            	form.init();
+        		return new Forward("home_page", form);
+        	}
+        	else {
+        		return new Forward("home_page_new_UI");
+        	}
         }
     }
 
@@ -160,11 +175,11 @@ public class HomePageController extends PageFlowController
      * @jpf:action
      */
     @Jpf.Action()
-    protected Forward assessments()
+    protected Forward home_page_new_UI()
     {               
         try
         {
-            String url = "/TestSessionInfoWeb/sessionOperation/assessments.do";
+            String url = "/SessionWeb/sessionOperation/begin.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -178,7 +193,7 @@ public class HomePageController extends PageFlowController
      * @jpf:action
      */
     @Jpf.Action()
-    protected Forward resetPassword(HomePageForm form)
+    protected Forward resetPassword()
     {               
         try
         {
@@ -196,7 +211,7 @@ public class HomePageController extends PageFlowController
      * @jpf:action
      */
     @Jpf.Action()
-    protected Forward setTimeZone(HomePageForm form)
+    protected Forward setTimeZone()
     {               
         try
         {
@@ -210,6 +225,42 @@ public class HomePageController extends PageFlowController
         return null;
     }
 
+    /**
+     * @jpf:action
+     */
+    @Jpf.Action()
+    protected Forward resetPassword_new_UI()
+    {               
+        try
+        {
+            String url = "/UserOperationWeb/userOperation/resetPassword.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+
+    /**
+     * @jpf:action
+     */
+    @Jpf.Action()
+    protected Forward setTimeZone_new_UI()
+    {               
+        try
+        {
+            String url = "/UserOperationWeb/userOperation/beginEditMyProfile.do?isSetTimeZone=true";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+    
     /**
      * @jpf:action
      * @jpf:forward name="success" path="home_page.do"

@@ -103,7 +103,7 @@
                 <td colspan="2">
                 <br/><h1>User Login</h1><br/><br/></td>
             </tr>
-            <tr height="32">
+            <tr>
                 <td width="65px" align="right"><b>Username:</b></td>
                 <td>
                 	<input type="text" id="j_username" name="j_username" value="<%= username %>" 
@@ -111,7 +111,7 @@
                 	onkeypress="return handleEnterKey(event, this);" />
                 </td>
             </tr>
-            <tr height="32">
+            <tr>
                 <td width="65px" align="right"><b>Password:</b></td>
                 <td>
                 	<input type="password" id="j_password" name="j_password" value=""  
@@ -119,7 +119,7 @@
                 	onkeypress="return handleEnterKey(event, this);" />
                 </td>
             </tr>
-            <tr height="32">
+            <tr>
                 <td>&nbsp;</td>
                 <td>                  
                 	<a href="#" onclick="submitPage();" class="rounded {transparent} button" tabindex="3"
@@ -129,7 +129,7 @@
                 	</a>                	
                 </td>
             </tr>
-            <tr height="32"> 
+            <tr> 
                 <td colspan="2"><hr size="1"></td>
             </tr>
             <tr> 

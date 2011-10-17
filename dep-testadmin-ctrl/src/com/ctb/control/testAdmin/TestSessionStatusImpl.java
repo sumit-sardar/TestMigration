@@ -24,6 +24,7 @@ import com.ctb.bean.testAdmin.ActiveTest;
 import com.ctb.bean.testAdmin.ActiveTestData;
 import com.ctb.bean.testAdmin.BroadcastMessageData;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfig;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerReport;
@@ -172,12 +173,19 @@ public class TestSessionStatusImpl implements TestSessionStatus
     @org.apache.beehive.controls.api.bean.Control()
     private com.ctb.control.db.StudentItemSetStatus studentItemSetStatus;
 
+    /**
+     * @common:control
+     */
+    @org.apache.beehive.controls.api.bean.Control()
+    private com.ctb.control.db.UploadDataFile uploadDataFile;
+    
     static final long serialVersionUID = 1L;
     
     private static final int CTB_CUSTOMER_ID =2;
     
     private static final String CUSTOMER_CONFIG_ALLOW_SUBTEST_INVALIDATION = "Allow_Subtest_Invalidation";
     private static final String CUSTOMER_CONFIG_PARTIALLY ="Partially ";
+    public static final String CUSTOMER_CONFIG_UPLOAD_DOWNLOAD = "Allow_Upload_Download";
 
     private String jndiFactory = "";
     private String jmsFactory = "";
@@ -1828,6 +1836,65 @@ public class TestSessionStatusImpl implements TestSessionStatus
     }
     
     
+    /**
+     * @common:operation
+     */
+    public Boolean hasProgramStatusConfig(String userName) throws CTBBusinessException{
+        try {
+            Boolean hasProgramStatusConfig = Boolean.FALSE;
+            Integer customerId = users.getCustomerIdForName(userName);
+            if(customerId != null){
+                CustomerConfiguration[] customerConfigs = customerConfiguration.getCustomerConfigurations(customerId.intValue());
+                if(customerConfigs != null && customerConfigs.length>0 ){
+                    for (int i = 0; i<customerConfigs.length; i++){
+                        CustomerConfiguration customerConfig = customerConfigs[i];
+                        if(("Program_Status".equals(customerConfig.getCustomerConfigurationName())) 
+                                    && ("T".equals(customerConfig.getDefaultValue()))){
+                            hasProgramStatusConfig = Boolean.TRUE;
+                        }
+                    }
+                }
+            }
+            return hasProgramStatusConfig;
+        } 
+        catch (Exception e){ 
+			e.printStackTrace();
+            throw new CTBBusinessException("Program Status Config");
+        }
+    }
+    
+    
+    /**
+     * Check whether user has the
+     * @common:operation
+     * @param userName - identifies the user
+     * @param  customerId - identifies the customer
+     * @return Boolean
+	 * @throws CTBBusinessException
+     */
+    public Boolean hasUploadDownloadConfig(String userName) throws CTBBusinessException {
+        try {
+            Boolean hasUploadDownloadConfig = Boolean.FALSE;
+            Integer customerId = users.getCustomerIdForName(userName);
+            if(customerId != null){
+                CustomerConfig[] cc = uploadDataFile.getCustomerConfigurationEntries(customerId);  
+                if(cc != null && cc.length>0 ){
+                    for (int i = 0; i<cc.length; i++){
+                        CustomerConfig customerConfig = cc[i];
+                        if((CUSTOMER_CONFIG_UPLOAD_DOWNLOAD.
+                                    equals(customerConfig.getCustomerConfigurationName())) 
+                                    && ("T".equals(customerConfig.getDefaultValue()))){
+                            hasUploadDownloadConfig = Boolean.TRUE;
+                        }
+                    }
+                }
+            }
+            return hasUploadDownloadConfig;
+        } catch (Exception e) {
+			e.printStackTrace();
+            throw new CTBBusinessException("hasUploadDownloadConfig");
+        }
+    }
     
      private Integer getExpectedPosition (CustomerConfigurationValue []customerConfigurationValue, String statusFlag) {
         

@@ -377,7 +377,11 @@ public interface TestSessionStatus
      */
     
     java.lang.Boolean allowSubtestInvalidation(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
+    
+    java.lang.Boolean hasProgramStatusConfig(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
 
+    java.lang.Boolean hasUploadDownloadConfig(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
+    
     /**
      * Toggles the validation status of the specifed subtests
      * @param userName - identifies the user
