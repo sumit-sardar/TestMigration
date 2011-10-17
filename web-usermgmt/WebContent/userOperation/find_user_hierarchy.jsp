@@ -20,7 +20,7 @@
 		   <tr  width="100%" >
 		       <td   align="right">
 	     	       <!-- <input style="padding: 2px;" class="ui-corner-top ui-corner-tr ui-corner-tl ui-widget-header" onclick="javascript:changePwdForUser(); return false;" value=" Change Password " type="button">-->
-	     	        <input style="padding: 2px; background: url(&quot;images/ui-bg_glass_85_dfeffc_1x400.png&quot;) repeat-x scroll 50% 50% rgb(223, 239, 252);" class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" onclick="javascript:changePwdForUser(); return false;" value=" Change Password " type="button">
+	     	        <div id="changePW" style="display:none"><input style="padding: 2px; background: url(&quot;images/ui-bg_glass_85_dfeffc_1x400.png&quot;) repeat-x scroll 50% 50% rgb(223, 239, 252);" class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" onclick="javascript:changePwdForUser(); return false;" value=" Change Password " type="button"></div>
 	     	   </td>
 	     	   <td    width="20px" align="right"> &nbsp;</td>
 		   </tr>
