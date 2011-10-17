@@ -7,10 +7,4 @@
 			<context-root>TestSessionInfoWeb</context-root>
 		</web>
 	</module>
-	<module id="WebModule_1256248050578">
-		<web>
-			<web-uri>web-testsessioninfo.war</web-uri>
-			<context-root>SessionWeb</context-root>
-		</web>
-	</module>
 </application>

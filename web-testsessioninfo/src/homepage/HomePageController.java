@@ -179,7 +179,7 @@ public class HomePageController extends PageFlowController
     {               
         try
         {
-            String url = "/SessionWeb/sessionOperation/begin.do";
+            String url = "/TestSessionInfoWeb/sessionOperation/begin.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

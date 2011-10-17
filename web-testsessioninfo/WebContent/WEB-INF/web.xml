@@ -129,17 +129,6 @@
             <http-method>POST</http-method>
             <http-method>GET</http-method>
         </web-resource-collection>
-        <web-resource-collection>
-            <web-resource-name>SessionWeb</web-resource-name>
-            <description>Protect any resources within the following Page Flow.</description>
-            <url-pattern>/homepage/*</url-pattern>
-            <url-pattern>/sessionOperation/*</url-pattern>
-            <url-pattern>/softwareOperation/*</url-pattern>
-            <url-pattern>/programOperation/*</url-pattern>
-            <url-pattern>/testContentOperation/*</url-pattern>
-            <http-method>POST</http-method>
-            <http-method>GET</http-method>
-        </web-resource-collection>
         <auth-constraint>
             <description>These are the roles who have access the web resources above.</description>
             <role-name>root</role-name>
