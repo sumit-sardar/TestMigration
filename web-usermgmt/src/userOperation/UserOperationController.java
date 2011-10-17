@@ -348,7 +348,8 @@ public class UserOperationController extends PageFlowController
 			Gson gson = new Gson();
 			baseTree.setData(data);
 			jsonTree = gson.toJson(baseTree);
-		
+			String pattern = ",\"children\":[]";
+			jsonTree = jsonTree.replace(pattern, "");
 
 			try {
 
@@ -362,7 +363,7 @@ public class UserOperationController extends PageFlowController
 				}
 			}
 		} catch (Exception e) {
-			System.err.println("Exception while processing CR response.");
+			System.err.println("Exception while processing userOrgNodeHierarchyList.");
 			e.printStackTrace();
 		}
 
@@ -417,7 +418,7 @@ public class UserOperationController extends PageFlowController
 					
 				
 			} catch (Exception e) {
-				System.err.println("Exception while processing CR response.");
+				System.err.println("Exception while processing userOrgNodeHierarchyGrid");
 				e.printStackTrace();
 			}
 			
