@@ -182,15 +182,15 @@ if(userEmail != "") {
             }
             //invalidString += invalidNumFields + ("<br/>" + INVALID_NUMBER_FORMAT);
             setMessage(invalid_char_message, invalidNumFields, "errorMessage",INVALID_NUMBER_FORMAT);
-				return false;
+				return true;
         }
                          
         if (invalidString!="" && invalidString.length > 0 ) {    
             setMessage(INVALID_FORMAT_TITLE, invalidString, "errorMessage");
-            return false;
+            return true;
         } 
         
-        return true;   
+        return false;   
     }
     
    function verifyUserAddressInfo(addressLine1,addressLine2)
