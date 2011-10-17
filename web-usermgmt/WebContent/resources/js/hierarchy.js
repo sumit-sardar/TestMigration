@@ -148,10 +148,10 @@ function createMultiNodeSelectedTree(jsondata) {
 			});
 			
 			if(currentlySelectedNode.length > 0 ) {
-					$("#notSelectedOrgNodes").css("visibility","hidden");
+					$("#notSelectedOrgNodes").css("display","none");
 					$("#selectedOrgNodesName").text(currentlySelectedNode);	
 				} else {
-					$("#notSelectedOrgNodes").css("visibility","visible");
+					$("#notSelectedOrgNodes").css("display","inline");
 					$("#selectedOrgNodesName").text("");	
 				}
         	}
@@ -172,7 +172,7 @@ function  searchUser(){
 }
 
 function populateTreeSelect() {
-			$("#notSelectedOrgNodes").css("visibility","visible");
+			$("#notSelectedOrgNodes").css("display","inline");
 			$("#selectedOrgNodesName").text("");	
 			createMultiNodeSelectedTree (orgTreeHierarchy);	
 
