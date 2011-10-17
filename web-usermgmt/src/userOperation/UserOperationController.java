@@ -1091,7 +1091,7 @@ public class UserOperationController extends PageFlowController
             roleOptions.add(Message.ANY_ROLE);
         }*/
         if (action.equals(ACTION_ADD_USER)) {	
-        	stateOptions.add(-1 + "|"+Message.SELECT_STATE);
+        	stateOptions.add("" + "|"+Message.SELECT_STATE);
         }
         
         try {

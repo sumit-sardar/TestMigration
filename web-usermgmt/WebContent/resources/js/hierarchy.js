@@ -510,7 +510,7 @@ function userDetailEdit(){
 			|| $("#addressLine1").val() != ""
 			|| $("#addressLine2").val() != ""
 			|| $("#city").val()!= ""
-			|| $("#stateOptions").val()!= "-1"
+			|| $("#stateOptions").val()!= ""
 			|| $("#zipCode1").val()!= ""
 			|| $("#zipCode2").val()!= ""
 			|| $("#primaryPhone1").val() != ""
