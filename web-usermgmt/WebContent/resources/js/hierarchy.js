@@ -494,6 +494,8 @@ function userDetailEdit(){
 		for(var count = 0; count < allSelects.length ; count++) {
 			$(allSelects[count]).find("option:eq(0)").attr("selected","true");
 		}	
+		
+		assignedOrgNodeIds = "";
 	 }
 	
 	
