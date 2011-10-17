@@ -134,6 +134,7 @@ if(userEmail != "") {
         if (invalidCharFields.length > 0) {
             //invalidString = invalidCharFields + ("<br/>" + INVALID_ADDRESS_CHARS);
             setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_ADDRESS_CHARS);
+            return true;
 				
         }	
         
@@ -145,6 +146,7 @@ if(userEmail != "") {
             }
             //invalidString += invalidCharFields + ("<br/>" + INVALID_CITY_CHARS);
             setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_CITY_CHARS);
+             return true;
 				
         }																									   
          
