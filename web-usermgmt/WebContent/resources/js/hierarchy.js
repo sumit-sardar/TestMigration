@@ -12,6 +12,25 @@ var roleOptions=[];
 var timeZoneOptions=[];
 var stateOptions=[];
 
+
+$(document).bind('keydown', function(event) {
+		
+	      var code = (event.keyCode ? event.keyCode : event.which);
+	      if(code == 27){
+	      		if(roleOptions.length > 0 
+				&& timeZoneOptions.length > 0
+				&& stateOptions.length > 0){
+				
+	      			onCancel();
+	      		}
+	            return false;
+	      }
+	  });
+
+
+
+
+
 function populateTree() {
 	
 	$.ajax({
@@ -265,6 +284,7 @@ function changePwdForUser(){
 								title:"Edit Record",  
 							 	resizable:false,
 							 	autoOpen: true,
+								closeOnEscape: false,
 							 	width: '600px'
 							 	});	
 	$("#preButton").css("visibility","visible");	
@@ -279,8 +299,10 @@ function changePwdForUser(){
 	$("#nextButton").css("visibility","hidden");*/	
 	document.getElementById('displayMessage').style.display = "none";	
 	document.getElementById('displayMessageMain').style.display = "none";	
-	reset();
 	
+	if(!(roleOptions.length > 0 
+		&& timeZoneOptions.length > 0
+			&& stateOptions.length > 0)){
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -309,6 +331,7 @@ function changePwdForUser(){
 							 	autoOpen: true,
 							 	width: '800px',
 							 	modal: true,
+								closeOnEscape: false,
 							 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 							 	});	
 						$('#addEditUserDetail').bind('keydown', function(event) {
@@ -330,6 +353,28 @@ function changePwdForUser(){
 		
 	});
 	
+	} else {
+		reset();
+		$("#addEditUserDetail").dialog({  
+			title:"Add User",  
+		 	resizable:false,
+		 	autoOpen: true,
+		 	width: '800px',
+		 	modal: true,
+		 	closeOnEscape: false,
+		 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+		 	});	
+		 	$('#addEditUserDetail').bind('keydown', function(event) {
+		 						  //alert("key up 2");
+ 							var code = (event.keyCode ? event.keyCode : event.which);
+ 							if(code == 27){
+		  				  	onCancel();
+		  				 	return false;
+		 				 }
+		 				
+						});
+		setPopupPosition();	
+	}	
 							 	
 						 	
 	}
