@@ -299,7 +299,6 @@ function changePwdForUser(){
 	$("#nextButton").css("visibility","hidden");*/	
 	document.getElementById('displayMessage').style.display = "none";	
 	document.getElementById('displayMessageMain').style.display = "none";	
-	reset();
 	
 	if(!(roleOptions.length > 0 
 		&& timeZoneOptions.length > 0
@@ -417,7 +416,6 @@ function changePwdForUser(){
 	function userDetailSubmit(){
 	var validflag = VerifyUserDetail(assignedOrgNodeIds);
 	//var validflag = true;
-	alert("validflag:"+validflag);
 	if(validflag){
 		isEmailProvided();
 	}else {
