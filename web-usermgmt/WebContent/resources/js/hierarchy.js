@@ -143,7 +143,7 @@ function createMultiNodeSelectedTree(jsondata) {
 
 
 function getText(element){
-var elementText  = element.children[1].childNodes[2].data;
+	var elementText  = element.childNodes[1].lastChild.data;
 return elementText;
 }
 
