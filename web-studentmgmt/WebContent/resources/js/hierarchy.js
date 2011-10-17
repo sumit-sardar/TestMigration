@@ -20,17 +20,13 @@ var SelectedOrgNodes = [];
 var optionList = [];
 var studentList;
 var isAddStudent = true;
-
+var isPopUp = false;
 
 $(document).bind('keydown', function(event) {
 		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
-	      		if(gradeOptions.length > 0 
-					&& genderOptions.length > 0
-						&& dayOptions.length > 0
-							&& monthOptions.length > 0 
-								&& yearOptions.length > 0){
+	      		if(isPopUp){				
 	      			onCancel();
 	      		}
 	            return false;
@@ -364,6 +360,7 @@ function createMultiNodeSelectedTree(jsondata) {
 
 function AddStudentDetail(){
 isAddStudent = true;
+isPopUp = true;
 document.getElementById('displayMessage').style.display = "none";	
 document.getElementById('displayMessageMain').style.display = "none";	
 	if(!(gradeOptions.length > 0 
@@ -543,6 +540,7 @@ function fillDropDown( elementId, optionList) {
 			$('#Student_Additional_Information').hide();
 			$('#Student_Accommodation_Information').hide();
 			populateTreeSelect();
+			isPopUp = false;
 		}
 			
 		
