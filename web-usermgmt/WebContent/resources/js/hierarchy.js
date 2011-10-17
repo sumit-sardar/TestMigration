@@ -561,11 +561,11 @@ function changePwdForUser(){
 		 	modal: true,
 		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 			});	
-			 $("#EmailWarning").css('height',100);
-			 //var toppos = ($(window).height() - 290) /2 + 'px';
-			 //var leftpos = ($(window).width() - 410) /2 + 'px';
-			 //$("#confirmationPopup").parent().css("top",toppos);
-			 //$("#confirmationPopup").parent().css("left",leftpos);	
+			 $("#EmailWarning").css('height',150);
+			 var toppos = ($(window).height() - 290) /2 + 'px';
+			 var leftpos = ($(window).width() - 410) /2 + 'px';
+			 $("#EmailWarning").parent().css("top",toppos);
+			 $("#EmailWarning").parent().css("left",leftpos);	
 		
 		}
 		else
