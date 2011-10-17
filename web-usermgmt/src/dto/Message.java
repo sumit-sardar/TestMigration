@@ -202,6 +202,9 @@ public class Message implements java.io.Serializable
      */
     public static String buildErrorString(String field, int count, String str)
     {
+    	if(str == null) {
+    		str = "";
+    	}
         String result = str;
         if (count == 1) {
             result += field;
