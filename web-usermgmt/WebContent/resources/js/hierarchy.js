@@ -11,15 +11,13 @@ var assignedOrgNodeIds="";
 var roleOptions=[];
 var timeZoneOptions=[];
 var stateOptions=[];
-
+var isPopUp = false;
 
 $(document).bind('keydown', function(event) {
 		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
-	      		if(roleOptions.length > 0 
-				&& timeZoneOptions.length > 0
-				&& stateOptions.length > 0){
+	      		if(isPopUp){
 				
 	      			onCancel();
 	      		}
@@ -254,14 +252,15 @@ function changePwdForUser(){
 
 }
 
- function gridReload(){ 
+function gridReload(){ 
            jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});
            jQuery("#list2").jqGrid('setGridParam', {url:'userOrgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
       }
 
 
 	
-	function userDetailEdit(){
+function userDetailEdit(){
+	isPopUp	= true;
 	
 	 for(var i=0;i<gridjsondata.userProfileInformation.length;i++) {
 		 if(SelectedUserId == gridjsondata.userProfileInformation[i].userId) {									
@@ -294,7 +293,7 @@ function changePwdForUser(){
 	}
 	
 	function AddUserDetail(){
-		
+	isPopUp	= true;
 	/*$("#preButton").css("visibility","hidden");	
 	$("#nextButton").css("visibility","hidden");*/	
 	document.getElementById('displayMessage').style.display = "none";	
@@ -571,6 +570,7 @@ function changePwdForUser(){
 			$("#Contact_Information").scrollTop(0);
 			$('#Contact_Information').hide();
 			populateTreeSelect();
+			isPopUp = false;
 			
 		}
 		$("#"+dailogId).dialog("close");
