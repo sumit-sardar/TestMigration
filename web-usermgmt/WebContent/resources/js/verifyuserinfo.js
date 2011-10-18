@@ -10,6 +10,7 @@ var INVALID_FORMAT_TITLE = "One or more fields contain invalid formats or invali
 var INVALID_ADDRESS_CHARS  = "Please re-enter your information with only these characters: A-Z, a-z, 0-9, #, /, \\, -, ', (, ), &, +, comma, period, space";
 var INVALID_CITY_CHARS  = "Please re-enter your information with only these characters: A-Z, a-z, 0-9, /, \\, -, ', (, ), &, +, comma, period, space";
 var INVALID_EMAIL  = "Please enter a valid email address";
+var INVALID_NUMERIC_FORMAT = "Please re-enter numeric fields in valid format";
       
     
 
@@ -183,7 +184,7 @@ if(userEmail != "") {
                invalidString += ("<br/>");
             }
             //invalidString += invalidNumFields + ("<br/>" + INVALID_NUMBER_FORMAT);
-            setMessage(invalid_char_message, invalidNumFields, "errorMessage",INVALID_NUMBER_FORMAT);
+            setMessage(invalid_char_message, invalidNumFields, "errorMessage",INVALID_NUMERIC_FORMAT);
 				return true;
         }
                          
@@ -349,7 +350,8 @@ if(userEmail != "") {
 
 	function setMessage(title, content, type, message){
 			$("#title").text(title);
-			$("#content").text(content);
+			//$("#content").text(content);
+			$("#content").html(content);
 			$("#message").text(message);
 	
 		}	
