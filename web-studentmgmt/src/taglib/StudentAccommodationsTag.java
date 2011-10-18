@@ -100,7 +100,7 @@ public class StudentAccommodationsTag extends CTBTag
             displayEmptyRow("2");
                 
             // screenReader
-            field = "screen_reader";
+            field = "screenReader";
             description = "<b>Allow Screen Reader</b>:";
             checked = this.accommodations.getScreenReader().booleanValue();
             disabled = isDisabled(field);
@@ -126,7 +126,7 @@ public class StudentAccommodationsTag extends CTBTag
 
 
             // testPause
-            field = "test_pause";
+            field = "testPause";
             description = "<b>Test Pause</b>:";
             checked = this.accommodations.getTestPause().booleanValue();
             disabled = isDisabled(field);
@@ -139,7 +139,7 @@ public class StudentAccommodationsTag extends CTBTag
 
 
             // untimedTest
-            field = "untimed_test";
+            field = "untimedTest";
             description = "<b>Untimed Test</b>:";
             checked = this.accommodations.getUntimedTest().booleanValue();
             disabled = isDisabled(field);
@@ -162,7 +162,7 @@ public class StudentAccommodationsTag extends CTBTag
             displayEmptyRow("2");
             
             // masking Ruler
-    	        field = "Masking_Ruler";
+    	        field = "MaskingRuler";
     	        description = "<b>Blocking Ruler</b>:";
     	        checked = this.accommodations.getMaskingRuler().booleanValue();
     	        disabled = isDisabled(field);
@@ -173,7 +173,7 @@ public class StudentAccommodationsTag extends CTBTag
            displayEmptyRow("2");
                 
            // Magnifying Glass
-	           field = "Magnifying_Glass";
+	           field = "MagnifyingGlass";
 	           description = "<b>Magnifying Glass</b>:";
 	           checked = this.accommodations.getMagnifyingGlass().booleanValue();
 	           disabled = isDisabled(field);
@@ -364,7 +364,7 @@ public class StudentAccommodationsTag extends CTBTag
         
         //Added for Auditory Calming
         displayTableStart("transparent");
-	        field = "Auditory_Calming";
+	        field = "AuditoryCalming";
 	        description = "<b>Music Player</b>:";
 	        checked = this.accommodations.getAuditoryCalming().booleanValue();
 	        disabled = isDisabled(field);
@@ -397,7 +397,7 @@ public class StudentAccommodationsTag extends CTBTag
 		
 	     // Student Pacing
 		displayTableStart("transparent");
-	        field = "Extended_Time";
+	        field = "ExtendedTime";
 	        description = "<b>Extended Time</b>:";
 	        checked = this.accommodations.getExtendedTime().booleanValue();
 	        disabled = isDisabled(field);
@@ -408,7 +408,7 @@ public class StudentAccommodationsTag extends CTBTag
         
         // Masking Answers
 		displayTableStart("transparent");
-	        field = "Masking_Tool";
+	        field = "MaskingTool";
 	        description = "<b>Masking Tool</b>:";
 	        checked = this.accommodations.getMaskingTool().booleanValue();
 	        disabled = isDisabled(field);
@@ -595,9 +595,9 @@ public class StudentAccommodationsTag extends CTBTag
                     disabled = true;
             }
         }        
-        if(counter == 0 && (field.equals("Masking_Ruler") || field.equals("Auditory_Calming")
-        		|| field.equals("Magnifying_Glass") || field.equals("Extended_Time") 
-        		|| field.equals("Masking_Tool")))
+        if(counter == 0 && (field.equals("MaskingRuler") || field.equals("AuditoryCalming")
+        		|| field.equals("MagnifyingGlass") || field.equals("ExtendedTime") 
+        		|| field.equals("MaskingTool")))
         	disabled=true;
         
         return disabled;

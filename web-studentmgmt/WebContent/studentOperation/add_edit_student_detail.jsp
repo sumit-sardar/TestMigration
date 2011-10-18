@@ -1,4 +1,4 @@
-<%@ page import="java.io.*, java.util.*"%>
+<%@ page import="java.io.*, java.util.*,com.ctb.bean.studentManagement.CustomerConfiguration"%>
 <%
     Boolean isMandatoryBirthDate = (Boolean)request.getAttribute("isMandatoryBirthDate"); //GACRCT2010CR007 - Disable Mandatory Birth Date 
 	Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
@@ -13,6 +13,8 @@
 		}
 	}
 	Boolean supportAccommodations = (Boolean)request.getAttribute("supportAccommodations");
+	String showEditButton = (String)request.getAttribute("showEditButton"); 
+	String showDeleteButton = (String)request.getAttribute("showDeleteButton"); 
 	
 
 %>
@@ -28,6 +30,9 @@
 <input type="hidden" id="isStudentId2Numeric" value = '<%=studentId2ArrValue[3] %>' />
 <input type="hidden" id="studentId2MinLength" value = '<%=studentId2ArrValue[2] %>' />
 <input type="hidden" id="supportAccommodations" value = '<%=supportAccommodations %>' />
+<input type="hidden" id="showEditButton" value = '<%=showEditButton %>' />
+<input type="hidden" id="showDeleteButton" value = '<%=showDeleteButton %>' />
+
 
 
 
@@ -147,11 +152,12 @@
 								   <%} %>
 								   	<tr style="display: table-row;" id="message" class="transparent">
 								   		<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Organization:</td>
-										<td class="transparent-small">
+										<td class="transparent-small" >
 											<div id="notSelectedOrgNodes" style="width:200px; visibility:visible; padding-left: 4px"><font color="gray">None selected. Use the control on the right to
 											select.</font>
 											</div>
 											<div id="selectedOrgNodesName" style="width:200px, padding-left: 4px"></div>
+											
 										
 										</td>
 									</tr>
@@ -215,9 +221,9 @@
 		<tbody>
 			<br>
 			<tr id="Act_Buttons" align="center">
-				<td  width="0%" id="preButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-left" id="pData" href="javascript:void(0)"><span
+				<td  width="3%" id="preButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-left" id="pData" href="javascript:pDataClick('Edit');"><span
 					class="ui-icon ui-icon-triangle-1-w"></span></a></td><td id="nextButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-right" id="nData"
-					href="javascript:void(0)"><span class="ui-icon ui-icon-triangle-1-e"></span></a></td>
+					href="javascript:nDataClick('Edit');"><span class="ui-icon ui-icon-triangle-1-e"></span></a></td>
 					<td>&nbsp;</td>
 				<td  width="100%">
 					<center>

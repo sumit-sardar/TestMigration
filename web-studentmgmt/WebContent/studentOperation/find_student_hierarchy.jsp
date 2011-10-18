@@ -50,6 +50,7 @@
 </br>
 </br>
 <jsp:include page="/studentOperation/add_edit_student_detail.jsp" />
+<jsp:include page="/studentOperation/view_student_detail.jsp" />
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table>

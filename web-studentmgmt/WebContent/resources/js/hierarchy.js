@@ -20,6 +20,10 @@ var SelectedOrgNodes = [];
 var optionList = [];
 var studentList;
 var isAddStudent = true;
+var stuDemographic ;
+var stuAccommodation;
+var loginId = "";
+var profileEditable = "true";
 var isPopUp = false;
 
 $(document).bind('keydown', function(event) {
@@ -215,8 +219,8 @@ function createMultiNodeSelectedTree(jsondata) {
 
 
 	function  getIDList() {
-      for(var i=0;i<gridjsondata.studentProfileInformation.length;i++) {
-       	idarray[i] = gridjsondata.studentProfileInformation[i].studentId;
+      for(var i=0;i<studentList.studentProfileInformation.length;i++) {
+       	idarray[i] = studentList.studentProfileInformation[i].studentId;
        }
 }		
 			
@@ -241,6 +245,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
 		   	records: function(obj) { 
+		   	//studentList = JSON.stringify(obj);
 		   	studentList = obj;
 		   	return obj.studentProfileInformation.length; } },
 		   	 
@@ -254,6 +259,7 @@ function createMultiNodeSelectedTree(jsondata) {
 			height: 370,  
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			caption:"Student List",
+			ondblClickRow: function(rowid) {editStudentDetail();},
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
@@ -309,6 +315,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
 		   	records: function(obj) { 
+		   //	studentList = JSON.stringify(obj);
 		   	studentList = obj;
 		   	return obj.studentProfileInformation.length; } },
 		   	 
@@ -322,6 +329,7 @@ function createMultiNodeSelectedTree(jsondata) {
 			height: 370,  
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			caption:"Student List",
+			ondblClickRow: function(rowid) {editStudentDetail();},
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
@@ -415,7 +423,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 		 				 }
 		 				
 						});
-						setPopupPosition();	
+						setPopupPosition(isAddStudent);	
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -447,12 +455,12 @@ document.getElementById('displayMessageMain').style.display = "none";
 		 				 }
 		 				
 						});
-		setPopupPosition();	
+		setPopupPosition(isAddStudent);	
 	}	
 	
 }
 
-	function setPopupPosition(){
+	function setPopupPosition(isAddStudent){
 				var toppos = ($(window).height() - 610) /2 + 'px';
 				var leftpos = ($(window).width() - 760) /2 + 'px';
 				$("#addEditStudentDetail").parent().css("top",toppos);
@@ -463,6 +471,18 @@ document.getElementById('displayMessageMain').style.display = "none";
 				$("#Student_Additional_Information").css("overflow",'auto');
 				$("#Student_Accommodation_Information").css("height",'300px');
 				$("#Student_Accommodation_Information").css("overflow",'auto');
+				if(isAddStudent) {
+					$("#preButton").css("visibility","hidden");	
+					$("#nextButton").css("visibility","hidden");
+					$("#viewPreButton").css("visibility","hidden");	
+					$("#viewNextButton").css("visibility","hidden");
+				} else {
+					$("#preButton").css("visibility","visible");	
+					$("#nextButton").css("visibility","visible");
+					$("#viewPreButton").css("visibility","visible");	
+					$("#viewNextButton").css("visibility","visible");
+					
+				}
 	}
 	
     function reset() {
@@ -529,7 +549,26 @@ function fillDropDown( elementId, optionList) {
 	
 }
 
-
+function fillselectedOrgNode( elementId, orgList) {
+	var ddl = document.getElementById(elementId);
+	var optionHtml = "";
+	for(var i = 0; i < orgList.length; i++) {
+		if(assignedOrgNodeIds == "") {
+			assignedOrgNodeIds = orgList[i].orgNodeId;
+		} else {
+			assignedOrgNodeIds = assignedOrgNodeIds + " , " + orgList[i].orgNodeId; 
+		}
+		optionHtml += "<a id='"+orgList[i].orgNodeId+"' href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+orgList[i].orgNodeName+"</a>";	
+	}
+	$(ddl).html(optionHtml);
+	
+	if(orgList.length > 0 ) {
+		$("#notSelectedOrgNodes").css("visibility","hidden");
+	} else {
+		$("#notSelectedOrgNodes").css("visibility","visible");
+		$("#selectedOrgNodesName").text("");	
+	}
+}
 
 	function closePopUp(dailogId){
 		if(dailogId == 'addEditStudentDetail') {
@@ -542,8 +581,18 @@ function fillDropDown( elementId, optionList) {
 			populateTreeSelect();
 			isPopUp = false;
 		}
-			
 		
+		if(dailogId == 'viewStudentDetail') {
+			$('#viewaccordion').accordion('activate', 0 );
+			$("#view_Student_Information").scrollTop(0);
+			$("#view_Student_Additional_Information").scrollTop(0);
+			$("#view_Student_Accommodation_Information").scrollTop(0);
+			$('#view_Student_Additional_Information').hide();
+			$('#view_Student_Accommodation_Information').hide();
+			populateTreeSelect();
+			isPopUp = false;
+		}
+			
 		if(dailogId == 'confirmationPopup') {
 			$('#accordion').accordion('activate', 0 );
 			$("#Student_Information").scrollTop(0);
@@ -673,26 +722,22 @@ function fillDropDown( elementId, optionList) {
 	
 	
 	function studentDetailSubmit(){
-	/*
+	
 	var param;
-	if(isAddStudent)
+	var createBy = "";
+	if(isAddStudent){
 		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
 		 $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val() + 
-		 "&isAddStudent=" + $("#isAddStudent").val()+'&createBy='+createBy ;
-	else{
+		 "&isAddStudent=" + isAddStudent +"&createBy="+createBy ;
+	}else{
 		var selectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
-		var createBy ;
-	      for(var i=0;i<studentList.studentProfileInformation.length;i++) {
-	      if(rowid == studentList.studentProfileInformation[i].studentId) {
-	       		createBy = studentList.studentProfileInformation[i].createBy;
-	       		break;
-	       		}
-	       }
+		createBy = getDataFromJson(selectedStudentId);
 		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
 			 $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val()+
-			  "&selectedStudentId=" + $("#selectedStudentId").val() + "&isAddStudent=" + $("#isAddStudent").val() +'&createBy='+createBy ;
-	}*/
+			  "&selectedStudentId=" + selectedStudentId + "&isAddStudent=" + isAddStudent + "&createBy="+createBy + "&loginId=" + loginId ;
+	}
 	 var validflag = VerifyStudentDetail(assignedOrgNodeIds);
+	 
 	if(validflag) {
 					$.ajax(
 						{
@@ -705,7 +750,7 @@ function fillDropDown( elementId, optionList) {
 											},
 								url:		'saveAddEditStudent.do',
 								type:		'POST',
-								data:		$("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" + $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val(),
+								data:		 param,
 								dataType:	'json',
 								success:	function(data, textStatus, XMLHttpRequest){	
 												$.unblockUI();  
@@ -739,13 +784,20 @@ function fillDropDown( elementId, optionList) {
 	}
 	}
 	
-	function openTreeNodes() {
+	
+	
+	
+	function openTreeNodes(orgNodeId) {
+		parentOrgNodeId = $("#" + orgNodeId).parent();
+		var ancestorNodes = parentOrgNodeId.parentsUntil(".jstree","li");
 		//open tree nodes from root to the clicked node		
-		for(var count = SelectedOrgNodes.length - 1; count >= 0; --count) {
-  		 		var tmpNode = SelectedOrgNodes[count].id;
+		for(var count = ancestorNodes.length - 1; count >= 0; --count) {
+  		 		var tmpNode = ancestorNodes[count].id;
 				$('#innerID').jstree('open_node', "#"+tmpNode); 
 			
   		 }
+  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
+  		 hideCheckBox();
 	}
 	
 	function hideCheckBox(){
@@ -757,21 +809,36 @@ function fillDropDown( elementId, optionList) {
 	  	});
 	
 	}
+	
+	function disablenextprev(selectedPosition,maxlength) {
+                    selectedPosition == 0 ? $("#pData").addClass("ui-state-disabled") : $("#pData").removeClass("ui-state-disabled");
+                    selectedPosition == maxlength? $("#nData").addClass("ui-state-disabled") : $("#nData").removeClass("ui-state-disabled");
+                }
+    
+    function highlightnextprev(prevSelectedRow,nextSelectedRow) {            
+		   $("#"+prevSelectedRow).removeClass("ui-state-highlight").attr({
+               "aria-selected": "false",
+               tabindex: "-1"
+           });
+           $("#"+nextSelectedRow).addClass("ui-state-highlight").attr({
+               "aria-selected": true,
+               tabindex: "0"
+           });
+	}
 
-
-	function editStudentDetail(){
-	/*
+	function editStudentDetail(SelectedStudentId){
+	isPopUp = true;
+	var rowid;
 	isAddStudent = false;
 	document.getElementById('displayMessage').style.display = "none";	
 	document.getElementById('displayMessageMain').style.display = "none";	
-	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
-	var createBy ;
-      for(var i=0;i<studentList.studentProfileInformation.length;i++) {
-      if(rowid == studentList.studentProfileInformation[i].studentId) {
-       		createBy = studentList.studentProfileInformation[i].createBy;
-       		break;
-       		}
-       }
+	if(SelectedStudentId == undefined){
+		rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+	} else {
+		rowid = SelectedStudentId;
+	}
+	
+    var createBy =  getDataFromJson(rowid);
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -788,6 +855,7 @@ function fillDropDown( elementId, optionList) {
 						monthOptions = data.optionList.monthOptions;
 						yearOptions = data.optionList.yearOptions; 
 						testPurposeOptions = data.optionList.testPurposeOptions;
+						loginId = data.userName;
 						fillDropDown("gradeOptions", gradeOptions);
 						fillDropDown("genderOptions", genderOptions);
 						fillDropDown("dayOptions", dayOptions);
@@ -808,8 +876,22 @@ function fillDropDown( elementId, optionList) {
 						$("#studentExternalId2").val(data.studentSecondNumber);
 						if($("#isLasLinkCustomer").val() == "true")
 							$("#testPurposeOptions").val(data.testPurpose);
+							
+						//profileEditable = data.profileEditable;
+						profileEditable = "true";
+						if(profileEditable == "false") {
+							$('#Student_Information :checkbox').attr('disabled', true); 
+							$('#Student_Information :radio').attr('disabled', true); 
+							$('#Student_Information select').attr('disabled', true); 
+						}
+							
+						stuDemographic = data.stuDemographic;
+						stuAccommodation = data.stuAccommodation;
+						var organizationNodes = [];
+						organizationNodes = data.organizationNodes;
+						fillselectedOrgNode("selectedOrgNodesName", organizationNodes);
+						setEditStudentDetail();
 						$.unblockUI();  
-						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
 						$("#addEditStudentDetail").dialog({  
 													title:"Edit Student",  
 												 	resizable:false,
@@ -820,7 +902,7 @@ function fillDropDown( elementId, optionList) {
 		 	
 												 	});	
 												 	 
-							 setPopupPosition();
+							 setPopupPosition(isAddStudent);
 							 
 							
 							 		
@@ -832,17 +914,265 @@ function fillDropDown( elementId, optionList) {
 					}
 		
 	});
-	*/
+	
 }
+
+	function viewEditStudentPopup(){
+		var editStudentPermission = $("#showEditButton").val();
+		//var editStudentPermission = "false";
+		if(editStudentPermission == "true"){
+			editStudentDetail();	
+		} else {
+			viewStuDetail();		
+		}
+	}
 	
 	
 	
+	function viewStuDetail(SelectedStudentId){
+	var rowid;
+	isPopUp = true;
+	isAddStudent = false;
+	document.getElementById('displayMessage').style.display = "none";	
+	document.getElementById('displayMessageMain').style.display = "none";	
+	if(SelectedStudentId == undefined){
+		rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+	} else {
+		rowid = SelectedStudentId;
+	}
+	var createBy =  getDataFromJson(rowid);
+    
+	$.ajax({
+		async:		true,
+		beforeSend:	function(){
+						UIBlock();
+					},
+		url:		'getViewStudentData.do?&studentID='+rowid +'&createBy='+createBy , 
+		type:		'POST',
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){	
+						$.unblockUI();
+						$("#studentFirstNameView").text(data.firstName);
+						$("#studentMiddleNameView").text(data.middleName);
+						$("#studentLastNameView").text(data.lastName);
+						$("#studentUserNameView").text(data.userName);
+						$("#birthdateStringView").text(data.birthdateString);
+						$("#studentgradeView").text(data.grade);
+						$("#studentgenderView").text(data.gender);
+						$("#studentNumberView").text(data.studentNumber);
+						$("#studenttestPurposeView").text(data.studentNumber);
+						$("#orgNodeNameView").text(data.orgNodeNamesStr);
+						stuDemographic = data.stuDemographic;
+						stuAccommodation = data.stuAccommodation;
+						setViewStudentDetail();
+						//disableFields('viewStudentDetail', true);
+						$('#viewStudentDetail :checkbox').attr('disabled', true); 
+						$('#viewStudentDetail :radio').attr('disabled', true); 
+						$('#viewStudentDetail select').attr('disabled', true); 
+						$.unblockUI();  
+						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
+						$("#viewStudentDetail").dialog({  
+													title:"View Student",  
+												 	resizable:false,
+												 	autoOpen: true,
+												 	width: '800px',
+												 	modal: true,
+												 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		 	
+												 	});	
+												 	 
+							 setPopupPosition(isAddStudent);
+							 
+							
+							 		
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();  
+						window.location.href="/TestSessionInfoWeb/logout.do";
+						
+					}
+		
+	});
+	
+}
+		
+		/*disableFields(dailogId, flag){
+			$("#"+dailogId + ' :checkbox').attr('disabled', flag); 
+			$("#"+dailogId + ' :radio').attr('disabled', flag); 
+			$("#"+dailogId + ' :select').attr('disabled', flag); 
+		}*/
+	
+				function nDataClick(popupname) {
+				var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
+                  	for(i= 0 ; i<studentList.studentProfileInformation.length; i++){
+                  		if(SelectedStudentId == studentList.studentProfileInformation[i].studentId && i!= studentList.length-1){
+                  			var previousSeclectedRow = SelectedStudentId;
+                  			SelectedStudentId= studentList.studentProfileInformation[i+1].studentId;
+                  			highlightnextprev(previousSeclectedRow, SelectedStudentId);
+                  			if(popupname == 'Edit')
+                  				editStudentDetail(SelectedStudentId);
+                  			else
+                  				viewStuDetail(SelectedStudentId);
+                  			disablenextprev(i+1,studentList.studentProfileInformation.length-1);
+                  			break;
+                  		}
+                  	}
+               }
+               
+               function pDataClick(popupname) {
+               var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
+                  	for(i=0 ; i<studentList.studentProfileInformation.length; i++){
+                  		if(SelectedStudentId == studentList.studentProfileInformation[i].studentId && i != 0){
+                  			var previousSeclectedRow = SelectedStudentId;
+                  			SelectedStudentId= studentList.studentProfileInformation[i-1].studentId;
+                  			highlightnextprev(previousSeclectedRow, SelectedStudentId);
+                  			if(popupname == 'Edit')
+                  				editStudentDetail(SelectedStudentId);
+                  			else
+                  				viewStuDetail(SelectedStudentId);
+                  			disablenextprev(i-1,studentList.studentProfileInformation.length-1);
+                  			break;
+                  		}
+                  	}
+               }
 	
 	
+	
+		function getDataFromJson(id){
+			var str = JSON.stringify(studentList);
+			var createBy = "";
+			var indexOfId = str.indexOf(id);
+			var indexOfCreatedBy = -1;
+			var indexOfComma = -1;
+			if(indexOfId > 0){
+				str = str.substring(parseInt(indexOfId), str.length);
+				//createBy
+				indexOfCreatedBy = str.indexOf("createBy");
+				indexOfComma = str.indexOf(',', parseInt(indexOfCreatedBy));
+				indexOfCreatedBy += 10;
+				createBy = str.substring(parseInt(indexOfCreatedBy), parseInt(indexOfComma));
+				createBy = createBy.trim();
+			}else{
+				
+			}
+			return createBy;
+	}
+	
+	
+	function getNextStudentIdJson(id){
+			var str = JSON.stringify(studentList);
+			var studentId = "";
+			var indexOfId = str.indexOf(id);
+			var indexOfStudentId = -1;
+			var indexOfComma = -1;
+			if(indexOfId > 0){
+				str = str.substring(parseInt(indexOfId), str.length);
+				//createBy
+				indexOfStudentId = str.indexOf("studentId");
+				indexOfComma = str.indexOf(',', parseInt(indexOfStudentId));
+				indexOfCreatedBy += 11;
+				studentId = str.substring(parseInt(indexOfStudentId), parseInt(indexOfComma));
+				studentId = studentId.trim();
+			}
+			return studentId;
+	}
+	
+	
+	/*function getPrevStudentIdJson(id){
+		var str = JSON.stringify(studentList);
+		var studentId = "";
+		var indexOfStudentID = -1;
+		var indexOfComma = -1;
+		var indexOfPrevId = -1;
+		var indexOfId = str.indexOf(id);
+		
+		
+		if(indexOfId > 0){
+			str = str.substring(0, parseInt(indexOfId));
+			//studentId
+			indexOfPrevId = str.indexOf("studentId");
+			if(indexOfPrevId > 0){
+				str = str.substring(parseInt(indexOfPrevId), str.length());
+				indexOfStudentID = str.lastIndexOf("studentId");
+				//System.out.println("str : "+str);
+				if(indexOfStudentID > 0){
+				indexOfComma = str.indexOf(',', parseInt(indexOfStudentID));
+				indexOfStudentID += 11;
+				createBy = str.substring((int)indexOfStudentID, parseInt(indexOfComma));
+				createBy = createBy.trim();
+				
+				}
+				
+			}
+		}
+
+	}*/
 	
 
 
-
+	function setViewStudentDetail() {
+    	assignedOrgNodeIds = "";
+      for(var key in stuAccommodation) {
+		     $("#view_Student_Accommodation_Information :checkbox[name='" + key+ "']").attr('checked', stuAccommodation[key]);
+		     $("#view_Student_Accommodation_Information select[name='" + key+ "']").attr("selected",stuAccommodation[key]);
+		}
+		
+		for(var count=0; count< stuDemographic.length; count++) {
+			 if(stuDemographic[count]['studentDemographicValues'].length == 1){
+		     	var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][0]['valueName'] ;
+		     	if(trim(stuDemographic[count]['studentDemographicValues'][0]['selectedFlag']) == 'true'){
+			     	$("#view_Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
+			     }else {
+			     	$("#view_Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+			     }
+		     }else {
+		     	for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
+		     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
+		     			$("#view_Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").val(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);			     			
+		     			$("#view_Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+		     			$("#view_Student_Additional_Information :checkbox[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+		     			//break;
+		     		} else {
+		     			$("#view_Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
+		     			$("#view_Student_Additional_Information :checkbox[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
+		     			
+		     		}
+		     	}
+		     }
+		}
+   }
+   
+   
+   function setEditStudentDetail() {
+    	for(var key in stuAccommodation) {
+		     $("#Student_Accommodation_Information :checkbox[name='" + key+ "']").attr('checked', stuAccommodation[key]);
+		     $("#Student_Accommodation_Information select[name='" + key+ "']").attr("selected",stuAccommodation[key]);
+		}
+		
+		for(var count=0; count< stuDemographic.length; count++) {
+			 if(stuDemographic[count]['studentDemographicValues'].length == 1){
+		     	var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][0]['valueName'] ;
+		     	if(trim(stuDemographic[count]['studentDemographicValues'][0]['selectedFlag']) == 'true'){
+			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
+			     }else {
+			     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+			     }
+		     }else {
+		     	for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
+		     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
+		     			$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").val(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);			     			
+		     			$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+		     			$("#Student_Additional_Information :checkbox[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+		     			//break;
+		     		} else {
+		     			$("#view_Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
+		     			$("#view_Student_Additional_Information :checkbox[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
+		     			
+		     		}
+		     	}
+		     }
+		}
+   }
 
 
 

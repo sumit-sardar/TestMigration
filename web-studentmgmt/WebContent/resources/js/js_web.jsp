@@ -704,7 +704,7 @@ function verifyExitAddEditStudent(){
 function enableAudioFiles() {
 	
 	var audioFiles = document.getElementById('music_files');
-	var musicPlayer = document.getElementById('Auditory_Calming');
+	var musicPlayer = document.getElementById('AuditoryCalming');
 	if(musicPlayer.checked)
 		audioFiles.removeAttribute("disabled");
 	else {

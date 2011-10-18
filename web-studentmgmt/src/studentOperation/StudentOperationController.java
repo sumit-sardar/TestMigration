@@ -40,6 +40,7 @@ import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.studentManagement.MusicFiles;
+import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.testAdmin.Customer;
@@ -49,9 +50,11 @@ import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
+import com.ctb.widgets.bean.PagerSummary;
 import com.google.gson.Gson;
 
 import dto.Message;
+import dto.PathNode;
 import dto.StudentAccommodationsDetail;
 import dto.StudentProfileInformation;
 
@@ -71,6 +74,7 @@ public class StudentOperationController extends PageFlowController {
 	List demographics = null;
 	// student accommodations
 	public StudentAccommodationsDetail accommodations = null;
+	CustomerConfiguration[] customerConfigurations = null;
 
 
 
@@ -272,17 +276,7 @@ public class StudentOperationController extends PageFlowController {
 			System.out.println ("db process time Start:"+new Date());
 			ManageStudentData msData = findStudentByHierarchy();
 			System.out.println ("db process time End:"+new Date());
-			/*try{
-			  System.out.println("List serialization start.......");
-				OutputStream file = new FileOutputStream( "C:/studentList.ser" );
-	    		 OutputStream buffer = new BufferedOutputStream( file );
-	    	      output = new ObjectOutputStream( buffer );
-	    	      output.writeObject(studentList);
-	    	  System.out.println("List serialization end.......");
-			} finally {
-
-				output.close();
-			}*/
+			
 			if ((msData != null) && (msData.getFilteredCount().intValue() > 0))
 			{
 				System.out.println ("List process time Start:"+new Date());
@@ -304,27 +298,7 @@ public class StudentOperationController extends PageFlowController {
 			System.out.println ("Json process time End:"+new Date());
 
 
-			/*InputStream file = new FileInputStream( "C:/studentList.ser" );
-		    	      InputStream buffer = new BufferedInputStream( file );
-		    	      ObjectInput input = new ObjectInputStream ( buffer );
-
-		    	      try{
-
-		    	    	  studentList = (List)input.readObject();
-		    	    	  if (studentList.size() > 0) {
-
-		    	    		System.out.println("Deserialize list......");
-		    	    	  }
-		    	    	  base.setStudentProfileInformation(studentList);
-		    	    	  System.out.println ("Json process time Start:"+new Date());
-				    	  json = gson.toJson(base);
-				    	  System.out.println ("Json process time End:"+new Date());
-		    	      }
-		    	      finally{
-		    	    	  input.close();
-		    	      }*/
-
-			//System.out.println(json);
+			
 			try{
 				resp.setContentType("application/json");
 				stream = resp.getOutputStream();
@@ -411,6 +385,7 @@ public class StudentOperationController extends PageFlowController {
 		studentProfile.setFirstName(getRequest().getParameter("studentFirstName"));
 		studentProfile.setMiddleName(getRequest().getParameter("studentMiddleName"));
 		studentProfile.setLastName(getRequest().getParameter("studentLastName"));
+		studentProfile.setUserName(getRequest().getParameter("loginId"));
 		studentProfile.setMonth(getRequest().getParameter("monthOptions"));
 		studentProfile.setDay(getRequest().getParameter("dayOptions"));
 		studentProfile.setYear(getRequest().getParameter("yearOptions"));
@@ -429,22 +404,20 @@ public class StudentOperationController extends PageFlowController {
 		}
 		//selectedOrgNodes.add(118641);
 		MessageInfo messageInfo = new MessageInfo();
-		Integer studentId = null;
-
-		/*if ( studentId == null) {
-
-			studentId = (Integer)this.getSession().getAttribute("selectStudentIdInView");
-			form.setSelectedStudentId(studentId);
-		}*/
-
-		boolean isCreateNew = studentId == null ? true : false;
-
-
-		//this.selectedOrgNodes = StudentPathListUtils.buildSelectedOrgNodes(this.currentOrgNodesInPathList, this.currentOrgNodeIds, this.selectedOrgNodes);
+		Integer studentId = new Integer(0);
+		String studentIdVal = getRequest().getParameter("selectedStudentId");
+		if(studentIdVal != "" && studentIdVal !=null)
+			studentId = Integer.parseInt(studentIdVal);
+		String isAddStudent = getRequest().getParameter("isAddStudent");
+		boolean isCreateNew = (isAddStudent == null || isAddStudent.equals("") || isAddStudent.equals("true")) ? true : false;
+		Integer createBy = new Integer(0);
+		String createByVal = getRequest().getParameter("createBy");
+		if(!createByVal.equals("") && createByVal != null)
+			createBy = Integer.parseInt(createByVal);
+		studentProfile.setCreateBy(createBy);
+		
 		boolean result = true;
-		try {
-			CustomerConfiguration[]  customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);
-
+		
 			if (result) {
 				if (isValidationForUniqueStudentIDRequired(studentProfile, customerConfigurations)) {
 					result = validateUniqueStudentId(isCreateNew, null, studentProfile);
@@ -529,10 +502,7 @@ public class StudentOperationController extends PageFlowController {
 					//form.setMessage(Message.EDIT_TITLE, Message.EDIT_ERROR, Message.INFORMATION);
 				}
 			}
-		}
-		catch (CTBBusinessException be) {
-			be.printStackTrace();
-		}	
+		
 			creatGson( req, resp, stream, messageInfo );
 			return null;
 		
@@ -554,6 +524,120 @@ public class StudentOperationController extends PageFlowController {
 
 		return new Forward("success");
 	}
+	
+	//Added for edit student
+	
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="find_user_by_hierarchy.jsp")
+	})
+	protected Forward getStudentDataForSelectedStudent(){
+		String jsonResponse = "";
+		OutputStream stream = null;
+		HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		int studentId = Integer.parseInt(req.getParameter("studentID"));
+		int createBy = Integer.parseInt(req.getParameter("createBy"));
+		System.out.println(studentId);
+		Boolean profileEditable = isProfileEditable(createBy);
+		//StudentProfileInformation studentProfileData = handleAddEdit(studentId, profileEditable, createBy);
+		StudentProfileInformation studentProfileData = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
+		List demographics = null;
+		studentProfileData.setStuDemographic(getStudentDemographics(studentId, demographics));
+		//this.getRequest().setAttribute("demographics", this.demographics);       
+		//this.getRequest().setAttribute("studentImported", new Boolean(studentImported));       
+		StudentAccommodationsDetail accommodations = null;
+		studentProfileData.setStuAccommodation(getStudentAccommodations(studentId, customerConfigurations));
+		try {
+			
+			OptionList optionList = new OptionList();
+			optionList.setGradeOptions(getGradeOptions(ACTION_ADD_STUDENT));
+			optionList.setGenderOptions(getGenderOptions(ACTION_ADD_STUDENT));
+			optionList.setMonthOptions( DateUtils.getMonthOptions());
+			optionList.setDayOptions(DateUtils.getDayOptions());
+			optionList.setYearOptions(DateUtils.getYearOptions());
+			optionList.setTestPurposeOptions(getTestPurposeOptions(ACTION_EDIT_STUDENT));
+		    
+			optionList.setProfileEditable(profileEditable);
+			
+			studentProfileData.setOptionList(optionList);
+			
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(studentProfileData);
+				System.out.println(json);
+				resp.setContentType("application/json");
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes());
+
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		}
+		catch (Exception e) {
+			System.err.println("Exception while retrieving optionList.");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="find_user_by_hierarchy.jsp")
+	})
+	protected Forward getViewStudentData(){
+		String jsonResponse = "";
+		OutputStream stream = null;
+		HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		int studentId = Integer.parseInt(req.getParameter("studentID"));
+		int createBy = Integer.parseInt(req.getParameter("createBy"));
+		System.out.println(studentId);
+		boolean studentImported = (createBy == 1);
+		StudentProfileInformation studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
+		
+		
+		try {
+			
+			List demographics = null;
+			studentProfile.setStuDemographic(getStudentDemographics(studentId, demographics));
+			//this.getRequest().setAttribute("demographics", this.demographics);       
+			//this.getRequest().setAttribute("studentImported", new Boolean(studentImported));       
+			StudentAccommodationsDetail accommodations = null;
+			studentProfile.setStuAccommodation(getStudentAccommodations(studentId, customerConfigurations));
+			//this.getRequest().setAttribute("accommodations", this.accommodations);       
+
+			//this.getRequest().setAttribute("viewOnly", Boolean.TRUE);       
+
+			//this.getRequest().setAttribute("disableColorSelection", Boolean.TRUE);       
+			if (this.demographics.size() == 0) {
+				//this.getRequest().setAttribute("demographicVisible", "F");       
+			}
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(studentProfile);
+				System.out.println(json);
+				resp.setContentType("application/json");
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes());
+
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		}
+		catch (Exception e) {
+			System.err.println("Exception while retrieving optionList.");
+			e.printStackTrace();
+		}
+		return null;
+	
+	}
 
 
 	/**
@@ -569,18 +653,66 @@ public class StudentOperationController extends PageFlowController {
 	@Override
 	protected void onDestroy(HttpSession session) {
 	}
+	
+	
+	
+	/**
+	 * handleAddOrEdit
+	 */
+	private StudentProfileInformation handleAddEdit(Integer studentId, Boolean profileEditable, Integer createBy)
+	{     
+		StudentProfileInformation studentProfile = null;
+		//if (profileEditable.booleanValue())
+		//{
+			// reload student profile since nothing in the request
+			studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
+		//}
+		try {
+		//CustomerConfiguration[]  customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);    
 
+		studentProfile.setStuDemographic(addEditDemographics(studentId, createBy));    
+
+		studentProfile.setStuAccommodation(addEditAccommodations(customerConfigurations, createBy));    
+
+		Boolean disableColorSelection = new Boolean(! this.accommodations.getColorFont().booleanValue()); 
+		this.getRequest().setAttribute("disableColorSelection", disableColorSelection);       
+
+		//setCustomerSettings();
+
+		if (this.demographics.size() == 0)
+		{
+			this.getRequest().setAttribute("demographicVisible", "F");       
+		}
+
+		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);  
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		 return studentProfile;
+	}
+	
+	
+	
+	
 	/**
 	 * initialize
 	 */
 	private void initialize()
 	{        
 		getUserDetails();
-		CustomerConfiguration[] customerConfigurations = getCustomerConfigurations();  
+		customerConfigurations = getCustomerConfigurations();  
 		StudentOperationForm  form = new StudentOperationForm();
-		addEditDemographics();
-		addEditAccommodations(customerConfigurations); 
-		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);  
+		demographics = null;
+		accommodations = null;
+		addEditDemographics(new Integer(0), null);
+		addEditAccommodations(customerConfigurations, null); 
+		this.getRequest().setAttribute("viewOnly", Boolean.FALSE); 
+		
+		String roleName = this.user.getRole().getRoleName();
+		this.getRequest().setAttribute("showEditButton", PermissionsUtils.showEditButton(roleName));
+		this.getRequest().setAttribute("showDeleteButton", PermissionsUtils.showDeleteButton(roleName));
+		
 		try{
 			MusicFiles[] musicList = this.studentManagement.getMusicFiles();	
 			this.getRequest().setAttribute("musicList", musicList);
@@ -667,7 +799,7 @@ public class StudentOperationController extends PageFlowController {
 		boolean studentImported = (studentProfile.getCreateBy().intValue() == 1);                
 		if (studentImported)
 		{        
-			//prepareStudentDemographicForCustomerConfiguration();
+			prepareStudentDemographicForCustomerConfiguration();
 		}        
 		getStudentDemographicsFromRequest();        
 
@@ -677,13 +809,14 @@ public class StudentOperationController extends PageFlowController {
 		}
 		else
 		{
-			//updateStudentDemographics(studentId);
+			updateStudentDemographics(studentId);
 		}
 		this.demographics = null;
 
 		return true;
 	}
-
+	
+	
 	/**
 	 * createStudentDemographics
 	 */
@@ -702,7 +835,25 @@ public class StudentOperationController extends PageFlowController {
 			} 
 		}
 	}
-
+	
+	/**
+	 * updateStudentDemographics
+	 */
+	private void updateStudentDemographics(Integer studentId)
+	{
+		if ((studentId != null) && (studentId.intValue() > 0) && (this.demographics != null))
+		{
+			try
+			{    
+				StudentDemographic[] studentDemoList = (StudentDemographic[])this.demographics.toArray( new StudentDemographic[0] );
+				this.studentManagement.updateStudentDemographics(this.userName, studentId, studentDemoList);
+			}
+			catch (CTBBusinessException be)
+			{
+				be.printStackTrace();
+			}    
+		}
+	}
 
 	/**
 	 * getStudentDemographicsFromRequest
@@ -711,7 +862,7 @@ public class StudentOperationController extends PageFlowController {
 	{
 		String param = null, paramValue = null;
 		if(this.demographics == null)
-			addEditDemographics();
+			addEditDemographics(new Integer(0), null);
 		
 		for (int i=0; i < this.demographics.size(); i++)
 		{
@@ -862,32 +1013,58 @@ public class StudentOperationController extends PageFlowController {
 	/**
 	 * addEditDemographics
 	 */
-	private void addEditDemographics()
+	private List addEditDemographics(Integer studentId, Integer createBy)
 	{	
-		List demographics = null;
-		//Integer studentId = form.getStudentProfile().getStudentId();
-
-		Integer studentId = 0;
-		//boolean studentImported = (form.getStudentProfile().getCreateBy().intValue() == 1);
-		boolean studentImported  = false;
-		if ((demographics == null) && (studentId != null))
+		//List demographics = null;
+		boolean studentImported = false;
+		 if(createBy != null)
+			 studentImported = (createBy.intValue() == 1);
+		
+		
+		if ((this.demographics == null) && (studentId != null))
 		{
 			demographics = getStudentDemographics(studentId, demographics);
 			prepareOnNullRule(demographics);            
 		}
 		else
 		{
-			/*if (studentImported)
+			if (studentImported)
 			{        
 				prepareStudentDemographicForCustomerConfiguration();
 			}
-			getStudentDemographicsFromRequest();*/
+			getStudentDemographicsFromRequest();
 		}
-		this.demographics = demographics;
+		//this.demographics = demographics;
 		this.getRequest().setAttribute("demographics", demographics);       
-		this.getRequest().setAttribute("studentImported", new Boolean(studentImported));       
+		this.getRequest().setAttribute("studentImported", new Boolean(studentImported));  
+		
+		return demographics;
 	}
-
+	
+	
+	/**
+	 * prepareStudentDemographicForCustomerConfiguration
+	 */
+	private void prepareStudentDemographicForCustomerConfiguration() 
+	{
+		for (int i=0; i < this.demographics.size(); i++)
+		{
+			StudentDemographic sdd = (StudentDemographic)this.demographics.get(i);
+			if (sdd.getImportEditable().equals("ON_NULL_RULE") || sdd.getImportEditable().equals("UNEDITABLE_ON_NULL_RULE") || sdd.getImportEditable().equals("F"))
+			{            
+				StudentDemographicValue[] values = sdd.getStudentDemographicValues();		    
+				for (int j=0; j < values.length; j++)
+				{
+					StudentDemographicValue value = (StudentDemographicValue)values[j];
+					if ((value.getSelectedFlag() != null) && value.getSelectedFlag().equals("true"))
+					{
+						value.setVisible("false");            
+					}
+				}
+			}
+		}
+	}
+	
 	/**
 	 * getStudentDemographics
 	 */
@@ -1171,12 +1348,10 @@ public class StudentOperationController extends PageFlowController {
 		boolean isStudentId2Configurable = false;
 		boolean isMandatoryStudentId = false;
 		Integer configId=0;
-		//START- GACR005 
 		String []valueForStudentId = new String[8] ;
 		String []valueForStudentId2 = new String[8] ;
 		valueForStudentId[0] = "Student ID";
 		valueForStudentId2[0] = "Student ID 2";
-		//END- GACR005 
 		for (int i=0; i < customerConfigurations.length; i++)
 		{
 			CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
@@ -1193,10 +1368,6 @@ public class StudentOperationController extends PageFlowController {
 					valueForStudentId2[sortOrder-1] = customerConfigurationsValue[j].getCustomerConfigurationValue();
 
 				}
-				//START- GACR005 
-				//this.studentId2Configurable = isStudentId2Configurable;
-				//form.setStudentId2Configurable(isStudentId2Configurable);
-				//END- GACR005 
 				valueForStudentId2 = getDefaultValue(valueForStudentId2,"Student ID 2");
 			}
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
@@ -1210,10 +1381,6 @@ public class StudentOperationController extends PageFlowController {
 					int sortOrder = customerConfigurationsValue[j].getSortOrder();
 					valueForStudentId[sortOrder-1] = customerConfigurationsValue[j].getCustomerConfigurationValue();
 				}	
-				//START- GACR005 
-				//this.studentIdConfigurable = isStudentIdConfigurable;
-				//form.setStudentIdConfigurable(isStudentIdConfigurable);
-				//END- GACR005 
 				valueForStudentId = getDefaultValue(valueForStudentId,"Student ID");
 
 			}
@@ -1482,10 +1649,12 @@ public class StudentOperationController extends PageFlowController {
 	/**
 	 * addEditAccommodations
 	 */
-	private void addEditAccommodations(CustomerConfiguration[] customerConfigurations)
+	private StudentAccommodationsDetail addEditAccommodations(CustomerConfiguration[] customerConfigurations, Integer createBy)
 	{
 		Integer studentId = 0;
 		boolean studentImported  = false;
+		 if(createBy != null)
+			 studentImported = (createBy.intValue() == 1);
 		 
 		if (accommodations == null)
 		{
@@ -1493,10 +1662,14 @@ public class StudentOperationController extends PageFlowController {
 		}
 		else
 		{
-			//getStudentAccommodationsFromRequest();
+			getStudentAccommodationsFromRequest(customerConfigurations, createBy);
 		}
 		this.getRequest().setAttribute("accommodations", this.accommodations);   
         
+		
+		return accommodations;
+		
+		
 		
 	}
 
@@ -1509,7 +1682,7 @@ public class StudentOperationController extends PageFlowController {
 
 		 if ((studentId != null) && (studentId.intValue() > 0))
 		{
-			/*try
+			try
 			{    
 				StudentAccommodations sa = this.studentManagement.getStudentAccommodations(this.userName, studentId);
 				accommodations = new StudentAccommodationsDetail(sa);
@@ -1517,7 +1690,7 @@ public class StudentOperationController extends PageFlowController {
 			catch (CTBBusinessException be)
 			{
 				be.printStackTrace();
-			} */
+			} 
 		}
 		else
 		{
@@ -1616,7 +1789,7 @@ public class StudentOperationController extends PageFlowController {
 		if (hideAccommodations.equalsIgnoreCase("T"))         
 			getStudentDefaultAccommodations(customerConfigurations);
 		else
-			getStudentAccommodationsFromRequest(customerConfigurations);
+			getStudentAccommodationsFromRequest(customerConfigurations, studentProfile.getCreateBy());
 
 		StudentAccommodations sa = this.accommodations.makeCopy(studentId);
 
@@ -1629,10 +1802,10 @@ public class StudentOperationController extends PageFlowController {
 		}
 		else
 		{
-			/*if (sa != null)
+			if (sa != null)
 				updateStudentAccommodations(studentId, sa);
 			else
-				deleteStudentAccommodations(studentId);*/
+				deleteStudentAccommodations(studentId);
 		}
 		this.accommodations = null;
 
@@ -1659,25 +1832,61 @@ public class StudentOperationController extends PageFlowController {
 	}
 	
 	/**
+	 * updateStudentAccommodations
+	 */
+	private void updateStudentAccommodations(Integer studentId, StudentAccommodations sa)
+	{
+		if ((studentId != null) && (studentId.intValue() > 0))
+		{
+			try
+			{    
+				this.studentManagement.updateStudentAccommodations(this.userName, sa);
+			}
+			catch (CTBBusinessException be)
+			{
+				be.printStackTrace();
+			}        
+		}
+	}
+
+	/**
+	 * deleteStudentAccommodations
+	 */
+	private void deleteStudentAccommodations(Integer studentId)
+	{
+		if ((studentId != null) && (studentId.intValue() > 0))
+		{
+			try
+			{    
+				this.studentManagement.deleteStudentAccommodations(this.userName, studentId);
+			}
+			catch (CTBBusinessException be)
+			{
+				be.printStackTrace();
+			}        
+		}
+	}
+	
+	/**
 	 * getStudentAccommodationsFromRequest
 	 */
-	private void getStudentAccommodationsFromRequest(CustomerConfiguration[]  customerConfigurations) 
+	private void getStudentAccommodationsFromRequest(CustomerConfiguration[]  customerConfigurations , Integer createBy) 
 	{
 		if(this.accommodations == null)
-			addEditAccommodations(customerConfigurations);
+			addEditAccommodations(customerConfigurations, createBy);
 		
 		// first get values from request
-		String screenReader = getRequest().getParameter("screen_reader");
+		String screenReader = getRequest().getParameter("screenReader");
 		String calculator = getRequest().getParameter("calculator");
 		String highlighter = getRequest().getParameter("highlighter");
-		String testPause = getRequest().getParameter("test_pause");
-		String untimedTest = getRequest().getParameter("untimed_test");
+		String testPause = getRequest().getParameter("testPause");
+		String untimedTest = getRequest().getParameter("untimedTest");
 		String colorFont = getRequest().getParameter("colorFont");
-		String maskingRuler = getRequest().getParameter("Masking_Ruler"); //Added for Masking Ruler
-		String auditoryCalming = getRequest().getParameter("Auditory_Calming"); //Added for Auditory Calming
-		String magnifyingGlass = getRequest().getParameter("Magnifying_Glass"); //Added for Magnifying Glass
-		String extendedTime = getRequest().getParameter("Extended_Time"); //Added for Student Pacing
-		String maskingTool = getRequest().getParameter("Masking_Tool"); // Added for Masking Answers
+		String maskingRuler = getRequest().getParameter("MaskingRuler"); //Added for Masking Ruler
+		String auditoryCalming = getRequest().getParameter("AuditoryCalming"); //Added for Auditory Calming
+		String magnifyingGlass = getRequest().getParameter("MagnifyingGlass"); //Added for Magnifying Glass
+		String extendedTime = getRequest().getParameter("ExtendedTime"); //Added for Student Pacing
+		String maskingTool = getRequest().getParameter("MaskingTool"); // Added for Masking Answers
 
 		this.accommodations.setScreenReader(new Boolean(screenReader != null));
 		this.accommodations.setCalculator(new Boolean(calculator != null));

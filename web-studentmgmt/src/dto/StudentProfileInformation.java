@@ -8,6 +8,7 @@ import utils.DateUtils;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.OrganizationNode;
 import com.ctb.util.web.sanitizer.SanitizedFormField;
+import utils.OptionList;
 
 /**
  * 
@@ -34,7 +35,9 @@ public class StudentProfileInformation extends SanitizedFormField
     //END- (LLO82) StudentManagement Changes For LasLink product
 
     private Integer createBy;
-
+    private OptionList optionList;
+    private List stuDemographic;
+    private StudentAccommodationsDetail stuAccommodation;
     private String birthdateString;
     private String month;
     private String day;
@@ -861,5 +864,51 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setOrgNodeNamesStr(String orgNodeNamesStr) {
 		this.orgNodeNamesStr = orgNodeNamesStr;
+	}
+
+	/**
+	 * @return the optionList
+	 */
+	public OptionList getOptionList() {
+		return optionList;
+	}
+
+	/**
+	 * @param optionList the optionList to set
+	 */
+	public void setOptionList(OptionList optionList) {
+		this.optionList = optionList;
+	}
+
+
+	/**
+	 * @return the stuDemographic
+	 */
+	public List getStuDemographic() {
+		return stuDemographic;
+	}
+
+
+	/**
+	 * @param stuDemographic the stuDemographic to set
+	 */
+	public void setStuDemographic(List stuDemographic) {
+		this.stuDemographic = stuDemographic;
+	}
+
+
+	/**
+	 * @return the stuAccommodation
+	 */
+	public StudentAccommodationsDetail getStuAccommodation() {
+		return stuAccommodation;
+	}
+
+
+	/**
+	 * @param stuAccommodation the stuAccommodation to set
+	 */
+	public void setStuAccommodation(StudentAccommodationsDetail stuAccommodation) {
+		this.stuAccommodation = stuAccommodation;
 	}
 } 
