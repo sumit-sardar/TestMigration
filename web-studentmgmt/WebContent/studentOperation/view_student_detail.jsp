@@ -136,8 +136,8 @@
 		<tbody>
 			<br>
 			<tr id="Act_Buttons" align="center">
-				<td  width="3%" id="viewPreButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-left" id="pData" href="javascript:pDataClick('View');"><span
-					class="ui-icon ui-icon-triangle-1-w"></span></a></td><td id="viewNextButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-right" id="nData"
+				<td  width="3%" id="viewPreButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-left" id="viewpData" href="javascript:pDataClick('View');"><span
+					class="ui-icon ui-icon-triangle-1-w"></span></a></td><td id="viewNextButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-right" id="viewnData"
 					href="javascript:nDataClick('View');"><span class="ui-icon ui-icon-triangle-1-e"></span></a></td>
 					<td>&nbsp;</td>
 				<td  width="100%">

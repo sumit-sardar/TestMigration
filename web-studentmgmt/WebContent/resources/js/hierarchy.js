@@ -184,10 +184,10 @@ function createMultiNodeSelectedTree(jsondata) {
 				if(orgcategorylevel == leafNodeCategoryId) {
 					if(currentlySelectedNode=="") {
 						//currentlySelectedNode = $(element).text();
-						currentlySelectedNode += "<a href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ $(element).text()+"</a>";	
+						currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ $(element).text()+"</a>";	
 					} else {
 						//currentlySelectedNode = currentlySelectedNode + " , " + $(element).text(); 
-						currentlySelectedNode = currentlySelectedNode + " , " + "<a href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ $(element).text()+"</a>";
+						currentlySelectedNode = currentlySelectedNode + " , " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ $(element).text()+"</a>";
 					}
 	
 		    		if(assignedOrgNodeIds=="") {
