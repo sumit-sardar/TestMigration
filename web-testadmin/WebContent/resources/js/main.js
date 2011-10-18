@@ -30,11 +30,11 @@ function gotoMenuAction(action, menuId)
 function showLoading()
 {	
 	$(document).ajaxStop($.unblockUI); 
- 	$.blockUI({ message: '<img src="/StudentManagementWeb/resources/images/loading.gif" />',
+	$.blockUI({ message: '<img src="/TestAdministrationWeb/resources/images/loading.gif" />',
 		css: {
 		border: '0px',
-		width:'0px',  
-		top:  ($(window).height() - 0) /2 + 'px', 
-		left: ($(window).width() - 0) /2 + 'px'}}); 				 
+		backgroundColor: '#aaaaaa', 
+		opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
+	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 		 
 }
 	

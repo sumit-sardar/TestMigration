@@ -105,7 +105,7 @@ function createSingleNodeSelectedTree(jsondata) {
             "themes" : {
 			    "theme" : "apple",
 			    "dots" : false,
-			    "icons" : true
+			    "icons" : false
 			},       
 	        "ui" : {  
 	           "select_limit" : 1
@@ -154,7 +154,7 @@ function createMultiNodeSelectedTree(jsondata) {
 	            "themes" : {
 			    "theme" : "apple",
 			    "dots" : false,
-			    "icons" : true
+			    "icons" : false
 			},       
 	 			"plugins" : [ "themes", "json_data", "ui", "checkbox"]
 	   });	

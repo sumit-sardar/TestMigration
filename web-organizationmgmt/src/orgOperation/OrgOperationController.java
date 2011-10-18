@@ -54,11 +54,11 @@ public class OrgOperationController extends PageFlowController {
 		java.security.Principal principal = getRequest().getUserPrincipal();
 		if (principal != null) {
 			this.userName = principal.toString();
-	        getSession().setAttribute("userName", this.userName);		
 		}
 		else {           
 			this.userName = (String)getSession().getAttribute("userName");
 		}
+        getSession().setAttribute("userName", this.userName);		
 	}
 	
 	/**
