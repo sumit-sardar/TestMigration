@@ -65,7 +65,7 @@
 							<tbody>
 								<tr class="transparent">
 								<td style ="vertical-align: top;">
-								<table class="transparent">
+								<table class="transparent" width="350">
 								<tbody>
 									<tr class="transparent">
 										<td width="110" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;First Name:</td>
@@ -151,8 +151,8 @@
 									</tr>
 								   <%} %>
 								   	<tr style="display: table-row;" id="message" class="transparent">
-								   		<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Organization:</td>
-										<td class="transparent-small" >
+								   		<td width="110" class="transparent alignRight"  style="vertical-align: top;"><span class="asterisk">*</span>&nbsp;Organization:</td>
+										<td class="transparent-small" style="padding: 5px 5px 0 0">
 											<div id="notSelectedOrgNodes" style="width:200px; visibility:visible; padding-left: 4px"><font color="gray">None selected. Use the control on the right to
 											select.</font>
 											</div>

@@ -33,11 +33,63 @@
         <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
+  
+  <tag> 
+      <name>viewStudentDemographics</name>
+      <tag-class>taglib.ViewStudentDemographicsTag</tag-class>
+    <body-content>JSP</body-content>      
+    <attribute>
+        <name>demographics</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>viewOnly</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>studentImported</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>tabIndex</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
 
 
   <tag> 
       <name>studentAccommodations</name>
       <tag-class>taglib.StudentAccommodationsTag</tag-class>
+    <body-content>JSP</body-content>      
+    <attribute>
+        <name>accommodations</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>customerConfigurations</name>
+        <required>true</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>viewOnly</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    <attribute>
+        <name>musicList</name>
+        <required>false</required>
+        <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+  
+  <tag> 
+      <name>viewStudentAccommodations</name>
+      <tag-class>taglib.ViewStudentAccommodationsTag</tag-class>
     <body-content>JSP</body-content>      
     <attribute>
         <name>accommodations</name>
