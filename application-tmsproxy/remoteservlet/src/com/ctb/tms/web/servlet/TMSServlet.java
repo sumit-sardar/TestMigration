@@ -139,6 +139,7 @@ public class TMSServlet extends HttpServlet {
 	        	ServletUtils.writeResponse(response, result);
 	        }
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 			result = ServletUtils.ERROR;
 			ServletUtils.writeResponse(response, result);
@@ -626,6 +627,9 @@ public class TMSServlet extends HttpServlet {
     	}
 
 		TmssvcResponseDocument response = rd.getLoginDocument();
+		if(!Constants.StudentLoginResponseStatus.OK_STATUS.equals(response.getTmssvcResponse().getLoginResponse().getStatus())) {
+			return response.xmlText();
+		}
 		LoginResponse loginResponse = response.getTmssvcResponse().getLoginResponse();
        	Sco[] scoa = new Sco[0];
        	if (loginResponse.getManifest() != null) {

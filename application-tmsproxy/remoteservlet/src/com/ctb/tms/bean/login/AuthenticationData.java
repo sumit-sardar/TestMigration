@@ -1,6 +1,7 @@
 package com.ctb.tms.bean.login; 
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
 public class AuthenticationData implements Serializable
@@ -26,8 +27,35 @@ public class AuthenticationData implements Serializable
 	private int testAdminId;
 	private String timeZone;
 	private String lastAccessCode;
-
-
+	private Timestamp startTime;
+	private Timestamp endTime;
+	private int lastMseq;
+	private int correlationId;
+	
+	public Timestamp getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(Timestamp startTime) {
+		this.startTime = startTime;
+	}
+	public Timestamp getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(Timestamp endTime) {
+		this.endTime = endTime;
+	}
+	public int getLastMseq() {
+		return lastMseq;
+	}
+	public void setLastMseq(int lastMseq) {
+		this.lastMseq = lastMseq;
+	}
+	public int getCorrelationId() {
+		return correlationId;
+	}
+	public void setCorrelationId(int correlationId) {
+		this.correlationId = correlationId;
+	}
 	public String getLastAccessCode() {
 		return lastAccessCode;
 	}
