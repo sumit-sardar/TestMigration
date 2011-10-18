@@ -560,7 +560,7 @@ public class UserOperationController extends PageFlowController
 				String isInvalidUserInfo = isInvalidUserInfo(userProfile);
 				if( isInvalidUserInfo != null ) {
 					validateAgain = false;
-					message = isInvalidUserInfo + (" <br/> " + Message.REQUIRED_TEXT);
+					message = isInvalidUserInfo ;
 					messageInfo = createMessageInfo(messageInfo, Message.INVALID_FORMAT_TITLE, message, Message.ERROR, true, false );
 				}
 			}
