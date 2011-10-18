@@ -80,6 +80,26 @@ public class StudentSearchUtils
         }
         return studentList;
     }
+    /**
+     * buildStudentList
+     */    
+    public static String buildStudentListString(ManageStudentData msData) 
+    {
+        String studentList = "";
+        if (msData != null) {
+            ManageStudent[] students = msData.getManageStudents();
+            for (int i=0 ; i<students.length ; i++) {
+                ManageStudent student = (ManageStudent)students[i];
+                if (student != null) {
+                	if(i == 0)
+                		studentList = studentList + student.getId();
+                	else
+                		studentList = studentList + "," + student.getId();
+                }
+            }
+        }
+        return studentList;
+    }
     
     /**
      * buildStudentPagerSummary

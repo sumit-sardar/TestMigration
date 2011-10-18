@@ -270,6 +270,7 @@ public class StudentOperationController extends PageFlowController {
 		OutputStream stream = null;
 		String contentType = CONTENT_TYPE_JSON;
 		List studentList = new ArrayList(0);
+		String studentArray = "";
 		String json = "";
 		ObjectOutput output = null;
 		try {
@@ -281,6 +282,7 @@ public class StudentOperationController extends PageFlowController {
 			{
 				System.out.println ("List process time Start:"+new Date());
 				studentList = StudentSearchUtils.buildStudentList(msData);
+				studentArray = StudentSearchUtils.buildStudentListString(msData);
 				System.out.println ("List process time End:"+new Date());
 			}
 			Base base = new Base();
@@ -294,6 +296,7 @@ public class StudentOperationController extends PageFlowController {
 			Gson gson = new Gson();
 			System.out.println ("Json process time Start:"+new Date());
 			base.setStudentProfileInformation(studentList);
+			base.setStudentIdArray(studentArray);
 			json = gson.toJson(base);
 			System.out.println ("Json process time End:"+new Date());
 
@@ -656,41 +659,7 @@ public class StudentOperationController extends PageFlowController {
 	
 	
 	
-	/**
-	 * handleAddOrEdit
-	 */
-	private StudentProfileInformation handleAddEdit(Integer studentId, Boolean profileEditable, Integer createBy)
-	{     
-		StudentProfileInformation studentProfile = null;
-		//if (profileEditable.booleanValue())
-		//{
-			// reload student profile since nothing in the request
-			studentProfile = StudentSearchUtils.getStudentProfileInformation(this.studentManagement, this.userName, studentId);
-		//}
-		try {
-		//CustomerConfiguration[]  customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);    
-
-		studentProfile.setStuDemographic(addEditDemographics(studentId, createBy));    
-
-		studentProfile.setStuAccommodation(addEditAccommodations(customerConfigurations, createBy));    
-
-		Boolean disableColorSelection = new Boolean(! this.accommodations.getColorFont().booleanValue()); 
-		this.getRequest().setAttribute("disableColorSelection", disableColorSelection);       
-
-		//setCustomerSettings();
-
-		if (this.demographics.size() == 0)
-		{
-			this.getRequest().setAttribute("demographicVisible", "F");       
-		}
-
-		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);  
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		 return studentProfile;
-	}
+	
 	
 	
 	

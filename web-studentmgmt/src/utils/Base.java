@@ -13,6 +13,7 @@ public class Base {
 	private String records;
 	private List<Row> rows;
 	private List<StudentProfileInformation> studentProfileInformation;
+	private String studentIdArray;
 	public String getPage() {
 		return page;
 	}
@@ -49,6 +50,18 @@ public class Base {
 	public void setStudentProfileInformation(
 			List<StudentProfileInformation> studentProfileInformation) {
 		this.studentProfileInformation = studentProfileInformation;
+	}
+	/**
+	 * @return the studentIdArray
+	 */
+	public String getStudentIdArray() {
+		return studentIdArray;
+	}
+	/**
+	 * @param studentIdArray the studentIdArray to set
+	 */
+	public void setStudentIdArray(String studentIdArray) {
+		this.studentIdArray = studentIdArray;
 	}
 	
 	

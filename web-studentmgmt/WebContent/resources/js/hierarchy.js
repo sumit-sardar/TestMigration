@@ -11,7 +11,7 @@ var monthOptions = [];
 var testPurposeOptions = [];
 var orgTreeHierarchy;
 var assignedOrgNodeIds = "";
-var customerDemographicValue;
+var customerDemographicValue = "";
 var isValueChanged = false;
 var leafNodeCategoryId;
 var SelectedOrgNodeId;
@@ -25,6 +25,10 @@ var stuAccommodation;
 var loginId = "";
 var profileEditable = "true";
 var isPopUp = false;
+var dbStudentDetails;
+var organizationNodes = [];
+						
+
 
 $(document).bind('keydown', function(event) {
 		
@@ -120,6 +124,8 @@ function createSingleNodeSelectedTree(jsondata) {
  		  		gridloaded = true;
  		  		populateTreeSelect();
  		  		var hideAccommodation = $("#supportAccommodations").val();
+ 		  		if(customerDemographicValue == "")
+ 		  			customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
  		  		if(hideAccommodation == "false")
  		  			populateGridWithoutAccommodation();
  		  		else
@@ -171,14 +177,17 @@ function createMultiNodeSelectedTree(jsondata) {
 	  	if($(this).attr("categoryid") == leafNodeCategoryId){
 		 	var currentlySelectedNode ="";
 			assignedOrgNodeIds = "";
+			//var optionHtml = "";
 			$("#innerID").find(".jstree-checked").each(function(i, element){
 				
 				var orgcategorylevel = $(element).attr("categoryid");
 				if(orgcategorylevel == leafNodeCategoryId) {
 					if(currentlySelectedNode=="") {
-						currentlySelectedNode = $(element).text();
+						//currentlySelectedNode = $(element).text();
+						currentlySelectedNode += "<a href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ $(element).text()+"</a>";	
 					} else {
-						currentlySelectedNode = currentlySelectedNode + " , " + $(element).text(); 
+						//currentlySelectedNode = currentlySelectedNode + " , " + $(element).text(); 
+						currentlySelectedNode = currentlySelectedNode + " , " + "<a href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ $(element).text()+"</a>";
 					}
 	
 		    		if(assignedOrgNodeIds=="") {
@@ -187,11 +196,11 @@ function createMultiNodeSelectedTree(jsondata) {
 						assignedOrgNodeIds = $(element).attr("id") +"," + assignedOrgNodeIds; 
 					}
 	    		}
-				
 			});
 				if(currentlySelectedNode.length > 0 ) {
 					$("#notSelectedOrgNodes").css("display","none");
-					$("#selectedOrgNodesName").text(currentlySelectedNode);	
+					$("#selectedOrgNodesName").html(currentlySelectedNode);
+					//$("#selectedOrgNodesName").text(currentlySelectedNode);	
 				} else {
 					$("#notSelectedOrgNodes").css("display","inline");
 					$("#selectedOrgNodesName").text("");	
@@ -218,11 +227,7 @@ function createMultiNodeSelectedTree(jsondata) {
       }
 
 
-	function  getIDList() {
-      for(var i=0;i<studentList.studentProfileInformation.length;i++) {
-       	idarray[i] = studentList.studentProfileInformation[i].studentId;
-       }
-}		
+		
 			
 	function populateGrid() {
 	var studentIdTitle = $("#studentIdLabelName").val();
@@ -245,8 +250,8 @@ function createMultiNodeSelectedTree(jsondata) {
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
 		   	records: function(obj) { 
-		   	//studentList = JSON.stringify(obj);
-		   	studentList = obj;
+		   	studentList = JSON.stringify(obj.studentProfileInformation);
+		   	idarray = obj.studentIdArray.split(",");
 		   	return obj.studentProfileInformation.length; } },
 		   	 
 			rowNum:20,
@@ -259,7 +264,7 @@ function createMultiNodeSelectedTree(jsondata) {
 			height: 370,  
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			caption:"Student List",
-			ondblClickRow: function(rowid) {editStudentDetail();},
+			ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
@@ -290,7 +295,16 @@ function createMultiNodeSelectedTree(jsondata) {
 						
 			}
 	 });
-			jQuery("#list2").jqGrid('navGrid','#pager2',{});  
+			//jQuery("#list2").jqGrid('navGrid','#pager2',{});  
+			jQuery("#list2").navGrid('#pager2', {
+				addfunc: function() {
+		    		AddStudentDetail();
+		    	},
+		    	editfunc: function() {
+		    		 viewEditStudentPopup();
+		    	}
+			});
+			
 			
 	}
 	
@@ -315,8 +329,8 @@ function createMultiNodeSelectedTree(jsondata) {
 		   	],
 		   	jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
 		   	records: function(obj) { 
-		   //	studentList = JSON.stringify(obj);
-		   	studentList = obj;
+		   	studentList = JSON.stringify(obj.studentProfileInformation);
+		   	idarray = obj.studentIdArray.split(",");
 		   	return obj.studentProfileInformation.length; } },
 		   	 
 			rowNum:20,
@@ -329,7 +343,7 @@ function createMultiNodeSelectedTree(jsondata) {
 			height: 370,  
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
 			caption:"Student List",
-			ondblClickRow: function(rowid) {editStudentDetail();},
+			ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
@@ -360,8 +374,15 @@ function createMultiNodeSelectedTree(jsondata) {
 						
 					}
 	 });
-			jQuery("#list2").jqGrid('navGrid','#pager2',{});  
-			
+			//jQuery("#list2").jqGrid('navGrid','#pager2',{});  
+			jQuery("#list2").navGrid('#pager2', {
+				addfunc: function() {
+		    		AddStudentDetail();
+		    	},
+		    	editfunc: function() {
+		    		 viewEditStudentPopup();
+		    	}
+			});
 	}
 	
 
@@ -404,7 +425,8 @@ document.getElementById('displayMessageMain').style.display = "none";
 						fillDropDown("yearOptions", yearOptions);
 						if($("#isLasLinkCustomer").val() =="true")
 							fillDropDown("testPurposeOptions", testPurposeOptions);
-						customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
+						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
+						
 						$("#addEditStudentDetail").dialog({  
 													title:"Add Student",  
 												 	resizable:false,
@@ -434,6 +456,17 @@ document.getElementById('displayMessageMain').style.display = "none";
 	});
 
 	} else {
+		$('#Student_Information :checkbox').attr('disabled', false); 
+		$('#Student_Information :radio').attr('disabled', false); 
+		$('#Student_Information select').attr('disabled', false);
+		$('#Student_Information :input').attr('disabled', false);
+		
+		$("#studentFirstName").val(""); 
+		$("#studentMiddleName").val(""); 
+		$("#studentLastName").val(""); 
+		$("#studentExternalId").val(""); 
+		$("#studentExternalId2").val(""); 
+						
 		reset();
 		if($("#isLasLinkCustomer").val() =="true")
 			fillDropDown("testPurposeOptions", testPurposeOptions);
@@ -558,7 +591,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		} else {
 			assignedOrgNodeIds = assignedOrgNodeIds + " , " + orgList[i].orgNodeId; 
 		}
-		optionHtml += "<a style='color: blue;text-decoration:underline' id='"+orgList[i].orgNodeId+"' href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+orgList[i].orgNodeName+"</a>";	
+		optionHtml += "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+orgList[i].orgNodeName+"</a>";	
 	}
 	$(ddl).html(optionHtml);
 	
@@ -614,25 +647,26 @@ function fillselectedOrgNode( elementId, orgList) {
 	function onCancel() {
 		
 			isValueChanged = false;
-		if($("#studentFirstName").val()!= "" 
-			|| $("#studentMiddleName").val()!= ""
-			|| $("#studentLastName").val()!= ""
-			|| $("#studentExternalId").val()!= ""
-			|| $("#studentExternalId2").val()!= ""
-			|| $("#genderOptions").val() != "Select a gender"
-			|| $("#gradeOptions").val() != "Select a grade" ) {
-			isValueChanged = true;	
-			}
-		if(!isValueChanged) {	
-			var radiofields = $(":radio"); 
-	       	for (var i=0; i<radiofields.length; i++) {
-				if (radiofields[i].value != "None" && radiofields[i].checked == true && radiofields[i].checked != ""  && radiofields[i].disabled == false && radiofields[i].getAttribute("disabled") == null) { 
+	if(isAddStudent){
+		  if($("#studentFirstName").val()!= "" 
+			 || $("#studentMiddleName").val()!= ""
+			 || $("#studentLastName").val()!= ""
+			 || $("#studentExternalId").val()!= ""
+		     || $("#studentExternalId2").val()!= ""
+			 || $("#genderOptions").val() != "Select a gender"
+			 || $("#gradeOptions").val() != "Select a grade" ) {
+			 isValueChanged = true;	
+			 }
+		 if(!isValueChanged) {	
+			 var radiofields = $(":radio"); 
+	       	 for (var i=0; i<radiofields.length; i++) {
+			   	if (radiofields[i].value != "None" && radiofields[i].checked == true && radiofields[i].checked != ""  && radiofields[i].disabled == false && radiofields[i].getAttribute("disabled") == null) { 
 					isValueChanged = true;
 					break;
 				}
 			}
-		}
-		if(!isValueChanged) {
+		 }
+		 if(!isValueChanged) {
 			var allSelects = $("#addEditStudentDetail select");
 			for(var count = 0; count < allSelects.length ; count++) {
 				var selectedInd = $(allSelects[count]).attr("selectedIndex");
@@ -648,7 +682,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		   var checkBoxfields = $(":checkbox"); 
 	       for(var i=0; i < checkBoxfields.length; i++){
 		       for(var j=0; j<customerDemographicValue.length; j++) {
-			       	if($(checkBoxfields).eq(i).attr('name') == customerDemographicValue[j].name) {
+		          	if($(checkBoxfields).eq(i).attr('name') == customerDemographicValue[j].name) {
 			       			if($(checkBoxfields).eq(i).attr('checked')== false)
 			       			{
 			       				isValueChanged = true;
@@ -709,6 +743,58 @@ function fillselectedOrgNode( elementId, orgList) {
 		} else {
 			closePopUp('addEditStudentDetail');
 		}
+	
+	} else {
+		/*
+				//if($("#"+dbStudentDetails[0].name).val() != dbStudentDetails[0].value
+		isValueChanged = false;	
+		 if(isValueChanged) {
+		      for(var key = 0; key < 10; key++) {
+		       if($("#"+dbStudentDetails[key].name).val() != dbStudentDetails[key].value){
+		      		isValueChanged = true;
+		      	}
+		      	 
+		      }
+	      }
+	       if(isValueChanged) {
+		       OrgNodeIds = ""
+		        for ( var i= 0; i<organizationNodes.length;i++) {
+		         if(OrgNodeIds == "") {
+		      		OrgNodeIds = organizationNodes[i].orgNodeId; 
+		      		} else {
+		      		OrgNodeIds = OrgNodeIds + " , " + organizationNodes[i].orgNodeId; 
+		      		}
+		      	}
+		      	if(OrgNodeIds != assignedOrgNodeIds) {
+		      		isValueChanged = true;
+		      	}
+	      	}
+	      	
+	      	
+	      	if(isValueChanged) {
+			//UIBlock();
+			$("#confirmationPopup").dialog({  
+				title:"Confirmation Alert",  
+			 	resizable:false,
+			 	autoOpen: true,
+			 	width: '400px',
+			 	modal: true,
+			 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+				});	
+				 $("#confirmationPopup").css('height',100);
+				 var toppos = ($(window).height() - 290) /2 + 'px';
+				 var leftpos = ($(window).width() - 410) /2 + 'px';
+				 $("#confirmationPopup").parent().css("top",toppos);
+				 $("#confirmationPopup").parent().css("left",leftpos);		 	 
+					
+				  
+			} else {
+				closePopUp('addEditStudentDetail');
+			}
+			*/
+			closePopUp('addEditStudentDetail');
+		}
+		
 	}
 	
 	function isExist(val, customerValCheckbox){
@@ -732,6 +818,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	}else{
 		var selectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
 		createBy = getDataFromJson(selectedStudentId);
+		var test = getNextStudentIdJson(selectedStudentId);
 		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
 			 $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val()+
 			  "&selectedStudentId=" + selectedStudentId + "&isAddStudent=" + isAddStudent + "&createBy="+createBy + "&loginId=" + loginId ;
@@ -788,15 +875,18 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	
 	function openTreeNodes(orgNodeId) {
-		parentOrgNodeId = $("#" + orgNodeId).parent();
+		var parentOrgNodeId = $("#" + orgNodeId).parent();
+		
 		var ancestorNodes = parentOrgNodeId.parentsUntil(".jstree","li");
-		//open tree nodes from root to the clicked node		
-		for(var count = ancestorNodes.length - 1; count >= 0; --count) {
-  		 		var tmpNode = ancestorNodes[count].id;
-				$('#innerID').jstree('open_node', "#"+tmpNode); 
-			
+		//open tree nodes from root to the clicked node	
+		if(ancestorNodes.length > 0) {
+			for(var count = ancestorNodes.length - 1; count >= 0; --count) {
+	  		 		var tmpNode = ancestorNodes[count].id;
+					$('#innerID').jstree('open_node', "#"+tmpNode); 
+				
+	  		 }
+	  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
   		 }
-  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
   		 hideCheckBox();
 	}
 	
@@ -813,6 +903,8 @@ function fillselectedOrgNode( elementId, orgList) {
 	function disablenextprev(selectedPosition,maxlength) {
                     selectedPosition == 0 ? $("#pData").addClass("ui-state-disabled") : $("#pData").removeClass("ui-state-disabled");
                     selectedPosition == maxlength? $("#nData").addClass("ui-state-disabled") : $("#nData").removeClass("ui-state-disabled");
+                    selectedPosition == 0 ? $("#viewpData").addClass("ui-state-disabled") : $("#viewpData").removeClass("ui-state-disabled");
+                    selectedPosition == maxlength? $("#viewnData").addClass("ui-state-disabled") : $("#viewnData").removeClass("ui-state-disabled");
                 }
     
     function highlightnextprev(prevSelectedRow,nextSelectedRow) {            
@@ -877,20 +969,21 @@ function fillselectedOrgNode( elementId, orgList) {
 						if($("#isLasLinkCustomer").val() == "true")
 							$("#testPurposeOptions").val(data.testPurpose);
 							
-						//profileEditable = data.profileEditable;
-						profileEditable = "true";
+						profileEditable = data.profileEditable;
 						if(profileEditable == "false") {
 							$('#Student_Information :checkbox').attr('disabled', true); 
 							$('#Student_Information :radio').attr('disabled', true); 
-							$('#Student_Information select').attr('disabled', true); 
+							$('#Student_Information select').attr('disabled', true);
+							$('#Student_Information :input').attr('disabled', true);
+							 
 						}
 							
 						stuDemographic = data.stuDemographic;
 						stuAccommodation = data.stuAccommodation;
-						var organizationNodes = [];
 						organizationNodes = data.organizationNodes;
 						fillselectedOrgNode("selectedOrgNodesName", organizationNodes);
 						setEditStudentDetail();
+						
 						$.unblockUI();  
 						$("#addEditStudentDetail").dialog({  
 													title:"Edit Student",  
@@ -903,8 +996,8 @@ function fillselectedOrgNode( elementId, orgList) {
 												 	});	
 												 	 
 							 setPopupPosition(isAddStudent);
-							 
-							
+						dbStudentDetails = 	$("#addEditStudentDetail *").serializeArray();  
+						
 							 		
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -1004,42 +1097,40 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 				function nDataClick(popupname) {
 				var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
-                  	for(i= 0 ; i<studentList.studentProfileInformation.length; i++){
-                  		if(SelectedStudentId == studentList.studentProfileInformation[i].studentId && i!= studentList.length-1){
-                  			var previousSeclectedRow = SelectedStudentId;
-                  			SelectedStudentId= studentList.studentProfileInformation[i+1].studentId;
-                  			highlightnextprev(previousSeclectedRow, SelectedStudentId);
-                  			if(popupname == 'Edit')
-                  				editStudentDetail(SelectedStudentId);
-                  			else
-                  				viewStuDetail(SelectedStudentId);
-                  			disablenextprev(i+1,studentList.studentProfileInformation.length-1);
-                  			break;
-                  		}
-                  	}
+                  	var str = idarray;
+					var nextStudentId ;
+					var indexOfId = str.indexOf(SelectedStudentId);
+					if(indexOfId != str.length-1) {
+						nextStudentId = str[indexOfId + 1];
+						highlightnextprev(SelectedStudentId, nextStudentId);
+		       			if(popupname == 'Edit')
+		       				editStudentDetail(nextStudentId);
+		       			else
+		       				viewStuDetail(nextStudentId);
+		       			disablenextprev(indexOfId+1,str.length-1);
+					}
                }
                
                function pDataClick(popupname) {
                var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
-                  	for(i=0 ; i<studentList.studentProfileInformation.length; i++){
-                  		if(SelectedStudentId == studentList.studentProfileInformation[i].studentId && i != 0){
-                  			var previousSeclectedRow = SelectedStudentId;
-                  			SelectedStudentId= studentList.studentProfileInformation[i-1].studentId;
-                  			highlightnextprev(previousSeclectedRow, SelectedStudentId);
-                  			if(popupname == 'Edit')
-                  				editStudentDetail(SelectedStudentId);
-                  			else
-                  				viewStuDetail(SelectedStudentId);
-                  			disablenextprev(i-1,studentList.studentProfileInformation.length-1);
-                  			break;
-                  		}
-                  	}
+                  	var str = idarray;
+					var preStudentId ;
+					var indexOfId = str.indexOf(SelectedStudentId);
+					if(indexOfId != 0) {
+						preStudentId = str[indexOfId - 1];
+						highlightnextprev(SelectedStudentId, preStudentId);
+		       			if(popupname == 'Edit')
+		       				editStudentDetail(preStudentId);
+		       			else
+		       				viewStuDetail(preStudentId);
+		       			disablenextprev(indexOfId-1,str.length-1);
+					}
                }
 	
 	
 	
 		function getDataFromJson(id){
-			var str = JSON.stringify(studentList);
+			var str = studentList;
 			var createBy = "";
 			var indexOfId = str.indexOf(id);
 			var indexOfCreatedBy = -1;
@@ -1059,59 +1150,14 @@ function fillselectedOrgNode( elementId, orgList) {
 	}
 	
 	
-	function getNextStudentIdJson(id){
-			var str = JSON.stringify(studentList);
-			var studentId = "";
-			var indexOfId = str.indexOf(id);
-			var indexOfStudentId = -1;
-			var indexOfComma = -1;
-			if(indexOfId > 0){
-				str = str.substring(parseInt(indexOfId), str.length);
-				//createBy
-				indexOfStudentId = str.indexOf("studentId");
-				indexOfComma = str.indexOf(',', parseInt(indexOfStudentId));
-				indexOfCreatedBy += 11;
-				studentId = str.substring(parseInt(indexOfStudentId), parseInt(indexOfComma));
-				studentId = studentId.trim();
-			}
-			return studentId;
-	}
 	
-	
-	/*function getPrevStudentIdJson(id){
-		var str = JSON.stringify(studentList);
-		var studentId = "";
-		var indexOfStudentID = -1;
-		var indexOfComma = -1;
-		var indexOfPrevId = -1;
-		var indexOfId = str.indexOf(id);
-		
-		
-		if(indexOfId > 0){
-			str = str.substring(0, parseInt(indexOfId));
-			//studentId
-			indexOfPrevId = str.indexOf("studentId");
-			if(indexOfPrevId > 0){
-				str = str.substring(parseInt(indexOfPrevId), str.length());
-				indexOfStudentID = str.lastIndexOf("studentId");
-				//System.out.println("str : "+str);
-				if(indexOfStudentID > 0){
-				indexOfComma = str.indexOf(',', parseInt(indexOfStudentID));
-				indexOfStudentID += 11;
-				createBy = str.substring((int)indexOfStudentID, parseInt(indexOfComma));
-				createBy = createBy.trim();
-				
-				}
-				
-			}
-		}
-
-	}*/
-	
-
-
 	function setViewStudentDetail() {
     	assignedOrgNodeIds = "";
+    	var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
+        var str = idarray;
+		var indexOfId = str.indexOf(SelectedStudentId);
+		disablenextprev(indexOfId,str.length-1);
+		
       for(var key in stuAccommodation) {
 		     $("#view_Student_Accommodation_Information :checkbox[name='" + key+ "']").attr('checked', stuAccommodation[key]);
 		     $("#view_Student_Accommodation_Information select[name='" + key+ "']").attr("selected",stuAccommodation[key]);
@@ -1130,20 +1176,47 @@ function fillselectedOrgNode( elementId, orgList) {
 		     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
 		     			$("#view_Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").val(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);			     			
 		     			$("#view_Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
-		     			$("#view_Student_Additional_Information :checkbox[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
-		     			//break;
+		     			break;
 		     		} else {
-		     			$("#view_Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
+		     			$("#view_Student_Additional_Information :radio[value='None']").attr('checked',true);
+		     			$("#view_Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
+						
+		     			
+		     		}
+		     	}
+		     	for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
+		     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
+		     			$("#view_Student_Additional_Information :checkbox[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+		     			break;
+		     		} else {
 		     			$("#view_Student_Additional_Information :checkbox[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
 		     			
 		     		}
 		     	}
 		     }
 		}
+		var radiofields = $("#view_Student_Additional_Information :radio"); 
+		var flag = false;
+       	for (var i=0; i<radiofields.length; i++) {
+			if (radiofields[i].checked == true  && radiofields[i].value != "None") { 
+				flag = true;
+			}
+		}
+		if(!flag) {
+		for (var i=0; i<radiofields.length; i++) {
+			if(radiofields[i].value == "None")
+				radiofields[i].checked = true;
+		}
+		}
    }
    
    
    function setEditStudentDetail() {
+   		var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
+        var str = idarray;
+		var indexOfId = str.indexOf(SelectedStudentId);
+		disablenextprev(indexOfId,str.length-1);
+					
     	for(var key in stuAccommodation) {
 		     $("#Student_Accommodation_Information :checkbox[name='" + key+ "']").attr('checked', stuAccommodation[key]);
 		     $("#Student_Accommodation_Information select[name='" + key+ "']").attr("selected",stuAccommodation[key]);
@@ -1162,16 +1235,28 @@ function fillselectedOrgNode( elementId, orgList) {
 		     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
 		     			$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").val(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);			     			
 		     			$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
-		     			$("#Student_Additional_Information :checkbox[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
-		     			//break;
+		     			break;
 		     		} else {
-		     			$("#view_Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
-		     			$("#view_Student_Additional_Information :checkbox[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
+		     			$("#Student_Additional_Information :radio[value='None']").attr('checked',true);
+		     			$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
+						
+		     			
+		     		}
+		     	}
+		     	for(var innerCount = 0 ; innerCount < stuDemographic[count]['studentDemographicValues'].length; innerCount++){
+		     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
+		     			$("#Student_Additional_Information :checkbox[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+		     			break;
+		     		} else {
+		     			$("#Student_Additional_Information :checkbox[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',false);
 		     			
 		     		}
 		     	}
 		     }
 		}
+		
+		
+		
    }
 
 
