@@ -103,12 +103,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	
 function createMultiNodeSelectedTree(jsondata) {
-
-	$("#innerID").bind("loaded.jstree", function (event, data) {  
-		//$('#innerID').jstree('open_node', $('#'+SelectedOrgNodeId).parent());   
-     });  
-
-
+var styleClass;
   $("#innerID").jstree({
         "json_data" : {	             
             "data" : jsondata.data,
@@ -127,10 +122,29 @@ function createMultiNodeSelectedTree(jsondata) {
 		"plugins" : [ "themes", "json_data", "checkbox"]
     });
     
-    $("#innerID").bind("change_state.jstree", function (e, d) { 
+    
+    	$("#innerID").delegate("li a","click", function(e) {
+			 styleClass = $(this.previousSibling.parentNode).attr('class');
+						
+			if(styleClass.indexOf("unchecked") > 0){
+			$(this.previousSibling.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
+			}else {
+			$(this.previousSibling.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
+			}
+			updateOrganization();
+			
+		});
+    
+   		 $("#innerID").bind("change_state.jstree", function (e, d) { 
+			updateOrganization();
+        });
+}
+
+
+function updateOrganization(){
     	var currentlySelectedNode ="";
     	assignedOrgNodeIds = "";
-        if ((d.args[0].tagName == "A" || d.args[0].tagName == "INS")){
+        
 		$("#innerID").find(".jstree-checked").each(function(i, element){
 				
 					if(currentlySelectedNode=="") {
@@ -154,8 +168,7 @@ function createMultiNodeSelectedTree(jsondata) {
 					$("#notSelectedOrgNodes").css("display","inline");
 					$("#selectedOrgNodesName").text("");	
 				}
-        	}
-        });
+        	
 }
 
 
