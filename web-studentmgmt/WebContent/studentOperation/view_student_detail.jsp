@@ -81,12 +81,14 @@
 									         </c:if>
 									        <td class="transparent"><label style="width: 200px;" maxlength="32" id="studentNumberView" name="studentNumberView"></td>
 									    </tr>
-									    <c:if test="${isLasLinkCustomer}"> 
+									    
+									    <%if(isLasLinkCustomer) { %>
 									    <tr class="transparent">
 									    	<td width="110" nowrap="" class="transparent alignRight">Purpose of Test:</td>
 											<td class="transparent"><label style="width: 200px;" maxlength="32" id="studenttestPurposeView" name="studenttestPurposeView"></td>
 									    </tr>
-									    </c:if>
+									    <%} %>
+									    
 									    <tr class="transparent">
 									        <td width="110" nowrap="" class="transparent-top alignRight">Organization:</td>
 									        <td class="transparent-top">
