@@ -992,6 +992,7 @@ function fillselectedOrgNode( elementId, orgList) {
 												 	autoOpen: true,
 												 	width: '800px',
 												 	modal: true,
+													closeOnEscape: false,												 	
 												 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		 	
 												 	});	
@@ -1071,7 +1072,6 @@ function fillselectedOrgNode( elementId, orgList) {
 												 	autoOpen: true,
 												 	width: '800px',
 												 	modal: true,
-												 	closeOnEscape: false,
 												 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		 	
 												 	});	
