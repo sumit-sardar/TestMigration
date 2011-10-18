@@ -911,22 +911,28 @@ public class TMSServlet extends HttpServlet {
 	}
 
 	private String getMethod(HttpServletRequest request) {
-    	String uri = request.getRequestURI();
+		String result = null;
+		String uri = request.getRequestURI();
     	logger.debug(uri);
-    	String result = uri.substring(uri.lastIndexOf("/") + 1);
-		if(result.startsWith(ServletUtils.SAVE_METHOD)) {
-			String requestXML = request.getParameter("requestXML");
-			if(requestXML.indexOf("adssvc_request") >= 0) {
-				if (requestXML.indexOf("get_subtest") >= 0) 
-					result = ServletUtils.GET_SUBTEST_METHOD;
-				else if (requestXML.indexOf("download_item") >= 0) 
-                	result = ServletUtils.DOWNLOAD_ITEM_METHOD;
-				else if (requestXML.indexOf("complete_tutorial") >= 0)
-					result = ServletUtils.COMPLETE_TUTORIAL_METHOD;
-			}
-		}       	
-        //logger.debug(result);
-    	return result;
+    	if(uri != null && uri.lastIndexOf("/") > -1) {
+	    	result = uri.substring(uri.lastIndexOf("/") + 1);
+			if(result != null && result.startsWith(ServletUtils.SAVE_METHOD)) {
+				String requestXML = request.getParameter("requestXML");
+				if(requestXML != null && requestXML.indexOf("adssvc_request") >= 0) {
+					if (requestXML.indexOf("get_subtest") >= 0) 
+						result = ServletUtils.GET_SUBTEST_METHOD;
+					else if (requestXML.indexOf("download_item") >= 0) 
+	                	result = ServletUtils.DOWNLOAD_ITEM_METHOD;
+					else if (requestXML.indexOf("complete_tutorial") >= 0)
+						result = ServletUtils.COMPLETE_TUTORIAL_METHOD;
+				}
+			}   
+    	}
+        logger.debug(result);
+    	if(result == null) {
+    		logger.warn("Unrecognized request: " + uri + " : " + request.getParameter("requestXML"));
+    	}
+        return result;
 	}
 
 }
