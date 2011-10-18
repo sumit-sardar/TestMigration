@@ -258,15 +258,15 @@
 			css_string = '' + 
 				'.jstree ul, .jstree li { display:block; margin:0 0 0 0; padding:0 0 0 0; list-style-type:none; } ' + 
 				'.jstree li { display:block; min-height:18px; line-height:18px; white-space:nowrap; margin-left:9px; } ' + 
-				'.jstree-rtl li { margin-left:0; margin-right:9px; } ' + 
+				'.jstree-rtl li { margin-left:0px; margin-right:9px; } ' + 
 				'.jstree > ul > li { margin-left:0px; } ' + 
 				'.jstree-rtl > ul > li { margin-right:0px; } ' + 
 				'.jstree ins { display:inline-block; text-decoration:none; width:18px; height:18px; margin:0 0 0 0; padding:0; } ' + 
 				'.jstree a { display:inline-block; line-height:16px; height:16px; color:black; white-space:nowrap; text-decoration:none; padding:1px 2px; margin:0; } ' + 
 				'.jstree a:focus { outline: none; } ' + 
 				'.jstree a > ins { height:16px; width:16px; } ' + 
-				'.jstree a > .jstree-icon { margin-right:3px; width:0px; height:0px; } ' + 
-				'.jstree-rtl a > .jstree-icon { margin-left:3px; margin-right:0; width:0px; height:0px; } ' + 
+				'.jstree a > .jstree-icon { margin-right:0px; width:0px; height:0px; } ' + 
+				'.jstree-rtl a > .jstree-icon { margin-left:0px; margin-right:0px; width:0px; height:0px; } ' + 
 				'li.jstree-open > ul { display:block; } ' + 
 				'li.jstree-closed > ul { display:none; } ';
 		// Correct IE 6 (does not support the > CSS selector)
