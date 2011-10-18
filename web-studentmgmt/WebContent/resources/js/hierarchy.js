@@ -173,8 +173,24 @@ function createMultiNodeSelectedTree(jsondata) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
 	    		  }
 	  		});
-	  		
+	  	
+	  	/*if(assignedOrgNodeIds != ""){
+		  		if(assignedOrgNodeIds.indexOf(',') > 0) {
+		  			var orgList = assignedOrgNodeIds.split(",");
+		  			for(key in orgList){
+		  				if(orgList[key].trim()  == $(element).attr("id"))
+		  				{
+		  				$('#innerID').jstree('check_node', "#"+orgList[key]); 
+		  				}
+		  				
+		  			}
+		  		} else {
+		  			$('#innerID').jstree('check_node', $(element).attr("id")); 
+		  		}
+		  		
+	  		}	*/
 	  	if($(this).attr("categoryid") == leafNodeCategoryId){
+	  		
 		 	var currentlySelectedNode ="";
 			assignedOrgNodeIds = "";
 			//var optionHtml = "";
@@ -983,7 +999,7 @@ function fillselectedOrgNode( elementId, orgList) {
 						stuAccommodation = data.stuAccommodation;
 						organizationNodes = data.organizationNodes;
 						fillselectedOrgNode("selectedOrgNodesName", organizationNodes);
-						setEditStudentDetail();
+						setEditStudentDetail(rowid);
 						
 						$.unblockUI();  
 						$("#addEditStudentDetail").dialog({  
@@ -1059,7 +1075,7 @@ function fillselectedOrgNode( elementId, orgList) {
 						$("#orgNodeNameView").text(data.orgNodeNamesStr);
 						stuDemographic = data.stuDemographic;
 						stuAccommodation = data.stuAccommodation;
-						setViewStudentDetail();
+						setViewStudentDetail(rowid);
 						//disableFields('viewStudentDetail', true);
 						$('#viewStudentDetail :checkbox').attr('disabled', true); 
 						$('#viewStudentDetail :radio').attr('disabled', true); 
@@ -1153,10 +1169,9 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	
 	
-	function setViewStudentDetail() {
+	function setViewStudentDetail(SelectedStudentId) {
     	assignedOrgNodeIds = "";
-    	var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
-        var str = idarray;
+    	var str = idarray;
 		var indexOfId = str.indexOf(SelectedStudentId);
 		disablenextprev(indexOfId,str.length-1);
 		
@@ -1213,9 +1228,8 @@ function fillselectedOrgNode( elementId, orgList) {
    }
    
    
-   function setEditStudentDetail() {
-   		var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
-        var str = idarray;
+   function setEditStudentDetail(SelectedStudentId) {
+   		var str = idarray;
 		var indexOfId = str.indexOf(SelectedStudentId);
 		disablenextprev(indexOfId,str.length-1);
 					
