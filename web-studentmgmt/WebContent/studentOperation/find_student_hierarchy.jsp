@@ -16,17 +16,17 @@
 	 <table class="transparent">
 	    <tr class="transparent">
 	        <td class="transparent"  valign="middle">
-	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header" style="visibility:hidden;  padding:3px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;Student Search</div>
+	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;Student Search</div>
 	    	<script>populateTree();</script>
-	    	<div id = "orgNodeHierarchy"  style="visibility:hidden; border: 1px solid #A6C9E2; overflow:auto; height: 485px;  width: 200px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
+	    	<div id = "orgNodeHierarchy" class="treeCtrl">
 				
 			</div> 
 			
 		 	</td>
 	 		<td class="transparent" width="8px">&nbsp;</td>
 		 	<td >
-	    		<table id="list2" style="font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;" ></table>
-				<div id="pager2" style="font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;" ></div>			
+	    		<table id="list2" class="gridTable"></table>
+				<div id="pager2" class="gridTable"></div>			
 		 </td>
 	    </tr>
 	</table>
