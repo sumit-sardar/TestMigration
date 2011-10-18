@@ -253,7 +253,7 @@ public class OASOracleSink implements OASRDBSink {
 					stmt3.setString(1, itemId);
 					stmt3.setInt(2, testRosterId);
 					ResultSet rs1 = stmt3.executeQuery();
-        			if(rs1.getInt("responseCount") == 0){
+        			if(rs1.next() && rs1.getInt("responseCount") == 0){
         				stmt1.executeUpdate();
         				stmt2.executeUpdate();        				
         			}
