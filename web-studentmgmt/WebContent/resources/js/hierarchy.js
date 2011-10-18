@@ -585,6 +585,7 @@ function fillDropDown( elementId, optionList) {
 function fillselectedOrgNode( elementId, orgList) {
 	var ddl = document.getElementById(elementId);
 	var optionHtml = "";
+	assignedOrgNodeIds = "";
 	for(var i = 0; i < orgList.length; i++) {
 		if(assignedOrgNodeIds == "") {
 			assignedOrgNodeIds = orgList[i].orgNodeId;
@@ -596,9 +597,9 @@ function fillselectedOrgNode( elementId, orgList) {
 	$(ddl).html(optionHtml);
 	
 	if(orgList.length > 0 ) {
-		$("#notSelectedOrgNodes").css("visibility","hidden");
+		$("#notSelectedOrgNodes").css("display","none");
 	} else {
-		$("#notSelectedOrgNodes").css("visibility","visible");
+		$("#notSelectedOrgNodes").css("display","inline");
 		$("#selectedOrgNodesName").text("");	
 	}
 }
@@ -658,7 +659,7 @@ function fillselectedOrgNode( elementId, orgList) {
 			 isValueChanged = true;	
 			 }
 		 if(!isValueChanged) {	
-			 var radiofields = $(":radio"); 
+			 var radiofields = $("#addEditStudentDetail :radio"); 
 	       	 for (var i=0; i<radiofields.length; i++) {
 			   	if (radiofields[i].value != "None" && radiofields[i].checked == true && radiofields[i].checked != ""  && radiofields[i].disabled == false && radiofields[i].getAttribute("disabled") == null) { 
 					isValueChanged = true;
@@ -679,7 +680,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		if(!isValueChanged) {
 		var customerValCheckbox = [];
 			var counter=0;
-		   var checkBoxfields = $(":checkbox"); 
+		   var checkBoxfields = $("#addEditStudentDetail :checkbox"); 
 	       for(var i=0; i < checkBoxfields.length; i++){
 		       for(var j=0; j<customerDemographicValue.length; j++) {
 		          	if($(checkBoxfields).eq(i).attr('name') == customerDemographicValue[j].name) {
@@ -745,18 +746,18 @@ function fillselectedOrgNode( elementId, orgList) {
 		}
 	
 	} else {
-		/*
-				//if($("#"+dbStudentDetails[0].name).val() != dbStudentDetails[0].value
+		
+		var newStudentValue = $("#addEditStudentDetail *").serializeArray(); 
 		isValueChanged = false;	
-		 if(isValueChanged) {
-		      for(var key = 0; key < 10; key++) {
-		       if($("#"+dbStudentDetails[key].name).val() != dbStudentDetails[key].value){
+		 if(!isValueChanged) {
+		      for(var key = 0; key <dbStudentDetails.length ; key++) {
+		       if(newStudentValue[key].value != dbStudentDetails[key].value){
 		      		isValueChanged = true;
 		      	}
 		      	 
 		      }
 	      }
-	       if(isValueChanged) {
+	       if(!isValueChanged) {
 		       OrgNodeIds = ""
 		        for ( var i= 0; i<organizationNodes.length;i++) {
 		         if(OrgNodeIds == "") {
@@ -791,8 +792,8 @@ function fillselectedOrgNode( elementId, orgList) {
 			} else {
 				closePopUp('addEditStudentDetail');
 			}
-			*/
-			closePopUp('addEditStudentDetail');
+			
+			
 		}
 		
 	}
@@ -884,8 +885,9 @@ function fillselectedOrgNode( elementId, orgList) {
 					$('#innerID').jstree('open_node', "#"+tmpNode); 
 				
 	  		 }
-	  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
+	  		 //$('#innerID').jstree('check_node', "#"+orgNodeId); 
   		 }
+  		  $('#innerID').jstree('check_node', "#"+orgNodeId); 
   		 hideCheckBox();
 	}
 	
@@ -1052,7 +1054,7 @@ function fillselectedOrgNode( elementId, orgList) {
 						$("#studentgradeView").text(data.grade);
 						$("#studentgenderView").text(data.gender);
 						$("#studentNumberView").text(data.studentNumber);
-						$("#studenttestPurposeView").text(data.studentNumber);
+						$("#studenttestPurposeView").text(data.testPurpose);
 						$("#orgNodeNameView").text(data.orgNodeNamesStr);
 						stuDemographic = data.stuDemographic;
 						stuAccommodation = data.stuAccommodation;
