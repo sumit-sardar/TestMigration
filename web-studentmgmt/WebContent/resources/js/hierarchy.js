@@ -818,7 +818,6 @@ function fillselectedOrgNode( elementId, orgList) {
 	}else{
 		var selectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
 		createBy = getDataFromJson(selectedStudentId);
-		var test = getNextStudentIdJson(selectedStudentId);
 		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
 			 $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val()+
 			  "&selectedStudentId=" + selectedStudentId + "&isAddStudent=" + isAddStudent + "&createBy="+createBy + "&loginId=" + loginId ;

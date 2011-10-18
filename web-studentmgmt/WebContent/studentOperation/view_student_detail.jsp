@@ -16,20 +16,7 @@
 <div id="viewStudentDetail"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	
-	<div id="displayMessage" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 1px solid #A6C9E2;">
-			<table>
-				<tr>
-					<td rowspan="3"><div id= "messageType">	</div></td>
-					<td>
-						<table>
-							<tr><td><div id="title"></div></td></tr>
-							<tr><td><div id= "content">	</div></td></tr>
-							<tr><td><div id= "message">	</div></td></tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-		</div>
+	
 		<br>
 	<div id="viewaccordion" style="width:99.5%;">
 			
