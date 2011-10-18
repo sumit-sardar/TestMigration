@@ -30,14 +30,15 @@ function gotoMenuAction(action, menuId)
 function showLoading()
 {	
 	$(document).ajaxStop($.unblockUI); 
-	$.blockUI({ message: '<img src="/TestSessionInfoWeb/resources/images/loading.gif" />',
+	 $.blockUI({ message: '<img src="/TestSessionInfoWeb/resources/images/loading.gif" />',
 		css: {
 		border: '0px',
 		backgroundColor: '#aaaaaa', 
-		opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
-	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 		 
+		opacity:  0.5, width:'0px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
+	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 		 	 		 
 }
-	
+	 
+ 	 
 
 function handleEnterKey( e, element ) {
     var keyId = (window.event) ? event.keyCode : e.which;
