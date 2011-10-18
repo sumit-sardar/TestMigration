@@ -4,58 +4,43 @@
 <table class="sortable">
 
     <tr class="sortable">
-        <td style="border-color : #2E6E9E">
+        <td style="border-color : #2E6E9E; padding: 10px">
         
-      <div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 1px solid #A6C9E2;">
+      	<div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 1px solid #A6C9E2;">
 			<div id="titleMain"></div>
 			<div id= "contentMain">	</div>
 			<div id= "messageMain">	</div>
 		</div>
-		<table  width="100%"> 
+		<table> 
 			<tr class="transparent">
-	        	<td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;
-	             
-	        </td>
+	        	<td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;</td>
    	 		</tr>
-		   <tr  width="100%" >
-		       <td   align="right">
-	     	       <!-- <input style="padding: 2px;" class="ui-corner-top ui-corner-tr ui-corner-tl ui-widget-header" onclick="javascript:changePwdForUser(); return false;" value=" Change Password " type="button">-->
+		   	<tr width="100%" >
+		       <td align="right" colspan="12">
 	     	        <div id="changePW" style="display:none"><input style="padding: 2px; background: url(&quot;images/ui-bg_glass_85_dfeffc_1x400.png&quot;) repeat-x scroll 50% 50% rgb(223, 239, 252);" class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" onclick="javascript:changePwdForUser(); return false;" value=" Change Password " type="button"></div>
 	     	   </td>
-	     	   <td    width="20px" align="right"> &nbsp;</td>
-		   </tr>
-		 </table>
-		 </td>
-		 </tr> 
-		 <tr>
-		 <td>
-		 <table>
+		   	</tr>
 		  
 	      <tr class="transparent">
 	        <td class="transparent"  valign="middle">
-	      	<div  id= "searchheader" class="ui-corner-top ui-corner-tr ui-corner-tl ui-widget-header " style="visibility:hidden;  height:25px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;User Search</div>
-	    	  <script>populateTree();</script>
-	    	  <div id = "orgNodeHierarchy"  style="visibility:hidden; border: 1px solid #A6C9E2; overflow:auto; height: 485px;  width: 200px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
-				
-			</div> 
-			
+		      	<div  id= "searchheader" class="ui-corner-top ui-corner-tr ui-corner-tl ui-widget-header " style="visibility:hidden;  height:25px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;User Search</div>
+		    	  <script>populateTree();</script>
+		    	  <div id = "orgNodeHierarchy"  style="visibility:hidden; border: 1px solid #A6C9E2; overflow:auto; height: 485px;  width: 200px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
+				</div> 
 		    </td>
+		    
 		 	<td class="transparent" width="20px">&nbsp;</td>
-		 	 <td >
-	      
-	    	<table id="list2" ></table>
-			<div id="pager2"  ></div>
+		 	 
+		 	<td >	      
+		    	<table id="list2" ></table>
+				<div id="pager2"  ></div>
+			</td>
 			
-		 </td>
-	    </tr>
-	    <tr class="transparent">
-	        <td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;
-	             
-	        </td>
-   	 	</tr>
-	     </table>
-	
-
+	      </tr>
+	      <tr class="transparent">
+	        <td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;</td>
+   	 	  </tr>
+	    </table>
         </td>
     </tr>
 </table>
