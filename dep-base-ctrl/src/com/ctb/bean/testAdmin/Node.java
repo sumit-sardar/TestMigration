@@ -43,6 +43,7 @@ public class Node extends CTBBean
     //END - Changes for MDR Number
     //private Integer numberOfLevels;
 	//private boolean hasFramework;
+    private String leafNodePath;
     
     /**
 	 * @return the mdrNumber
@@ -377,6 +378,20 @@ public class Node extends CTBBean
 	 */
 	public void setCategoryLevel(Integer categoryLevel) {
 		this.categoryLevel = categoryLevel;
+	}
+
+	/**
+	 * @return the leafNodePath
+	 */
+	public String getLeafNodePath() {
+		return leafNodePath;
+	}
+
+	/**
+	 * @param leafNodePath the leafNodePath to set
+	 */
+	public void setLeafNodePath(String leafNodePath) {
+		this.leafNodePath = leafNodePath;
 	}
     
    

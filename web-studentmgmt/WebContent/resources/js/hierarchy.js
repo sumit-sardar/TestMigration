@@ -44,7 +44,7 @@ $(document).bind('keydown', function(event) {
 
 
 function UIBlock(){
-	$.blockUI({ message: '<img src="/StudentManagementWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'0px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
+	$.blockUI({ message: '<img src="/StudentManagementWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
 	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 
 }
 
@@ -209,7 +209,8 @@ function createMultiNodeSelectedTree(jsondata) {
 					  			var orgList = assignedOrgNodeIds.split(",");
 					  			for(var key=0; key<orgList.length; key++){
 					  				if(trim(orgList[key]) == currentId){
-					  					isexist = true;  
+					  					isexist = true; 
+					  					break; 
 					  				}
 					  			}
 					  		} else {
@@ -977,20 +978,25 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	
 	function openTreeNodes(orgNodeId) {
-		var parentOrgNodeId = $("#" + orgNodeId).parent("ul");
+		//var parentOrgNodeId = $("#" + orgNodeId).parent("ul");
+		var leafParentOrgNodeId = "";
 		
-		var ancestorNodes = parentOrgNodeId.parentsUntil(".jstree","li");
-		//open tree nodes from root to the clicked node	
-		if(ancestorNodes.length > 0) {
-			for(var count = ancestorNodes.length - 1; count >= 0; --count) {
-	  		 		var tmpNode = ancestorNodes[count].id;
-					$('#innerID').jstree('open_node', "#"+tmpNode); 
-				
+			for(var i=0; i< organizationNodes.length; i++){
+				if(orgNodeId == organizationNodes[i].orgNodeId){
+					var leafOrgNodePath = organizationNodes[i].leafNodePath;
+					 leafParentOrgNodeId = leafOrgNodePath.split(",");
+					break;
+				}
+			}
+			if(leafParentOrgNodeId.length > 0) {
+				for(var count = 0; count < leafParentOrgNodeId.length; count++) {
+		  		 		var tmpNode = leafParentOrgNodeId[count];
+						$('#innerID').jstree('open_node', "#"+tmpNode); 
+					
+		  		 }
+		  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
 	  		 }
-	  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
-  		 }
-  		  //$('#innerID').jstree('check_node', "#"+orgNodeId); 
-  		 hideCheckBox();
+ 		 hideCheckBox();
 	}
 	
 	function hideCheckBox(){
