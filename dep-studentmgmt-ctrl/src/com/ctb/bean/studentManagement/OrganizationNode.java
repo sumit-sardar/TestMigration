@@ -46,6 +46,7 @@ public class OrganizationNode extends Node
         this.setChildNodeCount(node.getChildNodeCount());
         this.setOrgNodeCategoryName(node.getOrgNodeCategoryName());
         this.setStudentCount(node.getStudentCount());
+        this.setLeafNodePath(node.getLeafNodePath());
     }
     
     
@@ -74,6 +75,7 @@ public class OrganizationNode extends Node
         this.setCategoryLevel(node.getCategoryLevel());
         this.setParentOrgNodeId(node.getParentOrgNodeId());
         this.setParentOrgNodeName(node.getParentOrgNodeName());
+        this.setLeafNodePath(node.getLeafNodePath());
     }
     
 	/**
