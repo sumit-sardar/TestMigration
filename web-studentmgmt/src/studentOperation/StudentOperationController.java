@@ -234,7 +234,8 @@ public class StudentOperationController extends PageFlowController {
 			baseTree.setLeafNodeCategoryId(leafNodeCategoryId);
 			jsonTree = gson.toJson(baseTree);
 			//System.out.println(jsonTree);
-
+			String pattern = ",\"children\":[]";
+			jsonTree = jsonTree.replace(pattern, "");
 
 			try {
 
@@ -1607,6 +1608,7 @@ public class StudentOperationController extends PageFlowController {
 		TreeData td = new TreeData ();
 		td.setData(org.getOrgName());
 		td.getAttr().setId(org.getOrgNodeId().toString());
+		td.getAttr().setCategoryID(org.getOrgCategoryLevel().toString());
 		treeProcess (org,orgList,td);
 		data.add(td);
 	}

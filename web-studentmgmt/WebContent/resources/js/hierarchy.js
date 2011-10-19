@@ -27,6 +27,7 @@ var profileEditable = "true";
 var isPopUp = false;
 var dbStudentDetails;
 var organizationNodes = [];
+var optionHtml ="";
 						
 
 
@@ -157,9 +158,31 @@ function createMultiNodeSelectedTree(jsondata) {
 			    "icons" : false
 			},       
 	 			"plugins" : [ "themes", "json_data", "ui", "checkbox"]
-	   });	
+	   }).bind("open_node.jstree", function (e, data) {  
+       // data.inst is the instance which triggered this event
+	       var orgcategorylevel = data.rslt.obj.attr("categoryid");   
+	       if(orgcategorylevel == leafNodeCategoryId - 1) {
+		       $(this).find("[categoryid='" + leafNodeCategoryId+ "']").each(function(i, element) {
+		      		var childOrgId = $(element).attr("id");
+	    			if(assignedOrgNodeIds != ""){
+				  		if(String(assignedOrgNodeIds).indexOf(",") > 0) {
+				  			var orgList = assignedOrgNodeIds.split(",");
+				  			for(var key=0; key < orgList.length; key++){
+				  			var keyVal = trim(orgList[key]);
+				  				if(keyVal == childOrgId)
+				  				{
+				  				data.inst.check_node("#"+keyVal, true);  
+				  				}
+				  				
+				  			}
+				  		} else {
+				  			data.inst.check_node("#"+ assignedOrgNodeIds, true);  
+				  		}
+				  	}
+				});
+		  	}
+	   });  
 
-   		
 	  	if($("#innerID ul").length>0){
 		 	//jQuery.jstree._reference("#innerID").destroy();
 		 	//openTreeNodes();
@@ -167,6 +190,7 @@ function createMultiNodeSelectedTree(jsondata) {
     	hideCheckBox();
     	
  		$("#innerID").delegate("li","click", function(e) {
+ 			var isChecked = $(this).hasClass("jstree-checked");
  			$(this).find("li").each(function(i, element) {
     			var orgcategorylevel = $(element).attr("categoryid");
     			if(orgcategorylevel != leafNodeCategoryId) {
@@ -174,45 +198,102 @@ function createMultiNodeSelectedTree(jsondata) {
 	    		  }
 	  		});
 	  	
-	  	/*if(assignedOrgNodeIds != ""){
-		  		if(assignedOrgNodeIds.indexOf(',') > 0) {
-		  			var orgList = assignedOrgNodeIds.split(",");
-		  			for(key in orgList){
-		  				if(orgList[key].trim()  == $(element).attr("id"))
-		  				{
-		  				$('#innerID').jstree('check_node', "#"+orgList[key]); 
-		  				}
-		  				
-		  			}
-		  		} else {
-		  			$('#innerID').jstree('check_node', $(element).attr("id")); 
-		  		}
-		  		
-	  		}	*/
+
 	  	if($(this).attr("categoryid") == leafNodeCategoryId){
-	  		
-		 	var currentlySelectedNode ="";
-			assignedOrgNodeIds = "";
-			//var optionHtml = "";
-			$("#innerID").find(".jstree-checked").each(function(i, element){
-				
-				var orgcategorylevel = $(element).attr("categoryid");
-				if(orgcategorylevel == leafNodeCategoryId) {
-					if(currentlySelectedNode=="") {
-						//currentlySelectedNode = $(element).text();
-						currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ $(element).text()+"</a>";	
-					} else {
-						//currentlySelectedNode = currentlySelectedNode + " , " + $(element).text(); 
-						currentlySelectedNode = currentlySelectedNode + " , " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ $(element).text()+"</a>";
+	  		var currentlySelectedNode ="";
+			isexist = false;
+			currentId = $(this).attr("id");
+			if(!isAddStudent){
+				if(assignedOrgNodeIds != "") {
+						if(String(assignedOrgNodeIds).indexOf(",") > 0) {
+					  			var orgList = assignedOrgNodeIds.split(",");
+					  			for(var key=0; key<orgList.length; key++){
+					  				if(trim(orgList[key]) == currentId){
+					  					isexist = true;  
+					  				}
+					  			}
+					  		} else {
+					  			if(assignedOrgNodeIds == currentId){
+					  				isexist = true;  
+					  			}
+					  		}
 					}
-	
-		    		if(assignedOrgNodeIds=="") {
-						assignedOrgNodeIds = $(element).attr("id");
-					} else {
-						assignedOrgNodeIds = $(element).attr("id") +"," + assignedOrgNodeIds; 
+				if(isChecked) {
+					if(!isexist) {
+						currentlySelectedNode = optionHtml;
+						if(currentlySelectedNode=="") {
+							currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(this).attr("id")+"');>"+ trim($(this).text())+"</a>";	
+						} else {
+							currentlySelectedNode = currentlySelectedNode + " , " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(this).attr("id")+"');>"+ trim($(this).text())+"</a>";
+						}
+						if(assignedOrgNodeIds=="") {
+							assignedOrgNodeIds = $(this).attr("id");
+						} else {
+							assignedOrgNodeIds = $(this).attr("id") +"," + assignedOrgNodeIds; 
+						}
+						optionHtml = currentlySelectedNode;
 					}
-	    		}
-			});
+					
+				} else {
+					if(isexist){
+					currentlySelectedNode ="";
+						var newcurrentlySelectedNode = "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(this).attr("id")+"');>"+ trim($(this).text())+"</a>";	
+						var opList = optionHtml.split(",");
+						for(var key=0; key<opList.length; key++){
+							var opListVal = $.trim(opList[key]);
+							if($.trim(newcurrentlySelectedNode) != opListVal){
+								if(currentlySelectedNode=="") {
+								currentlySelectedNode = opListVal;	
+								} else {
+								currentlySelectedNode = opListVal + " , " + currentlySelectedNode;
+							}
+							}
+							
+						}
+						optionHtml = currentlySelectedNode;
+					var newassignedOrgNodeIds ="";
+						if(assignedOrgNodeIds != ""){
+							if(String(assignedOrgNodeIds).indexOf(",") > 0) {
+							var orgList = assignedOrgNodeIds.split(",");
+								for(var key=0; key<orgList.length; key++){
+								var orgListVal = $.trim(orgList[key]);
+									if(orgListVal != currentId){
+										if(newassignedOrgNodeIds=="") {
+											newassignedOrgNodeIds = orgListVal;
+										} else {
+											newassignedOrgNodeIds = orgListVal +"," + newassignedOrgNodeIds; 
+										}
+									}
+									
+								}
+								assignedOrgNodeIds = newassignedOrgNodeIds;
+							}
+						}
+					}
+				}
+			}
+			if(isAddStudent){
+				var currentlySelectedNode ="";
+				assignedOrgNodeIds = "";
+				$("#innerID").find(".jstree-checked").each(function(i, element){
+					
+					var orgcategorylevel = $(element).attr("categoryid");
+						if(orgcategorylevel == leafNodeCategoryId) {
+							if(currentlySelectedNode=="") {
+								currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ trim($(element).text())+"</a>";	
+							} else {
+								currentlySelectedNode = currentlySelectedNode + " , " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ trim($(element).text())+"</a>";
+							}
+			
+				    		if(assignedOrgNodeIds=="") {
+								assignedOrgNodeIds = $(element).attr("id");
+							} else {
+								assignedOrgNodeIds = $(element).attr("id") +"," + assignedOrgNodeIds; 
+							}
+			    		}
+					});
+			}
+			
 				if(currentlySelectedNode.length > 0 ) {
 					$("#notSelectedOrgNodes").css("display","none");
 					$("#selectedOrgNodesName").html(currentlySelectedNode);
@@ -600,7 +681,7 @@ function fillDropDown( elementId, optionList) {
 
 function fillselectedOrgNode( elementId, orgList) {
 	var ddl = document.getElementById(elementId);
-	var optionHtml = "";
+	optionHtml = "";
 	assignedOrgNodeIds = "";
 	for(var i = 0; i < orgList.length; i++) {
 		if(assignedOrgNodeIds == "") {
@@ -608,7 +689,12 @@ function fillselectedOrgNode( elementId, orgList) {
 		} else {
 			assignedOrgNodeIds = assignedOrgNodeIds + " , " + orgList[i].orgNodeId; 
 		}
-		optionHtml += "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+orgList[i].orgNodeName+"</a>";	
+		if(optionHtml == "") {
+			optionHtml += "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+trim(orgList[i].orgNodeName)+"</a>";	
+		} else {
+			optionHtml = optionHtml +" , " + "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+ trim(orgList[i].orgNodeName)+"</a>";	
+		}
+		
 	}
 	$(ddl).html(optionHtml);
 	
@@ -767,7 +853,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		isValueChanged = false;	
 		 if(!isValueChanged) {
 		      for(var key = 0; key <dbStudentDetails.length ; key++) {
-		       if(newStudentValue[key].value != dbStudentDetails[key].value){
+		       if(trim(newStudentValue[key].value) != trim(dbStudentDetails[key].value)){
 		      		isValueChanged = true;
 		      	}
 		      	 
@@ -779,7 +865,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		         if(OrgNodeIds == "") {
 		      		OrgNodeIds = organizationNodes[i].orgNodeId; 
 		      		} else {
-		      		OrgNodeIds = OrgNodeIds + " , " + organizationNodes[i].orgNodeId; 
+		      		OrgNodeIds = OrgNodeIds + "," + organizationNodes[i].orgNodeId; 
 		      		}
 		      	}
 		      	if(OrgNodeIds != assignedOrgNodeIds) {
@@ -891,7 +977,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	
 	function openTreeNodes(orgNodeId) {
-		var parentOrgNodeId = $("#" + orgNodeId).parent();
+		var parentOrgNodeId = $("#" + orgNodeId).parent("ul");
 		
 		var ancestorNodes = parentOrgNodeId.parentsUntil(".jstree","li");
 		//open tree nodes from root to the clicked node	
@@ -901,9 +987,9 @@ function fillselectedOrgNode( elementId, orgList) {
 					$('#innerID').jstree('open_node', "#"+tmpNode); 
 				
 	  		 }
-	  		 //$('#innerID').jstree('check_node', "#"+orgNodeId); 
+	  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
   		 }
-  		  $('#innerID').jstree('check_node', "#"+orgNodeId); 
+  		  //$('#innerID').jstree('check_node', "#"+orgNodeId); 
   		 hideCheckBox();
 	}
 	
@@ -1117,7 +1203,15 @@ function fillselectedOrgNode( elementId, orgList) {
 				var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
                   	var str = idarray;
 					var nextStudentId ;
-					var indexOfId = str.indexOf(SelectedStudentId);
+					//var indexOfId = str.indexOf(SelectedStudentId);
+					var indexOfId = -1;
+					if(!Array.indexOf) {
+						indexOfId = findIndexFromArray (str , SelectedStudentId);
+					} else {
+						indexOfId = str.indexOf(SelectedStudentId);;
+					}
+
+
 					if(indexOfId != str.length-1) {
 						nextStudentId = str[indexOfId + 1];
 						highlightnextprev(SelectedStudentId, nextStudentId);
@@ -1126,6 +1220,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		       			else
 		       				viewStuDetail(nextStudentId);
 		       			disablenextprev(indexOfId+1,str.length-1);
+		       			$("#list2").setSelection(nextStudentId, true); 
 					}
                }
                
@@ -1133,7 +1228,16 @@ function fillselectedOrgNode( elementId, orgList) {
                var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
                   	var str = idarray;
 					var preStudentId ;
-					var indexOfId = str.indexOf(SelectedStudentId);
+					//var indexOfId = str.indexOf(SelectedStudentId);
+					var indexOfId = -1;
+					if(!Array.indexOf) {
+						indexOfId = findIndexFromArray (str , SelectedStudentId);
+					} else {
+						indexOfId = str.indexOf(SelectedStudentId);;
+					}
+
+
+
 					if(indexOfId != 0) {
 						preStudentId = str[indexOfId - 1];
 						highlightnextprev(SelectedStudentId, preStudentId);
@@ -1142,6 +1246,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		       			else
 		       				viewStuDetail(preStudentId);
 		       			disablenextprev(indexOfId-1,str.length-1);
+		       			$("#list2").setSelection(preStudentId, true); 
 					}
                }
 	
@@ -1160,7 +1265,7 @@ function fillselectedOrgNode( elementId, orgList) {
 				indexOfComma = str.indexOf(',', parseInt(indexOfCreatedBy));
 				indexOfCreatedBy += 10;
 				createBy = str.substring(parseInt(indexOfCreatedBy), parseInt(indexOfComma));
-				createBy = createBy.trim();
+				createBy = trim(createBy);
 			}else{
 				
 			}
@@ -1172,12 +1277,21 @@ function fillselectedOrgNode( elementId, orgList) {
 	function setViewStudentDetail(SelectedStudentId) {
     	assignedOrgNodeIds = "";
     	var str = idarray;
-		var indexOfId = str.indexOf(SelectedStudentId);
+		//var indexOfId = str.indexOf(SelectedStudentId);
+
+		var indexOfId = -1;
+		if(!Array.indexOf) {
+			indexOfId = findIndexFromArray (str , SelectedStudentId);
+		} else {
+			indexOfId = str.indexOf(SelectedStudentId);;
+		}
+
+
 		disablenextprev(indexOfId,str.length-1);
 		
       for(var key in stuAccommodation) {
 		     $("#view_Student_Accommodation_Information :checkbox[name='" + key+ "']").attr('checked', stuAccommodation[key]);
-		     $("#view_Student_Accommodation_Information select[name='" + key+ "']").attr("selected",stuAccommodation[key]);
+		     $("#view_Student_Accommodation_Information select[name='" + key+ "']").val(stuAccommodation[key]);
 		}
 		
 		for(var count=0; count< stuDemographic.length; count++) {
@@ -1228,16 +1342,44 @@ function fillselectedOrgNode( elementId, orgList) {
    }
    
    
+	function findIndexFromArray (myArray, obj) {
+    
+    for(var i=0; i<myArray.length; i++){
+	            if(myArray[i]==obj){
+	                return i;
+	            }
+	        }
+	        return -1;
+   
+   }
+   
    function setEditStudentDetail(SelectedStudentId) {
    		var str = idarray;
-		var indexOfId = str.indexOf(SelectedStudentId);
-		disablenextprev(indexOfId,str.length-1);
+   		var isColorFontChecked; 
+		//var indexOfId = str.indexOf(SelectedStudentId);
+		var indexOfId = -1;
+		
+		if(!Array.indexOf) {
+			indexOfId = findIndexFromArray (str , SelectedStudentId);
+		} else {
+			indexOfId = str.indexOf(SelectedStudentId);;
+		}
+		disablenextprev(indexOfId,(str.length) - 1);
 					
     	for(var key in stuAccommodation) {
+    		if(key == 'colorFont'){
+    			isColorFontChecked = stuAccommodation[key];
+    		}
 		     $("#Student_Accommodation_Information :checkbox[name='" + key+ "']").attr('checked', stuAccommodation[key]);
-		     $("#Student_Accommodation_Information select[name='" + key+ "']").attr("selected",stuAccommodation[key]);
+		     $("#Student_Accommodation_Information select[name='" + key+ "']").val(stuAccommodation[key]);
 		}
-		
+		if(isColorFontChecked){
+			enableColorSettingsLink("true");
+			setQuestionColorOptions();
+			setAnswerColorOptions();
+		}else{
+			enableColorSettingsLink("false");
+		}
 		for(var count=0; count< stuDemographic.length; count++) {
 			 if(stuDemographic[count]['studentDemographicValues'].length == 1){
 		     	var dynKey = stuDemographic[count]['labelName'] + "_" + stuDemographic[count]['studentDemographicValues'][0]['valueName'] ;

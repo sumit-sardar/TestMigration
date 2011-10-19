@@ -338,3 +338,22 @@ input:focus {
 	font-style: normal;  
 	font-weight: bold; 	
 }
+
+
+.ie8 #orgNodeHierarchy ul {
+float: none;
+clear: both;
+}
+
+.ie8 #orgNodeHierarchy li {
+	clear: both;
+}	
+
+.ie8 #innerID ul {
+float: none;
+clear: both;
+}
+
+.ie8 #innerID li {
+	clear: both;
+}
