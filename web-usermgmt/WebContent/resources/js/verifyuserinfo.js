@@ -102,7 +102,8 @@ function VerifyUserDetail(assignedOrgNodeIds){
 				return false;
 	}																									   
 if(userEmail != "") {
- var validmail = validEmail(userEmail);  
+ //var validmail = validEmail(userEmail);  
+ var validmail = true;
 
   if (validmail == false) {
      if(invalidString != ""){
