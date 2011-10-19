@@ -29,7 +29,7 @@
 	      			<table border="0">
 	    			<tr>
 	    			<td width="100%">&nbsp;Student List</td>
-	    			<td width="175">
+	    			<td width="200">
 	    			
 					<div class="search_input_box">
 						<input class="search_input" type="text" name="username" >

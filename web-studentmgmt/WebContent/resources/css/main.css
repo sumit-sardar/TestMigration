@@ -281,7 +281,7 @@ input:focus {
   --font-size:10px; 
   --font-weight:normal; 
   height: 11px;
-  width: 110px;
+  width: 150px;
 }
   
 .search_input:focus {
@@ -293,10 +293,10 @@ input:focus {
 
 
 .search_input_box {
-  background:  url(searchbox.gif) no-repeat left top;
-  padding: 0px 0px 0px 30px;
+  background:  url(search_sm.png) no-repeat left top;
+  padding: 0px 0px 0px 10px;
   height: 19px;
-  width: 175px;
+  width: 200px;
 }
 
 
