@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>   
 
-<table class="sortable">
+<table class="transparent">
 
-    <tr class="sortable">
+    <tr class="transparent">
         <td style="border-color : #2E6E9E; padding: 10px">
         
       	<div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 1px solid #A6C9E2;">
@@ -12,9 +12,11 @@
 			<div id= "messageMain">	</div>
 		</div>
 		<table> 
+			<!--  
 			<tr class="transparent">
 	        	<td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;</td>
    	 		</tr>
+   	 		-->
 		   	<tr width="100%" >
 		       <td align="right" colspan="12">
 	     	        <div id="changePW" style="display:none"><input style="padding: 2px; background: url(&quot;images/ui-bg_glass_85_dfeffc_1x400.png&quot;) repeat-x scroll 50% 50% rgb(223, 239, 252);" class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" onclick="javascript:changePwdForUser(); return false;" value=" Change Password " type="button"></div>
@@ -22,10 +24,10 @@
 		   	</tr>
 		  
 	      <tr class="transparent">
-	        <td class="transparent"  valign="middle">
-		      	<div  id= "searchheader" class="ui-corner-top ui-corner-tr ui-corner-tl ui-widget-header " style="visibility:hidden;  height:25px;  color: #FFFFFF; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;User Search</div>
+	        <td class="transparent" valign="middle">
+		      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;User Search</div>
 		    	  <script>populateTree();</script>
-		    	  <div id = "orgNodeHierarchy"  style="visibility:hidden; border: 1px solid #A6C9E2; overflow:auto; height: 485px;  width: 200px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal;">
+		    	  <div id = "orgNodeHierarchy"  class="treeCtrl">
 				</div> 
 		    </td>
 		    
@@ -37,15 +39,15 @@
 			</td>
 			
 	      </tr>
+	      <!-- 
 	      <tr class="transparent">
 	        <td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;</td>
    	 	  </tr>
+   	 	   -->
 	    </table>
         </td>
     </tr>
 </table>
-</br>
-</br>
 
 <jsp:include page="/userOperation/add_edit_user_detail.jsp" />
 			
