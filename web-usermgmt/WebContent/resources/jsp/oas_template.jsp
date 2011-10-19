@@ -4,7 +4,11 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
 
-<html>
+<!--[if IE]><![endif]-->
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6">    <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8">    <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9">    <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
   <head>
     <title><netui-template:attribute name="title"/></title>
 	<link href="<%=request.getContextPath()%>/resources/css/widgets.css" type="text/css" rel="stylesheet" />
