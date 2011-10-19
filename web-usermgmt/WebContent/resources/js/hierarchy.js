@@ -84,6 +84,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	    });
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
+	    	document.getElementById('displayMessageMain').style.display = "none";
   			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
  		    UIBlock();
