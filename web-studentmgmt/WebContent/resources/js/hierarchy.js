@@ -238,11 +238,14 @@ function createMultiNodeSelectedTree(jsondata) {
 				} else {
 					if(isexist){
 					currentlySelectedNode ="";
-						var newcurrentlySelectedNode = "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(this).attr("id")+"');>"+ trim($(this).text())+"</a>";	
+						//var newcurrentlySelectedNode = "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(this).attr("id")+"');>"+ trim($(this).text())+"</a>";
+						 var nodeId = trim($(this).attr("id"));	
 						var opList = optionHtml.split(",");
 						for(var key=0; key<opList.length; key++){
 							var opListVal = $.trim(opList[key]);
-							if($.trim(newcurrentlySelectedNode) != opListVal){
+							 var resLen = opListVal.split(nodeId);
+						//	if($.trim(newcurrentlySelectedNode) != opListVal){
+						 	if(resLen.length < 2) {
 								if(currentlySelectedNode=="") {
 								currentlySelectedNode = opListVal;	
 								} else {
@@ -258,7 +261,9 @@ function createMultiNodeSelectedTree(jsondata) {
 							var orgList = assignedOrgNodeIds.split(",");
 								for(var key=0; key<orgList.length; key++){
 								var orgListVal = $.trim(orgList[key]);
-									if(orgListVal != currentId){
+								 var esLen = orgListVal.split(nodeId);
+									//if(orgListVal != currentId){
+									if(esLen.length < 2) {
 										if(newassignedOrgNodeIds=="") {
 											newassignedOrgNodeIds = orgListVal;
 										} else {
