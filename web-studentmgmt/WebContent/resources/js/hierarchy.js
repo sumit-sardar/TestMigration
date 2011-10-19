@@ -693,7 +693,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		if(assignedOrgNodeIds == "") {
 			assignedOrgNodeIds = orgList[i].orgNodeId;
 		} else {
-			assignedOrgNodeIds = assignedOrgNodeIds + " , " + orgList[i].orgNodeId; 
+			assignedOrgNodeIds = assignedOrgNodeIds + "," + orgList[i].orgNodeId; 
 		}
 		if(optionHtml == "") {
 			optionHtml += "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+trim(orgList[i].orgNodeName)+"</a>";	
