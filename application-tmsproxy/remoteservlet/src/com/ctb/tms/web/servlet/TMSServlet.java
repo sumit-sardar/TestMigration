@@ -429,8 +429,8 @@ public class TMSServlet extends HttpServlet {
 				    			manifestData[j].setCompletionStatus("IP");
 				    			manifest.setRosterCompletionStatus("IP");
 				    			manifestData[j].setStartTime(System.currentTimeMillis());
-				    			manifest.setRosterCorrelationId(tsd.getCid().intValue());
-				    			updateCID(rosterId, tsd.getCid().intValue(), accessCode);
+				    			//manifest.setRosterCorrelationId(tsd.getCid().intValue());
+				    			//updateCID(rosterId, tsd.getCid().intValue(), accessCode);
 				    		} else if(LmsEventType.STU_PAUSE.equals(eventType)) {
 				    			manifestData[j].setCompletionStatus("SP");
 				    			manifest.setRosterCompletionStatus("SP");
@@ -591,6 +591,8 @@ public class TMSServlet extends HttpServlet {
 	}
 
 	private String login(String xml) throws XmlException, IOException, ClassNotFoundException, SQLException {
+		Logger logger = Logger.getLogger(TMSServlet.class);
+		
 		XmlOptions xmlOptions = new XmlOptions(); 
         xmlOptions = xmlOptions.setUnsynchronized();
 		TmssvcRequestDocument document = TmssvcRequestDocument.Factory.parse(xml, xmlOptions);
@@ -627,7 +629,7 @@ public class TMSServlet extends HttpServlet {
     	}
 
 		TmssvcResponseDocument response = rd.getLoginDocument();
-		if(!Constants.StudentLoginResponseStatus.OK_STATUS.equals(response.getTmssvcResponse().getLoginResponse().getStatus())) {
+		if(!Constants.StudentLoginResponseStatus.OK_STATUS.equals(response.getTmssvcResponse().getLoginResponse().getStatus().getStatusCode())) {
 			return response.xmlText();
 		}
 		LoginResponse loginResponse = response.getTmssvcResponse().getLoginResponse();
@@ -644,16 +646,24 @@ public class TMSServlet extends HttpServlet {
 		BigInteger restart = loginResponse.getRestartNumber();
 		if(restart == null) restart = BigInteger.valueOf(0);
 		int restartCount = restart.intValue();
+		int manifestRestartCount = manifest.getRosterRestartNumber();
+		if(manifestRestartCount > restartCount) restartCount = manifestRestartCount;
 		logger.debug("Restart count: " + restartCount);
 		
 		if(lr.getCid() != null) {
 			int thisCid = Integer.parseInt(lr.getCid());
+			rd.getAuthData().setCorrelationId(thisCid);
 			manifest.setRosterCorrelationId(thisCid);
 			if(restartCount > 0) {
 				// try to optimize by only setting cid on other manifests if they've been accessed - this may be risky
+				logger.debug("updating CID for all manifests: " + thisCid);
 				updateCID(testRosterId, thisCid, creds.getAccesscode());
+			} else {
+				logger.debug("CID updated only for current manifest");
 			}
 		} else {
+			logger.debug("Old client - login cid is null . . . ");
+			rd.getAuthData().setCorrelationId(0);
 			manifest.setRosterCorrelationId(0);
 			updateCID(testRosterId, 0, creds.getAccesscode());
 		}

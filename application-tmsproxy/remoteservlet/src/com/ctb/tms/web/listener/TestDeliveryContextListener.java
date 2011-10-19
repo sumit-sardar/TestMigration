@@ -121,21 +121,23 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					}
 					for(int i=0;i<creds.length;i++) {
 						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
-						Long mapManifestHash = (Long)rosterMap.get(key);
-						if(mapManifestHash == null || !mapManifestHash.equals(creds[i].getManifestHash())) {
-							if (mapManifestHash != null && !mapManifestHash.equals(creds[i].getManifestHash())) {
+						String mapKey = (String)rosterMap.get(key);
+						if(mapKey == null || !creds[i].isTmsUpdate()) {
+							if (mapKey != null && !creds[i].isTmsUpdate()) {
 								RosterData rosterData = oasSource.getRosterData(creds[i]);
 								if(rosterData != null && rosterData.getAuthData() != null) {
 									oasSink.deleteAllManifests(String.valueOf(rosterData.getAuthData().getTestRosterId()));
 								}
 								oasSink.deleteRosterData(creds[i]);
-								logger.info("*****  Manifest changed for " + key + ", removing old manifest data from cache");
+								logger.warn("*****  Manifest changed for " + key + ", removing old manifest data from cache");
 							}
 							RosterData rosterData = oasSource.getRosterData(creds[i]);
+							int testRosterId = rosterData.getAuthData().getTestRosterId();
 							if(rosterData != null && rosterData.getAuthData() != null) {
-								Manifest manifest = oasSource.getManifest(String.valueOf(rosterData.getAuthData().getTestRosterId()), creds[i].getAccesscode());
+								Manifest manifest = oasSource.getManifest(String.valueOf(testRosterId), creds[i].getAccesscode());
 								if(manifest != null) {
-									manifest.setRandomDistractorSeed(rosterData.getAuthData().getRandomDistractorSeedNumber());
+									//manifest.setRandomDistractorSeed(rosterData.getAuthData().getRandomDistractorSeedNumber());
+									oasSink.putManifest(String.valueOf(testRosterId), creds[i].getAccesscode(), manifest);
 									logger.info("*****  Got roster data for " + key);
 								} else {
 									logger.debug("*****  No valid manifest in DB for " + key);
@@ -143,7 +145,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 							} else {
 								logger.debug("*****  No valid manifest in DB for " + key);
 							}
-							rosterMap.put(key, creds[i].getManifestHash());
+							rosterMap.put(key, key);
 						} else {
 							logger.debug("*****  Roster data for " + key + " already present.\n");
 						}

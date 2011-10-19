@@ -5,13 +5,13 @@ public class StudentCredentials {
 	private String password;
 	private String accesscode;
 	
-	private Long manifestHash;
+	private boolean tmsUpdate;
 	
-	public Long getManifestHash() {
-		return manifestHash;
+	public boolean isTmsUpdate() {
+		return tmsUpdate;
 	}
-	public void setManifestHash(Long manifestHash) {
-		this.manifestHash = manifestHash;
+	public void setTmsUpdate(boolean tmsUpdate) {
+		this.tmsUpdate = tmsUpdate;
 	}
 	public String getUsername() {
 		return username.toUpperCase();

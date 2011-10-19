@@ -85,6 +85,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			}
 			if(manifests[i].getRosterRestartNumber() > restartCount) {
 				restartCount = manifests[i].getRosterRestartNumber();
+				logger.debug("found higher restart number " + restartCount + " on manifest " + manifests[i].getAccessCode());
 			}
 		}
 		for(int i=0;i<manifests.length;i++) {
