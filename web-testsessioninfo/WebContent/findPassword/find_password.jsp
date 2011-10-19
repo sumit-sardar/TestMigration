@@ -77,7 +77,7 @@ function ignoreEnterKey( e ) {
             <tr>
                 <td colspan="2">
                 <br/><h1>Get new Password</h1>
-                Required fields are marked by a blue asterisk <span class="asterisk">*</span>. 
+                Required fields are marked by an asterisk <span class="asterisk">*</span>. 
                 <br/><br/>
                 </td>
             </tr>
