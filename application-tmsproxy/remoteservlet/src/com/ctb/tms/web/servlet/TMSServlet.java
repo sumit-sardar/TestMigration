@@ -846,6 +846,7 @@ public class TMSServlet extends HttpServlet {
 			newist.setMrk(ist.getMrk().equals("T")?true:false);
 			newist.setEid(ist.getEid());
 			newtsd.setMseq(ist.getMseq());
+			newist.addNewOv().addV(ist.getOvArray(0).getV());
 			ConsolidatedRestartData.Tsd.Ist.Rv[] rva = ist.getRvArray();
 			for(int j=0;j<rva.length;j++) {
 				ConsolidatedRestartData.Tsd.Ist.Rv rv = rva[j];

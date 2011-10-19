@@ -253,6 +253,12 @@ public class RosterData implements Serializable {
 			                    	ird.setEid(Integer.parseInt(ist.getEid()));
 			                    	ird.setItemId(ist.getIid());
 			                    	ird.setResponse(response);
+			                    	String score = "0";
+			                    	if(ist.getOvArray(0) != null && ist.getOvArray(0).getVArray(0) != null) {
+			                    		score = ist.getOvArray(0).getVArray(0);
+			                    	}
+			                    	if(score.trim().equals("")) score = "0";
+			                    	ird.setScore(Integer.parseInt(score));
 			                    	ird.setResponseElapsedTime((int)ist.getDur());
 			                    	ird.setResponseSeqNum(tsd.getMseq().intValue());
 			                    	ird.setStudentMarked(studentMarked);
