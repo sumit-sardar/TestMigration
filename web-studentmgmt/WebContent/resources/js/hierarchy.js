@@ -337,8 +337,11 @@ function createMultiNodeSelectedTree(jsondata) {
 		
 			
 	function populateGrid() {
-	var studentIdTitle = $("#studentIdLabelName").val();
-         $("#list2").jqGrid({         
+	
+		$("#searchresultheader").css("visibility","visible");	
+	
+		var studentIdTitle = $("#studentIdLabelName").val();
+        $("#list2").jqGrid({         
           url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
 		 datatype: "json",         
@@ -360,7 +363,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		   	studentList = JSON.stringify(obj.studentProfileInformation);
 		   	idarray = obj.studentIdArray.split(",");
 		   	return obj.studentProfileInformation.length; } },
-		   	 
+		   	
 			rowNum:20,
 			loadonce:true, 
 			multiselect:false,
@@ -370,7 +373,6 @@ function createMultiNodeSelectedTree(jsondata) {
 			sortorder: "asc",
 			height: 370,  
 			editurl: 'getStudentForSelectedOrgNodeGrid.do',
-			caption:"Student List",
 			ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));

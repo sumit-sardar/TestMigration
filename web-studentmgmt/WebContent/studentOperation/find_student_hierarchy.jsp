@@ -25,6 +25,22 @@
 		 	</td>
 	 		<td class="transparent" width="8px">&nbsp;</td>
 		 	<td >
+	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header gridTableHeader">
+	      			<table border="0">
+	    			<tr>
+	    			<td width="100%">&nbsp;Student List</td>
+	    			<td width="175">
+	    			
+					<div class="search_input_box">
+						<input class="search_input" type="text" name="username" >
+						&nbsp;&nbsp;
+						<img src="/StudentManagementWeb/resources/images/arrow.png" width="16" height="16">
+					 </div>
+
+	    			</td>
+	      			</tr>
+	      			</table>
+	      		</div>
 	    		<table id="list2" class="gridTable"></table>
 				<div id="pager2" class="gridTable"></div>			
 		 </td>
