@@ -233,10 +233,12 @@ function createMultiNodeSelectedTree(jsondata) {
 							assignedOrgNodeIds = $(this).attr("id") +"," + assignedOrgNodeIds; 
 						}
 						optionHtml = currentlySelectedNode;
+					} else{
+						currentlySelectedNode = optionHtml;
 					}
 					
 				} else {
-					if(isexist){
+				if(isexist){
 					currentlySelectedNode ="";
 						//var newcurrentlySelectedNode = "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(this).attr("id")+"');>"+ trim($(this).text())+"</a>";
 						 var nodeId = trim($(this).attr("id"));	
@@ -275,6 +277,8 @@ function createMultiNodeSelectedTree(jsondata) {
 								assignedOrgNodeIds = newassignedOrgNodeIds;
 							}
 						}
+					} else {
+						currentlySelectedNode = optionHtml;
 					}
 				}
 			}
