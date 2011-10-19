@@ -190,7 +190,7 @@
 										<td class="transparent">
 											<input type="text" onkeypress="return constrainNumericChar(event);"	 style="width: 40px;" maxlength="3" id="faxNumber1" name="faxNumber1">
 											- <input type="text" onkeypress="return constrainNumericChar(event);"   style="width: 40px;" maxlength="3" id="faxNumber2" name="faxNumber2">
-											- <input type="text" onkeypress="return constrainNumericChar(event);" style="width: 40px;" maxlength="4" id="faxNumber3" iname="faxNumber3">
+											- <input type="text" onkeypress="return constrainNumericChar(event);" style="width: 40px;" maxlength="4" id="faxNumber3" name="faxNumber3">
 										</td>
 									</tr>
 							  	</tbody>
