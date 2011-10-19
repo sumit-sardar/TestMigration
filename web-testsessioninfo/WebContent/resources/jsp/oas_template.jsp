@@ -80,9 +80,7 @@
 					    <div id="featureTabsContainer">
 					      <a href="#" id="assessmentsTabLink" onClick="gotoAction('assessments.do');" class="tab rounded {top transparent}">Assessments</a>
 					      <a href="#" id="organizationsTabLink" onClick="gotoAction('organizations.do');" class="tab rounded {top transparent}">Organizations</a>
-                		<c:if test="${sessionScope.showReportTab}">
 					      <a href="#" id="reportsTabLink" onClick="gotoAction('reports.do');" class="tab rounded {top transparent}">Reports</a>
-                		</c:if>					    
 					      <a href="#" id="servicesTabLink" onClick="gotoAction('services.do');" class="tab rounded {top transparent}">Services</a>
 					    </div>
  
@@ -96,16 +94,12 @@
 								<td class="toolbar" width="120">
 									<a href="#" id="sessionsLink" onClick="gotoMenuAction('assessments.do', 'sessionsLink');"><b>Sessions</b></a>						
 								</td>
-							  <c:if test="${sessionScope.hasScoringConfigured}">			      
 								<td class="toolbar" width="120">
 									<a href="#" id="studentScoringLink" onClick="gotoMenuAction('assessments.do', 'studentScoringLink');"><b>Student Scoring</b></a>						
 								</td>
-                			  </c:if>
-							  <c:if test="${sessionScope.hasProgramStatusConfigured}">			      
 								<td class="toolbar" width="120">
 									<a href="#" id="programStatusLink" onClick="gotoMenuAction('assessments.do', 'programStatusLink');"><b>Program Status</b></a>						
 								</td>
-                			  </c:if>
 								<td width="*">&nbsp;</td>		
 							</tr>
 							</table>						
@@ -141,11 +135,9 @@
 							<div id="services" style="display: none">	
 							<table class="toolbar">
 							<tr class="toolbar">
-							  <c:if test="${sessionScope.hasLicenseConfigured}">			      
 								<td class="toolbar" width="120">
 									<a href="#" id="manageLicensesLink" onClick="gotoMenuAction('services.do', 'manageLicensesLink');"><b>Manage Licenses</b></a>						
 								</td>
-                			  </c:if>
 								<td  class="toolbar-alignleft" width="330">
 								
 									<div id="service-menu">

@@ -24,7 +24,7 @@
 					 -->
                 	<a href="/TestSessionInfoWeb/homepage/HomePageController.jpf?OldUI=true"><b>Help</b></a>&nbsp;&nbsp;
 					<img src="<%=request.getContextPath()%>/resources/images/dotdot.jpg"/>&nbsp;&nbsp;
-					<a href="#" onclick="gotoAction('logout.do');"><b>Logout</b></a>
+					<a href="#" onclick="gotoAction('logout.do');"><b>Logout</b></a>&nbsp;&nbsp;
 				</div>
 				</td>
 			</tr>
