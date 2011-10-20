@@ -34,7 +34,7 @@
 					<div class="search_input_box">
 						<input class="search_input" type="text" name="username" >
 						&nbsp;&nbsp;
-						<img src="/StudentManagementWeb/resources/images/arrow.png" width="16" height="16">
+						<img src="/StudentManagementWeb/resources/images/magnifier.png" width="16" height="16">
 					 </div>
 
 	    			</td>
