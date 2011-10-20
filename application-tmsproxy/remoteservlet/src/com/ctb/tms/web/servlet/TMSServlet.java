@@ -759,10 +759,10 @@ public class TMSServlet extends HttpServlet {
 		}
 		manifest.setRosterCompletionStatus("IP");
 		manifest.setStudentName(rd.getAuthData().getStudentFirstName() + " " + rd.getAuthData().getStudentLastName());
+		loginResponse.setRestartNumber(BigInteger.valueOf(restartCount));
 		String result = response.xmlText();
 		int newRestartCount = restartCount + 1;
 		manifest.setRosterRestartNumber(newRestartCount);
-		loginResponse.setRestartNumber(BigInteger.valueOf(newRestartCount));
 		rd.getAuthData().setRestartNumber(newRestartCount);
 		if(loginResponse.getTutorial() != null) {
 			if(manifest.getTutorialTaken() == null) {
