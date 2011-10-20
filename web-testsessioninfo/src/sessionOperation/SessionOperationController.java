@@ -139,7 +139,7 @@ public class SessionOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/SessionWeb/programOperation/assessments.do";
+            String url = "/TestSessionInfoWeb/programOperation/assessments.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -253,6 +253,7 @@ public class SessionOperationController extends PageFlowController {
         boolean TABECustomer = isTABECustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
         
+        /*
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 
@@ -268,6 +269,15 @@ public class SessionOperationController extends PageFlowController {
         this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         
      	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs));
+        */
+        
+        this.getSession().setAttribute("showReportTab", new Boolean(true));
+        this.getSession().setAttribute("hasUploadDownloadConfigured", new Boolean(true));
+        this.getSession().setAttribute("hasProgramStatusConfigured", new Boolean(true));
+        this.getSession().setAttribute("hasScoringConfigured", new Boolean(true));
+        this.getSession().setAttribute("canRegisterStudent", new Boolean(true));
+        this.getSession().setAttribute("hasLicenseConfigured", new Boolean(true));
+        
         
 	}
 
@@ -391,6 +401,7 @@ public class SessionOperationController extends PageFlowController {
     
     private Boolean hasUploadDownloadConfig()
     {
+        /*
         Boolean hasUploadDownloadConfig = Boolean.FALSE;
         try {   
             hasUploadDownloadConfig = this.testSessionStatus.hasUploadDownloadConfig(this.userName);
@@ -399,10 +410,12 @@ public class SessionOperationController extends PageFlowController {
             be.printStackTrace();
         }
         return hasUploadDownloadConfig;
+        */
+    	return Boolean.TRUE;
     }
 
     private Boolean hasProgramStatusConfig()
-    {
+    {	/*
         Boolean hasProgramStatusConfig = Boolean.FALSE;
         try {   
             hasProgramStatusConfig = this.testSessionStatus.hasProgramStatusConfig(this.userName);
@@ -411,6 +424,8 @@ public class SessionOperationController extends PageFlowController {
             be.printStackTrace();
         }
         return hasProgramStatusConfig;
+        */
+    	return Boolean.TRUE;
     }
     
 }
