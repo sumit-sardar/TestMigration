@@ -1011,9 +1011,11 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	
 	function openTreeNodes(orgNodeId) {
+	var isopened = false;
 		var isIdExist = $('#innerID', '#'+assignedOrgNodeIds).length;
 			if(isIdExist > 0){
-				$('#innerID').jstree('check_node', "#"+assignedOrgNodeIds); 
+				$('#innerID').jstree('check_node', "#"+assignedOrgNodeIds);
+				isopened = true; 
 			} else {
 				var leafParentOrgNodeId = "";
 				
@@ -1030,11 +1032,26 @@ function fillselectedOrgNode( elementId, orgList) {
 								$('#innerID').jstree('open_node', "#"+tmpNode); 
 							
 				  		 }
-				  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
+				  		 $('#innerID').jstree('check_node', "#"+orgNodeId);
+				  		 isopened = true; 
 			  		 }
 		 		 hideCheckBox();
 		 }
-		 
+		 if(!isopened) {
+			var parentOrgNodeId = $("#" + orgNodeId).parent("ul");
+			
+			var ancestorNodes = parentOrgNodeId.parentsUntil(".jstree","li");
+			//open tree nodes from root to the clicked node	
+			if(ancestorNodes.length > 0) {
+				for(var count = ancestorNodes.length - 1; count >= 0; --count) {
+		  		 		var tmpNode = ancestorNodes[count].id;
+						$('#innerID').jstree('open_node', "#"+tmpNode); 
+					
+		  		 }
+		  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
+	  		 } 
+	  		  hideCheckBox();
+		}
 		
 	}
 	
