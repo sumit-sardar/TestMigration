@@ -225,7 +225,8 @@ function populateGrid() {
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 370,  
+			height: 370,
+			width: 975, 
 			editurl: 'userOrgNodeHierarchyGrid.do',
 			caption:"User List",
 			onPaging: function() {
