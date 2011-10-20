@@ -8,7 +8,7 @@ public class Organization {
 	private Integer orgCategoryLevel;
 	private Integer customerId;
 	private Boolean isAssociate = new Boolean (true);
-	
+	private Integer orgCategoryId;
 	
 	
 	public Boolean getIsAssociate() {
@@ -70,5 +70,11 @@ public class Organization {
 	 */
 	public void setCustomerId(Integer customerId) {
 		this.customerId = customerId;
+	}
+	public Integer getOrgCategoryId() {
+		return orgCategoryId;
+	}
+	public void setOrgCategoryId(Integer orgCategoryId) {
+		this.orgCategoryId = orgCategoryId;
 	}
 }

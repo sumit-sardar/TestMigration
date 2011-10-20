@@ -640,6 +640,7 @@ public class UserPathListUtils
                     pathNode.setOrgParentNodeId(node.getParentOrgNodeId());
 					pathNode.setCustomerId(node.getCustomerId());
                     nodeList.add(pathNode);
+                    pathNode.setOrgCategoryId(node.getOrgNodeCategoryId());
                 }
             }
         }
