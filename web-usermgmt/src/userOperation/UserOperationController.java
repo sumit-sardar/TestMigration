@@ -5,6 +5,7 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import utils.FilterSortPageUtils;
 import utils.MessageInfo;
 import utils.OptionList;
 import utils.Organization;
+import utils.OrgnizationComparator;
 import utils.TreeData;
 import utils.UserPathListUtils;
 import utils.UserSearchUtils;
@@ -311,7 +313,8 @@ public class UserOperationController extends PageFlowController
 
 			ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
 			UserNodeData associateNode = UserPathListUtils.populateAssociateNode(this.userName,this.userManagement);
-			ArrayList<Organization> selectedList  = UserPathListUtils.buildassoOrgNodehierarchyList(associateNode);	
+			ArrayList<Organization> selectedList  = UserPathListUtils.buildassoOrgNodehierarchyList(associateNode);
+			Collections.sort(selectedList, new OrgnizationComparator());
 			ArrayList <Integer> orgIDList = new ArrayList <Integer>();
 			ArrayList<TreeData> data = new ArrayList<TreeData>();
 
@@ -319,26 +322,30 @@ public class UserOperationController extends PageFlowController
 					this.userManagement, selectedList.get(0).getOrgNodeId()); 
 			ArrayList<Organization> orgNodesList = UserPathListUtils.buildOrgNodehierarchyList(und, orgIDList,completeOrgNodeList);	
 
-			jsonTree = generateTree(orgNodesList);
+			jsonTree = generateTree(orgNodesList,selectedList);
 
 			for (int i= 0; i < selectedList.size(); i++) {
 
 				if (i == 0) {
 
-					preTreeProcess (data,orgNodesList);
+					preTreeProcess (data,orgNodesList,selectedList);
 
 				} else {
 
 					Integer nodeId = selectedList.get (i).getOrgNodeId();
 					if (orgIDList.contains(nodeId)) {
 						continue;
+					} else if (!selectedList.get (i).getIsAssociate()) {
+						
+						continue;
+						
 					} else {
 
 						orgIDList = new ArrayList <Integer>();
 						UserNodeData undloop = UserPathListUtils.OrgNodehierarchy(this.userName, 
 								this.userManagement,nodeId);   
 						ArrayList<Organization> orgNodesListloop = UserPathListUtils.buildOrgNodehierarchyList(undloop, orgIDList, completeOrgNodeList);	
-						preTreeProcess (data,orgNodesListloop);
+						preTreeProcess (data,orgNodesListloop,selectedList);
 					}
 				}
 
@@ -868,14 +875,14 @@ public class UserOperationController extends PageFlowController
     /////////////////////////////////////////////////////////////////////////////////////////////    
 	
 
-	private String generateTree (ArrayList<Organization> orgNodesList) throws Exception{	
+	private String generateTree (ArrayList<Organization> orgNodesList,ArrayList<Organization> selectedList) throws Exception{	
 
 		Organization org = orgNodesList.get(0);
 		TreeData td = new TreeData ();
 		td.setData(org.getOrgName());
 		td.getAttr().setId(org.getOrgNodeId().toString());
 		td.getAttr().setCategoryID(org.getOrgCategoryLevel().toString());
-		treeProcess (org,orgNodesList,td);
+		treeProcess (org,orgNodesList,td,selectedList);
 		BaseTree baseTree = new BaseTree ();
 		baseTree.getData().add(td);
 		Gson gson = new Gson();
@@ -886,28 +893,40 @@ public class UserOperationController extends PageFlowController
 	}
 
 	
-	private static void preTreeProcess (ArrayList<TreeData> data,ArrayList<Organization> orgList) {
+	private static void preTreeProcess (ArrayList<TreeData> data,ArrayList<Organization> orgList,ArrayList<Organization> selectedList) {
 
 		Organization org = orgList.get(0);
 		TreeData td = new TreeData ();
 		td.setData(org.getOrgName());
 		td.getAttr().setId(org.getOrgNodeId().toString());
 		td.getAttr().setCustomerId(org.getCustomerId().toString());
-		treeProcess (org,orgList,td);
+		treeProcess (org,orgList,td,selectedList);
 		data.add(td);
 	}
 	
-	private static void treeProcess (Organization org,List<Organization> list,TreeData td) {
+	private static void treeProcess (Organization org,List<Organization> list,TreeData td,ArrayList<Organization> selectedList) {
 
 		for (Organization tempOrg : list) {
+			
 			if (org.getOrgNodeId().equals(tempOrg.getOrgParentNodeId())) {
+				
+				if (selectedList.contains(tempOrg)) {
+					
+					int index = selectedList.indexOf(tempOrg);
+					if (index != -1) {
+						
+						Organization selectedOrg = selectedList.get(index);
+						selectedOrg.setIsAssociate(false);
+					}
+					
+				}
 				TreeData tempData = new TreeData ();
 				tempData.setData(tempOrg.getOrgName());
 				tempData.getAttr().setId(tempOrg.getOrgNodeId().toString());
 				tempData.getAttr().setCategoryID(tempOrg.getOrgCategoryLevel().toString());
 				tempData.getAttr().setCustomerId(tempOrg.getCustomerId().toString());
 				td.getChildren().add(tempData);
-				treeProcess (tempOrg,list,tempData);
+				treeProcess (tempOrg,list,tempData,selectedList);
 			}
 		}
 	}
