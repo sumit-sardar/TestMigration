@@ -123,59 +123,60 @@ var styleClass;
 		"plugins" : [ "themes", "json_data", "checkbox"]
     });
     
+   
+    	$("#innerID").delegate("li a","click",
+    		 function(e) {
+    				styleClass = $(this.parentNode).attr('class');
+					if(styleClass.indexOf("unchecked") > 0){
+					$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
+					}else {
+					$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
+					}
+					updateOrganization();
+			   	 }
+			  );
     
-    	$("#innerID").delegate("li a","click", function(e) {
-			 styleClass = $(this.previousSibling.parentNode).attr('class');
-						
-			if(styleClass.indexOf("unchecked") > 0){
-			$(this.previousSibling.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
-			}else {
-			$(this.previousSibling.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
-			}
-			updateOrganization();
-			
-		});
-    
-   		 $("#innerID").bind("change_state.jstree", function (e, d) { 
-			updateOrganization();
-        });
+   		 $("#innerID").bind("change_state.jstree",
+   		 	 function (e, d) { 
+				updateOrganization();
+        		}
+        	);
 }
 
 
-function updateOrganization(){
-    	var currentlySelectedNode ="";
-    	assignedOrgNodeIds = "";
-        
-		$("#innerID").find(".jstree-checked").each(function(i, element){
+	function updateOrganization(){
+	    	var currentlySelectedNode ="";
+	    	assignedOrgNodeIds = "";
+	        
+			$("#innerID").find(".jstree-checked").each(
+				function(i, element){
+						if(currentlySelectedNode=="") {
+							currentlySelectedNode = getText(element);
+						} else {
+							currentlySelectedNode = currentlySelectedNode + " , " + getText(element);
+						}
+			    		if(assignedOrgNodeIds=="") {
+							assignedOrgNodeIds = $(element).attr("id")+ "|" + $(element).attr("customerId");
+						} else {
+							assignedOrgNodeIds = $(element).attr("id")+ "|" + $(element).attr("customerId") +"," + assignedOrgNodeIds;
+						}
+					}
+				);
 				
-					if(currentlySelectedNode=="") {
-						
-						currentlySelectedNode = getText(element);
-					} else {
-						currentlySelectedNode = currentlySelectedNode + " , " + getText(element);
-					
-					}
-		    		if(assignedOrgNodeIds=="") {
-						assignedOrgNodeIds = $(element).attr("id")+ "|" + $(element).attr("customerId");
-					} else {
-						assignedOrgNodeIds = $(element).attr("id")+ "|" + $(element).attr("customerId") +"," + assignedOrgNodeIds;
-					}
-			});
-			
 			if(currentlySelectedNode.length > 0 ) {
 					$("#notSelectedOrgNodes").css("display","none");
 					$("#selectedOrgNodesName").text(currentlySelectedNode);	
 				} else {
 					$("#notSelectedOrgNodes").css("display","inline");
 					$("#selectedOrgNodesName").text("");	
-				}
-        	
-}
+			}
+	        	
+	}
 
 
 function getText(element){
 	var elementText  = element.childNodes[1].lastChild.data;
-return elementText;
+	return elementText;
 }
 
 function  searchUser(){
@@ -188,8 +189,8 @@ function  searchUser(){
 function populateTreeSelect() {
 			$("#notSelectedOrgNodes").css("display","inline");
 			$("#selectedOrgNodesName").text("");	
+			$("#innerID").undelegate();
 			createMultiNodeSelectedTree (orgTreeHierarchy);	
-
 }
 
 
