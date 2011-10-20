@@ -281,6 +281,10 @@ function createMultiNodeSelectedTree(jsondata) {
 									}
 									
 								}
+							}
+							 if(newassignedOrgNodeIds == "") {
+								assignedOrgNodeIds = "";
+							} else {
 								assignedOrgNodeIds = newassignedOrgNodeIds;
 							}
 						}
