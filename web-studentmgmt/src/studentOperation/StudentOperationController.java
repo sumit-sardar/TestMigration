@@ -1293,16 +1293,16 @@ public class StudentOperationController extends PageFlowController {
 	 */
 	private boolean isMandatoryBirthDate(CustomerConfiguration[] customerConfigurations) 
 	{     
-		boolean disableMandatoryBirthdateValue = false;
+		boolean mandatoryBirthdateValue = true;
 		for (int i=0; i < customerConfigurations.length; i++)
 		{
 			CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Disable_Mandatory_Birth_Date") && cc.getDefaultValue().equalsIgnoreCase("T"))
 			{
-				disableMandatoryBirthdateValue = true; 
+				mandatoryBirthdateValue = false; 
 			}
 		}
-		return disableMandatoryBirthdateValue;
+		return mandatoryBirthdateValue;
 
 
 	}
