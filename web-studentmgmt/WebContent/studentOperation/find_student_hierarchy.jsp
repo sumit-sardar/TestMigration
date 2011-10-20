@@ -28,16 +28,13 @@
 	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header gridTableHeader">
 	      			<table border="0">
 	    			<tr>
-	    			<td width="100%">&nbsp;Student List</td>
-	    			<td width="200">
-	    			
-					<div class="search_input_box">
-						<input class="search_input" type="text" name="username" >
-						&nbsp;&nbsp;
-						<img src="/StudentManagementWeb/resources/images/magnifier.png" width="16" height="16">
-					 </div>
-
-	    			</td>
+	    				<td width="100%">&nbsp;Student List</td>
+	    				<td>
+							<div class="search_input_box">
+								<input class="search_input" type="text" name="searchControl" >
+								<img src="/StudentManagementWeb/resources/images/magnifier.png" class="search_image" onclick="alert('search');">
+							 </div>
+	    				</td>
 	      			</tr>
 	      			</table>
 	      		</div>

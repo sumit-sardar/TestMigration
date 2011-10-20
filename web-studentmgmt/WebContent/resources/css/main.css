@@ -269,19 +269,13 @@ input:focus {
 
 
 .search_input {
-	
   border: none;
   border-color: #ffffff; 
   border-style: none; 
   border-width: 0px; 
-  
-  
-  --background: #fff;
-  --font-family: Arial, Helvetica, Sans Serif; 
-  --font-size:10px; 
-  --font-weight:normal; 
-  height: 11px;
-  width: 150px;
+  height: 12px;
+  width: 130px;
+  vertical-align: top;
 }
   
 .search_input:focus {
@@ -291,12 +285,19 @@ input:focus {
     border:0px none rgba(255,255,255, 255); 
 }
 
+.search_image {
+	width: 15px;
+	height: 15px;
+	cursor: pointer;
+}
 
 .search_input_box {
   background:  url(search_sm.png) no-repeat left top;
-  padding: 0px 0px 0px 10px;
+  padding: 3px 0px 0px 10px;
+  --height: 19px;
+  --width: 168px;
   height: 19px;
-  width: 200px;
+  width: 170px;
 }
 
 
