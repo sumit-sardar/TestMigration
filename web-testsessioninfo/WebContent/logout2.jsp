@@ -161,7 +161,7 @@
         </tr>
         <tr>  
             <td><img src="<%=request.getContextPath()%>/resources/images/transparent.gif" width="6" height="24" border="0"></td>
-            <td><a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="return openCOPPAWindow('this.href');">Review COPPA Policies</a> and its requirements for parental consents to collect or use personal information concerning children. </td>
+            <td><a href="<%=request.getContextPath()%>/resources/html/coppa_policy.html" onClick="return openCOPPAWindow(this.href);">Review COPPA Policies</a> and its requirements for parental consents to collect or use personal information concerning children. </td>
         </tr>
         </table>
         <!--End privacy Statement-->
