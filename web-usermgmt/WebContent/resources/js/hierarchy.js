@@ -219,6 +219,7 @@ function populateGrid() {
 		   	],
 		   	jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId",records: function(obj) { return obj.userProfileInformation.length; } },
 		   	 
+		   	loadui: "disable",
 			rowNum:20,
 			loadonce:true, 
 			multiselect:false,

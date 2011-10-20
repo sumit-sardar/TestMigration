@@ -375,6 +375,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		   	idarray = obj.studentIdArray.split(",");
 		   	return obj.studentProfileInformation.length; } },
 		   	
+		   	loadui: "disable",
 			rowNum:20,
 			loadonce:true, 
 			multiselect:false,
@@ -457,6 +458,7 @@ function createMultiNodeSelectedTree(jsondata) {
 		   	idarray = obj.studentIdArray.split(",");
 		   	return obj.studentProfileInformation.length; } },
 		   	 
+		   	loadui: "disable",
 			rowNum:20,
 			loadonce:true, 
 			multiselect:false,
