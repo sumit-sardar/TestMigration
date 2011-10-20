@@ -422,6 +422,7 @@ public class ViewMonitorStatusController extends PageFlowController
         		 java.security.Principal principal = getRequest().getUserPrincipal();
         	        if (principal != null) 
         	            this.userName = principal.toString();  
+       	        getSession().setAttribute("userName", this.userName);
         	}
 
         	String reportUrl = null;        	

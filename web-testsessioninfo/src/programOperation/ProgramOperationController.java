@@ -54,6 +54,7 @@ public class ProgramOperationController extends PageFlowController {
 			this.userName = principal.toString();
 		else            
 			this.userName = (String)getSession().getAttribute("userName");
+        getSession().setAttribute("userName", this.userName);
 	}
 
 	/**
