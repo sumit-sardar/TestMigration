@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -322,7 +323,7 @@ public class UserOperationController extends PageFlowController
 					this.userManagement, selectedList.get(0).getOrgNodeId()); 
 			ArrayList<Organization> orgNodesList = UserPathListUtils.buildOrgNodehierarchyList(und, orgIDList,completeOrgNodeList);	
 
-			jsonTree = generateTree(orgNodesList,selectedList);
+			//jsonTree = generateTree(orgNodesList,selectedList);
 
 			for (int i= 0; i < selectedList.size(); i++) {
 
@@ -354,6 +355,13 @@ public class UserOperationController extends PageFlowController
 
 			Gson gson = new Gson();
 			baseTree.setData(data);
+			Collections.sort(baseTree.getData(), new Comparator<TreeData>(){
+
+				public int compare(TreeData t1, TreeData t2) {
+					return (t1.getData().toUpperCase().compareTo(t2.getData().toUpperCase()));
+				}
+					
+			});
 			jsonTree = gson.toJson(baseTree);
 			String pattern = ",\"children\":[]";
 			jsonTree = jsonTree.replace(pattern, "");
