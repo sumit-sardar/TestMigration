@@ -2,6 +2,7 @@
 <%
     Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); 
+	String []studentIdArrValue = (String[])request.getAttribute("studentIdArrValue");
 	
 	
 
@@ -73,12 +74,11 @@
 									    <tr class="transparent">
 									        <td width="110" nowrap="" class="transparent alignRight">
 									        
-									         <c:if test="${isStudentIdConfigurable}">   
-									        <netui:content value="${studentIdArrValue[0]}:"/></td>
-									         </c:if>
-									          <c:if test="${!isStudentIdConfigurable}">   
-									        <netui:content value="Student ID:"/></td>
-									         </c:if>
+									         <%if(isStudentIdConfigurable) {%> 
+												 <%=studentIdArrValue[0] %>	:
+											 <%} else {%> 
+												Student ID:	
+											 <%} %>
 									        <td class="transparent"><label style="width: 200px;" maxlength="32" id="studentNumberView" name="studentNumberView"></td>
 									    </tr>
 									    
