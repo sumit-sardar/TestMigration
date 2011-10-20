@@ -1018,8 +1018,7 @@ function fillselectedOrgNode( elementId, orgList) {
 				isopened = true; 
 			} else {
 				var leafParentOrgNodeId = "";
-				
-					for(var i=0; i< organizationNodes.length; i++){
+				for(var i=0; i< organizationNodes.length; i++){
 						if(orgNodeId == organizationNodes[i].orgNodeId){
 							var leafOrgNodePath = organizationNodes[i].leafNodePath;
 							 leafParentOrgNodeId = leafOrgNodePath.split(",");
@@ -1408,9 +1407,11 @@ function fillselectedOrgNode( elementId, orgList) {
 		disablenextprev(indexOfId,str.length-1);
 		
       for(var key in stuAccommodation) {
-		     $("#view_Student_Accommodation_Information :checkbox[name='" + key+ "']").attr('checked', stuAccommodation[key]);
-		     $("#view_Student_Accommodation_Information select[name='" + key+ "']").val(stuAccommodation[key]);
+             $("#view_Student_Accommodation_Information :checkbox[name='" + "view" + key+ "']").attr('checked', stuAccommodation[key]);
+		     $("#view_Student_Accommodation_Information select[name='" + "view" + key+ "']").val(stuAccommodation[key]);
 		}
+			setQuestionColorOptionsInView();
+			setAnswerColorOptionsInView();
 		
 		for(var count=0; count< stuDemographic.length; count++) {
 			 if(stuDemographic[count]['studentDemographicValues'].length == 1){

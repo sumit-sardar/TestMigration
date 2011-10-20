@@ -712,3 +712,77 @@ function enableAudioFiles() {
 		audioFiles.selectedIndex=0;
 	}
 }
+
+
+
+
+function setQuestionColorOptionsInView() 
+{
+    var bgrdbox = document.getElementById("viewquestion_bgrdColor");
+    var selIndex = bgrdbox.selectedIndex;
+    var option = bgrdbox.options[selIndex];
+    var chosen = option.value;
+    
+    var selbox = document.getElementById("viewquestion_fontColor"); 
+    selbox.options.length = 0;
+
+    if (chosen == "Dark blue") {
+      selbox.options[selbox.options.length] = new Option('White', 'White');
+    }
+    else
+    if (chosen == "Black") {
+      selbox.options[selbox.options.length] = new Option('Green', 'Green');
+      selbox.options[selbox.options.length] = new Option('White', 'White');
+      selbox.options[selbox.options.length] = new Option('Yellow', 'Yellow');
+    }
+    else {
+      selbox.options[selbox.options.length] = new Option('Black', 'Black');
+      selbox.options[selbox.options.length] = new Option('Dark blue', 'Dark blue');
+      selbox.options[selbox.options.length] = new Option('Dark brown', 'Dark brown');
+    }
+    
+    var questionBox = document.getElementById("viewQuestionBox");
+    setBackgroundColor(questionBox, chosen);
+
+    var colorbox = document.getElementById("viewquestion_fontColor"); 
+    var selectedIndex = colorbox.selectedIndex;
+    var colorOption = colorbox.options[selectedIndex];
+    var colorValue = colorOption.value;
+    setColor(questionBox, colorValue);        
+}
+
+function setAnswerColorOptionsInView() 
+{
+    var bgrdbox = document.getElementById("viewanswer_bgrdColor");
+    var selIndex = bgrdbox.selectedIndex;
+    var option = bgrdbox.options[selIndex];
+    var chosen = option.value;
+    
+    var selbox = document.getElementById("viewanswer_fontColor"); 
+    selbox.options.length = 0;
+
+    if (chosen == "Dark blue") {
+      selbox.options[selbox.options.length] = new Option('White', 'White');
+    }
+    else
+    if (chosen == "Black") {
+      selbox.options[selbox.options.length] = new Option('Green', 'Green');
+      selbox.options[selbox.options.length] = new Option('White', 'White');
+      selbox.options[selbox.options.length] = new Option('Yellow', 'Yellow');
+    }
+    else {
+      selbox.options[selbox.options.length] = new Option('Black', 'Black');
+      selbox.options[selbox.options.length] = new Option('Dark blue', 'Dark blue');
+      selbox.options[selbox.options.length] = new Option('Dark brown', 'Dark brown');
+    }
+    
+    var answerBox = document.getElementById("viewAnswerBox");
+    setBackgroundColor(answerBox, chosen);
+
+    var colorbox = document.getElementById("viewanswer_fontColor"); 
+    var selectedIndex = colorbox.selectedIndex;
+    var colorOption = colorbox.options[selectedIndex];
+    var colorValue = colorOption.value;
+    setColor(answerBox, colorValue);    
+}
+

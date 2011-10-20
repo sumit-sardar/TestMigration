@@ -72,7 +72,7 @@
 											<td class="transparent"><label style="width: 200px;" maxlength="32" id="studentgenderView" name="studentgenderView"></td>
 									    </tr>
 									    <tr class="transparent">
-									        <td width="110" nowrap="" class="transparent alignRight">
+									        <td width="110"  class="transparent alignRight">
 									        
 									         <%if(isStudentIdConfigurable) {%> 
 												 <%=studentIdArrValue[0] %>	:
