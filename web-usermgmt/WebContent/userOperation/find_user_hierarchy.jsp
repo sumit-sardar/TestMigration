@@ -4,7 +4,7 @@
 <table class="transparent">
 
     <tr class="transparent">
-        <td style="border-color : #2E6E9E; padding: 10px">
+        <td style="border-color : #2E6E9E;">
         
       	<div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 1px solid #A6C9E2;">
 			<div id="titleMain"></div>
@@ -31,7 +31,7 @@
 				</div> 
 		    </td>
 		    
-		 	<td class="transparent" width="20px">&nbsp;</td>
+		 	<td class="transparent" width="8px">&nbsp;</td>
 		 	 
 		 	<td >	      
 		    	<table id="list2" ></table>

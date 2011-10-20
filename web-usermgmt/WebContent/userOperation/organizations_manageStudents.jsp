@@ -52,7 +52,7 @@
 					
 			 </td>
 			 
-			 <td class="simple" width="10px">&nbsp;</td>
+			 <td class="simple" width="10">&nbsp;</td>
 			  
 			 <td class="simple" valign="top">
 		    	<table id="list2" ></table>
