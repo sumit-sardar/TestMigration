@@ -1,7 +1,7 @@
 
 function submitPage()
 {
-	showLoading();
+	//showLoading();
    	document.forms[0].submit();
 }    
 
@@ -11,7 +11,7 @@ function gotoAction(action)
     if (action != null) {
     	document.forms[0].action = action;
     }
-	showLoading();
+	//showLoading();
    	document.forms[0].submit();
 }    
  
@@ -23,7 +23,7 @@ function gotoMenuAction(action, menuId)
     	}
     	document.forms[0].action = action;
     }
-	showLoading();
+	//showLoading();
    	document.forms[0].submit();
 }    
  

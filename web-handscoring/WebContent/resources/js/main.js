@@ -1,14 +1,14 @@
 
 function submitPage()
 {
-	showLoading();
+	//showLoading();
    	document.forms[0].submit();
 }    
 
   
 function gotoAction(action)
 {
-	showLoading();
+	//showLoading();
     if (action != null) {
     	document.forms[0].action = action;
     }
@@ -17,7 +17,7 @@ function gotoAction(action)
  
 function gotoMenuAction(action, menuId)
 {	
-	showLoading();
+	//showLoading();
     if (action != null) {
     	if (menuId != null) {
     		action = action + "?menuId=" + menuId;
