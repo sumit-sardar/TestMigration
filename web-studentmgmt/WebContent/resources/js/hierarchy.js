@@ -897,20 +897,39 @@ function fillselectedOrgNode( elementId, orgList) {
 		      	 
 		      }
 	      }
-	      var assignedOrgNodeIdsList = assignedOrgNodeIds.split(",");
-       if(!isValueChanged) {
-	      	var count = 0;
-	      	 for ( var i= 0; i<organizationNodes.length;i++) {
-	         	if(isExist(organizationNodes[i].orgNodeId, assignedOrgNodeIdsList)){
-	         		count++;
-	         	}
-	      	}
-	      	if(count != assignedOrgNodeIdsList.length) {
-	      		isValueChanged = true;
-	      	}
-	      	
-	      	
-      	}
+	      var assignedOrgNodeIdsList = [];
+	          if(String(assignedOrgNodeIds).indexOf(",") > 0) {
+		     	assignedOrgNodeIdsList = assignedOrgNodeIds.split(",");
+		     		if(!isValueChanged) {
+				      	var count = 0;
+				      	 for ( var i= 0; i<organizationNodes.length;i++) {
+				         	if(isExist(organizationNodes[i].orgNodeId, assignedOrgNodeIdsList)){
+				         		count++;
+				         	}
+				      	}
+				      	if(count != assignedOrgNodeIdsList.length) {
+				      		isValueChanged = true;
+				      	}
+			      	}
+		     	} else {
+		     		if(assignedOrgNodeIds != ""){
+		     		 	if(organizationNodes.length > 1) {
+			     		   	if(organizationNodes.length != 1) {
+					      		isValueChanged = true;
+					      	} 
+					    } else {
+					      		if(String(organizationNodes[0].orgNodeId) != assignedOrgNodeIds) {
+					      			isValueChanged = true;
+					      		}
+					      	}
+				      	
+				     } else {
+				     		isValueChanged = true;
+				     }
+		     	
+		     	}
+	     
+	       
       	
       	return  isValueChanged;
 	}
@@ -1015,6 +1034,8 @@ function fillselectedOrgNode( elementId, orgList) {
 			  		 }
 		 		 hideCheckBox();
 		 }
+		 
+		
 	}
 	
 	function hideCheckBox(){
