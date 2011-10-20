@@ -44,7 +44,8 @@ public class RosterData implements Serializable {
 	
 	public TmssvcResponseDocument getLoginDocument() {
 		XmlOptions xmlOptions = new XmlOptions(); 
-        xmlOptions = xmlOptions.setUnsynchronized();
+		xmlOptions.setCharacterEncoding("UTF-8");
+        xmlOptions.setUnsynchronized();
 		TmssvcResponseDocument response = this.document;
 		try {
 			// were credentials correct?
@@ -254,7 +255,7 @@ public class RosterData implements Serializable {
 			                    	ird.setItemId(ist.getIid());
 			                    	ird.setResponse(response);
 			                    	String score = "0";
-			                    	if(ist.getOvArray(0) != null && ist.getOvArray(0).getVArray(0) != null) {
+			                    	if(ist.getOvArray() != null && ist.getOvArray().length > 0 && ist.getOvArray(0) != null && ist.getOvArray(0).getVArray() != null && ist.getOvArray(0).getVArray().length > 0 && ist.getOvArray(0).getVArray(0) != null) {
 			                    		score = ist.getOvArray(0).getVArray(0);
 			                    	}
 			                    	if(score.trim().equals("")) score = "0";

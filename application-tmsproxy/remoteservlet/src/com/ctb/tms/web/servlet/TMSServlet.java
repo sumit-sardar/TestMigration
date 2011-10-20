@@ -760,7 +760,11 @@ public class TMSServlet extends HttpServlet {
 		manifest.setRosterCompletionStatus("IP");
 		manifest.setStudentName(rd.getAuthData().getStudentFirstName() + " " + rd.getAuthData().getStudentLastName());
 		loginResponse.setRestartNumber(BigInteger.valueOf(restartCount));
-		String result = response.xmlText();
+		
+		XmlOptions opts = new XmlOptions();
+		opts.setCharacterEncoding("UTF-8");
+		String result = response.xmlText(opts);
+		
 		int newRestartCount = restartCount + 1;
 		manifest.setRosterRestartNumber(newRestartCount);
 		rd.getAuthData().setRestartNumber(newRestartCount);
@@ -846,7 +850,9 @@ public class TMSServlet extends HttpServlet {
 			newist.setMrk(ist.getMrk().equals("T")?true:false);
 			newist.setEid(ist.getEid());
 			newtsd.setMseq(ist.getMseq());
-			newist.addNewOv().addV(ist.getOvArray(0).getV());
+			if(ist.getOvArray() != null && ist.getOvArray().length > 0 && ist.getOvArray(0) != null) {
+				newist.addNewOv().addV(ist.getOvArray(0).getV());
+			}
 			ConsolidatedRestartData.Tsd.Ist.Rv[] rva = ist.getRvArray();
 			for(int j=0;j<rva.length;j++) {
 				ConsolidatedRestartData.Tsd.Ist.Rv rv = rva[j];

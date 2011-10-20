@@ -194,7 +194,7 @@ public class ServletUtils {
 	public static void writeResponse(HttpServletResponse response, String xml, String mseq) {
 		try {
 			//if((mseq == null || lastMseq == null) || !mseq.equals(lastMseq)) {
-				response.setContentType("text/xml");
+				response.setContentType("text/html;charset=UTF-8");
 				response.setStatus(response.SC_OK);
 				PrintWriter out = response.getWriter();
 				out.println(xml);

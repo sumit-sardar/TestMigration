@@ -135,7 +135,8 @@ public class OASOracleSource implements OASRDBSource
     
     private RosterData generateRosterData (Connection conn, AuthenticationData [] authDataArray, String accessCode) throws SQLException, AuthenticationFailureException, KeyEnteredResponsesException, OutsideTestWindowException, TestSessionCompletedException, TestSessionInProgressException, TestSessionNotScheduledException, IOException, ClassNotFoundException {
     	XmlOptions xmlOptions = new XmlOptions(); 
-        xmlOptions = xmlOptions.setUnsynchronized();
+    	xmlOptions.setCharacterEncoding("UTF-8");
+        xmlOptions.setUnsynchronized();
     	TmssvcResponseDocument response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
         LoginResponse loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
         loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.OK_STATUS);

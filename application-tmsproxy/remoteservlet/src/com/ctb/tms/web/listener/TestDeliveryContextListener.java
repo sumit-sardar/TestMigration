@@ -138,7 +138,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 								if(manifest != null) {
 									//manifest.setRandomDistractorSeed(rosterData.getAuthData().getRandomDistractorSeedNumber());
 									oasSink.putManifest(String.valueOf(testRosterId), creds[i].getAccesscode(), manifest);
-									logger.info("*****  Got roster data for " + key);
+									logger.debug("*****  Got roster data for " + key);
 								} else {
 									logger.debug("*****  No valid manifest in DB for " + key);
 								}
