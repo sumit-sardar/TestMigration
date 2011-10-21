@@ -405,7 +405,6 @@ function createMultiNodeSelectedTree(jsondata) {
             	}
 				$.unblockUI();  
 				$("#list2").setGridParam({datatype:'local'});
-				$("#list2").sortGrid('lastName',true);
 				var tdList = ("#pager2_left table.ui-pg-table  td");
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
@@ -489,7 +488,6 @@ function createMultiNodeSelectedTree(jsondata) {
             	}
 				$.unblockUI();  
 				$("#list2").setGridParam({datatype:'local'});
-				$("#list2").sortGrid('lastName',true);
 				var tdList = ("#pager2_left table.ui-pg-table  td");
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
