@@ -6,6 +6,9 @@ public class Organization {
 	private Integer orgParentNodeId;
 	private String orgName;
 	private Integer orgCategoryLevel;
+	private Boolean isAssociate = new Boolean (true);
+	private Integer orgCategoryId;
+	
 	public Integer getOrgNodeId() {
 		return orgNodeId;
 	}
@@ -47,6 +50,18 @@ public class Organization {
 		int hash = orgNodeId;
 
 		return hash;
+	}
+	public Boolean getIsAssociate() {
+		return isAssociate;
+	}
+	public void setIsAssociate(Boolean isAssociate) {
+		this.isAssociate = isAssociate;
+	}
+	public Integer getOrgCategoryId() {
+		return orgCategoryId;
+	}
+	public void setOrgCategoryId(Integer orgCategoryId) {
+		this.orgCategoryId = orgCategoryId;
 	}
 
 }
