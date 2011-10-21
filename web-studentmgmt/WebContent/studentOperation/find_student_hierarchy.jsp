@@ -23,8 +23,11 @@
 			</div> 
 			
 		 	</td>
-	 		<td class="transparent" width="8px">&nbsp;</td>
+	 		<td class="transparent" width="5px">&nbsp;</td>
 		 	<td >
+	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">
+	      			&nbsp;Student List
+	      		<!-- 
 	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header gridTableHeader">
 	      			<table border="0" width="100%">
 	    			<tr>
@@ -37,6 +40,7 @@
 	    				</td>
 	      			</tr>
 	      			</table>
+	      		 -->
 	      		</div>
 	    		<table id="list2" class="gridTable"></table>
 				<div id="pager2" class="gridTable"></div>			
