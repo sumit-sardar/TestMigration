@@ -233,7 +233,7 @@ public class HomePageController extends PageFlowController
     {               
         try
         {
-            String url = "/UserOperationWeb/userOperation/resetPassword.do";
+            String url = "/UserManagementWeb/manageUser/resetPassword.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -251,7 +251,7 @@ public class HomePageController extends PageFlowController
     {               
         try
         {
-            String url = "/UserOperationWeb/userOperation/beginEditMyProfile.do?isSetTimeZone=true";
+            String url = "/UserManagementWeb/manageUser/beginEditMyProfile.do?isSetTimeZone=true";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
