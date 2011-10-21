@@ -272,6 +272,7 @@ function changePwdForUser(){
 
 function gridReload(){ 
            jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});
+           jQuery("#list2").sortGrid('lastName',true);     
            jQuery("#list2").jqGrid('setGridParam', {url:'userOrgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
       }
 
