@@ -25,7 +25,7 @@ $.jgrid = {
 	},
 	edit : {
 		addCaption: "Add Record",
-		editCaption: "Edit/View Record",
+		editCaption: "Edit Record",
 		bSubmit: "Submit",
 		bCancel: "Cancel",
 		bClose: "Close",
@@ -61,7 +61,7 @@ $.jgrid = {
 	},
 	nav : {
 		edittext: "",
-		edittitle: "Edit selected row",
+		edittitle: "Edit/view selected row",
 		addtext:"",
 		addtitle: "Add new row",
 		deltext: "",
