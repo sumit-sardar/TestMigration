@@ -670,6 +670,39 @@ public class TMSServlet extends HttpServlet {
 
 		ManifestData[] manifesta = manifest.getManifest();
 		ArrayList newmanifest = new ArrayList();
+        for(int i=0; i<manifesta.length ;i++) {
+            if (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
+            	//scomap.remove(String.valueOf(manifesta[i].getId()));
+            	//logger.debug("found completed sco: " + String.valueOf(manifesta[i].getId()));
+            	int g;
+            	for(g=0;g<scoa.length;g++) {
+            		try {
+	            		//logger.debug("rd id: " + scoa[g].getId() + ", manifest id: " + String.valueOf(manifesta[i].getId()));
+	            		if(scoa[g].getId().equals(String.valueOf(manifesta[i].getId()))) {
+	            			break;
+	            		}
+            		} catch (XmlValueDisconnectedException xe) {
+            			break;
+            		}
+            	}
+            	if(g<scoa.length) {
+	            	//logger.debug("removing Sco " + g + " from manifest");
+	            	loginResponse.getManifest().removeSco(g);
+	            	logger.debug("removed Sco " + manifesta[i].getId() + " from scomap.");
+            	}
+            } else {
+            	newmanifest.add(manifesta[i]);
+            }
+        }
+        if(newmanifest.size() < 1) {
+			response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
+            loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
+            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_COMPLETED_STATUS);
+            return response.xmlText();
+		} else {
+			manifest.setManifest((ManifestData[])newmanifest.toArray(new ManifestData[0]));
+		}
+        manifesta = manifest.getManifest();
 		boolean gotRestart = false;
         for(int i=0; i<manifesta.length ;i++) {
             if(restartCount > 0 && !gotRestart && (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
@@ -702,41 +735,16 @@ public class TMSServlet extends HttpServlet {
                 gotRestart = true;
                 logger.debug("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
             } 
-            if (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
-            	//scomap.remove(String.valueOf(manifesta[i].getId()));
-            	//logger.debug("found completed sco: " + String.valueOf(manifesta[i].getId()));
-            	int g;
-            	for(g=0;g<scoa.length;g++) {
-            		try {
-	            		//logger.debug("rd id: " + scoa[g].getId() + ", manifest id: " + String.valueOf(manifesta[i].getId()));
-	            		if(scoa[g].getId().equals(String.valueOf(manifesta[i].getId()))) {
-	            			break;
-	            		}
-            		} catch (XmlValueDisconnectedException xe) {
-            			break;
-            		}
-            	}
-            	if(g<scoa.length) {
-	            	//logger.debug("removing Sco " + g + " from manifest");
-	            	loginResponse.getManifest().removeSco(g);
-	            	logger.debug("removed Sco " + manifesta[i].getId() + " from scomap.");
-            	}
-            } else {
-            	newmanifest.add(manifesta[i]);
-            }
         }
-        if(newmanifest.size() < 1) {
-			response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
-            loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
-            loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_COMPLETED_STATUS);
-            return response.xmlText();
-		} else {
-			manifest.setManifest((ManifestData[])newmanifest.toArray(new ManifestData[0]));
-		}
         //loginResponse.getManifest().setScoArray((Sco[])scomap.values().toArray(new Sco[0]));
         //logger.debug("Final manifest: " + loginResponse.getManifest().xmlText());
         if(gotRestart) {
         	loginResponse.setRestartFlag(true);
+        } else {
+        	loginResponse.setRestartFlag(false);
+        	if(loginResponse.getConsolidatedRestartDataArray() != null && loginResponse.getConsolidatedRestartDataArray().length > 0) {
+        		loginResponse.removeConsolidatedRestartData(0);
+        	}
         }
 
         // TODO (complete): handle random distractor seed
