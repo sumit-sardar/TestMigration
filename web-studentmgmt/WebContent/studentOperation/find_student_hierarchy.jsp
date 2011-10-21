@@ -26,10 +26,10 @@
 	 		<td class="transparent" width="8px">&nbsp;</td>
 		 	<td >
 	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header gridTableHeader">
-	      			<table border="0">
+	      			<table border="0" width="100%">
 	    			<tr>
-	    				<td width="100%">&nbsp;Student List</td>
-	    				<td>
+	    				<td width="90%">&nbsp;Student List</td>
+	    				<td width="10%">
 							<div class="search_input_box">
 								<input class="search_input" type="text" name="searchControl" >
 								<img src="/StudentManagementWeb/resources/images/magnifier.png" class="search_image" onclick="alert('search');">
