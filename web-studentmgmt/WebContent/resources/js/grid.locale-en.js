@@ -25,7 +25,7 @@ $.jgrid = {
 	},
 	edit : {
 		addCaption: "Add Record",
-		editCaption: "Edit Record",
+		editCaption: "Edit/View Record",
 		bSubmit: "Submit",
 		bCancel: "Cancel",
 		bClose: "Close",
