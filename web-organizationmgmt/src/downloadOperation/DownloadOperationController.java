@@ -190,7 +190,7 @@ public class DownloadOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/testContentOperation/begin.do";
+            String url = "/TestSessionInfoWeb/testContentOperation/begin.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
