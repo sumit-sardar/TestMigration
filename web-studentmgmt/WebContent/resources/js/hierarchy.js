@@ -1326,6 +1326,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	      			else
 	      				viewStuDetail(nextStudentId);
 	      			disablenextprev(indexOfId+1,str.length-1);
+	      			populateTreeSelect();
 	      			$("#list2").setSelection(nextStudentId, true); 
 			}
 		}
@@ -1350,6 +1351,7 @@ function fillselectedOrgNode( elementId, orgList) {
        			else
        				viewStuDetail(preStudentId);
        			disablenextprev(indexOfId-1,str.length-1);
+       			populateTreeSelect();
        			$("#list2").setSelection(preStudentId, true); 
 			}
 		}
