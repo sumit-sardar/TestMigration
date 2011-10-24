@@ -1345,6 +1345,9 @@ function fillselectedOrgNode( elementId, orgList) {
 			var curPage = parseInt($('#list2').jqGrid('getGridParam','page')); 
 	        var str = idarray;
 			var nextStudentId ;
+			var pageDataIds = $("#list2").jqGrid('getDataIDs'); 
+			//alert("Selected:["+SelectedStudentId+"]fetchNextData:"+pageDataIds);
+			str = pageDataIds;
 			//var indexOfId = str.indexOf(SelectedStudentId);
 			var indexOfId = -1;
 			if(!Array.indexOf) {
@@ -1375,7 +1378,9 @@ function fillselectedOrgNode( elementId, orgList) {
 			var curPage = parseInt($('#list2').jqGrid('getGridParam','page'));
             var str = idarray;
 			var preStudentId ;
-			//var indexOfId = str.indexOf(SelectedStudentId);
+			var pageDataIds = $("#list2").jqGrid('getDataIDs'); 
+			//alert("Selected:["+SelectedStudentId+"fetchPreviousData:"+pageDataIds);
+			str = pageDataIds;
 			var indexOfId = -1;
 			if(!Array.indexOf) {
 				indexOfId = findIndexFromArray (str , SelectedStudentId);
@@ -1444,7 +1449,9 @@ function fillselectedOrgNode( elementId, orgList) {
     	assignedOrgNodeIds = "";
     	var str = idarray;
 		//var indexOfId = str.indexOf(SelectedStudentId);
-
+		var pageDataIDs = $("#list2").jqGrid('getDataIDs'); 
+		//alert("SelectedStudentId:"+SelectedStudentId+"setViewStudentDetail:"+pageDataIDs);
+		str = pageDataIDs;
 		var indexOfId = -1;
 		if(!Array.indexOf) {
 			indexOfId = findIndexFromArray (str , SelectedStudentId);
@@ -1527,6 +1534,9 @@ function fillselectedOrgNode( elementId, orgList) {
 		//var indexOfId = str.indexOf(SelectedStudentId);
 		var indexOfId = -1;
 		
+		var pageDataIds = $("#list2").jqGrid('getDataIDs'); 
+		//alert("Selected:["+SelectedStudentId+"]setEditStudentDetail:"+pageDataIds);
+		str = pageDataIds;
 		if(!Array.indexOf) {
 			indexOfId = findIndexFromArray (str , SelectedStudentId);
 		} else {
