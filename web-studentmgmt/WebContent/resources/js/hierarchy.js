@@ -1179,7 +1179,7 @@ function fillselectedOrgNode( elementId, orgList) {
 						checkOpenNode(organizationNodes);
 						dbStudentDetails = 	$("#addEditStudentDetail *").serializeArray();  
 						
-				var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
+				/*var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
 	        	var str = idarray;
 				var nextStudentId ;
 				var indexOfId = -1;
@@ -1190,7 +1190,7 @@ function fillselectedOrgNode( elementId, orgList) {
 				}
 						
 				disablenextprev(indexOfId, str.length-1);
-							 		
+						*/	 		
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -1278,7 +1278,7 @@ function fillselectedOrgNode( elementId, orgList) {
 												 	 
 							 setPopupPosition(isAddStudent);
 							 
-							var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
+							/*var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
 	        				var str = idarray;
 							var nextStudentId ;
 							var indexOfId = -1;
@@ -1288,7 +1288,7 @@ function fillselectedOrgNode( elementId, orgList) {
 								indexOfId = str.indexOf(SelectedStudentId);;
 							}
 									
-							disablenextprev(indexOfId, str.length-1);
+							disablenextprev(indexOfId, str.length-1);*/
 							
 							 		
 					},
@@ -1341,6 +1341,8 @@ function fillselectedOrgNode( elementId, orgList) {
 		
 		function fetchNextData(popupname){
 			var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
+			var pageRows = $("#list2").jqGrid('getGridParam','rowNum');
+			var curPage = parseInt($('#list2').jqGrid('getGridParam','page')); 
 	        var str = idarray;
 			var nextStudentId ;
 			//var indexOfId = str.indexOf(SelectedStudentId);
@@ -1348,25 +1350,29 @@ function fillselectedOrgNode( elementId, orgList) {
 			if(!Array.indexOf) {
 				indexOfId = findIndexFromArray (str , SelectedStudentId);
 			} else {
-				indexOfId = str.indexOf(SelectedStudentId);;
+				indexOfId = str.indexOf(SelectedStudentId);
 			}
-	
+			//alert("indexOfId :"+indexOfId+"::"+str.length+"::"+pageRows+"::"+curPage);
 	
 			if(indexOfId != str.length-1) {
-				nextStudentId = str[indexOfId + 1];
-				highlightnextprev(SelectedStudentId, nextStudentId);
-	      			if(popupname == 'Edit')
-	      				editStudentDetail(nextStudentId);
-	      			else
-	      				viewStuDetail(nextStudentId);
-	      			disablenextprev(indexOfId+1,str.length-1);
-	      			populateTreeSelect();
-	      			$("#list2").setSelection(nextStudentId, true); 
+				if(indexOfId%pageRows != pageRows-1){	//if(indexOfId != (pageRows*curPage)-1){
+					nextStudentId = str[indexOfId + 1];
+					highlightnextprev(SelectedStudentId, nextStudentId);
+		      			if(popupname == 'Edit')
+		      				editStudentDetail(nextStudentId);
+		      			else
+		      				viewStuDetail(nextStudentId);
+		      			disablenextprev(indexOfId+1,str.length-1);
+		      			populateTreeSelect();
+		      			$("#list2").setSelection(nextStudentId, true); 
+	      		}
 			}
 		}
 		
 		function fetchPreviousData(popupname){
 			var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
+			var pageRows = $("#list2").jqGrid('getGridParam','rowNum');
+			var curPage = parseInt($('#list2').jqGrid('getGridParam','page'));
             var str = idarray;
 			var preStudentId ;
 			//var indexOfId = str.indexOf(SelectedStudentId);
@@ -1377,17 +1383,20 @@ function fillselectedOrgNode( elementId, orgList) {
 				indexOfId = str.indexOf(SelectedStudentId);;
 			}
 
-			if(indexOfId != 0) {
-				preStudentId = str[indexOfId - 1];
-				highlightnextprev(SelectedStudentId, preStudentId);
-       			if(popupname == 'Edit')
-       				editStudentDetail(preStudentId);
-       			else
-       				viewStuDetail(preStudentId);
-       			disablenextprev(indexOfId-1,str.length-1);
-       			populateTreeSelect();
-       			$("#list2").setSelection(preStudentId, true); 
-			}
+			//alert("indexOfId :"+indexOfId+"::"+str.length+"::"+pageRows+"::"+curPage);
+	
+			if(indexOfId%pageRows != 0){	//if(indexOfId != (pageRows*(curPage-1))){
+					preStudentId = str[indexOfId - 1];
+					highlightnextprev(SelectedStudentId, preStudentId);
+		       		if(popupname == 'Edit')
+		       			editStudentDetail(preStudentId);
+		       		else
+		       			viewStuDetail(preStudentId);
+		       		disablenextprev(indexOfId-1,str.length-1);
+		       		populateTreeSelect();
+		       		$("#list2").setSelection(preStudentId, true); 
+		    }	
+			
 		}
 		
 		
