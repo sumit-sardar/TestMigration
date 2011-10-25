@@ -238,7 +238,7 @@ public class StudentDemographicsTag extends CTBTag
 	    displayRowStart();
             displayCellStart("transparent-small");
                 writeToPage(getSpaces(8));
-				writeToPage("<select name=\"" + name + "\" id=\"" + name + "\" style=width:280px " + disabled + " tabindex=\"" + (this.tabIndex++) + "\" " + " >");
+				writeToPage("<select name=\"" + name + "\" id=\"" + name + "\" style=width:280px " + disabled +/* " tabindex=\"" + (this.tabIndex++) + "\" " +*/ " >");
 		        writeToPage(option("Please Select", true));
 			    for (i=0 ; i<values.length ; i++) {
 			        StudentDemographicValue sdv = (StudentDemographicValue)values[i];
@@ -263,7 +263,7 @@ public class StudentDemographicsTag extends CTBTag
 	    String nameId = name + "_" + value;
 		return "<input type=\"checkbox\" name=\"" + nameId + "\" id=\"" + nameId + "\"" +
 				" value=\""+ value + "\" " + 
-				" tabindex=\"" + (this.tabIndex++) + "\" " +
+				/*" tabindex=\"" + (this.tabIndex++) + "\" " +*/
 				(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
 	}
     
@@ -272,7 +272,7 @@ public class StudentDemographicsTag extends CTBTag
 	    String disabled = (this.viewOnly.booleanValue() || (! editable)) ? " disabled " : "";
 		return "<input type=\"radio\" name=\"" + name + "\" id=\"" + name + "\"" +
 				" value=\"" + value + "\" " + 
-				" tabindex=\"" + (this.tabIndex++) + "\" " +
+				/*" tabindex=\"" + (this.tabIndex++) + "\" " +*/
 				(isChecked?"checked=\"true\" ":" ") + disabled + "/>";
 	}
 
