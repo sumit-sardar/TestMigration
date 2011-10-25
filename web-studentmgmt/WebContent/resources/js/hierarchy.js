@@ -29,6 +29,7 @@ var dbStudentDetails;
 var organizationNodes = [];
 var optionHtml ="";
 var requetForStudent  = "";
+var isViewStudent = false;
 						
 
 
@@ -340,9 +341,13 @@ function createMultiNodeSelectedTree(jsondata) {
 
 	
 	  function gridReload(){ 
-           jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});           
+           jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});     
+     	   var sortArrow = jQuery("#list2");
            jQuery("#list2").jqGrid('setGridParam', {url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
-           jQuery("#list2").sortGrid('lastName',true);         
+           jQuery("#list2").sortGrid('lastName',true);
+        /*   var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
+           $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
+           $(arrowElements.childNodes[1]).addClass('ui-state-disabled');*/
       }
 
 
@@ -633,6 +638,14 @@ document.getElementById('displayMessageMain').style.display = "none";
 				$("#Student_Additional_Information").css("overflow",'auto');
 				$("#Student_Accommodation_Information").css("height",'300px');
 				$("#Student_Accommodation_Information").css("overflow",'auto');
+				$("#viewStudentDetail").parent().css("top",toppos);
+				$("#viewStudentDetail").parent().css("left",leftpos);		 	 
+				$("#view_Student_Information").css("height",'300px');
+				$("#view_Student_Information").css("overflow",'auto');
+				$("#view_Student_Additional_Information").css("height",'300px');
+				$("#view_Student_Additional_Information").css("overflow",'auto');
+				$("#view_Student_Accommodation_Information").css("height",'300px');
+				$("#view_Student_Accommodation_Information").css("overflow",'auto');
 				if(isAddStudent) {
 					$("#preButton").css("visibility","hidden");	
 					$("#nextButton").css("visibility","hidden");
@@ -739,6 +752,7 @@ function fillselectedOrgNode( elementId, orgList) {
 }
 
 	function closePopUp(dailogId){
+	//console.log("closePopupfired: " + dailogId);
 		if(dailogId == 'addEditStudentDetail') {
 			$('#accordion').accordion('activate', 0 );
 			$("#Student_Information").scrollTop(0);
@@ -759,6 +773,8 @@ function fillselectedOrgNode( elementId, orgList) {
 			$('#view_Student_Accommodation_Information').hide();
 			populateTreeSelect();
 			isPopUp = false;
+			isViewStudent = false;
+			
 		}
 			
 		if(dailogId == 'confirmationPopup') {
@@ -770,6 +786,17 @@ function fillselectedOrgNode( elementId, orgList) {
 			$('#Student_Accommodation_Information').hide();
 			$('#studentFirstName').trigger("focus");		
 		}
+		if(dailogId == 'confirmationPopupNavigation') {
+			$('#accordion').accordion('activate', 0 );
+			$("#Student_Information").scrollTop(0);
+			$("#Student_Additional_Information").scrollTop(0);
+			$("#Student_Accommodation_Information").scrollTop(0);
+			$('#Student_Additional_Information').hide();
+			$('#Student_Accommodation_Information').hide();
+			$('#studentFirstName').trigger("focus");
+			requetForStudent = "";				
+		}
+		
 		$("#"+dailogId).dialog("close");
 		 
 	}
@@ -777,9 +804,12 @@ function fillselectedOrgNode( elementId, orgList) {
 	function closeConfirmationPopup() {
 		if(isAddStudent){
 			closePopUp('confirmationPopup');
+			closePopUp('confirmationPopupNavigation');
 			closePopUp('addEditStudentDetail');
 		} else {
 			closePopUp('confirmationPopup');
+			closePopUp('confirmationPopupNavigation');
+			
 			if(requetForStudent == "Next"){
 				 fetchNextData('Edit');
 			} else if(requetForStudent == "Previous"){
@@ -792,8 +822,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	}
 	
 	function onCancel() {
-		
-			isValueChanged = false;
+		isValueChanged = false;
 	if(isAddStudent){
 		  if($("#studentFirstName").val()!= "" 
 			 || $("#studentMiddleName").val()!= ""
@@ -878,12 +907,21 @@ function fillselectedOrgNode( elementId, orgList) {
 		}
 	
 	} else {
-		  	isValueChanged = isEditStudentDataChanged();
+	
+			if (!isViewStudent){
+		  		isValueChanged = isEditStudentDataChanged();
+		  	}else {
+		  		isValueChanged = false;
+		  	}
 	      	if(isValueChanged) {
 				//UIBlock();
-				openConfirmationPopup();			 	 
+				openConfirmationPopup();	
 			} else {
+				if (!isViewStudent){
 				closePopUp('addEditStudentDetail');
+				}else{
+				closePopUp('viewStudentDetail');
+				}
 			}
 		}
 		
@@ -1287,6 +1325,8 @@ function fillselectedOrgNode( elementId, orgList) {
 												 	 
 							 setPopupPosition(isAddStudent);
 							 
+							 isViewStudent = true;
+							 
 							/*var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
 	        				var str = idarray;
 							var nextStudentId ;
@@ -1324,11 +1364,11 @@ function fillselectedOrgNode( elementId, orgList) {
 							isValueChanged = isEditStudentDataChanged();
 							if(isValueChanged) {
 								//UIBlock();
-								openConfirmationPopup();		
+								openConfirmationPopup('alternateMessage');
 								} 
 						}
 						if(!isValueChanged) {
-							fetchNextData(popupname);
+							fetchNextData(popupname);							
 						}
                }
                
@@ -1339,7 +1379,8 @@ function fillselectedOrgNode( elementId, orgList) {
 						isValueChanged = isEditStudentDataChanged();
 						if(isValueChanged) {
 							//UIBlock();
-							openConfirmationPopup();		
+							openConfirmationPopup('alternateMessage');	
+							
 							} 
 					}
 					if(!isValueChanged) {
@@ -1414,7 +1455,9 @@ function fillselectedOrgNode( elementId, orgList) {
 		}
 		
 		
-		function openConfirmationPopup(){
+		function openConfirmationPopup(args){
+		var arg= args;
+		if(arg == null || arg == undefined){
 			$("#confirmationPopup").dialog({  
 				title:"Confirmation Alert",  
 			 	resizable:false,
@@ -1427,8 +1470,26 @@ function fillselectedOrgNode( elementId, orgList) {
 				 var toppos = ($(window).height() - 290) /2 + 'px';
 				 var leftpos = ($(window).width() - 410) /2 + 'px';
 				 $("#confirmationPopup").parent().css("top",toppos);
-				 $("#confirmationPopup").parent().css("left",leftpos);		 	
-		}
+				 $("#confirmationPopup").parent().css("left",leftpos);		
+				 
+		 }
+		 else{
+		  $("#confirmationPopupNavigation").dialog({  
+			title:"Confirmation Alert",  
+			resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});	
+		    $("#confirmationPopupNavigation").css('height',100);
+			var toppos = ($(window).height() - 290) /2 + 'px';
+			var leftpos = ($(window).width() - 410) /2 + 'px';
+			$("#confirmationPopupNavigation").parent().css("top",toppos);
+			$("#confirmationPopupNavigation").parent().css("left",leftpos);	
+			
+		} 	
+	}
 		
 		
 		
@@ -1455,6 +1516,8 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	
 	function setViewStudentDetail(SelectedStudentId) {
+	
+	if(isViewStudent){
     	assignedOrgNodeIds = "";
     	var str = idarray;
 		//var indexOfId = str.indexOf(SelectedStudentId);
@@ -1521,6 +1584,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		for (var i=0; i<radiofields.length; i++) {
 			if(radiofields[i].value == "None")
 				radiofields[i].checked = true;
+		}
 		}
 		}
    }
