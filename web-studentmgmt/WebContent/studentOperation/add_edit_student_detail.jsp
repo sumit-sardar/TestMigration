@@ -99,19 +99,19 @@
 						   
 									</tr>
 									<tr class="transparent">
+										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Grade:</td>
+										<td class="transparent">  
+											<select id="gradeOptions" name="gradeOptions" style="width: 202px;">
+											</select> 
+										</td>
+									</tr>
+											<tr class="transparent">
 										<td width="110" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Gender:</td>
 										<td class="transparent">
 										 <select id="genderOptions"  name="genderOptions" style="width: 202px;">
 										 </select> 
 										</td>
 
-									</tr>
-									<tr class="transparent">
-										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Grade:</td>
-										<td class="transparent">  
-											<select id="gradeOptions" name="gradeOptions" style="width: 202px;">
-											</select> 
-										</td>
 									</tr>
 									
 									<!--ext_pin1 is added for DEX CR-->
