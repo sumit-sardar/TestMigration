@@ -1463,6 +1463,7 @@ function fillselectedOrgNode( elementId, orgList) {
 			 	resizable:false,
 			 	autoOpen: true,
 			 	width: '400px',
+			 	height: '100px',
 			 	modal: true,
 			 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 				});	
@@ -1479,6 +1480,7 @@ function fillselectedOrgNode( elementId, orgList) {
 			resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',
+		 	height: '100px',
 		 	modal: true,
 		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 			});	

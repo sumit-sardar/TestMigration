@@ -60,13 +60,15 @@
 	<table>
 		<tr>
 			<td colspan="2">
+			<br/>
 			<p>You have not saved this student. Are you sure you want to cancel?</p>
+			<br/>
 			</td>
 		</tr>
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">
+					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
 					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
 				</center>
 			<br>
@@ -81,13 +83,15 @@
 	<table>
 		<tr>
 			<td colspan="2">
+			<br/>
 			<p>You have not saved this student.Do you want to move to the next record?</p>
+			<br/>
 			</td>
 		</tr>
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">
+					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
 					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopupNavigation'); return false;" class="ui-widget-header">
 				</center>
 			<br>

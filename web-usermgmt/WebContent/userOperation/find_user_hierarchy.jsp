@@ -53,13 +53,15 @@
 	<table>
 		<tr>
 			<td colspan="2">
+			<br/>
 			<p>You have not saved this user. Are you sure you want to cancel?</p>
+			<br/>
 			</td>
 		</tr>
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">
+					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
 					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
 				</center>
 			<br>
@@ -82,7 +84,7 @@
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closePopUp('EmailWarning'); return false;" class="ui-widget-header">
+					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closePopUp('EmailWarning'); return false;" class="ui-widget-header">&nbsp;
 					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closeEmailWarningPopup(); return false;" class="ui-widget-header">
 				</center>
 			<br>
