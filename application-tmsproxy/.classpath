@@ -30,5 +30,7 @@
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/httpmime-4.1.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/ctb-webutils.jar"/>
 	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/CommunicatorS.jar"/>
+	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/coherence-3.6-messagingpattern-2.7.4.21016.jar"/>
+	<classpathentry kind="lib" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/lib/coherence-3.6-pushreplicationpattern-3.0.3.20019.jar"/>
 	<classpathentry kind="output" path="server/apache-tomcat-6.0.29/webapps/ROOT/WEB-INF/classes"/>
 </classpath>

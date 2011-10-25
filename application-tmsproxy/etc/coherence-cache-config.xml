@@ -2,11 +2,34 @@
 <!DOCTYPE cache-config SYSTEM "cache-config.dtd">
 
 <cache-config>
+	<introduce:config file="coherence-pushreplicationpattern-cache-config.xml" />
+	
     <caching-scheme-mapping>
         <!--    Caches with any name will be created as tiered.    -->
         <cache-mapping>
-                <cache-name>*</cache-name>
-                <scheme-name>TieredScheme</scheme-name>
+	        <cache-name>OAS*</cache-name>
+	        <scheme-name>TieredScheme</scheme-name>
+	        <!-- <sync:target-cache-name>publishing-cache</sync:target-cache-name> -->
+	        <!-- <sync:publisher>
+	           <sync:publisher-name>Active Publisher</sync:publisher-name>
+	           <sync:publisher-scheme>
+	               <sync:remote-cluster-publisher-scheme>
+	                   <sync:remote-invocation-service-name>remote-site</sync:remote-invocation-service-name>
+	                   <sync:remote-publisher-scheme>
+	                       <sync:local-cache-publisher-scheme>
+	                           
+	                           <sync:target-cache-name>{cache-name}</sync:target-cache-name>
+	                           
+	                           <sync:conflict-resolver-scheme>
+	                               <cr:class classname="com.oracle.coherence.examples.incubator.pushreplicationpattern.activeactive.ActiveActiveSumConflictResolver" />
+	                           </sync:conflict-resolver-scheme>
+	                       </sync:local-cache-publisher-scheme>
+	                   </sync:remote-publisher-scheme>
+	                   <sync:autostart>true</sync:autostart>
+	                   <sync:publish-original-value>true</sync:publish-original-value>
+	               </sync:remote-cluster-publisher-scheme>
+	           </sync:publisher-scheme>
+	       	</sync:publisher> -->
         </cache-mapping>
     </caching-scheme-mapping>
     <caching-schemes>  
@@ -14,14 +37,14 @@
     	<local-scheme>
    			<scheme-name>MemoryScheme</scheme-name>
 		</local-scheme>      
-        <!--        Local Disk storage scheme definition -->
-        <external-scheme>
+        <!--        Local Disk storage scheme definition (not used) -->
+        <!--  <external-scheme>
         	<scheme-name>DiskPersistentScheme</scheme-name>
         	<lh-file-manager>
         		<directory>.</directory>
         		<file-name>{cache-name}.store</file-name>
         	</lh-file-manager>
-        </external-scheme>
+        </external-scheme> -->
         <!--        Oracle backing store scheme definition -->
         <read-write-backing-map-scheme>
 		  <scheme-name>DBScheme</scheme-name>
@@ -46,7 +69,8 @@
         <!--        Default Distributed caching scheme.        -->
         <distributed-scheme>            
             <scheme-name>DistributedScheme</scheme-name>
-            <service-name>PartitionedCache</service-name>            
+            <service-name>PartitionedCache</service-name> 
+            <thread-count>4</thread-count>           
             <backing-map-scheme>                
                 <read-write-backing-map-scheme>                    
                     <scheme-ref>DBScheme</scheme-ref>
@@ -69,5 +93,33 @@
 				</distributed-scheme>
 			</back-scheme>
 		</near-scheme> 
+		
+		<remote-invocation-scheme> 
+			<service-name>remote-site</service-name> 
+			<initiator-config> 
+				<tcp-initiator> 
+					<address-provider>
+                    	<class-name>com.ctb.tms.nosql.coherence.push.TMSRemoteAddressProvider</class-name>
+                    </address-provider>
+					<connect-timeout>2s</connect-timeout> 
+				</tcp-initiator> 
+				<outgoing-message-handler> 
+					<request-timeout>5s</request-timeout> 
+				</outgoing-message-handler> 
+			</initiator-config> 
+		</remote-invocation-scheme>  
+
+        <proxy-scheme>
+            <service-name>ExtendTcpProxyService</service-name>
+            <acceptor-config>
+                <tcp-acceptor>
+                    <local-address>
+                        <address>localhost</address>
+                        <port>8089</port>
+                    </local-address>
+                </tcp-acceptor>
+            </acceptor-config>
+            <autostart>true</autostart>
+        </proxy-scheme>
     </caching-schemes>
 </cache-config>
