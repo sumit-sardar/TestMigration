@@ -112,7 +112,7 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 				return false;
 			}
 		
-			invalidCharFields = verifyAlphaNumericStudentNumber(studentNumber, studentSecondNumber, studentIdLabelName, studentId2LabelName, isStudentIdNumeric, isStudentId2Numeric,studentIdConfigurable, this.studentId2Configurable  );                
+			invalidCharFields = verifyAlphaNumericStudentNumber(studentNumber, studentSecondNumber, studentIdLabelName, studentId2LabelName, isStudentIdNumeric, isStudentId2Numeric,studentIdConfigurable, studentId2Configurable  );                
 			if (invalidCharFields.length > 0) {
 				//invalidCharFields += ("<br/>" + INVALID_ALPHANUMBER_CHARS);
 				setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_ALPHANUMBER_CHARS);
@@ -293,7 +293,7 @@ function VerifyStudentDetail(assignedOrgNodeIds){
         function verifyCreateStudentNumber(studentNumber, studentSecondNumber, studentIdLabelName, studentId2LabelName, studentIdConfigurable, studentId2Configurable ){
 		var invalidCharFields = "";
 		var invalidCharFieldCount = 0;
-		if(!studentIdConfigurable == "true") {
+		if(!(studentIdConfigurable == "true")) {
 			if (studentNumber != "") {
 				if (! validTextString(studentNumber) ) {
 					invalidCharFieldCount += 1;            
@@ -302,7 +302,7 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 			}
 		}
 		
-		if(!studentId2Configurable == "true") {
+		if(!(studentId2Configurable == "true")) {
 			if (studentSecondNumber != "") {
 				if (! validTextString(studentSecondNumber) ) {
 					invalidCharFieldCount += 1;            
