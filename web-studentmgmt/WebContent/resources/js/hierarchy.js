@@ -844,7 +844,7 @@ function fillselectedOrgNode( elementId, orgList) {
 				 for(var i=0; i < checkBoxfields.length; i++){
 			       for(var j=0; j<customerValCheckbox.length; j++) {
 				       	if(!isExist( $(checkBoxfields).eq(i).attr('name') ,customerValCheckbox)) { //
-				       			if($(checkBoxfields).eq(i).attr('checked')== true)
+				       			if($(checkBoxfields).eq(i).attr('checked')== true && !($(checkBoxfields).eq(i).attr('disabled')))
 				       			{
 				       				isValueChanged = true;
 				       				break;
