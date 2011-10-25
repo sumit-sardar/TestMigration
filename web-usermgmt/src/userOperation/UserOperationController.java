@@ -24,6 +24,7 @@ import utils.MessageInfo;
 import utils.OptionList;
 import utils.Organization;
 import utils.OrgnizationComparator;
+import utils.PermissionsUtils;
 import utils.TreeData;
 import utils.UserPathListUtils;
 import utils.UserSearchUtils;
@@ -69,6 +70,7 @@ public class UserOperationController extends PageFlowController
     @Control()
     private com.ctb.control.db.Users users;
 
+    
     // LLO- 118 - Change for Ematrix UI
 	@org.apache.beehive.controls.api.bean.Control()
 	private com.ctb.control.db.OrgNode orgnode;
@@ -143,46 +145,19 @@ public class UserOperationController extends PageFlowController
      */
     private void initialize() 
     {        
+		getLoggedInUserPrincipal();
+    	
         getUserDetails();
-        userOperationForm form = new userOperationForm();
-      	CustomerConfiguration[] customerConfigurations = getCustomerConfigurations();
-
+        
+		setupUserPermission();
     }
     
 	
-    /**
-	 * getCustomerConfigurations
-	 */
-	private CustomerConfiguration[] getCustomerConfigurations()
-	{
-		CustomerConfiguration[] customerConfigurations = null;
-		try {
-			customerConfigurations = this.users.getCustomerConfigurations(this.customerId);
-
-			this.getRequest().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
-			this.getRequest().setAttribute("isScoringConfigured", customerHasScoring(customerConfigurations));
-			boolean isLasLinkCustomer = isLasLinkCustomer(customerConfigurations);
-			this.getRequest().setAttribute("isLasLinkCustomer", isLasLinkCustomer);  
-			this.getRequest().setAttribute("isTopLevelUser",isTopLevelUser(isLasLinkCustomer));
-			this.getRequest().setAttribute("userHasReports", userHasReports());
-			this.getRequest().setAttribute("customerConfigurations", customerConfigurations);    
-		}
-		catch (SQLException be) {
-			be.printStackTrace();
-		}
-		return customerConfigurations;
-	}
     /**
      * getUserDetails
      */
     private void getUserDetails()
     {
-        java.security.Principal principal = getRequest().getUserPrincipal();
-        if (principal != null) 
-            this.userName = principal.toString();
-        else            
-            this.userName = (String) getSession().getAttribute("userName"); 
-        
         try {
             this.user = this.userManagement.getUser(this.userName, 
                                                this.userName);
@@ -192,8 +167,7 @@ public class UserOperationController extends PageFlowController
         catch (Exception e) {
             e.printStackTrace();
         }        
-        getSession().setAttribute("userName", this.userName);
-        
+        getSession().setAttribute("userName", this.userName);        
     }
 
     /**
@@ -216,29 +190,6 @@ public class UserOperationController extends PageFlowController
 		return new Boolean(hasBulkStudentConfigurable);           
 	}
 
-	
-	/**
-	 * This method checks whether customer is configured to access the scoring feature or not.
-	 * @return Return Boolean 
-	 */
-	
-	private Boolean customerHasScoring(CustomerConfiguration[] customerConfigurations)
-	{               
-		boolean hasScoringConfigurable = false;
-		if( customerConfigurations != null ) {
-			for (int i=0; i < customerConfigurations.length; i++)
-			{
-				CustomerConfiguration cc = (CustomerConfiguration) customerConfigurations[i];
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
-						cc.getDefaultValue().equals("T")	) {
-					hasScoringConfigurable = true;
-					break;
-				} 
-			}
-		}
-
-		return new Boolean(hasScoringConfigurable);
-	}
 	
 	private boolean isLasLinkCustomer(CustomerConfiguration[] customerConfigurations)
 	{               
@@ -280,24 +231,6 @@ public class UserOperationController extends PageFlowController
 	}
 
     
-    /**
-     * userHasReports
-     */
-    private Boolean userHasReports() 
-    {
-        Boolean hasReports = Boolean.FALSE;
-        try {   
-            Customer customer = this.user.getCustomer();
-            Integer customerId = customer.getCustomerId();     
-            hasReports = this.userManagement.userHasReports(this.userName, customerId);
-        }
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }
-        return hasReports;
-    }
-    
-
 	@Jpf.Action(forwards={
 			@Jpf.Forward(name = "success", 
 					path ="find_user_hierarchy.jsp")
@@ -879,10 +812,169 @@ public class UserOperationController extends PageFlowController
 
 
     /////////////////////////////////////////////////////////////////////////////////////////////    
-    ///////////////////////////// END OF NEW NAVIGATION ACTIONS ///////////////////////////////
+    ///////////////////////////// SETUP USER PERMISSION ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    
-	
+    private void getLoggedInUserPrincipal()
+    {
+        java.security.Principal principal = getRequest().getUserPrincipal();
+        if (principal != null) {
+            this.userName = principal.toString();
+        }        
+        getSession().setAttribute("userName", this.userName);
+    }
+    
+	private void setupUserPermission()
+	{
+        CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
+        boolean adminUser = isAdminUser();
+        boolean TABECustomer = isTABECustomer(customerConfigs);
+        boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
+        
+        this.getSession().setAttribute("showReportTab", 
+        		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 
+        this.getSession().setAttribute("hasScoringConfigured", 
+        		new Boolean( customerHasScoring(customerConfigs).booleanValue() && adminUser));
+        
+        this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
+        
+     	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs));
+     	
+    	this.getRequest().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));    	
+    	
+    	boolean isLasLinkCustomer = isLasLinkCustomer(customerConfigs);
+    	
+    	this.getRequest().setAttribute("isLasLinkCustomer", isLasLinkCustomer);  
+    	
+    	this.getRequest().setAttribute("isTopLevelUser",isTopLevelUser(isLasLinkCustomer));
+    	
+    	this.getRequest().setAttribute("customerConfigurations", customerConfigs);    
+     	
+	}
+
+
+    private Boolean userHasReports() 
+    {
+        boolean hasReports = false;
+        try
+        {      
+            Customer customer = this.user.getCustomer();
+            Integer customerId = customer.getCustomerId();   
+            hasReports = this.userManagement.userHasReports(this.userName, customerId);
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }        
+        return new Boolean(hasReports);           
+    }
+
+    private boolean isAdminUser() 
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
+    }
+    
+    private Boolean canRegisterStudent(CustomerConfiguration [] customerConfigs) 
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        boolean validCustomer = false; 
+
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+            CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer"))
+            {
+                validCustomer = true; 
+            }               
+        }
+        
+        boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || 
+        		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
+        
+        return new Boolean(validCustomer && validUser);
+    }
+    
+    private Boolean hasLicenseConfiguration(CustomerConfiguration [] customerConfigs)
+    {               
+    	 boolean hasLicenseConfiguration = false;
+
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
+            		cc.getDefaultValue().equals("T")	) {
+            	hasLicenseConfiguration = true;
+                break;
+            } 
+        }
+       
+        return new Boolean(hasLicenseConfiguration);
+    }
+    
+    private Boolean customerHasScoring(CustomerConfiguration [] customerConfigs)
+    {               
+        Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasScoringConfigurable = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
+            		cc.getDefaultValue().equals("T")	) {
+            	hasScoringConfigurable = true;
+            } 
+        }
+        return new Boolean(hasScoringConfigurable);
+    }
+
+    private boolean isLaslinkCustomer(CustomerConfiguration [] customerConfigs)
+    {               
+        boolean laslinkCustomer = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+            	laslinkCustomer = true;
+            }
+        }
+        return laslinkCustomer;
+    }
+
+    private boolean isTABECustomer(CustomerConfiguration [] customerConfigs)
+    {               
+        boolean TABECustomer = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer")) {
+            	TABECustomer = true;
+            }
+        }
+        return TABECustomer;
+    }
+    
+    private CustomerConfiguration [] getCustomerConfigurations(Integer customerId)
+    {               
+        CustomerConfiguration [] ccArray = null;
+        try
+        {      
+            ccArray = this.users.getCustomerConfigurations(customerId);       
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }        
+        return ccArray;
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////    
+    ///////////////////////////// END OF SETUP USER PERMISSION ///////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////    
+    
 	private String generateTree (ArrayList<Organization> orgNodesList,ArrayList<Organization> selectedList) throws Exception{	
 
 		Organization org = orgNodesList.get(0);

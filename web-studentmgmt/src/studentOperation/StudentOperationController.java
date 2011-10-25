@@ -684,9 +684,13 @@ public class StudentOperationController extends PageFlowController {
 	 * initialize
 	 */
 	private void initialize()
-	{        
+	{     
+		getLoggedInUserPrincipal();
+		
 		getUserDetails();
-		customerConfigurations = getCustomerConfigurations();  
+		
+		setupUserPermission();
+		
 		StudentOperationForm  form = new StudentOperationForm();
 		demographics = null;
 		accommodations = null;
@@ -1245,12 +1249,6 @@ public class StudentOperationController extends PageFlowController {
 	 */
 	private void getUserDetails()
 	{
-		java.security.Principal principal = getRequest().getUserPrincipal();
-		if (principal != null) 
-			this.userName = principal.toString();
-		else            
-			this.userName = (String)getSession().getAttribute("userName");
-
 		try
 		{	if(this.userName != null ) {
 			this.user = this.studentManagement.getUserDetails(this.userName, this.userName);     
@@ -1272,8 +1270,6 @@ public class StudentOperationController extends PageFlowController {
 			be.printStackTrace();
 		}        
 		getSession().setAttribute("userName", this.userName);
-
-		           
 	}
 
 	/**
@@ -1284,17 +1280,6 @@ public class StudentOperationController extends PageFlowController {
 		CustomerConfiguration[] customerConfigurations = null;
 		try {
 			customerConfigurations = this.studentManagement.getCustomerConfigurations(this.userName, this.customerId);
-
-			this.getRequest().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
-			this.getRequest().setAttribute("isScoringConfigured", customerHasScoring(customerConfigurations));
-			this.getRequest().setAttribute("canRegisterStudent",canRegisterStudent(customerConfigurations));
-			boolean isLasLinkCustomer = isLasLinkCustomer(customerConfigurations);
-			this.getRequest().setAttribute("isLasLinkCustomer", isLasLinkCustomer);  
-			this.getRequest().setAttribute("isTopLevelUser",isTopLevelUser(isLasLinkCustomer));
-			this.getRequest().setAttribute("userHasReports", userHasReports());
-			this.getRequest().setAttribute("isMandatoryBirthDate", isMandatoryBirthDate(customerConfigurations));
-			isGeorgiaCustomer(customerConfigurations);
-			this.getRequest().setAttribute("customerConfigurations", customerConfigurations);    
 		}
 		catch (CTBBusinessException be) {
 			be.printStackTrace();
@@ -1505,47 +1490,6 @@ public class StudentOperationController extends PageFlowController {
 		return new Boolean(hasBulkStudentConfigurable);           
 	}
 
-	/**
-	 * This method checks whether customer is configured to access the scoring feature or not.
-	 * @return Return Boolean 
-	 */
-
-
-	private Boolean customerHasScoring(CustomerConfiguration[] customerConfigurations)
-	{               
-		boolean hasScoringConfigurable = false;
-		if( customerConfigurations != null ) {
-			for (int i=0; i < customerConfigurations.length; i++)
-			{
-				CustomerConfiguration cc = (CustomerConfiguration) customerConfigurations[i];
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
-						cc.getDefaultValue().equals("T")	) {
-					hasScoringConfigurable = true;
-					break;
-				} 
-			}
-		}
-
-		return new Boolean(hasScoringConfigurable);
-	}
-
-	private Boolean canRegisterStudent(CustomerConfiguration[] customerConfigurations) 
-	{               
-		String roleName = this.user.getRole().getRoleName();        
-		boolean validCustomer = false; 
-		if( customerConfigurations != null ) {
-			for (int i=0; i < customerConfigurations.length; i++)
-			{
-				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer"))
-				{
-					validCustomer = true; 
-				}               
-			}
-		}
-		boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
-		return new Boolean(validCustomer && validUser);
-	}
 	private boolean isTopLevelUser(boolean isLasLinkCustomerVal){
 
 		boolean isUserTopLevel = false;
@@ -2091,6 +2035,146 @@ public class StudentOperationController extends PageFlowController {
 	}
 
 	
+    /////////////////////////////////////////////////////////////////////////////////////////////    
+    ///////////////////////////// SETUP USER PERMISSION ///////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////    
+    private void getLoggedInUserPrincipal()
+    {
+        java.security.Principal principal = getRequest().getUserPrincipal();
+        if (principal != null) {
+            this.userName = principal.toString();
+        }        
+        getSession().setAttribute("userName", this.userName);
+    }
+    
+	private void setupUserPermission()
+	{
+		customerConfigurations = getCustomerConfigurations();  
+
+        boolean adminUser = isAdminUser();
+        boolean TABECustomer = isTABECustomer(customerConfigurations);
+        boolean laslinkCustomer = isLaslinkCustomer(customerConfigurations);
+        
+        this.getSession().setAttribute("showReportTab", 
+        		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
+
+        this.getSession().setAttribute("hasScoringConfigured", 
+        		new Boolean( customerHasScoring(customerConfigurations).booleanValue() && adminUser));
+        
+        this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigurations));
+        
+     	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigurations));
+     	
+    	this.getRequest().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
+    	
+    	boolean isLasLinkCustomer = isLasLinkCustomer(customerConfigurations);
+    	
+    	this.getRequest().setAttribute("isLasLinkCustomer", isLasLinkCustomer);  
+    	
+    	this.getRequest().setAttribute("isTopLevelUser",isTopLevelUser(isLasLinkCustomer));
+    	
+    	this.getRequest().setAttribute("customerConfigurations", customerConfigurations);         	
+
+		this.getRequest().setAttribute("isMandatoryBirthDate", isMandatoryBirthDate(customerConfigurations));
+
+		isGeorgiaCustomer(customerConfigurations);
+		
+		this.getRequest().setAttribute("customerConfigurations", customerConfigurations);    
+    	
+	}
+
+
+    private boolean isAdminUser() 
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
+    }
+    
+    private Boolean canRegisterStudent(CustomerConfiguration [] customerConfigs) 
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        boolean validCustomer = false; 
+
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+            CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer"))
+            {
+                validCustomer = true; 
+            }               
+        }
+        
+        boolean validUser = (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) || 
+        		roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR));
+        
+        return new Boolean(validCustomer && validUser);
+    }
+    
+    private Boolean hasLicenseConfiguration(CustomerConfiguration [] customerConfigs)
+    {               
+    	 boolean hasLicenseConfiguration = false;
+
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
+            		cc.getDefaultValue().equals("T")	) {
+            	hasLicenseConfiguration = true;
+                break;
+            } 
+        }
+       
+        return new Boolean(hasLicenseConfiguration);
+    }
+    
+    private Boolean customerHasScoring(CustomerConfiguration [] customerConfigs)
+    {               
+        Integer customerId = this.user.getCustomer().getCustomerId();
+        boolean hasScoringConfigurable = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Hand_Scoring") && 
+            		cc.getDefaultValue().equals("T")	) {
+            	hasScoringConfigurable = true;
+            } 
+        }
+        return new Boolean(hasScoringConfigurable);
+    }
+
+    private boolean isLaslinkCustomer(CustomerConfiguration [] customerConfigs)
+    {               
+        boolean laslinkCustomer = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Laslink_Customer")
+					&& cc.getDefaultValue().equals("T")) {
+            	laslinkCustomer = true;
+            }
+        }
+        return laslinkCustomer;
+    }
+
+    private boolean isTABECustomer(CustomerConfiguration [] customerConfigs)
+    {               
+        boolean TABECustomer = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TABE_Customer")) {
+            	TABECustomer = true;
+            }
+        }
+        return TABECustomer;
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////////////////    
+    ///////////////////////////// END OF SETUP USER PERMISSION ///////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////    
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////// *********************** MANAGESTUDENTFORM ************* /////////////////////////////    
