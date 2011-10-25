@@ -1,8 +1,15 @@
 <?xml version="1.0"?>
 <!DOCTYPE cache-config SYSTEM "cache-config.dtd">
 
-<cache-config>
-	<introduce:config file="coherence-pushreplicationpattern-cache-config.xml" />
+<cache-config
+	xmlns:sync="class:com.oracle.coherence.patterns.pushreplication.configuration.PushReplicationNamespaceContentHandler"
+    xmlns:cr="class:com.oracle.coherence.environment.extensible.namespaces.InstanceNamespaceContentHandler">
+
+	<introduce:config file="coherence-messagingpattern-cache-config.xml" />
+
+    <sync:provider pof-enabled="false">
+        <sync:coherence-provider />
+    </sync:provider>
 	
     <caching-scheme-mapping>
         <!--    Caches with any name will be created as tiered.    -->
@@ -10,7 +17,7 @@
 	        <cache-name>OAS*</cache-name>
 	        <scheme-name>TieredScheme</scheme-name>
 	        <!-- <sync:target-cache-name>publishing-cache</sync:target-cache-name> -->
-	        <!-- <sync:publisher>
+	        <sync:publisher>
 	           <sync:publisher-name>Active Publisher</sync:publisher-name>
 	           <sync:publisher-scheme>
 	               <sync:remote-cluster-publisher-scheme>
@@ -19,17 +26,18 @@
 	                       <sync:local-cache-publisher-scheme>
 	                           
 	                           <sync:target-cache-name>{cache-name}</sync:target-cache-name>
-	                           
-	                           <sync:conflict-resolver-scheme>
-	                               <cr:class classname="com.oracle.coherence.examples.incubator.pushreplicationpattern.activeactive.ActiveActiveSumConflictResolver" />
-	                           </sync:conflict-resolver-scheme>
+
 	                       </sync:local-cache-publisher-scheme>
 	                   </sync:remote-publisher-scheme>
 	                   <sync:autostart>true</sync:autostart>
 	                   <sync:publish-original-value>true</sync:publish-original-value>
 	               </sync:remote-cluster-publisher-scheme>
 	           </sync:publisher-scheme>
-	       	</sync:publisher> -->
+	       	</sync:publisher>
+        </cache-mapping>
+        <cache-mapping>
+	        <cache-name>ADS*</cache-name>
+	        <scheme-name>TieredScheme</scheme-name>
         </cache-mapping>
     </caching-scheme-mapping>
     <caching-schemes>  
@@ -37,14 +45,6 @@
     	<local-scheme>
    			<scheme-name>MemoryScheme</scheme-name>
 		</local-scheme>      
-        <!--        Local Disk storage scheme definition (not used) -->
-        <!--  <external-scheme>
-        	<scheme-name>DiskPersistentScheme</scheme-name>
-        	<lh-file-manager>
-        		<directory>.</directory>
-        		<file-name>{cache-name}.store</file-name>
-        	</lh-file-manager>
-        </external-scheme> -->
         <!--        Oracle backing store scheme definition -->
         <read-write-backing-map-scheme>
 		  <scheme-name>DBScheme</scheme-name>
@@ -53,9 +53,20 @@
 		      <scheme-ref>MemoryScheme</scheme-ref>
 		    </local-scheme>
 		  </internal-cache-scheme>
+		  <!-- <cachestore-scheme>
+			<class-scheme>
+				<class-name>com.oracle.coherence.patterns.pushreplication.PublishingCacheStore</class-name>
+				<init-params>
+					<init-param>
+						<param-type>java.lang.String</param-type>
+						<param-value>{cache-name}</param-value>
+					</init-param>
+				</init-params>
+			</class-scheme>
+		  </cachestore-scheme> -->
 		  <cachestore-scheme>
 		    <class-scheme>
-		      <class-name>com.ctb.tms.nosql.coherence.OracleCacheStore</class-name>
+		      <class-name>com.ctb.tms.nosql.coherence.MultiCacheStore</class-name>
 		      <init-params>
 		        <init-param>
 		          <param-type>java.lang.String</param-type>
@@ -64,7 +75,7 @@
 		      </init-params>
 		    </class-scheme>
 		  </cachestore-scheme>
-		  <write-delay>10s</write-delay>
+		  <write-delay>5s</write-delay>
 		</read-write-backing-map-scheme>
         <!--        Default Distributed caching scheme.        -->
         <distributed-scheme>            
@@ -98,9 +109,11 @@
 			<service-name>remote-site</service-name> 
 			<initiator-config> 
 				<tcp-initiator> 
-					<address-provider>
-                    	<class-name>com.ctb.tms.nosql.coherence.push.TMSRemoteAddressProvider</class-name>
-                    </address-provider>
+					<remote-addresses>
+						<address-provider>
+	                    	<class-name>com.ctb.tms.nosql.coherence.push.TMSRemoteAddressProvider</class-name>
+	                    </address-provider>
+	                </remote-addresses>
 					<connect-timeout>2s</connect-timeout> 
 				</tcp-initiator> 
 				<outgoing-message-handler> 
@@ -114,8 +127,9 @@
             <acceptor-config>
                 <tcp-acceptor>
                     <local-address>
-                        <address>localhost</address>
-                        <port>8089</port>
+                        <address-provider>
+	                    	<class-name>com.ctb.tms.nosql.coherence.push.TMSLocalAddressProvider</class-name>
+	                    </address-provider>
                     </local-address>
                 </tcp-acceptor>
             </acceptor-config>
