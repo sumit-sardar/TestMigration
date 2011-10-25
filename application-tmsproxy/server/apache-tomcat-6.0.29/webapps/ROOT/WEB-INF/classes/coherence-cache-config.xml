@@ -126,11 +126,9 @@
             <service-name>ExtendTcpProxyService</service-name>
             <acceptor-config>
                 <tcp-acceptor>
-                    <local-address>
-                        <address-provider>
-	                    	<class-name>com.ctb.tms.nosql.coherence.push.TMSLocalAddressProvider</class-name>
-	                    </address-provider>
-                    </local-address>
+                    <address-provider>
+                    	<class-name>com.ctb.tms.nosql.coherence.push.TMSLocalAddressProvider</class-name>
+                    </address-provider>
                 </tcp-acceptor>
             </acceptor-config>
             <autostart>true</autostart>
