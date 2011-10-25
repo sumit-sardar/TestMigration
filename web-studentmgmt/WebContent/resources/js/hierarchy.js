@@ -898,6 +898,10 @@ function fillselectedOrgNode( elementId, orgList) {
 		}
 		 if(!isValueChanged) {
 		      for(var key = 0; key <dbStudentDetails.length ; key++) {
+		       if(newStudentValue[key].name != dbStudentDetails[key].name) {
+		       	isValueChanged = true;
+		       	break;
+		       }
 		       if(trim(newStudentValue[key].value) != trim(dbStudentDetails[key].value)){
 		      		isValueChanged = true;
 		      		break;
