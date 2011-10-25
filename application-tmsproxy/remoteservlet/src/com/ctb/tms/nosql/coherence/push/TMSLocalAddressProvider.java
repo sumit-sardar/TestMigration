@@ -18,7 +18,7 @@ public class TMSLocalAddressProvider implements AddressProvider {
 	static {
 		ResourceBundle rb = ResourceBundle.getBundle("pushreplication");
 		hostname = rb.getString("coherence.local.hostname");
-		hostname = rb.getString("coherence.local.port");
+		port = Integer.parseInt(rb.getString("coherence.local.port"));
 	}
 	
 	public void accept() {
