@@ -97,7 +97,9 @@
 					    <div id="featureTabsContainer">
 					      <a href="#" id="assessmentsTabLink" onClick="gotoAction('assessments.do');" class="tab rounded {top transparent}">Assessments</a>
 					      <a href="#" id="organizationsTabLink" onClick="gotoAction('organizations.do');" class="tab rounded {top transparent}">Organizations</a>
+                		<c:if test="${sessionScope.showReportTab}">
 					      <a href="#" id="reportsTabLink" onClick="gotoAction('reports.do');" class="tab rounded {top transparent}">Reports</a>
+                		</c:if>					    
 					      <a href="#" id="servicesTabLink" onClick="gotoAction('services.do');" class="tab rounded {top transparent}">Services</a>
 					    </div>
 
@@ -107,38 +109,28 @@
 
 							<!-- ASSESSMENT MENU -->	
 							<div id="assessments" style="display: none">					
-							<table class="toolbar">
-							<tr class="toolbar">
-								<td class="toolbar" width="120">
-									<a href="#" id="sessionsLink" onClick="gotoMenuAction('assessments.do', 'sessionsLink');"><b>Sessions</b></a>						
-								</td>
-								<td class="toolbar" width="120">
-									<a href="#" id="studentScoringLink" onClick="gotoMenuAction('assessments.do', 'studentScoringLink');"><b>Student Scoring</b></a>						
-								</td>
-								<td class="toolbar" width="120">
-									<a href="#" id="programStatusLink" onClick="gotoMenuAction('assessments.do', 'programStatusLink');"><b>Program Status</b></a>						
-								</td>
-								<td width="*">&nbsp;</td>		
-							</tr>
-							</table>						
 							</div>
 
 							<!-- ORGANIZATION MENU -->
 							<div id="organizations" style="display: none">					
-							<table class="toolbar">
-							<tr class="toolbar">
-								<td class="toolbar" width="120">
-									<a href="#" id="organizationsLink" onClick="gotoMenuAction('organizations.do', 'organizationsLink');"><b>Organizations</b></a>						
-								</td>
-								<td class="toolbar" width="120">
-									<a href="#" id="studentsLink" onClick="gotoMenuAction('organizations.do', 'studentsLink');"><b>Students</b></a>						
-								</td>
-								<td class="toolbar" width="120">
-									<a href="#" id="usersLink" onClick="gotoMenuAction('organizations.do', 'usersLink');"><b>Users</b></a>						
-								</td>
-								<td width="*">&nbsp;</td>		
-							</tr>
-							</table>						
+								<table class="toolbar">
+								<tr class="toolbar">
+									<td class="toolbar" width="120">
+										<a href="#" id="studentsLink" onClick="gotoMenuAction('organizations.do', 'studentsLink');"><b>Students</b></a>						
+									</td>
+								<ctb:auth roles="Administrator">										
+									<td class="toolbar" width="120">
+										<a href="#" id="usersLink" onClick="gotoMenuAction('organizations.do', 'usersLink');"><b>Users</b></a>						
+									</td>
+								</ctb:auth>
+								<ctb:auth roles="Administrator">										
+									<td class="toolbar" width="120">
+										<a href="#" id="organizationsLink" onClick="gotoMenuAction('organizations.do', 'organizationsLink');"><b>Organizations</b></a>						
+									</td>
+								</ctb:auth>
+									<td width="*">&nbsp;</td>		
+								</tr>
+								</table>						
 							</div>
 
 							<!-- REPORTS MENU -->

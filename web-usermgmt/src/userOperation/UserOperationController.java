@@ -771,9 +771,9 @@ public class UserOperationController extends PageFlowController
 	 * ORGANIZATIONS actions
 	 */    
 	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
 	        @Jpf.Forward(name = "studentsLink", path = "organizations_manageStudents.do"),
-	        @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do")
+	        @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do"),
+	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do")
 	    }) 
 	protected Forward organizations()
 	{

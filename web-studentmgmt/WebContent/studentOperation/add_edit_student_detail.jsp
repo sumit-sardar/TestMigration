@@ -39,21 +39,23 @@
 <div id="addEditStudentDetail"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	
-	<div id="displayMessage" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 1px solid #A6C9E2;">
+	<div id="displayMessage" class="roundedMessage"> 
 			<table>
 				<tr>
-					<td rowspan="3"><div id= "messageType">	</div></td>
+					<td rowspan="3" valign="top">
+                   	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
+					</td>
 					<td>
 						<table>
-							<tr><td><div id="title"></div></td></tr>
+							<tr><td><font style="color: red; font-size:12px; font-weight:bold"><div id="title"></div></font></td></tr>
 							<tr><td><div id= "content">	</div></td></tr>
 							<tr><td><div id= "message">	</div></td></tr>
 						</table>
 					</td>
 				</tr>
 			</table>
-		</div>
-		<br>
+	</div>
+	<br>
 	<div id="accordion" style="width:99.5%;">
 			
 			<div>

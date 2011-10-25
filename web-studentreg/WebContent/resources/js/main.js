@@ -1,14 +1,14 @@
 
 function submitPage()
 {
-	//showLoading();
+	showLoading();
    	document.forms[0].submit();
 }    
 
   
 function gotoAction(action)
 {
-	//showLoading();
+	showLoading();
     if (action != null) {
     	document.forms[0].action = action;
     }
@@ -17,7 +17,7 @@ function gotoAction(action)
  
 function gotoMenuAction(action, menuId)
 {	
-	//showLoading();
+	showLoading();
     if (action != null) {
     	if (menuId != null) {
     		action = action + "?menuId=" + menuId;
@@ -29,12 +29,15 @@ function gotoMenuAction(action, menuId)
  
 function showLoading()
 {	
+    document.body.style.cursor = 'wait';
+	/*
 	$(document).ajaxStop($.unblockUI); 
 	$.blockUI({ message: '<img src="/StudentRegistrationWeb/resources/images/loading.gif" />',
 		css: {
 		border: '0px',
 		backgroundColor: '#aaaaaa', 
 		opacity:  0.5, width:'0px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
-	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 		 
+	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 		
+	*/ 
 }
 	

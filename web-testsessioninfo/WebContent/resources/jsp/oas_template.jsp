@@ -80,7 +80,9 @@
 					    <div id="featureTabsContainer">
 					      <a href="#" id="assessmentsTabLink" onClick="gotoAction('assessments.do');" class="tab rounded {top transparent}">Assessments</a>
 					      <a href="#" id="organizationsTabLink" onClick="gotoAction('organizations.do');" class="tab rounded {top transparent}">Organizations</a>
+                		<c:if test="${sessionScope.showReportTab}">
 					      <a href="#" id="reportsTabLink" onClick="gotoAction('reports.do');" class="tab rounded {top transparent}">Reports</a>
+                		</c:if>					    
 					      <a href="#" id="servicesTabLink" onClick="gotoAction('services.do');" class="tab rounded {top transparent}">Services</a>
 					    </div>
  
@@ -89,42 +91,28 @@
 
 							<!-- ASSESSMENT MENU -->	
 							<div id="assessments" style="display: none">					
-							<table class="toolbar">
-							<tr class="toolbar">
-								<td class="toolbar" width="120">
-									<a href="#" id="sessionsLink" onClick="gotoMenuAction('assessments.do', 'sessionsLink');"><b>Sessions</b></a>						
-								</td>
-								<td class="toolbar" width="120">
-									<a href="#" id="studentScoringLink" onClick="gotoMenuAction('assessments.do', 'studentScoringLink');"><b>Student Scoring</b></a>						
-								</td>
-								<td class="toolbar" width="120">
-									<a href="#" id="programStatusLink" onClick="gotoMenuAction('assessments.do', 'programStatusLink');"><b>Program Status</b></a>						
-								</td>
-								<td width="*">&nbsp;</td>		
-							</tr>
-							</table>						
+								<table class="toolbar">
+								<tr class="toolbar">
+									<td class="toolbar" width="120">
+										<a href="#" id="sessionsLink" onClick="gotoMenuAction('assessments.do', 'sessionsLink');"><b>Sessions</b></a>						
+									</td>
+								  <c:if test="${sessionScope.hasScoringConfigured}">			      
+									<td class="toolbar" width="120">
+										<a href="#" id="studentScoringLink" onClick="gotoMenuAction('assessments.do', 'studentScoringLink');"><b>Student Scoring</b></a>						
+									</td>
+	                			  </c:if>
+								  <c:if test="${sessionScope.hasProgramStatusConfigured}">			      
+									<td class="toolbar" width="120">
+										<a href="#" id="programStatusLink" onClick="gotoMenuAction('assessments.do', 'programStatusLink');"><b>Program Status</b></a>						
+									</td>
+	                			  </c:if>
+									<td width="*">&nbsp;</td>		
+								</tr>
+								</table>						
 							</div>
 
 							<!-- ORGANIZATION MENU -->
 							<div id="organizations" style="display: none">					
-							<table class="toolbar">
-							<tr class="toolbar">
-							  <ctb:auth roles="Administrator">										
-								<td class="toolbar" width="120">
-									<a href="#" id="organizationsLink" onClick="gotoMenuAction('organizations.do', 'organizationsLink');"><b>Organizations</b></a>						
-								</td>
-							  </ctb:auth>
-								<td class="toolbar" width="120">
-									<a href="#" id="studentsLink" onClick="gotoMenuAction('organizations.do', 'studentsLink');"><b>Students</b></a>						
-								</td>
-							  <ctb:auth roles="Administrator">										
-								<td class="toolbar" width="120">
-									<a href="#" id="usersLink" onClick="gotoMenuAction('organizations.do', 'usersLink');"><b>Users</b></a>						
-								</td>
-							  </ctb:auth>
-								<td width="*">&nbsp;</td>		
-							</tr>
-							</table>						
 							</div>
 
 							<!-- REPORTS MENU -->
@@ -135,10 +123,7 @@
 							<div id="services" style="display: none">	
 							<table class="toolbar">
 							<tr class="toolbar">
-								<td class="toolbar" width="120">
-									<a href="#" id="manageLicensesLink" onClick="gotoMenuAction('services.do', 'manageLicensesLink');"><b>Manage Licenses</b></a>						
-								</td>
-								<td  class="toolbar-alignleft" width="330">
+								<td  class="toolbar-alignleft" width="300">
 								
 									<div id="service-menu">
 									<ul>
@@ -170,6 +155,13 @@
 									</div>
 								
 								</td>
+								
+							  <c:if test="${sessionScope.hasLicenseConfigured}">			      
+								<td class="toolbar" width="120">
+									<a href="#" id="manageLicensesLink" onClick="gotoMenuAction('services.do', 'manageLicensesLink');"><b>Manage Licenses</b></a>						
+								</td>
+                			  </c:if>
+								
 								<td width="*">&nbsp;</td>		
 								
 								</tr>

@@ -80,7 +80,7 @@ public class SoftwareOperationController extends PageFlowController {
     	java.security.Principal principal = getRequest().getUserPrincipal();
         if (principal != null) 
             this.userName = principal.toString();
-        getSession().setAttribute("userName", this.userName);
+        //getSession().setAttribute("userName", this.userName);
     	
         String PC_URI = "'" + getdownloadURI("TDCINSTPC") + "'";
         String MAC_URI = "'" + getdownloadURI("TDCINSTMAC") + "'";

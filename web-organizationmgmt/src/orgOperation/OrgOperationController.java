@@ -105,14 +105,14 @@ public class OrgOperationController extends PageFlowController {
 	 * ORGANIZATIONS actions
 	 */    
 	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
 	        @Jpf.Forward(name = "studentsLink", path = "organizations_manageStudents.do"),
-	        @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do")
+	        @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do"),
+	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do")
 	    }) 
 	protected Forward organizations()
 	{
 		String menuId = (String)this.getRequest().getParameter("menuId");    	
-		String forwardName = (menuId != null) ? menuId : "organizationsLink";
+		String forwardName = (menuId != null) ? menuId : "studentsLink";
 		
 	    return new Forward(forwardName);
 	}
@@ -178,16 +178,16 @@ public class OrgOperationController extends PageFlowController {
 	 * SERVICES actions
 	 */    
 	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "manageLicensesLink", path = "services_manageLicenses.do"),
 	        @Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
 	        @Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
 	        @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
-	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do")
+	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do"),
+	        @Jpf.Forward(name = "manageLicensesLink", path = "services_manageLicenses.do")
 	    }) 
 	protected Forward services()
 	{
 		String menuId = (String)this.getRequest().getParameter("menuId");    	
-		String forwardName = (menuId != null) ? menuId : "manageLicensesLink";
+		String forwardName = (menuId != null) ? menuId : "installSoftwareLink";
 		
 	    return new Forward(forwardName);
 	}

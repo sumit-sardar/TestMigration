@@ -12,14 +12,11 @@
 			<div id= "messageMain">	</div>
 		</div>
 		<table> 
-			<!--  
-			<tr class="transparent">
-	        	<td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;</td>
-   	 		</tr>
-   	 		-->
 		   	<tr width="100%" >
-		       <td align="right" colspan="12">
-	     	        <div id="changePW" style="display:none"><input style="padding: 2px; background: url(&quot;images/ui-bg_glass_85_dfeffc_1x400.png&quot;) repeat-x scroll 50% 50% rgb(223, 239, 252);" class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" onclick="javascript:changePwdForUser(); return false;" value=" Change Password " type="button"></div>
+		       <td align="right" colspan="12" style="padding: 0 0 5px 0">
+		       	<div id="changePW" style="display:none">
+                	<a href="#" onclick="changePwdForUser();" class="rounded {transparent} button">Change Password</a>      
+                </div>          		     	        
 	     	   </td>
 		   	</tr>
 		  

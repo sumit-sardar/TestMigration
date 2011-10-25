@@ -218,7 +218,6 @@ public class SessionOperationController extends PageFlowController {
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// SETUP USER PERMISSION ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    
-
     private void getLoggedInUserPrincipal()
     {
         java.security.Principal principal = getRequest().getUserPrincipal();
@@ -253,7 +252,6 @@ public class SessionOperationController extends PageFlowController {
         boolean TABECustomer = isTABECustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
         
-        /*
         this.getSession().setAttribute("showReportTab", 
         		new Boolean(userHasReports().booleanValue() || laslinkCustomer));
 
@@ -269,16 +267,6 @@ public class SessionOperationController extends PageFlowController {
         this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         
      	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs));
-        */
-        
-        this.getSession().setAttribute("showReportTab", new Boolean(true));
-        this.getSession().setAttribute("hasUploadDownloadConfigured", new Boolean(true));
-        this.getSession().setAttribute("hasProgramStatusConfigured", new Boolean(true));
-        this.getSession().setAttribute("hasScoringConfigured", new Boolean(true));
-        this.getSession().setAttribute("canRegisterStudent", new Boolean(true));
-        this.getSession().setAttribute("hasLicenseConfigured", new Boolean(true));
-        
-        
 	}
 
     private Boolean userHasReports() 
@@ -401,7 +389,6 @@ public class SessionOperationController extends PageFlowController {
     
     private Boolean hasUploadDownloadConfig()
     {
-        /*
         Boolean hasUploadDownloadConfig = Boolean.FALSE;
         try {   
             hasUploadDownloadConfig = this.testSessionStatus.hasUploadDownloadConfig(this.userName);
@@ -410,12 +397,10 @@ public class SessionOperationController extends PageFlowController {
             be.printStackTrace();
         }
         return hasUploadDownloadConfig;
-        */
-    	return Boolean.TRUE;
     }
 
     private Boolean hasProgramStatusConfig()
-    {	/*
+    {	
         Boolean hasProgramStatusConfig = Boolean.FALSE;
         try {   
             hasProgramStatusConfig = this.testSessionStatus.hasProgramStatusConfig(this.userName);
@@ -424,8 +409,6 @@ public class SessionOperationController extends PageFlowController {
             be.printStackTrace();
         }
         return hasProgramStatusConfig;
-        */
-    	return Boolean.TRUE;
     }
     
 }
