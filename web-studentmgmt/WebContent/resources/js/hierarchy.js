@@ -892,10 +892,15 @@ function fillselectedOrgNode( elementId, orgList) {
 	function isEditStudentDataChanged(){
 		var newStudentValue = $("#addEditStudentDetail *").serializeArray(); 
 		isValueChanged = false;	
+		
+		if(dbStudentDetails.length != newStudentValue.length) {
+			isValueChanged = true;
+		}
 		 if(!isValueChanged) {
 		      for(var key = 0; key <dbStudentDetails.length ; key++) {
 		       if(trim(newStudentValue[key].value) != trim(dbStudentDetails[key].value)){
 		      		isValueChanged = true;
+		      		break;
 		      	}
 		      	 
 		      }
