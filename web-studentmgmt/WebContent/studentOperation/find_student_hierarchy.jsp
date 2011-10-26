@@ -84,7 +84,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p>You have not saved this student.Do you want to move to the next record?</p>
+			<p>You have not saved this student. Are you sure you want to move?</p>
 			<br/>
 			</td>
 		</tr>

@@ -807,12 +807,14 @@ function fillselectedOrgNode( elementId, orgList) {
 			closePopUp('confirmationPopupNavigation');
 			closePopUp('addEditStudentDetail');
 		} else {
+			
+			//added temp variable here becasue requetForStudent is getting reset in closePopUp func. Need to handle this more elegantly.
+			var navFlow = requetForStudent;
 			closePopUp('confirmationPopup');
 			closePopUp('confirmationPopupNavigation');
-			
-			if(requetForStudent == "Next"){
+			if(navFlow == "Next"){
 				 fetchNextData('Edit');
-			} else if(requetForStudent == "Previous"){
+			} else if(navFlow == "Previous"){
 				fetchPreviousData('Edit');
 			} else{
 				closePopUp('addEditStudentDetail');
@@ -1463,11 +1465,10 @@ function fillselectedOrgNode( elementId, orgList) {
 			 	resizable:false,
 			 	autoOpen: true,
 			 	width: '400px',
-			 	height: '100px',
 			 	modal: true,
 			 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 				});	
-				 $("#confirmationPopup").css('height',100);
+				 $("#confirmationPopup").css('height',120);
 				 var toppos = ($(window).height() - 290) /2 + 'px';
 				 var leftpos = ($(window).width() - 410) /2 + 'px';
 				 $("#confirmationPopup").parent().css("top",toppos);
@@ -1480,11 +1481,10 @@ function fillselectedOrgNode( elementId, orgList) {
 			resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',
-		 	height: '100px',
 		 	modal: true,
 		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 			});	
-		    $("#confirmationPopupNavigation").css('height',100);
+		    $("#confirmationPopupNavigation").css('height',120);
 			var toppos = ($(window).height() - 290) /2 + 'px';
 			var leftpos = ($(window).width() - 410) /2 + 'px';
 			$("#confirmationPopupNavigation").parent().css("top",toppos);
