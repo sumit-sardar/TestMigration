@@ -1422,6 +1422,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		      			$("#list2").setSelection(nextStudentId, true); 
 	      		}
 			}
+			requetForStudent = "";
 		}
 		
 		function fetchPreviousData(popupname){
@@ -1453,7 +1454,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		       		populateTreeSelect();
 		       		$("#list2").setSelection(preStudentId, true); 
 		    }	
-			
+			requetForStudent = "";
 		}
 		
 		
