@@ -106,7 +106,7 @@ public class SoftwareOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/TestSessionInfoWeb/sessionOperation/assessments.do";
+            String url = "/TestSessionInfoWeb/sessionOperation/assessments_sessions.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -124,7 +124,7 @@ public class SoftwareOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/organizations.do";
+            String url = "/StudentManagementWeb/studentOperation/organizations_manageStudents.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -175,7 +175,7 @@ public class SoftwareOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/OrganizationManagementWeb/licenseOperation/services.do";
+            String url = "/OrganizationManagementWeb/licenseOperation/services_manageLicenses.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -198,7 +198,7 @@ public class SoftwareOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/TestSessionInfoWeb/testContentOperation/begin.do";
+            String url = "/TestSessionInfoWeb/testContentOperation/services_downloadTest.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -213,7 +213,7 @@ public class SoftwareOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/uploadOperation/begin.do";
+            String url = "/OrganizationManagementWeb/uploadOperation/services_uploadData.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -228,7 +228,7 @@ public class SoftwareOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/downloadOperation/begin.do";
+            String url = "/OrganizationManagementWeb/downloadOperation/services_downloadData.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

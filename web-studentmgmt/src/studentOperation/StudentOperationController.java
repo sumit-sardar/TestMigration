@@ -1918,7 +1918,7 @@ public class StudentOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/TestSessionInfoWeb/sessionOperation/assessments.do";
+            String url = "/TestSessionInfoWeb/sessionOperation/assessments_sessions.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -1949,7 +1949,7 @@ public class StudentOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/organizations.do";
+            String url = "/OrganizationManagementWeb/orgOperation/organizations_manageOrganizations.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -1972,7 +1972,7 @@ public class StudentOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/UserManagementWeb/userOperation/organizations.do";
+            String url = "/UserManagementWeb/userOperation/organizations_manageUsers.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -2008,7 +2008,7 @@ public class StudentOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/services.do";
+            String url = "/TestSessionInfoWeb/softwareOperation/begin.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

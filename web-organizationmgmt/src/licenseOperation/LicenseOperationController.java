@@ -88,7 +88,7 @@ public class LicenseOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/TestSessionInfoWeb/sessionOperation/assessments.do";
+            String url = "/TestSessionInfoWeb/sessionOperation/assessments_sessions.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -106,7 +106,7 @@ public class LicenseOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/organizations.do";
+            String url = "/StudentManagementWeb/studentOperation/organizations_manageStudents.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -147,7 +147,7 @@ public class LicenseOperationController extends PageFlowController {
 	protected Forward services()
 	{
 		String menuId = (String)this.getRequest().getParameter("menuId");    	
-		String forwardName = (menuId != null) ? menuId : "manageLicensesLink";
+		String forwardName = (menuId != null) ? menuId : "installSoftwareLink";
 		
 	    return new Forward(forwardName);
 	}
@@ -165,7 +165,7 @@ public class LicenseOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/services.do?menuId=installSoftwareLink";
+            String url = "/TestSessionInfoWeb/softwareOperation/services_installSoftware.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -180,7 +180,7 @@ public class LicenseOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/services.do?menuId=downloadTestLink";
+            String url = "/TestSessionInfoWeb/testContentOperation/services_downloadTest.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -195,7 +195,7 @@ public class LicenseOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/services.do?menuId=uploadDataLink";
+            String url = "/OrganizationManagementWeb/uploadOperation/services_uploadData.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -210,7 +210,7 @@ public class LicenseOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/services.do?menuId=downloadDataLink";
+            String url = "/OrganizationManagementWeb/downloadOperation/services_downloadData.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

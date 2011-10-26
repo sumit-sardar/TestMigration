@@ -97,7 +97,7 @@ public class ScoringOperationController extends PageFlowController {
     protected Forward assessments()
     {
     	String menuId = (String)this.getRequest().getParameter("menuId");    	
-    	String forwardName = (menuId != null) ? menuId : "studentScoringLink";
+    	String forwardName = (menuId != null) ? menuId : "sessionsLink";
     	
         return new Forward(forwardName);
     }
@@ -107,7 +107,7 @@ public class ScoringOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/TestSessionInfoWeb/sessionOperation/assessments.do";
+            String url = "/TestSessionInfoWeb/sessionOperation/assessments_sessions.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -155,7 +155,7 @@ public class ScoringOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/StudentManagementWeb/studentOperation/organizations.do";
+            String url = "/StudentManagementWeb/studentOperation/organizations_manageStudents.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -193,7 +193,7 @@ public class ScoringOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/services.do";
+            String url = "/TestSessionInfoWeb/softwareOperation/begin.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

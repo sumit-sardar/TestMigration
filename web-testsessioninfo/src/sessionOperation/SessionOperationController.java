@@ -116,12 +116,6 @@ public class SessionOperationController extends PageFlowController {
         }) 
     protected Forward assessments_sessions()
     {
-		getLoggedInUserPrincipal();
-		
-		getUserDetails();
-
-		setupUserPermission();
-    	
         return new Forward("success");
     }
 
@@ -130,7 +124,7 @@ public class SessionOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/HandScoringWeb/scoringOperation/assessments.do";
+            String url = "/HandScoringWeb/scoringOperation/assessments_studentScoring.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -145,7 +139,7 @@ public class SessionOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/TestSessionInfoWeb/programOperation/assessments.do";
+            String url = "/TestSessionInfoWeb/programOperation/assessments_programStatus.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -164,7 +158,7 @@ public class SessionOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/StudentManagementWeb/studentOperation/organizations.do";
+            String url = "/StudentManagementWeb/studentOperation/organizations_manageStudents.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -198,7 +192,7 @@ public class SessionOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/services.do";
+            String url = "/TestSessionInfoWeb/softwareOperation/begin.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

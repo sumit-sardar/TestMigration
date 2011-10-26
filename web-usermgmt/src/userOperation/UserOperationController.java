@@ -690,7 +690,7 @@ public class UserOperationController extends PageFlowController
 	{
         try
         {
-            String url = "/TestSessionInfoWeb/sessionOperation/assessments.do";
+            String url = "/TestSessionInfoWeb/sessionOperation/assessments_sessions.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -711,7 +711,7 @@ public class UserOperationController extends PageFlowController
 	protected Forward organizations()
 	{
 		String menuId = (String)this.getRequest().getParameter("menuId");    	
-		String forwardName = (menuId != null) ? menuId : "usersLink";
+		String forwardName = (menuId != null) ? menuId : "studentsLink";
 		
 	    return new Forward(forwardName);
 	}
@@ -721,7 +721,7 @@ public class UserOperationController extends PageFlowController
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/organizations.do";
+            String url = "/OrganizationManagementWeb/orgOperation/organizations_manageOrganizations.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -736,7 +736,7 @@ public class UserOperationController extends PageFlowController
 	{
         try
         {
-            String url = "/StudentManagementWeb/studentOperation/organizations.do";
+            String url = "/StudentManagementWeb/studentOperation/organizations_manageStudents.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -781,7 +781,7 @@ public class UserOperationController extends PageFlowController
     {
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/services.do";
+            String url = "/TestSessionInfoWeb/softwareOperation/begin.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
