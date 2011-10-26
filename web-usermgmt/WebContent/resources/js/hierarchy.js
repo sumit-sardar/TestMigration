@@ -569,11 +569,10 @@ function userDetailEdit(){
 		 	resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',
-		 	height: '100px',
 		 	modal: true,
 		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 			});	
-			 $("#confirmationPopup").css('height',100);
+			 $("#confirmationPopup").css('height',120);
 			  var toppos = ($(window).height() - 290) /2 + 'px';
 			 var leftpos = ($(window).width() - 410) /2 + 'px';
 			 $("#confirmationPopup").parent().css("top",toppos);
