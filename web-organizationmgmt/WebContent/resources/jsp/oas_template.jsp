@@ -83,8 +83,8 @@
 					  <div id="featureTabsBody">
 					  
 					    <div id="featureTabsContainer">
-					      <a href="#" id="assessmentsTabLink" onClick="gotoAction('assessments.do');" class="tab rounded {top transparent}">Assessments</a>
-					      <a href="#" id="organizationsTabLink" onClick="gotoAction('organizations.do');" class="tab rounded {top transparent}">Organizations</a>
+					      <a href="#" id="assessmentsTabLink" onClick="gotoMenuAction('assessments.do', 'sessionsLink');" class="tab rounded {top transparent}">Assessments</a>
+					      <a href="#" id="organizationsTabLink" onClick="gotoMenuAction('organizations.do', 'studentsLink');" class="tab rounded {top transparent}">Organizations</a>
                 		<c:if test="${sessionScope.showReportTab}">
 					      <a href="#" id="reportsTabLink" onClick="gotoAction('reports.do');" class="tab rounded {top transparent}">Reports</a>
                 		</c:if>					    

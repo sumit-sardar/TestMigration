@@ -110,7 +110,7 @@ public class AdminOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/organizations.do";
+            String url = "/StudentManagementWeb/studentOperation/organizations.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

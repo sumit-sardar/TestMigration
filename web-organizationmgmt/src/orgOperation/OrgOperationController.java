@@ -115,7 +115,7 @@ public class OrgOperationController extends PageFlowController {
 	protected Forward organizations()
 	{
 		String menuId = (String)this.getRequest().getParameter("menuId");    	
-		String forwardName = (menuId != null) ? menuId : "studentsLink";
+		String forwardName = (menuId != null) ? menuId : "organizationsLink";
 		
 	    return new Forward(forwardName);
 	}
@@ -125,7 +125,12 @@ public class OrgOperationController extends PageFlowController {
 	    }) 
 	protected Forward organizations_manageOrganizations()
 	{
-		getUserDetails();		
+		getLoggedInUserPrincipal();
+		
+		getUserDetails();
+		
+		setupUserPermission();
+		
 		return new Forward("success");
 	}
 	

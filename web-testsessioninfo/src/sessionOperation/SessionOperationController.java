@@ -116,6 +116,12 @@ public class SessionOperationController extends PageFlowController {
         }) 
     protected Forward assessments_sessions()
     {
+		getLoggedInUserPrincipal();
+		
+		getUserDetails();
+
+		setupUserPermission();
+    	
         return new Forward("success");
     }
 
@@ -158,7 +164,7 @@ public class SessionOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/organizations.do";
+            String url = "/StudentManagementWeb/studentOperation/organizations.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

@@ -122,6 +122,12 @@ public class ScoringOperationController extends PageFlowController {
         }) 
     protected Forward assessments_studentScoring()
     {
+		getLoggedInUserPrincipal();
+		
+		getUserDetails();
+		
+		setupUserPermission();
+    	
         return new Forward("success");
     }
 
@@ -149,7 +155,7 @@ public class ScoringOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/organizations.do";
+            String url = "/StudentManagementWeb/studentOperation/organizations.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
