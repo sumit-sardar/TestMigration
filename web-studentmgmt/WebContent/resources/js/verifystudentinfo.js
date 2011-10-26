@@ -56,7 +56,12 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 				requiredFieldCount += 1;            
 				requiredFields = buildErrorString("Last Name", requiredFieldCount, requiredFields);       
 			}
-
+			if(isMandatoryBirthdate == "true") {
+				if (!allSelected(month, day, year)) {
+					requiredFieldCount += 1;            
+					requiredFields = buildErrorString("Date of Birth", requiredFieldCount, requiredFields);       
+				}
+			}
            if ( grade == "Select a grade") {
 				requiredFieldCount += 1;            
 				requiredFields = buildErrorString("Grade", requiredFieldCount, requiredFields);       
@@ -66,13 +71,7 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 				requiredFieldCount += 1;            
 				requiredFields = buildErrorString("Gender", requiredFieldCount, requiredFields);       
 			}
-			if(isMandatoryBirthdate == "true") {
-				if (!allSelected(month, day, year)) {
-					requiredFieldCount += 1;            
-					requiredFields = buildErrorString("Date of Birth", requiredFieldCount, requiredFields);       
-				}
-			}
-			
+					
 			if(isMandatoryStudentId == "true"){
 				var externalStudentNumber = trim(studentNumber);
 				if ( externalStudentNumber.length==0) {
