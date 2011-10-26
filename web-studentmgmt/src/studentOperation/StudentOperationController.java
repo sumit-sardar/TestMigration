@@ -2067,13 +2067,9 @@ public class StudentOperationController extends PageFlowController {
      	
     	this.getRequest().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
     	
-    	boolean isLasLinkCustomer = isLasLinkCustomer(customerConfigurations);
+    	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	
-    	this.getRequest().setAttribute("isLasLinkCustomer", isLasLinkCustomer);  
-    	
-    	this.getRequest().setAttribute("isTopLevelUser",isTopLevelUser(isLasLinkCustomer));
-    	
-    	this.getRequest().setAttribute("customerConfigurations", customerConfigurations);         	
+    	this.getRequest().setAttribute("isTopLevelUser",isTopLevelUser(laslinkCustomer));
 
 		this.getRequest().setAttribute("isMandatoryBirthDate", isMandatoryBirthDate(customerConfigurations));
 
@@ -2081,6 +2077,7 @@ public class StudentOperationController extends PageFlowController {
 		
 		this.getRequest().setAttribute("customerConfigurations", customerConfigurations);    
     	
+     	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     	
 	}
 
 

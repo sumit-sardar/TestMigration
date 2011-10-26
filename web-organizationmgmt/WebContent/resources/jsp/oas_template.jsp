@@ -131,8 +131,12 @@
 							<div id="services" style="display: none">	
 							<table class="toolbar">
 							<tr class="toolbar">
+							<c:if test="${sessionScope.hasUploadDownloadConfigured}">			      							
 								<td  class="toolbar-alignleft" width="300">
-								
+                			</c:if>					    
+							<c:if test="${! sessionScope.hasUploadDownloadConfigured}">			      							
+								<td  class="toolbar-alignleft" width="150">
+                			</c:if>					    								
 									<div id="service-menu">
 									<ul>
 										<li>
@@ -146,7 +150,7 @@
 												<li><a href="#" style="color: #0000ff" id="downloadtestLink" onClick="gotoMenuAction('services.do', 'downloadTestLink');">Download Test</a></li>
 											</ul>
 										</li>
-										
+										<c:if test="${sessionScope.hasUploadDownloadConfigured}">			      																	
 										<li>
 											<a href="#"><span style="color: blue">User/Student Load&nbsp;&nbsp;
 												<em>
@@ -158,6 +162,7 @@
 												<li><a href="#" style="color: #0000ff" id="downloadDataLink" onClick="gotoMenuAction('services.do', 'downloadDataLink');">Export</a></li>
 											</ul>
 										</li>
+                						</c:if>					    
 									</ul>
 									</div>
 								

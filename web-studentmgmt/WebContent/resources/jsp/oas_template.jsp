@@ -143,51 +143,8 @@
 
 							<!-- SERVICES MENU -->
 							<div id="services" style="display: none">	
-							<table class="toolbar">
-							<tr class="toolbar">
-							
-								<td class="toolbar" width="120">
-									<a href="#" id="manageLicensesLink" onClick="gotoMenuAction('services.do', 'manageLicensesLink');"><b>Manage Licenses</b></a>						
-								</td>
-								
-								<td  class="toolbar-alignleft" width="330">
-								
-									<div id="service-menu">
-									<ul>
-										<li>
-											<a href="#"><span style="color: blue">Workstation Setup&nbsp;
-												<em>
-													<img src="<%=request.getContextPath()%>/resources/images/zonebar-downarrow.png" alt="dropdown" />
-												</em>
-											</span></a>
-											<ul class="submenu" style="background: #DEECF6; display:none;">
-												<li><a href="#" style="color: #0000ff" id="installSoftwareLink" onClick="gotoMenuAction('services.do', 'installSoftwareLink');">Install Software</a></li>
-												<li><a href="#" style="color: #0000ff" id="downloadtestLink" onClick="gotoMenuAction('services.do', 'downloadTestLink');">Download Test</a></li>
-											</ul>
-										</li>
-										
-										<li>
-											<a href="#"><span style="color: blue">User/Student Load&nbsp;&nbsp;
-												<em>
-													<img src="<%=request.getContextPath()%>/resources/images/zonebar-downarrow.png" alt="dropdown" />
-												</em>
-											</span></a>
-											<ul class="submenu" style="background: #DEECF6; display:none;">
-												<li align="left"><a href="#" style="color: #0000ff" id="uploadDataLink" onClick="gotoMenuAction('services.do', 'uploadDataLink');">Import</a></li>
-												<li><a href="#" style="color: #0000ff" id="downloadDataLink" onClick="gotoMenuAction('services.do', 'downloadDataLink');">Export</a></li>
-											</ul>
-										</li>
-									</ul>
-									</div>
-								
-								</td>
-								<td width="*">&nbsp;</td>		
-								
-								</tr>
-								</table>
 							</div>
-					
-							
+												
 					      	<div class="feature" id="bodySection">
 					            <netui-template:includeSection name="bodySection"/>      	
 					      	</div>
