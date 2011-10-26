@@ -104,7 +104,28 @@
 				</distributed-scheme>
 			</back-scheme>
 		</near-scheme> 
-		
+		<!-- these are for push replication -->
+		<proxy-scheme>
+			<scheme-name>proxy-scheme</scheme-name>
+			<service-name>Proxy</service-name>
+			<thread-count>4</thread-count>
+            <acceptor-config>
+                <tcp-acceptor>
+	                <address-provider>
+                    	<class-name>com.ctb.tms.nosql.coherence.push.TMSLocalAddressProvider</class-name>
+                    </address-provider>
+                </tcp-acceptor>
+            </acceptor-config>    
+            <proxy-config>
+            	<cache-service-proxy>
+            		<enabled>true</enabled>
+            	</cache-service-proxy>
+            	<invocation-service-proxy>
+            		<enabled>true</enabled>
+            	</invocation-service-proxy>
+            </proxy-config>   
+            <autostart>true</autostart>
+        </proxy-scheme>
 		<remote-invocation-scheme> 
 			<service-name>remote-site</service-name> 
 			<initiator-config> 
@@ -121,17 +142,5 @@
 				</outgoing-message-handler> 
 			</initiator-config> 
 		</remote-invocation-scheme>  
-
-        <proxy-scheme>
-            <service-name>ExtendTcpProxyService</service-name>
-            <acceptor-config>
-                <tcp-acceptor>
-                    <address-provider>
-                    	<class-name>com.ctb.tms.nosql.coherence.push.TMSLocalAddressProvider</class-name>
-                    </address-provider>
-                </tcp-acceptor>
-            </acceptor-config>
-            <autostart>true</autostart>
-        </proxy-scheme>
     </caching-schemes>
 </cache-config>

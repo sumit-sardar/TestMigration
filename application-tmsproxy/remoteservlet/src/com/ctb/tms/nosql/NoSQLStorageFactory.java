@@ -1,5 +1,6 @@
 package com.ctb.tms.nosql;
 
+import java.util.Enumeration;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
@@ -8,6 +9,9 @@ import com.ctb.tms.nosql.coherence.ADSCoherenceSink;
 import com.ctb.tms.nosql.coherence.ADSCoherenceSource;
 import com.ctb.tms.nosql.coherence.OASCoherenceSink;
 import com.ctb.tms.nosql.coherence.OASCoherenceSource;
+import com.tangosol.net.CacheFactory;
+import com.tangosol.net.Cluster;
+import com.tangosol.net.Service;
 
 public class NoSQLStorageFactory {
 
@@ -23,10 +27,24 @@ public class NoSQLStorageFactory {
 	
 	static Logger logger = Logger.getLogger(NoSQLStorageFactory.class);
 	
-	{
+	static {
 		synchronized(NoSQLStorageFactory.class) {
 			ResourceBundle rb = ResourceBundle.getBundle("storage");
 			nosqlstore = rb.getString("storage.nosql.store");
+			if(COHERENCE.equals(nosqlstore)) {
+				try{
+					Service proxy = CacheFactory.getService("Proxy");
+					if(!proxy.isRunning()) {
+						proxy.start();
+						logger.info("Started proxy service!");
+					} else {
+						logger.info("Proxy service already running.");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.warn("Couldn't start proxy service!");
+				}
+			}
 		}
 	}
 	

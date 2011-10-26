@@ -1,8 +1,6 @@
 package com.ctb.tms.nosql.coherence.push;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;

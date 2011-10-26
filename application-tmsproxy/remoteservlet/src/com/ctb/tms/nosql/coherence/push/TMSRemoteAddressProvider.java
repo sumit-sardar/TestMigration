@@ -59,14 +59,10 @@ public class TMSRemoteAddressProvider implements AddressProvider {
 		while(keys.hasMoreElements()) {
 			String fullKey = keys.nextElement();
 			String key = fullKey;
-			System.out.println("Full key: " + key);
 			if(key.startsWith("coherence.remote.")) {
 				key = key.substring(17, key.length());
-				System.out.println("Remote key: " + key);
 				String node = key.substring(0, key.indexOf("."));
-				System.out.println("Node: " + node);
 				key = key.substring(key.indexOf(".") + 1, key.length());
-				System.out.println("Final key: " + key);
 				if(key.startsWith("hostname")) {
 					String hostname = rb.getString(fullKey);
 					RemoteNode remote = remoteMap.get(node);
