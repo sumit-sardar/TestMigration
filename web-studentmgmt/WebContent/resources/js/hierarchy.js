@@ -37,8 +37,10 @@ $(document).bind('keydown', function(event) {
 		
 	      var code = (event.keyCode ? event.keyCode : event.which);
 	      if(code == 27){
-	      		if(isPopUp){				
+	      		if(isPopUp){	
+	      			if(!isViewStudent){
 	      			onCancel();
+	      			}
 	      		}
 	            return false;
 	      }
@@ -345,9 +347,11 @@ function createMultiNodeSelectedTree(jsondata) {
      	   var sortArrow = jQuery("#list2");
            jQuery("#list2").jqGrid('setGridParam', {url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
            jQuery("#list2").sortGrid('lastName',true);
-        /*   var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
+         	//For MQC Defect - 67122
+           var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
            $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
-           $(arrowElements.childNodes[1]).addClass('ui-state-disabled');*/
+           $(arrowElements.childNodes[1]).addClass('ui-state-disabled');
+
       }
 
 
@@ -741,7 +745,7 @@ function fillselectedOrgNode( elementId, orgList) {
 }
 
 	function closePopUp(dailogId){
-	//console.log("closePopupfired: " + dailogId);
+	//alert("closePopupfired: " + dailogId);
 		if(dailogId == 'addEditStudentDetail') {
 			$('#accordion').accordion('activate', 0 );
 			$("#Student_Information").scrollTop(0);
@@ -760,10 +764,9 @@ function fillselectedOrgNode( elementId, orgList) {
 			$("#view_Student_Accommodation_Information").scrollTop(0);
 			$('#view_Student_Additional_Information').hide();
 			$('#view_Student_Accommodation_Information').hide();
-			populateTreeSelect();
+			//populateTreeSelect();
 			isPopUp = false;
-			isViewStudent = false;
-			
+			isViewStudent = false;			
 		}
 			
 		if(dailogId == 'confirmationPopup') {
@@ -1306,14 +1309,21 @@ function fillselectedOrgNode( elementId, orgList) {
 						$('#viewStudentDetail select').attr('disabled', true); 
 						$.unblockUI();  
 						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
+						// For MQC Defect - 67150
 						$("#viewStudentDetail").dialog({  
 													title:"View Student",  
 												 	resizable:false,
 												 	autoOpen: true,
 												 	width: '800px',
 												 	modal: true,
-												 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
-		 	
+												 	closeOnEscape: true,
+												 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
+												 	beforeClose: function(event, ui) {
+                 									if(event.keyCode == 27) {  
+                     								closePopUp('viewStudentDetail');
+                     								event.preventDefault();
+                 									} 
+   													}		 	
 												 	});	
 												 	 
 							 setPopupPosition(isAddStudent);
