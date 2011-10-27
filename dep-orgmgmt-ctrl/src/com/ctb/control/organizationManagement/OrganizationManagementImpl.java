@@ -1004,4 +1004,89 @@ public class OrganizationManagementImpl implements OrganizationManagement
         }  
     }
     //END - Changes for LASLINK PRODUCT 
+     
+     //Changes for new UI
+     
+     /**
+      * Get the list of all child nodes for a specified 
+      * node including the user_count below them
+      * @common:operation
+      * @param userName - identifies login user name
+      * @param orgNodeId - identifies org_node_id
+      * @param filter - filter params
+      * @param page - page params
+      * @param sort - sort params
+      * @return UserNodeData
+      */
+     public NodeData  getOrgNodesForParentIncludingParentName(String userName, 
+                                             Integer orgNodeId, 
+                                             FilterParams filter, 
+                                             PageParams page, 
+                                             SortParams sort) throws CTBBusinessException {
+
+     /*    try {
+             validator.validateNode(userName, orgNodeId, 
+                                    "OrganizationManagementImpl.getOrgNodesForParent");
+         } catch (ValidationException ve) {
+             throw ve;
+         }*/
+         
+         try {
+             NodeData nodeData = new NodeData();
+             Integer pageSize = null;
+             if ( page != null ) {
+                 pageSize = new Integer(page.getPageSize());
+             }
+                
+             Node[] nodes = orgNode.getOrgNodesByParentIncludingParentName(orgNodeId);
+         
+             nodeData.setNodes(nodes,pageSize);
+                 
+             if ( filter != null ) {
+                 
+                 nodeData.applyFiltering(filter);
+                 
+             }
+             if ( sort != null ) {
+                 
+                 nodeData.applySorting(sort);
+                 
+             }
+             if ( page != null ) {
+                 
+                 nodeData.applyPaging(page);
+                 
+             }
+             
+             for( int i = 0; i < nodeData.getNodes().length; i++ ) {
+                 Node node = nodeData.getNodes()[i];
+                 if (node != null) {   
+                     node.setEditable(getPermisssion(userName,node.getOrgNodeId(),orgNodeId));
+                 }
+                                 
+             }
+                             
+              return nodeData;
+         } catch (SQLException se) {
+             OrgDataNotFoundException dataNotFoundException = 
+                                         new OrgDataNotFoundException
+                                                 ("OrganizationManagement.Failed");
+             dataNotFoundException.setStackTrace(se.getStackTrace());
+             throw dataNotFoundException;
+         } catch(NullPointerException ne) {
+        	 return null;
+         }catch (CTBBusinessException be){
+             OrgDataNotFoundException dataNotFoundException = 
+                                         new OrgDataNotFoundException
+                                                 ("OrganizationManagement.Failed");
+             dataNotFoundException.setStackTrace(be.getStackTrace());
+             throw dataNotFoundException;
+         } catch (Exception e) {
+             OrgDataNotFoundException dataNotFoundException = 
+                                         new OrgDataNotFoundException
+                                                 ("OrganizationManagement.Failed");
+             dataNotFoundException.setStackTrace(e.getStackTrace());
+             throw dataNotFoundException;
+         }
+     }
 } 

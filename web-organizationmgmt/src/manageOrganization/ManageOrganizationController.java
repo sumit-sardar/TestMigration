@@ -248,7 +248,7 @@ public class ManageOrganizationController extends PageFlowController
     protected Forward goto_organizationOperation ()
     {
 		try{
-			String contextPath = "/OrganizationManagementWeb/manageOrganizationOperation/beginFindOrganization.do";
+			String contextPath = "/OrganizationManagementWeb/orgOperation/beginFindOrganization.do";
 	        String url = contextPath;         
 	        getResponse().sendRedirect(url);
 	 		} 

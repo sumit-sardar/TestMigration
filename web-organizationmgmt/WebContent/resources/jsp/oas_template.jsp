@@ -6,7 +6,11 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="ctb-widgets.tld" prefix="ctb"%>
 
-<html>
+<!--[if IE]><![endif]-->
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6">    <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8">    <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9">    <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
   <head>
     <title><netui-template:attribute name="title"/></title>
 	<link href="<%=request.getContextPath()%>/resources/css/widgets.css" type="text/css" rel="stylesheet" />
@@ -34,6 +38,8 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
+
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>   
@@ -56,6 +62,11 @@
 		
 		
 	</script>
+	<style>
+	.ui-jqgrid-titlebar-close{
+		display:none !important;   //change to hide the circle-triangle in top
+	}
+	</style>
      
 </head>
 
@@ -99,6 +110,20 @@
 
 							<!-- ASSESSMENT MENU -->	
 							<div id="assessments" style="display: none">					
+							<table class="toolbar">
+							<tr class="toolbar">
+								<td class="toolbar" width="120">
+									<a href="#" id="sessionsLink" onClick="gotoMenuAction('assessments.do', 'sessionsLink');"><b>Sessions</b></a>						
+								</td>
+								<td class="toolbar" width="120">
+									<a href="#" id="studentScoringLink" onClick="gotoMenuAction('assessments.do', 'studentScoringLink');"><b>Student Scoring</b></a>						
+								</td>
+								<td class="toolbar" width="120">
+									<a href="#" id="programStatusLink" onClick="gotoMenuAction('assessments.do', 'programStatusLink');"><b>Program Status</b></a>						
+								</td>
+								<td width="*">&nbsp;</td>		
+							</tr>
+							</table>						
 							</div>
 
 							<!-- ORGANIZATION MENU -->
@@ -131,12 +156,13 @@
 							<div id="services" style="display: none">	
 							<table class="toolbar">
 							<tr class="toolbar">
-							<c:if test="${sessionScope.hasUploadDownloadConfigured}">			      							
-								<td  class="toolbar-alignleft" width="300">
-                			</c:if>					    
-							<c:if test="${! sessionScope.hasUploadDownloadConfigured}">			      							
-								<td  class="toolbar-alignleft" width="150">
-                			</c:if>					    								
+							
+								<td class="toolbar" width="120">
+									<a href="#" id="manageLicensesLink" onClick="gotoMenuAction('services.do', 'manageLicensesLink');"><b>Manage Licenses</b></a>						
+								</td>
+								
+								<td  class="toolbar-alignleft" width="330">
+								
 									<div id="service-menu">
 									<ul>
 										<li>
@@ -150,7 +176,7 @@
 												<li><a href="#" style="color: #0000ff" id="downloadtestLink" onClick="gotoMenuAction('services.do', 'downloadTestLink');">Download Test</a></li>
 											</ul>
 										</li>
-										<c:if test="${sessionScope.hasUploadDownloadConfigured}">			      																	
+										
 										<li>
 											<a href="#"><span style="color: blue">User/Student Load&nbsp;&nbsp;
 												<em>
@@ -162,17 +188,10 @@
 												<li><a href="#" style="color: #0000ff" id="downloadDataLink" onClick="gotoMenuAction('services.do', 'downloadDataLink');">Export</a></li>
 											</ul>
 										</li>
-                						</c:if>					    
 									</ul>
 									</div>
 								
 								</td>
-							  <c:if test="${sessionScope.hasLicenseConfigured}">			      
-								<td class="toolbar" width="120">
-									<a href="#" id="manageLicensesLink" onClick="gotoMenuAction('services.do', 'manageLicensesLink');"><b>Manage Licenses</b></a>						
-								</td>
-                			  </c:if>
-								
 								<td width="*">&nbsp;</td>		
 								
 								</tr>

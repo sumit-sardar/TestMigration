@@ -112,4 +112,19 @@ public interface OrganizationManagement
     //START - Changes for LASLINK PRODUCT 
     java.lang.String  getlasLinkConfigForOrgNodes(Integer selectedOrgNodeId) throws com.ctb.exception.CTBBusinessException ;
     //END - Changes for LASLINK PRODUCT 
+    
+    //Changes for new UI
+    /**
+     * Get the list of all child nodes for a specified node including the
+     * user_count below them
+     * @param userName - identifies login user name
+     * @param orgNodeId - identifies org_node_id
+     * @param filter - filter params
+     * @param page - page params
+     * @param sort - sort params
+     * @return UserNodeData
+     */
+    
+    com.ctb.bean.testAdmin.NodeData getOrgNodesForParentIncludingParentName(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+
 } 

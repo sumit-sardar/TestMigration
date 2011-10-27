@@ -26,6 +26,10 @@
         <filter-name>NoCacheFilter</filter-name>
         <url-pattern>/manageOrganization/*</url-pattern>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>NoCacheFilter</filter-name>
+        <url-pattern>/orgOperation/*</url-pattern>
+    </filter-mapping>
     <servlet>
         <description/>
         <servlet-name>action</servlet-name>
@@ -103,6 +107,7 @@
             <description>Protect any resources within the following Page Flow.</description>
             <url-pattern>/administration/*</url-pattern>
             <url-pattern>/manageOrganization/*</url-pattern>
+            <url-pattern>/orgOperation/*</url-pattern>
             <url-pattern>/manageUpload/*</url-pattern>
             <url-pattern>/manageDownload/*</url-pattern>
             <url-pattern>/manageCustomer/*</url-pattern>

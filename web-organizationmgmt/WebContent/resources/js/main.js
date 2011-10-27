@@ -29,15 +29,12 @@ function gotoMenuAction(action, menuId)
  
 function showLoading()
 {	
-    document.body.style.cursor = 'wait';
-	/*
 	$(document).ajaxStop($.unblockUI); 
-	$.blockUI({ message: '<img src="/OrganizationManagementWeb/resources/images/loading.gif" />',
+	$.blockUI({ message: '<img src="/UserManagementWeb/resources/images/loading.gif" />',
 		css: {
 		border: '0px',
 		backgroundColor: '#aaaaaa', 
 		opacity:  0.5, width:'0px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
-	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050});
-	*/ 		 
+	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 		 
 }
 	

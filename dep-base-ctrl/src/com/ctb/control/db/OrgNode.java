@@ -1917,4 +1917,74 @@ public interface OrgNode extends JdbcControl
 	
 	@JdbcControl.SQL(statement = "SELECT MAX(ONC.CATEGORY_LEVEL) FROM ORG_NODE_CATEGORY ONC WHERE ONC.CUSTOMER_ID = {customerId} AND ONC.ACTIVATION_STATUS = 'AC'")
 	Integer getLeafNodeCategoryId(Integer customerId) throws SQLException;
+	
+	//Changes for new UI
+	
+	 /**
+     * @jc:sql statement::
+     * select distinct
+     *     node.org_node_id as orgNodeId,
+     *     node.customer_id as customerId,
+     *     node.org_node_category_id as orgNodeCategoryId,
+     *     node.org_node_name as orgNodeName,
+     *     node.ext_qed_pin as extQedPin,
+     *     node.ext_elm_id as extElmId,
+     *     node.ext_org_node_type as extOrgNodeType,
+     *     node.org_node_description as orgNodeDescription,
+     *     node.created_by as createdBy,
+     *     node.created_date_time as createdDateTime,
+     *     node.updated_by as updatedBy,
+     *     node.updated_date_time as updatedDateTime,
+     *     node.activation_status as activationStatus,
+     *     node.data_import_history_id as dataImportHistoryId,
+     *     node.parent_state as parentState,
+     *     node.parent_region as parentRegion,
+     *     node.parent_county as parentCounty,
+     *     node.parent_district as parentDistrict,
+     *     node.org_node_code as orgNodeCode,
+     *     cat.category_name as orgNodeCategoryName,
+     *     count(distinct child.org_node_id) as childNodeCount,
+     *     pnode.org_node_name as parentOrgNodeName
+     * from 
+     *      org_node node, org_node_parent parent, org_node_category cat,
+     *      org_node_parent child, org_node chnode, org_node pnode
+     * where 
+     *      parent.org_node_id = node.org_node_id
+     *      and cat.org_node_category_id = node.org_node_category_id
+     *      and parent.parent_org_node_id = {parentOrgNodeId}
+     *      and child.parent_org_node_id (+) = node.org_node_id
+     *      and chnode.org_node_id (+) = child.org_node_id   
+     *      and NVL(chnode.activation_status, 'AC') = 'AC'
+     *      and node.activation_status = 'AC'
+     *      and cat.activation_status = 'AC'
+     *      and pnode.org_node_id = parent.parent_org_node_id
+     * group by
+     *      node.org_node_id,
+     *      node.customer_id,
+     *      node.org_node_category_id,
+     *      node.org_node_name,
+     *      node.ext_qed_pin,
+     *      node.ext_elm_id,
+     *      node.ext_org_node_type,
+     *      node.org_node_description,
+     *      node.created_by,
+     *      node.created_date_time,
+     *      node.updated_by,
+     *      node.updated_date_time,
+     *      node.activation_status,
+     *      node.data_import_history_id,
+     *      node.parent_state,
+     *      node.parent_region,
+     *      node.parent_county,
+     *      node.parent_district,
+     *      node.org_node_code,
+     *      cat.category_name,
+     *      pnode.org_node_name
+     * order by 
+     * 		UPPER(node.org_node_name)::
+     *      array-max-length="all"
+     */
+    @JdbcControl.SQL(statement = "select distinct  node.org_node_id as orgNodeId,  node.customer_id as customerId,  node.org_node_category_id as orgNodeCategoryId,  node.org_node_name as orgNodeName,  node.ext_qed_pin as extQedPin,  node.ext_elm_id as extElmId,  node.ext_org_node_type as extOrgNodeType,  node.org_node_description as orgNodeDescription,  node.created_by as createdBy,  node.created_date_time as createdDateTime,  node.updated_by as updatedBy,  node.updated_date_time as updatedDateTime,  node.activation_status as activationStatus,  node.data_import_history_id as dataImportHistoryId,  node.parent_state as parentState,  node.parent_region as parentRegion,  node.parent_county as parentCounty,  node.parent_district as parentDistrict,  node.org_node_code as orgNodeCode,  cat.category_name as orgNodeCategoryName,  count(distinct child.org_node_id) as childNodeCount, pnode.org_node_name as parentOrgNodeName from  org_node node, org_node_parent parent, org_node_category cat,  org_node_parent child, org_node chnode, org_node pnode where  parent.org_node_id = node.org_node_id  and cat.org_node_category_id = node.org_node_category_id  and parent.parent_org_node_id = {parentOrgNodeId}  and child.parent_org_node_id (+) = node.org_node_id  and chnode.org_node_id (+) = child.org_node_id  and NVL(chnode.activation_status, 'AC') = 'AC'  and node.activation_status = 'AC'  and cat.activation_status = 'AC' and pnode.org_node_id = parent.parent_org_node_id group by  node.org_node_id,  node.customer_id,  node.org_node_category_id,  node.org_node_name,  node.ext_qed_pin,  node.ext_elm_id,  node.ext_org_node_type,  node.org_node_description,  node.created_by,  node.created_date_time,  node.updated_by,  node.updated_date_time,  node.activation_status,  node.data_import_history_id,  node.parent_state,  node.parent_region,  node.parent_county,  node.parent_district,  node.org_node_code,  cat.category_name, pnode.org_node_name order by UPPER(node.org_node_name)",
+                     arrayMaxLength = 0, fetchSize=100)
+    Node [] getOrgNodesByParentIncludingParentName(Integer parentOrgNodeId) throws SQLException;
 }
