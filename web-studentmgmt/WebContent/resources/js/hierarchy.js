@@ -778,22 +778,22 @@ function fillselectedOrgNode( elementId, orgList) {
 		}
 			
 		if(dailogId == 'confirmationPopup') {
-			$('#accordion').accordion('activate', 0 );
-			$("#Student_Information").scrollTop(0);
-			$("#Student_Additional_Information").scrollTop(0);
-			$("#Student_Accommodation_Information").scrollTop(0);
-			$('#Student_Additional_Information').hide();
-			$('#Student_Accommodation_Information').hide();
-			$('#studentFirstName').trigger("focus");		
+		//	$('#accordion').accordion('activate', 0 );
+		//	$("#Student_Information").scrollTop(0);
+		//	$("#Student_Additional_Information").scrollTop(0);
+		//	$("#Student_Accommodation_Information").scrollTop(0);
+		//	$('#Student_Additional_Information').hide();
+		//	$('#Student_Accommodation_Information').hide();
+		//	$('#studentFirstName').trigger("focus");		
 		}
 		if(dailogId == 'confirmationPopupNavigation') {
-			$('#accordion').accordion('activate', 0 );
-			$("#Student_Information").scrollTop(0);
-			$("#Student_Additional_Information").scrollTop(0);
-			$("#Student_Accommodation_Information").scrollTop(0);
-			$('#Student_Additional_Information').hide();
-			$('#Student_Accommodation_Information').hide();
-			$('#studentFirstName').trigger("focus");
+		//	$('#accordion').accordion('activate', 0 );
+		//	$("#Student_Information").scrollTop(0);
+		//	$("#Student_Additional_Information").scrollTop(0);
+		//	$("#Student_Accommodation_Information").scrollTop(0);
+		//	$('#Student_Additional_Information').hide();
+		//	$('#Student_Accommodation_Information').hide();
+		//	$('#studentFirstName').trigger("focus");
 			requetForStudent = "";				
 		}
 		
