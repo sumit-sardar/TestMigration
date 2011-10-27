@@ -357,6 +357,14 @@ if(userEmail != "") {
 	
 		}	
 		
+	function setMessageChangePWD(title, content, type, message){
+			$("#titlePWD").text(title);
+			//$("#content").text(content);
+			$("#contentPWD").html(content);
+			$("#messagePWD").text(message);
+	
+		}	
+		
 		function setMessageMain(title, content, type, message){
 			$("#titleMain").text(title);
 			$("#contentMain").text(content);

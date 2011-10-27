@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>   
 
+<input type="hidden" id="roleNameID" name = "roleName" value='<%=session.getAttribute("userRole") %>'/>
+
 <table class="transparent">
 
     <tr class="transparent">
@@ -13,10 +15,10 @@
 		</div>
 		<table> 
 		   	<tr width="100%" >
-		       <td align="right" colspan="12" style="padding: 0 0 5px 0">
-		       	<div id="changePW" style="display:none">
-                	<a href="#" onclick="changePwdForUser();" class="rounded {transparent} button">Change Password</a>      
-                </div>          		     	        
+		       <td align="right" colspan="12">
+	     	    <div id="changePW" style="display:none">
+	     	        	<input id="changePWDBtn" style="padding: 2px; background: url(&quot;images/ui-bg_glass_85_dfeffc_1x400.png&quot;) repeat-x scroll 50% 50% rgb(223, 239, 252);" class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" onclick="javascript:changePwdForUser(); return false;" value=" Change Password " type="button">
+	     	        </div>
 	     	   </td>
 		   	</tr>
 		  
@@ -47,6 +49,7 @@
 </table>
 
 <jsp:include page="/userOperation/add_edit_user_detail.jsp" />
+<jsp:include page="/userOperation/change_password.jsp" />
 			
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">

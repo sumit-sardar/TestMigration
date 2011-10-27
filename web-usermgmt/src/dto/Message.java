@@ -90,6 +90,7 @@ public class Message implements java.io.Serializable
     public static final String INVALID_PASSWORD = "Passwords must contain at least six characters. Passwords must contain at least one letter and at least one number. Please re-enter your information with only these characters: A-Z, a-z, 0-9, _, -,’";
     /* Changed/Added for DEx Phase 2 on 22-Apr-09 by TCS -- Start*/
     public static final String INVALID_DEX_PASSWORD = "Passwords must contain at least eight characters. Passwords must contain at least one letter and at least one number. Please re-enter your information with only these characters: A-Z, a-z, 0-9, _, -,$";
+    public static final String INVALID_DEX_PASSWORD_SINGLE_LINE = "Password must contain at least eight characters. Passwords must contain at least one letter and at least one number. Please re-enter your information with only these characters: A-Z, a-z, 0-9, _, -,$";
     /* Changed/Added for DEx Phase 2 on 22-Apr-09 by TCS -- End*/
     public static final String PASSWORD_MISMATCH = "You must enter the same password in the New Password and Confirm Password fields.";
     public static final String WRONG_PASSWORD = "Please provide a correct old password";

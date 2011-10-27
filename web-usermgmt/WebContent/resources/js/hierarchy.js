@@ -13,6 +13,8 @@ var timeZoneOptions=[];
 var stateOptions=[];
 var isPopUp = false;
 
+var userList;//added on 24.10.2011
+
 $(document).bind('keydown', function(event) {
 		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -85,6 +87,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	document.getElementById('displayMessageMain').style.display = "none";
+			$("#changePWDBtn").attr('disabled', true);	    	
   			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
  		    UIBlock();
@@ -200,7 +203,8 @@ function populateTreeSelect() {
 			
 function populateGrid() {
 
-		document.getElementById('changePW').style.display = "block";	
+		document.getElementById('changePW').style.display = "block";
+		$("#changePWDBtn").attr('disabled', true);	
          $("#list2").jqGrid({         
          url:'userOrgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
@@ -217,7 +221,7 @@ function populateGrid() {
 		   		{name:'orgNodeNamesStr',index:'orgNodeNamesStr',editable: true, align:"left" ,width:200, edittype:"newtree",editoptions:{readonly:true},sortable:true,sorttype:'text', cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   		
 		   	],
-		   	jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId",records: function(obj) { return obj.userProfileInformation.length; } },
+		   	jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId",records: function(obj) { userList = JSON.stringify(obj.userProfileInformation);return obj.userProfileInformation.length; } },
 		   	 
 		   	loadui: "disable",
 			rowNum:20,
@@ -243,6 +247,14 @@ function populateGrid() {
 				}
 				
 			},
+			onSelectRow: function () {
+				//alert($("#roleNameID").val());
+				if ($("#roleNameID").val() == 'Administrator') {
+				//alert('Administrator....');
+					$("#changePWDBtn").removeAttr('disabled');
+				}
+				document.getElementById('displayMessageMain').style.display = "none";	
+			},
 			loadComplete: function () {
 				if ($('#list2').getGridParam('records') === 0) {
             	$('#sp_1_pager2').text("1");
@@ -266,8 +278,68 @@ function populateGrid() {
 			 
 }
 
-function changePwdForUser(){
+function resetPassword () {
+	
+	resetPwdMsg();
+	hidePwdMsgDiv();
+	resetPwdTxtBox();
 
+}
+
+function resetPwdMsg () {
+
+	$("#titlePWD").text("");
+	$("#contentPWD").html("");
+	$("#messagePWD").text("");
+
+}
+
+function hidePwdMsgDiv () {
+
+	document.getElementById('displayMessageChangePassword').style.display = "none";
+}
+
+function resetPwdTxtBox () {
+
+	$("#newPassword").val("");
+	$("#confirmPassword").val("");
+
+}
+
+function getUserName () {
+
+	var selId = $("#list2").jqGrid('getGridParam', 'selrow');
+	
+	var fName = getColValueJson (selId,'firstName');
+	var lName = getColValueJson (selId,'lastName');
+	
+	return fName+' '+lName;
+}
+
+function changePwdForUser(){
+	
+	resetPassword();
+	
+	document.getElementById('changePW').style.display = "block";
+	
+			$("#changeUserPassword").dialog({  
+					title:"Change Password: "+getUserName(),  
+				 	resizable:false,
+				 	autoOpen: true,
+				 	width: '800px',
+				 	modal: true,
+					closeOnEscape: false,
+				 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+				 	});	
+			$('#changeUserPassword').bind('keydown', function(event) {
+ 				  var code = (event.keyCode ? event.keyCode : event.which);
+				  if(code == 27){
+	  				  onChangePasswordCancel();
+	  				  return false;
+ 				  }
+				});
+			 	 
+			setPopupPosition();	
 }
 
 function gridReload(){ 
@@ -651,7 +723,85 @@ function fillDropDown( elementId, optionList) {
 	$(ddl).html(optionHtml);
 }
 
+function saveChangePassword() {
+	var userId = $("#list2").jqGrid('getGridParam', 'selrow');
+	var userName = getColValueJson(userId,'userName');
+	
+				$.ajax(
+						{
+								async:		true,
+								beforeSend:	function(){
+												UIBlock();
+											},
+								url:		'saveUserPassword.do',
+								type:		'POST',
+								data:		$("#changeUserPassword *").serialize()+ "&userName="+userName ,
+								dataType:	'json',
+								success:	function(data, textStatus, XMLHttpRequest){	
+												$.unblockUI();  
+												var errorFlag = data.errorFlag;
+												var successFlag = data.successFlag;
+												if(successFlag) {
+													closeChangePasswordPopUp('changeUserPassword');
+													setMessageMain(data.title, data.content, data.message, "");
+													document.getElementById('displayMessageMain').style.display = "block";	
+													
+        										}
+        										else{
+        											setMessageChangePWD(data.title, data.content, data.type, "");
+        											document.getElementById('displayMessageChangePassword').style.display = "block";	
+        											
+        										}
+																								
+											},
+								error  :    function(XMLHttpRequest, textStatus, errorThrown){
+													$.unblockUI();  
+												window.location.href="/TestSessionInfoWeb/logout.do";
+											},
+								complete :  function(){
+												$.unblockUI();  
+											}
+						}
+					);
+}
 
+function onChangePasswordCancel() {
+	closeChangePasswordPopUp('changeUserPassword');
+}
+
+function closeChangePasswordPopUp(dailogId){
+		
+		$("#"+dailogId).dialog("close");
+		//$("#changePWDBtn").attr('disabled', true);
+		if(dailogId == 'confirmationPopup') {
+			$('#accordion').accordion('activate', 0 );
+			$("#new_user_password").scrollTop(0);
+			$('#new_user_password').hide();
+			//$("#userFirstName").trigger("focus");
+		} 
+	}
+
+function getColValueJson(id,colName){
+	var str = userList;
+	var colVal = "";
+	var indexOfId = str.indexOf(id);
+	
+	var indexOfCreatedBy = -1;
+	var indexOfComma = -1;
+	if(indexOfId > 0){
+		str = str.substring(parseInt(indexOfId), str.length);
+		//userName
+		indexOfCreatedBy = str.indexOf(colName);
+		indexOfComma = str.indexOf(',', parseInt(indexOfCreatedBy));
+		indexOfCreatedBy += colName.length + 2;
+		colVal = str.substring(parseInt(indexOfCreatedBy), parseInt(indexOfComma));
+		colVal = colVal.substring(1,colVal.length-1);
+		colVal = trim(colVal);
+	}else{
+				
+	}
+	return colVal;
+}
 
 
 

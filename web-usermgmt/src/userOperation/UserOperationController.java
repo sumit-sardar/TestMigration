@@ -12,6 +12,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import manageUser.ManageUserController.ManageUserForm;
+
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
@@ -21,11 +23,13 @@ import utils.Base;
 import utils.BaseTree;
 import utils.FilterSortPageUtils;
 import utils.MessageInfo;
+import utils.MessageResourceBundle;
 import utils.OptionList;
 import utils.Organization;
 import utils.OrgnizationComparator;
 import utils.PermissionsUtils;
 import utils.TreeData;
+import utils.UserPasswordUtils;
 import utils.UserPathListUtils;
 import utils.UserSearchUtils;
 import utils.WebUtils;
@@ -43,12 +47,14 @@ import com.ctb.bean.testAdmin.USState;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNodeData;
+import com.ctb.control.db.Users;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.userManagement.CTBConstants;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.google.gson.Gson;
 
 import dto.Message;
+import dto.PasswordInformation;
 import dto.PathNode;
 import dto.UserProfileInformation;
 
@@ -167,7 +173,9 @@ public class UserOperationController extends PageFlowController
         catch (Exception e) {
             e.printStackTrace();
         }        
-        getSession().setAttribute("userName", this.userName);        
+        getSession().setAttribute("userName", this.userName);
+        getSession().setAttribute("userRole", this.user.getRole().getRoleName());
+        
     }
 
     /**
@@ -1381,4 +1389,109 @@ public class UserOperationController extends PageFlowController
 	            
 	        return invalidCharFields;
 	    }
+	 
+	 @Jpf.Action(forwards={
+				@Jpf.Forward(name = "success", 
+						path ="find_user_by_hierarchy.jsp")
+		})
+		protected Forward saveUserPassword(String selectedUserName){
+		 String message = "";
+		 String requiredFields = null;
+		 boolean revalidate = true;
+		 boolean validationPassed = true;
+		 MessageInfo messageInfo = new MessageInfo();
+		 OutputStream stream = null;
+		 HttpServletRequest req = getRequest();
+		 HttpServletResponse resp = getResponse();
+		 String userName = getRequest().getParameter("userName");
+		 String newPassword = getRequest().getParameter("newPassword");
+		 String confirmPassword = getRequest().getParameter("confirmPassword");
+		 
+		 //String userName = UserPasswordUtils.getSelectedUserName(userId);
+		 //String userName = "01aa_01bb";
+		 
+		 User selectedUser = this.getSelectedUserDetails(userName);
+		 String oldPassword = selectedUser.getPassword();
+		 PasswordInformation passwordinfo = new PasswordInformation();
+		 passwordinfo.setOldPassword(oldPassword);
+		 passwordinfo.setNewPassword(newPassword);
+		 passwordinfo.setConfirmPassword(confirmPassword);
+		 
+		 requiredFields = UserPasswordUtils.getRequiredPasswordField(passwordinfo);
+		 if( requiredFields != null){
+			 revalidate = false;
+			 validationPassed = false;
+				if ( requiredFields.indexOf(",") > 0){
+					message = requiredFields + (" <br/> " + Message.REQUIRED_TEXT_MULTIPLE);
+					messageInfo = createMessageInfo(messageInfo, Message.MISSING_REQUIRED_FIELDS, message, Message.ERROR, true, false );
+				}
+				else {
+					message = requiredFields + (" <br/> " + Message.REQUIRED_TEXT);
+					messageInfo = createMessageInfo(messageInfo, Message.MISSING_REQUIRED_FIELD, message, Message.ERROR, true, false );
+
+				}
+			}
+		 else if (revalidate) {
+			 String invalidCharFields = UserPasswordUtils.verifyPasswordInfo(passwordinfo);
+			 String invalidString = "";
+
+				 if (invalidCharFields != null && invalidCharFields.length() > 0) {
+					 
+					 if ( invalidCharFields.indexOf(",") > 0){
+						 
+						 invalidString = invalidCharFields + ("<br/>" + Message.INVALID_DEX_PASSWORD);
+						 
+					 } else {
+						 
+						 invalidString = invalidCharFields + ("<br/>" + Message.INVALID_DEX_PASSWORD_SINGLE_LINE);
+						 
+					 }
+	
+						
+				 }
+
+				 if (invalidString != null && invalidString.length() > 0) {
+					 revalidate = false;
+					 validationPassed = false;
+				 	 //message = invalidString + (" <br/> " + Message.PASSWORD_MISMATCH);
+					 messageInfo = createMessageInfo(messageInfo, Message.INVALID_CHARS_TITLE, invalidString, Message.ERROR, true, false );
+				 }
+				 
+				if (revalidate) {
+					 boolean isNewAndConfirmPasswordDifferent = UserPasswordUtils.isNewAndConfirmPasswordDifferent(passwordinfo);
+					 
+					 if(isNewAndConfirmPasswordDifferent) {
+						 validationPassed = false;
+					 	 messageInfo = createMessageInfo(messageInfo, Message.CHANGE_PASSWORD_TITLE, Message.PASSWORD_MISMATCH, Message.ERROR, true, false );
+					 }
+				 }
+		 }		 
+		 		 
+		 if (validationPassed) {
+			 try {
+				selectedUser.setPassword(oldPassword);
+				selectedUser.setNewPassword(newPassword);
+				this.userManagement.updateUser(this.user.getUserName(),selectedUser);
+				messageInfo = createMessageInfo(messageInfo, Message.CHANGE_PASSWORD_TITLE, Message.CHANGE_PASSWORD_SUCCESSFUL, Message.INFORMATION, false, true );
+			} catch (CTBBusinessException e) {
+				e.printStackTrace();
+				message = MessageResourceBundle.getMessage(e.getMessage());
+				messageInfo = createMessageInfo(messageInfo, Message.CHANGE_PASSWORD_TITLE, message, Message.ERROR, true, false );
+			}
+		 }
+		 
+		 creatGson( req, resp, stream, messageInfo );
+			return null;
+	 }
+	 
+	 public User getSelectedUserDetails(String selectedUserName){
+		 User user = null;
+		try {
+			user = this.userManagement.getUser(this.user.getUserName(), selectedUserName);
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+		return user;
+	 }
+	 	 	 
 }
