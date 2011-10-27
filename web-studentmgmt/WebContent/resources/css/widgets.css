@@ -1294,3 +1294,8 @@ table.p table.pager .textField {
 	height: 30px;
 }
 
+#Student_Information, #Student_Additional_Information, #Student_Accommodation_Information, #view_Student_Information, #view_Student_Additional_Information, #view_Student_Accommodation_Information 
+{
+	height: 315px;
+	overflow:auto;	
+}

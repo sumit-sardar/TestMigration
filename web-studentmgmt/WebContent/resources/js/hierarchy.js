@@ -632,19 +632,8 @@ document.getElementById('displayMessageMain').style.display = "none";
 				var leftpos = ($(window).width() - 760) /2 + 'px';
 				$("#addEditStudentDetail").parent().css("top",toppos);
 				$("#addEditStudentDetail").parent().css("left",leftpos);		 	 
-				$("#Student_Information").css("height",'300px');
-				$("#Student_Information").css("overflow",'auto');
-				$("#Student_Additional_Information").css("height",'300px');
-				$("#Student_Additional_Information").css("overflow",'auto');
-				$("#Student_Accommodation_Information").css("height",'300px');
-				$("#Student_Accommodation_Information").css("overflow",'auto');
 				$("#viewStudentDetail").parent().css("top",toppos);
 				$("#viewStudentDetail").parent().css("left",leftpos);		 	 
-				$("#view_Student_Information").css("height",'300px');
-				$("#view_Student_Information").css("overflow",'auto');
-				$("#view_Student_Additional_Information").css("height",'300px');
-				$("#view_Student_Additional_Information").css("overflow",'auto');
-				$("#view_Student_Accommodation_Information").css("height",'300px');
 				$("#view_Student_Accommodation_Information").css("overflow",'auto');
 				if(isAddStudent) {
 					$("#preButton").css("visibility","hidden");	
@@ -861,7 +850,8 @@ function fillselectedOrgNode( elementId, orgList) {
 	       for(var i=0; i < checkBoxfields.length; i++){
 		       for(var j=0; j<customerDemographicValue.length; j++) {
 		          	if($(checkBoxfields).eq(i).attr('name') == customerDemographicValue[j].name) {
-			       			if($(checkBoxfields).eq(i).attr('checked')== false)
+		          	       // For bug MQC-67095
+			       			if($(checkBoxfields).eq(i).attr('checked')== false && !($(checkBoxfields).eq(i).attr('disabled')))
 			       			{
 			       				isValueChanged = true;
 			       				break;
@@ -887,7 +877,8 @@ function fillselectedOrgNode( elementId, orgList) {
 			}
 			if(!isValueChanged && customerValCheckbox.length == 0) {
 				 for(var i=0; i < checkBoxfields.length; i++){
-					if($(checkBoxfields).eq(i).attr('checked')== true) {
+				 // For bug MQC-67095
+					if($(checkBoxfields).eq(i).attr('checked')== true && !($(checkBoxfields).eq(i).attr('disabled'))) {
 						isValueChanged = true;
 						break;
 					}
