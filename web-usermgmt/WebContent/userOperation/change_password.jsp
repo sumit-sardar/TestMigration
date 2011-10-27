@@ -38,10 +38,6 @@
 		<div>
 			<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%">
 					<tr id="Act_Buttons" align="center">
-						<td  width="0%" id="preButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-left" id="pData" href="javascript:void(0)"><span
-							class="ui-icon ui-icon-triangle-1-w"></span></a></td><td id="nextButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-right" id="nData"
-							href="javascript:void(0)"><span class="ui-icon ui-icon-triangle-1-e"></span></a></td>
-							<td>&nbsp;</td>
 						<td  width="100%">
 							<center>
 							<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:saveChangePassword(); return false;" class="ui-widget-header">
