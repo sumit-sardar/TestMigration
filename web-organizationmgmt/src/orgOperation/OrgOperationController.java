@@ -413,7 +413,7 @@ public class OrgOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/StudentManagementWeb/studentOperation/organizations.do";
+            String url = "/StudentManagementWeb/studentOperation/organizations_manageStudents.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -428,7 +428,7 @@ public class OrgOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/UserManagementWeb/userOperation/organizations.do";
+            String url = "/UserManagementWeb/userOperation/organizations_manageUsers.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
