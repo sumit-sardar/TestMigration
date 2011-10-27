@@ -18,6 +18,7 @@ public class PathNode implements java.io.Serializable
     private String selectable = null;
     private String fullPathName = null;
     private String actionPermission = null;
+    private Integer customerId = null;
     
     public PathNode() {}
     
@@ -97,6 +98,14 @@ public class PathNode implements java.io.Serializable
 	 */
 	public void setActionPermission(String actionPermission) {
 		this.actionPermission = actionPermission;
+	}
+
+	public Integer getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
 	}
     
 } 

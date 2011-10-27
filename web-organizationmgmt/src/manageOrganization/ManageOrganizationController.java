@@ -1,4 +1,5 @@
 package manageOrganization;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -217,11 +218,14 @@ public class ManageOrganizationController extends PageFlowController
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "success",
-                     path = "findOrganization.do")
+                     path = "findOrganization.do"),
+                     @Jpf.Forward(name = "moveTo",
+   							path = "goto_organizationOperation.do")
     })
     protected Forward beginFindOrganization()
-    {                
-        getUserDetails();
+    {       
+    	return new Forward("moveTo");
+        /*getUserDetails();
         //START- Changed For LASLINK Product
         getCustomerConfigurations();
         isLasLinkCustomer();
@@ -233,9 +237,29 @@ public class ManageOrganizationController extends PageFlowController
         this.savedForm = initialize(globalApp.ACTION_FIND_ORGANIZATION);
         initHierarchy(this.savedForm);                
         this.globalApp.navPath.reset(globalApp.ACTION_FIND_ORGANIZATION);
-        return new Forward("success", this.savedForm);
+        return new Forward("success", this.savedForm);*/
         
     }
+    
+    /**
+     * @jpf:action
+     */
+	@Jpf.Action()
+    protected Forward goto_organizationOperation ()
+    {
+		try{
+			String contextPath = "/OrganizationManagementWeb/manageOrganizationOperation/beginFindOrganization.do";
+	        String url = contextPath;         
+	        getResponse().sendRedirect(url);
+	 		} 
+		    catch( IOException ioe ) {
+		        System.err.print(ioe.getStackTrace());
+		    }
+		    return null;
+    }
+    
+    
+    
 
     /**
      * @jpf:action
