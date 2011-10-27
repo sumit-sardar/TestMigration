@@ -110,20 +110,6 @@
 
 							<!-- ASSESSMENT MENU -->	
 							<div id="assessments" style="display: none">					
-							<table class="toolbar">
-							<tr class="toolbar">
-								<td class="toolbar" width="120">
-									<a href="#" id="sessionsLink" onClick="gotoMenuAction('assessments.do', 'sessionsLink');"><b>Sessions</b></a>						
-								</td>
-								<td class="toolbar" width="120">
-									<a href="#" id="studentScoringLink" onClick="gotoMenuAction('assessments.do', 'studentScoringLink');"><b>Student Scoring</b></a>						
-								</td>
-								<td class="toolbar" width="120">
-									<a href="#" id="programStatusLink" onClick="gotoMenuAction('assessments.do', 'programStatusLink');"><b>Program Status</b></a>						
-								</td>
-								<td width="*">&nbsp;</td>		
-							</tr>
-							</table>						
 							</div>
 
 							<!-- ORGANIZATION MENU -->
@@ -156,13 +142,12 @@
 							<div id="services" style="display: none">	
 							<table class="toolbar">
 							<tr class="toolbar">
-							
-								<td class="toolbar" width="120">
-									<a href="#" id="manageLicensesLink" onClick="gotoMenuAction('services.do', 'manageLicensesLink');"><b>Manage Licenses</b></a>						
-								</td>
-								
-								<td  class="toolbar-alignleft" width="330">
-								
+							<c:if test="${sessionScope.hasUploadDownloadConfigured}">			      							
+								<td  class="toolbar-alignleft" width="300">
+                			</c:if>					    
+							<c:if test="${! sessionScope.hasUploadDownloadConfigured}">			      							
+								<td  class="toolbar-alignleft" width="150">
+                			</c:if>					    
 									<div id="service-menu">
 									<ul>
 										<li>
@@ -176,7 +161,7 @@
 												<li><a href="#" style="color: #0000ff" id="downloadtestLink" onClick="gotoMenuAction('services.do', 'downloadTestLink');">Download Test</a></li>
 											</ul>
 										</li>
-										
+										<c:if test="${sessionScope.hasUploadDownloadConfigured}">			      																	
 										<li>
 											<a href="#"><span style="color: blue">User/Student Load&nbsp;&nbsp;
 												<em>
@@ -188,10 +173,17 @@
 												<li><a href="#" style="color: #0000ff" id="downloadDataLink" onClick="gotoMenuAction('services.do', 'downloadDataLink');">Export</a></li>
 											</ul>
 										</li>
+                						</c:if>					    
 									</ul>
 									</div>
 								
 								</td>
+							  <c:if test="${sessionScope.hasLicenseConfigured}">			      
+								<td class="toolbar" width="120">
+									<a href="#" id="manageLicensesLink" onClick="gotoMenuAction('services.do', 'manageLicensesLink');"><b>Manage Licenses</b></a>						
+								</td>
+                			  </c:if>
+								
 								<td width="*">&nbsp;</td>		
 								
 								</tr>
