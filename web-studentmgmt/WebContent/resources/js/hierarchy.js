@@ -439,7 +439,8 @@ function createMultiNodeSelectedTree(jsondata) {
 		    	}
 			});
 			
-			
+		setupButtonPerUserPermission();
+					
 	}
 	
 	
@@ -1673,6 +1674,15 @@ function fillselectedOrgNode( elementId, orgList) {
    }
 
 
+function setupButtonPerUserPermission() {
+
+	var addStudentEnable = $("#addStudentEnable").val();
+	if (addStudentEnable == 'false') {	
+		var element = document.getElementById('add_list2');
+		element.style.display = 'none';
+	}
+}
+			 
 
 			
 		

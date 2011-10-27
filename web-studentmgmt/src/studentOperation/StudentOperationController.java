@@ -2078,6 +2078,8 @@ public class StudentOperationController extends PageFlowController {
 		this.getRequest().setAttribute("customerConfigurations", customerConfigurations);    
     	
      	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     	
+     	
+		this.getSession().setAttribute("addStudentEnable", addStudentEnable());     	
 	}
 
 
@@ -2167,6 +2169,14 @@ public class StudentOperationController extends PageFlowController {
             }
         }
         return TABECustomer;
+    }
+    
+    private boolean addStudentEnable() 
+    {               
+        String roleName = this.user.getRole().getRoleName();        
+        return (roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR) ||
+                roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOMMODATIONS_COORDINATOR) ||
+                roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ACCOUNT_MANAGER));
     }
     
     /////////////////////////////////////////////////////////////////////////////////////////////    

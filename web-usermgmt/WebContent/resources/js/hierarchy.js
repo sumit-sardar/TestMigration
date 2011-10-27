@@ -87,7 +87,9 @@ function createSingleNodeSelectedTree(jsondata) {
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	document.getElementById('displayMessageMain').style.display = "none";
-			$("#changePWDBtn").attr('disabled', true);	    	
+			// $("#changePWDBtn").attr('disabled', true);
+			setAnchorButtonState('changePWButton', true);
+			 	 
   			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
  		    UIBlock();
@@ -204,7 +206,9 @@ function populateTreeSelect() {
 function populateGrid() {
 
 		document.getElementById('changePW').style.display = "block";
-		$("#changePWDBtn").attr('disabled', true);	
+		// $("#changePWDBtn").attr('disabled', true); 
+		setAnchorButtonState('changePWButton', true);
+			
          $("#list2").jqGrid({         
          url:'userOrgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
@@ -251,7 +255,8 @@ function populateGrid() {
 				//alert($("#roleNameID").val());
 				if ($("#roleNameID").val() == 'Administrator') {
 				//alert('Administrator....');
-					$("#changePWDBtn").removeAttr('disabled');
+					// $("#changePWDBtn").removeAttr('disabled');
+					setAnchorButtonState('changePWButton', false);
 				}
 				document.getElementById('displayMessageMain').style.display = "none";	
 			},
@@ -316,7 +321,10 @@ function getUserName () {
 	return fName+' '+lName;
 }
 
-function changePwdForUser(){
+function changePwdForUser(element){
+
+	if (isButtonDisabled(element))
+		return true;
 	
 	resetPassword();
 	
@@ -773,6 +781,7 @@ function closeChangePasswordPopUp(dailogId){
 		
 		$("#"+dailogId).dialog("close");
 		//$("#changePWDBtn").attr('disabled', true);
+		
 		if(dailogId == 'confirmationPopup') {
 			$('#accordion').accordion('activate', 0 );
 			$("#new_user_password").scrollTop(0);
@@ -802,12 +811,6 @@ function getColValueJson(id,colName){
 	}
 	return colVal;
 }
-
-
-
-
-			
-		
 
 
 
