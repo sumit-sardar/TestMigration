@@ -19,6 +19,8 @@ var dbUserDetails;
 var requetForUser="";
 var organizationNodes = [];
 var isValueChanged = false;
+var isTreeExpandIconClicked = false;
+var isAction = true;
 
 $(document).bind('keydown', function(event) {
 		
@@ -84,7 +86,7 @@ function createSingleNodeSelectedTree(jsondata) {
          	"themes" : {
 				"theme" : "apple",
 				"dots" : false,
-				"icons" : true
+				"icons" : false
 			},  
 				"plugins" : [ "themes", "json_data", "ui"]  
 				
@@ -127,59 +129,200 @@ var styleClass;
 			"themes" : {
 			"theme" : "apple",
 			"dots" : false,
-			"icons" : true
+			"icons" : false
 			},         	
          	
-		"plugins" : [ "themes", "json_data", "checkbox"]
+		"plugins" : [ "themes", "json_data","ui","checkbox"]
+    }).bind("open_node.jstree", function (e, data){
+  	  if(!isAddUser){
+         isTreeExpandIconClicked = true;
+    	 $(this).find("li").each(function(i, element) { 
+    		 var childOrgId = $(element).attr("id");
+    		// alert(childOrgId);
+    		 if(assignedOrgNodeIds != ""){
+    		 
+    		 if(String(assignedOrgNodeIds).indexOf(",") > 0) {
+				 var orgList = assignedOrgNodeIds.split(",");
+				 for(var key=0; key < orgList.length; key++){
+				 	var keyVal = trim(orgList[key]);
+				  	if(keyVal == childOrgId)
+				  	{
+				  		isAction = false;
+				  		data.inst.check_node("#"+keyVal, true);  
+				  		isAction = true;
+				  	}
+				  				
+				}
+			} else {
+			isAction = false;
+				  data.inst.check_node("#"+ assignedOrgNodeIds, true); 
+				  isAction = true; 
+			}
+    		 
+    		 
+    		 }
+    	 
+    	 });
+    	    isTreeExpandIconClicked = false;
+    	 }
+    
     });
     
    
     	$("#innerID").delegate("li a","click",
     		 function(e) {
     				styleClass = $(this.parentNode).attr('class');
+    				var element = this.parentNode;
 					if(styleClass.indexOf("unchecked") > 0){
 					$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
 					}else {
 					$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
 					}
-					updateOrganization();
+					
+					var isChecked = $(element).hasClass("jstree-checked");
+    			
+					updateOrganization(element,isChecked);
 			   	 }
 			  );
     
    		 $("#innerID").bind("change_state.jstree",
-   		 	 function (e, d) { 
-				updateOrganization();
+   		 	 function (e, d) {
+   		 	 if(isAction){ 
+				var isChecked = $(d.rslt[0]).hasClass("jstree-checked");
+				updateOrganization(d.rslt[0],isChecked);
+				console.log("changeState: " + isAction);
+				}
         		}
         	);
 }
 
+			function getText(element){
+		var elementText  = element.childNodes[1].lastChild.data;
+		return elementText;
+	}	
 
-	function updateOrganization(){
-	    	var currentlySelectedNode ="";
-	    	assignedOrgNodeIds = "";
-	        
-			$("#innerID").find(".jstree-checked").each(
-				function(i, element){
-						if(currentlySelectedNode=="") {
-							currentlySelectedNode = getText(element);
-						} else {
-							currentlySelectedNode = currentlySelectedNode + " , " + getText(element);
-						}
-			    		if(assignedOrgNodeIds=="") {
-							assignedOrgNodeIds = $(element).attr("id")+ "|" + $(element).attr("customerId");
-						} else {
-							assignedOrgNodeIds = $(element).attr("id")+ "|" + $(element).attr("customerId") +"," + assignedOrgNodeIds;
-						}
+	function updateOrganization(element,isChecked){
+	
+  		var currentlySelectedNode ="";
+			isexist = false;
+			currentId = $(element).attr("id");
+			if(!isAddUser){
+				if(assignedOrgNodeIds != "") {
+						if(String(assignedOrgNodeIds).indexOf(",") > 0) {
+					  			var orgList = assignedOrgNodeIds.split(",");
+					  			for(var key=0; key<orgList.length; key++){
+					  				if(trim(orgList[key]) == currentId){
+					  					isexist = true; 
+					  					break; 
+					  				}
+					  			}
+					  		} else {
+					  			if(assignedOrgNodeIds == currentId){
+					  				isexist = true;  
+					  			}
+					  		}
 					}
-				);
-				
-			if(currentlySelectedNode.length > 0 ) {
+				if(isChecked) {
+					if(!isexist) {
+						currentlySelectedNode = optionHtml;
+						if(currentlySelectedNode=="") {
+							currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ getText(element)+"</a>";	
+						} else {
+							currentlySelectedNode = currentlySelectedNode + " , " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ getText(element)+"</a>";
+						console.log("if not exist"+ trim($(element).text()));
+						}
+						if(assignedOrgNodeIds=="") {
+							assignedOrgNodeIds = $(element).attr("id");
+						} else {
+							assignedOrgNodeIds = $(element).attr("id") +"," + assignedOrgNodeIds; 
+						}
+						optionHtml = currentlySelectedNode;
+					} else{
+						currentlySelectedNode = optionHtml;
+					}
+					
+				} else {
+				if(isexist){
+					currentlySelectedNode ="";
+						//var newcurrentlySelectedNode = "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(this).attr("id")+"');>"+ trim($(this).text())+"</a>";
+						 var nodeId = trim($(element).attr("id"));	
+						var opList = optionHtml.split(",");
+						for(var key=0; key<opList.length; key++){
+							var opListVal = $.trim(opList[key]);
+							 var resLen = opListVal.split(nodeId);
+						//	if($.trim(newcurrentlySelectedNode) != opListVal){
+						 	if(resLen.length < 2) {
+								if(currentlySelectedNode=="") {
+								currentlySelectedNode = opListVal;	
+								} else {
+								currentlySelectedNode = opListVal + " , " + currentlySelectedNode;
+							}
+							}
+							
+						}
+						optionHtml = currentlySelectedNode;
+					var newassignedOrgNodeIds ="";
+						if(assignedOrgNodeIds != ""){
+							if(String(assignedOrgNodeIds).indexOf(",") > 0) {
+							var orgList = assignedOrgNodeIds.split(",");
+								for(var key=0; key<orgList.length; key++){
+								var orgListVal = $.trim(orgList[key]);
+								 var esLen = orgListVal.split(nodeId);
+									//if(orgListVal != currentId){
+									if(esLen.length < 2) {
+										if(newassignedOrgNodeIds=="") {
+											newassignedOrgNodeIds = orgListVal;
+										} else {
+											newassignedOrgNodeIds = orgListVal +"," + newassignedOrgNodeIds; 
+										}
+									}
+									
+								}
+							}
+							 if(newassignedOrgNodeIds == "") {
+								assignedOrgNodeIds = "";
+							} else {
+								assignedOrgNodeIds = newassignedOrgNodeIds;
+							}
+						}
+					} else {
+						currentlySelectedNode = optionHtml;
+					}
+				}
+			}
+			if(isAddUser){
+				var currentlySelectedNode ="";
+				assignedOrgNodeIds = "";
+				$("#innerID").find(".jstree-checked").each(function(i, element){
+					
+			
+							if(currentlySelectedNode=="") {
+								currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ trim($(element).text())+"</a>";	
+							} else {
+								currentlySelectedNode = currentlySelectedNode + " , " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ trim($(element).text())+"</a>";
+							}
+			
+				    		if(assignedOrgNodeIds=="") {
+								assignedOrgNodeIds = $(element).attr("id");
+							} else {
+								assignedOrgNodeIds = $(element).attr("id") +"," + assignedOrgNodeIds; 
+							}
+			    		
+					});
+			}
+			
+				if(currentlySelectedNode.length > 0 ) {
 					$("#notSelectedOrgNodes").css("display","none");
-					$("#selectedOrgNodesName").text(currentlySelectedNode);	
+					$("#selectedOrgNodesName").html(currentlySelectedNode);
+					//$("#selectedOrgNodesName").text(currentlySelectedNode);	
 				} else {
 					$("#notSelectedOrgNodes").css("display","inline");
 					$("#selectedOrgNodesName").text("");	
-			}
+				}
+		
+	
+
+
 	        	
 	}
 
@@ -1287,6 +1430,58 @@ function disablenextprev(selectedPosition,maxlength) {
                     $("#viewnData").removeClass("ui-state-disabled");
                }
 }
+
+function openTreeNodes(orgNodeId) {
+	var isopened = false;
+	
+	 if(isTreeExpandIconClicked )
+	    return;
+	
+		var isIdExist = $('#innerID', '#'+assignedOrgNodeIds).length;
+			if(isIdExist > 0){
+				$('#innerID').jstree('check_node', "#"+assignedOrgNodeIds);
+				isopened = true; 
+			} else {
+				var leafParentOrgNodeId = "";
+				for(var i=0; i< organizationNodes.length; i++){
+						if(orgNodeId == organizationNodes[i].orgNodeId){
+							var leafOrgNodePath = organizationNodes[i].leafNodePath;
+							 leafParentOrgNodeId = leafOrgNodePath.split(",");
+							break;
+						}
+					}
+					if(leafParentOrgNodeId.length > 0) {
+						for(var count = 0; count < leafParentOrgNodeId.length; count++) {
+				  		 		var tmpNode = leafParentOrgNodeId[count];
+								$('#innerID').jstree('open_node', "#"+tmpNode); 
+							
+				  		 }
+				  		 $('#innerID').jstree('check_node', "#"+orgNodeId);
+				  		 isopened = true; 
+			  		 }
+		 		// hideCheckBox();
+		 }
+		 if(!isopened) {
+			var parentOrgNodeId = $("#" + orgNodeId).parent("ul");
+			
+			var ancestorNodes = parentOrgNodeId.parentsUntil(".jstree","li");
+			//open tree nodes from root to the clicked node	
+			if(ancestorNodes.length > 0) {
+				for(var count = ancestorNodes.length - 1; count >= 0; --count) {
+		  		 		var tmpNode = ancestorNodes[count].id;
+						$('#innerID').jstree('open_node', "#"+tmpNode); 
+					
+		  		 }
+		  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
+	  		 } 
+	  		 // hideCheckBox();
+		}
+	
+
+		
+	}
+	
+	
 
 
 
