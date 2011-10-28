@@ -551,7 +551,7 @@ public class UserOperationController extends PageFlowController
 					 String [] values = assignedOrgNodeId[i].split("\\|");
 					 OrganizationNode orgNode = new OrganizationNode();
 					 orgNode.setOrgNodeId(Integer.parseInt(values[0].trim()));
-					 orgNode.setCustomerId(Integer.parseInt(values[1].trim()));
+					 orgNode.setCustomerId((Integer)getSession().getAttribute("customerId"));
 					 selectedOrgNodes.add(orgNode);
 					
 				}

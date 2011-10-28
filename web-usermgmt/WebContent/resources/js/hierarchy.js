@@ -558,13 +558,12 @@ function fillselectedOrgNode( elementId, orgList) {
 	var ddl = document.getElementById(elementId);
 	optionHtml = "";
 	assignedOrgNodeIds = "";
-	var customerId = $("#customerID").val();
 	for(var i = 0; i < orgList.length; i++) {
 	
 		if(assignedOrgNodeIds == "") {
-			assignedOrgNodeIds = orgList[i].orgNodeId + "|" + customerId;
+			assignedOrgNodeIds = orgList[i].orgNodeId ;
 		} else {
-			assignedOrgNodeIds = assignedOrgNodeIds + "," + orgList[i].orgNodeId + "|" + customerId; 
+			assignedOrgNodeIds = assignedOrgNodeIds + "," + orgList[i].orgNodeId ; 
 		}
 		if(optionHtml == "") {
 			optionHtml += "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+trim(orgList[i].orgNodeName)+"</a>";	
@@ -1222,7 +1221,7 @@ function isEditUserDataChanged(){
 					      		isValueChanged = true;
 					      	} 
 					    } else {
-					      		if(String(organizationNodes[0].orgNodeId) != assignedOrgNodeIds.split("|")[0]) {
+					      		if(String(organizationNodes[0].orgNodeId) != assignedOrgNodeIds) {
 					      			isValueChanged = true;
 					      		}
 					      	}
@@ -1240,7 +1239,7 @@ function isEditUserDataChanged(){
 
 function isExist(val, customerValCheckbox){
 		for(var i=0; i < customerValCheckbox.length; i++){
-			if(val == (customerValCheckbox[i].split("|")[0])){
+			if(val == customerValCheckbox[i]){
 				return true;
 			}
 		}
