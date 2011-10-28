@@ -137,7 +137,7 @@
 										<%if(isStudentId2Configurable) {%> 
 											<%=studentId2ArrValue[0] %>	: 
 										<%} else {%> 
-										Student Id 2:
+										Student ID 2:
 										<%} %>
 										</td>
 										<td class="transparent"><input type="text" style="width: 200px;" maxlength="<%=isStudentId2Configurable ? new Integer(studentId2ArrValue[1]).intValue()>0 && new Integer(studentId2ArrValue[1]).intValue()<32 ? new Integer(studentId2ArrValue[1]).intValue() : 32 : 32 %>" id="studentExternalId2" name="studentExternalId2"></td>
@@ -206,7 +206,7 @@
 				
 			</div>
 			<div>
-				<h3><a href="#">Student Additional Information</a></h3>
+				<h3><a href="#">Additional Student Information</a></h3>
 				<div id="Student_Additional_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
 					<jsp:include page="/studentOperation/add_edit_student_by_demographic.jsp" />				
 				</div>

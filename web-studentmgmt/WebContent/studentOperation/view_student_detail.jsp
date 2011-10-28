@@ -108,7 +108,7 @@
 				
 			</div>
 			<div>
-				<h3><a href="#">Student Additional Information</a></h3>
+				<h3><a href="#">Additional Student Information</a></h3>
 				<div id="view_Student_Additional_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
 					<jsp:include page="/studentOperation/view_student_by_demographic.jsp" />				
 				</div>
