@@ -243,6 +243,7 @@ function populateGrid() {
 			height: 370,
 			width: 975, 
 			editurl: 'userOrgNodeHierarchyGrid.do',
+			ondblClickRow: function(rowid) {EditUserDetail();},
 			caption:"User List",
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
@@ -1221,7 +1222,7 @@ function isEditUserDataChanged(){
 					      		isValueChanged = true;
 					      	} 
 					    } else {
-					      		if(String(organizationNodes[0].orgNodeId) != assignedOrgNodeIds) {
+					      		if(String(organizationNodes[0].orgNodeId) != assignedOrgNodeIds.split("|")[0]) {
 					      			isValueChanged = true;
 					      		}
 					      	}
@@ -1239,7 +1240,7 @@ function isEditUserDataChanged(){
 
 function isExist(val, customerValCheckbox){
 		for(var i=0; i < customerValCheckbox.length; i++){
-			if(val == customerValCheckbox[i]){
+			if(val == (customerValCheckbox[i].split("|")[0])){
 				return true;
 			}
 		}
