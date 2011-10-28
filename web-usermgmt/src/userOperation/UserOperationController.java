@@ -175,6 +175,7 @@ public class UserOperationController extends PageFlowController
         }        
         getSession().setAttribute("userName", this.userName);
         getSession().setAttribute("userRole", this.user.getRole().getRoleName());
+        getSession().setAttribute("customerId", this.customerId);
         
     }
 
@@ -545,14 +546,15 @@ public class UserOperationController extends PageFlowController
 			String[] assignedOrgNodeId = assignedOrgNodeIds.split(",");
 			ArrayList<OrganizationNode> selectedOrgNodes = new ArrayList<OrganizationNode>();
 			try {
-			for (int i = assignedOrgNodeId.length - 1; i >= 0; i--) {
-				 String [] values = assignedOrgNodeId[i].split("\\|");
-				 OrganizationNode orgNode = new OrganizationNode();
-				 orgNode.setOrgNodeId(Integer.parseInt(values[0].trim()));
-				 orgNode.setCustomerId(Integer.parseInt(values[1].trim()));
-				 selectedOrgNodes.add(orgNode);
 				
-			}
+				for (int i = assignedOrgNodeId.length - 1; i >= 0; i--) {
+					 String [] values = assignedOrgNodeId[i].split("\\|");
+					 OrganizationNode orgNode = new OrganizationNode();
+					 orgNode.setOrgNodeId(Integer.parseInt(values[0].trim()));
+					 orgNode.setCustomerId(Integer.parseInt(values[1].trim()));
+					 selectedOrgNodes.add(orgNode);
+					
+				}
 			} catch (NumberFormatException ne ) {
 				ne.printStackTrace();
 				validateAgain = false;

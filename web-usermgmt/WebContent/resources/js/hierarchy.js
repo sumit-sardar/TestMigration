@@ -557,11 +557,13 @@ function fillselectedOrgNode( elementId, orgList) {
 	var ddl = document.getElementById(elementId);
 	optionHtml = "";
 	assignedOrgNodeIds = "";
+	var customerId = $("#customerID").val();
 	for(var i = 0; i < orgList.length; i++) {
+	
 		if(assignedOrgNodeIds == "") {
-			assignedOrgNodeIds = orgList[i].orgNodeId;
+			assignedOrgNodeIds = orgList[i].orgNodeId + "|" + customerId;
 		} else {
-			assignedOrgNodeIds = assignedOrgNodeIds + "," + orgList[i].orgNodeId; 
+			assignedOrgNodeIds = assignedOrgNodeIds + "," + orgList[i].orgNodeId + "|" + customerId; 
 		}
 		if(optionHtml == "") {
 			optionHtml += "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+trim(orgList[i].orgNodeName)+"</a>";	

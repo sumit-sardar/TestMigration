@@ -2,6 +2,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>   
 
 <input type="hidden" id="roleNameID" name = "roleName" value='<%=session.getAttribute("userRole") %>'/>
+<input type="hidden" id="customerID" name = "customerName" value='<%=session.getAttribute("customerId") %>'/>
 
 <table class="transparent">
 
