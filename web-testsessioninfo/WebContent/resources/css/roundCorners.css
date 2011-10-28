@@ -54,7 +54,8 @@
 
   .buttonDisabled {
     background-color: #e9e9e9; 
-    color: #fff;
+    border-color: #c5dbec; 
+    color: #919191;
     padding: 5px 10px;
     font-weight: bold; 
   }
