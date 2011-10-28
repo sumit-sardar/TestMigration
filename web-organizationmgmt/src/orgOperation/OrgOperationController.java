@@ -319,47 +319,6 @@ public class OrgOperationController extends PageFlowController {
 			
 		}
 	 
-	 @Jpf.Action(forwards={
-				@Jpf.Forward(name = "success", 
-						path ="find_user_hierarchy.jsp")
-		})
-		protected Forward getUserRole(ManageOrganizationForm form){
-						
-		 HttpServletRequest req = getRequest();
-		 HttpServletResponse resp = getResponse();
-		 OutputStream stream = null;
-		 String contentType = CONTENT_TYPE_JSON;
-		 String json = "";
-			try {
-				String userRoleValue = this.user.getRole().getRoleName(); 
-				Gson gson = new Gson();
-				json = gson.toJson(userRoleValue);
-				System.out.println(json);
-					try{
-			    		resp.setContentType("application/json");
-			    		stream = resp.getOutputStream();
-			    		resp.flushBuffer();
-			    		stream.write(json.getBytes());
-				
-			    		}
-				
-			    		 finally{
-			 				if (stream!=null){
-			 					stream.close();
-			 				}
-			 			}
-					
-					
-				
-			} catch (Exception e) {
-				System.err.println("Exception while processing OrgNodeHierarchyGrid");
-				e.printStackTrace();
-			}
-			
-			return null;
-			
-		}
-	
 	
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////    
@@ -619,7 +578,9 @@ public class OrgOperationController extends PageFlowController {
         
      	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs));
 
-     	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     	
+     	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     
+     	
+     	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
 	}
 
     private Boolean userHasReports() 

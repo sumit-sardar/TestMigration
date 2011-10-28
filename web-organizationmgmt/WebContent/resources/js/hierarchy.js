@@ -7,9 +7,6 @@ var orgTreeHierarchy;
 var SelectedOrgNodeId ;
 var assignedOrgNodeIds="";
 
-var roleOptions=[];
-var timeZoneOptions=[];
-var stateOptions=[];
 var isPopUp = false;
 
 $(document).bind('keydown', function(event) {
@@ -268,58 +265,3 @@ function gridReload(){
            $(arrowElements.childNodes[1]).addClass('ui-state-disabled'); 
       }
 	
-	
-	function setPopupPosition(){
-				var toppos = ($(window).height() - 610) /2 + 'px';
-				var leftpos = ($(window).width() - 760) /2 + 'px';
-				$("#addEditUserDetail").parent().css("top",toppos);
-				$("#addEditUserDetail").parent().css("left",leftpos);		 	 
-				$("#User_Information").css("height",'300px');
-				$("#User_Information").css("overflow",'auto');
-				$("#Contact_Information").css("height",'300px');
-				$("#Contact_Information").css("overflow",'auto');
-				
-	}
-	
-	
-	
-	function disablenextprev(selectedPosition,maxlength) {
-                    selectedPosition == 0 ? $("#pData").addClass("ui-state-disabled") : $("#pData").removeClass("ui-state-disabled");
-                    selectedPosition == maxlength? $("#nData").addClass("ui-state-disabled") : $("#nData").removeClass("ui-state-disabled");
-                }
-    
-    function highlightnextprev(prevSelectedRow,nextSelectedRow) {            
-		   $("#"+prevSelectedRow).removeClass("ui-state-highlight").attr({
-               "aria-selected": "false",
-               tabindex: "-1"
-           });
-           $("#"+nextSelectedRow).addClass("ui-state-highlight").attr({
-               "aria-selected": true,
-               tabindex: "0"
-           });
-	}	
-
-	
-function fillDropDown( elementId, optionList) {
-	var ddl = document.getElementById(elementId);
-	var optionHtml = "" ;
-	for(var i = 0; i < optionList.length; i++ ) {
-	     //alert( optionList[i]);
-	     //alert( optionList[i].split(":"));
-	     var val = optionList[i].split("|");
-	     
-		optionHtml += "<option  value='"+ val[0]+"'>"+ val[1]+"</option>";	
-	}
-	$(ddl).html(optionHtml);
-}
-
-
-
-
-
-
-			
-		
-
-
-
