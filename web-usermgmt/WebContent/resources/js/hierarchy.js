@@ -721,8 +721,6 @@ function fillselectedOrgNode( elementId, orgList) {
 	else{
 		var userName =  getColValueJson(rowid,'userName');
 		var addressId = getColValueJson(rowid,'addressId');
-		alert('addressId'+addressId);
-		alert('userName>>'+userName);
 		param = $("#addEditUserDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+"&selectedUserName="+userName+"&userId="+rowid+"&addressId"+addressId;
 	}
 
