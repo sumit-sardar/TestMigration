@@ -26,11 +26,11 @@
 				</tr>
 	 			<tr class="transparent">
 					<td class="transparent" align="right" style="padding: 10px"><span class="asterisk">*</span>&nbsp;New Password:</td>
-					<td class="transparent"><input type="password" style="width: 200px;" maxlength="64" id="newPassword" name="newPassword"></td>
+					<td class="transparent"><input type="password" style="width: 200px; font-family: sans-serif;" maxlength="64" id="newPassword" name="newPassword"></td>
 				</tr>
 				<tr class="transparent">
 					<td class="transparent" align="right" style="padding: 10px"><span class="asterisk">*</span>&nbsp;Confirm Password:</td>
-					<td class="transparent"><input type="password" style="width: 200px;" maxlength="64" id="confirmPassword" name="confirmPassword"></td>
+					<td class="transparent"><input type="password" style="width: 200px; font-family: sans-serif;" maxlength="64" id="confirmPassword" name="confirmPassword"></td>
 				</tr>
 			</table>
 		</div>
