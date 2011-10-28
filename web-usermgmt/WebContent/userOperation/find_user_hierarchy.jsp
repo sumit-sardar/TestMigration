@@ -2,17 +2,25 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>   
 
 <input type="hidden" id="roleNameID" name = "roleName" value='<%=session.getAttribute("userRole") %>'/>
-
+<table> 
+	<tr> 
+		<td>  
+			<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">&nbsp;&nbsp;&nbsp;Select an organization to see a list of users associated with that organization.  
+			View, edit, delete or add users using the buttons at the bottom of the User List.
+			</span>
+		</td>	
+	</tr>
+</table>
+<br/>
 <table class="transparent">
-
     <tr class="transparent">
         <td style="border-color : #2E6E9E;">
         
-      	<div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 0px solid #A6C9E2;">
+      	<!-- <div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 0px solid #A6C9E2;">
 			<font style="color: red; font-size:12px; font-weight:bold"><div id="titleMain"></div></font>
 			<div id= "contentMain">	</div>
 			<div id= "messageMain">	</div>
-		</div>
+		</div>  -->
 		<table> 
 		<!-- 
 		   	<tr width="100%" >
@@ -25,7 +33,12 @@
 		 -->
 		  
 		   	<tr width="100%" >
-		       <td align="right" colspan="12" style="padding: 0 0 5px 0">
+		       <td align="right" colspan="12" style="padding: 0 0 5px 8px; clear:both">
+		       <div id="displayMessageMain" style="display:none; width:50%; float:left; text-align:left; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 0px solid #A6C9E2;">
+					<div id="titleMain" style="color:red;font-size:12px; font-weight:bold;"></div>
+					<div id= "contentMain">	</div>
+					<div id= "messageMain">	</div>
+				</div>
 		       	<div id="changePW" style="display:none">
                 	<a href="#" id="changePWButton" onclick="changePwdForUser(this);" class="rounded {transparent} button">Change Password</a>      
                 </div>          		     	        
