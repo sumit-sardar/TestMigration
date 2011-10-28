@@ -20,16 +20,16 @@
 	<div id="accordion" style="width:99.5%;">
 		<div id="new_user_password" style="overflow-y: hidden !important; overflow-x: hidden !important;">
 			<table class="transparent">
-				<tr class="transparent" width="50%">
+				<tr class="transparent">
 					<td class="transparent" colspan="2"><p>The password must contain at least eight characters. At least one character must be a number and at least one character must be a letter.
 						New password cannot be any of five previous passwords. Required fields are marked by a blue asterisk *.</p></td>
 				</tr>
-	 			<tr class="transparent" width="50%">
-					<td class="transparent" align="right" width="50%"><span class="asterisk">*</span>&nbsp;New Password:</td>
+	 			<tr class="transparent">
+					<td class="transparent" align="right" style="padding: 10px"><span class="asterisk">*</span>&nbsp;New Password:</td>
 					<td class="transparent"><input type="password" style="width: 200px;" maxlength="64" id="newPassword" name="newPassword"></td>
 				</tr>
-				<tr class="transparent" width="50%">
-					<td class="transparent" align="right" width="50%"><span class="asterisk">*</span>&nbsp;Confirm Password:</td>
+				<tr class="transparent">
+					<td class="transparent" align="right" style="padding: 10px"><span class="asterisk">*</span>&nbsp;Confirm Password:</td>
 					<td class="transparent"><input type="password" style="width: 200px;" maxlength="64" id="confirmPassword" name="confirmPassword"></td>
 				</tr>
 			</table>
@@ -40,8 +40,8 @@
 					<tr id="Act_Buttons" align="center">
 						<td  width="100%">
 							<center>
-							<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:saveChangePassword(); return false;" class="ui-widget-header">
-							<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onChangePasswordCancel(); return false;" class="ui-widget-header">
+							<input type="button" id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:saveChangePassword(); return false;" class="ui-widget-header" style="width:60px">
+							<input type="button" id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onChangePasswordCancel(); return false;" class="ui-widget-header" style="width:60px">
 							</center>
 							<br>
 						</td>
