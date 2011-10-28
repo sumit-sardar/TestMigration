@@ -281,7 +281,7 @@ public class OrgOperationController extends PageFlowController {
 		 ObjectOutput output = null;
 			try {
 				NodeData subOrganizationList  = new NodeData();
-				subOrganizationList = OrganizationPathListUtils.getOrganizationNodesForParentIncludingParentName(this.userName, this.organizationManagement, treeOrgNodeId, null, null, null);
+				subOrganizationList = OrganizationPathListUtils.getOrganizationNodesForParentIncludingParentName(this.userName, this.organizationManagement, treeOrgNodeId);
 				if (subOrganizationList != null)
 		        {
 		            organizationList = OrganizationPathListUtils.buildOrganizationList(subOrganizationList);

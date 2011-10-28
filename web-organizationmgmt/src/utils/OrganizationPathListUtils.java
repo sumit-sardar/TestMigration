@@ -701,17 +701,11 @@ public class OrganizationPathListUtils
      */    
     public static NodeData getOrganizationNodesForParentIncludingParentName(String userName, 
                                             OrganizationManagement orgManagement, 
-                                            Integer orgNodeId, 
-                                            FilterParams filter, 
-                                            PageParams page, 
-                                            SortParams sort) {    
+                                            Integer orgNodeId) {    
         NodeData nodeData = null;    
         try {      
             nodeData = orgManagement.getOrgNodesForParentIncludingParentName(userName, 
-                                                        orgNodeId, 
-                                                        filter, 
-                                                        page, 
-                                                        sort);
+                                                        orgNodeId);
         }
         catch (CTBBusinessException be) {
             be.printStackTrace();
