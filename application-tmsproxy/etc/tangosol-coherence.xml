@@ -28,8 +28,8 @@ to find specific notes on changes suggested for production use.
       Note: All members of the cluster must specify the same cluster name in
       order to be allowed to join the cluster.
       -->
-      <cluster-name system-property="tangosol.coherence.cluster">OASCluster</cluster-name>
-      <site-name    system-property="tangosol.coherence.site">CIP</site-name>
+      <cluster-name system-property="tangosol.coherence.cluster">tms</cluster-name>
+      <site-name    system-property="tangosol.coherence.site"></site-name>
       <rack-name    system-property="tangosol.coherence.rack"></rack-name>
       <machine-name system-property="tangosol.coherence.machine"></machine-name>
       <process-name system-property="tangosol.coherence.process"></process-name>
@@ -73,14 +73,14 @@ to find specific notes on changes suggested for production use.
       name or the specific IP address.
       -->
       <address system-property="tangosol.coherence.localhost">localhost</address>
-      <port system-property="tangosol.coherence.localport">8088</port>
-      <port-auto-adjust system-property="tangosol.coherence.localport.adjust">true</port-auto-adjust>
+      <port system-property="tangosol.coherence.localport">23101</port>
+      <port-auto-adjust system-property="tangosol.coherence.localport.adjust">false</port-auto-adjust>
       <priority>8</priority>
     </unicast-listener>
 
     <multicast-listener>
       <address system-property="tangosol.coherence.clusteraddress">237.0.0.1</address>
-      <port system-property="tangosol.coherence.clusterport">9000</port>
+      <port system-property="tangosol.coherence.clusterport">23198</port>
 
       <!--
       Note: For production use, this value should be set to the lowest integer

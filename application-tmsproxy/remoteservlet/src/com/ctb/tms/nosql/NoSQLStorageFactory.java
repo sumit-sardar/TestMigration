@@ -33,7 +33,7 @@ public class NoSQLStorageFactory {
 			nosqlstore = rb.getString("storage.nosql.store");
 			if(COHERENCE.equals(nosqlstore)) {
 				try{
-					Service proxy = CacheFactory.getService("Proxy");
+					Service proxy = CacheFactory.getService("ExtendTcpProxyService");
 					if(!proxy.isRunning()) {
 						proxy.start();
 						logger.info("Started proxy service!");

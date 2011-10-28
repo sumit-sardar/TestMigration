@@ -1,22 +1,24 @@
 package com.ctb.tms.nosql.coherence;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.ctb.tms.nosql.coherence.push.TMSRemoteAddressProvider;
 import com.oracle.coherence.patterns.pushreplication.PublishingCacheStore;
+import com.tangosol.net.cache.BinaryEntryStore;
 import com.tangosol.net.cache.CacheStore;
+import com.tangosol.util.BinaryEntry;
 
-public class MultiCacheStore implements CacheStore {
+public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	
-	static Logger logger = Logger.getLogger(MultiCacheStore.class);
+	static Logger logger = Logger.getLogger(DBCacheStore.class);
 	
 	private CacheStore store;
 	private PublishingCacheStore pushStore;
 	
-	public MultiCacheStore(String cacheName) {
+	public DBCacheStore(String cacheName) {
 		pushStore = new PublishingCacheStore(cacheName);
 		
 		if("OASRosterCache".equals(cacheName)) store = new RosterCacheStore(cacheName); 
@@ -26,7 +28,7 @@ public class MultiCacheStore implements CacheStore {
 		else if("ADSItemSetCache".equals(cacheName)) store = new ItemSetCacheStore(cacheName);
     }
 	
-	public MultiCacheStore() {
+	public DBCacheStore() {
     }
 
     // ----- CacheStore Interface -----
@@ -34,13 +36,19 @@ public class MultiCacheStore implements CacheStore {
     public Object load(Object oKey) {
     	return store.load(oKey);
     }
+    
+    public void load(com.tangosol.util.BinaryEntry entry) {
+    	logger.debug("Read from push replication store");
+    	entry.setValue(store.load(entry.getKey()));
+    }
 
     public void store(Object oKey, Object oValue) {
     	store.store(oKey, oValue);
     }
     
     public void store(com.tangosol.util.BinaryEntry entry) {
-    	logger.info("Write to push replication store");
+    	logger.debug("Write to push replication store");
+    	store.store(entry.getKey(), entry.getValue());
     	pushStore.store(entry);
     }
 
@@ -49,7 +57,8 @@ public class MultiCacheStore implements CacheStore {
     }
     
     public void erase(com.tangosol.util.BinaryEntry entry) {
-    	logger.info("Delete to push replication store");
+    	logger.debug("Delete to push replication store");
+    	store.erase(entry.getKey());
     	pushStore.erase(entry);
     }
 
@@ -58,12 +67,26 @@ public class MultiCacheStore implements CacheStore {
 	}
 	
 	public void eraseAll(java.util.Set setBinEntries) {
-		logger.info("Batch delete to push replication store");
+		logger.debug("Batch delete to push replication store");
+		Iterator<BinaryEntry> it = setBinEntries.iterator();
+		while(it.hasNext()) {
+			BinaryEntry entry = it.next();
+			store.erase(entry);
+		}
 		pushStore.eraseAll(setBinEntries);
 	}
 
 	public Map loadAll(Collection colKeys) {
 		return store.loadAll(colKeys);
+	}
+	
+	public void loadAll(java.util.Set setBinEntries) {
+		logger.debug("Batch read from push replication store");
+		Iterator<BinaryEntry> it = setBinEntries.iterator();
+		while(it.hasNext()) {
+			BinaryEntry entry = it.next();
+			entry.setValue(store.load(entry.getKey()));
+		}
 	}
 
 	public void storeAll(Map mapEntries) {
@@ -71,7 +94,12 @@ public class MultiCacheStore implements CacheStore {
 	}
 	
 	public void storeAll(java.util.Set setBinEntries) {
-		logger.info("Batch write to push replication store");
+		logger.debug("Batch write to push replication store");
+		Iterator<BinaryEntry> it = setBinEntries.iterator();
+		while(it.hasNext()) {
+			BinaryEntry entry = it.next();
+			store.store(entry.getKey(), entry.getValue());
+		}
 		pushStore.storeAll(setBinEntries);
 	}
 }

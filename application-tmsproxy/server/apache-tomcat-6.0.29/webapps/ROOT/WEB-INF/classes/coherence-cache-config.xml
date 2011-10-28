@@ -16,24 +16,21 @@
         <cache-mapping>
 	        <cache-name>OAS*</cache-name>
 	        <scheme-name>TieredScheme</scheme-name>
-	        <!-- <sync:target-cache-name>publishing-cache</sync:target-cache-name> -->
 	        <sync:publisher>
-	           <sync:publisher-name>Active Publisher</sync:publisher-name>
-	           <sync:publisher-scheme>
-	               <sync:remote-cluster-publisher-scheme>
-	                   <sync:remote-invocation-service-name>remote-site</sync:remote-invocation-service-name>
-	                   <sync:remote-publisher-scheme>
-	                       <sync:local-cache-publisher-scheme>
-	                           
-	                           <sync:target-cache-name>{cache-name}</sync:target-cache-name>
-
-	                       </sync:local-cache-publisher-scheme>
-	                   </sync:remote-publisher-scheme>
-	                   <sync:autostart>true</sync:autostart>
-	                   <sync:publish-original-value>true</sync:publish-original-value>
-	               </sync:remote-cluster-publisher-scheme>
-	           </sync:publisher-scheme>
-	       	</sync:publisher>
+                <sync:publisher-name>Active Publisher</sync:publisher-name>
+                <sync:publisher-scheme>
+                    <sync:remote-cluster-publisher-scheme>
+                        <sync:remote-invocation-service-name>remote-site</sync:remote-invocation-service-name>
+                        <sync:remote-publisher-scheme>
+                            <sync:local-cache-publisher-scheme>
+                                <sync:target-cache-name>{cache-name}</sync:target-cache-name>
+                            </sync:local-cache-publisher-scheme>
+                        </sync:remote-publisher-scheme>
+                        <sync:autostart>true</sync:autostart>
+                        <sync:publish-original-value>true</sync:publish-original-value>
+                    </sync:remote-cluster-publisher-scheme>
+                </sync:publisher-scheme>
+            </sync:publisher>
         </cache-mapping>
         <cache-mapping>
 	        <cache-name>ADS*</cache-name>
@@ -44,7 +41,7 @@
     	<!--        heap-limited memory scheme definition -->
     	<local-scheme>
    			<scheme-name>MemoryScheme</scheme-name>
-		</local-scheme>      
+		</local-scheme>   
         <!--        Oracle backing store scheme definition -->
         <read-write-backing-map-scheme>
 		  <scheme-name>DBScheme</scheme-name>
@@ -53,20 +50,9 @@
 		      <scheme-ref>MemoryScheme</scheme-ref>
 		    </local-scheme>
 		  </internal-cache-scheme>
-		  <!-- <cachestore-scheme>
-			<class-scheme>
-				<class-name>com.oracle.coherence.patterns.pushreplication.PublishingCacheStore</class-name>
-				<init-params>
-					<init-param>
-						<param-type>java.lang.String</param-type>
-						<param-value>{cache-name}</param-value>
-					</init-param>
-				</init-params>
-			</class-scheme>
-		  </cachestore-scheme> -->
 		  <cachestore-scheme>
 		    <class-scheme>
-		      <class-name>com.ctb.tms.nosql.coherence.MultiCacheStore</class-name>
+		      <class-name>com.ctb.tms.nosql.coherence.DBCacheStore</class-name>
 		      <init-params>
 		        <init-param>
 		          <param-type>java.lang.String</param-type>
@@ -107,7 +93,7 @@
 		<!-- these are for push replication -->
 		<proxy-scheme>
 			<scheme-name>proxy-scheme</scheme-name>
-			<service-name>Proxy</service-name>
+			<service-name>ExtendTcpProxyService</service-name>
 			<thread-count>4</thread-count>
             <acceptor-config>
                 <tcp-acceptor>
