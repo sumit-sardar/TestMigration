@@ -352,8 +352,13 @@ function changePwdForUser(element){
 
 function gridReload(){ 
            jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});
+           var sortArrow = jQuery("#list2");
            jQuery("#list2").jqGrid('setGridParam', {url:'userOrgNodeHierarchyGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
-      	   jQuery("#list2").sortGrid('lastName',true);   
+      	   jQuery("#list2").sortGrid('lastName',true);  
+      	   //For MQC Defect - 67122
+           var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
+           $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
+           $(arrowElements.childNodes[1]).addClass('ui-state-disabled'); 
       }
 
 
