@@ -334,6 +334,7 @@ public interface UserManagement
     com.ctb.bean.testAdmin.UserNodeData OrgNodehierarchyForParent(java.lang.String userName) throws com.ctb.exception.CTBBusinessException;
 
     java.lang.Integer getLeafNodeCategoryId(String userName, Integer customerId) throws com.ctb.exception.CTBBusinessException;
-
+    
+    public String getAddressIdFromUserId(int userId);
 
 } 

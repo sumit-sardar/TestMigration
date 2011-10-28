@@ -910,6 +910,10 @@ public interface Users extends JdbcControl
     
     @JdbcControl.SQL(statement = "select enforce_break from test_admin where test_admin_id = {testAdminId}")
     String hasMultipleAccessCode(int testAdminId) throws SQLException;
+    
+    //Added by TCS for update User
+    @JdbcControl.SQL(statement = "SELECT u.address_id FROM users u WHERE u.user_id = {userId}")
+    String getAddressIdFromUserId(int userId) throws SQLException;
 
 
 }

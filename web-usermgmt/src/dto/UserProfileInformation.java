@@ -3,6 +3,7 @@ package dto;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import utils.OptionList;
 import utils.PermissionsUtils;
 import utils.StringUtils;
 
@@ -38,6 +39,7 @@ public class UserProfileInformation extends SanitizedFormField
     private Integer addressId = new Integer(0);
     private String actionPermission = PermissionsUtils.VIEW_ONLY_PERMISSION_TOKEN;
     private String  orgNodeNamesStr;
+    private OptionList optionList;//added on 24.10.2011
     /**
      * ext_pin1 is added for DEX CR
      */
@@ -148,8 +150,8 @@ public class UserProfileInformation extends SanitizedFormField
         if ((this.addressId != null && this.addressId.intValue() != 0) 
                     || !userContact.isEmpty()) {
             Address address = new Address();
-            copied.setAddressId(this.addressId);   
-            address.setAddressId(this.addressId);
+            copied.setAddressId(this.addressId == 0 ? null:this.addressId);   
+            address.setAddressId(this.addressId == 0 ? null:this.addressId);
             address.setAddressLine1(this.userContact.getAddressLine1());
             address.setAddressLine2(this.userContact.getAddressLine2());
             address.setCity(this.userContact.getCity());
@@ -449,7 +451,21 @@ public class UserProfileInformation extends SanitizedFormField
 	 */
 	public void setOrgNodeNamesStr(String orgNodeNamesStr) {
 		this.orgNodeNamesStr = orgNodeNamesStr;
-	}    
+	} 
+////added on 24.10.2011
+	/**
+	 * @return the optionList
+	 */
+	public OptionList getOptionList() {
+		return optionList;
+	}
 
+	/**
+	 * @param optionList the optionList to set
+	 */
+	public void setOptionList(OptionList optionList) {
+		this.optionList = optionList;
+	}
+////
     
 } 

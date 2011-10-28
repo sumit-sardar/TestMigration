@@ -422,6 +422,66 @@ public class UserOperationController extends PageFlowController
 			return null;
 		}
 
+	 /*Added on 24.10.2011
+	  * for editUserDetails functionality
+	  */
+	 @Jpf.Action(forwards={
+				@Jpf.Forward(name = "success", 
+						path ="find_user_by_hierarchy.jsp")
+		})
+		protected Forward getUserDetailsForEdit(userOperationForm form){
+			String jsonResponse = "";
+			OutputStream stream = null;
+			UserProfileInformation userProfileData = null;
+			Boolean isLasLinkCustomer = new Boolean(getRequest().getParameter("isLasLinkCustomer"));
+			String selectedUserName = getRequest().getParameter("selectedUserName");//added on 24.10.2011
+			//String selectedUserName = "sumit_sardar";
+			if(selectedUserName!=null){
+				selectedUserName=selectedUserName.trim();
+			}
+			System.out.println("selectedUserName ::"+selectedUserName);
+			HttpServletRequest req = getRequest();
+			HttpServletResponse resp = getResponse();
+			System.out.println("userName ::"+this.userName);
+			try{
+				userProfileData = UserSearchUtils.getUserProfileInformation(this.userManagement, this.userName, selectedUserName);
+			}catch (CTBBusinessException e) {
+				e.printStackTrace();
+			}
+			System.out.println("check1");
+			try {
+				
+				OptionList optionList = new OptionList();
+				optionList.setRoleOptions(getRoleOptions(ACTION_ADD_USER));
+				optionList.setTimeZoneOptions(getTimeZoneOptions(ACTION_ADD_USER));
+				optionList.setStateOptions(getStateOptions(ACTION_ADD_USER));
+				
+//				User selectedUserDetails = this.getSelectedUserDetails(userName);
+				userProfileData.setOptionList(optionList);
+				System.out.println("check2");
+
+				
+				try {
+					Gson gson = new Gson();
+					String json = gson.toJson(userProfileData);
+					System.out.println(json);
+					resp.setContentType("application/json");
+					resp.flushBuffer();
+					stream = resp.getOutputStream();
+					stream.write(json.getBytes());
+
+				} finally{
+					if (stream!=null){
+						stream.close();
+					}
+				}
+			}
+			catch (Exception e) {
+				System.err.println("Exception while retrieving optionList.");
+				e.printStackTrace();
+			}
+			return null;
+		}
 	 
 	 
 	 @Jpf.Action(forwards={
@@ -466,6 +526,20 @@ public class UserOperationController extends PageFlowController
 			userProfile.getUserContact().setFaxNumber1(getRequest().getParameter("faxNumber1"));
 			userProfile.getUserContact().setFaxNumber2(getRequest().getParameter("faxNumber2"));
 			userProfile.getUserContact().setFaxNumber3(getRequest().getParameter("faxNumber3"));
+			int userId = 0;
+			//int addressId = 0;
+			String addressId = null;
+			if(getRequest().getParameter("userId")!=null){
+				userId = Integer.valueOf(getRequest().getParameter("userId"));
+				userProfile.setUserId(userId);
+			}
+			if (userId != 0){
+				addressId = this.userManagement.getAddressIdFromUserId(userId);
+			}
+			System.out.println("addressId::"+addressId);
+			if(addressId != null) {
+				userProfile.setAddressId(Integer.valueOf(addressId));
+			}
 			
 			String assignedOrgNodeIds = getRequest().getParameter("assignedOrgNodeIds");
 			String[] assignedOrgNodeId = assignedOrgNodeIds.split(",");
@@ -549,9 +623,10 @@ public class UserOperationController extends PageFlowController
 			
 			//selectedOrgNodes.add(118641);
 			
+			userName = getRequest().getParameter("selectedUserName");
 			
-			boolean isCreateNew = userName == null ? true : false;
-
+			boolean isCreateNew = (userName == null || "".equals(userName)) ? true : false;
+			
 			boolean result = true;
 			try {
 				
@@ -629,15 +704,19 @@ public class UserOperationController extends PageFlowController
 	    								UserProfileInformation userProfile, 
 	                                    String userName, 
 	                                    List selectedOrgNodes)
-	    {        
+	    {       
+	    	User user = null;
+        	user = userProfile.makeCopy(userName, selectedOrgNodes);
 	        
-	        User user = userProfile.makeCopy(userName, selectedOrgNodes);
 	        String title = null;
 	        String username = user.getUserName();
+	        System.out.println("username>>"+username);
 	        try {                    
 	            if (isCreateNew) {
 	                username = this.userManagement.createUser(this.userName, user);
-	            } 
+	            } else {
+	            	this.userManagement.updateUser(this.userName, user);
+	            }
 	        } 
 	        catch (CTBBusinessException be) {
 	            be.printStackTrace();

@@ -2665,6 +2665,17 @@ public class UserManagementImpl implements UserManagement
 		}
 		return leafNodeCategoryId;
 	}
+    
+    public String getAddressIdFromUserId(int userId) {
+    	String addressId = null;
+    	try {
+			addressId = users.getAddressIdFromUserId(userId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return addressId;
+    }
+
 
 
 }

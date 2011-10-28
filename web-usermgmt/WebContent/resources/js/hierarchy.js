@@ -14,6 +14,11 @@ var stateOptions=[];
 var isPopUp = false;
 
 var userList;//added on 24.10.2011
+var isAddUser = true;////added on 24.10.2011
+var dbUserDetails;
+var requetForUser="";
+var organizationNodes = [];
+var isValueChanged = false;
 
 $(document).bind('keydown', function(event) {
 		
@@ -279,7 +284,16 @@ function populateGrid() {
 						
 					}
 	 });
-			jQuery("#list2").jqGrid('navGrid','#pager2',{});  
+			jQuery("#list2").jqGrid('navGrid','#pager2',{
+				addfunc: function() {
+					requetForUser = "";
+		    		AddUserDetail();
+		    	},
+		    	editfunc: function() {
+		    		 requetForUser = "";
+		    		 EditUserDetail();
+		    	}
+			});  
 			 
 }
 
@@ -395,9 +409,189 @@ function userDetailEdit(){
 	$('#accordion ul:eq(0)').show();
 	
 	}
+
+	 /*Added on 24.10.2011
+	  * for editUserDetails functionality
+	  */
+	function EditUserDetail(selectedUserId){
+	isPopUp	= true;
+	isAddUser = false;//added on 25.10.2011
+	var rowid;
+	document.getElementById('displayMessage').style.display = "none";	
+	document.getElementById('displayMessageMain').style.display = "none";
+	//var selectedUserId = $("#list2").jqGrid('getGridParam', 'selrow');
+	if(selectedUserId == undefined ){
+		rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+	} else {
+		rowid = selectedUserId;
+	}
+	var userName =  getColValueJson(rowid,'userName');
 	
+		$.ajax({
+		async:		true,
+		beforeSend:	function(){
+						
+						UIBlock();
+					},
+		url:		'getUserDetailsForEdit.do?isLasLinkCustomer='+$("#isLasLinkCustomer").val()+'&selectedUserName='+userName, 
+		type:		'POST',
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){	
+						//alert('got json data ::'+data);
+						$.unblockUI();
+						//UIBlock();
+						//overlayblockUI(); 
+						organizationNodes = data.organizationNodes;
+						roleOptions = data.optionList.roleOptions;
+						//alert(roleOptions);
+						timeZoneOptions=data.optionList.timeZoneOptions;
+						stateOptions=data.optionList.stateOptions;
+						//alert('check1');
+						fillDropDown("roleOptions", roleOptions);
+						fillDropDown("timeZoneOptions", timeZoneOptions);
+						fillDropDown("stateOptions", stateOptions);
+						//alert(data.userName);
+						$("#userFirstName").val(data.firstName);
+						//alert(data.firstName);
+						$("#userMiddleName").val(data.middleName);
+						$("#userLastName").val(data.lastName);
+						$("#timeZoneOptions").val(data.timeZone);
+						//alert(data.timeZone);
+						//$("#roleOptions").val(data.role);
+						$("#roleOptions").val(data.roleId);
+						//alert(data.roleId);
+						//alert(data.role);
+						//$("").val(data.);
+						$("#addressLine1").val(data.userContact.addressLine1);
+						$("#addressLine2").val(data.userContact.addressLine2);
+						$("#city").val(data.userContact.city);
+						$("#stateOptions").val(data.userContact.state);
+						$("#zipCode1").val(data.userContact.zipCode1);
+						$("#zipCode2").val(data.userContact.zipCode2);
+						$("#primaryPhone1").val(data.userContact.primaryPhone1);
+						$("#primaryPhone2").val(data.userContact.primaryPhone2);
+						$("#primaryPhone3").val(data.userContact.primaryPhone3);
+						$("#primaryPhone4").val(data.userContact.primaryPhone4);
+						$("#secondaryPhone1").val(data.userContact.secondaryPhone1);
+						$("#secondaryPhone2").val(data.userContact.secondaryPhone2);
+						$("#secondaryPhone3").val(data.userContact.secondaryPhone3);
+						$("#secondaryPhone4").val(data.userContact.secondaryPhone4);
+						$("#faxNumber1").val(data.userContact.faxNumber1);
+						$("#faxNumber2").val(data.userContact.faxNumber2);
+						$("#faxNumber3").val(data.userContact.faxNumber3);
+						
+						fillselectedOrgNode("selectedOrgNodesName", data.organizationNodes);
+						//alert('check3');
+						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
+		
+		
+			// for enable next and prev			
+			var pageDataIds = $("#list2").jqGrid('getDataIDs'); 
+			var str = pageDataIds;
+			//var indexOfId = str.indexOf(selectedUserId);
+			var indexOfId = -1;
+			if(!Array.indexOf) {
+				indexOfId = findIndexFromArray (str , rowid);
+			} else {
+				indexOfId = str.indexOf(rowid);
+			}
+			disablenextprev (indexOfId,(str.length) - 1);
+			// for enable next and prev	
+			
+						$("#addEditUserDetail").dialog({  
+								title:"Edit User",  
+							 	resizable:false,
+							 	autoOpen: true,
+							 	width: '800px',
+							 	modal: true,
+								closeOnEscape: false,
+							 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+							 	});	
+						$('#addEditUserDetail').bind('keydown', function(event) {
+			 				  var code = (event.keyCode ? event.keyCode : event.which);
+  							  if(code == 27){
+			  				  onCancel();
+			  				  return false;
+			 				 }
+			 				
+							});
+						 	 
+							setPopupPosition(isAddUser);
+							checkOpenNode(data.organizationNodes);
+							dbUserDetails = $("#addEditUserDetail *").serializeArray(); 	
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();  
+						window.location.href="/TestSessionInfoWeb/logout.do";
+						
+					}
+		
+	});
+	
+	}//end of EditUserDetail()
+	
+	/*function getUserNameJson(id){
+	var str = userList;
+	//alert(str);
+	var userName = "";
+	var indexOfId = str.indexOf(id);
+	//alert(indexOfId);
+	var indexOfCreatedBy = -1;
+	var indexOfComma = -1;
+	if(indexOfId > 0){
+		str = str.substring(parseInt(indexOfId), str.length);
+		//userName
+		indexOfCreatedBy = str.indexOf("userName");
+		indexOfComma = str.indexOf(',', parseInt(indexOfCreatedBy));
+		indexOfCreatedBy += 10;
+		userName = str.substring(parseInt(indexOfCreatedBy), parseInt(indexOfComma));
+		userName = userName.substring(1,userName.length-1);
+		userName = trim(userName);
+	}else{
+				
+		}
+	return userName;
+	}*/
+	
+function fillselectedOrgNode( elementId, orgList) {
+	var ddl = document.getElementById(elementId);
+	optionHtml = "";
+	assignedOrgNodeIds = "";
+	for(var i = 0; i < orgList.length; i++) {
+		if(assignedOrgNodeIds == "") {
+			assignedOrgNodeIds = orgList[i].orgNodeId;
+		} else {
+			assignedOrgNodeIds = assignedOrgNodeIds + "," + orgList[i].orgNodeId; 
+		}
+		if(optionHtml == "") {
+			optionHtml += "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+trim(orgList[i].orgNodeName)+"</a>";	
+		} else {
+			optionHtml = optionHtml +" , " + "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+orgList[i].orgNodeId+"');>"+ trim(orgList[i].orgNodeName)+"</a>";	
+		}
+		
+	}
+	$(ddl).html(optionHtml);
+	
+	if(orgList.length > 0 ) {
+		$("#notSelectedOrgNodes").css("display","none");
+	} else {
+		$("#notSelectedOrgNodes").css("display","inline");
+		$("#selectedOrgNodesName").text("");	
+	}
+}
+	function checkOpenNode(organizationNodes){
+	for(var i=0; i<organizationNodes.length; i++){
+		var assignedOrg = organizationNodes[i].orgNodeId;
+		var isIdExist = $('#'+assignedOrg,'#innerID').length;
+			if(isIdExist > 0){
+				$('#innerID').jstree('check_node', "#"+assignedOrg); 
+			}
+		}
+	}
+	//upto this on 24.10.2011
 	function AddUserDetail(){
 	isPopUp	= true;
+	isAddUser = true;//added on 25.10.2011
 	/*$("#preButton").css("visibility","hidden");	
 	$("#nextButton").css("visibility","hidden");*/	
 	document.getElementById('displayMessage').style.display = "none";	
@@ -446,7 +640,7 @@ function userDetailEdit(){
 			 				
 							});
 						 	 
-							setPopupPosition();	
+							setPopupPosition(isAddUser);	
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -476,14 +670,14 @@ function userDetailEdit(){
 		 				 }
 		 				
 						});
-		setPopupPosition();	
+		setPopupPosition(isAddUser);	
 	}	
 							 	
 						 	
 	}
 	
 	
-	function setPopupPosition(){
+	function setPopupPosition(isAddUser){
 				var toppos = ($(window).height() - 610) /2 + 'px';
 				var leftpos = ($(window).width() - 760) /2 + 'px';
 				$("#addEditUserDetail").parent().css("top",toppos);
@@ -492,28 +686,19 @@ function userDetailEdit(){
 				$("#User_Information").css("overflow",'auto');
 				$("#Contact_Information").css("height",'300px');
 				$("#Contact_Information").css("overflow",'auto');
-				
+				if(isAddUser) {
+					$("#preButton").css("visibility","hidden");	
+					$("#nextButton").css("visibility","hidden");
+					//$("#viewPreButton").css("visibility","hidden");	
+					//$("#viewNextButton").css("visibility","hidden");
+				} else {
+					$("#preButton").css("visibility","visible");	
+					$("#nextButton").css("visibility","visible");
+					//$("#viewPreButton").css("visibility","visible");	
+					//$("#viewNextButton").css("visibility","visible");
+					
+				}
 	}
-	
-	
-	
-	function disablenextprev(selectedPosition,maxlength) {
-                    selectedPosition == 0 ? $("#pData").addClass("ui-state-disabled") : $("#pData").removeClass("ui-state-disabled");
-                    selectedPosition == maxlength? $("#nData").addClass("ui-state-disabled") : $("#nData").removeClass("ui-state-disabled");
-                }
-    
-    function highlightnextprev(prevSelectedRow,nextSelectedRow) {            
-		   $("#"+prevSelectedRow).removeClass("ui-state-highlight").attr({
-               "aria-selected": "false",
-               tabindex: "-1"
-           });
-           $("#"+nextSelectedRow).addClass("ui-state-highlight").attr({
-               "aria-selected": true,
-               tabindex: "0"
-           });
-	}
-	
-	
 	
 	
 	function userDetailSubmit(){
@@ -528,6 +713,19 @@ function userDetailEdit(){
 	
 	
 	function saveUserDetail(){
+	var param;//added on 25.10.2011
+	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+	if(isAddUser){
+		param = $("#addEditUserDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds;
+	}
+	else{
+		var userName =  getColValueJson(rowid,'userName');
+		var addressId = getColValueJson(rowid,'addressId');
+		alert('addressId'+addressId);
+		alert('userName>>'+userName);
+		param = $("#addEditUserDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+"&selectedUserName="+userName+"&userId="+rowid+"&addressId"+addressId;
+	}
+
 				$.ajax(
 						{
 								async:		true,
@@ -539,7 +737,7 @@ function userDetailEdit(){
 											},
 								url:		'saveAddEditUser.do',
 								type:		'POST',
-								data:		$("#addEditUserDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds ,
+								data:		param,
 								dataType:	'json',
 								success:	function(data, textStatus, XMLHttpRequest){	
 												$.unblockUI();  
@@ -606,7 +804,8 @@ function userDetailEdit(){
 	function onCancel() {
 		
 		isValueChanged = false;
-		if($("#userFirstName").val()!= "" 
+		if(isAddUser){
+			if($("#userFirstName").val()!= "" 
 			|| $("#userLastName").val()!= ""
 			|| $("#userMiddleName").val()!= ""
 			|| $("#userEmail").val()!= ""
@@ -631,41 +830,38 @@ function userDetailEdit(){
 			isValueChanged = true;	
 			}
 		
-		if(!isValueChanged) {
-			var allSelects = $("#addEditUserDetail select");
-			for(var count = 0; count < allSelects.length ; count++) {
-				var selectedInd = $(allSelects[count]).attr("selectedIndex");
-				if(selectedInd != 0 && ($(allSelects[count]).attr("disabled") == null  || $(allSelects[count]).attr("disabled") == false)) {
-					isValueChanged = true;
-					break;
+			if(!isValueChanged) {
+				var allSelects = $("#addEditUserDetail select");
+				for(var count = 0; count < allSelects.length ; count++) {
+					var selectedInd = $(allSelects[count]).attr("selectedIndex");
+					if(selectedInd != 0 && ($(allSelects[count]).attr("disabled") == null  || $(allSelects[count]).attr("disabled") == false)) {
+						isValueChanged = true;
+						break;
+					}
 				}
 			}
+			
+			if(!isValueChanged){
+				if(assignedOrgNodeIds != ""){
+					isValueChanged = true;
+				}
+			}
+			
+			if(isValueChanged) {
+				openConfirmationPopup();	 
+			} else {
+				closePopUp('addEditUserDetail');
+			}
 		}
-		
-		if(!isValueChanged){
-			if(assignedOrgNodeIds != ""){
-				isValueChanged = true;
+		else {
+		  	isValueChanged = isEditUserDataChanged();
+	      	if(isValueChanged) {
+				openConfirmationPopup();	
+			} else {
+				closePopUp('addEditUserDetail');
 			}
 		}
 		
-		if(isValueChanged) {
-		$("#confirmationPopup").dialog({  
-			title:"Confirmation Alert",  
-		 	resizable:false,
-		 	autoOpen: true,
-		 	width: '400px',
-		 	modal: true,
-		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
-			});	
-			 $("#confirmationPopup").css('height',120);
-			  var toppos = ($(window).height() - 290) /2 + 'px';
-			 var leftpos = ($(window).width() - 410) /2 + 'px';
-			 $("#confirmationPopup").parent().css("top",toppos);
-			 $("#confirmationPopup").parent().css("left",leftpos);	
-			  
-		} else {
-			closePopUp('addEditUserDetail');
-		}
 	}
 	
 	
@@ -688,11 +884,42 @@ function userDetailEdit(){
 			$('#Contact_Information').hide();
 			$("#userFirstName").trigger("focus");
 		} 
+		if(dailogId == 'confirmationPopupNavigation') {
+		//	$('#accordion').accordion('activate', 0 );
+		//	$("#Student_Information").scrollTop(0);
+		//	$("#Student_Additional_Information").scrollTop(0);
+		//	$("#Student_Accommodation_Information").scrollTop(0);
+		//	$('#Student_Additional_Information').hide();
+		//	$('#Student_Accommodation_Information').hide();
+		//	$('#studentFirstName').trigger("focus");
+			requetForUser = "";				
+		}
 	}
 	
-	function closeConfirmationPopup() {
+	/*function closeConfirmationPopup() {
 		closePopUp('confirmationPopup');
 		closePopUp('addEditUserDetail');
+	}*/
+	
+	function closeConfirmationPopup() {
+		if(isAddUser){
+			closePopUp('confirmationPopup');
+			closePopUp('confirmationPopupNavigation');
+			closePopUp('addEditUserDetail');
+		} else {
+			
+			var navFlow = requetForUser;
+			closePopUp('confirmationPopup');
+			closePopUp('confirmationPopupNavigation');
+			if(navFlow == "Next"){
+				 fetchNextData('Edit');
+			} else if(navFlow == "Previous"){
+				fetchPreviousData('Edit');
+			} else{
+				closePopUp('addEditUserDetail');
+			}
+			
+		}
 	}
 	
 	function closeEmailWarningPopup() {
@@ -725,6 +952,7 @@ function userDetailEdit(){
 	
 function fillDropDown( elementId, optionList) {
 	var ddl = document.getElementById(elementId);
+	//alert(optionList);
 	var optionHtml = "" ;
 	for(var i = 0; i < optionList.length; i++ ) {
 	     //alert( optionList[i]);
@@ -733,6 +961,7 @@ function fillDropDown( elementId, optionList) {
 	     
 		optionHtml += "<option  value='"+ val[0]+"'>"+ val[1]+"</option>";	
 	}
+	//alert(optionHtml);
 	$(ddl).html(optionHtml);
 }
 
@@ -816,6 +1045,249 @@ function getColValueJson(id,colName){
 	}
 	return colVal;
 }
+
+function nDataClick(popupname) {
+	requetForUser = "Next";
+	var isValueChanged = false;
+		if(popupname == 'Edit') {
+			isValueChanged = isEditUserDataChanged();
+			if(isValueChanged) {
+				//UIBlock();
+				openConfirmationPopup('alternateMessage');
+				} 
+		}
+		if(!isValueChanged) {
+			fetchNextData(popupname);							
+		}
+}
+
+function pDataClick(popupname) {
+           	requetForUser = "Previous";
+           		var isValueChanged = false;
+	if(popupname == 'Edit') {
+		isValueChanged = isEditUserDataChanged();
+		if(isValueChanged) {
+			//UIBlock();
+			openConfirmationPopup('alternateMessage');	
+			
+			} 
+	}
+	if(!isValueChanged) {
+		fetchPreviousData(popupname);
+  }
+}
+
+function fetchNextData(popupname){
+			var selectedUserId = $("#list2").jqGrid('getGridParam', 'selrow');
+			var pageRows = $("#list2").jqGrid('getGridParam','rowNum');
+			var curPage = parseInt($('#list2').jqGrid('getGridParam','page')); 
+	        var str = idarray;
+			var nextUserId ;
+			var pageDataIds = $("#list2").jqGrid('getDataIDs'); 
+			//alert("Selected:["+selectedUserId+"]fetchNextData:"+pageDataIds);
+			str = pageDataIds;
+			//var indexOfId = str.indexOf(selectedUserId);
+			var indexOfId = -1;
+			if(!Array.indexOf) {
+				indexOfId = findIndexFromArray (str , selectedUserId);
+			} else {
+				indexOfId = str.indexOf(selectedUserId);
+			}
+			//alert("indexOfId :"+indexOfId+"::"+str.length+"::"+pageRows+"::"+curPage);
+	
+			if(indexOfId != str.length-1) {
+				if(indexOfId%pageRows != pageRows-1){	//if(indexOfId != (pageRows*curPage)-1){
+					nextUserId = str[indexOfId + 1];
+					highlightnextprev(selectedUserId, nextUserId);
+		      			if(popupname == 'Edit')
+		      				EditUserDetail(nextUserId);
+		      			//else
+		      				//viewUserDetail(nextUserId);
+		      			disablenextprev(indexOfId+1,str.length-1);
+		      			populateTreeSelect();
+		      			$("#list2").setSelection(nextUserId, true); 
+	      		}
+			}
+			requetForUser = "";
+		}
+		
+function fetchPreviousData(popupname){
+	var selectedUserId = $("#list2").jqGrid('getGridParam', 'selrow');
+	var pageRows = $("#list2").jqGrid('getGridParam','rowNum');
+	var curPage = parseInt($('#list2').jqGrid('getGridParam','page'));
+          var str = idarray;
+	var preUserId ;
+	var pageDataIds = $("#list2").jqGrid('getDataIDs'); 
+	//alert("Selected:["+selectedUserId+"fetchPreviousData:"+pageDataIds);
+	str = pageDataIds;
+	var indexOfId = -1;
+	if(!Array.indexOf) {
+		indexOfId = findIndexFromArray (str , selectedUserId);
+	} else {
+		indexOfId = str.indexOf(selectedUserId);;
+	}
+
+	//alert("indexOfId :"+indexOfId+"::"+str.length+"::"+pageRows+"::"+curPage);
+
+	if(indexOfId%pageRows != 0){	//if(indexOfId != (pageRows*(curPage-1))){
+			preUserId = str[indexOfId - 1];
+			highlightnextprev(selectedUserId, preUserId);
+       		if(popupname == 'Edit')
+       			EditUserDetail(preUserId);
+       		//else
+       			//viewUserDetail(preUserId);
+       		disablenextprev(indexOfId-1,str.length-1);
+       		populateTreeSelect();
+       		$("#list2").setSelection(preUserId, true); 
+    }	
+	requetForUser = "";
+}
+
+function openConfirmationPopup(args){
+		var arg= args;
+		if(arg == null || arg == undefined){
+			$("#confirmationPopup").dialog({  
+				title:"Confirmation Alert",  
+			 	resizable:false,
+			 	autoOpen: true,
+			 	width: '400px',
+			 	modal: true,
+			 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+				});	
+				 $("#confirmationPopup").css('height',120);
+				 var toppos = ($(window).height() - 290) /2 + 'px';
+				 var leftpos = ($(window).width() - 410) /2 + 'px';
+				 $("#confirmationPopup").parent().css("top",toppos);
+				 $("#confirmationPopup").parent().css("left",leftpos);		
+				 
+		 }
+		 else{
+		  $("#confirmationPopupNavigation").dialog({  
+			title:"Confirmation Alert",  
+			resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});	
+		    $("#confirmationPopupNavigation").css('height',120);
+			var toppos = ($(window).height() - 290) /2 + 'px';
+			var leftpos = ($(window).width() - 410) /2 + 'px';
+			$("#confirmationPopupNavigation").parent().css("top",toppos);
+			$("#confirmationPopupNavigation").parent().css("left",leftpos);	
+			
+		} 	
+}
+
+
+function isEditUserDataChanged(){
+		var newUserValue = $("#addEditUserDetail *").serializeArray(); 
+		isValueChanged = false;	
+		
+		if(dbUserDetails.length != newUserValue.length) {
+			isValueChanged = true;
+		}
+		 if(!isValueChanged) {
+		      for(var key = 0; key <dbUserDetails.length ; key++) {
+		       if(newUserValue[key].name != dbUserDetails[key].name) {
+		       	isValueChanged = true;
+		       	break;
+		       }
+		       if(trim(newUserValue[key].value) != trim(dbUserDetails[key].value)){
+		      		isValueChanged = true;
+		      		break;
+		      	}
+		      	 
+		      }
+	      }
+	      var assignedOrgNodeIdsList = [];
+	          if(String(assignedOrgNodeIds).indexOf(",") > 0) {
+		     	assignedOrgNodeIdsList = assignedOrgNodeIds.split(",");
+		     		if(!isValueChanged) {
+				      	var count = 0;
+				      	 for ( var i= 0; i<organizationNodes.length;i++) {
+				         	if(isExist(organizationNodes[i].orgNodeId, assignedOrgNodeIdsList)){
+				         		count++;
+				         	}
+				      	}
+				      	if(count != assignedOrgNodeIdsList.length) {
+				      		isValueChanged = true;
+				      	}
+			      	}
+		     	} else {
+		     		if(assignedOrgNodeIds != ""){
+		     		 	if(organizationNodes.length > 1) {
+			     		   	if(organizationNodes.length != 1) {
+					      		isValueChanged = true;
+					      	} 
+					    } else {
+					      		if(String(organizationNodes[0].orgNodeId) != assignedOrgNodeIds) {
+					      			isValueChanged = true;
+					      		}
+					      	}
+				      	
+				     } else {
+				     		isValueChanged = true;
+				     }
+		     	
+		     	}
+	     
+	       
+      	
+      	return  isValueChanged;
+}
+
+function isExist(val, customerValCheckbox){
+		for(var i=0; i < customerValCheckbox.length; i++){
+			if(val == customerValCheckbox[i]){
+				return true;
+			}
+		}
+		return false;
+}
+
+function findIndexFromArray (myArray, obj) {
+    
+    for(var i=0; i<myArray.length; i++){
+	            if(myArray[i]==obj){
+	                return i;
+	            }
+	        }
+	        return -1;
+   
+}
+
+function highlightnextprev(prevSelectedRow,nextSelectedRow) {            
+		   $("#"+prevSelectedRow).removeClass("ui-state-highlight").attr({
+               "aria-selected": "false",
+               tabindex: "-1"
+           });
+           $("#"+nextSelectedRow).addClass("ui-state-highlight").attr({
+               "aria-selected": true,
+               tabindex: "0"
+           });
+}
+			
+function disablenextprev(selectedPosition,maxlength) {
+               if(selectedPosition == 0 || ((selectedPosition%20)==0)) {
+                	$("#pData").addClass("ui-state-disabled") ;
+                    $("#viewpData").addClass("ui-state-disabled");
+              
+               } else {
+						$("#pData").removeClass("ui-state-disabled");
+                        $("#viewpData").removeClass("ui-state-disabled");
+               }
+               
+                if ((selectedPosition == maxlength) || (((selectedPosition+1)%20) ==0)) {
+               		$("#nData").addClass("ui-state-disabled");
+                    $("#viewnData").addClass("ui-state-disabled");
+               
+               } else {
+               		$("#nData").removeClass("ui-state-disabled");
+                    $("#viewnData").removeClass("ui-state-disabled");
+               }
+}
+
 
 
 
