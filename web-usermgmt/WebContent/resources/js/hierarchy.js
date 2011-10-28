@@ -190,7 +190,7 @@ var styleClass;
    		 	 if(isAction){ 
 				var isChecked = $(d.rslt[0]).hasClass("jstree-checked");
 				updateOrganization(d.rslt[0],isChecked);
-				console.log("changeState: " + isAction);
+				//console.log("changeState: " + isAction);
 				}
         		}
         	);
@@ -229,7 +229,7 @@ var styleClass;
 							currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ getText(element)+"</a>";	
 						} else {
 							currentlySelectedNode = currentlySelectedNode + " , " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ getText(element)+"</a>";
-						console.log("if not exist"+ trim($(element).text()));
+						//console.log("if not exist"+ trim($(element).text()));
 						}
 						if(assignedOrgNodeIds=="") {
 							assignedOrgNodeIds = $(element).attr("id");
