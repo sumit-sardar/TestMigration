@@ -67,12 +67,6 @@ public class ProgramOperationController extends PageFlowController {
 	})
 	protected Forward begin()
 	{
-		getLoggedInUserPrincipal();
-		
-		getUserDetails();
-
-		setupUserPermission();
-		
 		return new Forward("success");
 	}
 	
@@ -85,6 +79,12 @@ public class ProgramOperationController extends PageFlowController {
 	})
 	protected Forward manageProgram()
 	{
+		getLoggedInUserPrincipal();
+		
+		getUserDetails();
+
+		setupUserPermission();
+		
 		return new Forward("success");
 	}
 	
@@ -143,8 +143,6 @@ public class ProgramOperationController extends PageFlowController {
         }) 
     protected Forward assessments_programStatus()
     {
-		getUserDetails();
-    	
         return new Forward("success");
     }
     

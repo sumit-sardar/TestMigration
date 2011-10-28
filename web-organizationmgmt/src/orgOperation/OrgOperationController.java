@@ -576,7 +576,7 @@ public class OrgOperationController extends PageFlowController {
         
         this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         
-     	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs));
+     	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs) && adminUser);
 
      	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     
      	
