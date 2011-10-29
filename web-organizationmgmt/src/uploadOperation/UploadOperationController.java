@@ -290,7 +290,7 @@ public class UploadOperationController extends PageFlowController {
         
         this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         
-     	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs));
+     	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs).booleanValue() && adminUser);
      	
      	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     	
 	}
