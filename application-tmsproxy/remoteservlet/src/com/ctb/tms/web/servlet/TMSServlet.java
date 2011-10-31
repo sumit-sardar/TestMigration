@@ -188,7 +188,7 @@ public class TMSServlet extends HttpServlet {
             
             Manifest manifest = oasSource.getManifest(testRosterId, accessCode);
             
-            if (manifest.getTutorialTaken()==null) {
+            if (manifest.getTutorialTaken()==null || !"TRUE".equals(manifest.getTutorialTaken())) {
                 manifest.setTutorialTaken("TRUE");
                 oasSink.putManifest(testRosterId, accessCode, manifest);
             }

@@ -71,6 +71,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		int latestMseq = -1;
 		int restartCount = 0;
 		String rosterStatus = "";
+		String tutorialTaken = "FALSE";
 		boolean allcoManifest = true;
 		for(int i=0;i<manifests.length;i++) {
 			logger.debug("comparing " + manifests[i].getRosterLastMseq() + " to " + latestMseq);
@@ -87,8 +88,12 @@ public class OASCoherenceSink implements OASNoSQLSink {
 				restartCount = manifests[i].getRosterRestartNumber();
 				logger.debug("found higher restart number " + restartCount + " on manifest " + manifests[i].getAccessCode());
 			}
+			if("TRUE".equals(manifests[i].getTutorialTaken())) {
+				tutorialTaken = "TRUE";
+			}
 		}
 		for(int i=0;i<manifests.length;i++) {
+			manifests[i].setTutorialTaken(tutorialTaken);
 			manifests[i].setRosterCompletionStatus(rosterStatus);
 			manifests[i].setRosterRestartNumber(restartCount);
 			manifests[i].setRosterLastMseq(latestMseq);
