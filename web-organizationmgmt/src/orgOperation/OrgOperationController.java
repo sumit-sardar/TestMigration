@@ -377,11 +377,14 @@ public class OrgOperationController extends PageFlowController {
 			HttpServletRequest req = getRequest();
 			HttpServletResponse resp = getResponse();
 			Node organizationDetail = new Node();
+			Boolean isLaslinkCustomer = new Boolean(getRequest().getParameter("isLaslinkCustomer"));
 			organizationDetail.setOrgNodeCategoryId(Integer.parseInt(getRequest().getParameter("layerOptions")));
 			organizationDetail.setOrgNodeName(getRequest().getParameter("orgName"));
 			organizationDetail.setCustomerId(Integer.parseInt((getSession().getAttribute("customerId")).toString()));
 			organizationDetail.setOrgNodeCode(getRequest().getParameter("orgCode"));
 			organizationDetail.setParentOrgNodeId(Integer.parseInt(getRequest().getParameter("assignedOrgNodeIds")));
+			if(isLaslinkCustomer)
+				organizationDetail.setMdrNumber(getRequest().getParameter("mdrNumber"));
 			String userName = getSession().getAttribute("userName").toString();
 			try {
 				 this.organizationManagement.createOrganization(userName, organizationDetail);

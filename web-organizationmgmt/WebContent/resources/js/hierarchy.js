@@ -16,7 +16,8 @@ var isAction = true;
 var isAddOrganization = true;
 var isValueChanged = false;
 var defaultParent = "<font color=\"gray\">None selected. Use the control on the right to select.</font>";
-var isLasLinkCustomer = $("#isLasLinkCustomer").val();
+var isLasLinkCustomer = false;
+isLasLinkCustomer = $("#isLasLinkCustomer").val();
 
 $(document).bind('keydown', function(event) {
 		
@@ -576,7 +577,7 @@ function openTreeNodes(orgNodeId) {
 	var param;
 	
 	if(isAddOrganization){
-		param = $("#addEditOrganizationDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds;
+		param = $("#addEditOrganizationDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds + "&isLaslinkCustomer="+$("#isLasLinkCustomer").val();
 	}
 
 				$.ajax(
@@ -609,7 +610,7 @@ function openTreeNodes(orgNodeId) {
 											},
 								error  :    function(XMLHttpRequest, textStatus, errorThrown){
 													$.unblockUI();  
-												//window.location.href="/TestSessionInfoWeb/logout.do";
+												window.location.href="/TestSessionInfoWeb/logout.do";
 											},
 								complete :  function(){
 												$.unblockUI();  
