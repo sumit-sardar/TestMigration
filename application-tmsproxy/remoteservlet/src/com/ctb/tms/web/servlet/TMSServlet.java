@@ -106,7 +106,7 @@ public class TMSServlet extends HttpServlet {
 		String result = ServletUtils.OK;
 		try {
 			String xml = request.getParameter("requestXML");
-			logger.warn("***** Remote servlet request: " + xml);
+			logger.debug("***** Remote servlet request: " + xml);
 			
 			if (method != null && method.startsWith(ServletUtils.LOGIN_METHOD))
 	            result = login(xml);
