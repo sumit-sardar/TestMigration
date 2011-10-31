@@ -48,8 +48,8 @@ public class ADSOracleSource implements ADSRDBSource {
 			SubtestData subtestData = getSubtest(conn, subtestId);
 			if (subtestData == null)
 				throw new Exception("Subtest with subtest id '"+subtestId+"' not found in ADS");
-			if (!subtestData.getHash().equals(hash))
-				throw new Exception("Incorrect hash for subtest id '"+subtestId+"' in ADS");
+			//if (!subtestData.getHash().equals(hash))
+			//	throw new Exception("Incorrect hash for subtest id '"+subtestId+"' in ADS");
 			boolean moreData = true;
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			InputStream is = getSubtestBlob(conn, subtestId).getBinaryStream();

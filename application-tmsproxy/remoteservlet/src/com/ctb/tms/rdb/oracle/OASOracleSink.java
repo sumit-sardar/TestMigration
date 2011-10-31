@@ -128,11 +128,13 @@ public class OASOracleSink implements OASRDBSink {
 		PreparedStatement stmt5 = null;
 		DecimalFormat df = new DecimalFormat("#.##");
     	try {
+    		boolean isTABE = false;
     		for(int k=0;k<manifests.length;k++) {
 				Manifest manifest = manifests[k];
 	    		String subtestList = "";
 	    		ManifestData [] subtests = manifest.getManifest();
 	    		for(int i=0;i<subtests.length;i++) {
+	    			if("TB".equals(subtests[i].getProduct()) || "TL".equals(subtests[i].getProduct())) isTABE = true;
 	    			ManifestData subtest = subtests[i];
 	    			if(i==0) {
 	    				subtestList = subtestList + subtest.getId();
@@ -194,7 +196,8 @@ public class OASOracleSink implements OASRDBSink {
 	    		stmt2.close();
 	    		stmt2 = null;
 				logger.debug("OASOracleSink: Updated roster status for roster: " + testRosterId + ". Status is: " + manifest.getRosterCompletionStatus());
-				if("TB".equals(subtests[0].getProduct()) || "TL".equals(subtests[0].getProduct())) {
+				if(isTABE) {
+					if("".equals(subtestList.trim())) subtestList = "-1";
 					stmt3 = conn.prepareStatement(SUBTEST_CLEANUP_SQL.replaceAll("itemSetIdList", subtestList));
 		    		stmt3.setString(1, testRosterId);
 		    		stmt3.setString(2, manifest.getAccessCode());

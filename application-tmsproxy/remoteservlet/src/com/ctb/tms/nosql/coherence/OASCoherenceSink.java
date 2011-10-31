@@ -71,7 +71,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		int latestMseq = -1;
 		int restartCount = 0;
 		String rosterStatus = "";
-		String tutorialTaken = "FALSE";
+		String tutorialTaken = null;
 		boolean allcoManifest = true;
 		for(int i=0;i<manifests.length;i++) {
 			logger.debug("comparing " + manifests[i].getRosterLastMseq() + " to " + latestMseq);
