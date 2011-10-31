@@ -44,7 +44,7 @@
     </tr>
 </table>
 
-
+<jsp:include page="/orgOperation/add_edit_org_detail.jsp" />
 			
 <div id="confirmationPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">

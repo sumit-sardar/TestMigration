@@ -7,7 +7,16 @@ var orgTreeHierarchy;
 var SelectedOrgNodeId ;
 var assignedOrgNodeIds="";
 
+var layerOptions=[];
+var categoryIds=[];
 var isPopUp = false;
+var requetForOrganization = "";
+var isTreeExpandIconClicked = false;
+var isAction = true;
+var isAddOrganization = true;
+var isValueChanged = false;
+var defaultParent = "<font color=\"gray\">None selected. Use the control on the right to select.</font>";
+var isLasLinkCustomer = $("#isLasLinkCustomer").val();
 
 $(document).bind('keydown', function(event) {
 		
@@ -30,7 +39,7 @@ function populateTree() {
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
-						UIBlock()
+						UIBlock();
 					},
 		url:		'organizationOrgNodeHierarchyList.do',
 		type:		'POST',
@@ -40,7 +49,7 @@ function populateTree() {
 						orgTreeHierarchy = data;
 						createSingleNodeSelectedTree (orgTreeHierarchy);
 						$("#searchheader").css("visibility","visible");	
-						$("#orgNodeHierarchy").css("visibility","visible");							
+						$("#orgNodeHierarchy").css("visibility","visible");						
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();
@@ -73,7 +82,7 @@ function createSingleNodeSelectedTree(jsondata) {
          	"themes" : {
 				"theme" : "apple",
 				"dots" : false,
-				"icons" : true
+				"icons" : false
 			},  
 				"plugins" : [ "themes", "json_data", "ui"]  
 				
@@ -81,6 +90,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	document.getElementById('displayMessageMain').style.display = "none";
+			 	 
   			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
  		    UIBlock();
@@ -106,6 +116,9 @@ var styleClass;
             "data" : jsondata.data,
 			"progressive_render" : true
         },
+        "ui" : {
+        	"select_limit" : 1
+        },
         "checkbox" : {
         "two_state" : true
         }, 
@@ -113,67 +126,145 @@ var styleClass;
 			"themes" : {
 			"theme" : "apple",
 			"dots" : false,
-			"icons" : true
+			"icons" : false
 			},         	
          	
-		"plugins" : [ "themes", "json_data", "checkbox"]
+		"plugins" : [ "themes", "json_data","ui","checkbox"]
+    }).bind("open_node.jstree", function (e, data){
+         isTreeExpandIconClicked = true;
+    	 $(this).find("li").each(function(i, element) { 
+    		 var childOrgId = $(element).attr("id");
+    		 if(assignedOrgNodeIds != ""){
+    		 
+    		 if(String(assignedOrgNodeIds).indexOf(",") > 0) {
+				 var orgList = assignedOrgNodeIds.split(",");
+				 for(var key=0; key < orgList.length; key++){
+				 	var keyVal = $.trim(orgList[key]);
+				  	if(keyVal == childOrgId)
+				  	{
+				  		isAction = false;
+				  		data.inst.check_node("#"+keyVal, true);  
+				  		isAction = true;
+				  	}
+				  				
+				}
+			} else {
+			isAction = false;
+				  data.inst.check_node("#"+ assignedOrgNodeIds, true); 
+				  isAction = true; 
+			}
+    		 
+    		 
+    		 }
+    	 
+    	 });
+    	    isTreeExpandIconClicked = false;
+    
     });
     
    
     	$("#innerID").delegate("li a","click",
     		 function(e) {
     				styleClass = $(this.parentNode).attr('class');
+    				var element = this.parentNode;
 					if(styleClass.indexOf("unchecked") > 0){
 					$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
 					}else {
 					$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
 					}
-					updateOrganization();
+					
+					var isChecked = $(element).hasClass("jstree-checked");
+    			
+					updateOrganizationAndLayer(element,isChecked);
 			   	 }
 			  );
     
    		 $("#innerID").bind("change_state.jstree",
-   		 	 function (e, d) { 
-				updateOrganization();
+   		 	 function (e, d) {
+   		 	 if(isAction){ 
+				var isChecked = $(d.rslt[0]).hasClass("jstree-checked");
+				updateOrganizationAndLayer(d.rslt[0],isChecked);
+        		}
         		}
         	);
 }
 
-
-	function updateOrganization(){
-	    	var currentlySelectedNode ="";
-	    	assignedOrgNodeIds = "";
-	        
-			$("#innerID").find(".jstree-checked").each(
-				function(i, element){
-						if(currentlySelectedNode=="") {
-							currentlySelectedNode = getText(element);
-						} else {
-							currentlySelectedNode = currentlySelectedNode + " , " + getText(element);
-						}
-			    		if(assignedOrgNodeIds=="") {
-							assignedOrgNodeIds = $(element).attr("id")+ "|" + $(element).attr("customerId");
-						} else {
-							assignedOrgNodeIds = $(element).attr("id")+ "|" + $(element).attr("customerId") +"," + assignedOrgNodeIds;
-						}
-					}
-				);
-				
-			if(currentlySelectedNode.length > 0 ) {
-					$("#notSelectedOrgNodes").css("display","none");
-					$("#selectedOrgNodesName").text(currentlySelectedNode);	
-				} else {
-					$("#notSelectedOrgNodes").css("display","inline");
-					$("#selectedOrgNodesName").text("");	
-			}
-	        	
+	function getText(element){
+		var elementText  = element.childNodes[1].lastChild.data;
+		return elementText;
 	}
 
 
-function getText(element){
-	var elementText  = element.childNodes[1].lastChild.data;
-	return elementText;
-}
+	function updateOrganizationAndLayer(element,isChecked){
+		layerOptions=[];
+		categoryIds=[];
+		var currentlySelectedNode ="";
+				assignedOrgNodeIds = "";
+				$("#innerID").find(".jstree-checked").each(function(i, element){
+					
+			
+							if(currentlySelectedNode=="") {
+								currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ getText(element)+"</a>";	
+							} 
+			
+				    		if(assignedOrgNodeIds=="") {
+								assignedOrgNodeIds = $(element).attr("id");
+							} 
+			    		
+					});
+				
+				if(currentlySelectedNode.length > 0 ) {
+					$("#parentOrgName").html(currentlySelectedNode);	
+				} else {
+					$("#parentOrgName").html(defaultParent);	
+				}
+	
+	if(isChecked) {
+		$.ajax({
+		async:		true,
+		beforeSend:	function(){
+						UIBlock();
+					},
+		url:		'populateLayer.do?selectedParentNode='+$(element).attr("id"),
+		type:		'POST',
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){	
+						
+						for(var i = 0; i < data.length; i++) {
+							layerOptions[i] = data[i].categoryName;
+							categoryIds[i] = data[i].orgNodeCategoryId;
+						}
+						fillDropDown('layerOptions',layerOptions);
+						$.unblockUI(); 						
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();
+						window.location.href="/TestSessionInfoWeb/logout.do";
+						
+					},
+		complete :  function(){
+						 $.unblockUI(); 
+					}
+	});
+	}
+	
+	else
+		fillDropDown('layerOptions',layerOptions);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	    
+			
+	        	
+	}
 
 function populateTreeSelect() {
 			$("#notSelectedOrgNodes").css("display","inline");
@@ -251,7 +342,12 @@ function populateGrid() {
 						
 					}
 	 });
-			jQuery("#list2").jqGrid('navGrid','#pager2',{});  
+			jQuery("#list2").jqGrid('navGrid','#pager2',{
+				addfunc: function() {
+					requetForOrganization = "";
+		    		AddOrganizationDetail();
+		    	}
+			});  
 			 
 }
 
@@ -265,3 +361,259 @@ function gridReload(){
            $(arrowElements.childNodes[1]).addClass('ui-state-disabled'); 
       }
 	
+	
+	function setPopupPosition(){
+				var toppos = ($(window).height() - 610) /2 + 'px';
+				var leftpos = ($(window).width() - 760) /2 + 'px';
+				$("#addEditOrganizationDetail").parent().css("top",toppos);
+				$("#addEditOrganizationDetail").parent().css("left",leftpos);		 	 
+				//$("#Organization_Information").css("height",'300px');
+				//$("#Organization_Information").css("overflow",'auto');
+				
+	}
+	
+	
+	
+	function disablenextprev(selectedPosition,maxlength) {
+                    selectedPosition == 0 ? $("#pData").addClass("ui-state-disabled") : $("#pData").removeClass("ui-state-disabled");
+                    selectedPosition == maxlength? $("#nData").addClass("ui-state-disabled") : $("#nData").removeClass("ui-state-disabled");
+                }
+    
+    function highlightnextprev(prevSelectedRow,nextSelectedRow) {            
+		   $("#"+prevSelectedRow).removeClass("ui-state-highlight").attr({
+               "aria-selected": "false",
+               tabindex: "-1"
+           });
+           $("#"+nextSelectedRow).addClass("ui-state-highlight").attr({
+               "aria-selected": true,
+               tabindex: "0"
+           });
+	}	
+
+	
+function fillDropDown( elementId, optionList) {
+	var ddl = document.getElementById(elementId);
+	var optionHtml = "" ;
+	if(optionList.length < 1) {
+		optionHtml += "<option  value='Select a layer'>Select a layer</option>";
+	} else {
+		for(var i = 0; i < optionList.length; i++ ) {		     
+			optionHtml += "<option  value='"+ categoryIds[i]+"'>"+ optionList[i]+"</option>";	
+		}
+	}
+	$(ddl).html(optionHtml);
+}
+
+
+function AddOrganizationDetail() {
+
+	isPopUp	= true;
+	isAddOrganization = true;
+	
+	//document.getElementById('displayMessage').style.display = "none";	
+	//document.getElementById('displayMessageMain').style.display = "none";
+	
+						$("#addEditOrganizationDetail").dialog({  
+								title:"Add Organization",  
+							 	resizable:false,
+							 	autoOpen: true,
+							 	width: '800px',
+							 	modal: true,
+								closeOnEscape: false,
+							 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();}
+							 	});	
+						$('#addEditOrganizationDetail').bind('keydown', function(event) {
+			 				  var code = (event.keyCode ? event.keyCode : event.which);
+  							  if(code == 27){
+			  				  onCancel();
+			  				  return false;
+			 				 }
+			 				
+							});
+	setPopupPosition(isAddOrganization);
+}
+	
+	
+	function onCancel() {
+		isValueChanged = false;
+		if(isAddOrganization) {
+			if($("#orgName").val() != ""
+			|| $("#orgCode").val() != ""
+			|| $.trim($("#parentOrgName").html()) != defaultParent
+			|| (isLasLinkCustomer && $("#mdrNumber").val() != ""))
+				isValueChanged = true;
+		}
+			
+			if(isValueChanged) {
+				openConfirmationPopup();	 
+			} else {
+				closePopUp('addEditOrganizationDetail');
+			}
+	}
+
+
+function openTreeNodes(orgNodeId) {
+	var isopened = false;
+	
+	 if(isTreeExpandIconClicked )
+	    return;
+	
+		var isIdExist = $('#innerID', '#'+assignedOrgNodeIds).length;
+			if(isIdExist > 0){
+				$('#innerID').jstree('check_node', "#"+assignedOrgNodeIds);
+				isopened = true; 
+			} else {
+				var leafParentOrgNodeId = "";
+				for(var i=0; i< organizationNodes.length; i++){
+						if(orgNodeId == organizationNodes[i].orgNodeId){
+							var leafOrgNodePath = organizationNodes[i].leafNodePath;
+							 leafParentOrgNodeId = leafOrgNodePath.split(",");
+							break;
+						}
+					}
+					if(leafParentOrgNodeId.length > 0) {
+						for(var count = 0; count < leafParentOrgNodeId.length; count++) {
+				  		 		var tmpNode = leafParentOrgNodeId[count];
+								$('#innerID').jstree('open_node', "#"+tmpNode); 
+							
+				  		 }
+				  		 $('#innerID').jstree('check_node', "#"+orgNodeId);
+				  		 isopened = true; 
+			  		 }
+		 }
+		 if(!isopened) {
+			var parentOrgNodeId = $("#" + orgNodeId).parent("ul");
+			
+			var ancestorNodes = parentOrgNodeId.parentsUntil(".jstree","li");
+			//open tree nodes from root to the clicked node	
+			if(ancestorNodes.length > 0) {
+				for(var count = ancestorNodes.length - 1; count >= 0; --count) {
+		  		 		var tmpNode = ancestorNodes[count].id;
+						$('#innerID').jstree('open_node', "#"+tmpNode); 
+					
+		  		 }
+		  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
+	  		 } 
+		}
+	
+
+		
+	}
+	
+	function reset() {
+	
+		$("#orgName").val("");
+		$("#orgCode").val("");
+		$("#layerOptions").html("<option  value='Select a layer'>Select a layer</option>");
+		$("#parentOrgName").html(defaultParent);
+		if(isLasLinkCustomer)
+			$("#mdrNumber").val("");
+		assignedOrgNodeIds = "";
+		populateTreeSelect();
+	}
+	
+	function openConfirmationPopup(args){
+		var arg= args;
+		if(arg == null || arg == undefined){
+			$("#confirmationPopup").dialog({  
+				title:"Confirmation Alert",  
+			 	resizable:false,
+			 	autoOpen: true,
+			 	width: '400px',
+			 	modal: true,
+			 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+				});	
+				 $("#confirmationPopup").css('height',120);
+				 var toppos = ($(window).height() - 290) /2 + 'px';
+				 var leftpos = ($(window).width() - 410) /2 + 'px';
+				 $("#confirmationPopup").parent().css("top",toppos);
+				 $("#confirmationPopup").parent().css("left",leftpos);		
+				 
+		 }
+}
+
+	function closePopUp(dailogId){
+		if(dailogId == 'addEditOrganizationDetail') {
+			isPopUp = false;
+			reset();			
+		}
+		$("#"+dailogId).dialog("close");
+		
+		if(dailogId == 'confirmationPopup') {
+			$("#orgName").trigger("focus");
+		} 
+	}
+	
+	function closeConfirmationPopup() {
+		if(isAddOrganization){
+			closePopUp('confirmationPopup');
+			closePopUp('addEditOrganizationDetail');
+		}
+	}
+	
+	function orgDetailSubmit(){
+		//var validflag = VerifyOrgDetail(assignedOrgNodeIds);
+		//if(!validflag)
+		//	document.getElementById('displayMessage').style.display = "block";
+		saveOrgDetail()
+	}
+	
+	function setPopupPosition(isAddUser){
+				var toppos = ($(window).height() - 610) /2 + 'px';
+				var leftpos = ($(window).width() - 760) /2 + 'px';
+				$("#addEditOrganizationDetail").parent().css("top",toppos);
+				$("#addEditOrganizationDetail").parent().css("left",leftpos);		 	 
+				$("#Organization_Information").css("height",'300px');
+				$("#Organization_Information").css("overflow",'auto');
+				if(isAddUser) {
+					$("#preButton").css("visibility","hidden");	
+					$("#nextButton").css("visibility","hidden");
+				} 
+	}
+	
+	
+	function saveOrgDetail(){
+	var param;
+	
+	if(isAddOrganization){
+		param = $("#addEditOrganizationDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds;
+	}
+
+				$.ajax(
+						{
+								async:		true,
+								beforeSend:	function(){
+												
+												UIBlock();
+											},
+								url:		'saveAddEditOrg.do',
+								type:		'POST',
+								data:		param,
+								dataType:	'json',
+								success:	function(data, textStatus, XMLHttpRequest){	
+												$.unblockUI();  
+												//var errorFlag = data.errorFlag;
+												//var successFlag = data.successFlag;
+												//if(successFlag) {
+													closePopUp('addEditOrganizationDetail');
+													//setMessageMain(data.title, data.content, data.type, "");
+													//document.getElementById('displayMessageMain').style.display = "block";	
+													assignedOrgNodeIds = "";
+        										//}
+        										//else{
+        											//setMessage(data.title, data.content, data.type, "");
+        											//document.getElementById('displayMessage').style.display = "block";	
+        											
+        										//}
+																								
+											},
+								error  :    function(XMLHttpRequest, textStatus, errorThrown){
+													$.unblockUI();  
+												//window.location.href="/TestSessionInfoWeb/logout.do";
+											},
+								complete :  function(){
+												$.unblockUI();  
+											}
+						}
+					);
+	}

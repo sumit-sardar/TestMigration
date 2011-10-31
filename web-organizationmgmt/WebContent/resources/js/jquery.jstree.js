@@ -1059,7 +1059,7 @@
 					}, this));
 		},
 		defaults : {
-			select_limit : -1, // 0, 1, 2 ... or -1 for unlimited
+			select_limit : 1, //-1, // 0, 1, 2 ... or -1 for unlimited
 			select_multiple_modifier : "ctrl", // on, or ctrl, shift, alt
 			select_range_modifier : "shift",
 			selected_parent_close : "select_parent", // false, "deselect", "select_parent"
@@ -2764,7 +2764,7 @@
 				.delegate( (this.data.ui && this.data.checkbox.noui ? "a" : "ins.jstree-checkbox") , "click.jstree", $.proxy(function (e) {
 						e.preventDefault();
 						if(this._get_node(e.target).hasClass("jstree-checked")) { this.uncheck_node(e.target); }
-						else { this.check_node(e.target); }
+						else { this.deselect_all(); this.check_node(e.target); }
 						if(this.data.ui && this.data.checkbox.noui) {
 							this.save_selected();
 							if(this.data.cookies) { this.save_cookie("select_node"); }
@@ -2888,6 +2888,7 @@
 				return true;
 			},
 			check_node : function (obj) {
+				this.uncheck_all(); // Added to make the tree a single selection js tree.
 				if(this.change_state(obj, false)) { 
 					obj = this._get_node(obj);
 					if(this._get_settings().checkbox.checked_parent_open) {

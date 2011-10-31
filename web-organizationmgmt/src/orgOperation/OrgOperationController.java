@@ -319,7 +319,103 @@ public class OrgOperationController extends PageFlowController {
 			
 		}
 	 
-	
+	 @Jpf.Action(forwards={
+				@Jpf.Forward(name = "success", 
+						path ="find_user_hierarchy.jsp")
+		})
+		protected Forward populateLayer(ManageOrganizationForm form){
+						
+		 HttpServletRequest req = getRequest();
+		 HttpServletResponse resp = getResponse();
+		 Integer selectedParentNode = Integer.parseInt(getRequest().getParameter("selectedParentNode"));
+		 OutputStream stream = null;
+		 String contentType = CONTENT_TYPE_JSON;
+		 OrgNodeCategory[] orgCatagories = null;
+		 String json = "";
+			try {
+				orgCatagories = organizationManagement.getFrameworkListForOrg(selectedParentNode, null, true); 
+
+				Gson gson = new Gson();
+				json = gson.toJson(orgCatagories);
+				System.out.println(json);
+				
+					try{
+			    		resp.setContentType("application/json");
+			    		stream = resp.getOutputStream();
+			    		resp.flushBuffer();
+			    		stream.write(json.getBytes());
+				
+			    		}
+				
+			    		 finally{
+			 				if (stream!=null){
+			 					stream.close();
+			 				}
+			 			}
+					
+					
+				
+			} catch (Exception e) {
+				System.err.println("Exception while processing populateLayer");
+				e.printStackTrace();
+			}
+			
+			return null;
+			
+		}
+	 
+	 //saving organization details
+	 @Jpf.Action(forwards={
+				@Jpf.Forward(name = "success", 
+						path ="find_user_by_hierarchy.jsp")
+		})
+		protected Forward saveAddEditOrg(ManageOrganizationForm form)
+		{
+		 	
+		 String json = "";
+			OutputStream stream = null;
+			HttpServletRequest req = getRequest();
+			HttpServletResponse resp = getResponse();
+			Node organizationDetail = new Node();
+			organizationDetail.setOrgNodeCategoryId(Integer.parseInt(getRequest().getParameter("layerOptions")));
+			organizationDetail.setOrgNodeName(getRequest().getParameter("orgName"));
+			organizationDetail.setCustomerId(Integer.parseInt((getSession().getAttribute("customerId")).toString()));
+			organizationDetail.setOrgNodeCode(getRequest().getParameter("orgCode"));
+			organizationDetail.setParentOrgNodeId(Integer.parseInt(getRequest().getParameter("assignedOrgNodeIds")));
+			String userName = getSession().getAttribute("userName").toString();
+			try {
+				 this.organizationManagement.createOrganization(userName, organizationDetail);
+			Gson gson = new Gson();
+			json = gson.toJson(organizationDetail);
+			System.out.println(json);
+			
+				try{
+		    		resp.setContentType("application/json");
+		    		stream = resp.getOutputStream();
+		    		resp.flushBuffer();
+		    		stream.write(json.getBytes());
+			
+		    		}
+			
+		    		 finally{
+		 				if (stream!=null){
+		 					stream.close();
+		 				}
+		 			}
+				
+				
+			
+		} catch (Exception e) {
+			System.err.println("Exception while processing populateLayer");
+			e.printStackTrace();
+		}
+		
+		return null;
+		 
+		}
+	 
+	 
+	 
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////    
 	///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
