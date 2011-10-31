@@ -59,6 +59,7 @@
 			$(function(){
 				// Accordion
 				$("#accordion").accordion({ header: "h3" });
+				$("#userAccordion").accordion({ header: "h3" });
 			});
 		
 		

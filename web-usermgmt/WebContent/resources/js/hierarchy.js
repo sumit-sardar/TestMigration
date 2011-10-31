@@ -550,7 +550,7 @@ function userDetailEdit(){
 							 	});	
 	$("#preButton").css("visibility","visible");	
 	$("#nextButton").css("visibility","visible");	
-	$('#accordion ul:eq(0)').show();
+	$('#userAccordion ul:eq(0)').show();
 	
 	}
 
@@ -649,7 +649,7 @@ function userDetailEdit(){
 							 	width: '800px',
 							 	modal: true,
 								closeOnEscape: false,
-							 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+							 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide();}
 							 	});	
 						$('#addEditUserDetail').bind('keydown', function(event) {
 			 				  var code = (event.keyCode ? event.keyCode : event.which);
@@ -1010,18 +1010,18 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	function closePopUp(dailogId){
 		if(dailogId == 'addEditUserDetail') {
-			$('#accordion').accordion('activate', 0 );
+			$('#userAccordion').accordion('activate', 0);
 			$("#User_Information").scrollTop(0);
 			$("#Contact_Information").scrollTop(0);
 			$('#Contact_Information').hide();
 			populateTreeSelect();
 			isPopUp = false;
-			
 		}
+
 		$("#"+dailogId).dialog("close");
 		
 		if(dailogId == 'confirmationPopup') {
-			$('#accordion').accordion('activate', 0 );
+			$('#userAccordion').accordion('activate', 0 );
 			$("#User_Information").scrollTop(0);
 			$("#Contact_Information").scrollTop(0);
 			$('#Contact_Information').hide();

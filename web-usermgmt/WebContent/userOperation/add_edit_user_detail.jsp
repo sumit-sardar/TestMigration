@@ -32,7 +32,7 @@
 		</tr>
 	</table>
 	<br>
-	<div id="accordion" style="width:99.5%;">
+	<div id="userAccordion" style="width:99.5%;">
 			
 			<div>
 				<h3><a href="#">User Information</a></h3>
