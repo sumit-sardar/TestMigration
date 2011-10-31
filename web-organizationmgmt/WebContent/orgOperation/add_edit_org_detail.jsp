@@ -58,7 +58,7 @@ Use the organization selector on the right to select the "Parent" organization t
 									<%if(isLasLinkCustomer) { %>
 									<tr class="transparent">
 										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;MDR Number:</td>
-										<td class="transparent"><input type="text" style="width: 200px;" maxlength="32" id="mdrNumber" name="mdrNumber"></td>
+										<td class="transparent"><input type="text" style="width: 200px;" maxlength="32" id="mdrNumber" name="mdrNumber" maxlength="8"></td>
 									</tr>
 									<%} %>
 									

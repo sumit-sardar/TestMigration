@@ -15,6 +15,7 @@ var isTreeExpandIconClicked = false;
 var isAction = true;
 var isAddOrganization = true;
 var defaultParent = "<font color=\"gray\">None selected. Use the control on the right to select.</font>";
+var defaultParentIE = "<FONT color=gray>None selected. Use the control on the right to select.</FONT>";
 var isLasLinkCustomer = false;
 
 $(document).bind('keydown', function(event) {
@@ -424,11 +425,11 @@ function AddOrganizationDetail() {
 	function onCancel() {
 		var isValueChanged = false;
 		if(isAddOrganization) {
-			if($.trim($("#orgName").val()) != ""
-			|| $.trim($("#orgCode").val()) != ""
-			|| $.trim($("#parentOrgName").html()) != defaultParent)
+			if($("#orgName").val() != ""
+			|| $("#orgCode").val() != ""
+			|| ($.trim($("#parentOrgName").html()) != defaultParent) && $.trim($("#parentOrgName").html()) != defaultParentIE)
 				isValueChanged = true;
-			if(isLasLinkCustomer == 'true' && $.trim($("#mdrNumber").val()) != "")
+			if((isLasLinkCustomer == true || isLasLinkCustomer == "true") && $.trim($("#mdrNumber").val()) != "")
 				isValueChanged = true;
 		}
 
@@ -480,7 +481,7 @@ function openTreeNodes(orgNodeId) {
 		$("#orgCode").val("");
 		$("#layerOptions").html("<option  value='Select a layer'>Select a layer</option>");
 		$("#parentOrgName").html(defaultParent);
-		if(isLasLinkCustomer == 'true')
+		if(isLasLinkCustomer == true || isLasLinkCustomer == "true")
 			$("#mdrNumber").val("");
 		assignedOrgNodeIds = "";
 		populateTreeSelect();
