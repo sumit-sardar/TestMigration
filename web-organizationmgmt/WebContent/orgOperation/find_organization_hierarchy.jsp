@@ -8,12 +8,17 @@
 
     <tr class="transparent">
         <td style="border-color : #2E6E9E;">
-        
-      	<div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
-			<div id="titleMain" style = "color:red;font-size:12px; font-weight:bold;"></div>
-			<div id= "contentMain"> </div>
-			<div id= "messageMain"> </div>
-		</div>
+        <table width="100%">
+        <tr width="100%" >
+		   <td align="left" style="padding: 0 0 0 8px;">
+		      	<div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
+					<div id="titleMain" style = "color:red;font-size:12px; font-weight:bold;"></div>
+					<div id= "contentMain"> </div>
+					<div id= "messageMain"> </div>
+				</div>
+			</td>
+		</tr>
+		</table>
 		<table>  
 			<!-- <tr class="transparent">
 	        	<td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;</td>
