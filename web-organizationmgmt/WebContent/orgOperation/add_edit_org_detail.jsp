@@ -6,12 +6,32 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 
 <input type="hidden" id="isLasLinkCustomer"  value = '<%=isLasLinkCustomer %>' />
 
+
+
 <div id="addEditOrganizationDetail"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	<span><b>Enter information about the organization in the form below. Required fields are marked by a blue asterisk *. 
+	
+	<div id="displayMessage" class="roundedMessage"> 
+			<table>
+				<tr>
+					<td rowspan="3" valign="top">
+                   	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
+					</td>
+					<td>
+						<table>
+							<tr><td><font style="color: red; font-size:12px; font-weight:bold"><div id="title"></div></font></td></tr>
+							<tr><td><div id= "content">	</div></td></tr>
+							<tr><td><div id= "message">	</div></td></tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+	</div>
+	
+	<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px;"><b>Enter information about the organization in the form below. Required fields are marked by a blue asterisk *. 
 Use the organization selector on the right to select the "Parent" organization to which you are adding this new member organization.</b></span>
-
-
+<br>
+<br>
 
 	<div id="accordion" style="width:99.5%;">
 			
@@ -52,7 +72,7 @@ Use the organization selector on the right to select the "Parent" organization t
 										</td>
 									</tr>
 									<tr class="transparent">
-										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;ParentOrg:</td>
+										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Parent Org:</td>
 										<td class="transparent">
 											<div id="parentOrgName" name="parentOrgName">
 												<font color="gray">None selected. Use the control on the right to select.</font>

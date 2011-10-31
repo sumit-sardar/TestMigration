@@ -14,10 +14,8 @@ var requetForOrganization = "";
 var isTreeExpandIconClicked = false;
 var isAction = true;
 var isAddOrganization = true;
-var isValueChanged = false;
 var defaultParent = "<font color=\"gray\">None selected. Use the control on the right to select.</font>";
 var isLasLinkCustomer = false;
-isLasLinkCustomer = $("#isLasLinkCustomer").val();
 
 $(document).bind('keydown', function(event) {
 		
@@ -251,19 +249,7 @@ var styleClass;
 	
 	else
 		fillDropDown('layerOptions',layerOptions);
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	    
-			
+				
 	        	
 	}
 
@@ -410,9 +396,9 @@ function AddOrganizationDetail() {
 
 	isPopUp	= true;
 	isAddOrganization = true;
-	
-	//document.getElementById('displayMessage').style.display = "none";	
-	//document.getElementById('displayMessageMain').style.display = "none";
+	isLasLinkCustomer = $("#isLasLinkCustomer").val();
+	document.getElementById('displayMessage').style.display = "none";	
+	document.getElementById('displayMessageMain').style.display = "none";
 	
 						$("#addEditOrganizationDetail").dialog({  
 								title:"Add Organization",  
@@ -436,15 +422,16 @@ function AddOrganizationDetail() {
 	
 	
 	function onCancel() {
-		isValueChanged = false;
+		var isValueChanged = false;
 		if(isAddOrganization) {
-			if($("#orgName").val() != ""
-			|| $("#orgCode").val() != ""
-			|| $.trim($("#parentOrgName").html()) != defaultParent
-			|| (isLasLinkCustomer && $("#mdrNumber").val() != ""))
+			if($.trim($("#orgName").val()) != ""
+			|| $.trim($("#orgCode").val()) != ""
+			|| $.trim($("#parentOrgName").html()) != defaultParent)
+				isValueChanged = true;
+			if(isLasLinkCustomer == true && $.trim($("#mdrNumber").val()) != "")
 				isValueChanged = true;
 		}
-			
+
 			if(isValueChanged) {
 				openConfirmationPopup();	 
 			} else {
@@ -464,23 +451,9 @@ function openTreeNodes(orgNodeId) {
 				$('#innerID').jstree('check_node', "#"+assignedOrgNodeIds);
 				isopened = true; 
 			} else {
-				var leafParentOrgNodeId = "";
-				for(var i=0; i< organizationNodes.length; i++){
-						if(orgNodeId == organizationNodes[i].orgNodeId){
-							var leafOrgNodePath = organizationNodes[i].leafNodePath;
-							 leafParentOrgNodeId = leafOrgNodePath.split(",");
-							break;
-						}
-					}
-					if(leafParentOrgNodeId.length > 0) {
-						for(var count = 0; count < leafParentOrgNodeId.length; count++) {
-				  		 		var tmpNode = leafParentOrgNodeId[count];
-								$('#innerID').jstree('open_node', "#"+tmpNode); 
-							
-				  		 }
-				  		 $('#innerID').jstree('check_node', "#"+orgNodeId);
-				  		 isopened = true; 
-			  		 }
+				
+			  		 	$('#innerID').jstree('open_node', "#"+orgNodeId); 
+			  		 	 $('#innerID').jstree('check_node', "#"+orgNodeId);
 		 }
 		 if(!isopened) {
 			var parentOrgNodeId = $("#" + orgNodeId).parent("ul");
@@ -507,7 +480,7 @@ function openTreeNodes(orgNodeId) {
 		$("#orgCode").val("");
 		$("#layerOptions").html("<option  value='Select a layer'>Select a layer</option>");
 		$("#parentOrgName").html(defaultParent);
-		if(isLasLinkCustomer)
+		if(isLasLinkCustomer == true)
 			$("#mdrNumber").val("");
 		assignedOrgNodeIds = "";
 		populateTreeSelect();
@@ -553,10 +526,11 @@ function openTreeNodes(orgNodeId) {
 	}
 	
 	function orgDetailSubmit(){
-		//var validflag = VerifyOrgDetail(assignedOrgNodeIds);
-		//if(!validflag)
-		//	document.getElementById('displayMessage').style.display = "block";
-		saveOrgDetail()
+		var validflag = VerifyOrgDetail(assignedOrgNodeIds, isLasLinkCustomer);
+		if(!validflag)
+			document.getElementById('displayMessage').style.display = "block";
+		else
+			saveOrgDetail()
 	}
 	
 	function setPopupPosition(isAddUser){
@@ -593,19 +567,13 @@ function openTreeNodes(orgNodeId) {
 								dataType:	'json',
 								success:	function(data, textStatus, XMLHttpRequest){	
 												$.unblockUI();  
-												//var errorFlag = data.errorFlag;
-												//var successFlag = data.successFlag;
-												//if(successFlag) {
+
 													closePopUp('addEditOrganizationDetail');
-													//setMessageMain(data.title, data.content, data.type, "");
-													//document.getElementById('displayMessageMain').style.display = "block";	
+													setMessageMain("Add Organization", "Organization was added successfully.", "", "");
+													
+													document.getElementById('displayMessageMain').style.display = "block";	
 													assignedOrgNodeIds = "";
-        										//}
-        										//else{
-        											//setMessage(data.title, data.content, data.type, "");
-        											//document.getElementById('displayMessage').style.display = "block";	
-        											
-        										//}
+
 																								
 											},
 								error  :    function(XMLHttpRequest, textStatus, errorThrown){

@@ -3,13 +3,14 @@
 <br/>   
 <span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">&nbsp;&nbsp;&nbsp;Open the Organization Search to view the organization hierarchy. Select an organization to view,  edit, delete, or add a suborganization.</span>
 <br/>
+<br>
 <table class="transparent">
 
     <tr class="transparent">
         <td style="border-color : #2E6E9E;">
         
-      	<div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 1px solid #A6C9E2;">
-			<div id="titleMain"></div>
+      	<div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
+			<div id="titleMain" style = "color:red;font-size:12px; font-weight:bold;"></div>
 			<div id= "contentMain"> </div>
 			<div id= "messageMain"> </div>
 		</div>

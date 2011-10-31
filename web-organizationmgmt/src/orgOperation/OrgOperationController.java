@@ -67,6 +67,12 @@ public class OrgOperationController extends PageFlowController {
      */
     @Control()
     private com.ctb.control.organizationManagement.OrganizationManagement organizationManagement;
+    
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.db.OrgNode orgNode;
 
     
     @org.apache.beehive.controls.api.bean.Control()
@@ -379,18 +385,66 @@ public class OrgOperationController extends PageFlowController {
 			Node organizationDetail = new Node();
 			Boolean isLaslinkCustomer = new Boolean(getRequest().getParameter("isLaslinkCustomer"));
 			organizationDetail.setOrgNodeCategoryId(Integer.parseInt(getRequest().getParameter("layerOptions")));
-			organizationDetail.setOrgNodeName(getRequest().getParameter("orgName"));
+			organizationDetail.setOrgNodeName(getRequest().getParameter("orgName").trim());
 			organizationDetail.setCustomerId(Integer.parseInt((getSession().getAttribute("customerId")).toString()));
-			organizationDetail.setOrgNodeCode(getRequest().getParameter("orgCode"));
+			organizationDetail.setOrgNodeCode(getRequest().getParameter("orgCode").trim());
 			organizationDetail.setParentOrgNodeId(Integer.parseInt(getRequest().getParameter("assignedOrgNodeIds")));
 			if(isLaslinkCustomer)
-				organizationDetail.setMdrNumber(getRequest().getParameter("mdrNumber"));
+				organizationDetail.setMdrNumber(getRequest().getParameter("mdrNumber").trim());
 			String userName = getSession().getAttribute("userName").toString();
 			try {
 				 this.organizationManagement.createOrganization(userName, organizationDetail);
 			Gson gson = new Gson();
 			json = gson.toJson(organizationDetail);
 			System.out.println(json);
+			
+				try{
+		    		resp.setContentType("application/json");
+		    		stream = resp.getOutputStream();
+		    		resp.flushBuffer();
+		    		stream.write(json.getBytes());
+			
+		    		}
+			
+		    		 finally{
+		 				if (stream!=null){
+		 					stream.close();
+		 				}
+		 			}
+				
+				
+			
+		} catch (Exception e) {
+			System.err.println("Exception while processing populateLayer");
+			e.printStackTrace();
+		}
+		
+		return null;
+		 
+		}
+	 
+	 
+	 
+	 
+	 
+	 @Jpf.Action(forwards={
+				@Jpf.Forward(name = "success", 
+						path ="find_user_by_hierarchy.jsp")
+		})
+		protected Forward uniqueMDRNumber(ManageOrganizationForm form)
+		{
+		 	
+		 String json = "";
+			OutputStream stream = null;
+			HttpServletRequest req = getRequest();
+			HttpServletResponse resp = getResponse();
+			String MDRNumber = getRequest().getParameter("mdrNumber");
+
+			try {
+				String validMDRNumber = validMDRNumber(MDRNumber);
+			Gson gson = new Gson();
+			json = gson.toJson(validMDRNumber);
+			System.out.println("validMDRNumber-->>" + json);
 			
 				try{
 		    		resp.setContentType("application/json");
@@ -866,6 +920,25 @@ public class OrgOperationController extends PageFlowController {
 			}
 		}
 	}
+    
+    
+ private String validMDRNumber(String mdrNumber) {
+        
+    	mdrNumber = mdrNumber.trim();
+        String mdrNumberFound ="F";
+        try {
+	        if ( mdrNumber != null && mdrNumber.length()>0 &&  !(mdrNumber.length()< 8)) {
+	            
+	        	mdrNumberFound = orgNode.checkUniqueMdrNumberForOrgNodes(mdrNumber);
+	           
+	        }         
+        }
+        catch (Exception e) {
+        }
+        
+        return mdrNumberFound;  
+        
+    }
     
     
 	
