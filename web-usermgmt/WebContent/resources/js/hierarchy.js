@@ -599,6 +599,7 @@ function userDetailEdit(){
 						//alert(data.firstName);
 						$("#userMiddleName").val(data.middleName);
 						$("#userLastName").val(data.lastName);
+						$("#userEmail").val(data.email);
 						$("#timeZoneOptions").val(data.timeZone);
 						//alert(data.timeZone);
 						//$("#roleOptions").val(data.role);
