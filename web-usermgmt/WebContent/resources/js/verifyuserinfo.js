@@ -30,7 +30,7 @@ function VerifyUserDetail(assignedOrgNodeIds){
 	 userRole = $("#roleOptions").val();
 	 timeZone = $("#timeZoneOptions").val();
 	 userEmail = $("#userEmail").val();
-	 selectedOrgNodes = trim(assignedOrgNodeIds);
+	 selectedOrgNodes = assignedOrgNodeIds;
 	 firstName = trim(firstName);
 	 middleName = trim(middleName);
 	 lastName =  trim(lastName); 
