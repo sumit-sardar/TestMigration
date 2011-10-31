@@ -343,7 +343,6 @@ public class OrgOperationController extends PageFlowController {
 
 				Gson gson = new Gson();
 				json = gson.toJson(orgCatagories);
-				System.out.println(json);
 				
 					try{
 			    		resp.setContentType("application/json");
@@ -396,7 +395,6 @@ public class OrgOperationController extends PageFlowController {
 				 this.organizationManagement.createOrganization(userName, organizationDetail);
 			Gson gson = new Gson();
 			json = gson.toJson(organizationDetail);
-			System.out.println(json);
 			
 				try{
 		    		resp.setContentType("application/json");
@@ -444,7 +442,6 @@ public class OrgOperationController extends PageFlowController {
 				String validMDRNumber = validMDRNumber(MDRNumber);
 			Gson gson = new Gson();
 			json = gson.toJson(validMDRNumber);
-			System.out.println("validMDRNumber-->>" + json);
 			
 				try{
 		    		resp.setContentType("application/json");

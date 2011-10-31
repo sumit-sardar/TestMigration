@@ -428,7 +428,7 @@ function AddOrganizationDetail() {
 			|| $.trim($("#orgCode").val()) != ""
 			|| $.trim($("#parentOrgName").html()) != defaultParent)
 				isValueChanged = true;
-			if(isLasLinkCustomer == true && $.trim($("#mdrNumber").val()) != "")
+			if(isLasLinkCustomer == 'true' && $.trim($("#mdrNumber").val()) != "")
 				isValueChanged = true;
 		}
 
@@ -480,7 +480,7 @@ function openTreeNodes(orgNodeId) {
 		$("#orgCode").val("");
 		$("#layerOptions").html("<option  value='Select a layer'>Select a layer</option>");
 		$("#parentOrgName").html(defaultParent);
-		if(isLasLinkCustomer == true)
+		if(isLasLinkCustomer == 'true')
 			$("#mdrNumber").val("");
 		assignedOrgNodeIds = "";
 		populateTreeSelect();
