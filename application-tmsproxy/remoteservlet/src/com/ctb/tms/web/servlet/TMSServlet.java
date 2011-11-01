@@ -51,6 +51,7 @@ import org.apache.xmlbeans.impl.values.XmlValueDisconnectedException;
 import com.ctb.tdc.web.utils.ContentFile;
 import com.ctb.tdc.web.utils.ServletUtils;
 import com.ctb.tms.bean.login.ItemResponseData;
+import com.ctb.tms.bean.login.ItemResponseWrapper;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
@@ -306,9 +307,10 @@ public class TMSServlet extends HttpServlet {
 		        saveResponse.getTsdArray(i).setStatus(Status.OK);
 			    
 	    		Manifest manifest = oasSource.getManifest(rosterId, accessCode);
-	    		if(manifest.getRosterCompletionStatus() == null) {
+	    		if(manifest.getRosterCompletionStatus() == null || !"IP".equals(manifest.getRosterCompletionStatus())) {
 	    			manifest.setRosterCompletionStatus("IP");
 	    		}
+	    		manifest.setRosterLastMseq(tsd.getMseq().intValue());
 		    	ManifestData[] manifestData = manifest.getManifest();	
 		    	int nextScoIndex = 0;
 		    	int j;
@@ -343,15 +345,15 @@ public class TMSServlet extends HttpServlet {
 		            }
 		            oasSink.putManifest(rosterId, accessCode, manifest);
 		            return responseDocument.xmlText();
-		    	}
-		        
-		    	manifest.setRosterLastMseq(tsd.getMseq().intValue());
+		    	}   	
 		    	
 			    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
 			    	// keep IP status if we're receiving heartbeats or responses
 			    	manifestData[j].setCompletionStatus("IP");
 			    	// response events
-			    	oasSink.putItemResponse(rosterId, tsd);
+			    	ItemResponseWrapper irw = new ItemResponseWrapper();
+			    	irw.setTsd(tsd);
+			    	oasSink.putItemResponse(rosterId, irw);
 			    	logger.debug("TMSServlet: save: cached response for roster " + rosterId + ", message " + tsd.getMseq() + ": " + tsd.xmlText()); 
 			    }
 			    
@@ -709,7 +711,7 @@ public class TMSServlet extends HttpServlet {
             					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS) ||
             					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
             					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {        	
-            	Tsd[] irt = null;
+            	ItemResponseWrapper[] irt = null;
             	ConsolidatedRestartData restartData = null;
             	irt = oasSource.getItemResponses(testRosterId);
             	logger.debug("TMSServlet: found " + irt.length + " responses in cache.");
@@ -721,7 +723,7 @@ public class TMSServlet extends HttpServlet {
                 	if (!responsesInCache && responsesInRD) {
                 		irt = convertTsdType(restartData.getTsdArray(0));
                 		for(int j=0;j<irt.length;j++) {
-	                    	oasSink.putItemResponse(testRosterId, irt[j]);
+                			oasSink.putItemResponse(testRosterId, irt[j]);
 	                    }
                 	}
             	}
@@ -841,9 +843,9 @@ public class TMSServlet extends HttpServlet {
 				intValue() % 2 == 0 ? false:true;
 	}
 	
-	private Tsd[] convertTsdType(ConsolidatedRestartData.Tsd tsd) {
+	private ItemResponseWrapper[] convertTsdType(ConsolidatedRestartData.Tsd tsd) {
 		//return tsd.changeType(Tsd.type);
-		Tsd[] newtsda = new Tsd[tsd.getIstArray().length];
+		ItemResponseWrapper[] newtsda = new ItemResponseWrapper[tsd.getIstArray().length];
 		ConsolidatedRestartData.Tsd.Ist[] ista = tsd.getIstArray();
 		for(int i=0;i<ista.length;i++) {
 			XmlOptions xmlOptions = new XmlOptions(); 
@@ -867,7 +869,9 @@ public class TMSServlet extends HttpServlet {
 				Rv newrv = newist.addNewRv();
 				newrv.addV(rv.getV());
 			}
-			newtsda[i] = newtsd;
+			ItemResponseWrapper irw = new ItemResponseWrapper();
+			irw.setTsd(newtsd);
+			newtsda[i] = irw;
 			//logger.debug("convertTsdType: added response " + ist.getMseq());
 		}
 		return newtsda;

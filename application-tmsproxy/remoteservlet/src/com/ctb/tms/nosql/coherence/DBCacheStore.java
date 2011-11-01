@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.ctb.tms.bean.login.CachePreLoadObject;
 import com.oracle.coherence.patterns.pushreplication.PublishingCacheStore;
 import com.tangosol.net.cache.BinaryEntryStore;
 import com.tangosol.net.cache.CacheStore;
@@ -17,9 +18,11 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	
 	private CacheStore store;
 	private PublishingCacheStore pushStore;
+	private String cacheName;
 	
 	public DBCacheStore(String cacheName) {
-		pushStore = new PublishingCacheStore(cacheName);
+		this.cacheName = cacheName;
+		this.pushStore = new PublishingCacheStore(cacheName);
 		
 		if("OASRosterCache".equals(cacheName)) store = new RosterCacheStore(cacheName); 
 		else if("OASManifestCache".equals(cacheName)) store = new ManifestCacheStore(cacheName); 
@@ -47,9 +50,20 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     }
     
     public void store(com.tangosol.util.BinaryEntry entry) {
-    	logger.debug("Write to push replication store");
-    	store.store(entry.getKey(), entry.getValue());
-    	pushStore.store(entry);
+    	Object value = entry.getValue();
+    	store.store(entry.getKey(), value);
+    	if(cacheName.startsWith("OAS")) {
+    		if(CachePreLoadObject.class.isInstance(value)) {
+    			if(((CachePreLoadObject) value).doReplicate()) {
+    				((CachePreLoadObject) value).setReplicate(false);
+    				pushStore.store(entry);
+    				logger.info("Replicated cache entry to remote cluster");
+    			} else {
+    				((CachePreLoadObject) value).setReplicate(true);
+    				logger.info("Cache entry from remote cluster, skipping replication");
+    			}
+    		}
+    	}
     }
 
     public void erase(Object oKey) {
@@ -58,8 +72,20 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     
     public void erase(com.tangosol.util.BinaryEntry entry) {
     	logger.debug("Delete to push replication store");
+    	Object value = entry.getValue();
     	store.erase(entry.getKey());
-    	pushStore.erase(entry);
+    	if(cacheName.startsWith("OAS")) {
+    		if(CachePreLoadObject.class.isInstance(value)) {
+    			if(((CachePreLoadObject) value).doReplicate()) {
+    				((CachePreLoadObject) value).setReplicate(false);
+    				pushStore.erase(entry);
+    				logger.info("Replicated cache erasure to remote cluster");
+    			} else {
+    				((CachePreLoadObject) value).setReplicate(true);
+    				logger.info("Cache erasure from remote cluster, skipping replication");
+    			}
+    		}
+    	}
     }
 
 	public void eraseAll(Collection colKeys) {
@@ -71,9 +97,21 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 		Iterator<BinaryEntry> it = setBinEntries.iterator();
 		while(it.hasNext()) {
 			BinaryEntry entry = it.next();
-			store.erase(entry);
+			Object value = entry.getValue();
+	    	store.erase(entry.getKey());
+	    	if(cacheName.startsWith("OAS")) {
+	    		if(CachePreLoadObject.class.isInstance(value)) {
+	    			if(((CachePreLoadObject) value).doReplicate()) {
+	    				((CachePreLoadObject) value).setReplicate(false);
+	    				pushStore.erase(entry);
+	    				logger.info("Replicated cache erasure to remote cluster");
+	    			} else {
+	    				((CachePreLoadObject) value).setReplicate(true);
+	    				logger.info("Cache erasure from remote cluster, skipping replication");
+	    			}
+	    		}
+	    	}
 		}
-		pushStore.eraseAll(setBinEntries);
 	}
 
 	public Map loadAll(Collection colKeys) {
@@ -98,8 +136,20 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 		Iterator<BinaryEntry> it = setBinEntries.iterator();
 		while(it.hasNext()) {
 			BinaryEntry entry = it.next();
-			store.store(entry.getKey(), entry.getValue());
+			Object value = entry.getValue();
+	    	store.store(entry.getKey(), value);
+	    	if(cacheName.startsWith("OAS")) {
+	    		if(CachePreLoadObject.class.isInstance(value)) {
+	    			if(((CachePreLoadObject) value).doReplicate()) {
+	    				((CachePreLoadObject) value).setReplicate(false);
+	    				pushStore.store(entry);
+	    				logger.info("Replicated bulk cache entry to remote cluster");
+	    			} else {
+	    				((CachePreLoadObject) value).setReplicate(true);
+	    				logger.info("Bulk cache entry from remote cluster, skipping replication");
+	    			}
+	    		}
+	    	}
 		}
-		pushStore.storeAll(setBinEntries);
 	}
 }

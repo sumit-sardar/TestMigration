@@ -10,6 +10,7 @@ import org.apache.xmlbeans.XmlException;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
+import com.ctb.tms.bean.login.ItemResponseWrapper;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
@@ -106,9 +107,9 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		manifestCache.put(key, manifests);
 	}
 	
-	public void putItemResponse(String testRosterId, Tsd tsd) throws IOException {
-		String key = testRosterId + ":" + tsd.getMseq();
-		responseCache.put(key, tsd);
+	public void putItemResponse(String testRosterId, ItemResponseWrapper irw) throws IOException {
+		String key = testRosterId + ":" + irw.getTsd().getMseq();
+		responseCache.put(key, irw);
 	}
 	
 	public void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException {

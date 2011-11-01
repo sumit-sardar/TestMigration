@@ -16,6 +16,7 @@ import noNamespace.BaseType;
 
 import org.apache.log4j.Logger;
 
+import com.ctb.tms.bean.login.ItemResponseWrapper;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
@@ -39,7 +40,8 @@ public class OASOracleSink implements OASRDBSink {
 		return OracleSetup.getOASConnection();
 	}
 	
-	public void putItemResponse(Connection conn, String testRosterId, Tsd tsd) throws NumberFormatException, Exception {		
+	public void putItemResponse(Connection conn, String testRosterId, ItemResponseWrapper irw) throws NumberFormatException, Exception {		
+		Tsd tsd = irw.getTsd();
 		Ist[] ista = tsd.getIstArray();
 		for(int j=0;j<ista.length;j++) {
 	        Ist ist = ista[j];

@@ -35,8 +35,13 @@ public class RosterData implements Serializable {
 	TmssvcResponseDocument document;
 	AuthenticationData authData;
 	//Manifest manifest;
+	private boolean replicate = true;
 	
 	static Logger logger = Logger.getLogger(RosterData.class);
+	
+    public void setReplicate(boolean replicate) {
+    	this.replicate = replicate;
+    }
 	
 	public TmssvcResponseDocument getDocument() {
 		return this.document;
@@ -208,12 +213,12 @@ public class RosterData implements Serializable {
 		ast.setRemSec(Float.parseFloat(String.valueOf(remSec)));
 	}
 	
-	public static ItemResponseData[] generateItemResponseData(ManifestData manifest, noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd[] tsda) {
+	public static ItemResponseData[] generateItemResponseData(ManifestData manifest, ItemResponseWrapper[] tsda) {
 		HashMap irdMap = new HashMap(tsda.length);
 		HashMap itemMap = new HashMap(tsda.length);
 		for(int i=0;i<tsda.length;i++) {
 			logger.debug("generateItemResponseData: Tsd " + i);
-			noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd tsd = tsda[i];
+			noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd tsd = tsda[i].getTsd();
 			if(manifest.getId() == Integer.parseInt(tsd.getScid())) {
 				noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist[] ista = tsd.getIstArray();
 				//for(int j=0;j<ista.length;j++) {	
@@ -291,5 +296,9 @@ public class RosterData implements Serializable {
 			}
 		}
 		return (ItemResponseData[]) irdMap.values().toArray(new ItemResponseData[0]);
+	}
+	
+	public boolean doReplicate() {
+		return this.replicate;
 	}
 }

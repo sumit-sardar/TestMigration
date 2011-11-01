@@ -3,7 +3,7 @@ package com.ctb.tms.bean.login;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Manifest implements Serializable {
+public class Manifest implements Serializable, CachePreLoadObject {
 
 	/**
 	 * 
@@ -23,7 +23,11 @@ public class Manifest implements Serializable {
     private Integer randomDistractorSeed;
     private String tutorialTaken;
     
+    private boolean replicate = true;
     
+    public void setReplicate(boolean replicate) {
+    	this.replicate = replicate;
+    }
     
 	public String getTutorialTaken() {
 		return tutorialTaken;
@@ -106,6 +110,10 @@ public class Manifest implements Serializable {
 
 	public void setManifest(ManifestData[] manifest) {
 		this.manifest = manifest;
+	}
+
+	public boolean doReplicate() {
+		return this.replicate;
 	}
 	
 	

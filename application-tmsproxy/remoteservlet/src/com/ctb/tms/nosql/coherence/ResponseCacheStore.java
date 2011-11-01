@@ -8,6 +8,7 @@ import java.util.Map;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
+import com.ctb.tms.bean.login.ItemResponseWrapper;
 import com.ctb.tms.rdb.OASRDBSink;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.tangosol.net.cache.CacheStore;
@@ -35,7 +36,7 @@ public class ResponseCacheStore implements CacheStore {
     	try {
     		String testRosterId = (String) oKey;
     		testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
-    		Tsd tsd = (Tsd) oValue;
+    		ItemResponseWrapper tsd = (ItemResponseWrapper) oValue;
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
 		    sink.putItemResponse(conn, testRosterId, tsd);
@@ -71,7 +72,7 @@ public class ResponseCacheStore implements CacheStore {
 		    conn = sink.getOASConnection();
     		while(it.hasNext()) {
 	    		String key = (String) it.next();
-	    		Tsd value = (Tsd) mapEntries.get(key);
+	    		ItemResponseWrapper value = (ItemResponseWrapper) mapEntries.get(key);
 	    		String testRosterId = key;
 	    		testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
 			    sink.putItemResponse(conn, testRosterId, value);

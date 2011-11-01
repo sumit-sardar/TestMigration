@@ -10,6 +10,7 @@ import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Ts
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 
+import com.ctb.tms.bean.login.ItemResponseWrapper;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
@@ -19,8 +20,6 @@ import com.tangosol.net.NamedCache;
 import com.tangosol.util.Filter;
 import com.tangosol.util.ValueExtractor;
 import com.tangosol.util.extractor.ReflectionExtractor;
-import com.tangosol.util.filter.EqualsFilter;
-import com.tangosol.util.filter.GreaterEqualsFilter;
 
 public class OASCoherenceSource implements OASNoSQLSource {
 	
@@ -75,7 +74,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 		return null;
 	}
 
-	public Tsd[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
+	public ItemResponseWrapper[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
 		String key1 = testRosterId;
 		String key2 = String.valueOf((Integer.parseInt(testRosterId) + 1));
 		Filter filter = new com.tangosol.util.filter.BetweenFilter("getLsid", key1, key2); 
@@ -84,11 +83,12 @@ public class OASCoherenceSource implements OASNoSQLSource {
 		if(mapResult != null) {
 			int size = mapResult.size();
 			logger.debug("*****  Found " + size + " responses for roster " + testRosterId);
-			Tsd[] tsda = new Tsd[size];
+			ItemResponseWrapper[] tsda = new ItemResponseWrapper[size];
 			Iterator it = mapResult.keySet().iterator();
 			int i = 0;
 			while(it.hasNext()) {
-				tsda[i] = (Tsd) mapResult.get(it.next());
+				ItemResponseWrapper irw = (ItemResponseWrapper) mapResult.get(it.next());
+				tsda[i] = irw;
 				i++;
 			}
 			return tsda;
