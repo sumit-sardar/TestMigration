@@ -196,10 +196,6 @@ var styleClass;
         	);
 }
 
-			function getText(element){
-		var elementText  = element.childNodes[1].lastChild.data;
-		return elementText;
-	}	
 
 	function updateOrganization(element,isChecked){
 	
@@ -297,9 +293,9 @@ var styleClass;
 					
 			
 							if(currentlySelectedNode=="") {
-								currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ trim($(element).text())+"</a>";	
+								currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ getText(element)+"</a>";	
 							} else {
-								currentlySelectedNode = currentlySelectedNode + " , " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ trim($(element).text())+"</a>";
+								currentlySelectedNode = currentlySelectedNode + " , " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ getText(element)+"</a>";
 							}
 			
 				    		if(assignedOrgNodeIds=="") {
