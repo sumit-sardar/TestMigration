@@ -1330,18 +1330,20 @@ function fillselectedOrgNode( elementId, orgList) {
 							 setPopupPosition(isAddStudent);
 							 
 							 isViewStudent = true;
-							 
-							/*var SelectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
-	        				var str = idarray;
-							var nextStudentId ;
-							var indexOfId = -1;
-							if(!Array.indexOf) {
-								indexOfId = findIndexFromArray (str , SelectedStudentId);
-							} else {
-								indexOfId = str.indexOf(SelectedStudentId);;
-							}
+							 // to handle enabling/disabling of next/prev button 
+							 //when this metod is invoked by view next button
+							if(SelectedStudentId == undefined) { 
+	        					var str = $("#list2").jqGrid('getDataIDs'); 
+								var nextStudentId ;
+								var indexOfId = -1;
+								if(!Array.indexOf) {
+									indexOfId = findIndexFromArray (str , rowid);
+								} else {
+									indexOfId = str.indexOf(rowid);;
+								}
 									
-							disablenextprev(indexOfId, str.length-1);*/
+								disablenextprev(indexOfId, str.length-1);
+							}
 							
 							 		
 					},
