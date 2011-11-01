@@ -234,6 +234,8 @@ public class TestClientPageFlowController extends PageFlowController
              return getImage(inxml);
        else if (method.equals("getLocalResource")) 
              return getLocalResource();
+       else if (method.equals("downloadFileParts"))
+    	   result = this.OK;
        else
             result = this.ERROR;  
        
