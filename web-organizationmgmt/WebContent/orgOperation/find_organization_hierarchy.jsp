@@ -35,8 +35,8 @@
 		 	<td class="transparent" width="8px">&nbsp;</td>
 		 	 
 		 	<td >	      
-		    	<table id="list2" ></table>
-				<div id="pager2"  ></div>
+		    	<table id="list2" class="gridTable"></table>
+				<div id="pager2" class="gridTable" ></div>
 			</td>
 			
 	      </tr>

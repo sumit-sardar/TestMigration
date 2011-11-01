@@ -392,7 +392,7 @@ public class OrgOperationController extends PageFlowController {
 				organizationDetail.setMdrNumber(getRequest().getParameter("mdrNumber").trim());
 			String userName = getSession().getAttribute("userName").toString();
 			try {
-				 this.organizationManagement.createOrganization(userName, organizationDetail);
+				organizationDetail = this.organizationManagement.createOrganization(userName, organizationDetail);
 			Gson gson = new Gson();
 			json = gson.toJson(organizationDetail);
 			
