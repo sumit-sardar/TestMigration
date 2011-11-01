@@ -30,6 +30,7 @@ var organizationNodes = [];
 var optionHtml ="";
 var requetForStudent  = "";
 var isViewStudent = false;
+var isAction = true;
 						
 
 
@@ -105,7 +106,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	        "json_data" : {	             
 	            "data" : jsondata.data,
 				"progressive_render" : true,
-				"progressive_unload" : true
+				"progressive_unload" : false
 	        },
             "themes" : {
 			    "theme" : "apple",
@@ -159,9 +160,12 @@ function createMultiNodeSelectedTree(jsondata) {
 	        "json_data" : {	             
 	            "data" : jsondata.data,
 				"progressive_render" : true,
-				"progressive_unload" : true
+				"progressive_unload" : false
 				
-	        },  
+	        },
+	         "checkbox" : {
+        "two_state" : true
+        },  
 	            "themes" : {
 			    "theme" : "apple",
 			    "dots" : false,
@@ -170,49 +174,108 @@ function createMultiNodeSelectedTree(jsondata) {
 	 			"plugins" : [ "themes", "json_data", "ui", "checkbox"]
 	   }).bind("open_node.jstree", function (e, data) {  
        // data.inst is the instance which triggered this event
+       if(!isAddStudent)
+       {
+       		
 	       var orgcategorylevel = data.rslt.obj.attr("categoryid");   
+	       var elementId  = data.rslt.obj.attr("id");
+         
 	       if(orgcategorylevel == leafNodeCategoryId - 1) {
 		       $(this).find("[categoryid='" + leafNodeCategoryId+ "']").each(function(i, element) {
 		      		var childOrgId = $(element).attr("id");
-	    			if(assignedOrgNodeIds != ""){
-				  		if(String(assignedOrgNodeIds).indexOf(",") > 0) {
-				  			var orgList = assignedOrgNodeIds.split(",");
-				  			for(var key=0; key < orgList.length; key++){
-				  			var keyVal = trim(orgList[key]);
-				  				if(keyVal == childOrgId)
-				  				{
-				  				data.inst.check_node("#"+keyVal, true);  
-				  				}
-				  				
-				  			}
-				  		} else {
-				  			data.inst.check_node("#"+ assignedOrgNodeIds, true);  
-				  		}
-				  	}
+		    			if(assignedOrgNodeIds != ""){
+					  		if(String(assignedOrgNodeIds).indexOf(",") > 0) {
+					  			var orgList = assignedOrgNodeIds.split(",");
+					  			for(var key=0; key < orgList.length; key++){
+					  			var keyVal = trim(orgList[key]);
+					  				if(keyVal == childOrgId)
+					  				{
+					  				isAction = false;
+					  				data.inst.check_node("#"+keyVal, true); 
+					  				isAction = true;
+					  				}
+					  				
+					  			}
+					  		} else {
+					  			isAction = false;
+					  			data.inst.check_node("#"+ assignedOrgNodeIds, true); 
+					  			isAction = true;
+					  		}
+					  	}
+				  	
 				});
 		  	}
-	   });  
+		  	}
+	   });
+	   
+	 
+	   
+	   	$("#innerID").bind("loaded.jstree", 
+		 	function (event, data) {
+				$(this).find('li').find('.jstree-checkbox:first').hide();
+			}
+		);
 
-	  	if($("#innerID ul").length>0){
-		 	//jQuery.jstree._reference("#innerID").destroy();
-		 	//openTreeNodes();
-	 	}
     	hideCheckBox();
     	
- 		$("#innerID").delegate("li","click", function(e) {
- 			var isChecked = $(this).hasClass("jstree-checked");
- 			$(this).find("li").each(function(i, element) {
+ 		$("#innerID").delegate("li","click", 
+ 			function(e) {
+ 				var isChecked = $(this).hasClass("jstree-checked");
+ 				$(this).find("li").each(function(i, element) {
     			var orgcategorylevel = $(element).attr("categoryid");
     			if(orgcategorylevel != leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
-	    		  }
+	    		  }	    		  
 	  		});
-	  	
+		});
+		
+		
+		$("#innerID").delegate("li a","click", 
+			function(e) {
+			
+				styleClass = $(this.parentNode).attr('class');
+				var orgcategorylevel = $(this.parentNode).attr("categoryid");
+				var elementId = $(this.parentNode).attr('id');
+				var currentlySelectedNode ="";
+				isexist = false;
+				currentId = $(this.parentNode).attr("id");
+				var element = this.parentNode;
+    			if(orgcategorylevel == leafNodeCategoryId) {
+    				if ($(element).hasClass("jstree-checked"))
+						$(element).removeClass("jstree-checked").addClass("jstree-unchecked");
+					else
+						$(element).removeClass("jstree-unchecked").addClass("jstree-checked");
+				var isChecked = $(element).hasClass("jstree-checked");
+    			updateOrganization(this.parentNode,isChecked);
+    			}
+			}
+			);
+			
+			
+			$("#innerID").bind("change_state.jstree",
+		  		function (e, d) { 
+			  		if(isAction){
+			    	var orgcategorylevel = d.rslt[0].getAttribute("categoryid");
+			    	var currentlySelectedNode="";
+					var isChecked = $(d.rslt[0]).hasClass("jstree-checked");
+					if(orgcategorylevel == leafNodeCategoryId) {
+						updateOrganization(d.rslt[0],isChecked);
+					}
+    			}
+			}
+			);
+		
+}
 
-	  	if($(this).attr("categoryid") == leafNodeCategoryId){
+
+function updateOrganization(element, isChecked){
+	
+	
+		
+	  	if($(element).attr("categoryid") == leafNodeCategoryId){
 	  		var currentlySelectedNode ="";
 			isexist = false;
-			currentId = $(this).attr("id");
+			currentId = $(element).attr("id");
 			if(!isAddStudent){
 				if(assignedOrgNodeIds != "") {
 						if(String(assignedOrgNodeIds).indexOf(",") > 0) {
@@ -233,14 +296,14 @@ function createMultiNodeSelectedTree(jsondata) {
 					if(!isexist) {
 						currentlySelectedNode = optionHtml;
 						if(currentlySelectedNode=="") {
-							currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(this).attr("id")+"');>"+ trim($(this).text())+"</a>";	
+							currentlySelectedNode += "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ trim($(element).text())+"</a>";	
 						} else {
-							currentlySelectedNode = currentlySelectedNode + " , " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(this).attr("id")+"');>"+ trim($(this).text())+"</a>";
+							currentlySelectedNode = currentlySelectedNode + " , " + "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(element).attr("id")+"');>"+ trim($(element).text())+"</a>";
 						}
 						if(assignedOrgNodeIds=="") {
-							assignedOrgNodeIds = $(this).attr("id");
+							assignedOrgNodeIds = $(element).attr("id");
 						} else {
-							assignedOrgNodeIds = $(this).attr("id") +"," + assignedOrgNodeIds; 
+							assignedOrgNodeIds = $(element).attr("id") +"," + assignedOrgNodeIds; 
 						}
 						optionHtml = currentlySelectedNode;
 					} else{
@@ -251,7 +314,7 @@ function createMultiNodeSelectedTree(jsondata) {
 				if(isexist){
 					currentlySelectedNode ="";
 						//var newcurrentlySelectedNode = "<a style='color: blue;text-decoration:underline' href=javascript:openTreeNodes('"+$(this).attr("id")+"');>"+ trim($(this).text())+"</a>";
-						 var nodeId = trim($(this).attr("id"));	
+						 var nodeId = trim($(element).attr("id"));	
 						var opList = optionHtml.split(",");
 						for(var key=0; key<opList.length; key++){
 							var opListVal = $.trim(opList[key]);
@@ -328,12 +391,13 @@ function createMultiNodeSelectedTree(jsondata) {
 				}
 		
 			}
-		});
-		
+
 }
 		function populateTreeSelect() {
 			$("#notSelectedOrgNodes").css("display","inline");
 			$("#selectedOrgNodesName").text("");	
+			$("#innerID").undelegate();
+			$("#innerID").unbind();
 			createMultiNodeSelectedTree (orgTreeHierarchy);
 			
 		}
