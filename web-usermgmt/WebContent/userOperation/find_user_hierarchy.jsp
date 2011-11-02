@@ -34,13 +34,13 @@
 		  
 		   	<tr width="100%" >
 		       <td align="right" colspan="12" style="padding: 0 0 5px 8px; clear:both">
-		       <div id="displayMessageMain" style="display:none; width:50%; float:left; text-align:left; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 0px solid #A6C9E2;">
-					<div id="titleMain" style="color:red;font-size:12px; font-weight:bold;"></div>
-					<div id= "contentMain">	</div>
-					<div id= "messageMain">	</div>
+		       <div id="displayMessageMain" style="display:none; width:50%; float:left; text-align:left; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 0px solid #A6C9E2;">
+					<div id= "contentMain" style="padding-top: 5px;">	</div>
 				</div>
-		       	<div id="changePW" style="display:none">
-                	<a href="#" id="changePWButton" onclick="changePwdForUser(this);" class="rounded {transparent} button">Change Password</a>      
+		       	<div id="changePW" style="display:none;">
+		       		<div id="cpw">
+                		<a href="#" id="changePWButton" onclick="changePwdForUser(this);" class="rounded {transparent} button">Change Password</a>
+                	</div>      
                 </div>          		     	        
 	     	   </td>
 		   	</tr>
@@ -80,7 +80,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p>You have not saved this user. Are you sure you want to cancel?</p>
+			<p>You have changed the user record. Do you want to save changes before leaving this page?</p>
 			<br/>
 			</td>
 		</tr>
@@ -104,7 +104,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p>You have not saved this user. Are you sure you want to move?</p>
+			<p>You have changed the user record. Do you want to save changes before leaving this page?</p>
 			<br/>
 			</td>
 		</tr>
