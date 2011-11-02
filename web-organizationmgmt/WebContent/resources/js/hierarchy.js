@@ -583,7 +583,9 @@ function openTreeNodes(orgNodeId) {
 												$.unblockUI();  
 
 													$("#innerID").jstree("create",assignedElement, "inside",  {"data":data.orgNodeName,
-														"attr" : {"id" : data.orgNodeId}});
+														"attr" : {"id" : data.orgNodeId, "categoryid" : data.categoryLevel}});
+														
+														hideCheckBox();
 
 													closePopUp('addEditOrganizationDetail');
 													setMessageMain("Add Organization", "Organization was added successfully.", "", "");

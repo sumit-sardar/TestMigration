@@ -519,6 +519,7 @@ public class OrganizationManagementImpl implements OrganizationManagement
             
             selectedOrgNode.setOrgNodeCategoryName(orgNodeCategories.getCategoryName());
             selectedOrgNode.setOrgNodeCategoryId(orgNodeCategories.getOrgNodeCategoryId());
+            selectedOrgNode.setCategoryLevel(orgNodeCategories.getCategoryLevel()); // Added for new TAS UI
                       
             //get immediate parent by passing orgNodeId
             topNode = orgNode.getParentOrgNode(orgNodeId);
