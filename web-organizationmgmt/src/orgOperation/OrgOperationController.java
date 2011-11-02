@@ -200,6 +200,7 @@ public class OrgOperationController extends PageFlowController {
 			ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
 			UserNodeData associateNode = OrganizationPathListUtils.populateAssociateNode(this.userName,this.userManagement);
 			ArrayList<Organization> selectedList  = OrganizationPathListUtils.buildassoOrgNodehierarchyList(associateNode);
+			Integer leafNodeCategoryId = OrganizationPathListUtils.getLeafNodeCategoryId(this.userName,this.customerId, this.userManagement);
 			Collections.sort(selectedList, new OrgnizationComparator());
 			ArrayList <Integer> orgIDList = new ArrayList <Integer>();
 			ArrayList<TreeData> data = new ArrayList<TreeData>();
@@ -239,6 +240,7 @@ public class OrgOperationController extends PageFlowController {
 
 			Gson gson = new Gson();
 			baseTree.setData(data);
+			baseTree.setLeafNodeCategoryId(leafNodeCategoryId);
 			Collections.sort(baseTree.getData(), new Comparator<TreeData>(){
 
 				public int compare(TreeData t1, TreeData t2) {

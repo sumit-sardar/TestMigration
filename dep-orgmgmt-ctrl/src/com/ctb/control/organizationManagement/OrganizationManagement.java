@@ -123,5 +123,7 @@ public interface OrganizationManagement
      */
     
     com.ctb.bean.testAdmin.NodeData getOrgNodesForParentIncludingParentName(java.lang.String userName, java.lang.Integer orgNodeId) throws com.ctb.exception.CTBBusinessException;
+    
+    java.lang.Integer getLeafNodeCategoryId(String userName, Integer customerId) throws com.ctb.exception.CTBBusinessException;
 
 } 

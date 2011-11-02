@@ -17,6 +17,8 @@ var isAddOrganization = true;
 var defaultParent = "<font color=\"gray\">None selected. Use the control on the right to select.</font>";
 var defaultParentIE = "<FONT color=gray>None selected. Use the control on the right to select.</FONT>";
 var isLasLinkCustomer = false;
+var assignedElement = "";
+var leafNodeCategoryId;
 
 $(document).bind('keydown', function(event) {
 		
@@ -47,6 +49,7 @@ function populateTree() {
 		success:	function(data, textStatus, XMLHttpRequest){	
 						$.unblockUI(); 
 						orgTreeHierarchy = data;
+						leafNodeCategoryId = data.leafNodeCategoryId;
 						createSingleNodeSelectedTree (orgTreeHierarchy);
 						$("#searchheader").css("visibility","visible");	
 						$("#orgNodeHierarchy").css("visibility","visible");						
@@ -84,7 +87,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				"dots" : false,
 				"icons" : false
 			},  
-				"plugins" : [ "themes", "json_data", "ui"]  
+				"plugins" : [ "themes", "json_data", "ui", "crrm"]  
 				
 	    });
 	    
@@ -129,8 +132,9 @@ var styleClass;
 			"icons" : false
 			},         	
          	
-		"plugins" : [ "themes", "json_data","ui","checkbox"]
+		"plugins" : [ "themes", "json_data","ui","checkbox","crrm"]
     }).bind("open_node.jstree", function (e, data){
+    hideCheckBox();
          isTreeExpandIconClicked = true;
     	 $(this).find("li").each(function(i, element) { 
     		 var childOrgId = $(element).attr("id");
@@ -167,15 +171,20 @@ var styleClass;
     		 function(e) {
     				styleClass = $(this.parentNode).attr('class');
     				var element = this.parentNode;
+    				var orgcategorylevel = $(element).attr("categoryid");
 					if(styleClass.indexOf("unchecked") > 0){
-					$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
+						$('#innerID').jstree('uncheck_all');
+						$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
 					}else {
-					$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
+						$(this.parentNode).removeClass("jstree-checked").addClass("jstree-unchecked");
 					}
 					
 					var isChecked = $(element).hasClass("jstree-checked");
-    			
-					updateOrganizationAndLayer(element,isChecked);
+					
+					if(orgcategorylevel != leafNodeCategoryId) {
+						updateOrganizationAndLayer(element,isChecked);							
+					} 
+						
 			   	 }
 			  );
     
@@ -200,6 +209,7 @@ var styleClass;
 		categoryIds=[];
 		var currentlySelectedNode ="";
 				assignedOrgNodeIds = "";
+				assignedElement = "";
 				$("#innerID").find(".jstree-checked").each(function(i, element){
 					
 			
@@ -209,6 +219,7 @@ var styleClass;
 			
 				    		if(assignedOrgNodeIds=="") {
 								assignedOrgNodeIds = $(element).attr("id");
+								assignedElement = element;
 							} 
 			    		
 					});
@@ -484,7 +495,9 @@ function openTreeNodes(orgNodeId) {
 		if(isLasLinkCustomer == true || isLasLinkCustomer == "true")
 			$("#mdrNumber").val("");
 		assignedOrgNodeIds = "";
-		populateTreeSelect();
+		//populateTreeSelect();
+		$('#innerID').jstree('uncheck_all');
+		$('#innerID').jstree('close_all', -1);
 	}
 	
 	function openConfirmationPopup(args){
@@ -569,11 +582,15 @@ function openTreeNodes(orgNodeId) {
 								success:	function(data, textStatus, XMLHttpRequest){	
 												$.unblockUI();  
 
+													$("#innerID").jstree("create",assignedElement, "inside",  {"data":data.orgNodeName,
+														"attr" : {"id" : data.orgNodeId}});
+
 													closePopUp('addEditOrganizationDetail');
 													setMessageMain("Add Organization", "Organization was added successfully.", "", "");
 													
 													document.getElementById('displayMessageMain').style.display = "block";	
 													assignedOrgNodeIds = "";
+													assignedElement = "";
 
 																								
 											},
@@ -586,4 +603,14 @@ function openTreeNodes(orgNodeId) {
 											}
 						}
 					);
+	}
+	
+	function hideCheckBox(){
+		$("#innerID li").each(function() {
+    			var orgcategorylevel = $(this).attr("categoryid");
+    			if(orgcategorylevel == leafNodeCategoryId) {
+	    		  $("a ins.jstree-checkbox", this).first().hide();
+	    		}
+	  	});
+	
 	}

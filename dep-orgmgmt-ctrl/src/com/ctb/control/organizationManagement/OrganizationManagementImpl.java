@@ -1050,4 +1050,18 @@ public class OrganizationManagementImpl implements OrganizationManagement
              throw dataNotFoundException;
          }
      }
+     
+     public Integer getLeafNodeCategoryId(String userName, Integer customerId) throws CTBBusinessException
+ 	{
+ 		Integer leafNodeCategoryId = new Integer(0);
+ 		try {
+ 			leafNodeCategoryId = orgNode.getLeafNodeCategoryId(customerId);
+ 		}
+ 		catch (SQLException se) {
+ 			OrgDataNotFoundException tee = new OrgDataNotFoundException("OrganizationManagement: getLeafNodeCategoryId: " + se.getMessage());
+ 			tee.setStackTrace(se.getStackTrace());
+ 			throw tee;
+ 		}
+ 		return leafNodeCategoryId;
+ 	}
 } 

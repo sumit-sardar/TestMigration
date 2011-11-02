@@ -736,6 +736,17 @@ public class OrganizationPathListUtils
         return organizationList;
     }
     
- 
+    /**
+     * getOrganizationLeafNode
+     */    
+    public static Integer getLeafNodeCategoryId(String userName, Integer customerId,
+    											UserManagement userManagement) throws CTBBusinessException {    
+    	Integer leafNodeCategoryId = new Integer(0);
+       
+    	leafNodeCategoryId = userManagement.getLeafNodeCategoryId(userName, customerId);
+    	
+      
+        return leafNodeCategoryId;
+    }
     
 } 
