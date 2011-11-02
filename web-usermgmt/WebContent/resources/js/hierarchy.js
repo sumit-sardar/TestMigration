@@ -885,12 +885,14 @@ function fillselectedOrgNode( elementId, orgList) {
 												var successFlag = data.successFlag;
 												if(successFlag) {
 													closePopUp('addEditUserDetail');
-													setMessageMain(data.title, data.content, data.type, "");
-													document.getElementById('displayMessageMain').style.display = "block";	
+													//setMessageMain(data.title, data.content, data.type, "");
+													$("#contentMain").text(data.content);
+													document.getElementById('displayMessageMain').style.display = "block";
 													assignedOrgNodeIds = "";
         										}
         										else{
-        											setMessage(data.title, data.content, data.type, "");
+        											//setMessage(data.title, data.content, data.type, "");     
+        											$("#contentMain").text(data.content);   											
         											document.getElementById('displayMessage').style.display = "block";	
         											
         										}
