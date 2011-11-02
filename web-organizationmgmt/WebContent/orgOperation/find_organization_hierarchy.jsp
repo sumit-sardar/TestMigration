@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
-<br/>   
+  
 <span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">&nbsp;&nbsp;&nbsp;Open the Organization Search to view the organization hierarchy. Select an organization to view,  edit, delete, or add a suborganization.</span>
 <br/>
 <br>
