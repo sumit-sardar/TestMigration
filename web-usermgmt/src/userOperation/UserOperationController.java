@@ -5,14 +5,13 @@ import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import manageUser.ManageUserController.ManageUserForm;
 
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
@@ -47,7 +46,6 @@ import com.ctb.bean.testAdmin.USState;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNodeData;
-import com.ctb.control.db.Users;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.userManagement.CTBConstants;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
@@ -55,7 +53,6 @@ import com.google.gson.Gson;
 
 import dto.Message;
 import dto.PasswordInformation;
-import dto.PathNode;
 import dto.UserProfileInformation;
 
 
@@ -422,6 +419,50 @@ public class UserOperationController extends PageFlowController
 			}
 			return null;
 		}
+	 
+	 /**
+	  * This method is responsible for checking the selected user is editable or not.
+	  * @param selectedUserOrgNodes
+	  * @param loginUserOrgNodes
+	  * @param selectedUserRoleId
+	  * @param loginUserRoleId
+	  * @return boolean
+	  */
+	 
+	
+	 private boolean isUserEditable (List<OrganizationNode> selectedUserOrgNodes, Node[] loginUserOrgNodes, 
+			 Integer selectedUserRoleId, Integer loginUserRoleId) {
+		 
+		 if (selectedUserRoleId.intValue() == loginUserRoleId.intValue()) {
+			 
+			 if ( !verifyAdminCreationPermission
+	                    (loginUserOrgNodes, selectedUserOrgNodes) ) {
+	                return false;
+	            }  
+		 }
+		 
+		 return true;
+	 }
+	 
+	/**
+	 * This method is responsible to convert <code>Node[]</code> to <code>List<OrganizationNode></code>
+	 * @param organizationNodes
+	 * @return <code>List<OrganizationNode></code>
+	 */
+	 
+	 private List<OrganizationNode> convertNodeArrToOrgList (Node[] organizationNodes) {
+		 
+		 List<OrganizationNode> selectedUserOrgNodes = new ArrayList <OrganizationNode>();
+		 for (Node node : organizationNodes) {
+			 OrganizationNode orgNode = new OrganizationNode();
+			 orgNode.setOrgNodeId(node.getOrgNodeId());
+			 orgNode.setCustomerId((Integer)getSession().getAttribute("customerId"));
+			 selectedUserOrgNodes.add(orgNode);
+			
+		}
+		 
+		 return selectedUserOrgNodes;
+	 }
 
 	 /*Added on 24.10.2011
 	  * for editUserDetails functionality
@@ -446,6 +487,13 @@ public class UserOperationController extends PageFlowController
 			System.out.println("userName ::"+this.userName);
 			try{
 				userProfileData = UserSearchUtils.getUserProfileInformation(this.userManagement, this.userName, selectedUserName);
+				if (!isUserEditable(convertNodeArrToOrgList(userProfileData.getOrganizationNodes()),
+						this.user.getOrganizationNodes(),Integer.valueOf(userProfileData.getRoleId()),
+						this.user.getRole().getRoleId())) {
+					
+					userProfileData.setViewMode(Boolean.TRUE);
+				}
+				
 			}catch (CTBBusinessException e) {
 				e.printStackTrace();
 			}
@@ -545,6 +593,7 @@ public class UserOperationController extends PageFlowController
 			String assignedOrgNodeIds = getRequest().getParameter("assignedOrgNodeIds");
 			String[] assignedOrgNodeId = assignedOrgNodeIds.split(",");
 			ArrayList<OrganizationNode> selectedOrgNodes = new ArrayList<OrganizationNode>();
+			
 			try {
 				
 				for (int i = assignedOrgNodeId.length - 1; i >= 0; i--) {
@@ -1328,7 +1377,7 @@ public class UserOperationController extends PageFlowController
 	        if ( user.getRole().getRoleId().intValue() == Integer.parseInt(form.getRoleId()) &&
 	        		user.getUserId().intValue() != form.getUserId().intValue()){
 	        	if ( !verifyAdminCreationPermission
-	                    (form, user.getOrganizationNodes(), selectedOrgNodes) ) {
+	                    (user.getOrganizationNodes(), selectedOrgNodes) ) {
 	                return false;
 	            }  
 	        }
@@ -1339,7 +1388,7 @@ public class UserOperationController extends PageFlowController
 	        return true;
 	    }
 	 
-	 public static boolean verifyAdminCreationPermission (UserProfileInformation form, Node []loginUserNodes, List<OrganizationNode> selectedOrgNodes)
+	 public static boolean verifyAdminCreationPermission ( Node []loginUserNodes, List<OrganizationNode> selectedOrgNodes)
 	    {
 	        String requiredFields = "";
 	        for (int i = 0; i < loginUserNodes.length; i++) {

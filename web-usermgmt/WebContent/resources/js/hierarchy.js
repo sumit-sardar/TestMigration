@@ -21,6 +21,7 @@ var organizationNodes = [];
 var isValueChanged = false;
 var isTreeExpandIconClicked = false;
 var isAction = true;
+var isViewMod = false;
 
 $(document).bind('keydown', function(event) {
 		
@@ -577,54 +578,60 @@ function userDetailEdit(){
 		type:		'POST',
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){	
-						//alert('got json data ::'+data);
-						$.unblockUI();
-						//UIBlock();
-						//overlayblockUI(); 
-						organizationNodes = data.organizationNodes;
-						roleOptions = data.optionList.roleOptions;
-						//alert(roleOptions);
-						timeZoneOptions=data.optionList.timeZoneOptions;
-						stateOptions=data.optionList.stateOptions;
-						//alert('check1');
-						fillDropDown("roleOptions", roleOptions);
-						fillDropDown("timeZoneOptions", timeZoneOptions);
-						fillDropDown("stateOptions", stateOptions);
-						//alert(data.userName);
-						$("#userFirstName").val(data.firstName);
-						//alert(data.firstName);
-						$("#userMiddleName").val(data.middleName);
-						$("#userLastName").val(data.lastName);
-						$("#userEmail").val(data.email);
-						$("#timeZoneOptions").val(data.timeZone);
-						//alert(data.timeZone);
-						//$("#roleOptions").val(data.role);
-						$("#roleOptions").val(data.roleId);
-						//alert(data.roleId);
-						//alert(data.role);
-						//$("").val(data.);
-						$("#addressLine1").val(data.userContact.addressLine1);
-						$("#addressLine2").val(data.userContact.addressLine2);
-						$("#city").val(data.userContact.city);
-						$("#stateOptions").val(data.userContact.state);
-						$("#zipCode1").val(data.userContact.zipCode1);
-						$("#zipCode2").val(data.userContact.zipCode2);
-						$("#primaryPhone1").val(data.userContact.primaryPhone1);
-						$("#primaryPhone2").val(data.userContact.primaryPhone2);
-						$("#primaryPhone3").val(data.userContact.primaryPhone3);
-						$("#primaryPhone4").val(data.userContact.primaryPhone4);
-						$("#secondaryPhone1").val(data.userContact.secondaryPhone1);
-						$("#secondaryPhone2").val(data.userContact.secondaryPhone2);
-						$("#secondaryPhone3").val(data.userContact.secondaryPhone3);
-						$("#secondaryPhone4").val(data.userContact.secondaryPhone4);
-						$("#faxNumber1").val(data.userContact.faxNumber1);
-						$("#faxNumber2").val(data.userContact.faxNumber2);
-						$("#faxNumber3").val(data.userContact.faxNumber3);
-						
-						fillselectedOrgNode("selectedOrgNodesName", data.organizationNodes);
-						//alert('check3');
-						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
 		
+						//alert('data.viewMode::'+data.viewMode);
+						$.unblockUI();
+						if (data.viewMode) {
+							viewEnable();
+							viewUser (data);
+							isViewMod = true;
+						} else {
+							isViewMod = false;
+							editEnable();
+							organizationNodes = data.organizationNodes;
+							roleOptions = data.optionList.roleOptions;
+							//alert(roleOptions);
+							timeZoneOptions=data.optionList.timeZoneOptions;
+							stateOptions=data.optionList.stateOptions;
+							//alert('check1');
+							fillDropDown("roleOptions", roleOptions);
+							fillDropDown("timeZoneOptions", timeZoneOptions);
+							fillDropDown("stateOptions", stateOptions);
+							//alert(data.userName);
+							$("#userFirstName").val(data.firstName);
+							//alert(data.firstName);
+							$("#userMiddleName").val(data.middleName);
+							$("#userLastName").val(data.lastName);
+							$("#userEmail").val(data.email);
+							$("#timeZoneOptions").val(data.timeZone);
+							//alert(data.timeZone);
+							//$("#roleOptions").val(data.role);
+							$("#roleOptions").val(data.roleId);
+							$("#userExternalId").val(data.extPin1);
+							//alert(data.roleId);
+							//alert(data.role);
+							//$("").val(data.);
+							$("#addressLine1").val(data.userContact.addressLine1);
+							$("#addressLine2").val(data.userContact.addressLine2);
+							$("#city").val(data.userContact.city);
+							$("#stateOptions").val(data.userContact.state);
+							$("#zipCode1").val(data.userContact.zipCode1);
+							$("#zipCode2").val(data.userContact.zipCode2);
+							$("#primaryPhone1").val(data.userContact.primaryPhone1);
+							$("#primaryPhone2").val(data.userContact.primaryPhone2);
+							$("#primaryPhone3").val(data.userContact.primaryPhone3);
+							$("#primaryPhone4").val(data.userContact.primaryPhone4);
+							$("#secondaryPhone1").val(data.userContact.secondaryPhone1);
+							$("#secondaryPhone2").val(data.userContact.secondaryPhone2);
+							$("#secondaryPhone3").val(data.userContact.secondaryPhone3);
+							$("#secondaryPhone4").val(data.userContact.secondaryPhone4);
+							$("#faxNumber1").val(data.userContact.faxNumber1);
+							$("#faxNumber2").val(data.userContact.faxNumber2);
+							$("#faxNumber3").val(data.userContact.faxNumber3);
+							
+							fillselectedOrgNode("selectedOrgNodesName", data.organizationNodes);
+							
+						}
 		
 			// for enable next and prev			
 			var pageDataIds = $("#list2").jqGrid('getDataIDs'); 
@@ -669,7 +676,130 @@ function userDetailEdit(){
 		
 	});
 	
-	}//end of EditUserDetail()
+	}
+	
+	function viewEnable () {
+		$("#user_information_acco").hide();
+		$("#user_information_view_acco").show();
+		$("#userAccordion").accordion( "activate" , 1 );	
+		$("#contact_information_acco").hide();
+		$("#contact_information_view_acco").show();		
+		$("#saveBtn").hide();
+		$("#cancelBtn").css({'padding-right': '20px'});
+					
+	}
+	
+	function editEnable () {
+	
+		$("#user_information_acco").show();
+		$("#userAccordion").accordion( "activate" , 0 );
+		$("#user_information_view_acco").hide();
+		$("#contact_information_acco").show();
+		$("#contact_information_view_acco").hide();
+		$("#saveBtn").show();
+		$("#cancelBtn").css({'padding-right': '300px'});
+		
+	}
+	
+	function viewUser (data) {
+	
+		$("#userFirstNameView").text(data.firstName);
+		$("#userMiddleNameView").text(data.middleName);
+		$("#userLastNameView").text(data.lastName);
+		$("#userEmailView").text(data.email);
+		$("#timeZoneOptionsView").text(data.timeZone);
+		$("#roleOptionsView").text(data.role);
+		$("#userExternalIdView").text(data.extPin1);
+		$("#selectedOrgNodesNameView").text(data.organizationNodes);
+		$("#addressLine1View").text(data.userContact.addressLine1);
+		$("#addressLine2View").text(data.userContact.addressLine2);
+		$("#cityView").text(data.userContact.city);
+		$("#stateOptionsView").text(data.userContact.stateDesc);
+		var zipCode1 = data.userContact.zipCode1;
+		var zipCode2 = data.userContact.zipCode2;
+		$("#zipCodeView").text(formatZipCode (zipCode1, zipCode2));
+		var primaryPhone1 = data.userContact.primaryPhone1;
+		var primaryPhone2 = data.userContact.primaryPhone2;
+		var primaryPhone3 = data.userContact.primaryPhone3;
+		var primaryPhone4 = data.userContact.primaryPhone4;
+		$("#primaryPhoneView").text(formatPhoneNumber (primaryPhone1, primaryPhone2, primaryPhone3, primaryPhone4));
+		var secondaryPhone1 = data.userContact.secondaryPhone1;
+		var secondaryPhone2 = data.userContact.secondaryPhone2;
+		var secondaryPhone3 = data.userContact.secondaryPhone3;
+		var secondaryPhone4 = data.userContact.secondaryPhone4;
+		$("#secondaryPhoneView").text(formatPhoneNumber (secondaryPhone1, secondaryPhone2, secondaryPhone3, secondaryPhone4))
+		var faxNumber1 = data.userContact.faxNumber1;
+		var faxNumber2 = data.userContact.faxNumber2;
+		var faxNumber3 = data.userContact.faxNumber3;
+		$("#faxNumberView").text(formatFaxNumber(faxNumber1,faxNumber2,faxNumber3));
+		
+		$("#selectedOrgNodesNameView").html(data.orgNodeNamesStr);
+	
+	}
+	
+	/**
+		This method is responsible to format the ZipCode.
+	*/
+	
+	function formatZipCode (zipCode1, zipCode2) {
+	
+		var zipCode = "";
+		if (zipCode1 != "") {
+			
+			zipCode = zipCode1;
+			
+			if (zipCode2 != "") {
+			
+				zipCode = zipCode+"-"+zipCode2;
+			}
+						
+		}
+		return zipCode;
+	}
+	
+	/**
+	
+		This method is responsible to format the PhoneNumber.
+	*/
+	
+	
+	function formatPhoneNumber (phone1, phone2, phone3, phone4) {
+	
+		var phoneNumber = "";
+		
+		if (phone1 != "") {
+		
+			phoneNumber = "("+phone1+")"+phone2+"-"+phone3;
+			
+			if (phone4 != "") {
+			
+				phoneNumber = phoneNumber+" Ext: "+phone4;
+			}		
+		}
+	
+		return phoneNumber;
+	}
+	
+	/**
+	
+		This method is responsible to format the FaxNumber
+	
+	*/
+	
+	function formatFaxNumber (fax1, fax2, fax3) {
+	
+		var faxNumber = "";
+		
+		if (fax1 != "") {
+		
+			faxNumber = "("+fax1+")"+fax2+"-"+fax3;
+		} 
+	
+		return faxNumber;
+	}
+	
+	
+	//end of EditUserDetail()
 	
 	/*function getUserNameJson(id){
 	var str = userList;
@@ -734,6 +864,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	function AddUserDetail(){
 	isPopUp	= true;
 	isAddUser = true;//added on 25.10.2011
+	editEnable();
 	/*$("#preButton").css("visibility","hidden");	
 	$("#nextButton").css("visibility","hidden");*/	
 	document.getElementById('displayMessage').style.display = "none";	
@@ -762,7 +893,7 @@ function fillselectedOrgNode( elementId, orgList) {
 						fillDropDown("roleOptions", roleOptions);
 						fillDropDown("timeZoneOptions", timeZoneOptions);
 						fillDropDown("stateOptions", stateOptions);
-						
+											
 						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
 						$("#addEditUserDetail").dialog({  
 								title:"Add User",  
@@ -828,6 +959,10 @@ function fillselectedOrgNode( elementId, orgList) {
 				$("#User_Information").css("overflow",'auto');
 				$("#Contact_Information").css("height",'300px');
 				$("#Contact_Information").css("overflow",'auto');
+				$("#User_Information_view").css("height",'300px');
+				$("#User_Information_view").css("overflow",'auto');
+				$("#Contact_Information_view").css("height",'300px');
+				$("#Contact_Information_view").css("overflow",'auto');
 				if(isAddUser) {
 					$("#preButton").css("visibility","hidden");	
 					$("#nextButton").css("visibility","hidden");
@@ -891,8 +1026,7 @@ function fillselectedOrgNode( elementId, orgList) {
 													assignedOrgNodeIds = "";
         										}
         										else{
-        											//setMessage(data.title, data.content, data.type, "");     
-        											$("#contentMain").text(data.content);   											
+        											setMessage(data.title, data.content, data.type, "");     
         											document.getElementById('displayMessage').style.display = "block";	
         											
         										}
@@ -1009,7 +1143,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	function closePopUp(dailogId){
 		if(dailogId == 'addEditUserDetail') {
-			$('#userAccordion').accordion('activate', 0);
+			$('#userAccordion').accordion('activate', 0);			
 			$("#User_Information").scrollTop(0);
 			$("#Contact_Information").scrollTop(0);
 			$('#Contact_Information').hide();
@@ -1323,6 +1457,11 @@ function openConfirmationPopup(args){
 
 
 function isEditUserDataChanged(){
+
+			if(isViewMod){
+				return  false;
+			}
+
 		var newUserValue = $("#addEditUserDetail *").serializeArray(); 
 		isValueChanged = false;	
 		

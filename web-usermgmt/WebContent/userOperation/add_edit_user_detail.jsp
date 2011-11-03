@@ -34,7 +34,7 @@
 	<br>
 	<div id="userAccordion" style="width:99.5%;">
 			
-			<div>
+			<div id="user_information_acco">
 				<h3><a href="#">User Information</a></h3>
 				
 					<div id="User_Information" style="background-color: #FFFFFF;">
@@ -135,9 +135,73 @@
 
 
 					</div>
+				</div>
+				
+				<div id="user_information_view_acco" style="display: none;" >
+				<h3><a href="#">User Information</a></h3>
+					
+					<div id="User_Information_view" style="background-color: #FFFFFF;">
+					 	<table class="transparent">
+							<tbody>
+								<tr class="transparent">
+								 <td style ="vertical-align: top;">
+									<table class="transparent" width="350">
+										<tbody>
+											<tr class="transparent">
+												<td width="110" class="transparent alignRight">First Name:</td>
+												<td class="transparent"><label style="width: 200px;" id="userFirstNameView"></label></td>
+											</tr>
+											<tr class="transparent">
+												<td width="110" class="transparent alignRight">Middle Name:</td>
+												<td class="transparent"><label style="width: 200px;" id="userMiddleNameView"></label></td>
+											</tr>
+											<tr class="transparent">
+												<td width="110" class="transparent alignRight">Last Name:</td>
+												<td class="transparent"><label style="width: 200px;" id="userLastNameView"></label></td>
+											</tr>
+											<tr class="transparent">
+												<td width="110" class="transparent alignRight">Email:</td>
+												<td class="transparent"><label style="width: 200px;" id="userEmailView"></label></td>
+											</tr>
+										 </tbody>
+									 </table>
+								 </td>
+									
+								
+								 <td style ="vertical-align: top;">
+									 <table class="transparent" width="350">
+										 <tbody>
+											<tr class="transparent">
+												<td width="110" class="transparent alignRight">Time Zone:</td>
+												<td class="transparent"><label style="width: 200px;" id="timeZoneOptionsView"></label></td>
+											</tr>
+											<tr class="transparent">
+												<td width="110" class="transparent alignRight">Role:</td>
+												<td class="transparent"><label style="width: 200px;" id="roleOptionsView"></label></td>
+								
+											</tr>
+											<tr class="transparent">
+												<td nowrap="" width="110" class="transparent alignRight">External User Id:</td>
+												<td class="transparent"><label style="width: 200px;" id="userExternalIdView"></label></td>
+											</tr>
+										   	<tr style="display: table-row;" id="message" class="transparent">
+										   		<td width="110" class="transparent alignRight" style="vertical-align: top;">Organization:</td>
+												<td class="transparent-small" style="padding: 5px 5px 0 0">
+													<div id="selectedOrgNodesNameView" style="width:200px, padding-left: 4px"></div>
+												</td>
+											</tr>
+										  </tbody>
+									  </table>
+								 </td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					
 				
 			</div>
-			<div>
+			
+			<div id="contact_information_acco">
 				<h3><a href="#">Contact Information</a></h3>
 				<div id="Contact_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
 					<table class="transparent">
@@ -213,6 +277,65 @@
 				</div>
 			</div>
 			
+			<div id="contact_information_view_acco" style="display: none;" >
+				<h3><a href="#">Contact Information</a></h3>
+				
+				<div id="Contact_Information_View" style="overflow-y: scroll !important; overflow-x: hidden !important;">
+					<table class="transparent">
+						<tbody>
+						 <tr class="transparent">
+							 <td style ="vertical-align: top;">
+							 	<table>
+							 		<tbody>
+							 			<tr class="transparent">
+											<td nowrap="" width="110" class="transparent alignRight">Address Line 1:</td>
+											<td class="transparent"><label style="width: 200px;" id="addressLine1View"></label></td>
+										</tr>
+										<tr class="transparent">
+											<td nowrap="" width="110" class="transparent alignRight">Address Line 2:</td>
+											<td class="transparent"><label style="width: 200px;" id="addressLine2View"></label></td>
+										</tr>
+										<tr class="transparent">
+											<td nowrap="" width="110" class="transparent alignRight">City:</td>
+											<td class="transparent"><label style="width: 200px;" id="cityView"></label></td>
+										</tr>
+										<tr class="transparent">
+											<td width="110" class="transparent alignRight">State:</td>
+											<td class="transparent"><label style="width: 200px;" id="stateOptionsView"></label></td>
+										</tr>
+										<tr class="transparent">
+											<td width="110" class="transparent alignRight">Zip:</td>
+											<td class="transparent"><label style="width: 200px;" id="zipCodeView"></label></td>
+										</tr>
+							 		</tbody>
+							 	</table>
+							 </td>
+							 
+							  <td style ="vertical-align: top;">
+							  	<table>
+							  	<tbody>
+							  		<tr class="transparent">
+										<td width="110" class="transparent alignRight">Primary Phone:</td>
+										<td class="transparent"><label style="width: 200px;" id="primaryPhoneView"></label></td>
+									</tr>
+									<tr class="transparent">
+										<td width="110" class="transparent alignRight">Secondary Phone:</td>
+										<td class="transparent"><label style="width: 200px;" id="secondaryPhoneView"></label></td>
+									</tr>
+									<tr class="transparent">
+										<td width="110" class="transparent alignRight">Fax Number:</td>
+										<td class="transparent"><label style="width: 200px;" id="faxNumberView"></label></td>
+									</tr>
+							  	</tbody>
+							  	</table>
+							 </td>
+							 </tr>
+						</tbody>
+					</table>
+				</div>
+				
+			</div>
+			
 			
 			<div>
 	<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%">
@@ -227,12 +350,15 @@
 					class="ui-icon ui-icon-triangle-1-w"></span></a></td><td id="nextButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-right" id="nData"
 					href="javascript:nDataClick('Edit');"><span class="ui-icon ui-icon-triangle-1-e"></span></a></td>
 					<td>&nbsp;</td>
-				<td  width="100%">
+				<td  width="100%" style="clear: both">
 					<center>
-					<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:userDetailSubmit(); return false;" class="ui-widget-header" style="width:60px">
-					<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onCancel(); return false;" class="ui-widget-header" style="width:60px">
+						<div id="saveBtn" style="float: left; padding-left: 280px; margin-left: 0px; padding-right: 0px;">
+							<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:userDetailSubmit(); return false;" class="ui-widget-header" style="width:60px">
+						</div>
+						<div id="cancelBtn" >
+							<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onCancel(); return false;" class="ui-widget-header" style="width:60px">
+						</div>
 					</center>
-					<br>
 				</td>
 			</tr>
 			<tr class="binfo" style="display: none;">

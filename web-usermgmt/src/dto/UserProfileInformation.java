@@ -21,6 +21,7 @@ public class UserProfileInformation extends SanitizedFormField
 { 
     static final long serialVersionUID = 1L;
 
+    private Boolean viewMode = Boolean.FALSE;
     private Integer userId = new Integer(0);
     private String userName = "";
     private String loginId = "";
@@ -38,7 +39,7 @@ public class UserProfileInformation extends SanitizedFormField
     private PasswordInformation userPassword = new PasswordInformation();
     private Integer addressId = new Integer(0);
     private String actionPermission = PermissionsUtils.VIEW_ONLY_PERMISSION_TOKEN;
-    private String  orgNodeNamesStr;
+    private String  orgNodeNamesStr = "";
     private OptionList optionList;//added on 24.10.2011
     /**
      * ext_pin1 is added for DEX CR
@@ -183,8 +184,24 @@ public class UserProfileInformation extends SanitizedFormField
 
         return copied;       
     }
+   
+   
+   
     
-   	/**
+   	
+
+
+	public Boolean getViewMode() {
+		return viewMode;
+	}
+
+
+	public void setViewMode(Boolean viewMode) {
+		this.viewMode = viewMode;
+	}
+
+
+	/**
 	 * @return Returns the userId.
 	 */
 	public Integer getUserId() {
@@ -435,7 +452,7 @@ public class UserProfileInformation extends SanitizedFormField
                 Node node = this.organizationNodes[i];
                 str = str + node.getOrgNodeName();
                 if (i < (this.organizationNodes.length - 1))
-                    str = str + ", " + "<br/>";
+                    str = str + ", ";
             }
         }
         return str;
