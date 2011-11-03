@@ -154,7 +154,7 @@ set JAVA_OPTS=%JAVA_OPTS% %LOGGING_CONFIG%
 if not "%LOGGING_MANAGER%" == "" goto noJuliManager
 set LOGGING_MANAGER=-Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
 :noJuliManager
-set JAVA_OPTS=-Xms1024m -Xmx1024m %JAVA_OPTS% %LOGGING_MANAGER%
+set JAVA_OPTS=-Xms1024m -Xmx1024m -Dtangosol.coherence.management=all -Dtangosol.coherence.management.remote=true -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=22113 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -Dtangosol.coherence.cluster=tms -Dtangosol.coherence.site=LOCAL -Dtangosol.coherence.machine=1 -Dtangosol.coherence.member=1 -Dtangosol.coherence.localhost=localhost -Dtangosol.coherence.localport=23101 -Dtangosol.coherence.clusteraddress=237.0.0.1 -Dtangosol.coherence.clusterport=23198 -Dtangosol.coherence.ttl=1 %JAVA_OPTS% %LOGGING_MANAGER%
 
 rem ----- Execute The Requested Command ---------------------------------------
 
