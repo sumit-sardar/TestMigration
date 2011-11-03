@@ -580,15 +580,21 @@ function openTreeNodes(orgNodeId) {
 								data:		param,
 								dataType:	'json',
 								success:	function(data, textStatus, XMLHttpRequest){	
-												$.unblockUI();  
+												 var parentElement =  assignedElement;
 
-													$("#innerID").jstree("create",assignedElement, "inside",  {"data":data.orgNodeName,
+													$("#innerID").jstree("create_node",assignedElement, "inside",  {"data":data.orgNodeName,
 														"attr" : {"id" : data.orgNodeId, "categoryid" : data.categoryLevel}});
 														
-														hideCheckBox();
-
+														if(data.orgcategorylevel == leafNodeCategoryId) {
+												    		  assignedElement.first().hide();
+												    	}
+														
+													$.unblockUI();
 													closePopUp('addEditOrganizationDetail');
 													setMessageMain("Add Organization", "Organization was added successfully.", "", "");
+													
+												//	$("#orgNodeHierarchy").jstree("create",$("#"+parentElement.id), "inside",  {"data":data.orgNodeName,
+												//		"attr" : {"id" : data.orgNodeId, "categoryid" : data.categoryLevel}});
 													
 													document.getElementById('displayMessageMain').style.display = "block";	
 													assignedOrgNodeIds = "";
