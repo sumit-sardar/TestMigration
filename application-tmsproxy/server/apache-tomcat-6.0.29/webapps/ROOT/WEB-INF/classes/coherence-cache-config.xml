@@ -61,7 +61,7 @@
 		      </init-params>
 		    </class-scheme>
 		  </cachestore-scheme>
-		  <write-delay>5s</write-delay>
+		  <write-delay>1ms</write-delay>
 		</read-write-backing-map-scheme>
         <!--        Default Distributed caching scheme.        -->
         <distributed-scheme>            

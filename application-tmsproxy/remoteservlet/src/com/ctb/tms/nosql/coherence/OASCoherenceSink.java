@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
@@ -18,6 +21,7 @@ import com.ctb.tms.nosql.OASNoSQLSink;
 import com.ctb.tms.web.servlet.TMSServlet;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
+import com.tangosol.util.Filter;
 
 public class OASCoherenceSink implements OASNoSQLSink {
 
@@ -115,6 +119,17 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	public void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException {
 		String key = testRosterId + ":" + mseq;
 		responseCache.remove(key);
+	}
+	
+	public void deleteAllItemResponses(String testRosterId) throws IOException {
+		String key1 = testRosterId;
+		String key2 = String.valueOf((Integer.parseInt(testRosterId) + 1));
+		Filter filter = new com.tangosol.util.filter.BetweenFilter("getLsid", key1, key2); 
+		Set setKeys = responseCache.keySet(filter); 
+		Iterator it = setKeys.iterator();
+		while(it.hasNext()) {
+			responseCache.remove(it.next());
+		}
 	}
 	
 	public void deleteAllManifests(String testRosterId) throws XmlException, IOException, ClassNotFoundException {

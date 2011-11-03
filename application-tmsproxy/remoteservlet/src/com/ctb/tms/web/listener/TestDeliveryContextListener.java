@@ -124,10 +124,9 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						String mapKey = (String)rosterMap.get(key);
 						if(mapKey == null || !creds[i].isTmsUpdate()) {
 							if (mapKey != null && !creds[i].isTmsUpdate()) {
-								RosterData rosterData = oasSource.getRosterData(creds[i]);
-								if(rosterData != null && rosterData.getAuthData() != null) {
-									oasSink.deleteAllManifests(String.valueOf(rosterData.getAuthData().getTestRosterId()));
-								}
+								String testRosterId = creds[i].getTestRosterId();
+								oasSink.deleteAllManifests(testRosterId);
+								oasSink.deleteAllItemResponses(testRosterId);
 								oasSink.deleteRosterData(creds[i]);
 								logger.warn("*****  Manifest changed for " + key + ", removing old manifest data from cache");
 							}

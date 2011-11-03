@@ -4,8 +4,15 @@ public class StudentCredentials {
 	private String username;
 	private String password;
 	private String accesscode;
-	
+	private String testRosterId;
 	private boolean tmsUpdate;
+	
+	public String getTestRosterId() {
+		return testRosterId;
+	}
+	public void setTestRosterId(String testRosterId) {
+		this.testRosterId = testRosterId;
+	}
 	
 	public boolean isTmsUpdate() {
 		return tmsUpdate;
