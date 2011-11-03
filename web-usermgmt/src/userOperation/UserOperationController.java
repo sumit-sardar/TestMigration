@@ -508,7 +508,11 @@ public class UserOperationController extends PageFlowController
 //				User selectedUserDetails = this.getSelectedUserDetails(userName);
 				userProfileData.setOptionList(optionList);
 				System.out.println("check2");
-
+				if (userProfileData.getViewMode()) {
+					
+					userProfileData.setTimeZoneDesc(userProfileData.covertTimeCodeToTimeDesc
+							(userProfileData.getTimeZone()));
+				}
 				
 				try {
 					Gson gson = new Gson();

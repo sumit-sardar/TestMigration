@@ -483,6 +483,31 @@ public class UserProfileInformation extends SanitizedFormField
 	public void setOptionList(OptionList optionList) {
 		this.optionList = optionList;
 	}
+	
+	public String covertTimeCodeToTimeDesc (String timeZoneCode) {
+		
+		String timeDesc = "";
+		if (this.optionList != null) {
+			
+			String []timeZones = this.optionList.getTimeZoneOptions();
+			if (timeZones != null) {
+				
+				for (String timeZone : timeZones) {
+					
+					if (timeZone.contains(timeZoneCode)){
+						
+						timeDesc = timeZone.split("\\|")[1];
+					}
+					
+				}
+				
+			}
+			
+		}
+		
+		return timeDesc;
+	}
+	
 ////
     
 } 
