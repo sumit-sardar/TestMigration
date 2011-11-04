@@ -3,11 +3,12 @@ package com.ctb.tms.bean.login;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Manifest implements Serializable, CachePreLoadObject {
+import org.apache.log4j.Logger;
 
-	/**
-	 * 
-	 */
+import com.ctb.tms.web.servlet.TMSServlet;
+
+public class Manifest implements Serializable, CachePreLoadObject {
+	
 	private static final long serialVersionUID = 1L;
 	private ManifestData[] manifest;
 	
@@ -71,6 +72,10 @@ public class Manifest implements Serializable, CachePreLoadObject {
 		return rosterRestartNumber;
 	}
 	public void setRosterRestartNumber(int rosterRestartNumber) {
+		if(rosterRestartNumber < this.rosterRestartNumber) {
+			System.out.println("***** Manifest: setRosterRestartNumber: Restart number has been DECREMENTED!!!");
+			new Exception().printStackTrace();
+		}
 		this.rosterRestartNumber = rosterRestartNumber;
 	}
 	public Timestamp getRosterStartTime() {
@@ -89,6 +94,10 @@ public class Manifest implements Serializable, CachePreLoadObject {
 		return rosterLastMseq;
 	}
 	public void setRosterLastMseq(int rosterLastMseq) {
+		if(rosterLastMseq < this.rosterLastMseq) {
+			System.out.println("***** Manifest: setRosterLastMseq: Last mseq number has been DECREMENTED!!!");
+			new Exception().printStackTrace();
+		}
 		this.rosterLastMseq = rosterLastMseq;
 	}
 	public int getRosterCorrelationId() {
