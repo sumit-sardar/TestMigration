@@ -57,6 +57,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     			if(((CachePreLoadObject) value).doReplicate()) {
     				((CachePreLoadObject) value).setReplicate(false);
     				pushStore.store(entry);
+    				((CachePreLoadObject) value).setReplicate(true);
     				logger.info("Replicated cache entry to remote cluster");
     			} else {
     				((CachePreLoadObject) value).setReplicate(true);
@@ -79,6 +80,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     			if(((CachePreLoadObject) value).doReplicate()) {
     				((CachePreLoadObject) value).setReplicate(false);
     				pushStore.erase(entry);
+    				((CachePreLoadObject) value).setReplicate(true);
     				logger.info("Replicated cache erasure to remote cluster");
     			} else {
     				((CachePreLoadObject) value).setReplicate(true);
@@ -104,6 +106,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	    			if(((CachePreLoadObject) value).doReplicate()) {
 	    				((CachePreLoadObject) value).setReplicate(false);
 	    				pushStore.erase(entry);
+	    				((CachePreLoadObject) value).setReplicate(true);
 	    				logger.info("Replicated cache erasure to remote cluster");
 	    			} else {
 	    				((CachePreLoadObject) value).setReplicate(true);
@@ -143,6 +146,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	    			if(((CachePreLoadObject) value).doReplicate()) {
 	    				((CachePreLoadObject) value).setReplicate(false);
 	    				pushStore.store(entry);
+	    				((CachePreLoadObject) value).setReplicate(true);
 	    				logger.info("Replicated bulk cache entry to remote cluster");
 	    			} else {
 	    				((CachePreLoadObject) value).setReplicate(true);

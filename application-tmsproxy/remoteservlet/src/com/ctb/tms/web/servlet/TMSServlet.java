@@ -312,9 +312,9 @@ public class TMSServlet extends HttpServlet {
 			        saveResponse.getTsdArray(i).setStatus(Status.OK);
 				    
 		    		manifest = oasSource.getManifest(rosterId, accessCode);
-		    		/* if(manifest.getRosterCompletionStatus() == null || !"IP".equals(manifest.getRosterCompletionStatus())) {
+		    		if(manifest.getRosterCompletionStatus() == null || !"IP".equals(manifest.getRosterCompletionStatus())) {
 		    			manifest.setRosterCompletionStatus("IP");
-		    		} */
+		    		}
 		    		manifest.setRosterLastMseq(tsd.getMseq().intValue());
 			    	ManifestData[] manifestData = manifest.getManifest();	
 			    	int nextScoIndex = 0;
@@ -357,7 +357,7 @@ public class TMSServlet extends HttpServlet {
 			    	
 				    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
 				    	if(thisSco == null) throw new InvalidItemSetIdException();
-				    	//thisSco.setCompletionStatus("IP");
+				    	thisSco.setCompletionStatus("IP");
 				    	// response events
 				    	ItemResponseWrapper irw = new ItemResponseWrapper();
 				    	irw.setTsd(tsd);
@@ -369,8 +369,8 @@ public class TMSServlet extends HttpServlet {
 				    	LmsEventType.Enum eventType = tsd.getLevArray()[0].getE();
 		    			//logger.debug("***** Got subtest event type: " + eventType.toString());
 				    	if(tsd.getLevArray()[0].getE() == null || !LmsEventType.TERMINATED.equals(eventType)) {
-				    		//if(thisSco == null) throw new InvalidItemSetIdException();
-					    	//thisSco.setCompletionStatus("IP");
+				    		if(thisSco == null) throw new InvalidItemSetIdException();
+					    	thisSco.setCompletionStatus("IP");
 				    		try {
 					    		if(LmsEventType.LMS_INITIALIZE.equals(eventType)) {
 					    			thisSco.setCompletionStatus("IP");
@@ -437,8 +437,8 @@ public class TMSServlet extends HttpServlet {
 				    }
 				    
 				    if(tsd.getLsvArray() != null && tsd.getLsvArray().length > 0) {
-				    	//if(thisSco == null) throw new InvalidItemSetIdException();
-				    	//thisSco.setCompletionStatus("IP");
+				    	if(thisSco == null) throw new InvalidItemSetIdException();
+				    	thisSco.setCompletionStatus("IP");
 				    	// test events
 				    	Lsv[] lsva = tsd.getLsvArray();
 				    	// TODO (complete): capture subtest raw scores against manifest record, persist to backing store
@@ -505,12 +505,12 @@ public class TMSServlet extends HttpServlet {
 				    
 				    // always update manifest to override interrupter via write-behind if still receiving events
 		    		manifest.setManifest(manifestData);
-		    		/*if(manifest.getRosterCompletionStatus() == null) {
+		    		if(manifest.getRosterCompletionStatus() == null) {
 		    			manifest.setRosterCompletionStatus("IP");
 		    			if(thisSco.getCompletionStatus() == null) {
 		    				thisSco.setCompletionStatus("IP");
 		    			}
-		    		}*/
+		    		}
 			    }
 	        }
 		    
