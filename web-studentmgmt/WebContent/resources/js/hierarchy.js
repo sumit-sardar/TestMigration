@@ -212,11 +212,14 @@ function createMultiNodeSelectedTree(jsondata) {
 	   
 	   	$("#innerID").bind("loaded.jstree", 
 		 	function (event, data) {
-				$(this).find('li').find('.jstree-checkbox:first').hide();
+				//$(this).find('li').find('.jstree-checkbox:first').hide();
+				// change for defect 67219 to hide checkbox for nonleafnode on initial loading
+				hideCheckBox();  
+				
 			}
 		);
 
-    	hideCheckBox();
+    	//hideCheckBox();
     	
  		$("#innerID").delegate("li","click", 
  			function(e) {
