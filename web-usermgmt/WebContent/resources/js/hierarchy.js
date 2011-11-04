@@ -22,6 +22,7 @@ var isValueChanged = false;
 var isTreeExpandIconClicked = false;
 var isAction = true;
 var isViewMod = false;
+var titleViewEdit = "Edit User";
 
 $(document).bind('keydown', function(event) {
 		
@@ -585,8 +586,10 @@ function userDetailEdit(){
 							viewEnable();
 							viewUser (data);
 							isViewMod = true;
+							titleViewEdit = "View User";
 						} else {
 							isViewMod = false;
+							titleViewEdit = "Edit User";
 							editEnable();
 							organizationNodes = data.organizationNodes;
 							roleOptions = data.optionList.roleOptions;
@@ -647,7 +650,7 @@ function userDetailEdit(){
 			// for enable next and prev	
 			
 						$("#addEditUserDetail").dialog({  
-								title:"Edit User",  
+								title:titleViewEdit,  
 							 	resizable:false,
 							 	autoOpen: true,
 							 	width: '800px',
