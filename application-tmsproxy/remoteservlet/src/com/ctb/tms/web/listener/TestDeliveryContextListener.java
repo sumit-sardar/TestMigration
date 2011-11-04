@@ -124,26 +124,30 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						String mapKey = (String)rosterMap.get(key);
 						if(mapKey == null || !creds[i].isTmsUpdate()) {
 							if (mapKey != null && !creds[i].isTmsUpdate()) {
-								String testRosterId = creds[i].getTestRosterId();
-								oasSink.deleteAllManifests(testRosterId);
-								oasSink.deleteAllItemResponses(testRosterId);
-								oasSink.deleteRosterData(creds[i]);
+								// re-load cache directly from DB - roster was changed outside of TMS
 								logger.warn("*****  Manifest changed for " + key + ", removing old manifest data from cache");
-							}
-							RosterData rosterData = oasSource.getRosterData(creds[i]);
-							int testRosterId = rosterData.getAuthData().getTestRosterId();
-							if(rosterData != null && rosterData.getAuthData() != null) {
-								Manifest manifest = oasSource.getManifest(String.valueOf(testRosterId), creds[i].getAccesscode());
-								if(manifest != null) {
-									//manifest.setRandomDistractorSeed(rosterData.getAuthData().getRandomDistractorSeedNumber());
-									manifest.setReplicate(false);
-									oasSink.putManifest(String.valueOf(testRosterId), creds[i].getAccesscode(), manifest);
-									logger.debug("*****  Got roster data for " + key);
+								String testRosterId = creds[i].getTestRosterId();
+								RosterData rd = oasDBSource.getRosterData(conn, key);
+								Manifest [] md = oasDBSource.getManifest(conn, testRosterId);
+								//oasSink.deleteAllItemResponses(testRosterId);
+								oasSink.putRosterData(creds[i], rd);
+								oasSink.putAllManifests(testRosterId, md);
+							} else {
+								RosterData rosterData = oasSource.getRosterData(creds[i]);
+								int testRosterId = rosterData.getAuthData().getTestRosterId();
+								if(rosterData != null && rosterData.getAuthData() != null) {
+									Manifest manifest = oasSource.getManifest(String.valueOf(testRosterId), creds[i].getAccesscode());
+									if(manifest != null) {
+										//manifest.setRandomDistractorSeed(rosterData.getAuthData().getRandomDistractorSeedNumber());
+										//manifest.setReplicate(false);
+										//oasSink.putManifest(String.valueOf(testRosterId), creds[i].getAccesscode(), manifest);
+										logger.debug("*****  Got roster data for " + key);
+									} else {
+										logger.debug("*****  No valid manifest in DB for " + key);
+									}
 								} else {
 									logger.debug("*****  No valid manifest in DB for " + key);
 								}
-							} else {
-								logger.debug("*****  No valid manifest in DB for " + key);
 							}
 							rosterMap.put(key, key);
 						} else {
