@@ -521,6 +521,7 @@ public class StudentPathListUtils
                     pathNode.setOrgNodeId(node.getOrgNodeId());   
                     pathNode.setOrgCategoryLevel(node.getCategoryLevel());
                     pathNode.setOrgParentNodeId(node.getParentOrgNodeId());
+                    pathNode.setOrgCategoryId(node.getOrgNodeCategoryId());  //change for defect 67227
                     nodeList.add(pathNode);
                 }
             }
