@@ -400,6 +400,7 @@ public class TMSServlet extends HttpServlet {
 								    			nextScoIndex = j+1;
 								    			// TODO (complete): fix next subtest selection for TABE auto-locator
 								    			thisSco = manifestData[j];
+								    			thisSco.setCompletionStatus("CO");
 								    			break;
 								    		}
 								    	}
@@ -802,6 +803,7 @@ public class TMSServlet extends HttpServlet {
 		opts.setCharacterEncoding("UTF-8");
 		String result = response.xmlText(opts);
 		
+		if(manifest.getRosterRestartNumber() > restartCount) restartCount = manifest.getRosterRestartNumber();
 		int newRestartCount = restartCount + 1;
 		manifest.setRosterRestartNumber(newRestartCount);
 		rd.getAuthData().setRestartNumber(newRestartCount);
