@@ -584,12 +584,14 @@ function userDetailEdit(){
 						$.unblockUI();
 						if (data.viewMode) {
 							viewEnable();
+							$("#viewEditDisplayId").hide();
 							viewUser (data);
 							isViewMod = true;
 							titleViewEdit = "View User";
 						} else {
 							isViewMod = false;
 							titleViewEdit = "Edit User";
+							$("#viewEditDisplayId").show();
 							editEnable();
 							organizationNodes = data.organizationNodes;
 							roleOptions = data.optionList.roleOptions;
@@ -868,10 +870,11 @@ function fillselectedOrgNode( elementId, orgList) {
 	isPopUp	= true;
 	isAddUser = true;//added on 25.10.2011
 	editEnable();
+	$("#viewEditDisplayId").show();
 	/*$("#preButton").css("visibility","hidden");	
 	$("#nextButton").css("visibility","hidden");*/	
 	document.getElementById('displayMessage').style.display = "none";	
-	document.getElementById('displayMessageMain').style.display = "none";	
+	document.getElementById('displayMessageMain').style.display = "none";
 	
 	if(!(roleOptions.length > 0 
 		&& timeZoneOptions.length > 0

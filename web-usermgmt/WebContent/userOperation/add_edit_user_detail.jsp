@@ -25,9 +25,11 @@
 	<table>
 		<tr>
 			<td>
-				<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">Enter information about the user in the form below. Required fields are marked by a blue asterisk *. Use the organization selector on the right to assign at least one organization for the user. 
-					Although Email is not required, it is recommended that a valid email address be entered.
-				</span>
+				<div id="viewEditDisplayId">
+					<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">Enter information about the user in the form below. Required fields are marked by a blue asterisk *. Use the organization selector on the right to assign at least one organization for the user. 
+						Although Email is not required, it is recommended that a valid email address be entered.
+					</span>
+				</div>
 			</td>
 		</tr>
 	</table>
