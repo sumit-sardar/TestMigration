@@ -72,10 +72,6 @@ public class Manifest implements Serializable, CachePreLoadObject {
 		return rosterRestartNumber;
 	}
 	public void setRosterRestartNumber(int rosterRestartNumber) {
-		if(rosterRestartNumber < this.rosterRestartNumber) {
-			System.out.println("***** Manifest: setRosterRestartNumber: Restart number has been DECREMENTED!!!");
-			new Exception().printStackTrace();
-		}
 		this.rosterRestartNumber = rosterRestartNumber;
 	}
 	public Timestamp getRosterStartTime() {
@@ -94,10 +90,6 @@ public class Manifest implements Serializable, CachePreLoadObject {
 		return rosterLastMseq;
 	}
 	public void setRosterLastMseq(int rosterLastMseq) {
-		if(rosterLastMseq < this.rosterLastMseq) {
-			System.out.println("***** Manifest: setRosterLastMseq: Last mseq number has been DECREMENTED!!!");
-			new Exception().printStackTrace();
-		}
 		this.rosterLastMseq = rosterLastMseq;
 	}
 	public int getRosterCorrelationId() {

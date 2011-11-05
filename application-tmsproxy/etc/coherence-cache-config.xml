@@ -24,6 +24,9 @@
                         <sync:remote-publisher-scheme>
                             <sync:local-cache-publisher-scheme>
                                 <sync:target-cache-name>{cache-name}</sync:target-cache-name>
+                                <sync:conflict-resolver-scheme>
+                                        <cr:class classname="com.ctb.tms.nosql.coherence.push.TMSConflictResolver" />
+                                </sync:conflict-resolver-scheme>
                             </sync:local-cache-publisher-scheme>
                         </sync:remote-publisher-scheme>
                         <sync:autostart>true</sync:autostart>

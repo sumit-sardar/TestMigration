@@ -221,9 +221,6 @@ public class ManifestData implements Serializable
 	 * @param completionStatus The completionStatus to set.
 	 */
 	public void setCompletionStatus(String completionStatus) {
-		if("CO".equals(this.completionStatus) && !"IN".equals(completionStatus)) {
-			completionStatus = "CO";
-		}
 		this.completionStatus = completionStatus;
 	}
     /**
