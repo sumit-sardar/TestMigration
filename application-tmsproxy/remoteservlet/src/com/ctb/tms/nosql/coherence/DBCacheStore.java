@@ -50,20 +50,11 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     }
     
     public void store(com.tangosol.util.BinaryEntry entry) {
+    	logger.debug("Write to push replication store");
     	Object value = entry.getValue();
     	store.store(entry.getKey(), value);
     	if(cacheName.startsWith("OAS")) {
-    		if(CachePreLoadObject.class.isInstance(value)) {
-    			if(((CachePreLoadObject) value).doReplicate()) {
-    				((CachePreLoadObject) value).setReplicate(false);
-    				pushStore.store(entry);
-    				((CachePreLoadObject) value).setReplicate(true);
-    				logger.info("Replicated cache entry to remote cluster");
-    			} else {
-    				((CachePreLoadObject) value).setReplicate(true);
-    				logger.info("Cache entry from remote cluster, skipping replication");
-    			}
-    		}
+    		pushStore.store(entry);
     	}
     }
 
@@ -76,17 +67,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     	Object value = entry.getValue();
     	store.erase(entry.getKey());
     	if(cacheName.startsWith("OAS")) {
-    		if(CachePreLoadObject.class.isInstance(value)) {
-    			if(((CachePreLoadObject) value).doReplicate()) {
-    				((CachePreLoadObject) value).setReplicate(false);
-    				pushStore.erase(entry);
-    				((CachePreLoadObject) value).setReplicate(true);
-    				logger.info("Replicated cache erasure to remote cluster");
-    			} else {
-    				((CachePreLoadObject) value).setReplicate(true);
-    				logger.info("Cache erasure from remote cluster, skipping replication");
-    			}
-    		}
+    		pushStore.erase(entry);
     	}
     }
 
@@ -102,17 +83,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 			Object value = entry.getValue();
 	    	store.erase(entry.getKey());
 	    	if(cacheName.startsWith("OAS")) {
-	    		if(CachePreLoadObject.class.isInstance(value)) {
-	    			if(((CachePreLoadObject) value).doReplicate()) {
-	    				((CachePreLoadObject) value).setReplicate(false);
-	    				pushStore.erase(entry);
-	    				((CachePreLoadObject) value).setReplicate(true);
-	    				logger.info("Replicated cache erasure to remote cluster");
-	    			} else {
-	    				((CachePreLoadObject) value).setReplicate(true);
-	    				logger.info("Cache erasure from remote cluster, skipping replication");
-	    			}
-	    		}
+	    		pushStore.erase(entry);
 	    	}
 		}
 	}
@@ -142,17 +113,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 			Object value = entry.getValue();
 	    	store.store(entry.getKey(), value);
 	    	if(cacheName.startsWith("OAS")) {
-	    		if(CachePreLoadObject.class.isInstance(value)) {
-	    			if(((CachePreLoadObject) value).doReplicate()) {
-	    				((CachePreLoadObject) value).setReplicate(false);
-	    				pushStore.store(entry);
-	    				((CachePreLoadObject) value).setReplicate(true);
-	    				logger.info("Replicated bulk cache entry to remote cluster");
-	    			} else {
-	    				((CachePreLoadObject) value).setReplicate(true);
-	    				logger.info("Bulk cache entry from remote cluster, skipping replication");
-	    			}
-	    		}
+	    		pushStore.store(entry);
 	    	}
 		}
 	}

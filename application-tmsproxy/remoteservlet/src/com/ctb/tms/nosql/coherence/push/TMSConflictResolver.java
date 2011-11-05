@@ -1,7 +1,10 @@
 package com.ctb.tms.nosql.coherence.push;
 
+import org.apache.log4j.Logger;
+
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
+import com.ctb.tms.nosql.coherence.OASCoherenceSink;
 import com.oracle.coherence.patterns.pushreplication.EntryOperation;
 import com.oracle.coherence.patterns.pushreplication.publishers.cache.ConflictResolution;
 import com.oracle.coherence.patterns.pushreplication.publishers.cache.ConflictResolver;
@@ -9,6 +12,8 @@ import com.tangosol.util.BinaryEntry;
 
 public class TMSConflictResolver implements ConflictResolver {
 
+	static Logger logger = Logger.getLogger(TMSConflictResolver.class);
+	
 	public TMSConflictResolver() {
     }
 
@@ -25,7 +30,7 @@ public class TMSConflictResolver implements ConflictResolver {
                 	resolution.useInComingValue();
                     break;
                 case Update:
-                	resolution.useLocalValue();
+                	resolution.useInComingValue();
                     break;
             }
         }
@@ -45,6 +50,7 @@ public class TMSConflictResolver implements ConflictResolver {
                 			resolution.useInComingValue();
                 		} else {
                 			resolution.useLocalValue();
+                			logger.warn("Replicated roster message has lower mseq than current local value - ignoring.");
                 		}
                 	} else if("OASManifestCache".equals(entryOperation.getCacheName())) {
                 		Manifest[] incoming = (Manifest[]) localEntry.getContext().getValueFromInternalConverter().convert(entryOperation.getPublishableEntry().getBinaryValue());
@@ -58,6 +64,7 @@ public class TMSConflictResolver implements ConflictResolver {
 	                			resolution.useInComingValue();
 	                		} else {
 	                			resolution.useLocalValue();
+	                			logger.warn("Replicated manifest message has lower mseq than current local value - ignoring.");
 	                		}
                 		}
                 	} else {
