@@ -33,7 +33,7 @@
 			</td>
 		</tr>
 	</table>
-	<br>
+
 	<div id="userAccordion" style="width:99.5%;">
 			
 			<div id="user_information_acco">
@@ -339,11 +339,8 @@
 			</div>
 			
 			
-			<div>
-	<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%">
-		<tbody>
-			<br>
-			<tr id="Act_Buttons" align="center">
+	<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%" style="padding-top: 10px">		
+			<tr id="Act_Buttons">
 				<!--  <td  width="0%" id="preButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-left" id="pData" href="javascript:void(0)"><span
 					class="ui-icon ui-icon-triangle-1-w"></span></a></td><td id="nextButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-right" id="nData"
 					href="javascript:void(0)"><span class="ui-icon ui-icon-triangle-1-e"></span></a></td>
@@ -351,24 +348,18 @@
 				<td  width="3%" id="preButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-left" id="pData" href="javascript:pDataClick('Edit');"><span
 					class="ui-icon ui-icon-triangle-1-w"></span></a></td><td id="nextButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-right" id="nData"
 					href="javascript:nDataClick('Edit');"><span class="ui-icon ui-icon-triangle-1-e"></span></a></td>
-					<td>&nbsp;</td>
-				<td  width="100%" style="clear: both">
-					<center>
-						<div id="saveBtn" style="float: left; padding-left: 280px; margin-left: 0px; padding-right: 0px;">
-							<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:userDetailSubmit(); return false;" class="ui-widget-header" style="width:60px">
+				<td style="width:1%;">&nbsp;</td>
+				<td style="clear: both;float:left;width:96%;">					
+						<div id="saveBtn" style="float: left; padding-left: 250px; margin-left: 0px; padding-right: 10px;">
+							<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:userDetailSubmit(); return false;" class="ui-widget-header" style="width:60px;display:block;"/>
 						</div>
-						<div id="cancelBtn" >
-							<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onCancel(); return false;" class="ui-widget-header" style="width:60px">
-						</div>
-					</center>
+						<div id="cancelBtn" style="float: left; padding-right: 0px; padding-left: 0px;">
+							<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onCancel(); return false;" class="ui-widget-header" style="width:60px;display:block !important;"/>
+						</div>					
 				</td>
-			</tr>
-			<tr class="binfo" style="display: none;">
-				<td colspan="2" class="bottominfo"></td>
-			</tr>
-		</tbody>
+			</tr>					
 	</table>
-	</div>
-		</div>
+	
+	</div>	
 
 </div>

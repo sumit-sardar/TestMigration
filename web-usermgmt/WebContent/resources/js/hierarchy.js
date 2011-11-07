@@ -561,6 +561,7 @@ function userDetailEdit(){
 	var rowid;
 	document.getElementById('displayMessage').style.display = "none";	
 	document.getElementById('displayMessageMain').style.display = "none";
+	//$("#displayMessage").empty();
 	//var selectedUserId = $("#list2").jqGrid('getGridParam', 'selrow');
 	if(selectedUserId == undefined ){
 		rowid = $("#list2").jqGrid('getGridParam', 'selrow');
@@ -584,14 +585,12 @@ function userDetailEdit(){
 						$.unblockUI();
 						if (data.viewMode) {
 							viewEnable();
-							$("#viewEditDisplayId").hide();
 							viewUser (data);
 							isViewMod = true;
 							titleViewEdit = "View User";
 						} else {
 							isViewMod = false;
 							titleViewEdit = "Edit User";
-							$("#viewEditDisplayId").show();
 							editEnable();
 							organizationNodes = data.organizationNodes;
 							roleOptions = data.optionList.roleOptions;
@@ -668,7 +667,12 @@ function userDetailEdit(){
 			 				 }
 			 				
 							});
-						 	 
+						 	
+						 	if (data.viewMode) {
+								$("#viewEditDisplayId").css("display","none");
+							} else {
+								$("#viewEditDisplayId").css("display","block");
+							} 
 							setPopupPosition(isAddUser);
 							checkOpenNode(data.organizationNodes);
 							dbUserDetails = $("#addEditUserDetail *").serializeArray(); 	
@@ -684,25 +688,34 @@ function userDetailEdit(){
 	}
 	
 	function viewEnable () {
+		$("#userAccordion").accordion("destroy");
+		$("#userAccordion").accordion({ header: "h3", autoHeight : true });
 		$("#user_information_acco").hide();
 		$("#user_information_view_acco").show();
 		$("#userAccordion").accordion( "activate" , 1 );	
 		$("#contact_information_acco").hide();
 		$("#contact_information_view_acco").show();		
-		$("#saveBtn").hide();
-		$("#cancelBtn").css({'padding-right': '20px'});
+		//$("#saveBtn").hide();
+		$("#saveBtn").css("display","none");
+		/*if($("#saveBtn").is(":hidden")) {
+			$("#saveBtn").css("display","block");
+		}*/
+		$("#cancelBtn").css({'padding-left': '300px'});
 					
 	}
 	
 	function editEnable () {
-	
+		$("#userAccordion").accordion("destroy");
+		$("#userAccordion").accordion({ header: "h3", autoHeight : true });
 		$("#user_information_acco").show();
 		$("#userAccordion").accordion( "activate" , 0 );
 		$("#user_information_view_acco").hide();
 		$("#contact_information_acco").show();
 		$("#contact_information_view_acco").hide();
-		$("#saveBtn").show();
-		$("#cancelBtn").css({'padding-right': '300px'});
+		//$("#saveBtn").show();
+		$("#saveBtn").css("display","block");
+		$("#cancelBtn").css({'padding-right': '0px'});
+		$("#cancelBtn").css({'padding-left': '0px'});
 		
 	}
 	
@@ -1086,6 +1099,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	function onCancel() {
 		
 		isValueChanged = false;
+		//$("#displayMessage").text("");
 		if(isAddUser){
 			if($("#userFirstName").val()!= "" 
 			|| $("#userLastName").val()!= ""
@@ -1360,6 +1374,7 @@ function pDataClick(popupname) {
 }
 
 function fetchNextData(popupname){
+			//$("#displayMessage").text("");
 			var selectedUserId = $("#list2").jqGrid('getGridParam', 'selrow');
 			var pageRows = $("#list2").jqGrid('getGridParam','rowNum');
 			var curPage = parseInt($('#list2').jqGrid('getGridParam','page')); 
@@ -1394,6 +1409,7 @@ function fetchNextData(popupname){
 		}
 		
 function fetchPreviousData(popupname){
+	//$("#displayMessage").text("");
 	var selectedUserId = $("#list2").jqGrid('getGridParam', 'selrow');
 	var pageRows = $("#list2").jqGrid('getGridParam','rowNum');
 	var curPage = parseInt($('#list2').jqGrid('getGridParam','page'));
