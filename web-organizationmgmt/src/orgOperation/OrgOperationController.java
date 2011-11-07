@@ -485,7 +485,7 @@ public class OrgOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/SessionWeb/sessionOperation/assessments_sessions.do";
+            String url = "/TestSessionInfoWeb/sessionOperation/assessments_sessions.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -524,7 +524,7 @@ public class OrgOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/StudentWeb/studentOperation/organizations_manageStudents.do";
+            String url = "/StudentManagementWeb/studentOperation/organizations_manageStudents.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -539,7 +539,7 @@ public class OrgOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/UserWeb/userOperation/organizations_manageUsers.do";
+            String url = "/UserManagementWeb/userOperation/organizations_manageUsers.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -557,7 +557,7 @@ public class OrgOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/SessionWeb/sessionOperation/reports.do";
+            String url = "/TestSessionInfoWeb/sessionOperation/reports.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -590,7 +590,7 @@ public class OrgOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/OrganizationWeb/licenseOperation/services_manageLicenses.do";
+            String url = "/OrganizationManagementWeb/licenseOperation/services_manageLicenses.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -605,7 +605,7 @@ public class OrgOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/SessionWeb/softwareOperation/services_installSoftware.do";
+            String url = "/TestSessionInfoWeb/softwareOperation/services_installSoftware.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -620,7 +620,7 @@ public class OrgOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/SessionWeb/testContentOperation/services_downloadTest.do";
+            String url = "/TestSessionInfoWeb/testContentOperation/services_downloadTest.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -635,7 +635,7 @@ public class OrgOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationWeb/uploadOperation/services_uploadData.do";
+            String url = "/OrganizationManagementWeb/uploadOperation/services_uploadData.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -650,7 +650,7 @@ public class OrgOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationWeb/downloadOperation/services_downloadData.do";
+            String url = "/OrganizationManagementWeb/downloadOperation/services_downloadData.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
