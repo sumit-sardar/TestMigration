@@ -782,7 +782,7 @@ public class ScoreByStudentController extends PageFlowController {
 		try {
 		
 			getResponse().sendRedirect(
-					"/TestSessionInfoWeb/homepage/HomePageController.jpf");
+					"/SessionWeb/sessionOperation/begin.do");
 		} catch (IOException ioe) {
 			System.err.print(ioe.getStackTrace());
 		}

@@ -4,7 +4,7 @@
 	<module id="WebModule_1301035166823">
 		<web>
 			<web-uri>web-handscoring.war</web-uri>
-			<context-root>HandScoringWeb</context-root>
+			<context-root>ScoringWeb</context-root>
 		</web>
 	</module>
 </application>

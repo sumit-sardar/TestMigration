@@ -32,7 +32,7 @@ function showLoading()
     document.body.style.cursor = 'wait';
 	/*
 	$(document).ajaxStop($.unblockUI); 
-	$.blockUI({ message: '<img src="/HandScoringWeb/resources/images/loading.gif" />',
+	$.blockUI({ message: '<img src="/ScoringWeb/resources/images/loading.gif" />',
 		css: {
 		border: '0px',
 		backgroundColor: '#aaaaaa', 

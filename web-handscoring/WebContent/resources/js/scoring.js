@@ -89,7 +89,7 @@ if(isHidden){
 									},
 						error  :    function(XMLHttpRequest, textStatus, errorThrown){
 										//changes for defect #66003
-										window.location.href="/TestSessionInfoWeb/logout.do";
+										window.location.href="/SessionWeb/logout.do";
 										
 									},
 						complete :  function(){
@@ -317,7 +317,7 @@ if(isHidden){
 									},
 						error  :    function(XMLHttpRequest, textStatus, errorThrown){
 										//changes for defect #66003
-										window.location.href="/TestSessionInfoWeb/logout.do";
+										window.location.href="/SessionWeb/logout.do";
 										
 									},
 						complete :  function(){
@@ -431,7 +431,7 @@ if(isHidden){
 											},
 								error  :    function(XMLHttpRequest, textStatus, errorThrown){
 												//changes for defect #66003
-												window.location.href="/TestSessionInfoWeb/logout.do";
+												window.location.href="/SessionWeb/logout.do";
 											},
 								complete :  function(){
 												//alert('after complete....');
@@ -463,7 +463,7 @@ if(isHidden){
 		}
 		function blockUI()
 		{	
-			$("body").append('<div id="blockDiv" style="background:url(/HandScoringWeb/resources/images/transparent.gif);position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"><img src="/HandScoringWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/></div>');
+			$("body").append('<div id="blockDiv" style="background:url(/ScoringWeb/resources/images/transparent.gif);position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999"><img src="/ScoringWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/></div>');
 			$("#blockDiv").css("cursor","wait");
 			
 		}

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-project guid="web-handscoring_12eebbd2625_54fe7da6553553f1" version="5">
-	<web-app guid="web-handscoring_12eebbd2625_f32b259a1d52a4e6">
+<web-project guid="web-scoring_12eebbd2625_54fe7da6553553f1" version="5">
+	<web-app guid="web-scoring_12eebbd2625_f32b259a1d52a4e6">
 		<web-app-type>com.m7.webapp.java</web-app-type>
-		<folder-mapping project-name="web-handscoring" project-uri="./" web-app-uri="/"/>
+		<folder-mapping project-name="web-scoring" project-uri="./" web-app-uri="/"/>
 	</web-app>
 	<properties>
 		<property name="validation.compile" value="true"/>
