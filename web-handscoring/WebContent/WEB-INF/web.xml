@@ -85,7 +85,7 @@
             <http-method>GET</http-method>
             <http-method>POST</http-method>
         </web-resource-collection>
-         -->
+         --> 
         <web-resource-collection>
             <web-resource-name>ScoringWeb</web-resource-name>
             <description>Protect any resources within the following Page Flow.</description>
