@@ -193,7 +193,7 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 			$("#title").text(title);
 			$("#content").text(content);
 			$("#message").text(message);
-			//$('#messageType').attr ('src', '/StudentManagementWeb/resources/images/messaging/icon_error.gif');
+			//$('#messageType').attr ('src', '/StudentWeb/resources/images/messaging/icon_error.gif');
 			
 		}	
 		

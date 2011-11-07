@@ -135,7 +135,7 @@ StudentSuggestions.prototype.getXmlHttpRequestObject = function()
  */
 function createAutoSuggestControl(controlId) 
 {
-    var url = "/StudentManagementWeb/manageStudent/findSuggestions.do";    
+    var url = "/StudentWeb/manageStudent/findSuggestions.do";    
     var element = document.getElementById(controlId);
     element.setAttribute("autocomplete", "off");
 

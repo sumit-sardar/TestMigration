@@ -49,7 +49,7 @@ $(document).bind('keydown', function(event) {
 
 
 function UIBlock(){
-	$.blockUI({ message: '<img src="/StudentManagementWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
+	$.blockUI({ message: '<img src="/StudentWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
 	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 
 }
 
@@ -77,7 +77,7 @@ function populateTree() {
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
-						window.location.href="/TestSessionInfoWeb/logout.do";
+						window.location.href="/SessionWeb/logout.do";
 						
 					},
 		complete :  function(){
@@ -490,7 +490,7 @@ function updateOrganization(element, isChecked){
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
-				window.location.href="/TestSessionInfoWeb/logout.do";
+				window.location.href="/SessionWeb/logout.do";
 						
 			}
 	 });
@@ -503,7 +503,11 @@ function updateOrganization(element, isChecked){
 		    	editfunc: function() {
 		    		 requetForStudent = "";
 		    		 viewEditStudentPopup();
-		    	}
+		    	},
+		    	delfunc: function() {
+		    		 requetForStudent = "";
+		    		 deleteStudentPopup();
+		    	}		    	
 			});
 			
 		setupButtonPerUserPermission();
@@ -574,7 +578,7 @@ function updateOrganization(element, isChecked){
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
-						window.location.href="/TestSessionInfoWeb/logout.do";
+						window.location.href="/SessionWeb/logout.do";
 						
 					}
 	 });
@@ -587,7 +591,11 @@ function updateOrganization(element, isChecked){
 		    	editfunc: function() {
 		    		 requetForStudent = "";
 		    		 viewEditStudentPopup();
-		    	}
+		    	},
+		    	delfunc: function() {
+		    		 requetForStudent = "";
+		    		 deleteStudentPopup();
+		    	}		    	
 			});
 	}
 	
@@ -655,7 +663,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
-						window.location.href="/TestSessionInfoWeb/logout.do";
+						window.location.href="/SessionWeb/logout.do";
 						
 					}
 		
@@ -1108,7 +1116,7 @@ function fillselectedOrgNode( elementId, orgList) {
 											},
 								error  :    function(XMLHttpRequest, textStatus, errorThrown){
 													$.unblockUI();  
-												window.location.href="/TestSessionInfoWeb/logout.do";
+												window.location.href="/SessionWeb/logout.do";
 											},
 								complete :  function(){
 												$.unblockUI();  
@@ -1305,7 +1313,7 @@ function fillselectedOrgNode( elementId, orgList) {
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
-						window.location.href="/TestSessionInfoWeb/logout.do";
+						window.location.href="/SessionWeb/logout.do";
 						
 					}
 		
@@ -1416,7 +1424,7 @@ function fillselectedOrgNode( elementId, orgList) {
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
-						window.location.href="/TestSessionInfoWeb/logout.do";
+						window.location.href="/SessionWeb/logout.do";
 						
 					}
 		
@@ -1743,14 +1751,60 @@ function fillselectedOrgNode( elementId, orgList) {
    }
 
 
-function setupButtonPerUserPermission() {
-
-	var addStudentEnable = $("#addStudentEnable").val();
-	if (addStudentEnable == 'false') {	
-		var element = document.getElementById('add_list2');
-		element.style.display = 'none';
+	function deleteStudentPopup() {
+	
+		$("#deleteStudentPopup").dialog({  
+			title:"Delete Student",  
+			resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});
+				
+	    $("#deleteStudentPopup").css('height',130);
+		var toppos = ($(window).height() - 130) /2 + 'px';
+		var leftpos = ($(window).width() - 400) /2 + 'px';
+		$("#deleteStudentPopup").parent().css("top",toppos);
+		$("#deleteStudentPopup").parent().css("left",leftpos);	
 	}
-}
+
+	function submitDeleteStudentPopup() {
+
+		closePopUp('deleteStudentPopup');
+
+		var studentId = $("#list2").jqGrid('getGridParam', 'selrow');
+		
+		var param = "param";
+		$.ajax(
+		{
+				async:		false,
+				beforeSend:	function(){
+							},
+				url:		'deleteStudent.do?&studentID=' + studentId,
+				type:		'POST',
+				data:		param,
+				dataType:	'html',
+				success:	function(data, textStatus, XMLHttpRequest){			
+								setMessageMain('Delete Student', 'Student has been deleted successfully.', '', '');
+								document.getElementById('displayMessageMain').style.display = "block";																							 						
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							},
+				complete :  function(){
+							}
+				}
+			);
+	}
+
+	function setupButtonPerUserPermission() {
+
+		var addStudentEnable = $("#addStudentEnable").val();
+		if (addStudentEnable == 'false') {	
+			var element = document.getElementById('add_list2');
+			element.style.display = 'none';
+		}
+	}
 			 
 
 			

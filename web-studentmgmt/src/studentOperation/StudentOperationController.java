@@ -52,6 +52,8 @@ import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.studentManagement.StudentDataCreationException;
+import com.ctb.exception.studentManagement.StudentDataDeletionException;
+import com.ctb.util.studentManagement.DeleteStudentStatus;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.PagerSummary;
 import com.google.gson.Gson;
@@ -1906,6 +1908,31 @@ public class StudentOperationController extends PageFlowController {
 		setCustomerAccommodations(this.accommodations, true, customerConfigurations);
 	}
 
+	/**
+	 * @jpf:action
+	 */
+	@Jpf.Action()
+	protected Forward deleteStudent()
+	{
+		String studentIdStr = (String)this.getRequest().getParameter("studentID");
+		
+		if (studentIdStr != null) {
+			Integer studentId = new Integer(studentIdStr);
+			/*
+			try {                    
+				DeleteStudentStatus status = this.studentManagement.deleteStudent(this.userName, studentId);
+			}
+			catch (StudentDataDeletionException sde) {
+				sde.printStackTrace();
+			}        
+			catch (CTBBusinessException be) {
+				be.printStackTrace();
+			}  
+			*/
+		}    
+		return null;
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////////////////    
 	///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////    
@@ -1918,7 +1945,7 @@ public class StudentOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/TestSessionInfoWeb/sessionOperation/assessments_sessions.do";
+            String url = "/SessionWeb/sessionOperation/assessments_sessions.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -1949,7 +1976,7 @@ public class StudentOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/orgOperation/organizations_manageOrganizations.do";
+            String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -1972,7 +1999,7 @@ public class StudentOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/UserManagementWeb/userOperation/organizations_manageUsers.do";
+            String url = "/UserWeb/userOperation/organizations_manageUsers.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -1990,7 +2017,7 @@ public class StudentOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/TestSessionInfoWeb/sessionOperation/reports.do";
+            String url = "/SessionWeb/sessionOperation/reports.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -2008,7 +2035,7 @@ public class StudentOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/TestSessionInfoWeb/softwareOperation/begin.do";
+            String url = "/SessionWeb/softwareOperation/begin.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

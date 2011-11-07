@@ -36,7 +36,7 @@
 	    				<td width="10%">
 							<div class="search_input_box">
 								<input class="search_input" type="text" name="searchControl" >
-								<img src="/StudentManagementWeb/resources/images/magnifier.png" class="search_image" onclick="alert('search');">
+								<img src="/StudentWeb/resources/images/magnifier.png" class="search_image" onclick="alert('search');">
 							 </div>
 	    				</td>
 	      			</tr>
@@ -98,6 +98,29 @@
 			<br>
 		</td>
 		
+		</tr>
+		
+	</table>
+</div>
+<div id="deleteStudentPopup"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table border="0" width="100%">
+		<tr align="left">
+			<td>
+			<br/>
+			<p>
+				Click 'OK' to delete this student's profile from your organization<br/>
+				The student will be removed and excluded from future tests.<br/>
+			 	Previous test records will be retained.
+			</p>
+			<br/>
+			</td>
+		</tr>
+		<tr align="center">
+			<td>
+				<input type="button"  value="&nbsp;OK&nbsp;" onclick="javascript:submitDeleteStudentPopup(); return false;" class="ui-widget-header">&nbsp;
+				<input type="button"  value="&nbsp;Cancel&nbsp;" onclick="javascript:closePopUp('deleteStudentPopup'); return false;" class="ui-widget-header">				
+			</td>		
 		</tr>
 		
 	</table>

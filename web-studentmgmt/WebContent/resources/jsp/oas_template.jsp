@@ -40,7 +40,7 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifystudentinfo.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
-	<script type="text/javascript" src="/StudentManagementWeb/resources/js/studentregistration.js"></script>
+	<script type="text/javascript" src="/StudentWeb/resources/js/studentregistration.js"></script>
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>   
