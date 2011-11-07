@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
@@ -30,6 +31,7 @@ import com.ctb.tms.exception.testDelivery.TestSessionCompletedException;
 import com.ctb.tms.exception.testDelivery.TestSessionNotScheduledException;
 import com.ctb.tms.util.Constants;
 import com.ctb.tms.util.DateUtils;
+import com.tangosol.coherence.component.util.Collections;
 
 public class RosterData implements Serializable {
 	TmssvcResponseDocument document;
@@ -158,7 +160,22 @@ public class RosterData implements Serializable {
 		this.manifest = manifest;
 	}*/
 	
+	private static ItemResponseData [] sortItemResponseData(ItemResponseData [] ird) {
+		HashMap<Integer, ItemResponseData> sortedIrd = new HashMap<Integer, ItemResponseData>(ird.length);
+		for(int i=0;i<ird.length;i++) {
+			sortedIrd.put(new Integer(ird[i].getResponseSeqNum()), ird[i]);
+		}
+		Integer [] keys = sortedIrd.keySet().toArray(new Integer[0]);
+		Arrays.sort(keys);
+		ird = new ItemResponseData [keys.length];
+		for(int i=0;i<keys.length;i++) {
+			ird[i] = sortedIrd.get(keys[i]);
+		}
+		return ird;
+	}
+	
 	public static void generateRestartData(LoginResponse loginResponse, ManifestData manifestData, ItemResponseData [] itemResponseData, ConsolidatedRestartData restartData) throws SQLException {
+		itemResponseData = sortItemResponseData(itemResponseData);
 		Tsd tsd = restartData.addNewTsd();        
 		tsd.setScid(String.valueOf(manifestData.getId()));
 		tsd.setLsid(loginResponse.getLsid());
