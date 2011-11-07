@@ -3,7 +3,7 @@
 	<name>application-testsessioninfo</name>
 	<comment></comment>
 	<projects>
-		<project>web-testsessioninfo</project>
+		<project>web-session</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

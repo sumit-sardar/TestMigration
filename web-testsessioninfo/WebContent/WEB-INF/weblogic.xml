@@ -35,7 +35,7 @@
     <debug>true</debug>
   </jsp-descriptor>
   <url-match-map>weblogic.servlet.utils.SimpleApacheURLMatchMap</url-match-map>
-    <context-root>web-testsessioninfo</context-root>
+    <context-root>web-session</context-root>
     <library-ref>
         <library-name>struts-1.1</library-name>
         <specification-version>1.1</specification-version>

@@ -92,7 +92,7 @@ public class AdminOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/TestSessionInfoWeb/sessionOperation/assessments_sessions.do";
+            String url = "/SessionWeb/sessionOperation/assessments_sessions.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -110,7 +110,7 @@ public class AdminOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/StudentManagementWeb/studentOperation/organizations_manageStudents.do";
+            String url = "/StudentWeb/studentOperation/organizations_manageStudents.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -128,7 +128,7 @@ public class AdminOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/TestSessionInfoWeb/sessionOperation/reports.do";
+            String url = "/SessionWeb/sessionOperation/reports.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -146,7 +146,7 @@ public class AdminOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/TestSessionInfoWeb/softwareOperation/begin.do";
+            String url = "/SessionWeb/softwareOperation/begin.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

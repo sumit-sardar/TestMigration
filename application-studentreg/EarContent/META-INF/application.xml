@@ -3,8 +3,8 @@
 	<display-name>application-studentreg</display-name>
 	<module id="WebModule_1256796117420">
 		<web>
-			<web-uri>web-studentreg.war</web-uri>
-			<context-root>StudentRegistrationWeb</context-root>
+			<web-uri>web-rapidregistration.war</web-uri>
+			<context-root>RapidRegistrationWeb</context-root>
 		</web>
 	</module>
 </application>

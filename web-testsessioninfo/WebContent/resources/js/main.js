@@ -32,7 +32,7 @@ function showLoading()
     document.body.style.cursor = 'wait';
 	/*
 	$(document).ajaxStop($.unblockUI); 
-	 $.blockUI({ message: '<img src="/TestSessionInfoWeb/resources/images/loading.gif" />',
+	 $.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',
 		css: {
 		border: '0px',
 		backgroundColor: '#aaaaaa', 

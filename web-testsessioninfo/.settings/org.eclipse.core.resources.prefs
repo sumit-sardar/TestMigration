@@ -1,5 +1,6 @@
-#Wed Oct 12 10:31:25 PDT 2011
+#Tue Nov 01 12:44:05 PDT 2011
 eclipse.preferences.version=1
+encoding//WebContent/WEB-INF/ctb-web.tld=ISO-8859-1
 encoding//WebContent/downloadtest/download_zippedFile.jsp=UTF-8
 encoding//WebContent/findPassword/find_password.jsp=ISO-8859-1
 encoding//WebContent/homepage/home_page.jsp=UTF-8
@@ -7,6 +8,7 @@ encoding//WebContent/homepage/turnleaf_report_home.jsp=UTF-8
 encoding//WebContent/index.jsp=UTF-8
 encoding//WebContent/login.jsp=ISO-8859-1
 encoding//WebContent/login_error.jsp=ISO-8859-1
+encoding//WebContent/logout.jsp=ISO-8859-1
 encoding//WebContent/logout2.jsp=ISO-8859-1
 encoding//WebContent/programOperation/programStatus.jsp=UTF-8
 encoding//WebContent/resources/jsp/oas_footer.jsp=ISO-8859-1

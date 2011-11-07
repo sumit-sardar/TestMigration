@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>application-testadmin</name>
-	<comment></comment>
+	<comment></comment> 
 	<projects>
-		<project>web-testadmin</project>
+		<project>web-schedulesession</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-project guid="web-testsessioninfo_1247e37fd86_cb497edfbbab7bbb" version="5">
-	<web-app guid="web-testsessioninfo_1247e37fd86_fe8b75acbb93fe1a">
+<web-project guid="web-session_1247e37fd86_cb497edfbbab7bbb" version="5">
+	<web-app guid="web-session_1247e37fd86_fe8b75acbb93fe1a">
 		<web-app-type>com.m7.webapp.java</web-app-type>
-		<folder-mapping project-name="web-testsessioninfo" project-uri="./" web-app-uri="/"/>
+		<folder-mapping project-name="web-session" project-uri="./" web-app-uri="/"/>
 	</web-app>
 	<properties>
 		<property name="validation.compile" value="true"/>

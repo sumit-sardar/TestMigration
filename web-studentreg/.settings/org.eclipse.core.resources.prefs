@@ -1,4 +1,4 @@
-#Tue Oct 11 14:22:54 PDT 2011
+#Thu Oct 20 14:33:51 PDT 2011
 eclipse.preferences.version=1
 encoding//WebContent/error401.jsp=ISO-8859-1
 encoding//WebContent/registration/add_student.jsp=UTF-8
@@ -8,4 +8,5 @@ encoding//WebContent/registration/find_student.jsp=UTF-8
 encoding//WebContent/registration/find_student_result.jsp=UTF-8
 encoding//WebContent/registration/modify_test.jsp=UTF-8
 encoding//WebContent/registration/show_message.jsp=ISO-8859-1
+encoding//WebContent/resources/jsp/oas_header.jsp=ISO-8859-1
 encoding//WebContent/resources/jsp/oas_template.jsp=ISO-8859-1

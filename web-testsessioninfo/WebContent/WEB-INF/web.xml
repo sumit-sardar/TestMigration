@@ -16,23 +16,15 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/downloadclient/*</url-pattern>
+        <url-pattern>/sessionOperation/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/downloadtest/*.jsp</url-pattern>
+        <url-pattern>/softwareOperation/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/downloadtest/*.jpf</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/downloadtest/*.do</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/homepage/*</url-pattern>
+        <url-pattern>/testContentOperation/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>NoCacheFilter</filter-name>
@@ -116,7 +108,8 @@
             <taglib-location>/WEB-INF/ctb-widgets.tld</taglib-location>
         </taglib>
     </jsp-config>
-    <security-constraint>
+    <security-constraint>    
+    <!-- 
         <web-resource-collection>
             <web-resource-name>TestSessionInfoWeb</web-resource-name>
             <description>Protect any resources within the following Page Flow.</description>
@@ -129,6 +122,18 @@
             <http-method>POST</http-method>
             <http-method>GET</http-method>
         </web-resource-collection>
+     -->
+        <web-resource-collection>
+            <web-resource-name>SessionWeb</web-resource-name>
+            <description>Protect any resources within the following Page Flow.</description>
+            <url-pattern>/sessionOperation/*</url-pattern>
+            <url-pattern>/softwareOperation/*</url-pattern>
+            <url-pattern>/programOperation/*</url-pattern>
+            <url-pattern>/testContentOperation/*</url-pattern>
+            <http-method>POST</http-method>
+            <http-method>GET</http-method>
+        </web-resource-collection>      
+          
         <auth-constraint>
             <description>These are the roles who have access the web resources above.</description>
             <role-name>root</role-name>

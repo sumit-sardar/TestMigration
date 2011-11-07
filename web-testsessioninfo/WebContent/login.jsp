@@ -24,7 +24,7 @@
                 cookies[i] = null;
 	            String message = rb.getString("sessionTimeout");
 	            request.setAttribute("message", message);
-	            response.sendRedirect("/TestSessionInfoWeb/logout2.jsp?timeout=true");
+	            response.sendRedirect("/SessionWeb/logout2.jsp?timeout=true");
 	        }
 
 	    }  
@@ -60,7 +60,7 @@
 
 <!-- BLOCK DIV -->
 <div id="blockDiv" style="display:none; background-color: #d0e5f5; opacity:0.5; position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999">
-	<img src="/TestSessionInfoWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/>
+	<img src="/SessionWeb/resources/images/loading.gif" style="left:50%;top:40%;position:absolute;"/>
 </div>
 
 
@@ -144,7 +144,7 @@
             <tr>
                 <td>&nbsp;</td>
                 <td>
-                	<a href="#" onclick="showLoading(); document.location = '/TestSessionInfoWeb/findPassword/FindPasswordController.jpf?username=' + document.getElementById('j_username').value" 
+                	<a href="#" onclick="showLoading(); document.location = '/SessionWeb/findPassword/FindPasswordController.jpf?username=' + document.getElementById('j_username').value" 
                 	class="rounded {transparent} button" tabindex="4"
                 	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
                 	onkeypress="return handleEnterKey(event, this);" >

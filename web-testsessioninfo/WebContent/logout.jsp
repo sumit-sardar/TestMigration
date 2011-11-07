@@ -20,7 +20,7 @@
             }
         }
         history.go(1);
-        window.location = "/TestSessionInfoWeb/logout2.jsp";
+        window.location = "/SessionWeb/logout2.jsp";
     </script>
 </head>
 

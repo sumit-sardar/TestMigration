@@ -28,7 +28,7 @@ public class Global extends GlobalApp
     {
         try
         {
-            getResponse().sendRedirect("/TestSessionInfoWeb/homepage/HomePageController.jpf");
+            getResponse().sendRedirect("/SessionWeb/sessionOperation/begin.do");
         } 
         catch (IOException ioe)
         {
@@ -47,7 +47,7 @@ public class Global extends GlobalApp
     {
         try
         {
-            getResponse().sendRedirect("/TestSessionInfoWeb/logout.do");
+            getResponse().sendRedirect("/SessionWeb/logout.do");
         } 
         catch (IOException ioe)
         {
@@ -64,7 +64,7 @@ public class Global extends GlobalApp
     {
         try
         {
-            getResponse().sendRedirect("/TestSessionInfoWeb/sessionTimeout.do");
+            getResponse().sendRedirect("/SessionWeb/sessionTimeout.do");
         } 
         catch (IOException ioe)
         {

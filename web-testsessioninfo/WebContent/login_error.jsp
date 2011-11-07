@@ -170,7 +170,7 @@
             <tr>
                 <td>&nbsp;</td>
                 <td>
-                	<a href="#" onclick="showLoading(); document.location = '/TestSessionInfoWeb/findPassword/FindPasswordController.jpf?username=' + document.getElementById('j_username').value" 
+                	<a href="#" onclick="showLoading(); document.location = '/SessionWeb/findPassword/FindPasswordController.jpf?username=' + document.getElementById('j_username').value" 
                 	class="rounded {transparent} button" tabindex="4"
                 	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
                 	onkeypress="return handleEnterKey(event, this);" >

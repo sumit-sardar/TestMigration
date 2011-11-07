@@ -545,7 +545,7 @@ public class ViewTestSessionsController extends PageFlowController
     {
         saveFormToSession(form);
         
-        String contextPath = "/HandScoringWeb/itemScoringPageFlow/beginIndivItemScoring.do";
+        String contextPath = "/ScoringWeb/itemScoringPageFlow/beginIndivItemScoring.do";
         String sessionId = form.getSessionId().toString();
         String testAdminId = "testAdminId=" +
                              sessionId;            
@@ -570,7 +570,7 @@ public class ViewTestSessionsController extends PageFlowController
     {
         saveFormToSession(form);
         
-        String contextPath = "/HandScoringWeb/scorebystudent/beginIndivStudentScoring.do";
+        String contextPath = "/ScoringWeb/scorebystudent/beginIndivStudentScoring.do";
         String sessionId = form.getSessionId().toString();
         String testAdminId = "testAdminId=" +
                              sessionId;            
@@ -626,7 +626,7 @@ public class ViewTestSessionsController extends PageFlowController
 		String contextPath = "";
         try {
         	if(this.requestFromFindStudent) {
-        		contextPath = "/StudentManagementWeb/manageStudent/returnToFindStudent.do";
+        		contextPath = "/StudentWeb/manageStudent/returnToFindStudent.do";
         	}
         	else {
         		contextPath = "/StudentRegistrationWeb/registration/backToRegisterStudent.do";

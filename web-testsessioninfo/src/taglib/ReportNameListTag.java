@@ -57,7 +57,7 @@ public class ReportNameListTag extends CTBTag
 				displayCellEnd();
 				displayCellStart("transparent", "650");
                     content = "<li style=\"list-style-type: square;\" >";
-                    content += "<a href=\"/TestSessionInfoWeb/homepage/viewReports.do?report=" + reportName + "\"" + this.displayStyle + " >" + displayName + "</a>";
+                    content += "<a href=\"/SessionWeb/homepage/viewReports.do?report=" + reportName + "\"" + this.displayStyle + " >" + displayName + "</a>";
                     content += "</li>";                    
                     content += description;                    
                     writeToPage(content);
@@ -75,7 +75,7 @@ public class ReportNameListTag extends CTBTag
         writeToPage("<div class=\"informationMessage\">");                        
         writeToPage("<table>");
         writeToPage("<tr>");
-            writeToPage("<th rowspan=\"2\"><img src=\"/TestSessionInfoWeb/resources/images/messaging/icon_info.gif\" border=\"0\" width=\"23\" height=\"23\"></th>"); 
+            writeToPage("<th rowspan=\"2\"><img src=\"/SessionWeb/resources/images/messaging/icon_info.gif\" border=\"0\" width=\"23\" height=\"23\"></th>"); 
             writeToPage("<th>There are no reports associated with the selected program.</th>");
         writeToPage("</tr>");
         writeToPage("<tr>");

@@ -1,7 +1,5 @@
 package sessionOperation;
 
-import homepage.HomePageController;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -124,7 +122,7 @@ public class SessionOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/HandScoringWeb/scoringOperation/assessments_studentScoring.do";
+            String url = "/ScoringWeb/scoringOperation/assessments_studentScoring.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -139,7 +137,7 @@ public class SessionOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/TestSessionInfoWeb/programOperation/assessments_programStatus.do";
+            String url = "/SessionWeb/programOperation/assessments_programStatus.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -158,7 +156,7 @@ public class SessionOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/StudentManagementWeb/studentOperation/organizations_manageStudents.do";
+            String url = "/StudentWeb/studentOperation/organizations_manageStudents.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -192,7 +190,7 @@ public class SessionOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/TestSessionInfoWeb/softwareOperation/begin.do";
+            String url = "/SessionWeb/softwareOperation/begin.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

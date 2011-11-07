@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>web-testadmin</name>
+	<name>web-test</name>
 	<comment></comment>
 	<projects>
 		<project>dep-weblib-webutils</project>
@@ -9,7 +9,7 @@
 		<project>dep-base-ctrl</project>
 		<project>dep-licensing-ctrl</project>
 	</projects>
-	<buildSpec>
+	<buildSpec> 
 		<buildCommand>
 			<name>com.bea.workshop.controls.core.AssemblyPublishCleaner</name>
 			<arguments>

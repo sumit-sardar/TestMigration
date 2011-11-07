@@ -11,7 +11,7 @@ var req;
  */
 function getReportList() 
 {
-    var url = "/TestSessionInfoWeb/homepage/getReportList.do";    
+    var url = "/SessionWeb/homepage/getReportList.do";    
     
     var programIndex = 0;
     var programControl = getSafeElement("wlw-select_key:{requestScope.program}");          

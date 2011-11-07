@@ -3,8 +3,8 @@
 	<display-name>application-testsessioninfo</display-name>
 	<module id="WebModule_1256248050577">
 		<web>
-			<web-uri>web-testsessioninfo.war</web-uri>
-			<context-root>TestSessionInfoWeb</context-root>
+			<web-uri>web-session.war</web-uri>
+			<context-root>SessionWeb</context-root>
 		</web>
 	</module>
 </application>

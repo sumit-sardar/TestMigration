@@ -1206,7 +1206,7 @@ function ajaxSelectAllCheckboxes() {
 								alert("done");
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
-								window.location.href="/TestSessionInfoWeb/logout.do";
+								window.location.href="/SessionWeb/logout.do";
 							}
 				
 				}

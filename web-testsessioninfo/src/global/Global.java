@@ -59,7 +59,7 @@ public class Global extends GlobalApp
     {
         try
         {
-            getResponse().sendRedirect("/TestSessionInfoWeb/homepage/HomePageController.jpf");
+            getResponse().sendRedirect("/SessionWeb/sessionOperation/begin.do");
         } 
         catch (IOException ioe)
         {
