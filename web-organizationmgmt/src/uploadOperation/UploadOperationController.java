@@ -90,7 +90,7 @@ public class UploadOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/TestSessionInfoWeb/sessionOperation/assessments_sessions.do";
+            String url = "/SessionWeb/sessionOperation/assessments_sessions.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -108,7 +108,7 @@ public class UploadOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/StudentManagementWeb/studentOperation/organizations_manageStudents.do";
+            String url = "/StudentWeb/studentOperation/organizations_manageStudents.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -126,7 +126,7 @@ public class UploadOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/TestSessionInfoWeb/sessionOperation/reports.do";
+            String url = "/SessionWeb/sessionOperation/reports.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -159,7 +159,7 @@ public class UploadOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/OrganizationManagementWeb/licenseOperation/services_manageLicenses.do";
+            String url = "/OrganizationWeb/licenseOperation/services_manageLicenses.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -174,7 +174,7 @@ public class UploadOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/TestSessionInfoWeb/softwareOperation/services_installSoftware.do";
+            String url = "/SessionWeb/softwareOperation/services_installSoftware.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -189,7 +189,7 @@ public class UploadOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/TestSessionInfoWeb/testContentOperation/services_downloadTest.do";
+            String url = "/SessionWeb/testContentOperation/services_downloadTest.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -212,7 +212,7 @@ public class UploadOperationController extends PageFlowController {
 	{
         try
         {
-            String url = "/OrganizationManagementWeb/downloadOperation/services_downloadData.do";
+            String url = "/OrganizationWeb/downloadOperation/services_downloadData.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

@@ -12,19 +12,19 @@ function startFileUpload()
  
 function initImages() 
 {
-	image00 = new Image(); image00.src='/OrganizationManagementWeb/resources/images/status/progress.gif';
-	image01 = new Image(); image01.src='/OrganizationManagementWeb/resources/images/status/progress01.gif';
-	image02 = new Image(); image02.src='/OrganizationManagementWeb/resources/images/status/progress02.gif';
-	image03 = new Image(); image03.src='/OrganizationManagementWeb/resources/images/status/progress03.gif';
-	image04 = new Image(); image04.src='/OrganizationManagementWeb/resources/images/status/progress04.gif';
-	image05 = new Image(); image05.src='/OrganizationManagementWeb/resources/images/status/progress05.gif';
-	image06 = new Image(); image06.src='/OrganizationManagementWeb/resources/images/status/progress06.gif';
-	image07 = new Image(); image07.src='/OrganizationManagementWeb/resources/images/status/progress07.gif';
-	image08 = new Image(); image08.src='/OrganizationManagementWeb/resources/images/status/progress08.gif';
-	image09 = new Image(); image09.src='/OrganizationManagementWeb/resources/images/status/progress09.gif';
-	image10 = new Image(); image10.src='/OrganizationManagementWeb/resources/images/status/progress10.gif';
-	image11 = new Image(); image11.src='/OrganizationManagementWeb/resources/images/status/progress11.gif';
-	image12 = new Image(); image12.src='/OrganizationManagementWeb/resources/images/status/progress12.gif';
+	image00 = new Image(); image00.src='/OrganizationWeb/resources/images/status/progress.gif';
+	image01 = new Image(); image01.src='/OrganizationWeb/resources/images/status/progress01.gif';
+	image02 = new Image(); image02.src='/OrganizationWeb/resources/images/status/progress02.gif';
+	image03 = new Image(); image03.src='/OrganizationWeb/resources/images/status/progress03.gif';
+	image04 = new Image(); image04.src='/OrganizationWeb/resources/images/status/progress04.gif';
+	image05 = new Image(); image05.src='/OrganizationWeb/resources/images/status/progress05.gif';
+	image06 = new Image(); image06.src='/OrganizationWeb/resources/images/status/progress06.gif';
+	image07 = new Image(); image07.src='/OrganizationWeb/resources/images/status/progress07.gif';
+	image08 = new Image(); image08.src='/OrganizationWeb/resources/images/status/progress08.gif';
+	image09 = new Image(); image09.src='/OrganizationWeb/resources/images/status/progress09.gif';
+	image10 = new Image(); image10.src='/OrganizationWeb/resources/images/status/progress10.gif';
+	image11 = new Image(); image11.src='/OrganizationWeb/resources/images/status/progress11.gif';
+	image12 = new Image(); image12.src='/OrganizationWeb/resources/images/status/progress12.gif';
 }
 
 function startProgressBar() 

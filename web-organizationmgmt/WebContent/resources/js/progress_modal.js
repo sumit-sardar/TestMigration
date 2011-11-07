@@ -348,7 +348,7 @@ function isOldSafariOnMac()
 
 function cancelProcess() {
 
-    //document.location.href = "/OrganizationManagementWeb/manageUpload/cancelUploadData.do";    
+    //document.location.href = "/OrganizationWeb/manageUpload/cancelUploadData.do";    
     
     //document.forms[0].action = "cancelUploadData.do";
     //document.forms[0].submit();    

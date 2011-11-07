@@ -56,7 +56,7 @@ function populateTree() {
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();
-						window.location.href="/TestSessionInfoWeb/logout.do";
+						window.location.href="/SessionWeb/logout.do";
 						
 					},
 		complete :  function(){
@@ -67,7 +67,7 @@ function populateTree() {
 }
 
 function UIBlock(){
-	$.blockUI({ message: '<img src="/OrganizationManagementWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'0px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
+	$.blockUI({ message: '<img src="/OrganizationWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'0px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
 	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 
 }
 			
@@ -250,7 +250,7 @@ var styleClass;
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();
-						window.location.href="/TestSessionInfoWeb/logout.do";
+						window.location.href="/SessionWeb/logout.do";
 						
 					},
 		complete :  function(){
@@ -337,7 +337,7 @@ function populateGrid() {
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
-						window.location.href="/TestSessionInfoWeb/logout.do";
+						window.location.href="/SessionWeb/logout.do";
 						
 					}
 	 });
@@ -604,7 +604,7 @@ function openTreeNodes(orgNodeId) {
 											},
 								error  :    function(XMLHttpRequest, textStatus, errorThrown){
 													$.unblockUI();  
-												window.location.href="/TestSessionInfoWeb/logout.do";
+												window.location.href="/SessionWeb/logout.do";
 											},
 								complete :  function(){
 												$.unblockUI();  

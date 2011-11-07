@@ -96,7 +96,7 @@ public class AdministrationController extends PageFlowController
     {
         try
         {
-            String url = "/TestSessionInfoWeb/manageProgram/begin.do";
+            String url = "/SessionWeb/manageProgram/begin.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -247,7 +247,7 @@ public class AdministrationController extends PageFlowController
     protected Forward reportQueue()
     {
         try {
-            String url = "/TestSessionInfoWeb/viewmonitorstatus/reportQueue.do";
+            String url = "/SessionWeb/viewmonitorstatus/reportQueue.do";
             getResponse().sendRedirect(url);
         } 
         catch( IOException ioe ) {
