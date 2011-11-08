@@ -55,6 +55,8 @@ public class RosterData implements Serializable {
         xmlOptions.setUnsynchronized();
 		TmssvcResponseDocument response = this.document;
 		try {
+			response.getTmssvcResponse().getLoginResponse().setRestartNumber(BigInteger.valueOf(this.authData.getRestartNumber()));
+			
 			// were credentials correct?
 	        if(authData == null) 
 	            throw new AuthenticationFailureException();
