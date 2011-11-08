@@ -973,7 +973,8 @@ function fillselectedOrgNode( elementId, orgList) {
 				var toppos = ($(window).height() - 610) /2 + 'px';
 				var leftpos = ($(window).width() - 760) /2 + 'px';
 				$("#addEditUserDetail").parent().css("top",toppos);
-				$("#addEditUserDetail").parent().css("left",leftpos);		 	 
+				$("#addEditUserDetail").parent().css("left",leftpos);
+				$("#addEditUserDetail").css("overflow",'hidden');		 	 
 				$("#User_Information").css("height",'300px');
 				$("#User_Information").css("overflow",'auto');
 				$("#Contact_Information").css("height",'300px');
