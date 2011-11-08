@@ -7,6 +7,7 @@ import java.util.List;
 import com.tcs.dataaccess.AbstractConnectionManager;
 import com.tcs.dataaccess.ConnectionManager;
 import com.tcs.util.CSVFileReader;
+import com.tcs.util.ReadinessProgressUtil;
 
 public class MainUpload {
 	
@@ -79,6 +80,9 @@ public class MainUpload {
 				} else {
 					
 					CSVFileReader.saveOrUpdateSiteSurveyEnrollMent(rowData, siteSurverId , year, con);
+					
+					//Updating the readiness progress and check point status
+					ReadinessProgressUtil.updateReadinessStatus(siteSurverId, con);
 				}
 			
 			}
