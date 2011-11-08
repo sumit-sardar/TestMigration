@@ -62,19 +62,18 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p>You have not saved this student. Are you sure you want to cancel?</p>
+			<p>You have not saved the student record. Are you sure you want to leave this page?</p>
 			<br/>
 			</td>
 		</tr>
 		<tr>
-		<td >
+		<td>
 				<center>
 					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
 					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
 				</center>
 			<br>
 		</td>
-		
 		</tr>
 		
 	</table>
@@ -85,7 +84,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p>You have not saved this student. Are you sure you want to move?</p>
+			<p>You have not saved the student record. Are you sure you want to leave this page?</p>
 			<br/>
 			</td>
 		</tr>

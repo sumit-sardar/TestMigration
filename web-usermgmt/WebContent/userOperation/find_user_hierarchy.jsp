@@ -80,7 +80,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p>You have changed the user record. Do you want to save changes before leaving this page?</p>
+			<p>You have not saved the user record. Are you sure you want to leave this page?</p>
 			<br/>
 			</td>
 		</tr>
@@ -104,7 +104,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p>You have changed the user record. Do you want to save changes before leaving this page?</p>
+			<p>You have not saved the user record. Are you sure you want to leave this page?</p>
 			<br/>
 			</td>
 		</tr>
