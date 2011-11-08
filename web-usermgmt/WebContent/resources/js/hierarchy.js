@@ -672,6 +672,7 @@ function userDetailEdit(){
 								$("#viewEditDisplayId").css("display","none");
 							} else {
 								$("#viewEditDisplayId").css("display","block");
+								$("#userAccordion h3").css("display","block");
 							} 
 							setPopupPosition(isAddUser);
 							checkOpenNode(data.organizationNodes);
@@ -690,16 +691,17 @@ function userDetailEdit(){
 	function viewEnable () {
 		$("#userAccordion").accordion("destroy");
 		$("#userAccordion").accordion({ header: "h3", autoHeight : true });
+		//$("#userAccordion h3").css("display","block");
+		//$("").trigger("focus");
+		//$("").focusin();
 		$("#user_information_acco").hide();
 		$("#user_information_view_acco").show();
+		//$("#user_information_view_acco h3").focusin();
 		$("#userAccordion").accordion( "activate" , 1 );	
 		$("#contact_information_acco").hide();
-		$("#contact_information_view_acco").show();		
-		//$("#saveBtn").hide();
+		$("#contact_information_view_acco").show();
+		//$("#contact_information_view_acco h3").focusin();	
 		$("#saveBtn").css("display","none");
-		/*if($("#saveBtn").is(":hidden")) {
-			$("#saveBtn").css("display","block");
-		}*/
 		$("#cancelBtn").css({'padding-left': '300px'});
 					
 	}
@@ -708,11 +710,12 @@ function userDetailEdit(){
 		$("#userAccordion").accordion("destroy");
 		$("#userAccordion").accordion({ header: "h3", autoHeight : true });
 		$("#user_information_acco").show();
+		//$("#user_information_acco h3").focusin();
 		$("#userAccordion").accordion( "activate" , 0 );
 		$("#user_information_view_acco").hide();
 		$("#contact_information_acco").show();
+		//$("#contact_information_acco h3").focusin();
 		$("#contact_information_view_acco").hide();
-		//$("#saveBtn").show();
 		$("#saveBtn").css("display","block");
 		$("#cancelBtn").css({'padding-right': '0px'});
 		$("#cancelBtn").css({'padding-left': '0px'});
