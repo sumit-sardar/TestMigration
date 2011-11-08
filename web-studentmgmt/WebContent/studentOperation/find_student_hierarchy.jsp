@@ -101,6 +101,8 @@
 		
 	</table>
 </div>
+
+<input type="hidden" id="deleteStatus" name="deleteStatus" value=""/>
 <div id="deleteStudentPopup"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table border="0" width="100%">
@@ -108,7 +110,7 @@
 			<td>
 			<br/>
 			<p>
-				Click 'OK' to delete this student's profile from your organization<br/>
+				Click 'OK' to delete this student's profile from your organization.<br/>
 				The student will be removed and excluded from future tests.<br/>
 			 	Previous test records will be retained.
 			</p>
@@ -117,8 +119,8 @@
 		</tr>
 		<tr align="center">
 			<td>
-				<input type="button"  value="&nbsp;OK&nbsp;" onclick="javascript:submitDeleteStudentPopup(); return false;" class="ui-widget-header">&nbsp;
-				<input type="button"  value="&nbsp;Cancel&nbsp;" onclick="javascript:closePopUp('deleteStudentPopup'); return false;" class="ui-widget-header">				
+				<input type="button"  value="&nbsp;OK&nbsp;" onclick="submitDeleteStudentPopup(); showDeleteStudentStatus();" class="ui-widget-header">&nbsp;
+				<input type="button"  value="&nbsp;Cancel&nbsp;" onclick="closePopUp('deleteStudentPopup');" class="ui-widget-header">				
 			</td>		
 		</tr>
 		

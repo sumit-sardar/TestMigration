@@ -1918,17 +1918,39 @@ public class StudentOperationController extends PageFlowController {
 		
 		if (studentIdStr != null) {
 			Integer studentId = new Integer(studentIdStr);
-			/*
+			String deleteStatus = "Student has been deleted successfully.";
+						
 			try {                    
 				DeleteStudentStatus status = this.studentManagement.deleteStudent(this.userName, studentId);
 			}
 			catch (StudentDataDeletionException sde) {
-				sde.printStackTrace();
+				deleteStatus = sde.getMessage();
 			}        
 			catch (CTBBusinessException be) {
-				be.printStackTrace();
+				deleteStatus = be.getMessage();
 			}  
-			*/
+			catch (Exception e) {
+				deleteStatus = "Failed to delete this student.";
+			}  
+			
+			
+			HttpServletResponse resp = getResponse();
+			OutputStream stream = null;
+
+			try {
+
+				resp.setContentType(CONTENT_TYPE_JSON);
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(deleteStatus.getBytes());
+				if (stream != null) {
+					stream.close();
+				}
+			} 
+			catch (Exception e) {
+				e.printStackTrace();
+			}			
+
 		}    
 		return null;
 	}

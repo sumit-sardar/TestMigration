@@ -1753,6 +1753,8 @@ function fillselectedOrgNode( elementId, orgList) {
 
 	function deleteStudentPopup() {
 	
+		clearMessage();
+	
 		$("#deleteStudentPopup").dialog({  
 			title:"Delete Student",  
 			resizable:false,
@@ -1786,8 +1788,9 @@ function fillselectedOrgNode( elementId, orgList) {
 				data:		param,
 				dataType:	'html',
 				success:	function(data, textStatus, XMLHttpRequest){			
-								setMessageMain('Delete Student', 'Student has been deleted successfully.', '', '');
-								document.getElementById('displayMessageMain').style.display = "block";																							 						
+								
+							    $("#deleteStatus").val(data);
+																														 						
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							},
@@ -1796,6 +1799,26 @@ function fillselectedOrgNode( elementId, orgList) {
 				}
 			);
 	}
+
+	function showDeleteStudentStatus(){ 
+	
+		var deleteStatus = $("#deleteStatus").val();
+	
+		setMessageMain('Delete Student', deleteStatus, '', '');
+		document.getElementById('displayMessageMain').style.display = "block";	
+
+		if (deleteStatus == 'Student has been deleted successfully.') {
+	     	UIBlock();
+	        jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});     
+	  	   	var sortArrow = jQuery("#list2");
+	        jQuery("#list2").jqGrid('setGridParam', 
+	        	{url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(),page:1}).trigger("reloadGrid");
+	        jQuery("#list2").sortGrid('lastName',true);
+	        var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
+	        $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
+	        $(arrowElements.childNodes[1]).addClass('ui-state-disabled');
+		}	    
+   	}
 
 	function setupButtonPerUserPermission() {
 
