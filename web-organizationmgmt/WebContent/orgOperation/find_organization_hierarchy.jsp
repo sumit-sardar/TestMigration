@@ -57,7 +57,7 @@
 	<table>
 		<tr>
 			<td colspan="2">
-			<p>You have not saved this organization. Are you sure you want to cancel?</p>
+			<p>You have not saved the organization record. Are you sure you want to leave this page?</p>
 			</td>
 		</tr>
 		<tr>
