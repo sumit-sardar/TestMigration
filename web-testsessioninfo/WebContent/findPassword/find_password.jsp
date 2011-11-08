@@ -13,6 +13,7 @@
   
 	<link href="<%=request.getContextPath()%>/resources/css/jquery-ui-1.8.16.custom.css" rel="stylesheet" type="text/css" />
 	<link href="<%=request.getContextPath()%>/resources/css/main.css" rel="stylesheet" type="text/css" />
+	<link href="<%=request.getContextPath()%>/resources/css/widgets.css" rel="stylesheet" type="text/css" />
 	<link href="<%=request.getContextPath()%>/resources/css/roundCorners.css" rel="stylesheet" type="text/css" />
           
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.6.2.min.js"></script>
@@ -111,13 +112,13 @@ function ignoreEnterKey( e ) {
                 <td><netui:span value="${pageFlow.user.passwordHintQuestion}"/></td>
             </tr>
             <tr height="32">
-                <td width="80" align="right"><b>* Hint Answer:</b></td>
+                <td width="80" align="right"><b><span class="asterisk">*</span> Hint Answer:</b></td>
                 <td>
                     <netui:textBox dataSource="pageFlow.hintAnswer" maxlength="255" style="width: 180px" tabindex="1" onKeyPress="return ignoreEnterKey( event );"/>
                 </td>
             </tr>
             <tr height="32">
-                <td width="80" align="right"><b>* Email:</b></td>
+                <td width="80" align="right"><b><span class="asterisk">*</span> Email:</b></td>
                 <td>
                     <netui:textBox dataSource="pageFlow.email" maxlength="64" style="width: 180px" tabindex="2" onKeyPress="return ignoreEnterKey( event );"/>
                 </td>
