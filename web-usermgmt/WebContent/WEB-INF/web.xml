@@ -12,17 +12,12 @@
     </filter>
     <filter-mapping>
         <filter-name>TamperFilter</filter-name>
-        <url-pattern>/manageUser/*</url-pattern>
+        <url-pattern>/userOperation/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/manageUser/*</url-pattern>
-    </filter-mapping>
-      <filter-mapping>
-        <filter-name>NoCacheFilter</filter-name>
         <url-pattern>/userOperation/*</url-pattern>
     </filter-mapping>
-  
     <servlet>
         <description/>
         <servlet-name>action</servlet-name>
@@ -95,10 +90,19 @@
     </jsp-config>
     <security-constraint>
         <display-name/>
+        <!-- 
         <web-resource-collection>
             <web-resource-name>UserManagementWeb</web-resource-name>
             <description>Protect any resources within the following Page Flow.</description>
             <url-pattern>/manageUser/*</url-pattern>
+               <url-pattern>/userOperation/*</url-pattern>
+            <http-method>POST</http-method>
+            <http-method>GET</http-method>
+        </web-resource-collection>
+         -->
+        <web-resource-collection>
+            <web-resource-name>UserWeb</web-resource-name>
+            <description>Protect any resources within the following Page Flow.</description>
                <url-pattern>/userOperation/*</url-pattern>
             <http-method>POST</http-method>
             <http-method>GET</http-method>
@@ -121,8 +125,8 @@
         <auth-method>FORM</auth-method>
         <realm-name>OAS</realm-name>
         <form-login-config>
-            <form-login-page>/../TestSessionInfoWeb/login.jsp</form-login-page>
-            <form-error-page>/../TestSessionInfoWeb/loginError.do</form-error-page>
+            <form-login-page>/../SessionWeb/login.jsp</form-login-page>
+            <form-error-page>/../SessionWeb/loginError.do</form-error-page>
         </form-login-config>
     </login-config>
     <security-role>
