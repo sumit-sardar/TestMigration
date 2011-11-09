@@ -3,7 +3,7 @@
 	<display-name>application-handscoring</display-name>
 	<module id="WebModule_1301035166823">
 		<web>
-			<web-uri>web-handscoring.war</web-uri>
+			<web-uri>web-scoring.war</web-uri>
 			<context-root>ScoringWeb</context-root>
 		</web>
 	</module>
