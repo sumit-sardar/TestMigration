@@ -10,10 +10,10 @@ public class ReadinessProgressUtil {
 
 	public static void updateReadinessStatus (Integer siteSurveyId, Connection con) throws Exception{
 		
-		PreparedStatement preStatement = con.prepareStatement(ReadinessProgressSQL.getSiteSurveyData(siteSurveyId));
+		PreparedStatement preStatement = con.prepareStatement(ReadinessProgressSQL.getSiteSurveyData(siteSurveyId), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		ResultSet siteSurveyRS = preStatement.executeQuery();
 		
-		PreparedStatement preStatement1 = con.prepareStatement(ReadinessProgressSQL.getSiteEnrollmentData(siteSurveyId));
+		PreparedStatement preStatement1 = con.prepareStatement(ReadinessProgressSQL.getSiteEnrollmentData(siteSurveyId), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		ResultSet enrollmentRS = preStatement1.executeQuery();
 		
 		String check12 = checkPoint1Part2(siteSurveyRS, enrollmentRS);
@@ -30,36 +30,38 @@ public class ReadinessProgressUtil {
 
 	private static int schoolProgressStatus (ResultSet siteSurveyRS, String checkPoint1Part2) throws Exception {
 		
-		String check1Part1 = siteSurveyRS.getString("CHECK_POINT1_PART1");
-		String check1Part3 = siteSurveyRS.getString("CHECK_POINT1_PART3");
-		String check2 = siteSurveyRS.getString("CHECK_POINT2");
-		String check3 = siteSurveyRS.getString("CHECK_POINT3");
+		siteSurveyRS.beforeFirst();
 		int schoolProgress = 0;
-		
-		if(check1Part1 != null && !"".equals(check1Part1) && check1Part1.equalsIgnoreCase("T")) {
-			if(checkPoint1Part2.equals("T")) {
-				if(check1Part3 != null && !"".equals(check1Part3) && check1Part3.equalsIgnoreCase("T")) {
-					if(check2 != null && !"".equals(check2) && check2.equalsIgnoreCase("T")) {
-						if(check3 != null && !"".equals(check3) && check3.equalsIgnoreCase("T")) {
-							schoolProgress = 5;
+		if (siteSurveyRS.next()) {
+			String check1Part1 = siteSurveyRS.getString("CHECK_POINT1_PART1");
+			String check1Part3 = siteSurveyRS.getString("CHECK_POINT1_PART3");
+			String check2 = siteSurveyRS.getString("CHECK_POINT2");
+			String check3 = siteSurveyRS.getString("CHECK_POINT3");
+			
+			
+			if(check1Part1 != null && !"".equals(check1Part1) && check1Part1.equalsIgnoreCase("T")) {
+				if(checkPoint1Part2.equals("T")) {
+					if(check1Part3 != null && !"".equals(check1Part3) && check1Part3.equalsIgnoreCase("T")) {
+						if(check2 != null && !"".equals(check2) && check2.equalsIgnoreCase("T")) {
+							if(check3 != null && !"".equals(check3) && check3.equalsIgnoreCase("T")) {
+								schoolProgress = 5;
+							}
+							else {
+								schoolProgress = 4;
+							}
 						}
 						else {
-							schoolProgress = 4;
+							schoolProgress = 3;
 						}
 					}
 					else {
-						schoolProgress = 3;
+						schoolProgress = 2;
 					}
 				}
 				else {
-					schoolProgress = 2;
+					schoolProgress = 1;
 				}
 			}
-			else {
-				schoolProgress = 1;
-			}
-		} else {
-			schoolProgress = 0;
 		}
 		
 		return schoolProgress;
@@ -73,10 +75,12 @@ public class ReadinessProgressUtil {
 		int testSessionsPerDay = 0;
 		int totalTestingDays = 0;
 		int workstationCapacityRequired= 0;	
-		
-		usableWorkstationCount = siteSurveyRS.getInt("WORKSTATION_COUNT");
-		testSessionsPerDay = enrollmentRS.getInt("TESTSESSION_PER_DAY");
-		totalTestingDays = enrollmentRS.getInt("TOTAL_TESTING_DAYS");
+		if(siteSurveyRS.next() && enrollmentRS.next()) {
+			
+			usableWorkstationCount = siteSurveyRS.getInt("WORKSTATION_COUNT");
+			testSessionsPerDay = enrollmentRS.getInt("TESTSESSION_PER_DAY");
+			totalTestingDays = enrollmentRS.getInt("TOTAL_TESTING_DAYS");
+		}
 		workstationCapacityRequired = getWorkstationRequired(enrollmentRS);
 		workstationCapacityAvailable = usableWorkstationCount * testSessionsPerDay * totalTestingDays;
 		
@@ -91,39 +95,41 @@ public class ReadinessProgressUtil {
 
 	private static int getWorkstationRequired(ResultSet enrollmentRS) throws Exception{
 	
+		enrollmentRS.beforeFirst();
 		int totalStudentCount = 0;
-		String thirdGradeCheck = enrollmentRS.getString("THIRD_GRADE_CHK");
-		String fourthGradeCheck = enrollmentRS.getString("FOURTH_GRADE_CHK");
-		String fifthGradeCheck = enrollmentRS.getString("FIFTH_GRADE_CHK");
-		String sixthGradeCheck = enrollmentRS.getString("SIXTH_GRADE_CHK");
-		String seventhGradeCheck = enrollmentRS.getString("SEVENTH_GRADE_CHK");
-		String eighthGradeCheck = enrollmentRS.getString("EIGHTH_GRADE_CHK");
-		String thirdGradeData = enrollmentRS.getString("THIRD_GRADE");
-		String fourthGradeData = enrollmentRS.getString("FOURTH_GRADE");
-		String fifthGradeData = enrollmentRS.getString("FIFTH_GRADE");
-		String sixthGradeData = enrollmentRS.getString("SIXTH_GRADE");
-		String seventhGradeData = enrollmentRS.getString("SEVENTH_GRADE");
-		String eighthGradeData = enrollmentRS.getString("EIGHTH_GRADE");
-	
-			if (thirdGradeCheck != null && thirdGradeCheck.equals("1"))
-				totalStudentCount += Integer.parseInt(thirdGradeData != null && !("").equals(thirdGradeData) ? thirdGradeData : "0")
-						* getContentArea(3);
-			if (fourthGradeCheck != null && fourthGradeCheck.equals("1"))
-				totalStudentCount += Integer.parseInt(fourthGradeData != null && !("").equals(fourthGradeData) ? fourthGradeData : "0") 
-						* getContentArea(4);
-			if (fifthGradeCheck != null && fifthGradeCheck.equals("1"))
-				totalStudentCount += Integer.parseInt(fifthGradeData != null && !("").equals(fifthGradeData) ? fifthGradeData : "0")
-						* getContentArea(5);
-			if (sixthGradeCheck != null && sixthGradeCheck.equals("1"))
-				totalStudentCount += Integer.parseInt(sixthGradeData != null && !("").equals(sixthGradeData) ? sixthGradeData : "0")
-						* getContentArea(6);
-			if (seventhGradeCheck != null && seventhGradeCheck.equals("1"))
-				totalStudentCount += Integer.parseInt(seventhGradeData != null && !("").equals(seventhGradeData) ? seventhGradeData : "0")
-						* getContentArea(7);
-			if (eighthGradeCheck != null && eighthGradeCheck.equals("1"))
-				totalStudentCount += Integer.parseInt(eighthGradeData != null && !("").equals(eighthGradeData) ? eighthGradeData : "0") 
-						* getContentArea(8);
-	
+		if(enrollmentRS.next()) {
+			String thirdGradeCheck = enrollmentRS.getString("THIRD_GRADE_CHK");
+			String fourthGradeCheck = enrollmentRS.getString("FOURTH_GRADE_CHK");
+			String fifthGradeCheck = enrollmentRS.getString("FIFTH_GRADE_CHK");
+			String sixthGradeCheck = enrollmentRS.getString("SIXTH_GRADE_CHK");
+			String seventhGradeCheck = enrollmentRS.getString("SEVENTH_GRADE_CHK");
+			String eighthGradeCheck = enrollmentRS.getString("EIGHTH_GRADE_CHK");
+			String thirdGradeData = enrollmentRS.getString("THIRD_GRADE");
+			String fourthGradeData = enrollmentRS.getString("FOURTH_GRADE");
+			String fifthGradeData = enrollmentRS.getString("FIFTH_GRADE");
+			String sixthGradeData = enrollmentRS.getString("SIXTH_GRADE");
+			String seventhGradeData = enrollmentRS.getString("SEVENTH_GRADE");
+			String eighthGradeData = enrollmentRS.getString("EIGHTH_GRADE");
+		
+				if (thirdGradeCheck != null && thirdGradeCheck.equals("1"))
+					totalStudentCount += Integer.parseInt(thirdGradeData != null && !("").equals(thirdGradeData) ? thirdGradeData : "0")
+							* getContentArea(3);
+				if (fourthGradeCheck != null && fourthGradeCheck.equals("1"))
+					totalStudentCount += Integer.parseInt(fourthGradeData != null && !("").equals(fourthGradeData) ? fourthGradeData : "0") 
+							* getContentArea(4);
+				if (fifthGradeCheck != null && fifthGradeCheck.equals("1"))
+					totalStudentCount += Integer.parseInt(fifthGradeData != null && !("").equals(fifthGradeData) ? fifthGradeData : "0")
+							* getContentArea(5);
+				if (sixthGradeCheck != null && sixthGradeCheck.equals("1"))
+					totalStudentCount += Integer.parseInt(sixthGradeData != null && !("").equals(sixthGradeData) ? sixthGradeData : "0")
+							* getContentArea(6);
+				if (seventhGradeCheck != null && seventhGradeCheck.equals("1"))
+					totalStudentCount += Integer.parseInt(seventhGradeData != null && !("").equals(seventhGradeData) ? seventhGradeData : "0")
+							* getContentArea(7);
+				if (eighthGradeCheck != null && eighthGradeCheck.equals("1"))
+					totalStudentCount += Integer.parseInt(eighthGradeData != null && !("").equals(eighthGradeData) ? eighthGradeData : "0") 
+							* getContentArea(8);
+		}
 		return totalStudentCount;
 	}
 
