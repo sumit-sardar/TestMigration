@@ -443,7 +443,8 @@ public class SessionOperationController extends PageFlowController {
             	INDIANACustomer = true;
             }
         }
-        return INDIANACustomer;
+        //return INDIANACustomer;
+        return true;
     }
 
     private boolean isGEORGIACustomer(CustomerConfiguration [] customerConfigs)
@@ -457,7 +458,8 @@ public class SessionOperationController extends PageFlowController {
             	GEORGIACustomer = true;
             }
         }
-        return GEORGIACustomer;
+        //return GEORGIACustomer;
+        return true;
     }
     
     /////////////////////////////////////////////////////////////////////////////////////////////    
