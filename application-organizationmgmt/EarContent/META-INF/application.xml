@@ -3,14 +3,9 @@
 	<display-name>application-organizationmgmt</display-name>
 	<module id="WebModule_1256942020715">
 		<web>
-			<web-uri>web-organizationmgmt.war</web-uri>
-			<context-root>OrganizationManagementWeb</context-root>
-		</web>
-	</module>
-	<module id="WebModule_1258667392455">
-		<web>
-			<web-uri>platform-webservices.war</web-uri>
-			<context-root>platform-webservices</context-root>
+			<web-uri>web-organization.war</web-uri>
+			<context-root>OrganizationWeb</context-root>
 		</web>
 	</module>
 </application>
+ 
