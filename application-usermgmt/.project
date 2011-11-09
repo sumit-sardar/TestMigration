@@ -3,7 +3,7 @@
 	<name>application-usermgmt</name>
 	<comment></comment>
 	<projects>
-		<project>web-usermgmt</project>
+		<project>web-user</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
