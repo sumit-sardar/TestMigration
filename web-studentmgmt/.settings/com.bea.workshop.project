@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-project guid="web-studentmgmt_124984c2e58_728b826bf53897c7" version="5">
-	<web-app guid="web-studentmgmt_124984c2e58_ec7497b21fd543c3">
+<web-project guid="web-student_124984c2e58_728b826bf53897c7" version="5">
+	<web-app guid="web-student_124984c2e58_ec7497b21fd543c3">
 		<web-app-type>com.m7.webapp.java</web-app-type>
-		<folder-mapping project-name="web-studentmgmt" project-uri="./" web-app-uri="/"/>
+		<folder-mapping project-name="web-student" project-uri="./" web-app-uri="/"/>
 	</web-app>
 	<properties>
 		<property name="validation.compile" value="true"/>

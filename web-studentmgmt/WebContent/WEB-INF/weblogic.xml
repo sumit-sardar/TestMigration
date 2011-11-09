@@ -35,7 +35,7 @@
     <debug>true</debug>
   </jsp-descriptor>
   <url-match-map>weblogic.servlet.utils.SimpleApacheURLMatchMap</url-match-map>
-  <context-root>web-studentmgmt</context-root>
+  <context-root>web-student</context-root>
   <library-ref>
     <library-name>beehive-netui-resources-1.0.1-10.0</library-name>
     <specification-version>1.0</specification-version>

@@ -12,15 +12,7 @@
     </filter>
     <filter-mapping>
         <filter-name>TamperFilter</filter-name>
-        <url-pattern>/manageStudent/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/manageStudent/*</url-pattern>
-    </filter-mapping>
-   <filter-mapping>
-        <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/manageBulkAccommodation/*</url-pattern>
+        <url-pattern>/studentOperation/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>NoCacheFilter</filter-name>
@@ -107,11 +99,20 @@
     </jsp-config>
     <security-constraint>
         <display-name/>
+        <!-- 
         <web-resource-collection>
             <web-resource-name>StudentManagementWeb</web-resource-name>
             <description>Protect any resources within the following Page Flow.</description>
             <url-pattern>/manageStudent/*</url-pattern>
             <url-pattern>/manageBulkAccommodation/*</url-pattern>
+            <url-pattern>/studentOperation/*</url-pattern>
+            <http-method>POST</http-method>
+            <http-method>GET</http-method>
+        </web-resource-collection>
+         -->
+        <web-resource-collection>
+            <web-resource-name>StudentWeb</web-resource-name>
+            <description>Protect any resources within the following Page Flow.</description>
             <url-pattern>/studentOperation/*</url-pattern>
             <http-method>POST</http-method>
             <http-method>GET</http-method>
@@ -134,8 +135,8 @@
         <auth-method>FORM</auth-method>
         <realm-name>OAS</realm-name>
         <form-login-config>
-            <form-login-page>/../TestSessionInfoWeb/login.jsp</form-login-page>
-            <form-error-page>/../TestSessionInfoWeb/loginError.do</form-error-page>
+            <form-login-page>/../SessionWeb/login.jsp</form-login-page>
+            <form-error-page>/../SessionWeb/loginError.do</form-error-page>
         </form-login-config>
     </login-config>
     <security-role>

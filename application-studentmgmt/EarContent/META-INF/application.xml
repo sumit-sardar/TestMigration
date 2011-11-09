@@ -3,8 +3,8 @@
 	<display-name>application-studentmgmt</display-name>
 	<module id="WebModule_1256679305078">
 		<web>
-			<web-uri>web-studentmgmt.war</web-uri>
-			<context-root>StudentManagementWeb</context-root>
+			<web-uri>web-student.war</web-uri>
+			<context-root>StudentWeb</context-root>
 		</web>
 	</module>
 </application>
