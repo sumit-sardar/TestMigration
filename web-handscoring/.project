@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>web-handscoring</name>
+	<name>web-scoring</name>
 	<comment></comment>
 	<projects>
 		<project>dep-base-ctrl</project>

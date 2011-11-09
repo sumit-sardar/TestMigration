@@ -3,7 +3,7 @@
 	<name>application-handscoring</name>
 	<comment></comment>
 	<projects>
-		<project>web-scoring</project>
+		<project>web-handscoring</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
