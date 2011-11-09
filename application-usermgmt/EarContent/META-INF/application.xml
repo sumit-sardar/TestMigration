@@ -3,8 +3,8 @@
 	<display-name>application-usermgmt</display-name>
 	<module id="WebModule_1256607281958">
 		<web>
-			<web-uri>web-usermgmt.war</web-uri>
-			<context-root>UserManagementWeb</context-root>
+			<web-uri>web-user.war</web-uri>
+			<context-root>UserWeb</context-root>
 		</web>
 	</module>
 </application>

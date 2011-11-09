@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <con:wlw-manifest xmlns:con="http://www.bea.com/2003/03/wlw/config/">
-    <con:project name="UserManagementWeb">
+    <con:project name="UserWeb">
         <con:top-level-component class-name="com.ctb.control.userManagement.OrgNodeHierarchy" component-type="Control">
             <con:external-callbacks/>
             <con:security-roles>
