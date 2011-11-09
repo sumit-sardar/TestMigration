@@ -93,7 +93,7 @@ public class SessionOperationController extends PageFlowController {
 			forwardName = "currentUI";
 		}
 		return new Forward(forwardName);
-	}
+	} 
 	
 	
     @Jpf.Action()
