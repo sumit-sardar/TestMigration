@@ -3,7 +3,7 @@
 	<name>application-testadmin</name>
 	<comment></comment> 
 	<projects>
-		<project>web-test</project>
+		<project>web-testadmin</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

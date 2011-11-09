@@ -3,7 +3,7 @@
 	<display-name>application-testadmin</display-name>
 	<module id="WebModule_1256850669776">
 		<web>
-			<web-uri>web-test.war</web-uri>
+			<web-uri>web-testadmin.war</web-uri>
 			<context-root>TestWeb</context-root>
 		</web>
 	</module>
