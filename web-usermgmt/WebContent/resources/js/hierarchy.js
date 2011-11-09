@@ -1178,11 +1178,12 @@ function fillselectedOrgNode( elementId, orgList) {
 		$("#"+dailogId).dialog("close");
 		
 		if(dailogId == 'confirmationPopup') {
-			$('#userAccordion').accordion('activate', 0 );
-			$("#User_Information").scrollTop(0);
-			$("#Contact_Information").scrollTop(0);
-			$('#Contact_Information').hide();
-			$("#userFirstName").trigger("focus");
+		//if second accordion is open, the focus should stay on second accordion 
+			//$('#userAccordion').accordion('activate', 0 );
+			//$("#User_Information").scrollTop(0);
+			//$("#Contact_Information").scrollTop(0);
+			//$('#Contact_Information').hide();
+			//$("#userFirstName").trigger("focus");
 		} 
 		if(dailogId == 'confirmationPopupNavigation') {
 		//	$('#accordion').accordion('activate', 0 );
