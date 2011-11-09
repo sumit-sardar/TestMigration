@@ -453,7 +453,7 @@ public class SessionOperationController extends PageFlowController {
         for (int i=0; i < customerConfigs.length; i++)
         {
         	CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Georgia_Customer")) {
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("GEORGIA_Customer")) {
             	GEORGIACustomer = true;
             }
         }
