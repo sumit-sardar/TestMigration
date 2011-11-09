@@ -73,21 +73,40 @@ public class SessionOperationController extends PageFlowController {
 	 * @jpf:forward name="success" path="organizations.do"
 	 */
 	@Jpf.Action(forwards = { 
-			@Jpf.Forward(name = "success",
-					path = "assessments.do")
+			@Jpf.Forward(name = "currentUI", path = "assessments.do"),
+			@Jpf.Forward(name = "legacyUI", path = "gotoLegacyUI.do")
 	})
 	protected Forward begin()
 	{
-		getLoggedInUserPrincipal();
-		
+		getLoggedInUserPrincipal();		
 		getUserDetails();
 
-		setupUserPermission();
+		boolean INDIANA_Customer = isINDIANACustomer();
+		boolean GEOGIA_Customer = isGEOGIACustomer();
+		String forwardName = "legacyUI";
 		
-		return new Forward("success");
+		if (INDIANA_Customer || GEOGIA_Customer) {		
+			setupUserPermission();
+			forwardName = "currentUI";
+		}
+		return new Forward(forwardName);
 	}
 	
 	
+    @Jpf.Action()
+    protected Forward gotoLegacyUI()
+    {
+        try
+        {
+            String url = "/SessionWeb/homepage/HomePageController.jpf?OldUI=true";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
 	
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
@@ -410,6 +429,19 @@ public class SessionOperationController extends PageFlowController {
         }
         return hasProgramStatusConfig;
     }
+    
+    private boolean isINDIANACustomer()
+    {            
+    	boolean ret = (this.customerId.intValue() == 7496);	// tai_istep0433 (9741) tai_tabe - welcome1
+    	return ret;
+    }
+
+    private boolean isGEOGIACustomer()
+    {               
+    	boolean ret = (this.customerId.intValue() == 3353);	// addist_walker - 123admin
+    	return ret;
+    }
+    
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// END OF SETUP USER PERMISSION ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    
