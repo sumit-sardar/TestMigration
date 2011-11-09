@@ -81,12 +81,15 @@ public class SessionOperationController extends PageFlowController {
 		getLoggedInUserPrincipal();		
 		getUserDetails();
 
-		boolean INDIANA_Customer = isINDIANACustomer();
-		boolean GEOGIA_Customer = isGEOGIACustomer();
+        CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
+		
+		boolean INDIANA_Customer = isINDIANACustomer(customerConfigs);
+		boolean GEORGIA_Customer = isGEORGIACustomer(customerConfigs);
+		
 		String forwardName = "legacyUI";
 		
-		if (INDIANA_Customer || GEOGIA_Customer) {		
-			setupUserPermission();
+		if (INDIANA_Customer || GEORGIA_Customer) {		
+			setupUserPermission(customerConfigs);
 			forwardName = "currentUI";
 		}
 		return new Forward(forwardName);
@@ -262,9 +265,8 @@ public class SessionOperationController extends PageFlowController {
         }
     }
     
-	private void setupUserPermission()
+	private void setupUserPermission(CustomerConfiguration [] customerConfigs)
 	{
-        CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
         boolean adminUser = isAdminUser();
         boolean TABECustomer = isTABECustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
@@ -430,16 +432,32 @@ public class SessionOperationController extends PageFlowController {
         return hasProgramStatusConfig;
     }
     
-    private boolean isINDIANACustomer()
+    private boolean isINDIANACustomer(CustomerConfiguration [] customerConfigs)
     {            
-    	boolean ret = (this.customerId.intValue() == 7496);	// tai_istep0433 (9741) tai_tabe - welcome1
-    	return ret;
+        boolean INDIANACustomer = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("INDIANA_Customer")) {
+            	INDIANACustomer = true;
+            }
+        }
+        return INDIANACustomer;
     }
 
-    private boolean isGEOGIACustomer()
+    private boolean isGEORGIACustomer(CustomerConfiguration [] customerConfigs)
     {               
-    	boolean ret = (this.customerId.intValue() == 3353);	// addist_walker - 123admin
-    	return ret;
+        boolean GEORGIACustomer = false;
+        
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Georgia_Customer")) {
+            	GEORGIACustomer = true;
+            }
+        }
+        return GEORGIACustomer;
     }
     
     /////////////////////////////////////////////////////////////////////////////////////////////    
