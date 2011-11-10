@@ -96,28 +96,41 @@ public class SessionOperationController extends PageFlowController {
 	 * @jpf:forward name="success" path="organizations.do"
 	 */
 	@Jpf.Action(forwards = { 
-			@Jpf.Forward(name = "currentUI", path = "assessments.do"),
+	        @Jpf.Forward(name = "resetPassword", path = "resetPassword.do"), 
+	        @Jpf.Forward(name = "editTimeZone", path = "setTimeZone.do"),
+			@Jpf.Forward(name = "currentUI", path = "gotoCurrentUI.do"),
 			@Jpf.Forward(name = "legacyUI", path = "gotoLegacyUI.do")
 	})
 	protected Forward begin()
 	{
+		String forwardName = "legacyUI";
 		getLoggedInUserPrincipal();		
 		getUserDetails();
 
-        CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
-		
-		boolean INDIANA_Customer = isINDIANACustomer(customerConfigs);
-		boolean GEORGIA_Customer = isGEORGIACustomer(customerConfigs);
-		
-		String forwardName = "legacyUI";
-		
-		if (INDIANA_Customer || GEORGIA_Customer) {		
-			setupUserPermission(customerConfigs);
-			forwardName = "currentUI";
-		}
+        if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
+        	forwardName = "resetPassword";
+        }
+        else if (this.user.getTimeZone() == null) {
+        	forwardName = "editTimeZone";
+        }
+        else {
+        	CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
+			if (accessNewUI(customerConfigs)) {		
+				setupUserPermission(customerConfigs);
+				forwardName = "currentUI";
+			}
+        }
+        
 		return new Forward(forwardName);
 	} 
 	
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "assessments_sessions.do") 
+        }) 
+    protected Forward gotoCurrentUI()
+    {
+        return new Forward("success");
+    }
 	
     @Jpf.Action()
     protected Forward gotoLegacyUI()
@@ -134,6 +147,54 @@ public class SessionOperationController extends PageFlowController {
         return null;
     }
 	
+    /**
+     * @jpf:action
+     */
+    @Jpf.Action()
+    protected Forward resetPassword()
+    {               
+        try
+        {
+            String url = "/UserManagementWeb/manageUser/resetPassword.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+
+    /**
+     * @jpf:action
+     */
+    @Jpf.Action()
+    protected Forward setTimeZone()
+    {               
+        try
+        {
+            String url = "/UserManagementWeb/manageUser/beginEditMyProfile.do?isSetTimeZone=true";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+    }
+    
+    private boolean isUserPasswordExpired()
+    {
+    	boolean pwdExpiredStatus = false;    	
+    	Date passwordExpirationDate = this.user.getPasswordExpirationDate();
+    	Date CurrentDate = new Date();
+    	if (CurrentDate.compareTo(passwordExpirationDate)> 0 ){
+    		pwdExpiredStatus = true;
+    	}
+    	return pwdExpiredStatus;
+    } 
+    
+    
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    
@@ -893,34 +954,20 @@ public class SessionOperationController extends PageFlowController {
 	        return tsd;
 	    }
 	    
-	    private boolean isINDIANACustomer(CustomerConfiguration [] customerConfigs)
+	private boolean accessNewUI(CustomerConfiguration [] customerConfigs)
     {            
-        boolean INDIANACustomer = false;
+        boolean accessNewUI = false;
         
         for (int i=0; i < customerConfigs.length; i++)
         {
         	CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("INDIANA_Customer")) {
-            	INDIANACustomer = true;
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("TAS_Revised_UI")) {
+            	accessNewUI = true;
             }
         }
-        return INDIANACustomer;
+        return accessNewUI;
     }
 
-    private boolean isGEORGIACustomer(CustomerConfiguration [] customerConfigs)
-    {               
-        boolean GEORGIACustomer = false;
-        
-        for (int i=0; i < customerConfigs.length; i++)
-        {
-        	CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
-            if (cc.getCustomerConfigurationName().equalsIgnoreCase("GEORGIA_Customer")) {
-            	GEORGIACustomer = true;
-            }
-        }
-        return GEORGIACustomer;
-    }
-    
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// END OF SETUP USER PERMISSION ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    
