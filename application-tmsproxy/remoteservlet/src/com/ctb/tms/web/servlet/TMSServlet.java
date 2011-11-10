@@ -106,8 +106,9 @@ public class TMSServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String method = getMethod(request);
 		String result = ServletUtils.OK;
+		String xml = "";
 		try {
-			String xml = request.getParameter("requestXML");
+			xml = request.getParameter("requestXML");
 			logger.debug("***** Remote servlet request: " + xml);
 			
 			if (method != null && method.startsWith(ServletUtils.LOGIN_METHOD))
@@ -143,6 +144,7 @@ public class TMSServlet extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
+			logger.error("Request XML: " + xml);
 			result = ServletUtils.ERROR;
 			ServletUtils.writeResponse(response, result);
 		}
@@ -289,242 +291,236 @@ public class TMSServlet extends HttpServlet {
 		String rosterId = null;
 		String accessCode = null;
 		Manifest manifest = null;
-		try {
-			XmlOptions xmlOptions = new XmlOptions(); 
-	        xmlOptions = xmlOptions.setUnsynchronized();
-			AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml, xmlOptions);
-			AdssvcRequest saveRequest = document.getAdssvcRequest();
-			AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
-	        SaveTestingSessionData saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
-	        
-	        Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
-	        for(int i=0;i<tsda.length;i++) {
-			    Tsd tsd = tsda[i];
-			    logger.debug("TMSServlet: save tsd: " + tsd);
-			    if(tsd.getLsid() != null && !(tsd.getLsid().length() < 1) && !"undefined".equals(tsd.getLsid())) {
-				    rosterId = tsd.getLsid().substring(0, tsd.getLsid().indexOf(":"));
-				    accessCode = tsd.getLsid().substring(tsd.getLsid().indexOf(":") + 1, tsd.getLsid().length()).toUpperCase();
-				    
-				    saveResponse.addNewTsd();
-			        saveResponse.getTsdArray(i).setLsid(tsd.getLsid());
-			        saveResponse.getTsdArray(i).setScid(tsd.getScid());
-			        saveResponse.getTsdArray(i).setMseq(tsd.getMseq());
-			        saveResponse.getTsdArray(i).setStatus(Status.OK);
-				    
-		    		manifest = oasSource.getManifest(rosterId, accessCode);
-		    		if(manifest.getRosterCompletionStatus() == null || !"IP".equals(manifest.getRosterCompletionStatus())) {
-		    			manifest.setRosterCompletionStatus("IP");
-		    		}
-		    		manifest.setRosterLastMseq(tsd.getMseq().intValue());
-			    	ManifestData[] manifestData = manifest.getManifest();	
-			    	int nextScoIndex = 0;
-			    	int j;
-			    	String thisScid = tsd.getScid();
-			    	if(!"0".equals(thisScid)) {
-				    	ManifestData thisSco = null;
-				    	for(j=0;j<manifestData.length;j++) {
-				    		if(!"TERMINATOR".equals(thisScid) && (manifestData[j].getId() == Integer.parseInt(thisScid))) {
-				    			nextScoIndex = j+1;
-				    			// TODO (complete): fix next subtest selection for TABE auto-locator
-				    			thisSco = manifestData[j];
-				    			break;
-				    		}
-				    	}	
-				    	
-				    	int rosterCid = manifest.getRosterCorrelationId();
-				    	int thisCid = tsd.getCid().intValue();
-				    	logger.debug("Cached CID: " + rosterCid + ", this message CID: " + thisCid);
-				    	if(rosterCid == 0) {
-				    		manifest.setRosterCorrelationId(thisCid);
-							updateCID(rosterId, thisCid, accessCode);
-				    	} else if(rosterCid != thisCid) {
-				    		responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
-				            saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
-				            noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd errorTsd = saveResponse.addNewTsd();
-				            errorTsd.setStatus(Status.INVALID_CID);
-				            errorTsd.addNewError();
-				            errorTsd.getError().setMethod("save_testing_session_data");
-				            errorTsd.getError().setStatus("invalid_cid");
-				            errorTsd.getError().setErrorElement(tsd.toString());
-				            if(!"CO".equals(manifest.getRosterCompletionStatus())) {
-				            	manifest.setRosterCompletionStatus("IN");
+
+		XmlOptions xmlOptions = new XmlOptions(); 
+        xmlOptions = xmlOptions.setUnsynchronized();
+		AdssvcRequestDocument document = AdssvcRequestDocument.Factory.parse(xml, xmlOptions);
+		AdssvcRequest saveRequest = document.getAdssvcRequest();
+		AdssvcResponseDocument responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
+        SaveTestingSessionData saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
+        
+        Tsd[] tsda = saveRequest.getSaveTestingSessionData().getTsdArray();
+        for(int i=0;i<tsda.length;i++) {
+		    Tsd tsd = tsda[i];
+		    logger.debug("TMSServlet: save tsd: " + tsd);
+		    if(tsd.getLsid() != null && !(tsd.getLsid().length() < 1) && !"undefined".equals(tsd.getLsid())) {
+			    rosterId = tsd.getLsid().substring(0, tsd.getLsid().indexOf(":"));
+			    accessCode = tsd.getLsid().substring(tsd.getLsid().indexOf(":") + 1, tsd.getLsid().length()).toUpperCase();
+			    
+			    saveResponse.addNewTsd();
+		        saveResponse.getTsdArray(i).setLsid(tsd.getLsid());
+		        saveResponse.getTsdArray(i).setScid(tsd.getScid());
+		        saveResponse.getTsdArray(i).setMseq(tsd.getMseq());
+		        saveResponse.getTsdArray(i).setStatus(Status.OK);
+			    
+	    		manifest = oasSource.getManifest(rosterId, accessCode);
+	    		if(manifest.getRosterCompletionStatus() == null || !"IP".equals(manifest.getRosterCompletionStatus())) {
+	    			manifest.setRosterCompletionStatus("IP");
+	    		}
+	    		manifest.setRosterLastMseq(tsd.getMseq().intValue());
+		    	ManifestData[] manifestData = manifest.getManifest();	
+		    	int nextScoIndex = 0;
+		    	int j;
+		    	String thisScid = tsd.getScid();
+		    	if(!"0".equals(thisScid)) {
+			    	ManifestData thisSco = null;
+			    	for(j=0;j<manifestData.length;j++) {
+			    		if(!"TERMINATOR".equals(thisScid) && (manifestData[j].getId() == Integer.parseInt(thisScid))) {
+			    			nextScoIndex = j+1;
+			    			// TODO (complete): fix next subtest selection for TABE auto-locator
+			    			thisSco = manifestData[j];
+			    			break;
+			    		}
+			    	}	
+			    	
+			    	int rosterCid = manifest.getRosterCorrelationId();
+			    	int thisCid = tsd.getCid().intValue();
+			    	logger.debug("Cached CID: " + rosterCid + ", this message CID: " + thisCid);
+			    	if(rosterCid == 0) {
+			    		manifest.setRosterCorrelationId(thisCid);
+						updateCID(rosterId, thisCid, accessCode);
+			    	} else if(rosterCid != thisCid) {
+			    		responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
+			            saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
+			            noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd errorTsd = saveResponse.addNewTsd();
+			            errorTsd.setStatus(Status.INVALID_CID);
+			            errorTsd.addNewError();
+			            errorTsd.getError().setMethod("save_testing_session_data");
+			            errorTsd.getError().setStatus("invalid_cid");
+			            errorTsd.getError().setErrorElement(tsd.toString());
+			            if(!"CO".equals(manifest.getRosterCompletionStatus())) {
+			            	manifest.setRosterCompletionStatus("IN");
+			            }
+			            if(thisSco != null) {
+				            if(!"CO".equals(thisSco.getCompletionStatus())) {
+				            	thisSco.setCompletionStatus("IN");
 				            }
-				            if(thisSco != null) {
-					            if(!"CO".equals(thisSco.getCompletionStatus())) {
-					            	thisSco.setCompletionStatus("IN");
-					            }
-				            }
-				            return responseDocument.xmlText();
-				    	}   	
-				    	
-					    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
-					    	if(thisSco == null) throw new InvalidItemSetIdException();
-					    	thisSco.setCompletionStatus("IP");
-					    	// response events
-					    	ItemResponseWrapper irw = new ItemResponseWrapper();
-					    	irw.setTsd(tsd);
-					    	oasSink.putItemResponse(rosterId, irw);
-					    	logger.debug("TMSServlet: save: cached response for roster " + rosterId + ", message " + tsd.getMseq() + ": " + tsd.xmlText()); 
-					    }
-					    
-					    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {
-					    	LmsEventType.Enum eventType = tsd.getLevArray()[0].getE();
-			    			//logger.debug("***** Got subtest event type: " + eventType.toString());
-					    	if(tsd.getLevArray()[0].getE() == null || !LmsEventType.TERMINATED.equals(eventType)) {
-					    		if(thisSco == null) throw new InvalidItemSetIdException();
-						    	thisSco.setCompletionStatus("IP");
-					    		try {
-						    		if(LmsEventType.LMS_INITIALIZE.equals(eventType)) {
-						    			thisSco.setCompletionStatus("IP");
-						    			manifest.setRosterCompletionStatus("IP");
-						    			thisSco.setStartTime(System.currentTimeMillis());
-						    			//manifest.setRosterCorrelationId(tsd.getCid().intValue());
-						    			//updateCID(rosterId, tsd.getCid().intValue(), accessCode);
-						    		} else if(LmsEventType.STU_PAUSE.equals(eventType)) {
-						    			thisSco.setCompletionStatus("SP");
-						    			manifest.setRosterCompletionStatus("SP");
-						    		} else if(LmsEventType.STU_RESUME.equals(eventType)) {
-						    			thisSco.setCompletionStatus("IP");
-						    			manifest.setRosterCompletionStatus("IP");
-						    		} else if(LmsEventType.STU_STOP.equals(eventType)) {
-						    			thisSco.setCompletionStatus("IS");
-						    			manifest.setRosterCompletionStatus("IS");
-						    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
-						    			thisSco.setCompletionStatus("CO");
-						    			thisSco.setEndTime(System.currentTimeMillis());
-						    			if(j < manifestData.length && (("TB".equals(thisSco.getProduct()) || "TL".equals(thisSco.getProduct())) && "L".equals(thisSco.getLevel()))) {
-						    				// we just completed a locator subtest of a single-TAC auto-located TABE assessment
-						    	    		handleTabeLocator(rosterId);
-						    	    		manifest = oasSource.getManifest(rosterId, accessCode);
-						    	    		manifestData = manifest.getManifest();
-						    	    		for(j=0;j<manifestData.length;j++) {
-									    		if(!"TERMINATOR".equals(tsd.getScid()) && (manifestData[j].getId() == Integer.parseInt(tsd.getScid()))) {
-									    			nextScoIndex = j+1;
-									    			// TODO (complete): fix next subtest selection for TABE auto-locator
-									    			thisSco = manifestData[j];
-									    			thisSco.setCompletionStatus("CO");
-									    			break;
-									    		}
-									    	}
-						    	    	}
-								    	if(nextScoIndex < manifestData.length) {
-								    		NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
-						                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
-						                	logger.debug("Selected next sco: " + manifestData[nextScoIndex].getId());
-								    	} else {
-								    		logger.debug("Selected next sco index " + nextScoIndex + " is greater than manifest length: " + manifestData.length);
-								    	}
-						    		}
-						    	} catch (Exception e) {
-						    		e.printStackTrace();
-						    	}
-					    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
-					    		manifest.setRosterEndTime(new Timestamp(System.currentTimeMillis()));
-					    		boolean inProgressSubtest = false;
-					    		for(int n=0;n<manifestData.length;n++) {
-					    			if("IP".equals(manifestData[n].getCompletionStatus()) || "IN".equals(manifestData[n].getCompletionStatus())) {
-					    				inProgressSubtest = true;
-					    				break;
-					    			}
-					    		}
-					    		if(!inProgressSubtest) {
-					    			// legitimate student stop
-					    			manifest.setRosterCompletionStatus("IS");
-					    		}
-					    		if(manifestData.length > 0 && "T".equals(manifestData[0].getScorable())) {
-					    			TestDeliveryContextListener.enqueueRoster(new ScoringMessage(System.currentTimeMillis(), rosterId));
-					    			logger.debug("TMSServlet: save: sent scoring message for roster " + rosterId);
-					            }
-					    	}
-					    }
-					    
-					    if(tsd.getLsvArray() != null && tsd.getLsvArray().length > 0) {
-					    	if(thisSco == null) throw new InvalidItemSetIdException();
-					    	thisSco.setCompletionStatus("IP");
-					    	// test events
-					    	Lsv[] lsva = tsd.getLsvArray();
-					    	// TODO (complete): capture subtest raw scores against manifest record, persist to backing store
-					    	int raw = -1;
-				            int max = -1;
-				            int unscored = -1;
-				            double ability = 0;
-		                    double sem = 0;
-		                    String obj = null;                    
-				            boolean timeout = false;
-				            for(int k=0;k<lsva.length;k++) {
-				                Lsv lsv = (Lsv) lsva[k];
-				                CmiCore cmi = lsv.getCmiCore();
-				                if(cmi != null) {
-				                	Exit.Enum exit = cmi.getExit();
-				                    if(exit != null) {
-				                        timeout = exit.equals(Exit.TIME_OUT);
-				                    }
-				                    // collect subtest score stuff here, put in SISS
-				                    BigDecimal cmiraw = cmi.getScoreRaw();
-				                    BigDecimal cmimax = cmi.getScoreMax();
-				                    BigDecimal cmiability = new BigDecimal(0);
-				                    BigDecimal cmisem =  new BigDecimal(0);
-				                    String cmiobjetive = "";
-				                    
-				                    if(cmi.getScoreAbility() != null)
-				                    	cmiability = cmi.getScoreAbility();
-				                    
-				                    if(cmi.getScoreSem() != null)
-				                    	cmisem = cmi.getScoreSem();
-				                    
-				                    if(cmi.getScoreObjective() != null)
-				                    	cmiobjetive = cmi.getScoreObjective(); 
-				                    
-				                    if(cmiraw != null) {
-				                        raw = cmiraw.intValue();
-				                        max = cmimax.intValue();
-				                    }
-				                    if(cmiability != null) {
-			                            ability = cmiability.doubleValue();
-			                            sem = cmisem.doubleValue();
-			                            obj = cmiobjetive.toString();
-			                        }
-				                }
-				                ExtCore ext = lsv.getExtCore();
-				                if(ext != null) {
-				                	BigInteger extunscored = ext.getNumberOfUnscoredItems();
-				                	if(extunscored != null) {
-				                		unscored = extunscored.intValue();
-				                	}
-				                }
-				            }
-				            if(raw > -1 && max > -1 && unscored > -1) {
-				                thisSco.setRawScore(raw);
-				                thisSco.setMaxScore(max);
-				                thisSco.setUnscored(unscored);
-				            }
-				            if(ability > 0){
-				            	thisSco.setAbilityScore(ability);
-				            	thisSco.setSemScore(sem);
-				            	thisSco.setObjectiveScore(obj);
-				            }
-					    }
-					    
-					    // always update manifest to override interrupter via write-behind if still receiving events
-			    		manifest.setManifest(manifestData);
-			    		if(manifest.getRosterCompletionStatus() == null) {
-			    			manifest.setRosterCompletionStatus("IP");
-				    	}
-		    			if(thisSco.getCompletionStatus() == null) {
-		    				thisSco.setCompletionStatus("IP");
-		    			}
+			            }
+			            return responseDocument.xmlText();
+			    	}   	
+			    	
+				    if(tsd.getIstArray() != null && tsd.getIstArray().length > 0) {
+				    	if(thisSco == null) throw new InvalidItemSetIdException();
+				    	thisSco.setCompletionStatus("IP");
+				    	// response events
+				    	ItemResponseWrapper irw = new ItemResponseWrapper();
+				    	irw.setTsd(tsd);
+				    	oasSink.putItemResponse(rosterId, irw);
+				    	logger.debug("TMSServlet: save: cached response for roster " + rosterId + ", message " + tsd.getMseq() + ": " + tsd.xmlText()); 
 				    }
-		        }
+				    
+				    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {
+				    	LmsEventType.Enum eventType = tsd.getLevArray()[0].getE();
+		    			//logger.debug("***** Got subtest event type: " + eventType.toString());
+				    	if(tsd.getLevArray()[0].getE() == null || !LmsEventType.TERMINATED.equals(eventType)) {
+				    		if(thisSco == null) throw new InvalidItemSetIdException();
+					    	thisSco.setCompletionStatus("IP");
+				    		if(LmsEventType.LMS_INITIALIZE.equals(eventType)) {
+				    			thisSco.setCompletionStatus("IP");
+				    			manifest.setRosterCompletionStatus("IP");
+				    			thisSco.setStartTime(System.currentTimeMillis());
+				    			//manifest.setRosterCorrelationId(tsd.getCid().intValue());
+				    			//updateCID(rosterId, tsd.getCid().intValue(), accessCode);
+				    		} else if(LmsEventType.STU_PAUSE.equals(eventType)) {
+				    			thisSco.setCompletionStatus("SP");
+				    			manifest.setRosterCompletionStatus("SP");
+				    		} else if(LmsEventType.STU_RESUME.equals(eventType)) {
+				    			thisSco.setCompletionStatus("IP");
+				    			manifest.setRosterCompletionStatus("IP");
+				    		} else if(LmsEventType.STU_STOP.equals(eventType)) {
+				    			thisSco.setCompletionStatus("IS");
+				    			manifest.setRosterCompletionStatus("IS");
+				    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
+				    			thisSco.setCompletionStatus("CO");
+				    			thisSco.setEndTime(System.currentTimeMillis());
+				    			if(j < manifestData.length && (("TB".equals(thisSco.getProduct()) || "TL".equals(thisSco.getProduct())) && "L".equals(thisSco.getLevel()))) {
+				    				// we just completed a locator subtest of a single-TAC auto-located TABE assessment
+				    	    		handleTabeLocator(rosterId);
+				    	    		manifest = oasSource.getManifest(rosterId, accessCode);
+				    	    		manifestData = manifest.getManifest();
+				    	    		for(j=0;j<manifestData.length;j++) {
+							    		if(!"TERMINATOR".equals(tsd.getScid()) && (manifestData[j].getId() == Integer.parseInt(tsd.getScid()))) {
+							    			nextScoIndex = j+1;
+							    			// TODO (complete): fix next subtest selection for TABE auto-locator
+							    			thisSco = manifestData[j];
+							    			thisSco.setCompletionStatus("CO");
+							    			break;
+							    		}
+							    	}
+				    	    	}
+						    	if(nextScoIndex < manifestData.length) {
+						    		NextSco nextSco = saveResponse.getTsdArray(i).addNewNextSco();
+				                	nextSco.setId(String.valueOf(manifestData[nextScoIndex].getId()));
+				                	logger.debug("Selected next sco: " + manifestData[nextScoIndex].getId());
+						    	} else {
+						    		logger.debug("Selected next sco index " + nextScoIndex + " is greater than manifest length: " + manifestData.length);
+						    	}
+				    		}
+				    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
+				    		manifest.setRosterEndTime(new Timestamp(System.currentTimeMillis()));
+				    		boolean inProgressSubtest = false;
+				    		for(int n=0;n<manifestData.length;n++) {
+				    			if("IP".equals(manifestData[n].getCompletionStatus()) || "IN".equals(manifestData[n].getCompletionStatus())) {
+				    				inProgressSubtest = true;
+				    				break;
+				    			}
+				    		}
+				    		if(!inProgressSubtest) {
+				    			// legitimate student stop
+				    			manifest.setRosterCompletionStatus("IS");
+				    		}
+				    		if(manifestData.length > 0 && "T".equals(manifestData[0].getScorable())) {
+				    			TestDeliveryContextListener.enqueueRoster(new ScoringMessage(System.currentTimeMillis(), rosterId));
+				    			logger.debug("TMSServlet: save: sent scoring message for roster " + rosterId);
+				            }
+				    	}
+				    }
+				    
+				    if(tsd.getLsvArray() != null && tsd.getLsvArray().length > 0) {
+				    	if(thisSco == null) throw new InvalidItemSetIdException();
+				    	thisSco.setCompletionStatus("IP");
+				    	// test events
+				    	Lsv[] lsva = tsd.getLsvArray();
+				    	// TODO (complete): capture subtest raw scores against manifest record, persist to backing store
+				    	int raw = -1;
+			            int max = -1;
+			            int unscored = -1;
+			            double ability = 0;
+	                    double sem = 0;
+	                    String obj = null;                    
+			            boolean timeout = false;
+			            for(int k=0;k<lsva.length;k++) {
+			                Lsv lsv = (Lsv) lsva[k];
+			                CmiCore cmi = lsv.getCmiCore();
+			                if(cmi != null) {
+			                	Exit.Enum exit = cmi.getExit();
+			                    if(exit != null) {
+			                        timeout = exit.equals(Exit.TIME_OUT);
+			                    }
+			                    // collect subtest score stuff here, put in SISS
+			                    BigDecimal cmiraw = cmi.getScoreRaw();
+			                    BigDecimal cmimax = cmi.getScoreMax();
+			                    BigDecimal cmiability = new BigDecimal(0);
+			                    BigDecimal cmisem =  new BigDecimal(0);
+			                    String cmiobjetive = "";
+			                    
+			                    if(cmi.getScoreAbility() != null)
+			                    	cmiability = cmi.getScoreAbility();
+			                    
+			                    if(cmi.getScoreSem() != null)
+			                    	cmisem = cmi.getScoreSem();
+			                    
+			                    if(cmi.getScoreObjective() != null)
+			                    	cmiobjetive = cmi.getScoreObjective(); 
+			                    
+			                    if(cmiraw != null) {
+			                        raw = cmiraw.intValue();
+			                        max = cmimax.intValue();
+			                    }
+			                    if(cmiability != null) {
+		                            ability = cmiability.doubleValue();
+		                            sem = cmisem.doubleValue();
+		                            obj = cmiobjetive.toString();
+		                        }
+			                }
+			                ExtCore ext = lsv.getExtCore();
+			                if(ext != null) {
+			                	BigInteger extunscored = ext.getNumberOfUnscoredItems();
+			                	if(extunscored != null) {
+			                		unscored = extunscored.intValue();
+			                	}
+			                }
+			            }
+			            if(raw > -1 && max > -1 && unscored > -1) {
+			                thisSco.setRawScore(raw);
+			                thisSco.setMaxScore(max);
+			                thisSco.setUnscored(unscored);
+			            }
+			            if(ability > 0){
+			            	thisSco.setAbilityScore(ability);
+			            	thisSco.setSemScore(sem);
+			            	thisSco.setObjectiveScore(obj);
+			            }
+				    }
+				    
+				    // always update manifest to override interrupter via write-behind if still receiving events
+		    		manifest.setManifest(manifestData);
+		    		if(manifest.getRosterCompletionStatus() == null) {
+		    			manifest.setRosterCompletionStatus("IP");
+			    	}
+	    			if(thisSco != null && thisSco.getCompletionStatus() == null) {
+	    				thisSco.setCompletionStatus("IP");
+	    			}
+			    }
 	        }
-	        // TODO (complete): implement correlation, sequence and subtest/roster status checks for security
-	        // TODO (complete): update roster status, lastMseq, restartNumber, start/end times, etc. on test events
-			return responseDocument.xmlText();
-		} finally {
-			if(rosterId != null && accessCode != null && manifest != null) {
-				oasSink.putManifest(rosterId, accessCode, manifest);
-	    		logger.debug("TMSServlet: save: updated manifest for roster " + rosterId);
-			}
+        }
+        // TODO (complete): implement correlation, sequence and subtest/roster status checks for security
+        // TODO (complete): update roster status, lastMseq, restartNumber, start/end times, etc. on test events
+		if(rosterId != null && accessCode != null && manifest != null) {
+			oasSink.putManifest(rosterId, accessCode, manifest);
+    		logger.debug("TMSServlet: save: updated manifest for roster " + rosterId);
 		}
+		return responseDocument.xmlText();
 	}
 	
 	private void handleTabeLocator(String testRosterId) throws SQLException, IOException, ClassNotFoundException {
