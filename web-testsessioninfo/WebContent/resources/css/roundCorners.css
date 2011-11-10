@@ -14,7 +14,7 @@
   .button {
     background-color: #dfeffc; 
     border-color: #c5dbec; 
-    color: #00f; 
+    color: #00f !important; 
     padding: 5px 10px;
 	font-weight: bold; 
   }

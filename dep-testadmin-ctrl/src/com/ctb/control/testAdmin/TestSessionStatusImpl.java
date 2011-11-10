@@ -548,6 +548,42 @@ public class TestSessionStatusImpl implements TestSessionStatus
     }
     
     /**
+     * Retrieves a filtered, sorted, paged list of test sessions to which the specified user
+     * is assigned as a proctor.
+     * @param userName - identifies the user
+	 * @param filter - filtering params
+	 * @param page - paging params
+	 * @param sort - sorting params
+	 * @return TestSessionData
+	 * @throws com.ctb.exception.CTBBusinessException
+     * @common:operation
+     */
+    public TestSessionData getTestSessionsForUserHome(String userName, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+        validator.validate(userName, null, "testAdmin.getTestSessionsForUser");
+        try {
+            TestSessionData tsd = new TestSessionData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            TestSession [] sessions = testAdmin.getTestSessionsForUserHome(userName);
+            for(int i=0;i<sessions.length;i++) {
+                TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(sessions[i]);
+            }
+            tsd.setTestSessions(sessions, pageSize);
+            if(filter != null) tsd.applyFiltering(filter);
+            if(sort != null) tsd.applySorting(sort);
+            if(page != null) tsd.applyPaging(page);
+            return tsd;
+        } catch (SQLException se) {
+            TestAdminDataNotFoundException tae = new TestAdminDataNotFoundException("TestSessionStatusImpl: getTestSessionsForUser: " + se.getMessage());
+            tae.setStackTrace(se.getStackTrace());
+            throw tae;
+        }
+    }
+    
+    /**
      * Retrieves a filtered, sorted, paged list of test sessions to which the specified user is assigned as a proctor
 	 * @param userName - identifies the user
 	 * @param filter - filtering params
@@ -681,6 +717,47 @@ public class TestSessionStatusImpl implements TestSessionStatus
                 pageSize = new Integer(page.getPageSize());
             }
             TestSession [] sessions = testAdmin.getTestAdminsForOrgNode(orgNodeId);
+            tsd.setTestSessions(sessions, pageSize);
+            if(filter != null) tsd.applyFiltering(filter);
+            if(sort != null) tsd.applySorting(sort);
+            if(page != null) tsd.applyPaging(page);
+            sessions = tsd.getTestSessions();
+            for(int i=0;i<sessions.length;i++) {
+                if(sessions[i] != null) {
+                    TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(sessions[i]);
+                }
+            }
+            
+            return tsd;
+        } catch (SQLException se) {
+            TestAdminDataNotFoundException tae = new TestAdminDataNotFoundException("TestSessionStatusImpl: getTestSessionsForOrgNode: " + se.getMessage());
+            tae.setStackTrace(se.getStackTrace());
+            throw tae;         
+        }
+    }
+    
+    
+    /**
+     * Retrieves a filtered, sorted, paged list of test sessions created at the specified org node
+	 * @param userName - identifies the user
+     * @param orgNodeId - identifies the org node
+	 * @param filter - filtering params
+	 * @param page - paging params
+	 * @param sort - sorting params
+	 * @return TestSessionData
+	 * @throws com.ctb.exception.CTBBusinessException
+     * @common:operation
+     */
+    public TestSessionData getTestSessionsForOrgNode(String userName, Integer orgNodeId, FilterParams filter, PageParams page, SortParams sort,Integer userId) throws CTBBusinessException
+    {
+        validator.validateNode(userName, orgNodeId, "testAdmin.getTestSessionsForOrgNode");
+        try {
+            TestSessionData tsd = new TestSessionData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            TestSession [] sessions = testAdmin.getTestAdminsForOrgNode(orgNodeId, userId);
             tsd.setTestSessions(sessions, pageSize);
             if(filter != null) tsd.applyFiltering(filter);
             if(sort != null) tsd.applySorting(sort);

@@ -21,7 +21,7 @@
 <!-- ********************************************************************************************************************* -->
  
 <netui:form action="assessments_sessions">
-
+<input type="hidden" id="treeOrgNodeId" />
 <table width="100%" border="0">
 <tr>
 <td>
@@ -30,7 +30,9 @@
 </tr>
 <tr height="400" align="center">
 <td>
-    <p align="center"><netui:content value="Content goes here"/></p>
+	<jsp:include page="/sessionOperation/assessment_sessionList.jsp" />
+	<script>populateSessionListGrid(true);</script>
+    
 </td>    
 </tr>
 </table>

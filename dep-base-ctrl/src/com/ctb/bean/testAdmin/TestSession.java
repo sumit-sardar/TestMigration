@@ -74,6 +74,7 @@ public class TestSession extends CTBBean
     //START - TABE BAUM 020 Form Recommendation 
 	private Boolean isStudentInTestSession = false;
     //END - TABE BAUM 020 Form Recommendation 
+	private String AssignedRole;
 	
    
    
@@ -585,5 +586,19 @@ public class TestSession extends CTBBean
 	 */
 	public void setIsTestSessionDataExported(String isTestSessionDataExported) {
 		this.isTestSessionDataExported = isTestSessionDataExported;
+	}
+
+	/**
+	 * @return the assignedRole
+	 */
+	public String getAssignedRole() {
+		return AssignedRole;
+	}
+
+	/**
+	 * @param assignedRole the assignedRole to set
+	 */
+	public void setAssignedRole(String assignedRole) {
+		AssignedRole = assignedRole;
 	}
 } 

@@ -30,8 +30,21 @@ public class TestSessionVO implements java.io.Serializable
     //START - form recommendation
     private Boolean isStudentInTestSession = false;
      //END - form recommendation
+    private String AssignedRole;
     
-    public TestSessionVO() 
+    /**
+	 * @return the assignedRole
+	 */
+	public String getAssignedRole() {
+		return AssignedRole;
+	}
+	/**
+	 * @param assignedRole the assignedRole to set
+	 */
+	public void setAssignedRole(String assignedRole) {
+		AssignedRole = assignedRole;
+	}
+	public TestSessionVO() 
     {
     }    
     public TestSessionVO(TestSession ts) 
@@ -57,7 +70,7 @@ public class TestSessionVO implements java.io.Serializable
          this.parentProductId = ts.getParentProductId();
          this.licenseEnabled = ts.getLicenseEnabled();
          this.isStudentInTestSession = ts.getIsStudentInTestSession();   //START - form recommendation
-        
+         this.AssignedRole = ts.getAssignedRole();
     }     
     public String getAccessCode() {
         return this.accessCode;

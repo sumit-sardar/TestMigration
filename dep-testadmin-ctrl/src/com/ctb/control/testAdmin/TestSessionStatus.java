@@ -484,4 +484,8 @@ public interface TestSessionStatus
      */
     String getParentResourceUriForUser(java.lang.String userName, java.lang.String resourceTypeCode) throws com.ctb.exception.CTBBusinessException;
     
+    com.ctb.bean.testAdmin.TestSessionData getTestSessionsForUserHome(java.lang.String userName, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+    
+    com.ctb.bean.testAdmin.TestSessionData getTestSessionsForOrgNode(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort, Integer userId) throws com.ctb.exception.CTBBusinessException;
+    
 } 
