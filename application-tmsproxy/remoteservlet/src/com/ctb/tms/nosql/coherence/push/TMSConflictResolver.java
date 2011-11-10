@@ -1,10 +1,11 @@
 package com.ctb.tms.nosql.coherence.push;
 
+import java.util.HashMap;
+
 import org.apache.log4j.Logger;
 
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.RosterData;
-import com.ctb.tms.nosql.coherence.OASCoherenceSink;
 import com.oracle.coherence.patterns.pushreplication.EntryOperation;
 import com.oracle.coherence.patterns.pushreplication.publishers.cache.ConflictResolution;
 import com.oracle.coherence.patterns.pushreplication.publishers.cache.ConflictResolver;
@@ -55,18 +56,22 @@ public class TMSConflictResolver implements ConflictResolver {
                 	} else if("OASManifestCache".equals(entryOperation.getCacheName())) {
                 		Manifest[] incoming = (Manifest[]) localEntry.getContext().getValueFromInternalConverter().convert(entryOperation.getPublishableEntry().getBinaryValue());
                 		Manifest[] current = (Manifest[]) localEntry.getValue();
-                		if(incoming == null || incoming.length <= 0) {
-                			resolution.useLocalValue();
-                		} else if(current == null || current.length <= 0) {
-                			resolution.useInComingValue();
-                		} else {
-	                		if(incoming[0].getRosterLastMseq() > current[0].getRosterLastMseq()) {
-	                			resolution.useInComingValue();
-	                		} else {
-	                			resolution.useLocalValue();
-	                			logger.warn("Replicated manifest message has lower mseq than current local value - ignoring.");
-	                		}
+                		HashMap<String, Manifest> manifestMap = new HashMap<String, Manifest>(incoming.length + current.length);	
+                		for(int i=0;i<current.length;i++) {
+                			String key = current[i].getAccessCode();
+                			manifestMap.put(key, current[i]);
                 		}
+                		for(int i=0;i<incoming.length;i++) {
+                			String key = incoming[i].getAccessCode();
+                			Manifest manifest = manifestMap.get(key);
+                			if(manifest == null) {
+                				manifestMap.put(key, incoming[i]);
+                			} else if(incoming[i].getRosterLastMseq() > manifest.getRosterLastMseq()) {
+                				manifestMap.put(key, incoming[i]);
+                			}
+                		}
+                		Manifest [] newManifest = manifestMap.values().toArray(new Manifest[0]);
+                		resolution.useMergedValue(newManifest);
                 	} else {
                 		resolution.useInComingValue();
                 	}
