@@ -121,74 +121,30 @@ public class HomePageController extends PageFlowController
      */
     @Jpf.Action(forwards = { 
         @Jpf.Forward(name = "home_page", path = "home_page.do"), 
-        @Jpf.Forward(name = "home_page_new_UI", path = "home_page_new_UI.do"),
         @Jpf.Forward(name = "resetPassword", path = "resetPassword.do"), 
-        @Jpf.Forward(name = "resetPassword_new_UI", path = "resetPassword_new_UI.do"), 
-        @Jpf.Forward(name = "editTimeZone", path = "setTimeZone.do"),
-        @Jpf.Forward(name = "editTimeZone_new_UI", path = "setTimeZone_new_UI.do")
+        @Jpf.Forward(name = "editTimeZone", path = "setTimeZone.do")
     })
     protected Forward begin()
     {        
     	getLoggedInUserPrincipal();   
     	getUserDetails();            
 
-        // temporary direct to old/new UI here
-        boolean usingOldUI = false;
-    	String OldUI = this.getRequest().getParameter("OldUI");
-    	if ("true".equals(OldUI))
-    		usingOldUI = true;
-    	if ("tai_state".equals(this.userName))
-    		usingOldUI = true;
-    	        
         if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword()))
         {
-        	if (usingOldUI) {       	
-        		return new Forward("resetPassword");
-        	}
-        	else {
-        		return new Forward("resetPassword_new_UI");
-        	}
+       		return new Forward("resetPassword");
         }
         else if (this.user.getTimeZone() == null)
         {
-        	if (usingOldUI) {        	
-        		return new Forward("editTimeZone");
-        	}
-        	else {
-        		return new Forward("editTimeZone_new_UI");
-        	}
+       		return new Forward("editTimeZone");
         }
         else
         {
-        	if (usingOldUI) {       	
-            	HomePageForm form = new HomePageForm();
-            	form.init();
-        		return new Forward("home_page", form);
-        	}
-        	else {
-        		return new Forward("home_page_new_UI");
-        	}
+        	HomePageForm form = new HomePageForm();
+        	form.init();
+    		return new Forward("home_page", form);
         }
     }
 
-    /**
-     * @jpf:action
-     */
-    @Jpf.Action()
-    protected Forward home_page_new_UI()
-    {               
-        try
-        {
-            String url = "/SessionWeb/sessionOperation/begin.do";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
-    }
-    
     /**
      * @jpf:action
      */
@@ -225,41 +181,6 @@ public class HomePageController extends PageFlowController
         return null;
     }
 
-    /**
-     * @jpf:action
-     */
-    @Jpf.Action()
-    protected Forward resetPassword_new_UI()
-    {               
-        try
-        {
-            String url = "/UserWeb/manageUser/resetPassword.do";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
-    }
-
-    /**
-     * @jpf:action
-     */
-    @Jpf.Action()
-    protected Forward setTimeZone_new_UI()
-    {               
-        try
-        {
-            String url = "/UserWeb/manageUser/beginEditMyProfile.do?isSetTimeZone=true";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
-    }
     
     /**
      * @jpf:action

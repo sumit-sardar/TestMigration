@@ -101,7 +101,7 @@ public class SessionOperationController extends PageFlowController {
     {
         try
         {
-            String url = "/SessionWeb/homepage/HomePageController.jpf?OldUI=true";
+            String url = "/TestSessionInfoWeb/homepage/HomePageController.jpf";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -443,8 +443,7 @@ public class SessionOperationController extends PageFlowController {
             	INDIANACustomer = true;
             }
         }
-        //return INDIANACustomer;
-        return true;
+        return INDIANACustomer;
     }
 
     private boolean isGEORGIACustomer(CustomerConfiguration [] customerConfigs)
@@ -458,8 +457,7 @@ public class SessionOperationController extends PageFlowController {
             	GEORGIACustomer = true;
             }
         }
-        //return GEORGIACustomer;
-        return true;
+        return GEORGIACustomer;
     }
     
     /////////////////////////////////////////////////////////////////////////////////////////////    
