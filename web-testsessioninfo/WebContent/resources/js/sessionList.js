@@ -330,7 +330,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	 		}
      	   jQuery("#list2").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
      	   
-           jQuery("#list2").sortGrid('loginEndDate',true);
+           jQuery("#list2").sortGrid('loginEndDate',false);
            var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
            $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
            $(arrowElements.childNodes[1]).addClass('ui-state-disabled');
@@ -341,10 +341,10 @@ function createSingleNodeSelectedTree(jsondata) {
      	   var urlVal = 'getCompletedSessionForGrid.do';
      	   jQuery("#list3").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
            var sortArrowPA = jQuery("#list3");
-           jQuery("#list3").sortGrid('loginEndDate',true);
-         	//var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
-           //$(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
-          // $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled');
+           jQuery("#list3").sortGrid('loginEndDate',false);
+         	var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
+           $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
+           $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled');
 
       }
 		
