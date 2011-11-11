@@ -298,7 +298,12 @@ public class TestClientPageFlowController extends PageFlowController
         }
                 
         ItemBean item = globalApp.currentDeliverableUnitBean.getItems()[ index - 1 ];
-        getRequest().setAttribute("item", item.getLml());
+        
+       //For Content Review Character issue.
+       String itemXML =  item.getLml();
+       itemXML = itemXML.replaceAll("&amp;", "&");
+       itemXML = itemXML.replaceAll(" & ", " &amp; ");
+        getRequest().setAttribute("item", itemXML);
         
     }
     
