@@ -150,7 +150,7 @@ public class TestClientPageFlowController extends PageFlowController
                           "<manifest title=\"" +
                           globalApp.currentDeliverableUnitBean.getTitle().replaceAll( "& ", "&amp; " ) +
                           "\">" +
-                          "<sco cmi.core.total_time=\"0:0:0\" adsid=\"10\" item_encryption_key=\"n7673nBJ2n27bB4oAfme7Ugl5VV42g8\" asmt_encryption_key=\"1\" asmt_hash=\"1003A05C5AFDD27F24A5F05B627C52E9\"" +
+                          "<sco cmi.core.total_time=\"0:0:0\" adaptive=\"false\"  adsid=\"10\" item_encryption_key=\"n7673nBJ2n27bB4oAfme7Ugl5VV42g8\" asmt_encryption_key=\"1\" asmt_hash=\"1003A05C5AFDD27F24A5F05B627C52E9\"" +
                           " title=\"" +
                           globalApp.currentDeliverableUnitBean.getTitle().replaceAll( "& ", "&amp; " ) + 
                           "\" sco_unit_type=\"SUBTEST\" sco_unit_question_number_offset=\"0\" sco_duration_minutes=\"" +
