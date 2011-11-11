@@ -21,6 +21,7 @@ public class CustomerLicense extends CTBBean
     private String productName;
     private boolean availableLicenseChange;
     private String customerName;
+    private Boolean isLicenseAvailable; 
 
 
     //changes for LM12
@@ -163,5 +164,21 @@ public class CustomerLicense extends CTBBean
 	 */
 	public void setProductName(String productName) {
 		this.productName = productName;
+	}
+
+	
+	/**
+	 * @return the isLicenseAvailable
+	 */
+	public boolean isLicenseAvailable() {
+		return isLicenseAvailable;
+	}
+
+	
+	/**
+	 * @param isLicenseAvailable the isLicenseAvailable to set
+	 */
+	public void setIsLicenseAvailable(boolean isLicenseAvailable) {
+		this.isLicenseAvailable = isLicenseAvailable;
 	}
 } 

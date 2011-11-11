@@ -346,5 +346,9 @@ public interface License extends JdbcControl
      @JdbcControl.SQL(arrayMaxLength = 100000,statement = "select sum(col.consumed) as consumedLicense, sum(col.reserved) as reservedLicense from customer_orgnode_license col where  col.product_id = {productId}  and col.org_node_id in (select ona.org_node_Id    from org_node_ancestor ona, org_node org   where ona.ancestor_org_node_id = {orgNodeId} and org.org_node_id = ona.org_node_id)")
      CustomerLicense [] getTotalConsumedReservedQuantityByAncestorOrgNode(Integer orgNodeId,Integer productId) throws SQLException;
 
+     
+     @JdbcControl.SQL(arrayMaxLength = 100000,statement = " select decode(sum(nvl(col.available, 0)),0,0,1) as isLicenseAvailable , prd.product_id as productId from customer_orgnode_license col,product prd,org_node node,user_role role,users, org_node_ancestor ans where prd.product_id = col.product_id and role.org_node_id = ans.ancestor_org_node_id  and col.org_node_id = ans.org_node_id and role.org_node_id = node.org_node_id and role.activation_status = 'AC' and node.activation_status = 'AC' and role.user_id = users.user_id and users.user_name = {userName} group by prd.product_id, prd.product_name, col.subtest_model ")
+     CustomerLicense[] isLicenseAvailable(String userName);
+
 }
 

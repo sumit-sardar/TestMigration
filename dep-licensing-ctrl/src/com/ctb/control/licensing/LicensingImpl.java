@@ -233,6 +233,18 @@ public class LicensingImpl implements Licensing
 	        customerLicense =  this.license.getUserOrgNodeLicenseDetails(userName);        
 	    }
 	    
+	    if(customerLicense!=null && customerLicense.length>0){
+	    	for( CustomerLicense license : customerLicense) {
+	    		CustomerLicense[] cLicense  =this.license.isLicenseAvailable(userName);
+	    		license.setIsLicenseAvailable(false);
+	    		for( CustomerLicense lic : cLicense) {
+	    			if(lic.getProductId().equals(license.getProductId())) {
+	    				license.setIsLicenseAvailable(lic.isLicenseAvailable());
+	    				break;
+	    			} 
+	    		}
+	    	}
+	    }
 	    return customerLicense;  
 	              
 	} catch (SQLException e ) {

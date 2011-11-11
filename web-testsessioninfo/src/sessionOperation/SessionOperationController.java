@@ -22,6 +22,7 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
@@ -53,6 +54,8 @@ public class SessionOperationController extends PageFlowController {
     @Control()
     private com.ctb.control.userManagement.UserManagement userManagement;
     
+    @Control()
+    private com.ctb.control.licensing.Licensing licensing;
     
 	private String userName = null;
 	private Integer customerId = null;
@@ -234,20 +237,26 @@ public class SessionOperationController extends PageFlowController {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String contentType = CONTENT_TYPE_JSON;
-		List sessionList = new ArrayList(0);
 		String studentArray = "";
 		String json = "";
 		ObjectOutput output = null;
 		try {
 			System.out.println ("db process time Start:"+new Date());
-			//code to be addwed here
-	    	// retrieve information for user test sessions
-	        //  FilterParams sessionFilter = FilterSortPageUtils.buildFilterParams(FilterSortPageUtils.TESTSESSION_DEFAULT_FILTER_COLUMN, "CU");
-	    	FilterParams sessionFilter = null;
+			
+			// get licenses
+	        CustomerLicense[] customerLicenses = getCustomerLicenses();
+	        
+	       /* if ((customerLicenses != null) && (customerLicenses.length > 0))
+	        {
+	            this.getRequest().setAttribute("customerLicenses", getLicenseQuantitiesByOrg());
+	           // this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
+	        }*/
+	        
+	        // retrieve information for user test sessions
+			FilterParams sessionFilter = null;
 	        PageParams sessionPage = null;
 	        SortParams sessionSort = null;
 	        sessionSort = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.TESTSESSION_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
-	        //TestSessionData tsd = getTestSessionsForUser(sessionFilter, sessionPage, sessionSort);
 	        TestSessionData tsd = getTestSessionsForUserHome(sessionFilter, sessionPage, sessionSort);
 	        System.out.println ("db process time End:"+new Date());
 	        Base base = new Base();
@@ -258,8 +267,8 @@ public class SessionOperationController extends PageFlowController {
 			if ((tsd != null) && (tsd.getFilteredCount().intValue() > 0))
 			{
 				System.out.println ("List process time Start:"+new Date());
-				base = buildTestSessionList(tsd, base); 
-				String userOrgCategoryName = getTestSessionOrgCategoryName(sessionList);
+				base = buildTestSessionList(customerLicenses, tsd, base); 
+				//String userOrgCategoryName = getTestSessionOrgCategoryName(sessionList);
 				System.out.println ("List process time End:"+new Date());
 			} else {
 				this.setSessionListCUFU(new ArrayList());
@@ -274,7 +283,7 @@ public class SessionOperationController extends PageFlowController {
 			System.out.println ("Json process time Start:"+new Date());
 			
 			json = gson.toJson(base);
-			//System.out.println ("Json process time End:"+new Date() +".."+json);
+			System.out.println ("Json process time End:"+new Date() +".."+json);
 
 
 			
@@ -459,7 +468,7 @@ public class SessionOperationController extends PageFlowController {
 		ObjectOutput output = null;
 		try {
 			System.out.println ("db process time Start:"+new Date());
-			//code to be addwed here
+			CustomerLicense[] customerLicenses = getCustomerLicenses();
 	    	// retrieve information for user test sessions
 	        //  FilterParams sessionFilter = FilterSortPageUtils.buildFilterParams(FilterSortPageUtils.TESTSESSION_DEFAULT_FILTER_COLUMN, "CU");
 	    	FilterParams sessionFilter = null;
@@ -476,7 +485,7 @@ public class SessionOperationController extends PageFlowController {
 			if ((tsd != null) && (tsd.getFilteredCount().intValue() > 0))
 			{
 				System.out.println ("List process time Start:"+new Date());
-				base = buildTestSessionList(tsd, base); 
+				base = buildTestSessionList(customerLicenses, tsd, base); 
 				String userOrgCategoryName = getTestSessionOrgCategoryName(sessionList);
 				System.out.println ("List process time End:"+new Date());
 			} else {
@@ -647,6 +656,26 @@ public class SessionOperationController extends PageFlowController {
         }
     }
     
+    /**
+     * getCustomerLicenses
+     */
+    private CustomerLicense[] getCustomerLicenses()
+    {
+        CustomerLicense[] cls = null;
+
+        try
+        {
+            cls = this.licensing.getCustomerOrgNodeLicenseData(this.userName, null);
+        }    
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+     
+        return cls;
+    }
+    
+   
 	private void setupUserPermission(CustomerConfiguration [] customerConfigs)
 	{
         boolean adminUser = isAdminUser();
@@ -673,6 +702,44 @@ public class SessionOperationController extends PageFlowController {
      	
      	this.getSession().setAttribute("userScheduleAndFindSessionPermission", userScheduleAndFindSessionPermission());    
 	}
+	
+	 /**
+     * get value for enabling RegisterStudent button.
+     */
+    private void registerStudentEnable(CustomerLicense[] customerLicenses, TestSessionVO testSessionVo)
+    {    
+    	if (customerLicenses == null) {
+    		return;
+    	}
+    	
+             boolean flag = false;
+            
+            if (testSessionVo.getLicenseEnabled().equals("T"))
+            {
+            
+                for (int j=0; j < customerLicenses.length; j++)
+                { 
+                            
+                    if (customerLicenses[j].getProductId().intValue() == testSessionVo.getProductId().intValue() || customerLicenses[j].getProductId().intValue() == testSessionVo.
+                        getParentProductId().intValue())
+                    {
+                        flag = true;      
+                       if(customerLicenses[j].isLicenseAvailable()){
+                        	testSessionVo.setIsRegisterStudentEnable("T");
+                        } else {
+                        	 testSessionVo.setIsRegisterStudentEnable("F");
+                        }
+                      
+                      break;
+                  }
+                }
+            } 
+            if (!flag) {
+                
+                testSessionVo.setIsRegisterStudentEnable("T");   
+                
+            }
+    }
 
     private Boolean userHasReports() 
     {
@@ -844,7 +911,7 @@ public class SessionOperationController extends PageFlowController {
         return tsd;
     }
     
-    private Base buildTestSessionList(TestSessionData tsd, Base base) 
+    private Base buildTestSessionList(CustomerLicense[] customerLicenses, TestSessionData tsd, Base base) 
     {
         List sessionListCUFU = new ArrayList(); 
         List sessionListPA = new ArrayList();        
@@ -855,9 +922,11 @@ public class SessionOperationController extends PageFlowController {
             if (ts != null)
             {	if (ts.getTestAdminStatus().equals("CU") ||ts.getTestAdminStatus().equals("FU") ){
             		TestSessionVO vo = new TestSessionVO(ts);
+            		registerStudentEnable(customerLicenses, vo);
             		sessionListCUFU.add(vo);
             	} else {
             		TestSessionVO vo = new TestSessionVO(ts);
+            		registerStudentEnable(customerLicenses, vo);
             		sessionListPA.add(vo);
             	}
             

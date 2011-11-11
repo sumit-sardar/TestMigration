@@ -1,6 +1,8 @@
 var leafNodeCategoryId;
 var orgTreeHierarchy;
 var gridloaded = false;
+var sessionListCUFU;
+var sessionListPA;
 
 var isTreePopulated = false;
 var openTreeRequested = false;
@@ -21,18 +23,16 @@ function populateSessionListGrid(homePageLoad) {
 		 datatype: "json",         
           colNames:['Session Name','Test Name', 'State', 'My Role','Start Date', 'End Date'],
 		   	colModel:[
-		   		{name:'testAdminName',index:'testAdminName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'creatorOrgNodeName',index:'creatorOrgNodeName', width:175, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'AssignedRole',index:'AssignedRole',editable: true, width:100, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'loginStartDate',index:'loginStartDate', width:175, editable: true, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d,Y h:i:s', newformat:'m/d/Y'}, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'loginEndDate',index:'loginEndDate', width:200, editable: true, align:"left",sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d,Y h:i:s', newformat:'m/d/Y'}, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'loginEndDate',index:'loginEndDate', width:175, editable: true, align:"left",sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d,Y h:i:s', newformat:'m/d/Y'}, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSessionCUFU", id:"testAdminId",
 		   	records: function(obj) { 
-		   	if(homePageLoad) {
-		   		//populateTree();
-		   		}
+		   	 sessionListCUFU = JSON.stringify(obj.testSessionCUFU);
 		   	 } },
 		   	loadui: "disable",
 			rowNum:20,
@@ -60,16 +60,16 @@ function populateSessionListGrid(homePageLoad) {
 				
 			},
 			onSelectRow: function () {
-				//if ($("#roleNameID").val() == 'Administrator') {
 					setAnchorButtonState('viewStatusButton', false);
-					if($("#userScheduleAndFindSessionPermission").val() == 'true'){
-			 			setAnchorButtonState('scSessionButton', false);
-			 		}
 					if($("#canRegisterStudent").val() == 'true'){
-			 			setAnchorButtonState('registerStudentButton', false);
+						var selectedTestSessionId = $("#list2").jqGrid('getGridParam', 'selrow');
+						 var val = getDataFromJson(selectedTestSessionId, sessionListCUFU);
+						 if(val == '"T"'){	
+			 				setAnchorButtonState('registerStudentButton', false);
+			 			 } else {
+			 			 	setAnchorButtonState('registerStudentButton', true);
+			 			 }
 			 		}
-				//}
-				//document.getElementById('displayMessageMain').style.display = "none";	
 			},
 			loadComplete: function () {
 				if ($('#list2').getGridParam('records') === 0) {
@@ -80,6 +80,11 @@ function populateSessionListGrid(homePageLoad) {
             	} else {
             		gridReloadPA();
             	}
+            	
+            	var width = jQuery("#sessionGrid").width();
+			    width = width - 80; // Fudge factor to prevent horizontal scrollbars
+			    jQuery("#list2").setGridWidth(width);
+			    jQuery("#list3").setGridWidth(width);
 				$.unblockUI();  
 				$("#list2").setGridParam({datatype:'local'});
 				var tdList = ("#pager2_left table.ui-pg-table  td");
@@ -108,14 +113,17 @@ function populateCompletedSessionListGrid() {
 		  datatype: "json",          
           colNames:['Session Name','Test Name', 'State', 'My Role','Start Date', 'End Date'],
 		   	colModel:[
-		   		{name:'testAdminName',index:'testAdminName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'creatorOrgNodeName',index:'creatorOrgNodeName', width:175, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'AssignedRole',index:'AssignedRole',editable: true, width:100, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'loginStartDate',index:'loginStartDate', width:175, editable: true, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d,Y h:i:s', newformat:'m/d/Y'}, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'loginEndDate',index:'loginEndDate', width:200, editable: true, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d,Y h:i:s', newformat:'m/d/Y'},sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'loginEndDate',index:'loginEndDate', width:175, editable: true, align:"left", sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d,Y h:i:s', newformat:'m/d/Y'},sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
-		   	jsonReader: { repeatitems : false, root:"testSessionPA", id:"testAdminId" },
+		   	jsonReader: { repeatitems : false, root:"testSessionPA", id:"testAdminId",
+		   	records: function(obj) { 
+		   	 sessionListPA = JSON.stringify(obj.testSessionPA);
+		   	 } },
 		   	loadui: "disable",
 			rowNum:20,
 			loadonce:true, 
@@ -138,16 +146,18 @@ function populateCompletedSessionListGrid() {
 				if(reqestedPage <= minPageSize){
 					$('#list3').setGridParam({"page": minPageSize});
 				}
-				
 			},
 			onSelectRow: function () {
-				//if ($("#roleNameID").val() == 'Administrator') {
-					setAnchorButtonState('viewStatusButtonPA', false);
+					setAnchorButtonState('viewStatusButton', false);
 					if($("#canRegisterStudent").val() == 'true'){
-			 			setAnchorButtonState('registerStudentButtonPA', false);
+			 			var selectedTestSessionId = $("#list3").jqGrid('getGridParam', 'selrow');
+						 var val = getDataFromJson(selectedTestSessionId, sessionListPA);
+						 if(val == '"T"'){	
+			 				setAnchorButtonState('registerStudentButton', false);
+			 			 } else {
+			 			 	setAnchorButtonState('registerStudentButton', true);
+			 			 }
 			 		}
-				//}
-				//document.getElementById('displayMessageMain').style.display = "none";	
 			},
 			loadComplete: function () {
 				if ($('#list3').getGridParam('records') === 0) {
@@ -185,7 +195,7 @@ function populateCompletedSessionListGrid() {
 		openTreeRequested = true;
 		 if(isTreePopulated) {
 			 $("#show").css('display', 'none');
-			 $("#hide").css('display', 'inline-block');
+			 $("#hide").css('display', 'block');
 			 $("#gap").width("3%");
 			 $("#orgSlider").width("17%");
 			 $("#sessionGrid").width("82%");
@@ -207,7 +217,7 @@ function populateCompletedSessionListGrid() {
 	function hideTreeSlider() {
 		 openTreeRequested  = false;
 		 $("#hide").css('display', 'none');
-		 $("#show").css('display', 'inline-block');
+		 $("#show").css('display', 'block');
 		 $("#gap").width("0%");
 		 $("#orgSlider").width("0%");
 		 $("#sessionGrid").width("100%");
@@ -302,18 +312,12 @@ function createSingleNodeSelectedTree(jsondata) {
 		
 		document.getElementById('ShowButtons').style.display = "block";
  		setAnchorButtonState('viewStatusButton', true);
- 		 if($("#userScheduleAndFindSessionPermission").val() == 'true'){
- 			setAnchorButtonState('scSessionButton', true);
- 		}
+ 		
  		 if($("#canRegisterStudent").val() == 'true'){
  			setAnchorButtonState('registerStudentButton', true);
  		}
  		
- 		document.getElementById('ShowButtonsPA').style.display = "block";
- 		setAnchorButtonState('viewStatusButtonPA', true);
- 		 if($("#canRegisterStudent").val() == 'true'){
- 			setAnchorButtonState('registerStudentButtonPA', true);
- 		}
+ 		
 	}
 	
 	 function gridReload(homePageLoad){ 
@@ -343,5 +347,24 @@ function createSingleNodeSelectedTree(jsondata) {
           // $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled');
 
       }
-	
+		
+		
+		function getDataFromJson(id, sessionList){
+			var str = sessionList;
+			var isRegisterStudentEnable = "";
+			var indexOfId = str.indexOf(id);
+			var indexOfisRegisterStudentEnable = -1;
+			var indexOfComma = -1;
+			if(indexOfId > 0){
+				str = str.substring(parseInt(indexOfId), str.length);
+				indexOfisRegisterStudentEnable = str.indexOf("isRegisterStudentEnable");
+				indexOfComma = str.indexOf(',', parseInt(indexOfisRegisterStudentEnable));
+				indexOfisRegisterStudentEnable += 25;
+				isRegisterStudentEnable = str.substring(parseInt(indexOfisRegisterStudentEnable), parseInt(indexOfComma));
+				isRegisterStudentEnable = $.trim(isRegisterStudentEnable);
+			}else{
+				
+			}
+			return isRegisterStudentEnable;
+	}
  
