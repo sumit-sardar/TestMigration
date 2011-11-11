@@ -806,6 +806,7 @@ public class TMSServlet extends HttpServlet {
 		manifest.setRosterRestartNumber(newRestartCount);
 		rd.getAuthData().setRestartNumber(newRestartCount);
 		rd.getAuthData().setLastMseq(newRestartCount * 1000000);
+		manifest.setRosterLastMseq(newRestartCount * 1000000);
 		if(loginResponse.getTutorial() != null) {
 			if(manifest.getTutorialTaken() == null) {
 				manifest.setTutorialTaken(0==loginResponse.getTutorial().getDeliverTutorial().intValue()?"TRUE":null);
