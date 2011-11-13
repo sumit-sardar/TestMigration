@@ -19,8 +19,20 @@
 <script type="text/javascript">
 <!--
 var _LDB_BypassSetFocusOnPageLoad = 0;
+
+//This is to revert the change for the header group in javascript side. Because this is not going to be parsed by Flash.
+String.prototype.replaceAll = function(stringToFind,stringToReplace){
+    var temp = this;
+    var index = temp.indexOf(stringToFind);
+        while(index != -1){
+            temp = temp.replace(stringToFind,stringToReplace);
+            index = temp.indexOf(stringToFind);
+        }
+        return temp;
+    }
 function showFootnote(header)
 {
+	header = header.replaceAll("&amp;","&");
 	lzSetCanvasAttribute("footnotedata", header);
 }
 
