@@ -109,7 +109,7 @@ public class UploadDownloadFormUtils
                    
                     headerNode = userFileRow[i].getOrganizationNodes();
                     //Insert organization header
-                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {
+                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+3) { 	// For MQC 66840 : Upload/Download user/student with MDR
                         
                         cell = row.createCell((short)j);
                         style = cell.getCellStyle();
@@ -123,11 +123,18 @@ public class UploadDownloadFormUtils
                         cell.setCellStyle(style);
                         cell.setCellValue(headerNode[k].getOrgNodeCode());
                         
+                        //Start For MQC 66840 : Upload/Download user/student with MDR
+                        cell = row.createCell((short)(j + 2));
+                        style = cell.getCellStyle();
+                        style.setWrapText(true);
+                        cell.setCellStyle(style);
+                        cell.setCellValue(headerNode[k].getMdrNumber());
+                        // End For MQC 66840 : Upload/Download user/student with MDR
                
                     }
                     
                     //Insert User Header
-                    userPos = headerNode.length * 2;
+                    userPos = headerNode.length * 3; 	// For MQC 66840 : Upload/Download user/student with MDR
                     
                     //FirstName Header
                     cell = row.createCell((short)userPos);
@@ -276,6 +283,13 @@ public class UploadDownloadFormUtils
                             cell.setCellStyle(style);
                             cell.setCellValue(nodeData[j].getOrgNodeCode());
                             
+                           // For MQC 66840 : Upload/Download user/student with MDR
+                            cell = row.createCell((short)(cellPosition + 2));
+                            style = cell.getCellStyle();
+                            style.setWrapText(true);
+                            cell.setCellStyle(style);
+                            cell.setCellValue(nodeData[j].getMdrNumber());
+                            // For MQC 66840 : Upload/Download user/student with MDR
                         }
                         
                         
@@ -354,7 +368,7 @@ public class UploadDownloadFormUtils
             
             
             
-            cellPosition = cellPosition + 2;
+            cellPosition = cellPosition + 3; 	// For MQC 66840 : Upload/Download user/student with MDR
             
         }
         if (flag) {
@@ -451,7 +465,8 @@ public class UploadDownloadFormUtils
                    
                     headerNode = userFileRow[i].getOrganizationNodes();
                     //Insert organization header
-                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {
+                    // For MQC 66840 : Upload/Download user/student with MDR
+                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+3) { 
                         
                         cell = row.createCell((short)j);
                         style = cell.getCellStyle();
@@ -465,11 +480,18 @@ public class UploadDownloadFormUtils
                         cell.setCellStyle(style);
                         cell.setCellValue(headerNode[k].getOrgNodeCode());
                         
+                        // Start For MQC 66840 : Upload/Download user/student with MDR
+                        cell = row.createCell((short)(j + 2));
+                        style = cell.getCellStyle();
+                        style.setWrapText(true);
+                        cell.setCellStyle(style);
+                        cell.setCellValue(headerNode[k].getMdrNumber());
+                        // End For MQC 66840 : Upload/Download user/student with MDR
                
                     }
                     
                     //Insert User Header
-                    userPos = headerNode.length * 2;
+                    userPos = headerNode.length * 3; 	//Start For MQC 66840 : Upload/Download user/student with MDR
                     
                     //FirstName Header
                     cell = row.createCell((short)userPos);
@@ -617,11 +639,18 @@ public class UploadDownloadFormUtils
                             cell.setCellStyle(style);
                             cell.setCellValue(nodeData[j].getOrgNodeCode());
                             
+                          	// Start For MQC 66840 : Upload/Download user/student with MDR
+                            cell = row.createCell((short)(cellPosition + 2));
+                            style = cell.getCellStyle();
+                            style.setWrapText(true);
+                            cell.setCellStyle(style);
+                            cell.setCellValue(nodeData[j].getMdrNumber());
+                            // End For MQC 66840 : Upload/Download user/student with MDR
                         }
                    
                     } //End for loop
                     
-                    cellPosition = headerNode.length * 2;    
+                    cellPosition = headerNode.length * 3;    	// Start For MQC 66840 : Upload/Download user/student with MDR
                     
                     //FirstName
                  
@@ -1070,7 +1099,7 @@ public class UploadDownloadFormUtils
                    
                     headerNode = studentFileRow[i].getOrganizationNodes();
                     //Insert organization header
-                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {
+                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+3) { 	// For MQC 66840 : Upload/Download user/student with MDR
                         
                         cell = row.createCell((short)j);
                         style = cell.getCellStyle();
@@ -1084,11 +1113,18 @@ public class UploadDownloadFormUtils
                         cell.setCellStyle(style);
                         cell.setCellValue(headerNode[k].getOrgNodeCode());
                         
+                        // Start For MQC 66840 : Upload/Download user/student with MDR
+                        cell = row.createCell((short)(j + 2));
+                        style = cell.getCellStyle();
+                        style.setWrapText(true);
+                        cell.setCellStyle(style);
+                        cell.setCellValue(headerNode[k].getMdrNumber());
+                        // End For MQC 66840 : Upload/Download user/student with MDR
                
                     }
                     
                     //Insert Student Header
-                    studentPos = headerNode.length * 2;
+                    studentPos = headerNode.length * 3; 	// For MQC 66840 : Upload/Download user/student with MDR
                     
                     //FirstName Header
                     cell = row.createCell((short)studentPos++);
@@ -1287,11 +1323,18 @@ public class UploadDownloadFormUtils
                             cell.setCellStyle(style);
                             cell.setCellValue(nodeData[j].getOrgNodeCode());
                             
+                          	// Start For MQC 66840 : Upload/Download user/student with MDR
+                            cell = row.createCell((short)(cellPosition + 2));
+                            style = cell.getCellStyle();
+                            style.setWrapText(true);
+                            cell.setCellStyle(style);
+                            cell.setCellValue(nodeData[j].getMdrNumber());
+                           // Start For MQC 66840 : Upload/Download user/student with MDR
                         }
                    
                     } //End for loop
                     
-                    cellPosition = headerNode.length * 2;    
+                    cellPosition = headerNode.length * 3;  	// For MQC 66840 : Upload/Download user/student with MDR  
                     
                     //FirstName
                  
@@ -1679,7 +1722,8 @@ public class UploadDownloadFormUtils
                    
                     headerNode = studentFileRow[i].getOrganizationNodes();
                     //Insert organization header
-                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+2) {
+                    // For MQC 66840 : Upload/Download user/student with MDR
+                    for (int k = 0,j = 0; k < headerNode.length; k++,j=j+3) {
                         
                         cell = row.createCell((short)j);
                         style = cell.getCellStyle();
@@ -1693,11 +1737,18 @@ public class UploadDownloadFormUtils
                         cell.setCellStyle(style);
                         cell.setCellValue(headerNode[k].getOrgNodeCode());
                         
+                        // Start For MQC 66840 : Upload/Download user/student with MDR
+                        cell = row.createCell((short)(j + 2));
+                        style = cell.getCellStyle();
+                        style.setWrapText(true);
+                        cell.setCellStyle(style);
+                        cell.setCellValue(headerNode[k].getMdrNumber());
+                        // End For MQC 66840 : Upload/Download user/student with MDR
                
                     }
                     
                     //Insert Student Header
-                    userPos = headerNode.length * 2;
+                    userPos = headerNode.length * 3; 	// For MQC 66840 : Upload/Download user/student with MDR
                     
                     //FirstName Header
                     cell = row.createCell((short)userPos++);
@@ -1898,6 +1949,13 @@ public class UploadDownloadFormUtils
                             cell.setCellStyle(style);
                             cell.setCellValue(nodeData[j].getOrgNodeCode());
                             
+                          	// Start For MQC 66840 : Upload/Download user/student with MDR
+                            cell = row.createCell((short)(cellPosition + 2));
+                            style = cell.getCellStyle();
+                            style.setWrapText(true);
+                            cell.setCellStyle(style);
+                            cell.setCellValue(nodeData[j].getMdrNumber());
+                            // Start For MQC 66840 : Upload/Download user/student with MDR
                         }
                         
                         

@@ -178,6 +178,8 @@ public class UploadProcess extends BatchProcessor.Process
         HashMap userDataMap = new HashMap();
         HashMap blankRowMap = new HashMap();
         boolean isMatchUploadOrgIds = false;
+        // For MQC 66840 : Upload/Download user/student with MDR
+        boolean isMatchMdrNo = false;
         boolean isBlankRow = true;
         User user = null;
         
@@ -185,7 +187,10 @@ public class UploadProcess extends BatchProcessor.Process
         String strCellId ="";
         String strCellHeaderName = "";
         String strCellHeaderId = "";
-        
+        // Start for MQC 66840 : Upload/Download user/student with MDR
+        String strCellMdr ="";
+        String strCellHeaderMdr = "";
+         // End for MQC 66840 : Upload/Download user/student with MDR
         int loginUserPosition = 0;
         
         try {
@@ -217,6 +222,9 @@ public class UploadProcess extends BatchProcessor.Process
             isMatchUploadOrgIds = 
                     this.uploadDataFile.checkCustomerConfigurationEntries(
                     customer.getCustomerId(),CTBConstants.CUSTOMER_CONF_NAME);
+             // For MQC 66840 : Upload/Download user/student with MDR
+            isMatchMdrNo = this.uploadDataFile.checkCustomerConfigurationEntries(
+                    customer.getCustomerId(),"LASLINK_Customer");
             
             
             // Read UploaderFile through POI     
@@ -283,8 +291,8 @@ public class UploadProcess extends BatchProcessor.Process
                     
                     
                     if ( isCommonPathValid (i, row, rowHeader, hierarchyErrorMap, isMatchUploadOrgIds , this.userTopOrgNode) ) {
-                        
-                                            
+                         // For MQC 66840 : Upload/Download user/student with MDR
+                    	List<String> newMDRList = new ArrayList<String>();                   
                         loginUserPosition = getLoginUserOrgPosition(row, rowHeader, this.userTopOrgNode);
                         //Admin validation
                         if ( !hasOrganization(loginUserPosition, row) ) {
@@ -304,20 +312,41 @@ public class UploadProcess extends BatchProcessor.Process
                                // create Organization process
                                Node []node = this.userFileRowHeader[0].
                                                     getOrganizationNodes();
-                               int orgHeaderLastPosition = node.length * 2 ;
+                               // Start for MQC 66840 : Upload/Download user/student with MDR
+                               int orgHeaderLastPosition = node.length * 3 ; 
+
+                               HSSFCell loginUserOrgCell = row.getCell((short)loginUserPosition);
+                               String loginUserOrgName = getCellValue(loginUserOrgCell);
+                               Node loginUserNode = getLoginUserOrgDetail(this.userTopOrgNode, loginUserOrgName);
+                               Integer parentOId = loginUserNode.getOrgNodeId();
+                               Integer [] parentOrgId = new Integer[1];
+                               parentOrgId[0] = parentOId;
+ 								// End for MQC 66840 : Upload/Download user/student with MDR
                                
-                               for ( int j = loginUserPosition + 2; 
-                                            j < orgHeaderLastPosition; j = j + 2 ) {
+                               for ( int j = loginUserPosition + 3; 
+                                            j < orgHeaderLastPosition; j = j + 3 ) {
                                     
                                     HSSFCell cellHeaderName = rowHeader.getCell(j);
                                     HSSFCell cellHeaderId = rowHeader.getCell(j + 1);
                                     HSSFCell cellName = row.getCell(j);
                                     HSSFCell cellId = row.getCell(j + 1);
-                                    
+                                    // Start for MQC 66840 : Upload/Download user/student with MDR
+                                    HSSFCell cellHeaderMdr = rowHeader.getCell(j + 2);
+                                    HSSFCell cellMdr = row.getCell(j+2);
+                                    // End for MQC 66840 : Upload/Download user/student with MDR
                                     strCellName = getCellValue(cellName);
                                     strCellId = getCellValue(cellId);
                                     strCellHeaderName = getCellValue(cellHeaderName);
                                     strCellHeaderId = getCellValue(cellHeaderId);
+                                     // Start for MQC 66840 : Upload/Download user/student with MDR
+                                    strCellMdr = getCellValue(cellMdr);
+                                    strCellHeaderMdr = getCellValue(cellHeaderMdr);
+
+                                    HSSFCell OrgCellHeaderName = rowHeader.getCell((short)j);
+                                    String headerName = getCellValue(OrgCellHeaderName);
+                                    Node []nodeCategory = this.userFileRowHeader[0].getOrganizationNodes();
+                                    Integer categoryId = getCategoryId (headerName, nodeCategory);
+									 // End for MQC 66840 : Upload/Download user/student with MDR
                                     
                                     // OrgName required check
                                     if ( strCellName.equals("")  && hasOrganization(j, row) 
@@ -332,7 +361,7 @@ public class UploadProcess extends BatchProcessor.Process
                                         break;
                                         
                                     
-                                    } else if (strCellName.equals("") && hasOrganization(j - 2, row) 
+                                    } else if (strCellName.equals("") && hasOrganization(j - 3, row)  //For MQC 66840 : Upload/Download user/student with MDR
                                                     && !strCellId.equals("")) {
                                         
                                         // write excel  required  with the help of cellHeaderName
@@ -342,7 +371,10 @@ public class UploadProcess extends BatchProcessor.Process
                                         
                                                                               
                                         break;
-                                        
+                                       // For MQC 66840 : Upload/Download user/student with MDR  
+                                    } else if(isMatchMdrNo && !isValidMDR (i, isMatchUploadOrgIds, strCellId, parentOrgId, categoryId, requiredMap, invalidCharMap , logicalErrorMap, newMDRList, strCellMdr,strCellName, strCellHeaderMdr )) {
+
+                                    	break;
                                     } else { 
                                     
                                         //OrgName invalid char check
@@ -420,11 +452,12 @@ public class UploadProcess extends BatchProcessor.Process
                         logicalErrorMap, hierarchyErrorMap); 
            }
            //create user and organization
+            // For MQC 66840 : Upload/Download user/student with MDR
            createOrganizationAndUser (requiredMap, maxLengthMap, 
                                             invalidCharMap, logicalErrorMap, 
                                             hierarchyErrorMap, userDataMap, 
                                             blankRowMap, isMatchUploadOrgIds, user,
-                                            this.userTopOrgNode);
+                                            this.userTopOrgNode, isMatchMdrNo);
           
                                             
                                                     
@@ -441,7 +474,171 @@ public class UploadProcess extends BatchProcessor.Process
     /*
      * initList ()
      * Initialize RoleMap,TimeZoneMap,StateMap
-    */ 
+    */
+
+	// For MQC 66840 : Upload/Download user/student with MDR
+    private boolean isValidMDR(int cellPos, boolean isMatchUploadOrgIds, String orgCode,
+			Integer[] parentOrgId, Integer categoryId, HashMap requiredMap,
+			HashMap invalidCharMap, HashMap logicalErrorMap, List<String> newMDRList, String strCellMdr, String orgName, String strCellHeaderMdr) {
+    	
+ 	
+    	if(!isOrganizationExists(isMatchUploadOrgIds, orgCode,
+    			 parentOrgId,  categoryId, newMDRList,  strCellMdr,  orgName)) {
+    		
+    		if(!validMdrNo(strCellMdr)){
+        		ArrayList requiredList = new ArrayList();
+                requiredList.add(strCellHeaderMdr); 
+                requiredMap.put(new Integer(cellPos), requiredList); 
+                return false;
+
+        	} else if(!validMdrNoLength(strCellMdr)){
+        		ArrayList requiredList = new ArrayList();
+                requiredList.add(strCellHeaderMdr); 
+                invalidCharMap.put(new Integer(cellPos), requiredList);
+                return false;
+
+        	} else if(!validMdrNoNumeric(strCellMdr)){
+        		ArrayList requiredList = new ArrayList();
+                requiredList.add(strCellHeaderMdr); 
+                invalidCharMap.put(new Integer(cellPos), requiredList);  
+                return false;
+              
+        	} else if (!isUniqueMdr(strCellMdr, newMDRList)){
+        		ArrayList requiredList = new ArrayList();
+                requiredList.add(strCellHeaderMdr); 
+                logicalErrorMap.put(new Integer(cellPos), requiredList); 
+                return false;
+             
+        	}
+    		
+    		newMDRList.add(strCellMdr) ;
+    	}
+    	
+    	
+    	return true;
+    }
+    
+    // For MQC 66840 : Upload/Download user/student with MDR
+    private boolean isOrganizationExists(boolean isMatchUploadOrgIds, String orgCode,
+			Integer[] parentOrgIdArray, Integer categoryId, List<String> newMDRList, String strCellMdr, String orgName) {
+		
+    	Node organization = null;
+    	boolean isOrgExist = false;
+    	Integer parentOrgId = parentOrgIdArray[0];
+    	if ( isMatchUploadOrgIds ) {
+            
+            isOrgExist = isOrganizationExist (orgCode, parentOrgId, categoryId, isMatchUploadOrgIds);
+            if (!orgCode.trim().equals("") || !orgName.trim().equals("") ) {
+                 // Search Organization by OrgName
+                if ( !isOrgExist ) {
+                    isOrgExist = isOrganizationExist (orgName, parentOrgId, categoryId, !isMatchUploadOrgIds);
+                     if(isOrgExist){
+                        
+                        // retrive existing organization by passing orgName
+                        organization = getOrgNodeDetail(orgName, parentOrgId, categoryId, false);
+                        //Is Organization Exist
+                            if (organization != null) {
+                            	parentOrgId = organization.getOrgNodeId();
+                            	parentOrgIdArray[0] = parentOrgId;
+                                    //orgNodeId = organization.getOrgNodeId();
+                                   // continue;    
+                            }  else {
+                            	isOrgExist = false;
+                            }
+                            
+                        }
+                    
+                    } else {
+                        
+                        // retrive existing organization by passing orgCode
+                            organization = getOrgNodeDetail(orgCode, parentOrgId, categoryId, isMatchUploadOrgIds);
+                            
+                            //Is Organization Exist
+                            if (organization != null) {
+                                    
+                                    parentOrgId = organization.getOrgNodeId();
+                                    parentOrgIdArray[0] = parentOrgId;
+                            
+                            } else {
+                            	isOrgExist = false;
+                            
+                            }
+                        
+                    }
+                
+                
+            }
+
+    	} else { // if no MatchUploadOrgIds present in customer configuration 
+            
+            
+            isOrgExist = isOrganizationExist (orgName, parentOrgId, categoryId, false);
+           if (!orgName.trim().equals("")) {   
+             // if no organization exist
+                if (!isOrgExist) {
+                
+                	isOrgExist = false;
+                } else {
+                    // retrive existing organization by passing orgName
+                    organization = getOrgNodeDetail(orgName, parentOrgId, categoryId, false);
+                    
+                    //Is Organization Exist
+                    if (organization != null) {
+                            parentOrgId = organization.getOrgNodeId();
+                            parentOrgIdArray[0] = parentOrgId;
+                    
+                    } else {
+                    	isOrgExist = false;
+                    }
+                
+                }
+            }
+        
+    }
+		return isOrgExist;
+	}
+
+	// For MQC 66840 : Upload/Download user/student with MDR
+	private boolean validMdrNo(String strCellMdr) {
+    	if(strCellMdr == null || (strCellMdr.trim().length()==0 )){
+			return false;
+		} 
+    	return true;
+	}
+	
+	// For MQC 66840 : Upload/Download user/student with MDR
+	private boolean validMdrNoLength(String strCellMdr) {
+    	if((strCellMdr.trim().length()!=8 )){
+			return false;
+		} 
+    	return true;
+	}
+
+	// For MQC 66840 : Upload/Download user/student with MDR
+	private boolean isUniqueMdr(String strCellMdr, List<String> newMDRList) {
+    	try{
+    		String val= orgNode.checkUniqueMdrNumberForOrgNodes(strCellMdr);
+        	if((val.equalsIgnoreCase("T")) && !(newMDRList.contains(strCellMdr))){
+        		return true;
+        	} 
+    	} catch (Exception e){
+    		return false;
+    	}
+    	return false;
+	}
+
+	// For MQC 66840 : Upload/Download user/student with MDR
+	private boolean validMdrNoNumeric(String strCellMdr) {
+		try {
+				 Integer.parseInt(strCellMdr.trim());
+				if(strCellMdr.trim().indexOf(".")!=-1){
+					return false;
+				}
+			} catch (Exception e){
+				return false;
+			}
+		return true;
+	}
 
     private void initList () {
 
@@ -492,6 +689,7 @@ public class UploadProcess extends BatchProcessor.Process
    /*
    * create Organization and User
    */ 
+   // For MQC 66840 : Upload/Download user/student with MDR
    private void createOrganizationAndUser(HashMap requiredMap, 
                                           HashMap maxLengthMap,
                                           HashMap invalidCharMap, 
@@ -501,7 +699,8 @@ public class UploadProcess extends BatchProcessor.Process
                                           HashMap blankRowMap, 
                                           boolean isMatchUploadOrgIds,
                                           User loginUser,
-                                          Node []loginUserNodes) 
+                                          Node []loginUserNodes,
+                                          boolean isMatchMdrNo) 
                                           throws SQLException,CTBBusinessException {
     
         POIFSFileSystem pfs = null;
@@ -531,7 +730,8 @@ public class UploadProcess extends BatchProcessor.Process
             HSSFRow rowHeader = sheet.getRow(0);
             //find the statr position of the user details header
             Node []nodeCategory = this.userFileRowHeader[0].getOrganizationNodes();
-            int orgHeaderLastPosition = nodeCategory.length * 2;    
+            // For MQC 66840 : Upload/Download user/student with MDR
+            int orgHeaderLastPosition = nodeCategory.length * 3;    
         //    Node []loginUserNodes =  orgNode.getTopNodesForUser(this.username);
             //travers the entire sheet to update the db for user insertion 
             for ( int i = 1; i < totalRows; i++ ) {
@@ -593,7 +793,8 @@ public class UploadProcess extends BatchProcessor.Process
                     Integer parentOrgId = loginUserNode.getOrgNodeId();
                     orgNodeId = loginUserNode.getOrgNodeId();
                     int lastOrganization = 0; 
-                    for (int ii = loginUserOrgPosition + 2; ii < orgHeaderLastPosition; ii = ii + 2 ) {
+                    // For MQC 66840 : Upload/Download user/student with MDR
+                    for (int ii = loginUserOrgPosition + 3; ii < orgHeaderLastPosition; ii = ii + 3 ) { 
                         
                             HSSFCell OrgCellName = bodyRow.getCell((short)ii);
                             HSSFCell OrgCellId = bodyRow.getCell((short)ii + 1);
@@ -604,6 +805,10 @@ public class UploadProcess extends BatchProcessor.Process
                             String headerName = getCellValue(OrgCellHeaderName);
                             Integer categoryId = getCategoryId (headerName, nodeCategory);
                             
+                            // Start For MQC 66840 : Upload/Download user/student with MDR
+                            HSSFCell OrgCellMdr = bodyRow.getCell((short)ii + 2);
+                            String orgMdr = getCellValue(OrgCellMdr);
+							 // End For MQC 66840 : Upload/Download user/student with MDR
                            if ( !hasOrganization(ii,bodyRow) && orgName.equals("")
                                     && orgCode.equals("")) {
                                 
@@ -637,6 +842,11 @@ public class UploadProcess extends BatchProcessor.Process
                                                 organization.setOrgNodeCode(orgCode); 
                                                 organization.setOrgNodeCategoryId(categoryId);
                                                 organization.setParentOrgNodeId(parentOrgId);
+                                                 // Start For MQC 66840 : Upload/Download user/student with MDR
+                                                if(isMatchMdrNo) {
+                                                	organization.setMdrNumber(orgMdr);
+                                                }
+                                                // End For MQC 66840 : Upload/Download user/student with MDR
                                                 //create Organization
                                                 organization = this.organizationManagement.
                                                         createOrganization(this.username, organization);
@@ -672,6 +882,11 @@ public class UploadProcess extends BatchProcessor.Process
                                                         organization.setOrgNodeCode(orgCode); 
                                                         organization.setOrgNodeCategoryId(categoryId);
                                                         organization.setParentOrgNodeId(parentOrgId);
+                                                         // Start For MQC 66840 : Upload/Download user/student with MDR
+                                                        if(isMatchMdrNo) {
+                                                        	organization.setMdrNumber(orgMdr);
+                                                        }
+                                                         // End For MQC 66840 : Upload/Download user/student with MDR
                                                         //create Organization
                                                         organization = this.organizationManagement.
                                                                 createOrganization(this.username, organization);
@@ -708,6 +923,11 @@ public class UploadProcess extends BatchProcessor.Process
                                                         organization.setOrgNodeCode(orgCode); 
                                                         organization.setOrgNodeCategoryId(categoryId);
                                                         organization.setParentOrgNodeId(parentOrgId);
+                                                         // Start For MQC 66840 : Upload/Download user/student with MDR
+                                                        if(isMatchMdrNo) {
+                                                        	organization.setMdrNumber(orgMdr);
+                                                        }
+                                                         // End For MQC 66840 : Upload/Download user/student with MDR
                                                         //create Organization
                                                         organization = this.organizationManagement.
                                                                 createOrganization(this.username, organization);
@@ -746,6 +966,11 @@ public class UploadProcess extends BatchProcessor.Process
                                                 organization.setOrgNodeCode(orgCode); 
                                                 organization.setOrgNodeCategoryId(categoryId);
                                                 organization.setParentOrgNodeId(parentOrgId);
+                                                 // Start For MQC 66840 : Upload/Download user/student with MDR
+                                                if(isMatchMdrNo) {
+                                                	organization.setMdrNumber(orgMdr);
+                                                }
+                                                 // End For MQC 66840 : Upload/Download user/student with MDR
                                                 //create Organization
                                                 organization = this.organizationManagement.
                                                         createOrganization(this.username, organization);
@@ -779,6 +1004,11 @@ public class UploadProcess extends BatchProcessor.Process
                                                     organization.setOrgNodeCode(orgCode); 
                                                     organization.setOrgNodeCategoryId(categoryId);
                                                     organization.setParentOrgNodeId(parentOrgId);
+                                                     // Start For MQC 66840 : Upload/Download user/student with MDR
+                                                    if(isMatchMdrNo) {
+                                                    	organization.setMdrNumber(orgMdr);
+                                                    }
+                                                     // End For MQC 66840 : Upload/Download user/student with MDR
                                                     //create Organization
                                                     organization = this.organizationManagement.
                                                             createOrganization(this.username, organization);
@@ -1702,7 +1932,8 @@ public class UploadProcess extends BatchProcessor.Process
         String roleName = "";
          // retrive header category Array
         Node []node = this.userFileRowHeader[0].getOrganizationNodes();
-        int userHeaderStartPosition = node.length * 2;
+         // For MQC 66840 : Upload/Download user/student with MDR
+        int userHeaderStartPosition = node.length * 3; 
         
         for ( int i = userHeaderStartPosition; i < totalCells; i++ ) {
             
@@ -1734,7 +1965,8 @@ public class UploadProcess extends BatchProcessor.Process
         String middleName = "";
         String lastName= ""; 
         Node []node = this.userFileRowHeader[0].getOrganizationNodes();
-        int userHeaderStartPosition = node.length * 2;
+         // For MQC 66840 : Upload/Download user/student with MDR
+        int userHeaderStartPosition = node.length * 3; 
         boolean isloginUser = false;
         String strCellHeader = "";
         String strCellValue = "";
@@ -1818,9 +2050,11 @@ public class UploadProcess extends BatchProcessor.Process
    private boolean hasOrganization (int currentPosition, HSSFRow row) {
     
         Node []node = this.userFileRowHeader[0].getOrganizationNodes();
-        int OrgHeaderLastPosition = node.length * 2;
+         // For MQC 66840 : Upload/Download user/student with MDR
+        int OrgHeaderLastPosition = node.length * 3; 
         String leafOrgName = "";
-        for ( int j = currentPosition + 2 ; j < OrgHeaderLastPosition; j = j + 2 ) {
+         // For MQC 66840 : Upload/Download user/student with MDR
+        for ( int j = currentPosition + 3 ; j < OrgHeaderLastPosition; j = j + 3 ) { 
                         
             HSSFCell cellName = row.getCell(j);
             HSSFCell cellId = row.getCell(j + 1);
@@ -1849,7 +2083,8 @@ public class UploadProcess extends BatchProcessor.Process
             int OrgHeaderLastPosition = node.length ;
             String leafOrgName = "";
             //Node []loginUserNode =  orgNode.getTopNodesForUser(this.username);
-            for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 2 ) {
+             // For MQC 66840 : Upload/Download user/student with MDR
+            for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 3 ) { 
                     
                     HSSFCell cell = row.getCell(j);
                     
@@ -1902,8 +2137,8 @@ public class UploadProcess extends BatchProcessor.Process
             String strCellName = "";
             
             int loginUserPosition = -1;
-            
-            for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 2 ) {
+            // For MQC 66840 : Upload/Download user/student with MDR 
+            for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 3 ) { 
                 
                 HSSFCell cellName = row.getCell(j);
                 HSSFCell cellId = row.getCell(j + 1);
@@ -2005,8 +2240,8 @@ public class UploadProcess extends BatchProcessor.Process
                String orgHeader = orgName +" Name";
                ArrayList errorHierarchyList = new ArrayList();
                String strCellNameHeader = "";
-               
-               for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 2 ) {
+                // For MQC 66840 : Upload/Download user/student with MDR
+               for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 3 ) { 
                 
                     HSSFCell cellNameHeader = rowHeader.getCell(j);
                     HSSFCell cellIdHeader = rowHeader.getCell(j + 1);
@@ -2178,8 +2413,8 @@ public class UploadProcess extends BatchProcessor.Process
             
             Node []node = this.userFileRowHeader[0].getOrganizationNodes();
             ArrayList errorHierarchyList = new ArrayList();
-            currentPosition = currentPosition * 2;
-            for ( int j = currentPosition ; j < loginUserPosition + 2; j = j + 2 ) {
+            currentPosition = currentPosition * 3;  // For MQC 66840 : Upload/Download user/student with MDR
+            for ( int j = currentPosition ; j < loginUserPosition + 3; j = j + 3 ) {  // For MQC 66840 : Upload/Download user/student with MDR
                 
                 HSSFCell cellNameHeader = rowHeader.getCell(j);
                 HSSFCell cellIdHeader = rowHeader.getCell(j + 1);
@@ -2212,7 +2447,7 @@ public class UploadProcess extends BatchProcessor.Process
         
         // retrive header category Array
         Node []node = this.userFileRowHeader[0].getOrganizationNodes();
-        int userHeaderStartPosition = node.length * 2;
+        int userHeaderStartPosition = node.length * 3;  // For MQC 66840 : Upload/Download user/student with MDR
         
         // checking for required field,invalid charecter,maxlength,logical error
         if ( isRequired (userHeaderStartPosition, row, 
@@ -2573,13 +2808,13 @@ public class UploadProcess extends BatchProcessor.Process
         
        Node []node = this.userFileRowHeader[0].getOrganizationNodes();
        Node [] loginUserNode = user.getOrganizationNodes();
-       int lastOrgPosition = node.length * 2;
+       int lastOrgPosition = node.length * 3;  // Start For MQC 66840 : Upload/Download user/student with MDR
        String orgCode = "";
        String orgName = "";
        String orgHeaderCode = "";
        String orgHeaderName = "";
        
-       for (int i = 0; i < lastOrgPosition; i = i + 2) {
+       for (int i = 0; i < lastOrgPosition; i = i + 3) {  // Start For MQC 66840 : Upload/Download user/student with MDR
         
             //Header
             HSSFCell orgCellHeaderName = rowHeader.getCell((short)i);

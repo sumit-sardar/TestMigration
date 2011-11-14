@@ -1001,8 +1001,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             }
             
             // get the start column number of userdata
+            // For MQC 66840 : Upload/Download user/student with MDR
             noOfUserColumn = (orgNodeCate.
-                    getOrgNodeCategories(customerId).length) * 2 + 1;
+                    getOrgNodeCategories(customerId).length) * 3 + 1;  
                     
             fileInputStrean = new FileInputStream(new File(excelFile));            
             
@@ -1216,8 +1217,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             
             
             // get the start column number of userdata
+            // For MQC 66840 : Upload/Download user/student with MDR
             noOfUserColumn = (orgNodeCate.
-                    getOrgNodeCategories(customerId).length) * 2 + 1;
+                    getOrgNodeCategories(customerId).length) * 3 + 1; 
                     
 			inputStream = new FileInputStream(new File(excelFile));
             fileInputStrean = new FileInputStream(new File(excelFile));
@@ -1920,6 +1922,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                                 OrgNodeCategory[i].getCategoryName()+ " Id");
                 currentHeader.setOrgNodeCategoryId(
                                 OrgNodeCategory[i].getOrgNodeCategoryId());
+                // For MQC 66840 : Upload/Download user/student with MDR
+                currentHeader.setMdrNumber(OrgNodeCategory[i].getCategoryName()+" MDR"); 
                 node[i] = currentHeader;
                 
             }
@@ -1964,7 +1968,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                         
                 currentHeader.setOrgNodeCategoryId(
                         OrgNodeCategory[i].getOrgNodeCategoryId());
-                        
+                // For MQC 66840 : Upload/Download user/student with MDR
+                currentHeader.setMdrNumber(OrgNodeCategory[i].getCategoryName()+" MDR"); 
                 node[i] = currentHeader;
                 
             }
@@ -2654,7 +2659,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                         for( int i = 0; i < orgNodes.length; i++ ) {
                             
                             orgNodeList.add(orgNodes[i].getOrgNodeCategoryName());
-                            orgNodeList.add(orgNodes[i].getOrgNodeCode());                                             
+                            orgNodeList.add(orgNodes[i].getOrgNodeCode());
+                            // For MQC 66840 : Upload/Download user/student with MDR
+                            orgNodeList.add(orgNodes[i].getMdrNumber()); 
                             
                          }
                          /* postion should be at the begining and should 
@@ -2714,7 +2721,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                         for( int i = 0; i < orgNodes.length; i++ ) {
                             
                             orgNodeList.add(orgNodes[i].getOrgNodeCategoryName());
-                            orgNodeList.add(orgNodes[i].getOrgNodeCode());                                             
+                            orgNodeList.add(orgNodes[i].getOrgNodeCode());
+                            // For MQC 66840 : Upload/Download user/student with MDR 
+                            orgNodeList.add(orgNodes[i].getMdrNumber()); 
                             
                          }
                          /* postion should be at the begining and should 
