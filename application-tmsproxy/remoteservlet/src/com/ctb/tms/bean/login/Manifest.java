@@ -24,7 +24,7 @@ public class Manifest implements Serializable, CachePreLoadObject {
     private Integer randomDistractorSeed;
     private String tutorialTaken;
     
-    private boolean replicate = true;
+    private boolean replicate = false;
     
     public void setReplicate(boolean replicate) {
     	this.replicate = replicate;

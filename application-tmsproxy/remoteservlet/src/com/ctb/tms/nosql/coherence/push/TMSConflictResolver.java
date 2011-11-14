@@ -68,6 +68,9 @@ public class TMSConflictResolver implements ConflictResolver {
                 				manifestMap.put(key, incoming[i]);
                 			} else if(incoming[i].getRosterLastMseq() > manifest.getRosterLastMseq()) {
                 				manifestMap.put(key, incoming[i]);
+                			} else if (incoming[i].doReplicate()) {
+                				incoming[i].setReplicate(false);
+                				manifestMap.put(key, incoming[i]);
                 			} else {
                 				logger.warn("Replicated manifest message has lower mseq than current local value - ignoring.");
                 			}

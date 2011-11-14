@@ -577,6 +577,7 @@ public class TMSServlet extends HttpServlet {
         		}
         	}
         	manifest.setManifest((ManifestData[]) newmanifest.toArray(new ManifestData[0]));
+        	manifest.setReplicate(true);
         }
         oasSink.putAllManifests(testRosterId, manifesta);
     }
@@ -614,6 +615,7 @@ public class TMSServlet extends HttpServlet {
 				allManifests[m].setRosterCompletionStatus("IN");
 			}
 			logger.debug("Set CID: " + cid + ", for manifest: " + allManifests[m].getAccessCode());
+			allManifests[m].setReplicate(true);
 		}
 		oasSink.putAllManifests(testRosterId, allManifests);
 	}
@@ -816,6 +818,7 @@ public class TMSServlet extends HttpServlet {
 			}
 		}
 		oasSink.putManifest(testRosterId, creds.getAccesscode(), manifest);
+		creds.setTestRosterId(testRosterId);
 		oasSink.putRosterData(creds, rd);
 		
 		logger.debug(response.xmlText());
