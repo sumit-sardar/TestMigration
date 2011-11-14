@@ -334,7 +334,7 @@ function populateGrid() {
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
 				 if(isGridEmpty) {
-				 	$('#list2').append("<tr width = '100%'><td colspan = '4'><br><br><center><div><span><h2>There are no records associated with the selected organization</h2></span></div></center></td></tr>");
+				 	$('#list2').append("<tr width = '100%'><td colspan = '4'><br><br><center><div><table><tr><td><img height='23' src='/OrganizationWeb/resources/images/messaging/icon_info.gif'></td><td>&nbsp;</td><td style='padding-top: 5px'><span><h2>There are no records associated with the selected organization</h2></span></td></tr></table></div></center></td></tr>");
 				 }
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
