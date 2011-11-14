@@ -19,6 +19,7 @@ var defaultParentIE = "<FONT color=gray>None selected. Use the control on the ri
 var isLasLinkCustomer = false;
 var assignedElement = "";
 var leafNodeCategoryId;
+var isLeafNodeAdmin;
 
 $(document).bind('keydown', function(event) {
 		
@@ -50,6 +51,7 @@ function populateTree() {
 						$.unblockUI(); 
 						orgTreeHierarchy = data;
 						leafNodeCategoryId = data.leafNodeCategoryId;
+						isLeafNodeAdmin = data.isLeafNodeAdmin;
 						createSingleNodeSelectedTree (orgTreeHierarchy);
 						$("#searchheader").css("visibility","visible");	
 						$("#orgNodeHierarchy").css("visibility","visible");						
@@ -134,7 +136,8 @@ var styleClass;
          	
 		"plugins" : [ "themes", "json_data","ui","checkbox","crrm"]
     }).bind("open_node.jstree", function (e, data){
-    hideCheckBox();
+    
+    	hideCheckBox();
          isTreeExpandIconClicked = true;
     	 $(this).find("li").each(function(i, element) { 
     		 var childOrgId = $(element).attr("id");
@@ -166,12 +169,11 @@ var styleClass;
     
     });
     
-   
     	$("#innerID").delegate("li a","click",
     		 function(e) {
     				styleClass = $(this.parentNode).attr('class');
     				var element = this.parentNode;
-    				var orgcategorylevel = $(element).attr("categoryid");
+    				var orgcategorylevel = $(element).attr("categoryID");
 					if(styleClass.indexOf("unchecked") > 0){
 						$('#innerID').jstree('uncheck_all');
 						$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
@@ -332,7 +334,7 @@ function populateGrid() {
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
 				 if(isGridEmpty) {
-				 	$('#list2').append("<tr width = '100%'><td colspan = '4'><br><br><center><div style = 'border: solid 3px; width: 80%;'><span><h2>There are no records associated with the selected organization</h2></span></div></center></td></tr>");
+				 	$('#list2').append("<tr width = '100%'><td colspan = '4'><br><br><center><div><span><h2>There are no records associated with the selected organization</h2></span></div></center></td></tr>");
 				 }
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
@@ -430,6 +432,7 @@ function AddOrganizationDetail() {
 			 				
 							});
 	setPopupPosition(isAddOrganization);
+	hideLeafAdminCheckBox();
 }
 	
 	
@@ -583,7 +586,7 @@ function openTreeNodes(orgNodeId) {
 												 var parentElement =  assignedElement;
 
 													$("#innerID").jstree("create_node",assignedElement, "inside",  {"data":data.orgNodeName,
-														"attr" : {"id" : data.orgNodeId, "categoryid" : data.categoryLevel}});
+														"attr" : {"id" : data.orgNodeId, "categoryID" : data.categoryLevel}});
 														
 														if(data.orgcategorylevel == leafNodeCategoryId) {
 												    		  assignedElement.first().hide();
@@ -613,9 +616,21 @@ function openTreeNodes(orgNodeId) {
 					);
 	}
 	
+	function hideLeafAdminCheckBox () {
+		if(isLeafNodeAdmin) {
+			$("#innerID li.jstree-leaf.jstree-unchecked").each(function(){
+			
+			var orgcategorylevelId = $(this).attr("categoryID");
+    			if(orgcategorylevelId == leafNodeCategoryId) {
+	    			$("a ins.jstree-checkbox", this).first().hide();
+	    		}
+			}); 
+		}
+	}
+	
 	function hideCheckBox(){
 		$("#innerID li").each(function() {
-    			var orgcategorylevel = $(this).attr("categoryid");
+    			var orgcategorylevel = $(this).attr("categoryID");
     			if(orgcategorylevel == leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
 	    		}

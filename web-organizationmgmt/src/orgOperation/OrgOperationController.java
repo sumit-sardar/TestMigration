@@ -1,48 +1,40 @@
 package orgOperation;
 
 import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
-import utils.PermissionsUtils;
-
-import com.ctb.bean.testAdmin.Customer;
-import com.ctb.bean.testAdmin.CustomerConfiguration;
-import com.ctb.bean.testAdmin.User;
-import com.ctb.exception.CTBBusinessException;
-import com.ctb.util.web.sanitizer.SanitizedFormData;
-
-import java.io.ObjectOutput;
-import java.io.OutputStream;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import utils.Base;
 import utils.BaseTree;
 import utils.Organization;
-import utils.OrgnizationComparator;
-import utils.TreeData;
 import utils.OrganizationPathListUtils;
+import utils.OrgnizationComparator;
+import utils.PermissionsUtils;
+import utils.TreeData;
 
-
-import com.ctb.bean.studentManagement.CustomerConfigurationValue;
+import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
-import com.ctb.bean.testAdmin.UserData;
+import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
-import com.ctb.util.CTBConstants;
+import com.ctb.exception.CTBBusinessException;
+import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.google.gson.Gson;
 
 
@@ -183,6 +175,8 @@ public class OrgOperationController extends PageFlowController {
 	}
 	
 	
+	
+	
 	@Jpf.Action(forwards={
 			@Jpf.Forward(name = "success", 
 					path ="find_user_hierarchy.jsp")
@@ -194,9 +188,10 @@ public class OrgOperationController extends PageFlowController {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String contentType = CONTENT_TYPE_JSON;
+		
 		try {
+			
 			BaseTree baseTree = new BaseTree ();
-
 			ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
 			UserNodeData associateNode = OrganizationPathListUtils.populateAssociateNode(this.userName,this.userManagement);
 			ArrayList<Organization> selectedList  = OrganizationPathListUtils.buildassoOrgNodehierarchyList(associateNode);
@@ -204,11 +199,11 @@ public class OrgOperationController extends PageFlowController {
 			Collections.sort(selectedList, new OrgnizationComparator());
 			ArrayList <Integer> orgIDList = new ArrayList <Integer>();
 			ArrayList<TreeData> data = new ArrayList<TreeData>();
-
 			UserNodeData und = OrganizationPathListUtils.OrgNodehierarchy(this.userName, 
 					this.userManagement, selectedList.get(0).getOrgNodeId()); 
-			ArrayList<Organization> orgNodesList = OrganizationPathListUtils.buildOrgNodehierarchyList(und, orgIDList,completeOrgNodeList);	
-
+			ArrayList<Organization> orgNodesList = OrganizationPathListUtils.buildOrgNodehierarchyList(und, orgIDList, completeOrgNodeList);	
+			
+					
 
 			for (int i= 0; i < selectedList.size(); i++) {
 
@@ -241,6 +236,7 @@ public class OrgOperationController extends PageFlowController {
 			Gson gson = new Gson();
 			baseTree.setData(data);
 			baseTree.setLeafNodeCategoryId(leafNodeCategoryId);
+			baseTree.setIsLeafNodeAdmin(isLeafNodeAdmin (leafNodeCategoryId, selectedList));
 			Collections.sort(baseTree.getData(), new Comparator<TreeData>(){
 
 				public int compare(TreeData t1, TreeData t2) {
@@ -888,6 +884,7 @@ public class OrgOperationController extends PageFlowController {
 		td.setData(org.getOrgName());
 		td.getAttr().setId(org.getOrgNodeId().toString());
 		td.getAttr().setCustomerId(org.getCustomerId().toString());
+		td.getAttr().setCategoryID(org.getOrgCategoryLevel().toString());
 		treeProcess (org,orgList,td,selectedList);
 		data.add(td);
 	}
@@ -938,6 +935,26 @@ public class OrgOperationController extends PageFlowController {
         return mdrNumberFound;  
         
     }
+ 
+ /**
+  * This method is responsible to check wheather admin user is belonging to leaf level node
+  * @param leafNodeCategoryId
+  * @param selectedList
+  * @return boolean
+  */
+ 
+ private boolean isLeafNodeAdmin (Integer leafNodeCategoryId, ArrayList<Organization> selectedList) {
+		
+		for (Organization org : selectedList) {
+			
+			if (leafNodeCategoryId.intValue() == org.getOrgCategoryLevel().intValue()) {
+				
+				return true;
+			}
+		}
+		
+		return false;
+	}
     
     
 	

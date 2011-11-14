@@ -1,5 +1,12 @@
 package utils; 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
@@ -8,21 +15,14 @@ import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.control.organizationManagement.OrganizationManagement;
-import com.ctb.control.userManagement.UserManagement;
 import com.ctb.control.userManagement.OrgNodeHierarchy;
-import com.ctb.control.userManagement.OrgNodeHierarchyImpl;
+import com.ctb.control.userManagement.UserManagement;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.widgets.bean.PagerSummary;
 import com.ctb.widgets.bean.PathListEntry;
 
 import dto.OrganizationProfileInformation;
 import dto.PathNode;
-//import dto.UserProfileInformation;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 
 public class OrganizationPathListUtils 
@@ -650,10 +650,13 @@ public class OrganizationPathListUtils
         return nodeList;
     }
     
+
+    
     /**
      * buildOrgNodeList
      */    
-    public static ArrayList<Organization> buildOrgNodehierarchyList(UserNodeData und, ArrayList<Integer> orgIDList,  ArrayList<Organization> completeOrgNodeList) 
+    public static ArrayList<Organization> buildOrgNodehierarchyList(UserNodeData und, ArrayList<Integer> orgIDList,  
+    				ArrayList<Organization> completeOrgNodeList) 
     {
         ArrayList<Organization> nodeList = new ArrayList<Organization>();
         if (und != null) {                    
@@ -671,6 +674,7 @@ public class OrganizationPathListUtils
                     nodeList.add(pathNode);
                     completeOrgNodeList.add(pathNode);
                     orgIDList.add(node.getOrgNodeId());
+                   
                 }
             }
         }
