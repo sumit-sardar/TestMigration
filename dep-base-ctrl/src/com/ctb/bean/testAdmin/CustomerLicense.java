@@ -172,7 +172,7 @@ public class CustomerLicense extends CTBBean
 	 * @return the isLicenseAvailable
 	 */
 	public boolean isLicenseAvailable() {
-		if(isLicenseAvailable) 
+		if(isLicenseAvailable == null) 
 			return false;
 		else
 			return isLicenseAvailable;
