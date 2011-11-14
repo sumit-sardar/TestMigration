@@ -65,10 +65,10 @@ function populateSessionListGrid(homePageLoad) {
 					if($("#canRegisterStudent").val() == 'true'){
 						var selectedTestSessionId = $("#list2").jqGrid('getGridParam', 'selrow');
 						 var val = getDataFromJson(selectedTestSessionId, sessionListCUFU);
-						 if(val == '"T"'){	
-			 				setAnchorButtonState('registerStudentButton', false);
+						 if(val == '"F"'){	
+			 				setAnchorButtonState('registerStudentButton', true);
 			 			 } else {
-			 			 	setAnchorButtonState('registerStudentButton', true);
+			 			 	setAnchorButtonState('registerStudentButton', false);
 			 			 }
 			 		}
 			},
@@ -157,10 +157,10 @@ function populateCompletedSessionListGrid() {
 					if($("#canRegisterStudent").val() == 'true'){
 			 			var selectedTestSessionId = $("#list3").jqGrid('getGridParam', 'selrow');
 						 var val = getDataFromJson(selectedTestSessionId, sessionListPA);
-						 if(val == '"T"'){	
-			 				setAnchorButtonState('registerStudentButton', false);
+						 if(val == '"F"'){	
+			 				setAnchorButtonState('registerStudentButton', true);
 			 			 } else {
-			 			 	setAnchorButtonState('registerStudentButton', true);
+			 			 	setAnchorButtonState('registerStudentButton', false);
 			 			 }
 			 		}
 			},
