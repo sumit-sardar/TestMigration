@@ -61,7 +61,8 @@ public class SessionOperationController extends PageFlowController {
 	private Integer customerId = null;
     private User user = null;
     private List sessionListCUFU = new ArrayList(); 
-    private List sessionListPA = new ArrayList();  
+    private List sessionListPA = new ArrayList(); 
+    private boolean hasLicenseConfig = false; 
     
     public static String CONTENT_TYPE_JSON = "application/json";
 
@@ -244,9 +245,11 @@ public class SessionOperationController extends PageFlowController {
 			System.out.println ("db process time Start:"+new Date());
 			
 			// get licenses
-	        CustomerLicense[] customerLicenses = getCustomerLicenses();
-	        
-	       /* if ((customerLicenses != null) && (customerLicenses.length > 0))
+			CustomerLicense[] customerLicenses =  null;
+			if(this.hasLicenseConfig) {
+				customerLicenses = getCustomerLicenses();
+			}
+			/* if ((customerLicenses != null) && (customerLicenses.length > 0))
 	        {
 	            this.getRequest().setAttribute("customerLicenses", getLicenseQuantitiesByOrg());
 	           // this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
@@ -468,7 +471,10 @@ public class SessionOperationController extends PageFlowController {
 		ObjectOutput output = null;
 		try {
 			System.out.println ("db process time Start:"+new Date());
-			CustomerLicense[] customerLicenses = getCustomerLicenses();
+			CustomerLicense[] customerLicenses =  null;
+			if(this.hasLicenseConfig) {
+				customerLicenses = getCustomerLicenses();
+			}
 	    	// retrieve information for user test sessions
 	        //  FilterParams sessionFilter = FilterSortPageUtils.buildFilterParams(FilterSortPageUtils.TESTSESSION_DEFAULT_FILTER_COLUMN, "CU");
 	    	FilterParams sessionFilter = null;
@@ -695,8 +701,8 @@ public class SessionOperationController extends PageFlowController {
         		new Boolean( customerHasScoring(customerConfigs).booleanValue() && adminUser));
         
         this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
-        
-     	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs).booleanValue() && adminUser);
+        this.hasLicenseConfig = hasLicenseConfiguration(customerConfigs).booleanValue();
+     	this.getSession().setAttribute("hasLicenseConfigured", this.hasLicenseConfig && adminUser);
      	
      	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     
      	
@@ -708,8 +714,13 @@ public class SessionOperationController extends PageFlowController {
      */
     private void registerStudentEnable(CustomerLicense[] customerLicenses, TestSessionVO testSessionVo)
     {    
-    	if (customerLicenses == null) {
+    	if (customerLicenses == null  || (!this.hasLicenseConfig)) {
+    		testSessionVo.setIsRegisterStudentEnable("T");  
     		return;
+    	}
+    	if (customerLicenses != null && customerLicenses.length<=0 && this.hasLicenseConfig) {
+    		 testSessionVo.setIsRegisterStudentEnable("F");   
+    		 return;
     	}
     	
              boolean flag = false;
