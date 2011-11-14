@@ -1111,7 +1111,7 @@ public class HomePageController extends PageFlowController
                         
                         flag = true;      
                         
-                        if (customerLicenses[j].getAvailable().intValue() > 0)
+                        /*if (customerLicenses[j].getAvailable().intValue() > 0)
                         { 
                             
                             testSessionVo.setIsRegisterStudentEnable("T");
@@ -1121,7 +1121,13 @@ public class HomePageController extends PageFlowController
                             
                             testSessionVo.setIsRegisterStudentEnable("F");
                             
-                      }
+                      }*/
+                      // For MQC 66803 :Rapid registration
+                        if(customerLicenses[j].isLicenseAvailable()){
+                        	testSessionVo.setIsRegisterStudentEnable("T");
+                        } else {
+                        	 testSessionVo.setIsRegisterStudentEnable("F");
+                        }
                       
                       break;
                   }

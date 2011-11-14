@@ -21,6 +21,8 @@ public class CustomerLicense extends CTBBean
     private String productName;
     private boolean availableLicenseChange;
     private String customerName;
+    // For MQC 66803 :Rapid registration
+    private Boolean isLicenseAvailable; 
 
 
     //changes for LM12
@@ -163,5 +165,24 @@ public class CustomerLicense extends CTBBean
 	 */
 	public void setProductName(String productName) {
 		this.productName = productName;
+	}
+
+	// For MQC 66803 :Rapid registration
+	/**
+	 * @return the isLicenseAvailable
+	 */
+	public boolean isLicenseAvailable() {
+		if(isLicenseAvailable) 
+			return false;
+		else
+			return isLicenseAvailable;
+	}
+
+	
+	/**
+	 * @param isLicenseAvailable the isLicenseAvailable to set
+	 */
+	public void setIsLicenseAvailable(boolean isLicenseAvailable) {
+		this.isLicenseAvailable = isLicenseAvailable;
 	}
 } 
