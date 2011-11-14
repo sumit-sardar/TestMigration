@@ -3,7 +3,8 @@ var orgTreeHierarchy;
 var gridloaded = false;
 var sessionListCUFU;
 var sessionListPA;
-
+var isGridEmpty = true;
+var isPAGridEmpty = true;
 var isTreePopulated = false;
 var openTreeRequested = false;
 
@@ -21,7 +22,7 @@ function populateSessionListGrid(homePageLoad) {
           url: 'getSessionForUserHomeGrid.do', 
 		 type:   'POST',
 		 datatype: "json",         
-          colNames:['Session Name','Test Name', 'State', 'My Role','Start Date', 'End Date'],
+          colNames:['Session Name','Test Name', 'Organization', 'My Role','Start Date', 'End Date'],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -73,7 +74,10 @@ function populateSessionListGrid(homePageLoad) {
 			},
 			loadComplete: function () {
 				if ($('#list2').getGridParam('records') === 0) {
-            	$('#sp_1_pager2').text("1");
+				 	isGridEmpty = true;
+            	 	$('#sp_1_pager2').text("1");
+            	} else {
+            		isGridEmpty = false;
             	}
             	if(!gridloaded) {
             		populateCompletedSessionListGrid();
@@ -85,6 +89,7 @@ function populateSessionListGrid(homePageLoad) {
 			    width = width - 80; // Fudge factor to prevent horizontal scrollbars
 			    jQuery("#list2").setGridWidth(width);
 			    jQuery("#list3").setGridWidth(width);
+			    setEmptyListMessage('CUFU');
 				$.unblockUI();  
 				$("#list2").setGridParam({datatype:'local'});
 				var tdList = ("#pager2_left table.ui-pg-table  td");
@@ -111,7 +116,7 @@ function populateCompletedSessionListGrid() {
           url: 'getCompletedSessionForGrid.do', 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:['Session Name','Test Name', 'State', 'My Role','Start Date', 'End Date'],
+          colNames:['Session Name','Test Name', 'Organization', 'My Role','Start Date', 'End Date'],
 		   	colModel:[
 		   		{name:'testAdminName',index:'testAdminName', width:250, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'testName',index:'testName', width:225, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -161,8 +166,12 @@ function populateCompletedSessionListGrid() {
 			},
 			loadComplete: function () {
 				if ($('#list3').getGridParam('records') === 0) {
-            	$('#sp_1_pager3').text("1");
+					isPAGridEmpty = true;
+            		$('#sp_1_pager3').text("1");
+            	} else {
+            		isPAGridEmpty = false;
             	}
+            	setEmptyListMessage('PA');
             	$.unblockUI();  
 				$("#list3").setGridParam({datatype:'local'});
 				var tdList = ("#pager3_left table.ui-pg-table  td");
@@ -181,7 +190,21 @@ function populateCompletedSessionListGrid() {
 	 setupButtonPerUserPermission();
 	 
 }
-
+	
+	 function setEmptyListMessage(requestedTab){
+	 if(requestedTab == 'CUFU') {
+		 if(isGridEmpty) {
+		 	$('#list2').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr><tr width = '100%'><th style='padding-right:12px; text-align: right;' rowspan='2'><img height='23'  src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan = '6'>You have no current or future sessions at this time.</th></tr>	<tr width = '100%'><td  colspan = '6'> Click another tab to show other sessions that belong to you. To schedule a new session, click the Schedule Session button to the right. </td></tr>");
+		 }
+	 } else if (requestedTab == 'PA'){
+	 	 if(isPAGridEmpty) {
+		 	$('#list3').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr><tr width = '100%'><th style='padding-right:12px; text-align: right;' rowspan='2'><img height='23'  src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan = '6'>You have no completed sessions at this time.</th></tr>	<tr width = '100%'><td  colspan = '6'> Click another tab to show other sessions that belong to you. To schedule a new session, click the Schedule Session button to the right. </td></tr>");
+		 }
+	 }
+	 
+	 }
+	
+	
 	function setupButtonPerUserPermission() {
 	var element = document.getElementById('add_list3');
 	element.style.display = 'none'; 
