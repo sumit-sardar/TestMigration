@@ -146,8 +146,10 @@ public class OASOracleSink implements OASRDBSink {
 	    			}
 	    			stmt1 = conn.prepareStatement(SUBTEST_STATUS_SQL);
 	    			if(subtest.getCompletionStatus() == null || "SC".equals(subtest.getCompletionStatus())) {
-	    				logger.error("Setting subtest completion status to " + subtest.getCompletionStatus() + " for roster " + testRosterId + ", subtest " + subtest.getId() + "!!!");
-	    				new Exception().printStackTrace();
+	    				logger.warn("Setting subtest completion status to " + subtest.getCompletionStatus() + " for roster " + testRosterId + ", subtest " + subtest.getId() + "!");
+	    				if(subtest.getCompletionStatus() == null) {
+	    					new Exception().printStackTrace();
+	    				}
 	    			}
 	    			stmt1.setString(1, subtest.getCompletionStatus());
 	    			if(subtest.getMaxScore() > 0) {
