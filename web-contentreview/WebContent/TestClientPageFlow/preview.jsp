@@ -14,7 +14,7 @@
  Changed the embed.js path to local folder.
 =>STARTS
 -->
-<SCRIPT SRC="/ContentReviewWeb/TestClientPageFlow/includes/embed.js" type="text/javascript">
+<SCRIPT SRC="../includes/embed.js" type="text/javascript">
 </SCRIPT>
 <script type="text/javascript">
 <!--
@@ -71,8 +71,8 @@ function updateLDB(){
 	<SCRIPT>
 		//This method will include the required SWF file in the html page. The function exists in the embed.js file
 		
-		lzEmbed({url: '/ContentReviewWeb/TestClientPageFlow/TestClient.lzx.swf?lzt=swf&servletUrl=<%=url%>&eliminatorResource=<%=url%>/<%=eliminatorResource%>&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('/ContentReviewWeb/TestClientPageFlow/includes/h.html?h='), bgcolor: '#6691B4"',  width: '100%', height: '100%'});
-		lzHistEmbed('/ContentReviewWeb/TestClientPageFlow/includes');
+		lzEmbed({url: '/ContentReviewWeb/TestClientPageFlow/TestClient.lzx.swf?lzt=swf&servletUrl=<%=url%>&eliminatorResource=<%=url%>/<%=eliminatorResource%>&__lzhistconn='+top.connuid+'&__lzhisturl=' + escape('../includes/h.html?h='), bgcolor: '#6691B4"',  width: '100%', height: '100%'});
+		lzHistEmbed('../includes');
 	</SCRIPT>
 </BODY>
 </HTML>

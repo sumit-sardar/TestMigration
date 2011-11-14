@@ -287,7 +287,10 @@ public class TestClientPageFlowController extends PageFlowController
        Element itemElement = requestElement.getChild("get_item");
             
        String itemId = itemElement.getAttributeValue("itemid");
-		    int index;
+              
+       //For hexcode issue
+       String itemLML  = null;
+        int index;
         //try
         {
             index = Integer.parseInt( itemId );
@@ -298,12 +301,16 @@ public class TestClientPageFlowController extends PageFlowController
         }
                 
         ItemBean item = globalApp.currentDeliverableUnitBean.getItems()[ index - 1 ];
-        
-       //For Content Review Character issue.
-       String itemXML =  item.getLml();
-       itemXML = itemXML.replaceAll("&amp;", "&");
-       itemXML = itemXML.replaceAll(" & ", " &amp; ");
-        getRequest().setAttribute("item", itemXML);
+		// For hexcode issue
+		//Start
+        itemLML = item.getLml();
+
+        itemLML = itemLML.replaceAll("&amp;", "&");
+        itemLML = itemLML.replaceAll(" & ", " &amp; ");
+        item.setLml(itemLML);
+        //End
+
+        getRequest().setAttribute("item", item.getLml());
         
     }
     
