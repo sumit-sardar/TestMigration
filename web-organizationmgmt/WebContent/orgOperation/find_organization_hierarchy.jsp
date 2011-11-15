@@ -11,10 +11,8 @@
         <table width="100%">
         <tr width="100%" >
 		   <td align="left" style="padding: 0 0 0 8px;">
-		      	<div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
-					<div id="titleMain" style = "color:red;font-size:12px; font-weight:bold;"></div>
-					<div id= "contentMain"> </div>
-					<div id= "messageMain"> </div>
+		      	<div id="displayMessageMain" style="display:none; width:99.5%; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold;">
+					<div id= "contentMain" style="padding-bottom: 5px"> </div>
 				</div>
 			</td>
 		</tr>
@@ -65,6 +63,30 @@
 				<center>
 					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">
 					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
+				</center>
+			<br>
+		</td>
+		
+		</tr>
+		
+	</table>
+</div>
+
+<div id="confirmationPopupNavigation"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table>
+		<tr>
+			<td colspan="2">
+			<br/>
+			<p>You have not saved the organization record. Are you sure you want to leave this page?</p>
+			<br/>
+			</td>
+		</tr>
+		<tr>
+		<td >
+				<center>
+					<input type="button"  value="&nbsp;Yes&nbsp;" onclick="javascript:closeConfirmationPopup(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value="&nbsp;No&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopupNavigation'); return false;" class="ui-widget-header">
 				</center>
 			<br>
 		</td>

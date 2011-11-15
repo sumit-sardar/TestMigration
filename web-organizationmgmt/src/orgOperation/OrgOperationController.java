@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import utils.Base;
 import utils.BaseTree;
+import utils.MessageInfo;
 import utils.Organization;
 import utils.OrganizationPathListUtils;
 import utils.OrgnizationComparator;
@@ -37,10 +39,14 @@ import com.ctb.exception.CTBBusinessException;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.google.gson.Gson;
 
+import dto.Message;
+
 
 @Jpf.Controller()
 public class OrgOperationController extends PageFlowController {
 	private static final long serialVersionUID = 1L;
+	
+    public LinkedHashMap orgLevelOptions = null;//Added on 09.11.2011 
 	
 	/**
      * @common:control
@@ -366,7 +372,54 @@ public class OrgOperationController extends PageFlowController {
 			return null;
 			
 		}
-	 
+	 /**
+	  * Added on 08.11.2011 for getting organization details
+	  */	 
+	 @Jpf.Action(forwards={
+	 			@Jpf.Forward(name = "success", 
+	 					path ="find_user_by_hierarchy.jsp")
+	 		})
+	 		protected Forward getOrgDetailsForEdit(ManageOrganizationForm form)
+	 		{
+	 		 HttpServletRequest req = getRequest();
+	 		 HttpServletResponse resp = getResponse();
+	 		 OutputStream stream = null;
+	 		 String contentType = CONTENT_TYPE_JSON;
+	 		 String json = "";
+	 		 Node orgNodeDetail = new Node();
+	 		 Integer orgNodeId = Integer.parseInt(getRequest().getParameter("selectedOrgId").toString());
+	 		 System.out.println("userName ::"+this.userName);
+	 		 System.out.println("orgNodeId ::"+orgNodeId);
+	 		
+	 		 try{
+	 			orgNodeDetail = this.organizationManagement.getOrganization(this.userName, orgNodeId);
+	 			
+	 			Gson gson = new Gson();
+				json = gson.toJson(orgNodeDetail);
+				
+				System.out.println(json);
+				try{
+		    		resp.setContentType("application/json");
+		    		stream = resp.getOutputStream();
+		    		resp.flushBuffer();
+		    		stream.write(json.getBytes());
+			
+		    		}
+			
+		    		 finally{
+		 				if (stream!=null){
+		 					stream.close();
+		 				}
+		 			}
+	 		 }
+	 		 catch(Exception e){
+	 			System.err.println("Exception while fetching organization details.");
+				e.printStackTrace();
+	 		 }
+	 		 
+	 		 return null;
+	 		}
+	 	 
 	 //saving organization details
 	 @Jpf.Action(forwards={
 				@Jpf.Forward(name = "success", 
@@ -385,15 +438,53 @@ public class OrgOperationController extends PageFlowController {
 			organizationDetail.setOrgNodeName(getRequest().getParameter("orgName").trim());
 			organizationDetail.setCustomerId(Integer.parseInt((getSession().getAttribute("customerId")).toString()));
 			organizationDetail.setOrgNodeCode(getRequest().getParameter("orgCode").trim());
-			organizationDetail.setParentOrgNodeId(Integer.parseInt(getRequest().getParameter("assignedOrgNodeIds")));
+			Integer selectedParentId = Integer.parseInt(getRequest().getParameter("assignedOrgNodeIds"));
+			organizationDetail.setParentOrgNodeId(selectedParentId);
+			//added on 08.11.2011
+			MessageInfo messageInfo = new MessageInfo();
+			//Message message = null;
+			Integer orgNodeId = null;
+			if(getRequest().getParameter("selectedOrgId")!=null){
+				orgNodeId = Integer.parseInt(getRequest().getParameter("selectedOrgId").toString());
+			}
+			boolean isCreateNew = (orgNodeId == null || "".equals(orgNodeId)) ? true : false;
+			//
 			if(isLaslinkCustomer)
 				organizationDetail.setMdrNumber(getRequest().getParameter("mdrNumber").trim());
 			String userName = getSession().getAttribute("userName").toString();
 			try {
-				organizationDetail = this.organizationManagement.createOrganization(userName, organizationDetail);
+				
+				if(isCreateNew){
+					organizationDetail = this.organizationManagement.createOrganization(userName, organizationDetail);
+					//message = new Message(Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION);
+					messageInfo = createMessageInfo(messageInfo, Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION, false, true );
+					messageInfo.setOrganizationDetail(organizationDetail);
+					
+				}
+				else{
+					boolean validInfo = true;
+					initOrgLevelOption(isCreateNew, orgNodeId, selectedParentId);
+					if(isInvalidParent()){
+						
+						//message = new Message(Message.EDIT_ERROR, Message.INVALID_PARENT, Message.ERROR);
+						messageInfo = createMessageInfo(messageInfo, Message.EDIT_ERROR, Message.INVALID_PARENT, Message.ERROR, true, false );
+						messageInfo.setOrganizationDetail(organizationDetail);
+						validInfo = false;
+						
+					}
+					
+					if(validInfo){
+						organizationDetail.setOrgNodeId(orgNodeId);
+						this.organizationManagement.updateOrganization(this.userName, organizationDetail);
+						//message = new Message(Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION);
+						messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION, false, true );
+						messageInfo.setOrganizationDetail(organizationDetail);
+						messageInfo.setIsEdit(Boolean.TRUE);
+					}
+				}
 			Gson gson = new Gson();
-			json = gson.toJson(organizationDetail);
-			
+			json = gson.toJson(messageInfo);
+			System.out.println("Json after saveOrg ::"+json);
 				try{
 		    		resp.setContentType("application/json");
 		    		stream = resp.getOutputStream();
@@ -970,8 +1061,73 @@ public class OrgOperationController extends PageFlowController {
   public static class ManageOrganizationForm extends SanitizedFormData
   {
 	  
+  }	
+/////////////////////////////////////////////////////////////////////////////////////////
+//////***********For server-side validation ::Added on 09.11.2011
+////////////////////////////////////////////////////////////////////////////////////////
+  
+  /**
+   * isInvalidParent
+   */
+  
+  private boolean isInvalidParent() {
+      boolean invalidParent = false;
+      
+      if(this.orgLevelOptions == null || this.orgLevelOptions.size()==0){
+          invalidParent = true;
+      }
+      else if(this.orgLevelOptions.size()== 1 && this.orgLevelOptions.containsKey("")){
+          invalidParent = true;
+      }
+       
+      return invalidParent; 
+  } 
+  
+  private void initOrgLevelOption(boolean isCreateNew ,Integer orgId,Integer selectedParentId)
+  {        
+      this.orgLevelOptions = new LinkedHashMap();
+      OrgNodeCategory[] orgCatagories = null;
+      boolean addFlag = true;
+     
+      if (isCreateNew) {
+    	  
+          this.orgLevelOptions.put("", Message.SELECT_ENTITY);
+          
+      }
+      
+      if (!isCreateNew) {
+          
+          addFlag = false;
+      }
+      
+      try {
+          orgCatagories = organizationManagement.
+                                  getFrameworkListForOrg(orgId, 
+                                  selectedParentId, addFlag);            
+          if (orgCatagories != null) {
+              
+              for (int i = 0; i < orgCatagories.length ; i++) {
+                  
+                  this.orgLevelOptions.put(orgCatagories[i].getOrgNodeCategoryId(), 
+                          orgCatagories[i].getCategoryName());
+              }
+          }
+      }
+      catch (Exception be) {
+         be.printStackTrace();
+      }       
   }
-	
+  
+	private MessageInfo createMessageInfo(MessageInfo messageInfo, String messageTitle, String content, String type, boolean errorflag, boolean successFlag){
+		messageInfo.setTitle(messageTitle);
+		messageInfo.setContent(content);
+		messageInfo.setType(type);
+		messageInfo.setErrorFlag(errorflag);
+		messageInfo.setSuccessFlag(successFlag);
+		return messageInfo;
+	}
+////////////////////////////////////////////////////////////////////////////////////  
+  
 }
 
    

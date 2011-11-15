@@ -139,12 +139,10 @@ Use the organization selector on the right to select the "Parent" organization t
 				<td  width="3%" id="preButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-left" id="pData" href="javascript:pDataClick('Edit');"><span
 					class="ui-icon ui-icon-triangle-1-w"></span></a></td><td id="nextButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-right" id="nData"
 					href="javascript:nDataClick('Edit');"><span class="ui-icon ui-icon-triangle-1-e"></span></a></td>
-					<td>&nbsp;</td>
-				<td  width="100%">
-					<center>
-					<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:orgDetailSubmit(); return false;" class="ui-widget-header">
-					<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onCancel(); return false;" class="ui-widget-header">
-					</center>
+					<td style="width:1%;">&nbsp;</td>
+				<td  style="width:96%; text-align: left;">
+					<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:orgDetailSubmit(); return false;" class="ui-widget-header" style="width:60px; margin-right: 10px; margin-left: 250px">
+					<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onCancel(); return false;" class="ui-widget-header" style="width:60px;">
 					<br>
 				</td>
 			</tr>
