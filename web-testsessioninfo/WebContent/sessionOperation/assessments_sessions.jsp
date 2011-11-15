@@ -21,11 +21,12 @@
 <!-- ********************************************************************************************************************* -->
  
 <netui:form action="assessments_sessions">
+<jsp:include page="/sessionOperation/oas_message.jsp" />
 <input type="hidden" id="treeOrgNodeId" />
 <table width="100%" border="0">
 <tr>
 <td>
-    <h1><netui:content value="Assessment: Sessions"/></h1>
+    <h1><netui:content value="${bundle.web['homepage.title']}"/></h1>
 </td>
 </tr>
 <tr height="400" align="center">
