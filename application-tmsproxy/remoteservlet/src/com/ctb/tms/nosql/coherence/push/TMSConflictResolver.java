@@ -1,10 +1,11 @@
 package com.ctb.tms.nosql.coherence.push;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
 import com.ctb.tms.bean.login.Manifest;
+import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
 import com.oracle.coherence.patterns.pushreplication.EntryOperation;
 import com.oracle.coherence.patterns.pushreplication.publishers.cache.ConflictResolution;
@@ -55,28 +56,56 @@ public class TMSConflictResolver implements ConflictResolver {
                 		}
                 	} else if("OASManifestCache".equals(entryOperation.getCacheName())) {
                 		Manifest[] incoming = (Manifest[]) localEntry.getContext().getValueFromInternalConverter().convert(entryOperation.getPublishableEntry().getBinaryValue());
-                		Manifest[] current = (Manifest[]) localEntry.getValue();
-                		HashMap<String, Manifest> manifestMap = new HashMap<String, Manifest>(incoming.length + current.length);	
-                		for(int i=0;i<current.length;i++) {
-                			String key = current[i].getAccessCode();
-                			manifestMap.put(key, current[i]);
-                		}
+                		Manifest[] local = (Manifest[]) localEntry.getValue();
+                		ArrayList<Manifest> merged = new ArrayList<Manifest>(); 
                 		for(int i=0;i<incoming.length;i++) {
-                			String key = incoming[i].getAccessCode();
-                			Manifest manifest = manifestMap.get(key);
-                			if(manifest == null) {
-                				manifestMap.put(key, incoming[i]);
-                			} else if(incoming[i].getRosterLastMseq() > manifest.getRosterLastMseq()) {
-                				manifestMap.put(key, incoming[i]);
-                			} else if (incoming[i].doReplicate()) {
-                				incoming[i].setReplicate(false);
-                				manifestMap.put(key, incoming[i]);
-                			} else {
-                				logger.warn("Replicated manifest message has lower mseq than current local value - ignoring.");
+                			boolean foundSU = false;
+                			for(int j=0;j<local.length;j++) {
+                				if(local[j].getAccessCode().equals(incoming[i].getAccessCode())) {
+                					// found SU
+                					foundSU = true;
+                					Manifest newManifest = local[j];
+                					if(incoming[i].getRosterLastMseq() > local[j].getRosterLastMseq()) {
+                						// using incoming roster-level values
+                						newManifest = incoming[i];
+                					}
+                					ManifestData[] inData = incoming[i].getManifest();
+                					ManifestData[] locData = local[j].getManifest();
+                					ArrayList<ManifestData> newData = new ArrayList<ManifestData>();
+                					for(int k=0;k<inData.length;k++) {
+                						boolean foundDU = false;
+                						for(int m=0;m<locData.length;m++) {
+                							if(locData[m].getId() == inData[k].getId()) {
+                								// found DU
+                								foundDU = true;
+                								ManifestData newer = locData[m];
+                								if(inData[k].getSubtestLastMseq() > locData[m].getSubtestLastMseq()) {
+                									// using incoming subtest-level values
+                									newer = inData[k];
+                								}
+                								newData.add(newer);
+                							}
+                						}
+                						if(!foundDU) {
+                							// all-new DU incoming
+                							newData.add(inData[k]);
+                						}
+                					}
+                					newManifest.setManifest((ManifestData[])newData.toArray(new ManifestData[0]));
+                					merged.add(newManifest);
+                				}
                 			}
+            				if(!foundSU) {
+            					// all-new SU incoming
+            					merged.add(incoming[i]);
+            				}
                 		}
-                		Manifest [] newManifest = manifestMap.values().toArray(new Manifest[0]);
-                		resolution.useMergedValue(newManifest);
+                		Manifest[] finalMerged = (Manifest[])merged.toArray(new Manifest[0]);
+                		logger.info("Merged manifest after replication: ");
+                		for(int n=0;n<finalMerged.length;n++) {
+                			logger.info(finalMerged[n].toString());
+                		}
+                		resolution.useMergedValue(finalMerged);
                 	} else {
                 		resolution.useInComingValue();
                 	}
