@@ -76,6 +76,7 @@ public class ViewTestSessionsController extends PageFlowController
     // LLO- 118 - Change for Ematrix UI
 	private boolean isTopLevelUser = false;
 	private boolean islaslinkCustomer = false;
+	private boolean hasLicenseConfig = false;
     
     
          
@@ -105,6 +106,7 @@ public class ViewTestSessionsController extends PageFlowController
      // change for handscoring
         customerHasScoring();
         isTopLevelUser();
+        this.hasLicenseConfig = hasLicenseConfiguration(customerConfigurations); 
         this.getSession().setAttribute("orgNodePath", this.orgNodePath);
         
         return new Forward("success", form);
@@ -330,6 +332,7 @@ public class ViewTestSessionsController extends PageFlowController
           	// change for handscoring
            customerHasScoring();
            isTopLevelUser();
+           this.hasLicenseConfig = hasLicenseConfiguration(customerConfigurations); 
            this.getSession().setAttribute("orgNodePath", this.orgNodePath);
          }
          if (form.orgNodeId == null)
@@ -1055,6 +1058,14 @@ public class ViewTestSessionsController extends PageFlowController
             
             TestSessionVO testSessionVo =(TestSessionVO)sessionList.get(i);
             boolean flag = false;
+            if (customerLicenses == null  || (!this.hasLicenseConfig)) {
+        		testSessionVo.setIsRegisterStudentEnable("T");  
+        		continue;
+        	}
+        	if (customerLicenses != null && customerLicenses.length<=0 && this.hasLicenseConfig) {
+        		 testSessionVo.setIsRegisterStudentEnable("F");   
+        		 continue;
+        	}
          
             if (testSessionVo.getLicenseEnabled().equals("T"))
             {
@@ -1247,7 +1258,22 @@ public class ViewTestSessionsController extends PageFlowController
         return new Boolean(hasScoringConfigurable);
     }
 	
-		
+    private Boolean hasLicenseConfiguration(CustomerConfiguration [] customerConfigs)
+    {               
+    	 boolean hasLicenseConfiguration = false;
+
+        for (int i=0; i < customerConfigs.length; i++)
+        {
+        	 CustomerConfiguration cc = (CustomerConfiguration)customerConfigs[i];
+            if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subscription") && 
+            		cc.getDefaultValue().equals("T")	) {
+            	hasLicenseConfiguration = true;
+                break;
+            } 
+        }
+       
+        return new Boolean(hasLicenseConfiguration);
+    }	
     /**
      * Changes For cr hand scoring score by student
 	 * getCustomerConfigurations

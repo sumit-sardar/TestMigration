@@ -1089,9 +1089,6 @@ public class HomePageController extends PageFlowController
      */
     private void registerStudentEnable(CustomerLicense[] customerLicenses, List sessionList)
     {    
-    	if (customerLicenses == null) {
-    		return;
-    	}
     	
         for (int i=0; i < sessionList.size(); i++)
         {
@@ -1102,6 +1099,15 @@ public class HomePageController extends PageFlowController
             if (testSessionVo.getLicenseEnabled().equals("T"))
             {
             
+            	if (customerLicenses == null  || (!this.hasLicenseConfig)) {
+            		testSessionVo.setIsRegisterStudentEnable("T");  
+            		continue;
+            	}
+            	if (customerLicenses != null && customerLicenses.length<=0 && this.hasLicenseConfig) {
+            		 testSessionVo.setIsRegisterStudentEnable("F");   
+            		 continue;
+            	}
+
                 for (int j=0; j < customerLicenses.length; j++)
                 { 
                             
