@@ -808,16 +808,19 @@ public class TMSServlet extends HttpServlet {
 		String result = response.xmlText(opts);
 		
 		if(manifest.getRosterRestartNumber() > restartCount) restartCount = manifest.getRosterRestartNumber();
-		int newRestartCount = restartCount + 1;
-		manifest.setRosterRestartNumber(newRestartCount);
-		rd.getAuthData().setRestartNumber(newRestartCount);
-		int newMseq = newRestartCount * 1000000;
+		
+		int newMseq = restartCount * 1000000;
 		rd.getAuthData().setLastMseq(newMseq);
 		manifest.setRosterLastMseq(newMseq);
 		ManifestData[] manifests = manifest.getManifest();
 		for(int i=0;i<manifests.length;i++) {
 			manifests[i].setSubtestLastMseq(newMseq);
 		}
+		
+		int newRestartCount = restartCount + 1;
+		manifest.setRosterRestartNumber(newRestartCount);
+		rd.getAuthData().setRestartNumber(newRestartCount);
+		
 		if(loginResponse.getTutorial() != null) {
 			if(manifest.getTutorialTaken() == null) {
 				manifest.setTutorialTaken(0==loginResponse.getTutorial().getDeliverTutorial().intValue()?"TRUE":null);

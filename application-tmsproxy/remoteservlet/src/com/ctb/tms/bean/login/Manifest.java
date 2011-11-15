@@ -29,7 +29,7 @@ public class Manifest implements Serializable, CachePreLoadObject {
     public String toString() {
     	String result = testRosterId + "::" + accessCode + "::" + rosterLastMseq + "::" + rosterCompletionStatus;
     	for(int i=0;i<manifest.length;i++) {
-    		result += "\n" + manifest[i].getId() + ":" + manifest[i].getTitle() + ":" + manifest[i].getCompletionStatus();
+    		result += "\n" + manifest[i].getId() + ":" + manifest[i].getTitle() + ":" + manifest[i].getSubtestLastMseq() + ":" + manifest[i].getCompletionStatus();
     	}
     	return result;
     }
