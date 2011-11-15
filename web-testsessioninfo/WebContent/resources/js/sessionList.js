@@ -195,12 +195,12 @@ function populateCompletedSessionListGrid() {
 	 if(requestedTab == 'CUFU') {
 		 if(isGridEmpty) {
 		 	$('#list2').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
-		 	$('#list2').append("<tr><td style='width: 100%;padding-left: 10%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>You have no current or future sessions at this time.</th></tr>	<tr width='100%'><td colspan='6'> Click another tab to show other sessions that belong to you. To schedule a new session, click the Schedule Session button to the right. </td></tr></tbody></table></td></tr>");
+		 	$('#list2').append("<tr><td style='width: 100%;padding-left: 10%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>You have no current or future sessions at this time.</th></tr>	<tr width='100%'><td colspan='6'>  To schedule a new session, click the Schedule Session button. </td></tr></tbody></table></td></tr>");
 		 }
 	 } else if (requestedTab == 'PA'){
 	 	 if(isPAGridEmpty) {
 		 	$('#list3').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
-		 	$('#list3').append("<tr><td style='width: 100%;padding-left: 10%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>You have no completed sessions at this time.</th></tr>	<tr width='100%'><td colspan='6'> Click another tab to show other sessions that belong to you. To schedule a new session, click the Schedule Session button to the right. </td></tr></tbody></table></td></tr>");
+		 	$('#list3').append("<tr><td style='width: 100%;padding-left: 10%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>You have no completed sessions at this time.</th></tr>	<tr width='100%'><td colspan='6'> To schedule a new session, click the Schedule Session button. </td></tr></tbody></table></td></tr>");
 		 }
 	 }
 	 
