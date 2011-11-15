@@ -1832,6 +1832,11 @@ function fillselectedOrgNode( elementId, orgList) {
 			var element = document.getElementById('add_list2');
 			element.style.display = 'none';
 		}
+		var deleteStudentEnable = $("#deleteStudentEnable").val();
+		if (deleteStudentEnable == 'false') {	
+			var element = document.getElementById('del_list2');
+			element.style.display = 'none';
+		}
 	}
 			 
 
