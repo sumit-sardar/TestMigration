@@ -1808,6 +1808,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		document.getElementById('displayMessageMain').style.display = "block";	
 
 		if (deleteStatus == 'Student has been deleted successfully.') {
+			/*
 	     	UIBlock();
 	        jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});     
 	  	   	var sortArrow = jQuery("#list2");
@@ -1817,6 +1818,10 @@ function fillselectedOrgNode( elementId, orgList) {
 	        var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
 	        $(arrowElements.childNodes[0]).removeClass('ui-state-disabled');
 	        $(arrowElements.childNodes[1]).addClass('ui-state-disabled');
+	        */
+			var studentId = $("#list2").jqGrid('getGridParam', 'selrow');
+			jQuery("#list2").delRowData(studentId);
+			jQuery("#list2").trigger("reloadGrid");	        
 		}	    
    	}
 
