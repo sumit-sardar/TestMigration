@@ -417,6 +417,7 @@ function EditOrganizationDetail(selectedOrgId){
 	isLasLinkCustomer = $("#isLasLinkCustomer").val();
 	document.getElementById('displayMessage').style.display = "none";	
 	document.getElementById('displayMessageMain').style.display = "none";
+	var parentNodeId ;
 	if(selectedOrgId == undefined){
 		rowId = $("#list2").jqGrid('getGridParam', 'selrow');
 	}
@@ -479,11 +480,14 @@ function EditOrganizationDetail(selectedOrgId){
 			  				  return false;
 			 				 }
 			 				
-							});		
+							});	
+							
+							parentNodeId = data.parentOrgNodeId;
 							setPopupPosition(isAddOrganization);
 							hideLeafAdminCheckBox();
-							//checkOpenNode(data.parentOrgNodeId);	
-							dbOrgDetails = $("#addEditOrganizationDetail *").serializeArray();
+							checkOpenNode(parentNodeId);
+							dbOrgDetails = $("#addEditOrganizationDetail *").serializeArray(); 
+								
 		 						
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -986,3 +990,22 @@ function disablenextprev(selectedPosition,maxlength) {
                     //$("#viewnData").removeClass("ui-state-disabled");
                }
 }
+
+function checkOpenNode(parentOrgNodeId){
+
+		var isIdExist = $('#'+parentOrgNodeId,'#innerID').length;
+			if(isIdExist > 0){
+				$("#"+parentOrgNodeId,'#innerID').removeClass("jstree-unchecked").addClass("jstree-checked");
+				$('#innerID').jstree('close_all', -1);
+		}
+	
+}
+
+
+
+
+
+
+
+
+
