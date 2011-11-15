@@ -25,8 +25,8 @@
 		   	<tr >
 		   		<td width="13%" align="left" style="padding: 5px 0px 5px 0px; clear:both;">
 		      		<div style="width:68%;">
-		      			<a id="show" href="#" onclick="showTreeSlider();" style="display: block; width:100%;" class="rounded {transparent} button">Show Organization</a>
-		      			<a id="hide" href="#" onclick="hideTreeSlider();" style="display: none; width:100%;" class="rounded {transparent} button">&nbsp;&nbsp;Hide Organization</a>
+		      			<!-- <a id="show" href="#" onclick="showTreeSlider();" style="display: block; width:100%;" class="rounded {transparent} button">Show Organization</a> -->
+		      			<!-- <a id="hide" href="#" onclick="hideTreeSlider();" style="display: none; width:100%;" class="rounded {transparent} button">&nbsp;&nbsp;Hide Organization</a> -->
 		      		</div>
 		    	</td>
 		        <td align="right" colspan="12" style="padding: 0 0 5px 0px; clear:both">
@@ -51,11 +51,18 @@
 	</table>
 	<%} %>
 	<div style="clear:both;float:left;width:100%;">
+		<div id="show" style="display: block;width:2%;float:left; padding: 3px 0 3px 3px;" class="ui-corner-tl ui-corner-tr ui-corner-bl ui-corner-br ui-widget-header " title="Show Organization">
+   			<a href="#" onclick="showTreeSlider();" style=" width:100%; " >>></a>
+   		</div>
 		<div id="orgSlider" style="float:left;width:0%;display:none" class="transparent">
-			<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;Session Search</div>
+			<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader" style="text-align:left;">
+				<div style="float:left;">&nbsp;Browse Organization</div> 
+				<div style="float:right;" title="Hide Organization"><a id="hide" href="#" onclick="hideTreeSlider();" style="display: none; width:100%;" >&nbsp;&lt;&lt;&nbsp;</a></div>
+				<div style="clear:both;"></div>     
+			</div>
 	    	<div id = "orgNodeHierarchy" style="text-align: left !important;" class="treeCtrl"></div> 
 		</div>  	     
-		<div id="sessionGrid" style="float:left;width:100%;"> 		      		    				
+		<div id="sessionGrid" style="float:right;width:97%;"> 		      		    				
 					<div id="accordion" style="width:100%;">							
 						<div>
 						  	<h3><a href="#">Current and Future</a></h3>

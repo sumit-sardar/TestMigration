@@ -245,7 +245,7 @@ function populateCompletedSessionListGrid() {
 		 $("#show").css('display', 'block');
 		 $("#gap").width("0%");
 		 $("#orgSlider").width("0%");
-		 $("#sessionGrid").width("100%");
+		 $("#sessionGrid").width("97%");
 		 $("#sessionGrid").css('padding-left',0);
 		$('#orgSlider').show('slide', {direction: 'right'}, 1000);
 		document.getElementById('orgSlider').style.display = 'none';
