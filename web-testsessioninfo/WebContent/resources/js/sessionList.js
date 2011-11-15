@@ -312,10 +312,17 @@ function createSingleNodeSelectedTree(jsondata) {
 	   
 	  $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	//clearMessage();
-  			SelectedOrgNodeId = $(this).parent().attr("id");
+	    	SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
- 		    reset();
- 		    gridReload(false);
+	    	topNodeSelected = $(this).parent().parent().parent();
+	    	if($(topNodeSelected).is("li")){
+	    	 	reset();
+ 		    	gridReload(false);
+	    	} else {
+	    		openConfirmationPopup();
+	    	}
+  			
+ 		   
  		 	
 		});
 	   $("#orgNodeHierarchy").bind("loaded.jstree", 
@@ -393,3 +400,32 @@ function createSingleNodeSelectedTree(jsondata) {
 			return isRegisterStudentEnable;
 	}
  
+ 
+ 	function closePopUp(dailogId){
+		$("#"+dailogId).dialog("close");
+	}
+	
+	
+	function fetchDataOnConfirmation() {
+		closePopUp('confirmationPopup');
+		reset();
+ 		gridReload(false);
+	}
+	
+	function openConfirmationPopup(){
+	$("#confirmationPopup").dialog({  
+		title:"Confirmation Alert",  
+	 	resizable:false,
+	 	autoOpen: true,
+	 	width: '400px',
+	 	modal: true,
+	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		 $("#confirmationPopup").css('height',120);
+		 var toppos = ($(window).height() - 290) /2 + 'px';
+		 var leftpos = ($(window).width() - 410) /2 + 'px';
+		 $("#confirmationPopup").parent().css("top",toppos);
+		 $("#confirmationPopup").parent().css("left",leftpos);	
+		 
+	}	
+				 

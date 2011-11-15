@@ -85,3 +85,29 @@
 				
 		</div>
 	</div>
+	
+	
+				
+<div id="confirmationPopup"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table>
+		<tr>
+			<td colspan="2">
+			<br/>
+			<p><netui:content value="${bundle.web['common.message.user.browse.topNodeSelection']}"/></p>
+			<br/>
+			</td>
+		</tr>
+		<tr>
+		<td >
+				<center>
+					<input type="button"  value="&nbsp;${bundle.web['homepage.button.yes']}&nbsp;" onclick="javascript:fetchDataOnConfirmation(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value="&nbsp;${bundle.web['homepage.button.no']}&nbsp;&nbsp;" onclick="javascript:closePopUp('confirmationPopup'); return false;" class="ui-widget-header">
+				</center>
+			<br>
+		</td>
+		
+		</tr>
+		
+	</table>
+</div>
