@@ -47,7 +47,7 @@ public class ManifestData implements Serializable
     private double semScore;
     private String objectiveScore;
     private String contentURI;
-    private int subtestLastMseq;
+    private int subtestLastMseq = -1;
     
 	public int getSubtestLastMseq() {
 		return subtestLastMseq;

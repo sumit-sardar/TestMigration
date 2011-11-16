@@ -131,6 +131,8 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 									RosterData rd = oasDBSource.getRosterData(conn, key);
 									Manifest [] md = oasDBSource.getManifest(conn, testRosterId);
 									//oasSink.deleteAllItemResponses(testRosterId);
+									oasSink.deleteAllManifests(testRosterId);
+									oasSink.deleteRosterData(creds[i]);
 									oasSink.putRosterData(creds[i], rd);
 									oasSink.putAllManifests(testRosterId, md);
 								} else {

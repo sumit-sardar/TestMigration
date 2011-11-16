@@ -571,7 +571,9 @@ public class OASOracleSource implements OASRDBSource
 				auth.setLastAccessCode(rs1.getString("accessCode"));
 				// addl fields for manifest update
 				auth.setCorrelationId(rs1.getInt("correlationId"));
-				auth.setLastMseq(rs1.getInt("lastMseq"));
+				int mseq = rs1.getInt("lastMseq");
+				if(mseq == 0) mseq = -1;
+				auth.setLastMseq(mseq);
 				Timestamp start = rs1.getTimestamp("startTime");
     			if(start != null) {
     				auth.setStartTime(start);

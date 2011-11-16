@@ -315,9 +315,6 @@ public class TMSServlet extends HttpServlet {
 		        saveResponse.getTsdArray(i).setStatus(Status.OK);
 			    
 	    		manifest = oasSource.getManifest(rosterId, accessCode);
-	    		if(manifest.getRosterCompletionStatus() == null) {
-	    			manifest.setRosterCompletionStatus("IP");
-	    		}
 	    		manifest.setRosterLastMseq(tsd.getMseq().intValue());
 		    	ManifestData[] manifestData = manifest.getManifest();	
 		    	int nextScoIndex = 0;

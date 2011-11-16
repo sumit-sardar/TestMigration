@@ -84,15 +84,21 @@ public class TMSConflictResolver implements ConflictResolver {
                 									newer = inData[k];
                 								}
                 								newData.add(newer);
+                								break;
                 							}
                 						}
                 						if(!foundDU) {
                 							// all-new DU incoming
-                							newData.add(inData[k]);
+                							//newData.add(inData[k]);
+                							// don't add new subtests, they should be same or removed
                 						}
                 					}
                 					newManifest.setManifest((ManifestData[])newData.toArray(new ManifestData[0]));
+                					if("TRUE".equals(incoming[i].getTutorialTaken()) || "TRUE".equals(local[j].getTutorialTaken())) {
+                						newManifest.setTutorialTaken("TRUE");
+                					}
                 					merged.add(newManifest);
+                					break;
                 				}
                 			}
             				if(!foundSU) {

@@ -16,7 +16,7 @@ public class Manifest implements Serializable, CachePreLoadObject {
 	private String accessCode;
 	private Timestamp rosterStartTime;
     private Timestamp rosterEndTime;
-    private int rosterLastMseq;
+    private int rosterLastMseq = -1;
     private int rosterCorrelationId = 0;
     private String rosterCompletionStatus;
     private int rosterRestartNumber;
