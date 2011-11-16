@@ -27,11 +27,18 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 				</tr>
 			</table>
 	</div>
-	
-	<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px;"><b>Enter information about the organization in the form below. Required fields are marked by a blue asterisk *. 
-Use the organization selector on the right to select the "Parent" organization to which you are adding this new member organization.</b></span>
-<br>
-<br>
+
+	<table style="padding-bottom: 5px">
+		<tr>
+			<td width="770px">
+				<div id="editOrgDisplayId">
+					<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px;">
+						<b>Enter information about the organization in the form below. Required fields are marked by a blue asterisk *. Use the organization selector on the right to select the "Parent" organization to which you are adding this new member organization.</b>
+					</span>
+				</div>
+			</td>
+		</tr>
+	</table>
 
 	<div id="accordion" style="width:99.5%;">
 			
