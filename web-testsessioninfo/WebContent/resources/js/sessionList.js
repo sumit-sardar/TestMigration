@@ -225,7 +225,7 @@ function populateCompletedSessionListGrid() {
 			 $("#orgSlider").width("17%");
 			 $("#sessionGrid").width("82%");
 			 document.getElementById('orgSlider').style.display = 'block';
-			 $("#sessionGrid").css('padding-left',10);
+			// $("#sessionGrid").css('padding-left',10);
 			$('#orgSlider').show('slide', {direction: 'left'}, 50);
 			var width = jQuery("#sessionGrid").width();
 		    width = width - 80; // Fudge factor to prevent horizontal scrollbars
@@ -246,7 +246,7 @@ function populateCompletedSessionListGrid() {
 		 $("#gap").width("0%");
 		 $("#orgSlider").width("0%");
 		 $("#sessionGrid").width("97%");
-		 $("#sessionGrid").css('padding-left',0);
+		// $("#sessionGrid").css('padding-left',0);
 		$('#orgSlider').show('slide', {direction: 'right'}, 1000);
 		document.getElementById('orgSlider').style.display = 'none';
 		var width = jQuery("#sessionGrid").width();
