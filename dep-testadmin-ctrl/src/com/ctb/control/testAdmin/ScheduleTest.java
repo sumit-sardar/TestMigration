@@ -375,6 +375,7 @@ public interface ScheduleTest
      */
     
     java.lang.Integer updateTestSession(java.lang.String userName, com.ctb.bean.testAdmin.ScheduledSession newSession) throws com.ctb.exception.CTBBusinessException;
+    void updateCreatorOrgNodeIdForTestSession(Integer testAdminId, Integer creatorOrgNodeId) throws com.ctb.exception.CTBBusinessException;
 
     /**
      * checks each of the provided list of access codes against the database to

@@ -728,6 +728,17 @@ public interface TestAdmin extends JdbcControl
     
     /**
      * @jc:sql statement::
+     * update
+     *     test_admin set
+     *          creator_org_node_id = {creatorOrgNodeId}
+     * where
+     *      test_admin_id = {testAdminId}::
+     */
+    @JdbcControl.SQL(statement = "update test_admin set creator_org_node_id = {creatorOrgNodeId} where test_admin_id = {testAdminId}")
+    void updateCreatorOrgNodeId(Integer testAdminId, Integer creatorOrgNodeId) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
      * select SEQ_TEST_ADMIN_ID.NEXTVAL from dual
      */
     @JdbcControl.SQL(statement = "select SEQ_TEST_ADMIN_ID.NEXTVAL from dual")

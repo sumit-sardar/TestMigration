@@ -1446,6 +1446,21 @@ public class ScheduleTestImpl implements ScheduleTest
     		throw ctbe;
     	}
     }
+
+    /**
+     * @throws com.ctb.exception.CTBBusinessException
+     */
+    public void updateCreatorOrgNodeIdForTestSession(Integer testAdminId, Integer creatorOrgNodeId) throws CTBBusinessException {
+        try {
+            admins.updateCreatorOrgNodeId(testAdminId, creatorOrgNodeId);
+        } catch (Exception e) {
+    		String message = e.getMessage().toLowerCase();
+            CTBBusinessException ctbe = new SessionCreationException(message);
+            ctbe.setStackTrace(e.getStackTrace());
+    		throw ctbe;
+        }
+    }
+    
     
     /**
      * checks each of the provided list of access codes against the
