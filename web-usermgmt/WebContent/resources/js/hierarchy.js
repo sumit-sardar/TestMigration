@@ -590,6 +590,11 @@ function userDetailEdit(){
 							titleViewEdit = "View User";
 						} else {
 							isViewMod = false;
+							var primaryPhn3 = trim(data.userContact.primaryPhone3);
+							var primaryPhoneExtn = trim(data.userContact.primaryPhone4);
+							var secondaryPhn3 = trim(data.userContact.secondaryPhone3);
+							var secondaryPhoneExtn = trim(data.userContact.secondaryPhone4);
+							
 							titleViewEdit = "Edit User";
 							editEnable();
 							organizationNodes = data.organizationNodes;
@@ -623,12 +628,12 @@ function userDetailEdit(){
 							$("#zipCode2").val(data.userContact.zipCode2);
 							$("#primaryPhone1").val(data.userContact.primaryPhone1);
 							$("#primaryPhone2").val(data.userContact.primaryPhone2);
-							$("#primaryPhone3").val(data.userContact.primaryPhone3);
-							$("#primaryPhone4").val(data.userContact.primaryPhone4);
+							$("#primaryPhone3").val(primaryPhn3);
+							$("#primaryPhone4").val(primaryPhoneExtn);
 							$("#secondaryPhone1").val(data.userContact.secondaryPhone1);
 							$("#secondaryPhone2").val(data.userContact.secondaryPhone2);
-							$("#secondaryPhone3").val(data.userContact.secondaryPhone3);
-							$("#secondaryPhone4").val(data.userContact.secondaryPhone4);
+							$("#secondaryPhone3").val(secondaryPhn3);
+							$("#secondaryPhone4").val(secondaryPhoneExtn);
 							$("#faxNumber1").val(data.userContact.faxNumber1);
 							$("#faxNumber2").val(data.userContact.faxNumber2);
 							$("#faxNumber3").val(data.userContact.faxNumber3);
