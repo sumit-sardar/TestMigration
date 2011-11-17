@@ -314,12 +314,12 @@ function createSingleNodeSelectedTree(jsondata) {
 	    	//clearMessage();
 	    	SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
-	    	topNodeSelected = $(this).parent().parent().parent();
-	    	if($(topNodeSelected).is("li")){
-	    	 	reset();
- 		    	gridReload(false);
+	    	topNodeSelected = $(this).parent().attr("categoryId");
+	    	if(topNodeSelected == '1'){
+	    	 	openConfirmationPopup();
 	    	} else {
-	    		openConfirmationPopup();
+	    		reset();
+ 		    	gridReload(false);
 	    	}
   			
  		   
