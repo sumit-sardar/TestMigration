@@ -714,7 +714,11 @@ public class SessionOperationController extends PageFlowController {
      */
     private void registerStudentEnable(CustomerLicense[] customerLicenses, TestSessionVO testSessionVo)
     {    
-    	if (customerLicenses == null  || (!this.hasLicenseConfig)) {
+    	
+    	testSessionVo.setIsRegisterStudentEnable("F");
+    	
+    	//Getting null pointer exception in isLicenseAvailable() call. 
+    	/*if (customerLicenses == null  || (!this.hasLicenseConfig)) {
     		testSessionVo.setIsRegisterStudentEnable("T");  
     		return;
     	}
@@ -749,7 +753,7 @@ public class SessionOperationController extends PageFlowController {
                 
                 testSessionVo.setIsRegisterStudentEnable("T");   
                 
-            }
+            }*/
     }
 
     private Boolean userHasReports() 
