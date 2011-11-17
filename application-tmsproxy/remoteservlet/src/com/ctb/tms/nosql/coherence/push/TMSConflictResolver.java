@@ -40,6 +40,7 @@ public class TMSConflictResolver implements ConflictResolver {
             switch (entryOperation.getOperation())
             {
                 case Delete:
+                	logger.warn("Replicated delete - removing record from " + entryOperation.getCacheName());
                     resolution.remove();
                     break;
                 case Insert:
