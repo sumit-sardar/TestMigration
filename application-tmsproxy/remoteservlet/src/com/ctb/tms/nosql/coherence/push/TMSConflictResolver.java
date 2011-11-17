@@ -56,12 +56,19 @@ public class TMSConflictResolver implements ConflictResolver {
                 			logger.warn("Replicated roster message has lower mseq than current local value - ignoring.");
                 		}
                 	} else if("OASManifestCache".equals(entryOperation.getCacheName())) {
+                		String tutorialTaken = "FALSE";
                 		Manifest[] incoming = (Manifest[]) localEntry.getContext().getValueFromInternalConverter().convert(entryOperation.getPublishableEntry().getBinaryValue());
                 		Manifest[] local = (Manifest[]) localEntry.getValue();
                 		ArrayList<Manifest> merged = new ArrayList<Manifest>(); 
                 		for(int i=0;i<incoming.length;i++) {
+                			if("TRUE".equals(incoming[i].getTutorialTaken())) {
+                				tutorialTaken = "TRUE";
+                			}
                 			boolean foundSU = false;
                 			for(int j=0;j<local.length;j++) {
+                				if("TRUE".equals(local[j].getTutorialTaken())) {
+                    				tutorialTaken = "TRUE";
+                    			}
                 				if(local[j].getAccessCode().equals(incoming[i].getAccessCode())) {
                 					// found SU
                 					foundSU = true;
@@ -95,9 +102,6 @@ public class TMSConflictResolver implements ConflictResolver {
                 						}
                 					}
                 					newManifest.setManifest((ManifestData[])newData.toArray(new ManifestData[0]));
-                					if("TRUE".equals(incoming[i].getTutorialTaken()) || "TRUE".equals(local[j].getTutorialTaken())) {
-                						newManifest.setTutorialTaken("TRUE");
-                					}
                 					merged.add(newManifest);
                 					break;
                 				}
@@ -110,6 +114,7 @@ public class TMSConflictResolver implements ConflictResolver {
                 		Manifest[] finalMerged = (Manifest[])merged.toArray(new Manifest[0]);
                 		logger.info("Merged manifest after replication: ");
                 		for(int n=0;n<finalMerged.length;n++) {
+                			finalMerged[n].setTutorialTaken(tutorialTaken);
                 			logger.info(finalMerged[n].toString());
                 		}
                 		resolution.useMergedValue(finalMerged);
