@@ -222,16 +222,16 @@ function populateCompletedSessionListGrid() {
 			 $("#show").css('display', 'none');
 			 $("#hide").css('display', 'block');
 			 $("#gap").width("3%");
-			 $("#orgSlider").width("17%");
-			 $("#sessionGrid").width("82%");
+			 $("#orgSlider").width("210");
+			 $("#sessionGrid").width("995");
 			 document.getElementById('orgSlider').style.display = 'block';
 			// $("#sessionGrid").css('padding-left',10);
 			$('#orgSlider').show('slide', {direction: 'left'}, 50);
 			var width = jQuery("#sessionGrid").width();
 		    width = width - 80; // Fudge factor to prevent horizontal scrollbars
 		    
-		    jQuery("#list2").setGridWidth(width);
-		    jQuery("#list3").setGridWidth(width);
+		    jQuery("#list2").setGridWidth(916);
+		    jQuery("#list3").setGridWidth(916);
 	    } else {
 	    	UIBlock();
 	    	populateTree();
@@ -244,16 +244,16 @@ function populateCompletedSessionListGrid() {
 		 $("#hide").css('display', 'none');
 		 $("#show").css('display', 'block');
 		 $("#gap").width("0%");
-		 $("#orgSlider").width("0%");
-		 $("#sessionGrid").width("97%");
+		 $("#orgSlider").width("0");
+		 $("#sessionGrid").width("1180");
 		// $("#sessionGrid").css('padding-left',0);
 		$('#orgSlider').show('slide', {direction: 'right'}, 1000);
 		document.getElementById('orgSlider').style.display = 'none';
 		var width = jQuery("#sessionGrid").width();
 	    width = width -80; // Fudge factor to prevent horizontal scrollbars
 	    
-	    jQuery("#list2").setGridWidth(width);
-	    jQuery("#list3").setGridWidth(width);
+	    jQuery("#list2").setGridWidth(1099);
+	    jQuery("#list3").setGridWidth(1099);
 	    
 	}
 	

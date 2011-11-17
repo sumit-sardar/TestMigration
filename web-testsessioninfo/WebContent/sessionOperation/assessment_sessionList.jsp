@@ -53,19 +53,19 @@
 		   	</tr>
 	</table>
 	<%} %>
-	<div style="clear:both;float:left;width:100%;">
-		<div id="show" style="display: block;width:2%;float:left; padding: 3px 0 3px 3px;" class="ui-corner-tl ui-corner-tr ui-corner-bl ui-corner-br ui-widget-header " title="${bundle.web['homepage.icon.showOrganization']}">
+	<div style="clear:both;float:left;width:1215px;">
+		<div id="show" style="display: block;width:25px;float:left; padding: 3px 0 3px 3px;" class="ui-corner-tl ui-corner-tr ui-corner-bl ui-corner-br ui-widget-header " title="${bundle.web['homepage.icon.showOrganization']}">
    			<a href="#" onclick="showTreeSlider();" style=" width:100%; " >>></a>
    		</div>
-		<div id="orgSlider" style="float:left;width:0%;display:none" class="transparent">
+		<div id="orgSlider" style="float:left;width:0px;display:none;white-space: nowrap;" class="transparent">
 			<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader" style="text-align:left;">
-				<div style="float:left;">&nbsp;<netui:content value="${bundle.web['homepage.hierarchy.title']}"/></div> 
+				<div style="float:left;" >&nbsp;<netui:content value="${bundle.web['homepage.hierarchy.title']}"/></div> 
 				<div style="float:right;" title="${bundle.web['homepage.icon.hideOrganization']}"><a id="hide" href="#" onclick="hideTreeSlider();" style="display: none; width:100%;" >&nbsp;&lt;&lt;&nbsp;</a></div>
 				<div style="clear:both;"></div>     
 			</div>
 	    	<div id = "orgNodeHierarchy" style="text-align: left !important;" class="treeCtrl"></div> 
 		</div>  	     
-		<div id="sessionGrid" style="float:right;width:97%;"> 		      		    				
+		<div id="sessionGrid" style="float:right;width:1180px;"> 		      		    				
 					<div id="accordion" style="width:100%;">							
 						<div>
 						  	<h3><a href="#"><netui:content value="${bundle.web['homepage.tab.currentAndFuture']}"/></a></h3>
