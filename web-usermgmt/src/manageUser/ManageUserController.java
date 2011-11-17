@@ -13,6 +13,8 @@ import com.ctb.bean.testAdmin.Node;
 import com.ctb.bean.testAdmin.NodeData;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
 import com.ctb.bean.testAdmin.Role;
+import com.ctb.bean.testAdmin.TestSession;
+import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.TimeZones;
 import com.ctb.bean.testAdmin.USState;
 import com.ctb.bean.testAdmin.User;
@@ -77,6 +79,18 @@ public class ManageUserController extends PageFlowController
 {
     static final long serialVersionUID = 1L;
 
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.testAdmin.TestSessionStatus testSessionStatus;
+
+    /**
+     * @common:control
+     */
+    @Control()
+    private com.ctb.control.testAdmin.ScheduleTest scheduleTest;
+    
     /**
      * @common:control
      */
@@ -2459,7 +2473,9 @@ public class ManageUserController extends PageFlowController
                 username = this.userManagement.createUser(this.userName, user);
             } else {
                 title = Message.EDIT_TITLE;
-                this.userManagement.updateUser(this.userName, user);
+                this.userManagement.updateUser(this.userName, user);                
+                // move user's sessions along w/ user if needed
+                updateCreatorOrgNodeIdForUserSessions(userName, selectedOrgNodes); 
             }
         } 
         catch (CTBBusinessException be) {
@@ -2478,6 +2494,40 @@ public class ManageUserController extends PageFlowController
         return username;
     }
 
+    
+    private void updateCreatorOrgNodeIdForUserSessions(String userName, List selectedOrgNodes) 
+    {
+        try
+        {      
+        	TestSessionData tsd = this.testSessionStatus.getTestSessionsForUser(userName, null, null, null);    
+            
+            PathNode node = (PathNode)selectedOrgNodes.get(0);
+            Integer defaultOrgNodeId = node.getId();
+            
+            TestSession[] testsessions = tsd.getTestSessions();            
+            for (int i=0; i < testsessions.length; i++) {
+                TestSession ts = testsessions[i];
+                if (ts != null) {
+                	boolean found = false;
+                    for (int j=0 ; j<selectedOrgNodes.size() ; j++) {
+                        node = (PathNode)selectedOrgNodes.get(j);
+                        if (node.getId().intValue() == ts.getCreatorOrgNodeId().intValue()) {
+                        	found = true;
+                        }
+                    }
+                    if (! found) {
+                    	// move this test session to user's default location
+                        this.scheduleTest.updateCreatorOrgNodeIdForTestSession(ts.getTestAdminId(), defaultOrgNodeId);                        
+                    }
+                }
+            }
+        }
+        catch (CTBBusinessException be)
+        {
+            be.printStackTrace();
+        }
+    }
+    
     /**
      * initHierarchyControl
      */
