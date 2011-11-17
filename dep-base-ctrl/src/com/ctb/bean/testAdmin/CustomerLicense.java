@@ -171,7 +171,7 @@ public class CustomerLicense extends CTBBean
 	 * @return the isLicenseAvailable
 	 */
 	public boolean isLicenseAvailable() {
-		return isLicenseAvailable;
+		return this.isLicenseAvailable != null ? this.isLicenseAvailable : false;
 	}
 
 	
