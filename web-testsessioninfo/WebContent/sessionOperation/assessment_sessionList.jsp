@@ -53,7 +53,7 @@
 		   	</tr>
 	</table>
 	
-	<div style="clear:both;float:left;width:1215px;">
+	<div style="clear:both;float:left;width:1210px;">
 	<%if(userScheduleAndFindSessionPermission) { %>
 		<div id="show" style="display: block;width:25px;float:left; padding: 3px 0 3px 3px;" class="ui-corner-tl ui-corner-tr ui-corner-bl ui-corner-br ui-widget-header " title="${bundle.web['homepage.icon.showOrganization']}">
    			<a href="#" onclick="showTreeSlider();" style=" width:100%; " >>></a>
@@ -68,9 +68,9 @@
 	    	<div id = "orgNodeHierarchy" style="text-align: left !important;" class="treeCtrl"></div> 
 		</div>  
 	<%if(userScheduleAndFindSessionPermission) { %>		     
-		<div id="sessionGrid" style="float:right;width:1180px;"> 
+		<div id="sessionGrid" style="float:right;width:1175px;"> 
 	<%} else {%>
-		<div id="sessionGrid" style="float:right;width:1215px;"> 	
+		<div id="sessionGrid" style="float:right;width:1210px;"> 	
 	<% } %>		      		    				
 					<div id="accordion" style="width:100%;">							
 						<div>
