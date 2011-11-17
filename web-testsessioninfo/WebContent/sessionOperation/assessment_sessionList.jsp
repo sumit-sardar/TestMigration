@@ -23,7 +23,7 @@
 				<% } %>
 			</p>
 	</div>	
-	 <%if(userScheduleAndFindSessionPermission) { %>
+	 
 	<table width="100%" > 
 		   	<tr >
 		   		<td width="13%" align="left" style="padding: 5px 0px 5px 0px; clear:both;">
@@ -52,11 +52,13 @@
 	     	   </td>
 		   	</tr>
 	</table>
-	<%} %>
+	
 	<div style="clear:both;float:left;width:1215px;">
+	<%if(userScheduleAndFindSessionPermission) { %>
 		<div id="show" style="display: block;width:25px;float:left; padding: 3px 0 3px 3px;" class="ui-corner-tl ui-corner-tr ui-corner-bl ui-corner-br ui-widget-header " title="${bundle.web['homepage.icon.showOrganization']}">
    			<a href="#" onclick="showTreeSlider();" style=" width:100%; " >>></a>
    		</div>
+   	<%} %>
 		<div id="orgSlider" style="float:left;width:0px;display:none;white-space: nowrap;" class="transparent">
 			<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader" style="text-align:left;">
 				<div style="float:left;" >&nbsp;<netui:content value="${bundle.web['homepage.hierarchy.title']}"/></div> 
@@ -64,8 +66,12 @@
 				<div style="clear:both;"></div>     
 			</div>
 	    	<div id = "orgNodeHierarchy" style="text-align: left !important;" class="treeCtrl"></div> 
-		</div>  	     
-		<div id="sessionGrid" style="float:right;width:1180px;"> 		      		    				
+		</div>  
+	<%if(userScheduleAndFindSessionPermission) { %>		     
+		<div id="sessionGrid" style="float:right;width:1180px;"> 
+	<%} else {%>
+		<div id="sessionGrid" style="float:right;width:1215px;"> 	
+	<% } %>		      		    				
 					<div id="accordion" style="width:100%;">							
 						<div>
 						  	<h3><a href="#"><netui:content value="${bundle.web['homepage.tab.currentAndFuture']}"/></a></h3>
