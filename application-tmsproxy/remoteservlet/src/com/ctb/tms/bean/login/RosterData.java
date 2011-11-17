@@ -244,7 +244,8 @@ public class RosterData implements Serializable {
 					//logger.debug("generateItemResponseData: Ist " + j);
 					SaveTestingSessionData.Tsd.Ist ist = ista[0];
 					BigInteger mapMseq = (BigInteger) itemMap.get(ist.getIid());
-					if(mapMseq == null || tsd.getMseq().intValue() > mapMseq.intValue()) {
+					boolean catHeartbeat = ist.getIid().indexOf("TABECAT") >=0 && !ist.getSendCatSave();
+					if((mapMseq == null || tsd.getMseq().intValue() > mapMseq.intValue()) && !catHeartbeat) {
 						itemMap.put(ist.getIid(), tsd.getMseq());
 						//   if(ist != null && ist.getRvArray(0) != null && ist.getRvArray(0).getVArray(0) != null) {
 				        if(ist != null && ist.getRvArray() != null && ist.getRvArray().length >0 ) {
