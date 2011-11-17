@@ -247,7 +247,8 @@ public class SessionOperationController extends PageFlowController {
 			// get licenses
 			CustomerLicense[] customerLicenses =  null;
 			if(this.hasLicenseConfig) {
-				customerLicenses = getCustomerLicenses();
+			//Temporary change to hide register student button
+			//	customerLicenses = getCustomerLicenses(); 
 			}
 			/* if ((customerLicenses != null) && (customerLicenses.length > 0))
 	        {
@@ -473,7 +474,8 @@ public class SessionOperationController extends PageFlowController {
 			System.out.println ("db process time Start:"+new Date());
 			CustomerLicense[] customerLicenses =  null;
 			if(this.hasLicenseConfig) {
-				customerLicenses = getCustomerLicenses();
+			 	//Temporary change to hide register student button
+				// customerLicenses = getCustomerLicenses();  
 			}
 	    	// retrieve information for user test sessions
 	        //  FilterParams sessionFilter = FilterSortPageUtils.buildFilterParams(FilterSortPageUtils.TESTSESSION_DEFAULT_FILTER_COLUMN, "CU");
@@ -700,7 +702,8 @@ public class SessionOperationController extends PageFlowController {
         this.getSession().setAttribute("hasScoringConfigured", 
         		new Boolean( customerHasScoring(customerConfigs).booleanValue() && adminUser));
         
-        this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
+        //this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
+        this.getSession().setAttribute("canRegisterStudent", false);//Temporary change to hide register student button
         this.hasLicenseConfig = hasLicenseConfiguration(customerConfigs).booleanValue();
      	this.getSession().setAttribute("hasLicenseConfigured", this.hasLicenseConfig && adminUser);
      	
@@ -714,11 +717,7 @@ public class SessionOperationController extends PageFlowController {
      */
     private void registerStudentEnable(CustomerLicense[] customerLicenses, TestSessionVO testSessionVo)
     {    
-    	
-    	testSessionVo.setIsRegisterStudentEnable("F");
-    	
-    	//Getting null pointer exception in isLicenseAvailable() call. 
-    	/*if (customerLicenses == null  || (!this.hasLicenseConfig)) {
+    	if (customerLicenses == null  || (!this.hasLicenseConfig)) {
     		testSessionVo.setIsRegisterStudentEnable("T");  
     		return;
     	}
@@ -753,7 +752,7 @@ public class SessionOperationController extends PageFlowController {
                 
                 testSessionVo.setIsRegisterStudentEnable("T");   
                 
-            }*/
+            }
     }
 
     private Boolean userHasReports() 
@@ -944,7 +943,7 @@ public class SessionOperationController extends PageFlowController {
             		registerStudentEnable(customerLicenses, vo);
             		sessionListPA.add(vo);
             	}
-            
+         
                 
             }
         }
