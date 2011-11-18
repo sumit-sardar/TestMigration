@@ -26,7 +26,7 @@
 	 
 	<table width="100%" > 
 		   	<tr >
-		   		<td align="right" colspan="12" style="padding: 0 0 5px 0px; clear:both">
+		   		<td align="left" colspan="12" style="padding: 0 0 5px 0px; clear:both">
 		       		<div id="ShowButtons" style="width:1210px;display:none;">
 						       		<div id="viewStatus" style="float:right;padding-left:5px;">
 						              	<a href="#" id="viewStatusButton" onclick="" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.viewStatus']}"/></a>
