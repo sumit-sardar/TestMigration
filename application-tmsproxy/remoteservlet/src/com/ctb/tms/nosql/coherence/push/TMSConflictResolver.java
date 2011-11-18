@@ -90,6 +90,14 @@ public class TMSConflictResolver implements ConflictResolver {
                 								if(inData[k].getSubtestLastMseq() > locData[m].getSubtestLastMseq()) {
                 									// using incoming subtest-level values
                 									newer = inData[k];
+                									if(locData[m].getRecommendedLevel() != null && newer.getRecommendedLevel() == null) {
+                										newer.setRecommendedLevel(locData[m].getRecommendedLevel());
+                									}
+                								} else {
+                									// use existing local values
+                									if(inData[k].getRecommendedLevel() != null && newer.getRecommendedLevel() == null) {
+                										newer.setRecommendedLevel(inData[k].getRecommendedLevel());
+                									}
                 								}
                 								newData.add(newer);
                 								break;

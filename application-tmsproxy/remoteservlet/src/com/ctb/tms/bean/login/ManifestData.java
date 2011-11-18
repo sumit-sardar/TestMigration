@@ -65,7 +65,9 @@ public class ManifestData implements Serializable
 		return recommendedLevel;
 	}
 	public void setRecommendedLevel(String recommendedLevel) {
-		this.recommendedLevel = recommendedLevel;
+		if(recommendedLevel != null && !"".equals(recommendedLevel.trim())) {
+			this.recommendedLevel = recommendedLevel;
+		}
 	}
 	public String getForm() {
 		return form;
