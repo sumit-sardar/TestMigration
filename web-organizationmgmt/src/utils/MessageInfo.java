@@ -14,6 +14,21 @@ public class MessageInfo {
 	private String type ;
 	private Node organizationDetail;
 	private Boolean isEdit = Boolean.FALSE;
+	private BaseTree baseTree;
+	
+	
+	/**
+	 * @return the baseTree
+	 */
+	public BaseTree getBaseTree() {
+		return baseTree;
+	}
+	/**
+	 * @param baseTree the baseTree to set
+	 */
+	public void setBaseTree(BaseTree baseTree) {
+		this.baseTree = baseTree;
+	}
 	/**
 	 * @return the title
 	 */

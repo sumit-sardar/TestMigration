@@ -480,6 +480,20 @@ public class OrgOperationController extends PageFlowController {
 						messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION, false, true );
 						messageInfo.setOrganizationDetail(organizationDetail);
 						messageInfo.setIsEdit(Boolean.TRUE);
+						BaseTree baseTree = new BaseTree ();
+						ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
+						ArrayList <Integer> orgIDList = new ArrayList <Integer>();
+						ArrayList<TreeData> data = new ArrayList<TreeData>();
+						ArrayList<Organization> selectedList = new ArrayList<Organization> ();
+						UserNodeData und = OrganizationPathListUtils.OrgNodehierarchy(this.userName, 
+						this.userManagement, orgNodeId); 
+						ArrayList<Organization> orgNodesList = OrganizationPathListUtils.buildOrgNodehierarchyList(und, orgIDList, completeOrgNodeList);	
+						preTreeProcess (data,orgNodesList,selectedList);
+						baseTree.setData(data);
+						/*Gson gson1 = new Gson();
+						System.out.println("childdataset......:: "+gson1.toJson(baseTree));*/
+						messageInfo.setBaseTree(baseTree);
+						
 					}
 				}
 			Gson gson = new Gson();
