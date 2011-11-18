@@ -732,10 +732,41 @@ function openTreeNodes(orgNodeId) {
 												 var thisObj = "#"+data.organizationDetail.orgNodeId;
 
 												if(data.isEdit){
-													$("#innerID").jstree("delete_node",thisObj);
-													//$("#innerID").jstree("create_node",assignedElement,"inside",thisObj);
-													$("#innerID").jstree("create_node",assignedElement, "inside",  {"data":data.organizationDetail.orgNodeName,
-														"attr" : {"id" : data.organizationDetail.orgNodeId, "categoryID" : data.organizationDetail.categoryLevel}});
+												
+												//move_node solution start
+													if (assignedOrgNodeIds != originalParentOrgId) {
+													
+																								
+														$('#innerID').jstree('open_node', "#"+originalParentOrgId); 
+														$(thisObj,"#innerID").remove();
+														if ($("#"+originalParentOrgId,"#innerID").has("li").length == 0) {
+														
+															$("#"+originalParentOrgId,"#innerID").removeClass("jstree-closed");
+															$("#"+originalParentOrgId,"#innerID").addClass("jstree-leaf");
+																														
+														}
+														
+														var nodeData = data.baseTree.data[0];
+														var pNode = assignedElement;
+														var id;
+														while (true) {
+															$("#innerID").jstree("create_node",pNode, "inside",  {"data":nodeData.data,
+															"attr" : {"id" : nodeData.attr.id, "categoryID" : nodeData.attr.categoryID}});
+															id=nodeData.attr.id;
+															if (nodeData.children.length > 0) {
+															
+																nodeData = nodeData.children[0];
+																
+																pNode = "#"+id;
+															} else {
+															
+																break;
+															}
+														}
+														
+													}
+														
+												//move_node solution end		
 												}
 												else{
 													$("#innerID").jstree("create_node",assignedElement, "inside",  {"data":data.organizationDetail.orgNodeName,
