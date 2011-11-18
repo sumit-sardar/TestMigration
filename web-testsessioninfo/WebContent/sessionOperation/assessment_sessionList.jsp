@@ -26,14 +26,8 @@
 	 
 	<table width="100%" > 
 		   	<tr >
-		   		<td width="13%" align="left" style="padding: 5px 0px 5px 0px; clear:both;">
-		      		<div style="width:68%;">
-		      			<!-- <a id="show" href="#" onclick="showTreeSlider();" style="display: block; width:100%;" class="rounded {transparent} button">Show Organization</a> -->
-		      			<!-- <a id="hide" href="#" onclick="hideTreeSlider();" style="display: none; width:100%;" class="rounded {transparent} button">&nbsp;&nbsp;Hide Organization</a> -->
-		      		</div>
-		    	</td>
-		        <td align="right" colspan="12" style="padding: 0 0 5px 0px; clear:both">
-		       		<div id="ShowButtons" style="width:98%;display:none;">
+		   		<td align="right" colspan="12" style="padding: 0 0 5px 0px; clear:both">
+		       		<div id="ShowButtons" style="width:1210px;display:none;">
 						       		<div id="viewStatus" style="float:right;padding-left:5px;">
 						              	<a href="#" id="viewStatusButton" onclick="" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.viewStatus']}"/></a>
 						            </div> 
