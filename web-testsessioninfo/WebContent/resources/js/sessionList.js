@@ -428,4 +428,9 @@ function createSingleNodeSelectedTree(jsondata) {
 		 $("#confirmationPopup").parent().css("left",leftpos);	
 		 
 	}	
+			
+	function reloadHomePage(){
+		hideTreeSlider();
+		gridReload(true);
+	}		
 				 

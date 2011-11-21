@@ -29,7 +29,7 @@
 		   		<td >
 		       		<div style="clear:both;float:left;width:1210px;padding: 5px 5px 5px 0;">
 						<div  style="float:left;width:210px;white-space: nowrap;" class="transparent">
-							<a  href="#" onclick="javascript:reloadHomePage(); return false;" style="display: block; width:50%; float:left; text-align: center;" class="rounded {transparent} button">My Session</a> 
+							<a  href="#" onclick="javascript:reloadHomePage(); return false;" style="display: block; width:50%; float:left; text-align: center;" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.mySession']}"/></a> 
 						</div>  
 						<div id="ShowButtons" style="width:1000px; display:none; float:left;">
 							<div id="viewStatus" style="float:right;padding-left:5px;">
