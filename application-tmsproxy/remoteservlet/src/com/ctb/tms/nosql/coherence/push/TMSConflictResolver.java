@@ -76,6 +76,11 @@ public class TMSConflictResolver implements ConflictResolver {
                 					if(incoming[i].getRosterLastMseq() > local[j].getRosterLastMseq()) {
                 						// using incoming roster-level values
                 						newManifest = incoming[i];
+                					} else if (incoming[i].getRosterLastMseq() <= local[j].getRosterLastMseq() && incoming[i].doReplicate()) {
+                						if(!"TRUE".equals(newManifest.getTutorialTaken())) {
+                							newManifest.setTutorialTaken(incoming[i].getTutorialTaken());
+                						}
+                						newManifest.setRosterCorrelationId(incoming[i].getRosterCorrelationId());
                 					}
                 					ManifestData[] inData = incoming[i].getManifest();
                 					ManifestData[] locData = local[j].getManifest();
@@ -110,6 +115,7 @@ public class TMSConflictResolver implements ConflictResolver {
                 						}
                 					}
                 					newManifest.setManifest((ManifestData[])newData.toArray(new ManifestData[0]));
+                					newManifest.setReplicate(false);
                 					merged.add(newManifest);
                 					break;
                 				}
