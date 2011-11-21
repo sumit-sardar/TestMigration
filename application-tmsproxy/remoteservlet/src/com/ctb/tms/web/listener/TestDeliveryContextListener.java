@@ -159,10 +159,12 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 							//Thread.sleep(10);
 						} catch (Exception e) {
 							logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
+							e.printStackTrace();
 						}
 					}
 				} catch (Exception e) {
 					logger.error("Caught Exception during active roster check.", e);
+					e.printStackTrace();
 				} finally {
 					try {
 						if(conn != null) {

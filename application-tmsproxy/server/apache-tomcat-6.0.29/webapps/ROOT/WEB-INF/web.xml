@@ -28,11 +28,23 @@
   </listener>
   
   <servlet>
+    <description>HealthServlet</description>
+    <display-name>HealthServlet</display-name>
+    <servlet-name>HealthServlet</servlet-name>
+    <servlet-class>com.ctb.tms.web.servlet.HealthServlet</servlet-class>
+  </servlet>
+  
+  <servlet>
     <description>TMSServlet</description>
     <display-name>TMSServlet</display-name>
     <servlet-name>TMSServlet</servlet-name>
     <servlet-class>com.ctb.tms.web.servlet.TMSServlet</servlet-class>
   </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>HealthServlet</servlet-name>
+    <url-pattern>/TestDeliveryWeb/status/*</url-pattern>
+  </servlet-mapping>
   
   <servlet-mapping>
     <servlet-name>TMSServlet</servlet-name>
