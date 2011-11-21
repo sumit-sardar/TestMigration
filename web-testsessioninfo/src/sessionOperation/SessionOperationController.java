@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,12 +24,18 @@ import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerLicense;
+import com.ctb.bean.testAdmin.PasswordDetails;
+import com.ctb.bean.testAdmin.PasswordHintQuestion;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.testSessionInfo.dto.Message;
+import com.ctb.testSessionInfo.dto.MessageInfo;
+import com.ctb.testSessionInfo.dto.PasswordInformation;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
+import com.ctb.testSessionInfo.dto.UserProfileInformation;
 import com.ctb.testSessionInfo.utils.Base;
 import com.ctb.testSessionInfo.utils.BaseTree;
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
@@ -38,8 +45,13 @@ import com.ctb.testSessionInfo.utils.PermissionsUtils;
 import com.ctb.testSessionInfo.utils.Row;
 import com.ctb.testSessionInfo.utils.TreeData;
 import com.ctb.testSessionInfo.utils.UserOrgHierarchyUtils;
+import com.ctb.testSessionInfo.utils.UserPasswordUtils;
+import com.ctb.util.userManagement.CTBConstants;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.google.gson.Gson;
+
+
+
 
 @Jpf.Controller()
 public class SessionOperationController extends PageFlowController {
@@ -66,7 +78,10 @@ public class SessionOperationController extends PageFlowController {
     
     public static String CONTENT_TYPE_JSON = "application/json";
 
-
+    public LinkedHashMap hintQuestionOptions = null;
+    public UserProfileInformation userProfile = null; 
+    private String existingPassword = "";
+    
 	/**
 	 * @return the userName
 	 */
@@ -107,23 +122,26 @@ public class SessionOperationController extends PageFlowController {
 	})
 	protected Forward begin()
 	{
-		String forwardName = "legacyUI";
+		String forwardName = "currentUI";
 		getLoggedInUserPrincipal();		
 		getUserDetails();
 
-        if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
-        	forwardName = "resetPassword";
-        }
-        else if (this.user.getTimeZone() == null) {
-        	forwardName = "editTimeZone";
-        }
-        else {
-        	CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
-			if (accessNewUI(customerConfigs)) {		
-				setupUserPermission(customerConfigs);
-				forwardName = "currentUI";
-			}
-        }
+    	CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
+		if (accessNewUI(customerConfigs)) {
+			// direct to revised UI
+			setupUserPermission(customerConfigs);
+	        if (isUserPasswordExpired()|| "T".equals(this.user.getResetPassword())) {
+	        	forwardName = "resetPassword";
+	        }
+	        else if (this.user.getTimeZone() == null) {
+	        	forwardName = "editTimeZone";
+	        }
+		}
+		else {
+			forwardName = "legacyUI";	
+		}
+
+        forwardName = "resetPassword";
         
 		return new Forward(forwardName);
 	} 
@@ -154,21 +172,150 @@ public class SessionOperationController extends PageFlowController {
     /**
      * @jpf:action
      */
-    @Jpf.Action()
+    @Jpf.Action(forwards = { 
+            @Jpf.Forward(name = "success", path = "reset_password.jsp")
+    })
     protected Forward resetPassword()
-    {               
-        try
-        {
-            String url = "/UserManagementWeb/manageUser/resetPassword.do";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
+    {              
+        initHintQuestionOptions();
+    	
+		try {
+			this.user = userManagement.getUser(this.userName, this.userName);
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
+        this.userProfile = new UserProfileInformation(this.user);   
+        this.existingPassword = this.userProfile.getUserPassword().getOldPassword();;
+        
+        String title = "Change Password: " + this.userProfile.getFirstName() + " " + this.userProfile.getLastName();
+        this.getRequest().setAttribute("pageTitle", title);
+        
+        return new Forward("success");
     }
 
+    /**
+     * @jpf:action
+     * @jpf:forward name="success" path="gotoCurrentUI.do"
+     */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "success", path = "gotoCurrentUI.do"),
+        @Jpf.Forward(name = "error", path = "reset_password.jsp") 
+    })
+    protected Forward savePassword()
+    {
+    	String forwardName = "success";
+    	
+		 String message = "";
+		 String requiredFields = null;
+		 boolean revalidate = true;
+		 boolean validationPassed = true;
+		 MessageInfo messageInfo = new MessageInfo();
+		 
+		 String newPassword = this.userProfile.getUserPassword().getNewPassword();
+		 String confirmPassword = this.userProfile.getUserPassword().getConfirmPassword();		 
+		 String oldPassword = this.userProfile.getUserPassword().getOldPassword();
+		 String hintQuestionId = this.userProfile.getUserPassword().getHintQuestionId();
+		 String hintAnswer = this.userProfile.getUserPassword().getHintAnswer();
+		 
+		 
+		 PasswordInformation passwordinfo = new PasswordInformation();
+		 passwordinfo.setOldPassword(oldPassword);
+		 passwordinfo.setNewPassword(newPassword);
+		 passwordinfo.setConfirmPassword(confirmPassword);
+		 
+		 requiredFields = UserPasswordUtils.getRequiredPasswordField(passwordinfo);
+		 if( requiredFields != null){
+			 revalidate = false;
+			 validationPassed = false;
+				if ( requiredFields.indexOf(",") > 0){
+					message = requiredFields + (" <br/> " + Message.REQUIRED_TEXT_MULTIPLE);
+					messageInfo = createMessageInfo(messageInfo, Message.MISSING_REQUIRED_FIELDS, message, Message.ERROR, true, false );
+				}
+				else {
+					message = requiredFields + (" <br/> " + Message.REQUIRED_TEXT);
+					messageInfo = createMessageInfo(messageInfo, Message.MISSING_REQUIRED_FIELD, message, Message.ERROR, true, false );
+	
+				}
+			}
+		 else if (revalidate) {
+			 	String invalidCharFields = UserPasswordUtils.verifyPasswordInfo(passwordinfo);
+			 	String invalidString = "";
+	
+				if (invalidCharFields != null && invalidCharFields.length() > 0) {
+					 
+					 if ( invalidCharFields.indexOf(",") > 0){
+						 
+						 invalidString = invalidCharFields + ("<br/>" + Message.INVALID_DEX_PASSWORD);
+						 
+					 } else {
+						 
+						 invalidString = invalidCharFields + ("<br/>" + Message.INVALID_DEX_PASSWORD_SINGLE_LINE);
+						 
+					 }
+	
+						
+				}
+	
+				if (invalidString != null && invalidString.length() > 0) {
+					 revalidate = false;
+					 validationPassed = false;
+					 messageInfo = createMessageInfo(messageInfo, Message.INVALID_CHARS_TITLE, invalidString, Message.ERROR, true, false );
+				 }
+				 
+				if (revalidate) {
+					 boolean isPasswordDifferent = UserPasswordUtils.isPasswordDifferent(this.existingPassword, oldPassword);
+					 
+					 if(isPasswordDifferent) {
+						 validationPassed = false;
+					 	 messageInfo = createMessageInfo(messageInfo, Message.CHANGE_PASSWORD_TITLE, Message.WRONG_PASSWORD, Message.ERROR, true, false );
+					 }
+					 else {
+						 boolean isNewAndConfirmPasswordDifferent = UserPasswordUtils.isNewAndConfirmPasswordDifferent(passwordinfo);
+						 
+						 if(isNewAndConfirmPasswordDifferent) {
+							 validationPassed = false;
+						 	 messageInfo = createMessageInfo(messageInfo, Message.CHANGE_PASSWORD_TITLE, Message.PASSWORD_MISMATCH, Message.ERROR, true, false );
+						 }
+					 }
+				 }
+		 }		 
+		 		 
+		 if (validationPassed) {
+			 this.user.setResetPassword("F");
+			 this.user.setPasswordHintQuestion(hintQuestionId);
+			 this.user.setPasswordHintAnswer(hintAnswer);
+			 this.user.setPassword(oldPassword);
+			 this.user.setNewPassword(newPassword);
+			 
+			 /*
+			 try {
+				 this.userManagement.updateUser(this.user.getUserName(),this.user);
+			} catch (CTBBusinessException e) {
+				e.printStackTrace();
+			}
+			*/
+		 }
+		 else {
+	        String title = "Change Password: " + this.userProfile.getFirstName() + " " + this.userProfile.getLastName();
+	        this.getRequest().setAttribute("pageTitle", title);
+
+	        this.getRequest().setAttribute("errorMsg", messageInfo.getContent());
+	        
+	        forwardName = "error";
+		 }
+		 
+        return new Forward(forwardName);
+    }    
+    
+	private MessageInfo createMessageInfo(MessageInfo messageInfo, String messageTitle, String content, String type, boolean errorflag, boolean successFlag){
+		messageInfo.setTitle(messageTitle);
+		messageInfo.setContent(content);
+		messageInfo.setType(type);
+		messageInfo.setErrorFlag(errorflag);
+		messageInfo.setSuccessFlag(successFlag);
+		return messageInfo;
+	}
+    
     /**
      * @jpf:action
      */
@@ -1051,6 +1198,34 @@ public class SessionOperationController extends PageFlowController {
         return accessNewUI;
     }
 
+	/**
+     * initHintQuestionOptions
+     */
+    private void initHintQuestionOptions()
+    {                 
+        try {
+            PasswordHintQuestion[] options = 
+                    this.userManagement.getHintQuestions();
+            
+            this.hintQuestionOptions = new LinkedHashMap();
+            
+            this.hintQuestionOptions.put("", "Select a hint question");
+            
+            if (options != null) {
+                for (int i=0 ; i<options.length ; i++) {
+                    this.hintQuestionOptions.put(
+                            ((PasswordHintQuestion) options[i])
+                            .getPasswordHintQuestionId(),
+                            ((PasswordHintQuestion)options[i])
+                            .getPasswordHintQuestion());
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+	
     /////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// END OF SETUP USER PERMISSION ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    
@@ -1087,5 +1262,21 @@ public class SessionOperationController extends PageFlowController {
 	 */
 	public void setSessionListPA(List sessionListPA) {
 		this.sessionListPA = sessionListPA;
+	}
+
+	public LinkedHashMap getHintQuestionOptions() {
+		return hintQuestionOptions;
+	}
+
+	public void setHintQuestionOptions(LinkedHashMap hintQuestionOptions) {
+		this.hintQuestionOptions = hintQuestionOptions;
+	}
+
+	public UserProfileInformation getUserProfile() {
+		return userProfile;
+	}
+
+	public void setUserProfile(UserProfileInformation userProfile) {
+		this.userProfile = userProfile;
 	}	
 }
