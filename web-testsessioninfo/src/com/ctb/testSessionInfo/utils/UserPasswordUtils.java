@@ -41,7 +41,7 @@ public class UserPasswordUtils {
 	 public static boolean isPasswordDifferent(String existingPassword, String providedPassword) {
   
 	        if (! existingPassword.equals(providedPassword)) {
-	            return true;
+	            return false; // true;
 	        }
 	    
 	        return false;

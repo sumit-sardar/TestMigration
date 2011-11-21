@@ -80,7 +80,6 @@ public class SessionOperationController extends PageFlowController {
 
     public LinkedHashMap hintQuestionOptions = null;
     public UserProfileInformation userProfile = null; 
-    private String existingPassword = "";
     
 	/**
 	 * @return the userName
@@ -140,6 +139,8 @@ public class SessionOperationController extends PageFlowController {
 		else {
 			forwardName = "legacyUI";	
 		}
+
+        forwardName = "resetPassword";
         
 		return new Forward(forwardName);
 	} 
@@ -183,7 +184,6 @@ public class SessionOperationController extends PageFlowController {
 			e.printStackTrace();
 		}
         this.userProfile = new UserProfileInformation(this.user);   
-        this.existingPassword = this.userProfile.getUserPassword().getOldPassword();;
         
         String title = "Change Password: " + this.userProfile.getFirstName() + " " + this.userProfile.getLastName();
         this.getRequest().setAttribute("pageTitle", title);
@@ -222,7 +222,7 @@ public class SessionOperationController extends PageFlowController {
 		 passwordinfo.setConfirmPassword(confirmPassword);
 		 
 		 requiredFields = UserPasswordUtils.getRequiredPasswordField(passwordinfo);
-		 if( requiredFields != null){
+		 if( requiredFields != null) {
 			 revalidate = false;
 			 validationPassed = false;
 				if ( requiredFields.indexOf(",") > 0){
@@ -234,8 +234,13 @@ public class SessionOperationController extends PageFlowController {
 					messageInfo = createMessageInfo(messageInfo, Message.MISSING_REQUIRED_FIELD, message, Message.ERROR, true, false );
 	
 				}
-			}
-		 else if (revalidate) {
+		 }
+		 else 
+		 if (UserPasswordUtils.isPasswordDifferent(this.user.getPassword(), oldPassword)) {
+			 validationPassed = false;
+		 	 messageInfo = createMessageInfo(messageInfo, Message.CHANGE_PASSWORD_TITLE, Message.WRONG_PASSWORD, Message.ERROR, true, false );
+		 }
+		 else {
 			 	String invalidCharFields = UserPasswordUtils.verifyPasswordInfo(passwordinfo);
 			 	String invalidString = "";
 	
@@ -261,19 +266,11 @@ public class SessionOperationController extends PageFlowController {
 				 }
 				 
 				if (revalidate) {
-					 boolean isPasswordDifferent = UserPasswordUtils.isPasswordDifferent(this.existingPassword, oldPassword);
+					 boolean isNewAndConfirmPasswordDifferent = UserPasswordUtils.isNewAndConfirmPasswordDifferent(passwordinfo);
 					 
-					 if(isPasswordDifferent) {
+					 if(isNewAndConfirmPasswordDifferent) {
 						 validationPassed = false;
-					 	 messageInfo = createMessageInfo(messageInfo, Message.CHANGE_PASSWORD_TITLE, Message.WRONG_PASSWORD, Message.ERROR, true, false );
-					 }
-					 else {
-						 boolean isNewAndConfirmPasswordDifferent = UserPasswordUtils.isNewAndConfirmPasswordDifferent(passwordinfo);
-						 
-						 if(isNewAndConfirmPasswordDifferent) {
-							 validationPassed = false;
-						 	 messageInfo = createMessageInfo(messageInfo, Message.CHANGE_PASSWORD_TITLE, Message.PASSWORD_MISMATCH, Message.ERROR, true, false );
-						 }
+					 	 messageInfo = createMessageInfo(messageInfo, Message.CHANGE_PASSWORD_TITLE, Message.PASSWORD_MISMATCH, Message.ERROR, true, false );
 					 }
 				 }
 		 }		 
