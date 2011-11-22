@@ -680,9 +680,12 @@ public class SessionOperationController extends PageFlowController {
 
 	}
     
-    @Jpf.Action()
+    @Jpf.Action(forwards={
+    		@Jpf.Forward(name = "success", path ="student_scoring.jsp")
+	})
     protected Forward assessments_studentScoring()
     {
+    	/*
         try
         {
             String url = "/ScoringWeb/scoringOperation/assessments_studentScoring.do";
@@ -693,6 +696,9 @@ public class SessionOperationController extends PageFlowController {
             System.err.print(ioe.getStackTrace());
         }
         return null;
+        */
+        return new Forward("success");
+    	
     }
 
     @Jpf.Action()
