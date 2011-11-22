@@ -140,7 +140,7 @@ public class SessionOperationController extends PageFlowController {
 			forwardName = "legacyUI";	
 		}
 
-        forwardName = "resetPassword";
+        //forwardName = "resetPassword";
         
 		return new Forward(forwardName);
 	} 
