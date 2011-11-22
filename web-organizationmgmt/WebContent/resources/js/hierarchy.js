@@ -788,6 +788,24 @@ function openTreeNodes(orgNodeId) {
 													document.getElementById('displayMessageMain').style.display = "block";	
 													assignedOrgNodeIds = "";
 													assignedElement = "";
+													
+													var dataToBeAdded = {orgNodeName:data.organizationDetail.orgNodeName,
+																		 orgNodeCode:data.organizationDetail.orgNodeCode,
+																		 orgNodeCategoryName:data.organizationDetail.orgNodeCategoryName,
+																		 parentOrgNodeName:data.organizationDetail.parentOrgNodeName};
+													
+													var sortOrd = jQuery("#list2").getGridParam("sortorder");
+													var sortCol = jQuery("#list2").getGridParam("sortname");	
+													
+													if(data.isEdit) {
+														jQuery("#list2").setRowData(data.organizationDetail.orgNodeId, dataToBeAdded, "first");
+													}
+													else {
+														jQuery("#list2").addRowData(data.organizationDetail.orgNodeId, dataToBeAdded, "first");
+													}
+											
+													jQuery("#list2").sortGrid(sortCol,true);
+
 												}
 												else{
 													setMessage(data.title, data.content, data.type, "");     
@@ -915,6 +933,7 @@ function pDataClick(popupname) {
 
 function fetchNextData(popupname){
 			//$("#displayMessage").text("");
+			assignedOrgNodeIds = "";
 			var selectedOrgId = $("#list2").jqGrid('getGridParam', 'selrow');
 			var pageRows = $("#list2").jqGrid('getGridParam','rowNum');
 			var curPage = parseInt($('#list2').jqGrid('getGridParam','page')); 
@@ -950,6 +969,7 @@ function fetchNextData(popupname){
 		
 function fetchPreviousData(popupname){
 	//$("#displayMessage").text("");
+	assignedOrgNodeIds = "";
 	var selectedOrgId = $("#list2").jqGrid('getGridParam', 'selrow');
 	var pageRows = $("#list2").jqGrid('getGridParam','rowNum');
 	var curPage = parseInt($('#list2').jqGrid('getGridParam','page'));
@@ -992,11 +1012,11 @@ function findIndexFromArray (myArray, obj) {
 }
 
 function highlightnextprev(prevSelectedRow,nextSelectedRow) {            
-		   $("#"+prevSelectedRow).removeClass("ui-state-highlight").attr({
+		   $("#"+prevSelectedRow,"#list2").removeClass("ui-state-highlight").attr({
                "aria-selected": "false",
                tabindex: "-1"
            });
-           $("#"+nextSelectedRow).addClass("ui-state-highlight").attr({
+           $("#"+nextSelectedRow,"#list2").addClass("ui-state-highlight").attr({
                "aria-selected": true,
                tabindex: "0"
            });
