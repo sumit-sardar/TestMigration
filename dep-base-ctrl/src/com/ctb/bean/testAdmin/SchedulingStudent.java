@@ -35,6 +35,10 @@ public class SchedulingStudent extends Student
     private Integer priorAdmin;
     private String highLighter; /* 51931 Deferred Defect For HighLighter*/
     private String extendedTimeAccom; // Added for Student Pacing
+    private String  maskingRular;
+    private String  maskingTool;
+    private String  magnifyingGlass;
+    private String  musicFileId;
     
    	public Integer getPriorAdmin() {
         return this.priorAdmin;
@@ -53,6 +57,10 @@ public class SchedulingStudent extends Student
             "T".equals(this.untimedTest) ||
             "T".equals(this.highLighter) ||
             "T".equals(this.extendedTimeAccom) ||
+            "T".equals(this.maskingRular) ||
+            "T".equals(this.maskingTool) ||
+            "T".equals(this.magnifyingGlass) ||
+            (this.musicFileId!=null && this.musicFileId.trim().length()!=0)||
             (this.extendedTimeAccom != null &&
             !this.extendedTimeAccom.equals("") &&
             !this.extendedTimeAccom.equals("F")) || // change for defect #66723
@@ -344,4 +352,36 @@ public class SchedulingStudent extends Student
 		this.extendedTimeAccom = extendedTimeAccom;
 	}
 	// End changes for Student Pacing
+
+	public String getMaskingRular() {
+		return maskingRular;
+	}
+
+	public void setMaskingRular(String maskingRular) {
+		this.maskingRular = maskingRular;
+	}
+
+	public String getMaskingTool() {
+		return maskingTool;
+	}
+
+	public void setMaskingTool(String maskingTool) {
+		this.maskingTool = maskingTool;
+	}
+
+	public String getMagnifyingGlass() {
+		return magnifyingGlass;
+	}
+
+	public void setMagnifyingGlass(String magnifyingGlass) {
+		this.magnifyingGlass = magnifyingGlass;
+	}
+
+	public String getMusicFileId() {
+		return musicFileId;
+	}
+
+	public void setMusicFileId(String musicFileId) {
+		this.musicFileId = musicFileId;
+	}
 } 
