@@ -756,7 +756,7 @@ public class TMSServlet extends HttpServlet {
 	                    }
                 	}
             	}
-            	ItemResponseData [] ird = RosterData.generateItemResponseData(manifesta[i], irt);
+            	ItemResponseData [] ird = RosterData.generateItemResponseData(testRosterId, manifesta[i], irt);
             	if(loginResponse.getConsolidatedRestartDataArray() == null || loginResponse.getConsolidatedRestartDataArray().length == 0) {
             		loginResponse.addNewConsolidatedRestartData();
             	}

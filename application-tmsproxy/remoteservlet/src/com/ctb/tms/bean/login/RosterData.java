@@ -232,7 +232,7 @@ public class RosterData implements Serializable {
 		ast.setRemSec(Float.parseFloat(String.valueOf(remSec)));
 	}
 	
-	public static ItemResponseData[] generateItemResponseData(ManifestData manifest, ItemResponseWrapper[] tsda) {
+	public static ItemResponseData[] generateItemResponseData(String testRosterId, ManifestData manifest, ItemResponseWrapper[] tsda) {
 		HashMap irdMap = new HashMap(tsda.length);
 		HashMap itemMap = new HashMap(tsda.length);
 		for(int i=0;i<tsda.length;i++) {
@@ -255,25 +255,33 @@ public class RosterData implements Serializable {
 				                    String xmlResponse = ist.getRvArray(0).getVArray(0);
 				                    String response = "";
 				                    String studentMarked = ist.getMrk() ? "T" : "F";
+				                    boolean audio = ist.getAudioItem();
+				                    String itemType = "SR";
 				                    if(xmlResponse != null && xmlResponse.length() > 0) {
-				                        // strip xml
-				                        int start = xmlResponse.indexOf(">");
-				                        if(start >= 0) {
-				                            response = xmlResponse.substring(start + 1);
-				                            int end = response.lastIndexOf("</");
-				                            if(end != -1)
-				                                response = response.substring(0, end);
-				                        } else {
-				                            response = xmlResponse;
-				                        }
-				                        // strip CDATA
-				                        start = response.indexOf("[CDATA[");
-				                        if(start >= 0) {
-				                            response = response.substring(start + 7);
-				                            int end = response.lastIndexOf("]]");
-				                            if(end != -1)
-				                                response = response.substring(0, end);
-				                        }
+				                    	if(audio) {
+				                    		itemType = "CR";
+				                    		response = testRosterId + "_" + ist.getIid();
+				                    	} else {
+					                        // strip xml
+					                        int start = xmlResponse.indexOf(">");
+					                        if(start >= 0) {
+					                            response = xmlResponse.substring(start + 1);
+					                            int end = response.lastIndexOf("</");
+					                            if(end != -1)
+					                                response = response.substring(0, end);
+					                        } else {
+					                            response = xmlResponse;
+					                        }
+					                        // strip CDATA
+					                        start = response.indexOf("[CDATA[");
+					                        if(start >= 0) {
+					                            response = response.substring(start + 7);
+					                            int end = response.lastIndexOf("]]");
+					                            if(end != -1)
+					                                response = response.substring(0, end);
+					                        }
+					                        if(response.length() >= 2) itemType = "CR";
+				                    	}
 				                    }
 				                    ItemResponseData ird = new ItemResponseData();
 			                    	ird.setEid(Integer.parseInt(ist.getEid()));
@@ -289,8 +297,8 @@ public class RosterData implements Serializable {
 			                    	ird.setResponseSeqNum(tsd.getMseq().intValue());
 			                    	ird.setStudentMarked(studentMarked);
 			                    	ird.setConstructedResponse(response);
-			                    	// TODO: fix this
-			                    	ird.setItemType("SR");
+			                    	// TODO (complete): fix this
+			                    	ird.setItemType(itemType);
 			                    	irdMap.put(ird.getItemId(), ird);
 			                    	logger.debug("RosterData: added restart item response record " + ird.getResponseSeqNum());
 				                 }
