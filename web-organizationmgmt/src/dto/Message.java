@@ -187,7 +187,8 @@ public class Message implements java.io.Serializable
     public static final String TEST_REQUEST_DESCRIPTION	= "Reason for reset";
     public static final String TEST_SERVICE_REQUESTOR	= "Requestor";
     public static final String TEST_RESET_FAILED ="Subtest failed to reset.";
-    
+    public static final String DIST_LICENSE = "Manage License";//For MQC-66805: TABE BAUM licenses distribution
+	public static final String LICENSE_DISTRIBUTION_ERROR = "System is unable to assign license to organization. Please retry.";//For MQC-66805: TABE BAUM licenses distribution
 
     public Message() {
         this.title = "";

@@ -61,7 +61,7 @@ String style = styleNormal;
     <netui:content value="${bundle.web['manageLicense.title.message']}"/><br/>
 </p>
 
-
+<jsp:include page="/manageLicense/show_message.jsp"  />
 <c:if test="${multipleProducts}">     
 <% if (rootNode.booleanValue()) { %>
 <p>

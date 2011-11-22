@@ -106,6 +106,11 @@ public class ManageLicenseController extends PageFlowController
     // LLO- 118 - Change for Ematrix UI
 	private boolean isTopLevelUser = false;
 	private boolean islaslinkCustomer = false;
+  //Start: For MQC-66805: TABE BAUM licenses distribution
+	private List  orgNodes = null;
+	private String orgCategoryName = null;
+	private PagerSummary orgPagerSummary = null;
+	//End: For MQC-66805: TABE BAUM licenses distribution
   
     /**
      * @jpf:action
@@ -257,7 +262,22 @@ public class ManageLicenseController extends PageFlowController
 
         String orgNodeName = form.getOrgNodeName();
         Integer orgNodeId = form.getOrgNodeId(); 
-        
+        //Start: For MQC-66805: TABE BAUM licenses distribution
+        form.setMessage(null);
+        //System.out.print(validateLicenseValuesInForm(form));
+        if(!validateLicenseValuesInForm(form)) {
+        	 this.getRequest().setAttribute("orgNodePath", this.orgNodePath);
+             this.getRequest().setAttribute("orgNodes", this.orgNodes );        
+             this.getRequest().setAttribute("orgPagerSummary", this.orgPagerSummary);
+             this.getRequest().setAttribute("orgCategoryName", this.orgCategoryName);   
+	         this.getRequest().setAttribute("multipleProducts", new Boolean(this.customerLicenses.length > 1));       
+             this.getRequest().setAttribute("rootNode", new Boolean(orgNodeId.intValue() == 0));                  
+             this.getRequest().setAttribute("singleRootNode", new Boolean(this.orgNodes.size() == 1));
+             form.setMessage(Message.DIST_LICENSE, Message.LICENSE_DISTRIBUTION_ERROR, Message.ERROR);
+             this.getRequest().setAttribute("pageMessage", form.getMessage());
+        	return;
+        }
+ 		//End: For MQC-66805: TABE BAUM licenses distribution
         form.resetValuesForAction(actionElement); 
                         
         boolean nodeChanged = OrgPathListUtils.adjustOrgNodePath(this.orgNodePath, orgNodeId, orgNodeName);
@@ -301,6 +321,7 @@ public class ManageLicenseController extends PageFlowController
         }
          
         List orgNodes = buildOrgNodeList(und);
+        this.orgNodes = orgNodes; //For MQC-66805: TABE BAUM licenses distribution
         
         populateLicenseNodes(orgNodes);
         
@@ -310,6 +331,10 @@ public class ManageLicenseController extends PageFlowController
         
         PagerSummary orgPagerSummary = OrgPathListUtils.buildOrgNodePagerSummary(
                                             und, form.getOrgPageRequested());        
+        //Start: For MQC-66805: TABE BAUM licenses distribution
+        this.orgPagerSummary  = orgPagerSummary;
+         this.orgCategoryName = orgCategoryName;
+         //End: For MQC-66805: TABE BAUM licenses distribution
         form.setOrgMaxPage(und.getFilteredPages());
 
         form.setTopNodeEditing(new Boolean((orgNodeId.intValue() == 0) && (orgNodes.size() > 1)));
@@ -329,6 +354,69 @@ public class ManageLicenseController extends PageFlowController
     /**
      * getLicenseValuesInForm
      */    
+      //For MQC-66805: TABE BAUM licenses distribution   
+    private boolean validateLicenseValuesInForm(ManageLicenseForm form) {
+    	boolean isValid = true;
+    	Integer parentNodeId = form.getParentNodeId();
+    	String parentNodeAvailableAfter = form.getParentNodeAvailable();
+    	String parentNodeAvailableBefore = form.getParentNodeAvailable();
+    	int childrenAvailableCountBefore = 0;
+    	int childrenAvailableCountAfter = 0;
+    	
+    	if ((parentNodeId != null) && (parentNodeAvailableAfter != null)) {
+    		if (parentNodeId.intValue() > 0) { 
+				LicenseNode nodeInList = findLicenseNode(parentNodeId);
+				if (nodeInList != null) {
+					parentNodeAvailableBefore = nodeInList.getAvailable();
+				}
+    		}
+    		else {
+    			this.availablePool = parentNodeAvailableAfter;
+    		}
+    	}
+    	
+    	if (form.availableValues != null) {
+	    	for (int i=0 ; i<form.availableValues.length ; i++) {
+	    		String id = form.orgNodeIds[i];
+	    		String available = form.availableValues[i];
+	    		if ((id != null) && (available != null) && (id.trim().length() > 0) && (available.trim().length() > 0)) {
+	    			LicenseNode nodeInList = findLicenseNode(new Integer(id));
+	    			if (nodeInList != null) {
+	    				childrenAvailableCountBefore+= Integer.valueOf(nodeInList.getAvailable());
+	    				childrenAvailableCountAfter+=Integer.valueOf(available);
+	    			}
+	    		}
+	    	}
+    	}
+    	
+    	if(parentNodeAvailableAfter!=null && parentNodeAvailableBefore!=null){
+    		int parentUpdated = Integer.valueOf(parentNodeAvailableBefore)-Integer.valueOf(parentNodeAvailableAfter);
+        	int childrenUpdated = childrenAvailableCountAfter - childrenAvailableCountBefore;
+        	if(parentUpdated != childrenUpdated) {
+        		isValid =  false;
+        		LicenseNode nodeInList = findLicenseNode(parentNodeId);
+        		form.setParentNodeId(nodeInList.getId());
+        		form.setParentLicenseNode(nodeInList);
+    	    	form.setParentNodeAvailable(nodeInList.getAvailable());
+    	    	String []tempOrgNodeIds = new String[5];
+    	    	String []tempavailableValues = new String[5];
+
+    	        for (int i = 0 ; i < this.orgNodes.size() ; i++) {           
+    	        	LicenseNode  node = (LicenseNode)this.orgNodes.get(i);
+    	        	tempOrgNodeIds[i] = node.getId().toString();
+    	        	tempavailableValues[i] = node.getAvailable();
+    	        }
+    	       form.setOrgNodeIds(tempOrgNodeIds);
+    	       form.setAvailableValues(tempavailableValues);
+    	    	
+        		
+        	}
+    	}
+    	
+    	return isValid;
+
+    }
+    
     private void getLicenseValuesInForm(ManageLicenseForm form) {
     	
     	Integer parentNodeId = form.getParentNodeId();
@@ -721,12 +809,29 @@ public class ManageLicenseController extends PageFlowController
         return null;
     }
 
+ //For MQC-66805: TABE BAUM licenses distribution   
     /**
      * @jpf:action
      */
-	@Jpf.Action()
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "failure", path = "manage_license.jsp")
+	}
+)
     protected Forward goToSaveLicenses(ManageLicenseForm form)
     {
+		 if(!validateLicenseValuesInForm(form)) {
+			  Integer orgNodeId = form.getOrgNodeId(); 
+        	 this.getRequest().setAttribute("orgNodePath", this.orgNodePath);
+             this.getRequest().setAttribute("orgNodes", this.orgNodes );        
+             this.getRequest().setAttribute("orgPagerSummary", this.orgPagerSummary);
+             this.getRequest().setAttribute("orgCategoryName", this.orgCategoryName);   
+	         this.getRequest().setAttribute("multipleProducts", new Boolean(this.customerLicenses.length > 1));       
+             this.getRequest().setAttribute("rootNode", new Boolean(orgNodeId.intValue() == 0));                  
+             this.getRequest().setAttribute("singleRootNode", new Boolean(this.orgNodes.size() == 1));
+             form.setMessage(Message.DIST_LICENSE, Message.LICENSE_DISTRIBUTION_ERROR, Message.ERROR);
+             this.getRequest().setAttribute("pageMessage", form.getMessage());
+             return new Forward("failure", form);        
+        }
 		saveLicenses(form);	
 		return goToSystemAdministration(form);		
     }
