@@ -1,7 +1,10 @@
 package com.ctb.tms.web.servlet;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.ctb.tdc.web.utils.ServletUtils;
+import com.ctb.tms.web.listener.AppStatusContextListener;
 import com.tangosol.net.CacheFactory;
 
 public class HealthServlet extends HttpServlet {
@@ -35,17 +39,12 @@ public class HealthServlet extends HttpServlet {
 		response.setContentType("text/plain;charset=UTF-8");
 		response.setStatus(HttpServletResponse.SC_OK);
 		PrintWriter out = response.getWriter();
-		boolean active = CacheFactory.getCache("OASResponseCache").isActive() &&
-						 CacheFactory.getCache("OASManifestCache").isActive() &&
-						 CacheFactory.getCache("OASRosterCache").isActive() &&
-						 CacheFactory.getCache("ADSItemCache").isActive() &&
-						 CacheFactory.getCache("ADSItemSetCache").isActive();
-		if(active) {
-			out.println("appCode=Pass");
-			logger.info(" . . . passed.");
+		String checkStatus = AppStatusContextListener.checkStatus;
+		String fileStatus = AppStatusContextListener.fileStatus;
+		if(!"Pass".equals(checkStatus) || !"Pass".equals(fileStatus)) {
+			out.write("appCode=Fail");
 		} else {
-			out.println("appCode=Fail");
-			logger.info(" . . . failed.");
+			out.write("appCode=Pass");
 		}
 		out.flush();
 		out.close();

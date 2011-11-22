@@ -27,6 +27,10 @@
     <listener-class>com.ctb.tms.web.listener.TestDeliveryContextListener</listener-class>
   </listener>
   
+  <listener>
+    <listener-class>com.ctb.tms.web.listener.AppStatusContextListener</listener-class>
+  </listener>
+  
   <servlet>
     <description>HealthServlet</description>
     <display-name>HealthServlet</display-name>
