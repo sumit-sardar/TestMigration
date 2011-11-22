@@ -824,6 +824,18 @@ public interface StudentManagement extends JdbcControl
 
     /**
      * @jc:sql statement::
+     * update 
+     *      test_roster 
+     * set 	
+     *      tms_update = 'F' 
+     *      where student_id={studentId}
+     * ::
+     */
+    @JdbcControl.SQL(statement = "update test_roster set tms_update = 'F' where student_id = {studentId}")
+    void setRosterUpdateFlag(Integer studentId) throws SQLException;
+    
+    /**
+     * @jc:sql statement::
      * delete from 
      *      student_demographic_data 
      * where 	student_id={studentId}

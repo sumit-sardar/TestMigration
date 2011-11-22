@@ -631,6 +631,7 @@ public class StudentManagementImpl implements StudentManagement
 					}
 				}
 			}
+			studentManagement.setRosterUpdateFlag(studentId);
 		} catch (SQLException se) {
 			StudentDataUpdateException tee = new StudentDataUpdateException("StudentManagementImpl: updateStudentDemographics: " + se.getMessage());
 			tee.setStackTrace(se.getStackTrace());
