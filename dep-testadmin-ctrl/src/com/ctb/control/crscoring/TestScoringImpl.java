@@ -684,7 +684,7 @@ public class TestScoringImpl implements TestScoring {
 				}
 			}
 			if (!isAnswered) {
-				itemResponseData.add("");
+				itemResponseData.add(" ");
 			}
 		}
 
