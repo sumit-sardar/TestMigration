@@ -589,6 +589,7 @@ public class StudentAccommodationsTag extends CTBTag
             String ccName = cc.getCustomerConfigurationName();
             String editable = cc.getEditable();
             
+            ccName = ccName.replace("_",""); //Added for defect 67325. This will resolve the editable issue.
             if (ccName.equalsIgnoreCase(field)) {
             	counter++;
                 if ((editable != null) && editable.equalsIgnoreCase("F"))
