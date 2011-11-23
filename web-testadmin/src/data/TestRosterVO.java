@@ -28,6 +28,12 @@ public class TestRosterVO implements java.io.Serializable
     private String untimedTest = null;
     private String highLighter = null; /* 51931 Deferred Defect For HighLighter*/
     private String extendedTimeAccom = null; // added for student pacing
+   // Start:For MQC defect 66844
+    private String maskingRular = null;
+    private String maskingTool = null;
+    private String magnifyingGlass = null;
+    private String musicFileId = null;
+    //End: For MQC defect 66844
     
     public TestRosterVO()
     {
@@ -189,4 +195,29 @@ public class TestRosterVO implements java.io.Serializable
 		this.extendedTimeAccom = extendedTimeAccom;
 	}
 	// end- added for student pacing
+
+	public String getMaskingRular() {
+		return maskingRular;
+	}
+	public void setMaskingRular(String maskingRular) {
+		this.maskingRular = maskingRular;
+	}
+	public String getMaskingTool() {
+		return maskingTool;
+	}
+	public void setMaskingTool(String maskingTool) {
+		this.maskingTool = maskingTool;
+	}
+	public String getMagnifyingGlass() {
+		return magnifyingGlass;
+	}
+	public void setMagnifyingGlass(String magnifyingGlass) {
+		this.magnifyingGlass = magnifyingGlass;
+	}
+	public String getMusicFileId() {
+		return musicFileId;
+	}
+	public void setMusicFileId(String musicFileId) {
+		this.musicFileId = musicFileId;
+	}
 } 
