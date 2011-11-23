@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.ctb.lexington.data.ItemContentArea;
+import com.ctb.lexington.db.data.CurriculumData.PrimaryObjective;
 import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.event.AssessmentEndedEvent;
 import com.ctb.lexington.domain.score.event.Objective;
@@ -40,11 +41,13 @@ public class PrimaryObjectivePercentMasteryCalculator extends Calculator {
     }
 
     public void onEvent(ObjectivePrimaryNumberCorrectEvent opncEvent) {
-        ContentAreaInfo contentArea = getContentAreaScores(opncEvent.getObjectiveId());
-        if (opncEvent.getMastery().isMastered()) {
-            contentArea.primaryObjectivesMastered.add(opncEvent.getObjectiveId());
-        }
-        contentArea.primaryObjectiveCount++;
+    	if(scorer.getResultHolder().getAdminData().getProductId() != 8000) {
+	        ContentAreaInfo contentArea = getContentAreaScores(opncEvent.getObjectiveId());
+	        if (opncEvent.getMastery().isMastered()) {
+	            contentArea.primaryObjectivesMastered.add(opncEvent.getObjectiveId());
+	        }
+	        contentArea.primaryObjectiveCount++;
+    	}
     }
 
     public void onEvent(SubtestContentAreaItemCollectionEvent event) throws CTBSystemException {
@@ -55,7 +58,12 @@ public class PrimaryObjectivePercentMasteryCalculator extends Calculator {
             caInfo.subtestId = event.getItemSetId();
             caInfo.contentAreaName = (String) i.next();
             caInfo.contentAreaId = getContentAreaId(event, caInfo.contentAreaName);
-            caInfo.objectiveIds = getObjectiveIDsForContentArea(caInfo.contentAreaName, event.getItemSetId());
+            if(scorer.getResultHolder().getAdminData().getProductId() != 8000) {
+            	caInfo.objectiveIds = getObjectiveIDsForContentArea(caInfo.contentAreaName, event.getItemSetId());
+            }
+            else {
+            	caInfo.objectiveIds = getObjectiveIDsForContentAreaAdaptive(caInfo.contentAreaName, event.getItemSetId());
+            }
             contentAreaScores.add(caInfo);
         }
     }
@@ -97,6 +105,20 @@ public class PrimaryObjectivePercentMasteryCalculator extends Calculator {
             List<Objective> primaryReportingLevelObjectiveList = subtest.socEvent.getPrimaryReportingLevelObjective(itemContentArea.getItemId());
             for(Objective primaryReportingLevelObjective: primaryReportingLevelObjectiveList ){
             result.add(primaryReportingLevelObjective.getId());
+        	}
+        }
+
+        return result;
+    }
+    
+    private Collection getObjectiveIDsForContentAreaAdaptive(String contentArea, Long subtestId) throws CTBSystemException {
+        Collection result = new SafeHashSet(Long.class);
+        SubtestInfo subtest = (SubtestInfo) subtests.get(subtestId);
+        PrimaryObjective[] primObjs = scorer.getResultHolder().getCurriculumData().getPrimaryObjectives();
+        if(primObjs != null) {
+        	for (int i= 0; i < primObjs.length; i++) {
+        		if(primObjs[i].getContentAreaId() == subtestId)
+        			result.add(primObjs[i].getPrimaryObjectiveId());
         	}
         }
 

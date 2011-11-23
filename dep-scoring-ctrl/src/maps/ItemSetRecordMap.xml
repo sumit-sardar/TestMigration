@@ -75,7 +75,10 @@
             status.recommended_level as recommendedLevel,
             status.validation_status as validationStatus,
             status.exemptions as exemptions,
-            status.absent as absent
+            status.absent as absent,
+            status.ability_score as abilityScore,
+            status.sem_score as semScore,
+            status.objective_score as objectiveScore
         FROM
             ITEM_SET subtest,
             TEST_ROSTER tr,

@@ -20,8 +20,10 @@ import com.ctb.lexington.domain.score.event.SubtestContentAreaItemCollectionEven
 import com.ctb.lexington.domain.score.event.SubtestEndedEvent;
 import com.ctb.lexington.domain.score.event.SubtestItemCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestObjectiveCollectionEvent;
+import com.ctb.lexington.domain.score.event.SubtestScoreReceivedEvent;
 import com.ctb.lexington.domain.score.event.common.Channel;
 import com.ctb.lexington.domain.score.scorer.Scorer;
+import com.ctb.lexington.domain.score.scorer.TAScorer;
 import com.ctb.lexington.exception.CTBSystemException;
 import com.ctb.lexington.util.SafeHashMap;
 
@@ -38,6 +40,7 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
     protected Map itemsByContentArea = new SafeHashMap(String.class, ItemContentArea.class);
     private SubtestItemCollectionEvent sicEvent;
     private Set contenAreaSet = new HashSet();
+    protected Map adaptiveContentDetails  = new SafeHashMap(Integer.class, SubtestScoreReceivedEvent.class);
 
     public ContentAreaNumberCorrectCalculator(Channel channel, Scorer scorer) {
         super(channel, scorer);
@@ -50,6 +53,7 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
         mustPrecede(SubtestContentAreaItemCollectionEvent.class, IncorrectResponseEvent.class);
         channel.subscribe(this, NoResponseEvent.class);
         mustPrecede(SubtestContentAreaItemCollectionEvent.class, NoResponseEvent.class);
+        channel.subscribe(this, SubtestScoreReceivedEvent.class); // changes for TABE Adaptive
         channel.subscribe(this, SubtestEndedEvent.class);
         mustPrecede(SubtestContentAreaItemCollectionEvent.class, SubtestEndedEvent.class);
     }
@@ -60,6 +64,15 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
 
         sicEvent = event;
     }
+    
+    
+ // changes for TABE Adaptive
+    public void onEvent(SubtestScoreReceivedEvent event) {
+    	
+    	if (!adaptiveContentDetails.containsKey(event.getItemSetId()))
+    		adaptiveContentDetails.put(event.getItemSetId(), event);
+    	
+    }    
 
     public void onEvent(SubtestContentAreaItemCollectionEvent event) {
     	
@@ -161,16 +174,33 @@ public class ContentAreaNumberCorrectCalculator extends AbstractResponseCalculat
     }
  //  For Laslink Scoring
     public void onEvent(SubtestEndedEvent event) {
-        Iterator iter = contentAreaAnswers.values().iterator();
-        while (iter.hasNext()) {
-            final ContentAreaAnswers summary = (ContentAreaAnswers) iter.next();
-            channel.send(new ContentAreaNumberCorrectEvent(event.getTestRosterId(), DatabaseHelper
-                    .asLong(event.getItemSetId()), summary.contentAreaId, summary.contentAreaName,
-                    summary.numberOfItems, summary.correctAnswers.size(), summary.incorrectAnswers
-                            .size(), summary.attemptedAnswers.size(), summary.unattemptedAnswers
-                            .size()));
-        }
-        contentAreaAnswers.clear();
+    	if (sicEvent.getProductId() == 8001) {
+    		//System.out.println("sicEvent.getProductId() == 8001");
+    		Iterator iter = adaptiveContentDetails.values().iterator();
+    		while (iter.hasNext()) {
+            	
+                final SubtestScoreReceivedEvent summary = (SubtestScoreReceivedEvent) iter.next();
+              //  System.out.println("summary.contentAreaName hostAdaptive -> " + summary.getContentAreaName());
+                channel.send(new ContentAreaNumberCorrectEvent(event.getTestRosterId(), DatabaseHelper
+                        .asLong(event.getItemSetId()), DatabaseHelper
+                        .asLong(summary.getItemSetId()), summary.getContentAreaName(),
+                        0, 0, 0, 0, 0));
+            }
+    	} else {
+	        Iterator iter = contentAreaAnswers.values().iterator();
+	        while (iter.hasNext()) {
+	        	
+	            final ContentAreaAnswers summary = (ContentAreaAnswers) iter.next();
+	         //   System.out.println("summary.contentAreaId -> " + summary.contentAreaId);
+	         //   System.out.println("summary.contentAreaName -> " + summary.contentAreaName);
+	            channel.send(new ContentAreaNumberCorrectEvent(event.getTestRosterId(), DatabaseHelper
+	                    .asLong(event.getItemSetId()), summary.contentAreaId, summary.contentAreaName,
+	                    summary.numberOfItems, summary.correctAnswers.size(), summary.incorrectAnswers
+	                            .size(), summary.attemptedAnswers.size(), summary.unattemptedAnswers
+	                            .size()));
+	        }
+	        contentAreaAnswers.clear();
+    	}
     }
 
     protected class ContentAreaAnswers {

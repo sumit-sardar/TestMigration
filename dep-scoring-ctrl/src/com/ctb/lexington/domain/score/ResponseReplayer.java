@@ -21,6 +21,7 @@ import com.ctb.lexington.db.mapper.TestRosterMapper;
 import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.event.ResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.SubtestEndedEvent;
+import com.ctb.lexington.domain.score.event.SubtestScoreReceivedEvent;
 import com.ctb.lexington.domain.score.event.SubtestStartedEvent;
 import com.ctb.lexington.domain.score.event.common.Event;
 import com.ctb.lexington.domain.score.scorer.Scorer;
@@ -221,12 +222,74 @@ public class ResponseReplayer {
         	if(itemSet.getValidationStatus().equals("VA") && itemSet.getAbsent().equals("N") && itemSet.getExemptions().equals("N"))
         		addResponseEvents(subtestStatus.getTestRosterId(), events, itemSet, itemResponseMapper);
         } else */
+        if(itemSet.getObjectiveScore() != null) {
+        	//System.out.println("-------Instead of addResponseEvent-------");
+        	addSubtestScoreEvents(subtestStatus.getTestRosterId(), events, itemSet);
+        }
+        else
         	addResponseEvents(subtestStatus.getTestRosterId(), events, itemSet, itemResponseMapper);
         	
         addSubtestEndedEvent(events, itemSet, requireSubtestsComplete, subtestStatus);
 
         return events;
     }
+    
+    //Added for TABE Cat Adaptive
+    private static void addSubtestScoreEvents(final Long testRosterId, final List events, final ItemSetVO itemSet) {
+    	
+    	String[] pipeSeparated = itemSet.getObjectiveScore().split("\\|");
+    	if(pipeSeparated != null && pipeSeparated.length > 0) {
+    		List subtestScore = new ArrayList(pipeSeparated.length);
+    		for (int i = 0; i < pipeSeparated.length; i++)
+    			subtestScore.add(pipeSeparated[i]);
+    		//System.out.println("pipeSeparated.length ---->>" + pipeSeparated.length);
+            events.addAll(getSubtestScoreEvents(subtestScore, testRosterId, itemSet.getItemSetId(), itemSet.getAbilityScore(), itemSet.getItemSetName()));
+    	}
+    	
+    }
+    
+    private static List getSubtestScoreEvents(final List scores, final Long testRosterId, final Integer itemSetId, final Double abilityScore, final String itemSetName) {
+        if (scores.isEmpty()) return Collections.EMPTY_LIST;
+
+        final List events = new ArrayList(scores.size());
+
+        for (final Iterator it = scores.iterator(); it.hasNext();)
+            events.add(createSubtestScoreReceivedEvent((String) it.next(), testRosterId, itemSetId, abilityScore, itemSetName));
+
+        return events;
+    }
+    
+    
+    private static SubtestScoreReceivedEvent createSubtestScoreReceivedEvent(
+            final String score, final Long testRosterId, final Integer itemSetId, final Double abilityScore, final String itemSetName) {
+    	
+        final SubtestScoreReceivedEvent event = new SubtestScoreReceivedEvent(testRosterId, itemSetId);
+        
+        if(score.length() > 0) {
+        	String[] objectiveValues = score.split(",");
+	        event.setObjectiveId(Integer.parseInt(objectiveValues[0]));
+	        //System.out.println("objectiveValues[0] -> " + objectiveValues[0]);
+	        event.setObjectiveRawScore(Double.parseDouble(objectiveValues[1]));
+	        //System.out.println("objectiveValues[1] -> " + objectiveValues[1]);
+	        event.setTotalObjectiveRawScore(Double.parseDouble(objectiveValues[2]));
+	        //System.out.println("objectiveValues[2] -> " + objectiveValues[2]);
+	        event.setObjectiveScore(Double.parseDouble(objectiveValues[3]));
+	        //System.out.println("objectiveValues[3] -> " + objectiveValues[3]);
+	        event.setObjectiveSSsem(Double.parseDouble(objectiveValues[4]));
+	        //System.out.println("objectiveValues[4] -> " + objectiveValues[4]);
+	        event.setObjectiveLevel(objectiveValues[5]);
+	        //System.out.println("objectiveValues[5] -> " + objectiveValues[5]);
+	        event.setObjectiveMasteryLevel(Integer.parseInt(objectiveValues[6]));
+	        //System.out.println("objectiveValues[6] -> " + objectiveValues[6]);
+        }
+        event.setAbilityScore(abilityScore);
+        event.setContentAreaName(itemSetName);
+
+        return event;
+    }
+    
+    
+    
 
     private static void addResponseEvents(final Long testRosterId, final List events, final ItemSetVO itemSet,
             final ItemResponseMapper itemResponseMapper) {
@@ -248,10 +311,17 @@ public class ResponseReplayer {
     private static void addSubtestStartedEvent(final Long testRosterId, final String normGroup, final String ageCategory,
     		final List events,
             final ItemSetVO itemSet) {
-        events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
-        		itemSet.getItemSetId(),
-                itemSet.getItemSetForm(), itemSet.getItemSetName(),
-                itemSet.getItemSetLevel(), itemSet.getRecommendedLevel()));
+    	if(itemSet.getObjectiveScore() != null) {
+    		events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
+	        		itemSet.getItemSetId(),
+	                itemSet.getItemSetForm(), itemSet.getItemSetName(),
+	                itemSet.getItemSetLevel(), itemSet.getRecommendedLevel(), itemSet.getAbilityScore(), itemSet.getSemScore()));
+        }
+        else
+	        events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
+	        		itemSet.getItemSetId(),
+	                itemSet.getItemSetForm(), itemSet.getItemSetName(),
+	                itemSet.getItemSetLevel(), itemSet.getRecommendedLevel()));
     }
 
     private static List getResponseEvents(final List responses) {
@@ -299,6 +369,17 @@ public class ResponseReplayer {
             final String itemSetLevel, final String recommendedLevel) {
         return new SubtestStartedEvent(testRosterId, itemSetId, itemSetForm, itemSetName,
                 itemSetLevel, normGroup, ageCategory, recommendedLevel);
+    }
+    
+    private static SubtestStartedEvent createSubtestStartedEvent(
+            final Long testRosterId,
+            final String normGroup,
+			final String ageCategory,
+			final Integer itemSetId,
+            final String itemSetForm, final String itemSetName,
+            final String itemSetLevel, final String recommendedLevel, final Double abilityScore, final Double semScore) {
+        return new SubtestStartedEvent(testRosterId, itemSetId, itemSetForm, itemSetName,
+                itemSetLevel, normGroup, ageCategory, recommendedLevel, abilityScore, semScore);
     }
 
     private static SubtestEndedEvent createSubtestEndedEvent(

@@ -41,6 +41,7 @@ import com.ctb.lexington.domain.score.event.SubtestItemCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestNumberCorrectEvent;
 import com.ctb.lexington.domain.score.event.SubtestObjectiveCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestRawScoreEvent;
+import com.ctb.lexington.domain.score.event.SubtestScoreReceivedEvent;
 import com.ctb.lexington.domain.score.event.SubtestStartedEvent;
 import com.ctb.lexington.domain.score.event.SubtestValidEvent;
 import com.ctb.lexington.domain.score.event.TestCompletionStatusEvent;
@@ -154,6 +155,9 @@ public abstract class EventProcessor implements EventRecipient {
     		this.onEvent((LocatorCompositeScoreEvent) event);
         if (event instanceof SubtestContentAreaCompositeAndDerivedEvent)     // For Laslink Scoring
     		this.onEvent((SubtestContentAreaCompositeAndDerivedEvent) event);
+        //For TABE Adaptive
+        if (event instanceof SubtestScoreReceivedEvent)
+        	this.onEvent((SubtestScoreReceivedEvent) event);
     }
 
     /**
@@ -462,6 +466,13 @@ public abstract class EventProcessor implements EventRecipient {
 	 * @param event
 	 */
 	public void onEvent(SubtestContentAreaCompositeAndDerivedEvent event) {
+		//System.out.println("BAD!!! calling empty onEvent() for: " + event.getClass().getName());
+	}
+	
+	/**
+	 * @param event
+	 */
+	public void onEvent(SubtestScoreReceivedEvent event) {
 		//System.out.println("BAD!!! calling empty onEvent() for: " + event.getClass().getName());
 	}
 }

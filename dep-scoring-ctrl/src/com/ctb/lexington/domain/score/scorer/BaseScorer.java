@@ -34,6 +34,7 @@ import com.ctb.lexington.db.utils.DatabaseHelper;
 import com.ctb.lexington.domain.score.collector.TestResultDataCollector;
 import com.ctb.lexington.domain.score.controller.TestResultController;
 import com.ctb.lexington.domain.score.controller.llcontroller.LLTestResultController;
+import com.ctb.lexington.domain.score.controller.tacontroller.TATestResultController;
 import com.ctb.lexington.domain.score.controller.tbcontroller.TBTestResultController;
 import com.ctb.lexington.domain.score.controller.tvcontroller.TVTestResultController;
 import com.ctb.lexington.domain.score.event.AssessmentEndedEvent;
@@ -185,7 +186,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
     }
 
     private void handleAssessmentStartedEvent(Event event) throws CTBSystemException {
-    	//System.out.println("***** SCORING: BaseScorer: handleAssessmentStartedEvent");
+    	System.out.println("***** SCORING: BaseScorer: handleAssessmentStartedEvent");
         if (resultHolder == null) {
             if (event instanceof AssessmentStartedEvent) {
                 try {
@@ -240,6 +241,14 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
                     controller.run(getRosterValidationStatus(event.getTestRosterId()));
                 }
                  //END- For Laslink Scoring
+                else if(this instanceof TAScorer) {
+                	
+                	//System.out.println("$$$$$$$$$$AssessmentEndedEvent");
+                	controller = new TATestResultController(getIRSConnection(), resultHolder, getReportingLevels(event.getTestRosterId()));
+                    controller.run(getRosterValidationStatus(event.getTestRosterId()));
+
+                	
+                }
                 System.out.println("***** SCORING: BaseScorer: handleAssessmentEndedEvent: finished persistence");
                 forceCloseAllConnections(false);
             } catch (Exception e) {
@@ -302,13 +311,22 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         details.setNumAttempted(new Long(event.getNumberAttempted()));
         details.setNumUnattempted(new Long(event.getNumberUnattempted()));
         details.setNumOfItems(new Long(details.getNumAttempted().intValue() + details.getNumUnattempted().intValue()));
-        
-        //System.out.println("computed NC score for objective " + event.getObjectiveId() + ": " + details.getNumCorrect() + "/" + details.getNumOfItems());
-        
-        MasteryLevel mastery = ObjectiveNumberCorrectCalculator.calculateMasteryLevel(details.getNumCorrect().intValue(), details.getNumAttempted().intValue() + details.getNumUnattempted().intValue());
-        details.setMasteryLevel(mastery.getCode());
-        details.setMastered( (mastery.isMastered() ? CTBConstants.TRUE
-                : CTBConstants.FALSE));
+        MasteryLevel mastery = null;
+       // System.out.println("computed NC score for objective " + event.getObjectiveId() + ": " + details.getNumCorrect() + "/" + details.getNumOfItems());
+       // System.out.println(getResultHolder().getAdminData().getProductId());
+        if(getResultHolder().getAdminData().getProductId() != 8000) { 
+        	//System.out.println("getResultHolder().getAdminData().getProductId() != 8001");
+	        mastery = ObjectiveNumberCorrectCalculator.calculateMasteryLevel(details.getNumCorrect().intValue(), details.getNumAttempted().intValue() + details.getNumUnattempted().intValue());
+	        details.setMasteryLevel(mastery.getCode());
+	        details.setMastered( (mastery.isMastered() ? CTBConstants.TRUE
+	                : CTBConstants.FALSE));	        
+        } else {
+        	//System.out.println("getResultHolder().getAdminData().getProductId() == 8001");
+        	mastery = event.getMastery();
+        	details.setMasteryLevel(mastery.getCode());
+	        details.setMastered( (mastery.isMastered() ? CTBConstants.TRUE
+	                : CTBConstants.FALSE));
+        }
         details.setSubtestId(event.getSubtestId());
         
         channel.send(new ObjectivePrimaryCumulativeNumberCorrectEvent(
@@ -370,10 +388,15 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         }
      // Added for Laslink Product
         String productType = getResultHolder().getAdminData().getAssessmentType();
-        if(productType.equals("LL") || productType.equals("ll"))
-        	factDetails.calculatePercentObtainedForFirstDecimal();
-        else
-        	factDetails.calculatePercentObtained();
+      //  System.out.println("productType ->" + productType);
+        if(!productType.equals("TA")) {
+	        if(productType.equals("LL") || productType.equals("ll"))
+	        	factDetails.calculatePercentObtainedForFirstDecimal();
+	        else
+	        	factDetails.calculatePercentObtained();
+        } else {
+        	factDetails.setPercentObtained(new Long(0));
+        }
         
     }
 
@@ -420,6 +443,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
         StudentItemScoreData studentItemScoreData = getResultHolder().getStudentItemScoreData();
         StudentScoreSummaryData studentScoreSummaryData = getResultHolder()
                 .getStudentScoreSummaryData();
+      //  System.out.println("No error in Base scorer");
         Iterator iter = event.getReportingLevelObjectiveKeysetIterator();
         while (iter.hasNext()) {
             String itemId = (String) iter.next();
@@ -467,7 +491,7 @@ public abstract class BaseScorer extends EventProcessor implements Scorer {
     public static final void copyScoreHistoryFromOasToAts(final ScoreMoveData scoreMoveData,
             final Iterator subtestItemCollectionData, final String itemSetName,SubtestObjectiveCollectionEvent subtestObjectives) {
         final StudentItemScoreData studentItemScoreData = scoreMoveData.getStudentItemScoreData();
-
+//System.out.println("copyScoreHistoryFromOasToAts");
         while (subtestItemCollectionData.hasNext()) {
             final ItemVO item = (ItemVO) subtestItemCollectionData.next();
             try {

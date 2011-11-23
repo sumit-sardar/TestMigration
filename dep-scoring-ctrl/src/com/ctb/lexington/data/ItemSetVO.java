@@ -137,6 +137,11 @@ public class ItemSetVO implements Persistent, Serializable
     protected String validationStatus   = null;
     protected String exemptions   = null;
     protected String absent   = null;
+    
+    //Added for TABE ADAPTIVE
+    protected Double abilityScore = null;
+    protected Double semScore = null;
+    protected String objectiveScore = null;
 
     public ItemSetVO() { }
 
@@ -665,6 +670,30 @@ public class ItemSetVO implements Persistent, Serializable
 
 	public void setAbsent(String absent) {
 		this.absent = absent;
+	}
+
+	public String getObjectiveScore() {
+		return objectiveScore;
+	}
+
+	public void setObjectiveScore(String objectiveScore) {
+		this.objectiveScore = objectiveScore;
+	}
+
+	public Double getAbilityScore() {
+		return abilityScore;
+	}
+
+	public void setAbilityScore(Double abilityScore) {
+		this.abilityScore = abilityScore;
+	}
+
+	public Double getSemScore() {
+		return semScore;
+	}
+
+	public void setSemScore(Double semScore) {
+		this.semScore = semScore;
 	}
 
 }

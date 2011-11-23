@@ -31,6 +31,7 @@ import com.ctb.lexington.exception.CTBSystemException;
 public class TestCompletionStatusCalculator extends Calculator {
     private List itemSetIdsForEndedSubTests;
     private Collection sicEvents = new ArrayList();
+    private Integer productId = null;
     
     private static final String decisionNodeProps = "completionstatus";
     private static DecisionNodeTree decisionTree = null;
@@ -64,6 +65,7 @@ public class TestCompletionStatusCalculator extends Calculator {
     }
 
     public void onEvent(SubtestItemCollectionEvent sicEvent){
+    	productId = sicEvent.getProductId();
         sicEvents.add(sicEvent);
     }
 
@@ -80,6 +82,10 @@ public class TestCompletionStatusCalculator extends Calculator {
 
     public void onEvent(AssessmentEndedEvent event) {
     	CompletionStatus status = getCompletionStatus(event.getTestRosterId());
+    	if (productId == 8001) {
+    		status = CompletionStatus.COMPLETED;
+    		//System.out.println("Setting test completion status to COMPLETED");
+    	}
         if(status != null) {
         	channel.send(createEvent(event.getTestRosterId(), status));
         }

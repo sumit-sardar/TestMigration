@@ -16,6 +16,7 @@ public final class ProductType extends StringConstant {
     public static final ProductType TERRANOVA_RESEARCH = new ProductType("TN", "TerraNova");
     public static final ProductType TABE_LOCATOR = new ProductType("TL", "TABE Locator");
     public static final ProductType LASLINK = new ProductType("LL", "LasLink");
+    public static final ProductType TABE_ADAPTIVE = new ProductType("TA", "TABE Adaptive");
     
     //Need to add one entry for Laslink
     

@@ -168,7 +168,10 @@ public class ScoringStatusCalculator extends Calculator {
      */
     private ScoringStatus determineSubtestStatus(Integer itemSetId) {
         SubtestItemCollectionEvent sicEvent = (SubtestItemCollectionEvent) sicEvents.get(itemSetId);
-
+        if(sicEvent.getProductId() == 8001) {
+        	//System.out.println("Making all scoring status as SCORED");
+        	return ScoringStatus.SCORED;
+        }
         final boolean subtestFinished = checkWhetherSubtestHasBeenTaken(itemSetId);
         
         boolean isOnlineCapture = RosterCaptureMethod.ONLINE.getCode().equals(rosterCaptureMethod);

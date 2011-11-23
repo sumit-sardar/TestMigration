@@ -19,6 +19,9 @@ public class SubtestStartedEvent extends SubtestEvent {
     private final String ageCategory;
     
     private String recommendedLevel;
+    // Added for tabe adaptive
+    private final Double abilityScore;
+    private final Double semScore;
 
     // TODO: ContentArea is not a subtest attribute, there may be
     // multiple content areas associated with the items in a subtest.
@@ -34,7 +37,27 @@ public class SubtestStartedEvent extends SubtestEvent {
         this.normGroup = NormGroup.getCodeForStringValue(normGroup);
         this.ageCategory = ageCategory;
         this.recommendedLevel = recommendedLevel;
+        this.abilityScore = 0.0;
+        this.semScore = 0.0;
     }
+    
+    public SubtestStartedEvent(final Long testRosterId, final Integer itemSetId,
+            final String itemSetForm, final String itemSetName, final String itemSetLevel,
+            final String normGroup, final String ageCategory, final String recommendedLevel,
+            final Double abilityScore, final Double semScore) {
+        super(testRosterId, itemSetId);
+
+        this.itemSetForm = itemSetForm;
+        this.itemSetName = itemSetName;
+        this.itemSetLevel = itemSetLevel;
+        this.normGroup = NormGroup.getCodeForStringValue(normGroup);
+        this.ageCategory = ageCategory;
+        this.recommendedLevel = recommendedLevel;
+        this.abilityScore = abilityScore;
+        this.semScore = semScore;
+    }
+    
+    
 
     /**
 	 * @return Returns the recommendedLevel.
@@ -161,4 +184,12 @@ public class SubtestStartedEvent extends SubtestEvent {
     public String getAgeCategory() {
         return ageCategory;
     }
+
+	public Double getAbilityScore() {
+		return abilityScore;
+	}
+
+	public Double getSemScore() {
+		return semScore;
+	}
 }

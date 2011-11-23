@@ -1,6 +1,7 @@
 package com.ctb.lexington.domain.score.scorer.calculator;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import com.ctb.lexington.domain.score.event.ResponseReceivedEvent;
 import com.ctb.lexington.domain.score.event.SubtestEndedEvent;
 import com.ctb.lexington.domain.score.event.SubtestItemCollectionEvent;
 import com.ctb.lexington.domain.score.event.SubtestObjectiveCollectionEvent;
+import com.ctb.lexington.domain.score.event.SubtestScoreReceivedEvent;
 import com.ctb.lexington.domain.score.event.common.Channel;
 import com.ctb.lexington.domain.score.scorer.Scorer;
 import com.ctb.lexington.domain.score.scorer.ScorerHelper;
@@ -56,10 +58,20 @@ public class ObjectiveNumberCorrectCalculator extends Calculator {
     private final Map secondaryObjectivesIncorrect = new ObjectiveSetMap();
     private final Map secondaryObjectivesAttempted = new ObjectiveSetMap();
     private final Map secondaryObjectivesUnattempted = new ObjectiveSetMap();
+    
+    private final Map<Integer, Integer> tabeAdaptiveObjectiveMap = new HashMap<Integer, Integer>();
 
     private SubtestObjectiveCollectionEvent subtestObjectives = null;
 
     private SubtestItemCollectionEvent sicEvent;
+    
+    //Added for TABE Adaptive
+    private boolean isTabeAdaptive = false;
+    private Integer objectiveId = null;
+   // private Double objectiveRawScore = null;
+   // private Double totalObjectiveRawScore = null;
+   // private Double objectiveScore = null;
+    private Integer objectiveMasteryLevel = 0;
 
     /**
      * Constructor for ObjectiveNumberCorrectCalculator.
@@ -84,8 +96,25 @@ public class ObjectiveNumberCorrectCalculator extends Calculator {
         mustPrecede(SubtestObjectiveCollectionEvent.class, CorrectResponseEvent.class);
         channel.subscribe(this, IncorrectResponseEvent.class);
         mustPrecede(SubtestObjectiveCollectionEvent.class, IncorrectResponseEvent.class);
+        channel.subscribe(this, SubtestScoreReceivedEvent.class); // changes for TABE Adaptive
+        mustPrecede(SubtestObjectiveCollectionEvent.class, SubtestScoreReceivedEvent.class);
         channel.subscribe(this, SubtestEndedEvent.class);
-        mustPrecede(SubtestObjectiveCollectionEvent.class, SubtestEndedEvent.class);
+        mustPrecede(SubtestScoreReceivedEvent.class, SubtestEndedEvent.class);
+        
+    }
+    
+    //This method is added for TABE Adaptive
+    public void onEvent(SubtestScoreReceivedEvent event) {
+    	isTabeAdaptive = true;
+    	 this.objectiveId = event.getObjectiveId();
+    	 //objectiveRawScore = event.getObjectiveRawScore();
+    	// totalObjectiveRawScore = event.getTotalObjectiveRawScore();
+    	 //objectiveScore = event.getObjectiveScore();
+    	 this.objectiveMasteryLevel = event.getObjectiveMasteryLevel();
+    //	 System.out.println("SubtestScoreReceivedEvent of ObjectiveNumberCorrectCalculator");
+    	 tabeAdaptiveObjectiveMap.put(event.getObjectiveId(), event.getObjectiveMasteryLevel());
+    //	 System.out.println(event.getObjectiveId()+"-"+event.getObjectiveMasteryLevel());
+    	
     }
 
     public void onEvent(SubtestItemCollectionEvent event) {
@@ -230,46 +259,72 @@ public class ObjectiveNumberCorrectCalculator extends Calculator {
     }
 
     public void onEvent(SubtestEndedEvent event) {
-        validateItemSetBeingProcessed(event.getItemSetId(), "Response received for wrong itemset.");
-
-        for (Iterator iter = primaryObjectivesCorrect.keySet().iterator(); iter.hasNext();) {
-            Long objectiveId = (Long) iter.next();
-            int numItemsCorrectForObjective = ((Set) primaryObjectivesCorrect.get(objectiveId))
-                    .size();
-            int numItemsIncorrectForObjective = ((Set) primaryObjectivesIncorrect.get(objectiveId))
-                    .size();
-            int numItemsAttemptedForObjective = ((Set) primaryObjectivesAttempted.get(objectiveId))
-                    .size();
-            int numItemsUnattemptedForObjective = ((Set) primaryObjectivesUnattempted
-                    .get(objectiveId)).size();
-
-            MasteryLevel masteryLevel = calculateMasteryLevel(numItemsCorrectForObjective,
-                    numItemsAttemptedForObjective + numItemsUnattemptedForObjective);
-            ObjectivePrimaryNumberCorrectEvent numberCorrectEvent = new ObjectivePrimaryNumberCorrectEvent(
-                    event.getTestRosterId(), objectiveId, sicEvent.getItems().size(),
-                    numItemsCorrectForObjective, numItemsIncorrectForObjective,
-                    numItemsAttemptedForObjective, numItemsUnattemptedForObjective, masteryLevel, new Long(event.getItemSetId().longValue()));
-            channel.send(numberCorrectEvent);
-        }
-        primaryObjectivesCorrect.clear();
-
-        for (Iterator iter = secondaryObjectivesCorrect.keySet().iterator(); iter.hasNext();) {
-            Long objectiveId = (Long) iter.next();
-            int numItemsCorrectForObjective = ((Set) secondaryObjectivesCorrect.get(objectiveId))
-                    .size();
-            int numItemsIncorrectForObjective = ((Set) secondaryObjectivesIncorrect
-                    .get(objectiveId)).size();
-            int numItemsAttemptedForObjective = ((Set) secondaryObjectivesAttempted
-                    .get(objectiveId)).size();
-            int numItemsUnattemptedForObjective = ((Set) secondaryObjectivesUnattempted
-                    .get(objectiveId)).size();
-            ObjectiveSecondaryNumberCorrectEvent numberCorrectEvent = new ObjectiveSecondaryNumberCorrectEvent(
-                    event.getTestRosterId(), objectiveId, sicEvent.getItems().size(),
-                    numItemsCorrectForObjective, numItemsIncorrectForObjective,
-                    numItemsAttemptedForObjective, numItemsUnattemptedForObjective, new Long(event.getItemSetId().longValue()));
-            channel.send(numberCorrectEvent);
-        }
-        secondaryObjectivesCorrect.clear();
+    	if(!isTabeAdaptive) {
+	        validateItemSetBeingProcessed(event.getItemSetId(), "Response received for wrong itemset.");
+	
+	        for (Iterator iter = primaryObjectivesCorrect.keySet().iterator(); iter.hasNext();) {
+	            Long objectiveId = (Long) iter.next();
+	            int numItemsCorrectForObjective = ((Set) primaryObjectivesCorrect.get(objectiveId))
+	                    .size();
+	            int numItemsIncorrectForObjective = ((Set) primaryObjectivesIncorrect.get(objectiveId))
+	                    .size();
+	            int numItemsAttemptedForObjective = ((Set) primaryObjectivesAttempted.get(objectiveId))
+	                    .size();
+	            int numItemsUnattemptedForObjective = ((Set) primaryObjectivesUnattempted
+	                    .get(objectiveId)).size();
+	
+	            MasteryLevel masteryLevel = calculateMasteryLevel(numItemsCorrectForObjective,
+	                    numItemsAttemptedForObjective + numItemsUnattemptedForObjective);
+	            ObjectivePrimaryNumberCorrectEvent numberCorrectEvent = new ObjectivePrimaryNumberCorrectEvent(
+	                    event.getTestRosterId(), objectiveId, sicEvent.getItems().size(),
+	                    numItemsCorrectForObjective, numItemsIncorrectForObjective,
+	                    numItemsAttemptedForObjective, numItemsUnattemptedForObjective, masteryLevel, new Long(event.getItemSetId().longValue()));
+	            channel.send(numberCorrectEvent);
+	        }
+	        primaryObjectivesCorrect.clear();
+	
+	        for (Iterator iter = secondaryObjectivesCorrect.keySet().iterator(); iter.hasNext();) {
+	            Long objectiveId = (Long) iter.next();
+	            int numItemsCorrectForObjective = ((Set) secondaryObjectivesCorrect.get(objectiveId))
+	                    .size();
+	            int numItemsIncorrectForObjective = ((Set) secondaryObjectivesIncorrect
+	                    .get(objectiveId)).size();
+	            int numItemsAttemptedForObjective = ((Set) secondaryObjectivesAttempted
+	                    .get(objectiveId)).size();
+	            int numItemsUnattemptedForObjective = ((Set) secondaryObjectivesUnattempted
+	                    .get(objectiveId)).size();
+	            ObjectiveSecondaryNumberCorrectEvent numberCorrectEvent = new ObjectiveSecondaryNumberCorrectEvent(
+	                    event.getTestRosterId(), objectiveId, sicEvent.getItems().size(),
+	                    numItemsCorrectForObjective, numItemsIncorrectForObjective,
+	                    numItemsAttemptedForObjective, numItemsUnattemptedForObjective, new Long(event.getItemSetId().longValue()));
+	            channel.send(numberCorrectEvent);
+	        }
+	        secondaryObjectivesCorrect.clear();
+	    } else {  	
+	    	for (Map.Entry<Integer, Integer> entry : tabeAdaptiveObjectiveMap.entrySet()) {
+	            Long objectiveId =  new Long (entry.getKey());
+	          //  System.out.println("objectiveId ==--" + objectiveId);
+	            if(objectiveId > 0) {
+		            int masteryValue = entry.getValue();
+		            MasteryLevel masteryLevel;
+		            if(masteryValue == 0)
+			    		masteryLevel = MasteryLevel.masteryLevelForPercentage(10);
+			    	else if (masteryValue == 1)
+			    		masteryLevel = MasteryLevel.masteryLevelForPercentage(60);
+			    	else
+			    		masteryLevel = MasteryLevel.masteryLevelForPercentage(80);
+			    //	System.out.println("******objectiveMasteryLevel -> masteryLevel.getCode() -> " + masteryLevel.getCode());
+			    //	System.out.println("event.getItemSetId().longValue() -> " + event.getItemSetId().longValue());
+	
+		            ObjectivePrimaryNumberCorrectEvent numberCorrectEvent = new ObjectivePrimaryNumberCorrectEvent(
+		                    event.getTestRosterId(), objectiveId, sicEvent.getItems().size(),
+		                    0, 0,
+		                    0, 0, masteryLevel, new Long(event.getItemSetId().longValue()));
+		            channel.send(numberCorrectEvent);
+	            }
+	        }
+	    	tabeAdaptiveObjectiveMap.clear();	    	
+	    }
     }
 
     public static MasteryLevel calculateMasteryLevel(int numItemsCorrectForObjective,

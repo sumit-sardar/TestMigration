@@ -29,6 +29,9 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
     protected String pContentArea;
     protected String pRecommendedLevel;
     protected Long testRosterId;
+    protected Double abilityScore;
+    protected Double semScore;
+    
 
     public AbstractDerivedScoreCalculator(final Channel channel, final Scorer scorer) {
         super(channel, scorer);
@@ -54,6 +57,10 @@ public abstract class AbstractDerivedScoreCalculator extends Calculator {
         pNormGroup = event.getNormGroup();
         pRecommendedLevel = event.getRecommendedLevel();
         //pAgeCategory = event.getAgeCategory();
+     //   System.out.println("Inside SubtestStartedEvent  of AbstractDerivedScoreCalculator");
+    	abilityScore = event.getAbilityScore();
+    	semScore = event.getSemScore();
+    	pContentArea = event.getItemSetName();
     }
 
     //  NOTE: Made protected for tests

@@ -161,7 +161,8 @@ public class AdminController {
             "TL".equals(data.getAssessmentType())?1:
             "TN".equals(data.getAssessmentType())?2:
             "TV".equals(data.getAssessmentType())?2:
-            "LL".equals(data.getAssessmentType())?4:3)); // For Laslink Scoring
+            "LL".equals(data.getAssessmentType())?4: // For Laslink Scoring
+            "TA".equals(data.getAssessmentType())?5:3)); // For Tabe Adaptive Scoring
         programData.setNormsGroup(
             "6".equals(data.getNormsGroup())?"Fall":
             "18".equals(data.getNormsGroup())?"Winter":
@@ -202,7 +203,8 @@ public class AdminController {
             "TL".equals(data.getAssessmentType())?1:
             "TN".equals(data.getAssessmentType())?2:
             "TV".equals(data.getAssessmentType())?2:
-            "LL".equals(data.getAssessmentType())?4:3)); // For Laslink Scoring
+            "LL".equals(data.getAssessmentType())?4:
+            "TA".equals(data.getAssessmentType())?5:3)); // For Laslink Scoring
     	return productData;
     }
     
@@ -218,7 +220,8 @@ public class AdminController {
             "TL".equals(data.getAssessmentType())?1:
             "TN".equals(data.getAssessmentType())?2:
             "TV".equals(data.getAssessmentType())?2:
-            "LL".equals(data.getAssessmentType())?4:3)); // For Laslink Scoring
+            "LL".equals(data.getAssessmentType())?4:
+            "TA".equals(data.getAssessmentType())?5:3)); // For Laslink Scoring
         
         // this is WRONG!!! what if they didn't complete any content area?
         String form = "N/A";
@@ -234,7 +237,8 @@ public class AdminController {
                                           "1".equals(form)?4:
                                           "A".equals(form)?7:
                                           "B".equals(form)?8:
-                                          ("Espa?ol".equals(form)|| "Espanol".equals(form) || "Español".equals(form))?9:10)); // For Laslink Scoring
+                                          ("Espa?ol".equals(form)|| "Espanol".equals(form) || "Español".equals(form))?9: // For Laslink Scoring
+                                          "CAT".equals(form)?13:14)); 
         if("TV".equals(data.getAssessmentType())) {
             assessmentData.setLevelid(                                  
                                           new Long(
@@ -259,6 +263,12 @@ public class AdminController {
                                         	"4-5".equals(level)?19:
                                         	"6-8".equals(level)?20:
                                         	"9-12".equals(level)?21:22 ));
+        } 
+     // For Tabe Adaptive Scoring
+       else if("TA".equals(data.getAssessmentType())) {
+            assessmentData.setLevelid(                                  
+                                          new Long(
+                                        	"CAT".equals(level)?23:24 ));
         } else {
             assessmentData.setLevelid(new Long(6));
         }

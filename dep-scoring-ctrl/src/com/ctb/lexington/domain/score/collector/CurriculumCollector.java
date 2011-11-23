@@ -28,8 +28,14 @@ public class CurriculumCollector {
     public CurriculumData collectCurriculumData(Long oasRosterId, String productType) throws SQLException {
         CurriculumData data = new CurriculumData();
         data.setComposites(getComposites(oasRosterId, productType));
-        data.setContentAreas(getContentAreas(oasRosterId));
-        data.setPrimaryObjectives(getPrimaryObjectives(oasRosterId));
+        if (productType.equalsIgnoreCase("TA")) {
+        	data.setContentAreas(getContentAreasForAdaptive(oasRosterId));
+        	data.setPrimaryObjectives(getPrimaryObjectivesForTabeCat(oasRosterId));   
+        } else {       
+        	data.setContentAreas(getContentAreas(oasRosterId));	  
+        	data.setPrimaryObjectives(getPrimaryObjectives(oasRosterId));
+        }
+        
         data.setSecondaryObjectives(getSecondaryObjectives(oasRosterId));
         data.setItems(getItems(oasRosterId));
         
@@ -317,8 +323,28 @@ public class CurriculumCollector {
                 composites[0].setCompositeNumItems(new Long(100));
                 composites[0].setCompositePointsPossible(new Long(315));
             }
-           }
+           } 
         	return composites;
+        } else if ("TA".equals(productType)) {
+        	Composite [] composites = new Composite[2];
+        	 composites[0] = new Composite();
+             composites[0].setCompositeId(new Long(1));
+             composites[0].setCompositeName("Total Mathematics");
+             composites[0].setCompositeType("TABE COMPOSITE");
+             composites[0].setSubject("TA Total Mathematics");
+             composites[0].setCompositePointsPossible(new Long(90));
+             composites[0].setCompositeNumItems(new Long(90));
+             composites[1] = new Composite();
+             composites[1].setCompositeId(new Long(2));
+             composites[1].setCompositeName("Total Battery");
+             composites[1].setCompositeType("TABE COMPOSITE");
+             composites[1].setSubject("TA Total Battery");
+             composites[1].setCompositePointsPossible(new Long(195));
+             composites[1].setCompositeNumItems(new Long(195));
+     	   
+     	   
+     	   
+     	  return composites;
         }
         return new Composite[0];
     }
@@ -742,4 +768,154 @@ public class CurriculumCollector {
         }
         return (Item []) items.values().toArray(new Item[0]);
     }
+    
+    
+    //Changes for TABE Adaptive
+    
+    public ContentArea [] getContentAreasForAdaptive(Long oasRosterId) throws SQLException {
+    	//System.out.println("!!!!!!getContentAreasForAdaptive!!!!!!");
+        HashMap caMap = new HashMap();
+        ArrayList contentAreas = new ArrayList();
+        final String casql = "select distinct " +
+        		"	prod.product_id || ca.item_Set_id as contentAreaId, " +
+        		"	ca.item_set_name as contentAreaName, " +
+        		"	prod.product_type || ' CONTENT AREA' as contentAreaType, " +
+        		"	prod.product_type || ' ' || ca.item_Set_name as subject, " +
+        		"	decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', ca.item_set_form) as subtestForm, " +
+        		"	ca.item_set_level as subtestLevel, " +
+        		"	ca.item_set_id as subtestId " +
+        		"from " +
+        		"	product prod, " +
+        		"	item_set ca, " +
+        		"	item_Set_category cacat, " +
+        		"	student_item_set_status siss, " +
+        		"	test_roster ros, " +
+        		"	test_admin adm, " +
+        		"	test_catalog tc " +
+        		"where " +
+        		"	ros.test_roster_id = ? " +
+        		"	and adm.test_admin_id = ros.test_admin_id " +
+        		"	and tc.test_catalog_id = adm.test_catalog_id " +
+        		"	and prod.product_id = tc.product_id " +
+        		"	and siss.test_roster_id = ros.test_roster_id " +
+        		"	and ca.item_set_id = siss.item_set_id " +
+        		"	and ca.sample = 'F' " +
+        		"	and tc.ACTIVATION_STATUS = 'AC' " +
+        		"	and (ca.item_set_level != 'L' OR PROD.PRODUCT_TYPE = 'TL') " +
+        		"	and cacat.framework_product_id = prod.PARENT_PRODUCT_ID " +
+        		"group by " +
+        		"	prod.product_id || ca.item_Set_id, " +
+        		"	ca.item_set_name, " +
+        		"	prod.product_type || ' CONTENT AREA', " +
+        		"	prod.product_type || ' ' || ca.item_Set_name, " +
+        		"	decode(prod.internal_display_name, 'TABE 9 Survey', '9', 'TABE 9 Battery', '9', 'TABE 10 Survey', '10', 'TABE 10 Battery', '10', ca.item_set_form), " +
+        		"	ca.item_Set_level, " +
+        		"	ca.item_Set_id";
+        	      
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(casql);
+            ps.setLong(1, oasRosterId.longValue());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                ContentArea contentArea = new ContentArea();
+                contentArea.setContentAreaId(new Long(rs.getLong("contentAreaId")));
+                contentArea.setContentAreaName(rs.getString("contentAreaName"));
+                contentArea.setContentAreaType(rs.getString("contentAreaType"));
+                contentArea.setSubject(rs.getString("subject"));
+                contentArea.setContentAreaNumItems(new Long(0));
+                contentArea.setContentAreaPointsPossible(new Long(0));
+                contentArea.setSubtestId(new Long(rs.getLong("subtestId")));
+                contentArea.setSubtestForm(rs.getString("subtestForm"));
+                contentArea.setSubtestLevel(rs.getString("subtestLevel"));
+
+                String key = contentArea.getContentAreaName() + "||" + contentArea.getSubtestLevel();
+
+                if(caMap.containsKey(key)) {
+                    ContentArea ca1 = (ContentArea) caMap.get(key);
+                    Long numItems = new Long(0);
+                    Long points = new Long(0);
+                    contentArea.setContentAreaNumItems(numItems);
+                    contentArea.setContentAreaPointsPossible(points);
+                    ca1.setContentAreaNumItems(numItems);
+                    ca1.setContentAreaPointsPossible(points);
+                }   
+                caMap.put(key, contentArea);    
+                contentAreas.add(contentArea);
+            }
+        } finally {
+            SQLUtil.close(rs);
+            ConnectionFactory.getInstance().release(ps);
+        }
+        return (ContentArea []) contentAreas.toArray(new ContentArea[0]);
+    }
+    
+    public PrimaryObjective [] getPrimaryObjectivesForTabeCat(Long oasRosterId) throws SQLException {
+        ArrayList primaryObjectives = new ArrayList();
+        HashMap poMap = new HashMap();
+        
+        final String casql = 
+        	"select distinct " +
+        	"	tco.objective_id as primaryObjectiveId, " +
+        	"	rownum as primaryObjectiveIndex, " +
+        	"	prod.product_id || tco.content_area_id as contentAreaId, " +
+        	"	tco.objective_name as primaryObjectiveName, " +
+        	"	tco.items as primaryNumItems, " +
+        	"	iset.item_set_id as subtestId, " +
+        	"	iset.item_set_level as subtestLevel, " +
+        	"	prod.product_id as productId " +
+        	"from " +
+        	"	test_roster ros, " +
+        	"	test_admin adm, " +
+        	"	product prod, " +
+        	"	tabe_cat_objective tco, " +
+        	"	student_item_set_status siss, " +
+        	"	item_set iset " +
+        	"where " +
+        	"	ros.test_roster_id = ? " +
+        	"	and adm.test_admin_id = ros.test_admin_id " +
+        	"	and adm.product_id = prod.product_id " +
+        	"	and siss.test_roster_id = ros.test_roster_id " +
+        	"	and siss.item_set_id = iset.item_set_id " +
+        	"	and iset.item_set_id = tco.content_area_id";
+        
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = conn.prepareStatement(casql);
+            ps.setLong(1, oasRosterId.longValue());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                PrimaryObjective primaryObjective = new PrimaryObjective();
+                primaryObjective.setPrimaryObjectiveId(new Long(rs.getLong("primaryObjectiveId")));
+                primaryObjective.setContentAreaId(new Long(rs.getLong("contentAreaId")));
+                primaryObjective.setPrimaryObjectiveName(rs.getString("primaryObjectiveName"));
+                primaryObjective.setPrimaryObjectiveType("Objective");
+                primaryObjective.setPrimaryObjectiveNumItems(new Long(rs.getLong("primaryNumItems")));
+                primaryObjective.setPrimaryObjectivePointsPossible(new Long(0));
+                primaryObjective.setSubtestId(new Long(rs.getLong("subtestId")));
+                primaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
+                primaryObjective.setPrimaryObjectiveIndex(new Long(rs.getLong("primaryObjectiveIndex")));
+                primaryObjective.setProductId(new Long(rs.getLong("productId")));
+                
+                String key = primaryObjective.getPrimaryObjectiveName() + "||" + primaryObjective.getProductId() + "||" + primaryObjective.getContentAreaId() + "||" + primaryObjective.getSubtestLevel();
+               // System.out.println(key);
+                
+                if(poMap.containsKey(key)) {
+                    PrimaryObjective po1 = (PrimaryObjective) poMap.get(key);
+                    primaryObjective.setPrimaryObjectiveNumItems(new Long(po1.getPrimaryObjectiveNumItems().longValue() + primaryObjective.getPrimaryObjectiveNumItems().longValue()));
+                    primaryObjective.setPrimaryObjectivePointsPossible(new Long(po1.getPrimaryObjectivePointsPossible().longValue() + primaryObjective.getPrimaryObjectivePointsPossible().longValue()));
+                }   
+                poMap.put(key, primaryObjective);    
+                primaryObjectives.add(primaryObjective);
+            }
+        } finally {
+            SQLUtil.close(rs);
+            ConnectionFactory.getInstance().release(ps);
+        }
+        return (PrimaryObjective []) primaryObjectives.toArray(new PrimaryObjective[0]);
+    }
+    
+    
 }
