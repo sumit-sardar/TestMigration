@@ -1,6 +1,5 @@
 package com.ctb.control.userManagement; 
 
-import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +31,7 @@ import com.ctb.bean.testAdmin.CustomerEmail;
 import com.ctb.bean.testAdmin.FindUser;
 import com.ctb.bean.testAdmin.FindUserData;
 import com.ctb.bean.testAdmin.Node;
+import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
 import com.ctb.bean.testAdmin.PasswordHistory;
 import com.ctb.bean.testAdmin.Role;
@@ -56,6 +56,7 @@ import com.ctb.exception.userManagement.UserPasswordRetrivalException;
 import com.ctb.exception.userManagement.UserPasswordUpdateException;
 import com.ctb.exception.validation.ValidationException;
 import com.ctb.util.OASLogger;
+import com.ctb.util.SQLutils;
 import com.ctb.util.SimpleCache;
 import com.ctb.util.userManagement.CTBConstants;
 import com.ctb.util.userManagement.DExCrypto;
@@ -2664,6 +2665,24 @@ public class UserManagementImpl implements UserManagement
 			throw dataNotfoundException;
 		}
 		return leafNodeCategoryId;
+	}
+    
+   public OrgNodeCategory getCustomerLeafNodeDetail(String userName, Integer customerId) throws CTBBusinessException
+	{
+		//Integer leafNodeCategoryId = new Integer(0);
+	   	OrgNodeCategory orgNodeCategory = new OrgNodeCategory();
+	   	orgNodeCategory.setCategoryLevel(new Integer(0));
+	   	orgNodeCategory.setCategoryName("Organization");
+		try {
+			orgNodeCategory = orgNode.getCustomerLeafNodeDetail(customerId);
+		}
+		catch (SQLException se) {
+			UserDataNotFoundException dataNotfoundException = 
+                new UserDataNotFoundException("UserManagementImpl: getLeafNodeCategoryId: " + se.getMessage());
+			dataNotfoundException.setStackTrace(se.getStackTrace());
+			throw dataNotfoundException;
+		}
+		return orgNodeCategory;
 	}
     
     public String getAddressIdFromUserId(int userId) {

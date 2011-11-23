@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.control.userManagement.UserManagement;
@@ -111,5 +112,18 @@ public class UserOrgHierarchyUtils {
             }
         }
         return nodeList;
+    }
+    
+    /**
+     * getOrganizationLeafNode
+     */    
+    public static OrgNodeCategory getCustomerLeafNodeDetail(String userName, Integer customerId,
+    											UserManagement userManagement) throws CTBBusinessException {    
+    	OrgNodeCategory orgNodeCategory = new OrgNodeCategory();
+       
+    	orgNodeCategory = userManagement.getCustomerLeafNodeDetail(userName, customerId);
+    	
+      
+        return orgNodeCategory;
     }
 }

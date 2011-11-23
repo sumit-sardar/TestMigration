@@ -2,6 +2,7 @@ package com.ctb.testSessionInfo.utils;
 
 import java.util.List;
 
+import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
 
 
@@ -14,6 +15,20 @@ public class Base {
 	private List<Row> rows;
 	private List<TestSessionVO> testSessionCUFU;
 	private List<TestSessionVO> testSessionPA;
+	private List studentNode;
+	private OrgNodeCategory orgNodeCategory;
+	/**
+	 * @return the orgNodeCategory
+	 */
+	public OrgNodeCategory getOrgNodeCategory() {
+		return orgNodeCategory;
+	}
+	/**
+	 * @param orgNodeCategory the orgNodeCategory to set
+	 */
+	public void setOrgNodeCategory(OrgNodeCategory orgNodeCategory) {
+		this.orgNodeCategory = orgNodeCategory;
+	}
 	public String getPage() {
 		return page;
 	}
@@ -61,6 +76,18 @@ public class Base {
 	 */
 	public void setTestSessionPA(List<TestSessionVO> testSessionPA) {
 		this.testSessionPA = testSessionPA;
+	}
+	/**
+	 * @return the studentNode
+	 */
+	public List getStudentNode() {
+		return studentNode;
+	}
+	/**
+	 * @param studentNode the studentNode to set
+	 */
+	public void setStudentNode(List studentNode) {
+		this.studentNode = studentNode;
 	}
 
 }

@@ -55,7 +55,7 @@
 			$(function(){
 				// Accordion
 				$("#accordion").accordion({ header: "h3" });
-				
+				$("#ssAccordion").accordion({ header: "h3" });
 			});
 		
 		

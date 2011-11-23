@@ -23,9 +23,13 @@ import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerLicense;
 import com.ctb.bean.testAdmin.PasswordDetails;
+import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
+import com.ctb.bean.testAdmin.SessionStudent;
+import com.ctb.bean.testAdmin.SessionStudentData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
@@ -139,8 +143,6 @@ public class SessionOperationController extends PageFlowController {
 		else {
 			forwardName = "legacyUI";	
 		}
-
-        //forwardName = "resetPassword";
         
 		return new Forward(forwardName);
 	} 
@@ -397,7 +399,8 @@ public class SessionOperationController extends PageFlowController {
 	            this.getRequest().setAttribute("customerLicenses", getLicenseQuantitiesByOrg());
 	           // this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
 	        }*/
-	        
+			OrgNodeCategory orgNodeCategory = UserOrgHierarchyUtils.getCustomerLeafNodeDetail(this.userName,this.customerId,this.userManagement );
+	     	
 	        // retrieve information for user test sessions
 			FilterParams sessionFilter = null;
 	        PageParams sessionPage = null;
@@ -422,6 +425,7 @@ public class SessionOperationController extends PageFlowController {
 		        base.setTestSessionCUFU(sessionListCUFU);
 		        base.setTestSessionPA(sessionListPA);
 			}
+			base.setOrgNodeCategory(orgNodeCategory);
 			
 			
 			System.out.println("just b4 gson");	
@@ -481,6 +485,56 @@ public class SessionOperationController extends PageFlowController {
 			List <Row> rows = new ArrayList<Row>();
 			base.setTestSessionCUFU(this.sessionListCUFU);
 			base.setTestSessionPA(this.sessionListPA);
+			Gson gson = new Gson();
+			System.out.println ("Json process time Start:"+new Date());
+			json = gson.toJson(base);
+			System.out.println ("Json process time End:"+new Date() +".."+json);
+			try{
+				resp.setContentType("application/json");
+				stream = resp.getOutputStream();
+				resp.flushBuffer();
+				stream.write(json.getBytes());
+			}
+			finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Exception while processing CR response.");
+			e.printStackTrace();
+		}
+
+		return null;
+
+	}
+    
+    
+    @Jpf.Action(forwards={
+    		@Jpf.Forward(name = "success", 
+					path ="assessments_sessions.jsp")
+	})
+    protected Forward getSelectedStudentList(SessionOperationForm form){
+    	
+		String jsonTree = "";
+		HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		String contentType = CONTENT_TYPE_JSON;
+		List sessionList = new ArrayList(0);
+		String studentArray = "";
+		String json = "";
+		ObjectOutput output = null;
+		try {
+			SessionStudentData ssd = new SessionStudentData();
+			List studentNodes = buildStudentList(ssd);
+			Base base = new Base();
+			base.setPage("1");
+			base.setRecords("10");
+			base.setTotal("2");
+			List <Row> rows = new ArrayList<Row>();
+			base.setStudentNode(studentNodes);
+			
 			Gson gson = new Gson();
 			System.out.println ("Json process time Start:"+new Date());
 			json = gson.toJson(base);
@@ -857,7 +911,40 @@ public class SessionOperationController extends PageFlowController {
      	
      	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     
      	
-     	this.getSession().setAttribute("userScheduleAndFindSessionPermission", userScheduleAndFindSessionPermission());    
+     	this.getSession().setAttribute("userScheduleAndFindSessionPermission", userScheduleAndFindSessionPermission());   
+     	
+     	getConfigStudentLabel(customerConfigs);
+     	
+   }
+		
+	
+	private void getConfigStudentLabel(CustomerConfiguration[] customerConfigurations) 
+	{     
+		boolean isStudentIdConfigurable = false;
+		Integer configId=0;
+		String []valueForStudentId = new String[8] ;
+		valueForStudentId[0] = "Student ID";
+		for (int i=0; i < customerConfigurations.length; i++)
+		{
+			CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
+			{
+				isStudentIdConfigurable = true; 
+				configId = cc.getId();
+				CustomerConfigurationValue[] customerConfigurationsValue = customerConfigurationValues(configId);
+				//By default there should be 3 entries for customer configurations
+				valueForStudentId = new String[8];
+				for(int j=0; j<customerConfigurationsValue.length; j++){
+					int sortOrder = customerConfigurationsValue[j].getSortOrder();
+					valueForStudentId[sortOrder-1] = customerConfigurationsValue[j].getCustomerConfigurationValue();
+				}	
+				valueForStudentId[0] = valueForStudentId[0]!= null ? valueForStudentId[0] : "Student ID" ;
+
+			}
+
+		}
+		this.getSession().setAttribute("studentIdLabelName",valueForStudentId[0]);
+		
 	}
 	
 	 /**
@@ -1020,6 +1107,23 @@ public class SessionOperationController extends PageFlowController {
         }        
         return ccArray;
     }
+    
+    /*
+	 * 
+	 * this method retrieve CustomerConfigurationsValue for provided customer configuration Id.
+	 */
+	private CustomerConfigurationValue[] customerConfigurationValues(Integer configId)
+	{	
+		CustomerConfigurationValue[] customerConfigurationsValue = null;
+		try {
+			customerConfigurationsValue = this.testSessionStatus.getCustomerConfigurationsValue(configId);
+
+		}
+		catch (CTBBusinessException be) {
+			be.printStackTrace();
+		}
+		return customerConfigurationsValue;
+	}
     
     private Boolean hasUploadDownloadConfig()
     {
@@ -1225,6 +1329,76 @@ public class SessionOperationController extends PageFlowController {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    private List buildStudentList(SessionStudentData ssd) 
+    {
+        List studentList = new ArrayList();
+        SessionStudent [] sessionStudents = ssd.getSessionStudents();   
+        for (int i=0 ; i<sessionStudents.length; i++) {
+            SessionStudent ss = (SessionStudent)sessionStudents[i];
+            if (ss != null) {                
+                StringBuffer buf = new StringBuffer();
+                buf.append(ss.getFirstName()).append(" ").append(ss.getLastName()).append(": ");
+                if ("T".equals(ss.getCalculator())) {
+                    if ("true".equals(ss.getHasColorFontAccommodations()) ||
+                        "T".equals(ss.getScreenReader()) ||
+                        "T".equals(ss.getTestPause()) ||
+                        "T".equals(ss.getUntimedTest()))
+                        buf.append("Calculator, ");
+                    else
+                        buf.append("Calculator");
+                }
+                if ("true".equals(ss.getHasColorFontAccommodations())) {
+                    if ("T".equals(ss.getScreenReader()) ||
+                        "T".equals(ss.getTestPause()) ||
+                        "T".equals(ss.getUntimedTest()))
+                        buf.append("Color/Font, ");
+                    else
+                        buf.append("Color/Font");
+                }
+                if ("T".equals(ss.getScreenReader())) {
+                    if ("T".equals(ss.getTestPause()) ||
+                        "T".equals(ss.getUntimedTest()))
+                        buf.append("ScreenReader, ");
+                    else
+                        buf.append("ScreenReader");
+                }
+                if ("T".equals(ss.getTestPause())) {
+                    if ("T".equals(ss.getUntimedTest()))
+                        buf.append("TestPause, ");
+                    else
+                        buf.append("TestPause");
+                }
+                if ("T".equals(ss.getUntimedTest())) {
+                    buf.append("UntimedTest");
+                }
+                buf.append(".");
+                ss.setExtPin3(escape(buf.toString()));
+                studentList.add(ss);
+            }
+        }
+        return studentList;
+    }
+    
+    private String escape(String str)
+    {
+        int len = str.length ();
+
+        StringBuffer safe = new StringBuffer (len);
+
+        for (int i = 0; i < len; i++)
+        {
+            char cur = str.charAt (i);
+            if (cur == '\'')
+            {
+             safe.append ('\\');
+             safe.append (cur);
+            }
+            else
+                safe.append (cur);
+        }
+        return new String (safe);
     }
 	
     /////////////////////////////////////////////////////////////////////////////////////////////    

@@ -6,11 +6,13 @@
 	<%
 	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
 	 Boolean userScheduleAndFindSessionPermission = (Boolean) session.getAttribute("userScheduleAndFindSessionPermission");
+	 String studentIdLabelName = (String) session.getAttribute("studentIdLabelName");
 	
 	%>
 	
 	<input type="hidden" id="canRegisterStudent" name = "canRegisterStudent" value='<%=canRegisterStudent %>'/>
 	<input type="hidden" id="userScheduleAndFindSessionPermission" name = "userScheduleAndFindSessionPermission" value='<%=userScheduleAndFindSessionPermission %>'/>
+	<input type="hidden" id="studentIdLabelName" name = "studentIdLabelName" value='<%=studentIdLabelName %>'/>
 	 
 	 <div style="clear:both;float:left;width:100%;text-align: left;"> 
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"><netui:content value="${bundle.web['homepage.viewTestSessions.message']}"/>
@@ -41,7 +43,7 @@
 							    </div>
 						    <%} if (userScheduleAndFindSessionPermission) {%>
 							    <div id="scSession" style="float:right;padding-left:5px;">
-								<a href="#" id="scSessionButton" onclick="" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.scheduleSession']}"/></a>
+								<a href="#" id="scSessionButton" onclick="javascript:scheduleSession(); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.scheduleSession']}"/></a>
 							    </div> 
 						    <%} %>			
 						</div>  
@@ -114,3 +116,5 @@
 		
 	</table>
 </div>
+
+<jsp:include page="/sessionOperation/schedule_session.jsp" />

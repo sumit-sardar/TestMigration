@@ -1,12 +1,17 @@
 var leafNodeCategoryId;
+var leafNodeCategoryName = "Organization";
 var orgTreeHierarchy;
 var gridloaded = false;
+var stuGridloaded = false;
 var sessionListCUFU;
 var sessionListPA;
 var isGridEmpty = true;
 var isPAGridEmpty = true;
+var isStuGridEmpty = true;
 var isTreePopulated = false;
 var openTreeRequested = false;
+var isTabeProduct = false;
+var ishomepageload = false;
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -15,6 +20,7 @@ function UIBlock(){
 
 
 function populateSessionListGrid(homePageLoad) {
+		ishomepageload  = homePageLoad;
  		UIBlock();
  		//populateTree();
  		reset();
@@ -34,6 +40,10 @@ function populateSessionListGrid(homePageLoad) {
 		   	jsonReader: { repeatitems : false, root:"testSessionCUFU", id:"testAdminId",
 		   	records: function(obj) { 
 		   	 sessionListCUFU = JSON.stringify(obj.testSessionCUFU);
+		   	 if(ishomepageload){
+		   	 	leafNodeCategoryId = obj.orgNodeCategory.categoryLevel;
+		   	 	leafNodeCategoryName = obj.orgNodeCategory.categoryName;
+		   	 }
 		   	 } },
 		   	loadui: "disable",
 			rowNum:20,
@@ -104,7 +114,11 @@ function populateSessionListGrid(homePageLoad) {
 						
 			}
 	 });
-	 jQuery("#list2").jqGrid('navGrid','#pager2',{});  
+	 jQuery("#list2").navGrid('#pager2', {
+				addfunc: function() {
+					scheduleSession();
+		    	}	    	
+			}); 
 }
 
 
@@ -201,6 +215,13 @@ function populateCompletedSessionListGrid() {
 	 	 if(isPAGridEmpty) {
 		 	$('#list3').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
 		 	$('#list3').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noCompletedTestSessions").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noTestSessions").val()+"</td></tr></tbody></table></td></tr>");
+		 }
+	 } else if (requestedTab == 'studentGrid'){
+	 	 if(isStuGridEmpty) {
+	 	 	$('#totalStudent').text("0");
+	 	 	$('#stuWithAcc').text("0");
+		 	$('#list6').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+		 	$('#list6').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noStudentTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noStudentMsg").val()+"</td></tr></tbody></table></td></tr>");
 		 }
 	 }
 	 
@@ -353,6 +374,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 	
 	 function gridReload(homePageLoad){ 
+	 	   ishomepageload = homePageLoad;
 	  		UIBlock();
            jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});     
      	    var sortArrow = jQuery("#list2");
@@ -374,6 +396,22 @@ function createSingleNodeSelectedTree(jsondata) {
      	   jQuery("#list3").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
            var sortArrowPA = jQuery("#list3");
            jQuery("#list3").sortGrid('loginEndDate',false);
+         	var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
+           $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
+           $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled');
+
+      }
+      
+      function gridReloadStu(addStudent){ 
+	      if(addStudent){
+	      	jQuery("#list6").jqGrid('setGridParam',{datatype:'local'});     
+	      } else {
+	      	jQuery("#list6").jqGrid('setGridParam',{datatype:'json'});    
+	      }
+	  	   var urlVal = 'getCompletedSessionForGrid.do';
+     	   jQuery("#list6").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
+           var sortArrowPA = jQuery("#list6");
+           jQuery("#list6").sortGrid('lastName',false);
          	var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
            $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
            $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled');
@@ -402,6 +440,16 @@ function createSingleNodeSelectedTree(jsondata) {
  
  
  	function closePopUp(dailogId){
+ 		if(dailogId == 'scheduleSession') {
+			$('#ssAccordion').accordion('activate', 0 );
+			$("#select_Test").scrollTop(0);
+			$("#test_Detail").scrollTop(0);
+			$("#add_Student").scrollTop(0);
+			$('#add_Proctor').scrollTop(0);
+			$("#test_Detail").hide();
+			$("#add_Student").hide();
+			$('#add_Proctor').hide();
+		}
 		$("#"+dailogId).dialog("close");
 	}
 	
@@ -428,9 +476,140 @@ function createSingleNodeSelectedTree(jsondata) {
 		 $("#confirmationPopup").parent().css("left",leftpos);	
 		 
 	}	
+	
+	
+	function scheduleSession(){
+		if(!stuGridloaded) {
+	   		populateSelectedStudent();
+	   	} else {
+	   		gridReloadStu(true);
+	   	}
+		$("#scheduleSession").dialog({  
+			title:"Schedule Session",  
+		 	resizable:false,
+		 	autoOpen: true,
+		 	width: '1200px',
+		 	modal: true,
+		 	closeOnEscape: false,
+		 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+		});
+		var width = jQuery("#scheduleSession").width();
+	    width = width - 72; // Fudge factor to prevent horizontal scrollbars
+	    
+		if(isTabeProduct) {
+			
+			$("#list6").jqGrid("hideCol","itemSetForm"); 
+			jQuery("#list6").setGridWidth(width,true);
+		} else {
+			
+			$("#list6").jqGrid("showCol","itemSetForm"); 
+			jQuery("#list6").setGridWidth(width,false);
+		}
+		$("#select_Test").css('height',400);
+		$("#test_Detail").css('height',400);
+		$("#add_Student").css('height',400);
+		$("#add_Proctor").css('height',400);
+		
+				
+		 var toppos = ($(window).height() - 700) /2 + 'px';
+		 var leftpos = ($(window).width() - 1200) /2 + 'px';
+		 $("#scheduleSession").parent().css("top",toppos);
+		 $("#scheduleSession").parent().css("left",leftpos);		
+	
+	}
 			
 	function reloadHomePage(){
+		reset();
 		hideTreeSlider();
 		gridReload(true);
-	}		
+	}	
+	
+	
+	
+function populateSelectedStudent() {
+ 		UIBlock();
+ 		var studentIdTitle = $("#studentIdLabelName").val();
+ 		stuGridloaded = true;
+ 		$("#list6").jqGrid({         
+          url: 'getSelectedStudentList.do', 
+		 type:   'POST',
+		 datatype: "local",         
+          colNames:[ 'Last Name','First Name', 'M.I.', studentIdTitle, 'Accommodations', leafNodeCategoryName , 'Form'],
+		   	colModel:[
+		   		{name:'lastName',index:'lastName', width:150, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'firstName',index:'firstName', width:150, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'middleName',index:'middleName', width:150, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentId',index:'studentId', width:225, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'hasAccommodations',index:'hasAccommodations', width:145, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'orgNodeName',index:'orgNodeName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'itemSetForm',index:'itemSetForm',editable: true, width:75, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   	],
+		   	jsonReader: { repeatitems : false, root:"studentNode", id:"studentId",
+		   	records: function(obj) { 
+		   	 //sessionListCUFU = JSON.stringify(obj.studentNode);
+		   	 } },
+		   	loadui: "disable",
+			rowNum:20,
+			loadonce:true, 
+			multiselect:true,
+			pager: '#pager6', 
+			sortname: 'lastName', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 370,  
+			editurl: 'getSelectedStudentList.do',
+			caption:"Session List",
+		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
+			onPaging: function() {
+				//clearMessage();
+				var reqestedPage = parseInt($('#list6').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_pager6').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#list6').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#list6').setGridParam({"page": minPageSize});
+				}
+				
+			},
+			loadComplete: function () {
+				if ($('#list6').getGridParam('records') === 0) {
+				 	isStuGridEmpty = true;
+            	 	$('#sp_1_pager6').text("1");
+            	} else {
+            		isStuGridEmpty = false;
+            	}
+            	
+            	
+			    setEmptyListMessage('studentGrid');
+				$.unblockUI();  
+				$("#list6").setGridParam({datatype:'local'});
+				var tdList = ("#pager6_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/TestSessionInfoWeb/logout.do";
+						
+			}
+	 });
+	 jQuery("#list6").navGrid('#pager6', {
+				addfunc: function() {
+					
+		    	}	    	
+			});
+	var element = document.getElementById('add_list6');
+	element.style.display = 'none'; 
+	var element = document.getElementById('edit_list6');
+	element.style.display = 'none'; 
+	var element = document.getElementById('search_list6');
+	element.style.display = 'none';  
+	var element = document.getElementById('del_list6');
+	element.title = 'Remove Student'; 
+}
+		
 				 

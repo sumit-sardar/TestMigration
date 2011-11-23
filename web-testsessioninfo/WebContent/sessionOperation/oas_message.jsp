@@ -7,3 +7,5 @@
 <input type="hidden" id="noCompletedTestSessions" name = "noCompletedTestSessions" value="${bundle.web['common.message.user.noCompletedTestSessions.title']}"/>
 <input type="hidden" id="noCurrentOrFutureTestSessions" name = "noCurrentOrFutureTestSessions" value="${bundle.web['common.message.user.noCurrentOrFutureTestSessions.title']}"/>
 <input type="hidden" id="noTestSessions" name = "noTestSessions" value="${bundle.web['common.message.browse.noTestSessions.message']}"/>
+<input type="hidden" id="noStudentTitle" name = "noStudentTitle" value="${bundle.web['sessionList.studentTab.noStuSelected.title']}"/>
+<input type="hidden" id="noStudentMsg" name = "noStudentMsg" value="${bundle.web['sessionList.studentTab.noStuSelected.message']}"/>
