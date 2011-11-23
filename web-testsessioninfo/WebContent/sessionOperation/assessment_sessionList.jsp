@@ -24,7 +24,7 @@
 			</p>
 	</div>	
 	 
-	<table width="100%" > 
+	<table style="clear:both;float:left" width= "100%"> 
 		   	<tr >
 		   		<td >
 		       		<div style="clear:both;float:left;width:1210px;padding: 5px 5px 5px 0;">
