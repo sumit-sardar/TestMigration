@@ -1,4 +1,5 @@
 package utils;
+
 import com.ctb.bean.testAdmin.RosterElement;
 import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScheduledSession;
@@ -27,7 +28,7 @@ public class TestSessionUtils
     public static final String TABE_LOCATOR_PRODUCT_TYPE = "tabeLocatorProductType";
     public static final String TABE_ADAPTIVE_PRODUCT_TYPE = "tabeAdaptiveProductType";
 	
-
+ 
     /**
      * getTestSessionInformation
      */
@@ -1080,6 +1081,24 @@ public class TestSessionUtils
         return new Boolean((! productType.equals(GENERIC_PRODUCT_TYPE)) && (! productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE)));
     }
 
+    /**
+     * isTabeAdaptiveProduct
+     */
+    public static Boolean isTabeAdaptiveProduct(String productType)
+    {
+        return new Boolean(productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE));
+    }
+
+    /**
+     * isTabeOrTabeAdaptiveProduct
+     */
+    public static Boolean isTabeOrTabeAdaptiveProduct(String productType)
+    {
+        return new Boolean(	productType.equals(TABE_BATTERY_SURVEY_PRODUCT_TYPE) ||
+        					productType.equals(TABE_LOCATOR_PRODUCT_TYPE) ||
+        					productType.equals(TABE_ADAPTIVE_PRODUCT_TYPE));
+    }
+    
     /**
      * isTabeBatterySurveyProduct
      */

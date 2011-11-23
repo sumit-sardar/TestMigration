@@ -403,7 +403,7 @@ public class ScheduleTestController extends PageFlowController
         isTopLevelUser();
     }    
 
-
+ 
     /**
      * @jpf:action
      * @jpf:forward name="success" path="modifySubtests.do"
@@ -501,9 +501,17 @@ public class ScheduleTestController extends PageFlowController
         this.getRequest().setAttribute("availableSubtests", this.availableSubtests);
         this.getRequest().setAttribute("selectedSubtests", this.selectedSubtests);
         this.getRequest().setAttribute("levelOptions", this.levelOptions);
-        
-        this.getRequest().setAttribute("showLevel", new Boolean(validateLevels));
 
+        Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);  
+        this.getRequest().setAttribute("isTabeAdaptiveProduct", isTabeAdaptiveProduct);        
+        
+        if (isTabeAdaptiveProduct.booleanValue()) {
+            this.getRequest().setAttribute("showLevel", new Boolean(false));        	
+        }
+        else {
+            this.getRequest().setAttribute("showLevel", new Boolean(validateLevels));        	
+        }
+        
         return new Forward("modifySubtests", form);
     }
 
@@ -713,7 +721,8 @@ public class ScheduleTestController extends PageFlowController
                 form.getTestStatePathList().setSortColumn("ItemSetName");
     
     
-            if (TestSessionUtils.isTabeProduct(this.productType).booleanValue())
+            if (TestSessionUtils.isTabeProduct(this.productType).booleanValue() ||
+            	TestSessionUtils.isTabeAdaptiveProduct(this.productType).booleanValue())
             { 
                 if (form.getTestStatePathList().getSortColumn().equals("Grade") || form.getTestStatePathList().getSortColumn().equals("ItemSetLevel"))
                 {
@@ -909,19 +918,22 @@ public class ScheduleTestController extends PageFlowController
         }
 
         Boolean isTabeProduct = TestSessionUtils.isTabeProduct(this.productType);
+        Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);
         Boolean isTabeLocatorProduct = TestSessionUtils.isTabeLocatorProduct(this.productType);
         
         this.getRequest().setAttribute("productType", this.productType);
 
         this.getRequest().setAttribute("isTabeProduct", isTabeProduct);
 
+        this.getRequest().setAttribute("isTabeAdaptiveProduct", isTabeAdaptiveProduct);
+        
         this.getRequest().setAttribute("isSelectTest", Boolean.TRUE);
         
         this.getRequest().setAttribute("hideTestOptions", new Boolean(hideTestOptions));
         
         this.getRequest().setAttribute("disableNextButton", new Boolean(disableNextButton));
         
-        if (isTabeProduct.booleanValue() && (! isTabeLocatorProduct.booleanValue()))
+        if ((isTabeProduct.booleanValue() || isTabeAdaptiveProduct.booleanValue()) && (! isTabeLocatorProduct.booleanValue()))
         {
             hasMultipleSubtests = true;
         }
@@ -2006,7 +2018,8 @@ public class ScheduleTestController extends PageFlowController
             }
             else
             {
-                if (TestSessionUtils.isTabeProduct(this.productType).booleanValue())
+                if (TestSessionUtils.isTabeProduct(this.productType).booleanValue() ||
+                	TestSessionUtils.isTabeAdaptiveProduct(this.productType).booleanValue())
                     buf.append(MessageResourceBundle.getMessage("SelectSettings.Students.TABEClickSave"));
                 else
                     buf.append(MessageResourceBundle.getMessage("SelectSettings.Students.ClickSave"));                    
@@ -2041,21 +2054,23 @@ public class ScheduleTestController extends PageFlowController
 
         this.getRequest().setAttribute("productType", this.productType);
         
-        Boolean tabeProduct = TestSessionUtils.isTabeProduct(this.productType);        
+        Boolean isTabeProduct = TestSessionUtils.isTabeProduct(this.productType);        
+        Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);
         Boolean isTabeBatterySurveyProduct = TestSessionUtils.isTabeBatterySurveyProduct(this.productType);
         Boolean isTabeLocatorProduct = TestSessionUtils.isTabeLocatorProduct(this.productType);
         
-        this.getRequest().setAttribute("isTabeProduct", tabeProduct);            
+        this.getRequest().setAttribute("isTabeProduct", isTabeProduct);            
         this.getRequest().setAttribute("isTabeBatterySurveyProduct", isTabeBatterySurveyProduct);                    
         this.getRequest().setAttribute("isTabeLocatorProduct", isTabeLocatorProduct);                    
+        this.getRequest().setAttribute("isTabeAdaptiveProduct", isTabeAdaptiveProduct);
         
-        if (tabeProduct.booleanValue())
+        if (isTabeProduct.booleanValue() || isTabeAdaptiveProduct.booleanValue())
         {
             this.getRequest().setAttribute("hideCopyButton", Boolean.TRUE);
         }
 
         String autoLocator = form.getAutoLocator();
-        if ((autoLocator != null) && autoLocator.equals("true") && tabeProduct.booleanValue() && (this.locatorSubtest != null))
+        if ((autoLocator != null) && autoLocator.equals("true") && isTabeProduct.booleanValue() && (this.locatorSubtest != null))
         {
             this.getRequest().setAttribute("showLocatorSubtest", Boolean.TRUE);
         }
@@ -2110,14 +2125,20 @@ public class ScheduleTestController extends PageFlowController
 
         List testAdminSubtests = TestSessionUtils.getAllSubtestsForTestAdmin(this.scheduleTest, this.userName, this.testAdminId);
 
-        TestSessionUtils.copySubtestLevel(testAdminSubtests, this.allSubtests);
-
-        Integer locatorItemSetId = this.locatorSubtest.getId();
+    	if (! TestSessionUtils.isTabeAdaptiveProduct(this.productType).booleanValue()) {
+    		TestSessionUtils.copySubtestLevel(testAdminSubtests, this.allSubtests);
+    	}
+    	
+        if (this.locatorSubtest != null) {
+        	Integer locatorItemSetId = this.locatorSubtest.getId();
                              
-        TestSessionUtils.setRecommendedLevelForSession(this.scheduleTest, this.userName, this.studentId, this.itemSetId, locatorItemSetId, this.allSubtests);
-
-        TestSessionUtils.copySubtestLevelIfNull(this.allSubtests, this.selectedSubtests);
+        	TestSessionUtils.setRecommendedLevelForSession(this.scheduleTest, this.userName, this.studentId, this.itemSetId, locatorItemSetId, this.allSubtests);
+        }
         
+    	if (! TestSessionUtils.isTabeAdaptiveProduct(this.productType).booleanValue()) {
+    		TestSessionUtils.copySubtestLevelIfNull(this.allSubtests, this.selectedSubtests);
+    	}
+    	
         return new Forward("success", form);
     }
     
@@ -2147,11 +2168,20 @@ public class ScheduleTestController extends PageFlowController
         this.getRequest().setAttribute("selectedSubtests", this.selectedSubtests);
         this.getRequest().setAttribute("levelOptions", this.levelOptions);                
         
-        this.getRequest().setAttribute("subtestName", this.locatorSubtest.getSubtestName());
-        this.getRequest().setAttribute("levelName", this.locatorSubtest.getLevel());
-        this.getRequest().setAttribute("hasLocatorSubtest", Boolean.TRUE);        
+        if (this.locatorSubtest != null) {
+        	this.getRequest().setAttribute("subtestName", this.locatorSubtest.getSubtestName());
+        	this.getRequest().setAttribute("levelName", this.locatorSubtest.getLevel());
+            this.getRequest().setAttribute("hasLocatorSubtest", Boolean.TRUE);        
+        }
 
         this.getRequest().setAttribute("checked", checked);
+        
+        Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);        
+        this.getRequest().setAttribute("isTabeAdaptiveProduct", isTabeAdaptiveProduct);        
+
+        if (isTabeAdaptiveProduct.booleanValue()) {
+        	showLevel = Boolean.FALSE;
+        }        
         this.getRequest().setAttribute("showLevel", showLevel);
         
         String studentName = TestSessionUtils.getStudentDisplayName(this.studentNodes, this.studentId);
@@ -2160,7 +2190,7 @@ public class ScheduleTestController extends PageFlowController
         this.getRequest().setAttribute("sessionName", form.getTestAdmin().getSessionName().trim());
 
         String locatorSessionInfo = "";
-        if (showLevel.booleanValue())
+        if (showLevel.booleanValue() && (this.locatorSubtest != null))
         {
             Integer locatorItemSetId = this.locatorSubtest.getId();
             String currentAction = form.getCurrentAction();
@@ -2173,6 +2203,7 @@ public class ScheduleTestController extends PageFlowController
         //START - Added for Deferred Defect 64306
         setFormInfoOnRequest(form);
         //END - Added for Deferred Defect 64306
+        
         return new Forward("success", form);
     }
 
@@ -2591,6 +2622,7 @@ public class ScheduleTestController extends PageFlowController
         
         this.getRequest().setAttribute("productType", this.productType);
         this.getRequest().setAttribute("isTabeProduct", TestSessionUtils.isTabeProduct(this.productType));    
+        this.getRequest().setAttribute("isTabeAdaptiveProduct", TestSessionUtils.isTabeAdaptiveProduct(this.productType));
         
         String actionElement = form.getActionElement();
         if (actionElement != null)
@@ -3002,7 +3034,8 @@ public class ScheduleTestController extends PageFlowController
         boolean hasBreak = form.getHasBreak().booleanValue();
         
         // set as manual for TB products
-        if (TestSessionUtils.isTabeProduct(this.productType).booleanValue())
+        if (TestSessionUtils.isTabeProduct(this.productType).booleanValue() ||
+        	TestSessionUtils.isTabeAdaptiveProduct(this.productType).booleanValue())
         {
             testSession.setFormAssignmentMethod(TestSession.FormAssignment.MANUAL);
         }
@@ -3010,10 +3043,12 @@ public class ScheduleTestController extends PageFlowController
         List subtestList = null;
         boolean sessionHasLocator = false;
                              
-        if (TestSessionUtils.isTabeProduct(this.productType).booleanValue())
+        if (TestSessionUtils.isTabeProduct(this.productType).booleanValue() ||
+        	TestSessionUtils.isTabeAdaptiveProduct(this.productType).booleanValue())
         {
             // for tabe test
-            if (TestSessionUtils.isTabeBatterySurveyProduct(this.productType).booleanValue())
+            if (TestSessionUtils.isTabeBatterySurveyProduct(this.productType).booleanValue() ||
+            	TestSessionUtils.isTabeAdaptiveProduct(this.productType).booleanValue())
             {
                 
                 subtestList = TestSessionUtils.setupSessionSubtests(this.sessionSubtests, this.defaultSubtests); 
@@ -3052,7 +3087,8 @@ public class ScheduleTestController extends PageFlowController
         
             te.setItemSetId(subVO.getId());
             
-            if (TestSessionUtils.isTabeProduct(this.productType).booleanValue())
+            if (TestSessionUtils.isTabeProduct(this.productType).booleanValue() ||
+            	TestSessionUtils.isTabeAdaptiveProduct(this.productType).booleanValue())
             {                
                 String level = subVO.getLevel();
                 te.setItemSetForm(level);
@@ -3094,7 +3130,8 @@ public class ScheduleTestController extends PageFlowController
             {
                 SessionStudent sessionStudent = (SessionStudent)this.selectedStudents.get(i);
                              
-                if (TestSessionUtils.isTabeProduct(this.productType).booleanValue())
+                if (TestSessionUtils.isTabeProduct(this.productType).booleanValue() ||
+                	TestSessionUtils.isTabeAdaptiveProduct(this.productType).booleanValue())
                 {   
                                                                      
                     // replicate student's manifest if this student has no individual manifest
@@ -3125,13 +3162,13 @@ public class ScheduleTestController extends PageFlowController
                             Integer studentId = sessionStudent.getStudentId();
                             Integer itemSetId = testSession.getItemSetId();
                             SubtestVO locSubtest = this.locatorSubtest;
-                            if (locSubtest == null)
-                            {                   
+                            if (locSubtest == null) {
                                 locSubtest = TestSessionUtils.getLocatorSubtest(this.scheduleTest, this.userName, itemSetId); 
                             }
-                            Integer locatorItemSetId = locSubtest.getId();
-                             
-                            TestSessionUtils.setRecommendedLevelForStudent(this.scheduleTest, this.userName, studentId, itemSetId, locatorItemSetId, studentManifests);
+                            if (locSubtest != null) {
+                            	Integer locatorItemSetId = locSubtest.getId();
+                            	TestSessionUtils.setRecommendedLevelForStudent(this.scheduleTest, this.userName, studentId, itemSetId, locatorItemSetId, studentManifests);
+                            }
                         }
                                      
                         sessionStudent.setStudentManifests(studentManifests);
@@ -3291,7 +3328,8 @@ public class ScheduleTestController extends PageFlowController
 
         // validate subtests        
         Boolean isTabeProduct = TestSessionUtils.isTabeProduct(this.productType);   
-        if (isTabeProduct.booleanValue())
+        Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);   
+        if (isTabeProduct.booleanValue() || isTabeAdaptiveProduct.booleanValue())
         {     
             String autoLocator = form.getAutoLocator();
             boolean autoLocatorChecked = ((autoLocator != null) && autoLocator.equals("true"));

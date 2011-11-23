@@ -28,6 +28,7 @@
 <netui-data:getData resultId="showSelectOrganization" value="${requestScope.showSelectOrganization}"/>
 <netui-data:getData resultId="productType" value="${requestScope.productType}"/>
 <netui-data:getData resultId="isTabeProduct" value="${requestScope.isTabeProduct}"/>
+<netui-data:getData resultId="isTabeAdaptiveProduct" value="${requestScope.isTabeAdaptiveProduct}"/>
 <netui-data:getData resultId="isTabeBatterySurveyProduct" value="${requestScope.isTabeBatterySurveyProduct}"/>
 <netui-data:getData resultId="isTabeLocatorProduct" value="${requestScope.isTabeLocatorProduct}"/>
 <netui-data:getData resultId="showLocatorSubtest" value="${requestScope.showLocatorSubtest}"/>
@@ -68,7 +69,7 @@
     </tr>
      
     
-<c:if test="${! isTabeProduct}">                     
+<c:if test="${!isTabeProduct && !isTabeAdaptiveProduct}">                     
     <c:if test="${showLevelOrGrade == 'level'}"> 
         <tr class="transparent">
             <td class="transparent" width="250"><netui:span value="${bundle.web['selectsettings.label.level']}"/></td>
@@ -91,7 +92,7 @@
     </tr>
     </c:if>
     
-<c:if test="${! isTabeProduct}">                     
+<c:if test="${!isTabeProduct && !isTabeAdaptiveProduct}">                     
     <c:if test="${! hasMultipleSubtests}"> 
         <tr class="transparent">
             <td class="transparent" width="250"><netui:span value="${bundle.web['selectsettings.label.testAccessCode']}"/></td>
@@ -174,7 +175,7 @@
 </c:if> 
           
         
-<c:if test="${! isTabeProduct}">                     
+<c:if test="${!isTabeProduct && !isTabeAdaptiveProduct}">                     
     <c:if test="${hasMultipleSubtests}">  
         <tr class="transparent">                    
             <td class="transparent" colspan="2">

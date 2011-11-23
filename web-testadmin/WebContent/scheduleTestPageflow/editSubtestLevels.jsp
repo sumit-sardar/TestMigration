@@ -112,6 +112,8 @@
 
 <input type="hidden" id="validateTest" name="validateTest" value="noValidateTest" />
 
+<netui-data:getData resultId="isTabeAdaptiveProduct" value="${requestScope.isTabeAdaptiveProduct}"/>
+
 <p>
 <table class="transparent">
 <tr>
@@ -138,6 +140,7 @@
 
 <!-- Locator Test-->
 <a name="autoLocator"><!-- autoLocator --></a>    
+<c:if test="${! isTabeAdaptiveProduct}">     
 <p>
 <h4><netui:span value="Locator Test"/></h4>
 <p>Select the checkbox below to include the Locator Test. Each student's performance on the Locator Test determines the difficulty level of the other subtests for that student.</p>
@@ -147,6 +150,7 @@
                        showLevel = "<%= Boolean.FALSE %>" 
                        checked = "<%= checked %>" />
 </p>
+</c:if>
 
 
 <!-- subtestOrderList custom tag -->

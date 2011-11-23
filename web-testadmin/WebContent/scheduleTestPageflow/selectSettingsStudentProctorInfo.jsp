@@ -22,6 +22,8 @@
 <netui-data:getData resultId="showFormAssignment" value="${requestScope.showFormAssignment}"/>
 
 <netui-data:getData resultId="isTabeProduct" value="${requestScope.isTabeProduct}"/>
+<netui-data:getData resultId="isTabeAdaptiveProduct" value="${requestScope.isTabeAdaptiveProduct}"/>
+<netui-data:getData resultId="isTabeBatterySurveyProduct" value="${requestScope.isTabeBatterySurveyProduct}"/>
 <netui-data:getData resultId="productType" value="${requestScope.productType}"/>
 <!--<netui:hidden dataSource="actionForm.creatorOrgNodeId"/>  --><!-- Changes for defect 60455 -->
 <a name="studentTableAnchor"><!-- studentTableAnchor --></a>    
@@ -29,7 +31,7 @@
 <% String formOperand = (String)pageContext.getAttribute("formOperand");%>  <!-- Changes for defect 61543 -->
 
 
-<c:if test="${! isTabeProduct}">                 
+<c:if test="${!isTabeProduct && !isTabeAdaptiveProduct}">                 
 <p>    
 <c:if test="${action=='view'}">  
     <c:if test="${showFormAssignment == 'hidden'}">  
@@ -217,7 +219,7 @@
                     <td class="tableFilter alignLeft"><netui:content value="${bundle.web['common.column.firstName']}"/>:</td>
                     <td class="tableFilter alignLeft"><netui:select optionsDataSource="${pageFlow.nameOptions}" dataSource="actionForm.testRosterFilter.firstNameFilterType" size="1" defaultValue="${actionForm.testRosterFilter.firstNameFilterType}" style="width:100px"/></td>
                     <td class="tableFilter alignLeft"><netui:textBox dataSource="actionForm.testRosterFilter.firstName" onKeyPress="return handleEnterKey('currentAction', 'applyFilters');"/></td>                    
-<c:if test="${isTabeProduct}">                                         
+<c:if test="${isTabeProduct || isTabeAdaptiveProduct}">                                         
                     <td class="tableFilter alignLeft">&nbsp;</td>
                     <td class="tableFilter alignLeft">&nbsp;</td>
 </c:if>                                    
@@ -282,7 +284,7 @@
             <th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="HasAccommodations"><netui:span value="Accommodations"/></ctb:tableSortColumn></th>
 </c:if>            
             <th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="OrgNodeName"><netui:content value="${requestScope.orgCategoryName}"/></ctb:tableSortColumn></th>
-<c:if test="${! isTabeProduct}">                 
+<c:if test="${!isTabeProduct && !isTabeAdaptiveProduct}">                 
             <th class="sortable alignCenter" nowrap><ctb:tableSortColumn value="ItemSetForm"><netui:span value="Form"/></ctb:tableSortColumn></th>
 </c:if>            
         </ctb:tableSortColumnGroup>
@@ -337,7 +339,7 @@
         <td class="sortable alignCenter">
             <netui:span value="${container.item.orgNodeName}"/>
         </td>
-<c:if test="${! isTabeProduct}">                 
+<c:if test="${!isTabeProduct && !isTabeAdaptiveProduct}">                 
         <td class="sortable alignCenter">
             <ctb:switch dataSource="${container.item.status.editable}">
                 <ctb:case value="T">

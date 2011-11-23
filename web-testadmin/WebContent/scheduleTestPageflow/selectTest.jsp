@@ -49,6 +49,7 @@
 <netui-data:getData resultId="showLevelOrGrade" value="${pageFlow.showLevelOrGrade}"/>
 <netui-data:getData resultId="acknowledgmentsURL" value="${requestScope.acknowledgmentsURL}"/>
 <netui-data:getData resultId="isTabeProduct" value="${requestScope.isTabeProduct}"/>
+<netui-data:getData resultId="isTabeAdaptiveProduct" value="${requestScope.isTabeAdaptiveProduct}"/>
 
 <netui-data:getData resultId="productType" value="${requestScope.productType}"/>
 
@@ -189,7 +190,7 @@
 
 
 <!-- Non TABE -->
-<c:if test="${! isTabeProduct}"> 
+<c:if test="${!isTabeProduct && !isTabeAdaptiveProduct}"> 
     <c:if test="${showLevelOrGrade == 'level' || showLevelOrGrade == 'grade'}"> 
         <td class="transparent" width="200">
         <c:if test="${showLevelOrGrade == 'level'}"> 
@@ -213,7 +214,7 @@
 
 
 <!-- TABE -->
-<c:if test="${isTabeProduct}"> 
+<c:if test="${isTabeProduct || isTabeAdaptiveProduct}"> 
     <!-- remove Grade column -->
     <td class="transparent" width="200">&nbsp;</td>
 </c:if>     
@@ -250,7 +251,7 @@
         <th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="ItemSetName"><netui:span value="${bundle.web['common.column.testName']}"/></ctb:tableSortColumn></th>
         
 <!-- Non TABE -->
-<c:if test="${! isTabeProduct}"> 
+<c:if test="${!isTabeProduct && !isTabeAdaptiveProduct}"> 
         <c:if test="${showLevelOrGrade == 'level'}"> 
             <th class="sortable alignLeft" nowrap><ctb:tableSortColumn value="ItemSetLevel"><netui:span value="${bundle.web['common.column.level']}"/></ctb:tableSortColumn></th>
         </c:if>            
@@ -274,7 +275,7 @@
     <td class="sortable alignLeft"><netui:span value="${container.item.testName}" defaultValue="&nbsp;"/></td>
 
 <!-- Non TABE -->
-<c:if test="${! isTabeProduct}">     
+<c:if test="${!isTabeProduct && !isTabeAdaptiveProduct}">     
     <c:if test="${showLevelOrGrade == 'level' || showLevelOrGrade == 'grade'}"> 
         <td class="sortable alignLeft"><netui:span value="${container.item.level}" defaultValue="&nbsp;"/></td>
     </c:if> 
@@ -537,7 +538,7 @@
 <br/><p>        
 <h4><netui:span value="${bundle.web['selecttest.subtestDetails.title']}"/></h4>
 
-<c:if test="${isTabeProduct}">             
+<c:if test="${isTabeProduct || isTabeAdaptiveProduct}">             
     <p>Click the Modify Test button below to select subtests, difficulty level, or subtest order.</p>
 </c:if>
     
@@ -556,7 +557,7 @@
         
 
 <!-- TABE -->
-<c:if test="${isTabeProduct}">             
+<c:if test="${isTabeProduct || isTabeAdaptiveProduct}">             
         <tr class="sortable">
             <td class="sortableControls" colspan="4">
                 &nbsp;<netui:button type="submit" value="Modify Test" action="toModifySubtests"/>
