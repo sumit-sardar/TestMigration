@@ -24,7 +24,7 @@ var dbOrgDetails;
 var isValueChanged = false;
 var organizationNodes = [];
 var originalParentOrgId;
-//
+var isParentChange = false;
 var isLeafNodeAdmin;
 
 $(document).bind('keydown', function(event) {
@@ -377,12 +377,12 @@ function gridReload(){
       }
 	
 	
-	function disablenextprev(selectedPosition,maxlength) {
+	/* function disablenextprev(selectedPosition,maxlength) {
                     selectedPosition == 0 ? $("#pData").addClass("ui-state-disabled") : $("#pData").removeClass("ui-state-disabled");
                     selectedPosition == maxlength? $("#nData").addClass("ui-state-disabled") : $("#nData").removeClass("ui-state-disabled");
-                }
+                } */
     
-    function highlightnextprev(prevSelectedRow,nextSelectedRow) {            
+    /* function highlightnextprev(prevSelectedRow,nextSelectedRow) {            
 		   $("#"+prevSelectedRow).removeClass("ui-state-highlight").attr({
                "aria-selected": "false",
                tabindex: "-1"
@@ -391,7 +391,7 @@ function gridReload(){
                "aria-selected": true,
                tabindex: "0"
            });
-	}	
+	} */
 
 	
 function fillDropDown( elementId, optionList) {
@@ -446,6 +446,10 @@ function EditOrganizationDetail(selectedOrgId){
 						if(assignedOrgNodeIds == "") {
 							//assignedOrgNodeIds = data.parentOrgNodeId ;
 							assignedOrgNodeIds = originalParentOrgId;
+						} else if (isParentChange) {
+							
+							assignedOrgNodeIds = originalParentOrgId;
+							isParentChange = false;
 						}
 						
 						var innerHtml = "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+data.parentOrgNodeId+"');>"+trim(data.parentOrgNodeName)+"</a>";	
@@ -933,7 +937,12 @@ function pDataClick(popupname) {
 
 function fetchNextData(popupname){
 			//$("#displayMessage").text("");
-			assignedOrgNodeIds = "";
+			//assignedOrgNodeIds = "";
+			if (assignedOrgNodeIds != originalParentOrgId) {
+							
+				isParentChange = true;
+			}
+			
 			var selectedOrgId = $("#list2").jqGrid('getGridParam', 'selrow');
 			var pageRows = $("#list2").jqGrid('getGridParam','rowNum');
 			var curPage = parseInt($('#list2').jqGrid('getGridParam','page')); 
@@ -969,7 +978,11 @@ function fetchNextData(popupname){
 		
 function fetchPreviousData(popupname){
 	//$("#displayMessage").text("");
-	assignedOrgNodeIds = "";
+	//assignedOrgNodeIds = "";
+	if (assignedOrgNodeIds != originalParentOrgId) {
+							
+			isParentChange = true;
+	}
 	var selectedOrgId = $("#list2").jqGrid('getGridParam', 'selrow');
 	var pageRows = $("#list2").jqGrid('getGridParam','rowNum');
 	var curPage = parseInt($('#list2').jqGrid('getGridParam','page'));
