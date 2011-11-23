@@ -208,11 +208,16 @@ public class TMSServlet extends HttpServlet {
 	private void getMp3(HttpServletRequest request, HttpServletResponse response) throws IOException
     {   
 		byte [] musicFile = null;
-		response.setContentType("audio/mpeg3");
+		response.setContentType("audio/mpeg");
 		
 		try {
+			String contextPath = getServletContext().getContextPath();
+			logger.error(contextPath);
+			
 			String musicId = request.getParameter("musicId");
-			String resource = "/resources/audio" + musicId + ".mp3";
+			String resource = contextPath + "resources/audio" + musicId + ".mp3";
+			logger.error(resource);
+			
 			InputStream is = getServletContext().getResourceAsStream(resource);
 		    musicFile = ContentFile.readFromStream(is);
 			OutputStream stream = response.getOutputStream();
