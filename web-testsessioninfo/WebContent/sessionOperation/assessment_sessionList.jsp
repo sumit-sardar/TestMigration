@@ -27,7 +27,7 @@
 	<table style="clear:both;float:left" width= "100%"> 
 		   	<tr >
 		   		<td >
-		       		<div style="clear:both;float:left;width:1210px;padding: 5px 5px 5px 0;">
+		       		<div style="float:left;width:1210px;padding: 5px 5px 5px 0;">
 						<div  style="float:left;width:210px;white-space: nowrap;" class="transparent">
 							<a  href="#" onclick="javascript:reloadHomePage(); return false;" style="display: block; width:50%; float:left; text-align: center;" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.mySession']}"/></a> 
 						</div>  
@@ -50,7 +50,7 @@
 		   	</tr>
 	</table>
 	
-	<div style="clear:both;float:left;width:1210px;">
+	<div style="float:left;width:1210px;">
 	<%if(userScheduleAndFindSessionPermission) { %>
 		<div id="show" style="display: block;width:25px;float:left; padding: 3px 0 3px 3px;" class="ui-corner-tl ui-corner-tr ui-corner-bl ui-corner-br ui-widget-header " title="${bundle.web['homepage.icon.showOrganization']}">
    			<a href="#" onclick="showTreeSlider();" style=" width:100%; " >>></a>
