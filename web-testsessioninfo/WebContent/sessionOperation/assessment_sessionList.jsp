@@ -1,6 +1,7 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 
+
 <netui-data:declareBundle bundlePath="webResources" name="web"/>	
 	
 	<%
@@ -74,14 +75,14 @@
 					<div id="accordion" style="width:100%;">							
 						<div>
 						  	<h3><a href="#"><netui:content value="${bundle.web['homepage.tab.currentAndFuture']}"/></a></h3>
-							<div id="CurrentFuture" style="background-color: #FFFFFF;">
+							<div id="CurrentFuture" style="background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
 								<table id="list2" class="gridTable"></table>
 								<div id="pager2" class="gridTable"></div>		
 							</div>								
 						</div>
 						<div>
 							<h3><a href="#"><netui:content value="${bundle.web['homepage.tab.completed']}"/></a></h3>
-							<div id="Completed" style="background-color: #FFFFFF;">
+							<div id="Completed" style="background-color: #FFFFFF;overflow-y: hidden !important; overflow-x: hidden !important;">
 								<table id="list3" class="gridTable"></table>
 								<div id="pager3" class="gridTable"></div>	
 							</div>									
