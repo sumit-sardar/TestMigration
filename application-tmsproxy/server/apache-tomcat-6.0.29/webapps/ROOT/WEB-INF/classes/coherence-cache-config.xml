@@ -92,6 +92,7 @@
 					<scheme-ref>DistributedScheme</scheme-ref>
 				</distributed-scheme>
 			</back-scheme>
+			<high-units>1000000</high-units>
 		</near-scheme> 
 		<!-- these are for push replication -->
 		<proxy-scheme>
