@@ -26,22 +26,24 @@
                                                       </select>
                                                       </td>
                                                     </tr>
-                                                    
-	                                                    <tr class="transparent">
-	                                                      <td class="transparent"> <div id = "gradeDiv" style="display: none;">Grade : </div> <div id = "levelDiv" style="display: none;">Level : </div>  </td>
-	                                                      <td>
-	                                                      <div id="levelDropDown"> 
-	                                                      	<select name="level" class="norBox" id="level">  </select>
-	                                                      </div>
-	                                                      </td>
-	                                                    </tr>
-	                                                    <!--<tr class="transparent">
-	                                                      <td class="transparent">Level :</td>
-	                                                      <td><select name="level" class="norBox" id="level">
-	                                                      </select></td>
-	                                                    </tr>
-                                                 
-                                                  --></table></td>
+                                                    <tr class="transparent">
+                                                      <td class="transparent">
+                                                      <div id="gradeDiv" style="display:none;">
+                                                      	Grade :
+                                                      </div>
+													  <div id="levelDiv" style="display:none;">Level : </div></td>
+                                                      <td>
+                                                      	<div id="levelDropDown"> 
+	                                                      	<select name="level" class="norBox" id="level"></select>
+	                                                   	</div>
+	                                                   </td>
+                                                    </tr>
+                                                    <!--tr class="transparent">
+                                                      <td class="transparent">Level :</td>
+                                                      <td><select name="level" id="level" class="norBox">
+                                                      </select></td>
+                                                    </tr-->
+                                                  </table></td>
                                                 </tr>
                                                 <tr>												  
 												  		<td height="10" colspan="2"></td>
@@ -209,74 +211,9 @@
 			<div>
 				<h3><a href="#">Test Detail</a></h3>
 				<div id="Test_Detail" style="overflow-y: scroll !important; overflow-x: hidden !important;">
-						<table class="transparent">
-							<tbody>
-								<tr class="transparent">
-								<td style ="vertical-align: top;" align="center" >
-								<table class="transparent" width="510" align="center" >
-								<tbody>
-									<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Test Session 
-											Name:</td>
-										<td class="transparent alignLeft"><input type="text" style="width: 200px;" tabindex="0" maxlength="32" id="testSessionName" name="testSessionName">
-										</td>
-									</tr>
-									<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight">* Start Date:</td>
-										<td class="transparent alignLeft"><input name="startDate" id="startDate" type="text" class="norBox" size="12"/></td>
-									</tr>
-									<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;End Date :</td>
-										<td class="transparent alignLeft"><input name="endDate" id="endDate" type="text" class="norBox" size="12"/></td>
-									</tr>
-									<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight">										
-											<span class="asterisk">*</span>
-											Time Window :</td>
-											<td height="25" style="padding-left:10px;" class="transparent alignLeft">
-												<table width="100%" border="0" cellpadding="0" cellspacing="0" class="transparent">
-					                              <tr>
-					                                <td width="150" class="transparent alignLeft"><span id="time">9:00 AM - 5:00 PM</span></td>
-					                                <td>
-														<span >Drag the slider to get the time window - </span>													
-														<div id="slider-range" style="width:200px;"></div>
-														<span id="SlideMax"></span>
-													</td>
-					                              </tr>
-					                            </table>
-                           				</td>
-									</tr>
-									<tr class="transparent">
-										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Time Zone :</td>
-										<td class="transparent alignLeft">  
-											<select id="timeZoneList" name="timeZone">
-											</select> 
-										</td>
-									</tr>
-											<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Test Location :</td>
-										<td class="transparent alignLeft">
-										 <input type="text" id="testLocation"  name="testLocation" style="width: 202px;"/>
-										</td>
-
-									</tr>
-									
-									<!--ext_pin1 is added for DEX CR-->
-									<tr class="transparent">
-										<td  width="110" class="transparent alignRight">										 
-											*</span>&nbsp;Organization may view :</td>
-										<td class="transparent alignLeft">
-											<select id="select" name="select">
-                                              </select>										
-										
-										</td>
-									</tr>
-								</tbody>
-								</table>
-								</td>
-									</tr>
-								</tbody>
-								</table>
+					<div align="center">
+						<jsp:include page="/sessionOperation/test_details.jsp" />
+					</div>
 				</div>
 			</div>
 			<div>
