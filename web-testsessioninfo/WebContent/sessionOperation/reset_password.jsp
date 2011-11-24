@@ -105,7 +105,7 @@
 <p>
 <table class="transparent">
 <tr>
-	<td class="transparent" width="50%">
+	<td class="class="transparent-top"" width="50%">
 
 <table class="transparent">
     <tr> 
@@ -148,6 +148,16 @@
             <netui:textBox tagId="confirmPassword" dataSource="pageFlow.userProfile.userPassword.hintAnswer" tabindex="5" maxlength="255" style="width:290px"/>
         </td>
     </tr>   
+    <tr class="transparent">
+    	<td class="transparent alignRight" colspan="2">
+		   	<a href="#" onclick="submitPage();" class="rounded {transparent} button" 
+		   	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
+		   	onkeypress="return handleEnterKey(event, this);" >
+		   	Save
+		   	</a>                	
+    	</td>
+    </tr>
+    
 </table>
 </td>
 
@@ -156,27 +166,27 @@
     
         <tr>
             <td class="transparent">
-                <ul><li>
+                <div class="roundedPrivacy" style="text-align: left">
                     Enter old password for verification.
-                </li></ul>
+                </div>
             </td>
         </tr>
-        <tr><td>&nbsp;</td></tr>
-        
+        <tr><td>&nbsp;</td></tr> 
         <tr>
             <td class="transparent">
-                <ul><li>
-                    The password must contain at least eight characters.<br/>At least one character must be a number and at least one character must be a letter.
-                </li></ul>
+                <div class="roundedPrivacy" style="text-align: left">
+                    The password must contain at least eight characters.
+                </div>
+                At least one character must be a number and at least one character must be a letter.
             </td>
        </tr>
-        <tr><td>&nbsp;</td></tr>
-       
+       <tr><td>&nbsp;</td></tr>        
        <tr>
         <td class="transparent">
-            <ul><li>
-                Remember your hint answer.<br/>It can be used to validate you as a user in the event you forget your password.
-            </li></ul>
+        		<div class="roundedPrivacy" style="text-align: left">
+                Remember your hint answer.
+            	</div>
+                It can be used to validate you as a user in the event you forget your password.
         </td>
     </tr>
 </table>
@@ -185,23 +195,9 @@
 </tr></table>
 </p>
 
-
-<!-- buttons -->
-<p>
-   	<a href="#" onclick="submitPage();" class="rounded {transparent} button" 
-   	onfocus="handleFocus(event, this);" onblur="handleBlur(event, this);"
-   	onkeypress="return handleEnterKey(event, this);" >
-   	Save
-   	</a>                	
-</p>
-
-
-
-                
                 </td>
             </tr>
             </table>
-        <br>
         <!--End content-->
     </td>
 </tr>
