@@ -851,6 +851,7 @@ public class CurriculumCollector {
         return (ContentArea []) contentAreas.toArray(new ContentArea[0]);
     }
     
+    // Added for tabe adaptive
     public PrimaryObjective [] getPrimaryObjectivesForTabeCat(Long oasRosterId) throws SQLException {
         ArrayList primaryObjectives = new ArrayList();
         HashMap poMap = new HashMap();
@@ -863,7 +864,7 @@ public class CurriculumCollector {
         	"	tco.objective_name as primaryObjectiveName, " +
         	"	tco.items as primaryNumItems, " +
         	"	iset.item_set_id as subtestId, " +
-        	"	iset.item_set_level as subtestLevel, " +
+        	"	siss.objective_score as subtestLevel, " +
         	"	prod.product_id as productId " +
         	"from " +
         	"	test_roster ros, " +
@@ -895,9 +896,24 @@ public class CurriculumCollector {
                 primaryObjective.setPrimaryObjectiveNumItems(new Long(rs.getLong("primaryNumItems")));
                 primaryObjective.setPrimaryObjectivePointsPossible(new Long(0));
                 primaryObjective.setSubtestId(new Long(rs.getLong("subtestId")));
-                primaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
+              //  primaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
                 primaryObjective.setPrimaryObjectiveIndex(new Long(rs.getLong("primaryObjectiveIndex")));
                 primaryObjective.setProductId(new Long(rs.getLong("productId")));
+                
+                String level = rs.getString("subtestLevel");
+                if(level.contains(primaryObjective.getPrimaryObjectiveId().toString())) {
+                	 String[] objectiveScores = level.split("\\|");
+                     for (int i = 0; i < objectiveScores.length; i++) {
+                     	String[] individualObj = objectiveScores[i].split(",");
+                     	long objId = Long.parseLong(individualObj[0]);
+                     	if(primaryObjective.getPrimaryObjectiveId() == objId) {
+                     		primaryObjective.setSubtestLevel(individualObj[5]);
+                     	}
+                     }
+                } else {
+                	primaryObjective.setSubtestLevel(rs.getString("subtestLevel"));
+                }
+               
                 
                 String key = primaryObjective.getPrimaryObjectiveName() + "||" + primaryObjective.getProductId() + "||" + primaryObjective.getContentAreaId() + "||" + primaryObjective.getSubtestLevel();
                // System.out.println(key);

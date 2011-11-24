@@ -7,6 +7,16 @@ insert into level_dim values (23, 'CAT', 5)
 /
 insert into level_dim values (24, 'N/A', 5)
 /
+insert into level_dim values (25,'L',5)
+/
+insert into level_dim values (26,'E',5)
+/
+insert into level_dim values (27,'M',5)
+/
+insert into level_dim values (28,'D',5)
+/
+insert into level_dim values (29,'A',5)
+/
 
 --form_dim
 insert into form_dim values (13, 'CAT', 5)

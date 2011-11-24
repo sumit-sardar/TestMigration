@@ -97,9 +97,8 @@ public class ObjectiveNumberCorrectCalculator extends Calculator {
         channel.subscribe(this, IncorrectResponseEvent.class);
         mustPrecede(SubtestObjectiveCollectionEvent.class, IncorrectResponseEvent.class);
         channel.subscribe(this, SubtestScoreReceivedEvent.class); // changes for TABE Adaptive
-        mustPrecede(SubtestObjectiveCollectionEvent.class, SubtestScoreReceivedEvent.class);
         channel.subscribe(this, SubtestEndedEvent.class);
-        mustPrecede(SubtestScoreReceivedEvent.class, SubtestEndedEvent.class);
+        mustPrecede(SubtestObjectiveCollectionEvent.class, SubtestEndedEvent.class);
         
     }
     
