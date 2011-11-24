@@ -82,7 +82,7 @@ public class ScheduleTestVo implements Serializable{
 		
 	}
 
-	private List<TestVO> buildTestList(String userName, TestElementData ted, ScheduleTest scheduleTest) throws CTBBusinessException
+	private List<TestVO> buildTestList(String userName, TestElementData ted, ScheduleTest scheduleTest, String showLevelOrGrade) throws CTBBusinessException
     {
         
         List<TestVO> result = new ArrayList<TestVO>();
@@ -123,12 +123,12 @@ public class ScheduleTestVo implements Serializable{
     
     
             String level = "";
-            /*
-            if (this.showLevelOrGrade.equals("level")) 
+           
+            if (showLevelOrGrade!=null && showLevelOrGrade.equals("level")) 
                 level = tes[i].getItemSetLevel();
-            else if (this.showLevelOrGrade.equals("grade"))
+            else if (showLevelOrGrade!=null && showLevelOrGrade.equals("grade"))
                 level = tes[i].getGrade();
-            */
+            
             
             
             TestVO testVO = new TestVO(tes[i].getItemSetId(), tes[i].getItemSetName(), 
@@ -165,12 +165,12 @@ public class ScheduleTestVo implements Serializable{
         return result;
         
     }
-	 private List<TestVO> getTestsForProductForUser(String userName, Integer productId, ScheduleTest scheduleTest)
+	 private List<TestVO> getTestsForProductForUser(String userName, Integer productId, ScheduleTest scheduleTest, String showLevelOrGrade)
      throws CTBBusinessException
      {
 		 
 		 TestElementData ted = scheduleTest.getTestsForProduct(userName, productId, null, null, null); 
-		 List<TestVO> testList = buildTestList(userName, ted,scheduleTest);
+		 List<TestVO> testList = buildTestList(userName, ted,scheduleTest, showLevelOrGrade);
 		 return testList;
      }
 	 private boolean isLasLinkProduct(String productType) {
@@ -191,8 +191,8 @@ public class ScheduleTestVo implements Serializable{
 					
 				}
 				
-				List<TestVO> testSession= getTestsForProductForUser(userName,val.getProductId(), scheduleTest);
-				ProductBean prod = new ProductBean(val.getProductId(), val.getProductName(), getLevelDropList(val.getLevels()), getGradeDropList(val.getGrades()), testSession);
+				//List<TestVO> testSession= getTestsForProductForUser(userName,val.getProductId(), scheduleTest);
+				ProductBean prod = new ProductBean(val.getProductId(), val.getProductName(), getLevelDropList(val.getLevels()), getGradeDropList(val.getGrades()));
 				
 				
 				prod.setAcknowledgmentsURL(val.getAcknowledgmentsURL());
@@ -229,6 +229,9 @@ public class ScheduleTestVo implements Serializable{
 				} else {
 					prod.setHideLevelDropDown(false);
 				}
+				
+				List<TestVO> testSession= getTestsForProductForUser(userName,val.getProductId(), scheduleTest, prod.getShowLevelOrGrade());
+				prod.setTestSessionList(testSession);
 				
 				product.add(prod);
 
@@ -308,14 +311,13 @@ class ProductBean implements Serializable{
 
 	
 	public ProductBean(Integer productId, String productName,
-			List<ObjectIdName> levelDropList, List<ObjectIdName> gradeDropList, List<TestVO> testSessionList) {
+			List<ObjectIdName> levelDropList, List<ObjectIdName> gradeDropList) {
 		this.productId = productId;
 		this.productName = productName;
 		this.levelDropDownList = levelDropList;
 		if(gradeDropList!=null) 
 			this.gradeDropDownList = gradeDropList;
-		if(testSessionList!=null)
-			this.testSessionList  = testSessionList;
+		
 		
 	}
 
@@ -443,6 +445,24 @@ class ProductBean implements Serializable{
 	 */
 	public void setHasMultipleSubtests(boolean hasMultipleSubtests) {
 		this.hasMultipleSubtests = hasMultipleSubtests;
+	}
+
+
+	
+	/**
+	 * @param testSessionList the testSessionList to set
+	 */
+	public void setTestSessionList(List<TestVO> testSessionList) {
+		this.testSessionList = testSessionList;
+	}
+
+
+	
+	/**
+	 * @return the showLevelOrGrade
+	 */
+	public String getShowLevelOrGrade() {
+		return showLevelOrGrade;
 	}
 
 
