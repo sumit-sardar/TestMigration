@@ -195,7 +195,7 @@ function populateCompletedSessionListGrid() {
 				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
-				$.unUI();  
+				$.unblockUI();  
 				window.location.href="/SessionWeb/logout.do";
 						
 			}
