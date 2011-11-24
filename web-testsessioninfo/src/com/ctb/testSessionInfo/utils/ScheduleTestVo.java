@@ -92,7 +92,7 @@ public class ScheduleTestVo implements Serializable{
             return result;
         
         TestElement [] tes = ted.getTestElements();
-        
+        String level = "";
         //todo: ask Nate to fix bug here.
         for (int i=0; i<tes.length && tes[i]!=null ; i++)
         {
@@ -122,7 +122,7 @@ public class ScheduleTestVo implements Serializable{
             String duration = (durationMinutes == 0) ? "Untimed" : durationMinutes + " minutes";
     
     
-            String level = "";
+           
            
             if (showLevelOrGrade!=null && showLevelOrGrade.equals("level")) 
                 level = tes[i].getItemSetLevel();
