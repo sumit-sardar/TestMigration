@@ -281,7 +281,7 @@
 			</div>
 			<div>
 				<h3><a href="#">Add Student</a></h3>
-				<div id="add_Student" style="background-color: #FFFFFF; overflow-y: scroll !important; overflow-x: hidden !important;">
+				<div id="Add_Student" style="background-color: #FFFFFF; overflow-y: scroll !important; overflow-x: hidden !important;">
 					<jsp:include page="/sessionOperation/add_student_tab.jsp" />
 				</div>
 			</div>

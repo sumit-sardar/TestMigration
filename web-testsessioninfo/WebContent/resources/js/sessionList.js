@@ -41,7 +41,7 @@ function populateSessionListGrid(homePageLoad) {
 		   	jsonReader: { repeatitems : false, root:"testSessionCUFU", id:"testAdminId",
 		   	records: function(obj) { 
 		   	 sessionListCUFU = JSON.stringify(obj.testSessionCUFU);
-		   	 if(ishomepageload){
+		   	 if(ishomepageload && obj.orgNodeCategory != 'undefined'){
 		   	 	leafNodeCategoryId = obj.orgNodeCategory.categoryLevel;
 		   	 	leafNodeCategoryName = obj.orgNodeCategory.categoryName;
 		   	 }
@@ -448,7 +448,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			$("#Add_Student").scrollTop(0);
 			$('#Add_Proctor').scrollTop(0);
 			$("#Test_Detail").hide();
-			$("#add_Student").hide();
+			$("#Add_Student").hide();
 			$('#Add_Proctor').hide();
 		}
 		$("#"+dailogId).dialog("close");

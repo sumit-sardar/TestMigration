@@ -44,7 +44,7 @@
 							    </div>
 						    <%} if (userScheduleAndFindSessionPermission) {%>
 							    <div id="scSession" style="float:right;padding-left:5px;">
-								<a href="#" id="scSessionButton" onclick="javascript:scheduleNewSession(); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.scheduleSession']}"/></a>
+								<a href="#" id="scSessionButton" onclick="javascript:scheduleSession(); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.scheduleSession']}"/></a>
 							    </div> 
 						    <%} %>			
 						</div>  
