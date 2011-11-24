@@ -14,6 +14,11 @@ public class TABESubtestValidation
 	public static final String LANGUAGE_MECHANICS = "TABE Language Mechanics";
 	public static final String SPELLING = "TABE Spelling";	
     
+	public static final String TABE_ADAPTIVE_READING = "TABE Adaptive Reading";
+	public static final String TABE_ADAPTIVE_MATH_COMPUTATION = "TABE Adaptive Mathematics Computation";
+	public static final String TABE_ADAPTIVE_APPLIED_MATH = "TABE Adaptive Applied Mathematics";
+	public static final String TABE_ADAPTIVE_LANGUAGE = "TABE Adaptive Language";
+	
     // error messages
     public static final String NO_SUBTEST_MSG = "You must select at least one subtest to continue.";
 
@@ -35,7 +40,46 @@ public class TABESubtestValidation
     
     public static String currentMessage = "";
     
-    public static boolean validation(List subtests, boolean validateLevels)
+    
+    
+    public static boolean validation(List subtests, boolean validateLevels, boolean isTabeAdaptiveProduct)
+    {
+    	boolean result = false;
+    	
+    	if (isTabeAdaptiveProduct) 
+    		result = validationTABE_ADAPTIVE(subtests);
+    	else
+    		result = validationTABE(subtests, validateLevels);
+        
+    	return result;
+    }
+
+    public static boolean validationTABE_ADAPTIVE(List subtests)
+    {
+        currentMessage = NO_ERROR_MSG;
+        
+        if (! noSubtest(subtests)) {
+            currentMessage = NO_SUBTEST_MSG;
+            return false;
+        }
+        
+        if (! mathSubtests_TABE_ADAPTIVE(subtests)) {
+            currentMessage = MATH_SUBTESTS_MSG; // just warning, not error
+        }
+
+        if (! scoreCalculatable_TABE_ADAPTIVE(subtests)) {
+            if (currentMessage.equals(NO_ERROR_MSG))
+                currentMessage = SCORE_CALULATABLE_MSG; // just warning, not error
+            else {
+                currentMessage += "<br/>";
+                currentMessage += SCORE_CALULATABLE_MSG; // just warning, not error
+            }
+        }
+        
+        return true;    	
+    }
+    	
+    public static boolean validationTABE(List subtests, boolean validateLevels)
     {
         currentMessage = NO_ERROR_MSG;
         
@@ -48,7 +92,7 @@ public class TABESubtestValidation
             currentMessage = LANGUAGE_DEPENDENCY_MSG;
             return false;
         }
-        
+    	
         if (validateLevels) {    
             if (! languageLevel(subtests)) {
                 currentMessage = LANGUAGE_LEVEL_MSG;
@@ -169,6 +213,14 @@ public class TABESubtestValidation
         }
         return false;
     }
+    public static boolean mathSubtests_TABE_ADAPTIVE(List subtests)
+    {
+        if (presented(TABE_ADAPTIVE_MATH_COMPUTATION, subtests) && presented(TABE_ADAPTIVE_APPLIED_MATH, subtests)) {
+            return true;
+        }
+        return false;
+    }
+
     
     /*
      * If you select Math Computation and Applied Math, then they must be of the same level.
@@ -191,6 +243,14 @@ public class TABESubtestValidation
     {
         if (presented(READING, subtests) && presented(LANGUAGE, subtests) &&
             presented(MATH_COMPUTATION, subtests) && presented(APPLIED_MATH, subtests)) {
+            return true;
+        }
+        return false;
+    }
+    public static boolean scoreCalculatable_TABE_ADAPTIVE(List subtests)
+    {
+        if (presented(TABE_ADAPTIVE_READING, subtests) && presented(TABE_ADAPTIVE_LANGUAGE, subtests) &&
+            presented(TABE_ADAPTIVE_MATH_COMPUTATION, subtests) && presented(TABE_ADAPTIVE_APPLIED_MATH, subtests)) {
             return true;
         }
         return false;

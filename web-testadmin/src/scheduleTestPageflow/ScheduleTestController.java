@@ -470,7 +470,8 @@ public class ScheduleTestController extends PageFlowController
             
             this.selectedSubtests = TestSessionUtils.retrieveSelectedSubtestsFromRequest(this.getRequest(), this.allSubtests);      
                     
-            boolean valid = TABESubtestValidation.validation(this.selectedSubtests, validateLevels);
+            Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);            
+            boolean valid = TABESubtestValidation.validation(this.selectedSubtests, validateLevels, isTabeAdaptiveProduct.booleanValue());
             
             String message = TABESubtestValidation.currentMessage;                
             form.setSubtestValidationMessage(null);
@@ -2244,7 +2245,8 @@ public class ScheduleTestController extends PageFlowController
             boolean autoLocatorChecked = ((autoLocator != null) && autoLocator.equals("true"));
             boolean validateLevels = !autoLocatorChecked;          
                  
-            boolean valid = TABESubtestValidation.validation(this.selectedSubtests, validateLevels);
+            Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(this.productType);            
+            boolean valid = TABESubtestValidation.validation(this.selectedSubtests, validateLevels, isTabeAdaptiveProduct.booleanValue());
                                                    
             String message = TABESubtestValidation.currentMessage;        
             form.setSubtestValidationMessage(null);
@@ -3061,7 +3063,9 @@ public class ScheduleTestController extends PageFlowController
                 }
                 else
                 {
-                    TestSessionUtils.setDefaultLevels(subtestList, "E");  // make sure set level = 'E' if null
+                    if (TestSessionUtils.isTabeProduct(this.productType).booleanValue()) {
+                    	TestSessionUtils.setDefaultLevels(subtestList, "E");  // make sure set level = 'E' if null
+                    }
                 }
             } 
             else
@@ -3335,7 +3339,7 @@ public class ScheduleTestController extends PageFlowController
             boolean autoLocatorChecked = ((autoLocator != null) && autoLocator.equals("true"));
             if (! autoLocatorChecked)
             {                
-                boolean valid = TABESubtestValidation.validation(this.defaultSubtests, true);
+                boolean valid = TABESubtestValidation.validation(this.defaultSubtests, true, isTabeAdaptiveProduct.booleanValue());
                 if (! valid)
                 {
                     String message = TABESubtestValidation.currentMessage; 
