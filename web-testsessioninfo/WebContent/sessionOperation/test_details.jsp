@@ -40,7 +40,8 @@
 					</tr>
 					<tr class="transparent">
 						<td width="170" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Time Zone :</td>
-						<td class="transparent alignLeft"><select id="timeZoneList" name="timeZone">
+						<td class="transparent alignLeft">
+						<select id="timeZoneList" name="timeZone">
 						</select></td>
 					</tr>
 					<tr class="transparent">

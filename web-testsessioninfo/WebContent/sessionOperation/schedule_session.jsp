@@ -33,8 +33,8 @@
                                                       </div>
 													  <div id="levelDiv" style="display:none;">Level : </div></td>
                                                       <td>
-                                                      	<div id="levelDropDown"> 
-	                                                      	<select name="level" class="norBox" id="level"></select>
+                                                      	<div id="levelDropDown" > 
+	                                                      	<select name="level" class="norBox" id="level" style="display:none;"></select>
 	                                                   	</div>
 	                                                   </td>
                                                     </tr>

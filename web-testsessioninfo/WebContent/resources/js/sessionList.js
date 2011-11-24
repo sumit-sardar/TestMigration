@@ -615,14 +615,10 @@ function createSingleNodeSelectedTree(jsondata) {
 		type:		'POST',
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){	
-						/*
-						for(var i = 0; i < data.length; i++) {
-							layerOptions[i] = data[i].categoryName;
-							categoryIds[i] = data[i].orgNodeCategoryId;
-						}*/
 						ProductData = data;
 						var selectedproductId= data.selectedProductId;
 						fillProductGradeLevelDropDown('testGroupList',data.product,selectedproductId);
+						fillDropDown("timeZoneList",data.testZoneDropDownList);
 						$.unblockUI(); 						
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -677,21 +673,26 @@ function createSingleNodeSelectedTree(jsondata) {
 					//fillDropDown("grade", optionList[i].gradeDropDownList);
 					if(!(optionList[i].isTabeProduct)) {
 						if(!(optionList[i].hideLevelDropDown)) {
-							fillDropDown("level",optionList[i].levelDropDownList);	
-							
-							if(optionList[i].showLevelOrGrade="level") {
+							if(optionList[i].showLevelOrGrade=='level') {
 								document.getElementById("levelDiv").style.display ="block";
 								document.getElementById("level").style.display = "block";
-							} else if (optionList[i].showLevelOrGrade="grade") {
+								document.getElementById("gradeDiv").style.display = "none";
+								fillDropDown("level",optionList[i].levelDropDownList);	
+							} else if (optionList[i].showLevelOrGrade=='grade') {
 								document.getElementById("gradeDiv").style.display ="block";
 								document.getElementById("level").style.display = "block";
+								document.getElementById("levelDiv").style.display = "none";
+								fillDropDown("level",optionList[i].levelDropDownList);	
 							} else { 
 							document.getElementById("gradeDiv").style.display = "none";
 							document.getElementById("levelDiv").style.display = "none";
 							document.getElementById("level").style.display = "none";
 							}
 						} else {
-							fillDropDown("level",optionList[i].levelDropDownList);	
+							//fillDropDown("level",optionList[i].levelDropDownList);
+							document.getElementById("gradeDiv").style.display = "none";
+							document.getElementById("levelDiv").style.display = "none";
+							document.getElementById("level").style.display = "none";	
 						}
 					
 					} else {
@@ -725,42 +726,45 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 
 	function  changeGradeAndLevel(){
-
-	var e = document.getElementById("testGroupList");  
-	var selectProductId = e.options[e.selectedIndex].value;
-	var optionList = ProductData.product
-	
+		var e = document.getElementById("testGroupList");  
+		var selectProductId = e.options[e.selectedIndex].value;
+		var optionList = ProductData.product
 		for(var i = 0; i < optionList.length; i++ ) {
-				if(selectProductId==optionList[i].productId) { 	     
-					//optionHtml += "<option  value='"+ optionList[i].productId+"'selected >"+ optionList[i].productName+"</option>";
-					if(!(optionList[i].isTabeProduct)) {
-						if(!(optionList[i].hideLevelDropDown)) {
+			if(selectProductId==optionList[i].productId) { 	     
+				if(!(optionList[i].isTabeProduct)) {
+					if(!(optionList[i].hideLevelDropDown)) {
+						if(optionList[i].showLevelOrGrade=="level") {
+							document.getElementById("levelDiv").style.display ="block";
+							document.getElementById("level").style.display = "block";
+							document.getElementById("gradeDiv").style.display = "none";
 							fillDropDown("level",optionList[i].levelDropDownList);	
-							
-							if(optionList[i].showLevelOrGrade="level") {
-								document.getElementById("levelDiv").style.display ="block";
-								document.getElementById("level").style.display = "block";
-							} else if (optionList[i].showLevelOrGrade="grade") {
-								document.getElementById("gradeDiv").style.display ="block";
-								document.getElementById("level").style.display = "block";
-							} else { 
+						} else if (optionList[i].showLevelOrGrade=="grade") {
+							document.getElementById("gradeDiv").style.display ="block";
+							document.getElementById("level").style.display = "block";
+							document.getElementById("levelDiv").style.display = "none";
+							fillDropDown("level",optionList[i].levelDropDownList);	
+						} else { 
+							//fillDropDown("level",optionList[i].levelDropDownList);	
 							document.getElementById("gradeDiv").style.display = "none";
 							document.getElementById("levelDiv").style.display = "none";
 							document.getElementById("level").style.display = "none";
-							}
-						} else {
-							fillDropDown("level",optionList[i].levelDropDownList);	
 						}
-					
 					} else {
 						document.getElementById("gradeDiv").style.display = "none";
 						document.getElementById("levelDiv").style.display = "none";
 						document.getElementById("level").style.display = "none";
+						//fillDropDown("level",optionList[i].levelDropDownList);	
 					}
-					break;
-				} 
-				
-			}
+						
+				} else {
+					document.getElementById("gradeDiv").style.display = "none";
+					document.getElementById("levelDiv").style.display = "none";
+					document.getElementById("level").style.display = "none";
+				}
+				break;
+			} 
+					
+		}
 	
 
 	}

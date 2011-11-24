@@ -20,10 +20,7 @@ import com.ctb.testSessionInfo.data.TestVO;
 
 
 public class ScheduleTestVo implements Serializable{
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private static final String RD_YES = "Y";
     private static final String RD_NO = "N";
@@ -77,7 +74,7 @@ public class ScheduleTestVo implements Serializable{
         Collections.sort(result);
         if (grades.length > 1)
         	gradeList.add(new ObjectIdName("*",FilterSortPageUtils.FILTERTYPE_SHOWALL));
-           // result.add(0, FilterSortPageUtils.FILTERTYPE_SHOWALL);
+           
         for (String val : result) {
         	gradeList.add(new ObjectIdName(val,val));
         }
@@ -200,11 +197,7 @@ public class ScheduleTestVo implements Serializable{
 				
 				prod.setAcknowledgmentsURL(val.getAcknowledgmentsURL());
 				
-				if(prod.getLevelDropDownList()==null || prod.getLevelDropDownList().size()<=1){
-					prod.setHideLevelDropDown(true);
-				} else {
-					prod.setHideLevelDropDown(false);
-				}
+				
 				prod.setProductType(TestSessionUtils.getProductType(val.getProductType()));
 				
 				prod.setTabeProduct(TestSessionUtils.isTabeProduct(prod.getProductType()));
@@ -222,12 +215,20 @@ public class ScheduleTestVo implements Serializable{
 	            	prod.setShowLevelOrGrade( "grade");
 	            	//gradeFlag = true;
 	                //this.showLevelOrGrade = "grade";
-	            	prod.setLevelDropDownList(new ArrayList<ObjectIdName> ());// clear existing
+	            	prod.setLevelDropDownList(prod.getGradeDropDownList());
 	                //this.levelList = this.gradeList;
 	            } else {
 	            	prod.setShowLevelOrGrade( "none");
 	            }
 				
+				
+				
+				
+				if(prod.getLevelDropDownList()==null || prod.getLevelDropDownList().size()<0){
+					prod.setHideLevelDropDown(true);
+				} else {
+					prod.setHideLevelDropDown(false);
+				}
 				
 				product.add(prod);
 
