@@ -56,6 +56,23 @@
 				// Accordion
 				$("#accordion").accordion({ header: "h3" });
 				$("#ssAccordion").accordion({ header: "h3" });
+				 $('#startDate').datepicker({
+					inline: true,
+					clickInput:true
+					
+
+				});
+				$('#endDate').datepicker({
+					inline: true,
+					clickInput:true
+					
+
+				});
+				var startTime;
+				var endTime;
+				$("#slider-range").slider({
+					range: true, min: 0, max: 2879, values: [540, 1020], step:5, slide: slideTime, change: checkMax
+				}); 
 			});
 		
 		

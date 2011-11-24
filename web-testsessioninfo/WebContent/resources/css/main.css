@@ -426,3 +426,42 @@ clear: both;
 .ie8 #innerID li {
 	clear: both;
 }
+
+.subtestHeader{
+	background: url(../images/tableHeader.GIF);
+	color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    font-weight: bold;
+    padding: 5px;
+    vertical-align: middle;
+}
+
+.shadowBorder{
+	border-bottom:#B0DFFF 1px groove;
+	border-right:#B0DFFF 1px groove;
+	border-top:#B0DFFF 1px groove;
+	border-left:#B0DFFF 1px groove;
+	border-radius:5px;
+	-moz-border-radius:5px;
+	
+}
+
+.divider{
+	border-right:#0099FF dashed 1px;
+}
+
+.bigBox{
+	border:1px solid #E1E1E1;
+	width : 220px;
+}
+
+.norBox{
+	border:1px solid #E1E1E1;
+}
+
+
+
+
+

@@ -13,6 +13,7 @@ var openTreeRequested = false;
 var isTabeProduct = false;
 var ishomepageload = false;
 
+var ProductData;
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
 	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 
@@ -442,13 +443,13 @@ function createSingleNodeSelectedTree(jsondata) {
  	function closePopUp(dailogId){
  		if(dailogId == 'scheduleSession') {
 			$('#ssAccordion').accordion('activate', 0 );
-			$("#select_Test").scrollTop(0);
-			$("#test_Detail").scrollTop(0);
-			$("#add_Student").scrollTop(0);
-			$('#add_Proctor').scrollTop(0);
-			$("#test_Detail").hide();
+			$("#Select_Test").scrollTop(0);
+			$("#Test_Detail").scrollTop(0);
+			$("#Add_Student").scrollTop(0);
+			$('#Add_Proctor').scrollTop(0);
+			$("#Test_Detail").hide();
 			$("#add_Student").hide();
-			$('#add_Proctor').hide();
+			$('#Add_Proctor').hide();
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -610,6 +611,232 @@ function populateSelectedStudent() {
 	element.style.display = 'none';  
 	var element = document.getElementById('del_list6');
 	element.title = 'Remove Student'; 
+}
+function scheduleNewSession() {
+
+	$.ajax({
+		async:		true,
+		beforeSend:	function(){
+						UIBlock();
+					},
+		url:		'selectTest.do?currentAction=init',
+		type:		'POST',
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){	
+						/*
+						for(var i = 0; i < data.length; i++) {
+							layerOptions[i] = data[i].categoryName;
+							categoryIds[i] = data[i].orgNodeCategoryId;
+						}*/
+						ProductData = data;
+						var selectedproductId= data.selectedProductId;
+						fillProductGradeLevelDropDown('testGroupList',data.product,selectedproductId);
+						$.unblockUI(); 						
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();
+						window.location.href="/SessionWeb/logout.do";
+						
+					},
+		complete :  function(){
+						 $.unblockUI(); 
+					}
+	});
+	
+	$("#scheduleSession").dialog({  
+		title:"Schedule Session",  
+	 	resizable:false,
+	 	autoOpen: true,
+	 	width: '1200px',
+	 	modal: true,
+	 	closeOnEscape: false,
+	 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+	});	
+	setPopupPosition();
+}
+
+function fillProductGradeLevelDropDown( elementId, optionList, selectedProductId) {
+		var ddl = document.getElementById(elementId);
+		var optionHtml = "" ;
+		//var optionList = data.product;
+		if(optionList.length < 1) {
+			optionHtml += "<option  value='Select a product'>Show All</option>";
+		} else {
+			for(var i = 0; i < optionList.length; i++ ) {
+				if(selectedProductId==optionList[i].productId) { 	     
+					optionHtml += "<option  value='"+ optionList[i].productId+"'selected >"+ optionList[i].productName+"</option>";
+					//fillDropDown("grade", optionList[i].gradeDropDownList);
+					if(!(optionList[i].isTabeProduct)) {
+						if(!(optionList[i].hideLevelDropDown)) {
+							fillDropDown("level",optionList[i].levelDropDownList);	
+							
+							if(optionList[i].showLevelOrGrade="level") {
+								document.getElementById("levelDiv").style.display ="block";
+								document.getElementById("level").style.display = "block";
+							} else if (optionList[i].showLevelOrGrade="grade") {
+								document.getElementById("gradeDiv").style.display ="block";
+								document.getElementById("level").style.display = "block";
+							} else { 
+							document.getElementById("gradeDiv").style.display = "none";
+							document.getElementById("levelDiv").style.display = "none";
+							document.getElementById("level").style.display = "none";
+							}
+						} else {
+							fillDropDown("level",optionList[i].levelDropDownList);	
+						}
+					
+					} else {
+						document.getElementById("gradeDiv").style.display = "none";
+						document.getElementById("levelDiv").style.display = "none";
+						document.getElementById("level").style.display = "none";
+					}
+					
+				} else {
+					optionHtml += "<option  value='"+ optionList[i].productId+"'>"+ optionList[i].productName+"</option>";
+				}
+				
+			}
+		}
+		$(ddl).html(optionHtml);
+	}
+	
+
+
+function fillDropDown( elementId, optionList) {
+	var ddl = document.getElementById(elementId);
+	var optionHtml = "" ;
+	if(optionList.length < 1) {
+		optionHtml += "<option  value='Select'>Select</option>";
+	} else {
+		for(var i = 0; i < optionList.length; i++ ) {		     
+			optionHtml += "<option  value='"+ optionList[i].id+"'>"+ optionList[i].name+"</option>";	
+		}
+	}
+	$(ddl).html(optionHtml);
+}
+
+function  changeGradeAndLevel(){
+
+	var e = document.getElementById("testGroupList");  
+	var selectProductId = e.options[e.selectedIndex].value;
+	var optionList = ProductData.product
+	
+		for(var i = 0; i < optionList.length; i++ ) {
+				if(selectProductId==optionList[i].productId) { 	     
+					//optionHtml += "<option  value='"+ optionList[i].productId+"'selected >"+ optionList[i].productName+"</option>";
+					if(!(optionList[i].isTabeProduct)) {
+						if(!(optionList[i].hideLevelDropDown)) {
+							fillDropDown("level",optionList[i].levelDropDownList);	
+							
+							if(optionList[i].showLevelOrGrade="level") {
+								document.getElementById("levelDiv").style.display ="block";
+								document.getElementById("level").style.display = "block";
+							} else if (optionList[i].showLevelOrGrade="grade") {
+								document.getElementById("gradeDiv").style.display ="block";
+								document.getElementById("level").style.display = "block";
+							} else { 
+							document.getElementById("gradeDiv").style.display = "none";
+							document.getElementById("levelDiv").style.display = "none";
+							document.getElementById("level").style.display = "none";
+							}
+						} else {
+							fillDropDown("level",optionList[i].levelDropDownList);	
+						}
+					
+					} else {
+						document.getElementById("gradeDiv").style.display = "none";
+						document.getElementById("levelDiv").style.display = "none";
+						document.getElementById("level").style.display = "none";
+					}
+					break;
+				} 
+				
+			}
+	
+
+}
+
+function setPopupPosition(){
+				var toppos = ($(window).height() - 610) /2 + 'px';
+				var leftpos = ($(window).width() - 760) /2 + 'px';
+				$("#Select_Test").parent().css("top",toppos);
+				$("#Select_Test").parent().css("left",leftpos);
+				$("#Select_Test").css("overflow",'auto');
+				$("#Select_Test").css("height",'350px');
+				$("#Test_Detail").css("overflow",'auto');
+				$("#Test_Detail").css("height",'300px');
+				$("#Add_Student").css("overflow",'auto');
+				$("#Add_Student").css("height",'400px');
+				$("#Add_Proctor").css("overflow",'auto');
+				$("#Add_Proctor").css("height",'300px');			
+				
+	}
+	
+	function toggleAccessCode(){
+	var testBreak = document.getElementById("testBreak");
+	if(!testBreak.checked){		
+		document.getElementById("aCodeH").style.display = "none";
+		document.getElementById("aCode").style.display = "inline";			
+		for(var i=1;i<3;i++){
+			document.getElementById("aCodeB"+i).style.display = "none";
+		}
+	}else{
+		document.getElementById("aCodeH").style.display = "";		
+		document.getElementById("aCode").style.display = "none";
+		for(var i=1;i<3;i++){
+			document.getElementById("aCodeB"+i).style.display = "";
+		}
+	}
+}
+
+
+function slideTime(event, ui){
+    var minutes0 = parseInt($("#slider-range").slider("values", 0) % 60);
+    var hours0 = parseInt($("#slider-range").slider("values", 0) / 60 % 24);
+    var minutes1 = parseInt($("#slider-range").slider("values", 1) % 60);
+    var hours1 = parseInt($("#slider-range").slider("values", 1) / 60 % 24);
+    startTime = getTime(hours0, minutes0);
+    endTime = getTime(hours1, minutes1);
+    $("#time").text(startTime + ' - ' + endTime);	
+}
+
+
+function getTime(hours, minutes) {
+    var time = null;
+    minutes = minutes + "";
+    if (hours < 12) {time = "AM";}
+    else {  time = "PM";}
+    if (hours == 0) {hours = 12;}
+    if (hours > 12) {hours = hours - 12; }
+    if (minutes.length == 1) {minutes = "0" + minutes;}
+    return hours + ":" + minutes + " " + time;
+}
+function checkMax() {
+    var size = $("#slider-range").slider("values", 1) - $("#slider-range").slider("values", 0);
+    if( size >= 1435) {
+        $("#slider-range div").addClass("ui-state-error");
+        $("#slider-range div").removeClass("ui-widget-header");
+        /*$("#scheduleSubmit").attr("disabled","disabled");
+        $("#scheduleSubmit").addClass("ui-state-disabled");
+        $("#scheduleSubmit").removeClass("ui-state-default");*/
+        $("#SlideMax").text("Cannot be more than 24 hours");
+    }
+    else {
+        $("#slider-range div").addClass("ui-widget-header");
+        $("#slider-range div").removeClass("ui-state-error");
+        /*$("#scheduleSubmit").attr("disabled","");
+        $("#scheduleSubmit").addClass("ui-state-default");
+        $("#scheduleSubmit").removeClass("ui-state-disabled");*/
+        $("#SlideMax").text("");
+    }
+}
+function add() {
+    //console.log(startTime);
+    //console.log(endTime);
+    $('#Schedule tbody').append('<tr>' +
+        '<td>' + startTime + '</td>' +
+        '<td>' + endTime + '</td>' +
+        '</tr>');
 }
 		
 				 

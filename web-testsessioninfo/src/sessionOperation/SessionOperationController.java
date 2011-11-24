@@ -3,10 +3,12 @@ package sessionOperation;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -17,6 +19,8 @@ import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
+
+
 
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
@@ -30,11 +34,15 @@ import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.SessionStudentData;
+import com.ctb.bean.testAdmin.TestElementData;
+import com.ctb.bean.testAdmin.TestProduct;
+import com.ctb.bean.testAdmin.TestProductData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.testSessionInfo.data.Condition;
 import com.ctb.testSessionInfo.dto.Message;
 import com.ctb.testSessionInfo.dto.MessageInfo;
 import com.ctb.testSessionInfo.dto.PasswordInformation;
@@ -47,12 +55,21 @@ import com.ctb.testSessionInfo.utils.Organization;
 import com.ctb.testSessionInfo.utils.OrgnizationComparator;
 import com.ctb.testSessionInfo.utils.PermissionsUtils;
 import com.ctb.testSessionInfo.utils.Row;
+import com.ctb.testSessionInfo.utils.ScheduleTestVo;
+import com.ctb.testSessionInfo.utils.TestSessionUtils;
 import com.ctb.testSessionInfo.utils.TreeData;
 import com.ctb.testSessionInfo.utils.UserOrgHierarchyUtils;
 import com.ctb.testSessionInfo.utils.UserPasswordUtils;
 import com.ctb.util.userManagement.CTBConstants;
+import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
+import com.ctb.widgets.bean.ColumnSortEntry;
+import com.ctb.widgets.bean.PagerSummary;
 import com.google.gson.Gson;
+
+
+
+
 
 
 
@@ -73,17 +90,33 @@ public class SessionOperationController extends PageFlowController {
     @Control()
     private com.ctb.control.licensing.Licensing licensing;
     
+
+    @Control()
+    private com.ctb.control.testAdmin.ScheduleTest scheduleTest;
+    
+    @Control()
+    private com.ctb.control.db.ItemSet itemSet;
+    
 	private String userName = null;
 	private Integer customerId = null;
     private User user = null;
     private List sessionListCUFU = new ArrayList(); 
     private List sessionListPA = new ArrayList(); 
     private boolean hasLicenseConfig = false; 
-    
+    private List productNameList = null;
+    //private Hashtable productNameToIndexHash = null;
     public static String CONTENT_TYPE_JSON = "application/json";
 
     public LinkedHashMap hintQuestionOptions = null;
     public UserProfileInformation userProfile = null; 
+	private TestProductData testProductData = null;  
+	private TestProduct [] tps;
+	private String productType = TestSessionUtils.GENERIC_PRODUCT_TYPE;
+	private static final String ACTION_INIT = "init";
+	boolean isPopulatedSuccessfully = false;
+	ScheduleTestVo vo = new ScheduleTestVo();
+
+	 public Condition condition = new Condition();
     
 	/**
 	 * @return the userName
@@ -329,6 +362,421 @@ public class SessionOperationController extends PageFlowController {
             System.err.print(ioe.getStackTrace());
         }
         return null;
+    }
+    
+    @Jpf.Action()
+    protected Forward selectTest(SessionOperationForm form)
+    {
+    	String jsonData = "";
+    	HttpServletResponse resp = getResponse();
+    	OutputStream stream = null;
+        //boolean disableNextButton = false;
+        //boolean hideTestOptions = false;
+        //boolean hasMultipleSubtests = false;
+        String productName = "";
+       
+        
+        //String selectedProductName = null;
+        //Boolean isTabeProduct = null;
+        //Boolean isTabeLocatorProduct = null;
+        String currentAction = this.getRequest().getParameter("currentAction");
+        String selectedProductId =  this.getRequest().getParameter("productId");
+        //ScheduleTestVo vo = new ScheduleTestVo();
+        /*String actionElement = form.getActionElement();
+        String currentAction = form.getCurrentAction();
+      //change for performance tuning
+       */
+        if(currentAction==null)
+        {
+        	currentAction=ACTION_INIT;
+        } 
+        
+          try
+        {
+            if (this.testProductData == null)
+            { // first time here 
+                this.testProductData = this.getTestProductDataForUser();
+                 tps = this.testProductData.getTestProducts();//changes for performance tuning
+                 if( tps[0] != null && tps.length>0) {
+                	 vo.populate(userName,tps, itemSet, scheduleTest);
+                	 
+                 }
+                 isPopulatedSuccessfully = true;
+            } else if (!isPopulatedSuccessfully){
+            	vo.populate(userName, tps, itemSet, scheduleTest);
+            }
+        	           
+            if(selectedProductId== null || selectedProductId.trim().length()==0)
+            {
+                if (tps.length > 0 && tps[0] != null)
+                {
+                     productName = tps[0].getProductName();
+                     selectedProductId = tps[0].getProductId().toString();
+                }
+           } 
+            vo.setSelectedProductId(selectedProductId);
+            
+            int selectedProductIndex = getProductIndexByID(selectedProductId);
+            
+            // populate grade and level for selected product
+            TestProduct prod = tps[selectedProductIndex];
+            
+            
+			 // subhendu started
+            /* 
+            if (form.getSelectedProductName() == null || form.getSelectedProductName().equals(""))
+            {
+                if (tps.length > 0 && tps[0] != null)
+                {
+                    String productName = tps[0].getProductName();
+                    form.setSelectedProductName(productName);
+                }
+                else
+                {
+                    form.setSelectedProductName("");
+                }
+            }
+            
+            form.validateValues();
+            //changes for performance tuning
+            
+            if(currentAction.equals("null")){
+            	 selectedProductName = form.getSelectedProductName();
+                 selectedLevel = form.getSelectedLevel();
+            }
+           if (!((currentAction.equals("selectTest"))||(currentAction.equals("null")))){
+               selectedProductName = form.getSelectedProductName();
+                selectedLevel = form.getSelectedLevel();
+            }
+    
+            boolean newTestSelected = false;
+            
+            
+
+            disableNextButton = false;
+            hideTestOptions = false;
+            */              
+            this.condition.setOffGradeTestingDisabled(Boolean.FALSE);
+            //changes for performance tuning
+            this.condition.setShowStudentFeedback(new Boolean(tps[selectedProductIndex].getShowStudentFeedback().equals("T")));
+            
+            /*
+            if (this.scheduledSession != null)
+            {
+                TestSession testSession = this.scheduledSession.getTestSession();
+                testSession.setShowStudentFeedback(this.condition.getShowStudentFeedback().booleanValue() ? "T" : "F");
+            }*/
+            
+            String acknowledgmentsURL =  tps[selectedProductIndex].getAcknowledgmentsURL();
+            if (acknowledgmentsURL != null)
+            {
+                acknowledgmentsURL = acknowledgmentsURL.trim();
+                if (!"".equals(acknowledgmentsURL))
+                    this.getRequest().setAttribute("acknowledgmentsURL", acknowledgmentsURL);
+            }
+
+            Integer productId = tps[selectedProductIndex].getProductId();
+			
+            this.productType = TestSessionUtils.getProductType(tps[selectedProductIndex].getProductType());
+            
+            //Changes for defect in performance tuning    
+            /*if (this.levelList.size() > 0 && gradeFlag==false) {
+                this.showLevelOrGrade = "level";
+            }
+            else if (this.gradeList.size() > 0)
+            {
+            	 //Changes for defect in performance tuning 
+            	gradeFlag = true;
+                this.showLevelOrGrade = "grade";
+                this.levelList = this.gradeList;
+            }
+            else
+                this.showLevelOrGrade = "none";
+            */
+           /* if ("grade".equals(this.showLevelOrGrade) && "ItemSetLevel".equals(form.getTestStatePathList().getSortColumn()))
+                form.getTestStatePathList().setSortColumn("Grade");
+            else if ("level".equals(this.showLevelOrGrade) && "Grade".equals(form.getTestStatePathList().getSortColumn()))
+                form.getTestStatePathList().setSortColumn("ItemSetLevel");    
+            else if ("none".equals(this.showLevelOrGrade) && ("ItemSetLevel".equals(form.getTestStatePathList().getSortColumn()) || "Grade".equals(form.getTestStatePathList().getSortColumn())))
+                form.getTestStatePathList().setSortColumn("ItemSetName");
+    */
+         /*
+            if (TestSessionUtils.isTabeProduct(this.productType).booleanValue())
+            { 
+                if (form.getTestStatePathList().getSortColumn().equals("Grade") || form.getTestStatePathList().getSortColumn().equals("ItemSetLevel"))
+                {
+                    form.getTestStatePathList().setSortColumn("ItemSetName");
+                }
+            }
+            
+         */       
+            /*FilterParams testFilter = null;
+            if (selectedLevel != null && !selectedLevel.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
+            {
+                if (this.showLevelOrGrade.equals("level"))                
+                    testFilter = FilterSortPageUtils.buildFilterParams("ItemSetLevel", selectedLevel);
+                else if (this.showLevelOrGrade.equals("grade")) 
+                    testFilter = FilterSortPageUtils.buildFilterParams("Grade", selectedLevel);
+                
+            }
+            PageParams testPage = FilterSortPageUtils.buildPageParams(form.getTestStatePathList().getPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+            SortParams testSort = FilterSortPageUtils.buildSortParams(form.getTestStatePathList().getSortColumn(), form.getTestStatePathList().getSortOrderBy(), null, null);
+                        
+            TestElementData ted = this.getTestsForProductForUser(productId, testFilter, testPage, testSort);
+                   
+            int totalNumOfPages = ted.getTotalPages().intValue();                       
+            //START- Added for Deferred Defect 59285
+            form.testStatePathList.setMaxPageRequested(totalNumOfPages);
+            //END- Added for Deferred Defect 59285
+          //code for performance tuning
+            if(currentAction.equals("null")){
+            this.testList = buildTestList(ted);
+            }
+           
+            if (!((currentAction.equals("selectTest"))||(currentAction.equals("null")))){
+            	this.testList = buildTestList(ted);
+         }
+            
+            if (form.getTestStatePathList().getPageRequested().intValue() > ted.getFilteredPages().intValue())
+            {
+                form.getTestStatePathList().setPageRequested(ted.getFilteredPages());
+            }
+            
+    
+            PagerSummary testPagerSummary = buildTestPagerSummary(ted, form.getTestStatePathList().getPageRequested());
+            this.getRequest().setAttribute("testPagerSummary", testPagerSummary);
+                      
+              */        
+           /* if (newTestSelected)
+            {
+                Integer testId = new Integer(form.getSelectedTestId());
+                if (isOffGradeTestingContainStudents(tps[selectedProductIndex], ted, testId))
+                { 
+                    form.setSelectedTestId(this.currentSelectedTestId);
+                    newTestSelected = false;                    
+                    this.getRequest().setAttribute("errorMessage", MessageResourceBundle.getMessage("Off_Grade_Testing_Error"));
+                }
+                else
+                {
+                    this.currentSelectedTestId = form.getSelectedTestId();
+                }
+            }*/
+            
+           /*     
+                      
+            TestVO selectedTest = null;
+            if (form.getSelectedTestId() != null && !form.getSelectedTestId().equals(""))
+            {
+                
+                selectedTest = getTestById(form.getSelectedTestId());
+                
+                if (selectedTest != null)
+                {
+                    
+                    this.itemSetId = selectedTest.getId();
+                 
+                    if (newTestSelected)
+                    {
+                       
+                        this.sessionSubtests = selectedTest.getSubtests(); 
+                                                
+                        this.locatorSubtest = TestSessionUtils.getLocatorSubtest(this.sessionSubtests);   
+
+                        if (TestSessionUtils.isTabeBatterySurveyProduct(this.productType).booleanValue())
+                        {
+                            this.defaultSubtests = TestSessionUtils.getDefaultSubtestsWithoutLocator(this.sessionSubtests); 
+                        }
+                        else
+                        {
+                            this.defaultSubtests = TestSessionUtils.cloneSubtests(this.sessionSubtests); 
+                        }
+                                                                        
+                        form.getTestAdmin().setAccessCode(selectedTest.getAccessCode());
+
+                        if (this.defaultSubtests.size() >= 1)
+                        {
+                            form.getTestAdmin().setAccessCode(((SubtestVO)this.defaultSubtests.get(0)).getTestAccessCode());
+                        }
+                        
+                        if (this.locatorSubtest != null)
+                        {
+                            form.setAutoLocator("true");   
+                        }
+                    }
+
+                    this.setFormList(selectedTest.getForms());
+                    this.levelOptions = TestSessionUtils.getLevelOptions();
+
+                    int numOfSubtests =0;
+                    if (this.defaultSubtests != null) 
+                        numOfSubtests = this.defaultSubtests.size();
+
+                    hasMultipleSubtests = (numOfSubtests > 1);
+                    
+                    disableNextButton = false;
+                    hideTestOptions = false;         
+                    
+                    this.condition.setOffGradeTestingDisabled(isOffGradeTestingDisabled(tps[selectedProductIndex], ted, selectedTest.getId(), form));
+                               
+                }
+                else if (this.condition.getIsSearchTestList().booleanValue())
+                {
+                    boolean found = false;
+                    for (int i=2; i <= totalNumOfPages && !found; i++)
+                    {
+                        form.getTestStatePathList().setPageRequested(new Integer(i));
+                        testPage = FilterSortPageUtils.buildPageParams(form.getTestStatePathList().getPageRequested(), FilterSortPageUtils.PAGESIZE_10);
+                        ted = this.getTestsForProductForUser(productId, testFilter, testPage, testSort);
+                        this.testList = buildTestList(ted);
+                        selectedTest = getTestById(form.getSelectedTestId());
+                        if (selectedTest != null)
+                            found = true;
+                    }
+                    this.condition.setIsSearchTestList(Boolean.FALSE);
+                    //disableNextButton = false;
+                   //Start Defect fixing 59285
+                    if(!found) {
+                    	disableNextButton = true;
+                    } else {
+                    	disableNextButton = false;
+                    }
+                  //End Defect fixing 59285
+                    testPagerSummary = buildTestPagerSummary(ted, form.getTestStatePathList().getPageRequested());
+                    this.getRequest().setAttribute("testPagerSummary", testPagerSummary);
+                    
+                }
+                else
+                {
+                    disableNextButton = true;
+                    hideTestOptions = true;                    
+                }
+            }
+            else
+            {
+                disableNextButton = true;
+                hideTestOptions = true;                    
+            }
+            
+            if (selectedTest != null)
+                this.getRequest().setAttribute("selectedTestName", selectedTest.getTestName());
+    
+            if ("changeHasBreakToYes".equals(currentAction) && this.testAdminId != null && this.selectedTestId.equals(form.getSelectedTestId()))
+            {
+                resetTACs(form.getSelectedTestId());                
+            }
+        */
+        ///////////////////
+    /*
+            boolean hideProductNameDropDown = this.productNameList.size() <= 1;
+            this.getRequest().setAttribute("hideProductNameDropDown", new Boolean(hideProductNameDropDown));
+            if (hideProductNameDropDown)
+                form.setSelectedProductName((String)this.productNameList.get(0));
+            
+            boolean hideLevelDropDown = this.levelList.size() <= 1;
+            this.getRequest().setAttribute("hideLevelDropDown", new Boolean(hideLevelDropDown));
+            if (hideLevelDropDown)
+            {
+                if (this.levelList.size() > 0)
+                {
+                    form.setSelectedLevel((String)this.levelList.get(0));
+                }
+            }
+                   
+        }
+        catch (TestNotFoundException e)
+        {
+            e.printStackTrace();
+            this.getRequest().setAttribute("informationMessage", e.getMessage());
+            disableNextButton = true;
+        }
+        catch (CTBBusinessException e)
+        {
+            e.printStackTrace();
+            this.getRequest().setAttribute("errorMessage", e.getMessage());
+            disableNextButton = true;
+        }
+
+       */ 
+        
+        
+        /*form.setActionElement(ACTION_DEFAULT); 
+        isTopLevelUser(); //LLO- 118 - Change for Ematrix UI
+        setFormInfoOnRequest(form);
+            
+           */ 
+            
+       // subhendu ended
+                   
+    	
+        } catch (Exception e) {
+			e.printStackTrace();
+		}
+    	
+    	Gson gson = new Gson();
+    	
+    	
+   		//vo.populateProducts(tps);
+    	
+    	jsonData = gson.toJson(vo);
+    	System.out.println("Select test session completed...");
+    	System.out.println(jsonData);
+    	try {
+
+			resp.setContentType(CONTENT_TYPE_JSON);
+			resp.flushBuffer();
+			stream = resp.getOutputStream();
+			stream.write(jsonData.getBytes());
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		} finally{
+			if (stream!=null){
+				try {
+					stream.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+		return null;
+    	
+		
+        
+    }
+    
+     private int getProductIndexByID(String selectedProductId) {
+    	 int productIndex = -1;
+    	 int counter = 0;
+    	 if (selectedProductId == null)
+             return -1;
+    	 int val = 0;
+    	 try {
+    		 val = Integer.valueOf(selectedProductId);
+    	 } catch (NumberFormatException ne) {
+    		 return -1;
+    	 }
+    	 
+         for (TestProduct tp :tps) {
+        	 
+        	 if(tp.getProductId().intValue() == val) {
+        		 productIndex =  counter;
+        		 break;
+        	 }
+        		
+        	 counter = counter+1;
+         }
+    	 
+    	 return productIndex;
+	}
+     
+     
+    
+
+	private TestProductData getTestProductDataForUser() throws CTBBusinessException
+    {
+        TestProductData tpd = null;                
+        SortParams sortParams = FilterSortPageUtils.buildSortParams("ProductName", ColumnSortEntry.ASCENDING, null, null);            
+        tpd = this.scheduleTest.getTestProductsForUser(this.userName,null,null,sortParams);
+        return tpd;
     }
     
     private boolean isUserPasswordExpired()

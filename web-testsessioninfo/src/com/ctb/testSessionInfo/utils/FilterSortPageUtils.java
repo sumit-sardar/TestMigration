@@ -103,6 +103,27 @@ public class FilterSortPageUtils
 
         return sort;
     }
+    
+    public static SortParams buildSortParams(String sortName, String sortOrderBy, String secondarySortName, String secondarySortOrderBy)
+    {
+        SortParams sort = new SortParams();
+                
+        if(secondarySortName != null && secondarySortOrderBy != null) {
+            SortType sortType = sortOrderBy.equals(ColumnSortEntry.ASCENDING) ? SortType.ALPHAASC : SortType.ALPHADESC;
+            SortType secondarySortType = secondarySortOrderBy.equals(ColumnSortEntry.ASCENDING) ? SortType.ALPHAASC : SortType.ALPHADESC;
+            SortParam[] sortParams = new SortParam[2];
+            sortParams[0] = new SortParam(sortName, sortType);
+            sortParams[1] = new SortParam(secondarySortName, secondarySortType);
+            sort.setSortParams(sortParams);
+        } else {
+            SortType sortType = sortOrderBy.equals(ColumnSortEntry.ASCENDING) ? SortType.ALPHAASC : SortType.ALPHADESC;
+            SortParam[] sortParams = new SortParam[1];
+            sortParams[0] = new SortParam(sortName, sortType);
+            sort.setSortParams(sortParams);
+        }
+        
+        return sort;
+    }
  
     public static PageParams buildPageParams(Integer pageRequested, int pageSize)
     {
