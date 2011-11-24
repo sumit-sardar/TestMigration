@@ -39,13 +39,14 @@ function populateSessionListGrid(homePageLoad) {
 		   		{name:'loginEndDate',index:'loginEndDate', width:175, editable: true, align:"left",sorttype:'date', formatter:'date', formatoptions: {srcformat:'M d, Y h:i:s', newformat:'m/d/y'}, sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSessionCUFU", id:"testAdminId",
-		   	records: function(obj) { 
-		   	 sessionListCUFU = JSON.stringify(obj.testSessionCUFU);
-		   	 if(ishomepageload && obj.orgNodeCategory != 'undefined'){
-		   	 	leafNodeCategoryId = obj.orgNodeCategory.categoryLevel;
-		   	 	leafNodeCategoryName = obj.orgNodeCategory.categoryName;
-		   	 }
-		   	 } },
+			   	records: function(obj) { 
+			   	 sessionListCUFU = JSON.stringify(obj.testSessionCUFU);
+				   	 if(ishomepageload && obj.orgNodeCategory != 'undefined'){
+				   	 	leafNodeCategoryId = obj.orgNodeCategory.categoryLevel;
+				   	 	leafNodeCategoryName = obj.orgNodeCategory.categoryName;
+				   	 }
+			   	 }
+		   	 },
 		   	loadui: "disable",
 			rowNum:20,
 			loadonce:true, 
@@ -117,7 +118,7 @@ function populateSessionListGrid(homePageLoad) {
 	 });
 	 jQuery("#list2").navGrid('#pager2', {
 				addfunc: function() {
-					scheduleSession();
+					scheduleNewSession();
 		    	}	    	
 			}); 
 }
@@ -634,6 +635,11 @@ function createSingleNodeSelectedTree(jsondata) {
 					}
 	});
 	
+	if(!stuGridloaded) {
+   		populateSelectedStudent();
+   	} else {
+   		gridReloadStu(true);
+   	}
 	$("#scheduleSession").dialog({  
 		title:"Schedule Session",  
 	 	resizable:false,
@@ -642,7 +648,19 @@ function createSingleNodeSelectedTree(jsondata) {
 	 	modal: true,
 	 	closeOnEscape: false,
 	 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
-	});	
+	});
+	var width = jQuery("#scheduleSession").width();
+    width = width - 72; // Fudge factor to prevent horizontal scrollbars
+    
+	if(isTabeProduct) {
+		
+		$("#list6").jqGrid("hideCol","itemSetForm"); 
+		jQuery("#list6").setGridWidth(width,true);
+	} else {
+		
+		$("#list6").jqGrid("showCol","itemSetForm"); 
+		jQuery("#list6").setGridWidth(width,false);
+	}
 	setPopupPosition();
 	}
 
