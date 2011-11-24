@@ -506,19 +506,9 @@ function createSingleNodeSelectedTree(jsondata) {
 			$("#list6").jqGrid("showCol","itemSetForm"); 
 			jQuery("#list6").setGridWidth(width,false);
 		}
-		$("#select_Test").css('height',400);
-		$("#test_Detail").css('height',400);
-		$("#add_Student").css('height',400);
-		$("#add_Proctor").css('height',400);
-		
-				
-		 var toppos = ($(window).height() - 700) /2 + 'px';
-		 var leftpos = ($(window).width() - 1200) /2 + 'px';
-		 $("#scheduleSession").parent().css("top",toppos);
-		 $("#scheduleSession").parent().css("left",leftpos);		
-	
+		setPopupPosition();
 	}
-			
+	
 	function reloadHomePage(){
 		reset();
 		hideTreeSlider();
@@ -527,7 +517,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	
 	
-function populateSelectedStudent() {
+	function populateSelectedStudent() {
  		UIBlock();
  		var studentIdTitle = $("#studentIdLabelName").val();
  		stuGridloaded = true;
@@ -611,8 +601,9 @@ function populateSelectedStudent() {
 	element.style.display = 'none';  
 	var element = document.getElementById('del_list6');
 	element.title = 'Remove Student'; 
-}
-function scheduleNewSession() {
+	}
+	
+	function scheduleNewSession() {
 
 	$.ajax({
 		async:		true,
@@ -653,9 +644,9 @@ function scheduleNewSession() {
 	 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 	});	
 	setPopupPosition();
-}
+	}
 
-function fillProductGradeLevelDropDown( elementId, optionList, selectedProductId) {
+	function fillProductGradeLevelDropDown( elementId, optionList, selectedProductId) {
 		var ddl = document.getElementById(elementId);
 		var optionHtml = "" ;
 		//var optionList = data.product;
@@ -702,20 +693,20 @@ function fillProductGradeLevelDropDown( elementId, optionList, selectedProductId
 	
 
 
-function fillDropDown( elementId, optionList) {
-	var ddl = document.getElementById(elementId);
-	var optionHtml = "" ;
-	if(optionList.length < 1) {
-		optionHtml += "<option  value='Select'>Select</option>";
-	} else {
-		for(var i = 0; i < optionList.length; i++ ) {		     
-			optionHtml += "<option  value='"+ optionList[i].id+"'>"+ optionList[i].name+"</option>";	
+	function fillDropDown( elementId, optionList) {
+		var ddl = document.getElementById(elementId);
+		var optionHtml = "" ;
+		if(optionList.length < 1) {
+			optionHtml += "<option  value='Select'>Select</option>";
+		} else {
+			for(var i = 0; i < optionList.length; i++ ) {		     
+				optionHtml += "<option  value='"+ optionList[i].id+"'>"+ optionList[i].name+"</option>";	
+			}
 		}
+		$(ddl).html(optionHtml);
 	}
-	$(ddl).html(optionHtml);
-}
 
-function  changeGradeAndLevel(){
+	function  changeGradeAndLevel(){
 
 	var e = document.getElementById("testGroupList");  
 	var selectProductId = e.options[e.selectedIndex].value;
@@ -754,11 +745,11 @@ function  changeGradeAndLevel(){
 			}
 	
 
-}
+	}
 
-function setPopupPosition(){
-				var toppos = ($(window).height() - 610) /2 + 'px';
-				var leftpos = ($(window).width() - 760) /2 + 'px';
+	function setPopupPosition(){
+				var toppos = ($(window).height() - 700) /2 + 'px';
+				var leftpos = ($(window).width() - 1200) /2 + 'px';
 				$("#Select_Test").parent().css("top",toppos);
 				$("#Select_Test").parent().css("left",leftpos);
 				$("#Select_Test").css("overflow",'auto');
@@ -790,53 +781,53 @@ function setPopupPosition(){
 }
 
 
-function slideTime(event, ui){
-    var minutes0 = parseInt($("#slider-range").slider("values", 0) % 60);
-    var hours0 = parseInt($("#slider-range").slider("values", 0) / 60 % 24);
-    var minutes1 = parseInt($("#slider-range").slider("values", 1) % 60);
-    var hours1 = parseInt($("#slider-range").slider("values", 1) / 60 % 24);
-    startTime = getTime(hours0, minutes0);
-    endTime = getTime(hours1, minutes1);
-    $("#time").text(startTime + ' - ' + endTime);	
-}
-
-
-function getTime(hours, minutes) {
-    var time = null;
-    minutes = minutes + "";
-    if (hours < 12) {time = "AM";}
-    else {  time = "PM";}
-    if (hours == 0) {hours = 12;}
-    if (hours > 12) {hours = hours - 12; }
-    if (minutes.length == 1) {minutes = "0" + minutes;}
-    return hours + ":" + minutes + " " + time;
-}
-function checkMax() {
-    var size = $("#slider-range").slider("values", 1) - $("#slider-range").slider("values", 0);
-    if( size >= 1435) {
-        $("#slider-range div").addClass("ui-state-error");
-        $("#slider-range div").removeClass("ui-widget-header");
-        /*$("#scheduleSubmit").attr("disabled","disabled");
-        $("#scheduleSubmit").addClass("ui-state-disabled");
-        $("#scheduleSubmit").removeClass("ui-state-default");*/
-        $("#SlideMax").text("Cannot be more than 24 hours");
-    }
-    else {
-        $("#slider-range div").addClass("ui-widget-header");
-        $("#slider-range div").removeClass("ui-state-error");
-        /*$("#scheduleSubmit").attr("disabled","");
-        $("#scheduleSubmit").addClass("ui-state-default");
-        $("#scheduleSubmit").removeClass("ui-state-disabled");*/
-        $("#SlideMax").text("");
-    }
-}
-function add() {
-    //console.log(startTime);
-    //console.log(endTime);
-    $('#Schedule tbody').append('<tr>' +
-        '<td>' + startTime + '</td>' +
-        '<td>' + endTime + '</td>' +
-        '</tr>');
-}
-		
-				 
+	function slideTime(event, ui){
+	    var minutes0 = parseInt($("#slider-range").slider("values", 0) % 60);
+	    var hours0 = parseInt($("#slider-range").slider("values", 0) / 60 % 24);
+	    var minutes1 = parseInt($("#slider-range").slider("values", 1) % 60);
+	    var hours1 = parseInt($("#slider-range").slider("values", 1) / 60 % 24);
+	    startTime = getTime(hours0, minutes0);
+	    endTime = getTime(hours1, minutes1);
+	    $("#time").text(startTime + ' - ' + endTime);	
+	}
+	
+	
+	function getTime(hours, minutes) {
+	    var time = null;
+	    minutes = minutes + "";
+	    if (hours < 12) {time = "AM";}
+	    else {  time = "PM";}
+	    if (hours == 0) {hours = 12;}
+	    if (hours > 12) {hours = hours - 12; }
+	    if (minutes.length == 1) {minutes = "0" + minutes;}
+	    return hours + ":" + minutes + " " + time;
+	}
+	function checkMax() {
+	    var size = $("#slider-range").slider("values", 1) - $("#slider-range").slider("values", 0);
+	    if( size >= 1435) {
+	        $("#slider-range div").addClass("ui-state-error");
+	        $("#slider-range div").removeClass("ui-widget-header");
+	        /*$("#scheduleSubmit").attr("disabled","disabled");
+	        $("#scheduleSubmit").addClass("ui-state-disabled");
+	        $("#scheduleSubmit").removeClass("ui-state-default");*/
+	        $("#SlideMax").text("Cannot be more than 24 hours");
+	    }
+	    else {
+	        $("#slider-range div").addClass("ui-widget-header");
+	        $("#slider-range div").removeClass("ui-state-error");
+	        /*$("#scheduleSubmit").attr("disabled","");
+	        $("#scheduleSubmit").addClass("ui-state-default");
+	        $("#scheduleSubmit").removeClass("ui-state-disabled");*/
+	        $("#SlideMax").text("");
+	    }
+	}
+	function add() {
+	    //console.log(startTime);
+	    //console.log(endTime);
+	    $('#Schedule tbody').append('<tr>' +
+	        '<td>' + startTime + '</td>' +
+	        '<td>' + endTime + '</td>' +
+	        '</tr>');
+	}
+			
+					 

@@ -20,8 +20,6 @@ import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
-
-
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
@@ -70,10 +68,6 @@ import com.google.gson.Gson;
 
 
 
-
-
-
-
 @Jpf.Controller()
 public class SessionOperationController extends PageFlowController {
 	private static final long serialVersionUID = 1L;
@@ -116,7 +110,7 @@ public class SessionOperationController extends PageFlowController {
 	boolean isPopulatedSuccessfully = false;
 	ScheduleTestVo vo = new ScheduleTestVo();
 
-	 public Condition condition = new Condition();
+	public Condition condition = new Condition();
     
 	/**
 	 * @return the userName
