@@ -454,14 +454,23 @@ clear: both;
 
 .bigBox{
 	border:1px solid #E1E1E1;
+	font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;    
 	width : 220px;
 }
 
 .norBox{
 	border:1px solid #E1E1E1;
+	font-family: Arial, Helvetica, Sans Serif;
+    font-size: 11px;
+    font-style: normal;
+    
 }
 
+.textboxDisabled { border:1px dotted #999999; padding:2px 0px; height:12px; font-size:10px}
 
+.lableDisabled {color:#999999; }
 
 
 
