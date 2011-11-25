@@ -57,7 +57,7 @@
 					<tr class="transparent">
 						<td width="232" valign="top" class="transparent alignRight">*</span>&nbsp;Organization may view</td>
 						<td align="center" valign="middle" class="transparent alignLeft">:</td>
-					    <td valign="top" class="transparent alignLeft"><select id="select" name="select">
+					    <td valign="top" class="transparent alignLeft"><select id="topOrgNode" name=""topOrgNode"">
                         </select></td>
 					</tr>
 				</tbody>

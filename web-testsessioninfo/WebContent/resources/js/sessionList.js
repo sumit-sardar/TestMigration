@@ -644,6 +644,7 @@ function createSingleNodeSelectedTree(jsondata) {
 						var selectedproductId= data.selectedProductId;
 						fillProductGradeLevelDropDown('testGroupList',data.product,selectedproductId);
 						fillDropDown("timeZoneList",data.testZoneDropDownList);
+						fillDropDown("topOrgNode",data.topNodeDropDownList)
 						populateTestListGrid(data.product[0].testSessionList,true);
 						processStudentAccordion();
 						$.unblockUI(); 						
