@@ -672,6 +672,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					optionHtml += "<option  value='"+ optionList[i].productId+"'selected >"+ optionList[i].productName+"</option>";
 					//fillDropDown("grade", optionList[i].gradeDropDownList);
 					if(!(optionList[i].isTabeProduct)) {
+						isTabeProduct = false;
 						if(!(optionList[i].hideLevelDropDown)) {
 							if(optionList[i].showLevelOrGrade=='level') {
 								document.getElementById("levelDiv").style.display ="block";
@@ -696,6 +697,7 @@ function createSingleNodeSelectedTree(jsondata) {
 						}
 					
 					} else {
+						isTabeProduct = true;
 						document.getElementById("gradeDiv").style.display = "none";
 						document.getElementById("levelDiv").style.display = "none";
 						document.getElementById("level").style.display = "none";
@@ -732,6 +734,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		for(var i = 0; i < optionList.length; i++ ) {
 			if(selectProductId==optionList[i].productId) { 	     
 				if(!(optionList[i].isTabeProduct)) {
+					isTabeProduct = false;
 					if(!(optionList[i].hideLevelDropDown)) {
 						if(optionList[i].showLevelOrGrade=="level") {
 							document.getElementById("levelDiv").style.display ="block";
@@ -757,6 +760,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					}
 						
 				} else {
+					isTabeProduct = true;
 					document.getElementById("gradeDiv").style.display = "none";
 					document.getElementById("levelDiv").style.display = "none";
 					document.getElementById("level").style.display = "none";

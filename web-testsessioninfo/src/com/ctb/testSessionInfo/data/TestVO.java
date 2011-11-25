@@ -26,6 +26,10 @@ public class TestVO implements java.io.Serializable
     private String levelOrGrade = null;
     
     private String isRandomize = null; //Added for Random Distractor
+   
+    private String subtestsString = "";
+    
+    boolean hasMultipleSubtests = true;
     
     public TestVO(Integer id, String testName, String level, String duration, List<SubtestVO> subtests) {
         this.id = id;
@@ -33,9 +37,16 @@ public class TestVO implements java.io.Serializable
         this.level = level;
         this.duration = duration;
         this.subtests = subtests;
+        this.subtestsString = getSubtestsString();
+        this.accessCode = getFirstAccessCode();
+        this.hasMultipleSubtests = hasMultipleSubtests();
     }
 
-    public TestVO(TestVO src) {
+    private String getFirstAccessCode() {
+    	return subtests.get(0).getTestAccessCode();
+	}
+
+	public TestVO(TestVO src) {
         this.id = src.getId();
         this.testName = src.getTestName();
         this.level = src.getLevel();
@@ -59,6 +70,12 @@ public class TestVO implements java.io.Serializable
         }
         else
             this.subtests = null;
+        if(this.subtests != null) {
+        	this.subtestsString = getSubtestsString();
+            this.accessCode = getFirstAccessCode();
+            this.hasMultipleSubtests = hasMultipleSubtests();
+        }
+        
     }
 
     public Integer getId() {

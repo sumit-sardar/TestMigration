@@ -134,7 +134,9 @@ public class ScheduleTestVo implements Serializable{
             TestVO testVO = new TestVO(tes[i].getItemSetId(), tes[i].getItemSetName(), 
                     level, duration, subtestList);
                     
-            testVO.setAccessCode(accessCode);
+            if(accessCode!=null){
+            	testVO.setAccessCode(accessCode);
+            }
             testVO.setForms(tes[i].getForms());
             
             
@@ -203,20 +205,14 @@ public class ScheduleTestVo implements Serializable{
 				prod.setTabeProduct(TestSessionUtils.isTabeProduct(prod.getProductType()));
 				prod.setTabeLocatorProduct(TestSessionUtils.isTabeLocatorProduct(prod.getProductType()));
 				
-				if (prod.isTabeProduct() || prod.isTabeLocatorProduct()) {
-					prod.setHasMultipleSubtests(true);
-				}
 				
-				if (prod.getLevelDropDownList().size() > 0 /*&& gradeFlag==false*/) {
+				if (prod.getLevelDropDownList().size() > 0 ) {
 					prod.setShowLevelOrGrade( "level");
 	            }
 	            else if (prod.getGradeDropDownList().size() > 0)
 	            {
 	            	prod.setShowLevelOrGrade( "grade");
-	            	//gradeFlag = true;
-	                //this.showLevelOrGrade = "grade";
 	            	prod.setLevelDropDownList(prod.getGradeDropDownList());
-	                //this.levelList = this.gradeList;
 	            } else {
 	            	prod.setShowLevelOrGrade( "none");
 	            }
@@ -302,7 +298,6 @@ class ProductBean implements Serializable{
 	
 	private boolean isTabeLocatorProduct = false;
 	
-	private boolean hasMultipleSubtests  = false;
 	
 	public ProductBean(Integer productId, String productName) {
 		this.productId = productId;
@@ -440,12 +435,6 @@ class ProductBean implements Serializable{
 
 
 	
-	/**
-	 * @param hasMultipleSubtests the hasMultipleSubtests to set
-	 */
-	public void setHasMultipleSubtests(boolean hasMultipleSubtests) {
-		this.hasMultipleSubtests = hasMultipleSubtests;
-	}
 
 
 	
