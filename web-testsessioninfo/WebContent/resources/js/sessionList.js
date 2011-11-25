@@ -796,6 +796,12 @@ function createSingleNodeSelectedTree(jsondata) {
 					document.getElementById("levelDiv").style.display = "none";
 					document.getElementById("level").style.display = "none";
 				}
+				var tList = optionList[i].testSessionList;
+				var noOfRows = tList.length;
+				
+				$('#testList').GridUnload();
+				
+				populateTestListGrid(tList, true);
 				break;
 			} 
 					
