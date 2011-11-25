@@ -31,6 +31,10 @@ public class TestVO implements java.io.Serializable
     
     boolean hasMultipleSubtests = true;
     
+    boolean isSubtestExists = true;
+    
+    int subtestCount = 0;
+    
     public TestVO(Integer id, String testName, String level, String duration, List<SubtestVO> subtests) {
         this.id = id;
         this.testName = testName;
@@ -40,16 +44,11 @@ public class TestVO implements java.io.Serializable
         this.subtestsString = getSubtestsString();
         this.accessCode = getFirstAccessCode();
         this.hasMultipleSubtests = hasMultipleSubtests();
+        this.isSubtestExists = getSubtestExistStatus();
+        this.subtestCount = getSubtestCount();
     }
 
-    private String getFirstAccessCode() {
-    	if(subtests!=null && subtests.size()>0)
-    		return subtests.get(0).getTestAccessCode();
-    	else
-    		return "";
-	}
-
-	public TestVO(TestVO src) {
+   	public TestVO(TestVO src) {
         this.id = src.getId();
         this.testName = src.getTestName();
         this.level = src.getLevel();
@@ -79,7 +78,33 @@ public class TestVO implements java.io.Serializable
             this.hasMultipleSubtests = hasMultipleSubtests();
         }
         
+        this.isSubtestExists = getSubtestExistStatus();
+        
     }
+   	
+   	
+   	private int getSubtestCount() {
+   		if(subtests==null ) {
+			return 0;
+		} else {
+			return subtests.size();
+		}
+	}
+   	
+    private boolean getSubtestExistStatus() {
+		if(subtests==null || subtests.size()==0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private String getFirstAccessCode() {
+    	if(subtests!=null && subtests.size()>0)
+    		return subtests.get(0).getTestAccessCode();
+    	else
+    		return "";
+	}
 
     public Integer getId() {
         return this.id;

@@ -129,7 +129,9 @@ public class ScheduleTestVo implements Serializable{
             else if (showLevelOrGrade!=null && showLevelOrGrade.equals("grade"))
                 level = tes[i].getGrade();
             
-            
+            if(level== null) {
+            	level = "";
+            }
             
             TestVO testVO = new TestVO(tes[i].getItemSetId(), tes[i].getItemSetName(), 
                     level, duration, subtestList);
