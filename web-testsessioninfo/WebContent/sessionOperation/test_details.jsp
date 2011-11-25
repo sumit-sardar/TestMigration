@@ -13,8 +13,8 @@
 						<td width="232" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Test Session
 						Name</td>
 						<td width="22" align="center" valign="middle" class="transparent alignLeft">:</td>
-				      <td width="316" valign="top" class="transparent alignLeft"><input type="text" style="width: 200px;" tabindex="0"
-							maxlength="32" id="testSessionName" name="testSessionName"></td>
+				      <td width="316" valign="top" class="transparent alignLeft"><input type="text" style="width: 200px;" 
+							id="testSessionName" name="testSessionName"></td>
 					</tr>
 					<tr class="transparent">
 						<td width="232" valign="top" nowrap="" class="transparent alignRight">* Start Date</td>

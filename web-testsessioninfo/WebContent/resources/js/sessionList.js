@@ -457,6 +457,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				if(sessionList[i].id == id){
 					document.getElementById("aCode").style.display = "";
 					document.getElementById("aCode").value = sessionList[i].accessCode;
+					document.getElementById("testSessionName_lbl").innerHTML = sessionList[i].testName;
 					document.getElementById("testSessionName").value = sessionList[i].testName;					
 					str = sessionList[i].subtests;					
 					break;					
@@ -804,15 +805,18 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 
 	function setPopupPosition(){
-				$("#Select_Test").css("height",'350px');
-				$("#Test_Detail").css("height",'300px');
-				$("#Add_Student").css("height",'400px');
-				$("#Add_Proctor").css("height",'400px');
 				var toppos = ($(window).height() - 600) /2 + 'px';
 				var leftpos = ($(window).width() - 1200) /2 + 'px';
-				$("#scheduleSession").parent().css("top",toppos);
-				$("#scheduleSession").parent().css("left",leftpos);	
-							
+				$("#Select_Test").parent().css("top",toppos);
+				$("#Select_Test").parent().css("left",leftpos);
+				$("#Select_Test").css("overflow",'auto');
+				$("#Select_Test").css("height",'400px');
+				$("#Test_Detail").css("overflow",'auto');
+				$("#Test_Detail").css("height",'400px');
+				$("#Add_Student").css("overflow",'auto');
+				$("#Add_Student").css("height",'400px');
+				$("#Add_Proctor").css("overflow",'auto');
+				$("#Add_Proctor").css("height",'400px');			
 				
 	}
 	
@@ -974,16 +978,19 @@ function createSingleNodeSelectedTree(jsondata) {
 	function createSubtestGrid(subtestsArr){
 		var subtestArr = new Array();
 		subtestArr = subtestsArr;
+		//alert(subtestGridLoaded);
 		if(!subtestGridLoaded && subtestArr.length > 0){
 			subtestLength = subtestArr.length;
 			document.getElementById("subtestGrid").style.display = "";
 			document.getElementById("noSubtest").style.display = "none";
 			var tr = '';
 			var th = '';
+			subtestData +='<table width="100%" cellpadding="2" cellspacing="1" class="shadowBorder">';
+							
 			th +='<tr class="subtestHeader">';
 			th +='<th width="24" height="20" align="center"><strong>#</strong></th>';
 			th +='<th width="287" height="20" align="left"><strong>Subtest Name </strong></th>';
-			th +='<th width="144" height="20"><div align="center" id="aCodeHead" style="display: none;"><strong>Access Code </strong></div></th>';
+			th +='<th width="144" height="20"><div align="center" id="aCodeHead" style="display:none;"><strong>Access Code </strong></div></th>';
 			th +='<th width="73" height="20" align="center"><strong>Duration</strong></th>';
 			if(isTabeProduct){
 				th +='<th width="34" height="20" id="removeSubtestHead">&nbsp;</th>';
@@ -1001,7 +1008,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				tr +='</td>';
 				tr +='<td height="20" class="transparent">';
 				tr +='<div align="center" id="aCodeDiv'+i+'">';
-				tr +='<input name="aCodeB'+i+'" type="text" class="norBox" id="aCodeB'+i+'" value="'+subtestArr[i].testAccessCode+'" style="display: none;"/></div>';
+				tr +='<input name="aCodeB'+i+'" type="text" class="norBox" size="15" id="aCodeB'+i+'" value="'+subtestArr[i].testAccessCode+'" style="display: none;"/></div>';
 				tr +='</td>';
 				tr +='<td height="20" class="transparent">';
 				tr +='<div align="center" id="duration'+i+'">'+subtestArr[i].duration+'</div>';
@@ -1016,16 +1023,17 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 				tr +='</tr>';				
 				subtestData += tr;		
-			}	
+			}
+			subtestData +='</table>';
 			document.getElementById("subtestGrid").innerHTML = subtestData;
 			subtestGridLoaded = true;
-		}else{
+		}/*else{
 			subtestLength = 0;
 			subtestGridLoaded = false;
 			subtestData = "";
 			document.getElementById("subtestGrid").style.display = "none";
 			document.getElementById("noSubtest").style.display = "";
-		}
+		}*/
 	}
 	
 	function removeSubtestOption(removeSubtest,subtestCount){

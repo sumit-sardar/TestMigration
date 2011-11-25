@@ -62,7 +62,7 @@
 							<td height="10" colspan="2"></td>
 						</tr>
 						<tr>
-							<td height="20" colspan="2">Selected Test : <div id="testSessionName" class="labelDisabled">No Test Session is selected</div></td>
+							<td height="20" colspan="2">Selected Test : <span id="testSessionName_lbl" class="lblDisabled">No Test Session is selected</span></td>
 						</tr>
 						<tr>
 							<td height="10" colspan="2"></td>
@@ -73,10 +73,10 @@
 						</tr>
 						<tr>
 							<td width="31" height="20" align="left" valign="middle">
-								<input type="checkbox" id="testBreak" value="1"	onClick="toggleAccessCode();" class="norBox" />
+								<input type="checkbox" id="testBreak" value="1"	onClick="toggleAccessCode();" class="norBox"/>
 							</td>
 							<td width="864" class="transparent">Allow Test Breaks 
-								<span style="padding-left:5px;"><input name="aCode" type="text" class="norBox" id="aCode" style="display:none;" /></span>
+								<span style="padding-left:5px;"><input name="aCode" type="text" class="norBox" id="aCode" style="display:none;" size="13" /></span>
 							</td>
 						</tr>
 						<tr>
@@ -114,8 +114,8 @@
 								</tr>
 							</table>
 							</div>
-							<table id="subtestGrid" width="100%" cellpadding="2" cellspacing="1" class="shadowBorder" style="display:none;">
-							</table>
+							<div id="subtestGrid" style="display:none;"></div>
+							
 							</td>
 						</tr>
 						<tr>
