@@ -13,7 +13,15 @@ var openTreeRequested = false;
 var isTabeProduct = false;
 var ishomepageload = false;
 
+var isTestGroupLoad = false;
+var testGridLoaded = false;
+var subtestGridLoaded = false;
+var isTestGridEmpty = true;
+var subtestLength = 0;
+var subtestData = '';
 var ProductData;
+
+
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
 	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 
@@ -439,6 +447,23 @@ function createSingleNodeSelectedTree(jsondata) {
 			}
 			return isRegisterStudentEnable;
 	}
+	
+	function getDataFromTestJson(id, sessionList){
+			var sessionListArr = new Array();
+			sessionListArr = sessionList;
+			var str = new Array();;
+			var indexOfId;
+			for(var i=0; i<sessionList.length ;i++){
+				if(sessionList[i].id == id){
+					document.getElementById("aCode").style.display = "";
+					document.getElementById("aCode").value = sessionList[i].accessCode;
+					document.getElementById("testSessionName").value = sessionList[i].testName;					
+					str = sessionList[i].subtests;					
+					break;					
+				}
+			}
+			return str;
+	}
  
  
  	function closePopUp(dailogId){
@@ -619,6 +644,7 @@ function createSingleNodeSelectedTree(jsondata) {
 						var selectedproductId= data.selectedProductId;
 						fillProductGradeLevelDropDown('testGroupList',data.product,selectedproductId);
 						fillDropDown("timeZoneList",data.testZoneDropDownList);
+						populateTestListGrid(data.product[0].testSessionList,true);
 						processStudentAccordion();
 						$.unblockUI(); 						
 					},
@@ -698,7 +724,7 @@ function createSingleNodeSelectedTree(jsondata) {
 							document.getElementById("gradeDiv").style.display = "none";
 							document.getElementById("levelDiv").style.display = "none";
 							document.getElementById("level").style.display = "none";	
-						}
+						}				
 					
 					} else {
 						isTabeProduct = true;
@@ -774,42 +800,43 @@ function createSingleNodeSelectedTree(jsondata) {
 					
 		}
 		processStudentAccordion();
-	
 
 	}
 
 	function setPopupPosition(){
-				var toppos = ($(window).height() - 700) /2 + 'px';
+				var toppos = ($(window).height() - $("#Select_Test").parent().height()) /2 + 'px';
 				var leftpos = ($(window).width() - 1200) /2 + 'px';
 				$("#Select_Test").parent().css("top",toppos);
 				$("#Select_Test").parent().css("left",leftpos);
 				$("#Select_Test").css("overflow",'auto');
-				$("#Select_Test").css("height",'350px');
+				$("#Select_Test").css("height",'400px');
 				$("#Test_Detail").css("overflow",'auto');
-				$("#Test_Detail").css("height",'300px');
+				$("#Test_Detail").css("height",'400px');
 				$("#Add_Student").css("overflow",'auto');
 				$("#Add_Student").css("height",'400px');
 				$("#Add_Proctor").css("overflow",'auto');
-				$("#Add_Proctor").css("height",'300px');			
+				$("#Add_Proctor").css("height",'400px');			
 				
 	}
 	
 	function toggleAccessCode(){
-	var testBreak = document.getElementById("testBreak");
-	if(!testBreak.checked){		
-		document.getElementById("aCodeH").style.display = "none";
-		document.getElementById("aCode").style.display = "inline";			
-		for(var i=1;i<3;i++){
-			document.getElementById("aCodeB"+i).style.display = "none";
-		}
-	}else{
-		document.getElementById("aCodeH").style.display = "";		
-		document.getElementById("aCode").style.display = "none";
-		for(var i=1;i<3;i++){
-			document.getElementById("aCodeB"+i).style.display = "";
+		if(subtestLength > 0){
+			var testBreak = document.getElementById("testBreak");
+			if(!testBreak.checked){		
+				document.getElementById("aCodeHead").style.display = "none";
+				document.getElementById("aCode").style.display = "inline";			
+				for(var i=0;i<subtestLength;i++){
+					document.getElementById("aCodeB"+i).style.display = "none";
+				}
+			}else{
+				document.getElementById("aCodeHead").style.display = "inline";		
+				document.getElementById("aCode").style.display = "none";
+				for(var i=0;i<subtestLength;i++){
+					document.getElementById("aCodeB"+i).style.display = "inline";
+				}
+			}
 		}
 	}
-}
 
 
 	function slideTime(event, ui){
@@ -859,6 +886,164 @@ function createSingleNodeSelectedTree(jsondata) {
 	        '<td>' + startTime + '</td>' +
 	        '<td>' + endTime + '</td>' +
 	        '</tr>');
+	}
+	
+	function populateTestListGrid(testSessionlist, testGroupLoad) {
+		isTestGroupLoad  = testGroupLoad;
+ 		UIBlock();
+ 		//populateTree();
+ 		reset();
+ 		$("#testList").jqGrid({         
+        	data: testSessionlist,
+			datatype: "local",         
+			colNames:['Test Name','Level', 'Subtest', 'Dur(mins)'],
+		   	colModel:[
+		   		{name:'testName',index:'testName', width:60, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'level',index:'level', width:15, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'subtestCount',index:'subtestCount', width:15, editable: false, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'duration',index:'duration',editable: false, width:15, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   	],
+		   	jsonReader: { repeatitems : false, root:"rows", id:"id",
+		   		records: function(obj) { 
+		   	 		//sessionListCUFU = JSON.stringify(obj.studentNode);
+		   	 	} },
+		   	
+		   	loadui: "disable",
+			rowNum:10,
+			loadonce:true, 
+			multiselect:false,
+			shrinkToFit: true,
+			pager: '#testPager', 
+			sortname: 'testName', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 150,
+			caption:"Test List",
+		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
+			onPaging: function() {
+				//clearMessage();
+				var reqestedPage = parseInt($('#testList').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_testPager').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#testList').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#testList').setGridParam({"page": minPageSize});
+				}
+				
+			},
+			onSelectRow: function () {
+					var selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
+					var testBreak = document.getElementById("testBreak");
+					if(testBreak.checked)
+						testBreak.checked = false;
+					var val = getDataFromTestJson(selectedTestId, testSessionlist);
+					createSubtestGrid(val);
+			 		
+			},
+			loadComplete: function () {
+				if ($('#testList').getGridParam('records') === 0) {
+				 	isTestGridEmpty = true;
+				 	$('#sp_1_testPager').text("1");
+            	} else {
+            		isTestGridEmpty = false;
+            	}
+            	
+			
+            	var width = jQuery("#Select_Test").width();
+			    width = width/2 - 30; // Fudge factor to prevent horizontal scrollbars
+			    jQuery("#testList").setGridWidth(width);
+			    setEmptyListMessage('CUFU');
+				$.unblockUI();  
+				$("#testList").setGridParam({datatype:'local'});
+				var tdList = ("#testPager_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/TestSessionInfoWeb/logout.do";
+						
+			}
+	 });
+	 jQuery("#testList").jqGrid('navGrid', '#testPager', { edit: false, add: false, del: false, search: false, refresh: false });
+	 		
+	}
+	
+	
+	function createSubtestGrid(subtestsArr){
+		var subtestArr = new Array();
+		subtestArr = subtestsArr;
+		if(!subtestGridLoaded && subtestArr.length > 0){
+			subtestLength = subtestArr.length;
+			document.getElementById("subtestGrid").style.display = "";
+			document.getElementById("noSubtest").style.display = "none";
+			var tr = '';
+			var th = '';
+			th +='<tr class="subtestHeader">';
+			th +='<th width="24" height="20" align="center"><strong>#</strong></th>';
+			th +='<th width="287" height="20" align="left"><strong>Subtest Name </strong></th>';
+			th +='<th width="144" height="20"><div align="center" id="aCodeHead" style="display: none;"><strong>Access Code </strong></div></th>';
+			th +='<th width="73" height="20" align="center"><strong>Duration</strong></th>';
+			if(isTabeProduct){
+				th +='<th width="34" height="20" id="removeSubtestHead">&nbsp;</th>';
+			}
+			th +='</tr>';
+			subtestData += th;
+			for(var i=0;i<subtestArr.length; i++){	
+				tr = ''			
+				tr +='<tr>';
+				tr +='<td height="20" class="transparent">';
+				tr +='<div align="center" id="num'+i+'">'+parseInt(i+1)+'</div>';
+				tr +='</td>';
+				tr +='<td height="20" class="transparent">';
+				tr +='<div align="left" id="sName'+i+'">'+subtestArr[i].subtestName+'</div>';
+				tr +='</td>';
+				tr +='<td height="20" class="transparent">';
+				tr +='<div align="center" id="aCodeDiv'+i+'">';
+				tr +='<input name="aCodeB'+i+'" type="text" class="norBox" id="aCodeB'+i+'" value="'+subtestArr[i].testAccessCode+'" style="display: none;"/></div>';
+				tr +='</td>';
+				tr +='<td height="20" class="transparent">';
+				tr +='<div align="center" id="duration'+i+'">'+subtestArr[i].duration+'</div>';
+				tr +='</td>';
+				if(isTabeProduct){
+					tr +='<td height="20" class="transparent" id="removeSubtestCol'+i+'">';
+					tr +='<div align="center">';
+					tr +='<img id="imgMin" src="images/minus.gif" width="14" title="Remove" onclick="toggleRows(0,1);" />';
+					tr +='<img id="imgPlus" src="images/icone_plus.gif" width="14" title="Add" onclick="toggleRows(1,1);" style="display: none;" />';
+					tr +='</div>';
+					tr +='</td>';
+				}
+				tr +='</tr>';				
+				subtestData += tr;		
+			}	
+			document.getElementById("subtestGrid").innerHTML = subtestData;
+			subtestGridLoaded = true;
+		}else{
+			subtestLength = 0;
+			subtestGridLoaded = false;
+			subtestData = "";
+			document.getElementById("subtestGrid").style.display = "none";
+			document.getElementById("noSubtest").style.display = "";
+		}
+	}
+	
+	function removeSubtestOption(removeSubtest,subtestCount){
+		if(removeSubtest){
+			document.getElementById('removeSubtestHead').style.display = "none";
+			for(var i=0; i<subtestCount; i++){
+				document.getElementById('removeSubtestCol'+[i]).style.display = "none";
+			}
+		}else{
+			document.getElementById('removeSubtestHead').style.display = "";
+			for(var i=0; i<subtestCount; i++){
+				document.getElementById('removeSubtestCol'+[i]).style.display = "";
+			}
+			
+		}
 	}
 			
 					 
