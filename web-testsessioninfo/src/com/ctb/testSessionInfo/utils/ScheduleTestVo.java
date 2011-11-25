@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestElementData;
@@ -26,6 +27,7 @@ public class ScheduleTestVo implements Serializable{
     private static final String RD_NO = "N";
 	private List<ProductBean> product = new ArrayList<ProductBean> ();
 	private List<ObjectIdName> testZoneDropDownList = new ArrayList<ObjectIdName>();
+	private List<ObjectIdName> topNodeDropDownList = new ArrayList<ObjectIdName>();
 	private boolean hideProductNameDropDown = false;
 	private String selectedProductId;
 	
@@ -53,7 +55,7 @@ public class ScheduleTestVo implements Serializable{
         }
         Collections.sort(result);
         if (levels.length > 1)
-        	levelList.add(new ObjectIdName("*",FilterSortPageUtils.FILTERTYPE_SHOWALL));
+        	levelList.add(new ObjectIdName(FilterSortPageUtils.FILTERTYPE_SHOWALL,FilterSortPageUtils.FILTERTYPE_SHOWALL));
         for (String val : result) {
         	levelList.add(new ObjectIdName(val,val));
         }
@@ -73,7 +75,7 @@ public class ScheduleTestVo implements Serializable{
         }
         Collections.sort(result);
         if (grades.length > 1)
-        	gradeList.add(new ObjectIdName("*",FilterSortPageUtils.FILTERTYPE_SHOWALL));
+        	gradeList.add(new ObjectIdName(FilterSortPageUtils.FILTERTYPE_SHOWALL,FilterSortPageUtils.FILTERTYPE_SHOWALL));
            
         for (String val : result) {
         	gradeList.add(new ObjectIdName(val,val));
@@ -139,7 +141,7 @@ public class ScheduleTestVo implements Serializable{
             if(accessCode!=null){
             	testVO.setAccessCode(accessCode);
             }
-            testVO.setForms(tes[i].getForms());
+            //testVO.setForms(tes[i].getForms());
             
             
             
@@ -269,6 +271,12 @@ public class ScheduleTestVo implements Serializable{
 	}
 
 
+	public void populateTopOrgnode(Map<Integer, String> topNodesMap) {
+		for(Map.Entry<Integer, String> entry : topNodesMap.entrySet()) {
+			topNodeDropDownList.add(new ObjectIdName(entry.getKey().toString(), entry.getValue()));
+		}
+		
+	}
 	
 	
 }

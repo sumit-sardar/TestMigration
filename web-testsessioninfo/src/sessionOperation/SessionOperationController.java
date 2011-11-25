@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +39,7 @@ import com.ctb.bean.testAdmin.TestProductData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.testSessionInfo.data.Condition;
@@ -111,6 +113,8 @@ public class SessionOperationController extends PageFlowController {
 	ScheduleTestVo vo = new ScheduleTestVo();
 
 	public Condition condition = new Condition();
+	
+	Map<Integer, String> topNodesMap = new LinkedHashMap<Integer, String>();
     
 	/**
 	 * @return the userName
@@ -361,25 +365,13 @@ public class SessionOperationController extends PageFlowController {
     @Jpf.Action()
     protected Forward selectTest(SessionOperationForm form)
     {
+    	initialize();
     	String jsonData = "";
     	HttpServletResponse resp = getResponse();
     	OutputStream stream = null;
-        //boolean disableNextButton = false;
-        //boolean hideTestOptions = false;
-        //boolean hasMultipleSubtests = false;
         String productName = "";
-       
-        
-        //String selectedProductName = null;
-        //Boolean isTabeProduct = null;
-        //Boolean isTabeLocatorProduct = null;
         String currentAction = this.getRequest().getParameter("currentAction");
         String selectedProductId =  this.getRequest().getParameter("productId");
-        //ScheduleTestVo vo = new ScheduleTestVo();
-        /*String actionElement = form.getActionElement();
-        String currentAction = form.getCurrentAction();
-      //change for performance tuning
-       */
         if(currentAction==null)
         {
         	currentAction=ACTION_INIT;
@@ -391,13 +383,15 @@ public class SessionOperationController extends PageFlowController {
             { // first time here 
                 this.testProductData = this.getTestProductDataForUser();
                  tps = this.testProductData.getTestProducts();//changes for performance tuning
-                 if( tps[0] != null && tps.length>0) {
+                 if( tps!=null ) {
                 	 vo.populate(userName,tps, itemSet, scheduleTest);
+                	 vo.populateTopOrgnode(this.topNodesMap);
                 	 
                  }
                  isPopulatedSuccessfully = true;
             } else if (!isPopulatedSuccessfully){
             	vo.populate(userName, tps, itemSet, scheduleTest);
+            	vo.populateTopOrgnode(this.topNodesMap);
             }
         	           
             if(selectedProductId== null || selectedProductId.trim().length()==0)
@@ -413,7 +407,7 @@ public class SessionOperationController extends PageFlowController {
             int selectedProductIndex = getProductIndexByID(selectedProductId);
             
             // populate grade and level for selected product
-            TestProduct prod = tps[selectedProductIndex];
+            //TestProduct prod = tps[selectedProductIndex];
             
             
 			 // subhendu started
@@ -452,7 +446,7 @@ public class SessionOperationController extends PageFlowController {
             */              
             this.condition.setOffGradeTestingDisabled(Boolean.FALSE);
             //changes for performance tuning
-            this.condition.setShowStudentFeedback(new Boolean(tps[selectedProductIndex].getShowStudentFeedback().equals("T")));
+           // this.condition.setShowStudentFeedback(new Boolean(tps[selectedProductIndex].getShowStudentFeedback().equals("T")));
             
             /*
             if (this.scheduledSession != null)
@@ -469,9 +463,9 @@ public class SessionOperationController extends PageFlowController {
                     this.getRequest().setAttribute("acknowledgmentsURL", acknowledgmentsURL);
             }
 
-            Integer productId = tps[selectedProductIndex].getProductId();
+            //Integer productId = tps[selectedProductIndex].getProductId();
 			
-            this.productType = TestSessionUtils.getProductType(tps[selectedProductIndex].getProductType());
+           // this.productType = TestSessionUtils.getProductType(tps[selectedProductIndex].getProductType());
             
             //Changes for defect in performance tuning    
             /*if (this.levelList.size() > 0 && gradeFlag==false) {
@@ -737,7 +731,36 @@ public class SessionOperationController extends PageFlowController {
         
     }
     
-     private int getProductIndexByID(String selectedProductId) {
+     private void initialize() {
+    	 java.security.Principal principal = getRequest().getUserPrincipal();
+         this.userName = principal.toString();
+         
+         getSession().setAttribute("userName", this.userName);
+         UserNodeData und =null;
+        
+         
+         try
+         {
+             this.user = this.scheduleTest.getUserDetails(this.userName, this.userName);
+             und = this.scheduleTest.getTopUserNodesForUser(this.userName, null, null, null, null);
+             UserNode [] nodes = und.getUserNodes();        
+             for (int i=0; i < nodes.length; i++)
+             {
+                 UserNode node = (UserNode)nodes[i];
+                 if (node != null)
+                 {
+                 	this.topNodesMap.put(node.getOrgNodeId(), node.getOrgNodeName());
+                 }
+                 
+             }
+         }
+         catch (CTBBusinessException e)
+         {
+             e.printStackTrace();
+         }
+	}
+
+	private int getProductIndexByID(String selectedProductId) {
     	 int productIndex = -1;
     	 int counter = 0;
     	 if (selectedProductId == null)

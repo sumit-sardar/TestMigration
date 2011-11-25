@@ -17,7 +17,7 @@ public class TestVO implements java.io.Serializable
     
     private String accessCode = null;
 
-    private String [] forms = null;
+   // private String [] forms = null;
     
     private String overrideFormAssignment = null;
     
@@ -54,14 +54,14 @@ public class TestVO implements java.io.Serializable
         this.level = src.getLevel();
         this.duration = src.getDuration();
         this.accessCode = src.getAccessCode();
-        if (src.getForms() != null) {
+        /*if (src.getForms() != null) {
             this.forms = new String[src.getForms().length];
             for (int i=0; i< src.getForms().length; i++) {
                 this.forms[i]= src.getForms()[i];     
             }
         }
         else 
-            this.forms = null;
+            this.forms = null;*/
 
         if (src.getSubtests() != null) {
             Iterator<SubtestVO> it = src.getSubtests().iterator();
@@ -149,14 +149,14 @@ public class TestVO implements java.io.Serializable
     public void setAccessCode(String accessCode) {
         this.accessCode = accessCode;
     }
-
+    /*
     public String [] getForms() {
         return this.forms;
     }
     public void setForms(String [] forms) {
         this.forms = forms;
     }
-
+*/
     public String getOverrideFormAssignment() {
         return this.overrideFormAssignment;
     }
@@ -190,7 +190,8 @@ public class TestVO implements java.io.Serializable
             String subtestName = ((SubtestVO)it.next()).getSubtestName();
             buf.append(subtestName);
             if (it.hasNext())
-                buf.append("<br/>");
+            	buf.append(",");
+               // buf.append("<br/>");
         }
         return buf.toString();
     }
