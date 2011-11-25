@@ -619,6 +619,7 @@ function createSingleNodeSelectedTree(jsondata) {
 						var selectedproductId= data.selectedProductId;
 						fillProductGradeLevelDropDown('testGroupList',data.product,selectedproductId);
 						fillDropDown("timeZoneList",data.testZoneDropDownList);
+						processStudentAccordion();
 						$.unblockUI(); 						
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -631,11 +632,11 @@ function createSingleNodeSelectedTree(jsondata) {
 					}
 	});
 	
-	if(!stuGridloaded) {
+	/*if(!stuGridloaded) {
    		populateSelectedStudent();
    	} else {
    		gridReloadStu(true);
-   	}
+   	}*/
 	$("#scheduleSession").dialog({  
 		title:"Schedule Session",  
 	 	resizable:false,
@@ -645,7 +646,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	 	closeOnEscape: false,
 	 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 	});
-	var width = jQuery("#scheduleSession").width();
+	/*var width = jQuery("#scheduleSession").width();
     width = width - 72; // Fudge factor to prevent horizontal scrollbars
     
 	if(isTabeProduct) {
@@ -656,8 +657,29 @@ function createSingleNodeSelectedTree(jsondata) {
 		
 		$("#list6").jqGrid("showCol","itemSetForm"); 
 		jQuery("#list6").setGridWidth(width,false);
-	}
+	}*/
 	setPopupPosition();
+	}
+	
+	function processStudentAccordion() {
+		if(!stuGridloaded) {
+   			populateSelectedStudent();
+   		} else {
+   			gridReloadStu(true);
+   		}
+   		
+   		var width = jQuery("#scheduleSession").width();
+    	width = width - 72; // Fudge factor to prevent horizontal scrollbars
+    
+		if(isTabeProduct) {
+			
+			$("#list6").jqGrid("hideCol","itemSetForm"); 
+			jQuery("#list6").setGridWidth(width,true);
+		} else {
+			
+			$("#list6").jqGrid("showCol","itemSetForm"); 
+			jQuery("#list6").setGridWidth(width,false);
+		}
 	}
 
 	function fillProductGradeLevelDropDown( elementId, optionList, selectedProductId) {
