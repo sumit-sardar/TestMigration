@@ -43,7 +43,10 @@ public class TestVO implements java.io.Serializable
     }
 
     private String getFirstAccessCode() {
-    	return subtests.get(0).getTestAccessCode();
+    	if(subtests!=null && subtests.size()>0)
+    		return subtests.get(0).getTestAccessCode();
+    	else
+    		return "";
 	}
 
 	public TestVO(TestVO src) {
