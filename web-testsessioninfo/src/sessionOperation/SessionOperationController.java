@@ -841,6 +841,10 @@ public class SessionOperationController extends PageFlowController {
 	            this.getRequest().setAttribute("customerLicenses", getLicenseQuantitiesByOrg());
 	           // this.getSession().setAttribute("hasLicenseConfig", new Boolean(true));
 	        }*/
+			if(this.userName == null ) {
+				getLoggedInUserPrincipal();		
+				getUserDetails();
+			}
 			OrgNodeCategory orgNodeCategory = UserOrgHierarchyUtils.getCustomerLeafNodeDetail(this.userName,this.customerId,this.userManagement );
 	     	
 	        // retrieve information for user test sessions
@@ -859,7 +863,6 @@ public class SessionOperationController extends PageFlowController {
 			{
 				System.out.println ("List process time Start:"+new Date());
 				base = buildTestSessionList(customerLicenses, tsd, base); 
-				//String userOrgCategoryName = getTestSessionOrgCategoryName(sessionList);
 				System.out.println ("List process time End:"+new Date());
 			} else {
 				this.setSessionListCUFU(new ArrayList());

@@ -41,7 +41,7 @@ function populateSessionListGrid(homePageLoad) {
 		   	jsonReader: { repeatitems : false, root:"testSessionCUFU", id:"testAdminId",
 			   	records: function(obj) { 
 			   	 sessionListCUFU = JSON.stringify(obj.testSessionCUFU);
-				   	 if(ishomepageload && obj.orgNodeCategory != 'undefined'){
+				   	 if(ishomepageload && obj.orgNodeCategory != undefined){
 				   	 	leafNodeCategoryId = obj.orgNodeCategory.categoryLevel;
 				   	 	leafNodeCategoryName = obj.orgNodeCategory.categoryName;
 				   	 }
