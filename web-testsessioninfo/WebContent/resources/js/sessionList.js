@@ -18,7 +18,6 @@ var testGridLoaded = false;
 var subtestGridLoaded = false;
 var isTestGridEmpty = true;
 var subtestLength = 0;
-var subtestData = '';
 var ProductData;
 
 
@@ -516,7 +515,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			title:"Schedule Session",  
 		 	resizable:false,
 		 	autoOpen: true,
-		 	width: '1200px',
+		 	width: '1024px',
 		 	modal: true,
 		 	closeOnEscape: false,
 		 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
@@ -662,7 +661,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		title:"Schedule Session",  
 	 	resizable:false,
 	 	autoOpen: true,
-	 	width: '1200px',
+	 	width: '1024px',
 	 	modal: true,
 	 	closeOnEscape: false,
 	 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
@@ -805,8 +804,8 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 
 	function setPopupPosition(){
-				var toppos = ($(window).height() - 600) /2 + 'px';
-				var leftpos = ($(window).width() - 1200) /2 + 'px';
+				var toppos = ($(window).height() - 512) /2 + 'px';
+				var leftpos = ($(window).width() - 1024) /2 + 'px';
 				$("#Select_Test").parent().css("top",toppos);
 				$("#Select_Test").parent().css("left",leftpos);
 				$("#Select_Test").css("overflow",'auto');
@@ -935,6 +934,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				
 			},
 			onSelectRow: function () {
+					subtestGridLoaded = false;
 					var selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
 					var testBreak = document.getElementById("testBreak");
 					if(testBreak.checked)
@@ -978,6 +978,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	function createSubtestGrid(subtestsArr){
 		var subtestArr = new Array();
 		subtestArr = subtestsArr;
+		var subtestData = '';
 		//alert(subtestGridLoaded);
 		if(!subtestGridLoaded && subtestArr.length > 0){
 			subtestLength = subtestArr.length;
@@ -1008,7 +1009,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				tr +='</td>';
 				tr +='<td height="20" class="transparent">';
 				tr +='<div align="center" id="aCodeDiv'+i+'">';
-				tr +='<input name="aCodeB'+i+'" type="text" class="norBox" size="15" id="aCodeB'+i+'" value="'+subtestArr[i].testAccessCode+'" style="display: none;"/></div>';
+				tr +='<input name="aCodeB'+i+'" type="text" class="norBox" size="16" id="aCodeB'+i+'" value="'+subtestArr[i].testAccessCode+'" style="display: none; padding-left:2px;"/></div>';
 				tr +='</td>';
 				tr +='<td height="20" class="transparent">';
 				tr +='<div align="center" id="duration'+i+'">'+subtestArr[i].duration+'</div>';

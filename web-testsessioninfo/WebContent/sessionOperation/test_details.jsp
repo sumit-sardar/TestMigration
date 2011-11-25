@@ -7,7 +7,7 @@
 	<tbody>
 		<tr class="shadowborder">
 			<td style="vertical-align: top;">
-			<table width="100%" cellpadding="2" cellspacing="2" class="transparent">
+			<table width="100%" cellpadding="2" cellspacing="2" class="shadowBorder">
 				<tbody>
 					<tr class="transparent">
 						<td width="232" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Test Session

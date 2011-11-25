@@ -76,7 +76,7 @@
 								<input type="checkbox" id="testBreak" value="1"	onClick="toggleAccessCode();" class="norBox"/>
 							</td>
 							<td width="864" class="transparent">Allow Test Breaks 
-								<span style="padding-left:5px;"><input name="aCode" type="text" class="norBox" id="aCode" style="display:none;" size="13" /></span>
+								<span style="padding-left:5px;"><input name="aCode" type="text" class="norBox" id="aCode" style="display:none; padding-left:2px;" size="16" /></span>
 							</td>
 						</tr>
 						<tr>
