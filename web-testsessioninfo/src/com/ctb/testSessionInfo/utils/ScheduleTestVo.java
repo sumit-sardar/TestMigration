@@ -108,7 +108,7 @@ public class ScheduleTestVo implements Serializable{
             for (int j=0; j<usTes.length; j++)
             {
                 int durationMinutes = usTes[j].getTimeLimit().intValue()/60;
-                String duration = (durationMinutes == 0) ? "Untimed" : durationMinutes + " minutes";
+                String duration = (durationMinutes == 0) ? "Untimed" : durationMinutes + " minss";
                 SubtestVO subtestVO = new SubtestVO(usTes[j].getItemSetId(),
                                                     String.valueOf(j+1), 
                                                     usTes[j].getItemSetName(), 
@@ -121,7 +121,7 @@ public class ScheduleTestVo implements Serializable{
             }
     
             int durationMinutes = tes[i].getTimeLimit().intValue()/60;
-            String duration = (durationMinutes == 0) ? "Untimed" : durationMinutes + " minutes";
+            String duration = (durationMinutes == 0) ? "Untimed" : durationMinutes + " mins";
     
     
            
