@@ -233,7 +233,12 @@ function populateCompletedSessionListGrid() {
 		 	$('#list6').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
 		 	$('#list6').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noStudentTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noStudentMsg").val()+"</td></tr></tbody></table></td></tr>");
 		 }
-	 }
+	 }else if (requestedTab == 'TSL'){
+	 	 if(isTestGridEmpty) {
+		 	$('#testList').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+		 	$('#testList').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>No Test Sessions available for this Test Group.</th></tr></tbody></table></td></tr>");
+		 }
+	 } 
 	 
 	 }
 	
@@ -640,12 +645,13 @@ function createSingleNodeSelectedTree(jsondata) {
 		url:		'selectTest.do?currentAction=init',
 		type:		'POST',
 		dataType:	'json',
-		success:	function(data, textStatus, XMLHttpRequest){	
+		success:	function(data, textStatus, XMLHttpRequest){
 						ProductData = data;
 						var selectedproductId= data.selectedProductId;
 						fillProductGradeLevelDropDown('testGroupList',data.product,selectedproductId);
 						fillDropDown("timeZoneList",data.testZoneDropDownList);
-						populateTestListGrid(data.product[0].testSessionList,true);
+						reloadGrids(data.product[0].testSessionList,true);						
+						//populateTestListGrid(data.product[0].testSessionList,true);
 						fillDropDown("topOrgNode",data.topNodeDropDownList)
 						processStudentAccordion();
 						$.unblockUI(); 						
@@ -810,10 +816,8 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 
 	function setPopupPosition(){
-				var toppos = ($(window).height() - 512) /2 + 'px';
+				var toppos = ($(window).height() - 848) /2 + 'px';
 				var leftpos = ($(window).width() - 1024) /2 + 'px';
-				$("#Select_Test").parent().css("top",toppos);
-				$("#Select_Test").parent().css("left",leftpos);
 				$("#Select_Test").css("overflow",'auto');
 				$("#Select_Test").css("height",'400px');
 				$("#Test_Detail").css("overflow",'auto');
@@ -821,7 +825,10 @@ function createSingleNodeSelectedTree(jsondata) {
 				$("#Add_Student").css("overflow",'auto');
 				$("#Add_Student").css("height",'400px');
 				$("#Add_Proctor").css("overflow",'auto');
-				$("#Add_Proctor").css("height",'400px');			
+				$("#Add_Proctor").css("height",'400px');
+				$("#Select_Test").parent().css("top",toppos);
+				$("#Select_Test").parent().css("left",leftpos);
+					
 				
 	}
 	
@@ -832,13 +839,22 @@ function createSingleNodeSelectedTree(jsondata) {
 				document.getElementById("aCodeHead").style.display = "none";
 				document.getElementById("aCode").style.display = "inline";			
 				for(var i=0;i<subtestLength;i++){
-					document.getElementById("aCodeB"+i).style.display = "none";
+					document.getElementById("aCodeDiv"+i).style.display = "none";
+					/*document.getElementById("aCodeB"+i).removeAttribute("disabled");
+					document.getElementById("aCodeB"+i).className = "";	*/		
 				}
 			}else{
 				document.getElementById("aCodeHead").style.display = "inline";		
 				document.getElementById("aCode").style.display = "none";
 				for(var i=0;i<subtestLength;i++){
-					document.getElementById("aCodeB"+i).style.display = "inline";
+					document.getElementById("aCodeDiv"+i).style.display = "inline";
+					if(document.getElementById("actionTaken"+i).value == "1"){
+						document.getElementById("aCodeB"+i).removeAttribute("disabled");
+						document.getElementById("aCodeB"+i).className = "";
+					}else{
+						document.getElementById("aCodeB"+i).setAttribute("disabled",true);
+						document.getElementById("aCodeB"+i).className = "textboxDisabled";
+					}
 				}
 			}
 		}
@@ -902,29 +918,29 @@ function createSingleNodeSelectedTree(jsondata) {
  		$("#testList").jqGrid({         
         	data: testSessionlist,
 			datatype: "local",         
-			colNames:['Test Name','Level', 'Subtest', 'Dur(mins)'],
+			colNames:['Test Name','Level', 'Subtest', 'Duration'],
 		   	colModel:[
-		   		{name:'testName',index:'testName', width:60, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'level',index:'level', width:15, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testName',index:'testName', width:55, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'level',index:'level', width:12, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'subtestCount',index:'subtestCount', width:15, editable: false, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'duration',index:'duration',editable: false, width:15, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'duration',index:'duration',editable: false, width:25, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   	],
 		   	jsonReader: { repeatitems : false, root:"rows", id:"id",
 		   		records: function(obj) { 
-		   	 		//sessionListCUFU = JSON.stringify(obj.studentNode);
+		   	 		
 		   	 	} },
 		   	
 		   	loadui: "disable",
 			rowNum:10,
 			loadonce:true, 
 			multiselect:false,
-			shrinkToFit: true,
+			//shrinkToFit: true,
 			pager: '#testPager', 
 			sortname: 'testName', 
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 150,
-			caption:"Test List",
+			caption:"Tests",
 		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
 				//clearMessage();
@@ -942,10 +958,12 @@ function createSingleNodeSelectedTree(jsondata) {
 			onSelectRow: function () {
 					subtestGridLoaded = false;
 					var selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
+					
 					var testBreak = document.getElementById("testBreak");
 					isTestSelected = true;
-					if(testBreak.checked)
-						testBreak.checked = false;
+					if(testBreak.checked)testBreak.checked = false;
+					document.getElementById("aCode").style.display = "none";
+					
 					var val = getDataFromTestJson(selectedTestId, testSessionlist);
 					createSubtestGrid(val);
 			 		
@@ -960,12 +978,12 @@ function createSingleNodeSelectedTree(jsondata) {
             	
 			
             	var width = jQuery("#Select_Test").width();
-			    width = width/2 - 30; // Fudge factor to prevent horizontal scrollbars
+			    width = width/2 - 20; // Fudge factor to prevent horizontal scrollbars
 			    jQuery("#testList").setGridWidth(width);
-			    setEmptyListMessage('CUFU');
-				$.unblockUI();  
+			    setEmptyListMessage('TSL');
+			    $.unblockUI();  
 				$("#testList").setGridParam({datatype:'local'});
-				var tdList = ("#testPager_left table.ui-pg-table  td");
+				var tdList = ("#testPager_center table.ui-pg-table  td");
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
@@ -997,11 +1015,11 @@ function createSingleNodeSelectedTree(jsondata) {
 							
 			th +='<tr class="subtestHeader">';
 			th +='<th width="24" height="20" align="center"><strong>#</strong></th>';
-			th +='<th width="287" height="20" align="left"><strong>Subtest Name </strong></th>';
-			th +='<th width="144" height="20"><div align="center" id="aCodeHead" style="display:none;"><strong>Access Code </strong></div></th>';
-			th +='<th width="73" height="20" align="center"><strong>Duration</strong></th>';
+			th +='<th width="289" height="20" align="left"><strong>Subtest Name </strong></th>';
+			th +='<th width="130" height="20"><div align="center" id="aCodeHead" style="display:none;"><strong>Access Code </strong></div></th>';
+			th +='<th width="82" height="20" align="center"><strong>Duration</strong></th>';
 			if(isTabeProduct){
-				th +='<th width="34" height="20" id="removeSubtestHead">&nbsp;</th>';
+				th +='<th width="34" height="20">&nbsp;</th>';
 			}
 			th +='</tr>';
 			subtestData += th;
@@ -1009,23 +1027,23 @@ function createSingleNodeSelectedTree(jsondata) {
 				tr = ''			
 				tr +='<tr>';
 				tr +='<td height="20" class="transparent">';
-				tr +='<div align="center" id="num'+i+'">'+parseInt(i+1)+'</div>';
+				tr +='<div align="center" id="num'+i+'">'+parseInt(i+1)+'<input type="hidden" id="actionTaken'+i+'" value="1"/></div>';
 				tr +='</td>';
 				tr +='<td height="20" class="transparent">';
 				tr +='<div align="left" id="sName'+i+'">'+subtestArr[i].subtestName+'</div>';
 				tr +='</td>';
-				tr +='<td height="20" class="transparent">';
-				tr +='<div align="center" id="aCodeDiv'+i+'">';
-				tr +='<input name="aCodeB'+i+'" type="text" class="norBox" size="16" id="aCodeB'+i+'" value="'+subtestArr[i].testAccessCode+'" style="display: none; padding-left:2px;"/></div>';
+				tr +='<td height="20" class="transparent" align="center">';
+				tr +='<div align="center" id="aCodeDiv'+i+'" style="display: none;">';
+				tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+subtestArr[i].testAccessCode+'" style="padding-left:2px;"/></div>';
 				tr +='</td>';
-				tr +='<td height="20" class="transparent">';
+				tr +='<td height="20" class="transparent" align="center">';
 				tr +='<div align="center" id="duration'+i+'">'+subtestArr[i].duration+'</div>';
 				tr +='</td>';
 				if(isTabeProduct){
-					tr +='<td height="20" class="transparent" id="removeSubtestCol'+i+'">';
+					tr +='<td height="20" class="transparent" align="center">';
 					tr +='<div align="center">';
-					tr +='<img id="imgMin" src="images/minus.gif" width="14" title="Remove" onclick="toggleRows(0,1);" />';
-					tr +='<img id="imgPlus" src="images/icone_plus.gif" width="14" title="Add" onclick="toggleRows(1,1);" style="display: none;" />';
+					tr +='<img id="imgMin'+i+'" src="/SessionWeb/resources/images/minus.gif" width="14" title="Remove Subtest" onclick="javascript:removeSubtestOption(0,'+i+');" />';
+					tr +='<img id="imgPlus'+i+'" src="/SessionWeb/resources/images/icone_plus.gif" width="14" title="Add Subtest" onclick="javascript:removeSubtestOption(1,'+i+');" style="display: none;" />';
 					tr +='</div>';
 					tr +='</td>';
 				}
@@ -1044,18 +1062,30 @@ function createSingleNodeSelectedTree(jsondata) {
 		}*/
 	}
 	
-	function removeSubtestOption(removeSubtest,subtestCount){
-		if(removeSubtest){
-			document.getElementById('removeSubtestHead').style.display = "none";
-			for(var i=0; i<subtestCount; i++){
-				document.getElementById('removeSubtestCol'+[i]).style.display = "none";
+	function removeSubtestOption(action,rowId){
+		if(action == '0'){
+			document.getElementById("imgPlus"+rowId).style.display = "inline";
+			document.getElementById("imgMin"+rowId).style.display = "none";
+			document.getElementById("num"+rowId).className = "lblDisabled";
+			document.getElementById("sName"+rowId).className = "lblDisabled";
+			document.getElementById("duration"+rowId).className = "lblDisabled";
+			if(document.getElementById("aCodeDiv"+rowId).style.display == "inline"){
+				document.getElementById("aCodeB"+rowId).setAttribute("disabled",true);
+				document.getElementById("aCodeB"+rowId).className = "textboxDisabled";
 			}
-		}else{
-			document.getElementById('removeSubtestHead').style.display = "";
-			for(var i=0; i<subtestCount; i++){
-				document.getElementById('removeSubtestCol'+[i]).style.display = "";
-			}
+			document.getElementById("actionTaken"+rowId).value = "0";
 			
+		}else{
+			document.getElementById("imgPlus"+rowId).style.display = "none";
+			document.getElementById("imgMin"+rowId).style.display = "inline";
+			document.getElementById("num"+rowId).className = "";
+			document.getElementById("sName"+rowId).className = "";
+			document.getElementById("duration"+rowId).className = "";
+			if(document.getElementById("aCodeDiv"+rowId).style.display == "inline"){
+				document.getElementById("aCodeB"+rowId).removeAttribute("disabled");
+				document.getElementById("aCodeB"+rowId).className = "";
+			}
+			document.getElementById("actionTaken"+rowId).value = "1";
 		}
 	}
 	
@@ -1063,15 +1093,25 @@ function createSingleNodeSelectedTree(jsondata) {
 		$('#testList').GridUnload();				
 		populateTestListGrid(tList, true);
 		
+		subtestLength = 0;
 		var testBreak = document.getElementById("testBreak");
 		isTestSelected = false;
 		if(testBreak.checked) testBreak.checked = false;
+		document.getElementById("aCode").style.display = "none";
+		
 		
 		document.getElementById("subtestGrid").style.display = "none";
 		document.getElementById("noSubtest").style.display = "";
 		/*var val = getDataFromTestJson(selectedTestId, tList);
 		subtestGridLoaded = false;
 		createSubtestGrid(val);*/
+		document.getElementById("testSessionName_lbl").innerHTML = "No Test Session is selected";
+		document.getElementById("testSessionName").value = "";
+		document.getElementById("startDate").value = "";			
+		document.getElementById("endDate").value = "";			
+		document.getElementById("time").innerHTML = "9:00 AM - 5:00 PM";
+		document.getElementById("testLocation").value = "";											
+					
 	}
 	
 	function resetPopup() { 
@@ -1084,7 +1124,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById('ShowButtons').style.display = "block";
  		setAnchorButtonState('viewStatusButton', true);
  		
- 		 if($("#canRegisterStudent").val() == 'true'){
+ 		if($("#canRegisterStudent").val() == 'true'){
  			setAnchorButtonState('registerStudentButton', true);
  		}
  		

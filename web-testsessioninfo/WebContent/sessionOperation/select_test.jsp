@@ -19,7 +19,7 @@
 									<table width="100%" border="0" cellpadding="0" cellspacing="4">
 										<tr class="transparent">
 											<td class="transparent" width="20%">Test Group :</td>
-											<td width="80%"><select name="testGroupList" class="bigBox" id="testGroupList"
+											<td width="80%"><select name="testGroupList" id="testGroupList"
 												onchange="javascript:changeGradeAndLevel(); return false;">
 
 											</select></td>
@@ -30,7 +30,7 @@
 											<div id="levelDiv" style="display: none;">Level :</div>
 											</td>
 											<td>
-											<div id="levelDropDown"><select name="level" class="norBox" id="level" style="display: none;"></select></div>
+											<div id="levelDropDown"><select name="level" id="level" style="display: none;"></select></div>
 											</td>
 										</tr>
 										
@@ -68,15 +68,15 @@
 							<td height="10" colspan="2"></td>
 						</tr>
 						<tr>
-							<td height="20"><input type="checkbox" name="randomDis" value="1" class="norBox"></td>
+							<td height="20"><input type="checkbox" name="randomDis" value="1"></td>
 							<td class="transparent">Random Distractor</td>
 						</tr>
 						<tr>
 							<td width="31" height="20" align="left" valign="middle">
-								<input type="checkbox" id="testBreak" value="1"	onClick="toggleAccessCode();" class="norBox"/>
+								<input type="checkbox" id="testBreak" value="1"	onClick="toggleAccessCode();"/>
 							</td>
 							<td width="864" class="transparent">Allow Test Breaks 
-								<span style="padding-left:5px;"><input name="aCode" type="text" class="norBox" id="aCode" style="display:none; padding-left:2px;" size="16" /></span>
+								<span style="padding-left:5px;"><input name="aCode" type="text" id="aCode" style="display:none; padding-left:2px;" size="16" /></span>
 							</td>
 						</tr>
 						<tr>

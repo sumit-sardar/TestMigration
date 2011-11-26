@@ -448,12 +448,25 @@ clear: both;
 	
 }
 
+.shadowBorderFull{
+	border-bottom:#B0DFFF 2px solid;
+	border-right:#B0DFFF 2px solid;
+	border-top:#B0DFFF 2px solid;
+	border-left:#B0DFFF 2px solid;
+	border-radius:5px;
+	-moz-border-radius:5px;
+	
+}
+
 .divider{
 	border-right:#0099FF dashed 1px;
 }
 
 .bigBox{
-	border:1px solid #E1E1E1;
+	border-bottom:#E1E1E1 1px solid;
+	border-right:#E1E1E1 1px solid;
+	border-top:#E1E1E1 1px solid;
+	border-left:#E1E1E1 1px solid;
 	font-family: Arial, Helvetica, Sans Serif;
     font-size: 10px;
     font-style: normal;    
@@ -462,7 +475,10 @@ clear: both;
 }
 
 .norBox{
-	border:1px solid #E1E1E1;
+	border-bottom:#E1E1E1 1px solid;
+	border-right:#E1E1E1 1px solid;
+	border-top:#E1E1E1 1px solid;
+	border-left:#E1E1E1 1px solid;	
 	font-family: Arial, Helvetica, Sans Serif;
     font-size: 10px;
     font-style: normal;
@@ -470,7 +486,7 @@ clear: both;
     
 }
 
-.textboxDisabled { border:1px dotted #999999; padding:2px 0px; height:12px; font-size:10px}
+.textboxDisabled { border:#999999 1px dotted; padding:2px 0px; height:12px; font-size:10px}
 
 .lblDisabled {color:#999999; }
 
