@@ -47,7 +47,7 @@
 					    <td valign="top" class="transparent alignLeft"><span id="time">9:00 AM - 5:00 PM</span></td>
 					</tr>
 					<tr class="transparent">
-						<td width="232" valign="top" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Time Zone</td>
+						<td width="232" valign="top" class="transparent alignRight">Time Zone</td>
 						<td align="center" valign="middle" class="transparent alignLeft">:</td>
 					    <td valign="top" class="transparent alignLeft"><select id="timeZoneList" name="timeZoneList">
                         </select></td>
