@@ -650,7 +650,7 @@ function createSingleNodeSelectedTree(jsondata) {
 						var selectedproductId= data.selectedProductId;
 						fillProductGradeLevelDropDown('testGroupList',data.product,selectedproductId);
 						fillDropDown("timeZoneList",data.testZoneDropDownList);
-						reloadGrids(data.product[0].testSessionList,true,data.product[0].showLevelOrGrade);
+						reloadGrids(data.product[0].testSessionList,data.product[0].showLevelOrGrade);
 						//populateTestListGrid(data.product[0].testSessionList,true,data.product[0].showLevelOrGrade);
 						fillDropDown("topOrgNode",data.topNodeDropDownList)
 						processStudentAccordion();
@@ -1160,5 +1160,41 @@ function createSingleNodeSelectedTree(jsondata) {
 		}
 		return true;
 	}	
+
+	function  changeSessionList() {
+		var el = document.getElementById("level");  
+		var selectlevel = el.options[el.selectedIndex].value;
+		
+		var ep = document.getElementById("testGroupList");  
+		var selectProductId = ep.options[ep.selectedIndex].value;
+		var optionList = ProductData.product
+		
+		for(var i = 0; i < optionList.length; i++ ) {
+			if(selectProductId==optionList[i].productId) { 	     
+				var tList = optionList[i].testSessionList;
+				if(!(selectlevel=="Show all")) {
+					tList =filterSessionList(tList,selectlevel);
+				}
+				reloadGrids(tList,optionList[i].showLevelOrGrade );
+				break;
+			} 
+			isTestSelected = false;		
+		}
+	
+	}
+	
+	function  filterSessionList(testSessionList, gradeOrLevel) {
+		var newSessionList = new Array();
+		var counter = 0;
+		for(var i = 0; i < testSessionList.length; i++ ) {
+				if(testSessionList[i].level==gradeOrLevel) {
+					newSessionList[counter]=testSessionList[i];
+					counter= counter+1;
+				}
+		}
+		return newSessionList;
+	}
+	
+	
 			
 					 

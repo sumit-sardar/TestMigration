@@ -30,7 +30,7 @@
 											<div id="levelDiv" style="display: none;">Level :</div>
 											</td>
 											<td>
-											<div id="levelDropDown"><select name="level" id="level" style="display: none;"></select></div>
+											<div id="levelDropDown"><select name="level" id="level" style="display: none;" onchange="javascript:changeSessionList(); return false;" ></select></div>
 											</td>
 										</tr>
 										
