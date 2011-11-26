@@ -18,6 +18,7 @@ var testGridLoaded = false;
 var subtestGridLoaded = false;
 var isTestGridEmpty = true;
 var subtestLength = 0;
+var isTestSelected = false;
 var ProductData;
 
 
@@ -644,8 +645,8 @@ function createSingleNodeSelectedTree(jsondata) {
 						var selectedproductId= data.selectedProductId;
 						fillProductGradeLevelDropDown('testGroupList',data.product,selectedproductId);
 						fillDropDown("timeZoneList",data.testZoneDropDownList);
-						fillDropDown("topOrgNode",data.topNodeDropDownList)
 						populateTestListGrid(data.product[0].testSessionList,true);
+						fillDropDown("topOrgNode",data.topNodeDropDownList)
 						processStudentAccordion();
 						$.unblockUI(); 						
 					},
@@ -804,7 +805,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				populateTestListGrid(tList, true);
 				break;
 			} 
-					
+			isTestSelected = false;		
 		}
 		processStudentAccordion();
 
@@ -944,6 +945,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					subtestGridLoaded = false;
 					var selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
 					var testBreak = document.getElementById("testBreak");
+					isTestSelected = true;
 					if(testBreak.checked)
 						testBreak.checked = false;
 					var val = getDataFromTestJson(selectedTestId, testSessionlist);

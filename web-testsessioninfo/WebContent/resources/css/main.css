@@ -439,10 +439,10 @@ clear: both;
 }
 
 .shadowBorder{
-	border-bottom:#B0DFFF 1px groove;
-	border-right:#B0DFFF 1px groove;
-	border-top:#B0DFFF 1px groove;
-	border-left:#B0DFFF 1px groove;
+	border-bottom:#B0DFFF 1px solid;
+	border-right:#B0DFFF 1px solid;
+	border-top:#B0DFFF 1px solid;
+	border-left:#B0DFFF 1px solid;
 	border-radius:5px;
 	-moz-border-radius:5px;
 	
@@ -455,22 +455,24 @@ clear: both;
 .bigBox{
 	border:1px solid #E1E1E1;
 	font-family: Arial, Helvetica, Sans Serif;
-    font-size: 11px;
+    font-size: 10px;
     font-style: normal;    
 	width : 220px;
+	height: 18px;
 }
 
 .norBox{
 	border:1px solid #E1E1E1;
 	font-family: Arial, Helvetica, Sans Serif;
-    font-size: 11px;
+    font-size: 10px;
     font-style: normal;
+    height: 18px;
     
 }
 
 .textboxDisabled { border:1px dotted #999999; padding:2px 0px; height:12px; font-size:10px}
 
-.lableDisabled {color:#999999; }
+.lblDisabled {color:#999999; }
 
 
 
