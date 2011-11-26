@@ -2,12 +2,12 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
-
-<table width="600" align="center" class="transparent">
+ <br>
+ <table width="600" height="360" align="center" class="shadowborder">
 	<tbody>
-		<tr class="shadowborder">
-			<td style="vertical-align: top;">
-			<table width="100%" cellpadding="2" cellspacing="2" class="shadowBorder">
+		<tr>
+			<td align="center" style="vertical-align: top; padding:5px;">
+			<table width="100%" cellpadding="2" cellspacing="2">
 				<tbody>
 					<tr class="transparent">
 						<td width="232" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Test Session
@@ -27,18 +27,24 @@
 				      <td valign="top" class="transparent alignLeft"><input name="endDate" id="endDate" type="text" class="norBox" size="12" /></td>
 					</tr>
 					<tr class="transparent">
+					  <td height="25" valign="top" nowrap="" class="transparent alignRight">&nbsp;</td>
+					  <td align="center" valign="middle" class="transparent alignLeft">&nbsp;</td>
+					  <td valign="top" class="transparent alignLeft"><table width="100%" border="0" cellpadding="0" cellspacing="2" class="transparent">
+                        <tr>
+                          <td height="20" class="transparent alignLeft"><span>Drag the slider to get the time window - </span>                          </td>
+                        </tr>
+                        <tr>
+                          <td height="5" class="transparent alignLeft">
+						  <div id="slider-range" style="width: 200px; vertical-align:middle;"></div>
+                          <span id="SlideMax"></span>
+						  </td>
+                        </tr>
+                      </table></td>
+				  </tr>
+					<tr class="transparent">
 						<td width="232" height="25" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span> Time Window</td>
 						<td align="center" valign="middle" class="transparent alignLeft">:</td>
-					    <td valign="top" class="transparent alignLeft"><table width="100%" border="0" cellpadding="0" cellspacing="0" class="transparent">
-                            <tr>
-                              <td class="transparent alignCenter"><span>Drag the slider to get the time window - </span>
-                                  <div id="slider-range" style="width: 200px;" class="transparent alignCenter"></div>
-                                <span id="SlideMax"></span></td>
-                            </tr>
-                            <tr>
-                              <td width="150" class="transparent alignCenter"><span id="time">9:00 AM - 5:00 PM</span></td>
-                            </tr>
-                        </table></td>
+					    <td valign="top" class="transparent alignLeft"><span id="time">9:00 AM - 5:00 PM</span></td>
 					</tr>
 					<tr class="transparent">
 						<td width="232" valign="top" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Time Zone</td>
@@ -57,12 +63,12 @@
 					<tr class="transparent">
 						<td width="232" valign="top" class="transparent alignRight">*</span>&nbsp;Organization may view</td>
 						<td align="center" valign="middle" class="transparent alignLeft">:</td>
-					    <td valign="top" class="transparent alignLeft"><select id="topOrgNode" name=""topOrgNode"">
+					    <td valign="top" class="transparent alignLeft"><select id="topOrgNode" name=""topOrgNode" class="norBox">
                         </select></td>
 					</tr>
 				</tbody>
 			</table>
-			</td>
+		  </td>
 		</tr>
 	</tbody>
 </table>

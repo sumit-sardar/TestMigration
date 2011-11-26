@@ -799,10 +799,8 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 				var tList = optionList[i].testSessionList;
 				var noOfRows = tList.length;
+				reloadGrids(tList);
 				
-				$('#testList').GridUnload();
-				
-				populateTestListGrid(tList, true);
 				break;
 			} 
 			isTestSelected = false;		
@@ -1060,5 +1058,46 @@ function createSingleNodeSelectedTree(jsondata) {
 			
 		}
 	}
+	
+	function reloadGrids(tList){
+		$('#testList').GridUnload();				
+		populateTestListGrid(tList, true);
+		
+		var testBreak = document.getElementById("testBreak");
+		isTestSelected = false;
+		if(testBreak.checked) testBreak.checked = false;
+		
+		document.getElementById("subtestGrid").style.display = "none";
+		document.getElementById("noSubtest").style.display = "";
+		/*var val = getDataFromTestJson(selectedTestId, tList);
+		subtestGridLoaded = false;
+		createSubtestGrid(val);*/
+	}
+	
+	function resetPopup() { 
+		$('#ssAccordion').accordion('activate', 0 );
+		$("#Select_Test").scrollTop(0);
+		$("#Test_Detail").scrollTop(0);
+		$("#Add_Student").scrollTop(0);
+		$("#Add_Proctor").scrollTop(0);
+		
+		document.getElementById('ShowButtons').style.display = "block";
+ 		setAnchorButtonState('viewStatusButton', true);
+ 		
+ 		 if($("#canRegisterStudent").val() == 'true'){
+ 			setAnchorButtonState('registerStudentButton', true);
+ 		}
+ 		
+ 		
+	}
+	
+	function validateTest(){
+		if(!isTestSelected){
+			alert("select test first");
+			//$('#ssAccordion').accordion('activate', 0 );
+			return false;
+		}
+		return true;
+	}	
 			
 					 
