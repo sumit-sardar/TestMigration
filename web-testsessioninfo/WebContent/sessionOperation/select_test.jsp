@@ -18,8 +18,8 @@
 									<td>
 									<table width="100%" border="0" cellpadding="0" cellspacing="4">
 										<tr class="transparent">
-											<td class="transparent" width="16%">Test Group :</td>
-											<td width="84%"><select name="testGroupList" class="bigBox" id="testGroupList"
+											<td class="transparent" width="20%">Test Group :</td>
+											<td width="80%"><select name="testGroupList" class="bigBox" id="testGroupList"
 												onchange="javascript:changeGradeAndLevel(); return false;">
 
 											</select></td>
@@ -87,29 +87,23 @@
 							<div id="noSubtest">
 							<table width="100%" cellpadding="2" cellspacing="1" class="shadowBorder">
 								<tr class="subtestHeader">
-									<th width="24" height="20" align="center"><strong>#</strong></th>
-									<th width="287" height="20" align="left"><strong>Subtest Name </strong></th>
-									<th width="144" height="20">
-									<div align="center"><strong>Access Code </strong></div>
-									</th>
-									<th width="73" height="20" align="center"><strong>Duration</strong></th>
+									<th width="4%" height="20" align="center"><strong>#</strong></th>
+									<th width="33%" height="20" align="left"><strong>Subtest Name </strong></th>									
+									<th width="33%" height="20" align="center"><strong>Duration</strong></th>
 								</tr>
 								<tr>
 									<td height="20" align="center">&nbsp;</td>
 									<td height="20" align="left">&nbsp;</td>
-									<td height="20">&nbsp;</td>
 									<td height="20" align="center">&nbsp;</td>
 								</tr>
 								<tr>
 									<td height="20" align="center">&nbsp;</td>
 									<td height="20" align="left">No Test Session is selected !!</td>
-									<td height="20">&nbsp;</td>
 									<td height="20" align="center">&nbsp;</td>
 								</tr>
 								<tr>
 									<td height="20" align="center">&nbsp;</td>
 									<td height="20" align="left">&nbsp;</td>
-									<td height="20">&nbsp;</td>
 									<td height="20" align="center">&nbsp;</td>
 								</tr>
 							</table>
