@@ -649,7 +649,7 @@ function createSingleNodeSelectedTree(jsondata) {
 						ProductData = data;
 						var selectedproductId= data.selectedProductId;
 						fillProductGradeLevelDropDown('testGroupList',data.product,selectedproductId);
-						fillDropDown("timeZoneList",data.testZoneDropDownList);
+						fillDropDownWithDefaultValue("timeZoneList",data.testZoneDropDownList, data.userTimeZone);
 						reloadGrids(data.product[0].testSessionList,data.product[0].showLevelOrGrade);
 						//populateTestListGrid(data.product[0].testSessionList,true,data.product[0].showLevelOrGrade);
 						fillDropDown("topOrgNode",data.topNodeDropDownList)
@@ -760,6 +760,24 @@ function createSingleNodeSelectedTree(jsondata) {
 		} else {
 			for(var i = 0; i < optionList.length; i++ ) {		     
 				optionHtml += "<option  value='"+ optionList[i].id+"'>"+ optionList[i].name+"</option>";	
+			}
+		}
+		$(ddl).html(optionHtml);
+	}
+	
+	
+	function fillDropDownWithDefaultValue( elementId, optionList, defVal) {
+		var ddl = document.getElementById(elementId);
+		var optionHtml = "" ;
+		if(optionList.length < 1) {
+			optionHtml += "<option  value='Select'>Select</option>";
+		} else {
+			for(var i = 0; i < optionList.length; i++ ) {
+				if(optionList[i].id==defVal) {
+					optionHtml += "<option  value='"+ optionList[i].id+"' selected>"+ optionList[i].name+"</option>";	
+				} else {
+					optionHtml += "<option  value='"+ optionList[i].id+"'>"+ optionList[i].name+"</option>";	
+				}		     
 			}
 		}
 		$(ddl).html(optionHtml);

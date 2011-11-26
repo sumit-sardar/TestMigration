@@ -50,6 +50,7 @@ import com.ctb.testSessionInfo.dto.TestSessionVO;
 import com.ctb.testSessionInfo.dto.UserProfileInformation;
 import com.ctb.testSessionInfo.utils.Base;
 import com.ctb.testSessionInfo.utils.BaseTree;
+import com.ctb.testSessionInfo.utils.DateUtils;
 import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
 import com.ctb.testSessionInfo.utils.Organization;
 import com.ctb.testSessionInfo.utils.OrgnizationComparator;
@@ -403,6 +404,7 @@ public class SessionOperationController extends PageFlowController {
                 }
            } 
             vo.setSelectedProductId(selectedProductId);
+            vo.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
             
             int selectedProductIndex = getProductIndexByID(selectedProductId);
       

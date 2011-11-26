@@ -30,21 +30,9 @@ public class ScheduleTestVo implements Serializable{
 	private List<ObjectIdName> topNodeDropDownList = new ArrayList<ObjectIdName>();
 	private boolean hideProductNameDropDown = false;
 	private String selectedProductId;
+	private String userTimeZone = "";
 	
 	
-	/*public void populateProducts(TestProduct[] tps) {
-		//product.add(new ProductIdName(-1, "Show All"));
-		if(tps!=null) {
-			for(TestProduct val: tps) {
-				product.add(new ProductIdName(val.getProductId(),val.getProductName()));
-				
-			}
-		}
-		
-		
-	}*/
-
-
 	public List<ObjectIdName> getLevelDropList(String[] levels) {
 		List<String> result = new ArrayList<String>();
 		List<ObjectIdName> levelList = new ArrayList<ObjectIdName> ();
@@ -276,6 +264,13 @@ public class ScheduleTestVo implements Serializable{
 			topNodeDropDownList.add(new ObjectIdName(entry.getKey().toString(), entry.getValue()));
 		}
 		
+	}
+
+	/**
+	 * @param userTimeZone the userTimeZone to set
+	 */
+	public void setUserTimeZone(String userTimeZone) {
+		this.userTimeZone = userTimeZone;
 	}
 	
 	
