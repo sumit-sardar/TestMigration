@@ -650,8 +650,8 @@ function createSingleNodeSelectedTree(jsondata) {
 						var selectedproductId= data.selectedProductId;
 						fillProductGradeLevelDropDown('testGroupList',data.product,selectedproductId);
 						fillDropDown("timeZoneList",data.testZoneDropDownList);
-						reloadGrids(data.product[0].testSessionList,true);						
-						//populateTestListGrid(data.product[0].testSessionList,true);
+						reloadGrids(data.product[0].testSessionList,true,data.product[0].showLevelOrGrade);
+						//populateTestListGrid(data.product[0].testSessionList,true,data.product[0].showLevelOrGrade);
 						fillDropDown("topOrgNode",data.topNodeDropDownList)
 						processStudentAccordion();
 						$.unblockUI(); 						
@@ -805,7 +805,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 				var tList = optionList[i].testSessionList;
 				var noOfRows = tList.length;
-				reloadGrids(tList);
+				reloadGrids(tList,optionList[i].showLevelOrGrade );
 				
 				break;
 			} 
@@ -910,15 +910,30 @@ function createSingleNodeSelectedTree(jsondata) {
 	        '</tr>');
 	}
 	
-	function populateTestListGrid(testSessionlist, testGroupLoad) {
+	function populateTestListGrid(testSessionlist, testGroupLoad, showLevelOrGrade) {
 		isTestGroupLoad  = testGroupLoad;
  		UIBlock();
- 		//populateTree();
+ 		var levelOrGradeTitle = "None";
+ 		var istabe = false;
+ 		if(isTabeProduct == undefined || isTabeProduct =='undefined') {
+ 			istabe = false;
+ 		} else {
+ 			istabe = isTabeProduct;
+ 		}
+ 		if (!istabe) {
+	 		if(showLevelOrGrade== undefined || showLevelOrGrade=='undefined'){
+	 			levelOrGradeTitle = 'None';
+	 		} else if (showLevelOrGrade=='level') {
+	 			levelOrGradeTitle = "Level";
+	 		} else if (showLevelOrGrade=='grade') {
+	 			levelOrGradeTitle = "Grade";
+	 		} 
+ 		} 
  		reset();
  		$("#testList").jqGrid({         
         	data: testSessionlist,
 			datatype: "local",         
-			colNames:['Test Name','Level', 'Subtest', 'Duration'],
+			colNames:['Test Name',levelOrGradeTitle, 'Subtest', 'Duration'],
 		   	colModel:[
 		   		{name:'testName',index:'testName', width:55, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'level',index:'level', width:12, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -996,6 +1011,13 @@ function createSingleNodeSelectedTree(jsondata) {
 			}
 	 });
 	 jQuery("#testList").jqGrid('navGrid', '#testPager', { edit: false, add: false, del: false, search: false, refresh: false });
+	 
+	 var colPos = 1;
+	 var myGrid = $('#testList'); 
+	 var columnName = myGrid.getGridParam("colModel")[colPos].name;
+	 if(istabe || columnName=="None") {
+	 	myGrid.jqGrid('hideCol', myGrid.getGridParam("colModel")[colPos].name);  
+	 }
 	 		
 	}
 	
@@ -1089,16 +1111,15 @@ function createSingleNodeSelectedTree(jsondata) {
 		}
 	}
 	
-	function reloadGrids(tList){
+	function reloadGrids(tList, showlevelOrGrade){
 		$('#testList').GridUnload();				
-		populateTestListGrid(tList, true);
+		populateTestListGrid(tList, true, showlevelOrGrade);
 		
 		subtestLength = 0;
 		var testBreak = document.getElementById("testBreak");
 		isTestSelected = false;
 		if(testBreak.checked) testBreak.checked = false;
 		document.getElementById("aCode").style.display = "none";
-		
 		
 		document.getElementById("subtestGrid").style.display = "none";
 		document.getElementById("noSubtest").style.display = "";
