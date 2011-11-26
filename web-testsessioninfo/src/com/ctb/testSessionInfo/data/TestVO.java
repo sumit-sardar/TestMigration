@@ -27,7 +27,7 @@ public class TestVO implements java.io.Serializable
     
     private String isRandomize = null; //Added for Random Distractor
    
-    private String subtestsString = "";
+   // private String subtestsString = "";
     
     boolean hasMultipleSubtests = true;
     
@@ -41,7 +41,7 @@ public class TestVO implements java.io.Serializable
         this.level = level;
         this.duration = duration;
         this.subtests = subtests;
-        this.subtestsString = getSubtestsString();
+        //this.subtestsString = getSubtestsString();
         this.accessCode = getFirstAccessCode();
         this.hasMultipleSubtests = hasMultipleSubtests();
         this.isSubtestExists = getSubtestExistStatus();
@@ -73,7 +73,7 @@ public class TestVO implements java.io.Serializable
         else
             this.subtests = null;
         if(this.subtests != null) {
-        	this.subtestsString = getSubtestsString();
+        	//this.subtestsString = getSubtestsString();
             this.accessCode = getFirstAccessCode();
             this.hasMultipleSubtests = hasMultipleSubtests();
         }
