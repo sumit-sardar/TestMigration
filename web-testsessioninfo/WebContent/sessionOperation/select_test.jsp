@@ -42,7 +42,7 @@
 								</tr>
 								<tr>
 									<td>
-									<div id="sessionListDiv" >
+									<div id="sessionListDiv">
 										<table id="testList" class="gridTable"></table>
 										<div id="testPager" class="gridTable"></div>
 									</div>
@@ -57,8 +57,7 @@
 					<td width="54%" style="padding-left: 7px; vertical-align: top;">
 					<table width="100%" border="0" cellspacing="0" cellpadding="0">
 						<tr>
-							<td height="20" colspan="3" style="border-bottom: #0099FF 1px groove;"><strong>Select Test Group
-							from the left and modify test details below</strong></td>
+							<td height="20" colspan="3" style="border-bottom: #0099FF 1px groove;"><strong><netui:content value="${bundle.web['sessionList.selectTest.testSelect.title']}"/></strong></td>
 						</tr>
 						<tr>
 							<td height="10" colspan="2"></td>
@@ -70,8 +69,8 @@
 							<td height="10" colspan="2"></td>
 						</tr>
 						<tr>
-							<td height="20"><input type="checkbox" name="randomDis" value="1"></td>
-							<td class="transparent">Random Distractor</td>
+							<td height="20"><input type="checkbox" id="randomDis" name="randomDis" value="1"></td>
+							<td class="transparent"><span id="randDisLbl">Random Distractor</span></td>
 						</tr>
 						<tr>
 							<td width="31" height="20" align="left" valign="middle">
