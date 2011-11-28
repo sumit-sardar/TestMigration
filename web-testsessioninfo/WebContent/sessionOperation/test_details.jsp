@@ -27,7 +27,22 @@
 						<td align="center" valign="middle" class="transparent alignLeft">:</td>
 				      <td colspan="2" valign="top" class="transparent alignLeft"><input name="endDate" id="endDate" type="text" size="12" maxlength="10" /></td>
 					</tr>
-					
+					<tr class="transparent">
+						<td width="171" height="25" align="left" valign="middle" nowrap="" class="transparent"><span class="asterisk">*</span>Time Window</td>
+						<td align="center" valign="middle" class="transparent alignLeft">:</td>
+					    <td colspan="2" valign="middle" class="transparent alignLeft"><table width="100%" border="0">
+                            <tr>
+                              <td width="128" align="left"><span id="time">9:00 AM - 5:00 PM</span></td>
+                              <td width="548" align="left"><table width="320" border="0" cellpadding="0" cellspacing="0" class="transparent">
+                                <tr>
+                                  <td width="50" height="5" align="right" class="transparent alignLeft"><span class="style3">12:00 AM</span> </td>
+                                  <td width="200" class="transparent alignLeft"><div id="slider-range" style="width: 200px; vertical-align:bottom;"></div></td>
+                                  <td width="50" class="transparent alignLeft"><span class="style3">11:45 PM</span></td>
+                                </tr>
+                              </table></td>
+                            </tr>
+                          </table></td>
+				    </tr>
 					<tr class="transparent">
 						<td width="171" align="left" valign="top" class="transparent">&nbsp;Time Zone</td>
 						<td align="center" valign="middle" class="transparent alignLeft">:</td>
@@ -47,32 +62,17 @@
 					    <td colspan="2" valign="top" class="transparent alignLeft"><select id="topOrgNode" name="topOrgNode">
                         </select></td>
 					</tr>
-					<tr class="transparent">
-						<td width="171" height="25" align="left" valign="middle" nowrap="" class="transparent"><span class="asterisk">*</span>Time Window</td>
-						<td align="center" valign="middle" class="transparent alignLeft">:</td>
-					    <td colspan="2" valign="middle" class="transparent alignLeft"><table width="100%" border="0">
-                            <tr>
-                              <td width="128" align="left"><span id="time">9:00 AM - 5:00 PM</span></td>
-                              <td width="548" align="left"><table width="320" border="0" cellpadding="0" cellspacing="0" class="transparent">
-                                <tr>
-                                  <td width="50" height="5" align="right" class="transparent alignLeft"><span class="style3">12:00 AM</span> </td>
-                                  <td width="200" class="transparent alignLeft"><div id="slider-range" style="width: 200px; vertical-align:bottom;"></div></td>
-                                  <td width="50" class="transparent alignLeft"><span class="style3">11:45 PM</span></td>
-                                </tr>
-                              </table></td>
-                            </tr>
-                          </table></td>
-				    </tr>
-					<tr>
+					
+					<!--tr>
 					<td valign="top">&nbsp;</td>
 					<td align="center">&nbsp;</td>
-					<td width="131" valign="top">&nbsp;</td>
-					<td width="556" valign="top"><table width="320" border="0">
+					<td width="110" valign="top">&nbsp;</td>
+					<td width="548" valign="top"><table width="320" border="0">
                       <tr>
-                        <td align="center">(<span class="transparent alignLeft">Drag the slider to set the time</span>)</td>
+                        <td align="left" class="transparent">(Drag the slider to set the time)</td>
                       </tr>
                     </table></td>
-					</tr>
+					</tr-->
 				</tbody>
 			</table>
 		  </td>
