@@ -9,3 +9,4 @@
 <input type="hidden" id="noTestSessions" name = "noTestSessions" value="${bundle.web['common.message.browse.noTestSessions.message']}"/>
 <input type="hidden" id="noStudentTitle" name = "noStudentTitle" value="${bundle.web['sessionList.studentTab.noStuSelected.title']}"/>
 <input type="hidden" id="noStudentMsg" name = "noStudentMsg" value="${bundle.web['sessionList.studentTab.noStuSelected.message']}"/>
+<input type="hidden" id="noTestMsg" name = "noStudentMsg" value="${bundle.web['sessionList.selectTest.noTestSelected.message']}"/>

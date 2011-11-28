@@ -20,6 +20,7 @@ var testGridLoaded = false;
 var subtestGridLoaded = false;
 var isTestGridEmpty = true;
 var subtestLength = 0;
+var subtestDataArr;
 var isTestSelected = false;
 var currentTime = new Date();
 var month = currentTime.getMonth() + 1;
@@ -252,9 +253,9 @@ function populateCompletedSessionListGrid() {
 	 }else if (requestedTab == 'TSL'){
 	 	 if(isTestGridEmpty) {
 		 	$('#testList').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
-		 	$('#testList').append("<tr><td style='width: 100%;' align='center'  colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>No Test available for this Test Group.</th></tr></tbody></table></td></tr>");
+		 	$('#testList').append("<tr><td style='width: 100%;' align='center'  colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noTestMsgNo").val()+"</th></tr></tbody></table></td></tr>");
 		 }
-	 } 
+	 }
 	 
 	 }
 	
@@ -783,11 +784,6 @@ function createSingleNodeSelectedTree(jsondata) {
 			}
 		}
 		$(ddl).html(optionHtml);
-		if(optionList.length==1) {
-			ddl.disabled=true;
-		} else {
-			ddl.disabled=false;
-		}
 	}
 	
 	
@@ -872,24 +868,22 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	function toggleAccessCode(){
 		if(subtestLength > 0){
+			subtestGridLoaded = false;
+			createSubtestGrid();
+			document.getElementById("aCode").value = ProductData.accessCodeList[0];
+			
 			var testBreak = document.getElementById("testBreak");
 			if(!testBreak.checked){		
 				isTestBreak = false;
-				//document.getElementById("aCodeHead").style.display = "none";
-				//document.getElementById("aCode").style.display = "inline";
 				document.getElementById("aCodeHead").style.visibility = "hidden";
 				document.getElementById("aCode").style.visibility = "visible";			
 							
 				for(var i=0;i<subtestLength;i++){
-					//document.getElementById("aCodeDiv"+i).style.display = "none";
 					document.getElementById("aCodeDiv"+i).style.visibility = "hidden";
-					/*document.getElementById("aCodeB"+i).removeAttribute("disabled");
-					document.getElementById("aCodeB"+i).className = "";	*/		
+					
 				}
 			}else{
 				isTestBreak = true;
-				//document.getElementById("aCodeHead").style.display = "inline";		
-				//document.getElementById("aCode").style.display = "none";
 				document.getElementById("aCodeHead").style.visibility = "visible";
 				document.getElementById("aCode").style.visibility = "hidden";
 				for(var i=0;i<subtestLength;i++){
@@ -905,17 +899,6 @@ function createSingleNodeSelectedTree(jsondata) {
 			}
 		}
 	}
-
-
-	/*function slideTime(event, ui){
-	    var minutes0 = parseInt($("#slider-range").slider("values", 0) % 60);
-	    var hours0 = parseInt($("#slider-range").slider("values", 0) / 60 % 24);
-	    var minutes1 = parseInt($("#slider-range").slider("values", 1) % 60);
-	    var hours1 = parseInt($("#slider-range").slider("values", 1) / 60 % 24);
-	    startTime = getTime(hours0, minutes0);
-	    endTime = getTime(hours1, minutes1);
-	    $("#time").text(startTime + ' - ' + endTime);	
-	}*/
 	
 	function stopSlide(event, ui) {
 	 	var minutes0Stop = parseInt($("#slider-range").slider("values", 0) % 60, 10);
@@ -1050,7 +1033,8 @@ function createSingleNodeSelectedTree(jsondata) {
 					//document.getElementById("aCode").style.display = "none";
 					populateDates();
 					var val = getDataFromTestJson(selectedTestId, testSessionlist);
-					createSubtestGrid(val);
+					subtestDataArr = val;
+					createSubtestGrid();
 			 		
 			},
 			loadComplete: function () {
@@ -1092,9 +1076,9 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 	
 	
-	function createSubtestGrid(subtestsArr){
+	function createSubtestGrid(){
 		var subtestArr = new Array();
-		subtestArr = subtestsArr;
+		subtestArr = subtestDataArr;
 		var subtestData = '';
 		//alert(subtestGridLoaded);
 		if(!subtestGridLoaded && subtestArr.length > 0){
@@ -1187,6 +1171,14 @@ function createSingleNodeSelectedTree(jsondata) {
 		populateTestListGrid(tList, true, showlevelOrGrade);
 		$("#sessionListDiv").show();
 		$('#displayMessage').hide();
+		if(ProductData.isRandomize == "Y" || ProductData.isRandomize == "y"){
+			document.getElementById("randomDis").style.display = "inline";
+			document.getElementById("randDisLbl").style.display = "inline";			
+		}else{
+			document.getElementById("randomDis").style.display = "none";
+			document.getElementById("randDisLbl").style.display = "none";	
+		}
+			
 		subtestLength = 0;
 		var testBreak = document.getElementById("testBreak");
 		isTestSelected = false;
@@ -1195,9 +1187,6 @@ function createSingleNodeSelectedTree(jsondata) {
 		
 		document.getElementById("subtestGrid").style.display = "none";
 		document.getElementById("noSubtest").style.display = "";
-		/*var val = getDataFromTestJson(selectedTestId, tList);
-		subtestGridLoaded = false;
-		createSubtestGrid(val);*/
 		document.getElementById("testSessionName_lbl").innerHTML = "No Test is selected";
 		document.getElementById("testSessionName").value = "";
 		document.getElementById("startDate").value = "";			
@@ -1228,13 +1217,26 @@ function createSingleNodeSelectedTree(jsondata) {
 		var acc   = $("#ssAccordion");
 		var testSessionName = trim(document.getElementById("testSessionName").value);
 		var startDate = trim(document.getElementById("startDate").value);
-		var endDate = trim(document.getElementById("endDate").value);
+		var endDate = trim(document.getElementById("endDate").value);	
 		
 		if(!isTestSelected){
 			return false;
 		}else{
-			if(testSessionName == "" || startDate == "" || endDate == "" ){
+			if(testSessionName == "" || startDate == "" || endDate == ""){				
 				return false;
+			}
+			if(subtestLength > 0){
+				var testBreak = document.getElementById("testBreak");
+				if(!testBreak.checked){	
+					var accessCode = trim(document.getElementById("aCode").value);	
+					if(accessCode == "") return false;	
+				}else{
+					for(var i=0;i<subtestLength;i++){
+						if(trim(document.getElementById("aCodeB"+i).value) == ""){
+							return false;
+						}
+					}
+				}
 			}
 		}
 		return true;
@@ -1246,6 +1248,7 @@ function createSingleNodeSelectedTree(jsondata) {
      	var testSessionName = trim(document.getElementById("testSessionName").value);
 		var startDate = trim(document.getElementById("startDate").value);
 		var endDate = trim(document.getElementById("endDate").value);
+		var testBreakVal = 0;
 		
 		if(!isTestSelected){
 			requiredFields = "";
@@ -1255,6 +1258,26 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 		}else{
 			requiredFields = "";
+			if(subtestLength > 0){
+				var testBreak = document.getElementById("testBreak");
+				if(!testBreak.checked){	
+					var accessCode = trim(document.getElementById("aCode").value);	
+					if(accessCode.length == 0){
+						requiredFieldCount += 1;            
+						requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
+					}	
+				}else{
+					for(var i=0;i<subtestLength;i++){
+						if(trim(document.getElementById("aCodeB"+i).value) == ""){
+							testBreakVal += 1;
+						}
+					}
+					if(testBreakVal > 0){
+						requiredFieldCount += 1;            
+						requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
+					}
+				}
+			}
 			if ( testSessionName.length == 0 ) {
 					requiredFieldCount += 1;            
 					requiredFields = buildErrorString("Test Session Name", requiredFieldCount, requiredFields);       
@@ -1270,16 +1293,16 @@ function createSingleNodeSelectedTree(jsondata) {
 				} 
 			
 		}
-			if (requiredFieldCount > 0) {
-				if (requiredFieldCount == 1) {
-					setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);
-				}
-				else {
-					setMessage("Missing required fields", requiredFields, "errorMessage", REQUIRED_TEXT_MULTIPLE);
-				}
-				//return false;
+		if (requiredFieldCount > 0) {
+			if (requiredFieldCount == 1) {
+				setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);
 			}
-		//setMessage("Missing required field", requiredFields, "errorMessage", "Please enter/select this value to continue.");
+			else {
+				setMessage("Missing required fields", requiredFields, "errorMessage", REQUIRED_TEXT_MULTIPLE);
+			}
+			//return false;
+		}
+	//return true;
 	 }
 	 
 	  function buildErrorString(field, count, str){
