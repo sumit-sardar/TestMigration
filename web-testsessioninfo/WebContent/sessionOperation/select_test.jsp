@@ -42,7 +42,7 @@
 								</tr>
 								<tr>
 									<td>
-									<div id="sessionListDiv" disabled = true>
+									<div id="sessionListDiv" >
 										<table id="testList" class="gridTable"></table>
 										<div id="testPager" class="gridTable"></div>
 									</div>
