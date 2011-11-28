@@ -834,19 +834,14 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 
 	function setPopupPosition(){
-				var toppos = ($(window).height() - 848) /2 + 'px';
-				var leftpos = ($(window).width() - 1024) /2 + 'px';
-				$("#Select_Test").css("overflow",'auto');
 				$("#Select_Test").css("height",'400px');
-				$("#Test_Detail").css("overflow",'auto');
 				$("#Test_Detail").css("height",'400px');
-				$("#Add_Student").css("overflow",'auto');
 				$("#Add_Student").css("height",'400px');
-				$("#Add_Proctor").css("overflow",'auto');
 				$("#Add_Proctor").css("height",'400px');
-				$("#Select_Test").parent().css("top",toppos);
-				$("#Select_Test").parent().css("left",leftpos);
-					
+				var toppos = ($(window).height() - 650) /2 + 'px';
+				var leftpos = ($(window).width() - 1024) /2 + 'px';
+				$("#scheduleSession").parent().css("top",toppos);
+				$("#scheduleSession").parent().css("left",leftpos);	
 				
 	}
 	
