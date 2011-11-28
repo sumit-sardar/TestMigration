@@ -1771,11 +1771,33 @@ public class ScheduleTestImpl implements ScheduleTest
 				
 				session.setTestAdminId(createNewTestAdminRecord(userId, customerId, session));
                 ArrayList subtests = createTestAdminItemSetRecords(newSession);
+                
+                // TEMPORARILY REMOVE SAMPLE SUBTESTS FOR TABE ADAPTIVE - NEED TO REWRITE THIS LOGIC
+                if (session.getProductId().intValue() == 8001) {
+	                for (int i=subtests.size()-1 ; i>=0 ; i--) {
+	                	TestElement te = (TestElement)subtests.get(i);
+	                	if ("T".equals(te.getSample())) {
+	                		subtests.remove(i);
+	                	}
+	                }
+                }
+                
                 createTestRosters(userName, userId, subtests, newSession, extendedTimeValue);
                 createProctorAssignments(true, userId, newSession);
             } else {
             	updateTestAdminRecord(userId, session);
                 ArrayList subtests = updateTestAdminItemSetRecords(newSession);
+                
+                // TEMPORARILY REMOVE SAMPLE SUBTESTS FOR TABE ADAPTIVE - NEED TO REWRITE THIS LOGIC
+                if (session.getProductId().intValue() == 8001) {
+	                for (int i=subtests.size()-1 ; i>=0 ; i--) {
+	                	TestElement te = (TestElement)subtests.get(i);
+	                	if ("T".equals(te.getSample())) {
+	                		subtests.remove(i);
+	                	}
+	                }
+                }
+                
                 updateTestRosters(userName, userId, subtests, newSession, session.getItemSetId(), extendedTimeValue);
                 updateProctorAssignments(userName, userId, newSession);
                 writeTestAdminRecord(userId, session);
@@ -2950,6 +2972,14 @@ public class ScheduleTestImpl implements ScheduleTest
                                 form = "%";
                             
                            Integer [] itemSetIds = siss.getItemSetIdsForFormForParent(parentItemsetId,form);
+                           
+                           // TEMPORARILY REMOVE SAMPLE SUBTESTS FOR TABE ADAPTIVE - NEED TO REWRITE THIS LOGIC
+                           if (customerId.intValue() == 9859) {
+                        	   Integer itemSetId = itemSetIds[1];
+                        	   itemSetIds = new Integer[1];
+                        	   itemSetIds[0] = itemSetId;
+                           }
+                           
                             for(int j=0;j<itemSetIds.length;j++){
                                 StudentSessionStatus sss = new StudentSessionStatus();
                                 sss.setItemSetId(itemSetIds[j]);
