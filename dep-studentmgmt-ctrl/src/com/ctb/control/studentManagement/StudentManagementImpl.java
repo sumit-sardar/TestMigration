@@ -1298,7 +1298,7 @@ public class StudentManagementImpl implements StudentManagement
 	 * @return student id
 	 * @throws com.ctb.exception.CTBBusinessException
 	 */
-	public Integer createNewStudent(String userName, ManageStudent manageStudent) throws CTBBusinessException
+	public Student createNewStudent(String userName, ManageStudent manageStudent) throws CTBBusinessException
 	{
 		OrganizationNode [] organizationNodes = manageStudent.getOrganizationNodes();
 		for (int i=0; organizationNodes!=null && i< organizationNodes.length; i++) 
@@ -1350,7 +1350,7 @@ public class StudentManagementImpl implements StudentManagement
 				orgNodeStudent.setStudentId(student.getStudentId());
 				orgNodeStudents.createOrgNodeStudent(orgNodeStudent);                                
 			}
-			return newStudentId;
+			return student;
 
 		} catch (SQLException se) {
 			StudentDataCreationException one = new StudentDataCreationException("StudentManagementImpl: createNewStudent: " + se.getMessage());

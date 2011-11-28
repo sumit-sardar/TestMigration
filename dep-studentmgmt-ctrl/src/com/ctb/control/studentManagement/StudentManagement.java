@@ -115,7 +115,7 @@ public interface StudentManagement
      * @throws com.ctb.exception.CTBBusinessException
      */
     
-    java.lang.Integer createNewStudent(java.lang.String userName, com.ctb.bean.studentManagement.ManageStudent manageStudent) throws com.ctb.exception.CTBBusinessException;
+    com.ctb.bean.testAdmin.Student createNewStudent(java.lang.String userName, com.ctb.bean.studentManagement.ManageStudent manageStudent) throws com.ctb.exception.CTBBusinessException;
 
     /**
      * Retrieves a list of ancestor org nodes of the specified org node

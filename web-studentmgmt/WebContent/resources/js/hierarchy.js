@@ -1070,6 +1070,8 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	var param;
 	var createBy = "";
+	var assignedOrg = $('#selectedOrgNodesName').text();
+	var showStudentInGrid = false;
 	if(isAddStudent){
 		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
 		 $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val() + 
@@ -1077,6 +1079,9 @@ function fillselectedOrgNode( elementId, orgList) {
 	}else{
 		var selectedStudentId = $("#list2").jqGrid('getGridParam', 'selrow');
 		createBy = getDataFromJson(selectedStudentId);
+		if(createBy == null || createBy == 'undefined') {
+			createBy = $("#stuCreatedBy").val();
+		}
 		param = $("#addEditStudentDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds+ "&studentIdLabelName=" +
 			 $("#studentIdLabelName").val()+ "&studentIdConfigurable=" + $("#isStudentIdConfigurable").val()+
 			  "&selectedStudentId=" + selectedStudentId + "&isAddStudent=" + isAddStudent + "&createBy="+createBy + "&loginId=" + loginId ;
@@ -1098,14 +1103,74 @@ function fillselectedOrgNode( elementId, orgList) {
 								data:		 param,
 								dataType:	'json',
 								success:	function(data, textStatus, XMLHttpRequest){	
-												$.unblockUI();  
+												  
 												var errorFlag = data.errorFlag;
 												var successFlag = data.successFlag;
 												if(successFlag) {
 													closePopUp('addEditStudentDetail');
 													setMessageMain(data.title, data.content, data.type, "");
 													document.getElementById('displayMessageMain').style.display = "block";	
+													var orgs = assignedOrgNodeIds.split(",");
+													
+													if(orgs.length > 0) {
+														if(isExist(SelectedOrgNodeId,orgs)){
+															assignedOrg = $("#" +SelectedOrgNodeId).text();
+															showStudentInGrid = true;
+														} else {
+														if ($("#" +SelectedOrgNodeId).attr("categoryid") < leafNodeCategoryId) {
+														var tempAssignedOrg = "";
+																for(var i=0; i<orgs.length; i++){
+																	var parentOrgNodeId = $("#" + orgs[i]).parent("ul");
+																	var ancestorNodes = parentOrgNodeId.parentsUntil(".jstree","li");
+																	for(var count = ancestorNodes.length - 1; count >= 0; --count) {
+															  		 		var tmpNode = ancestorNodes[count].id;
+																			if($.trim(tmpNode) == $.trim(SelectedOrgNodeId)){
+																			 if(tempAssignedOrg == ""){
+																			 	tempAssignedOrg =  tempAssignedOrg + $("#" +orgs[i]).text() ;
+																			 } else {
+																			 	tempAssignedOrg =  tempAssignedOrg + "," + $("#" +orgs[i]).text() ;
+																			 }
+																				
+																				showStudentInGrid = true;
+																				break;
+																			}
+																	 }
+																	
+																}
+															assignedOrg	= tempAssignedOrg;
+															} else {
+																showStudentInGrid = false;
+															}
+														}
+													} 
+													
 													assignedOrgNodeIds = "";
+													if(showStudentInGrid) {
+														var dataToBeAdded = {lastName:$("#studentLastName").val(),
+																			firstName:$("#studentFirstName").val(),
+																			middleName:$("#studentMiddleName").val(),
+																			grade:$("#gradeOptions").val(),
+																			orgNodeNamesStr:$.trim(assignedOrg),
+																			gender:$("#genderOptions").val(),
+																			hasAccommodations:data.hasAccommodation,
+																			userName:data.studentLoginId,
+																			studentNumber:$("#studentExternalId").val()};
+														
+														var sortOrd = jQuery("#list2").getGridParam("sortorder");
+														var sortCol = jQuery("#list2").getGridParam("sortname");	
+														if(!isAddStudent) {
+															jQuery("#list2").setRowData(data.studentId, dataToBeAdded, "first");
+														}
+														else {
+															jQuery("#list2").addRowData(data.studentId, dataToBeAdded, "first");
+														}
+															jQuery("#list2").sortGrid(sortCol,true);
+													} else {
+														if(!isAddStudent) {
+															jQuery("#list2").delRowData(data.studentId);
+														}
+													}
+													$.unblockUI();			
         										}
         										else{
         											setMessage(data.title, data.content, data.type, "");
@@ -1230,6 +1295,9 @@ function fillselectedOrgNode( elementId, orgList) {
 	}
 	
     var createBy =  getDataFromJson(rowid);
+    if(createBy == null || createBy == '') {
+		createBy = $("#stuCreatedBy").val();
+	}
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){

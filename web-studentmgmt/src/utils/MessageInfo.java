@@ -10,6 +10,10 @@ public class MessageInfo {
 	private String content ;
 	private String message ;
 	private String type ;
+	private Integer studentId ;
+	private String studentLoginId ;
+	private String hasAccommodation = "No";
+
 	/**
 	 * @return the title
 	 */
@@ -82,7 +86,41 @@ public class MessageInfo {
 	public void setType(String type) {
 		this.type = type;
 	}
+	/**
+	 * @return the studentId
+	 */
+	public Integer getStudentId() {
+		return studentId;
+	}
+	/**
+	 * @param studentId the studentId to set
+	 */
+	public void setStudentId(Integer studentId) {
+		this.studentId = studentId;
+	}
+	/**
+	 * @return the studentLoginId
+	 */
+	public String getStudentLoginId() {
+		return studentLoginId;
+	}
+	/**
+	 * @param studentLoginId the studentLoginId to set
+	 */
+	public void setStudentLoginId(String studentLoginId) {
+		this.studentLoginId = studentLoginId;
+	}
+	/**
+	 * @return the hasAccommodation
+	 */
+	public String getHasAccommodation() {
+		return hasAccommodation;
+	}
+	/**
+	 * @param hasAccommodation the hasAccommodation to set
+	 */
+	public void setHasAccommodation(String hasAccommodation) {
+		this.hasAccommodation = hasAccommodation;
+	}
 	
-	
-
 }

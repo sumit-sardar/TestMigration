@@ -15,6 +15,7 @@
 	Boolean supportAccommodations = (Boolean)request.getAttribute("supportAccommodations");
 	String showEditButton = (String)request.getAttribute("showEditButton"); 
 	String showDeleteButton = (String)request.getAttribute("showDeleteButton"); 
+	Integer stuCreatedBy = (Integer)session.getAttribute("createdBy"); 
 	
 
 %>
@@ -32,6 +33,7 @@
 <input type="hidden" id="supportAccommodations" value = '<%=supportAccommodations %>' />
 <input type="hidden" id="showEditButton" value = '<%=showEditButton %>' />
 <input type="hidden" id="showDeleteButton" value = '<%=showDeleteButton %>' />
+<input type="hidden" id="stuCreatedBy" value = '<%=stuCreatedBy %>' />
 
 
 

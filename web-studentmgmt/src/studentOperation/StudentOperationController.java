@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import manageStudent.ManageStudentController.ManageStudentForm;
-
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
@@ -47,6 +45,7 @@ import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentAccommodations;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.bean.testAdmin.UserNodeData;
@@ -479,8 +478,8 @@ public class StudentOperationController extends PageFlowController {
 				}  
 			}
 			if(result) {
-				studentId = saveStudentProfileInformation(isCreateNew, studentProfile, studentId, selectedOrgNodes);
-	
+				studentId = saveStudentProfileInformation(isCreateNew, studentProfile, studentId, selectedOrgNodes, messageInfo);
+				
 				System.out.println("studentId==>"+studentId + "studentProfile.setFirstName" + studentProfile.getFirstName());	
 				String demographicVisible = this.user.getCustomer().getDemographicVisible();
 				if ((studentId != null) && demographicVisible.equalsIgnoreCase("T"))
@@ -490,7 +489,7 @@ public class StudentOperationController extends PageFlowController {
 	
 				if (studentId != null)
 				{
-					result = saveStudentAccommodations(isCreateNew, studentProfile, studentId, customerConfigurations);
+					result = saveStudentAccommodations(isCreateNew, studentProfile, studentId, customerConfigurations, messageInfo);
 				}
 
 			}
@@ -751,7 +750,7 @@ public class StudentOperationController extends PageFlowController {
 	/**
 	 * saveStudentProfileInformation
 	 */
-	private Integer saveStudentProfileInformation(boolean isCreateNew, StudentProfileInformation studentProfile, Integer studentId, List selectedOrgNodes)
+	private Integer saveStudentProfileInformation(boolean isCreateNew, StudentProfileInformation studentProfile, Integer studentId, List selectedOrgNodes, MessageInfo messageInfo)
 	{
 
 		ManageStudent student = studentProfile.makeCopy(studentId, selectedOrgNodes);
@@ -760,11 +759,17 @@ public class StudentOperationController extends PageFlowController {
 		{                    
 			if (isCreateNew)
 			{
-				studentId = this.studentManagement.createNewStudent(this.userName, student);
+				Student studentdetail = this.studentManagement.createNewStudent(this.userName, student);
+				studentId = studentdetail.getStudentId();
+				messageInfo.setStudentLoginId(studentdetail.getUserName());
+				messageInfo.setStudentId(studentId);
+				
 			}
 			else
 			{
 				this.studentManagement.updateStudent(this.userName, student);
+				messageInfo.setStudentLoginId(student.getLoginId());
+				messageInfo.setStudentId(student.getId());
 			}
 		}
 		catch (StudentDataCreationException sde)
@@ -1272,6 +1277,7 @@ public class StudentOperationController extends PageFlowController {
 			be.printStackTrace();
 		}        
 		getSession().setAttribute("userName", this.userName);
+		getSession().setAttribute("createdBy", this.user.getUserId());
 	}
 
 	/**
@@ -1725,7 +1731,7 @@ public class StudentOperationController extends PageFlowController {
 	 * saveStudentAccommodation
 	 */
 
-	private boolean saveStudentAccommodations(boolean isCreateNew, StudentProfileInformation studentProfile, Integer studentId, CustomerConfiguration[]  customerConfigurations)
+	private boolean saveStudentAccommodations(boolean isCreateNew, StudentProfileInformation studentProfile, Integer studentId, CustomerConfiguration[]  customerConfigurations, MessageInfo messageInfo)
 	{
 			String hideAccommodations = this.user.getCustomer().getHideAccommodations();
 
@@ -1735,7 +1741,7 @@ public class StudentOperationController extends PageFlowController {
 			getStudentAccommodationsFromRequest(customerConfigurations, studentProfile.getCreateBy());
 
 		StudentAccommodations sa = this.accommodations.makeCopy(studentId);
-
+		messageInfo.setHasAccommodation(studentHasAccommodation(sa));
 		if (isCreateNew)
 		{
 			if (sa != null)
@@ -1753,6 +1759,32 @@ public class StudentOperationController extends PageFlowController {
 		this.accommodations = null;
 
 		return true;
+	}
+	
+	public String studentHasAccommodation(StudentAccommodations sa){
+		 String hasAccommodations = "No";
+	        if( "T".equals(sa.getScreenMagnifier()) ||
+	            "T".equals(sa.getScreenReader()) ||
+	            "T".equals(sa.getCalculator()) ||
+	            "T".equals(sa.getTestPause()) ||
+	            "T".equals(sa.getUntimedTest()) ||
+	            "T".equals(sa.getHighlighter()) ||
+	            "T".equals(sa.getExtendedTime()) ||
+	            (sa.getMaskingRuler() != null && !sa.getMaskingRuler().equals("") && !sa.getMaskingRuler().equals("F"))||
+	            (sa.getExtendedTime() != null && !sa.getExtendedTime().equals("") && !sa.getExtendedTime().equals("F")) || 
+	            (sa.getAuditoryCalming() != null && !sa.getAuditoryCalming().equals("") && !sa.getAuditoryCalming().equals("F")) || 
+	            (sa.getMagnifyingGlass() != null && !sa.getMagnifyingGlass().equals("") && !sa.getMagnifyingGlass().equals("F")) || 
+	            (sa.getMaskingTool() != null && !sa.getMaskingTool().equals("") && !sa.getMaskingTool().equals("F")) || 
+	            sa.getQuestionBackgroundColor() != null ||
+	            sa.getQuestionFontColor() != null ||
+	            sa.getQuestionFontSize() != null ||
+	            sa.getAnswerBackgroundColor() != null ||
+	            sa.getAnswerFontColor() != null ||
+	            sa.getAnswerFontSize() != null)
+	        	hasAccommodations = "Yes";
+	       
+	       
+	   return hasAccommodations;
 	}
 
 

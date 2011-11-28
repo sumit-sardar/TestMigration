@@ -58,6 +58,7 @@ import com.ctb.bean.studentManagement.OrganizationNodeData;
 import com.ctb.bean.studentManagement.StudentDemographic;
 import com.ctb.bean.studentManagement.StudentDemographicValue;
 import com.ctb.bean.testAdmin.Customer;
+import com.ctb.bean.testAdmin.Student;
 import com.ctb.bean.testAdmin.StudentAccommodations;
 import com.ctb.bean.testAdmin.StudentSessionStatus;
 import com.ctb.bean.testAdmin.User;
@@ -1000,7 +1001,9 @@ public class ManageStudentController extends PageFlowController
 		{                    
 			if (isCreateNew)
 			{
-				studentId = this.studentManagement.createNewStudent(this.userName, student);
+				Student studentdetail = this.studentManagement.createNewStudent(this.userName, student);
+				studentId = studentdetail.getStudentId();
+				
 			}
 			else
 			{
