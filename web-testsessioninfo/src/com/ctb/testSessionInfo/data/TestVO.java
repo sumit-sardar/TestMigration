@@ -83,7 +83,7 @@ public class TestVO implements java.io.Serializable
     }
    	
    	
-   	private int getSubtestCount() {
+   	public int getSubtestCount() {
    		if(subtests==null ) {
 			return 0;
 		} else {

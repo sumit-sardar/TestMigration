@@ -31,6 +31,7 @@ public class ScheduleTestVo implements Serializable{
 	private boolean hideProductNameDropDown = false;
 	private String selectedProductId;
 	private String userTimeZone = "";
+	private List<String> accessCodeList = new ArrayList<String>();
 	
 	
 	public List<ObjectIdName> getLevelDropList(String[] levels) {
@@ -91,7 +92,7 @@ public class ScheduleTestVo implements Serializable{
             List<SubtestVO> subtestList = new ArrayList<SubtestVO>();
 
             Integer itemSetId = tes[i].getItemSetId();
-            TestElementData suTed = scheduleTest.getSchedulableUnitsForTest(userName, itemSetId, new Boolean(true), null, null, null);
+            TestElementData suTed = scheduleTest.getSchedulableUnitsForTestWithBlankAccessCode(userName, itemSetId, new Boolean(true), null, null, null);
             TestElement [] usTes = suTed.getTestElements();
             for (int j=0; j<usTes.length; j++)
             {
@@ -271,6 +272,24 @@ public class ScheduleTestVo implements Serializable{
 	 */
 	public void setUserTimeZone(String userTimeZone) {
 		this.userTimeZone = userTimeZone;
+	}
+
+	public void populateAccessCode(ScheduleTest scheduleTest) throws CTBBusinessException {
+		int maxSubtestCount = 0;
+		for(ProductBean pp :product){
+			if(pp.getTestSessionList() != null) {
+				for ( TestVO tt : pp.getTestSessionList()) {
+					if(tt.getSubtestCount()>maxSubtestCount) {
+						maxSubtestCount= tt.getSubtestCount();
+					}
+				}
+			}
+		}
+		
+		if(maxSubtestCount>0){
+			this.accessCodeList = scheduleTest.getFixedNoAccessCode(maxSubtestCount);
+		}
+		
 	}
 	
 	
@@ -457,6 +476,15 @@ class ProductBean implements Serializable{
 	 */
 	public String getShowLevelOrGrade() {
 		return showLevelOrGrade;
+	}
+
+
+	
+	/**
+	 * @return the testSessionList
+	 */
+	public List<TestVO> getTestSessionList() {
+		return testSessionList;
 	}
 
 

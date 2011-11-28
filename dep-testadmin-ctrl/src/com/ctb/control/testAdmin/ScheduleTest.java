@@ -2,6 +2,8 @@ package com.ctb.control.testAdmin;
 
 
 
+import java.util.List;
+
 import com.bea.control.annotations.TransactionAttribute;
 import com.bea.control.annotations.TransactionAttributeType;
 import org.apache.beehive.controls.api.bean.ControlInterface;
@@ -90,6 +92,9 @@ public interface ScheduleTest
     
     com.ctb.bean.testAdmin.TestElementData getSchedulableUnitsForTest(java.lang.String userName, java.lang.Integer testItemSetId, java.lang.Boolean generateAccessCodes, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 
+    com.ctb.bean.testAdmin.TestElementData getSchedulableUnitsForTestWithBlankAccessCode(java.lang.String userName, java.lang.Integer testItemSetId, java.lang.Boolean generateAccessCodes, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+    
+    List<String> getFixedNoAccessCode(int totalAccessCode) throws com.ctb.exception.CTBBusinessException;
     /**
      * Retrieves a filtered, sorted, paged list of the unique student
      * grade/accommodation option sets of all students in orgs visible to the

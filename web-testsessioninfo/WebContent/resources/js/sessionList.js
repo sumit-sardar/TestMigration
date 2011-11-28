@@ -475,7 +475,11 @@ function createSingleNodeSelectedTree(jsondata) {
 			for(var i=0; i<sessionList.length ;i++){
 				if(sessionList[i].id == id){
 					document.getElementById("aCode").style.visibility = "visible";
-					document.getElementById("aCode").value = sessionList[i].accessCode;
+					if(sessionList[i].subtests.length>0)  {
+						document.getElementById("aCode").value = ProductData.accessCodeList[0];
+					} else {
+						document.getElementById("aCode").value = "";
+					}
 					document.getElementById("testSessionName_lbl").innerHTML = sessionList[i].testName;
 					document.getElementById("testSessionName").value = sessionList[i].testName;	
 					str = sessionList[i].subtests;					
@@ -1115,7 +1119,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				tr +='</td>';
 				tr +='<td height="23" width="130" align="center" class="subtestCols">';
 				tr +='<div align="center" id="aCodeDiv'+i+'" style="visibility:hidden;">';
-				tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+subtestArr[i].testAccessCode+'" style="padding-left:2px;"/></div>';
+				tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" style="padding-left:2px;"/></div>';
 				tr +='</td>';
 				tr +='<td height="23" width="82" align="center" class="subtestCols">';
 				tr +='<div align="center" id="duration'+i+'">'+subtestArr[i].duration+'</div>';

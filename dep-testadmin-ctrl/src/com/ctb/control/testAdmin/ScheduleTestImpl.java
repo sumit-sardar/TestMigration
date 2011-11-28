@@ -391,6 +391,78 @@ public class ScheduleTestImpl implements ScheduleTest
         
     }
     
+    
+    public TestElementData getSchedulableUnitsForTestWithBlankAccessCode(String userName, Integer testItemSetId, Boolean generateAccessCodes, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+        validator.validateItemSet(userName, testItemSetId, "testAdmin.getSchedulableUnitsForTest");
+        try {
+            String [] forms = itemSet.getFormsForTest(testItemSetId);
+            TestElementData ted = new TestElementData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            String cacheKey = String.valueOf(testItemSetId) + "|TS";
+            TestElementCacheObject cacheObj = (TestElementCacheObject) SimpleCache.checkCache5min("TEST_ELEMENT", cacheKey);
+            if(cacheObj == null) {
+                cacheObj = new TestElementCacheObject();
+                cacheObj.testElements = itemSet.getTestElementsForParent(testItemSetId, "TS");
+                SimpleCache.cacheResult("TEST_ELEMENT", cacheKey, cacheObj);
+            }
+            ted.setTestElements(cacheObj.testElements, pageSize);
+            if(filter != null) ted.applyFiltering(filter);
+            if(sort != null) ted.applySorting(sort);
+            if(page != null) ted.applyPaging(page);
+            if(generateAccessCodes.booleanValue() == true) {
+            TestElement [] subtests = ted.getTestElements();
+                HashMap accessCodeHashmap = new HashMap();
+                for(int i=0;i<subtests.length && subtests[i] != null;i++) {
+                    TestElement subtest = subtests[i];
+                    subtest.setForms(forms);
+                    boolean validCode = false;
+                    String code = "";
+                    subtest.setAccessCode(code);
+                }
+            }
+            return ted;
+        } catch (SQLException se) {
+            TestElementDataNotFoundException tee = new TestElementDataNotFoundException("ScheduleTestImpl: getSchedulableUnitsForTest: " + se.getMessage());
+            tee.setStackTrace(se.getStackTrace());
+            throw tee;
+        }
+        
+    }
+    
+    
+    public List<String> getFixedNoAccessCode(int count) throws CTBBusinessException
+    {
+    	HashMap accessCodeHashmap = new HashMap();
+    	List<String> accessCodeList = new ArrayList<String>(count);
+    	int genCount = 0;
+    	try{
+    		while(count>genCount) {
+        		boolean validCode = false;
+                String code = null;
+                while(!validCode) {
+                    code = AccessCodeGenerator.generateAccessCode();
+                    if (!accessCodeHashmap.containsKey(code))
+                        validCode = admins.getTestAdminsByAccessCode(code).length == 0;
+                }
+                genCount++;
+                accessCodeList.add(code);
+                accessCodeHashmap.put(code, code);
+        		
+        	}
+        	return accessCodeList;
+    	}catch (SQLException se) {
+            TestElementDataNotFoundException tee = new TestElementDataNotFoundException("ScheduleTestImpl: getFixedNoAccessCode: " + se.getMessage());
+            tee.setStackTrace(se.getStackTrace());
+            throw tee;
+        }
+    	
+    	
+    }
+    
     /**
      * Retrieves a filtered, sorted, paged list of the unique student grade/accommodation
      * option sets of all students in orgs visible to the current user.

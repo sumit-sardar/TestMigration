@@ -401,6 +401,7 @@ public class SessionOperationController extends PageFlowController {
                 {
                      productName = tps[0].getProductName();
                      selectedProductId = tps[0].getProductId().toString();
+                     vo.populateAccessCode(scheduleTest);
                 }
            } 
             vo.setSelectedProductId(selectedProductId);
