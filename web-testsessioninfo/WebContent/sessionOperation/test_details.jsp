@@ -13,7 +13,7 @@
 					<tr class="transparent">
 						<td width="171" align="left" valign="top" nowrap="" class="transparent"><span class="asterisk">*</span>&nbsp;Test Session
 						Name</td>
-						<td width="14" align="center" valign="middle" class="transparent">:</td>
+						<td width="14" align="center" valign="middle" class="transparent alignLeft">:</td>
 				      <td colspan="2" valign="top" class="transparent alignLeft"><input type="text" style="width: 200px;" 
 							id="testSessionName" name="testSessionName" ></td>
 					</tr>
