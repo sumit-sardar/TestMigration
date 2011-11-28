@@ -59,10 +59,7 @@
 				$('#ssAccordion a').click(function(e){ 
 					if(!validateTest()){
 						$('#displayMessage').show();
-						$('#title').text = "Missing required fields";
-						$('#content').html = errMsg;
-						$('#message').text = "Please enter/select these values to continue.";
-						
+						verifyTestDetails();
 						e.stopPropagation(); 
 					}else{
 						$('#displayMessage').hide();

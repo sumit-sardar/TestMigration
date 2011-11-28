@@ -1,7 +1,7 @@
 <div id="scheduleSession"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<br>
-		<div id="displayMessage" class="roundedBorderMessage" style="display:none;"> 
+		<div id="displayMessage" class="roundedMessage" style="display:none; margin-bottom: 15px;"> 
 			<table>
 				<tr>
 					<td rowspan="3" valign="top">
@@ -15,7 +15,8 @@
 						</table>
 					</td>
 				</tr>
-			</table><br>
+			</table>
+			
 		</div>	
 		
 		<div id="ssAccordion" style="width:99.5%;">
@@ -57,7 +58,7 @@
 								<td>&nbsp;</td>
 							<td  width="100%">
 								<center>
-								<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="" class="ui-widget-header" disabled="disabled">
+								<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="ValidateSave();" class="ui-widget-header" disabled="disabled">
 								<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('scheduleSession'); return false;" class="ui-widget-header">
 								</center>
 								<br>
@@ -70,7 +71,4 @@
 				</table>
 			</div>
 		</div>
-</div>
-<div id="dialogValidate" title="Dialog Title">
-			<p>Please select a test !!</p>
 </div>

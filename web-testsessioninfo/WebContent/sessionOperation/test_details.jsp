@@ -20,12 +20,12 @@
 					<tr class="transparent">
 						<td width="232" valign="top" nowrap="" class="transparent alignRight">* Start Date</td>
 						<td align="center" valign="middle" class="transparent alignLeft">:</td>
-				      <td valign="top" class="transparent alignLeft"><input name="startDate" id="startDate" type="text" size="12" /></td>
+				      <td valign="top" class="transparent alignLeft"><input name="startDate" id="startDate" type="text" size="12" maxlength="10"  /></td>
 					</tr>
 					<tr class="transparent">
 						<td width="232" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;End Date</td>
 						<td align="center" valign="middle" class="transparent alignLeft">:</td>
-				      <td valign="top" class="transparent alignLeft"><input name="endDate" id="endDate" type="text" size="12" /></td>
+				      <td valign="top" class="transparent alignLeft"><input name="endDate" id="endDate" type="text" size="12" maxlength="10" /></td>
 					</tr>
 					<tr class="transparent">
 						<td width="232" height="25" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>Time Window</td>

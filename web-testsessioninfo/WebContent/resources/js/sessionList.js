@@ -1,3 +1,5 @@
+var REQUIRED_TEXT = "Please enter/select this value to continue.";
+var REQUIRED_TEXT_MULTIPLE = "Please enter/select these values to continue.";
 var leafNodeCategoryId;
 var leafNodeCategoryName = "Organization";
 var orgTreeHierarchy;
@@ -28,7 +30,7 @@ var currDate = month + "/" + day + "/" + year;
 var nextDate = month + "/" + dayNext + "/" + year;
 var ProductData;
 var isTestBreak = false;
-var errMsg = "";
+var requiredFields = "";
 var minutes0 = 0;
 var hours0 = 0;
 var minutes1 = 0;
@@ -1036,7 +1038,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			onSelectRow: function () {
 					subtestGridLoaded = false;
 					var selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
-					
+					$('#displayMessage').hide();
 					var testBreak = document.getElementById("testBreak");
 					isTestSelected = true;
 					if(testBreak.checked)testBreak.checked = false;
@@ -1179,6 +1181,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		$('#testList').GridUnload();				
 		populateTestListGrid(tList, true, showlevelOrGrade);
 		$("#sessionListDiv").show();
+		$('#displayMessage').hide();
 		subtestLength = 0;
 		var testBreak = document.getElementById("testBreak");
 		isTestSelected = false;
@@ -1190,7 +1193,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		/*var val = getDataFromTestJson(selectedTestId, tList);
 		subtestGridLoaded = false;
 		createSubtestGrid(val);*/
-		document.getElementById("testSessionName_lbl").innerHTML = "No Test Session is selected";
+		document.getElementById("testSessionName_lbl").innerHTML = "No Test is selected";
 		document.getElementById("testSessionName").value = "";
 		document.getElementById("startDate").value = "";			
 		document.getElementById("endDate").value = "";			
@@ -1218,30 +1221,76 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	function validateTest(){
 		var acc   = $("#ssAccordion");
+		var testSessionName = trim(document.getElementById("testSessionName").value);
+		var startDate = trim(document.getElementById("startDate").value);
+		var endDate = trim(document.getElementById("endDate").value);
+		
 		if(!isTestSelected){
-			errMsg +="Test Session Name" ;
 			return false;
 		}else{
-			var testSessionName = trim(document.getElementById("testSessionName").value);
-			var startDate = trim(document.getElementById("startDate").value);
-			var endDate = trim(document.getElementById("startDate").value);
 			if(testSessionName == "" || startDate == "" || endDate == "" ){
-				if(testSessionName == "")errMsg +="Test Session Name" ;
-				if(startDate == "")errMsg +=", Test Start Date" ;
-				if(endDate == "")errMsg +=", Test End Date" ;
-				
 				return false;
 			}
 		}
 		return true;
 	}
 	
+	 function verifyTestDetails(){
+	 	var requiredFields = "";
+     	var requiredFieldCount = 0; 
+     	var testSessionName = trim(document.getElementById("testSessionName").value);
+		var startDate = trim(document.getElementById("startDate").value);
+		var endDate = trim(document.getElementById("endDate").value);
+		
+		if(!isTestSelected){
+			requiredFields = "";
+			if ( testSessionName.length == 0 ) {
+					requiredFieldCount += 1;            
+					requiredFields = buildErrorString("Test Session Name", requiredFieldCount, requiredFields);       
+				}
+		}else{
+			requiredFields = "";
+			if ( testSessionName.length == 0 ) {
+					requiredFieldCount += 1;            
+					requiredFields = buildErrorString("Test Session Name", requiredFieldCount, requiredFields);       
+				}
+	   		if ( startDate.length == 0 ) {
+					requiredFieldCount += 1;            
+					requiredFields = buildErrorString("Test Start Date", requiredFieldCount, requiredFields);       
+				}
+	
+	   		if ( endDate.length == 0 ) {
+					requiredFieldCount += 1;            
+					requiredFields = buildErrorString("Test End Date", requiredFieldCount, requiredFields);       
+				} 
+			
+		}
+			if (requiredFieldCount > 0) {
+				if (requiredFieldCount == 1) {
+					setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);
+				}
+				else {
+					setMessage("Missing required fields", requiredFields, "errorMessage", REQUIRED_TEXT_MULTIPLE);
+				}
+				//return false;
+			}
+		//setMessage("Missing required field", requiredFields, "errorMessage", "Please enter/select this value to continue.");
+	 }
+	 
+	  function buildErrorString(field, count, str){
+        var result = str;
+        if (count == 1) {
+            result += field;
+        }else {
+            result += (", " + field);            
+        }        
+        return result;
+    }
+	 
 	function ValidateSave(){
 		if(!validateTest()){
 			$('#displayMessage').show();
-			$('#title').val = "Missing required fields";
-			$('#content').val = errMsg;
-			$('#message').val = "Please enter/select these values to continue.";
+			verifyTestDetails();			
 			e.stopPropagation(); 
 		}else{
 			$('#displayMessage').hide();
@@ -1285,7 +1334,6 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	function setMessage(title, content, type, message){
 			$("#title").text(title);
-			//$("#content").text(content);
 			$("#content").html(content);
 			$("#message").text(message);
 	

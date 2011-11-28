@@ -87,7 +87,7 @@
 						<tr>
 							<td height="10" colspan="2" valign="top">
 							<div id="noSubtest">
-							<table width="100%" cellpadding="2" cellspacing="1" class="shadowBorder">
+							<table width="100%" cellpadding="2" cellspacing="0" class="shadowBorder">
 								<tr class="subtestHeader">
 									<th width="4%" height="20" align="center"><strong>#</strong></th>
 									<th width="33%" height="20" align="left"><strong>Subtest Name </strong></th>									
@@ -100,7 +100,7 @@
 								</tr>
 								<tr>
 									<td height="20" align="center">&nbsp;</td>
-									<td height="20" align="left">No Test Session is selected !!</td>
+									<td height="20" align="left">No Test is selected !!</td>
 									<td height="20" align="center">&nbsp;</td>
 								</tr>
 								<tr>
