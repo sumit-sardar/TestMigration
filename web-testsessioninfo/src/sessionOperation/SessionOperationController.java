@@ -404,49 +404,56 @@ public class SessionOperationController extends PageFlowController {
                      vo.populateAccessCode(scheduleTest);
                 }
            } 
-            vo.setSelectedProductId(selectedProductId);
-            vo.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
-            
-            int selectedProductIndex = getProductIndexByID(selectedProductId);
-      
-                       
-            this.condition.setOffGradeTestingDisabled(Boolean.FALSE);
+            if(tps.length<=0) {
+            	
+            	vo.setNoTestExists(true);
+            }else {
+            	 vo.setNoTestExists(false);
+            	 vo.setSelectedProductId(selectedProductId);
+                 vo.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
+                 
+                 int selectedProductIndex = getProductIndexByID(selectedProductId);
            
-            
-            String acknowledgmentsURL =  tps[selectedProductIndex].getAcknowledgmentsURL();
-            if (acknowledgmentsURL != null)
-            {
-                acknowledgmentsURL = acknowledgmentsURL.trim();
-                if (!"".equals(acknowledgmentsURL))
-                    this.getRequest().setAttribute("acknowledgmentsURL", acknowledgmentsURL);
+                            
+                 this.condition.setOffGradeTestingDisabled(Boolean.FALSE);
+                
+                 
+                 String acknowledgmentsURL =  tps[selectedProductIndex].getAcknowledgmentsURL();
+                 if (acknowledgmentsURL != null)
+                 {
+                     acknowledgmentsURL = acknowledgmentsURL.trim();
+                     if (!"".equals(acknowledgmentsURL))
+                         this.getRequest().setAttribute("acknowledgmentsURL", acknowledgmentsURL);
+                 }
+            	
             }
     
+            Gson gson = new Gson();
+        	jsonData = gson.toJson(vo);
+        	System.out.println(jsonData);
+        	try {
+
+    			resp.setContentType(CONTENT_TYPE_JSON);
+    			resp.flushBuffer();
+    			stream = resp.getOutputStream();
+    			stream.write(jsonData.getBytes());
+    		} catch (IOException e) {
+    			
+    			e.printStackTrace();
+    		} finally{
+    			if (stream!=null){
+    				try {
+    					stream.close();
+    				} catch (IOException e) {
+    				}
+    			}
+    		}
     	
         } catch (Exception e) {
 			e.printStackTrace();
 		}
     	
-    	Gson gson = new Gson();
-    	jsonData = gson.toJson(vo);
-    	System.out.println("Select test session completed...");
-    	System.out.println(jsonData);
-    	try {
-
-			resp.setContentType(CONTENT_TYPE_JSON);
-			resp.flushBuffer();
-			stream = resp.getOutputStream();
-			stream.write(jsonData.getBytes());
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-		} finally{
-			if (stream!=null){
-				try {
-					stream.close();
-				} catch (IOException e) {
-				}
-			}
-		}
+    	
 		return null;
     	
 		

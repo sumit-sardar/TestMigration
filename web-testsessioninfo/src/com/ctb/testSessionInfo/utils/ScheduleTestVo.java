@@ -32,6 +32,7 @@ public class ScheduleTestVo implements Serializable{
 	private String selectedProductId;
 	private String userTimeZone = "";
 	private List<String> accessCodeList = new ArrayList<String>();
+	private boolean noTestExists = false;
 	
 	
 	public List<ObjectIdName> getLevelDropList(String[] levels) {
@@ -292,6 +293,24 @@ public class ScheduleTestVo implements Serializable{
 			this.accessCodeList = scheduleTest.getFixedNoAccessCode(maxSubtestCount);
 		}
 		
+	}
+
+
+	
+	/**
+	 * @return the noTestExists
+	 */
+	public boolean isNoTestExists() {
+		return noTestExists;
+	}
+
+
+	
+	/**
+	 * @param noTestExists the noTestExists to set
+	 */
+	public void setNoTestExists(boolean noTestExists) {
+		this.noTestExists = noTestExists;
 	}
 	
 	
