@@ -783,6 +783,11 @@ function createSingleNodeSelectedTree(jsondata) {
 			}
 		}
 		$(ddl).html(optionHtml);
+		if(optionList.length==1) {
+			ddl.disabled=true;
+		} else {
+			ddl.disabled=false;
+		}
 	}
 	
 	
