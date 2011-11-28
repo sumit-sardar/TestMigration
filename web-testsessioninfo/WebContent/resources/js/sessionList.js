@@ -250,7 +250,7 @@ function populateCompletedSessionListGrid() {
 	 }else if (requestedTab == 'TSL'){
 	 	 if(isTestGridEmpty) {
 		 	$('#testList').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
-		 	$('#testList').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6' align='left'>No Test Sessions available for this Test Group.</th></tr></tbody></table></td></tr>");
+		 	$('#testList').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6' align='left'>No Test available for this Test Group.</th></tr></tbody></table></td></tr>");
 		 }
 	 } 
 	 
