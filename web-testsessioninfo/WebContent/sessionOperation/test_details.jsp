@@ -7,6 +7,7 @@
 	<tbody>
 		<tr>
 			<td align="center" style="vertical-align: top; padding:5px;">
+			 <br>
 			<table width="100%" cellpadding="2" cellspacing="2">
 				<tbody>
 					<tr class="transparent">
@@ -27,25 +28,22 @@
 				      <td valign="top" class="transparent alignLeft"><input name="endDate" id="endDate" type="text" size="12" /></td>
 					</tr>
 					<tr class="transparent">
-					  <td height="25" valign="top" nowrap="" class="transparent alignRight">&nbsp;</td>
-					  <td align="center" valign="middle" class="transparent alignLeft">&nbsp;</td>
-					  <td valign="top" class="transparent alignLeft"><table width="100%" border="0" cellpadding="0" cellspacing="2" class="transparent">
-                        <tr>
-                          <td height="20" class="transparent alignLeft"><span>Drag the slider to get the time window - </span>                          </td>
-                        </tr>
-                        <tr>
-                          <td height="5" class="transparent alignLeft">
-						  <div id="slider-range" style="width: 200px; vertical-align:middle;"></div>
-                          <span id="SlideMax"></span>
-						  </td>
-                        </tr>
-                      </table></td>
-				  </tr>
-					<tr class="transparent">
 						<td width="232" height="25" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>Time Window</td>
 						<td align="center" valign="middle" class="transparent alignLeft">:</td>
 					    <td valign="top" class="transparent alignLeft"><span id="time">9:00 AM - 5:00 PM</span></td>
 					</tr>
+					<tr class="transparent">
+                      <td height="25" valign="top" nowrap="" class="transparent alignRight">&nbsp;</td>
+					  <td align="center" valign="middle" class="transparent alignLeft">&nbsp;</td>
+					  <td valign="top" class="transparent alignLeft"><table width="100%" border="0" cellpadding="0" cellspacing="2" class="transparent">
+                          <tr>
+                            <td height="20" class="transparent alignLeft"><span>Drag the slider to get the time window - </span> </td>
+                          </tr>
+                          <tr>
+                            <td height="5" class="transparent alignLeft"><div id="slider-range" style="width: 200px; vertical-align:middle;"></div></td>
+                          </tr>
+                      </table></td>
+				  </tr>
 					<tr class="transparent">
 						<td width="232" valign="top" class="transparent alignRight">Time Zone</td>
 						<td align="center" valign="middle" class="transparent alignLeft">:</td>

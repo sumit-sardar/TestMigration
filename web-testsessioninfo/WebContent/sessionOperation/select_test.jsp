@@ -78,14 +78,14 @@
 								<input type="checkbox" id="testBreak" value="1"	onClick="toggleAccessCode();"/>
 							</td>
 							<td width="864" class="transparent">Allow Test Breaks 
-								<span style="padding-left:5px;"><input name="aCode" type="text" id="aCode" style="display:none; padding-left:2px;" size="16" /></span>
+								<span style="padding-left:5px;"><input name="aCode" type="text" id="aCode" style="visibility:hidden; padding-left:2px;" size="16" /></span>
 							</td>
 						</tr>
 						<tr>
 							<td height="10" colspan="2"></td>
 						</tr>
 						<tr>
-							<td height="10" colspan="2">
+							<td height="10" colspan="2" valign="top">
 							<div id="noSubtest">
 							<table width="100%" cellpadding="2" cellspacing="1" class="shadowBorder">
 								<tr class="subtestHeader">

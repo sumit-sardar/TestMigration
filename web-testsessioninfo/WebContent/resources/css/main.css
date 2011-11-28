@@ -428,14 +428,28 @@ clear: both;
 }
 
 .subtestHeader{
-	background: url(../images/tableHeader.GIF);
-	color: #000;
+	background: url(../images/tableHeader.GIF) repeat-x;
+    border-style: none;
+    color: #000;
     font-family: Arial, Helvetica, Sans Serif;
     font-size: 11px;
     font-style: normal;
     font-weight: bold;
     padding: 5px;
     vertical-align: middle;
+}
+
+.subtestCols{
+	border-style: none;
+    color: #000;
+    font-family: Arial, Helvetica, Sans Serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: normal;
+    padding: 5px;
+    vertical-align: middle;
+    background-color: #ffffff;
+    
 }
 
 .shadowBorder{
@@ -449,10 +463,10 @@ clear: both;
 }
 
 .shadowBorderFull{
-	border-bottom:#B0DFFF 2px solid;
-	border-right:#B0DFFF 2px solid;
-	border-top:#B0DFFF 2px solid;
-	border-left:#B0DFFF 2px solid;
+	border-bottom:#B0DFFF 1px solid;
+	border-right:#B0DFFF 1px solid;
+	border-top:#B0DFFF 1px solid;
+	border-left:#B0DFFF 1px solid;
 	border-radius:5px;
 	-moz-border-radius:5px;
 	

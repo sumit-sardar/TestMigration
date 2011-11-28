@@ -1188,7 +1188,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			/*acc.bind('accordionchange',function(event){
 				acc.accordion("option", "active", 0);	
 				})*/
-				setMessage("", "", "", "");     
+				 
 			$("#dialogValidate").dialog({  
 					title:"Validation atert !",  
 					resizable:false,
