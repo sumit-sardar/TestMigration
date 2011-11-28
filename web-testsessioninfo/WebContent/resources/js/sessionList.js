@@ -19,8 +19,15 @@ var subtestGridLoaded = false;
 var isTestGridEmpty = true;
 var subtestLength = 0;
 var isTestSelected = false;
+var currentTime = new Date();
+var month = currentTime.getMonth() + 1;
+var day = currentTime.getDate();
+var dayNext = currentTime.getDate() + 1;
+var year = currentTime.getFullYear();
+var currDate = month + "/" + day + "/" + year;
+var nextDate = month + "/" + dayNext + "/" + year;
 var ProductData;
-
+var isTestBreak = false;
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -460,10 +467,10 @@ function createSingleNodeSelectedTree(jsondata) {
 			var indexOfId;
 			for(var i=0; i<sessionList.length ;i++){
 				if(sessionList[i].id == id){
-					document.getElementById("aCode").style.display = "";
+					document.getElementById("aCode").style.visibility = "visible";
 					document.getElementById("aCode").value = sessionList[i].accessCode;
 					document.getElementById("testSessionName_lbl").innerHTML = sessionList[i].testName;
-					document.getElementById("testSessionName").value = sessionList[i].testName;					
+					document.getElementById("testSessionName").value = sessionList[i].testName;	
 					str = sessionList[i].subtests;					
 					break;					
 				}
@@ -849,18 +856,26 @@ function createSingleNodeSelectedTree(jsondata) {
 		if(subtestLength > 0){
 			var testBreak = document.getElementById("testBreak");
 			if(!testBreak.checked){		
-				document.getElementById("aCodeHead").style.display = "none";
-				document.getElementById("aCode").style.display = "inline";			
+				isTestBreak = false;
+				//document.getElementById("aCodeHead").style.display = "none";
+				//document.getElementById("aCode").style.display = "inline";
+				document.getElementById("aCodeHead").style.visibility = "hidden";
+				document.getElementById("aCode").style.visibility = "visible";			
+							
 				for(var i=0;i<subtestLength;i++){
-					document.getElementById("aCodeDiv"+i).style.display = "none";
+					//document.getElementById("aCodeDiv"+i).style.display = "none";
+					document.getElementById("aCodeDiv"+i).style.visibility = "hidden";
 					/*document.getElementById("aCodeB"+i).removeAttribute("disabled");
 					document.getElementById("aCodeB"+i).className = "";	*/		
 				}
 			}else{
-				document.getElementById("aCodeHead").style.display = "inline";		
-				document.getElementById("aCode").style.display = "none";
+				isTestBreak = true;
+				//document.getElementById("aCodeHead").style.display = "inline";		
+				//document.getElementById("aCode").style.display = "none";
+				document.getElementById("aCodeHead").style.visibility = "visible";
+				document.getElementById("aCode").style.visibility = "hidden";
 				for(var i=0;i<subtestLength;i++){
-					document.getElementById("aCodeDiv"+i).style.display = "inline";
+					document.getElementById("aCodeDiv"+i).style.visibility = "visible";
 					if(document.getElementById("actionTaken"+i).value == "1"){
 						document.getElementById("aCodeB"+i).removeAttribute("disabled");
 						document.getElementById("aCodeB"+i).className = "";
@@ -990,8 +1005,8 @@ function createSingleNodeSelectedTree(jsondata) {
 					var testBreak = document.getElementById("testBreak");
 					isTestSelected = true;
 					if(testBreak.checked)testBreak.checked = false;
-					document.getElementById("aCode").style.display = "none";
-					
+					//document.getElementById("aCode").style.display = "none";
+					populateDates();
 					var val = getDataFromTestJson(selectedTestId, testSessionlist);
 					createSubtestGrid(val);
 			 		
@@ -1046,36 +1061,36 @@ function createSingleNodeSelectedTree(jsondata) {
 			document.getElementById("noSubtest").style.display = "none";
 			var tr = '';
 			var th = '';
-			subtestData +='<table width="100%" cellpadding="2" cellspacing="1" class="shadowBorder">';
+			subtestData +='<table width="100%" cellpadding="3" cellspacing="0" class="shadowBorder">';
 							
-			th +='<tr class="subtestHeader">';
-			th +='<th width="24" height="20" align="center"><strong>#</strong></th>';
-			th +='<th width="289" height="20" align="left"><strong>Subtest Name </strong></th>';
-			th +='<th width="130" height="20"><div align="center" id="aCodeHead" style="display:none;"><strong>Access Code </strong></div></th>';
-			th +='<th width="82" height="20" align="center"><strong>Duration</strong></th>';
+			th +='<tr class="subtestHeader" >';
+			th +='<th width="24" height="23" align="center"><strong>#</strong></th>';
+			th +='<th width="289" height="23" align="left"><strong>Subtest Name </strong></th>';
+			th +='<th width="130" height="23"><div align="center" id="aCodeHead" style="visibility:hidden;"><strong>Access Code </strong></div></th>';
+			th +='<th width="82" height="23" align="center"><strong>Duration</strong></th>';
 			if(isTabeProduct){
-				th +='<th width="34" height="20">&nbsp;</th>';
+				th +='<th width="34" height="23">&nbsp;</th>';
 			}
 			th +='</tr>';
 			subtestData += th;
 			for(var i=0;i<subtestArr.length; i++){	
 				tr = ''			
-				tr +='<tr>';
-				tr +='<td height="20" class="transparent">';
+				tr +='<tr class="subtestCols">';
+				tr +='<td height="23" width="24" class="subtestCols">';
 				tr +='<div align="center" id="num'+i+'">'+parseInt(i+1)+'<input type="hidden" id="actionTaken'+i+'" value="1"/></div>';
 				tr +='</td>';
-				tr +='<td height="20" class="transparent">';
+				tr +='<td height="23" width="289" class="subtestCols">';
 				tr +='<div align="left" id="sName'+i+'">'+subtestArr[i].subtestName+'</div>';
 				tr +='</td>';
-				tr +='<td height="20" class="transparent" align="center">';
-				tr +='<div align="center" id="aCodeDiv'+i+'" style="display: none;">';
+				tr +='<td height="23" width="130" align="center" class="subtestCols">';
+				tr +='<div align="center" id="aCodeDiv'+i+'" style="visibility:hidden;">';
 				tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+subtestArr[i].testAccessCode+'" style="padding-left:2px;"/></div>';
 				tr +='</td>';
-				tr +='<td height="20" class="transparent" align="center">';
+				tr +='<td height="23" width="82" align="center" class="subtestCols">';
 				tr +='<div align="center" id="duration'+i+'">'+subtestArr[i].duration+'</div>';
 				tr +='</td>';
 				if(isTabeProduct){
-					tr +='<td height="20" class="transparent" align="center">';
+					tr +='<td height="23" align="center" width="34" class="subtestCols">';
 					tr +='<div align="center">';
 					tr +='<img id="imgMin'+i+'" src="/SessionWeb/resources/images/minus.gif" width="14" title="Remove Subtest" onclick="javascript:removeSubtestOption(0,'+i+');" />';
 					tr +='<img id="imgPlus'+i+'" src="/SessionWeb/resources/images/icone_plus.gif" width="14" title="Add Subtest" onclick="javascript:removeSubtestOption(1,'+i+');" style="display: none;" />';
@@ -1133,7 +1148,8 @@ function createSingleNodeSelectedTree(jsondata) {
 		var testBreak = document.getElementById("testBreak");
 		isTestSelected = false;
 		if(testBreak.checked) testBreak.checked = false;
-		document.getElementById("aCode").style.display = "none";
+		document.getElementById("aCode").visibility = "hidden";
+		
 		
 		document.getElementById("subtestGrid").style.display = "none";
 		document.getElementById("noSubtest").style.display = "";
@@ -1145,7 +1161,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById("startDate").value = "";			
 		document.getElementById("endDate").value = "";			
 		document.getElementById("time").innerHTML = "9:00 AM - 5:00 PM";
-		document.getElementById("testLocation").value = "";	
+		document.getElementById("testLocation").value = "";											
 					
 	}
 	
@@ -1166,15 +1182,34 @@ function createSingleNodeSelectedTree(jsondata) {
  		
 	}
 	
-	function validateTest(){
+	function validateTest(index){
+		var acc   = $("#ssAccordion");
 		if(!isTestSelected){
-			alert("select test first");
-			//$('#ssAccordion').accordion('activate', 0 );
-			return false;
+			/*acc.bind('accordionchange',function(event){
+				acc.accordion("option", "active", 0);	
+				})*/
+				setMessage("", "", "", "");     
+			$("#dialogValidate").dialog({  
+					title:"Validation atert !",  
+					resizable:false,
+					autoOpen: true,
+					width: '400px',
+					modal: true,
+					closeOnEscape: false,
+					open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); },
+					buttons: {
+								"Ok": function() { 
+									//$("#accordion").accordion('activate', $('#accordion h3').index(0));
+									acc.accordion("option", "active", 0);	
+									$(this).dialog("close"); 
+									}
+							}
+					
+				});
 		}
 		return true;
-	}	
-
+	}
+	
 	function  changeSessionList() {
 		var el = document.getElementById("level");  
 		var selectlevel = el.options[el.selectedIndex].value;
@@ -1209,6 +1244,9 @@ function createSingleNodeSelectedTree(jsondata) {
 		return newSessionList;
 	}
 	
-	
+	function populateDates(){
+		document.getElementById("startDate").value = currDate;
+		document.getElementById("endDate").value = nextDate;
+	}
 			
 					 

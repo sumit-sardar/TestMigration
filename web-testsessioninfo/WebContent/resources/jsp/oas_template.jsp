@@ -58,21 +58,28 @@
 				$("#ssAccordion").accordion({ header: "h3" });
 				$('#startDate').datepicker({
 					inline: true,
-					clickInput:true
-					
+					clickInput:true,
+					minDate: new Date(currDate)
 
 				});
+				
 				$('#endDate').datepicker({
 					inline: true,
-					clickInput:true
-					
+					clickInput:true,					
+					minDate: new Date(nextDate)
 
 				});
+				//$("#endDate").val(nextDate);
+				//$("#endDate").datepicker( "setDate" , nextDate); 
+				
 				var startTime;
 				var endTime;
 				$("#slider-range").slider({
-					range: true, min: 0, max: 2879, values: [540, 1020], step:5, slide: slideTime, change: checkMax
+					//range: true, min: 0, max: 2879, values: [540, 1020], step:5, slide: slideTime, change: checkMax
+					range: true, min: 0, max: 1425, values: [540, 1020], step:5, slide: slideTime
 				});
+				
+				
 			});
 		
 		

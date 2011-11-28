@@ -3,13 +3,13 @@
 	<br>
 		<div id="ssAccordion" style="width:99.5%;">
 			<div>
-				<h3><a href="#">Select Test</a></h3>
+				<h3><a href="#" >Select Test</a></h3>
 				<div id="Select_Test" style="background-color: #FFFFFF;">
 					<jsp:include page="/sessionOperation/select_test.jsp" />
 				</div>
 			</div>
 			<div>
-				<h3><a href="#">Test Detail</a></h3>
+				<h3><a onclick="validateTest('1');" href="#" >Test Detail</a></h3>
 				<div id="Test_Detail" style="overflow-y: scroll !important; overflow-x: hidden !important;">
 					<div align="center">
 						<jsp:include page="/sessionOperation/test_details.jsp" />
@@ -17,13 +17,13 @@
 				</div>
 			</div>
 			<div>
-				<h3><a href="#">Add Student</a></h3>
+				<h3><a onclick="validateTest('2');" href="#" >Add Student</a></h3>
 				<div id="Add_Student" style="background-color: #FFFFFF; overflow-y: scroll !important; overflow-x: hidden !important;">
 					<jsp:include page="/sessionOperation/add_student_tab.jsp" />
 				</div>
 			</div>
 			<div>
-				<h3><a href="#">Add Proctor</a></h3>
+				<h3><a onclick="validateTest('3');" href="#" >Add Proctor</a></h3>
 				<div id="Add_Proctor" style="overflow-y: scroll !important; overflow-x: hidden !important;">
 					
 				</div>
@@ -40,7 +40,7 @@
 								<td>&nbsp;</td>
 							<td  width="100%">
 								<center>
-								<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="" class="ui-widget-header">
+								<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="" class="ui-widget-header" disabled="disabled">
 								<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('scheduleSession'); return false;" class="ui-widget-header">
 								</center>
 								<br>
@@ -53,4 +53,7 @@
 				</table>
 			</div>
 		</div>
+</div>
+<div id="dialogValidate" title="Dialog Title">
+			<p>Please select a test !!</p>
 </div>
