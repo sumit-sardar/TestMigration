@@ -1150,7 +1150,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				tr +='</td>';
 				tr +='<td height="23" width="130" align="center" class="subtestCols">';
 				tr +='<div align="center" id="aCodeDiv'+i+'" style="visibility:hidden;">';
-				tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" style="padding-left:2px;"/></div>';
+				tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" style="padding-left:2px;" maxlength="32" /></div>';
 				tr +='</td>';
 				tr +='<td height="23" width="82" align="center" class="subtestCols">';
 				tr +='<div align="center" id="duration'+i+'">'+subtestArr[i].duration+'</div>';
