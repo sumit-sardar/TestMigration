@@ -1,6 +1,23 @@
 <div id="scheduleSession"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<br>
+		<div id="displayMessage" class="roundedBorderMessage" style="display:none;"> 
+			<table>
+				<tr>
+					<td rowspan="3" valign="top">
+                   	<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
+					</td>
+					<td>
+						<table>
+							<tr><td><font style="color: red; font-size:12px; font-weight:bold"><div id="title"></div></font></td></tr>
+							<tr><td><div id= "content">	</div></td></tr>
+							<tr><td><div id= "message">	</div></td></tr>
+						</table>
+					</td>
+				</tr>
+			</table><br>
+		</div>	
+		
 		<div id="ssAccordion" style="width:99.5%;">
 			<div>
 				<h3><a href="#" >Select Test</a></h3>
@@ -9,7 +26,7 @@
 				</div>
 			</div>
 			<div>
-				<h3><a onclick="validateTest('1');" href="#" >Test Detail</a></h3>
+				<h3><a href="#" >Test Detail</a></h3>
 				<div id="Test_Detail" style="overflow-y: scroll !important; overflow-x: hidden !important;">
 					<div align="center">
 						<jsp:include page="/sessionOperation/test_details.jsp" />
@@ -17,13 +34,13 @@
 				</div>
 			</div>
 			<div>
-				<h3><a onclick="validateTest('2');" href="#" >Add Student</a></h3>
+				<h3><a href="#" >Add Student</a></h3>
 				<div id="Add_Student" style="background-color: #FFFFFF; overflow-y: scroll !important; overflow-x: hidden !important;">
 					<jsp:include page="/sessionOperation/add_student_tab.jsp" />
 				</div>
 			</div>
 			<div>
-				<h3><a onclick="validateTest('3');" href="#" >Add Proctor</a></h3>
+				<h3><a href="#" >Add Proctor</a></h3>
 				<div id="Add_Proctor" style="overflow-y: scroll !important; overflow-x: hidden !important;">
 					
 				</div>

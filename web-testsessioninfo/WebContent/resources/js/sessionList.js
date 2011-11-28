@@ -28,6 +28,13 @@ var currDate = month + "/" + day + "/" + year;
 var nextDate = month + "/" + dayNext + "/" + year;
 var ProductData;
 var isTestBreak = false;
+var errMsg = "";
+var minutes0 = 0;
+var hours0 = 0;
+var minutes1 = 0;
+var hours1 = 0;
+
+
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -243,7 +250,7 @@ function populateCompletedSessionListGrid() {
 	 }else if (requestedTab == 'TSL'){
 	 	 if(isTestGridEmpty) {
 		 	$('#testList').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
-		 	$('#testList').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>No Test Sessions available for this Test Group.</th></tr></tbody></table></td></tr>");
+		 	$('#testList').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6' align='left'>No Test Sessions available for this Test Group.</th></tr></tbody></table></td></tr>");
 		 }
 	 } 
 	 
@@ -889,7 +896,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 
 
-	function slideTime(event, ui){
+	/*function slideTime(event, ui){
 	    var minutes0 = parseInt($("#slider-range").slider("values", 0) % 60);
 	    var hours0 = parseInt($("#slider-range").slider("values", 0) / 60 % 24);
 	    var minutes1 = parseInt($("#slider-range").slider("values", 1) % 60);
@@ -897,7 +904,31 @@ function createSingleNodeSelectedTree(jsondata) {
 	    startTime = getTime(hours0, minutes0);
 	    endTime = getTime(hours1, minutes1);
 	    $("#time").text(startTime + ' - ' + endTime);	
+	}*/
+	
+	function stopSlide(event, ui) {
+	 	var minutes0Stop = parseInt($("#slider-range").slider("values", 0) % 60, 10);
+		var hours0Stop = parseInt($("#slider-range").slider("values", 0) / 60 % 24, 10);
+		var minutes1Stop = parseInt($("#slider-range").slider("values", 1) % 60, 10);
+		var hours1Stop = parseInt($("#slider-range").slider("values", 1) / 60 % 24, 10);
+		if((minutes0Stop == 0 && hours0Stop == 0 && !(minutes0 == 0 && hours0 == 0)) || (hours1Stop == 23 && minutes1Stop == 45 && !(hours1 == 23 && minutes1 == 45))) {
+			startTime = getTime(hours0Stop, minutes0Stop);
+			endTime = getTime(hours1Stop, minutes1Stop);
+			$("#time").text(startTime + ' - ' + endTime);
+		}
+	
 	}
+
+	function slideTime(event, ui){
+	    minutes0 = parseInt($("#slider-range").slider("values", 0) % 60, 10);
+	    hours0 = parseInt($("#slider-range").slider("values", 0) / 60 % 24, 10);
+	    minutes1 = parseInt($("#slider-range").slider("values", 1) % 60, 10);
+	    hours1 = parseInt($("#slider-range").slider("values", 1) / 60 % 24, 10);
+	    startTime = getTime(hours0, minutes0);
+	    endTime = getTime(hours1, minutes1);
+	    $("#time").text(startTime + ' - ' + endTime);	
+	}
+	
 	
 	
 	function getTime(hours, minutes) {
@@ -957,7 +988,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	 			levelOrGradeTitle = "Grade";
 	 		} 
  		} 
- 		reset();
+ 		//reset();
  		$("#testList").jqGrid({         
         	data: testSessionlist,
 			datatype: "local",         
@@ -1148,8 +1179,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		var testBreak = document.getElementById("testBreak");
 		isTestSelected = false;
 		if(testBreak.checked) testBreak.checked = false;
-		document.getElementById("aCode").visibility = "hidden";
-		
+		document.getElementById("aCode").style.visibility = "hidden";
 		
 		document.getElementById("subtestGrid").style.display = "none";
 		document.getElementById("noSubtest").style.display = "";
@@ -1182,33 +1212,38 @@ function createSingleNodeSelectedTree(jsondata) {
  		
 	}
 	
-	function validateTest(index){
+	function validateTest(){
 		var acc   = $("#ssAccordion");
 		if(!isTestSelected){
-			/*acc.bind('accordionchange',function(event){
-				acc.accordion("option", "active", 0);	
-				})*/
-				 
-			$("#dialogValidate").dialog({  
-					title:"Validation atert !",  
-					resizable:false,
-					autoOpen: true,
-					width: '400px',
-					modal: true,
-					closeOnEscape: false,
-					open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); },
-					buttons: {
-								"Ok": function() { 
-									//$("#accordion").accordion('activate', $('#accordion h3').index(0));
-									acc.accordion("option", "active", 0);	
-									$(this).dialog("close"); 
-									}
-							}
-					
-				});
+			errMsg +="Test Session Name" ;
+			return false;
+		}else{
+			var testSessionName = trim(document.getElementById("testSessionName").value);
+			var startDate = trim(document.getElementById("startDate").value);
+			var endDate = trim(document.getElementById("startDate").value);
+			if(testSessionName == "" || startDate == "" || endDate == "" ){
+				if(testSessionName == "")errMsg +="Test Session Name" ;
+				if(startDate == "")errMsg +=", Test Start Date" ;
+				if(endDate == "")errMsg +=", Test End Date" ;
+				
+				return false;
+			}
 		}
 		return true;
 	}
+	
+	function ValidateSave(){
+		if(!validateTest()){
+			$('#displayMessage').show();
+			$('#title').val = "Missing required fields";
+			$('#content').val = errMsg;
+			$('#message').val = "Please enter/select these values to continue.";
+			e.stopPropagation(); 
+		}else{
+			$('#displayMessage').hide();
+		}
+	}	
+	
 	
 	function  changeSessionList() {
 		var el = document.getElementById("level");  
@@ -1244,9 +1279,30 @@ function createSingleNodeSelectedTree(jsondata) {
 		return newSessionList;
 	}
 	
+	function setMessage(title, content, type, message){
+			$("#title").text(title);
+			//$("#content").text(content);
+			$("#content").html(content);
+			$("#message").text(message);
+	
+		}
+	
 	function populateDates(){
 		document.getElementById("startDate").value = currDate;
 		document.getElementById("endDate").value = nextDate;
 	}
-			
+
+	function trim(str, chars) {
+		return ltrim(rtrim(str, chars), chars);
+	}
+ 
+	function ltrim(str, chars) {
+		chars = chars || "\\s";
+		return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
+	}
+ 
+	function rtrim(str, chars) {
+		chars = chars || "\\s";
+		return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
+	}
 					 

@@ -56,6 +56,19 @@
 				// Accordion
 				$("#accordion").accordion({ header: "h3" });
 				$("#ssAccordion").accordion({ header: "h3" });
+				$('#ssAccordion a').click(function(e){ 
+					if(!validateTest()){
+						$('#displayMessage').show();
+						$('#title').text = "Missing required fields";
+						$('#content').html = errMsg;
+						$('#message').text = "Please enter/select these values to continue.";
+						
+						e.stopPropagation(); 
+					}else{
+						$('#displayMessage').hide();
+					}
+				}); 
+				
 				$('#startDate').datepicker({
 					inline: true,
 					clickInput:true,
@@ -76,7 +89,7 @@
 				var endTime;
 				$("#slider-range").slider({
 					//range: true, min: 0, max: 2879, values: [540, 1020], step:5, slide: slideTime, change: checkMax
-					range: true, min: 0, max: 1425, values: [540, 1020], step:5, slide: slideTime
+					range: true, min: 0, max: 1425, values: [540, 1020], step:5, slide: slideTime, stop: stopSlide
 				});
 				
 				
