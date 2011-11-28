@@ -1,11 +1,5 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
-<style type="text/css">
-<!--
-.style3 {font-size: 9px}
--->
-</style>
-
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
  <br>
@@ -73,7 +67,7 @@
 					<td valign="top">&nbsp;</td>
 					<td align="center">&nbsp;</td>
 					<td width="131" valign="top">&nbsp;</td>
-					<td width="556" valign="top"><table width="290" border="0">
+					<td width="556" valign="top"><table width="300" border="0">
                       <tr>
                         <td align="center">(<span class="transparent alignLeft">Drag the slider to set the time</span>)</td>
                       </tr>
