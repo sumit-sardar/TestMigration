@@ -36,6 +36,7 @@ var minutes0 = 0;
 var hours0 = 0;
 var minutes1 = 0;
 var hours1 = 0;
+var isTabeLocatorProduct = false;
 
 
 
@@ -475,8 +476,10 @@ function createSingleNodeSelectedTree(jsondata) {
 			sessionListArr = sessionList;
 			var str = new Array();;
 			var indexOfId;
+			var found = false;
 			for(var i=0; i<sessionList.length ;i++){
 				if(sessionList[i].id == id){
+				    found = true;
 					document.getElementById("aCode").style.visibility = "visible";
 					if(sessionList[i].subtests.length>0)  {
 						document.getElementById("aCode").value = ProductData.accessCodeList[0];
@@ -485,9 +488,26 @@ function createSingleNodeSelectedTree(jsondata) {
 					}
 					document.getElementById("testSessionName_lbl").innerHTML = sessionList[i].testName;
 					document.getElementById("testSessionName").value = sessionList[i].testName;	
-					str = sessionList[i].subtests;					
+					str = sessionList[i].subtests;
+					if(sessionList[i].isRandomize == "Y" ){
+						$("#randomDis").show();	
+						$("#randDisLbl").show();	
+						document.getElementById("randomDis").checked = true;
+					}else if(sessionList[i].isRandomize == "N" ){
+						$("#randomDis").show();	
+						$("#randDisLbl").show();	
+						document.getElementById("randomDis").checked = false;
+					} else {
+						document.getElementById("randomDis").checked = false;
+						$("#randomDis").hide();	
+						$("#randDisLbl").hide();	
+					}
 					break;					
 				}
+			}
+			if(!found) {
+				$("#randomDis").hide();	
+				$("#randDisLbl").hide();
 			}
 			return str;
 	}
@@ -732,6 +752,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					//fillDropDown("grade", optionList[i].gradeDropDownList);
 					if(!(optionList[i].isTabeProduct)) {
 						isTabeProduct = false;
+						isTabeLocatorProduct=false;
 						if(!(optionList[i].hideLevelDropDown)) {
 							if(optionList[i].showLevelOrGrade=='level') {
 								document.getElementById("levelDiv").style.display ="block";
@@ -756,6 +777,11 @@ function createSingleNodeSelectedTree(jsondata) {
 						}				
 					
 					} else {
+					    if(optionList[i].isTabeLocatorProduct){ 
+					    	isTabeLocatorProduct = true;
+					    } else {
+					    	isTabeLocatorProduct = false;
+					    }
 						isTabeProduct = true;
 						document.getElementById("gradeDiv").style.display = "none";
 						document.getElementById("levelDiv").style.display = "none";
@@ -1176,14 +1202,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		populateTestListGrid(tList, true, showlevelOrGrade);
 		$("#sessionListDiv").show();
 		$('#displayMessage').hide();
-		if(ProductData.isRandomize == "Y" || ProductData.isRandomize == "y"){
-			document.getElementById("randomDis").style.display = "inline";
-			document.getElementById("randDisLbl").style.display = "inline";			
-		}else{
-			document.getElementById("randomDis").style.display = "none";
-			document.getElementById("randDisLbl").style.display = "none";	
-		}
-			
+		
 		subtestLength = 0;
 		var testBreak = document.getElementById("testBreak");
 		isTestSelected = false;
@@ -1197,7 +1216,9 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById("startDate").value = "";			
 		document.getElementById("endDate").value = "";			
 		document.getElementById("time").innerHTML = "9:00 AM - 5:00 PM";
-		document.getElementById("testLocation").value = "";											
+		document.getElementById("testLocation").value = "";	
+		$("#randomDis").hide();	
+		$("#randDisLbl").hide();										
 					
 	}
 	

@@ -145,9 +145,11 @@ public class ScheduleTestVo implements Serializable{
         
                             testVO.setIsRandomize(RD_YES);
         
-                    } else {
+                    } else if(hasRdAllowable .equals("F")){
         
                             testVO.setIsRandomize(RD_NO);
+                    } else {
+                    	testVO.setIsRandomize("");
                     }
         
                 } 
