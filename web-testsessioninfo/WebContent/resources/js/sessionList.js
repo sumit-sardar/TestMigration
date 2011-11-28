@@ -852,6 +852,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			if(selectProductId==optionList[i].productId) { 	     
 				if(!(optionList[i].isTabeProduct)) {
 					isTabeProduct = false;
+					isTabeLocatorProduct=false;
 					if(!(optionList[i].hideLevelDropDown)) {
 						if(optionList[i].showLevelOrGrade=="level") {
 							document.getElementById("levelDiv").style.display ="block";
@@ -878,6 +879,11 @@ function createSingleNodeSelectedTree(jsondata) {
 						
 				} else {
 					isTabeProduct = true;
+					if(optionList[i].isTabeLocatorProduct){ 
+					   isTabeLocatorProduct = true;
+					 } else {
+					    isTabeLocatorProduct = false;
+					 }
 					document.getElementById("gradeDiv").style.display = "none";
 					document.getElementById("levelDiv").style.display = "none";
 					document.getElementById("level").style.display = "none";
@@ -1134,7 +1140,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			th +='<th width="289" height="23" align="left"><strong>Subtest Name </strong></th>';
 			th +='<th width="130" height="23"><div align="center" id="aCodeHead" style="visibility:hidden;"><strong>Access Code </strong></div></th>';
 			th +='<th width="82" height="23" align="center"><strong>Duration</strong></th>';
-			if(isTabeProduct){
+			if(isTabeProduct && !isTabeLocatorProduct ){
 				th +='<th width="34" height="23">&nbsp;</th>';
 			}
 			th +='</tr>';
@@ -1155,7 +1161,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				tr +='<td height="23" width="82" align="center" class="subtestCols">';
 				tr +='<div align="center" id="duration'+i+'">'+subtestArr[i].duration+'</div>';
 				tr +='</td>';
-				if(isTabeProduct){
+				if(isTabeProduct && !isTabeLocatorProduct){
 					tr +='<td height="23" align="center" width="34" class="subtestCols">';
 					tr +='<div align="center">';
 					tr +='<img id="imgMin'+i+'" src="/SessionWeb/resources/images/minus.gif" width="14" title="Remove Subtest" onclick="javascript:removeSubtestOption(0,'+i+');" />';
