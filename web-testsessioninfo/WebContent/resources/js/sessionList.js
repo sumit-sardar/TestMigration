@@ -1,5 +1,14 @@
+var INVALID_NUMBER_CHARS = "Please re-enter your string with these characters: A-Z, a-z, 0-9, space";
+var INVALID_NAME_CHARS = "Please re-enter your information with only these characters: A-Z, a-z, 0-9, /, \\, -, ', (, ), &, +, comma, period, space";
 var REQUIRED_TEXT = "Please enter/select this value to continue.";
 var REQUIRED_TEXT_MULTIPLE = "Please enter/select these values to continue.";
+var INVALID_NUMBER_FORMAT = "Please enter phone and fax with numeric characters, with no spaces. Acceptable characters are 0-9.";
+var invalid_char_message = "One or more fields contain invalid formats or invalid values:";
+var INVALID_FORMAT_TITLE = "One or more fields contain invalid formats or invalid values:"; 
+var INVALID_ADDRESS_CHARS  = "Please re-enter your information with only these characters: A-Z, a-z, 0-9, #, /, \\, -, ', (, ), &, +, comma, period, space";
+var INVALID_CITY_CHARS  = "Please re-enter your information with only these characters: A-Z, a-z, 0-9, /, \\, -, ', (, ), &, +, comma, period, space";
+var INVALID_EMAIL  = "Please enter a valid email address";
+var INVALID_NUMERIC_FORMAT = "Please re-enter numeric fields in valid format";
 var leafNodeCategoryId;
 var leafNodeCategoryName = "Organization";
 var orgTreeHierarchy;
@@ -501,7 +510,7 @@ function createSingleNodeSelectedTree(jsondata) {
 						document.getElementById("randomDis").checked = false;
 						$("#randomDis").hide();	
 						$("#randDisLbl").hide();	
-					}
+					}					
 					break;					
 				}
 			}
@@ -1019,10 +1028,10 @@ function createSingleNodeSelectedTree(jsondata) {
 			datatype: "local",         
 			colNames:['Test Name',levelOrGradeTitle, 'Subtest', 'Duration'],
 		   	colModel:[
-		   		{name:'testName',index:'testName', width:55, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'level',index:'level', width:12, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'subtestCount',index:'subtestCount', width:15, editable: false, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'duration',index:'duration',editable: false, width:25, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testName',index:'testName', width:55, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
+		   		{name:'level',index:'level', width:12, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
+		   		{name:'subtestCount',index:'subtestCount', width:15, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
+		   		{name:'duration',index:'duration',width:25, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
 		   	],
 		   	jsonReader: { repeatitems : false, root:"rows", id:"id",
 		   		records: function(obj) { 
@@ -1216,7 +1225,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById("startDate").value = "";			
 		document.getElementById("endDate").value = "";			
 		document.getElementById("time").innerHTML = "9:00 AM - 5:00 PM";
-		document.getElementById("testLocation").value = "";	
+		document.getElementById("testLocation").value = "";											
 		$("#randomDis").hide();	
 		$("#randDisLbl").hide();										
 					
@@ -1244,6 +1253,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		var testSessionName = trim(document.getElementById("testSessionName").value);
 		var startDate = trim(document.getElementById("startDate").value);
 		var endDate = trim(document.getElementById("endDate").value);	
+		var accessCode = trim(document.getElementById("aCode").value);
 		
 		if(!isTestSelected){
 			return false;
@@ -1253,17 +1263,21 @@ function createSingleNodeSelectedTree(jsondata) {
 			}
 			if(subtestLength > 0){
 				var testBreak = document.getElementById("testBreak");
-				if(!testBreak.checked){	
-					var accessCode = trim(document.getElementById("aCode").value);	
+				if(!testBreak.checked){						
 					if(accessCode == "") return false;	
 				}else{
 					for(var i=0;i<subtestLength;i++){
-						if(trim(document.getElementById("aCodeB"+i).value) == ""){
+						if(trim(document.getElementById("aCodeB"+i).value) == "" || (verifyUserInfo("",document.getElementById("aCodeB"+i).value).length) > 0){
 							return false;
 						}
 					}
 				}
 			}
+			var invalidCharFields = verifyUserInfo(testSessionName,accessCode);
+				var invalidString = "";                        
+				if (invalidCharFields.length > 0) {
+					return false;
+				}	
 		}
 		return true;
 	}
@@ -1275,6 +1289,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		var startDate = trim(document.getElementById("startDate").value);
 		var endDate = trim(document.getElementById("endDate").value);
 		var testBreakVal = 0;
+		var accessCode = trim(document.getElementById("aCode").value);
 		
 		if(!isTestSelected){
 			requiredFields = "";
@@ -1287,15 +1302,22 @@ function createSingleNodeSelectedTree(jsondata) {
 			if(subtestLength > 0){
 				var testBreak = document.getElementById("testBreak");
 				if(!testBreak.checked){	
-					var accessCode = trim(document.getElementById("aCode").value);	
+						
 					if(accessCode.length == 0){
 						requiredFieldCount += 1;            
 						requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
-					}	
+					}
 				}else{
 					for(var i=0;i<subtestLength;i++){
 						if(trim(document.getElementById("aCodeB"+i).value) == ""){
 							testBreakVal += 1;
+							break;
+						}else{
+							var invalidCharFields = verifyUserInfo("",document.getElementById("aCodeB"+i).value);
+				 			var invalidString = "";                        
+				    		if (invalidCharFields.length > 0) {
+				          		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
+							}
 						}
 					}
 					if(testBreakVal > 0){
@@ -1317,6 +1339,11 @@ function createSingleNodeSelectedTree(jsondata) {
 					requiredFieldCount += 1;            
 					requiredFields = buildErrorString("Test End Date", requiredFieldCount, requiredFields);       
 				} 
+			var invalidCharFields = verifyUserInfo(testSessionName, accessCode);
+ 			var invalidString = "";                        
+    		if (invalidCharFields.length > 0) {
+          		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
+			}
 			
 		}
 		if (requiredFieldCount > 0) {
@@ -1330,6 +1357,24 @@ function createSingleNodeSelectedTree(jsondata) {
 		}
 	//return true;
 	 }
+	 
+	  function verifyUserInfo(firstName, middleName)
+    {
+        var invalidCharFields = "";
+        var invalidCharFieldCount = 0;
+
+        if (firstName != "" && !validNameString(firstName) ) {
+            invalidCharFieldCount += 1;            
+            invalidCharFields = buildErrorString("Test Session Name", invalidCharFieldCount, invalidCharFields);       
+        }
+        
+        if (!validNameString(middleName) ) {
+            invalidCharFieldCount += 1;            
+            invalidCharFields = buildErrorString("Access Code", invalidCharFieldCount, invalidCharFields);       
+        }
+            
+        return invalidCharFields;
+    }
 	 
 	  function buildErrorString(field, count, str){
         var result = str;
@@ -1411,4 +1456,78 @@ function createSingleNodeSelectedTree(jsondata) {
 		chars = chars || "\\s";
 		return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
 	}
+	
+	 function validNameString(str){
+        var characters = [];
+        characters = toCharArray(str);
+        for (var i=0 ; i<characters.length ; i++) {
+            var character = characters[i];
+            if (! validNameCharacter(character))
+                return false;
+        }
+        return !requestHasInvalidParameters(str);
+    }
+	  
+	  function toCharArray(str){
+       var charArr=new Array();
+       for(var i=0;i<str.length;i++){
+            charArr[i]= str.charAt(i);
+            }
+            return charArr;
+            
+      }
+      
+       function validNameCharacter(str){
+        var ch = toascii(str);
+        var A_Z = ((ch >= 65) && (ch <= 90));
+        var a_z = ((ch >= 97) && (ch <= 122));
+        var zero_nine = ((ch >= 48) && (ch <= 57));
+        var validChar = ((str == '/') || 
+                         (str == '\'') || 
+                         (str == '-') || 
+                         (str == '\\') || 
+                         (str == '.') || 
+                         (str == '(') || 
+                         (str == ')') || 
+                         (str == '&') || 
+                         (str == '+') || 
+                         (str == ',') || 
+                         (str == ' '));
+        
+        return (zero_nine || A_Z || a_z || validChar);
+    }
+    
+    function toascii (c){
+	c = c . charAt (0);
+	var i;
+	for (i = 0; i < 256; ++ i)
+	{
+		var h = i . toString (16);
+		if (h . length == 1)
+			h = "0" + h;
+		h = "%" + h;
+		h = unescape (h);
+
+		if (h == c)
+			break;
+	}
+	return i;
+}
+    
+     function requestHasInvalidParameters(str){
+       
+        var invalidChars = [];
+        invalidChars [0] = "<script>";
+		invalidChars [1] = "javascript:";
+        
+            for( var i=0; i<invalidChars.length; i++ )
+            {
+                if ( str.indexOf(invalidChars[i]) != -1 )
+                {
+                    return true;                
+                }
+            }
+          
+        return false;
+    }
 					 
