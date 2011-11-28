@@ -53,11 +53,11 @@
 					    <td colspan="2" valign="middle" class="transparent alignLeft"><table width="100%" border="0">
                             <tr>
                               <td width="128" align="left"><span id="time">9:00 AM - 5:00 PM</span></td>
-                              <td width="548" align="left"><table width="290" border="0" cellpadding="0" cellspacing="0" class="transparent">
+                              <td width="548" align="left"><table width="320" border="0" cellpadding="0" cellspacing="0" class="transparent">
                                 <tr>
-                                  <td width="45" height="5" align="right" class="transparent alignLeft"><span class="style3">12:00 AM</span> </td>
+                                  <td width="50" height="5" align="right" class="transparent alignLeft"><span class="style3">12:00 AM</span> </td>
                                   <td width="200" class="transparent alignLeft"><div id="slider-range" style="width: 200px; vertical-align:bottom;"></div></td>
-                                  <td width="45" class="transparent alignLeft"><span class="style3">11:45 PM</span></td>
+                                  <td width="50" class="transparent alignLeft"><span class="style3">11:45 PM</span></td>
                                 </tr>
                               </table></td>
                             </tr>
@@ -67,7 +67,7 @@
 					<td valign="top">&nbsp;</td>
 					<td align="center">&nbsp;</td>
 					<td width="131" valign="top">&nbsp;</td>
-					<td width="556" valign="top"><table width="300" border="0">
+					<td width="556" valign="top"><table width="320" border="0">
                       <tr>
                         <td align="center">(<span class="transparent alignLeft">Drag the slider to set the time</span>)</td>
                       </tr>
