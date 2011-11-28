@@ -1125,9 +1125,10 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 	
 	function reloadGrids(tList, showlevelOrGrade){
+	  	$("#sessionListDiv").hide();
 		$('#testList').GridUnload();				
 		populateTestListGrid(tList, true, showlevelOrGrade);
-		
+		$("#sessionListDiv").show();
 		subtestLength = 0;
 		var testBreak = document.getElementById("testBreak");
 		isTestSelected = false;
@@ -1144,7 +1145,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById("startDate").value = "";			
 		document.getElementById("endDate").value = "";			
 		document.getElementById("time").innerHTML = "9:00 AM - 5:00 PM";
-		document.getElementById("testLocation").value = "";											
+		document.getElementById("testLocation").value = "";	
 					
 	}
 	

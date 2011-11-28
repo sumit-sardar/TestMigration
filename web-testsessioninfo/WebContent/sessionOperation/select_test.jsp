@@ -42,8 +42,10 @@
 								</tr>
 								<tr>
 									<td>
-									<table id="testList" class="gridTable"></table>
-									<div id="testPager" class="gridTable"></div>
+									<div id="sessionListDiv" disabled = true>
+										<table id="testList" class="gridTable"></table>
+										<div id="testPager" class="gridTable"></div>
+									</div>
 									</td>
 								</tr>
 							</table>
