@@ -35,6 +35,8 @@ var hours0 = 0;
 var minutes1 = 0;
 var hours1 = 0;
 var isTabeLocatorProduct = false;
+var isFirstAccordSelected = true;
+var isSecondAccordSelected = false;
 
 
 
@@ -1258,15 +1260,36 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 	
 	function validateTest(){
-		var acc   = $("#ssAccordion");
+		//var acc   = $("#ssAccordion");
+		var testSessionName = trim(document.getElementById("testSessionName").value);
+		var requiredFields = "";
+     	var requiredFieldCount = 0; 
+		//var startDate = trim(document.getElementById("startDate").value);
+		//var endDate = trim(document.getElementById("endDate").value);	
+		//var accessCode = trim(document.getElementById("aCode").value);
+		
+		if(!isTestSelected){
+			requiredFields = "";
+			if ( testSessionName.length == 0 ) {
+					requiredFieldCount += 1;            
+					requiredFields = buildErrorString("Test Name", requiredFieldCount, requiredFields);
+					setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);       
+				}
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	
+	// Added Nov-29
+	
+		function validateTestInformation(){
 		var testSessionName = trim(document.getElementById("testSessionName").value);
 		var startDate = trim(document.getElementById("startDate").value);
 		var endDate = trim(document.getElementById("endDate").value);	
 		var accessCode = trim(document.getElementById("aCode").value);
 		
-		if(!isTestSelected){
-			return false;
-		}else{
 			if(testSessionName == "" || startDate == "" || endDate == ""){				
 				return false;
 			}
@@ -1276,20 +1299,21 @@ function createSingleNodeSelectedTree(jsondata) {
 					if(accessCode == "") return false;	
 				}else{
 					for(var i=0;i<subtestLength;i++){
-						if(trim(document.getElementById("aCodeB"+i).value) == "" || (verifyUserInfo("",document.getElementById("aCodeB"+i).value).length) > 0){
+						if(trim(document.getElementById("aCodeB"+i).value) == "" || (verifyTestInfo("",document.getElementById("aCodeB"+i).value).length) > 0){
 							return false;
 						}
 					}
 				}
 			}
-			var invalidCharFields = verifyUserInfo(testSessionName,accessCode);
+			var invalidCharFields = verifyTestInfo(testSessionName,accessCode);
 				var invalidString = "";                        
 				if (invalidCharFields.length > 0) {
 					return false;
 				}	
-		}
 		return true;
 	}
+	
+	//
 	
 	 function verifyTestDetails(){
 	 	var requiredFields = "";
@@ -1300,13 +1324,6 @@ function createSingleNodeSelectedTree(jsondata) {
 		var testBreakVal = 0;
 		var accessCode = trim(document.getElementById("aCode").value);
 		
-		if(!isTestSelected){
-			requiredFields = "";
-			if ( testSessionName.length == 0 ) {
-					requiredFieldCount += 1;            
-					requiredFields = buildErrorString("Test Session Name", requiredFieldCount, requiredFields);       
-				}
-		}else{
 			requiredFields = "";
 			if(subtestLength > 0){
 				var testBreak = document.getElementById("testBreak");
@@ -1322,7 +1339,7 @@ function createSingleNodeSelectedTree(jsondata) {
 							testBreakVal += 1;
 							break;
 						}else{
-							var invalidCharFields = verifyUserInfo("",document.getElementById("aCodeB"+i).value);
+							var invalidCharFields = verifyTestInfo("",document.getElementById("aCodeB"+i).value);
 				 			var invalidString = "";                        
 				    		if (invalidCharFields.length > 0) {
 				          		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
@@ -1335,10 +1352,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					}
 				}
 			}
-			if ( testSessionName.length == 0 ) {
-					requiredFieldCount += 1;            
-					requiredFields = buildErrorString("Test Session Name", requiredFieldCount, requiredFields);       
-				}
+
 	   		if ( startDate.length == 0 ) {
 					requiredFieldCount += 1;            
 					requiredFields = buildErrorString("Test Start Date", requiredFieldCount, requiredFields);       
@@ -1348,13 +1362,12 @@ function createSingleNodeSelectedTree(jsondata) {
 					requiredFieldCount += 1;            
 					requiredFields = buildErrorString("Test End Date", requiredFieldCount, requiredFields);       
 				} 
-			var invalidCharFields = verifyUserInfo(testSessionName, accessCode);
+			var invalidCharFields = verifyTestInfo(testSessionName, accessCode);
  			var invalidString = "";                        
     		if (invalidCharFields.length > 0) {
           		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
 			}
 			
-		}
 		if (requiredFieldCount > 0) {
 			if (requiredFieldCount == 1) {
 				setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);
@@ -1367,7 +1380,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	//return true;
 	 }
 	 
-	  function verifyUserInfo(firstName, middleName)
+	  function verifyTestInfo(firstName, middleName)
     {
         var invalidCharFields = "";
         var invalidCharFieldCount = 0;

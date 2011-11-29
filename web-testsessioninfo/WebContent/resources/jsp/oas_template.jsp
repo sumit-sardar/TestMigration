@@ -38,7 +38,7 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/sessionList.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/sessionConstants.js"></script>
-    
+   
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>   
   	
@@ -57,15 +57,57 @@
 				// Accordion
 				$("#accordion").accordion({ header: "h3" });
 				$("#ssAccordion").accordion({ header: "h3" });
-				$('#ssAccordion a').click(function(e){ 
+				
+				$('#selectTestId a').click(function(e){ 
+					if (!validateTestInformation()) {
+						verifyTestDetails();
+						$('#displayMessage').show();
+						e.stopPropagation();
+					}else{
+						$('#displayMessage').hide();
+					}
+					isFirstAccordSelected = true;
+					isSecondAccordSelected = false;
+				}); 
+				
+				$('#testDetailId a').click(function(e){
 					if(!validateTest()){
 						$('#displayMessage').show();
+						e.stopPropagation(); 
+					}else{
+						$('#displayMessage').hide();
+						isFirstAccordSelected = false;
+						isSecondAccordSelected = true;
+					}
+					
+				});
+				
+				
+				$('#addStudentId a').click(function(e){ 
+					if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+						$('#displayMessage').show();
+						e.stopPropagation(); 
+					}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
 						verifyTestDetails();
+						$('#displayMessage').show();
 						e.stopPropagation();
 					}else{
 						$('#displayMessage').hide();
 					}
 				}); 
+				
+				$('#addProctorId a').click(function(e){ 
+					if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+						$('#displayMessage').show();
+						e.stopPropagation(); 
+					}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
+						verifyTestDetails();
+						$('#displayMessage').show();
+						e.stopPropagation();
+					}else{
+						$('#displayMessage').hide();
+					}
+				});  
 				
 				$('#startDate').datepicker({
 					inline: true,
