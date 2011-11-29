@@ -48,7 +48,7 @@
                                   					<td width="200"><div id="slider-range" style="width: 400px; vertical-align:top;"></div></td>
                                   					<td></td>
                                 				</tr>
-                                					<td width="50" align="right"><span class="style3">12:00 AM</span> </td>
+                                					<td width="50" align="right"><span>12:00 AM</span> </td>
                                 					<td width="200"></td>
                                 					<td><span>11:45 PM</span></td>
                                 				<tr>
