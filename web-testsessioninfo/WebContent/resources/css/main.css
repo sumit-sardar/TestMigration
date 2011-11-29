@@ -428,15 +428,15 @@ clear: both;
 }
 
 .subtestHeader{
-	background: url(../images/tableHeader.GIF) repeat-x;
+	background: url(../images/tableHeader2.png) repeat-x;
     border-style: none;
-    color: #000;
+    color: #FFF;
     font-family: Arial, Helvetica, Sans Serif;
-    font-size: 11px;
+    font-size: 12px;
     font-style: normal;
     font-weight: bold;
-    padding: 5px;
     vertical-align: middle;
+    height: 35px;
 }
 
 .subtestCols{
@@ -504,5 +504,12 @@ clear: both;
 
 .lblDisabled {color:#999999; }
 
+.style3 {font-size: 9px}
 
-
+.blueSubHeading{
+	font-family: Arial, Verdana, Sans Serif; 
+	font-size: 12px; 
+	font-style: normal;
+	margin-bottom: 0;
+	color : #003399;
+}
