@@ -491,24 +491,28 @@ function createSingleNodeSelectedTree(jsondata) {
 					document.getElementById("testSessionName").value = sessionList[i].testName;	
 					str = sessionList[i].subtests;
 					if(sessionList[i].isRandomize == "Y" ){
-						$("#randomDis").show();	
-						$("#randDisLbl").show();	
+						//$("#randomDis").show();	
+						//$("#randDisLbl").show();
+						$("#randomDistDiv").show();
 						document.getElementById("randomDis").checked = true;
 					}else if(sessionList[i].isRandomize == "N" ){
-						$("#randomDis").show();	
-						$("#randDisLbl").show();	
+						//$("#randomDis").show();	
+						//$("#randDisLbl").show();	
+						$("#randomDistDiv").show();
 						document.getElementById("randomDis").checked = false;
 					} else {
 						document.getElementById("randomDis").checked = false;
-						$("#randomDis").hide();	
-						$("#randDisLbl").hide();	
+						//$("#randomDis").hide();	
+						//$("#randDisLbl").hide();	
+						$("#randomDistDiv").hide();
 					}					
 					break;					
 				}
 			}
 			if(!found) {
-				$("#randomDis").hide();	
-				$("#randDisLbl").hide();
+				//$("#randomDis").hide();	
+				//$("#randDisLbl").hide();
+				$("#randomDistDiv").hide();
 			}
 			return str;
 	}
@@ -1231,8 +1235,9 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById("endDate").value = "";			
 		document.getElementById("time").innerHTML = "9:00 AM - 5:00 PM";
 		document.getElementById("testLocation").value = "";											
-		$("#randomDis").hide();	
-		$("#randDisLbl").hide();										
+		//$("#randomDis").hide();	
+		//$("#randDisLbl").hide();		
+		$("#randomDistDiv").hide();								
 					
 	}
 	
@@ -1253,8 +1258,9 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById("endDate").value = "";			
 		document.getElementById("time").innerHTML = "9:00 AM - 5:00 PM";
 		document.getElementById("testLocation").value = "";											
-		$("#randomDis").hide();	
-		$("#randDisLbl").hide();
+		//$("#randomDis").hide();	
+		//$("#randDisLbl").hide();
+		$("#randomDistDiv").hide();
  		
  		
 	}

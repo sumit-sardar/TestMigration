@@ -68,7 +68,7 @@
 						<tr>
 							<td height="10" colspan="2"></td>
 						</tr>
-						<tr>
+						<tr id = "randomDistDiv">
 							<td height="20"><input type="checkbox" id="randomDis" name="randomDis" value="1"></td>
 							<td class="transparent"><span id="randDisLbl">Random Distractor</span></td>
 						</tr>
