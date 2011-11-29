@@ -32,14 +32,32 @@
 						<td align="center" valign="middle" class="transparent alignLeft">:</td>
 					    <td colspan="2" valign="middle" class="transparent alignLeft"><table width="100%" border="0">
                             <tr>
-                              <td width="128" align="left"><span id="time">9:00 AM - 5:00 PM</span></td>
-                              <td width="548" align="left"><table width="320" border="0" cellpadding="0" cellspacing="0" class="transparent">
-                                <tr>
-                                  <td width="50" height="5" align="right" class="transparent alignLeft"><span class="style3">12:00 AM</span> </td>
-                                  <td width="200" class="transparent alignLeft"><div id="slider-range" style="width: 200px; vertical-align:bottom;"></div></td>
-                                  <td width="50" class="transparent alignLeft"><span class="style3">11:45 PM</span></td>
-                                </tr>
-                              </table></td>
+                            <td>
+                            	<table>
+                            		<tr>
+                            			<td align="center" valign="bottom" style="vertical-align: bottom;">
+                            				<span id="time">9:00 AM - 5:00 PM</span>
+                            				<span>&nbsp;&nbsp;&nbsp;</span>
+                            			</td>
+                            		</tr>
+                            		<tr>
+                            			<td width="548" align="left" valign="bottom">
+                            				<table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                				<tr>
+                                  					<td width="50"></td>
+                                  					<td width="200"><div id="slider-range" style="width: 400px; vertical-align:top;"></div></td>
+                                  					<td></td>
+                                				</tr>
+                                					<td width="50" align="right"><span class="style3">12:00 AM</span> </td>
+                                					<td width="200"></td>
+                                					<td><span>11:45 PM</span></td>
+                                				<tr>
+                                				</tr>
+                              				</table>
+                              			</td>
+                            		</tr>
+                            	</table>
+                            </td>
                             </tr>
                           </table></td>
 				    </tr>
