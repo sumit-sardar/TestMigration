@@ -1,3 +1,8 @@
+<%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
+<%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+
+<netui-data:declareBundle bundlePath="webResources" name="web" />
+
 <div id="scheduleSession"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<br>
@@ -23,7 +28,19 @@
 			<div id="selectTestId">
 				<h3><a href="#" >Select Test</a></h3>
 				<div id="Select_Test" style="background-color: #FFFFFF;">
-					<jsp:include page="/sessionOperation/select_test.jsp" />
+					<div id="noTestDiv" style="display:none;">
+						<table width="100%" height="300" cellpadding="0" cellspacing="0" class="transparent">
+							<tr><td width="40%" align="right" valign="middle">
+	                   			<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
+							</td>
+							<td width="60%" align="left" valign="middle" class="transparent">
+								<netui:content value="${bundle.web['sessionList.selectTest.noTestExists']}"/></td>
+						</tr>
+						</table>
+					</div>
+					<div id="testDiv" style="display:none;">
+						<jsp:include page="/sessionOperation/select_test.jsp" />
+					</div>
 				</div>
 			</div>
 			<div id="testDetailId">
@@ -53,7 +70,7 @@
 						<br>
 						<tr id="Act_Buttons" align="center">
 							<td  width="3%" id="preButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-left" id="pData" href="javascript:pDataClick('Edit');"><span
-								class="ui-icon ui-icon-triangle-1-w"></span></a></td><td id="nextButton" style= "visibility:hidden"><a class="fm-button ui-state-default ui-corner-right" id="nData"
+								class="ui-icon ui-icon-triangle-1-w"></span></a></td><td id="nextButton" style="visibility:hidden"><a class="fm-button ui-state-default ui-corner-right" id="nData"
 								href="javascript:nDataClick('Edit');"><span class="ui-icon ui-icon-triangle-1-e"></span></a></td>
 								<td>&nbsp;</td>
 							<td  width="100%">

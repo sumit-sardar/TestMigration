@@ -38,7 +38,7 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/sessionList.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/sessionConstants.js"></script>
-   
+    
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.js"></script>   
   	
@@ -57,55 +57,137 @@
 				// Accordion
 				$("#accordion").accordion({ header: "h3" });
 				$("#ssAccordion").accordion({ header: "h3" });
-				
 				$('#selectTestId a').click(function(e){ 
-					if (!validateTestInformation()) {
-						verifyTestDetails();
-						$('#displayMessage').show();
-						e.stopPropagation();
+					if(!noTestExist){
+						if (!validateTestInformation()) {
+							verifyTestDetails();
+							$('#displayMessage').show();
+							e.stopPropagation();
+						}else{
+							$('#displayMessage').hide();
+						}
+						isFirstAccordSelected = true;
+						isSecondAccordSelected = false;
 					}else{
-						$('#displayMessage').hide();
+						e.stopPropagation();
 					}
-					isFirstAccordSelected = true;
-					isSecondAccordSelected = false;
 				}); 
 				
 				$('#testDetailId a').click(function(e){
-					if(!validateTest()){
-						$('#displayMessage').show();
-						e.stopPropagation(); 
+					if(!noTestExist){
+						if(!validateTest()){
+							$('#displayMessage').show();
+							e.stopPropagation(); 
+						}else{
+							$('#displayMessage').hide();
+							isFirstAccordSelected = false;
+							isSecondAccordSelected = true;
+						}
 					}else{
-						$('#displayMessage').hide();
-						isFirstAccordSelected = false;
-						isSecondAccordSelected = true;
+						e.stopPropagation();
 					}
 					
 				});
 				
 				
 				$('#addStudentId a').click(function(e){ 
-					if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
-						$('#displayMessage').show();
-						e.stopPropagation(); 
-					}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
-						verifyTestDetails();
-						$('#displayMessage').show();
-						e.stopPropagation();
+					if(!noTestExist){
+						if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+							$('#displayMessage').show();
+							e.stopPropagation(); 
+						}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
+							verifyTestDetails();
+							$('#displayMessage').show();
+							e.stopPropagation();
+						}else{
+							$('#displayMessage').hide();
+						}
 					}else{
-						$('#displayMessage').hide();
+						e.stopPropagation();
 					}
 				}); 
 				
 				$('#addProctorId a').click(function(e){ 
-					if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
-						$('#displayMessage').show();
-						e.stopPropagation(); 
-					}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
-						verifyTestDetails();
-						$('#displayMessage').show();
-						e.stopPropagation();
+					if(!noTestExist){
+						if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+							$('#displayMessage').show();
+							e.stopPropagation(); 
+						}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
+							verifyTestDetails();
+							$('#displayMessage').show();
+							e.stopPropagation();
+						}else{
+							$('#displayMessage').hide();
+						}
 					}else{
-						$('#displayMessage').hide();
+						e.stopPropagation();
+					}
+				});  
+				
+				$('#selectTestId h3 span').click(function(e){ 
+					if(!noTestExist){
+						if (!validateTestInformation()) {
+							verifyTestDetails();
+							$('#displayMessage').show();
+							e.stopPropagation();
+						}else{
+							$('#displayMessage').hide();
+						}
+						isFirstAccordSelected = true;
+						isSecondAccordSelected = false;
+					}else{
+						e.stopPropagation();
+					}
+				}); 
+				
+				$('#testDetailId h3 span').click(function(e){
+					if(!noTestExist){
+						if(!validateTest()){
+							$('#displayMessage').show();
+							e.stopPropagation(); 
+						}else{
+							$('#displayMessage').hide();
+							isFirstAccordSelected = false;
+							isSecondAccordSelected = true;
+						}
+					}else{
+						e.stopPropagation();
+					}
+					
+				});
+				
+				
+				$('#addStudentId h3 span').click(function(e){ 
+					if(!noTestExist){
+						if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+							$('#displayMessage').show();
+							e.stopPropagation(); 
+						}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
+							verifyTestDetails();
+							$('#displayMessage').show();
+							e.stopPropagation();
+						}else{
+							$('#displayMessage').hide();
+						}
+					}else{
+						e.stopPropagation();
+					}
+				}); 
+				
+				$('#addProctorId h3 span').click(function(e){ 
+					if(!noTestExist){
+						if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+							$('#displayMessage').show();
+							e.stopPropagation(); 
+						}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
+							verifyTestDetails();
+							$('#displayMessage').show();
+							e.stopPropagation();
+						}else{
+							$('#displayMessage').hide();
+						}
+					}else{
+						e.stopPropagation();
 					}
 				});  
 				

@@ -35,9 +35,9 @@ var hours0 = 0;
 var minutes1 = 0;
 var hours1 = 0;
 var isTabeLocatorProduct = false;
+var noTestExist = false;
 var isFirstAccordSelected = true;
 var isSecondAccordSelected = false;
-
 
 
 function UIBlock(){
@@ -510,9 +510,8 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 			}
 			if(!found) {
-				//$("#randomDis").hide();	
-				//$("#randDisLbl").hide();
-				$("#randomDistDiv").hide();
+				$("#randomDis").hide();	
+				$("#randDisLbl").hide();
 			}
 			return str;
 	}
@@ -695,13 +694,26 @@ function createSingleNodeSelectedTree(jsondata) {
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){
 						ProductData = data;
-						var selectedproductId= data.selectedProductId;
-						fillProductGradeLevelDropDown('testGroupList',data.product,selectedproductId);
-						fillDropDownWithDefaultValue("timeZoneList",data.testZoneDropDownList, data.userTimeZone);
-						reloadGrids(data.product[0].testSessionList,data.product[0].showLevelOrGrade);
-						//populateTestListGrid(data.product[0].testSessionList,true,data.product[0].showLevelOrGrade);
-						fillDropDown("topOrgNode",data.topNodeDropDownList)
-						processStudentAccordion();
+						
+						if(ProductData.noTestExists == true){
+							noTestExist = true;
+							document.getElementById("testDiv").style.display = "none";
+							document.getElementById("noTestDiv").style.display = "inline";
+						}else{
+							noTestExist = false;
+							document.getElementById("noTestDiv").style.display = "none";
+							document.getElementById("testDiv").style.display = "inline";
+						}
+						if(!noTestExist){
+							var selectedproductId= data.selectedProductId;
+							fillProductGradeLevelDropDown('testGroupList',data.product,selectedproductId);
+							fillDropDownWithDefaultValue("timeZoneList",data.testZoneDropDownList, data.userTimeZone);
+							reloadGrids(data.product[0].testSessionList,data.product[0].showLevelOrGrade);
+							//populateTestListGrid(data.product[0].testSessionList,true,data.product[0].showLevelOrGrade);
+							fillDropDown("topOrgNode",data.topNodeDropDownList)
+							processStudentAccordion();
+						}
+						
 						$.unblockUI(); 						
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -713,16 +725,16 @@ function createSingleNodeSelectedTree(jsondata) {
 						 $.unblockUI(); 
 					}
 	});
-	$("#scheduleSession").dialog({  
+		$("#scheduleSession").dialog({  
 		title:"Schedule Session",  
-	 	resizable:false,
-	 	autoOpen: true,
-	 	width: '1024px',
-	 	modal: true,
-	 	closeOnEscape: false,
-	 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
-	});
-	setPopupPosition();
+		resizable:false,
+		autoOpen: true,
+		width: '1024px',
+		modal: true,
+		closeOnEscape: false,
+		open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+		});						
+		setPopupPosition();
 	}
 	
 	function processStudentAccordion() {
@@ -1038,9 +1050,9 @@ function createSingleNodeSelectedTree(jsondata) {
 			colNames:['Test Name',levelOrGradeTitle, 'Subtest', 'Duration'],
 		   	colModel:[
 		   		{name:'testName',index:'testName', width:55, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
-		   		{name:'level',index:'level', width:12, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
-		   		{name:'subtestCount',index:'subtestCount', width:15, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
-		   		{name:'duration',index:'duration',width:25, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
+		   		{name:'level',index:'level', width:18, align:"left",sorttype:'text',sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
+		   		{name:'subtestCount',index:'subtestCount', width:20, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
+		   		{name:'duration',index:'duration',width:22, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;cursor: pointer;' } },
 		   	],
 		   	jsonReader: { repeatitems : false, root:"rows", id:"id",
 		   		records: function(obj) { 
@@ -1096,7 +1108,7 @@ function createSingleNodeSelectedTree(jsondata) {
             	
 			
             	var width = jQuery("#Select_Test").width();
-			    width = width/2 - 20; // Fudge factor to prevent horizontal scrollbars
+			    width = width/2 - 15; // Fudge factor to prevent horizontal scrollbars
 			    jQuery("#testList").setGridWidth(width);
 			    setEmptyListMessage('TSL');
 			    $.unblockUI();  
@@ -1318,8 +1330,6 @@ function createSingleNodeSelectedTree(jsondata) {
 				}	
 		return true;
 	}
-	
-	//
 	
 	 function verifyTestDetails(){
 	 	var requiredFields = "";
