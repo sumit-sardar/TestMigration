@@ -245,7 +245,8 @@ function populateCompletedSessionListGrid() {
 	 } else if (requestedTab == 'studentGrid'){
 	 	 if(isStuGridEmpty) {
 	 	 	$('#totalStudent').text("0");
-	 	 	$('#stuWithAcc').text("0");
+	 	 	if($("#supportAccommodations").val() != 'false')
+	 	 	 	$('#stuWithAcc').text("0");
 		 	$('#list6').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
 		 	$('#list6').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noStudentTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noStudentMsg").val()+"</td></tr></tbody></table></td></tr>");
 		 }
