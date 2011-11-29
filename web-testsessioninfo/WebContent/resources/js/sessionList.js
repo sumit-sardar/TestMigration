@@ -941,12 +941,9 @@ function createSingleNodeSelectedTree(jsondata) {
 		var hours0Stop = parseInt($("#slider-range").slider("values", 0) / 60 % 24, 10);
 		var minutes1Stop = parseInt($("#slider-range").slider("values", 1) % 60, 10);
 		var hours1Stop = parseInt($("#slider-range").slider("values", 1) / 60 % 24, 10);
-		if((minutes0Stop == 0 && hours0Stop == 0 && !(minutes0 == 0 && hours0 == 0)) || (hours1Stop == 23 && minutes1Stop == 45 && !(hours1 == 23 && minutes1 == 45))) {
 			startTime = getTime(hours0Stop, minutes0Stop);
 			endTime = getTime(hours1Stop, minutes1Stop);
 			$("#time").text(startTime + ' - ' + endTime);
-		}
-	
 	}
 
 	function slideTime(event, ui){
