@@ -20,13 +20,13 @@
 		</div>	
 		
 		<div id="ssAccordion" style="width:99.5%;">
-			<div>
+			<div id="selectTestId">
 				<h3><a href="#" >Select Test</a></h3>
 				<div id="Select_Test" style="background-color: #FFFFFF;">
 					<jsp:include page="/sessionOperation/select_test.jsp" />
 				</div>
 			</div>
-			<div>
+			<div id="testDetailId">
 				<h3><a href="#" >Test Detail</a></h3>
 				<div id="Test_Detail" style="overflow-y: scroll !important; overflow-x: hidden !important;">
 					<div align="center">
@@ -34,13 +34,13 @@
 					</div>
 				</div>
 			</div>
-			<div>
+			<div id="addStudentId">
 				<h3><a href="#" >Add Student</a></h3>
 				<div id="Add_Student" style="background-color: #FFFFFF; overflow-y: scroll !important; overflow-x: hidden !important;">
 					<jsp:include page="/sessionOperation/add_student_tab.jsp" />
 				</div>
 			</div>
-			<div>
+			<div id="addProctorId">
 				<h3><a href="#" >Add Proctor</a></h3>
 				<div id="Add_Proctor" style="overflow-y: scroll !important; overflow-x: hidden !important;">
 					
