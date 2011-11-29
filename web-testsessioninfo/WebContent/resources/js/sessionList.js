@@ -532,6 +532,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			$("#Test_Detail").hide();
 			$("#Add_Student").hide();
 			$('#Add_Proctor').hide();
+			$("#slider-range").slider("option", "values", [540, 1020]);
 		}
 		$("#"+dailogId).dialog("close");
 	}
