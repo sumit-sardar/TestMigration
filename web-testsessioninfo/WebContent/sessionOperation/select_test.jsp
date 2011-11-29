@@ -88,9 +88,9 @@
 							<div id="noSubtest">
 							<table width="100%" cellpadding="2" cellspacing="0" class="shadowBorder">
 								<tr class="subtestHeader">
-									<th width="4%" height="20" align="center"><strong>#</strong></th>
-									<th width="33%" height="20" align="left"><strong>Subtest Name </strong></th>									
-									<th width="33%" height="20" align="center"><strong>Duration</strong></th>
+									<th width="4%" height="20" align="center" valign="middle"><strong>#</strong></th>
+									<th width="33%" height="20" align="left" valign="middle"><strong>Subtest Name </strong></th>									
+									<th width="33%" height="20" align="center" valign="middle"><strong>Duration</strong></th>
 								</tr>
 								<tr>
 									<td height="20" align="center">&nbsp;</td>

@@ -522,6 +522,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			$("#Add_Student").hide();
 			$('#Add_Proctor').hide();
 			$("#slider-range").slider("option", "values", [540, 1020]);
+			resetPopup();
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -676,7 +677,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 	
 	function scheduleNewSession() {
-
+	
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -1228,18 +1229,24 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 	
 	function resetPopup() { 
-		$('#ssAccordion').accordion('activate', 0 );
-		$("#Select_Test").scrollTop(0);
-		$("#Test_Detail").scrollTop(0);
-		$("#Add_Student").scrollTop(0);
-		$("#Add_Proctor").scrollTop(0);
-		
-		document.getElementById('ShowButtons').style.display = "block";
- 		setAnchorButtonState('viewStatusButton', true);
- 		
- 		if($("#canRegisterStudent").val() == 'true'){
- 			setAnchorButtonState('registerStudentButton', true);
- 		}
+		$("#sessionListDiv").hide();
+		$('#testList').GridUnload();
+		$('#displayMessage').hide();		
+		subtestLength = 0;
+		var testBreak = document.getElementById("testBreak");
+		isTestSelected = false;
+		if(testBreak.checked) testBreak.checked = false;
+		document.getElementById("aCode").style.visibility = "hidden";		
+		document.getElementById("subtestGrid").style.display = "none";
+		document.getElementById("noSubtest").style.display = "";
+		document.getElementById("testSessionName_lbl").innerHTML = "No test selected";
+		document.getElementById("testSessionName").value = "";
+		document.getElementById("startDate").value = "";			
+		document.getElementById("endDate").value = "";			
+		document.getElementById("time").innerHTML = "9:00 AM - 5:00 PM";
+		document.getElementById("testLocation").value = "";											
+		$("#randomDis").hide();	
+		$("#randDisLbl").hide();
  		
  		
 	}

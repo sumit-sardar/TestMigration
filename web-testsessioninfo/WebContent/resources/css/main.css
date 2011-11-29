@@ -428,15 +428,13 @@ clear: both;
 }
 
 .subtestHeader{
-	background: url(../images/tableHeader2.png) repeat-x;
-    border-style: none;
+	background: url(../images/tableHeader3.png);
     color: #FFF;
     font-family: Arial, Helvetica, Sans Serif;
     font-size: 12px;
     font-style: normal;
     font-weight: bold;
-    vertical-align: middle;
-    height: 35px;
+    height: 23px;
 }
 
 .subtestCols{
