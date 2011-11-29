@@ -8,12 +8,14 @@
 	 Boolean canRegisterStudent = (Boolean) session.getAttribute("canRegisterStudent");
 	 Boolean userScheduleAndFindSessionPermission = (Boolean) session.getAttribute("userScheduleAndFindSessionPermission");
 	 String studentIdLabelName = (String) session.getAttribute("studentIdLabelName");
+	 Boolean supportAccommodations  = (Boolean) session.getAttribute("supportAccommodations");
 	
 	%>
 	
 	<input type="hidden" id="canRegisterStudent" name = "canRegisterStudent" value='<%=canRegisterStudent %>'/>
 	<input type="hidden" id="userScheduleAndFindSessionPermission" name = "userScheduleAndFindSessionPermission" value='<%=userScheduleAndFindSessionPermission %>'/>
 	<input type="hidden" id="studentIdLabelName" name = "studentIdLabelName" value='<%=studentIdLabelName %>'/>
+	<input type="hidden" id="supportAccommodations" name = "supportAccommodations" value='<%=supportAccommodations %>'/>
 	 
 	 <div style="clear:both;float:left;width:100%;text-align: left;"> 
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"><netui:content value="${bundle.web['homepage.viewTestSessions.message']}"/>

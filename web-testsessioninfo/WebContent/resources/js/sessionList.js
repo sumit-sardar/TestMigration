@@ -731,12 +731,17 @@ function createSingleNodeSelectedTree(jsondata) {
 		if(isTabeProduct) {
 			
 			$("#list6").jqGrid("hideCol","itemSetForm"); 
-			jQuery("#list6").setGridWidth(width,true);
 		} else {
-			
 			$("#list6").jqGrid("showCol","itemSetForm"); 
-			jQuery("#list6").setGridWidth(width,true);
 		}
+		
+		var showAccommodations = $("#supportAccommodations").val();
+		if(showAccommodations  == 'false') {
+			$("#list6").jqGrid("hideCol","hasAccommodations"); 
+		} else {
+			$("#list6").jqGrid("showCol","hasAccommodations"); 
+		}
+		jQuery("#list6").setGridWidth(width,true);
 	}
 
 	function fillProductGradeLevelDropDown( elementId, optionList, selectedProductId) {

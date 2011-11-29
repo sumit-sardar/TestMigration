@@ -1055,7 +1055,14 @@ public class SessionOperationController extends PageFlowController {
             this.user = this.testSessionStatus.getUserDetails(this.userName, this.userName);
             Customer customer = this.user.getCustomer();
             this.customerId = customer.getCustomerId();
-            getSession().setAttribute("customerId", customerId); 
+            getSession().setAttribute("customerId", customerId);
+            String hideAccommodations = customer.getHideAccommodations();
+	        if ((hideAccommodations != null) && hideAccommodations.equalsIgnoreCase("T"))
+	        {
+	            supportAccommodations = Boolean.FALSE;
+	        }
+	        getSession().setAttribute("supportAccommodations", supportAccommodations); 
+	        System.out.println("supportAccommodations==>"+supportAccommodations);
         }
         catch (CTBBusinessException be)
         {
