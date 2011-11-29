@@ -136,7 +136,7 @@ function populateSessionListGrid(homePageLoad) {
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
-				window.location.href="/TestSessionInfoWeb/logout.do";
+				window.location.href="/SessionWeb/logout.do";
 						
 			}
 	 });
@@ -332,7 +332,7 @@ function populateCompletedSessionListGrid() {
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						//$.unblockUI();  
-						window.location.href="/TestSessionInfoWeb/logout.do";
+						window.location.href="/SessionWeb/logout.do";
 						
 					},
 		complete :  function(){
@@ -657,7 +657,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
-				window.location.href="/TestSessionInfoWeb/logout.do";
+				window.location.href="/SessionWeb/logout.do";
 						
 			}
 	 });
@@ -1102,7 +1102,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
-				window.location.href="/TestSessionInfoWeb/logout.do";
+				window.location.href="/SessionWeb/logout.do";
 						
 			}
 	 });
