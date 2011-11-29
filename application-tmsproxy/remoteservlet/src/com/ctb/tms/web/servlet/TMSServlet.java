@@ -127,13 +127,18 @@ public class TMSServlet extends HttpServlet {
 	            result = writeToAuditFile(xml);
 	        else if (method != null && method.startsWith(ServletUtils.COMPLETE_TUTORIAL_METHOD))
 	            result = completeTutorial(xml);
-	        else if(method.toLowerCase().indexOf("mp3") >= 0)
+	        else if(method != null && method.toLowerCase().indexOf("mp3") >= 0)
 	        	getMp3(request, response);
 	        else if (method != null && method.startsWith(ServletUtils.GET_STATUS_METHOD)) {
 	        	result = verifySettings(xml);
 	        }
 			else {
-	            result = ServletUtils.ERROR;   
+				String musicId = request.getParameter("musicId");
+				if(musicId != null && !"".equals(musicId.trim())) {
+					getMp3(request, response);
+				} else {
+					result = ServletUtils.ERROR;   
+				}
 	        }
 			
 	        // return response to client
