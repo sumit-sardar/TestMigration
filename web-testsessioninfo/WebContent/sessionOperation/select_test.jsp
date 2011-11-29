@@ -9,6 +9,12 @@
 			<td>
 			<table class="transparent" width="100%" cellpadding="0" cellspacing="0">
 				<tr>
+				<td height="20" colspan="3" class="blueSubHeading"><netui:content value="${bundle.web['sessionList.selectTest.testSelect.title']}"/></td>
+				</tr>
+				<tr>
+							<td height="10" colspan="3"></td>
+						</tr>
+				<tr>
 					<td style="vertical-align: top;">
 					<table width="100%" border="0" cellpadding="0" cellspacing="0">
 						<tr>
@@ -18,20 +24,20 @@
 									<td>
 									<table width="100%" border="0" cellpadding="0" cellspacing="4">
 										<tr class="transparent">
-											<td class="transparent" width="20%">Test Group :</td>
-											<td width="80%"><select name="testGroupList" id="testGroupList"
+											<td width="20%" valign="top" class="transparent">Test Group :</td>
+											<td width="80%" valign="top"><select name="testGroupList" id="testGroupList"
 												onchange="javascript:changeGradeAndLevel(); return false;">
 
-											</select></td>
+										  </select></td>
 										</tr>
 										<tr class="transparent">
-											<td class="transparent" height="20">
+											<td height="20" valign="top" class="transparent">
 											<div id="gradeDiv" style="display: none;">Grade :</div>
 											<div id="levelDiv" style="display: none;">Level :</div>
-											</td>
-											<td>
+										  </td>
+											<td valign="top">
 											<div id="levelDropDown"><select name="level" id="level" style="display: none;" onchange="javascript:changeSessionList(); return false;" ></select></div>
-											</td>
+										  </td>
 										</tr>
 										
 									</table>
@@ -57,13 +63,7 @@
 					<td width="54%" style="padding-left: 7px; vertical-align: top;">
 					<table width="100%" border="0" cellspacing="0" cellpadding="0">
 						<tr>
-							<td height="20" colspan="3" style="border-bottom: #0099FF 1px groove;"><strong><netui:content value="${bundle.web['sessionList.selectTest.testSelect.title']}"/></strong></td>
-						</tr>
-						<tr>
-							<td height="10" colspan="2"></td>
-						</tr>
-						<tr>
-							<td height="20" colspan="2">Selected Test : <span id="testSessionName_lbl" class="lblDisabled">No Test Session is selected</span></td>
+							<td height="20" colspan="2">Selected Test : <span id="testSessionName_lbl" class="lblDisabled">No Test selected</span></td>
 						</tr>
 						<tr>
 							<td height="10" colspan="2"></td>
@@ -99,7 +99,7 @@
 								</tr>
 								<tr>
 									<td height="20" align="center">&nbsp;</td>
-									<td height="20" align="left">No Test is selected !!</td>
+									<td height="20" align="left">No test selected</td>
 									<td height="20" align="center">&nbsp;</td>
 								</tr>
 								<tr>
