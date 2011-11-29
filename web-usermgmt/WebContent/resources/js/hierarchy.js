@@ -23,6 +23,7 @@ var isTreeExpandIconClicked = false;
 var isAction = true;
 var isViewMod = false;
 var titleViewEdit = "Edit User";
+var isGridRefreshRequired = false;
 
 $(document).bind('keydown', function(event) {
 		
@@ -1020,6 +1021,27 @@ function fillselectedOrgNode( elementId, orgList) {
 	function saveUserDetail(){
 	var param;//added on 25.10.2011
 	var rowid = $("#list2").jqGrid('getGridParam', 'selrow');
+	var orgName = $("#selectedOrgNodesName").text();
+	var treeOrgNodeId = $("#treeOrgNodeId").val();
+	//alert(treeOrgNodeId);
+	//alert(assignedOrgNodeIds);
+	
+	if(String(assignedOrgNodeIds).indexOf(",") > 0) {
+		 var assignedOrgIdList = assignedOrgNodeIds.split(",");
+		 for( var i=0; i<assignedOrgIdList.length; i++) {
+		 	var keyVal = $.trim(assignedOrgIdList[i]);
+		 	if( keyVal == treeOrgNodeId){
+		 		isGridRefreshRequired = true;
+		 		break;
+		 	}
+		 }
+	}
+	else {
+		if( assignedOrgNodeIds == treeOrgNodeId){
+		 		isGridRefreshRequired = true;
+		}
+	}
+	
 	if(isAddUser){
 		param = $("#addEditUserDetail *").serialize()+ "&assignedOrgNodeIds="+assignedOrgNodeIds;
 	}
@@ -1052,6 +1074,37 @@ function fillselectedOrgNode( elementId, orgList) {
 													$("#contentMain").text(data.content);
 													document.getElementById('displayMessageMain').style.display = "block";
 													assignedOrgNodeIds = "";
+													
+													// Added new codes for Refreshing the Grid for Adding/Updating users : Start
+													var dataToBeAdded = {lastName:data.userProfile.lastName,
+																		 firstName:data.userProfile.firstName,
+																		 loginId:data.userProfile.userName,
+																		 role:data.userProfile.role,
+																		 email:data.userProfile.email,
+																		 orgNodeNamesStr:orgName};
+													
+													var sortOrd = jQuery("#list2").getGridParam("sortorder");
+													var sortCol = jQuery("#list2").getGridParam("sortname");	
+													
+													if(isAddUser) {
+														if(isGridRefreshRequired){
+															jQuery("#list2").addRowData(data.userProfile.userId, dataToBeAdded, "first");
+															isGridRefreshRequired = false;
+														}
+													}
+													else {
+														if (isGridRefreshRequired){
+															jQuery("#list2").setRowData(data.userProfile.userId, dataToBeAdded, "first");
+															isGridRefreshRequired = false;
+														}
+														else {
+															jQuery("#list2").delRowData(data.userProfile.userId);
+														}
+													}
+											
+													jQuery("#list2").sortGrid(sortCol,true);
+													
+													// Added new codes for Refreshing the Grid for Adding/Updating users : End
         										}
         										else{
         											setMessage(data.title, data.content, data.type, "");     

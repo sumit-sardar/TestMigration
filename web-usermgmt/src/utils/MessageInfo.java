@@ -3,6 +3,8 @@ package utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import dto.UserProfileInformation;
+
 public class MessageInfo {
 	private boolean errorFlag = false;
 	private boolean successFlag = false;
@@ -10,6 +12,10 @@ public class MessageInfo {
 	private String content ;
 	private String message ;
 	private String type ;
+	
+	private UserProfileInformation userProfile;
+	
+	
 	/**
 	 * @return the title
 	 */
@@ -83,6 +89,11 @@ public class MessageInfo {
 		this.type = type;
 	}
 	
+	public UserProfileInformation getUserProfile() {
+		return userProfile;
+	}
+	public void setUserProfile(UserProfileInformation userProfile) {
+		this.userProfile = userProfile;
+	}
 	
-
 }

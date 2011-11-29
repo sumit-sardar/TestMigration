@@ -579,6 +579,7 @@ public class UserOperationController extends PageFlowController
 			userProfile.getUserContact().setFaxNumber1(getRequest().getParameter("faxNumber1"));
 			userProfile.getUserContact().setFaxNumber2(getRequest().getParameter("faxNumber2"));
 			userProfile.getUserContact().setFaxNumber3(getRequest().getParameter("faxNumber3"));
+			
 			int userId = 0;
 			//int addressId = 0;
 			String addressId = null;
@@ -683,6 +684,7 @@ public class UserOperationController extends PageFlowController
 			boolean isCreateNew = (userName == null || "".equals(userName)) ? true : false;
 			
 			boolean result = true;
+			User user = null;
 			try {
 				
 				
@@ -691,11 +693,21 @@ public class UserOperationController extends PageFlowController
 					userName = saveUserProfileInformation(isCreateNew, userProfile, userName, selectedOrgNodes);
 				       
 					
+					
 					if (isCreateNew)
 					{
 						if (userName != null)  {
-							
+							userProfile.setUserName(userName);
 							messageInfo = createMessageInfo(messageInfo, Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION, false, true );
+							try {
+								user = userManagement.getUser(this.userName, userName);
+								if(user != null){
+									userProfile.setRole((user.getRole().getRoleName()));
+								}
+							} catch (CTBBusinessException e) {
+								e.printStackTrace();
+							}
+							messageInfo.setUserProfile(userProfile);
 							//form.setMessage(Message.ADD_TITLE, Message.ADD_SUCCESSFUL, Message.INFORMATION);
 						}
 						else  {
@@ -709,7 +721,17 @@ public class UserOperationController extends PageFlowController
 					else
 					{
 						if (userName != null) {
+							userProfile.setUserName(userName);
 							messageInfo = createMessageInfo(messageInfo, Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION, false, true );
+							try {
+								user = userManagement.getUser(this.userName, userName);
+								if(user != null){
+									userProfile.setRole((user.getRole().getRoleName()));
+								}
+							} catch (CTBBusinessException e) {
+								e.printStackTrace();
+							}
+							messageInfo.setUserProfile(userProfile);
 							//form.setMessage(Message.EDIT_TITLE, Message.EDIT_SUCCESSFUL, Message.INFORMATION);
 						}
 						else  {
@@ -717,13 +739,15 @@ public class UserOperationController extends PageFlowController
 							
 						}
 					}
+					
 			}
 		}
 			catch (SQLException be) {
 				be.printStackTrace();
-			}	
-				creatGson( req, resp, stream, messageInfo );
-				return null;
+			}
+			
+			creatGson( req, resp, stream, messageInfo );
+			return null;
 			
 		}
 		
