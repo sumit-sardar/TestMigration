@@ -373,25 +373,9 @@ public class TMSServlet extends HttpServlet {
 				    	// response events
 				    	ItemResponseWrapper irw = new ItemResponseWrapper();
 				    	irw.setTsd(tsd);
-				    	boolean persist = true;
-				    	Ist ist = tsd.getIstArray(0);
-				    	if(ist.getAudioItem()) {
-				    		if(ist.getRvArray() != null && ist.getRvArray().length > 0) {
-				    			Rv rv = ist.getRvArray(0);
-				    			if(rv.getVArray() != null && rv.getVArray().length > 0) {
-				    				String v = rv.getVArray(0);
-				    				if(v == null || "".equals(v.trim())) {
-				    					persist = false;
-				    				}
-				    			}
-				    		}
-				    	}
-				    	if(persist) {
-					    	oasSink.putItemResponse(rosterId, irw);
-					    	logger.debug("TMSServlet: save: cached response for roster " + rosterId + ", message " + tsd.getMseq() + ": " + tsd.xmlText());
-				    	} else {
-				    		logger.debug("TMSServlet: save: skipped persist for 0-length audio response - roster " + rosterId + ", message " + tsd.getMseq() + ": " + tsd.xmlText());
-				    	}
+				    
+				    	oasSink.putItemResponse(rosterId, irw);
+					    logger.debug("TMSServlet: save: cached response for roster " + rosterId + ", message " + tsd.getMseq() + ": " + tsd.xmlText());
 				    }
 				    
 				    if(tsd.getLevArray() != null && tsd.getLevArray().length > 0) {

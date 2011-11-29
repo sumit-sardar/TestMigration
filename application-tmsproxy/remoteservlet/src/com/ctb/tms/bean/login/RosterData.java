@@ -3,7 +3,6 @@ package com.ctb.tms.bean.login;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,7 +18,6 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Consolida
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist.Ov;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist.Rv;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.Sco;
 
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlOptions;
@@ -31,7 +29,6 @@ import com.ctb.tms.exception.testDelivery.TestSessionCompletedException;
 import com.ctb.tms.exception.testDelivery.TestSessionNotScheduledException;
 import com.ctb.tms.util.Constants;
 import com.ctb.tms.util.DateUtils;
-import com.tangosol.coherence.component.util.Collections;
 
 public class RosterData implements Serializable {
 	TmssvcResponseDocument document;
@@ -235,6 +232,7 @@ public class RosterData implements Serializable {
 	public static ItemResponseData[] generateItemResponseData(String testRosterId, ManifestData manifest, ItemResponseWrapper[] tsda) {
 		HashMap irdMap = new HashMap(tsda.length);
 		HashMap itemMap = new HashMap(tsda.length);
+		HashMap audioResponseMap = new HashMap(tsda.length);
 		for(int i=0;i<tsda.length;i++) {
 			logger.debug("generateItemResponseData: Tsd " + i);
 			noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd tsd = tsda[i].getTsd();
@@ -246,7 +244,21 @@ public class RosterData implements Serializable {
 					BigInteger mapMseq = (BigInteger) itemMap.get(ist.getIid());
 					boolean catHeartbeat = ist.getIid().indexOf("TABECAT") >=0 && !ist.getSendCatSave();
 					if((mapMseq == null || tsd.getMseq().intValue() > mapMseq.intValue()) && !catHeartbeat) {
+						if(ist.getAudioItem()) {
+				    		if(ist.getRvArray() != null && ist.getRvArray().length > 0) {
+				    			noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Rv rv = ist.getRvArray(0);
+				    			if(rv.getVArray() != null && rv.getVArray().length > 0) {
+				    				String v = rv.getVArray(0);
+				    				if(v != null && !"".equals(v.trim())) {
+				    					audioResponseMap.put(ist.getIid(), v);
+				    				} else {
+				    					rv.setVArray(0, (String) audioResponseMap.get(ist.getIid()));
+				    				}
+				    			}
+				    		}
+				    	}
 						itemMap.put(ist.getIid(), tsd.getMseq());
+						
 						//   if(ist != null && ist.getRvArray(0) != null && ist.getRvArray(0).getVArray(0) != null) {
 				        if(ist != null && ist.getRvArray() != null && ist.getRvArray().length >0 ) {
 				            if( ist.getRvArray(0).getVArray() != null && ist.getRvArray(0).getVArray().length >0){
