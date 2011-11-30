@@ -12,9 +12,35 @@
     </sync:provider>
 	
     <caching-scheme-mapping>
+        <cache-mapping>
+	        <cache-name>ADS*</cache-name>
+	        <scheme-name>DistributedScheme</scheme-name>
+        </cache-mapping>
         <!--    Caches with any name will be created as tiered.    -->
         <cache-mapping>
-	        <cache-name>OAS*</cache-name>
+	        <cache-name>OASResponse*</cache-name>
+	        <scheme-name>DistributedScheme</scheme-name>
+	        <sync:publisher>
+                <sync:publisher-name>Active Publisher</sync:publisher-name>
+                <sync:publisher-scheme>
+                    <sync:remote-cluster-publisher-scheme>
+                        <sync:remote-invocation-service-name>remote-site</sync:remote-invocation-service-name>
+                        <sync:remote-publisher-scheme>
+                            <sync:local-cache-publisher-scheme>
+                                <sync:target-cache-name>{cache-name}</sync:target-cache-name>
+                                <sync:conflict-resolver-scheme>
+                                        <cr:class classname="com.ctb.tms.nosql.coherence.push.TMSConflictResolver" />
+                                </sync:conflict-resolver-scheme>
+                            </sync:local-cache-publisher-scheme>
+                        </sync:remote-publisher-scheme>
+                        <sync:autostart>true</sync:autostart>
+                        <sync:publish-original-value>true</sync:publish-original-value>
+                    </sync:remote-cluster-publisher-scheme>
+                </sync:publisher-scheme>
+            </sync:publisher>
+        </cache-mapping>
+        <cache-mapping>
+	        <cache-name>OASManifest*</cache-name>
 	        <scheme-name>TieredScheme</scheme-name>
 	        <sync:publisher>
                 <sync:publisher-name>Active Publisher</sync:publisher-name>
@@ -36,15 +62,38 @@
             </sync:publisher>
         </cache-mapping>
         <cache-mapping>
-	        <cache-name>ADS*</cache-name>
+	        <cache-name>OASRoster*</cache-name>
 	        <scheme-name>TieredScheme</scheme-name>
+	        <sync:publisher>
+                <sync:publisher-name>Active Publisher</sync:publisher-name>
+                <sync:publisher-scheme>
+                    <sync:remote-cluster-publisher-scheme>
+                        <sync:remote-invocation-service-name>remote-site</sync:remote-invocation-service-name>
+                        <sync:remote-publisher-scheme>
+                            <sync:local-cache-publisher-scheme>
+                                <sync:target-cache-name>{cache-name}</sync:target-cache-name>
+                                <sync:conflict-resolver-scheme>
+                                        <cr:class classname="com.ctb.tms.nosql.coherence.push.TMSConflictResolver" />
+                                </sync:conflict-resolver-scheme>
+                            </sync:local-cache-publisher-scheme>
+                        </sync:remote-publisher-scheme>
+                        <sync:autostart>true</sync:autostart>
+                        <sync:publish-original-value>true</sync:publish-original-value>
+                    </sync:remote-cluster-publisher-scheme>
+                </sync:publisher-scheme>
+            </sync:publisher>
         </cache-mapping>
     </caching-scheme-mapping>
     <caching-schemes>  
     	<!--        heap-limited memory scheme definition -->
     	<local-scheme>
-   			<scheme-name>MemoryScheme</scheme-name>
-   			<high-units>1000000</high-units>
+   			<scheme-name>BackMemoryScheme</scheme-name>
+   			<high-units>536870912</high-units>
+   			<unit-calculator>BINARY</unit-calculator>
+		</local-scheme>
+		<local-scheme>
+   			<scheme-name>FrontMemoryScheme</scheme-name>
+   			<high-units>5500000</high-units>
    			<unit-calculator>FIXED</unit-calculator>
 		</local-scheme>   
         <!--        Oracle backing store scheme definition -->
@@ -52,7 +101,7 @@
 		  <scheme-name>DBScheme</scheme-name>
 		  <internal-cache-scheme>
 		    <local-scheme>
-		      <scheme-ref>MemoryScheme</scheme-ref>
+		      <scheme-ref>BackMemoryScheme</scheme-ref>
 		    </local-scheme>
 		  </internal-cache-scheme>
 		  <cachestore-scheme>
@@ -87,7 +136,7 @@
         	<scheme-name>TieredScheme</scheme-name>
         	<front-scheme>    
         		<local-scheme>
-        			<scheme-ref>MemoryScheme</scheme-ref>
+        			<scheme-ref>FrontMemoryScheme</scheme-ref>
         		</local-scheme>  
         	</front-scheme>  
         	<back-scheme>
