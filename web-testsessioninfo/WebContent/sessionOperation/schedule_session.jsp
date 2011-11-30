@@ -39,7 +39,7 @@
 									<tr width='100%'>
 										<th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23'
 											src='/SessionWeb/resources/images/messaging/icon_info.gif'></th>
-										<th colspan='6'><netui:content value="${bundle.web['sessionList.selectTest.noTestExistsHead']}" /></th>
+										<th colspan='6' align="left"><netui:content value="${bundle.web['sessionList.selectTest.noTestExistsHead']}" /></th>
 									</tr>
 									<tr width='100%'>
 										<td colspan='6'><netui:content value="${bundle.web['sessionList.selectTest.noTestExists']}" /></td>
