@@ -44,6 +44,8 @@
     	<!--        heap-limited memory scheme definition -->
     	<local-scheme>
    			<scheme-name>MemoryScheme</scheme-name>
+   			<high-units>1000000</high-units>
+   			<unit-calculator>FIXED</unit-calculator>
 		</local-scheme>   
         <!--        Oracle backing store scheme definition -->
         <read-write-backing-map-scheme>
