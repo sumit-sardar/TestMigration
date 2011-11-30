@@ -29,14 +29,26 @@
 				<h3><a href="#" >Select Test</a></h3>
 				<div id="Select_Test" style="background-color: #FFFFFF;">
 					<div id="noTestDiv" style="display:none;">
-						<table width="100%" height="300" cellpadding="0" cellspacing="0" class="transparent">
-							<tr><td width="40%" align="right" valign="middle">
-	                   			<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
+					<table width="100%" height="300" cellpadding="0" cellspacing="0" class="transparent">
+					
+					
+						<tr>
+							<td style='width: 100%;' colspan='6' align="center">
+							<table>
+								<tbody>
+									<tr width='100%'>
+										<th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23'
+											src='/SessionWeb/resources/images/messaging/icon_info.gif'></th>
+										<th colspan='6'><netui:content value="${bundle.web['sessionList.selectTest.noTestExistsHead']}" /></th>
+									</tr>
+									<tr width='100%'>
+										<td colspan='6'><netui:content value="${bundle.web['sessionList.selectTest.noTestExists']}" /></td>
+									</tr>
+								</tbody>
+							</table>
 							</td>
-							<td width="60%" align="left" valign="middle" class="transparent">
-								<netui:content value="${bundle.web['sessionList.selectTest.noTestExists']}"/></td>
 						</tr>
-						</table>
+					</table>
 					</div>
 					<div id="testDiv" style="display:none;">
 						<jsp:include page="/sessionOperation/select_test.jsp" />

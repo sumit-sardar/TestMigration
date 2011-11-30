@@ -430,11 +430,11 @@ clear: both;
 .subtestHeader{
 	background: url(../images/tableHeader3.png);
     color: #FFF;
-    font-family: Arial, Helvetica, Sans Serif;
+    font-family: Arial, Verdana, Sans Serif; 
     font-size: 12px;
     font-style: normal;
     font-weight: bold;
-    height: 23px;
+    height: 23px; 
 }
 
 .subtestCols{
@@ -451,10 +451,10 @@ clear: both;
 }
 
 .shadowBorder{
-	border-bottom:#B0DFFF 1px solid;
-	border-right:#B0DFFF 1px solid;
-	border-top:#B0DFFF 1px solid;
-	border-left:#B0DFFF 1px solid;
+	border-bottom:#A6C9E2 1px solid;
+	border-right:#A6C9E2 1px solid;
+	border-top:#A6C9E2 1px solid;
+	border-left:#A6C9E2 1px solid;
 	border-radius:5px;
 	-moz-border-radius:5px;
 	
@@ -498,6 +498,10 @@ clear: both;
     
 }
 
+.selectBox{
+	padding: 0 1em; 
+}
+
 .textboxDisabled { border:#999999 1px dotted; padding:2px 0px; height:12px; font-size:10px}
 
 .lblDisabled {color:#999999; }
@@ -510,4 +514,13 @@ clear: both;
 	font-style: normal;
 	margin-bottom: 0;
 	color : #003399;
+}
+
+table.ts{
+}
+
+.subtestSubHeader{
+	background: url("images/ui-bg_glass_85_dfeffc_1x400.png") repeat-x scroll 50% 50% #DFEFFC;    
+    color: #2E6E9E;
+    font-weight: bold;
 }

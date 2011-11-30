@@ -493,28 +493,27 @@ function createSingleNodeSelectedTree(jsondata) {
 					document.getElementById("testSessionName").value = sessionList[i].testName;	
 					str = sessionList[i].subtests;
 					if(sessionList[i].isRandomize == "Y" ){
-						//$("#randomDis").show();	
-						//$("#randDisLbl").show();
-						$("#randomDistDiv").show();
+						$("#randomDis").show();	
+						$("#randDisLbl").show();
+						//$("#randomDistDiv").show();
 						document.getElementById("randomDis").checked = true;
 					}else if(sessionList[i].isRandomize == "N" ){
-						//$("#randomDis").show();	
-						//$("#randDisLbl").show();	
-						$("#randomDistDiv").show();
+						$("#randomDis").hide();	
+						$("#randDisLbl").hide();
+						//$("#randomDistDiv").show();
 						document.getElementById("randomDis").checked = false;
 					} else {
 						document.getElementById("randomDis").checked = false;
-						//$("#randomDis").hide();	
-						//$("#randDisLbl").hide();	
-						$("#randomDistDiv").hide();
+						$("#randomDis").hide();	
+						$("#randDisLbl").hide();	
+						//$("#randomDistDiv").hide();
 					}					
 					break;					
 				}
 			}
 			if(!found) {
-				//$("#randomDis").hide();	
-				//$("#randDisLbl").hide();
-				$("#randomDistDiv").hide();
+				$("#randomDis").hide();	
+				$("#randDisLbl").hide();
 			}
 			return str;
 	}
@@ -775,32 +774,32 @@ function createSingleNodeSelectedTree(jsondata) {
 		} else {
 			for(var i = 0; i < optionList.length; i++ ) {
 				if(selectedProductId==optionList[i].productId) { 	     
-					optionHtml += "<option  value='"+ optionList[i].productId+"'selected >"+ optionList[i].productName+"</option>";
+					optionHtml += "<option  value='"+ optionList[i].productId+"'selected >"+ optionList[i].productName+"&nbsp;&nbsp;</option>";
 					//fillDropDown("grade", optionList[i].gradeDropDownList);
 					if(!(optionList[i].isTabeProduct)) {
 						isTabeProduct = false;
 						isTabeLocatorProduct=false;
 						if(!(optionList[i].hideLevelDropDown)) {
 							if(optionList[i].showLevelOrGrade=='level') {
-								document.getElementById("levelDiv").style.display ="block";
-								document.getElementById("level").style.display = "block";
-								document.getElementById("gradeDiv").style.display = "none";
+								document.getElementById("levelDiv").style.display ="inline";
+								document.getElementById("level").style.visibility ="visible";
+								document.getElementById("gradeDiv").style.display ="none";
 								fillDropDown("level",optionList[i].levelDropDownList);	
 							} else if (optionList[i].showLevelOrGrade=='grade') {
-								document.getElementById("gradeDiv").style.display ="block";
-								document.getElementById("level").style.display = "block";
-								document.getElementById("levelDiv").style.display = "none";
+								document.getElementById("gradeDiv").style.display ="inline";
+								document.getElementById("level").style.visibility ="visible";
+								document.getElementById("levelDiv").style.display ="none";
 								fillDropDown("level",optionList[i].levelDropDownList);	
 							} else { 
-							document.getElementById("gradeDiv").style.display = "none";
-							document.getElementById("levelDiv").style.display = "none";
-							document.getElementById("level").style.display = "none";
+							document.getElementById("gradeDiv").style.display ="none";
+							document.getElementById("levelDiv").style.display ="none";
+							document.getElementById("level").style.visibility ="hidden";
 							}
 						} else {
 							//fillDropDown("level",optionList[i].levelDropDownList);
-							document.getElementById("gradeDiv").style.display = "none";
-							document.getElementById("levelDiv").style.display = "none";
-							document.getElementById("level").style.display = "none";	
+							document.getElementById("gradeDiv").style.display ="none";
+							document.getElementById("levelDiv").style.display ="none";
+							document.getElementById("level").style.visibility ="hidden";
 						}				
 					
 					} else {
@@ -810,13 +809,13 @@ function createSingleNodeSelectedTree(jsondata) {
 					    	isTabeLocatorProduct = false;
 					    }
 						isTabeProduct = true;
-						document.getElementById("gradeDiv").style.display = "none";
-						document.getElementById("levelDiv").style.display = "none";
-						document.getElementById("level").style.display = "none";
+						document.getElementById("gradeDiv").style.display ="none";
+						document.getElementById("levelDiv").style.display ="none";
+						document.getElementById("level").style.visibility ="hidden";
 					}
 					
 				} else {
-					optionHtml += "<option  value='"+ optionList[i].productId+"'>"+ optionList[i].productName+"</option>";
+					optionHtml += "<option  value='"+ optionList[i].productId+"'>"+ optionList[i].productName+"&nbsp;&nbsp;</option>";
 				}
 				
 			}
@@ -833,7 +832,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			optionHtml += "<option  value='Select'>Select</option>";
 		} else {
 			for(var i = 0; i < optionList.length; i++ ) {		     
-				optionHtml += "<option  value='"+ optionList[i].id+"'>"+ optionList[i].name+"</option>";	
+				optionHtml += "<option  value='"+ optionList[i].id+"'>"+ optionList[i].name+"&nbsp;&nbsp;</option>";	
 			}
 		}
 		$(ddl).html(optionHtml);
@@ -853,9 +852,9 @@ function createSingleNodeSelectedTree(jsondata) {
 		} else {
 			for(var i = 0; i < optionList.length; i++ ) {
 				if(optionList[i].id==defVal) {
-					optionHtml += "<option  value='"+ optionList[i].id+"' selected>"+ optionList[i].name+"</option>";	
+					optionHtml += "<option  value='"+ optionList[i].id+"' selected>"+ optionList[i].name+"&nbsp;&nbsp;</option>";	
 				} else {
-					optionHtml += "<option  value='"+ optionList[i].id+"'>"+ optionList[i].name+"</option>";	
+					optionHtml += "<option  value='"+ optionList[i].id+"'>"+ optionList[i].name+"&nbsp;&nbsp;</option>";	
 				}		     
 			}
 		}
@@ -873,25 +872,25 @@ function createSingleNodeSelectedTree(jsondata) {
 					isTabeLocatorProduct=false;
 					if(!(optionList[i].hideLevelDropDown)) {
 						if(optionList[i].showLevelOrGrade=="level") {
-							document.getElementById("levelDiv").style.display ="block";
-							document.getElementById("level").style.display = "block";
-							document.getElementById("gradeDiv").style.display = "none";
+							document.getElementById("levelDiv").style.display ="inline";
+							document.getElementById("level").style.visibility ="visible";
+							document.getElementById("gradeDiv").style.display ="none";
 							fillDropDown("level",optionList[i].levelDropDownList);	
 						} else if (optionList[i].showLevelOrGrade=="grade") {
-							document.getElementById("gradeDiv").style.display ="block";
-							document.getElementById("level").style.display = "block";
-							document.getElementById("levelDiv").style.display = "none";
+							document.getElementById("gradeDiv").style.display ="inline";
+							document.getElementById("level").style.visibility ="visible";
+							document.getElementById("levelDiv").style.display ="none";
 							fillDropDown("level",optionList[i].levelDropDownList);	
 						} else { 
 							//fillDropDown("level",optionList[i].levelDropDownList);	
-							document.getElementById("gradeDiv").style.display = "none";
-							document.getElementById("levelDiv").style.display = "none";
-							document.getElementById("level").style.display = "none";
+							document.getElementById("gradeDiv").style.display ="none";
+							document.getElementById("levelDiv").style.display ="none";
+							document.getElementById("level").style.visibility ="hidden";
 						}
 					} else {
-						document.getElementById("gradeDiv").style.display = "none";
-						document.getElementById("levelDiv").style.display = "none";
-						document.getElementById("level").style.display = "none";
+						document.getElementById("gradeDiv").style.display ="none";
+						document.getElementById("levelDiv").style.display ="none";
+						document.getElementById("level").style.visibility ="hidden";
 						//fillDropDown("level",optionList[i].levelDropDownList);	
 					}
 						
@@ -902,9 +901,9 @@ function createSingleNodeSelectedTree(jsondata) {
 					 } else {
 					    isTabeLocatorProduct = false;
 					 }
-					document.getElementById("gradeDiv").style.display = "none";
-					document.getElementById("levelDiv").style.display = "none";
-					document.getElementById("level").style.display = "none";
+					document.getElementById("gradeDiv").style.display ="none";
+					document.getElementById("levelDiv").style.display ="none";
+					document.getElementById("level").style.visibility ="hidden";
 				}
 				var tList = optionList[i].testSessionList;
 				var noOfRows = tList.length;
@@ -933,25 +932,27 @@ function createSingleNodeSelectedTree(jsondata) {
 	function toggleAccessCode(){
 		if(subtestLength > 0){
 			subtestGridLoaded = false;
-			createSubtestGrid();
+			
 			document.getElementById("aCode").value = ProductData.accessCodeList[0];
 			
 			var testBreak = document.getElementById("testBreak");
 			if(!testBreak.checked){		
 				isTestBreak = false;
-				document.getElementById("aCodeHead").style.visibility = "hidden";
+				createSubtestGrid();
+				//document.getElementById("aCodeHead").style.visibility = "hidden";
 				document.getElementById("aCode").style.visibility = "visible";			
 							
-				for(var i=0;i<subtestLength;i++){
+				/*for(var i=0;i<subtestLength;i++){
 					document.getElementById("aCodeDiv"+i).style.visibility = "hidden";
 					
-				}
+				}*/
 			}else{
 				isTestBreak = true;
-				document.getElementById("aCodeHead").style.visibility = "visible";
+				createSubtestGrid();
+				//document.getElementById("aCodeHead").style.visibility = "visible";
 				document.getElementById("aCode").style.visibility = "hidden";
-				for(var i=0;i<subtestLength;i++){
-					document.getElementById("aCodeDiv"+i).style.visibility = "visible";
+				/*for(var i=0;i<subtestLength;i++){
+					//document.getElementById("aCodeDiv"+i).style.visibility = "visible";
 					if(document.getElementById("actionTaken"+i).value == "1"){
 						document.getElementById("aCodeB"+i).removeAttribute("disabled");
 						document.getElementById("aCodeB"+i).className = "";
@@ -959,8 +960,9 @@ function createSingleNodeSelectedTree(jsondata) {
 						document.getElementById("aCodeB"+i).setAttribute("disabled",true);
 						document.getElementById("aCodeB"+i).className = "textboxDisabled";
 					}
-				}
+				}*/
 			}
+			
 		}
 	}
 	
@@ -1094,6 +1096,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					var testBreak = document.getElementById("testBreak");
 					isTestSelected = true;
 					if(testBreak.checked)testBreak.checked = false;
+					isTestBreak = false;
 					//document.getElementById("aCode").style.display = "none";
 					populateDates();
 					var val = getDataFromTestJson(selectedTestId, testSessionlist);
@@ -1151,12 +1154,16 @@ function createSingleNodeSelectedTree(jsondata) {
 			document.getElementById("noSubtest").style.display = "none";
 			var tr = '';
 			var th = '';
-			subtestData +='<table width="100%" cellpadding="3" cellspacing="0" class="shadowBorder">';
+			subtestData +='<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#A6C9E2"><tr><td><table width="100%" class="ts" cellpadding="0" cellspacing="1">';
 							
 			th +='<tr class="subtestHeader" >';
 			th +='<th width="24" height="23" align="center"><strong>#</strong></th>';
-			th +='<th width="289" height="23" align="left"><strong>Subtest Name </strong></th>';
-			th +='<th width="130" height="23"><div align="center" id="aCodeHead" style="visibility:hidden;"><strong>Access Code </strong></div></th>';
+			if(isTestBreak){
+				th +='<th width="289" height="23" align="left" style="padding-left:5px;"><strong>Subtest Name </strong></th>';				
+				th +='<th width="130" height="23"><div align="center" id="aCodeHead"><strong>Access Code </strong></div></th>';
+			}else{
+				th +='<th width="419" height="23" align="left" style="padding-left:5px;"><strong>Subtest Name </strong></th>';
+			}
 			th +='<th width="82" height="23" align="center"><strong>Duration</strong></th>';
 			if(isTabeProduct && !isTabeLocatorProduct ){
 				th +='<th width="34" height="23">&nbsp;</th>';
@@ -1165,22 +1172,28 @@ function createSingleNodeSelectedTree(jsondata) {
 			subtestData += th;
 			for(var i=0;i<subtestArr.length; i++){	
 				tr = ''			
-				tr +='<tr class="subtestCols">';
-				tr +='<td height="23" width="24" class="subtestCols">';
+				tr +='<tr>';
+				tr +='<td height="23" width="24" bgcolor="#FFFFFF">';
 				tr +='<div align="center" id="num'+i+'">'+parseInt(i+1)+'<input type="hidden" id="actionTaken'+i+'" value="1"/></div>';
 				tr +='</td>';
-				tr +='<td height="23" width="289" class="subtestCols">';
-				tr +='<div align="left" id="sName'+i+'">'+subtestArr[i].subtestName+'</div>';
-				tr +='</td>';
-				tr +='<td height="23" width="130" align="center" class="subtestCols">';
-				tr +='<div align="center" id="aCodeDiv'+i+'" style="visibility:hidden;">';
-				tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" style="padding-left:2px;" maxlength="32" /></div>';
-				tr +='</td>';
-				tr +='<td height="23" width="82" align="center" class="subtestCols">';
+				if(isTestBreak){
+					tr +='<td height="23" width="289" bgcolor="#FFFFFF" style="padding-left:5px;">';
+					tr +='<div align="left" id="sName'+i+'">'+subtestArr[i].subtestName+'</div>';
+					tr +='</td>';
+					tr +='<td height="23" width="130" align="center" bgcolor="#FFFFFF">';
+					tr +='<div align="center" id="aCodeDiv'+i+'">';
+					tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" style="padding-left:2px;" maxlength="32" /></div>';
+					tr +='</td>';
+				}else{
+					tr +='<td height="23" width="419" bgcolor="#FFFFFF" style="padding-left:5px;">';
+					tr +='<div align="left" id="sName'+i+'">'+subtestArr[i].subtestName+'</div>';
+					tr +='</td>';
+				}
+				tr +='<td height="23" width="82" align="center" bgcolor="#FFFFFF">';
 				tr +='<div align="center" id="duration'+i+'">'+subtestArr[i].duration+'</div>';
 				tr +='</td>';
 				if(isTabeProduct && !isTabeLocatorProduct){
-					tr +='<td height="23" align="center" width="34" class="subtestCols">';
+					tr +='<td height="23" align="center" width="34" bgcolor="#FFFFFF">';
 					tr +='<div align="center">';
 					tr +='<img id="imgMin'+i+'" src="/SessionWeb/resources/images/minus.gif" width="14" title="Remove Subtest" onclick="javascript:removeSubtestOption(0,'+i+');" />';
 					tr +='<img id="imgPlus'+i+'" src="/SessionWeb/resources/images/icone_plus.gif" width="14" title="Add Subtest" onclick="javascript:removeSubtestOption(1,'+i+');" style="display: none;" />';
@@ -1190,7 +1203,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				tr +='</tr>';				
 				subtestData += tr;		
 			}
-			subtestData +='</table>';
+			subtestData +='</table></td></tr></table>';
 			document.getElementById("subtestGrid").innerHTML = subtestData;
 			subtestGridLoaded = true;
 		}/*else{
@@ -1209,9 +1222,11 @@ function createSingleNodeSelectedTree(jsondata) {
 			document.getElementById("num"+rowId).className = "lblDisabled";
 			document.getElementById("sName"+rowId).className = "lblDisabled";
 			document.getElementById("duration"+rowId).className = "lblDisabled";
-			if(document.getElementById("aCodeDiv"+rowId).style.display == "inline"){
-				document.getElementById("aCodeB"+rowId).setAttribute("disabled",true);
-				document.getElementById("aCodeB"+rowId).className = "textboxDisabled";
+			if(isTestBreak){
+				//if(document.getElementById("aCodeDiv"+rowId).style.display == "inline"){
+					document.getElementById("aCodeB"+rowId).setAttribute("disabled",true);
+					document.getElementById("aCodeB"+rowId).className = "textboxDisabled";
+				//}
 			}
 			document.getElementById("actionTaken"+rowId).value = "0";
 			
@@ -1221,9 +1236,11 @@ function createSingleNodeSelectedTree(jsondata) {
 			document.getElementById("num"+rowId).className = "";
 			document.getElementById("sName"+rowId).className = "";
 			document.getElementById("duration"+rowId).className = "";
-			if(document.getElementById("aCodeDiv"+rowId).style.display == "inline"){
-				document.getElementById("aCodeB"+rowId).removeAttribute("disabled");
-				document.getElementById("aCodeB"+rowId).className = "";
+			if(isTestBreak){
+				//if(document.getElementById("aCodeDiv"+rowId).style.display == "inline"){
+					document.getElementById("aCodeB"+rowId).removeAttribute("disabled");
+					document.getElementById("aCodeB"+rowId).className = "";
+				//}
 			}
 			document.getElementById("actionTaken"+rowId).value = "1";
 		}
@@ -1250,9 +1267,9 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById("endDate").value = "";			
 		document.getElementById("time").innerHTML = "9:00 AM - 5:00 PM";
 		document.getElementById("testLocation").value = "";											
-		//$("#randomDis").hide();	
-		//$("#randDisLbl").hide();		
-		$("#randomDistDiv").hide();								
+		$("#randomDis").hide();	
+		$("#randDisLbl").hide();		
+		//$("#randomDistDiv").hide();								
 					
 	}
 	
@@ -1273,9 +1290,9 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById("endDate").value = "";			
 		document.getElementById("time").innerHTML = "9:00 AM - 5:00 PM";
 		document.getElementById("testLocation").value = "";											
-		//$("#randomDis").hide();	
-		//$("#randDisLbl").hide();
-		$("#randomDistDiv").hide();
+		$("#randomDis").hide();	
+		$("#randDisLbl").hide();
+		//$("#randomDistDiv").hide();
  		
  		
 	}
@@ -1305,7 +1322,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	// Added Nov-29
 	
-		function validateTestInformation(){
+	function validateTestInformation(){
 		var testSessionName = trim(document.getElementById("testSessionName").value);
 		var startDate = trim(document.getElementById("startDate").value);
 		var endDate = trim(document.getElementById("endDate").value);	
