@@ -434,23 +434,29 @@ public class SessionOperationController extends PageFlowController {
         	try {
 
     			resp.setContentType(CONTENT_TYPE_JSON);
-    			resp.flushBuffer();
+    			//resp.flushBuffer();
     			stream = resp.getOutputStream();
     			stream.write(jsonData.getBytes());
+    			resp.flushBuffer();
     		} catch (IOException e) {
     			
     			e.printStackTrace();
-    		} finally{
-    			if (stream!=null){
-    				try {
-    					stream.close();
-    				} catch (IOException e) {
-    				}
-    			}
-    		}
+    		} 
     	
         } catch (Exception e) {
+        	resp.setStatus(resp.SC_INTERNAL_SERVER_ERROR );
+        	try {
+				resp.flushBuffer();
+			} catch (Exception e1) {
+			}
 			e.printStackTrace();
+		} finally{
+			if (stream!=null){
+				try {
+					stream.close();
+				} catch (Exception e) {
+				}
+			}
 		}
     	
     	
