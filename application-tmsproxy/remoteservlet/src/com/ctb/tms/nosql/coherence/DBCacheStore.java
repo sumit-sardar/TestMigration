@@ -66,9 +66,9 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     	logger.debug("Delete to push replication store");
     	Object value = entry.getValue();
     	store.erase(entry.getKey());
-    	if(cacheName.startsWith("OAS")) {
+    	/* if(cacheName.startsWith("OAS")) {
     		pushStore.erase(entry);
-    	}
+    	} */
     }
 
 	public void eraseAll(Collection colKeys) {
@@ -82,9 +82,9 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 			BinaryEntry entry = it.next();
 			Object value = entry.getValue();
 	    	store.erase(entry.getKey());
-	    	if(cacheName.startsWith("OAS")) {
+	    	/* if(cacheName.startsWith("OAS")) {
 	    		pushStore.erase(entry);
-	    	}
+	    	} */
 		}
 	}
 
