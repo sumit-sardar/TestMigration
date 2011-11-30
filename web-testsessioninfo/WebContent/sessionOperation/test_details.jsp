@@ -11,26 +11,22 @@
 			<table width="100%" cellpadding="0" cellspacing="2">
 				<tbody>
 					<tr class="transparent">
-						<td width="171" align="right" valign="top" nowrap="" class="transparent"><span class="asterisk">*</span>&nbsp;Test Session
-						Name</td>
-						<td width="14" align="left" valign="middle" class="transparent alignLeft">:</td>
-				      <td colspan="2" valign="top" class="transparent alignLeft"><input type="text" style="width: 200px;" 
+						<td width="171" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Test Session
+						Name : </td>
+					  <td colspan="2" valign="top" class="transparent alignLeft"><input type="text" style="width: 200px;" 
 							id="testSessionName" name="testSessionName" ></td>
 					</tr>
 					<tr class="transparent">
-						<td width="171" align="right" valign="top" nowrap="" class="transparent">* Start Date</td>
-						<td align="left" valign="middle" class="transparent alignLeft">:</td>
-				      <td colspan="2" valign="top" class="transparent alignLeft"><input name="startDate" id="startDate" type="text" size="12" maxlength="10"  /></td>
+						<td width="171" valign="top" nowrap="" class="transparent alignRight">* Start Date : </td>
+					  <td colspan="2" valign="top" class="transparent alignLeft"><input name="startDate" id="startDate" type="text" size="12" maxlength="10"  /></td>
 					</tr>
 					<tr class="transparent">
-						<td width="171" align="right" valign="top" nowrap="" class="transparent"><span class="asterisk">*</span>&nbsp;End Date</td>
-						<td align="left" valign="middle" class="transparent alignLeft">:</td>
-				      <td colspan="2" valign="top" class="transparent alignLeft"><input name="endDate" id="endDate" type="text" size="12" maxlength="10" /></td>
+						<td width="171" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;End Date : </td>
+					  <td colspan="2" valign="top" class="transparent alignLeft"><input name="endDate" id="endDate" type="text" size="12" maxlength="10" /></td>
 					</tr>
 					<tr class="transparent">
-						<td width="171" height="25" align="right" valign="middle" nowrap="" class="transparent"><span class="asterisk">*</span>Time Window</td>
-						<td align="left" valign="middle" class="transparent alignLeft">:</td>
-					    <td colspan="2" valign="middle" class="transparent alignLeft"><table width="100%" border="0">
+						<td width="171" height="25" valign="middle" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>Time Window : </td>
+						<td colspan="2" valign="middle" class="transparent alignLeft"><table width="100%" border="0">
                             <tr>
                             <td>
                             	<table>
@@ -70,22 +66,19 @@
                           </table></td>
 				    </tr>
 					<tr class="transparent">
-						<td width="171" align="right" valign="top" class="transparent">&nbsp;Time Zone</td>
-						<td align="left" valign="middle" class="transparent alignLeft">:</td>
-					    <td colspan="2" valign="top" class="transparent alignLeft"><select id="timeZoneList" name="timeZoneList">
+						<td width="171" valign="top" class="transparent alignRight">&nbsp;Time Zone : </td>
+						<td colspan="2" valign="top" class="transparent alignLeft"><select id="timeZoneList" name="timeZoneList">
                         </select></td>
 					</tr>
 					<tr class="transparent">
-						<td width="171" align="right" valign="top" nowrap="" class="transparent">&nbsp;Test Location</td>
-						<td align="left" valign="middle" class="transparent alignLeft">:</td>
-				      <td colspan="2" valign="top" class="transparent alignLeft"><input type="text" id="testLocation" name="testLocation" style="width: 202px;" maxlength="64" /></td>
+						<td width="171" valign="top" nowrap="" class="transparent alignRight">&nbsp;Test Location : </td>
+					  <td colspan="2" valign="top" class="transparent alignLeft"><input type="text" id="testLocation" name="testLocation" style="width: 202px;" maxlength="64" /></td>
 					</tr>
 
 					<!--ext_pin1 is added for DEX CR-->
 					<tr class="transparent">
-						<td width="171" align="right" valign="top" class="transparent">*</span>&nbsp;Organization may view</td>
-						<td align="left" valign="middle" class="transparent alignLeft">:</td>
-					    <td colspan="2" valign="top" class="transparent alignLeft"><select id="topOrgNode" name="topOrgNode">
+						<td width="171" valign="top" class="transparent alignRight">*</span>&nbsp;Organization may view : </td>
+						<td colspan="2" valign="top" class="transparent alignLeft"><select id="topOrgNode" name="topOrgNode">
                         </select></td>
 					</tr>
 					
