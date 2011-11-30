@@ -301,7 +301,7 @@ to find specific notes on changes suggested for production use.
           </init-param>
           <init-param id="3">
             <param-name>partition-count</param-name>
-            <param-value>257</param-value>
+            <param-value>509</param-value>
           </init-param>
           <init-param id="4">
             <param-name>local-storage</param-name>

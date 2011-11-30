@@ -64,7 +64,7 @@
 		      </init-params>
 		    </class-scheme>
 		  </cachestore-scheme>
-		  <write-delay>1ms</write-delay>
+		  <write-delay>1s</write-delay>
 		</read-write-backing-map-scheme>
         <!--        Default Distributed caching scheme.        -->
         <distributed-scheme>            
@@ -76,6 +76,7 @@
                     <scheme-ref>DBScheme</scheme-ref>
                 </read-write-backing-map-scheme>
             </backing-map-scheme>
+            <partition-count>509</partition-count>
             <backup-count>1</backup-count>
             <autostart>true</autostart>
         </distributed-scheme>
@@ -92,7 +93,6 @@
 					<scheme-ref>DistributedScheme</scheme-ref>
 				</distributed-scheme>
 			</back-scheme>
-			<high-units>1000000</high-units>
 		</near-scheme> 
 		<!-- these are for push replication -->
 		<proxy-scheme>
