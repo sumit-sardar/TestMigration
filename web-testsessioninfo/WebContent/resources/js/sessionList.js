@@ -510,8 +510,9 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 			}
 			if(!found) {
-				$("#randomDis").hide();	
-				$("#randDisLbl").hide();
+				//$("#randomDis").hide();	
+				//$("#randDisLbl").hide();
+				$("#randomDistDiv").hide();
 			}
 			return str;
 	}
