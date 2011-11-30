@@ -38,6 +38,8 @@ var isTabeLocatorProduct = false;
 var noTestExist = false;
 var isFirstAccordSelected = true;
 var isSecondAccordSelected = false;
+var isThirdAccordSelected = false;
+var isFourthAccordSelected = false;
 
 
 function UIBlock(){

@@ -58,30 +58,36 @@
 				$("#accordion").accordion({ header: "h3" });
 				$("#ssAccordion").accordion({ header: "h3" });
 				$('#selectTestId a').click(function(e){ 
+
 					if(!noTestExist){
-						if (!validateTestInformation()) {
+						if (!isThirdAccordSelected && !isFourthAccordSelected && !validateTestInformation()) {
 							verifyTestDetails();
 							$('#displayMessage').show();
 							e.stopPropagation();
 						}else{
 							$('#displayMessage').hide();
+							isFirstAccordSelected = true;
+							isSecondAccordSelected = false;
+							isThirdAccordSelected = false;
+							isFourthAccordSelected = false;
 						}
-						isFirstAccordSelected = true;
-						isSecondAccordSelected = false;
 					}else{
 						e.stopPropagation();
 					}
 				}); 
 				
 				$('#testDetailId a').click(function(e){
+				
 					if(!noTestExist){
-						if(!validateTest()){
+						if(!isThirdAccordSelected && !isFourthAccordSelected && !validateTest()){
 							$('#displayMessage').show();
 							e.stopPropagation(); 
 						}else{
 							$('#displayMessage').hide();
 							isFirstAccordSelected = false;
 							isSecondAccordSelected = true;
+							isThirdAccordSelected = false;
+							isFourthAccordSelected = false;
 						}
 					}else{
 						e.stopPropagation();
@@ -91,6 +97,7 @@
 				
 				
 				$('#addStudentId a').click(function(e){ 
+
 					if(!noTestExist){
 						if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
 							$('#displayMessage').show();
@@ -101,13 +108,18 @@
 							e.stopPropagation();
 						}else{
 							$('#displayMessage').hide();
+							isFirstAccordSelected = true;
+							isSecondAccordSelected = false;
+							isThirdAccordSelected = true;
+							isFourthAccordSelected = false;
 						}
 					}else{
 						e.stopPropagation();
 					}
 				}); 
 				
-				$('#addProctorId a').click(function(e){ 
+				$('#addProctorId a').click(function(e){
+
 					if(!noTestExist){
 						if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
 							$('#displayMessage').show();
@@ -118,6 +130,10 @@
 							e.stopPropagation();
 						}else{
 							$('#displayMessage').hide();
+							isFirstAccordSelected = true;
+							isSecondAccordSelected = false;
+							isFourthAccordSelected = true;
+							isThirdAccordSelected = false;
 						}
 					}else{
 						e.stopPropagation();
