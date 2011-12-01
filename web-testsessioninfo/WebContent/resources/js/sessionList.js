@@ -1336,7 +1336,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		var endDate = trim(document.getElementById("endDate").value);	
 		var accessCode = trim(document.getElementById("aCode").value);
 		
-			if(testSessionName == "" || startDate == "" || endDate == ""){				
+			if(testSessionName == "" || startDate == "" || endDate == "" || !validateDate(startDate,endDate)){				
 				return false;
 			}
 			if(subtestLength > 0){
@@ -1368,49 +1368,59 @@ function createSingleNodeSelectedTree(jsondata) {
 		var testBreakVal = 0;
 		var accessCode = trim(document.getElementById("aCode").value);
 		
-			requiredFields = "";
-			if(subtestLength > 0){
-				var testBreak = document.getElementById("testBreak");
-				if(!testBreak.checked){	
-						
-					if(accessCode.length == 0){
-						requiredFieldCount += 1;            
-						requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
-					}
-				}else{
-					for(var i=0;i<subtestLength;i++){
-						if(trim(document.getElementById("aCodeB"+i).value) == ""){
-							testBreakVal += 1;
-							break;
-						}else{
-							var invalidCharFields = verifyTestInfo("",document.getElementById("aCodeB"+i).value);
-				 			var invalidString = "";                        
-				    		if (invalidCharFields.length > 0) {
-				          		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
-							}
+		requiredFields = "";
+		if(subtestLength > 0){
+			var testBreak = document.getElementById("testBreak");
+			if(!testBreak.checked){	
+					
+				if(accessCode.length == 0){
+					requiredFieldCount += 1;            
+					requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
+				}
+			}else{
+				for(var i=0;i<subtestLength;i++){
+					if(trim(document.getElementById("aCodeB"+i).value) == ""){
+						testBreakVal += 1;
+						break;
+					}else{
+						var invalidCharFields = verifyTestInfo("",document.getElementById("aCodeB"+i).value);
+			 			var invalidString = "";                        
+			    		if (invalidCharFields.length > 0) {
+			          		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
 						}
 					}
-					if(testBreakVal > 0){
-						requiredFieldCount += 1;            
-						requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
-					}
+				}
+				if(testBreakVal > 0){
+					requiredFieldCount += 1;            
+					requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
 				}
 			}
+		}
 
-	   		if ( startDate.length == 0 ) {
-					requiredFieldCount += 1;            
-					requiredFields = buildErrorString("Test Start Date", requiredFieldCount, requiredFields);       
-				}
+		if ( testSessionName.length == 0 ) {
+				requiredFieldCount += 1;            
+				requiredFields = buildErrorString("Test Session Name", requiredFieldCount, requiredFields);       
+		}
+		
+	   	if ( startDate.length == 0 ) {
+				requiredFieldCount += 1;            
+				requiredFields = buildErrorString("Test Start Date", requiredFieldCount, requiredFields);       
+		}
 	
-	   		if ( endDate.length == 0 ) {
-					requiredFieldCount += 1;            
-					requiredFields = buildErrorString("Test End Date", requiredFieldCount, requiredFields);       
-				} 
-			var invalidCharFields = verifyTestInfo(testSessionName, accessCode);
- 			var invalidString = "";                        
-    		if (invalidCharFields.length > 0) {
-          		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
-			}
+	   	if ( endDate.length == 0 ) {
+				requiredFieldCount += 1;            
+				requiredFields = buildErrorString("Test End Date", requiredFieldCount, requiredFields);       
+		} 
+			
+		if(startDate.length != 0 && endDate.length != 0 && !validateDate(startDate,endDate)){
+			 	setMessage(INVALID_DATES, INVALID_DATES_MSG, "errorMessage", "");       
+		}	
+			
+		var invalidCharFields = verifyTestInfo(testSessionName, accessCode);
+ 		var invalidString = "";                        
+    	if (invalidCharFields.length > 0) {
+    		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
+		}
 			
 		if (requiredFieldCount > 0) {
 			if (requiredFieldCount == 1) {
@@ -1440,6 +1450,21 @@ function createSingleNodeSelectedTree(jsondata) {
         }
             
         return invalidCharFields;
+    }
+    
+    function validateDate(sDate, eDate){
+    	var sdate = new Date(sDate);
+    	var edate = new Date(eDate);
+    	
+    	/*var result =    (edate.getFullYear() >  sdate.getFullYear()) ||
+                        (edate.getFullYear() == sdate.getFullYear() && edate.getMonth() >  sdate.getMonth()) ||
+                        (edate.getFullYear() == sdate.getFullYear() && edate.getMonth() == sdate.getMonth() && edate.getDate() > sdate.getDate());
+        alert(result);*/
+        if(sdate > edate)
+        	return false;
+        	
+        return true;
+       
     }
 	 
 	  function buildErrorString(field, count, str){
