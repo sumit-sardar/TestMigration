@@ -1335,8 +1335,9 @@ function createSingleNodeSelectedTree(jsondata) {
 		var startDate = trim(document.getElementById("startDate").value);
 		var endDate = trim(document.getElementById("endDate").value);	
 		var accessCode = trim(document.getElementById("aCode").value);
+		var testLocation = trim(document.getElementById("testLocation").value);
 		
-			if(testSessionName == "" || startDate == "" || endDate == "" || !validateDate(startDate,endDate)){				
+			if(testSessionName == "" || startDate == "" || endDate == "" || !validateDate(startDate,endDate) || !validNameString(testLocation)){				
 				return false;
 			}
 			if(subtestLength > 0){
@@ -1345,13 +1346,13 @@ function createSingleNodeSelectedTree(jsondata) {
 					if(accessCode == "") return false;	
 				}else{
 					for(var i=0;i<subtestLength;i++){
-						if(trim(document.getElementById("aCodeB"+i).value) == "" || (verifyTestInfo("",document.getElementById("aCodeB"+i).value).length) > 0){
+						if(trim(document.getElementById("aCodeB"+i).value) == "" || (verifyTestInfo("",document.getElementById("aCodeB"+i).value).length) > 0,""){
 							return false;
 						}
 					}
 				}
 			}
-			var invalidCharFields = verifyTestInfo(testSessionName,accessCode);
+			var invalidCharFields = verifyTestInfo(testSessionName,accessCode,"");
 				var invalidString = "";                        
 				if (invalidCharFields.length > 0) {
 					return false;
@@ -1367,6 +1368,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		var endDate = trim(document.getElementById("endDate").value);
 		var testBreakVal = 0;
 		var accessCode = trim(document.getElementById("aCode").value);
+		var testLocation = trim(document.getElementById("testLocation").value);
 		
 		requiredFields = "";
 		if(subtestLength > 0){
@@ -1383,7 +1385,7 @@ function createSingleNodeSelectedTree(jsondata) {
 						testBreakVal += 1;
 						break;
 					}else{
-						var invalidCharFields = verifyTestInfo("",document.getElementById("aCodeB"+i).value);
+						var invalidCharFields = verifyTestInfo("",document.getElementById("aCodeB"+i).value,"");
 			 			var invalidString = "";                        
 			    		if (invalidCharFields.length > 0) {
 			          		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
@@ -1416,7 +1418,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			 	setMessage(INVALID_DATES, INVALID_DATES_MSG, "errorMessage", "");       
 		}	
 			
-		var invalidCharFields = verifyTestInfo(testSessionName, accessCode);
+		var invalidCharFields = verifyTestInfo(testSessionName, accessCode, testLocation);
  		var invalidString = "";                        
     	if (invalidCharFields.length > 0) {
     		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
@@ -1434,19 +1436,24 @@ function createSingleNodeSelectedTree(jsondata) {
 	//return true;
 	 }
 	 
-	  function verifyTestInfo(firstName, middleName)
+	function verifyTestInfo(testSessionName, accessCode, testLocation)
     {
         var invalidCharFields = "";
         var invalidCharFieldCount = 0;
 
-        if (firstName != "" && !validNameString(firstName) ) {
+        if (testSessionName != "" && !validNameString(testSessionName) ) {
             invalidCharFieldCount += 1;            
             invalidCharFields = buildErrorString("Test Session Name", invalidCharFieldCount, invalidCharFields);       
         }
         
-        if (!validNameString(middleName) ) {
+        if (accessCode != "" && !validNameString(accessCode) ) {
             invalidCharFieldCount += 1;            
             invalidCharFields = buildErrorString("Access Code", invalidCharFieldCount, invalidCharFields);       
+        }
+        
+        if (testLocation != "" && !validNameString(testLocation) ) {
+            invalidCharFieldCount += 1;            
+            invalidCharFields = buildErrorString("Test Location", invalidCharFieldCount, invalidCharFields);       
         }
             
         return invalidCharFields;
@@ -1456,11 +1463,7 @@ function createSingleNodeSelectedTree(jsondata) {
     	var sdate = new Date(sDate);
     	var edate = new Date(eDate);
     	
-    	/*var result =    (edate.getFullYear() >  sdate.getFullYear()) ||
-                        (edate.getFullYear() == sdate.getFullYear() && edate.getMonth() >  sdate.getMonth()) ||
-                        (edate.getFullYear() == sdate.getFullYear() && edate.getMonth() == sdate.getMonth() && edate.getDate() > sdate.getDate());
-        alert(result);*/
-        if(sdate > edate)
+    	if(sdate > edate)
         	return false;
         	
         return true;
