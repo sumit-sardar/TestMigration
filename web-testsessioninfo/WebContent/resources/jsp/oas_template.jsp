@@ -61,7 +61,7 @@
 					$(this).click(function(e){
 						var divID = $(this).parent().attr('id');
 						if(divID == "selectTestId"){
-							if (!isThirdAccordSelected && !isFourthAccordSelected && !validateTestInformation()) {
+							if (!isFirstAccordSelected && !isThirdAccordSelected && !isFourthAccordSelected && !validateTestInformation()) {
 								verifyTestDetails();
 								$('#displayMessage').show();
 								e.stopPropagation();
