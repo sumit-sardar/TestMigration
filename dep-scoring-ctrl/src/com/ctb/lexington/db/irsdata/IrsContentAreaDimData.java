@@ -27,8 +27,8 @@ public class IrsContentAreaDimData implements Persistent {
 				name.equals(((IrsContentAreaDimData)arg0).getName()) &&
 				contentAreaIndex.equals(((IrsContentAreaDimData)arg0).getContentAreaIndex()) &&
 				contentAreaType.equals(((IrsContentAreaDimData)arg0).getContentAreaType()) &&
-				numItems.equals(((IrsContentAreaDimData)arg0).getNumItems()) &&
-				pointsPossible.equals(((IrsContentAreaDimData)arg0).getPointsPossible()) &&
+				(numItems == null || numItems.equals(((IrsContentAreaDimData)arg0).getNumItems())) &&
+				(pointsPossible == null || pointsPossible.equals(((IrsContentAreaDimData)arg0).getPointsPossible())) &&
 				assessmentid.equals(((IrsContentAreaDimData)arg0).getAssessmentid()) &&
                 subjectid.equals(((IrsContentAreaDimData)arg0).getSubjectid());
 		}

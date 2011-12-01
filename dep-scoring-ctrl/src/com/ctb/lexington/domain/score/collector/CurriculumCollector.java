@@ -332,15 +332,15 @@ public class CurriculumCollector {
              composites[0].setCompositeName("Total Mathematics");
              composites[0].setCompositeType("TABE COMPOSITE");
              composites[0].setSubject("TA Total Mathematics");
-             composites[0].setCompositePointsPossible(new Long(90));
-             composites[0].setCompositeNumItems(new Long(90));
+           //  composites[0].setCompositePointsPossible(new Long(90));
+          //   composites[0].setCompositeNumItems(new Long(90));
              composites[1] = new Composite();
              composites[1].setCompositeId(new Long(2));
              composites[1].setCompositeName("Total Battery");
              composites[1].setCompositeType("TABE COMPOSITE");
              composites[1].setSubject("TA Total Battery");
-             composites[1].setCompositePointsPossible(new Long(195));
-             composites[1].setCompositeNumItems(new Long(195));
+           //  composites[1].setCompositePointsPossible(new Long(195));
+          //   composites[1].setCompositeNumItems(new Long(195));
      	   
      	   
      	   
@@ -824,15 +824,15 @@ public class CurriculumCollector {
                 contentArea.setContentAreaName(rs.getString("contentAreaName"));
                 contentArea.setContentAreaType(rs.getString("contentAreaType"));
                 contentArea.setSubject(rs.getString("subject"));
-                contentArea.setContentAreaNumItems(new Long(0));
-                contentArea.setContentAreaPointsPossible(new Long(0));
+         //       contentArea.setContentAreaNumItems(new Long(0));
+         //       contentArea.setContentAreaPointsPossible(new Long(0));
                 contentArea.setSubtestId(new Long(rs.getLong("subtestId")));
                 contentArea.setSubtestForm(rs.getString("subtestForm"));
                 contentArea.setSubtestLevel(rs.getString("subtestLevel"));
 
                 String key = contentArea.getContentAreaName() + "||" + contentArea.getSubtestLevel();
 
-                if(caMap.containsKey(key)) {
+               /* if(caMap.containsKey(key)) {
                     ContentArea ca1 = (ContentArea) caMap.get(key);
                     Long numItems = new Long(0);
                     Long points = new Long(0);
@@ -840,7 +840,7 @@ public class CurriculumCollector {
                     contentArea.setContentAreaPointsPossible(points);
                     ca1.setContentAreaNumItems(numItems);
                     ca1.setContentAreaPointsPossible(points);
-                }   
+                } */  
                 caMap.put(key, contentArea);    
                 contentAreas.add(contentArea);
             }
