@@ -62,7 +62,12 @@
     <netui:content value="Edit Student: Modify Test"/>
 </h1>
 <p>
+<c:if test="${! isTabeAdaptiveProduct}">     
     <netui:content value="You may change the order in which subtests will be presented for testing, remove subtests from the test, or re-select them from the Available Subtests list. For tests that do not include the Locator Test, you may also select the difficulty level for each subtest."/><br/>
+</c:if>    
+<c:if test="${isTabeAdaptiveProduct}">     
+    <netui:content value="You may change the order in which subtests will be presented for testing, remove subtests from the test, or re-select them from the Available Subtests list."/><br/>
+</c:if>    
 </p>
 
 
