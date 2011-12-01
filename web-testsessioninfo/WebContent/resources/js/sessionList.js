@@ -1323,6 +1323,9 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 			return false;
 		}
+		else if(!validateAccessCodeInformation()){
+			verifyAccessCodeDetails();
+		}
 		else {
 			return true;
 		}
@@ -1340,19 +1343,8 @@ function createSingleNodeSelectedTree(jsondata) {
 			if(testSessionName == "" || startDate == "" || endDate == "" || !validateDate(startDate,endDate) || !validNameString(testLocation)){				
 				return false;
 			}
-			if(subtestLength > 0){
-				var testBreak = document.getElementById("testBreak");
-				if(!testBreak.checked){						
-					if(accessCode == "") return false;	
-				}else{
-					for(var i=0;i<subtestLength;i++){
-						if(trim(document.getElementById("aCodeB"+i).value) == "" || (verifyTestInfo("",document.getElementById("aCodeB"+i).value).length) > 0,""){
-							return false;
-						}
-					}
-				}
-			}
-			var invalidCharFields = verifyTestInfo(testSessionName,accessCode,"");
+
+			var invalidCharFields = verifyTestInfo(testSessionName,"","");
 				var invalidString = "";                        
 				if (invalidCharFields.length > 0) {
 					return false;
@@ -1366,39 +1358,10 @@ function createSingleNodeSelectedTree(jsondata) {
      	var testSessionName = trim(document.getElementById("testSessionName").value);
 		var startDate = trim(document.getElementById("startDate").value);
 		var endDate = trim(document.getElementById("endDate").value);
-		var testBreakVal = 0;
-		var accessCode = trim(document.getElementById("aCode").value);
+		//var testBreakVal = 0;
+		//var accessCode = trim(document.getElementById("aCode").value);
 		var testLocation = trim(document.getElementById("testLocation").value);
 		
-		requiredFields = "";
-		if(subtestLength > 0){
-			var testBreak = document.getElementById("testBreak");
-			if(!testBreak.checked){	
-					
-				if(accessCode.length == 0){
-					requiredFieldCount += 1;            
-					requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
-				}
-			}else{
-				for(var i=0;i<subtestLength;i++){
-					if(trim(document.getElementById("aCodeB"+i).value) == ""){
-						testBreakVal += 1;
-						break;
-					}else{
-						var invalidCharFields = verifyTestInfo("",document.getElementById("aCodeB"+i).value,"");
-			 			var invalidString = "";                        
-			    		if (invalidCharFields.length > 0) {
-			          		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
-						}
-					}
-				}
-				if(testBreakVal > 0){
-					requiredFieldCount += 1;            
-					requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
-				}
-			}
-		}
-
 		if ( testSessionName.length == 0 ) {
 				requiredFieldCount += 1;            
 				requiredFields = buildErrorString("Test Session Name", requiredFieldCount, requiredFields);       
@@ -1418,7 +1381,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			 	setMessage(INVALID_DATES, INVALID_DATES_MSG, "errorMessage", "");       
 		}	
 			
-		var invalidCharFields = verifyTestInfo(testSessionName, accessCode, testLocation);
+		var invalidCharFields = verifyTestInfo(testSessionName, "", testLocation);
  		var invalidString = "";                        
     	if (invalidCharFields.length > 0) {
     		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
@@ -1458,6 +1421,94 @@ function createSingleNodeSelectedTree(jsondata) {
             
         return invalidCharFields;
     }
+    
+    // Added to validate Access Code : Start
+    
+    function validateAccessCodeInformation(){
+
+		var accessCode = trim(document.getElementById("aCode").value);
+		
+			if(subtestLength > 0){
+				var testBreak = document.getElementById("testBreak");
+				if(!testBreak.checked){						
+					if(accessCode == "") return false;	
+				}else{
+					for(var i=0;i<subtestLength;i++){
+						if(trim(document.getElementById("aCodeB"+i).value) == "" || (verifyTestInfo("", document.getElementById("aCodeB"+i).value, "").length) > 0){
+							return false;
+						}
+					}
+				}
+			}
+			var invalidCharFields = verifyTestInfo("", accessCode, "");
+				var invalidString = "";                        
+				if (invalidCharFields.length > 0) {
+					return false;
+				}	
+		return true;
+	}
+	
+	 function verifyAccessCodeDetails(){
+	 	var requiredFields = "";
+     	var requiredFieldCount = 0; 
+		var testBreakVal = 0;
+		var accessCode = trim(document.getElementById("aCode").value);
+		
+			if(subtestLength > 0){
+				var testBreak = document.getElementById("testBreak");
+				if(!testBreak.checked){	
+						
+					if(accessCode.length == 0){
+						requiredFieldCount += 1;            
+						requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
+					}
+				}else{
+					for(var i=0;i<subtestLength;i++){
+						if(trim(document.getElementById("aCodeB"+i).value) == ""){
+							testBreakVal += 1;
+							break;
+						}else{
+							var invalidCharFields = verifyTestInfo("", document.getElementById("aCodeB"+i).value, "");
+				 			var invalidString = "";                        
+				    		if (invalidCharFields.length > 0) {
+				          		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
+							}
+						}
+					}
+					if(testBreakVal > 0){
+						requiredFieldCount += 1;            
+						requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
+					}
+				}
+			}
+
+			var invalidCharFields = verifyTestInfo("", accessCode, "");
+
+    		if (invalidCharFields.length > 0) {
+          		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
+			}
+			
+		if (requiredFieldCount > 0) {
+			if (requiredFieldCount == 1) {
+				setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);
+			}
+			else {
+				setMessage("Missing required fields", requiredFields, "errorMessage", REQUIRED_TEXT_MULTIPLE);
+			}
+		}
+	 }
+	 
+    function buildErrorString(field, count, str){
+        var result = str;
+        if (count == 1) {
+            result += field;
+        }else {
+            result += (", " + field);            
+        }        
+        return result;
+    }
+    
+    // Added to validate Access Code
     
     function validateDate(sDate, eDate){
     	var sdate = new Date(sDate);
