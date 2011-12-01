@@ -60,62 +60,78 @@
 				$("h3", wizard).each(function(index) { 
 					$(this).click(function(e){
 						var divID = $(this).parent().attr('id');
-						if(divID == "selectTestId"){
-							if (!isFirstAccordSelected && !isThirdAccordSelected && !isFourthAccordSelected && !validateTestInformation()) {
-								verifyTestDetails();
-								$('#displayMessage').show();
-								e.stopPropagation();
+						if(!noTestExist){
+							if(divID == "selectTestId"){
+								if (!isFirstAccordSelected && !isThirdAccordSelected && !isFourthAccordSelected && !validateTestInformation()) {
+									verifyTestDetails();
+									$('#displayMessage').show();
+									e.stopPropagation();
+								}else{
+									$('#displayMessage').hide();
+									isFirstAccordSelected = true;
+									isSecondAccordSelected = false;
+									isThirdAccordSelected = false;
+									isFourthAccordSelected = false;
+									wizard.accordion("activate", index);
+								}
 							}else{
-								$('#displayMessage').hide();
-								isFirstAccordSelected = true;
-								isSecondAccordSelected = false;
-								isThirdAccordSelected = false;
-								isFourthAccordSelected = false;
-								wizard.accordion("activate", index);
+								e.stopPropagation();
 							}
 						}else if(divID == "testDetailId"){
-							if(!isThirdAccordSelected && !isFourthAccordSelected && !validateTest()){
-								$('#displayMessage').show();
-								e.stopPropagation(); 
+							if(!noTestExist){
+								if(!isThirdAccordSelected && !isFourthAccordSelected && !validateTest()){
+									$('#displayMessage').show();
+									e.stopPropagation(); 
+								}else{
+									$('#displayMessage').hide();
+									isFirstAccordSelected = false;
+									isSecondAccordSelected = true;
+									isThirdAccordSelected = false;
+									isFourthAccordSelected = false;
+									wizard.accordion("activate", index);
+								}
 							}else{
-								$('#displayMessage').hide();
-								isFirstAccordSelected = false;
-								isSecondAccordSelected = true;
-								isThirdAccordSelected = false;
-								isFourthAccordSelected = false;
-								wizard.accordion("activate", index);
+								e.stopPropagation();
 							}
 						}else if(divID == "addStudentId"){
-							if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
-								$('#displayMessage').show();
-								e.stopPropagation(); 
-							}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
-								verifyTestDetails();
-								$('#displayMessage').show();
-								e.stopPropagation();
+							if(!noTestExist){
+								if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+									$('#displayMessage').show();
+									e.stopPropagation(); 
+								}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
+									verifyTestDetails();
+									$('#displayMessage').show();
+									e.stopPropagation();
+								}else{
+									$('#displayMessage').hide();
+									isFirstAccordSelected = true;
+									isSecondAccordSelected = false;
+									isThirdAccordSelected = true;
+									isFourthAccordSelected = false;
+									wizard.accordion("activate", index);
+								}
 							}else{
-								$('#displayMessage').hide();
-								isFirstAccordSelected = true;
-								isSecondAccordSelected = false;
-								isThirdAccordSelected = true;
-								isFourthAccordSelected = false;
-								wizard.accordion("activate", index);
+								e.stopPropagation();
 							}
 						}else if(divID == "addProctorId"){
-							if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
-								$('#displayMessage').show();
-								e.stopPropagation(); 
-							}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
-								verifyTestDetails();
-								$('#displayMessage').show();
-								e.stopPropagation();
+							if(!noTestExist){
+								if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+									$('#displayMessage').show();
+									e.stopPropagation(); 
+								}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
+									verifyTestDetails();
+									$('#displayMessage').show();
+									e.stopPropagation();
+								}else{
+									$('#displayMessage').hide();
+									isFirstAccordSelected = true;
+									isSecondAccordSelected = false;
+									isFourthAccordSelected = true;
+									isThirdAccordSelected = false;
+									wizard.accordion("activate", index);
+								}
 							}else{
-								$('#displayMessage').hide();
-								isFirstAccordSelected = true;
-								isSecondAccordSelected = false;
-								isFourthAccordSelected = true;
-								isThirdAccordSelected = false;
-								wizard.accordion("activate", index);
+								e.stopPropagation();
 							}
 						}			
 					});
