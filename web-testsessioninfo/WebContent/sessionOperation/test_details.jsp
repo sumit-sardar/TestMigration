@@ -14,15 +14,15 @@
 						<td width="171" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Test Session
 						Name : </td>
 					  <td colspan="2" valign="top" class="transparent alignLeft"><input type="text" style="width: 200px;" 
-							id="testSessionName" name="testSessionName" ></td>
+							id="testSessionName" name="testSessionName" maxlength="64" ></td>
 					</tr>
 					<tr class="transparent">
 						<td width="171" valign="top" nowrap="" class="transparent alignRight">* Start Date : </td>
-					  <td colspan="2" valign="top" class="transparent alignLeft"><input name="startDate" id="startDate" type="text" size="12" maxlength="10"  /></td>
+					  <td colspan="2" valign="top" class="transparent alignLeft"><input name="startDate" id="startDate" type="text" size="12" maxlength="10" readonly="readonly"  /></td>
 					</tr>
 					<tr class="transparent">
 						<td width="171" valign="top" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;End Date : </td>
-					  <td colspan="2" valign="top" class="transparent alignLeft"><input name="endDate" id="endDate" type="text" size="12" maxlength="10" /></td>
+					  <td colspan="2" valign="top" class="transparent alignLeft"><input name="endDate" id="endDate" type="text" size="12" maxlength="10" readonly="readonly"/></td>
 					</tr>
 					<tr class="transparent">
 						<td width="171" height="25" valign="middle" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>Time Window : </td>
@@ -33,7 +33,7 @@
                             		<tr>
                             			<td valign="bottom" style="vertical-align: bottom;">
                             			<div style="width: 400px;" align="center">
-                            				<span id="time">&nbsp;&nbsp;&nbsp;&nbsp;9:00 AM - 5:00 PM</span>
+                            				<span id="time">9:00 AM - 5:00 PM</span>
                             			</div>
                             			</td>
                             		</tr>
