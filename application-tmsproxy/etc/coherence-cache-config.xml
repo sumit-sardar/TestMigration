@@ -14,7 +14,7 @@
     <caching-scheme-mapping>
         <cache-mapping>
 	        <cache-name>ADS*</cache-name>
-	        <scheme-name>DistributedScheme</scheme-name>
+	        <scheme-name>TieredScheme</scheme-name>
         </cache-mapping>
         <!--    Caches with any name will be created as tiered.    -->
         <cache-mapping>
@@ -93,7 +93,7 @@
 		</local-scheme>
 		<local-scheme>
    			<scheme-name>FrontMemoryScheme</scheme-name>
-   			<high-units>5500000</high-units>
+   			<high-units>250000</high-units>
    			<unit-calculator>FIXED</unit-calculator>
 		</local-scheme>   
         <!--        Oracle backing store scheme definition -->
