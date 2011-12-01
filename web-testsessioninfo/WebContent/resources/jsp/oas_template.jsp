@@ -57,11 +57,11 @@
 				// Accordion
 				$("#accordion").accordion({ header: "h3" });
 				var wizard = $("#ssAccordion").accordion({ header: "h3",event:false});
-				$("h3", wizard).each(function(index) { 
+				$("h3", wizard).each(function(index) { 				
 					$(this).click(function(e){
+					if(!noTestExist){
 						var divID = $(this).parent().attr('id');
-						if(!noTestExist){
-							if(divID == "selectTestId"){
+						if(divID == "selectTestId"){
 								if (!isFirstAccordSelected && !isThirdAccordSelected && !isFourthAccordSelected && !validateTestInformation()) {
 									verifyTestDetails();
 									$('#displayMessage').show();
@@ -74,12 +74,8 @@
 									isFourthAccordSelected = false;
 									wizard.accordion("activate", index);
 								}
-							}else{
-								e.stopPropagation();
-							}
 						}else if(divID == "testDetailId"){
-							if(!noTestExist){
-								if(!isThirdAccordSelected && !isFourthAccordSelected && !validateTest()){
+							if(!isThirdAccordSelected && !isFourthAccordSelected && !validateTest()){
 									$('#displayMessage').show();
 									e.stopPropagation(); 
 								}else{
@@ -90,12 +86,8 @@
 									isFourthAccordSelected = false;
 									wizard.accordion("activate", index);
 								}
-							}else{
-								e.stopPropagation();
-							}
 						}else if(divID == "addStudentId"){
-							if(!noTestExist){
-								if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+							if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
 									$('#displayMessage').show();
 									e.stopPropagation(); 
 								}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
@@ -110,11 +102,8 @@
 									isFourthAccordSelected = false;
 									wizard.accordion("activate", index);
 								}
-							}else{
-								e.stopPropagation();
-							}
 						}else if(divID == "addProctorId"){
-							if(!noTestExist){
+							
 								if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
 									$('#displayMessage').show();
 									e.stopPropagation(); 
@@ -130,10 +119,9 @@
 									isThirdAccordSelected = false;
 									wizard.accordion("activate", index);
 								}
-							}else{
-								e.stopPropagation();
-							}
-						}			
+						}
+						}	
+							
 					});
 				});
 				
