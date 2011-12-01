@@ -27,15 +27,16 @@
 
 <!-- title message -->
 <p>
-    <netui:content value="Enter information about the user in the form below. Required fields are marked by a blue asterisk *."/>
+    <netui:content value="Enter information about the user in the form below. Required fields are marked by a blue asterisk *." />
+    <br/>
+    <netui:content value="If this user is moved to a different organization, his or her existing test sessions will be moved automatically to the new location."/>
+    <br />
     <c:if test="${isAddAdministrator }"> 
-        <br /> 
         <br /> 
         <netui:content value="Email is used to send users their login information. If no email address is provided, the Account Manager is responsible for communicating login information to the user."/>
     </c:if> 
     <c:if test="${ ! isAddAdministrator }">                
         <netui:content value="Use the organization selector on the right to assign at least one organization for the user."/>
-        <br /> 
         <br /> 
         <c:if test="${ isAddUser }">                
             Email is used to send users their login information. If no email address is provided, the administrator is responsible for communicating login information to the user.
