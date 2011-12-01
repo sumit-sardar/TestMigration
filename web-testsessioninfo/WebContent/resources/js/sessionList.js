@@ -116,6 +116,8 @@ function populateSessionListGrid(homePageLoad) {
 				if ($('#list2').getGridParam('records') === 0) {
 				 	isGridEmpty = true;
             	 	$('#sp_1_pager2').text("1");
+            	 	$('#next_pager2').addClass('ui-state-disabled');
+            	 	$('#last_pager2').addClass('ui-state-disabled');
             	} else {
             		isGridEmpty = false;
             	}
@@ -212,6 +214,8 @@ function populateCompletedSessionListGrid() {
 				if ($('#list3').getGridParam('records') === 0) {
 					isPAGridEmpty = true;
             		$('#sp_1_pager3').text("1");
+            		$('#next_pager3').addClass('ui-state-disabled');
+            	 	$('#last_pager3').addClass('ui-state-disabled');
             	} else {
             		isPAGridEmpty = false;
             	}
@@ -630,7 +634,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			sortorder: "asc",
 			height: 370,  
 			editurl: 'getSelectedStudentList.do',
-			caption:"Session List",
+			caption:"Student List",
 		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
 				//clearMessage();
@@ -649,6 +653,8 @@ function createSingleNodeSelectedTree(jsondata) {
 				if ($('#list6').getGridParam('records') === 0) {
 				 	isStuGridEmpty = true;
             	 	$('#sp_1_pager6').text("1");
+            	 	$('#next_pager6').addClass('ui-state-disabled');
+            	 	$('#last_pager6').addClass('ui-state-disabled');
             	} else {
             		isStuGridEmpty = false;
             	}
@@ -1108,6 +1114,8 @@ function createSingleNodeSelectedTree(jsondata) {
 				if ($('#testList').getGridParam('records') === 0) {
 				 	isTestGridEmpty = true;
 				 	$('#sp_1_testPager').text("1");
+				 	$('#next_testPager').addClass('ui-state-disabled');
+            	 	$('#last_testPager').addClass('ui-state-disabled');
             	} else {
             		isTestGridEmpty = false;
             	}
