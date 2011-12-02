@@ -117,9 +117,14 @@ public class TMSServlet extends HttpServlet {
 	            result = getSubtest(xml); 
 			else if (method != null && method.startsWith(ServletUtils.DOWNLOAD_ITEM_METHOD))
 	            result = downloadItem(xml); 
-	        else if (method != null && method.startsWith(ServletUtils.SAVE_METHOD))
-	            result = save(response, xml);        
-	        else if (method != null && method.startsWith(ServletUtils.FEEDBACK_METHOD))
+	        else if (method != null && method.startsWith(ServletUtils.SAVE_METHOD)) {
+	        	String musicId = request.getParameter("musicId");
+				if(musicId != null && !"".equals(musicId.trim())) {
+					getMp3(request, response);
+				} else {
+					result = save(response, xml);   
+				}
+	        } else if (method != null && method.startsWith(ServletUtils.FEEDBACK_METHOD))
 	            result = feedback(xml);        
 	        else if (method != null && method.startsWith(ServletUtils.UPLOAD_AUDIT_FILE_METHOD))
 	            result = uploadAuditFile(xml);
@@ -213,7 +218,7 @@ public class TMSServlet extends HttpServlet {
 	private void getMp3(HttpServletRequest request, HttpServletResponse response) throws IOException
     {   
 		byte [] musicFile = null;
-		response.setContentType("audio/mpeg3");
+		response.setContentType("audio/mpeg");
 		
 		try {
 			String contextPath = getServletContext().getContextPath();
