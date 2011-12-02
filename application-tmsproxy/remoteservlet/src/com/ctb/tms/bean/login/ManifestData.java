@@ -48,7 +48,16 @@ public class ManifestData implements Serializable
     private String objectiveScore;
     private String contentURI;
     private int subtestLastMseq = -1;
+    private String blockDownload;
     
+    
+    
+	public String getBlockDownload() {
+		return blockDownload;
+	}
+	public void setBlockDownload(String blockDownload) {
+		this.blockDownload = blockDownload;
+	}
 	public int getSubtestLastMseq() {
 		return subtestLastMseq;
 	}

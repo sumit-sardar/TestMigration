@@ -995,6 +995,8 @@
 									</xs:sequence>
 									<xs:attribute name="title"
 										type="xs:string" use="required" />
+									<xs:attribute name="block_content_download"
+										type="xs:string" use="required" />
 								</xs:complexType>
 							</xs:element>
 							<xs:element
