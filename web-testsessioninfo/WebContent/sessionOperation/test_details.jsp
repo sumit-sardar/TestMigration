@@ -33,7 +33,7 @@
                             		<tr>
                             			<td valign="bottom" style="vertical-align: bottom;">
                             			<div style="width: 400px;" align="center">
-                            				<span id="time">9:00 AM - 5:00 PM</span>
+                            				<span id="time">8:00 AM - 5:00 PM</span>
                             			</div>
                             			</td>
                             		</tr>

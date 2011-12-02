@@ -1273,7 +1273,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById("testSessionName").value = "";
 		document.getElementById("startDate").value = "";			
 		document.getElementById("endDate").value = "";			
-		document.getElementById("time").innerHTML = "9:00 AM - 5:00 PM";
+		document.getElementById("time").innerHTML = "8:00 AM - 5:00 PM";
 		document.getElementById("testLocation").value = "";											
 		$("#randomDis").hide();	
 		$("#randDisLbl").hide();		
@@ -1296,7 +1296,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById("testSessionName").value = "";
 		document.getElementById("startDate").value = "";			
 		document.getElementById("endDate").value = "";			
-		document.getElementById("time").innerHTML = "9:00 AM - 5:00 PM";
+		document.getElementById("time").innerHTML = "8:00 AM - 5:00 PM";
 		document.getElementById("testLocation").value = "";											
 		$("#randomDis").hide();	
 		$("#randDisLbl").hide();
