@@ -1538,14 +1538,14 @@ public class StudentOperationController extends PageFlowController {
 	}
 
 
-	private String generateTree (ArrayList<Organization> orgNodesList, ArrayList<Organization> selectedList) throws Exception{	
+	/*private String generateTree (ArrayList<Organization> orgNodesList, ArrayList<Organization> selectedList) throws Exception{	
 
 		Organization org = orgNodesList.get(0);
 		TreeData td = new TreeData ();
 		td.setData(org.getOrgName());
 		td.getAttr().setId(org.getOrgNodeId().toString());
-		td.getAttr().setCategoryID(org.getOrgCategoryLevel().toString());
-		treeProcess (org,orgNodesList,td, selectedList);
+		td.getAttr().setCid(org.getOrgCategoryLevel().toString());
+		//treeProcess (org,orgNodesList,td, selectedList);
 		BaseTree baseTree = new BaseTree ();
 		baseTree.getData().add(td);
 		Gson gson = new Gson();
@@ -1553,10 +1553,11 @@ public class StudentOperationController extends PageFlowController {
 		String json = gson.toJson(baseTree);
 
 		return json;
-	}
+	}*/
 
-	private static void treeProcess (Organization org,List<Organization> list,TreeData td, ArrayList<Organization> selectedList) {
+	private static void treeProcess (Organization org,List<Organization> list,TreeData td, ArrayList<Organization> selectedList, Integer rootCategoryLevel) {
 
+		Integer treeLevel;
 		for (Organization tempOrg : list) {
 			if (org.getOrgNodeId().equals(tempOrg.getOrgParentNodeId())) {
 				
@@ -1573,9 +1574,11 @@ public class StudentOperationController extends PageFlowController {
 				TreeData tempData = new TreeData ();
 				tempData.setData(tempOrg.getOrgName());
 				tempData.getAttr().setId(tempOrg.getOrgNodeId().toString());
-				tempData.getAttr().setCategoryID(tempOrg.getOrgCategoryLevel().toString());
+				tempData.getAttr().setCid(tempOrg.getOrgCategoryLevel().toString());
+				treeLevel = tempOrg.getOrgCategoryLevel() - (rootCategoryLevel -1);
+				tempData.getAttr().setTcl(treeLevel.toString());
 				td.getChildren().add(tempData);
-				treeProcess (tempOrg,list,tempData, selectedList);
+				treeProcess (tempOrg,list,tempData, selectedList,rootCategoryLevel);
 			}
 		}
 	}
@@ -1583,11 +1586,14 @@ public class StudentOperationController extends PageFlowController {
 	private static void preTreeProcess (ArrayList<TreeData> data,ArrayList<Organization> orgList, ArrayList<Organization> selectedList) {
 
 		Organization org = orgList.get(0);
+		Integer rootCategoryLevel = 0;
 		TreeData td = new TreeData ();
 		td.setData(org.getOrgName());
 		td.getAttr().setId(org.getOrgNodeId().toString());
-		td.getAttr().setCategoryID(org.getOrgCategoryLevel().toString());
-		treeProcess (org,orgList,td,selectedList);
+		td.getAttr().setCid(org.getOrgCategoryLevel().toString());
+		rootCategoryLevel = org.getOrgCategoryLevel();
+		td.getAttr().setTcl("1");
+		treeProcess (org,orgList,td,selectedList, rootCategoryLevel);
 		data.add(td);
 	}
 

@@ -39,6 +39,7 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>	
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifystudentinfo.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/map.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
 	<script type="text/javascript" src="/StudentWeb/resources/js/studentregistration.js"></script>
     

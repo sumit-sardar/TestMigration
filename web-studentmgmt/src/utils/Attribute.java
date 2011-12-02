@@ -3,17 +3,10 @@ package utils;
 public class Attribute {
 	
 	private String id;
-	private String checked = "false";
-	private String categoryID;
+	private String cid;
+	private String tcl;
 
 		
-	public String getChecked() {
-		return checked;
-	}
-
-	public void setChecked(String checked) {
-		this.checked = checked;
-	}
 
 	public String getId() {
 		return id;
@@ -24,17 +17,33 @@ public class Attribute {
 	}
 
 	/**
-	 * @return the categoryID
+	 * @return the cid
 	 */
-	public String getCategoryID() {
-		return categoryID;
+	public String getCid() {
+		return cid;
 	}
 
 	/**
-	 * @param categoryID the categoryID to set
+	 * @param cid the cid to set
 	 */
-	public void setCategoryID(String categoryID) {
-		this.categoryID = categoryID;
+	public void setCid(String cid) {
+		this.cid = cid;
 	}
+
+	/**
+	 * @return the tcl
+	 */
+	public String getTcl() {
+		return tcl;
+	}
+
+	/**
+	 * @param tcl the tcl to set
+	 */
+	public void setTcl(String tcl) {
+		this.tcl = tcl;
+	}
+
+
 
 }
