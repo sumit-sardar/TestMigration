@@ -243,20 +243,21 @@ public class RosterData implements Serializable {
 					SaveTestingSessionData.Tsd.Ist ist = ista[0];
 					BigInteger mapMseq = (BigInteger) itemMap.get(ist.getIid());
 					boolean catHeartbeat = ist.getIid().indexOf("TABECAT") >=0 && !ist.getSendCatSave();
+					if(ist.getAudioItem()) {
+			    		if(ist.getRvArray() != null && ist.getRvArray().length > 0) {
+			    			noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Rv rv = ist.getRvArray(0);
+			    			if(rv.getVArray() != null && rv.getVArray().length > 0) {
+			    				String v = rv.getVArray(0);
+			    				if(v != null && !"".equals(v.trim())) {
+			    					String response = testRosterId + "_" + ist.getIid();
+			    					audioResponseMap.put(ist.getIid(), response);
+			    					ItemResponseData ird = (ItemResponseData) irdMap.get(ist.getIid());
+			    					if(ird != null) ird.setConstructedResponse(response);
+			    				}
+			    			}
+			    		}
+			    	}
 					if((mapMseq == null || tsd.getMseq().intValue() > mapMseq.intValue()) && !catHeartbeat) {
-						if(ist.getAudioItem()) {
-				    		if(ist.getRvArray() != null && ist.getRvArray().length > 0) {
-				    			noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Rv rv = ist.getRvArray(0);
-				    			if(rv.getVArray() != null && rv.getVArray().length > 0) {
-				    				String v = rv.getVArray(0);
-				    				if(v != null && !"".equals(v.trim())) {
-				    					audioResponseMap.put(ist.getIid(), v);
-				    				} else {
-				    					rv.setVArray(0, (String) audioResponseMap.get(ist.getIid()));
-				    				}
-				    			}
-				    		}
-				    	}
 						itemMap.put(ist.getIid(), tsd.getMseq());
 						
 						//   if(ist != null && ist.getRvArray(0) != null && ist.getRvArray(0).getVArray(0) != null) {
@@ -269,31 +270,30 @@ public class RosterData implements Serializable {
 				                    String studentMarked = ist.getMrk() ? "T" : "F";
 				                    boolean audio = ist.getAudioItem();
 				                    String itemType = "SR";
-				                    if(xmlResponse != null && xmlResponse.length() > 0) {
-				                    	if(audio) {
-				                    		itemType = "CR";
-				                    		response = testRosterId + "_" + ist.getIid();
-				                    	} else {
-					                        // strip xml
-					                        int start = xmlResponse.indexOf(">");
-					                        if(start >= 0) {
-					                            response = xmlResponse.substring(start + 1);
-					                            int end = response.lastIndexOf("</");
-					                            if(end != -1)
-					                                response = response.substring(0, end);
-					                        } else {
-					                            response = xmlResponse;
-					                        }
-					                        // strip CDATA
-					                        start = response.indexOf("[CDATA[");
-					                        if(start >= 0) {
-					                            response = response.substring(start + 7);
-					                            int end = response.lastIndexOf("]]");
-					                            if(end != -1)
-					                                response = response.substring(0, end);
-					                        }
-					                        if(response.length() >= 2) itemType = "CR";
-				                    	}
+				                    if(audio) {
+				                    	itemType = "CR";
+				                    	response = (String) audioResponseMap.get(ist.getIid());
+				                    	if(response == null) response = "";
+				                    } else if(xmlResponse != null && xmlResponse.length() > 0) {
+				                    	// strip xml
+				                        int start = xmlResponse.indexOf(">");
+				                        if(start >= 0) {
+				                            response = xmlResponse.substring(start + 1);
+				                            int end = response.lastIndexOf("</");
+				                            if(end != -1)
+				                                response = response.substring(0, end);
+				                        } else {
+				                            response = xmlResponse;
+				                        }
+				                        // strip CDATA
+				                        start = response.indexOf("[CDATA[");
+				                        if(start >= 0) {
+				                            response = response.substring(start + 7);
+				                            int end = response.lastIndexOf("]]");
+				                            if(end != -1)
+				                                response = response.substring(0, end);
+				                        }
+				                        if(response.length() >= 2) itemType = "CR";
 				                    }
 				                    ItemResponseData ird = new ItemResponseData();
 			                    	ird.setEid(Integer.parseInt(ist.getEid()));
