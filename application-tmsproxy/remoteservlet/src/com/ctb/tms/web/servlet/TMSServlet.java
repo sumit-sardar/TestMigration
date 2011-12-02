@@ -349,10 +349,7 @@ public class TMSServlet extends HttpServlet {
 			    	int rosterCid = manifest.getRosterCorrelationId();
 			    	int thisCid = tsd.getCid().intValue();
 			    	logger.debug("Cached CID: " + rosterCid + ", this message CID: " + thisCid);
-			    	if(rosterCid == 0) {
-			    		manifest.setRosterCorrelationId(thisCid);
-						updateCID(rosterId, thisCid, accessCode);
-			    	} else if(rosterCid != thisCid) {
+			    	if(rosterCid != thisCid) {
 			    		responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
 			            saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
 			            noNamespace.AdssvcResponseDocument.AdssvcResponse.SaveTestingSessionData.Tsd errorTsd = saveResponse.addNewTsd();
@@ -629,7 +626,7 @@ public class TMSServlet extends HttpServlet {
 						mda[n].setCompletionStatus("IN");
 					}
 				}
-				allManifests[m].setRosterCompletionStatus("IN");
+				//allManifests[m].setRosterCompletionStatus("IN");
 			}
 			logger.debug("Set CID: " + cid + ", for manifest: " + allManifests[m].getAccessCode());
 			allManifests[m].setReplicate(true);
@@ -697,23 +694,9 @@ public class TMSServlet extends HttpServlet {
 		if(manifestRestartCount > restartCount) restartCount = manifestRestartCount;
 		logger.debug("Restart count: " + restartCount);
 		
-		if(lr.getCid() != null) {
-			int thisCid = Integer.parseInt(lr.getCid());
-			rd.getAuthData().setCorrelationId(thisCid);
-			manifest.setRosterCorrelationId(thisCid);
-			if(restartCount > 0) {
-				// try to optimize by only setting cid on other manifests if they've been accessed - this may be risky
-				logger.debug("updating CID for all manifests: " + thisCid);
-				updateCID(testRosterId, thisCid, creds.getAccesscode());
-			} else {
-				logger.debug("CID updated only for current manifest");
-			}
-		} else {
-			logger.debug("Old client - login cid is null . . . ");
-			rd.getAuthData().setCorrelationId(0);
-			manifest.setRosterCorrelationId(0);
-			updateCID(testRosterId, 0, creds.getAccesscode());
-		}
+		int thisCid = Integer.parseInt(lr.getCid());
+		rd.getAuthData().setCorrelationId(thisCid);
+		manifest.setRosterCorrelationId(thisCid);
 
 		ManifestData[] manifesta = manifest.getManifest();
 		ArrayList newmanifest = new ArrayList();
@@ -845,6 +828,14 @@ public class TMSServlet extends HttpServlet {
 		oasSink.putManifest(testRosterId, creds.getAccesscode(), manifest);
 		creds.setTestRosterId(testRosterId);
 		oasSink.putRosterData(creds, rd);
+		
+		if(restartCount > 0) {
+			// try to optimize by only setting cid on other manifests if they've been accessed - this may be risky
+			logger.debug("updating CID for all manifests: " + thisCid);
+			updateCID(testRosterId, thisCid, creds.getAccesscode());
+		} else {
+			logger.debug("CID updated only for current manifest");
+		}
 		
 		logger.debug(response.xmlText());
 		
