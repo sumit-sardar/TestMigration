@@ -11,3 +11,4 @@ var INVALID_EMAIL  = "Please enter a valid email address";
 var INVALID_NUMERIC_FORMAT = "Please re-enter numeric fields in valid format";
 var INVALID_DATES = "Invalid dates";
 var INVALID_DATES_MSG = "Please make sure the end date is after the desired start date.";
+var TAC_SIXCHARS="TACs must be at least 6 characters long.";

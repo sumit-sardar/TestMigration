@@ -1431,12 +1431,16 @@ function createSingleNodeSelectedTree(jsondata) {
 			if(subtestLength > 0){
 				var testBreak = document.getElementById("testBreak");
 				if(!testBreak.checked){						
-					if(accessCode == "") return false;	
+					if(accessCode == "") 
+						return false;	
+					else if (trim(accessCode).length<6)
+					   return false;	
 				}else{
 					for(var i=0;i<subtestLength;i++){
 						if(trim(document.getElementById("aCodeB"+i).value) == "" || (verifyTestInfo("", document.getElementById("aCodeB"+i).value, "").length) > 0){
 							return false;
-						}
+						} else if (trim(document.getElementById("aCodeB"+i).value).length<6)
+							return false;
 					}
 				}
 			}
@@ -1467,6 +1471,8 @@ function createSingleNodeSelectedTree(jsondata) {
 						if(trim(document.getElementById("aCodeB"+i).value) == ""){
 							testBreakVal += 1;
 							break;
+						}else if(trim(document.getElementById("aCodeB"+i).value).length<6){
+							setMessage(TAC_SIXCHARS, "", "errorMessage","");
 						}else{
 							var invalidCharFields = verifyTestInfo("", document.getElementById("aCodeB"+i).value, "");
 				 			var invalidString = "";                        
@@ -1486,6 +1492,8 @@ function createSingleNodeSelectedTree(jsondata) {
 
     		if (invalidCharFields.length > 0) {
           		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
+			} else if (trim(accessCode).length<6){
+				setMessage(TAC_SIXCHARS, "", "errorMessage","");
 			}
 			
 		if (requiredFieldCount > 0) {
