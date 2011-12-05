@@ -1107,6 +1107,12 @@ function createSingleNodeSelectedTree(jsondata) {
 					populateDates();
 					var val = getDataFromTestJson(selectedTestId, testSessionlist);
 					subtestDataArr = val;
+					if(subtestDataArr!= undefined && subtestDataArr.length>1){
+						document.getElementById("testBreak").disabled=false;
+					} else {
+						document.getElementById("testBreak").disabled=true;
+					}
+					
 					createSubtestGrid();
 			 		
 			},
@@ -1265,6 +1271,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		var testBreak = document.getElementById("testBreak");
 		isTestSelected = false;
 		if(testBreak.checked) testBreak.checked = false;
+		document.getElementById("testBreak").disabled=true;
 		document.getElementById("aCode").style.visibility = "hidden";
 		
 		document.getElementById("subtestGrid").style.display = "none";
@@ -1289,6 +1296,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		var testBreak = document.getElementById("testBreak");
 		isTestSelected = false;
 		if(testBreak.checked) testBreak.checked = false;
+		document.getElementById("testBreak").disabled=true;	
 		document.getElementById("aCode").style.visibility = "hidden";		
 		document.getElementById("subtestGrid").style.display = "none";
 		document.getElementById("noSubtest").style.display = "";

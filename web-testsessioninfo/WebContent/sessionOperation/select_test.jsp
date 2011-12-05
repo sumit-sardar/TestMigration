@@ -74,7 +74,7 @@
 						</tr>
 						<tr>
 							<td width="0" height="20" align="left" valign="middle">
-								<input type="checkbox" id="testBreak" value="1"	onClick="toggleAccessCode();"/>							</td>
+								<input type="checkbox" id="testBreak" value="1" disabled="disabled" onClick="toggleAccessCode();"/>							</td>
 							<td width="294" height="20" valign="middle" class="transparent">Allow Test Breaks 
 								<span style="padding-left:5px;">
 						  <input name="aCode" type="text" id="aCode" style="visibility:hidden; padding-left:2px;" size="16" maxlength="32" /></span>							</td>
