@@ -1431,24 +1431,16 @@ function createSingleNodeSelectedTree(jsondata) {
 			if(subtestLength > 0){
 				var testBreak = document.getElementById("testBreak");
 				if(!testBreak.checked){						
-					if(accessCode == "") 
-						return false;	
-					else if (trim(accessCode).length<6)
+					if(!validateMissingTestAccessCode()|| !validateAccessCodeMinLength( false) || !validateAccessCodeSpecialChar(false))
 					   return false;	
 				}else{
-					for(var i=0;i<subtestLength;i++){
-						if(trim(document.getElementById("aCodeB"+i).value) == "" || (verifyTestInfo("", document.getElementById("aCodeB"+i).value, "").length) > 0){
-							return false;
-						} else if (trim(document.getElementById("aCodeB"+i).value).length<6)
-							return false;
-					}
+					if(!validateMissingTestAccessCodes()|| !validateAccessCodeMinLength( true) || !validateIdenticalTestAccessCodes()|| !validateAccessCodeSpecialChar(true))
+					   return false;
 				}
+			} else {
+				if(!validateMissingTestAccessCode()|| !validateAccessCodeMinLength( false)|| !validateAccessCodeSpecialChar(false))
+					   return false;
 			}
-			var invalidCharFields = verifyTestInfo("", accessCode, "");
-				var invalidString = "";                        
-				if (invalidCharFields.length > 0) {
-					return false;
-				}	
 		return true;
 	}
 	
@@ -1461,49 +1453,36 @@ function createSingleNodeSelectedTree(jsondata) {
 			if(subtestLength > 0){
 				var testBreak = document.getElementById("testBreak");
 				if(!testBreak.checked){	
-						
-					if(accessCode.length == 0){
-						requiredFieldCount += 1;            
-						requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
+					if(!validateMissingTestAccessCode()) {
+						setMessage(TAC_MISSING_TEST_ACCESSCODE_HEADER, TAC_MISSING_TEST_ACCESSCODE, "errorMessage","");
+					} else if(!validateAccessCodeMinLength( false) ) {
+						setMessage(TAC_SIXCHARS, "", "errorMessage","");
+					} else if(!validateAccessCodeSpecialChar(false)) {
+						setMessage(TAC_SPECIAL_CHAR_NOTALLOWED_HEADER, TAC_SPECIAL_CHAR_NOTALLOWED, "errorMessage","");
 					}
 				}else{
-					for(var i=0;i<subtestLength;i++){
-						if(trim(document.getElementById("aCodeB"+i).value) == ""){
-							testBreakVal += 1;
-							break;
-						}else if(trim(document.getElementById("aCodeB"+i).value).length<6){
-							setMessage(TAC_SIXCHARS, "", "errorMessage","");
-						}else{
-							var invalidCharFields = verifyTestInfo("", document.getElementById("aCodeB"+i).value, "");
-				 			var invalidString = "";                        
-				    		if (invalidCharFields.length > 0) {
-				          		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
-							}
-						}
+					if(!validateMissingTestAccessCodes()) {
+						setMessage(TAC_MISSING_TEST_ACCESSCODES_HEADER, TAC_MISSING_TEST_ACCESSCODES1, "errorMessage",TAC_MISSING_TEST_ACCESSCODES2);
+					} else if(!validateAccessCodeMinLength( true) ) { 
+						setMessage(TAC_SIXCHARS, "", "errorMessage","");
+					} else if(!validateAccessCodeSpecialChar(true)) {
+						setMessage(TAC_SPECIAL_CHAR_NOTALLOWED_HEADER, TAC_SPECIAL_CHAR_NOTALLOWED, "errorMessage","");
+					}else if(!validateIdenticalTestAccessCodes()) {
+						setMessage(TAC_IDENTICAL_TESTACCESSCODES_HEADER , TAC_IDENTICAL_TEST_ACCESSCODES1, "errorMessage", TAC_IDENTICAL_TEST_ACCESSCODES2);
 					}
-					if(testBreakVal > 0){
-						requiredFieldCount += 1;            
-						requiredFields = buildErrorString("Access Code", requiredFieldCount, requiredFields);
-					}
+					
 				}
-			}
-
-			var invalidCharFields = verifyTestInfo("", accessCode, "");
-
-    		if (invalidCharFields.length > 0) {
-          		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
-			} else if (trim(accessCode).length<6){
-				setMessage(TAC_SIXCHARS, "", "errorMessage","");
-			}
+			} else {
+				
+				if(!validateMissingTestAccessCode()) {
+					setMessage(TAC_MISSING_TEST_ACCESSCODE_HEADER, TAC_MISSING_TEST_ACCESSCODE, "errorMessage","");
+				} else if(!validateAccessCodeMinLength( false) ) {
+					setMessage(TAC_SIXCHARS, "", "errorMessage","");
+				} else if(!validateAccessCodeSpecialChar(false)) {
+					setMessage(TAC_SPECIAL_CHAR_NOTALLOWED_HEADER, TAC_SPECIAL_CHAR_NOTALLOWED, "errorMessage","");
+				}
 			
-		if (requiredFieldCount > 0) {
-			if (requiredFieldCount == 1) {
-				setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);
 			}
-			else {
-				setMessage("Missing required fields", requiredFields, "errorMessage", REQUIRED_TEXT_MULTIPLE);
-			}
-		}
 	 }
 	 
     function buildErrorString(field, count, str){
@@ -1682,5 +1661,97 @@ function createSingleNodeSelectedTree(jsondata) {
             }
           
         return false;
+    }
+    
+    function validateAccessCodeSpecialChar(hasBreak) {
+        var validStatus = true;
+	    
+	    if(!hasBreak) {
+	      	var val = document.getElementById("aCode").value;
+		    validStatus = validAccessCodeNameString(trim(val));
+	        
+	    } else {
+	      	for(var i=0;i<subtestLength;i++){	
+		      	var val = document.getElementById("aCodeB"+i).value;
+		      	validStatus = validAccessCodeNameString(trim(val));
+		        if(!validStatus)
+		        	break;
+			}
+	    }
+    	return validStatus;
+    }
+    
+     function validAccessCodeNameString(str){
+        var characters = [];
+        characters = toCharArray(str);
+        for (var i=0 ; i<characters.length ; i++) {
+            var character = characters[i];
+            if (! validAccessCodeNameCharacter(character))
+                return false;
+        }
+        return !requestHasInvalidParameters(str);
+    }
+     
+     function validAccessCodeNameCharacter(str){
+        var ch = toascii(str);
+        var A_Z = ((ch >= 65) && (ch <= 90));
+        var a_z = ((ch >= 97) && (ch <= 122));
+        var zero_nine = ((ch >= 48) && (ch <= 57));
+        return (zero_nine || A_Z || a_z );
+    }
+    
+    function validateIdenticalTestAccessCodes () {
+    	var accessCodes=new Array();
+    	var validStatus = true;
+    	for(var i=0;i<subtestLength;i++){
+			accessCodes[i]= document.getElementById("aCodeB"+i).value;
+		}
+		var sorted_arr = accessCodes.sort(); 
+		for (var i = 0; i < accessCodes.length - 1; i++) {
+			if (sorted_arr[i + 1] == sorted_arr[i]) {
+		    	validStatus = false; 
+		        break;   
+		 	} 
+		} 
+    	return validStatus;
+    }
+    
+    function validateMissingTestAccessCode ( ) {
+    	 var accessCode = document.getElementById("aCode").value;
+    	 var validStatus = true;
+    	if(trim(accessCode)==""){
+    		validStatus = false;
+    	} 
+    	return validStatus;
+    }
+    
+    function validateMissingTestAccessCodes ( ) {
+    	var validStatus = true;
+    	for(var i=0;i<subtestLength;i++){
+			if(trim(document.getElementById("aCodeB"+i).value) == "" ){
+				validStatus = false;
+				break;
+			} 
+		}
+		return validStatus;
+    }
+    
+     function validateAccessCodeMinLength ( hasBreak ) {
+    	var validStatus = true;
+    	var accessCode = trim(document.getElementById("aCode").value);
+    	if (!hasBreak) {
+    		if(accessCode.length<6) {
+    			validStatus = false;
+    		}
+    	} else {
+    		for(var i=0;i<subtestLength;i++){
+				if(trim(document.getElementById("aCodeB"+i).value).length<6){
+					validStatus = false;
+					break;
+				} 
+			}
+    	}
+    	
+		return validStatus;
     }
 					 
