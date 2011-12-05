@@ -15,6 +15,7 @@ import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Ts
 
 import com.ctb.tms.bean.login.ItemResponseWrapper;
 import com.ctb.tms.bean.login.Manifest;
+import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.OASNoSQLSink;
@@ -97,6 +98,14 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			}
 			if("TRUE".equals(manifests[i].getTutorialTaken())) {
 				tutorialTaken = "TRUE";
+			}
+			if("IP".equals(manifest.getRosterCompletionStatus()) && !accessCode.equals(manifests[i].getAccessCode())) {
+				ManifestData[] mda = manifests[i].getManifest();
+				for(int n=0;n<mda.length;n++) {
+					if("IP".equals(mda[n].getCompletionStatus())) {
+						mda[n].setCompletionStatus("IN");
+					}
+				}
 			}
 		}
 		for(int i=0;i<manifests.length;i++) {

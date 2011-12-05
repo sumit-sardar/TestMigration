@@ -612,27 +612,6 @@ public class TMSServlet extends HttpServlet {
         }
         return false;
     }
-	
-	private void updateCID(String testRosterId, int cid, String currentAccessCode) throws IOException, ClassNotFoundException {
-		// necessary to kick out same student using different access code . . .
-		Manifest[] allManifests = oasSource.getAllManifests(testRosterId);
-		logger.debug("Found " + allManifests.length + " manifests for roster " + testRosterId);
-		for(int m=0;m<allManifests.length;m++) {
-			allManifests[m].setRosterCorrelationId(cid);
-			if("IP".equals(allManifests[m].getRosterCompletionStatus()) && !currentAccessCode.equals(allManifests[m].getAccessCode())) {
-				ManifestData[] mda = allManifests[m].getManifest();
-				for(int n=0;n<mda.length;n++) {
-					if("IP".equals(mda[n].getCompletionStatus())) {
-						mda[n].setCompletionStatus("IN");
-					}
-				}
-				//allManifests[m].setRosterCompletionStatus("IN");
-			}
-			logger.debug("Set CID: " + cid + ", for manifest: " + allManifests[m].getAccessCode());
-			allManifests[m].setReplicate(true);
-		}
-		oasSink.putAllManifests(testRosterId, allManifests);
-	}
 
 	private String login(String xml) throws XmlException, IOException, ClassNotFoundException, SQLException {
 		Logger logger = Logger.getLogger(TMSServlet.class);
@@ -828,14 +807,6 @@ public class TMSServlet extends HttpServlet {
 		oasSink.putManifest(testRosterId, creds.getAccesscode(), manifest);
 		creds.setTestRosterId(testRosterId);
 		oasSink.putRosterData(creds, rd);
-		
-		if(restartCount > 0) {
-			// try to optimize by only setting cid on other manifests if they've been accessed - this may be risky
-			logger.debug("updating CID for all manifests: " + thisCid);
-			updateCID(testRosterId, thisCid, creds.getAccesscode());
-		} else {
-			logger.debug("CID updated only for current manifest");
-		}
 		
 		logger.debug(response.xmlText());
 		
