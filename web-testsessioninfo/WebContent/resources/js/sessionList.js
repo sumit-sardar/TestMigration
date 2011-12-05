@@ -451,7 +451,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	  	   var urlVal = 'getCompletedSessionForGrid.do';
      	   jQuery("#list6").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
            var sortArrowPA = jQuery("#list6");
-           jQuery("#list6").sortGrid('lastName',false);
+           jQuery("#list6").sortGrid('lastName',true);
          	var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
            $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
            $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled');
