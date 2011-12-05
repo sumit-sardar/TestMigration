@@ -111,7 +111,7 @@
     <tr> 
         <td class="transparent alignRight" width="130"><span class="asterisk">*</span>&nbsp;<netui:content value="Old Password:"/></td>
         <td class="transparent">
-            <netui:textBox password="true" tagId="newPassword" dataSource="pageFlow.userProfile.userPassword.oldPassword" tabindex="1" maxlength="32" style="width:290px"/>
+            <netui:textBox password="true" tagId="oldPassword" dataSource="pageFlow.userProfile.userPassword.oldPassword" tabindex="1" maxlength="32" style="width:290px"/>
         </td>
     </tr>
        
@@ -145,7 +145,7 @@
     <tr class="transparent">
         <td class="transparent alignRight" width="130"><span class="asterisk">*</span>&nbsp;<netui:content value="Hint Answer:"/></td>
         <td class="transparent">
-            <netui:textBox tagId="confirmPassword" dataSource="pageFlow.userProfile.userPassword.hintAnswer" tabindex="5" maxlength="255" style="width:290px"/>
+            <netui:textBox tagId="hintAnswer" dataSource="pageFlow.userProfile.userPassword.hintAnswer" tabindex="5" maxlength="255" style="width:290px"/>
         </td>
     </tr>   
     <tr class="transparent">

@@ -171,11 +171,12 @@ public class SessionOperationController extends PageFlowController {
 	        else if (this.user.getTimeZone() == null) {
 	        	forwardName = "editTimeZone";
 	        }
+	        
 		}
 		else {
 			forwardName = "legacyUI";	
 		}
-        
+		
 		return new Forward(forwardName);
 	} 
 	
@@ -254,6 +255,8 @@ public class SessionOperationController extends PageFlowController {
 		 passwordinfo.setOldPassword(oldPassword);
 		 passwordinfo.setNewPassword(newPassword);
 		 passwordinfo.setConfirmPassword(confirmPassword);
+		 passwordinfo.setHintQuestionId(hintQuestionId);
+		 passwordinfo.setHintAnswer(hintAnswer);
 		 
 		 requiredFields = UserPasswordUtils.getRequiredPasswordField(passwordinfo);
 		 if( requiredFields != null) {
@@ -316,13 +319,12 @@ public class SessionOperationController extends PageFlowController {
 			 this.user.setPassword(oldPassword);
 			 this.user.setNewPassword(newPassword);
 			 
-			 /*
 			 try {
 				 this.userManagement.updateUser(this.user.getUserName(),this.user);
-			} catch (CTBBusinessException e) {
-				e.printStackTrace();
-			}
-			*/
+			 } catch (CTBBusinessException e) {
+				 e.printStackTrace();
+			 }
+			 
 		 }
 		 else {
 	        String title = "Change Password: " + this.userProfile.getFirstName() + " " + this.userProfile.getLastName();

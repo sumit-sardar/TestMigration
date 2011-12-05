@@ -19,7 +19,9 @@ public class UserPasswordUtils {
 	        String oldPassword = passwordInfo.getOldPassword();
 	        String newPassword = passwordInfo.getNewPassword();
 	        String confirmPassword = passwordInfo.getConfirmPassword();
-
+	        String hintQuestionId = passwordInfo.getHintQuestionId();
+	        String hintAnswer = passwordInfo.getHintAnswer();
+	        
 	        if (oldPassword.length() == 0 ) {
 	            requiredFieldCount += 1;            
 	            requiredFields = Message.buildErrorString(Message.FIELD_OLD_PASSWORD, requiredFieldCount, requiredFields);       
@@ -35,6 +37,17 @@ public class UserPasswordUtils {
 	            requiredFields = Message.buildErrorString(Message.FIELD_CONFIRM_PASSWORD, requiredFieldCount, requiredFields);       
 	        }
 
+            if ( hintQuestionId == null || hintQuestionId.length() == 0 ) {
+                requiredFieldCount += 1;            
+                requiredFields = Message.buildErrorString(Message.FIELD_HINT_QUESTION, requiredFieldCount, requiredFields);       
+            }
+     
+	        if( hintAnswer.length() == 0) {
+	            requiredFieldCount += 1;            
+	            requiredFields = Message.buildErrorString(Message.FIELD_HINT_ANSWER, requiredFieldCount, requiredFields);       
+	
+	        }
+	        
 	        return requiredFields;
 	    }
 	 
