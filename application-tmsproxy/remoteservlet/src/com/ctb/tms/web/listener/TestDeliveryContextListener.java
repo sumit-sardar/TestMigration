@@ -106,19 +106,11 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		}
 		
 		public void run() {
-			Connection conn = null;
-			Connection sinkConn = null;
 			while (true) {
 				try {
-					doLoop(conn, sinkConn, oasSource, oasSink, oasDBSource, oasDBSink);
+					doLoop(oasSource, oasSink, oasDBSource, oasDBSink);
 				} finally {
 					try {
-						if(conn != null) {
-							conn.close();
-						}
-						if(sinkConn != null) {
-							sinkConn.close();
-						}
 						logger.info("*****  Completed active roster check. Sleeping for " + checkFrequency + " seconds.");
 						Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000);
 					}catch (Exception ie) {
@@ -128,16 +120,18 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 			}
 		}
 		
-		private static void doLoop (Connection conn, Connection sinkConn, OASNoSQLSource oasSource, OASNoSQLSink oasSink, OASRDBSource oasDBSource, OASRDBSink oasDBSink) {
+		private static void doLoop (OASNoSQLSource oasSource, OASNoSQLSink oasSink, OASRDBSource oasDBSource, OASRDBSink oasDBSink) {
+			Connection conn = null;
+			//Connection sinkConn = null;
 			try {
 				conn = oasDBSource.getOASConnection();
 				StudentCredentials[] creds = oasDBSource.getActiveRosters(conn);
-				if("true".equals(RDBStorageFactory.copytosink)) {
+				/*if("true".equals(RDBStorageFactory.copytosink)) {
 					sinkConn = oasDBSink.getOASConnection();
 					oasDBSink.putActiveRosters(sinkConn, creds);
 					sinkConn.commit();
 					sinkConn.close();
-				}
+				} */
 				HashMap<String, String> tasModMap = new HashMap<String, String>(128);
 				for(int i=0;i<creds.length;i++) {						
 					String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
@@ -172,6 +166,17 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 			} catch (Exception e) {
 				logger.error("Caught Exception during active roster check.", e);
 				e.printStackTrace();
+			} finally {
+				try {
+					if(conn != null) {
+						conn.close();
+					}
+					/*if(sinkConn != null) {
+						sinkConn.close();
+					} */
+				}catch (Exception ie) {
+					// do nothing
+				}
 			}
 		}
 	}
