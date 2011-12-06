@@ -6,21 +6,26 @@
 <div id="duplicateStudent"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<br>
-		<div id="dupStudent" style="width:99.5%;">
+		 <div style="width:965px;text-align: left;background-color: #FFFFFF; padding:5px;"> 
+			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;">
+					These students have been assigned to this tests session through more than one organization. 
+			</p>
+			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"> 
+					Select the correct assignment for each student  and click Apply.
+			</p>
+	 	</div>	
+			<br>
 			<table id="dupStudentlist" class="gridTable"></table>
 			<div id="dupStudentpager" class="gridTable"></div>	
-		</div>
-			
-			
 			<div>
-				<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%">
+				<table cellspacing="0" cellpadding="0" border="0"  class="EditTable" width="100%">
 					<tbody>
 						<br>
 						<tr align="center">
 							
 							<td  width="100%">
 								<center>
-								<input type="button"  id="dsData" value="&nbsp;Apply&nbsp;" onclick="" class="ui-widget-header">
+								<input type="button"  id="dsData" value="&nbsp;Apply&nbsp;"  onclick="javascript:updateDupStudent(); return false;" class="ui-widget-header">
 								<input type="button"  id="dcData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('duplicateStudent'); return false;" class="ui-widget-header">
 								</center>
 								<br>

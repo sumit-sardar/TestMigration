@@ -114,7 +114,7 @@
 		if(isMethodCall) {
 			if(settings.substring(0, 1) == '_') { return returnValue; }
 			this.each(function() {
-				var instance = instances[$.data(this, "jstree-instance-id")],
+				var instance = instances[$.data(this, "jstreeInstanceId")],
 					methodValue = (instance && $.isFunction(instance[settings])) ? instance[settings].apply(instance, args) : instance;
 					if(typeof methodValue !== "undefined" && (settings.indexOf("is_") === 0 || (methodValue !== true && methodValue !== false))) { returnValue = methodValue; return false; }
 			});
@@ -122,7 +122,7 @@
 		else {
 			this.each(function() {
 				// extend settings and allow for multiple hashes and $.data
-				var instance_id = $.data(this, "jstree-instance-id"),
+				var instance_id = $.data(this, "jstreeInstanceId"),
 					a = [],
 					b = settings ? $.extend({}, true, settings) : {},
 					c = $(this), 
@@ -137,7 +137,7 @@
 				// push a new empty object to the instances array
 				instance_id = parseInt(instances.push({}),10) - 1;
 				// store the jstree instance id to the container element
-				$.data(this, "jstree-instance-id", instance_id);
+				$.data(this, "jstreeInstanceId", instance_id);
 				// clean up all plugins
 				b.plugins = $.isArray(b.plugins) ? b.plugins : $.jstree.defaults.plugins.slice();
 				b.plugins.unshift("core");
@@ -178,7 +178,7 @@
 			var o = $(needle); 
 			if(!o.length && typeof needle === "string") { o = $("#" + needle); }
 			if(!o.length) { return null; }
-			return instances[o.closest(".jstree").data("jstree-instance-id")] || null; 
+			return instances[o.closest(".jstree").data("jstreeInstanceId")] || null; 
 		},
 		_instance : function (index, container, settings) { 
 			// for plugins to store data in
@@ -433,7 +433,7 @@
 				this.get_container()
 					.unbind(".jstree")
 					.undelegate(".jstree")
-					.removeData("jstree-instance-id")
+					.removeData("jstreeInstanceId")
 					.find("[class^='jstree']")
 						.andSelf()
 						.attr("class", function () { return this.className.replace(/jstree[^ ]*|$/ig,''); });

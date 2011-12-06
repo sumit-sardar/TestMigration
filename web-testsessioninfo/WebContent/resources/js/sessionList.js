@@ -467,6 +467,7 @@ function createSingleNodeSelectedTree(jsondata) {
       }
       
       function gridReloadSelectStu(){ 
+      	  UIBlock();
 	      jQuery("#selectStudent").jqGrid('setGridParam',{datatype:'json'});    
 	       var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val();
      	   jQuery("#selectStudent").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
@@ -565,6 +566,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			AddStudentLocaldata ={};
 			stuIdObjArray = [];
 			delStuIdObjArray = [];
+			isOnBack = false;
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -610,7 +612,6 @@ function createSingleNodeSelectedTree(jsondata) {
  		UIBlock();
  		var studentIdTitle = $("#studentIdLabelName").val();
  		stuGridloaded = true;
- 		
  		$("#list6").jqGrid({  
  		 data:  AddStudentLocaldata,
          datatype: 'local',         

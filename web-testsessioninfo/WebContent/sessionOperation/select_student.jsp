@@ -21,23 +21,23 @@
 </table>
 <table cellspacing="0" cellpadding="0" border="0" class="transparent">
 		<tbody><tr class="transparent">
-			<td colspan="2" class="transparent">Status Key:</td>
+			<td colspan="2" class="transparent"><netui:content value="${bundle.web['selectstudentpage.Msg.statusKey']}"/></td>
 		</tr>
 		<tr class="transparent">
-			<td width="20" class="transparent">Cmp</td>
-			<td width="500" class="transparent">Completed the test.</td>
+			<td width="20" class="transparent"><netui:content value="${bundle.web['selectstudentpage.Msg.completed']}"/></td>
+			<td width="500" class="transparent"><netui:content value="${bundle.web['selectstudentpage.Msg.completedMsg']}"/></td>
 		</tr>
 		<tr class="transparent">
-			<td width="20" class="transparent">Inp</td>
-			<td width="500" class="transparent">In progress, taking the test.</td>
+			<td width="20" class="transparent"><netui:content value="${bundle.web['selectstudentpage.Msg.inprogress']}"/></td>
+			<td width="500" class="transparent"><netui:content value="${bundle.web['selectstudentpage.Msg.inprogressMsg']}"/></td>
 		</tr>
 		<tr class="transparent">
-			<td width="20" class="transparent">Org</td>
-			<td width="500" class="transparent">Scheduled through other organization. Cannot override.</td>
+			<td width="20" class="transparent"><netui:content value="${bundle.web['selectstudentpage.Msg.schedule']}"/></td>
+			<td width="500" class="transparent"><netui:content value="${bundle.web['selectstudentpage.Msg.scheduleMsg']}"/></td>
 		</tr>
 		<tr class="transparent">
-			<td width="20" class="transparent">Ses</td>
-			<td width="500" class="transparent">Previously scheduled for this test in different test session.</td>
+			<td width="20" class="transparent"><netui:content value="${bundle.web['selectstudentpage.Msg.Preschedule']}"/></td>
+			<td width="500" class="transparent"><netui:content value="${bundle.web['selectstudentpage.Msg.PrescheduleMsg']}"/></td>
 		</tr>
 	</tbody>
 </table>
@@ -48,7 +48,7 @@
 			<td  width="100%">
 				<center>
 				<input type="button"  id="okData" value="&nbsp;Ok&nbsp;" onclick="javascript:returnSelectedStudent(); return false;" class="ui-widget-header">
-				<input type="button"  id="cancelData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:hideSelectStudent(); return false;" class="ui-widget-header">
+				<input type="button"  id="cancelData" value="&nbsp;Back&nbsp;&nbsp;" onclick="javascript:hideSelectStudent(); return false;" class="ui-widget-header">
 				</center>
 				<br>
 			</td>
