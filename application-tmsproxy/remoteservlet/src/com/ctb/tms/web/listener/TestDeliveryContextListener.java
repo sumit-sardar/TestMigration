@@ -110,47 +110,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 			Connection sinkConn = null;
 			while (true) {
 				try {
-					conn = oasDBSource.getOASConnection();
-					StudentCredentials[] creds = oasDBSource.getActiveRosters(conn);
-					if("true".equals(RDBStorageFactory.copytosink)) {
-						sinkConn = oasDBSink.getOASConnection();
-						oasDBSink.putActiveRosters(sinkConn, creds);
-						sinkConn.commit();
-						sinkConn.close();
-					}
-					HashMap<String, String> tasModMap = new HashMap<String, String>(128);
-					for(int i=0;i<creds.length;i++) {						
-						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
-						try {
-							String tasKey = tasModMap.get(creds[i].getTestRosterId());
-							String mapKey = (String)rosterMap.get(key);
-							if(mapKey == null || !creds[i].isTmsUpdate()) {
-								if (mapKey != null && !creds[i].isTmsUpdate()) {
-									// re-load cache directly from DB - roster was changed outside of TMS
-									logger.warn("*****  Manifest changed for " + key + ", removing old manifest data from cache");
-									if(tasKey == null) {
-										String testRosterId = creds[i].getTestRosterId();
-										//oasSink.deleteAllItemResponses(testRosterId);
-										oasSink.deleteAllManifests(testRosterId);
-										tasModMap.put(testRosterId, testRosterId);
-									}
-									oasSink.deleteRosterData(creds[i]);
-								}
-								oasSource.getRosterData(creds[i]);
-								oasSource.getManifest(creds[i].getTestRosterId(), creds[i].getAccesscode());
-								rosterMap.put(key, key);
-							} else {
-								logger.debug("*****  Roster data for " + key + " already present.\n");
-							}
-							//Thread.sleep(10);
-						} catch (Exception e) {
-							logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
-							e.printStackTrace();
-						}
-					}
-				} catch (Exception e) {
-					logger.error("Caught Exception during active roster check.", e);
-					e.printStackTrace();
+					doLoop(conn, sinkConn, oasSource, oasSink, oasDBSource, oasDBSink);
 				} finally {
 					try {
 						if(conn != null) {
@@ -165,6 +125,52 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						// do nothing
 					}
 				}
+			}
+		}
+		
+		private static void doLoop (Connection conn, Connection sinkConn, OASNoSQLSource oasSource, OASNoSQLSink oasSink, OASRDBSource oasDBSource, OASRDBSink oasDBSink) {
+			try {
+				conn = oasDBSource.getOASConnection();
+				StudentCredentials[] creds = oasDBSource.getActiveRosters(conn);
+				if("true".equals(RDBStorageFactory.copytosink)) {
+					sinkConn = oasDBSink.getOASConnection();
+					oasDBSink.putActiveRosters(sinkConn, creds);
+					sinkConn.commit();
+					sinkConn.close();
+				}
+				HashMap<String, String> tasModMap = new HashMap<String, String>(128);
+				for(int i=0;i<creds.length;i++) {						
+					String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
+					try {
+						String tasKey = tasModMap.get(creds[i].getTestRosterId());
+						String mapKey = (String)rosterMap.get(key);
+						if(mapKey == null || !creds[i].isTmsUpdate()) {
+							if (mapKey != null && !creds[i].isTmsUpdate()) {
+								// re-load cache directly from DB - roster was changed outside of TMS
+								logger.warn("*****  Manifest changed for " + key + ", removing old manifest data from cache");
+								if(tasKey == null) {
+									String testRosterId = "" + creds[i].getTestRosterId();
+									//oasSink.deleteAllItemResponses(testRosterId);
+									oasSink.deleteAllManifests(testRosterId);
+									tasModMap.put(testRosterId, testRosterId);
+								}
+								oasSink.deleteRosterData(creds[i]);
+							}
+							oasSource.getRosterData(creds[i]);
+							oasSource.getManifest(creds[i].getTestRosterId(), creds[i].getAccesscode());
+							rosterMap.put(key, key);
+						} else {
+							logger.debug("*****  Roster data for " + key + " already present.\n");
+						}
+						//Thread.sleep(10);
+					} catch (Exception e) {
+						logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
+						e.printStackTrace();
+					}
+				}
+			} catch (Exception e) {
+				logger.error("Caught Exception during active roster check.", e);
+				e.printStackTrace();
 			}
 		}
 	}
