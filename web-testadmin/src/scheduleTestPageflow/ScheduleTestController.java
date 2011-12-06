@@ -3063,8 +3063,7 @@ public class ScheduleTestController extends PageFlowController
                 }
                 else
                 {
-                    if (TestSessionUtils.isTabeProduct(this.productType).booleanValue() ||
-                    	TestSessionUtils.isTabeAdaptiveProduct(this.productType).booleanValue()) {
+                    if (TestSessionUtils.isTabeProduct(this.productType).booleanValue()) {
                     	TestSessionUtils.setDefaultLevels(subtestList, "E");  // make sure set level = 'E' if null
                     }
                 }
