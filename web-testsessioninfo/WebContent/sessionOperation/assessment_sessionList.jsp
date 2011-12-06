@@ -121,3 +121,4 @@
 </div>
 
 <jsp:include page="/sessionOperation/schedule_session.jsp" />
+<jsp:include page="/sessionOperation/duplicate_student.jsp" />

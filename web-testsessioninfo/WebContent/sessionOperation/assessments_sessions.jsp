@@ -23,6 +23,8 @@
 <netui:form action="assessments_sessions">
 <jsp:include page="/sessionOperation/oas_message.jsp" />
 <input type="hidden" id="treeOrgNodeId" />
+<input type="hidden" id="stuForOrgNodeId" />
+<input type="hidden" id="selectedTestId" />
 <table width="100%" border="0">
 <tr>
 <td>

@@ -66,7 +66,12 @@
 			<div id="addStudentId">
 				<h3><a href="#" >Add Student</a></h3>
 				<div id="Add_Student" style="background-color: #FFFFFF; overflow-y: scroll !important; overflow-x: hidden !important;">
-					<jsp:include page="/sessionOperation/add_student_tab.jsp" />
+					<div id="Student_Tab" style ="display:block;">
+						<jsp:include page="/sessionOperation/add_student_tab.jsp" />
+					</div>
+					<div id="Select_Student_Tab" style ="display:none;">
+						<jsp:include page="/sessionOperation/select_student.jsp" />	
+					</div>
 				</div>
 			</div>
 			<div id="addProctorId">

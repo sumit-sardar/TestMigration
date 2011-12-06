@@ -24,6 +24,7 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.request.FilterParams.FilterParam;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
@@ -33,6 +34,7 @@ import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.SessionStudentData;
+import com.ctb.bean.testAdmin.StudentAccommodations;
 import com.ctb.bean.testAdmin.TestElementData;
 import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.bean.testAdmin.TestProductData;
@@ -719,7 +721,7 @@ public class SessionOperationController extends PageFlowController {
     		@Jpf.Forward(name = "success", 
 					path ="assessments_sessions.jsp")
 	})
-    protected Forward getSelectedStudentList(SessionOperationForm form){
+    protected Forward getStudentForList(SessionOperationForm form){
     	
 		String jsonTree = "";
 		HttpServletRequest req = getRequest();
@@ -730,9 +732,24 @@ public class SessionOperationController extends PageFlowController {
 		String studentArray = "";
 		String json = "";
 		ObjectOutput output = null;
+		
+		String testId = getRequest().getParameter("selectedTestId");
+		String treeOrgNodeId = getRequest().getParameter("stuForOrgNodeId");
+		Integer selectedOrgNodeId = null;
+		Integer selectedTestId = null;
+		Integer testAdminId = null;
+		if(treeOrgNodeId != null)
+			selectedOrgNodeId = Integer.parseInt(treeOrgNodeId);
+		if(testId != null)
+			selectedTestId = Integer.parseInt(testId);
 		try {
-			SessionStudentData ssd = new SessionStudentData();
-			List studentNodes = buildStudentList(ssd);
+			FilterParams studentFilter = null;
+	        PageParams studentPage = null;
+	        SortParams studentSort = null;
+	        studentSort = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.STUDENT_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
+	        // get students - getSessionStudents
+	        SessionStudentData ssd = getSessionStudents(selectedOrgNodeId, testAdminId, selectedTestId, studentFilter, studentPage, studentSort);
+	        List studentNodes = buildStudentList(ssd);
 			Base base = new Base();
 			base.setPage("1");
 			base.setRecords("10");
@@ -1389,6 +1406,18 @@ public class SessionOperationController extends PageFlowController {
         return tsd;
     }
     
+    private SessionStudentData getSessionStudents(Integer orgNodeId, Integer testAdminId,Integer selectedTestId, FilterParams filter, PageParams page, SortParams sort)
+    {    
+        SessionStudentData sd = null;
+        try {      
+            sd = this.scheduleTest.getSessionStudentsForOrgNode(this.userName, orgNodeId, testAdminId, selectedTestId, filter, page, sort);
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }
+        return sd;
+    }
+
     private Base buildTestSessionList(CustomerLicense[] customerLicenses, TestSessionData tsd, Base base) 
     {
         List sessionListCUFU = new ArrayList(); 
@@ -1587,11 +1616,55 @@ public class SessionOperationController extends PageFlowController {
                 }
                 buf.append(".");
                 ss.setExtPin3(escape(buf.toString()));
+                ss.setHasColorFontAccommodations(getHasColorFontAccommodations(ss));
+                ss.setHasAccommodations(studentHasAccommodation(ss));
+                 if(ss.getMiddleName() != null && !ss.getMiddleName().equals(""))
+                	ss.setMiddleName( ss.getMiddleName().substring(0,1));
                 studentList.add(ss);
             }
         }
         return studentList;
     }
+    
+    
+    public String getHasColorFontAccommodations(SessionStudent ss) {
+        String result = "F";
+        if( ss.getQuestionBackgroundColor() != null ||
+        	ss.getQuestionFontColor() != null ||
+        	ss.getQuestionFontSize() != null ||
+        	ss.getAnswerBackgroundColor() != null ||
+        	ss.getAnswerFontColor() != null ||
+        	ss.getAnswerFontSize() != null)
+            result = "T";
+        return result;
+    }
+    
+    
+    public String studentHasAccommodation(SessionStudent  sa){
+		 String hasAccommodations = "No";
+	        if( "T".equals(sa.getScreenMagnifier()) ||
+	            "T".equals(sa.getScreenReader()) ||
+	            "T".equals(sa.getCalculator()) ||
+	            "T".equals(sa.getTestPause()) ||
+	            "T".equals(sa.getUntimedTest()) ||
+	            "T".equals(sa.getHighLighter()) ||
+	            "T".equals(sa.getExtendedTimeAccom()) ||
+	           // (sa.getMaskingRuler() != null && !sa.getMaskingRuler().equals("") && !sa.getMaskingRuler().equals("F"))||
+	            (sa.getExtendedTimeAccom() != null && !sa.getExtendedTimeAccom().equals("") && !sa.getExtendedTimeAccom().equals("F")) || 
+	           // (sa.getAuditoryCalming() != null && !sa.getAuditoryCalming().equals("") && !sa.getAuditoryCalming().equals("F")) || 
+	            //(sa.getMagnifyingGlass() != null && !sa.getMagnifyingGlass().equals("") && !sa.getMagnifyingGlass().equals("F")) || 
+	           // (sa.getMaskingTool() != null && !sa.getMaskingTool().equals("") && !sa.getMaskingTool().equals("F")) || 
+	            sa.getQuestionBackgroundColor() != null ||
+	            sa.getQuestionFontColor() != null ||
+	            sa.getQuestionFontSize() != null ||
+	            sa.getAnswerBackgroundColor() != null ||
+	            sa.getAnswerFontColor() != null ||
+	            sa.getAnswerFontSize() != null)
+	        	hasAccommodations = "Yes";
+	   return hasAccommodations;
+	}
+    
+    
     
     private String escape(String str)
     {

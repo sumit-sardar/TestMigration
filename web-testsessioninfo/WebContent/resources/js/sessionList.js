@@ -12,7 +12,7 @@ var isTreePopulated = false;
 var openTreeRequested = false;
 var isTabeProduct = false;
 var ishomepageload = false;
-
+var loadSessionGrid = false;
 var isTestGroupLoad = false;
 var testGridLoaded = false;
 var subtestGridLoaded = false;
@@ -252,6 +252,7 @@ function populateCompletedSessionListGrid() {
 		 }
 	 } else if (requestedTab == 'studentGrid'){
 	 	 if(isStuGridEmpty) {
+	 	 	$('#list6').jqGrid('clearGridData') ;
 	 	 	$('#totalStudent').text("0");
 	 	 	if($("#supportAccommodations").val() != 'false')
 	 	 	 	$('#stuWithAcc').text("0");
@@ -372,10 +373,10 @@ function createSingleNodeSelectedTree(jsondata) {
 	    });
 	   
 	  $("#orgNodeHierarchy").delegate("a","click", function(e) {
-	    	//clearMessage();
-	    	SelectedOrgNodeId = $(this).parent().attr("id");
+	    	//loadSessionGrid = true;
+	    	var SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
-	    	topNodeSelected = $(this).parent().attr("categoryId");
+	    	var topNodeSelected = $(this).parent().attr("categoryId");
 	    	if(topNodeSelected == '1'){
 	    	 	openConfirmationPopup();
 	    	} else {
@@ -443,15 +444,34 @@ function createSingleNodeSelectedTree(jsondata) {
       }
       
       function gridReloadStu(addStudent){ 
+      	$('#list6').GridUnload();		
+      	populateSelectedStudent();
+      	
+      	
+      	/*UIBlock();
 	      if(addStudent){
 	      	jQuery("#list6").jqGrid('setGridParam',{datatype:'local'});     
 	      } else {
-	      	jQuery("#list6").jqGrid('setGridParam',{datatype:'json'});    
+	      	jQuery("#list6").jqGrid('setGridParam',{datatype:'json'}); 
+	      	jQuery("#list6").jqGrid('setGridParam',{postData:{'selectedStudentList':AddStudentLocaldata} });   
 	      }
-	  	   var urlVal = 'getCompletedSessionForGrid.do';
+	     
+	  	   var urlVal = 'getSelectedStudentList.do?q=2';
      	   jQuery("#list6").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
            var sortArrowPA = jQuery("#list6");
            jQuery("#list6").sortGrid('lastName',true);
+         	var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
+           $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
+           $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled'); */
+
+      }
+      
+      function gridReloadSelectStu(){ 
+	      jQuery("#selectStudent").jqGrid('setGridParam',{datatype:'json'});    
+	       var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val();
+     	   jQuery("#selectStudent").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
+           var sortArrowPA = jQuery("#selectStudent");
+           jQuery("#selectStudent").sortGrid('lastName',false);
          	var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
            $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
            $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled');
@@ -533,8 +553,18 @@ function createSingleNodeSelectedTree(jsondata) {
 			$("#Test_Detail").hide();
 			$("#Add_Student").hide();
 			$('#Add_Proctor').hide();
+			$("#Student_Tab").css('display', 'block');
+			$("#Select_Student_Tab").css('display', 'none');
+			selectedOrg = [];
+			orgCheckedStudent = [];
+			orgunCheckedStudent = [];
+			$('#selectStudent').GridUnload();
+			selectStudentgridLoaded = false;				
 			$("#slider-range").slider("option", "values", [540, 1020]);
 			resetPopup();
+			AddStudentLocaldata ={};
+			stuIdObjArray = [];
+			delStuIdObjArray = [];
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -543,7 +573,11 @@ function createSingleNodeSelectedTree(jsondata) {
 	function fetchDataOnConfirmation() {
 		closePopUp('confirmationPopup');
 		reset();
- 		gridReload(false);
+		//if(loadSessionGrid) {
+ 			gridReload(false);
+ 		//} else {
+ 		//	gridReloadSelectStu();
+ 		//}
 	}
 	
 	function openConfirmationPopup(){
@@ -564,36 +598,6 @@ function createSingleNodeSelectedTree(jsondata) {
 	}	
 	
 	
-	function scheduleSession(){
-		if(!stuGridloaded) {
-	   		populateSelectedStudent();
-	   	} else {
-	   		gridReloadStu(true);
-	   	}
-		$("#scheduleSession").dialog({  
-			title:"Schedule Session",  
-		 	resizable:false,
-		 	autoOpen: true,
-		 	width: '1024px',
-		 	modal: true,
-		 	closeOnEscape: false,
-		 	open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
-		});
-		var width = jQuery("#scheduleSession").width();
-	    width = width - 72; // Fudge factor to prevent horizontal scrollbars
-	    
-		if(isTabeProduct) {
-			
-			$("#list6").jqGrid("hideCol","itemSetForm"); 
-			jQuery("#list6").setGridWidth(width,true);
-		} else {
-			
-			$("#list6").jqGrid("showCol","itemSetForm"); 
-			jQuery("#list6").setGridWidth(width,false);
-		}
-		setPopupPosition();
-	}
-	
 	function reloadHomePage(){
 		reset();
 		hideTreeSlider();
@@ -606,21 +610,21 @@ function createSingleNodeSelectedTree(jsondata) {
  		UIBlock();
  		var studentIdTitle = $("#studentIdLabelName").val();
  		stuGridloaded = true;
- 		$("#list6").jqGrid({         
-          url: 'getSelectedStudentList.do', 
-		 type:   'POST',
-		 datatype: "local",         
+ 		
+ 		$("#list6").jqGrid({  
+ 		 data:  AddStudentLocaldata,
+         datatype: 'local',         
           colNames:[ 'Last Name','First Name', 'M.I.', studentIdTitle, 'Accommodations', leafNodeCategoryName , 'Form'],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'middleName',index:'middleName', width:120, editable: true, align:"left",sorttype:'text',cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'studentId',index:'studentId', width:275, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'hasAccommodations',index:'hasAccommodations', width:165, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'userName',index:'userName', width:275, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'hasAccommodations',index:'hasAccommodations', width:165, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter: 'link' },
 		   		{name:'orgNodeName',index:'orgNodeName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetForm',index:'itemSetForm',editable: true, width:75, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
-		   	jsonReader: { repeatitems : false, root:"studentNode", id:"studentId",
+		   	jsonReader: { repeatitems : false, root:"rows", id:"studentId",
 		   	records: function(obj) { 
 		   	 //sessionListCUFU = JSON.stringify(obj.studentNode);
 		   	 } },
@@ -633,9 +637,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 370,  
-			editurl: 'getSelectedStudentList.do',
 			caption:"Student List",
-		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
 				//clearMessage();
 				var reqestedPage = parseInt($('#list6').getGridParam("page"));
@@ -648,6 +650,17 @@ function createSingleNodeSelectedTree(jsondata) {
 					$('#list6').setGridParam({"page": minPageSize});
 				}
 				
+			},
+			onSelectRow: function (rowid, status) {
+				var selectedRowId = rowid;
+				if(status) {
+					var selectedRowData = $("#list6").getRowData(selectedRowId);
+					if(delStuIdObjArray[selectedRowId] == undefined){
+						delStuIdObjArray[selectedRowId]= selectedRowData;
+					} 
+				} else {
+					delStuIdObjArray.splice(selectedRowId,1); 
+				}
 			},
 			loadComplete: function () {
 				if ($('#list6').getGridParam('records') === 0) {
@@ -667,6 +680,23 @@ function createSingleNodeSelectedTree(jsondata) {
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
+				var width = jQuery("#scheduleSession").width();
+		    	width = width - 72; // Fudge factor to prevent horizontal scrollbars
+		    
+				if(isTabeProduct) {
+					
+					$("#list6").jqGrid("hideCol","itemSetForm"); 
+				} else {
+					$("#list6").jqGrid("showCol","itemSetForm"); 
+				}
+				
+				var showAccommodations = $("#supportAccommodations").val();
+				if(showAccommodations  == 'false') {
+					$("#list6").jqGrid("hideCol","hasAccommodations"); 
+				} else {
+					$("#list6").jqGrid("showCol","hasAccommodations"); 
+				}
+				jQuery("#list6").setGridWidth(width,true);
 				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
@@ -676,8 +706,8 @@ function createSingleNodeSelectedTree(jsondata) {
 			}
 	 });
 	 jQuery("#list6").navGrid('#pager6', {
-				addfunc: function() {
-					
+				delfunc: function() {
+					removeSelectedStudent();
 		    	}	    	
 			});
 	var element = document.getElementById('add_list6');
@@ -689,6 +719,16 @@ function createSingleNodeSelectedTree(jsondata) {
 	var element = document.getElementById('del_list6');
 	element.title = 'Remove Student'; 
 	}
+	
+	function removeSelectedStudent() {
+		
+		for(var key in delStuIdObjArray){ 	
+			jQuery("#list6").delRowData(key);
+			stuIdObjArray.splice(key,1); 
+		}
+	}
+	
+	
 	
 	function scheduleNewSession() {
 	
@@ -752,23 +792,7 @@ function createSingleNodeSelectedTree(jsondata) {
    			gridReloadStu(true);
    		}
    		
-   		var width = jQuery("#scheduleSession").width();
-    	width = width - 72; // Fudge factor to prevent horizontal scrollbars
-    
-		if(isTabeProduct) {
-			
-			$("#list6").jqGrid("hideCol","itemSetForm"); 
-		} else {
-			$("#list6").jqGrid("showCol","itemSetForm"); 
-		}
-		
-		var showAccommodations = $("#supportAccommodations").val();
-		if(showAccommodations  == 'false') {
-			$("#list6").jqGrid("hideCol","hasAccommodations"); 
-		} else {
-			$("#list6").jqGrid("showCol","hasAccommodations"); 
-		}
-		jQuery("#list6").setGridWidth(width,true);
+   		
 	}
 
 	function fillProductGradeLevelDropDown( elementId, optionList, selectedProductId) {
@@ -1098,6 +1122,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			onSelectRow: function () {
 					subtestGridLoaded = false;
 					var selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
+					$("#selectedTestId").val(selectedTestId);
 					$('#displayMessage').hide();
 					var testBreak = document.getElementById("testBreak");
 					isTestSelected = true;
