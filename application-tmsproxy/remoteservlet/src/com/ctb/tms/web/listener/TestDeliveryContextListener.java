@@ -130,7 +130,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 									logger.warn("*****  Manifest changed for " + key + ", removing old manifest data from cache");
 									if(tasKey == null) {
 										String testRosterId = creds[i].getTestRosterId();
-										oasSink.deleteAllItemResponses(testRosterId);
+										//oasSink.deleteAllItemResponses(testRosterId);
 										oasSink.deleteAllManifests(testRosterId);
 										tasModMap.put(testRosterId, testRosterId);
 									}
