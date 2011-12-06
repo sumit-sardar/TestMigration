@@ -118,7 +118,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						sinkConn.commit();
 						sinkConn.close();
 					}
-					HashMap tasModMap = new HashMap((int)(creds.length*0.1));
+					HashMap<String, String> tasModMap = new HashMap<String, String>(128);
 					for(int i=0;i<creds.length;i++) {						
 						if(tasModMap.get(creds[i].getTestRosterId()) == null) {
 							String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();

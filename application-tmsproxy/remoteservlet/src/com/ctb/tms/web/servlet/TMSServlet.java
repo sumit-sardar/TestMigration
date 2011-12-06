@@ -330,7 +330,6 @@ public class TMSServlet extends HttpServlet {
 		        saveResponse.getTsdArray(i).setStatus(Status.OK);
 			    
 	    		manifest = oasSource.getManifest(rosterId, accessCode);
-	    		manifest.setRosterLastMseq(tsd.getMseq().intValue());
 		    	ManifestData[] manifestData = manifest.getManifest();	
 		    	int nextScoIndex = 0;
 		    	int j;
@@ -520,11 +519,12 @@ public class TMSServlet extends HttpServlet {
 		    			manifest.setRosterCompletionStatus("IP");
 			    	}
 	    			if(thisSco != null) {
-	    				thisSco.setSubtestLastMseq(manifest.getRosterLastMseq());
+	    				thisSco.setSubtestLastMseq(tsd.getMseq().intValue());
 	    				if(thisSco.getCompletionStatus() == null) {
 	    					thisSco.setCompletionStatus("IP");
 	    				}
 	    			}
+		    		manifest.setRosterLastMseq(tsd.getMseq().intValue());
 			    }
 	        }
         }
