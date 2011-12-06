@@ -3063,7 +3063,8 @@ public class ScheduleTestController extends PageFlowController
                 }
                 else
                 {
-                    if (TestSessionUtils.isTabeProduct(this.productType).booleanValue()) {
+                    if (TestSessionUtils.isTabeProduct(this.productType).booleanValue() ||
+                    	TestSessionUtils.isTabeAdaptiveProduct(this.productType).booleanValue()) {
                     	TestSessionUtils.setDefaultLevels(subtestList, "E");  // make sure set level = 'E' if null
                     }
                 }
@@ -3161,7 +3162,7 @@ public class ScheduleTestController extends PageFlowController
                         }   
                         
                         // set recommended level for this student if there is no locator for this session
-                        if (! sessionHasLocator)
+                        if (! sessionHasLocator && TestSessionUtils.isTabeProduct(this.productType).booleanValue())
                         {
                             Integer studentId = sessionStudent.getStudentId();
                             Integer itemSetId = testSession.getItemSetId();
