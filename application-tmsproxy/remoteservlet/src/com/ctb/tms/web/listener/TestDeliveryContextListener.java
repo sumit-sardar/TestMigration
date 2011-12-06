@@ -120,49 +120,30 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					}
 					HashMap<String, String> tasModMap = new HashMap<String, String>(128);
 					for(int i=0;i<creds.length;i++) {						
-						if(tasModMap.get(creds[i].getTestRosterId()) == null) {
-							String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
-							try {
-								String mapKey = (String)rosterMap.get(key);
-								if(mapKey == null || !creds[i].isTmsUpdate()) {
-									if (mapKey != null && !creds[i].isTmsUpdate()) {
-										// re-load cache directly from DB - roster was changed outside of TMS
-										logger.warn("*****  Manifest changed for " + key + ", removing old manifest data from cache");
-										String testRosterId = creds[i].getTestRosterId();
-										RosterData rd = oasDBSource.getRosterData(conn, key);
-										Manifest [] md = oasDBSource.getManifest(conn, testRosterId);
-										oasSink.deleteAllItemResponses(testRosterId);
-										oasSink.deleteAllManifests(testRosterId);
-										oasSink.deleteRosterData(creds[i]);
-										oasSink.putRosterData(creds[i], rd);
-										oasSink.putAllManifests(testRosterId, md);
-										tasModMap.put(testRosterId, testRosterId);
-									} else {
-										RosterData rosterData = oasSource.getRosterData(creds[i]);
-										int testRosterId = rosterData.getAuthData().getTestRosterId();
-										if(rosterData != null && rosterData.getAuthData() != null) {
-											Manifest manifest = oasSource.getManifest(String.valueOf(testRosterId), creds[i].getAccesscode());
-											if(manifest != null) {
-												//manifest.setRandomDistractorSeed(rosterData.getAuthData().getRandomDistractorSeedNumber());
-												//manifest.setReplicate(false);
-												//oasSink.putManifest(String.valueOf(testRosterId), creds[i].getAccesscode(), manifest);
-												logger.debug("*****  Got roster data for " + key);
-											} else {
-												logger.debug("*****  No valid manifest in DB for " + key);
-											}
-										} else {
-											logger.debug("*****  No valid manifest in DB for " + key);
-										}
-									}
-									rosterMap.put(key, key);
-								} else {
-									logger.debug("*****  Roster data for " + key + " already present.\n");
+						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
+						try {
+							String tasKey = tasModMap.get(creds[i].getTestRosterId());
+							String mapKey = (String)rosterMap.get(key);
+							if(mapKey == null || !creds[i].isTmsUpdate()) {
+								if (tasKey == null && mapKey != null && !creds[i].isTmsUpdate()) {
+									// re-load cache directly from DB - roster was changed outside of TMS
+									logger.warn("*****  Manifest changed for " + key + ", removing old manifest data from cache");
+									String testRosterId = creds[i].getTestRosterId();
+									oasSink.deleteAllItemResponses(testRosterId);
+									oasSink.deleteAllManifests(testRosterId);
+									oasSink.deleteRosterData(creds[i]);
+									tasModMap.put(testRosterId, testRosterId);
 								}
-								//Thread.sleep(10);
-							} catch (Exception e) {
-								logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
-								e.printStackTrace();
+								oasSource.getRosterData(creds[i]);
+								oasSource.getManifest(creds[i].getTestRosterId(), creds[i].getAccesscode());
+								rosterMap.put(key, key);
+							} else {
+								logger.debug("*****  Roster data for " + key + " already present.\n");
 							}
+							//Thread.sleep(10);
+						} catch (Exception e) {
+							logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
+							e.printStackTrace();
 						}
 					}
 				} catch (Exception e) {
