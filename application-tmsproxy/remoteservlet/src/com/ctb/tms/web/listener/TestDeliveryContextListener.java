@@ -157,7 +157,8 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 								oasSink.deleteRosterData(creds[i]);
 							}
 							oasSource.getRosterData(creds[i]);
-							oasSource.getManifest(creds[i].getTestRosterId(), creds[i].getAccesscode());
+							Manifest manifest = oasSource.getManifest(creds[i].getTestRosterId(), creds[i].getAccesscode());
+							oasSink.putManifest(creds[i].getTestRosterId(), creds[i].getAccesscode(), manifest);
 							rosterMap.put(key, key);
 						} else {
 							logger.debug("*****  Roster data for " + key + " already present.\n");
