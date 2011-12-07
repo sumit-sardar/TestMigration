@@ -5,7 +5,7 @@ public class StudentCredentials {
 	private String password;
 	private String accesscode;
 	private String testRosterId;
-	private boolean tmsUpdate;
+	private String tmsUpdate;
 	
 	public String getTestRosterId() {
 		return testRosterId;
@@ -14,10 +14,10 @@ public class StudentCredentials {
 		this.testRosterId = testRosterId;
 	}
 	
-	public boolean isTmsUpdate() {
+	public String getTmsUpdate() {
 		return tmsUpdate;
 	}
-	public void setTmsUpdate(boolean tmsUpdate) {
+	public void setTmsUpdate(String tmsUpdate) {
 		this.tmsUpdate = tmsUpdate;
 	}
 	public String getUsername() {
