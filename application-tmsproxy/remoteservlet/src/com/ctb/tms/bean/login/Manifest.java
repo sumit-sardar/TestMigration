@@ -23,6 +23,15 @@ public class Manifest implements Serializable, CachePreLoadObject {
     private String studentName;
     private Integer randomDistractorSeed;
     private String tutorialTaken;
+    private boolean forceReplication;
+    
+    public boolean isForceReplication() {
+		return forceReplication;
+	}
+
+	public void setForceReplication(boolean forceReplication) {
+		this.forceReplication = forceReplication;
+	}
     
     private boolean replicate = false;
     

@@ -49,90 +49,104 @@ public class TMSConflictResolver implements ConflictResolver {
                 	if("OASRosterCache".equals(entryOperation.getCacheName())) {
                 		RosterData incoming = (RosterData) localEntry.getContext().getValueFromInternalConverter().convert(entryOperation.getPublishableEntry().getBinaryValue());
                 		RosterData current = (RosterData) localEntry.getValue();
-                		if(incoming.getAuthData().getLastMseq() > current.getAuthData().getLastMseq()) {
+                		if(incoming.isForceReplication()) {
+                			incoming.setForceReplication(false);
                 			resolution.useInComingValue();
                 		} else {
-                			resolution.useLocalValue();
-                			logger.warn("Replicated roster message has lower mseq than current local value - ignoring.");
+	                		if(incoming.getAuthData().getLastMseq() > current.getAuthData().getLastMseq()) {
+	                			resolution.useInComingValue();
+	                		} else {
+	                			resolution.useLocalValue();
+	                			logger.warn("Replicated roster message has lower mseq than current local value - ignoring.");
+	                		}
                 		}
                 	} else if("OASManifestCache".equals(entryOperation.getCacheName())) {
                 		String tutorialTaken = "FALSE";
                 		Manifest[] incoming = (Manifest[]) localEntry.getContext().getValueFromInternalConverter().convert(entryOperation.getPublishableEntry().getBinaryValue());
                 		Manifest[] local = (Manifest[]) localEntry.getValue();
-                		ArrayList<Manifest> merged = new ArrayList<Manifest>(); 
-                		for(int i=0;i<incoming.length;i++) {
-                			if("TRUE".equals(incoming[i].getTutorialTaken())) {
-                				tutorialTaken = "TRUE";
-                			}
-                			boolean foundSU = false;
-                			for(int j=0;j<local.length;j++) {
-                				if("TRUE".equals(local[j].getTutorialTaken())) {
-                    				tutorialTaken = "TRUE";
-                    			}
-                				if(local[j].getAccessCode().equals(incoming[i].getAccessCode())) {
-                					// found SU
-                					foundSU = true;
-                					Manifest newManifest = local[j];
-                					if(incoming[i].getRosterLastMseq() > local[j].getRosterLastMseq()) {
-                						// using incoming roster-level values
-                						newManifest = incoming[i];
-                					} else if (incoming[i].getRosterLastMseq() <= local[j].getRosterLastMseq() && incoming[i].doReplicate()) {
-                						if(!"TRUE".equals(newManifest.getTutorialTaken()) && "TRUE".equals(incoming[i].getTutorialTaken())) {
-                							newManifest.setTutorialTaken(incoming[i].getTutorialTaken());
-                						}
-                						newManifest.setRosterCorrelationId(incoming[i].getRosterCorrelationId());
-                					}
-                					ManifestData[] inData = incoming[i].getManifest();
-                					ManifestData[] locData = local[j].getManifest();
-                					ArrayList<ManifestData> newData = new ArrayList<ManifestData>();
-                					for(int k=0;k<inData.length;k++) {
-                						boolean foundDU = false;
-                						for(int m=0;m<locData.length;m++) {
-                							if(locData[m].getId() == inData[k].getId()) {
-                								// found DU
-                								foundDU = true;
-                								ManifestData newer = locData[m];
-                								if(inData[k].getSubtestLastMseq() > locData[m].getSubtestLastMseq()) {
-                									// using incoming subtest-level values
-                									newer = inData[k];
-                									if(locData[m].getRecommendedLevel() != null && newer.getRecommendedLevel() == null) {
-                										newer.setRecommendedLevel(locData[m].getRecommendedLevel());
-                									}
-                								} else {
-                									// use existing local values
-                									if(inData[k].getRecommendedLevel() != null && newer.getRecommendedLevel() == null) {
-                										newer.setRecommendedLevel(inData[k].getRecommendedLevel());
-                									}
-                								}
-                								newData.add(newer);
-                								break;
-                							}
-                						}
-                						if(!foundDU) {
-                							// all-new DU incoming
-                							//newData.add(inData[k]);
-                							// don't add new subtests, they should be same or removed
-                						}
-                					}
-                					newManifest.setManifest((ManifestData[])newData.toArray(new ManifestData[0]));
-                					newManifest.setReplicate(false);
-                					merged.add(newManifest);
-                					break;
+                		if(incoming.length > 0 && incoming[0] != null && incoming[0].isForceReplication()) {
+                			for(int k=0;k<incoming.length;k++) {
+                				if(incoming[k] != null) {
+                					incoming[k].setForceReplication(false);
                 				}
                 			}
-            				if(!foundSU) {
-            					// all-new SU incoming
-            					merged.add(incoming[i]);
-            				}
+                			resolution.useInComingValue();
+                		} else {
+	                		ArrayList<Manifest> merged = new ArrayList<Manifest>(); 
+	                		for(int i=0;i<incoming.length;i++) {
+	                			if("TRUE".equals(incoming[i].getTutorialTaken())) {
+	                				tutorialTaken = "TRUE";
+	                			}
+	                			boolean foundSU = false;
+	                			for(int j=0;j<local.length;j++) {
+	                				if("TRUE".equals(local[j].getTutorialTaken())) {
+	                    				tutorialTaken = "TRUE";
+	                    			}
+	                				if(local[j].getAccessCode().equals(incoming[i].getAccessCode())) {
+	                					// found SU
+	                					foundSU = true;
+	                					Manifest newManifest = local[j];
+	                					if(incoming[i].getRosterLastMseq() > local[j].getRosterLastMseq()) {
+	                						// using incoming roster-level values
+	                						newManifest = incoming[i];
+	                					} else if (incoming[i].getRosterLastMseq() <= local[j].getRosterLastMseq() && incoming[i].doReplicate()) {
+	                						if(!"TRUE".equals(newManifest.getTutorialTaken()) && "TRUE".equals(incoming[i].getTutorialTaken())) {
+	                							newManifest.setTutorialTaken(incoming[i].getTutorialTaken());
+	                						}
+	                						newManifest.setRosterCorrelationId(incoming[i].getRosterCorrelationId());
+	                					}
+	                					ManifestData[] inData = incoming[i].getManifest();
+	                					ManifestData[] locData = local[j].getManifest();
+	                					ArrayList<ManifestData> newData = new ArrayList<ManifestData>();
+	                					for(int k=0;k<inData.length;k++) {
+	                						boolean foundDU = false;
+	                						for(int m=0;m<locData.length;m++) {
+	                							if(locData[m].getId() == inData[k].getId()) {
+	                								// found DU
+	                								foundDU = true;
+	                								ManifestData newer = locData[m];
+	                								if(inData[k].getSubtestLastMseq() > locData[m].getSubtestLastMseq()) {
+	                									// using incoming subtest-level values
+	                									newer = inData[k];
+	                									if(locData[m].getRecommendedLevel() != null && newer.getRecommendedLevel() == null) {
+	                										newer.setRecommendedLevel(locData[m].getRecommendedLevel());
+	                									}
+	                								} else {
+	                									// use existing local values
+	                									if(inData[k].getRecommendedLevel() != null && newer.getRecommendedLevel() == null) {
+	                										newer.setRecommendedLevel(inData[k].getRecommendedLevel());
+	                									}
+	                								}
+	                								newData.add(newer);
+	                								break;
+	                							}
+	                						}
+	                						if(!foundDU) {
+	                							// all-new DU incoming
+	                							//newData.add(inData[k]);
+	                							// don't add new subtests, they should be same or removed
+	                						}
+	                					}
+	                					newManifest.setManifest((ManifestData[])newData.toArray(new ManifestData[0]));
+	                					newManifest.setReplicate(false);
+	                					merged.add(newManifest);
+	                					break;
+	                				}
+	                			}
+	            				if(!foundSU) {
+	            					// all-new SU incoming
+	            					merged.add(incoming[i]);
+	            				}
+	                		}
+	                		Manifest[] finalMerged = (Manifest[])merged.toArray(new Manifest[0]);
+	                		logger.info("Merged manifest after replication: ");
+	                		for(int n=0;n<finalMerged.length;n++) {
+	                			finalMerged[n].setTutorialTaken(tutorialTaken);
+	                			logger.info(finalMerged[n].toString());
+	                		}
+	                		resolution.useMergedValue(finalMerged);
                 		}
-                		Manifest[] finalMerged = (Manifest[])merged.toArray(new Manifest[0]);
-                		logger.info("Merged manifest after replication: ");
-                		for(int n=0;n<finalMerged.length;n++) {
-                			finalMerged[n].setTutorialTaken(tutorialTaken);
-                			logger.info(finalMerged[n].toString());
-                		}
-                		resolution.useMergedValue(finalMerged);
-                	} else {
+            		} else {
                 		resolution.useInComingValue();
                 	}
                     break;

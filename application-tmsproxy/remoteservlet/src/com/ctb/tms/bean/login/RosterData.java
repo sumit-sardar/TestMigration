@@ -35,7 +35,16 @@ public class RosterData implements Serializable {
 	AuthenticationData authData;
 	//Manifest manifest;
 	private boolean replicate = true;
+	private boolean forceReplication = false;
 	
+	public boolean isForceReplication() {
+		return forceReplication;
+	}
+
+	public void setForceReplication(boolean forceReplication) {
+		this.forceReplication = forceReplication;
+	}
+
 	static Logger logger = Logger.getLogger(RosterData.class);
 	
     public void setReplicate(boolean replicate) {
