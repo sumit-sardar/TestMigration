@@ -107,12 +107,18 @@ public class TABEAdaptCompositeScoreCalculator extends AbstractDerivedScoreCalcu
             mathCompositeScores.scaleScore = calculateMathCompositeScaleScore();
             mathCompositeScores.validScore = CTBConstants.VALID_SCORE;
             
-            ContentAreaDerivedScoreEvent comp = (ContentAreaDerivedScoreEvent) contentAreaDerivedScoreEvents
+            ContentAreaDerivedScoreEvent comp = null;
+            ContentAreaDerivedScoreEvent applied = null;
+            if(contentAreaDerivedScoreEvents.containsKey(MATH_COMP_CONTENT_AREA_NAME)) {
+            	comp = (ContentAreaDerivedScoreEvent) contentAreaDerivedScoreEvents
                     .get(MATH_COMP_CONTENT_AREA_NAME);
-            ContentAreaDerivedScoreEvent applied = (ContentAreaDerivedScoreEvent) contentAreaDerivedScoreEvents
+            }
+            if(contentAreaDerivedScoreEvents.containsKey(MATH_APPLIED_CONTENT_AREA_NAME)) {
+            	applied = (ContentAreaDerivedScoreEvent) contentAreaDerivedScoreEvents
                     .get(MATH_APPLIED_CONTENT_AREA_NAME);
+            }
 
-            if (null != comp.getTestLevel() && applied.getTestLevel().equals(comp.getTestLevel())
+            if (null != comp && null != applied && null != comp.getTestLevel() && applied.getTestLevel().equals(comp.getTestLevel())
                     && null != mathCompositeScores.scaleScore) {
                 mathCompositeDerivedScoresCalculated = true;
 

@@ -224,7 +224,8 @@ public class ResponseReplayer {
         } else */
         if(itemSet.getObjectiveScore() != null) {
         	//System.out.println("-------Instead of addResponseEvent-------");
-        	addSubtestScoreEvents(subtestStatus.getTestRosterId(), events, itemSet);
+        	if(itemSet.getValidationStatus().equals("VA"))
+        		addSubtestScoreEvents(subtestStatus.getTestRosterId(), events, itemSet);
         }
         else
         	addResponseEvents(subtestStatus.getTestRosterId(), events, itemSet, itemResponseMapper);
