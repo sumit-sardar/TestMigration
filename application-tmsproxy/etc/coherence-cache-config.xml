@@ -88,7 +88,7 @@
     	<!--        heap-limited memory scheme definition -->
     	<local-scheme>
    			<scheme-name>BackMemoryScheme</scheme-name>
-   			<high-units>536870912</high-units>
+   			<high-units>1073741824</high-units>
    			<unit-calculator>BINARY</unit-calculator>
 		</local-scheme>
 		<local-scheme>
