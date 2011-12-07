@@ -599,6 +599,23 @@ function createSingleNodeSelectedTree(jsondata) {
 		 
 	}	
 	
+	function removeStuConfirmationPopup(){
+	$("#removeStuConfirmationPopup").dialog({  
+		title:"Confirmation Alert",  
+	 	resizable:false,
+	 	autoOpen: true,
+	 	width: '400px',
+	 	modal: true,
+	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		 $("#removeStuConfirmationPopup").css('height',120);
+		 var toppos = ($(window).height() - 290) /2 + 'px';
+		 var leftpos = ($(window).width() - 410) /2 + 'px';
+		 $("#removeStuConfirmationPopup").parent().css("top",toppos);
+		 $("#removeStuConfirmationPopup").parent().css("left",leftpos);	
+		 
+	}	
+	
 	
 	function reloadHomePage(){
 		reset();
@@ -708,7 +725,10 @@ function createSingleNodeSelectedTree(jsondata) {
 	 });
 	 jQuery("#list6").navGrid('#pager6', {
 				delfunc: function() {
-					removeSelectedStudent();
+				if(delStuIdObjArray.length > 0 ) {
+					removeStuConfirmationPopup();
+					
+				}
 		    	}	    	
 			});
 	var element = document.getElementById('add_list6');
@@ -725,8 +745,17 @@ function createSingleNodeSelectedTree(jsondata) {
 		
 		for(var key in delStuIdObjArray){ 	
 			jQuery("#list6").delRowData(key);
-			stuIdObjArray.splice(key,1); 
+			var objstr = stuIdObjArray[key];
+			var hasAccom = objstr.hasAccommodations;
+		 	 if(hasAccom == 'Yes') {
+		 	 	studentWithaccommodation = studentWithaccommodation - 1;
+		 	 }
+		 	 stuIdObjArray.splice(key,1); 
 		}
+		$('#totalStudent').text(stuIdObjArray.length);
+		if($("#supportAccommodations").val() != 'false')
+	 		 $('#stuWithAcc').text(studentWithaccommodation);
+		closePopUp('removeStuConfirmationPopup');
 	}
 	
 	

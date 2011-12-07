@@ -8,10 +8,10 @@
 	<br>
 		 <div style="width:965px;text-align: left;background-color: #FFFFFF; padding:5px;"> 
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;">
-					These students have been assigned to this tests session through more than one organization. 
+					<netui:content value="${bundle.web['homepage.deuplicatestudent.message']}"/>
 			</p>
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"> 
-					Select the correct assignment for each student  and click Apply.
+					<netui:content value="${bundle.web['homepage.deuplicatestudent2.message']}"/>
 			</p>
 	 	</div>	
 			<br>

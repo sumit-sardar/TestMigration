@@ -15,6 +15,8 @@ var delStuIdObjArray = [];
 var orgForDupStu = [];
 var nondupStudent = [];
 
+var studentWithaccommodation = 0;
+
 
 function showSelectStudent(){
 	$("#Student_Tab").css('display', 'none');
@@ -28,6 +30,9 @@ function showSelectStudent(){
 }
 function hideSelectStudent (){
 	isOnBack = true;
+	$('#totalStudent').text(AddStudentLocaldata.length);
+	if($("#supportAccommodations").val() != 'false')
+	 	 $('#stuWithAcc').text(studentWithaccommodation);
 	$("#Student_Tab").css('display', 'block');
 	$("#Select_Student_Tab").css('display', 'none');
 }
@@ -366,9 +371,14 @@ var duplicateStuArray=[];
 orgForDupStu = [];
 var dupStuPresent = false;
 var duplicateStuArraydata ={};
+studentWithaccommodation = 0;
  for(var key in stuIdObjArray){ 
  	var objstr = stuIdObjArray[key];
  	objstr['studentId']= key;
+ 	var hasAccom = objstr.hasAccommodations;
+ 	 if(hasAccom == 'Yes') {
+ 	 	studentWithaccommodation = studentWithaccommodation + 1;
+ 	 }
 	var orgArray = 	objstr.orgNodeId.split(",");
 	if(orgArray.length > 1) {
 		dupStuPresent = true;

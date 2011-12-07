@@ -36,3 +36,28 @@
 	
 
 
+				
+<div id="removeStuConfirmationPopup"
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table>
+		<tr>
+			<td colspan="2">
+			<br/>
+			<p><netui:content value="${bundle.web['homepage.delStuConfirmation.message']}"/></p>
+			<p><netui:content value="${bundle.web['homepage.delStuConfirmation2.message']}"/></p>
+			<br/>
+			</td>
+		</tr>
+		<tr>
+		<td >
+				<center>
+					<input type="button"  value="&nbsp;${bundle.web['homepage.button.ok']}&nbsp;" onclick="javascript:removeSelectedStudent(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value="&nbsp;${bundle.web['homepage.button.cancel']}&nbsp;&nbsp;" onclick="javascript:closePopUp('removeStuConfirmationPopup'); return false;" class="ui-widget-header">
+				</center>
+			<br>
+		</td>
+		
+		</tr>
+		
+	</table>
+</div>
