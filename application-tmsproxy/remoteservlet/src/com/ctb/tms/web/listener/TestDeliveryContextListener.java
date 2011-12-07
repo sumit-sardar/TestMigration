@@ -138,12 +138,12 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 					} */
 					HashMap<String, String> tasModMap = new HashMap<String, String>(128);
 					for(int i=0;i<creds.length;i++) {	
-						System.out.print(".");
 						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
 						try {
 							String tasKey = tasModMap.get(creds[i].getTestRosterId());
 							String mapKey = (String)rosterMap.get(key);
 							if(mapKey == null || !creds[i].isTmsUpdate()) {
+								System.out.print(".");
 								if (mapKey != null && !creds[i].isTmsUpdate()) {
 									// re-load cache directly from DB - roster was changed outside of TMS
 									logger.warn("*****  Manifest changed for " + key + ", removing old manifest data from cache");
