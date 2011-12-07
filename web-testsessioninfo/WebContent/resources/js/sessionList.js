@@ -604,7 +604,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		title:"Confirmation Alert",  
 	 	resizable:false,
 	 	autoOpen: true,
-	 	width: '400px',
+	 	width: '500px',
 	 	modal: true,
 	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});	
@@ -632,7 +632,7 @@ function createSingleNodeSelectedTree(jsondata) {
  		$("#list6").jqGrid({  
  		 data:  AddStudentLocaldata,
          datatype: 'local',         
-          colNames:[ 'Last Name','First Name', 'M.I.', studentIdTitle, 'Accommodations', leafNodeCategoryName , 'Form'],
+          colNames:[ 'Last Name','First Name', 'M.I.', studentIdTitle, 'Accommodations', leafNodeCategoryName , 'Form', 'studentId'],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -640,7 +640,8 @@ function createSingleNodeSelectedTree(jsondata) {
 		   		{name:'userName',index:'userName', width:275, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'hasAccommodations',index:'hasAccommodations', width:165, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter: 'link' },
 		   		{name:'orgNodeName',index:'orgNodeName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'itemSetForm',index:'itemSetForm',editable: true, width:75, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'itemSetForm',index:'itemSetForm',editable: true, width:75, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentId',index:'studentId',editable: false, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"rows", id:"studentId",
 		   	records: function(obj) { 
@@ -714,6 +715,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				} else {
 					$("#list6").jqGrid("showCol","hasAccommodations"); 
 				}
+				$("#list6").jqGrid("hideCol","studentId");
 				jQuery("#list6").setGridWidth(width,true);
 				
 			},
@@ -745,12 +747,12 @@ function createSingleNodeSelectedTree(jsondata) {
 		
 		for(var key in delStuIdObjArray){ 	
 			jQuery("#list6").delRowData(key);
-			var objstr = stuIdObjArray[key];
+			var objstr = stuIdObjArray[delStuIdObjArray[key].studentId];
 			var hasAccom = objstr.hasAccommodations;
 		 	 if(hasAccom == 'Yes') {
 		 	 	studentWithaccommodation = studentWithaccommodation - 1;
 		 	 }
-		 	 stuIdObjArray.splice(key,1); 
+		 	 stuIdObjArray.splice(delStuIdObjArray[key].studentId,1); 
 		}
 		$('#totalStudent').text(stuIdObjArray.length);
 		if($("#supportAccommodations").val() != 'false')
