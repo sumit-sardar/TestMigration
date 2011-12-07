@@ -72,23 +72,62 @@ public class OASOracleSource implements OASRDBSource
 	//private static final String UPDATE_TEST_ROSTER_WITH_RD_SEED_SQL = "update  test_roster set  random_distractor_seed = {rndNumber} where  test_roster_id = {testRosterId}";
 	//private static final String SPEECH_CONTROLLER_SQL = "select cconfig.default_value as speechControllerFlag  from test_roster  ros,  customer  cus,  customer_configuration cconfig,  student_accommodation  accom  where accom.screen_reader = 'T'  and accom.student_id = ros.student_id  and cconfig.customer_configuration_name = 'Allow_Speech_Controller'  and cconfig.customer_id = cus.customer_id  and cus.customer_id = ros.customer_id  and ros.test_roster_id = {testRosterId}";
 	private static final String TEST_PRODUCT_FOR_ADMIN_SQL = "select distinct  productId, productName,  version,  productDescription,  createdBy, createdDateTime,   updatedBy,  updatedDateTime,  activationStatus,  productType,  scoringItemSetLevel,  previewItemSetLevel,  parentProductId,  extProductId,  contentAreaLevel,  internalDisplayName,  secScoringItemSetLevel,  ibsShowCmsId,  printable,  scannable,  keyenterable,  brandingTypeCode,   acknowledgmentsURL,  showStudentFeedback,  staticManifest,  sessionManifest,  subtestsSelectable,  subtestsOrderable,  subtestsLevelsVary,  supportPhoneNumber,  offGradeTestingDisabled, max(resource_uri) as resource_uri from (select distinct  prod.product_id as productId,  prod.product_name as productName,  prod.version as version,  prod.product_description as productDescription,  prod.created_by as createdBy,  prod.created_date_time as createdDateTime,  prod.updated_by as updatedBy,  prod.updated_date_time as updatedDateTime,  prod.activation_status as activationStatus,  prod.product_type as productType,  prod.scoring_item_set_level as scoringItemSetLevel,  prod.preview_item_set_level as previewItemSetLevel,  prod.parent_product_id as parentProductId,  prod.ext_product_id as extProductId,  prod.content_area_level as contentAreaLevel,  prod.internal_display_name as internalDisplayName,  prod.sec_scoring_item_set_level as secScoringItemSetLevel,  prod.ibs_show_cms_id as ibsShowCmsId,  prod.printable as printable,  prod.scannable as scannable,  prod.keyenterable as keyenterable,  prod.branding_type_code as brandingTypeCode,  prod.acknowledgments_url as acknowledgmentsURL,  prod.show_student_feedback as showStudentFeedback,  prod.static_manifest as staticManifest,  prod.session_manifest as sessionManifest,  prod.subtests_selectable as subtestsSelectable,  prod.subtests_orderable as subtestsOrderable,  prod.subtests_levels_vary as subtestsLevelsVary,  cec.support_phone_number as supportPhoneNumber,  prod.off_grade_testing_disabled as offGradeTestingDisabled, null as resource_uri from  test_admin adm, customer_email_config cec, product prod where  prod.product_id = adm.product_id  and cec.customer_id (+) = adm.customer_id  and adm.test_admin_id = ? union select distinct  prod.product_id as productId,  prod.product_name as productName,  prod.version as version,  prod.product_description as productDescription,  prod.created_by as createdBy,  prod.created_date_time as createdDateTime,  prod.updated_by as updatedBy,  prod.updated_date_time as updatedDateTime,  prod.activation_status as activationStatus,  prod.product_type as productType,  prod.scoring_item_set_level as scoringItemSetLevel,  prod.preview_item_set_level as previewItemSetLevel,  prod.parent_product_id as parentProductId,  prod.ext_product_id as extProductId,  prod.content_area_level as contentAreaLevel,  prod.internal_display_name as internalDisplayName,  prod.sec_scoring_item_set_level as secScoringItemSetLevel,  prod.ibs_show_cms_id as ibsShowCmsId,  prod.printable as printable,  prod.scannable as scannable,  prod.keyenterable as keyenterable,  prod.branding_type_code as brandingTypeCode,  prod.acknowledgments_url as acknowledgmentsURL,  prod.show_student_feedback as showStudentFeedback,  prod.static_manifest as staticManifest,  prod.session_manifest as sessionManifest,  prod.subtests_selectable as subtestsSelectable,  prod.subtests_orderable as subtestsOrderable,  prod.subtests_levels_vary as subtestsLevelsVary,  cec.support_phone_number as supportPhoneNumber,  prod.off_grade_testing_disabled as offGradeTestingDisabled, pr.resource_uri as resource_uri from  test_admin adm, customer_email_config cec, product prod, product_resource pr where  prod.product_id = adm.product_id  and cec.customer_id (+) = adm.customer_id  and pr.product_id = prod.product_id and pr.resource_type_code = 'TDCLOGO' and adm.test_admin_id = ?) group by productId, productName,  version,  productDescription,  createdBy, createdDateTime,   updatedBy,  updatedDateTime,  activationStatus,  productType,  scoringItemSetLevel,  previewItemSetLevel,  parentProductId,  extProductId,  contentAreaLevel,  internalDisplayName,  secScoringItemSetLevel,  ibsShowCmsId,  printable,  scannable,  keyenterable,  brandingTypeCode,   acknowledgmentsURL,  showStudentFeedback,  staticManifest,  sessionManifest,  subtestsSelectable,  subtestsOrderable,  subtestsLevelsVary,  supportPhoneNumber,  offGradeTestingDisabled";
-	private static final String ACTIVE_ROSTERS_SQL = "select distinct stu.user_name as username, tr.password as password, upper(tais.access_code) as accesscode, decode(tr.tms_update, 'F', 'F', min(siss.tms_update)) as tmsUpdate, tr.test_roster_id as testRosterId" 
-		 + " from test_roster tr, test_admin ta, test_admin_item_set tais, student stu, student_item_Set_Status siss, item_set_parent isp where stu.activation_status = 'AC' and tr.activation_status = 'AC' and ta.activation_status = 'AC' and tr.test_completion_status in ('SC', 'IN', 'IS', 'IP', 'IC', 'NT')"
-		 + " and sysdate > (TA.LOGIN_START_DATE - 1) and sysdate < (TA.LOGIN_END_DATE + 1)"
-		 + " and ((stu.user_name not like 'pt-student%') OR (stu.user_name like 'pt-student%' and tr.updated_date_time > sysdate -1)) and ta.test_admin_id = tr.test_admin_id and tais.test_admin_id = ta.test_admin_id and stu.student_id = tr.student_id and siss.test_roster_id = tr.test_roster_id and tais.item_set_id = isp.parent_item_Set_id and siss.item_set_id = isp.item_Set_id group by stu.user_name, tr.password, upper(tais.access_code), tr.tms_update, tr.test_roster_id order by tr.test_roster_id asc";
+	private static final String ACTIVE_ROSTERS_SQL = "" +
+		"select * from ( " +
+		"   select p.*, rownum rnum " +
+		"           from ( " +
+		"               select distinct " + 
+		"                    stu.user_name as username, " + 
+		"                    tr.password as password, " + 
+		"                    upper(tais.access_code) as accesscode, " + 
+		"                    decode(tr.tms_update, 'F', 'F', min(siss.tms_update)) as tmsUpdate, " + 
+		"                    tr.test_roster_id as testRosterId " +
+		"                from " + 
+		"                    test_roster tr, " + 
+		"                    test_admin ta, " + 
+		"                    test_admin_item_set tais, " + 
+		"                    student stu, " + 
+		"                    student_item_Set_Status siss, " + 
+		"                    item_set_parent isp " + 
+		"                where " + 
+		"                    stu.activation_status = 'AC' " + 
+		"                    and tr.activation_status = 'AC' " + 
+		"                    and ta.activation_status = 'AC' " +
+		"                    and tr.test_completion_status in ('SC', 'IN', 'IS', 'IP', 'IC', 'NT') " +
+		"                    and sysdate > (TA.LOGIN_START_DATE - 1) " + 
+		"                    and sysdate < (TA.LOGIN_END_DATE + 1) " +
+		"                    and ((stu.user_name not like 'pt-student%') OR (stu.user_name like 'pt-student%' and tr.updated_date_time > sysdate -1)) " + 
+		"                    and ta.test_admin_id = tr.test_admin_id " + 
+		"                    and tais.test_admin_id = ta.test_admin_id " + 
+		"                    and stu.student_id = tr.student_id " + 
+		"                    and siss.test_roster_id = tr.test_roster_id " + 
+		"                    and tais.item_set_id = isp.parent_item_Set_id " + 
+		"                    and siss.item_set_id = isp.item_Set_id " + 
+		"                group by " + 
+		"                    stu.user_name, " + 
+		"                    tr.password, " + 
+		"                    upper(tais.access_code), " + 
+		"                    tr.tms_update, tr.test_roster_id  " +
+		"                order by " + 
+		"                    tr.test_roster_id asc " +
+		"           ) p rowcountExpr";
 	
 	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		return OracleSetup.getOASConnection();
 	}
 	
-	public StudentCredentials [] getActiveRosters(Connection con) {
-    	StudentCredentials[] data = null;
+	public StudentCredentials[] getActiveRosters(Connection con, int startRow, int rowCount) {
     	PreparedStatement stmt1 = null;
+    	int recordCount = 0;
     	try {
-			stmt1 = con.prepareStatement(ACTIVE_ROSTERS_SQL);
+    		String rowcountExpr = " where rownum < " + (startRow + rowCount) + ") where rnum >= " + startRow;
+    		String sql = ACTIVE_ROSTERS_SQL.replaceAll("rowcountExpr", rowcountExpr);
+    		//System.out.println(sql);
+			stmt1 = con.prepareStatement(sql);
 			ResultSet rs1 = stmt1.executeQuery();
 			ArrayList<StudentCredentials> dataList = new ArrayList<StudentCredentials>();
 			while (rs1.next()) {
+				recordCount++;
 				StudentCredentials creds = new StudentCredentials();
 				creds.setUsername(rs1.getString("username"));
 				creds.setPassword(rs1.getString("password"));
@@ -98,9 +137,10 @@ public class OASOracleSource implements OASRDBSource
 				dataList.add(creds);
 			}
 			rs1.close();
-			data = (StudentCredentials[]) dataList.toArray(new StudentCredentials[0]);
+			return (StudentCredentials[]) dataList.toArray(new StudentCredentials[0]);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		} finally {
 			try {
 				if(stmt1 != null) stmt1.close();
@@ -108,7 +148,6 @@ public class OASOracleSource implements OASRDBSource
 				// do nothing
 			}
 		}
-		return data;
 	}
 	
 	public RosterData getRosterData(Connection conn, String key)  throws Exception {

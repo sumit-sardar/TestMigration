@@ -89,7 +89,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		}
 	}
 	
-	private class RosterThread extends Thread {
+	private static class RosterThread extends Thread {
 		
 		OASNoSQLSource oasSource;
 		OASNoSQLSink oasSink;
@@ -105,82 +105,87 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 			this.oasDBSink = oasDBSink;
 		}
 		
-		public synchronized void run() {
+		public void run() {
+			Connection conn = null;
+			//Connection sinkConn = null;
 			while (true) {
 				try {
-					Looper looper = new Looper();
-					looper.doLoop(oasSource, oasSink, oasDBSource, oasDBSink);
-					looper = null;
-				} finally {
-					try {
-						logger.info("*****  Completed active roster check. Sleeping for " + checkFrequency + " seconds.");
-						Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000);
-					}catch (Exception ie) {
-						// do nothing
-					}
-				}
-			}
-		}
-		
-		private class Looper {
-			private void doLoop (OASNoSQLSource oasSource, OASNoSQLSink oasSink, OASRDBSource oasDBSource, OASRDBSink oasDBSink) {
-				StudentCredentials[] creds = null;
-				Connection conn = null;
-				//Connection sinkConn = null;
-				try {
 					conn = oasDBSource.getOASConnection();
-					creds = oasDBSource.getActiveRosters(conn);
-					/*if("true".equals(RDBStorageFactory.copytosink)) {
-						sinkConn = oasDBSink.getOASConnection();
-						oasDBSink.putActiveRosters(sinkConn, creds);
-						sinkConn.commit();
-						sinkConn.close();
-					} */
-					HashMap<String, String> tasModMap = new HashMap<String, String>(128);
-					for(int i=0;i<creds.length;i++) {	
-						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
-						try {
-							String tasKey = tasModMap.get(creds[i].getTestRosterId());
-							String mapKey = (String)rosterMap.get(key);
-							if(mapKey == null || !creds[i].isTmsUpdate()) {
-								System.out.print(".");
-								if (mapKey != null && !creds[i].isTmsUpdate()) {
-									// re-load cache directly from DB - roster was changed outside of TMS
-									logger.warn("*****  Manifest changed for " + key + ", removing old manifest data from cache");
-									if(tasKey == null) {
-										String testRosterId = "" + creds[i].getTestRosterId();
-										//oasSink.deleteAllItemResponses(testRosterId);
-										oasSink.deleteAllManifests(testRosterId);
-										tasModMap.put(testRosterId, testRosterId);
+					int startRow = 1;
+					int rowCount = 25000;
+					int rosterCount = rowCount;
+					while(rosterCount == rowCount) {
+						int errorCount = 0;
+						int storedCount = 0;
+						StudentCredentials[] creds = oasDBSource.getActiveRosters(conn, startRow, rowCount);
+						rosterCount = creds.length;
+						startRow = startRow + rowCount;
+						/*if("true".equals(RDBStorageFactory.copytosink)) {
+							sinkConn = oasDBSink.getOASConnection();
+							oasDBSink.putActiveRosters(sinkConn, creds);
+							sinkConn.commit();
+							sinkConn.close();
+						}*/
+						HashMap<String, String> tasModMap = new HashMap<String, String>(128);
+						for(int i=0;i<creds.length;i++) {						
+							String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
+							try {
+								String tasKey = tasModMap.get(creds[i].getTestRosterId());
+								String mapKey = (String)rosterMap.get(key);
+								if(mapKey == null || !creds[i].isTmsUpdate()) {
+									if (mapKey != null && !creds[i].isTmsUpdate()) {
+										// re-load cache directly from DB - roster was changed outside of TMS
+										logger.warn("*****  Manifest changed for " + key + ", removing old manifest data from cache");
+										if(tasKey == null) {
+											String testRosterId = creds[i].getTestRosterId();
+											//oasSink.deleteAllItemResponses(testRosterId);
+											oasSink.deleteAllManifests(testRosterId);
+											tasModMap.put(testRosterId, testRosterId);
+										}
+										oasSink.deleteRosterData(creds[i]);
 									}
-									oasSink.deleteRosterData(creds[i]);
+									oasSource.getRosterData(creds[i]);
+									if(!creds[i].isTmsUpdate()) {
+										Manifest manifest = oasSource.getManifest(creds[i].getTestRosterId(), creds[i].getAccesscode());
+										oasSink.putManifest(creds[i].getTestRosterId(), creds[i].getAccesscode(), manifest);
+										manifest = null;
+									} else {
+										oasSource.getManifest(creds[i].getTestRosterId(), creds[i].getAccesscode());
+									}
+									rosterMap.put(key, key);
+									storedCount += 1;
+								} else {
+									logger.debug("*****  Roster data for " + key + " already present.\n");
 								}
-								oasSource.getRosterData(creds[i]);
-								Manifest manifest = oasSource.getManifest(creds[i].getTestRosterId(), creds[i].getAccesscode());
-								oasSink.putManifest(creds[i].getTestRosterId(), creds[i].getAccesscode(), manifest);
-								rosterMap.put(key, key);
-							} else {
-								logger.debug("*****  Roster data for " + key + " already present.\n");
+								tasKey = null;
+								mapKey = null;
+								//Thread.sleep(10);
+							} catch (Exception e) {
+								//logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
+								//e.printStackTrace();
+								errorCount++;
 							}
-							//Thread.sleep(10);
-						} catch (Exception e) {
-							logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
-							e.printStackTrace();
+							key = null;
 						}
+						if(errorCount > 0) {
+							logger.warn("Failed to store data in cache for " + errorCount + " rosters!");
+						}
+						logger.info("Stored data in cache for " + storedCount + " rosters.");
+						creds = null;
 					}
 				} catch (Exception e) {
 					logger.error("Caught Exception during active roster check.", e);
 					e.printStackTrace();
 				} finally {
-					creds = null;
 					try {
 						if(conn != null) {
 							conn.close();
 						}
-						conn = null;
 						/*if(sinkConn != null) {
 							sinkConn.close();
-						} */
+						}*/
+						logger.info("*****  Completed active roster check. Sleeping for " + checkFrequency + " seconds.");
+						Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000);
 					}catch (Exception ie) {
 						// do nothing
 					}
@@ -194,11 +199,10 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		}
 		
 		public void run() {
-			ScoringMessage message = null;
 			while (true) {
 				try {
 					while(!rosterQueue.isEmpty()) {
-						message = rosterQueue.peek();
+						ScoringMessage message = rosterQueue.peek();
 						if(message != null && (System.currentTimeMillis() - message.timestamp) > 60000 ) {
 							message = rosterQueue.poll();
 							JMSUtils.sendMessage(Integer.valueOf(message.getTestRosterId()));

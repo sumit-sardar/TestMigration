@@ -107,12 +107,19 @@ public class RosterCacheStore implements CacheStore {
     	try {
     		OASRDBSource source = RDBStorageFactory.getOASSource();
 		    conn = source.getOASConnection();
-		    StudentCredentials [] credsa = source.getActiveRosters(conn);
-		    for(int i=0;i<credsa.length;i++) {
-		    	StudentCredentials creds = credsa[i];
-		    	String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
-		    	result.add(key);
-		    }
+		    int startRow = 0;
+			int rowCount = 25000;
+			int rosterCount = rowCount;
+			while(rosterCount == rowCount) {
+			    StudentCredentials [] credsa = source.getActiveRosters(conn, startRow, rowCount);
+			    rosterCount = credsa.length;
+			    startRow = startRow + rowCount;
+			    for(int i=0;i<credsa.length;i++) {
+			    	StudentCredentials creds = credsa[i];
+			    	String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
+			    	result.add(key);
+			    }
+			}
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {

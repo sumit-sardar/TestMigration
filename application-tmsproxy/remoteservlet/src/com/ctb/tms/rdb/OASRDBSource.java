@@ -9,7 +9,7 @@ import com.ctb.tms.bean.login.StudentCredentials;
 
 public interface OASRDBSource
 { 
-	public StudentCredentials [] getActiveRosters(Connection con);
+	public StudentCredentials[] getActiveRosters(Connection con, int startRow, int rowCount);
     
     public RosterData getRosterData(Connection conn, String key) throws Exception;
 
