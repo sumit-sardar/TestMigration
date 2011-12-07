@@ -1670,8 +1670,13 @@ public class ManageCustomerController extends PageFlowController
         
         //START - Changes for LLESPANOL PRODUCT 
         customerOptions.put(CTBConstants.LLESPANOL_CUSTOMER,CTBConstants.LLESPANOL_CUSTOMER);
-        customerOptions.put(CTBConstants.OTHER_CUSTOMER,CTBConstants.OTHER_CUSTOMER);    
         //END - Changes for LLESPANOL PRODUCT
+        
+        //START - Changes for TABE ADAPTIVE PRODUCT
+        customerOptions.put(CTBConstants.TABE_ADAPTIVE_CUSTOMER,CTBConstants.TABE_ADAPTIVE_CUSTOMER);
+        //END - Changes for TABE ADAPTIVE PRODUCT
+        customerOptions.put(CTBConstants.OTHER_CUSTOMER,CTBConstants.OTHER_CUSTOMER);    
+        
     }
     
      private boolean isContains (String stateDesc) {

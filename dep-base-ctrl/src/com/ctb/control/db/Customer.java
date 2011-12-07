@@ -304,4 +304,10 @@ public interface Customer extends JdbcControl
     void createLLEspanolCustomerConfiguration(Integer CustomerId) throws SQLException;
     //END - Changes for LLESPANOL Product
     
+    
+    //START - Changes for TABE ADAPTIVE Product
+    @JdbcControl.SQL(statement = "call setup_tabe_adaptive_customer({CustomerId})")
+    void createTABEAdaptiveCustomerConfiguration(Integer CustomerId) throws SQLException;
+    //END - Changes for TABE ADAPTIVE Product
+    
 }

@@ -312,6 +312,16 @@ public class CustomerManagementImpl implements CustomerManagement
                     
             }
             //END - Changes for LLESPANOL PRODUCT 
+            
+          //START - Changes for TABE ADAPTIVE PRODUCT 
+            else if(CTBConstants.TABE_ADAPTIVE_CUSTOMER.equalsIgnoreCase
+                    (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
+               
+                customers.createTABEAdaptiveCustomerConfiguration(customerId);
+                    
+            }
+            //END - Changes for TABE ADAPTIVE PRODUCT
+            
             else if(CTBConstants.OTHER_CUSTOMER.equalsIgnoreCase
                     (customer.getCustomerConfiguration()[0].getCustomerConfigurationName())) {
                 saveCustomerEmail(customer);
@@ -651,6 +661,16 @@ public class CustomerManagementImpl implements CustomerManagement
                                                     
        			 }
        			//END - Changes For LLESPANOL Product
+                
+              //START - Changes For TABE ADAPTIVE Product
+                else if( customerConfigurations[0].getCustomerConfigurationName().equals(
+                        CTBConstants.DB_TABE_ADAPTIVE_CUSTOMER)){
+                            
+                	customerConfigurations[0].setCustomerConfigurationName(
+                        CTBConstants.TABE_ADAPTIVE_CUSTOMER);
+                                                    
+       			 }
+       			//END - Changes For TABE ADAPTIVE Product
 
 
                 customer.setCustomerConfiguration(customerConfigurations);
