@@ -100,7 +100,7 @@ public class OASOracleSource implements OASRDBSource
 		"                    and siss.test_roster_id = tr.test_roster_id " + 
 		"                    and tais.item_set_id = isp.parent_item_Set_id " + 
 		"                    and siss.item_set_id = isp.item_Set_id " +
-		"					 and (tr.tms_update != 'T' OR siss.tms_update != 'T') " +
+		"					 and (tr.tms_update != 'T' OR siss.tms_update != 'T' or tr.tms_update is null or siss.tms_update is null) " +
 		"					 and rownum < 25000 " +
 		"                group by " + 
 		"                    stu.user_name, " + 
