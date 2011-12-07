@@ -144,9 +144,25 @@
 				
 				var startTime;
 				var endTime;
-				$("#slider-range").slider({
-					//range: true, min: 0, max: 2879, values: [540, 1020], step:5, slide: slideTime, change: checkMax
-					range: true, min: 0, max: 1425, values: [540, 1020], step:5, slide: slideTime, stop: stopSlide
+				$( "#slider-range" ).slider({
+					range: true,
+					min: 0,
+					max: 1425,
+					values: [ 480, 1020 ],
+					step: 5,
+					slide: function( event, ui ) {
+						minutes0 = parseInt(ui.values[0] % 60,10);
+						hours0 = parseInt(ui.values[0] / 60 % 24,10);
+						minutes1 = parseInt(ui.values[1] % 60,10);
+						hours1 = parseInt(ui.values[1] / 60 % 24,10);
+						if(ui.values[0] - ui.values[1] < 60 && ui.values[0] - ui.values[1] > -60) {
+							return false;
+						}
+						startTime = getTime(hours0, minutes0);
+						endTime = getTime(hours1, minutes1);
+				
+						$( "#time" ).text( startTime + " - " + endTime );
+					}
 				});
 				
 				

@@ -1058,11 +1058,13 @@ function createSingleNodeSelectedTree(jsondata) {
 	    minutes = minutes + "";
 	    if (hours < 12) {time = "AM";}
 	    else {  time = "PM";}
+		
 	    if (hours == 0) {hours = 12;}
-	    if (hours > 12) {hours = hours - 12; }
+	    else if (hours > 12) {hours = hours - 12; }
 	    if (minutes.length == 1) {minutes = "0" + minutes;}
-	    return hours + ":" + minutes + " " + time;
+		return hours + ":" + minutes + " " + time;
 	}
+	
 	function checkMax() {
 	    var size = $("#slider-range").slider("values", 1) - $("#slider-range").slider("values", 0);
 	    if( size >= 1435) {
