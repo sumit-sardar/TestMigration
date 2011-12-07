@@ -604,11 +604,11 @@ function createSingleNodeSelectedTree(jsondata) {
 		title:"Confirmation Alert",  
 	 	resizable:false,
 	 	autoOpen: true,
-	 	width: '500px',
+	 	width: '400px',
 	 	modal: true,
 	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});	
-		 $("#removeStuConfirmationPopup").css('height',120);
+		 $("#removeStuConfirmationPopup").css('height',200);
 		 var toppos = ($(window).height() - 290) /2 + 'px';
 		 var leftpos = ($(window).width() - 410) /2 + 'px';
 		 $("#removeStuConfirmationPopup").parent().css("top",toppos);
