@@ -22,6 +22,8 @@ import com.ctb.tms.util.JMSUtils;
 
 public class TestDeliveryContextListener implements javax.servlet.ServletContextListener {
 	
+	public static final int batchSize = 10000;
+	
 	private static int checkFrequency = 30;
 	private static int postFrequency = 5;
 	private static RosterThread rosterThread;
@@ -107,11 +109,14 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 			Connection conn = null;
 			//Connection sinkConn = null;
 			while (true) {
+				int fetchedCount = 0;
 				try {
 					conn = oasDBSource.getOASConnection();
 					int errorCount = 0;
 					int storedCount = 0;
+					fetchedCount = 0;
 					StudentCredentials[] creds = oasDBSource.getActiveRosters(conn);
+					fetchedCount = creds.length;
 					/*if("true".equals(RDBStorageFactory.copytosink)) {
 						sinkConn = oasDBSink.getOASConnection();
 						oasDBSink.putActiveRosters(sinkConn, creds);
@@ -151,8 +156,14 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						/*if(sinkConn != null) {
 							sinkConn.close();
 						}*/
-						logger.info("*****  Completed active roster check. Sleeping for " + checkFrequency + " seconds.");
-						Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000);
+						if(fetchedCount == batchSize) {
+							int sleepSeconds = (TestDeliveryContextListener.checkFrequency / 10);
+							logger.info("Fetched full batch. Sleeping for " + sleepSeconds + " seconds.");
+							Thread.sleep(sleepSeconds * 1000);
+						} else {
+							logger.info("*****  Completed active roster check. Sleeping for " + checkFrequency + " seconds.");
+							Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000);
+						}
 					}catch (Exception ie) {
 						// do nothing
 					}
