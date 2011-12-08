@@ -84,8 +84,7 @@ public class TMSRemoteAddressProvider implements AddressProvider {
 				}
 			}
 		}
-		nextIndex = (int) (Math.random() * remoteMap.size());
-		if(nextIndex == 0) nextIndex = 1;
+		nextIndex = (int) ((Math.random() * remoteMap.size()) + 1);
 	}
 	
 	public void accept() {
@@ -99,7 +98,7 @@ public class TMSRemoteAddressProvider implements AddressProvider {
 		int tries = remoteMap.size();
 		for(int i=0;i<tries;i++) {
 			synchronized(TMSRemoteAddressProvider.class) {
-				if(nextIndex > tries) nextIndex = 1;
+				if(nextIndex > remoteMap.size()) nextIndex = 1;
 				remote = remoteMap.get(String.valueOf(nextIndex));
 				nextIndex += 1;
 			}
