@@ -23,11 +23,11 @@
 <table cellspacing="0" cellpadding="0" border="0" class="EditTable" width="100%">
 	<tbody>
 		<br>
-		<tr id="Act_Buttons" align="center">
+		<tr id="Act_Buttons_Proctor" align="center">
 			<td  width="100%">
 				<center>
-				<input type="button"  id="okData" value="&nbsp;Ok&nbsp;" onclick="javascript:returnSelectedProctor(); return false;" class="ui-widget-header">
-				<input type="button"  id="cancelData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:hideSelectedProctor(); return false;" class="ui-widget-header">
+				<input type="button"  id="okDataProctor" value="&nbsp;Ok&nbsp;" onclick="javascript:returnSelectedProctor(); return false;" class="ui-widget-header">
+				<input type="button"  id="cancelDataProctor" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:hideSelectedProctor(); return false;" class="ui-widget-header">
 				</center>
 				<br>
 			</td>
