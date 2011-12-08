@@ -164,6 +164,7 @@ function populateCompletedSessionListGrid() {
  		//UIBlock();
  		gridloaded = true;
  		reset();
+ 		$('#showMessage').hide();
        $("#list3").jqGrid({         
           url: 'getCompletedSessionForGrid.do', 
 		  type:   'POST',
@@ -194,6 +195,7 @@ function populateCompletedSessionListGrid() {
 		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
 				//clearMessage();
+				$('#showMessage').hide();
 				var reqestedPage = parseInt($('#list3').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager3').text());
 				var minPageSize = 1;
@@ -205,6 +207,7 @@ function populateCompletedSessionListGrid() {
 				}
 			},
 			onSelectRow: function () {
+					$('#showMessage').hide();
 					setAnchorButtonState('viewStatusButton', false);
 					if($("#canRegisterStudent").val() == 'true'){
 			 			var selectedTestSessionId = $("#list3").jqGrid('getGridParam', 'selrow');
