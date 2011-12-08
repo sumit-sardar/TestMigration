@@ -5,6 +5,8 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="userApplicationResource" />
  
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
@@ -37,7 +39,7 @@
 	        <td class="simple" style="background-color : #ffffff" valign="top">
 	        
 		      	<div id="searchheader" class="treeHeader">
-		      		&nbsp;Organization Search
+		      		&nbsp;<lb:label key="user.label.organizationsearch" />
 		      	</div>
 			      	
 		    	<script>

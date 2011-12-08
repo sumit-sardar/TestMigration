@@ -1,4 +1,6 @@
 <%@ page import="java.io.*, java.util.*"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="userApplicationResource" />
 
 <div id="changeUserPassword"
 	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
@@ -21,15 +23,14 @@
 		<div id="new_user_password" style="overflow-y: hidden !important; overflow-x: hidden !important;">
 			<table class="transparent">
 				<tr class="transparent">
-					<td class="transparent" colspan="2"><p>The password must contain at least eight characters. At least one character must be a number and at least one character must be a letter.
-						New password cannot be any of five previous passwords. Required fields are marked by a blue asterisk *.</p></td>
+					<td class="transparent" colspan="2"><p><lb:label key="user.msg.newpassword" /></p></td>
 				</tr>
 	 			<tr class="transparent">
-					<td class="transparent" align="right" style="padding: 10px"><span class="asterisk">*</span>&nbsp;New Password:</td>
+					<td class="transparent" align="right" style="padding: 10px"><span class="asterisk">*</span>&nbsp;<lb:label key="user.newpassword" suffix=":"/></td>
 					<td class="transparent"><input type="password" style="width: 200px; font-family: sans-serif;" maxlength="64" id="newPassword" name="newPassword"></td>
 				</tr>
 				<tr class="transparent">
-					<td class="transparent" align="right" style="padding: 10px"><span class="asterisk">*</span>&nbsp;Confirm Password:</td>
+					<td class="transparent" align="right" style="padding: 10px"><span class="asterisk">*</span>&nbsp;<lb:label key="user.confirmpassword" suffix=":"/></td>
 					<td class="transparent"><input type="password" style="width: 200px; font-family: sans-serif;" maxlength="64" id="confirmPassword" name="confirmPassword"></td>
 				</tr>
 			</table>

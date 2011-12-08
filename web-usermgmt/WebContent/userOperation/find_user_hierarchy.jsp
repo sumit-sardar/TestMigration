@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>   
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="userApplicationResource" />
 
 <input type="hidden" id="roleNameID" name = "roleName" value='<%=session.getAttribute("userRole") %>'/>
 <table> 
 	<tr> 
 		<td>  
-			<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">&nbsp;&nbsp;&nbsp;Select an organization to see a list of users associated with that organization.  
-			View, edit, delete or add users using the buttons at the bottom of the User List.
+			<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">&nbsp;&nbsp;&nbsp;<lb:label key="user.msg.pos.button" />
 			</span>
 		</td>	
 	</tr>
@@ -39,7 +40,7 @@
 				</div>
 		       	<div id="changePW" style="display:none;">
 		       		<div id="cpw">
-                		<a href="#" id="changePWButton" onclick="changePwdForUser(this);" class="rounded {transparent} button">Change Password</a>
+                		<a href="#" id="changePWButton" onclick="changePwdForUser(this);" class="rounded {transparent} button"><lb:label key="user.changepassword" /></a>
                 	</div>      
                 </div>          		     	        
 	     	   </td>
@@ -47,7 +48,7 @@
 		  
 	      <tr class="transparent">
 	        <td class="transparent" valign="middle">
-		      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;User Search</div>
+		      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="user.label.usersearch" /></div>
 		    	  <script>populateTree();</script>
 		    	  <div id = "orgNodeHierarchy"  class="treeCtrl">
 				</div> 
@@ -80,7 +81,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p>You have not saved the user record. Are you sure you want to leave this page?</p>
+			<p><lb:label key="user.msg.notsave" /></p>
 			<br/>
 			</td>
 		</tr>
@@ -104,7 +105,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p>You have not saved the user record. Are you sure you want to leave this page?</p>
+			<p><lb:label key="user.msg.notsave" /></p>
 			<br/>
 			</td>
 		</tr>
@@ -128,7 +129,7 @@
 	<table>
 		<tr>
 			<td colspan="2">
-			<p>An email address was not provided for this new user. Therefore, the welcome email message with login information cannot be sent directly to the user. Do you want to add an email address now?</p>
+			<p><lb:label key="user.msg.emailprovide" /></p>
 			</td>
 		</tr>
 		<tr>
