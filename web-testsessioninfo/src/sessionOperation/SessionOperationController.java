@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-
+ 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -325,28 +325,35 @@ public class SessionOperationController extends PageFlowController {
 					 }
 				 }
 		 }		 
-		 		 
+		 		
+		 boolean passwordSaved = false;
+		 
 		 if (validationPassed) {
 			 this.user.setResetPassword("F");
 			 this.user.setPasswordHintQuestion(hintQuestionId);
 			 this.user.setPasswordHintAnswer(hintAnswer);
 			 this.user.setPassword(oldPassword);
 			 this.user.setNewPassword(newPassword);
+			 passwordSaved = true;
 			 
 			 try {
 				 this.userManagement.updateUser(this.user.getUserName(),this.user);
-			 } catch (CTBBusinessException e) {
-				 e.printStackTrace();
+			 } catch (CTBBusinessException be) {
+				 be.printStackTrace();
+	             String msg = MessageResourceBundle.getMessage(be.getMessage());
+			 	 messageInfo = createMessageInfo(messageInfo, Message.CHANGE_PASSWORD_TITLE, msg, Message.ERROR, true, false );
+				 passwordSaved = false;
 			 }
 			 
 		 }
-		 else {
-	        String title = "Change Password: " + this.userProfile.getFirstName() + " " + this.userProfile.getLastName();
-	        this.getRequest().setAttribute("pageTitle", title);
+		 
+		 if (! passwordSaved) {
+			 String title = "Change Password: " + this.userProfile.getFirstName() + " " + this.userProfile.getLastName();
+			 this.getRequest().setAttribute("pageTitle", title);
 
-	        this.getRequest().setAttribute("errorMsg", messageInfo.getContent());
-	        
-	        forwardName = "error";
+			 this.getRequest().setAttribute("errorMsg", messageInfo.getContent());
+        
+			 forwardName = "error";
 		 }
 		 
         return new Forward(forwardName);
