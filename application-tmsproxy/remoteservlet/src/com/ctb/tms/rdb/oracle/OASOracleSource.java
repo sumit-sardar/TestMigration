@@ -108,7 +108,7 @@ public class OASOracleSource implements OASRDBSource
 		"                    upper(tais.access_code), " + 
 		"                    tr.tms_update, tr.test_roster_id  " +
 		"                order by " + 
-		"                    tr.test_roster_id asc) where rownum <= " + TestDeliveryContextListener.batchSize;
+		"                    dbms_random.value) where rownum <= " + TestDeliveryContextListener.batchSize;
 	
 	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		return OracleSetup.getOASConnection();
