@@ -1,7 +1,12 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ page language="java" contentType="text/html;charset=UTF-8"%>
 
 <netui-data:declareBundle bundlePath="webResources" name="web" />
+<input type="hidden" id="selectedNewTestId" name="selectedNewTestId" val="" />
+<input type="hidden" id="hasTestBreak" name="hasTestBreak" val="F" />
+<input type="hidden" id="productType" name="productType"  />
+<input type="hidden" id="showStudentFeedback" name="showStudentFeedback"  />
 
 <table class="transparent" align="center">
 	<tbody>
@@ -78,7 +83,7 @@
 							<td width="294" height="20" valign="middle" class="transparent">Allow Test Breaks 
 								<span style="padding-left:5px;">
 						  <input name="aCode" type="text" id="aCode" style="visibility:hidden; padding-left:2px;" size="16" maxlength="32" /></span>							</td>
-					      <td width="0" height="20" valign="middle"><input type="checkbox" id="randomDis" name="randomDis" value="1"></td>
+					      <td width="0" height="20" valign="middle"><input type="checkbox" id="randomDis" name="randomDis" value="" onClick="toggleRandomDisVal();"></td>
 						    <td width="200" height="20" valign="middle" class="transparent"><span id="randDisLbl">Random Distractor</span></td>
 						</tr>
                           </table></td>

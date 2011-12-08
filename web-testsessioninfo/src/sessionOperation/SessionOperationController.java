@@ -3,15 +3,16 @@ package sessionOperation;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.OutputStream;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,21 +22,23 @@ import org.apache.beehive.netui.pageflow.Forward;
 import org.apache.beehive.netui.pageflow.PageFlowController;
 import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
+import util.MessageResourceBundle;
+import util.RequestUtil;
+
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
-import com.ctb.bean.request.FilterParams.FilterParam;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerLicense;
-import com.ctb.bean.testAdmin.PasswordDetails;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
+import com.ctb.bean.testAdmin.RosterElementData;
+import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.SessionStudentData;
-import com.ctb.bean.testAdmin.StudentAccommodations;
-import com.ctb.bean.testAdmin.TestElementData;
+import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.bean.testAdmin.TestProductData;
 import com.ctb.bean.testAdmin.TestSession;
@@ -45,7 +48,13 @@ import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
-import com.ctb.testSessionInfo.data.Condition;
+import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
+import com.ctb.exception.testAdmin.TransactionTimeoutException;
+
+import com.ctb.exception.validation.ValidationException;
+
+import com.ctb.testSessionInfo.data.SubtestVO;
+import com.ctb.testSessionInfo.data.TestVO;
 import com.ctb.testSessionInfo.dto.Message;
 import com.ctb.testSessionInfo.dto.MessageInfo;
 import com.ctb.testSessionInfo.dto.PasswordInformation;
@@ -64,11 +73,11 @@ import com.ctb.testSessionInfo.utils.TestSessionUtils;
 import com.ctb.testSessionInfo.utils.TreeData;
 import com.ctb.testSessionInfo.utils.UserOrgHierarchyUtils;
 import com.ctb.testSessionInfo.utils.UserPasswordUtils;
-import com.ctb.util.userManagement.CTBConstants;
-import com.ctb.util.web.sanitizer.JavaScriptSanitizer;
+import com.ctb.testSessionInfo.utils.WebUtils;
+import com.ctb.util.OperationStatus;
+import com.ctb.util.ValidationFailedInfo;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.ColumnSortEntry;
-import com.ctb.widgets.bean.PagerSummary;
 import com.google.gson.Gson;
 
 
@@ -103,7 +112,7 @@ public class SessionOperationController extends PageFlowController {
     private List sessionListCUFU = new ArrayList(); 
     private List sessionListPA = new ArrayList(); 
     private boolean hasLicenseConfig = false; 
-    private List productNameList = null;
+    //private List productNameList = null;
     //private Hashtable productNameToIndexHash = null;
     public static String CONTENT_TYPE_JSON = "application/json";
 
@@ -111,14 +120,16 @@ public class SessionOperationController extends PageFlowController {
     public UserProfileInformation userProfile = null; 
 	private TestProductData testProductData = null;  
 	private TestProduct [] tps;
-	private String productType = TestSessionUtils.GENERIC_PRODUCT_TYPE;
+	//private String productType = TestSessionUtils.GENERIC_PRODUCT_TYPE;
 	private static final String ACTION_INIT = "init";
+	//private static final int RETURN_TYPE_INT = 1;
 	boolean isPopulatedSuccessfully = false;
 	ScheduleTestVo vo = new ScheduleTestVo();
 
-	public Condition condition = new Condition();
+	//public Condition condition = new Condition();
 	
 	Map<Integer, String> topNodesMap = new LinkedHashMap<Integer, String>();
+	Map<Integer, TestVO> idToTestMap = new LinkedHashMap<Integer, TestVO>();
     
 	/**
 	 * @return the userName
@@ -374,6 +385,7 @@ public class SessionOperationController extends PageFlowController {
     	initialize();
     	String jsonData = "";
     	HttpServletResponse resp = getResponse();
+    	resp.setCharacterEncoding("UTF-8"); 
     	OutputStream stream = null;
         String productName = "";
         String currentAction = this.getRequest().getParameter("currentAction");
@@ -392,12 +404,14 @@ public class SessionOperationController extends PageFlowController {
                  if( tps!=null ) {
                 	 vo.populate(userName,tps, itemSet, scheduleTest);
                 	 vo.populateTopOrgnode(this.topNodesMap);
+                	 vo.populateTestIdToTestMap(idToTestMap);
                 	 
                  }
                  isPopulatedSuccessfully = true;
             } else if (!isPopulatedSuccessfully){
             	vo.populate(userName, tps, itemSet, scheduleTest);
             	vo.populateTopOrgnode(this.topNodesMap);
+            	vo.populateTestIdToTestMap(idToTestMap);
             }
         	           
             if(selectedProductId== null || selectedProductId.trim().length()==0)
@@ -420,7 +434,7 @@ public class SessionOperationController extends PageFlowController {
                  int selectedProductIndex = getProductIndexByID(selectedProductId);
            
                             
-                 this.condition.setOffGradeTestingDisabled(Boolean.FALSE);
+                 //this.condition.setOffGradeTestingDisabled(Boolean.FALSE);
                 
                  
                  String acknowledgmentsURL =  tps[selectedProductIndex].getAcknowledgmentsURL();
@@ -441,7 +455,7 @@ public class SessionOperationController extends PageFlowController {
     			resp.setContentType(CONTENT_TYPE_JSON);
     			//resp.flushBuffer();
     			stream = resp.getOutputStream();
-    			stream.write(jsonData.getBytes());
+    			stream.write(jsonData.getBytes("UTF-8"));
     			resp.flushBuffer();
     		} catch (IOException e) {
     			
@@ -471,33 +485,568 @@ public class SessionOperationController extends PageFlowController {
         
     }
     
-     private void initialize() {
-    	 java.security.Principal principal = getRequest().getUserPrincipal();
-         this.userName = principal.toString();
-         
-         getSession().setAttribute("userName", this.userName);
-         UserNodeData und =null;
+    	@Jpf.Action()
+        protected Forward saveTest(SessionOperationForm form)
+        {
+    		
+    		//  form.validateValues(); NOT TO DO
+    		Integer studentCountAfterSave = 0;
+    		Integer testAdminId =null;
+    		ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+            String[] studentsBeforeSave =  RequestUtil.getValuesFromRequest(this.getRequest(),"student");;
+            int studentCountBeforeSave =0;
+            boolean isValidationFailed = false;
+            String jsonData = "";
+            OperationStatus status = new OperationStatus();
+            HttpServletResponse resp = getResponse();
+        	resp.setCharacterEncoding("UTF-8"); 
+        	OutputStream stream = null;
+        	
+        	
+            if ( studentsBeforeSave != null )
+                studentCountBeforeSave = studentsBeforeSave.length;
+            try
+            {
+                testAdminId = createSaveTest(this.getRequest(), validationFailedInfo);
+                if(!validationFailedInfo.isValidationFailed()) {
+                	isValidationFailed = false;
+                	RosterElementData red = this.testSessionStatus.getRosterForTestSession(this.userName,
+                    		testAdminId, null, null, null);
+                    studentCountAfterSave = red.getTotalCount().intValue(); 
+                } else {
+                	isValidationFailed = true;
+                }
+                
+                                      
+                                
+            }   
+            catch (InsufficientLicenseQuantityException e)
+            {
+                e.printStackTrace();
+                String errorMessageHeader =  MessageResourceBundle.getMessage("SelectSettings.InsufficentLicenseQuantity.E001.Header");
+                String errorMessageBody =  MessageResourceBundle.getMessage("SelectSettings.InsufficentLicenseQuantity.E001.Body");
+                
+                validationFailedInfo.setKey("SelectSettings.InsufficentLicenseQuantity.E001");
+                validationFailedInfo.setMessageHeader(errorMessageHeader);
+                validationFailedInfo.updateMessage(errorMessageBody);
+                isValidationFailed = true;
         
-         
+            } 
+            //START- Changed for deferred defect 64446
+            catch (TransactionTimeoutException e)
+            {
+                e.printStackTrace();
+                String errorMessageHeader = MessageResourceBundle.getMessage("SelectSettings.FailedToSaveTestSessionTransactionTimeOut.Header");
+                String errorMessageBody =  MessageResourceBundle.getMessage("SelectSettings.FailedToSaveTestSessionTransactionTimeOut.Body");
+                                
+                
+                validationFailedInfo.setKey("SelectSettings.FailedToSaveTestSessionTransactionTimeOut");
+                validationFailedInfo.setMessageHeader(errorMessageHeader);
+                validationFailedInfo.updateMessage(errorMessageBody);
+                isValidationFailed = true;
+            }
+            catch (CTBBusinessException e)
+            {
+                e.printStackTrace();
+                String errorMessage =getMessageResourceBundle(e, "SelectSettings.FailedToSaveTestSession"); 
+                validationFailedInfo.setKey("SelectSettings.FailedToSaveTestSession");
+                validationFailedInfo.updateMessage(errorMessage);
+                isValidationFailed = true;
+            } 
+           if (!isValidationFailed && studentCountBeforeSave == studentCountAfterSave) {
+           		String Message = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved");
+        	   	status.setSuccess(true); 
+           		status.setSuccessMessage(Message);
+           } else if (!isValidationFailed)
+            {
+                int removedCount = studentCountBeforeSave - studentCountAfterSave;
+                String Message = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved") + MessageResourceBundle.getMessage("RestrictedStudentsNotSaved", "" +removedCount);
+                status.setSuccess(true); 
+           		status.setSuccessMessage(Message);
+            } else {
+            	status.setSuccess(false);
+            	status.setValidationFailedInfo(validationFailedInfo);
+            }
+            
+           Gson gson = new Gson();
+	       jsonData = gson.toJson(status);
+	       System.out.println(jsonData);
+	       	try {
+	   			resp.setContentType(CONTENT_TYPE_JSON);
+ 	   			stream = resp.getOutputStream();
+	   			stream.write(jsonData.getBytes("UTF-8"));
+	   			resp.flushBuffer();
+	   		} catch (IOException e) {
+	   			e.printStackTrace();
+   		} 
+           
+           
+           
+            return null;
+           // return new Forward("success", form);
+        }
+    
+    
+    	
+   
+    	 private Integer createSaveTest(HttpServletRequest httpServletRequest, ValidationFailedInfo validationFailedInfo) throws CTBBusinessException
+    	    {  
+    		 Integer newTestAdminId = null;
+    		 ScheduledSession scheduledSession = new ScheduledSession();
+    		 populateTestSession(scheduledSession, httpServletRequest, validationFailedInfo );
+    		 if(!validationFailedInfo.isValidationFailed()) {
+    			 populateSessionStudent(scheduledSession, httpServletRequest, validationFailedInfo );
+    		 }
+    		 if(!validationFailedInfo.isValidationFailed()) {
+    			 populateSessionStudent(scheduledSession, httpServletRequest, validationFailedInfo ); 
+    		 }
+    		 if(!validationFailedInfo.isValidationFailed()) {
+    			 populateProctor(scheduledSession, httpServletRequest , validationFailedInfo);
+    		 }
+    		 if(!validationFailedInfo.isValidationFailed()) {
+    			 populateScheduledUnits(scheduledSession, httpServletRequest, validationFailedInfo ); 
+    		 }
+    		 if(!validationFailedInfo.isValidationFailed()) {
+    			 newTestAdminId = this.scheduleTest.createNewTestSession(this.userName, scheduledSession);  
+    		 }    		 
+    	        return newTestAdminId;
+    }
+    
+     private void populateScheduledUnits(ScheduledSession scheduledSession,
+				HttpServletRequest request, ValidationFailedInfo validationFailedInfo) {
+    	/* List subtestList = null;*/
+	     //boolean sessionHasLocator = false;
+    	 try{
+    		 String productType				= RequestUtil.getValueFromRequest(request, RequestUtil.PRODUCT_TYPE, true, "");
+        	 Integer itemSetId        		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_ITEM_SET_ID, false, null));
+        	 String hasBreakValue     		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_HAS_BREAK, false, null);
+        	 String hasBreak          		= (hasBreakValue == null || !(hasBreakValue.trim().equals("T") || hasBreakValue.trim().equals("F"))) ? "F" :  hasBreakValue.trim();
+        	 boolean hasBreakBoolean        = (hasBreak.equals("T")) ? true : false;
+        	 
+        	 
+        	 List<SubtestVO>  subtestList   = idToTestMap.get(itemSetId).getSubtests();
+        	                     
+    	        if (productType!=null && TestSessionUtils.isTabeProduct(productType).booleanValue())
+    	        {
+    	            // for tabe test
+    	        	/*   if (TestSessionUtils.isTabeBatterySurveyProduct(this.productType).booleanValue())
+    	            {
+    	                
+    	                subtestList = TestSessionUtils.setupSessionSubtests(this.sessionSubtests, this.defaultSubtests); 
+    	                
+    	                String autoLocator = form.getAutoLocator();
+    	                if ((autoLocator != null) && autoLocator.equals("true"))
+    	                {            
+    	                    TestSessionUtils.restoreLocatorSubtest(subtestList, this.locatorSubtest);
+    	                    sessionHasLocator = true;
+    	                }
+    	                else
+    	                {
+    	                    TestSessionUtils.setDefaultLevels(subtestList, "E");  // make sure set level = 'E' if null
+    	                }
+    	            } 
+    	            else
+    	            {
+    	                // tabe locator test
+    	                subtestList = TestSessionUtils.cloneSubtests(this.defaultSubtests);
+    	                TestSessionUtils.setDefaultLevels(subtestList, "1");  // make sure set level = '1' for test locator
+    	            }    */   
+    	            
+    	        }
+    	        else
+    	        {
+    	            // for non-tabe test
+    	            subtestList = TestSessionUtils.cloneSubtests(subtestList);
+    	        }
+    	        
+    	        
+    	        TestElement [] newTEs = new TestElement[subtestList.size()];
+    	        
+    	        for (int i=0; i < subtestList.size(); i++)
+    	        {
+    	            SubtestVO subVO= (SubtestVO)subtestList.get(i);
+    	            TestElement te = new TestElement();
+    	        
+    	            te.setItemSetId(subVO.getId());
+    	            
+    	            if (TestSessionUtils.isTabeProduct(productType).booleanValue())
+    	            {                
+    	                /*String level = subVO.getLevel();
+    	                te.setItemSetForm(level);*/
+    	            }
+    	            
+    	            if (!hasBreakBoolean ) {
+    	            	//String accessCode = RequestUtil.getValueFromRequest(request, RequestUtil.ACCESS_CODE, true, "");
+    	            	String accessCode = scheduledSession.getTestSession().getAccessCode();
+    	            	te.setAccessCode(accessCode);
+    	            } else {
+    	            	String accessCode = RequestUtil.getValueFromRequest(request, RequestUtil.ACCESS_CODEB+i, true, "");
+    	            	te.setAccessCode(accessCode);
+    	            }
+    	               
+    	            
+    	            te.setSessionDefault(subVO.getSessionDefault());
+    	            
+    	            newTEs[i] = te;
+    	        }
+    	        
+    	        scheduledSession.setScheduledUnits(newTEs);
+    	        validateScheduledUnits(scheduledSession, hasBreakBoolean, validationFailedInfo);
+            
+    	       
+    	 } catch (Exception e) {
+    		 validationFailedInfo.setKey("UnknownException");
+    	 }
+    	 
+	        
+	        
+	        
+	        
+	        
+			
+		}
+
+	private void populateProctor(ScheduledSession scheduledSession,
+				HttpServletRequest request, ValidationFailedInfo validationFailedInfo) {
+		User[] proctorArray = new User[1];
+		proctorArray[0]= this.user;
+		scheduledSession.setProctors(proctorArray);
+			
+		}
+
+	private void populateSessionStudent(ScheduledSession scheduledSession,
+				HttpServletRequest httpServletRequest, ValidationFailedInfo validationFailedInfo) {
+			// TODO Auto-generated method stub
+			
+		}
+
+	private void populateTestSession(ScheduledSession scheduledSession, HttpServletRequest request, ValidationFailedInfo validationFailedInfo) {
+		
+		 try{
+			 TestSession testSession = new TestSession();
+			 Set<Integer> keySet            = this.topNodesMap.keySet();
+			 Integer[] topnodeids= (keySet).toArray(new Integer[keySet.size()]);
+			 Integer creatorOrgNod    		= topnodeids[0];
+			 Integer itemSetId        		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_ITEM_SET_ID, false, null));
+			 
+			 TestVO selectedTest = idToTestMap.get(itemSetId);
+			 Integer productId        		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_PRODUCT_ID, true, "-1"));
+			 Date dailyLoginEndTime   		= DateUtils.getDateFromTimeString(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_END_TIME, false, null));
+			 Date dailyLoginStartTime 		= DateUtils.getDateFromTimeString(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_START_TIME, false, null));
+			 Date dailyLoginEndDate   		= DateUtils.getDateFromDateString(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_END_DATE, false, null));
+			 Date dailyLoginStartDate 		= DateUtils.getDateFromDateString(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_START_DATE, false, null));
+			 String location          		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_LOCATION, false, null);
+			 String hasBreakValue     		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_HAS_BREAK, false, null);
+			 String hasBreak          		= (hasBreakValue == null || !(hasBreakValue.trim().equals("T") || hasBreakValue.trim().equals("F"))) ? "F" :  hasBreakValue.trim();
+			 boolean hasBreakBoolean        = (hasBreak.equals("T")) ? true : false;
+			 String isRandomize       		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_RANDOMIZE, true, "");
+			 String timeZone          		= DateUtils.getDBTimeZone( RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_TIME_ZONE, false, null));
+			 String sessionName		  		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_TEST_NAME, false, null);
+			 //String sessionName       		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_SESSION_NAME, false, null);
+			 String showStdFeedbackVal   	= RequestUtil.getValueFromRequest(request, RequestUtil.SHOW_STUDENT_FEEDBACK, true, "false");
+			 String showStdFeedback         = (showStdFeedbackVal==null || !(showStdFeedbackVal.trim().equals("true") || showStdFeedbackVal.trim().equals("false")) )? "F" :(showStdFeedbackVal.trim().equals("true")? "T" : "F");  
+			 String productType				= RequestUtil.getValueFromRequest(request, RequestUtil.PRODUCT_TYPE, true, "");
+			 //String formOperand       		= RequestUtil.getValueFromRequest(request, RequestUtil.FORM_OPERAND, true, TestSession.FormAssignment.ROUND_ROBIN);
+			 //String overrideFormAssignment 	= RequestUtil.getValueFromRequest(request, RequestUtil.OVERRIDE_FORM_ASSIGNMENT, false, null);
+			 //String overrideLoginStartDate    = RequestUtil.getValueFromRequest(request, RequestUtil.OVERRIDE_LOGIN_START_DATE, false, null);
+			 /*Date overrideLoginSDate        = null ;
+			 if(overrideLoginStartDate!=null)
+				 overrideLoginSDate = DateUtils.getDateFromDateString(overrideLoginStartDate);*/
+			 //String formAssigned			= RequestUtil.getValueFromRequest(request, RequestUtil.FORM_ASSIGNED, true, "");
+			 
+			 
+			 String formOperand       		=  selectedTest.getFormOperand();
+			 String overrideFormAssignment 	=  selectedTest.getOverrideFormAssignment();
+			 Date overrideLoginSDate  		=  selectedTest.getOverrideLoginStartDate();
+			 String formAssigned			=  (selectedTest.getForms() ==null || selectedTest.getForms().length==0)? null: selectedTest.getForms()[0]; 
+			 String testName       		    = 	selectedTest.getTestName(); 
+			 // setting default value
+			 testSession.setTestAdminStatus("CU");
+	         testSession.setTestAdminType("SE");
+	         testSession.setActivationStatus("AC");
+	         testSession.setEnforceTimeLimit("T");
+	         testSession.setCreatedBy(this.userName);
+
+	         
+	         testSession.setCreatorOrgNodeId(creatorOrgNod);
+	         testSession.setShowStudentFeedback(showStdFeedback);
+	         testSession.setProductId(productId);
+	         testSession.setDailyLoginEndTime(dailyLoginEndTime);
+	         testSession.setDailyLoginStartTime(dailyLoginStartTime);
+	         testSession.setLocation(location);
+	         testSession.setEnforceBreak(hasBreak);
+	         testSession.setIsRandomize(isRandomize);
+	         testSession.setLoginEndDate(dailyLoginEndDate);
+	         testSession.setLoginStartDate(dailyLoginStartDate);
+	         testSession.setTimeZone(timeZone);
+	         testSession.setTestName(testName);
+	         testSession.setTestAdminName(sessionName);
+
+	         if (formOperand.equals(TestSession.FormAssignment.MANUAL))
+	             testSession.setFormAssignmentMethod(TestSession.FormAssignment.MANUAL);
+	         else if (formOperand.equals(TestSession.FormAssignment.ALL_SAME))
+	             testSession.setFormAssignmentMethod(TestSession.FormAssignment.ALL_SAME);
+	         else 
+	             testSession.setFormAssignmentMethod(TestSession.FormAssignment.ROUND_ROBIN);
+	         
+	        testSession.setPreferredForm(formAssigned);      
+	         
+	         testSession.setOverrideFormAssignmentMethod(overrideFormAssignment);
+	         testSession.setOverrideLoginStartDate(overrideLoginSDate);
+	         
+	         testSession.setItemSetId(itemSetId);
+	         
+	         if (productType!=null && TestSessionUtils.isTabeProduct(productType).booleanValue())
+	         {
+	             testSession.setFormAssignmentMethod(TestSession.FormAssignment.MANUAL);
+	         }
+
+	         if (hasBreakBoolean)
+	         {
+	        	String accessCode = RequestUtil.getValueFromRequest(request, RequestUtil.ACCESS_CODEB+0, true, "");
+	         	testSession.setAccessCode(accessCode);    
+	         }
+	         else
+	         {
+	        	 String accessCode = RequestUtil.getValueFromRequest(request, RequestUtil.ACCESS_CODE, true, "");
+	        	 testSession.setAccessCode(accessCode); 
+	         }
+	         
+	         validateTestSession(testSession, validationFailedInfo);
+
+	         
+	         scheduledSession.setTestSession(testSession);
+			 
+		 } catch (Exception e) {
+			 validationFailedInfo.setKey("UnknownException");
+		 }
+		 // retrieving data from request
+		 
+			
+		}
+
+     private void validateTestSession(TestSession testSession,	ValidationFailedInfo validationFailedInfo) throws Exception {
+		String[] TACs = new String[1];
+		TACs[0] = testSession.getAccessCode();
+		if (!WebUtils.validString(testSession.getTestAdminName())) {
+			validationFailedInfo.setKey("SelectSettings.TestSessionName.InvalidCharacters");
+			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SelectSettings.TestSessionName.InvalidCharacters.Header"));
+			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("SelectSettings.TestSessionName.InvalidCharacters.Body"));
+		} else if (!WebUtils.validString(testSession.getLocation())) {
+			validationFailedInfo.setKey("SelectSettings.TestLocation.InvalidCharacters");
+			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SelectSettings.TestLocation.InvalidCharacters.Header"));
+			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("SelectSettings.TestLocation.InvalidCharacters.Body"));
+		} else if (hasEmptyTAC(TACs)) {
+			if (testSession.getEnforceBreak().equals("T")) {
+				validationFailedInfo.setKey("TAC.MissingTestAccessCodes");
+	 			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.MissingTestAccessCodes.Header"));
+	 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.MissingTestAccessCodes.Body1"));
+	 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.MissingTestAccessCodes.Body2"));
+			} else {
+				validationFailedInfo.setKey("TAC.MissingTestAccessCode");
+				validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.MissingTestAccessCode.Header"));
+				validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.MissingTestAccessCode.Body"));
+			}
+		} else if (hasSpecialCharInTAC(TACs)) {
+			validationFailedInfo.setKey( "TAC.SpecialCharNotAllowed");
+ 			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage( "TAC.SpecialCharNotAllowed.Header"));
+ 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage( "TAC.SpecialCharNotAllowed.Body"));
+		} else if (hasInvalidateTACLength(TACs)) {
+			validationFailedInfo.setKey("TAC.SixChars");
+ 			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.SixChars"));
+		}  
+
+	}
+     private void validateScheduledUnits(ScheduledSession scheduledSession,	boolean hasBreakBoolean, ValidationFailedInfo validationFailedInfo) {
+    	 TestElement[] newTEs = scheduledSession.getScheduledUnits();
+    	 //boolean hasAL = ((form.getAutoLocator() != null) && form.getAutoLocator().equals("true"));
+         //if (hasAL)
+          //   TACs = new String[this.defaultSubtests.size() + 1];
+        // else
+    	 
+    	 String[] TACs = null;
+    	 if(!hasBreakBoolean){
+    		 TACs = new String[1];
+             TACs[0] = scheduledSession.getTestSession().getAccessCode();
+    	 } else {
+    		 TACs = new String[newTEs.length];
+    		 for(int i=0; i<newTEs.length; i++) {
+    			 TACs[i] = newTEs[i].getAccessCode();
+    		 }
+    	 }
+    	 
+    	if (hasBreakBoolean && hasEmptyTAC(TACs)) {
+ 			validationFailedInfo.setKey("TAC.MissingTestAccessCodes");
+ 			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.MissingTestAccessCodes.Header"));
+ 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.MissingTestAccessCodes.Body1"));
+ 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.MissingTestAccessCodes.Body2"));
+ 			
+ 		} else if (hasBreakBoolean && hasSpecialCharInTAC(TACs)) {
+ 			validationFailedInfo.setKey( "TAC.SpecialCharNotAllowed");
+ 			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage( "TAC.SpecialCharNotAllowed.Header"));
+ 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage( "TAC.SpecialCharNotAllowed.Body"));
+ 		} else if (hasBreakBoolean && hasInvalidateTACLength(TACs)) {
+ 			validationFailedInfo.setKey("TAC.SixChars");
+ 			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.SixChars"));
+ 		} else if (hasBreakBoolean && hasDuplicateTAC(TACs)) {
+ 			validationFailedInfo.setKey("TAC.IdenticalTestAccessCodes");
+ 			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.IdenticalTestAccessCodes.Header"));
+ 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.IdenticalTestAccessCodes.Body1"));
+ 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.IdenticalTestAccessCodes.Body2"));
+ 		}else if (isValidTAC(scheduledSession, TACs,validationFailedInfo)){
+ 			// do nothing validationFailedInfo is populated
+ 		}
+    	
+    	 
+    	 
+ 		
+ 	}
+     
+     private boolean isValidTAC(ScheduledSession scheduledSession, String[] TACs, ValidationFailedInfo validationFailedInfo) {
+
+         String [] validateResults=null;
+         boolean found = false;
          try
          {
-             this.user = this.scheduleTest.getUserDetails(this.userName, this.userName);
-             und = this.scheduleTest.getTopUserNodesForUser(this.userName, null, null, null, null);
-             UserNode [] nodes = und.getUserNodes();        
-             for (int i=0; i < nodes.length; i++)
-             {
-                 UserNode node = (UserNode)nodes[i];
-                 if (node != null)
-                 {
-                 	this.topNodesMap.put(node.getOrgNodeId(), node.getOrgNodeName());
-                 }
-                 
-             }
+             validateResults = this.scheduleTest.validateAccessCodes(this.userName, TACs,scheduledSession.getTestSession().getTestAdminId());
          }
          catch (CTBBusinessException e)
          {
-             e.printStackTrace();
+             e.printStackTrace();    
          }
+         
+         if (validateResults != null)
+         {
+             Vector<String> tacsInuse = new Vector<String>();
+             for (int i=0; i < validateResults.length; i++)
+             {
+                 if (validateResults[i] != null && validateResults[i].indexOf("exists") >= 0)
+                 {
+                	 found = true;
+                     tacsInuse.add(TACs[i]);
+                 }
+                 
+             }
+             if (tacsInuse.size() > 1)
+             {
+            	 validationFailedInfo.setKey("TAC.InvalidTestAccessCode.Header2");
+            	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.InvalidTestAccessCode.Header2"));
+            	 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.InvalidTestAccessCode.InUse2", getTACsInString(tacsInuse)));
+             }                    
+             else if (tacsInuse.size() == 1)
+             {
+            	 validationFailedInfo.setKey("TAC.InvalidTestAccessCode.Header");
+            	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.InvalidTestAccessCode.Header"));
+            	 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.InvalidTestAccessCode.InUse", getTACsInString(tacsInuse)));
+             }
+             
+             /*if (scheduledSession.getTestSession().getEnforceBreak().equals("T")){
+            	 validationFailedInfo.setKey("TAC.InvalidTestAccessCode.Footer.WithBreak");
+            	 validationFailedInfo.setMessageHeader("TAC.InvalidTestAccessCode.Footer.WithBreak");
+                 //validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.InvalidTestAccessCode.Footer.WithBreak"));
+             } else {
+            	 validationFailedInfo.setKey("TAC.InvalidTestAccessCode.Footer.NoBreak");
+            	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.InvalidTestAccessCode.Footer.NoBreak"));
+            	 //validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.InvalidTestAccessCode.Footer.NoBreak"));
+             }*/
+            	 
+         }
+         
+         return found;
+     
+	
+	} 
+     
+	private boolean hasDuplicateTAC(String[] TACs) {
+		boolean found = false;
+		if (TACs.length <= 1)
+			return false;
+		for (int i = 0; i < TACs.length && !found; i++) {
+			for (int j = i + 1; j < TACs.length && !found; j++) {
+				if (TACs[i] != null && TACs[i].equalsIgnoreCase((TACs[j]))) {
+					found = true;
+					break;
+				}
+
+			}
+			if (found) {
+				break;
+			}
+		}
+		return found;
+	}
+
+
+	private boolean hasInvalidateTACLength(String[] TACs) {
+		boolean found = false;
+		for (int i = 0; i < TACs.length && !found; i++) {
+			if (TACs[i] != null && TACs[i].length() < 6) {
+				found = true;
+				break;
+			}
+				
+		}
+		return found;
+	}
+
+
+	private boolean hasSpecialCharInTAC(String[] TACs) {
+		boolean found = false;
+		for (int i = 0; i < TACs.length && !found; i++) {
+			for (int j = 0; j < TACs[i].length() && !found; j++) {
+				char currentChar = TACs[i].charAt(j);
+				if (!(currentChar >= 'A' && currentChar <= 'Z'
+						|| currentChar >= 'a' && currentChar <= 'z'
+						|| currentChar >= '0' && currentChar <= '9' || currentChar == '_')){
+					found = true;
+				    break;
+				}
+					
+			}
+			if(found)
+				 break;
+		}
+		return found;
+	}
+
+
+	private boolean hasEmptyTAC(String[] TACs) {
+		boolean found = false;
+		for (int i = 0; i < TACs.length && !found; i++) {
+			if ("".equals(TACs[i])) {
+				found = true;
+				break;
+			}
+				
+		}
+		return found;
+	}
+
+
+	private void initialize() {
+		java.security.Principal principal = getRequest().getUserPrincipal();
+		this.userName = principal.toString();
+
+		getSession().setAttribute("userName", this.userName);
+		UserNodeData und = null;
+
+		try {
+			this.user = this.scheduleTest.getUserDetails(this.userName,
+					this.userName);
+			und = this.scheduleTest.getTopUserNodesForUser(this.userName, null,
+					null, null, null);
+			UserNode[] nodes = und.getUserNodes();
+			for (int i = 0; i < nodes.length; i++) {
+				UserNode node = (UserNode) nodes[i];
+				if (node != null) {
+					this.topNodesMap.put(node.getOrgNodeId(), node
+							.getOrgNodeName());
+				}
+
+			}
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private int getProductIndexByID(String selectedProductId) {
@@ -1849,4 +2398,42 @@ public class SessionOperationController extends PageFlowController {
     }
     
     // Added for Proctor : End
+	 private String getTACsInString(Vector vec) 
+	    {
+	        Iterator it = vec.iterator();
+	        StringBuffer buf = new StringBuffer();
+	        while (it.hasNext()) {
+	            buf.append((String)it.next());
+	            if (it.hasNext())
+	                buf.append(", ");
+	        }
+	        return buf.toString();
+	    }
+	 
+	 private String getMessageResourceBundle(CTBBusinessException e, String msgId) 
+	    {
+	        String errorMessage = "";
+	        /*if (e instanceof ValidationException) {
+	            String msgException = e.getMessage();
+	            if (msgException != null) {
+	                if (msgException.equals("SelectSettings.TestSessionName.InvalidCharacters") ||
+	                    msgException.equals("SelectSettings.TestLocation.InvalidCharacters")) {
+	                    errorMessage = MessageResourceBundle.getMessage(msgException);
+	                }
+	                else {
+	                    msgId += ".ValidationException";
+	                    errorMessage = MessageResourceBundle.getMessage(msgId);
+	                }            
+	            }
+	            else {
+	                msgId += ".ValidationException";
+	                errorMessage = MessageResourceBundle.getMessage(msgId);
+	            }
+	        }*/
+	        /*else {*/
+	            errorMessage = MessageResourceBundle.getMessage(msgId, e.getMessage());
+	        /*}*/
+	            
+	        return errorMessage; 
+	    }
 }

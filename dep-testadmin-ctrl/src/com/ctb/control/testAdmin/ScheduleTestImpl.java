@@ -419,9 +419,9 @@ public class ScheduleTestImpl implements ScheduleTest
                 for(int i=0;i<subtests.length && subtests[i] != null;i++) {
                     TestElement subtest = subtests[i];
                     subtest.setForms(forms);
-                    boolean validCode = false;
+                    /*boolean validCode = false;
                     String code = "";
-                    subtest.setAccessCode(code);
+                    subtest.setAccessCode(code);*/
                 }
             }
             return ted;

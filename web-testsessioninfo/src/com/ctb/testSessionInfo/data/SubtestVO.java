@@ -104,7 +104,7 @@ public class SubtestVO implements java.io.Serializable
     }   
     
     public String getTestAccessCode() {
-        return this.testAccessCode.trim();
+        return this.testAccessCode;
     }
     public void setTestAccessCode(String testAccessCode) {
         this.testAccessCode = testAccessCode;

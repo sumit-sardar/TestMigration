@@ -10,6 +10,7 @@ import java.util.Map;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestElementData;
 import com.ctb.bean.testAdmin.TestProduct;
+import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.control.db.ItemSet;
 import com.ctb.control.testAdmin.ScheduleTest;
 import com.ctb.exception.CTBBusinessException;
@@ -74,7 +75,7 @@ public class ScheduleTestVo implements Serializable{
 		
 	}
 
-	private List<TestVO> buildTestList(String userName, TestElementData ted, ScheduleTest scheduleTest, String showLevelOrGrade) throws CTBBusinessException
+	private List<TestVO> buildTestList(String userName, TestProduct tp, TestElementData ted, ScheduleTest scheduleTest, String showLevelOrGrade) throws CTBBusinessException
     {
         
         List<TestVO> result = new ArrayList<TestVO>();
@@ -131,7 +132,7 @@ public class ScheduleTestVo implements Serializable{
             if(accessCode!=null){
             	testVO.setAccessCode(accessCode);
             }
-            //testVO.setForms(tes[i].getForms());
+            testVO.setForms(tes[i].getForms());
             
             
             
@@ -157,18 +158,26 @@ public class ScheduleTestVo implements Serializable{
         
             testVO.setOverrideFormAssignment(tes[i].getOverrideFormAssignmentMethod());
             testVO.setOverrideLoginStartDate(tes[i].getOverrideLoginStartDate());
+            testVO.setOffGradeTestingDisabled(isOffGradeTestingDisabled(tp,ted,tes[i].getItemSetId() ));
+            if(tes[i].getOverrideFormAssignmentMethod() != null) {
+            	testVO.setFormOperand(tes[i].getOverrideFormAssignmentMethod());
+            }else if (tes[i].getForms()!= null && tes[i].getForms().length > 0 ) {
+            	testVO.setFormOperand(TestSession.FormAssignment.ROUND_ROBIN);
+            } else {
+            	testVO.setFormOperand(TestSession.FormAssignment.ROUND_ROBIN);
+            }
                     
             result.add(testVO);
         }
         return result;
         
     }
-	 private List<TestVO> getTestsForProductForUser(String userName, Integer productId, ScheduleTest scheduleTest, String showLevelOrGrade)
+	 private List<TestVO> getTestsForProductForUser(TestProduct tp, String userName, Integer productId, ScheduleTest scheduleTest, String showLevelOrGrade)
      throws CTBBusinessException
      {
 		 
 		 TestElementData ted = scheduleTest.getTestsForProduct(userName, productId, null, null, null); 
-		 List<TestVO> testList = buildTestList(userName, ted,scheduleTest, showLevelOrGrade);
+		 List<TestVO> testList = buildTestList( userName,tp, ted,scheduleTest, showLevelOrGrade);
 		 return testList;
      }
 	 private boolean isLasLinkProduct(String productType) {
@@ -190,7 +199,7 @@ public class ScheduleTestVo implements Serializable{
 				}
 				
 				//List<TestVO> testSession= getTestsForProductForUser(userName,val.getProductId(), scheduleTest);
-				ProductBean prod = new ProductBean(val.getProductId(), val.getProductName(), getLevelDropList(val.getLevels()), getGradeDropList(val.getGrades()));
+				ProductBean prod = new ProductBean(val.getProductId(), val.getProductName(), getLevelDropList(val.getLevels()), getGradeDropList(val.getGrades()), val.getShowStudentFeedback());
 				
 				
 				prod.setAcknowledgmentsURL(val.getAcknowledgmentsURL());
@@ -222,7 +231,7 @@ public class ScheduleTestVo implements Serializable{
 					prod.setHideLevelDropDown(false);
 				}
 				
-				List<TestVO> testSession= getTestsForProductForUser(userName,val.getProductId(), scheduleTest, prod.getShowLevelOrGrade());
+				List<TestVO> testSession= getTestsForProductForUser(val,userName,val.getProductId(), scheduleTest, prod.getShowLevelOrGrade());
 				prod.setTestSessionList(testSession);
 				
 				product.add(prod);
@@ -244,6 +253,46 @@ public class ScheduleTestVo implements Serializable{
 
 
 	
+	private Boolean isOffGradeTestingDisabled(TestProduct tp, TestElementData ted, Integer testId) {
+        
+        if (! tp.getOffGradeTestingDisabled().equals("T"))
+        {
+            return Boolean.FALSE;
+        }
+
+        String[] grades = tp.getGrades();
+        if (grades != null)
+        {
+            for (int i=0; i < grades.length; i++)
+            {
+                if (grades[i] != null)
+                {
+                    TestElement[] tes = ted.getTestElements();
+                    for (int j=0; j < tes.length && tes[j] != null; j++)
+                    {
+                        TestElement te = tes[j];
+                        if (te.getItemSetId().intValue() == testId.intValue())
+                        {
+                        	if (isLasLinkProduct(tp.getProductType())) {
+	                            if (te.getItemSetLevel() != null) {
+	                                return Boolean.TRUE;                                
+	                            }
+                        	}
+                        	else {
+	                            if (te.getGrade() != null) {
+	                                return Boolean.TRUE;                                
+	                            }
+                        	}
+                        }
+                    }
+                }
+            }                        
+        }        
+                
+        return Boolean.FALSE;
+    
+	}
+
 	@SuppressWarnings("unchecked")
 	private void populateTimeZone() {
 		List<String> timeZoneList = DateUtils.getTimeZoneList(); 
@@ -312,6 +361,23 @@ public class ScheduleTestVo implements Serializable{
 	public void setNoTestExists(boolean noTestExists) {
 		this.noTestExists = noTestExists;
 	}
+
+	/**
+	 * @return the product
+	 */
+	public List<ProductBean> getProduct() {
+		return product;
+	}
+
+
+	public void populateTestIdToTestMap(Map<Integer, TestVO> idToTestMap) {
+		for(ProductBean productBean :  this.product) {
+			for(TestVO testVO : productBean.getTestSessionList()) {
+				idToTestMap.put(testVO.getId(), testVO);
+			}
+		}
+		
+	}
 	
 	
 }
@@ -343,6 +409,8 @@ class ProductBean implements Serializable{
 	
 	private boolean isTabeLocatorProduct = false;
 	
+	private Boolean showStudentFeedback = false;
+	
 	
 	public ProductBean(Integer productId, String productName) {
 		this.productId = productId;
@@ -351,12 +419,13 @@ class ProductBean implements Serializable{
 
 	
 	public ProductBean(Integer productId, String productName,
-			List<ObjectIdName> levelDropList, List<ObjectIdName> gradeDropList) {
+			List<ObjectIdName> levelDropList, List<ObjectIdName> gradeDropList, String showStudentFeedback) {
 		this.productId = productId;
 		this.productName = productName;
 		this.levelDropDownList = levelDropList;
 		if(gradeDropList!=null) 
 			this.gradeDropDownList = gradeDropList;
+		this.showStudentFeedback = new Boolean(showStudentFeedback.equals("T"));
 		
 		
 	}

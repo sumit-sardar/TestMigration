@@ -60,6 +60,7 @@
 					</div>
 	     	   </td>
 		   	</tr>
+		   	<div id="showMessage" style="display:none; width:99.5%; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; "> </div>
 	</table>
 	
 	<div style="float:left;width:1210px;">

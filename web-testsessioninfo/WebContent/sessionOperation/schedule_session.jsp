@@ -1,6 +1,6 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
-
+<%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <netui-data:declareBundle bundlePath="webResources" name="web" />
 
 <div id="scheduleSession"
@@ -98,7 +98,7 @@
 								<td>&nbsp;</td>
 							<td  width="100%">
 								<center>
-								<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="" class="ui-widget-header">
+								<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:saveTest(); return false;" class="ui-widget-header">
 								<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('scheduleSession'); return false;" class="ui-widget-header">
 								</center>
 								<br>

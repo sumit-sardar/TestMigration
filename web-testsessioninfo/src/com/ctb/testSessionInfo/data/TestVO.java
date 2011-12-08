@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Iterator;
 
+import com.ctb.bean.testAdmin.TestSession;
+
 public class TestVO implements java.io.Serializable
 { 
     static final long serialVersionUID = 1L;
@@ -17,7 +19,7 @@ public class TestVO implements java.io.Serializable
     
     private String accessCode = null;
 
-   // private String [] forms = null;
+    private String [] forms = null;
     
     private String overrideFormAssignment = null;
     
@@ -35,6 +37,10 @@ public class TestVO implements java.io.Serializable
     
     int subtestCount = 0;
     
+    private Boolean offGradeTestingDisabled = Boolean.FALSE;
+    
+    private String formOperand = TestSession.FormAssignment.ROUND_ROBIN;
+    
     public TestVO(Integer id, String testName, String level, String duration, List<SubtestVO> subtests) {
         this.id = id;
         this.testName = testName;
@@ -42,7 +48,7 @@ public class TestVO implements java.io.Serializable
         this.duration = duration;
         this.subtests = subtests;
         //this.subtestsString = getSubtestsString();
-        this.accessCode = getFirstAccessCode();
+        //this.accessCode = getFirstAccessCode();
         this.hasMultipleSubtests = hasMultipleSubtests();
         this.isSubtestExists = getSubtestExistStatus();
         this.subtestCount = getSubtestCount();
@@ -53,15 +59,18 @@ public class TestVO implements java.io.Serializable
         this.testName = src.getTestName();
         this.level = src.getLevel();
         this.duration = src.getDuration();
-        this.accessCode = src.getAccessCode();
-        /*if (src.getForms() != null) {
+        //this.accessCode = src.getAccessCode();
+        if (src.getForms() != null && src.getForms().length>0) {
             this.forms = new String[src.getForms().length];
             for (int i=0; i< src.getForms().length; i++) {
                 this.forms[i]= src.getForms()[i];     
             }
         }
-        else 
-            this.forms = null;*/
+        else {
+        	this.forms = new String[1];
+        	this.forms[0] = "";
+        }
+            
 
         if (src.getSubtests() != null) {
             Iterator<SubtestVO> it = src.getSubtests().iterator();
@@ -149,14 +158,14 @@ public class TestVO implements java.io.Serializable
     public void setAccessCode(String accessCode) {
         this.accessCode = accessCode;
     }
-    /*
+    
     public String [] getForms() {
         return this.forms;
     }
     public void setForms(String [] forms) {
         this.forms = forms;
     }
-*/
+
     public String getOverrideFormAssignment() {
         return this.overrideFormAssignment;
     }
@@ -209,6 +218,30 @@ public class TestVO implements java.io.Serializable
 	 */
 	public void setIsRandomize(String isRandomize) {
 		this.isRandomize = isRandomize;
+	}
+
+	
+	/**
+	 * @param offGradeTestingDisabled the offGradeTestingDisabled to set
+	 */
+	public void setOffGradeTestingDisabled(Boolean offGradeTestingDisabled) {
+		this.offGradeTestingDisabled = offGradeTestingDisabled;
+	}
+
+	
+	/**
+	 * @param formOperand the formOperand to set
+	 */
+	public void setFormOperand(String formOperand) {
+		this.formOperand = formOperand;
+	}
+
+	
+	/**
+	 * @return the formOperand
+	 */
+	public String getFormOperand() {
+		return formOperand;
 	}
     
     

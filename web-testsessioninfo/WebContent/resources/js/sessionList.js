@@ -93,6 +93,7 @@ function populateSessionListGrid(homePageLoad) {
 		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
 				//clearMessage();
+				$('#showMessage').hide();
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
 				var minPageSize = 1;
@@ -105,6 +106,7 @@ function populateSessionListGrid(homePageLoad) {
 				
 			},
 			onSelectRow: function () {
+					$('#showMessage').hide();
 					setAnchorButtonState('viewStatusButton', false);
 					if($("#canRegisterStudent").val() == 'true'){
 						var selectedTestSessionId = $("#list2").jqGrid('getGridParam', 'selrow');
@@ -289,6 +291,7 @@ function populateCompletedSessionListGrid() {
 	}
 	function showTreeSlider() {
 		openTreeRequested = true;
+		$('#showMessage').hide();
 		 if(isTreePopulated) {
 			 $("#show").css('display', 'none');
 			 $("#hide").css('display', 'block');
@@ -311,6 +314,7 @@ function populateCompletedSessionListGrid() {
 	}
 	
 	function hideTreeSlider() {
+		 $('#showMessage').hide();
 		 openTreeRequested  = false;
 		 $("#hide").css('display', 'none');
 		 $("#show").css('display', 'block');
@@ -383,6 +387,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	   
 	  $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	//loadSessionGrid = true;
+	    	$('#showMessage').hide();
 	    	var SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
 	    	var topNodeSelected = $(this).parent().attr("categoryId");
@@ -529,17 +534,20 @@ function createSingleNodeSelectedTree(jsondata) {
 					if(sessionList[i].isRandomize == "Y" ){
 						$("#randomDis").show();	
 						$("#randDisLbl").show();
+						$("#randomDis").val("Y");
 						//$("#randomDistDiv").show();
 						document.getElementById("randomDis").checked = true;
 					}else if(sessionList[i].isRandomize == "N" ){
-						$("#randomDis").hide();	
-						$("#randDisLbl").hide();
+						$("#randomDis").show();	
+						$("#randDisLbl").show();
+						$("#randomDis").val("N");
 						//$("#randomDistDiv").show();
 						document.getElementById("randomDis").checked = false;
 					} else {
 						document.getElementById("randomDis").checked = false;
 						$("#randomDis").hide();	
-						$("#randDisLbl").hide();	
+						$("#randDisLbl").hide();
+						$("#randomDis").val("");	
 						//$("#randomDistDiv").hide();
 					}					
 					break;					
@@ -548,6 +556,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			if(!found) {
 				$("#randomDis").hide();	
 				$("#randDisLbl").hide();
+				$("#randomDis").val("");
 			}
 			return str;
 	}
@@ -630,9 +639,11 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	
 	function reloadHomePage(){
+		
 		reset();
 		hideTreeSlider();
 		gridReload(true);
+		$('#showMessage').hide();
 	}	
 	
 	
@@ -775,7 +786,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	
 	function scheduleNewSession() {
-	
+	$('#showMessage').hide();
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -784,6 +795,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		url:		'selectTest.do?currentAction=init',
 		type:		'POST',
 		dataType:	'json',
+		contentType: 'application/json; charset=UTF-8', 
 		success:	function(data, textStatus, XMLHttpRequest){
 						ProductData = data;
 						
@@ -805,6 +817,8 @@ function createSingleNodeSelectedTree(jsondata) {
 							fillDropDown("topOrgNode",data.topNodeDropDownList)
 							processStudentAccordion();
 							processProctorAccordion();
+							$("#productType").val(data.product[0].productType);
+							$("#showStudentFeedback").val(data.product[0].showStudentFeedback);
 						}
 						
 						$.unblockUI(); 						
@@ -942,6 +956,8 @@ function createSingleNodeSelectedTree(jsondata) {
 		var optionList = ProductData.product
 		for(var i = 0; i < optionList.length; i++ ) {
 			if(selectProductId==optionList[i].productId) { 	     
+				$("#productType").val(optionList[i].productType);
+				$("#showStudentFeedback").val(optionList[i].showStudentFeedback); 	     
 				if(!(optionList[i].isTabeProduct)) {
 					isTabeProduct = false;
 					isTabeLocatorProduct=false;
@@ -1022,11 +1038,13 @@ function createSingleNodeSelectedTree(jsondata) {
 					document.getElementById("aCodeDiv"+i).style.visibility = "hidden";
 					
 				}*/
+				$("#hasTestBreak").val("F"); 
 			}else{
 				isTestBreak = true;
 				createSubtestGrid();
 				//document.getElementById("aCodeHead").style.visibility = "visible";
 				document.getElementById("aCode").style.visibility = "hidden";
+				$("#hasTestBreak").val("T");
 				/*for(var i=0;i<subtestLength;i++){
 					//document.getElementById("aCodeDiv"+i).style.visibility = "visible";
 					if(document.getElementById("actionTaken"+i).value == "1"){
@@ -1176,6 +1194,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					isTestSelected = true;
 					if(testBreak.checked)testBreak.checked = false;
 					isTestBreak = false;
+					$("#hasTestBreak").val("F");
 					//document.getElementById("aCode").style.display = "none";
 					populateDates();
 					var val = getDataFromTestJson(selectedTestId, testSessionlist);
@@ -1187,6 +1206,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					}
 					
 					createSubtestGrid();
+					$("#selectedNewTestId").val(selectedTestId);
 			 		
 			},
 			loadComplete: function () {
@@ -1345,6 +1365,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		isTestSelected = false;
 		if(testBreak.checked) testBreak.checked = false;
 		document.getElementById("testBreak").disabled=true;
+		$("#hasTestBreak").val("F");
 		document.getElementById("aCode").style.visibility = "hidden";
 		
 		document.getElementById("subtestGrid").style.display = "none";
@@ -1357,6 +1378,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById("testLocation").value = "";											
 		$("#randomDis").hide();	
 		$("#randDisLbl").hide();		
+		$("#randomDis").val("");		
 		//$("#randomDistDiv").hide();								
 					
 	}
@@ -1370,6 +1392,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		isTestSelected = false;
 		if(testBreak.checked) testBreak.checked = false;
 		document.getElementById("testBreak").disabled=true;	
+		$("#hasTestBreak").val("F");
 		document.getElementById("aCode").style.visibility = "hidden";		
 		document.getElementById("subtestGrid").style.display = "none";
 		document.getElementById("noSubtest").style.display = "";
@@ -1381,6 +1404,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		document.getElementById("testLocation").value = "";											
 		$("#randomDis").hide();	
 		$("#randDisLbl").hide();
+		$("#randomDis").val("");
 		//$("#randomDistDiv").hide();
  		
  		
@@ -2085,5 +2109,78 @@ function createSingleNodeSelectedTree(jsondata) {
 		 $("#removeProctorConfirmationPopup").parent().css("top",toppos);
 		 $("#removeProctorConfirmationPopup").parent().css("left",leftpos);	
 		 
+	}
+
+    function saveTest() {
+    $('#displayMessage').hide();
+    $('#showMessage').hide();
+	var param;
+	var param1 =$("#testDiv *").serialize(); 
+    var param2 = $("#Test_Detail *").serialize();
+    var time = document.getElementById("time").innerHTML;
+    var timeArray = time.split("-");
+    param = param1+"&"+param2+"&startTime="+$.trim(timeArray[0])+"&endTime="+$.trim(timeArray[1]);
+    
+	$.ajax({
+		async:		true,
+		beforeSend:	function(){
+						UIBlock();
+					},
+		url:		'saveTest.do?'+param,
+		type:		'POST',
+		data:		 param,
+		dataType:	'json',
+		contentType: 'application/json; charset=UTF-8', 
+		success:	function(data, textStatus, XMLHttpRequest){
+						
+					  if(data.isSuccess){
+						  	var successMessage = data.successMessage;
+						  	$.unblockUI();
+						  	$('#showMessage').show();
+						  	$("#showMessage").html(successMessage); 
+						  	
+						  	closePopUp("scheduleSession");
+					  } else {
+						   var key 		        = data.validationFailedInfo.key;
+						   var messageHeader 	= data.validationFailedInfo.messageHeader;
+						   var messageArray     = data.validationFailedInfo.message;
+						   var length = 0;
+						    $('#ssAccordion').accordion('activate', 0 );
+						   if(messageArray!=undefined){
+						   	length= messageArray.length;
+						   }
+						   if(length==0) {
+						   		setMessage(messageHeader, "", "errorMessage","");
+						   		 $('#displayMessage').show(); 
+						   } else if (length==1) {
+						   		setMessage(messageHeader, messageArray[0], "errorMessage","");
+						   		 $('#displayMessage').show(); 
+						   } else if (length==2) {
+						   		setMessage(messageHeader,  messageArray[0], "errorMessage", messageArray[1]);
+						   		 $('#displayMessage').show(); 
+						   } 
+						  
+				  }
+	
+						 						
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						$.unblockUI();
+						window.location.href="/SessionWeb/logout.do";
+						
+					},
+		complete :  function(){
+						 $.unblockUI(); 
+					}
+	});
+		
+	}
+	function toggleRandomDisVal() {
+			var randomDisVal = document.getElementById("randomDis");
+			if(!randomDisVal.checked){		
+				$("#randomDis").val("N"); 
+			} else {
+				$("#randomDis").val("Y"); 
+			}
 	}
 					 
