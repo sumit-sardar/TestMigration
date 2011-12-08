@@ -38,6 +38,7 @@ public class UserProfileInformation extends SanitizedFormField
     private Integer addressId = new Integer(0);
     private String actionPermission = "TFFF";
     private String  orgNodeNamesStr = "";
+    private String defaultScheduler = "F";
     /**
      * ext_pin1 is added for DEX CR
      */
@@ -467,6 +468,16 @@ public class UserProfileInformation extends SanitizedFormField
 	 */
 	public void setOrgNodeNamesStr(String orgNodeNamesStr) {
 		this.orgNodeNamesStr = orgNodeNamesStr;
+	}
+
+
+	public String getDefaultScheduler() {
+		return defaultScheduler;
+	}
+
+
+	public void setDefaultScheduler(String defaultScheduler) {
+		this.defaultScheduler = defaultScheduler;
 	} 
 	
     

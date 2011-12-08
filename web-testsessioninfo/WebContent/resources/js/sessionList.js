@@ -1886,6 +1886,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	 		jsondata['userId'] = schedulerUserId;
 	 		jsondata['lastName'] = schedulerLastName;
 	 		jsondata['firstName'] = schedulerFirstName;
+	 		jsondata['defaultScheduler'] = "T";
 	 		
 	 		var val=[] ;
 		 	val.push(jsondata);
@@ -1907,10 +1908,11 @@ function createSingleNodeSelectedTree(jsondata) {
  		$("#listProctor").jqGrid({         
          data:  addProctorLocaldata,
 		 datatype: "local",         
-          colNames:[ 'Last Name','First Name'],
+          colNames:[ 'Last Name','First Name','Default SCheduler'],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'firstName',index:'firstName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'firstName',index:'firstName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'defaultScheduler',index:'defaultScheduler', hidden: true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"rows", id:"userId", records: function(obj) {} },
 		   	//jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId", records: function(obj) { userList = JSON.stringify(obj.userProfileInformation);return obj.userProfileInformation.length; } },
@@ -1953,8 +1955,20 @@ function createSingleNodeSelectedTree(jsondata) {
 					} 
 				} */
 			},
-			/* gridComplete: function() { 
-				if(proctorForSelectedOrg != preSelectedOrgPro) {
+			gridComplete: function() { 
+
+					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
+					var selectedRowData;
+					for(var i = 0; i < allRowsInGrid.length; i++) {
+					
+						selectedRowData = $("#listProctor").getRowData(allRowsInGrid[i]);
+						if (selectedRowData.defaultScheduler == 'T') {
+				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
+				 		}
+					
+					}
+				
+			/*	if(proctorForSelectedOrg != preSelectedOrgPro) {
 					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
 					if(allRowSelectedPro) { 
 					 	$('.cbox').attr('checked', true);
@@ -1977,8 +1991,8 @@ function createSingleNodeSelectedTree(jsondata) {
 							}
 					 	}
 					 }
-				}
-			}, */
+				} */
+			},
 			/* onSelectAll: function (rowIds) {
 				if(allRowSelectedPro) {
 					allRowSelectedPro = false;
@@ -2018,9 +2032,6 @@ function createSingleNodeSelectedTree(jsondata) {
 		    	jQuery("#listProctor").setGridWidth(width,true);
 		    	
 		    	$("#testSchedulerId").text(schedulerFirstName + ' ' + schedulerLastName);
-		    	//$('#totalAssignedProctors').text(proctorIdObjArray.length);
-		    	
-		    	$("#jqg_listProctor_1").attr("disabled", true);
 				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){

@@ -1839,6 +1839,7 @@ public class SessionOperationController extends PageFlowController {
                     User user = users[i];
                     if (user != null && user.getUserName() != null) {
                         UserProfileInformation userDetail = new UserProfileInformation(user);
+                        userDetail.setDefaultScheduler("F");
                         userList.add(userDetail);
                     }
                 }
