@@ -38,10 +38,12 @@ var dataObj7;
 var dataObj8;
 var rootMap = {};
 var jsonData;
-var Map = new Map();
+var map = new Map();
 var rootNode = [];
 var checkedListObject = {};
 var type;
+var asyncOver = 0;
+var leafParentOrgNodeId = "";
 
 
 $(document).bind('keydown', function(event) {
@@ -166,7 +168,7 @@ function registerDelegate(tree){
 				populateTreeImmediate(currentNodeId,currentCategoryLevel,indexOfRoot);
 			}
 	
-			var cacheData = Map.get(currentNodeId);
+			var cacheData = map.get(currentNodeId);
 			if (cacheData != null){
 				currentTreeArray = cacheData;			
 			}
@@ -179,48 +181,48 @@ function registerDelegate(tree){
 					case "2": 	dataObj3 =getObject(jsonData,currentNodeId,currentCategoryLevel,x.parentNode.parentNode.id);
 								currentIndex = dataObj3.index;
 								currentTreeArray = dataObj3.jsonData;
-								Map.put(currentNodeId,currentTreeArray);
+								map.put(currentNodeId,currentTreeArray);
 								//alert("case2");
 							break;
 							
-					case "3": 	dataObj4 = Map.get(x.parentNode.parentNode.id);
+					case "3": 	dataObj4 = map.get(x.parentNode.parentNode.id);
 								currentTreeArray =getObject(dataObj4,currentNodeId,currentCategoryLevel);
 								currentIndex = currentTreeArray.index;
 								currentTreeArray = currentTreeArray.jsonData;
-								Map.put(currentNodeId,currentTreeArray);
+								map.put(currentNodeId,currentTreeArray);
 								//alert("case3");
 							break;
-					case "4": 	dataObj5 = Map.get(x.parentNode.parentNode.id);
+					case "4": 	dataObj5 = map.get(x.parentNode.parentNode.id);
 								currentTreeArray =getObject(dataObj5,currentNodeId,currentCategoryLevel);
 								currentIndex = currentTreeArray.index;
 								currentTreeArray = currentTreeArray.jsonData;
-								Map.put(currentNodeId,currentTreeArray);
+								map.put(currentNodeId,currentTreeArray);
 							//	alert("case4");
 							break;
-					case "5": 	dataObj6 = Map.get(x.parentNode.parentNode.id);
+					case "5": 	dataObj6 = map.get(x.parentNode.parentNode.id);
 								currentTreeArray =getObject(dataObj6,currentNodeId,currentCategoryLevel);
 								currentIndex = currentTreeArray.index;
 								currentTreeArray = currentTreeArray.jsonData;
-								Map.put(currentNodeId,currentTreeArray);
+								map.put(currentNodeId,currentTreeArray);
 							break;
-					case "6": 	dataObj7 = Map.get(x.parentNode.parentNode.id);
+					case "6": 	dataObj7 = map.get(x.parentNode.parentNode.id);
 								currentTreeArray =getObject(dataObj7,currentNodeId,currentCategoryLevel);
 								currentIndex = currentTreeArray.index;
 								currentTreeArray = currentTreeArray.jsonData;
-								Map.put(currentNodeId,currentTreeArray);
+								map.put(currentNodeId,currentTreeArray);
 							break;
-					case "7": 	dataObj8 =Map.get(x.parentNode.parentNode.id);
+					case "7": 	dataObj8 =map.get(x.parentNode.parentNode.id);
 								currentTreeArray =getObject(dataObj8,currentNodeId,currentCategoryLevel);
 								currentIndex = currentTreeArray.index;
 								currentTreeArray = currentTreeArray.jsonData;
-								Map.put(currentNodeId,currentTreeArray);
+								map.put(currentNodeId,currentTreeArray);
 								
 							break;	
-					case "8": 	dataObj9 =Map.get(x.parentNode.parentNode.id);
+					case "8": 	dataObj9 =map.get(x.parentNode.parentNode.id);
 								currentTreeArray =getObject(dataObj9,currentNodeId,currentCategoryLevel);
 								currentIndex = currentTreeArray.index;
 								currentTreeArray = currentTreeArray.jsonData;
-								Map.put(currentNodeId,currentTreeArray);
+								map.put(currentNodeId,currentTreeArray);
 							break;						
 					
 				}
@@ -1776,7 +1778,10 @@ function disablenextprev(selectedPosition,maxlength) {
 
 function openTreeNodes(orgNodeId) {
 	var isopened = false;
-	
+	asyncOver = 0;
+	leafParentOrgNodeId = "";
+	var par = null;
+	$('#innerID').jstree('close_all');
 	 if(isTreeExpandIconClicked )
 	    return;
 	
@@ -1785,7 +1790,7 @@ function openTreeNodes(orgNodeId) {
 				$('#innerID').jstree('check_node', "#"+assignedOrgNodeIds);
 				isopened = true; 
 			} else {
-				var leafParentOrgNodeId = "";
+				leafParentOrgNodeId = "";
 				for(var i=0; i< organizationNodes.length; i++){
 						if(orgNodeId == organizationNodes[i].orgNodeId){
 							var leafOrgNodePath = organizationNodes[i].leafNodePath;
@@ -1793,31 +1798,31 @@ function openTreeNodes(orgNodeId) {
 							break;
 						}
 					}
+					type = "innerID";
 					if(leafParentOrgNodeId.length > 0) {
-						for(var count = 0; count < leafParentOrgNodeId.length; count++) {
-				  		 		var tmpNode = leafParentOrgNodeId[count];
-								$('#innerID').jstree('open_node', "#"+tmpNode); 
+						for(var count = 0; count < leafParentOrgNodeId.length - 1; count++) {
+				  		 	var tmpNode = leafParentOrgNodeId[count];
+
+				  		 	currentCategoryLevel = String(count+1);
+				  		 	currentNodeId = tmpNode;
+				  		 	if(count != 0) { 
+				  		 		par = leafParentOrgNodeId[count-1];		 						  		 			
+				  		 	} else {
+				  		 		par = leafParentOrgNodeId[count];
+				  		 	}
+				  		 	prepareData(false,currentCategoryLevel,currentNodeId,par);
+				  		 }	 			
+				  		 	var tmpNode = leafParentOrgNodeId[0];	
+				  		 	currentCategoryLevel = "1";
+				  		 	currentNodeId = tmpNode;
+				  		 	currentTreeArray = map.get(currentNodeId);
+				  		 	$('#innerID').jstree('open_node', "#"+currentNodeId); 
 							
-				  		 }
-				  		 $('#innerID').jstree('check_node', "#"+orgNodeId);
-				  		 isopened = true; 
+				  		 	$('#innerID').jstree('check_node', "#"+orgNodeId);
+				  		 	$("#"+orgNodeId).focus();
+				  		 	isopened = true; 
 			  		 }
 		 }
-		 if(!isopened) {
-			var parentOrgNodeId = $("#" + orgNodeId).parent("ul");
-			
-			var ancestorNodes = parentOrgNodeId.parentsUntil(".jstree","li");
-			//open tree nodes from root to the clicked node	
-			if(ancestorNodes.length > 0) {
-				for(var count = ancestorNodes.length - 1; count >= 0; --count) {
-		  		 		var tmpNode = ancestorNodes[count].id;
-						$('#innerID').jstree('open_node', "#"+tmpNode); 
-					
-		  		 }
-		  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
-	  		 } 
-		}
-	
 
 		
 	}
@@ -1891,6 +1896,8 @@ function openTreeNodes(orgNodeId) {
 		 stream(objArray,ulElement,fragment,streamInnerPush, null, function(){
 			currentElement.appendChild(fragment);
 			$(currentElement.childNodes[1]).removeClass('jstree-loading'); 
+			asyncOver++;
+			openNextLevel(asyncOver);
 			// currentElement.childNodes[1].firstChild.style.display = "none";
 		 });	
 		 }
@@ -2025,6 +2032,86 @@ function openTreeNodes(orgNodeId) {
 	}
   		return "unchecked";
   }
+  
+  
+  function prepareData(classState,currentCategoryLevel,currentNodeId,element){
+  
+		if (classState == false || !classState || classState == 'false'){
+
+			var cacheData = map.get(currentNodeId);
+			if (cacheData != null){
+				currentTreeArray = cacheData;			
+			}
+					
+			if (cacheData == null){
+		if (currentCategoryLevel == "1") {	
+			dataObj2 = [];	
+			var indexOfRoot = getIndexOfRoot(currentNodeId);
+			populateTreeImmediate(currentNodeId,currentCategoryLevel,indexOfRoot);
+		}
+				switch(String(currentCategoryLevel)){
+					
+					case "2": 	dataObj3 =getObject(jsonData,currentNodeId,currentCategoryLevel,element);
+								currentIndex = dataObj3.index;
+								currentTreeArray = dataObj3.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+							break;							
+					case "3": 	dataObj4 = map.get(element);
+								currentTreeArray =getObject(dataObj4,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+							break;
+					case "4": 	dataObj5 = map.get(element);
+								currentTreeArray =getObject(dataObj5,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+							break;
+					case "5": 	dataObj6 = map.get(element);
+								currentTreeArray =getObject(dataObj6,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+							break;
+					case "6": 	dataObj7 = map.get(element);
+								currentTreeArray =getObject(dataObj7,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+							break;
+					case "7": 	dataObj8 =map.get(element);
+								currentTreeArray =getObject(dataObj8,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);								
+							break;	
+					case "8": 	dataObj9 =map.get(element);
+								currentTreeArray =getObject(dataObj9,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+							break;						
+					
+				}
+			}
+
+		}
+  
+  }
+  
+  
+  function openNextLevel(asyncOver){
+  		if(leafParentOrgNodeId.length - 1 > asyncOver) {
+	  		var tmpNode = leafParentOrgNodeId[asyncOver];	
+			currentCategoryLevel = String(asyncOver + 1);
+			currentNodeId = tmpNode;
+			currentTreeArray = map.get(currentNodeId);
+			$('#innerID').jstree('open_node', "#"+currentNodeId);
+		}
+  }
+  
+  
   
 	/******CRUD Operations****/
 		function addTree(currentNodeId){

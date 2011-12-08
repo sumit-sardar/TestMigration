@@ -48,8 +48,8 @@ var map = new Map();
 var rootNode = [];
 var checkedListObject = {};
 var type;
-var asyncOver = 0;
-var leafParentOrgNodeId = "";
+
+
 						
 
 
@@ -75,7 +75,9 @@ function UIBlock(){
 
 			
 function populateTree() {
-	
+
+if(sessionStorage.treedata == "undefined" || sessionStorage.treedata == null) {	
+
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -89,12 +91,14 @@ function populateTree() {
 						$.unblockUI();  
 						leafNodeCategoryId = data.leafNodeCategoryId;
 						orgTreeHierarchy = data;
+						sessionStorage.treedata = JSON.stringify(orgTreeHierarchy);
 						jsonData = orgTreeHierarchy.data;
 						getRootNodeDetails();
+						//alert("if"+sessionStorage.treedata);	
 						createSingleNodeSelectedTree (orgTreeHierarchy);
 						$("#searchheader").css("visibility","visible");	
 						$("#orgNodeHierarchy").css("visibility","visible");	
-												
+											
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
@@ -105,9 +109,27 @@ function populateTree() {
 						 $.unblockUI();  
 					}
 	});
-
+}
+else {
+	setTimeout("loadTreeFromSessionStorage()",1000); 
+}
 }
 
+function loadTreeFromSessionStorage() {
+		UIBlock();
+		//alert(sessionStorage.treedata);
+		leafNodeCategoryId = JSON.parse(sessionStorage.treedata).leafNodeCategoryId;
+		//alert("leafNodeCategoryId : "+leafNodeCategoryId);
+		orgTreeHierarchy = JSON.parse(sessionStorage.treedata);
+		//alert(orgTreeHierarchy);
+		jsonData = orgTreeHierarchy.data;
+		//alert(jsonData);
+		getRootNodeDetails();
+		createSingleNodeSelectedTree(orgTreeHierarchy);
+		$("#searchheader").css("visibility","visible");	
+		$("#orgNodeHierarchy").css("visibility","visible");	
+		$.unblockUI();  
+}
 
 function overlayblockUI(){	
 	$("body").append('<div id="blDiv" style="opacity: 0.6; background-color: #d0e5f5;position: absolute;top:0;left:0;width:100%;height:100%;z-index:10"></div>');
@@ -123,6 +145,7 @@ function overlayunblockUI(){
 
 
 function createSingleNodeSelectedTree(jsondata) {
+//alert("createSingleNodeSelectedTree");
 	   $("#orgNodeHierarchy").jstree({
 	        "json_data" : {	             
 	            "data" : rootNode,
@@ -1287,16 +1310,12 @@ function fillselectedOrgNode( elementId, orgList) {
 	
 	function openTreeNodes(orgNodeId) {
 	var isopened = false;
-	asyncOver = 0;
-	leafParentOrgNodeId = "";
-	var par = null;
-	$('#innerID').jstree('close_all');
 		var isIdExist = $('#innerID', '#'+assignedOrgNodeIds).length;
 			if(isIdExist > 0){
 				$('#innerID').jstree('check_node', "#"+assignedOrgNodeIds);
 				isopened = true; 
 			} else {
-				leafParentOrgNodeId = "";
+				var leafParentOrgNodeId = "";
 				for(var i=0; i< organizationNodes.length; i++){
 						if(orgNodeId == organizationNodes[i].orgNodeId){
 							var leafOrgNodePath = organizationNodes[i].leafNodePath;
@@ -1304,32 +1323,32 @@ function fillselectedOrgNode( elementId, orgList) {
 							break;
 						}
 					}
-					type = "innerID";
 					if(leafParentOrgNodeId.length > 0) {
-						for(var count = 0; count < leafParentOrgNodeId.length - 1; count++) {
-				  		 	var tmpNode = leafParentOrgNodeId[count];
-
-				  		 	currentCategoryLevel = String(count+1);
-				  		 	currentNodeId = tmpNode;
-				  		 	if(count != 0) { 
-				  		 		par = leafParentOrgNodeId[count-1];		 						  		 			
-				  		 	} else {
-				  		 		par = leafParentOrgNodeId[count];
-				  		 	}
-				  		 	prepareData(false,currentCategoryLevel,currentNodeId,par);
-				  		 }	 			
-				  		 	var tmpNode = leafParentOrgNodeId[0];	
-				  		 	currentCategoryLevel = "1";
-				  		 	currentNodeId = tmpNode;
-				  		 	currentTreeArray = map.get(currentNodeId);
-				  		 	$('#innerID').jstree('open_node', "#"+currentNodeId); 
+						for(var count = 0; count < leafParentOrgNodeId.length; count++) {
+				  		 		var tmpNode = leafParentOrgNodeId[count];
+								$('#innerID').jstree('open_node', "#"+tmpNode); 
 							
-				  		 	$('#innerID').jstree('check_node', "#"+orgNodeId);
-				  		 	$("#"+orgNodeId).focus();
-				  		 	isopened = true; 
+				  		 }
+				  		 $('#innerID').jstree('check_node', "#"+orgNodeId);
+				  		 isopened = true; 
 			  		 }
 		 		 hideCheckBox();
 		 }
+		 if(!isopened) {
+			var parentOrgNodeId = $("#" + orgNodeId).parent("ul");
+			
+			var ancestorNodes = parentOrgNodeId.parentsUntil(".jstree","li");
+			//open tree nodes from root to the clicked node	
+			if(ancestorNodes.length > 0) {
+				for(var count = ancestorNodes.length - 1; count >= 0; --count) {
+		  		 		var tmpNode = ancestorNodes[count].id;
+						$('#innerID').jstree('open_node', "#"+tmpNode); 
+					
+		  		 }
+		  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
+	  		 } 
+	  		  hideCheckBox();
+		}
 		
 	}
 	
@@ -2088,8 +2107,6 @@ function setSelectedValue(selectObj, valueToSet) {
 		 stream(objArray,ulElement,fragment,streamInnerPush, null, function(){
 			currentElement.appendChild(fragment);
 			$(currentElement.childNodes[1]).removeClass('jstree-loading'); 
-			asyncOver++;
-			openNextLevel(asyncOver);
 			// currentElement.childNodes[1].firstChild.style.display = "none";
 		 });	
 		 }
@@ -2193,6 +2210,7 @@ function setSelectedValue(selectObj, valueToSet) {
 	
 	function getRootNodeDetails(){
 		var noOfRoots = jsonData.length;
+		//alert("noOfRoots : "+noOfRoots);
 			for (var i = 0,j = noOfRoots; i < j; i++ ){
 				rootMap[jsonData[i].attr.id] = jsonData[i].attr.cid;
 				rootNode.push({data: jsonData[i].data,attr:{id: jsonData[i].attr.id,cid:jsonData[i].attr.cid,tcl:jsonData[i].attr.tcl},children : [{}]});
@@ -2239,88 +2257,6 @@ function setSelectedValue(selectObj, valueToSet) {
   		return "unchecked";
   }
   
-  
-  
-function prepareData(classState,currentCategoryLevel,currentNodeId,element){
-  
-		if (classState == false || !classState || classState == 'false'){
-
-			var cacheData = map.get(currentNodeId);
-			if (cacheData != null){
-				currentTreeArray = cacheData;			
-			}
-					
-			if (cacheData == null){
-		if (currentCategoryLevel == "1") {	
-			dataObj2 = [];	
-			var indexOfRoot = getIndexOfRoot(currentNodeId);
-			populateTreeImmediate(currentNodeId,currentCategoryLevel,indexOfRoot);
-		}
-				switch(String(currentCategoryLevel)){
-					
-					case "2": 	dataObj3 =getObject(jsonData,currentNodeId,currentCategoryLevel,element);
-								currentIndex = dataObj3.index;
-								currentTreeArray = dataObj3.jsonData;
-								map.put(currentNodeId,currentTreeArray);
-							break;							
-					case "3": 	dataObj4 = map.get(element);
-								currentTreeArray =getObject(dataObj4,currentNodeId,currentCategoryLevel);
-								currentIndex = currentTreeArray.index;
-								currentTreeArray = currentTreeArray.jsonData;
-								map.put(currentNodeId,currentTreeArray);
-							break;
-					case "4": 	dataObj5 = map.get(element);
-								currentTreeArray =getObject(dataObj5,currentNodeId,currentCategoryLevel);
-								currentIndex = currentTreeArray.index;
-								currentTreeArray = currentTreeArray.jsonData;
-								map.put(currentNodeId,currentTreeArray);
-							break;
-					case "5": 	dataObj6 = map.get(element);
-								currentTreeArray =getObject(dataObj6,currentNodeId,currentCategoryLevel);
-								currentIndex = currentTreeArray.index;
-								currentTreeArray = currentTreeArray.jsonData;
-								map.put(currentNodeId,currentTreeArray);
-							break;
-					case "6": 	dataObj7 = map.get(element);
-								currentTreeArray =getObject(dataObj7,currentNodeId,currentCategoryLevel);
-								currentIndex = currentTreeArray.index;
-								currentTreeArray = currentTreeArray.jsonData;
-								map.put(currentNodeId,currentTreeArray);
-							break;
-					case "7": 	dataObj8 =map.get(element);
-								currentTreeArray =getObject(dataObj8,currentNodeId,currentCategoryLevel);
-								currentIndex = currentTreeArray.index;
-								currentTreeArray = currentTreeArray.jsonData;
-								map.put(currentNodeId,currentTreeArray);								
-							break;	
-					case "8": 	dataObj9 =map.get(element);
-								currentTreeArray =getObject(dataObj9,currentNodeId,currentCategoryLevel);
-								currentIndex = currentTreeArray.index;
-								currentTreeArray = currentTreeArray.jsonData;
-								map.put(currentNodeId,currentTreeArray);
-							break;						
-					
-				}
-			}
-
-		}
-  
-  }
-  
-  
-  function openNextLevel(asyncOver){
-  		if(leafParentOrgNodeId.length - 1 > asyncOver) {
-	  		var tmpNode = leafParentOrgNodeId[asyncOver];	
-			currentCategoryLevel = String(asyncOver + 1);
-			currentNodeId = tmpNode;
-			currentTreeArray = map.get(currentNodeId);
-			$('#innerID').jstree('open_node', "#"+currentNodeId);
-		}
-  }
-  
-  
-  
-  
 	/******CRUD Operations****/
 		function addTree(currentNodeId){
 		//TODO :  
@@ -2342,10 +2278,7 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 
 		function openTree(){
 		//TODO: need to work on;
-		} 
-
-	
-			 
+		}  
 
 			
 		
