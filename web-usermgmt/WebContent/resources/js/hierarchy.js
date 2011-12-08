@@ -22,7 +22,7 @@ var isValueChanged = false;
 var isTreeExpandIconClicked = false;
 var isAction = true;
 var isViewMod = false;
-var titleViewEdit = "Edit User";
+var titleViewEdit = $("#userEditTitleID").val();
 var isGridRefreshRequired = false;
 
 var currentNodeId ;
@@ -462,7 +462,7 @@ function populateGrid() {
 		 type:   'POST',
 		 datatype: "json",         
                 
-          colNames:['Last Name','First Name','Login ID', 'Role', 'Email','Organization'],
+          colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(),$("#jqgLoginID").val(), $("#jqgRoleID").val(), $("#jqgEmailID").val(),$("#jqgOrgID").val()],
 		   	colModel:[
 		   	
 		   	    {name:'lastName',index:'lastName', width:130, editable: true,align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -689,7 +689,7 @@ function userDetailEdit(){
 							viewEnable();
 							viewUser (data);
 							isViewMod = true;
-							titleViewEdit = "View User";
+							titleViewEdit = $("#userViewTitleID").val();
 						} else {
 							isViewMod = false;
 							var primaryPhn3 = trim(data.userContact.primaryPhone3);
@@ -697,7 +697,7 @@ function userDetailEdit(){
 							var secondaryPhn3 = trim(data.userContact.secondaryPhone3);
 							var secondaryPhoneExtn = trim(data.userContact.secondaryPhone4);
 							
-							titleViewEdit = "Edit User";
+							titleViewEdit = $("#userEditTitleID").val();
 							editEnable();
 							organizationNodes = data.organizationNodes;
 							roleOptions = data.optionList.roleOptions;

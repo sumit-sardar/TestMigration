@@ -4,6 +4,14 @@
 <lb:bundle baseName="userApplicationResource" />
 
 <input type="hidden" id="roleNameID" name = "roleName" value='<%=session.getAttribute("userRole") %>'/>
+<input type="hidden" id="userEditTitleID" name = "userEditTitleID" value=<lb:label key="user.label.titleEdit" prefix="'" suffix="'"/>/>
+<input type="hidden" id="userViewTitleID" name = "userViewTitleID" value=<lb:label key="user.label.titleView" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgFirstNameID" name = "jqgFirstNameID" value=<lb:label key="user.firstName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgLastNameID" name = "jqgLastNameID" value=<lb:label key="user.lastName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgLoginID" name = "jqgLoginID" value=<lb:label key="user.loginID" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgRoleID" name = "jqgRoleID" value=<lb:label key="user.role" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgEmailID" name = "jqgEmailID" value=<lb:label key="user.email" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgOrgID" name = "jqgOrgID" value=<lb:label key="user.organization" prefix="'" suffix="'"/>/>
 <table> 
 	<tr> 
 		<td>  

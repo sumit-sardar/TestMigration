@@ -259,7 +259,7 @@
 											<input type="text" onkeypress="return constrainNumericChar(event);"	  style="width: 40px;" maxlength="3" id="secondaryPhone1" name="secondaryPhone1">
 											- <input type="text" onkeypress="return constrainNumericChar(event);"   style="width: 40px;" maxlength="3" id="secondaryPhone2" name="secondaryPhone2">
 											- <input type="text" onkeypress="return constrainNumericChar(event);"   style="width: 40px;" maxlength="4" id="secondaryPhone3" name="secondaryPhone3">
-											<lb:label key="user.ext" suffix=":"/><input	type="text" onkeypress="return constrainNumericChar(event);" style="width: 40px;" maxlength="4"	id="secondaryPhone4" name="secondaryPhone4">
+											<lb:label key="user.ext" suffix=":"/> <input	type="text" onkeypress="return constrainNumericChar(event);" style="width: 40px;" maxlength="4"	id="secondaryPhone4" name="secondaryPhone4">
 										</td>
 									</tr>
 									<tr class="transparent">
