@@ -51,7 +51,7 @@ public class TMSConflictResolver implements ConflictResolver {
                 		RosterData current = (RosterData) localEntry.getValue();
                 		if(incoming.isForceReplication()) {
                 			incoming.setForceReplication(false);
-                			resolution.useInComingValue();
+                			resolution.useMergedValue(incoming);
                 		} else {
 	                		if(incoming.getAuthData().getLastMseq() > current.getAuthData().getLastMseq()) {
 	                			resolution.useInComingValue();
@@ -70,7 +70,7 @@ public class TMSConflictResolver implements ConflictResolver {
                 					incoming[k].setForceReplication(false);
                 				}
                 			}
-                			resolution.useInComingValue();
+                			resolution.useMergedValue(incoming);
                 		} else {
 	                		ArrayList<Manifest> merged = new ArrayList<Manifest>(); 
 	                		for(int i=0;i<incoming.length;i++) {
