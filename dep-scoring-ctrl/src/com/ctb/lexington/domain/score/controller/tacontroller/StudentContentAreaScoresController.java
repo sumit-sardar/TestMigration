@@ -44,7 +44,7 @@ public class StudentContentAreaScoresController {
         for(int i=0;i<facts.length;i++) {
             IrsTABEContentAreaFactData newFact = facts[i];
             mapper.delete(newFact);
-            if(new Long(1).equals(context.getCurrentResultId()))  {
+            if(new Long(1).equals(context.getCurrentResultId()) && newFact.getScaleScore() != null)  {
                 System.out.println("TABECAFact record currency: " + mapper.isTABECAFactCurrent(newFact));
                 mapper.insert(newFact);
             }

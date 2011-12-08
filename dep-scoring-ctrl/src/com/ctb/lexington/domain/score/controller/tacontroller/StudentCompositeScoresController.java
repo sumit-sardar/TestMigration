@@ -39,7 +39,7 @@ public class StudentCompositeScoresController {
         for(int i=0;i<facts.length;i++) {
             IrsTABECompositeFactData newFact = facts[i];
             mapper.delete(newFact);
-            if(new Long(1).equals(context.getCurrentResultId()))  {
+            if(new Long(1).equals(context.getCurrentResultId()) && newFact.getScaleScore() != null)  {
                 mapper.insert(newFact);
             }
         }

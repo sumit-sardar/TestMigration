@@ -49,7 +49,7 @@ public class TABEAdaptContentAreaDerivedScoreCalculator extends AbstractDerivedS
 	    	if (!adaptiveContentDetails.containsKey(event.getContentAreaName())) {
 	    		adaptiveContentDetails.put(event.getContentAreaName(), event);
 		        final Integer subtestId = DatabaseHelper.asInteger(event.getSubtestId());
-		        final BigDecimal scaleScore = new BigDecimal(abilityScore);
+		        final BigDecimal scaleScore = new BigDecimal(Math.floor(abilityScore));
 		     //   System.out.println("-------event.getContentAreaName() ->" + event.getContentAreaName());
 		     //   System.out.println("-------scaleScore ->" + scaleScore);
 		        

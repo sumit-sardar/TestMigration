@@ -901,7 +901,7 @@ public class CurriculumCollector {
                 primaryObjective.setProductId(new Long(rs.getLong("productId")));
                 
                 String level = rs.getString("subtestLevel");
-                if(level.contains(primaryObjective.getPrimaryObjectiveId().toString())) {
+                if(null != level && level.contains(primaryObjective.getPrimaryObjectiveId().toString())) {
                 	 String[] objectiveScores = level.split("\\|");
                      for (int i = 0; i < objectiveScores.length; i++) {
                      	String[] individualObj = objectiveScores[i].split(",");

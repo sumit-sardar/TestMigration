@@ -125,7 +125,7 @@ public class TestResultDataCollector {
                 PrimaryObjective [] primObjs = currData.getPrimaryObjectives();
                 for(int j=0;j<primObjs.length;j++) {
                     if(primObjs[j].getContentAreaId().equals(contentAreas[i].getContentAreaId()) &&
-                        (primObjs[j].getSubtestLevel().equals(contentAreas[i].getSubtestLevel()) || contentAreas[i].getSubtestLevel().equals("CAT"))) { // Changes for TABE Cat
+                        (contentAreas[i].getSubtestLevel().equals("CAT") || primObjs[j].getSubtestLevel().equals(contentAreas[i].getSubtestLevel()))) { // Changes for TABE Cat
                         primObjList.add(primObjs[j]);
                         SecondaryObjective [] secObjs = currData.getSecondaryObjectives();
                         for(int k=0;k<secObjs.length;k++) {
