@@ -10,3 +10,5 @@
 <input type="hidden" id="noStudentTitle" name = "noStudentTitle" value="${bundle.web['sessionList.studentTab.noStuSelected.title']}"/>
 <input type="hidden" id="noStudentMsg" name = "noStudentMsg" value="${bundle.web['sessionList.studentTab.noStuSelected.message']}"/>
 <input type="hidden" id="noTestMsg" name = "noStudentMsg" value="${bundle.web['sessionList.selectTest.noTestSelected.message']}"/>
+<input type="hidden" id="noProctorTitle" name = "noProctorTitle" value="${bundle.web['sessionList.studentTab.noProctorTitle.title']}"/>
+<input type="hidden" id="noProctorMsg" name = "noProctorMsg" value="${bundle.web['sessionList.studentTab.noProctorSelected.message']}"/>

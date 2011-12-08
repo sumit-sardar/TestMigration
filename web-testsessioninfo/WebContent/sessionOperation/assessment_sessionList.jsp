@@ -9,6 +9,9 @@
 	 Boolean userScheduleAndFindSessionPermission = (Boolean) session.getAttribute("userScheduleAndFindSessionPermission");
 	 String studentIdLabelName = (String) session.getAttribute("studentIdLabelName");
 	 Boolean supportAccommodations  = (Boolean) session.getAttribute("supportAccommodations");
+	 String schedulerFirstName = (String) session.getAttribute("schedulerFirstName");
+	 String schedulerLastName = (String) session.getAttribute("schedulerLastName");
+	 String schedulerUserId = (String) session.getAttribute("schedulerUserId");
 	
 	%>
 	
@@ -16,6 +19,10 @@
 	<input type="hidden" id="userScheduleAndFindSessionPermission" name = "userScheduleAndFindSessionPermission" value='<%=userScheduleAndFindSessionPermission %>'/>
 	<input type="hidden" id="studentIdLabelName" name = "studentIdLabelName" value='<%=studentIdLabelName %>'/>
 	<input type="hidden" id="supportAccommodations" name = "supportAccommodations" value='<%=supportAccommodations %>'/>
+	
+	<input type="hidden" id="schedulerFirstName" name = "schedulerFirstName" value='<%=schedulerFirstName %>'/>
+	<input type="hidden" id="schedulerLastName" name = "schedulerLastName" value='<%=schedulerLastName %>'/>
+	<input type="hidden" id="schedulerUserId" name = "schedulerUserId" value='<%=schedulerUserId %>'/>
 	 
 	 <div style="clear:both;float:left;width:100%;text-align: left;"> 
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"><netui:content value="${bundle.web['homepage.viewTestSessions.message']}"/>

@@ -41,6 +41,7 @@ import com.ctb.bean.testAdmin.TestProductData;
 import com.ctb.bean.testAdmin.TestSession;
 import com.ctb.bean.testAdmin.TestSessionData;
 import com.ctb.bean.testAdmin.User;
+import com.ctb.bean.testAdmin.UserData;
 import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
@@ -1087,6 +1088,9 @@ public class SessionOperationController extends PageFlowController {
 	            supportAccommodations = Boolean.FALSE;
 	        }
 	        getSession().setAttribute("supportAccommodations", supportAccommodations); 
+	        getSession().setAttribute("schedulerFirstName", this.user.getFirstName());
+	        getSession().setAttribute("schedulerLastName", this.user.getLastName());
+	        getSession().setAttribute("schedulerUserId", this.user.getUserId().toString());
 	        System.out.println("supportAccommodations==>"+supportAccommodations);
         }
         catch (CTBBusinessException be)
@@ -1739,4 +1743,109 @@ public class SessionOperationController extends PageFlowController {
 	public void setUserProfile(UserProfileInformation userProfile) {
 		this.userProfile = userProfile;
 	}	
+	
+	// Added for Proctor : Start
+	
+	@Jpf.Action(forwards={
+    		@Jpf.Forward(name = "success", 
+					path ="assessments_sessions.jsp")
+	})
+    protected Forward getProctorList(SessionOperationForm form){
+    	
+		String jsonTree = "";
+		HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		String contentType = CONTENT_TYPE_JSON;
+		final String PROCTOR_DEFAULT_SORT = "LastName";
+		User testScheduler = null;
+		
+		
+		List sessionList = new ArrayList(0);
+		String studentArray = "";
+		String json = "";
+		ObjectOutput output = null;
+		
+		//String testId = getRequest().getParameter("selectedTestId");
+		String proctorOrgNodeId = getRequest().getParameter("proctorOrgNodeId");
+		Integer selectedOrgNodeId = null;
+		Integer selectedTestId = null;
+		Integer testAdminId = null;
+		if(proctorOrgNodeId != null)
+			selectedOrgNodeId = Integer.parseInt(proctorOrgNodeId);
+		//if(testId != null)
+			//selectedTestId = Integer.parseInt(testId);
+		try {
+			FilterParams proctorFilter = null;
+	        PageParams proctorPage = null;
+	        SortParams proctorSort = FilterSortPageUtils.buildSortParams(PROCTOR_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
+	        FilterParams filter = null;
+	        List proctorNodes = null;
+
+	        // Get the list of proctors
+	        UserData ud = getProctors(selectedOrgNodeId, proctorFilter, proctorPage, proctorSort);
+	        if( ud != null) {
+	        	proctorNodes = buildProctorList(ud);
+	        }
+			Base base = new Base();
+			base.setPage("1");
+			base.setRecords("10");
+			base.setTotal("2");
+			base.setUserProfileInformation(proctorNodes);
+			
+			Gson gson = new Gson();
+			System.out.println ("Json process time Start:"+new Date());
+			json = gson.toJson(base);
+			System.out.println ("Json process time End:"+new Date() +".."+json);
+			try{
+				resp.setContentType("application/json");
+				stream = resp.getOutputStream();
+				resp.flushBuffer();
+				stream.write(json.getBytes());
+			}
+			finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Exception while processing CR response.");
+			e.printStackTrace();
+		}
+
+		return null;
+
+	}
+	
+	
+	private UserData getProctors(Integer orgNodeId, FilterParams filter, PageParams page, SortParams sort) {    
+        UserData ud = null;
+        try {      
+            ud = this.scheduleTest.getUsersForOrgNode(this.userName, orgNodeId, filter, page, sort);
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }
+        return ud;
+    }
+
+	
+	public List buildProctorList(UserData uData) {
+        ArrayList userList = new ArrayList();
+        if (uData != null) {
+            User[] users = uData.getUsers();
+            if(users != null){
+                for (int i=0 ; i<users.length ; i++) {
+                    User user = users[i];
+                    if (user != null && user.getUserName() != null) {
+                        UserProfileInformation userDetail = new UserProfileInformation(user);
+                        userList.add(userDetail);
+                    }
+                }
+            }
+        }
+        return userList;
+    }
+    
+    // Added for Proctor : End
 }

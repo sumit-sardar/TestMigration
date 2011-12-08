@@ -41,6 +41,10 @@ var isSecondAccordSelected = false;
 var isThirdAccordSelected = false;
 var isFourthAccordSelected = false;
 
+var proctorGridloaded = false;
+var isProctorGridEmpty = true;
+var noOfProctorAdded = 0;
+
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -263,6 +267,11 @@ function populateCompletedSessionListGrid() {
 	 	 if(isTestGridEmpty) {
 		 	$('#testList').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
 		 	$('#testList').append("<tr><td style='width: 100%;' align='center'  colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noTestMsg").val()+"</th></tr></tbody></table></td></tr>");
+		 }
+	 }else if (requestedTab == 'proctorGrid'){
+	 	 if(isProctorGridEmpty) {
+		 	$('#listProctor').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+		 	$('#listProctor').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='6'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noProctorTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noProctorMsg").val()+"</td></tr></tbody></table></td></tr>");
 		 }
 	 }
 	 
@@ -556,6 +565,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			$('#Add_Proctor').hide();
 			$("#Student_Tab").css('display', 'block');
 			$("#Select_Student_Tab").css('display', 'none');
+			$("#Select_Proctor_Tab").css('display', 'none');
 			selectedOrg = [];
 			orgCheckedStudent = [];
 			orgunCheckedStudent = [];
@@ -567,6 +577,8 @@ function createSingleNodeSelectedTree(jsondata) {
 			stuIdObjArray = [];
 			delStuIdObjArray = [];
 			isOnBack = false;
+			delProctorIdObjArray = [];
+			proctorIdObjArray = [];
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -792,6 +804,7 @@ function createSingleNodeSelectedTree(jsondata) {
 							//populateTestListGrid(data.product[0].testSessionList,true,data.product[0].showLevelOrGrade);
 							fillDropDown("topOrgNode",data.topNodeDropDownList)
 							processStudentAccordion();
+							processProctorAccordion();
 						}
 						
 						$.unblockUI(); 						
@@ -976,6 +989,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			isTestSelected = false;		
 		}
 		processStudentAccordion();
+		processProctorAccordion();
 
 	}
 
@@ -1821,4 +1835,244 @@ function createSingleNodeSelectedTree(jsondata) {
     	
 		return validStatus;
     }
+    
+  // ----------------- Added for Proctor changes ---------------------//
+  
+  function processProctorAccordion() {
+		if(!proctorGridloaded) {
+   			populateSelectedProctor();
+   		} else {
+   			gridReloadProctor(true);
+   		}
+   		
+   		var width = jQuery("#scheduleSession").width();
+    	width = width - 72; // Fudge factor to prevent horizontal scrollbars
+    
+		jQuery("#listProctor").setGridWidth(width,true);
+	}
+	     
+    function gridReloadSelectProctor(){ 
+	      
+	      jQuery("#selectProctor").jqGrid('setGridParam',{datatype:'json'});    
+	      var urlVal = 'getProctorList.do?q=2&proctorOrgNodeId='+$("#proctorOrgNodeId").val(); 
+     	  jQuery("#selectProctor").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
+          var sortArrowPA = jQuery("#selectProctor");
+          jQuery("#selectProctor").sortGrid('lastName',false);
+          var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
+          $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
+          $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled');
+
+    }
+     
+     function gridReloadProctor(addProctor){ 
+      	
+      	$('#listProctor').GridUnload();		
+      	populateSelectedProctor();
+      	
+     }
+	
+    
+  	function populateSelectedProctor() {
+ 		UIBlock();
+ 		
+ 		var schedulerFirstName = $("#schedulerFirstName").val();
+		var schedulerLastName = $("#schedulerLastName").val();
+		var schedulerUserId = $("#schedulerUserId").val();
+ 		
+ 		proctorGridloaded = true;
+
+ 		if( noOfProctorAdded == 0) {
+	 		var jsondata = {};
+	 		jsondata['userId'] = schedulerUserId;
+	 		jsondata['lastName'] = schedulerLastName;
+	 		jsondata['firstName'] = schedulerFirstName;
+	 		
+	 		var val=[] ;
+		 	val.push(jsondata);
+		    var mainObj = {};
+		    mainObj = val;
+		    
+		 	addProctorLocaldata = mainObj;
+		 	
+		 	//alert('proctorIdObjArray.length: ' + proctorIdObjArray.length);
+			//$('#totalAssignedProctors').text(proctorIdObjArray.length);
+		
+		 	proctorIdObjArray[schedulerUserId]=jsondata;
+		 	noOfProctorAdded = addProctorLocaldata.length;
+		 	$("#totalAssignedProctors").text(noOfProctorAdded);
+	 	}
+	 	
+	 	//$("#testSchedulerId").text(schedulerFirstName + ' ' + schedulerLastName);
+	 	 		
+ 		$("#listProctor").jqGrid({         
+         data:  addProctorLocaldata,
+		 datatype: "local",         
+          colNames:[ 'Last Name','First Name'],
+		   	colModel:[
+		   		{name:'lastName',index:'lastName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'firstName',index:'firstName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   	],
+		   	jsonReader: { repeatitems : false, root:"rows", id:"userId", records: function(obj) {} },
+		   	//jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId", records: function(obj) { userList = JSON.stringify(obj.userProfileInformation);return obj.userProfileInformation.length; } },
+		   	
+		   	loadui: "disable",
+			rowNum:20,
+			loadonce:true, 
+			multiselect:true,
+			pager: '#pagerProctor', 
+			sortname: 'lastName', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 370,  
+			caption:"Proctor List",
+			onPaging: function() {
+				var reqestedPage = parseInt($('#listProctor').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_listProctor').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#listProctor').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#listProctor').setGridParam({"page": minPageSize});
+				}
+				
+			/*	if(allRowSelectedPro) {
+					var sessions  = jQuery('#selectProctor').jqGrid('getGridParam','selarrrow');	
+					if(selectedSessionPro.length > 0) {
+					var existlen = selectedSessionPro.length;
+					for(var i=0; i<sessions.length; i++) {
+						if(!include(selectedSessionPro, sessions[i])) {
+							selectedSessionPro[existlen] = sessions[i] ;
+							existlen++;
+						}
+					}
+					 var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
+					
+					} else {
+						selectedSessionPro = sessions;
+					} 
+				} */
+			},
+			/* gridComplete: function() { 
+				if(proctorForSelectedOrg != preSelectedOrgPro) {
+					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
+					if(allRowSelectedPro) { 
+					 	$('.cbox').attr('checked', true);
+					 	if(unCheckedSessionPro.length > 0) {
+					 	for(var i=0; i<unCheckedSessionPro.length; i++) {
+					 	 	if(include(allRowsInGrid, unCheckedSessionPro[i])){
+					 	 			$("#"+unCheckedSessionPro[i]+" td input").attr('checked', false); 
+					 	 		}
+					 		}
+					 	}
+					 } else {
+					 	$('.cbox').attr('checked', false); 
+					 	for(var i=0; i<allRowsInGrid.length; i++) {
+						 	if(proctorIdObjArray[allRowsInGrid[i]] != undefined){
+						 		var stuObj = proctorIdObjArray[allRowsInGrid[i]];
+						 		//var orgArray = 	stuObj.orgNodeId.split(",");
+					 			//if(include(orgArray, proctorForSelectedOrg)) {
+								//	$("#"+allRowsInGrid[i]+" td input").attr('checked', true); 
+								//} 
+							}
+					 	}
+					 }
+				}
+			}, */
+			/* onSelectAll: function (rowIds) {
+				if(allRowSelectedPro) {
+					allRowSelectedPro = false;
+				} else {
+					allRowSelectedPro = true;
+				}
+			}, */
+			onSelectRow: function (rowid, status) {
+				var selectedRowId = rowid;
+				if(status) {
+					var selectedRowData = $("#listProctor").getRowData(selectedRowId);
+					if(delProctorIdObjArray[selectedRowId] == undefined){
+						delProctorIdObjArray[selectedRowId]= selectedRowData;
+					} 
+				} else {
+					delProctorIdObjArray.splice(selectedRowId,1); 
+				}
+			},
+			loadComplete: function () {
+				if ($('#listProctor').getGridParam('records') === 0) {
+					isPAGridEmpty = true;
+            		$('#sp_1_selectProctorPager').text("1");
+            		$('#next_selectProctorPager').addClass('ui-state-disabled');
+            	 	$('#last_selectProctorPager').addClass('ui-state-disabled');
+            	} else {
+            		isPAGridEmpty = false;
+            	}
+            	//setEmptyListMessage('PA');
+            	$.unblockUI();  
+				$("#listProctor").setGridParam({datatype:'local'});
+				var tdList = ("#selectProctorPager_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				var width = jQuery("#scheduleSession").width();
+		    	width = width - 72; // Fudge factor to prevent horizontal scrollbars
+		    	jQuery("#listProctor").setGridWidth(width,true);
+		    	
+		    	$("#testSchedulerId").text(schedulerFirstName + ' ' + schedulerLastName);
+		    	//$('#totalAssignedProctors').text(proctorIdObjArray.length);
+		    	
+		    	$("#jqg_listProctor_1").attr("disabled", true);
+				
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				window.location.href="/SessionWeb/logout.do";
+						
+			}
+	 });
+	 jQuery("#listProctor").navGrid('#pagerProctor', {
+			delfunc: function() {
+				if(delProctorIdObjArray.length > 0 ) {
+					removeProctorConfirmationPopup();
+				}
+		    }	    	
+	 });
+		var element = document.getElementById('add_listProctor');
+		element.style.display = 'none'; 
+		var element = document.getElementById('edit_listProctor');
+		element.style.display = 'none'; 
+		var element = document.getElementById('search_listProctor');
+		element.style.display = 'none';  
+		var element = document.getElementById('del_listProctor');
+		element.title = 'Remove Proctor'; 
+	}
+	
+	function removeSelectedProctor() {
+		
+		//alert('inside removeSelectedProctor');
+		for(var key in delProctorIdObjArray){ 	
+			jQuery("#listProctor").delRowData(key);
+			//var objstr = proctorIdObjArray[delProctorIdObjArray[key].userId];
+			proctorIdObjArray.splice(delProctorIdObjArray[key].userId,1);
+			noOfProctorAdded = noOfProctorAdded - 1; 
+		}
+		$('#totalAssignedProctors').text(noOfProctorAdded);
+		closePopUp('removeProctorConfirmationPopup');
+	}
+	
+	function removeProctorConfirmationPopup(){
+	$("#removeProctorConfirmationPopup").dialog({  
+		title:"Confirmation Alert",  
+	 	resizable:false,
+	 	autoOpen: true,
+	 	width: '400px',
+	 	modal: true,
+	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		 $("#removeProctorConfirmationPopup").css('height',200);
+		 var toppos = ($(window).height() - 290) /2 + 'px';
+		 var leftpos = ($(window).width() - 410) /2 + 'px';
+		 $("#removeProctorConfirmationPopup").parent().css("top",toppos);
+		 $("#removeProctorConfirmationPopup").parent().css("left",leftpos);	
+		 
+	}
 					 

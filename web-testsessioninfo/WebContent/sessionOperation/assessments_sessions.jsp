@@ -25,6 +25,7 @@
 <input type="hidden" id="treeOrgNodeId" />
 <input type="hidden" id="stuForOrgNodeId" />
 <input type="hidden" id="selectedTestId" />
+<input type="hidden" id="proctorOrgNodeId" />
 <table width="100%" border="0">
 <tr>
 <td>

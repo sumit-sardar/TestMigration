@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.testSessionInfo.dto.TestSessionVO;
+import com.ctb.testSessionInfo.dto.UserProfileInformation;
 
 
 
@@ -17,6 +18,7 @@ public class Base {
 	private List<TestSessionVO> testSessionPA;
 	private List studentNode;
 	private OrgNodeCategory orgNodeCategory;
+	private List<com.ctb.testSessionInfo.dto.UserProfileInformation> userProfileInformation;;
 	/**
 	 * @return the orgNodeCategory
 	 */
@@ -88,6 +90,14 @@ public class Base {
 	 */
 	public void setStudentNode(List studentNode) {
 		this.studentNode = studentNode;
+	}
+	
+	public List<UserProfileInformation> getUserProfileInformation() {
+		return userProfileInformation;
+	}
+	public void setUserProfileInformation(
+			List<UserProfileInformation> userProfileInformation) {
+		this.userProfileInformation = userProfileInformation;
 	}
 
 }

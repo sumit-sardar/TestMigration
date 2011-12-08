@@ -76,9 +76,15 @@
 			</div>
 			<div id="addProctorId">
 				<h3><a href="#" >Add Proctor</a></h3>
-				<div id="Add_Proctor" style="overflow-y: scroll !important; overflow-x: hidden !important;">
-					
+				<div id="Add_Proctor" style="background-color: #FFFFFF; overflow-y: scroll !important; overflow-x: hidden !important;">
+					<div id="Proctor_Tab" style ="display:block;">
+						<jsp:include page="/sessionOperation/add_proctor_tab.jsp" />
+					</div>
+					<div id="Select_Proctor_Tab" style ="display:none;">
+						<jsp:include page="/sessionOperation/select_proctor.jsp" />	
+					</div>
 				</div>
+				
 			</div>
 			
 			<div>

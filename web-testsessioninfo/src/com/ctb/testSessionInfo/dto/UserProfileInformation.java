@@ -61,8 +61,10 @@ public class UserProfileInformation extends SanitizedFormField
         this.middleName = user.getMiddleName();
         this.lastName = user.getLastName();
         this.displayName = user.getDisplayUserName();
-        this.role = user.getRole().getRoleName();
-        this.roleId = user.getRole().getRoleId().toString();
+        if( user.getRole() != null) {
+        	this.role = user.getRole().getRoleName();
+        	this.roleId = user.getRole().getRoleId().toString();
+        }
         this.extPin1 = user.getExtPin1(); //ext_pin1 is added for DEX CR
         this.email = user.getEmail();
         this.timeZone = user.getTimeZone();   
