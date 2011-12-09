@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.Vector;
  
 import javax.servlet.http.HttpServletRequest;
@@ -134,6 +135,7 @@ public class SessionOperationController extends PageFlowController {
 	
 	Map<Integer, String> topNodesMap = new LinkedHashMap<Integer, String>();
 	Map<Integer, TestVO> idToTestMap = new LinkedHashMap<Integer, TestVO>();
+	Map<String, SessionStudent> idToStudentMap = new TreeMap<String, SessionStudent>();
     
 	/**
 	 * @return the userName
@@ -505,7 +507,7 @@ public class SessionOperationController extends PageFlowController {
     		Integer testAdminId =null;
     		ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
     		SuccessInfo successInfo = new SuccessInfo();
-            String[] studentsBeforeSave =  RequestUtil.getValuesFromRequest(this.getRequest(),"student");;
+            String studentsBeforeSave =  RequestUtil.getValueFromRequest(this.getRequest(), "students", true, "");
             int studentCountBeforeSave =0;
             boolean isValidationFailed = false;
             String jsonData = "";
@@ -515,8 +517,8 @@ public class SessionOperationController extends PageFlowController {
         	OutputStream stream = null;
         	
         	
-            if ( studentsBeforeSave != null )
-                studentCountBeforeSave = studentsBeforeSave.length;
+            if (studentsBeforeSave!=null && studentsBeforeSave.trim().length()>1)
+                studentCountBeforeSave = studentsBeforeSave.split(",").length;
             try
             {
                 testAdminId = createSaveTest(this.getRequest(), validationFailedInfo);
@@ -565,14 +567,14 @@ public class SessionOperationController extends PageFlowController {
                 if(e instanceof ValidationException){
                 	String errorMessageHeader =MessageResourceBundle.getMessage("FailedToSaveTestSession.ValidationException.Header");
                 	String errorMessageBody =MessageResourceBundle.getMessage("FailedToSaveTestSession.ValidationException.Body");
-                	validationFailedInfo.setKey("SYATEM_EXCEPTION");
+                	validationFailedInfo.setKey("SYSTEM_EXCEPTION");
                     validationFailedInfo.setMessageHeader(errorMessageHeader);
                     validationFailedInfo.updateMessage(errorMessageBody);
                 	
                 } else  {
                 	 String errorMessageHeader =MessageResourceBundle.getMessage("FailedToSaveTestSession");
-                	 String errorMessageBody = MessageResourceBundle.getMessage("FailedToSaveTestSession", e.getMessage());
-                     validationFailedInfo.setKey("SYATEM_EXCEPTION");
+                	 String errorMessageBody = MessageResourceBundle.getMessage("FailedToSaveTestSession.Body", e.getMessage());
+                     validationFailedInfo.setKey("SYSTEM_EXCEPTION");
                      validationFailedInfo.setMessageHeader(errorMessageHeader);
                      validationFailedInfo.updateMessage(errorMessageBody);
                 }
@@ -587,6 +589,7 @@ public class SessionOperationController extends PageFlowController {
            		successInfo.updateMessage(messageBody);
         	   	status.setSuccess(true); 
         	   	status.setSuccessInfo(successInfo);
+        	   	idToStudentMap.clear(); // clear map
         	   	
            } else if (!isValidationFailed)
             {
@@ -598,10 +601,12 @@ public class SessionOperationController extends PageFlowController {
            		successInfo.updateMessage(messageBody);
                 status.setSuccess(true);
                 status.setSuccessInfo(successInfo);
+            	idToStudentMap.clear(); // clear map
             } else {
             	status.setSuccess(false);
-            	if("SYATEM_EXCEPTION".equalsIgnoreCase(validationFailedInfo.getKey())){
+            	if("SYSTEM_EXCEPTION".equalsIgnoreCase(validationFailedInfo.getKey())){
             		status.setSystemError(true);
+            		idToStudentMap.clear(); // clear map
             	} else {
             		status.setSystemError(false);
             	}
@@ -637,9 +642,7 @@ public class SessionOperationController extends PageFlowController {
     		 if(!validationFailedInfo.isValidationFailed()) {
     			 populateSessionStudent(scheduledSession, httpServletRequest, validationFailedInfo );
     		 }
-    		 if(!validationFailedInfo.isValidationFailed()) {
-    			 populateSessionStudent(scheduledSession, httpServletRequest, validationFailedInfo ); 
-    		 }
+    		 
     		 if(!validationFailedInfo.isValidationFailed()) {
     			 populateProctor(scheduledSession, httpServletRequest , validationFailedInfo);
     		 }
@@ -734,9 +737,9 @@ public class SessionOperationController extends PageFlowController {
     	       
     	 } catch (Exception e) {
     		 e.printStackTrace();
-    		 validationFailedInfo.setKey("SYATEM_EXCEPTION");
-			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("Syatem.Exception.Header"));
-			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("Syatem.Exception.Body"));
+    		 validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
+			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
     	 }
     	 
 	        
@@ -757,9 +760,24 @@ public class SessionOperationController extends PageFlowController {
 
 	private void populateSessionStudent(ScheduledSession scheduledSession,
 				HttpServletRequest httpServletRequest, ValidationFailedInfo validationFailedInfo) {
-			// TODO Auto-generated method stub
 			
-		}
+		 String studentsBeforeSave =  RequestUtil.getValueFromRequest(this.getRequest(), "students", true, "");
+         int studentCountBeforeSave =0;
+         if (studentsBeforeSave!=null && studentsBeforeSave.trim().length()>1){
+        	 studentCountBeforeSave = studentsBeforeSave.split(",").length;
+         }
+         if(studentCountBeforeSave>0) {
+        	 ArrayList<SessionStudent> val = new ArrayList<SessionStudent> ();
+        	 String[] studs = studentsBeforeSave.split(",");
+        	 for(String key : studs){
+        		 SessionStudent ss =  this.idToStudentMap.get(key);
+        		 val.add(ss);
+        	 }
+        	 scheduledSession.setStudents(val.toArray(new SessionStudent[ val.size()]));
+         }
+             
+	
+	}
 
 	private void populateTestSession(ScheduledSession scheduledSession, HttpServletRequest request, ValidationFailedInfo validationFailedInfo) {
 		
@@ -860,9 +878,9 @@ public class SessionOperationController extends PageFlowController {
 			 
 		 } catch (Exception e) {
 			 e.printStackTrace();
-			 validationFailedInfo.setKey("SYATEM_EXCEPTION");
-			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("Syatem.Exception.Header"));
-			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("Syatem.Exception.Body"));
+			 validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
+			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
 			 
 		 }
 		 // retrieving data from request
@@ -946,9 +964,9 @@ public class SessionOperationController extends PageFlowController {
     		
     	}catch (Exception e) {
    		 e.printStackTrace();
-		 validationFailedInfo.setKey("SYATEM_EXCEPTION");
-		 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("Syatem.Exception.Header"));
-		 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("Syatem.Exception.Body"));
+		 validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+		 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
+		 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
 	 }
     	 
     	 
@@ -2189,7 +2207,7 @@ public class SessionOperationController extends PageFlowController {
     private List buildStudentList(SessionStudentData ssd) 
     {
         List studentList = new ArrayList();
-        SessionStudent [] sessionStudents = ssd.getSessionStudents();   
+        SessionStudent [] sessionStudents = ssd.getSessionStudents();
         for (int i=0 ; i<sessionStudents.length; i++) {
             SessionStudent ss = (SessionStudent)sessionStudents[i];
             if (ss != null) {                
@@ -2235,6 +2253,8 @@ public class SessionOperationController extends PageFlowController {
                  if(ss.getMiddleName() != null && !ss.getMiddleName().equals(""))
                 	ss.setMiddleName( ss.getMiddleName().substring(0,1));
                 studentList.add(ss);
+                idToStudentMap.put(ss.getStudentId()+":"+ss.getOrgNodeId(), ss);
+
             }
         }
         return studentList;

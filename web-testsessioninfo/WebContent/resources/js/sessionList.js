@@ -2182,6 +2182,8 @@ function createSingleNodeSelectedTree(jsondata) {
     var time = document.getElementById("time").innerHTML;
     var timeArray = time.split("-");
     param = param1+"&"+param2+"&startTime="+$.trim(timeArray[0])+"&endTime="+$.trim(timeArray[1]);
+    var selectedstudent = getStudentListArray(AddStudentLocaldata);
+    param = param+"&students="+selectedstudent.toString();
     
 	$.ajax({
 		async:		true,
@@ -2293,4 +2295,41 @@ function createSingleNodeSelectedTree(jsondata) {
 				$('#errorIcon').hide();
 			}
 	}
+	function getStudentListArray(studentArray) {
+	  var resultStdArray = [];
+	  if (studentArray==undefined) {
+	  	return resultStdArray;
+	  }
+	  
+	  for (var i=0; i<studentArray.length; i++) {
+	  	var val = studentArray[i].studentId+":"+studentArray[i].orgNodeId;
+	  	resultStdArray[i]= val;
+	  }
+	  return resultStdArray;
+	}
+	function validateIdenticalStudent (studentArray) {
+    	var accessCodes=new Array();
+    	var validStatus = true;
+		var resultStdArray = [];
+		var duplicateStudentArray = [];
+		var k = 0;
+		if (studentArray==undefined) {
+		  	return true;
+		 }
+		  
+		for (i=0; i<studentArray.length; i++) {
+		  var val = studentArray[i].studentId;
+		  resultStdArray[i]= val;
+		}
+    
+		var sorted_arr = resultStdArray.sort(); 
+		for (var i = 0; i < resultStdArray.length - 1; i++) {
+			if (sorted_arr[i + 1] == sorted_arr[i]) {
+				duplicateStudentArray[k]=sorted_arr[i]; 
+		    	validStatus = false; 
+		    	k++;
+		 	} 
+		} 
+    	return validStatus;
+    }
 					 
