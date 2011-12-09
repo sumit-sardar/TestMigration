@@ -166,6 +166,17 @@ function populateSelectProctorGrid() {
 				}
 			},
 			gridComplete: function() { 
+			
+				var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
+					var selectedRowData;
+					for(var i = 0; i < allRowsInGrid.length; i++) {
+						selectedRowData = $("#selectProctor").getRowData(allRowsInGrid[i]);
+						if (selectedRowData.defaultScheduler == 'T') {
+				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
+				 		}
+					
+					}
+					
 				if(proctorForSelectedOrg != preSelectedOrgPro) {
 					var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
 					/*if(allRowSelectedPro) { 
