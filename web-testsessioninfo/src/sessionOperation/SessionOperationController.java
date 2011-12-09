@@ -49,6 +49,7 @@ import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
+import com.ctb.exception.testAdmin.SessionCreationException;
 import com.ctb.exception.testAdmin.TransactionTimeoutException;
 
 import com.ctb.exception.validation.ValidationException;
@@ -75,6 +76,7 @@ import com.ctb.testSessionInfo.utils.UserOrgHierarchyUtils;
 import com.ctb.testSessionInfo.utils.UserPasswordUtils;
 import com.ctb.testSessionInfo.utils.WebUtils;
 import com.ctb.util.OperationStatus;
+import com.ctb.util.SuccessInfo;
 import com.ctb.util.ValidationFailedInfo;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.ColumnSortEntry;
@@ -500,6 +502,7 @@ public class SessionOperationController extends PageFlowController {
     		Integer studentCountAfterSave = 0;
     		Integer testAdminId =null;
     		ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+    		SuccessInfo successInfo = new SuccessInfo();
             String[] studentsBeforeSave =  RequestUtil.getValuesFromRequest(this.getRequest(),"student");;
             int studentCountBeforeSave =0;
             boolean isValidationFailed = false;
@@ -555,23 +558,51 @@ public class SessionOperationController extends PageFlowController {
             catch (CTBBusinessException e)
             {
                 e.printStackTrace();
-                String errorMessage =getMessageResourceBundle(e, "SelectSettings.FailedToSaveTestSession"); 
-                validationFailedInfo.setKey("SelectSettings.FailedToSaveTestSession");
-                validationFailedInfo.updateMessage(errorMessage);
                 isValidationFailed = true;
+                
+                if(e instanceof ValidationException){
+                	String errorMessageHeader =MessageResourceBundle.getMessage("FailedToSaveTestSession.ValidationException.Header");
+                	String errorMessageBody =MessageResourceBundle.getMessage("FailedToSaveTestSession.ValidationException.Body");
+                	validationFailedInfo.setKey("SYATEM_EXCEPTION");
+                    validationFailedInfo.setMessageHeader(errorMessageHeader);
+                    validationFailedInfo.updateMessage(errorMessageBody);
+                	
+                } else  {
+                	 String errorMessageHeader =MessageResourceBundle.getMessage("FailedToSaveTestSession");
+                	 String errorMessageBody = MessageResourceBundle.getMessage("FailedToSaveTestSession", e.getMessage());
+                     validationFailedInfo.setKey("SYATEM_EXCEPTION");
+                     validationFailedInfo.setMessageHeader(errorMessageHeader);
+                     validationFailedInfo.updateMessage(errorMessageBody);
+                }
+
             } 
            if (!isValidationFailed && studentCountBeforeSave == studentCountAfterSave) {
-           		String Message = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved");
+        	   
+           		String messageHeader = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Header");
+           		String messageBody = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Body");
+           		successInfo.setKey("TEST_SESSION_SAVED");
+           		successInfo.setMessageHeader(messageHeader);
+           		successInfo.updateMessage(messageBody);
         	   	status.setSuccess(true); 
-           		status.setSuccessMessage(Message);
+        	   	status.setSuccessInfo(successInfo);
+        	   	
            } else if (!isValidationFailed)
             {
                 int removedCount = studentCountBeforeSave - studentCountAfterSave;
-                String Message = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved") + MessageResourceBundle.getMessage("RestrictedStudentsNotSaved", "" +removedCount);
-                status.setSuccess(true); 
-           		status.setSuccessMessage(Message);
+                String messageHeader = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Header");
+           		String messageBody = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Body")+ MessageResourceBundle.getMessage("RestrictedStudentsNotSaved", "" +removedCount);
+           		successInfo.setKey("TEST_SESSION_SAVED_RES_STD");
+           		successInfo.setMessageHeader(messageHeader);
+           		successInfo.updateMessage(messageBody);
+                status.setSuccess(true);
+                status.setSuccessInfo(successInfo);
             } else {
             	status.setSuccess(false);
+            	if("SYATEM_EXCEPTION".equalsIgnoreCase(validationFailedInfo.getKey())){
+            		status.setSystemError(true);
+            	} else {
+            		status.setSystemError(false);
+            	}
             	status.setValidationFailedInfo(validationFailedInfo);
             }
             
@@ -586,9 +617,6 @@ public class SessionOperationController extends PageFlowController {
 	   		} catch (IOException e) {
 	   			e.printStackTrace();
    		} 
-           
-           
-           
             return null;
            // return new Forward("success", form);
         }
@@ -602,6 +630,9 @@ public class SessionOperationController extends PageFlowController {
     		 ScheduledSession scheduledSession = new ScheduledSession();
     		 populateTestSession(scheduledSession, httpServletRequest, validationFailedInfo );
     		 if(!validationFailedInfo.isValidationFailed()) {
+    			 populateScheduledUnits(scheduledSession, httpServletRequest, validationFailedInfo ); 
+    		 }
+    		 if(!validationFailedInfo.isValidationFailed()) {
     			 populateSessionStudent(scheduledSession, httpServletRequest, validationFailedInfo );
     		 }
     		 if(!validationFailedInfo.isValidationFailed()) {
@@ -610,9 +641,7 @@ public class SessionOperationController extends PageFlowController {
     		 if(!validationFailedInfo.isValidationFailed()) {
     			 populateProctor(scheduledSession, httpServletRequest , validationFailedInfo);
     		 }
-    		 if(!validationFailedInfo.isValidationFailed()) {
-    			 populateScheduledUnits(scheduledSession, httpServletRequest, validationFailedInfo ); 
-    		 }
+    		 
     		 if(!validationFailedInfo.isValidationFailed()) {
     			 newTestAdminId = this.scheduleTest.createNewTestSession(this.userName, scheduledSession);  
     		 }    		 
@@ -702,7 +731,10 @@ public class SessionOperationController extends PageFlowController {
             
     	       
     	 } catch (Exception e) {
-    		 validationFailedInfo.setKey("UnknownException");
+    		 e.printStackTrace();
+    		 validationFailedInfo.setKey("SYATEM_EXCEPTION");
+			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("Syatem.Exception.Header"));
+			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("Syatem.Exception.Body"));
     	 }
     	 
 	        
@@ -825,9 +857,14 @@ public class SessionOperationController extends PageFlowController {
 	         scheduledSession.setTestSession(testSession);
 			 
 		 } catch (Exception e) {
-			 validationFailedInfo.setKey("UnknownException");
+			 e.printStackTrace();
+			 validationFailedInfo.setKey("SYATEM_EXCEPTION");
+			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("Syatem.Exception.Header"));
+			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("Syatem.Exception.Body"));
+			 
 		 }
 		 // retrieving data from request
+		 
 		 
 			
 		}
@@ -865,44 +902,54 @@ public class SessionOperationController extends PageFlowController {
 
 	}
      private void validateScheduledUnits(ScheduledSession scheduledSession,	boolean hasBreakBoolean, ValidationFailedInfo validationFailedInfo) {
-    	 TestElement[] newTEs = scheduledSession.getScheduledUnits();
-    	 //boolean hasAL = ((form.getAutoLocator() != null) && form.getAutoLocator().equals("true"));
-         //if (hasAL)
-          //   TACs = new String[this.defaultSubtests.size() + 1];
-        // else
+    	try{
+    		TestElement[] newTEs = scheduledSession.getScheduledUnits();
+    		//boolean hasAL = ((form.getAutoLocator() != null) && form.getAutoLocator().equals("true"));
+            //if (hasAL)
+             //   TACs = new String[this.defaultSubtests.size() + 1];
+           // else
+       	 
+       	 	String[] TACs = null;
+       	 	if(!hasBreakBoolean){
+	       		 TACs = new String[1];
+	             TACs[0] = scheduledSession.getTestSession().getAccessCode();
+       	 	} else {
+       		 TACs = new String[newTEs.length];
+       		 for(int i=0; i<newTEs.length; i++) {
+       			 TACs[i] = newTEs[i].getAccessCode();
+       		 }
+       	 }
+       	 
+       	 	if (hasBreakBoolean && hasEmptyTAC(TACs)) {
+    			validationFailedInfo.setKey("TAC.MissingTestAccessCodes");
+    			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.MissingTestAccessCodes.Header"));
+    			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.MissingTestAccessCodes.Body1"));
+    			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.MissingTestAccessCodes.Body2"));
+    			
+    		} else if (hasBreakBoolean && hasSpecialCharInTAC(TACs)) {
+    			validationFailedInfo.setKey( "TAC.SpecialCharNotAllowed");
+    			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage( "TAC.SpecialCharNotAllowed.Header"));
+    			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage( "TAC.SpecialCharNotAllowed.Body"));
+    		} else if (hasBreakBoolean && hasInvalidateTACLength(TACs)) {
+    			validationFailedInfo.setKey("TAC.SixChars");
+    			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.SixChars"));
+    		} else if (hasBreakBoolean && hasDuplicateTAC(TACs)) {
+    			validationFailedInfo.setKey("TAC.IdenticalTestAccessCodes");
+    			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.IdenticalTestAccessCodes.Header"));
+    			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.IdenticalTestAccessCodes.Body1"));
+    			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.IdenticalTestAccessCodes.Body2"));
+    		}else if (isValidTAC(scheduledSession, TACs,validationFailedInfo)){
+    			// do nothing validationFailedInfo is populated
+    		}
+    		
+    	}catch (Exception e) {
+   		 e.printStackTrace();
+		 validationFailedInfo.setKey("SYATEM_EXCEPTION");
+		 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("Syatem.Exception.Header"));
+		 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("Syatem.Exception.Body"));
+	 }
     	 
-    	 String[] TACs = null;
-    	 if(!hasBreakBoolean){
-    		 TACs = new String[1];
-             TACs[0] = scheduledSession.getTestSession().getAccessCode();
-    	 } else {
-    		 TACs = new String[newTEs.length];
-    		 for(int i=0; i<newTEs.length; i++) {
-    			 TACs[i] = newTEs[i].getAccessCode();
-    		 }
-    	 }
     	 
-    	if (hasBreakBoolean && hasEmptyTAC(TACs)) {
- 			validationFailedInfo.setKey("TAC.MissingTestAccessCodes");
- 			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.MissingTestAccessCodes.Header"));
- 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.MissingTestAccessCodes.Body1"));
- 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.MissingTestAccessCodes.Body2"));
- 			
- 		} else if (hasBreakBoolean && hasSpecialCharInTAC(TACs)) {
- 			validationFailedInfo.setKey( "TAC.SpecialCharNotAllowed");
- 			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage( "TAC.SpecialCharNotAllowed.Header"));
- 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage( "TAC.SpecialCharNotAllowed.Body"));
- 		} else if (hasBreakBoolean && hasInvalidateTACLength(TACs)) {
- 			validationFailedInfo.setKey("TAC.SixChars");
- 			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.SixChars"));
- 		} else if (hasBreakBoolean && hasDuplicateTAC(TACs)) {
- 			validationFailedInfo.setKey("TAC.IdenticalTestAccessCodes");
- 			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("TAC.IdenticalTestAccessCodes.Header"));
- 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.IdenticalTestAccessCodes.Body1"));
- 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("TAC.IdenticalTestAccessCodes.Body2"));
- 		}else if (isValidTAC(scheduledSession, TACs,validationFailedInfo)){
- 			// do nothing validationFailedInfo is populated
- 		}
     	
     	 
     	 

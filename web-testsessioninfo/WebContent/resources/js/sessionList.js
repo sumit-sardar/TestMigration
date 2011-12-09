@@ -96,7 +96,7 @@ function populateSessionListGrid(homePageLoad) {
 		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
 				//clearMessage();
-				$('#showMessage').hide();
+				$('#showSaveTestMessage').hide();
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
 				var minPageSize = 1;
@@ -109,7 +109,7 @@ function populateSessionListGrid(homePageLoad) {
 				
 			},
 			onSelectRow: function () {
-					$('#showMessage').hide();
+					$('#showSaveTestMessage').hide();
 					setAnchorButtonState('viewStatusButton', false);
 					if($("#canRegisterStudent").val() == 'true'){
 						var selectedTestSessionId = $("#list2").jqGrid('getGridParam', 'selrow');
@@ -167,7 +167,7 @@ function populateCompletedSessionListGrid() {
  		//UIBlock();
  		gridloaded = true;
  		reset();
- 		$('#showMessage').hide();
+ 		$('#showSaveTestMessage').hide();
        $("#list3").jqGrid({         
           url: 'getCompletedSessionForGrid.do', 
 		  type:   'POST',
@@ -198,7 +198,7 @@ function populateCompletedSessionListGrid() {
 		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
 				//clearMessage();
-				$('#showMessage').hide();
+				$('#showSaveTestMessage').hide();
 				var reqestedPage = parseInt($('#list3').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager3').text());
 				var minPageSize = 1;
@@ -210,7 +210,7 @@ function populateCompletedSessionListGrid() {
 				}
 			},
 			onSelectRow: function () {
-					$('#showMessage').hide();
+					$('#showSaveTestMessage').hide();
 					setAnchorButtonState('viewStatusButton', false);
 					if($("#canRegisterStudent").val() == 'true'){
 			 			var selectedTestSessionId = $("#list3").jqGrid('getGridParam', 'selrow');
@@ -297,7 +297,7 @@ function populateCompletedSessionListGrid() {
 	}
 	function showTreeSlider() {
 		openTreeRequested = true;
-		$('#showMessage').hide();
+		$('#showSaveTestMessage').hide();
 		 if(isTreePopulated) {
 			 $("#show").css('display', 'none');
 			 $("#hide").css('display', 'block');
@@ -320,7 +320,7 @@ function populateCompletedSessionListGrid() {
 	}
 	
 	function hideTreeSlider() {
-		 $('#showMessage').hide();
+		 $('#showSaveTestMessage').hide();
 		 openTreeRequested  = false;
 		 $("#hide").css('display', 'none');
 		 $("#show").css('display', 'block');
@@ -393,7 +393,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	   
 	  $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	//loadSessionGrid = true;
-	    	$('#showMessage').hide();
+	    	$('#showSaveTestMessage').hide();
 	    	var SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
 	    	var topNodeSelected = $(this).parent().attr("categoryId");
@@ -653,7 +653,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		reset();
 		hideTreeSlider();
 		gridReload(true);
-		$('#showMessage').hide();
+		$('#showSaveTestMessage').hide();
 	}	
 	
 	
@@ -806,7 +806,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	
 	function scheduleNewSession() {
-	$('#showMessage').hide();
+	$('#showSaveTestMessage').hide();
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -861,6 +861,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		closeOnEscape: false,
 		open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 		});						
+		$("#sData").addClass("ui-state-disabled");		
 		setPopupPosition();
 	}
 	
@@ -1231,6 +1232,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					
 					createSubtestGrid();
 					$("#selectedNewTestId").val(selectedTestId);
+					$("#sData").removeClass("ui-state-disabled");
 			 		
 			},
 			loadComplete: function () {
@@ -1383,7 +1385,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		populateTestListGrid(tList, true, showlevelOrGrade);
 		$("#sessionListDiv").show();
 		$('#displayMessage').hide();
-		
+		$("#sData").addClass("ui-state-disabled");
 		subtestLength = 0;
 		var testBreak = document.getElementById("testBreak");
 		isTestSelected = false;
@@ -2170,7 +2172,7 @@ function createSingleNodeSelectedTree(jsondata) {
 
     function saveTest() {
     $('#displayMessage').hide();
-    $('#showMessage').hide();
+    $('#showSaveTestMessage').hide();
 	var param;
 	var param1 =$("#testDiv *").serialize(); 
     var param2 = $("#Test_Detail *").serialize();
@@ -2189,33 +2191,70 @@ function createSingleNodeSelectedTree(jsondata) {
 		dataType:	'json',
 		contentType: 'application/json; charset=UTF-8', 
 		success:	function(data, textStatus, XMLHttpRequest){
-						
+					   
+					   
+					   var successMessage;
+					   var key;
+					   var messageHeader;
+					   var messageArray;
+					   var length = 0;
+					   
 					  if(data.isSuccess){
-						  	var successMessage = data.successMessage;
-						  	$.unblockUI();
-						  	$('#showMessage').show();
-						  	$("#showMessage").html(successMessage); 
-						  	
-						  	closePopUp("scheduleSession");
+					  	successMessage   = data.successMessage;
+						key 		     = data.successInfo.key;
+						messageHeader 	 = data.successInfo.messageHeader;
+						messageArray     = data.successInfo.message;
 					  } else {
-						   var key 		        = data.validationFailedInfo.key;
-						   var messageHeader 	= data.validationFailedInfo.messageHeader;
-						   var messageArray     = data.validationFailedInfo.message;
-						   var length = 0;
-						    $('#ssAccordion').accordion('activate', 0 );
-						   if(messageArray!=undefined){
-						   	length= messageArray.length;
-						   }
-						   if(length==0) {
-						   		setMessage(messageHeader, "", "errorMessage","");
-						   		 $('#displayMessage').show(); 
-						   } else if (length==1) {
-						   		setMessage(messageHeader, messageArray[0], "errorMessage","");
-						   		 $('#displayMessage').show(); 
-						   } else if (length==2) {
-						   		setMessage(messageHeader,  messageArray[0], "errorMessage", messageArray[1]);
-						   		 $('#displayMessage').show(); 
-						   } 
+					  	key 		    = data.validationFailedInfo.key;
+						messageHeader 	= data.validationFailedInfo.messageHeader;
+						messageArray    = data.validationFailedInfo.message;
+					  
+					  
+					  }
+					  if(messageArray!=undefined){
+							   	length= messageArray.length;
+					  }
+					   
+					  if(data.isSuccess){
+							if(length==0) {
+							   setSessionSaveMessage(messageHeader, "", "infoMessage","");
+							   	$('#displayMessage').show(); 
+							} else if (length==1) {
+							   	setSessionSaveMessage(messageHeader, messageArray[0], "infoMessage","");
+							   	$('#displayMessage').show(); 
+							} else  {
+							   	setSessionSaveMessage(messageHeader,  messageArray[0], "infoMessage", messageArray[1]);
+							   	$('#displayMessage').show(); 
+							 } 
+						  	
+						  	$('#showSaveTestMessage').show();
+						  	$.unblockUI();
+						  	closePopUp("scheduleSession");
+					  } else if (data.IsSystemError) {
+							if(length==0) {
+								setSessionSaveMessage(messageHeader, "", "errorMessage","");
+								$('#displayMessage').show(); 
+							} else if (length==1) {
+								setSessionSaveMessage(messageHeader, messageArray[0], "errorMessage","");
+								$('#displayMessage').show(); 
+							} else  {
+								setSessionSaveMessage(messageHeader,  messageArray[0], "errorMessage", messageArray[1]);
+								$('#displayMessage').show(); 
+							}
+							$.unblockUI();
+							$('#showSaveTestMessage').show();
+						  	closePopUp("scheduleSession");
+				  } else {
+							if(length==0) {
+								setMessage(messageHeader, "", "errorMessage","");
+								$('#displayMessage').show(); 
+							} else if (length==1) {
+								setMessage(messageHeader, messageArray[0], "errorMessage","");
+								$('#displayMessage').show(); 
+							} else  {
+								setMessage(messageHeader,  messageArray[0], "errorMessage", messageArray[1]);
+								$('#displayMessage').show(); 
+							} 
 						  
 				  }
 	
@@ -2238,6 +2277,17 @@ function createSingleNodeSelectedTree(jsondata) {
 				$("#randomDis").val("N"); 
 			} else {
 				$("#randomDis").val("Y"); 
+			}
+	}
+	
+	function setSessionSaveMessage(title, content, type, message){
+			$("#saveTestTitle").html(title);
+			$("#saveTestContent").html(content);
+			$("#saveTestMessage").html(message);
+			if(type=="errorMessage"){
+				$('#errorIcon').show();
+			} else {
+				$('#errorIcon').hide();
 			}
 	}
 					 

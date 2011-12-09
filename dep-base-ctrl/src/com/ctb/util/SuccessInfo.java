@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ValidationFailedInfo  {
+public class SuccessInfo {
 
 
 	private String key ;
 	private List <String> message = new ArrayList <String>();
 	private String messageHeader;
-	public ValidationFailedInfo(String key) {
+	public SuccessInfo(String key) {
 		this.key = key;
 		
 	}
-	public ValidationFailedInfo() {
+	public SuccessInfo() {
 		
 	}
 	public void updateMessage(String message){
@@ -51,13 +51,6 @@ public class ValidationFailedInfo  {
 	 */
 	public void setMessageHeader(String messageHeader) {
 		this.messageHeader = messageHeader;
-	}
-	
-	/**
-	 * @return the key
-	 */
-	public String getKey() {
-		return key;
 	}
 
 }

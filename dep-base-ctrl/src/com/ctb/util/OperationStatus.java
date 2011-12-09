@@ -3,9 +3,11 @@ package com.ctb.util;
 
 
 public class OperationStatus {
-	private boolean isSuccess ;
+	private boolean isSuccess = false;
+	private boolean IsSystemError = false;
 	private String successMessage ;
 	private ValidationFailedInfo validationFailedInfo;
+	private SuccessInfo successInfo;
 	
 	/**
 	 * @return the isSuccess
@@ -47,6 +49,38 @@ public class OperationStatus {
 	 */
 	public void setValidationFailedInfo(ValidationFailedInfo validation) {
 		this.validationFailedInfo = validation;
+	}
+
+	
+	/**
+	 * @return the isSystemError
+	 */
+	public boolean isSystemError() {
+		return IsSystemError;
+	}
+
+	
+	/**
+	 * @param isSystemError the isSystemError to set
+	 */
+	public void setSystemError(boolean isSystemError) {
+		IsSystemError = isSystemError;
+	}
+
+	
+	/**
+	 * @return the successInfo
+	 */
+	public SuccessInfo getSuccessInfo() {
+		return successInfo;
+	}
+
+	
+	/**
+	 * @param successInfo the successInfo to set
+	 */
+	public void setSuccessInfo(SuccessInfo successInfo) {
+		this.successInfo = successInfo;
 	}
 	
 
