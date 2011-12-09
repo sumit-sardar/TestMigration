@@ -1488,7 +1488,7 @@ public class ScheduleTestImpl implements ScheduleTest
 	            throw new SessionCreationException("testAdmin: createNewTestSession: cannot create a session with existing session id: " + newSession.getTestSession().getTestAdminId());
 	        return writeTestSession(userName, newSession);
     	} catch (Exception e) {
-    		String message = e.getMessage().toLowerCase();
+    		String message = (e.getMessage()!= null) ? e.getMessage().toLowerCase() : "";
             CTBBusinessException ctbe = new SessionCreationException(message);
             ctbe.setStackTrace(e.getStackTrace());
     		throw ctbe;
