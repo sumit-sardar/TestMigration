@@ -529,9 +529,12 @@ function createSingleNodeSelectedTree(jsondata) {
 				if(sessionList[i].id == id){
 				    found = true;
 				    blockOffGradeTesting = sessionList[i].offGradeTestingDisabled;
+				    if(blockOffGradeTesting == null || blockOffGradeTesting == undefined || blockOffGradeTesting == "")
+				    	blockOffGradeTesting = false;
 				    selectedLevel = sessionList[i].level;
-				   // alert("blockOffGradeTesting -> " + blockOffGradeTesting);
-				    //alert("selectedLevel -> " + selectedLevel);
+				    if(selectedLevel == null || selectedLevel == undefined || selectedLevel == "")
+				    	selectedLevel = "Show All"
+				    
 					document.getElementById("aCode").style.visibility = "visible";
 					if(sessionList[i].subtests.length>0)  {
 						document.getElementById("aCode").value = ProductData.accessCodeList[0];

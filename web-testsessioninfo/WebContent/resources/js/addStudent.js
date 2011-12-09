@@ -154,8 +154,8 @@ function selectFormat( cellvalue, options, rowObject ){
 
 function populateSelectStudentGrid() {
  		UIBlock();
- 		populateGradeLevelFilter();
- 		//alert("selectedLevel -> " + selectedLevel);
+ 		if(!isTabeProduct)
+ 			populateGradeLevelFilter();
  		selectStudentgridLoaded = true;
  		var studentIdTitle = $("#studentIdLabelName").val();
  		var calculator= '<img src="/SessionWeb/resources/images/calc.PNG" title="Calculator"/>';
@@ -301,8 +301,6 @@ function populateSelectStudentGrid() {
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
-				if(blockOffGradeTesting)
-					$("#gs_grade").attr('disabled', true);
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -336,6 +334,13 @@ function populateSelectStudentGrid() {
 		
 	});*/
 	 
+	 //Changes to block off grade testing
+		if(blockOffGradeTesting) {
+			if(selectedLevel.length > 2)
+				$("#gs_grade").attr('disabled', false);
+			else
+				$("#gs_grade").attr('disabled', true);
+		}
 	 
 	 
 }
@@ -497,17 +502,23 @@ function populateGradeLevelFilter() {
 	var init = 0;
 	var final = 0;	
 	var splitArray = [];
-	categoriesStr = ":All;";
+	if(blockOffGradeTesting) {
+		categoriesStr = "";
+		dropListToDisplay = [{"id":selectedLevel,"name":selectedLevel}];
+	}
+	else
+		categoriesStr = ":All;";
 	for (var i = 0; i < dropListToDisplay.length; i++) {
 		if(dropListToDisplay[i].id == "Show all")
 			continue;
 		else {
-			if(dropListToDisplay[i].id.indexOf("-") < 0) {
-				categoriesStr = categoriesStr + dropListToDisplay[i].id + ":" + dropListToDisplay[i].name + ";";
-				if(dropListToDisplay[i].id.indexOf("/") >= 0) { // For handling terranova product
+			if(dropListToDisplay[i].id.indexOf("-") < 0) {				
+				if(dropListToDisplay[i].id.indexOf("\/") >= 0) { // For handling terranova product
 					splitAttay = dropListToDisplay[i].id.split("/");
 					categoriesStr = categoriesStr + splitAttay[0] + ":" + splitAttay[0] + ";";
 					categoriesStr = categoriesStr + splitAttay[1] + ":" + splitAttay[1] + ";";
+				} else {
+					categoriesStr = categoriesStr + dropListToDisplay[i].id + ":" + dropListToDisplay[i].name + ";";
 				}
 			} else { // For handling laslink products
 				splitArray = dropListToDisplay[i].id.split("-");

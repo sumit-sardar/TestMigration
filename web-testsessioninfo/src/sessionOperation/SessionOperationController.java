@@ -28,6 +28,8 @@ import util.RequestUtil;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.request.FilterParams.FilterParam;
+import com.ctb.bean.request.FilterParams.FilterType;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
@@ -1340,7 +1342,7 @@ public class SessionOperationController extends PageFlowController {
 		String testId = getRequest().getParameter("selectedTestId");
 		String treeOrgNodeId = getRequest().getParameter("stuForOrgNodeId");
 		String blockOffGrade = getRequest().getParameter("blockOffGradeTesting");
-		//System.out.println("blockOffGrade -> " + blockOffGrade);
+		String selectedLevel = getRequest().getParameter("selectedLevel");
 		Integer selectedOrgNodeId = null;
 		Integer selectedTestId = null;
 		Integer testAdminId = null;
@@ -1349,12 +1351,9 @@ public class SessionOperationController extends PageFlowController {
 		if(testId != null)
 			selectedTestId = Integer.parseInt(testId);
 		try {
-			FilterParams studentFilter = new FilterParams();
-			if(blockOffGrade.equalsIgnoreCase("true"))
-				studentFilter = null;
-			else {
-				String [] arg = new String[1];
-				studentFilter = null;
+			FilterParams studentFilter = null;
+			if(blockOffGrade.equalsIgnoreCase("true")) { //Changes for block off grade testing
+				studentFilter = generateFilterParams(selectedLevel);				
 			}
 	        PageParams studentPage = null;
 	        SortParams studentSort = null;
@@ -2450,12 +2449,7 @@ public class SessionOperationController extends PageFlowController {
                     User user = users[i];
                     if (user != null && user.getUserName() != null) {
                         UserProfileInformation userDetail = new UserProfileInformation(user);
-                        if(this.user.getUserId().equals(user.getUserId())){
-                        	userDetail.setDefaultScheduler("T");
-                        	
-                        }else {
-                        	userDetail.setDefaultScheduler("F");
-                        }
+                        userDetail.setDefaultScheduler("F");
                         userList.add(userDetail);
                     }
                 }
@@ -2503,4 +2497,35 @@ public class SessionOperationController extends PageFlowController {
 	            
 	        return errorMessage; 
 	    }
+	 
+	 //Added for block off grade
+	 private FilterParams generateFilterParams(String selectedLevel) {
+		 
+		 FilterParams studentFilter = new FilterParams();		 
+		String [] arg = new String[1];
+		arg[0] = selectedLevel;
+		studentFilter = new FilterParams();
+		ArrayList filters = new ArrayList();
+		if(selectedLevel.contains("-")) {
+			String [] grades = selectedLevel.split("-");
+			int initVal = Integer.parseInt(grades[0]);
+			int finalVal = Integer.parseInt(grades[1]);
+			for(int i = initVal; i <= finalVal; i++) {
+				arg[0] = String.valueOf(i);
+				filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));
+			}
+		} else if(selectedLevel.contains("/")) {
+			String [] grades = selectedLevel.split("/");
+			arg[0] = grades[0];
+			filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));
+			arg[0] = grades[1];
+			filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));
+		} else {
+			filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));
+		}
+		studentFilter.setFilterParams((FilterParam[])filters.toArray(new FilterParam[0]));
+		 
+		 return studentFilter;
+		 
+	 }
 }
