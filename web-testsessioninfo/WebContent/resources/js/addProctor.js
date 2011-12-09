@@ -175,33 +175,20 @@ function populateSelectProctorGrid() {
 				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
 				 			$("#"+allRowsInGrid[i]+" td input").attr("checked", true);
 				 		}
-					
-					}
-					
-				if(proctorForSelectedOrg != preSelectedOrgPro) {
-					var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
-					/*if(allRowSelectedPro) { 
-					 	$('.cbox').attr('checked', true);
-					 	if(unCheckedSessionPro.length > 0) {
-					 	for(var i=0; i<unCheckedSessionPro.length; i++) {
-					 	 	if(include(allRowsInGrid, unCheckedSessionPro[i])){
-					 	 			$("#"+unCheckedSessionPro[i]+" td input").attr('checked', false); 
-					 	 		}
-					 		}
-					 	}
-					 } else {
-					 	$('.cbox').attr('checked', false); 
-					 	/*for(var i=0; i<allRowsInGrid.length; i++) {
-						 	if(proctorIdObjArray[allRowsInGrid[i]] != undefined){
-						 		var stuObj = proctorIdObjArray[allRowsInGrid[i]];
-						 		//var orgArray = 	stuObj.orgNodeId.split(",");
-					 			//if(include(orgArray, proctorForSelectedOrg)) {
-									//$("#"+allRowsInGrid[i]+" td input").attr('checked', true); 
-								//} 
+				 		
+				 		for (var j=0; j < proctorIdObjArray.length; j++) {
+						var objstr = proctorIdObjArray[j];
+							if (objstr != null) {
+								var key = getProctorRowID (j);
+								if( key == allRowsInGrid[i]) {
+									//alert("getProctorRowID " + key);
+									//alert("allRowsInGrid[i] " + allRowsInGrid[i]);
+									$("#"+allRowsInGrid[i]+" td input").attr("checked", true);
+									break;
+								}
 							}
-					 	}*/
-					 //}*/
-				} 
+						}
+					}
 			},
 			onSelectAll: function (rowIds) {
 				if(allRowSelectedPro) {
