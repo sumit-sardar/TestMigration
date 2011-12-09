@@ -1945,8 +1945,16 @@ function createSingleNodeSelectedTree(jsondata) {
 		 	
 		 	//alert('proctorIdObjArray.length: ' + proctorIdObjArray.length);
 			//$('#totalAssignedProctors').text(proctorIdObjArray.length);
-		
-		 	proctorIdObjArray[schedulerUserId]=jsondata;
+			proctorIdObjArray[pindex]=jsondata;
+					
+			if (selectedProctorIds == "") {
+					selectedProctorIds = schedulerUserId+"_"+pindex;
+					pindex++;
+			} else {
+					selectedProctorIds = selectedProctorIds +"|"+schedulerUserId+"_"+pindex;
+					pindex++;
+			}
+		 	//proctorIdObjArray[schedulerUserId]=jsondata;
 		 	noOfProctorAdded = addProctorLocaldata.length;
 		 	$("#totalAssignedProctors").text(noOfProctorAdded);
 	 	}
@@ -1956,11 +1964,12 @@ function createSingleNodeSelectedTree(jsondata) {
  		$("#listProctor").jqGrid({         
          data:  addProctorLocaldata,
 		 datatype: "local",         
-          colNames:[ 'Last Name','First Name','Default SCheduler'],
+          colNames:[ 'Last Name','First Name','Default Scheduler','User Id'],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'defaultScheduler',index:'defaultScheduler', hidden: true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'defaultScheduler',index:'defaultScheduler', hidden: true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'userId',index:'userId', hidden: true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"rows", id:"userId", records: function(obj) {} },
 		   	//jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId", records: function(obj) { userList = JSON.stringify(obj.userProfileInformation);return obj.userProfileInformation.length; } },
@@ -2042,7 +2051,8 @@ function createSingleNodeSelectedTree(jsondata) {
 					 }
 				} */
 			},
-			/* onSelectAll: function (rowIds) {
+			/* 
+			onSelectAll: function (rowIds) {
 				if(allRowSelectedPro) {
 					allRowSelectedPro = false;
 				} else {
@@ -2050,15 +2060,29 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 			}, */
 			onSelectRow: function (rowid, status) {
-				var selectedRowId = rowid;
+			
+				var selectedRowData = $("#listProctor").getRowData(rowid);
+				selectedRowId = selectedRowData.userId;
+								
 				if(status) {
-					var selectedRowData = $("#listProctor").getRowData(selectedRowId);
-					if(delProctorIdObjArray[selectedRowId] == undefined){
-						delProctorIdObjArray[selectedRowId]= selectedRowData;
-					} 
+				
+					
+					delProctorIdObjArray[pdindex]=selectedRowId;
+					if (deletedProctorIds == "") {
+							deletedProctorIds = selectedRowId+"_"+pdindex;
+							pdindex++;
+					} else {
+							deletedProctorIds = deletedProctorIds +"|"+selectedRowId+"_"+pdindex;
+							pdindex++;
+					}
+					
 				} else {
-					delProctorIdObjArray.splice(selectedRowId,1); 
-				}
+				
+					var indx = getProctorIDIndex(selectedRowId);
+					delProctorIdObjArray[indx]=null;
+					deletedProctorIds = updateRule(deletedProctorIds,indx);
+					
+				} 
 			},
 			loadComplete: function () {
 				if ($('#listProctor').getGridParam('records') === 0) {
@@ -2108,15 +2132,23 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	function removeSelectedProctor() {
 		
-		//alert('inside removeSelectedProctor');
-		for(var key in delProctorIdObjArray){ 	
-			jQuery("#listProctor").delRowData(key);
-			//var objstr = proctorIdObjArray[delProctorIdObjArray[key].userId];
-			proctorIdObjArray.splice(delProctorIdObjArray[key].userId,1);
-			noOfProctorAdded = noOfProctorAdded - 1; 
+		
+		for (var i = 0; i< delProctorIdObjArray.length; i++) {
+		
+			var uid = delProctorIdObjArray[i];
+			if (uid != null) {
+			
+				jQuery("#listProctor").delRowData(uid);
+				var indx = getProctorIDIndex(uid);
+				removeProctorByIndex(indx);
+			}
+					
 		}
-		$('#totalAssignedProctors').text(noOfProctorAdded);
+		//$('#totalAssignedProctors').text(noOfProctorAdded);
 		closePopUp('removeProctorConfirmationPopup');
+		delProctorIdObjArray = [];
+		returnSelectedProctor();
+		
 	}
 	
 	function removeProctorConfirmationPopup(){

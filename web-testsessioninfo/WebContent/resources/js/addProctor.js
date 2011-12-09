@@ -8,6 +8,10 @@ var unCheckedSessionPro = [];
 var addProctorLocaldata ={};
 var proctorForSelectedOrg;
 var preSelectedOrgPro;
+var selectedProctorIds = "";
+var deletedProctorIds = "";
+var pindex = 0;
+var pdindex = 0;
 var proctorIdObjArray = [];
 var delProctorIdObjArray = [];
 var isOnBackProctor = false;
@@ -113,11 +117,12 @@ function populateSelectProctorGrid() {
           url: 'getProctorList.do?q=2&proctorOrgNodeId='+$("#proctorOrgNodeId").val(), 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[ 'Last Name','First Name','Default SCheduler'],
+          colNames:[ 'Last Name','First Name','Default Scheduler','User Id'],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'defaultScheduler',index:'defaultScheduler', hidden: true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'defaultScheduler',index:'defaultScheduler', hidden: true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'userId',index:'userId', hidden: true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 
 		   	jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId", records: function(obj) { userList = JSON.stringify(obj.userProfileInformation);return obj.userProfileInformation.length; } },
@@ -163,7 +168,7 @@ function populateSelectProctorGrid() {
 			gridComplete: function() { 
 				if(proctorForSelectedOrg != preSelectedOrgPro) {
 					var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
-					if(allRowSelectedPro) { 
+					/*if(allRowSelectedPro) { 
 					 	$('.cbox').attr('checked', true);
 					 	if(unCheckedSessionPro.length > 0) {
 					 	for(var i=0; i<unCheckedSessionPro.length; i++) {
@@ -174,7 +179,7 @@ function populateSelectProctorGrid() {
 					 	}
 					 } else {
 					 	$('.cbox').attr('checked', false); 
-					 	for(var i=0; i<allRowsInGrid.length; i++) {
+					 	/*for(var i=0; i<allRowsInGrid.length; i++) {
 						 	if(proctorIdObjArray[allRowsInGrid[i]] != undefined){
 						 		var stuObj = proctorIdObjArray[allRowsInGrid[i]];
 						 		//var orgArray = 	stuObj.orgNodeId.split(",");
@@ -182,8 +187,8 @@ function populateSelectProctorGrid() {
 									//$("#"+allRowsInGrid[i]+" td input").attr('checked', true); 
 								//} 
 							}
-					 	}
-					 }
+					 	}*/
+					 //}*/
 				} 
 			},
 			onSelectAll: function (rowIds) {
@@ -197,11 +202,22 @@ function populateSelectProctorGrid() {
 				var selectedRowId = rowid;
 				if(status) {
 					var selectedRowData = $("#selectProctor").getRowData(selectedRowId);
-					if(proctorIdObjArray[selectedRowId] == undefined){
-						proctorIdObjArray[selectedRowId]= selectedRowData;
-					} 
+					proctorIdObjArray[pindex]=selectedRowData;
+					
+					if (selectedProctorIds == "") {
+							selectedProctorIds = selectedRowId+"_"+pindex;
+							pindex++;
+					} else {
+							selectedProctorIds = selectedProctorIds +"|"+selectedRowId+"_"+pindex;
+							pindex++;
+					}
+					
 				} else {
-					proctorIdObjArray.splice(selectedRowId,1); 
+				
+					var indx = getProctorIDIndex(selectedRowId);
+					removeProctorByIndex(indx); 
+					selectedProctorIds = updateRule(selectedProctorIds,indx);
+										
 				} 
 			},
 			loadComplete: function () {
@@ -235,6 +251,81 @@ function populateSelectProctorGrid() {
 
 }
 
+function getProctorIDIndex(selectedRowId) {
+
+	var pIDs = selectedProctorIds.split("|");
+	var pid = "";
+	for (var i = 0; i < pIDs.length; i++) {
+		
+		pid = pIDs[i];
+		if (pid.match(selectedRowId) != null) {
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+function getProctorRowID (index) {
+
+	index = "_"+index;
+	var pIDs = selectedProctorIds.split("|");
+	var pid = "";
+	for (var i = 0; i < pIDs.length; i++) {
+		
+		pid = pIDs[i];
+		if (pid.match(index) != null) {
+			
+			var end = pid.indexOf(index);
+			var selectedRowID = pid.substring(0,end);
+			return selectedRowID;
+		}
+	}
+	
+	return "-1";
+	
+
+}
+
+function removeProctorByIndex (arrayIndex) {
+
+	//proctorIdObjArray.splice(arrayIndex,1);
+	proctorIdObjArray[arrayIndex]=null;
+
+}
+
+
+function updateRule (rule,index) {
+
+	index = "_"+index;
+	var pIDs = rule.split("|");
+	var pid = "";
+	for (var i = 0; i < pIDs.length; i++) {
+		
+		pid = pIDs[i];
+		if (pid.match(index) != null) {
+			
+			pIDs[i] = "deleted"
+			break;
+			
+		}
+	}
+	
+	for (var i = 0; i < pIDs.length; i++) {
+	
+		pid = pIDs[i];
+		
+		if (i == 0) {
+			rule = pid;
+		} else {
+			rule = rule +"|"+pid;
+		}
+		
+	}
+	
+	return rule;
+} 
+
 function include(arr,obj) {
      //return (arr.indexOf(obj) != -1);
     var indx =  jQuery.inArray(obj, arr); 
@@ -249,22 +340,25 @@ function include(arr,obj) {
 function returnSelectedProctor() {
 
 	var val=[] ;
-	 for(var key in proctorIdObjArray){ 
-	 	var objstr = proctorIdObjArray[key];
-	 	objstr['userId']= key;
-	 	val.push(objstr);
-	 }
-	 var mainObj = {};
-	  //mainObj['page']= '1';
-	 //mainObj['total']='2';
-	 //mainObj['records']='10';
-	 //mainObj['studentNode'] = val;
-	 mainObj = val;
-	 addProctorLocaldata = mainObj;
-	 noOfProctorAdded = addProctorLocaldata.length;
-	 hideSelectedProctor();
-	 gridReloadProctor(false);
-	 $("#totalAssignedProctors").text(noOfProctorAdded);
-	 //$("#jqg_listProctor_1").attr("disabled", true);
-	 
+	for (var i=0; i < proctorIdObjArray.length; i++) {
+	
+		var objstr = proctorIdObjArray[i];
+		
+		if (objstr != null) {
+			var key = getProctorRowID (i);
+			objstr['userId'] = key;
+			val.push(objstr);
+		
+		}
+		
+	}
+	
+	var mainObj = {};
+	mainObj = val;
+	addProctorLocaldata = mainObj;
+	noOfProctorAdded = addProctorLocaldata.length;
+	hideSelectedProctor();
+	gridReloadProctor(false);
+	$("#totalAssignedProctors").text(noOfProctorAdded);
+			 
 }
