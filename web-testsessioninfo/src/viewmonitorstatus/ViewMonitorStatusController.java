@@ -713,14 +713,16 @@ public class ViewMonitorStatusController extends PageFlowController
         boolean isTabeSession = isTabeSession(testProduct.getProductType());
         
         boolean isTabeLocatorSession = isTabeLocatorSession(testProduct.getProductType());
-       
+
+        boolean isTabeAdaptiveSession = isTabeAdaptiveSession(testProduct.getProductType());
+        
         // START- Added for LLO-109 
         isLasLinkCustomer();
         boolean isLaslinkSession  = this.isLasLinkCustomer;
         
         boolean testSessionCompleted = isTestSessionCompleted(testSession);
                                 
-        this.studentStatusSubtests = buildStudentStatusSubtests(re.getStudentId(), this.sessionId, testSessionCompleted, isTabeSession, isTabeLocatorSession, isLaslinkSession);       
+        this.studentStatusSubtests = buildStudentStatusSubtests(re.getStudentId(), this.sessionId, testSessionCompleted, (isTabeSession || isTabeAdaptiveSession), isTabeLocatorSession, isLaslinkSession);       
        
         String testGrade = getTestGrade(this.studentStatusSubtests);
         String testLevel = getTestLevel(this.studentStatusSubtests);
@@ -731,7 +733,7 @@ public class ViewMonitorStatusController extends PageFlowController
         getRequest().setAttribute("testSessionName", testSession.getTestAdminName());
         getRequest().setAttribute("testName", testSession.getTestName());
         
-        if (! isTabeSession)
+        if ((! isTabeSession) && (! isTabeAdaptiveSession))
         {
             if (! testGrade.equals("--"))
                 getRequest().setAttribute("testGrade", testGrade);
@@ -1665,6 +1667,14 @@ public class ViewMonitorStatusController extends PageFlowController
             return false;
     }
 
+    private boolean isTabeAdaptiveSession(String productType)
+    {
+        if (productType.equalsIgnoreCase("TA"))
+            return true;   
+        else             
+            return false;
+    }
+    
     private TestElement []  orderedSubtestList(TestElement[] subtestelements,Integer studentId,Integer testAdminId)
     {
         TestElement [] orderedSubtestElements = new TestElement[subtestelements.length];
