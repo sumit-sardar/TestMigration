@@ -430,8 +430,12 @@ public class TestSessionUtils
     /**
      * setDefaultLevels
      */
-     public static void setDefaultLevels(List defaultSubtests, List subtests)
+     public static void setDefaultLevels(List defaultSubtests, List subtests, boolean isTabeAdaptive)
      {
+     	if (isTabeAdaptive)
+    		return; // do nothing for TABE Adaptive
+    	
+    	 
         for (int i=0 ; i<defaultSubtests.size() ; i++) {
             SubtestVO defSubtest = (SubtestVO)defaultSubtests.get(i);
             for (int j=0 ; j<subtests.size() ; j++) {
@@ -447,8 +451,12 @@ public class TestSessionUtils
     /**
      * setDefaultLevelsIfNull
      */
-     public static void setDefaultLevelsIfNull(List defaultSubtests, List subtests)
+     public static void setDefaultLevelsIfNull(List defaultSubtests, List subtests, boolean isTabeAdaptive)
      {
+     	if (isTabeAdaptive)
+    		return; // do nothing for TABE Adaptive
+    	
+    	 
         for (int i=0 ; i<defaultSubtests.size() ; i++) {
             SubtestVO defSubtest = (SubtestVO)defaultSubtests.get(i);
             for (int j=0 ; j<subtests.size() ; j++) {
@@ -1001,8 +1009,11 @@ public class TestSessionUtils
     /**
      * setDefaultLevels
      */
-    public static void setDefaultLevels(List srcList, String level)
+    public static void setDefaultLevels(List srcList, String level, boolean isTabeAdaptive)
     {
+    	if (isTabeAdaptive)
+    		return; // do nothing for TABE Adaptive
+    	
         List resultList = new ArrayList();
         for (int i=0 ; i<srcList.size() ; i++) {
             SubtestVO src = (SubtestVO)srcList.get(i);   
