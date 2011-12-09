@@ -173,6 +173,7 @@ function populateSelectProctorGrid() {
 						selectedRowData = $("#selectProctor").getRowData(allRowsInGrid[i]);
 						if (selectedRowData.defaultScheduler == 'T') {
 				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
+				 			$("#"+allRowsInGrid[i]+" td input").attr("checked", true);
 				 		}
 					
 					}
