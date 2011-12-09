@@ -1292,6 +1292,8 @@ public class SessionOperationController extends PageFlowController {
 		
 		String testId = getRequest().getParameter("selectedTestId");
 		String treeOrgNodeId = getRequest().getParameter("stuForOrgNodeId");
+		String blockOffGrade = getRequest().getParameter("blockOffGradeTesting");
+		//System.out.println("blockOffGrade -> " + blockOffGrade);
 		Integer selectedOrgNodeId = null;
 		Integer selectedTestId = null;
 		Integer testAdminId = null;
@@ -1300,7 +1302,13 @@ public class SessionOperationController extends PageFlowController {
 		if(testId != null)
 			selectedTestId = Integer.parseInt(testId);
 		try {
-			FilterParams studentFilter = null;
+			FilterParams studentFilter = new FilterParams();
+			if(blockOffGrade.equalsIgnoreCase("true"))
+				studentFilter = null;
+			else {
+				String [] arg = new String[1];
+				studentFilter = null;
+			}
 	        PageParams studentPage = null;
 	        SortParams studentSort = null;
 	        studentSort = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.STUDENT_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);

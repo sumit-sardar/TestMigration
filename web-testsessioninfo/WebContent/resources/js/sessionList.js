@@ -45,6 +45,9 @@ var proctorGridloaded = false;
 var isProctorGridEmpty = true;
 var noOfProctorAdded = 0;
 
+var blockOffGradeTesting = false;
+var selectedLevel;
+var dropListToDisplay;
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -519,12 +522,16 @@ function createSingleNodeSelectedTree(jsondata) {
 	function getDataFromTestJson(id, sessionList){
 			var sessionListArr = new Array();
 			sessionListArr = sessionList;
-			var str = new Array();;
+			var str = new Array();
 			var indexOfId;
 			var found = false;
 			for(var i=0; i<sessionList.length ;i++){
 				if(sessionList[i].id == id){
 				    found = true;
+				    blockOffGradeTesting = sessionList[i].offGradeTestingDisabled;
+				    selectedLevel = sessionList[i].level;
+				   // alert("blockOffGradeTesting -> " + blockOffGradeTesting);
+				    //alert("selectedLevel -> " + selectedLevel);
 					document.getElementById("aCode").style.visibility = "visible";
 					if(sessionList[i].subtests.length>0)  {
 						document.getElementById("aCode").value = ProductData.accessCodeList[0];
@@ -770,20 +777,30 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 	
 	function removeSelectedStudent() {
-		
+		var totalCount = AddStudentLocaldata.length;
 		for(var key in delStuIdObjArray){ 	
 			jQuery("#list6").delRowData(key);
-			var objstr = stuIdObjArray[delStuIdObjArray[key].studentId];
+			var objstr = delStuIdObjArray[key];
 			var hasAccom = objstr.hasAccommodations;
 		 	 if(hasAccom == 'Yes') {
 		 	 	studentWithaccommodation = studentWithaccommodation - 1;
 		 	 }
-		 	 stuIdObjArray.splice(delStuIdObjArray[key].studentId,1); 
+		 	 //alert("delStuIdObjArray[key].studentId -> " + delStuIdObjArray[key].studentId);
+		 	 for(var j = 0; j < AddStudentLocaldata.length; j++) {		 	
+		 	 	if(AddStudentLocaldata[j].studentId == delStuIdObjArray[key].studentId) {
+		 	 		AddStudentLocaldata.splice(j,1);
+		 	 		stuIdObjArray.splice(delStuIdObjArray[key].studentId,1); 
+		 	 		//alert("AddStudentLocaldata.studentId -> " + AddStudentLocaldata[j].studentId);
+		 	 	}
+		 	 }
+		 	 totalCount--;
 		}
-		$('#totalStudent').text(stuIdObjArray.length);
+		
+		$('#totalStudent').text(totalCount);
 		if($("#supportAccommodations").val() != 'false')
 	 		 $('#stuWithAcc').text(studentWithaccommodation);
 		closePopUp('removeStuConfirmationPopup');
+		delStuIdObjArray = [];
 	}
 	
 	
@@ -877,11 +894,13 @@ function createSingleNodeSelectedTree(jsondata) {
 								document.getElementById("level").style.visibility ="visible";
 								document.getElementById("gradeDiv").style.display ="none";
 								fillDropDown("level",optionList[i].levelDropDownList);	
+								dropListToDisplay = optionList[i].levelDropDownList;
 							} else if (optionList[i].showLevelOrGrade=='grade') {
 								document.getElementById("gradeDiv").style.display ="inline";
 								document.getElementById("level").style.visibility ="visible";
 								document.getElementById("levelDiv").style.display ="none";
 								fillDropDown("level",optionList[i].levelDropDownList);	
+								dropListToDisplay = optionList[i].levelDropDownList;
 							} else { 
 							document.getElementById("gradeDiv").style.display ="none";
 							document.getElementById("levelDiv").style.display ="none";
@@ -970,11 +989,13 @@ function createSingleNodeSelectedTree(jsondata) {
 							document.getElementById("level").style.visibility ="visible";
 							document.getElementById("gradeDiv").style.display ="none";
 							fillDropDown("level",optionList[i].levelDropDownList);	
+							dropListToDisplay = optionList[i].levelDropDownList;
 						} else if (optionList[i].showLevelOrGrade=="grade") {
 							document.getElementById("gradeDiv").style.display ="inline";
 							document.getElementById("level").style.visibility ="visible";
 							document.getElementById("levelDiv").style.display ="none";
-							fillDropDown("level",optionList[i].levelDropDownList);	
+							fillDropDown("level",optionList[i].levelDropDownList);
+							dropListToDisplay = optionList[i].levelDropDownList;	
 						} else { 
 							//fillDropDown("level",optionList[i].levelDropDownList);	
 							document.getElementById("gradeDiv").style.display ="none";
@@ -1991,6 +2012,7 @@ function createSingleNodeSelectedTree(jsondata) {
 						selectedRowData = $("#listProctor").getRowData(allRowsInGrid[i]);
 						if (selectedRowData.defaultScheduler == 'T') {
 				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
+				 		//	$("#listProctor").jqGrid('editRow',allRowsInGrid[i],false);
 				 		}
 					
 					}

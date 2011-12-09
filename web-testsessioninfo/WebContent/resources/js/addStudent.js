@@ -154,6 +154,8 @@ function selectFormat( cellvalue, options, rowObject ){
 
 function populateSelectStudentGrid() {
  		UIBlock();
+ 		populateGradeLevelFilter();
+ 		//alert("selectedLevel -> " + selectedLevel);
  		selectStudentgridLoaded = true;
  		var studentIdTitle = $("#studentIdLabelName").val();
  		var calculator= '<img src="/SessionWeb/resources/images/calc.PNG" title="Calculator"/>';
@@ -163,7 +165,7 @@ function populateSelectStudentGrid() {
  		var untimedTest= '<img src="/SessionWeb/resources/images/untimed.PNG" title="Untimed"/>';
  		reset();
        $("#selectStudent").jqGrid({         
-          url: 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val(), 
+          url: 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel, 
 		  type:   'POST',
 		  datatype: "json",          
           colNames:[ 'Last Name','First Name', 'M.I', studentIdTitle, 'Organization','orgName','Accommodation', 'Grade', 'Status', calculator, colorFont, testPause, screenReader, untimedTest],
@@ -299,7 +301,8 @@ function populateSelectStudentGrid() {
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
-				
+				if(blockOffGradeTesting)
+					$("#gs_grade").attr('disabled', true);
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -486,5 +489,37 @@ function populateDuplicateStudentGrid(duplicateStuArray, orgForDupStu) {
 	 
 	 
 	 
+}
+
+
+function populateGradeLevelFilter() {
+
+	var init = 0;
+	var final = 0;	
+	var splitArray = [];
+	categoriesStr = ":All;";
+	for (var i = 0; i < dropListToDisplay.length; i++) {
+		if(dropListToDisplay[i].id == "Show all")
+			continue;
+		else {
+			if(dropListToDisplay[i].id.indexOf("-") < 0) {
+				categoriesStr = categoriesStr + dropListToDisplay[i].id + ":" + dropListToDisplay[i].name + ";";
+				if(dropListToDisplay[i].id.indexOf("/") >= 0) { // For handling terranova product
+					splitAttay = dropListToDisplay[i].id.split("/");
+					categoriesStr = categoriesStr + splitAttay[0] + ":" + splitAttay[0] + ";";
+					categoriesStr = categoriesStr + splitAttay[1] + ":" + splitAttay[1] + ";";
+				}
+			} else { // For handling laslink products
+				splitArray = dropListToDisplay[i].id.split("-");
+				init = parseInt(splitArray[0]);
+				final = parseInt(splitArray[1]);
+				for(var j = init; j <= final; j++) {
+					categoriesStr = categoriesStr + j + ":" + j + ";";
+				}
+			}
+		}
+	}
+	categoriesStr = categoriesStr.substr(0,categoriesStr.length - 1);
+
 }
 	
