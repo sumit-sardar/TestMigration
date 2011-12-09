@@ -67,6 +67,24 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		TestDeliveryContextListener.rosterThread.stop();
 		TestDeliveryContextListener.scoringThread.stop();
 	}
+	
+	private static RosterThread getRosterThread(OASNoSQLSource oasSource, OASNoSQLSink oasSink, OASRDBSource oasDBSource, OASRDBSink oasDBSink) {
+		synchronized (TestDeliveryContextListener.class) {
+			if(rosterThread == null) {
+				rosterThread = new RosterThread(oasSource, oasSink, oasDBSource, oasDBSink);
+			}
+		}
+		return rosterThread;
+	}
+	
+	private static ScoringThread getScoringThread() {
+		synchronized (TestDeliveryContextListener.class) {
+			if(scoringThread == null) {
+				scoringThread = new ScoringThread();
+			}
+		}
+		return scoringThread;
+	}
     
 	public void contextInitialized(ServletContextEvent sce) {
 		logger.info("*****  Context Listener Startup");
@@ -75,13 +93,13 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 			OASNoSQLSink oasSink = NoSQLStorageFactory.getOASSink();
 			
 			logger.info("*****  Starting active roster check background thread . . .");
-			TestDeliveryContextListener.rosterThread = new RosterThread(oasSource, oasSink, oasDBSource, oasDBSink);
+			TestDeliveryContextListener.rosterThread = getRosterThread(oasSource, oasSink, oasDBSource, oasDBSink);
 			TestDeliveryContextListener.rosterThread.start();
 			logger.info(" started.");
 			
 			logger.info("*****  Starting scoring queue thread . . .");
 			TestDeliveryContextListener.rosterQueue = new ConcurrentLinkedQueue<ScoringMessage>();
-			TestDeliveryContextListener.scoringThread = new ScoringThread();
+			TestDeliveryContextListener.scoringThread = getScoringThread();
 			TestDeliveryContextListener.scoringThread.start();
 			logger.info(" started.");
 		} catch (Exception e) {
@@ -108,72 +126,70 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		public void run() {
 			Connection conn = null;
 			//Connection sinkConn = null;
-			synchronized(TestDeliveryContextListener.class) {
-				while (true) {
-					int fetchedCount = 0;
+			while (true) {
+				int fetchedCount = 0;
+				try {
+					conn = oasDBSource.getOASConnection();
+					Exception lastError = null;
+					int errorCount = 0;
+					int storedCount = 0;
+					fetchedCount = 0;
+					StudentCredentials[] creds = oasDBSource.getActiveRosters(conn);
+					fetchedCount = creds.length;
+					/*if("true".equals(RDBStorageFactory.copytosink)) {
+						sinkConn = oasDBSink.getOASConnection();
+						oasDBSink.putActiveRosters(sinkConn, creds);
+						sinkConn.commit();
+						sinkConn.close();
+					}*/
+					for(int i=0;i<creds.length;i++) {						
+						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
+						try {
+							RosterData rd = oasDBSource.getRosterData(conn, key);
+							Manifest[] manifests = oasDBSource.getManifest(conn, creds[i].getTestRosterId());
+							for(int j=0;j<manifests.length;j++) {
+								manifests[j].setForceReplication(true);
+							}
+							rd.setForceReplication(true);
+							oasSink.putRosterData(creds[i], rd);
+							oasSink.putAllManifests(creds[i].getTestRosterId(), manifests);
+							rd = null;
+							manifests = null;
+							storedCount++;
+						} catch (Exception e) {
+							//logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
+							errorCount++;
+							lastError = e;
+						}
+						key = null;
+					}
+					creds = null;
+					if(errorCount > 0) {
+						logger.warn("Failed to store data in cache for " + errorCount + " rosters! Last exception: ", lastError);
+					}
+					logger.info("Stored data in cache for " + storedCount + " rosters.");
+					creds = null;
+				} catch (Exception e) {
+					logger.error("Caught Exception during active roster check.", e);
+					e.printStackTrace();
+				} finally {
 					try {
-						conn = oasDBSource.getOASConnection();
-						Exception lastError = null;
-						int errorCount = 0;
-						int storedCount = 0;
-						fetchedCount = 0;
-						StudentCredentials[] creds = oasDBSource.getActiveRosters(conn);
-						fetchedCount = creds.length;
-						/*if("true".equals(RDBStorageFactory.copytosink)) {
-							sinkConn = oasDBSink.getOASConnection();
-							oasDBSink.putActiveRosters(sinkConn, creds);
-							sinkConn.commit();
+						if(conn != null) {
+							conn.close();
+						}
+						/*if(sinkConn != null) {
 							sinkConn.close();
 						}*/
-						for(int i=0;i<creds.length;i++) {						
-							String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
-							try {
-								RosterData rd = oasDBSource.getRosterData(conn, key);
-								Manifest[] manifests = oasDBSource.getManifest(conn, creds[i].getTestRosterId());
-								for(int j=0;j<manifests.length;j++) {
-									manifests[j].setForceReplication(true);
-								}
-								rd.setForceReplication(true);
-								oasSink.putRosterData(creds[i], rd);
-								oasSink.putAllManifests(creds[i].getTestRosterId(), manifests);
-								rd = null;
-								manifests = null;
-								storedCount++;
-							} catch (Exception e) {
-								//logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
-								errorCount++;
-								lastError = e;
-							}
-							key = null;
+						if(fetchedCount == batchSize) {
+							int sleepSeconds = (TestDeliveryContextListener.checkFrequency / 10);
+							logger.info("Fetched full batch. Sleeping for " + sleepSeconds + " seconds.");
+							Thread.sleep(sleepSeconds * 1000);
+						} else {
+							logger.info("*****  Completed active roster check. Sleeping for " + checkFrequency + " seconds.");
+							Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000);
 						}
-						creds = null;
-						if(errorCount > 0) {
-							logger.warn("Failed to store data in cache for " + errorCount + " rosters! Last exception: ", lastError);
-						}
-						logger.info("Stored data in cache for " + storedCount + " rosters.");
-						creds = null;
-					} catch (Exception e) {
-						logger.error("Caught Exception during active roster check.", e);
-						e.printStackTrace();
-					} finally {
-						try {
-							if(conn != null) {
-								conn.close();
-							}
-							/*if(sinkConn != null) {
-								sinkConn.close();
-							}*/
-							if(fetchedCount == batchSize) {
-								int sleepSeconds = (TestDeliveryContextListener.checkFrequency / 10);
-								logger.info("Fetched full batch. Sleeping for " + sleepSeconds + " seconds.");
-								Thread.sleep(sleepSeconds * 1000);
-							} else {
-								logger.info("*****  Completed active roster check. Sleeping for " + checkFrequency + " seconds.");
-								Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000);
-							}
-						}catch (Exception ie) {
-							// do nothing
-						}
+					}catch (Exception ie) {
+						// do nothing
 					}
 				}
 			}
@@ -185,27 +201,25 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		}
 		
 		public void run() {
-			synchronized(TestDeliveryContextListener.class) {
-				while (true) {
-					try {
-						while(!rosterQueue.isEmpty()) {
-							ScoringMessage message = rosterQueue.peek();
-							if(message != null && (System.currentTimeMillis() - message.timestamp) > 60000 ) {
-								message = rosterQueue.poll();
-								JMSUtils.sendMessage(Integer.valueOf(message.getTestRosterId()));
-								logger.debug("*****  Sent scoring message for roster " + message.getTestRosterId());
-							} else {
-								Thread.sleep(1000);
-							}
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
-					} finally {
-						try {
+			while (true) {
+				try {
+					while(!rosterQueue.isEmpty()) {
+						ScoringMessage message = rosterQueue.peek();
+						if(message != null && (System.currentTimeMillis() - message.timestamp) > 60000 ) {
+							message = rosterQueue.poll();
+							JMSUtils.sendMessage(Integer.valueOf(message.getTestRosterId()));
+							logger.info("*****  Sent scoring message for roster " + message.getTestRosterId());
+						} else {
 							Thread.sleep(1000);
-						}catch (Exception ie) {
-							// do nothing
 						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					try {
+						Thread.sleep(1000);
+					}catch (Exception ie) {
+						// do nothing
 					}
 				}
 			}

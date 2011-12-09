@@ -441,7 +441,7 @@ public class TMSServlet extends HttpServlet {
 				    		}
 				    		if(manifestData.length > 0 && "T".equals(manifestData[0].getScorable())) {
 				    			TestDeliveryContextListener.enqueueRoster(new ScoringMessage(System.currentTimeMillis(), rosterId));
-				    			logger.debug("TMSServlet: save: sent scoring message for roster " + rosterId);
+				    			logger.info("TMSServlet: save: sent scoring message for roster " + rosterId);
 				            }
 				    	}
 				    }
@@ -718,31 +718,52 @@ public class TMSServlet extends HttpServlet {
             					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS) ||
             					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
             					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {        	
-            	ItemResponseWrapper[] irt = null;
+            	ItemResponseWrapper[] cachedirt = null;
+            	ItemResponseWrapper[] rdirt = null;
             	ConsolidatedRestartData restartData = null;
-            	irt = oasSource.getItemResponses(testRosterId);
-            	logger.debug("TMSServlet: found " + irt.length + " responses in cache.");
-            	boolean responsesInCache = (irt != null && irt.length > 0);
+            	cachedirt = oasSource.getItemResponses(testRosterId);
+            	logger.debug("TMSServlet: found " + cachedirt.length + " responses in cache.");
+            	boolean responsesInCache = (cachedirt != null && cachedirt.length > 0);
             	ConsolidatedRestartData[] crda = loginResponse.getConsolidatedRestartDataArray();
             	if(crda != null && crda.length > 0) {
 	            	restartData = loginResponse.getConsolidatedRestartDataArray(0);
 	            	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
-                	if (!responsesInCache && responsesInRD) {
-                		irt = convertTsdType(restartData.getTsdArray(0));
-                		for(int j=0;j<irt.length;j++) {
-                			oasSink.putItemResponse(testRosterId, irt[j]);
+                	if (responsesInRD) {
+                		rdirt = convertTsdType(restartData.getTsdArray(0));
+                		for(int j=0;j<rdirt.length;j++) {
+                			oasSink.putItemResponse(testRosterId, rdirt[j]);
 	                    }
                 	}
             	}
-            	ItemResponseData [] ird = RosterData.generateItemResponseData(testRosterId, manifesta[i], irt);
-            	if(loginResponse.getConsolidatedRestartDataArray() == null || loginResponse.getConsolidatedRestartDataArray().length == 0) {
-            		loginResponse.addNewConsolidatedRestartData();
+            	ItemResponseWrapper[] netirt = null;
+            	if((cachedirt != null && cachedirt.length > 0) && (rdirt == null || rdirt.length < 1) ) {
+            		netirt = cachedirt;
+            	} else if ((rdirt != null && rdirt.length > 0) && (cachedirt == null || cachedirt.length < 1) ) {
+            		netirt = rdirt;
+            	} else if (cachedirt != null && cachedirt.length > 0 && rdirt != null && rdirt.length > 0){
+            		netirt = new ItemResponseWrapper[cachedirt.length + rdirt.length];
+            		int counter = 0;
+            		for(int k=0;k<cachedirt.length;k++) {
+            			netirt[counter] = cachedirt[k];
+            			counter++;
+            		}
+            		for(int k=0;k<rdirt.length;k++) {
+            			netirt[counter] = rdirt[k];
+            			counter++;
+            		}
             	}
-            	loginResponse.setConsolidatedRestartDataArray(0, ConsolidatedRestartData.Factory.newInstance(xmlOptions));
-            	restartData = loginResponse.getConsolidatedRestartDataArray(0);
-            	RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
-                gotRestart = true;
-                logger.debug("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
+            	ItemResponseData [] ird = null;
+            	if(netirt != null && netirt.length > 0) {
+	            	ird = RosterData.generateItemResponseData(testRosterId, manifesta[i], netirt);
+	            	if(loginResponse.getConsolidatedRestartDataArray() == null || loginResponse.getConsolidatedRestartDataArray().length == 0) {
+	            		loginResponse.addNewConsolidatedRestartData();
+	            	}
+	            	loginResponse.setConsolidatedRestartDataArray(0, ConsolidatedRestartData.Factory.newInstance(xmlOptions));
+	            	restartData = loginResponse.getConsolidatedRestartDataArray(0);
+	            	RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
+	            	logger.debug("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
+            	}
+            	gotRestart = true;
             } 
         }
         //loginResponse.getManifest().setScoArray((Sco[])scomap.values().toArray(new Sco[0]));
