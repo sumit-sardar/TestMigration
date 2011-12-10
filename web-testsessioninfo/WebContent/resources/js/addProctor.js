@@ -117,12 +117,14 @@ function populateSelectProctorGrid() {
           url: 'getProctorList.do?q=2&proctorOrgNodeId='+$("#proctorOrgNodeId").val(), 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[ 'Last Name','First Name','Default Scheduler','User Id'],
+          colNames:[ 'Last Name','First Name','Default Scheduler','User Id',"User Name","Copyable"],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'defaultScheduler',index:'defaultScheduler', hidden: true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'userId',index:'userId', hidden: true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'userId',index:'userId', hidden: true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'userName',index:'userName', hidden: true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'copyable',index:'copyable', hidden: true, width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 
 		   	jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId", records: function(obj) { userList = JSON.stringify(obj.userProfileInformation);return obj.userProfileInformation.length; } },
@@ -382,3 +384,31 @@ function returnSelectedProctor() {
 	$("#totalAssignedProctors").text(noOfProctorAdded);
 			 
 }
+
+function getProctorListArray(proctorArray) {
+	  var resultProcArray = [];
+	  if (proctorArray==undefined) {
+	  	return resultProcArray;
+	  }
+	  
+	  for (var i=0; i<proctorArray.length; i++) {
+	  	var val = new ProctorAssignment(proctorArray[i].userId, proctorArray[i].userName, proctorArray[i].copyable);
+	  	resultProcArray[i]= val.toString();
+	  }
+	  return resultProcArray;
+	}
+	
+	
+function ProctorAssignment(userId, userName, copyable) {
+	   this.userId = userId;
+	   this.userName = userName;
+	   this.copyable = "";
+	   if(copyable != undefined)
+	   		this.copyable = copyable;
+
+	}
+	
+	ProctorAssignment.prototype.toString = function () {
+  		return ( ""+"userId="+this.userId +":userName=" +this.userName + ":copyable="+this.copyable+":");
+	};
+

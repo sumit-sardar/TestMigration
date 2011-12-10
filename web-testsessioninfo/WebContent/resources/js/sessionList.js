@@ -2189,6 +2189,9 @@ function createSingleNodeSelectedTree(jsondata) {
     var selectedstudent = getStudentListArray(AddStudentLocaldata);
     param = param+"&students="+selectedstudent.toString();
     
+    var selectedProctors =getProctorListArray(addProctorLocaldata);
+    param = param+"&proctors="+selectedProctors.toString();
+    
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){

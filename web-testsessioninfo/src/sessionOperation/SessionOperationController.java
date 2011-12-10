@@ -753,12 +753,62 @@ public class SessionOperationController extends PageFlowController {
 		}
 
 	private void populateProctor(ScheduledSession scheduledSession,
-				HttpServletRequest request, ValidationFailedInfo validationFailedInfo) {
-		User[] proctorArray = new User[1];
-		proctorArray[0]= this.user;
-		scheduledSession.setProctors(proctorArray);
-			
+			HttpServletRequest request,
+			ValidationFailedInfo validationFailedInfo) {
+		
+
+		try {
+			String proctorsData = RequestUtil.getValueFromRequest(this
+					.getRequest(), "proctors", true, "");
+			int proctorCount = 0;
+			if (proctorsData != null
+					&& proctorsData.trim().length() > 1) {
+				proctorCount = proctorsData.split(",").length;
+			}
+			if (proctorCount > 0) {
+				ArrayList<User> proctorList = new ArrayList<User>();
+				String[] procs = proctorsData.split(",");
+				for (String procrec : procs) {
+					StringTokenizer st = new StringTokenizer(procrec, ":");
+					User us = new User();
+					while (st.hasMoreTokens()) {
+						StringTokenizer keyVal = new StringTokenizer(st
+								.nextToken(), "=");
+
+						String key = keyVal.nextToken();
+						String val = null;
+						if (keyVal.countTokens() > 0) {
+							val = keyVal.nextToken();
+						}
+
+						if (key.equalsIgnoreCase("userId")) {
+							us.setUserId(Integer.valueOf(val));
+						} else if (key.equalsIgnoreCase("userName")) {
+							us.setUserName(val);
+						} else if (key.equalsIgnoreCase("copyable")) {
+							us.setCopyable(val);
+						} 
+					}
+
+					proctorList.add(us);
+				}
+
+				scheduledSession.setProctors(proctorList.toArray(new User[proctorList.size()]));
+			} else {
+				User[] proctorArray = new User[1];
+				proctorArray[0]= this.user;
+				scheduledSession.setProctors(proctorArray);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+			validationFailedInfo.setMessageHeader(MessageResourceBundle
+					.getMessage("System.Exception.Header"));
+			validationFailedInfo.updateMessage(MessageResourceBundle
+					.getMessage("System.Exception.Body"));
 		}
+
+	}
 
 	private void populateSessionStudent(ScheduledSession scheduledSession,
 				HttpServletRequest httpServletRequest,

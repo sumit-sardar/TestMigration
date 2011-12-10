@@ -39,6 +39,7 @@ public class UserProfileInformation extends SanitizedFormField
     private String actionPermission = "TFFF";
     private String  orgNodeNamesStr = "";
     private String defaultScheduler = "F";
+    private String copyable;
     /**
      * ext_pin1 is added for DEX CR
      */
@@ -80,6 +81,7 @@ public class UserProfileInformation extends SanitizedFormField
                     user.getPasswordHintQuestionId().toString());
             this.userPassword.setHintAnswer(user.getPasswordHintAnswer());
         }
+        this.setCopyable(user.getCopyable());
         this.orgNodeNamesStr = getOrgNodeNamesString();
     }
 
@@ -478,6 +480,24 @@ public class UserProfileInformation extends SanitizedFormField
 
 	public void setDefaultScheduler(String defaultScheduler) {
 		this.defaultScheduler = defaultScheduler;
+	}
+
+
+	
+	/**
+	 * @return the copyable
+	 */
+	public String getCopyable() {
+		return copyable;
+	}
+
+
+	
+	/**
+	 * @param copyable the copyable to set
+	 */
+	public void setCopyable(String copyable) {
+		this.copyable = copyable;
 	} 
 	
     
