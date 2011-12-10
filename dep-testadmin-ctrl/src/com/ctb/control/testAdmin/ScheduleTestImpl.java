@@ -1487,7 +1487,9 @@ public class ScheduleTestImpl implements ScheduleTest
 	        if(newSession.getTestSession().getTestAdminId() != null)
 	            throw new SessionCreationException("testAdmin: createNewTestSession: cannot create a session with existing session id: " + newSession.getTestSession().getTestAdminId());
 	        return writeTestSession(userName, newSession);
-    	} catch (Exception e) {
+    	} catch (CTBBusinessException e) { 
+    		throw e;
+    	}catch (Exception e) {
     		String message = (e.getMessage()!= null) ? e.getMessage().toLowerCase() : "";
             CTBBusinessException ctbe = new SessionCreationException(message);
             ctbe.setStackTrace(e.getStackTrace());
@@ -1511,8 +1513,10 @@ public class ScheduleTestImpl implements ScheduleTest
 	        if(newSession.getTestSession().getTestAdminId() == null)
 	            throw new SessionCreationException("testAdmin: updateTestSession: cannot update a session with null session id.");
 	        return writeTestSession(userName, newSession);
+    	} catch (CTBBusinessException e) { 
+    		throw e;
     	} catch (Exception e) {
-    		String message = e.getMessage().toLowerCase();
+    		String message = (e.getMessage()!= null) ? e.getMessage().toLowerCase() : "";
             CTBBusinessException ctbe = new SessionCreationException(message);
             ctbe.setStackTrace(e.getStackTrace());
     		throw ctbe;
