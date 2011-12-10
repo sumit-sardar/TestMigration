@@ -170,10 +170,11 @@ function populateSelectProctorGrid() {
 				var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
 					var selectedRowData;
 					for(var i = 0; i < allRowsInGrid.length; i++) {
+						
 						selectedRowData = $("#selectProctor").getRowData(allRowsInGrid[i]);
+						//$("#"+allRowsInGrid[i]).unbind("clicked");
 						if (selectedRowData.defaultScheduler == 'T') {
 				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
-				 			$("#"+allRowsInGrid[i]+" td input").attr("checked", true);
 				 		}
 				 		
 				 		for (var j=0; j < proctorIdObjArray.length; j++) {
@@ -181,9 +182,18 @@ function populateSelectProctorGrid() {
 							if (objstr != null) {
 								var key = getProctorRowID (j);
 								if( key == allRowsInGrid[i]) {
-									//alert("getProctorRowID " + key);
-									//alert("allRowsInGrid[i] " + allRowsInGrid[i]);
-									$("#"+allRowsInGrid[i]+" td input").attr("checked", true);
+									//$("#"+allRowsInGrid[i]+" td input").attr("checked", true);
+									
+									$("#"+allRowsInGrid[i]+" td input").attr("checked", false); 
+									$("#"+allRowsInGrid[i]+" td input").unbind('click');
+						
+									//var isAlreadyChecked1 = $("#"+allRowsInGrid[i]).is(":checked");
+									//var isAlreadyChecked2 = jQuery(this).find('#'+allRowsInGrid[i]+' input[type=checkbox]').prop('checked'); 
+									
+									$("#"+allRowsInGrid[i]+" td input").attr("checked", true); 
+						 			$("#"+allRowsInGrid[i]+" td input").trigger('click'); 
+						 			$("#"+allRowsInGrid[i]+" td input").attr("checked", true);
+									
 									break;
 								}
 							}
@@ -199,7 +209,18 @@ function populateSelectProctorGrid() {
 			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
-				if(status) {
+				var alreadyExists = false;
+
+				for (var j=0; j < proctorIdObjArray.length; j++) {
+					var existingSelectedRowId = getProctorRowID (j);
+					if( existingSelectedRowId == selectedRowId){
+						alreadyExists = true;
+						break;
+					}
+					
+				}
+				
+				if(status && !alreadyExists) {
 					var selectedRowData = $("#selectProctor").getRowData(selectedRowId);
 					proctorIdObjArray[pindex]=selectedRowData;
 					
@@ -211,7 +232,7 @@ function populateSelectProctorGrid() {
 							pindex++;
 					}
 					
-				} else {
+				} else if (!status && alreadyExists){
 				
 					var indx = getProctorIDIndex(selectedRowId);
 					removeProctorByIndex(indx); 
