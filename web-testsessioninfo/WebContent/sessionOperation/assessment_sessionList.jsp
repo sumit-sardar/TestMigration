@@ -23,7 +23,25 @@
 	<input type="hidden" id="schedulerFirstName" name = "schedulerFirstName" value='<%=schedulerFirstName %>'/>
 	<input type="hidden" id="schedulerLastName" name = "schedulerLastName" value='<%=schedulerLastName %>'/>
 	<input type="hidden" id="schedulerUserId" name = "schedulerUserId" value='<%=schedulerUserId %>'/>
-	 
+	 <div id="showSaveTestMessage" class="roundedMessage" style="float:left;display:none; " > 
+			<table>
+				<tr>
+					<td rowspan="3" valign="top">
+					<div id="errorIcon" style="display:none;">
+                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
+					</div>
+					</td>
+					<td>
+					   	<table>
+							<tr><td><font style="color: black; font-size:12px; font-weight:bold"><div id="saveTestTitle"></div></font></td></tr>
+							<tr><td><div id= "saveTestContent">	</div></td></tr>
+							<tr><td><div id= "saveTestMessage">	</div></td></tr>
+						</table>
+					</td>
+				</tr>
+		</table>
+			
+	</div>
 	 <div style="clear:both;float:left;width:100%;text-align: left;"> 
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"><netui:content value="${bundle.web['homepage.viewTestSessions.message']}"/>
 				 <%if(canRegisterStudent) { %>
@@ -64,25 +82,7 @@
 		   		
 	 </tr>
 	</table>
-	<div id="showSaveTestMessage" class="roundedMessage" style="display:none; margin-bottom: 15px;"> 
-			<table>
-				<tr>
-					<td rowspan="3" valign="top">
-					<div id="errorIcon" style="display:none;">
-                   		<img src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
-					</div>
-					</td>
-					<td>
-					   	<table>
-							<tr><td><font style="color: black; font-size:12px; font-weight:bold"><div id="saveTestTitle"></div></font></td></tr>
-							<tr><td><div id= "saveTestContent">	</div></td></tr>
-							<tr><td><div id= "saveTestMessage">	</div></td></tr>
-						</table>
-					</td>
-				</tr>
-		</table>
-			
-	</div>
+	
 	<div style="float:left;width:1210px;">
 	<%if(userScheduleAndFindSessionPermission) { %>
 		<div id="show" style="display: block;width:25px;float:left; padding: 3px 0 3px 3px;" class="ui-corner-tl ui-corner-tr ui-corner-bl ui-corner-br ui-widget-header " title="${bundle.web['homepage.icon.showOrganization']}">
