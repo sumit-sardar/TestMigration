@@ -668,4 +668,66 @@ function populateGradeLevelFilter() {
 	categoriesStr = categoriesStr.substr(0,categoriesStr.length - 1);
 
 }
+
+
+
+function getStudentListArray(studentArray) {
+	  var resultStdArray = [];
+	  if (studentArray==undefined) {
+	  	return resultStdArray;
+	  }
+	  
+	  for (var i=0; i<studentArray.length; i++) {
+	  	var val = new SessionStudent(studentArray[i].studentId, studentArray[i].orgNodeId, studentArray[i].extendedTimeAccom, studentArray[i]["status.copyable"],  studentArray[i].itemSetForm );
+	  	resultStdArray[i]= val.toString();
+	  }
+	  return resultStdArray;
+	}
+	function validateIdenticalStudent (studentArray) {
+    	var accessCodes=new Array();
+    	var validStatus = true;
+		var resultStdArray = [];
+		var duplicateStudentArray = [];
+		var k = 0;
+		if (studentArray==undefined) {
+		  	return true;
+		 }
+		  
+		for (i=0; i<studentArray.length; i++) {
+		  var val = studentArray[i].studentId;
+		  resultStdArray[i]= val;
+		}
+    
+		var sorted_arr = resultStdArray.sort(); 
+		for (var i = 0; i < resultStdArray.length - 1; i++) {
+			if (sorted_arr[i + 1] == sorted_arr[i]) {
+				duplicateStudentArray[k]=sorted_arr[i]; 
+		    	validStatus = false; 
+		    	k++;
+		 	} 
+		} 
+    	return validStatus;
+    }
+    
+    
+    
+    function SessionStudent(studentId, orgNodeId, extendedTimeAccom, statusCopyable, itemSetForm) {
+	   this.studentId = studentId;
+	   this.orgNodeId = orgNodeId;
+	   this.extendedTimeAccom = "";
+	   if(extendedTimeAccom != undefined)
+	   		this.extendedTimeAccom = extendedTimeAccom;
+	   
+	   this.statusCopyable = "";
+	   if(statusCopyable != undefined)
+	   		this.statusCopyable = statusCopyable;
+
+	   this.itemSetForm ="";
+	   if(itemSetForm != undefined)
+	   		this.itemSetForm = itemSetForm;
+	}
+	
+	SessionStudent.prototype.toString = function () {
+  		return ( ""+"studentId="+this.studentId +":orgNodeId=" +this.orgNodeId + ":extendedTimeAccom="+this.extendedTimeAccom + ":statusCopyable=" +this.statusCopyable +":itemSetForm=" +this.itemSetForm+":");
+	};
 	
