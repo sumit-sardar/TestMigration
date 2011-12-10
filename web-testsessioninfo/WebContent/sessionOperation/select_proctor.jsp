@@ -26,8 +26,8 @@
 		<tr id="Act_Buttons_Proctor" align="center">
 			<td  width="100%">
 				<center>
-				<input type="button"  id="okDataProctor" value="&nbsp;Ok&nbsp;" onclick="javascript:returnSelectedProctor(); return false;" class="ui-widget-header" style="width:60px">
-				<input type="button"  id="cancelDataProctor" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:hideSelectedProctor(); return false;" class="ui-widget-header" style="width:60px">
+				<input type="button"  id="okDataProctor" value="${bundle.web['homepage.button.ok']}" onclick="javascript:returnSelectedProctor(); return false;" class="ui-widget-header" style="width:60px">
+				<input type="button"  id="cancelDataProctor" value="${bundle.web['homepage.button.back']}" onclick="javascript:hideSelectedProctor(); return false;" class="ui-widget-header" style="width:60px">
 				</center>
 				<br>
 			</td>

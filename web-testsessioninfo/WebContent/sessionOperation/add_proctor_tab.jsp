@@ -3,29 +3,47 @@
 
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 
-	<div style="width:100%;text-align: left;"> 
-			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;padding: 0 5px 4px 0;">
-					<netui:content value="${bundle.web['sessionList.proctors.assigned']}"/> 
-					<span id = "totalAssignedProctors"></span>	
-			</p>
 
-			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"> 
-					<netui:content value="${bundle.web['sessionList.proctors.testscheduler']}"/> 
-					<span id = "testSchedulerId"></span>	
-			</p>
-
-	</div>
 	<table>
-			<tr>
-				<td>
-					<div style="clear:both;float:left;width:925px;padding: 0 5px 5px 0;">
-						<div id="addProctor" style="float:right;padding-left:5px;">
-							<a href="#" id="addProctorButton" onclick="showSelectProctor();" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.addProctor']}"/></a>
-						</div> 
-					</div>
-				</td>
-			</tr>
+		<tr>
+			<td>
+				<div id="proctorInformationText">
+					<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">
+						The person scheduling the test session is automatically assigned as a proctor.
+						Click the Add Proctor button to select additional proctors for this session.
+					</span>
+				</div>
+			</td>
+		</tr>
 	</table>
+	
+	<br/>
+
+	
+	<table width="100%">
+		<tr>
+			<td>
+				<div style="float:left;"> 
+						<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;padding: 0 5px 5px 0;">
+								<netui:content value="${bundle.web['sessionList.proctors.assigned']}"/> 
+								<span id = "totalAssignedProctors"></span>	
+						</p>
+			
+						<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;"> 
+								<netui:content value="${bundle.web['sessionList.proctors.testscheduler']}"/> 
+								<span id = "testSchedulerId"></span>	
+						</p>
+				</div>
+			</td>
+			<td>
+				<div id="addProctor" style="float:right;padding-top:5px;">
+					<a href="#" id="addProctorButton" onclick="showSelectProctor();" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.addProctor']}"/></a>
+				</div> 
+			</td>
+		</tr>
+	</table>
+	
+	<br/>
 	
 	<table id="listProctor" class="gridTable"></table>
 	
