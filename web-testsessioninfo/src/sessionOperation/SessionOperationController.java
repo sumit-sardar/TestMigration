@@ -583,10 +583,10 @@ public class SessionOperationController extends PageFlowController {
            if (!isValidationFailed && studentCountBeforeSave == studentCountAfterSave) {
         	   
            		String messageHeader = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Header");
-           		String messageBody = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Body");
+           		//String messageBody = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Body");
            		successInfo.setKey("TEST_SESSION_SAVED");
            		successInfo.setMessageHeader(messageHeader);
-           		successInfo.updateMessage(messageBody);
+           		//successInfo.updateMessage(messageBody);
         	   	status.setSuccess(true); 
         	   	status.setSuccessInfo(successInfo);
         	   	idToStudentMap.clear(); // clear map
@@ -595,7 +595,7 @@ public class SessionOperationController extends PageFlowController {
             {
                 int removedCount = studentCountBeforeSave - studentCountAfterSave;
                 String messageHeader = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Header");
-           		String messageBody = MessageResourceBundle.getMessage("SelectSettings.TestSessionSaved.Body")+ MessageResourceBundle.getMessage("RestrictedStudentsNotSaved", "" +removedCount);
+           		String messageBody = MessageResourceBundle.getMessage("RestrictedStudentsNotSaved", "" +removedCount);
            		successInfo.setKey("TEST_SESSION_SAVED_RES_STD");
            		successInfo.setMessageHeader(messageHeader);
            		successInfo.updateMessage(messageBody);
