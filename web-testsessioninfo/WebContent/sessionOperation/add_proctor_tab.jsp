@@ -20,7 +20,7 @@
 	<br/>
 
 	
-	<table width="100%">
+	<table width="928px">
 		<tr>
 			<td>
 				<div style="float:left;"> 
