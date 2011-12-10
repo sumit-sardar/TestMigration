@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.Vector;
  
@@ -35,6 +36,7 @@ import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
 import com.ctb.bean.testAdmin.CustomerConfigurationValue;
 import com.ctb.bean.testAdmin.CustomerLicense;
+import com.ctb.bean.testAdmin.EditCopyStatus;
 import com.ctb.bean.testAdmin.OrgNodeCategory;
 import com.ctb.bean.testAdmin.PasswordHintQuestion;
 import com.ctb.bean.testAdmin.RosterElementData;
@@ -135,7 +137,7 @@ public class SessionOperationController extends PageFlowController {
 	
 	Map<Integer, String> topNodesMap = new LinkedHashMap<Integer, String>();
 	Map<Integer, TestVO> idToTestMap = new LinkedHashMap<Integer, TestVO>();
-	Map<String, SessionStudent> idToStudentMap = new TreeMap<String, SessionStudent>();
+	//Map<String, SessionStudent> idToStudentMap = new TreeMap<String, SessionStudent>();
     
 	/**
 	 * @return the userName
@@ -589,7 +591,7 @@ public class SessionOperationController extends PageFlowController {
            		//successInfo.updateMessage(messageBody);
         	   	status.setSuccess(true); 
         	   	status.setSuccessInfo(successInfo);
-        	   	idToStudentMap.clear(); // clear map
+        	   	//idToStudentMap.clear(); // clear map
         	   	
            } else if (!isValidationFailed)
             {
@@ -601,12 +603,12 @@ public class SessionOperationController extends PageFlowController {
            		successInfo.updateMessage(messageBody);
                 status.setSuccess(true);
                 status.setSuccessInfo(successInfo);
-            	idToStudentMap.clear(); // clear map
+            	//idToStudentMap.clear(); // clear map
             } else {
             	status.setSuccess(false);
             	if("SYSTEM_EXCEPTION".equalsIgnoreCase(validationFailedInfo.getKey())){
             		status.setSystemError(true);
-            		idToStudentMap.clear(); // clear map
+            		//idToStudentMap.clear(); // clear map
             	} else {
             		status.setSystemError(false);
             	}
@@ -759,25 +761,68 @@ public class SessionOperationController extends PageFlowController {
 		}
 
 	private void populateSessionStudent(ScheduledSession scheduledSession,
-				HttpServletRequest httpServletRequest, ValidationFailedInfo validationFailedInfo) {
-			
-		 String studentsBeforeSave =  RequestUtil.getValueFromRequest(this.getRequest(), "students", true, "");
-         int studentCountBeforeSave =0;
-         if (studentsBeforeSave!=null && studentsBeforeSave.trim().length()>1){
-        	 studentCountBeforeSave = studentsBeforeSave.split(",").length;
-         }
-         if(studentCountBeforeSave>0) {
-        	 ArrayList<SessionStudent> val = new ArrayList<SessionStudent> ();
-        	 String[] studs = studentsBeforeSave.split(",");
-        	 for(String key : studs){
-        		 SessionStudent ss =  this.idToStudentMap.get(key);
-        		 val.add(ss);
-        	 }
-        	 scheduledSession.setStudents(val.toArray(new SessionStudent[ val.size()]));
-         }
+				HttpServletRequest httpServletRequest,
+			ValidationFailedInfo validationFailedInfo) {
+
+		try {
+			String studentsBeforeSave = RequestUtil.getValueFromRequest(this
+					.getRequest(), "students", true, "");
+			int studentCountBeforeSave = 0;
+			if (studentsBeforeSave != null
+					&& studentsBeforeSave.trim().length() > 1) {
+				studentCountBeforeSave = studentsBeforeSave.split(",").length;
+			}
+			if (studentCountBeforeSave > 0) {
+				ArrayList<SessionStudent> sessionStudents = new ArrayList<SessionStudent>();
+				String[] studs = studentsBeforeSave.split(",");
+				for (String std : studs) {
+					StringTokenizer st = new StringTokenizer(std, ":");
+					SessionStudent ss = new SessionStudent();
+					while (st.hasMoreTokens()) {
+						StringTokenizer keyVal = new StringTokenizer(st.nextToken(), "=");
+						
+						String key = keyVal.nextToken();
+						String val = null;
+						if(keyVal.countTokens()>0) {
+							val= keyVal.nextToken();
+						}
+
+
+						if (key.equalsIgnoreCase("studentId")) {
+							ss.setStudentId(Integer.valueOf(val));
+						} else if (key.equalsIgnoreCase("orgNodeId")) {
+							ss.setOrgNodeId(Integer.valueOf(val));
+						} else if (key.equalsIgnoreCase("extendedTimeAccom")) {
+							ss.setExtendedTimeAccom(val);
+						} else if (key.equalsIgnoreCase("statusCopyable")) {
+							EditCopyStatus status = new EditCopyStatus();
+							status.setCopyable(val);
+							ss.setStatus(status);
+						} else if (key.equalsIgnoreCase("itemSetForm")) {
+							ss.setItemSetForm(val);
+						}
+					}
+
+					sessionStudents.add(ss);
+
+				}
+
+				scheduledSession.setStudents(sessionStudents
+						.toArray(new SessionStudent[sessionStudents.size()]));
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			validationFailedInfo.setKey("SYSTEM_EXCEPTION");
+			validationFailedInfo.setMessageHeader(MessageResourceBundle
+					.getMessage("System.Exception.Header"));
+			validationFailedInfo.updateMessage(MessageResourceBundle
+					.getMessage("System.Exception.Body"));
+		}
+
+	}
              
 	
-	}
 
 	private void populateTestSession(ScheduledSession scheduledSession, HttpServletRequest request, ValidationFailedInfo validationFailedInfo) {
 		
@@ -2253,7 +2298,7 @@ public class SessionOperationController extends PageFlowController {
                  if(ss.getMiddleName() != null && !ss.getMiddleName().equals(""))
                 	ss.setMiddleName( ss.getMiddleName().substring(0,1));
                 studentList.add(ss);
-                idToStudentMap.put(ss.getStudentId()+":"+ss.getOrgNodeId(), ss);
+                //idToStudentMap.put(ss.getStudentId()+":"+ss.getOrgNodeId(), ss);
 
             }
         }

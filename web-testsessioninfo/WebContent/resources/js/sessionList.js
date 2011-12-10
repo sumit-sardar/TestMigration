@@ -2306,8 +2306,8 @@ function createSingleNodeSelectedTree(jsondata) {
 	  }
 	  
 	  for (var i=0; i<studentArray.length; i++) {
-	  	var val = studentArray[i].studentId+":"+studentArray[i].orgNodeId;
-	  	resultStdArray[i]= val;
+	  	var val = new SessionStudent(studentArray[i].studentId, studentArray[i].orgNodeId, studentArray[i].extendedTimeAccom, studentArray[i]["status.copyable"],  studentArray[i].itemSetForm );
+	  	resultStdArray[i]= val.toString();
 	  }
 	  return resultStdArray;
 	}
@@ -2336,4 +2336,31 @@ function createSingleNodeSelectedTree(jsondata) {
 		} 
     	return validStatus;
     }
+    
+    
+    
+    function SessionStudent(studentId, orgNodeId, extendedTimeAccom, statusCopyable, itemSetForm) {
+	   this.studentId = studentId;
+	   this.orgNodeId = orgNodeId;
+	   this.extendedTimeAccom = "";
+	   if(extendedTimeAccom != undefined)
+	   		this.extendedTimeAccom = extendedTimeAccom;
+	   
+	   this.statusCopyable = "";
+	   if(statusCopyable != undefined)
+	   		this.statusCopyable = statusCopyable;
+
+	   this.itemSetForm ="";
+	   if(itemSetForm != undefined)
+	   		this.itemSetForm = itemSetForm;
+	}
+	
+	SessionStudent.prototype.toString = function () {
+  		return ( ""+"studentId="+this.studentId +":orgNodeId=" +this.orgNodeId + ":extendedTimeAccom="+this.extendedTimeAccom + ":statusCopyable=" +this.statusCopyable +":itemSetForm=" +this.itemSetForm+":");
+	};
+	
+
+    
+    
+    
 					 
