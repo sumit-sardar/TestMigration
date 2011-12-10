@@ -128,14 +128,14 @@ function populateSelectProctorGrid() {
 		   	jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId", records: function(obj) { userList = JSON.stringify(obj.userProfileInformation);return obj.userProfileInformation.length; } },
 
 		   	loadui: "disable",
-			rowNum:20,
+			rowNum:10,
 			loadonce:true, 
 			multiselect:true,
 			pager: '#selectProctorPager', 
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 370,  
+			height: 151,  
 			caption:"Proctor List",
 			onPaging: function() {
 				var reqestedPage = parseInt($('#selectProctor').getGridParam("page"));

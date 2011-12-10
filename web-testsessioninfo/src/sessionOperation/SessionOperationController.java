@@ -1370,7 +1370,7 @@ public class SessionOperationController extends PageFlowController {
 			selectedTestId = Integer.parseInt(testId);
 		try {
 			FilterParams studentFilter = null;
-			if(blockOffGrade.equalsIgnoreCase("true")) { //Changes for block off grade testing
+			if(blockOffGrade != null && blockOffGrade.equalsIgnoreCase("true")) { //Changes for block off grade testing
 				studentFilter = generateFilterParams(selectedLevel);				
 			}
 	        PageParams studentPage = null;

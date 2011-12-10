@@ -19,7 +19,7 @@
 	    </td>
     </tr>
 </table>
-<table cellspacing="0" cellpadding="0" border="0" class="transparent">
+<!-- <table cellspacing="0" cellpadding="0" border="0" class="transparent">
 		<tbody><tr class="transparent">
 			<td colspan="2" class="transparent"><netui:content value="${bundle.web['selectstudentpage.Msg.statusKey']}"/></td>
 		</tr>
@@ -40,7 +40,7 @@
 			<td width="500" class="transparent"><netui:content value="${bundle.web['selectstudentpage.Msg.PrescheduleMsg']}"/></td>
 		</tr>
 	</tbody>
-</table>
+</table>-->
 <table cellspacing="0" cellpadding="0" border="0" class="EditTable" width="100%">
 	<tbody>
 		<br>

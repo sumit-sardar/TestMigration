@@ -684,14 +684,14 @@ function createSingleNodeSelectedTree(jsondata) {
 		   	 //sessionListCUFU = JSON.stringify(obj.studentNode);
 		   	 } },
 		   	loadui: "disable",
-			rowNum:20,
+			rowNum:10,
 			loadonce:true, 
 			multiselect:true,
 			pager: '#pager6', 
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 370,  
+			height: 151,  
 			caption:"Student List",
 			onPaging: function() {
 				//clearMessage();
@@ -714,7 +714,11 @@ function createSingleNodeSelectedTree(jsondata) {
 						delStuIdObjArray[selectedRowId]= selectedRowData;
 					} 
 				} else {
-					delStuIdObjArray.splice(selectedRowId,1); 
+					//elStuIdObjArray.splice(selectedRowId,1);
+					var indx = getStudentIDIndex(selectedRowId);
+					removeStudentByIndex(indx); 
+					selectedStudentIds = updateRule(selectedStudentIds,indx);
+					AddStudentLocaldata = studentIdObjArray; 
 				}
 			},
 			loadComplete: function () {
@@ -1980,14 +1984,14 @@ function createSingleNodeSelectedTree(jsondata) {
 		   	//jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId", records: function(obj) { userList = JSON.stringify(obj.userProfileInformation);return obj.userProfileInformation.length; } },
 		   	
 		   	loadui: "disable",
-			rowNum:20,
+			rowNum:10,
 			loadonce:true, 
 			multiselect:true,
 			pager: '#pagerProctor', 
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 370,  
+			height: 151,  
 			caption:"Proctor List",
 			onPaging: function() {
 				var reqestedPage = parseInt($('#listProctor').getGridParam("page"));

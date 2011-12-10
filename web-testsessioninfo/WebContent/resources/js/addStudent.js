@@ -17,6 +17,12 @@ var nondupStudent = [];
 
 var studentWithaccommodation = 0;
 
+var selectedStudentIds = "";
+var deletedStudentIds = "";
+var pindex = 0;
+var pdindex = 0;
+var studentIdObjArray = [];
+var delStudentIdObjArray = [];
 
 function showSelectStudent(){
 	$("#Student_Tab").css('display', 'none');
@@ -190,14 +196,14 @@ function populateSelectStudentGrid() {
 		   	 //sessionListPA = JSON.stringify(obj.testSessionPA);
 		   	 } },
 		   	loadui: "disable",
-			rowNum:20,
+			rowNum:10,
 			loadonce:true, 
 			multiselect:true,
 			pager: '#selectStudentPager', 
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 370,  
+			height: 151,  
 			caption:"Student List",
 			//toolbar: [true,"top"],
 			onPaging: function() {
@@ -265,8 +271,18 @@ function populateSelectStudentGrid() {
 				var selectedRowId = rowid;
 				if(status) {
 					var selectedRowData = $("#selectStudent").getRowData(selectedRowId);
+					
+					if (selectedStudentIds == "") {
+							selectedStudentIds = selectedRowId+"_"+pindex;
+							pindex++;
+					} else {
+							selectedStudentIds = selectedStudentIds +"|"+selectedRowId+"_"+pindex;
+							pindex++;
+					}					
 					if(stuIdObjArray[selectedRowId] == undefined){
 						stuIdObjArray[selectedRowId]= selectedRowData;
+						studentIdObjArray[pindex]=selectedRowData;
+						
 					} else {
 						var stuObj = stuIdObjArray[selectedRowId];
 						var orgArray = 	stuObj.orgNodeId.split(",");
@@ -282,7 +298,10 @@ function populateSelectStudentGrid() {
 						
 					}
 				} else {
-					stuIdObjArray.splice(selectedRowId,1); 
+					var indx = getStudentIDIndex(selectedRowId);
+					removeStudentByIndex(indx); 
+					selectedStudentIds = updateRule(selectedStudentIds,indx);
+					AddStudentLocaldata = studentIdObjArray; 
 				}
 			},
 			loadComplete: function () {
@@ -344,6 +363,79 @@ function populateSelectStudentGrid() {
 	 
 	 
 }
+
+
+function getStudentIDIndex(selectedRowId) {
+
+	var pIDs = selectedStudentIds.split("|");
+	var pid = "";
+	for (var i = 0; i < pIDs.length; i++) {		
+		pid = pIDs[i];
+		if (pid.match(selectedRowId) != null) {
+			return i;
+		}
+	}
+	
+	return -1;
+}
+
+function getStudentRowID (index) {
+
+	index = "_"+index;
+	var pIDs = selectedStudentIds.split("|");
+	var pid = "";
+	for (var i = 0; i < pIDs.length; i++) {		
+		pid = pIDs[i];
+		if (pid.match(index) != null) {			
+			var end = pid.indexOf(index);
+			var selectedRowID = pid.substring(0,end);
+			return selectedRowID;
+		}
+	}	
+	return "-1";
+}
+
+function removeStudentByIndex (arrayIndex) {
+
+	//proctorIdObjArray.splice(arrayIndex,1);
+	studentIdObjArray[arrayIndex]=null;
+
+}
+
+
+function updateRule (rule,index) {
+
+	index = "_"+index;
+	var pIDs = rule.split("|");
+	var pid = "";
+	for (var i = 0; i < pIDs.length; i++) {
+		
+		pid = pIDs[i];
+		if (pid.match(index) != null) {
+			
+			pIDs[i] = "deleted"
+			break;
+			
+		}
+	}
+	
+	for (var i = 0; i < pIDs.length; i++) {
+	
+		pid = pIDs[i];
+		
+		if (i == 0) {
+			rule = pid;
+		} else {
+			rule = rule +"|"+pid;
+		}
+		
+	}
+	
+	return rule;
+} 
+
+
+
 
 function include(arr,obj) {
      //return (arr.indexOf(obj) != -1);
