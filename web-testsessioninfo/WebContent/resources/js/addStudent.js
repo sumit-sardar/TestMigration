@@ -249,33 +249,38 @@ function populateSelectStudentGrid() {
 				}
 			},
 			gridComplete: function() { 
-			//if(stuForSelectedOrg != preSelectedOrg) {
-			var allRowsInGrid = $('#selectStudent').jqGrid('getDataIDs');
-			if(AddStudentLocaldata != null && AddStudentLocaldata.length > 0) {
-				for(var i = 0; i < AddStudentLocaldata.length; i++) {
-					var stuObj = AddStudentLocaldata[i];
-					var orgArray = 	stuObj.orgNodeId.split(",");
-					if(include(orgArray, stuForSelectedOrg)) {
-						$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true);
-						$("#"+AddStudentLocaldata[i].studentId).trigger('click');
-						$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true); 
-					} 
-					
-				}
-			} else { // Added if user selects students and clicks on BACK button instead of OK button
-				$('.cbox').attr('checked', false); 
-			}
-
+			
 			if(allRowSelected) { 
-			 	$('.cbox').attr('checked', true);
-			 	if(unCheckedSession.length > 0) {
-			 	for(var i=0; i<unCheckedSession.length; i++) {
-			 	 	if(include(allRowsInGrid, unCheckedSession[i])){
-			 	 			$("#"+unCheckedSession[i]+" td input").attr('checked', false); 
-			 	 		}
-			 		}
-			 	}
-			 } else {
+			//	var allRowsInGrid = $('#selectStudent').jqGrid('getDataIDs');
+			 	//if(unCheckedSession.length > 0) {
+			 	//for(var i=0; i<unCheckedSession.length; i++) {
+			 	// 	if(include(allRowsInGrid, unCheckedSession[i])){
+			 //	 			$("#"+unCheckedSession[i]+" td input").attr('checked', false); 
+			 	// 		}
+			 	//	}
+			 	$("#cb_selectStudent").attr("checked", true);
+			 	$("#cb_selectStudent").trigger('click');
+			 	$("#cb_selectStudent").attr("checked", true);
+			 	} else {
+			 	//if(stuForSelectedOrg != preSelectedOrg) {
+				
+				if(AddStudentLocaldata != null && AddStudentLocaldata.length > 0) {
+					$('.cbox').attr('checked', false); 
+					for(var i = 0; i < AddStudentLocaldata.length; i++) {
+						var stuObj = AddStudentLocaldata[i];
+						var orgArray = 	String(stuObj.orgNodeId).split(",");
+						if(include(orgArray, stuForSelectedOrg)) {
+							$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true);
+							$("#"+AddStudentLocaldata[i].studentId).trigger('click');
+							$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true); 
+						} 					
+					}
+				} else { // Added if user selects students and clicks on BACK button instead of OK button for first time
+					$('.cbox').attr('checked', false); 
+					studentIdObjArray = [];
+					nondupStudent = [];
+					AddStudentLocaldata = [];
+				}
 			 	
 			 }
 			//}
@@ -295,13 +300,15 @@ function populateSelectStudentGrid() {
 								selectedStudentIds = selectedStudentIds +"|"+allStudentIds[i].studentId+"_"+pindex;
 								pindex++;
 						}
-						studentIdObjArray[pindex]=selectedRowData;
+						studentIdObjArray[pindex]=selectedRowData;						
 					}					
 				} else {
 					allRowSelected = false;
-				}				
+					studentIdObjArray = [];
+				}
+				if(studentIdObjArray.length != undefined && studentIdObjArray.length > 0)				
+					studentIdObjArray.splice(0,1);
 				AddStudentLocaldata = studentIdObjArray;
-				AddStudentLocaldata.splice(0,1);
 			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
@@ -327,6 +334,7 @@ function populateSelectStudentGrid() {
 						if(stuIdObjArray[selectedRowId] == undefined){
 							stuIdObjArray[selectedRowId]= selectedRowData;
 							studentIdObjArray[pindex]=selectedRowData;
+							studentIdObjArray[pindex].studentId = selectedRowId;
 							
 						} else {
 							var stuObj = stuIdObjArray[selectedRowId];
@@ -347,6 +355,8 @@ function populateSelectStudentGrid() {
 					removeStudentByIndex(indx); 
 					selectedStudentIds = updateRule(selectedStudentIds,indx);
 					AddStudentLocaldata = studentIdObjArray; 
+					if(allRowSelected)
+						allRowSelected = false;
 				}
 			},
 			loadComplete: function () {
@@ -518,23 +528,25 @@ var duplicateStuArraydata ={};
 studentWithaccommodation = 0;
  for(var key in studentIdObjArray){ 
  	var objstr = studentIdObjArray[key];
- 	objstr['studentId']= studentIdObjArray[key].studentId;
- 	var hasAccom = objstr.hasAccommodations;
- 	 if(hasAccom == 'Yes') {
- 	 	studentWithaccommodation = studentWithaccommodation + 1;
- 	 }
-	var orgArray = String(objstr.orgNodeId).split(",");
-	if(orgArray.length > 1) {
-		dupStuPresent = true;
-		duplicateStuArray.push(objstr);
-		var orgNameArray = objstr.orgNodeName.split(",");
-		var orgIdNameMap = {};
-		for(var i=0;i<orgArray.length; i++){
-			orgIdNameMap[orgArray[i]] = orgNameArray[i];
-		}
-		orgForDupStu[key] = orgIdNameMap;
-	} else {	
- 		nondupStudent.push(objstr);
+ 	if(objstr != null && objstr != undefined) {
+	 	objstr['studentId']= studentIdObjArray[key].studentId;
+	 	var hasAccom = objstr.hasAccommodations;
+	 	 if(hasAccom == 'Yes') {
+	 	 	studentWithaccommodation = studentWithaccommodation + 1;
+	 	 }
+		var orgArray = String(objstr.orgNodeId).split(",");
+		if(orgArray.length > 1) {
+			dupStuPresent = true;
+			duplicateStuArray.push(objstr);
+			var orgNameArray = objstr.orgNodeName.split(",");
+			var orgIdNameMap = {};
+			for(var i=0;i<orgArray.length; i++){
+				orgIdNameMap[orgArray[i]] = orgNameArray[i];
+			}
+			orgForDupStu[key] = orgIdNameMap;
+		} else {	
+	 		nondupStudent.push(objstr);
+	 	}
  	}
  }
  if(dupStuPresent) {
