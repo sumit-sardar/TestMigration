@@ -250,16 +250,22 @@ function populateSelectStudentGrid() {
 			},
 			gridComplete: function() { 
 			//if(stuForSelectedOrg != preSelectedOrg) {
+			var allRowsInGrid = $('#selectStudent').jqGrid('getDataIDs');
 			if(AddStudentLocaldata != null && AddStudentLocaldata.length > 0) {
 				for(var i = 0; i < AddStudentLocaldata.length; i++) {
-					$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true);
-					$("#"+AddStudentLocaldata[i].studentId).trigger('click');
-					$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true);
+					var stuObj = AddStudentLocaldata[i];
+					var orgArray = 	stuObj.orgNodeId.split(",");
+					if(include(orgArray, stuForSelectedOrg)) {
+						$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true);
+						$("#"+AddStudentLocaldata[i].studentId).trigger('click');
+						$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true); 
+					} 
+					
 				}
-			} else {
-
+			} else { // Added if user selects students and clicks on BACK button instead of OK button
+				$('.cbox').attr('checked', false); 
 			}
-			var allRowsInGrid = $('#selectStudent').jqGrid('getDataIDs');
+
 			if(allRowSelected) { 
 			 	$('.cbox').attr('checked', true);
 			 	if(unCheckedSession.length > 0) {
@@ -270,16 +276,7 @@ function populateSelectStudentGrid() {
 			 		}
 			 	}
 			 } else {
-			 	$('.cbox').attr('checked', false); 
-			 	for(var i=0; i<allRowsInGrid.length; i++) {
-				 	if(stuIdObjArray[allRowsInGrid[i]] != undefined){
-				 		var stuObj = stuIdObjArray[allRowsInGrid[i]];
-				 		var orgArray = 	stuObj.orgNodeId.split(",");
-			 			if(include(orgArray, stuForSelectedOrg)) {
-							$("#"+allRowsInGrid[i]+" td input").attr('checked', true); 
-						} 
-					}
-			 	}
+			 	
 			 }
 			//}
 			},
@@ -299,12 +296,12 @@ function populateSelectStudentGrid() {
 								pindex++;
 						}
 						studentIdObjArray[pindex]=selectedRowData;
-					}
-					AddStudentLocaldata.splice(0,1);
+					}					
 				} else {
 					allRowSelected = false;
-				}
+				}				
 				AddStudentLocaldata = studentIdObjArray;
+				AddStudentLocaldata.splice(0,1);
 			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
@@ -445,7 +442,6 @@ function getStudentRowID (index) {
 
 function removeStudentByIndex (arrayIndex) {
 
-	//proctorIdObjArray.splice(arrayIndex,1);
 	studentIdObjArray[arrayIndex]=null;
 
 }
@@ -520,18 +516,18 @@ orgForDupStu = [];
 var dupStuPresent = false;
 var duplicateStuArraydata ={};
 studentWithaccommodation = 0;
- for(var key in stuIdObjArray){ 
- 	var objstr = stuIdObjArray[key];
- 	objstr['studentId']= key;
+ for(var key in studentIdObjArray){ 
+ 	var objstr = studentIdObjArray[key];
+ 	objstr['studentId']= studentIdObjArray[key].studentId;
  	var hasAccom = objstr.hasAccommodations;
  	 if(hasAccom == 'Yes') {
  	 	studentWithaccommodation = studentWithaccommodation + 1;
  	 }
-	var orgArray = 	objstr.orgNodeId.split(",");
+	var orgArray = String(objstr.orgNodeId).split(",");
 	if(orgArray.length > 1) {
 		dupStuPresent = true;
 		duplicateStuArray.push(objstr);
-		var orgNameArray = 	objstr.orgNodeName.split(",");
+		var orgNameArray = objstr.orgNodeName.split(",");
 		var orgIdNameMap = {};
 		for(var i=0;i<orgArray.length; i++){
 			orgIdNameMap[orgArray[i]] = orgNameArray[i];
@@ -675,7 +671,16 @@ function populateGradeLevelFilter() {
 		}
 	}
 	categoriesStr = categoriesStr.substr(0,categoriesStr.length - 1);
-
+	if(blockOffGradeTesting == null || blockOffGradeTesting == undefined || blockOffGradeTesting == "" || !blockOffGradeTesting) {
+		var optionList = [];
+		optionList[0] = {"id":'',"name":'All'};		
+		var gradeArray = categoriesStr.split(";");
+		for(var i = 1; i < gradeArray.length; i++) {
+			var splitGrade = gradeArray[i].split(":");
+			optionList[i] = {"id":splitGrade[0],"name":splitGrade[1]};
+		}
+		fillDropDown('gs_grade',optionList);
+	}
 }
 
 
