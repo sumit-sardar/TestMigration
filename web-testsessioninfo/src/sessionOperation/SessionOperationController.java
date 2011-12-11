@@ -138,6 +138,8 @@ public class SessionOperationController extends PageFlowController {
 	Map<Integer, String> topNodesMap = new LinkedHashMap<Integer, String>();
 	Map<Integer, TestVO> idToTestMap = new LinkedHashMap<Integer, TestVO>();
 	//Map<String, SessionStudent> idToStudentMap = new TreeMap<String, SessionStudent>();
+	
+	private List studentGradesForCustomer;
     
 	/**
 	 * @return the userName
@@ -1480,6 +1482,7 @@ public class SessionOperationController extends PageFlowController {
 			base.setTotal("2");
 			List <Row> rows = new ArrayList<Row>();
 			base.setStudentNode(studentNodes);
+			base.setGradeList(this.studentGradesForCustomer);
 			
 			Gson gson = new Gson();
 			System.out.println ("Json process time Start:"+new Date());
@@ -1870,6 +1873,8 @@ public class SessionOperationController extends PageFlowController {
      	this.getSession().setAttribute("userScheduleAndFindSessionPermission", userScheduleAndFindSessionPermission());   
      	
      	getConfigStudentLabel(customerConfigs);
+     	
+     	getStudentGrades(customerConfigs);
      	
    }
 		
@@ -2648,4 +2653,24 @@ public class SessionOperationController extends PageFlowController {
 		 return studentFilter;
 		 
 	 }
+	 
+	 private void getStudentGrades(CustomerConfiguration[] customerConfigurations) 
+		{     
+		 this.studentGradesForCustomer = new ArrayList<String>();
+			Integer configId=0;
+			for (int i=0; i < customerConfigurations.length; i++)
+			{
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Grade") && cc.getDefaultValue().equalsIgnoreCase("T"))
+				{
+					configId = cc.getId();
+					CustomerConfigurationValue[] customerConfigurationsValue = customerConfigurationValues(configId);
+					for(int j=0; j<customerConfigurationsValue.length; j++){
+						this.studentGradesForCustomer.add(customerConfigurationsValue[j].getCustomerConfigurationValue());
+					}	
+
+				}
+
+			}			
+		}
 }

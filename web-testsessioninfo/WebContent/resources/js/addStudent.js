@@ -24,6 +24,7 @@ var pdindex = 0;
 var studentIdObjArray = [];
 var delStudentIdObjArray = [];
 var allStudentIds = [];
+var studentGradesCustomerConfig = [];
 
 function showSelectStudent(){
 	$("#Student_Tab").css('display', 'none');
@@ -161,7 +162,7 @@ function selectFormat( cellvalue, options, rowObject ){
 
 function populateSelectStudentGrid() {
  		UIBlock();
- 		if(!isTabeProduct)
+ 		if(blockOffGradeTesting)		
  			populateGradeLevelFilter();
  		selectStudentgridLoaded = true;
  		var studentIdTitle = $("#studentIdLabelName").val();
@@ -203,6 +204,10 @@ function populateSelectStudentGrid() {
 			   	 	allStudentIds.push(obj.studentNode[i]);
 			   	 }
 		   	 }
+		   	 if(!blockOffGradeTesting) {
+		   	 	studentGradesCustomerConfig = obj.gradeList;
+ 			 	populateGradeLevelFilter();
+ 			 }
 		   	 } },
 		   	loadui: "disable",
 			rowNum:10,
@@ -641,8 +646,12 @@ function populateGradeLevelFilter() {
 		categoriesStr = "";
 		dropListToDisplay = [{"id":selectedLevel,"name":selectedLevel}];
 	}
-	else
+	else {
+		dropListToDisplay = [];
+		for (var i = 0; i < studentGradesCustomerConfig.length; i++)
+			dropListToDisplay[i] = {"id":studentGradesCustomerConfig[i],"name":studentGradesCustomerConfig[i]};
 		categoriesStr = ":All;";
+	}
 	for (var i = 0; i < dropListToDisplay.length; i++) {
 		if(dropListToDisplay[i].id == "Show all")
 			continue;

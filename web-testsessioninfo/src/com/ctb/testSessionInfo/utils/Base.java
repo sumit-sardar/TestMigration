@@ -18,7 +18,8 @@ public class Base {
 	private List<TestSessionVO> testSessionPA;
 	private List studentNode;
 	private OrgNodeCategory orgNodeCategory;
-	private List<com.ctb.testSessionInfo.dto.UserProfileInformation> userProfileInformation;;
+	private List<com.ctb.testSessionInfo.dto.UserProfileInformation> userProfileInformation;
+	private List gradeList;
 	/**
 	 * @return the orgNodeCategory
 	 */
@@ -91,13 +92,30 @@ public class Base {
 	public void setStudentNode(List studentNode) {
 		this.studentNode = studentNode;
 	}
-	
+	/**
+	 * @return the userProfileInformation
+	 */
 	public List<UserProfileInformation> getUserProfileInformation() {
 		return userProfileInformation;
 	}
+	/**
+	 * @param userProfileInformation the userProfileInformation to set
+	 */
 	public void setUserProfileInformation(
 			List<UserProfileInformation> userProfileInformation) {
 		this.userProfileInformation = userProfileInformation;
+	}
+	/**
+	 * @param gradeList the gradeList to set
+	 */
+	public void setGradeList(List gradeList) {
+		this.gradeList = gradeList;
+	}
+	/**
+	 * @return the gradeList
+	 */
+	public List getGradeList() {
+		return gradeList;
 	}
 
 }
