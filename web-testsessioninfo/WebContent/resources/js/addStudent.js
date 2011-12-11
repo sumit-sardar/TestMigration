@@ -162,7 +162,7 @@ function selectFormat( cellvalue, options, rowObject ){
 
 function populateSelectStudentGrid() {
  		UIBlock();
- 		if(blockOffGradeTesting)		
+ 		if(blockOffGradeTesting != null && blockOffGradeTesting)		
  			populateGradeLevelFilter();
  		selectStudentgridLoaded = true;
  		var studentIdTitle = $("#studentIdLabelName").val();
@@ -204,7 +204,7 @@ function populateSelectStudentGrid() {
 			   	 	allStudentIds.push(obj.studentNode[i]);
 			   	 }
 		   	 }
-		   	 if(!blockOffGradeTesting) {
+		   	 if(blockOffGradeTesting == null || blockOffGradeTesting == undefined || blockOffGradeTesting == "" || !blockOffGradeTesting) {
 		   	 	studentGradesCustomerConfig = obj.gradeList;
  			 	populateGradeLevelFilter();
  			 }
