@@ -203,6 +203,7 @@ function populateSelectProctorGrid() {
 						if (selectedRowData.defaultScheduler == 'T') {
 				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
 				 			$("#"+allRowsInGrid[i]).addClass('ui-state-disabled');
+				 			
 				 		}
 				 	}
 			 } 
@@ -269,11 +270,11 @@ function populateSelectProctorGrid() {
 			},
 			onSelectAll: function (rowIds, status) {
 				
-				if(preSelectedOrgPro = proctorForSelectedOrg) {
-					selectedProctorIds = "";
-					pindex = 0;
+				//if(preSelectedOrgPro = proctorForSelectedOrg) {
+					//selectedProctorIds = "";
+					//pindex = 0;
 					//proctorIdObjArray = [];
-				}
+				//}
 				
 				if(status) {
 					allRowSelectedPro = true;
@@ -311,13 +312,12 @@ function populateSelectProctorGrid() {
 				} else {
 					allRowSelectedPro = false;										
 					for(var i = 0; i < allProctorIds.length; i++) {
-						if(getProctorIDIndex(allProctorIds[i].userId) >= 0) {
+						//if(getProctorIDIndex(allProctorIds[i].userId) >= 0) {
 							var selectedRowData = allProctorIds[i];
 							var indx = getProctorIDIndex(selectedRowData.userId);
-							removeStudentByIndex(indx); 
+							removeProctorByIndex(indx); 
 							selectedProctorIds = updateRule(selectedProctorIds,indx);
-							addProctorLocaldata = proctorIdObjArray; 
-						}						
+						//}						
 					}
 					for(var i = 0; i < allSelectOrgProctor.length; i++) {
 						if(allSelectOrgProctor[i] != null && allSelectOrgProctor[i] == proctorForSelectedOrg)
