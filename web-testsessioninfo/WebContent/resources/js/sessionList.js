@@ -599,6 +599,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			stuIdObjArray = [];
 			delStuIdObjArray = [];
 			isOnBack = false;
+			document.getElementById("testDiv").style.display = "none";
 			
 			resetProctor();
 			
