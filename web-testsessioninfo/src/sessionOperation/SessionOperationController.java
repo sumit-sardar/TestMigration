@@ -1817,6 +1817,7 @@ public class SessionOperationController extends PageFlowController {
 	        getSession().setAttribute("schedulerFirstName", this.user.getFirstName());
 	        getSession().setAttribute("schedulerLastName", this.user.getLastName());
 	        getSession().setAttribute("schedulerUserId", this.user.getUserId().toString());
+	        getSession().setAttribute("schedulerUserName", this.user.getUserName());
 	        System.out.println("supportAccommodations==>"+supportAccommodations);
         }
         catch (CTBBusinessException be)
