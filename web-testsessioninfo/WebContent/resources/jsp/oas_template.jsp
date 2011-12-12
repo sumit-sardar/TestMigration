@@ -168,6 +168,17 @@
 				
 				
 			});
+
+			$(function(){
+				var wizard = $("#sessionGrid").accordion({ header: "h3",event:false});
+				$("h3", wizard).each(function(index) { 				
+					$(this).click(function(e){
+						$('#showSaveTestMessage').hide();
+					});
+				});
+
+			});
+			
 		
 		
 	</script>

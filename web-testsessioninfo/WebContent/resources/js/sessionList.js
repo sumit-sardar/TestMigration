@@ -95,8 +95,6 @@ function populateSessionListGrid(homePageLoad) {
 			caption:"Session List",
 		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
-				//clearMessage();
-				$('#showSaveTestMessage').hide();
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
 				var minPageSize = 1;
@@ -147,6 +145,7 @@ function populateSessionListGrid(homePageLoad) {
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
+				$('#showSaveTestMessage').hide();
 				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
@@ -167,7 +166,6 @@ function populateCompletedSessionListGrid() {
  		//UIBlock();
  		gridloaded = true;
  		reset();
- 		$('#showSaveTestMessage').hide();
        $("#list3").jqGrid({         
           url: 'getCompletedSessionForGrid.do', 
 		  type:   'POST',
@@ -197,8 +195,6 @@ function populateCompletedSessionListGrid() {
 			caption:"Session List",
 		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
 			onPaging: function() {
-				//clearMessage();
-				$('#showSaveTestMessage').hide();
 				var reqestedPage = parseInt($('#list3').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager3').text());
 				var minPageSize = 1;
@@ -239,6 +235,7 @@ function populateCompletedSessionListGrid() {
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
 				
+				$('#showSaveTestMessage').hide();
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
