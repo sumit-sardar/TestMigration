@@ -177,6 +177,7 @@ function populateSelectProctorGrid() {
 						//$("#"+allRowsInGrid[i]).unbind("clicked");
 						if (selectedRowData.defaultScheduler == 'T') {
 				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
+				 			$("#"+allRowsInGrid[i]).addClass('ui-state-disabled');
 				 		}
 				 		
 				 		for (var j=0; j < proctorIdObjArray.length; j++) {

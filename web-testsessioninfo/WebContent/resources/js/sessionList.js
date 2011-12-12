@@ -1935,6 +1935,7 @@ function createSingleNodeSelectedTree(jsondata) {
  		var schedulerFirstName = $("#schedulerFirstName").val();
 		var schedulerLastName = $("#schedulerLastName").val();
 		var schedulerUserId = $("#schedulerUserId").val();
+		var schedulerUserName = $("#schedulerUserName").val();
  		
  		proctorGridloaded = true;
 
@@ -1944,6 +1945,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	 		jsondata['lastName'] = schedulerLastName;
 	 		jsondata['firstName'] = schedulerFirstName;
 	 		jsondata['defaultScheduler'] = "T";
+	 		jsondata['userName'] = schedulerUserName;
 	 		
 	 		var val=[] ;
 		 	val.push(jsondata);
@@ -2030,6 +2032,7 @@ function createSingleNodeSelectedTree(jsondata) {
 						selectedRowData = $("#listProctor").getRowData(allRowsInGrid[i]);
 						if (selectedRowData.defaultScheduler == 'T') {
 				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
+				 			$("#"+allRowsInGrid[i]).addClass('ui-state-disabled');
 				 		//	$("#listProctor").jqGrid('editRow',allRowsInGrid[i],false);
 				 		}
 					
