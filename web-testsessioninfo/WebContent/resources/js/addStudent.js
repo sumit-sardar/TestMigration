@@ -278,7 +278,7 @@ function populateSelectStudentGrid() {
 			 	//	$('.cbox').attr('checked', false); 
 			 	//}
 			 } else {
-			 	if(stuForSelectedOrg != preSelectedOrg) {
+			 	//if(stuForSelectedOrg != preSelectedOrg) {
 				
 					if(AddStudentLocaldata != null && AddStudentLocaldata.length > 0) {
 						$('.cbox').attr('checked', false); 
@@ -302,15 +302,15 @@ function populateSelectStudentGrid() {
 						}
 					}
 				 	
-				 }
+				 //}
 			 }
 			},
 			onSelectAll: function (rowIds, status) {
-				if(stuForSelectedOrg == preSelectedOrg) {
-					selectedStudentIds = "";
-					pindex = 0;
-					studentIdObjArray = [];
-				}
+			//	if(stuForSelectedOrg == preSelectedOrg) {
+			//		selectedStudentIds = "";
+			//		pindex = 0;
+			//		studentIdObjArray = [];
+			//	}
 				
 				if(status) {
 					allRowSelected = true;
@@ -356,7 +356,7 @@ function populateSelectStudentGrid() {
 					}
 					for(var i = 0; i < allSelectOrg.length; i++) {
 						if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
-							allSelectOrg[i] = null;
+							allSelectOrg.splice(i,1);
 					}									
 				}
 			},
@@ -401,6 +401,10 @@ function populateSelectStudentGrid() {
 						}
 					}
 				} else {
+					for(var i = 0; i < allSelectOrg.length; i++) {
+						if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
+							allSelectOrg.splice(i,1);
+					}
 					var indx = getStudentIDIndex(selectedRowId);
 					removeStudentByIndex(indx); 
 					selectedStudentIds = updateRule(selectedStudentIds,indx);
