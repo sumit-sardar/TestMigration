@@ -1369,7 +1369,7 @@ public class SessionOperationController extends PageFlowController {
 				resp.setContentType("application/json");
 				stream = resp.getOutputStream();
 				resp.flushBuffer();
-				stream.write(json.getBytes());
+				stream.write(json.getBytes("UTF-8"));
 
 			}
 
@@ -1421,7 +1421,7 @@ public class SessionOperationController extends PageFlowController {
 				resp.setContentType("application/json");
 				stream = resp.getOutputStream();
 				resp.flushBuffer();
-				stream.write(json.getBytes());
+				stream.write(json.getBytes("UTF-8"));
 			}
 			finally{
 				if (stream!=null){
@@ -1492,7 +1492,7 @@ public class SessionOperationController extends PageFlowController {
 				resp.setContentType("application/json");
 				stream = resp.getOutputStream();
 				resp.flushBuffer();
-				stream.write(json.getBytes());
+				stream.write(json.getBytes("UTF-8"));
 			}
 			finally{
 				if (stream!=null){
@@ -1581,7 +1581,7 @@ public class SessionOperationController extends PageFlowController {
 				resp.setContentType(contentType);
 				resp.flushBuffer();
 				stream = resp.getOutputStream();
-				stream.write(jsonTree.getBytes());
+				stream.write(jsonTree.getBytes("UTF-8"));
 			} finally{
 				if (stream!=null){
 					stream.close();
@@ -1662,7 +1662,7 @@ public class SessionOperationController extends PageFlowController {
 				resp.setContentType("application/json");
 				stream = resp.getOutputStream();
 				resp.flushBuffer();
-				stream.write(json.getBytes());
+				stream.write(json.getBytes("UTF-8"));
 
 			}
 
@@ -2532,7 +2532,7 @@ public class SessionOperationController extends PageFlowController {
 				resp.setContentType("application/json");
 				stream = resp.getOutputStream();
 				resp.flushBuffer();
-				stream.write(json.getBytes());
+				stream.write(json.getBytes("UTF-8"));
 			}
 			finally{
 				if (stream!=null){
