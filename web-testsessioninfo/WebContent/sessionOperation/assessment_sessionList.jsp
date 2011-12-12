@@ -12,6 +12,7 @@
 	 String schedulerFirstName = (String) session.getAttribute("schedulerFirstName");
 	 String schedulerLastName = (String) session.getAttribute("schedulerLastName");
 	 String schedulerUserId = (String) session.getAttribute("schedulerUserId");
+	 String schedulerUserName = (String) session.getAttribute("schedulerUserName");
 	
 	%>
 	
@@ -23,6 +24,7 @@
 	<input type="hidden" id="schedulerFirstName" name = "schedulerFirstName" value='<%=schedulerFirstName %>'/>
 	<input type="hidden" id="schedulerLastName" name = "schedulerLastName" value='<%=schedulerLastName %>'/>
 	<input type="hidden" id="schedulerUserId" name = "schedulerUserId" value='<%=schedulerUserId %>'/>
+	<input type="hidden" id="schedulerUserName" name = "schedulerUserId" value='<%=schedulerUserName %>'/>
 	 <div id="showSaveTestMessage" class="roundedMessage" style="float:left;display:none; " > 
 			<table>
 				<tr>
