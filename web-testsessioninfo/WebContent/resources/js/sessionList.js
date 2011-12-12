@@ -587,6 +587,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			$('#Add_Proctor').hide();
 			$("#Student_Tab").css('display', 'block');
 			$("#Select_Student_Tab").css('display', 'none');
+			$("#Proctor_Tab").css('display', 'block');
 			$("#Select_Proctor_Tab").css('display', 'none');
 			selectedOrg = [];
 			orgCheckedStudent = [];
