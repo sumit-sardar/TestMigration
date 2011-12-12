@@ -886,11 +886,16 @@ public class SessionOperationController extends PageFlowController {
 			 Integer itemSetId        		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_ITEM_SET_ID, false, null));
 			 
 			 TestVO selectedTest = idToTestMap.get(itemSetId);
-			 Integer productId        		= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_PRODUCT_ID, true, "-1"));
-			 Date dailyLoginEndTime   		= DateUtils.getDateFromTimeString(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_END_TIME, false, null));
-			 Date dailyLoginStartTime 		= DateUtils.getDateFromTimeString(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_START_TIME, false, null));
-			 Date dailyLoginEndDate   		= DateUtils.getDateFromDateString(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_END_DATE, false, null));
-			 Date dailyLoginStartDate 		= DateUtils.getDateFromDateString(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_START_DATE, false, null));
+			 Integer productId        			= Integer.valueOf(RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_PRODUCT_ID, true, "-1"));
+			 String dailyLoginEndTimeString		=RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_END_TIME, false, null);
+			 String dailyLoginStartTimeString	= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_START_TIME, false, null);
+			 String dailyLoginEndDateString		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_END_DATE, false, null);
+			 String dailyLoginStartDateString	= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_START_DATE, false, null);
+
+			 Date dailyLoginEndTime   		= DateUtils.getDateFromTimeString(dailyLoginEndTimeString);
+			 Date dailyLoginStartTime 		= DateUtils.getDateFromTimeString(dailyLoginStartTimeString);
+			 Date dailyLoginEndDate   		= DateUtils.getDateFromDateString(dailyLoginEndDateString);
+			 Date dailyLoginStartDate 		= DateUtils.getDateFromDateString(dailyLoginStartDateString);
 			 String location          		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_LOCATION, false, null);
 			 String hasBreakValue     		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_HAS_BREAK, false, null);
 			 String hasBreak          		= (hasBreakValue == null || !(hasBreakValue.trim().equals("T") || hasBreakValue.trim().equals("F"))) ? "F" :  hasBreakValue.trim();
@@ -969,7 +974,9 @@ public class SessionOperationController extends PageFlowController {
 	         }
 	         
 	         validateTestSession(testSession, validationFailedInfo);
-
+	         if(!validationFailedInfo.isValidationFailed()) {
+	        	validateTestSessionDate(dailyLoginEndDateString,dailyLoginStartDateString, dailyLoginEndTimeString, dailyLoginStartTimeString, timeZone, overrideLoginSDate, validationFailedInfo); 
+	         }
 	         
 	         scheduledSession.setTestSession(testSession);
 			 
@@ -985,6 +992,54 @@ public class SessionOperationController extends PageFlowController {
 		 
 			
 		}
+
+     private void validateTestSessionDate(String dailyLoginEndDateString,
+			String dailyLoginStartDateString, String dailyLoginEndTimeString,
+			String dailyLoginStartTimeString, String timeZonep,
+			Date overrideLoginSDate, ValidationFailedInfo validationFailedInfo) {
+    	 if ((DateUtils.validateDateString(dailyLoginStartDateString) == DateUtils.DATE_INVALID) ||( DateUtils.validateDateString(dailyLoginEndDateString)== DateUtils.DATE_INVALID)){
+    		 validationFailedInfo.setKey("SaveTest.InvalidDate");
+ 			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.InvalidDate.Header"));
+ 			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("SaveTest.InvalidDate.Body"));
+    		 
+    	 } else{
+    		 Date dateStarted = DateUtils.getDateFromDateString(dailyLoginStartDateString);
+             Date dateEnded = DateUtils.getDateFromDateString(dailyLoginEndDateString);
+             Date timeStarted = DateUtils.getDateFromTimeString(dailyLoginStartTimeString);
+             Date timeEnded = DateUtils.getDateFromTimeString(dailyLoginEndTimeString);
+             
+             String strDateTime = "";
+             if (dailyLoginEndDateString != null && dailyLoginEndTimeString != null)
+                 strDateTime = dailyLoginEndDateString + " " + dailyLoginEndTimeString;
+             Date datetimeEnded = DateUtils.getDateFromDateTimeString(strDateTime);
+             String timeZone = timeZonep;
+             
+             
+    		 if( overrideLoginSDate != null && dateStarted.compareTo(overrideLoginSDate ) < 0){
+    			 validationFailedInfo.setKey("SaveTest.StartDateBeforeOverrideStartDate");
+     			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeOverrideStartDate.Header"));
+     			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeOverrideStartDate.Body","" +DateUtils.formatDateToDateString(overrideLoginSDate)));
+    		 } else if ( DateUtils.isBeforeToday(dateStarted, timeZone) ){
+    			 validationFailedInfo.setKey("SaveTest.StartDateBeforeOverrideStartDate");
+     			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeToday.Header"));
+     			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeToday.Body"));
+    		 } else if ( DateUtils.isBeforeNow(datetimeEnded, timeZone) ) {
+    			 validationFailedInfo.setKey("SaveTest.EndDateTimeBeforeNow");
+     			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.EndDateTimeBeforeNow.Header"));
+     			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("SaveTest.EndDateTimeBeforeNow.Body"));
+    		 } else if ( dateStarted.compareTo(dateEnded)>0 ) {
+    			 validationFailedInfo.setKey("SaveTest.EndDateBeforeStartDate");
+     			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.EndDateBeforeStartDate"));
+    		 } else if( timeStarted.compareTo(timeEnded)>=0 ) {
+    			 validationFailedInfo.setKey("SaveTest.EndTimeBeforeStartTime");
+     			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.EndTimeBeforeStartTime"));
+    		 } 
+    		 
+    		 
+    	 }
+            
+		
+	}
 
      private void validateTestSession(TestSession testSession,	ValidationFailedInfo validationFailedInfo) throws Exception {
 		String[] TACs = new String[1];
