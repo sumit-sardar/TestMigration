@@ -430,6 +430,8 @@ function createSingleNodeSelectedTree(jsondata) {
  		 if($("#canRegisterStudent").val() == 'true'){
  			setAnchorButtonState('registerStudentButton', true);
  		}
+ 		allSelectOrg = [];
+		countAllSelect = 0;
  		
  		
 	}
@@ -708,6 +710,30 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 				
 			},
+			onSelectAll: function (rowIds, status) {
+				selectedStudentIds = "";
+				pindex = 0;
+				studentIdObjArray = [];
+				if(status) {
+					allRowSelected = true;
+					for(var i = 0; i < allStudentIds.length; i++) {
+						var selectedRowData = allStudentIds[i];
+						if (selectedStudentIds == "") {
+								selectedStudentIds = allStudentIds[i].studentId+"_"+pindex;
+								pindex++;
+						} else {
+								selectedStudentIds = selectedStudentIds +"|"+allStudentIds[i].studentId+"_"+pindex;
+								pindex++;
+						}
+						studentIdObjArray[pindex]=selectedRowData;
+					}
+					AddStudentLocaldata = studentIdObjArray;
+					AddStudentLocaldata.splice(0,1);
+				} else {
+					allRowSelected = false;
+					AddStudentLocaldata = studentIdObjArray;
+				}
+			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
 				if(status) {
@@ -732,7 +758,7 @@ function createSingleNodeSelectedTree(jsondata) {
             	} else {
             		isStuGridEmpty = false;
             	}
-            	
+            	studentIdObjArray = AddStudentLocaldata;
             	
 			    setEmptyListMessage('studentGrid');
 				$.unblockUI();  

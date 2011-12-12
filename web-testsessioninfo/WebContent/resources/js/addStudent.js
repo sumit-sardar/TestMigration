@@ -26,6 +26,9 @@ var delStudentIdObjArray = [];
 var allStudentIds = [];
 var studentGradesCustomerConfig = [];
 
+var allSelectOrg = [];
+var countAllSelect = 0;
+
 function showSelectStudent(){
 	$("#Student_Tab").css('display', 'none');
 	$("#Select_Student_Tab").css('display', 'block');
@@ -250,8 +253,14 @@ function populateSelectStudentGrid() {
 				}
 			},
 			gridComplete: function() { 
-			
-			if(allRowSelected) { 
+			var allRowChecked = false;
+			if(allSelectOrg != null && allSelectOrg.length > 0) {
+				for(var i = 0; i < allSelectOrg.length; i++) {
+					if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
+						allRowChecked = true;
+				}
+			}
+			if(allRowChecked) { 
 			//	var allRowsInGrid = $('#selectStudent').jqGrid('getDataIDs');
 			 	//if(unCheckedSession.length > 0) {
 			 	//for(var i=0; i<unCheckedSession.length; i++) {
@@ -259,15 +268,15 @@ function populateSelectStudentGrid() {
 			 //	 			$("#"+unCheckedSession[i]+" td input").attr('checked', false); 
 			 	// 		}
 			 	//	}
-			 	if(stuForSelectedOrg == preSelectedOrg) {
+			 	//if(stuForSelectedOrg == preSelectedOrg) {
 				 	$("#cb_selectStudent").attr("checked", true);
 				 	$("#cb_selectStudent").trigger('click');
 				 	$("#cb_selectStudent").attr("checked", true);
 				 	allRowSelected = true;
-			 	} else {
-			 		allRowSelected = false;
-			 		$('.cbox').attr('checked', false); 
-			 	}
+			 //	} else {
+			 	//	allRowSelected = false;
+			 	//	$('.cbox').attr('checked', false); 
+			 	//}
 			 } else {
 			 	if(stuForSelectedOrg != preSelectedOrg) {
 				
@@ -275,11 +284,13 @@ function populateSelectStudentGrid() {
 						$('.cbox').attr('checked', false); 
 						for(var i = 0; i < AddStudentLocaldata.length; i++) {
 							var stuObj = AddStudentLocaldata[i];
-							var orgArray = 	String(stuObj.orgNodeId).split(",");
-							if(include(orgArray, stuForSelectedOrg)) {
-								$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true);
-								$("#"+AddStudentLocaldata[i].studentId).trigger('click');
-								$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true); 
+							if(stuObj != null && stuObj != undefined) {
+								var orgArray = 	String(stuObj.orgNodeId).split(",");
+								if(include(orgArray, stuForSelectedOrg)) {
+									$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true);
+									$("#"+AddStudentLocaldata[i].studentId).trigger('click');
+									$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true); 
+								}
 							} 					
 						}
 					} else { // Added if user selects students and clicks on BACK button instead of OK button for first time
@@ -300,26 +311,54 @@ function populateSelectStudentGrid() {
 					pindex = 0;
 					studentIdObjArray = [];
 				}
+				
 				if(status) {
 					allRowSelected = true;
 					for(var i = 0; i < allStudentIds.length; i++) {
-						var selectedRowData = allStudentIds[i];
-						if (selectedStudentIds == "") {
-								selectedStudentIds = allStudentIds[i].studentId+"_"+pindex;
-								pindex++;
-						} else {
-								selectedStudentIds = selectedStudentIds +"|"+allStudentIds[i].studentId+"_"+pindex;
-								pindex++;
+						if(getStudentIDIndex(allStudentIds[i].studentId) < 0) {
+							var selectedRowData = allStudentIds[i];
+							if (selectedStudentIds == "") {
+									selectedStudentIds = allStudentIds[i].studentId+"_"+pindex;
+									pindex++;
+							} else {
+									selectedStudentIds = selectedStudentIds +"|"+allStudentIds[i].studentId+"_"+pindex;
+									pindex++;
+							}
+							studentIdObjArray[pindex]=selectedRowData;
+						}						
+					}	
+					AddStudentLocaldata = studentIdObjArray;
+					// Added to handle multiple organization select All	
+					var present = false;
+					if(countAllSelect > 0) {
+						for(var i = 0; i < allSelectOrg.length; i++) {
+							if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
+								present = true;
 						}
-						studentIdObjArray[pindex]=selectedRowData;						
-					}					
+						if(!present) {
+							allSelectOrg[countAllSelect] = stuForSelectedOrg;
+							countAllSelect++;
+						}
+					} else {
+						allSelectOrg[countAllSelect] = stuForSelectedOrg;
+						countAllSelect++;
+					}			
 				} else {
-					allRowSelected = false;
-					studentIdObjArray = [];
+					allRowSelected = false;										
+					for(var i = 0; i < allStudentIds.length; i++) {
+						if(getStudentIDIndex(allStudentIds[i].studentId) >= 0) {
+							var selectedRowData = allStudentIds[i];
+							var indx = getStudentIDIndex(selectedRowData.studentId);
+							removeStudentByIndex(indx); 
+							selectedStudentIds = updateRule(selectedStudentIds,indx);
+							AddStudentLocaldata = studentIdObjArray; 
+						}						
+					}
+					for(var i = 0; i < allSelectOrg.length; i++) {
+						if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
+							allSelectOrg[i] = null;
+					}									
 				}
-				if(studentIdObjArray.length != undefined && studentIdObjArray.length > 0)				
-					studentIdObjArray.splice(0,1);
-				AddStudentLocaldata = studentIdObjArray;
 			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
