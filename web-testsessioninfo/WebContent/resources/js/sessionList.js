@@ -49,6 +49,8 @@ var blockOffGradeTesting = false;
 var selectedLevel;
 var dropListToDisplay;
 
+var selectAllForDelete = false;
+
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
 	}, overlayCSS:  {  backgroundColor: '#aaaaaa', opacity:  0.5 }, baseZ:1050}); 
@@ -427,8 +429,6 @@ function createSingleNodeSelectedTree(jsondata) {
  		 if($("#canRegisterStudent").val() == 'true'){
  			setAnchorButtonState('registerStudentButton', true);
  		}
- 		allSelectOrg = [];
-		countAllSelect = 0;
  		
  		
 	}
@@ -709,42 +709,27 @@ function createSingleNodeSelectedTree(jsondata) {
 				
 			},
 			onSelectAll: function (rowIds, status) {
-				selectedStudentIds = "";
-				pindex = 0;
-				studentIdObjArray = [];
 				if(status) {
-					allRowSelected = true;
-					for(var i = 0; i < allStudentIds.length; i++) {
-						var selectedRowData = allStudentIds[i];
-						if (selectedStudentIds == "") {
-								selectedStudentIds = allStudentIds[i].studentId+"_"+pindex;
-								pindex++;
-						} else {
-								selectedStudentIds = selectedStudentIds +"|"+allStudentIds[i].studentId+"_"+pindex;
-								pindex++;
-						}
-						studentIdObjArray[pindex]=selectedRowData;
-					}
-					AddStudentLocaldata = studentIdObjArray;
-					AddStudentLocaldata.splice(0,1);
+					selectAllForDelete = true;
+					delStuIdObjArray = AddStudentLocaldata;
 				} else {
-					allRowSelected = false;
+					selectAllForDelete = false;
 					AddStudentLocaldata = studentIdObjArray;
 				}
 			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
 				if(status) {
+					selectAllForDelete = false;
 					var selectedRowData = $("#list6").getRowData(selectedRowId);
-					if(delStuIdObjArray[selectedRowId] == undefined){
-						delStuIdObjArray[selectedRowId]= selectedRowData;
+					if(delStuIdObjArray[selectedRowId] == undefined || delStuIdObjArray[selectedRowId] == null){
+						delStuIdObjArray[selectedRowId] = selectedRowData;
 					} 
 				} else {
-					//elStuIdObjArray.splice(selectedRowId,1);
-					var indx = getStudentIDIndex(selectedRowId);
-					removeStudentByIndex(indx); 
-					selectedStudentIds = updateRule(selectedStudentIds,indx);
-					AddStudentLocaldata = studentIdObjArray; 
+					if(selectAllForDelete)
+						selectAllForDelete = false;
+					delStuIdObjArray[selectedRowId]= null;
+					
 				}
 			},
 			loadComplete: function () {
@@ -809,31 +794,44 @@ function createSingleNodeSelectedTree(jsondata) {
 	element.title = 'Remove Student'; 
 	}
 	
-	function removeSelectedStudent() {
+	function removeSelectedStudent() { // Remove the organization from the list in addStudent.js
 		var totalCount = AddStudentLocaldata.length;
-		for(var key in delStuIdObjArray){ 	
-			jQuery("#list6").delRowData(key);
-			var objstr = delStuIdObjArray[key];
-			var hasAccom = objstr.hasAccommodations;
-		 	 if(hasAccom == 'Yes') {
-		 	 	studentWithaccommodation = studentWithaccommodation - 1;
+		for(var key in delStuIdObjArray){ 
+			//alert("key -> " + key);				
+			var objstr = delStuIdObjArray[key];			
+			if(objstr != null && objstr != undefined) {
+				//alert("objstr -> " + objstr);
+				var hasAccom = objstr.hasAccommodations;
+			 	 if(hasAccom == 'Yes') {
+			 	 	studentWithaccommodation = studentWithaccommodation - 1;
+			 	 }			 	 			 	 
+			 	 var indx = getStudentIDIndex(objstr.studentId);
+			 	 //alert("indx -> " + indx);
+			 	 //alert("objstr.studentId -> " + objstr.studentId);
+				 removeStudentByIndex(indx); 
+				 selectedStudentIds = updateRule(selectedStudentIds,indx);
+			 	 totalCount--;
+			 	 jQuery("#list6").delRowData(key);
 		 	 }
-		 	 //alert("delStuIdObjArray[key].studentId -> " + delStuIdObjArray[key].studentId);
-		 	 for(var j = 0; j < AddStudentLocaldata.length; j++) {		 	
-		 	 	if(AddStudentLocaldata[j].studentId == delStuIdObjArray[key].studentId) {
-		 	 		AddStudentLocaldata.splice(j,1);
-		 	 		stuIdObjArray.splice(delStuIdObjArray[key].studentId,1); 
-		 	 		//alert("AddStudentLocaldata.studentId -> " + AddStudentLocaldata[j].studentId);
-		 	 	}
-		 	 }
-		 	 totalCount--;
+		 	 
 		}
+		AddStudentLocaldata = studentIdObjArray; 
 		
 		$('#totalStudent').text(totalCount);
 		if($("#supportAccommodations").val() != 'false')
 	 		 $('#stuWithAcc').text(studentWithaccommodation);
 		closePopUp('removeStuConfirmationPopup');
 		delStuIdObjArray = [];
+		if(selectAllForDelete) {
+			AddStudentLocaldata = {};
+			studentIdObjArray = [];
+		}
+		alert("AddStudentLocaldata.length -> " + AddStudentLocaldata.length);
+		for(var i = 0; i <AddStudentLocaldata.length; i++) {
+		alert("AddStudentLocaldata[i].studentId -> " + AddStudentLocaldata[i].studentId);
+		} 
+		$('#list6').GridUnload();
+		populateSelectedStudent();
 	}
 	
 	
