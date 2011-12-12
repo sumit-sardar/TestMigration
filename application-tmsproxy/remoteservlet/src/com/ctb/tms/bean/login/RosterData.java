@@ -20,6 +20,7 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Consolida
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd.Ist.Rv;
 
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
 
 import com.ctb.tms.exception.testDelivery.AuthenticationFailureException;
@@ -31,7 +32,7 @@ import com.ctb.tms.util.Constants;
 import com.ctb.tms.util.DateUtils;
 
 public class RosterData implements Serializable {
-	TmssvcResponseDocument document;
+	String document;
 	AuthenticationData authData;
 	//Manifest manifest;
 	private boolean replicate = true;
@@ -52,14 +53,21 @@ public class RosterData implements Serializable {
     }
 	
 	public TmssvcResponseDocument getDocument() {
-		return this.document;
+		XmlOptions xmlOptions = new XmlOptions(); 
+		xmlOptions.setCharacterEncoding("UTF-8");
+        xmlOptions.setUnsynchronized();
+		try {
+			return TmssvcResponseDocument.Factory.parse(this.document, xmlOptions);
+		} catch (XmlException e) {
+			return null;
+		}
 	}
 	
 	public TmssvcResponseDocument getLoginDocument() {
 		XmlOptions xmlOptions = new XmlOptions(); 
 		xmlOptions.setCharacterEncoding("UTF-8");
         xmlOptions.setUnsynchronized();
-		TmssvcResponseDocument response = this.document;
+		TmssvcResponseDocument response = getDocument();
 		try {
 			response.getTmssvcResponse().getLoginResponse().setRestartNumber(BigInteger.valueOf(this.authData.getRestartNumber()));
 			
@@ -151,7 +159,10 @@ public class RosterData implements Serializable {
 		return response;
 	}
 	public void setDocument(TmssvcResponseDocument document) {
-		this.document = document;
+		XmlOptions xmlOptions = new XmlOptions(); 
+		xmlOptions.setCharacterEncoding("UTF-8");
+        xmlOptions.setUnsynchronized();
+		this.document = document.xmlText(xmlOptions);
 	}
 	public AuthenticationData getAuthData() {
 		return authData;

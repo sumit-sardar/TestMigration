@@ -293,9 +293,9 @@ public class OASOracleSource implements OASRDBSource
 	        RosterData result = new RosterData();
 	        result.setDocument(response);
 	        result.setAuthData(authData);
-	        com.ctb.tms.bean.login.Manifest manifest = new com.ctb.tms.bean.login.Manifest();
-	        manifest.setManifest(manifestData);
-	        manifest.setTestRosterId(String.valueOf(testRosterId));
+	        //com.ctb.tms.bean.login.Manifest manifest = new com.ctb.tms.bean.login.Manifest();
+	        //manifest.setManifest(manifestData);
+	        //manifest.setTestRosterId(String.valueOf(testRosterId));
 	        //result.setManifest(manifest);
 	        //logger.debug(response.xmlText());
 	        return result;
