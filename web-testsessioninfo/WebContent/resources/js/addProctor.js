@@ -28,6 +28,7 @@ function showSelectProctor(){
 }
 function hideSelectedProctor (){
 
+	backProctorRule();
 	isOnBackProctor = true;
 	$("#Proctor_Tab").css('display', 'block');
 	$("#Select_Proctor_Tab").css('display', 'none');	
@@ -228,10 +229,10 @@ function populateSelectProctorGrid() {
 					proctorIdObjArray[pindex]=selectedRowData;
 					
 					if (selectedProctorIds == "") {
-							selectedProctorIds = selectedRowId+"_"+pindex;
+							selectedProctorIds = selectedRowId+"_"+pindex+"_tmp";
 							pindex++;
 					} else {
-							selectedProctorIds = selectedProctorIds +"|"+selectedRowId+"_"+pindex;
+							selectedProctorIds = selectedProctorIds +"|"+selectedRowId+"_"+pindex+"_tmp";
 							pindex++;
 					}
 					
@@ -358,10 +359,67 @@ function include(arr,obj) {
       return false;
      
 }
+
+function confirmProctorRule () {
+
+	var pIDs = selectedProctorIds.split("|");
+	var pid = "";
+	for (var i = 0; i < pIDs.length; i++) {
+		
+		pid = pIDs[i];
+		if (pid.match("_tmp") != null) {
+			
+			pid = pid.replace("_tmp","");
+			pIDs[i] = pid;
+						
+		}
+	}
+	
+	for (var i = 0; i < pIDs.length; i++) {
+	
+		pid = pIDs[i];
+		
+		if (i == 0) {
+			selectedProctorIds = pid;
+		} else {
+			selectedProctorIds = selectedProctorIds +"|"+pid;
+		}
+		
+	}
+}
+
+function backProctorRule () {
+
+	var pIDs = selectedProctorIds.split("|");
+	var pid = "";
+	for (var i = 0; i < pIDs.length; i++) {
+		
+		pid = pIDs[i];
+		if (pid.match("_tmp") != null) {
+			
+			pIDs[i] = "deleted";
+			removeProctorByIndex(i);
+						
+		}
+	}
+	
+	for (var i = 0; i < pIDs.length; i++) {
+	
+		pid = pIDs[i];
+		
+		if (i == 0) {
+			selectedProctorIds = pid;
+		} else {
+			selectedProctorIds = selectedProctorIds +"|"+pid;
+		}
+		
+	}
+}
 	
 	
 function returnSelectedProctor() {
 
+	confirmProctorRule();
 	var val=[] ;
 	for (var i=0; i < proctorIdObjArray.length; i++) {
 	
