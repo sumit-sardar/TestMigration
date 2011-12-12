@@ -599,8 +599,9 @@ function createSingleNodeSelectedTree(jsondata) {
 			stuIdObjArray = [];
 			delStuIdObjArray = [];
 			isOnBack = false;
-			delProctorIdObjArray = [];
-			proctorIdObjArray = [];
+			
+			resetProctor();
+			
 		}
 		$("#"+dailogId).dialog("close");
 	}

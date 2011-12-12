@@ -470,4 +470,28 @@ function ProctorAssignment(userId, userName, copyable) {
 	ProctorAssignment.prototype.toString = function () {
   		return ( ""+"userId="+this.userId +":userName=" +this.userName + ":copyable="+this.copyable+":");
 	};
+	
+function resetProctor() {
+
+	selectProctorGridLoaded = false;
+	allRowSelectedPro = false;
+	selectedSessionPro = [];
+	unCheckedSessionPro = [];
+	addProctorLocaldata ={};
+	proctorForSelectedOrg;
+	preSelectedOrgPro;
+	selectedProctorIds = "";
+	deletedProctorIds = "";
+	pindex = 0;
+	pdindex = 0;
+	proctorIdObjArray = [];
+	delProctorIdObjArray = [];
+	isOnBackProctor = false;
+	noOfProctorAdded = 0;
+	proctorGridloaded = false;
+	$('#listProctor').GridUnload();
+	$('#selectProctor').GridUnload();		
+	
+	
+}
 
