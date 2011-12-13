@@ -803,10 +803,15 @@ function getStudentListArray(studentArray) {
 	  if (studentArray==undefined) {
 	  	return resultStdArray;
 	  }
-	  
+	  var l = 0;
 	  for (var i=0; i<studentArray.length; i++) {
-	  	var val = new SessionStudent(studentArray[i].studentId, studentArray[i].orgNodeId, studentArray[i].extendedTimeAccom, studentArray[i]["status.copyable"],  studentArray[i].itemSetForm );
-	  	resultStdArray[i]= val.toString();
+	    if(studentArray[i]!= undefined && studentArray[i] != null) {
+	    	var val = new SessionStudent(studentArray[i].studentId, studentArray[i].orgNodeId, studentArray[i].extendedTimeAccom, studentArray[i]["status.copyable"],  studentArray[i].itemSetForm );
+	        resultStdArray[l]= val.toString();
+	        ++l;
+	    }
+	  		
+	  	
 	  }
 	  return resultStdArray;
 	}
