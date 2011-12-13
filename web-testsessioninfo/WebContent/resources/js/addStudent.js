@@ -261,48 +261,32 @@ function populateSelectStudentGrid() {
 				}
 			}
 			if(allRowChecked) { 
-			//	var allRowsInGrid = $('#selectStudent').jqGrid('getDataIDs');
-			 	//if(unCheckedSession.length > 0) {
-			 	//for(var i=0; i<unCheckedSession.length; i++) {
-			 	// 	if(include(allRowsInGrid, unCheckedSession[i])){
-			 //	 			$("#"+unCheckedSession[i]+" td input").attr('checked', false); 
-			 	// 		}
-			 	//	}
-			 	//if(stuForSelectedOrg == preSelectedOrg) {
-				 	$("#cb_selectStudent").attr("checked", true);
-				 	$("#cb_selectStudent").trigger('click');
-				 	$("#cb_selectStudent").attr("checked", true);
-				 	allRowSelected = true;
-			 //	} else {
-			 	//	allRowSelected = false;
-			 	//	$('.cbox').attr('checked', false); 
-			 	//}
-			 } else {
-			 	//if(stuForSelectedOrg != preSelectedOrg) {
-				
-					if(AddStudentLocaldata != null && AddStudentLocaldata.length > 0) {
-						$('.cbox').attr('checked', false); 
-						for(var i = 0; i < AddStudentLocaldata.length; i++) {
-							var stuObj = AddStudentLocaldata[i];
-							if(stuObj != null && stuObj != undefined) {
-								var orgArray = 	String(stuObj.orgNodeId).split(",");
-								if(include(orgArray, stuForSelectedOrg)) {
-									$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true);
-									$("#"+AddStudentLocaldata[i].studentId).trigger('click');
-									$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true); 
-								}
-							} 					
-						}
-					} else { // Added if user selects students and clicks on BACK button instead of OK button for first time
-						$('.cbox').attr('checked', false); 
-						if(isOnBack) {
-							studentIdObjArray = [];
-							nondupStudent = [];
-							AddStudentLocaldata = [];
-						}
+				 $("#cb_selectStudent").attr("checked", true);
+				 $("#cb_selectStudent").trigger('click');
+				 $("#cb_selectStudent").attr("checked", true);
+				 allRowSelected = true;
+			 } else {				
+				if(AddStudentLocaldata != null && AddStudentLocaldata.length > 0) {
+					$('.cbox').attr('checked', false); 
+					for(var i = 0; i < AddStudentLocaldata.length; i++) {
+						var stuObj = AddStudentLocaldata[i];
+						if(stuObj != null && stuObj != undefined) {
+							var orgArray = 	String(stuObj.orgNodeId).split(",");
+							if(include(orgArray, stuForSelectedOrg)) {
+								$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true);
+								$("#"+AddStudentLocaldata[i].studentId).trigger('click');
+								$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true); 
+							}
+						} 					
 					}
-				 	
-				 //}
+				} else { // Added if user selects students and clicks on BACK button instead of OK button for first time
+					$('.cbox').attr('checked', false); 
+					if(isOnBack && stuForSelectedOrg == preSelectedOrg) {
+						studentIdObjArray = [];
+						nondupStudent = [];
+						AddStudentLocaldata = [];
+					}
+				}
 			 }
 			},
 			onSelectAll: function (rowIds, status) {
@@ -327,8 +311,6 @@ function populateSelectStudentGrid() {
 							var orgListName = studentIdObjArray[index].orgNodeName;
 							var orgListAll = String(allStudentIds[i].orgNodeId);
 							var orgListAllName = String(allStudentIds[i].orgNodeName);
-							//alert("allStudentIds[i].userName -> " + allStudentIds[i].userName);
-							//alert("studentIdObjArray[index].userName -> " + studentIdObjArray[index+1].userName);
 							if(orgList.indexOf(orgListAll) == -1) {
 								orgList = orgList + "," + orgListAll;
 								orgListName = orgListName + "," + orgListAllName;
@@ -374,16 +356,16 @@ function populateSelectStudentGrid() {
 				var selectedRowId = rowid;
 				var alreadyChecked = false;
 				if(status) {
-					if(AddStudentLocaldata != null && AddStudentLocaldata.length > 0) {
-						var indx = getStudentIDIndex(selectedRowId);
-						if(indx < 0)
+						var indexStd = getStudentIDIndex(selectedRowId);
+						if(indexStd < 0)
 							alreadyChecked = false;
 						else
 							alreadyChecked = true;
-					}
+							
 					if(!alreadyChecked) {
 						var selectedRowData = $("#selectStudent").getRowData(selectedRowId);
-						
+						studentIdObjArray[pindexStu] = selectedRowData;
+						studentIdObjArray[pindexStu].studentId = selectedRowId;
 						if (selectedStudentIds == "") {
 								selectedStudentIds = selectedRowId+"_"+pindexStu;
 								pindexStu++;
@@ -391,23 +373,19 @@ function populateSelectStudentGrid() {
 								selectedStudentIds = selectedStudentIds +"|"+selectedRowId+"_"+pindexStu;
 								pindexStu++;
 						}					
-						if(stuIdObjArray[selectedRowId] == undefined){
-							stuIdObjArray[selectedRowId]= selectedRowData;
-							studentIdObjArray[pindexStu]=selectedRowData;
-							studentIdObjArray[pindexStu].studentId = selectedRowId;
 							
-						} else {
-							var stuObj = stuIdObjArray[selectedRowId];
-							var orgArray = 	stuObj.orgNodeId.split(",");
-							var orgNameArray = stuObj.orgNodeName.split(",");
-							if(orgArray.length > 0) {
-								if(!include(orgArray, stuForSelectedOrg)) {
-								orgArray =orgArray + "," +stuForSelectedOrg;
-								orgNameArray = orgNameArray + "," + $("#"+stuForSelectedOrg).text();
-								stuObj.orgNodeId = orgArray;
-								stuObj.orgNodeName = orgNameArray;
-								}
-							}							
+					} else {
+						var stuObj = studentIdObjArray[indexStd];
+						var orgArray = 	stuObj.orgNodeId.split(",");
+						var orgNameArray = stuObj.orgNodeName.split(",");
+						if(orgArray.length > 0) {
+							if(!include(orgArray, stuForSelectedOrg)) {
+							orgArray =orgArray + "," +stuForSelectedOrg;
+							orgNameArray = orgNameArray + "," + $("#"+stuForSelectedOrg).text();
+							stuObj.orgNodeId = orgArray;
+							stuObj.orgNodeName = orgNameArray;
+							}
+							studentIdObjArray[indexStd] = stuObj;
 						}
 					}
 				} else {
@@ -575,8 +553,8 @@ var dupData = $("#dupStudentlist").jqGrid('getGridParam','data');
 		objstr.orgNodeName = OrgName;
 		nondupStudent.push(objstr);
 		var indx = getStudentIDIndex(objstr.studentId)
-		studentIdObjArray[indx+1].orgNodeId = orgId;
-		studentIdObjArray[indx+1].orgNodeName = OrgName;
+		studentIdObjArray[indx].orgNodeId = orgId;
+		studentIdObjArray[indx].orgNodeName = OrgName;
 	}
 	 AddStudentLocaldata = nondupStudent;
 	 hideSelectStudent();
