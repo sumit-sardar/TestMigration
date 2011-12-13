@@ -1360,7 +1360,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					tr +='</td>';
 					tr +='<td height="23" width="130" align="center" bgcolor="#FFFFFF">';
 					tr +='<div align="center" id="aCodeDiv'+i+'">';
-					tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" style="padding-left:2px;" maxlength="32" /></div>';
+					tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
 					tr +='</td>';
 				}else{
 					tr +='<td height="23" width="419" bgcolor="#FFFFFF" style="padding-left:5px;">';
@@ -2347,6 +2347,10 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 	
 	
+	function trimTextValue(element){
+	       element.value=$.trim(element.value);
+	}
+
 
     
     

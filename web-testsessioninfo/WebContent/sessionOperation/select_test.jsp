@@ -82,7 +82,7 @@
 								<input type="checkbox" id="testBreak" value="1" disabled="disabled" onClick="toggleAccessCode();"/>							</td>
 							<td width="294" height="20" valign="middle" class="transparent">Allow Test Breaks 
 								<span style="padding-left:5px;">
-						  <input name="aCode" type="text" id="aCode" style="visibility:hidden; padding-left:2px;" size="16" maxlength="32" /></span>							</td>
+						  <input name="aCode" type="text" id="aCode" style="visibility:hidden; padding-left:2px;" size="16" maxlength="32" onblur="javascript:trimTextValue(this); return false;"/></span>							</td>
 					      <td width="0" height="20" valign="middle"><input type="checkbox" id="randomDis" name="randomDis" value="" onClick="toggleRandomDisVal();"></td>
 						    <td width="200" height="20" valign="middle" class="transparent"><span id="randDisLbl">Random Distractor</span></td>
 						</tr>
