@@ -2212,7 +2212,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	 	modal: true,
 	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});	
-		 $("#removeProctorConfirmationPopup").css('height',200);
+		 $("#removeProctorConfirmationPopup").css('height',120);
 		 var toppos = ($(window).height() - 290) /2 + 'px';
 		 var leftpos = ($(window).width() - 410) /2 + 'px';
 		 $("#removeProctorConfirmationPopup").parent().css("top",toppos);
