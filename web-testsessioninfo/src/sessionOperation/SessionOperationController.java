@@ -2692,15 +2692,17 @@ public class SessionOperationController extends PageFlowController {
 			int initVal = Integer.parseInt(grades[0]);
 			int finalVal = Integer.parseInt(grades[1]);
 			for(int i = initVal; i <= finalVal; i++) {
-				arg[0] = String.valueOf(i);
-				filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));
+				String [] args = new String[1];
+				args[0] = String.valueOf(i);
+				filters.add(new FilterParam("StudentGrade", args, FilterType.EQUALS));
 			}
 		} else if(selectedLevel.contains("/")) {
 			String [] grades = selectedLevel.split("/");
-			arg[0] = grades[0];
-			filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));
-			arg[0] = grades[1];
-			filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));
+			String [] args = new String[1];
+			args[0] = grades[0];
+			filters.add(new FilterParam("StudentGrade", args, FilterType.EQUALS));
+			args[0] = grades[1];
+			filters.add(new FilterParam("StudentGrade", args, FilterType.EQUALS));
 		} else {
 			filters.add(new FilterParam("StudentGrade", arg, FilterType.EQUALS));
 		}
