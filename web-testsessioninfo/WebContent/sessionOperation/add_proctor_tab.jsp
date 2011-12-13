@@ -54,21 +54,17 @@
 	<table>
 		<tr>
 			<td colspan="2">
-				<br/>
-					<p><netui:content value="${bundle.web['homepage.delProctorConfirmation1.message']}"/></p>
-					<p><netui:content value="${bundle.web['homepage.delProctorConfirmation2.message']}"/></p>
-				<br/>
+				<p><netui:content value="${bundle.web['homepage.delProctorConfirmation1.message']}"/></p>
+				<p><netui:content value="${bundle.web['homepage.delProctorConfirmation2.message']}"/></p>
 			</td>
 		</tr>
 		<tr>
-		<td >
-			<center>
-				<input type="button"  value="&nbsp;${bundle.web['homepage.button.ok']}&nbsp;" onclick="javascript:removeSelectedProctor(); return false;" class="ui-widget-header">&nbsp;
-				<input type="button"  value="&nbsp;${bundle.web['homepage.button.cancel']}&nbsp;&nbsp;" onclick="javascript:closePopUp('removeProctorConfirmationPopup'); return false;" class="ui-widget-header">
-			</center>
-			<br>
-		</td>
-		
+			<td >
+				<center>
+					<input type="button"  value="${bundle.web['homepage.button.ok']}" onclick="javascript:removeSelectedProctor(); return false;" class="ui-widget-header" style="width:60px">&nbsp;
+					<input type="button"  value="${bundle.web['homepage.button.cancel']}" onclick="javascript:closePopUp('removeProctorConfirmationPopup'); return false;" class="ui-widget-header" style="width:60px">
+				</center>
+			</td>
 		</tr>
 		
 	</table>
