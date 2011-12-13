@@ -1,18 +1,18 @@
 var selectProctorGridLoaded = false;
 var allRowSelectedPro = false;
-var selectedSessionPro = [];
-var unCheckedSessionPro = [];
+var selectedSessionPro = {};
+var unCheckedSessionPro = {};
 //var categoriesStr = ":All;JV:JV;AD:AD"; 
 //var AccommOption = ":Any;T:Yes;F:No";
 
-var addProctorLocaldata ={};
+var addProctorLocaldata =[];
 var proctorForSelectedOrg;
 var preSelectedOrgPro;
 var selectedProctorIds = "";
 var deletedProctorIds = "";
 var pindex = 0;
 var pdindex = 0;
-var proctorIdObjArray = [];
+var proctorIdObjArray = {};
 var delProctorIdObjArray = [];
 var isOnBackProctor = false;
 
@@ -243,7 +243,7 @@ function populateSelectProctorGrid() {
 				 			$("#"+allRowsInGrid[i]).addClass('ui-state-disabled');
 				 		}
 				 		
-				 		for (var j=0; j < proctorIdObjArray.length; j++) {
+				 		for (var j in proctorIdObjArray) {
 						var objstr = proctorIdObjArray[j];
 							if (objstr != null) {
 								var key = getProctorRowID (j);
@@ -286,12 +286,14 @@ function populateSelectProctorGrid() {
 										selectedProctorIds = allProctorIds[i].userId+"_"+pindex+"_tmp";										
 								} else {
 										selectedProctorIds = selectedProctorIds +"|"+allProctorIds[i].userId+"_"+pindex+"_tmp";
-								}
-								proctorIdObjArray[pindex++]=selectedRowData;
+								}																
+								proctorIdObjArray[pindex]=selectedRowData;
+								pindex = pindex + 1;
 					 		}
 						}						
 					}	
-					addProctorLocaldata = proctorIdObjArray;
+					
+					
 					// Added to handle multiple organization select All	
 					var present = false;
 					if(countAllSelectProctor > 0) {
@@ -299,7 +301,7 @@ function populateSelectProctorGrid() {
 							if(allSelectOrgProctor[i] != null && allSelectOrgProctor[i] == proctorForSelectedOrg)
 								present = true;
 						}
-						if(!present) {
+						if(!present) {							
 							allSelectOrgProctor[countAllSelectProctor] = proctorForSelectedOrg;
 							countAllSelectProctor++;
 						}
@@ -329,7 +331,7 @@ function populateSelectProctorGrid() {
 				var selectedRowId = rowid;
 				var alreadyExists = false;
 
-				for (var j=0; j < proctorIdObjArray.length; j++) {
+				for (var j in proctorIdObjArray) {
 					var existingSelectedRowId = getProctorRowID (j);
 					if( existingSelectedRowId == selectedRowId){
 						alreadyExists = true;
@@ -397,8 +399,7 @@ function getProctorIDIndex(selectedRowId) {
 
 	var pIDs = selectedProctorIds.split("|");
 	var pid = "";
-	for (var i = 0; i < pIDs.length; i++) {
-		
+	for (var i = 0; i < pIDs.length; i++) {		
 		pid = pIDs[i];
 		if (pid.match(selectedRowId) != null) {
 			return i;
@@ -538,12 +539,12 @@ function backProctorRule () {
 function returnSelectedProctor() {
 
 	confirmProctorRule();
-	var val=[] ;
-	for (var i=0; i < proctorIdObjArray.length; i++) {
-	
+	var val= [] ;
+	for (var i in proctorIdObjArray) {
+		
 		var objstr = proctorIdObjArray[i];
 		
-		if (objstr != null) {
+		if (objstr != null) {			
 			var key = getProctorRowID (i);
 			objstr['userId'] = key;
 			val.push(objstr);
@@ -552,9 +553,7 @@ function returnSelectedProctor() {
 		
 	}
 	
-	var mainObj = {};
-	mainObj = val;
-	addProctorLocaldata = mainObj;
+	addProctorLocaldata = val;
 	noOfProctorAdded = addProctorLocaldata.length;
 	hideSelectedProctor();
 	gridReloadProctor(false);
@@ -593,16 +592,16 @@ function resetProctor() {
 
 	selectProctorGridLoaded = false;
 	allRowSelectedPro = false;
-	selectedSessionPro = [];
-	unCheckedSessionPro = [];
-	addProctorLocaldata ={};
+	selectedSessionPro = {};
+	unCheckedSessionPro = {};
+	addProctorLocaldata =[];
 	proctorForSelectedOrg;
 	preSelectedOrgPro;
 	selectedProctorIds = "";
 	deletedProctorIds = "";
 	pindex = 0;
 	pdindex = 0;
-	proctorIdObjArray = [];
+	proctorIdObjArray = {};
 	delProctorIdObjArray = [];
 	isOnBackProctor = false;
 	noOfProctorAdded = 0;

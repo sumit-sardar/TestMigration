@@ -1989,10 +1989,8 @@ function createSingleNodeSelectedTree(jsondata) {
 	 		
 	 		var val=[] ;
 		 	val.push(jsondata);
-		    var mainObj = {};
-		    mainObj = val;
 		    
-		 	addProctorLocaldata = mainObj;
+		    addProctorLocaldata = val;
 		 	
 		 	//alert('proctorIdObjArray.length: ' + proctorIdObjArray.length);
 			//$('#totalAssignedProctors').text(proctorIdObjArray.length);
@@ -2220,14 +2218,13 @@ function createSingleNodeSelectedTree(jsondata) {
 	function removeSelectedProctor() {
 		
 		
-		for (var i = 0; i< delProctorIdObjArray.length; i++) {
-		
+		for (var i=0 ; i<delProctorIdObjArray.length;i++) {		
 			var uid = delProctorIdObjArray[i];
-			if (uid != null) {
-			
+			if (uid != null) {			
 				jQuery("#listProctor").delRowData(uid);
 				var indx = getProctorIDIndex(uid);
 				removeProctorByIndex(indx);
+				selectedProctorIds = updateRule(selectedProctorIds,indx);
 			}
 					
 		}
