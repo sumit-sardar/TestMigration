@@ -151,11 +151,11 @@ function imageFormat( cellvalue, options, rowObject ){
 } 
 
 function selectFormat( cellvalue, options, rowObject ){
-		var orgArray = 	orgForDupStu[rowObject.studentId];
+		var orgArrayList = 	orgForDupStu[rowObject.studentId];
 		var optList = "<select id='dupStu"+rowObject.studentId +"'>" ;
-		for(var key in orgArray){
+		for(var key in orgArrayList){
 		if(key != undefined)
-           optList= optList + "<option value='"+key+"'>"+$.trim(orgArray[key])+"</option>" 
+           optList= optList + "<option value='"+key+"'>"+$.trim(orgArrayList[key])+"</option>" 
 		}    
 		optList = optList + "</select> " ;
 		return optList;
@@ -316,15 +316,31 @@ function populateSelectStudentGrid() {
 					allRowSelected = true;
 					for(var i = 0; i < allStudentIds.length; i++) {
 						if(getStudentIDIndex(allStudentIds[i].studentId) < 0) {
+							studentIdObjArray[pindex] = allStudentIds[i];
 							var selectedRowData = allStudentIds[i];
 							if (selectedStudentIds == "") {
-									selectedStudentIds = allStudentIds[i].studentId+"_"+pindex;
-									pindex++;
+								selectedStudentIds = allStudentIds[i].studentId+"_"+pindex;
+								pindex++;
 							} else {
-									selectedStudentIds = selectedStudentIds +"|"+allStudentIds[i].studentId+"_"+pindex;
-									pindex++;
+								selectedStudentIds = selectedStudentIds +"|"+allStudentIds[i].studentId+"_"+pindex;
+								pindex++;
 							}
-							studentIdObjArray[pindex]=selectedRowData;
+							
+						} else {
+							// Added to handle duplicate students
+							var index = getStudentIDIndex(allStudentIds[i].studentId);
+							var orgList = String(studentIdObjArray[index].orgNodeId);
+							var orgListName = studentIdObjArray[index].orgNodeName;
+							var orgListAll = String(allStudentIds[i].orgNodeId);
+							var orgListAllName = String(allStudentIds[i].orgNodeName);
+							//alert("allStudentIds[i].userName -> " + allStudentIds[i].userName);
+							//alert("studentIdObjArray[index].userName -> " + studentIdObjArray[index+1].userName);
+							if(orgList.indexOf(orgListAll) == -1) {
+								orgList = orgList + "," + orgListAll;
+								orgListName = orgListName + "," + orgListAllName;
+								studentIdObjArray[index].orgNodeId = orgList;
+								studentIdObjArray[index].orgNodeName = orgListName;
+							}
 						}						
 					}	
 					AddStudentLocaldata = studentIdObjArray;
@@ -564,8 +580,9 @@ var dupData = $("#dupStudentlist").jqGrid('getGridParam','data');
 		objstr.orgNodeId = orgId;
 		objstr.orgNodeName = OrgName;
 		nondupStudent.push(objstr);
-		stuIdObjArray[objstr.studentId].orgNodeId = orgId;
-		stuIdObjArray[objstr.studentId].orgNodeName = OrgName;
+		var indx = getStudentIDIndex(objstr.studentId)
+		studentIdObjArray[indx+1].orgNodeId = orgId;
+		studentIdObjArray[indx+1].orgNodeName = OrgName;
 	}
 	 AddStudentLocaldata = nondupStudent;
 	 hideSelectStudent();
@@ -580,7 +597,6 @@ orgForDupStu = [];
 var dupStuPresent = false;
 var duplicateStuArraydata ={};
 studentWithaccommodation = 0;
-//alert("studentIdObjArray.length -> " + studentIdObjArray.length);
  for(var key in studentIdObjArray){ 
  	var objstr = studentIdObjArray[key];
  	if(objstr != null && objstr != undefined) {
@@ -598,7 +614,7 @@ studentWithaccommodation = 0;
 			for(var i=0;i<orgArray.length; i++){
 				orgIdNameMap[orgArray[i]] = orgNameArray[i];
 			}
-			orgForDupStu[key] = orgIdNameMap;
+			orgForDupStu[objstr.studentId] = orgIdNameMap;
 		} else {	
 	 		nondupStudent.push(objstr);
 	 	}

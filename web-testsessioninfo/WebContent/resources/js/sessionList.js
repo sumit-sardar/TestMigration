@@ -600,7 +600,15 @@ function createSingleNodeSelectedTree(jsondata) {
 			delStuIdObjArray = [];
 			isOnBack = false;
 			document.getElementById("testDiv").style.display = "none";
-			
+			selectedStudentIds = "";
+			deletedStudentIds = "";
+			pindex = 0;
+			pdindex = 0;
+			studentIdObjArray = [];
+			delStudentIdObjArray = [];
+			allStudentIds = [];
+			allSelectOrg = [];
+			countAllSelect = 0;
 			resetProctor();
 			
 		}
@@ -641,6 +649,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '400px',
+	 	height: '160px',
 	 	modal: true,
 	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});	
@@ -666,6 +675,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	function populateSelectedStudent() {
  		UIBlock();
  		var studentIdTitle = $("#studentIdLabelName").val();
+ 		delStuIdObjArray = [];
  		stuGridloaded = true;
  		$("#list6").jqGrid({  
  		 data:  AddStudentLocaldata,
@@ -712,23 +722,28 @@ function createSingleNodeSelectedTree(jsondata) {
 				if(status) {
 					selectAllForDelete = true;
 					delStuIdObjArray = AddStudentLocaldata;
+					for(var i = 0; i < AddStudentLocaldata.length; i++) {
+						if(AddStudentLocaldata[i] != null && AddStudentLocaldata[i] != undefined) {
+							delStuIdObjArray[AddStudentLocaldata[i].studentId] = AddStudentLocaldata[i];
+						}
+					}
 				} else {
 					selectAllForDelete = false;
-					AddStudentLocaldata = studentIdObjArray;
+					delStuIdObjArray = [];
+					//AddStudentLocaldata = studentIdObjArray;
 				}
 			},
 			onSelectRow: function (rowid, status) {
+				selectAllForDelete = false;
 				var selectedRowId = rowid;
 				if(status) {
-					selectAllForDelete = false;
 					var selectedRowData = $("#list6").getRowData(selectedRowId);
 					if(delStuIdObjArray[selectedRowId] == undefined || delStuIdObjArray[selectedRowId] == null){
 						delStuIdObjArray[selectedRowId] = selectedRowData;
 					} 
 				} else {
-					if(selectAllForDelete)
-						selectAllForDelete = false;
-					delStuIdObjArray[selectedRowId]= null;
+					
+					delStuIdObjArray.splice(selectedRowId,1);
 					
 				}
 			},
@@ -796,18 +811,15 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	function removeSelectedStudent() { // Remove the organization from the list in addStudent.js
 		var totalCount = AddStudentLocaldata.length;
-		for(var key in delStuIdObjArray){ 
-			//alert("key -> " + key);				
+		for(var key in delStuIdObjArray){ 			
 			var objstr = delStuIdObjArray[key];			
 			if(objstr != null && objstr != undefined) {
-				//alert("objstr -> " + objstr);
 				var hasAccom = objstr.hasAccommodations;
 			 	 if(hasAccom == 'Yes') {
 			 	 	studentWithaccommodation = studentWithaccommodation - 1;
 			 	 }			 	 			 	 
 			 	 var indx = getStudentIDIndex(objstr.studentId);
-			 	 //alert("indx -> " + indx);
-			 	 //alert("objstr.studentId -> " + objstr.studentId);
+			 	 AddStudentLocaldata.splice(indx,1);
 				 removeStudentByIndex(indx); 
 				 selectedStudentIds = updateRule(selectedStudentIds,indx);
 			 	 totalCount--;
@@ -815,7 +827,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		 	 }
 		 	 
 		}
-		AddStudentLocaldata = studentIdObjArray; 
+		//AddStudentLocaldata = studentIdObjArray; 
 		
 		$('#totalStudent').text(totalCount);
 		if($("#supportAccommodations").val() != 'false')
@@ -825,13 +837,10 @@ function createSingleNodeSelectedTree(jsondata) {
 		if(selectAllForDelete) {
 			AddStudentLocaldata = {};
 			studentIdObjArray = [];
+			$('#list6').GridUnload();
+			populateSelectedStudent();
 		}
-		alert("AddStudentLocaldata.length -> " + AddStudentLocaldata.length);
-		for(var i = 0; i <AddStudentLocaldata.length; i++) {
-		alert("AddStudentLocaldata[i].studentId -> " + AddStudentLocaldata[i].studentId);
-		} 
-		$('#list6').GridUnload();
-		populateSelectedStudent();
+		
 	}
 	
 	
