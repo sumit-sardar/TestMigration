@@ -727,38 +727,52 @@ function createSingleNodeSelectedTree(jsondata) {
 					delStuIdObjArray = AddStudentLocaldata;
 					for(var i = 0; i < AddStudentLocaldata.length; i++) {
 						if(AddStudentLocaldata[i] != null && AddStudentLocaldata[i] != undefined) {
-							delStuIdObjArray[AddStudentLocaldata[i].studentId] = AddStudentLocaldata[i];
+							delStuIdObjArray[pdindexStu] = AddStudentLocaldata[i];
+							if (deletedStudentIds == "") {
+								deletedStudentIds = allRowsInGrid[i]+"_"+pdindexStu;
+								pdindexStu++;
+							} else {
+								deletedStudentIds = deletedStudentIds +"|"+allRowsInGrid[i]+"_"+pdindexStu;
+								pdindexStu++;
+							}
 						}
 					}
 				} else {
 					selectAllForDelete = false;
 					delStuIdObjArray = [];
-					//AddStudentLocaldata = studentIdObjArray;
+					AddStudentLocaldata = studentIdObjArray;
+					//var indxSt = getStudentIDIndex(selectedRowId);
+					//delStuIdObjArray[indxSt]=null;
+					//deletedStudentIds = updateRule(deletedStudentIds,indxSt);
 				}
 			},
 			onSelectRow: function (rowid, status) {
 				selectAllForDelete = false;
-				var selectedRowId = rowid;
-				if(status) {
-					var selectedRowData = $("#list6").getRowData(selectedRowId);
-					if(delStuIdObjArray[selectedRowId] == undefined || delStuIdObjArray[selectedRowId] == null){
-						delStuIdObjArray[selectedRowId] = selectedRowData;
-					} 
+				var selectedRowData = $("#list6").getRowData(rowid);
+				var selectedRowId = selectedRowData.studentId;
+				if(status) {				
+					delStuIdObjArray[pdindexStu]=selectedRowId;
+					if (deletedStudentIds == "") {
+						deletedStudentIds = selectedRowId+"_"+pdindexStu;
+						pdindexStu++;
+					} else {
+						deletedStudentIds = deletedStudentIds +"|"+selectedRowId+"_"+pdindexStu;
+						pdindexStu++;
+					}
+				//	var selectedRowData = $("#list6").getRowData(selectedRowId);
+				//	if(delStuIdObjArray[selectedRowId] == undefined || delStuIdObjArray[selectedRowId] == null){
+				//		delStuIdObjArray[selectedRowId] = selectedRowData;
+				//	} 
 				} else {
-					
+					//var indxSt = getStudentIDIndex(selectedRowId);
+					//delStuIdObjArray[indxSt]=null;
+					//deletedStudentIds = updateRule(deletedStudentIds,indxSt);
 					delStuIdObjArray.splice(selectedRowId,1);
 					
 				}
 			},
 			loadComplete: function () {
-				if ($('#list6').getGridParam('records') === 0) {
-				 	isStuGridEmpty = true;
-            	 	$('#sp_1_pager6').text("1");
-            	 	$('#next_pager6').addClass('ui-state-disabled');
-            	 	$('#last_pager6').addClass('ui-state-disabled');
-            	} else {
-            		isStuGridEmpty = false;
-            	}
+				
             	studentIdObjArray = AddStudentLocaldata;
             	
 			    setEmptyListMessage('studentGrid');
@@ -787,6 +801,15 @@ function createSingleNodeSelectedTree(jsondata) {
 				$("#list6").jqGrid("hideCol","studentId");
 				jQuery("#list6").setGridWidth(width,true);
 				
+				if ($('#list6').getGridParam('records') === 0) {
+				 	isStuGridEmpty = true;
+            	 	$('#sp_1_pager6').text("1");
+            	 	$('#next_pager6').addClass('ui-state-disabled');
+            	 	$('#last_pager6').addClass('ui-state-disabled');
+            	} else {
+            		isStuGridEmpty = false;
+            	}
+				
 			},
 			loadError: function(XMLHttpRequest, textStatus, errorThrown){
 				$.unblockUI();  
@@ -812,37 +835,38 @@ function createSingleNodeSelectedTree(jsondata) {
 	element.title = 'Remove Student'; 
 	}
 	
-	function removeSelectedStudent() { // Remove the organization from the list in addStudent.js
-		var totalCount = AddStudentLocaldata.length;
-		for(var key in delStuIdObjArray){ 			
-			var objstr = delStuIdObjArray[key];			
-			if(objstr != null && objstr != undefined) {
-				var hasAccom = objstr.hasAccommodations;
+	function removeSelectedStudent() {	
+		for (var i=0 ; i<delStuIdObjArray.length;i++) {		
+			var uid = delStuIdObjArray[i];
+			if (uid != null && uid != undefined) {
+				var hasAccom = uid.hasAccommodations;
 			 	 if(hasAccom == 'Yes') {
 			 	 	studentWithaccommodation = studentWithaccommodation - 1;
-			 	 }			 	 			 	 
-			 	 var indx = getStudentIDIndex(objstr.studentId);
-			 	 AddStudentLocaldata.splice(indx,1);
-				 removeStudentByIndex(indx); 
-				 selectedStudentIds = updateRule(selectedStudentIds,indx);
-			 	 totalCount--;
-			 	 jQuery("#list6").delRowData(key);
-		 	 }
-		 	 
+			 	 }			
+				jQuery("#list6").delRowData(uid);
+				var indx = getStudentIDIndex(uid);
+				removeStudentByIndex(indx);
+				selectedStudentIds = updateRule(selectedStudentIds,indx);
+			}
+					
 		}
-		//AddStudentLocaldata = studentIdObjArray; 
-		
-		$('#totalStudent').text(totalCount);
-		if($("#supportAccommodations").val() != 'false')
-	 		 $('#stuWithAcc').text(studentWithaccommodation);
 		closePopUp('removeStuConfirmationPopup');
+		returnSelectedStudent();
+		for(var i = 0; i < allSelectOrg.length; i++) {
+			if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
+				allSelectOrg[i] = null;
+		}		
+		$('#totalStudent').text(studentIdObjArray.length);
+		if($("#supportAccommodations").val() != 'false')
+	 		 $('#stuWithAcc').text(studentWithaccommodation);		
 		delStuIdObjArray = [];
 		if(selectAllForDelete) {
 			AddStudentLocaldata = {};
 			studentIdObjArray = [];
-			$('#list6').GridUnload();
-			populateSelectedStudent();
+			
 		}
+		$('#list6').GridUnload();
+		populateSelectedStudent();
 		
 	}
 	

@@ -20,13 +20,13 @@ var studentWithaccommodation = 0;
 var selectedStudentIds = "";
 var deletedStudentIds = "";
 var pindexStu = 0;
-var pdindex = 0;
-var studentIdObjArray = [];
+var pdindexStu = 0;
+var studentIdObjArray = {};
 var delStudentIdObjArray = [];
 var allStudentIds = [];
 var studentGradesCustomerConfig = [];
 
-var allSelectOrg = [];
+var allSelectOrg = {};
 var countAllSelect = 0;
 
 function showSelectStudent(){
@@ -273,9 +273,9 @@ function populateSelectStudentGrid() {
 						if(stuObj != null && stuObj != undefined) {
 							var orgArray = 	String(stuObj.orgNodeId).split(",");
 							if(include(orgArray, stuForSelectedOrg)) {
-								$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true);
-								$("#"+AddStudentLocaldata[i].studentId).trigger('click');
-								$("#"+AddStudentLocaldata[i].studentId+" td input").attr("checked", true); 
+								$("#"+stuObj.studentId+" td input").attr("checked", true);
+								$("#"+stuObj.studentId).trigger('click');
+								$("#"+stuObj.studentId+" td input").attr("checked", true); 
 							}
 						} 					
 					}
@@ -297,10 +297,10 @@ function populateSelectStudentGrid() {
 							studentIdObjArray[pindexStu] = allStudentIds[i];
 							var selectedRowData = allStudentIds[i];
 							if (selectedStudentIds == "") {
-								selectedStudentIds = allStudentIds[i].studentId+"_"+pindexStu;
+								selectedStudentIds = allStudentIds[i].studentId+"_"+pindexStu+"_tmp";
 								pindexStu++;
 							} else {
-								selectedStudentIds = selectedStudentIds +"|"+allStudentIds[i].studentId+"_"+pindexStu;
+								selectedStudentIds = selectedStudentIds +"|"+allStudentIds[i].studentId+"_"+pindexStu+"_tmp";
 								pindexStu++;
 							}
 							
@@ -367,25 +367,27 @@ function populateSelectStudentGrid() {
 						studentIdObjArray[pindexStu] = selectedRowData;
 						studentIdObjArray[pindexStu].studentId = selectedRowId;
 						if (selectedStudentIds == "") {
-								selectedStudentIds = selectedRowId+"_"+pindexStu;
+								selectedStudentIds = selectedRowId+"_"+pindexStu+"_tmp";
 								pindexStu++;
 						} else {
-								selectedStudentIds = selectedStudentIds +"|"+selectedRowId+"_"+pindexStu;
+								selectedStudentIds = selectedStudentIds +"|"+selectedRowId+"_"+pindexStu+"_tmp";
 								pindexStu++;
 						}					
 							
 					} else {
 						var stuObj = studentIdObjArray[indexStd];
-						var orgArray = 	String(stuObj.orgNodeId).split(",");
-						var orgNameArray = stuObj.orgNodeName.split(",");
-						if(orgArray.length > 0) {
-							if(!include(orgArray, stuForSelectedOrg)) {
-							orgArray =orgArray + "," +stuForSelectedOrg;
-							orgNameArray = orgNameArray + "," + $("#"+stuForSelectedOrg).text();
-							stuObj.orgNodeId = orgArray;
-							stuObj.orgNodeName = orgNameArray;
+						if(stuObj != null && stuObj != undefined) {
+							var orgArray = 	String(stuObj.orgNodeId).split(",");
+							var orgNameArray = stuObj.orgNodeName.split(",");
+							if(orgArray.length > 0) {
+								if(!include(orgArray, stuForSelectedOrg)) {
+								orgArray =orgArray + "," +stuForSelectedOrg;
+								orgNameArray = orgNameArray + "," + $("#"+stuForSelectedOrg).text();
+								stuObj.orgNodeId = orgArray;
+								stuObj.orgNodeName = orgNameArray;
+								}
+								studentIdObjArray[indexStd] = stuObj;
 							}
-							studentIdObjArray[indexStd] = stuObj;
 						}
 					}
 				} else {
@@ -530,8 +532,61 @@ function updateRule (rule,index) {
 	return rule;
 } 
 
+function confirmStudentRule () {
 
+	var pIDs = selectedStudentIds.split("|");
+	var pid = "";
+	for (var i = 0; i < pIDs.length; i++) {
+		
+		pid = pIDs[i];
+		if (pid.match("_tmp") != null) {
+			
+			pid = pid.replace("_tmp","");
+			pIDs[i] = pid;
+						
+		}
+	}
+	
+	for (var i = 0; i < pIDs.length; i++) {
+	
+		pid = pIDs[i];
+		
+		if (i == 0) {
+			selectedStudentIds = pid;
+		} else {
+			selectedStudentIds = selectedStudentIds +"|"+pid;
+		}
+		
+	}
+}
 
+function backStudentRule () {
+
+	var pIDs = selectedStudentIds.split("|");
+	var pid = "";
+	for (var i = 0; i < pIDs.length; i++) {
+		
+		pid = pIDs[i];
+		if (pid.match("_tmp") != null) {
+			
+			pIDs[i] = "deleted";
+			removeStudentByIndex(i);
+						
+		}
+	}
+	
+	for (var i = 0; i < pIDs.length; i++) {
+	
+		pid = pIDs[i];
+		
+		if (i == 0) {
+			selectedStudentIds = pid;
+		} else {
+			selectedStudentIds = selectedStudentIds +"|"+pid;
+		}
+		
+	}
+}
 
 function include(arr,obj) {
      //return (arr.indexOf(obj) != -1);
@@ -563,7 +618,8 @@ var dupData = $("#dupStudentlist").jqGrid('getGridParam','data');
 }
 	
 function returnSelectedStudent() {
-nondupStudent =[] ;
+confirmStudentRule();
+nondupStudent = [] ;
 var duplicateStuArray=[];
 orgForDupStu = [];
 var dupStuPresent = false;
