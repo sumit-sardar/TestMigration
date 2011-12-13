@@ -51,6 +51,7 @@ var dropListToDisplay;
 
 var selectAllForDelete = false;
 var selectAllForDeleteProctor = false;
+var allLocalProctorIds = [];
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -2102,24 +2103,19 @@ function createSingleNodeSelectedTree(jsondata) {
 				} */
 			},
 			
-			onSelectAll: function (rowid, status) {
-				/*if(allRowSelectedPro) {
-					allRowSelectedPro = false;
-				} else {
-					allRowSelectedPro = true;
-				}*/
+			onSelectAll: function (rowids, status) {
+
 				if(status) {
 					selectAllForDeleteProctor = true;
 					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
 						var selectedRowData;
-						for(var i = 0; i < allRowsInGrid.length; i++) {
-						
-							//$("#"+allRowsInGrid[i]+" td input").attr("checked", true); 
-							//$("#"+allRowsInGrid[i]+" td input").trigger('click'); 
-							//$("#"+allRowsInGrid[i]+" td input").attr("checked", true);
-						
-							selectedRowData = $("#listProctor").getRowData(allRowsInGrid[i]);
+						for(var i = 0; i < addProctorLocaldata.length; i++) {
+							
+							selectedRowData = addProctorLocaldata[i];
 							if (selectedRowData.defaultScheduler == 'F') {
+							
+								selectedRowData = addProctorLocaldata[i];
+								$("#"+selectedRowData.userId+" td input").attr("checked", true); 
 								
 					 			delProctorIdObjArray[pdindex]=selectedRowData.userId;
 								if (deletedProctorIds == "") {
