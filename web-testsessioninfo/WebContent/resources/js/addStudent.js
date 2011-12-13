@@ -376,7 +376,7 @@ function populateSelectStudentGrid() {
 							
 					} else {
 						var stuObj = studentIdObjArray[indexStd];
-						var orgArray = 	stuObj.orgNodeId.split(",");
+						var orgArray = 	String(stuObj.orgNodeId).split(",");
 						var orgNameArray = stuObj.orgNodeName.split(",");
 						if(orgArray.length > 0) {
 							if(!include(orgArray, stuForSelectedOrg)) {
@@ -550,11 +550,11 @@ var dupData = $("#dupStudentlist").jqGrid('getGridParam','data');
 		var orgId = $("#dupStu"+objstr.studentId).val(); 
 		var OrgName = orgForDupStu[objstr.studentId][orgId];
 		objstr.orgNodeId = orgId;
-		objstr.orgNodeName = OrgName;
+		objstr.orgNodeName = $.trim(OrgName);
 		nondupStudent.push(objstr);
 		var indx = getStudentIDIndex(objstr.studentId)
 		studentIdObjArray[indx].orgNodeId = orgId;
-		studentIdObjArray[indx].orgNodeName = OrgName;
+		studentIdObjArray[indx].orgNodeName = $.trim(OrgName);
 	}
 	 AddStudentLocaldata = nondupStudent;
 	 hideSelectStudent();
