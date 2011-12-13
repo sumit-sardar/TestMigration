@@ -386,6 +386,8 @@ public class OrgOperationController extends PageFlowController {
 	 		 OutputStream stream = null;
 	 		 String contentType = CONTENT_TYPE_JSON;
 	 		 String json = "";
+	 		 MessageInfo messageInfo = new MessageInfo(); //added on 10.12.2011 for open node functionality in new jstree 
+	 		 Node [] organizationNodes = null; //added on 10.12.2011 for open node functionality in new jstree 
 	 		 Node orgNodeDetail = new Node();
 	 		 Integer orgNodeId = Integer.parseInt(getRequest().getParameter("selectedOrgId").toString());
 	 		 System.out.println("userName ::"+this.userName);
@@ -393,9 +395,17 @@ public class OrgOperationController extends PageFlowController {
 	 		
 	 		 try{
 	 			orgNodeDetail = this.organizationManagement.getOrganization(this.userName, orgNodeId);
+	 			//added on 10.12.2011 for open node functionality in new jstree 
+	 			organizationNodes = this.organizationManagement.getAncestorOrganizationNodesForOrgNode(this.userName, orgNodeId);
+	 			
+	 			messageInfo.setOrganizationDetail(orgNodeDetail);
+	 			messageInfo.setOrganizationNodes(organizationNodes);
+	 			//
+	 			
 	 			
 	 			Gson gson = new Gson();
-				json = gson.toJson(orgNodeDetail);
+				//json = gson.toJson(orgNodeDetail);
+	 			json = gson.toJson(messageInfo);
 				
 				System.out.println(json);
 				try{
@@ -984,21 +994,23 @@ public class OrgOperationController extends PageFlowController {
     
     private static void preTreeProcess (ArrayList<TreeData> data,ArrayList<Organization> orgList,ArrayList<Organization> selectedList) {
 
-		Organization org = orgList.get(0);
+    	Organization org = orgList.get(0);
+		Integer rootCategoryLevel = 0;
 		TreeData td = new TreeData ();
 		td.setData(org.getOrgName());
 		td.getAttr().setId(org.getOrgNodeId().toString());
-		td.getAttr().setCustomerId(org.getCustomerId().toString());
-		td.getAttr().setCategoryID(org.getOrgCategoryLevel().toString());
-		treeProcess (org,orgList,td,selectedList);
+		td.getAttr().setCid(org.getOrgCategoryLevel().toString());
+		rootCategoryLevel = org.getOrgCategoryLevel();
+		td.getAttr().setTcl("1");
+		treeProcess (org,orgList,td,selectedList, rootCategoryLevel);
 		data.add(td);
 	}
     
     
-    private static void treeProcess (Organization org,List<Organization> list,TreeData td,ArrayList<Organization> selectedList) {
+    private static void treeProcess (Organization org,List<Organization> list,TreeData td, ArrayList<Organization> selectedList, Integer rootCategoryLevel) {
 
+		Integer treeLevel;
 		for (Organization tempOrg : list) {
-			
 			if (org.getOrgNodeId().equals(tempOrg.getOrgParentNodeId())) {
 				
 				if (selectedList.contains(tempOrg)) {
@@ -1014,10 +1026,11 @@ public class OrgOperationController extends PageFlowController {
 				TreeData tempData = new TreeData ();
 				tempData.setData(tempOrg.getOrgName());
 				tempData.getAttr().setId(tempOrg.getOrgNodeId().toString());
-				tempData.getAttr().setCategoryID(tempOrg.getOrgCategoryLevel().toString());
-				tempData.getAttr().setCustomerId(tempOrg.getCustomerId().toString());
+				tempData.getAttr().setCid(tempOrg.getOrgCategoryLevel().toString());
+				treeLevel = tempOrg.getOrgCategoryLevel() - (rootCategoryLevel -1);
+				tempData.getAttr().setTcl(treeLevel.toString());
 				td.getChildren().add(tempData);
-				treeProcess (tempOrg,list,tempData,selectedList);
+				treeProcess (tempOrg,list,tempData, selectedList,rootCategoryLevel);
 			}
 		}
 	}

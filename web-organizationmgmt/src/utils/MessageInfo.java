@@ -15,6 +15,7 @@ public class MessageInfo {
 	private Node organizationDetail;
 	private Boolean isEdit = Boolean.FALSE;
 	private BaseTree baseTree;
+    private Node[] organizationNodes; //added on 10.12.2011 for open node functionality in new jstree 
 	
 	
 	/**
@@ -118,6 +119,18 @@ public class MessageInfo {
 	}
 	public void setIsEdit(Boolean isEdit) {
 		this.isEdit = isEdit;
+	}
+	/**
+	 * @return the organizationNodes
+	 */
+	public Node[] getOrganizationNodes() {
+		return organizationNodes;
+	}
+	/**
+	 * @param organizationNodes the organizationNodes to set
+	 */
+	public void setOrganizationNodes(Node[] organizationNodes) {
+		this.organizationNodes = organizationNodes;
 	}	
 
 }

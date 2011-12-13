@@ -27,6 +27,26 @@ var originalParentOrgId;
 var isParentChange = false;
 var isLeafNodeAdmin;
 
+var currentNodeId ;
+var currentCategoryLevel;
+var currentTreeArray;
+var currentIndex;
+var dataObj2=[];
+var dataObj3=[];
+var dataObj4;
+var dataObj5;
+var dataObj6;
+var dataObj7;
+var dataObj8;
+var rootMap = {};
+var jsonData;
+var map = new Map();
+var rootNode = [];
+var checkedListObject = {};
+var type;
+var asyncOver = 0;
+var leafParentOrgNodeId = "";
+
 $(document).bind('keydown', function(event) {
 		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -58,6 +78,8 @@ function populateTree() {
 						orgTreeHierarchy = data;
 						leafNodeCategoryId = data.leafNodeCategoryId;
 						isLeafNodeAdmin = data.isLeafNodeAdmin;
+						jsonData = orgTreeHierarchy.data;
+						getRootNodeDetails();						
 						createSingleNodeSelectedTree (orgTreeHierarchy);
 						$("#searchheader").css("visibility","visible");	
 						$("#orgNodeHierarchy").css("visibility","visible");						
@@ -83,9 +105,9 @@ function UIBlock(){
 function createSingleNodeSelectedTree(jsondata) {
 	   $("#orgNodeHierarchy").jstree({
 	        "json_data" : {	             
-	            "data" : jsondata.data,
+	            "data" : rootNode,
 				"progressive_render" : true,
-				"progressive_unload" : false
+				"progressive_unload" : true
 	        },
 	        "ui" : {  
 	           "select_limit" : 1
@@ -113,10 +135,97 @@ function createSingleNodeSelectedTree(jsondata) {
 			else
 				gridReload();
 		});
-	   
+	    registerDelegate("orgNodeHierarchy");
 }
 	
+function registerDelegate(tree){
+
+	$("#"+tree).delegate("li ins","click", function(e) {
+		type = tree;
+		var x = this.parentNode;		
+		var categoryId  = x.getAttribute("tcl");
+		if(categoryId != null || categoryId != undefined){
+			currentCategoryLevel = categoryId ; 
+		}
+		else{
+			currentCategoryLevel ="1";
+		}
+		currentNodeId = x.id;			
+		var classState = $(x).hasClass("jstree-open");			
+		var rootCategoryLevel = rootMap[currentNodeId];
 	
+		if (classState == false){
+			if (currentCategoryLevel == 1) {	
+				dataObj2 = [];	
+				var indexOfRoot = getIndexOfRoot(currentNodeId);
+				populateTreeImmediate(currentNodeId,currentCategoryLevel,indexOfRoot);
+			}
+	
+			var cacheData = map.get(currentNodeId);
+			if (cacheData != null){
+				currentTreeArray = cacheData;			
+			}
+			if (cacheData == null){
+				switch(currentCategoryLevel){
+					
+					//Not caching at initial level because the whole data will be put in cache which may increase the cache size
+					//considerably
+					
+					case "2": 	dataObj3 =getObject(jsonData,currentNodeId,currentCategoryLevel,x.parentNode.parentNode.id);
+								currentIndex = dataObj3.index;
+								currentTreeArray = dataObj3.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+								//alert("case2");
+							break;
+							
+					case "3": 	dataObj4 = map.get(x.parentNode.parentNode.id);
+								currentTreeArray =getObject(dataObj4,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+								//alert("case3");
+							break;
+					case "4": 	dataObj5 = map.get(x.parentNode.parentNode.id);
+								currentTreeArray =getObject(dataObj5,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+							//	alert("case4");
+							break;
+					case "5": 	dataObj6 = map.get(x.parentNode.parentNode.id);
+								currentTreeArray =getObject(dataObj6,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+							break;
+					case "6": 	dataObj7 = map.get(x.parentNode.parentNode.id);
+								currentTreeArray =getObject(dataObj7,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+							break;
+					case "7": 	dataObj8 =map.get(x.parentNode.parentNode.id);
+								currentTreeArray =getObject(dataObj8,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+								
+							break;	
+					case "8": 	dataObj9 =map.get(x.parentNode.parentNode.id);
+								currentTreeArray =getObject(dataObj9,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+							break;						
+					
+				}
+			}
+
+		}
+			
+	});
+
+}
 	
 	
 	
@@ -124,8 +233,9 @@ function createMultiNodeSelectedTree(jsondata) {
 var styleClass;
   $("#innerID").jstree({
         "json_data" : {	             
-            "data" : jsondata.data,
-			"progressive_render" : true
+            "data" : rootNode,
+			"progressive_render" : true,
+			"progressive_unload" : true
         },
         "ui" : {
         	"select_limit" : 1
@@ -141,45 +251,28 @@ var styleClass;
 			},         	
          	
 		"plugins" : [ "themes", "json_data","ui","checkbox","crrm"]
-    }).bind("open_node.jstree", function (e, data){
-    
-    	hideCheckBox();
-         isTreeExpandIconClicked = true;
-    	 $(this).find("li").each(function(i, element) { 
-    		 var childOrgId = $(element).attr("id");
-    		 if(assignedOrgNodeIds != ""){
-    		 
-    		 if(String(assignedOrgNodeIds).indexOf(",") > 0) {
-				 var orgList = assignedOrgNodeIds.split(",");
-				 for(var key=0; key < orgList.length; key++){
-				 	var keyVal = $.trim(orgList[key]);
-				  	if(keyVal == childOrgId)
-				  	{
-				  		isAction = false;
-				  		data.inst.check_node("#"+keyVal, true);  
-				  		isAction = true;
-				  	}
-				  				
-				}
-			} else {
-			isAction = false;
-				  data.inst.check_node("#"+ assignedOrgNodeIds, true); 
-				  isAction = true; 
-			}
-    		 
-    		 
-    		 }
-    	 
-    	 });
-    	    isTreeExpandIconClicked = false;
-    
     });
+    
+    	$("#innerID").bind("loaded.jstree", 
+		 	function (event, data) {				
+				var orgcategorylevel = $(this).attr("cid");
+    			if(currentCategoryLevel == leafNodeCategoryId) {
+	    			$(this).find('li').find('.jstree-checkbox:first').hide();	
+	    		 }			
+			}
+		);
+			registerDelegate("innerID");
     
     	$("#innerID").delegate("li a","click",
     		 function(e) {
+    		 
     				styleClass = $(this.parentNode).attr('class');
+    				var orgcategorylevel = $(this.parentNode).attr("cid");
+					var elementId = $(this.parentNode).attr('id');
+					var currentlySelectedNode ="";
     				var element = this.parentNode;
-    				var orgcategorylevel = $(element).attr("categoryID");
+    				currentId = $(this.parentNode).attr("id");
+    				var orgcategorylevel = $(element).attr("cid");
 					if(styleClass.indexOf("unchecked") > 0){
 						$('#innerID').jstree('uncheck_all');
 						$(this.parentNode).removeClass("jstree-unchecked").addClass("jstree-checked");
@@ -188,8 +281,10 @@ var styleClass;
 					}
 					
 					var isChecked = $(element).hasClass("jstree-checked");
+					checkedListObject = {};
+					checkedListObject[elementId] = 'checked';
 					
-					if(orgcategorylevel != leafNodeCategoryId) {
+					if(currentCategoryLevel != leafNodeCategoryId) {
 						updateOrganizationAndLayer(element,isChecked);							
 					} 
 						
@@ -198,10 +293,21 @@ var styleClass;
     
    		 $("#innerID").bind("change_state.jstree",
    		 	 function (e, d) {
-   		 	 if(isAction){ 
-				var isChecked = $(d.rslt[0]).hasClass("jstree-checked");
-				updateOrganizationAndLayer(d.rslt[0],isChecked);
-        		}
+   		 	 if(isAction){
+			    	var orgcategorylevel = d.rslt[0].getAttribute("cid");
+			    	var elementId = d.rslt[0].getAttribute("id");
+			    	var currentlySelectedNode="";
+					var isChecked = $(d.rslt[0]).hasClass("jstree-checked");
+					//console.log("isChecked" + isChecked);
+					if (isChecked){
+						checkedListObject = {};
+						checkedListObject[elementId] = 'checked';
+						checkedListObject[elementId] = "checked" ;
+					}else{					
+						checkedListObject[elementId] = "unchecked" ;
+					}
+					updateOrganizationAndLayer(d.rslt[0],isChecked);
+    			}
         		}
         	);
 }
@@ -277,6 +383,7 @@ function populateTreeSelect() {
 			$("#notSelectedOrgNodes").css("display","inline");
 			$("#selectedOrgNodesName").text("");	
 			$("#innerID").undelegate();
+			$("#innerID").unbind();
 			createMultiNodeSelectedTree (orgTreeHierarchy);	
 }
 
@@ -437,14 +544,15 @@ function EditOrganizationDetail(selectedOrgId){
 		success:	function(data, textStatus, XMLHttpRequest){	
 						
 						$.unblockUI();
-						originalParentOrgId = data.parentOrgNodeId;
-						$("#orgName").val(data.orgNodeName);
-						$("#orgCode").val(data.orgNodeCode);
-						//alert(data.orgNodeCategoryName);
-						//$("#layerOptions").val(data.orgNodeCategoryName);
-						$("#layerOptions").html("<option  value='"+ data.orgNodeCategoryId+"'>"+ data.orgNodeCategoryName+"</option>");
+						organizationNodes = data.organizationNodes;
+						originalParentOrgId = data.organizationDetail.parentOrgNodeId;
+						$("#orgName").val(data.organizationDetail.orgNodeName);
+						$("#orgCode").val(data.organizationDetail.orgNodeCode);
+						//alert(data.organizationDetail.orgNodeCategoryName);
+						//$("#layerOptions").val(data.organizationDetail.orgNodeCategoryName);
+						$("#layerOptions").html("<option  value='"+ data.organizationDetail.orgNodeCategoryId+"'>"+ data.organizationDetail.orgNodeCategoryName+"</option>");
 						if(assignedOrgNodeIds == "") {
-							//assignedOrgNodeIds = data.parentOrgNodeId ;
+							//assignedOrgNodeIds = data.organizationDetail.parentOrgNodeId ;
 							assignedOrgNodeIds = originalParentOrgId;
 						} else if (isParentChange) {
 							
@@ -452,7 +560,7 @@ function EditOrganizationDetail(selectedOrgId){
 							isParentChange = false;
 						}
 						
-						var innerHtml = "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+data.parentOrgNodeId+"');>"+trim(data.parentOrgNodeName)+"</a>";	
+						var innerHtml = "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+data.organizationDetail.parentOrgNodeId+"');>"+trim(data.organizationDetail.parentOrgNodeName)+"</a>";	
 						$("#parentOrgName").html(innerHtml);
 						
 					// for enable next and prev			
@@ -486,12 +594,12 @@ function EditOrganizationDetail(selectedOrgId){
 			 				
 							});	
 							
-							parentNodeId = data.parentOrgNodeId;
+							parentNodeId = data.organizationDetail.parentOrgNodeId;
 							setPopupPosition(isAddOrganization);
 							hideLeafAdminCheckBox();
 							checkOpenNode(parentNodeId);
 							dbOrgDetails = $("#addEditOrganizationDetail *").serializeArray(); 
-								
+							prepareCheckedList(); //added on 12.12.2011		
 		 						
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -565,7 +673,11 @@ function AddOrganizationDetail() {
 
 function openTreeNodes(orgNodeId) {
 	var isopened = false;
-	
+	asyncOver = 0;
+	leafParentOrgNodeId = "";
+	var par = null;
+
+	$('#innerID').jstree('close_all');
 	 if(isTreeExpandIconClicked )
 	    return;
 	
@@ -574,25 +686,44 @@ function openTreeNodes(orgNodeId) {
 				$('#innerID').jstree('check_node', "#"+assignedOrgNodeIds);
 				isopened = true; 
 			} else {
-				
-			  		 	$('#innerID').jstree('open_node', "#"+orgNodeId); 
-			  		 	 $('#innerID').jstree('check_node', "#"+orgNodeId);
+				leafParentOrgNodeId = "";
+				for(var i=0; i< organizationNodes.length; i++){
+						if(orgNodeId == organizationNodes[i].orgNodeId){
+							var leafOrgNodePath = organizationNodes[i].leafNodePath;
+							 leafParentOrgNodeId = leafOrgNodePath.split(",");
+							break;
+						}
+					}
+
+					type = "innerID";
+					if(leafParentOrgNodeId.length > 0) {
+						for(var count = 0; count < leafParentOrgNodeId.length - 1; count++) {
+				  		 	var tmpNode = leafParentOrgNodeId[count];
+
+				  		 	currentCategoryLevel = String(count+1);
+				  		 	currentNodeId = tmpNode;
+				  		 	if(count != 0) { 
+				  		 		par = leafParentOrgNodeId[count-1];		 						  		 			
+				  		 	} else {
+				  		 		par = leafParentOrgNodeId[count];
+				  		 	}
+				  		 	prepareData(false,currentCategoryLevel,currentNodeId,par);
+				  		 }	 			
+				  		 	var tmpNode = leafParentOrgNodeId[0];	
+				  		 	currentCategoryLevel = "1";
+				  		 	currentNodeId = tmpNode;
+				  		 	currentTreeArray = map.get(currentNodeId);
+				  		 	$('#innerID').jstree('open_node', "#"+currentNodeId); 
+				  		 	
+				  		 	//$("#"+currentNodeId).scroll();
+							
+				  		 	//$('#innerID').jstree('check_node', "#"+orgNodeId); //commented on 12.12.2011
+				  		 	//$('#innerID').jstree('_fix_scroll',"#"+orgNodeId);
+				  		 	//$("#"+orgNodeId).focus();
+				  		 	//$("#"+orgNodeId).scroll();
+				  		 	isopened = true; 
+			  		 }
 		 }
-		 if(!isopened) {
-			var parentOrgNodeId = $("#" + orgNodeId).parent("ul");
-			
-			var ancestorNodes = parentOrgNodeId.parentsUntil(".jstree","li");
-			//open tree nodes from root to the clicked node	
-			if(ancestorNodes.length > 0) {
-				for(var count = ancestorNodes.length - 1; count >= 0; --count) {
-		  		 		var tmpNode = ancestorNodes[count].id;
-						$('#innerID').jstree('open_node', "#"+tmpNode); 
-					
-		  		 }
-		  		 $('#innerID').jstree('check_node', "#"+orgNodeId); 
-	  		 } 
-		}
-	
 
 		
 	}
@@ -755,7 +886,7 @@ function openTreeNodes(orgNodeId) {
 														var id;
 														while (true) {
 															$("#innerID").jstree("create_node",pNode, "inside",  {"data":nodeData.data,
-															"attr" : {"id" : nodeData.attr.id, "categoryID" : nodeData.attr.categoryID}});
+															"attr" : {"id" : nodeData.attr.id, "cid" : nodeData.attr.categoryID}});
 															id=nodeData.attr.id;
 															if (nodeData.children.length > 0) {
 															
@@ -773,8 +904,11 @@ function openTreeNodes(orgNodeId) {
 												//move_node solution end		
 												}
 												else{
-													$("#innerID").jstree("create_node",assignedElement, "inside",  {"data":data.organizationDetail.orgNodeName,
-														"attr" : {"id" : data.organizationDetail.orgNodeId, "categoryID" : data.organizationDetail.categoryLevel}});
+												//alert(data.organizationDetail.parentOrgNodeId+", "+data.organizationDetail.orgNodeName+", "+data.organizationDetail.orgNodeId);
+
+													addTree(data.organizationDetail.parentOrgNodeId,data.organizationDetail.orgNodeName,data.organizationDetail.orgNodeId,data.organizationDetail.categoryLevel);
+													//$("#innerID").jstree("create_node",assignedElement, "inside",  {"data":data.organizationDetail.orgNodeName,
+														//"attr" : {"id" : data.organizationDetail.orgNodeId, "cid" : data.organizationDetail.categoryLevel}});
 												}	
 												
 												if(data.organizationDetail.orgcategorylevel == leafNodeCategoryId) {
@@ -835,7 +969,7 @@ function openTreeNodes(orgNodeId) {
 		if(isLeafNodeAdmin) {
 			$("#innerID li.jstree-leaf.jstree-unchecked").each(function(){
 			
-			var orgcategorylevelId = $(this).attr("categoryID");
+			var orgcategorylevelId = $(this).attr("cid");
     			if(orgcategorylevelId == leafNodeCategoryId) {
 	    			$("a ins.jstree-checkbox", this).first().hide();
 	    		}
@@ -845,7 +979,7 @@ function openTreeNodes(orgNodeId) {
 	
 	function hideCheckBox(){
 		$("#innerID li").each(function() {
-    			var orgcategorylevel = $(this).attr("categoryID");
+    			var orgcategorylevel = $(this).attr("cid");
     			if(orgcategorylevel == leafNodeCategoryId) {
 	    		  $("a ins.jstree-checkbox", this).first().hide();
 	    		}
@@ -1066,7 +1200,370 @@ function checkOpenNode(parentOrgNodeId){
 }
 
 
+/******Jstree Methods*****/
+	//method triggered from library
+	  function customLoad(){
+	  	//console.log("Custom Load called");
+	    pushInsideElement(currentNodeId,currentCategoryLevel,dataObj2,currentTreeArray);
+	  }
+  
+    function pushInsideElement(currentNodeId,currentCategoryLevel,dataObj2,currentTreeArray){
+		var objArray;
+		switch(currentCategoryLevel){
+		case "1": objArray = dataObj2;				  
+				break;
+		case "2": objArray = currentTreeArray.children;
+				break;
+				
+		case "3": objArray = currentTreeArray.children;
+				break;
+		case "4": objArray = currentTreeArray.children;
+				break;
+		case "5": objArray = currentTreeArray.children;
+				break;
+		case "6": objArray = currentTreeArray.children;
+				break;
+		case "7": objArray = currentTreeArray.children;
+				break;
+		case "8": objArray = currentTreeArray.children;
+				break;
+		}
+		
+		updateTree(objArray);	
+	  }
+	  function updateTree(objArray){
+	  	//timer.setStartTime();
+	  	var currentElement;
+		if (isPopUp){
+			currentElement = $('li[id='+ currentNodeId+ ']');
+			if(currentElement.length < 2) currentElement = currentElement[0];
+			else currentElement = currentElement[1];
+				
+		}else {		
+			currentElement = document.getElementById(currentNodeId);
+		}
+	
+		currentElement.className = "jstree-open jstree-"+ getCheckedStatus(currentNodeId);
+		var fragment = document.createDocumentFragment();
+		var ulElement = document.createElement('ul');
+		
+		if(type.indexOf("innerID") < 0){
+		stream(objArray,ulElement,fragment,streamPush, null, function(){
+			currentElement.appendChild(fragment);
+			$(currentElement.childNodes[1]).removeClass('jstree-loading'); 
+		 });	
+		 }
+		 else{
+		 stream(objArray,ulElement,fragment,streamInnerPush, null, function(){
+			currentElement.appendChild(fragment);
+			$(currentElement.childNodes[1]).removeClass('jstree-loading');
+			asyncOver++;
+			openNextLevel(asyncOver);
+		 });	
+		 }
+	  }
 
+	  //Seperated outer tree push and inner tree push because each method is a performance critical operation conditions will increase the 
+	  // tree population.	  
+	  function streamPush(objArray,ulElement,fragment){
+	  	var liElement = document.createElement('li');
+		liElement.setAttribute("id", objArray.attr.id);
+		liElement.setAttribute("cid" , objArray.attr.cid);
+		liElement.setAttribute("tcl" , objArray.attr.tcl);
+		var condition = objArray.attr.chlen;
+		
+		switch(condition){
+		case false: liElement.className = "jstree-leaf jstree-unchecked";
+					break;
+		case true:  liElement.className = "jstree-closed jstree-unchecked";
+					break;
+		case undefined: var con = objArray.hasOwnProperty("children");
+							switch(con){
+								case false: liElement.className = "jstree-leaf jstree-unchecked";
+											break;
+								case true:  liElement.className = "jstree-closed jstree-unchecked";
+											break;						
+							}
+						  break;
+					}
+		liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
+		ulElement.appendChild(liElement);
+		fragment.appendChild(ulElement);
+	  }
+	  
+	  function streamInnerPush(objArray,ulElement,fragment){
+	  	var liElement = document.createElement('li');
+		liElement.setAttribute("id", objArray.attr.id);
+		liElement.setAttribute("cid" , objArray.attr.cid);
+		liElement.setAttribute("tcl" , objArray.attr.tcl);
+		var condition = objArray.attr.chlen;
+		
+		switch(condition){
+		case false: liElement.className = "jstree-leaf jstree-"+ getCheckedStatus(objArray.attr.id);
+					break;
+		case true:  liElement.className = "jstree-closed jstree-"+ getCheckedStatus(objArray.attr.id);
+					break;
+		case undefined: var con = objArray.hasOwnProperty("children");
+							switch(con){
+								case false: liElement.className = "jstree-leaf jstree-"+ getCheckedStatus(objArray.attr.id);
+											break;
+								case true:  liElement.className = "jstree-closed jstree-"+ getCheckedStatus(objArray.attr.id);
+											break;						
+							}
+						  break;
+		
+		}	
+		if (objArray.attr.cid != leafNodeCategoryId){
+		liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: inline-block;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
+		}else{
+		liElement.innerHTML = "<ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + objArray.data + "</a> ";
+		}
+		ulElement.appendChild(liElement);
+		fragment.appendChild(ulElement);
+	  }
+  
+  	function populateTreeImmediate(currentNodeId,currentCategoryLevel,indexOfRoot){	
+	//TODO : Updation in root node is a problem need to work on that but this method is also necessary for populating the immediate //tree because if we use the cache all the 2nd level objects will be stored in cache which makes the cache very heavy
+		var jsonObject = jsonData;
+		jsonObject = jsonObject[indexOfRoot];
+		if (dataObj2.length == 0){
+			for (var i = 0, j = jsonObject.children.length; i < j; i++ ){
+					dataObj2.push({data: jsonObject.children[i].data,attr:{id: jsonObject.children[i].attr.id,cid:jsonObject.children[i].attr.cid, tcl:jsonObject.children[i].attr.tcl,chlen:jsonObject.children[i].hasOwnProperty("children")},children : [{}]});	
+			}
+		}
+	}
+  
+  	/************Tree Utils*****************/
+	function getObject(jsonObject,currentNodeId,currentCategoryLevel, parentNodeId){
+			var obj = new Object();
+			var indexRoot = getIndexOfRoot(parentNodeId);
+			if(currentCategoryLevel == 2){
+				for (var i = 0, j = jsonObject[indexRoot].children.length; i < j; i++ ){
+				var attrId = jsonObject[indexRoot].children[i].attr.id;
+					if (attrId == currentNodeId){
+					obj.jsonData = jsonObject[indexRoot].children[i];
+					obj.index = i;
+					return obj;
+					}
+				}
+			}
+			else {
+				for (var i = 0, j = jsonObject.children.length; i < j; i++ ){
+				var attrId = jsonObject.children[i].attr.id;
+					if (attrId == currentNodeId){
+					obj.jsonData = jsonObject.children[i];
+					obj.index = i;
+					return obj;
+					}
+				}	
+			}
+		}
+	
+	function getRootNodeDetails(){
+		var noOfRoots = jsonData.length;
+			for (var i = 0,j = noOfRoots; i < j; i++ ){
+				rootMap[jsonData[i].attr.id] = jsonData[i].attr.cid;
+				rootNode.push({data: jsonData[i].data,attr:{id: jsonData[i].attr.id,cid:jsonData[i].attr.cid,tcl:jsonData[i].attr.tcl},children : [{}]});
+			}
+	}
+	
+
+
+	function getIndexOfRoot(currentNodeId){
+	var numberOfRoots = jsonData.length;
+	
+		for (var i = 0,j = numberOfRoots; i < j; i++ ){
+			if (jsonData[i].attr.id == currentNodeId){				
+				return i;
+			}
+		}
+	
+	}
+	
+	function stream(array,element,fragment,process,context,callback){
+	 var treeData = array.concat();   
+	
+		setTimeout(function(){
+
+			var start = +new Date();
+
+			do {
+				 process.call(context, treeData.shift(),element,fragment);
+			} while (treeData.length > 0 && (+new Date() - start < 50));
+
+			if (treeData.length > 0){
+				setTimeout(arguments.callee, 25);
+			} else {
+				callback(array);
+			}
+		}, 25);    
+	
+	}	
+	
+	function getCheckedStatus(id){
+    if (checkedListObject[id] == "checked"){
+		return "checked";
+	}
+  		return "unchecked";
+  }
+ //added on 12.12.2011
+	function prepareCheckedList(){	
+		var orgList = assignedOrgNodeIds;
+		orgList = String(orgList).split(",");	
+		for(var i = 0; i < orgList.length; i++) {	
+			checkedListObject[orgList[i]] = "checked";	
+		}
+	}
+////added on 08.12.2011  
+function prepareData(classState,currentCategoryLevel,currentNodeId,element){
+  
+		if (classState == false || !classState || classState == 'false'){
+
+			var cacheData = map.get(currentNodeId);
+			if (cacheData != null){
+				currentTreeArray = cacheData;			
+			}
+					
+			if (cacheData == null){
+		if (currentCategoryLevel == "1") {	
+			dataObj2 = [];	
+			var indexOfRoot = getIndexOfRoot(currentNodeId);
+			populateTreeImmediate(currentNodeId,currentCategoryLevel,indexOfRoot);
+		}
+				switch(String(currentCategoryLevel)){
+					
+					case "2": 	dataObj3 =getObject(jsonData,currentNodeId,currentCategoryLevel,element);
+								currentIndex = dataObj3.index;
+								currentTreeArray = dataObj3.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+								//alert("case 2 -> " + map.get(currentNodeId));
+							break;							
+					case "3": 	dataObj4 = map.get(element);
+								currentTreeArray =getObject(dataObj4,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+								//alert("case 3 -> " + map.get(currentNodeId));
+							break;
+					case "4": 	dataObj5 = map.get(element);
+								currentTreeArray =getObject(dataObj5,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+								//alert("case 4 -> " + map.get(currentNodeId));
+							break;
+					case "5": 	dataObj6 = map.get(element);
+								currentTreeArray =getObject(dataObj6,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+								//alert("case 5 -> " + map.get(currentNodeId));
+							break;
+					case "6": 	dataObj7 = map.get(element);
+								currentTreeArray =getObject(dataObj7,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+							break;
+					case "7": 	dataObj8 =map.get(element.parentNode.parentNode.id);
+								currentTreeArray =getObject(dataObj8,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);								
+							break;	
+					case "8": 	dataObj9 =map.get(element.parentNode.parentNode.id);
+								currentTreeArray =getObject(dataObj9,currentNodeId,currentCategoryLevel);
+								currentIndex = currentTreeArray.index;
+								currentTreeArray = currentTreeArray.jsonData;
+								map.put(currentNodeId,currentTreeArray);
+							break;						
+					
+				}
+			}
+
+		}
+ }  
+  
+////
+  function openNextLevel(asyncOver){ 
+
+  		if(leafParentOrgNodeId.length - 1 > asyncOver) {
+	  		var tmpNode = leafParentOrgNodeId[asyncOver];	
+			currentCategoryLevel = String(asyncOver + 1);
+			currentNodeId = tmpNode;
+			currentTreeArray = map.get(currentNodeId);
+			//$("#"+currentNodeId).scroll();
+			$('#innerID').jstree('open_node', "#"+currentNodeId);
+		}
+  }
+  
+	/******CRUD Operations****/
+function addTree(currentSelectedId,addedOrgName,addedOrgId,addedOrgCategoryId){
+	var parentElementBeforeAdd = document.getElementById(currentSelectedId);
+	var tclIndex  = parseInt(parentElementBeforeAdd.getAttribute("tcl"));
+
+	prepareData(false,parentElementBeforeAdd.getAttribute("cid"),currentSelectedId,parentElementBeforeAdd.parentNode.parentNode.id);
+	var obj = map.get(currentSelectedId);
+	var index = getIndexOfRoot(currentSelectedId);
+	var isLeaf = $(parentElementBeforeAdd).hasClass("jstree-leaf");	
+	var isTreeOpen =  $(parentElementBeforeAdd).hasClass("jstree-open");	
+		 if (isLeaf){
+		 $(parentElementBeforeAdd).removeClass("jstree-leaf").addClass("jstree-closed");	
+		 }
+		 else{
+		 //Nothing
+		 }
+	 //Need to use updateJsonData also for the root alone because second node is populated from json data and not the cache
+	if (parentElementBeforeAdd.getAttribute("cid") ==1){
+		//console.log("AddObject" + obj);		
+		if(obj == null || obj == undefined)
+			obj = [];
+     	obj.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
+     	obj.children = [];
+		jsonData[index].children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
+	}
+	
+	//In all the other cases we need to just update the cache since data is already in cache and its populated only from cache which is not the case for 2nd level
+	//For levels 3 to n we have to consider two things before adding the elements to cache first whether the element has children or not.
+	if (parentElementBeforeAdd.getAttribute("cid") > 1 && obj.hasOwnProperty("children")){
+	 obj.children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+2),chlen:undefined}}); 
+	 map.put(currentSelectedId,obj);
+	}
+	else if (parentElementBeforeAdd.getAttribute("cid") > 1) {
+	 obj.children = [];
+	 obj.children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+2),chlen:undefined}});	 
+	 map.put(currentSelectedId,obj);
+	}
+	 
+	 currentNodeId = currentSelectedId;
+	 if (isTreeOpen){
+	 	if(addedOrgCategoryId != leafNodeCategoryId){
+			$("#"+currentNodeId+ "> ul").append("<li id ="+addedOrgId+" class=\"jstree-leaf jstree-unchecked\" cid="+addedOrgCategoryId + "><ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: inline-block;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + addedOrgName  + "</a></li> ");
+		}
+		else{
+			$("#"+currentNodeId+ "> ul").append("<li id ="+addedOrgId+" class=\"jstree-leaf jstree-unchecked\" cid="+addedOrgCategoryId + "><ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + addedOrgName  + "</a></li> ");			
+		}
+		
+	 }
+	}
+
+		function deleteTree(currentNodeId){
+		//TODO :  
+		}
+
+		function moveTree(currentNodeId){
+		deleteTree(currentNodeId);
+		addTree(currentNodeId);
+		}
+
+		function hideCheckBox(){
+		//TODO: Use the pushInside data.attr.children == null add leaf class.
+
+		}
+
+		function openTree(){
+		//TODO: need to work on;
+		} 
 
 
 

@@ -41,6 +41,7 @@ public class UserNode extends Node
         this.setCategoryLevel(node.getCategoryLevel());
         this.setParentOrgNodeId(node.getParentOrgNodeId());
         this.setParentOrgNodeName(node.getParentOrgNodeName());
+        this.setLeafNodePath(node.getLeafNodePath());//added on 10.12.2011 for open node functionality in new jstree
     }
     
     /**
