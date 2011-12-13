@@ -50,6 +50,7 @@ var selectedLevel;
 var dropListToDisplay;
 
 var selectAllForDelete = false;
+var selectAllForDeleteProctor = false;
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -2102,22 +2103,54 @@ function createSingleNodeSelectedTree(jsondata) {
 					 }
 				} */
 			},
-			/* 
-			onSelectAll: function (rowIds) {
-				if(allRowSelectedPro) {
+			
+			onSelectAll: function (rowid, status) {
+				/*if(allRowSelectedPro) {
 					allRowSelectedPro = false;
 				} else {
 					allRowSelectedPro = true;
-				}
-			}, */
+				}*/
+				if(status) {
+					selectAllForDeleteProctor = true;
+					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
+						var selectedRowData;
+						for(var i = 0; i < allRowsInGrid.length; i++) {
+						
+							//$("#"+allRowsInGrid[i]+" td input").attr("checked", true); 
+							//$("#"+allRowsInGrid[i]+" td input").trigger('click'); 
+							//$("#"+allRowsInGrid[i]+" td input").attr("checked", true);
+						
+							selectedRowData = $("#listProctor").getRowData(allRowsInGrid[i]);
+							if (selectedRowData.defaultScheduler == 'F') {
+								
+					 			delProctorIdObjArray[pdindex]=selectedRowData.userId;
+								if (deletedProctorIds == "") {
+										deletedProctorIds = allRowsInGrid[i]+"_"+pdindex;
+										pdindex++;
+								} else {
+										deletedProctorIds = deletedProctorIds +"|"+allRowsInGrid[i]+"_"+pdindex;
+										pdindex++;
+								}
+					 		}
+						
+						}
+				} else {
+					selectAllForDeleteProctor = false;
+					var indx = getProctorIDIndex(selectedRowId);
+					delProctorIdObjArray[indx]=null;
+					deletedProctorIds = updateRule(deletedProctorIds,indx);
+					
+				} 
+				
+			}, 
 			onSelectRow: function (rowid, status) {
 			
+				selectAllForDeleteProctor = false;
 				var selectedRowData = $("#listProctor").getRowData(rowid);
 				selectedRowId = selectedRowData.userId;
 								
 				if(status) {
-				
-					
+
 					delProctorIdObjArray[pdindex]=selectedRowId;
 					if (deletedProctorIds == "") {
 							deletedProctorIds = selectedRowId+"_"+pdindex;
@@ -2138,16 +2171,16 @@ function createSingleNodeSelectedTree(jsondata) {
 			loadComplete: function () {
 				if ($('#listProctor').getGridParam('records') === 0) {
 					isPAGridEmpty = true;
-            		$('#sp_1_selectProctorPager').text("1");
-            		$('#next_selectProctorPager').addClass('ui-state-disabled');
-            	 	$('#last_selectProctorPager').addClass('ui-state-disabled');
+            		$('#sp_1_pagerProctor').text("1");
+            		$('#next_pagerProctor').addClass('ui-state-disabled');
+            	 	$('#last_pagerProctor').addClass('ui-state-disabled');
             	} else {
             		isPAGridEmpty = false;
             	}
             	//setEmptyListMessage('PA');
             	$.unblockUI();  
 				$("#listProctor").setGridParam({datatype:'local'});
-				var tdList = ("#selectProctorPager_left table.ui-pg-table  td");
+				var tdList = ("#pagerProctor_left table.ui-pg-table  td");
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
 				}
@@ -2155,6 +2188,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		    	width = width - 72; // Fudge factor to prevent horizontal scrollbars
 		    	$("#listProctor").jqGrid("hideCol","defaultScheduler");
 		    	$("#listProctor").jqGrid("hideCol","userId");
+		    	
 		    	jQuery("#listProctor").setGridWidth(width,true);
 		    	
 		    	$("#testSchedulerId").text(schedulerFirstName + ' ' + schedulerLastName);
@@ -2201,6 +2235,10 @@ function createSingleNodeSelectedTree(jsondata) {
 		closePopUp('removeProctorConfirmationPopup');
 		delProctorIdObjArray = [];
 		returnSelectedProctor();
+		for(var i = 0; i < allSelectOrgProctor.length; i++) {
+			if(allSelectOrgProctor[i] != null && allSelectOrgProctor[i] == proctorForSelectedOrg)
+				allSelectOrgProctor[i] = null;
+		}	
 		
 	}
 	
