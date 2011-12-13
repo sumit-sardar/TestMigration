@@ -712,59 +712,55 @@ public class TMSServlet extends HttpServlet {
 			manifest.setManifest((ManifestData[])newmanifest.toArray(new ManifestData[0]));
 		}
         manifesta = manifest.getManifest();
-		boolean gotRestart = false;
-        for(int i=0; i<manifesta.length ;i++) {
-            if(restartCount > 0 && !gotRestart && (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
-            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS) ||
-            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
-            					manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {        	
-            	ItemResponseWrapper[] cachedirt = null;
-            	ItemResponseWrapper[] rdirt = null;
-            	ConsolidatedRestartData restartData = null;
-            	cachedirt = oasSource.getItemResponses(testRosterId);
-            	logger.debug("TMSServlet: found " + cachedirt.length + " responses in cache.");
-            	boolean responsesInCache = (cachedirt != null && cachedirt.length > 0);
-            	ConsolidatedRestartData[] crda = loginResponse.getConsolidatedRestartDataArray();
-            	if(crda != null && crda.length > 0) {
-	            	restartData = loginResponse.getConsolidatedRestartDataArray(0);
-	            	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
-                	if (responsesInRD) {
-                		rdirt = convertTsdType(restartData.getTsdArray(0));
-                		for(int j=0;j<rdirt.length;j++) {
-                			oasSink.putItemResponse(testRosterId, rdirt[j]);
+        
+        boolean gotRestart = false;
+        if(restartCount > 0) {
+	        ArrayList<ItemResponseWrapper> netirt = new ArrayList<ItemResponseWrapper>();
+	    	ItemResponseWrapper[] cachedirt = null;
+	    	ItemResponseWrapper[] rdirt = null;
+	    	ConsolidatedRestartData restartData = null;
+	    	cachedirt = oasSource.getItemResponses(testRosterId);
+	    	for(int j=0;j<cachedirt.length;j++) {
+				netirt.add(cachedirt[j]);
+	        }
+	    	ConsolidatedRestartData[] crda = loginResponse.getConsolidatedRestartDataArray();
+	    	if(crda != null && crda.length > 0) {
+	        	restartData = loginResponse.getConsolidatedRestartDataArray(0);
+	        	boolean responsesInRD = (restartData.getTsdArray() != null && restartData.getTsdArray().length > 0);
+	        	if (responsesInRD) {
+	        		TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd[] rdtsda = restartData.getTsdArray();
+	        		for(int m=0;m<rdtsda.length;m++) {
+	        			rdirt = convertTsdType(restartData.getTsdArray(m));
+	            		for(int j=0;j<rdirt.length;j++) {
+	            			oasSink.putItemResponse(testRosterId, rdirt[j]);
+	            			netirt.add(rdirt[j]);
 	                    }
-                	}
-            	}
-            	ItemResponseWrapper[] netirt = null;
-            	if((cachedirt != null && cachedirt.length > 0) && (rdirt == null || rdirt.length < 1) ) {
-            		netirt = cachedirt;
-            	} else if ((rdirt != null && rdirt.length > 0) && (cachedirt == null || cachedirt.length < 1) ) {
-            		netirt = rdirt;
-            	} else if (cachedirt != null && cachedirt.length > 0 && rdirt != null && rdirt.length > 0){
-            		netirt = new ItemResponseWrapper[cachedirt.length + rdirt.length];
-            		int counter = 0;
-            		for(int k=0;k<cachedirt.length;k++) {
-            			netirt[counter] = cachedirt[k];
-            			counter++;
-            		}
-            		for(int k=0;k<rdirt.length;k++) {
-            			netirt[counter] = rdirt[k];
-            			counter++;
-            		}
-            	}
-            	ItemResponseData [] ird = null;
-            	if(netirt != null && netirt.length > 0) {
-	            	ird = RosterData.generateItemResponseData(testRosterId, manifesta[i], netirt);
-	            	if(loginResponse.getConsolidatedRestartDataArray() == null || loginResponse.getConsolidatedRestartDataArray().length == 0) {
-	            		loginResponse.addNewConsolidatedRestartData();
+	        		}
+	        		
+	        	}
+	    	}
+	    	
+	    	if(loginResponse.getConsolidatedRestartDataArray() == null || loginResponse.getConsolidatedRestartDataArray().length == 0) {
+        		loginResponse.addNewConsolidatedRestartData();
+        	}
+        	loginResponse.setConsolidatedRestartDataArray(0, ConsolidatedRestartData.Factory.newInstance(xmlOptions));
+        	restartData = loginResponse.getConsolidatedRestartDataArray(0);
+	        
+	        for(int i=0; i<manifesta.length;i++) {
+	            if((manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.SYSTEM_STOP_STATUS) || 
+	            	manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS) ||
+	            	manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
+	            	manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {        	
+	            	
+	            	ItemResponseData [] ird = null;
+	            	if(netirt != null && netirt.size() > 0) {
+		            	ird = RosterData.generateItemResponseData(testRosterId, manifesta[i], netirt);
+		            	RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
+		            	logger.debug("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
 	            	}
-	            	loginResponse.setConsolidatedRestartDataArray(0, ConsolidatedRestartData.Factory.newInstance(xmlOptions));
-	            	restartData = loginResponse.getConsolidatedRestartDataArray(0);
-	            	RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
-	            	logger.debug("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
-            	}
-            	gotRestart = true;
-            } 
+	            	gotRestart = true;
+	            } 
+	        }
         }
         //loginResponse.getManifest().setScoArray((Sco[])scomap.values().toArray(new Sco[0]));
         //logger.debug("Final manifest: " + loginResponse.getManifest().xmlText());
@@ -772,7 +768,7 @@ public class TMSServlet extends HttpServlet {
         	loginResponse.setRestartFlag(true);
         } else {
         	loginResponse.setRestartFlag(false);
-        	if(loginResponse.getConsolidatedRestartDataArray() != null && loginResponse.getConsolidatedRestartDataArray().length > 0) {
+        	while(loginResponse.getConsolidatedRestartDataArray() != null && loginResponse.getConsolidatedRestartDataArray().length > 0) {
         		loginResponse.removeConsolidatedRestartData(0);
         	}
         }

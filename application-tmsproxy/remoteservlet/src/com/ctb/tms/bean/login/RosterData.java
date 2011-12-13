@@ -3,6 +3,7 @@ package com.ctb.tms.bean.login;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -249,13 +250,13 @@ public class RosterData implements Serializable {
 		ast.setRemSec(Float.parseFloat(String.valueOf(remSec)));
 	}
 	
-	public static ItemResponseData[] generateItemResponseData(String testRosterId, ManifestData manifest, ItemResponseWrapper[] tsda) {
-		HashMap irdMap = new HashMap(tsda.length);
-		HashMap itemMap = new HashMap(tsda.length);
-		HashMap audioResponseMap = new HashMap(tsda.length);
-		for(int i=0;i<tsda.length;i++) {
+	public static ItemResponseData[] generateItemResponseData(String testRosterId, ManifestData manifest, ArrayList<ItemResponseWrapper> tsda) {
+		HashMap irdMap = new HashMap(tsda.size());
+		HashMap itemMap = new HashMap(tsda.size());
+		HashMap audioResponseMap = new HashMap(tsda.size());
+		for(int i=0;i<tsda.size();i++) {
 			logger.debug("generateItemResponseData: Tsd " + i);
-			noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd tsd = tsda[i].getTsd();
+			noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd tsd = tsda.get(i).getTsd();
 			if(manifest.getId() == Integer.parseInt(tsd.getScid())) {
 				noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist[] ista = tsd.getIstArray();
 				//for(int j=0;j<ista.length;j++) {	
