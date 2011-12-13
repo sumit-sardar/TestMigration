@@ -279,17 +279,15 @@ function populateSelectProctorGrid() {
 				if(status) {
 					allRowSelectedPro = true;
 					for(var i = 0; i < allProctorIds.length; i++) {
-						if(getProctorIDIndex(allProctorIds[i].userId) < 0) {
+						if(getProctorIDIndex(allProctorIds[i].userId) < 0) {							
 							if (allProctorIds[i].defaultScheduler == 'F') {
 								var selectedRowData = allProctorIds[i];
 								if (selectedProctorIds == "") {
-										selectedProctorIds = allProctorIds[i].userId+"_"+pindex+"_tmp";
-										pindex++;
+										selectedProctorIds = allProctorIds[i].userId+"_"+pindex+"_tmp";										
 								} else {
 										selectedProctorIds = selectedProctorIds +"|"+allProctorIds[i].userId+"_"+pindex+"_tmp";
-										pindex++;
 								}
-								proctorIdObjArray[pindex]=selectedRowData;
+								proctorIdObjArray[pindex++]=selectedRowData;
 					 		}
 						}						
 					}	
@@ -310,15 +308,17 @@ function populateSelectProctorGrid() {
 						countAllSelectProctor++;
 					}			
 				} else {
-					allRowSelectedPro = false;										
+					allRowSelectedPro = false;	
+													
 					for(var i = 0; i < allProctorIds.length; i++) {
-						//if(getProctorIDIndex(allProctorIds[i].userId) >= 0) {
-							var selectedRowData = allProctorIds[i];
-							var indx = getProctorIDIndex(selectedRowData.userId);
-							removeProctorByIndex(indx); 
-							selectedProctorIds = updateRule(selectedProctorIds,indx);
-						//}						
+						if (allProctorIds[i].defaultScheduler == 'F') {
+							var selectedRowData = allProctorIds[i];							
+							var indx = getProctorIDIndex(selectedRowData.userId);							
+							removeProctorByIndex(indx); 							
+							selectedProctorIds = updateRule(selectedProctorIds,indx);							
+						}						
 					}
+					
 					for(var i = 0; i < allSelectOrgProctor.length; i++) {
 						if(allSelectOrgProctor[i] != null && allSelectOrgProctor[i] == proctorForSelectedOrg)
 							allSelectOrgProctor[i] = null;
