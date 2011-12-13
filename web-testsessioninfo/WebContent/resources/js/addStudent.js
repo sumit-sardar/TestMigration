@@ -19,7 +19,7 @@ var studentWithaccommodation = 0;
 
 var selectedStudentIds = "";
 var deletedStudentIds = "";
-var pindex = 0;
+var pindexStu = 0;
 var pdindex = 0;
 var studentIdObjArray = [];
 var delStudentIdObjArray = [];
@@ -306,24 +306,18 @@ function populateSelectStudentGrid() {
 			 }
 			},
 			onSelectAll: function (rowIds, status) {
-			//	if(stuForSelectedOrg == preSelectedOrg) {
-			//		selectedStudentIds = "";
-			//		pindex = 0;
-			//		studentIdObjArray = [];
-			//	}
-				
 				if(status) {
 					allRowSelected = true;
 					for(var i = 0; i < allStudentIds.length; i++) {
 						if(getStudentIDIndex(allStudentIds[i].studentId) < 0) {
-							studentIdObjArray[pindex] = allStudentIds[i];
+							studentIdObjArray[pindexStu] = allStudentIds[i];
 							var selectedRowData = allStudentIds[i];
 							if (selectedStudentIds == "") {
-								selectedStudentIds = allStudentIds[i].studentId+"_"+pindex;
-								pindex++;
+								selectedStudentIds = allStudentIds[i].studentId+"_"+pindexStu;
+								pindexStu++;
 							} else {
-								selectedStudentIds = selectedStudentIds +"|"+allStudentIds[i].studentId+"_"+pindex;
-								pindex++;
+								selectedStudentIds = selectedStudentIds +"|"+allStudentIds[i].studentId+"_"+pindexStu;
+								pindexStu++;
 							}
 							
 						} else {
@@ -391,16 +385,16 @@ function populateSelectStudentGrid() {
 						var selectedRowData = $("#selectStudent").getRowData(selectedRowId);
 						
 						if (selectedStudentIds == "") {
-								selectedStudentIds = selectedRowId+"_"+pindex;
-								pindex++;
+								selectedStudentIds = selectedRowId+"_"+pindexStu;
+								pindexStu++;
 						} else {
-								selectedStudentIds = selectedStudentIds +"|"+selectedRowId+"_"+pindex;
-								pindex++;
+								selectedStudentIds = selectedStudentIds +"|"+selectedRowId+"_"+pindexStu;
+								pindexStu++;
 						}					
 						if(stuIdObjArray[selectedRowId] == undefined){
 							stuIdObjArray[selectedRowId]= selectedRowData;
-							studentIdObjArray[pindex]=selectedRowData;
-							studentIdObjArray[pindex].studentId = selectedRowId;
+							studentIdObjArray[pindexStu]=selectedRowData;
+							studentIdObjArray[pindexStu].studentId = selectedRowId;
 							
 						} else {
 							var stuObj = stuIdObjArray[selectedRowId];

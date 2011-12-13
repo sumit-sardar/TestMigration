@@ -603,6 +603,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			selectedStudentIds = "";
 			deletedStudentIds = "";
 			pindex = 0;
+			pindexStu = 0;
 			pdindex = 0;
 			studentIdObjArray = [];
 			delStudentIdObjArray = [];
