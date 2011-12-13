@@ -23,6 +23,7 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfTable;
 import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.BaseFont;
 import data.ImageVO;
 import data.TableVO;
 import java.awt.Color;
@@ -222,10 +223,25 @@ public class TableUtils
         int cols = columnWidths.length;
         int rows = texts.length/cols;
         for(int i=0; i<texts.length; i++){
+        	if (i==3){
+        		cells.add(getTableCell(texts[i], 
+        				getPasswordFont(), 
+                        getColumnOuterBorder(i, cols, rows),  
+                        borderWidth));
+        	}
+        	else if(i==5){
+        		cells.add(getTableCell(texts[i], 
+        				getAccessFont(), 
+                        getColumnOuterBorder(i, cols, rows),  
+                        borderWidth));
+        		
+        	}
+        	else{
             cells.add(getTableCell(texts[i], 
                                    getLoginFont(i, cols), 
                                    getColumnOuterBorder(i, cols, rows),  
                                    borderWidth));
+        	}
         }
         PdfPTable table = getTable(cols, cells);
         table.setTotalWidth(width);
@@ -462,7 +478,7 @@ public class TableUtils
                                STUDENT_CELL_PADDING,
                                Element.ALIGN_LEFT));
         cells.add(getTableCell(password,
-                               getDataEntryTenFont(),
+        					   getPasswordFont(),
                                true,
                                false,
                                false,
@@ -601,7 +617,7 @@ public class TableUtils
             return getNormalBoldBlueFont();
         }
         else if ((cell+1)%cols == 0){  // tac 
-            return getDataEntryFont();
+            return getAccessFont();
         }
         else{
             return getNormalFont();
@@ -915,6 +931,16 @@ public class TableUtils
             this.normalFont = FontFactory.getFont(ARIAL, NORMAL_FONT);
         }
         return this.normalFont;
+    }
+    
+    private Font getAccessFont(){
+       	Font font=FontFactory.getFont("DejaVuSansMono.ttf", BaseFont.WINANSI, BaseFont.EMBEDDED, 12, Font.NORMAL);
+        return font;
+    }
+    
+    private Font getPasswordFont(){
+       	Font font=FontFactory.getFont("DejaVuSansMono.ttf", BaseFont.WINANSI, BaseFont.EMBEDDED, 10, Font.NORMAL);
+        return font;
     }
     
     private Font getDataEntryFont(){

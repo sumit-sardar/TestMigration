@@ -15,5 +15,6 @@
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/application-testadmin"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Oracle WebLogic Server v10.3 JRE"/>
+	<classpathentry kind="src" path="WebContent/resources/fonts"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
