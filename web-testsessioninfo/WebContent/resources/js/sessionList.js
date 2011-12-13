@@ -1273,7 +1273,12 @@ function createSingleNodeSelectedTree(jsondata) {
 					createSubtestGrid();
 					$("#selectedNewTestId").val(selectedTestId);
 					$("#sData").removeClass("ui-state-disabled");
-			 		
+					// Added to refresh student list grid if user changes tests
+			 		hideSelectStudent();
+			 		studentIdObjArray = [];
+			 		AddStudentLocaldata ={};
+			 		$('#list6').GridUnload();
+			 		populateSelectedStudent();
 			},
 			loadComplete: function () {
 				if ($('#testList').getGridParam('records') === 0) {

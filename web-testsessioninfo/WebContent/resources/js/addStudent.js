@@ -723,6 +723,8 @@ function populateGradeLevelFilter() {
 	var splitArray = [];
 	if(blockOffGradeTesting) {
 		categoriesStr = "";
+		if(selectedLevel.indexOf("-") >= 0 || selectedLevel.indexOf("\/") >= 0)
+			categoriesStr = ":"+selectedLevel+";";
 		dropListToDisplay = [{"id":selectedLevel,"name":selectedLevel}];
 	}
 	else {
