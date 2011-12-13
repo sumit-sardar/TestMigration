@@ -17,7 +17,7 @@ var delProctorIdObjArray = [];
 var isOnBackProctor = false;
 
 var allProctorIds = [];
-var allSelectOrgProctor = [];
+var allSelectOrgProctor = {};
 var countAllSelectProctor = 0;
 
 function showSelectProctor(){
@@ -610,7 +610,7 @@ function resetProctor() {
 	$('#selectProctor').GridUnload();
 	allRowSelectedPro = false;
 	allProctorIds = [];
-	allSelectOrgProctor = [];
+	allSelectOrgProctor = {};
 	countAllSelectProctor = 0;
 }
 
