@@ -2194,6 +2194,13 @@ public class ScheduleTestImpl implements ScheduleTest
             String defaultCustomerFlagStatus = customerConfigurations.getDefaulCustomerFlagStatus(customerId);
             SessionStudent [] scheduledStudents = newSession.getStudents();
             String form = newSession.getTestSession().getPreferredForm();
+            
+            if(form != null ){
+            	//System.out.println("##### FORM"+form);
+            	if( form.equalsIgnoreCase("CAT")){
+                   	overrideUsingStudentManifest= false;
+            	}
+            }
             FormAssignmentCount [] formCounts = null;
             if(newSession.getTestSession().getFormAssignmentMethod().equals(TestSession.FormAssignment.ROUND_ROBIN)) {
                 formCounts = formAssignments.getFormAssignmentCounts(testAdminId);
