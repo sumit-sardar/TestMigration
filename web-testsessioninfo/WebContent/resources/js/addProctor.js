@@ -566,10 +566,13 @@ function getProctorListArray(proctorArray) {
 	  if (proctorArray==undefined) {
 	  	return resultProcArray;
 	  }
-	  
+	  var l = 0;
 	  for (var i=0; i<proctorArray.length; i++) {
-	  	var val = new ProctorAssignment(proctorArray[i].userId, proctorArray[i].userName, proctorArray[i].copyable);
-	  	resultProcArray[i]= val.toString();
+	    if(proctorArray[i] != undefined && proctorArray[i] != null){
+		    var val = new ProctorAssignment(proctorArray[i].userId, proctorArray[i].userName, proctorArray[i].copyable);
+		  	resultProcArray[l]= val.toString();
+		  	++l;
+	    }
 	  }
 	  return resultProcArray;
 	}
