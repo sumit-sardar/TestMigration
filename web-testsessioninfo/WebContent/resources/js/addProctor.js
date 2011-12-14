@@ -11,7 +11,7 @@ var preSelectedOrgPro;
 var selectedProctorIds = "";
 var deletedProctorIds = "";
 var pindex = 0;
-var pdindex = 0;
+var pdindex = 1;
 var proctorIdObjArray = {};
 var delProctorIdObjArray = [];
 var isOnBackProctor = false;
@@ -402,7 +402,7 @@ function getProctorIDIndex(selectedRowId) {
 	for (var i = 0; i < pIDs.length; i++) {		
 		pid = pIDs[i];
 		if (pid.match(selectedRowId) != null) {
-			return i;
+			return pid.substring((selectedRowId+"_").length,pid.length);
 		}
 	}
 	
@@ -440,7 +440,7 @@ function removeProctorByIndex (arrayIndex) {
 
 function updateRule (rule,index) {
 
-	index = "_"+index;
+	/*index = "_"+index;
 	var pIDs = rule.split("|");
 	var pid = "";
 	for (var i = 0; i < pIDs.length; i++) {
@@ -464,6 +464,45 @@ function updateRule (rule,index) {
 			rule = rule +"|"+pid;
 		}
 		
+	}*/
+	var pIDs = rule.split("|");
+	var preIndex = 0;
+	var prePipePos = 0;
+	var nxtPipePos = 0;
+	var len = pIDs.length - 1;
+	var part1 = "";
+	var part2 = "";
+	var flag = false;
+	
+	var lpid = pIDs[len];
+	var pos = lpid.indexOf("_");
+	var lindex = lpid.substring(pos+1,lpid.length);
+	
+	if (lindex == index) {
+	
+		flag = true;	
+	}
+	
+	if (index > 0 && !flag) {
+	
+		preIndex = index - 1;
+		
+		var rule1 = rule.substring(0,rule.indexOf("_"+index+"|"));
+		prePipePos = rule1.lastIndexOf("|");
+		
+		//prePipePos = rule.indexOf("|",rule.indexOf("_"+preIndex));
+		nxtPipePos = rule.indexOf("|",rule.indexOf("_"+index+"|"));
+		var part1 = rule.substring(0,(prePipePos));
+		var part2 = rule.substring(nxtPipePos,rule.length);
+		rule = part1 + part2;
+	
+	} else {
+	
+		preIndex = index - 1;
+		//prePipePos = rule.indexOf("|",rule.indexOf("_"+preIndex));
+		prePipePos = rule.lastIndexOf("|");
+		part1 = rule.substring(0,(prePipePos));
+		rule = part1;
 	}
 	
 	return rule;
@@ -481,7 +520,7 @@ function include(arr,obj) {
 
 function confirmProctorRule () {
 
-	var pIDs = selectedProctorIds.split("|");
+	/*var pIDs = selectedProctorIds.split("|");
 	var pid = "";
 	for (var i = 0; i < pIDs.length; i++) {
 		
@@ -504,7 +543,10 @@ function confirmProctorRule () {
 			selectedProctorIds = selectedProctorIds +"|"+pid;
 		}
 		
-	}
+	}*/
+	
+	selectedProctorIds = selectedProctorIds.replace(/_tmp/gi,"");
+	
 }
 
 function backProctorRule () {
@@ -519,20 +561,40 @@ function backProctorRule () {
 			pIDs[i] = "deleted";
 			removeProctorByIndex(i);
 						
+		} else {
+		
+			if (i == 0) {
+				selectedProctorIds = pid;
+			} else {
+			
+				if (pid !="deleted") {
+			
+					selectedProctorIds = selectedProctorIds +"|"+pid;
+			
+				}
+			
+			}
+		
 		}
 	}
 	
-	for (var i = 0; i < pIDs.length; i++) {
+	/*for (var i = 0; i < pIDs.length; i++) {
 	
 		pid = pIDs[i];
 		
 		if (i == 0) {
 			selectedProctorIds = pid;
 		} else {
-			selectedProctorIds = selectedProctorIds +"|"+pid;
+			
+			if (pid !="deleted") {
+			
+				selectedProctorIds = selectedProctorIds +"|"+pid;
+			
+			}
+			
 		}
 		
-	}
+	}*/
 }
 	
 	
@@ -600,10 +662,10 @@ function resetProctor() {
 	addProctorLocaldata =[];
 	proctorForSelectedOrg;
 	preSelectedOrgPro;
-	selectedProctorIds = "";
+	//selectedProctorIds = "";
 	deletedProctorIds = "";
 	pindex = 0;
-	pdindex = 0;
+	pdindex = 1;
 	proctorIdObjArray = {};
 	delProctorIdObjArray = [];
 	isOnBackProctor = false;

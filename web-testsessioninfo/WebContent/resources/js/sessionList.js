@@ -606,7 +606,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			deletedStudentIds = "";
 			pindex = 0;
 			pindexStu = 0;
-			pdindex = 0;
+			pdindex = 1;
 			studentIdObjArray = [];
 			delStudentIdObjArray = [];
 			allStudentIds = [];
@@ -2130,6 +2130,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			onSelectAll: function (rowids, status) {
 
 				if(status) {
+					var tmpselectedRowId = "";
 					selectAllForDeleteProctor = true;
 					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
 						var selectedRowData;
@@ -2141,14 +2142,17 @@ function createSingleNodeSelectedTree(jsondata) {
 								selectedRowData = addProctorLocaldata[i];
 								$("#"+selectedRowData.userId+" td input").attr("checked", true); 
 								
-					 			delProctorIdObjArray[pdindex]=selectedRowData.userId;
-								if (deletedProctorIds == "") {
+								tmpselectedRowId = selectedRowData.userId;
+								pdindex = getProctorIDIndex(tmpselectedRowId);
+					 			delProctorIdObjArray[pdindex]=tmpselectedRowId;
+					 			//pdindex++;
+								/*if (deletedProctorIds == "") {
 										deletedProctorIds = allRowsInGrid[i]+"_"+pdindex;
 										pdindex++;
 								} else {
 										deletedProctorIds = deletedProctorIds +"|"+allRowsInGrid[i]+"_"+pdindex;
 										pdindex++;
-								}
+								}*/
 					 		}
 						
 						}
@@ -2156,7 +2160,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					selectAllForDeleteProctor = false;
 					var indx = getProctorIDIndex(selectedRowId);
 					delProctorIdObjArray[indx]=null;
-					deletedProctorIds = updateRule(deletedProctorIds,indx);
+					//deletedProctorIds = updateRule(deletedProctorIds,indx);
 					
 				} 
 				
@@ -2168,21 +2172,23 @@ function createSingleNodeSelectedTree(jsondata) {
 				selectedRowId = selectedRowData.userId;
 								
 				if(status) {
-
+					
+					pdindex = getProctorIDIndex(selectedRowId);
 					delProctorIdObjArray[pdindex]=selectedRowId;
-					if (deletedProctorIds == "") {
+					//pdindex++;
+					/*if (deletedProctorIds == "") {
 							deletedProctorIds = selectedRowId+"_"+pdindex;
 							pdindex++;
 					} else {
 							deletedProctorIds = deletedProctorIds +"|"+selectedRowId+"_"+pdindex;
 							pdindex++;
-					}
+					}*/
 					
 				} else {
 				
 					var indx = getProctorIDIndex(selectedRowId);
 					delProctorIdObjArray[indx]=null;
-					deletedProctorIds = updateRule(deletedProctorIds,indx);
+					//deletedProctorIds = updateRule(deletedProctorIds,indx);
 					
 				} 
 			},
@@ -2251,6 +2257,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		//$('#totalAssignedProctors').text(noOfProctorAdded);
 		closePopUp('removeProctorConfirmationPopup');
 		delProctorIdObjArray = [];
+		pdindex = 1;
 		returnSelectedProctor();
 		for(var i = 0; i < allSelectOrgProctor.length; i++) {
 			if(allSelectOrgProctor[i] != null && allSelectOrgProctor[i] == proctorForSelectedOrg)
