@@ -98,7 +98,7 @@
 								<td>&nbsp;</td>
 							<td  width="100%">
 								<center>
-								<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:saveTest(); return false;" class="ui-widget-header">
+								<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:saveTest(); return false;" disabled="disabled" class="ui-widget-header">
 								<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('scheduleSession'); return false;" class="ui-widget-header">
 								</center>
 								<br>

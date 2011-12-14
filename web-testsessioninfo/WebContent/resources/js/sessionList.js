@@ -569,9 +569,10 @@ function createSingleNodeSelectedTree(jsondata) {
 					currDate = sessionList[i].startDate;
 					nextDate = sessionList[i].endDate;
 					$( "#startDate" ).datepicker( "option" , "minDate" , currDate ) ;
-					$( "#endDate" ).datepicker( "option" , "minDate" , nextDate ) ;
+					$( "#endDate" ).datepicker( "option" , "minDate" , currDate ) ;
 					$( "#endDate" ).datepicker( "refresh" );
 					$( "#startDate" ).datepicker( "refresh" );
+					//$("#endDate").val(nextDate);
 					break;					
 				}
 			}
@@ -937,6 +938,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
 		});						
 		$("#sData").addClass("ui-state-disabled");		
+		document.getElementById("sData").disabled=true;	
 		setPopupPosition();
 	}
 	
@@ -1308,6 +1310,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					createSubtestGrid();
 					$("#selectedNewTestId").val(selectedTestId);
 					$("#sData").removeClass("ui-state-disabled");
+					document.getElementById("sData").disabled=false;
 					// Added to refresh student list grid if user changes tests
 			 		hideSelectStudent();
 			 		studentIdObjArray = [];
@@ -1466,6 +1469,8 @@ function createSingleNodeSelectedTree(jsondata) {
 		$("#sessionListDiv").show();
 		$('#displayMessage').hide();
 		$("#sData").addClass("ui-state-disabled");
+		document.getElementById("sData").disabled=true;
+
 		subtestLength = 0;
 		var testBreak = document.getElementById("testBreak");
 		isTestSelected = false;
