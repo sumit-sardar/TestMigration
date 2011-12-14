@@ -301,31 +301,34 @@ function populateSelectStudentGrid() {
 				if(status) {
 					allRowSelected = true;
 					for(var i = 0; i < allStudentIds.length; i++) {						
-						if(studentTempMap == undefined) {
-							studentTempMap.put(allStudentIds[i].studentId,allStudentIds[i]);
-							studentTempIndexMap.put(studentTempIndexCount,allStudentIds[i].studentId);
-							studentTempIndexCount++;
-						}
-						
-						if (studentTempMap.get(allStudentIds[i].studentId) == null || studentTempMap.get(allStudentIds[i].studentId) == undefined) {
+						if(studentTempMap.length() == 0) {
 							studentTempMap.put(allStudentIds[i].studentId,allStudentIds[i]);
 							studentTempIndexMap.put(studentTempIndexCount,allStudentIds[i].studentId);
 							studentTempIndexCount++;
 						} else {
-							// Added to handle duplicate students
-							var studentData = studentTempMap.get(allStudentIds[i].studentId);
-							var orgList = String(studentData.orgNodeId);
-							var orgListName = studentData.orgNodeName;
-							var orgListAll = String(allStudentIds[i].orgNodeId);
-							var orgListAllName = String(allStudentIds[i].orgNodeName);
-							if(orgList.indexOf(orgListAll) == -1) {
-								orgList = orgList + "," + orgListAll;
-								orgListName = orgListName + "," + orgListAllName;
-								studentData.orgNodeId = orgList;
-								studentData.orgNodeName = orgListName;
-								studentTempMap.put(studentData.studentId, studentData);
+							if (studentTempMap.get(allStudentIds[i].studentId) == null || studentTempMap.get(allStudentIds[i].studentId) == undefined) {
+								studentTempMap.put(allStudentIds[i].studentId,allStudentIds[i]);
+								if(!isPresentIndex(allStudentIds[i].studentId)) {
+									alert("Added again");
+									studentTempIndexMap.put(studentTempIndexCount,allStudentIds[i].studentId);
+									studentTempIndexCount++;
+								}
+							} else {
+								// Added to handle duplicate students
+								var studentData = studentTempMap.get(allStudentIds[i].studentId);
+								var orgList = String(studentData.orgNodeId);
+								var orgListName = studentData.orgNodeName;
+								var orgListAll = String(allStudentIds[i].orgNodeId);
+								var orgListAllName = String(allStudentIds[i].orgNodeName);
+								if(orgList.indexOf(orgListAll) == -1) {
+									orgList = orgList + "," + orgListAll;
+									orgListName = orgListName + "," + orgListAllName;
+									studentData.orgNodeId = orgList;
+									studentData.orgNodeName = orgListName;
+									studentTempMap.put(studentData.studentId, studentData);
+								}
 							}
-						}						
+						}
 					}	
 					// Added to handle multiple organization select All	
 					var present = false;
@@ -361,31 +364,34 @@ function populateSelectStudentGrid() {
 				var selectedRowData = $("#selectStudent").getRowData(selectedRowId);
 				
 				if(status) {
-					if(studentTempMap == undefined) {
+					if(studentTempMap.length() == 0) {
 						studentTempMap.put(selectedRowId,selectedRowData);
 						studentTempIndexMap.put(studentTempIndexCount,selectedRowId);
 						studentTempIndexCount++;
-					}
-					
-					var studentDataVal = studentTempMap.get(selectedRowId);
-					if(studentDataVal == null || studentDataVal == undefined) {
-						studentTempMap.put(selectedRowId,selectedRowData);
-						studentTempIndexMap.put(studentTempIndexCount,selectedRowId);
-						studentTempIndexCount++;
-					} else {
-						// Added to handle duplicate students
-						var orgList = String(studentDataVal.orgNodeId);
-						var orgListName = studentDataVal.orgNodeName;
-						var orgListAll = String(selectedRowData.orgNodeId);
-						var orgListAllName = String(selectedRowData.orgNodeName);
-						if(orgList.indexOf(orgListAll) == -1) {
-							orgList = orgList + "," + orgListAll;
-							orgListName = orgListName + "," + orgListAllName;
-							studentDataVal.orgNodeId = orgList;
-							studentDataVal.orgNodeName = orgListName;
-							studentTempMap.put(selectedRowId, studentDataVal);
+					} else {					
+						var studentDataVal = studentTempMap.get(selectedRowId);
+						if(studentDataVal == null || studentDataVal == undefined) {
+							studentTempMap.put(selectedRowId,selectedRowData);
+							if(!isPresentIndex(selectedRowId)) {
+								alert("Added twice");
+								studentTempIndexMap.put(studentTempIndexCount,selectedRowId);
+								studentTempIndexCount++;
+							}
+						} else {
+							// Added to handle duplicate students
+							var orgList = String(studentDataVal.orgNodeId);
+							var orgListName = studentDataVal.orgNodeName;
+							var orgListAll = String(selectedRowData.orgNodeId);
+							var orgListAllName = String(selectedRowData.orgNodeName);
+							if(orgList.indexOf(orgListAll) == -1) {
+								orgList = orgList + "," + orgListAll;
+								orgListName = orgListName + "," + orgListAllName;
+								studentDataVal.orgNodeId = orgList;
+								studentDataVal.orgNodeName = orgListName;
+								studentTempMap.put(selectedRowId, studentDataVal);
+							}
 						}
-					}				
+					}
 				} else {
 					var studentIdVal = studentTempMap.get(selectedRowId);
 					if(studentIdVal != null && studentIdVal != undefined) {
@@ -754,5 +760,14 @@ function getStudentListArray(studentArray) {
 			studentTempIndexMap.put(i,studentIdCur);
 			studentTempMap.put(studentIdCur,studentMap.get(studentIdCur));
 		}
+	}
+	
+	function isPresentIndex(studentIdForCheck) {
+		var found = false;
+		for(var i = 0; i < studentTempIndexCount ; i++) {
+			if(studentTempIndexMap.get(i) != null && studentTempIndexMap.get(i) != undefined && String(studentTempIndexMap.get(i)) == String(studentIdForCheck))
+				found = true;
+		}
+		return found;
 	}
 	
