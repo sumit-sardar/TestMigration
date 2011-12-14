@@ -315,7 +315,7 @@ public class TestTicketController extends PageFlowController
             TestProduct testproduct = this.testSessionStatus.getProductForTestAdmin(this.userName, sessionId);
             Boolean isTabeProduct = TestSessionUtils.isTabeProduct(TestSessionUtils.getProductType(testproduct.getProductType())); 
             Boolean isTabeAdaptiveProduct = TestSessionUtils.isTabeAdaptiveProduct(TestSessionUtils.getProductType(testproduct.getProductType())); 
-            if (isTabeProduct.booleanValue() || isTabeAdaptiveProduct.booleanValue()) {
+            if (isTabeProduct.booleanValue()) {
                 test.setLevel(null);
                 String duration = getTestSessionDuration(testAdmin);
                 test.setDuration(duration);
