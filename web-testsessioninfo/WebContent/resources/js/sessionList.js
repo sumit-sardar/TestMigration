@@ -2157,9 +2157,29 @@ function createSingleNodeSelectedTree(jsondata) {
 						
 						}
 				} else {
+				
+					var tmpselectedRowId = "";
 					selectAllForDeleteProctor = false;
-					var indx = getProctorIDIndex(selectedRowId);
-					delProctorIdObjArray[indx]=null;
+					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
+						var selectedRowData;
+						for(var i = 0; i < addProctorLocaldata.length; i++) {
+							
+							selectedRowData = addProctorLocaldata[i];
+							if (selectedRowData.defaultScheduler == 'F') {
+							
+								selectedRowData = addProctorLocaldata[i];
+								$("#"+selectedRowData.userId+" td input").attr("checked", false); 
+								
+								tmpselectedRowId = selectedRowData.userId;
+								var indx = getProctorIDIndex(tmpselectedRowId);
+								delProctorIdObjArray[indx]=null;
+					 		}
+						}
+				
+					//selectAllForDeleteProctor = false;
+					//var indx = getProctorIDIndex(selectedRowId);
+					//delProctorIdObjArray[indx]=null;
+					
 					//deletedProctorIds = updateRule(deletedProctorIds,indx);
 					
 				} 
