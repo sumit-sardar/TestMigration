@@ -1,8 +1,6 @@
 package com.ctb.tms.web.listener;
 
 import java.sql.Connection;
-import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.servlet.ServletContextEvent;
@@ -19,6 +17,8 @@ import com.ctb.tms.rdb.OASRDBSink;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.ctb.tms.util.JMSUtils;
+import com.tangosol.net.Cluster;
+import com.tangosol.net.Member;
 
 public class TestDeliveryContextListener implements javax.servlet.ServletContextListener {
 	
@@ -91,7 +91,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 		try {
 			OASNoSQLSource oasSource = NoSQLStorageFactory.getOASSource();
 			OASNoSQLSink oasSink = NoSQLStorageFactory.getOASSink();
-			
+
 			logger.info("*****  Starting active roster check background thread . . .");
 			TestDeliveryContextListener.rosterThread = getRosterThread(oasSource, oasSink, oasDBSource, oasDBSink);
 			TestDeliveryContextListener.rosterThread.start();
@@ -128,47 +128,56 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 			//Connection sinkConn = null;
 			while (true) {
 				int fetchedCount = 0;
+				boolean isSenior = false;
 				try {
-					conn = oasDBSource.getOASConnection();
-					Exception lastError = null;
-					int errorCount = 0;
-					int storedCount = 0;
-					fetchedCount = 0;
-					StudentCredentials[] creds = oasDBSource.getActiveRosters(conn);
-					fetchedCount = creds.length;
-					/*if("true".equals(RDBStorageFactory.copytosink)) {
-						sinkConn = oasDBSink.getOASConnection();
-						oasDBSink.putActiveRosters(sinkConn, creds);
-						sinkConn.commit();
-						sinkConn.close();
-					}*/
-					for(int i=0;i<creds.length;i++) {						
-						String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
-						try {
-							RosterData rd = oasDBSource.getRosterData(conn, key);
-							Manifest[] manifests = oasDBSource.getManifest(conn, creds[i].getTestRosterId());
-							for(int j=0;j<manifests.length;j++) {
-								manifests[j].setForceReplication(true);
+					Cluster cluster = com.tangosol.net.CacheFactory.ensureCluster();
+					Member localMember = cluster.getLocalMember();
+	                Member seniorMember = cluster.getOldestMember();
+	                int nodeId = localMember.getId();
+	                int seniorId = seniorMember.getId();
+	                if(nodeId == seniorId) {
+	                	isSenior = true;
+						conn = oasDBSource.getOASConnection();
+						Exception lastError = null;
+						int errorCount = 0;
+						int storedCount = 0;
+						fetchedCount = 0;
+						StudentCredentials[] creds = oasDBSource.getActiveRosters(conn);
+						fetchedCount = creds.length;
+						/*if("true".equals(RDBStorageFactory.copytosink)) {
+							sinkConn = oasDBSink.getOASConnection();
+							oasDBSink.putActiveRosters(sinkConn, creds);
+							sinkConn.commit();
+							sinkConn.close();
+						}*/
+						for(int i=0;i<creds.length;i++) {						
+							String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
+							try {
+								RosterData rd = oasDBSource.getRosterData(conn, key);
+								Manifest[] manifests = oasDBSource.getManifest(conn, creds[i].getTestRosterId());
+								for(int j=0;j<manifests.length;j++) {
+									manifests[j].setForceReplication(true);
+								}
+								rd.setForceReplication(true);
+								oasSink.putRosterData(creds[i], rd);
+								oasSink.putAllManifests(creds[i].getTestRosterId(), manifests);
+								rd = null;
+								manifests = null;
+								storedCount++;
+							} catch (Exception e) {
+								//logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
+								errorCount++;
+								lastError = e;
 							}
-							rd.setForceReplication(true);
-							oasSink.putRosterData(creds[i], rd);
-							oasSink.putAllManifests(creds[i].getTestRosterId(), manifests);
-							rd = null;
-							manifests = null;
-							storedCount++;
-						} catch (Exception e) {
-							//logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
-							errorCount++;
-							lastError = e;
+							key = null;
 						}
-						key = null;
-					}
-					creds = null;
-					if(errorCount > 0) {
-						logger.warn("Failed to store data in cache for " + errorCount + " rosters! Last exception: ", lastError);
-					}
-					logger.info("Stored data in cache for " + storedCount + " rosters.");
-					creds = null;
+						creds = null;
+						if(errorCount > 0) {
+							logger.warn("Failed to store data in cache for " + errorCount + " rosters! Last exception: ", lastError);
+						}
+						logger.info("Stored data in cache for " + storedCount + " rosters.");
+						creds = null;
+                	}
 				} catch (Exception e) {
 					logger.error("Caught Exception during active roster check.", e);
 					e.printStackTrace();
@@ -184,9 +193,12 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 							int sleepSeconds = (TestDeliveryContextListener.checkFrequency / 10);
 							logger.info("Fetched full batch. Sleeping for " + sleepSeconds + " seconds.");
 							Thread.sleep(sleepSeconds * 1000);
-						} else {
+						} else if(isSenior){
 							logger.info("*****  Completed active roster check. Sleeping for " + checkFrequency + " seconds.");
 							Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000);
+						} else {
+							logger.info("*****  This is not the designated pre-population node - skipping active roster check. Sleeping for " + checkFrequency * 2 + " seconds.");
+							Thread.sleep(TestDeliveryContextListener.checkFrequency * 1000 * 2);
 						}
 					}catch (Exception ie) {
 						// do nothing
