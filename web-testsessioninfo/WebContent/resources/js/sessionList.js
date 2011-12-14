@@ -1581,7 +1581,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		} 
 			
 		if(startDate.length != 0 && endDate.length != 0 && !validateDate(startDate,endDate)){
-			 	setMessage(INVALID_DATES, INVALID_DATES_MSG, "errorMessage", "");       
+			 	setMessage(INVALID_DATES_MSG, "", "errorMessage", "");       
 		}	
 			
 		var invalidCharFields = verifyTestInfo(testSessionName, "", testLocation);
