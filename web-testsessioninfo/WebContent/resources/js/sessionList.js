@@ -622,6 +622,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			studentTempIndexMap = new Map();
 			studentIndexCount = 0;
 			studentTempIndexCount = 0;
+			resetOnSelectTestSessionData();
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -1088,6 +1089,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			} 
 			isTestSelected = false;		
 		}
+		resetOnSelectTestSessionData();
 		processStudentAccordion();
 		processProctorAccordion();
 
@@ -1746,6 +1748,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			} 
 			isTestSelected = false;		
 		}
+		resetOnSelectTestSessionData();
 	
 	}
 	
@@ -2462,8 +2465,18 @@ function createSingleNodeSelectedTree(jsondata) {
 	       element.value=$.trim(element.value);
 	}
 
-	function  resetSessionData() {
-
+	function  resetOnSelectTestSessionData() {
+		document.getElementById("testSessionName").value = "";
+		document.getElementById("startDate").value = "";			
+		document.getElementById("endDate").value = "";			
+		document.getElementById("time").innerHTML = "8:00 AM - 5:00 PM";
+		document.getElementById("endDate").value = "";
+		document.getElementById("aCode").value = "";
+		isTestSelected = false;
+		document.getElementById("testBreak").checked = false;
+    	isTestBreak = false;
+	    $("#hasTestBreak").val("F");
+	    document.getElementById("sData").disabled=true;
 	}
 
 
