@@ -655,12 +655,14 @@ public class OASOracleSource implements OASRDBSource
 	private ManifestData[] getManifest(Connection con, String testRosterId, String accessCode) throws IOException, ClassNotFoundException {
 		logger.debug("Looking for manifest for roster " + testRosterId + ", accessCode " + accessCode);
 		com.ctb.tms.bean.login.Manifest[] manifests = getManifest(con, testRosterId);
-		for(int i=0;i<manifests.length;i++) {
-			com.ctb.tms.bean.login.Manifest manifest = manifests[i];
-			logger.debug("     Comparing access code: " + manifest.getAccessCode());
-			if(accessCode.equalsIgnoreCase(manifest.getAccessCode())) {
-				logger.debug("     Found matching manifest! ");
-				return manifest.getManifest();
+		if(manifests != null) {
+			for(int i=0;i<manifests.length;i++) {
+				com.ctb.tms.bean.login.Manifest manifest = manifests[i];
+				logger.debug("     Comparing access code: " + manifest.getAccessCode());
+				if(accessCode.equalsIgnoreCase(manifest.getAccessCode())) {
+					logger.debug("     Found matching manifest! ");
+					return manifest.getManifest();
+				}
 			}
 		}
 		return null;
@@ -742,14 +744,18 @@ public class OASOracleSource implements OASRDBSource
 				manifest.setAccessCode(accessCode);
 				// fill in roster data for updated manifests
 				AuthenticationData auth = authenticateStudentByRoster(con, testRosterId, accessCode);
-				manifest.setRosterLastMseq(auth.getLastMseq());
-				manifest.setRosterRestartNumber(auth.getRestartNumber());
-				manifest.setRosterCorrelationId(auth.getCorrelationId());
-				manifest.setRandomDistractorSeed(auth.getRandomDistractorSeedNumber());
-				manifest.setRosterCompletionStatus(auth.getRosterTestCompletionStatus());
-				manifest.setRosterStartTime(auth.getStartTime());
-				manifest.setRosterEndTime(auth.getEndTime());
-				manifests[i] = manifest;
+				if(auth != null) {
+					manifest.setRosterLastMseq(auth.getLastMseq());
+					manifest.setRosterRestartNumber(auth.getRestartNumber());
+					manifest.setRosterCorrelationId(auth.getCorrelationId());
+					manifest.setRandomDistractorSeed(auth.getRandomDistractorSeedNumber());
+					manifest.setRosterCompletionStatus(auth.getRosterTestCompletionStatus());
+					manifest.setRosterStartTime(auth.getStartTime());
+					manifest.setRosterEndTime(auth.getEndTime());
+					manifests[i] = manifest;
+				} else {
+					return null;
+				}
 				i++;
 			}
 		} catch (Exception e) {

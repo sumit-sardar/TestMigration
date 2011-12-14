@@ -155,15 +155,20 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 							try {
 								RosterData rd = oasDBSource.getRosterData(conn, key);
 								Manifest[] manifests = oasDBSource.getManifest(conn, creds[i].getTestRosterId());
-								for(int j=0;j<manifests.length;j++) {
-									manifests[j].setForceReplication(true);
+								if(manifests != null) {
+									for(int j=0;j<manifests.length;j++) {
+										manifests[j].setForceReplication(true);
+									}
+									rd.setForceReplication(true);
+									oasSink.putRosterData(creds[i], rd);
+									oasSink.putAllManifests(creds[i].getTestRosterId(), manifests);
+									rd = null;
+									manifests = null;
+									storedCount++;
+								} else {
+									errorCount++;
+									lastError = new Exception("Couldn't retrieve manifest for " + key);
 								}
-								rd.setForceReplication(true);
-								oasSink.putRosterData(creds[i], rd);
-								oasSink.putAllManifests(creds[i].getTestRosterId(), manifests);
-								rd = null;
-								manifests = null;
-								storedCount++;
 							} catch (Exception e) {
 								//logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
 								errorCount++;
