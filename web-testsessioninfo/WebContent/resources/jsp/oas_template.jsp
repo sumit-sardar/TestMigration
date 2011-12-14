@@ -37,6 +37,7 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jqGrid.min.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/sessionConstants.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/map.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/sessionList.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/addStudent.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/addProctor.js"></script>
