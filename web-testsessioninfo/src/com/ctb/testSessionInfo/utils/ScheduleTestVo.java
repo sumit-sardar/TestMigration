@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestElementData;
@@ -376,6 +378,26 @@ public class ScheduleTestVo implements Serializable{
 				idToTestMap.put(testVO.getId(), testVO);
 			}
 		}
+		
+	}
+
+	@SuppressWarnings("deprecation")
+	public void populateDefaultDateAndTime(String timeZone, Map<Integer, TestVO> idToTestMap) {
+		Date now = new Date(System.currentTimeMillis());
+        Date today = com.ctb.util.DateUtils.getAdjustedDate(now, TimeZone.getDefault().getID(), timeZone, now);
+        Date tomorrow = com.ctb.util.DateUtils.getAdjustedDate(new Date(now.getTime() + (24 * 60 * 60 * 1000)), TimeZone.getDefault().getID(), timeZone, now);
+        for(TestVO testVO : idToTestMap.values()) {
+        	if (testVO.getOverrideLoginStartDate() != null && !(DateUtils.isBeforeToday(testVO.getOverrideLoginStartDate(), timeZone ))) {
+        		Date loginEndDate = (Date)testVO.getOverrideLoginStartDate().clone();
+                loginEndDate.setDate(loginEndDate.getDate() + 1);
+                testVO.setStartDate(DateUtils.formatDateToDateString(testVO.getOverrideLoginStartDate()));
+                testVO.setEndDate(DateUtils.formatDateToDateString(loginEndDate));
+        	
+        	} else {
+        		testVO.setStartDate(DateUtils.formatDateToDateString(today));
+        		testVO.setEndDate(DateUtils.formatDateToDateString(tomorrow));
+        	}
+        }
 		
 	}
 	

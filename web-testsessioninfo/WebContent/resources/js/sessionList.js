@@ -563,7 +563,15 @@ function createSingleNodeSelectedTree(jsondata) {
 						$("#randDisLbl").hide();
 						$("#randomDis").val("");	
 						//$("#randomDistDiv").hide();
-					}					
+					}
+					document.getElementById("startDate").value = sessionList[i].startDate;
+					document.getElementById("endDate").value = sessionList[i].endDate;
+					currDate = sessionList[i].startDate;
+					nextDate = sessionList[i].endDate;
+					$( "#startDate" ).datepicker( "option" , "minDate" , currDate ) ;
+					$( "#endDate" ).datepicker( "option" , "minDate" , nextDate ) ;
+					$( "#endDate" ).datepicker( "refresh" );
+					$( "#startDate" ).datepicker( "refresh" );
 					break;					
 				}
 			}
@@ -1288,7 +1296,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					isTestBreak = false;
 					$("#hasTestBreak").val("F");
 					//document.getElementById("aCode").style.display = "none";
-					populateDates();
+					//populateDates();
 					var val = getDataFromTestJson(selectedTestId, testSessionlist);
 					subtestDataArr = val;
 					if(subtestDataArr!= undefined && subtestDataArr.length>1){
@@ -2432,6 +2440,10 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	function trimTextValue(element){
 	       element.value=$.trim(element.value);
+	}
+
+	function  resetSessionData() {
+
 	}
 
 

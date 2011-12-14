@@ -37,6 +37,10 @@ public class TestVO implements java.io.Serializable
     
     int subtestCount = 0;
     
+    private String startDate;
+    
+	private String endDate;
+    
     private Boolean offGradeTestingDisabled = Boolean.FALSE;
     
     private String formOperand = TestSession.FormAssignment.ROUND_ROBIN;
@@ -242,6 +246,38 @@ public class TestVO implements java.io.Serializable
 	 */
 	public String getFormOperand() {
 		return formOperand;
+	}
+
+	
+	/**
+	 * @return the startDate
+	 */
+	public String getStartDate() {
+		return startDate;
+	}
+
+	
+	/**
+	 * @param startDate the startDate to set
+	 */
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	
+	/**
+	 * @return the endDate
+	 */
+	public String getEndDate() {
+		return endDate;
+	}
+
+	
+	/**
+	 * @param endDate the endDate to set
+	 */
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
     
     

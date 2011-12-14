@@ -130,14 +130,14 @@
 				$('#startDate').datepicker({
 					inline: true,
 					clickInput:true,
-					minDate: new Date(currDate)
+					dateFormat: 'mm/dd/y'				
 
 				});
 				
 				$('#endDate').datepicker({
 					inline: true,
-					clickInput:true,					
-					minDate: new Date(nextDate)
+					clickInput:true,
+					dateFormat: 'mm/dd/y'
 
 				});
 				//$("#endDate").val(nextDate);

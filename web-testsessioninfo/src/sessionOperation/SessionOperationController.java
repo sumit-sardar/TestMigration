@@ -438,6 +438,7 @@ public class SessionOperationController extends PageFlowController {
                      productName = tps[0].getProductName();
                      selectedProductId = tps[0].getProductId().toString();
                      vo.populateAccessCode(scheduleTest);
+                     vo.populateDefaultDateAndTime(this.user.getTimeZone(), this.idToTestMap);
                 }
            } 
             if(tps.length<=0) {
@@ -1017,8 +1018,7 @@ public class SessionOperationController extends PageFlowController {
              
     		 if( overrideLoginSDate != null && dateStarted.compareTo(overrideLoginSDate ) < 0){
     			 validationFailedInfo.setKey("SaveTest.StartDateBeforeOverrideStartDate");
-     			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeOverrideStartDate.Header"));
-     			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeOverrideStartDate.Body","" +DateUtils.formatDateToDateString(overrideLoginSDate)));
+     			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeOverrideStartDate.Header","" +DateUtils.formatDateToDateString(overrideLoginSDate)));
     		 } else if ( DateUtils.isBeforeToday(dateStarted, timeZone) ){
     			 validationFailedInfo.setKey("SaveTest.StartDateBeforeOverrideStartDate");
      			 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.StartDateBeforeToday.Header"));
@@ -1044,7 +1044,11 @@ public class SessionOperationController extends PageFlowController {
      private void validateTestSession(TestSession testSession,	ValidationFailedInfo validationFailedInfo) throws Exception {
 		String[] TACs = new String[1];
 		TACs[0] = testSession.getAccessCode();
-		if (!WebUtils.validString(testSession.getTestAdminName())) {
+		if( testSession.getTestAdminName() == null || testSession.getTestAdminName().trim().length()==0 ) {
+			validationFailedInfo.setKey("SaveTest.TestSessionNameRequired");
+			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SaveTest.TestSessionNameRequired.Header"));
+			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("SaveTest.TestSessionNameRequired.Body"));
+		}else if (!WebUtils.validString(testSession.getTestAdminName())) {
 			validationFailedInfo.setKey("SelectSettings.TestSessionName.InvalidCharacters");
 			validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SelectSettings.TestSessionName.InvalidCharacters.Header"));
 			validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("SelectSettings.TestSessionName.InvalidCharacters.Body"));
@@ -1257,19 +1261,23 @@ public class SessionOperationController extends PageFlowController {
 		UserNodeData und = null;
 
 		try {
-			this.user = this.scheduleTest.getUserDetails(this.userName,
-					this.userName);
-			und = this.scheduleTest.getTopUserNodesForUser(this.userName, null,
-					null, null, null);
-			UserNode[] nodes = und.getUserNodes();
-			for (int i = 0; i < nodes.length; i++) {
-				UserNode node = (UserNode) nodes[i];
-				if (node != null) {
-					this.topNodesMap.put(node.getOrgNodeId(), node
-							.getOrgNodeName());
-				}
+			if(this.user == null || this.topNodesMap == null || (this.topNodesMap!=null && this.topNodesMap.size()==0 ) ) {
+				if(this.user ==null)
+					this.user =  userManagement.getUser(this.userName, this.userName);
+				und = this.scheduleTest.getTopUserNodesForUser(this.userName, null,
+						null, null, null);
+				UserNode[] nodes = und.getUserNodes();
+				for (int i = 0; i < nodes.length; i++) {
+					UserNode node = (UserNode) nodes[i];
+					if (node != null) {
+						this.topNodesMap.put(node.getOrgNodeId(), node
+								.getOrgNodeName());
+					}
 
-			}
+				}
+			}			
+			
+			
 		} catch (CTBBusinessException e) {
 			e.printStackTrace();
 		}
