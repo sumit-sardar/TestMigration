@@ -105,6 +105,7 @@ function createSingleNodeSelectedTreeForProctor(jsondata) {
 			 	 
   			proctorForSelectedOrg = $(this).parent().attr("id");
  		    $("#proctorOrgNodeId").val(proctorForSelectedOrg);
+ 		    allRowSelectedPro = false;
  		    UIBlock();
  		    if(!selectProctorGridLoaded) {
  		        populateSelectProctorGrid();
@@ -116,6 +117,7 @@ function createSingleNodeSelectedTreeForProctor(jsondata) {
 
 function populateSelectProctorGrid() {
  		UIBlock();
+ 		
  		selectProctorGridLoaded = true;
  		//reset();
        $("#selectProctor").jqGrid({         
@@ -180,6 +182,11 @@ function populateSelectProctorGrid() {
 						selectedSessionPro = sessions;
 					} 
 				}
+				
+				if(allRowSelectedPro) {
+					$("#cb_selectProctor").attr("checked", true);
+				}
+				
 			},
 			gridComplete: function() {
 			
@@ -190,6 +197,11 @@ function populateSelectProctorGrid() {
 						allRowChecked = true;
 				}
 			} 
+			
+			if (allRowSelectedPro) {
+				
+				allRowChecked = true;
+			}
 			
 			if(allRowChecked) { 
 				 	$("#cb_selectProctor").attr("checked", true);
@@ -208,29 +220,7 @@ function populateSelectProctorGrid() {
 				 	}
 			 } 
 			 
-			 /*else {
-			 	if(proctorForSelectedOrg != preSelectedOrgPro) {
-				
-					if(addProctorLocaldata != null && addProctorLocaldata.length > 0) {
-						$('.cbox').attr('checked', false); 
-						for(var i = 0; i < addProctorLocaldata.length; i++) {
-							var proctorObj = addProctorLocaldata[i];
-							if(proctorObj != null && proctorObj != undefined) {
-								$("#"+proctorObj.userId+" td input").attr("checked", true);
-								$("#"+proctorObj.userId).trigger('click');
-								$("#"+proctorObj.userId+" td input").attr("checked", true); 
-							} 					
-						}
-					} else { 
-						$('.cbox').attr('checked', false); 
-						if(isOnBackProctor) {
-							hideSelectedProctor();
-						}
-					}
-				 	
-				 }
-			 }*/
-			 
+			 			 
 			 else {
 			 	var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
 					var selectedRowData;
@@ -275,7 +265,7 @@ function populateSelectProctorGrid() {
 					//pindex = 0;
 					//proctorIdObjArray = [];
 				//}
-				
+				pindex = getRuleLength ();
 				if(status) {
 					allRowSelectedPro = true;
 					for(var i = 0; i < allProctorIds.length; i++) {
@@ -310,12 +300,19 @@ function populateSelectProctorGrid() {
 						countAllSelectProctor++;
 					}			
 				} else {
-					allRowSelectedPro = false;	
-													
+					allRowSelectedPro = false;
+					/*var loginJson = proctorIdObjArray[0];	
+					proctorIdObjArray = [];
+					proctorIdObjArray[0]=loginJson;
+					selectedProctorIds = loginJson.userId+"_0";	*/							
 					for(var i = 0; i < allProctorIds.length; i++) {
 						if (allProctorIds[i].defaultScheduler == 'F') {
 							var selectedRowData = allProctorIds[i];							
-							var indx = getProctorIDIndex(selectedRowData.userId);							
+							var indx = getProctorIDIndex(selectedRowData.userId);	
+							if (indx.match("_tmp") != null) {
+	
+								indx = indx.replace(/_tmp/gi,"");
+							}						
 							removeProctorByIndex(indx); 							
 							selectedProctorIds = updateRule(selectedProctorIds,indx);							
 						}						
@@ -324,12 +321,21 @@ function populateSelectProctorGrid() {
 					for(var i = 0; i < allSelectOrgProctor.length; i++) {
 						if(allSelectOrgProctor[i] != null && allSelectOrgProctor[i] == proctorForSelectedOrg)
 							allSelectOrgProctor[i] = null;
-					}									
+					}
+					if (selectedProctorIds.split("|").length > 1) {
+					
+						allRowSelectedPro = true;
+					} else {
+					
+						allRowSelectedPro = false;
+					}
+														
 				}
 			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
 				var alreadyExists = false;
+				allRowSelectedPro = false;
 
 				for (var j in proctorIdObjArray) {
 					var existingSelectedRowId = getProctorRowID (j);
@@ -356,9 +362,18 @@ function populateSelectProctorGrid() {
 				
 					var indx = getProctorIDIndex(selectedRowId);
 					removeProctorByIndex(indx); 
+					/*if (allProctorIds.length == getRuleLength()) {
+					
+						$("#cb_selectProctor").attr("checked", true);
+					}*/
 					selectedProctorIds = updateRule(selectedProctorIds,indx);
 										
 				} 
+				
+				if (allProctorIds.length == getRuleLength()) {
+				
+					allRowSelectedPro = true;
+				}
 			},
 			loadComplete: function () {
 				if ($('#selectProctor').getGridParam('records') === 0) {
@@ -392,6 +407,13 @@ function populateSelectProctorGrid() {
 	 });
 	  jQuery("#selectProctor").jqGrid('navGrid','#selectProctorPager',{edit:false,add:false,del:false,search:false,refresh:false});
 	  //jQuery("#selectProctor").jqGrid('filterToolbar');
+
+}
+
+function getRuleLength () {
+
+	var tmpArr = selectedProctorIds.split("|");
+	return tmpArr.length;
 
 }
 
