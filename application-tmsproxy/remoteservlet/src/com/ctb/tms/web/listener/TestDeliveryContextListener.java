@@ -22,7 +22,7 @@ import com.tangosol.net.Member;
 
 public class TestDeliveryContextListener implements javax.servlet.ServletContextListener {
 	
-	public static final int batchSize = 10000;
+	public static final int batchSize = 25000;
 	
 	private static int checkFrequency = 30;
 	private static int postFrequency = 5;
