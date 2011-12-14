@@ -2297,7 +2297,40 @@ function createSingleNodeSelectedTree(jsondata) {
 		 $("#removeProctorConfirmationPopup").parent().css("left",leftpos);	
 		 
 	}
-
+	function closeScheduleSessionPopup() {
+	    closePopUp('closeScheduleSessionPopup');
+		closePopUp('scheduleSession');
+	
+	}
+	 
+	function openCloseScheduleSessionPopup(){
+		$("#closeScheduleSessionPopup").dialog({  
+		title:"Confirmation Alert",  
+	 	resizable:false,
+	 	autoOpen: true,
+	 	width: '400px',
+	 	modal: true,
+	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+		});	
+		 $("#closeScheduleSessionPopup").css('height',120);
+		 var toppos = ($(window).height() - 290) /2 + 'px';
+		 var leftpos = ($(window).width() - 410) /2 + 'px';
+		 $("#closeScheduleSessionPopup").parent().css("top",toppos);
+		 $("#closeScheduleSessionPopup").parent().css("left",leftpos);	
+		 
+	}
+    
+    function onCloseScheduleSessionPopUp() {
+    	var sessionName = document.getElementById("testSessionName").value;
+    	if( sessionName!= null && $.trim(sessionName).length == 0 ){
+    		closePopUp('scheduleSession');
+    	} else {
+    		openCloseScheduleSessionPopup();
+    	}
+    
+    
+    }
+    
     function saveTest() {
     $('#displayMessage').hide();
     $('#showSaveTestMessage').hide();

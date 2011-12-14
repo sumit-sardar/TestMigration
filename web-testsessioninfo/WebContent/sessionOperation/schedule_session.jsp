@@ -99,7 +99,7 @@
 							<td  width="100%">
 								<center>
 								<input type="button"  id="sData" value="&nbsp;Save&nbsp;" onclick="javascript:saveTest(); return false;" disabled="disabled" class="ui-widget-header">
-								<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('scheduleSession'); return false;" class="ui-widget-header">
+								<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:onCloseScheduleSessionPopUp(); return false;" class="ui-widget-header">
 								</center>
 								<br>
 							</td>
@@ -111,4 +111,25 @@
 				</table>
 			</div>
 		</div>
+</div>
+
+
+<div id="closeScheduleSessionPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table>
+		<tr>
+			<td colspan="2">
+				<p><netui:content value="${bundle.web['scheduleTest.cancelConfirmation.message']}"/></p>
+				<p></p>
+			</td>
+		</tr>
+		<tr>
+			<td >
+				<center>
+					<input type="button"  value="${bundle.web['homepage.button.ok']}" onclick=" javascript:closeScheduleSessionPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+					<input type="button"  value="${bundle.web['homepage.button.cancel']}" onclick="javascript:closePopUp('closeScheduleSessionPopup'); return false;" class="ui-widget-header" style="width:60px">
+				</center>
+			</td>
+		</tr>
+		
+	</table>
 </div>
