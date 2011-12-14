@@ -26,8 +26,7 @@ Map.prototype.put = function(key, value) {
 	//Update map
     if (this.items[key] != null){
         this._removeItem(key);
-		this._addItem(new map(key, value));
-		}
+	}
     this._addItem(new map(key, value));
 };
 
