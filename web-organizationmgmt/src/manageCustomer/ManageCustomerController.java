@@ -1499,6 +1499,7 @@ public class ManageCustomerController extends PageFlowController
         getUserDetails();
         //Bulk Accommodation Changes
         customerHasBulkAccommodation();
+        customerHasResetTestSessions();
         customerHasScoring(); // For hand scoring changes
         isTopLevelUser();
         this.savedForm = new ManageCustomerForm();
@@ -2583,6 +2584,40 @@ public class ManageCustomerController extends PageFlowController
        
         return new Boolean(hasBulkStudentConfigurable);
     }
+	
+	
+	/**
+	 * Reset Test Session
+	 */
+	private Boolean customerHasResetTestSessions() 
+	{	
+		Integer customerId = this.user.getCustomer().getCustomerId();
+		boolean hasResetTestSessionsConfigurable = false;
+		try
+        {
+			CustomerConfiguration [] customerConfigurations = users.getCustomerConfigurations(customerId.intValue());
+			if (customerConfigurations == null || customerConfigurations.length == 0) {
+				customerConfigurations = users.getCustomerConfigurations(2);
+			}
+			
+			for (int i=0; i < customerConfigurations.length; i++) {
+	
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_User_Reset_Subtest") && 
+						cc.getDefaultValue().equals("T")) {
+					hasResetTestSessionsConfigurable = true; 
+					break;
+				}
+			}
+	
+			getSession().setAttribute("isResetTestSessionsConfigured", hasResetTestSessionsConfigurable);
+        }
+        catch (SQLException se) {
+        	se.printStackTrace();
+		}
+
+		return new Boolean(hasResetTestSessionsConfigurable);           
+	}
 	
 //changes for scoring
 	

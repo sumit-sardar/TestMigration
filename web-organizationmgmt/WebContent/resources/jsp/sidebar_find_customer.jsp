@@ -65,6 +65,16 @@
 </ctb:auth>
 
 
+
+<c:if test="${ sessionScope.isResetTestSessionsConfigured}">
+	<ctb:auth roles="Administrator, Administrative Coordinator">
+	<h1>Tests</h1>
+	<ul>
+	    <li><a href="/OrganizationManagementWeb/manageCustomerService/CustomerServiceManagementController.jpf" ><span>Reset Test Session</span></a></li>
+	</ul>
+	</ctb:auth>
+</c:if>
+
 <ctb:auth roles="root, Account Manager">
 <h1>Tests</h1>
 <ul>
