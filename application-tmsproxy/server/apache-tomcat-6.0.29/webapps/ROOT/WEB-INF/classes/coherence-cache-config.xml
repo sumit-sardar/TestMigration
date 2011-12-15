@@ -121,7 +121,7 @@
         <distributed-scheme>            
             <scheme-name>DistributedScheme</scheme-name>
             <service-name>PartitionedCache</service-name> 
-            <thread-count>4</thread-count>           
+            <thread-count>40</thread-count>           
             <backing-map-scheme>                
                 <read-write-backing-map-scheme>                    
                     <scheme-ref>DBScheme</scheme-ref>
@@ -149,7 +149,7 @@
 		<proxy-scheme>
 			<scheme-name>proxy-scheme</scheme-name>
 			<service-name>ExtendTcpProxyService</service-name>
-			<thread-count>4</thread-count>
+			<thread-count>20</thread-count>
             <acceptor-config>
                 <tcp-acceptor>
 	                <address-provider>
