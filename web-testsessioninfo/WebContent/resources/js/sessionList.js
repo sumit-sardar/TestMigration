@@ -730,6 +730,29 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 				
 			},
+			gridComplete: function() {
+				if(selectAllForDelete) {
+					$("#cb_list6").attr("checked", true);
+				 	$("#cb_list6").trigger('click');
+				 	$("#cb_list6").attr("checked", true);
+				} else {
+					var allRowsInGridPresent = $('#list6').jqGrid('getDataIDs');
+					for(var k = 0; k < allRowsInGridPresent.length; k++) {
+						var selectedRowData = $("#list6").getRowData(allRowsInGridPresent[k]);
+						var selectedRowId = selectedRowData.studentId;
+						if(delStuIdObjArray != undefined && delStuIdObjArray.length > 0) {
+							for(var j = 0; j < delStuIdObjArray.length; j++) {
+								if(delStuIdObjArray[j] != undefined && delStuIdObjArray[j] == selectedRowId) {
+									$("#"+allRowsInGridPresent[k]+" td input").attr("checked", true);
+						 			$("#"+allRowsInGridPresent[k]).trigger('click');
+						 			$("#"+allRowsInGridPresent[k]+" td input").attr("checked", true);
+								}
+							}
+						}
+					}
+					
+				}
+			},
 			onSelectAll: function (rowIds, status) {
 				if(status) {
 					selectAllForDelete = true;
@@ -737,24 +760,30 @@ function createSingleNodeSelectedTree(jsondata) {
 				} else {
 					selectAllForDelete = false;
 					delStuIdObjArray = [];
+					deleteStudentCounter = 0;
 				}
 			},
 			onSelectRow: function (rowid, status) {
-				selectAllForDelete = false;
+				//selectAllForDelete = false;
 				var selectedRowData = $("#list6").getRowData(rowid);
 				var selectedRowId = selectedRowData.studentId;
 				if(status) {
-					delStuIdObjArray[deleteStudentCounter] = selectedRowId;
-					deleteStudentCounter++; 
+					if(!checkPresenceInDelStuIdObjArray(selectedRowId)) {
+						delStuIdObjArray[deleteStudentCounter] = selectedRowId;
+						deleteStudentCounter++;
+					}
 				} else {
+					selectAllForDelete = false;
 					var delIndx = -1;
 					for(var k = 0; k < deleteStudentCounter; k++) {
 						if(delStuIdObjArray[k] == selectedRowId) {
 							delIndx = k;
 						}
 					}
-					if(k != -1)
+					if(k != -1) {
 						delStuIdObjArray.splice(k,1);
+						deleteStudentCounter--;
+					}
 				}
 			},
 			loadComplete: function () {
@@ -828,9 +857,30 @@ function createSingleNodeSelectedTree(jsondata) {
 	element.title = 'Remove Student'; 
 	}
 	
+	function checkPresenceInDelStuIdObjArray(deleteId) {
+		var present = false;
+		if (delStuIdObjArray == undefined || delStuIdObjArray.length  <= 0)
+			return present;
+		for(var i = 0; i < delStuIdObjArray.length; i++) {
+			if(delStuIdObjArray[i] == deleteId) {
+				present = true;
+				break;
+			}
+		}
+		return present;
+	}
+	
 	function removeSelectedStudent() {
 		for(var i = 0; i < delStuIdObjArray.length; i++) {
-			if(studentTempMap != undefined && studentTempMap.get(delStuIdObjArray[i]) != null && studentTempMap.get(delStuIdObjArray[i]) != undefined) {
+			if(studentTempMap != undefined && studentTempMap.get(delStuIdObjArray[i]) != null && studentTempMap.get(delStuIdObjArray[i]) != undefined) {				
+				if(allSelectOrg != undefined && allSelectOrg.length > 0) {
+					for(var k = 0; k < allSelectOrg.length; k++) {
+						if(allSelectOrg[k] == (studentTempMap.get(delStuIdObjArray[i])).orgNodeId) {
+							allSelectOrg.splice(k,1);
+							countAllSelect--;
+						}
+					}
+				}
 				studentTempMap.put(delStuIdObjArray[i],null);
 			}
 		}

@@ -352,9 +352,11 @@ function populateSelectStudentGrid() {
 							updateOrganizationInDelete(allStudentIds[i].studentId,studIdVal);
 						}
 					}
-					for(var i = 0; i < allSelectOrg.length; i++) {
-						if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
+					for(var i = 0; i < countAllSelect; i++) {
+						if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg) {
 							allSelectOrg.splice(i,1);
+							countAllSelect--;
+						}
 					}									
 				}
 			},
@@ -485,7 +487,18 @@ function updateDupStudent(){
 			studentIndexCount++;
 			studentDataTe = studentMap.get(objstr.studentId);
 		}
+		splitArr = studentDataTe.orgNodeId.split(",");
+		for(var i = 0; i < splitArr.length; i++) {
+			for(var k = 0; k < countAllSelect; k++) {
+				if(allSelectOrg[k] != null && allSelectOrg[k] == splitArr[i]) {
+					allSelectOrg.splice(i,1);
+					countAllSelect--;
+				}
+			}
+		}
 		studentDataTe.orgNodeId = orgId;
+		allSelectOrg[countAllSelect] = orgId;
+		countAllSelect++;
 		studentDataTe.orgNodeName = $.trim(OrgName);
 		studentMap.put(objstr.studentId,studentDataTe);
 	}
@@ -497,6 +510,8 @@ function updateDupStudent(){
 	
 function returnSelectedStudent() {
 	var duplicateStuArray=[];
+	delStuIdObjArray = [];
+	selectAllForDelete = 0;
 	orgForDupStu = [];
 	var dupStuPresent = false;
 	var duplicateStuArraydata ={};
