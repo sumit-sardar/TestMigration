@@ -164,6 +164,7 @@ public class ItemScoringController extends PageFlowController {
 		ItemScoringForm form = initialize(ACTION_SCORE_BY_ITEM);
 		isGeorgiaCustomer(form);
 		customerHasBulkAccommodation();
+		customerHasResetTestSessions();
 		customerHasScoring();
 		isTopLevelUser();
 		return new Forward("success", form);
@@ -227,6 +228,7 @@ public class ItemScoringController extends PageFlowController {
 
 		this.pageTitle  = "List Of Items";
 		customerHasBulkAccommodation();
+		customerHasResetTestSessions();
 		if(itemList.isEmpty())
 		{	
 			this.getRequest().setAttribute("itemSearchEmpty", MessageResourceBundle.getMessage("itemSearchEmpty"));        
@@ -389,6 +391,28 @@ public class ItemScoringController extends PageFlowController {
 
 
 		return new Boolean(hasBulkStudentConfigurable);           
+	}
+	/**
+	 * Reset Test Session
+	 */
+	private Boolean customerHasResetTestSessions() 
+	{
+		boolean hasResetTestSessionsConfigurable = false;
+		//Bulk Accommodation
+		for (int i=0; i < this.customerConfigurations.length; i++) {
+
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_User_Reset_Subtest") && 
+					cc.getDefaultValue().equals("T")) {
+				hasResetTestSessionsConfigurable = true; 
+				break;
+			}
+		}
+
+		getSession().setAttribute("isResetTestSessionsConfigured", hasResetTestSessionsConfigurable);
+
+
+		return new Boolean(hasResetTestSessionsConfigurable);           
 	}
 	
 	/**

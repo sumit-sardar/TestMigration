@@ -126,6 +126,7 @@ public class ScoreByStudentController extends PageFlowController {
 		ScoreByStudentForm form = initialize(ACTION_FIND_STUDENT);
 		isGeorgiaCustomer(form);
 		customerHasBulkAccommodation();
+		customerHasResetTestSessions();
 		customerHasScoring();
 		isTopLevelUser();
 
@@ -210,6 +211,7 @@ public class ScoreByStudentController extends PageFlowController {
 			getUserDetails();
 			isGeorgiaCustomer(form);
 			customerHasBulkAccommodation();
+			customerHasResetTestSessions();
 			customerHasScoring();
 			isTopLevelUser();
 			form.setUserName((String) getSession().getAttribute("userName"));
@@ -424,6 +426,29 @@ public class ScoreByStudentController extends PageFlowController {
 				hasBulkStudentConfigurable);
 
 		return new Boolean(hasBulkStudentConfigurable);
+	}
+	
+	/**
+	 * Reset Test Session
+	 */
+	private Boolean customerHasResetTestSessions() 
+	{
+		boolean hasResetTestSessionsConfigurable = false;
+		//Bulk Accommodation
+		for (int i=0; i < this.customerConfigurations.length; i++) {
+
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_User_Reset_Subtest") && 
+					cc.getDefaultValue().equals("T")) {
+				hasResetTestSessionsConfigurable = true; 
+				break;
+			}
+		}
+
+		getSession().setAttribute("isResetTestSessionsConfigured", hasResetTestSessionsConfigurable);
+
+
+		return new Boolean(hasResetTestSessionsConfigurable);           
 	}
 
 	private Boolean customerHasScoring() {

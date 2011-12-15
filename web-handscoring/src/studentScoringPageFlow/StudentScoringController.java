@@ -242,6 +242,7 @@ public class StudentScoringController extends PageFlowController {
 		this.pageTitle  = "Scoring: Find Student";
 		
 		customerHasBulkAccommodation();
+		customerHasResetTestSessions();
 		this.savedForm = form.createClone();    
 		form.setCurrentAction(ACTION_DEFAULT);     
 		//this.studentSearch = form.getStudentProfile().createClone();    
@@ -598,6 +599,29 @@ public class StudentScoringController extends PageFlowController {
 	            
 	 	
 		return new Boolean(hasBulkStudentConfigurable);           
+	}
+	
+	/**
+	 * Reset Test Session
+	 */
+	private Boolean customerHasResetTestSessions() 
+	{
+		boolean hasResetTestSessionsConfigurable = false;
+		//Bulk Accommodation
+		for (int i=0; i < this.customerConfigurations.length; i++) {
+
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_User_Reset_Subtest") && 
+					cc.getDefaultValue().equals("T")) {
+				hasResetTestSessionsConfigurable = true; 
+				break;
+			}
+		}
+
+		getSession().setAttribute("isResetTestSessionsConfigured", hasResetTestSessionsConfigurable);
+
+
+		return new Boolean(hasResetTestSessionsConfigurable);           
 	}
 	
 	/**
