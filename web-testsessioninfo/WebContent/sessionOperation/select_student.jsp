@@ -12,7 +12,7 @@
 		</div> 
 		
 	 	</td>
- 		<td class="transparent" width="5px">&nbsp;</td>
+ 		<td class="transparent" width="4px">&nbsp;</td>
 	 	<td >
       		<table id="selectStudent" class="gridTable"></table>
 			<div id="selectStudentPager" class="gridTable"></div>			
