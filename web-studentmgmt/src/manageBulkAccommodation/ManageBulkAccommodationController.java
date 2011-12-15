@@ -241,6 +241,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 		this.getSession().setAttribute("userHasReports", userHasReports());
 		customerHasBulkAccommodation();
+		customerHasResetTestSessions();
 		customerHasScoring();//For hand scoring changes
 		isTopLevelUser();
 		copySelectedStudents(savedForm);
@@ -290,6 +291,30 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 
 		return new Boolean(hasBulkStudentConfigurable);           
+	}
+	
+	
+	/**
+	 * Reset Test Session
+	 */
+	private Boolean customerHasResetTestSessions() 
+	{
+		boolean hasResetTestSessionsConfigurable = false;
+		//Bulk Accommodation
+		for (int i=0; i < this.customerConfigurations.length; i++) {
+
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_User_Reset_Subtest") && 
+					cc.getDefaultValue().equals("T")) {
+				hasResetTestSessionsConfigurable = true; 
+				break;
+			}
+		}
+
+		getSession().setAttribute("isResetTestSessionsConfigured", hasResetTestSessionsConfigurable);
+
+
+		return new Boolean(hasResetTestSessionsConfigurable);           
 	}
 
 	//changes for scoring
@@ -1218,6 +1243,7 @@ public class ManageBulkAccommodationController extends PageFlowController
 
 		//Bulk Accommodation Changes
 		customerHasBulkAccommodation();
+		customerHasResetTestSessions();
 		//scoring changes
 		customerHasScoring();//For hand scoring changes
 		isTopLevelUser();

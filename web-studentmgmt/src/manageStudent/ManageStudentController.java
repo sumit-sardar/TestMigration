@@ -283,7 +283,30 @@ public class ManageStudentController extends PageFlowController
 		return new Boolean(hasBulkStudentConfigurable);           
 	}
 
+	
+	
+	/**
+	 * Reset Test Session
+	 */
+	private Boolean customerHasResetTestSessions() 
+	{
+		boolean hasResetTestSessionsConfigurable = false;
+		//Bulk Accommodation
+		for (int i=0; i < this.customerConfigurations.length; i++) {
 
+			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
+			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_User_Reset_Subtest") && 
+					cc.getDefaultValue().equals("T")) {
+				hasResetTestSessionsConfigurable = true; 
+				break;
+			}
+		}
+
+		getSession().setAttribute("isResetTestSessionsConfigured", hasResetTestSessionsConfigurable);
+
+
+		return new Boolean(hasResetTestSessionsConfigurable);           
+	}
 
 	//changes for scoring
 		
@@ -685,6 +708,7 @@ public class ManageStudentController extends PageFlowController
 		this.getRequest().setAttribute("viewOnly", Boolean.FALSE);  
 		//Bulk Accommodation
 		customerHasBulkAccommodation();
+		customerHasResetTestSessions();
 		customerHasScoring();//For hand scoring changes
 		canRegisterStudent(); ////FORM RECOMMENDATION
 		isLasLinkCustomer();
@@ -1886,6 +1910,7 @@ public class ManageStudentController extends PageFlowController
 		this.pageTitle = buildPageTitle(ACTION_FIND_STUDENT, form);
 		//Bulk Accommodation
 		customerHasBulkAccommodation();
+		customerHasResetTestSessions();
 		//scoring changes
 		customerHasScoring();//For hand scoring changes
 		canRegisterStudent();  //- FORM RECOMMENDATION
