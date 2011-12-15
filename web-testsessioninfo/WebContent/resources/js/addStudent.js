@@ -350,7 +350,30 @@ function populateSelectStudentGrid() {
 					for(var i = 0; i < allStudentIds.length; i++) {
 						var studIdVal = studentTempMap.get(allStudentIds[i].studentId);
 						if(studIdVal != null && studIdVal != undefined) {
-							studentTempMap.put(allStudentIds[i].studentId,null);
+							//studentTempMap.put(allStudentIds[i].studentId,null);
+							var orgList = String(studIdVal.orgNodeId);
+							var orgListName = studIdVal.orgNodeName;
+							var finalOrgList = "";
+							var finalOrgListName = "";
+							if(orgList.indexOf(",") == -1) {
+								studentTempMap.put(allStudentIds[i].studentId,null);
+							} else {
+								var orgListArray = orgList.split(",");
+								var orgListNameArray = orgListName.split(",");
+								for(var j = 0; j < orgListArray.length; j++) {
+									if(orgListArray[j] == stuForSelectedOrg) {
+								
+									} else {
+										finalOrgList = finalOrgList + orgListArray[j] + ",";
+										finalOrgListName = finalOrgListName + orgListArray[j] + ",";
+									}
+								}
+								finalOrgList = finalOrgList.substr(0,finalOrgList.length - 1);
+								finalOrgListName = finalOrgListName.substr(0,finalOrgListName.length - 1);
+								studIdVal.orgNodeId = finalOrgList;
+								studIdVal.orgNodeName = finalOrgListName;
+								studentTempMap.put(allStudentIds[i].studentId,studIdVal);
+							}
 						}
 					}
 					for(var i = 0; i < allSelectOrg.length; i++) {
@@ -373,7 +396,6 @@ function populateSelectStudentGrid() {
 						if(studentDataVal == null || studentDataVal == undefined) {
 							studentTempMap.put(selectedRowId,selectedRowData);
 							if(!isPresentIndex(selectedRowId)) {
-								//alert("Added twice");
 								studentTempIndexMap.put(studentTempIndexCount,selectedRowId);
 								studentTempIndexCount++;
 							}
@@ -395,7 +417,7 @@ function populateSelectStudentGrid() {
 				} else {
 					var studentIdVal = studentTempMap.get(selectedRowId);
 					if(studentIdVal != null && studentIdVal != undefined) {
-						var orgList = studentIdVal.orgNodeId;
+						var orgList = String(studentIdVal.orgNodeId);
 						var orgListName = studentIdVal.orgNodeName;
 						var finalOrgList = "";
 						var finalOrgListName = "";
