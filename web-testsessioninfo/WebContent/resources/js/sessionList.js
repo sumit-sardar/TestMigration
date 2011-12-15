@@ -754,13 +754,16 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 			},
 			onSelectAll: function (rowIds, status) {
+				delStuIdObjArray = [];
+				deleteStudentCounter = 0;
 				if(status) {
 					selectAllForDelete = true;
-					delStuIdObjArray = AddStudentLocaldata;
+					for(var i = 0; i < AddStudentLocaldata.length; i++) {
+						delStuIdObjArray[deleteStudentCounter] = AddStudentLocaldata[i].studentId;
+						deleteStudentCounter++;
+					}
 				} else {
-					selectAllForDelete = false;
-					delStuIdObjArray = [];
-					deleteStudentCounter = 0;
+					selectAllForDelete = false;					
 				}
 			},
 			onSelectRow: function (rowid, status) {
@@ -775,13 +778,13 @@ function createSingleNodeSelectedTree(jsondata) {
 				} else {
 					selectAllForDelete = false;
 					var delIndx = -1;
-					for(var k = 0; k < deleteStudentCounter; k++) {
+					for(var k = 0; k < delStuIdObjArray.length; k++) {
 						if(delStuIdObjArray[k] == selectedRowId) {
 							delIndx = k;
 						}
 					}
-					if(k != -1) {
-						delStuIdObjArray.splice(k,1);
+					if(delIndx != -1) {
+						delStuIdObjArray.splice(delIndx,1);
 						deleteStudentCounter--;
 					}
 				}
@@ -885,11 +888,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			}
 		}
 		closePopUp('removeStuConfirmationPopup');
-		returnSelectedStudent();
-		for(var i = 0; i < allSelectOrg.length; i++) {
-			if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
-				allSelectOrg[i] = null;
-		}		
+		returnSelectedStudent();		
 				
 		delStuIdObjArray = [];
 		if(selectAllForDelete) {
