@@ -14,7 +14,7 @@ var orgForDupStu = [];
 var studentWithaccommodation = 0;
 var allStudentIds = [];
 var studentGradesCustomerConfig = [];
-var allSelectOrg = {};
+var allSelectOrg = [];
 var countAllSelect = 0;
 var studentMap = new Map();
 var studentIndexMap = new Map();
@@ -309,7 +309,6 @@ function populateSelectStudentGrid() {
 							if (studentTempMap.get(allStudentIds[i].studentId) == null || studentTempMap.get(allStudentIds[i].studentId) == undefined) {
 								studentTempMap.put(allStudentIds[i].studentId,allStudentIds[i]);
 								if(!isPresentIndex(allStudentIds[i].studentId)) {
-									//alert("Added again");
 									studentTempIndexMap.put(studentTempIndexCount,allStudentIds[i].studentId);
 									studentTempIndexCount++;
 								}
@@ -333,7 +332,7 @@ function populateSelectStudentGrid() {
 					// Added to handle multiple organization select All	
 					var present = false;
 					if(countAllSelect > 0) {
-						for(var i = 0; i < allSelectOrg.length; i++) {
+						for(var i = 0; i < countAllSelect; i++) {
 							if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
 								present = true;
 						}
@@ -350,30 +349,7 @@ function populateSelectStudentGrid() {
 					for(var i = 0; i < allStudentIds.length; i++) {
 						var studIdVal = studentTempMap.get(allStudentIds[i].studentId);
 						if(studIdVal != null && studIdVal != undefined) {
-							//studentTempMap.put(allStudentIds[i].studentId,null);
-							var orgList = String(studIdVal.orgNodeId);
-							var orgListName = studIdVal.orgNodeName;
-							var finalOrgList = "";
-							var finalOrgListName = "";
-							if(orgList.indexOf(",") == -1) {
-								studentTempMap.put(allStudentIds[i].studentId,null);
-							} else {
-								var orgListArray = orgList.split(",");
-								var orgListNameArray = orgListName.split(",");
-								for(var j = 0; j < orgListArray.length; j++) {
-									if(orgListArray[j] == stuForSelectedOrg) {
-								
-									} else {
-										finalOrgList = finalOrgList + orgListArray[j] + ",";
-										finalOrgListName = finalOrgListName + orgListArray[j] + ",";
-									}
-								}
-								finalOrgList = finalOrgList.substr(0,finalOrgList.length - 1);
-								finalOrgListName = finalOrgListName.substr(0,finalOrgListName.length - 1);
-								studIdVal.orgNodeId = finalOrgList;
-								studIdVal.orgNodeName = finalOrgListName;
-								studentTempMap.put(allStudentIds[i].studentId,studIdVal);
-							}
+							updateOrganizationInDelete(allStudentIds[i].studentId,studIdVal);
 						}
 					}
 					for(var i = 0; i < allSelectOrg.length; i++) {
@@ -417,29 +393,7 @@ function populateSelectStudentGrid() {
 				} else {
 					var studentIdVal = studentTempMap.get(selectedRowId);
 					if(studentIdVal != null && studentIdVal != undefined) {
-						var orgList = String(studentIdVal.orgNodeId);
-						var orgListName = studentIdVal.orgNodeName;
-						var finalOrgList = "";
-						var finalOrgListName = "";
-						if(orgList.indexOf(",") == -1) {
-							studentTempMap.put(selectedRowId,null);
-						} else {
-							var orgListArray = orgList.split(",");
-							var orgListNameArray = orgListName.split(",");
-							for(var j = 0; j < orgListArray.length; j++) {
-								if(orgListArray[j] == stuForSelectedOrg) {
-								
-								} else {
-									finalOrgList = finalOrgList + orgListArray[j] + ",";
-									finalOrgListName = finalOrgListName + orgListArray[j] + ",";
-								}
-							}
-							finalOrgList = finalOrgList.substr(0,finalOrgList.length - 1);
-							finalOrgListName = finalOrgListName.substr(0,finalOrgListName.length - 1);
-							studentIdVal.orgNodeId = finalOrgList;
-							studentIdVal.orgNodeName = finalOrgListName;
-							studentTempMap.put(selectedRowId,studentIdVal);
-						}
+						updateOrganizationInDelete(selectedRowId,studentIdVal);
 					}
 					for(var i = 0; i < allSelectOrg.length; i++) {
 						if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
@@ -813,5 +767,31 @@ function getStudentListArray(studentArray) {
 				found = true;
 		}
 		return found;
+	}
+	
+	function updateOrganizationInDelete(studentId,studentData) {
+		var orgList = String(studentData.orgNodeId);
+		var orgListName = studentData.orgNodeName;
+		var finalOrgList = "";
+		var finalOrgListName = "";
+		if(orgList.indexOf(",") == -1) {
+			studentTempMap.put(studentId,null);
+		} else {
+			var orgListArray = orgList.split(",");
+			var orgListNameArray = orgListName.split(",");
+			for(var j = 0; j < orgListArray.length; j++) {
+				if(orgListArray[j] == stuForSelectedOrg) {
+								
+				} else {
+					finalOrgList = finalOrgList + orgListArray[j] + ",";
+					finalOrgListName = finalOrgListName + orgListArray[j] + ",";
+				}
+			}
+			finalOrgList = finalOrgList.substr(0,finalOrgList.length - 1);
+			finalOrgListName = finalOrgListName.substr(0,finalOrgListName.length - 1);
+			studentData.orgNodeId = finalOrgList;
+			studentData.orgNodeName = finalOrgListName;
+			studentTempMap.put(studentId,studentData);
+		}
 	}
 	
