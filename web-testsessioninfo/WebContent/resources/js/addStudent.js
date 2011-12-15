@@ -309,7 +309,7 @@ function populateSelectStudentGrid() {
 							if (studentTempMap.get(allStudentIds[i].studentId) == null || studentTempMap.get(allStudentIds[i].studentId) == undefined) {
 								studentTempMap.put(allStudentIds[i].studentId,allStudentIds[i]);
 								if(!isPresentIndex(allStudentIds[i].studentId)) {
-									alert("Added again");
+									//alert("Added again");
 									studentTempIndexMap.put(studentTempIndexCount,allStudentIds[i].studentId);
 									studentTempIndexCount++;
 								}
@@ -373,7 +373,7 @@ function populateSelectStudentGrid() {
 						if(studentDataVal == null || studentDataVal == undefined) {
 							studentTempMap.put(selectedRowId,selectedRowData);
 							if(!isPresentIndex(selectedRowId)) {
-								alert("Added twice");
+								//alert("Added twice");
 								studentTempIndexMap.put(studentTempIndexCount,selectedRowId);
 								studentTempIndexCount++;
 							}
@@ -395,7 +395,29 @@ function populateSelectStudentGrid() {
 				} else {
 					var studentIdVal = studentTempMap.get(selectedRowId);
 					if(studentIdVal != null && studentIdVal != undefined) {
-						studentTempMap.put(selectedRowId,null);
+						var orgList = studentIdVal.orgNodeId;
+						var orgListName = studentIdVal.orgNodeName;
+						var finalOrgList = "";
+						var finalOrgListName = "";
+						if(orgList.indexOf(",") == -1) {
+							studentTempMap.put(selectedRowId,null);
+						} else {
+							var orgListArray = orgList.split(",");
+							var orgListNameArray = orgListName.split(",");
+							for(var j = 0; j < orgListArray.length; j++) {
+								if(orgListArray[j] == stuForSelectedOrg) {
+								
+								} else {
+									finalOrgList = finalOrgList + orgListArray[j] + ",";
+									finalOrgListName = finalOrgListName + orgListArray[j] + ",";
+								}
+							}
+							finalOrgList = finalOrgList.substr(0,finalOrgList.length - 1);
+							finalOrgListName = finalOrgListName.substr(0,finalOrgListName.length - 1);
+							studentIdVal.orgNodeId = finalOrgList;
+							studentIdVal.orgNodeName = finalOrgListName;
+							studentTempMap.put(selectedRowId,studentIdVal);
+						}
 					}
 					for(var i = 0; i < allSelectOrg.length; i++) {
 						if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
