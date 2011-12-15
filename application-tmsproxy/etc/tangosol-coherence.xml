@@ -162,7 +162,7 @@ to find specific notes on changes suggested for production use.
         <nack-delay-milliseconds>1</nack-delay-milliseconds>
       </notification-queueing>
       <traffic-jam>
-        <maximum-packets>8192</maximum-packets>
+        <maximum-packets>1024</maximum-packets>
         <pause-milliseconds>10</pause-milliseconds>
       </traffic-jam>
       <priority>6</priority>
