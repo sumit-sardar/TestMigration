@@ -1382,7 +1382,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			}
 	 });
 	 jQuery("#testList").jqGrid('navGrid', '#testPager', { edit: false, add: false, del: false, search: false, refresh: false });
-	 
+	 $("#testPager_left").width(75);
 	 var colPos = 1;
 	 var myGrid = $('#testList'); 
 	 var columnName = myGrid.getGridParam("colModel")[colPos].name;
