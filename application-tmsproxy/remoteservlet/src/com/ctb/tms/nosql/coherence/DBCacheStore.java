@@ -132,5 +132,6 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	    	}
 	    	counter++;
 		}
+		logger.info("DBCacheStore.storeAll processed " + counter + " records.");
 	}
 }
