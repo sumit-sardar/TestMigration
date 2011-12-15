@@ -424,7 +424,7 @@ function getProctorIDIndex(selectedRowId) {
 	for (var i = 0; i < pIDs.length; i++) {		
 		pid = pIDs[i];
 		if (pid.match(selectedRowId) != null) {
-			return pid.substring((selectedRowId+"_").length,pid.length);
+			return pid.substring((selectedRowId+"_").length,pid.length).split('_')[0];//added split to remove '_tmp'
 		}
 	}
 	
@@ -498,7 +498,7 @@ function updateRule (rule,index) {
 	
 	var lpid = pIDs[len];
 	var pos = lpid.indexOf("_");
-	var lindex = lpid.substring(pos+1,lpid.length);
+	var lindex = lpid.substring(pos + 1,lpid.length).split('_')[0];//added split to remove '_tmp';
 	
 	if (lindex == index) {
 	
