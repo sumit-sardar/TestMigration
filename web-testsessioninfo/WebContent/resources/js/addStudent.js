@@ -23,6 +23,8 @@ var studentTempIndexMap = new Map();
 var studentIndexCount = 0;
 var studentTempIndexCount = 0;
 var deleteStudentCounter = 0;
+var orgBeforeBack = [];
+var orgBeforeBackCount = 0;
 
 function showSelectStudent(){
 	$("#Student_Tab").css('display', 'none');
@@ -34,10 +36,24 @@ function showSelectStudent(){
 	}
 	
 }
-function hideSelectStudent (){
+function hideSelectStudent(){
 	isOnBack = true;
+	if(AddStudentLocaldata == undefined || AddStudentLocaldata.length == 0)
+		studentWithaccommodation = 0;
 	cloneStudentMapToTemp();
 	hideSelectStudentPopup();
+	if(orgBeforeBack != undefined && orgBeforeBack.length > 0) {
+		for(var i = 0; i < orgBeforeBack.length; i++) {
+			for(var j = 0; j < allSelectOrg.length; j++) {
+				if(orgBeforeBack[i] == allSelectOrg[j]) {
+					allSelectOrg.splice(j,1);
+					countAllSelect--;
+				}
+			}
+		}
+	}
+	orgBeforeBackCount = 0;
+	orgBeforeBack = [];
 }
 
 function hideSelectStudentPopup() {
@@ -271,11 +287,14 @@ function populateSelectStudentGrid() {
 					for(var i = 0; i < AddStudentLocaldata.length; i++) {
 						var stuObj = AddStudentLocaldata[i];
 						if(stuObj != null && stuObj != undefined) {
-							var orgArray = 	String(stuObj.orgNodeId).split(",");
-							if(include(orgArray, stuForSelectedOrg)) {
+							var orgArray = 	String(stuObj.orgNodeId);
+							if(orgArray == stuForSelectedOrg) {
 								$("#"+stuObj.studentId+" td input").attr("checked", true);
 								$("#"+stuObj.studentId).trigger('click');
 								$("#"+stuObj.studentId+" td input").attr("checked", true); 
+							} else {
+								$("#"+stuObj.studentId+" td input").attr("checked", false);
+								//$("#"+stuObj.studentId).trigger('click');
 							}
 						} 					
 					}
@@ -286,8 +305,8 @@ function populateSelectStudentGrid() {
 					for(var i = 0; i < allRowsInGridHere.length; i++) {
 						var stdData = studentTempMap.get(allRowsInGridHere[i]);
 						if(stdData != null && stdData != undefined) {
-							var orgArray = 	String(stdData.orgNodeId).split(",");
-							if(include(orgArray, stuForSelectedOrg)) {
+							var orgArray = 	String(stdData.orgNodeId);
+							if(orgArray.indexOf(String(stuForSelectedOrg)) >= 0) {
 								$("#"+allRowsInGridHere[i]+" td input").attr("checked", true);
 								$("#"+allRowsInGridHere[i]).trigger('click');
 								$("#"+allRowsInGridHere[i]+" td input").attr("checked", true);
@@ -339,10 +358,14 @@ function populateSelectStudentGrid() {
 						if(!present) {
 							allSelectOrg[countAllSelect] = stuForSelectedOrg;
 							countAllSelect++;
+							orgBeforeBack[orgBeforeBackCount] = stuForSelectedOrg;
+							orgBeforeBackCount++;
 						}
 					} else {
 						allSelectOrg[countAllSelect] = stuForSelectedOrg;
 						countAllSelect++;
+						orgBeforeBack[orgBeforeBackCount] = stuForSelectedOrg;
+						orgBeforeBackCount++;
 					}			
 				} else {
 					allRowSelected = false;	
@@ -519,6 +542,8 @@ function returnSelectedStudent() {
 	studentMap = new Map();
 	studentIndexCount = 0;
 	studentIndexMap = new Map();
+	orgBeforeBack = [];
+	orgBeforeBackCount = 0;
 	for(var j = 0; j < studentTempIndexCount; j++) {
 		var stdId = studentTempIndexMap.get(j);
 		var objstr = studentTempMap.get(stdId);
