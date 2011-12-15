@@ -615,7 +615,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			allStudentIds = [];
 			allSelectOrg = [];
 			countAllSelect = 0;
-			resetProctor();
+			//resetProctor();
 			studentMap = new Map();
 			studentIndexMap = new Map();
 			studentTempMap = new Map();
@@ -2066,8 +2066,9 @@ function createSingleNodeSelectedTree(jsondata) {
 		 	
 		 	//alert('proctorIdObjArray.length: ' + proctorIdObjArray.length);
 			//$('#totalAssignedProctors').text(proctorIdObjArray.length);
-			proctorIdObjArray[pindex]=jsondata;
-					
+			proctorIdObjArray["All"]= {};
+			proctorIdObjArray["All"][schedulerUserId] = jsondata;
+			//alert(JSON.stringify(proctorIdObjArray));	
 			if (selectedProctorIds == "") {
 					selectedProctorIds = schedulerUserId+"_"+pindex;
 					pindex++;
@@ -2372,15 +2373,14 @@ function createSingleNodeSelectedTree(jsondata) {
 		 
 	}
     
-    function onCloseScheduleSessionPopUp() {
+    function onCloseScheduleSessionPopUp() {    	
     	var sessionName = document.getElementById("testSessionName").value;
     	if( sessionName!= null && $.trim(sessionName).length == 0 ){
     		closePopUp('scheduleSession');
+    		resetProctor();
     	} else {
     		openCloseScheduleSessionPopup();
     	}
-    
-    
     }
     
     function saveTest() {

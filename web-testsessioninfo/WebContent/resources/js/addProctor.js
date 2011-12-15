@@ -16,9 +16,16 @@ var proctorIdObjArray = {};
 var delProctorIdObjArray = [];
 var isOnBackProctor = false;
 
-var allProctorIds = [];
+var allProctorIds = {};
 var allSelectOrgProctor = {};
 var countAllSelectProctor = 0;
+var orgDataInform = {};
+
+var tempOrgDataInform = {};
+var tempProctorData = {};
+var tempAllSelectOrgProctor= {};
+var onloadGrid = false;
+var crossOrgProctors = {};
 
 function showSelectProctor(){
 	$("#Proctor_Tab").css('display', 'none');
@@ -30,9 +37,36 @@ function showSelectProctor(){
 	}
 	
 }
-function hideSelectedProctor (){
-
-	backProctorRule();
+function hideSelectedProctor (){	
+	//backProctorRule();
+	delete orgDataInform;
+	delete allSelectOrgProctor;
+	delete proctorIdObjArray;
+	
+	orgDataInform = {};
+	allSelectOrgProctor = {};
+	
+	var jsonDataOrg = {};	
+	for (var i in tempProctorData) {		
+		var objstr = tempProctorData[i];
+		var jsonDataUser = {};
+		for(var j in objstr){
+			jsonDataUser[j] = objstr[j];
+		}
+		jsonDataOrg[i] = jsonDataUser;	
+		if(i != 'All') {
+			if(tempAllSelectOrgProctor[i]){
+				allSelectOrgProctor[i] = true;
+			}else {
+				allSelectOrgProctor[i] = false;
+			}
+			var count = parseInt(tempOrgDataInform[i]);
+			orgDataInform[i] = count;
+		}
+	}
+	
+	proctorIdObjArray = jsonDataOrg;	
+	
 	isOnBackProctor = true;
 	$("#Proctor_Tab").css('display', 'block');
 	$("#Select_Proctor_Tab").css('display', 'none');	
@@ -115,6 +149,14 @@ function createSingleNodeSelectedTreeForProctor(jsondata) {
 		});
 }
 
+function getLength(obj){
+	var cnt = 0;
+	for( var i in obj ) {
+	cnt++;
+	}
+	return cnt;
+}
+
 function populateSelectProctorGrid() {
  		UIBlock();
  		
@@ -134,13 +176,14 @@ function populateSelectProctorGrid() {
 		   		{name:'copyable',index:'copyable', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 
-		   	jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId", records: function(obj) { userList = JSON.stringify(obj.userProfileInformation);
-		   	
+		   	jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId", records: function(obj) {		   	 
 		   	if(obj.userProfileInformation != null && obj.userProfileInformation != undefined && obj.userProfileInformation.length > 0) {
-		   	 	allProctorIds = [];
+		   	 	allProctorIds = {};
+		   	 	allProctorIds['dataList'] = {};
 			   	 for(var i = 0; i <obj.userProfileInformation.length; i++) {
-			   	 	allProctorIds.push(obj.userProfileInformation[i]);
+			   	 	allProctorIds['dataList'][obj.userProfileInformation[i].userId] = obj.userProfileInformation[i];
 			   	 }
+			   	 allProctorIds['dataLength'] = i;
 		   	 }
 		   	 
 		   	return obj.userProfileInformation.length; } },
@@ -156,7 +199,8 @@ function populateSelectProctorGrid() {
 			height: 151,  
 			caption:"Proctor List",
 			onPaging: function() {
-				var reqestedPage = parseInt($('#selectProctor').getGridParam("page"));
+			
+			var reqestedPage = parseInt($('#selectProctor').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_selectProctor').text());
 				var minPageSize = 1;
 				if(reqestedPage > maxPageSize){
@@ -166,214 +210,124 @@ function populateSelectProctorGrid() {
 					$('#selectProctor').setGridParam({"page": minPageSize});
 				}
 				
-				if(allRowSelectedPro) {
-					var sessions  = jQuery('#selectProctor').jqGrid('getGridParam','selarrrow');	
-					if(selectedSessionPro.length > 0) {
-					var existlen = selectedSessionPro.length;
-					for(var i=0; i<sessions.length; i++) {
-						if(!include(selectedSessionPro, sessions[i])) {
-							selectedSessionPro[existlen] = sessions[i] ;
-							existlen++;
-						}
-					}
-					 var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
-					
-					} else {
-						selectedSessionPro = sessions;
-					} 
-				}
 				
-				if(allRowSelectedPro) {
-					$("#cb_selectProctor").attr("checked", true);
-				}
+				
 				
 			},
-			gridComplete: function() {
-			
-			var allRowChecked = false;
-			if(allSelectOrgProctor != null && allSelectOrgProctor.length > 0) {
-				for(var i = 0; i < allSelectOrgProctor.length; i++) {
-					if(allSelectOrgProctor[i] != null && allSelectOrgProctor[i] == proctorForSelectedOrg)
-						allRowChecked = true;
-				}
-			} 
-			
-			if (allRowSelectedPro) {
-				
-				allRowChecked = true;
-			}
-			
-			if(allRowChecked) { 
-				 	$("#cb_selectProctor").attr("checked", true);
-				 	$("#cb_selectProctor").trigger('click');
-				 	$("#cb_selectProctor").attr("checked", true);
-				 	allRowSelected = true;
-				 	
-				 	var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
-				 	for(var i = 0; i < allRowsInGrid.length; i++) {
-						var selectedRowData = $("#selectProctor").getRowData(allRowsInGrid[i]);
-						if (selectedRowData.defaultScheduler == 'T') {
-				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
-				 			$("#"+allRowsInGrid[i]).addClass('ui-state-disabled');
-				 			
-				 		}
-				 	}
-			 } 
-			 
-			 			 
+			gridComplete: function() {		
+			//alert(JSON.stringify(proctorIdObjArray));
+			onloadGrid = true;
+			if(allSelectOrgProctor[proctorForSelectedOrg]) { 
+				 	$("#cb_selectProctor").attr('checked', true).trigger('click').attr('checked', true);
+				 	var defaultUserId = $("#schedulerUserId").val();
+				 	$("#"+defaultUserId+" td input").attr('checked',true).attr("disabled", true);
+				 	$("#"+ defaultUserId).addClass('ui-state-disabled');
+			 } 		 
 			 else {
 			 	var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
-					var selectedRowData;
-					for(var i = 0; i < allRowsInGrid.length; i++) {
-						
-						selectedRowData = $("#selectProctor").getRowData(allRowsInGrid[i]);
-						//$("#"+allRowsInGrid[i]).unbind("clicked");
-						if (selectedRowData.defaultScheduler == 'T') {
-				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
-				 			$("#"+allRowsInGrid[i]).addClass('ui-state-disabled');
-				 		}
-				 		
-				 		for (var j in proctorIdObjArray) {
-						var objstr = proctorIdObjArray[j];
-							if (objstr != null) {
-								var key = getProctorRowID (j);
-								if( key == allRowsInGrid[i]) {
-									//$("#"+allRowsInGrid[i]+" td input").attr("checked", true);
-									
-									$("#"+allRowsInGrid[i]+" td input").attr("checked", false); 
-									$("#"+allRowsInGrid[i]+" td input").unbind('click');
-						
-									//var isAlreadyChecked1 = $("#"+allRowsInGrid[i]).is(":checked");
-									//var isAlreadyChecked2 = jQuery(this).find('#'+allRowsInGrid[i]+' input[type=checkbox]').prop('checked'); 
-									
-									$("#"+allRowsInGrid[i]+" td input").attr("checked", true); 
-						 			$("#"+allRowsInGrid[i]+" td input").trigger('click'); 
-						 			$("#"+allRowsInGrid[i]+" td input").attr("checked", true);
-									
-									break;
-								}
-							}
+				var defaultUserId = $("#schedulerUserId").val();
+			 	$("#"+defaultUserId+" td input").attr("disabled", true);
+			 	$("#"+ defaultUserId).addClass('ui-state-disabled');
+			 	
+				for(var i = 0; i < allRowsInGrid.length; i++) {
+			 		if(crossOrgProctors[allRowsInGrid[i]]){
+			 			var seledtedRowId = allRowsInGrid[i];							
+						if(!($("#"+allRowsInGrid[i]+" td input").attr('checked'))){
+							$("#"+allRowsInGrid[i]+" td input").attr('checked', true).trigger('click').attr('checked', true);
+						}	
+						if(proctorIdObjArray[proctorForSelectedOrg]){
+							proctorIdObjArray[proctorForSelectedOrg][seledtedRowId] = crossOrgProctors[allRowsInGrid[i]];
+						}else {
+							proctorIdObjArray[proctorForSelectedOrg] = {};
+							orgDataInform[proctorForSelectedOrg] = 0;
+							proctorIdObjArray[proctorForSelectedOrg][seledtedRowId] = crossOrgProctors[allRowsInGrid[i]];
 						}
-					}
+						
+						if(parseInt(orgDataInform[proctorForSelectedOrg])  + 1 == parseInt(allProctorIds['dataLength'])){
+							allSelectOrgProctor[proctorForSelectedOrg] = true; 
+							$("#cb_selectProctor").attr('checked', true).trigger('click').attr('checked', true);					
+						}
+						orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
+						
+						
+			 		}else {			 			
+			 			
+			 			if($("#"+allRowsInGrid[i]+" td input").attr('checked')){
+							$("#"+allRowsInGrid[i]+" td input").attr('checked', false).trigger('click').attr('checked', false);
+						}
+			 		}
+			 		
+				}
 			 }
+			 onloadGrid = false;
 				
 			},
 			onSelectAll: function (rowIds, status) {
-				
-				//if(preSelectedOrgPro = proctorForSelectedOrg) {
-					//selectedProctorIds = "";
-					//pindex = 0;
-					//proctorIdObjArray = [];
-				//}
-				pindex = getRuleLength ();
-				if(status) {
-					allRowSelectedPro = true;
-					for(var i = 0; i < allProctorIds.length; i++) {
-						if(getProctorIDIndex(allProctorIds[i].userId) < 0) {							
-							if (allProctorIds[i].defaultScheduler == 'F') {
-								var selectedRowData = allProctorIds[i];
-								if (selectedProctorIds == "") {
-										selectedProctorIds = allProctorIds[i].userId+"_"+pindex+"_tmp";										
-								} else {
-										selectedProctorIds = selectedProctorIds +"|"+allProctorIds[i].userId+"_"+pindex+"_tmp";
-								}																
-								proctorIdObjArray[pindex]=selectedRowData;
-								pindex = pindex + 1;
-					 		}
+				if(!onloadGrid){
+					if(status) {
+						for(var key in allProctorIds['dataList']) {
+							if (allProctorIds['dataList'][key].defaultScheduler == 'F') {
+								/*var jsondata = {};
+								jsondata[key] = allProctorIds['dataList'][key];	*/
+								if(proctorIdObjArray[proctorForSelectedOrg]){
+									proctorIdObjArray[proctorForSelectedOrg][key] = allProctorIds['dataList'][key];
+								}else {
+									proctorIdObjArray[proctorForSelectedOrg] = {};
+									proctorIdObjArray[proctorForSelectedOrg][key] = allProctorIds['dataList'][key];
+								}
+								crossOrgProctors[key] = allProctorIds['dataList'][key];																									
+								
+					 		}				
 						}						
-					}	
-					
-					
-					// Added to handle multiple organization select All	
-					var present = false;
-					if(countAllSelectProctor > 0) {
-						for(var i = 0; i < allSelectOrgProctor.length; i++) {
-							if(allSelectOrgProctor[i] != null && allSelectOrgProctor[i] == proctorForSelectedOrg)
-								present = true;
-						}
-						if(!present) {							
-							allSelectOrgProctor[countAllSelectProctor] = proctorForSelectedOrg;
-							countAllSelectProctor++;
-						}
+						orgDataInform[proctorForSelectedOrg] = allProctorIds['dataLength'];
+						// Added to handle multiple organization select All	
+						allSelectOrgProctor[proctorForSelectedOrg] = true; 	
 					} else {
-						allSelectOrgProctor[countAllSelectProctor] = proctorForSelectedOrg;
-						countAllSelectProctor++;
-					}			
-				} else {
-					allRowSelectedPro = false;
-					/*var loginJson = proctorIdObjArray[0];	
-					proctorIdObjArray = [];
-					proctorIdObjArray[0]=loginJson;
-					selectedProctorIds = loginJson.userId+"_0";	*/							
-					for(var i = 0; i < allProctorIds.length; i++) {
-						if (allProctorIds[i].defaultScheduler == 'F') {
-							var selectedRowData = allProctorIds[i];							
-							var indx = getProctorIDIndex(selectedRowData.userId);	
-							if (indx.match("_tmp") != null) {
-	
-								indx = indx.replace(/_tmp/gi,"");
-							}						
-							removeProctorByIndex(indx); 							
-							selectedProctorIds = updateRule(selectedProctorIds,indx);							
-						}						
-					}
-					
-					for(var i = 0; i < allSelectOrgProctor.length; i++) {
-						if(allSelectOrgProctor[i] != null && allSelectOrgProctor[i] == proctorForSelectedOrg)
-							allSelectOrgProctor[i] = null;
-					}
-					if (selectedProctorIds.split("|").length > 1) {
-					
-						allRowSelectedPro = true;
-					} else {
-					
-						allRowSelectedPro = false;
-					}
-														
+						orgDataInform[proctorForSelectedOrg] = 0 ;
+						allSelectOrgProctor[proctorForSelectedOrg] = false;
+						for(var i in proctorIdObjArray[proctorForSelectedOrg]){
+							delete crossOrgProctors[i];
+						}
+						delete proctorIdObjArray[proctorForSelectedOrg];								
+					}		
 				}
+						
 			},
 			onSelectRow: function (rowid, status) {
-				var selectedRowId = rowid;
-				var alreadyExists = false;
-				allRowSelectedPro = false;
-
-				for (var j in proctorIdObjArray) {
-					var existingSelectedRowId = getProctorRowID (j);
-					if( existingSelectedRowId == selectedRowId){
-						alreadyExists = true;
-						break;
-					}
-					
-				}
-				
-				if(status && !alreadyExists) {
-					var selectedRowData = $("#selectProctor").getRowData(selectedRowId);
-					proctorIdObjArray[pindex]=selectedRowData;
-					
-					if (selectedProctorIds == "") {
-							selectedProctorIds = selectedRowId+"_"+pindex+"_tmp";
-							pindex++;
+				if(!onloadGrid){
+					var selectedRowId = rowid;
+					if(status) {
+						var selectedRowData = $("#selectProctor").getRowData(selectedRowId);
+						if(proctorIdObjArray[proctorForSelectedOrg]){
+							proctorIdObjArray[proctorForSelectedOrg][selectedRowId] = selectedRowData;
+						}else {
+							proctorIdObjArray[proctorForSelectedOrg] = {};
+							orgDataInform[proctorForSelectedOrg] = 0;
+							proctorIdObjArray[proctorForSelectedOrg][selectedRowId] = selectedRowData;
+						}
+						crossOrgProctors[selectedRowId] = selectedRowData;
+						
+						if(parseInt(orgDataInform[proctorForSelectedOrg])  + 1 == parseInt(allProctorIds['dataLength'])){
+							allSelectOrgProctor[proctorForSelectedOrg] = true; 
+							$("#cb_selectProctor").attr('checked', true).trigger('click').attr('checked', true);					
+						}
+						orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
+						
 					} else {
-							selectedProctorIds = selectedProctorIds +"|"+selectedRowId+"_"+pindex+"_tmp";
-							pindex++;
-					}
-					
-				} else if (!status && alreadyExists){
+						if(proctorIdObjArray[proctorForSelectedOrg]){
+							delete proctorIdObjArray[proctorForSelectedOrg][selectedRowId];
+							delete crossOrgProctors[selectedRowId];
+							orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) - 1;
+						}
+						
+						if(orgDataInform[proctorForSelectedOrg] == 0){
+							delete proctorIdObjArray[proctorForSelectedOrg];
+						}
+						allSelectOrgProctor[proctorForSelectedOrg] = false; 
+						$("#cb_selectProctor").attr('checked', false);
+					} 
+				}	
 				
-					var indx = getProctorIDIndex(selectedRowId);
-					removeProctorByIndex(indx); 
-					/*if (allProctorIds.length == getRuleLength()) {
-					
-						$("#cb_selectProctor").attr("checked", true);
-					}*/
-					selectedProctorIds = updateRule(selectedProctorIds,indx);
-										
-				} 
-				
-				if (allProctorIds.length == getRuleLength()) {
-				
-					allRowSelectedPro = true;
-				}
 			},
 			loadComplete: function () {
 				if ($('#selectProctor').getGridParam('records') === 0) {
@@ -624,22 +578,39 @@ function returnSelectedProctor() {
 
 	confirmProctorRule();
 	var val= [] ;
-	for (var i in proctorIdObjArray) {
-		
+	delete tempOrgDataInform;
+	delete tempAllSelectOrgProctor;
+	delete tempProctorData;
+	
+	tempOrgDataInform = {};
+	tempAllSelectOrgProctor= {};
+	var jsonDataOrg = {};
+	
+	for (var i in proctorIdObjArray) {		
 		var objstr = proctorIdObjArray[i];
-		
-		if (objstr != null) {			
-			var key = getProctorRowID (i);
-			objstr['userId'] = key;
-			val.push(objstr);
-		
+		var jsonDataUser = {};
+		for(var j in objstr){
+			jsonDataUser[j] = objstr[j];
+			val.push(objstr[j]);
 		}
-		
+		jsonDataOrg[i] = jsonDataUser;	
+		if(i != 'All') {
+			if(allSelectOrgProctor[i]){
+				tempAllSelectOrgProctor[i] = true;
+			}else {
+				tempAllSelectOrgProctor[i] = false;
+			}
+			var count = parseInt(orgDataInform[i]);
+			tempOrgDataInform[i] = count;
+		}
 	}
+	tempProctorData = jsonDataOrg;
 	
 	addProctorLocaldata = val;
 	noOfProctorAdded = addProctorLocaldata.length;
-	hideSelectedProctor();
+	isOnBackProctor = true;
+	$("#Proctor_Tab").css('display', 'block');
+	$("#Select_Proctor_Tab").css('display', 'none');
 	gridReloadProctor(false);
 	$("#totalAssignedProctors").text(noOfProctorAdded);
 			 
@@ -688,7 +659,7 @@ function resetProctor() {
 	deletedProctorIds = "";
 	pindex = 0;
 	pdindex = 1;
-	proctorIdObjArray = {};
+	//proctorIdObjArray = {};
 	delProctorIdObjArray = [];
 	isOnBackProctor = false;
 	noOfProctorAdded = 0;
@@ -698,6 +669,7 @@ function resetProctor() {
 	allRowSelectedPro = false;
 	allProctorIds = [];
 	allSelectOrgProctor = {};
+	//proctorIdObjArray = {};
 	countAllSelectProctor = 0;
 }
 
