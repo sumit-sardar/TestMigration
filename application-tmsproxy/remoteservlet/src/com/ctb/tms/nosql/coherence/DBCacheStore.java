@@ -126,6 +126,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 		    		if (guardContext != null) {
 		    		    guardContext.heartbeat();
 		    		    logger.warn("Sent guardian heartbeat - DBCacheStore.storeAll busy for > 10 seconds, processed " + counter + " records.");
+		    		    counter=0;
 		    		}
 		    		start = end;
 		    	}
