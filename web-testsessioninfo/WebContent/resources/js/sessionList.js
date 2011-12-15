@@ -490,7 +490,7 @@ function createSingleNodeSelectedTree(jsondata) {
       function gridReloadSelectStu(){ 
       	  UIBlock();
 	      jQuery("#selectStudent").jqGrid('setGridParam',{datatype:'json'});    
-	       var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val();
+	       var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel;
      	   jQuery("#selectStudent").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
            var sortArrowPA = jQuery("#selectStudent");
            jQuery("#selectStudent").sortGrid('lastName',false);
