@@ -2316,6 +2316,8 @@ function createSingleNodeSelectedTree(jsondata) {
 		}
 		
 		noOfProctorAdded = addProctorLocaldata.length;
+		allProctorSelected	= false;	
+		$("#cb_listProctor").attr('checked', false);
 		//$('#totalAssignedProctors').text(noOfProctorAdded);
 		closePopUpForProctor('removeProctorConfirmationPopup');
 		delProctorIdObjArray = {};
