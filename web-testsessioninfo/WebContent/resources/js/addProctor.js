@@ -193,7 +193,7 @@ function populateSelectProctorGrid() {
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 151,  
+			height: 160,  
 			caption:"Proctor List",
 			onPaging: function() {
 			
@@ -446,6 +446,8 @@ function resetProctor() {
 	tempOrgDataInform = {};
 	tempProctorData = {};
 	tempAllSelectOrgProctor= {};
+	allProctorSelected = false;
+	proctorSelectedLength = 0;
 	
 }
 

@@ -52,11 +52,15 @@ var dropListToDisplay;
 var selectAllForDelete = false;
 var selectAllForDeleteProctor = false;
 var allLocalProctorIds = [];
+var allProctorSelected = false;
+var proctorSelectedLength = 0;
+
 var previousValue = "";
 var previousSubtest = "";
 var testJSONValue = "";
 var selectedTestId = "";
 var selectedSubtestId = "";
+var onloadProctorListGrid = false;
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -2140,7 +2144,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 151,  
+			height: 160,  
 			caption:"Proctor List",
 			onPaging: function() {
 				var reqestedPage = parseInt($('#listProctor').getGridParam("page"));
@@ -2155,29 +2159,36 @@ function createSingleNodeSelectedTree(jsondata) {
 			
 			},
 			gridComplete: function() {
+					onloadProctorListGrid = true;
 					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
 					var selectedRowData;
 					for(var i = 0; i < allRowsInGrid.length; i++) {
-					
 						selectedRowData = $("#listProctor").getRowData(allRowsInGrid[i]);
 						if (selectedRowData.defaultScheduler == 'T') {
 				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
 				 			$("#"+allRowsInGrid[i]).addClass('ui-state-disabled');
 				 		//	$("#listProctor").jqGrid('editRow',allRowsInGrid[i],false);
+				 		}else {
+				 			if(!allProctorSelected && delProctorIdObjArray[selectedRowData.userId]){
+				 				$("#jqg_listProctor_"+ parseInt(i+1)).attr('checked', true).trigger('click').attr('checked', true);
+				 			}
 				 		}
-					
 					}
+					if(allProctorSelected){
+						$("#cb_listProctor").attr('checked', true).trigger('click').attr('checked', true);
+					}
+					onloadProctorListGrid = false;	
 			},
 			
 			onSelectAll: function (rowids, status) {
-
-				if(status) {
-					var tmpselectedRowId = "";
-					selectAllForDeleteProctor = true;
-					var allRowsInGrid = $('#listProctor').jqGrid('getRowData');
+				if(!onloadProctorListGrid){
+					if(status) {
+						var tmpselectedRowId = "";
+						selectAllForDeleteProctor = true;
+						allProctorSelected = true;
+						
 						var selectedRowData;
-						for(var i = 0; i < addProctorLocaldata.length; i++) {
-							
+						for(var i = 0; i < addProctorLocaldata.length; i++) {						
 							selectedRowData = addProctorLocaldata[i];
 							if (selectedRowData.defaultScheduler == 'F') {
 							
@@ -2186,22 +2197,14 @@ function createSingleNodeSelectedTree(jsondata) {
 								
 								tmpselectedRowId = selectedRowData.userId;
 					 			delProctorIdObjArray[selectedRowData.userId]=selectedRowData;
-					 			//pdindex++;
-								/*if (deletedProctorIds == "") {
-										deletedProctorIds = allRowsInGrid[i]+"_"+pdindex;
-										pdindex++;
-								} else {
-										deletedProctorIds = deletedProctorIds +"|"+allRowsInGrid[i]+"_"+pdindex;
-										pdindex++;
-								}*/
+					 			
 					 		}
-						
 						}
-				} else {
-				
-					var tmpselectedRowId = "";
-					selectAllForDeleteProctor = false;
-					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
+						proctorSelectedLength = addProctorLocaldata.length;
+					} else {				
+						var tmpselectedRowId = "";
+						selectAllForDeleteProctor = false;
+						allProctorSelected= false;
 						var selectedRowData;
 						for(var i = 0; i < addProctorLocaldata.length; i++) {
 							
@@ -2215,28 +2218,36 @@ function createSingleNodeSelectedTree(jsondata) {
 								delete delProctorIdObjArray[selectedRowData.userId];
 					 		}
 						}
-				
-					//selectAllForDeleteProctor = false;
-					//var indx = getProctorIDIndex(selectedRowId);
-					//delProctorIdObjArray[indx]=null;
-					
-					//deletedProctorIds = updateRule(deletedProctorIds,indx);
-					
-				} 
+						proctorSelectedLength = 1;
+					} 
+				}	
 				
 			}, 
 			onSelectRow: function (rowid, status) {
-				var tmpselectedRowId = "";
-				selectAllForDeleteProctor = false;
-				var selectedRowData = $("#listProctor").getRowData(rowid);
-				tmpselectedRowId = selectedRowData.userId;
-								
-				if(status) {					
-					delProctorIdObjArray[tmpselectedRowId]=selectedRowData;					
-				} else {				
-					delete delProctorIdObjArray[tmpselectedRowId];
+				if(!onloadProctorListGrid){
+					var tmpselectedRowId = "";
+					selectAllForDeleteProctor = false;
+					var selectedRowData = $("#listProctor").getRowData(rowid);
+					tmpselectedRowId = selectedRowData.userId;
 					
-				} 
+					if(status) {					
+						delProctorIdObjArray[tmpselectedRowId]=selectedRowData;	
+						proctorSelectedLength = parseInt(proctorSelectedLength) + 1;
+						if(parseInt(noOfProctorAdded) == proctorSelectedLength){
+							allProctorSelected = true;
+						}
+						if(allProctorSelected){
+							$("#cb_listProctor").attr('checked', true).trigger('click').attr('checked', true);
+						}				
+					} else {
+						proctorSelectedLength = parseInt(proctorSelectedLength) - 1;
+						allProctorSelected	= false;	
+						$("#cb_listProctor").attr('checked', false);		
+						delete delProctorIdObjArray[tmpselectedRowId];
+						
+					} 
+				}
+				
 			},
 			loadComplete: function () {
 				if ($('#listProctor').getGridParam('records') === 0) {
