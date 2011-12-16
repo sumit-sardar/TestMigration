@@ -432,7 +432,7 @@ function resetProctor() {
 	deletedProctorIds = "";
 	pindex = 0;
 	pdindex = 1;
-	//proctorIdObjArray = {};
+	proctorIdObjArray = {};
 	delProctorIdObjArray = {};
 	isOnBackProctor = false;
 	noOfProctorAdded = 0;
@@ -442,7 +442,10 @@ function resetProctor() {
 	allRowSelectedPro = false;
 	allProctorIds = [];
 	allSelectOrgProctor = {};
-	//proctorIdObjArray = {};
 	countAllSelectProctor = 0;
+	tempOrgDataInform = {};
+	tempProctorData = {};
+	tempAllSelectOrgProctor= {};
+	
 }
 

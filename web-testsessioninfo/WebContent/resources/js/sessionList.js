@@ -623,6 +623,8 @@ function createSingleNodeSelectedTree(jsondata) {
 			studentIndexCount = 0;
 			studentTempIndexCount = 0;
 			resetOnSelectTestSessionData();
+			resetProctor();
+
 		}
 		$("#"+dailogId).dialog("close");
 	}
@@ -2261,7 +2263,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		
 		noOfProctorAdded = addProctorLocaldata.length;
 		//$('#totalAssignedProctors').text(noOfProctorAdded);
-		closePopUp('removeProctorConfirmationPopup');
+		closePopUpForProctor('removeProctorConfirmationPopup');
 		delProctorIdObjArray = {};
 		gridReloadProctor(false);
 	}
@@ -2309,7 +2311,6 @@ function createSingleNodeSelectedTree(jsondata) {
     	var sessionName = document.getElementById("testSessionName").value;
     	if( sessionName!= null && $.trim(sessionName).length == 0 ){
     		closePopUp('scheduleSession');
-    		resetProctor();
     	} else {
     		openCloseScheduleSessionPopup();
     	}
@@ -2458,6 +2459,13 @@ function createSingleNodeSelectedTree(jsondata) {
     	isTestBreak = false;
 	    $("#hasTestBreak").val("F");
 	    document.getElementById("sData").disabled=true;
+	}
+	
+	function closePopUpForProctor(dailogId){
+ 		if(dailogId == 'removeProctorConfirmationPopup') {
+			$("#"+dailogId).dialog("close");
+		}
+		
 	}
 
 

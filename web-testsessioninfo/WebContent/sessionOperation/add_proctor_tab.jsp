@@ -62,7 +62,7 @@
 			<td >
 				<center>
 					<input type="button"  value="${bundle.web['homepage.button.ok']}" onclick="javascript:removeSelectedProctor(); return false;" class="ui-widget-header" style="width:60px">&nbsp;
-					<input type="button"  value="${bundle.web['homepage.button.cancel']}" onclick="javascript:closePopUp('removeProctorConfirmationPopup'); return false;" class="ui-widget-header" style="width:60px">
+					<input type="button"  value="${bundle.web['homepage.button.cancel']}" onclick="javascript:closePopUpForProctor('removeProctorConfirmationPopup'); return false;" class="ui-widget-header" style="width:60px">
 				</center>
 			</td>
 		</tr>
