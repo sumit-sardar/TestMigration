@@ -68,13 +68,13 @@ function hideSelectStudentPopup() {
 }
 
 function loadInnerStuOrgTree() {
-	if(!isOnBack) {
+	//if(!isOnBack) {
 		createinnSingleNodeSelectedTree (orgTreeHierarchy);
-	} else{
+	//} else{
 		$("#stuOrgNodeHierarchy").jstree("close_all");
 		$("#selectStudent").GridUnload();
 		selectStudentgridLoaded = false;
-	}
+	//}
 	$("#innerSearchheader").css("visibility","visible");	
 	$("#stuOrgNodeHierarchy").css("visibility","visible");	
 
