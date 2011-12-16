@@ -2066,8 +2066,8 @@ function createSingleNodeSelectedTree(jsondata) {
 		 	
 		 	//alert('proctorIdObjArray.length: ' + proctorIdObjArray.length);
 			//$('#totalAssignedProctors').text(proctorIdObjArray.length);
-			proctorIdObjArray["All"]= {};
-			proctorIdObjArray["All"][schedulerUserId] = jsondata;
+			proctorIdObjArray = {};
+			proctorIdObjArray[schedulerUserId] = jsondata;
 			//alert(JSON.stringify(proctorIdObjArray));	
 			if (selectedProctorIds == "") {
 					selectedProctorIds = schedulerUserId+"_"+pindex;

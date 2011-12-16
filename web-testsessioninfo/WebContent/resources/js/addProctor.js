@@ -25,7 +25,6 @@ var tempOrgDataInform = {};
 var tempProctorData = {};
 var tempAllSelectOrgProctor= {};
 var onloadGrid = false;
-var crossOrgProctors = {};
 
 function showSelectProctor(){
 	$("#Proctor_Tab").css('display', 'none');
@@ -48,21 +47,18 @@ function hideSelectedProctor (){
 	
 	var jsonDataOrg = {};	
 	for (var i in tempProctorData) {		
-		var objstr = tempProctorData[i];
-		var jsonDataUser = {};
-		for(var j in objstr){
-			jsonDataUser[j] = objstr[j];
+		var objstr = tempProctorData[i];		
+		jsonDataOrg[i] = objstr;
+	}
+	
+	for(var j in tempAllSelectOrgProctor){
+		if(tempAllSelectOrgProctor[j]){
+			allSelectOrgProctor[j] = true;
+		}else {
+			allSelectOrgProctor[j] = false;
 		}
-		jsonDataOrg[i] = jsonDataUser;	
-		if(i != 'All') {
-			if(tempAllSelectOrgProctor[i]){
-				allSelectOrgProctor[i] = true;
-			}else {
-				allSelectOrgProctor[i] = false;
-			}
-			var count = parseInt(tempOrgDataInform[i]);
-			orgDataInform[i] = count;
-		}
+		var count = parseInt(tempOrgDataInform[j]);
+		orgDataInform[j] = count;
 	}
 	
 	proctorIdObjArray = jsonDataOrg;	
@@ -230,35 +226,19 @@ function populateSelectProctorGrid() {
 			 	$("#"+ defaultUserId).addClass('ui-state-disabled');
 			 	
 				for(var i = 0; i < allRowsInGrid.length; i++) {
-			 		if(crossOrgProctors[allRowsInGrid[i]]){
+			 		if(proctorIdObjArray[allRowsInGrid[i]]){
 			 			var seledtedRowId = allRowsInGrid[i];							
 						if(!($("#"+allRowsInGrid[i]+" td input").attr('checked'))){
 							$("#"+allRowsInGrid[i]+" td input").attr('checked', true).trigger('click').attr('checked', true);
-						}	
-						if(proctorIdObjArray[proctorForSelectedOrg]){
-							proctorIdObjArray[proctorForSelectedOrg][seledtedRowId] = crossOrgProctors[allRowsInGrid[i]];
-						}else {
-							proctorIdObjArray[proctorForSelectedOrg] = {};
-							orgDataInform[proctorForSelectedOrg] = 0;
-							proctorIdObjArray[proctorForSelectedOrg][seledtedRowId] = crossOrgProctors[allRowsInGrid[i]];
 						}
-						
-						if(parseInt(orgDataInform[proctorForSelectedOrg])  + 1 == parseInt(allProctorIds['dataLength'])){
-							allSelectOrgProctor[proctorForSelectedOrg] = true; 
-							$("#cb_selectProctor").attr('checked', true).trigger('click').attr('checked', true);					
-						}
-						orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
-						
-						
-			 		}else {			 			
-			 			
+			 		}else {
 			 			if($("#"+allRowsInGrid[i]+" td input").attr('checked')){
 							$("#"+allRowsInGrid[i]+" td input").attr('checked', false).trigger('click').attr('checked', false);
 						}
-			 		}
-			 		
+			 		}			 		
 				}
 			 }
+			 
 			 onloadGrid = false;
 				
 			},
@@ -267,15 +247,7 @@ function populateSelectProctorGrid() {
 					if(status) {
 						for(var key in allProctorIds['dataList']) {
 							if (allProctorIds['dataList'][key].defaultScheduler == 'F') {
-								/*var jsondata = {};
-								jsondata[key] = allProctorIds['dataList'][key];	*/
-								if(proctorIdObjArray[proctorForSelectedOrg]){
-									proctorIdObjArray[proctorForSelectedOrg][key] = allProctorIds['dataList'][key];
-								}else {
-									proctorIdObjArray[proctorForSelectedOrg] = {};
-									proctorIdObjArray[proctorForSelectedOrg][key] = allProctorIds['dataList'][key];
-								}
-								crossOrgProctors[key] = allProctorIds['dataList'][key];																									
+								proctorIdObjArray[key] = allProctorIds['dataList'][key];																							
 								
 					 		}				
 						}						
@@ -283,12 +255,13 @@ function populateSelectProctorGrid() {
 						// Added to handle multiple organization select All	
 						allSelectOrgProctor[proctorForSelectedOrg] = true; 	
 					} else {
-						orgDataInform[proctorForSelectedOrg] = 0 ;
+						orgDataInform[proctorForSelectedOrg] = 1 ;
 						allSelectOrgProctor[proctorForSelectedOrg] = false;
-						for(var i in proctorIdObjArray[proctorForSelectedOrg]){
-							delete crossOrgProctors[i];
-						}
-						delete proctorIdObjArray[proctorForSelectedOrg];								
+						for(var key in allProctorIds['dataList']) {
+							if (allProctorIds['dataList'][key].defaultScheduler == 'F') {
+								delete proctorIdObjArray[key];
+							}	
+						}							
 					}		
 				}
 						
@@ -298,14 +271,7 @@ function populateSelectProctorGrid() {
 					var selectedRowId = rowid;
 					if(status) {
 						var selectedRowData = $("#selectProctor").getRowData(selectedRowId);
-						if(proctorIdObjArray[proctorForSelectedOrg]){
-							proctorIdObjArray[proctorForSelectedOrg][selectedRowId] = selectedRowData;
-						}else {
-							proctorIdObjArray[proctorForSelectedOrg] = {};
-							orgDataInform[proctorForSelectedOrg] = 0;
-							proctorIdObjArray[proctorForSelectedOrg][selectedRowId] = selectedRowData;
-						}
-						crossOrgProctors[selectedRowId] = selectedRowData;
+						proctorIdObjArray[selectedRowId] = selectedRowData;
 						
 						if(parseInt(orgDataInform[proctorForSelectedOrg])  + 1 == parseInt(allProctorIds['dataLength'])){
 							allSelectOrgProctor[proctorForSelectedOrg] = true; 
@@ -314,15 +280,11 @@ function populateSelectProctorGrid() {
 						orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
 						
 					} else {
-						if(proctorIdObjArray[proctorForSelectedOrg]){
-							delete proctorIdObjArray[proctorForSelectedOrg][selectedRowId];
-							delete crossOrgProctors[selectedRowId];
+						if(proctorIdObjArray[selectedRowId]){
+							delete proctorIdObjArray[selectedRowId];
 							orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) - 1;
 						}
 						
-						if(orgDataInform[proctorForSelectedOrg] == 0){
-							delete proctorIdObjArray[proctorForSelectedOrg];
-						}
 						allSelectOrgProctor[proctorForSelectedOrg] = false; 
 						$("#cb_selectProctor").attr('checked', false);
 					} 
@@ -338,6 +300,20 @@ function populateSelectProctorGrid() {
             	} else {
             		isPAGridEmpty = false;
             	}
+            	var selectedCount = 0;
+            	for(var key in allProctorIds['dataList']) {
+			 		if(proctorIdObjArray[key]){
+						selectedCount++;
+			 		}			 		
+				}
+				
+				orgDataInform[proctorForSelectedOrg] = selectedCount;
+				
+				if(parseInt(orgDataInform[proctorForSelectedOrg]) == parseInt(allProctorIds['dataLength'])){
+					allSelectOrgProctor[proctorForSelectedOrg] = true; 
+					$("#cb_selectProctor").attr('checked', true).trigger('click').attr('checked', true);					
+				}
+            	
             	//setEmptyListMessage('PA');
             	$.unblockUI();  
 				$("#selectProctor").setGridParam({datatype:'local'});
@@ -588,22 +564,19 @@ function returnSelectedProctor() {
 	
 	for (var i in proctorIdObjArray) {		
 		var objstr = proctorIdObjArray[i];
-		var jsonDataUser = {};
-		for(var j in objstr){
-			jsonDataUser[j] = objstr[j];
-			val.push(objstr[j]);
-		}
-		jsonDataOrg[i] = jsonDataUser;	
-		if(i != 'All') {
-			if(allSelectOrgProctor[i]){
-				tempAllSelectOrgProctor[i] = true;
-			}else {
-				tempAllSelectOrgProctor[i] = false;
-			}
-			var count = parseInt(orgDataInform[i]);
-			tempOrgDataInform[i] = count;
-		}
+		jsonDataOrg[i] = objstr;
+		val.push(objstr);
 	}
+	for(var j in allSelectOrgProctor){
+		if(allSelectOrgProctor[j]){
+			tempAllSelectOrgProctor[j] = true;
+		}else {
+			tempAllSelectOrgProctor[j] = false;
+		}
+		var count = parseInt(orgDataInform[j]);
+		tempOrgDataInform[j] = count;
+	}
+	
 	tempProctorData = jsonDataOrg;
 	
 	addProctorLocaldata = val;
