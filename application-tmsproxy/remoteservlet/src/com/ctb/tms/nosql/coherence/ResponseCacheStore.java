@@ -77,26 +77,12 @@ public class ResponseCacheStore implements OASCacheStore {
     		Iterator<BinaryEntry> it = setBinEntries.iterator();
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
-		    long start = System.currentTimeMillis();
 		    int counter = 0;
     		while(it.hasNext()) {
     			BinaryEntry entry = it.next();
 	    		String key = (String) entry.getKey();
 	    		key = key.substring(0, key.indexOf(":"));
 	    		sink.putItemResponse(conn, key, (ItemResponseWrapper) entry.getValue());
-	    		it.remove();
-	    		if(counter%100 == 0) {
-			    	long end = System.currentTimeMillis();
-			    	if(end - start > 10000) {
-			    		Guardian.GuardContext guardContext = GuardSupport.getThreadContext();
-			    		if (guardContext != null) {
-			    		    guardContext.heartbeat();
-			    		    logger.warn("Sent guardian heartbeat - ResponseCacheStore.storeAll busy for > 10 seconds, processed " + counter + " records.");
-			    		    counter=0;
-			    		}
-			    		start = end;
-			    	}
-		    	}
 		    	counter++;
     		}
     		conn.commit();

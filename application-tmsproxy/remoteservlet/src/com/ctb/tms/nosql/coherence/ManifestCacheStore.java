@@ -144,24 +144,10 @@ public class ManifestCacheStore implements OASCacheStore {
     		Iterator<BinaryEntry> it = setBinEntries.iterator();
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
-		    long start = System.currentTimeMillis();
 		    int counter = 0;
     		while(it.hasNext()) {
     			BinaryEntry entry = it.next();
     			sink.putManifest(conn, (String) entry.getKey(), (Manifest[]) entry.getValue());
-    			it.remove();
-	    		if(counter%100 == 0) {
-			    	long end = System.currentTimeMillis();
-			    	if(end - start > 10000) {
-			    		Guardian.GuardContext guardContext = GuardSupport.getThreadContext();
-			    		if (guardContext != null) {
-			    		    guardContext.heartbeat();
-			    		    logger.warn("Sent guardian heartbeat - ManifestCacheStore.storeAll busy for > 10 seconds, processed " + counter + " records.");
-			    		    counter=0;
-			    		}
-			    		start = end;
-			    	}
-		    	}
 		    	counter++;
     		}
     		conn.commit();

@@ -104,6 +104,7 @@
 		      <scheme-ref>BackMemoryScheme</scheme-ref>
 		    </local-scheme>
 		  </internal-cache-scheme>
+		  <write-max-batch-size>32</write-max-batch-size>
 		  <cachestore-scheme>
 		    <class-scheme>
 		      <class-name>com.ctb.tms.nosql.coherence.DBCacheStore</class-name>
@@ -149,7 +150,7 @@
 		<proxy-scheme>
 			<scheme-name>proxy-scheme</scheme-name>
 			<service-name>ExtendTcpProxyService</service-name>
-			<thread-count>20</thread-count>
+			<thread-count>10</thread-count>
             <acceptor-config>
                 <tcp-acceptor>
 	                <address-provider>
@@ -176,10 +177,12 @@
 	                    	<class-name>com.ctb.tms.nosql.coherence.push.TMSRemoteAddressProvider</class-name>
 	                    </address-provider>
 	                </remote-addresses>
-					<connect-timeout>2s</connect-timeout> 
+					<connect-timeout>3s</connect-timeout> 
 				</tcp-initiator> 
 				<outgoing-message-handler> 
-					<request-timeout>5s</request-timeout> 
+					<heartbeat-interval>30s</heartbeat-interval>
+					<heartbeat-timeout>3s</heartbeat-timeout>
+					<request-timeout>30s</request-timeout> 
 				</outgoing-message-handler> 
 			</initiator-config> 
 		</remote-invocation-scheme>  
