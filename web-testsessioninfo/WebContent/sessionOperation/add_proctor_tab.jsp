@@ -4,7 +4,7 @@
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 
 
-	<table>
+	<table style="margin-bottom: 10px;">
 		<tr>
 			<td>
 				<div id="proctorInformationText">
@@ -16,13 +16,12 @@
 			</td>
 		</tr>
 	</table>
-	<br/>
 	
-	<table width="928px" style="padding-bottom: 4px">
+	<table width="928px" style="margin-bottom: 10px;">
 		<tr>
 			<td>
 				<div style="float:left;"> 
-						<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;padding: 0 5px 5px 0;">
+						<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;">
 								<netui:content value="${bundle.web['sessionList.proctors.assigned']}"/> 
 								<span id = "totalAssignedProctors"></span>	
 						</p>
