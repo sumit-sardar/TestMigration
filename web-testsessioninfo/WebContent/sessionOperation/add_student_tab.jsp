@@ -38,11 +38,10 @@
 
 				
 <div id="removeStuConfirmationPopup"
-	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal; height: 160px !important;">
+	style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table>
 		<tr>
 			<td colspan="2">
-			<br/>
 			<p><netui:content value="${bundle.web['homepage.delStuConfirmation.message']}"/></p>
 			<p><netui:content value="${bundle.web['homepage.delStuConfirmation2.message']}"/></p>
 			</td>
