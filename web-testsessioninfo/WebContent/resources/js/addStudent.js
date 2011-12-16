@@ -242,7 +242,7 @@ function populateSelectStudentGrid() {
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 162,  
+			height: 161,  
 			caption:"Student List",
 			//toolbar: [true,"top"],
 			onPaging: function() {
