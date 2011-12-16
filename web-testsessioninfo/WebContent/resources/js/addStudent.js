@@ -27,9 +27,10 @@ var orgBeforeBack = [];
 var orgBeforeBackCount = 0;
 
 function showSelectStudent(){
+	selectedSubtestId = selectedTestId;
 	$("#Student_Tab").css('display', 'none');
 	$("#Select_Student_Tab").css('display', 'block');
-		$("#selectStudentPager").css('display', 'none');
+	$("#selectStudentPager").css('display', 'none');
 	if(orgTreeHierarchy == "" || orgTreeHierarchy ==undefined) {
 		populateStuTree();
 	} else {
