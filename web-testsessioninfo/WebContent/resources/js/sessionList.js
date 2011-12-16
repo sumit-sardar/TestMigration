@@ -2034,8 +2034,7 @@ function createSingleNodeSelectedTree(jsondata) {
     }
      
      function gridReloadProctor(addProctor){ 
-      	
-      	$('#listProctor').GridUnload();		
+      	$('#listProctor').GridUnload();	
       	populateSelectedProctor();
       	
      }
@@ -2051,7 +2050,7 @@ function createSingleNodeSelectedTree(jsondata) {
  		
  		proctorGridloaded = true;
 
- 		if( noOfProctorAdded == 0) {
+ 		if(noOfProctorAdded == 0) {
 	 		var jsondata = {};
 	 		jsondata['userId'] = schedulerUserId;
 	 		jsondata['lastName'] = schedulerLastName;
@@ -2064,22 +2063,14 @@ function createSingleNodeSelectedTree(jsondata) {
 		    
 		    addProctorLocaldata = val;
 		 	
-		 	//alert('proctorIdObjArray.length: ' + proctorIdObjArray.length);
-			//$('#totalAssignedProctors').text(proctorIdObjArray.length);
 			proctorIdObjArray = {};
 			proctorIdObjArray[schedulerUserId] = jsondata;
 			//alert(JSON.stringify(proctorIdObjArray));	
-			if (selectedProctorIds == "") {
-					selectedProctorIds = schedulerUserId+"_"+pindex;
-					pindex++;
-			} else {
-					selectedProctorIds = selectedProctorIds +"|"+schedulerUserId+"_"+pindex;
-					pindex++;
-			}
-		 	//proctorIdObjArray[schedulerUserId]=jsondata;
-		 	noOfProctorAdded = addProctorLocaldata.length;
-		 	$("#totalAssignedProctors").text(noOfProctorAdded);
+		 	
 	 	}
+	 	
+	 	noOfProctorAdded = addProctorLocaldata.length;
+		$("#totalAssignedProctors").text(noOfProctorAdded);
 	 	
 	 	//$("#testSchedulerId").text(schedulerFirstName + ' ' + schedulerLastName);
 	 	 		
@@ -2116,26 +2107,9 @@ function createSingleNodeSelectedTree(jsondata) {
 				if(reqestedPage <= minPageSize){
 					$('#listProctor').setGridParam({"page": minPageSize});
 				}
-				
-			/*	if(allRowSelectedPro) {
-					var sessions  = jQuery('#selectProctor').jqGrid('getGridParam','selarrrow');	
-					if(selectedSessionPro.length > 0) {
-					var existlen = selectedSessionPro.length;
-					for(var i=0; i<sessions.length; i++) {
-						if(!include(selectedSessionPro, sessions[i])) {
-							selectedSessionPro[existlen] = sessions[i] ;
-							existlen++;
-						}
-					}
-					 var allRowsInGrid = $('#selectProctor').jqGrid('getDataIDs');
-					
-					} else {
-						selectedSessionPro = sessions;
-					} 
-				} */
+			
 			},
-			gridComplete: function() { 
-
+			gridComplete: function() {
 					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
 					var selectedRowData;
 					for(var i = 0; i < allRowsInGrid.length; i++) {
@@ -2148,31 +2122,6 @@ function createSingleNodeSelectedTree(jsondata) {
 				 		}
 					
 					}
-				
-			/*	if(proctorForSelectedOrg != preSelectedOrgPro) {
-					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
-					if(allRowSelectedPro) { 
-					 	$('.cbox').attr('checked', true);
-					 	if(unCheckedSessionPro.length > 0) {
-					 	for(var i=0; i<unCheckedSessionPro.length; i++) {
-					 	 	if(include(allRowsInGrid, unCheckedSessionPro[i])){
-					 	 			$("#"+unCheckedSessionPro[i]+" td input").attr('checked', false); 
-					 	 		}
-					 		}
-					 	}
-					 } else {
-					 	$('.cbox').attr('checked', false); 
-					 	for(var i=0; i<allRowsInGrid.length; i++) {
-						 	if(proctorIdObjArray[allRowsInGrid[i]] != undefined){
-						 		var stuObj = proctorIdObjArray[allRowsInGrid[i]];
-						 		//var orgArray = 	stuObj.orgNodeId.split(",");
-					 			//if(include(orgArray, proctorForSelectedOrg)) {
-								//	$("#"+allRowsInGrid[i]+" td input").attr('checked', true); 
-								//} 
-							}
-					 	}
-					 }
-				} */
 			},
 			
 			onSelectAll: function (rowids, status) {
@@ -2180,7 +2129,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				if(status) {
 					var tmpselectedRowId = "";
 					selectAllForDeleteProctor = true;
-					var allRowsInGrid = $('#listProctor').jqGrid('getDataIDs');
+					var allRowsInGrid = $('#listProctor').jqGrid('getRowData');
 						var selectedRowData;
 						for(var i = 0; i < addProctorLocaldata.length; i++) {
 							
@@ -2191,8 +2140,7 @@ function createSingleNodeSelectedTree(jsondata) {
 								$("#"+selectedRowData.userId+" td input").attr("checked", true); 
 								
 								tmpselectedRowId = selectedRowData.userId;
-								pdindex = getProctorIDIndex(tmpselectedRowId);
-					 			delProctorIdObjArray[pdindex]=tmpselectedRowId;
+					 			delProctorIdObjArray[selectedRowData.userId]=selectedRowData;
 					 			//pdindex++;
 								/*if (deletedProctorIds == "") {
 										deletedProctorIds = allRowsInGrid[i]+"_"+pdindex;
@@ -2219,8 +2167,7 @@ function createSingleNodeSelectedTree(jsondata) {
 								$("#"+selectedRowData.userId+" td input").attr("checked", false); 
 								
 								tmpselectedRowId = selectedRowData.userId;
-								var indx = getProctorIDIndex(tmpselectedRowId);
-								delProctorIdObjArray[indx]=null;
+								delete delProctorIdObjArray[selectedRowData.userId];
 					 		}
 						}
 				
@@ -2234,29 +2181,15 @@ function createSingleNodeSelectedTree(jsondata) {
 				
 			}, 
 			onSelectRow: function (rowid, status) {
-			
+				var tmpselectedRowId = "";
 				selectAllForDeleteProctor = false;
 				var selectedRowData = $("#listProctor").getRowData(rowid);
-				selectedRowId = selectedRowData.userId;
+				tmpselectedRowId = selectedRowData.userId;
 								
-				if(status) {
-					
-					pdindex = getProctorIDIndex(selectedRowId);
-					delProctorIdObjArray[pdindex]=selectedRowId;
-					//pdindex++;
-					/*if (deletedProctorIds == "") {
-							deletedProctorIds = selectedRowId+"_"+pdindex;
-							pdindex++;
-					} else {
-							deletedProctorIds = deletedProctorIds +"|"+selectedRowId+"_"+pdindex;
-							pdindex++;
-					}*/
-					
-				} else {
-				
-					var indx = getProctorIDIndex(selectedRowId);
-					delProctorIdObjArray[indx]=null;
-					//deletedProctorIds = updateRule(deletedProctorIds,indx);
+				if(status) {					
+					delProctorIdObjArray[tmpselectedRowId]=selectedRowData;					
+				} else {				
+					delete delProctorIdObjArray[tmpselectedRowId];
 					
 				} 
 			},
@@ -2294,7 +2227,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	 });
 	 jQuery("#listProctor").navGrid('#pagerProctor', {
 			delfunc: function() {
-				if(delProctorIdObjArray.length > 0 ) {
+				if(!isEmpty(delProctorIdObjArray)) {
 					removeProctorConfirmationPopup();
 				}
 		    }	    	
@@ -2310,28 +2243,27 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 	
 	function removeSelectedProctor() {
-		
-		
-		for (var i=0 ; i<delProctorIdObjArray.length;i++) {		
-			var uid = delProctorIdObjArray[i];
-			if (uid != null) {			
-				jQuery("#listProctor").delRowData(uid);
-				var indx = getProctorIDIndex(uid);
-				removeProctorByIndex(indx);
-				selectedProctorIds = updateRule(selectedProctorIds,indx);
+		for(var i in delProctorIdObjArray) {		
+			delete proctorIdObjArray[i];
+			delete tempProctorData[i];
+			for(var count=0;count<addProctorLocaldata.length;count++){
+				if(i == addProctorLocaldata[count].userId){
+					addProctorLocaldata.splice(count,1);
+				}
 			}
-					
 		}
+		for(var j in allSelectOrgProctor){
+			allSelectOrgProctor[j] = false;
+			if(tempAllSelectOrgProctor[j]){
+				tempAllSelectOrgProctor[j] = false;
+			}
+		}
+		
+		noOfProctorAdded = addProctorLocaldata.length;
 		//$('#totalAssignedProctors').text(noOfProctorAdded);
 		closePopUp('removeProctorConfirmationPopup');
-		delProctorIdObjArray = [];
-		pdindex = 1;
-		returnSelectedProctor();
-		for(var i = 0; i < allSelectOrgProctor.length; i++) {
-			if(allSelectOrgProctor[i] != null && allSelectOrgProctor[i] == proctorForSelectedOrg)
-				allSelectOrgProctor[i] = null;
-		}	
-		
+		delProctorIdObjArray = {};
+		gridReloadProctor(false);
 	}
 	
 	function removeProctorConfirmationPopup(){

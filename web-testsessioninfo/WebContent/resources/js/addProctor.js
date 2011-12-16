@@ -13,7 +13,7 @@ var deletedProctorIds = "";
 var pindex = 0;
 var pdindex = 1;
 var proctorIdObjArray = {};
-var delProctorIdObjArray = [];
+var delProctorIdObjArray = {};
 var isOnBackProctor = false;
 
 var allProctorIds = {};
@@ -37,7 +37,7 @@ function showSelectProctor(){
 	
 }
 function hideSelectedProctor (){	
-	//backProctorRule();
+
 	delete orgDataInform;
 	delete allSelectOrgProctor;
 	delete proctorIdObjArray;
@@ -145,12 +145,13 @@ function createSingleNodeSelectedTreeForProctor(jsondata) {
 		});
 }
 
-function getLength(obj){
-	var cnt = 0;
+function isEmpty(obj){
+	var empty = true;
 	for( var i in obj ) {
-	cnt++;
+		empty = false;
+		break;
 	}
-	return cnt;
+	return empty;
 }
 
 function populateSelectProctorGrid() {
@@ -340,126 +341,6 @@ function populateSelectProctorGrid() {
 
 }
 
-function getRuleLength () {
-
-	var tmpArr = selectedProctorIds.split("|");
-	return tmpArr.length;
-
-}
-
-function getProctorIDIndex(selectedRowId) {
-
-	var pIDs = selectedProctorIds.split("|");
-	var pid = "";
-	for (var i = 0; i < pIDs.length; i++) {		
-		pid = pIDs[i];
-		if (pid.match(selectedRowId) != null) {
-			return pid.substring((selectedRowId+"_").length,pid.length).split('_')[0];//added split to remove '_tmp'
-		}
-	}
-	
-	return -1;
-}
-
-function getProctorRowID (index) {
-
-	index = "_"+index;
-	var pIDs = selectedProctorIds.split("|");
-	var pid = "";
-	for (var i = 0; i < pIDs.length; i++) {
-		
-		pid = pIDs[i];
-		if (pid.match(index) != null) {
-			
-			var end = pid.indexOf(index);
-			var selectedRowID = pid.substring(0,end);
-			return selectedRowID;
-		}
-	}
-	
-	return "-1";
-	
-
-}
-
-function removeProctorByIndex (arrayIndex) {
-
-	//proctorIdObjArray.splice(arrayIndex,1);
-	proctorIdObjArray[arrayIndex]=null;
-
-}
-
-
-function updateRule (rule,index) {
-
-	/*index = "_"+index;
-	var pIDs = rule.split("|");
-	var pid = "";
-	for (var i = 0; i < pIDs.length; i++) {
-		
-		pid = pIDs[i];
-		if (pid.match(index) != null) {
-			
-			pIDs[i] = "deleted"
-			break;
-			
-		}
-	}
-	
-	for (var i = 0; i < pIDs.length; i++) {
-	
-		pid = pIDs[i];
-		
-		if (i == 0) {
-			rule = pid;
-		} else {
-			rule = rule +"|"+pid;
-		}
-		
-	}*/
-	var pIDs = rule.split("|");
-	var preIndex = 0;
-	var prePipePos = 0;
-	var nxtPipePos = 0;
-	var len = pIDs.length - 1;
-	var part1 = "";
-	var part2 = "";
-	var flag = false;
-	
-	var lpid = pIDs[len];
-	var pos = lpid.indexOf("_");
-	var lindex = lpid.substring(pos + 1,lpid.length).split('_')[0];//added split to remove '_tmp';
-	
-	if (lindex == index) {
-	
-		flag = true;	
-	}
-	
-	if (index > 0 && !flag) {
-	
-		preIndex = index - 1;
-		
-		var rule1 = rule.substring(0,rule.indexOf("_"+index+"|"));
-		prePipePos = rule1.lastIndexOf("|");
-		
-		//prePipePos = rule.indexOf("|",rule.indexOf("_"+preIndex));
-		nxtPipePos = rule.indexOf("|",rule.indexOf("_"+index+"|"));
-		var part1 = rule.substring(0,(prePipePos));
-		var part2 = rule.substring(nxtPipePos,rule.length);
-		rule = part1 + part2;
-	
-	} else {
-	
-		preIndex = index - 1;
-		//prePipePos = rule.indexOf("|",rule.indexOf("_"+preIndex));
-		prePipePos = rule.lastIndexOf("|");
-		part1 = rule.substring(0,(prePipePos));
-		rule = part1;
-	}
-	
-	return rule;
-} 
-
 function include(arr,obj) {
      //return (arr.indexOf(obj) != -1);
     var indx =  jQuery.inArray(obj, arr); 
@@ -469,90 +350,9 @@ function include(arr,obj) {
       return false;
      
 }
-
-function confirmProctorRule () {
-
-	/*var pIDs = selectedProctorIds.split("|");
-	var pid = "";
-	for (var i = 0; i < pIDs.length; i++) {
-		
-		pid = pIDs[i];
-		if (pid.match("_tmp") != null) {
-			
-			pid = pid.replace("_tmp","");
-			pIDs[i] = pid;
-						
-		}
-	}
-	
-	for (var i = 0; i < pIDs.length; i++) {
-	
-		pid = pIDs[i];
-		
-		if (i == 0) {
-			selectedProctorIds = pid;
-		} else {
-			selectedProctorIds = selectedProctorIds +"|"+pid;
-		}
-		
-	}*/
-	
-	selectedProctorIds = selectedProctorIds.replace(/_tmp/gi,"");
-	
-}
-
-function backProctorRule () {
-
-	var pIDs = selectedProctorIds.split("|");
-	var pid = "";
-	for (var i = 0; i < pIDs.length; i++) {
-		
-		pid = pIDs[i];
-		if (pid.match("_tmp") != null) {
-			
-			pIDs[i] = "deleted";
-			removeProctorByIndex(i);
-						
-		} else {
-		
-			if (i == 0) {
-				selectedProctorIds = pid;
-			} else {
-			
-				if (pid !="deleted") {
-			
-					selectedProctorIds = selectedProctorIds +"|"+pid;
-			
-				}
-			
-			}
-		
-		}
-	}
-	
-	/*for (var i = 0; i < pIDs.length; i++) {
-	
-		pid = pIDs[i];
-		
-		if (i == 0) {
-			selectedProctorIds = pid;
-		} else {
-			
-			if (pid !="deleted") {
-			
-				selectedProctorIds = selectedProctorIds +"|"+pid;
-			
-			}
-			
-		}
-		
-	}*/
-}
-	
 	
 function returnSelectedProctor() {
 
-	confirmProctorRule();
 	var val= [] ;
 	delete tempOrgDataInform;
 	delete tempAllSelectOrgProctor;
@@ -633,7 +433,7 @@ function resetProctor() {
 	pindex = 0;
 	pdindex = 1;
 	//proctorIdObjArray = {};
-	delProctorIdObjArray = [];
+	delProctorIdObjArray = {};
 	isOnBackProctor = false;
 	noOfProctorAdded = 0;
 	proctorGridloaded = false;
