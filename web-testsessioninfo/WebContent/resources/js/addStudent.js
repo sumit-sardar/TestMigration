@@ -27,6 +27,7 @@ var orgBeforeBack = [];
 var orgBeforeBackCount = 0;
 
 function showSelectStudent(){
+	$("#studentAddDeleteInfo").hide();
 	selectedSubtestId = selectedTestId;
 	$("#Student_Tab").css('display', 'none');
 	$("#Select_Student_Tab").css('display', 'block');
@@ -529,7 +530,17 @@ function updateDupStudent(){
 		studentDataTe.orgNodeName = $.trim(OrgName);
 		studentMap.put(objstr.studentId,studentDataTe);
 	}
+	 var previous = AddStudentLocaldata.length;
+	 if(previous == undefined)
+	 	previous = 0;
 	 updateAddStudentLocaldata();
+	 var newValue = AddStudentLocaldata.length;
+	 if(newValue == undefined)
+	 	newValue = 0;
+	 var finalValue = newValue - previous;
+	 $("#studentAddDeleteInfo").show();
+	 var message = finalValue + "  " + STUDENTS_ADDED;
+	 $("#addDeleteStud").text(message);
 	 hideSelectStudentPopup();
 	 gridReloadStu(false);
 	 $("#duplicateStudent").dialog("close");
@@ -575,11 +586,27 @@ function returnSelectedStudent() {
 		}
 	}
  if(dupStuPresent) {
+ var message = "";
  duplicateStuArraydata = duplicateStuArray;
  	$('#dupStudentlist').GridUnload();	
  	openDuplicateStudentPopup(duplicateStuArraydata, orgForDupStu);
  } else {
+	 var previous = AddStudentLocaldata.length; 
+	if(previous == undefined)
+	 	previous = 0;
 	 updateAddStudentLocaldata();
+	 var newValue = AddStudentLocaldata.length;
+	 if(newValue == undefined)
+	 	newValue = 0; 
+	 var finalValue = newValue - previous;
+	 if(finalValue < 0) {
+	 	finalValue = 0 - finalValue;
+	 	message = finalValue + "  " + STUDENTS_DELETED;
+	 } else {
+	 	message = finalValue + "  " + STUDENTS_ADDED;
+	 }
+	 $("#studentAddDeleteInfo").show();
+	 $("#addDeleteStud").text(message);
 	 hideSelectStudentPopup();
 	 gridReloadStu(false);
 	 $("#duplicateStudent").dialog("close");

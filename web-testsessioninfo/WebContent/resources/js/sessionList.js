@@ -722,6 +722,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			caption:"Student List",
 			onPaging: function() {
 				//clearMessage();
+				$("#studentAddDeleteInfo").hide();
 				var reqestedPage = parseInt($('#list6').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager6').text());
 				var minPageSize = 1;
@@ -757,6 +758,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 			},
 			onSelectAll: function (rowIds, status) {
+				$("#studentAddDeleteInfo").hide();
 				delStuIdObjArray = [];
 				deleteStudentCounter = 0;
 				if(status) {
@@ -771,6 +773,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			},
 			onSelectRow: function (rowid, status) {
 				//selectAllForDelete = false;
+				$("#studentAddDeleteInfo").hide();
 				var selectedRowData = $("#list6").getRowData(rowid);
 				var selectedRowId = selectedRowData.studentId;
 				if(status) {
@@ -891,7 +894,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			}
 		}
 		closePopUp('removeStuConfirmationPopup');
-		returnSelectedStudent();		
+		returnSelectedStudent();
 				
 		delStuIdObjArray = [];
 		if(selectAllForDelete) {

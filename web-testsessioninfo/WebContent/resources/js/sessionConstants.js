@@ -21,3 +21,5 @@ var TAC_MISSING_TEST_ACCESSCODE= "For security purposes, a Test Access Code is r
 var TAC_MISSING_TEST_ACCESSCODES_HEADER= "Missing Test Access Code(s).";
 var TAC_MISSING_TEST_ACCESSCODES1 = "For security purposes, a Test Access Code is required for each subtest.";
 var TAC_MISSING_TEST_ACCESSCODES2= "If you allow student breaks, make sure there is a unique Test Access Code for each subtest, and then Proceed.";
+var STUDENTS_DELETED = "Students are deleted from this test session."
+var STUDENTS_ADDED = "Students are added to this test session."

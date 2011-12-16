@@ -71,6 +71,7 @@
 									e.stopPropagation();
 								}else{
 									$('#displayMessage').hide();
+									$('#studentAddDeleteInfo').hide();
 									isFirstAccordSelected = true;
 									isSecondAccordSelected = false;
 									isThirdAccordSelected = false;
@@ -83,6 +84,7 @@
 									e.stopPropagation(); 
 								}else{
 									$('#displayMessage').hide();
+									$('#studentAddDeleteInfo').hide();
 									isFirstAccordSelected = false;
 									isSecondAccordSelected = true;
 									isThirdAccordSelected = false;
@@ -116,6 +118,7 @@
 									e.stopPropagation();
 								}else{
 									$('#displayMessage').hide();
+									$('#studentAddDeleteInfo').hide();
 									isFirstAccordSelected = true;
 									isSecondAccordSelected = false;
 									isFourthAccordSelected = true;

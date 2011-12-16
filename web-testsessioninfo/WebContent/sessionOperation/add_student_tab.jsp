@@ -5,6 +5,24 @@
 <%
 	 Boolean supportAccommodations  = (Boolean) session.getAttribute("supportAccommodations");
 %>
+	<div id = "studentAddDeleteInfo" 
+		style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">	
+	<table>
+		<tbody>
+			<tr width='100%'>
+				<th style='padding-right: 6px; text-align: right;' rowspan='2'>
+					<img height='23' src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif">
+				</th>
+			</tr>
+			<tr width='100%'>
+				<td>
+					<span id = 'addDeleteStud'></span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	</div>
+
 	<div style="width:100%;text-align: left;"> 
 			<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;padding: 0 5px 4px 0;">
 				 
