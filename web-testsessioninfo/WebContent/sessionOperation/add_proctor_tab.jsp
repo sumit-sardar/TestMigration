@@ -16,11 +16,9 @@
 			</td>
 		</tr>
 	</table>
-	
 	<br/>
-
 	
-	<table width="928px">
+	<table width="928px" style="padding-bottom: 4px">
 		<tr>
 			<td>
 				<div style="float:left;"> 
@@ -43,7 +41,7 @@
 		</tr>
 	</table>
 	
-	<br/>
+
 	
 	<table id="listProctor" class="gridTable"></table>
 	

@@ -2144,7 +2144,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 160,  
+			height: 162,  
 			caption:"Proctor List",
 			onPaging: function() {
 				var reqestedPage = parseInt($('#listProctor').getGridParam("page"));
