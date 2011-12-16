@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import sun.misc.BASE64Encoder;
 
@@ -18,7 +19,7 @@ import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.tangosol.net.cache.CacheStore;
 
-public class RosterCacheStore implements CacheStore {
+public class RosterCacheStore implements OASCacheStore {
 	
 	
 	public RosterCacheStore(String cacheName) {
@@ -124,4 +125,8 @@ public class RosterCacheStore implements CacheStore {
     	}
     	return result.iterator();
     }
+
+	public void storeAll(Set setBinEntries) {
+		// do nothing, roster data is read-only
+	}
 }

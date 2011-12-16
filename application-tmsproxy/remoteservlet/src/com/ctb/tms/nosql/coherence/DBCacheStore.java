@@ -17,7 +17,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	
 	static Logger logger = Logger.getLogger(DBCacheStore.class);
 	
-	private CacheStore store;
+	private OASCacheStore store;
 	private PublishingCacheStore pushStore;
 	private String cacheName;
 	
@@ -108,6 +108,14 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	
 	public void storeAll(java.util.Set setBinEntries) {
 		logger.debug("Batch write to push replication store");
+		store.storeAll(setBinEntries);
+		if(cacheName.startsWith("OAS")) {
+			pushStore.storeAll(setBinEntries);
+		}
+	}
+	
+	/*public void storeAll(java.util.Set setBinEntries) {
+		logger.debug("Batch write to push replication store");
 		Iterator<BinaryEntry> it = setBinEntries.iterator();
 		long start = System.currentTimeMillis();
 		int counter = 0;
@@ -134,5 +142,5 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	    	counter++;
 		}
 		logger.info("DBCacheStore.storeAll processed " + counter + " records.");
-	}
+	} */
 }

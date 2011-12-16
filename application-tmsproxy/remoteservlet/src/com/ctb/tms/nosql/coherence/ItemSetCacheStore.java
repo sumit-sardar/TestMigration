@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
@@ -15,7 +16,7 @@ import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.tangosol.net.cache.CacheStore;
 
-public class ItemSetCacheStore implements CacheStore {
+public class ItemSetCacheStore implements OASCacheStore {
 	
 	
 	public ItemSetCacheStore(String cacheName) {
@@ -96,4 +97,8 @@ public class ItemSetCacheStore implements CacheStore {
     	// do nothing, itemset data is read-only
     	return null;
     }
+
+	public void storeAll(Set setBinEntries) {
+		// do nothing, itemset data is read-only
+	}
 }
