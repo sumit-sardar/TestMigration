@@ -29,6 +29,7 @@ var orgBeforeBackCount = 0;
 function showSelectStudent(){
 	$("#Student_Tab").css('display', 'none');
 	$("#Select_Student_Tab").css('display', 'block');
+		$("#selectStudentPager").css('display', 'none');
 	if(orgTreeHierarchy == "" || orgTreeHierarchy ==undefined) {
 		populateStuTree();
 	} else {
@@ -62,6 +63,7 @@ function hideSelectStudentPopup() {
 	 	 $('#stuWithAcc').text(studentWithaccommodation);
 	$("#Student_Tab").css('display', 'block');
 	$("#Select_Student_Tab").css('display', 'none');
+	$("#selectStudentPager").css('display', 'none');
 }
 
 function loadInnerStuOrgTree() {
@@ -149,6 +151,7 @@ function createinnSingleNodeSelectedTree(jsondata) {
 					}
 					$("#selectStudent").jqGrid("hideCol",["orgNodeId","orgNodeName","hasAccommodations"]);
 					jQuery("#selectStudent").setGridWidth(width,true);
+					$("#selectStudentPager").css('display', 'block');
 				}
 				
 		   });
