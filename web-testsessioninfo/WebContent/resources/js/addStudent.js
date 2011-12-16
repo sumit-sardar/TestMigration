@@ -242,7 +242,7 @@ function populateSelectStudentGrid() {
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 151,  
+			height: 162,  
 			caption:"Student List",
 			//toolbar: [true,"top"],
 			onPaging: function() {
@@ -530,14 +530,25 @@ function updateDupStudent(){
 		studentDataTe.orgNodeName = $.trim(OrgName);
 		studentMap.put(objstr.studentId,studentDataTe);
 	}
-	 var previous = AddStudentLocaldata.length;
-	 if(previous == undefined)
+	 var previous = AddStudentLocaldata.length; 
+	if(previous == undefined)
 	 	previous = 0;
 	 updateAddStudentLocaldata();
 	 var newValue = AddStudentLocaldata.length;
 	 if(newValue == undefined)
-	 	newValue = 0;
+	 	newValue = 0; 
 	 var finalValue = newValue - previous;
+	 if(finalValue < 0) {
+	 	finalValue = 0 - finalValue;
+	 	if(newValue == 0)
+	 		message = ALL_STUDENTS_DELETED;
+	 	else
+	 		message = finalValue + "  " + STUDENTS_DELETED;
+	 } else if (finalValue > 0) {
+	 	message = finalValue + "  " + STUDENTS_ADDED;
+	 } else {
+	 	$("#studentAddDeleteInfo").hide();
+	 }
 	 $("#studentAddDeleteInfo").show();
 	 var message = finalValue + "  " + STUDENTS_ADDED;
 	 $("#addDeleteStud").text(message);
@@ -591,6 +602,7 @@ function returnSelectedStudent() {
  	$('#dupStudentlist').GridUnload();	
  	openDuplicateStudentPopup(duplicateStuArraydata, orgForDupStu);
  } else {
+ 	$("#studentAddDeleteInfo").show();
 	 var previous = AddStudentLocaldata.length; 
 	if(previous == undefined)
 	 	previous = 0;
@@ -601,11 +613,15 @@ function returnSelectedStudent() {
 	 var finalValue = newValue - previous;
 	 if(finalValue < 0) {
 	 	finalValue = 0 - finalValue;
-	 	message = finalValue + "  " + STUDENTS_DELETED;
-	 } else {
+	 	if(newValue == 0)
+	 		message = ALL_STUDENTS_DELETED;
+	 	else
+	 		message = finalValue + "  " + STUDENTS_DELETED;
+	 } else if (finalValue > 0) {
 	 	message = finalValue + "  " + STUDENTS_ADDED;
+	 } else {
+	 	$("#studentAddDeleteInfo").hide();
 	 }
-	 $("#studentAddDeleteInfo").show();
 	 $("#addDeleteStud").text(message);
 	 hideSelectStudentPopup();
 	 gridReloadStu(false);
