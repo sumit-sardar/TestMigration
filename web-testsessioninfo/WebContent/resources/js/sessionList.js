@@ -52,6 +52,11 @@ var dropListToDisplay;
 var selectAllForDelete = false;
 var selectAllForDeleteProctor = false;
 var allLocalProctorIds = [];
+var previousValue = "";
+var previousSubtest = "";
+var testJSONValue = "";
+var selectedTestId = "";
+var selectedSubtestId = "";
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -612,16 +617,8 @@ function createSingleNodeSelectedTree(jsondata) {
 			document.getElementById("testDiv").style.display = "none";
 			pindex = 0;
 			pdindex = 1;
-			allStudentIds = [];
-			allSelectOrg = [];
-			countAllSelect = 0;
 			//resetProctor();
-			studentMap = new Map();
-			studentIndexMap = new Map();
-			studentTempMap = new Map();
-			studentTempIndexMap = new Map();
-			studentIndexCount = 0;
-			studentTempIndexCount = 0;
+			resetStudentSelection();
 			resetOnSelectTestSessionData();
 			resetProctor();
 
@@ -894,14 +891,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				
 		delStuIdObjArray = [];
 		if(selectAllForDelete) {
-			AddStudentLocaldata = [];
-			studentTempMap = new Map();
-			studentMap = new Map();
-			studentTempIndexMap = new Map();
-			studentIndexMap = new Map();
-			studentTempIndexCount = 0;
-			studentIndexCount = 0;
-			studentWithaccommodation = 0;
+			resetStudentSelection();
 		} else {
 			cloneStudentMapToTemp();
 		}
@@ -1082,6 +1072,76 @@ function createSingleNodeSelectedTree(jsondata) {
 			}
 		}
 		$(ddl).html(optionHtml);
+	}
+	function changeSubtestConfirmPopup() {
+		if(AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0) {
+			$("#subtestChangeConfirmationPopup").dialog({  
+			title:"Confirmation Alert",  
+		 	resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});	
+			 $("#subtestChangeConfirmationPopup").css('height',120);
+			 var toppos = ($(window).height() - 290) /2 + 'px';
+			 var leftpos = ($(window).width() - 410) /2 + 'px';
+			 $("#subtestChangeConfirmationPopup").parent().css("top",toppos);
+			 $("#subtestChangeConfirmationPopup").parent().css("left",leftpos);
+		 } else {
+		 	subtestChangeProcess();
+		 }
+	}
+	
+	function changeProductConfirmed() {
+		if(AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0) {
+			$("#productChangeConfirmationPopup").dialog({  
+			title:"Confirmation Alert",  
+		 	resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});	
+			 $("#productChangeConfirmationPopup").css('height',120);
+			 var toppos = ($(window).height() - 290) /2 + 'px';
+			 var leftpos = ($(window).width() - 410) /2 + 'px';
+			 $("#productChangeConfirmationPopup").parent().css("top",toppos);
+			 $("#productChangeConfirmationPopup").parent().css("left",leftpos);
+		 } else {
+		 	changeGradeAndLevel();
+		 }
+	}
+	
+	function closeSubtestConfirmPopup() {
+		 closePopUp('subtestChangeConfirmationPopup');
+		 subtestChangeProcess();
+		 resetStudentSelection();
+		 hideSelectStudent();
+		 $('#list6').GridUnload();
+		 populateSelectedStudent();
+		 previousValue = $("#testGroupList").val();
+		 selectedSubtestId = selectedTestId;
+	}
+	
+	function closeProductConfirmPopup() {
+		 closePopUp('productChangeConfirmationPopup');
+		 changeGradeAndLevel();
+		 resetStudentSelection();
+		 hideSelectStudent();
+		 $('#list6').GridUnload();
+		 populateSelectedStudent();
+		 previousValue = $("#testGroupList").val();
+	}
+	
+	function closeProductConfirmationPopUp() {		
+		closePopUp('productChangeConfirmationPopup');		
+		$("#testGroupList").val(previousValue);
+	}
+	
+	function closeSubtestConfirmationPopUp() {		
+		closePopUp('subtestChangeConfirmationPopup');
+		$("#"+selectedSubtestId).trigger('click');
 	}
 
 	function  changeGradeAndLevel(){
@@ -1323,35 +1383,18 @@ function createSingleNodeSelectedTree(jsondata) {
 				
 			},
 			onSelectRow: function () {
+					previousValue = $("#testGroupList").val();
 					subtestGridLoaded = false;
-					var selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
-					$("#selectedTestId").val(selectedTestId);
+					selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
 					$('#displayMessage').hide();
-					var testBreak = document.getElementById("testBreak");
-					isTestSelected = true;
-					if(testBreak.checked)testBreak.checked = false;
-					isTestBreak = false;
-					$("#hasTestBreak").val("F");
-					//document.getElementById("aCode").style.display = "none";
-					//populateDates();
-					var val = getDataFromTestJson(selectedTestId, testSessionlist);
-					subtestDataArr = val;
-					if(subtestDataArr!= undefined && subtestDataArr.length>1){
-						document.getElementById("testBreak").disabled=false;
-					} else {
-						document.getElementById("testBreak").disabled=true;
-					}
-					
-					createSubtestGrid();
-					$("#selectedNewTestId").val(selectedTestId);
-					$("#sData").removeClass("ui-state-disabled");
-					document.getElementById("sData").disabled=false;
+					testJSONValue = getDataFromTestJson(selectedTestId, testSessionlist);
 					// Added to refresh student list grid if user changes tests
-			 		hideSelectStudent();
-			 		studentIdObjArray = [];
-			 		AddStudentLocaldata ={};
-			 		$('#list6').GridUnload();
-			 		populateSelectedStudent();
+					if(AddStudentLocaldata != undefined && AddStudentLocaldata.length > 0 && blockOffGradeTesting) {
+						if(selectedSubtestId != selectedTestId)
+		 					changeSubtestConfirmPopup();
+					} else {
+						subtestChangeProcess();
+					}
 			},
 			loadComplete: function () {
 				if ($('#testList').getGridParam('records') === 0) {
@@ -2468,8 +2511,42 @@ function createSingleNodeSelectedTree(jsondata) {
 		
 	}
 
-
+	function resetStudentSelection() {
+		studentMap = new Map();
+		studentIndexMap = new Map();
+		studentTempMap = new Map();
+		studentTempIndexMap = new Map();
+		studentIndexCount = 0;
+		studentTempIndexCount = 0;
+		allStudentIds = [];
+		allSelectOrg = [];
+		countAllSelect = 0;
+		AddStudentLocaldata = [];
+		studentWithaccommodation = 0;
+		orgBeforeBack = [];
+		orgBeforeBackCount = 0;
+	}
     
+    function subtestChangeProcess() {
+    	$("#selectedTestId").val(selectedTestId);					
+		var testBreak = document.getElementById("testBreak");
+		isTestSelected = true;
+		if(testBreak.checked)testBreak.checked = false;
+		isTestBreak = false;
+		$("#hasTestBreak").val("F");
+		//document.getElementById("aCode").style.display = "none";
+		//populateDates();
+		subtestDataArr = testJSONValue;
+		if(subtestDataArr!= undefined && subtestDataArr.length>1){
+			document.getElementById("testBreak").disabled=false;
+		} else {
+			document.getElementById("testBreak").disabled=true;
+		}						
+		createSubtestGrid();
+		$("#selectedNewTestId").val(selectedTestId);
+		$("#sData").removeClass("ui-state-disabled");
+		document.getElementById("sData").disabled=false;
+    }
     
     
 					 

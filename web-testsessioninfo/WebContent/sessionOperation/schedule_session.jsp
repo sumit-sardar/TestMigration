@@ -133,3 +133,41 @@
 		
 	</table>
 </div>
+
+<div id="productChangeConfirmationPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table>
+		<tr>
+			<td colspan="2">
+				<p><netui:content value="${bundle.web['scheduleTest.changeProduct.message']}"/></p>
+				<p><netui:content value="${bundle.web['scheduleTest.changeProduct.removeStudent.message']}"/></p>
+			</td>
+		</tr>
+		<tr>
+			<td >
+				<center>
+					<input type="button"  value="${bundle.web['homepage.button.ok']}" onclick=" javascript:closeProductConfirmPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+					<input type="button"  value="${bundle.web['homepage.button.cancel']}" onclick="javascript:closeProductConfirmationPopUp(); return false;" class="ui-widget-header" style="width:60px">
+				</center>
+			</td>
+		</tr>		
+	</table>
+</div>
+
+<div id="subtestChangeConfirmationPopup" style="display: none; background-color: #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	<table>
+		<tr>
+			<td colspan="2">
+				<p><netui:content value="${bundle.web['scheduleTest.changeProduct.message']}"/></p>
+				<p><netui:content value="${bundle.web['scheduleTest.changeProduct.removeStudent.message']}"/></p>
+			</td>
+		</tr>
+		<tr>
+			<td >
+				<center>
+					<input type="button"  value="${bundle.web['homepage.button.ok']}" onclick=" javascript:closeSubtestConfirmPopup();return false;" class="ui-widget-header" style="width:60px">&nbsp;
+					<input type="button"  value="${bundle.web['homepage.button.cancel']}" onclick="javascript:closeSubtestConfirmationPopUp(); return false;" class="ui-widget-header" style="width:60px">
+				</center>
+			</td>
+		</tr>		
+	</table>
+</div>

@@ -30,8 +30,8 @@
 									<table width="100%" border="0">
 										<tr class="transparent">
 											<td width="22%" height="20" valign="top" class="transparent" align="left">Test Group :</td>
-											<td width="78%" height="20" valign="middle" align="left"><select name="testGroupList" id="testGroupList"
-												onchange="javascript:changeGradeAndLevel(); return false;">
+											<td width="78%" height="20" valign="middle" align="left"><select name="testGroupList" id="testGroupList" 
+												onchange="javascript:changeProductConfirmed(); return false;">
 
 										  </select></td>
 										</tr>
