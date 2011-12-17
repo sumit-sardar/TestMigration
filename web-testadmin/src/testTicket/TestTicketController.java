@@ -734,7 +734,9 @@ public class TestTicketController extends PageFlowController
         for(int i=0;i<subtests.size();i++){            
             SubtestVO subtestVO = (SubtestVO) subtests.get(i);
             String duration = subtestVO.getDuration();
-            totalTime = totalTime + Integer.parseInt((duration.substring(0,duration.indexOf("minutes"))).trim());            
+            if (duration.indexOf("minutes") > 0) {
+            	totalTime = totalTime + Integer.parseInt((duration.substring(0,duration.indexOf("minutes"))).trim());
+            }
         }
         String timeLimit = totalTime + " minutes";
         return timeLimit;
