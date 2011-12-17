@@ -87,7 +87,11 @@
 <!-- buttons -->
 <p>
     <netui:button type="submit" value="Cancel" action="gotoHomePage" onClick="return verifyExitRegisterStudent();"/>
-    <!-- netui:button tagId="nextToModify" type="submit" value="Next" action="toModifyTestFromFind" disabled="${requestScope.disableNextButton}"/-->
+<c:if test="${isTabeAdaptiveProduct}">     
+    <netui:button tagId="nextToModify" type="submit" value="Next" action="toModifyTestFromFind" disabled="${requestScope.disableNextButton}"/>
+</c:if>    
+<c:if test="${! isTabeAdaptiveProduct}">     
     <netui:button tagId="nextToModify" type="button" value="Next" onclick="viewStudentDetail();" disabled="${requestScope.disableNextButton}"/>
+</c:if>    
 </p>
 

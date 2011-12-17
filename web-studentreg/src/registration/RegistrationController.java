@@ -393,8 +393,9 @@ public class RegistrationController extends PageFlowController
         }
 
         this.getRequest().setAttribute("selectedTab", selectedTab);
+        this.getRequest().setAttribute("isTabeAdaptiveProduct", new Boolean(this.isTabeAdaptiveProduct));        
+        this.getRequest().setAttribute("testAdminName", this.scheduledSession.getTestSession().getTestAdminName());         
         
-        this.getRequest().setAttribute("testAdminName", this.scheduledSession.getTestSession().getTestAdminName());                        
         isTopLevelUser(); //LLO- 118 - Change for Ematrix UI
         setFormInfoOnRequest(form);                
         return new Forward("success", form);
