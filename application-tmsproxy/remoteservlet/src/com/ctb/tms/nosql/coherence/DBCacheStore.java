@@ -36,8 +36,6 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	public DBCacheStore() {
     }
 
-    // ----- CacheStore Interface -----
-
     public Object load(Object oKey) {
     	return store.load(oKey);
     }
@@ -73,9 +71,6 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     	if(store != null) {
 	    	Object value = entry.getValue();
 	    	store.erase(entry.getKey());
-	    	/* if(cacheName.startsWith("OAS")) {
-	    		pushStore.erase(entry);
-	    	} */
     	}
     }
 
@@ -91,9 +86,6 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 				BinaryEntry entry = it.next();
 				Object value = entry.getValue();
 		    	store.erase(entry.getKey());
-		    	/* if(cacheName.startsWith("OAS")) {
-		    		pushStore.erase(entry);
-		    	} */
 			}
 		}
 	}
@@ -128,34 +120,4 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 			}
 		}
 	}
-	
-	/*public void storeAll(java.util.Set setBinEntries) {
-		logger.debug("Batch write to push replication store");
-		Iterator<BinaryEntry> it = setBinEntries.iterator();
-		long start = System.currentTimeMillis();
-		int counter = 0;
-		while(it.hasNext()) {
-			BinaryEntry entry = it.next();
-			Object value = entry.getValue();
-	    	store.store(entry.getKey(), value);
-	    	if(cacheName.startsWith("OAS")) {
-	    		pushStore.store(entry);
-	    		it.remove();
-	    	}
-	    	if(counter%100 == 0) {
-		    	long end = System.currentTimeMillis();
-		    	if(end - start > 10000) {
-		    		Guardian.GuardContext guardContext = GuardSupport.getThreadContext();
-		    		if (guardContext != null) {
-		    		    guardContext.heartbeat();
-		    		    logger.warn("Sent guardian heartbeat - DBCacheStore.storeAll busy for > 10 seconds, processed " + counter + " records.");
-		    		    counter=0;
-		    		}
-		    		start = end;
-		    	}
-	    	}
-	    	counter++;
-		}
-		logger.info("DBCacheStore.storeAll processed " + counter + " records.");
-	} */
 }
