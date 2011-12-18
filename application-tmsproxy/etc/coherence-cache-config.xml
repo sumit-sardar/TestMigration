@@ -2,86 +2,24 @@
 <!DOCTYPE cache-config SYSTEM "cache-config.dtd">
 
 <cache-config
-	xmlns:sync="class:com.oracle.coherence.patterns.pushreplication.configuration.PushReplicationNamespaceContentHandler"
-    xmlns:cr="class:com.oracle.coherence.environment.extensible.namespaces.InstanceNamespaceContentHandler">
-
-	<introduce:config file="coherence-messagingpattern-cache-config.xml" />
-
-    <sync:provider pof-enabled="false">
-        <sync:coherence-provider />
-    </sync:provider>
+	xmlns:cr="class:com.oracle.coherence.environment.extensible.namespaces.InstanceNamespaceContentHandler">
 	
     <caching-scheme-mapping>
         <cache-mapping>
 	        <cache-name>ADS*</cache-name>
 	        <scheme-name>TieredScheme</scheme-name>
         </cache-mapping>
-        <!--    Caches with any name will be created as tiered.    -->
         <cache-mapping>
 	        <cache-name>OASResponse*</cache-name>
 	        <scheme-name>DistributedScheme</scheme-name>
-	        <sync:publisher>
-                <sync:publisher-name>Active Publisher</sync:publisher-name>
-                <sync:publisher-scheme>
-                    <sync:remote-cluster-publisher-scheme>
-                        <sync:remote-invocation-service-name>remote-site</sync:remote-invocation-service-name>
-                        <sync:remote-publisher-scheme>
-                            <sync:local-cache-publisher-scheme>
-                                <sync:target-cache-name>{cache-name}</sync:target-cache-name>
-                                <sync:conflict-resolver-scheme>
-                                        <cr:class classname="com.ctb.tms.nosql.coherence.push.TMSConflictResolver" />
-                                </sync:conflict-resolver-scheme>
-                            </sync:local-cache-publisher-scheme>
-                        </sync:remote-publisher-scheme>
-                        <sync:autostart>true</sync:autostart>
-                        <sync:publish-original-value>true</sync:publish-original-value>
-                    </sync:remote-cluster-publisher-scheme>
-                </sync:publisher-scheme>
-            </sync:publisher>
         </cache-mapping>
         <cache-mapping>
 	        <cache-name>OASManifest*</cache-name>
 	        <scheme-name>TieredScheme</scheme-name>
-	        <sync:publisher>
-                <sync:publisher-name>Active Publisher</sync:publisher-name>
-                <sync:publisher-scheme>
-                    <sync:remote-cluster-publisher-scheme>
-                        <sync:remote-invocation-service-name>remote-site</sync:remote-invocation-service-name>
-                        <sync:remote-publisher-scheme>
-                            <sync:local-cache-publisher-scheme>
-                                <sync:target-cache-name>{cache-name}</sync:target-cache-name>
-                                <sync:conflict-resolver-scheme>
-                                        <cr:class classname="com.ctb.tms.nosql.coherence.push.TMSConflictResolver" />
-                                </sync:conflict-resolver-scheme>
-                            </sync:local-cache-publisher-scheme>
-                        </sync:remote-publisher-scheme>
-                        <sync:autostart>true</sync:autostart>
-                        <sync:publish-original-value>true</sync:publish-original-value>
-                    </sync:remote-cluster-publisher-scheme>
-                </sync:publisher-scheme>
-            </sync:publisher>
         </cache-mapping>
         <cache-mapping>
 	        <cache-name>OASRoster*</cache-name>
 	        <scheme-name>TieredScheme</scheme-name>
-	        <sync:publisher>
-                <sync:publisher-name>Active Publisher</sync:publisher-name>
-                <sync:publisher-scheme>
-                    <sync:remote-cluster-publisher-scheme>
-                        <sync:remote-invocation-service-name>remote-site</sync:remote-invocation-service-name>
-                        <sync:remote-publisher-scheme>
-                            <sync:local-cache-publisher-scheme>
-                                <sync:target-cache-name>{cache-name}</sync:target-cache-name>
-                                <sync:conflict-resolver-scheme>
-                                        <cr:class classname="com.ctb.tms.nosql.coherence.push.TMSConflictResolver" />
-                                </sync:conflict-resolver-scheme>
-                            </sync:local-cache-publisher-scheme>
-                        </sync:remote-publisher-scheme>
-                        <sync:autostart>true</sync:autostart>
-                        <sync:publish-original-value>true</sync:publish-original-value>
-                    </sync:remote-cluster-publisher-scheme>
-                </sync:publisher-scheme>
-            </sync:publisher>
         </cache-mapping>
     </caching-scheme-mapping>
     <caching-schemes>  
@@ -122,6 +60,7 @@
         <distributed-scheme>            
             <scheme-name>DistributedScheme</scheme-name>
             <service-name>PartitionedCache</service-name> 
+            <local-storage>true</local-storage>
             <thread-count>40</thread-count>           
             <backing-map-scheme>                
                 <read-write-backing-map-scheme>                    
@@ -145,46 +84,6 @@
 					<scheme-ref>DistributedScheme</scheme-ref>
 				</distributed-scheme>
 			</back-scheme>
-		</near-scheme> 
-		<!-- these are for push replication -->
-		<proxy-scheme>
-			<scheme-name>proxy-scheme</scheme-name>
-			<service-name>ExtendTcpProxyService</service-name>
-			<thread-count>10</thread-count>
-            <acceptor-config>
-                <tcp-acceptor>
-	                <address-provider>
-                    	<class-name>com.ctb.tms.nosql.coherence.push.TMSLocalAddressProvider</class-name>
-                    </address-provider>
-                </tcp-acceptor>
-            </acceptor-config>    
-            <proxy-config>
-            	<cache-service-proxy>
-            		<enabled>true</enabled>
-            	</cache-service-proxy>
-            	<invocation-service-proxy>
-            		<enabled>true</enabled>
-            	</invocation-service-proxy>
-            </proxy-config>   
-            <autostart>true</autostart>
-        </proxy-scheme>
-		<remote-invocation-scheme> 
-			<service-name>remote-site</service-name> 
-			<initiator-config> 
-				<tcp-initiator> 
-					<remote-addresses>
-						<address-provider>
-	                    	<class-name>com.ctb.tms.nosql.coherence.push.TMSRemoteAddressProvider</class-name>
-	                    </address-provider>
-	                </remote-addresses>
-					<connect-timeout>3s</connect-timeout> 
-				</tcp-initiator> 
-				<outgoing-message-handler> 
-					<heartbeat-interval>30s</heartbeat-interval>
-					<heartbeat-timeout>3s</heartbeat-timeout>
-					<request-timeout>30s</request-timeout> 
-				</outgoing-message-handler> 
-			</initiator-config> 
-		</remote-invocation-scheme>  
+		</near-scheme>   
     </caching-schemes>
 </cache-config>
