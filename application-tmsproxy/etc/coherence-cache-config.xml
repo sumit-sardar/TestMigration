@@ -146,6 +146,24 @@
 					<scheme-ref>DistributedScheme</scheme-ref>
 				</distributed-scheme>
 			</back-scheme>
-		</near-scheme>   
+		</near-scheme> 
+		<remote-invocation-scheme> 
+			<service-name>remote-site</service-name> 
+			<initiator-config> 
+				<tcp-initiator> 
+					<remote-addresses>
+						<address-provider>
+	                    	<class-name>com.ctb.tms.nosql.coherence.push.TMSRemoteAddressProvider</class-name>
+	                    </address-provider>
+	                </remote-addresses>
+					<connect-timeout>3s</connect-timeout> 
+				</tcp-initiator> 
+				<outgoing-message-handler> 
+					<heartbeat-interval>30s</heartbeat-interval>
+					<heartbeat-timeout>3s</heartbeat-timeout>
+					<request-timeout>30s</request-timeout> 
+				</outgoing-message-handler> 
+			</initiator-config> 
+		</remote-invocation-scheme>  
     </caching-schemes>
 </cache-config>
