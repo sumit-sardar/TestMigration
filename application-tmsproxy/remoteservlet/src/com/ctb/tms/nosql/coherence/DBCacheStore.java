@@ -21,9 +21,21 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	private PublishingCacheStore pushStore;
 	private String cacheName;
 	
+	private static boolean doPush = true;
+	
 	public DBCacheStore(String cacheName) {
 		this.cacheName = cacheName;
-		this.pushStore = new PublishingCacheStore(cacheName);
+		
+		if(doPush) {
+			try {
+				this.pushStore = new PublishingCacheStore(cacheName);
+				doPush = true;
+			} catch (Exception e) {
+				this.pushStore = null;
+				doPush = false;
+				logger.info("Note: This node is NOT configured as a push replication publisher.");
+			}
+		}
 		
 		if("OASRosterCache".equals(cacheName)) store = new RosterCacheStore(cacheName); 
 		else if("OASManifestCache".equals(cacheName)) store = new ManifestCacheStore(cacheName); 
@@ -37,7 +49,11 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     }
 
     public Object load(Object oKey) {
-    	return store.load(oKey);
+    	if(store != null) {
+    		return store.load(oKey);
+    	} else {
+    		return null;
+    	}
     }
     
     public void load(com.tangosol.util.BinaryEntry entry) {
@@ -48,7 +64,9 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     }
 
     public void store(Object oKey, Object oValue) {
-    	store.store(oKey, oValue);
+    	if(store != null) {
+    		store.store(oKey, oValue);
+    	}
     }
     
     public void store(com.tangosol.util.BinaryEntry entry) {
@@ -57,13 +75,17 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	    	Object value = entry.getValue();
 	    	store.store(entry.getKey(), value);
 	    	if(cacheName.startsWith("OAS")) {
-	    		pushStore.store(entry);
+	    		if(pushStore != null) {
+	    			pushStore.store(entry);
+	    		}
 	    	}
     	}
     }
 
     public void erase(Object oKey) {
-    	store.erase(oKey);
+    	if(store != null) {
+    		store.erase(oKey);
+    	}
     }
     
     public void erase(com.tangosol.util.BinaryEntry entry) {
@@ -75,7 +97,9 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     }
 
 	public void eraseAll(Collection colKeys) {
-		store.eraseAll(colKeys);
+		if(store != null) {
+			store.eraseAll(colKeys);
+		}
 	}
 	
 	public void eraseAll(java.util.Set setBinEntries) {
@@ -91,7 +115,10 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	}
 
 	public Map loadAll(Collection colKeys) {
-		return store.loadAll(colKeys);
+		if(store != null) {
+			return store.loadAll(colKeys);
+		}
+		else return null;
 	}
 	
 	public void loadAll(java.util.Set setBinEntries) {
@@ -116,7 +143,9 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 		if(store != null) {
 			store.storeAll(setBinEntries);
 			if(cacheName.startsWith("OAS")) {
-				pushStore.storeAll(setBinEntries);
+				if(pushStore != null) {
+					pushStore.storeAll(setBinEntries);
+				}
 			}
 		}
 	}

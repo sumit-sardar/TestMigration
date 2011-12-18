@@ -41,8 +41,7 @@ public class NoSQLStorageFactory {
 						logger.info("Proxy service already running.");
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
-					logger.warn("Couldn't start proxy service!");
+					logger.warn("Didn't start proxy service on this node.");
 				}
 			}
 		}
