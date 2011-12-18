@@ -2,24 +2,86 @@
 <!DOCTYPE cache-config SYSTEM "cache-config.dtd">
 
 <cache-config
-	xmlns:cr="class:com.oracle.coherence.environment.extensible.namespaces.InstanceNamespaceContentHandler">
+	xmlns:sync="class:com.oracle.coherence.patterns.pushreplication.configuration.PushReplicationNamespaceContentHandler"
+    xmlns:cr="class:com.oracle.coherence.environment.extensible.namespaces.InstanceNamespaceContentHandler">
+
+	<introduce:config file="coherence-messagingpattern-cache-config.xml" />	
+	
+    <sync:provider pof-enabled="false">
+        <sync:coherence-provider />
+    </sync:provider>
 	
     <caching-scheme-mapping>
         <cache-mapping>
 	        <cache-name>ADS*</cache-name>
 	        <scheme-name>TieredScheme</scheme-name>
         </cache-mapping>
+        <!--    Caches with any name will be created as tiered.    -->
         <cache-mapping>
 	        <cache-name>OASResponse*</cache-name>
 	        <scheme-name>DistributedScheme</scheme-name>
+	        <sync:publisher>
+                <sync:publisher-name>Active Publisher</sync:publisher-name>
+                <sync:publisher-scheme>
+                    <sync:remote-cluster-publisher-scheme>
+                        <sync:remote-invocation-service-name>remote-site</sync:remote-invocation-service-name>
+                        <sync:remote-publisher-scheme>
+                            <sync:local-cache-publisher-scheme>
+                                <sync:target-cache-name>{cache-name}</sync:target-cache-name>
+                                <sync:conflict-resolver-scheme>
+                                        <cr:class classname="com.ctb.tms.nosql.coherence.push.TMSConflictResolver" />
+                                </sync:conflict-resolver-scheme>
+                            </sync:local-cache-publisher-scheme>
+                        </sync:remote-publisher-scheme>
+                        <sync:autostart>true</sync:autostart>
+                        <sync:publish-original-value>true</sync:publish-original-value>
+                    </sync:remote-cluster-publisher-scheme>
+                </sync:publisher-scheme>
+            </sync:publisher>
         </cache-mapping>
         <cache-mapping>
 	        <cache-name>OASManifest*</cache-name>
 	        <scheme-name>TieredScheme</scheme-name>
+	        <sync:publisher>
+                <sync:publisher-name>Active Publisher</sync:publisher-name>
+                <sync:publisher-scheme>
+                    <sync:remote-cluster-publisher-scheme>
+                        <sync:remote-invocation-service-name>remote-site</sync:remote-invocation-service-name>
+                        <sync:remote-publisher-scheme>
+                            <sync:local-cache-publisher-scheme>
+                                <sync:target-cache-name>{cache-name}</sync:target-cache-name>
+                                <sync:conflict-resolver-scheme>
+                                        <cr:class classname="com.ctb.tms.nosql.coherence.push.TMSConflictResolver" />
+                                </sync:conflict-resolver-scheme>
+                            </sync:local-cache-publisher-scheme>
+                        </sync:remote-publisher-scheme>
+                        <sync:autostart>true</sync:autostart>
+                        <sync:publish-original-value>true</sync:publish-original-value>
+                    </sync:remote-cluster-publisher-scheme>
+                </sync:publisher-scheme>
+            </sync:publisher>
         </cache-mapping>
         <cache-mapping>
 	        <cache-name>OASRoster*</cache-name>
 	        <scheme-name>TieredScheme</scheme-name>
+	        <sync:publisher>
+                <sync:publisher-name>Active Publisher</sync:publisher-name>
+                <sync:publisher-scheme>
+                    <sync:remote-cluster-publisher-scheme>
+                        <sync:remote-invocation-service-name>remote-site</sync:remote-invocation-service-name>
+                        <sync:remote-publisher-scheme>
+                            <sync:local-cache-publisher-scheme>
+                                <sync:target-cache-name>{cache-name}</sync:target-cache-name>
+                                <sync:conflict-resolver-scheme>
+                                        <cr:class classname="com.ctb.tms.nosql.coherence.push.TMSConflictResolver" />
+                                </sync:conflict-resolver-scheme>
+                            </sync:local-cache-publisher-scheme>
+                        </sync:remote-publisher-scheme>
+                        <sync:autostart>true</sync:autostart>
+                        <sync:publish-original-value>true</sync:publish-original-value>
+                    </sync:remote-cluster-publisher-scheme>
+                </sync:publisher-scheme>
+            </sync:publisher>
         </cache-mapping>
     </caching-scheme-mapping>
     <caching-schemes>  
