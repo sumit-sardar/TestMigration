@@ -11,7 +11,7 @@
 <input type="hidden" id="selectedTestSessionId" name = "selectedTestSessionId" />
 
 <div id="printTestTicket"
-	style="display: none; border:2px solid #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	style="display: none; border:10px solid #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	
 <p>To print session documents for a specific organization, select the organization below, then click the document you wish to print.<br/>To print session documents for all organizations, just click the documents you wish to print.</p>
 <h3 style="border-width: 0px"><span>Test Information</span></h3>

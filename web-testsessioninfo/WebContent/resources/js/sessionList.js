@@ -2580,22 +2580,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		return true;
 	
 		document.getElementById('printTicket').style.display = "block";
-		$("#printTestTicket").dialog({  
-			title:"Print Test Ticket ",  
-			resizable:false,
-			autoOpen: true,
-			width: '800px',
-			modal: true,
-			closeOnEscape: false,
-			open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
-		});	
-		$('#printTestTicket').bind('keydown', function(event) {
- 			var code = (event.keyCode ? event.keyCode : event.which);
-			if(code == 27){
-				return false;
- 			}
-		});
-		setPopupPosition();	
+		
 		populateTestTicketTree();
 	}
 	
@@ -2631,7 +2616,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
-						//UIBlock();
+						UIBlock();
 					},
 		url:		'userTreeOrgNodeHierarchyList.do?testAdminId='+document.getElementById('selectedTestSessionId').value,
 		type:		'POST',
@@ -2644,7 +2629,23 @@ function createSingleNodeSelectedTree(jsondata) {
 						createSingleNodeSelectedTktTree(orgTktTreeHierarchy);
 						$("#searchheader").css("visibility","visible");	
 						$("#orgNodeHierarchy").css("visibility","visible");	
-												
+						$("#printTestTicket").dialog({  
+							title:"Print Test Ticket ",  
+							resizable:false,
+							autoOpen: true,
+							width: '800px',
+							modal: true,
+							closeOnEscape: false,
+							open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+						});	
+						$('#printTestTicket').bind('keydown', function(event) {
+				 			var code = (event.keyCode ? event.keyCode : event.which);
+							if(code == 27){
+								return false;
+				 			}
+						});
+						setPopupPosition();		
+						$.unblockUI();					
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						//$.unblockUI();  
