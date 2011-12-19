@@ -55,7 +55,7 @@
 				<% } %>
 			</p>
 	</div>	
-	 
+	<jsp:include page="/sessionOperation/print_ticket.jsp" /> 
 	<table style="clear:both;float:left" width= "100%"> 
 		   	<tr >
 		   		<td >
@@ -75,7 +75,10 @@
 							    <div id="scSession" style="float:right;padding-left:5px;">
 								<a href="#" id="scSessionButton" onclick="javascript:scheduleNewSession(); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.scheduleSession']}"/></a>
 							    </div> 
-						    <%} %>			
+						    <%} %>	
+						    <div id="printTicket" style="float:right;padding-left:5px;">
+								<a href="#" id="printTicketButton" onclick="printTTicket(this);" class="rounded {transparent} button"><netui:content value="${bundle.web['homepage.button.printTicket']}"/></a>
+							</div> 		
 						</div>  
 					</div>
 	     	   </td>
