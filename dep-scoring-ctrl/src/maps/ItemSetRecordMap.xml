@@ -78,7 +78,8 @@
             status.absent as absent,
             status.ability_score as abilityScore,
             status.sem_score as semScore,
-            status.objective_score as objectiveScore
+            status.objective_score as objectiveScore,
+            status.unscored as unscored
         FROM
             ITEM_SET subtest,
             TEST_ROSTER tr,

@@ -313,10 +313,17 @@ public class ResponseReplayer {
     		final List events,
             final ItemSetVO itemSet) {
     	if(itemSet.getObjectiveScore() != null) {
-    		events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
-	        		itemSet.getItemSetId(),
-	                itemSet.getItemSetForm(), itemSet.getItemSetName(),
-	                itemSet.getItemSetLevel(), itemSet.getRecommendedLevel(), itemSet.getAbilityScore(), itemSet.getSemScore()));
+    		if(itemSet.getUnscored() != null && itemSet.getUnscored() == 0) {
+	    		events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
+		        		itemSet.getItemSetId(),
+		                itemSet.getItemSetForm(), itemSet.getItemSetName(),
+		                itemSet.getItemSetLevel(), itemSet.getRecommendedLevel(), itemSet.getAbilityScore(), itemSet.getSemScore()));
+    		} else {
+    			events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 
+		        		itemSet.getItemSetId(),
+		                itemSet.getItemSetForm(), itemSet.getItemSetName(),
+		                itemSet.getItemSetLevel(), itemSet.getRecommendedLevel(), null, null));
+    		}
         }
         else
 	        events.add(createSubtestStartedEvent(testRosterId, normGroup, ageCategory, 

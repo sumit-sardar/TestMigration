@@ -142,6 +142,7 @@ public class ItemSetVO implements Persistent, Serializable
     protected Double abilityScore = null;
     protected Double semScore = null;
     protected String objectiveScore = null;
+    protected Integer unscored = null; // Added to handle student stop in case of tabe adaptive
 
     public ItemSetVO() { }
 
@@ -694,6 +695,14 @@ public class ItemSetVO implements Persistent, Serializable
 
 	public void setSemScore(Double semScore) {
 		this.semScore = semScore;
+	}
+
+	public Integer getUnscored() {
+		return unscored;
+	}
+
+	public void setUnscored(Integer unscored) {
+		this.unscored = unscored;
 	}
 
 }

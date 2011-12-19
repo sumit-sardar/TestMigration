@@ -49,11 +49,11 @@ public class TABEAdaptContentAreaDerivedScoreCalculator extends AbstractDerivedS
 	    	if (!adaptiveContentDetails.containsKey(event.getContentAreaName())) {
 	    		adaptiveContentDetails.put(event.getContentAreaName(), event);
 		        final Integer subtestId = DatabaseHelper.asInteger(event.getSubtestId());
-		        final BigDecimal scaleScore = new BigDecimal(Math.floor(abilityScore));
+		        final BigDecimal scaleScore = abilityScore != null ? new BigDecimal(Math.floor(abilityScore)) : null;
 		     //   System.out.println("-------event.getContentAreaName() ->" + event.getContentAreaName());
 		     //   System.out.println("-------scaleScore ->" + scaleScore);
 		        
-		        final BigDecimal standardErrorMeasurement = new BigDecimal(semScore);
+		        final BigDecimal standardErrorMeasurement = abilityScore != null ? new BigDecimal(semScore) : null;
 		        
 		        final String gradeEquivalent = getGradeEquivalent(
 		        		subtestId,
