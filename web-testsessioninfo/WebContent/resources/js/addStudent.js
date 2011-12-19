@@ -4,6 +4,7 @@ var selectedSession = [];
 var unCheckedSession = [];
 var categoriesStr = ":All;JV:JV;AD:AD"; 
 var AccommOption = ":Any;T:Yes;F:No";
+var addedOrg={status:"true"};
 
 var AddStudentLocaldata ={};
 var isOnBack = false;
@@ -13,18 +14,36 @@ var delStuIdObjArray = [];
 var orgForDupStu = [];
 var studentWithaccommodation = 0;
 var allStudentIds = [];
+var allFilteredStudentRow = [];
 var studentGradesCustomerConfig = [];
 var allSelectOrg = [];
+var allSelectOrgTmp = [];// stores org node whose all node checked 
 var countAllSelect = 0;
 var studentMap = new Map();
-var studentIndexMap = new Map();
+var visitedNodeCounter = new Map(); /// has to be flush select student is clicked
+var visitedNodeTraverseCounter = new Map();// after selecting a node this will track paging/sorting/filtering
 var studentTempMap = new Map();
-var studentTempIndexMap = new Map();
-var studentIndexCount = 0;
-var studentTempIndexCount = 0;
 var deleteStudentCounter = 0;
-var orgBeforeBack = [];
-var orgBeforeBackCount = 0;
+/// FOR FILTER
+var isNodeChanged = false;
+var defaultGrade 		= "";
+var defaultCalculator 	= "";
+var defaultHasColorFont = "";
+var defaultTestPause 	= "";
+var defaultScreenReader = "";
+var defaultUntimedTest 	= "";
+
+var prvGrade 		= "";
+var prvCalculator 	= "";
+var prvHasColorFont = "";
+var prvTestPause 	= "";
+var prvScreenReader = "";
+var prvUntimedTest 	= "";
+var isPagingEvent  = false;
+var isSortingEvent = false;
+var filterAppliedOrgMap = new Map();
+
+/// FOR FILTER
 
 function showSelectStudent(){
 	$("#studentAddDeleteInfo").hide();
@@ -37,26 +56,19 @@ function showSelectStudent(){
 	} else {
 		loadInnerStuOrgTree();
 	}
+		allSelectOrgTmp = allSelectOrg.slice(0);
+		visitedNodeCounter = new Map();
+		visitedNodeTraverseCounter = new Map();
 	
 }
+// when back button invoked
 function hideSelectStudent(){
 	isOnBack = true;
 	if(AddStudentLocaldata == undefined || AddStudentLocaldata.length == 0)
 		studentWithaccommodation = 0;
 	cloneStudentMapToTemp();
 	hideSelectStudentPopup();
-	if(orgBeforeBack != undefined && orgBeforeBack.length > 0) {
-		for(var i = 0; i < orgBeforeBack.length; i++) {
-			for(var j = 0; j < allSelectOrg.length; j++) {
-				if(orgBeforeBack[i] == allSelectOrg[j]) {
-					allSelectOrg.splice(j,1);
-					countAllSelect--;
-				}
-			}
-		}
-	}
-	orgBeforeBackCount = 0;
-	orgBeforeBack = [];
+	allSelectOrg = allSelectOrgTmp.slice(0);
 }
 
 function hideSelectStudentPopup() {
@@ -128,9 +140,6 @@ function createinnSingleNodeSelectedTree(jsondata) {
 	    });
 	     
 		    $("#stuOrgNodeHierarchy").delegate("a","click", function(e) {
-		    	//clearMessage();
-		    	
-		    	//loadSessionGrid = false;
 		    	preSelectedOrg = stuForSelectedOrg;
 		    	stuForSelectedOrg = $(this).parent().attr("id");
 	 		    $("#stuForOrgNodeId").val(stuForSelectedOrg);
@@ -161,8 +170,6 @@ function createinnSingleNodeSelectedTree(jsondata) {
 	  	  
 }
 
-
-
 function imageFormat( cellvalue, options, rowObject ){
 	if(cellvalue == 'T')
 		return "Yes";
@@ -182,8 +189,6 @@ function selectFormat( cellvalue, options, rowObject ){
 		return optList;
 }
 
-
-
 function populateSelectStudentGrid() {
  		UIBlock();
  		if(blockOffGradeTesting != null && blockOffGradeTesting)		
@@ -200,7 +205,7 @@ function populateSelectStudentGrid() {
           url: 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel, 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[ 'Last Name','First Name', 'M.I', studentIdTitle, 'Organization','orgName','Accommodation', 'Grade', 'Status', calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom"],
+          colNames:[ 'Last Name','First Name', 'M.I', studentIdTitle, 'Organization','orgName','Accommodation', 'Grade', 'Status', calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StudentId"],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -218,17 +223,26 @@ function populateSelectStudentGrid() {
 		   		{name:'untimedTest',index:'untimedTest',editable: true, width:38, align:"center", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} },
 		   		{name:'status.copyable',index:'statusCopyable',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetForm',index:'itemSetForm',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'extendedTimeAccom',index:'extendedTimeAccom',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'extendedTimeAccom',index:'extendedTimeAccom',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentId',index:'studentId',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   		jsonReader: { repeatitems : false, root:"studentNode", id:"studentId",
-		   	records: function(obj) { 
-		   	 //sessionListPA = JSON.stringify(obj.testSessionPA);
-		   	 if(obj.studentNode != null && obj.studentNode != undefined && obj.studentNode.length > 0) {
-		   	 	allStudentIds = [];
-			   	 for(var i = 0; i <obj.studentNode.length; i++) {
-			   	 	allStudentIds.push(obj.studentNode[i]);
-			   	 }
+		   	records: function(obj) {
+		   	 isNodeChanged = true;
+		   	 if(visitedNodeCounter.get(stuForSelectedOrg) != null){
+			   	  var vcounter = visitedNodeCounter.get(stuForSelectedOrg);
+			   	  vcounter = parseInt(vcounter)+parseInt(1);
+			   	  visitedNodeCounter.put(stuForSelectedOrg,vcounter);
+		   	 } else {
+		   	 		visitedNodeCounter.put(stuForSelectedOrg,0);
 		   	 }
+		   	 	allStudentIds 			= [];
+		   	 	allFilteredStudentRow	= [];
+		   	 	if(obj.studentNode != null && obj.studentNode.length>0) {
+		   	 		allStudentIds = allStudentIds.concat(obj.studentNode);
+		   	 		allFilteredStudentRow = allFilteredStudentRow.concat(obj.studentNode);
+		   	 	}
+
 		   	 if(blockOffGradeTesting == null || blockOffGradeTesting == undefined || blockOffGradeTesting == "" || !blockOffGradeTesting) {
 		   	 	studentGradesCustomerConfig = obj.gradeList;
  			 	populateGradeLevelFilter();
@@ -247,8 +261,9 @@ function populateSelectStudentGrid() {
 			//toolbar: [true,"top"],
 			onPaging: function() {
 				var reqestedPage = parseInt($('#selectStudent').getGridParam("page"));
-				var maxPageSize = parseInt($('#sp_1_selectStudent').text());
+				var maxPageSize = parseInt($('#sp_1_selectStudentPager').text());
 				var minPageSize = 1;
+				isPagingEvent  = true;
 				if(reqestedPage > maxPageSize){
 					$('#selectStudent').setGridParam({"page": maxPageSize});
 				}
@@ -273,76 +288,109 @@ function populateSelectStudentGrid() {
 					} 
 				}
 			},
+			onSortCol : function(index, columnIndex, sortOrder) { 
+				isSortingEvent = true;
+			}, 
 			gridComplete: function() { 
+			// For repopulating filtered data
+			if(isNodeChanged) {
+			 	setDefaultGridFilter();
+			}
+			 if(visitedNodeTraverseCounter.get(stuForSelectedOrg) != null){
+				 var vcounter = visitedNodeTraverseCounter.get(stuForSelectedOrg);
+				 vcounter = parseInt(vcounter)+parseInt(1);
+				 visitedNodeTraverseCounter.put(stuForSelectedOrg,vcounter);
+			 } else {
+			   	visitedNodeTraverseCounter.put(stuForSelectedOrg,0);
+			  }
+    		if(!isDefaultFilterUpdated()) {
+				allFilteredStudentRow = allStudentIds;
+			} else {
+				updateFilteredStudentData();
+			}
+	   	  	
 			var allRowChecked = false;
 			if(allSelectOrg != null && allSelectOrg.length > 0) {
 				for(var i = 0; i < allSelectOrg.length; i++) {
-					if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
+				    if(allSelectOrg[i] == null || allSelectOrg[i] == undefined) {
+				    	continue;
+				    }
+					if(allSelectOrg[i] != null && (allSelectOrg[i] == stuForSelectedOrg ))
 						allRowChecked = true;
+					 else if(!isFilterUpdated() && isDefaultFilterUpdated() && ( allSelectOrg[i] == stuForSelectedOrg+"_f"))
+					 	allRowChecked = true;
 				}
 			}
-			if(allRowChecked) { 
+			if(allRowChecked ) { 
 				 $("#cb_selectStudent").attr("checked", true);
 				 $("#cb_selectStudent").trigger('click');
 				 $("#cb_selectStudent").attr("checked", true);
 				 allRowSelected = true;
-			 } else {			 				
-				if(AddStudentLocaldata != null && AddStudentLocaldata.length > 0) {
-					$('.cbox').attr('checked', false); 
-					for(var i = 0; i < AddStudentLocaldata.length; i++) {
-						var stuObj = AddStudentLocaldata[i];
-						if(stuObj != null && stuObj != undefined) {
-							var orgArray = 	String(stuObj.orgNodeId);
-							if(orgArray == stuForSelectedOrg) {
-								$("#"+stuObj.studentId+" td input").attr("checked", true);
-								$("#"+stuObj.studentId).trigger('click');
-								$("#"+stuObj.studentId+" td input").attr("checked", true); 
-							} else {
-								$("#"+stuObj.studentId+" td input").attr("checked", false);
-								//$("#"+stuObj.studentId).trigger('click');
-							}
-						} 					
+			 } else if(visitedNodeTraverseCounter.get(stuForSelectedOrg) == 0) {
+			 
+			 	if(AddStudentLocaldata != null && AddStudentLocaldata.length > 0 ) {
+						$('.cbox').attr('checked', false); 
+						for(var i = 0; i < AddStudentLocaldata.length; i++) {
+							var stuObj = AddStudentLocaldata[i];
+							if(stuObj != null && stuObj != undefined) {
+								var orgArray = 	String(stuObj.orgNodeId);
+								if(orgArray == stuForSelectedOrg) {
+									$("#"+stuObj.studentId+" td input").attr("checked", true);
+									$("#"+stuObj.studentId).trigger('click');
+									$("#"+stuObj.studentId+" td input").attr("checked", true); 
+								} else {
+									$("#"+stuObj.studentId+" td input").attr("checked", false);
+									//$("#"+stuObj.studentId).trigger('click');
+									//$("#"+stuObj.studentId+" td input").attr("checked", false);
+								}
+							} 					
+						}
 					}
-				} else { 
-					$('.cbox').attr('checked', false); 
-					
+			 
+			 
+			 } else { // if next time read from already loaded data
+			    
+			    $('.cbox').attr('checked', false); 
 					var allRowsInGridHere = $('#selectStudent').jqGrid('getDataIDs');
-					for(var i = 0; i < allRowsInGridHere.length; i++) {
+			 		for(var i = 0; i < allRowsInGridHere.length; i++) {
 						var stdData = studentTempMap.get(allRowsInGridHere[i]);
 						if(stdData != null && stdData != undefined) {
 							var orgArray = 	String(stdData.orgNodeId);
-							if(orgArray.indexOf(String(stuForSelectedOrg)) >= 0) {
+							if(orgArray.indexOf(String(stuForSelectedOrg)) >= 0 && String(allRowsInGridHere[i]) == String(stdData.studentId)) {
 								$("#"+allRowsInGridHere[i]+" td input").attr("checked", true);
 								$("#"+allRowsInGridHere[i]).trigger('click');
 								$("#"+allRowsInGridHere[i]+" td input").attr("checked", true);
 							}
 						}
 					}
-				}
+			 
+			 
+			 
+			    /// update if any scenario exists
+
 			 }
+			 isNodeChanged = false;
+			 isSortingEvent = false;
+			 isPagingEvent  = false;
 			},
 			onSelectAll: function (rowIds, status) {
+			    UIBlock();
+				var isFilteredApplied = isDefaultFilterUpdated();
 				if(status) {
 					allRowSelected = true;
-					for(var i = 0; i < allStudentIds.length; i++) {						
+					for(var i = 0; i < allFilteredStudentRow.length; i++) {						
 						if(studentTempMap.length() == 0) {
-							studentTempMap.put(allStudentIds[i].studentId,allStudentIds[i]);
-							studentTempIndexMap.put(studentTempIndexCount,allStudentIds[i].studentId);
-							studentTempIndexCount++;
+							studentTempMap.put(allFilteredStudentRow[i].studentId,allFilteredStudentRow[i]);
 						} else {
-							if (studentTempMap.get(allStudentIds[i].studentId) == null || studentTempMap.get(allStudentIds[i].studentId) == undefined) {
-								studentTempMap.put(allStudentIds[i].studentId,allStudentIds[i]);
-								if(!isPresentIndex(allStudentIds[i].studentId)) {
-									studentTempIndexMap.put(studentTempIndexCount,allStudentIds[i].studentId);
-									studentTempIndexCount++;
-								}
+							if (studentTempMap.get(allFilteredStudentRow[i].studentId) == null || studentTempMap.get(allFilteredStudentRow[i].studentId) == undefined) {
+								studentTempMap.put(allFilteredStudentRow[i].studentId,allFilteredStudentRow[i]);
 							} else {
 								// Added to handle duplicate students
-								var studentData = studentTempMap.get(allStudentIds[i].studentId);
+								var studentData = studentTempMap.get(allFilteredStudentRow[i].studentId);
 								var orgList = String(studentData.orgNodeId);
 								var orgListName = studentData.orgNodeName;
-								var orgListAll = String(allStudentIds[i].orgNodeId);
-								var orgListAllName = String(allStudentIds[i].orgNodeName);
+								var orgListAll = String(allFilteredStudentRow[i].orgNodeId);
+								var orgListAllName = String(allFilteredStudentRow[i].orgNodeName);
 								if(orgList.indexOf(orgListAll) == -1) {
 									orgList = orgList + "," + orgListAll;
 									orgListName = orgListName + "," + orgListAllName;
@@ -355,38 +403,52 @@ function populateSelectStudentGrid() {
 					}	
 					// Added to handle multiple organization select All	
 					var present = false;
-					if(countAllSelect > 0) {
-						for(var i = 0; i < countAllSelect; i++) {
-							if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
+					if(allSelectOrg != null && allSelectOrg != undefined ) {
+						for(var i = 0; i < allSelectOrg.length; i++) {
+							if(allSelectOrg[i] != null && (allSelectOrg[i] == stuForSelectedOrg || allSelectOrg[i] == stuForSelectedOrg+"_f")){
+								if(isFilteredApplied){
+									 allSelectOrg[i] = stuForSelectedOrg+"_f";
+								} else {
+									allSelectOrg[i] = stuForSelectedOrg;
+								}
 								present = true;
+							}
+								
 						}
 						if(!present) {
-							allSelectOrg[countAllSelect] = stuForSelectedOrg;
+							if(isFilteredApplied) {
+								allSelectOrg[countAllSelect] = stuForSelectedOrg+"_f";
+							} else {
+								allSelectOrg[countAllSelect] = stuForSelectedOrg;
+							}
 							countAllSelect++;
-							orgBeforeBack[orgBeforeBackCount] = stuForSelectedOrg;
-							orgBeforeBackCount++;
 						}
 					} else {
-						allSelectOrg[countAllSelect] = stuForSelectedOrg;
-						countAllSelect++;
-						orgBeforeBack[orgBeforeBackCount] = stuForSelectedOrg;
-						orgBeforeBackCount++;
+							if(isFilteredApplied) {
+								allSelectOrg[countAllSelect] = stuForSelectedOrg+"_f";
+							} else {
+								allSelectOrg[countAllSelect] = stuForSelectedOrg;
+							}
+							countAllSelect++;
 					}			
 				} else {
 					allRowSelected = false;	
-					for(var i = 0; i < allStudentIds.length; i++) {
-						var studIdVal = studentTempMap.get(allStudentIds[i].studentId);
+					for(var i = 0; i < allFilteredStudentRow.length; i++) {
+						var studIdVal = studentTempMap.get(allFilteredStudentRow[i].studentId);
 						if(studIdVal != null && studIdVal != undefined) {
-							updateOrganizationInDelete(allStudentIds[i].studentId,studIdVal);
+							deleteStudentFromTemp(stuForSelectedOrg, studIdVal, allFilteredStudentRow[i].studentId, studentTempMap);
+							
 						}
 					}
 					for(var i = 0; i < countAllSelect; i++) {
-						if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg) {
+						if(allSelectOrg[i] != null && (allSelectOrg[i] == stuForSelectedOrg || allSelectOrg[i] == stuForSelectedOrg+"_f")) {
 							allSelectOrg.splice(i,1);
 							countAllSelect--;
 						}
-					}									
+					}	
+													
 				}
+				$.unblockUI(); 
 			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
@@ -395,16 +457,10 @@ function populateSelectStudentGrid() {
 				if(status) {
 					if(studentTempMap.length() == 0) {
 						studentTempMap.put(selectedRowId,selectedRowData);
-						studentTempIndexMap.put(studentTempIndexCount,selectedRowId);
-						studentTempIndexCount++;
 					} else {					
 						var studentDataVal = studentTempMap.get(selectedRowId);
 						if(studentDataVal == null || studentDataVal == undefined) {
 							studentTempMap.put(selectedRowId,selectedRowData);
-							if(!isPresentIndex(selectedRowId)) {
-								studentTempIndexMap.put(studentTempIndexCount,selectedRowId);
-								studentTempIndexCount++;
-							}
 						} else {
 							// Added to handle duplicate students
 							var orgList = String(studentDataVal.orgNodeId);
@@ -423,12 +479,13 @@ function populateSelectStudentGrid() {
 				} else {
 					var studentIdVal = studentTempMap.get(selectedRowId);
 					if(studentIdVal != null && studentIdVal != undefined) {
-						updateOrganizationInDelete(selectedRowId,studentIdVal);
+						deleteStudentFromTemp(stuForSelectedOrg, studentIdVal, selectedRowId, studentTempMap);
 					}
 					for(var i = 0; i < allSelectOrg.length; i++) {
-						if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg)
+						if(allSelectOrg[i] != null && allSelectOrg[i] == stuForSelectedOrg || allSelectOrg[i] == stuForSelectedOrg+"_f")
 							allSelectOrg.splice(i,1);
 					}
+					$("#cb_selectStudent").attr("checked", false);
 				}
 			},
 			loadComplete: function () {
@@ -440,9 +497,8 @@ function populateSelectStudentGrid() {
             	} else {
             		isPAGridEmpty = false;
             	}
-            	//setEmptyListMessage('PA');
             	$.unblockUI();  
-				$("#selectStudent").setGridParam({datatype:'local'});
+				//$("#selectStudent").setGridParam({datatype:'local'});
 				var tdList = ("#selectStudentPager_left table.ui-pg-table  td");
 				for(var i=0; i < tdList.length; i++){
 					$(tdList).eq(i).attr("tabIndex", i+1);
@@ -456,29 +512,7 @@ function populateSelectStudentGrid() {
 	 });
 	 jQuery("#selectStudent").jqGrid('navGrid','#selectStudentPager',{edit:false,add:false,del:false,search:false,refresh:false});
 	 jQuery("#selectStudent").jqGrid('filterToolbar');
-	/* $("#t_selectStudent").append("<select id='groupSelection'>     <option>Show All</option>   <option>Student with accommodation</option>     <option>Student without accommodation</option>     </select> ");
-	$("select","#t_selectStudent").change(function( val){
-		if($('#groupSelection').val() == 'Student with accommodation') {
-			$('#gs_calculator').val('T');
-			$('#gs_hasColorFontAccommodations').val('T');
-			$('#gs_testPause').val('T');
-			$('#gs_screenReader').val('T');
-			$('#gs_untimedTest').val('T');
-		} else if ($('#groupSelection').val() == 'Student without accommodation'){
-			$('#gs_calculator').val('F');
-			$('#gs_hasColorFontAccommodations').val('F');
-			$('#gs_testPause').val('F');
-			$('#gs_screenReader').val('F');
-			$('#gs_untimedTest').val('F');
-		} else if ($('#groupSelection').val() == 'Show All'){
-			$('#gs_calculator').val('');
-			$('#gs_hasColorFontAccommodations').val('');
-			$('#gs_testPause').val('');
-			$('#gs_screenReader').val('');
-			$('#gs_untimedTest').val('');
-		}
-		
-	});*/
+	
 	 
 	 //Changes to block off grade testing
 		if(blockOffGradeTesting) {
@@ -509,24 +543,28 @@ function updateDupStudent(){
 		var OrgName = orgForDupStu[objstr.studentId][orgId];
 		var studentDataTe = studentMap.get(objstr.studentId);
 		var studentTempData = studentTempMap.get(objstr.studentId);
+		
+		
+		
+		
 		if(studentDataTe == null || studentDataTe == undefined) {
 			studentMap.put(objstr.studentId,studentTempData);
-			studentIndexMap.put(studentIndexCount,objstr.studentId);
-			studentIndexCount++;
 			studentDataTe = studentMap.get(objstr.studentId);
 		}
-		splitArr = studentDataTe.orgNodeId.split(",");
+		splitArr = String(studentDataTe.orgNodeId).split(",");
 		for(var i = 0; i < splitArr.length; i++) {
 			for(var k = 0; k < countAllSelect; k++) {
-				if(allSelectOrg[k] != null && allSelectOrg[k] == splitArr[i]) {
-					allSelectOrg.splice(i,1);
-					countAllSelect--;
+				if(allSelectOrg[k] != null && (allSelectOrg[k] == splitArr[i] || allSelectOrg[k] == splitArr[i]+"_f")) {
+					if(String(orgId)!=String(splitArr[i])){
+						allSelectOrg.splice(i,1);
+						countAllSelect--;
+					}
+					
 				}
 			}
 		}
+		
 		studentDataTe.orgNodeId = orgId;
-		allSelectOrg[countAllSelect] = orgId;
-		countAllSelect++;
 		studentDataTe.orgNodeName = $.trim(OrgName);
 		studentMap.put(objstr.studentId,studentDataTe);
 	}
@@ -566,12 +604,14 @@ function returnSelectedStudent() {
 	var duplicateStuArraydata ={};
 	studentWithaccommodation = 0;
 	studentMap = new Map();
-	studentIndexCount = 0;
-	studentIndexMap = new Map();
-	orgBeforeBack = [];
-	orgBeforeBackCount = 0;
-	for(var j = 0; j < studentTempIndexCount; j++) {
-		var stdId = studentTempIndexMap.get(j);
+
+
+
+
+	var keys = studentTempMap.getKeys();
+	for(var ll =0 ; ll<keys.length; ll++ ) {
+
+		var stdId = keys[ll];
 		var objstr = studentTempMap.get(stdId);
 		if(objstr != null && objstr != undefined) {
 			var hasAccom = objstr.hasAccommodations;
@@ -579,11 +619,41 @@ function returnSelectedStudent() {
 	 	 		studentWithaccommodation = studentWithaccommodation + 1;
 	 	 	}
 	 	 	var orgArray = String(objstr.orgNodeId).split(",");
+	 	 	var mm= 0;
+	 	 	var tempOrgArray = [];
+	 	 	// extracare to avoid junc data
+	 	 	if(orgArray.length>1){
+		 	 	 for(var nn = 0; nn<orgArray.length ; ++nn){
+		 	 	 	if(!(orgArray[nn]== undefined ||orgArray[nn]== null, orgArray[nn].length==0 ) ) {
+		 	 	 		tempOrgArray[mm] = orgArray[nn];
+		 	 	 		mm = mm+1;
+		 	 	 	}
+		 	 	 
+		 	 	 }
+		 	 	orgArray =  tempOrgArray;
+	 	 	}
+	 	 	objstr.orgNodeId=orgArray.valueOf();
+	 	 	var orgNameArray = String(objstr.orgNodeName).split(",");
+	 	 	mm= 0;
+	 	 	tempOrgArray = [];
+	 	 	if(orgNameArray.length>1){
+		 	 	 for(var nn = 0; nn<orgNameArray.length ; ++nn){
+		 	 	 	if(!(orgNameArray[nn]== undefined ||orgNameArray[nn]== null, orgNameArray[nn].length==0 ) ) {
+		 	 	 		tempOrgArray[mm] = orgNameArray[nn];
+		 	 	 		mm = mm+1;
+		 	 	 	}
+		 	 	 
+		 	 	 }
+		 	 	orgNameArray =  tempOrgArray;
+	 	 	}
+	 	 	objstr.orgNodeName=orgNameArray.valueOf();
+	 	 	// extracare to avoid junc data
+	 	 	
 	 	 	if(orgArray.length > 1) {
 				dupStuPresent = true;
 				objstr.studentId = stdId;
 				duplicateStuArray.push(objstr);
-				var orgNameArray = objstr.orgNodeName.split(",");
+				orgNameArray = String(objstr.orgNodeName).split(",");
 				var orgIdNameMap = {};
 				for(var i=0;i<orgArray.length; i++) {
 					orgIdNameMap[orgArray[i]] = orgNameArray[i];
@@ -591,8 +661,6 @@ function returnSelectedStudent() {
 				orgForDupStu[objstr.studentId] = orgIdNameMap;
 			} else {	
 		 		studentMap.put(stdId,objstr);
-				studentIndexMap.put(studentIndexCount,stdId);
-				studentIndexCount++;
 	 		}
 		}
 	}
@@ -632,10 +700,13 @@ function returnSelectedStudent() {
 
 function updateAddStudentLocaldata() {
 	AddStudentLocaldata = [];
-	for(var i = 0; i < studentIndexCount; i++) {
-		var studeId = studentIndexMap.get(i);
-		AddStudentLocaldata[i] = studentMap.get(studeId);
-		AddStudentLocaldata[i].studentId = studeId;
+	var keys = studentTempMap.getKeys();
+
+	for(var i =0 ; i<keys.length; i++ ) {
+	    AddStudentLocaldata[i] = studentTempMap.get(keys[i]);
+		AddStudentLocaldata[i].studentId = keys[i];
+	
+	
 	}
 }
 
@@ -711,10 +782,6 @@ function populateDuplicateStudentGrid(duplicateStuArray, orgForDupStu) {
 	 });
 	 jQuery("#dupStudentlist").jqGrid('navGrid','#dupStudentPager',{edit:false,add:false,del:false,search:false,refresh:false});
 	 
-	
-	
-	 
-	 
 	 
 }
 
@@ -742,14 +809,14 @@ function populateGradeLevelFilter() {
 		else {
 			if(dropListToDisplay[i].id.indexOf("-") < 0) {				
 				if(dropListToDisplay[i].id.indexOf("\/") >= 0) { // For handling terranova product
-					splitAttay = dropListToDisplay[i].id.split("/");
+					splitAttay = String(dropListToDisplay[i].id).split("/");
 					categoriesStr = categoriesStr + splitAttay[0] + ":" + splitAttay[0] + ";";
 					categoriesStr = categoriesStr + splitAttay[1] + ":" + splitAttay[1] + ";";
 				} else {
 					categoriesStr = categoriesStr + dropListToDisplay[i].id + ":" + dropListToDisplay[i].name + ";";
 				}
 			} else { // For handling laslink products
-				splitArray = dropListToDisplay[i].id.split("-");
+				splitArray = String(dropListToDisplay[i].id).split("-");
 				init = parseInt(splitArray[0]);
 				final = parseInt(splitArray[1]);
 				for(var j = init; j <= final; j++) {
@@ -762,9 +829,9 @@ function populateGradeLevelFilter() {
 	if(blockOffGradeTesting == null || blockOffGradeTesting == undefined || blockOffGradeTesting == "" || !blockOffGradeTesting) {
 		var optionList = [];
 		optionList[0] = {"id":'',"name":'All'};		
-		var gradeArray = categoriesStr.split(";");
+		var gradeArray = String(categoriesStr).split(";");
 		for(var i = 1; i < gradeArray.length; i++) {
-			var splitGrade = gradeArray[i].split(":");
+			var splitGrade = String(gradeArray[i]).split(":");
 			optionList[i] = {"id":splitGrade[0],"name":splitGrade[1]};
 		}
 		fillDropDown('gs_grade',optionList);
@@ -837,48 +904,162 @@ function getStudentListArray(studentArray) {
 	};
 	
 	function cloneStudentMapToTemp() {
-		studentTempIndexCount = studentIndexCount;
 		studentTempMap = new Map();
-		studentTempIndexMap = new Map();
-		for(var i = 0; i < studentIndexCount; i++) {
-			var studentIdCur = studentIndexMap.get(i);
-			studentTempIndexMap.put(i,studentIdCur);
-			studentTempMap.put(studentIdCur,studentMap.get(studentIdCur));
+		var keys = studentMap.getKeys();
+		for(var i =0 ; i<keys.length; i++ ) {
+			studentTempMap.put(keys[i], studentMap.get(keys[i]));
 		}
+
 	}
 	
-	function isPresentIndex(studentIdForCheck) {
-		var found = false;
-		for(var i = 0; i < studentTempIndexCount ; i++) {
-			if(studentTempIndexMap.get(i) != null && studentTempIndexMap.get(i) != undefined && String(studentTempIndexMap.get(i)) == String(studentIdForCheck))
-				found = true;
-		}
-		return found;
-	}
-	
-	function updateOrganizationInDelete(studentId,studentData) {
-		var orgList = String(studentData.orgNodeId);
-		var orgListName = studentData.orgNodeName;
-		var finalOrgList = "";
-		var finalOrgListName = "";
-		if(orgList.indexOf(",") == -1) {
-			studentTempMap.put(studentId,null);
+	function deleteStudentFromTemp(  stuForSelectedOrg,  studentIdVal, selectedRowId, studentTempMap) {
+		var tmpOrgIdList    =  String(studentIdVal.orgNodeId).split(",");
+		var tmpOrgNameList  =  String(studentIdVal.orgNodeName).split(",");
+		var finalTmpOrgIdList ="";
+		var finalTmpOrgNameList ="";
+		if(tmpOrgIdList.length == 1) {
+		   if(stuForSelectedOrg == tmpOrgIdList[0])
+			 studentTempMap.remove(selectedRowId);
 		} else {
-			var orgListArray = orgList.split(",");
-			var orgListNameArray = orgListName.split(",");
-			for(var j = 0; j < orgListArray.length; j++) {
-				if(orgListArray[j] == stuForSelectedOrg) {
-								
-				} else {
-					finalOrgList = finalOrgList + orgListArray[j] + ",";
-					finalOrgListName = finalOrgListName + orgListArray[j] + ",";
+			for(var kk = 0; kk<tmpOrgIdList.length ; kk++  ){
+				if( tmpOrgIdList[kk] != stuForSelectedOrg) {
+					if(finalTmpOrgIdList.length ==0){
+							finalTmpOrgIdList =tmpOrgIdList[kk];
+							finalTmpOrgNameList =  tmpOrgNameList[kk];
+					}else {
+							finalTmpOrgIdList   = tmpOrgIdList[kk]+","+finalTmpOrgIdList;
+							finalTmpOrgNameList = tmpOrgNameList[kk]+","+finalTmpOrgNameList;
+					}					         	
 				}
 			}
-			finalOrgList = finalOrgList.substr(0,finalOrgList.length - 1);
-			finalOrgListName = finalOrgListName.substr(0,finalOrgListName.length - 1);
-			studentData.orgNodeId = finalOrgList;
-			studentData.orgNodeName = finalOrgListName;
-			studentTempMap.put(studentId,studentData);
+			studentIdVal.orgNodeId   = finalTmpOrgIdList;
+			studentIdVal.orgNodeName = finalTmpOrgNameList;
+			studentTempMap.put(selectedRowId,studentIdVal);
 		}
+	
+	
 	}
 	
+
+	function isFilterUpdated(){
+		var result = false;
+		 if(prvGrade != $("#gs_grade").val()){
+		 	result = true;
+		 } else if (prvCalculator != $("#gs_calculator").val()) {
+		 	result = true;
+		 } else if (prvHasColorFont != $("#gs_hasColorFontAccommodations").val()) {
+		 	result = true;
+		 }else if (prvTestPause != $("#gs_testPause").val()) {
+		 	result = true;
+		 }else if (prvScreenReader != $("#gs_screenReader").val()) {
+		 	result = true;
+		 }else if (prvUntimedTest 	= $("#gs_untimedTest").val()) {
+		 	result = true;
+		 }
+		 
+		 prvGrade 		= $("#gs_grade").val();
+		 prvCalculator 	= $("#gs_calculator").val();
+		 prvHasColorFont = $("#gs_hasColorFontAccommodations").val();
+		 prvTestPause 	= $("#gs_testPause").val();
+		 prvScreenReader = $("#gs_screenReader").val();
+		 prvUntimedTest  = $("#gs_untimedTest").val();
+
+	     return result;
+	
+	}
+	
+	function isDefaultFilterUpdated(){
+		var result = false;
+		 if(defaultGrade != $("#gs_grade").val()){
+		 	result = true;
+		 } else if (defaultCalculator != $("#gs_calculator").val()) {
+		 	result = true;
+		 } else if (defaultHasColorFont != $("#gs_hasColorFontAccommodations").val()) {
+		 	result = true;
+		 }else if (defaultTestPause != $("#gs_testPause").val()) {
+		 	result = true;
+		 }else if (defaultScreenReader != $("#gs_screenReader").val()) {
+		 	result = true;
+		 }else if (defaultUntimedTest 	= $("#gs_untimedTest").val()) {
+		 	result = true;
+		 }
+	     return result;
+	}
+	
+	
+	
+	function updateFilteredStudentData(){
+		allFilteredStudentRow = [];
+		var fgrade 			= $("#gs_grade").val();
+		var fcalculator 	= $("#gs_calculator").val();
+		var fColorFont		= $("#gs_hasColorFontAccommodations").val();
+		var ftestPause  	= $("#gs_testPause").val();
+		var fscreenReader	= $("#gs_screenReader").val();
+		var funtimedTest	= $("#gs_untimedTest").val();
+		var all 			= "";
+		var isFilteredSuccess = false;
+		var indx = 0;
+		if(fgrade==defaultGrade && fcalculator==defaultCalculator && fColorFont ==defaultHasColorFont && ftestPause == defaultTestPause && fscreenReader == defaultScreenReader  && funtimedTest==defaultUntimedTest ){
+			allFilteredStudentRow = allStudentIds;
+			return;
+		}
+		
+		for(var i = 0; i < allStudentIds.length; i++) {	
+		    isFilteredSuccess = true;
+		    var student = allStudentIds[i];
+			if(fgrade!=defaultGrade && fgrade != student.grade){
+				isFilteredSuccess =false;
+			} 
+			if (isFilteredSuccess && fcalculator!=defaultCalculator && fcalculator != student.calculator) {
+				isFilteredSuccess =false;
+			} 
+			if (isFilteredSuccess && fColorFont!=defaultHasColorFont && fColorFont != student.hasColorFontAccommodations) {
+				isFilteredSuccess =false;
+			} 
+			if (isFilteredSuccess && ftestPause!=defaultTestPause && ftestPause != student.testPause){
+				isFilteredSuccess =false;
+			} 
+			if (isFilteredSuccess && fscreenReader!=defaultScreenReader && fscreenReader != student.screenReader){
+				isFilteredSuccess =false;
+			}
+			if (isFilteredSuccess && funtimedTest!=defaultUntimedTest && funtimedTest != student.untimedTest){
+				isFilteredSuccess =false;
+			}
+			if(isFilteredSuccess){
+				allFilteredStudentRow[indx++] = student;
+			}
+
+		}
+	
+	}
+	
+	function setDefaultGridFilter(){
+			  defaultGrade 			= $("#gs_grade").val();
+		   	  defaultCalculator 	= $("#gs_calculator").val();
+		   	  defaultHasColorFont 	= $("#gs_hasColorFontAccommodations").val();
+		   	  defaultTestPause 		= $("#gs_testPause").val();
+		   	  defaultScreenReader 	= $("#gs_screenReader").val();
+		   	  defaultUntimedTest 	= $("#gs_untimedTest").val();
+		   	 prvGrade 			= defaultGrade;
+			 prvCalculator 		= defaultCalculator;
+			 prvHasColorFont 	= defaultHasColorFont;
+			 prvTestPause 		= defaultTestPause;
+			 prvScreenReader 	= defaultScreenReader;
+			 prvUntimedTest 	= defaultUntimedTest;
+	
+	}
+	
+	function cloneMap(src, dist){
+	 var keys = src.getKeys();
+	 dist = new Map(); // clear this map;
+	 for (var ll =0; ll<keys.length; ll++) {
+	  	dist.put(keys[ll],src.get(keys[ll]));
+	 }
+	
+	
+	
+	}
+	
+	
+	
+    

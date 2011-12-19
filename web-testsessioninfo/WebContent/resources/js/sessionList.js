@@ -511,9 +511,8 @@ function createSingleNodeSelectedTree(jsondata) {
 	      jQuery("#selectStudent").jqGrid('setGridParam',{datatype:'json'});    
 	       var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel;
      	   delete jQuery("#selectStudent").jqGrid('getGridParam' ,'postData' )["filters"];
-     	   jQuery("#selectStudent").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
+     	   jQuery("#selectStudent").jqGrid('setGridParam', {url:urlVal, sortname: 'lastName' ,page:1}).trigger("reloadGrid");
            var sortArrowPA = jQuery("#selectStudent");
-           jQuery("#selectStudent").sortGrid('lastName',false);
          	var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
            $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
            $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled');
@@ -811,10 +810,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				 	isStuGridEmpty = true;
 				 	studentTempMap = new Map();
 				 	studentMap = new Map();
-				 	studentTempIndexMap = new Map();
-				 	studentIndexMap = new Map();
-				 	studentTempIndexCount = 0;
-				 	studentIndexCount = 0;
+
             	} else {
             		isStuGridEmpty = false;
             		cloneStudentMapToTemp();
@@ -895,13 +891,16 @@ function createSingleNodeSelectedTree(jsondata) {
 			if(studentTempMap != undefined && studentTempMap.get(delStuIdObjArray[i]) != null && studentTempMap.get(delStuIdObjArray[i]) != undefined) {				
 				if(allSelectOrg != undefined && allSelectOrg.length > 0) {
 					for(var k = 0; k < allSelectOrg.length; k++) {
-						if(allSelectOrg[k] == (studentTempMap.get(delStuIdObjArray[i])).orgNodeId) {
+					    if(allSelectOrg[k] == null || allSelectOrg[k] == undefined){
+					    	continue;
+					    }
+						if(allSelectOrg[k] == (studentTempMap.get(delStuIdObjArray[i])).orgNodeId || allSelectOrg[k] ==(studentTempMap.get(delStuIdObjArray[i])).orgNodeId+"_f") {
 							allSelectOrg.splice(k,1);
 							countAllSelect--;
 						}
 					}
 				}
-				studentTempMap.put(delStuIdObjArray[i],null);
+				studentTempMap.remove(delStuIdObjArray[i]);
 			}
 		}
 		closePopUp('removeStuConfirmationPopup');
@@ -2550,18 +2549,12 @@ function createSingleNodeSelectedTree(jsondata) {
 
 	function resetStudentSelection() {
 		studentMap = new Map();
-		studentIndexMap = new Map();
 		studentTempMap = new Map();
-		studentTempIndexMap = new Map();
-		studentIndexCount = 0;
-		studentTempIndexCount = 0;
 		allStudentIds = [];
 		allSelectOrg = [];
 		countAllSelect = 0;
 		AddStudentLocaldata = [];
 		studentWithaccommodation = 0;
-		orgBeforeBack = [];
-		orgBeforeBackCount = 0;
 	}
     
     function subtestChangeProcess() {
