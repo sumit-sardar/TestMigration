@@ -27,6 +27,7 @@ var tempAllSelectOrgProctor= {};
 var onloadGrid = false;
 
 function showSelectProctor(){
+	$("#proctorAddDeleteInfo").hide();
 	$("#Proctor_Tab").css('display', 'none');
 	$("#Select_Proctor_Tab").css('display', 'block');
 	if(orgTreeHierarchy == "" || orgTreeHierarchy ==undefined) {
@@ -392,6 +393,7 @@ function returnSelectedProctor() {
 		var count = parseInt(orgDataInform[j]);
 		tempOrgDataInform[j] = count;
 	}
+	$("#proctorAddDeleteInfo").show();
 	if (val.length > previousDataCount && val.length > 1){	
 		if (previousDataCount == 0){
 			previousDataCount = 1;
@@ -399,7 +401,13 @@ function returnSelectedProctor() {
 		var value = val.length - previousDataCount;
 		message = value + "  " + PROCTORS_ADDED;			
 	}
-	
+	else if(val.length < previousDataCount) {
+		var value = previousDataCount - val.length;
+		message = value + "  " + PROCTORS_DELETED;			
+	}
+	else {
+		$("#proctorAddDeleteInfo").hide();
+	}
 	tempProctorData = jsonDataOrg;
 	
 	addProctorLocaldata = val;
@@ -408,7 +416,7 @@ function returnSelectedProctor() {
 	$("#Proctor_Tab").css('display', 'block');
 	$("#Select_Proctor_Tab").css('display', 'none');
 	gridReloadProctor(false);
-	$("#proctorAddDeleteInfo").show();
+	//$("#proctorAddDeleteInfo").show();
 	$("#addDeleteProc").text(message);	
 	$("#totalAssignedProctors").text(noOfProctorAdded);
 	

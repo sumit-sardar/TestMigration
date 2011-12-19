@@ -2160,6 +2160,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			height: 162,  
 			caption:"Proctor List",
 			onPaging: function() {
+				$("#proctorAddDeleteInfo").hide();
 				var reqestedPage = parseInt($('#listProctor').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_listProctor').text());
 				var minPageSize = 1;
@@ -2194,6 +2195,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			},
 			
 			onSelectAll: function (rowids, status) {
+				$("#proctorAddDeleteInfo").hide();
 				if(!onloadProctorListGrid){
 					if(status) {
 						var tmpselectedRowId = "";
@@ -2237,6 +2239,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				
 			}, 
 			onSelectRow: function (rowid, status) {
+				$("#proctorAddDeleteInfo").hide();
 				if(!onloadProctorListGrid){
 					var tmpselectedRowId = "";
 					selectAllForDeleteProctor = false;
