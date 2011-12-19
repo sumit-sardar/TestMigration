@@ -589,7 +589,7 @@ function changePwdForUser(element){
 	document.getElementById('changePW').style.display = "block";
 	
 			$("#changeUserPassword").dialog({  
-					title:"Change Password: "+getUserName(),  
+					title:$("#chgPwdID").val()+getUserName(),  
 				 	resizable:false,
 				 	autoOpen: true,
 				 	width: '800px',
@@ -642,7 +642,7 @@ function userDetailEdit(){
 
 	}
 	$("#editUserDetail").dialog({  
-								title:"Edit Record",  
+								title:$("#editRecordID").val(),  
 							 	resizable:false,
 							 	autoOpen: true,
 								closeOnEscape: false,
@@ -910,7 +910,7 @@ function userDetailEdit(){
 			
 			if (phone4 != "") {
 			
-				phoneNumber = phoneNumber+" Ext: "+phone4;
+				phoneNumber = phoneNumber+$("#extID").val()+phone4;
 			}		
 		}
 	
@@ -1064,7 +1064,7 @@ function fillselectedOrgNode( elementId, orgList) {
 	} else {
 		reset();
 		$("#addEditUserDetail").dialog({  
-			title:"Add User",  
+			title:$("#addUserID").val(),  
 		 	resizable:false,
 		 	autoOpen: true,
 		 	width: '800px',
@@ -1413,7 +1413,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		
 		if($("#userEmail").val()== "") {
 			$("#EmailWarning").dialog({  
-			title:"Email Alert",  
+			title:$("#emailAlertID").val(),  
 		 	resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',
@@ -1630,7 +1630,7 @@ function openConfirmationPopup(args){
 		var arg= args;
 		if(arg == null || arg == undefined){
 			$("#confirmationPopup").dialog({  
-				title:"Confirmation Alert",  
+				title:$("#confirmID").val(),  
 			 	resizable:false,
 			 	autoOpen: true,
 			 	width: '400px',
@@ -1646,7 +1646,7 @@ function openConfirmationPopup(args){
 		 }
 		 else{
 		  $("#confirmationPopupNavigation").dialog({  
-			title:"Confirmation Alert",  
+			title:$("#confirmID").val(),  
 			resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',

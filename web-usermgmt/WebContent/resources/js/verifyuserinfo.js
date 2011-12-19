@@ -9,7 +9,6 @@ var INVALID_EMAIL  = "Please enter a valid email address";
 var INVALID_FORMAT_TITLE = "One or more fields contain invalid formats or invalid values:"; 
 var INVALID_ADDRESS_CHARS  = "Please re-enter your information with only these characters: A-Z, a-z, 0-9, #, /, \\, -, ', (, ), &, +, comma, period, space";
 var INVALID_CITY_CHARS  = "Please re-enter your information with only these characters: A-Z, a-z, 0-9, /, \\, -, ', (, ), &, +, comma, period, space";
-var INVALID_EMAIL  = "Please enter a valid email address";
 var INVALID_NUMERIC_FORMAT = "Please re-enter numeric fields in valid format";
       
     
@@ -55,26 +54,26 @@ function VerifyUserDetail(assignedOrgNodeIds){
 	  
 	if ( firstName.length == 0 ) {
 				requiredFieldCount += 1;            
-				requiredFields = buildErrorString("First Name", requiredFieldCount, requiredFields);       
+				requiredFields = buildErrorString($("#jqgFirstNameID").val(), requiredFieldCount, requiredFields);       
 			}
    if ( lastName.length == 0 ) {
 				requiredFieldCount += 1;            
-				requiredFields = buildErrorString("Last Name", requiredFieldCount, requiredFields);       
+				requiredFields = buildErrorString($("#jqgLastNameID").val(), requiredFieldCount, requiredFields);       
 			}
 
    if ( timeZone == "-1" ) {
 				requiredFieldCount += 1;            
-				requiredFields = buildErrorString("TimeZone", requiredFieldCount, requiredFields);       
+				requiredFields = buildErrorString($("#tZoneID").val(), requiredFieldCount, requiredFields);       
 			}  
 
 	if ( userRole == "-1") {
 				requiredFieldCount += 1;            
-				requiredFields = buildErrorString("Role", requiredFieldCount, requiredFields);       
+				requiredFields = buildErrorString($("#jqgRoleID").val(), requiredFieldCount, requiredFields);       
 			}
 
    if ( selectedOrgNodes == "" ) {
 			requiredFieldCount += 1;            
-			requiredFields = buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
+			requiredFields = buildErrorString($("#oAssignID").val(), requiredFieldCount, requiredFields);       
 		} 
 			
    //if ( selectedOrgNodes.length == "" ) {
@@ -86,11 +85,11 @@ function VerifyUserDetail(assignedOrgNodeIds){
   if (requiredFieldCount > 0) {
 		if (requiredFieldCount == 1) {
 					//requiredFields += ("\n" + REQUIRED_TEXT);
-					setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);
+					setMessage($("#mRequiredID").val(), requiredFields, "errorMessage", $("#sRequiredID").val());
 				}
 				else {
 					//requiredFields += ("\n" + REQUIRED_TEXT_MULTIPLE);
-					setMessage("Missing required fields", requiredFields, "errorMessage", REQUIRED_TEXT_MULTIPLE);
+					setMessage($("#mRequiredID").val(), requiredFields, "errorMessage", $("#mRequiredID").val());
 				}
 				return false;
 			}
@@ -98,7 +97,7 @@ function VerifyUserDetail(assignedOrgNodeIds){
  var invalidCharFields = verifyUserInfo(firstName, middleName,lastName);
  var invalidString = "";                        
     if (invalidCharFields.length > 0) {
-          setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
+          setMessage($("#inCharID").val(), invalidCharFields, "errorMessage",$("#inNameCharID").val());
 				return false;
 	}																									   
 if(userEmail != "") {
@@ -110,12 +109,12 @@ if(userEmail != "") {
     invalidString += ("<br/>");
     }
     //invalidString += "Email" + ("<br/>" + INVALID_EMAIL);
-    setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_EMAIL);
+    setMessage($("#inCharID").val(), invalidCharFields, "errorMessage",$("#inEmailID").val());
 				return false;
  }   
 }   
   if (invalidString!= "") {    
-     setMessage(INVALID_FORMAT_TITLE, invalidString,"errorMessage");
+     setMessage($("#inFormatID").val(), invalidString,"errorMessage");
      return false;
  } 
  
@@ -135,7 +134,7 @@ if(userEmail != "") {
         var invalidString = "";                        
         if (invalidCharFields.length > 0) {
             //invalidString = invalidCharFields + ("<br/>" + INVALID_ADDRESS_CHARS);
-            setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_ADDRESS_CHARS);
+            setMessage($("#inCharID").val(), invalidCharFields, "errorMessage",$("#inAddressID").val());
             return true;
 				
         }	
@@ -147,7 +146,7 @@ if(userEmail != "") {
                invalidString += ("<br/>");
             }
             //invalidString += invalidCharFields + ("<br/>" + INVALID_CITY_CHARS);
-            setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_CITY_CHARS);
+            setMessage($("#inCharID").val(), invalidCharFields, "errorMessage",$("#inNameCharID").val());
              return true;
 				
         }																									   
@@ -155,7 +154,7 @@ if(userEmail != "") {
         // this section is for the validation of Zip  
         var invalidNumFields = "";
         if (isInvalidZip(zipCode1,zipCode2)) {
-            invalidNumFields += "Zip";
+            invalidNumFields += $("#zipID").val();
         }
         
         // this section is for the validation of Primary Phone 
@@ -163,21 +162,21 @@ if(userEmail != "") {
             if(invalidNumFields!="" && invalidNumFields.length>0) {
                invalidNumFields += ", ";
             }
-            invalidNumFields += "Primary Phone";
+            invalidNumFields += $("#pPhoneID").val();
         }
         
         if (isInvalidSecondaryPhone(secondaryPhone1,secondaryPhone2,secondaryPhone3,secondaryPhone4)){
             if(invalidNumFields!="" && invalidNumFields.length>0){
                invalidNumFields += ", ";
             }
-            invalidNumFields += "Secondary Phone";
+            invalidNumFields += $("#sPhoneID").val();
         }
         
         if (isInvalidFaxNumber(faxNumber1,faxNumber2,faxNumber3)){
             if(invalidNumFields!="" && invalidNumFields.length>0){
                invalidNumFields += ", ";
             }
-            invalidNumFields += "Fax Number";
+            invalidNumFields += $("#faxID").val();
         }
                
         if (invalidNumFields != "" && invalidNumFields.length>0 ) {
@@ -185,12 +184,12 @@ if(userEmail != "") {
                invalidString += ("<br/>");
             }
             //invalidString += invalidNumFields + ("<br/>" + INVALID_NUMBER_FORMAT);
-            setMessage(invalid_char_message, invalidNumFields, "errorMessage",INVALID_NUMERIC_FORMAT);
+            setMessage($("#inCharID").val(), invalidNumFields, "errorMessage",$("#inNemericFormatID").val());
 				return true;
         }
                          
         if (invalidString!="" && invalidString.length > 0 ) {    
-            setMessage(INVALID_FORMAT_TITLE, invalidString, "errorMessage");
+            setMessage($("#inFormatID").val(), invalidString, "errorMessage");
             return true;
         } 
         
@@ -204,12 +203,12 @@ if(userEmail != "") {
 
         if (!validAddressString(addressLine1) ) {
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Address Line1", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString($("#addrID1").val(), invalidCharFieldCount, invalidCharFields);       
         }
         
         if (!validAddressString(addressLine2) ) {
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Address Line2", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString($("#addrID2").val(), invalidCharFieldCount, invalidCharFields);       
         }
                 
         return invalidCharFields;
@@ -265,17 +264,17 @@ if(userEmail != "") {
 
         if (!validNameString(firstName) ) {
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("First Name", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString($("#jqgFirstNameID").val(), invalidCharFieldCount, invalidCharFields);       
         }
         
         if (!validNameString(middleName) ) {
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Middle Name", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString($("#mNameID").val(), invalidCharFieldCount, invalidCharFields);       
         }
         
         if (!validNameString(lastName) ) {
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Last Name", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString($("#jqgLastNameID").val(), invalidCharFieldCount, invalidCharFields);       
         }
             
         return invalidCharFields;
@@ -409,7 +408,7 @@ if(userEmail != "") {
 
         if (!validNameString(str) ) {
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("City", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString($("#cityID").val(), invalidCharFieldCount, invalidCharFields);       
         }
         
           

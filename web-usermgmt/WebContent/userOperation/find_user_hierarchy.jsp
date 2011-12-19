@@ -12,6 +12,31 @@
 <input type="hidden" id="jqgRoleID" name = "jqgRoleID" value=<lb:label key="user.role" prefix="'" suffix="'"/>/>
 <input type="hidden" id="jqgEmailID" name = "jqgEmailID" value=<lb:label key="user.email" prefix="'" suffix="'"/>/>
 <input type="hidden" id="jqgOrgID" name = "jqgOrgID" value=<lb:label key="user.organization" prefix="'" suffix="'"/>/>
+<input type="hidden" id="editRecordID" name = "editRecordID" value=<lb:label key="user.label.titleEditRecord" prefix="'" suffix="'"/>/>
+<input type="hidden" id="chgPwdID" name = "chgPwdID" value=<lb:label key="user.changepassword" prefix="'" suffix=": '"/>/>
+<input type="hidden" id="extID" name = "extID" value=<lb:label key="user.ext" prefix="' " suffix=": '"/>/>
+<input type="hidden" id="confirmID" name = "confirmID" value=<lb:label key="user.msg.alert.confirm" prefix="'" suffix="'"/>/>
+<input type="hidden" id="emailAlertID" name = "emailAlertID" value=<lb:label key="user.msg.alert.email" prefix="'" suffix="'"/>/>
+<input type="hidden" id="addUserID" name = "addUserID" value=<lb:label key="user.label.titleADD" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mRequiredID" name = "mRequiredID" value=<lb:label key="user.msg.missingRequesdField" prefix="'" suffix="'"/>/>
+<input type="hidden" id="tZoneID" name = "tZoneID" value=<lb:label key="user.label.timeZone" prefix="'" suffix="'"/>/>
+<input type="hidden" id="oAssignID" name = "oAssignID" value=<lb:label key="user.label.orgAssignment" prefix="'" suffix="'"/>/>
+<input type="hidden" id="zipID" name = "zipID" value=<lb:label key="user.zip" prefix="'" suffix="'"/>/>
+<input type="hidden" id="pPhoneID" name = "pPhoneID" value=<lb:label key="user.primaryphone" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sPhoneID" name = "sPhoneID" value=<lb:label key="user.secondaryphone" prefix="'" suffix="'"/>/>
+<input type="hidden" id="faxID" name = "faxID" value=<lb:label key="user.faxnumber" prefix="'" suffix="'"/>/>
+<input type="hidden" id="addrID1" name = "addrID1" value=<lb:label key="user.addressLine1" prefix="'" suffix="'"/>/>
+<input type="hidden" id="addrID2" name = "addrID2" value=<lb:label key="user.addressLine2" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mNameID" name = "mNameID" value=<lb:label key="user.middleName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="cityID" name = "cityID" value=<lb:label key="user.middleName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="inNameCharID" name = "inNameCharID" value=<lb:label key="user.msg.invalidNameChars" prefix="'" suffix="'"/>/>
+<input type="hidden" id="sRequiredID" name = "sRequiredID" value=<lb:label key="user.msg.requiredField" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mRequiredID" name = "mRequiredID" value=<lb:label key="user.msg.multiple.requiredField" prefix="'" suffix="'"/>/>
+<input type="hidden" id="inCharID" name = "inCharID" value=<lb:label key="user.msg.invalid.chars" prefix="'" suffix="'"/>/>
+<input type="hidden" id="inEmailID" name = "inEmailID" value=<lb:label key="user.msg.invalid.email" prefix="'" suffix="'"/>/>
+<input type="hidden" id="inFormatID" name = "inFormatID" value=<lb:label key="user.msg.invalid.format" prefix="'" suffix="'"/>/>
+<input type="hidden" id="inAddressID" name = "inAddressID" value=<lb:label key="user.msg.invalid.address" prefix="'" suffix="'"/>/>
+<input type="hidden" id="inNemericFormatID" name = "inNemericFormatID" value=<lb:label key="user.msg.invalid.numericFormat" prefix="'" suffix="'"/>/>
 <table> 
 	<tr> 
 		<td>  
