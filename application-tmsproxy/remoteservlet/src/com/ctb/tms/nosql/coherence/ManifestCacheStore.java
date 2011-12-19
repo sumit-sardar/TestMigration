@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 
 import com.ctb.tms.bean.login.Manifest;
+import com.ctb.tms.bean.login.ManifestWrapper;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.rdb.OASRDBSink;
 import com.ctb.tms.rdb.OASRDBSource;
@@ -39,12 +40,12 @@ public class ManifestCacheStore implements OASCacheStore {
 
     public Object load(Object oKey) {
     	Connection conn = null;
-    	Manifest[] result = null;
+    	ManifestWrapper result = null;
     	String key = (String) oKey;
     	try {
 	    	OASRDBSource source = RDBStorageFactory.getOASSource();
 	    	conn = source.getOASConnection();
-	    	result = source.getManifest(conn, key);
+	    	result = new ManifestWrapper(source.getManifest(conn, key));
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {
@@ -62,10 +63,10 @@ public class ManifestCacheStore implements OASCacheStore {
     	try {
     		String key = (String) oKey;
     	    logger.debug("Storing manifest to DB for roster " + key);
-    		Manifest[] manifest = (Manifest[]) oValue;
+    		ManifestWrapper manifest = (ManifestWrapper) oValue;
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
-		    sink.putManifest(conn, key, manifest);
+		    sink.putManifest(conn, key, manifest.getManifests());
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {
@@ -96,7 +97,7 @@ public class ManifestCacheStore implements OASCacheStore {
     			Object oKey = it.next();
     			String key = (String) oKey;
     		    Manifest[] manifest = source.getManifest(conn, key);
-		    	result.put(key, manifest);
+		    	result.put(key, new ManifestWrapper(manifest));
     		}
     	} catch (Exception e) {
     		e.printStackTrace();
@@ -119,8 +120,8 @@ public class ManifestCacheStore implements OASCacheStore {
     		while(it.hasNext()) {
 	    		Object oKey = it.next();
     			String key = (String) oKey;
-	    		Manifest[] value = (Manifest[]) mapEntries.get(key);
-			    sink.putManifest(conn, key, value);
+	    		ManifestWrapper value = (ManifestWrapper) mapEntries.get(key);
+			    sink.putManifest(conn, key, value.getManifests());
     		}
     	} catch (Exception e) {
     		e.printStackTrace();
@@ -147,7 +148,7 @@ public class ManifestCacheStore implements OASCacheStore {
 		    int counter = 0;
     		while(it.hasNext()) {
     			BinaryEntry entry = it.next();
-    			sink.putManifest(conn, (String) entry.getKey(), (Manifest[]) entry.getValue());
+    			sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) entry.getValue()).getManifests());
 		    	counter++;
     		}
     		conn.commit();

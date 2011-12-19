@@ -6,6 +6,7 @@ import org.apache.xmlbeans.XmlException;
 
 import com.ctb.tms.bean.login.ItemResponseWrapper;
 import com.ctb.tms.bean.login.Manifest;
+import com.ctb.tms.bean.login.ManifestWrapper;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 
@@ -17,5 +18,5 @@ public interface OASNoSQLSource {
 	
 	public ItemResponseWrapper[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException;
 	
-	public Manifest[] getAllManifests(String testRosterId) throws IOException, ClassNotFoundException;
+	public ManifestWrapper getAllManifests(String testRosterId) throws IOException, ClassNotFoundException;
 }

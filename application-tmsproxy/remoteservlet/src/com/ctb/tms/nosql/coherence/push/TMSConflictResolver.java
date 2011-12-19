@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
+import com.ctb.tms.bean.login.ManifestWrapper;
 import com.ctb.tms.bean.login.RosterData;
 import com.oracle.coherence.patterns.pushreplication.EntryOperation;
 import com.oracle.coherence.patterns.pushreplication.publishers.cache.ConflictResolution;
@@ -62,8 +63,8 @@ public class TMSConflictResolver implements ConflictResolver {
                 		}
                 	} else if("OASManifestCache".equals(entryOperation.getCacheName())) {
                 		String tutorialTaken = "FALSE";
-                		Manifest[] incoming = (Manifest[]) localEntry.getContext().getValueFromInternalConverter().convert(entryOperation.getPublishableEntry().getBinaryValue());
-                		Manifest[] local = (Manifest[]) localEntry.getValue();
+                		Manifest[] incoming = ((ManifestWrapper) localEntry.getContext().getValueFromInternalConverter().convert(entryOperation.getPublishableEntry().getBinaryValue())).getManifests();
+                		Manifest[] local = ((ManifestWrapper) localEntry.getValue()).getManifests();
                 		if(incoming.length > 0 && incoming[0] != null && incoming[0].isForceReplication()) {
                 			for(int k=0;k<incoming.length;k++) {
                 				if(incoming[k] != null) {
@@ -144,7 +145,7 @@ public class TMSConflictResolver implements ConflictResolver {
 	                			finalMerged[n].setTutorialTaken(tutorialTaken);
 	                			logger.info(finalMerged[n].toString());
 	                		}
-	                		resolution.useMergedValue(finalMerged);
+	                		resolution.useMergedValue(new ManifestWrapper(finalMerged));
                 		}
             		} else {
                 		resolution.useInComingValue();

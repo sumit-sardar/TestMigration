@@ -2,24 +2,20 @@ package com.ctb.tms.nosql.coherence;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
-
 import com.ctb.tms.bean.login.ItemResponseWrapper;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
+import com.ctb.tms.bean.login.ManifestWrapper;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.OASNoSQLSink;
-import com.ctb.tms.web.servlet.TMSServlet;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 import com.tangosol.util.Filter;
@@ -59,7 +55,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	
 	public void putManifest(String testRosterId, String accessCode, Manifest manifest) throws IOException {
 		String key = testRosterId;
-		Manifest[] manifests = (Manifest[]) manifestCache.get(key);
+		Manifest[] manifests = ((ManifestWrapper) manifestCache.get(key)).getManifests();
 		ArrayList newManifests = new ArrayList();
 		boolean foundManifest = false;
 		for(int i=0;i<manifests.length;i++) {
@@ -115,10 +111,10 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			manifests[i].setRosterLastMseq(latestMseq);
 			manifests[i].setRosterCorrelationId(cid);
 		}
-		manifestCache.put(key, manifests);
+		manifestCache.put(key, new ManifestWrapper(manifests));
 	}
 	
-	public void putAllManifests(String testRosterId, Manifest[] manifests) throws IOException {
+	public void putAllManifests(String testRosterId, ManifestWrapper manifests) throws IOException {
 		String key = testRosterId;
 		manifestCache.put(key, manifests);
 	}

@@ -1,6 +1,5 @@
 package com.ctb.tms.bean.login; 
 
-import java.sql.Clob;
 
 public class ItemResponseData 
 { 

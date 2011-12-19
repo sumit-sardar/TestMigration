@@ -2,7 +2,6 @@ package com.ctb.tms.bean.login;
 
 import java.io.Serializable;
 import java.sql.Clob;
-import java.sql.Date;
 
 public class ManifestData implements Serializable
 {

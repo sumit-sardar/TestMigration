@@ -7,6 +7,7 @@ import org.apache.xmlbeans.XmlException;
 
 import com.ctb.tms.bean.login.ItemResponseWrapper;
 import com.ctb.tms.bean.login.Manifest;
+import com.ctb.tms.bean.login.ManifestWrapper;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 
@@ -16,7 +17,7 @@ public interface OASNoSQLSink {
 	
 	public void putManifest(String testRosterId, String accessCode, Manifest manifest) throws IOException;
 	
-	public void putAllManifests(String testRosterId, Manifest[] manifests) throws IOException ;
+	public void putAllManifests(String testRosterId, ManifestWrapper manifests) throws IOException ;
 	
 	public void putItemResponse(String testRosterId, ItemResponseWrapper irw) throws IOException;
 	

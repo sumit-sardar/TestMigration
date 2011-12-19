@@ -5,13 +5,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
-
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 
 import com.ctb.tms.bean.login.ItemResponseWrapper;
 import com.ctb.tms.bean.login.Manifest;
+import com.ctb.tms.bean.login.ManifestWrapper;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.OASNoSQLSource;
@@ -64,7 +63,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 		/*String key = testRosterId + ":" + accessCode;
 		return (Manifest) manifestCache.get(key); */
 		String key = testRosterId;
-		Manifest[] manifests = (Manifest[]) manifestCache.get(key);
+		Manifest[] manifests = ((ManifestWrapper) manifestCache.get(key)).getManifests();
 		for(int i=0;i<manifests.length;i++) {
 			Manifest manifest = manifests[i];
 			manifest.setReplicate(false);
@@ -98,7 +97,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 		}
 	}
 	
-	public Manifest[] getAllManifests(String testRosterId) throws IOException, ClassNotFoundException {
+	public ManifestWrapper getAllManifests(String testRosterId) throws IOException, ClassNotFoundException {
 		/* String key = testRosterId;
 		Filter filter = new EqualsFilter("getTestRosterId", key); 
 		Set setKeys = manifestCache.keySet(filter); 
@@ -118,10 +117,10 @@ public class OASCoherenceSource implements OASNoSQLSource {
 			return null;
 		} */
 		String key = testRosterId;
-		Manifest[] manifests = (Manifest[]) manifestCache.get(key);
+		Manifest[] manifests = ((ManifestWrapper) manifestCache.get(key)).getManifests();
 		for(int i=0;i<manifests.length;i++) {
 			manifests[i].setReplicate(false);
 		}
-		return manifests;
+		return new ManifestWrapper(manifests);
 	}
 }

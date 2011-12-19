@@ -3,10 +3,6 @@ package com.ctb.tms.bean.login;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import org.apache.log4j.Logger;
-
-import com.ctb.tms.web.servlet.TMSServlet;
-
 public class Manifest implements Serializable, CachePreLoadObject {
 	
 	private static final long serialVersionUID = 1L;

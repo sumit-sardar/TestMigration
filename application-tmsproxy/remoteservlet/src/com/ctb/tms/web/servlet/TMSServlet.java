@@ -54,6 +54,7 @@ import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.ItemResponseWrapper;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
+import com.ctb.tms.bean.login.ManifestWrapper;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.exception.testDelivery.InvalidCorrelationIdException;
@@ -541,7 +542,7 @@ public class TMSServlet extends HttpServlet {
         logger.debug("##### handleTabeLocator: In handleTabeLocator");
 		RosterSubtestStatus [] locatorSubtests = null;
         ArrayList rssList = new ArrayList();
-        Manifest[] manifesta = oasSource.getAllManifests(testRosterId);
+        Manifest[] manifesta = oasSource.getAllManifests(testRosterId).getManifests();
         logger.debug("##### handleTabeLocator: found " + manifesta.length + " manifests for roster " + testRosterId);
         for(int i=0;i<manifesta.length;i++) {
         	Manifest manifest = manifesta[i];
@@ -593,11 +594,11 @@ public class TMSServlet extends HttpServlet {
         	manifest.setManifest((ManifestData[]) newmanifest.toArray(new ManifestData[0]));
         	manifest.setReplicate(true);
         }
-        oasSink.putAllManifests(testRosterId, manifesta);
+        oasSink.putAllManifests(testRosterId, new ManifestWrapper(manifesta));
     }
 	
 	private boolean checkForIncompleteTabeLocatorSubtests(String testRosterId) throws SQLException, IOException, ClassNotFoundException {
-        Manifest[] manifesta = oasSource.getAllManifests(testRosterId);
+        Manifest[] manifesta = oasSource.getAllManifests(testRosterId).getManifests();
         for(int i=0;i<manifesta.length;i++) {
         	Manifest manifest = manifesta[i];
         	ManifestData[] mda = manifest.getManifest();

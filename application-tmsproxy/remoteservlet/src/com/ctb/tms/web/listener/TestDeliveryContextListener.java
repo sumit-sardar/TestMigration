@@ -8,6 +8,7 @@ import javax.servlet.ServletContextEvent;
 import org.apache.log4j.Logger;
 
 import com.ctb.tms.bean.login.Manifest;
+import com.ctb.tms.bean.login.ManifestWrapper;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.nosql.NoSQLStorageFactory;
@@ -161,7 +162,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 									}
 									rd.setForceReplication(true);
 									oasSink.putRosterData(creds[i], rd);
-									oasSink.putAllManifests(creds[i].getTestRosterId(), manifests);
+									oasSink.putAllManifests(creds[i].getTestRosterId(), new ManifestWrapper(manifests));
 									rd = null;
 									manifests = null;
 									storedCount++;
