@@ -256,11 +256,15 @@ function populateSelectProctorGrid() {
 						// Added to handle multiple organization select All	
 						allSelectOrgProctor[proctorForSelectedOrg] = true; 	
 					} else {
-						orgDataInform[proctorForSelectedOrg] = 1 ;
+						//orgDataInform[proctorForSelectedOrg] = 1 ;
+						orgDataInform[proctorForSelectedOrg] = 0;
 						allSelectOrgProctor[proctorForSelectedOrg] = false;
 						for(var key in allProctorIds['dataList']) {
 							if (allProctorIds['dataList'][key].defaultScheduler == 'F') {
 								delete proctorIdObjArray[key];
+							}
+							else if (allProctorIds['dataList'][key].defaultScheduler == 'T') {
+								orgDataInform[proctorForSelectedOrg] = 1 ;
 							}	
 						}							
 					}		
