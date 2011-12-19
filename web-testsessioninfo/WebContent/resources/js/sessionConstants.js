@@ -24,3 +24,6 @@ var TAC_MISSING_TEST_ACCESSCODES2= "If you allow student breaks, make sure there
 var STUDENTS_DELETED = "student(s) removed from the Student Test Roster."
 var STUDENTS_ADDED = "student(s) added to the Student Test Roster."
 var ALL_STUDENTS_DELETED = "All students removed from the Student Test Roster."
+var PROCTORS_DELETED = "proctor(s) removed from the Proctor Session List."
+var PROCTORS_ADDED = "proctor(s) added to the Proctor Session List."
+var ALL_PROCTORS_DELETED = "proctor(s) removed from the Proctor Session List. The scheduler cannot be removed."

@@ -2313,6 +2313,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	}
 	
 	function removeSelectedProctor() {
+	var deletedProcCount = 0;
 		for(var i in delProctorIdObjArray) {		
 			delete proctorIdObjArray[i];
 			delete tempProctorData[i];
@@ -2321,6 +2322,7 @@ function createSingleNodeSelectedTree(jsondata) {
 					addProctorLocaldata.splice(count,1);
 				}
 			}
+			deletedProcCount++;
 		}
 		for(var j in allSelectOrgProctor){
 			allSelectOrgProctor[j] = false;
@@ -2329,6 +2331,11 @@ function createSingleNodeSelectedTree(jsondata) {
 			}
 		}
 		
+		if (allProctorSelected && deletedProcCount > 0){
+			message = deletedProcCount + "  " + ALL_PROCTORS_DELETED;
+		}else {
+			message = deletedProcCount + "  " + PROCTORS_DELETED;
+		}
 		noOfProctorAdded = addProctorLocaldata.length;
 		allProctorSelected	= false;	
 		$("#cb_listProctor").attr('checked', false);
@@ -2336,6 +2343,8 @@ function createSingleNodeSelectedTree(jsondata) {
 		closePopUpForProctor('removeProctorConfirmationPopup');
 		delProctorIdObjArray = {};
 		gridReloadProctor(false);
+		$("#proctorAddDeleteInfo").show();
+		$("#addDeleteProc").text(message);	
 	}
 	
 	function removeProctorConfirmationPopup(){

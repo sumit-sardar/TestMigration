@@ -17,6 +17,23 @@
 		</tr>
 	</table>
 	
+	<div id = "proctorAddDeleteInfo" 
+		style="display: none; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">	
+	<table style="margin-bottom: 10px;">
+		<tr width='100%'>
+				<th style='padding-right: 6px; text-align: right;' rowspan='2'>
+					<img height='23' src="<%=request.getContextPath()%>/resources/images/messaging/icon_info.gif">
+				</th>
+			</tr>
+			<tr width='100%'>
+				<td>
+					<span id = 'addDeleteProc'></span>
+				</td>
+			</tr>
+	</table>
+</div>
+
+	
 	<table width="928px" style="margin-bottom: 10px;">
 		<tr>
 			<td>

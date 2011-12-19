@@ -359,6 +359,17 @@ function include(arr,obj) {
 function returnSelectedProctor() {
 
 	var val= [] ;
+	var previousDataCount = 0;
+	var previousData = tempProctorData;
+	
+	
+	for (var i in previousData) {		
+		previousDataCount++;
+	}
+	
+	
+	var message = "";
+		
 	delete tempOrgDataInform;
 	delete tempAllSelectOrgProctor;
 	delete tempProctorData;
@@ -381,6 +392,13 @@ function returnSelectedProctor() {
 		var count = parseInt(orgDataInform[j]);
 		tempOrgDataInform[j] = count;
 	}
+	if (val.length > previousDataCount && val.length > 1){	
+		if (previousDataCount == 0){
+			previousDataCount = 1;
+		}
+		var value = val.length - previousDataCount;
+		message = value + "  " + PROCTORS_ADDED;			
+	}
 	
 	tempProctorData = jsonDataOrg;
 	
@@ -390,7 +408,10 @@ function returnSelectedProctor() {
 	$("#Proctor_Tab").css('display', 'block');
 	$("#Select_Proctor_Tab").css('display', 'none');
 	gridReloadProctor(false);
+	$("#proctorAddDeleteInfo").show();
+	$("#addDeleteProc").text(message);	
 	$("#totalAssignedProctors").text(noOfProctorAdded);
+	
 			 
 }
 
