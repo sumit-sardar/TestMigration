@@ -2314,6 +2314,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	function removeSelectedProctor() {
 	var deletedProcCount = 0;
+	var message = "";
 		for(var i in delProctorIdObjArray) {		
 			delete proctorIdObjArray[i];
 			delete tempProctorData[i];
