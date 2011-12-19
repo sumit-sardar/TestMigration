@@ -1990,4 +1990,9 @@ public interface OrgNode extends JdbcControl
     
     @JdbcControl.SQL(statement = "SELECT ONC.CATEGORY_LEVEL AS categoryLevel, ONC.CATEGORY_NAME AS categoryName   FROM ORG_NODE_CATEGORY ONC  WHERE ONC.CUSTOMER_ID = {customerId}    AND ONC.ACTIVATION_STATUS = 'AC'    AND ONC.CATEGORY_LEVEL =        (SELECT MAX(ONC.CATEGORY_LEVEL)           FROM ORG_NODE_CATEGORY ONC          WHERE ONC.CUSTOMER_ID = {customerId}            AND ONC.ACTIVATION_STATUS = 'AC')")
 	OrgNodeCategory getCustomerLeafNodeDetail(Integer customerId) throws SQLException;
+    
+    
+    @JdbcControl.SQL(statement = "SELECT DISTINCT NODE.ORG_NODE_ID          AS orgNodeId,                ONP.PARENT_ORG_NODE_ID    AS parentOrgNodeId,                NODE.ORG_NODE_CATEGORY_ID AS orgNodeCategoryId,                NODE.ORG_NODE_NAME        AS orgNodeName,                CAT.CATEGORY_NAME         AS orgNodeCategoryName,                CAT.CATEGORY_LEVEL        AS categoryLevel,                NODE.CUSTOMER_ID          AS customerId  FROM ORG_NODE          NODE,       ORG_NODE_CATEGORY CAT,       ORG_NODE_ANCESTOR DESCENDANTS,       ORG_NODE          DESCENDANT_NODE,       ORG_NODE_ANCESTOR DESCENDANTSCHILD,       ORG_NODE_PARENT   ONP WHERE DESCENDANTS.ORG_NODE_ID = NODE.ORG_NODE_ID   AND CAT.ORG_NODE_CATEGORY_ID = NODE.ORG_NODE_CATEGORY_ID   AND NVL(DESCENDANT_NODE.ACTIVATION_STATUS, 'AC') = 'AC'   AND NODE.ACTIVATION_STATUS = 'AC'   AND CAT.ACTIVATION_STATUS = 'AC'   AND NODE.ORG_NODE_ID = ONP.ORG_NODE_ID   AND DESCENDANTS.ANCESTOR_ORG_NODE_ID = {orgNodeId}   AND NODE.ORG_NODE_ID = DESCENDANTSCHILD.ANCESTOR_ORG_NODE_ID   AND DESCENDANTSCHILD.ORG_NODE_ID = DESCENDANT_NODE.ORG_NODE_ID   AND DESCENDANTSCHILD.NUMBER_OF_LEVELS >= 0 ORDER BY CATEGORYLEVEL, UPPER(ORGNODENAME)  ",
+                     arrayMaxLength = 0, fetchSize=100)
+    Node [] getOrgNodesByParentAncestor(Integer orgNodeId) throws SQLException;
 }

@@ -1217,7 +1217,8 @@ public class ScheduleTestImpl implements ScheduleTest
             if(page != null) {
                 pageSize = new Integer(page.getPageSize());
             }
-            Node [] nodes = orgNode.getOrgNodesByParent(orgNodeId);
+            //Node [] nodes = orgNode.getOrgNodesByParent(orgNodeId);
+            Node [] nodes = orgNode.getOrgNodesByParentAncestor(orgNodeId);
             StudentNode [] studentNodes = new StudentNode [nodes.length];
             for(int i=0;i<nodes.length;i++) {
                 studentNodes[i] = new StudentNode(nodes[i]);                     

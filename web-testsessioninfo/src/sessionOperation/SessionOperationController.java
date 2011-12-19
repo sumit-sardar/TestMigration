@@ -43,6 +43,7 @@ import com.ctb.bean.testAdmin.RosterElementData;
 import com.ctb.bean.testAdmin.ScheduledSession;
 import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.bean.testAdmin.SessionStudentData;
+import com.ctb.bean.testAdmin.StudentNodeData;
 import com.ctb.bean.testAdmin.TestElement;
 import com.ctb.bean.testAdmin.TestProduct;
 import com.ctb.bean.testAdmin.TestProductData;
@@ -1275,9 +1276,7 @@ public class SessionOperationController extends PageFlowController {
 					}
 
 				}
-			}			
-			
-			
+			}
 		} catch (CTBBusinessException e) {
 			e.printStackTrace();
 		}
@@ -1659,6 +1658,98 @@ public class SessionOperationController extends PageFlowController {
 
 	}
     
+    
+    @Jpf.Action(forwards={
+			@Jpf.Forward(name = "success", 
+					path ="find_user_hierarchy.jsp")
+	})
+	protected Forward userTreeOrgNodeHierarchyList(SessionOperationForm form){
+
+		String jsonTree = "";
+		HttpServletRequest req = getRequest();
+		HttpServletResponse resp = getResponse();
+		OutputStream stream = null;
+		String contentType = CONTENT_TYPE_JSON;
+		Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
+		try {
+			BaseTree baseTree = new BaseTree ();
+
+			ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
+			UserNodeData associateNode = UserOrgHierarchyUtils.populateAssociateNode(this.userName,this.userManagement);
+			ArrayList<Organization> selectedList  = UserOrgHierarchyUtils.buildassoOrgNodehierarchyList(associateNode);
+			Collections.sort(selectedList, new OrgnizationComparator());
+			ArrayList <Integer> orgIDList = new ArrayList <Integer>();
+			ArrayList<TreeData> data = new ArrayList<TreeData>();
+System.out.println("OrgNodeId:"+selectedList.get(0).getOrgNodeId());
+System.out.println("testadminid:"+testAdminId);
+			StudentNodeData snd = this.scheduleTest.getTestTicketNodesForParent(this.userName, selectedList.get(0).getOrgNodeId(), testAdminId, null, null, null);
+					
+			ArrayList<Organization> orgNodesList = UserOrgHierarchyUtils.buildOrgNodeAncestorHierarchyList(snd, orgIDList,completeOrgNodeList);	
+
+			//jsonTree = generateTree(orgNodesList,selectedList);
+
+			for (int i= 0; i < selectedList.size(); i++) {
+
+				if (i == 0) {
+
+					preTreeProcess (data,orgNodesList,selectedList);
+
+				} else {
+
+					Integer nodeId = selectedList.get (i).getOrgNodeId();
+					if (orgIDList.contains(nodeId)) {
+						continue;
+					} else if (!selectedList.get (i).getIsAssociate()) {
+						
+						continue;
+						
+					} else {
+
+						orgIDList = new ArrayList <Integer>();
+						UserNodeData undloop = UserOrgHierarchyUtils.OrgNodehierarchy(this.userName, 
+								this.userManagement,nodeId);   
+						ArrayList<Organization> orgNodesListloop = UserOrgHierarchyUtils.buildOrgNodehierarchyList(undloop, orgIDList, completeOrgNodeList);	
+						preTreeProcess (data,orgNodesListloop,selectedList);
+					}
+				}
+
+
+			}
+
+			Gson gson = new Gson();
+			baseTree.setData(data);
+			Collections.sort(baseTree.getData(), new Comparator<TreeData>(){
+
+				public int compare(TreeData t1, TreeData t2) {
+					return (t1.getData().toUpperCase().compareTo(t2.getData().toUpperCase()));
+				}
+					
+			});
+			jsonTree = gson.toJson(baseTree);
+			String pattern = ",\"children\":[]";
+			jsonTree = jsonTree.replace(pattern, "");
+			//System.out.println(jsonTree);
+			try {
+
+				resp.setContentType(contentType);
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(jsonTree.getBytes("UTF-8"));
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Exception while processing userTreeOrgNodeHierarchyList.");
+			e.printStackTrace();
+		}
+
+		return null;
+
+	}
+    
+    
     @Jpf.Action(forwards={
 			@Jpf.Forward(name = "success", 
 					path ="assessments_sessions.jsp")
@@ -1876,11 +1967,15 @@ public class SessionOperationController extends PageFlowController {
 	        {
 	            supportAccommodations = Boolean.FALSE;
 	        }
+	        UserNodeData associateNode = UserOrgHierarchyUtils.populateAssociateNode(this.userName,this.userManagement);
+	        ArrayList<Organization> selectedList  = UserOrgHierarchyUtils.buildassoOrgNodehierarchyList(associateNode);
+	        int nodeid= selectedList.get(0).getOrgNodeId();
 	        getSession().setAttribute("supportAccommodations", supportAccommodations); 
 	        getSession().setAttribute("schedulerFirstName", this.user.getFirstName());
 	        getSession().setAttribute("schedulerLastName", this.user.getLastName());
 	        getSession().setAttribute("schedulerUserId", this.user.getUserId().toString());
 	        getSession().setAttribute("schedulerUserName", this.user.getUserName());
+	        getSession().setAttribute("schedulerUserOrgIds",nodeid );
 	        System.out.println("supportAccommodations==>"+supportAccommodations);
         }
         catch (CTBBusinessException be)

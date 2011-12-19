@@ -37,7 +37,11 @@ public class StudentNode extends Node
         this.setUpdatedBy(node.getUpdatedBy());
         this.setUpdatedDateTime(node.getUpdatedDateTime());
         this.setChildNodeCount(node.getChildNodeCount());
-        this.setOrgNodeCategoryName(node.getOrgNodeCategoryName());
+        this.setOrgNodeCategoryName(node.getOrgNodeCategoryName());        
+        this.setCategoryLevel(node.getCategoryLevel());
+        this.setParentOrgNodeId(node.getParentOrgNodeId());
+        this.setParentOrgNodeName(node.getParentOrgNodeName());
+        this.setLeafNodePath(node.getLeafNodePath());
     }
     
 	/**

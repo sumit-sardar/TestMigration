@@ -10,6 +10,8 @@ import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.control.userManagement.UserManagement;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.bean.testAdmin.StudentNode;
+import com.ctb.bean.testAdmin.StudentNodeData;
 
 public class UserOrgHierarchyUtils {
 	
@@ -113,6 +115,35 @@ public class UserOrgHierarchyUtils {
         }
         return nodeList;
     }
+    
+    /**
+     * buildOrgNodeList
+     */    
+    public static ArrayList<Organization> buildOrgNodeAncestorHierarchyList(StudentNodeData snd, ArrayList<Integer> orgIDList,  ArrayList<Organization> completeOrgNodeList) 
+    {
+        ArrayList<Organization> nodeList = new ArrayList<Organization>();
+        if (snd != null) {                    
+        	Organization pathNode = null;
+            StudentNode[] nodes = snd.getStudentNodes();     
+            for (int i = 0 ; i < nodes.length ; i++) {
+            	StudentNode node = (StudentNode)nodes[i];
+                if (node != null) {
+                    pathNode = new Organization();
+                    pathNode.setOrgName(node.getOrgNodeName());
+                    pathNode.setOrgNodeId(node.getOrgNodeId());   
+                    pathNode.setOrgCategoryLevel(node.getCategoryLevel());
+                    pathNode.setOrgParentNodeId(node.getParentOrgNodeId());
+                    //pathNode.setCustomerId(node.getCustomerId());
+                    nodeList.add(pathNode);
+                    completeOrgNodeList.add(pathNode);
+                    orgIDList.add(node.getOrgNodeId());
+                }
+            }
+        }
+        return nodeList;
+    }
+    
+    
     
     /**
      * getOrganizationLeafNode
