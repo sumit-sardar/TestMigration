@@ -44,7 +44,7 @@ public class StudentContentAreaScoresController {
         for(int i=0;i<facts.length;i++) {
             IrsTABEContentAreaFactData newFact = facts[i];
             mapper.delete(newFact);
-            if(new Long(1).equals(context.getCurrentResultId()) && newFact.getScaleScore() != null)  {
+            if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 System.out.println("TABECAFact record currency: " + mapper.isTABECAFactCurrent(newFact));
                 mapper.insert(newFact);
             }
@@ -56,8 +56,7 @@ public class StudentContentAreaScoresController {
         ArrayList facts = new ArrayList();
             for(int i=0;i<contentAreas.length;i++) {
                StsTestResultFactDetails fact = factData.get(contentAreas[i].getContentAreaName());
-               if(fact != null && 
-                    ("TL CONTENT AREA".equals(contentAreas[i].getContentAreaType()) || "T".equals(fact.getValidScore()) || "Y".equals(fact.getValidScore()))) {
+               if(fact != null && fact.getScaleScore() != null) {
                    StudentSubtestScoresDetails subtest = subtestData.get(contentAreas[i].getSubtestId());
                    IrsTABEContentAreaFactData newFact = new IrsTABEContentAreaFactData();
                    newFact.setAssessmentid(context.getAssessmentId());
@@ -133,6 +132,13 @@ public class StudentContentAreaScoresController {
                    newFact.setAttr15id(context.getDemographicData().getAttr15Id());
                    newFact.setAttr16id(context.getDemographicData().getAttr16Id());
                    facts.add(newFact);
+               } else {
+            	   IrsTABEContentAreaFactData newFact = new IrsTABEContentAreaFactData();
+            	   newFact.setSessionid(context.getSessionId());
+            	   newFact.setStudentid(context.getStudentId());
+            	   newFact.setContentAreaid(contentAreas[i].getContentAreaId());
+            	   newFact.setCurrentResultid(new Long (2));
+            	   facts.add(newFact);
                }
             }
         return (IrsTABEContentAreaFactData []) facts.toArray(new IrsTABEContentAreaFactData[0]);

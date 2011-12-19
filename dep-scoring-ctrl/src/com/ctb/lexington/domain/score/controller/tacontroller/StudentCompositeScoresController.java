@@ -39,7 +39,7 @@ public class StudentCompositeScoresController {
         for(int i=0;i<facts.length;i++) {
             IrsTABECompositeFactData newFact = facts[i];
             mapper.delete(newFact);
-            if(new Long(1).equals(context.getCurrentResultId()) && newFact.getScaleScore() != null)  {
+            if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 mapper.insert(newFact);
             }
         }
@@ -51,7 +51,7 @@ public class StudentCompositeScoresController {
             ArrayList facts = new ArrayList();
             for(int i=0;i<composites.length;i++) {
                StsTotalStudentScoreDetail total = totalData.get(composites[i].getCompositeName());
-               if(total != null && ("T".equals(total.getValidScore()) || "Y".equals(total.getValidScore())))  {
+               if(total != null && total.getScaleScore() != null)  {
                    IrsTABECompositeFactData newFact = new IrsTABECompositeFactData();
                    newFact.setAssessmentid(context.getAssessmentId());
                    newFact.setCompositeid(composites[i].getCompositeId());
@@ -107,6 +107,13 @@ public class StudentCompositeScoresController {
                    newFact.setAttr15id(context.getDemographicData().getAttr15Id());
                    newFact.setAttr16id(context.getDemographicData().getAttr16Id());
                    facts.add(newFact);
+               } else {
+            	   IrsTABECompositeFactData newFact = new IrsTABECompositeFactData();
+            	   newFact.setCompositeid(composites[i].getCompositeId());
+            	   newFact.setSessionid(context.getSessionId());
+            	   newFact.setStudentid(context.getStudentId());
+            	   newFact.setCurrentResultid(new Long (2));
+            	   facts.add(newFact);
                }
             }
             return (IrsTABECompositeFactData []) facts.toArray(new IrsTABECompositeFactData[0]);
