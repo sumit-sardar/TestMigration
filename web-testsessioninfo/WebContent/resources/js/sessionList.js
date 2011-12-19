@@ -61,6 +61,7 @@ var testJSONValue = "";
 var selectedTestId = "";
 var selectedSubtestId = "";
 var onloadProctorListGrid = false;
+var orgTktTreeHierarchy;
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -119,12 +120,19 @@ function populateSessionListGrid(homePageLoad) {
 				}
 				
 			},
-			onSelectRow: function () {
+			onSelectRow: function (rowId) {
+				$("#selectedTestSessionId").val(rowId);
+				
+					var selectedRowData = $('#list2').getRowData(rowId);
+					$("#adminTestName_val").text(selectedRowData.testAdminName);
+					$("#testName_val").text(selectedRowData.testName);
 					$('#showSaveTestMessage').hide();
 					setAnchorButtonState('viewStatusButton', false);
+					setAnchorButtonState('printTicketButton', false);
 					if($("#canRegisterStudent").val() == 'true'){
 						var selectedTestSessionId = $("#list2").jqGrid('getGridParam', 'selrow');
 						 var val = getDataFromJson(selectedTestSessionId, sessionListCUFU);
+						// var selectedTestname = getDataFromTestJson(selectedTestSessionId, testSessionlist);
 						 if(val == '"F"'){	
 			 				setAnchorButtonState('registerStudentButton', true);
 			 			 } else {
@@ -221,6 +229,7 @@ function populateCompletedSessionListGrid() {
 			onSelectRow: function () {
 					$('#showSaveTestMessage').hide();
 					setAnchorButtonState('viewStatusButton', false);
+					setAnchorButtonState('printTicketButton', false);
 					if($("#canRegisterStudent").val() == 'true'){
 			 			var selectedTestSessionId = $("#list3").jqGrid('getGridParam', 'selrow');
 						 var val = getDataFromJson(selectedTestSessionId, sessionListPA);
@@ -436,6 +445,7 @@ function createSingleNodeSelectedTree(jsondata) {
 		
 		document.getElementById('ShowButtons').style.display = "block";
  		setAnchorButtonState('viewStatusButton', true);
+ 		setAnchorButtonState('printTicketButton', true);
  		
  		 if($("#canRegisterStudent").val() == 'true'){
  			setAnchorButtonState('registerStudentButton', true);
@@ -2564,6 +2574,119 @@ function createSingleNodeSelectedTree(jsondata) {
 		$("#sData").removeClass("ui-state-disabled");
 		document.getElementById("sData").disabled=false;
     }
+	
+	function printTTicket(element){
+		if (isButtonDisabled(element))
+		return true;
+	
+		document.getElementById('printTicket').style.display = "block";
+		$("#printTestTicket").dialog({  
+			title:"Print Test Ticket ",  
+			resizable:false,
+			autoOpen: true,
+			width: '800px',
+			modal: true,
+			closeOnEscape: false,
+			open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+		});	
+		$('#printTestTicket').bind('keydown', function(event) {
+ 			var code = (event.keyCode ? event.keyCode : event.which);
+			if(code == 27){
+				return false;
+ 			}
+		});
+		setPopupPosition();	
+		populateTestTicketTree();
+	}
+	
+	function openTestTicketIndividual( anchor, testAdminId, orgNodeId ) {
+	    var url = "/TestWeb/testTicket/individualTestTicket.do";
+	    return openTestTicket( "individual", anchor, url, testAdminId, orgNodeId );
+	}
+	//START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+	function openTestTicketMultiple( anchor, testAdminId, orgNodeId ) {
+	    var url = "/TestWeb/testTicket/individualTestTicket.do";
+	    return openTestTicket( "multiple", anchor, url, testAdminId, orgNodeId );
+	}
+	//END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+
+	function openTestTicketSummary( anchor, testAdminId, orgNodeId ) {
+		//alert("openTestTicketSummary orgNodeId:"+orgNodeId);
+	    var url = "/TestWeb/testTicket/summaryTestTicket.do";
+	    return openTestTicket( "summary", anchor, url, testAdminId, orgNodeId );
+	}
+
+	function openTestTicket( ticketType, anchor, url, testAdminId, orgNodeId ) {
+	    anchor.href  = url;
+	    anchor.href += "?testAdminId=" + testAdminId;
+	    anchor.href += "&orgNodeId=" + orgNodeId;
+	    anchor.href += "&ticketType=" + ticketType;    //Added For CR ISTEP2011CR007 (Multiple Test Ticket)
+		//    var targetWindowName = ticketType + orgNodeId;
+		//    anchor.target = targetWindowName;
+	    return true;
+	}
+	
+	function populateTestTicketTree() {
+	
+	$.ajax({
+		async:		true,
+		beforeSend:	function(){
+						//UIBlock();
+					},
+		url:		'userTreeOrgNodeHierarchyList.do?testAdminId='+document.getElementById('selectedTestSessionId').value,
+		type:		'POST',
+		dataType:	'json',
+		success:	function(data, textStatus, XMLHttpRequest){	
+						//alert('in');
+						//$.unblockUI();  
+						//leafNodeCategoryId = data.leafNodeCategoryId;
+						orgTktTreeHierarchy = data;
+						createSingleNodeSelectedTktTree(orgTktTreeHierarchy);
+						$("#searchheader").css("visibility","visible");	
+						$("#orgNodeHierarchy").css("visibility","visible");	
+												
+					},
+		error  :    function(XMLHttpRequest, textStatus, errorThrown){
+						//$.unblockUI();  
+						window.location.href="/SessionWeb/logout.do";
+						
+					},
+		complete :  function(){
+						// $.unblockUI();  
+					}
+	});
+
+}
+
+function createSingleNodeSelectedTktTree(jsondata) {
+	   $("#orgTktTreeDiv").jstree({
+	        "json_data" : {	             
+	            "data" : jsondata.data,
+				"progressive_render" : true,
+				"progressive_unload" : false
+	        },
+            "themes" : {
+			    "theme" : "apple",
+			    "dots" : false,
+			    "icons" : false
+			},       
+	        "ui" : {  
+	           "select_limit" : 1
+         	}, 
+				"plugins" : [ "themes", "json_data", "ui"]  
+				
+	    });
+	   
+	  $("#orgTktTreeDiv").delegate("a","click", function(e) {
+	    	//loadSessionGrid = true;
+	    	//$('#showSaveTestMessage').hide();
+	    	 //$('#orgTktTreeDiv a.jstree-clicked').parent('li').attr('id')
+	    	var SelectedTktOrgNodeId = $(this).parent().attr("id");
+ 		    $("#scheduleUserOrgNode").val(SelectedTktOrgNodeId); 		 	
+		});
+}
+
+    
     
     
 					 

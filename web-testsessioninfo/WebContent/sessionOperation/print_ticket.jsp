@@ -31,7 +31,7 @@
 		
 	</div>
 	
-	<div style="width:49%;float:left;">
+	<div style="width:49%;float:right;">
 	<h3 style="border-width: 0px; margin-bottom:15px;">Test session documents</h3>
 	<p>	
 	Click the links to display the documents you wish to print.<br>
