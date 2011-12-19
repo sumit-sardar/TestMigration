@@ -274,11 +274,12 @@ function populateSelectProctorGrid() {
 						var selectedRowData = $("#selectProctor").getRowData(selectedRowId);
 						proctorIdObjArray[selectedRowId] = selectedRowData;
 						
-						if(parseInt(orgDataInform[proctorForSelectedOrg])  + 1 == parseInt(allProctorIds['dataLength'])){
+						orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
+						if(parseInt(orgDataInform[proctorForSelectedOrg]) == parseInt(allProctorIds['dataLength'])){
 							allSelectOrgProctor[proctorForSelectedOrg] = true; 
 							$("#cb_selectProctor").attr('checked', true).trigger('click').attr('checked', true);					
 						}
-						orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
+						//orgDataInform[proctorForSelectedOrg] = parseInt(orgDataInform[proctorForSelectedOrg]) + 1;
 						
 					} else {
 						if(proctorIdObjArray[selectedRowId]){
