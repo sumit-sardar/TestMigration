@@ -5,10 +5,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
 import com.oracle.coherence.patterns.pushreplication.PublishingCacheStore;
-import com.tangosol.net.GuardSupport;
-import com.tangosol.net.Guardian;
 import com.tangosol.net.cache.BinaryEntryStore;
 import com.tangosol.net.cache.CacheStore;
 import com.tangosol.util.BinaryEntry;
@@ -22,6 +21,14 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	private String cacheName;
 	
 	private static boolean doPush = true;
+	
+	//static ConfigurablePofContext ctx;
+	static ReflectionPofExtractor extractor;
+	
+	static {
+		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new DBCacheStore().getClass().getResource("/custom-types-pof-config.xml")));
+		extractor = new ReflectionPofExtractor();
+	}
 	
 	public DBCacheStore(String cacheName) {
 		this.cacheName = cacheName;
@@ -73,7 +80,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     public void store(com.tangosol.util.BinaryEntry entry) {
     	logger.debug("Write to push replication store");
     	if(store != null) {
-	    	Object value = entry.getValue();
+	    	Object value = extractor.extractFromEntry(entry);
 	    	store.store(entry.getKey(), value);
 	    	if(cacheName.startsWith("OAS")) {
 	    		if(pushStore != null) {
@@ -92,7 +99,6 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     public void erase(com.tangosol.util.BinaryEntry entry) {
     	logger.debug("Delete to push replication store");
     	if(store != null) {
-	    	Object value = entry.getValue();
 	    	store.erase(entry.getKey());
     	}
     }
@@ -109,8 +115,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 			Iterator<BinaryEntry> it = setBinEntries.iterator();
 			while(it.hasNext()) {
 				BinaryEntry entry = it.next();
-				Object value = entry.getValue();
-		    	store.erase(entry.getKey());
+				store.erase(entry.getKey());
 			}
 		}
 	}

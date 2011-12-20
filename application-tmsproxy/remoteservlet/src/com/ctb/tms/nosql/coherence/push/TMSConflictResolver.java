@@ -12,19 +12,17 @@ import com.ctb.tms.bean.login.RosterData;
 import com.oracle.coherence.patterns.pushreplication.EntryOperation;
 import com.oracle.coherence.patterns.pushreplication.publishers.cache.ConflictResolution;
 import com.oracle.coherence.patterns.pushreplication.publishers.cache.ConflictResolver;
-import com.tangosol.io.pof.ConfigurablePofContext;
-import com.tangosol.run.xml.XmlHelper;
 import com.tangosol.util.BinaryEntry;
 
 public class TMSConflictResolver implements ConflictResolver {
 
 	static Logger logger = Logger.getLogger(TMSConflictResolver.class);
 	
-	static ConfigurablePofContext ctx;
+	//static ConfigurablePofContext ctx;
 	static ReflectionPofExtractor extractor;
 	
 	static {
-		ctx = new ConfigurablePofContext(XmlHelper.loadXml(new TMSConflictResolver().getClass().getResource("/custom-types-pof-config.xml")));
+		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new TMSConflictResolver().getClass().getResource("/custom-types-pof-config.xml")));
 		extractor = new ReflectionPofExtractor();
 	}
 	
@@ -59,8 +57,8 @@ public class TMSConflictResolver implements ConflictResolver {
                 case Update:
                 {
                 	if("OASRosterCache".equals(entryOperation.getCacheName())) {
-                		RosterData incoming = (RosterData) extractor.extractFromBinary(ctx, entryOperation.getPublishableEntry().getBinaryValue());
-                		RosterData current = (RosterData) localEntry.getValue();
+                		RosterData incoming = (RosterData) extractor.extractFromEntry(entryOperation.getPublishableEntry());
+                		RosterData current = (RosterData) extractor.extractFromEntry(localEntry);
                 		if(incoming.isForceReplication()) {
                 			incoming.setForceReplication(false);
                 			resolution.useMergedValue(incoming);
@@ -74,8 +72,8 @@ public class TMSConflictResolver implements ConflictResolver {
                 		}
                 	} else if("OASManifestCache".equals(entryOperation.getCacheName())) {
                 		String tutorialTaken = "FALSE";
-                		Manifest[] incoming = ((ManifestWrapper) extractor.extractFromBinary(ctx, entryOperation.getPublishableEntry().getBinaryValue())).getManifests();
-                		Manifest[] local = ((ManifestWrapper) localEntry.getValue()).getManifests();
+                		Manifest[] incoming = ((ManifestWrapper) extractor.extractFromEntry(entryOperation.getPublishableEntry())).getManifests();
+                		Manifest[] local = ((ManifestWrapper) extractor.extractFromEntry(localEntry)).getManifests();
                 		if(incoming.length > 0 && incoming[0] != null && incoming[0].isForceReplication()) {
                 			for(int k=0;k<incoming.length;k++) {
                 				if(incoming[k] != null) {

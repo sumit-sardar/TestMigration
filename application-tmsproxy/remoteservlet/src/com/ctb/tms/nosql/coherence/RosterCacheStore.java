@@ -1,7 +1,5 @@
 package com.ctb.tms.nosql.coherence;
 
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectOutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,16 +9,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import sun.misc.BASE64Encoder;
-
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
-import com.tangosol.net.cache.CacheStore;
 
 public class RosterCacheStore implements OASCacheStore {
-	
 	
 	public RosterCacheStore(String cacheName) {
 		this();

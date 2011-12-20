@@ -586,7 +586,7 @@ to find specific notes on changes suggested for production use.
        <init-params>
          <init-param>
            <param-type>String</param-type>
-           <param-value system-property="tangosol.pof.config">pof-config.xml</param-value>
+           <param-value system-property="tangosol.pof.config">custom-types-pof-config.xml</param-value>
          </init-param>
        </init-params>
      </serializer>

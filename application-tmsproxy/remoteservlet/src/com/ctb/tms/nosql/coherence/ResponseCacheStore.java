@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
 import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.rdb.OASRDBSink;
@@ -16,6 +17,14 @@ import com.tangosol.util.BinaryEntry;
 public class ResponseCacheStore implements OASCacheStore {
 	
 	static Logger logger = Logger.getLogger(ResponseCacheStore.class);
+	
+	//static ConfigurablePofContext ctx;
+	static ReflectionPofExtractor extractor;
+	
+	static {
+		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new TMSConflictResolver().getClass().getResource("/custom-types-pof-config.xml")));
+		extractor = new ReflectionPofExtractor();
+	}
 	
 	public ResponseCacheStore(String cacheName) {
 		this();
@@ -76,7 +85,7 @@ public class ResponseCacheStore implements OASCacheStore {
     			BinaryEntry entry = it.next();
 	    		String key = (String) entry.getKey();
 	    		key = key.substring(0, key.indexOf(":"));
-	    		sink.putItemResponse(conn, (ItemResponseData) entry.getValue());
+	    		sink.putItemResponse(conn, (ItemResponseData) extractor.extractFromEntry(entry));
 		    	counter++;
     		}
     		conn.commit();

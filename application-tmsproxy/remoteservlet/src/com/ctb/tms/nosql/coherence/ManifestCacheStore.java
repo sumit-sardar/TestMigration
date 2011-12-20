@@ -9,24 +9,26 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
+import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestWrapper;
-import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.rdb.OASRDBSink;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
-import com.ctb.tms.rdb.oracle.OASOracleSink;
-import com.tangosol.net.GuardSupport;
-import com.tangosol.net.Guardian;
-import com.tangosol.net.cache.CacheStore;
 import com.tangosol.util.BinaryEntry;
 
 public class ManifestCacheStore implements OASCacheStore {
 	
 	static Logger logger = Logger.getLogger(ManifestCacheStore.class);
+	
+	//static ConfigurablePofContext ctx;
+	static ReflectionPofExtractor extractor;
+	
+	static {
+		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new TMSConflictResolver().getClass().getResource("/custom-types-pof-config.xml")));
+		extractor = new ReflectionPofExtractor();
+	}
 	
 	public ManifestCacheStore(String cacheName) {
 		this();
@@ -148,7 +150,7 @@ public class ManifestCacheStore implements OASCacheStore {
 		    int counter = 0;
     		while(it.hasNext()) {
     			BinaryEntry entry = it.next();
-    			sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) entry.getValue()).getManifests());
+    			sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) extractor.extractFromEntry(entry)).getManifests());
 		    	counter++;
     		}
     		conn.commit();
