@@ -175,14 +175,15 @@ function populateSelectProctorGrid() {
 		   	],
 
 		   	jsonReader: { repeatitems : false, root:"userProfileInformation", id:"userId", records: function(obj) {		   	 
-		   	if(obj.userProfileInformation != null && obj.userProfileInformation != undefined && obj.userProfileInformation.length > 0) {
+		   //	if(obj.userProfileInformation != null && obj.userProfileInformation != undefined && obj.userProfileInformation.length > 0) {
 		   	 	allProctorIds = {};
 		   	 	allProctorIds['dataList'] = {};
-			   	 for(var i = 0; i <obj.userProfileInformation.length; i++) {
+		   	 	var i = 0;
+			   	 for(i = 0; i <obj.userProfileInformation.length; i++) {
 			   	 	allProctorIds['dataList'][obj.userProfileInformation[i].userId] = obj.userProfileInformation[i];
 			   	 }
 			   	 allProctorIds['dataLength'] = i;
-		   	 }
+		   	 //}
 		   	 
 		   	return obj.userProfileInformation.length; } },
 
@@ -316,7 +317,7 @@ function populateSelectProctorGrid() {
 				
 				orgDataInform[proctorForSelectedOrg] = selectedCount;
 				
-				if(parseInt(orgDataInform[proctorForSelectedOrg]) == parseInt(allProctorIds['dataLength'])){
+				if(parseInt(orgDataInform[proctorForSelectedOrg]) > 0 && (parseInt(orgDataInform[proctorForSelectedOrg]) == parseInt(allProctorIds['dataLength']))){
 					allSelectOrgProctor[proctorForSelectedOrg] = true; 
 					$("#cb_selectProctor").attr('checked', true).trigger('click').attr('checked', true);					
 				}
