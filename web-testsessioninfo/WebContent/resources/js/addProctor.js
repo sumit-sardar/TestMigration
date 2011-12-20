@@ -482,7 +482,7 @@ function resetProctor() {
 	tempProctorData = {};
 	tempAllSelectOrgProctor= {};
 	allProctorSelected = false;
-	proctorSelectedLength = 0;
+	proctorSelectedLength = 1;
 	
 }
 

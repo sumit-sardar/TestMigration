@@ -2326,6 +2326,7 @@ function createSingleNodeSelectedTree(jsondata) {
 				}
 			}
 			deletedProcCount++;
+			proctorSelectedLength = parseInt(proctorSelectedLength) - 1;
 		}
 		for(var j in allSelectOrgProctor){
 			allSelectOrgProctor[j] = false;
