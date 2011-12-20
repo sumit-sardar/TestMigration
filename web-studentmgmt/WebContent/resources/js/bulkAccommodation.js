@@ -82,13 +82,23 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 	    	//SelectedOrgNodes = SelectedOrgNode.parentsUntil(".jstree","li");
 	    	//clear message before moving to pther node
 	    	//clearMessage();
-	    	$('#gs_grade').val('Any');
-	    	$('#gs_calculator').val('Any');
-	    	$('#gs_hasColorFontAccommodations').val('Any');
-	    	$('#gs_testPause').val('Any');
-	    	$('#gs_screenReader').val('Any');
-	    	$('#gs_untimedTest').val('Any');
-	    	$('#gs_highLighter').val('Any');
+	    	
+	    	$("option:contains('Any')",'#gs_grade' ).attr("selected", "selected");
+	    	$("option:contains('Any')",'#gs_calculator').attr("selected", "selected");
+	    	$("option:contains('Any')",'#gs_hasColorFontAccommodations').attr("selected", "selected");
+	    	$("option:contains('Any')",'#gs_testPause').attr("selected", "selected");
+	    	$("option:contains('Any')",'#gs_screenReader').attr("selected", "selected");
+	    	$("option:contains('Any')",'#gs_untimedTest').attr("selected", "selected");
+	    	$("option:contains('Any')",'#gs_highLighter').attr("selected", "selected");
+	    	$('#gs_grade').trigger('change');
+	    	$('#gs_calculator').trigger('change');
+	    	$('#gs_hasColorFontAccommodations').trigger('change');
+	    	$('#gs_testPause').trigger('change');
+	    	$('#gs_screenReader').trigger('change');
+	    	$('#gs_untimedTest').trigger('change');
+	    	$('#gs_highLighter').trigger('change');
+	    	
+	    	
 	    	
 	    	resetBulk();
 	    	setAnchorButtonState('assignAccommButton', true);
@@ -325,7 +335,6 @@ function populateBulkStudentGrid() {
        jQuery("#studentAccommGrid").jqGrid('setGridParam',{datatype:'json'});     
  	   var sortArrow = jQuery("#studentAccommGrid");
        jQuery("#studentAccommGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#selectedBulkTreeOrgNodeId").val(),page:1}).trigger("reloadGrid");
-       
        jQuery("#studentAccommGrid").sortGrid('lastName',true);
      	//For MQC Defect - 67122
        var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
