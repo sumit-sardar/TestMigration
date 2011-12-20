@@ -38,7 +38,7 @@ public class StudentObjectiveScoresController {
         for(int i=0;i<pfacts.length;i++) {
             IrsTABEPrimObjFactData newFact = pfacts[i];
             poMapper.delete(newFact);
-            if(new Long(1).equals(contextData.getCurrentResultId()))  {
+            if(new Long(1).equals(newFact.getCurrentResultid()))  {
                 poMapper.insert(newFact);
             }
         }
@@ -50,7 +50,7 @@ public class StudentObjectiveScoresController {
         for(int i=0;i<prims.length;i++) {
             PrimaryObjective prim = currData.getPrimObjById(prims[i].getPrimaryObjectiveId());
             StudentScoreSummaryDetails details = studentScoreSummaryData.get(prims[i].getPrimaryObjectiveId());
-            if(details != null && !"F".equals(details.getAtsArchive())) {
+            if(details != null && !"F".equals(details.getAtsArchive()) && details.getSubtestId() != null) {
                 IrsTABEPrimObjFactData primObjFact = new IrsTABEPrimObjFactData();
                 primObjFact.setPrimObjid(new Long(Long.parseLong(String.valueOf(prims[i].getProductId()) + String.valueOf(prims[i].getPrimaryObjectiveId()))));
                 primObjFact.setPointsObtained(details.getPointsObtained());
@@ -106,6 +106,13 @@ public class StudentObjectiveScoresController {
                 primObjFact.setAttr16id(contextData.getDemographicData().getAttr16Id());
                 
                 primaries.add(primObjFact);
+            } else {
+            	IrsTABEPrimObjFactData primObjFact = new IrsTABEPrimObjFactData();
+            	primObjFact.setSessionid(contextData.getSessionId());
+            	primObjFact.setStudentid(contextData.getStudentId());
+            	primObjFact.setCurrentResultid(new Long (2));
+            	primObjFact.setPrimObjid(new Long(Long.parseLong(String.valueOf(prims[i].getProductId()) + String.valueOf(prims[i].getPrimaryObjectiveId()))));
+            	primaries.add(primObjFact);
             }
         }
         return (IrsTABEPrimObjFactData[]) primaries.toArray(new IrsTABEPrimObjFactData[0]);
