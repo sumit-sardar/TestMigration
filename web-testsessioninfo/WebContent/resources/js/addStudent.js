@@ -228,6 +228,13 @@ function populateSelectStudentGrid() {
 		   	],
 		   		jsonReader: { repeatitems : false, root:"studentNode", id:"studentId",
 		   	records: function(obj) {
+		   	$('#gs_calculator').val("");
+		   	$('#gs_hasColorFontAccommodations').val("");
+		   	$('#gs_testPause').val("");
+		   	$('#gs_screenReader').val("");
+		   	$('#gs_untimedTest').val("");
+
+		   	
 		   	 isNodeChanged = true;
 		   	 if(visitedNodeCounter.get(stuForSelectedOrg) != null){
 			   	  var vcounter = visitedNodeCounter.get(stuForSelectedOrg);
