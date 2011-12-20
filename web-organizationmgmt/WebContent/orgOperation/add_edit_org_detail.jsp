@@ -1,5 +1,6 @@
 <%@ page import="java.io.*, java.util.*"%>
-
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="organizationApplicationResource" />
 <%
 Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 %>
@@ -33,7 +34,7 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 			<td width="770px">
 				<div id="editOrgDisplayId">
 					<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px;">
-						<b>Enter information about the organization in the form below. Required fields are marked by a blue asterisk *. Use the organization selector on the right to select the "Parent" organization to which you are adding this new member organization.</b>
+						<b><lb:label key="org.label.AddEdit" /></b>
 					</span>
 				</div>
 			</td>
@@ -54,24 +55,24 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 								<table class="transparent" width="350">
 								<tbody>
 									<tr class="transparent">
-										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Name:</td>
+										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;<lb:label key="org.name" suffix=":"/></td>
 										<td class="transparent"><input type="text" style="width: 200px;" tabindex="0" maxlength="50" id="orgName" name="orgName">
 										</td>
 									</tr>
 									<tr class="transparent">
-										<td width="110" class="transparent alignRight">Org Code:</td>
+										<td width="110" class="transparent alignRight"><lb:label key="org.Code" suffix=":"/></td>
 										<td class="transparent"><input type="text" style="width: 200px;" maxlength="32" id="orgCode" name="orgCode" ></td>
 									</tr>
 									<%if(isLasLinkCustomer) { %>
 									<tr class="transparent">
-										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;MDR Number:</td>
+										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;<lb:label key="org.mdrNumber" suffix=":"/></td>
 										<td class="transparent"><input type="text" style="width: 200px;" id="mdrNumber" name="mdrNumber" maxlength="8" onKeyPress="return constrainNumericChar(event);"></td>
 									</tr>
 									<%} %>
 									
 
 									<tr class="transparent">
-										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Layer:</td>
+										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;<lb:label key="org.layer" suffix=":"/></td>
 										<td class="transparent">
 											<select id="layerOptions"  name="layerOptions" style="width: 202px;">
 												<option value = "Select a layer">Select a layer</option>
@@ -79,10 +80,10 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 										</td>
 									</tr>
 									<tr class="transparent">
-										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Parent Org:</td>
+										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;<lb:label key="org.parentOrg" suffix=":"/></td>
 										<td class="transparent">
 											<div id="parentOrgName" name="parentOrgName">
-												<font color="gray">None selected. Use the control on the right to select.</font>
+												<font color="gray"><lb:label key="org.msg.noneSelected" /></font>
 											</div>
 										</td>
 									</tr>
@@ -100,7 +101,7 @@ Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 											<tbody>
 											<tr>
 											<td>
-											<div   style=" background:#D4ECFF; height:25px; color:#4297D7; width: 350px; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;Select OrgNode</div>
+											<div   style=" background:#D4ECFF; height:25px; color:#4297D7; width: 350px; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;<lb:label key="org.label.selOrg" /></div>
 											</td>
 											</tr>
 												<tr>

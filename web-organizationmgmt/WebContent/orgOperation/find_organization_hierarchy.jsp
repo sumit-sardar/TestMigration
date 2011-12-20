@@ -1,7 +1,32 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
-  
-<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">&nbsp;&nbsp;&nbsp;Open the Organization Search to view the organization hierarchy. Select an organization to view,  edit, delete, or add a suborganization.</span>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="organizationApplicationResource" />
+
+<input type="hidden" id="orgNameID" name = "orgNameID" value=<lb:label key="org.name" prefix="'" suffix="'"/>/>
+<input type="hidden" id="orgCodeID" name = "orgCodeID" value=<lb:label key="org.Code" prefix="'" suffix="'"/>/>
+<input type="hidden" id="orgLayerID" name = "orgLayerID" value=<lb:label key="org.layer" prefix="'" suffix="'"/>/>
+<input type="hidden" id="orgParentID" name = "orgParentID" value=<lb:label key="org.parentOrg" prefix="'" suffix="'"/>/>
+<input type="hidden" id="editOrgID" name = "editOrgID" value=<lb:label key="org.msg.editOrganization" prefix="'" suffix="'"/>/>
+<input type="hidden" id="addOrgID" name = "addOrgID" value=<lb:label key="org.msg.addOrganization" prefix="'" suffix="'"/>/>
+<input type="hidden" id="confirmID" name = "confirmID" value=<lb:label key="org.msg.alertConfirm" prefix="'" suffix="'"/>/>
+<input type="hidden" id="requiredID" name = "requiredID" value=<lb:label key="org.msg.requiredText" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mRequiredID" name = "mRequiredID" value=<lb:label key="org.msg.multiple.requiredText" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mdrNumberID" name = "mdrNumberID" value=<lb:label key="org.msg.invalidMDRNumber" prefix="'" suffix="'"/>/>
+<input type="hidden" id="dupFormatID" name = "dupFormatID" value=<lb:label key="org.msg.invalidDupFormatTitle" prefix="'" suffix="'"/>/>
+<input type="hidden" id="invalidNameCharsID" name = "invalidNameCharsID" value=<lb:label key="org.msg.invalidNameCharsOrg" prefix="'" suffix="'"/>/>
+<input type="hidden" id="invalidFormatID" name = "invalidFormatID" value=<lb:label key="org.msg.invalidFormatTitle" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mdrID" name = "mdrID" value=<lb:label key="org.mdrNumber" prefix="'" suffix="'"/>/>
+<input type="hidden" id="layerID" name = "layerID" value=<lb:label key="org.layer" prefix="'" suffix="'"/>/>
+<input type="hidden" id="pOrgID" name = "pOrgID" value=<lb:label key="org.parentOrg" prefix="'" suffix="'"/>/>
+<input type="hidden" id="missRequiredID" name = "missRequiredID" value=<lb:label key="org.msg.missingField" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mMissRequiredID" name = "mMissRequiredID" value=<lb:label key="org.msg.missingField" prefix="'" suffix="s'"/>/>
+
+
+
+
+
+<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">&nbsp;&nbsp;&nbsp;<lb:label key="org.msg.pos.button" /></span>
 <br/>
 <br>
 <table class="transparent">
@@ -24,7 +49,7 @@
 		  
 	      <tr class="transparent">
 	        <td class="transparent" valign="middle">
-		      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;Organization Search</div>
+		      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="org.label.search" /></div>
 		    	  <script>populateTree();</script>
 		    	  <div id = "orgNodeHierarchy"  class="treeCtrl">
 				</div> 
@@ -55,7 +80,7 @@
 	<table>
 		<tr>
 			<td colspan="2">
-			<p>You have not saved the organization record. Are you sure you want to leave this page?</p>
+			<p><lb:label key="org.msg.notSave" /></p>
 			</td>
 		</tr>
 		<tr>
@@ -78,7 +103,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p>You have not saved the organization record. Are you sure you want to leave this page?</p>
+			<p><lb:label key="org.msg.notSave" /></p>
 			<br/>
 			</td>
 		</tr>

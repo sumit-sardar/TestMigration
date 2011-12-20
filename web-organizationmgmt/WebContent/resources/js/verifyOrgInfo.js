@@ -1,10 +1,10 @@
 
-var REQUIRED_TEXT = "Please enter/select this value to continue.";
+/*var REQUIRED_TEXT = "Please enter/select this value to continue.";
 var REQUIRED_TEXT_MULTIPLE = "Please enter/select these values to continue.";
 var INVALID__MDRNUMBER_FORMAT  = "Please re-enter your information with a unique 8-digit combination of 0-9.";
 var INVALID_DUP_FORMAT_TITLE = "One or more fields contain invalid formats, duplicate or invalid values:";
 var INVALID_NAME_CHARS_ORG  = "Please re-enter your information with these characters: A-Z, a-z, 0-9, /, \\, -, ', (, ), &, +, comma, period, space";
-var INVALID_FORMAT_TITLE = "One or more fields contain invalid formats or invalid values:"; 
+var INVALID_FORMAT_TITLE = "One or more fields contain invalid formats or invalid values:";*/ 
 
 var orgName="";
 var mDRNumber="";
@@ -25,26 +25,26 @@ var isLasLinkCustomer = false;
         if ( orgName == "" || orgName.length == 0 ) {
             
             requiredFieldCount += 1;          
-            requiredFields = buildErrorString("Name", requiredFieldCount, requiredFields);       
+            requiredFields = buildErrorString($("#orgNameID").val(), requiredFieldCount, requiredFields);       
         
         }
         if(isLasLinkCustomer == 'true'){
 	        mDRNumber = $.trim($("#mdrNumber").val());
 	        if ( mDRNumber == "" || mDRNumber.length == 0 ) {
 	                requiredFieldCount += 1;            
-	                requiredFields = buildErrorString("MDR Number", requiredFieldCount, requiredFields);       
+	                requiredFields = buildErrorString($("#mdrID").val(), requiredFieldCount, requiredFields);       
 	        }
         }
 
         orgType = $.trim($("#layerOptions").val());
         if ( orgType == "" || orgType.length == 0 || orgType == 'Select a layer') {
             requiredFieldCount += 1;            
-            requiredFields = buildErrorString("Layer", requiredFieldCount, requiredFields);       
+            requiredFields = buildErrorString($("#layerID").val(), requiredFieldCount, requiredFields);       
         }
                 
         if ( assignedOrgNodeIds == "" || assignedOrgNodeIds.length == 0) {
             requiredFieldCount += 1;            
-            requiredFields = buildErrorString("Parent Org", requiredFieldCount, requiredFields);       
+            requiredFields = buildErrorString($("#pOrgID").val(), requiredFieldCount, requiredFields);       
         
         }
         
@@ -53,12 +53,12 @@ var isLasLinkCustomer = false;
         if (requiredFieldCount > 0) {
             if (requiredFieldCount == 1) {
                
-                setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);
+                setMessage($("#missRequiredID").val(), requiredFields, "errorMessage", $("#requiredID").val());
             
             }
             else {
                 
-                setMessage("Missing required fields", requiredFields, "errorMessage", REQUIRED_TEXT_MULTIPLE);
+                setMessage($("#mMissRequiredID").val(), requiredFields, "errorMessage", $("#mRequiredID").val());
             
             }
             return false;
@@ -69,7 +69,7 @@ var isLasLinkCustomer = false;
   	  	var invalidCharFieldCount = 0;                     
  
  	    if (invalidCharFields.length > 0) {
-	          setMessage(INVALID_FORMAT_TITLE, invalidCharFields, "errorMessage", INVALID_NAME_CHARS_ORG);
+	          setMessage($("#invalidFormatID").val(), invalidCharFields, "errorMessage", $("#invalidNameCharsID").val());
 					return false;
 		}
         
@@ -80,15 +80,15 @@ var isLasLinkCustomer = false;
   			        if ((mDRNumber.length > 0) && mDRNumber.length < 8) {
   			            
   			            invalidCharFieldCount += 1;            
-  			            invalidCharFields = buildErrorString("MDR Number", invalidCharFieldCount, invalidCharFields);       
+  			            invalidCharFields = buildErrorString($("#mdrID").val(), invalidCharFieldCount, invalidCharFields);       
   			        
   			        }
 	  		      
 	  			
 	  		        if ( invalidCharFieldCount > 0) {
 	  		            
-	  		            invalidString = INVALID__MDRNUMBER_FORMAT;
-	  		            setMessage(INVALID_FORMAT_TITLE, "MDR Number", "errorMessage", invalidString);
+	  		            invalidString = $("#mdrNumberID").val();
+	  		            setMessage($("#invalidFormatID").val(), $("#mdrID").val(), "errorMessage", invalidString);
 	  		             return false; 
 	  		        }	
   		      
@@ -124,7 +124,7 @@ var isLasLinkCustomer = false;
 		});
 	  		if(invalidMDRCount > 0) {
 	  		
-	  			 setMessage(INVALID_DUP_FORMAT_TITLE, "MDR Number", "errorMessage", INVALID__MDRNUMBER_FORMAT);
+	  			 setMessage($("#dupFormatID").val(), $("#mdrID").val(), "errorMessage", $("#mdrNumberID").val());
 	  			return false;
 	  		}
   		}
@@ -147,21 +147,21 @@ var isLasLinkCustomer = false;
         if ( !validNameString(orgName) ) {
         
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Name", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString($("#orgNameID").val(), invalidCharFieldCount, invalidCharFields);       
         
         }
         
         if ( !validNameString(orgCode) ) {
             
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Org Code", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString($("#orgCodeID").val(), invalidCharFieldCount, invalidCharFields);       
         
         }
         if(isLasLinkCustomer == 'true'){
 	        if ( !validNameString(mDRNumber) ) {
 	            
 	            invalidCharFieldCount += 1;            
-	            invalidCharFields = buildErrorString("MDR Number", invalidCharFieldCount, invalidCharFields);       
+	            invalidCharFields = buildErrorString($("#mdrID").val(), invalidCharFieldCount, invalidCharFields);       
 	        
 	        }
         }
