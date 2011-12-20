@@ -199,7 +199,7 @@ function populateSelectProctorGrid() {
 			onPaging: function() {
 			
 			var reqestedPage = parseInt($('#selectProctor').getGridParam("page"));
-				var maxPageSize = parseInt($('#sp_1_selectProctor').text());
+				var maxPageSize = parseInt($('#sp_1_selectProctorPager').text());
 				var minPageSize = 1;
 				if(reqestedPage > maxPageSize){
 					$('#selectProctor').setGridParam({"page": maxPageSize});

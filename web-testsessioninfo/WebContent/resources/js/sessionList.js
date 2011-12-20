@@ -2162,7 +2162,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			onPaging: function() {
 				$("#proctorAddDeleteInfo").hide();
 				var reqestedPage = parseInt($('#listProctor').getGridParam("page"));
-				var maxPageSize = parseInt($('#sp_1_listProctor').text());
+				var maxPageSize = parseInt($('#sp_1_pagerProctor').text());
 				var minPageSize = 1;
 				if(reqestedPage > maxPageSize){
 					$('#listProctor').setGridParam({"page": maxPageSize});
