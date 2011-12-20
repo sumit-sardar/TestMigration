@@ -23,7 +23,7 @@
     </user-type>
     <user-type>
       <type-id>1003</type-id>
-      <class-name>com.ctb.tms.bean.login.ItemResponseWrapper</class-name>
+      <class-name>com.ctb.tms.bean.login.ItemResponseData</class-name>
       <serializer>
       	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
       </serializer>
@@ -41,6 +41,27 @@
       <serializer>
       	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
       </serializer>
+    </user-type>
+    <user-type>
+      <type-id>1006</type-id>
+      <class-name>com.ctb.tms.bean.login.AuthenticationData</class-name>
+      <serializer>
+      	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
+      </serializer> 
+    </user-type>
+    <user-type>
+      <type-id>1007</type-id>
+      <class-name>com.ctb.tms.bean.login.Manifest</class-name>
+      <serializer>
+      	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
+      </serializer> 
+    </user-type>
+    <user-type>
+      <type-id>1008</type-id>
+      <class-name>com.ctb.tms.bean.login.ManifestData</class-name>
+      <serializer>
+      	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
+      </serializer> 
     </user-type>
   </user-type-list>
 </pof-config>

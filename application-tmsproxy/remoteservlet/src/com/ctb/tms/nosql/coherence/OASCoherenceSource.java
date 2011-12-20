@@ -7,8 +7,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
+import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
-import com.ctb.tms.bean.login.ItemResponseWrapper;
+import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestWrapper;
 import com.ctb.tms.bean.login.RosterData;
@@ -18,7 +19,6 @@ import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 import com.tangosol.util.Filter;
 import com.tangosol.util.ValueExtractor;
-import com.tangosol.util.extractor.ReflectionExtractor;
 
 public class OASCoherenceSource implements OASNoSQLSource {
 	
@@ -38,7 +38,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 			manifestCache = CacheFactory.getCache("OASManifestCache");
 			responseCache = CacheFactory.getCache("OASResponseCache");
 			
-			ValueExtractor extractor = new ReflectionExtractor("getLsid"); 
+			ValueExtractor extractor = new ReflectionPofExtractor("testRosterId"); 
 			responseCache.addIndex(extractor, false, null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -74,20 +74,20 @@ public class OASCoherenceSource implements OASNoSQLSource {
 		return null;
 	}
 
-	public ItemResponseWrapper[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
+	public ItemResponseData[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
 		String key1 = testRosterId;
 		String key2 = String.valueOf((Integer.parseInt(testRosterId) + 1));
-		Filter filter = new com.tangosol.util.filter.BetweenFilter("getLsid", key1, key2); 
+		Filter filter = new com.tangosol.util.filter.BetweenFilter("getTestRosterId", key1, key2); 
 		Set setKeys = responseCache.keySet(filter); 
 		Map mapResult = responseCache.getAll(setKeys); 
 		if(mapResult != null) {
 			int size = mapResult.size();
 			logger.debug("*****  Found " + size + " responses for roster " + testRosterId);
-			ItemResponseWrapper[] tsda = new ItemResponseWrapper[size];
+			ItemResponseData[] tsda = new ItemResponseData[size];
 			Iterator it = mapResult.keySet().iterator();
 			int i = 0;
 			while(it.hasNext()) {
-				ItemResponseWrapper irw = (ItemResponseWrapper) mapResult.get(it.next());
+				ItemResponseData irw = (ItemResponseData) mapResult.get(it.next());
 				tsda[i] = irw;
 				i++;
 			}

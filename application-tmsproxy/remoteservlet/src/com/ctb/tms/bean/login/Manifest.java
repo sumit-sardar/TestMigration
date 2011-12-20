@@ -21,6 +21,10 @@ public class Manifest implements Serializable, CachePreLoadObject {
     private String tutorialTaken;
     private boolean forceReplication;
     
+    public Manifest () {
+    	
+    }
+    
     public boolean isForceReplication() {
 		return forceReplication;
 	}

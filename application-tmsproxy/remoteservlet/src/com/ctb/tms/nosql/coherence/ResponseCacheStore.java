@@ -8,15 +8,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
-
-import com.ctb.tms.bean.login.ItemResponseWrapper;
+import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.rdb.OASRDBSink;
 import com.ctb.tms.rdb.RDBStorageFactory;
-import com.tangosol.net.GuardSupport;
-import com.tangosol.net.Guardian;
-import com.tangosol.net.cache.BinaryEntryStore;
-import com.tangosol.net.cache.CacheStore;
 import com.tangosol.util.BinaryEntry;
 
 public class ResponseCacheStore implements OASCacheStore {
@@ -43,10 +37,10 @@ public class ResponseCacheStore implements OASCacheStore {
     	try {
     		String testRosterId = (String) oKey;
     		testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
-    		ItemResponseWrapper tsd = (ItemResponseWrapper) oValue;
+    		ItemResponseData tsd = (ItemResponseData) oValue;
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
-		    sink.putItemResponse(conn, testRosterId, tsd);
+		    sink.putItemResponse(conn, tsd);
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {
@@ -82,7 +76,7 @@ public class ResponseCacheStore implements OASCacheStore {
     			BinaryEntry entry = it.next();
 	    		String key = (String) entry.getKey();
 	    		key = key.substring(0, key.indexOf(":"));
-	    		sink.putItemResponse(conn, key, (ItemResponseWrapper) entry.getValue());
+	    		sink.putItemResponse(conn, (ItemResponseData) entry.getValue());
 		    	counter++;
     		}
     		conn.commit();
@@ -106,10 +100,10 @@ public class ResponseCacheStore implements OASCacheStore {
 		    conn = sink.getOASConnection();
     		while(it.hasNext()) {
 	    		String key = (String) it.next();
-	    		ItemResponseWrapper value = (ItemResponseWrapper) mapEntries.get(key);
+	    		ItemResponseData value = (ItemResponseData) mapEntries.get(key);
 	    		String testRosterId = key;
 	    		testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
-			    sink.putItemResponse(conn, testRosterId, value);
+			    sink.putItemResponse(conn, value);
     		}
     	} catch (Exception e) {
     		e.printStackTrace();

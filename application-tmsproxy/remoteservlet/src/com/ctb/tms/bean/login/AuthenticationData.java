@@ -32,6 +32,10 @@ public class AuthenticationData implements Serializable
 	private int lastMseq;
 	private int correlationId;
 	
+	public AuthenticationData () {
+	
+	}
+	
 	public Timestamp getStartTime() {
 		return startTime;
 	}

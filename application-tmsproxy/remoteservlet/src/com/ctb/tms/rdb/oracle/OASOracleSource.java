@@ -882,7 +882,7 @@ public class OASOracleSource implements OASRDBSource
 				response.setItemType(rs1.getString("itemType"));
 				response.setResponse(rs1.getString("response"));
 				response.setResponseElapsedTime(rs1.getInt("responseElapsedTime"));
-				response.setResponseSeqNum(rs1.getInt("responseSeqNum"));
+				response.setResponseSeqNum(rs1.getString("responseSeqNum"));
 				response.setScore(rs1.getInt("score"));
 				response.setStudentMarked(rs1.getString("studentMarked"));
 				response.setConstructedResponse(clobToString(rs1.getClob("constructedResponse")));

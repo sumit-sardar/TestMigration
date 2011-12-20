@@ -49,7 +49,9 @@ public class ManifestData implements Serializable
     private int subtestLastMseq = -1;
     private String blockDownload;
     
-    
+    public ManifestData () {
+    	
+    }
     
 	public String getBlockDownload() {
 		return blockDownload;

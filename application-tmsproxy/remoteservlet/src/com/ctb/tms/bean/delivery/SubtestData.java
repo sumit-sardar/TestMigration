@@ -7,6 +7,10 @@ public class SubtestData
     private String hash;
     private byte[] subtest;
     
+    public SubtestData() {
+    	
+    }
+    
     /**
 	 * @return Returns the subtestId.
 	 */

@@ -51,7 +51,6 @@ import org.apache.xmlbeans.impl.values.XmlValueDisconnectedException;
 import com.ctb.tdc.web.utils.ContentFile;
 import com.ctb.tdc.web.utils.ServletUtils;
 import com.ctb.tms.bean.login.ItemResponseData;
-import com.ctb.tms.bean.login.ItemResponseWrapper;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.ManifestWrapper;
@@ -373,10 +372,9 @@ public class TMSServlet extends HttpServlet {
 				    	if(thisSco == null) throw new InvalidItemSetIdException();
 				    	//thisSco.setCompletionStatus("IP");
 				    	// response events
-				    	ItemResponseWrapper irw = new ItemResponseWrapper();
-				    	irw.setTsd(tsd);
+				    	ItemResponseData ird = ItemResponseData.TsdToIrd(tsd);
 				    
-				    	oasSink.putItemResponse(rosterId, irw);
+				    	oasSink.putItemResponse(ird);
 					    logger.debug("TMSServlet: save: cached response for roster " + rosterId + ", message " + tsd.getMseq() + ": " + tsd.xmlText());
 				    }
 				    
@@ -716,9 +714,9 @@ public class TMSServlet extends HttpServlet {
         
         boolean gotRestart = false;
         if(restartCount > 0) {
-	        ArrayList<ItemResponseWrapper> netirt = new ArrayList<ItemResponseWrapper>();
-	    	ItemResponseWrapper[] cachedirt = null;
-	    	ItemResponseWrapper[] rdirt = null;
+	        ArrayList<ItemResponseData> netirt = new ArrayList<ItemResponseData>();
+	    	ItemResponseData[] cachedirt = null;
+	    	ItemResponseData[] rdirt = null;
 	    	ConsolidatedRestartData restartData = null;
 	    	cachedirt = oasSource.getItemResponses(testRosterId);
 	    	for(int j=0;j<cachedirt.length;j++) {
@@ -733,7 +731,7 @@ public class TMSServlet extends HttpServlet {
 	        		for(int m=0;m<rdtsda.length;m++) {
 	        			rdirt = convertTsdType(restartData.getTsdArray(m));
 	            		for(int j=0;j<rdirt.length;j++) {
-	            			oasSink.putItemResponse(testRosterId, rdirt[j]);
+	            			oasSink.putItemResponse(rdirt[j]);
 	            			netirt.add(rdirt[j]);
 	                    }
 	        		}
@@ -880,9 +878,9 @@ public class TMSServlet extends HttpServlet {
 				intValue() % 2 == 0 ? false:true;
 	}
 	
-	private ItemResponseWrapper[] convertTsdType(ConsolidatedRestartData.Tsd tsd) {
+	private ItemResponseData[] convertTsdType(ConsolidatedRestartData.Tsd tsd) {
 		//return tsd.changeType(Tsd.type);
-		ItemResponseWrapper[] newtsda = new ItemResponseWrapper[tsd.getIstArray().length];
+		ItemResponseData[] newtsda = new ItemResponseData[tsd.getIstArray().length];
 		ConsolidatedRestartData.Tsd.Ist[] ista = tsd.getIstArray();
 		for(int i=0;i<ista.length;i++) {
 			XmlOptions xmlOptions = new XmlOptions(); 
@@ -906,9 +904,8 @@ public class TMSServlet extends HttpServlet {
 				Rv newrv = newist.addNewRv();
 				newrv.addV(rv.getV());
 			}
-			ItemResponseWrapper irw = new ItemResponseWrapper();
-			irw.setTsd(newtsd);
-			newtsda[i] = irw;
+			ItemResponseData ird = ItemResponseData.TsdToIrd(newtsd);
+			newtsda[i] = ird;
 			//logger.debug("convertTsdType: added response " + ist.getMseq());
 		}
 		return newtsda;

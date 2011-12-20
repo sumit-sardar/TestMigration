@@ -2,21 +2,21 @@ package com.ctb.tms.rdb.oracle;
 
 import java.math.BigInteger;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 
+import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
 import noNamespace.BaseType;
 
 import org.apache.log4j.Logger;
+import org.apache.xmlbeans.XmlOptions;
 
-import com.ctb.tms.bean.login.ItemResponseWrapper;
+import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.RosterData;
@@ -41,58 +41,25 @@ public class OASOracleSink implements OASRDBSink {
 		return OracleSetup.getOASConnection();
 	}
 	
-	public void putItemResponse(Connection conn, String testRosterId, ItemResponseWrapper irw) throws NumberFormatException, Exception {		
-		Tsd tsd = irw.getTsd();
-		Ist[] ista = tsd.getIstArray();
-		for(int j=0;j<ista.length;j++) {
-	        Ist ist = ista[j];
-	     //   if(ist != null && ist.getRvArray(0) != null && ist.getRvArray(0).getVArray(0) != null) {
-	        if(ist != null && ist.getRvArray() != null && ist.getRvArray().length >0 ) {
-	            if( ist.getRvArray(0).getVArray() != null && ist.getRvArray(0).getVArray().length >0){
-	                if(ist.getRvArray(0).getVArray(0) != null){
-	                    BaseType.Enum responseType = ist.getRvArray(0).getT();
-	                    String xmlResponse = ist.getRvArray(0).getVArray(0);
-	                    String response = "";
-	                    String studentMarked = ist.getMrk() ? "T" : "F";
-	                    String audioItem = ist.getAudioItem() ? "T" : "F";
-	                    if(xmlResponse != null && xmlResponse.length() > 0) {
-	                        // strip xml
-	                        int start = xmlResponse.indexOf(">");
-	                        if(start >= 0) {
-	                            response = xmlResponse.substring(start + 1);
-	                            int end = response.lastIndexOf("</");
-	                            if(end != -1)
-	                                response = response.substring(0, end);
-	                        } else {
-	                            response = xmlResponse;
-	                        }
-	                        // strip CDATA
-	                        start = response.indexOf("[CDATA[");
-	                        if(start >= 0) {
-	                            response = response.substring(start + 7);
-	                            int end = response.lastIndexOf("]]");
-	                            if(end != -1)
-	                                response = response.substring(0, end);
-	                        }
-	                    }
-	                    if(responseType.equals(BaseType.IDENTIFIER)) {
-	                        storeResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked);
-	                    } else if(responseType.equals(BaseType.STRING)) {
-	                    	storeResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), null, ist.getDur(), tsd.getMseq(), studentMarked);
-	                        storeCRResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked, audioItem);
-	                    }
-	                    logger.debug("OASOracleSink: Stored response records in DB for roster " + testRosterId + ", mseq " + tsd.getMseq());
-	                 }
-	            }else{ 
-	                String response = "";                   
-	                String studentMarked = ist.getMrk() ? "T" : "F";                    
-	                storeResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked);                                          
-	            }       
-	        }
-		}
+	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, Exception {		
+		String response = ird.getResponse();
+		String responseType = ird.getResponseType();
+		int testRosterId = ird.getTestRosterId();
+		if(response != null && !"".equals(response.trim())) {
+			if(responseType.equals(BaseType.IDENTIFIER)) {
+				storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getDuration(), ird.getResponseSeqNum(), ird.getStudentMarked());
+            } else if(responseType.equals(BaseType.STRING)) {
+            	storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), null, ird.getDuration(), ird.getResponseSeqNum(), ird.getStudentMarked());
+                storeCRResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getDuration(), ird.getResponseSeqNum(), ird.getStudentMarked(), ird.isAudioItem());
+            }
+	        logger.debug("OASOracleSink: Stored response records in DB for roster " + testRosterId + ", mseq " + ird.getResponseSeqNum());
+	    } else{ 
+            response = "";                   
+            storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getDuration(), ird.getResponseSeqNum(), ird.getStudentMarked());                                          
+        }       
 	}
 
-	private static void storeResponse(Connection con, int testRosterId, int itemSetId, String itemId, String response, float duration, BigInteger mseq, String studentMarked) throws Exception {
+	private static void storeResponse(Connection con, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked) throws Exception {
 		PreparedStatement stmt1 = null;
     	try {
 			stmt1 = con.prepareStatement(STORE_RESPONSE_SQL);
@@ -101,7 +68,7 @@ public class OASOracleSink implements OASRDBSink {
 			stmt1.setString(3, itemId);
 			stmt1.setString(4, response);
 			stmt1.setFloat(5, duration);
-			stmt1.setInt(6, mseq.intValue());
+			stmt1.setString(6, mseq);
 			stmt1.setString(7, null);
 			stmt1.setString(8, studentMarked);
 
@@ -236,7 +203,7 @@ public class OASOracleSink implements OASRDBSink {
 		}
 	}
 	
-	private static void storeCRResponse(Connection conn, int testRosterId, int itemSetId, String itemId, String response, float duration, BigInteger mseq, String studentMarked, String audioItem) throws Exception {
+	private static void storeCRResponse(Connection conn, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked, boolean audioItem) throws Exception {
 		PreparedStatement stmt1 = null;
 		PreparedStatement stmt2 = null;
 		PreparedStatement stmt3 = null;
@@ -253,7 +220,7 @@ public class OASOracleSink implements OASRDBSink {
 			stmt2.setString(4, response);
 			
 			
-			if(audioItem == "T"){
+			if(audioItem){
 				if(response.length()== 0){
 					stmt3 = conn.prepareStatement(CR_RESPONSE_EXISTS_SQL);
 					stmt3.setString(1, itemId);

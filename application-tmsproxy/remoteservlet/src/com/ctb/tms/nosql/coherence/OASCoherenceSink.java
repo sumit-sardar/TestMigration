@@ -9,7 +9,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 
-import com.ctb.tms.bean.login.ItemResponseWrapper;
+import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestData;
 import com.ctb.tms.bean.login.ManifestWrapper;
@@ -119,9 +119,9 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		manifestCache.put(key, manifests);
 	}
 	
-	public void putItemResponse(String testRosterId, ItemResponseWrapper irw) throws IOException {
-		String key = testRosterId + ":" + irw.getTsd().getMseq();
-		responseCache.put(key, irw);
+	public void putItemResponse(ItemResponseData ird) throws IOException {
+		String key = ird.getTestRosterId() + ":" + ird.getResponseSeqNum();
+		responseCache.put(key, ird);
 	}
 	
 	public void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException {
@@ -132,7 +132,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	public void deleteAllItemResponses(String testRosterId) throws IOException {
 		String key1 = testRosterId;
 		String key2 = String.valueOf((Integer.parseInt(testRosterId) + 1));
-		Filter filter = new com.tangosol.util.filter.BetweenFilter("getLsid", key1, key2); 
+		Filter filter = new com.tangosol.util.filter.BetweenFilter("getTestRosterId", key1, key2); 
 		Set setKeys = responseCache.keySet(filter); 
 		Iterator it = setKeys.iterator();
 		while(it.hasNext()) {

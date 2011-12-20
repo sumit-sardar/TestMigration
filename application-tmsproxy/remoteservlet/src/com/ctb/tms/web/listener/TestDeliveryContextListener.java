@@ -171,6 +171,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 									lastError = new Exception("Couldn't retrieve manifest for " + key);
 								}
 							} catch (Exception e) {
+								e.printStackTrace();
 								//logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
 								errorCount++;
 								lastError = e;

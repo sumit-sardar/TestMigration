@@ -7,6 +7,10 @@ public class ItemData
     private String hash;
     private byte [] item;
     
+    public ItemData() {
+    	
+    }
+    
     /**
 	 * @return Returns the itemId.
 	 */

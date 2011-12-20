@@ -5,7 +5,7 @@ import java.math.BigInteger;
 
 import org.apache.xmlbeans.XmlException;
 
-import com.ctb.tms.bean.login.ItemResponseWrapper;
+import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestWrapper;
 import com.ctb.tms.bean.login.RosterData;
@@ -19,7 +19,7 @@ public interface OASNoSQLSink {
 	
 	public void putAllManifests(String testRosterId, ManifestWrapper manifests) throws IOException ;
 	
-	public void putItemResponse(String testRosterId, ItemResponseWrapper irw) throws IOException;
+	public void putItemResponse(ItemResponseData ird) throws IOException;
 	
 	public void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException;
 	

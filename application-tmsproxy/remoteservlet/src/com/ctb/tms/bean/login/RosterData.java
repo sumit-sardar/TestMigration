@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.TimeZone;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData;
+import noNamespace.AdssvcRequestDocument;
 import noNamespace.BaseType;
 import noNamespace.TmssvcResponseDocument;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
@@ -38,6 +39,10 @@ public class RosterData implements Serializable {
 	//Manifest manifest;
 	private boolean replicate = true;
 	private boolean forceReplication = false;
+	
+	public RosterData() {
+		
+	}
 	
 	public boolean isForceReplication() {
 		return forceReplication;
@@ -213,7 +218,7 @@ public class RosterData implements Serializable {
 			ist.setCst(Ist.Cst.UNKNOWN);
 			ist.setMrk("T".equals(data.getStudentMarked())?"1":"0");
 			ist.setDur(data.getResponseElapsedTime());
-			ist.setMseq(BigInteger.valueOf(data.getResponseSeqNum()));
+			ist.setMseq(new BigInteger(data.getResponseSeqNum()));
 			totalDur = totalDur + data.getResponseElapsedTime();
 			Rv rv = ist.addNewRv();
 			if ("SR".equals(data.getItemType())) {
@@ -240,9 +245,9 @@ public class RosterData implements Serializable {
 			else
 				ov.setV("");
 	
-			if(data.getResponseSeqNum() > maxRSN) {
+			if(Integer.valueOf(data.getResponseSeqNum()) > maxRSN) {
 				ast.setCurEid(""+itemResponseData[i].getEid());
-				maxRSN = data.getResponseSeqNum();
+				maxRSN = Integer.valueOf(data.getResponseSeqNum());
 			}
 		}
 		manifestData.setTotalTime(totalDur);
@@ -250,13 +255,15 @@ public class RosterData implements Serializable {
 		ast.setRemSec(Float.parseFloat(String.valueOf(remSec)));
 	}
 	
-	public static ItemResponseData[] generateItemResponseData(String testRosterId, ManifestData manifest, ArrayList<ItemResponseWrapper> tsda) {
+	public static ItemResponseData[] generateItemResponseData(String testRosterId, ManifestData manifest, ArrayList<ItemResponseData> tsda) throws XmlException {
 		HashMap irdMap = new HashMap(tsda.size());
 		HashMap itemMap = new HashMap(tsda.size());
 		HashMap audioResponseMap = new HashMap(tsda.size());
 		for(int i=0;i<tsda.size();i++) {
 			logger.debug("generateItemResponseData: Tsd " + i);
-			noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd tsd = tsda.get(i).getTsd();
+			
+			AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd tsd = ItemResponseData.IrdToTsd(tsda.get(i));
+			
 			if(manifest.getId() == Integer.parseInt(tsd.getScid())) {
 				noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist[] ista = tsd.getIstArray();
 				//for(int j=0;j<ista.length;j++) {	
@@ -327,7 +334,7 @@ public class RosterData implements Serializable {
 			                    	if(score.trim().equals("")) score = "0";
 			                    	ird.setScore(Integer.parseInt(score));
 			                    	ird.setResponseElapsedTime((int)ist.getDur());
-			                    	ird.setResponseSeqNum(tsd.getMseq().intValue());
+			                    	ird.setResponseSeqNum(String.valueOf(tsd.getMseq()));
 			                    	ird.setStudentMarked(studentMarked);
 			                    	ird.setConstructedResponse(response);
 			                    	// TODO (complete): fix this
@@ -343,7 +350,7 @@ public class RosterData implements Serializable {
 		                    	ird.setItemId(ist.getIid());
 		                    	ird.setResponse(response);
 		                    	ird.setResponseElapsedTime((int)ist.getDur());
-		                    	ird.setResponseSeqNum(tsd.getMseq().intValue());
+		                    	ird.setResponseSeqNum(String.valueOf(tsd.getMseq()));
 		                    	ird.setStudentMarked(studentMarked);
 		                    	ird.setConstructedResponse(response);
 		                    	// TODO: fix this

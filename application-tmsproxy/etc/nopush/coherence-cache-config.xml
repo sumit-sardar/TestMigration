@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!DOCTYPE cache-config SYSTEM "cache-config.dtd">
+
+<cache-config
+        xmlns:cr="class:com.oracle.coherence.environment.extensible.namespaces.InstanceNamespaceContentHandler">
+
+   	<caching-scheme-mapping>
+        <cache-mapping>
+                <cache-name>ADS*</cache-name>
+                <scheme-name>TieredScheme</scheme-name>
+        </cache-mapping>
+        <!--    Caches with any name will be created as tiered.    -->
+        <cache-mapping>
+                <cache-name>OASResponse*</cache-name>
+                <scheme-name>DistributedScheme</scheme-name>
+        </cache-mapping>
+        <cache-mapping>
+            <cache-name>OASManifest*</cache-name>
+            <scheme-name>TieredScheme</scheme-name>
+        </cache-mapping>
+        <cache-mapping>
+                <cache-name>OASRoster*</cache-name>
+                <scheme-name>TieredScheme</scheme-name>
+        </cache-mapping>
+    </caching-scheme-mapping>
+    <caching-schemes>
+        <!--        heap-limited memory scheme definition -->
+        <local-scheme>
+                <scheme-name>BackMemoryScheme</scheme-name>
+                <high-units>1073741824</high-units>
+                <unit-calculator>BINARY</unit-calculator>
+        </local-scheme>
+        <local-scheme>
+                <scheme-name>FrontMemoryScheme</scheme-name>
+                <high-units>250000</high-units>
+                <unit-calculator>FIXED</unit-calculator>
+        </local-scheme>
+        <!--        Oracle backing store scheme definition -->
+        <read-write-backing-map-scheme>
+          <scheme-name>DBScheme</scheme-name>
+          <internal-cache-scheme>
+            <local-scheme>
+              <scheme-ref>BackMemoryScheme</scheme-ref>
+            </local-scheme>
+          </internal-cache-scheme>
+          <write-max-batch-size>32</write-max-batch-size>
+          <cachestore-scheme>
+            <class-scheme>
+              <class-name>com.ctb.tms.nosql.coherence.DBCacheStore</class-name>
+              <init-params>
+                <init-param>
+                  <param-type>java.lang.String</param-type>
+                  <param-value>{cache-name}</param-value>
+                </init-param>
+              </init-params>
+            </class-scheme>
+          </cachestore-scheme>
+          <write-delay>1s</write-delay>
+        </read-write-backing-map-scheme>
+        <!--        Default Distributed caching scheme.        -->
+        <distributed-scheme>
+            <scheme-name>DistributedScheme</scheme-name>
+            <service-name>PartitionedCache</service-name>
+            <thread-count>40</thread-count>
+            <backing-map-scheme>
+                <read-write-backing-map-scheme>
+                    <scheme-ref>DBScheme</scheme-ref>
+                </read-write-backing-map-scheme>
+            </backing-map-scheme>
+            <partition-count>509</partition-count>
+        	<backup-count>1</backup-count>
+            <autostart>true</autostart>
+        </distributed-scheme>
+        <!--        2-tier (memory, disk/db) scheme definition -->
+        <near-scheme>
+	        <scheme-name>TieredScheme</scheme-name>
+	        <front-scheme>
+	                <local-scheme>
+	                        <scheme-ref>FrontMemoryScheme</scheme-ref>
+	                </local-scheme>
+	        </front-scheme>
+	        <back-scheme>
+	                <distributed-scheme>
+	                        <scheme-ref>DistributedScheme</scheme-ref>
+	                </distributed-scheme>
+	        </back-scheme>
+        </near-scheme>
+    </caching-schemes>
+</cache-config>
