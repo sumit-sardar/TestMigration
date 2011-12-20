@@ -952,6 +952,9 @@ function fillselectedOrgNode( elementId, orgList) {
 		//	$('#studentFirstName').trigger("focus");
 			requetForStudent = "";				
 		}
+		if(dailogId == 'AssignAccommPopup') {
+			resetBulk();
+		}
 		
 		$("#"+dailogId).dialog("close");
 		 

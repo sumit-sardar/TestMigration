@@ -6,6 +6,7 @@ import com.ctb.bean.request.SortParams;
 import com.ctb.bean.studentManagement.ManageBulkStudentData;
 import com.ctb.bean.studentManagement.ManageStudent;
 import com.ctb.bean.studentManagement.ManageStudentData;
+import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.control.studentManagement.StudentManagement;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.widgets.bean.PagerSummary;
@@ -95,6 +96,28 @@ public class StudentSearchUtils
                 		studentList = studentList + student.getId();
                 	else
                 		studentList = studentList + "," + student.getId();
+                }
+            }
+        }
+        return studentList;
+    }
+    
+    /**
+     * buildStudentList
+     */    
+    public static String buildStudentListString(ManageBulkStudentData msData) 
+    {
+        String studentList = "";
+        if (msData != null) {
+        	SessionStudent [] students = msData.getManageStudents();
+            
+            for (int i=0 ; i<students.length ; i++) {
+            	SessionStudent student = (SessionStudent)students[i];
+                if (student != null) {
+                	if(i == 0)
+                		studentList = studentList + student.getStudentId();
+                	else
+                		studentList = studentList + "," + student.getStudentId();
                 }
             }
         }

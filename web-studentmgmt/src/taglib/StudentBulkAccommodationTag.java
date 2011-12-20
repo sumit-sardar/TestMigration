@@ -57,7 +57,7 @@ public class StudentBulkAccommodationTag extends CTBTag
 			displayRowStart("transparent");
             
                 // column 1
-				displayCellStart("transparent-top", "45%");
+				displayCellStart("transparent-top", "40%");
                     displayColumnOne();
 				displayCellEnd();
 

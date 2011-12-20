@@ -2021,7 +2021,8 @@ public class StudentOperationController extends PageFlowController {
 	@Jpf.Action(forwards = { 
 	        @Jpf.Forward(name = "studentsLink", path = "organizations_manageStudents.do"),
 	        @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do"),
-	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do")
+	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
+	        @Jpf.Forward(name = "bulkAccomLink", path = "organizations_manageBulkAccommodation.do")
 	    }) 
 	protected Forward organizations()
 	{
@@ -2037,6 +2038,21 @@ public class StudentOperationController extends PageFlowController {
         try
         {
             String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+    
+    @Jpf.Action()
+	protected Forward organizations_manageBulkAccommodation()
+	{
+        try
+        {
+            String url = "/StudentWeb/bulkOperation/organizations_manageBulkAccommodation.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)

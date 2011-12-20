@@ -14,6 +14,9 @@ public class Base {
 	private List<Row> rows;
 	private List<StudentProfileInformation> studentProfileInformation;
 	private String studentIdArray;
+	private List studentNode;
+	
+	
 	public String getPage() {
 		return page;
 	}
@@ -62,6 +65,18 @@ public class Base {
 	 */
 	public void setStudentIdArray(String studentIdArray) {
 		this.studentIdArray = studentIdArray;
+	}
+	/**
+	 * @return the studentNode
+	 */
+	public List getStudentNode() {
+		return studentNode;
+	}
+	/**
+	 * @param studentNode the studentNode to set
+	 */
+	public void setStudentNode(List studentNode) {
+		this.studentNode = studentNode;
 	}
 	
 	

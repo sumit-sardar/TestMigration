@@ -41,6 +41,7 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifystudentinfo.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/map.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/bulkAccommodation.js"></script>
 	<script type="text/javascript" src="/StudentWeb/resources/js/studentregistration.js"></script>
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
@@ -133,6 +134,12 @@
 										<a href="#" id="organizationsLink" onClick="gotoMenuAction('organizations.do', 'organizationsLink');"><b>Organizations</b></a>						
 									</td>
 								</ctb:auth>
+								<ctb:auth roles="Administrator">										
+									<td class="toolbar" width="190">
+										<a href="#" id="bulkAccomLink" onclick="gotoMenuAction('organizations.do', 'bulkAccomLink');"><b>Edit Accommodations</b></a>						
+									</td>
+								</ctb:auth>
+								
 									<td width="*">&nbsp;</td>		
 								</tr>
 								</table>						

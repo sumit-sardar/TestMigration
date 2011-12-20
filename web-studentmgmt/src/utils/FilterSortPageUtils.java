@@ -27,7 +27,8 @@ public class FilterSortPageUtils
     public static final String FILTERTYPE_GREATERTHAN = "Greater than";
     public static final String FILTERTYPE_LESSTHAN = "Less than";
     public static final String FILTERTYPE_BEGINSWITH = "Begins with";
-
+    
+    public static final String FILTERTYPE_ANY = "Any";
     public static final String FILTERTYPE_ANY_GRADE = "Any grade";
     public static final String FILTERTYPE_ANY_GENDER = "Any gender";
     public static final String FILTERTYPE_SELECT_A_GRADE = "Select a grade";
@@ -116,7 +117,7 @@ public class FilterSortPageUtils
         
         sortParams[0] = new SortParam(sortName, sortType);
         
-        String secondarySortName = STUDENT_DEFAULT_SORT_COLUMN;
+        String secondarySortName = FIRST_NAME_SORT;
         if (sortName.equals(STUDENT_DEFAULT_SORT_COLUMN))
              secondarySortName = LOGIN_NAME_SORT;
              
