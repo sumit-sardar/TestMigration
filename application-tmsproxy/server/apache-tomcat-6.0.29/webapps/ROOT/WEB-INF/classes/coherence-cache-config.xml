@@ -132,7 +132,8 @@
 			</serializer>
             <service-name>PartitionedCache</service-name> 
             <local-storage>true</local-storage>
-            <thread-count>40</thread-count>           
+            <thread-count>40</thread-count>      
+            <local-storage>true</local-storage>     
             <backing-map-scheme>                
                 <read-write-backing-map-scheme>                    
                     <scheme-ref>DBScheme</scheme-ref>

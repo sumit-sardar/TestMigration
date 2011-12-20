@@ -7,7 +7,7 @@
 
 	<introduce:config file="coherence-messagingpattern-cache-config.xml" />
 
-    <sync:provider pof-enabled="false">
+    <sync:provider pof-enabled="true">
         <sync:coherence-provider />
     </sync:provider>
 	
