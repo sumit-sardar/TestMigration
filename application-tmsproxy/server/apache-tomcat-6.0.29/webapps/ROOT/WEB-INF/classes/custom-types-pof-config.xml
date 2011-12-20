@@ -1,0 +1,67 @@
+<!DOCTYPE pof-config SYSTEM "pof-config.dtd">
+
+<pof-config>
+   <user-type-list>
+      <include>coherence-pof-config.xml</include>
+      <include>coherence-common-pof-config.xml</include>
+      <include>coherence-messagingpattern-pof-config.xml</include>
+      <include>coherence-pushreplicationpattern-pof-config.xml</include>
+
+    <user-type>
+      <type-id>10001</type-id>
+      <class-name>com.ctb.tms.bean.login.RosterData</class-name>
+      <serializer>
+      	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
+      </serializer> 
+    </user-type>
+    <user-type>
+      <type-id>10002</type-id>
+      <class-name>com.ctb.tms.bean.login.ManifestWrapper</class-name>
+      <serializer>
+      	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
+      </serializer>
+    </user-type>
+    <user-type>
+      <type-id>10003</type-id>
+      <class-name>com.ctb.tms.bean.login.ItemResponseData</class-name>
+      <serializer>
+      	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
+      </serializer>
+    </user-type>
+    <user-type>
+      <type-id>10004</type-id>
+      <class-name>com.ctb.tms.bean.delivery.ItemData</class-name>
+      <serializer>
+      	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
+      </serializer>
+    </user-type>
+    <user-type>
+      <type-id>10005</type-id>
+      <class-name>com.ctb.tms.bean.delivery.SubtestData</class-name>
+      <serializer>
+      	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
+      </serializer>
+    </user-type>
+    <user-type>
+      <type-id>10006</type-id>
+      <class-name>com.ctb.tms.bean.login.AuthenticationData</class-name>
+      <serializer>
+      	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
+      </serializer> 
+    </user-type>
+    <user-type>
+      <type-id>10007</type-id>
+      <class-name>com.ctb.tms.bean.login.Manifest</class-name>
+      <serializer>
+      	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
+      </serializer> 
+    </user-type>
+    <user-type>
+      <type-id>10008</type-id>
+      <class-name>com.ctb.tms.bean.login.ManifestData</class-name>
+      <serializer>
+      	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
+      </serializer> 
+    </user-type>
+  </user-type-list>
+</pof-config>
