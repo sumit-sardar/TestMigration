@@ -27,7 +27,7 @@
 </p>
 <br/>
 
-<div style="width:100%;clear:both;float:left;" id="studentExists">
+<div style="width:100%;clear:both;float:left;margin-bottom: 20px;" id="studentExists">
 	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader" style="text-align:left;">
 		<div style="float:left;" >&nbsp;<netui:content value="${bundle.web['testTicket.organizations']}"/></div> 
 		<div style="clear:both;"></div>     
