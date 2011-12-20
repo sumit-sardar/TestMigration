@@ -218,17 +218,20 @@ public class OASOracleSource implements OASRDBSource
                 	scratchMap.put(new Integer(scratchData[i].getItemSetId()), scratchData[i].getScratchpadData());
                 }
                 for (int i = 0; i < manifestData.length; i++) {
-                	final char[] buffer = new char[0x1000];
-                	Reader in = scratchMap.get(new Integer(manifestData[i].getId())).getCharacterStream();
-                	StringBuilder out = new StringBuilder(); 
-                	int read; 
-                	do {   
-                		read = in.read(buffer, 0, buffer.length);   
-                		if (read>0) {     
-                			out.append(buffer, 0, read);   
-                		} 
-                	} while (read>=0); 
-                	manifestData[i].setScratchpadContent(out.toString());
+                	Clob clob = scratchMap.get(new Integer(manifestData[i].getId()));
+                	if(clob != null && clob.length() > 0) {
+	                	final char[] buffer = new char[0x1000];
+	                	Reader in = clob.getCharacterStream();
+	                	StringBuilder out = new StringBuilder(); 
+	                	int read; 
+	                	do {   
+	                		read = in.read(buffer, 0, buffer.length);   
+	                		if (read>0) {     
+	                			out.append(buffer, 0, read);   
+	                		} 
+	                	} while (read>=0); 
+	                	manifestData[i].setScratchpadContent(out.toString());
+                	}
                 }
             } else {
             	return null;
