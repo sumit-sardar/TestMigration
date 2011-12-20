@@ -35,7 +35,7 @@
 	<div style="width:49%;float:left; padding-right: 0px;height:255px; margin-bottom:10px;" id="orgTktTreeDiv" class="ticketTreeCtrl">		
 	</div>
 	
-	<div style="width:49%;float:right;">
+	<div style="width:48%;float:right;">
 	<h3 style="border-width: 0px; margin-bottom:15px;"><netui:content value="${bundle.web['testTicket.testSessionDocs']}" /></h3>
 	<p>	
 	<netui:content value="${bundle.web['testTicket.sessionDocsText']}" /><br>
@@ -69,21 +69,21 @@
 	</div>		
 </div>
 <br/>
-<div style="width:100%;clear:both;float:left; display:none; margin-bottom: 30px;" id="noStudent" class="ticketTreeCtrl">
-	<table width='100%' height="50" style="padding: 12px;" cellpadding="2" cellspacing="5">
+<div style="width:97%;display:none; margin-bottom: 30px;" id="noStudent" class="ticketTreeCtrl">
+	<table width='95%' height="60" cellpadding="2" cellspacing="5">
 	<tbody>
 	<tr>
-	<th align="left"><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th>
+	<th align="left" style="padding-left: 5px;padding-top: 5px;" ><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th>
 	<th align="left">Tickets cannot be printed at this time.</th>
 	</tr>
 	<tr>
 	<td>&nbsp;</td>
-	<td align="left">There are no students on the test roster. Click Back to add students now, or click Finish and add students later. </td></tr>
+	<td align="left" style="padding-bottom: 5px;" >There are no students on the test roster. Click Back to add students now, or click Finish and add students later. </td></tr>
 	</tbody>
 	</table>
 </div>
 	
-			<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%">
+			<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%" style=" padding-top:20px;">
 					<tr id="Act_Buttons" align="right">
 						<td  width="100%" style="text-align:center;">
 							

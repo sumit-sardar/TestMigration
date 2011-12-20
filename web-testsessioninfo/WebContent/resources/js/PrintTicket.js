@@ -54,12 +54,14 @@ function populateTestTicketTree() {
 							$("#noStudent").css('display', 'block');
 							$("#studentExists").css('display', 'none');
 							$("#orgNodeHierarchy").css("visibility","hidden");	
+							$("#printTestTicket").css("height",'330px');
 						}else{
 							orgTktTreeHierarchy = data;
 							createSingleNodeSelectedTktTree(orgTktTreeHierarchy);
 							$("#noStudent").css('display', 'none');
 							$("#studentExists").css('display', 'block');
 							$("#orgNodeHierarchy").css("visibility","visible");	
+							$("#printTestTicket").css("height",'430px');
 						
 						}
 						$("#searchheader").css("visibility","visible");	
@@ -67,7 +69,7 @@ function populateTestTicketTree() {
 							title:"Print Test Ticket ",  
 							resizable:false,
 							autoOpen: true,
-							width: '800px',
+							width: '820px',
 							modal: true,
 							closeOnEscape: false,
 							open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
@@ -78,7 +80,7 @@ function populateTestTicketTree() {
 								return false;
 				 			}
 						});
-						setPopupPosition();		
+						//setTicketPopupPosition();		
 						$.unblockUI();					
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -92,6 +94,15 @@ function populateTestTicketTree() {
 	});
 
 }
+
+function setTicketPopupPosition(){
+				//$("#printTestTicket").css("height",'320px');
+				var toppos = ($(window).height() - 510) /2 + 'px';
+				var leftpos = ($(window).width() - 760) /2 + 'px';
+				$("#printTestTicket").parent().css("top",toppos);
+				$("#printTestTicket").parent().css("left",leftpos);	
+				
+	}
 
 function createSingleNodeSelectedTktTree(jsondata) {
 	   $("#orgTktTreeDiv").jstree({
