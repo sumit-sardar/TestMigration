@@ -31,9 +31,10 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 				this.pushStore = new PublishingCacheStore(cacheName);
 				doPush = true;
 			} catch (Exception e) {
+				e.printStackTrace();
 				this.pushStore = null;
 				doPush = false;
-				logger.info("Note: This node is NOT configured as a push replication publisher.");
+				logger.info("Note: This node is NOT configured as a push replication publisher: " + e.getMessage());
 			}
 		}
 		
