@@ -42,7 +42,8 @@ function getTabIndex(tabId) {
 	var tabIndex = 0;	
 	var theTabs = $('#featureTabsContainer .tab');
 	for (var i=0 ; i<theTabs.length ; i++) {
-		if (theTabs[i].textContent.toUpperCase() == tabId.toUpperCase()) {
+		var id = theTabs[i].getAttribute("id");
+		if (id.indexOf(tabId) >= 0) {
 			tabIndex = i;
 			break;
 		}
