@@ -27,3 +27,7 @@ var ALL_STUDENTS_DELETED = "All students removed from the Student Test Roster."
 var PROCTORS_DELETED = "proctor(s) removed from the Proctor Session List."
 var PROCTORS_ADDED = "proctor(s) added to the Proctor Session List."
 var ALL_PROCTORS_DELETED = "proctor(s) removed from the Proctor Session List. The scheduler cannot be removed."
+var TEST_SESSIONNAME_INVALIDCHARACTERS_HEADER= "Invalid character(s) in test session name."
+var TEST_SESSIONNAME_INVALIDCHARACTERS_BODY = 'Please re-enter test session name without these characters: !, @, #, $, %, ^, :, <, >, (, )'
+var TEST_TESTLOCATION_INVALIDCHARACTERS_HEADER= "Invalid character(s) in test location."
+var TEST_TESTLOCATION_INVALIDCHARACTERS_BODY = 'Please re-enter test location without these characters: !, @, #, $, %, ^, :, <, >, (, )'

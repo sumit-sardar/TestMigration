@@ -1677,15 +1677,11 @@ function createSingleNodeSelectedTree(jsondata) {
 		var accessCode = trim(document.getElementById("aCode").value);
 		var testLocation = trim(document.getElementById("testLocation").value);
 		
-			if(testSessionName == "" || startDate == "" || endDate == "" || !validateDate(startDate,endDate) || !validNameString(testLocation)){				
+			if(testSessionName == "" || startDate == "" || endDate == "" || !validateDate(startDate,endDate) || !validString(testLocation)){				
+				return false;
+			} else if(!validString(testSessionName)){
 				return false;
 			}
-
-			var invalidCharFields = verifyTestInfo(testSessionName,"","");
-				var invalidString = "";                        
-				if (invalidCharFields.length > 0) {
-					return false;
-				}	
 		return true;
 	}
 	
@@ -1717,13 +1713,6 @@ function createSingleNodeSelectedTree(jsondata) {
 		if(startDate.length != 0 && endDate.length != 0 && !validateDate(startDate,endDate)){
 			 	setMessage(INVALID_DATES_MSG, "", "errorMessage", "");       
 		}	
-			
-		var invalidCharFields = verifyTestInfo(testSessionName, "", testLocation);
- 		var invalidString = "";                        
-    	if (invalidCharFields.length > 0) {
-    		setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
-		}
-			
 		if (requiredFieldCount > 0) {
 			if (requiredFieldCount == 1) {
 				setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);
@@ -1731,34 +1720,18 @@ function createSingleNodeSelectedTree(jsondata) {
 			else {
 				setMessage("Missing required fields", requiredFields, "errorMessage", REQUIRED_TEXT_MULTIPLE);
 			}
-			//return false;
+			return;
 		}
-	//return true;
+		
+		 if (testSessionName != "" && !validString(testSessionName) ) {
+		 	setMessage(TEST_SESSIONNAME_INVALIDCHARACTERS_HEADER, TEST_SESSIONNAME_INVALIDCHARACTERS_BODY , "errorMessage","");
+		 } else if(testLocation != "" && !validString(testLocation)){
+		 	setMessage(TEST_TESTLOCATION_INVALIDCHARACTERS_HEADER, TEST_TESTLOCATION_INVALIDCHARACTERS_BODY , "errorMessage","");
+		 }	
+
 	 }
 	 
-	function verifyTestInfo(testSessionName, accessCode, testLocation)
-    {
-        var invalidCharFields = "";
-        var invalidCharFieldCount = 0;
 
-        if (testSessionName != "" && !validNameString(testSessionName) ) {
-            invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Test Session Name", invalidCharFieldCount, invalidCharFields);       
-        }
-        
-        if (accessCode != "" && !validNameString(accessCode) ) {
-            invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Access Code", invalidCharFieldCount, invalidCharFields);       
-        }
-        
-        if (testLocation != "" && !validNameString(testLocation) ) {
-            invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Test Location", invalidCharFieldCount, invalidCharFields);       
-        }
-            
-        return invalidCharFields;
-    }
-    
     // Added to validate Access Code : Start
     
     function validateAccessCodeInformation(){
@@ -1926,16 +1899,16 @@ function createSingleNodeSelectedTree(jsondata) {
 		chars = chars || "\\s";
 		return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
 	}
-	
-	 function validNameString(str){
+
+    function validString(str){
         var characters = [];
         characters = toCharArray(str);
         for (var i=0 ; i<characters.length ; i++) {
             var character = characters[i];
-            if (! validNameCharacter(character))
+            if (containsInvalidCharacter(character))
                 return false;
         }
-        return !requestHasInvalidParameters(str);
+        return true;
     }
 	  
 	  function toCharArray(str){
@@ -1947,24 +1920,21 @@ function createSingleNodeSelectedTree(jsondata) {
             
       }
       
-       function validNameCharacter(str){
+       function containsInvalidCharacter(str){
         var ch = toascii(str);
-        var A_Z = ((ch >= 65) && (ch <= 90));
-        var a_z = ((ch >= 97) && (ch <= 122));
-        var zero_nine = ((ch >= 48) && (ch <= 57));
-        var validChar = ((str == '/') || 
-                         (str == '\'') || 
-                         (str == '-') || 
-                         (str == '\\') || 
-                         (str == '.') || 
+        var invalidChar = ((str == '!') || 
+                         (str == '@') || 
+                         (str == '#') || 
+                         (str == '$') || 
+                         (str == '%') || 
+                         (str == ':') || 
+                         (str == '<') || 
+                         (str == '>') || 
                          (str == '(') || 
                          (str == ')') || 
-                         (str == '&') || 
-                         (str == '+') || 
-                         (str == ',') || 
-                         (str == ' '));
+                         (str == '^'));
         
-        return (zero_nine || A_Z || a_z || validChar);
+        return (invalidChar);
     }
     
     function toascii (c){
