@@ -342,8 +342,23 @@ public class OrgOperationController extends PageFlowController {
 		 String contentType = CONTENT_TYPE_JSON;
 		 OrgNodeCategory[] orgCatagories = null;
 		 String json = "";
+		 //added on 14.12.2011 for class with student is changed to school level issue
+		 Boolean isAddOrganization = new Boolean(getRequest().getParameter("isAddOrganization"));
+		 Integer orgNodeToEdit = null;
+		 if(getRequest().getParameter("currentNodeIdForEdit") != null)
+			 orgNodeToEdit = Integer.parseInt(getRequest().getParameter("currentNodeIdForEdit"));
+		 
+		 System.out.println("isAddOrganization ::"+isAddOrganization);
+		 System.out.println("orgNodeToEdit ::"+orgNodeToEdit);
+		 System.out.println("selectedParentNode ::"+selectedParentNode);
+		 
 			try {
-				orgCatagories = organizationManagement.getFrameworkListForOrg(selectedParentNode, null, true); 
+				if(isAddOrganization){
+					orgCatagories = organizationManagement.getFrameworkListForOrg(selectedParentNode, null, true); 
+				}
+				else{
+					orgCatagories = organizationManagement.getFrameworkListForOrg(orgNodeToEdit, selectedParentNode, false);
+				}
 
 				Gson gson = new Gson();
 				json = gson.toJson(orgCatagories);

@@ -46,6 +46,7 @@ var checkedListObject = {};
 var type;
 var asyncOver = 0;
 var leafParentOrgNodeId = "";
+var currentNodeIdForEdit = ""; //added to bypass layer population in case of self parent problem
 
 $(document).bind('keydown', function(event) {
 		
@@ -343,39 +344,51 @@ var styleClass;
 				} else {
 					$("#parentOrgName").html(defaultParent);	
 				}
-	
-	if(isChecked) {
-		$.ajax({
-		async:		true,
-		beforeSend:	function(){
-						UIBlock();
-					},
-		url:		'populateLayer.do?selectedParentNode='+$(element).attr("id"),
-		type:		'POST',
-		dataType:	'json',
-		success:	function(data, textStatus, XMLHttpRequest){	
-						
-						for(var i = 0; i < data.length; i++) {
-							layerOptions[i] = data[i].categoryName;
-							categoryIds[i] = data[i].orgNodeCategoryId;
-						}
-						fillDropDown('layerOptions',layerOptions);
-						$.unblockUI(); 						
-					},
-		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-						$.unblockUI();
-						window.location.href="/SessionWeb/logout.do";
-						
-					},
-		complete :  function(){
-						 $.unblockUI(); 
-					}
-	});
-	}
-	
-	else
-		fillDropDown('layerOptions',layerOptions);
+		if(currentNodeIdForEdit != $(element).attr("id")){  //added to bypass layer population in case of self parent problem
+			if(isChecked) {
+				var param;
 				
+				if(isAddOrganization){
+					param = "selectedParentNode="+$(element).attr("id")+"&isAddOrganization="+isAddOrganization;
+				}
+				else{
+					param = "selectedParentNode="+$(element).attr("id")+"&currentNodeIdForEdit="+currentNodeIdForEdit+"&isAddOrganization="+isAddOrganization;
+				}
+
+					$.ajax({
+					async:		true,
+					beforeSend:	function(){
+									UIBlock();
+								},
+					url:		'populateLayer.do',
+					type:		'POST',
+					data:		param,
+					dataType:	'json',
+					success:	function(data, textStatus, XMLHttpRequest){	
+									
+									for(var i = 0; i < data.length; i++) {
+										layerOptions[i] = data[i].categoryName;
+										categoryIds[i] = data[i].orgNodeCategoryId;
+									}
+									fillDropDown('layerOptions',layerOptions);
+									$.unblockUI(); 						
+								},
+					error  :    function(XMLHttpRequest, textStatus, errorThrown){
+									$.unblockUI();
+									window.location.href="/SessionWeb/logout.do";
+									
+								},
+					complete :  function(){
+									 $.unblockUI(); 
+								}
+				});
+			}
+			
+			else
+				fillDropDown('layerOptions',layerOptions);
+		}
+		else
+			fillDropDown('layerOptions',layerOptions);		
 	        	
 	}
 
@@ -548,6 +561,9 @@ function EditOrganizationDetail(selectedOrgId){
 						originalParentOrgId = data.organizationDetail.parentOrgNodeId;
 						$("#orgName").val(data.organizationDetail.orgNodeName);
 						$("#orgCode").val(data.organizationDetail.orgNodeCode);
+						if(isLasLinkCustomer){
+							$("#mdrNumber").val(data.organizationDetail.mdrNumber);
+						}
 						//alert(data.organizationDetail.orgNodeCategoryName);
 						//$("#layerOptions").val(data.organizationDetail.orgNodeCategoryName);
 						$("#layerOptions").html("<option  value='"+ data.organizationDetail.orgNodeCategoryId+"'>"+ data.organizationDetail.orgNodeCategoryName+"</option>");
@@ -599,8 +615,8 @@ function EditOrganizationDetail(selectedOrgId){
 							hideLeafAdminCheckBox();
 							checkOpenNode(parentNodeId);
 							dbOrgDetails = $("#addEditOrganizationDetail *").serializeArray(); 
-							prepareCheckedList(); //added on 12.12.2011		
-		 						
+							prepareCheckedList(); //added on 12.12.2011	
+							currentNodeIdForEdit = data.organizationDetail.orgNodeId //added to bypass layer population in case of self parent problem						
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
 						$.unblockUI();  
