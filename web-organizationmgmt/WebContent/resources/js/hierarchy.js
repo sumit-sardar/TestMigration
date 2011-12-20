@@ -412,7 +412,7 @@ function populateGrid() {
 		 type:   'POST',
 		 datatype: "json",         
                 
-          colNames:['Name','Org Code','Layer', 'Parent Org'],
+          colNames:[$("#orgNameID").val(),$("#orgCodeID").val(),$("#orgLayerID").val(), $("#orgParentID").val()],
 		   	colModel:[
 		   	
 		   	    {name:'orgNodeName',index:'orgNodeName', width:130, editable: true,align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -436,7 +436,7 @@ function populateGrid() {
 			width: 975, 
 			editurl: 'OrgNodeHierarchyGrid.do',
 			ondblClickRow: function(rowid) {EditOrganizationDetail();},
-			caption:"Organization List",
+			caption:$("#orgListID").val(),
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
@@ -593,7 +593,7 @@ function EditOrganizationDetail(selectedOrgId){
 					// for enable next and prev
 						
 						$("#addEditOrganizationDetail").dialog({  
-								title:"Edit Organization",  
+								title:$("#editOrgID").val(),  
 							 	resizable:false,
 							 	autoOpen: true,
 							 	width: '800px',
@@ -638,7 +638,7 @@ function AddOrganizationDetail() {
 	document.getElementById('displayMessageMain').style.display = "none";
 	
 						$("#addEditOrganizationDetail").dialog({  
-								title:"Add Organization",  
+								title:$("#addOrgID").val(),  
 							 	resizable:false,
 							 	autoOpen: true,
 							 	width: '800px',
@@ -764,7 +764,7 @@ function openTreeNodes(orgNodeId) {
 		var arg= args;
 		if(arg == null || arg == undefined){
 			$("#confirmationPopup").dialog({  
-				title:"Confirmation Alert",  
+				title:$("#confirmID").val(),  
 			 	resizable:false,
 			 	autoOpen: true,
 			 	width: '400px',
@@ -780,7 +780,7 @@ function openTreeNodes(orgNodeId) {
 		 }
 		 else{
 		  $("#confirmationPopupNavigation").dialog({  
-			title:"Confirmation Alert",  
+			title:$("#confirmID").val(),  
 			resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',

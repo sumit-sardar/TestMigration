@@ -21,6 +21,7 @@
 <input type="hidden" id="pOrgID" name = "pOrgID" value=<lb:label key="org.parentOrg" prefix="'" suffix="'"/>/>
 <input type="hidden" id="missRequiredID" name = "missRequiredID" value=<lb:label key="org.msg.missingField" prefix="'" suffix="'"/>/>
 <input type="hidden" id="mMissRequiredID" name = "mMissRequiredID" value=<lb:label key="org.msg.missingField" prefix="'" suffix="s'"/>/>
+<input type="hidden" id="orgListID" name = "orgListID" value=<lb:label key="org.label.orgList" prefix="'" suffix="'"/>/>
 
 
 
