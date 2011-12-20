@@ -703,6 +703,7 @@ public class UserOperationController extends PageFlowController
 								user = userManagement.getUser(this.userName, userName);
 								if(user != null){
 									userProfile.setRole((user.getRole().getRoleName()));
+									userProfile.setUserId(user.getUserId());
 								}
 							} catch (CTBBusinessException e) {
 								e.printStackTrace();

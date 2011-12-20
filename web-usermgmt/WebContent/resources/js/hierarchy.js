@@ -670,7 +670,8 @@ function userDetailEdit(){
 	} else {
 		rowid = selectedUserId;
 	}
-	var userName =  getColValueJson(rowid,'userName');
+	//var userName =  getColValueJson(rowid,'userName');
+	var userName = $('#list2').jqGrid('getCell',rowid,'loginId');
 	
 		$.ajax({
 		async:		true,
