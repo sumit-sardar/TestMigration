@@ -53,7 +53,7 @@ var selectAllForDelete = false;
 var selectAllForDeleteProctor = false;
 var allLocalProctorIds = [];
 var allProctorSelected = false;
-var proctorSelectedLength = 0;
+var proctorSelectedLength = 1;
 
 var previousValue = "";
 var previousSubtest = "";
