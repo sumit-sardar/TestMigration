@@ -426,7 +426,7 @@ public class TMSServlet extends HttpServlet {
 						    	}
 				    		}
 				    	} else if (LmsEventType.TERMINATED.equals(eventType)) {
-				    		manifest.setRosterEndTime(new Timestamp(System.currentTimeMillis()));
+				    		manifest.setRosterEndTime(System.currentTimeMillis());
 				    		boolean inProgressSubtest = false;
 				    		for(int n=0;n<manifestData.length;n++) {
 				    			if("IP".equals(manifestData[n].getCompletionStatus()) || "IN".equals(manifestData[n].getCompletionStatus())) {
@@ -787,8 +787,8 @@ public class TMSServlet extends HttpServlet {
 			 }
 		 }
 		
-		if(manifest.getRosterStartTime() == null) {
-			manifest.setRosterStartTime(new Timestamp(System.currentTimeMillis()));
+		if(manifest.getRosterStartTime() == 0) {
+			manifest.setRosterStartTime(System.currentTimeMillis());
 		}
 		manifest.setRosterCompletionStatus("IP");
 		manifest.setStudentName(rd.getAuthData().getStudentFirstName() + " " + rd.getAuthData().getStudentLastName());

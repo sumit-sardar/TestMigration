@@ -204,8 +204,8 @@ public class RosterData implements Serializable {
 		Tsd tsd = restartData.addNewTsd();        
 		tsd.setScid(String.valueOf(manifestData.getId()));
 		tsd.setLsid(loginResponse.getLsid());
-		if (manifestData.getScratchpadContentStr()== null) manifestData.setScratchpadContentStr("");
-		tsd.addSp(manifestData.getScratchpadContentStr());
+		if (manifestData.getScratchpadContent()== null) manifestData.setScratchpadContent("");
+		tsd.addSp(manifestData.getScratchpadContent());
 		Ast ast = tsd.addNewAst();
 		int maxRSN = 0;
 		int totalDur = 0;

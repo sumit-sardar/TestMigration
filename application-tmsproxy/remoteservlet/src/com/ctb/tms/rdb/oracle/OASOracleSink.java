@@ -146,10 +146,19 @@ public class OASOracleSink implements OASRDBSink {
 	    		stmt2 = conn.prepareStatement(ROSTER_STATUS_SQL);
 	    		stmt2.setString(1, manifest.getRosterCompletionStatus());
 	    		stmt2.setInt(2, manifest.getRosterRestartNumber());
-	    		stmt2.setTimestamp(3, manifest.getRosterStartTime());
-	    		stmt2.setTimestamp(4, manifest.getRosterStartTime());
+	    		if(manifest.getRosterStartTime() == 0) {
+	    			stmt2.setTimestamp(3, null);
+		    		stmt2.setTimestamp(4, null);
+	    		} else {
+		    		stmt2.setTimestamp(3, new Timestamp(manifest.getRosterStartTime()));
+		    		stmt2.setTimestamp(4, new Timestamp(manifest.getRosterStartTime()));
+	    		}
 	    		stmt2.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
-	    		stmt2.setTimestamp(6, manifest.getRosterEndTime());
+	    		if(manifest.getRosterEndTime() == 0) {
+	    			stmt2.setTimestamp(6, null);
+	    		} else {
+		    		stmt2.setTimestamp(6, new Timestamp(manifest.getRosterEndTime()));
+	    		}
 	    		stmt2.setInt(7, manifest.getRosterLastMseq());
 	    		stmt2.setInt(8, manifest.getRosterCorrelationId());
 	    		Integer seed = null;

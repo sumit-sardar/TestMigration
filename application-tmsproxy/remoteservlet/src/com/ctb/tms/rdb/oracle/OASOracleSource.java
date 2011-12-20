@@ -2,6 +2,7 @@ package com.ctb.tms.rdb.oracle;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.math.BigInteger;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -217,7 +218,17 @@ public class OASOracleSource implements OASRDBSource
                 	scratchMap.put(new Integer(scratchData[i].getItemSetId()), scratchData[i].getScratchpadData());
                 }
                 for (int i = 0; i < manifestData.length; i++) {
-                	manifestData[i].setScratchpadContent(scratchMap.get(new Integer(manifestData[i].getId())));
+                	final char[] buffer = new char[0x1000];
+                	Reader in = scratchMap.get(new Integer(manifestData[i].getId())).getCharacterStream();
+                	StringBuilder out = new StringBuilder(); 
+                	int read; 
+                	do {   
+                		read = in.read(buffer, 0, buffer.length);   
+                		if (read>0) {     
+                			out.append(buffer, 0, read);   
+                		} 
+                	} while (read>=0); 
+                	manifestData[i].setScratchpadContent(out.toString());
                 }
             } else {
             	return null;
@@ -750,8 +761,8 @@ public class OASOracleSource implements OASRDBSource
 					manifest.setRosterCorrelationId(auth.getCorrelationId());
 					manifest.setRandomDistractorSeed(auth.getRandomDistractorSeedNumber());
 					manifest.setRosterCompletionStatus(auth.getRosterTestCompletionStatus());
-					manifest.setRosterStartTime(auth.getStartTime());
-					manifest.setRosterEndTime(auth.getEndTime());
+					manifest.setRosterStartTime(auth.getStartTime().getTime());
+					manifest.setRosterEndTime(auth.getEndTime().getTime());
 					manifests[i] = manifest;
 				} else {
 					return null;

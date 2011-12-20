@@ -10,8 +10,8 @@ public class Manifest implements Serializable, CachePreLoadObject {
 	
 	private String testRosterId;
 	private String accessCode;
-	private Timestamp rosterStartTime;
-    private Timestamp rosterEndTime;
+	private long rosterStartTime;
+    private long rosterEndTime;
     private int rosterLastMseq = -1;
     private int rosterCorrelationId = 0;
     private String rosterCompletionStatus;
@@ -91,16 +91,16 @@ public class Manifest implements Serializable, CachePreLoadObject {
 	public void setRosterRestartNumber(int rosterRestartNumber) {
 		this.rosterRestartNumber = rosterRestartNumber;
 	}
-	public Timestamp getRosterStartTime() {
+	public long getRosterStartTime() {
 		return rosterStartTime;
 	}
-	public void setRosterStartTime(Timestamp rosterStartTime) {
+	public void setRosterStartTime(long rosterStartTime) {
 		this.rosterStartTime = rosterStartTime;
 	}
-	public Timestamp getRosterEndTime() {
+	public long getRosterEndTime() {
 		return rosterEndTime;
 	}
-	public void setRosterEndTime(Timestamp rosterEndTime) {
+	public void setRosterEndTime(long rosterEndTime) {
 		this.rosterEndTime = rosterEndTime;
 	}
 	public int getRosterLastMseq() {

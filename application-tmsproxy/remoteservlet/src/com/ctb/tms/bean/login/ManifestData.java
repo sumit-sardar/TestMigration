@@ -27,7 +27,7 @@ public class ManifestData implements Serializable
     private String asmtEncryptionKey;
     private String itemEncryptionKey;
     private String accessCode;
-    transient private Clob scratchpadContent;
+    transient private String scratchpadContent;
     private String scratchpadContentStr;
     private String randomDistractorStatus;
     private int rawScore;
@@ -400,40 +400,12 @@ public class ManifestData implements Serializable
 	}
 
 
-    public Clob getScratchpadContent() {
+    public String getScratchpadContent() {
         return scratchpadContent;
     }
     
-    public void setScratchpadContent(Clob scratchpadContent) {
+    public void setScratchpadContent(String scratchpadContent) {
         this.scratchpadContent = scratchpadContent;
-        if (scratchpadContent != null)
-            setScrathpadStrValue();
-    }
-    
-    public String getScratchpadContentStr() {
-        if (scratchpadContentStr == null && scratchpadContent != null) {
-            setScrathpadStrValue();
-        }
-        return scratchpadContentStr;
-    }
-    
-    public void setScratchpadContentStr(String scratchpadContentStr) {
-        this.scratchpadContentStr = scratchpadContentStr;
-        if (scratchpadContent == null) {
-            //scratchpad = Clob.
-            
-        }
-    }
-    
-    private void setScrathpadStrValue() {
-        try {                                        
-            int len = (int) scratchpadContent.length();            
-            String content = scratchpadContent.getSubString(1, len);
-            this.scratchpadContentStr = content;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-                        
     }
     
     //Changes For Random Distractor
