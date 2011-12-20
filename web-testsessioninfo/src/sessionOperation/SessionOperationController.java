@@ -1671,49 +1671,58 @@ public class SessionOperationController extends PageFlowController {
 		OutputStream stream = null;
 		String contentType = CONTENT_TYPE_JSON;
 		Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
+		int studentCount = getRosterForTestSession(testAdminId);
+		
 		try {
 			BaseTree baseTree = new BaseTree ();
-
-			ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
-			UserNodeData associateNode = UserOrgHierarchyUtils.populateAssociateNode(this.userName,this.userManagement);
-			ArrayList<Organization> selectedList  = UserOrgHierarchyUtils.buildassoOrgNodehierarchyList(associateNode);
-			Collections.sort(selectedList, new OrgnizationComparator());
-			ArrayList <Integer> orgIDList = new ArrayList <Integer>();
 			ArrayList<TreeData> data = new ArrayList<TreeData>();
-System.out.println("OrgNodeId:"+selectedList.get(0).getOrgNodeId());
-System.out.println("testadminid:"+testAdminId);
-			StudentNodeData snd = this.scheduleTest.getTestTicketNodesForParent(this.userName, selectedList.get(0).getOrgNodeId(), testAdminId, null, null, null);
-					
-			ArrayList<Organization> orgNodesList = UserOrgHierarchyUtils.buildOrgNodeAncestorHierarchyList(snd, orgIDList,completeOrgNodeList);	
-
-			//jsonTree = generateTree(orgNodesList,selectedList);
-
-			for (int i= 0; i < selectedList.size(); i++) {
-
-				if (i == 0) {
-
-					preTreeProcess (data,orgNodesList,selectedList);
-
-				} else {
-
-					Integer nodeId = selectedList.get (i).getOrgNodeId();
-					if (orgIDList.contains(nodeId)) {
-						continue;
-					} else if (!selectedList.get (i).getIsAssociate()) {
+			if(studentCount > 0){
+				baseTree.setIsStudentExist("true");		
+			
+				ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
+				UserNodeData associateNode = UserOrgHierarchyUtils.populateAssociateNode(this.userName,this.userManagement);
+				ArrayList<Organization> selectedList  = UserOrgHierarchyUtils.buildassoOrgNodehierarchyList(associateNode);
+				Collections.sort(selectedList, new OrgnizationComparator());
+				ArrayList <Integer> orgIDList = new ArrayList <Integer>();
+				
+	System.out.println("OrgNodeId:"+selectedList.get(0).getOrgNodeId());
+	System.out.println("testadminid:"+testAdminId);
+				
+				StudentNodeData snd = this.scheduleTest.getTestTicketNodesForParent(this.userName, selectedList.get(0).getOrgNodeId(), testAdminId, null, null, null);
 						
-						continue;
-						
+				ArrayList<Organization> orgNodesList = UserOrgHierarchyUtils.buildOrgNodeAncestorHierarchyList(snd, orgIDList,completeOrgNodeList);	
+	
+				//jsonTree = generateTree(orgNodesList,selectedList);
+	
+				for (int i= 0; i < selectedList.size(); i++) {
+	
+					if (i == 0) {
+	
+						preTreeProcess (data,orgNodesList,selectedList);
+	
 					} else {
-
-						orgIDList = new ArrayList <Integer>();
-						UserNodeData undloop = UserOrgHierarchyUtils.OrgNodehierarchy(this.userName, 
-								this.userManagement,nodeId);   
-						ArrayList<Organization> orgNodesListloop = UserOrgHierarchyUtils.buildOrgNodehierarchyList(undloop, orgIDList, completeOrgNodeList);	
-						preTreeProcess (data,orgNodesListloop,selectedList);
+	
+						Integer nodeId = selectedList.get (i).getOrgNodeId();
+						if (orgIDList.contains(nodeId)) {
+							continue;
+						} else if (!selectedList.get (i).getIsAssociate()) {
+							
+							continue;
+							
+						} else {
+	
+							orgIDList = new ArrayList <Integer>();
+							UserNodeData undloop = UserOrgHierarchyUtils.OrgNodehierarchy(this.userName, 
+									this.userManagement,nodeId);   
+							ArrayList<Organization> orgNodesListloop = UserOrgHierarchyUtils.buildOrgNodehierarchyList(undloop, orgIDList, completeOrgNodeList);	
+							preTreeProcess (data,orgNodesListloop,selectedList);
+						}
 					}
+	
+	
 				}
-
-
+			}else{
+				baseTree.setIsStudentExist("false");
 			}
 
 			Gson gson = new Gson();
@@ -2834,4 +2843,35 @@ System.out.println("testadminid:"+testAdminId);
 
 			}			
 		}
+	 
+	 private int getRosterForTestSession(Integer testAdminId){
+		 int studentCount = 0;
+		 //String errorMessage = "";
+		 try
+	        {
+	            
+	            RosterElementData red = this.testSessionStatus.getRosterForTestSession(this.userName,
+	                            testAdminId, null, null, null);
+	            studentCount = red.getTotalCount().intValue(); 
+	                 
+	        } 
+	        //START- Changed for deferred defect 64446 
+	        catch (TransactionTimeoutException e)
+	        {
+	            e.printStackTrace();
+	            String errorMessage =MessageResourceBundle.getMessage("SelectSettings.FailedToSaveTestSessionTransactionTimeOut"); 
+	            System.out.println("errorMessage in TransactionTimeoutException");
+	            this.getRequest().setAttribute("errorMessage", errorMessage); 
+	            return 0;            
+	        } 
+	        //END- Changed for deferred defect 64446
+	        catch (CTBBusinessException e)
+	        {
+	            e.printStackTrace();
+	            String errorMessage = getMessageResourceBundle(e, "SelectSettings.FailedToSaveTestSession"); 
+	            this.getRequest().setAttribute("errorMessage", errorMessage); 
+	            return 0;            
+	        }  
+	        return studentCount;
+	 }
 }

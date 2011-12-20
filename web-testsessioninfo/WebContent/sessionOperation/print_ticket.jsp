@@ -13,57 +13,75 @@
 <div id="printTestTicket"
 	style="display: none; border:10px solid #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	
-<p>To print session documents for a specific organization, select the organization below, then click the document you wish to print.<br/>To print session documents for all organizations, just click the documents you wish to print.</p>
-<h3 style="border-width: 0px"><span>Test Information</span></h3>
+<p><netui:content value="${bundle.web['testTicket.subtitle']}" /></p>
+<h3 style="border-width: 0px"><span><netui:content value="${bundle.web['testTicket.testInformation']}" /></span></h3>
 			
 <table class="transparent">
     <tr class="transparent">
-        <td class="transparent" nowrap><span style="font-weight:bold;">Test name:</span></td>
+        <td class="transparent" nowrap><span style="font-weight:bold;"><netui:content value="${bundle.web['testTicket.testName']}" /></span></td>
         <td class="transparent" ><span id = "testName_val" style="background-color:white;"></span></td>
-        <td class="transparent" nowrap><span style="font-weight:bold;">Test session name:</span></td>
+        <td class="transparent" nowrap><span style="font-weight:bold;"><netui:content value="${bundle.web['testTicket.testSessionName']}" /></span></td>
         <td class="transparent" > <span id = "adminTestName_val" style="background-color:white;"></span></td>
 	</tr>
 </table>
 </p>
 <br/>
-<div style="width:100%;clear:both;float:left;">
-	<div style="width:50%;float:left; padding-right: 5px;" id="orgTktTreeDiv">
-		
+
+<div style="width:100%;clear:both;float:left;" id="studentExists">
+	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader" style="text-align:left;">
+		<div style="float:left;" >&nbsp;<netui:content value="${bundle.web['testTicket.organizations']}"/></div> 
+		<div style="clear:both;"></div>     
+	</div>
+	<div style="width:49%;float:left; padding-right: 0px;height:255px; margin-bottom:10px;" id="orgTktTreeDiv" class="ticketTreeCtrl">		
 	</div>
 	
 	<div style="width:49%;float:right;">
-	<h3 style="border-width: 0px; margin-bottom:15px;">Test session documents</h3>
+	<h3 style="border-width: 0px; margin-bottom:15px;"><netui:content value="${bundle.web['testTicket.testSessionDocs']}" /></h3>
 	<p>	
-	Click the links to display the documents you wish to print.<br>
+	<netui:content value="${bundle.web['testTicket.sessionDocsText']}" /><br>
 	</p>
 	<p>
-	<a href="#" style="text-decoration:underline;color:blue;" onclick="return openTestTicketIndividual(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);">Individual Test Tickets</a>
+	<a href="#" style="text-decoration:underline;color:blue;" onclick="return openTestTicketIndividual(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);"><netui:content value="${bundle.web['testTicket.sessionIndividualTestTicket']}" /></a>
 	&nbsp;
 	<img src="/SessionWeb/resources/images/logo_pdf.gif" border="0">
 	<br/>
-	These tickets have the login names and passwords your students need to take the test.
+	<netui:content value="${bundle.web['testTicket.sessionDocsIndividual']}" />
 	<br>
 	
 	</p>
 	
 	<!--START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)-->
 	<p>
-	<a href="#" style="text-decoration:underline;color:blue;" onclick="return openTestTicketMultiple(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);">Multiple Test Tickets</a>
+	<a href="#" style="text-decoration:underline;color:blue;" onclick="return openTestTicketMultiple(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);"><netui:content value="${bundle.web['testTicket.sessionMultipleTestTicket']}" /></a>
 	&nbsp;
 	<img src="/SessionWeb/resources/images/logo_pdf.gif" border="0">
 	<br/>
-	This format allows printing of multiple individual test tickets on a sheet when using the pdf print options.
+	<netui:content value="${bundle.web['testTicket.sessionDocsMultiple']}" />
 	</p>
 	<!--END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)-->
 	
 	<p>
-	<a href="#" style="text-decoration:underline;color:blue;" onclick="return openTestTicketSummary(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);">Summary Test Ticket</a>
+	<a href="#" style="text-decoration:underline;color:blue;" onclick="return openTestTicketSummary(this, document.getElementById('selectedTestSessionId').value, document.getElementById('scheduleUserOrgNode').value);"><netui:content value="${bundle.web['testTicket.sessionSummaryTestTicket']}" /></a>
 	&nbsp;<img src="/SessionWeb/resources/images/logo_pdf.gif" border="0">
 	<br/>
-	This summary has the information your proctor needs to administer the test: Student names, login IDs, passwords, and test access code(s).
+	<netui:content value="${bundle.web['testTicket.sessionDocsSummary']}" />
 	</p>
 	</div>		
-	</div>
+</div>
+<br/>
+<div style="width:100%;clear:both;float:left; display:none; margin-bottom: 30px;" id="noStudent" class="ticketTreeCtrl">
+	<table width='100%' height="50" style="padding: 12px;" cellpadding="2" cellspacing="5">
+	<tbody>
+	<tr>
+	<th align="left"><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th>
+	<th align="left">Tickets cannot be printed at this time.</th>
+	</tr>
+	<tr>
+	<td>&nbsp;</td>
+	<td align="left">There are no students on the test roster. Click Back to add students now, or click Finish and add students later. </td></tr>
+	</tbody>
+	</table>
+</div>
 	
 			<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%">
 					<tr id="Act_Buttons" align="right">

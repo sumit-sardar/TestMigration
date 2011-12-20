@@ -7,6 +7,16 @@ public class BaseTree {
 	
 	private List<TreeData> data = new ArrayList<TreeData> ();
 	private Integer leafNodeCategoryId;
+	private String isStudentExist;
+	
+
+	public String getIsStudentExist() {
+		return isStudentExist;
+	}
+
+	public void setIsStudentExist(String isStudentExist) {
+		this.isStudentExist = isStudentExist;
+	}
 
 	/**
 	 * @return the leafNodeCategoryId
