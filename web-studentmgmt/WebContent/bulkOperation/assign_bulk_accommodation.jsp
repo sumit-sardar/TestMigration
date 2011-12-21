@@ -1,3 +1,8 @@
+<%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
+<%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ page language="java" contentType="text/html;charset=UTF-8"%>
+<netui-data:declareBundle bundlePath="webResources" name="web" />
+
 <%
     String studentIdLabelName = (String)request.getAttribute("studentIdLabelName");
 	Boolean supportAccommodations = (Boolean)request.getAttribute("supportAccommodations");
@@ -10,7 +15,7 @@
 
 
 
-
+&nbsp;&nbsp;<netui:content value="${bundle.web['student.assignAccommodation.text']}"/>
 <table class="transparent">
 
     <tr class="transparent">
@@ -36,7 +41,7 @@
 		   		<td >
 	       			<div id="ShowButtons" style="width:1210px; display:none; float:left;">
 						<div id="viewStatus" style="float:right;padding-left:5px;">
-							<a href="#" id="assignAccommButton" onclick="javascript:openAssignAccommPopup(this); return false;" class="rounded {transparent} button">Assign Accommodation</a>
+							<a href="#" id="assignAccommButton" onclick="javascript:openAssignAccommPopup(this); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['student.assignAccommodation.EditAccom.Button']}"/></a>
 						</div> 
 					   
 					</div>  
@@ -49,8 +54,8 @@
 		
 	 <table class="transparent">
 	    <tr class="transparent">
-	        <td class="transparent"  valign="middle">
-	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;Student Search</div>
+	        <td class="transparent"  valign="bottom" style="vertical-align: bottom !important;">
+	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<netui:content value="${bundle.web['student.assignAccommodation.StudentSearch']}"/></div>
 	    	<script>populateBulkAccommTree();</script>
 	    	<div id = "studentBulkOrgNode" class="treeCtrl">
 				
@@ -60,7 +65,7 @@
 	 		<td class="transparent" width="5px">&nbsp;</td>
 		 	<td >
 	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">
-	      			&nbsp;Student List
+	      			&nbsp;<netui:content value="${bundle.web['student.assignAccommodation.StudentList']}"/>
 	      		</div>
 	    		<table id="studentAccommGrid" class="gridTable"></table>
 				<div id="studentAccommpager" class="gridTable"></div>			

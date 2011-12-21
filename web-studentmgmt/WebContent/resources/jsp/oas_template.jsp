@@ -139,7 +139,7 @@
 								</ctb:auth>
 								<ctb:auth roles="Administrator">										
 									<td class="toolbar" width="190">
-										<a href="#" id="bulkAccomLink" onclick="gotoMenuAction('organizations.do', 'bulkAccomLink');"><b>Edit Accommodations</b></a>						
+										<a href="#" id="bulkAccomLink" onclick="gotoMenuAction('organizations.do', 'bulkAccomLink');"><b>Assign Accommodations</b></a>						
 									</td>
 								</ctb:auth>
 								
