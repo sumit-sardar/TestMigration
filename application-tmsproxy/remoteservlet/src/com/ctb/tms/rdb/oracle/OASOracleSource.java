@@ -764,8 +764,16 @@ public class OASOracleSource implements OASRDBSource
 					manifest.setRosterCorrelationId(auth.getCorrelationId());
 					manifest.setRandomDistractorSeed(auth.getRandomDistractorSeedNumber());
 					manifest.setRosterCompletionStatus(auth.getRosterTestCompletionStatus());
-					manifest.setRosterStartTime(auth.getStartTime().getTime());
-					manifest.setRosterEndTime(auth.getEndTime().getTime());
+					if(auth.getStartTime() != null) {
+						manifest.setRosterStartTime(auth.getStartTime().getTime());
+					} else {
+						manifest.setRosterStartTime(0);
+					}
+					if(auth.getEndTime() != null) {
+						manifest.setRosterEndTime(auth.getEndTime().getTime());
+					} else {
+						manifest.setRosterEndTime(0);
+					}
 					manifests[i] = manifest;
 				} else {
 					return null;
