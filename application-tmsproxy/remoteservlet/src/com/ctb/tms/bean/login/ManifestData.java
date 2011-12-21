@@ -27,8 +27,7 @@ public class ManifestData implements Serializable
     private String asmtEncryptionKey;
     private String itemEncryptionKey;
     private String accessCode;
-    transient private String scratchpadContent;
-    private String scratchpadContentStr;
+    private String scratchpadContent;
     private String randomDistractorStatus;
     private int rawScore;
     private int maxScore;

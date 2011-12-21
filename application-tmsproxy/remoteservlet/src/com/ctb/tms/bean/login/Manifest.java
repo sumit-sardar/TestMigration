@@ -1,7 +1,6 @@
 package com.ctb.tms.bean.login;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 public class Manifest implements Serializable, CachePreLoadObject {
 	
@@ -17,7 +16,7 @@ public class Manifest implements Serializable, CachePreLoadObject {
     private String rosterCompletionStatus;
     private int rosterRestartNumber;
     private String studentName;
-    private Integer randomDistractorSeed;
+    private int randomDistractorSeed;
     private String tutorialTaken;
     private boolean forceReplication;
     
@@ -71,11 +70,11 @@ public class Manifest implements Serializable, CachePreLoadObject {
 		this.accessCode = accessCode;
 	}
 
-	public Integer getRandomDistractorSeed() {
+	public int getRandomDistractorSeed() {
 		return randomDistractorSeed;
 	}
 	
-	public void setRandomDistractorSeed(Integer randomDistractorSeed) {
+	public void setRandomDistractorSeed(int randomDistractorSeed) {
 		this.randomDistractorSeed = randomDistractorSeed;
 	}
     
@@ -130,8 +129,8 @@ public class Manifest implements Serializable, CachePreLoadObject {
 		this.manifest = manifest;
 	}
 
-	public boolean doReplicate() {
-		return this.replicate;
+	public boolean isReplicate() {
+		return replicate;
 	}
 	
 	

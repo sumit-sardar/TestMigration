@@ -318,7 +318,7 @@ public class ItemResponseData implements Serializable, CachePreLoadObject{
 		this.answerArea = answerArea;
 	}
 
-	public boolean doReplicate() {
+	public boolean isReplicate() {
 		return replicate;
 	}
 

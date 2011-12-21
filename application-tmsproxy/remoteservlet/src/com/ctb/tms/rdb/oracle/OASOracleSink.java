@@ -162,8 +162,8 @@ public class OASOracleSink implements OASRDBSink {
 	    		stmt2.setInt(7, manifest.getRosterLastMseq());
 	    		stmt2.setInt(8, manifest.getRosterCorrelationId());
 	    		Integer seed = null;
-	    		if(manifest.getRandomDistractorSeed() != null && subtests[0] != null && "Y".equals(subtests[0].getRandomDistractorStatus())) {
-	    			seed = manifest.getRandomDistractorSeed().intValue();
+	    		if(subtests[0] != null && "Y".equals(subtests[0].getRandomDistractorStatus())) {
+	    			seed = new Integer(manifest.getRandomDistractorSeed());
 	    		}
 	    		if(seed != null) {
 	    			stmt2.setInt(9, seed);

@@ -99,7 +99,7 @@ public class TMSConflictResolver implements ConflictResolver {
 	                					if(incoming[i].getRosterLastMseq() > local[j].getRosterLastMseq()) {
 	                						// using incoming roster-level values
 	                						newManifest = incoming[i];
-	                					} else if (incoming[i].getRosterLastMseq() <= local[j].getRosterLastMseq() && incoming[i].doReplicate()) {
+	                					} else if (incoming[i].getRosterLastMseq() <= local[j].getRosterLastMseq() && incoming[i].isReplicate()) {
 	                						if(!"TRUE".equals(newManifest.getTutorialTaken()) && "TRUE".equals(incoming[i].getTutorialTaken())) {
 	                							newManifest.setTutorialTaken(incoming[i].getTutorialTaken());
 	                						}
