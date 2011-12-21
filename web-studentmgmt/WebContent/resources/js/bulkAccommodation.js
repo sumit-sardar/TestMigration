@@ -378,7 +378,7 @@ function populateBulkStudentGrid() {
 		title:"Assign Accommodation",  
 	 	resizable:false,
 	 	autoOpen: true,
-	 	width: '550px',
+	 	width: '560px',
 	 	modal: true,
 	 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
 		});	

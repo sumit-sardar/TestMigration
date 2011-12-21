@@ -75,7 +75,7 @@
 
 				
 <div id="AssignAccommPopup"
-	style="display: none; border:8px solid #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	style="width:97%; display: none; border:8px solid #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	<table>
 		<tr><td>
 			<div id="displayPopupMessage" class="roundedMessage" style="display:none; border:2px solid #D4ECFF;"> 
