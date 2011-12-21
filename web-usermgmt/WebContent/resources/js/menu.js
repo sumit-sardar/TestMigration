@@ -69,7 +69,8 @@ function selectOrganizationsLink(menuId)
 	selectLink("organizationsLink", false); 
 	selectLink("usersLink", false); 
 	selectLink("studentsLink", false); 
-
+	selectLink("bulkAccomLink", false);
+	
 	selectLink(menuId, true); 
 	
 	selectOrganizationsContent(menuId);
