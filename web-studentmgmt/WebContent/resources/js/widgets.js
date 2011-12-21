@@ -1174,6 +1174,7 @@ function moveSelectedOption(elementId, moveDirection)
 		var calculator = document.getElementsByName("calculator");
 		calculator[0].checked=false;
 		calculator[1].checked=false;
+		calculator[2].checked=false;
 		
 		var test_pause = document.getElementsByName("test_pause");
 		test_pause[0].checked=false;

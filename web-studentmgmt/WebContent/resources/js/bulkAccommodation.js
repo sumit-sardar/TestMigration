@@ -6,8 +6,9 @@ var studentArrId = [];
 var totalRowSelectedOnPage = 0;
 var customerDemographicList ;
 var onNodechange = false;
- var listStr;
-	
+var listStr;
+var submittedSuccesfully = "";
+var previousDataForpaging = {};
 
 
 var selectedStudentObjArr = {};
@@ -83,12 +84,8 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 	    });
 	    
 	    $("#studentBulkOrgNode").delegate("a","click", function(e) {
-	    	//SelectedOrgNode = $(this).parent();
-	    	//SelectedOrgNodes = SelectedOrgNode.parentsUntil(".jstree","li");
-	    	//clear message before moving to pther node
-	    	//clearMessage();
 	    	onNodechange = true;
-	    	
+	    	submittedSuccesfully = "";
 	    	$("option:contains('Any')",'#gs_grade' ).attr("selected", "selected");
 	    	$("option:contains('Any')",'#gs_calculator').attr("selected", "selected");
 	    	$("option:contains('Any')",'#gs_hasColorFontAccommodations').attr("selected", "selected");
@@ -187,7 +184,7 @@ function populateBulkStudentGrid() {
 		   		{name:'testPause',index:'testPause',editable: true, width:75, align:"center", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} },
 		   		{name:'screenReader',index:'screenReader',editable: true, width:75, align:"center", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} },
 		   		{name:'untimedTest',index:'untimedTest',editable: true, width:75, align:"center", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} },
-		   		{name:'highLighter',index:'highLighter',editable: true, width:75, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} }
+		   		{name:'highLighter',index:'highLighter',editable: true, width:75, align:"center", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} }
 		   		
 		   	],
 		   		jsonReader: { repeatitems : false, root:"studentNode", id:"studentId",
@@ -231,7 +228,10 @@ function populateBulkStudentGrid() {
 			        } else {
 		           		$("#"+selectedStudentObjArr[allRowsInGrid[i]]+" td input").attr('checked', false).trigger('click').attr('checked', false);
 		           }
-				}
+		           if(submittedSuccesfully != ""){
+		           	 jQuery("#studentAccommGrid").setRowData(previousDataForpaging[allRowsInGrid[i]], submittedSuccesfully, "first");
+		           }
+		        }
 				totalRowSelectedOnPage = gridreloadRowCount;
 				if(onNodechange){
 					totalRowSelectedOnPage = 0;
@@ -421,15 +421,17 @@ function populateBulkStudentGrid() {
 								var errorFlag = data.errorFlag;
 								var successFlag = data.successFlag;
 								if(successFlag) {
-									resetRadioAccommodation();
 									closePopUp('AssignAccommPopup');
 									setBulkMessageMain(data.title, data.content, data.type, "");
 									document.getElementById('displayBulkMessageMain').style.display = "block";	
-									
-						            for(var i=0; i<studentArrId.length; i++) {
-								 	 	 jQuery("#studentAccommGrid").setRowData(selectedStudentObjArr[studentArrId[i]], dataToBeAdded, "first");
+									var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');
+						            for(var i=0; i<allRowsInGrid.length; i++) {
+								 	 	 jQuery("#studentAccommGrid").setRowData(selectedStudentObjArr[allRowsInGrid[i]], dataToBeAdded, "first");
+								 	 	 $("#"+selectedStudentObjArr[allRowsInGrid[i]]+" td input").attr('checked', false).trigger('click').attr('checked', false);
+								 	 	 submittedSuccesfully = dataToBeAdded;
 									}
-									
+									previousDataForpaging = selectedStudentObjArr;
+									selectedStudentObjArr = {};
 									$.unblockUI();			
 									}
 									else{

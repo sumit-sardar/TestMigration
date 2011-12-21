@@ -57,17 +57,14 @@
 	        <td class="transparent"  valign="bottom" style="vertical-align: bottom !important;">
 	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<netui:content value="${bundle.web['student.assignAccommodation.StudentSearch']}"/></div>
 	    	<script>populateBulkAccommTree();</script>
-	    	<div id = "studentBulkOrgNode" class="treeCtrl">
+	    	<div id = "studentBulkOrgNode" class="treeCtrl" style="height:542px !important">
 				
 			</div> 
 			
 		 	</td>
 	 		<td class="transparent" width="5px">&nbsp;</td>
 		 	<td >
-	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">
-	      			&nbsp;<netui:content value="${bundle.web['student.assignAccommodation.StudentList']}"/>
-	      		</div>
-	    		<table id="studentAccommGrid" class="gridTable"></table>
+	      		<table id="studentAccommGrid" class="gridTable"></table>
 				<div id="studentAccommpager" class="gridTable"></div>			
 		 </td>
 	    </tr>

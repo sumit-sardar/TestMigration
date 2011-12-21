@@ -953,6 +953,7 @@ function fillselectedOrgNode( elementId, orgList) {
 			requetForStudent = "";				
 		}
 		if(dailogId == 'AssignAccommPopup') {
+			resetRadioAccommodation();
 			resetBulk();
 		}
 		
