@@ -3,6 +3,7 @@ var gradeOptions = ":Any;JV:JV;AD:AD";
 var AccommOption = ":Any;T:Yes;F:No";
 var allRowSelected = false;
 var studentArrId = [];
+var studentObjArr = [];
 var totalRowSelectedOnPage = 0;
 var customerDemographicList ;
 var onNodechange = false;
@@ -170,14 +171,11 @@ function populateBulkStudentGrid() {
           url: 'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#selectedBulkTreeOrgNodeId").val(), 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[ 'Last Name','First Name', 'M.I', 'Organization','orgName','Accommodation', 'Grade', calculator, colorFont, testPause, screenReader, untimedTest, highlighter],
+          colNames:[ 'Last Name','First Name', 'M.I', 'Grade', calculator, colorFont, testPause, screenReader, untimedTest, highlighter],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:152, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:153, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'middleName',index:'middleName', width:80, editable: true, align:"left",sorttype:'text',search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'orgNodeId',index:'orgNodeId',editable: false, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'orgNodeName',index:'orgNodeName',editable: false, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'hasAccommodations',index:'hasAccommodations',editable: false, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'grade',index:'grade', width:90, editable: true, align:"left", sortable:true, search: true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: gradeOptions }},
 		   		{name:'calculator',index:'calculator', width:75, editable: true, align:"center", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} },
 		   		{name:'hasColorFontAccommodations',index:'hasColorFontAccommodations',editable: true, width:75, align:"center", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} },
@@ -190,7 +188,7 @@ function populateBulkStudentGrid() {
 		   		jsonReader: { repeatitems : false, root:"studentNode", id:"studentId",
 		   	records: function(obj) { 
 		   	 	studentArrId = obj.studentIdArray.split(",");
-		   	 	
+		   	 	studentObjArr = obj.studentNode;
 		   	 } },
 		   	loadui: "disable",
 			rowNum:20,
@@ -249,26 +247,140 @@ function populateBulkStudentGrid() {
 				 }
 			},
 			onSelectAll: function (rowIds, status) {
-				if(!status) {
-					//allRowSelected = false;
-					UIBlock();
-					for(var i=0; i<studentArrId.length; i++){
-						delete selectedStudentObjArr[studentArrId[i]];
+					var grade = $('#gs_grade').val();
+			    	var calculator = $('#gs_calculator').val();
+			    	var hasColorFontAccommodations = $('#gs_hasColorFontAccommodations').val();
+			    	var testPause = $('#gs_testPause').val();
+			    	var screenReader = $('#gs_screenReader').val();
+			    	var untimedTest = $('#gs_untimedTest').val();
+			    	var highLighter = $('#gs_highLighter').val();
+					
+					if(!status) {
+						UIBlock();
+						if(defaultFilterApplied()) {
+							for(var i=0; i<studentArrId.length; i++){
+								delete selectedStudentObjArr[studentArrId[i]];
+							}
+						} else {
+							for(var i=0; i<studentArrId.length; i++){
+							 	var skip = false;
+								 var objIndex = jQuery.inArray(studentArrId[i], studentArrId); 
+								 var obj = studentObjArr[objIndex];
+								 if(skip == false && grade != ""){
+									 if(obj['grade'] == grade)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 } else  if(skip == false && calculator != ""){
+									 if(obj['calculator'] == calculator)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 } else if(skip == false && hasColorFontAccommodations != ""){
+									 if(obj['hasColorFontAccommodations'] == hasColorFontAccommodations)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 }
+								 else if(skip == false && testPause != ""){
+									 if(obj['testPause'] == testPause)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 }
+								 else if(skip == false && screenReader != ""){
+									 if(obj['screenReader'] == screenReader)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 }
+								 else if(skip == false && untimedTest != ""){
+									 if(obj['untimedTest'] == untimedTest)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 }
+								 else if(skip == false && highLighter != ""){
+									 if(obj['highLighter'] == highLighter)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 }
+								  if(!skip) {
+								  	delete selectedStudentObjArr[studentArrId[i]];
+								  }
+								  
+							}
+				
+						}	
+						totalRowSelectedOnPage = 0;
+						setAnchorButtonState('assignAccommButton', true);
+						$.unblockUI();  
+					} else {
+						UIBlock();
+						if(defaultFilterApplied()) {
+							for(var i=0; i<studentArrId.length; i++){
+								selectedStudentObjArr[parseInt(studentArrId[i])]= parseInt(studentArrId[i]);
+							}
+						} else {
+							for(var i=0; i<studentArrId.length; i++){
+							 	var skip = false;
+								 var objIndex = jQuery.inArray(studentArrId[i], studentArrId); 
+								 var obj = studentObjArr[objIndex];
+								 if(skip == false && grade != ""){
+									 if(obj['grade'] == grade)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 } else  if(skip == false && calculator != ""){
+									 if(obj['calculator'] == calculator)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 } else if(skip == false && hasColorFontAccommodations != ""){
+									 if(obj['hasColorFontAccommodations'] == hasColorFontAccommodations)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 }
+								 else if(skip == false && testPause != ""){
+									 if(obj['testPause'] == testPause)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 }
+								 else if(skip == false && screenReader != ""){
+									 if(obj['screenReader'] == screenReader)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 }
+								 else if(skip == false && untimedTest != ""){
+									 if(obj['untimedTest'] == untimedTest)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 }
+								 else if(skip == false && highLighter != ""){
+									 if(obj['highLighter'] == highLighter)
+									 	skip = false;
+									 else 
+									 	skip = true;
+								 }
+								  if(!skip) {
+								  	selectedStudentObjArr[parseInt(studentArrId[i])]= parseInt(studentArrId[i]);
+								  } else {
+								  	delete selectedStudentObjArr[studentArrId[i]];
+								  }
+								  
+							}
+				
+						}	
+						setAnchorButtonState('assignAccommButton', false);
+						$.unblockUI();
+						var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');  
+						totalRowSelectedOnPage = studentArrId.length;
 					}
-					totalRowSelectedOnPage = 0;
-					setAnchorButtonState('assignAccommButton', true);
-					$.unblockUI();  
-				} else {
-					//allRowSelected = true;
-					UIBlock();
-					for(var i=0; i<studentArrId.length; i++){
-						selectedStudentObjArr[parseInt(studentArrId[i])]= parseInt(studentArrId[i]);
-					}
-					setAnchorButtonState('assignAccommButton', false);
-					$.unblockUI();
-					var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');  
-					totalRowSelectedOnPage = studentArrId.length;
-				}
 				
 			},
 			onSelectRow: function (rowid, status) {
@@ -635,4 +747,17 @@ function populateBulkStudentGrid() {
 			speed:'fast'
 		});
 	}
+	
+	 function defaultFilterApplied(){
+	 	if ($('#gs_grade').val() != "" && 
+	    	$('#gs_calculator').val() != "" && 
+	    	$('#gs_hasColorFontAccommodations').val() != "" && 
+	    	$('#gs_testPause').val() != "" && 
+	    	$('#gs_screenReader').val() != "" && 
+	    	$('#gs_untimedTest').val() != "" && 
+	    	$('#gs_highLighter').val() != "") 
+	    		return true;
+	    	else
+	    		return false;
+	 }
 	
