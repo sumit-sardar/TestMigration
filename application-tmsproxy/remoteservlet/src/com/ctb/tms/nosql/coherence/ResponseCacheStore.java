@@ -19,12 +19,12 @@ public class ResponseCacheStore implements OASCacheStore {
 	static Logger logger = Logger.getLogger(ResponseCacheStore.class);
 	
 	//static ConfigurablePofContext ctx;
-	static ReflectionPofExtractor extractor;
+	//static ReflectionPofExtractor extractor;
 	
-	static {
+	//static {
 		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new TMSConflictResolver().getClass().getResource("/custom-types-pof-config.xml")));
-		extractor = new ReflectionPofExtractor();
-	}
+	//	extractor = new ReflectionPofExtractor();
+	//}
 	
 	public ResponseCacheStore(String cacheName) {
 		this();
@@ -85,7 +85,7 @@ public class ResponseCacheStore implements OASCacheStore {
     			BinaryEntry entry = it.next();
 	    		String key = (String) entry.getKey();
 	    		key = key.substring(0, key.indexOf(":"));
-	    		sink.putItemResponse(conn, (ItemResponseData) extractor.extractFromEntry(entry));
+	    		sink.putItemResponse(conn, (ItemResponseData) entry.getValue());
 		    	counter++;
     		}
     		conn.commit();

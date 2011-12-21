@@ -23,12 +23,12 @@ public class ManifestCacheStore implements OASCacheStore {
 	static Logger logger = Logger.getLogger(ManifestCacheStore.class);
 	
 	//static ConfigurablePofContext ctx;
-	static ReflectionPofExtractor extractor;
+	//static ReflectionPofExtractor extractor;
 	
-	static {
+	//static {
 		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new TMSConflictResolver().getClass().getResource("/custom-types-pof-config.xml")));
-		extractor = new ReflectionPofExtractor();
-	}
+	//	extractor = new ReflectionPofExtractor();
+	//}
 	
 	public ManifestCacheStore(String cacheName) {
 		this();
@@ -78,6 +78,7 @@ public class ManifestCacheStore implements OASCacheStore {
     			// do nothing
     		}
     	}
+    	logger.info("ManifestCacheStore.store processed 1 record.");
     }
 
     public void erase(Object oKey) {
@@ -151,7 +152,7 @@ public class ManifestCacheStore implements OASCacheStore {
     		while(it.hasNext()) {
     			BinaryEntry entry = it.next();
     			try {
-	    			sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) extractor.extractFromEntry(entry)).getManifests());
+	    			sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) entry.getValue()).getManifests());
     			} catch (IllegalArgumentException iae) {
     	    		logger.error("Couldn't de-serialize: " + entry.getValue().getClass().getName() + ": " + iae.getMessage());
     	    	}

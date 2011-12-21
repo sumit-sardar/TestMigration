@@ -5,13 +5,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
 import com.oracle.coherence.patterns.pushreplication.PublishingCacheStore;
-import com.tangosol.io.pof.ConfigurablePofContext;
 import com.tangosol.net.cache.BinaryEntryStore;
 import com.tangosol.net.cache.CacheStore;
-import com.tangosol.run.xml.XmlHelper;
 import com.tangosol.util.BinaryEntry;
 
 public class DBCacheStore implements CacheStore, BinaryEntryStore {
@@ -25,12 +22,12 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	private static boolean doPush = true;
 	
 	//static ConfigurablePofContext ctx;
-	static ReflectionPofExtractor extractor;
+	//static ReflectionPofExtractor extractor;
 	
-	static {
+	//static {
 		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new DBCacheStore().getClass().getResource("/custom-types-pof-config.xml")));
-		extractor = new ReflectionPofExtractor();
-	}
+		//extractor = new ReflectionPofExtractor();
+	//}
 	
 	public DBCacheStore(String cacheName) {
 		this.cacheName = cacheName;
@@ -83,7 +80,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     	try {
     		logger.debug("Write to push replication store");
 	    	if(store != null) {
-		    	Object value = extractor.extractFromEntry(entry);
+		    	Object value = entry.getValue(); //extractor.extractFromEntry(entry);
 		    	store.store(entry.getKey(), value);
 		    	if(cacheName.startsWith("OAS")) {
 		    		if(pushStore != null) {
