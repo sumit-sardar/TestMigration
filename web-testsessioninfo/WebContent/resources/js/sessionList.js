@@ -651,6 +651,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			resetStudentSelection();
 			resetOnSelectTestSessionData();
 			resetProctor();
+			$('#studentAddDeleteInfo').hide();
 
 		}
 		$("#"+dailogId).dialog("close");
