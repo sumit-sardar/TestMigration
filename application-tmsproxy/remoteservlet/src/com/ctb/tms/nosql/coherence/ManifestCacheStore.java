@@ -153,7 +153,7 @@ public class ManifestCacheStore implements OASCacheStore {
     			try {
 	    			sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) extractor.extractFromEntry(entry)).getManifests());
     			} catch (IllegalArgumentException iae) {
-    	    		logger.error("Couldn't de-serialize: " + entry.getValue().getClass().getName());
+    	    		logger.error("Couldn't de-serialize: " + entry.getValue().getClass().getName() + ": " + iae.getMessage());
     	    	}
     			counter++;
     		}

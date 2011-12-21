@@ -92,7 +92,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 		    	}
 	    	}
     	} catch (IllegalArgumentException iae) {
-    		logger.error("Couldn't de-serialize: " + entry.getValue().getClass().getName());
+    		logger.error("Couldn't de-serialize: " + entry.getValue().getClass().getName() + ": " + iae.getMessage());
     	}
     }
 
