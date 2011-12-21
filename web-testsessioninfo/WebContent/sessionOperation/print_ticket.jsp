@@ -74,11 +74,11 @@
 	<tbody>
 	<tr>
 	<th align="left" style="padding-left: 5px;padding-top: 5px;" ><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th>
-	<th align="left">Tickets cannot be printed at this time.</th>
+	<th align="left"><netui:content value="${bundle.web['testTicket.noStudentErrorHead']}" /></th>
 	</tr>
 	<tr>
 	<td>&nbsp;</td>
-	<td align="left" style="padding-bottom: 5px;" >There are no students on the test roster. Click Back to add students now, or click Finish and add students later. </td></tr>
+	<td align="left" style="padding-bottom: 5px;" ><netui:content value="${bundle.web['testTicket.noStudentErrorSubhead']}" /></td></tr>
 	</tbody>
 	</table>
 </div>
