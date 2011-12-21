@@ -13,7 +13,6 @@ public class ManifestWrapper implements Serializable {
 	}
 	
 	public ManifestWrapper (Manifest[] manifests) {
-		super();
 		this.manifests = manifests;
 	}
 

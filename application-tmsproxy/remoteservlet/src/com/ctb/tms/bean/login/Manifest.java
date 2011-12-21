@@ -34,13 +34,13 @@ public class Manifest implements Serializable, CachePreLoadObject {
     
     private boolean replicate = false;
     
-    public String toString() {
+   /* public String toString() {
     	String result = testRosterId + "::" + accessCode + "::" + rosterLastMseq + "::" + rosterCompletionStatus;
     	for(int i=0;i<manifest.length;i++) {
     		result += "\n" + manifest[i].getId() + ":" + manifest[i].getTitle() + ":" + manifest[i].getSubtestLastMseq() + ":" + manifest[i].getCompletionStatus();
     	}
     	return result;
-    }
+    } */
     
     public void setReplicate(boolean replicate) {
     	this.replicate = replicate;
