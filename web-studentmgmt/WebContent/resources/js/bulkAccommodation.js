@@ -318,6 +318,7 @@ function populateBulkStudentGrid() {
 						
 			}
 	 });
+	 $("thead:first tr.ui-jqgrid-labels", $("#studentAccommGrid")[0].grid.hDiv).height('26px');
 	 jQuery("#studentAccommGrid").jqGrid('navGrid','#selectStudentPager',{edit:false,add:false,del:false,search:false,refresh:false});
 	 jQuery("#studentAccommGrid").jqGrid('filterToolbar');
 	 $("#t_studentAccommGrid").append(listStr).height(30);
