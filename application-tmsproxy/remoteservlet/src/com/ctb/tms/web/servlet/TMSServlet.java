@@ -777,8 +777,8 @@ public class TMSServlet extends HttpServlet {
 			 loginResponse.setRandomDistractorSeedNumber(new BigInteger(String.valueOf( rd.getAuthData().getRandomDistractorSeedNumber())));
 		 }  else {
 			 if ("Y".equals(manifest.getManifest()[0].getRandomDistractorStatus())) {
-				 Integer seed = manifest.getRandomDistractorSeed();
-				 if(seed == null) {
+				 int seed = manifest.getRandomDistractorSeed();
+				 if(seed == 0) {
 					 seed = generateRandomNumber();
 					 manifest.setRandomDistractorSeed(seed);
 				 }
@@ -829,7 +829,7 @@ public class TMSServlet extends HttpServlet {
 		return result;
 	}
 	
-	private static Integer generateRandomNumber () {
+	private static int generateRandomNumber () {
 		final String NUM_ARRAY   = "1234567890";
 		String alphaNumArray = NUM_ARRAY;
 		int index = 0;
@@ -857,7 +857,7 @@ public class TMSServlet extends HttpServlet {
 				seed = "";
 			}
 		}
-		return Integer.valueOf(seed);
+		return Integer.parseInt(seed);
 	}
 	
 	private static boolean verifyContainsCharFrom(String charArray,String seed) {
