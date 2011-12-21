@@ -782,6 +782,7 @@ public class OASOracleSource implements OASRDBSource
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			manifests = null;
 		} finally {
 			try {
 				if(stmt1 != null) stmt1.close();

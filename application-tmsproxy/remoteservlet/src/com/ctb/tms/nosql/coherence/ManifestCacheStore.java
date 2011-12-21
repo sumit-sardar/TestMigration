@@ -17,7 +17,6 @@ import com.ctb.tms.rdb.OASRDBSink;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.tangosol.util.BinaryEntry;
-import com.tangosol.util.extractor.IdentityExtractor;
 
 public class ManifestCacheStore implements OASCacheStore {
 	
@@ -55,15 +54,17 @@ public class ManifestCacheStore implements OASCacheStore {
 
     public void store(Object oKey, Object oValue) {
     	Connection conn = null;
+    	String key = null;
     	try {
-    		String key = (String) oKey;
+    		key = (String) oKey;
     	    logger.debug("Storing manifest to DB for roster " + key);
-    		ManifestWrapper manifest = (ManifestWrapper) oValue;
+    		ManifestWrapper wrapper = (ManifestWrapper) oValue;
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
-		    sink.putManifest(conn, key, manifest.getManifests());
+		    sink.putManifest(conn, key, wrapper.getManifests());
     	} catch (Exception e) {
-    		e.printStackTrace();
+    		logger.warn("ManifestCacheStore.store: Error storing manifest to DB for roster " + key);
+    		//e.printStackTrace();
     	} finally {
     		try {
     			if(conn != null) conn.close();
@@ -141,13 +142,24 @@ public class ManifestCacheStore implements OASCacheStore {
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
 		    int counter = 0;
+		    int total = 0;
     		while(it.hasNext()) {
     			BinaryEntry entry = it.next();
-	    		sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) entry.getValue()).getManifests());
-    			counter++;
+    			String key = null;
+    			try {
+    				key = (String) entry.getKey();
+    				Object value = entry.getValue();
+    				ManifestWrapper wrapper = (ManifestWrapper) value;
+	    			sink.putManifest(conn, key, wrapper.getManifests());
+	    			counter++;
+    			} catch (Exception e) {
+    				logger.warn("ManifestCacheStore.storeAll: Error storing manifest to DB for roster " + key);
+    	    		//e.printStackTrace();
+    			}
+    			total++;
     		}
     		conn.commit();
-    		logger.info("ManifestCacheStore.storeAll processed " + counter + " records.");
+    		logger.info("********  ManifestCacheStore.storeAll processed " + counter + " of " + total + " records.");
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {

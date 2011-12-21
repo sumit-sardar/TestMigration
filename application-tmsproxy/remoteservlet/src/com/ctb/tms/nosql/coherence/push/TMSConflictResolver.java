@@ -50,14 +50,14 @@ public class TMSConflictResolver implements ConflictResolver {
             switch (entryOperation.getOperation())
             {
                 case Delete:
-                	logger.warn("Replicated delete - removing record from " + entryOperation.getCacheName());
+                	logger.debug("Replicated delete - removing record from " + entryOperation.getCacheName());
                     resolution.remove();
                     break;
                 case Insert:
                 case Update:
-                {
+                { /*
                 	if("OASRosterCache".equals(entryOperation.getCacheName())) {
-                		RosterData incoming = (RosterData) extractor.extractFromEntry(entryOperation.getPublishableEntry());
+                		RosterData incoming = (RosterData) entryOperation.getPublishableEntry().getValue();
                 		RosterData current = (RosterData) extractor.extractFromEntry(localEntry);
                 		if(incoming.isForceReplication()) {
                 			incoming.setForceReplication(false);
@@ -72,7 +72,7 @@ public class TMSConflictResolver implements ConflictResolver {
                 		}
                 	} else if("OASManifestCache".equals(entryOperation.getCacheName())) {
                 		String tutorialTaken = "FALSE";
-                		Manifest[] incoming = ((ManifestWrapper) extractor.extractFromEntry(entryOperation.getPublishableEntry())).getManifests();
+                		Manifest[] incoming = ((ManifestWrapper) entryOperation.getPublishableEntry().getValue()).getManifests();
                 		Manifest[] local = ((ManifestWrapper) extractor.extractFromEntry(localEntry)).getManifests();
                 		if(incoming.length > 0 && incoming[0] != null && incoming[0].isForceReplication()) {
                 			for(int k=0;k<incoming.length;k++) {
@@ -149,16 +149,16 @@ public class TMSConflictResolver implements ConflictResolver {
 	            				}
 	                		}
 	                		Manifest[] finalMerged = (Manifest[])merged.toArray(new Manifest[0]);
-	                		logger.info("Merged manifest after replication: ");
+	                		//logger.info("Merged manifest after replication: ");
 	                		for(int n=0;n<finalMerged.length;n++) {
 	                			finalMerged[n].setTutorialTaken(tutorialTaken);
-	                			logger.info(finalMerged[n].toString());
+	                			//logger.info(finalMerged[n].toString());
 	                		}
 	                		resolution.useMergedValue(new ManifestWrapper(finalMerged));
                 		}
-            		} else {
+            		} else { */
                 		resolution.useInComingValue();
-                	}
+                	/*} */
                     break;
                 }
             }

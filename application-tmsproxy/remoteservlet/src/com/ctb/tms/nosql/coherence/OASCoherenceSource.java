@@ -57,20 +57,27 @@ public class OASCoherenceSource implements OASNoSQLSource {
 			ObjectInputStream ois = new ObjectInputStream(bais);
 			result = (RosterData) ois.readObject();
 		}*/
-		RosterData result = (RosterData) rosterCache.get(key);
-		return result; 
+		Object value = rosterCache.get(key);
+		if(value != null) {
+			RosterData result = (RosterData) value;
+			return result; 
+		} else {
+			return null;
+		}
 	}
 	
 	public Manifest getManifest(String testRosterId, String accessCode) throws XmlException, IOException, ClassNotFoundException {
-		/*String key = testRosterId + ":" + accessCode;
-		return (Manifest) manifestCache.get(key); */
 		String key = testRosterId;
-		Manifest[] manifests = ((ManifestWrapper) manifestCache.get(key)).getManifests();
-		for(int i=0;i<manifests.length;i++) {
-			Manifest manifest = manifests[i];
-			manifest.setReplicate(false);
-			if(accessCode.equals(manifest.getAccessCode())) {
-				return manifest;
+		Object value = manifestCache.get(key);
+		if(value != null ) {
+			ManifestWrapper wrapper = (ManifestWrapper) value;
+			Manifest[] manifests = wrapper.getManifests();
+			for(int i=0;i<manifests.length;i++) {
+				Manifest manifest = manifests[i];
+				manifest.setReplicate(false);
+				if(accessCode.equals(manifest.getAccessCode())) {
+					return manifest;
+				}
 			}
 		}
 		return null;
@@ -100,29 +107,17 @@ public class OASCoherenceSource implements OASNoSQLSource {
 	}
 	
 	public ManifestWrapper getAllManifests(String testRosterId) throws IOException, ClassNotFoundException {
-		/* String key = testRosterId;
-		Filter filter = new EqualsFilter("getTestRosterId", key); 
-		Set setKeys = manifestCache.keySet(filter); 
-		Map mapResult = manifestCache.getAll(setKeys); 
-		if(mapResult != null) {
-			int size = mapResult.size();
-			logger.debug("*****  Found " + size + " manifests for roster " + testRosterId);
-			Manifest[] manifesta = new Manifest[size];
-			Iterator it = mapResult.keySet().iterator();
-			int i = 0;
-			while(it.hasNext()) {
-				manifesta[i] = (Manifest) mapResult.get(it.next());
-				i++;
+		String key = testRosterId;
+		Object value = manifestCache.get(key);
+		if(value != null) {
+			ManifestWrapper wrapper = (ManifestWrapper) value;
+			Manifest[] manifests = wrapper.getManifests();
+			for(int i=0;i<manifests.length;i++) {
+				manifests[i].setReplicate(false);
 			}
-			return manifesta;
+			return wrapper;
 		} else {
 			return null;
-		} */
-		String key = testRosterId;
-		Manifest[] manifests = ((ManifestWrapper) manifestCache.get(key)).getManifests();
-		for(int i=0;i<manifests.length;i++) {
-			manifests[i].setReplicate(false);
 		}
-		return new ManifestWrapper(manifests);
 	}
 }

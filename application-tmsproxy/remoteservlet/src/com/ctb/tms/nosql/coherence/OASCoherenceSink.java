@@ -55,16 +55,22 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	
 	public void putManifest(String testRosterId, String accessCode, Manifest manifest) throws IOException {
 		String key = testRosterId;
-		Manifest[] manifests = ((ManifestWrapper) manifestCache.get(key)).getManifests();
+		ManifestWrapper wrapper = (ManifestWrapper) manifestCache.get(key);
 		ArrayList newManifests = new ArrayList();
 		boolean foundManifest = false;
-		for(int i=0;i<manifests.length;i++) {
-			if(accessCode.equals(manifests[i].getAccessCode())) {
-				newManifests.add(manifest);
-				foundManifest = true;
-			} else {
-				newManifests.add(manifests[i]);
+		Manifest[] manifests = null;
+		if(wrapper != null) {
+			manifests = wrapper.getManifests();
+			for(int i=0;i<manifests.length;i++) {
+				if(accessCode.equals(manifests[i].getAccessCode())) {
+					newManifests.add(manifest);
+					foundManifest = true;
+				} else {
+					newManifests.add(manifests[i]);
+				}
 			}
+		} else {
+			wrapper = new ManifestWrapper();
 		}
 		if(!foundManifest) {
 			newManifests.add(manifest);
@@ -111,12 +117,17 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			manifests[i].setRosterLastMseq(latestMseq);
 			manifests[i].setRosterCorrelationId(cid);
 		}
-		manifestCache.put(key, new ManifestWrapper(manifests));
+		wrapper.setManifests(manifests);
+		if(wrapper != null && manifests != null && manifests.length > 0) {
+			manifestCache.put(key, wrapper);
+		}
 	}
 	
-	public void putAllManifests(String testRosterId, ManifestWrapper manifests) throws IOException {
+	public void putAllManifests(String testRosterId, ManifestWrapper wrapper) throws IOException {
 		String key = testRosterId;
-		manifestCache.put(key, manifests);
+		if(wrapper != null && wrapper.getManifests() != null && wrapper.getManifests().length > 0) {
+			manifestCache.put(key, wrapper);
+		}
 	}
 	
 	public void putItemResponse(ItemResponseData ird) throws IOException {

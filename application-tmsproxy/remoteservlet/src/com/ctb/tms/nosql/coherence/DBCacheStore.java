@@ -1,19 +1,14 @@
 package com.ctb.tms.nosql.coherence;
 
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
+import com.ctb.tms.bean.login.ManifestWrapper;
 import com.oracle.coherence.patterns.pushreplication.PublishingCacheStore;
-import com.tangosol.io.pof.ConfigurablePofContext;
 import com.tangosol.net.cache.BinaryEntryStore;
-import com.tangosol.net.cache.CacheStore;
-import com.tangosol.run.xml.XmlHelper;
 import com.tangosol.util.BinaryEntry;
-import com.tangosol.util.extractor.IdentityExtractor;
 
 public class DBCacheStore implements BinaryEntryStore {
 	
@@ -59,18 +54,17 @@ public class DBCacheStore implements BinaryEntryStore {
     }
     
     public void store(com.tangosol.util.BinaryEntry entry) {
-    	try {
-    		logger.debug("Write to push replication store");
-	    	if(store != null) {
-		    	store.store(entry.getKey(), entry.getValue());
-		    	if(cacheName.startsWith("OAS")) {
-		    		if(pushStore != null) {
-		    			pushStore.store(entry);
-		    		}
-		    	}
+    	logger.debug("Write to push replication store");
+    	if(store != null) {
+    		//System.out.println(entry.getSerializer().getClass().getName());
+    		Object key = entry.getKey();
+    		Object value = entry.getValue();
+    		store.store(key, value);
+	    	if(cacheName.startsWith("OAS")) {
+	    		if(pushStore != null) {
+	    			pushStore.store(entry);
+	    		}
 	    	}
-    	} catch (IllegalArgumentException iae) {
-    		logger.error("Couldn't de-serialize: " + entry.getValue().getClass().getName() + ": " + iae.getMessage());
     	}
     }
     

@@ -156,7 +156,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 							try {
 								RosterData rd = oasDBSource.getRosterData(conn, key);
 								Manifest[] manifests = oasDBSource.getManifest(conn, creds[i].getTestRosterId());
-								if(manifests != null) {
+								if(manifests != null && manifests.length > 0) {
 									for(int j=0;j<manifests.length;j++) {
 										manifests[j].setForceReplication(true);
 									}
@@ -180,7 +180,7 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						}
 						creds = null;
 						if(errorCount > 0) {
-							logger.warn("Failed to store data in cache for " + errorCount + " rosters! Last exception: ", lastError);
+							logger.warn("Failed to store data in cache for " + errorCount + " rosters! Last exception: " + lastError.getMessage());
 						}
 						logger.info("Stored data in cache for " + storedCount + " rosters.");
 						creds = null;
