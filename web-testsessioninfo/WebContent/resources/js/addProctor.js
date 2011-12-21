@@ -414,6 +414,12 @@ function returnSelectedProctor() {
 	addProctorLocaldata = val;
 	noOfProctorAdded = addProctorLocaldata.length;
 	isOnBackProctor = true;
+	
+	delProctorIdObjArray = {};
+	proctorSelectedLength = 1;
+	allProctorSelected	= false;	
+	$("#cb_listProctor").attr('checked', false);	
+	
 	$("#Proctor_Tab").css('display', 'block');
 	$("#Select_Proctor_Tab").css('display', 'none');
 	gridReloadProctor(false);
