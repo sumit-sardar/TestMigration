@@ -114,6 +114,7 @@
             <web-resource-name>StudentWeb</web-resource-name>
             <description>Protect any resources within the following Page Flow.</description>
             <url-pattern>/studentOperation/*</url-pattern>
+            <url-pattern>/bulkOperation/*</url-pattern>
             <http-method>POST</http-method>
             <http-method>GET</http-method>
         </web-resource-collection>

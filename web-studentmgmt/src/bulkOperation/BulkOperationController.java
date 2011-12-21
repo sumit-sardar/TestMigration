@@ -609,8 +609,12 @@ public class BulkOperationController extends PageFlowController {
 	{
 		List CustomerDemographicList = new ArrayList();
 		for (int i=0; i < customerDemographic.length; i++)
-		{
-			CustomerDemographicList.add(customerDemographic[i]);
+		{	
+			if(customerDemographic[i].getVisible() != null 
+					&& !(customerDemographic[i].getVisible().equals("")) 
+					&& customerDemographic[i].getVisible().equals("T")) {
+					CustomerDemographicList.add(customerDemographic[i]);
+			}
 		}
 
 		return CustomerDemographicList;

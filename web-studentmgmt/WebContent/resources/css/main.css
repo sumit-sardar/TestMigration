@@ -348,7 +348,18 @@ input:focus {
 
 #innerID li {
 	clear: both;
+}
+
+
+#studentBulkOrgNode ul {
+	float: left;
+	clear: both;
+}
+
+#studentBulkOrgNode li {
+	clear: both;
 }	
+
 
 .gridTable {
 	font-family: Arial, Verdana, Sans Serif; 
@@ -406,5 +417,16 @@ clear: both;
 }
 
 .ie8 #innerID li {
+	clear: both;
+}
+
+
+
+.ie8 #studentBulkOrgNode ul {
+float: none;
+clear: both;
+}
+
+.ie8 #studentBulkOrgNode li {
 	clear: both;
 }

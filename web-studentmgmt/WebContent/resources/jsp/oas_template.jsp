@@ -23,6 +23,8 @@
     <link href="<%=request.getContextPath()%>/resources/css/main.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/menu.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/tabs.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/css/pro_dropdown_2.css" />
+	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/css/superfish.css"/>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/json2.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.4.4.min.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-ui-1.8.16.custom.min.js"></script>
@@ -43,6 +45,7 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/bulkAccommodation.js"></script>
 	<script type="text/javascript" src="/StudentWeb/resources/js/studentregistration.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/superfish.js"></script>
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>   
