@@ -8,8 +8,10 @@ import org.apache.log4j.Logger;
 import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
 import com.oracle.coherence.patterns.pushreplication.PublishingCacheStore;
+import com.tangosol.io.pof.ConfigurablePofContext;
 import com.tangosol.net.cache.BinaryEntryStore;
 import com.tangosol.net.cache.CacheStore;
+import com.tangosol.run.xml.XmlHelper;
 import com.tangosol.util.BinaryEntry;
 
 public class DBCacheStore implements CacheStore, BinaryEntryStore {
@@ -22,11 +24,11 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	
 	private static boolean doPush = true;
 	
-	//static ConfigurablePofContext ctx;
+	static ConfigurablePofContext ctx;
 	static ReflectionPofExtractor extractor;
 	
 	static {
-		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new DBCacheStore().getClass().getResource("/custom-types-pof-config.xml")));
+		ctx = new ConfigurablePofContext(XmlHelper.loadXml(new DBCacheStore().getClass().getResource("/custom-types-pof-config.xml")));
 		extractor = new ReflectionPofExtractor();
 	}
 	
@@ -78,15 +80,19 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     }
     
     public void store(com.tangosol.util.BinaryEntry entry) {
-    	logger.debug("Write to push replication store");
-    	if(store != null) {
-	    	Object value = extractor.extractFromEntry(entry);
-	    	store.store(entry.getKey(), value);
-	    	if(cacheName.startsWith("OAS")) {
-	    		if(pushStore != null) {
-	    			pushStore.store(entry);
-	    		}
+    	try {
+	    	logger.debug("Write to push replication store");
+	    	if(store != null) {
+		    	Object value = extractor.extractFromEntry(entry);
+		    	store.store(entry.getKey(), value);
+		    	if(cacheName.startsWith("OAS")) {
+		    		if(pushStore != null) {
+		    			pushStore.store(entry);
+		    		}
+		    	}
 	    	}
+    	} catch (IllegalArgumentException iae) {
+    		logger.error("Couldn't de-serialize: " + entry.getValue().getClass().getName());
     	}
     }
 

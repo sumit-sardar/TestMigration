@@ -150,8 +150,12 @@ public class ManifestCacheStore implements OASCacheStore {
 		    int counter = 0;
     		while(it.hasNext()) {
     			BinaryEntry entry = it.next();
-    			sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) extractor.extractFromEntry(entry)).getManifests());
-		    	counter++;
+    			try {
+	    			sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) extractor.extractFromEntry(entry)).getManifests());
+    			} catch (IllegalArgumentException iae) {
+    	    		logger.error("Couldn't de-serialize: " + entry.getValue().getClass().getName());
+    	    	}
+    			counter++;
     		}
     		conn.commit();
     		logger.info("ManifestCacheStore.storeAll processed " + counter + " records.");
