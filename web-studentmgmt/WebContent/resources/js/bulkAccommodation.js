@@ -102,7 +102,7 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 	    	$('#gs_highLighter').trigger('change');
 	    	
 	    	
-	    	
+	    	clearList();
 	    	resetBulk();
 	    	setAnchorButtonState('assignAccommButton', true);
 			SelectedOrgNodeId = $(this).parent().attr("id");
@@ -522,14 +522,16 @@ function populateBulkStudentGrid() {
 	
 	
 	}
-	
+	var globalCustomerDemographic1='';
+	var globalCustomerDemographic2='';
+	var globalCustomerDemographic3='';
 	
 	function createDemoList(){
 		var liMenuStr = "<div><ul class='sf-menu' id='menu'>";
 		 for (var i=0; i<3; i++) {
-		 	liMenuStr = liMenuStr + "<li class='selected'><a href='#' class='menuText'>Please select</a><ul><li><a href='#' id='Please select'>Please select</a>";
+		 	liMenuStr = liMenuStr + "<li class='selected'><a href='#' class='menuText' id='selectedBox"+parseInt(i+1)+"'>Please select</a><ul><li><a href='#' id='ps_"+parseInt(i+1)+"'>Please select</a>";
 		 	for(var j=0; j<customerDemographicList.length; j++) {
-		 		liMenuStr= liMenuStr + "<li><a href='#' id='"+customerDemographicList[j].id+"_"+j+"'>"+customerDemographicList[j].labelName+"</a>";
+		 		liMenuStr= liMenuStr + "<li><a href='#' id='"+customerDemographicList[j].id+"_"+parseInt(i+1)+"'>"+customerDemographicList[j].labelName+"</a>";
 		 		var cDemoValues = customerDemographicList[j].customerDemographicValues;
 		 		if (cDemoValues.length > 0){
 		 			liMenuStr= liMenuStr + "<ul>";
@@ -559,31 +561,69 @@ function populateBulkStudentGrid() {
 	}).delegate("a","click",function(e) {
 		
 		var selected = $(this);
-					var selectedParent = selected.parent().parent().prev();
-					 if(!selectedParent.is(".menuText")) {
-						var pTxt = selected.parent().parent().prev().text();
-						pTxt = pTxt.substring(0,pTxt.length);
-						var parentTxt =  ((pTxt.length >= 15) ? pTxt.substring(0,15)+"... >> " : pTxt);
+		
+		var selectedParent = selected.parent().parent().prev();
+		 if(!selectedParent.is(".menuText")) {
+			var pTxt = selected.parent().parent().prev().text();
+			pTxt = pTxt.substring(0,pTxt.length);
+			var parentTxt =  ((pTxt.length >= 15) ? pTxt.substring(0,15)+"... >> " : pTxt);
 
-						var tooltip = txt = selected.text();	
-						if(! selected.is(".menuText")) {
-							var txt = ((txt.length >= 15) ? txt.substring(0,15)+"..." : txt);		
-							selected.parents("li.selected").children("a").attr("title",tooltip).html(parentTxt +" "+ txt+"<span class='sf-sub-indicator'></span>");
-							selected.parents("ul:not(.sf-menu)").hide();
-						}
-					} else {
-						var parentTxt = "";
-						var tooltip = txt = selected.text();	
-						if(! selected.is(".menuText")) {
-							var txt = ((txt.length >= 15) ? txt.substring(0,15)+"... >> All " : txt.substring(0,txt.length) +" All");		
-							if(txt.indexOf('Please select')!= -1){
-								txt = 'Please select';
-							}
-							
-							selected.parents("li.selected").children("a").attr("title",tooltip).html(parentTxt + txt+"<span class='sf-sub-indicator'></span>");
-							selected.parents("ul:not(.sf-menu)").hide();
-						}
-					}
+			var tooltip = txt = selected.text();	
+			if(! selected.is(".menuText")) {
+				var txt = ((txt.length >= 15) ? txt.substring(0,15)+"..." : txt);		
+				selected.parents("li.selected").children("a").attr("title",tooltip).html(parentTxt +" "+ txt+"<span class='sf-sub-indicator'></span>");
+				selected.parents("ul:not(.sf-menu)").hide();
+			}
+			selectedFullId = selected.parents("li:eq(1)").children("a").attr("id");			
+			
+		} else {
+			var parentTxt = "";
+			var tooltip = txt = selected.text();
+			var selectedFullId;	
+			if(! selected.is(".menuText")) {
+				var txt = ((txt.length >= 15) ? txt.substring(0,15)+"... >> All " : txt.substring(0,txt.length) +" All");		
+				if(txt.indexOf('Please select')!= -1){
+					txt = 'Please select';
+				}
+				
+				selected.parents("li.selected").children("a").attr("title",tooltip).html(parentTxt + txt+"<span class='sf-sub-indicator'></span>");
+				selected.parents("ul:not(.sf-menu)").hide();
+				selectedFullId = selected.attr("id");
+				
+			}
+			
+		}
+		
+		var selectedId = selectedFullId.split('_');
+			
+		if(selectedFullId.indexOf('ps_') != -1){
+			if(selectedId[1] == '1'){
+				$("[id^='" + globalCustomerDemographic1+"_']").show();
+			}
+			if(selectedId[1] == '2'){
+				$("[id^='" + globalCustomerDemographic2+"_']").show();
+			}
+			if(selectedId[1] == '3'){
+				$("[id^='" + globalCustomerDemographic3+"_']").show();
+			}
+		}else {	
+			if(selectedId[1] == '1'){
+				globalCustomerDemographic1 = selectedId[0];
+				document.getElementById(selectedId[0]+"_2").style.display = 'none';
+				document.getElementById(selectedId[0]+"_3").style.display = 'none';
+			}
+			if(selectedId[1] == '2'){
+			globalCustomerDemographic2 = selectedId[0];
+				document.getElementById(selectedId[0]+"_1").style.display = 'none';
+				document.getElementById(selectedId[0]+"_3").style.display = 'none';
+			}
+			if(selectedId[1] == '3'){
+				globalCustomerDemographic3 = selectedId[0];
+				document.getElementById(selectedId[0]+"_1").style.display = 'none';
+				document.getElementById(selectedId[0]+"_2").style.display = 'none';
+			}
+		}
+					
 	});	
 	
 	
