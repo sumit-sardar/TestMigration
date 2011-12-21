@@ -68,7 +68,7 @@ public class AuthenticationData implements Serializable
 	}
 	
 	//Changes for RD 
-	private Integer randomDistractorSeedNumber;
+	private int randomDistractorSeedNumber;
 
 	//Change for TTS-Sppech controller
     
@@ -91,7 +91,7 @@ public class AuthenticationData implements Serializable
 	 * 
 	 * @return
 	 */
-	public Integer getRandomDistractorSeedNumber() {
+	public int getRandomDistractorSeedNumber() {
 		return randomDistractorSeedNumber;
 	}
 
@@ -99,10 +99,8 @@ public class AuthenticationData implements Serializable
 	 * 
 	 * @param randomDistractorSeedNumber
 	 */
-	public void setRandomDistractorSeedNumber(Integer randomDistractorSeedNumber) {
-		if(randomDistractorSeedNumber != null && !(0 == randomDistractorSeedNumber.intValue())) {
-			this.randomDistractorSeedNumber = randomDistractorSeedNumber;
-		}
+	public void setRandomDistractorSeedNumber(int randomDistractorSeedNumber) {
+		this.randomDistractorSeedNumber = randomDistractorSeedNumber;
 	}
 
 	/**
