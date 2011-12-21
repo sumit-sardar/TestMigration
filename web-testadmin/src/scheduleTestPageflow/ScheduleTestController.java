@@ -4977,6 +4977,12 @@ public class ScheduleTestController extends PageFlowController
 		/* 51931 Deferred Defect For HighLighter*/
 		int highLigther = 0;
 		int extendedTime = 0;// added for student pacing
+         // Start: For MQC defect 66844
+        int  maskingRular = 0;
+        int  maskingTool = 0;
+        int  magnifyingGlass = 0;
+        int  musicFileId = 0;
+         // End: For MQC defect 66844
         SessionStudent[] students = scheduledSession.getStudents();
         total = students.length;
         for(int i=0; i<students.length; i++){
@@ -5008,6 +5014,20 @@ public class ScheduleTestController extends PageFlowController
         	   extendedTime++;
            }
            //end- added for student pacing
+            // Start: For MQC defect 66844
+           if(stringToBoolean(student.getMaskingRular())){
+           	maskingRular++;
+           }
+           if(stringToBoolean(student.getMaskingTool())){
+           	maskingTool++;
+           }
+           if(stringToBoolean(student.getMagnifyingGlass())){
+           	magnifyingGlass++;
+           }
+           if(stringToBoolean(student.getMusicFileId())){
+           	musicFileId++;
+           }
+            // End: For MQC defect 66844
         }
         return new TestSummaryVO(new Integer(total),
                                  new Integer (accommodated),
@@ -5018,7 +5038,11 @@ public class ScheduleTestController extends PageFlowController
                                  new Integer (untimed),
 								/* 51931 Deferred Defect For HighLighter*/
 								 new Integer (highLigther),
-								 new Integer (extendedTime)); 
+								 new Integer (extendedTime),
+								 new Integer (maskingRular),
+                                 new Integer (maskingTool),
+                                 new Integer (magnifyingGlass),
+                                 new Integer (musicFileId)); 
      } 
     
     private boolean stringToBoolean(String in)

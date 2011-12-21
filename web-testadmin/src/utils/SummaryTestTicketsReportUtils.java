@@ -71,11 +71,11 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private static final float DYNAMIC_PAGE_TAC_TITLE_SPACING = 10f;
     private static final float TAC_TITLE_TAC_INFO_SPACING = 20f;
     private static final float TAC_INFO_TAC_TABLE_SPACING = 20f;
-    private static final float TAC_TABLE_TOTAL_STUDENTS_SPACING = 20f;
+    private static final float TAC_TABLE_TOTAL_STUDENTS_SPACING = 15f; // For MQC defect 66844
     private static final float STUDENTS_TABLE_SPACING = 10f;
     private static final float TOTAL_STUDENTS_TOTAL_ACCOMMODATIONS_SPACING = 20f;
-    private static final float TOTAL_ACCOMMODATIONS_ACCOM_1_SPACING = 20f;
-    private static final float ACCOMM_1_ACCOMM_2_SPACING = 20f;
+    private static final float TOTAL_ACCOMMODATIONS_ACCOM_1_SPACING = 15f; // For MQC defect 66844
+    private static final float ACCOMM_1_ACCOMM_2_SPACING = 15f; // For MQC defect 66844
     private static final float DYNAMIC_PAGE_STUDENT_TABLE_SPACING = 10f;
 
     private static final float SUBTEST_HEADER_HEIGHT = 20f;
@@ -149,7 +149,13 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private static final String WATERMARK_TEXT = "TTS";
     private static final String SUPPORT_CONTACT_LABEL = "For customer support, please call ";
     private static final String HIGHLIGHTER_LABEL = "Highlighter:"; /* 51931 Deferred Defect For HighLighter*//* 55815 solution for defect*/
-
+   // Start: For MQC defect 66844
+    private static final String MASKING_RULAR_LABEL = "Blocking Ruler:";
+    private static final String MASKING_TOOL_LABEL = "Masking Tool:";
+    private static final String MAGNIFYING_GLASS_LABEL = "Magnifying Glass";
+    private static final String MUSIC_PLAYER_LABEL = "Music Player";
+    private static final String EXTENDED_TIME_LABEL = "Extended Time";
+    // End: For MQC defect 66844
     // variable y page coordinates
     private float lineY = 0f;
     private float testNameY = 0f;
@@ -165,7 +171,11 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private float totalStudentsY = 0f;  
     private float totalAccommY = 0f;    
     private float accomm1Y = 0f;      
-    private float accomm2Y = 0f;    
+    // Start:For MQC defect 66844
+    private float accomm2Y = 0f;
+    private float accomm3Y = 0f;
+    private float accomm4Y = 0f;
+    // End: For MQC defect 66844
     
     // global variables
 	private Collection rosterList = null;
@@ -422,11 +432,95 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
                 result.add(getHighLighterLabel());  /* 51931 Deferred Defect For HighLighter*/
                 result.add(getHighLighterValue());
                 
+                // Start: For MQC defect 66844
+                result.add(getMaskingRularLabel());
+                result.add(getMaskingRularValue());
+                result.add(getMaskingToolLabel());
+                result.add(getMaskingToolValue());
+                result.add(getMagniFyingGlassLabel());
+                result.add(getMagniFyingGlassValue());
+                result.add(getMusicPlayerLabel());
+                result.add(getMusicPlayerValue());
+                result.add(getExtendedTimeLabel());
+                result.add(getExtendedTimeValue());
+				//End: For MQC defect 66844
+                
             }
         }
         return result;
     }
     
+	// For MQC defect 66844
+	private TableVO getExtendedTimeValue() throws DocumentException {
+		return tableUtils.getInfoTable(getExtendedTime(),
+                INFO_VALUE_WIDTH,
+                ACCOMM_2_VALUE_X,
+                accomm4Y);
+}
+// For MQC defect 66844
+	private TableVO getExtendedTimeLabel() throws DocumentException {
+		return tableUtils.getBlueTable(EXTENDED_TIME_LABEL,
+                INFO_LABEL_WIDTH,
+                ACCOMM_2_LABEL_X,
+                accomm4Y);
+}
+// For MQC defect 66844
+	private TableVO getMusicPlayerValue() throws DocumentException {
+		return tableUtils.getInfoTable(getMusicPlayer(),
+                INFO_VALUE_WIDTH,
+                ACCOMM_1_VALUE_X,
+                accomm4Y);
+}
+// For MQC defect 66844
+	private TableVO getMusicPlayerLabel() throws DocumentException {
+		return tableUtils.getBlueTable(MUSIC_PLAYER_LABEL,
+                INFO_LABEL_WIDTH,
+                ACCOMM_1_LABEL_X,
+                accomm4Y);
+}
+// For MQC defect 66844
+	private TableVO getMagniFyingGlassValue() throws DocumentException{
+		return tableUtils.getInfoTable(getMagniFyingGlass(),
+                INFO_VALUE_WIDTH,
+                ACCOMM_3_VALUE_X,
+                accomm3Y);
+}
+// For MQC defect 66844
+	private TableVO getMagniFyingGlassLabel() throws DocumentException{
+		return tableUtils.getBlueTable(MAGNIFYING_GLASS_LABEL,
+                INFO_LABEL_WIDTH,
+                ACCOMM_3_LABEL_X,
+                accomm3Y);
+}
+// For MQC defect 66844
+	private TableVO getMaskingToolValue() throws DocumentException{
+		return tableUtils.getInfoTable(getMaskingTool(),
+                INFO_VALUE_WIDTH,
+                ACCOMM_2_VALUE_X,
+                accomm3Y);
+}
+// For MQC defect 66844
+	private TableVO getMaskingToolLabel() throws DocumentException{
+		return tableUtils.getBlueTable(MASKING_TOOL_LABEL,
+                INFO_LABEL_WIDTH,
+                ACCOMM_2_LABEL_X,
+                accomm3Y);
+}
+// For MQC defect 66844
+    private TableVO getMaskingRularValue() throws DocumentException {
+    	return tableUtils.getInfoTable(getMaskingRular(),
+                INFO_VALUE_WIDTH,
+                ACCOMM_1_VALUE_X,
+                accomm3Y);
+    }
+// For MQC defect 66844
+	private TableVO getMaskingRularLabel() throws DocumentException {
+		  return tableUtils.getBlueTable(MASKING_RULAR_LABEL,
+                  INFO_LABEL_WIDTH,
+                  ACCOMM_1_LABEL_X,
+                  accomm3Y);
+}
+
     private boolean hasAccommodatedStudents(){
         return testSummary.getAccommodated().intValue() > 0;
     }
@@ -436,6 +530,9 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
         this.totalAccommY = this.totalStudentsY - TOTAL_STUDENTS_TOTAL_ACCOMMODATIONS_SPACING;
         this.accomm1Y = this.totalAccommY - TOTAL_ACCOMMODATIONS_ACCOM_1_SPACING;
         this.accomm2Y = this.accomm1Y - ACCOMM_1_ACCOMM_2_SPACING;
+        
+        this.accomm3Y = this.accomm2Y - TOTAL_ACCOMMODATIONS_ACCOM_1_SPACING; // For MQC defect 66844
+        this.accomm4Y = this.accomm3Y - ACCOMM_1_ACCOMM_2_SPACING; // For MQC defect 66844
     }
     private TableVO getTotalStudentsLabel() throws DocumentException {
         return tableUtils.getTitleTable(TOTAL_STUDENTS_LABEL,
@@ -593,6 +690,22 @@ public class SummaryTestTicketsReportUtils extends ReportUtils
     private String getHighLighter(){
         return testSummary.getHighLighter().toString();
     }
+    
+    private String getMaskingRular() {
+    	 return testSummary.getMaskingRular().toString();
+	}
+    private String getMaskingTool() {
+    	return testSummary.getMaskingTool().toString();
+	}
+    private String getMagniFyingGlass() {
+    	return testSummary.getMagnifyingGlass().toString();
+	}
+	private String getMusicPlayer() {
+		return testSummary.getMusicPlayerAccom().toString();
+	}
+	private String getExtendedTime() {
+		return testSummary.getExtendedTimeAccom().toString();
+	}
     
     private void addSupportContact() throws DocumentException {
         this.staticTables.add( 

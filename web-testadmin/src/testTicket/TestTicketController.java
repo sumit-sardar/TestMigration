@@ -676,9 +676,27 @@ public class TestTicketController extends PageFlowController
             
             //Start- added for student pacing          
             if(convertStringToBoolean(student.getExtendedTimeAccom()) ){
+            	roster.setExtendedTimeAccom(student.getExtendedTimeAccom());  // Start: For MQC defect 66844
                 accommodationList.add("Extended Time");
+            }  //end- added for student pacing
+             // Start: For MQC defect 66844
+            if (convertStringToBoolean(student.getMaskingRular())) {
+            	roster.setMaskingRular(student.getMaskingRular());
+            	accommodationList.add("Blocking Ruler");
             }
-            //end- added for student pacing
+            if (convertStringToBoolean(student.getMaskingTool())) {
+            	roster.setMaskingTool(student.getMaskingTool());
+            	accommodationList.add("Masking Tool");
+            }
+            if (convertStringToBoolean(student.getMagnifyingGlass())) {
+            	roster.setMagnifyingGlass(student.getMagnifyingGlass());
+            	accommodationList.add("Magnifying Glass");
+            }
+            if (convertStringToBoolean(student.getMusicFileId())) {
+            	roster.setMusicFileId(student.getMusicFileId());
+            	accommodationList.add("Music Player");
+            }
+             // End: For MQC defect 66844
         }
         
         String[] accommodations = new String[accommodationList.size()];
@@ -715,7 +733,9 @@ public class TestTicketController extends PageFlowController
         for(int i=0;i<subtests.size();i++){            
             SubtestVO subtestVO = (SubtestVO) subtests.get(i);
             String duration = subtestVO.getDuration();
-            totalTime = totalTime + Integer.parseInt((duration.substring(0,duration.indexOf("minutes"))).trim());            
+            if (duration.indexOf("minutes") > 0) {
+            	totalTime = totalTime + Integer.parseInt((duration.substring(0,duration.indexOf("minutes"))).trim());
+            }
         }
         String timeLimit = totalTime + " minutes";
         return timeLimit;
@@ -754,6 +774,12 @@ public class TestTicketController extends PageFlowController
         int untimed = 0;
         int highLighter = 0; /* 51931 Deferred Defect For HighLighter*/
         int extendedTimeAccom = 0; //Added for student pacing 
+        // Start: For MQC defect 66844
+        int  maskingRular = 0;
+        int  maskingTool = 0;
+        int  magnifyingGlass = 0;
+        int  musicFileId = 0;
+        // End: For MQC defect 66844
         for(Iterator it = rosterList.iterator(); it.hasNext();){
             TestRosterVO roster = (TestRosterVO)it.next();
             if(stringToBoolean(roster.getHasAccommodations())){
@@ -783,8 +809,23 @@ public class TestTicketController extends PageFlowController
             	extendedTimeAccom++;
             }
             //end- added for student pacing
+            // Start: For MQC defect 66844
+            if(stringToBoolean(roster.getMaskingRular())){
+            	maskingRular++;
+            }
+            if(stringToBoolean(roster.getMaskingTool())){
+            	maskingTool++;
+            }
+            if(stringToBoolean(roster.getMagnifyingGlass())){
+            	magnifyingGlass++;
+            }
+            if(stringToBoolean(roster.getMusicFileId())){
+            	musicFileId++;
+            }
+            // End: For MQC defect 66844
         }
         /* 51931 Deferred Defect For HighLighter*/
+        /// For MQC defect 66844
         return new TestSummaryVO(new Integer(total),
                                  new Integer (accommodated),
                                  new Integer (calculator),
@@ -793,7 +834,11 @@ public class TestTicketController extends PageFlowController
                                  new Integer (pause),
                                  new Integer (untimed),
                                  new Integer (highLighter),
-                                 new Integer (extendedTimeAccom));
+                                 new Integer (extendedTimeAccom),
+                                 new Integer (maskingRular),
+                                 new Integer (maskingTool),
+                                 new Integer (magnifyingGlass),
+                                 new Integer (musicFileId) );
      } // added for student pacing
     
  // START- Added for CR GA2011CR001

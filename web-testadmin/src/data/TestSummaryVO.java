@@ -23,7 +23,14 @@ public class TestSummaryVO implements java.io.Serializable
     /* 51931 Deferred Defect For HighLighter*/
     private Integer highLighter = null;
     
-    /* 51931 Deferred Defect For HighLighter*/     
+    /* 51931 Deferred Defect For HighLighter*/
+    // Start: For MQC defect 66844
+    private Integer maskingRular = null;
+    private Integer maskingTool = null;
+    private Integer magnifyingGlass = null;
+    private Integer musicPlayerAccom = null;
+    // End: For MQC defect 66844
+    // For MQC defect 66844
     public TestSummaryVO(Integer total, 
                          Integer accommodated, 
                          Integer calculator,
@@ -32,7 +39,11 @@ public class TestSummaryVO implements java.io.Serializable
                          Integer pause,
                          Integer untimed,
                          Integer highLighter,
-                         Integer extendedTimeAccom) {
+                         Integer extendedTimeAccom, 
+                         Integer maskingRular, 
+                         Integer maskingTool, 
+                         Integer magnifyingGlass, 
+                         Integer musicPlayerAccom) {
         this.total = total;
         this.accommodated = accommodated;
         this.calculator = calculator;
@@ -44,6 +55,12 @@ public class TestSummaryVO implements java.io.Serializable
         this.extendedTimeAccom = extendedTimeAccom; 
         // end- added for student pacing
         this.supportAccommodations = Boolean.TRUE;
+         // Start: For MQC defect 66844
+        this.maskingRular = maskingRular; 
+        this.maskingTool = maskingTool; 
+        this.magnifyingGlass = magnifyingGlass; 
+        this.musicPlayerAccom = musicPlayerAccom; 
+         // End: For MQC defect 66844
     }
     /* 51931 Deferred Defect For HighLighter*/     
     public TestSummaryVO(TestSummaryVO src) {
@@ -58,6 +75,12 @@ public class TestSummaryVO implements java.io.Serializable
         //added for student pacing
         this.extendedTimeAccom = src.extendedTimeAccom;
         this.supportAccommodations = Boolean.TRUE;
+         // Start: For MQC defect 66844
+        this.maskingRular = src.maskingRular; 
+        this.maskingTool = src.maskingTool; 
+        this.magnifyingGlass = src.magnifyingGlass; 
+        this.musicPlayerAccom = src.musicPlayerAccom; 
+         // End: For MQC defect 66844
     }
 
     public Integer getTotal() {
@@ -130,5 +153,29 @@ public class TestSummaryVO implements java.io.Serializable
 		this.extendedTimeAccom = extendedTimeAccom;
 	}
     //end- added for student pacing
+	public Integer getMaskingRular() {
+		return maskingRular;
+	}
+	public void setMaskingRular(Integer maskingRular) {
+		this.maskingRular = maskingRular;
+	}
+	public Integer getMaskingTool() {
+		return maskingTool;
+	}
+	public void setMaskingTool(Integer maskingTool) {
+		this.maskingTool = maskingTool;
+	}
+	public Integer getMagnifyingGlass() {
+		return magnifyingGlass;
+	}
+	public void setMagnifyingGlass(Integer magnifyingGlass) {
+		this.magnifyingGlass = magnifyingGlass;
+	}
+	public Integer getMusicPlayerAccom() {
+		return musicPlayerAccom;
+	}
+	public void setMusicPlayerAccom(Integer musicPlayerAccom) {
+		this.musicPlayerAccom = musicPlayerAccom;
+	}
     
 } 
