@@ -24,11 +24,11 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	
 	private static boolean doPush = true;
 	
-	static ConfigurablePofContext ctx;
+	//static ConfigurablePofContext ctx;
 	static ReflectionPofExtractor extractor;
 	
 	static {
-		ctx = new ConfigurablePofContext(XmlHelper.loadXml(new DBCacheStore().getClass().getResource("/custom-types-pof-config.xml")));
+		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new DBCacheStore().getClass().getResource("/custom-types-pof-config.xml")));
 		extractor = new ReflectionPofExtractor();
 	}
 	
@@ -81,7 +81,7 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     
     public void store(com.tangosol.util.BinaryEntry entry) {
     	try {
-	    	logger.debug("Write to push replication store");
+    		logger.debug("Write to push replication store");
 	    	if(store != null) {
 		    	Object value = extractor.extractFromEntry(entry);
 		    	store.store(entry.getKey(), value);

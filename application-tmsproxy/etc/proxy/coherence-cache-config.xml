@@ -5,7 +5,7 @@
 	xmlns:sync="class:com.oracle.coherence.patterns.pushreplication.configuration.PushReplicationNamespaceContentHandler"
     xmlns:cr="class:com.oracle.coherence.environment.extensible.namespaces.InstanceNamespaceContentHandler">
 
-	<introduce:config file="coherence-messagingpattern-cache-config.xml" />
+	<introduce:config file="coherence-messagingpattern-pof-cache-config.xml" />
 
     <sync:provider pof-enabled="true">
         <sync:coherence-provider />
