@@ -77,19 +77,15 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     }
     
     public void store(com.tangosol.util.BinaryEntry entry) {
-    	try {
-    		logger.debug("Write to push replication store");
-	    	if(store != null) {
-		    	Object value = entry.getValue(); //extractor.extractFromEntry(entry);
-		    	store.store(entry.getKey(), value);
-		    	if(cacheName.startsWith("OAS")) {
-		    		if(pushStore != null) {
-		    			pushStore.store(entry);
-		    		}
-		    	}
+		logger.debug("Write to push replication store");
+    	if(store != null) {
+	    	Object value = entry.getValue(); //extractor.extractFromEntry(entry);
+	    	store.store(entry.getKey(), value);
+	    	if(cacheName.startsWith("OAS")) {
+	    		if(pushStore != null) {
+	    			pushStore.store(entry);
+	    		}
 	    	}
-    	} catch (IllegalArgumentException iae) {
-    		logger.error("Couldn't de-serialize: " + entry.getValue().getClass().getName() + ": " + iae.getMessage());
     	}
     }
 

@@ -78,7 +78,7 @@ public class ManifestCacheStore implements OASCacheStore {
     			// do nothing
     		}
     	}
-    	logger.info("ManifestCacheStore.store processed 1 record.");
+    	logger.debug("ManifestCacheStore.store processed 1 record.");
     }
 
     public void erase(Object oKey) {
@@ -151,11 +151,7 @@ public class ManifestCacheStore implements OASCacheStore {
 		    int counter = 0;
     		while(it.hasNext()) {
     			BinaryEntry entry = it.next();
-    			try {
-	    			sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) entry.getValue()).getManifests());
-    			} catch (IllegalArgumentException iae) {
-    	    		logger.error("Couldn't de-serialize: " + entry.getValue().getClass().getName() + ": " + iae.getMessage());
-    	    	}
+    			sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) entry.getValue()).getManifests());
     			counter++;
     		}
     		conn.commit();
