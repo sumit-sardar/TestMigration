@@ -5,11 +5,25 @@
 	xmlns:sync="class:com.oracle.coherence.patterns.pushreplication.configuration.PushReplicationNamespaceContentHandler"
     xmlns:cr="class:com.oracle.coherence.environment.extensible.namespaces.InstanceNamespaceContentHandler">
 
-	<introduce:config file="coherence-messagingpattern-pof-cache-config.xml" />	
+	<defaults>
+      <serializer>
+         <instance>
+            <class-name>com.tangosol.io.pof.ConfigurablePofContext</class-name>
+            <init-params>
+               <init-param>
+                  <param-type>String</param-type>
+                  <param-value>custom-types-pof-config.xml</param-value>
+               </init-param>
+            </init-params>
+         </instance>
+      </serializer>
+   	</defaults>
 	
     <sync:provider pof-enabled="true">
         <sync:coherence-provider />
     </sync:provider>
+	
+	<introduce:config file="coherence-messagingpattern-pof-cache-config.xml" />	
 	
     <caching-scheme-mapping>
         <cache-mapping>
@@ -121,15 +135,6 @@
         <!--        Default Distributed caching scheme.        -->
         <distributed-scheme>            
             <scheme-name>DistributedScheme</scheme-name>
-            <serializer>
-			  <class-name>com.tangosol.io.pof.ConfigurablePofContext</class-name>
-			  <init-params>
-				<init-param>
-				  <param-type>string</param-type>
-				  <param-value>custom-types-pof-config.xml</param-value>
-				</init-param>
-			  </init-params>
-			</serializer>
             <service-name>PartitionedCache</service-name> 
             <local-storage>true</local-storage>
             <thread-count>40</thread-count>    
@@ -145,15 +150,6 @@
         <!--        2-tier (memory, disk/db) scheme definition -->
         <near-scheme>
         	<scheme-name>TieredScheme</scheme-name>
-        	<serializer>
-			  <class-name>com.tangosol.io.pof.ConfigurablePofContext</class-name>
-			  <init-params>
-				<init-param>
-				  <param-type>string</param-type>
-				  <param-value>custom-types-pof-config.xml</param-value>
-				</init-param>
-			  </init-params>
-			</serializer>
         	<front-scheme>    
         		<local-scheme>
         			<scheme-ref>FrontMemoryScheme</scheme-ref>
@@ -175,16 +171,7 @@
 	                    </address-provider>
 	                </remote-addresses>
 					<connect-timeout>3s</connect-timeout> 
-				</tcp-initiator>
-				<serializer>
-				  <class-name>com.tangosol.io.pof.ConfigurablePofContext</class-name>
-				  <init-params>
-					<init-param>
-					  <param-type>string</param-type>
-					  <param-value>custom-types-pof-config.xml</param-value>
-					</init-param>
-				  </init-params>
-				</serializer> 
+				</tcp-initiator> 
 				<outgoing-message-handler> 
 					<heartbeat-interval>30s</heartbeat-interval>
 					<heartbeat-timeout>3s</heartbeat-timeout>

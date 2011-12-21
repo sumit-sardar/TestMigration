@@ -5,13 +5,17 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
 import com.oracle.coherence.patterns.pushreplication.PublishingCacheStore;
+import com.tangosol.io.pof.ConfigurablePofContext;
 import com.tangosol.net.cache.BinaryEntryStore;
 import com.tangosol.net.cache.CacheStore;
+import com.tangosol.run.xml.XmlHelper;
 import com.tangosol.util.BinaryEntry;
+import com.tangosol.util.extractor.IdentityExtractor;
 
-public class DBCacheStore implements CacheStore, BinaryEntryStore {
+public class DBCacheStore implements BinaryEntryStore {
 	
 	static Logger logger = Logger.getLogger(DBCacheStore.class);
 	
@@ -20,14 +24,6 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	private String cacheName;
 	
 	private static boolean doPush = true;
-	
-	//static ConfigurablePofContext ctx;
-	//static ReflectionPofExtractor extractor;
-	
-	//static {
-		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new DBCacheStore().getClass().getResource("/custom-types-pof-config.xml")));
-		//extractor = new ReflectionPofExtractor();
-	//}
 	
 	public DBCacheStore(String cacheName) {
 		this.cacheName = cacheName;
@@ -54,14 +50,6 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	
 	public DBCacheStore() {
     }
-
-    public Object load(Object oKey) {
-    	if(store != null) {
-    		return store.load(oKey);
-    	} else {
-    		return null;
-    	}
-    }
     
     public void load(com.tangosol.util.BinaryEntry entry) {
     	logger.debug("Read from push replication store");
@@ -69,29 +57,20 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     		entry.setValue(store.load(entry.getKey()));
     	}
     }
-
-    public void store(Object oKey, Object oValue) {
-    	if(store != null) {
-    		store.store(oKey, oValue);
-    	}
-    }
     
     public void store(com.tangosol.util.BinaryEntry entry) {
-		logger.debug("Write to push replication store");
-    	if(store != null) {
-	    	Object value = entry.getValue(); //extractor.extractFromEntry(entry);
-	    	store.store(entry.getKey(), value);
-	    	if(cacheName.startsWith("OAS")) {
-	    		if(pushStore != null) {
-	    			pushStore.store(entry);
-	    		}
+    	try {
+    		logger.debug("Write to push replication store");
+	    	if(store != null) {
+		    	store.store(entry.getKey(), entry.getValue());
+		    	if(cacheName.startsWith("OAS")) {
+		    		if(pushStore != null) {
+		    			pushStore.store(entry);
+		    		}
+		    	}
 	    	}
-    	}
-    }
-
-    public void erase(Object oKey) {
-    	if(store != null) {
-    		store.erase(oKey);
+    	} catch (IllegalArgumentException iae) {
+    		logger.error("Couldn't de-serialize: " + entry.getValue().getClass().getName() + ": " + iae.getMessage());
     	}
     }
     
@@ -101,12 +80,6 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	    	store.erase(entry.getKey());
     	}
     }
-
-	public void eraseAll(Collection colKeys) {
-		if(store != null) {
-			store.eraseAll(colKeys);
-		}
-	}
 	
 	public void eraseAll(java.util.Set setBinEntries) {
 		logger.debug("Batch delete to push replication store");
@@ -118,13 +91,6 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 			}
 		}
 	}
-
-	public Map loadAll(Collection colKeys) {
-		if(store != null) {
-			return store.loadAll(colKeys);
-		}
-		else return null;
-	}
 	
 	public void loadAll(java.util.Set setBinEntries) {
 		logger.debug("Batch read from push replication store");
@@ -134,12 +100,6 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 				BinaryEntry entry = it.next();
 				entry.setValue(store.load(entry.getKey()));
 			}
-		}
-	}
-
-	public void storeAll(Map mapEntries) {
-		if(store != null) {
-			store.storeAll(mapEntries);
 		}
 	}
 	

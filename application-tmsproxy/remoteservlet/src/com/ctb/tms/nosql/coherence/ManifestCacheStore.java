@@ -17,18 +17,11 @@ import com.ctb.tms.rdb.OASRDBSink;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.tangosol.util.BinaryEntry;
+import com.tangosol.util.extractor.IdentityExtractor;
 
 public class ManifestCacheStore implements OASCacheStore {
 	
 	static Logger logger = Logger.getLogger(ManifestCacheStore.class);
-	
-	//static ConfigurablePofContext ctx;
-	//static ReflectionPofExtractor extractor;
-	
-	//static {
-		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new TMSConflictResolver().getClass().getResource("/custom-types-pof-config.xml")));
-	//	extractor = new ReflectionPofExtractor();
-	//}
 	
 	public ManifestCacheStore(String cacheName) {
 		this();
@@ -78,7 +71,6 @@ public class ManifestCacheStore implements OASCacheStore {
     			// do nothing
     		}
     	}
-    	logger.debug("ManifestCacheStore.store processed 1 record.");
     }
 
     public void erase(Object oKey) {
@@ -142,7 +134,7 @@ public class ManifestCacheStore implements OASCacheStore {
     	return null;
     }
 
-	public void storeAll(Set setBinEntries) {
+	public void storeAll(Set<BinaryEntry> setBinEntries) {
 		Connection conn = null;
     	try {
     		Iterator<BinaryEntry> it = setBinEntries.iterator();
@@ -151,7 +143,7 @@ public class ManifestCacheStore implements OASCacheStore {
 		    int counter = 0;
     		while(it.hasNext()) {
     			BinaryEntry entry = it.next();
-    			sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) entry.getValue()).getManifests());
+	    		sink.putManifest(conn, (String) entry.getKey(), ((ManifestWrapper) entry.getValue()).getManifests());
     			counter++;
     		}
     		conn.commit();

@@ -4,6 +4,20 @@
 <cache-config
 	xmlns:cr="class:com.oracle.coherence.environment.extensible.namespaces.InstanceNamespaceContentHandler">
 	
+	<defaults>
+      <serializer>
+         <instance>
+            <class-name>com.tangosol.io.pof.ConfigurablePofContext</class-name>
+            <init-params>
+               <init-param>
+                  <param-type>String</param-type>
+                  <param-value>custom-types-pof-config.xml</param-value>
+               </init-param>
+            </init-params>
+         </instance>
+      </serializer>
+   	</defaults>
+	
     <caching-scheme-mapping>
         <cache-mapping>
 	        <cache-name>ADS*</cache-name>
@@ -60,15 +74,6 @@
         <!--        Default Distributed caching scheme.        -->
         <distributed-scheme>            
             <scheme-name>DistributedScheme</scheme-name>
-            <serializer>
-			  <class-name>com.tangosol.io.pof.ConfigurablePofContext</class-name>
-			  <init-params>
-				<init-param>
-				  <param-type>string</param-type>
-				  <param-value>custom-types-pof-config.xml</param-value>
-				</init-param>
-			  </init-params>
-			</serializer>
             <service-name>PartitionedCache</service-name> 
             <local-storage>true</local-storage>
             <thread-count>40</thread-count>    
@@ -84,15 +89,6 @@
         <!--        2-tier (memory, disk/db) scheme definition -->
         <near-scheme>
         	<scheme-name>TieredScheme</scheme-name>
-        	<serializer>
-			  <class-name>com.tangosol.io.pof.ConfigurablePofContext</class-name>
-			  <init-params>
-				<init-param>
-				  <param-type>string</param-type>
-				  <param-value>custom-types-pof-config.xml</param-value>
-				</init-param>
-			  </init-params>
-			</serializer>
         	<front-scheme>    
         		<local-scheme>
         			<scheme-ref>FrontMemoryScheme</scheme-ref>

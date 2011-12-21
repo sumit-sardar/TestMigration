@@ -13,18 +13,11 @@ import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.rdb.OASRDBSink;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.tangosol.util.BinaryEntry;
+import com.tangosol.util.extractor.IdentityExtractor;
 
 public class ResponseCacheStore implements OASCacheStore {
 	
 	static Logger logger = Logger.getLogger(ResponseCacheStore.class);
-	
-	//static ConfigurablePofContext ctx;
-	//static ReflectionPofExtractor extractor;
-	
-	//static {
-		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new TMSConflictResolver().getClass().getResource("/custom-types-pof-config.xml")));
-	//	extractor = new ReflectionPofExtractor();
-	//}
 	
 	public ResponseCacheStore(String cacheName) {
 		this();
@@ -74,7 +67,7 @@ public class ResponseCacheStore implements OASCacheStore {
     	return null;
 	}
 
-	public void storeAll(java.util.Set setBinEntries) {
+	public void storeAll(java.util.Set<BinaryEntry> setBinEntries) {
 		Connection conn = null;
     	try {
     		Iterator<BinaryEntry> it = setBinEntries.iterator();
