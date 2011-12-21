@@ -125,14 +125,8 @@ function populateSessionListGrid(homePageLoad) {
 				setAnchorButtonState('printTicketButton', true);
 			},
 			onSelectRow: function (rowId) {
-				$("#selectedTestSessionId").val(rowId);
-				
-					var selectedRowData = $('#list2').getRowData(rowId);
-					$("#adminTestName_val").text(selectedRowData.testAdminName);
-					$("#testName_val").text(selectedRowData.testName);
+					testTicketPopupValues(rowId,'list2');					
 					$('#showSaveTestMessage').hide();
-					setAnchorButtonState('viewStatusButton', false);
-					setAnchorButtonState('printTicketButton', false);
 					if($("#canRegisterStudent").val() == 'true'){
 						var selectedTestSessionId = $("#list2").jqGrid('getGridParam', 'selrow');
 						 var val = getDataFromJson(selectedTestSessionId, sessionListCUFU);
@@ -237,10 +231,8 @@ function populateCompletedSessionListGrid() {
 				setAnchorButtonState('printTicketButton', true);
 			},
 			onSelectRow: function (rowId) {
-				$("#selectedTestSessionId").val(rowId);
+					testTicketPopupValues(rowId,'list3');					
 					$('#showSaveTestMessage').hide();
-					setAnchorButtonState('viewStatusButton', false);
-					setAnchorButtonState('printTicketButton', false);
 					if($("#canRegisterStudent").val() == 'true'){
 			 			var selectedTestSessionId = $("#list3").jqGrid('getGridParam', 'selrow');
 						 var val = getDataFromJson(selectedTestSessionId, sessionListPA);

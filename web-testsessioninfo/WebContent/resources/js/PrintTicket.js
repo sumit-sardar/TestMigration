@@ -80,7 +80,7 @@ function populateTestTicketTree() {
 								return false;
 				 			}
 						});
-						//setTicketPopupPosition();		
+						setTicketPopupPosition();		
 						$.unblockUI();					
 					},
 		error  :    function(XMLHttpRequest, textStatus, errorThrown){
@@ -97,7 +97,7 @@ function populateTestTicketTree() {
 
 function setTicketPopupPosition(){
 				//$("#printTestTicket").css("height",'320px');
-				var toppos = ($(window).height() - 510) /2 + 'px';
+				var toppos = ($(window).height() - 440) /2 + 'px';
 				var leftpos = ($(window).width() - 760) /2 + 'px';
 				$("#printTestTicket").parent().css("top",toppos);
 				$("#printTestTicket").parent().css("left",leftpos);	
@@ -128,4 +128,15 @@ function createSingleNodeSelectedTktTree(jsondata) {
 	    	var SelectedTktOrgNodeId = $(this).parent().attr("id");
  		    $("#scheduleUserOrgNode").val(SelectedTktOrgNodeId); 		 	
 		});
+}
+
+function testTicketPopupValues(rowId,listId){
+	$("#selectedTestSessionId").val(rowId);
+	$("#"+listId+" #"+rowId).addClass("ui-state-highlight");	
+	var selectedRowData = $("#"+listId).getRowData(rowId);
+	$("#adminTestName_val").text(selectedRowData.testAdminName);
+	$("#testName_val").text(selectedRowData.testName);					
+					
+	setAnchorButtonState('viewStatusButton', false);
+	setAnchorButtonState('printTicketButton', false);
 }
