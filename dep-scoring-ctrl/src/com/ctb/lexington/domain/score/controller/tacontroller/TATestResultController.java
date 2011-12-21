@@ -142,10 +142,10 @@ public class TATestResultController implements TestResultController{
 	    		details.setAttr3Id(new Long(("Yes".equals(freelunch) || ("Y".equals(freelunch)))?5:
 	                                    ("True".equals(freelunch) || ("T".equals(freelunch)))?5:6));
  		}
- 		details.setAttr4Id(new Long(("Male".equals(data.getGender()))?7:
- 								("Female".equals(data.getGender()))?8:
-                                 ("M".equals(data.getGender()))?7:
-                                 ("F".equals(data.getGender()))?8:9));
+ 		details.setAttr4Id(new Long(("Female".equals(data.getGender()))?7:
+ 								("Male".equals(data.getGender()))?8:
+                                 ("F".equals(data.getGender()))?7:
+                                 ("M".equals(data.getGender()))?8:9));
 
  	
  		details.setAttr5Id(new Long(6));
