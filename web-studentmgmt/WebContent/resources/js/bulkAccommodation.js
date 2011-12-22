@@ -148,7 +148,7 @@ function populateBulkStudentGrid() {
  		var testPause= '<img src="/StudentWeb/resources/images/pause.PNG" title="Pause"/>';
  		var screenReader= '<img src="/StudentWeb/resources/images/screenreader.PNG" title="Reader"/>';
  		var untimedTest= '<img src="/StudentWeb/resources/images/untimed.PNG" title="Untimed"/>';
- 		var highlighter= '<img src="/StudentWeb/resources/images/highlighter.JPG" title="Highlighter" />';
+ 		var highlighter= '<img src="/StudentWeb/resources/images/highlighter.PNG" title="Highlighter" />';
  		
  		//reset();
        $("#studentAccommGrid").jqGrid({         
