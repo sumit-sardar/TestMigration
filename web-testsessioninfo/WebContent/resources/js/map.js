@@ -21,6 +21,7 @@ Map.prototype.get = function(key) {
 Map.prototype.getKeys = function() {
     var i = 0;
     if(this.isDurty){
+        this.keys = []; // Key set need to be cleared
 	    for (var k in this.items) {
 	   	 	if(this.items[k].value !=null && this.items[k].value!= undefined) {
 		   	 	this.keys[i] = k;

@@ -711,8 +711,10 @@ function updateAddStudentLocaldata() {
 	var keys = studentTempMap.getKeys();
 
 	for(var i =0 ; i<keys.length; i++ ) {
-	    AddStudentLocaldata[i] = studentTempMap.get(keys[i]);
-		AddStudentLocaldata[i].studentId = keys[i];
+		if(studentTempMap.get(keys[i]) != null && studentTempMap.get(keys[i]) != undefined) {
+		    AddStudentLocaldata[i] = studentTempMap.get(keys[i]);
+			AddStudentLocaldata[i].studentId = keys[i];
+		}
 	
 	
 	}
@@ -721,7 +723,7 @@ function updateAddStudentLocaldata() {
 function openDuplicateStudentPopup(duplicateStuArray, orgForDupStu){
 	populateDuplicateStudentGrid(duplicateStuArray, orgForDupStu);
 	$("#duplicateStudent").dialog({  
-		title:"Confirmation Alert",  
+		title:"Resolve Multiple Assignments",  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '1024px',
