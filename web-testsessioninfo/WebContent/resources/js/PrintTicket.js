@@ -9,19 +9,19 @@ function printTTicket(element){
 }
 	
 function openTestTicketIndividual( anchor, testAdminId, orgNodeId ) {
-	var url = "/TestWeb/testTicket/individualTestTicket.do";
+	var url = "/SessionWeb/testTicket/individualTestTicket.do";
 	return openTestTicket( "individual", anchor, url, testAdminId, orgNodeId );
 }
 //START - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
 function openTestTicketMultiple( anchor, testAdminId, orgNodeId ) {
-	var url = "/TestWeb/testTicket/individualTestTicket.do";
+	var url = "/SessionWeb/testTicket/individualTestTicket.do";
 	return openTestTicket( "multiple", anchor, url, testAdminId, orgNodeId );
 }
 //END - Added For CR ISTEP2011CR007 (Multiple Test Ticket)
 
 function openTestTicketSummary( anchor, testAdminId, orgNodeId ) {
 	//alert("openTestTicketSummary orgNodeId:"+orgNodeId);
-	var url = "/TestWeb/testTicket/summaryTestTicket.do";
+	var url = "/SessionWeb/testTicket/summaryTestTicket.do";
 	return openTestTicket( "summary", anchor, url, testAdminId, orgNodeId );
 }
 
