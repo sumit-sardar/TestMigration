@@ -84,6 +84,7 @@ import com.ctb.testSessionInfo.utils.WebUtils;
 import com.ctb.util.OperationStatus;
 import com.ctb.util.SuccessInfo;
 import com.ctb.util.ValidationFailedInfo;
+import com.ctb.util.testAdmin.TestAdminStatusComputer;
 import com.ctb.util.web.sanitizer.SanitizedFormData;
 import com.ctb.widgets.bean.ColumnSortEntry;
 import com.google.gson.Gson;
@@ -2520,6 +2521,29 @@ public class SessionOperationController extends PageFlowController {
                 ss.setHasAccommodations(studentHasAccommodation(ss));
                  if(ss.getMiddleName() != null && !ss.getMiddleName().equals(""))
                 	ss.setMiddleName( ss.getMiddleName().substring(0,1));
+                 
+                 if (ss.getStatus().getCode() == null || ss.getStatus().getCode().equals(""))
+                     ss.getStatus().setCode("&nbsp;");
+                 if ("Ses".equals(ss.getStatus().getCode()))
+                 {
+                     StringBuffer buf1 = new StringBuffer();
+                     TestSession ts = ss.getStatus().getPriorSession();
+                     if (ts != null)
+                     {
+//                         String timeZone = ts.getTimeZone();
+                         TestAdminStatusComputer.adjustSessionTimesToLocalTimeZone(ts);
+                         String testAdminName = ts.getTestAdminName();
+                         testAdminName = testAdminName.replaceAll("\"", "&quot;");
+                         buf1.append("Session Name: ").append(testAdminName);
+                         buf1.append("<br/>Start Date: ").append(DateUtils.formatDateToDateString(ts.getLoginStartDate()));
+                         buf1.append("<br/>End Date: ").append(DateUtils.formatDateToDateString(ts.getLoginEndDate()));
+//                         buf.append("<br/>Start Date: ").append(DateUtils.formatDateToDateString(com.ctb.util.DateUtils.getAdjustedDate(ts.getLoginStartDate(), TimeZone.getDefault().getID(), timeZone, ts.getDailyLoginStartTime())));
+//                         buf.append("<br/>End Date: ").append(DateUtils.formatDateToDateString(com.ctb.util.DateUtils.getAdjustedDate(ts.getLoginEndDate(), TimeZone.getDefault().getID(), timeZone, ts.getDailyLoginEndTime())));
+                     }
+                     ss.setExtPin2(buf1.toString());
+                 }
+                 
+                 
                 studentList.add(ss);
                 //idToStudentMap.put(ss.getStudentId()+":"+ss.getOrgNodeId(), ss);
 
