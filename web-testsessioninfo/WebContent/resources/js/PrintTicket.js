@@ -66,7 +66,7 @@ function populateTestTicketTree() {
 						}
 						$("#searchheader").css("visibility","visible");	
 						$("#printTestTicket").dialog({
-							title:"Print Test Ticket ",  
+							title:"Print Test Tickets ",  
 							resizable:false,
 							autoOpen: true,
 							width: '820px',
