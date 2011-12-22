@@ -44,7 +44,7 @@ public class OASOracleSink implements OASRDBSink {
 	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, Exception {		
 		String response = ird.getResponse();
 		String responseType = ird.getResponseType();
-		int testRosterId = ird.getTestRosterId();
+		String testRosterId = ird.getTestRosterId();
 		if(response != null && !"".equals(response.trim())) {
 			if(responseType.equals(BaseType.IDENTIFIER)) {
 				storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getDuration(), ird.getResponseSeqNum(), ird.getStudentMarked());
@@ -59,11 +59,11 @@ public class OASOracleSink implements OASRDBSink {
         }       
 	}
 
-	private static void storeResponse(Connection con, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked) throws Exception {
+	private static void storeResponse(Connection con, String testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked) throws Exception {
 		PreparedStatement stmt1 = null;
     	try {
 			stmt1 = con.prepareStatement(STORE_RESPONSE_SQL);
-			stmt1.setInt(1, testRosterId);
+			stmt1.setString(1, testRosterId);
 			stmt1.setInt(2, itemSetId);
 			stmt1.setString(3, itemId);
 			stmt1.setString(4, response);
@@ -212,18 +212,18 @@ public class OASOracleSink implements OASRDBSink {
 		}
 	}
 	
-	private static void storeCRResponse(Connection conn, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked, boolean audioItem) throws Exception {
+	private static void storeCRResponse(Connection conn, String testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked, boolean audioItem) throws Exception {
 		PreparedStatement stmt1 = null;
 		PreparedStatement stmt2 = null;
 		PreparedStatement stmt3 = null;
     	try {
 			stmt1 = conn.prepareStatement(DELETE_CR_RESPONSE_SQL);
-			stmt1.setInt(1, testRosterId);
+			stmt1.setString(1, testRosterId);
 			stmt1.setInt(2, itemSetId);
 			stmt1.setString(3, itemId);		
 			
 			stmt2 = conn.prepareStatement(STORE_CR_RESPONSE_SQL);
-			stmt2.setInt(1, testRosterId);
+			stmt2.setString(1, testRosterId);
 			stmt2.setInt(2, itemSetId);
 			stmt2.setString(3, itemId);
 			stmt2.setString(4, response);
@@ -233,7 +233,7 @@ public class OASOracleSink implements OASRDBSink {
 				if(response.length()== 0){
 					stmt3 = conn.prepareStatement(CR_RESPONSE_EXISTS_SQL);
 					stmt3.setString(1, itemId);
-					stmt3.setInt(2, testRosterId);
+					stmt3.setString(2, testRosterId);
 					ResultSet rs1 = stmt3.executeQuery();
         			if(rs1.next() && rs1.getInt("responseCount") == 0){
         				stmt1.executeUpdate();

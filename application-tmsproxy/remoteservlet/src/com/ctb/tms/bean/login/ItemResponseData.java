@@ -21,7 +21,7 @@ public class ItemResponseData implements Serializable, CachePreLoadObject{
 	
 	}
 	
-	private int testRosterId;
+	private String testRosterId;
 	private int itemSetId;
     private String itemId;
     private int itemSortOrder;
@@ -166,10 +166,10 @@ public class ItemResponseData implements Serializable, CachePreLoadObject{
 	public void setAudioItem(boolean audioItem) {
 		this.audioItem = audioItem;
 	}
-	public int getTestRosterId() {
+	public String getTestRosterId() {
 		return testRosterId;
 	}
-	public void setTestRosterId(int testRosterId) {
+	public void setTestRosterId(String testRosterId) {
 		this.testRosterId = testRosterId;
 	}
 	public int getItemSetId() {

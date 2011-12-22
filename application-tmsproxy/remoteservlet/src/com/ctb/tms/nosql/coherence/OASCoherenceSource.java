@@ -84,9 +84,9 @@ public class OASCoherenceSource implements OASNoSQLSource {
 	}
 
 	public ItemResponseData[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
-		int key1 = Integer.parseInt(testRosterId);
-		int key2 = (Integer.parseInt(testRosterId) + 1);
-		Filter filter = new com.tangosol.util.filter.BetweenFilter(extractor, key1, key2); 
+		String key1 = testRosterId;
+		//String key2 = String.valueOf((Integer.parseInt(testRosterId) + 1));
+		Filter filter = new com.tangosol.util.filter.EqualsFilter(extractor, key1); 
 		Set setKeys = responseCache.keySet(filter); 
 		Map mapResult = responseCache.getAll(setKeys); 
 		if(mapResult != null) {

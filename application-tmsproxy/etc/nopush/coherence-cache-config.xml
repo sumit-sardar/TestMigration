@@ -2,8 +2,9 @@
 <!DOCTYPE cache-config SYSTEM "cache-config.dtd">
 
 <cache-config
-	xmlns:cr="class:com.oracle.coherence.environment.extensible.namespaces.InstanceNamespaceContentHandler">
-	
+	xmlns:sync="class:com.oracle.coherence.patterns.pushreplication.configuration.PushReplicationNamespaceContentHandler"
+    xmlns:cr="class:com.oracle.coherence.environment.extensible.namespaces.InstanceNamespaceContentHandler">
+
 	<defaults>
       <serializer>
          <instance>
@@ -17,6 +18,12 @@
          </instance>
       </serializer>
    	</defaults>
+	
+    <sync:provider pof-enabled="true">
+        <sync:coherence-provider />
+    </sync:provider>
+	
+	<introduce:config file="coherence-messagingpattern-pof-cache-config.xml" />	
 	
     <caching-scheme-mapping>
         <cache-mapping>
