@@ -6,7 +6,7 @@ function Map() {
     this.items = {};
     this.count = 0;
     this.keys = [];
-    this.isDurty = false;
+    this.isDurty = true;
 }
 
 Map.prototype.get = function(key) {
