@@ -185,7 +185,7 @@ function selectFormat( cellvalue, options, rowObject ){
 		for(var key in orgArrayList){
 			if(key != undefined) {
 				if($.trim(orgArrayList[key]).length > 25)
-					optionList = "<option title = '"+$.trim(orgArrayList[key])+"' value='"+key+"'>"+$.trim(orgArrayList[key])+"</option>" + optionList;
+					optionList = "<option title = \""+$.trim(orgArrayList[key])+"\" value='"+key+"'>"+$.trim(orgArrayList[key])+"</option>" + optionList;
 				else
 					optionList = "<option value='"+key+"'>"+$.trim(orgArrayList[key])+"</option>" + optionList;
 			}
