@@ -889,7 +889,9 @@ function createSingleNodeSelectedTree(jsondata) {
 	var element = document.getElementById('search_list6');
 	element.style.display = 'none';  
 	var element = document.getElementById('del_list6');
-	element.title = 'Remove Student'; 
+	element.title = 'Remove Student';
+	var element = document.getElementById('refresh_list6'); // Added to remove refresh button from grid also
+	element.style.display = 'none';
 	}
 	
 	function checkPresenceInDelStuIdObjArray(deleteId) {
