@@ -358,14 +358,7 @@ input:focus {
 	clear: both;
 }	
 
-#innerID ul {
-	float: left;
-	clear: both;
-}
 
-#innerID li {
-	clear: both;
-}	
 
 .gridTable {
 	font-family: Arial, Verdana, Sans Serif; 
@@ -454,15 +447,6 @@ clear: both;
 .ie8 #orgNodeHierarchy li {
 	clear: both;
 }	
-
-.ie8 #innerID ul {
-float: none;
-clear: both;
-}
-
-.ie8 #innerID li {
-	clear: both;
-}
 
 .subtestHeader{
 	background: url(../images/tableHeader3.png);
@@ -588,3 +572,41 @@ table.ts{
 	position: absolute;
 	z-index: 1100;
 }
+
+#stuOrgNodeHierarchy ul {
+float: left;
+clear: both;
+}
+
+#stuOrgNodeHierarchy li {
+	clear: both;
+}	
+
+.ie8 #stuOrgNodeHierarchy ul {
+float: none;
+clear: both;
+}
+
+.ie8 #stuOrgNodeHierarchy li {
+	clear: both;
+}
+
+#proctorOrgNodeHierarchy ul {
+float: left;
+clear: both;
+}
+
+#proctorOrgNodeHierarchy li {
+	clear: both;
+}	
+
+.ie8 #proctorOrgNodeHierarchy ul {
+float: none;
+clear: both;
+}
+
+.ie8 #proctorOrgNodeHierarchy li {
+	clear: both;
+}
+
+
