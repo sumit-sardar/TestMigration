@@ -1149,6 +1149,11 @@ function fillselectedOrgNode( elementId, orgList) {
 	}
 	
 	function isExist(val, customerValCheckbox){
+	if(String(customerValCheckbox.length) == "undefined" && customerValCheckbox != null){
+		if(val == customerValCheckbox){
+		 return true;
+		 }
+	}
 		for(var i=0; i < customerValCheckbox.length; i++){
 			if(val == customerValCheckbox[i]){
 				return true;
@@ -1210,12 +1215,12 @@ function fillselectedOrgNode( elementId, orgList) {
 														orgs = assignedOrgNodeIds;
 													}
 													
-													if(orgs.length > 0) {
-														if(isExist(SelectedOrgNodeId,orgs)){
+													if(orgs.length > 0 || orgs != null || orgs != "undefined") {
+													 if(isExist(SelectedOrgNodeId,orgs)){
 															assignedOrg = $("#" +SelectedOrgNodeId).text();
 															showStudentInGrid = true;
 														} else {
-														if ($("#" +SelectedOrgNodeId).attr("categoryid") < leafNodeCategoryId) {
+														if ($("#" +SelectedOrgNodeId).attr("cid") < leafNodeCategoryId) {
 														var tempAssignedOrg = "";
 																for(var i=0; i<orgs.length; i++){
 																	var parentOrgNodeId = $("#" + orgs[i]).parent("ul");
