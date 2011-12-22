@@ -90,8 +90,11 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 	    	clearFilterDropDown();
 	    	clearList();
 	    	resetBulk();
+	    	$('#cb_studentAccommGrid').attr('checked', false);
 	    	setAnchorButtonState('assignAccommButton', true);
 			SelectedOrgNodeId = $(this).parent().attr("id");
+			var topNodeSelected = $(this).parent().attr("cid");
+			if(topNodeSelected == leafNodeCategoryId || topNodeSelected == (leafNodeCategoryId -1)) {
  		    $("#selectedBulkTreeOrgNodeId").val(SelectedOrgNodeId);
  		     UIBlock();
  		  	if(!bulkStudentgridLoaded) {
@@ -112,6 +115,7 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 					}
 					
 				}
+			}
 		});
 		
 	registerDelegate("studentBulkOrgNode");		
@@ -640,29 +644,32 @@ function populateBulkStudentGrid() {
 				
 			if(selectedFullId.indexOf('ps_') != -1){
 				if(selectedId[1] == '1'){
-					$("[id^='" + globalCustomerDemographic1+"_']").show();
+					$("[id^='" + globalCustomerDemographic1+"_']").parent().show();
 				}
 				if(selectedId[1] == '2'){
-					$("[id^='" + globalCustomerDemographic2+"_']").show();
+					$("[id^='" + globalCustomerDemographic2+"_']").parent().show();
 				}
 				if(selectedId[1] == '3'){
-					$("[id^='" + globalCustomerDemographic3+"_']").show();
+					$("[id^='" + globalCustomerDemographic3+"_']").parent().show();
 				}
 			}else {	
 				if(selectedId[1] == '1'){
+					$("[id^='" + globalCustomerDemographic1+"_']").parent().show();
 					globalCustomerDemographic1 = selectedId[0];
-					document.getElementById(selectedId[0]+"_2").style.display = 'none';
-					document.getElementById(selectedId[0]+"_3").style.display = 'none';
+					$('#'+selectedId[0]+"_2").parent().css('display','none');
+					$('#'+selectedId[0]+"_3").parent().css('display','none');
 				}
 				if(selectedId[1] == '2'){
-				globalCustomerDemographic2 = selectedId[0];
-					document.getElementById(selectedId[0]+"_1").style.display = 'none';
-					document.getElementById(selectedId[0]+"_3").style.display = 'none';
+					$("[id^='" + globalCustomerDemographic2+"_']").parent().show();
+					globalCustomerDemographic2 = selectedId[0];
+					$('#'+selectedId[0]+"_1").parent().css('display','none');
+					$('#'+selectedId[0]+"_3").parent().css('display','none');
 				}
 				if(selectedId[1] == '3'){
+					$("[id^='" + globalCustomerDemographic3+"_']").parent().show();
 					globalCustomerDemographic3 = selectedId[0];
-					document.getElementById(selectedId[0]+"_1").style.display = 'none';
-					document.getElementById(selectedId[0]+"_2").style.display = 'none';
+					$('#'+selectedId[0]+"_1").parent().css('display','none');
+					$('#'+selectedId[0]+"_2").parent().css('display','none');
 				}
 			}
 		}			

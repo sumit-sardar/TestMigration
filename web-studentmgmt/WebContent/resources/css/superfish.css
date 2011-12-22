@@ -86,7 +86,7 @@ ul.sf-menu li li li.sfHover ul {
 	background:		#FFFFFF;
 	border-top:	1px solid #eaf4fd;
 	border-left:	1px solid #eaf4fd;
-	border-bottom:	1px solid #eaf4fd;
+	/*border-bottom:	1px solid #eaf4fd;*/
 }
 .sf-menu li:hover, .sf-menu li.sfHover,
 .sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active {
