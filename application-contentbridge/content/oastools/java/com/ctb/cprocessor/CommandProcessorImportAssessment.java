@@ -67,7 +67,7 @@ public class CommandProcessorImportAssessment implements CommandProcessor {
                 transaction.commit();
                 doContentSizeFromADS( ( AbstractReport )r, rootElement.getAttributeValue( "ID" ) );
                 // START : FOR Content Download 
-                System.out.println("Asset published Successfully.");
+                /*System.out.println("Asset published Successfully.");
                 try{
                 	if (this.processor instanceof AssessmentProcessor) {
                 		AssessmentProcessor processor = (AssessmentProcessor) this.processor;
@@ -79,7 +79,7 @@ public class CommandProcessorImportAssessment implements CommandProcessor {
                 } catch(Exception e) {
                 	System.err.println("Packaging error ...");
                 	e.printStackTrace();
-                }
+                }*/
 			// END : FOR Content Download 
             }
             else
