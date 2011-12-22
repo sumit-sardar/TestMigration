@@ -85,7 +85,6 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 	    });
 	    
 	    $("#studentBulkOrgNode").delegate("a","click", function(e) {
-	    	onNodechange = true;
 	    	submittedSuccesfully = "";
 	    	clearFilterDropDown();
 	    	clearList();
@@ -116,7 +115,9 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 					
 				}
 			}
-		});
+			totalRowSelectedOnPage = 0;
+	    	onNodechange = true;
+	    });
 		
 	registerDelegate("studentBulkOrgNode");		
 	   
