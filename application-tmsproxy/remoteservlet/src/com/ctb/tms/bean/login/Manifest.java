@@ -2,7 +2,7 @@ package com.ctb.tms.bean.login;
 
 import java.io.Serializable;
 
-public class Manifest implements Serializable, CachePreLoadObject {
+public class Manifest implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	private ManifestData[] manifest;
@@ -24,16 +24,6 @@ public class Manifest implements Serializable, CachePreLoadObject {
     	
     }
     
-    public boolean isForceReplication() {
-		return forceReplication;
-	}
-
-	public void setForceReplication(boolean forceReplication) {
-		this.forceReplication = forceReplication;
-	}
-    
-    private boolean replicate = false;
-    
    /* public String toString() {
     	String result = testRosterId + "::" + accessCode + "::" + rosterLastMseq + "::" + rosterCompletionStatus;
     	for(int i=0;i<manifest.length;i++) {
@@ -41,10 +31,6 @@ public class Manifest implements Serializable, CachePreLoadObject {
     	}
     	return result;
     } */
-    
-    public void setReplicate(boolean replicate) {
-    	this.replicate = replicate;
-    }
     
 	public String getTutorialTaken() {
 		return tutorialTaken;
@@ -127,10 +113,6 @@ public class Manifest implements Serializable, CachePreLoadObject {
 
 	public void setManifest(ManifestData[] manifest) {
 		this.manifest = manifest;
-	}
-
-	public boolean isReplicate() {
-		return replicate;
 	}
 	
 	

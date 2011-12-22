@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.ctb.tms.bean.login.ReplicationObject;
 import com.oracle.coherence.patterns.pushreplication.PublishingCacheStore;
 import com.tangosol.net.cache.BinaryEntryStore;
 import com.tangosol.net.cache.CacheStore;
@@ -71,14 +72,16 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     public void store(com.tangosol.util.BinaryEntry entry) {
     	logger.debug("Write to push replication store");
     	if(store != null) {
-    		//System.out.println(entry.getSerializer().getClass().getName());
-    		Object key = entry.getKey();
-    		Object value = entry.getValue();
-    		store.store(key, value);
-	    	if(cacheName.startsWith("OAS")) {
-	    		if(pushStore != null) {
-	    			pushStore.store(entry);
-	    		}
+    		if(cacheName.startsWith("OAS")) {
+    			Object key = entry.getKey();	
+    			ReplicationObject value = (ReplicationObject) entry.getValue();
+    			if(value.isReplicate()) {
+	    			store.store(key, value);
+	    			value.setReplicate(false);
+	    			if(pushStore != null) {
+		    			pushStore.store(entry);
+		    		}
+    			}
 	    	}
     	}
     }
@@ -140,9 +143,9 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	public void storeAll(java.util.Set setBinEntries) {
 		logger.debug("Batch write to push replication store");
 		if(store != null) {
-			store.storeAll(setBinEntries);
 			if(cacheName.startsWith("OAS")) {
-				if(pushStore != null) {
+				store.storeAll(setBinEntries);
+				if(pushStore != null && setBinEntries.size() > 0) {
 					pushStore.storeAll(setBinEntries);
 				}
 			}

@@ -1,6 +1,5 @@
 package com.ctb.tms.bean.login; 
 
-import java.io.Serializable;
 import java.math.BigInteger;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
@@ -11,11 +10,7 @@ import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Ts
 import noNamespace.BaseType;
 
 
-public class ItemResponseData implements Serializable, CachePreLoadObject{
-	
-	private static final long serialVersionUID = 1L;
-	
-	private boolean replicate = true;
+public class ItemResponseData extends ReplicationObject {
 	
 	public ItemResponseData() {
 	
@@ -319,13 +314,5 @@ public class ItemResponseData implements Serializable, CachePreLoadObject{
 	 */
 	public void setAnswerArea(String answerArea) {
 		this.answerArea = answerArea;
-	}
-
-	public boolean isReplicate() {
-		return replicate;
-	}
-
-	public void setReplicate(boolean replicate) {
-		this.replicate = replicate;
 	}
 } 

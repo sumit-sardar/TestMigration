@@ -80,8 +80,13 @@ public class ResponseCacheStore implements OASCacheStore {
 	    		//String testRosterId = (String) entry.getKey();
 	    		//testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
 	    		ItemResponseData ird = (ItemResponseData) entry.getValue();
-	    		//ird.setTestRosterId(testRosterId);
-	    		sink.putItemResponse(conn, ird);
+	    		if(ird.isReplicate()) {
+		    		//ird.setTestRosterId(testRosterId);
+		    		sink.putItemResponse(conn, ird);
+		    		ird.setReplicate(false);
+	    		} else {
+	    			it.remove();
+	    		}
 		    	counter++;
     		}
     		conn.commit();

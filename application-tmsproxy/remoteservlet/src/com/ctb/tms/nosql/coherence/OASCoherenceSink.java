@@ -51,12 +51,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	
 	public void putRosterData(StudentCredentials creds, RosterData rosterData) throws IOException {
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
-		/*ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(baos);
-		oos.writeObject(rosterData);
-		byte [] bytes = baos.toByteArray();
-		String data = new BASE64Encoder().encode(bytes);
-		rosterCache.put(key, data); */
+		rosterData.setReplicate(true);
 		rosterCache.put(key, rosterData);
 	}
 	
@@ -126,6 +121,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		}
 		wrapper.setManifests(manifests);
 		if(wrapper != null && manifests != null && manifests.length > 0) {
+			wrapper.setReplicate(true);
 			manifestCache.put(key, wrapper);
 		}
 	}
@@ -133,12 +129,14 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	public void putAllManifests(String testRosterId, ManifestWrapper wrapper) throws IOException {
 		String key = testRosterId;
 		if(wrapper != null && wrapper.getManifests() != null && wrapper.getManifests().length > 0) {
+			wrapper.setReplicate(true);
 			manifestCache.put(key, wrapper);
 		}
 	}
 	
 	public void putItemResponse(ItemResponseData ird) throws IOException {
 		String key = ird.getTestRosterId() + ":" + ird.getResponseSeqNum();
+		ird.setReplicate(true);
 		responseCache.put(key, ird);
 	}
 	

@@ -1,6 +1,5 @@
 package com.ctb.tms.bean.login;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,8 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
 
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData;
 import noNamespace.AdssvcRequestDocument;
+import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData;
 import noNamespace.BaseType;
 import noNamespace.TmssvcResponseDocument;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
@@ -33,30 +32,15 @@ import com.ctb.tms.exception.testDelivery.TestSessionNotScheduledException;
 import com.ctb.tms.util.Constants;
 import com.ctb.tms.util.DateUtils;
 
-public class RosterData implements Serializable {
+public class RosterData extends ReplicationObject {
 	String document;
 	AuthenticationData authData;
-	//Manifest manifest;
-	private boolean replicate = true;
-	private boolean forceReplication = false;
+	
+	static Logger logger = Logger.getLogger(RosterData.class);
 	
 	public RosterData() {
 		
 	}
-	
-	public boolean isForceReplication() {
-		return forceReplication;
-	}
-
-	public void setForceReplication(boolean forceReplication) {
-		this.forceReplication = forceReplication;
-	}
-
-	static Logger logger = Logger.getLogger(RosterData.class);
-	
-    public void setReplicate(boolean replicate) {
-    	this.replicate = replicate;
-    }
 	
 	public TmssvcResponseDocument getDocument() {
 		XmlOptions xmlOptions = new XmlOptions(); 
@@ -364,9 +348,5 @@ public class RosterData implements Serializable {
 			}
 		}
 		return (ItemResponseData[]) irdMap.values().toArray(new ItemResponseData[0]);
-	}
-	
-	public boolean doReplicate() {
-		return this.replicate;
 	}
 }

@@ -157,10 +157,10 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 								RosterData rd = oasDBSource.getRosterData(conn, key);
 								Manifest[] manifests = oasDBSource.getManifest(conn, creds[i].getTestRosterId());
 								if(manifests != null && manifests.length > 0) {
-									for(int j=0;j<manifests.length;j++) {
-										manifests[j].setForceReplication(true);
-									}
-									rd.setForceReplication(true);
+									//for(int j=0;j<manifests.length;j++) {
+									//	manifests[j].setForceReplication(true);
+									//}
+									//rd.setForceReplication(true);
 									oasSink.putRosterData(creds[i], rd);
 									oasSink.putAllManifests(creds[i].getTestRosterId(), new ManifestWrapper(manifests));
 									rd = null;

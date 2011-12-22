@@ -204,7 +204,6 @@ public class TMSServlet extends HttpServlet {
             
             if (manifest.getTutorialTaken()==null || !"TRUE".equals(manifest.getTutorialTaken())) {
                 manifest.setTutorialTaken("TRUE");
-                manifest.setReplicate(true);
                 oasSink.putManifest(testRosterId, accessCode, manifest);
             }
         } catch (InvalidTestRosterIdException itre) {
@@ -591,7 +590,6 @@ public class TMSServlet extends HttpServlet {
         		}
         	}
         	manifest.setManifest((ManifestData[]) newmanifest.toArray(new ManifestData[0]));
-        	manifest.setReplicate(true);
         }
         oasSink.putAllManifests(testRosterId, new ManifestWrapper(manifesta));
     }

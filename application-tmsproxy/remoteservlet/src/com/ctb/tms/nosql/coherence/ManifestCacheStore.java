@@ -150,7 +150,12 @@ public class ManifestCacheStore implements OASCacheStore {
     				key = (String) entry.getKey();
     				Object value = entry.getValue();
     				ManifestWrapper wrapper = (ManifestWrapper) value;
-	    			sink.putManifest(conn, key, wrapper.getManifests());
+    				if(wrapper.isReplicate()) {
+    					sink.putManifest(conn, key, wrapper.getManifests());
+    					wrapper.setReplicate(false);
+    				} else {
+    					it.remove();
+    				}
 	    			counter++;
     			} catch (Exception e) {
     				logger.warn("ManifestCacheStore.storeAll: Error storing manifest to DB for roster " + key);

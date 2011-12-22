@@ -74,7 +74,6 @@ public class OASCoherenceSource implements OASNoSQLSource {
 			Manifest[] manifests = wrapper.getManifests();
 			for(int i=0;i<manifests.length;i++) {
 				Manifest manifest = manifests[i];
-				manifest.setReplicate(false);
 				if(accessCode.equals(manifest.getAccessCode())) {
 					return manifest;
 				}
@@ -112,10 +111,6 @@ public class OASCoherenceSource implements OASNoSQLSource {
 		Object value = manifestCache.get(key);
 		if(value != null) {
 			ManifestWrapper wrapper = (ManifestWrapper) value;
-			Manifest[] manifests = wrapper.getManifests();
-			for(int i=0;i<manifests.length;i++) {
-				manifests[i].setReplicate(false);
-			}
 			return wrapper;
 		} else {
 			return null;

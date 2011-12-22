@@ -1,10 +1,7 @@
 package com.ctb.tms.bean.login;
 
-import java.io.Serializable;
 
-public class ManifestWrapper implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class ManifestWrapper extends ReplicationObject {
 
 	private Manifest[] manifests;
 	
