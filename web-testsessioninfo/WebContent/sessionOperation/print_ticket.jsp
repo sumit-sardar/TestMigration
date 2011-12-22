@@ -11,7 +11,7 @@
 <input type="hidden" id="selectedTestSessionId" name = "selectedTestSessionId" />
 
 <div id="printTestTicket"
-	style="display: none; border:10px solid #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+	style="clear:both;display: none; border:10px solid #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
 	
 <p><netui:content value="${bundle.web['testTicket.subtitle']}" /></p>
 <h3 style="border-width: 0px"><span><netui:content value="${bundle.web['testTicket.testInformation']}" /></span></h3>
@@ -73,7 +73,7 @@
 	<table width='95%' height="60" cellpadding="2" cellspacing="5">
 	<tbody>
 	<tr>
-	<th align="left" style="padding-left: 5px;padding-top: 5px;" ><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th>
+	<th align="left" style="padding-left: 5px;padding-top: 5px; width:25px;" ><img height='23' src='/SessionWeb/resources/images/messaging/icon_info.gif'></th>
 	<th align="left"><netui:content value="${bundle.web['testTicket.noStudentErrorHead']}" /></th>
 	</tr>
 	<tr>
@@ -84,7 +84,7 @@
 </div>
 	
 			<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%" style=" padding-top:20px;">
-					<tr id="Act_Buttons" align="right">
+					<tr id="Act_Buttons">
 						<td  width="100%" style="text-align:center;">
 							
 								<input type="button" id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('printTestTicket'); return false;" class="ui-widget-header" style="width:60px">
