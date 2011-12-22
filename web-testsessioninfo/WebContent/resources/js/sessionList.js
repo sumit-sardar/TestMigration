@@ -517,7 +517,7 @@ function createSingleNodeSelectedTree(jsondata) {
       function gridReloadSelectStu(){ 
       	  UIBlock();
 	      jQuery("#selectStudent").jqGrid('setGridParam',{datatype:'json'});    
-	       var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel;
+	       var urlVal = 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel;
      	   delete jQuery("#selectStudent").jqGrid('getGridParam' ,'postData' )["filters"];
      	   jQuery("#selectStudent").jqGrid('setGridParam', {url:urlVal, sortname: 'lastName' ,page:1}).trigger("reloadGrid");
            var sortArrowPA = jQuery("#selectStudent");
@@ -2410,11 +2410,10 @@ function createSingleNodeSelectedTree(jsondata) {
 		beforeSend:	function(){
 						UIBlock();
 					},
-		url:		'saveTest.do?'+param,
+		url:		'saveTest.do',
 		type:		'POST',
 		data:		 param,
 		dataType:	'json',
-		contentType: 'application/json; charset=UTF-8', 
 		success:	function(data, textStatus, XMLHttpRequest){
 					   
 					   
