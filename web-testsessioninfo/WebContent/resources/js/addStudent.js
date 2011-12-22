@@ -181,11 +181,12 @@ function imageFormat( cellvalue, options, rowObject ){
 function selectFormat( cellvalue, options, rowObject ){
 		var orgArrayList = 	orgForDupStu[rowObject.studentId];
 		var optList = "<select id='dupStu"+rowObject.studentId +"'>" ;
+		var optionList = "";
 		for(var key in orgArrayList){
-		if(key != undefined)
-           optList= optList + "<option value='"+key+"'>"+$.trim(orgArrayList[key])+"</option>" 
+			if(key != undefined)
+				optionList = "<option value='"+key+"'>"+$.trim(orgArrayList[key])+"</option>" + optionList;
 		}    
-		optList = optList + "</select> " ;
+		optList = optList + optionList + "</select> " ;
 		return optList;
 }
 
@@ -564,7 +565,7 @@ function updateDupStudent(){
 			for(var k = 0; k < countAllSelect; k++) {
 				if(allSelectOrg[k] != null && (allSelectOrg[k] == splitArr[i] || allSelectOrg[k] == splitArr[i]+"_f")) {
 					if(String(orgId)!=String(splitArr[i])){
-						allSelectOrg.splice(i,1);
+						allSelectOrg.splice(k,1);
 						countAllSelect--;
 					}
 					
