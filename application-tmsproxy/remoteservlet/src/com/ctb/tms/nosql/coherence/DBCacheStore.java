@@ -1,16 +1,17 @@
 package com.ctb.tms.nosql.coherence;
 
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
-import com.ctb.tms.bean.login.ManifestWrapper;
 import com.oracle.coherence.patterns.pushreplication.PublishingCacheStore;
 import com.tangosol.net.cache.BinaryEntryStore;
+import com.tangosol.net.cache.CacheStore;
 import com.tangosol.util.BinaryEntry;
 
-public class DBCacheStore implements BinaryEntryStore {
+public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	
 	static Logger logger = Logger.getLogger(DBCacheStore.class);
 	
@@ -45,11 +46,25 @@ public class DBCacheStore implements BinaryEntryStore {
 	
 	public DBCacheStore() {
     }
+
+    public Object load(Object oKey) {
+    	if(store != null) {
+    		return store.load(oKey);
+    	} else {
+    		return null;
+    	}
+    }
     
     public void load(com.tangosol.util.BinaryEntry entry) {
     	logger.debug("Read from push replication store");
     	if(store != null) {
     		entry.setValue(store.load(entry.getKey()));
+    	}
+    }
+
+    public void store(Object oKey, Object oValue) {
+    	if(store != null) {
+    		store.store(oKey, oValue);
     	}
     }
     
@@ -67,6 +82,12 @@ public class DBCacheStore implements BinaryEntryStore {
 	    	}
     	}
     }
+
+    public void erase(Object oKey) {
+    	if(store != null) {
+    		store.erase(oKey);
+    	}
+    }
     
     public void erase(com.tangosol.util.BinaryEntry entry) {
     	logger.debug("Delete to push replication store");
@@ -74,6 +95,12 @@ public class DBCacheStore implements BinaryEntryStore {
 	    	store.erase(entry.getKey());
     	}
     }
+
+	public void eraseAll(Collection colKeys) {
+		if(store != null) {
+			store.eraseAll(colKeys);
+		}
+	}
 	
 	public void eraseAll(java.util.Set setBinEntries) {
 		logger.debug("Batch delete to push replication store");
@@ -85,6 +112,13 @@ public class DBCacheStore implements BinaryEntryStore {
 			}
 		}
 	}
+
+	public Map loadAll(Collection colKeys) {
+		if(store != null) {
+			return store.loadAll(colKeys);
+		}
+		else return null;
+	}
 	
 	public void loadAll(java.util.Set setBinEntries) {
 		logger.debug("Batch read from push replication store");
@@ -94,6 +128,12 @@ public class DBCacheStore implements BinaryEntryStore {
 				BinaryEntry entry = it.next();
 				entry.setValue(store.load(entry.getKey()));
 			}
+		}
+	}
+
+	public void storeAll(Map mapEntries) {
+		if(store != null) {
+			store.storeAll(mapEntries);
 		}
 	}
 	

@@ -373,7 +373,8 @@ public class TMSServlet extends HttpServlet {
 				    	//thisSco.setCompletionStatus("IP");
 				    	// response events
 				    	ItemResponseData ird = ItemResponseData.TsdToIrd(tsd);
-				    
+					    ird.setTestRosterId(rosterId);
+					    ird.setResponseSeqNum(String.valueOf(tsd.getMseq()));
 				    	oasSink.putItemResponse(ird);
 					    logger.debug("TMSServlet: save: cached response for roster " + rosterId + ", message " + tsd.getMseq() + ": " + tsd.xmlText());
 				    }
@@ -731,6 +732,7 @@ public class TMSServlet extends HttpServlet {
 	        		for(int m=0;m<rdtsda.length;m++) {
 	        			rdirt = convertTsdType(restartData.getTsdArray(m));
 	            		for(int j=0;j<rdirt.length;j++) {
+	            			rdirt[j].setTestRosterId(testRosterId);
 	            			oasSink.putItemResponse(rdirt[j]);
 	            			netirt.add(rdirt[j]);
 	                    }

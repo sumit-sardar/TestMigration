@@ -37,11 +37,12 @@ public class ResponseCacheStore implements OASCacheStore {
     public void store(Object oKey, Object oValue) {
     	Connection conn = null;
     	try {
-    		String testRosterId = (String) oKey;
-    		testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
+    		//String testRosterId = (String) oKey;
+    		//testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
     		ItemResponseData tsd = (ItemResponseData) oValue;
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
+		    //tsd.setTestRosterId(testRosterId);
 		    sink.putItemResponse(conn, tsd);
     	} catch (Exception e) {
     		e.printStackTrace();
@@ -76,9 +77,11 @@ public class ResponseCacheStore implements OASCacheStore {
 		    int counter = 0;
     		while(it.hasNext()) {
     			BinaryEntry entry = it.next();
-	    		String key = (String) entry.getKey();
-	    		key = key.substring(0, key.indexOf(":"));
-	    		sink.putItemResponse(conn, (ItemResponseData) entry.getValue());
+	    		//String testRosterId = (String) entry.getKey();
+	    		//testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
+	    		ItemResponseData ird = (ItemResponseData) entry.getValue();
+	    		//ird.setTestRosterId(testRosterId);
+	    		sink.putItemResponse(conn, ird);
 		    	counter++;
     		}
     		conn.commit();
@@ -103,8 +106,10 @@ public class ResponseCacheStore implements OASCacheStore {
     		while(it.hasNext()) {
 	    		String key = (String) it.next();
 	    		ItemResponseData value = (ItemResponseData) mapEntries.get(key);
-	    		String testRosterId = key;
-	    		testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
+	    		//String testRosterId = key;
+	    		//testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
+	    		ItemResponseData ird = (ItemResponseData) value;
+	    		//value.setTestRosterId(testRosterId);
 			    sink.putItemResponse(conn, value);
     		}
     	} catch (Exception e) {

@@ -97,6 +97,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 			int i = 0;
 			while(it.hasNext()) {
 				ItemResponseData irw = (ItemResponseData) mapResult.get(it.next());
+				irw.setTestRosterId(testRosterId);
 				tsda[i] = irw;
 				i++;
 			}

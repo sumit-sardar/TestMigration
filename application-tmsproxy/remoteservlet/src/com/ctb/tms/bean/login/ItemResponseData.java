@@ -88,6 +88,9 @@ public class ItemResponseData implements Serializable, CachePreLoadObject{
     
     public static ItemResponseData TsdToIrd(Tsd tsd) {
 	    ItemResponseData ird = new ItemResponseData();
+	    String testRosterId = tsd.getLsid();
+	    testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
+	    ird.setTestRosterId(testRosterId);
 	    ird.setItemSetId(Integer.parseInt(tsd.getScid()));
 	    ird.setResponseSeqNum(String.valueOf(tsd.getMseq()));
     	Ist[] ista = tsd.getIstArray();

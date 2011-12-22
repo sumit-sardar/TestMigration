@@ -909,6 +909,7 @@ public class OASOracleSource implements OASRDBSource
 				response.setScore(rs1.getInt("score"));
 				response.setStudentMarked(rs1.getString("studentMarked"));
 				response.setConstructedResponse(clobToString(rs1.getClob("constructedResponse")));
+				response.setTestRosterId(String.valueOf(testRosterId));
 				dataList.add(response);
 			}
 			rs1.close();

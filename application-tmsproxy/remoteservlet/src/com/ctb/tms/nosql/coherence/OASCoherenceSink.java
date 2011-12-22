@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
+import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
 import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.Manifest;
@@ -19,12 +21,15 @@ import com.ctb.tms.nosql.OASNoSQLSink;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 import com.tangosol.util.Filter;
+import com.tangosol.util.ValueExtractor;
 
 public class OASCoherenceSink implements OASNoSQLSink {
 
 	private static NamedCache rosterCache;
 	private static NamedCache manifestCache;
 	private static NamedCache responseCache;
+	
+	static ValueExtractor extractor;
 	
 	static Logger logger = Logger.getLogger(OASCoherenceSink.class);
 	
@@ -37,6 +42,8 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			rosterCache = CacheFactory.getCache("OASRosterCache"); 
 			manifestCache = CacheFactory.getCache("OASManifestCache");
 			responseCache = CacheFactory.getCache("OASResponseCache");
+			
+			extractor = new ReflectionPofExtractor("testRosterId");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -142,9 +149,10 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	
 	public void deleteAllItemResponses(String testRosterId) throws IOException {
 		String key1 = testRosterId;
-		String key2 = String.valueOf((Integer.parseInt(testRosterId) + 1));
-		Filter filter = new com.tangosol.util.filter.BetweenFilter("getTestRosterId", key1, key2); 
+		//String key2 = String.valueOf((Integer.parseInt(testRosterId) + 1));
+		Filter filter = new com.tangosol.util.filter.EqualsFilter(extractor, key1); 
 		Set setKeys = responseCache.keySet(filter); 
+		Map mapResult = responseCache.getAll(setKeys);  
 		Iterator it = setKeys.iterator();
 		while(it.hasNext()) {
 			responseCache.remove(it.next());
