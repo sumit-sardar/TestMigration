@@ -180,7 +180,7 @@ function imageFormat( cellvalue, options, rowObject ){
 
 function selectFormat( cellvalue, options, rowObject ){
 		var orgArrayList = 	orgForDupStu[rowObject.studentId];
-		var optList = "<select id='dupStu"+rowObject.studentId +"'>" ;
+		var optList = "<select id='dupStu"+rowObject.studentId +"' style = 'width: 190px;'> onMouseOver = 'javascript:dupDropChanged("+rowObject.studentId+");'" ;
 		var optionList = "";
 		for(var key in orgArrayList){
 			if(key != undefined)
@@ -188,6 +188,15 @@ function selectFormat( cellvalue, options, rowObject ){
 		}    
 		optList = optList + optionList + "</select> " ;
 		return optList;
+}
+
+function dupDropChanged(studentIdDrop) {
+	var textValue = $("#dupStu"+studentIdDrop+" option:selected").text();
+	if(textValue.length > 25) {
+		$("#dupStu"+studentIdDrop).attr('title',textValue);
+	} else {
+		$("#dupStu"+studentIdDrop).removeAttr('title');
+	}
 }
 
 function populateSelectStudentGrid() {
@@ -265,7 +274,7 @@ function populateSelectStudentGrid() {
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 161,  
+			height: 162,  
 			caption:"Student List",
 			//toolbar: [true,"top"],
 			onPaging: function() {
