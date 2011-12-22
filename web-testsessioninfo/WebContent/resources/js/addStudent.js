@@ -200,12 +200,13 @@ function populateSelectStudentGrid() {
  		var testPause= '<img src="/SessionWeb/resources/images/pause.PNG" title="Pause"/>';
  		var screenReader= '<img src="/SessionWeb/resources/images/screenreader.PNG" title="Reader"/>';
  		var untimedTest= '<img src="/SessionWeb/resources/images/untimed.PNG" title="Untimed"/>';
+ 		var status = 'Status'+""+'<img id=statusLegend src=/SessionWeb/resources/images/questionmark.jpg onmouseover=showStatusLegend(event); onmouseout=hideStatusLegend(); />'  
  		reset();
        $("#selectStudent").jqGrid({         
           url: 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel, 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[ 'Last Name','First Name', 'M.I', studentIdTitle, 'Organization','orgName','Accommodation', 'Grade', 'Status', calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StudentId"],
+          colNames:[ 'Last Name','First Name', 'M.I', studentIdTitle, 'Organization','orgName','Accommodation', 'Grade', status, calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StudentId"],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -1059,14 +1060,35 @@ function getStudentListArray(studentArray) {
 	function cloneMap(src, dist){
 	 var keys = src.getKeys();
 	 dist = new Map(); // clear this map;
-	 for (var ll =0; ll<keys.length; ll++) {
-	  	dist.put(keys[ll],src.get(keys[ll]));
-	 }
-	
-	
-	
+		for (var ll =0; ll<keys.length; ll++) {
+		 	dist.put(keys[ll],src.get(keys[ll]));
+		}
 	}
 	
+	function showStatusLegend(event) {
+		var isIE = document.all?true:false;
+		var tempX = 0;
+		var tempY = 0;
+		var legendDiv = null;
+		var padding = 15;
+		
+		if (isIE) { 
+			tempX = event.clientX + document.documentElement.scrollLeft;
+			tempY = event.clientY + document.documentElement.scrollTop;
+		}
+		else { 
+			tempX = event.pageX;
+			tempY = event.pageY;
+		}  
+		legendDiv = document.getElementById("statusLegend");
+		legendDiv.style.left = (tempX - $(legendDiv).width() / 3)+"px" ;
+		legendDiv.style.top = (tempY - $(legendDiv).height() - padding)+"px"; 
+		legendDiv.style.display = "block";
+		htimer = setTimeout("hideStatusLegend()", 5000);
+	}
 	
-	
-    
+	function hideStatusLegend() {
+		clearTimeout(htimer);
+		document.getElementById("statusLegend").style.display = "none";
+	}
+ 	

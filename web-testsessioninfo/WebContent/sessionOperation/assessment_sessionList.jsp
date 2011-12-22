@@ -153,5 +153,31 @@
 	</table>
 </div>
 
+
+<div id="statusLegend" style="display:none;" class="statusLegendDiv">
+<table width="360" cellspacing="2" cellpadding="2" border="0" class="statusLegendTable">
+	<tbody>
+		<tr>
+			<td colspan="2" align="left">Status Key:</td>
+		</tr>
+		<tr>
+			<td align="left" width="30">Cmp</td>
+			<td align="left" width="320">Completed the test.</td>
+		</tr>
+		<tr>
+			<td align="left" width="30">Inp</td>
+			<td align="left" width="320">In progress, taking the test.</td>
+		</tr>
+		<tr>
+			<td align="left" width="30">Org</td>
+			<td align="left" width="320">Scheduled through other organization. Cannot override.</td>
+		</tr>
+		<tr>
+			<td align="left" width="30">Ses</td>
+			<td align="left" width="320">Previously scheduled for this test in different test session.</td>
+		</tr>
+	</tbody>
+</table>  
+</div>
 <jsp:include page="/sessionOperation/schedule_session.jsp" />
 <jsp:include page="/sessionOperation/duplicate_student.jsp" />
