@@ -180,11 +180,15 @@ function imageFormat( cellvalue, options, rowObject ){
 
 function selectFormat( cellvalue, options, rowObject ){
 		var orgArrayList = 	orgForDupStu[rowObject.studentId];
-		var optList = "<select id='dupStu"+rowObject.studentId +"' style = 'width: 190px;'> onMouseOver = 'javascript:dupDropChanged("+rowObject.studentId+");'" ;
+		var optList = "<select id='dupStu"+rowObject.studentId +"' style = 'width: 190px;'>" ;
 		var optionList = "";
 		for(var key in orgArrayList){
-			if(key != undefined)
-				optionList = "<option value='"+key+"'>"+$.trim(orgArrayList[key])+"</option>" + optionList;
+			if(key != undefined) {
+				if($.trim(orgArrayList[key]).length > 25)
+					optionList = "<option title = '"+$.trim(orgArrayList[key])+"' value='"+key+"'>"+$.trim(orgArrayList[key])+"</option>" + optionList;
+				else
+					optionList = "<option value='"+key+"'>"+$.trim(orgArrayList[key])+"</option>" + optionList;
+			}
 		}    
 		optList = optList + optionList + "</select> " ;
 		return optList;
