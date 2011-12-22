@@ -1195,14 +1195,20 @@ function fillselectedOrgNode( elementId, orgList) {
 								data:		 param,
 								dataType:	'json',
 								success:	function(data, textStatus, XMLHttpRequest){	
-												  
+												var orgs;  
 												var errorFlag = data.errorFlag;
 												var successFlag = data.successFlag;
 												if(successFlag) {
 													closePopUp('addEditStudentDetail');
 													setMessageMain(data.title, data.content, data.type, "");
 													document.getElementById('displayMessageMain').style.display = "block";	
-													var orgs = assignedOrgNodeIds.split(",");
+													//For edit student save defect
+													if(String(assignedOrgNodeIds).indexOf(",") > 0) { 
+														orgs = assignedOrgNodeIds.split(",");
+														}
+														else {
+														orgs = assignedOrgNodeIds;
+													}
 													
 													if(orgs.length > 0) {
 														if(isExist(SelectedOrgNodeId,orgs)){
@@ -1780,6 +1786,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		//alert("SelectedStudentId:"+SelectedStudentId+"setViewStudentDetail:"+pageDataIDs);
 		str = pageDataIDs;
 		var indexOfId = -1;
+		var noRadioData = true;
 		if(!Array.indexOf) {
 			indexOfId = findIndexFromArray (str , SelectedStudentId);
 		} else {
@@ -1811,11 +1818,17 @@ function fillselectedOrgNode( elementId, orgList) {
 				     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
 				     			//$("#view_Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").val(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
 				     			var selectElement = document.getElementById(stuDemographic[count]['labelName']);
-			     			    if(selectElement!=null) setSelectedValue(selectElement, stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);			     			
+			     			    if(selectElement!=null && String(selectElement.options) !="undefined"){
+			     			     setSelectedValue(selectElement, stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
+			     			    }else{		     			
 				     			$("#view_Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+				     			noRadioData = false;
+				     			}
 				     			break;
 				     		} else {
+				     			if (noRadioData){
 				     			$("#view_Student_Additional_Information :radio[value='None']").attr('checked',true);
+				     			}
 				     			$("#view_Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
 				     		}
 				     	}
@@ -1872,6 +1885,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		
 		var pageDataIds = $("#list2").jqGrid('getDataIDs'); 
 		//alert("Selected:["+SelectedStudentId+"]setEditStudentDetail:"+pageDataIds);
+		var noRadioData = true;
 		str = pageDataIds;
 		if(!Array.indexOf) {
 			indexOfId = findIndexFromArray (str , SelectedStudentId);
@@ -1912,11 +1926,19 @@ function fillselectedOrgNode( elementId, orgList) {
 				     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
 				     			//$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").val(stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
 				     			var selectElement = document.getElementById(stuDemographic[count]['labelName']);
-			     			    if(selectElement!=null) setSelectedValue(selectElement, stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);			     			
-				     			$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
-				     			break;
+				     			
+				     		    if(selectElement!=null && String(selectElement.options) !="undefined"){
+			     			     setSelectedValue(selectElement, stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']);
+			     			     }else {
+			     			     	$("#Student_Additional_Information :radio[value='" + stuDemographic[count]['studentDemographicValues'][innerCount]['valueName']+ "']").attr('checked',true);
+			     			    	noRadioData = false;
+			     			     }
+			     			  	break;
 				     		} else {
-				     			$("#Student_Additional_Information :radio[value='None']").attr('checked',true);
+				     			//The following line is setting none for all the radio values even once it comes to the else block
+				     			if(noRadioData){
+				     				$("#Student_Additional_Information :radio[value='None']").attr('checked',true);
+				     			}
 				     			$("#Student_Additional_Information select[name='" + stuDemographic[count]['labelName']+ "']").find("option:eq(0)").attr("selected","true");
 				     		}
 				     	}
@@ -1928,7 +1950,7 @@ function fillselectedOrgNode( elementId, orgList) {
 			     		if(trim(stuDemographic[count]['studentDemographicValues'][innerCount]['selectedFlag']) == 'true'){
 			     		$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', true);
 					     }else {
-					     	$("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
+					     $("#Student_Additional_Information :checkbox[name='" + dynKey+ "']").attr('checked', false);
 					     }
 			     	}
 			    }
@@ -1944,7 +1966,7 @@ function setSelectedValue(selectObj, valueToSet) {
             selectObj.options[i].selected = true;
             return;
         }
-    }
+    }    
 }
 
 	function deleteStudentPopup() {
