@@ -17,6 +17,10 @@ public class ADSConfig extends Config {
     public String adsDbPassword;
     public String adsDbSid;
     public String adsDbHost;
+    private boolean isSftp;
+    private int port;
+    
+    
     
 
    public ADSConfig(){};
@@ -25,11 +29,13 @@ public class ADSConfig extends Config {
         String ftpHost,
         String ftpUser,
         String ftpPassword,
-        String wsClient) {
+        String wsClient, boolean isSftp, int port) {
         this.ftpHost = ftpHost;
         this.ftpUser = ftpUser;
         this.ftpPassword = ftpPassword;
         this.wsClient = wsClient;
+        this.isSftp= isSftp;
+        this.port =port;
      }
 
     public ADSConfig(File file) {
@@ -45,6 +51,29 @@ public class ADSConfig extends Config {
         adsDbPassword = getRequiredProperty(properties, "adsdb.password", file);
         adsDbSid = getRequiredProperty(properties, "adsdb.sid", file);
         adsDbHost = getRequiredProperty(properties, "adsdb.host", file);
+        try{
+        	String transferProtocol = getRequiredProperty(properties, "ws.file.transfer.protocol", file);
+        	if(transferProtocol == null || !transferProtocol.trim().equalsIgnoreCase("ftp") ){
+        		isSftp = true;
+        	} else {
+        		isSftp = false;
+        	}
+        } catch (Exception e) {
+        	isSftp = true;
+        }
+        
+        try{
+        	String sport = getRequiredProperty(properties, "ws.file.transfer.protocol.port", file);
+        	port = Integer.parseInt(sport.trim());
+        } catch (Exception e) {
+        	if(isSftp){
+        		port = 22;
+        	} else {
+        		port = 21;
+        	}
+        	
+        }
+        
     }
 
     public String getFtpHost() {
@@ -61,5 +90,19 @@ public class ADSConfig extends Config {
     public String getWsClient() {
         return wsClient;
     }
+
+	/**
+	 * @return the isSftp
+	 */
+	public boolean isSftp() {
+		return isSftp;
+	}
+
+	/**
+	 * @return the port
+	 */
+	public int getPort() {
+		return port;
+	}
 
 }

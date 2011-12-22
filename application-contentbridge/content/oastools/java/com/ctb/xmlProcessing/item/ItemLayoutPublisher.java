@@ -9,6 +9,7 @@ package com.ctb.xmlProcessing.item;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.io.*;
 
 import javax.xml.transform.*;
@@ -84,9 +85,13 @@ public class ItemLayoutPublisher {
 			xmlStr = xmlStr.replaceAll(" & ", " &amp; ");
 			String xmlStr2 = xmlStr;		
 			
-		     if (assetList != null) 
+		     if (assetList != null && assetList.size()>0) 
 			 {
-		     	this.sendfiles_ftp(assetList);
+		    	if(adsConfig.isSftp()){
+		    		this.sendfiles_sftp(assetList);
+		    	} else {
+		    		this.sendfiles_ftp(assetList);
+		    	}
 				this.publishAssets(assetList);
 		     }
 			//Publish Itemt to ADS - publish "xml"
@@ -171,43 +176,63 @@ public class ItemLayoutPublisher {
 		
 		public void sendfiles_sftp( List inputFiles ) throws Exception
 	    {
-			      JSch jsch=new JSch();
 
-			      String host=adsConfig.getFtpHost(); 
-			      String user=adsConfig.getFtpUser();
-			    
-			      Session session=jsch.getSession(user, host);
-			      session.setPassword(adsConfig.getFtpPassword());
-			      
-			      jsch.setKnownHosts("/export/home/iwuser/.ssh/known_hosts");
-			      
-			      session.connect();
+			JSch jsch = new JSch();
+			Session session = null;
+			ChannelSftp sftpChannel = null;
+			Properties properties = new Properties();
+			properties.put("StrictHostKeyChecking", "no");
+			properties.put("compression.s2c", "none");
+			properties.put("compression.c2s", "none");
 
-			      Channel channel=session.openChannel("sftp");
-			      channel.connect();
-			      ChannelSftp c=(ChannelSftp)channel;
-			
-                  Iterator iter = inputFiles.iterator();
-                  while (iter.hasNext())
-	            	{
-	            	String sourceFile = (String)(iter.next());
-	                try
-	                        {
-	                			String img = getImage(sourceFile);
-	                			sourceFile = "/default/main/OAS/WORKAREA/highwire/images/" + sourceFile.substring(sourceFile.indexOf("/images/") + 8);
-	                			sourceFile = sourceFile.replaceAll("%20", " ");
-	                   			//sourceFile = "c:\\mappingdata\\images\\" + img;
-	                			String destination = destinationPath + img;
-	                			c.put(sourceFile, destination);
-	                        }
-	                        catch( Exception e )
-	                        {
-	                            System.err.println("Exception : "  + e.getMessage());
-	                            e.printStackTrace();
-	                        }
-	                }
-                  c.quit();
-	      }
+			String ftpHost = adsConfig.getFtpHost();
+			String ftpUser = adsConfig.getFtpUser();
+			String ftpPass = adsConfig.getFtpPassword();
+			int port    = adsConfig.getPort();
+
+			System.out.println("Connecting to server:" + ftpHost);
+			try {
+				session = jsch.getSession(ftpUser, ftpHost, port);
+				session.setConfig(properties);
+				session.setPassword(ftpPass);
+				//jsch.setKnownHosts("/export/home/iwuser/.ssh/known_hosts");
+				session.connect();
+				Channel channel = session.openChannel("sftp");
+				channel.connect();
+				sftpChannel = (ChannelSftp) channel;
+
+				Iterator iter = inputFiles.iterator();
+				while (iter.hasNext()) {
+					String sourceFile = (String) (iter.next());
+					try {
+						String img = getImage(sourceFile);
+						sourceFile = "/default/main/OAS/WORKAREA/highwire/images/"
+								+ sourceFile.substring(sourceFile
+										.indexOf("/images/") + 8);
+						sourceFile = sourceFile.replaceAll("%20", " ");
+						 sourceFile = "c:\\mappingdata\\images\\" + img;
+						String destination = destinationPath + img;
+						// sftpChannel.cd(destinationPath);
+						sftpChannel.put(sourceFile, destination);
+
+					}  catch (SftpException e) {
+						 System.err.println("Exception : "  + e.getMessage());
+						 e.printStackTrace();
+					}
+
+				}
+
+			} finally {
+				if (sftpChannel != null) {
+					sftpChannel.exit();
+				}
+				if (session != null) {
+					session.disconnect();
+				}
+
+			}
+
+		}
 	       
 		
 		public void sendfiles_ftp( List inputFiles ) throws Exception
