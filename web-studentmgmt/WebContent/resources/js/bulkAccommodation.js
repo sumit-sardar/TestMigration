@@ -87,22 +87,7 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 	    $("#studentBulkOrgNode").delegate("a","click", function(e) {
 	    	onNodechange = true;
 	    	submittedSuccesfully = "";
-	    	$("option:contains('Any')",'#gs_grade' ).attr("selected", "selected");
-	    	$("option:contains('Any')",'#gs_calculator').attr("selected", "selected");
-	    	$("option:contains('Any')",'#gs_hasColorFontAccommodations').attr("selected", "selected");
-	    	$("option:contains('Any')",'#gs_testPause').attr("selected", "selected");
-	    	$("option:contains('Any')",'#gs_screenReader').attr("selected", "selected");
-	    	$("option:contains('Any')",'#gs_untimedTest').attr("selected", "selected");
-	    	$("option:contains('Any')",'#gs_highLighter').attr("selected", "selected");
-	    	$('#gs_grade').trigger('change');
-	    	$('#gs_calculator').trigger('change');
-	    	$('#gs_hasColorFontAccommodations').trigger('change');
-	    	$('#gs_testPause').trigger('change');
-	    	$('#gs_screenReader').trigger('change');
-	    	$('#gs_untimedTest').trigger('change');
-	    	$('#gs_highLighter').trigger('change');
-	    	
-	    	
+	    	clearFilterDropDown();
 	    	clearList();
 	    	resetBulk();
 	    	setAnchorButtonState('assignAccommButton', true);
@@ -125,7 +110,6 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 					} else {
 						$("#studentAccommGrid").jqGrid("showCol",["calculator","hasColorFontAccommodations","testPause","screenReader","untimedTest"]); 
 					}
-					$("#studentAccommGrid").jqGrid("hideCol",["orgNodeId","orgNodeName","hasAccommodations"]);
 					
 				}
 		});
@@ -228,6 +212,7 @@ function populateBulkStudentGrid() {
 		           }
 		           if(submittedSuccesfully != ""){
 		           	 jQuery("#studentAccommGrid").setRowData(previousDataForpaging[allRowsInGrid[i]], submittedSuccesfully, "first");
+		           	 resetBulk();
 		           }
 		        }
 				totalRowSelectedOnPage = gridreloadRowCount;
@@ -263,52 +248,10 @@ function populateBulkStudentGrid() {
 							}
 						} else {
 							for(var i=0; i<studentArrId.length; i++){
-							 	var skip = false;
-								 var objIndex = jQuery.inArray(studentArrId[i], studentArrId); 
-								 var obj = studentObjArr[objIndex];
-								 if(skip == false && grade != ""){
-									 if(obj['grade'] == grade)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 } else  if(skip == false && calculator != ""){
-									 if(obj['calculator'] == calculator)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 } else if(skip == false && hasColorFontAccommodations != ""){
-									 if(obj['hasColorFontAccommodations'] == hasColorFontAccommodations)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 }
-								 else if(skip == false && testPause != ""){
-									 if(obj['testPause'] == testPause)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 }
-								 else if(skip == false && screenReader != ""){
-									 if(obj['screenReader'] == screenReader)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 }
-								 else if(skip == false && untimedTest != ""){
-									 if(obj['untimedTest'] == untimedTest)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 }
-								 else if(skip == false && highLighter != ""){
-									 if(obj['highLighter'] == highLighter)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 }
-								  if(!skip) {
-								  	delete selectedStudentObjArr[studentArrId[i]];
-								  }
+								var skip = skipStudent(grade, calculator, hasColorFontAccommodations, testPause, screenReader, untimedTest, highLighter, studentArrId[i]);
+						 	 	if(!skip) {
+							 	 	delete selectedStudentObjArr[studentArrId[i]];
+							 	 }
 								  
 							}
 				
@@ -322,66 +265,29 @@ function populateBulkStudentGrid() {
 							for(var i=0; i<studentArrId.length; i++){
 								selectedStudentObjArr[parseInt(studentArrId[i])]= parseInt(studentArrId[i]);
 							}
+							totalRowSelectedOnPage = studentArrId.length;
 						} else {
+							totalRowSelectedOnPage = 0;
 							for(var i=0; i<studentArrId.length; i++){
-							 	var skip = false;
-								 var objIndex = jQuery.inArray(studentArrId[i], studentArrId); 
-								 var obj = studentObjArr[objIndex];
-								 if(skip == false && grade != ""){
-									 if(obj['grade'] == grade)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 } else  if(skip == false && calculator != ""){
-									 if(obj['calculator'] == calculator)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 } else if(skip == false && hasColorFontAccommodations != ""){
-									 if(obj['hasColorFontAccommodations'] == hasColorFontAccommodations)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 }
-								 else if(skip == false && testPause != ""){
-									 if(obj['testPause'] == testPause)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 }
-								 else if(skip == false && screenReader != ""){
-									 if(obj['screenReader'] == screenReader)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 }
-								 else if(skip == false && untimedTest != ""){
-									 if(obj['untimedTest'] == untimedTest)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 }
-								 else if(skip == false && highLighter != ""){
-									 if(obj['highLighter'] == highLighter)
-									 	skip = false;
-									 else 
-									 	skip = true;
-								 }
-								  if(!skip) {
+								var skip = skipStudent(grade, calculator, hasColorFontAccommodations, testPause, screenReader, untimedTest, highLighter, studentArrId[i]);
+							 	  if(!skip) {
 								  	selectedStudentObjArr[parseInt(studentArrId[i])]= parseInt(studentArrId[i]);
+								  	totalRowSelectedOnPage = totalRowSelectedOnPage + 1;
 								  } else {
 								  	delete selectedStudentObjArr[studentArrId[i]];
 								  }
 								  
 							}
-				
+							
 						}	
 						setAnchorButtonState('assignAccommButton', false);
 						$.unblockUI();
 						var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');  
-						totalRowSelectedOnPage = studentArrId.length;
+						
 					}
-				
+				 if(submittedSuccesfully != ""){
+		           	 resetBulk();
+		         }
 			},
 			onSelectRow: function (rowid, status) {
 				var selectedRowId = rowid;
@@ -404,6 +310,10 @@ function populateBulkStudentGrid() {
 				 } else {
 				 	$('#cb_studentAccommGrid').attr('checked', false);
 				 }
+				 
+				  if(submittedSuccesfully != ""){
+		           	 resetBulk();
+		         }
 			},
 			loadComplete: function () {
 				if ($('#studentAccommGrid').getGridParam('records') === 0) {
@@ -464,9 +374,30 @@ function populateBulkStudentGrid() {
 
 
  function gridReloadForBulkStudent(){ 
+  		var demo1 = $('#selectedBox1').text();
+  		 if(demo1.indexOf('Please select')!= -1){
+			demo1 = "";
+		 } else {
+		 	var d1a = demo1.split(">>");
+		 	demo1 = $.trim(d1a[0])+"_"+$.trim(d1a[1]);
+		 }
+		 var demo2 = $('#selectedBox2').text();
+  		 if(demo2.indexOf('Please select')!= -1){
+			demo2 = "";
+		 } else {
+		 	var d1a = demo2.split(">>");
+		 	demo2 = $.trim(d1a[0])+"_"+$.trim(d1a[1]);
+		 }
+		 var demo3 = $('#selectedBox3').text();
+  		 if(demo3.indexOf('Please select')!= -1){
+			demo3 = "";
+		 } else {
+		 	var d1a = demo3.split(">>");
+		 	demo3 = $.trim(d1a[0])+"_"+$.trim(d1a[1]);
+		 }
        jQuery("#studentAccommGrid").jqGrid('setGridParam',{datatype:'json'});     
  	   var sortArrow = jQuery("#studentAccommGrid");
-       jQuery("#studentAccommGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#selectedBulkTreeOrgNodeId").val(),page:1}).trigger("reloadGrid");
+       jQuery("#studentAccommGrid").jqGrid('setGridParam', {url:'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#selectedBulkTreeOrgNodeId").val()+'&demoFilter1='+demo1+'&demoFilter2='+demo2+'&demoFilter3='+demo3,page:1}).trigger("reloadGrid");
        jQuery("#studentAccommGrid").sortGrid('lastName',true);
      	//For MQC Defect - 67122
        var arrowElements = sortArrow[0].grid.headers[0].el.lastChild.lastChild;
@@ -488,7 +419,7 @@ function populateBulkStudentGrid() {
 		return true;
 		
 	 $("#AssignAccommPopup").dialog({  
-		title:"Assign Accommodation",  
+		title:"Select Accommodation",  
 	 	resizable:false,
 	 	autoOpen: true,
 	 	width: '560px',
@@ -509,7 +440,6 @@ function populateBulkStudentGrid() {
 	var param;
 	var showStudentInGrid = false;
 	var studentIds = "";
-	
 	
 	for(var key in selectedStudentObjArr){
 		studentIds =  selectedStudentObjArr[key] + "," + studentIds;
@@ -535,7 +465,6 @@ function populateBulkStudentGrid() {
 								if(successFlag) {
 									closePopUp('AssignAccommPopup');
 									setBulkMessageMain(data.title, data.content, data.type, "");
-									document.getElementById('displayBulkMessageMain').style.display = "block";	
 									var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');
 						            for(var i=0; i<allRowsInGrid.length; i++) {
 								 	 	 jQuery("#studentAccommGrid").setRowData(selectedStudentObjArr[allRowsInGrid[i]], dataToBeAdded, "first");
@@ -544,6 +473,8 @@ function populateBulkStudentGrid() {
 									}
 									previousDataForpaging = selectedStudentObjArr;
 									selectedStudentObjArr = {};
+									document.getElementById('displayBulkMessageMain').style.display = "block";	
+									
 									$.unblockUI();			
 									}
 									else{
@@ -579,12 +510,12 @@ function populateBulkStudentGrid() {
   }
   
   function setBulkMessageMain(title, content, type, message){
-			$("#titleBulkMain").text(title);
+			//$("#titleBulkMain").text(title);
 			$("#contentBulkMain").text(content);
 			$("#messageBulkMain").text(message);
 		}
 		function setPopupMessage(){
-			$("#titleBulkPopup").text(BULK_ADD_TITLE);
+			//$("#titleBulkPopup").text(BULK_ADD_TITLE);
 			$("#contentBulkPopup").text(BULK_ACCOM_NOTSELECTED);
 			$("#messageBulkPopup").text("");
 		}
@@ -659,7 +590,7 @@ function populateBulkStudentGrid() {
 		 	
 		 }
 		 liMenuStr = liMenuStr + "</ul></div>";
-		 liMenuStr = liMenuStr + "<div><input type='button' id='apply'  class = 'ui-widget-header' style='border:1px solid;float:right;width:40px;margin:5px;height:20px;font-weight:bold;font-family:arial;cursor:pointer !important;' value='Apply'/>"+
+		 liMenuStr = liMenuStr + "<div><input type='button' id='apply' onclick='javascript:applyList(); return false;'  class = 'ui-widget-header' style='border:1px solid;float:right;width:40px;margin:5px;height:20px;font-weight:bold;font-family:arial;cursor:pointer !important;' value='Apply'/>"+
 		 			"	<input type='button' id='clear' onclick='javascript:clearList(); return false;' class = 'ui-widget-header' value='Clear' style='border:1px solid;float:right;width:40px;margin:5px;height:20px;font-weight:bold;font-family:arial;margin-right:0px;cursor:pointer !important;'/></div>";
 		 return liMenuStr;
 	}
@@ -673,7 +604,7 @@ function populateBulkStudentGrid() {
 	}).delegate("a","click",function(e) {
 		
 		var selected = $(this);
-		
+		var selectedFullId = "";	
 		var selectedParent = selected.parent().parent().prev();
 		 if(!selectedParent.is(".menuText")) {
 			var pTxt = selected.parent().parent().prev().text();
@@ -690,8 +621,7 @@ function populateBulkStudentGrid() {
 			
 		} else {
 			var parentTxt = "";
-			var tooltip = txt = selected.text();
-			var selectedFullId;	
+			var tooltip = txt = selected.text();			
 			if(! selected.is(".menuText")) {
 				var txt = ((txt.length >= 15) ? txt.substring(0,15)+"... >> All " : txt.substring(0,txt.length) +" All");		
 				if(txt.indexOf('Please select')!= -1){
@@ -705,47 +635,51 @@ function populateBulkStudentGrid() {
 			}
 			
 		}
-		
-		var selectedId = selectedFullId.split('_');
-			
-		if(selectedFullId.indexOf('ps_') != -1){
-			if(selectedId[1] == '1'){
-				$("[id^='" + globalCustomerDemographic1+"_']").show();
+		if(selectedFullId != undefined) {
+			var selectedId = selectedFullId.split('_');
+				
+			if(selectedFullId.indexOf('ps_') != -1){
+				if(selectedId[1] == '1'){
+					$("[id^='" + globalCustomerDemographic1+"_']").show();
+				}
+				if(selectedId[1] == '2'){
+					$("[id^='" + globalCustomerDemographic2+"_']").show();
+				}
+				if(selectedId[1] == '3'){
+					$("[id^='" + globalCustomerDemographic3+"_']").show();
+				}
+			}else {	
+				if(selectedId[1] == '1'){
+					globalCustomerDemographic1 = selectedId[0];
+					document.getElementById(selectedId[0]+"_2").style.display = 'none';
+					document.getElementById(selectedId[0]+"_3").style.display = 'none';
+				}
+				if(selectedId[1] == '2'){
+				globalCustomerDemographic2 = selectedId[0];
+					document.getElementById(selectedId[0]+"_1").style.display = 'none';
+					document.getElementById(selectedId[0]+"_3").style.display = 'none';
+				}
+				if(selectedId[1] == '3'){
+					globalCustomerDemographic3 = selectedId[0];
+					document.getElementById(selectedId[0]+"_1").style.display = 'none';
+					document.getElementById(selectedId[0]+"_2").style.display = 'none';
+				}
 			}
-			if(selectedId[1] == '2'){
-				$("[id^='" + globalCustomerDemographic2+"_']").show();
-			}
-			if(selectedId[1] == '3'){
-				$("[id^='" + globalCustomerDemographic3+"_']").show();
-			}
-		}else {	
-			if(selectedId[1] == '1'){
-				globalCustomerDemographic1 = selectedId[0];
-				document.getElementById(selectedId[0]+"_2").style.display = 'none';
-				document.getElementById(selectedId[0]+"_3").style.display = 'none';
-			}
-			if(selectedId[1] == '2'){
-			globalCustomerDemographic2 = selectedId[0];
-				document.getElementById(selectedId[0]+"_1").style.display = 'none';
-				document.getElementById(selectedId[0]+"_3").style.display = 'none';
-			}
-			if(selectedId[1] == '3'){
-				globalCustomerDemographic3 = selectedId[0];
-				document.getElementById(selectedId[0]+"_1").style.display = 'none';
-				document.getElementById(selectedId[0]+"_2").style.display = 'none';
-			}
-		}
-					
+		}			
 	});	
 	
 	
 }
 	function clearList(){
 		 $("#t_studentAccommGrid").html(listStr).height(30);
-		 $('#menu').superfish({
-			delay:10,
-			speed:'fast'
-		});
+		 loadMenu();
+	}
+	
+	function applyList(){
+		UIBlock();
+		gridReloadForBulkStudent();
+		clearFilterDropDown();
+		//$.unblockUI();   
 	}
 	
 	 function defaultFilterApplied(){
@@ -760,4 +694,98 @@ function populateBulkStudentGrid() {
 	    	else
 	    		return false;
 	 }
+	 
+	 function closeUnsaveConfirmationPopup (){
+	 	closePopUp('unSaveConfirmationPopup');
+	 	closePopUp('AssignAccommPopup');
+	 }
+	 
+	 function cancelAssignAccom(){
+	 	param = $("#AssignAccommPopup *").serialize();
+		var dataToBeAdded  = getDataToBeAdded(param);
+		if(dataToBeAdded['isAccommodationSelected']){
+			 $("#unSaveConfirmationPopup").dialog({  
+			title:"Confirmation Alert",  
+			resizable:false,
+		 	autoOpen: true,
+		 	width: '400px',
+		 	modal: true,
+		 	open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); }
+			});	
+		    $("#unSaveConfirmationPopup").css('height',120);
+			var toppos = ($(window).height() - 290) /2 + 'px';
+			var leftpos = ($(window).width() - 410) /2 + 'px';
+			$("#unSaveConfirmationPopup").parent().css("top",toppos);
+			$("#unSaveConfirmationPopup").parent().css("left",leftpos);	
+		} else {
+			closePopUp('AssignAccommPopup');
+		}
+	 }
+	 
+	  function clearFilterDropDown (){
+	  		$("option:contains('Any')",'#gs_grade' ).attr("selected", "selected");
+	    	$("option:contains('Any')",'#gs_calculator').attr("selected", "selected");
+	    	$("option:contains('Any')",'#gs_hasColorFontAccommodations').attr("selected", "selected");
+	    	$("option:contains('Any')",'#gs_testPause').attr("selected", "selected");
+	    	$("option:contains('Any')",'#gs_screenReader').attr("selected", "selected");
+	    	$("option:contains('Any')",'#gs_untimedTest').attr("selected", "selected");
+	    	$("option:contains('Any')",'#gs_highLighter').attr("selected", "selected");
+	    	$('#gs_grade').trigger('change');
+	    	$('#gs_calculator').trigger('change');
+	    	$('#gs_hasColorFontAccommodations').trigger('change');
+	    	$('#gs_testPause').trigger('change');
+	    	$('#gs_screenReader').trigger('change');
+	    	$('#gs_untimedTest').trigger('change');
+	    	$('#gs_highLighter').trigger('change');
+	  }
+	  
+	  
+	   function skipStudent(grade, calculator, hasColorFontAccommodations, testPause, screenReader, untimedTest, highLighter, studentId){
+	  	var skip = false;
+		 var objIndex = jQuery.inArray(studentId, studentArrId); 
+		 var obj = studentObjArr[objIndex];
+		 if(skip == false && grade != ""){
+			 if(obj['grade'] == grade)
+			 	skip = false;
+			 else 
+			 	skip = true;
+		 } else  if(skip == false && calculator != ""){
+			 if(obj['calculator'] == calculator)
+			 	skip = false;
+			 else 
+			 	skip = true;
+		 } else if(skip == false && hasColorFontAccommodations != ""){
+			 if(obj['hasColorFontAccommodations'] == hasColorFontAccommodations)
+			 	skip = false;
+			 else 
+			 	skip = true;
+		 }
+		 else if(skip == false && testPause != ""){
+			 if(obj['testPause'] == testPause)
+			 	skip = false;
+			 else 
+			 	skip = true;
+		 }
+		 else if(skip == false && screenReader != ""){
+			 if(obj['screenReader'] == screenReader)
+			 	skip = false;
+			 else 
+			 	skip = true;
+		 }
+		 else if(skip == false && untimedTest != ""){
+			 if(obj['untimedTest'] == untimedTest)
+			 	skip = false;
+			 else 
+			 	skip = true;
+		 }
+		 else if(skip == false && highLighter != ""){
+			 if(obj['highLighter'] == highLighter)
+			 	skip = false;
+			 else 
+			 	skip = true;
+		 }
+		
+		  return skip;
+	  }
+	
 	

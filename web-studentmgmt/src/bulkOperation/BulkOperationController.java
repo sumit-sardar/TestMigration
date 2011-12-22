@@ -32,6 +32,8 @@ import utils.TreeData;
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
 import com.ctb.bean.request.SortParams;
+import com.ctb.bean.request.FilterParams.FilterParam;
+import com.ctb.bean.request.FilterParams.FilterType;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
 import com.ctb.bean.studentManagement.CustomerDemographic;
@@ -69,6 +71,7 @@ public class BulkOperationController extends PageFlowController {
 	CustomerDemographic [] customerDemographic = null;
 	public String[] realDemographicOptions = null;
 	public static String CONTENT_TYPE_JSON = "application/json";
+	public static String UNDER_SCORE = "_";
 	
 	/**
 	 * This method represents the point of entry into the pageflow
@@ -105,54 +108,111 @@ public class BulkOperationController extends PageFlowController {
 			String json = "";
 			ObjectOutput output = null;
 			String studentArray = "";
-			
+			FilterParams demoFilter = null;
+			PageParams studentPage = null;
+	        SortParams studentSort = null;
 			String treeOrgNodeId = getRequest().getParameter("stuForOrgNodeId");
 			Integer selectedOrgNodeId = null;
 			if(treeOrgNodeId != null)
 				selectedOrgNodeId = Integer.parseInt(treeOrgNodeId);
-			
+			String demoFilter1 = getRequest().getParameter("demoFilter1");
+			String demoFilter2 = getRequest().getParameter("demoFilter2");
+			String demoFilter3 = getRequest().getParameter("demoFilter3");
 			try {
-				FilterParams studentFilter = null;
+				if(demoFilter1 != null && demoFilter2 != null && demoFilter3 != null  
+						&& !(demoFilter1.equals("") && demoFilter2.equals("") && demoFilter3.equals(""))) {
+					
+				String selectedDemo1 = (demoFilter1.equals("")?  FilterSortPageUtils.FILTERTYPE_SHOWALL : (demoFilter1.split(UNDER_SCORE))[0].trim());
+				String selectedDemoValue1 = (demoFilter1.equals("")?  FilterSortPageUtils.FILTERTYPE_SHOWALL : ((demoFilter1.split(UNDER_SCORE))[1].trim().equals("All")?  FilterSortPageUtils.FILTERTYPE_SHOWALL :(demoFilter1.split(UNDER_SCORE))[1].trim()));
+				String selectedDemo2 = (demoFilter2.equals("")?  FilterSortPageUtils.FILTERTYPE_SHOWALL : (demoFilter2.split(UNDER_SCORE))[0].trim());
+				String selectedDemoValue2 = (demoFilter2.equals("")?  FilterSortPageUtils.FILTERTYPE_SHOWALL : ((demoFilter2.split(UNDER_SCORE))[1].trim().equals("All")?  FilterSortPageUtils.FILTERTYPE_SHOWALL :(demoFilter2.split(UNDER_SCORE))[1].trim()));
+				String selectedDemo3 = (demoFilter3.equals("")?  FilterSortPageUtils.FILTERTYPE_SHOWALL : (demoFilter3.split(UNDER_SCORE))[0].trim());
+				String selectedDemoValue3 = (demoFilter3.equals("")?  FilterSortPageUtils.FILTERTYPE_SHOWALL : ((demoFilter3.split(UNDER_SCORE))[1].trim().equals("All")?  FilterSortPageUtils.FILTERTYPE_SHOWALL :(demoFilter3.split(UNDER_SCORE))[1].trim()));
 				
-		        PageParams studentPage = null;
-		        SortParams studentSort = null;
-		        studentSort = FilterSortPageUtils.buildStudentSortParams(FilterSortPageUtils.STUDENT_DEFAULT_SORT_COLUMN_LAST_NAME, FilterSortPageUtils.ASCENDING);
-		        // get students - getSessionStudents
-		        ManageBulkStudentData msData = StudentSearchUtils.searchBulkStudentsByOrgNode(this.userName, this.studentManagement, selectedOrgNodeId, studentFilter,studentFilter, studentPage, studentSort);
+				demoFilter = new FilterParams();
+				ArrayList demoFilters = new ArrayList();
+				if (selectedDemo1 != null && !selectedDemo1.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
+				{
+					String [] arg = new String[1];
+					arg[0] = selectedDemo1;
+					if (selectedDemoValue1 != null && !selectedDemoValue1.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
+					{
+						String [] valueArg = new String[1];
+						valueArg[0] = arg[0]+ "_" + selectedDemoValue1;
+						demoFilters.add(new FilterParam("ValueName", valueArg, FilterType.EQUALS));
+					} else {
+						demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
+					}
 
-		        List studentNodes = buildStudentList(msData);
-		        studentArray = StudentSearchUtils.buildStudentListString(msData);
-				Base base = new Base();
-				base.setPage("1");
-				base.setRecords("10");
-				base.setTotal("2");
-				List <Row> rows = new ArrayList<Row>();
-				base.setStudentNode(studentNodes);
-				base.setStudentIdArray(studentArray);
-				
-				Gson gson = new Gson();
-				//System.out.println ("Json process time Start:"+new Date());
-				json = gson.toJson(base);
-				//System.out.println ("Json process time End:"+new Date() +".."+json);
-				try{
-					resp.setContentType("application/json");
-					stream = resp.getOutputStream();
-					resp.flushBuffer();
-					stream.write(json.getBytes("UTF-8"));
 				}
-				finally{
-					if (stream!=null){
-						stream.close();
+
+				if (selectedDemo2 != null && !selectedDemo2.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
+				{
+					String [] arg = new String[1];
+					arg[0] = selectedDemo2;
+					if (selectedDemoValue2 != null && !selectedDemoValue2.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
+					{
+						String [] valueArg = new String[1];
+						valueArg[0] = arg[0]+ "_" + selectedDemoValue2;
+						demoFilters.add(new FilterParam("ValueName", valueArg, FilterType.EQUALS));
+					} else {
+						demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
+					}
+
+				}
+
+				if (selectedDemo3 != null && !selectedDemo3.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
+				{
+					String [] arg = new String[1];
+					arg[0] = selectedDemo3;
+					if (selectedDemoValue3 != null && !selectedDemoValue3.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
+					{
+						String [] valueArg = new String[1];
+						valueArg[0] = arg[0]+ "_" + selectedDemoValue3;
+						demoFilters.add(new FilterParam("ValueName", valueArg, FilterType.EQUALS));
+					} else {
+						demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
 					}
 				}
-			} catch (Exception e) {
-				System.err.println("Exception while processing CR response.");
-				e.printStackTrace();
+				demoFilter.setFilterParams((FilterParam[])demoFilters.toArray(new FilterParam[0]));
 			}
+	        studentSort = FilterSortPageUtils.buildStudentSortParams(FilterSortPageUtils.STUDENT_DEFAULT_SORT_COLUMN_LAST_NAME, FilterSortPageUtils.ASCENDING);
+	        // get students - getSessionStudents
+	        ManageBulkStudentData msData = StudentSearchUtils.searchBulkStudentsByOrgNode(this.userName, this.studentManagement, selectedOrgNodeId, null, demoFilter, studentPage, studentSort);
 
-			return null;
-
+	        List studentNodes = buildStudentList(msData);
+	        studentArray = StudentSearchUtils.buildStudentListString(msData);
+			Base base = new Base();
+			base.setPage("1");
+			base.setRecords("10");
+			base.setTotal("2");
+			List <Row> rows = new ArrayList<Row>();
+			base.setStudentNode(studentNodes);
+			base.setStudentIdArray(studentArray);
+			
+			Gson gson = new Gson();
+			//System.out.println ("Json process time Start:"+new Date());
+			json = gson.toJson(base);
+			//System.out.println ("Json process time End:"+new Date() +".."+json);
+			try{
+				resp.setContentType("application/json");
+				stream = resp.getOutputStream();
+				resp.flushBuffer();
+				stream.write(json.getBytes("UTF-8"));
+			}
+			finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+		} catch (Exception e) {
+			System.err.println("Exception while processing CR response.");
+			e.printStackTrace();
 		}
+
+		return null;
+
+	}
 	
 	@Jpf.Action(forwards={
 			@Jpf.Forward(name = "success", 

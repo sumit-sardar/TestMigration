@@ -1172,10 +1172,14 @@ function moveSelectedOption(elementId, moveDirection)
 		screen_reader[1].checked=false;
 		
 		var calculator = document.getElementsByName("calculator");
+		if(calculator.length == 3) {
 		calculator[0].checked=false;
 		calculator[1].checked=false;
 		calculator[2].checked=false;
-		
+		} else {
+		calculator[0].checked=false;
+		calculator[1].checked=false;
+		}
 		var test_pause = document.getElementsByName("test_pause");
 		test_pause[0].checked=false;
 		test_pause[1].checked=false;
@@ -1193,6 +1197,7 @@ function moveSelectedOption(elementId, moveDirection)
 		colorFont[1].checked=false;
 		
 		enableColorSettingsLink();
+		
 		
 	}
 	
