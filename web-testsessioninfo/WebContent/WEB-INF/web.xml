@@ -34,6 +34,10 @@
         <filter-name>NoCacheFilter</filter-name>
         <url-pattern>/viewtestsessions/*</url-pattern>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>NoCacheFilter</filter-name>
+        <url-pattern>/testTicket/*</url-pattern>
+    </filter-mapping>
     <servlet>
         <description/>
         <servlet-name>action</servlet-name>
@@ -130,6 +134,7 @@
             <url-pattern>/softwareOperation/*</url-pattern>
             <url-pattern>/programOperation/*</url-pattern>
             <url-pattern>/testContentOperation/*</url-pattern>
+            <url-pattern>/testTicket/*</url-pattern>
             <http-method>POST</http-method>
             <http-method>GET</http-method>
         </web-resource-collection>      
@@ -145,7 +150,7 @@
         </auth-constraint>
         <user-data-constraint>
             <description>This is how the user data must be transmitted.</description>
-            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+            <transport-guarantee>NONE</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
     <login-config>
