@@ -24,7 +24,7 @@ function viewBroadcastMessage() {
 								$('#broadcastMsgDialogId').dialog({
 									autoOpen: true,
 									modal: true,
-								    title:"Broadcast Message", 
+								    title:$("#bcastMsgID").val(), 
 									width: 600,
 									resizable: false,
 									buttons: {
@@ -69,7 +69,7 @@ function viewMyProfile() {
 								// My Profile Dialog			
 								$('#myProfileDialogId').dialog({
 									autoOpen: true,
-								    title:"My Profile", 
+								    title:$("#mprofileID").val(), 
 									modal: true,
 									width: 600,
 									resizable: false,

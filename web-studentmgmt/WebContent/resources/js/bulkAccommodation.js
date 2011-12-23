@@ -13,8 +13,8 @@ var previousDataForpaging = {};
 
 
 var selectedStudentObjArr = {};
-var BULK_ADD_TITLE      = "Edit Accommodations";
-var BULK_ACCOM_NOTSELECTED = "No accommodation was selected. Accommodations for the selected set of students was not updated.";	
+var BULK_ADD_TITLE      = $("#stuEditAccoID").val();
+var BULK_ACCOM_NOTSELECTED = $("#stuNoAccoID").val();	
 	
 function populateBulkAccommTree() {
 	
@@ -160,7 +160,7 @@ function populateBulkStudentGrid() {
           url: 'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#selectedBulkTreeOrgNodeId").val(), 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[ 'Last Name','First Name', 'M.I', 'Grade', calculator, colorFont, testPause, screenReader, untimedTest, highlighter],
+          colNames:[ $("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("miID").val(), $("#jqgGradeID").val(), calculator, colorFont, testPause, screenReader, untimedTest, highlighter],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:152, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:153, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -188,7 +188,7 @@ function populateBulkStudentGrid() {
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 370,  
-			caption:"Student List",
+			caption:$("#stuListID").val(),
 			toolbar: [true,"top"],
 			onPaging: function() {
 				var reqestedPage = parseInt($('#studentAccommGrid').getGridParam("page"));

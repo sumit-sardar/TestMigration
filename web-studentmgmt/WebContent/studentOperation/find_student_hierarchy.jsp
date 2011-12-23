@@ -1,8 +1,46 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>   
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="studentApplicationResource" />
 
 <input type="hidden" id="addStudentEnable" name="addStudentEnable" value='<%=session.getAttribute("addStudentEnable") %>'/>
 <input type="hidden" id="deleteStudentEnable" name="deleteStudentEnable" value='<%=session.getAttribute("deleteStudentEnable") %>'/>
+<input type="hidden" id="jqgFirstNameID" name="jqgFirstNameID" value=<lb:label key="stu.info.firstName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgLastNameID" name="jqgLastNameID" value=<lb:label key="stu.info.lastName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgMiddleIniID" name="jqgMiddleIniID" value=<lb:label key="stu.label.midInitial" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgGradeID" name="jqgGradeID" value=<lb:label key="stu.info.grade" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgOrgID" name="jqgOrgID" value=<lb:label key="stu.info.org" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgGenderID" name="jqgGenderID" value=<lb:label key="stu.info.gender" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgAccoID" name="jqgAccoID" value=<lb:label key="stu.label.acco" prefix="'" suffix="'"/>/>
+<input type="hidden" id="jqgLoginID" name="jqgLoginID" value=<lb:label key="stu.info.loginID" prefix="'" suffix="'"/>/>
+<input type="hidden" id="addStuID" name="addStuID" value=<lb:label key="stu.label.addStu" prefix="'" suffix="'"/>/>
+<input type="hidden" id="editStuID" name="editStuID" value=<lb:label key="stu.label.editStu" prefix="'" suffix="'"/>/>
+<input type="hidden" id="viewStuID" name="viewStuID" value=<lb:label key="stu.label.viewStu" prefix="'" suffix="'"/>/>
+<input type="hidden" id="confirmID" name="confirmID" value=<lb:label key="stu.label.confirm" prefix="'" suffix="'"/>/>
+<input type="hidden" id="delStuID" name="delStuID" value=<lb:label key="stu.label.delStu" prefix="'" suffix="'"/>/>
+<input type="hidden" id="delStuSuccessID" name="delStuSuccessID" value=<lb:label key="stu.msg.stuDelSuccess" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuEditAccoID" name="stuEditAccoID" value=<lb:label key="stu.label.editAcco" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuNoAccoID" name="stuNoAccoID" value=<lb:label key="stu.msg.noAcco" prefix="'" suffix="'"/>/>
+<input type="hidden" id="miID" name="miID" value=<lb:label key="stu.label.mi" prefix="'" suffix="'"/>/>
+<input type="hidden" id="stuListID" name="stuListID" value=<lb:label key="stu.label.list" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mprofileID" name="mprofileID" value=<lb:label key="stu.label.mprofile" prefix="'" suffix="'"/>/>
+<input type="hidden" id="bcastMsgID" name="bcastMsgID" value=<lb:label key="stu.label.bcastMsg" prefix="'" suffix="'"/>/>
+<input type="hidden" id="invalidNumCharID" name="invalidNumCharID" value=<lb:label key="stu.msg.invalidNumChar" prefix="'" suffix="'"/>/>
+<input type="hidden" id="invalidNameID" name="invalidNameID" value=<lb:label key="stu.msg.invalidName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="reqTextID" name="reqTextID" value=<lb:label key="stu.msg.reqText" prefix="'" suffix="'"/>/>
+<input type="hidden" id="mReqTextID" name="mReqTextID" value=<lb:label key="stu.msg.mReqText" prefix="'" suffix="'"/>/>
+<input type="hidden" id="alphaNumericCharsID" name="alphaNumericCharsID" value=<lb:label key="stu.msg.alphaNumericChars" prefix="'" suffix="'"/>/>
+<input type="hidden" id="invalidNumFrmtID" name="invalidNumFrmtID" value=<lb:label key="stu.msg.invalidNumFrmt" prefix="'" suffix="'"/>/>
+<input type="hidden" id="minLengthFormatID" name="minLengthFormatID" value=<lb:label key="stu.msg.minLengthFormat" prefix="'" suffix="'"/>/>
+<input type="hidden" id="invalidDateID" name="invalidDateID" value=<lb:label key="stu.msg.invalidDate" prefix="'" suffix="'"/>/>
+<input type="hidden" id="invalidCharID" name="invalidCharID" value=<lb:label key="stu.msg.invalidChar" prefix="'" suffix="'"/>/>
+<input type="hidden" id="invalidBirthDayID" name="invalidBirthDayID" value=<lb:label key="stu.msg.invalidBirthDay" prefix="'" suffix="'"/>/>
+<input type="hidden" id="dateOfBirthID" name="dateOfBirthID" value=<lb:label key="stu.info.dateOfBirth" prefix="'" suffix="'"/>/>
+<input type="hidden" id="orgAssingID" name="orgAssingID" value=<lb:label key="stu.label.orgAssing" prefix="'" suffix="'"/>/>
+<input type="hidden" id="missRequiredFieldID" name="missRequiredFieldID" value=<lb:label key="stu.msg.missRequiredField" prefix="'" suffix="'"/>/>
+<input type="hidden" id="missRequiredFieldsID" name="missRequiredFieldsID" value=<lb:label key="stu.msg.missRequiredFields" prefix="'" suffix="s'"/>/>
+<input type="hidden" id="middleNameID" name="middleNameID" value=<lb:label key="stu.info.middleName" prefix="'" suffix="'"/>/>
+<input type="hidden" id="assignAccoID" name="assignAccoID" value=<lb:label key="stu.label.assignAcco" prefix="'" suffix="'"/>/>
 
 <table class="transparent">
 
@@ -28,7 +66,7 @@
 	 		<td class="transparent" width="5px">&nbsp;</td>
 		 	<td >
 	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">
-	      			&nbsp;Student List
+	      			&nbsp;<lb:label key="stu.label.list" />
 	      		<!-- 
 	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header gridTableHeader">
 	      			<table border="0" width="100%">
@@ -63,7 +101,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p>You have not saved the student record. Are you sure you want to leave this page?</p>
+			<p><lb:label key="stu.msg.notsave" /></p>
 			<br/>
 			</td>
 		</tr>
@@ -85,7 +123,7 @@
 		<tr>
 			<td colspan="2">
 			<br/>
-			<p>You have not saved the student record. Are you sure you want to leave this page?</p>
+			<p><lb:label key="stu.msg.notsave" /></p>
 			<br/>
 			</td>
 		</tr>
@@ -111,9 +149,7 @@
 			<td>
 			<br/>
 			<p>
-				Click 'OK' to delete this student's profile from your organization.<br/>
-				The student will be removed and excluded from future tests.<br/>
-			 	Previous test records will be retained.
+				<lb:label key="stu.msg.delete" />
 			</p>
 			<br/>
 			</td>

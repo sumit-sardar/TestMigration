@@ -513,7 +513,7 @@ function updateOrganization(element, isChecked){
           url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
 		 datatype: "json",         
-          colNames:['Last Name','First Name', 'Middle Initial', 'Grade','Organization', 'Gender', 'Accommodation', 'Login ID', studentIdTitle],
+          colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(),$("#jqgOrgID").val(), $("#jqgGenderID").val(), $("#jqgAccoID").val(), $("#jqgLoginID").val(), studentIdTitle],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -602,7 +602,7 @@ function updateOrganization(element, isChecked){
           url:'getStudentForSelectedOrgNodeGrid.do?q=2&treeOrgNodeId='+$("#treeOrgNodeId").val(), 
 		 type:   'POST',
 		 datatype: "json",         
-          colNames:['Last Name','First Name', 'Middle Initial', 'Grade','Organization', 'Gender', 'Login ID', studentIdTitle],
+          colNames:[$("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("#jqgMiddleIniID").val(), $("#jqgGradeID").val(),$("#jqgOrgID").val(), $("#jqgGenderID").val(), $("#jqgAccoID").val(), $("#jqgLoginID").val(), studentIdTitle],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:100, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -722,7 +722,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
 						
 						$("#addEditStudentDetail").dialog({  
-													title:"Add Student",  
+													title:$("#addStuID").val(),  
 												 	resizable:false,
 												 	autoOpen: true,
 												 	width: '800px',
@@ -765,7 +765,7 @@ document.getElementById('displayMessageMain').style.display = "none";
 		if($("#isLasLinkCustomer").val() =="true")
 			fillDropDown("testPurposeOptions", testPurposeOptions);
 		$("#addEditStudentDetail").dialog({  
-			title:"Add Student",  
+			title:$("#addStuID").val(),  
 		 	resizable:false,
 		 	autoOpen: true,
 		 	width: '800px',
@@ -1460,7 +1460,7 @@ function fillselectedOrgNode( elementId, orgList) {
 						setEditStudentDetail(rowid);
 						$.unblockUI();  
 						$("#addEditStudentDetail").dialog({  
-													title:"Edit Student",  
+													title:$("#editStuID").val(),  
 												 	resizable:false,
 												 	autoOpen: true,
 												 	width: '800px',
@@ -1571,7 +1571,7 @@ function fillselectedOrgNode( elementId, orgList) {
 						//customerDemographicValue = $("#addEditStudentDetail *").serializeArray(); 
 						// For MQC Defect - 67150
 						$("#viewStudentDetail").dialog({  
-													title:"View Student",  
+													title:$("#viewStuID").val(),  
 												 	resizable:false,
 												 	autoOpen: true,
 												 	width: '800px',
@@ -1725,7 +1725,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		var arg= args;
 		if(arg == null || arg == undefined){
 			$("#confirmationPopup").dialog({  
-				title:"Confirmation Alert",  
+				title:$("#confirmID").val(),  
 			 	resizable:false,
 			 	autoOpen: true,
 			 	width: '400px',
@@ -1741,7 +1741,7 @@ function fillselectedOrgNode( elementId, orgList) {
 		 }
 		 else{
 		  $("#confirmationPopupNavigation").dialog({  
-			title:"Confirmation Alert",  
+			title:$("#confirmID").val(),  
 			resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',
@@ -1979,7 +1979,7 @@ function setSelectedValue(selectObj, valueToSet) {
 		clearMessage();
 	
 		$("#deleteStudentPopup").dialog({  
-			title:"Delete Student",  
+			title:$("#delStuID").val(),  
 			resizable:false,
 		 	autoOpen: true,
 		 	width: '400px',
@@ -2026,11 +2026,11 @@ function setSelectedValue(selectObj, valueToSet) {
 	function showDeleteStudentStatus(){ 
 	
 		var deleteStatus = $("#deleteStatus").val();
-	
-		setMessageMain('Delete Student', deleteStatus, '', '');
+		var delStuMsg = $("#delStuID").val();
+		setMessageMain(delStuMsg, deleteStatus, '', '');
 		document.getElementById('displayMessageMain').style.display = "block";	
-
-		if (deleteStatus == 'Student has been deleted successfully.') {
+		var delStuSuccess=$("#delStuSuccessID").val();
+		if (deleteStatus == delStuSuccess) {
 			/*
 	     	UIBlock();
 	        jQuery("#list2").jqGrid('setGridParam',{datatype:'json'});     

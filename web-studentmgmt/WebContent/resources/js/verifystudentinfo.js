@@ -1,13 +1,13 @@
-var INVALID_NUMBER_CHARS = "Please re-enter your string with these characters: A-Z, a-z, 0-9, space";
-var INVALID_NAME_CHARS = "Please re-enter your string with these characters: A-Z, a-z, 0-9, /, \\, -, ', (, ), &, +, comma, period, space";
-var REQUIRED_TEXT = "Please enter/select this value to continue.";
-var REQUIRED_TEXT_MULTIPLE = "Please enter/select these values to continue.";
-var INVALID_ALPHANUMBER_CHARS = "Please enter ID of alpha-numeric characters, with no spaces. Acceptable characters are a-z, A-Z, 0-9.";
-var INVALID_NUMBER_FORMAT = "Please enter ID of numeric characters, with no spaces. Acceptable characters are 0-9.";
-var INVALID_STUDENT_MINLENGTH_FORMAT = "Please enter ID of minimum length:";;
-var INVALID_DATE = "Please re-select valid month, day, and year.";
-var invalid_char_message = "One or more fields contain invalid formats or invalid values:";
-var invalid_birthdate = "Invalid Date of Birth:";
+//var INVALID_NUMBER_CHARS = "Please re-enter your string with these characters: A-Z, a-z, 0-9, space";
+//var INVALID_NAME_CHARS = "Please re-enter your string with these characters: A-Z, a-z, 0-9, /, \\, -, ', (, ), &, +, comma, period, space";
+//var REQUIRED_TEXT = "Please enter/select this value to continue.";
+//var REQUIRED_TEXT_MULTIPLE = "Please enter/select these values to continue.";
+//var INVALID_ALPHANUMBER_CHARS = "Please enter ID of alpha-numeric characters, with no spaces. Acceptable characters are a-z, A-Z, 0-9.";
+//var INVALID_NUMBER_FORMAT = "Please enter ID of numeric characters, with no spaces. Acceptable characters are 0-9.";
+//var INVALID_STUDENT_MINLENGTH_FORMAT = "Please enter ID of minimum length:";;
+//var INVALID_DATE = "Please re-select valid month, day, and year.";
+//var invalid_char_message = "One or more fields contain invalid formats or invalid values:";
+//var invalid_birthdate = "Invalid Date of Birth:";
 
 var grade; var gender; var day; var year; var month; 
 var firstName;var middleName;var lastName;var studentExternalId;var studentExternalId2;
@@ -49,27 +49,27 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 			            
 			if ( firstName.length == 0 ) {
 				requiredFieldCount += 1;            
-				requiredFields = buildErrorString("First Name", requiredFieldCount, requiredFields);       
+				requiredFields = buildErrorString($("#jqgFirstNameID").val(), requiredFieldCount, requiredFields);       
 			}
 
 		   if ( lastName.length == 0 ) {
 				requiredFieldCount += 1;            
-				requiredFields = buildErrorString("Last Name", requiredFieldCount, requiredFields);       
+				requiredFields = buildErrorString($("#jqgLastNameID").val(), requiredFieldCount, requiredFields);       
 			}
 			if(isMandatoryBirthdate == "true") {
 				if (!allSelected(month, day, year)) {
 					requiredFieldCount += 1;            
-					requiredFields = buildErrorString("Date of Birth", requiredFieldCount, requiredFields);       
+					requiredFields = buildErrorString($("#dateOfBirthID").val(), requiredFieldCount, requiredFields);       
 				}
 			}
            if ( grade == "Select a grade") {
 				requiredFieldCount += 1;            
-				requiredFields = buildErrorString("Grade", requiredFieldCount, requiredFields);       
+				requiredFields = buildErrorString($("#jqgGradeID").val(), requiredFieldCount, requiredFields);       
 			}
 
 			if ( gender == "Select a gender" ) {
 				requiredFieldCount += 1;            
-				requiredFields = buildErrorString("Gender", requiredFieldCount, requiredFields);       
+				requiredFields = buildErrorString($("#jqgGenderID").val(), requiredFieldCount, requiredFields);       
 			}
 					
 			if(isMandatoryStudentId == "true"){
@@ -82,18 +82,18 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 
 			if ( selectedOrgNodes.length == "" ) {
 				requiredFieldCount += 1;      
-				requiredFields = buildErrorString("Organization Assignment", requiredFieldCount, requiredFields);       
+				requiredFields = buildErrorString($("#orgAssingID").val(), requiredFieldCount, requiredFields);       
 			}        
 			
 			
 			if (requiredFieldCount > 0) {
 				if (requiredFieldCount == 1) {
 					//requiredFields += ("\n" + REQUIRED_TEXT);
-					setMessage("Missing required field", requiredFields, "errorMessage", REQUIRED_TEXT);
+					setMessage($("#missRequiredFieldID").val(), requiredFields, "errorMessage", $("#reqTextID").val());
 				}
 				else {
 					//requiredFields += ("\n" + REQUIRED_TEXT_MULTIPLE);
-					setMessage("Missing required fields", requiredFields, "errorMessage", REQUIRED_TEXT_MULTIPLE);
+					setMessage($("#missRequiredFieldsID").val(), requiredFields, "errorMessage", $("#mReqTextID").val());
 				}
 				return false;
 			}
@@ -101,27 +101,27 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 			var invalidCharFields = verifyCreateStudentName(firstName, lastName, middleName);                
 			if (invalidCharFields.length > 0) {
 				//invalidCharFields += ("<br/>" + INVALID_NAME_CHARS);
-				setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NAME_CHARS);
+				setMessage($("#invalidCharID").val(), invalidCharFields, "errorMessage",$("#invalidNameID").val());
 				return false;
 			}
 			invalidCharFields = verifyCreateStudentNumber(studentNumber, studentSecondNumber, studentIdLabelName, studentId2LabelName,studentIdConfigurable, studentId2Configurable  );                
 			if (invalidCharFields.length > 0) {
 				//invalidCharFields += ("<br/>" + INVALID_NUMBER_CHARS);
-				setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NUMBER_CHARS);
+				setMessage($("#invalidCharID").val(), invalidCharFields, "errorMessage",$("#invalidNumCharID").val());
 				return false;
 			}
 		
 			invalidCharFields = verifyAlphaNumericStudentNumber(studentNumber, studentSecondNumber, studentIdLabelName, studentId2LabelName, isStudentIdNumeric, isStudentId2Numeric,studentIdConfigurable, studentId2Configurable  );                
 			if (invalidCharFields.length > 0) {
 				//invalidCharFields += ("<br/>" + INVALID_ALPHANUMBER_CHARS);
-				setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_ALPHANUMBER_CHARS);
+				setMessage($("#invalidCharID").val(), invalidCharFields, "errorMessage",$("#alphaNumericCharsID").val());
 				return false;
 			}
 			
 			invalidCharFields = verifyConfigurableStudentNumber(studentNumber, studentSecondNumber, studentIdLabelName,studentId2LabelName, isStudentIdNumeric, isStudentId2Numeric);                
 			if (invalidCharFields.length > 0) {
 				//invalidCharFields += ("<br/>" + INVALID_NUMBER_FORMAT);
-				setMessage(invalid_char_message, invalidCharFields, "errorMessage",INVALID_NUMBER_FORMAT);
+				setMessage($("#invalidCharID").val(), invalidCharFields, "errorMessage",$("#invalidNumFrmtID").val());
 					return false;
 			}
 			
@@ -129,7 +129,7 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 			if (invalidCharFields.length > 0) {
 				var str = [];
 				str = invalidCharFields.split(",");
-				var invalidFields = INVALID_STUDENT_MINLENGTH_FORMAT;  
+				var invalidFields = $("#minLengthFormatID").val();  
 				for(var temp=0; temp< str.length; temp++){
 					if(trim(str[temp])== studentIdLabelName)
 						invalidFields += (" " + studentIdLabelName +" - " + studentIdMinLength + " characters");  
@@ -137,14 +137,14 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 						invalidFields += (" " + studentId2LabelName +" - " + studentId2MinLength+ " characters");  
 				}
 		
-				setMessage(invalid_char_message, invalidCharFields, "errorMessage" , invalidFields);
+				setMessage($("#invalidCharID").val(), invalidCharFields, "errorMessage" , invalidFields);
 					return false;
 				}
 						
 			if(isMandatoryBirthdate == "true" && !allSelected(month, day, year)) {
 				if (!noneSelected(month, day, year)) {
 					//invalidCharFields += INVALID_DATE;
-					setMessage(invalid_birthdate, invalidCharFields,"errorMessage",INVALID_DATE);
+					setMessage($("#invalidBirthDayID").val(), invalidCharFields,"errorMessage",$("#invalidDateID").val());
 					return false;
 					      
 				}
@@ -154,7 +154,7 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 				var isDateValid = validateDateValues(year, month, day);
 				if (isDateValid == 0) {
 					//invalidCharFields += INVALID_DATE;
-					setMessage(invalid_birthdate, invalidCharFields, "errorMessage", INVALID_DATE);
+					setMessage($("#invalidBirthDayID").val(), invalidCharFields, "errorMessage", $("#invalidDateID").val());
 					return false;
 				}
 			}
@@ -217,17 +217,17 @@ function VerifyStudentDetail(assignedOrgNodeIds){
 
         if (! validNameString(firstName) ) {
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("First Name", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString($("#jqgFirstNameID").val(), invalidCharFieldCount, invalidCharFields);       
         }
         
         if (! validNameString(lastName) ) {
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Last Name", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString($("#jqgLastNameID").val(), invalidCharFieldCount, invalidCharFields);       
         }
 
         if (! validNameString(middleName) ) {
             invalidCharFieldCount += 1;            
-            invalidCharFields = buildErrorString("Middle Name", invalidCharFieldCount, invalidCharFields);       
+            invalidCharFields = buildErrorString($("#middleNameID").val(), invalidCharFieldCount, invalidCharFields);       
         }
     
         return invalidCharFields;

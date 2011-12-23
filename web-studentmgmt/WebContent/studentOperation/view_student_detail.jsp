@@ -1,4 +1,6 @@
 <%@ page import="java.io.*, java.util.*"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="studentApplicationResource" />
 <%
     Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
 	Boolean isStudentIdConfigurable = (Boolean)request.getAttribute("isStudentIdConfigurable"); 
@@ -33,24 +35,24 @@
 								<table class="transparent" >
 								<tbody>
 									<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight">First Name:</td>
+										<td width="110" nowrap="" class="transparent alignRight"><lb:label key="stu.info.firstName" suffix=":"/></td>
 										<td class="transparent"><label style="width: 200px;" tabindex="0" maxlength="32" id="studentFirstNameView" name="studentFirstNameView">
 										</td>
 									</tr>
 									<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight">Middle Name:</td>
+										<td width="110" nowrap="" class="transparent alignRight"><lb:label key="stu.info.middleName" suffix=":"/></td>
 										<td class="transparent"><label style="width: 200px;" maxlength="32" id="studentMiddleNameView" name="studentMiddleNameView"></td>
 									</tr>
 									<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight">Last Name:</td>
+										<td width="110" nowrap="" class="transparent alignRight"><lb:label key="stu.info.lastName" suffix=":"/></td>
 										<td class="transparent"><label style="width: 200px;" maxlength="32" id="studentLastNameView" name="studentLastNameView"></td>
 									</tr>
 									<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight">Login ID:</td>
+										<td width="110" nowrap="" class="transparent alignRight"><lb:label key="stu.info.loginID" suffix=":"/></td>
 										<td class="transparent"><label style="width: 200px;" maxlength="32" id="studentUserNameView" name="studentUserNameView"></td>
 									</tr>
 									<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight">Date of  Birth:</td>
+										<td width="110" nowrap="" class="transparent alignRight"><lb:label key="stu.info.dateOfBirth" suffix=":"/></td>
 										<td nowrap="" class="transparent">    
 											<label style="width: 200px;" maxlength="32" id="birthdateStringView" name="birthdateStringView">
 										</td>                    
@@ -64,11 +66,11 @@
 								<tbody>
 									
 									    <tr class="transparent">
-									        <td width="110" nowrap="" class="transparent alignRight">Grade:</td>
+									        <td width="110" nowrap="" class="transparent alignRight"><lb:label key="stu.info.grade" suffix=":"/></td>
 											<td class="transparent"><label style="width: 200px;" maxlength="32" id="studentgradeView" name="studentgradeView"></td>
 									    </tr>
 									    <tr class="transparent">
-									    	<td width="110" nowrap="" class="transparent alignRight">Gender:</td>
+									    	<td width="110" nowrap="" class="transparent alignRight"><lb:label key="stu.info.gender" suffix=":"/></td>
 											<td class="transparent"><label style="width: 200px;" maxlength="32" id="studentgenderView" name="studentgenderView"></td>
 									    </tr>
 									    <tr class="transparent">
@@ -77,20 +79,20 @@
 									         <%if(isStudentIdConfigurable) {%> 
 												 <%=studentIdArrValue[0] %>	:
 											 <%} else {%> 
-												Student ID:	
+												<lb:label key="stu.info.studentID" suffix=":"/>		
 											 <%} %>
 									        <td class="transparent"><label style="width: 200px;" maxlength="32" id="studentNumberView" name="studentNumberView"></td>
 									    </tr>
 									    
 									    <%if(isLasLinkCustomer) { %>
 									    <tr class="transparent">
-									    	<td width="110" nowrap="" class="transparent alignRight">Purpose of Test:</td>
+									    	<td width="110" nowrap="" class="transparent alignRight"><lb:label key="stu.info.purposeTest" suffix=":"/></td>
 											<td class="transparent"><label style="width: 200px;" maxlength="32" id="studenttestPurposeView" name="studenttestPurposeView"></td>
 									    </tr>
 									    <%} %>
 									    
 									    <tr class="transparent">
-									        <td width="110" nowrap="" class="transparent-top alignRight">Organization:</td>
+									        <td width="110" nowrap="" class="transparent-top alignRight"><lb:label key="stu.info.org" suffix=":"/></td>
 									        <td class="transparent-top">
 									            <label style="width: 200px;" maxlength="32" id="orgNodeNameView" name="orgNodeNameView">
 									        </td>
@@ -108,13 +110,13 @@
 				
 			</div>
 			<div>
-				<h3><a href="#">Additional Student Information</a></h3>
+				<h3><a href="#"><lb:label key="stu.label.extraInfo" /></a></h3>
 				<div id="view_Student_Additional_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
 					<jsp:include page="/studentOperation/view_student_by_demographic.jsp" />				
 				</div>
 			</div>
 			<div>
-				<h3><a href="#">Specific Accommodations</a></h3>
+				<h3><a href="#"><lb:label key="stu.label.specificAccoInfo" /></a></h3>
 				<div id="view_Student_Accommodation_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
 					<jsp:include page="/studentOperation/view_student_by_accommodation.jsp" />
 				</div>

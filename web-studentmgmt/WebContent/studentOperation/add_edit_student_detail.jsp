@@ -1,4 +1,6 @@
 <%@ page import="java.io.*, java.util.*,com.ctb.bean.studentManagement.CustomerConfiguration"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="studentApplicationResource" />
 <%
     Boolean isMandatoryBirthDate = (Boolean)request.getAttribute("isMandatoryBirthDate"); //GACRCT2010CR007 - Disable Mandatory Birth Date 
 	Boolean isLasLinkCustomer = (Boolean) request.getAttribute("isLasLinkCustomer");
@@ -61,7 +63,7 @@
 	<div id="accordion" style="width:99.5%;">
 			
 			<div>
-				<h3><a href="#">Student Information</a></h3>
+				<h3><a href="#"><lb:label key="stu.label.info" /></a></h3>
 				
 					<div id="Student_Information" style="background-color: #FFFFFF;">
 	
@@ -72,16 +74,16 @@
 								<table class="transparent" width="350">
 								<tbody>
 									<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;First Name:</td>
+										<td width="110" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;<lb:label key="stu.info.firstName" suffix=":"/></td>
 										<td class="transparent"><input type="text" style="width: 200px;" tabindex="0" maxlength="32" id="studentFirstName" name="studentFirstName">
 										</td>
 									</tr>
 									<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight">Middle Name:</td>
+										<td width="110" nowrap="" class="transparent alignRight"><lb:label key="stu.info.middleName" suffix=":"/></td>
 										<td class="transparent"><input type="text" style="width: 200px;" maxlength="32" id="studentMiddleName" name="studentMiddleName"></td>
 									</tr>
 									<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Last Name:</td>
+										<td width="110" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;<lb:label key="stu.info.lastName" suffix=":"/></td>
 										<td class="transparent"><input type="text" style="width: 200px;" maxlength="32" id="studentLastName" name="studentLastName"></td>
 									</tr>
 									<tr class="transparent">
@@ -89,7 +91,7 @@
 										<%if(isMandatoryBirthDate) { %>
 											<span class="asterisk">*</span>
 										<% }%>
-										Date of  Birth:</td>
+										<lb:label key="stu.info.dateOfBirth" suffix=":"/></td>
 										<td nowrap="" class="transparent">    
 											<select style="width: 65px;"   id="monthOptions" name="monthOptions">		
 											</select>
@@ -103,14 +105,14 @@
 						   
 									</tr>
 									<tr class="transparent">
-										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Grade:</td>
+										<td width="110" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;<lb:label key="stu.info.grade" suffix=":"/></td>
 										<td class="transparent">  
 											<select id="gradeOptions" name="gradeOptions" style="width: 202px;">
 											</select> 
 										</td>
 									</tr>
 											<tr class="transparent">
-										<td width="110" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;Gender:</td>
+										<td width="110" nowrap="" class="transparent alignRight"><span class="asterisk">*</span>&nbsp;<lb:label key="stu.info.gender" suffix=":"/></td>
 										<td class="transparent">
 										 <select id="genderOptions"  name="genderOptions" style="width: 202px;">
 										 </select> 
@@ -127,7 +129,7 @@
 										 <%if(isStudentIdConfigurable) {%> 
 											 <%=studentIdArrValue[0] %>	:
 										 <%} else {%> 
-											Student ID:	
+											<lb:label key="stu.info.studentID" suffix=":"/>	
 										 <%} %>
 										 </td>
 										
@@ -139,14 +141,14 @@
 										<%if(isStudentId2Configurable) {%> 
 											<%=studentId2ArrValue[0] %>	: 
 										<%} else {%> 
-										Student ID 2:
+										<lb:label key="stu.info.studentID2" suffix=":"/>
 										<%} %>
 										</td>
 										<td class="transparent"><input type="text" style="width: 200px;" maxlength="<%=isStudentId2Configurable ? new Integer(studentId2ArrValue[1]).intValue()>0 && new Integer(studentId2ArrValue[1]).intValue()<32 ? new Integer(studentId2ArrValue[1]).intValue() : 32 : 32 %>" id="studentExternalId2" name="studentExternalId2"></td>
 									</tr>
 									<%if(isLasLinkCustomer) { %>
 									 <tr class="transparent">
-										<td nowrap="" width="110" class="transparent alignRight">Purpose of Test:</td>
+										<td nowrap="" width="110" class="transparent alignRight"><lb:label key="stu.info.purposeTest" suffix=":"/></td>
 										
 										<td nowrap="" class="transparent">    
 											<select style="width: 200px;"   id="testPurposeOptions" name="testPurposeOptions">		
@@ -155,10 +157,9 @@
 									</tr>
 								   <%} %>
 								   	<tr style="display: table-row;" id="message" class="transparent">
-								   		<td width="110" class="transparent alignRight"  style="vertical-align: top;"><span class="asterisk">*</span>&nbsp;Organization:</td>
+								   		<td width="110" class="transparent alignRight"  style="vertical-align: top;"><span class="asterisk">*</span>&nbsp;<lb:label key="stu.info.org" suffix=":"/></td>
 										<td class="transparent-small" style="padding: 5px 5px 0 0">
-											<div id="notSelectedOrgNodes" style="width:200px; visibility:visible; padding-left: 4px"><font color="gray">None selected. Use the control on the right to
-											select.</font>
+											<div id="notSelectedOrgNodes" style="width:200px; visibility:visible; padding-left: 4px"><font color="gray"><lb:label key="stu.msg.noneSelected" /></font>
 											</div>
 											<div id="selectedOrgNodesName" style="width:200px, padding-left: 4px"></div>
 											
@@ -179,7 +180,7 @@
 											<tbody>
 											<tr>
 											<td>
-											<div   style=" background:#D4ECFF; height:25px; color:#4297D7; width: 350px; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;Select OrgNode</div>
+											<div   style=" background:#D4ECFF; height:25px; color:#4297D7; width: 350px; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold; vertical-align:middle;">&nbsp;<lb:label key="stu.label.selNode" /></div>
 											</td>
 											</tr>
 												<tr>
@@ -208,13 +209,13 @@
 				
 			</div>
 			<div>
-				<h3><a href="#">Additional Student Information</a></h3>
+				<h3><a href="#"><lb:label key="stu.label.extraInfo" /></a></h3>
 				<div id="Student_Additional_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
 					<jsp:include page="/studentOperation/add_edit_student_by_demographic.jsp" />				
 				</div>
 			</div>
 			<div>
-				<h3><a href="#">Specific Accommodations</a></h3>
+				<h3><a href="#"><lb:label key="stu.label.specificAccoInfo" /></a></h3>
 				<div id="Student_Accommodation_Information" style="overflow-y: scroll !important; overflow-x: hidden !important;"><!-- changes for defect #66994 -->
 					<jsp:include page="/studentOperation/add_edit_student_by_accommodation.jsp" />
 				</div>
