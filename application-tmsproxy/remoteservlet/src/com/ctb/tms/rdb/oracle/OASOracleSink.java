@@ -44,34 +44,53 @@ public class OASOracleSink implements OASRDBSink {
 	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, Exception {		
 		String response = ird.getResponse();
 		String responseType = ird.getResponseType();
-		String testRosterId = ird.getTestRosterId();
-		logger.debug("Called putItemResponse for roster: " + ird.getTestRosterId() + ", item: " + ird.getItemId() + ", type: " + responseType + ", response: " + response);
-		//if(response != null && !"".equals(response.trim())) {
+		int testRosterId = ird.getTestRosterId();
+		logger.info("Called putItemResponse for roster: " + ird.getTestRosterId() + ", item: " + ird.getItemId() + ", item type: " + ird.getItemType() + ", response type: " + responseType + ", response: " + response);
+		
+		String xmlResponse = response;
+        if(xmlResponse != null && xmlResponse.length() > 0) {
+            // strip xml
+            int start = xmlResponse.indexOf(">");
+            if(start >= 0) {
+                response = xmlResponse.substring(start + 1);
+                int end = response.lastIndexOf("</");
+                if(end != -1)
+                    response = response.substring(0, end);
+            } else {
+                response = xmlResponse;
+            }
+            // strip CDATA
+            start = response.indexOf("[CDATA[");
+            if(start >= 0) {
+                response = response.substring(start + 7);
+                int end = response.lastIndexOf("]]");
+                if(end != -1)
+                    response = response.substring(0, end);
+            }
+        }
+		
+		if(response != null && !"".equals(response.trim())) {
 			if(responseType.equals(BaseType.IDENTIFIER)) {
-				logger.debug("Storing SR response");
+				logger.info("Storing SR response");
 				storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getDuration(), ird.getResponseSeqNum(), ird.getStudentMarked());
             } else if(responseType.equals(BaseType.STRING)) {
-            	logger.debug("Storing CR response");
+            	logger.info("Storing CR response");
             	storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), null, ird.getDuration(), ird.getResponseSeqNum(), ird.getStudentMarked());
                 storeCRResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getDuration(), ird.getResponseSeqNum(), ird.getStudentMarked(), ird.isAudioItem());
-            } else{
-        	    logger.debug("Storing null response");
-                storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getDuration(), ird.getResponseSeqNum(), ird.getStudentMarked());                                          
             }
-			logger.debug("Finished putItemResponse.");
-	        //logger.debug("OASOracleSink: Stored response records in DB for roster " + testRosterId + ", mseq " + ird.getResponseSeqNum());
-	    //} else{
-	    //	logger.info("Storing null response");
-        //    storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getDuration(), ird.getResponseSeqNum(), ird.getStudentMarked());                                          
-        //}       
+			logger.info("Finished putItemResponse for roster " + testRosterId + ", mseq " + ird.getResponseSeqNum());
+	    } else{
+	    	logger.info("Storing null response");
+	    	storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), "", ird.getDuration(), ird.getResponseSeqNum(), ird.getStudentMarked());                                          
+        }       
 	}
 
-	private void storeResponse(Connection con, String testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked) throws Exception {
+	private void storeResponse(Connection con, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked) throws Exception {
 		logger.debug("Called storeResponse for roster: " + testRosterId + ", item: " + itemId);
 		PreparedStatement stmt1 = null;
     	try {
 			stmt1 = con.prepareStatement(STORE_RESPONSE_SQL);
-			stmt1.setInt(1, Integer.parseInt(testRosterId));
+			stmt1.setInt(1, testRosterId);
 			stmt1.setInt(2, itemSetId);
 			stmt1.setString(3, itemId);
 			stmt1.setString(4, response);
@@ -220,18 +239,18 @@ public class OASOracleSink implements OASRDBSink {
 		}
 	}
 	
-	private void storeCRResponse(Connection conn, String testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked, boolean audioItem) throws Exception {
+	private void storeCRResponse(Connection conn, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked, boolean audioItem) throws Exception {
 		PreparedStatement stmt1 = null;
 		PreparedStatement stmt2 = null;
 		PreparedStatement stmt3 = null;
     	try {
 			stmt1 = conn.prepareStatement(DELETE_CR_RESPONSE_SQL);
-			stmt1.setInt(1, Integer.parseInt(testRosterId));
+			stmt1.setInt(1, testRosterId);
 			stmt1.setInt(2, itemSetId);
 			stmt1.setString(3, itemId);		
 			
 			stmt2 = conn.prepareStatement(STORE_CR_RESPONSE_SQL);
-			stmt2.setInt(1, Integer.parseInt(testRosterId));
+			stmt2.setInt(1, testRosterId);
 			stmt2.setInt(2, itemSetId);
 			stmt2.setString(3, itemId);
 			stmt2.setString(4, response);
@@ -241,7 +260,7 @@ public class OASOracleSink implements OASRDBSink {
 				if(response.length()== 0){
 					stmt3 = conn.prepareStatement(CR_RESPONSE_EXISTS_SQL);
 					stmt3.setString(1, itemId);
-					stmt3.setInt(2, Integer.parseInt(testRosterId));
+					stmt3.setInt(2, testRosterId);
 					ResultSet rs1 = stmt3.executeQuery();
         			if(rs1.next() && rs1.getInt("responseCount") == 0){
         				stmt1.executeUpdate();

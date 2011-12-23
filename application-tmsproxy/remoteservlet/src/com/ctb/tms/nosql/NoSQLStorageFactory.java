@@ -28,7 +28,7 @@ public class NoSQLStorageFactory {
 	static Logger logger = Logger.getLogger(NoSQLStorageFactory.class);
 	
 	static {
-		synchronized(NoSQLStorageFactory.class) {
+		//synchronized(NoSQLStorageFactory.class) {
 			ResourceBundle rb = ResourceBundle.getBundle("storage");
 			nosqlstore = rb.getString("storage.nosql.store");
 			if(COHERENCE.equals(nosqlstore)) {
@@ -44,7 +44,7 @@ public class NoSQLStorageFactory {
 					logger.warn("Didn't start proxy service on this node: " + e.getMessage());
 				}
 			}
-		}
+		//}
 	}
 	
 	public static OASNoSQLSource getOASSource() {

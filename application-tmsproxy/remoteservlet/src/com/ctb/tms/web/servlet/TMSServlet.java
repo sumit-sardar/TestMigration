@@ -372,7 +372,7 @@ public class TMSServlet extends HttpServlet {
 				    	//thisSco.setCompletionStatus("IP");
 				    	// response events
 				    	ItemResponseData ird = ItemResponseData.TsdToIrd(tsd);
-					    ird.setTestRosterId(rosterId);
+					    ird.setTestRosterId(Integer.parseInt(rosterId));
 					    ird.setResponseSeqNum(String.valueOf(tsd.getMseq()));
 				    	oasSink.putItemResponse(ird);
 					    logger.debug("TMSServlet: save: cached response for roster " + rosterId + ", message " + tsd.getMseq() + ": " + tsd.xmlText());
@@ -717,7 +717,7 @@ public class TMSServlet extends HttpServlet {
 	    	ItemResponseData[] cachedirt = null;
 	    	ItemResponseData[] rdirt = null;
 	    	ConsolidatedRestartData restartData = null;
-	    	cachedirt = oasSource.getItemResponses(testRosterId);
+	    	cachedirt = oasSource.getItemResponses(Integer.parseInt(testRosterId));
 	    	for(int j=0;j<cachedirt.length;j++) {
 				netirt.add(cachedirt[j]);
 	        }
@@ -728,14 +728,13 @@ public class TMSServlet extends HttpServlet {
 	        	if (responsesInRD) {
 	        		TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd[] rdtsda = restartData.getTsdArray();
 	        		for(int m=0;m<rdtsda.length;m++) {
-	        			rdirt = convertTsdType(restartData.getTsdArray(m));
+	        			rdirt = ItemResponseData.TsdToIrd(restartData.getTsdArray(m));
 	            		for(int j=0;j<rdirt.length;j++) {
-	            			rdirt[j].setTestRosterId(testRosterId);
+	            			rdirt[j].setTestRosterId(Integer.parseInt(testRosterId));
 	            			oasSink.putItemResponse(rdirt[j]);
 	            			netirt.add(rdirt[j]);
 	                    }
 	        		}
-	        		
 	        	}
 	    	}
 	    	
@@ -751,11 +750,9 @@ public class TMSServlet extends HttpServlet {
 	            	manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
 	            	manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {        	
 	            	
-	            	ItemResponseData [] ird = null;
 	            	if(netirt != null && netirt.size() > 0) {
-		            	ird = RosterData.generateItemResponseData(testRosterId, manifesta[i], netirt);
-		            	RosterData.generateRestartData(loginResponse, manifesta[i], ird, restartData);
-		            	logger.debug("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + ird.length + " responses");
+		            	RosterData.generateRestartData(loginResponse, manifesta[i], netirt, restartData);
+		            	logger.debug("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + netirt.size() + " responses");
 	            	}
 	            	gotRestart = true;
 	            } 

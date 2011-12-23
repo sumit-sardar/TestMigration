@@ -70,20 +70,20 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 	}
 	
 	private static RosterThread getRosterThread(OASNoSQLSource oasSource, OASNoSQLSink oasSink, OASRDBSource oasDBSource, OASRDBSink oasDBSink) {
-		synchronized (TestDeliveryContextListener.class) {
+		//synchronized (TestDeliveryContextListener.class) {
 			if(rosterThread == null) {
 				rosterThread = new RosterThread(oasSource, oasSink, oasDBSource, oasDBSink);
 			}
-		}
+		//}
 		return rosterThread;
 	}
 	
 	private static ScoringThread getScoringThread() {
-		synchronized (TestDeliveryContextListener.class) {
+		//synchronized (TestDeliveryContextListener.class) {
 			if(scoringThread == null) {
 				scoringThread = new ScoringThread();
 			}
-		}
+		//}
 		return scoringThread;
 	}
     
@@ -154,13 +154,12 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 						for(int i=0;i<creds.length;i++) {						
 							String key = creds[i].getUsername() + ":" + creds[i].getPassword() + ":" + creds[i].getAccesscode();
 							try {
+								if(creds[i].getUsername().startsWith("pt-student") && creds[i].getAccesscode().startsWith("PTest")) {
+									oasSink.deleteAllItemResponses(Integer.parseInt(creds[i].getTestRosterId()));
+								}
 								RosterData rd = oasDBSource.getRosterData(conn, key);
 								Manifest[] manifests = oasDBSource.getManifest(conn, creds[i].getTestRosterId());
 								if(manifests != null && manifests.length > 0) {
-									//for(int j=0;j<manifests.length;j++) {
-									//	manifests[j].setForceReplication(true);
-									//}
-									//rd.setForceReplication(true);
 									oasSink.putRosterData(creds[i], rd);
 									oasSink.putAllManifests(creds[i].getTestRosterId(), new ManifestWrapper(manifests));
 									rd = null;
@@ -171,8 +170,6 @@ public class TestDeliveryContextListener implements javax.servlet.ServletContext
 									lastError = new Exception("Couldn't retrieve manifest for " + key);
 								}
 							} catch (Exception e) {
-								//e.printStackTrace();
-								//logger.warn("Caught Exception during active roster check. Couldn't update cache for roster: " + key, e);
 								errorCount++;
 								lastError = e;
 							}

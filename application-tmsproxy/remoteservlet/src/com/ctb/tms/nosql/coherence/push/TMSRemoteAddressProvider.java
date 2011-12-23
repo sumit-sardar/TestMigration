@@ -15,7 +15,7 @@ public class TMSRemoteAddressProvider implements AddressProvider {
 	static Logger logger = Logger.getLogger(TMSRemoteAddressProvider.class);
 	static HashMap<String, RemoteNode> remoteMap = new HashMap<String, RemoteNode>(10);
 	static int nextIndex;
-	RemoteNode remote = null;
+	static RemoteNode remote = null;
 	
 	private static class RemoteNode {
 		private String host;
@@ -97,11 +97,11 @@ public class TMSRemoteAddressProvider implements AddressProvider {
 		logger.info("request for address");
 		int tries = remoteMap.size();
 		for(int i=0;i<tries;i++) {
-			synchronized(TMSRemoteAddressProvider.class) {
+			//synchronized(TMSRemoteAddressProvider.class) {
 				if(nextIndex > remoteMap.size()) nextIndex = 1;
 				remote = remoteMap.get(String.valueOf(nextIndex));
 				nextIndex += 1;
-			}
+			//}
 			if(remote != null && remote.getStatus()) {
 				break;
 			} else {

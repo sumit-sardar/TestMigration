@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 
+import noNamespace.BaseType;
 import noNamespace.EntryType;
 import noNamespace.StereotypeType;
 import noNamespace.TmssvcResponseDocument;
@@ -308,7 +309,7 @@ public class OASOracleSource implements OASRDBSource
 	                		 manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_STOP_STATUS) ||
 	                		 manifestData[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS))) {
 	                	ConsolidatedRestartData restartData = loginResponse.addNewConsolidatedRestartData();
-	                	ItemResponseData [] itemResponseData = getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
+	                	ArrayList<ItemResponseData> itemResponseData = getRestartItemResponses(conn, testRosterId, manifestData[i].getId());
 	                    RosterData.generateRestartData(loginResponse, manifestData[i], itemResponseData, restartData);
 	                    gotRestart = true;
 	                }
@@ -887,18 +888,17 @@ public class OASOracleSource implements OASRDBSource
 		return result;
 	}
     
-	private static ItemResponseData [] getRestartItemResponses(Connection con, int testRosterId, int itemSetId) {
-    	ItemResponseData[] data = null;
+	private static ArrayList <ItemResponseData> getRestartItemResponses(Connection con, int testRosterId, int itemSetId) {
+		ArrayList <ItemResponseData> data = new ArrayList<ItemResponseData>();
     	PreparedStatement stmt1 = null;
     	try {
 			stmt1 = con.prepareStatement(RESTART_RESPONSES_SQL);
 			stmt1.setInt(1, testRosterId);
 			stmt1.setInt(2, itemSetId);
 			ResultSet rs1 = stmt1.executeQuery();
-			ArrayList<ItemResponseData> dataList = new ArrayList<ItemResponseData>();
 			while (rs1.next()) {
 				ItemResponseData response = new ItemResponseData();
-				response.setConstructedResponse(rs1.getString("constructedResponse"));
+				//response.setConstructedResponse(rs1.getString("constructedResponse"));
 				response.setEid(rs1.getInt("eid"));
 				response.setItemId(rs1.getString("itemId"));
 				response.setItemSortOrder(rs1.getInt("itemSortOrder"));
@@ -909,11 +909,12 @@ public class OASOracleSource implements OASRDBSource
 				response.setScore(rs1.getInt("score"));
 				response.setStudentMarked(rs1.getString("studentMarked"));
 				response.setConstructedResponse(clobToString(rs1.getClob("constructedResponse")));
-				response.setTestRosterId(String.valueOf(testRosterId));
-				dataList.add(response);
+				response.setTestRosterId(testRosterId);
+				response.setResponseType(("CR".equals(response.getItemType())?BaseType.STRING:BaseType.IDENTIFIER).toString());
+				data.add(response);
+				logger.info("\n\n\n*****  Got response from DB for roster " + testRosterId + ", item type: " + response.getItemType() + ", response type: " + response.getResponseType() + ", response: " + response.getResponse() + ", CR response: " + response.getConstructedResponse() + "\n\n\n");
 			}
 			rs1.close();
-			data = (ItemResponseData[]) dataList.toArray(new ItemResponseData[0]);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -923,7 +924,7 @@ public class OASOracleSource implements OASRDBSource
 				// do nothing
 			}
 		}
-		logger.debug("Found " + data.length + " item responses in db for subtest " + itemSetId);
+		logger.debug("Found " + data.size() + " item responses in db for subtest " + itemSetId);
 		return data;
 	}
 	

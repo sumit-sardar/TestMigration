@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -21,6 +20,7 @@ import com.ctb.tms.nosql.OASNoSQLSink;
 import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 import com.tangosol.util.Filter;
+import com.tangosol.util.QueryMap.Entry;
 import com.tangosol.util.ValueExtractor;
 
 public class OASCoherenceSink implements OASNoSQLSink {
@@ -29,7 +29,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	private static NamedCache manifestCache;
 	private static NamedCache responseCache;
 	
-	static ValueExtractor extractor;
+	static ValueExtractor extractor = new ReflectionPofExtractor("testRosterId"); 
 	
 	static Logger logger = Logger.getLogger(OASCoherenceSink.class);
 	
@@ -42,8 +42,6 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			rosterCache = CacheFactory.getCache("OASRosterCache"); 
 			manifestCache = CacheFactory.getCache("OASManifestCache");
 			responseCache = CacheFactory.getCache("OASResponseCache");
-			
-			extractor = new ReflectionPofExtractor("testRosterId");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -52,6 +50,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	public void putRosterData(StudentCredentials creds, RosterData rosterData) throws IOException {
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
 		rosterData.setReplicate(true);
+		rosterData.setCacheTime(System.currentTimeMillis());
 		rosterCache.put(key, rosterData);
 	}
 	
@@ -122,6 +121,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		wrapper.setManifests(manifests);
 		if(wrapper != null && manifests != null && manifests.length > 0) {
 			wrapper.setReplicate(true);
+			wrapper.setCacheTime(System.currentTimeMillis());
 			manifestCache.put(key, wrapper);
 		}
 	}
@@ -130,6 +130,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		String key = testRosterId;
 		if(wrapper != null && wrapper.getManifests() != null && wrapper.getManifests().length > 0) {
 			wrapper.setReplicate(true);
+			wrapper.setCacheTime(System.currentTimeMillis());
 			manifestCache.put(key, wrapper);
 		}
 	}
@@ -137,23 +138,23 @@ public class OASCoherenceSink implements OASNoSQLSink {
 	public void putItemResponse(ItemResponseData ird) throws IOException {
 		String key = ird.getTestRosterId() + ":" + ird.getResponseSeqNum();
 		ird.setReplicate(true);
+		ird.setCacheTime(System.currentTimeMillis());
 		responseCache.put(key, ird);
+		logger.info("\n\n\n*****  Stored response: " + key + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse() + "\n\n\n");
 	}
 	
-	public void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException {
-		String key = testRosterId + ":" + mseq;
+	public void deleteItemResponse(int testRosterId, BigInteger mseq) throws IOException {
+		String key = String.valueOf(testRosterId) + ":" + mseq;
 		responseCache.remove(key);
 	}
 	
-	public void deleteAllItemResponses(String testRosterId) throws IOException {
-		String key1 = testRosterId;
-		//String key2 = String.valueOf((Integer.parseInt(testRosterId) + 1));
-		Filter filter = new com.tangosol.util.filter.EqualsFilter(extractor, key1); 
-		Set setKeys = responseCache.keySet(filter); 
-		Map mapResult = responseCache.getAll(setKeys);  
-		Iterator it = setKeys.iterator();
+	public void deleteAllItemResponses(int testRosterId) throws IOException {
+		Filter filter = new com.tangosol.util.filter.EqualsFilter(extractor, testRosterId); 
+		Set setVals = responseCache.entrySet(filter); 
+		Iterator it = setVals.iterator();
 		while(it.hasNext()) {
-			responseCache.remove(it.next());
+			Entry entry = (Entry) it.next();
+			responseCache.remove(entry.getKey());
 		}
 	}
 	

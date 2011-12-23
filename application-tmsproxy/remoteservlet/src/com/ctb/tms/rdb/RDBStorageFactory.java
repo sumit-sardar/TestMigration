@@ -30,7 +30,7 @@ public class RDBStorageFactory {
 	static Logger logger = Logger.getLogger(RDBStorageFactory.class);
 	
 	static {
-		synchronized(RDBStorageFactory.class) {
+		//synchronized(RDBStorageFactory.class) {
 			ResourceBundle rb = ResourceBundle.getBundle("storage");
 			oassource = rb.getString("storage.rdb.source");
 			oassink = rb.getString("storage.rdb.sink");
@@ -38,7 +38,7 @@ public class RDBStorageFactory {
 			adssink = rb.getString("storage.rdb.sink");
 			
 			copytosink = rb.getString("storage.rdb.copytosink");
-		}
+		//}
 	}
 	
 	public static OASRDBSource getOASSource() {

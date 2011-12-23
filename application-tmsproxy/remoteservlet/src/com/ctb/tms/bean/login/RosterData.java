@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.TimeZone;
 
 import noNamespace.AdssvcRequestDocument;
@@ -169,21 +170,23 @@ public class RosterData extends ReplicationObject {
 		this.manifest = manifest;
 	}*/
 	
-	private static ItemResponseData [] sortItemResponseData(ItemResponseData [] ird) {
-		HashMap<Integer, ItemResponseData> sortedIrd = new HashMap<Integer, ItemResponseData>(ird.length);
-		for(int i=0;i<ird.length;i++) {
-			sortedIrd.put(new Integer(ird[i].getResponseSeqNum()), ird[i]);
+	private static ArrayList<ItemResponseData> sortItemResponseData(ArrayList<ItemResponseData> startList) {
+		HashMap<Integer, ItemResponseData> sortedMap = new HashMap<Integer, ItemResponseData>(startList.size());
+		Iterator<ItemResponseData> it = startList.iterator();
+		while(it.hasNext()) {
+			ItemResponseData val = (ItemResponseData) it.next();
+			sortedMap.put(new Integer(val.getResponseSeqNum()), val);
 		}
-		Integer [] keys = sortedIrd.keySet().toArray(new Integer[0]);
+		Integer [] keys = sortedMap.keySet().toArray(new Integer[0]);
 		Arrays.sort(keys);
-		ird = new ItemResponseData [keys.length];
+		ArrayList<ItemResponseData> finalList = new ArrayList<ItemResponseData>(keys.length);
 		for(int i=0;i<keys.length;i++) {
-			ird[i] = sortedIrd.get(keys[i]);
+			finalList.add(sortedMap.get(keys[i]));
 		}
-		return ird;
+		return finalList;
 	}
 	
-	public static void generateRestartData(LoginResponse loginResponse, ManifestData manifestData, ItemResponseData [] itemResponseData, ConsolidatedRestartData restartData) throws SQLException {
+	public static void generateRestartData(LoginResponse loginResponse, ManifestData manifestData, ArrayList<ItemResponseData> itemResponseData, ConsolidatedRestartData restartData) throws SQLException {
 		itemResponseData = sortItemResponseData(itemResponseData);
 		Tsd tsd = restartData.addNewTsd();        
 		tsd.setScid(String.valueOf(manifestData.getId()));
@@ -193,10 +196,12 @@ public class RosterData extends ReplicationObject {
 		Ast ast = tsd.addNewAst();
 		int maxRSN = 0;
 		int totalDur = 0;
-		for(int i=0;i<itemResponseData.length;i++) {
-			ItemResponseData data = itemResponseData[i];
+		Iterator<ItemResponseData> it = itemResponseData.iterator();
+		int i = 0;
+		while(it.hasNext()) {
+			ItemResponseData data = it.next();
 			tsd.addNewIst();
-			Ist ist = tsd.getIstArray(i);
+			Ist ist = tsd.getIstArray(0);
 			ist.setIid(data.getItemId());
 			ist.setEid(""+data.getEid());
 			ist.setCst(Ist.Cst.UNKNOWN);
@@ -230,9 +235,11 @@ public class RosterData extends ReplicationObject {
 				ov.setV("");
 	
 			if(Integer.valueOf(data.getResponseSeqNum()) > maxRSN) {
-				ast.setCurEid(""+itemResponseData[i].getEid());
+				ast.setCurEid(""+data.getEid());
 				maxRSN = Integer.valueOf(data.getResponseSeqNum());
 			}
+			i++;
+			logger.info("\n\n\n*****  Added response to restart data: " + tsd.xmlText());
 		}
 		manifestData.setTotalTime(totalDur);
 		int remSec = (manifestData.getScoDurationMinutes() * 60) - manifestData.getTotalTime();

@@ -2,7 +2,7 @@ package com.ctb.tms.nosql.coherence;
 
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -26,7 +26,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 	private static NamedCache manifestCache;
 	private static NamedCache responseCache;
 	
-	static ValueExtractor extractor;
+	static ValueExtractor extractor = new ReflectionPofExtractor("testRosterId"); 
 	
 	static Logger logger = Logger.getLogger(OASCoherenceSource.class);
 	
@@ -39,8 +39,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 			rosterCache = CacheFactory.getCache("OASRosterCache"); 
 			manifestCache = CacheFactory.getCache("OASManifestCache");
 			responseCache = CacheFactory.getCache("OASResponseCache");
-			
-			extractor = new ReflectionPofExtractor("testRosterId"); 
+
 			responseCache.addIndex(extractor, false, null);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -82,24 +81,23 @@ public class OASCoherenceSource implements OASNoSQLSource {
 		return null;
 	}
 
-	public ItemResponseData[] getItemResponses(String testRosterId) throws IOException, ClassNotFoundException {
-		String key1 = testRosterId;
-		//String key2 = String.valueOf((Integer.parseInt(testRosterId) + 1));
-		Filter filter = new com.tangosol.util.filter.EqualsFilter(extractor, key1); 
-		Set setKeys = responseCache.keySet(filter); 
-		Map mapResult = responseCache.getAll(setKeys); 
-		if(mapResult != null) {
-			int size = mapResult.size();
-			logger.debug("*****  Found " + size + " responses for roster " + testRosterId);
+	public ItemResponseData[] getItemResponses(int testRosterId) throws IOException, ClassNotFoundException {
+		Filter filter = new com.tangosol.util.filter.EqualsFilter(extractor, testRosterId); 
+		Set setVals = responseCache.entrySet(filter); 
+		if(setVals != null) {
+			Iterator it = setVals.iterator();
+			int size = setVals.size();
+			logger.info("\n\n\n*****  Found " + size + " response keys for roster " + testRosterId + "\n\n\n");
 			ItemResponseData[] tsda = new ItemResponseData[size];
-			Iterator it = mapResult.keySet().iterator();
 			int i = 0;
 			while(it.hasNext()) {
-				ItemResponseData irw = (ItemResponseData) mapResult.get(it.next());
+				Entry entry = (Entry) it.next();
+				ItemResponseData irw = (ItemResponseData) entry.getValue();
 				irw.setTestRosterId(testRosterId);
 				tsda[i] = irw;
 				i++;
 			}
+			logger.info("\n\n\n*****  Retrieved " + i + " responses for roster " + testRosterId + "\n\n\n");
 			return tsda;
 		} else {
 			return null;

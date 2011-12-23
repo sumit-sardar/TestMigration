@@ -21,9 +21,9 @@ public interface OASNoSQLSink {
 	
 	public void putItemResponse(ItemResponseData ird) throws IOException;
 	
-	public void deleteItemResponse(String testRosterId, BigInteger mseq) throws IOException;
+	public void deleteItemResponse(int testRosterId, BigInteger mseq) throws IOException;
 	
-	public void deleteAllItemResponses(String testRosterId) throws IOException;
+	public void deleteAllItemResponses(int testRosterId) throws IOException;
 	
 	public void deleteAllManifests(String testRosterId) throws XmlException, IOException, ClassNotFoundException;
 

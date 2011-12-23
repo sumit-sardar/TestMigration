@@ -1,6 +1,7 @@
 package com.ctb.tms.bean.login; 
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ast;
@@ -8,6 +9,7 @@ import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Ts
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Ov;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Rv;
 import noNamespace.BaseType;
+import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData;
 
 
 public class ItemResponseData extends ReplicationObject {
@@ -16,7 +18,7 @@ public class ItemResponseData extends ReplicationObject {
 	
 	}
 	
-	private String testRosterId;
+	private int testRosterId;
 	private int itemSetId;
     private String itemId;
     private int itemSortOrder;
@@ -85,7 +87,7 @@ public class ItemResponseData extends ReplicationObject {
 	    ItemResponseData ird = new ItemResponseData();
 	    String testRosterId = tsd.getLsid();
 	    testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
-	    ird.setTestRosterId(testRosterId);
+	    ird.setTestRosterId(Integer.parseInt(testRosterId));
 	    ird.setItemSetId(Integer.parseInt(tsd.getScid()));
 	    ird.setResponseSeqNum(String.valueOf(tsd.getMseq()));
     	Ist[] ista = tsd.getIstArray();
@@ -132,6 +134,58 @@ public class ItemResponseData extends ReplicationObject {
 		}
 		return ird;
     }
+    
+    public static ItemResponseData[] TsdToIrd(ConsolidatedRestartData.Tsd tsd) {
+	    ArrayList irds = new ArrayList();
+	    String testRosterId = tsd.getLsid();
+	    testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
+	    //ird.setResponseSeqNum(String.valueOf(tsd.getMseq()));
+	    ConsolidatedRestartData.Tsd.Ist[] ista = tsd.getIstArray();
+		for(int j=0;j<ista.length;j++) {
+			ItemResponseData ird = new ItemResponseData();
+			ird.setTestRosterId(Integer.parseInt(testRosterId));
+		    ird.setItemSetId(Integer.parseInt(tsd.getScid()));
+			ConsolidatedRestartData.Tsd.Ist ist = ista[j];
+	        ird.setItemId(ist.getIid());
+	        // if(ist != null && ist.getRvArray(0) != null && ist.getRvArray(0).getVArray(0) != null) {
+	        if(ist != null && ist.getRvArray() != null && ist.getRvArray().length >0 ) {
+	            if(ist.getRvArray(0).getV() != null){
+                    BaseType.Enum responseType = ist.getRvArray(0).getT();
+                    ird.setResponseType(responseType.toString());
+                    String xmlResponse = ist.getRvArray(0).getV();
+                    String response = "";
+                    String studentMarked = ist.getMrk();
+                    ird.setStudentMarked(studentMarked);
+                    //String audioItem = ist.getAudioItem() ? "T" : "F";
+                    //ird.setAudioItem(ist.getAudioItem());
+                    if(xmlResponse != null && xmlResponse.length() > 0) {
+                        // strip xml
+                        int start = xmlResponse.indexOf(">");
+                        if(start >= 0) {
+                            response = xmlResponse.substring(start + 1);
+                            int end = response.lastIndexOf("</");
+                            if(end != -1)
+                                response = response.substring(0, end);
+                        } else {
+                            response = xmlResponse;
+                        }
+                        // strip CDATA
+                        start = response.indexOf("[CDATA[");
+                        if(start >= 0) {
+                            response = response.substring(start + 7);
+                            int end = response.lastIndexOf("]]");
+                            if(end != -1) {
+                                response = response.substring(0, end);
+                            }
+                        }
+                    }
+                    ird.setResponse(response);
+	            }
+	        }
+	        irds.add(ird);
+		}
+		return (ItemResponseData[]) irds.toArray(new ItemResponseData[0]);
+    }
 
 	                    /*if(responseType.equals(BaseType.IDENTIFIER)) {
 	                        ird.setT testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked);
@@ -164,10 +218,10 @@ public class ItemResponseData extends ReplicationObject {
 	public void setAudioItem(boolean audioItem) {
 		this.audioItem = audioItem;
 	}
-	public String getTestRosterId() {
+	public int getTestRosterId() {
 		return testRosterId;
 	}
-	public void setTestRosterId(String testRosterId) {
+	public void setTestRosterId(int testRosterId) {
 		this.testRosterId = testRosterId;
 	}
 	public int getItemSetId() {

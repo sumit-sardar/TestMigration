@@ -18,13 +18,7 @@ public class TMSConflictResolver implements ConflictResolver {
 
 	static Logger logger = Logger.getLogger(TMSConflictResolver.class);
 	
-	//static ConfigurablePofContext ctx;
-	static ReflectionPofExtractor extractor;
-	
-	static {
-		//ctx = new ConfigurablePofContext(XmlHelper.loadXml(new TMSConflictResolver().getClass().getResource("/custom-types-pof-config.xml")));
-		extractor = new ReflectionPofExtractor();
-	}
+	static ReflectionPofExtractor extractor = new ReflectionPofExtractor("cacheTime");
 	
 	public TMSConflictResolver() {
     }
@@ -55,7 +49,17 @@ public class TMSConflictResolver implements ConflictResolver {
                     break;
                 case Insert:
                 case Update:
-                { /*
+                { 
+                	long localTime = (Long) extractor.extractFromEntry(localEntry);
+                	long inTime = (Long) extractor.extractFromEntry(entryOperation.getPublishableEntry());
+                	if(inTime > localTime) {
+                		logger.info("Using newer INCOMING message.");
+                		resolution.useInComingValue();
+                	} else {
+                		logger.info("Using newer LOCAL message.");
+                		resolution.useLocalValue();
+                	}
+                	/*
                 	if("OASRosterCache".equals(entryOperation.getCacheName())) {
                 		RosterData incoming = (RosterData) entryOperation.getPublishableEntry().getValue();
                 		RosterData current = (RosterData) extractor.extractFromEntry(localEntry);
@@ -156,9 +160,9 @@ public class TMSConflictResolver implements ConflictResolver {
 	                		}
 	                		resolution.useMergedValue(new ManifestWrapper(finalMerged));
                 		}
-            		} else { */
+            		} else { 
                 		resolution.useInComingValue();
-                	/*} */
+                	} */
                     break;
                 }
             }
