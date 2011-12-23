@@ -141,6 +141,7 @@ function populateSessionListGrid(homePageLoad) {
 			 		}
 			},
 			loadComplete: function () {
+				$("#list2").jqGrid("hideCol","creatorOrgNodeId");
 				if ($('#list2').getGridParam('records') === 0) {
 				 	isGridEmpty = true;
             	 	$('#sp_1_pager2').text("1");
@@ -202,8 +203,8 @@ function populateCompletedSessionListGrid() {
 		   	],
 		   	jsonReader: { repeatitems : false, root:"testSessionPA", id:"testAdminId",
 		   	records: function(obj) { 
-		   	 sessionListPA = JSON.stringify(obj.testSessionPA);
 		   	 $("#list3").jqGrid("hideCol","creatorOrgNodeId");
+		   	 sessionListPA = JSON.stringify(obj.testSessionPA);
 		   	 } },
 		   	loadui: "disable",
 			rowNum:20,
@@ -247,6 +248,7 @@ function populateCompletedSessionListGrid() {
 			 		}
 			},
 			loadComplete: function () {
+				$("#list3").jqGrid("hideCol","creatorOrgNodeId");
 				if ($('#list3').getGridParam('records') === 0) {
 					isPAGridEmpty = true;
             		$('#sp_1_pager3').text("1");
@@ -255,6 +257,10 @@ function populateCompletedSessionListGrid() {
             	} else {
             		isPAGridEmpty = false;
             	}
+            	var width = jQuery("#sessionGrid").width();
+			    width = width - 80; // Fudge factor to prevent horizontal scrollbars
+			    jQuery("#list3").setGridWidth(width);
+			    
             	setEmptyListMessage('PA');
             	$.unblockUI();  
 				$("#list3").setGridParam({datatype:'local'});
