@@ -11,6 +11,7 @@ var onNodeChangeEmptyMsg = true;
 var listStr;
 var submittedSuccesfully = "";
 var previousDataForpaging = {};
+var applyChange = false;
 
 
 var selectedStudentObjArr = {};
@@ -222,13 +223,16 @@ function populateBulkStudentGrid() {
 		           }
 		        }
 				totalRowSelectedOnPage = gridreloadRowCount;
-				if(onNodechange){
+				if(onNodechange || applyChange){
 					totalRowSelectedOnPage = 0;
 					for(var i=0; i<studentArrId.length; i++) {
 						if (selectedStudentObjArr[studentArrId[i]] != undefined)
 							totalRowSelectedOnPage = totalRowSelectedOnPage + 1;
 					}
-					onNodeChangeEmptyMsg = true;	
+					 if(onNodechange){
+						 onNodeChangeEmptyMsg = true;	
+					 }
+					 applyChange = false;
 					//onNodechange = false;
 				} 
 				
@@ -669,32 +673,32 @@ function populateBulkStudentGrid() {
 				
 			if(selectedFullId.indexOf('ps_') != -1){
 				if(selectedId[1] == '1'){
-					$("[id^='" + globalCustomerDemographic1+"_']").parent().show();
+					$("[id^='" + globalCustomerDemographic1+"_']").show();
 				}
 				if(selectedId[1] == '2'){
-					$("[id^='" + globalCustomerDemographic2+"_']").parent().show();
+					$("[id^='" + globalCustomerDemographic2+"_']").show();
 				}
 				if(selectedId[1] == '3'){
-					$("[id^='" + globalCustomerDemographic3+"_']").parent().show();
+					$("[id^='" + globalCustomerDemographic3+"_']").show();
 				}
 			}else {	
 				if(selectedId[1] == '1'){
-					$("[id^='" + globalCustomerDemographic1+"_']").parent().show();
+					$("[id^='" + globalCustomerDemographic1+"_']").show();
 					globalCustomerDemographic1 = selectedId[0];
-					$('#'+selectedId[0]+"_2").parent().css('display','none');
-					$('#'+selectedId[0]+"_3").parent().css('display','none');
+					$('#'+selectedId[0]+"_2").css('display','none');
+					$('#'+selectedId[0]+"_3").css('display','none');
 				}
 				if(selectedId[1] == '2'){
-					$("[id^='" + globalCustomerDemographic2+"_']").parent().show();
+					$("[id^='" + globalCustomerDemographic2+"_']").show();
 					globalCustomerDemographic2 = selectedId[0];
-					$('#'+selectedId[0]+"_1").parent().css('display','none');
-					$('#'+selectedId[0]+"_3").parent().css('display','none');
+					$('#'+selectedId[0]+"_1").css('display','none');
+					$('#'+selectedId[0]+"_3").css('display','none');
 				}
 				if(selectedId[1] == '3'){
-					$("[id^='" + globalCustomerDemographic3+"_']").parent().show();
+					$("[id^='" + globalCustomerDemographic3+"_']").show();
 					globalCustomerDemographic3 = selectedId[0];
-					$('#'+selectedId[0]+"_1").parent().css('display','none');
-					$('#'+selectedId[0]+"_2").parent().css('display','none');
+					$('#'+selectedId[0]+"_1").css('display','none');
+					$('#'+selectedId[0]+"_2").css('display','none');
 				}
 			}
 		}			
@@ -709,6 +713,7 @@ function populateBulkStudentGrid() {
 	
 	function applyList(){
 		UIBlock();
+		applyChange = true;
 		gridReloadForBulkStudent();
 		clearFilterDropDown();
 		//$.unblockUI();   
