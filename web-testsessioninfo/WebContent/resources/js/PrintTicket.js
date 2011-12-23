@@ -43,7 +43,7 @@ function populateTestTicketTree() {
 		beforeSend:	function(){
 						UIBlock();
 					},
-		url:		'userTreeOrgNodeHierarchyList.do?testAdminId='+document.getElementById('selectedTestSessionId').value,
+		url:		'userTreeOrgNodeHierarchyList.do?testAdminId='+document.getElementById('selectedTestSessionId').value+'&orgNodeId='+document.getElementById('scheduleUserOrgNode').value,
 		type:		'POST',
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){	
@@ -136,7 +136,7 @@ function testTicketPopupValues(rowId,listId){
 	var selectedRowData = $("#"+listId).getRowData(rowId);
 	$("#adminTestName_val").text(selectedRowData.testAdminName);
 	$("#testName_val").text(selectedRowData.testName);					
-					
+	$("#scheduleUserOrgNode").val(selectedRowData.creatorOrgNodeId); 				
 	setAnchorButtonState('viewStatusButton', false);
 	setAnchorButtonState('printTicketButton', false);
 }

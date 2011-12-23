@@ -31,6 +31,7 @@ public class TestSessionVO implements java.io.Serializable
     private Boolean isStudentInTestSession = false;
      //END - form recommendation
     private String AssignedRole;
+    private Integer creatorOrgNodeId;
     
     /**
 	 * @return the assignedRole
@@ -58,6 +59,7 @@ public class TestSessionVO implements java.io.Serializable
         this.reportable = ts.getReportable();   
         this.accessCode = ts.getAccessCode();
         this.creatorOrgNodeName = ts.getCreatorOrgNodeName();
+        this.creatorOrgNodeId = ts.getCreatorOrgNodeId();
         this.creatorOrgNodeCategoryName = ts.getCreatorOrgNodeCategoryName();
         this.testAdminStatus = ts.getTestAdminStatus();
         this.showStudentFeedback = ts.getShowStudentFeedback();
@@ -229,6 +231,18 @@ public class TestSessionVO implements java.io.Serializable
 	 */
 	public void setIsStudentInTestSession(Boolean isStudentInTestSession) {
 		this.isStudentInTestSession = isStudentInTestSession;
+	}
+	/**
+	 * @return the creatorOrgNodeId
+	 */
+	public Integer getCreatorOrgNodeId() {
+		return creatorOrgNodeId;
+	}
+	/**
+	 * @param creatorOrgNodeId the creatorOrgNodeId to set
+	 */
+	public void setCreatorOrgNodeId(Integer creatorOrgNodeId) {
+		this.creatorOrgNodeId = creatorOrgNodeId;
 	}
    
                

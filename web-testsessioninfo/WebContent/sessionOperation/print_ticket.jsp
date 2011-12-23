@@ -4,15 +4,15 @@
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <netui-data:declareBundle bundlePath="webResources" name="web" />
 <% 
- Integer scheduleUserOrgNode =  (Integer) session.getAttribute("schedulerUserOrgIds");
-//String schedulerUserId = (String) session.getAttribute("schedulerUserId");
+ //Integer scheduleUserOrgNode =  (Integer) session.getAttribute("schedulerUserOrgIds");
+ //String schedulerUserId = (String) session.getAttribute("schedulerUserId");
 %>
-<input type="hidden" id="scheduleUserOrgNode" name = "scheduleUserOrgNode" value='<%=scheduleUserOrgNode %>'/>
+<input type="hidden" id="scheduleUserOrgNode" name = "scheduleUserOrgNode"/>
 <input type="hidden" id="selectedTestSessionId" name = "selectedTestSessionId" />
 
 <div id="printTestTicket"
-	style="clear:both;display: none; border:10px solid #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
-	
+	style="display: none; border:10px solid #D4ECFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: normal;">
+<br>	
 <p><netui:content value="${bundle.web['testTicket.subtitle']}" /></p>
 <h3 style="border-width: 0px"><span><netui:content value="${bundle.web['testTicket.testInformation']}" /></span></h3>
 			
@@ -82,16 +82,22 @@
 	</tbody>
 	</table>
 </div>
-	
-			<table cellspacing="0" cellpadding="0" border="0" id="TblGrid_list2_2" class="EditTable" width="100%" style=" padding-top:20px;">
-					<tr id="Act_Buttons">
-						<td  width="100%" style="text-align:center;">
-							
-								<input type="button" id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('printTestTicket'); return false;" class="ui-widget-header" style="width:60px">
-							
-							<br>
-						</td>
-					</tr>						
+<br/>
+<div style="width:97%;clear:both; float:left;">	
+			<table cellspacing="0" cellpadding="0" border="0" width='95%' height="20">
+					<tbody>
+						<tr id="Act_Buttons" align="center">
+							<td  width="100%">
+								<center>
+								<input type="button"  id="cData" value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:closePopUp('printTestTicket'); return false;" class="ui-widget-header">
+								</center>
+								<br>
+							</td>
+						</tr>
+						<tr class="binfo" style="display: none;">
+							<td colspan="2" class="bottominfo"></td>
+						</tr>
+					</tbody>					
 			</table>
-		
+</div>		
 </div>

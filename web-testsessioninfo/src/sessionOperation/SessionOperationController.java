@@ -1672,6 +1672,8 @@ public class SessionOperationController extends PageFlowController {
 		OutputStream stream = null;
 		String contentType = CONTENT_TYPE_JSON;
 		Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
+		Integer orgNodeId = Integer.valueOf(this.getRequest().getParameter("orgNodeId"));
+		
 		int studentCount = getRosterForTestSession(testAdminId);
 		
 		try {
@@ -1681,47 +1683,17 @@ public class SessionOperationController extends PageFlowController {
 				baseTree.setIsStudentExist("true");		
 			
 				ArrayList<Organization> completeOrgNodeList = new ArrayList<Organization>();
-				UserNodeData associateNode = UserOrgHierarchyUtils.populateAssociateNode(this.userName,this.userManagement);
-				ArrayList<Organization> selectedList  = UserOrgHierarchyUtils.buildassoOrgNodehierarchyList(associateNode);
-				Collections.sort(selectedList, new OrgnizationComparator());
 				ArrayList <Integer> orgIDList = new ArrayList <Integer>();
 				
-	System.out.println("OrgNodeId:"+selectedList.get(0).getOrgNodeId());
-	System.out.println("testadminid:"+testAdminId);
-				
-				StudentNodeData snd = this.scheduleTest.getTestTicketNodesForParent(this.userName, selectedList.get(0).getOrgNodeId(), testAdminId, null, null, null);
-						
+				StudentNodeData snd = this.scheduleTest.getTestTicketNodesForParent(this.userName, orgNodeId, testAdminId, null, null, null);
+				ArrayList selectedList = new ArrayList();
+
 				ArrayList<Organization> orgNodesList = UserOrgHierarchyUtils.buildOrgNodeAncestorHierarchyList(snd, orgIDList,completeOrgNodeList);	
 	
-				//jsonTree = generateTree(orgNodesList,selectedList);
+				
+				preTreeProcess (data,orgNodesList,selectedList);
 	
-				for (int i= 0; i < selectedList.size(); i++) {
-	
-					if (i == 0) {
-	
-						preTreeProcess (data,orgNodesList,selectedList);
-	
-					} else {
-	
-						Integer nodeId = selectedList.get (i).getOrgNodeId();
-						if (orgIDList.contains(nodeId)) {
-							continue;
-						} else if (!selectedList.get (i).getIsAssociate()) {
-							
-							continue;
-							
-						} else {
-	
-							orgIDList = new ArrayList <Integer>();
-							UserNodeData undloop = UserOrgHierarchyUtils.OrgNodehierarchy(this.userName, 
-									this.userManagement,nodeId);   
-							ArrayList<Organization> orgNodesListloop = UserOrgHierarchyUtils.buildOrgNodehierarchyList(undloop, orgIDList, completeOrgNodeList);	
-							preTreeProcess (data,orgNodesListloop,selectedList);
-						}
-					}
-	
-	
-				}
+				
 			}else{
 				baseTree.setIsStudentExist("false");
 			}
@@ -1979,13 +1951,11 @@ public class SessionOperationController extends PageFlowController {
 	        }
 	        UserNodeData associateNode = UserOrgHierarchyUtils.populateAssociateNode(this.userName,this.userManagement);
 	        ArrayList<Organization> selectedList  = UserOrgHierarchyUtils.buildassoOrgNodehierarchyList(associateNode);
-	        int nodeid= selectedList.get(0).getOrgNodeId();
 	        getSession().setAttribute("supportAccommodations", supportAccommodations); 
 	        getSession().setAttribute("schedulerFirstName", this.user.getFirstName());
 	        getSession().setAttribute("schedulerLastName", this.user.getLastName());
 	        getSession().setAttribute("schedulerUserId", this.user.getUserId().toString());
 	        getSession().setAttribute("schedulerUserName", this.user.getUserName());
-	        getSession().setAttribute("schedulerUserOrgIds",nodeid );
 	        System.out.println("supportAccommodations==>"+supportAccommodations);
         }
         catch (CTBBusinessException be)
