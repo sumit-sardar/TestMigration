@@ -42,6 +42,7 @@ var prvUntimedTest 	= "";
 var isPagingEvent  = false;
 var isSortingEvent = false;
 var filterAppliedOrgMap = new Map();
+var studentEditStatusMap = new Map(); //changes for ie issue
 
 /// FOR FILTER
 
@@ -220,7 +221,7 @@ function populateSelectStudentGrid() {
           url: 'getStudentForList.do?q=2&stuForOrgNodeId='+$("#stuForOrgNodeId").val()+'&selectedTestId='+$("#selectedTestId").val()+'&blockOffGradeTesting='+blockOffGradeTesting+'&selectedLevel='+selectedLevel, 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[ 'Last Name','First Name', 'M.I', studentIdTitle, 'Organization','orgName','Accommodation', 'Grade', status, calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StudentId","StatusEditable"],
+          colNames:[ 'Last Name','First Name', 'M.I', studentIdTitle, 'Organization','orgName','Accommodation', 'Grade', status, calculator, colorFont, testPause, screenReader, untimedTest, "StatusCopyable", "ItemSetForm","ExtendedTimeAccom","StatusEditable","StudentId", "ToolTip"],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -230,7 +231,7 @@ function populateSelectStudentGrid() {
 		   		{name:'orgNodeName',index:'orgNodeName',editable: false, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'hasAccommodations',index:'hasAccommodations',editable: false, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'grade',index:'grade', width:50, editable: true, align:"left", sortable:true, search: true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, stype: 'select', searchoptions:{ sopt:['eq'], value: categoriesStr }},
-		   		{name:'status.code',index:'code',editable: true, width:50, align:"left", sortable:true, search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'status.code',index:'code',editable: true, width:50, align:"left", sortable:true, search: false, formatter:addToolTipFmatter, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'calculator',index:'calculator', width:38, editable: true, align:"center", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} },
 		   		{name:'hasColorFontAccommodations',index:'hasColorFontAccommodations',editable: true, width:38, align:"center", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} },
 		   		{name:'testPause',index:'testPause',editable: true, width:38, align:"center", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter:imageFormat, stype:'select', editoptions:{value:AccommOption} },
@@ -240,7 +241,8 @@ function populateSelectStudentGrid() {
 		   		{name:'itemSetForm',index:'itemSetForm',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'extendedTimeAccom',index:'extendedTimeAccom',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'status.editable',index:'editable1',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'studentId',index:'studentId',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'studentId',index:'studentId',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'extPin2',index:'extPin2',hidden:true,editable: true, width:38, editable: true, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   	],
 		   		jsonReader: { repeatitems : false, root:"studentNode", id:"studentId",
 		   	records: function(obj) {
@@ -264,6 +266,11 @@ function populateSelectStudentGrid() {
 		   	 	if(obj.studentNode != null && obj.studentNode.length>0) {
 		   	 		allStudentIds = allStudentIds.concat(obj.studentNode);
 		   	 		allFilteredStudentRow = allFilteredStudentRow.concat(obj.studentNode);
+		   	 	}
+		   	 	studentEditStatusMap = new Map(); //changes for ie issue
+		   	 	for(var ii=0; ii<obj.studentNode.length;ii++){
+		   	 	   var data1= obj.studentNode[ii];
+		   	 	   studentEditStatusMap.put(data1.studentId,data1.status.editable );
 		   	 	}
 
 		   	 if(blockOffGradeTesting == null || blockOffGradeTesting == undefined || blockOffGradeTesting == "" || !blockOffGradeTesting) {
@@ -533,15 +540,11 @@ function populateSelectStudentGrid() {
             		$('#next_selectStudentPager').addClass('ui-state-disabled');
             	 	$('#last_selectStudentPager').addClass('ui-state-disabled');
             	} else {
-            	 //alert("loadComplete start");
             		var allRowsInGridHere = $('#selectStudent').jqGrid('getDataIDs');
-            	 //alert("loadComplete start1");
 			 		for(var ii = 0; ii < allRowsInGridHere.length; ii++) {
-			 		//alert("loadComplete start10"+allRowsInGridHere[ii]);
-			 		    var selectedRowData = $("#selectStudent").getRowData(String(allRowsInGridHere[ii]));
-			 		 // alert("loadComplete start11");
-			 		    var statEditable = selectedRowData ["status.editable"];
-			 		 //alert("loadComplete start2");     
+			 		    //var selectedRowData = $("#selectStudent").getRowData(String(allRowsInGridHere[ii]));
+			 		    //var statEditable = selectedRowData ["status.editable"];
+                        var statEditable = studentEditStatusMap.get(allRowsInGridHere[ii]); // changes for if issue
 			 		     if(statEditable == "F"){ 
 					 		var trs = $('#gview_selectStudent tr');
 					 		var node;
@@ -558,12 +561,9 @@ function populateSelectStudentGrid() {
 					 		}
 					 		//  $('#selectStudent').setCell(allRowsInGridHere[ii], 5, '', {color:'blue'},{ title: selectedRowData.extPin2});
 			 		     }
-			 		  //alert("loadComplete start3");   
-			 		   
 
 			 		}
             		isPAGridEmpty = false;
-            		//alert("loadComplete end");
             	}
             	
             	$.unblockUI();  
@@ -1163,28 +1163,39 @@ function getStudentListArray(studentArray) {
 	
 	
 	function updateUI(){
-			        var allRowsInGridHere = $('#selectStudent').jqGrid('getDataIDs');
-			 		for(var ii = 0; ii < allRowsInGridHere.length; ii++) {
-			 		    var selectedRowData = $("#selectStudent").getRowData(allRowsInGridHere[ii]);
-			 		    var statEditable = $("#selectStudent").getRowData(allRowsInGridHere[ii])["status.editable"];
-			 		     if(statEditable == "F"){ 
-					 		var trs = $('#gview_selectStudent tr');
-					 		var node;
-					 		for(count=0; count<trs.length; count++) {
-					 		    if(count<2) // to skip first two header row
-					 		     	continue;
-					 			node = trs.eq(count);
-					 			if(node.attr("id") == allRowsInGridHere[ii]){
-					 			  node.removeClass('ui-state-highlight');
-					 			}
-					 		}
-					 		 
-			 		     }
-			 		     
-			 		   
-
-			 		}
-	
-	
+		var allRowsInGridHere = $('#selectStudent').jqGrid('getDataIDs');
+		for(var ii = 0; ii < allRowsInGridHere.length; ii++) {
+		    //var selectedRowData = $("#selectStudent").getRowData(allRowsInGridHere[ii]);
+		    //var statEditable = selectedRowData["status.editable"];
+		     var statEditable = studentEditStatusMap.get(allRowsInGridHere[ii]);
+		    if(statEditable == "F"){ 
+		 		var trs = $('#gview_selectStudent tr');
+		 		var node;
+		 		for(count=0; count<trs.length; count++) {
+		 		    if(count<2) // to skip first two header row
+		 		     	continue;
+		 			node = trs.eq(count);
+		 			if(node.attr("id") == allRowsInGridHere[ii]){
+			 			  node.removeClass('ui-state-highlight');
+					}
+				}
+						 		 
+			}
+		 }
 	}
+	
+	function addToolTipFmatter(cellvalue, options, rowObject){
+	  var val = cellvalue;
+        if(cellvalue=="Ses") {
+	       var tooltip = rowObject.extPin2;
+	       if(tooltip == undefined  || tooltip == null){
+	       	tooltip = "";
+	       }
+		    tooltip = tooltip.replace(new RegExp("<br/>", 'g'),"&#013;" ); 
+		 	//val = "<p style='color:blue;' title='"+tooltip+"' >"+ val +"</p>";
+		 	val = "<a href='#' style=' color:blue;' title=' "+tooltip+" ' >"+ val +"</a>";
+
+		 }
+	return val;
+  }
  	
