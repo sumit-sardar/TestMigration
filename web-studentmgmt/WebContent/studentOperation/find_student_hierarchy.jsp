@@ -56,7 +56,7 @@
 	 <table class="transparent">
 	    <tr class="transparent">
 	        <td class="transparent"  valign="middle">
-	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;Student Search</div>
+	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="stu.label.search" /></div>
 	    	<script>populateTree();</script>
 	    	<div id = "orgNodeHierarchy" class="treeCtrl">
 				
