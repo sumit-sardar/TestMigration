@@ -557,6 +557,10 @@ function populateSelectStudentGrid() {
 					 			  //node.css("disabled","disabled");
 					 			  node[0].setAttribute("disabled","disabled");//disabling this way works in IE also
 					 			  //node[0].setAttribute("title", node.attr("id"));//tooltip for ses
+					 			   if(node[0].children.length>0 && node[0].children[0].children.length>0 && node[0].children[0].children[0].getAttribute("type")== "checkbox"){
+					 			   	 node[0].children[0].children[0].setAttribute("disabled","disabled");
+					 			   
+					 			   }
 					 			}
 					 		}
 					 		//  $('#selectStudent').setCell(allRowsInGridHere[ii], 5, '', {color:'blue'},{ title: selectedRowData.extPin2});
