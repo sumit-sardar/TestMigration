@@ -65,7 +65,7 @@
 			</div>
 			<div id="addStudentId">
 				<h3><a href="#" >Add Student</a></h3>
-				<div id="Add_Student" style="background-color: #FFFFFF; overflow-x: scroll !important; overflow-y: hidden !important;">
+				<div id="Add_Student" style="background-color: #FFFFFF; overflow-x: scroll !important; overflow-y: scroll !important;">
 					<div id="Student_Tab" style ="display:block;">
 						<jsp:include page="/sessionOperation/add_student_tab.jsp" />
 					</div>

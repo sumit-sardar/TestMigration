@@ -747,7 +747,7 @@ function createSingleNodeSelectedTree(jsondata) {
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 151,  
+			height: 162,  
 			caption:"Student List",
 			onPaging: function() {
 				//clearMessage();
