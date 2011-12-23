@@ -64,7 +64,7 @@ function populateTestTicketTree() {
 							$("#printTestTicket").css("height",'430px');
 						
 						}
-						$("#searchheader").css("visibility","visible");	
+						$("#ticktSearchheader").css("visibility","visible");	
 						$("#printTestTicket").dialog({
 							title:"Print Test Tickets ",  
 							resizable:false,
