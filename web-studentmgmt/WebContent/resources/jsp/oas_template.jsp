@@ -137,7 +137,7 @@
 										<a href="#" id="organizationsLink" onClick="gotoMenuAction('organizations.do', 'organizationsLink');"><b>Organizations</b></a>						
 									</td>
 								</ctb:auth>
-								<ctb:auth roles="Administrator">										
+								<ctb:auth roles="Administrator, Administrative Coordinator">										
 									<td class="toolbar" width="190">
 										<a href="#" id="bulkAccomLink" onclick="gotoMenuAction('organizations.do', 'bulkAccomLink');"><b>Assign Accommodations</b></a>						
 									</td>

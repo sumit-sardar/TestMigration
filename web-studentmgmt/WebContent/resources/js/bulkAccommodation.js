@@ -7,14 +7,15 @@ var studentObjArr = [];
 var totalRowSelectedOnPage = 0;
 var customerDemographicList ;
 var onNodechange = false;
+var onNodeChangeEmptyMsg = true;
 var listStr;
 var submittedSuccesfully = "";
 var previousDataForpaging = {};
 
 
 var selectedStudentObjArr = {};
-var BULK_ADD_TITLE      = $("#stuEditAccoID").val();
-var BULK_ACCOM_NOTSELECTED = $("#stuNoAccoID").val();	
+var BULK_ADD_TITLE      = "Edit Accommodations";
+var BULK_ACCOM_NOTSELECTED = "No accommodation was selected. Accommodations for the selected set of students was not updated.";	
 	
 function populateBulkAccommTree() {
 	
@@ -160,7 +161,7 @@ function populateBulkStudentGrid() {
           url: 'getStudentForSelectedNode.do?q=2&stuForOrgNodeId='+$("#selectedBulkTreeOrgNodeId").val(), 
 		  type:   'POST',
 		  datatype: "json",          
-          colNames:[ $("#jqgLastNameID").val(),$("#jqgFirstNameID").val(), $("miID").val(), $("#jqgGradeID").val(), calculator, colorFont, testPause, screenReader, untimedTest, highlighter],
+          colNames:[ 'Last Name','First Name', 'M.I', 'Grade', calculator, colorFont, testPause, screenReader, untimedTest, highlighter],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:152, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:153, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -187,8 +188,8 @@ function populateBulkStudentGrid() {
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 370,  
-			caption:$("#stuListID").val(),
+			height: 392,  
+			caption:"Student List",
 			toolbar: [true,"top"],
 			onPaging: function() {
 				var reqestedPage = parseInt($('#studentAccommGrid').getGridParam("page"));
@@ -226,8 +227,9 @@ function populateBulkStudentGrid() {
 					for(var i=0; i<studentArrId.length; i++) {
 						if (selectedStudentObjArr[studentArrId[i]] != undefined)
 							totalRowSelectedOnPage = totalRowSelectedOnPage + 1;
-					}	
-					onNodechange = false;
+					}
+					onNodeChangeEmptyMsg = true;	
+					//onNodechange = false;
 				} 
 				
 				 if(totalRowSelectedOnPage == studentArrId.length ) {
@@ -235,6 +237,8 @@ function populateBulkStudentGrid() {
 				 } else {
 				 	$('#cb_studentAccommGrid').attr('checked', false);
 				 }
+				if(allRowsInGrid.length <= 0)
+					$('#cb_studentAccommGrid').attr('checked', false);
 			},
 			onSelectAll: function (rowIds, status) {
 					var grade = $('#gs_grade').val();
@@ -321,15 +325,21 @@ function populateBulkStudentGrid() {
 		         }
 			},
 			loadComplete: function () {
+				var isSAGridEmpty = false;
 				if ($('#studentAccommGrid').getGridParam('records') === 0) {
-					isPAGridEmpty = true;
+					isSAGridEmpty = true;
             		$('#sp_1_studentAccommpager').text("1");
             		$('#next_studentAccommpager').addClass('ui-state-disabled');
             	 	$('#last_studentAccommpager').addClass('ui-state-disabled');
             	} else {
-            		isPAGridEmpty = false;
+            		isSAGridEmpty = false;
             	}
-            	//setEmptyListMessage('PA');
+            	
+            	setEmptyListMessage('SelectAccommodation', isSAGridEmpty);
+            	if(onNodechange){
+            		onNodeChangeEmptyMsg = false;
+            		onNodechange = false;
+            	}
             	$.unblockUI();  
 				$("#studentAccommGrid").setGridParam({datatype:'local'});
 				var tdList = ("#studentAccommpager_left table.ui-pg-table  td");
@@ -376,7 +386,21 @@ function populateBulkStudentGrid() {
 	 
 	 
 }
-
+	
+	 function setEmptyListMessage(requestedTab, isSAGridEmpty){
+		 if(requestedTab == 'SelectAccommodation') {
+		 if(isSAGridEmpty) {
+			  if(onNodeChangeEmptyMsg) {
+			 	$('#studentAccommGrid').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 	$('#studentAccommGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/StudentWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noStudentTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#noStudentMsg").val()+"</td></tr></tbody></table></td></tr>");
+			 } else {
+			 	$('#studentAccommGrid').append("<tr><th>&nbsp;</th></tr><tr><th>&nbsp;</th></tr>");
+			 	$('#studentAccommGrid').append("<tr><td style='width: 100%;padding-left: 30%;' colspan='8'><table><tbody><tr width='100%'><th style='padding-right: 12px; text-align: right;' rowspan='2'><img height='23' src='/StudentWeb/resources/images/messaging/icon_info.gif'></th><th colspan='6'>"+$("#noStudentTitle").val()+"</th></tr><tr width='100%'><td colspan='6'>"+$("#filterNoStuSelected").val()+"</td></tr></tbody></table></td></tr>");
+			 }
+		 }
+		 } 
+	 }
+	
 
  function gridReloadForBulkStudent(){ 
   		var demo1 = $('#selectedBox1').text();
@@ -602,7 +626,7 @@ function populateBulkStudentGrid() {
 	
 	
 	function loadMenu()
-{	
+	{	
 	$('#menu').superfish({
 		delay:10,
 		speed:'fast'
@@ -709,8 +733,8 @@ function populateBulkStudentGrid() {
 	 }
 	 
 	 function cancelAssignAccom(){
-	 	param = $("#AssignAccommPopup *").serialize();
-		var dataToBeAdded  = getDataToBeAdded(param);
+	 	var param = $("#AssignAccommPopup *").serialize();
+	 	var dataToBeAdded  = getDataToBeAdded(param);
 		if(dataToBeAdded['isAccommodationSelected']){
 			 $("#unSaveConfirmationPopup").dialog({  
 			title:"Confirmation Alert",  
@@ -795,5 +819,10 @@ function populateBulkStudentGrid() {
 		
 		  return skip;
 	  }
-	
+	  
+	  
+	function resetAccommpopup()   {
+		resetBulk();
+		resetRadioAccommodation();
+	}
 	
