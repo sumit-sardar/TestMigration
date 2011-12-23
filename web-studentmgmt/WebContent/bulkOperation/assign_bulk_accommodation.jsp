@@ -11,6 +11,10 @@
 
 <input type="hidden" id="studentIdLabelName"  value ='Student ID' />
 <input type="hidden" id="supportAccommodations" value = '<%=supportAccommodations %>' />
+<input type="hidden" id="noStudentTitle" name = "noStudentTitle" value="${bundle.web['student.noStuSelected.title']}"/>
+<input type="hidden" id="noStudentMsg" name = "noStudentMsg" value="${bundle.web['student.noStuSelected.message']}"/>
+<input type="hidden" id="filterNoStuSelected" name = "filterNoStuSelected" value="${bundle.web['student.filterNoStuSelected.message']}"/>
+	
 
 <p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;">
 <netui:content value="${bundle.web['student.assignAccommodation.text']}"/>
@@ -58,7 +62,7 @@
 	        <td class="transparent"  valign="bottom" style="vertical-align: bottom !important;">
 	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<netui:content value="${bundle.web['student.assignAccommodation.StudentSearch']}"/></div>
 	    	<script>populateBulkAccommTree();</script>
-	    	<div id = "studentBulkOrgNode" class="treeCtrl" style="height:542px !important">
+	    	<div id = "studentBulkOrgNode" class="treeCtrl" style="height:568px !important">
 				
 			</div> 
 			
@@ -108,7 +112,7 @@
 		<tr>
 		<td >
 				<center>
-					<input type="button"  value="&nbsp;Reset&nbsp;" onclick="javascript:resetRadioAccommodation(); return false;" class="ui-widget-header">&nbsp;
+					<input type="button"  value="&nbsp;Reset&nbsp;" onclick="javascript:resetAccommpopup(); return false;" class="ui-widget-header">&nbsp;
 					<input type="button"  value="&nbsp;Submit&nbsp;" onclick="javascript:saveBulkStudentData(); return false;" class="ui-widget-header">&nbsp;
 					<input type="button"  value="&nbsp;Cancel&nbsp;&nbsp;" onclick="javascript:cancelAssignAccom(); return false;" class="ui-widget-header">
 				</center>
