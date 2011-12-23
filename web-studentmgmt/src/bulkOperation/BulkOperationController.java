@@ -826,7 +826,7 @@ public class BulkOperationController extends PageFlowController {
         this.getSession().setAttribute("hasScoringConfigured", 
         		new Boolean( customerHasScoring(customerConfigurations).booleanValue() && adminUser));
         
-    	this.getRequest().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
+    	this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
     	
     	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	

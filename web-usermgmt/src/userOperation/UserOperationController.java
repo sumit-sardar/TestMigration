@@ -1023,7 +1023,7 @@ public class UserOperationController extends PageFlowController
         
      	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs).booleanValue() && adminUser);
      	
-    	this.getRequest().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));    	
+    	this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));    	
     	
     	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	

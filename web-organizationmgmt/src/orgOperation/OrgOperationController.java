@@ -875,8 +875,30 @@ public class OrgOperationController extends PageFlowController {
      	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     
      	
      	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);
+     	
+     	this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));
 	}
+	
+	/**
+	 * Bulk Accommodation
+	 */
+	private Boolean customerHasBulkAccommodation(CustomerConfiguration[] customerConfigurations) 
+	{
+		boolean hasBulkStudentConfigurable = false;
+		if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
 
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+						cc.getDefaultValue().equals("T")) {
+					hasBulkStudentConfigurable = true; 
+					break;
+				}
+			}
+		}
+		return new Boolean(hasBulkStudentConfigurable);           
+	}
+	
     private Boolean userHasReports() 
     {
         boolean hasReports = false;

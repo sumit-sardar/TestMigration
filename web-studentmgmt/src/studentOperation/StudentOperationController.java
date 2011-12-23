@@ -2171,7 +2171,7 @@ public class StudentOperationController extends PageFlowController {
         
      	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigurations));
      	
-    	this.getRequest().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
+    	this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
     	
     	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	
