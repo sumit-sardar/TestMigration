@@ -793,6 +793,9 @@ public class StudentOperationController extends PageFlowController {
 	private boolean saveStudentDemographic(boolean isCreateNew, StudentProfileInformation studentProfile, Integer studentId)
 	{
 		boolean studentImported = (studentProfile.getCreateBy().intValue() == 1);                
+		
+		getStudentDemographicsFromRequest();
+		
 		if (studentImported)
 		{        
 			prepareStudentDemographicForCustomerConfiguration();
