@@ -140,7 +140,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		ird.setReplicate(true);
 		ird.setCacheTime(System.currentTimeMillis());
 		responseCache.put(key, ird);
-		logger.info("\n\n\n*****  Stored response: " + key + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse() + "\n\n\n");
+		logger.info("\n*****  OASCoherenceSink: putItemResponse: Stored response: " + key + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 	}
 	
 	public void deleteItemResponse(int testRosterId, BigInteger mseq) throws IOException {

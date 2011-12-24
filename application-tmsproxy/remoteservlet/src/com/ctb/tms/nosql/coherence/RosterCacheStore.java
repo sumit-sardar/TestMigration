@@ -9,10 +9,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import com.ctb.tms.bean.login.ReplicationObject;
 import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
+import com.tangosol.util.BinaryEntry;
 
 public class RosterCacheStore implements OASCacheStore {
 	
@@ -61,6 +63,18 @@ public class RosterCacheStore implements OASCacheStore {
 
 	public void eraseAll(Collection colKeys) {
 		// do nothing, roster data is read-only
+	}
+	
+	public void eraseAll(java.util.Set<BinaryEntry> setBinEntries) {
+		Iterator it = setBinEntries.iterator();
+		while(it.hasNext()) {
+			ReplicationObject value = (ReplicationObject) ((BinaryEntry) it.next()).getValue();
+			if(value.isReplicate()) {
+				value.setReplicate(false);
+			} else {
+				it.remove();
+			}
+		}
 	}
 
 	public Map loadAll(Collection colKeys) {

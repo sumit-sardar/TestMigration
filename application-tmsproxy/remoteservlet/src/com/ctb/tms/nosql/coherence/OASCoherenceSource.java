@@ -87,18 +87,19 @@ public class OASCoherenceSource implements OASNoSQLSource {
 		if(setVals != null) {
 			Iterator it = setVals.iterator();
 			int size = setVals.size();
-			logger.info("\n\n\n*****  Found " + size + " response keys for roster " + testRosterId + "\n\n\n");
-			ItemResponseData[] tsda = new ItemResponseData[size];
+			//logger.info("\n*****  OASCoherenceSource: getItemResponses: Found " + size + " response keys for roster " + testRosterId);
+			ItemResponseData[] irda = new ItemResponseData[size];
 			int i = 0;
 			while(it.hasNext()) {
 				Entry entry = (Entry) it.next();
-				ItemResponseData irw = (ItemResponseData) entry.getValue();
-				irw.setTestRosterId(testRosterId);
-				tsda[i] = irw;
+				ItemResponseData ird = (ItemResponseData) entry.getValue();
+				ird.setTestRosterId(testRosterId);
+				irda[i] = ird;
+				logger.info("\n*****  OASCoherenceSource: getItemResponses: Retrieved response from cache: " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 				i++;
 			}
-			logger.info("\n\n\n*****  Retrieved " + i + " responses for roster " + testRosterId + "\n\n\n");
-			return tsda;
+			//logger.info("\n*****  OASCoherenceSource: getItemResponses: Retrieved " + i + " responses for roster " + testRosterId);
+			return irda;
 		} else {
 			return null;
 		}

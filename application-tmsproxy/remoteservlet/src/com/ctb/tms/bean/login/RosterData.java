@@ -170,11 +170,10 @@ public class RosterData extends ReplicationObject {
 		this.manifest = manifest;
 	}*/
 	
-	private static ArrayList<ItemResponseData> sortItemResponseData(ArrayList<ItemResponseData> startList) {
-		HashMap<Integer, ItemResponseData> sortedMap = new HashMap<Integer, ItemResponseData>(startList.size());
-		Iterator<ItemResponseData> it = startList.iterator();
-		while(it.hasNext()) {
-			ItemResponseData val = (ItemResponseData) it.next();
+	private static ItemResponseData[] sortItemResponseData(ItemResponseData[] startList) {
+		HashMap<Integer, ItemResponseData> sortedMap = new HashMap<Integer, ItemResponseData>(startList.length);
+		for(int i=0;i<startList.length;i++) {
+			ItemResponseData val = startList[i];
 			sortedMap.put(new Integer(val.getResponseSeqNum()), val);
 		}
 		Integer [] keys = sortedMap.keySet().toArray(new Integer[0]);
@@ -183,10 +182,10 @@ public class RosterData extends ReplicationObject {
 		for(int i=0;i<keys.length;i++) {
 			finalList.add(sortedMap.get(keys[i]));
 		}
-		return finalList;
+		return finalList.toArray(new ItemResponseData[0]);
 	}
 	
-	public static void generateRestartData(LoginResponse loginResponse, ManifestData manifestData, ArrayList<ItemResponseData> itemResponseData, ConsolidatedRestartData restartData) throws SQLException {
+	public static void generateRestartData(LoginResponse loginResponse, ManifestData manifestData, ItemResponseData[] itemResponseData, ConsolidatedRestartData restartData) throws SQLException {
 		itemResponseData = sortItemResponseData(itemResponseData);
 		Tsd tsd = restartData.addNewTsd();        
 		tsd.setScid(String.valueOf(manifestData.getId()));
@@ -194,14 +193,14 @@ public class RosterData extends ReplicationObject {
 		if (manifestData.getScratchpadContent()== null) manifestData.setScratchpadContent("");
 		tsd.addSp(manifestData.getScratchpadContent());
 		Ast ast = tsd.addNewAst();
+		int remSec = (manifestData.getScoDurationMinutes() * 60) - manifestData.getTotalTime();
+		ast.setRemSec((float) remSec);
 		int maxRSN = 0;
 		int totalDur = 0;
-		Iterator<ItemResponseData> it = itemResponseData.iterator();
-		int i = 0;
-		while(it.hasNext()) {
-			ItemResponseData data = it.next();
+		for(int i=0;i<itemResponseData.length;i++) {
+			ItemResponseData data = itemResponseData[i];
 			tsd.addNewIst();
-			Ist ist = tsd.getIstArray(0);
+			Ist ist = tsd.getIstArray(i);
 			ist.setIid(data.getItemId());
 			ist.setEid(""+data.getEid());
 			ist.setCst(Ist.Cst.UNKNOWN);
@@ -212,6 +211,7 @@ public class RosterData extends ReplicationObject {
 			Rv rv = ist.addNewRv();
 			if ("SR".equals(data.getItemType())) {
 				rv.setT(BaseType.IDENTIFIER);
+				if(data.getResponse() == null) data.setResponse("");
 				rv.setV(data.getResponse());
 			}
 			else { 
@@ -238,22 +238,19 @@ public class RosterData extends ReplicationObject {
 				ast.setCurEid(""+data.getEid());
 				maxRSN = Integer.valueOf(data.getResponseSeqNum());
 			}
-			i++;
-			logger.info("\n\n\n*****  Added response to restart data: " + tsd.xmlText());
+			logger.info("\n*****  RosterData: generateRestartData: Added response to restart data: " + tsd.xmlText());
 		}
 		manifestData.setTotalTime(totalDur);
-		int remSec = (manifestData.getScoDurationMinutes() * 60) - manifestData.getTotalTime();
-		ast.setRemSec(Float.parseFloat(String.valueOf(remSec)));
 	}
 	
-	public static ItemResponseData[] generateItemResponseData(String testRosterId, ManifestData manifest, ArrayList<ItemResponseData> tsda) throws XmlException {
-		HashMap irdMap = new HashMap(tsda.size());
-		HashMap itemMap = new HashMap(tsda.size());
-		HashMap audioResponseMap = new HashMap(tsda.size());
-		for(int i=0;i<tsda.size();i++) {
+	public static ItemResponseData[] generateItemResponseData(String testRosterId, ManifestData manifest, ItemResponseData[] tsda) throws XmlException {
+		HashMap irdMap = new HashMap(tsda.length);
+		HashMap itemMap = new HashMap(tsda.length);
+		HashMap audioResponseMap = new HashMap(tsda.length);
+		for(int i=0;i<tsda.length;i++) {
 			logger.debug("generateItemResponseData: Tsd " + i);
 			
-			AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd tsd = ItemResponseData.IrdToTsd(tsda.get(i));
+			AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd tsd = ItemResponseData.IrdToAdsTsd(tsda[i]);
 			
 			if(manifest.getId() == Integer.parseInt(tsd.getScid())) {
 				noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist[] ista = tsd.getIstArray();
@@ -285,7 +282,7 @@ public class RosterData extends ReplicationObject {
 				                if(ist.getRvArray(0).getVArray(0) != null){
 				                    BaseType.Enum responseType = ist.getRvArray(0).getT();
 				                    String xmlResponse = ist.getRvArray(0).getVArray(0);
-				                    String response = "";
+				                    String response = xmlResponse;
 				                    String studentMarked = ist.getMrk() ? "T" : "F";
 				                    boolean audio = ist.getAudioItem();
 				                    String itemType = "SR";
@@ -294,6 +291,7 @@ public class RosterData extends ReplicationObject {
 				                    	response = (String) audioResponseMap.get(ist.getIid());
 				                    	if(response == null) response = "";
 				                    } else if(xmlResponse != null && xmlResponse.length() > 0) {
+				                    	response = xmlResponse;
 				                    	// strip xml
 				                        int start = xmlResponse.indexOf(">");
 				                        if(start >= 0) {
@@ -312,7 +310,7 @@ public class RosterData extends ReplicationObject {
 				                            if(end != -1)
 				                                response = response.substring(0, end);
 				                        }
-				                        if(response.length() >= 2) itemType = "CR";
+				                        if(response.length() > 1) itemType = "CR";
 				                    }
 				                    ItemResponseData ird = new ItemResponseData();
 			                    	ird.setEid(Integer.parseInt(ist.getEid()));
@@ -328,10 +326,13 @@ public class RosterData extends ReplicationObject {
 			                    	ird.setResponseSeqNum(String.valueOf(tsd.getMseq()));
 			                    	ird.setStudentMarked(studentMarked);
 			                    	ird.setConstructedResponse(response);
+			                    	ird.setAudioItem(ist.getAudioItem());
 			                    	// TODO (complete): fix this
-			                    	ird.setItemType(itemType);
+			                    	ird.setItemType(BaseType.STRING.equals(responseType)?"CR":"SR");
+			                    	ird.setResponseType(responseType.toString());
+			                    	ird.setTestRosterId(Integer.parseInt(testRosterId));
 			                    	irdMap.put(ird.getItemId(), ird);
-			                    	logger.debug("RosterData: added restart item response record " + ird.getResponseSeqNum());
+			                    	logger.info("\n*****  RosterData: generateItemResponseData: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 				                 }
 				            } else { 
 				                String response = "";                   
@@ -346,8 +347,9 @@ public class RosterData extends ReplicationObject {
 		                    	ird.setConstructedResponse(response);
 		                    	// TODO: fix this
 		                    	ird.setItemType("SR");
+		                    	ird.setTestRosterId(Integer.parseInt(testRosterId));
 		                    	irdMap.put(ird.getItemId(), ird);
-		                    	logger.debug("RosterData: added restart item response record " + ird.getResponseSeqNum());
+		                    	logger.info("\n*****  RosterData: generateItemResponseData: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 				            }       
 				        }
 					}

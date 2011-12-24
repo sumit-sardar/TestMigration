@@ -13,6 +13,7 @@ import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
 import com.ctb.tms.bean.login.Manifest;
 import com.ctb.tms.bean.login.ManifestWrapper;
+import com.ctb.tms.bean.login.ReplicationObject;
 import com.ctb.tms.rdb.OASRDBSink;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
@@ -61,7 +62,10 @@ public class ManifestCacheStore implements OASCacheStore {
     		ManifestWrapper wrapper = (ManifestWrapper) oValue;
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
-		    sink.putManifest(conn, key, wrapper.getManifests());
+		    if(wrapper.isReplicate()) {
+		    	sink.putManifest(conn, key, wrapper.getManifests());
+		    	wrapper.setReplicate(false);
+		    }
     	} catch (Exception e) {
     		logger.warn("ManifestCacheStore.store: Error storing manifest to DB for roster " + key);
     		//e.printStackTrace();
@@ -75,11 +79,23 @@ public class ManifestCacheStore implements OASCacheStore {
     }
 
     public void erase(Object oKey) {
-    	// do nothing, response data is write-only
+    	// do nothing, manifest data is write-only
     }
 
 	public void eraseAll(Collection colKeys) {
-		// do nothing, response data is write-only
+		// do nothing, manifest data is write-only
+	}
+	
+	public void eraseAll(java.util.Set<BinaryEntry> setBinEntries) {
+		Iterator it = setBinEntries.iterator();
+		while(it.hasNext()) {
+			ReplicationObject value = (ReplicationObject) ((BinaryEntry) it.next()).getValue();
+			if(value.isReplicate()) {
+				value.setReplicate(false);
+			} else {
+				it.remove();
+			}
+		}
 	}
 
 	public Map loadAll(Collection colKeys) {
@@ -117,7 +133,12 @@ public class ManifestCacheStore implements OASCacheStore {
 	    		Object oKey = it.next();
     			String key = (String) oKey;
 	    		ManifestWrapper value = (ManifestWrapper) mapEntries.get(key);
-			    sink.putManifest(conn, key, value.getManifests());
+	    		if(value.isReplicate()) {
+	    			sink.putManifest(conn, key, value.getManifests());
+	    			value.setReplicate(false);
+	    		} else {
+	    			it.remove();
+	    		}
     		}
     	} catch (Exception e) {
     		e.printStackTrace();

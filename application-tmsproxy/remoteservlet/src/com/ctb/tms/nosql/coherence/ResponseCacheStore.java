@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
 import com.ctb.tms.bean.login.ItemResponseData;
+import com.ctb.tms.bean.login.ReplicationObject;
 import com.ctb.tms.rdb.OASRDBSink;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.tangosol.util.BinaryEntry;
@@ -43,7 +44,10 @@ public class ResponseCacheStore implements OASCacheStore {
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
 		    //tsd.setTestRosterId(testRosterId);
-		    sink.putItemResponse(conn, tsd);
+		    if(tsd.isReplicate()) {
+		    	sink.putItemResponse(conn, tsd);
+		    	tsd.setReplicate(false);
+		    }
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {
@@ -61,6 +65,18 @@ public class ResponseCacheStore implements OASCacheStore {
 
 	public void eraseAll(Collection colKeys) {
 		// do nothing, response data is write-only
+	}
+	
+	public void eraseAll(java.util.Set<BinaryEntry> setBinEntries) {
+		Iterator it = setBinEntries.iterator();
+		while(it.hasNext()) {
+			ReplicationObject value = (ReplicationObject) ((BinaryEntry) it.next()).getValue();
+			if(value.isReplicate()) {
+				value.setReplicate(false);
+			} else {
+				it.remove();
+			}
+		}
 	}
 
 	public Map loadAll(Collection colKeys) {
@@ -115,7 +131,12 @@ public class ResponseCacheStore implements OASCacheStore {
 	    		//testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
 	    		ItemResponseData ird = (ItemResponseData) value;
 	    		//value.setTestRosterId(testRosterId);
-			    sink.putItemResponse(conn, value);
+	    		if(value.isReplicate()) {
+	    			sink.putItemResponse(conn, value);
+	    			value.setReplicate(false);
+	    		} else {
+	    			it.remove();
+	    		}
     		}
     	} catch (Exception e) {
     		e.printStackTrace();

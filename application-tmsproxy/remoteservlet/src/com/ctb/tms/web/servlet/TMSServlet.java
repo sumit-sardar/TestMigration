@@ -371,7 +371,7 @@ public class TMSServlet extends HttpServlet {
 				    	if(thisSco == null) throw new InvalidItemSetIdException();
 				    	//thisSco.setCompletionStatus("IP");
 				    	// response events
-				    	ItemResponseData ird = ItemResponseData.TsdToIrd(tsd);
+				    	ItemResponseData ird = ItemResponseData.AdsTsdToIrd(tsd);
 					    ird.setTestRosterId(Integer.parseInt(rosterId));
 					    ird.setResponseSeqNum(String.valueOf(tsd.getMseq()));
 				    	oasSink.putItemResponse(ird);
@@ -728,7 +728,7 @@ public class TMSServlet extends HttpServlet {
 	        	if (responsesInRD) {
 	        		TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData.Tsd[] rdtsda = restartData.getTsdArray();
 	        		for(int m=0;m<rdtsda.length;m++) {
-	        			rdirt = ItemResponseData.TsdToIrd(restartData.getTsdArray(m));
+	        			rdirt = ItemResponseData.TmsTsdToIrd(restartData.getTsdArray(m));
 	            		for(int j=0;j<rdirt.length;j++) {
 	            			rdirt[j].setTestRosterId(Integer.parseInt(testRosterId));
 	            			oasSink.putItemResponse(rdirt[j]);
@@ -751,8 +751,9 @@ public class TMSServlet extends HttpServlet {
 	            	manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {        	
 	            	
 	            	if(netirt != null && netirt.size() > 0) {
-		            	RosterData.generateRestartData(loginResponse, manifesta[i], netirt, restartData);
-		            	logger.debug("TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + netirt.size() + " responses");
+	            		ItemResponseData[] finalResponses = RosterData.generateItemResponseData(testRosterId, manifesta[i], netirt.toArray(new ItemResponseData[0]));
+		            	RosterData.generateRestartData(loginResponse, manifesta[i], finalResponses, restartData);
+		            	logger.info("\n***** TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + finalResponses.length + " responses");
 	            	}
 	            	gotRestart = true;
 	            } 
@@ -875,7 +876,7 @@ public class TMSServlet extends HttpServlet {
 				intValue() % 2 == 0 ? false:true;
 	}
 	
-	private ItemResponseData[] convertTsdType(ConsolidatedRestartData.Tsd tsd) {
+	/*private ItemResponseData[] convertTsdType(ConsolidatedRestartData.Tsd tsd) {
 		//return tsd.changeType(Tsd.type);
 		ItemResponseData[] newtsda = new ItemResponseData[tsd.getIstArray().length];
 		ConsolidatedRestartData.Tsd.Ist[] ista = tsd.getIstArray();
@@ -901,12 +902,12 @@ public class TMSServlet extends HttpServlet {
 				Rv newrv = newist.addNewRv();
 				newrv.addV(rv.getV());
 			}
-			ItemResponseData ird = ItemResponseData.TsdToIrd(newtsd);
+			ItemResponseData ird = ItemResponseData.AdsTsdToIrd(newtsd);
 			newtsda[i] = ird;
 			//logger.debug("convertTsdType: added response " + ist.getMseq());
 		}
 		return newtsda;
-	}
+	}*/
 	
 	public String getSubtest(String xml) throws XmlException, IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, SQLException
 	{

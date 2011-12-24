@@ -65,7 +65,10 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 
     public void store(Object oKey, Object oValue) {
     	if(store != null) {
-    		store.store(oKey, oValue);
+    		if(cacheName.startsWith("OAS")) {
+    			store.store(oKey, oValue);
+    			((ReplicationObject) oValue).setReplicate(false);
+	    	}
     	}
     }
     
@@ -75,13 +78,10 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
     		if(cacheName.startsWith("OAS")) {
     			Object key = entry.getKey();	
     			ReplicationObject value = (ReplicationObject) entry.getValue();
-    			if(value.isReplicate()) {
-	    			store.store(key, value);
-	    			value.setReplicate(false);
-	    			if(pushStore != null) {
-		    			pushStore.store(entry);
-		    		}
-    			}
+    			store.store(key, value);
+    			if(pushStore != null) {
+	    			pushStore.store(entry);
+	    		}
 	    	}
     	}
     }
@@ -108,10 +108,11 @@ public class DBCacheStore implements CacheStore, BinaryEntryStore {
 	public void eraseAll(java.util.Set setBinEntries) {
 		logger.debug("Batch delete to push replication store");
 		if(store != null) {
-			Iterator<BinaryEntry> it = setBinEntries.iterator();
-			while(it.hasNext()) {
-				BinaryEntry entry = it.next();
-				store.erase(entry.getKey());
+			if(cacheName.startsWith("OAS")) {
+				store.eraseAll(setBinEntries);
+				if(pushStore != null && setBinEntries.size() > 0) {
+					pushStore.eraseAll(setBinEntries);
+				}
 			}
 		}
 	}

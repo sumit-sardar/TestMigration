@@ -3,6 +3,8 @@ package com.ctb.tms.bean.login;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
+import org.apache.log4j.Logger;
+
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ast;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
@@ -13,6 +15,8 @@ import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Consolida
 
 
 public class ItemResponseData extends ReplicationObject {
+	
+	static Logger logger = Logger.getLogger(ItemResponseData.class);
 	
 	public ItemResponseData() {
 	
@@ -31,11 +35,10 @@ public class ItemResponseData extends ReplicationObject {
     private int eid;
     private int score;
     private String answerArea;
-    private float duration;
     private boolean audioItem;
     private String responseType;
     
-    public static Tsd IrdToTsd(ItemResponseData ird) {
+    public static Tsd IrdToAdsTsd(ItemResponseData ird) {
     	Tsd tsd = Tsd.Factory.newInstance();        
 		tsd.setScid(String.valueOf(ird.getItemSetId()));
 		tsd.setLsid(String.valueOf(ird.getTestRosterId()));
@@ -49,21 +52,16 @@ public class ItemResponseData extends ReplicationObject {
 		ist.setCst(Ist.Cst.UNKNOWN);
 		ist.setMrk("T".equals(ird.getStudentMarked()));
 		ist.setDur(ird.getResponseElapsedTime());
+		ist.setAudioItem(ird.audioItem);
 		tsd.setMseq(new BigInteger(ird.getResponseSeqNum()));
 		totalDur = totalDur + ird.getResponseElapsedTime();
 		Rv rv = ist.addNewRv();
 		if ("SR".equals(ird.getItemType())) {
 			rv.setT(BaseType.IDENTIFIER);
 			rv.addNewV().setStringValue(ird.getResponse());
-		}
-		else { 
+		} else { 
 			rv.setT(BaseType.STRING);
-			String crResponse = "";
-			String crResponseClob = ird.getConstructedResponse();
-			if (crResponseClob != null && crResponseClob.length() > 0) {
-				crResponse = crResponseClob.substring(0, crResponseClob.length());
-			}
-			rv.addNewV().setStringValue(crResponse);
+			rv.addNewV().setStringValue(ird.getConstructedResponse());
 		}
 		rv.setN("RESPONSE");
 
@@ -73,17 +71,19 @@ public class ItemResponseData extends ReplicationObject {
 
 		if ("SR".equals(ird.getItemType()))
 			ov.addNewV().setStringValue(""+ird.getScore());
-		else
+		else {
 			ov.addNewV().setStringValue("");
+		}
 
 		if(Integer.valueOf(ird.getResponseSeqNum()) > maxRSN) {
 			ast.setCurEid(""+ird.getEid());
 			maxRSN = Integer.valueOf(ird.getResponseSeqNum());
 		}
+		logger.info("\n*****  ItemResponseData: IrdToAdsTsd: converted ird to AdsTsd: " + tsd.xmlText());
 		return tsd;
     }
     
-    public static ItemResponseData TsdToIrd(Tsd tsd) {
+    public static ItemResponseData AdsTsdToIrd(Tsd tsd) {
 	    ItemResponseData ird = new ItemResponseData();
 	    String testRosterId = tsd.getLsid();
 	    testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
@@ -94,12 +94,16 @@ public class ItemResponseData extends ReplicationObject {
 		for(int j=0;j<ista.length;j++) {
 	        Ist ist = ista[j];
 	        ird.setItemId(ist.getIid());
+	        ird.setResponseElapsedTime((int)ist.getDur());
+	        ird.setEid(Integer.parseInt(ist.getEid()));
+	        ird.setAudioItem(ist.getAudioItem());
 	        // if(ist != null && ist.getRvArray(0) != null && ist.getRvArray(0).getVArray(0) != null) {
 	        if(ist != null && ist.getRvArray() != null && ist.getRvArray().length >0 ) {
 	            if( ist.getRvArray(0).getVArray() != null && ist.getRvArray(0).getVArray().length >0){
 	                if(ist.getRvArray(0).getVArray(0) != null){
 	                    BaseType.Enum responseType = ist.getRvArray(0).getT();
 	                    ird.setResponseType(responseType.toString());
+	                    ird.setItemType(BaseType.STRING.equals(responseType)?"CR":"SR");
 	                    String xmlResponse = ist.getRvArray(0).getVArray(0);
 	                    String response = "";
 	                    String studentMarked = ist.getMrk() ? "T" : "F";
@@ -132,10 +136,11 @@ public class ItemResponseData extends ReplicationObject {
 	            }
 	        }
 		}
+		logger.info("\n*****  ItemResponseData: AdsTsdToIrd: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 		return ird;
     }
     
-    public static ItemResponseData[] TsdToIrd(ConsolidatedRestartData.Tsd tsd) {
+    public static ItemResponseData[] TmsTsdToIrd(ConsolidatedRestartData.Tsd tsd) {
 	    ArrayList irds = new ArrayList();
 	    String testRosterId = tsd.getLsid();
 	    testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
@@ -147,15 +152,19 @@ public class ItemResponseData extends ReplicationObject {
 		    ird.setItemSetId(Integer.parseInt(tsd.getScid()));
 			ConsolidatedRestartData.Tsd.Ist ist = ista[j];
 	        ird.setItemId(ist.getIid());
+	        ird.setResponseSeqNum(String.valueOf(ist.getMseq()));
+	        ird.setResponseElapsedTime((int)ist.getDur());
+	        ird.setEid(Integer.parseInt(ist.getEid()));
 	        // if(ist != null && ist.getRvArray(0) != null && ist.getRvArray(0).getVArray(0) != null) {
 	        if(ist != null && ist.getRvArray() != null && ist.getRvArray().length >0 ) {
 	            if(ist.getRvArray(0).getV() != null){
                     BaseType.Enum responseType = ist.getRvArray(0).getT();
                     ird.setResponseType(responseType.toString());
+                    ird.setItemType(BaseType.STRING.equals(responseType)?"CR":"SR");
                     String xmlResponse = ist.getRvArray(0).getV();
                     String response = "";
                     String studentMarked = ist.getMrk();
-                    ird.setStudentMarked(studentMarked);
+                    ird.setStudentMarked("1".equals(studentMarked)?"T":"F");
                     //String audioItem = ist.getAudioItem() ? "T" : "F";
                     //ird.setAudioItem(ist.getAudioItem());
                     if(xmlResponse != null && xmlResponse.length() > 0) {
@@ -180,28 +189,14 @@ public class ItemResponseData extends ReplicationObject {
                         }
                     }
                     ird.setResponse(response);
+                    if("CR".equals(ird.getItemType())) ird.setConstructedResponse(response);
 	            }
 	        }
+	        logger.info("\n*****  ItemResponseData: TmsTsdToIrd: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 	        irds.add(ird);
 		}
 		return (ItemResponseData[]) irds.toArray(new ItemResponseData[0]);
     }
-
-	                    /*if(responseType.equals(BaseType.IDENTIFIER)) {
-	                        ird.setT testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked);
-	                    } else if(responseType.equals(BaseType.STRING)) {
-	                    	storeResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), null, ist.getDur(), tsd.getMseq(), studentMarked);
-	                        storeCRResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked, audioItem);
-	                    }
-	                    logger.debug("OASOracleSink: Stored response records in DB for roster " + testRosterId + ", mseq " + tsd.getMseq());
-	                 }
-	            }else{ 
-	                String response = "";                   
-	                String studentMarked = ist.getMrk() ? "T" : "F";                    
-	                storeResponse(conn, Integer.parseInt(testRosterId), Integer.parseInt(tsd.getScid()), ist.getIid(), response, ist.getDur(), tsd.getMseq(), studentMarked);                                          
-	            }       
-	        }*/
-    
     
 	public boolean isAudioItem() {
 		return audioItem;
@@ -229,12 +224,6 @@ public class ItemResponseData extends ReplicationObject {
 	}
 	public void setItemSetId(int itemSetId) {
 		this.itemSetId = itemSetId;
-	}
-	public float getDuration() {
-		return duration;
-	}
-	public void setDuration(float duration) {
-		this.duration = duration;
 	}
 	/**
 	 * @param itemId The itemId to set.
