@@ -1074,15 +1074,26 @@ public class HomePageController extends PageFlowController
         List reportList = new ArrayList();
         CustomerReport[] crs = this.customerReportData.getCustomerReports();
         
+        boolean isTABEAdaptive = false;
+        
         for (int i=0; i < crs.length; i++)
         {                
             CustomerReport cr = crs[i];
+            if (cr.getProductId().intValue() == 8000)
+            	isTABEAdaptive = true;
             if (! cr.getReportName().equals("IndividualProfile"))
             {
             	reportList.add(cr);
             }
         }           
-                         
+        
+        if (isTABEAdaptive) {
+        	CustomerReport groupList =  (CustomerReport)reportList.get(0);
+        	CustomerReport indPorfolio =  (CustomerReport)reportList.get(1);
+        	reportList.set(0, indPorfolio);
+        	reportList.set(1, groupList);
+        }
+        
         return reportList; 
     }
 
