@@ -63,5 +63,12 @@
       	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
       </serializer> 
     </user-type>
+    <user-type>
+      <type-id>123459</type-id>
+      <class-name>com.ctb.tms.bean.login.ReplicationObject</class-name>
+      <serializer>
+      	<class-name>org.gridkit.coherence.utils.pof.ReflectionPofSerializer</class-name>
+      </serializer> 
+    </user-type>
   </user-type-list>
 </pof-config>

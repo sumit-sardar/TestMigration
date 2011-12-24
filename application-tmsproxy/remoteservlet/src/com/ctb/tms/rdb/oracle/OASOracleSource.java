@@ -913,7 +913,7 @@ public class OASOracleSource implements OASRDBSource
 				response.setAudioItem("T".equals(rs1.getString("audioItem"))?true:false);
 				response.setResponseType(("CR".equals(response.getItemType())?BaseType.STRING:BaseType.IDENTIFIER).toString());
 				data.add(response);
-				logger.info("\n*****  OASOracleSource: getRestartItemResponses: Got response from DB for roster " + testRosterId + ", seqnum: " + response.getResponseSeqNum() + ", item type: " + response.getItemType() + ", response type: " + response.getResponseType() + ", elapsed time: " + response.getResponseElapsedTime() + ", response: " + response.getResponse() + ", CR response: " + response.getConstructedResponse());
+				logger.debug("\n*****  OASOracleSource: getRestartItemResponses: Got response from DB for roster " + testRosterId + ", seqnum: " + response.getResponseSeqNum() + ", item type: " + response.getItemType() + ", response type: " + response.getResponseType() + ", elapsed time: " + response.getResponseElapsedTime() + ", response: " + response.getResponse() + ", CR response: " + response.getConstructedResponse());
 			}
 			rs1.close();
 		} catch (Exception e) {

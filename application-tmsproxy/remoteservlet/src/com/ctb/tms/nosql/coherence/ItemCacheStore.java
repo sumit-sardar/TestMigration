@@ -2,19 +2,15 @@ package com.ctb.tms.nosql.coherence;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.ctb.tms.bean.login.RosterData;
-import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.rdb.ADSRDBSource;
-import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
-import com.tangosol.net.cache.CacheStore;
+import com.tangosol.util.BinaryEntry;
 
 public class ItemCacheStore implements OASCacheStore {
 	
@@ -52,6 +48,10 @@ public class ItemCacheStore implements OASCacheStore {
     }
 
     public void store(Object oKey, Object oValue) {
+    	// do nothing, item data is read-only
+    }
+    
+    public void store(BinaryEntry entry) {
     	// do nothing, item data is read-only
     }
 

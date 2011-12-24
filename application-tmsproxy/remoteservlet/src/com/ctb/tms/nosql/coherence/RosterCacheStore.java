@@ -56,6 +56,10 @@ public class RosterCacheStore implements OASCacheStore {
     public void store(Object oKey, Object oValue) {
     	// do nothing, roster data is read-only
     }
+    
+    public void store(BinaryEntry entry) {
+    	// do nothing, roster data is read-only
+    }
 
     public void erase(Object oKey) {
     	// do nothing, roster data is read-only
@@ -68,10 +72,9 @@ public class RosterCacheStore implements OASCacheStore {
 	public void eraseAll(java.util.Set<BinaryEntry> setBinEntries) {
 		Iterator it = setBinEntries.iterator();
 		while(it.hasNext()) {
-			ReplicationObject value = (ReplicationObject) ((BinaryEntry) it.next()).getValue();
-			if(value.isReplicate()) {
-				value.setReplicate(false);
-			} else {
+			BinaryEntry entry = (BinaryEntry) it.next();
+			ReplicationObject value = (ReplicationObject) entry.getValue();
+			if(!value.isReplicate().booleanValue()) {
 				it.remove();
 			}
 		}

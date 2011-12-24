@@ -15,6 +15,7 @@ import com.ctb.tms.rdb.ADSRDBSource;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
 import com.tangosol.net.cache.CacheStore;
+import com.tangosol.util.BinaryEntry;
 
 public class ItemSetCacheStore implements OASCacheStore {
 	
@@ -52,6 +53,10 @@ public class ItemSetCacheStore implements OASCacheStore {
     }
 
     public void store(Object oKey, Object oValue) {
+    	// do nothing, itemset data is read-only
+    }
+    
+    public void store(BinaryEntry entry) {
     	// do nothing, itemset data is read-only
     }
 

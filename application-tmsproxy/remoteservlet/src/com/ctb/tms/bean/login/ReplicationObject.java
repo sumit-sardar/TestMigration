@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class ReplicationObject implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private boolean replicate;
+	private Boolean replicate;
 	private long cacheTime;
 	
 	public long getCacheTime() {
@@ -16,11 +16,19 @@ public class ReplicationObject implements Serializable {
 		this.cacheTime = cacheTime;
 	}
 
-	public boolean isReplicate() {
+	public Boolean isReplicate() {
 		return this.replicate;
 	}
 	
-	public void setReplicate(boolean replicate) {
+	public Boolean doReplicate() {
+		return this.replicate;
+	}
+	
+	public Boolean getReplicate() {
+		return this.replicate;
+	}
+	
+	public void setReplicate(Boolean replicate) {
 		this.replicate = replicate;
 	}
 }

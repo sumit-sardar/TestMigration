@@ -79,7 +79,7 @@ public class ItemResponseData extends ReplicationObject {
 			ast.setCurEid(""+ird.getEid());
 			maxRSN = Integer.valueOf(ird.getResponseSeqNum());
 		}
-		logger.info("\n*****  ItemResponseData: IrdToAdsTsd: converted ird to AdsTsd: " + tsd.xmlText());
+		logger.debug("\n*****  ItemResponseData: IrdToAdsTsd: converted ird to AdsTsd: " + tsd.xmlText());
 		return tsd;
     }
     
@@ -136,7 +136,7 @@ public class ItemResponseData extends ReplicationObject {
 	            }
 	        }
 		}
-		logger.info("\n*****  ItemResponseData: AdsTsdToIrd: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
+		logger.debug("\n*****  ItemResponseData: AdsTsdToIrd: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 		return ird;
     }
     
@@ -192,7 +192,7 @@ public class ItemResponseData extends ReplicationObject {
                     if("CR".equals(ird.getItemType())) ird.setConstructedResponse(response);
 	            }
 	        }
-	        logger.info("\n*****  ItemResponseData: TmsTsdToIrd: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
+	        logger.debug("\n*****  ItemResponseData: TmsTsdToIrd: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 	        irds.add(ird);
 		}
 		return (ItemResponseData[]) irds.toArray(new ItemResponseData[0]);

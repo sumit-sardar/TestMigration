@@ -44,9 +44,31 @@ public class ResponseCacheStore implements OASCacheStore {
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
 		    //tsd.setTestRosterId(testRosterId);
-		    if(tsd.isReplicate()) {
+		    if(tsd.isReplicate().booleanValue()) {
 		    	sink.putItemResponse(conn, tsd);
-		    	tsd.setReplicate(false);
+		    }
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	} finally {
+    		try {
+    			if(conn != null) conn.close();
+    		} catch (SQLException sqe) {
+    			// do nothing
+    		}
+    	}
+    }
+    
+    public void store(BinaryEntry entry) {
+    	Connection conn = null;
+    	try {
+    		//String testRosterId = (String) oKey;
+    		//testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
+    		ItemResponseData tsd = (ItemResponseData) entry.getValue();
+    		OASRDBSink sink = RDBStorageFactory.getOASSink();
+		    conn = sink.getOASConnection();
+		    //tsd.setTestRosterId(testRosterId);
+		    if(tsd.isReplicate().booleanValue()) {
+		    	sink.putItemResponse(conn, tsd);
 		    }
     	} catch (Exception e) {
     		e.printStackTrace();
@@ -70,10 +92,9 @@ public class ResponseCacheStore implements OASCacheStore {
 	public void eraseAll(java.util.Set<BinaryEntry> setBinEntries) {
 		Iterator it = setBinEntries.iterator();
 		while(it.hasNext()) {
-			ReplicationObject value = (ReplicationObject) ((BinaryEntry) it.next()).getValue();
-			if(value.isReplicate()) {
-				value.setReplicate(false);
-			} else {
+			BinaryEntry entry = (BinaryEntry) it.next();
+			ReplicationObject value = (ReplicationObject) entry.getValue();
+			if(!value.isReplicate().booleanValue()) {
 				it.remove();
 			}
 		}
@@ -96,10 +117,9 @@ public class ResponseCacheStore implements OASCacheStore {
 	    		//String testRosterId = (String) entry.getKey();
 	    		//testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
 	    		ItemResponseData ird = (ItemResponseData) entry.getValue();
-	    		if(ird.isReplicate()) {
+	    		if(ird.isReplicate().booleanValue()) {
 		    		//ird.setTestRosterId(testRosterId);
 		    		sink.putItemResponse(conn, ird);
-		    		ird.setReplicate(false);
 	    		} else {
 	    			it.remove();
 	    		}
@@ -131,9 +151,8 @@ public class ResponseCacheStore implements OASCacheStore {
 	    		//testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
 	    		ItemResponseData ird = (ItemResponseData) value;
 	    		//value.setTestRosterId(testRosterId);
-	    		if(value.isReplicate()) {
+	    		if(value.isReplicate().booleanValue()) {
 	    			sink.putItemResponse(conn, value);
-	    			value.setReplicate(false);
 	    		} else {
 	    			it.remove();
 	    		}

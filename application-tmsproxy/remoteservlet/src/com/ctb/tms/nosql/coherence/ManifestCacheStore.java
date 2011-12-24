@@ -62,9 +62,32 @@ public class ManifestCacheStore implements OASCacheStore {
     		ManifestWrapper wrapper = (ManifestWrapper) oValue;
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
-		    if(wrapper.isReplicate()) {
+		    if(wrapper.isReplicate().booleanValue()) {
 		    	sink.putManifest(conn, key, wrapper.getManifests());
-		    	wrapper.setReplicate(false);
+		    }
+    	} catch (Exception e) {
+    		logger.warn("ManifestCacheStore.store: Error storing manifest to DB for roster " + key);
+    		//e.printStackTrace();
+    	} finally {
+    		try {
+    			if(conn != null) conn.close();
+    		} catch (SQLException sqe) {
+    			// do nothing
+    		}
+    	}
+    }
+    
+    public void store(BinaryEntry entry) {
+    	Connection conn = null;
+    	String key = null;
+    	try {
+    		key = (String) entry.getKey();
+    	    logger.debug("Storing manifest to DB for roster " + key);
+    		ManifestWrapper wrapper = (ManifestWrapper) entry.getValue();
+    		OASRDBSink sink = RDBStorageFactory.getOASSink();
+		    conn = sink.getOASConnection();
+		    if(wrapper.isReplicate().booleanValue()) {
+		    	sink.putManifest(conn, key, wrapper.getManifests());
 		    }
     	} catch (Exception e) {
     		logger.warn("ManifestCacheStore.store: Error storing manifest to DB for roster " + key);
@@ -89,10 +112,9 @@ public class ManifestCacheStore implements OASCacheStore {
 	public void eraseAll(java.util.Set<BinaryEntry> setBinEntries) {
 		Iterator it = setBinEntries.iterator();
 		while(it.hasNext()) {
-			ReplicationObject value = (ReplicationObject) ((BinaryEntry) it.next()).getValue();
-			if(value.isReplicate()) {
-				value.setReplicate(false);
-			} else {
+			BinaryEntry entry = (BinaryEntry) it.next();
+			ReplicationObject value = (ReplicationObject) entry.getValue();
+			if(!value.isReplicate().booleanValue()) {
 				it.remove();
 			}
 		}
@@ -133,9 +155,8 @@ public class ManifestCacheStore implements OASCacheStore {
 	    		Object oKey = it.next();
     			String key = (String) oKey;
 	    		ManifestWrapper value = (ManifestWrapper) mapEntries.get(key);
-	    		if(value.isReplicate()) {
+	    		if(value.isReplicate().booleanValue()) {
 	    			sink.putManifest(conn, key, value.getManifests());
-	    			value.setReplicate(false);
 	    		} else {
 	    			it.remove();
 	    		}
@@ -171,9 +192,8 @@ public class ManifestCacheStore implements OASCacheStore {
     				key = (String) entry.getKey();
     				Object value = entry.getValue();
     				ManifestWrapper wrapper = (ManifestWrapper) value;
-    				if(wrapper.isReplicate()) {
+    				if(wrapper.isReplicate().booleanValue()) {
     					sink.putManifest(conn, key, wrapper.getManifests());
-    					wrapper.setReplicate(false);
     				} else {
     					it.remove();
     				}

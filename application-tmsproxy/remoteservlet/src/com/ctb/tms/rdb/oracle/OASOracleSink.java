@@ -71,10 +71,10 @@ public class OASOracleSink implements OASRDBSink {
 		
 		if(response != null && !"".equals(response.trim())) {
 			if(responseType.equals(BaseType.IDENTIFIER.toString())) {
-				logger.info("Storing SR response");
+				logger.debug("Storing SR response");
 				storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getResponseElapsedTime(), ird.getResponseSeqNum(), ird.getStudentMarked());
             } else if(responseType.equals(BaseType.STRING.toString())) {
-            	logger.info("Storing CR response");
+            	logger.debug("Storing CR response");
             	CRresponse = response;
             	response = null;
             	storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getResponseElapsedTime(), ird.getResponseSeqNum(), ird.getStudentMarked());
@@ -82,11 +82,11 @@ public class OASOracleSink implements OASRDBSink {
             }
 			//logger.info("Finished putItemResponse for roster " + testRosterId + ", mseq " + ird.getResponseSeqNum());
 	    } else{
-	    	logger.info("Storing null response");
+	    	logger.debug("Storing null response");
 	    	response = "";
 	    	storeResponse(conn, testRosterId, ird.getItemSetId(), ird.getItemId(), response, ird.getResponseElapsedTime(), ird.getResponseSeqNum(), ird.getStudentMarked());                                          
         }  
-		logger.info("\n***** OASOracleSink: putItemResponse: " + ird.getTestRosterId() + ", mseq: " + ird.getResponseSeqNum() + ", item: " + ird.getItemId() + ", item type: " + ird.getItemType() + ", response type: " + responseType + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + response + ", CR response: " + CRresponse);
+		logger.debug("\n***** OASOracleSink: putItemResponse: " + ird.getTestRosterId() + ", mseq: " + ird.getResponseSeqNum() + ", item: " + ird.getItemId() + ", item type: " + ird.getItemType() + ", response type: " + responseType + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + response + ", CR response: " + CRresponse);
 	}
 
 	private void storeResponse(Connection con, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked) throws Exception {

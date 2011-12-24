@@ -753,7 +753,7 @@ public class TMSServlet extends HttpServlet {
 	            	if(netirt != null && netirt.size() > 0) {
 	            		ItemResponseData[] finalResponses = RosterData.generateItemResponseData(testRosterId, manifesta[i], netirt.toArray(new ItemResponseData[0]));
 		            	RosterData.generateRestartData(loginResponse, manifesta[i], finalResponses, restartData);
-		            	logger.info("\n***** TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + finalResponses.length + " responses");
+		            	logger.debug("\n***** TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + finalResponses.length + " responses");
 	            	}
 	            	gotRestart = true;
 	            } 

@@ -238,7 +238,7 @@ public class RosterData extends ReplicationObject {
 				ast.setCurEid(""+data.getEid());
 				maxRSN = Integer.valueOf(data.getResponseSeqNum());
 			}
-			logger.info("\n*****  RosterData: generateRestartData: Added response to restart data: " + tsd.xmlText());
+			logger.debug("\n*****  RosterData: generateRestartData: Added response to restart data: " + tsd.xmlText());
 		}
 		manifestData.setTotalTime(totalDur);
 	}
@@ -332,7 +332,7 @@ public class RosterData extends ReplicationObject {
 			                    	ird.setResponseType(responseType.toString());
 			                    	ird.setTestRosterId(Integer.parseInt(testRosterId));
 			                    	irdMap.put(ird.getItemId(), ird);
-			                    	logger.info("\n*****  RosterData: generateItemResponseData: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
+			                    	logger.debug("\n*****  RosterData: generateItemResponseData: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 				                 }
 				            } else { 
 				                String response = "";                   
@@ -349,7 +349,7 @@ public class RosterData extends ReplicationObject {
 		                    	ird.setItemType("SR");
 		                    	ird.setTestRosterId(Integer.parseInt(testRosterId));
 		                    	irdMap.put(ird.getItemId(), ird);
-		                    	logger.info("\n*****  RosterData: generateItemResponseData: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
+		                    	logger.debug("\n*****  RosterData: generateItemResponseData: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 				            }       
 				        }
 					}
