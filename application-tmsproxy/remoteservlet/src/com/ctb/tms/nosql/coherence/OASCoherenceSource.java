@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
-import org.gridkit.coherence.utils.pof.ReflectionPofExtractor;
 
 import com.ctb.tms.bean.login.ItemResponseData;
 import com.ctb.tms.bean.login.Manifest;
@@ -19,6 +18,7 @@ import com.tangosol.net.CacheFactory;
 import com.tangosol.net.NamedCache;
 import com.tangosol.util.Filter;
 import com.tangosol.util.ValueExtractor;
+import com.tangosol.util.extractor.ReflectionExtractor;
 
 public class OASCoherenceSource implements OASNoSQLSource {
 	
@@ -26,7 +26,7 @@ public class OASCoherenceSource implements OASNoSQLSource {
 	private static NamedCache manifestCache;
 	private static NamedCache responseCache;
 	
-	static ValueExtractor extractor = new ReflectionPofExtractor("testRosterId"); 
+	static ValueExtractor extractor = new ReflectionExtractor("getTestRosterId"); 
 	
 	static Logger logger = Logger.getLogger(OASCoherenceSource.class);
 	
