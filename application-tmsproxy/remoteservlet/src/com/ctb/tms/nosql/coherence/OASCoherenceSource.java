@@ -2,6 +2,7 @@ package com.ctb.tms.nosql.coherence;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -83,19 +84,19 @@ public class OASCoherenceSource implements OASNoSQLSource {
 
 	public ItemResponseData[] getItemResponses(int testRosterId) throws IOException, ClassNotFoundException {
 		Filter filter = new com.tangosol.util.filter.EqualsFilter(extractor, testRosterId); 
-		Set setVals = responseCache.entrySet(filter); 
-		if(setVals != null) {
-			Iterator it = setVals.iterator();
-			int size = setVals.size();
+		Set setKeys = responseCache.keySet(filter); 
+		Map mapResult = responseCache.getAll(setKeys); 
+		if(mapResult != null) {
+			Iterator it = mapResult.keySet().iterator();
+			int size = mapResult.size();
 			//logger.info("\n*****  OASCoherenceSource: getItemResponses: Found " + size + " response keys for roster " + testRosterId);
 			ItemResponseData[] irda = new ItemResponseData[size];
 			int i = 0;
 			while(it.hasNext()) {
-				Entry entry = (Entry) it.next();
-				ItemResponseData ird = (ItemResponseData) entry.getValue();
-				ird.setTestRosterId(testRosterId);
+				ItemResponseData ird = (ItemResponseData) mapResult.get(it.next());;
+				//ird.setTestRosterId(testRosterId);
 				irda[i] = ird;
-				logger.debug("\n*****  OASCoherenceSource: getItemResponses: Retrieved response from cache: " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
+				logger.info("\n*****  OASCoherenceSource: getItemResponses: Retrieved response from cache: " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 				i++;
 			}
 			//logger.info("\n*****  OASCoherenceSource: getItemResponses: Retrieved " + i + " responses for roster " + testRosterId);
