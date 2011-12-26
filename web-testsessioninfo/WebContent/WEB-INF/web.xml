@@ -36,7 +36,7 @@
     </filter-mapping>
     <filter-mapping>
         <filter-name>NoCacheFilter</filter-name>
-        <url-pattern>/testTicket/*</url-pattern>
+        <url-pattern>/testTicketOperation/*</url-pattern>
     </filter-mapping>
     <servlet>
         <description/>
@@ -134,7 +134,7 @@
             <url-pattern>/softwareOperation/*</url-pattern>
             <url-pattern>/programOperation/*</url-pattern>
             <url-pattern>/testContentOperation/*</url-pattern>
-            <url-pattern>/testTicket/*</url-pattern>
+            <url-pattern>/testTicketOperation/*</url-pattern>
             <http-method>POST</http-method>
             <http-method>GET</http-method>
         </web-resource-collection>      

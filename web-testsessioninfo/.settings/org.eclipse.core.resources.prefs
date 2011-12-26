@@ -1,4 +1,4 @@
-#Tue Nov 01 12:44:05 PDT 2011
+#Mon Dec 26 19:09:00 IST 2011
 eclipse.preferences.version=1
 encoding//WebContent/WEB-INF/ctb-web.tld=ISO-8859-1
 encoding//WebContent/downloadtest/download_zippedFile.jsp=UTF-8
@@ -18,6 +18,12 @@ encoding//WebContent/resources/jsp/report_template.jsp=UTF-8
 encoding//WebContent/resources/jsp/sidebar.jsp=ISO-8859-1
 encoding//WebContent/resources/jsp/template.jsp=UTF-8
 encoding//WebContent/resources/jsp/template_download.jsp=UTF-8
+encoding//WebContent/sessionOperation/oas_message.jsp=ISO-8859-1
+encoding//WebContent/sessionOperation/print_ticket.jsp=UTF-8
 encoding//WebContent/sessionOperation/reports.jsp=UTF-8
+encoding//WebContent/sessionOperation/schedule_session.jsp=ISO-8859-1
+encoding//WebContent/sessionOperation/select_test.jsp=ISO-8859-1
+encoding//WebContent/sessionOperation/test_details.jsp=ISO-8859-1
 encoding//WebContent/softwareOperation/installSoftware.jsp=UTF-8
 encoding//WebContent/testContentOperation/downloadTest.jsp=UTF-8
+encoding//WebContent/testTicketOperation/index.jsp=UTF-8
