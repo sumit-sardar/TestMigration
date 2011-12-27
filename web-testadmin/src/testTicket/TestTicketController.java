@@ -192,6 +192,7 @@ public class TestTicketController extends PageFlowController
             getResponse().setContentType("application/pdf");
             getResponse().setHeader("Content-Disposition", filename); // Changed For CR ISTEP2011CR007 (Multiple Test Ticket)
             getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+            getResponse().setHeader("Pragma", "public");
             util.generateReport(new Object[]{
                                 rosterList, 
                                 testAdmin,
@@ -333,6 +334,7 @@ public class TestTicketController extends PageFlowController
             getResponse().setContentType("application/pdf");
             getResponse().setHeader("Content-Disposition","attachment; filename=TestTicketSummary.pdf");
             getResponse().setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+            getResponse().setHeader("Pragma", "public");
             
             util.generateReport(new Object[]{
                                 rosterList, 
