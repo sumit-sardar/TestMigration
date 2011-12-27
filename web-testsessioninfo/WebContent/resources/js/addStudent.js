@@ -554,8 +554,8 @@ function populateSelectStudentGrid() {
 					 			node = trs.eq(count);
 					 			if(node.attr("id") == allRowsInGridHere[ii]){
 					 			  node.addClass('ui-state-disabled');
-					 			  //node.css("disabled","disabled");
-					 			  node[0].setAttribute("disabled","disabled");//disabling this way works in IE also
+					 			  node.addClass('removeOpacity');
+					 			  //node[0].setAttribute("disabled","disabled");//disabling this way works in IE also
 					 			  //node[0].setAttribute("title", node.attr("id"));//tooltip for ses
 					 			   if(node[0].children.length>0 && node[0].children[0].children.length>0 && node[0].children[0].children[0].getAttribute("type")== "checkbox"){
 					 			   	 node[0].children[0].children[0].setAttribute("disabled","disabled");

@@ -1361,3 +1361,9 @@ table.p table.pager .textField {
     text-align: left;
     padding: 3px;
 }
+
+.removeOpacity {   
+    opacity: 1 !important; 
+    filter: Alpha(opacity=100) !important;   
+} 
+
