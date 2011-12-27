@@ -140,7 +140,16 @@ function createSingleNodeSelectedTree(jsondata) {
 				"plugins" : [ "themes", "json_data", "ui"]  
 				
 	    });
-	    
+	    $("#orgNodeHierarchy").bind("loaded.jstree", 
+		 	function (event, data) {
+				for(var i = 0; i < rootNode.length; i++) {
+					var orgcatlevel = rootNode[i].attr.cid;
+					if(orgcatlevel == leafNodeCategoryId) {
+						$("#orgNodeHierarchy ul li").eq(i).find('.jstree-icon').hide();
+		    		}
+				}
+			}
+		);
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	//SelectedOrgNode = $(this).parent();
 	    	//SelectedOrgNodes = SelectedOrgNode.parentsUntil(".jstree","li");
@@ -292,11 +301,15 @@ function createMultiNodeSelectedTree(jsondata) {
 	 			"plugins" : [ "themes", "json_data", "ui", "checkbox"]
 	   });	   
 	   	$("#innerID").bind("loaded.jstree", 
-		 	function (event, data) {				
-				var orgcategorylevel = $(this).attr("cid");
-    			if(orgcategorylevel != leafNodeCategoryId) {
-	    		$(this).find('li').find('.jstree-checkbox:first').hide();	
-	    		  }			
+		 	function (event, data) {
+				for(var i = 0; i < rootNode.length; i++) {
+					var orgcatlevel = rootNode[i].attr.cid;
+					if(orgcatlevel != leafNodeCategoryId) {
+						$("#innerID ul li").eq(i).find('a').find('.jstree-checkbox:first').hide();
+		    		} else {
+		    			$("#innerID ul li").eq(i).find('.jstree-icon').hide();
+		    		}
+				}
 			}
 		);
 			registerDelegate("innerID");
