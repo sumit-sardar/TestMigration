@@ -28,9 +28,7 @@ public class TMSConflictResolver implements ConflictResolver {
             switch (entryOperation.getOperation())
             {
                 case Delete:
-                    merged = (ReplicationObject) localEntry.getValue();
-                    merged.setReplicate(false);
-                    resolution.useMergedValue(merged);
+                    resolution.useLocalValue();
                     break;
                 case Insert:
                 	merged = (ReplicationObject) entryOperation.getPublishableEntry().getValue();

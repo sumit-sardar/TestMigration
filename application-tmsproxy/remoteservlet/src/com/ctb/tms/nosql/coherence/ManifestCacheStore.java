@@ -77,16 +77,16 @@ public class ManifestCacheStore implements OASCacheStore {
     	}
     }
     
-    public void store(BinaryEntry entry) {
+    /*public void store(BinaryEntry entry) {
     	Connection conn = null;
     	String key = null;
     	try {
     		key = (String) entry.getKey();
     	    logger.debug("Storing manifest to DB for roster " + key);
     		ManifestWrapper wrapper = (ManifestWrapper) entry.getValue();
-    		OASRDBSink sink = RDBStorageFactory.getOASSink();
-		    conn = sink.getOASConnection();
 		    if(wrapper.isReplicate().booleanValue()) {
+		    	OASRDBSink sink = RDBStorageFactory.getOASSink();
+			    conn = sink.getOASConnection();
 		    	sink.putManifest(conn, key, wrapper.getManifests());
 		    }
     	} catch (Exception e) {
@@ -99,7 +99,7 @@ public class ManifestCacheStore implements OASCacheStore {
     			// do nothing
     		}
     	}
-    }
+    }*/
 
     public void erase(Object oKey) {
     	// do nothing, manifest data is write-only

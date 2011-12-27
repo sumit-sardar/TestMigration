@@ -7,6 +7,6 @@ public interface OASCacheStore extends CacheStore {
 	
 	public void storeAll(java.util.Set<BinaryEntry> setBinEntries);
 	
-	public void store(BinaryEntry entry);
+	//public void store(BinaryEntry entry);
 
 }

@@ -58,16 +58,16 @@ public class ResponseCacheStore implements OASCacheStore {
     	}
     }
     
-    public void store(BinaryEntry entry) {
+    /*public void store(BinaryEntry entry) {
     	Connection conn = null;
     	try {
     		//String testRosterId = (String) oKey;
     		//testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
     		ItemResponseData tsd = (ItemResponseData) entry.getValue();
-    		OASRDBSink sink = RDBStorageFactory.getOASSink();
-		    conn = sink.getOASConnection();
 		    //tsd.setTestRosterId(testRosterId);
 		    if(tsd.isReplicate().booleanValue()) {
+		    	OASRDBSink sink = RDBStorageFactory.getOASSink();
+			    conn = sink.getOASConnection();
 		    	sink.putItemResponse(conn, tsd);
 		    }
     	} catch (Exception e) {
@@ -79,7 +79,7 @@ public class ResponseCacheStore implements OASCacheStore {
     			// do nothing
     		}
     	}
-    }
+    }*/
 
     public void erase(Object oKey) {
     	// do nothing, response data is write-only
