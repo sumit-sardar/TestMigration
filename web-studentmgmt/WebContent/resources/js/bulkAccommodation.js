@@ -86,6 +86,17 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 				
 	    });
 	    
+	    $("#studentBulkOrgNode").bind("loaded.jstree", 
+		 	function (event, data) {
+				for(var i = 0; i < rootNode.length; i++) {
+					var orgcatlevel = rootNode[i].attr.cid;
+					if(orgcatlevel == leafNodeCategoryId) {
+						$("#studentBulkOrgNode ul li").eq(i).find('.jstree-icon').hide();
+		    		}
+				}
+			}
+		);
+	    
 	    $("#studentBulkOrgNode").delegate("a","click", function(e) {
 	    	submittedSuccesfully = "";
 	    	clearFilterDropDown();
