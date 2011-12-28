@@ -185,9 +185,10 @@
 											</tr>
 												<tr>
 													<td >
-														<div  id="innerID" 
-																style="overflow:auto; height: 235px;  width: 350px; font-family: Arial, Verdana, Sans Serif; font-size: 13px; font-style: normal; font-weight: normal; position: absolute;">
+													<div  id="innertreebgdiv" class="innertreeCtrl">
+														<div id="innerID" style="width:auto;height:auto;display:table">
 														</div>
+													</div>
 													
 													</td>
 												</tr>

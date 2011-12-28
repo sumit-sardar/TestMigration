@@ -331,7 +331,7 @@ input:focus {
     border-width: 1px; 
 	padding: 0px;    
 }
-
+/*
 #orgNodeHierarchy ul {
 	float: left;
 	clear: both;
@@ -348,8 +348,12 @@ input:focus {
 
 #innerID li {
 	clear: both;
-}
+}	
+*/
 
+#treebackgrounddiv {
+	float:left;
+}
 
 #studentBulkOrgNode ul {
 	float: left;
@@ -369,7 +373,7 @@ input:focus {
 }
 
 .treeCtrl {
-	visibility: hidden;
+	/*visibility: hidden;*/
 	border: 1px solid #A6C9E2;
 	overflow:auto; 
 	height: 485px;  
@@ -378,6 +382,17 @@ input:focus {
 	font-size: 13px;  
 	font-style: normal;  
 	font-weight: normal; 	
+}
+
+.innertreeCtrl {
+	overflow:auto; 
+	height: 235px;  
+	width: 350px; 
+	font-family: Arial, Verdana, Sans Serif; 
+	font-size: 13px; 
+	font-style: normal; 
+	font-weight: normal; 
+	position: absolute;
 }
 
 .treeCtrlHeader {
