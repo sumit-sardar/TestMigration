@@ -177,7 +177,7 @@
 						hours0 = parseInt(ui.values[0] / 60 % 24,10);
 						minutes1 = parseInt(ui.values[1] % 60,10);
 						hours1 = parseInt(ui.values[1] / 60 % 24,10);
-						if(ui.values[0] - ui.values[1] < 60 && ui.values[0] - ui.values[1] > -60) {
+						if(ui.values[0] - ui.values[1] < 15 && ui.values[0] - ui.values[1] > - 15) {
 							return false;
 						}
 						startTime = getTime(hours0, minutes0);
