@@ -600,14 +600,14 @@ function createSingleNodeSelectedTree(jsondata) {
 						$("#randomDis").val("");	
 						//$("#randomDistDiv").hide();
 					}
-					document.getElementById("startDate").value = sessionList[i].startDate;
-					document.getElementById("endDate").value = sessionList[i].endDate;
 					currDate = sessionList[i].startDate;
 					nextDate = sessionList[i].endDate;
 					$( "#startDate" ).datepicker( "option" , "minDate" , currDate ) ;
 					$( "#endDate" ).datepicker( "option" , "minDate" , currDate ) ;
 					$( "#endDate" ).datepicker( "refresh" );
 					$( "#startDate" ).datepicker( "refresh" );
+					document.getElementById("startDate").value = sessionList[i].startDate;
+					document.getElementById("endDate").value = sessionList[i].endDate;
 					//$("#endDate").val(nextDate);
 					break;					
 				}
