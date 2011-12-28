@@ -37,7 +37,9 @@ public class Manifest implements Serializable {
 	}
 
 	public void setTutorialTaken(String tutorialTaken) {
-		this.tutorialTaken = tutorialTaken;
+		if(!"TRUE".equals(this.tutorialTaken)) {
+			this.tutorialTaken = tutorialTaken;
+		}
 	}
 
 	public String getTestRosterId() {
@@ -61,7 +63,9 @@ public class Manifest implements Serializable {
 	}
 	
 	public void setRandomDistractorSeed(int randomDistractorSeed) {
-		this.randomDistractorSeed = randomDistractorSeed;
+		if(this.randomDistractorSeed == 0) {
+			this.randomDistractorSeed = randomDistractorSeed;
+		}
 	}
     
     public String getStudentName() {

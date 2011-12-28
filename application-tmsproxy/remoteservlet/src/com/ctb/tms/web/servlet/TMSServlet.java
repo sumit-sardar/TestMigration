@@ -346,7 +346,13 @@ public class TMSServlet extends HttpServlet {
 			    	
 			    	int rosterCid = manifest.getRosterCorrelationId();
 			    	int thisCid = tsd.getCid().intValue();
+			    	
 			    	logger.debug("Cached CID: " + rosterCid + ", this message CID: " + thisCid);
+			    	if(rosterCid < 1) {
+			    		manifest.setRosterCorrelationId(thisCid);
+			    		rosterCid = thisCid;
+			    	}
+			    	
 			    	if(rosterCid != thisCid) {
 			    		responseDocument = AdssvcResponseDocument.Factory.newInstance(xmlOptions);
 			            saveResponse = responseDocument.addNewAdssvcResponse().addNewSaveTestingSessionData();
@@ -654,16 +660,7 @@ public class TMSServlet extends HttpServlet {
 			return response.xmlText();
 		}
 		LoginResponse loginResponse = response.getTmssvcResponse().getLoginResponse();
-       	Sco[] scoa = new Sco[0];
-       	if (loginResponse.getManifest() != null) {
-       		scoa = loginResponse.getManifest().getScoArray();
-       	}
-       	logger.debug("Initial manifest size: " + scoa.length);
-       	/*LinkedHashMap scomap = new LinkedHashMap(scoa.length);
-       	for (int h=0;h<scoa.length;h++) {
-       		scomap.put(scoa[h].getId(), scoa[h]);
-       		logger.debug("Added Sco " + scoa[h].getId() + " to scomap.");
-       	}*/
+
 		BigInteger restart = loginResponse.getRestartNumber();
 		if(restart == null) restart = BigInteger.valueOf(0);
 		int restartCount = restart.intValue();
@@ -676,32 +673,34 @@ public class TMSServlet extends HttpServlet {
 		manifest.setRosterCorrelationId(thisCid);
 
 		ManifestData[] manifesta = manifest.getManifest();
-		ArrayList newmanifest = new ArrayList();
+		//ArrayList newmanifest = new ArrayList();
         for(int i=0; i<manifesta.length ;i++) {
             if (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
-            	//scomap.remove(String.valueOf(manifesta[i].getId()));
-            	//logger.debug("found completed sco: " + String.valueOf(manifesta[i].getId()));
+            	logger.info("found completed sco: " + String.valueOf(manifesta[i].getId()));
+            	Sco[] scoa = loginResponse.getManifest().getScoArray();
             	int g;
+            	boolean foundSco = false;
             	for(g=0;g<scoa.length;g++) {
             		try {
 	            		//logger.debug("rd id: " + scoa[g].getId() + ", manifest id: " + String.valueOf(manifesta[i].getId()));
 	            		if(scoa[g].getId().equals(String.valueOf(manifesta[i].getId()))) {
+	            			foundSco = true;
 	            			break;
 	            		}
             		} catch (XmlValueDisconnectedException xe) {
             			break;
             		}
             	}
-            	if(g<scoa.length) {
+            	if(foundSco) {
 	            	//logger.debug("removing Sco " + g + " from manifest");
 	            	loginResponse.getManifest().removeSco(g);
-	            	logger.debug("removed Sco " + manifesta[i].getId() + " from scomap.");
+	            	logger.info("removed Sco " + manifesta[i].getId() + " from login response manifest.");
             	}
-            } else {
-            	newmanifest.add(manifesta[i]);
-            }
+            } //else {
+            	//newmanifest.add(manifesta[i]);
+            //}
         }
-        if(newmanifest.size() < 1) {
+        /*if(newmanifest.size() < 1) {
 			response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
             loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_COMPLETED_STATUS);
@@ -709,7 +708,7 @@ public class TMSServlet extends HttpServlet {
 		} else {
 			manifest.setManifest((ManifestData[])newmanifest.toArray(new ManifestData[0]));
 		}
-        manifesta = manifest.getManifest();
+        manifesta = manifest.getManifest(); */
         
         boolean gotRestart = false;
         if(restartCount > 0) {
@@ -750,12 +749,19 @@ public class TMSServlet extends HttpServlet {
 	            	manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.IN_PROGRESS_STATUS) ||
 	            	manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.STUDENT_PAUSE_STATUS))) {        	
 	            	
+	            	boolean foundResponses = false;
 	            	if(netirt != null && netirt.size() > 0) {
 	            		ItemResponseData[] finalResponses = RosterData.generateItemResponseData(testRosterId, manifesta[i], netirt.toArray(new ItemResponseData[0]));
-		            	RosterData.generateRestartData(loginResponse, manifesta[i], finalResponses, restartData);
-		            	logger.debug("\n***** TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + finalResponses.length + " responses");
+		            	if(finalResponses != null && finalResponses.length > 0) {
+		            		foundResponses = true;
+
+		            		RosterData.generateRestartData(loginResponse, manifesta[i], finalResponses, restartData);
+		            		logger.debug("\n***** TMSServlet: login: generated restart data for roster " + testRosterId + ", found " + finalResponses.length + " responses");
+		            	}
+		            }
+	            	if(foundResponses) {
+	            		gotRestart = true;
 	            	}
-	            	gotRestart = true;
 	            } 
 	        }
         }
