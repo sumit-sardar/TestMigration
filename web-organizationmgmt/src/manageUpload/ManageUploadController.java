@@ -244,7 +244,8 @@ public class ManageUploadController extends PageFlowController
 
         prepareContentHeader(resp, bodypart);
 
-        data = getTemplate(fileName);
+       // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+        data = getTemplate(fileName , this.islaslinkCustomer);
             
         try
         {
@@ -890,7 +891,8 @@ public class ManageUploadController extends PageFlowController
      * @param fileName
      * @returns String
     */
-    private byte [] getTemplate(String fileName) {
+    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+    private byte [] getTemplate(String fileName, boolean islaslinkCustomer) {
         
         String fileContent = "";
         byte[] data = null;
@@ -901,7 +903,8 @@ public class ManageUploadController extends PageFlowController
         
                 UserFile userFile = uploadDownloadManagement.
                                     getUserFileTemplate(this.userName);
-                data = UploadDownloadFormUtils.createTemplateFile(userFile, this.userName, userManagement);      
+                // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                data = UploadDownloadFormUtils.createTemplateFile(userFile, this.userName, userManagement, islaslinkCustomer);      
                 //fileContent = UploadDownloadFormUtils.createTemplate(userFile);                                               
         
             } else {
@@ -909,8 +912,9 @@ public class ManageUploadController extends PageFlowController
                 StudentFile studentFile = uploadDownloadManagement.
                                     getStudentFileTemplate(this.userName);
                                     
+                //For MQC 67720: MDR columns needs to be removed for nonLaslinks
                 data = UploadDownloadFormUtils.createStudentTemplateFile(studentFile,
-                        this.userName, userManagement);                    
+                        this.userName, userManagement, islaslinkCustomer);                    
                 //fileContent = UploadDownloadFormUtils.
                                     //createStudentTemplate(studentFile);
         

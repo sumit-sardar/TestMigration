@@ -169,8 +169,9 @@ public class ManageDownloadController extends PageFlowController
                 }
                 
                 //fileContent = UploadDownloadFormUtils.downLoadUserData(userFile);
+                // For MQC 67720: MDR columns needs to be removed for nonLaslinks
                 data = UploadDownloadFormUtils.downLoadUserDataFile
-                        (userFile, this.userName, userManagement);
+                        (userFile, this.userName, userManagement, this.islaslinkCustomer);
                 
             } else {
                 
@@ -185,9 +186,9 @@ public class ManageDownloadController extends PageFlowController
                     
                 }
                 //fileContent = UploadDownloadFormUtils.downLoadStudentData(studentFile);
-                
+                // For MQC 67720: MDR columns needs to be removed for nonLaslinks
                 data = UploadDownloadFormUtils.downLoadStudentDataFile
-                        (studentFile, this.userName, userManagement);
+                        (studentFile, this.userName, userManagement, this.islaslinkCustomer);
                 
             }
             

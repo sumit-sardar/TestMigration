@@ -187,6 +187,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             Node []userTopOrgNode =  orgNode.getTopNodesForUser(userName);
             Customer customer = users.getCustomer(userName);
             //Template Header Creation for Organization and User
+            // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            boolean isLaslinksCustomer = this.uploadDataFile.checkCustomerConfigurationEntries(
+                    customer.getCustomerId(),"LASLINK_Customer");
             OrgNodeCategory []OrgNodeCategory = 
                     orgNodeCate.getOrgNodeCategories(customer.getCustomerId());
 
@@ -219,7 +222,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             userFileRow = new UserFileRow[totalSize];
             
             // Insert Header Part
-            createTemplateHeader(customer,OrgNodeCategory, userFileRow, true);
+            // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            createTemplateHeader(customer,OrgNodeCategory, userFileRow, true, isLaslinksCustomer);
             //Insert Template Body
             createTemplateBody(hierarchyMap,userFileRow, true);
             
@@ -332,6 +336,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             OrgNodeCategory []OrgNodeCategory = 
                                 orgNodeCate.getOrgNodeCategories(
                                 customer.getCustomerId());
+            // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            boolean isLaslinksCustomer = this.uploadDataFile.checkCustomerConfigurationEntries(
+                    customer.getCustomerId(),"LASLINK_Customer");
             
             Node [] sortedOrgNodes = new Node[OrgNodeCategory.length];                     
             //retrive StudentNode details
@@ -364,8 +371,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             
             isStudentIDConfigurableCustomer(userName);
             // Insert Header Part
+            // For MQC 67720: MDR columns needs to be removed for nonLaslinks
             createTemplateHeader(customer,OrgNodeCategory, 
-                    studentFileRow, false);
+                    studentFileRow, false, isLaslinksCustomer);
                     
             //Insert Template Body
             createTemplateBody(hierarchyMap,studentFileRow, false);
@@ -471,6 +479,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             //Template Header Creation for Organization and User
             OrgNodeCategory []OrgNodeCategory = 
                     orgNodeCate.getOrgNodeCategories(customer.getCustomerId());
+            // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            boolean isLaslinksCustomer = this.uploadDataFile.checkCustomerConfigurationEntries(
+                    customer.getCustomerId(),"LASLINK_Customer");
             UserFileRow [] userFileRow = uploadDataFile.getUserData(userName);
             //retrive userNode details
             Node [] detailNode = uploadDataFile.getUserDataTemplate(userName);
@@ -487,7 +498,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             int totalSize = userFileRow.length + 1;
             UserFileRow [] downLoadUserFileRow = new UserFileRow[totalSize];
              // Insert downLoad Header Part
-            createTemplateHeader(customer,OrgNodeCategory, downLoadUserFileRow, true);
+            // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            createTemplateHeader(customer,OrgNodeCategory, downLoadUserFileRow, true, isLaslinksCustomer);
             //Insert downLoad Body Part
             retrivePathFromCustomerToLoginUser (customer, topOrgNode, commonPathMap);
             for (int i = 0, j = 1; i < userFileRow.length; i++, j++) {
@@ -653,6 +665,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             HashMap commonPathMap = new HashMap ();
             Node []userTopOrgNode =  orgNode.getTopNodesForUser(userName);
             Customer customer = users.getCustomer(userName);
+            // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            boolean isLaslinksCustomer = this.uploadDataFile.checkCustomerConfigurationEntries(
+                    customer.getCustomerId(),"LASLINK_Customer");
             //System.out.println("getStudentFile" + userName + customer+ customer.getCustomerId());
             //Template Header Creation for Organization and User
             OrgNodeCategory []OrgNodeCategory = orgNodeCate.getOrgNodeCategories(
@@ -679,8 +694,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             isStudentIDConfigurableCustomer(userName);
                         
              // Insert downLoad Header Part
+             // For MQC 67720: MDR columns needs to be removed for nonLaslinks
             createTemplateHeader(customer,OrgNodeCategory, 
-                    downloadStudentFileRow, false);
+                    downloadStudentFileRow, false, isLaslinksCustomer);
             
              //generate org hierarchy
             generateHiarchyFromLoginUserToLeafNode(detailNode, 
@@ -991,6 +1007,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
              // get user customer Id
             Customer customer = users.getCustomer(userName);
             Integer customerId = customer.getCustomerId();
+            // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            boolean isLaslinksCustomer = this.uploadDataFile.checkCustomerConfigurationEntries(
+                    customer.getCustomerId(),"LASLINK_Customer");
             
             if ( serverFilePath.indexOf(String.valueOf(
                     customerId.intValue())) <=  -1  ) {
@@ -1002,8 +1021,15 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             
             // get the start column number of userdata
             // For MQC 66840 : Upload/Download user/student with MDR
-            noOfUserColumn = (orgNodeCate.
-                    getOrgNodeCategories(customerId).length) * 3 + 1;  
+            // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            if(isLaslinksCustomer) {
+            	noOfUserColumn = (orgNodeCate.
+                        getOrgNodeCategories(customerId).length) * 3 + 1;  
+            } else {
+            	 noOfUserColumn = (orgNodeCate.
+                         getOrgNodeCategories(customerId).length) * 2 + 1;  
+            }
+            // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
                     
             fileInputStrean = new FileInputStream(new File(excelFile));            
             
@@ -1011,9 +1037,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                     orgNodeCate.getOrgNodeCategories(customer.getCustomerId());
             
             //Validating the excel sheet
+            // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
             String fileType = getUploadFileType(
                     fileInputStrean,noOfUserColumn,customerId,
-                    orgNodeCategory, customer, userName);            
+                    orgNodeCategory, customer, userName, isLaslinksCustomer);            
             
             if ( fileType == "") {
              
@@ -1178,7 +1205,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
              // get user customer Id
             Customer customer = users.getCustomer(userName);
             customerId = customer.getCustomerId();
-            
+            //For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            boolean isLaslinksCustomer = this.uploadDataFile.checkCustomerConfigurationEntries(
+                    customer.getCustomerId(),"LASLINK_Customer");
             // Get the user
             User user = users.getUserDetails(userName);
             
@@ -1218,8 +1247,15 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             
             // get the start column number of userdata
             // For MQC 66840 : Upload/Download user/student with MDR
-            noOfUserColumn = (orgNodeCate.
-                    getOrgNodeCategories(customerId).length) * 3 + 1; 
+            // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            if(isLaslinksCustomer){
+            	noOfUserColumn = (orgNodeCate.
+                        getOrgNodeCategories(customerId).length) * 3 + 1; 
+            } else {
+            	noOfUserColumn = (orgNodeCate.
+                        getOrgNodeCategories(customerId).length) * 2 + 1; 
+            }
+            // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
                     
 			inputStream = new FileInputStream(new File(excelFile));
             fileInputStrean = new FileInputStream(new File(excelFile));
@@ -1228,22 +1264,23 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
             
             OrgNodeCategory[] orgNodeCategory = 
                     orgNodeCate.getOrgNodeCategories(customer.getCustomerId());
-            
+            // For MQC 67720: MDR columns needs to be removed for nonLaslinks
             String fileType = getUploadFileType(
                     fileInputStrean,noOfUserColumn,customerId,
-                    orgNodeCategory, customer, userName);
+                    orgNodeCategory, customer, userName, isLaslinksCustomer);
             
             
                                                             
             UserFileRow []userFileRowHeader = new UserFileRow[1];
+            // For MQC 67720: MDR columns needs to be removed for nonLaslinks
             createTemplateHeader(customer,orgNodeCategory, 
-                    userFileRowHeader, true);
+                    userFileRowHeader, true, isLaslinksCustomer);
             
             StudentFileRow [] studentFileRowHeader = 
                     new StudentFileRow[1];                                                            
-                    
+            //For MQC 67720: MDR columns needs to be removed for nonLaslinks        
             createTemplateHeader(customer,orgNodeCategory, 
-                    studentFileRowHeader, false);
+                    studentFileRowHeader, false, isLaslinksCustomer);
             
             if ( fileType == "") {
              
@@ -1896,11 +1933,11 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
     * Create Template header
     * createTemplateHeader()
     */
-    
+    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
     private void createTemplateHeader (Customer customer,
                                        OrgNodeCategory []OrgNodeCategory, 
                                        Object []object, 
-                                       boolean isUserHeader) {
+                                       boolean isUserHeader, boolean isLaslinksCustomer) {
     	//System.out.println("customer" + customer + "Customer Name"  + customer.getCustomerName() + "Customer Id" + customer.getCustomerId() );
         
         int userHeaderPosition = 0;
@@ -1923,7 +1960,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                 currentHeader.setOrgNodeCategoryId(
                                 OrgNodeCategory[i].getOrgNodeCategoryId());
                 // For MQC 66840 : Upload/Download user/student with MDR
-                currentHeader.setMdrNumber(OrgNodeCategory[i].getCategoryName()+" MDR"); 
+                // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                if(isLaslinksCustomer){
+                	currentHeader.setMdrNumber(OrgNodeCategory[i].getCategoryName()+" MDR"); 
+                }
                 node[i] = currentHeader;
                 
             }
@@ -1969,7 +2009,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                 currentHeader.setOrgNodeCategoryId(
                         OrgNodeCategory[i].getOrgNodeCategoryId());
                 // For MQC 66840 : Upload/Download user/student with MDR
-                currentHeader.setMdrNumber(OrgNodeCategory[i].getCategoryName()+" MDR"); 
+                // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                if(isLaslinksCustomer){
+                	currentHeader.setMdrNumber(OrgNodeCategory[i].getCategoryName()+" MDR"); 
+                }
                 node[i] = currentHeader;
                 
             }
@@ -2583,12 +2626,12 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
     * and determine if the header are correct?
     * getUploadFileType()
    */
-   
+   // For MQC 67720: MDR columns needs to be removed for nonLaslinks
     private String getUploadFileType ( InputStream fileInputStream,
                                        int noOfUserColumn,
                                        Integer customerId,
                                        OrgNodeCategory[] orgNodeCategory,
-                                       Customer customer,String userName) throws CTBBusinessException {
+                                       Customer customer,String userName, boolean isLaslinksCustomer) throws CTBBusinessException {
     
        isStudentIDConfigurableCustomer(userName);
        String fileType = "";                 
@@ -2639,8 +2682,8 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                    
                     
                     if ( fileType.equals("Upload_User_Data") ) {
-                         
-                        createTemplateHeader(customer,orgNodeCategory, userFileRow, true);
+                        // For MQC 67720: MDR columns needs to be removed for nonLaslinks 
+                        createTemplateHeader(customer,orgNodeCategory, userFileRow, true, isLaslinksCustomer);
                             
                          for ( int i = 0 ; i < noOfUserColumn - 1 ; i++  ) {
                            
@@ -2661,7 +2704,10 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                             orgNodeList.add(orgNodes[i].getOrgNodeCategoryName());
                             orgNodeList.add(orgNodes[i].getOrgNodeCode());
                             // For MQC 66840 : Upload/Download user/student with MDR
-                            orgNodeList.add(orgNodes[i].getMdrNumber()); 
+                            // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                            if(isLaslinksCustomer){
+                            	 orgNodeList.add(orgNodes[i].getMdrNumber()); 
+                            }
                             
                          }
                          /* postion should be at the begining and should 
@@ -2700,9 +2746,9 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                         
                     } 
                     else if ( fileType.equals("Upload_Student_Data") ){    // end of user header validation   
-                         
+                         //For MQC 67720: MDR columns needs to be removed for nonLaslinks
                          createTemplateHeader(customer,orgNodeCategory, 
-                                studentFileRow, false); 
+                                studentFileRow, false, isLaslinksCustomer); 
                          
                          for ( int i = 0 ; i < noOfUserColumn - 1 ; i++  ) {
                            
@@ -2722,8 +2768,11 @@ public class UploadDownloadManagementImpl implements UploadDownloadManagement
                             
                             orgNodeList.add(orgNodes[i].getOrgNodeCategoryName());
                             orgNodeList.add(orgNodes[i].getOrgNodeCode());
-                            // For MQC 66840 : Upload/Download user/student with MDR 
-                            orgNodeList.add(orgNodes[i].getMdrNumber()); 
+                            // For MQC 66840 : Upload/Download user/student with MDR
+                            // For MQC 67720: MDR columns needs to be removed for nonLaslinks 
+                            if(isLaslinksCustomer){
+                            	orgNodeList.add(orgNodes[i].getMdrNumber()); 
+                            }
                             
                          }
                          /* postion should be at the begining and should 

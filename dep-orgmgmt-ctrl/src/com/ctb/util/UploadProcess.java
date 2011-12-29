@@ -119,6 +119,10 @@ public class UploadProcess extends BatchProcessor.Process
     private Node [] detailNodeM = null;
     
     private HashMap visibleUsers = null;
+ // For MQC 66840 : Upload/Download user/student with MDR
+ // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+    private boolean isLaslinksCustomer = false;
+    private int orgPosFact = 2;
     
     
     public UploadProcess (String serverFilePath, String username, 
@@ -178,8 +182,7 @@ public class UploadProcess extends BatchProcessor.Process
         HashMap userDataMap = new HashMap();
         HashMap blankRowMap = new HashMap();
         boolean isMatchUploadOrgIds = false;
-        // For MQC 66840 : Upload/Download user/student with MDR
-        boolean isMatchMdrNo = false;
+        
         boolean isBlankRow = true;
         User user = null;
         
@@ -222,9 +225,8 @@ public class UploadProcess extends BatchProcessor.Process
             isMatchUploadOrgIds = 
                     this.uploadDataFile.checkCustomerConfigurationEntries(
                     customer.getCustomerId(),CTBConstants.CUSTOMER_CONF_NAME);
-             // For MQC 66840 : Upload/Download user/student with MDR
-            isMatchMdrNo = this.uploadDataFile.checkCustomerConfigurationEntries(
-                    customer.getCustomerId(),"LASLINK_Customer");
+             
+           
             
             
             // Read UploaderFile through POI     
@@ -313,39 +315,45 @@ public class UploadProcess extends BatchProcessor.Process
                                Node []node = this.userFileRowHeader[0].
                                                     getOrganizationNodes();
                                // Start for MQC 66840 : Upload/Download user/student with MDR
-                               int orgHeaderLastPosition = node.length * 3 ; 
-
-                               HSSFCell loginUserOrgCell = row.getCell((short)loginUserPosition);
-                               String loginUserOrgName = getCellValue(loginUserOrgCell);
-                               Node loginUserNode = getLoginUserOrgDetail(this.userTopOrgNode, loginUserOrgName);
-                               Integer parentOId = loginUserNode.getOrgNodeId();
+                               // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                               int orgHeaderLastPosition = node.length * orgPosFact ; 
                                Integer [] parentOrgId = new Integer[1];
-                               parentOrgId[0] = parentOId;
+                               if(isLaslinksCustomer) {
+                                   HSSFCell loginUserOrgCell = row.getCell((short)loginUserPosition);
+                                   String loginUserOrgName = getCellValue(loginUserOrgCell);
+                                   Node loginUserNode = getLoginUserOrgDetail(this.userTopOrgNode, loginUserOrgName);
+                                   Integer parentOId = loginUserNode.getOrgNodeId();
+                                   parentOrgId[0] = parentOId;
+                               }
+                               // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
  								// End for MQC 66840 : Upload/Download user/student with MDR
-                               
-                               for ( int j = loginUserPosition + 3; 
-                                            j < orgHeaderLastPosition; j = j + 3 ) {
+                              // For MQC 67720: MDR columns needs to be removed for nonLaslinks 
+                               for ( int j = loginUserPosition + orgPosFact; 
+                                            j < orgHeaderLastPosition; j = j + orgPosFact ) {
                                     
                                     HSSFCell cellHeaderName = rowHeader.getCell(j);
                                     HSSFCell cellHeaderId = rowHeader.getCell(j + 1);
                                     HSSFCell cellName = row.getCell(j);
                                     HSSFCell cellId = row.getCell(j + 1);
-                                    // Start for MQC 66840 : Upload/Download user/student with MDR
-                                    HSSFCell cellHeaderMdr = rowHeader.getCell(j + 2);
-                                    HSSFCell cellMdr = row.getCell(j+2);
-                                    // End for MQC 66840 : Upload/Download user/student with MDR
                                     strCellName = getCellValue(cellName);
                                     strCellId = getCellValue(cellId);
                                     strCellHeaderName = getCellValue(cellHeaderName);
                                     strCellHeaderId = getCellValue(cellHeaderId);
                                      // Start for MQC 66840 : Upload/Download user/student with MDR
-                                    strCellMdr = getCellValue(cellMdr);
-                                    strCellHeaderMdr = getCellValue(cellHeaderMdr);
+                                     // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                                    Integer categoryId = null;
+                                    if(isLaslinksCustomer){
+                                    	HSSFCell cellHeaderMdr = rowHeader.getCell(j + 2);
+                                        HSSFCell cellMdr = row.getCell(j+2);
+                                        strCellMdr = getCellValue(cellMdr);
+                                        strCellHeaderMdr = getCellValue(cellHeaderMdr);
 
-                                    HSSFCell OrgCellHeaderName = rowHeader.getCell((short)j);
-                                    String headerName = getCellValue(OrgCellHeaderName);
-                                    Node []nodeCategory = this.userFileRowHeader[0].getOrganizationNodes();
-                                    Integer categoryId = getCategoryId (headerName, nodeCategory);
+                                        HSSFCell OrgCellHeaderName = rowHeader.getCell((short)j);
+                                        String headerName = getCellValue(OrgCellHeaderName);
+                                        Node []nodeCategory = this.userFileRowHeader[0].getOrganizationNodes();
+                                        categoryId = getCategoryId (headerName, nodeCategory);
+                                    }
+                                     // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
 									 // End for MQC 66840 : Upload/Download user/student with MDR
                                     
                                     // OrgName required check
@@ -361,7 +369,7 @@ public class UploadProcess extends BatchProcessor.Process
                                         break;
                                         
                                     
-                                    } else if (strCellName.equals("") && hasOrganization(j - 3, row)  //For MQC 66840 : Upload/Download user/student with MDR
+                                    } else if (strCellName.equals("") && hasOrganization(j - orgPosFact, row)   // For MQC 67720: MDR columns needs to be removed for nonLaslinks
                                                     && !strCellId.equals("")) {
                                         
                                         // write excel  required  with the help of cellHeaderName
@@ -371,8 +379,9 @@ public class UploadProcess extends BatchProcessor.Process
                                         
                                                                               
                                         break;
-                                       // For MQC 66840 : Upload/Download user/student with MDR  
-                                    } else if(isMatchMdrNo && !isValidMDR (i, isMatchUploadOrgIds, strCellId, parentOrgId, categoryId, requiredMap, invalidCharMap , logicalErrorMap, newMDRList, strCellMdr,strCellName, strCellHeaderMdr )) {
+                                       // For MQC 66840 : Upload/Download user/student with MDR 
+                                       // For MQC 67720: MDR columns needs to be removed for nonLaslinks 
+                                    } else if(isLaslinksCustomer && !isValidMDR (i, isMatchUploadOrgIds, strCellId, parentOrgId, categoryId, requiredMap, invalidCharMap , logicalErrorMap, newMDRList, strCellMdr,strCellName, strCellHeaderMdr )) {
 
                                     	break;
                                     } else { 
@@ -453,11 +462,12 @@ public class UploadProcess extends BatchProcessor.Process
            }
            //create user and organization
             // For MQC 66840 : Upload/Download user/student with MDR
+             //For MQC 67720: MDR columns needs to be removed for nonLaslinks
            createOrganizationAndUser (requiredMap, maxLengthMap, 
                                             invalidCharMap, logicalErrorMap, 
                                             hierarchyErrorMap, userDataMap, 
                                             blankRowMap, isMatchUploadOrgIds, user,
-                                            this.userTopOrgNode, isMatchMdrNo);
+                                            this.userTopOrgNode, isLaslinksCustomer);
           
                                             
                                                     
@@ -481,7 +491,10 @@ public class UploadProcess extends BatchProcessor.Process
 			Integer[] parentOrgId, Integer categoryId, HashMap requiredMap,
 			HashMap invalidCharMap, HashMap logicalErrorMap, List<String> newMDRList, String strCellMdr, String orgName, String strCellHeaderMdr) {
     	
- 	
+ 	 //For MQC 67720: MDR columns needs to be removed for nonLaslinks
+    	if(orgName==null || orgName.length()==0 ){
+    		return true; // if org name is blank then noneed to validate the mdr no
+    	}
     	if(!isOrganizationExists(isMatchUploadOrgIds, orgCode,
     			 parentOrgId,  categoryId, newMDRList,  strCellMdr,  orgName)) {
     		
@@ -676,6 +689,18 @@ public class UploadProcess extends BatchProcessor.Process
             //Changed 04/12/2008
            this.detailNodeM = this.uploadDataFile.
                                         getUserDataTemplate(this.username); 
+           
+         // For MQC 66840 : Upload/Download user/student with MDR
+         // START: For MQC 67720: MDR columns needs to be removed for nonLaslinks
+         com.ctb.bean.testAdmin.Customer customer = users.getCustomer(this.username);
+         isLaslinksCustomer = this.uploadDataFile.checkCustomerConfigurationEntries(
+                   customer.getCustomerId(),"LASLINK_Customer");
+         if(isLaslinksCustomer){
+	        orgPosFact = 3;
+	     } else {
+	        orgPosFact = 2;
+	     }
+	      // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -731,7 +756,8 @@ public class UploadProcess extends BatchProcessor.Process
             //find the statr position of the user details header
             Node []nodeCategory = this.userFileRowHeader[0].getOrganizationNodes();
             // For MQC 66840 : Upload/Download user/student with MDR
-            int orgHeaderLastPosition = nodeCategory.length * 3;    
+            //For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            int orgHeaderLastPosition = nodeCategory.length * orgPosFact;    
         //    Node []loginUserNodes =  orgNode.getTopNodesForUser(this.username);
             //travers the entire sheet to update the db for user insertion 
             for ( int i = 1; i < totalRows; i++ ) {
@@ -794,7 +820,8 @@ public class UploadProcess extends BatchProcessor.Process
                     orgNodeId = loginUserNode.getOrgNodeId();
                     int lastOrganization = 0; 
                     // For MQC 66840 : Upload/Download user/student with MDR
-                    for (int ii = loginUserOrgPosition + 3; ii < orgHeaderLastPosition; ii = ii + 3 ) { 
+                    // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                    for (int ii = loginUserOrgPosition + orgPosFact; ii < orgHeaderLastPosition; ii = ii + orgPosFact ) { 
                         
                             HSSFCell OrgCellName = bodyRow.getCell((short)ii);
                             HSSFCell OrgCellId = bodyRow.getCell((short)ii + 1);
@@ -806,8 +833,13 @@ public class UploadProcess extends BatchProcessor.Process
                             Integer categoryId = getCategoryId (headerName, nodeCategory);
                             
                             // Start For MQC 66840 : Upload/Download user/student with MDR
-                            HSSFCell OrgCellMdr = bodyRow.getCell((short)ii + 2);
-                            String orgMdr = getCellValue(OrgCellMdr);
+                            //For MQC 67720: MDR columns needs to be removed for nonLaslinks
+                            String orgMdr = null;
+                            if(isMatchMdrNo ) {
+                                HSSFCell OrgCellMdr = bodyRow.getCell((short)ii + 2);
+                                orgMdr = getCellValue(OrgCellMdr);
+                            }
+                            // END: For MQC 67720: MDR columns needs to be removed for nonLaslinks
 							 // End For MQC 66840 : Upload/Download user/student with MDR
                            if ( !hasOrganization(ii,bodyRow) && orgName.equals("")
                                     && orgCode.equals("")) {
@@ -1933,7 +1965,8 @@ public class UploadProcess extends BatchProcessor.Process
          // retrive header category Array
         Node []node = this.userFileRowHeader[0].getOrganizationNodes();
          // For MQC 66840 : Upload/Download user/student with MDR
-        int userHeaderStartPosition = node.length * 3; 
+         // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+        int userHeaderStartPosition = node.length * orgPosFact; 
         
         for ( int i = userHeaderStartPosition; i < totalCells; i++ ) {
             
@@ -1966,7 +1999,8 @@ public class UploadProcess extends BatchProcessor.Process
         String lastName= ""; 
         Node []node = this.userFileRowHeader[0].getOrganizationNodes();
          // For MQC 66840 : Upload/Download user/student with MDR
-        int userHeaderStartPosition = node.length * 3; 
+         // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+        int userHeaderStartPosition = node.length * orgPosFact; 
         boolean isloginUser = false;
         String strCellHeader = "";
         String strCellValue = "";
@@ -2051,10 +2085,12 @@ public class UploadProcess extends BatchProcessor.Process
     
         Node []node = this.userFileRowHeader[0].getOrganizationNodes();
          // For MQC 66840 : Upload/Download user/student with MDR
-        int OrgHeaderLastPosition = node.length * 3; 
+         // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+        int OrgHeaderLastPosition = node.length * orgPosFact; 
         String leafOrgName = "";
          // For MQC 66840 : Upload/Download user/student with MDR
-        for ( int j = currentPosition + 3 ; j < OrgHeaderLastPosition; j = j + 3 ) { 
+         // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+        for ( int j = currentPosition + orgPosFact ; j < OrgHeaderLastPosition; j = j + orgPosFact ) { 
                         
             HSSFCell cellName = row.getCell(j);
             HSSFCell cellId = row.getCell(j + 1);
@@ -2084,7 +2120,8 @@ public class UploadProcess extends BatchProcessor.Process
             String leafOrgName = "";
             //Node []loginUserNode =  orgNode.getTopNodesForUser(this.username);
              // For MQC 66840 : Upload/Download user/student with MDR
-            for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 3 ) { 
+             // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + orgPosFact ) { 
                     
                     HSSFCell cell = row.getCell(j);
                     
@@ -2137,8 +2174,9 @@ public class UploadProcess extends BatchProcessor.Process
             String strCellName = "";
             
             int loginUserPosition = -1;
-            // For MQC 66840 : Upload/Download user/student with MDR 
-            for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 3 ) { 
+            // For MQC 66840 : Upload/Download user/student with MDR
+             // For MQC 67720: MDR columns needs to be removed for nonLaslinks 
+            for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + orgPosFact ) { 
                 
                 HSSFCell cellName = row.getCell(j);
                 HSSFCell cellId = row.getCell(j + 1);
@@ -2241,7 +2279,8 @@ public class UploadProcess extends BatchProcessor.Process
                ArrayList errorHierarchyList = new ArrayList();
                String strCellNameHeader = "";
                 // For MQC 66840 : Upload/Download user/student with MDR
-               for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + 3 ) { 
+                 // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+               for ( int i = 0, j = 0; i < OrgHeaderLastPosition; i++, j = j + orgPosFact ) { 
                 
                     HSSFCell cellNameHeader = rowHeader.getCell(j);
                     HSSFCell cellIdHeader = rowHeader.getCell(j + 1);
@@ -2413,8 +2452,8 @@ public class UploadProcess extends BatchProcessor.Process
             
             Node []node = this.userFileRowHeader[0].getOrganizationNodes();
             ArrayList errorHierarchyList = new ArrayList();
-            currentPosition = currentPosition * 3;  // For MQC 66840 : Upload/Download user/student with MDR
-            for ( int j = currentPosition ; j < loginUserPosition + 3; j = j + 3 ) {  // For MQC 66840 : Upload/Download user/student with MDR
+            currentPosition = currentPosition * orgPosFact;   // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+            for ( int j = currentPosition ; j < loginUserPosition + orgPosFact; j = j + orgPosFact ) {   // For MQC 67720: MDR columns needs to be removed for nonLaslinks
                 
                 HSSFCell cellNameHeader = rowHeader.getCell(j);
                 HSSFCell cellIdHeader = rowHeader.getCell(j + 1);
@@ -2447,7 +2486,7 @@ public class UploadProcess extends BatchProcessor.Process
         
         // retrive header category Array
         Node []node = this.userFileRowHeader[0].getOrganizationNodes();
-        int userHeaderStartPosition = node.length * 3;  // For MQC 66840 : Upload/Download user/student with MDR
+        int userHeaderStartPosition = node.length * orgPosFact;  // For MQC 67720: MDR columns needs to be removed for nonLaslinks
         
         // checking for required field,invalid charecter,maxlength,logical error
         if ( isRequired (userHeaderStartPosition, row, 
@@ -2808,13 +2847,14 @@ public class UploadProcess extends BatchProcessor.Process
         
        Node []node = this.userFileRowHeader[0].getOrganizationNodes();
        Node [] loginUserNode = user.getOrganizationNodes();
-       int lastOrgPosition = node.length * 3;  // Start For MQC 66840 : Upload/Download user/student with MDR
+       // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+       int lastOrgPosition = node.length * orgPosFact;  // Start For MQC 66840 : Upload/Download user/student with MDR
        String orgCode = "";
        String orgName = "";
        String orgHeaderCode = "";
        String orgHeaderName = "";
-       
-       for (int i = 0; i < lastOrgPosition; i = i + 3) {  // Start For MQC 66840 : Upload/Download user/student with MDR
+        // For MQC 67720: MDR columns needs to be removed for nonLaslinks
+       for (int i = 0; i < lastOrgPosition; i = i + orgPosFact) {  // Start For MQC 66840 : Upload/Download user/student with MDR
         
             //Header
             HSSFCell orgCellHeaderName = rowHeader.getCell((short)i);
