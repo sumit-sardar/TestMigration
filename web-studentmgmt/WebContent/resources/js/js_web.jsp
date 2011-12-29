@@ -171,15 +171,22 @@ function openColorPreviewWindow()
         param = param + "1" + ",";
     else
         param = param + "1.5" + ",";
-
-	var firstName = document.getElementById("studentFirstName").value;
+    var firstName ="";
+    var lastName = "";
+	if(document.getElementById("studentFirstName") != null) {
+	firstName = document.getElementById("studentFirstName").value;
     firstName = encodeString(firstName);
+    } else {
+    	firstName = 'New';
+    }
     param = param + firstName + ",";
-        
+    if(document.getElementById("studentLastName") != null) {    
 	var lastName = document.getElementById("studentLastName").value;
     lastName = encodeString(lastName);
-    param = param + lastName + ",";
-
+	}else {
+		lastName = 'Student';
+	}
+	param = param + lastName + ",";
    	var location = "colorFontPreview.do" + param;
     
 	var windowName = "colorPreviewWindow"; 
