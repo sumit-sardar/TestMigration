@@ -1371,6 +1371,7 @@ function createSingleNodeSelectedTree(jsondata) {
 	
 	function populateTestListGrid(testSessionlist, testGroupLoad, showLevelOrGrade) {
 		isTestGroupLoad  = testGroupLoad;
+		selectedTestId = ""; // resetting old selected test id
  		UIBlock();
  		var levelOrGradeTitle = "None";
  		var istabe = false;
@@ -1432,6 +1433,10 @@ function createSingleNodeSelectedTree(jsondata) {
 			onSelectRow: function () {
 					previousValue = $("#testGroupList").val();
 					subtestGridLoaded = false;
+					if(selectedTestId == $("#testList").jqGrid('getGridParam', 'selrow')) {
+						$('#displayMessage').hide();
+						return;
+					}
 					selectedTestId = $("#testList").jqGrid('getGridParam', 'selrow');
 					$('#displayMessage').hide();
 					testJSONValue = getDataFromTestJson(selectedTestId, testSessionlist);
