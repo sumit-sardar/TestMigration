@@ -305,8 +305,8 @@ public class TestClientPageFlowController extends PageFlowController
 		//Start
         itemLML = item.getLml();
 
-        itemLML = itemLML.replaceAll("&amp;", "&");
-        itemLML = itemLML.replaceAll(" & ", " &amp; ");
+        //itemLML = itemLML.replaceAll("&amp;", "&");
+        //itemLML = itemLML.replaceAll(" & ", " &amp; ");
         item.setLml(itemLML);
         //End
 

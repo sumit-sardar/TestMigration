@@ -1,6 +1,15 @@
 
 <%@ page import="java.io.*"%>
 <%@ page import=" java.util.*"%>
+
+<%
+    String eliminatorResource = "eliminator.swf";
+    String url = request.getRequestURL().toString().trim();
+    int lastSlash = url.lastIndexOf("/");
+    url = url.substring(0,lastSlash).trim().replaceAll("https:","http:").replaceAll(":443",":80").replaceAll(":7002",":7001");
+    System.out.println(url);
+%>
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
@@ -56,13 +65,6 @@ function updateLDB(){
 //-->
 </script>
 </HEAD>
-<%
-    String eliminatorResource = "eliminator.swf";
-    String url = request.getRequestURL().toString().trim();
-    int lastSlash = url.lastIndexOf("/");
-    url = url.substring(0,lastSlash).trim().replaceAll("https:","http:").replaceAll(":443",":80");
-    System.out.println(url);
-%>
 
 <!--SA041005 start -->
 
