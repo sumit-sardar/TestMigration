@@ -422,22 +422,26 @@ function populateBulkStudentGrid() {
   		 if(demo1.indexOf('Please select')!= -1){
 			demo1 = "";
 		 } else {
-		 	var d1a = demo1.split(">>");
-		 	demo1 = $.trim(d1a[0])+"_"+$.trim(d1a[1]);
+		 	
+		 	var d1a = globalDemo1.split(">>");
+		 	demo1 = $.trim(d1a[0])+"_"+$.trim(globalSubDemo1);
+		 	//demo1 = $.trim(d1a[0])+"_"+$.trim(d1a[1]);
 		 }
 		 var demo2 = $('#selectedBox2').text();
   		 if(demo2.indexOf('Please select')!= -1){
 			demo2 = "";
 		 } else {
-		 	var d1a = demo2.split(">>");
-		 	demo2 = $.trim(d1a[0])+"_"+$.trim(d1a[1]);
+		 	var d1a = globalDemo2.split(">>");
+		 	demo2 = $.trim(d1a[0])+"_"+$.trim(globalSubDemo2);
+		 	//demo2 = $.trim(d1a[0])+"_"+$.trim(d1a[1]);
 		 }
 		 var demo3 = $('#selectedBox3').text();
   		 if(demo3.indexOf('Please select')!= -1){
 			demo3 = "";
 		 } else {
-		 	var d1a = demo3.split(">>");
-		 	demo3 = $.trim(d1a[0])+"_"+$.trim(d1a[1]);
+		 	var d1a = globalDemo3.split(">>");
+		 	demo3 = $.trim(d1a[0])+"_"+$.trim(globalSubDemo3);
+		 	//	demo3 = $.trim(d1a[0])+"_"+$.trim(d1a[1]);
 		 }
        jQuery("#studentAccommGrid").jqGrid('setGridParam',{datatype:'json'});     
  	   var sortArrow = jQuery("#studentAccommGrid");
@@ -612,6 +616,12 @@ function populateBulkStudentGrid() {
 	var globalCustomerDemographic1='';
 	var globalCustomerDemographic2='';
 	var globalCustomerDemographic3='';
+	var globalDemo1='';
+	var globalDemo2='';
+	var globalDemo3='';
+	var globalSubDemo1='';
+	var globalSubDemo2='';
+	var globalSubDemo3='';
 	
 	function createDemoList(){
 		var liMenuStr = "<div><ul class='sf-menu' id='menu'>";
@@ -661,7 +671,22 @@ function populateBulkStudentGrid() {
 				selected.parents("li.selected").children("a").attr("title",tooltip).html(parentTxt +" "+ txt+"<span class='sf-sub-indicator'></span>");
 				selected.parents("ul:not(.sf-menu)").hide();
 			}
-			selectedFullId = selected.parents("li:eq(1)").children("a").attr("id");			
+			selectedFullId = selected.parents("li:eq(1)").children("a").attr("id");		
+			if(selectedFullId != undefined) {
+				var selectedId = selectedFullId.split('_');
+				if(selectedId[1] == '1'){
+					globalDemo1= pTxt;
+					globalSubDemo1= tooltip;
+				}
+				if(selectedId[1] == '2'){
+					globalDemo2= pTxt;
+					globalSubDemo2= tooltip;
+				}
+				if(selectedId[1] == '3'){
+					globalDemo3= pTxt;
+					globalSubDemo3= tooltip;
+				}
+			}	
 			
 		} else {
 			var parentTxt = "";
@@ -677,6 +702,21 @@ function populateBulkStudentGrid() {
 				selectedFullId = selected.attr("id");
 				
 			}
+			if(selectedFullId != undefined) {
+				var selectedId = selectedFullId.split('_');
+				if(selectedId[1] == '1'){
+					globalDemo1= tooltip;
+					globalSubDemo1= "All";
+				}
+				if(selectedId[1] == '2'){
+					globalDemo2= tooltip;
+					globalSubDemo2= "All";
+				}
+				if(selectedId[1] == '3'){
+					globalDemo3= tooltip;
+					globalSubDemo3= "All";
+				}
+			}	
 			
 		}
 		if(selectedFullId != undefined) {
@@ -694,6 +734,7 @@ function populateBulkStudentGrid() {
 				}
 			}else {	
 				if(selectedId[1] == '1'){
+					
 					$("[id^='" + globalCustomerDemographic1+"_']").show();
 					globalCustomerDemographic1 = selectedId[0];
 					$('#'+selectedId[0]+"_2").css('display','none');
