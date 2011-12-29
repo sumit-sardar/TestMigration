@@ -521,7 +521,10 @@ function populateBulkStudentGrid() {
 									}
 									previousDataForpaging = selectedStudentObjArr;
 									selectedStudentObjArr = {};
-									document.getElementById('displayBulkMessageMain').style.display = "block";	
+									document.getElementById('displayBulkMessageMain').style.display = "block";
+									var alldata = $("#studentAccommGrid").jqGrid('getGridParam','data');
+									jQuery("#studentAccommGrid").jqGrid('setGridParam', { data: alldata,datatype:'local' }).trigger("reloadGrid");
+									
 									
 									$.unblockUI();			
 									}
