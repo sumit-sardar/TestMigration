@@ -779,6 +779,7 @@ public class TMSServlet extends HttpServlet {
         // TODO (complete): handle random distractor seed
 		if (rd.getAuthData().getRandomDistractorSeedNumber() != 0) {
 			 loginResponse.setRandomDistractorSeedNumber(new BigInteger(String.valueOf( rd.getAuthData().getRandomDistractorSeedNumber())));
+			 manifest.setRandomDistractorSeed(rd.getAuthData().getRandomDistractorSeedNumber());
 		 }  else {
 			 if ("Y".equals(manifest.getManifest()[0].getRandomDistractorStatus())) {
 				 int seed = manifest.getRandomDistractorSeed();
