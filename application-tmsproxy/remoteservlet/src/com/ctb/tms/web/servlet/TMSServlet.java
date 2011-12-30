@@ -333,7 +333,7 @@ public class TMSServlet extends HttpServlet {
 		    	int nextScoIndex = 0;
 		    	int j;
 		    	String thisScid = tsd.getScid();
-		    	if(!"0".equals(thisScid)) {
+		    	if(!"0".equals(thisScid) && !"null".equals(thisScid) && !"".equals(thisScid.trim())) {
 			    	ManifestData thisSco = null;
 			    	for(j=0;j<manifestData.length;j++) {
 			    		if(!"TERMINATOR".equals(thisScid) && (manifestData[j].getId() == Integer.parseInt(thisScid))) {
