@@ -508,7 +508,7 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
 			}
 
 		}
-		this.getSession().setAttribute("studentIdLabelName",valueForStudentId[0]);
+		this.getRequest().setAttribute("studentIdLabelName",valueForStudentId[0]);
 		
 	}
 	

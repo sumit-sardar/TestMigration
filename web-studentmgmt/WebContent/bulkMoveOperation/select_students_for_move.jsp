@@ -9,7 +9,7 @@
 	
 %>
 
-<input type="hidden" id="studentIdLabelName"  value ='Student ID' />
+<input type="hidden" id="studentIdLabelName"  value = '<%=studentIdLabelName %>' />
 <input type="hidden" id="supportAccommodations" value = '<%=supportAccommodations %>' />
 <input type="hidden" id="noStudentTitle" name = "noStudentTitle" value="${bundle.web['student.noStuSelected.title']}"/>
 <input type="hidden" id="noStudentMsg" name = "noStudentMsg" value="${bundle.web['student.noStuSelected.message']}"/>
