@@ -65,6 +65,7 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/map.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/bulkAccommodation.js"></script>
+	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/bulkMoveStudent.js"></script>
 	<script type="text/javascript" src="/StudentWeb/resources/js/studentregistration.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/superfish.js"></script>
     
@@ -164,7 +165,12 @@
 											<a href="#" id="bulkAccomLink" onclick="gotoMenuAction('organizations.do', 'bulkAccomLink');"><b>Assign Accommodations</b></a>						
 										</td>
 									</ctb:auth>
-								</c:if>		
+								</c:if>
+							  	<c:if test="${sessionScope.isBulkMoveConfigured}">										
+									<td class="toolbar" width="190">
+										<a href="#" id="bulkMoveLink" onclick="gotoMenuAction('organizations.do', 'bulkMoveLink');"><b>Move Students</b></a>						
+									</td>
+								</c:if>
 									<td width="*">&nbsp;</td>		
 								</tr>
 								</table>						

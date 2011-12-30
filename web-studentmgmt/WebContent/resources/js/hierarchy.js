@@ -50,6 +50,7 @@ var checkedListObject = {};
 var type;
 var asyncOver = 0;
 var leafParentOrgNodeId = "";
+var isBulkMove = false;
 						
 
 
@@ -75,7 +76,7 @@ function UIBlock(){
 
 			
 function populateTree() {
-	
+	isBulkMove = false;
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -2202,7 +2203,7 @@ function setSelectedValue(selectObj, valueToSet) {
 	//TODO : Updation in root node is a problem need to work on that but this method is also necessary for populating the immediate //tree because if we use the cache all the 2nd level objects will be stored in cache which makes the cache very heavy
 		var jsonObject = jsonData;
 		jsonObject = jsonObject[indexOfRoot];
-		if (dataObj2.length == 0){
+		if (dataObj2.length == 0 && jsonObject != undefined){
 			for (var i = 0, j = jsonObject.children.length; i < j; i++ ){
 					dataObj2.push({data: jsonObject.children[i].data,attr:{id: jsonObject.children[i].attr.id,cid:jsonObject.children[i].attr.cid, tcl:jsonObject.children[i].attr.tcl,chlen:jsonObject.children[i].hasOwnProperty("children")},children : [{}]});	
 			}

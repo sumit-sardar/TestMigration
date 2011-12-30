@@ -67,6 +67,9 @@ public class StudentProfileInformation extends SanitizedFormField
     
     private String hasAccommodations = "No";
     
+    private String orgNodeName;
+    private Integer orgNodeId;
+    
 
     /**
 	 * @return the hasAccommodations
@@ -494,6 +497,8 @@ public class StudentProfileInformation extends SanitizedFormField
         this.extendedTime = student.getExtendedTime();
         this.maskingTool = student.getMaskingTool();
         this.hasAccommodations = studentHasAccommodation();
+        this.orgNodeId = student.getOrgNodeId();
+        this.orgNodeName = student.getOrgNodeName();
         
     }
     
@@ -782,11 +787,13 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public String getOrgNodeNamesString() {
         String str = "";
-        for (int i=0 ; i<this.organizationNodes.length ; i++) {
-            OrganizationNode node = this.organizationNodes[i];
-            str = str + node.getOrgNodeName();
-            if (i < (this.organizationNodes.length - 1))
-                str = str + ", ";
+        if(this.organizationNodes != null && this.organizationNodes.length > 0) {
+	        for (int i=0 ; i<this.organizationNodes.length ; i++) {
+	            OrganizationNode node = this.organizationNodes[i];
+	            str = str + node.getOrgNodeName();
+	            if (i < (this.organizationNodes.length - 1))
+	                str = str + ", ";
+	        }
         }
         return str;
 	}  
@@ -910,5 +917,25 @@ public class StudentProfileInformation extends SanitizedFormField
 	 */
 	public void setStuAccommodation(StudentAccommodationsDetail stuAccommodation) {
 		this.stuAccommodation = stuAccommodation;
+	}
+
+
+	public String getOrgNodeName() {
+		return orgNodeName;
+	}
+
+
+	public void setOrgNodeName(String orgNodeName) {
+		this.orgNodeName = orgNodeName;
+	}
+
+
+	public Integer getOrgNodeId() {
+		return orgNodeId;
+	}
+
+
+	public void setOrgNodeId(Integer orgNodeId) {
+		this.orgNodeId = orgNodeId;
 	}
 } 

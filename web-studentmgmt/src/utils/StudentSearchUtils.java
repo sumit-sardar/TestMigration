@@ -124,6 +124,7 @@ public class StudentSearchUtils
         return studentList;
     }
     
+    
     /**
      * buildStudentPagerSummary
      */    
@@ -210,6 +211,22 @@ public class StudentSearchUtils
     	ManageBulkStudentData msData = null;
         try {    
             msData = studentManagement.findBulkStudentsForOrgNode(userName, orgNodeId, filter,demoFilter, page, sort);
+        }
+        catch (CTBBusinessException be) {
+            be.printStackTrace();
+        }        
+        return msData;
+    }
+    
+    /**
+     * searchBulkStudentsByOrgNodeForMove Bulk Move
+     */    
+    public static ManageStudentData searchBulkStudentsByOrgNodeForMove(String userName, StudentManagement studentManagement, Integer orgNodeId,
+                                                           FilterParams filter, PageParams page, SortParams sort)
+    {    
+    	ManageStudentData msData = null;
+        try {    
+            msData = studentManagement.getBulkMoveStudent(userName, orgNodeId, filter, page, sort);
         }
         catch (CTBBusinessException be) {
             be.printStackTrace();

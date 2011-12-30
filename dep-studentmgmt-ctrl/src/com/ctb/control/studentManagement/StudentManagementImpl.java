@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.beehive.controls.api.bean.ControlImplementation;
+import org.apache.beehive.controls.system.jdbc.JdbcControl;
 
 import com.ctb.bean.request.FilterParams;
 import com.ctb.bean.request.PageParams;
@@ -2743,6 +2744,54 @@ public class StudentManagementImpl implements StudentManagement
 		}
 		return leafNodeCategoryId;
 	}
+	
+	
+	//Added for bulk move students
+	/**
+	 * Retrieves a sorted, filtered, paged list of students at the specified org node.
+	 * @common:operation
+	 * @param userName - identifies the user
+	 * @param orgNodeId - identifies the org nodes
+	 * @param filter - filtering params
+	 * @param page - paging params
+	 * @param sort - sorting params
+	 * @return ManageStudentData
+	 * @throws com.ctb.exception.CTBBusinessException
+	 */
+	public ManageStudentData getBulkMoveStudent(String userName, Integer orgNodeId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+	{
+		validator.validateNode(userName, orgNodeId, "StudentManagementImpl.getBulkMoveStudent");
+		try {
+			ManageStudentData std = new ManageStudentData();
+			Integer pageSize = null;
+			if(page != null) {
+				pageSize = new Integer(page.getPageSize());
+			}
+			ManageStudent [] students = studentManagement.getStudentsForBulkMove(orgNodeId);
+			std.setManageStudents(students, pageSize);
+			if(sort != null) std.applySorting(sort);
+			if(page != null) std.applyPaging(page);
+
+			students = std.getManageStudents();
+			return std;
+		} catch (SQLException se) {
+			StudentDataNotFoundException tee = new StudentDataNotFoundException("StudentManagementImpl: getBulkMoveStudent: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
 		
+	//Added for updating the organization node for bulk move student
+	public void updateBulkMoveOperation(Integer orgId, Integer[] studentIds) throws com.ctb.exception.CTBBusinessException {
+		try {
+			for(int i = 0; i < studentIds.length; i++) {
+				studentManagement.moveBulkStudents(orgId, studentIds[i]);				
+			}
+		} catch (SQLException se) {
+			StudentDataCreationException tee = new StudentDataCreationException("StudentManagementImpl: updateBulkMoveOperation: " + se.getMessage());
+			tee.setStackTrace(se.getStackTrace());
+			throw tee;
+		}
+	}
 
 } 

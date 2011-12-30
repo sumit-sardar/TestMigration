@@ -331,6 +331,7 @@ input:focus {
     border-width: 1px; 
 	padding: 0px;    
 }
+
 /*
 #orgNodeHierarchy ul {
 	float: left;
@@ -362,7 +363,17 @@ input:focus {
 
 #studentBulkOrgNode li {
 	clear: both;
-}	
+}
+
+
+#bulkStudentMoveOrgNode ul {
+	float: left;
+	clear: both;
+}
+
+#bulkStudentMoveOrgNode li {
+	clear: both;
+}
 
 
 .gridTable {
@@ -443,5 +454,15 @@ clear: both;
 }
 
 .ie8 #studentBulkOrgNode li {
+	clear: both;
+}
+
+
+.ie8 #bulkStudentMoveOrgNode ul {
+float: none;
+clear: both;
+}
+
+.ie8 #bulkStudentMoveOrgNode li {
 	clear: both;
 }

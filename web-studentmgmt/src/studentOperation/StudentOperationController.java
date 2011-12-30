@@ -1500,6 +1500,26 @@ public class StudentOperationController extends PageFlowController {
 		}
 		return new Boolean(hasBulkStudentConfigurable);           
 	}
+	
+	/**
+	 * Bulk Move
+	 */
+	private Boolean customerHasBulkMove(CustomerConfiguration[] customerConfigurations) 
+	{
+		boolean hasBulkStudentConfigurable = false;
+		if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Bulk_Move_Students") && 
+						cc.getDefaultValue().equals("T")) {
+					hasBulkStudentConfigurable = true; 
+					break;
+				}
+			}
+		}
+		return new Boolean(hasBulkStudentConfigurable);           
+	}
 
 	private boolean isTopLevelUser(boolean isLasLinkCustomerVal){
 
@@ -2025,7 +2045,8 @@ public class StudentOperationController extends PageFlowController {
 	        @Jpf.Forward(name = "studentsLink", path = "organizations_manageStudents.do"),
 	        @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do"),
 	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
-	        @Jpf.Forward(name = "bulkAccomLink", path = "organizations_manageBulkAccommodation.do")
+	        @Jpf.Forward(name = "bulkAccomLink", path = "organizations_manageBulkAccommodation.do"),
+	        @Jpf.Forward(name = "bulkMoveLink", path = "organizations_manageBulkMove.do")
 	    }) 
 	protected Forward organizations()
 	{
@@ -2079,6 +2100,21 @@ public class StudentOperationController extends PageFlowController {
         try
         {
             String url = "/UserWeb/userOperation/organizations_manageUsers.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+    
+    @Jpf.Action()
+	protected Forward organizations_manageBulkMove()
+	{
+        try
+        {
+            String url = "/StudentWeb/bulkMoveOperation/organizations_manageBulkMove.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -2187,7 +2223,9 @@ public class StudentOperationController extends PageFlowController {
      	
 		this.getSession().setAttribute("addStudentEnable", addStudentEnable());     	
 
-		this.getSession().setAttribute("deleteStudentEnable", deleteStudentEnable());     	
+		this.getSession().setAttribute("deleteStudentEnable", deleteStudentEnable());
+		
+		this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigurations));
 	}
 
 

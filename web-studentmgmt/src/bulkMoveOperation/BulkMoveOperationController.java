@@ -1,4 +1,4 @@
-package bulkOperation;
+package bulkMoveOperation;
 
 import java.io.IOException;
 import java.io.ObjectOutput;
@@ -7,10 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.beehive.controls.api.bean.Control;
 import org.apache.beehive.netui.pageflow.Forward;
@@ -36,8 +38,9 @@ import com.ctb.bean.request.FilterParams.FilterParam;
 import com.ctb.bean.request.FilterParams.FilterType;
 import com.ctb.bean.studentManagement.CustomerConfiguration;
 import com.ctb.bean.studentManagement.CustomerConfigurationValue;
-import com.ctb.bean.studentManagement.CustomerDemographic;
 import com.ctb.bean.studentManagement.ManageBulkStudentData;
+import com.ctb.bean.studentManagement.ManageStudent;
+import com.ctb.bean.studentManagement.ManageStudentData;
 import com.ctb.bean.studentManagement.MusicFiles;
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.SessionStudent;
@@ -48,175 +51,98 @@ import com.ctb.exception.CTBBusinessException;
 import com.google.gson.Gson;
 
 import dto.Message;
-import dto.StudentAccommodationsDetail;
 
 @Jpf.Controller(simpleActions = { @Jpf.SimpleAction(name = "begin", path = "index.jsp") })
-public class BulkOperationController extends PageFlowController {
+public class BulkMoveOperationController extends PageFlowController {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Control()
 	private com.ctb.control.studentManagement.StudentManagement studentManagement;
 
 	@Control()
 	private com.ctb.control.db.OrgNode orgnode;
-
+	
 	
 	private String userName = null;
 	private Integer customerId = null;
 	private User user = null;
-	List demographics = null;
-	// student accommodations
-	public StudentAccommodationsDetail accommodations = null;
 	CustomerConfiguration[] customerConfigurations = null;
-	CustomerDemographic [] customerDemographic = null;
-	public String[] realDemographicOptions = null;
 	public static String CONTENT_TYPE_JSON = "application/json";
-	public static String UNDER_SCORE = "_";
 	
-	/**
-	 * This method represents the point of entry into the pageflow
-	 * @jpf:action
-	 * @jpf:forward name="success" path="findStudent.do"
-	 */
+	
 	/**
 	 * @jpf:action
 	 * @jpf:forward name="success" path="findStudent.do"
 	 */
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success",
-					path = "add_bulk_student_accommodation.jsp")
+					path = "bulk_student_move_select.jsp")
 	}, 
 	validationErrorForward = @Jpf.Forward(name = "failure",
 			path = "logout.do"))
-	protected Forward beginAddBulkStudent()
+	protected Forward beginBulkMoveStudent()
 	{
 		initialize();
 		return new Forward("success");
 	}
 	
+	
 	 @Jpf.Action(forwards={
 	    		@Jpf.Forward(name = "success", 
-						path ="assessments_sessions.jsp")
+						path ="")
 		})
 	    protected Forward getStudentForSelectedNode(){
 	    	
-			String jsonTree = "";
+		 String jsonTree = "";
 			HttpServletRequest req = getRequest();
 			HttpServletResponse resp = getResponse();
+			String treeOrgNodeId = getRequest().getParameter("stuForOrgNodeId");
 			OutputStream stream = null;
 			String contentType = CONTENT_TYPE_JSON;
+			List studentList = new ArrayList(0);
+			String studentArray = "";
 			String json = "";
 			ObjectOutput output = null;
-			String studentArray = "";
-			FilterParams demoFilter = null;
-			PageParams studentPage = null;
-	        SortParams studentSort = null;
-			String treeOrgNodeId = getRequest().getParameter("stuForOrgNodeId");
-			Integer selectedOrgNodeId = null;
-			if(treeOrgNodeId != null)
-				selectedOrgNodeId = Integer.parseInt(treeOrgNodeId);
-			String demoFilter1 = getRequest().getParameter("demoFilter1");
-			String demoFilter2 = getRequest().getParameter("demoFilter2");
-			String demoFilter3 = getRequest().getParameter("demoFilter3");
 			try {
-				if(demoFilter1 != null && demoFilter2 != null && demoFilter3 != null  
-						&& !(demoFilter1.equals("") && demoFilter2.equals("") && demoFilter3.equals(""))) {
-					
-				String selectedDemo1 = (demoFilter1.equals("")?  FilterSortPageUtils.FILTERTYPE_SHOWALL : (demoFilter1.split(UNDER_SCORE))[0].trim());
-				String selectedDemoValue1 = (demoFilter1.equals("")?  FilterSortPageUtils.FILTERTYPE_SHOWALL : ((demoFilter1.split(UNDER_SCORE))[1].trim().equals("All")?  FilterSortPageUtils.FILTERTYPE_SHOWALL :(demoFilter1.split(UNDER_SCORE))[1].trim()));
-				String selectedDemo2 = (demoFilter2.equals("")?  FilterSortPageUtils.FILTERTYPE_SHOWALL : (demoFilter2.split(UNDER_SCORE))[0].trim());
-				String selectedDemoValue2 = (demoFilter2.equals("")?  FilterSortPageUtils.FILTERTYPE_SHOWALL : ((demoFilter2.split(UNDER_SCORE))[1].trim().equals("All")?  FilterSortPageUtils.FILTERTYPE_SHOWALL :(demoFilter2.split(UNDER_SCORE))[1].trim()));
-				String selectedDemo3 = (demoFilter3.equals("")?  FilterSortPageUtils.FILTERTYPE_SHOWALL : (demoFilter3.split(UNDER_SCORE))[0].trim());
-				String selectedDemoValue3 = (demoFilter3.equals("")?  FilterSortPageUtils.FILTERTYPE_SHOWALL : ((demoFilter3.split(UNDER_SCORE))[1].trim().equals("All")?  FilterSortPageUtils.FILTERTYPE_SHOWALL :(demoFilter3.split(UNDER_SCORE))[1].trim()));
+				ManageStudentData msData = findStudentByHierarchy();
+				List studentNodes = StudentSearchUtils.buildStudentList(msData);
 				
-				demoFilter = new FilterParams();
-				ArrayList demoFilters = new ArrayList();
-				if (selectedDemo1 != null && !selectedDemo1.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
-				{
-					String [] arg = new String[1];
-					arg[0] = selectedDemo1;
-					if (selectedDemoValue1 != null && !selectedDemoValue1.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
-					{
-						String [] valueArg = new String[1];
-						valueArg[0] = arg[0]+ "_" + selectedDemoValue1;
-						demoFilters.add(new FilterParam("ValueName", valueArg, FilterType.EQUALS));
-					} else {
-						demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
-					}
-
+				Base base = new Base();
+				base.setPage("1");
+				base.setRecords("10");
+				base.setTotal("2");
+				List <Row> rows = new ArrayList<Row>();
+				Gson gson = new Gson();
+				base.setStudentProfileInformation(studentNodes);
+				base.setStudentIdArray(studentArray);
+				json = gson.toJson(base);
+				try{
+					resp.setContentType("application/json");
+					stream = resp.getOutputStream();
+					resp.flushBuffer();
+					stream.write(json.getBytes());
 				}
-
-				if (selectedDemo2 != null && !selectedDemo2.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
-				{
-					String [] arg = new String[1];
-					arg[0] = selectedDemo2;
-					if (selectedDemoValue2 != null && !selectedDemoValue2.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
-					{
-						String [] valueArg = new String[1];
-						valueArg[0] = arg[0]+ "_" + selectedDemoValue2;
-						demoFilters.add(new FilterParam("ValueName", valueArg, FilterType.EQUALS));
-					} else {
-						demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
-					}
-
-				}
-
-				if (selectedDemo3 != null && !selectedDemo3.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
-				{
-					String [] arg = new String[1];
-					arg[0] = selectedDemo3;
-					if (selectedDemoValue3 != null && !selectedDemoValue3.equals(FilterSortPageUtils.FILTERTYPE_SHOWALL))
-					{
-						String [] valueArg = new String[1];
-						valueArg[0] = arg[0]+ "_" + selectedDemoValue3;
-						demoFilters.add(new FilterParam("ValueName", valueArg, FilterType.EQUALS));
-					} else {
-						demoFilters.add(new FilterParam("LabelName", arg, FilterType.EQUALS));
+				finally{
+					if (stream!=null){
+						stream.close();
 					}
 				}
-				demoFilter.setFilterParams((FilterParam[])demoFilters.toArray(new FilterParam[0]));
-			}
-	        studentSort = FilterSortPageUtils.buildStudentSortParams(FilterSortPageUtils.STUDENT_DEFAULT_SORT_COLUMN_LAST_NAME, FilterSortPageUtils.ASCENDING);
-	        // get students - getSessionStudents
-	        ManageBulkStudentData msData = StudentSearchUtils.searchBulkStudentsByOrgNode(this.userName, this.studentManagement, selectedOrgNodeId, null, demoFilter, studentPage, studentSort);
 
-	        List studentNodes = buildStudentList(msData);
-	        studentArray = StudentSearchUtils.buildStudentListString(msData);
-			Base base = new Base();
-			base.setPage("1");
-			base.setRecords("10");
-			base.setTotal("2");
-			List <Row> rows = new ArrayList<Row>();
-			base.setStudentNode(studentNodes);
-			base.setStudentIdArray(studentArray);
-			
-			Gson gson = new Gson();
-			//System.out.println ("Json process time Start:"+new Date());
-			json = gson.toJson(base);
-			//System.out.println ("Json process time End:"+new Date() +".."+json);
-			try{
-				resp.setContentType("application/json");
-				stream = resp.getOutputStream();
-				resp.flushBuffer();
-				stream.write(json.getBytes("UTF-8"));
-			}
-			finally{
-				if (stream!=null){
-					stream.close();
-				}
-			}
-		} catch (Exception e) {
-			System.err.println("Exception while processing CR response.");
-			e.printStackTrace();
-		}
 
-		return null;
+
+			} catch (Exception e) {
+				System.err.println("Exception while processing CR response.");
+				e.printStackTrace();
+			}
+
+			return null;
 
 	}
 	
+	
 	@Jpf.Action(forwards={
 			@Jpf.Forward(name = "success", 
-					path ="find_student_hierarchy.jsp")
+					path ="")
 	})
 	protected Forward userOrgNodeHierarchyList(){
 
@@ -238,9 +164,7 @@ public class BulkOperationController extends PageFlowController {
 
 			UserNodeData und = StudentPathListUtils.OrgNodehierarchy(this.userName, 
 					this.studentManagement, selectedList.get(0).getOrgNodeId()); 
-			ArrayList<Organization> orgNodesList = StudentPathListUtils.buildOrgNodehierarchyList(und, orgIDList,completeOrgNodeList);	
-
-			//jsonTree = generateTree(orgNodesList);
+			ArrayList<Organization> orgNodesList = StudentPathListUtils.buildOrgNodehierarchyList(und, orgIDList,completeOrgNodeList);
 
 			for (int i= 0; i < selectedList.size(); i++) {
 
@@ -280,10 +204,7 @@ public class BulkOperationController extends PageFlowController {
 					
 			});
 			baseTree.setLeafNodeCategoryId(leafNodeCategoryId);
-			baseTree.setGradeOptions(getGradeOptions());
-			baseTree.setCustomerDemographicList(buildCustomerDemographicList());
 			jsonTree = gson.toJson(baseTree);
-			//System.out.println(jsonTree);
 			String pattern = ",\"children\":[]";
 			jsonTree = jsonTree.replace(pattern, "");
 
@@ -307,7 +228,7 @@ public class BulkOperationController extends PageFlowController {
 
 	}
 	
-
+	
 	/**
 	 * @jpf:action
 	 * @jpf:forward name="success" path="goToViewStudent.do" 
@@ -315,7 +236,7 @@ public class BulkOperationController extends PageFlowController {
 	 */
 	@Jpf.Action(forwards = { 
 			@Jpf.Forward(name = "success", 
-					path = "find_student_hierarchy.jsp")
+					path = "")
 	})
 	protected Forward saveBulkStudentData()
 	{   
@@ -323,222 +244,37 @@ public class BulkOperationController extends PageFlowController {
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String studentIds = getRequest().getParameter("studentIds");
+		Integer organizationId = Integer.parseInt(getRequest().getParameter("selectedOrgId"));
 		String[] selectedStudents = null;
 		if(studentIds != null)
 			selectedStudents = studentIds.split(",");
-		
 		 MessageInfo messageInfo = new MessageInfo();
 		
 			boolean successFlag=true;
 			if(selectedStudents != null && selectedStudents.length > 0 ) {
 				Integer[] studentId = new Integer[selectedStudents.length];
-				//studentId = Arrays.copyOf(selectedStudents, selectedStudents.length, Integer[].class);
 				
 				for(int i=0;i< selectedStudents.length;i++)
 				{
 					studentId[i] = Integer.parseInt(selectedStudents[i]);
-					
-
 				}
 				if(studentId != null && studentId.length > 0) {
-					StudentAccommodations sa = saveAccommodationsSelected();
-					if (sa != null) {
-						try {
-							
-							this.studentManagement.updateBulkStudentAccommodations(this.userName,sa,studentId);
-						} catch (CTBBusinessException e) {
-							// TODO Auto-generated catch block
-							successFlag=false;
-						}
-						
-
-						if(successFlag) {
-							messageInfo = createMessageInfo(messageInfo, Message.BULK_ADD_TITLE, Message.BULK_ADD_SUCCESSFUL, Message.INFORMATION, false, true );
-							
-						}
-						else {
-							messageInfo = createMessageInfo(messageInfo, Message.BULK_ADD_TITLE, Message.BULK_ADD_ERROR, Message.INFORMATION, true, false );
-						}
-						
-					} else {
-						
-							messageInfo = createMessageInfo(messageInfo, Message.BULK_ADD_TITLE, Message.BULK_ACCOM_NOTSELECTED, Message.ALERT, true, false );
+					try {
+						this.studentManagement.updateBulkMoveOperation(organizationId,studentId);
+					} catch (CTBBusinessException e) {
+						// TODO Auto-generated catch block
+						successFlag=false;
 					}
 					
 				}
 			}
 		
 
-			creatGson( req, resp, stream, messageInfo );
+			creatGson(req, resp, stream, messageInfo);
 			return null;
 
 	}
-
-	public StudentAccommodations saveAccommodationsSelected()
-	{	
-		boolean isAccommodationSelected = false;
-		String screenReader = getRequest().getParameter("screen_reader");
-		String calculator = getRequest().getParameter("calculator");
-		String testPause = getRequest().getParameter("test_pause");
-		String untimedTest = getRequest().getParameter("untimed_test");
-		String highLighter = getRequest().getParameter("highlighter");
-		String colorFont = getRequest().getParameter("colorFont");
-		String questionBgrdColor = this.getRequest().getParameter("question_bgrdColor");
-
-		String questionFontColor = this.getRequest().getParameter("question_fontColor");
-
-		String answerBgrdColor = this.getRequest().getParameter("answer_bgrdColor");
-
-
-		String answerFontColor = this.getRequest().getParameter("answer_fontColor");
-
-
-		String fontSize = this.getRequest().getParameter("fontSize");
-
-		StudentAccommodations stuAommodations = new StudentAccommodations();
-		StudentAccommodationsDetail stdDetail = new StudentAccommodationsDetail();
-
-		//generate dynamic sql query for update
-		StringBuffer result = new StringBuffer();
-		if (screenReader != null ) {
-			stuAommodations.setScreenReader(screenReader);
-			isAccommodationSelected = true;
-		}
-
-		if (calculator != null) {
-			stuAommodations.setCalculator(calculator);
-			isAccommodationSelected = true;
-		}	 
-
-		if (testPause != null ) {
-			stuAommodations.setTestPause(testPause);
-			isAccommodationSelected = true;
-		}
-
-		if (untimedTest != null ) {
-			stuAommodations.setUntimedTest(untimedTest);
-			isAccommodationSelected = true;
-		}
-
-		if (highLighter != null) {
-			stuAommodations.setHighlighter(highLighter);
-			isAccommodationSelected = true;
-		}
-
-		if (colorFont != null) {
-			stuAommodations.setColorFont(colorFont);
-			isAccommodationSelected = true;//Change for defect -# 65698 
-		}
-		if (questionBgrdColor != null) {
-			
-			stuAommodations.setQuestionBackgroundColor
-			(stdDetail.getColorHexMapping(questionBgrdColor));
-			isAccommodationSelected = true;
-		}
-
-		if (questionFontColor != null) {
-			stuAommodations.setQuestionFontColor(
-					stdDetail.getColorHexMapping(questionFontColor));
-			isAccommodationSelected = true;
-			
-		}
-		if (answerBgrdColor != null) {
-			stuAommodations.setAnswerBackgroundColor(
-					stdDetail.getColorHexMapping(answerBgrdColor));
-			isAccommodationSelected = true;
-		}
-
-		if (answerFontColor != null) {
-			stuAommodations.setAnswerFontColor(
-					stdDetail.getColorHexMapping(answerFontColor));
-			isAccommodationSelected = true;
-		}
-
-		if (fontSize != null) {
-			stuAommodations.setAnswerFontSize(fontSize);
-			isAccommodationSelected = true;
-		}
-		if (fontSize != null) {
-			stuAommodations.setQuestionFontSize(fontSize);
-			isAccommodationSelected = true;
-		}
-
-		if (colorFont != null && colorFont.equalsIgnoreCase("F")) {
-			stuAommodations.setColorFont(colorFont);       //Change for defect -# 65698 
-			stuAommodations.setAnswerBackgroundColor(null);
-			stuAommodations.setAnswerFontColor(null);
-			stuAommodations.setAnswerFontSize(null);
-			stuAommodations.setQuestionBackgroundColor(null);
-			stuAommodations.setQuestionFontColor(null);
-			stuAommodations.setQuestionFontSize(null);
-		}
-		if(isAccommodationSelected)
-			return stuAommodations;
-		else
-			return null;
-	}
-
-
-	private MessageInfo createMessageInfo(MessageInfo messageInfo, String messageTitle, String content, String type, boolean errorflag, boolean successFlag){
-		messageInfo.setTitle(messageTitle);
-		messageInfo.setContent(content);
-		messageInfo.setType(type);
-		messageInfo.setErrorFlag(errorflag);
-		messageInfo.setSuccessFlag(successFlag);
-		return messageInfo;
-	}
-
-	private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputStream stream, MessageInfo messageInfo ){
-		
-		try {
-			try {
-				Gson gson = new Gson();
-				String json = gson.toJson(messageInfo);
-				resp.setContentType("application/json");
-				resp.flushBuffer();
-				stream = resp.getOutputStream();
-				stream.write(json.getBytes());
-
-			} finally{
-				if (stream!=null){
-					stream.close();
-				}
-			}
-			
-		}
-		catch (Exception e) {
-			System.err.println("Exception while retrieving optionList.");
-			e.printStackTrace();
-		}
-	} 
-	private List buildStudentList(ManageBulkStudentData ssd) 
-	{
-		List studentList = new ArrayList();
-		SessionStudent [] sessionStudents = ssd.getManageStudents();    
-
-		for (int i=0; i < sessionStudents.length; i++)
-		{
-			SessionStudent ss = (SessionStudent)sessionStudents[i];
-			ss.setHasColorFontAccommodations(getHasColorFontAccommodations(ss));
-            ss.setHasAccommodations(studentHasAccommodation(ss));
-			if (ss != null)
-			{
-				String middleName = ss.getMiddleName();
-				if ((middleName != null) && (middleName.length() > 0)) {
-					ss.setMiddleName(String.valueOf(middleName.charAt(0)));
-				}
-				studentList.add(ss);
-				
-
-
-			}
-		}
-
-		return studentList;
-	}
 	
-	
-
 	private static void preTreeProcess (ArrayList<TreeData> data,ArrayList<Organization> orgList, ArrayList<Organization> selectedList) {
 
 		Organization org = orgList.get(0);
@@ -581,26 +317,64 @@ public class BulkOperationController extends PageFlowController {
 			}
 		}
 	}
+	
+	/**
+	 * findByHierarchy
+	 */
+	private ManageStudentData findStudentByHierarchy()
+	{      
+		String treeOrgNodeId = getRequest().getParameter("stuForOrgNodeId");
+		Integer selectedOrgNodeId = null;
+		if(treeOrgNodeId != null)
+			selectedOrgNodeId = Integer.parseInt(treeOrgNodeId);
+		ManageStudentData msData = null;
+
+		FilterParams filter = null;
+		PageParams page = null;
+		SortParams sort = null;
+
+		if (selectedOrgNodeId != null)
+		{
+			sort = FilterSortPageUtils.buildStudentSortParams(FilterSortPageUtils.LAST_NAME_SORT, FilterSortPageUtils.ASCENDING);
+			msData = StudentSearchUtils.searchBulkStudentsByOrgNodeForMove(this.userName, this.studentManagement, selectedOrgNodeId, filter, page, sort);
+
+		}
+
+		return msData;
+	}
+	
 	private void initialize()
 	{     
 		getLoggedInUserPrincipal();
 		getUserDetails();
 		setupUserPermission();
-		getCustomerDemographicOptions();
-		demographics = null;
-		accommodations = null;
-		this.accommodations = getStudentAccommodations();
-		this.getRequest().setAttribute("accommodations",accommodations);
 		this.getRequest().setAttribute("viewOnly", Boolean.FALSE); 
 		String roleName = this.user.getRole().getRoleName();
 		
-		try{
-			MusicFiles[] musicList = this.studentManagement.getMusicFiles();	
-			this.getRequest().setAttribute("musicList", musicList);
-		}catch (CTBBusinessException be) {
-			be.printStackTrace();
-		}
+	}
+	
+private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputStream stream, MessageInfo messageInfo ){
 		
+		try {
+			try {
+				Gson gson = new Gson();
+				String json = gson.toJson(messageInfo);
+				resp.setContentType("application/json");
+				resp.flushBuffer();
+				stream = resp.getOutputStream();
+				stream.write(json.getBytes());
+
+			} finally{
+				if (stream!=null){
+					stream.close();
+				}
+			}
+			
+		}
+		catch (Exception e) {
+			System.err.println("Exception while retrieving optionList.");
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -632,192 +406,9 @@ public class BulkOperationController extends PageFlowController {
 		getSession().setAttribute("createdBy", this.user.getUserId());
 	}
 	
-	/**
-	 * getCustomerDemographicOptions
-	 */
-	private  void getCustomerDemographicOptions()
-	{	
-		try {
-			customerDemographic =  this.studentManagement.getCustomerDemographics(this.userName, this.customerId);
-		}
-		catch (CTBBusinessException be) {
-			be.printStackTrace();
-		}
-		if (customerDemographic != null)
-		{
-			/*realDemographicOptions = new String[customerDemographic.length+1];
-			realDemographicOptions[0] = FilterSortPageUtils.FILTERTYPE_SHOWALL;
-
-			for (int i=0 ; i<customerDemographic.length ; i++) { 
-				if(customerDemographic[i].getVisible() != null 
-						&& !(customerDemographic[i].getVisible().equals("")) 
-						&& customerDemographic[i].getVisible().equals("T")) {
-					realDemographicOptions[i+1] = customerDemographic[i].getLabelName();
-				}
-			}*/
-		}
-		if(realDemographicOptions != null) {
-			//demographic1 = realDemographicOptions;
-			//demographic2 = realDemographicOptions;
-			//demographic3 = realDemographicOptions;
-			
-		}
-
-	}
 	
-	private List buildCustomerDemographicList() 
-	{
-		List CustomerDemographicList = new ArrayList();
-		for (int i=0; i < customerDemographic.length; i++)
-		{	
-			if(customerDemographic[i].getVisible() != null 
-					&& !(customerDemographic[i].getVisible().equals("")) 
-					&& customerDemographic[i].getVisible().equals("T")) {
-					CustomerDemographicList.add(customerDemographic[i]);
-			}
-		}
-
-		return CustomerDemographicList;
-	}
 	
-	/**
-	 * getGradeOptions
-	 */
-	private String [] getGradeOptions()
-	{
-		String[] grades = null;
-		try {
-			grades =  this.studentManagement.getGradesForCustomer(this.userName, this.customerId);
-		}
-		catch (CTBBusinessException be) {
-			be.printStackTrace();
-		}
-
-		List options = new ArrayList();
-		for (int i=0 ; i<grades.length ; i++) {        
-			options.add(grades[i]);
-		}
-
-		return (String [])options.toArray(new String[0]);        
-	}
-
-	private StudentAccommodationsDetail getStudentAccommodations()
-	{
-
-
-		this.accommodations = new StudentAccommodationsDetail();
-		setCustomerAccommodations(this.accommodations, true);
-		this.accommodations.convertHexToText();      
-
-		return this.accommodations;
-	}
-
-	//Added for color font preview button
-	/**
-	 * @jpf:action
-	 * @jpf:forward name="success" path="/previewer/PreviewerController.jpf"
-	 */
-	@Jpf.Action(forwards = { 
-			@Jpf.Forward(name = "success",
-					path = "/previewer/PreviewerController.jpf")
-	})
-	protected Forward colorFontPreview()
-	{      
-		String param = getRequest().getParameter("param");
-		getSession().setAttribute("param", param);
-
-		return new Forward("success");
-	}
-	
-	//Added for edit student
-
-	//Bulk Accommodation Changes
-	/**
-	 * setCustomerAccommodations
-	 */
-	private void setCustomerAccommodations(StudentAccommodationsDetail sad, boolean isSetDefaultValue) 
-	{        
-		// set checked value if there is configuration for this customer
-		for (int i=0; i < this.customerConfigurations.length; i++)
-		{
-			CustomerConfiguration cc = (CustomerConfiguration)this.customerConfigurations[i];
-			String ccName = cc.getCustomerConfigurationName();
-			String defaultValue = cc.getDefaultValue() != null ? cc.getDefaultValue() : "F";
-			String editable = cc.getEditable() != null ? cc.getEditable() : "F";
-
-			if (isSetDefaultValue)
-				editable = "F";
-
-			if (defaultValue.equalsIgnoreCase("T") && editable.equalsIgnoreCase("F"))
-			{
-
-				if (ccName.equalsIgnoreCase("screen_reader"))
-				{
-					sad.setScreenReader(Boolean.TRUE);
-				}
-
-				if (ccName.equalsIgnoreCase("calculator"))
-				{
-					sad.setCalculator(Boolean.TRUE);
-				}
-
-				if (ccName.equalsIgnoreCase("test_pause"))
-				{
-					sad.setTestPause(Boolean.TRUE);
-				}
-
-				if (ccName.equalsIgnoreCase("untimed_test"))
-				{
-					sad.setUntimedTest(Boolean.TRUE);
-				}
-
-				if (ccName.equalsIgnoreCase("highlighter"))
-				{
-					sad.setHighlighter(Boolean.TRUE);
-				}
-			}
-		}
-	}
-	
-	 public String getHasColorFontAccommodations(SessionStudent ss) {
-	        String result = "F";
-	        if( ss.getQuestionBackgroundColor() != null ||
-	        	ss.getQuestionFontColor() != null ||
-	        	ss.getQuestionFontSize() != null ||
-	        	ss.getAnswerBackgroundColor() != null ||
-	        	ss.getAnswerFontColor() != null ||
-	        	ss.getAnswerFontSize() != null)
-	            result = "T";
-	        return result;
-	    }
-	    
-	    
-	    public String studentHasAccommodation(SessionStudent  sa){
-			 String hasAccommodations = "No";
-		        if( "T".equals(sa.getScreenMagnifier()) ||
-		            "T".equals(sa.getScreenReader()) ||
-		            "T".equals(sa.getCalculator()) ||
-		            "T".equals(sa.getTestPause()) ||
-		            "T".equals(sa.getUntimedTest()) ||
-		            "T".equals(sa.getHighLighter()) ||
-		            "T".equals(sa.getExtendedTimeAccom()) ||
-		           // (sa.getMaskingRuler() != null && !sa.getMaskingRuler().equals("") && !sa.getMaskingRuler().equals("F"))||
-		            (sa.getExtendedTimeAccom() != null && !sa.getExtendedTimeAccom().equals("") && !sa.getExtendedTimeAccom().equals("F")) || 
-		           // (sa.getAuditoryCalming() != null && !sa.getAuditoryCalming().equals("") && !sa.getAuditoryCalming().equals("F")) || 
-		            //(sa.getMagnifyingGlass() != null && !sa.getMagnifyingGlass().equals("") && !sa.getMagnifyingGlass().equals("F")) || 
-		           // (sa.getMaskingTool() != null && !sa.getMaskingTool().equals("") && !sa.getMaskingTool().equals("F")) || 
-		            sa.getQuestionBackgroundColor() != null ||
-		            sa.getQuestionFontColor() != null ||
-		            sa.getQuestionFontSize() != null ||
-		            sa.getAnswerBackgroundColor() != null ||
-		            sa.getAnswerFontColor() != null ||
-		            sa.getAnswerFontSize() != null)
-		        	hasAccommodations = "Yes";
-		   return hasAccommodations;
-		}
-	    
-	    
-	 /////////////////////////////////////////////////////////////////////////////////////////////    
+/////////////////////////////////////////////////////////////////////////////////////////////    
     ///////////////////////////// SETUP USER PERMISSION ///////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////    
     private void getLoggedInUserPrincipal()
@@ -843,7 +434,7 @@ public class BulkOperationController extends PageFlowController {
         this.getSession().setAttribute("hasScoringConfigured", 
         		new Boolean( customerHasScoring(customerConfigurations).booleanValue() && adminUser));
         
-    	this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
+    	this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigurations));
     	
     	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	
@@ -854,8 +445,6 @@ public class BulkOperationController extends PageFlowController {
 		this.getRequest().setAttribute("customerConfigurations", customerConfigurations);    
     	
      	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     	
-     	
-     	this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigurations));
    }
 
 	/**
@@ -960,26 +549,6 @@ public class BulkOperationController extends PageFlowController {
 	}
 
 	/**
-	 * Bulk Accommodation
-	 */
-	private Boolean customerHasBulkAccommodation(CustomerConfiguration[] customerConfigurations) 
-	{
-		boolean hasBulkStudentConfigurable = false;
-		if( customerConfigurations != null ) {
-			for (int i=0; i < customerConfigurations.length; i++) {
-
-				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
-						cc.getDefaultValue().equals("T")) {
-					hasBulkStudentConfigurable = true; 
-					break;
-				}
-			}
-		}
-		return new Boolean(hasBulkStudentConfigurable);           
-	}
-	
-	/**
 	 * Bulk Move
 	 */
 	private Boolean customerHasBulkMove(CustomerConfiguration[] customerConfigurations) 
@@ -1068,6 +637,9 @@ public class BulkOperationController extends PageFlowController {
 	        return laslinkCustomer;
 	    }
 	
+	
+	
+	
 	/////////////////////////////////////////////////////////////////////////////////////////////    
 	///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////    
@@ -1103,7 +675,7 @@ public class BulkOperationController extends PageFlowController {
 	protected Forward organizations()
 	{
 		String menuId = (String)this.getRequest().getParameter("menuId");    	
-		String forwardName = (menuId != null) ? menuId : "bulkAccomLink";
+		String forwardName = (menuId != null) ? menuId : "bulkMoveLink";
 		
 	    return new Forward(forwardName);
 	}
@@ -1154,11 +726,11 @@ public class BulkOperationController extends PageFlowController {
 	}
     
     @Jpf.Action()
-	protected Forward organizations_manageBulkMove()
+	protected Forward organizations_manageBulkAccommodation()
 	{
         try
         {
-            String url = "/StudentWeb/bulkMoveOperation/organizations_manageBulkMove.do";
+            String url = "/StudentWeb/bulkOperation/organizations_manageBulkAccommodation.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -1188,9 +760,9 @@ public class BulkOperationController extends PageFlowController {
     
     
     @Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "beginAddBulkStudent.do") 
+	        @Jpf.Forward(name = "success", path = "beginBulkMoveStudent.do") 
 	    }) 
-	protected Forward organizations_manageBulkAccommodation()
+	protected Forward organizations_manageBulkMove()
 	{
 	    return new Forward("success");
 	}
@@ -1212,5 +784,4 @@ public class BulkOperationController extends PageFlowController {
         }
         return null;
     }
-	
 }
