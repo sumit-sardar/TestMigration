@@ -435,6 +435,7 @@ function saveBulkMoveData() {
 				dataType:	'json',
 				success:	function(data, textStatus, XMLHttpRequest){
 									selectedStudentForMove = [];
+									bulkMoveStuCounterPage = 0;
 									gridReloadForBulkMoveStudent();
 									hideBulkMovePopup();
 									$("#displayBulkMessageMain").show();
