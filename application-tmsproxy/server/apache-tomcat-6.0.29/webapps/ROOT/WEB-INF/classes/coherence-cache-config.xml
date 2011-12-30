@@ -70,6 +70,7 @@
 		  </cachestore-scheme>
 		  <write-delay>1s</write-delay>
 		  <write-batch-factor>1</write-batch-factor>  
+		  <write-requeue-threshold>2147483647</write-requeue-threshold>
 		</read-write-backing-map-scheme>
         <!--        Default Distributed caching scheme.        -->
         <distributed-scheme>            

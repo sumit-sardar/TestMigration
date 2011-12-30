@@ -9,7 +9,11 @@ import com.ctb.tms.bean.login.StudentCredentials;
 
 public interface OASRDBSource
 { 
-	public StudentCredentials[] getActiveRosters(Connection con);
+	public void markActiveRosters(Connection con, String clusterName, int nodeid);
+	
+	public StudentCredentials[] getActiveRosters(Connection con, String clusterName, int nodeid);
+	
+	public void sweepActiveRosters(Connection con, String clusterName, int nodeid);
     
     public RosterData getRosterData(Connection conn, String key) throws Exception;
 

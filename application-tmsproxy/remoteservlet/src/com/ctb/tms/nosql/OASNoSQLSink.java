@@ -13,13 +13,13 @@ import com.ctb.tms.bean.login.StudentCredentials;
 
 public interface OASNoSQLSink {
 
-	public void putRosterData(StudentCredentials creds, RosterData rosterData) throws IOException;
+	public void putRosterData(StudentCredentials creds, RosterData rosterData, boolean replicate) throws IOException;
 	
-	public void putManifest(String testRosterId, String accessCode, Manifest manifest) throws IOException;
+	public void putManifest(String testRosterId, String accessCode, Manifest manifest, boolean replicate) throws IOException;
 	
-	public void putAllManifests(String testRosterId, ManifestWrapper manifests) throws IOException ;
+	public void putAllManifests(String testRosterId, ManifestWrapper manifests, boolean replicate) throws IOException ;
 	
-	public void putItemResponse(ItemResponseData ird) throws IOException;
+	public void putItemResponse(ItemResponseData ird, boolean replicate) throws IOException;
 	
 	public void deleteItemResponse(int testRosterId, BigInteger mseq) throws IOException;
 	

@@ -14,6 +14,7 @@ import com.ctb.tms.bean.login.RosterData;
 import com.ctb.tms.bean.login.StudentCredentials;
 import com.ctb.tms.rdb.OASRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
+import com.ctb.tms.web.listener.TestDeliveryContextListener;
 import com.tangosol.util.BinaryEntry;
 
 public class RosterCacheStore implements OASCacheStore {
@@ -119,7 +120,7 @@ public class RosterCacheStore implements OASCacheStore {
     	try {
     		OASRDBSource source = RDBStorageFactory.getOASSource();
 		    conn = source.getOASConnection();
-		    StudentCredentials [] credsa = source.getActiveRosters(conn);
+		    StudentCredentials [] credsa = source.getActiveRosters(conn, TestDeliveryContextListener.clusterName, TestDeliveryContextListener.nodeId);
 			for(int i=0;i<credsa.length;i++) {
 		    	StudentCredentials creds = credsa[i];
 		    	String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();

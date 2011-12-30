@@ -111,27 +111,37 @@ public class ResponseCacheStore implements OASCacheStore {
     		Iterator<BinaryEntry> it = setBinEntries.iterator();
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
+		    conn.setAutoCommit(false);
 		    int counter = 0;
+		    int total = 0;
     		while(it.hasNext()) {
     			BinaryEntry entry = it.next();
-	    		//String testRosterId = (String) entry.getKey();
-	    		//testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
-	    		ItemResponseData ird = (ItemResponseData) entry.getValue();
-	    		if(ird.isReplicate().booleanValue()) {
-		    		//ird.setTestRosterId(testRosterId);
-		    		sink.putItemResponse(conn, ird);
-	    		} else {
-	    			it.remove();
-	    		}
-		    	counter++;
+    			String key = null;
+    			try {
+    				key = (String) entry.getKey();
+		    		ItemResponseData ird = (ItemResponseData) entry.getValue();
+		    		if(ird.isReplicate().booleanValue()) {
+			    		sink.putItemResponse(conn, ird);
+			    		conn.commit();
+		    		} else {
+		    			it.remove();
+		    		}
+			    	counter++;
+	    		} catch (Exception e) {
+					conn.rollback();
+					logger.warn("ManifestCacheStore.storeAll (binary): Error storing manifest to DB for roster " + key + ": " + e.getMessage());
+				}
+	    		total++;
     		}
-    		conn.commit();
-    		logger.info("ResponseCacheStore.storeAll processed " + counter + " records.");
+    		logger.info("ResponseCacheStore.storeAll (binary) processed " + counter + " of " + total + " records.");
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {
     		try {
-    			if(conn != null) conn.close();
+    			if(conn != null) {
+    				conn.setAutoCommit(true);
+    				conn.close();
+    			}
     		} catch (SQLException sqe) {
     			// do nothing
     		}
@@ -144,24 +154,37 @@ public class ResponseCacheStore implements OASCacheStore {
     		Iterator it = mapEntries.keySet().iterator();
     		OASRDBSink sink = RDBStorageFactory.getOASSink();
 		    conn = sink.getOASConnection();
+		    conn.setAutoCommit(false);
+		    int counter = 0;
+		    int total = 0;
     		while(it.hasNext()) {
-	    		String key = (String) it.next();
-	    		ItemResponseData value = (ItemResponseData) mapEntries.get(key);
-	    		//String testRosterId = key;
-	    		//testRosterId = testRosterId.substring(0, testRosterId.indexOf(":"));
-	    		ItemResponseData ird = (ItemResponseData) value;
-	    		//value.setTestRosterId(testRosterId);
-	    		if(value.isReplicate().booleanValue()) {
-	    			sink.putItemResponse(conn, value);
-	    		} else {
-	    			it.remove();
-	    		}
+	    		String key = null;
+	    		try {
+	    			key = (String) it.next();
+		    		ItemResponseData value = (ItemResponseData) mapEntries.get(key);
+		    		ItemResponseData ird = (ItemResponseData) value;
+		    		if(value.isReplicate().booleanValue()) {
+		    			sink.putItemResponse(conn, value);
+			    		conn.commit();
+		    		} else {
+		    			it.remove();
+		    		}
+			    	counter++;
+	    		} catch (Exception e) {
+					conn.rollback();
+					logger.warn("ManifestCacheStore.storeAll: Error storing manifest to DB for roster " + key + ": " + e.getMessage());
+				}
+	    		total++;
     		}
+    		logger.info("ResponseCacheStore.storeAll processed " + counter + " of " + total + " records.");
     	} catch (Exception e) {
     		e.printStackTrace();
     	} finally {
     		try {
-    			if(conn != null) conn.close();
+    			if(conn != null) {
+    				conn.setAutoCommit(true);
+    				conn.close();
+    			}
     		} catch (SQLException sqe) {
     			// do nothing
     		}

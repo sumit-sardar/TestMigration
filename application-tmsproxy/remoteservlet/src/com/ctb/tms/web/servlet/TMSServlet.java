@@ -204,7 +204,7 @@ public class TMSServlet extends HttpServlet {
             
             if (manifest.getTutorialTaken()==null || !"TRUE".equals(manifest.getTutorialTaken())) {
                 manifest.setTutorialTaken("TRUE");
-                oasSink.putManifest(testRosterId, accessCode, manifest);
+                oasSink.putManifest(testRosterId, accessCode, manifest, true);
             }
         } catch (InvalidTestRosterIdException itre) {
             saveResponse.setStatus(noNamespace.AdssvcResponseDocument.AdssvcResponse.CompleteTutorial.Status.INVALID_LSID);
@@ -380,7 +380,7 @@ public class TMSServlet extends HttpServlet {
 				    	ItemResponseData ird = ItemResponseData.AdsTsdToIrd(tsd);
 					    ird.setTestRosterId(Integer.parseInt(rosterId));
 					    ird.setResponseSeqNum(String.valueOf(tsd.getMseq()));
-				    	oasSink.putItemResponse(ird);
+				    	oasSink.putItemResponse(ird, true);
 					    logger.debug("TMSServlet: save: cached response for roster " + rosterId + ", message " + tsd.getMseq() + ": " + tsd.xmlText());
 				    }
 				    
@@ -536,7 +536,7 @@ public class TMSServlet extends HttpServlet {
         // TODO (complete): implement correlation, sequence and subtest/roster status checks for security
         // TODO (complete): update roster status, lastMseq, restartNumber, start/end times, etc. on test events
 		if(rosterId != null && accessCode != null && manifest != null) {
-			oasSink.putManifest(rosterId, accessCode, manifest);
+			oasSink.putManifest(rosterId, accessCode, manifest, true);
     		logger.debug("TMSServlet: save: updated manifest for roster " + rosterId);
 		}
 		return responseDocument.xmlText();
@@ -597,7 +597,7 @@ public class TMSServlet extends HttpServlet {
         	}
         	manifest.setManifest((ManifestData[]) newmanifest.toArray(new ManifestData[0]));
         }
-        oasSink.putAllManifests(testRosterId, new ManifestWrapper(manifesta));
+        oasSink.putAllManifests(testRosterId, new ManifestWrapper(manifesta), true);
     }
 	
 	private boolean checkForIncompleteTabeLocatorSubtests(String testRosterId) throws SQLException, IOException, ClassNotFoundException {
@@ -727,7 +727,7 @@ public class TMSServlet extends HttpServlet {
 	        			rdirt = ItemResponseData.TmsTsdToIrd(restartData.getTsdArray(m));
 	            		for(int j=0;j<rdirt.length;j++) {
 	            			rdirt[j].setTestRosterId(Integer.parseInt(testRosterId));
-	            			oasSink.putItemResponse(rdirt[j]);
+	            			oasSink.putItemResponse(rdirt[j], true);
 	            			netirt.add(rdirt[j]);
 	                    }
 	        		}
@@ -827,9 +827,9 @@ public class TMSServlet extends HttpServlet {
 				manifest.setTutorialTaken("TRUE");
 			}
 		}
-		oasSink.putManifest(testRosterId, creds.getAccesscode(), manifest);
+		oasSink.putManifest(testRosterId, creds.getAccesscode(), manifest, true);
 		creds.setTestRosterId(testRosterId);
-		oasSink.putRosterData(creds, rd);
+		oasSink.putRosterData(creds, rd, true);
 		
 		logger.debug(response.xmlText());
 		

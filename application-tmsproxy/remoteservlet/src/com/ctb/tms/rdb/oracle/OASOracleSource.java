@@ -75,71 +75,68 @@ public class OASOracleSource implements OASRDBSource
 	//private static final String UPDATE_TEST_ROSTER_WITH_RD_SEED_SQL = "update  test_roster set  random_distractor_seed = {rndNumber} where  test_roster_id = {testRosterId}";
 	//private static final String SPEECH_CONTROLLER_SQL = "select cconfig.default_value as speechControllerFlag  from test_roster  ros,  customer  cus,  customer_configuration cconfig,  student_accommodation  accom  where accom.screen_reader = 'T'  and accom.student_id = ros.student_id  and cconfig.customer_configuration_name = 'Allow_Speech_Controller'  and cconfig.customer_id = cus.customer_id  and cus.customer_id = ros.customer_id  and ros.test_roster_id = {testRosterId}";
 	private static final String TEST_PRODUCT_FOR_ADMIN_SQL = "select distinct  productId, productName,  version,  productDescription,  createdBy, createdDateTime,   updatedBy,  updatedDateTime,  activationStatus,  productType,  scoringItemSetLevel,  previewItemSetLevel,  parentProductId,  extProductId,  contentAreaLevel,  internalDisplayName,  secScoringItemSetLevel,  ibsShowCmsId,  printable,  scannable,  keyenterable,  brandingTypeCode,   acknowledgmentsURL,  showStudentFeedback,  staticManifest,  sessionManifest,  subtestsSelectable,  subtestsOrderable,  subtestsLevelsVary,  supportPhoneNumber,  offGradeTestingDisabled, max(resource_uri) as resource_uri from (select distinct  prod.product_id as productId,  prod.product_name as productName,  prod.version as version,  prod.product_description as productDescription,  prod.created_by as createdBy,  prod.created_date_time as createdDateTime,  prod.updated_by as updatedBy,  prod.updated_date_time as updatedDateTime,  prod.activation_status as activationStatus,  prod.product_type as productType,  prod.scoring_item_set_level as scoringItemSetLevel,  prod.preview_item_set_level as previewItemSetLevel,  prod.parent_product_id as parentProductId,  prod.ext_product_id as extProductId,  prod.content_area_level as contentAreaLevel,  prod.internal_display_name as internalDisplayName,  prod.sec_scoring_item_set_level as secScoringItemSetLevel,  prod.ibs_show_cms_id as ibsShowCmsId,  prod.printable as printable,  prod.scannable as scannable,  prod.keyenterable as keyenterable,  prod.branding_type_code as brandingTypeCode,  prod.acknowledgments_url as acknowledgmentsURL,  prod.show_student_feedback as showStudentFeedback,  prod.static_manifest as staticManifest,  prod.session_manifest as sessionManifest,  prod.subtests_selectable as subtestsSelectable,  prod.subtests_orderable as subtestsOrderable,  prod.subtests_levels_vary as subtestsLevelsVary,  cec.support_phone_number as supportPhoneNumber,  prod.off_grade_testing_disabled as offGradeTestingDisabled, null as resource_uri from  test_admin adm, customer_email_config cec, product prod where  prod.product_id = adm.product_id  and cec.customer_id (+) = adm.customer_id  and adm.test_admin_id = ? union select distinct  prod.product_id as productId,  prod.product_name as productName,  prod.version as version,  prod.product_description as productDescription,  prod.created_by as createdBy,  prod.created_date_time as createdDateTime,  prod.updated_by as updatedBy,  prod.updated_date_time as updatedDateTime,  prod.activation_status as activationStatus,  prod.product_type as productType,  prod.scoring_item_set_level as scoringItemSetLevel,  prod.preview_item_set_level as previewItemSetLevel,  prod.parent_product_id as parentProductId,  prod.ext_product_id as extProductId,  prod.content_area_level as contentAreaLevel,  prod.internal_display_name as internalDisplayName,  prod.sec_scoring_item_set_level as secScoringItemSetLevel,  prod.ibs_show_cms_id as ibsShowCmsId,  prod.printable as printable,  prod.scannable as scannable,  prod.keyenterable as keyenterable,  prod.branding_type_code as brandingTypeCode,  prod.acknowledgments_url as acknowledgmentsURL,  prod.show_student_feedback as showStudentFeedback,  prod.static_manifest as staticManifest,  prod.session_manifest as sessionManifest,  prod.subtests_selectable as subtestsSelectable,  prod.subtests_orderable as subtestsOrderable,  prod.subtests_levels_vary as subtestsLevelsVary,  cec.support_phone_number as supportPhoneNumber,  prod.off_grade_testing_disabled as offGradeTestingDisabled, pr.resource_uri as resource_uri from  test_admin adm, customer_email_config cec, product prod, product_resource pr where  prod.product_id = adm.product_id  and cec.customer_id (+) = adm.customer_id  and pr.product_id = prod.product_id and pr.resource_type_code = 'TDCLOGO' and adm.test_admin_id = ?) group by productId, productName,  version,  productDescription,  createdBy, createdDateTime,   updatedBy,  updatedDateTime,  activationStatus,  productType,  scoringItemSetLevel,  previewItemSetLevel,  parentProductId,  extProductId,  contentAreaLevel,  internalDisplayName,  secScoringItemSetLevel,  ibsShowCmsId,  printable,  scannable,  keyenterable,  brandingTypeCode,   acknowledgmentsURL,  showStudentFeedback,  staticManifest,  sessionManifest,  subtestsSelectable,  subtestsOrderable,  subtestsLevelsVary,  supportPhoneNumber,  offGradeTestingDisabled";
-	private static final String ACTIVE_ROSTERS_SQL = "" +
-	"                select distinct * from ( " +
-	"                select " + 
+	private static final String MARK_ACTIVE_ROSTERS_SQL = "update prepop_table set node_id = ? where node_id is null and test_roster_id in (select distinct test_roster_id from (select distinct test_roster_id from prepop_table where node_id is null) where rownum <= " + TestDeliveryContextListener.batchSize + ") ";
+	private static final String SWEEP_ACTIVE_ROSTERS_SQL = "delete from prepop_table where node_id = ?";
+	private static final String GET_ACTIVE_ROSTERS_SQL = "" +
+	"                select distinct " +
 	"                    stu.user_name as username, " +
 	"                    tr.password as password, " +
 	"                    tais.access_code as accessCode, " +
 	"                    'F' as tmsUpdate, " +
-	"                   tr.test_roster_id as testRosterId " + 
+	"                     tr.test_roster_id as testRosterId " +
 	"                from " +
+	"                    prepop_table prepop, " +
 	"                    test_roster tr, " +
 	"                    student stu, " +
 	"                    test_admin_item_set tais, " +
-	"                    item_set_parent isp, " +
-	"                    test_admin ta, " +
-	"                    (select test_roster_id, item_set_id from student_item_set_status where (NVL(tms_update, 'F') = 'F')) tsu " +
+	"                    test_admin ta " +
 	"                where " +
-	"                    tr.test_roster_id = tsu.test_roster_id " +
-	"                    and ta.test_Admin_id = tr.test_Admin_id " + 
-	"                    and sysdate > (TA.LOGIN_START_DATE - 1) " +  
+	"                    prepop.node_id = ? " +
+	"                    and tr.test_roster_id = prepop.test_roster_id " +
+	"                    and ta.test_Admin_id = tr.test_Admin_id " +
+	"                    and sysdate > (TA.LOGIN_START_DATE - 1) " + 
 	"                    and sysdate < (TA.LOGIN_END_DATE + 1) " + 
 	"                    and tr.activation_status = 'AC' " +  
 	"                    and ta.activation_status = 'AC' " + 
 	"                    and tr.test_completion_status in ('SC', 'IN', 'IS', 'IP', 'IC', 'NT') " +
 	"                    and stu.student_id = tr.student_id " +
-	"                    and tais.test_Admin_id = ta.test_admin_id " +
-	"                    and tsu.item_set_id = isp.item_set_id " +
-	"                    and tais.item_set_id = isp.parent_item_set_id " +
-	"                union " +  
-	"                select " + 
-	"                    stu.user_name as username, " +
-	"                    tr.password as password, " +
-	"                    tais.access_code as accessCode, " +
-	"                    'F' as tmsUpdate, " +
-	"                    tr.test_roster_id as testRosterId " + 
-	"                from " +
-	"                    test_roster tr, " +
-	"                    student stu, " +
-	"                    test_admin_item_set tais, " +
-	"                    item_set_parent isp, " +
-	"                    test_admin ta, " +
-	"                    student_item_Set_status siss, " +
-	"                    (select test_roster_id from test_roster where (NVL(tms_update, 'F') = 'F')) tsu " +
-	"                where " +
-	"                    tr.test_roster_id = tsu.test_roster_id " +
-	"                    and ta.test_Admin_id = tr.test_Admin_id " + 
-	"                    and sysdate > (TA.LOGIN_START_DATE - 1) " +  
-	"                    and sysdate < (TA.LOGIN_END_DATE + 1) " + 
-	"                    and tr.activation_status = 'AC' " +  
-	"                    and ta.activation_status = 'AC' " + 
-	"                    and tr.test_completion_status in ('SC', 'IN', 'IS', 'IP', 'IC', 'NT') " +
-	"                    and stu.student_id = tr.student_id " +
-	"                    and tais.test_Admin_id = ta.test_admin_id " +
-	"                    and siss.item_set_id = isp.item_set_id " +
-	"                    and tais.item_set_id = isp.parent_item_set_id " +
-	"                    and siss.test_roster_id = tr.test_roster_id) where rownum <= " + TestDeliveryContextListener.batchSize;
+	"                    and tais.test_Admin_id = ta.test_admin_id";
 	
 	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
 		return OracleSetup.getOASConnection();
 	}
 	
-	public StudentCredentials[] getActiveRosters(Connection con) {
+	public void markActiveRosters(Connection con, String clusterName, int nodeid) {
+		PreparedStatement stmt1 = null;
+    	try {
+    		String prepopTable = "TMS_PRIM_CACHE_PREPOP";
+    		if(clusterName.endsWith("DR")) {
+    			prepopTable = "TMS_SEC_CACHE_PREPOP";
+    		}
+    		stmt1 = con.prepareStatement(MARK_ACTIVE_ROSTERS_SQL.replaceAll("prepop_table", prepopTable));
+    		stmt1.setInt(1, nodeid);
+			stmt1.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+	}
+	
+	public StudentCredentials[] getActiveRosters(Connection con, String clusterName, int nodeid) {
     	PreparedStatement stmt1 = null;
     	int recordCount = 0;
     	try {
-    		stmt1 = con.prepareStatement(ACTIVE_ROSTERS_SQL);
+    		String prepopTable = "TMS_PRIM_CACHE_PREPOP";
+    		if(clusterName.endsWith("DR")) {
+    			prepopTable = "TMS_SEC_CACHE_PREPOP";
+    		}
+    		stmt1 = con.prepareStatement(GET_ACTIVE_ROSTERS_SQL.replaceAll("prepop_table", prepopTable));
+    		stmt1.setInt(1, nodeid);
 			ResultSet rs1 = stmt1.executeQuery();
 			ArrayList<StudentCredentials> dataList = new ArrayList<StudentCredentials>();
 			while (rs1.next()) {
@@ -157,6 +154,27 @@ public class OASOracleSource implements OASRDBSource
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
+		} finally {
+			try {
+				if(stmt1 != null) stmt1.close();
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
+	}
+	
+	public void sweepActiveRosters(Connection con, String clusterName, int nodeid) {
+		PreparedStatement stmt1 = null;
+    	try {
+    		String prepopTable = "TMS_PRIM_CACHE_PREPOP";
+    		if(clusterName.endsWith("DR")) {
+    			prepopTable = "TMS_SEC_CACHE_PREPOP";
+    		}
+    		stmt1 = con.prepareStatement(SWEEP_ACTIVE_ROSTERS_SQL.replaceAll("prepop_table", prepopTable));
+    		stmt1.setInt(1, nodeid);
+			stmt1.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
 		} finally {
 			try {
 				if(stmt1 != null) stmt1.close();

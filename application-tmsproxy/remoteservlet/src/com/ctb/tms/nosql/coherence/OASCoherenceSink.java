@@ -46,14 +46,14 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		}
 	}
 	
-	public void putRosterData(StudentCredentials creds, RosterData rosterData) throws IOException {
+	public void putRosterData(StudentCredentials creds, RosterData rosterData, boolean replicate) throws IOException {
 		String key = creds.getUsername() + ":" + creds.getPassword() + ":" + creds.getAccesscode();
-		rosterData.setReplicate(new Boolean(true));
+		rosterData.setReplicate(replicate);
 		rosterData.setCacheTime(System.currentTimeMillis());
 		rosterCache.put(key, rosterData);
 	}
 	
-	public void putManifest(String testRosterId, String accessCode, Manifest manifest) throws IOException {
+	public void putManifest(String testRosterId, String accessCode, Manifest manifest, boolean replicate) throws IOException {
 		String key = testRosterId;
 		ManifestWrapper wrapper = (ManifestWrapper) manifestCache.get(key);
 		ArrayList newManifests = new ArrayList();
@@ -124,24 +124,24 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		}
 		wrapper.setManifests(manifests);
 		if(wrapper != null && manifests != null && manifests.length > 0) {
-			wrapper.setReplicate(new Boolean(true));
+			wrapper.setReplicate(replicate);
 			wrapper.setCacheTime(System.currentTimeMillis());
 			manifestCache.put(key, wrapper);
 		}
 	}
 	
-	public void putAllManifests(String testRosterId, ManifestWrapper wrapper) throws IOException {
+	public void putAllManifests(String testRosterId, ManifestWrapper wrapper, boolean replicate) throws IOException {
 		String key = testRosterId;
 		if(wrapper != null && wrapper.getManifests() != null && wrapper.getManifests().length > 0) {
-			wrapper.setReplicate(new Boolean(true));
+			wrapper.setReplicate(replicate);
 			wrapper.setCacheTime(System.currentTimeMillis());
 			manifestCache.put(key, wrapper);
 		}
 	}
 	
-	public void putItemResponse(ItemResponseData ird) throws IOException {
+	public void putItemResponse(ItemResponseData ird, boolean replicate) throws IOException {
 		String key = ird.getTestRosterId() + ":" + ird.getResponseSeqNum();
-		ird.setReplicate(new Boolean(true));
+		ird.setReplicate(replicate);
 		ird.setCacheTime(System.currentTimeMillis());
 		if("CR".equals(ird.getItemType()) && (ird.getConstructedResponse() == null || "".equals(ird.getConstructedResponse().trim()))) {
 			ird.setConstructedResponse(ird.getResponse());
