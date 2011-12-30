@@ -69,6 +69,9 @@ public class ManageStudent extends CTBBean
     private String testPurpose;
     //END- (LLO82) StudentManagement Changes For LasLink product
     
+    private String orgNodeName;
+    private Integer orgNodeId;
+    
 	/**
 	 * @return the testPurpose
 	 */
@@ -602,6 +605,18 @@ public class ManageStudent extends CTBBean
 	 */
 	public void setMaskingTool(String maskingTool) {
 		this.maskingTool = maskingTool;
+	}
+	public String getOrgNodeName() {
+		return orgNodeName;
+	}
+	public void setOrgNodeName(String orgNodeName) {
+		this.orgNodeName = orgNodeName;
+	}
+	public Integer getOrgNodeId() {
+		return orgNodeId;
+	}
+	public void setOrgNodeId(Integer orgNodeId) {
+		this.orgNodeId = orgNodeId;
 	}
 	
     
