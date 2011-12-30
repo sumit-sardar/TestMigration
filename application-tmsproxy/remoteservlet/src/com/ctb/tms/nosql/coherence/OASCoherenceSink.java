@@ -79,6 +79,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 		int latestMseq = -1;
 		int restartCount = -1;
 		int cid = 0;
+		int randomSeed = 0;
 		String rosterStatus = "";
 		String tutorialTaken = null;
 		boolean allcoManifest = true;
@@ -101,6 +102,9 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			if("TRUE".equals(manifests[i].getTutorialTaken())) {
 				tutorialTaken = "TRUE";
 			}
+			if(manifests[i].getRandomDistractorSeed() != 0) {
+				randomSeed = manifests[i].getRandomDistractorSeed();
+			}
 			if("IP".equals(manifest.getRosterCompletionStatus()) && !accessCode.equals(manifests[i].getAccessCode())) {
 				ManifestData[] mda = manifests[i].getManifest();
 				for(int n=0;n<mda.length;n++) {
@@ -116,6 +120,7 @@ public class OASCoherenceSink implements OASNoSQLSink {
 			manifests[i].setRosterRestartNumber(restartCount);
 			manifests[i].setRosterLastMseq(latestMseq);
 			manifests[i].setRosterCorrelationId(cid);
+			manifests[i].setRandomDistractorSeed(randomSeed);
 		}
 		wrapper.setManifests(manifests);
 		if(wrapper != null && manifests != null && manifests.length > 0) {

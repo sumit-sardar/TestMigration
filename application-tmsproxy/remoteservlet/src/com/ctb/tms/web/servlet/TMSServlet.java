@@ -700,15 +700,12 @@ public class TMSServlet extends HttpServlet {
             	//newmanifest.add(manifesta[i]);
             //}
         }
-        /*if(newmanifest.size() < 1) {
+        if(loginResponse.getManifest().sizeOfScoArray() < 1) {
 			response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
             loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
             loginResponse.addNewStatus().setStatusCode(Constants.StudentLoginResponseStatus.TEST_SESSION_COMPLETED_STATUS);
             return response.xmlText();
-		} else {
-			manifest.setManifest((ManifestData[])newmanifest.toArray(new ManifestData[0]));
 		}
-        manifesta = manifest.getManifest(); */
         
         boolean gotRestart = false;
         if(restartCount > 0) {
@@ -777,12 +774,13 @@ public class TMSServlet extends HttpServlet {
         }
 
         // TODO (complete): handle random distractor seed
-		if (rd.getAuthData().getRandomDistractorSeedNumber() != 0) {
-			 loginResponse.setRandomDistractorSeedNumber(new BigInteger(String.valueOf( rd.getAuthData().getRandomDistractorSeedNumber())));
-			 manifest.setRandomDistractorSeed(rd.getAuthData().getRandomDistractorSeedNumber());
+        int seed = rd.getAuthData().getRandomDistractorSeedNumber();
+		if (seed != 0) {
+			 loginResponse.setRandomDistractorSeedNumber(BigInteger.valueOf(seed));
+			 manifest.setRandomDistractorSeed(seed);
 		 }  else {
 			 if ("Y".equals(manifest.getManifest()[0].getRandomDistractorStatus())) {
-				 int seed = manifest.getRandomDistractorSeed();
+				 seed = manifest.getRandomDistractorSeed();
 				 if(seed == 0) {
 					 seed = generateRandomNumber();
 					 manifest.setRandomDistractorSeed(seed);
@@ -818,11 +816,15 @@ public class TMSServlet extends HttpServlet {
 		rd.getAuthData().setRestartNumber(newRestartCount);
 		
 		if(loginResponse.getTutorial() != null) {
-			if(manifest.getTutorialTaken() == null) {
-				manifest.setTutorialTaken(0==loginResponse.getTutorial().getDeliverTutorial().intValue()?"TRUE":null);
+			if(restartCount == 0) {
+				if("TRUE".equals(manifest.getTutorialTaken())) {
+					loginResponse.getTutorial().setDeliverTutorial(BigInteger.valueOf(0));
+				} else if(0 == loginResponse.getTutorial().getDeliverTutorial().intValue()) {
+					manifest.setTutorialTaken("TRUE");
+				}
 			} else {
-				int tut = "TRUE".equals(manifest.getTutorialTaken())?0:1;
-				loginResponse.getTutorial().setDeliverTutorial(BigInteger.valueOf(tut));
+				loginResponse.getTutorial().setDeliverTutorial(BigInteger.valueOf(0));
+				manifest.setTutorialTaken("TRUE");
 			}
 		}
 		oasSink.putManifest(testRosterId, creds.getAccesscode(), manifest);
