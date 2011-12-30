@@ -44,7 +44,7 @@
 							</div>
 						</div>
 						<div id="viewStatus" style="float:right;padding-left:5px;margin-top: 7px;margin-bottom: 5px;">
-							<a href="#" id="bulkMoveButton" onclick="javascript:openBulkMovePopup(); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['student.bulkMove.moveStudent.Button']}"/></a>
+							<a href="#" id="bulkMoveButton" onclick="javascript:openBulkMovePopup(this); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['student.bulkMove.moveStudent.Button']}"/></a>
 						</div> 
 					</div> 
 				</td>

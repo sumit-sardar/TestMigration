@@ -272,7 +272,10 @@ function populateBulkMoveStudentGrid() {
 }
 
 
-function openBulkMovePopup() {
+function openBulkMovePopup(element) {
+	if (isButtonDisabled(element))
+		return true;
+		
 	removeBulkPopupMessage();
 	isPopUp = true;
 	createMultiNodeBulkMoveTree(orgTreeHierarchy);
