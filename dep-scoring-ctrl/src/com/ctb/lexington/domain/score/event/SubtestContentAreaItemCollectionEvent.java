@@ -12,6 +12,7 @@ public class SubtestContentAreaItemCollectionEvent extends Event {
     private final Long itemSetId;
     private final Map itemContentAreasByItemId;
     private final IndexSetMap contentAreasIndex;
+    private final String itemSetName; //Added for tabe adaptive
 
     public SubtestContentAreaItemCollectionEvent(final Long testRosterId, final Long itemSetId,
             final Map itemContentAreasByItemId) {
@@ -19,6 +20,16 @@ public class SubtestContentAreaItemCollectionEvent extends Event {
         this.itemSetId = itemSetId;
         this.itemContentAreasByItemId = itemContentAreasByItemId;
         this.contentAreasIndex = createContentAreasIndex(itemContentAreasByItemId.values());
+        this.itemSetName = null;
+    }
+    
+    public SubtestContentAreaItemCollectionEvent(final Long testRosterId, final Long itemSetId,
+            final Map itemContentAreasByItemId, final String itemSetName) {
+        super(testRosterId);
+        this.itemSetId = itemSetId;
+        this.itemContentAreasByItemId = itemContentAreasByItemId;
+        this.contentAreasIndex = createContentAreasIndex(itemContentAreasByItemId.values());
+        this.itemSetName = itemSetName;
     }
 
     private static IndexSetMap createContentAreasIndex(final Collection contentAreas) {
@@ -44,4 +55,8 @@ public class SubtestContentAreaItemCollectionEvent extends Event {
     public Set getItemContentAreasFor(final String contentArea) {
         return contentAreasIndex.getAll(contentArea);
     }
+
+	public String getItemSetName() {
+		return itemSetName;
+	}
 }

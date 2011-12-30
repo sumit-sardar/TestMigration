@@ -53,6 +53,13 @@ public class TAScorer extends STScorer {
        // System.out.println("TAScorer -> ContentAreaDerivedScoreEvent -> event.getScaleScore()==" + event.getScaleScore());
     }
 	
+	public void onEvent(PrimaryObjectivePercentMasteryEvent popmEvent) {
+        StsTestResultFactData factData = getResultHolder().getStsTestResultFactData();
+        //System.out.println("popmEvent.getContentAreaName() -> " + popmEvent.getContentAreaName() + "    ----    " + "popmEvent.getPercentMastery() -> " + popmEvent.getPercentMastery());
+        StsTestResultFactDetails details = factData.get(popmEvent.getContentAreaName());
+        details.setPercentObjectiveMastery(new Long(popmEvent.getPercentMastery()));
+    }
+	
 	 public void onEvent(SubtestContentAreaCompositeScoreEvent event) {
 		 //System.out.println("TAScorer -> ContentAreaDerivedScoreEvent -> event.getScaleScore()**<==>**" + event.getScaleScore());
 	        StsTotalStudentScoreDetail detail = getResultHolder().getStsTotalStudentScoreData().get(event.getType());

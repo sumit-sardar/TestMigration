@@ -36,9 +36,14 @@ public class SubtestContentAreaItemCollectionCalculator extends Calculator {
                 });
 
         itemsByContentArea.addAll(itemsByContentAreaQueryResults);
+        if(scorer.getResultHolder().getAdminData().getProductId() != 8000) {
+        	channel.send(new SubtestContentAreaItemCollectionEvent(event.getTestRosterId(),
+                    DatabaseHelper.asLong(event.getItemSetId()), itemsByContentArea));
+        } else {
 
         channel.send(new SubtestContentAreaItemCollectionEvent(event.getTestRosterId(),
-                DatabaseHelper.asLong(event.getItemSetId()), itemsByContentArea));
+                DatabaseHelper.asLong(event.getItemSetId()), itemsByContentArea, event.getItemSetName()));
+        }
     }
 
     protected List getItemsByContentArea(Integer itemSetId, Integer productId) {
