@@ -11,6 +11,8 @@ public class ObjectiveNumberCorrectEvent extends ObjectiveEvent {
             final int numberOfItems, final int numberCorrect, final int numberIncorrect,
             final int numberAttempted, final int numberUnattempted, Long subtestId) {
         super(testRosterId, objectiveId, subtestId);
+
+    	System.out.println("Inside ObjectiveNumbercorrectEvent for obj : " + objectiveId.toString());
         this.numberOfItems = numberOfItems;
         this.numberCorrect = numberCorrect;
         this.numberIncorrect = numberIncorrect;
