@@ -111,6 +111,7 @@ public class PrimaryObjectivePercentMasteryCalculator extends Calculator {
     }
 
     private ContentAreaInfo getContentAreaScores(Long objectiveId) {
+    	System.out.println("getContentAreaScores called for : " + objectiveId.toString());
         for (Iterator i = contentAreaScores.iterator(); i.hasNext();) {
             ContentAreaInfo info = (ContentAreaInfo) i.next();
             if (info.objectiveIds.contains(objectiveId))
@@ -143,8 +144,11 @@ public class PrimaryObjectivePercentMasteryCalculator extends Calculator {
         PrimaryObjective[] primObjs = scorer.getResultHolder().getCurriculumData().getPrimaryObjectives();
         if(primObjs != null) {
         	for (int i= 0; i < primObjs.length; i++) {
-        		if(primObjs[i].getContentAreaId().longValue() == subtestId.longValue())
+        		if(primObjs[i].getContentAreaId().longValue() == subtestId.longValue()){
         			result.add(primObjs[i].getPrimaryObjectiveId());
+        			System.out.println("Adding Objective ID :" + primObjs[i].getPrimaryObjectiveId().toString());
+        		}
+        			
         	}
         }
 
