@@ -41,7 +41,7 @@ public class OASOracleSink implements OASRDBSink {
 		return OracleSetup.getOASConnection();
 	}
 	
-	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, Exception {		
+	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, SQLException {		
 		String response = ird.getResponse();
 		String CRresponse = null;
 		String responseType = ird.getResponseType();
@@ -89,7 +89,7 @@ public class OASOracleSink implements OASRDBSink {
 		logger.debug("\n***** OASOracleSink: putItemResponse: " + ird.getTestRosterId() + ", mseq: " + ird.getResponseSeqNum() + ", item: " + ird.getItemId() + ", item type: " + ird.getItemType() + ", response type: " + responseType + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + response + ", CR response: " + CRresponse);
 	}
 
-	private void storeResponse(Connection con, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked) throws Exception {
+	private void storeResponse(Connection con, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked) throws SQLException {
 		logger.debug("Called storeResponse for roster: " + testRosterId + ", item: " + itemId);
 		PreparedStatement stmt1 = null;
     	try {
@@ -105,7 +105,7 @@ public class OASOracleSink implements OASRDBSink {
 
 			stmt1.executeUpdate();
 			logger.debug("OASOracleSink: Stored response record in DB for roster " + testRosterId + ", mseq " + mseq + ", response: " + response);
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if(e.getMessage().indexOf("unique constraint") >= 0 ) {
 				logger.debug("dupe response for roster: " + testRosterId + ", item: " + itemId);
 			} else {
@@ -121,7 +121,7 @@ public class OASOracleSink implements OASRDBSink {
 		}
 	}
 	
-	public void putManifest(Connection conn, String testRosterId, Manifest[] manifests) throws Exception {
+	public void putManifest(Connection conn, String testRosterId, Manifest[] manifests) throws SQLException {
 		PreparedStatement stmt1 = null;
 		PreparedStatement stmt2 = null;
 		PreparedStatement stmt3 = null;
@@ -228,22 +228,20 @@ public class OASOracleSink implements OASRDBSink {
 		    		stmt4 = null;
 				}
     		}
-    	} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
+    	} finally {
 			try {
 				if(stmt1 != null) stmt1.close();
 				if(stmt2 != null) stmt2.close();
 				if(stmt3 != null) stmt3.close();
 				if(stmt4 != null) stmt4.close();
 				if(stmt5 != null) stmt5.close();
-			} catch (Exception e) {
+			} catch (SQLException e) {
 				// do nothing
 			}
 		}
 	}
 	
-	private void storeCRResponse(Connection conn, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked, boolean audioItem) throws Exception {
+	private void storeCRResponse(Connection conn, int testRosterId, int itemSetId, String itemId, String response, float duration, String mseq, String studentMarked, boolean audioItem) throws SQLException {
 		PreparedStatement stmt1 = null;
 		PreparedStatement stmt2 = null;
 		PreparedStatement stmt3 = null;
@@ -281,11 +279,10 @@ public class OASOracleSink implements OASRDBSink {
 
 			
 			logger.debug("OASOracleSink: Stored CR response record in DB for roster " + testRosterId + ", mseq " + mseq);
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if(e.getMessage().indexOf("unique constraint") >= 0 ) {
 				// do nothing, dupe response
 			} else {
-				e.printStackTrace();
 				throw(e);
 			}
 		} finally {

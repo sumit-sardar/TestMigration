@@ -11,7 +11,7 @@ import com.ctb.tms.bean.login.StudentCredentials;
 public interface OASRDBSink {
 	public Connection getOASConnection() throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException;
 	
-	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, Exception;
+	public void putItemResponse(Connection conn, ItemResponseData ird) throws NumberFormatException, SQLException;
 
 	public void putManifest(Connection conn, String testRosterId, Manifest[] manifest) throws Exception;
 	

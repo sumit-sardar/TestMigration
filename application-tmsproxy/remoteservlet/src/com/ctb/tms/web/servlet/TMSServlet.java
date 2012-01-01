@@ -290,7 +290,7 @@ public class TMSServlet extends HttpServlet {
         for(int i=0;i<feedback.length;i++) {
             feedbackResponse.getTitle().addNewSco().setId(String.valueOf(feedback[i].getId()));
             feedbackResponse.getTitle().getScoArray()[i].setTitle(feedback[i].getTitle());
-            feedbackResponse.getTitle().getScoArray()[i].setSeq(String.valueOf(feedback[i].getScoOrder()));
+            feedbackResponse.getTitle().getScoArray()[i].setSeq(String.valueOf(i + 1));
             feedbackResponse.getLms().addNewSco().setScid(String.valueOf(feedback[i].getId()));
             feedbackResponse.getLms().getScoArray()[i].addNewLsv().addNewCmiCore().setScoreRaw(new BigDecimal(feedback[i].getRawScore()));
             feedbackResponse.getLms().getScoArray()[i].getLsv().getCmiCore().setScoreMax(new BigDecimal(feedback[i].getMaxScore()));
