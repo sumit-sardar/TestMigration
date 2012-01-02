@@ -1226,7 +1226,7 @@ function fillselectedOrgNode( elementId, orgList) {
 														orgs = assignedOrgNodeIds.split(",");
 														}
 														else {
-														orgs = assignedOrgNodeIds;
+														orgs = [assignedOrgNodeIds];
 													}
 													
 													if(orgs.length > 0 || orgs != null || orgs != "undefined") {
