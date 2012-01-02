@@ -18,9 +18,11 @@
 	        			 	</li>
         			 	</ctb:auth>
     				 </c:if>
+    				 <c:if test="${sessionScope.hasProgramStatusConfigured}">
         			 <li>
         				<a href="#" id="programStatusLink" onClick="gotoMenuAction('assessments.do', 'programStatusLink');">Program Status</a>
         			 </li>
+        			 </c:if>
         		</ul>
         	</li>
         	<li id="organizations" class="simpleMenu"><a href="#">Organizations</a>        	
@@ -65,16 +67,20 @@
         					<li><a href="#" id="downloadTestLink" onClick="gotoMenuAction('services.do', 'downloadTestLink');">Download Test</a></li>
         				</ul>
         			 </li>
-        			 <li>
-        			 	<a href="#" style="float:left;">User/Student Load</a><span class='ui-menuicon ui-icon-triangle-1-e' style="float:right;"></span>        			 	
-        				<ul>
-        					<li><a href="#" id="downloadDataLink" onClick="gotoMenuAction('services.do', 'downloadDataLink');">Import</a></li>
-        					<li><a href="#" id="uploadDataLink" onClick="gotoMenuAction('services.do', 'uploadDataLink');">Export</a></li>
-        				</ul>
-        			 </li>
+        			 <c:if test="${sessionScope.hasUploadDownloadConfigured}">	
+	        			 <li>
+	        			 	<a href="#" style="float:left;">User/Student Load</a><span class='ui-menuicon ui-icon-triangle-1-e' style="float:right;"></span>        			 	
+	        				<ul>
+	        					<li><a href="#" id="downloadDataLink" onClick="gotoMenuAction('services.do', 'downloadDataLink');">Import</a></li>
+	        					<li><a href="#" id="uploadDataLink" onClick="gotoMenuAction('services.do', 'uploadDataLink');">Export</a></li>
+	        				</ul>
+	        			 </li>
+        			 </c:if>	
+        			 <c:if test="${sessionScope.hasLicenseConfigured}">	
         			 <li>
         				<a href="#" id="manageLicensesLink" onClick="gotoMenuAction('services.do', 'manageLicensesLink');">Manage Licenses</a>
         			 </li>
+        			 </c:if>
         		</ul>
         	</li>
         </ul>		
