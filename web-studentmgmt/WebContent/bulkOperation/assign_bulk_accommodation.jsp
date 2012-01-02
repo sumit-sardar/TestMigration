@@ -24,7 +24,7 @@
     <tr class="transparent">
         <td style="border-color : #2E6E9E">
     	
-		<table style="clear:both;float:left" width= "100%"> 
+		<table style="clear:both;" width= "100%"> 
 		   	<tr >
 		   		<td >
 	       			<div id="ShowButtons" style="width:1225px; display:none; float:left;">
