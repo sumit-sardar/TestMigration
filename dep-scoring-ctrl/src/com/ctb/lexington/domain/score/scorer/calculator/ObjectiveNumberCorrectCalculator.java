@@ -258,6 +258,7 @@ public class ObjectiveNumberCorrectCalculator extends Calculator {
     }
 
     public void onEvent(SubtestEndedEvent event) {
+    	isTabeAdaptive = scorer.getResultHolder().getAdminData().getProductId() == 8000?true:false;
     	if(!isTabeAdaptive) {
 	        validateItemSetBeingProcessed(event.getItemSetId(), "Response received for wrong itemset.");
 	
