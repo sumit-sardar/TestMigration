@@ -329,7 +329,7 @@ public class TABEAdaptCompositeScoreCalculator extends AbstractDerivedScoreCalcu
     
     private void publishScores(final String scoreType, final Long testRosterId,
             final CompositeScoreHolder scores) {
-        if (null != scores.scaleScore || 0 != scores.pointsPossible || scores.hasPredictedGed()) {
+        //if (null != scores.scaleScore || 0 != scores.pointsPossible || scores.hasPredictedGed()) {
             channel.send(new SubtestContentAreaCompositeScoreEvent(testRosterId, scoreType,
                     scores.scaleScore, scores.normalCurveEquivalent, scores.gradeEquivalent,
                     scores.nationalStanine, scores.nationalPercentile, pNormGroup, pNormYear,
@@ -338,7 +338,7 @@ public class TABEAdaptCompositeScoreCalculator extends AbstractDerivedScoreCalcu
                     scores.expectedAverageGed, scores.getPointsObtained(), scores
                             .getPointsAttempted(), scores.getPointsPossible(), scores
                             .getPercentObtained(), null, scores.validScore, null));
-        }
+        //}
     }
     
     
