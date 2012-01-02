@@ -83,7 +83,7 @@ public class TAScorer extends STScorer {
 	        detail.setNormYear(event.getNormYear());
 	        detail.setValidScore(event.getValidScore());
 
-	        if (event.hasExpectedGedScores()) {
+	       // if (event.hasExpectedGedScores()) {
 	            StudentPredictedScoresData predictedGedScores = getResultHolder().getOrCreateStudentPredictedScoresData();
 	            if (event.getExpectedAverageGed()!=null)
 	                predictedGedScores.setExpectedGedAverage(event.getExpectedAverageGed());
@@ -97,7 +97,7 @@ public class TAScorer extends STScorer {
 	                predictedGedScores.setExpectedGedSocialStudies(event.getExpectedSocialStudiesGed());
 	            if (event.getExpectedWritingGed()!=null)
 	                predictedGedScores.setExpectedGedWriting(event.getExpectedWritingGed());
-	        }
+	       // }
 	    }
 
 }

@@ -64,6 +64,11 @@ public class StudentPredictedScoresController {
                         newFact.setRecActivityid(new Long(2));
                     else newFact.setRecActivityid(new Long(3));
                     facts.add(newFact);
+                } else { //Changed for deleting the data from fact table if the student is invalidated for adaptive
+                	IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
+                	newFact.setPredSubjectid(new Long(1));
+                	newFact.setCurrentResultid(new Long (2));
+                	facts.add(newFact);
                 }
                 if(predData.getExpectedGedMath() != null) {
                     IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
@@ -75,6 +80,11 @@ public class StudentPredictedScoresController {
                         newFact.setRecActivityid(new Long(2));
                     else newFact.setRecActivityid(new Long(3));
                     facts.add(newFact);
+                } else {
+                	IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
+                	newFact.setPredSubjectid(new Long(2));
+                	newFact.setCurrentResultid(new Long (2));
+                	facts.add(newFact);
                 }
                 if(predData.getExpectedGedReading() != null) {
                     IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
@@ -86,6 +96,11 @@ public class StudentPredictedScoresController {
                         newFact.setRecActivityid(new Long(2));
                     else newFact.setRecActivityid(new Long(3));
                     facts.add(newFact);
+                } else {
+                	IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
+                	newFact.setPredSubjectid(new Long(3));
+                	newFact.setCurrentResultid(new Long (2));
+                	facts.add(newFact);
                 }
                 if(predData.getExpectedGedScience() != null) {
                     IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
@@ -97,6 +112,11 @@ public class StudentPredictedScoresController {
                         newFact.setRecActivityid(new Long(2));
                     else newFact.setRecActivityid(new Long(3));
                     facts.add(newFact);
+                } else {
+                	IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
+                	newFact.setPredSubjectid(new Long(4));
+                	newFact.setCurrentResultid(new Long (2));
+                	facts.add(newFact);
                 }
                 if(predData.getExpectedGedSocialStudies() != null) {
                     IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
@@ -108,6 +128,11 @@ public class StudentPredictedScoresController {
                         newFact.setRecActivityid(new Long(2));
                     else newFact.setRecActivityid(new Long(3));
                     facts.add(newFact);
+                } else {
+                	IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
+                	newFact.setPredSubjectid(new Long(5));
+                	newFact.setCurrentResultid(new Long (2));
+                	facts.add(newFact);
                 }
                 if(predData.getExpectedGedWriting() != null) {
                     IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
@@ -119,6 +144,11 @@ public class StudentPredictedScoresController {
                         newFact.setRecActivityid(new Long(2));
                     else newFact.setRecActivityid(new Long(3));
                     facts.add(newFact);
+                } else {
+                	IrsTABEPredSubjectFactData newFact = new IrsTABEPredSubjectFactData();
+                	newFact.setPredSubjectid(new Long(6));
+                	newFact.setCurrentResultid(new Long (2));
+                	facts.add(newFact);
                 }
             Iterator factIter = facts.iterator();
             while(factIter.hasNext()) {
