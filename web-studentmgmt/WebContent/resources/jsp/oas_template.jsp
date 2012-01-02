@@ -39,7 +39,7 @@
     <link href="<%=request.getContextPath()%>/resources/css/ui.jqgrid.css" type="text/css" rel="stylesheet" />
    
     <link href="<%=request.getContextPath()%>/resources/css/autosuggest.css" type="text/css" rel="stylesheet" />
-    
+    <link href="<%=request.getContextPath()%>/resources/css/niftyCorners.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/roundCorners.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/main.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/menu.css" type="text/css" rel="stylesheet" />
@@ -57,6 +57,7 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/tabs.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/dialogs.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.corners.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/niftycube.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.dropdownPlain.js"></script>
     

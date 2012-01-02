@@ -64,19 +64,28 @@ ul.sf-menu li li li.sfHover ul {
 	z-index:100;
 }
 .sf-menu li a {
-	border-left:	1px solid #222222;	
-	padding: 		7px 27px 6px 12px;
+	padding: 0px 27px 0px 12px;
 	text-decoration:none;
+	margin-top:5px;
+	height:20px;
 }
 
-.sf-menu li li a {
+.sf-menu li a {
+	border-left:	1px solid #222222;
+}	
+
+.sf-menu li li  a{
 	border-left:	none;
+	margin-top:0px;
+	height:10px;
 }
-.sf-menu li li li a {
+.sf-menu li li li  a{
 	border-left:	none;
+	margin-top:0px;
+	height:10px;
 }
 
-.sf-menu li:first-child a {
+.sf-menu li:first-child  a{
 	border-left:none;
 }
 .sf-menu a, .sf-menu a:visited  { /* visited pseudo selector so IE6 applies text colour*/
@@ -91,30 +100,25 @@ ul.sf-menu li li li.sfHover ul {
 .sf-menu li li {
 	/* border-bottom:	1px solid #eaf4fd; */
 	z-index:1000;
+	padding :10px 0px 10px 0px;
 }
+
+.sf-menu li li:hover,.sf-menu li li li:hover{
+	background:		#E9E9E9;
+}
+
 .sf-menu li li li {
 	background:		#D4ECFF;
+	padding :12px 0px 12px 0px;
 	/* border-top:	1px solid #eaf4fd;
 	border-left:	1px solid #eaf4fd;
 	border-bottom:	1px solid #eaf4fd;*/
 }
 
-.sf-menu li  a, .sf-menu li a:visited {
+.sf-menu li  {
 	background:		#D4ECFF;
 }
-	
-.sf-menu li li a {
-	font-weight:bold;
-}
-.sf-menu li li li a {
-	font-weight:bold;
-}
 
-
-.sf-menu li:hover a:hover, .sf-menu li.sfHover a:hover {
-	background:		#eaf4fd;
-	outline:		0;
-}
 
 /*** arrows **/
 .sf-menu a.sf-with-ul {
@@ -133,7 +137,7 @@ ul.sf-menu li li li.sfHover ul {
 	background:		url('images/arrows-blue2.png') no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only */
 }
 a > .sf-sub-indicator {  /* give all except IE6 the correct values */
-	top:			.8em;
+	top:			0px;
 	background-position: -10px -100px; /* use translucent arrow for modern browsers*/
 }
 /* apply hovers to modern browsers */
@@ -176,8 +180,29 @@ li.sfHover > a > .sf-sub-indicator {
 	position:static !important;
 }
 .roundedBorder{
-	-moz-border-radius-topleft: 10px;
-	-moz-border-radius-topright: 10px;
-	-webkit-border-top-right-radius: 10px;
-	-webkit-border-top-left-radius: 10px; 
+	background-color: #d4ecff;
+	height:25px;
+}
+.roundedBorder  div {
+	/* display:inline-block;*/
+}
+.roundedBorder   a{
+	height:20px !important;
+	margin-top:0px;
+}
+.roundedBorder   li  a{
+	height:10px !important;
+	margin-top:0px;
+}
+.roundedBorder   li li  a{
+	height:10px !important;
+	margin-top:0px;
+}
+
+.sf-menu {
+	background-color: #FFF;
+}
+
+.ui-userdata {
+	background: none !important;
 }
