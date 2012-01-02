@@ -159,7 +159,7 @@ function setMenuActive(topMenuId, menuId)
 	
 	var topMenu = document.getElementById(topMenuId);
 	topMenu.className = "simpleMenu active";
-	if($.browser.mozilla){
+	if($.browser.mozilla || $.browser.safari){
 		$("#bodySection").css('padding-top','12px');
 	}
 	$('.simpleMenu').corners('top'); 

@@ -436,7 +436,10 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
         
     	this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigurations));
     	
-    	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
+    	this.getSession().setAttribute("hasUploadDownloadConfigured", 
+        		new Boolean( hasUploadDownloadConfig(customerConfigurations).booleanValue() && adminUser));
+        
+        this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	
     	this.getRequest().setAttribute("isTopLevelUser",isTopLevelUser(laslinkCustomer));
     	
@@ -567,6 +570,23 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
 		}
 		return new Boolean(hasBulkStudentConfigurable);           
 	}
+	
+	private Boolean hasUploadDownloadConfig(CustomerConfiguration[] customerConfigurations)
+    {
+        Boolean hasUploadDownloadConfig = Boolean.FALSE;
+        if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload_Download") && 
+						cc.getDefaultValue().equals("T")) {
+					hasUploadDownloadConfig = true; 
+					break;
+				}
+			}
+		}
+        return new Boolean(hasUploadDownloadConfig);
+    }
 
 	private boolean isTopLevelUser(boolean isLasLinkCustomerVal){
 

@@ -1175,7 +1175,10 @@ public class UserOperationController extends PageFlowController
         
      	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs).booleanValue() && adminUser);
      	
-    	this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));    	
+     	this.getSession().setAttribute("hasUploadDownloadConfigured", 
+        		new Boolean( hasUploadDownloadConfig(customerConfigs).booleanValue() && adminUser));
+        
+        this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));    	
     	
     	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	
@@ -1246,6 +1249,23 @@ public class UserOperationController extends PageFlowController
         }
        
         return new Boolean(hasLicenseConfiguration);
+    }
+    
+    private Boolean hasUploadDownloadConfig(CustomerConfiguration[] customerConfigurations)
+    {
+        Boolean hasUploadDownloadConfig = Boolean.FALSE;
+        if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload_Download") && 
+						cc.getDefaultValue().equals("T")) {
+					hasUploadDownloadConfig = true; 
+					break;
+				}
+			}
+		}
+        return new Boolean(hasUploadDownloadConfig);
     }
     
     private Boolean customerHasScoring(CustomerConfiguration [] customerConfigs)

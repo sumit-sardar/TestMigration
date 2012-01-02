@@ -843,7 +843,10 @@ public class BulkOperationController extends PageFlowController {
         this.getSession().setAttribute("hasScoringConfigured", 
         		new Boolean( customerHasScoring(customerConfigurations).booleanValue() && adminUser));
         
-    	this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
+        this.getSession().setAttribute("hasUploadDownloadConfigured", 
+        		new Boolean( hasUploadDownloadConfig(customerConfigurations).booleanValue() && adminUser));
+        
+        this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
     	
     	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	
@@ -958,6 +961,24 @@ public class BulkOperationController extends PageFlowController {
 		}        
 		return new Boolean(hasReports);           
 	}
+	
+
+    private Boolean hasUploadDownloadConfig(CustomerConfiguration[] customerConfigurations)
+    {
+        Boolean hasUploadDownloadConfig = Boolean.FALSE;
+        if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Upload_Download") && 
+						cc.getDefaultValue().equals("T")) {
+					hasUploadDownloadConfig = true; 
+					break;
+				}
+			}
+		}
+        return new Boolean(hasUploadDownloadConfig);
+    }
 
 	/**
 	 * Bulk Accommodation
