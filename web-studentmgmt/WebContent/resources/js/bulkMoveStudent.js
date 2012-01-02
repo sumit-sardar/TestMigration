@@ -6,7 +6,6 @@ var selectedStudentForMove = [];
 var finalSelectedNode;
 var BULK_MOVE_NOTSELECTED = "No organization was selected. Organization for the selected set of students was not updated.";
 var STUDENTS_MOVED = "Selected students were successfully moved to the selected organization."
-var checkRemoved;
 
 function populateBulkMoveTree() {
 	isBulkMove = true;
@@ -83,7 +82,7 @@ function createSingleNodeBulkMoveTree(jsondata) {
  		     UIBlock();
  		  	if(!bulkMoveGridLoaded) {
  		  		bulkMoveGridLoaded = true;
- 		  			populateBulkMoveStudentGrid(); // Check whether grid without accommodation is required here or not?
+ 		  			populateBulkMoveStudentGrid();
  		  		}
 			else
 				gridReloadForBulkMoveStudent();
@@ -216,7 +215,16 @@ function populateBulkMoveStudentGrid() {
 						}
 						bulkMoveStuCounterPage = allStudentInGrid.length;
 						setAnchorButtonState('bulkMoveButton', false);
-						$.unblockUI();						
+						$.unblockUI();
+						if(allStudentInGrid == undefined || allStudentInGrid.length <=0) {
+							setAnchorButtonState('bulkMoveButton', true);
+							var noStudents = $('.ui-state-highlight');
+							if(noStudents.length > 0) {
+								for(var k = 0; k < noStudents.length; k++) {
+									$(noStudents[k]).removeClass('ui-state-highlight');
+								}
+							}
+						}
 					}
 			},
 			onSelectRow: function (rowid, status) {
@@ -280,7 +288,6 @@ function openBulkMovePopup(element) {
 	isPopUp = true;
 	createMultiNodeBulkMoveTree(orgTreeHierarchy);
 	finalSelectedNode = undefined;
-	checkRemoved = undefined;
 	$("#moveStudentPopup").dialog({  
 		title:"Select Orgnization",  
 	 	resizable:false,
@@ -366,7 +373,6 @@ function createMultiNodeBulkMoveTree(jsondata) {
 							finalSelectedNode = elementId;
 							$(d.rslt[0]).find('a').addClass("jstree-clicked");
 						} else {
-							checkRemoved = elementId;
 							$(d.rslt[0]).find('a').removeClass("jstree-clicked");
 						}
     				}
@@ -400,6 +406,7 @@ function closeUnsaveBulkConfirmationPopup() {
 }
 
 function hideBulkMovePopup() {
+	isPopUp = false;
 	$("#moveStudentPopup").dialog("close");
 	removeBulkPopupMessage();	
 }
@@ -418,10 +425,6 @@ function saveBulkMoveData() {
 		studentIds =  selectedStudentForMove[key] + "," + studentIds;
 	}
 	studentIds = studentIds.substring(0,studentIds.length-1);
-	if(checkRemoved != undefined && checkRemoved == finalSelectedNode) {
-		finalSelectedNode = undefined;
-		checkRemoved = undefined;
-	}
 	if(finalSelectedNode != undefined && finalSelectedNode.length > 0) {
 		$.ajax(
 		{
@@ -436,11 +439,13 @@ function saveBulkMoveData() {
 				success:	function(data, textStatus, XMLHttpRequest){
 									selectedStudentForMove = [];
 									bulkMoveStuCounterPage = 0;
+									$("#innerID").undelegate();
+									$("#innerID").unbind();
 									gridReloadForBulkMoveStudent();
 									hideBulkMovePopup();
 									$("#displayBulkMessageMain").show();
 									$("#contentBulkMain").text(STUDENTS_MOVED);
-									
+									setAnchorButtonState('bulkMoveButton', true);
 							},
 				error  :    function(XMLHttpRequest, textStatus, errorThrown){
 									$.unblockUI();  
