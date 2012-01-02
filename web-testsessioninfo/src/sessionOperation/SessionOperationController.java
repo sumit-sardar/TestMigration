@@ -1856,12 +1856,42 @@ public class SessionOperationController extends PageFlowController {
     }
     
     
-    /**
-     * ORGANIZATIONS actions
-     */    
+	/**
+	 * ORGANIZATIONS actions
+	 */
+    @Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "studentsLink", path = "organizations_manageStudents.do"),
+	        @Jpf.Forward(name = "usersLink", path = "organizations_manageUsers.do"),
+	        @Jpf.Forward(name = "organizationsLink", path = "organizations_manageOrganizations.do"),
+	        @Jpf.Forward(name = "bulkAccomLink", path = "organizations_manageBulkAccommodation.do"),
+	        @Jpf.Forward(name = "bulkMoveLink", path = "organizations_manageBulkMove.do")
+	    }) 
+	protected Forward organizations()
+	{
+		String menuId = (String)this.getRequest().getParameter("menuId");    	
+		String forwardName = (menuId != null) ? menuId : "studentsLink";
+		
+	    return new Forward(forwardName);
+	}
+	
     @Jpf.Action()
-    protected Forward organizations()
-    {
+	protected Forward organizations_manageOrganizations()
+	{
+        try
+        {
+            String url = "/OrganizationWeb/orgOperation/organizations_manageOrganizations.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+	
+    @Jpf.Action()
+	protected Forward organizations_manageStudents()
+	{
         try
         {
             String url = "/StudentWeb/studentOperation/organizations_manageStudents.do";
@@ -1872,8 +1902,54 @@ public class SessionOperationController extends PageFlowController {
             System.err.print(ioe.getStackTrace());
         }
         return null;
-    }
+	}
+	
+    @Jpf.Action()
+	protected Forward organizations_manageBulkAccommodation()
+	{
+        try
+        {
+            String url = "/StudentWeb/bulkOperation/organizations_manageBulkAccommodation.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
     
+    @Jpf.Action() 
+	protected Forward organizations_manageUsers()
+	{
+		try
+        {
+            String url = "/UserWeb/userOperation/organizations_manageUsers.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+		
+	}
+
+    @Jpf.Action()
+	protected Forward organizations_manageBulkMove()
+	{
+        try
+        {
+            String url = "/StudentWeb/bulkMoveOperation/organizations_manageBulkMove.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+
     
     /**
      * REPORTS actions
@@ -1885,20 +1961,42 @@ public class SessionOperationController extends PageFlowController {
         }) 
     protected Forward reports()
     {
+    	getLoggedInUserPrincipal();
+		
+		getUserDetails();
+		CustomerConfiguration [] customerConfigs = getCustomerConfigurations(this.customerId);
+		setupUserPermission(customerConfigs);
+    	    	
         return new Forward("success");
         //return new Forward("viewReports");
     }
 
     
+
     /**
      * SERVICES actions
-     */    
-	@Jpf.Action()
-    protected Forward services()
+     */
+    @Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "manageLicensesLink", path = "services_manageLicenses.do"),
+	        @Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
+	        @Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
+	        @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
+	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do")
+	    }) 
+	protected Forward services()
+	{
+		String menuId = (String)this.getRequest().getParameter("menuId");    	
+		String forwardName = (menuId != null) ? menuId : "installSoftwareLink";
+		
+	    return new Forward(forwardName);
+	}
+	
+    @Jpf.Action()
+    protected Forward services_manageLicenses()
     {
         try
         {
-            String url = "/SessionWeb/softwareOperation/begin.do";
+            String url = "/OrganizationWeb/licenseOperation/services_manageLicenses.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -1907,6 +2005,66 @@ public class SessionOperationController extends PageFlowController {
         }
         return null;
     }
+	
+	@Jpf.Action()
+	protected Forward services_installSoftware()
+	{
+		  try
+	        {
+	            String url = "/SessionWeb/softwareOperation/begin.do";
+	            getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+	        return null;
+	}
+	
+    @Jpf.Action()
+	protected Forward services_downloadTest()
+	{
+        try
+        {
+            String url = "/SessionWeb/testContentOperation/services_downloadTest.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+	
+    @Jpf.Action()
+	protected Forward services_uploadData()
+	{
+        try
+        {
+            String url = "/OrganizationWeb/uploadOperation/services_uploadData.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+	
+    @Jpf.Action()
+	protected Forward services_downloadData()
+	{
+        try
+        {
+            String url = "/OrganizationWeb/downloadOperation/services_downloadData.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
     
 	@Jpf.Action()
     protected Forward broadcastMessage()
@@ -2002,13 +2160,17 @@ public class SessionOperationController extends PageFlowController {
         this.getSession().setAttribute("hasScoringConfigured", 
         		new Boolean( customerHasScoring(customerConfigs).booleanValue() && adminUser));
         
+        this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));
+    	
         //this.getSession().setAttribute("canRegisterStudent", canRegisterStudent(customerConfigs));
         this.getSession().setAttribute("canRegisterStudent", false);//Temporary change to hide register student button
         this.hasLicenseConfig = hasLicenseConfiguration(customerConfigs).booleanValue();
      	this.getSession().setAttribute("hasLicenseConfigured", this.hasLicenseConfig && adminUser);
      	
      	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     
-     	
+
+		this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigs));
+		
      	this.getSession().setAttribute("userScheduleAndFindSessionPermission", userScheduleAndFindSessionPermission());   
      	
      	getConfigStudentLabel(customerConfigs);
@@ -2193,6 +2355,47 @@ public class SessionOperationController extends PageFlowController {
         }
         return TABECustomer;
     }
+    
+    /**
+	 * Bulk Accommodation
+	 */
+	private Boolean customerHasBulkAccommodation(CustomerConfiguration[] customerConfigurations) 
+	{
+		boolean hasBulkStudentConfigurable = false;
+		if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+						cc.getDefaultValue().equals("T")) {
+					hasBulkStudentConfigurable = true; 
+					break;
+				}
+			}
+		}
+		return new Boolean(hasBulkStudentConfigurable);           
+	}
+	
+
+	/**
+	 * Bulk Move
+	 */
+	private Boolean customerHasBulkMove(CustomerConfiguration[] customerConfigurations) 
+	{
+		boolean hasBulkStudentConfigurable = false;
+		if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Bulk_Move_Students") && 
+						cc.getDefaultValue().equals("T")) {
+					hasBulkStudentConfigurable = true; 
+					break;
+				}
+			}
+		}
+		return new Boolean(hasBulkStudentConfigurable);           
+	}
     
     private CustomerConfiguration [] getCustomerConfigurations(Integer customerId)
     {               

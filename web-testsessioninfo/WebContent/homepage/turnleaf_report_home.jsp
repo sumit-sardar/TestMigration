@@ -79,7 +79,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	selectTab("reports", null);
+	setMenuActive("reports", null);
 });
 </script>
 

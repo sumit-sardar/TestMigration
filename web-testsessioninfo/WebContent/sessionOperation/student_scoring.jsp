@@ -30,7 +30,7 @@
 </tr>
 <tr height="400" align="center">
 <td>
-    <p align="center"><netui:content value="No content"/></p>
+    <p align="center"><netui:content value="Content goes here"/></p>
 </td>    
 </tr>
 </table>
@@ -41,7 +41,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	selectTab("assessments", "studentScoringLink");
+	setMenuActive("assessments", "studentScoringLink");
 });
 </script>
 

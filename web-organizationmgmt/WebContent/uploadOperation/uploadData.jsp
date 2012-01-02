@@ -44,7 +44,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	selectTab("services", "uploadDataLink");
+	setMenuActive("services", "uploadDataLink");
 });
 </script>
 

@@ -644,23 +644,69 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
 	///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////    
 	
-	/**
-	 * ASSESSMENTS actions
-	 */    
-    @Jpf.Action()
-	protected Forward assessments()
-	{
-        try
-        {
-            String url = "/SessionWeb/sessionOperation/assessments_sessions.do";
-            getResponse().sendRedirect(url);
-        } 
-        catch (IOException ioe)
-        {
-            System.err.print(ioe.getStackTrace());
-        }
-        return null;
-	}
+	    /**
+	     * ASSESSMENTS actions
+	     */    
+	    @Jpf.Action(forwards = { 
+	    		@Jpf.Forward(name = "sessionsLink", path = "assessments_sessionsLink.do"),
+	    		@Jpf.Forward(name = "studentScoringLink", path = "assessments_studentScoringLink.do"),
+	    		@Jpf.Forward(name = "programStatusLink", path = "assessments_programStatusLink.do")
+	    })   
+	    protected Forward assessments()
+	    {
+
+	    	String menuId = (String)this.getRequest().getParameter("menuId");    	
+	    	String forwardName = (menuId != null) ? menuId : "sessionsLink";
+
+	    	return new Forward(forwardName);	    
+	    }
+
+
+	    @Jpf.Action()
+	    protected Forward assessments_sessionsLink()
+	    {
+	    	try
+	    	{
+	    		String url = "/SessionWeb/sessionOperation/assessments_sessions.do";
+	    		getResponse().sendRedirect(url);
+	    	} 
+	    	catch (IOException ioe)
+	    	{
+	    		System.err.print(ioe.getStackTrace());
+	    	}
+	    	return null;
+	    }
+
+	    @Jpf.Action()
+	    protected Forward assessments_studentScoringLink()
+	    {
+	    	try
+	    	{
+	    		String url = "/SessionWeb/sessionOperation/assessments_studentScoring.do";
+	    		getResponse().sendRedirect(url);
+	    	} 
+	    	catch (IOException ioe)
+	    	{
+	    		System.err.print(ioe.getStackTrace());
+	    	}
+	    	return null;
+	    }
+
+	    @Jpf.Action()
+	    protected Forward assessments_programStatusLink()
+	    {
+	    	try
+	    	{
+	    		String url = "/SessionWeb/programOperation/assessments_programStatus.do";
+	    		getResponse().sendRedirect(url);
+	    	} 
+	    	catch (IOException ioe)
+	    	{
+	    		System.err.print(ioe.getStackTrace());
+	    	}
+	    	return null;
+	    }
+
 			
 	/**
 	 * ORGANIZATIONS actions
@@ -674,8 +720,8 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
 	    }) 
 	protected Forward organizations()
 	{
-		String menuId = (String)this.getRequest().getParameter("menuId");    	
-		String forwardName = (menuId != null) ? menuId : "bulkMoveLink";
+		String menuId = (String)this.getRequest().getParameter("menuId");
+		String forwardName = (menuId != null) ? menuId : "studentsLink";
 		
 	    return new Forward(forwardName);
 	}
@@ -739,6 +785,14 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
         }
         return null;
 	}
+    
+    @Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "beginBulkMoveStudent.do") 
+	    }) 
+	protected Forward organizations_manageBulkMove()
+	{
+	    return new Forward("success");
+	}
 
     /**
      * REPORTS actions
@@ -758,24 +812,31 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
         return null;
     }
     
-    
-    @Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "beginBulkMoveStudent.do") 
+
+	/**
+	 * SERVICES actions
+	 */    
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "manageLicensesLink", path = "services_manageLicenses.do"),
+	        @Jpf.Forward(name = "installSoftwareLink", path = "services_installSoftware.do"),
+	        @Jpf.Forward(name = "downloadTestLink", path = "services_downloadTest.do"),
+	        @Jpf.Forward(name = "uploadDataLink", path = "services_uploadData.do"),
+	        @Jpf.Forward(name = "downloadDataLink", path = "services_downloadData.do")
 	    }) 
-	protected Forward organizations_manageBulkMove()
+	protected Forward services()
 	{
-	    return new Forward("success");
+		String menuId = (String)this.getRequest().getParameter("menuId");    	
+		String forwardName = (menuId != null) ? menuId : "installSoftwareLink";
+		
+	    return new Forward(forwardName);
 	}
 	
-    /**
-     * SERVICES actions
-     */    
-	@Jpf.Action()
-    protected Forward services()
+    @Jpf.Action()
+    protected Forward services_manageLicenses()
     {
         try
         {
-            String url = "/SessionWeb/softwareOperation/begin.do";
+            String url = "/OrganizationWeb/licenseOperation/services_manageLicenses.do";
             getResponse().sendRedirect(url);
         } 
         catch (IOException ioe)
@@ -784,4 +845,72 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
         }
         return null;
     }
+	
+    @Jpf.Action()
+	protected Forward services_installSoftware()
+	{
+        try
+        {
+            String url = "/SessionWeb/softwareOperation/services_installSoftware.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+	
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "begin.do") 
+	    }) 
+	protected Forward services_downloadTest()
+	{
+	    return new Forward("success");
+	}
+	
+    @Jpf.Action()
+	protected Forward services_uploadData()
+	{
+        try
+        {
+            String url = "/OrganizationWeb/uploadOperation/services_uploadData.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+	
+    @Jpf.Action()
+	protected Forward services_downloadData()
+	{
+        try
+        {
+            String url = "/OrganizationWeb/downloadOperation/services_downloadData.do";
+            getResponse().sendRedirect(url);
+        } 
+        catch (IOException ioe)
+        {
+            System.err.print(ioe.getStackTrace());
+        }
+        return null;
+	}
+    /**
+	 * @jpf:action
+	 */
+	@Jpf.Action()
+	protected Forward broadcastMessage()
+	{
+	    return null;
+	}
+	
+	
+	@Jpf.Action()
+	protected Forward myProfile()
+	{
+	    return null;
+	}
 }

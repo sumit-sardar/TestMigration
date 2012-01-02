@@ -1,4 +1,4 @@
-/*
+/* 
  * jQuery UI CSS Framework 1.8.16
  *
  * Copyright 2011, AUTHORS.txt (http://jqueryui.com/about)
@@ -32,6 +32,7 @@
 
 /* states and images */
 .ui-icon { display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat; }
+.ui-menuicon { display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat; vertical-align: bottom;}
 
 
 /* Misc visuals
@@ -90,6 +91,8 @@
 
 /* states and images */
 .ui-icon { width: 16px; height: 16px; background-image: url(images/ui-icons_469bdd_256x240.png); }
+.ui-menuicon { width: 16px; height: 16px; background-image: url(images/ui-icons_469bdd_256x240.png); }
+
 .ui-widget-content .ui-icon {background-image: url(images/ui-icons_469bdd_256x240.png); }
 .ui-widget-header .ui-icon {background-image: url(images/ui-icons_d8e7f3_256x240.png); }
 .ui-state-default .ui-icon { background-image: url(images/ui-icons_6da8d5_256x240.png); }

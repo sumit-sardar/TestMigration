@@ -67,7 +67,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	selectTab("organizations", "studentsLink");
+	setMenuActive("organizations", "studentsLink");
 });
 </script>
 

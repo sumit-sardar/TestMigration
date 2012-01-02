@@ -103,19 +103,19 @@
 	    	<div id = "orgNodeHierarchy" style="text-align: left !important;" class="treeCtrl"></div> 
 		</div>  
 	<%if(userScheduleAndFindSessionPermission) { %>		     
-		<div id="sessionGrid" style="float:right;width:1175px;"> 
+		<div id="sessionGrid" style="float:right;width:1175px;position:relative;z-index:100;"> 
 	<%} else {%>
-		<div id="sessionGrid" style="float:right;width:1210px;"> 	
+		<div id="sessionGrid" style="float:right;width:1210px;position:relative;z-index:100;"> 	
 	<% } %>		      		    				
-					<div id="accordion" style="width:100%;">							
-						<div>
+					<div id="accordion" style="width:100%;position:relative;">							
+						<div style="position:relative;">
 						  	<h3><a href="#"><netui:content value="${bundle.web['homepage.tab.currentAndFuture']}"/></a></h3>
 							<div id="CurrentFuture" style="background-color: #FFFFFF; overflow-y: hidden !important; overflow-x: hidden !important;">
 								<table id="list2" class="gridTable"></table>
 								<div id="pager2" class="gridTable"></div>		
 							</div>								
 						</div>
-						<div>
+						<div style="position:relative;">
 							<h3><a href="#"><netui:content value="${bundle.web['homepage.tab.completed']}"/></a></h3>
 							<div id="Completed" style="background-color: #FFFFFF;overflow-y: hidden !important; overflow-x: hidden !important;">
 								<table id="list3" class="gridTable"></table>

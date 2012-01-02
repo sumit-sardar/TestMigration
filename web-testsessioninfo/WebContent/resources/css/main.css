@@ -24,9 +24,19 @@ body {
 	border-radius: 11px;
 }
 
+.simpleMenu {
+	background-color: #d4ecff;
+	width:153px;
+	padding: 5px 0px 5px 0px;
+}
+
+
 .feature {
 	background-color: #d4ecff; 
 	padding: 10px;
+	margin-top: -15px;
+    padding-top: 15px;
+    z-index:0;
 }
 
 .roundedHeader {
@@ -609,4 +619,12 @@ clear: both;
 	clear: both;
 }
 
+.feature div {
+	margin-left:0px !important;
+}
 
+
+.gridPos{
+	position:relative;
+	z-index:100;
+}

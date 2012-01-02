@@ -34,7 +34,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	selectTab("organizations", "bulkAccomLink");
+	setMenuActive("organizations", "bulkAccomLink");
 });
 </script>
         

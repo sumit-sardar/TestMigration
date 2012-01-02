@@ -43,7 +43,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	selectTab("services", "installSoftwareLink");
+	setMenuActive("services", "installSoftwareLink");
 });
 </script>
 

@@ -24,9 +24,19 @@ body {
 	border-radius: 11px;
 }
 
+.simpleMenu {
+	background-color: #d4ecff;
+	width:153px;
+	padding: 5px 0px 5px 0px;
+}
+
+
 .feature {
 	background-color: #d4ecff; 
 	padding: 10px;
+	margin-top: -15px;
+    padding-top: 15px;
+    z-index:0;
 }
 
 .roundedHeader {
@@ -59,6 +69,23 @@ body {
 	font-size:10px; 
 	font-weight: bold;
 }
+
+
+.legacyBodyLayout {
+    border-collapse: collapse;
+    border-style: none;
+    border-width: 0px;
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+}
+
+#legacyBody {
+    background-color: #fff;
+    padding: 20px;
+    vertical-align: top;
+}
+
 
 h1 { 
     color: #476cb5;
@@ -331,7 +358,6 @@ input:focus {
     border-width: 1px; 
 	padding: 0px;    
 }
-
 /*
 #orgNodeHierarchy ul {
 	float: left;
@@ -381,6 +407,7 @@ input:focus {
 	font-size: 13px;  
 	font-style: normal;  
 	font-weight: normal; 	
+	
 }
 
 .treeCtrl {
@@ -413,7 +440,7 @@ input:focus {
 	font-family: Arial, Verdana, Sans Serif; 
 	font-size: 13px;  
 	font-style: normal;  
-	font-weight: bold; 	
+	font-weight: bold; 
 }
 
 .gridTableHeader {
@@ -458,6 +485,7 @@ clear: both;
 }
 
 
+
 .ie8 #bulkStudentMoveOrgNode ul {
 float: none;
 clear: both;
@@ -465,4 +493,14 @@ clear: both;
 
 .ie8 #bulkStudentMoveOrgNode li {
 	clear: both;
+}
+
+.feature div {
+	margin-left:0px !important;
+}
+
+.gridPos{
+	
+	position:relative;
+	z-index:100;
 }

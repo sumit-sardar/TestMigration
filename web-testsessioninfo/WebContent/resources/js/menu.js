@@ -69,7 +69,8 @@ function selectOrganizationsLink(menuId)
 	selectLink("organizationsLink", false); 
 	selectLink("usersLink", false); 
 	selectLink("studentsLink", false); 
-
+	selectLink("bulkAccomLink", false);
+	
 	selectLink(menuId, true); 
 	
 	selectOrganizationsContent(menuId);
@@ -149,5 +150,20 @@ function selectServicesContent(menuId)
 	}
 }
 
+function setMenuActive(topMenuId, menuId) 
+{
+	document.getElementById("assessments").className = "simpleMenu";
+	document.getElementById("organizations").className = "simpleMenu";
+	document.getElementById("reports").className = "simpleMenu";
+	document.getElementById("services").className = "simpleMenu";
+	
+	var topMenu = document.getElementById(topMenuId);
+	topMenu.className = "simpleMenu active";
+	if($.browser.mozilla){
+		$("#bodySection").css('padding-top','12px');
+	}
+	$('.simpleMenu').corners('top'); 
+    
+}
 
 

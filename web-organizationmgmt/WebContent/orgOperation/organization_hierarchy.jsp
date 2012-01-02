@@ -34,7 +34,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	selectTab("organizations", "organizationsLink");
+	setMenuActive("organizations", "organizationsLink");
 });
 </script>
         

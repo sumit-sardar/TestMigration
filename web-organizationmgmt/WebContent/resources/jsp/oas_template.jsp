@@ -22,7 +22,7 @@
     <link href="<%=request.getContextPath()%>/resources/css/roundCorners.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/main.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/menu.css" type="text/css" rel="stylesheet" />
-    <link href="<%=request.getContextPath()%>/resources/css/tabs.css" type="text/css" rel="stylesheet" />
+    <link href="<%=request.getContextPath()%>/resources/css/popup_menu.css" rel="stylesheet" type="text/css" />
     
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-1.4.4.min.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery-ui-1.8.16.custom.min.js"></script>
@@ -34,6 +34,7 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/dialogs.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.corners.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.dropdownPlain.js"></script>
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
@@ -41,7 +42,6 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/verifyOrgInfo.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/map.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/hierarchy.js"></script>
-	
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/widgets.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/js_web.jsp"></script>   
@@ -95,117 +95,16 @@
 				  	<td align="left" valign="top">
 
 					  <!-- TABS HEADERS -->
-					  <div id="featureTabsBody">
-					  
-					    <div id="featureTabsContainer">
-					      <a href="#" id="assessmentsTabLink" onClick="gotoAction('assessments.do');" class="tab rounded {top transparent}">Assessments</a>
-					      <a href="#" id="organizationsTabLink" onClick="gotoAction('organizations.do');" class="tab rounded {top transparent}">Organizations</a>
-                		<c:if test="${sessionScope.showReportTab}">
-					      <a href="#" id="reportsTabLink" onClick="gotoAction('reports.do');" class="tab rounded {top transparent}">Reports</a>
-                		</c:if>					    
-					      <a href="#" id="servicesTabLink" onClick="gotoAction('services.do');" class="tab rounded {top transparent}">Services</a>
-					    </div>
-
-
-					  	<!-- TABS BODY -->
-    					<div id="featureElementsContainer" class="rounded {right bottom}">
-
-							<!-- ASSESSMENT MENU -->	
-							<div id="assessments" style="display: none">					
-							</div>
-
-							<!-- ORGANIZATION MENU -->
-							<div id="organizations" style="display: none">					
-								<table class="toolbar">
-								<tr class="toolbar">
-									<td class="toolbar" width="120">
-										<a href="#" id="studentsLink" onClick="gotoMenuAction('organizations.do', 'studentsLink');"><b>Students</b></a>						
-									</td>
-								<ctb:auth roles="Administrator">										
-									<td class="toolbar" width="120">
-										<a href="#" id="usersLink" onClick="gotoMenuAction('organizations.do', 'usersLink');"><b>Users</b></a>						
-									</td>
-								</ctb:auth>
-								<ctb:auth roles="Administrator">										
-									<td class="toolbar" width="120">
-										<a href="#" id="organizationsLink" onClick="gotoMenuAction('organizations.do', 'organizationsLink');"><b>Organizations</b></a>						
-									</td>
-								</ctb:auth>
-								<c:if test="${sessionScope.isBulkAccommodationConfigured}">
-									<ctb:auth roles="Administrator, Administrative Coordinator">										
-										<td class="toolbar" width="190">
-											<a href="#" id="bulkAccomLink" onclick="gotoMenuAction('organizations.do', 'bulkAccomLink');"><b>Assign Accommodations</b></a>						
-										</td>
-									</ctb:auth>
-								</c:if>		
-									<td width="*">&nbsp;</td>		
-								</tr>
-								</table>						
-							</div>
-
-							<!-- REPORTS MENU -->
-							<div id="reports" style="display: none">					
-							</div>
-
-							<!-- SERVICES MENU -->
-							<div id="services" style="display: none">	
-							<table class="toolbar">
-							<tr class="toolbar">
-							<c:if test="${sessionScope.hasUploadDownloadConfigured}">			      							
-								<td  class="toolbar-alignleft" width="300">
-                			</c:if>					    
-							<c:if test="${! sessionScope.hasUploadDownloadConfigured}">			      							
-								<td  class="toolbar-alignleft" width="150">
-                			</c:if>					    
-									<div id="service-menu">
-									<ul>
-										<li>
-											<a href="#"><span style="color: blue">Workstation Setup&nbsp;
-												<em>
-													<img src="<%=request.getContextPath()%>/resources/images/zonebar-downarrow.png" alt="dropdown" />
-												</em>
-											</span></a>
-											<ul class="submenu" style="background: #DEECF6; display:none;">
-												<li><a href="#" style="color: #0000ff" id="installSoftwareLink" onClick="gotoMenuAction('services.do', 'installSoftwareLink');">Install Software</a></li>
-												<li><a href="#" style="color: #0000ff" id="downloadtestLink" onClick="gotoMenuAction('services.do', 'downloadTestLink');">Download Test</a></li>
-											</ul>
-										</li>
-										<c:if test="${sessionScope.hasUploadDownloadConfigured}">			      																	
-										<li>
-											<a href="#"><span style="color: blue">User/Student Load&nbsp;&nbsp;
-												<em>
-													<img src="<%=request.getContextPath()%>/resources/images/zonebar-downarrow.png" alt="dropdown" />
-												</em>
-											</span></a>
-											<ul class="submenu" style="background: #DEECF6; display:none;">
-												<li align="left"><a href="#" style="color: #0000ff" id="uploadDataLink" onClick="gotoMenuAction('services.do', 'uploadDataLink');">Import</a></li>
-												<li><a href="#" style="color: #0000ff" id="downloadDataLink" onClick="gotoMenuAction('services.do', 'downloadDataLink');">Export</a></li>
-											</ul>
-										</li>
-                						</c:if>					    
-									</ul>
-									</div>
-								
-								</td>
-							  <c:if test="${sessionScope.hasLicenseConfigured}">			      
-								<td class="toolbar" width="120">
-									<a href="#" id="manageLicensesLink" onClick="gotoMenuAction('services.do', 'manageLicensesLink');"><b>Manage Licenses</b></a>						
-								</td>
-                			  </c:if>
-								
-								<td width="*">&nbsp;</td>		
-								
-								</tr>
-								</table>
-							</div>
-					
-							
-					      	<div class="feature" id="bodySection">
-					            <netui-template:includeSection name="bodySection"/>      	
-					      	</div>
-
-    					</div> <!-- End of TABS BODY -->
-  					</div> <!-- End of TABS HEADERS -->
+					  <jsp:include page="/resources/jsp/oas_navigation_menu.jsp" />
+						<div class="feature" id="bodySection">
+							<table width="100%" border="0" bgcolor="#FFFFFF" cellpadding="0" cellspacing="12" >
+							<tr>
+				  			<td align="left" valign="top">
+							<netui-template:includeSection name="bodySection"/>
+							</td>
+							</tr>
+							</table>
+						</div>
 
 					</td>
 				</tr>

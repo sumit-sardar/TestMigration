@@ -1,13 +1,19 @@
 
   $(document).ready(function(){
-    $('.feature').corners();
+    roundCornerFeatureIE();    
     $('.rounded').corners();
     $('.roundedHeader').corners(); 
     $('.roundedPrivacy').corners(); 
     $('.roundedMessage').corners(); 
     $('.treeHeader').corners('top'); 
   });
-
+function roundCornerFeatureIE(){
+ 	$('.feature').corners();
+ 	if($.browser.msie){
+ 		$(".feature").css('padding-top','0px');
+ 		$(".feature div:eq(1)").css('padding-top','10px');
+ 	}
+ }
 function setAnchorButtonState(elementId, disabled) {
 	var element = document.getElementById(elementId);
 	if (element) {

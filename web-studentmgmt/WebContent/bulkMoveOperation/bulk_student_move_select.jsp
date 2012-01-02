@@ -44,7 +44,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	selectTab("organizations", "bulkMoveLink");
+	setMenuActive("organizations", "bulkMoveLink");
 });
 </script>
         

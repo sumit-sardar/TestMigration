@@ -32,7 +32,8 @@
 .sf-menu li:hover ul,
 .sf-menu li.sfHover ul {
 	left:			0;
-	top:			2.5em; /* match top ul list item height */
+	
+	top:			26px;  /*match top ul list item height */
 	z-index:		99;
 }
 ul.sf-menu li:hover li ul,
@@ -57,40 +58,61 @@ ul.sf-menu li li li.sfHover ul {
 /*** DEMO SKIN ***/
 .sf-menu {
 	float:			left;
-	margin-bottom:	1em;
+	margin-top:	5px;
 	width:90%;
 	position:absolute;
 	z-index:100;
 }
-.sf-menu a {
-	border-left:	1px solid #fff;
-	
-	padding: 		.75em 1em;
+.sf-menu li a {
+	border-left:	1px solid #222222;	
+	padding: 		7px 27px 6px 12px;
 	text-decoration:none;
 }
+
+.sf-menu li li a {
+	border-left:	none;
+}
+.sf-menu li li li a {
+	border-left:	none;
+}
+
+.sf-menu li:first-child a {
+	border-left:none;
+}
 .sf-menu a, .sf-menu a:visited  { /* visited pseudo selector so IE6 applies text colour*/
-	color:			#2E6E9E;
+	color:			#0000FF !important;
 }
 .sf-menu li {
-	background:		#FFFFFF;
 	width:32.5%;
-	margin-right:2px;
+	font-family: Arial,Helvetica,Sans Serif;
+    font-size: 12px;
 	
 }
 .sf-menu li li {
-	background:		#FFFFFF;
-	border-bottom:	1px solid #eaf4fd;
+	/* border-bottom:	1px solid #eaf4fd; */
 	z-index:1000;
 }
 .sf-menu li li li {
-	background:		#FFFFFF;
-	border-top:	1px solid #eaf4fd;
+	background:		#D4ECFF;
+	/* border-top:	1px solid #eaf4fd;
 	border-left:	1px solid #eaf4fd;
-	/*border-bottom:	1px solid #eaf4fd;*/
+	border-bottom:	1px solid #eaf4fd;*/
 }
-.sf-menu li:hover, .sf-menu li.sfHover,
-.sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active {
-	background:		#C5DBEC;
+
+.sf-menu li  a, .sf-menu li a:visited {
+	background:		#D4ECFF;
+}
+	
+.sf-menu li li a {
+	font-weight:bold;
+}
+.sf-menu li li li a {
+	font-weight:bold;
+}
+
+
+.sf-menu li:hover a:hover, .sf-menu li.sfHover a:hover {
+	background:		#eaf4fd;
 	outline:		0;
 }
 
@@ -112,7 +134,7 @@ ul.sf-menu li li li.sfHover ul {
 }
 a > .sf-sub-indicator {  /* give all except IE6 the correct values */
 	top:			.8em;
-	background-position: 0 -100px; /* use translucent arrow for modern browsers*/
+	background-position: -10px -100px; /* use translucent arrow for modern browsers*/
 }
 /* apply hovers to modern browsers */
 a:focus > .sf-sub-indicator,
@@ -125,7 +147,7 @@ li.sfHover > a > .sf-sub-indicator {
 
 /* point right for anchors in subs */
 .sf-menu ul .sf-sub-indicator { background-position:  -10px 0; }
-.sf-menu ul a > .sf-sub-indicator { background-position:  0 0; }
+.sf-menu ul a > .sf-sub-indicator { background-position:  -10px 0; }
 /* apply hovers to modern browsers */
 .sf-menu ul a:focus > .sf-sub-indicator,
 .sf-menu ul a:hover > .sf-sub-indicator,
@@ -137,12 +159,12 @@ li.sfHover > a > .sf-sub-indicator {
 
 /*** shadows for all but IE6 ***/
 .sf-shadow ul {
-	background:	url('images/shadow.png') no-repeat bottom right;
-	padding: 0 8px 9px 0;
-	-moz-border-radius-bottomleft: 17px;
+	border: 1px solid #E9E9E9;
+	padding: 0px;
+	/* -moz-border-radius-bottomleft: 17px;
 	-moz-border-radius-topright: 17px;
 	-webkit-border-top-right-radius: 17px;
-	-webkit-border-bottom-left-radius: 17px;
+	-webkit-border-bottom-left-radius: 17px; */
 	width:100%;
 }
 .sf-shadow ul.sf-shadow-off {
@@ -152,4 +174,10 @@ li.sfHover > a > .sf-sub-indicator {
 #studentAccommpager {
 	z-index:0 !important;
 	position:static !important;
+}
+.roundedBorder{
+	-moz-border-radius-topleft: 10px;
+	-moz-border-radius-topright: 10px;
+	-webkit-border-top-right-radius: 10px;
+	-webkit-border-top-left-radius: 10px; 
 }

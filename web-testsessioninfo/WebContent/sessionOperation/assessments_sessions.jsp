@@ -47,7 +47,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	selectTab("assessments", "sessionsLink");
+	setMenuActive("assessments", "sessionsLink");
 });
 </script>
 

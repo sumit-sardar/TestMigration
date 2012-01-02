@@ -67,7 +67,7 @@
 		 	</td>
 	 		<td class="transparent" width="5px">&nbsp;</td>
 		 	<td >
-	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">
+	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader gridPos">
 	      			&nbsp;<lb:label key="stu.label.list" />
 	      		<!-- 
 	      		<div  id= "searchresultheader" class="ui-corner-tl ui-corner-tr ui-widget-header gridTableHeader">

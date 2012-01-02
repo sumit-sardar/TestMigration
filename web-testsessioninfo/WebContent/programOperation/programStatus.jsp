@@ -22,7 +22,6 @@
 
 <netui:form action="manageProgram">
 
-
 <table width="100%" border="0">
 <tr valign="top">
 <td valign="top">
@@ -42,7 +41,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	selectTab("assessments", "programStatusLink");
+	setMenuActive("assessments", "programStatusLink");
 });
 </script>
 

@@ -43,7 +43,8 @@
     <link href="<%=request.getContextPath()%>/resources/css/roundCorners.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/main.css" type="text/css" rel="stylesheet" />
     <link href="<%=request.getContextPath()%>/resources/css/menu.css" type="text/css" rel="stylesheet" />
-    <link href="<%=request.getContextPath()%>/resources/css/tabs.css" type="text/css" rel="stylesheet" />
+    <link href="<%=request.getContextPath()%>/resources/css/popup_menu.css" rel="stylesheet" type="text/css" />
+    
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/css/pro_dropdown_2.css" />
 	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/css/superfish.css"/>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/json2.js"></script>
@@ -57,6 +58,7 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/dialogs.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.corners.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/roundCorners.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.dropdownPlain.js"></script>
     
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/jquery.jstree.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/grid.locale-en.js"></script>
@@ -123,73 +125,16 @@
 				  	<td align="left" valign="top">
 
 					  <!-- TABS HEADERS -->
-					  <div id="featureTabsBody">
-					  
-					    <div id="featureTabsContainer">
-					      <a href="#" id="assessmentsTabLink" onClick="gotoAction('assessments.do');" class="tab rounded {top transparent}">Assessments</a>
-					      <a href="#" id="organizationsTabLink" onClick="gotoAction('organizations.do');" class="tab rounded {top transparent}">Organizations</a>
-                		<c:if test="${sessionScope.showReportTab}">
-					      <a href="#" id="reportsTabLink" onClick="gotoAction('reports.do');" class="tab rounded {top transparent}">Reports</a>
-                		</c:if>					    
-					      <a href="#" id="servicesTabLink" onClick="gotoAction('services.do');" class="tab rounded {top transparent}">Services</a>
-					    </div>
-
-
-					  	<!-- TABS BODY -->
-    					<div id="featureElementsContainer" class="rounded {right bottom}">
-
-							<!-- ASSESSMENT MENU -->	
-							<div id="assessments" style="display: none">					
-							</div>
-
-							<!-- ORGANIZATION MENU -->
-							<div id="organizations" style="display: none">					
-								<table class="toolbar">
-								<tr class="toolbar">
-									<td class="toolbar" width="120">
-										<a href="#" id="studentsLink" onClick="gotoMenuAction('organizations.do', 'studentsLink');"><b>Students</b></a>						
-									</td>
-								<ctb:auth roles="Administrator">										
-									<td class="toolbar" width="120">
-										<a href="#" id="usersLink" onClick="gotoMenuAction('organizations.do', 'usersLink');"><b>Users</b></a>						
-									</td>
-								</ctb:auth>
-								<ctb:auth roles="Administrator">										
-									<td class="toolbar" width="120">
-										<a href="#" id="organizationsLink" onClick="gotoMenuAction('organizations.do', 'organizationsLink');"><b>Organizations</b></a>						
-									</td>
-								</ctb:auth>
-								<c:if test="${sessionScope.isBulkAccommodationConfigured}">
-									<ctb:auth roles="Administrator, Administrative Coordinator">										
-										<td class="toolbar" width="190">
-											<a href="#" id="bulkAccomLink" onclick="gotoMenuAction('organizations.do', 'bulkAccomLink');"><b>Assign Accommodations</b></a>						
-										</td>
-									</ctb:auth>
-								</c:if>
-							  	<c:if test="${sessionScope.isBulkMoveConfigured}">										
-									<td class="toolbar" width="190">
-										<a href="#" id="bulkMoveLink" onclick="gotoMenuAction('organizations.do', 'bulkMoveLink');"><b>Move Students</b></a>						
-									</td>
-								</c:if>
-									<td width="*">&nbsp;</td>		
-								</tr>
-								</table>						
-							</div>
-
-							<!-- REPORTS MENU -->
-							<div id="reports" style="display: none">					
-							</div>
-
-							<!-- SERVICES MENU -->
-							<div id="services" style="display: none">	
-							</div>
-												
-					      	<div class="feature" id="bodySection">
-					            <netui-template:includeSection name="bodySection"/>      	
-					      	</div>
-
-    					</div> <!-- End of TABS BODY -->
-  					</div> <!-- End of TABS HEADERS -->
+					  <jsp:include page="/resources/jsp/oas_navigation_menu.jsp" />
+						<div class="feature" id="bodySection">
+							<table width="100%" border="0" bgcolor="#FFFFFF" cellpadding="0" cellspacing="12" >
+							<tr>
+				  			<td align="left" valign="top">
+							<netui-template:includeSection name="bodySection"/>
+							</td>
+							</tr>
+							</table>
+						</div>
 
 					</td>
 				</tr>

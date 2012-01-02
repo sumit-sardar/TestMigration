@@ -43,7 +43,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-	selectTab("services", "downloadDataLink");
+	setMenuActive("services", "downloadDataLink");
 });
 </script>
 

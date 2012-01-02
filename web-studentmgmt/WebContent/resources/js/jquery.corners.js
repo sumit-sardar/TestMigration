@@ -50,10 +50,10 @@ jQuery.fn.corners = function(options) {
   function roundWebkit(e, s) {
     var radius = '' + s.sizex + 'px ' + s.sizey + 'px';
     var $e = jQuery(e);
-    if (s.tl) $e.css('WebkitBorderTopLeftRadius', radius);
-    if (s.tr) $e.css('WebkitBorderTopRightRadius', radius);
-    if (s.bl) $e.css('WebkitBorderBottomLeftRadius', radius);
-    if (s.br) $e.css('WebkitBorderBottomRightRadius', radius);
+    if (s.tl) $e.css('-webkit-border-radius-topleft', radius);
+    if (s.tr) $e.css('-webkit-border-radius-topright', radius);
+    if (s.bl) $e.css('-webkit-border-radius-bottomleft', radius);
+    if (s.br) $e.css('-webkit-border-radius-bottomright', radius);
   }
   
   function roundMozilla(e, s)
@@ -161,6 +161,10 @@ jQuery.fn.corners = function(options) {
   }
   
   function adjustedPadding(e, s, pad, top) {
+	  
+	  if (pad == null)
+		  return '0px';
+	  
     if (pad.indexOf("px") < 0) {
       try {
         //TODO Make this check work otherwise remove it
