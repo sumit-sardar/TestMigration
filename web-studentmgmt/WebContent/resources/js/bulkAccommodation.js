@@ -118,7 +118,7 @@ function createSingleNodeSelectedTreeInBulk(jsondata) {
 				gridReloadForBulkStudent();
 				
 				 if(bulkStudentgridLoaded) {
-				 	document.getElementById('ShowButtons').style.display = "block";
+				 	document.getElementById('viewStatus').style.display = "block";
 				 	var showAccommodations = $("#supportAccommodations").val();
 					if(showAccommodations  == 'false') {
 						$("#studentAccommGrid").jqGrid("hideCol",["calculator","hasColorFontAccommodations","testPause","screenReader","untimedTest"]); 

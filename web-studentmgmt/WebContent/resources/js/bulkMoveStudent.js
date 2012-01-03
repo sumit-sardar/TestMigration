@@ -88,7 +88,7 @@ function createSingleNodeBulkMoveTree(jsondata) {
 				gridReloadForBulkMoveStudent();
 				
 				 if(bulkMoveGridLoaded) {
-				 	document.getElementById('ShowButtons').style.display = "block";
+				 	document.getElementById('viewStatus').style.display = "block";
 				}
 			}
 			totalRowSelectedOnPage = 0;

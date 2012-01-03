@@ -27,7 +27,7 @@
 		<table style="clear:both;" width= "100%"> 
 		   	<tr >
 		   		<td >
-	       			<div id="ShowButtons" style="width:1225px; display:none; float:left;">
+	       			<div id="ShowButtons" style="width:1225px; min-height:44px; float:left;">
 	       				<div  style="float:left;width:1000px;white-space: nowrap;" class="transparent">
 							<div id="displayBulkMessageMain" class="roundedMessage" style="display:none;"> 
 								<table>
@@ -46,7 +46,7 @@
 								</table>
 							</div>
 						</div>
-						<div id="viewStatus" style="float:right;padding-left:5px;margin-top: 7px;margin-bottom: 5px;">
+						<div id="viewStatus" style="float:right;padding-left:5px;margin-top: 7px;margin-bottom: 5px; display:none;">
 							<a href="#" id="assignAccommButton" onclick="javascript:openAssignAccommPopup(this); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['student.assignAccommodation.EditAccom.Button']}"/></a>
 						</div> 
 					</div> 
