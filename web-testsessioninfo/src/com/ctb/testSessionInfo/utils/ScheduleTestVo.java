@@ -22,7 +22,7 @@ import com.ctb.testSessionInfo.data.TestVO;
 
 
 
-
+@SuppressWarnings( "all")
 public class ScheduleTestVo implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -404,7 +404,7 @@ public class ScheduleTestVo implements Serializable{
 	
 }
 
-
+@SuppressWarnings( "all")
 class ProductBean implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -602,7 +602,7 @@ class ProductBean implements Serializable{
 
 }
 
-
+@SuppressWarnings( "all")
 class ObjectIdName implements Serializable{
 
 	private static final long serialVersionUID = 1L;
