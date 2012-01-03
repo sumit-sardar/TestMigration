@@ -84,7 +84,7 @@ public class TATestResultController implements TestResultController{
 	        context.setStudentId(studentData.getOasStudentId());
 	        context.setSessionId(adminData.getSessionId());
 	        context.setCurrentResultId(new Long(rosterValidationStatus.isValid()?1:2));
-	        context.setGradeId(new Long(studentData.getGrade().equals("AD")?1:2));
+	        context.setGradeId(new Long(studentData.getGrade().equals("AD")?28:29));
 	        context.setAssessmentId(adminData.getAssessmentId());
 	        context.setAssessmentType(adminData.getAssessmentType());
 	        context.setProgramId(adminData.getProgramId());
