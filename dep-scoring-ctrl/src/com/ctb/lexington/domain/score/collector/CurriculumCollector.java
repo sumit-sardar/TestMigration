@@ -328,14 +328,14 @@ public class CurriculumCollector {
         } else if ("TA".equals(productType)) {
         	Composite [] composites = new Composite[2];
         	 composites[0] = new Composite();
-             composites[0].setCompositeId(new Long(1));
+             composites[0].setCompositeId(new Long(37));
              composites[0].setCompositeName("Total Mathematics");
              composites[0].setCompositeType("TABE COMPOSITE");
              composites[0].setSubject("TA Total Mathematics");
            //  composites[0].setCompositePointsPossible(new Long(90));
           //   composites[0].setCompositeNumItems(new Long(90));
              composites[1] = new Composite();
-             composites[1].setCompositeId(new Long(2));
+             composites[1].setCompositeId(new Long(38));
              composites[1].setCompositeName("Total Battery");
              composites[1].setCompositeType("TABE COMPOSITE");
              composites[1].setSubject("TA Total Battery");
