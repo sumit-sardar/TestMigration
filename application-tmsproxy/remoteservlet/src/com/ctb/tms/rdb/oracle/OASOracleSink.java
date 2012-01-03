@@ -174,6 +174,15 @@ public class OASOracleSink implements OASRDBSink {
 	    			stmt1.close();
 	    			stmt1 = null;
 	    		}
+	    		if(isTABE) {
+					if("".equals(subtestList.trim())) subtestList = "-1";
+					stmt3 = conn.prepareStatement(SUBTEST_CLEANUP_SQL.replaceAll("itemSetIdList", subtestList));
+		    		stmt3.setString(1, testRosterId);
+		    		stmt3.setString(2, manifest.getAccessCode());
+		    		stmt3.executeUpdate();
+		    		stmt3.close();
+		    		stmt3 = null;
+				}
 	    		if(k==0) {
 		    		stmt2 = conn.prepareStatement(ROSTER_STATUS_SQL);
 		    		stmt2.setString(1, manifest.getRosterCompletionStatus());
@@ -207,15 +216,6 @@ public class OASOracleSink implements OASRDBSink {
 		    		stmt2.close();
 		    		stmt2 = null;
 					logger.debug("OASOracleSink: Updated roster status for roster: " + testRosterId + ". Status is: " + manifest.getRosterCompletionStatus());
-					if(isTABE) {
-						if("".equals(subtestList.trim())) subtestList = "-1";
-						stmt3 = conn.prepareStatement(SUBTEST_CLEANUP_SQL.replaceAll("itemSetIdList", subtestList));
-			    		stmt3.setString(1, testRosterId);
-			    		stmt3.setString(2, manifest.getAccessCode());
-			    		stmt3.executeUpdate();
-			    		stmt3.close();
-			    		stmt3 = null;
-					}
 					if(manifest.getTutorialTaken() != null) {
 						stmt4 = conn.prepareStatement(TUTORIAL_DELETE_SQL);
 			    		stmt4.setString(1, testRosterId);
