@@ -1175,7 +1175,10 @@ public class UserOperationController extends PageFlowController
         
      	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigs).booleanValue() && adminUser);
      	
-     	this.getSession().setAttribute("hasUploadDownloadConfigured", 
+     	this.getSession().setAttribute("hasProgramStatusConfigured", 
+        		new Boolean( hasProgramStatusConfig(customerConfigs).booleanValue() && adminUser));
+        
+        this.getSession().setAttribute("hasUploadDownloadConfigured", 
         		new Boolean( hasUploadDownloadConfig(customerConfigs).booleanValue() && adminUser));
         
         this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));    	
@@ -1267,6 +1270,24 @@ public class UserOperationController extends PageFlowController
 		}
         return new Boolean(hasUploadDownloadConfig);
     }
+    
+    private Boolean hasProgramStatusConfig(CustomerConfiguration[] customerConfigurations)
+    {	
+        Boolean hasProgramStatusConfig = Boolean.FALSE;
+        if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subtest_Invalidation") && 
+						cc.getDefaultValue().equals("T")) {
+					hasProgramStatusConfig = true; 
+					break;
+				}
+			}
+		}
+        return new Boolean(hasProgramStatusConfig);
+    }
+    
     
     private Boolean customerHasScoring(CustomerConfiguration [] customerConfigs)
     {               

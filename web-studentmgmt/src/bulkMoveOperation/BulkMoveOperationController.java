@@ -436,8 +436,13 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
         
     	this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigurations));
     	
+    	this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
+    	
     	this.getSession().setAttribute("hasUploadDownloadConfigured", 
         		new Boolean( hasUploadDownloadConfig(customerConfigurations).booleanValue() && adminUser));
+        
+    	this.getSession().setAttribute("hasProgramStatusConfigured", 
+        		new Boolean( hasProgramStatusConfig(customerConfigurations).booleanValue() && adminUser));
         
         this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	
@@ -550,6 +555,26 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
 		}        
 		return new Boolean(hasReports);           
 	}
+	
+	/**
+	 * Bulk Accommodation
+	 */
+	private Boolean customerHasBulkAccommodation(CustomerConfiguration[] customerConfigurations) 
+	{
+		boolean hasBulkStudentConfigurable = false;
+		if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+						cc.getDefaultValue().equals("T")) {
+					hasBulkStudentConfigurable = true; 
+					break;
+				}
+			}
+		}
+		return new Boolean(hasBulkStudentConfigurable);           
+	}
 
 	/**
 	 * Bulk Move
@@ -588,6 +613,24 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
         return new Boolean(hasUploadDownloadConfig);
     }
 
+
+    private Boolean hasProgramStatusConfig(CustomerConfiguration[] customerConfigurations)
+    {	
+        Boolean hasProgramStatusConfig = Boolean.FALSE;
+        if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subtest_Invalidation") && 
+						cc.getDefaultValue().equals("T")) {
+					hasProgramStatusConfig = true; 
+					break;
+				}
+			}
+		}
+        return new Boolean(hasProgramStatusConfig);
+    }
+    
 	private boolean isTopLevelUser(boolean isLasLinkCustomerVal){
 
 		boolean isUserTopLevel = false;
