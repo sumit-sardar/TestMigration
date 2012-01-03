@@ -647,8 +647,8 @@ function populateBulkStudentGrid() {
 		 	
 		 }
 		 liMenuStr = liMenuStr + "</ul></div>";
-		 liMenuStr = liMenuStr + "<div><input type='button' id='apply' onclick='javascript:applyList(); return false;'  class = 'ui-widget-header' style='border:1px solid;float:right;width:40px;margin:5px;height:20px;font-weight:bold;font-family:arial;cursor:pointer !important;' value='Apply'/>"+
-		 			"	<input type='button' id='clear' onclick='javascript:clearList(); return false;' class = 'ui-widget-header' value='Clear' style='border:1px solid;float:right;width:40px;margin:5px;height:20px;font-weight:bold;font-family:arial;margin-right:0px;cursor:pointer !important;'/></div>";
+		 liMenuStr = liMenuStr + "<div><input type='button' id='apply' onclick='javascript:applyList(); return false;'  class = 'ui-widget-header rounded' style='float:right;width:40px;margin:5px;height:20px;font-weight:bold;font-family:arial;cursor:pointer !important;' value='Apply'/>"+
+		 			"	<input type='button' id='clear' onclick='javascript:clearList(); return false;' class = 'ui-widget-header rounded' value='Clear' style='float:right;width:40px;margin:5px;height:20px;font-weight:bold;font-family:arial;margin-right:0px;cursor:pointer !important;'/></div>";
 		 return liMenuStr;
 	}
 	
