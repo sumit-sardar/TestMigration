@@ -851,7 +851,9 @@ public class BulkOperationController extends PageFlowController {
         
         this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
     	
-    	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
+        this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigurations));
+     	
+     	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	
     	this.getRequest().setAttribute("isTopLevelUser",isTopLevelUser(laslinkCustomer));
     	
@@ -1330,12 +1332,19 @@ public class BulkOperationController extends PageFlowController {
         return null;
 	}
 	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "begin.do") 
-	    }) 
+	@Jpf.Action() 
 	protected Forward services_downloadTest()
 	{
-	    return new Forward("success");
+		 try
+	        {
+	            String url = "/SessionWeb/testContentOperation/services_downloadTest.do";
+	            getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+	        return null;
 	}
 	
     @Jpf.Action()

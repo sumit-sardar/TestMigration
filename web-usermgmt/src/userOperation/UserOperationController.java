@@ -1088,12 +1088,19 @@ public class UserOperationController extends PageFlowController
         return null;
 	}
 	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "begin.do") 
-	    }) 
+    @Jpf.Action() 
 	protected Forward services_downloadTest()
 	{
-	    return new Forward("success");
+		 try
+	        {
+	            String url = "/SessionWeb/testContentOperation/services_downloadTest.do";
+	            getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+	        return null;
 	}
 	
     @Jpf.Action()

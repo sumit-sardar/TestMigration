@@ -2238,13 +2238,20 @@ public class StudentOperationController extends PageFlowController {
     	return null;
     }
 
-    @Jpf.Action(forwards = { 
-    		@Jpf.Forward(name = "success", path = "begin.do") 
-    }) 
-    protected Forward services_downloadTest()
-    {
-    	return new Forward("success");
-    }
+    @Jpf.Action() 
+	protected Forward services_downloadTest()
+	{
+		 try
+	        {
+	            String url = "/SessionWeb/testContentOperation/services_downloadTest.do";
+	            getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+	        return null;
+	}
 
     @Jpf.Action()
     protected Forward services_uploadData()

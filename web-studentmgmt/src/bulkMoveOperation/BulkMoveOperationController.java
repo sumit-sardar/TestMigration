@@ -441,7 +441,9 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
     	this.getSession().setAttribute("hasUploadDownloadConfigured", 
         		new Boolean( hasUploadDownloadConfig(customerConfigurations).booleanValue() && adminUser));
         
-    	this.getSession().setAttribute("hasProgramStatusConfigured", 
+    	this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigurations));
+     	
+     	this.getSession().setAttribute("hasProgramStatusConfigured", 
         		new Boolean( hasProgramStatusConfig(customerConfigurations).booleanValue() && adminUser));
         
         this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
@@ -784,7 +786,7 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
 	protected Forward organizations()
 	{
 		String menuId = (String)this.getRequest().getParameter("menuId");
-		String forwardName = (menuId != null) ? menuId : "studentsLink";
+		String forwardName = (menuId != null) ? menuId : "bulkMoveLink";
 		
 	    return new Forward(forwardName);
 	}
@@ -924,12 +926,19 @@ private void creatGson(HttpServletRequest req, HttpServletResponse resp, OutputS
         return null;
 	}
 	
-	@Jpf.Action(forwards = { 
-	        @Jpf.Forward(name = "success", path = "begin.do") 
-	    }) 
+    @Jpf.Action() 
 	protected Forward services_downloadTest()
 	{
-	    return new Forward("success");
+		 try
+	        {
+	            String url = "/SessionWeb/testContentOperation/services_downloadTest.do";
+	            getResponse().sendRedirect(url);
+	        } 
+	        catch (IOException ioe)
+	        {
+	            System.err.print(ioe.getStackTrace());
+	        }
+	        return null;
 	}
 	
     @Jpf.Action()

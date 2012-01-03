@@ -420,7 +420,9 @@ public class DownloadOperationController extends PageFlowController {
      	
      	this.getSession().setAttribute("isBulkMoveConfigured",customerHasBulkMove(customerConfigs));
     	
-     	this.getSession().setAttribute("adminUser", new Boolean(adminUser));     	
+     	this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigs));    	
+    	
+        this.getSession().setAttribute("adminUser", new Boolean(adminUser));     	
 	}
 
     private Boolean userHasReports() 
@@ -566,6 +568,26 @@ public class DownloadOperationController extends PageFlowController {
     }
     
     /**
+	 * Bulk Accommodation
+	 */
+	private Boolean customerHasBulkAccommodation(CustomerConfiguration[] customerConfigurations) 
+	{
+		boolean hasBulkStudentConfigurable = false;
+		if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Bulk_Accommodation") && 
+						cc.getDefaultValue().equals("T")) {
+					hasBulkStudentConfigurable = true; 
+					break;
+				}
+			}
+		}
+		return new Boolean(hasBulkStudentConfigurable);           
+	}
+	
+	/**
 	 * Bulk Move
 	 */
 	private Boolean customerHasBulkMove(CustomerConfiguration[] customerConfigurations) 
