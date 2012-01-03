@@ -11,9 +11,9 @@
 
 function roundCornerFeatureIE(){
  	$('.feature').corners();
- 	if($.browser.msie){
- 		$(".feature").css('padding-top','0px');
- 		$(".feature div:eq(1)").css('padding-top','10px');
+ 	if($("#bodySection").length>0 && $("#bodySection").children().length == 3){
+ 		$("#bodySection").css('padding-top','0px');
+ 		$("#bodySection").children().eq(1).css('padding-top','10px');
  	}
  } 
 function setAnchorButtonState(elementId, disabled) {

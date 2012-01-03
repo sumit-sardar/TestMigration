@@ -159,11 +159,26 @@ function setMenuActive(topMenuId, menuId)
 	
 	var topMenu = document.getElementById(topMenuId);
 	topMenu.className = "simpleMenu active";
-	if($.browser.mozilla || $.browser.safari){
-		$("#bodySection").css('padding-top','12px');
+	if($.browser.mozilla || $.browser.safari || ($.browser.msie && getInternetExplorerVersion() > 7)){
+		$("#bodySection").css('margin-top','-18px');
 	}
 	$('.simpleMenu').corners('top'); 
     
+}
+
+function getInternetExplorerVersion()
+// Returns the version of Internet Explorer or a -1
+// (indicating the use of another browser).
+{
+  var rv = -1; // Return value assumes failure.
+  if (navigator.appName == 'Microsoft Internet Explorer')
+  {
+    var ua = navigator.userAgent;
+    var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+    if (re.exec(ua) != null)
+      rv = parseFloat( RegExp.$1 );
+  }
+  return rv;
 }
 
 
