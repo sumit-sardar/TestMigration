@@ -727,33 +727,32 @@ function populateBulkStudentGrid() {
 				
 			if(selectedFullId.indexOf('ps_') != -1){
 				if(selectedId[1] == '1'){
-					$("[id^='" + globalCustomerDemographic1+"_']").show();
+					$("[id^='" + globalCustomerDemographic1+"_']").parent().show();
 				}
 				if(selectedId[1] == '2'){
-					$("[id^='" + globalCustomerDemographic2+"_']").show();
+					$("[id^='" + globalCustomerDemographic2+"_']").parent().show();
 				}
 				if(selectedId[1] == '3'){
-					$("[id^='" + globalCustomerDemographic3+"_']").show();
+					$("[id^='" + globalCustomerDemographic3+"_']").parent().show();
 				}
 			}else {	
-				if(selectedId[1] == '1'){
-					
-					$("[id^='" + globalCustomerDemographic1+"_']").show();
+				if(selectedId[1] == '1'){					
+					$("[id^='" + globalCustomerDemographic1+"_']").parent().show();
 					globalCustomerDemographic1 = selectedId[0];
-					$('#'+selectedId[0]+"_2").css('display','none');
-					$('#'+selectedId[0]+"_3").css('display','none');
+					$('#'+selectedId[0]+"_2").parent().hide();
+					$('#'+selectedId[0]+"_3").parent().hide();
 				}
 				if(selectedId[1] == '2'){
-					$("[id^='" + globalCustomerDemographic2+"_']").show();
+					$("[id^='" + globalCustomerDemographic2+"_']").parent().show();
 					globalCustomerDemographic2 = selectedId[0];
-					$('#'+selectedId[0]+"_1").css('display','none');
-					$('#'+selectedId[0]+"_3").css('display','none');
+					$('#'+selectedId[0]+"_1").parent().hide();
+					$('#'+selectedId[0]+"_3").parent().hide();
 				}
 				if(selectedId[1] == '3'){
-					$("[id^='" + globalCustomerDemographic3+"_']").show();
+					$("[id^='" + globalCustomerDemographic3+"_']").parent().show();
 					globalCustomerDemographic3 = selectedId[0];
-					$('#'+selectedId[0]+"_1").css('display','none');
-					$('#'+selectedId[0]+"_2").css('display','none');
+					$('#'+selectedId[0]+"_1").parent().hide();
+					$('#'+selectedId[0]+"_2").parent().hide();
 				}
 			}
 		}			
