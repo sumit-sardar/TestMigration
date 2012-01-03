@@ -20,24 +20,63 @@
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->
 
+	<link href="<%=request.getContextPath()%>/resources/css/widgets_NEW.css" type="text/css" rel="stylesheet" />
 
 
 <netui:form action="services_downloadTest">
 
 
-<table width="100%" border="0">
-<tr>
-<td>
-    <h1><netui:content value="Services: Download Test"/></h1>
-</td>
-</tr>
-<tr height="400" align="center">
-<td>
-    <p align="center"><netui:content value="Content goes here"/></p>
-</td>    
-</tr>
-</table>
+<h1><netui:content value="${bundle.web['loadTest.title']}"/></h1>
 
+
+<c:if test="${ requestScope.showMessage }"> 
+<p style="color:#000"><netui:content value="${bundle.web['loadTest.title.message3']}"/>
+<br/>For details, click this link: <a href="<netui:content value="/help/index.html#downloading_the_test_on_the_student_workstation.htm"/>" onClick="return showHelpWindow(this.href);"><netui:content value="Tell me more..."/></a>
+</p>
+<br/>
+</c:if>
+
+<p>
+<table class="sortable">
+<netui-data:repeater dataSource="requestScope.fileInfoList">
+    <netui-data:repeaterHeader>
+       <tr class="sortable">
+                <th class="sortable alignLeft" nowrap>
+                    <div class="notCurrentSort"><span>Product Type</span></div>
+                </th>
+                <th class="sortable alignRight" nowrap>
+                    <div class="notCurrentSort"><span>Size</span></div>
+                </th>
+        </tr>
+    </netui-data:repeaterHeader>
+    <netui-data:repeaterItem>
+        <tr class="sortable">
+            <td class="sortable alignLeft">
+        		<netui-data:getData resultId="fileName" value="${container.item.fileName}"/>    
+        		<% String fileName = (String)pageContext.getAttribute("fileName"); %>         		          
+            	<a href="<%= fileName %>">
+               		<netui:span value="${container.item.displayName}" defaultValue="&nbsp;"/>
+            	</a>
+            </td>
+            <td class="sortable alignRight">
+               <netui:span value="${container.item.size}" defaultValue="&nbsp;"/>
+            </td>
+        </tr>
+    </netui-data:repeaterItem>
+</netui-data:repeater>
+
+    <ctb:tableNoResults dataSource="request.fileInfoList">
+        <tr class="sortable">
+            <td class="sortable" colspan="2">
+                 <ctb:message title="${bundle.web['loadTest.noContent.title']}" style="tableMessage">
+                     <netui:content value="${bundle.web['loadTest.noContent.message']}"/>
+                 </ctb:message>
+            </td>
+       </tr>
+	</ctb:tableNoResults>
+	   
+</table>
+</p>
 
 </netui:form>
 

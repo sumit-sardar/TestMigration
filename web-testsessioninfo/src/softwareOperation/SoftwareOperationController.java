@@ -86,6 +86,23 @@ public class SoftwareOperationController extends PageFlowController {
    		return new Forward("success");
     }
 	
+    /**
+     * getdownloadURI: download installer URL based on user and OS 
+    */
+    private String getdownloadURI(String resourceTypeCode) 
+    {
+    	NonCatalogLogger logger =OASLogger.getLogger(this.getClass().getName());
+   	 	logger.info("Entering getdownloadURI()");
+   	 	String uri = "";
+        try {      
+            //Changes for OAS – Alternate URL - Part I-TAS
+        	uri = this.testSessionStatus.getParentResourceUriForUser(this.userName, resourceTypeCode);
+        }    
+        catch( CTBBusinessException e ) {
+            System.err.print(e.getStackTrace());
+        }
+        return uri;
+    }
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////    
 	///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
@@ -618,37 +635,6 @@ public class SoftwareOperationController extends PageFlowController {
     /////////////////////////////////////////////////////////////////////////////////////////////    
 
 
-    /**
-     * @jpf:action
-     * @jpf:forward name="success" path="/SessionWeb/sessionOperation/begin.do"
-     */
-	@Jpf.Action(
-		forwards = { 
-			@Jpf.Forward(name = "success", path = "/SessionWeb/sessionOperation/begin.do")
-		}
-	)
-    protected Forward goto_homepage()
-    {
-        return new Forward("success");
-    }
 	
     
-   /**
-     * getdownloadURI: download installer URL based on user and OS 
-    */
-    private String getdownloadURI(String resourceTypeCode) 
-    {
-    	NonCatalogLogger logger =OASLogger.getLogger(this.getClass().getName());
-   	 	logger.info("Entering getdownloadURI()");
-   	 	String uri = "";
-        try {      
-            //Changes for OAS – Alternate URL - Part I-TAS
-        	uri = this.testSessionStatus.getParentResourceUriForUser(this.userName, resourceTypeCode);
-        }    
-        catch( CTBBusinessException e ) {
-            System.err.print(e.getStackTrace());
-        }
-        return uri;
-    }
-	
 }

@@ -1,6 +1,7 @@
 package testContentOperation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
 
@@ -11,8 +12,11 @@ import org.apache.beehive.netui.pageflow.annotations.Jpf;
 
 import com.ctb.bean.testAdmin.Customer;
 import com.ctb.bean.testAdmin.CustomerConfiguration;
+import com.ctb.bean.testAdmin.CustomerTestResource;
+import com.ctb.bean.testAdmin.CustomerTestResourceData;
 import com.ctb.bean.testAdmin.User;
 import com.ctb.exception.CTBBusinessException;
+import com.ctb.testSessionInfo.dto.FileInfo;
 import com.ctb.testSessionInfo.utils.PermissionsUtils;
 
 @Jpf.Controller()
@@ -59,10 +63,10 @@ public class TestContentOperationController extends PageFlowController {
 
     /**
      * @jpf:action
-     * @jpf:forward name="success" path="downloadTest.jsp"
+     * @jpf:forward name="success" path="downloadTest.do"
      */
     @Jpf.Action(forwards = { 
-        @Jpf.Forward(name = "success", path = "downloadTest.jsp")
+        @Jpf.Forward(name = "success", path = "downloadTest.do")
     })
     protected Forward begin()
     {    	
@@ -75,7 +79,38 @@ public class TestContentOperationController extends PageFlowController {
    		return new Forward("success");
     }
 	
+
+    /**
+     * @jpf:action
+     * @jpf:forward name="success" path="downloadTest.jsp"
+     */
+    @Jpf.Action(forwards = { 
+        @Jpf.Forward(name = "success",
+                     path = "downloadTest.jsp")
+    })
+    protected Forward downloadTest()
+    {
+     	ArrayList<FileInfo> fileInfoList = new ArrayList<FileInfo>(); 
+    	try {
+			CustomerTestResourceData resourceData= this.testSessionStatus.getCustomerTestResources(this.userName, null, null, null);
+			CustomerTestResource[] result =resourceData.getCustomerTestResource();
+			for(CustomerTestResource resource:result){
+				FileInfo fileInfo = new FileInfo(resource.getProductName(), resource.getResourceURI(), resource.getContentSize());
+				fileInfoList.add(fileInfo);				
+			}
+		} catch (CTBBusinessException e) {
+			e.printStackTrace();
+		} 
+    	
+        this.getRequest().setAttribute("fileInfoList", fileInfoList);
+        this.getRequest().setAttribute("showMessage", new Boolean(fileInfoList.size() > 0));
+    	 
+        return new Forward("success");
+    }
+    
+          
 	
+
 	/////////////////////////////////////////////////////////////////////////////////////////////    
 	///////////////////////////// BEGIN OF NEW NAVIGATION ACTIONS ///////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////    
