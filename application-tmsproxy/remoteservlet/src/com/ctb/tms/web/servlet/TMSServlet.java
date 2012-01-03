@@ -676,7 +676,7 @@ public class TMSServlet extends HttpServlet {
 		//ArrayList newmanifest = new ArrayList();
         for(int i=0; i<manifesta.length ;i++) {
             if (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
-            	logger.info("found completed sco: " + String.valueOf(manifesta[i].getId()));
+            	logger.debug("found completed sco: " + String.valueOf(manifesta[i].getId()));
             	Sco[] scoa = loginResponse.getManifest().getScoArray();
             	int g;
             	boolean foundSco = false;
@@ -797,6 +797,19 @@ public class TMSServlet extends HttpServlet {
 		manifest.setStudentName(rd.getAuthData().getStudentFirstName() + " " + rd.getAuthData().getStudentLastName());
 		loginResponse.setRestartNumber(BigInteger.valueOf(restartCount));
 		
+		if(loginResponse.getTutorial() != null) {
+			if(restartCount < 1) {
+				if("TRUE".equals(manifest.getTutorialTaken())) {
+					loginResponse.getTutorial().setDeliverTutorial(BigInteger.valueOf(0));
+				} else if(0 == loginResponse.getTutorial().getDeliverTutorial().intValue()) {
+					manifest.setTutorialTaken("TRUE");
+				}
+			} else {
+				loginResponse.getTutorial().setDeliverTutorial(BigInteger.valueOf(0));
+				manifest.setTutorialTaken("TRUE");
+			}
+		}
+		
 		XmlOptions opts = new XmlOptions();
 		opts.setCharacterEncoding("UTF-8");
 		String result = response.xmlText(opts);
@@ -815,18 +828,7 @@ public class TMSServlet extends HttpServlet {
 		manifest.setRosterRestartNumber(newRestartCount);
 		rd.getAuthData().setRestartNumber(newRestartCount);
 		
-		if(loginResponse.getTutorial() != null) {
-			if(restartCount == 0) {
-				if("TRUE".equals(manifest.getTutorialTaken())) {
-					loginResponse.getTutorial().setDeliverTutorial(BigInteger.valueOf(0));
-				} else if(0 == loginResponse.getTutorial().getDeliverTutorial().intValue()) {
-					manifest.setTutorialTaken("TRUE");
-				}
-			} else {
-				loginResponse.getTutorial().setDeliverTutorial(BigInteger.valueOf(0));
-				manifest.setTutorialTaken("TRUE");
-			}
-		}
+		
 		oasSink.putManifest(testRosterId, creds.getAccesscode(), manifest, true);
 		creds.setTestRosterId(testRosterId);
 		oasSink.putRosterData(creds, rd, true);

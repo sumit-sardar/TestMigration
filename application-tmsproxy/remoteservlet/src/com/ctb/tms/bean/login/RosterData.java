@@ -192,11 +192,10 @@ public class RosterData extends ReplicationObject {
 		tsd.setLsid(loginResponse.getLsid());
 		if (manifestData.getScratchpadContent()== null) manifestData.setScratchpadContent("");
 		tsd.addSp(manifestData.getScratchpadContent());
-		Ast ast = tsd.addNewAst();
-		int remSec = (manifestData.getScoDurationMinutes() * 60) - manifestData.getTotalTime();
-		ast.setRemSec((float) remSec);
+		
 		int maxRSN = 0;
 		int totalDur = 0;
+		int curEid = 0;
 		for(int i=0;i<itemResponseData.length;i++) {
 			ItemResponseData data = itemResponseData[i];
 			tsd.addNewIst();
@@ -235,12 +234,16 @@ public class RosterData extends ReplicationObject {
 				ov.setV("");
 	
 			if(Integer.valueOf(data.getResponseSeqNum()) > maxRSN) {
-				ast.setCurEid(""+data.getEid());
+				curEid = data.getEid();
 				maxRSN = Integer.valueOf(data.getResponseSeqNum());
 			}
 			logger.debug("\n*****  RosterData: generateRestartData: Added response to restart data: " + tsd.xmlText());
 		}
 		manifestData.setTotalTime(totalDur);
+		Ast ast = tsd.addNewAst();
+		int remSec = (manifestData.getScoDurationMinutes() * 60) - manifestData.getTotalTime();
+		ast.setRemSec((float) remSec);
+		ast.setCurEid(String.valueOf(curEid));
 	}
 	
 	public static ItemResponseData[] generateItemResponseData(String testRosterId, ManifestData manifest, ItemResponseData[] tsda) throws XmlException {
@@ -248,11 +251,12 @@ public class RosterData extends ReplicationObject {
 		HashMap itemMap = new HashMap(tsda.length);
 		HashMap audioResponseMap = new HashMap(tsda.length);
 		for(int i=0;i<tsda.length;i++) {
-			logger.debug("generateItemResponseData: Tsd " + i);
-			
 			AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd tsd = ItemResponseData.IrdToAdsTsd(tsda[i]);
 			
+			logger.debug("generateItemResponseData: Tsd scid: " + tsd.getScid() + ", manifest id: " + manifest.getId());
+			
 			if(manifest.getId() == Integer.parseInt(tsd.getScid())) {
+				//System.out.print("1-");
 				noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist[] ista = tsd.getIstArray();
 				//for(int j=0;j<ista.length;j++) {	
 					//logger.debug("generateItemResponseData: Ist " + j);
@@ -274,12 +278,16 @@ public class RosterData extends ReplicationObject {
 			    		}
 			    	}
 					if((mapMseq == null || tsd.getMseq().intValue() > mapMseq.intValue()) && !catHeartbeat) {
+						//System.out.print("2-");
 						itemMap.put(ist.getIid(), tsd.getMseq());
 						
 						//   if(ist != null && ist.getRvArray(0) != null && ist.getRvArray(0).getVArray(0) != null) {
 				        if(ist != null && ist.getRvArray() != null && ist.getRvArray().length >0 ) {
+				        	//System.out.print("3-");
 				            if( ist.getRvArray(0).getVArray() != null && ist.getRvArray(0).getVArray().length >0){
+				            	//System.out.print("4-");
 				                if(ist.getRvArray(0).getVArray(0) != null){
+				                	//System.out.print("5-");
 				                    BaseType.Enum responseType = ist.getRvArray(0).getT();
 				                    String xmlResponse = ist.getRvArray(0).getVArray(0);
 				                    String response = xmlResponse;
@@ -331,7 +339,9 @@ public class RosterData extends ReplicationObject {
 			                    	ird.setItemType(BaseType.STRING.equals(responseType)?"CR":"SR");
 			                    	ird.setResponseType(responseType.toString());
 			                    	ird.setTestRosterId(Integer.parseInt(testRosterId));
+			                    	ird.setSendCatSave(ist.getSendCatSave());
 			                    	irdMap.put(ird.getItemId(), ird);
+			                    	//System.out.print("6-");
 			                    	logger.debug("\n*****  RosterData: generateItemResponseData: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 				                 }
 				            } else { 
@@ -348,7 +358,9 @@ public class RosterData extends ReplicationObject {
 		                    	// TODO: fix this
 		                    	ird.setItemType("SR");
 		                    	ird.setTestRosterId(Integer.parseInt(testRosterId));
+		                    	ird.setSendCatSave(ist.getSendCatSave());
 		                    	irdMap.put(ird.getItemId(), ird);
+		                    	//System.out.print("7-");
 		                    	logger.debug("\n*****  RosterData: generateItemResponseData: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 				            }       
 				        }
@@ -356,6 +368,7 @@ public class RosterData extends ReplicationObject {
 				//}
 			}
 		}
+		//System.out.print("8\n");
 		return (ItemResponseData[]) irdMap.values().toArray(new ItemResponseData[0]);
 	}
 }

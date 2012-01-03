@@ -37,6 +37,7 @@ public class ItemResponseData extends ReplicationObject {
     private String answerArea;
     private boolean audioItem;
     private String responseType;
+    private boolean sendCatSave;
     
     public static Tsd IrdToAdsTsd(ItemResponseData ird) {
     	Tsd tsd = Tsd.Factory.newInstance();        
@@ -53,6 +54,7 @@ public class ItemResponseData extends ReplicationObject {
 		ist.setMrk("T".equals(ird.getStudentMarked()));
 		ist.setDur(ird.getResponseElapsedTime());
 		ist.setAudioItem(ird.audioItem);
+		ist.setSendCatSave(ird.isSendCatSave());
 		tsd.setMseq(new BigInteger(ird.getResponseSeqNum()));
 		totalDur = totalDur + ird.getResponseElapsedTime();
 		Rv rv = ist.addNewRv();
@@ -97,6 +99,7 @@ public class ItemResponseData extends ReplicationObject {
 	        ird.setResponseElapsedTime((int)ist.getDur());
 	        ird.setEid(Integer.parseInt(ist.getEid()));
 	        ird.setAudioItem(ist.getAudioItem());
+	        ird.setSendCatSave(ist.getSendCatSave());
 	        // if(ist != null && ist.getRvArray(0) != null && ist.getRvArray(0).getVArray(0) != null) {
 	        if(ist != null && ist.getRvArray() != null && ist.getRvArray().length >0 ) {
 	            if( ist.getRvArray(0).getVArray() != null && ist.getRvArray(0).getVArray().length >0){
@@ -132,6 +135,13 @@ public class ItemResponseData extends ReplicationObject {
 	                        }
 	                    }
 	                    ird.setResponse(response);
+	                }
+	            }
+	        }
+	        if(ist != null && ist.getOvArray() != null && ist.getOvArray().length >0 ) {
+	            if( ist.getOvArray(0).getVArray() != null && ist.getOvArray(0).getVArray().length >0){
+	                if(ist.getOvArray(0).getVArray(0) != null){
+	                	ird.setScore(Integer.parseInt(ist.getOvArray(0).getVArray(0)));
 	                }
 	            }
 	        }
@@ -192,12 +202,25 @@ public class ItemResponseData extends ReplicationObject {
                     if("CR".equals(ird.getItemType())) ird.setConstructedResponse(response);
 	            }
 	        }
+	        if(ist != null && ist.getOvArray() != null && ist.getOvArray().length >0 ) {
+	            if(ist.getOvArray(0).getV() != null && !"".equals(ist.getOvArray(0).getV().trim())){
+	            	ird.setScore(Integer.parseInt(ist.getOvArray(0).getV()));
+	            }
+	        }
 	        logger.debug("\n*****  ItemResponseData: TmsTsdToIrd: constructed restart item response " + ird.getTestRosterId() + ", seqnum: " + ird.getResponseSeqNum() + ", item type: " + ird.getItemType() + ", response type: " + ird.getResponseType() + ", elapsed time: " + ird.getResponseElapsedTime() + ", response: " + ird.getResponse() + ", CR response: " + ird.getConstructedResponse());
 	        irds.add(ird);
 		}
 		return (ItemResponseData[]) irds.toArray(new ItemResponseData[0]);
     }
     
+	public boolean isSendCatSave() {
+		return sendCatSave;
+	}
+
+	public void setSendCatSave(boolean sendCatSave) {
+		this.sendCatSave = sendCatSave;
+	}
+
 	public boolean isAudioItem() {
 		return audioItem;
 	}
