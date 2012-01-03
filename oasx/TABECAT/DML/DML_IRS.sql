@@ -24,6 +24,12 @@ insert into form_dim values (13, 'CAT', 5)
 insert into form_dim values (14, 'N/A', 5)
 /
 
+--grade_dim
+insert into grade_dim values (28, 'AD', 5)
+/
+insert into grade_dim values (29, 'JV', 5)
+/
+
 --attr1_dim
 insert into attr1_dim values (5,'Yes','ELL',5)
 /
@@ -43,21 +49,21 @@ insert into attr2_dim values (39,'Caucasian','Ethnicity',5)
 /
 insert into attr2_dim values (40,'Multi-ethnic','Ethnicity',5)
 /
-insert into attr2_dim values (41,'N/A','Ethnicity',5)
+insert into attr2_dim values (41,'Ethnicity Unknown','Ethnicity',5)
 /
 
 --attr3_dim
-insert into attr3_dim values (5,'Yes','FREE_REDUCED_LUNCH',5)
+insert into attr3_dim values (5,'Yes','Free or Reduced Lunch',5)
 /
-insert into attr3_dim values (6,'No','FREE_REDUCED_LUNCH',5)
+insert into attr3_dim values (6,'No','Free or Reduced Lunch',5)
 /
 
 --attr4_dim
-insert into attr4_dim values (7,'Female','GENDER',5)
+insert into attr4_dim values (7,'Female','Gender',5)
 /
-insert into attr4_dim values (8,'Male','GENDER',5)
+insert into attr4_dim values (8,'Male','Gender',5)
 /
-insert into attr4_dim values (9,'N/A','GENDER',5)
+insert into attr4_dim values (9,'Gender Unknown','Gender',5)
 /
 
 --attr5_dim
@@ -67,13 +73,13 @@ insert into attr5_dim values (6,'No','IEP',5)
 /
 
 --attr6_dim
-insert into attr6_dim values (10,'Employed','LABORFORCE_STATUS',5)
+insert into attr6_dim values (10,'Employed','Labor Force Status',5)
 /
-insert into attr6_dim values (11,'Unemployed','LABORFORCE_STATUS',5)
+insert into attr6_dim values (11,'Unemployed','Labor Force Status',5)
 /
-insert into attr6_dim values (12,'Not in Labor Force','LABORFORCE_STATUS',5)
+insert into attr6_dim values (12,'Not in Labor Force','Labor Force Status',5)
 /
-insert into attr6_dim values (13,'Labor Force Status Unknown','LABORFORCE_STATUS',5)
+insert into attr6_dim values (13,'Labor Force Status Unknown','Labor Force Status',5)
 /
 
 --attr7_dim
@@ -83,9 +89,9 @@ insert into attr7_dim values (6,'No','LEP',5)
 /
 
 --attr8_dim
-insert into attr8_dim values (5,'Yes','MIGRANT',5)
+insert into attr8_dim values (5,'Yes','Migrant',5)
 /
-insert into attr8_dim values (6,'No','MIGRANT',5)
+insert into attr8_dim values (6,'No','Migrant',5)
 /
 
 --attr9_dim
@@ -95,9 +101,9 @@ insert into attr9_dim values (8,'No','Screen Magnifier',5)
 /
 
 --attr10_dim
-insert into attr10_dim values (5,'Yes','SECTION 504',5)
+insert into attr10_dim values (5,'Yes','Section 504',5)
 /
-insert into attr10_dim values (6,'No','SECTION 504',5)
+insert into attr10_dim values (6,'No','Section 504',5)
 /
 
 --attr11_dim
