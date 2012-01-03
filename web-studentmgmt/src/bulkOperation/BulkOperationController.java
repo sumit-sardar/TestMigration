@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -549,14 +551,20 @@ public class BulkOperationController extends PageFlowController {
 		td.getAttr().setCid(org.getOrgCategoryLevel().toString());
 		rootCategoryLevel = org.getOrgCategoryLevel();
 		td.getAttr().setTcl("1");
-		treeProcess (org,orgList,td,selectedList, rootCategoryLevel);
+		org.setTreeLevel(1);
+		Map<Integer, Organization> orgMap = new HashMap<Integer, Organization>();
+		orgMap.put(org.getOrgNodeId(), org);
+		treeProcess (org, orgList, td, selectedList, rootCategoryLevel, orgMap);
 		data.add(td);
 	}
 	
 	
-	private static void treeProcess (Organization org,List<Organization> list,TreeData td, ArrayList<Organization> selectedList, Integer rootCategoryLevel) {
+	private static void treeProcess (Organization org,List<Organization> list,TreeData td, 
+    		ArrayList<Organization> selectedList, Integer rootCategoryLevel, 
+    		Map<Integer, Organization> orgMap) {
 
-		Integer treeLevel;
+		Integer treeLevel = 0;
+		Organization parentOrg = null;
 		for (Organization tempOrg : list) {
 			if (org.getOrgNodeId().equals(tempOrg.getOrgParentNodeId())) {
 				
@@ -574,10 +582,13 @@ public class BulkOperationController extends PageFlowController {
 				tempData.setData(tempOrg.getOrgName());
 				tempData.getAttr().setId(tempOrg.getOrgNodeId().toString());
 				tempData.getAttr().setCid(tempOrg.getOrgCategoryLevel().toString());
-				treeLevel = tempOrg.getOrgCategoryLevel() - (rootCategoryLevel -1);
+				parentOrg = orgMap.get(tempOrg.getOrgParentNodeId());
+				treeLevel = parentOrg.getTreeLevel() + 1;
+				tempOrg.setTreeLevel(treeLevel);
 				tempData.getAttr().setTcl(treeLevel.toString());
 				td.getChildren().add(tempData);
-				treeProcess (tempOrg,list,tempData, selectedList,rootCategoryLevel);
+				orgMap.put(tempOrg.getOrgNodeId(), tempOrg);
+				treeProcess (tempOrg, list, tempData, selectedList, rootCategoryLevel, orgMap);
 			}
 		}
 	}
@@ -846,14 +857,9 @@ public class BulkOperationController extends PageFlowController {
         this.getSession().setAttribute("hasUploadDownloadConfigured", 
         		new Boolean( hasUploadDownloadConfig(customerConfigurations).booleanValue() && adminUser));
         
-        this.getSession().setAttribute("hasProgramStatusConfigured", 
-        		new Boolean( hasProgramStatusConfig(customerConfigurations).booleanValue() && adminUser));
-        
         this.getSession().setAttribute("isBulkAccommodationConfigured",customerHasBulkAccommodation(customerConfigurations));
     	
-        this.getSession().setAttribute("hasLicenseConfigured", hasLicenseConfiguration(customerConfigurations));
-     	
-     	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
+    	this.getRequest().setAttribute("isLasLinkCustomer", laslinkCustomer);  
     	
     	this.getRequest().setAttribute("isTopLevelUser",isTopLevelUser(laslinkCustomer));
     	
@@ -985,24 +991,6 @@ public class BulkOperationController extends PageFlowController {
         return new Boolean(hasUploadDownloadConfig);
     }
 
-
-    private Boolean hasProgramStatusConfig(CustomerConfiguration[] customerConfigurations)
-    {	
-        Boolean hasProgramStatusConfig = Boolean.FALSE;
-        if( customerConfigurations != null ) {
-			for (int i=0; i < customerConfigurations.length; i++) {
-
-				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
-				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subtest_Invalidation") && 
-						cc.getDefaultValue().equals("T")) {
-					hasProgramStatusConfig = true; 
-					break;
-				}
-			}
-		}
-        return new Boolean(hasProgramStatusConfig);
-    }
-    
 	/**
 	 * Bulk Accommodation
 	 */
@@ -1332,19 +1320,12 @@ public class BulkOperationController extends PageFlowController {
         return null;
 	}
 	
-	@Jpf.Action() 
+	@Jpf.Action(forwards = { 
+	        @Jpf.Forward(name = "success", path = "begin.do") 
+	    }) 
 	protected Forward services_downloadTest()
 	{
-		 try
-	        {
-	            String url = "/SessionWeb/testContentOperation/services_downloadTest.do";
-	            getResponse().sendRedirect(url);
-	        } 
-	        catch (IOException ioe)
-	        {
-	            System.err.print(ioe.getStackTrace());
-	        }
-	        return null;
+	    return new Forward("success");
 	}
 	
     @Jpf.Action()

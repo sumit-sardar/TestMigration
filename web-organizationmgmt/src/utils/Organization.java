@@ -9,8 +9,21 @@ public class Organization {
 	private Integer customerId;
 	private Boolean isAssociate = new Boolean (true);
 	private Integer orgCategoryId;
+	private Integer treeLevel;
 	
 	
+	/**
+	 * @return the treeLevel
+	 */
+	public Integer getTreeLevel() {
+		return treeLevel;
+	}
+	/**
+	 * @param treeLevel the treeLevel to set
+	 */
+	public void setTreeLevel(Integer treeLevel) {
+		this.treeLevel = treeLevel;
+	}
 	public Boolean getIsAssociate() {
 		return isAssociate;
 	}

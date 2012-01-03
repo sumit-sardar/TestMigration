@@ -47,7 +47,11 @@ var type;
 var asyncOver = 0;
 var leafParentOrgNodeId = "";
 var currentNodeIdForEdit = ""; //added to bypass layer population in case of self parent problem
-
+var prevOrgNodeParentId;
+var prevOrgNodeParent;
+var prevElementLeafNodePath;
+var currentClickedId;
+var currentClickedTcl;
 $(document).bind('keydown', function(event) {
 		
 	      var code = (event.keyCode ? event.keyCode : event.which);
@@ -135,7 +139,8 @@ function createSingleNodeSelectedTree(jsondata) {
 	    
 	    $("#orgNodeHierarchy").delegate("a","click", function(e) {
 	    	document.getElementById('displayMessageMain').style.display = "none";
-			 	 
+			currentClickedId = this.parentNode.id;
+			currentClickedTcl = this.parentNode.getAttribute("tcl");	 
   			SelectedOrgNodeId = $(this).parent().attr("id");
  		    $("#treeOrgNodeId").val(SelectedOrgNodeId);
  		    UIBlock();
@@ -589,7 +594,9 @@ function EditOrganizationDetail(selectedOrgId){
 							assignedOrgNodeIds = originalParentOrgId;
 							isParentChange = false;
 						}
-						
+						prevOrgNodeParentId = originalParentOrgId;
+						//console.log("prevOrgNodeElement" + prevOrgNodeParentId);
+						prevOrgNodeElement = document.getElementById(assignedOrgNodeIds);
 						var innerHtml = "<a style='color: blue;text-decoration:underline'  href=javascript:openTreeNodes('"+data.organizationDetail.parentOrgNodeId+"');>"+trim(data.organizationDetail.parentOrgNodeName)+"</a>";	
 						$("#parentOrgName").html(innerHtml);
 						
@@ -897,46 +904,21 @@ function openTreeNodes(orgNodeId) {
 												 var thisObj = "#"+data.organizationDetail.orgNodeId;
 
 												if(data.isEdit){
-												
+																								
+												var orgArray = organizationNodes; 
 												//move_node solution start
 													if (assignedOrgNodeIds != originalParentOrgId) {
 													
-																								
-														$('#innerID').jstree('open_node', "#"+originalParentOrgId); 
-														$(thisObj,"#innerID").remove();
-														if ($("#"+originalParentOrgId,"#innerID").has("li").length == 0) {
-														
-															$("#"+originalParentOrgId,"#innerID").removeClass("jstree-closed");
-															$("#"+originalParentOrgId,"#innerID").addClass("jstree-leaf");
-																														
-														}
-														
-														var nodeData = data.baseTree.data[0];
-														var pNode = assignedElement;
-														var id;
-														while (true) {
-															$("#innerID").jstree("create_node",pNode, "inside",  {"data":nodeData.data,
-															"attr" : {"id" : nodeData.attr.id, "cid" : nodeData.attr.categoryID}});
-															id=nodeData.attr.id;
-															if (nodeData.children.length > 0) {
-															
-																nodeData = nodeData.children[0];
-																
-																pNode = "#"+id;
-															} else {
-															
-																break;
-															}
-														}
+														deleteTree(data.organizationDetail.orgNodeId,data.organizationDetail.parentOrgNodeId);										
+														addTree(data.organizationDetail.parentOrgNodeId,data.organizationDetail.orgNodeName,data.organizationDetail.orgNodeId,data.organizationDetail.categoryLevel);
 														
 													}
 														
 												//move_node solution end		
 												}
 												else{
-												//alert(data.organizationDetail.parentOrgNodeId+", "+data.organizationDetail.orgNodeName+", "+data.organizationDetail.orgNodeId);
-
-													addTree(data.organizationDetail.parentOrgNodeId,data.organizationDetail.orgNodeName,data.organizationDetail.orgNodeId,data.organizationDetail.categoryLevel);
+												//alert(data.organizationDetail.parentOrgNodeId+", "+data.organizationDetail.orgNodeName+", "+data.organizationDetail.orgNodeId+", "+data.organizationDetail.categoryLevel);
+												addTree(data.organizationDetail.parentOrgNodeId,data.organizationDetail.orgNodeName,data.organizationDetail.orgNodeId,data.organizationDetail.categoryLevel);
 													//$("#innerID").jstree("create_node",assignedElement, "inside",  {"data":data.organizationDetail.orgNodeName,
 														//"attr" : {"id" : data.organizationDetail.orgNodeId, "cid" : data.organizationDetail.categoryLevel}});
 												}	
@@ -973,6 +955,7 @@ function openTreeNodes(orgNodeId) {
 													}
 											
 													jQuery("#list2").sortGrid(sortCol,true);
+													checkedListObject = {}; // Added to clear checkedListObject if organization saved successfully.
 
 												}
 												else{
@@ -1527,74 +1510,115 @@ function prepareData(classState,currentCategoryLevel,currentNodeId,element){
 		}
   }
   
-	/******CRUD Operations****/
-function addTree(currentSelectedId,addedOrgName,addedOrgId,addedOrgCategoryId){
-	var parentElementBeforeAdd = document.getElementById(currentSelectedId);
-	var tclIndex  = parseInt(parentElementBeforeAdd.getAttribute("tcl"));
-
-	prepareData(false,parentElementBeforeAdd.getAttribute("cid"),currentSelectedId,parentElementBeforeAdd.parentNode.parentNode.id);
-	var obj = map.get(currentSelectedId);
-	var index = getIndexOfRoot(currentSelectedId);
-	var isLeaf = $(parentElementBeforeAdd).hasClass("jstree-leaf");	
-	var isTreeOpen =  $(parentElementBeforeAdd).hasClass("jstree-open");	
-		 if (isLeaf){
-		 $(parentElementBeforeAdd).removeClass("jstree-leaf").addClass("jstree-closed");	
-		 }
-		 else{
-		 //Nothing
-		 }
-	 //Need to use updateJsonData also for the root alone because second node is populated from json data and not the cache
-	if (parentElementBeforeAdd.getAttribute("cid") ==1){
-		//console.log("AddObject" + obj);		
-		if(obj == null || obj == undefined)
-			obj = [];
-     	obj.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
-     	obj.children = [];
-		jsonData[index].children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
-	}
-	
-	//In all the other cases we need to just update the cache since data is already in cache and its populated only from cache which is not the case for 2nd level
-	//For levels 3 to n we have to consider two things before adding the elements to cache first whether the element has children or not.
-	if (parentElementBeforeAdd.getAttribute("cid") > 1 && obj.hasOwnProperty("children")){
-	 obj.children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+2),chlen:undefined}}); 
-	 map.put(currentSelectedId,obj);
-	}
-	else if (parentElementBeforeAdd.getAttribute("cid") > 1) {
-	 obj.children = [];
-	 obj.children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+2),chlen:undefined}});	 
-	 map.put(currentSelectedId,obj);
-	}
-	 
-	 currentNodeId = currentSelectedId;
-	 if (isTreeOpen){
-	 	if(addedOrgCategoryId != leafNodeCategoryId){
-			$("#"+currentNodeId+ "> ul").append("<li id ="+addedOrgId+" class=\"jstree-leaf jstree-unchecked\" cid="+addedOrgCategoryId + "><ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: inline-block;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + addedOrgName  + "</a></li> ");
+		/******CRUD Operations****/
+	function addTree(currentSelectedId,addedOrgName,addedOrgId,addedOrgCategoryId){
+		var parentElementBeforeAdd = document.getElementById(currentSelectedId);
+		var tclIndex  = parseInt(parentElementBeforeAdd.getAttribute("tcl"));
+		if (addedOrgCategoryId == null || addedOrgCategoryId == undefined ){
+		addedOrgCategoryId = parseInt(parentElementBeforeAdd.getAttribute("cid")) + 1;
 		}
-		else{
-			$("#"+currentNodeId+ "> ul").append("<li id ="+addedOrgId+" class=\"jstree-leaf jstree-unchecked\" cid="+addedOrgCategoryId + "><ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + addedOrgName  + "</a></li> ");			
+		prepareData(false,parentElementBeforeAdd.getAttribute("cid"),currentSelectedId,parentElementBeforeAdd.parentNode.parentNode.id);
+		var obj = map.get(currentSelectedId);
+		var addedObject = map.get(addedOrgId);
+
+		var index = getIndexOfRoot(currentSelectedId);
+		var isLeaf = $(parentElementBeforeAdd).hasClass("jstree-leaf");	
+		var isTreeOpen =  $(parentElementBeforeAdd).hasClass("jstree-open");	
+			 if (isLeaf){
+			 $(parentElementBeforeAdd).removeClass("jstree-leaf").addClass("jstree-closed");	
+			 }
+			 else{
+			 //Nothing
+			 }
+		 //Need to use updateJsonData also for the root alone because second node is populated from json data and not the cache
+		if (parentElementBeforeAdd.getAttribute("cid") ==1){
+			//console.log("AddObject" + obj);		
+			if(obj == null || obj == undefined)
+				obj = [];
+	     	obj.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
+	     	obj.children = [];
+			jsonData[index].children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
 		}
 		
-	 }
-	}
+		//In all the other cases we need to just update the cache since data is already in cache and its populated only from cache which is not the case for 2nd level
+		//For levels 3 to n we have to consider two things before adding the elements to cache first whether the element has children or not.
+		if (parentElementBeforeAdd.getAttribute("cid") > 1 && obj.hasOwnProperty("children")){
+			if (addedObject != null && addedObject != undefined && addedObject.children != undefined){
+			 obj.children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined},children: addedObject.children}); 
+			 }else {
+			 obj.children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});
+			 }		 
+		 map.put(currentSelectedId,obj);
+		 tclIndex = tclIndex +1;
+		}
+		else if (parentElementBeforeAdd.getAttribute("cid") > 1) {
+		 obj.children = [];
+		 obj.children.push({data: addedOrgName,attr:{id: addedOrgId,cid: addedOrgCategoryId,tcl: String(tclIndex+1),chlen:undefined}});	 
+		 map.put(currentSelectedId,obj);
+		 tclIndex = tclIndex +1;
+		}
+		 
+		 currentNodeId = currentSelectedId;
+		 if (isTreeOpen){
+		  if (addedObject != null && addedObject.hasOwnProperty("children")){
+				$("#"+currentNodeId+ "> ul").append("<li id ="+addedOrgId+" class=\"jstree-closed jstree-unchecked\" cid="+addedOrgCategoryId + " tcl="+tclIndex + "><ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + addedOrgName  + "</a></li> ");			
+			}else{
+				$("#"+currentNodeId+ "> ul").append("<li id ="+addedOrgId+" class=\"jstree-leaf jstree-unchecked\" cid="+addedOrgCategoryId + " tcl="+tclIndex + "><ins class=\"jstree-icon\">&nbsp;</ins><a href=\"#\" class=\"\"><ins class=\"jstree-checkbox\" style=\"display: none;\">&nbsp;</ins><ins class=\"jstree-icon\">&nbsp;</ins>" + addedOrgName  + "</a></li> ");
+			}
+			
+		 }
+		}
 
 		function deleteTree(currentNodeId){
-		//TODO :  
+		  
+		  var prevElement =$('#'+currentNodeId,'#orgNodeHierarchy'); 	
+		  if (prevElement != undefined || prevElement != null )	prevElement = prevElement[0];	
+
+		 var path="";
+		 var currentClickedElement =$('#'+prevOrgNodeParentId,'#orgNodeHierarchy'); 
+		 if (currentClickedElement != undefined || currentClickedElement != null )	currentClickedElement = currentClickedElement[0];	
+		 var currClickElmtPrntId = currentClickedElement.parentNode.parentNode.id;
+ 
+		 //preparing cache for the current clicked element and the node that has to be moved
+		 if (currentClickedTcl > 1){
+		  prepareData(false,currentClickedTcl,currentClickedId,currClickElmtPrntId);
+		  var nextTcl = parseInt(currentClickedTcl)+1;
+		  prepareData(false,String(nextTcl),currentNodeId,prevOrgNodeParentId);	
+		  var obj= map.get(prevOrgNodeParentId); 
+		  var index = getIndexFromCache(obj.children,currentNodeId);
+		  obj.children.splice(index,1);
+		  map.put(prevOrgNodeParentId,obj);			   	
+		  }
+		  //Preparing cache only for the node that has to be moved because the current clicked element is not 
+		  //cached sicne its category level 1		  
+		  if (currentClickedTcl == 1){		  
+		  var nextTcl = parseInt(currentClickedTcl)+1;
+		  prepareData(false,String(nextTcl),currentNodeId,prevOrgNodeParentId);	
+		  var index = getIndexOfRoot(prevOrgNodeParentId);
+    	  	for (var i = 0, j = jsonData[index].children.length; i < j; i++ ){
+				var attrId = jsonData[index].children[i].attr.id;
+					if (attrId == currentNodeId){
+						map.put(currentNodeId,jsonData[index].children[i]);
+						jsonData[index].children.splice(i,1);
+					}
+				}
+		  }
+	 
+		  if(prevElement != null || prevElement != undefined){
+		   var prevElementParent =prevElement.parentNode;	
+		   var refPrevElement = prevElementParent.removeChild(prevElement);
+		  
+		  }
 		}
 
-		function moveTree(currentNodeId){
-		deleteTree(currentNodeId);
-		addTree(currentNodeId);
+	//Returns elements index in cache of json data
+	function getIndexFromCache(obj,elementId){	
+		for (var i=0, j = obj.length; i <j;i++){
+			if(obj[i].attr.id == elementId){
+			return i;
+			}
 		}
-
-		function hideCheckBox(){
-		//TODO: Use the pushInside data.attr.children == null add leaf class.
-
-		}
-
-		function openTree(){
-		//TODO: need to work on;
-		} 
-
+	}
 
 
 

@@ -97,6 +97,8 @@ function populateProctorTree() {
 		success:	function(data, textStatus, XMLHttpRequest){	
 						$.unblockUI(); 
 						orgTreeHierarchy = data;
+						jsonData = orgTreeHierarchy.data;
+						getRootNodeDetails();
 						createSingleNodeSelectedTreeForProctor (orgTreeHierarchy);
 						$("#innerProctorSearchheader").css("visibility","visible");	
 						$("#proctorOrgNodeHierarchy").css("visibility","visible");							
@@ -116,9 +118,9 @@ function populateProctorTree() {
 function createSingleNodeSelectedTreeForProctor(jsondata) {
 	   $("#proctorOrgNodeHierarchy").jstree({
 	        "json_data" : {	             
-	            "data" : jsondata.data,
+	            "data" : rootNode,
 				"progressive_render" : true,
-				"progressive_unload" : false
+				"progressive_unload" : true
 	        },
 	        "ui" : {  
 	           "select_limit" : 1
@@ -144,6 +146,19 @@ function createSingleNodeSelectedTreeForProctor(jsondata) {
 			else
 				gridReloadSelectProctor();
 		});
+		
+		$("#proctorOrgNodeHierarchy").bind("loaded.jstree", 
+		 	function (event, data) {
+		 		for(var i = 0; i < rootNode.length; i++) {
+					var orgcatlevel = rootNode[i].attr.cid;
+					if(orgcatlevel == leafNodeCategoryId) {
+						$("#proctorOrgNodeHierarchy ul li").eq(i).find('.jstree-icon').hide();
+		    		}
+				}
+			}
+		);
+	  
+	  	  registerDelegate("proctorOrgNodeHierarchy");
 }
 
 function isEmpty(obj){

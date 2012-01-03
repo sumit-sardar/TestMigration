@@ -57,6 +57,9 @@ function populateTestTicketTree() {
 							$("#printTestTicket").css("height",'330px');
 						}else{
 							orgTktTreeHierarchy = data;
+							jsonData = orgTktTreeHierarchy.data;
+							rootNode = [];
+							getRootNodeDetails();
 							createSingleNodeSelectedTktTree(orgTktTreeHierarchy);
 							$("#noStudent").css('display', 'none');
 							$("#studentExists").css('display', 'block');
@@ -107,9 +110,9 @@ function setTicketPopupPosition(){
 function createSingleNodeSelectedTktTree(jsondata) {
 	   $("#orgTktTreeDiv").jstree({
 	        "json_data" : {	             
-	            "data" : jsondata.data,
+	            "data" : rootNode,
 				"progressive_render" : true,
-				"progressive_unload" : false
+				"progressive_unload" : true
 	        },
             "themes" : {
 			    "theme" : "apple",
@@ -128,6 +131,19 @@ function createSingleNodeSelectedTktTree(jsondata) {
 	    	var SelectedTktOrgNodeId = $(this).parent().attr("id");
  		    $("#scheduleUserOrgNode").val(SelectedTktOrgNodeId); 		 	
 		});
+		
+		$("#orgTktTreeDiv").bind("loaded.jstree", 
+		 	function (event, data) {
+		 		for(var i = 0; i < rootNode.length; i++) {
+					var orgcatlevel = rootNode[i].attr.cid;
+					if(orgcatlevel == leafNodeCategoryId) {
+						$("#orgTktTreeDiv ul li").eq(i).find('.jstree-icon').hide();
+		    		}
+				}
+			}
+		);
+	  
+	  	  registerDelegate("orgTktTreeDiv");
 }
 
 function testTicketPopupValues(rowId,listId){

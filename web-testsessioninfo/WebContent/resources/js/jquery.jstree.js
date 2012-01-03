@@ -114,7 +114,7 @@
 		if(isMethodCall) {
 			if(settings.substring(0, 1) == '_') { return returnValue; }
 			this.each(function() {
-				var instance = instances[$.data(this, "jstreeInstanceId")],
+				var instance = instances[$.data(this, "jstree-instance-id")],
 					methodValue = (instance && $.isFunction(instance[settings])) ? instance[settings].apply(instance, args) : instance;
 					if(typeof methodValue !== "undefined" && (settings.indexOf("is_") === 0 || (methodValue !== true && methodValue !== false))) { returnValue = methodValue; return false; }
 			});
@@ -122,7 +122,7 @@
 		else {
 			this.each(function() {
 				// extend settings and allow for multiple hashes and $.data
-				var instance_id = $.data(this, "jstreeInstanceId"),
+				var instance_id = $.data(this, "jstree-instance-id"),
 					a = [],
 					b = settings ? $.extend({}, true, settings) : {},
 					c = $(this), 
@@ -137,7 +137,7 @@
 				// push a new empty object to the instances array
 				instance_id = parseInt(instances.push({}),10) - 1;
 				// store the jstree instance id to the container element
-				$.data(this, "jstreeInstanceId", instance_id);
+				$.data(this, "jstree-instance-id", instance_id);
 				// clean up all plugins
 				b.plugins = $.isArray(b.plugins) ? b.plugins : $.jstree.defaults.plugins.slice();
 				b.plugins.unshift("core");
@@ -159,7 +159,7 @@
 				$.each(instances[instance_id]._get_settings().plugins, function (i, val) { instances[instance_id].data[val] = {}; });
 				$.each(instances[instance_id]._get_settings().plugins, function (i, val) { if(plugins[val]) { plugins[val].__init.apply(instances[instance_id]); } });
 				// initialize the instance
-				setTimeout(function() { instances[instance_id].init(); }, 0);
+				setTimeout(function() { instances[instance_id].init(); }, 100);
 			});
 		}
 		// return the jquery selection (or if it was a method call that returned a value - the returned value)
@@ -178,7 +178,7 @@
 			var o = $(needle); 
 			if(!o.length && typeof needle === "string") { o = $("#" + needle); }
 			if(!o.length) { return null; }
-			return instances[o.closest(".jstree").data("jstreeInstanceId")] || null; 
+			return instances[o.closest(".jstree").data("jstree-instance-id")] || null; 
 		},
 		_instance : function (index, container, settings) { 
 			// for plugins to store data in
@@ -350,7 +350,7 @@
 				if(this._get_settings().core.rtl) {
 					this.get_container().addClass("jstree-rtl").css("direction", "rtl");
 				}
-				this.get_container().html("<ul><li class='jstree-last jstree-leaf'><ins>&#160;</ins><a class='jstree-loading' href='#'><ins class='jstree-icon'>&#160;</ins>" + this._get_string("loading") + "</a></li></ul>");
+				this.get_container().html("<ul><li class='jstree-last jstree-leaf'><ins>&#160;</ins><a class='jstree-loading' onclick='toggle()' href='#'><ins class='jstree-icon'>&#160;</ins>" + this._get_string("loading") + "</a></li></ul>");
 				this.data.core.li_height = this.get_container_ul().find("li.jstree-closed, li.jstree-leaf").eq(0).height() || 18;
 
 				this.get_container()
@@ -433,7 +433,7 @@
 				this.get_container()
 					.unbind(".jstree")
 					.undelegate(".jstree")
-					.removeData("jstreeInstanceId")
+					.removeData("jstree-instance-id")
 					.find("[class^='jstree']")
 						.andSelf()
 						.attr("class", function () { return this.className.replace(/jstree[^ ]*|$/ig,''); });
@@ -640,13 +640,13 @@
 				}
 				else {
 					if(this._get_settings().core.open_parents) {
-						obj.parentsUntil(".jstree",".jstree-closed").each(function () {
+					/*	obj.parentsUntil(".jstree",".jstree-closed").each(function () {
 							t.open_node(this, false, true);
-						});
+						});*/
 					}
 					if(s) { obj.children("ul").css("display","none"); }
 					obj.removeClass("jstree-closed").addClass("jstree-open").children("a").removeClass("jstree-loading");
-					if(s) { obj.children("ul").stop(true, true).slideDown(s, function () { this.style.display = ""; t.after_open(obj); }); }
+					if(s) { /*obj.children("ul").stop(true, true).delay(100).slideDown(s, function () { this.style.display = ""; t.after_open(obj); });*/ }
 					else { t.after_open(obj); }
 					this.__callback({ "obj" : obj });
 					if(callback) { callback.call(); }
@@ -664,7 +664,8 @@
 				else { t.after_close(obj); }
 				this.__callback({ "obj" : obj });
 			},
-			after_close	: function (obj) { this.__callback({ "obj" : obj }); },
+			after_close	: function (obj) {//console.log("after_close"); 
+			this.__callback({ "obj" : obj }); },
 			toggle_node	: function (obj) {
 				obj = this._get_node(obj);
 				if(obj.hasClass("jstree-closed")) { return this.open_node(obj); }
@@ -1668,20 +1669,25 @@
 					error_func = function () {},
 					success_func = function () {};
 				obj = this._get_node(obj);
-
+				//console.log("load_node11: ");
+				//var y = false;
 				if(obj && obj !== -1 && (s.progressive_render || s.progressive_unload) && !obj.is(".jstree-open, .jstree-leaf") && obj.children("ul").children("li").length === 0 && obj.data("jstree-children")) {
-					d = this._parse_json(obj.data("jstree-children"), obj);
+					//console.log("load_node12: ");
+					//y = true;
+					/*d = this._parse_json(obj.data("jstree-children"), obj);
 					if(d) {
 						obj.append(d);
 						if(!s.progressive_unload) { obj.removeData("jstree-children"); }
 					}
 					this.clean_node(obj);
-					if(s_call) { s_call.call(this); }
+					if(s_call) {console.log("load_node14: "); s_call.call(this); }*/
+					customLoad();
 					return;
 				}
 
 				if(obj && obj !== -1) {
-					if(obj.data("jstree-is-loading")) { return; }
+				
+					if(obj.data("jstree-is-loading")) {customLoad(); return; }
 					else { obj.data("jstree-is-loading",true); }
 				}
 				switch(!0) {
@@ -1710,17 +1716,26 @@
 						}, this));
 						break;
 					case (!!s.data && !s.ajax) || (!!s.data && !!s.ajax && (!obj || obj === -1)):
+					//console.log("Case21: ");
+						var x = false;
 						if(!obj || obj == -1) {
+						x = true;
+						//console.log("Case22:" + s.data.length);						
+							
 							d = this._parse_json(s.data, obj);
 							if(d) {
 								this.get_container().children("ul").empty().append(d.children());
-								this.clean_node();
+								//this.clean_node();
 							}
 							else { 
 								if(s.correct_state) { this.get_container().children("ul").empty(); }
 							}
 						}
-						if(s_call) { s_call.call(this); }
+						if(s_call) {
+						//console.log("Case23: ");
+						if (x)
+						s_call.call(this);
+						else customLoad();}
 						break;
 					case (!s.data && !!s.ajax) || (!!s.data && !!s.ajax && obj && obj !== -1):
 						error_func = function (x, t, e) {
@@ -2202,7 +2217,7 @@
 			$.vakata.dnd.user_data = data;
 			$.vakata.dnd.is_down = true;
 			$.vakata.dnd.helper = $("<div id='vakata-dragged' />").html(html); //.fadeTo(10,0.25);
-			$(document).bind("mousemove", $.vakata.dnd.drag);
+			//$(document).bind("mousemove", $.vakata.dnd.drag);
 			$(document).bind("mouseup", $.vakata.dnd.drag_stop);
 			return false;
 		},
@@ -2219,7 +2234,7 @@
 
 			// maybe use a scrolling parent element instead of document?
 			if(e.type === "mousemove") { // thought of adding scroll in order to move the helper, but mouse poisition is n/a
-				var d = $(document), t = d.scrollTop(), l = d.scrollLeft();
+				/*var d = $(document), t = d.scrollTop(), l = d.scrollLeft();
 				if(e.pageY - t < 20) { 
 					if(sti && dir1 === "down") { clearInterval(sti); sti = false; }
 					if(!sti) { dir1 = "up"; sti = setInterval(function () { $(document).scrollTop($(document).scrollTop() - $.vakata.dnd.scroll_spd); }, 150); }
@@ -2248,7 +2263,7 @@
 				}
 				else { 
 					if(sli && dir2 === "right") { clearInterval(sli); sli = false; }
-				}
+				}*/
 			}
 
 			$.vakata.dnd.helper.css({ left : (e.pageX + $.vakata.dnd.helper_left) + "px", top : (e.pageY + $.vakata.dnd.helper_top) + "px" });
@@ -2257,7 +2272,7 @@
 		drag_stop : function (e) {
 			if(sli) { clearInterval(sli); }
 			if(sti) { clearInterval(sti); }
-			$(document).unbind("mousemove", $.vakata.dnd.drag);
+			//$(document).unbind("mousemove", $.vakata.dnd.drag);
 			$(document).unbind("mouseup", $.vakata.dnd.drag_stop);
 			$(document).triggerHandler("drag_stop.vakata", { "event" : e, "data" : $.vakata.dnd.user_data });
 			$.vakata.dnd.helper.remove();
@@ -2347,7 +2362,7 @@
 							}
 						}
 					}, this))
-				.bind("mousemove.jstree", $.proxy(function (e) {
+				/*.bind("mousemove.jstree", $.proxy(function (e) {
 						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree) {
 							var cnt = this.get_container()[0];
 
@@ -2378,7 +2393,7 @@
 							}
 
 						}
-					}, this))
+					}, this))*/
 				.bind("scroll.jstree", $.proxy(function (e) { 
 						if($.vakata.dnd.is_drag && $.vakata.dnd.user_data.jstree && m && ml) {
 							m.hide();
@@ -3196,7 +3211,9 @@
 				obj = this._get_node(obj);
 				if(obj && obj !== -1) {
 					if(obj.data("jstree-is-loading")) { return; }
-					else { obj.data("jstree-is-loading",true); }
+					else {
+					//console.log("Else Jstree Loading");
+					obj.data("jstree-is-loading",true); }
 				}
 				switch(!0) {
 					case (!s.data && !s.ajax): throw "Neither data nor ajax settings supplied.";

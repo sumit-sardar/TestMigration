@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -2545,20 +2546,28 @@ public class SessionOperationController extends PageFlowController {
     
     private static void preTreeProcess (ArrayList<TreeData> data,ArrayList<Organization> orgList,ArrayList<Organization> selectedList) {
 
-		Organization org = orgList.get(0);
+    	Organization org = orgList.get(0);
+		Integer rootCategoryLevel = 0;
 		TreeData td = new TreeData ();
 		td.setData(org.getOrgName());
 		td.getAttr().setId(org.getOrgNodeId().toString());
-		td.getAttr().setCategoryID(org.getOrgCategoryLevel().toString());
-		//td.getAttr().setCustomerId(org.getCustomerId().toString());
-		treeProcess (org,orgList,td,selectedList);
+		td.getAttr().setCid(org.getOrgCategoryLevel().toString());
+		rootCategoryLevel = org.getOrgCategoryLevel();
+		td.getAttr().setTcl("1");
+		org.setTreeLevel(1);
+		Map<Integer, Organization> orgMap = new HashMap<Integer, Organization>();
+		orgMap.put(org.getOrgNodeId(), org);
+		treeProcess (org, orgList, td, selectedList, rootCategoryLevel, orgMap);
 		data.add(td);
 	}
 	
-	private static void treeProcess (Organization org,List<Organization> list,TreeData td,ArrayList<Organization> selectedList) {
+    private static void treeProcess (Organization org,List<Organization> list,TreeData td, 
+    		ArrayList<Organization> selectedList, Integer rootCategoryLevel, 
+    		Map<Integer, Organization> orgMap) {
 
+		Integer treeLevel = 0;
+		Organization parentOrg = null;
 		for (Organization tempOrg : list) {
-			
 			if (org.getOrgNodeId().equals(tempOrg.getOrgParentNodeId())) {
 				
 				if (selectedList.contains(tempOrg)) {
@@ -2574,10 +2583,14 @@ public class SessionOperationController extends PageFlowController {
 				TreeData tempData = new TreeData ();
 				tempData.setData(tempOrg.getOrgName());
 				tempData.getAttr().setId(tempOrg.getOrgNodeId().toString());
-				tempData.getAttr().setCategoryID(tempOrg.getOrgCategoryLevel().toString());
-				//tempData.getAttr().setCustomerId(tempOrg.getCustomerId().toString());
+				tempData.getAttr().setCid(tempOrg.getOrgCategoryLevel().toString());
+				parentOrg = orgMap.get(tempOrg.getOrgParentNodeId());
+				treeLevel = parentOrg.getTreeLevel() + 1;
+				tempOrg.setTreeLevel(treeLevel);
+				tempData.getAttr().setTcl(treeLevel.toString());
 				td.getChildren().add(tempData);
-				treeProcess (tempOrg,list,tempData,selectedList);
+				orgMap.put(tempOrg.getOrgNodeId(), tempOrg);
+				treeProcess (tempOrg, list, tempData, selectedList, rootCategoryLevel, orgMap);
 			}
 		}
 	}

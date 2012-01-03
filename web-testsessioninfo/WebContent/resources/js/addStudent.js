@@ -105,7 +105,9 @@ function populateStuTree() {
 		type:		'POST',
 		dataType:	'json',
 		success:	function(data, textStatus, XMLHttpRequest){	
-						orgTreeHierarchy = data;
+							orgTreeHierarchy = data;
+							jsonData = orgTreeHierarchy.data;
+							getRootNodeDetails();
 						createinnSingleNodeSelectedTree (orgTreeHierarchy);
 						$("#innerSearchheader").css("visibility","visible");	
 						$("#stuOrgNodeHierarchy").css("visibility","visible");	
@@ -124,9 +126,9 @@ function populateStuTree() {
 function createinnSingleNodeSelectedTree(jsondata) {
 	   $("#stuOrgNodeHierarchy").jstree({
 	        "json_data" : {	             
-	            "data" : jsondata.data,
+	            "data" : rootNode,
 				"progressive_render" : true,
-				"progressive_unload" : false
+				"progressive_unload" : true
 	        },
             "themes" : {
 			    "theme" : "apple",
@@ -139,12 +141,13 @@ function createinnSingleNodeSelectedTree(jsondata) {
 				"plugins" : [ "themes", "json_data", "ui"]  
 				
 	    });
+	     registerDelegate("stuOrgNodeHierarchy");
 	     
 		    $("#stuOrgNodeHierarchy").delegate("a","click", function(e) {
 		    	preSelectedOrg = stuForSelectedOrg;
 		    	stuForSelectedOrg = $(this).parent().attr("id");
 	 		    $("#stuForOrgNodeId").val(stuForSelectedOrg);
-		    	var topNodeSelected = $(this).parent().attr("categoryId");
+		    	var topNodeSelected = $(this).parent().attr("cid");
 		    	if(topNodeSelected == leafNodeCategoryId) {
 	    		if(!selectStudentgridLoaded) {
 		    		populateSelectStudentGrid();
@@ -167,6 +170,17 @@ function createinnSingleNodeSelectedTree(jsondata) {
 				}
 				
 		   });
+		   
+		   $("#stuOrgNodeHierarchy").bind("loaded.jstree", 
+		 	function (event, data) {
+		 		for(var i = 0; i < rootNode.length; i++) {
+					var orgcatlevel = rootNode[i].attr.cid;
+					if(orgcatlevel == leafNodeCategoryId) {
+						$("#stuOrgNodeHierarchy ul li").eq(i).find('.jstree-icon').hide();
+		    		}
+				}
+			}
+		);
 	  
 	  	  
 }
