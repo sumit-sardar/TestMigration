@@ -111,6 +111,10 @@
             <taglib-uri>ctb-widgets.tld</taglib-uri>
             <taglib-location>/WEB-INF/ctb-widgets.tld</taglib-location>
         </taglib>
+        <taglib>
+            <taglib-uri>label.tld</taglib-uri>
+            <taglib-location>/WEB-INF/label.tld</taglib-location>
+        </taglib>
     </jsp-config>
     <security-constraint>    
     <!-- 
