@@ -138,6 +138,10 @@ public class StudentItemScoresController {
 	                }
                 }
                 }
+                // Change for defect #66936
+                if(itemFact.getResponseid() == null) { // It means, the content area to which the item belongs is invalid and studentItemScoreData does not contain the required id.
+                	itemFact.setResponseid(new Long(6));
+                }
                 itemFacts.add(itemFact);
             }
         return (IrsTVItemFactData[]) itemFacts.toArray(new IrsTVItemFactData[0]);
