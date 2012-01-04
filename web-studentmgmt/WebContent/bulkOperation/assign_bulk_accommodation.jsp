@@ -27,7 +27,7 @@
 		<table style="clear:both;" width= "100%"> 
 		   	<tr >
 		   		<td >
-	       			<div id="ShowButtons" style="width:1225px; min-height:25px; float:left;">
+	       			<div id="ShowButtons" style="width:1225px; min-height:25px; float:left; height: 25px;">
 	       				<div  style="float:left;width:1000px;white-space: nowrap;" class="transparent">
 							<div id="displayBulkMessageMain" class="roundedMessage" style="display:none;"> 
 								<table>
