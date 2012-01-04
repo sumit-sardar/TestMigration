@@ -77,7 +77,7 @@
             <scheme-name>DistributedScheme</scheme-name>
             <service-name>PartitionedCache</service-name> 
             <local-storage>true</local-storage>
-            <thread-count>40</thread-count>    
+            <thread-count>60</thread-count>    
             <backing-map-scheme>                
                 <read-write-backing-map-scheme>                    
                     <scheme-ref>DBScheme</scheme-ref>

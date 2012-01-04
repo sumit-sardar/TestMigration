@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -20,8 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import noNamespace.AdssvcRequestDocument;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist;
-import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Rv;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv.CmiCore;
 import noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Lsv.CmiCore.Exit;
@@ -41,12 +38,10 @@ import noNamespace.TmssvcRequestDocument.TmssvcRequest.LoginRequest;
 import noNamespace.TmssvcResponseDocument;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse;
 import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.ConsolidatedRestartData;
-import noNamespace.TmssvcResponseDocument.TmssvcResponse.LoginResponse.Manifest.Sco;
 
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
-import org.apache.xmlbeans.impl.values.XmlValueDisconnectedException;
 
 import com.ctb.tdc.web.utils.ContentFile;
 import com.ctb.tdc.web.utils.ServletUtils;
@@ -67,6 +62,7 @@ import com.ctb.tms.nosql.OASNoSQLSource;
 import com.ctb.tms.rdb.ADSRDBSink;
 import com.ctb.tms.rdb.ADSRDBSource;
 import com.ctb.tms.rdb.RDBStorageFactory;
+import com.ctb.tms.rdb.oracle.OASOracleSource;
 import com.ctb.tms.util.Constants;
 import com.ctb.tms.util.TabeLocatorUtils;
 import com.ctb.tms.util.TabeLocatorUtils.RecommendedSubtestLevel;
@@ -666,6 +662,7 @@ public class TMSServlet extends HttpServlet {
 		int restartCount = restart.intValue();
 		int manifestRestartCount = manifest.getRosterRestartNumber();
 		if(manifestRestartCount > restartCount) restartCount = manifestRestartCount;
+		loginResponse.setRestartNumber(BigInteger.valueOf(restartCount));
 		logger.debug("Restart count: " + restartCount);
 		
 		int thisCid = Integer.parseInt(lr.getCid());
@@ -673,33 +670,13 @@ public class TMSServlet extends HttpServlet {
 		manifest.setRosterCorrelationId(thisCid);
 
 		ManifestData[] manifesta = manifest.getManifest();
-		//ArrayList newmanifest = new ArrayList();
-        for(int i=0; i<manifesta.length ;i++) {
-            if (manifesta[i].getCompletionStatus().equals(Constants.StudentTestCompletionStatus.COMPLETED_STATUS)) {
-            	logger.debug("found completed sco: " + String.valueOf(manifesta[i].getId()));
-            	Sco[] scoa = loginResponse.getManifest().getScoArray();
-            	int g;
-            	boolean foundSco = false;
-            	for(g=0;g<scoa.length;g++) {
-            		try {
-	            		//logger.debug("rd id: " + scoa[g].getId() + ", manifest id: " + String.valueOf(manifesta[i].getId()));
-	            		if(scoa[g].getId().equals(String.valueOf(manifesta[i].getId()))) {
-	            			foundSco = true;
-	            			break;
-	            		}
-            		} catch (XmlValueDisconnectedException xe) {
-            			break;
-            		}
-            	}
-            	if(foundSco) {
-	            	//logger.debug("removing Sco " + g + " from manifest");
-	            	loginResponse.getManifest().removeSco(g);
-	            	logger.info("removed Sco " + manifesta[i].getId() + " from login response manifest.");
-            	}
-            } //else {
-            	//newmanifest.add(manifesta[i]);
-            //}
-        }
+
+		// force login response manifest to reflect manifest cache object
+		while(loginResponse.getManifest().sizeOfScoArray() > 0) {
+			loginResponse.getManifest().removeSco(0);
+		}
+		OASOracleSource.setManifestDataInResponse(loginResponse, manifesta);
+
         if(loginResponse.getManifest().sizeOfScoArray() < 1) {
 			response = TmssvcResponseDocument.Factory.newInstance(xmlOptions);
             loginResponse = response.addNewTmssvcResponse().addNewLoginResponse();
@@ -762,8 +739,7 @@ public class TMSServlet extends HttpServlet {
 	            } 
 	        }
         }
-        //loginResponse.getManifest().setScoArray((Sco[])scomap.values().toArray(new Sco[0]));
-        //logger.debug("Final manifest: " + loginResponse.getManifest().xmlText());
+
         if(gotRestart) {
         	loginResponse.setRestartFlag(true);
         } else {
@@ -795,7 +771,7 @@ public class TMSServlet extends HttpServlet {
 		}
 		manifest.setRosterCompletionStatus("IP");
 		manifest.setStudentName(rd.getAuthData().getStudentFirstName() + " " + rd.getAuthData().getStudentLastName());
-		loginResponse.setRestartNumber(BigInteger.valueOf(restartCount));
+		
 		
 		if(loginResponse.getTutorial() != null) {
 			if(restartCount < 1) {
