@@ -443,7 +443,24 @@ public class OASOracleSource implements OASRDBSource
         // TODO: calculate 'ultimate access code' without DB call
         String isUltimateAccessCode = isUltimateAccessCode(conn, testRosterId, testAdminId, accessCode);
         
-        if(response.getRestartFlag()) {
+        // don't need this here since it's done on login
+        //setManifestDataInResponse(response, manifestData);
+        
+        //AuthenticateStudent authenticator = authenticatorFactory.create();
+        if("T".equals(isUltimateAccessCode)) {
+            if(manifestData.length > 0 && "T".equals(manifestData[0].getShowStudentFeedback())) {
+                manifest.addNewFeedback();
+                manifest.getFeedback().setId("STUDENT_FEEDBACK");
+            }
+        }
+        manifest.addNewTerminator();
+        manifest.getTerminator().setId("SEE_YOU_LATER");  
+    }
+    
+    public static void setManifestDataInResponse(LoginResponse response, ManifestData [] manifestData) throws SQLException {
+        Manifest manifest = response.getManifest();
+        
+        if(response.getRestartNumber().intValue() > 0) {
 	        ArrayList a = new ArrayList();
 	        for(int i=0;i<manifestData.length;i++) {
 	        	ManifestData data = manifestData[i];
@@ -499,15 +516,6 @@ public class OASOracleSource implements OASRDBSource
 	            sco.setCmiCoreTotalTime(hours + ":" + minutes + ":" + seconds);
         	//}
         }
-        //AuthenticateStudent authenticator = authenticatorFactory.create();
-        if("T".equals(isUltimateAccessCode)) {
-            if(manifestData.length > 0 && "T".equals(manifestData[0].getShowStudentFeedback())) {
-                manifest.addNewFeedback();
-                manifest.getFeedback().setId("STUDENT_FEEDBACK");
-            }
-        }
-        manifest.addNewTerminator();
-        manifest.getTerminator().setId("SEE_YOU_LATER");  
     }
 	
     /**
