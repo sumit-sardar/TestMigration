@@ -141,6 +141,8 @@ public class StudentItemScoresController {
                 // Change for defect #66936
                 if(itemFact.getResponseid() == null) { // It means, the content area to which the item belongs is invalid and studentItemScoreData does not contain the required id.
                 	itemFact.setResponseid(new Long(6));
+                	itemFact.setItemResponseTimestamp(new Timestamp(System.currentTimeMillis()));
+                	itemFact.setCurrentResultid(new Long(2));
                 }
                 itemFacts.add(itemFact);
             }
