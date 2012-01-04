@@ -1081,6 +1081,12 @@ public class HomePageController extends PageFlowController
             CustomerReport cr = crs[i];
             if (cr.getProductId().intValue() == 8000)
             	isTABEAdaptive = true;
+            
+            String reportUrl = cr.getReportUrl();
+            if (reportUrl.indexOf("http:") == 0) {
+            	reportUrl = reportUrl.replaceAll("http:", "https:");
+            	cr.setReportUrl(reportUrl);
+            }
             if (! cr.getReportName().equals("IndividualProfile"))
             {
             	reportList.add(cr);
