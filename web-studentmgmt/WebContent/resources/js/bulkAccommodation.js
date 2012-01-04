@@ -155,7 +155,14 @@ function selectFormat( cellvalue, options, rowObject ){
 		return optList;
 }
 
-
+function isEmpty(obj){
+	var empty = true;
+	for( var i in obj ) {
+		empty = false;
+		break;
+	}
+	return empty;
+}
 
 function populateBulkStudentGrid() {
  		UIBlock();
@@ -229,7 +236,7 @@ function populateBulkStudentGrid() {
 			        } else {
 		           		$("#"+selectedStudentObjArr[allRowsInGrid[i]]+" td input").attr('checked', false).trigger('click').attr('checked', false);
 		           }
-		           if(submittedSuccesfully != ""){
+		           if(!isEmpty(previousDataForpaging)){
 		           	 jQuery("#studentAccommGrid").setRowData(previousDataForpaging[allRowsInGrid[i]], submittedSuccesfully, "first");
 		           	 resetBulk();
 		           }
@@ -515,18 +522,27 @@ function populateBulkStudentGrid() {
 									closePopUp('AssignAccommPopup');
 									setBulkMessageMain(data.title, data.content, data.type, "");
 									var allRowsInGrid = $('#studentAccommGrid').jqGrid('getDataIDs');
-						            for(var i=0; i<allRowsInGrid.length; i++) {
-								 	 	 jQuery("#studentAccommGrid").setRowData(selectedStudentObjArr[allRowsInGrid[i]], dataToBeAdded, "first");
+						           for(var i=0; i<allRowsInGrid.length; i++) {
+								 	 	jQuery("#studentAccommGrid").setRowData(selectedStudentObjArr[allRowsInGrid[i]], dataToBeAdded, "first");
 								 	 	 $("#"+selectedStudentObjArr[allRowsInGrid[i]]+" td input").attr('checked', false).trigger('click').attr('checked', false);
 								 	 	 submittedSuccesfully = dataToBeAdded;
 									}
-									previousDataForpaging = selectedStudentObjArr;
-									selectedStudentObjArr = {};
+									
+									previousDataForpaging = selectedStudentObjArr;									
 									document.getElementById('displayBulkMessageMain').style.display = "block";
-									var alldata = $("#studentAccommGrid").jqGrid('getGridParam','data');									
+									var alldata = $("#studentAccommGrid").jqGrid('getGridParam','data');
+									if(alldata){
+										for(var key in selectedStudentObjArr){
+											var index = jQuery.inArray(key, studentArrId);
+											for(var prop in dataToBeAdded){											
+												alldata[index][prop] = dataToBeAdded[prop];
+											}
+										}
+										
+									}									
 									jQuery("#studentAccommGrid").jqGrid('setGridParam', { data: alldata,datatype:'local' }).trigger("reloadGrid");
 									
-									
+									selectedStudentObjArr = {};
 									$.unblockUI();			
 									}
 									else{
