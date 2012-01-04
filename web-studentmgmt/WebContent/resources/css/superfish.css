@@ -202,3 +202,6 @@ li.sfHover > a > .sf-sub-indicator {
 .ui-userdata {
 	background: none !important;
 }
+#sf-menu-sub2 ul ul {
+	left:-293px;
+}

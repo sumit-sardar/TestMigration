@@ -629,7 +629,7 @@ function populateBulkStudentGrid() {
 	function createDemoList(){
 		var liMenuStr = "<div><ul class='sf-menu' id='menu'>";
 		 for (var i=0; i<3; i++) {
-		 	liMenuStr = liMenuStr + "<li class='selected roundedBorder'><a href='#' class='menuText' id='selectedBox"+parseInt(i+1)+"'>Please select</a><ul><li><a href='#' id='ps_"+parseInt(i+1)+"'>Please select</a>";
+		 	liMenuStr = liMenuStr + "<li class='selected roundedBorder' id='sf-menu-sub"+i+"'><a href='#' class='menuText' id='selectedBox"+parseInt(i+1)+"'>Please select</a><ul><li><a href='#' id='ps_"+parseInt(i+1)+"'>Please select</a>";
 		 	for(var j=0; j<customerDemographicList.length; j++) {
 		 		liMenuStr= liMenuStr + "<li><a href='#' id='"+customerDemographicList[j].id+"_"+parseInt(i+1)+"'>"+customerDemographicList[j].labelName+"</a>";
 		 		var cDemoValues = customerDemographicList[j].customerDemographicValues;
