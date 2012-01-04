@@ -140,7 +140,7 @@ public class ItemResponseData extends ReplicationObject {
 	        }
 	        if(ist != null && ist.getOvArray() != null && ist.getOvArray().length >0 ) {
 	            if( ist.getOvArray(0).getVArray() != null && ist.getOvArray(0).getVArray().length >0){
-	                if(ist.getOvArray(0).getVArray(0) != null){
+	                if(ist.getOvArray(0).getVArray(0) != null && !"".equals(ist.getOvArray(0).getVArray(0).trim())){
 	                	ird.setScore(Integer.parseInt(ist.getOvArray(0).getVArray(0)));
 	                }
 	            }
