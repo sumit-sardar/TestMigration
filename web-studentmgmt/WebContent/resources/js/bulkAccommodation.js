@@ -529,7 +529,6 @@ function populateBulkStudentGrid() {
 									}
 									
 									previousDataForpaging = selectedStudentObjArr;									
-									document.getElementById('displayBulkMessageMain').style.display = "block";
 									var alldata = $("#studentAccommGrid").jqGrid('getGridParam','data');
 									if(alldata){
 										for(var key in selectedStudentObjArr){
@@ -540,8 +539,8 @@ function populateBulkStudentGrid() {
 										}
 										
 									}									
-									jQuery("#studentAccommGrid").jqGrid('setGridParam', { data: alldata,datatype:'local' }).trigger("reloadGrid");
-									
+									jQuery("#studentAccommGrid").jqGrid('setGridParam', { data: alldata,datatype:'local',page: 1 }).trigger("reloadGrid");
+									document.getElementById('displayBulkMessageMain').style.display = "block";
 									selectedStudentObjArr = {};
 									$.unblockUI();			
 									}
