@@ -404,7 +404,7 @@ public class TMSServlet extends HttpServlet {
 				    		} else if(LmsEventType.LMS_FINISH.equals(eventType)) {
 				    			thisSco.setCompletionStatus("CO");
 				    			thisSco.setEndTime(System.currentTimeMillis());
-				    			if(j < manifestData.length && (("TB".equals(thisSco.getProduct()) || "TL".equals(thisSco.getProduct())) && "L".equals(thisSco.getLevel()))) {
+				    			if(("TB".equals(thisSco.getProduct()) || "TL".equals(thisSco.getProduct())) && "L".equals(thisSco.getLevel())) {
 				    				// we just completed a locator subtest of a single-TAC auto-located TABE assessment
 				    	    		handleTabeLocator(rosterId);
 				    	    		manifest = oasSource.getManifest(rosterId, accessCode);
