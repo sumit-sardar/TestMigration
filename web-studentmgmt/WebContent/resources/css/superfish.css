@@ -67,6 +67,8 @@ ul.sf-menu li li li.sfHover ul {
 	padding: 0px 27px 0px 12px;
 	text-decoration:none;
 	margin-top:5px;
+}
+.menuText {
 	height:20px;
 }
 
@@ -77,12 +79,10 @@ ul.sf-menu li li li.sfHover ul {
 .sf-menu li li  a{
 	border-left:	none;
 	margin-top:0px;
-	height:10px;
 }
 .sf-menu li li li  a{
 	border-left:	none;
 	margin-top:0px;
-	height:10px;
 }
 
 .sf-menu li:first-child  a{
@@ -100,7 +100,7 @@ ul.sf-menu li li li.sfHover ul {
 .sf-menu li li {
 	/* border-bottom:	1px solid #eaf4fd; */
 	z-index:1000;
-	padding :10px 0px 10px 0px;
+	padding: 10px 0px;
 }
 
 .sf-menu li li:hover,.sf-menu li li li:hover{
@@ -109,10 +109,7 @@ ul.sf-menu li li li.sfHover ul {
 
 .sf-menu li li li {
 	background:		#D4ECFF;
-	padding :12px 0px 12px 0px;
-	/* border-top:	1px solid #eaf4fd;
-	border-left:	1px solid #eaf4fd;
-	border-bottom:	1px solid #eaf4fd;*/
+	padding: 10px 0px;
 }
 
 .sf-menu li  {
@@ -186,16 +183,15 @@ li.sfHover > a > .sf-sub-indicator {
 .roundedBorder  div {
 	/* display:inline-block;*/
 }
-.roundedBorder   a{
-	height:20px !important;
+.roundedBorder   a {
 	margin-top:0px;
 }
 .roundedBorder   li  a{
-	height:10px !important;
+	/* height:10px !important;*/
 	margin-top:0px;
 }
 .roundedBorder   li li  a{
-	height:10px !important;
+	/*height:10px !important;*/
 	margin-top:0px;
 }
 
