@@ -201,6 +201,7 @@ function populateBulkStudentGrid() {
 			viewrecords: true, 
 			sortorder: "asc",
 			height: 392,  
+			width:1000,
 			caption:"Student List",
 			toolbar: [true,"top"],
 			onPaging: function() {
@@ -522,7 +523,7 @@ function populateBulkStudentGrid() {
 									previousDataForpaging = selectedStudentObjArr;
 									selectedStudentObjArr = {};
 									document.getElementById('displayBulkMessageMain').style.display = "block";
-									var alldata = $("#studentAccommGrid").jqGrid('getGridParam','data');
+									var alldata = $("#studentAccommGrid").jqGrid('getGridParam','data');									
 									jQuery("#studentAccommGrid").jqGrid('setGridParam', { data: alldata,datatype:'local' }).trigger("reloadGrid");
 									
 									
