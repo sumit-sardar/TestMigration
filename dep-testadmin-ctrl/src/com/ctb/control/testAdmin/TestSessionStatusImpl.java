@@ -1204,7 +1204,17 @@ public class TestSessionStatusImpl implements TestSessionStatus
          private void invokeScoring(Integer testRosterId) throws Exception 
     {
 		getResourceValue();
+		
+	    System.out.println("***********");
+	    System.out.println("jndiFactory=" + jndiFactory);
+	    System.out.println("jmsURL=" + jmsURL);
+	    System.out.println("jmsPrincipal=" + jmsPrincipal);
+	    System.out.println("jmsCredentials=" + jmsCredentials);
+	    System.out.println("***********");
+		
 	    InitialContext ic = QueueSend.getInitialContext(jndiFactory,jmsURL,jmsPrincipal,jmsCredentials);
+	    
+	    
 	    QueueSend qs = new QueueSend();
 	    qs.init(ic, jmsFactory, jmsQueue);
 	    qs.readAndSend(qs,testRosterId);
