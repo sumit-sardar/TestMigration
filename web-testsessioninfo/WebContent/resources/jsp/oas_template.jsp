@@ -118,6 +118,7 @@
 								}
 						}else if(divID == "addStudentId"){
 								if(state =="EDIT"){
+									isStdDetClicked = true;
 									populateStudentGrid(wizard,index);
 								}
 								else if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
@@ -137,6 +138,7 @@
 								}
 						}else if(divID == "addProctorId"){							
 								if(state =="EDIT"){
+									isProcDetClicked = true;
 									populateProctorGrid(wizard,index);
 								}
 								else if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
