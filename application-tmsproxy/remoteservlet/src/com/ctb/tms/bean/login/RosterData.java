@@ -262,7 +262,7 @@ public class RosterData extends ReplicationObject {
 					//logger.debug("generateItemResponseData: Ist " + j);
 					SaveTestingSessionData.Tsd.Ist ist = ista[0];
 					BigInteger mapMseq = (BigInteger) itemMap.get(ist.getIid());
-					boolean catHeartbeat = ist.getIid().indexOf("TABECAT") >=0 && !ist.getSendCatSave();
+					boolean catHeartbeat = ist.getIid().indexOf("TABECAT") >=0 && ist.getIid().indexOf("Sample") < 0 && !ist.getSendCatSave();
 					if(ist.getAudioItem()) {
 			    		if(ist.getRvArray() != null && ist.getRvArray().length > 0) {
 			    			noNamespace.AdssvcRequestDocument.AdssvcRequest.SaveTestingSessionData.Tsd.Ist.Rv rv = ist.getRvArray(0);

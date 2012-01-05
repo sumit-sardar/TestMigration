@@ -333,7 +333,7 @@ public class OASOracleSource implements OASRDBSource
 	                }
 	            }
 	        }
-	        copyManifestDataToResponse(conn, loginResponse, manifestData, testRosterId, authData.getTestAdminId(), accessCode);
+	        copyManifestDataToResponse(loginResponse, manifestData);
 	
 	        String tutorialResource = getTutorialResource(conn, testRosterId);
 	        if (tutorialResource!= null && !tutorialResource.trim().equals("")) {
@@ -437,22 +437,22 @@ public class OASOracleSource implements OASRDBSource
         }
     }
     
-    private static void copyManifestDataToResponse(Connection conn, LoginResponse response, ManifestData [] manifestData, int testRosterId, int testAdminId, String accessCode) throws SQLException {
+    private static void copyManifestDataToResponse(LoginResponse response, ManifestData [] manifestData) throws SQLException {
         response.addNewManifest();
         Manifest manifest = response.getManifest();
         // TODO: calculate 'ultimate access code' without DB call
-        String isUltimateAccessCode = isUltimateAccessCode(conn, testRosterId, testAdminId, accessCode);
+        //String isUltimateAccessCode = isUltimateAccessCode(conn, testRosterId, testAdminId, accessCode);
         
         // don't need this here since it's done on login
         //setManifestDataInResponse(response, manifestData);
         
         //AuthenticateStudent authenticator = authenticatorFactory.create();
-        if("T".equals(isUltimateAccessCode)) {
-            if(manifestData.length > 0 && "T".equals(manifestData[0].getShowStudentFeedback())) {
+        //if("T".equals(isUltimateAccessCode)) {
+            if("T".equals(manifestData[0].getShowStudentFeedback())) {
                 manifest.addNewFeedback();
                 manifest.getFeedback().setId("STUDENT_FEEDBACK");
             }
-        }
+        //}
         manifest.addNewTerminator();
         manifest.getTerminator().setId("SEE_YOU_LATER");  
     }

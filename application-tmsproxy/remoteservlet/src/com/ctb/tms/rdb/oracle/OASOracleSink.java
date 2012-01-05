@@ -28,7 +28,7 @@ public class OASOracleSink implements OASRDBSink {
 	private static final String DELETE_CR_RESPONSE_SQL = "delete from item_response_cr where test_roster_id = ? and item_set_id = ? and item_id = ?";
 	private static final String STORE_CR_RESPONSE_SQL = "insert into item_response_cr (  test_roster_id,  item_set_id, item_id, constructed_response) values (?,  ?,  ?,  ?)";
 	private static final String SUBTEST_STATUS_SQL = "update student_item_set_status set tms_update = 'T', completion_status = NVL(?, completion_status), raw_score = NVL(?, raw_score), max_score = NVL(?, max_score), unscored = NVL(?, unscored), start_date_time = NVL(?, start_date_time), completion_date_time = NVL(?, completion_date_time), recommended_level = NVL(?, recommended_level) , ability_score = NVL(?, ability_score), sem_score = NVL(?, sem_score), objective_score = NVL(?, objective_score) where test_roster_id = ? and item_set_id = ?";
-	private static final String SUBTEST_CLEANUP_SQL = "delete from student_item_set_status siss where siss.completion_status = 'SC' and siss.test_roster_id = ? and siss.item_set_id not in (itemSetIdList) and siss.item_set_id in (select isp.item_set_id from item_set_parent isp, test_admin_item_set tais, test_roster ros where ros.test_roster_id = siss.test_roster_id and tais.test_admin_id = ros.test_admin_id and isp.parent_item_set_id = tais.item_set_id and tais.access_code = ?)";
+	private static final String SUBTEST_CLEANUP_SQL = "delete from student_item_set_status siss where siss.completion_status = 'SC' and siss.test_roster_id = ? and siss.item_set_id not in (itemSetIdList) and siss.item_set_id in (select isp.item_set_id from item_set_parent isp, test_admin_item_set tais, test_roster ros where ros.test_roster_id = siss.test_roster_id and tais.test_admin_id = ros.test_admin_id and isp.parent_item_set_id = tais.item_set_id and upper(tais.access_code) = upper(?))";
 	private static final String TUTORIAL_STATUS_SQL = "insert into student_tutorial_status  (product_id, student_id, completion_status) values (3510, (select student_id from test_roster where test_roster_id = ?), 'CO')";
 	private static final String TUTORIAL_DELETE_SQL = "delete from student_tutorial_status where student_id = (select student_id from test_roster where test_roster_id = ?)";
 	private static final String ROSTER_STATUS_SQL = "update  test_roster ros set tms_update = 'T', test_completion_Status = decode((select count(*) from student_item_set_status where test_roster_id = ros.test_roster_id and completion_Status != 'CO'), 0, 'CO', NVL(?, test_completion_status)),  restart_number = ?,  start_date_time = nvl(start_date_time,?),  last_login_date_time = ?, updated_date_time = ?,  completion_date_time = ?, last_mseq = ?,  correlation_id = ?, random_distractor_seed = ? where  test_roster_id = ?";
@@ -135,44 +135,46 @@ public class OASOracleSink implements OASRDBSink {
 	    		String subtestList = "";
 	    		ManifestData [] subtests = manifest.getManifest();
 	    		for(int i=0;i<subtests.length;i++) {
-	    			if("TB".equals(subtests[i].getProduct()) || "TL".equals(subtests[i].getProduct())) isTABE = true;
 	    			ManifestData subtest = subtests[i];
-	    			if(i==0) {
-	    				subtestList = subtestList + subtest.getId();
-	    			} else {
-	    				subtestList = subtestList + "," + subtest.getId();
+	    			if(!"SC".equals(subtest.getCompletionStatus())) {
+		    			if("TB".equals(subtest.getProduct()) || "TL".equals(subtest.getProduct())) isTABE = true;
+		    			if(i==0) {
+		    				subtestList = subtestList + subtest.getId();
+		    			} else {
+		    				subtestList = subtestList + "," + subtest.getId();
+		    			}
+		    			stmt1 = conn.prepareStatement(SUBTEST_STATUS_SQL);
+		    			stmt1.setString(1, subtest.getCompletionStatus());
+		    			if(subtest.getMaxScore() > 0) {
+			    			stmt1.setInt(2, subtest.getRawScore());
+			    			stmt1.setInt(3, subtest.getMaxScore());
+			    			stmt1.setInt(4, subtest.getUnscored());
+		    			} else {
+		    				stmt1.setObject(2, null);
+			    			stmt1.setObject(3, null);
+			    			stmt1.setObject(4, null);
+		    			}
+		    			if(subtest.getStartTime() > 0) {
+		    				stmt1.setTimestamp(5, new Timestamp(subtest.getStartTime()));
+		    			} else {
+		    				stmt1.setTimestamp(5, null);
+		    			}
+		    			if(subtest.getEndTime() > 0) {
+		    				stmt1.setTimestamp(6, new Timestamp(subtest.getEndTime()));
+		    			} else {
+		    				stmt1.setTimestamp(6, null);
+		    			}
+		    			stmt1.setString(7, subtest.getRecommendedLevel());       			
+		    			stmt1.setString(8, df.format(subtest.getAbilityScore()));
+		    			stmt1.setString(9, df.format(subtest.getSemScore()));
+		    			stmt1.setString(10, subtest.getObjectiveScore());
+		    			stmt1.setString(11, testRosterId);
+		    			stmt1.setInt(12, subtest.getId());
+		    			stmt1.executeUpdate();
+		    			logger.debug("OASOracleSink: Updated subtest status for roster: " + testRosterId + ", subtest: " + subtest.getId() + ". Status is: " + subtest.getCompletionStatus());
+		    			stmt1.close();
+		    			stmt1 = null;
 	    			}
-	    			stmt1 = conn.prepareStatement(SUBTEST_STATUS_SQL);
-	    			stmt1.setString(1, subtest.getCompletionStatus());
-	    			if(subtest.getMaxScore() > 0) {
-		    			stmt1.setInt(2, subtest.getRawScore());
-		    			stmt1.setInt(3, subtest.getMaxScore());
-		    			stmt1.setInt(4, subtest.getUnscored());
-	    			} else {
-	    				stmt1.setObject(2, null);
-		    			stmt1.setObject(3, null);
-		    			stmt1.setObject(4, null);
-	    			}
-	    			if(subtest.getStartTime() > 0) {
-	    				stmt1.setTimestamp(5, new Timestamp(subtest.getStartTime()));
-	    			} else {
-	    				stmt1.setTimestamp(5, null);
-	    			}
-	    			if(subtest.getEndTime() > 0) {
-	    				stmt1.setTimestamp(6, new Timestamp(subtest.getEndTime()));
-	    			} else {
-	    				stmt1.setTimestamp(6, null);
-	    			}
-	    			stmt1.setString(7, subtest.getRecommendedLevel());       			
-	    			stmt1.setString(8, df.format(subtest.getAbilityScore()));
-	    			stmt1.setString(9, df.format(subtest.getSemScore()));
-	    			stmt1.setString(10, subtest.getObjectiveScore());
-	    			stmt1.setString(11, testRosterId);
-	    			stmt1.setInt(12, subtest.getId());
-	    			stmt1.executeUpdate();
-	    			logger.debug("OASOracleSink: Updated subtest status for roster: " + testRosterId + ", subtest: " + subtest.getId() + ". Status is: " + subtest.getCompletionStatus());
-	    			stmt1.close();
-	    			stmt1 = null;
 	    		}
 	    		if(isTABE) {
 					if("".equals(subtestList.trim())) subtestList = "-1";
