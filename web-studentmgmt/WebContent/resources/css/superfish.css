@@ -174,7 +174,6 @@ li.sfHover > a > .sf-sub-indicator {
 
 #studentAccommpager {
 	z-index:0 !important;
-	position:static !important;
 }
 .roundedBorder{
 	background-color: #d4ecff;
@@ -204,4 +203,7 @@ li.sfHover > a > .sf-sub-indicator {
 }
 #sf-menu-sub2 ul ul {
 	left:-293px;
+}
+.ui-jqgrid-view {
+	z-index: 100;
 }
