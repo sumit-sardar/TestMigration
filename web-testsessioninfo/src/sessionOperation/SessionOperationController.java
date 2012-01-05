@@ -813,7 +813,7 @@ public class SessionOperationController extends PageFlowController {
     	    OperationStatus status = new OperationStatus();
     	    try {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
-    	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledStudentsDetails(this.userName, testAdminId);
+    	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledStudentsMinimalInfoDetails(this.userName, testAdminId);
     	    	SessionStudent[] students =  scheduledSession.getStudents();
     	    	List<SessionStudent> studentsList = buildStudentList(students);
     	    	vo.setSavedStudentsDetails(studentsList);

@@ -3370,7 +3370,7 @@ public class ScheduleTestImpl implements ScheduleTest
         }  
     }
     
-    @Override
+    @Deprecated 
     public ScheduledSession getScheduledStudentsDetails(String userName, Integer testAdminId) throws CTBBusinessException {
         validator.validateAdmin(userName, testAdminId, "testAdmin.getScheduledStudentsDetails");
         try {
@@ -3470,6 +3470,62 @@ public class ScheduleTestImpl implements ScheduleTest
             return session;
         } catch (SQLException se) {
             CTBBusinessException cbe = new UserDataNotFoundException("ScheduleTestImpl: getScheduledProctorsDetails: " + se.getMessage());
+            cbe.setStackTrace(se.getStackTrace());
+            throw cbe;
+        }  
+    }
+    
+    @Override
+    public ScheduledSession getScheduledStudentsMinimalInfoDetails(String userName, Integer testAdminId) throws CTBBusinessException {
+        validator.validateAdmin(userName, testAdminId, "testAdmin.getScheduledStudentsDetails");
+        try {
+            ScheduledSession session = new ScheduledSession();
+            int studentsLoggedIn = 0;
+            TestSession testSession = admins.getTestAdminDetails(testAdminId);
+            Integer productId = testSession.getProductId();
+            TestProduct testProduct = product.getProduct(productId);
+            boolean overrideUsingStudentManifest = false;
+            if ("F".equalsIgnoreCase(testProduct.getStaticManifest())
+                && "F".equalsIgnoreCase(testProduct.getSessionManifest()))
+                overrideUsingStudentManifest = true;
+            
+           SessionStudent [] roster = students.getSessionStudentsMinimalInfoForAdmin(testAdminId);
+            boolean testRestricted = "T".equals(admins.isTestRestricted(testSession.getItemSetId()))?true:false;
+            for(int i=0;i<roster.length;i++) {
+                if (overrideUsingStudentManifest) {
+                    StudentManifest [] studentManifests = studentItemSetStatus.getStudentManifestsForRoster(roster[i].getStudentId(),testAdminId);
+                    ArrayList smAr = getFilteredStudentManifestForRoster(studentManifests);
+                    roster[i].setStudentManifests((StudentManifest [])smAr.toArray(new StudentManifest[0]));
+                }
+                boolean copyable = students.isStudentEditableByUserForOrg(userName, roster[i].getStudentId(), roster[i].getOrgNodeId()).intValue() > 0;
+                EditCopyStatus status = roster[i].getStatus();
+                status.setEditable("T");
+                status.setCopyable("T");
+                if(!copyable) {
+                    status.setCopyable("F");
+                    status.setEditable("F");
+                    status.setCode(EditCopyStatus.StatusCode.OUTSIDE_VISIBLE_ORG);
+                }
+                Integer restrictedAdmin = new Integer(-1);
+                if(testRestricted) {
+                    restrictedAdmin = students.isTestRestrictedForStudent(userName, roster[i].getStudentId(), testSession.getItemSetId());
+                }
+                if(restrictedAdmin != null && !new Integer(-1).equals(restrictedAdmin)) {
+                    status.setCopyable("F");
+                    status.setCode(EditCopyStatus.StatusCode.PREVIOUSLY_SCHEDULED);
+                    status.setPriorSession(admins.getTestAdminDetails(restrictedAdmin));
+                }
+                if(!"F".equals(roster[i].getTested())) {
+                    status.setEditable("F");
+                    studentsLoggedIn++;
+                }
+            }
+            session.setStudents(roster);
+            session.setStudentsLoggedIn(new Integer(studentsLoggedIn));
+            session.setCopyable(admins.checkCopyable(userName, testAdminId));
+            return session;
+        } catch (SQLException se) {
+            CTBBusinessException cbe = new UserDataNotFoundException("ScheduleTestImpl: getScheduledSessionDetails: " + se.getMessage());
             cbe.setStackTrace(se.getStackTrace());
             throw cbe;
         }  
