@@ -136,13 +136,13 @@ public class OASOracleSink implements OASRDBSink {
 	    		ManifestData [] subtests = manifest.getManifest();
 	    		for(int i=0;i<subtests.length;i++) {
 	    			ManifestData subtest = subtests[i];
+	    			if(i==0) {
+	    				subtestList = subtestList + subtest.getId();
+	    			} else {
+	    				subtestList = subtestList + "," + subtest.getId();
+	    			}
 	    			if(!"SC".equals(subtest.getCompletionStatus())) {
 		    			if("TB".equals(subtest.getProduct()) || "TL".equals(subtest.getProduct())) isTABE = true;
-		    			if(i==0) {
-		    				subtestList = subtestList + subtest.getId();
-		    			} else {
-		    				subtestList = subtestList + "," + subtest.getId();
-		    			}
 		    			stmt1 = conn.prepareStatement(SUBTEST_STATUS_SQL);
 		    			stmt1.setString(1, subtest.getCompletionStatus());
 		    			if(subtest.getMaxScore() > 0) {
