@@ -90,7 +90,7 @@
 		document.getElementById("time").innerHTML = data.savedTestDetails.testSession.dailyLoginStartTimeString  +" - "+ data.savedTestDetails.testSession.dailyLoginEndTimeString ;
 		var sliderLeft =  calculateTimeInMin(data.savedTestDetails.testSession.dailyLoginStartTimeString);
 		var sliderRight = calculateTimeInMin( data.savedTestDetails.testSession.dailyLoginEndTimeString);
-		$("#slider-range").slider("option", "values", []);
+		$("#slider-range").slider("option", "values", [sliderLeft, sliderRight]);
 		$("#selectedTestId").val(data.savedTestDetails.testSession.testCatalogId);
   	}
     
@@ -247,15 +247,24 @@
   	}
   	
   	function calculateTimeInMin(val){
-  	
-  	/*var time = val.split(" ");
-  	var timeVal = timeVal[0].split(":");
-  	var calculatedValue;
-  	if (time[1] == "AM" ){
-  	calculatedValue = timeVal[0] * 60;
-  	}
-  	var timeVal = timeVal[0].split(":");*/
-  	
+	  	var time = val.split(" ");
+	  	var afterOrPost = time[1];
+	  	var timeValue = time[0]
+	  	var timeVal = timeValue.split(":");
+	  	var hour = parseInt(timeVal[0]);
+	  	var minutes = parseInt(timeVal[1]);
+	  	var calculatedValue = 0;
+	  	if (afterOrPost == "AM" ){
+	  		if(hour == 12) {
+	  			hour = 0;
+	  		}
+	  	} else {
+	  		if(hour != 12) {
+	  			hour = hour + 12;
+	  		}
+	  	}
+	  	calculatedValue = hour * 60 + minutes;
+	  	return calculatedValue;
   	}
   	
   	function getSubtestTestSession(tList,id){  	  	
