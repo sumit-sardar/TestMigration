@@ -1,5 +1,8 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="studentApplicationResource" />
+
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
 <netui-data:declareBundle bundlePath="webResources" name="web" />
 
@@ -15,10 +18,18 @@
 <input type="hidden" id="noStudentMsg" name = "noStudentMsg" value="${bundle.web['student.noStuSelected.message']}"/>
 <input type="hidden" id="filterNoStuSelected" name = "filterNoStuSelected" value="${bundle.web['student.filterNoStuSelected.message']}"/>
 	
-
-<p style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;margin-bottom: 0;">
-<netui:content value="${bundle.web['student.assignAccommodation.text']}"/>
-</p>
+<table> 
+	<tr>
+		<td style="padding-left:5px;">
+    		<h1><lb:label key="stu.stuAccom.title" /></h1>
+		</td>
+	</tr>
+	<tr> 
+		<td style="padding-left:6px;font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">
+		<netui:content value="${bundle.web['student.assignAccommodation.text']}"/>
+	</td>	
+	</tr>
+</table>
 <table class="transparent">
 
     <tr class="transparent">

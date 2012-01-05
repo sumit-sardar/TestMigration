@@ -23,13 +23,19 @@
 <input type="hidden" id="mMissRequiredID" name = "mMissRequiredID" value=<lb:label key="org.msg.missingField" prefix="'" suffix="s'"/>/>
 <input type="hidden" id="orgListID" name = "orgListID" value=<lb:label key="org.label.orgList" prefix="'" suffix="'"/>/>
 
-
-
-
-
-<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">&nbsp;&nbsp;&nbsp;<lb:label key="org.msg.pos.button" /></span>
+<table> 
+	<tr>
+		<td style="padding-left:5px;">
+    		<h1><lb:label key="org.title" /></h1>
+		</td>
+	</tr>
+	<tr> 
+		<td style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;padding-left:6px;">  
+			<lb:label key="org.msg.pos.button" />
+		</td>	
+	</tr>
+</table>
 <br/>
-<br>
 <table class="transparent">
 
     <tr class="transparent">

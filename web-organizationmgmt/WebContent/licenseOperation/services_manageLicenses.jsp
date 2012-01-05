@@ -15,7 +15,8 @@
 <netui-template:setAttribute name="title" value="${bundle.web['manageLicense.window.title']}"/>
 <netui-template:setAttribute name="helpLink" value="${bundle.help['help.topic.testLicense']}"/>
 <netui-template:section name="bodySection">
- 
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="organizationApplicationResource" />
 <!-- ********************************************************************************************************************* -->
 <!-- Start Page Content -->
 <!-- ********************************************************************************************************************* -->

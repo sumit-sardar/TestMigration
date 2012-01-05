@@ -1,7 +1,9 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ page language="java" contentType="text/html;charset=UTF-8"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
 <netui-data:declareBundle bundlePath="webResources" name="web" />
+<lb:bundle baseName="studentApplicationResource" />
 
 <%
     String studentIdLabelName = (String)request.getAttribute("studentIdLabelName");
@@ -15,7 +17,13 @@
 <input type="hidden" id="noStudentMsg" name = "noStudentMsg" value="${bundle.web['student.noStuSelected.message']}"/>
 <input type="hidden" id="filterNoStuSelected" name = "filterNoStuSelected" value="${bundle.web['student.filterNoStuSelected.message']}"/>
 	
-
+<table> 
+	<tr>
+		<td style="padding-left:5px;">
+    		<h1><lb:label key="stu.moveStu.title" /></h1>
+		</td>
+	</tr>
+</table>	
 <table class="transparent">
 
     <tr class="transparent">

@@ -42,6 +42,13 @@
 <input type="hidden" id="middleNameID" name="middleNameID" value=<lb:label key="stu.info.middleName" prefix="'" suffix="'"/>/>
 <input type="hidden" id="assignAccoID" name="assignAccoID" value=<lb:label key="stu.label.assignAcco" prefix="'" suffix="'"/>/>
 
+<table> 
+	<tr>
+		<td style="padding-left:5px;">
+    		<h1><lb:label key="stu.students.title" /></h1>
+		</td>
+	</tr>
+</table>
 <table class="transparent">
 
     <tr class="transparent">
