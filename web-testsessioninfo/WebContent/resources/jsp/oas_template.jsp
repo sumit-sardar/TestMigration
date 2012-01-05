@@ -40,6 +40,7 @@
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/sessionConstants.js"></script>
 	<script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/map.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/sessionList.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/editTestSession.js"></script>    
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/addStudent.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/resources/js/addProctor.js"></script>
     
@@ -80,7 +81,11 @@
 					if(!noTestExist){
 						var divID = $(this).parent().attr('id');
 						if(divID == "selectTestId"){
-								if (!isFirstAccordSelected && !isThirdAccordSelected && !isFourthAccordSelected && !validateTestInformation()) {
+						
+								if(state =="EDIT"){
+									populateSelectTestGrid(wizard,index);
+								}								
+								else if (!isFirstAccordSelected && !isThirdAccordSelected && !isFourthAccordSelected && !validateTestInformation()) {
 									verifyTestDetails();
 									$('#displayMessage').show();
 									e.stopPropagation();
@@ -95,7 +100,10 @@
 									wizard.accordion("activate", index);
 								}
 						}else if(divID == "testDetailId"){
-							if(!isThirdAccordSelected && !isFourthAccordSelected && !validateTest()){
+								if(state =="EDIT"){
+									wizard.accordion("activate", index);
+								}
+								else if(!isThirdAccordSelected && !isFourthAccordSelected && !validateTest()){
 									$('#displayMessage').show();
 									e.stopPropagation(); 
 								}else{
@@ -109,7 +117,10 @@
 									wizard.accordion("activate", index);
 								}
 						}else if(divID == "addStudentId"){
-							if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+								if(state =="EDIT"){
+									populateStudentGrid(wizard,index);
+								}
+								else if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
 									$('#displayMessage').show();
 									e.stopPropagation(); 
 								}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
@@ -124,9 +135,11 @@
 									isFourthAccordSelected = false;
 									wizard.accordion("activate", index);
 								}
-						}else if(divID == "addProctorId"){
-							
-								if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
+						}else if(divID == "addProctorId"){							
+								if(state =="EDIT"){
+									populateProctorGrid(wizard,index);
+								}
+								else if(isFirstAccordSelected && !isSecondAccordSelected && !validateTest()){
 									$('#displayMessage').show();
 									e.stopPropagation(); 
 								}else if (!isFirstAccordSelected && isSecondAccordSelected && !validateTestInformation()) {
