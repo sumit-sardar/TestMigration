@@ -5,7 +5,9 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
- 
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="testsessionApplicationResource" />
+
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
 <netui-data:declareBundle bundlePath="widgetResources" name="widgets"/>
@@ -22,21 +24,18 @@
 
 <netui:form action="manageProgram">
 
-<table width="100%" border="0">
-<tr valign="top">
-<td valign="top">
-    <h1><netui:content value="Assessment: Program Status"/></h1>
-</td>
-</tr>
-<tr height="400" align="center">
-<td>
-    <p align="center"><netui:content value="Content goes here"/></p>
-</td>    
-</tr>
+<table width="100%" border="0"> 
+	<tr>
+		<td style="padding-left:5px;">
+    		<h1><lb:label key="assessments.programStatus.title" /></h1>
+		</td>
+	</tr>
+	<tr height="400" align="center"> 
+		<td>
+			 <p align="center"><netui:content value="Content goes here"/></p>
+		</td>	
+	</tr>
 </table>
-    
-
-
 </netui:form>
 
 <script type="text/javascript">

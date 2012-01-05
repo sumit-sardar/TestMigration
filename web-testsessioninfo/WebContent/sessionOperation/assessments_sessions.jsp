@@ -5,6 +5,8 @@
 <%@ taglib uri="http://beehive.apache.org/netui/tags-html-1.0" prefix="netui"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-databinding-1.0" prefix="netui-data"%>
 <%@ taglib uri="http://beehive.apache.org/netui/tags-template-1.0" prefix="netui-template"%>
+<%@ taglib uri="label.tld" prefix="lb" %>
+<lb:bundle baseName="testsessionApplicationResource" />
  
 <netui-data:declareBundle bundlePath="oasResources" name="oas"/>
 <netui-data:declareBundle bundlePath="webResources" name="web"/>
@@ -29,7 +31,7 @@
 <table width="100%" border="0">
 <tr>
 <td>
-    <h1><netui:content value="${bundle.web['homepage.title']}"/></h1>
+    <h1><lb:label key="assessments.sessions.title" /></h1>
 </td>
 </tr>
 <tr height="400" align="center">

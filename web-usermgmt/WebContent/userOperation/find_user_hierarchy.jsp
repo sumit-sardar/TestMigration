@@ -38,14 +38,17 @@
 <input type="hidden" id="inAddressID" name = "inAddressID" value=<lb:label key="user.msg.invalid.address" prefix="'" suffix="'"/>/>
 <input type="hidden" id="inNemericFormatID" name = "inNemericFormatID" value=<lb:label key="user.msg.invalid.numericFormat" prefix="'" suffix="'"/>/>
 <table> 
+	<tr>
+		<td style="padding-left:5px;">
+    		<h1><lb:label key="user.title" /></h1>
+		</td>
+	</tr>
 	<tr> 
-		<td>  
-			<span style = "font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;">&nbsp;&nbsp;&nbsp;<lb:label key="user.msg.pos.button" />
-			</span>
+		<td style="font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal;padding-left:6px;">  
+			<lb:label key="user.msg.pos.button" />
 		</td>	
 	</tr>
 </table>
-<br/>
 <table class="transparent">
     <tr class="transparent">
         <td style="border-color : #2E6E9E;">
@@ -67,7 +70,7 @@
 		 -->
 		  
 		   	<tr width="100%" >
-		       <td align="right" colspan="12" style="padding: 0 0 5px 8px; clear:both">
+		       <td align="right" colspan="12" style="padding: 0 0 0px 8px; clear:both;min-height:25px; height: 25px; ">
 		       <div id="displayMessageMain" style="display:none; width:50%; float:left; text-align:left; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 0px solid #A6C9E2;">
 					<div id= "contentMain" style="padding-top: 5px;">	</div>
 				</div>
