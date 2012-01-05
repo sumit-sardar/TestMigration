@@ -19,12 +19,24 @@ ul.dropdown                         { position: relative; }
 ul.dropdown li                      { font-weight: bold; float: left; zoom: 1; background: #d4ecff; }
 ul.dropdown a:hover		            { color: #000; text-decoration: none; }
 ul.dropdown li a                    { display: block; width: 140px; padding: 3px 0px 3px 12px; border-left: 1px solid #222;}
-ul.dropdown li.active               { background: #e9e9e9; }
+ul.dropdown li.active               { background: #d4ecff; }
 ul.dropdown li li a					{border-left: none;}
 
 ul.dropdown li:first-child a         { border-left: none; } /* Doesn't work in IE */
 ul.dropdown li:hover                { color: blue; position: relative; }
 ul.dropdown li.hover a              { color: blue; }
+
+ul.dropdown .simpleMenu {
+	 background: #e9e9e9;
+}
+ul.dropdown li.simpleMenu:hover div:first-child {
+	background: #fff !important;
+}
+
+ul.dropdown li.simpleMenu:hover, ul.dropdown li.simpleMenu:hover div:first-child div{
+	background: #d4ecff !important;
+}
+
 
 
 /* 
