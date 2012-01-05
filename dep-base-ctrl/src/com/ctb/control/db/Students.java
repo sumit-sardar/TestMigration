@@ -727,6 +727,12 @@ public interface Students extends JdbcControl
 	@JdbcControl.SQL(statement = "SELECT DECODE(COUNT(1), 0, 'T', 'F') AS UNIQUESTUDENTID  FROM STUDENT STU WHERE trim(STU.EXT_PIN1) = {studentId} AND STU.CUSTOMER_ID = {customerId} AND STU.ACTIVATION_STATUS = 'AC'") // change for defect - 66238
     String checkUniqueStudentId(String studentId, Integer customerId) throws SQLException;
 	
+	//Changes for EditTestSession new UI.
+	
+	@JdbcControl.SQL(statement = "select count(studentId)  from ( select distinct stu.student_id as studentId, decode(decode(ros.test_completion_status, 'NT', 'SC', ros.test_completion_status), 'SC',   'F',  'T') as tested   from student  stu,  test_roster   ros,  org_node    node,  org_node_category     onc  where ros.student_id = stu.student_id    and ros.test_Admin_id = {testAdminId}    and node.org_node_id = ros.org_node_id    and onc.org_node_category_id = node.org_node_category_id    and (stu.activation_Status = 'AC' or  decode(decode(ros.test_completion_status, 'NT',  'SC',    ros.test_completion_status),  'SC',  'F',  'T') = 'T') ) where tested = 'T'",
+            arrayMaxLength = 1)
+    Integer  getLoggedInSessionStudentCountForAdmin(Integer testAdminId) throws SQLException;
+	
 	static final long serialVersionUID = 1L;
 
 
