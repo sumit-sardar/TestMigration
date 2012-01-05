@@ -25,4 +25,5 @@ public interface RequestParam {
 	String PRODUCT_TYPE				= "productType";
 	String ACCESS_CODE				= "aCode";
 	String ACCESS_CODEB 			= "aCodeB";
+	String TEST_ADMIN_ID 			= "testAdminId";
 }
