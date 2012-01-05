@@ -74,7 +74,7 @@ public class BundleTag extends TagSupport{
 		String propName = this.getBaseName();
 		Properties prop = new Properties ();
 		InputStream inStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(propName); 
-		System.out.println("inStream::"+inStream);		
+		//System.out.println("inStream::"+inStream);		
 		prop.load(inStream);
 		return prop;
 	}
