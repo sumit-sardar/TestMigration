@@ -305,7 +305,11 @@ function populateCompletedSessionListGrid() {
 						
 			}
 	 });
-	 jQuery("#list3").jqGrid('navGrid','#pager3',{});
+	 jQuery("#list3").navGrid('#pager3', {			
+		    	editfunc: function() {
+		    		 editTestSession();
+		    	}	    	
+	}); 
 	 setupButtonPerUserPermission();
 	 
 }
@@ -626,24 +630,6 @@ function registerDelegate(tree){
       function gridReloadStu(addStudent){ 
       	$('#list6').GridUnload();		
       	populateSelectedStudent();
-      	
-      	
-      	/*UIBlock();
-	      if(addStudent){
-	      	jQuery("#list6").jqGrid('setGridParam',{datatype:'local'});     
-	      } else {
-	      	jQuery("#list6").jqGrid('setGridParam',{datatype:'json'}); 
-	      	jQuery("#list6").jqGrid('setGridParam',{postData:{'selectedStudentList':AddStudentLocaldata} });   
-	      }
-	     
-	  	   var urlVal = 'getSelectedStudentList.do?q=2';
-     	   jQuery("#list6").jqGrid('setGridParam', {url:urlVal ,page:1}).trigger("reloadGrid");
-           var sortArrowPA = jQuery("#list6");
-           jQuery("#list6").sortGrid('lastName',true);
-         	var arrowElementsPA = sortArrowPA[0].grid.headers[0].el.lastChild.lastChild;
-           $(arrowElementsPA.childNodes[0]).removeClass('ui-state-disabled');
-           $(arrowElementsPA.childNodes[1]).addClass('ui-state-disabled'); */
-
       }
       
       function gridReloadSelectStu(){ 
@@ -725,12 +711,14 @@ function registerDelegate(tree){
 					}
 					currDate = sessionList[i].startDate;
 					nextDate = sessionList[i].endDate;
-					$( "#startDate" ).datepicker( "option" , "minDate" , currDate ) ;
-					$( "#endDate" ).datepicker( "option" , "minDate" , currDate ) ;
-					$( "#endDate" ).datepicker( "refresh" );
-					$( "#startDate" ).datepicker( "refresh" );
-					document.getElementById("startDate").value = sessionList[i].startDate;
-					document.getElementById("endDate").value = sessionList[i].endDate;
+					if(state != "EDIT"){
+						$( "#startDate" ).datepicker( "option" , "minDate" , currDate ) ;
+						$( "#endDate" ).datepicker( "option" , "minDate" , currDate ) ;
+						$( "#endDate" ).datepicker( "refresh" );
+						$( "#startDate" ).datepicker( "refresh" );
+						document.getElementById("startDate").value = sessionList[i].startDate;
+						document.getElementById("endDate").value = sessionList[i].endDate;
+					}
 					//$("#endDate").val(nextDate);
 					break;					
 				}
@@ -857,7 +845,7 @@ function registerDelegate(tree){
  		$("#list6").jqGrid({  
  		 data:  AddStudentLocaldata,
          datatype: 'local',         
-          colNames:[ 'Last Name','First Name', 'M.I.', studentIdTitle, 'Accommodations', leafNodeCategoryName , 'Form', 'studentId'],
+          colNames:[ 'Last Name','First Name', 'M.I.', studentIdTitle, 'Accommodations', leafNodeCategoryName , 'Form', 'studentId', 'testCompletionStatus'],
 		   	colModel:[
 		   		{name:'lastName',index:'lastName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'firstName',index:'firstName', width:130, editable: true, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
@@ -866,7 +854,8 @@ function registerDelegate(tree){
 		   		{name:'hasAccommodations',index:'hasAccommodations', width:165, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' }, formatter: 'link' },
 		   		{name:'orgNodeName',index:'orgNodeName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'itemSetForm',index:'itemSetForm',editable: true, width:75, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'studentId',index:'studentId',editable: false, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'studentId',index:'studentId',editable: false, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testCompletionStatus',index:'testCompletionStatus',editable: false,hidden:true, width:0, align:"left", sortable:false,search: false, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;width=0px!important' } }
 		   	],
 		   	jsonReader: { repeatitems : false, root:"rows", id:"studentId",
 		   	records: function(obj) { 
@@ -897,6 +886,17 @@ function registerDelegate(tree){
 				
 			},
 			gridComplete: function() {
+				if(state=="EDIT"){
+					var allRowsInGridPresent = $('#list6').jqGrid('getDataIDs');
+					for(var k = 0; k < allRowsInGridPresent.length; k++) {
+						var selectedRowData = $("#list6").getRowData(allRowsInGridPresent[k]);
+						if(selectedRowData.testCompletionStatus != "SC" && selectedRowData.testCompletionStatus != "" && selectedRowData.testCompletionStatus != "NT"){
+							$("#"+(k+1)+" td input","#list6").attr("disabled", true);
+				 			$("#"+(k+1), "#list6").addClass('ui-state-disabled');
+				 			editDataMrkStds.put(selectedRowData.studentId,selectedRowData.studentId);
+						}				
+					}				
+				}
 				if(selectAllForDelete) {
 					$("#cb_list6").attr("checked", true);
 				 	$("#cb_list6").trigger('click');
@@ -1737,14 +1737,16 @@ function registerDelegate(tree){
 		$("#hasTestBreak").val("F");
 		document.getElementById("aCode").style.visibility = "hidden";
 		
-		document.getElementById("subtestGrid").style.display = "none";
-		document.getElementById("noSubtest").style.display = "";
-		document.getElementById("testSessionName_lbl").innerHTML = "No test selected";
-		document.getElementById("testSessionName").value = "";
-		document.getElementById("startDate").value = "";			
-		document.getElementById("endDate").value = "";			
-		document.getElementById("time").innerHTML = "8:00 AM - 5:00 PM";
-		document.getElementById("testLocation").value = "";											
+		if(state != "EDIT"){
+			document.getElementById("subtestGrid").style.display = "none";
+			document.getElementById("noSubtest").style.display = "";
+			document.getElementById("testSessionName_lbl").innerHTML = "No test selected";
+			document.getElementById("testSessionName").value = "";
+			document.getElementById("startDate").value = "";			
+			document.getElementById("endDate").value = "";			
+			document.getElementById("time").innerHTML = "8:00 AM - 5:00 PM";
+			document.getElementById("testLocation").value = "";	
+		}
 		$("#randomDis").hide();	
 		$("#randDisLbl").hide();		
 		$("#randomDis").val("");		
@@ -2018,10 +2020,6 @@ function registerDelegate(tree){
 	
 		}
 	
-	function populateDates(){
-		document.getElementById("startDate").value = currDate;
-		document.getElementById("endDate").value = nextDate;
-	}
 
 	function trim(str, chars) {
 		return ltrim(rtrim(str, chars), chars);
@@ -2312,8 +2310,8 @@ function registerDelegate(tree){
 					for(var i = 0; i < allRowsInGrid.length; i++) {
 						selectedRowData = $("#listProctor").getRowData(allRowsInGrid[i]);
 						if (selectedRowData.defaultScheduler == 'T') {
-				 			$("#"+allRowsInGrid[i]+" td input").attr("disabled", true);
-				 			$("#"+allRowsInGrid[i]).addClass('ui-state-disabled');
+							$("#"+allRowsInGrid[i]+" td input","#listProctor").attr("disabled", true);
+				 			$("#"+allRowsInGrid[i], "#listProctor").addClass('ui-state-disabled');
 				 		//	$("#listProctor").jqGrid('editRow',allRowsInGrid[i],false);
 				 		}else {
 				 			if(!allProctorSelected && delProctorIdObjArray[selectedRowData.userId]){
@@ -2533,109 +2531,113 @@ function registerDelegate(tree){
     }
     
     function saveTest() {
-    $('#displayMessage').hide();
-    $('#showSaveTestMessage').hide();
-	var param;
-	var param1 =$("#testDiv *").serialize(); 
-    var param2 = $("#Test_Detail *").serialize();
-    var time = document.getElementById("time").innerHTML;
-    var timeArray = time.split("-");
-    param = param1+"&"+param2+"&startTime="+$.trim(timeArray[0])+"&endTime="+$.trim(timeArray[1]);
-    var selectedstudent = getStudentListArray(AddStudentLocaldata);
-    param = param+"&students="+selectedstudent.toString();
-    
-    var selectedProctors =getProctorListArray(addProctorLocaldata);
-    param = param+"&proctors="+selectedProctors.toString();
-    
-	$.ajax({
-		async:		true,
-		beforeSend:	function(){
-						UIBlock();
-					},
-		url:		'saveTest.do',
-		type:		'POST',
-		data:		 param,
-		dataType:	'json',
-		success:	function(data, textStatus, XMLHttpRequest){
-					   
-					   
-					   var successMessage;
-					   var key;
-					   var messageHeader;
-					   var messageArray;
-					   var length = 0;
-					   
-					  if(data.isSuccess){
-					  	successMessage   = data.successMessage;
-						key 		     = data.successInfo.key;
-						messageHeader 	 = data.successInfo.messageHeader;
-						messageArray     = data.successInfo.message;
-					  } else {
-					  	key 		    = data.validationFailedInfo.key;
-						messageHeader 	= data.validationFailedInfo.messageHeader;
-						messageArray    = data.validationFailedInfo.message;
-					  
-					  
-					  }
-					  if(messageArray!=undefined){
-							   	length= messageArray.length;
-					  }
-					   
-					  if(data.isSuccess){
-							if(length==0) {
-							   setSessionSaveMessage(messageHeader, "", "infoMessage","");
-							   	$('#displayMessage').show(); 
-							} else if (length==1) {
-							   	setSessionSaveMessage(messageHeader, messageArray[0], "infoMessage","");
-							   	$('#displayMessage').show(); 
-							} else  {
-							   	setSessionSaveMessage(messageHeader,  messageArray[0], "infoMessage", messageArray[1]);
-							   	$('#displayMessage').show(); 
-							 } 
-						  	
-						  	$('#showSaveTestMessage').show();
-						  	$.unblockUI();
-						  	closePopUp("scheduleSession");
-					  } else if (data.IsSystemError) {
-							if(length==0) {
-								setSessionSaveMessage(messageHeader, "", "errorMessage","");
-								$('#displayMessage').show(); 
-							} else if (length==1) {
-								setSessionSaveMessage(messageHeader, messageArray[0], "errorMessage","");
-								$('#displayMessage').show(); 
-							} else  {
-								setSessionSaveMessage(messageHeader,  messageArray[0], "errorMessage", messageArray[1]);
-								$('#displayMessage').show(); 
-							}
-							$.unblockUI();
-							$('#showSaveTestMessage').show();
-						  	closePopUp("scheduleSession");
-				  } else {
-							if(length==0) {
-								setMessage(messageHeader, "", "errorMessage","");
-								$('#displayMessage').show(); 
-							} else if (length==1) {
-								setMessage(messageHeader, messageArray[0], "errorMessage","");
-								$('#displayMessage').show(); 
-							} else  {
-								setMessage(messageHeader,  messageArray[0], "errorMessage", messageArray[1]);
-								$('#displayMessage').show(); 
-							} 
+   	 if(state != "EDIT"){
+	    $('#displayMessage').hide();
+	    $('#showSaveTestMessage').hide();
+		var param;
+		var param1 =$("#testDiv *").serialize(); 
+	    var param2 = $("#Test_Detail *").serialize();
+	    var time = document.getElementById("time").innerHTML;
+	    var timeArray = time.split("-");
+	    param = param1+"&"+param2+"&startTime="+$.trim(timeArray[0])+"&endTime="+$.trim(timeArray[1]);
+	    var selectedstudent = getStudentListArray(AddStudentLocaldata);
+	    param = param+"&students="+selectedstudent.toString();
+	    
+	    var selectedProctors =getProctorListArray(addProctorLocaldata);
+	    param = param+"&proctors="+selectedProctors.toString();
+	    
+		$.ajax({
+			async:		true,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'saveTest.do',
+			type:		'POST',
+			data:		 param,
+			dataType:	'json',
+			success:	function(data, textStatus, XMLHttpRequest){
+						   
+						   
+						   var successMessage;
+						   var key;
+						   var messageHeader;
+						   var messageArray;
+						   var length = 0;
+						   
+						  if(data.isSuccess){
+						  	successMessage   = data.successMessage;
+							key 		     = data.successInfo.key;
+							messageHeader 	 = data.successInfo.messageHeader;
+							messageArray     = data.successInfo.message;
+						  } else {
+						  	key 		    = data.validationFailedInfo.key;
+							messageHeader 	= data.validationFailedInfo.messageHeader;
+							messageArray    = data.validationFailedInfo.message;
 						  
-				  }
-	
-						 						
-					},
-		error  :    function(XMLHttpRequest, textStatus, errorThrown){
-						$.unblockUI();
-						window.location.href="/SessionWeb/logout.do";
-						
-					},
-		complete :  function(){
-						 $.unblockUI(); 
-					}
-	});
+						  
+						  }
+						  if(messageArray!=undefined){
+								   	length= messageArray.length;
+						  }
+						   
+						  if(data.isSuccess){
+								if(length==0) {
+								   setSessionSaveMessage(messageHeader, "", "infoMessage","");
+								   	$('#displayMessage').show(); 
+								} else if (length==1) {
+								   	setSessionSaveMessage(messageHeader, messageArray[0], "infoMessage","");
+								   	$('#displayMessage').show(); 
+								} else  {
+								   	setSessionSaveMessage(messageHeader,  messageArray[0], "infoMessage", messageArray[1]);
+								   	$('#displayMessage').show(); 
+								 } 
+							  	
+							  	$('#showSaveTestMessage').show();
+							  	$.unblockUI();
+							  	closePopUp("scheduleSession");
+						  } else if (data.IsSystemError) {
+								if(length==0) {
+									setSessionSaveMessage(messageHeader, "", "errorMessage","");
+									$('#displayMessage').show(); 
+								} else if (length==1) {
+									setSessionSaveMessage(messageHeader, messageArray[0], "errorMessage","");
+									$('#displayMessage').show(); 
+								} else  {
+									setSessionSaveMessage(messageHeader,  messageArray[0], "errorMessage", messageArray[1]);
+									$('#displayMessage').show(); 
+								}
+								$.unblockUI();
+								$('#showSaveTestMessage').show();
+							  	closePopUp("scheduleSession");
+					  } else {
+								if(length==0) {
+									setMessage(messageHeader, "", "errorMessage","");
+									$('#displayMessage').show(); 
+								} else if (length==1) {
+									setMessage(messageHeader, messageArray[0], "errorMessage","");
+									$('#displayMessage').show(); 
+								} else  {
+									setMessage(messageHeader,  messageArray[0], "errorMessage", messageArray[1]);
+									$('#displayMessage').show(); 
+								} 
+							  
+					  }
 		
+							 						
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();
+							window.location.href="/SessionWeb/logout.do";
+							
+						},
+			complete :  function(){
+							 $.unblockUI(); 
+						}
+		});
+		}
+		else{
+			saveEditTestData();
+		}
 	}
 	function toggleRandomDisVal() {
 			var randomDisVal = document.getElementById("randomDis");
@@ -2663,17 +2665,19 @@ function registerDelegate(tree){
 	}
 
 	function  resetOnSelectTestSessionData() {
-		document.getElementById("testSessionName").value = "";
-		document.getElementById("startDate").value = "";			
-		document.getElementById("endDate").value = "";			
-		document.getElementById("time").innerHTML = "8:00 AM - 5:00 PM";
-		document.getElementById("endDate").value = "";
-		document.getElementById("aCode").value = "";
-		isTestSelected = false;
-		document.getElementById("testBreak").checked = false;
-    	isTestBreak = false;
-	    $("#hasTestBreak").val("F");
-	    document.getElementById("sData").disabled=true;
+		if(state != "EDIT"){
+			document.getElementById("testSessionName").value = "";
+			document.getElementById("startDate").value = "";			
+			document.getElementById("endDate").value = "";			
+			document.getElementById("time").innerHTML = "8:00 AM - 5:00 PM";
+			document.getElementById("endDate").value = "";
+			document.getElementById("aCode").value = "";
+			isTestSelected = false;
+			document.getElementById("testBreak").checked = false;
+	    	isTestBreak = false;
+		    $("#hasTestBreak").val("F");
+		    document.getElementById("sData").disabled=true;
+	    }
 	}
 	
 	function closePopUpForProctor(dailogId){
