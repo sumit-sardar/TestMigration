@@ -2395,7 +2395,7 @@ public class SessionOperationController extends PageFlowController {
         		new Boolean( hasUploadDownloadConfig().booleanValue() && adminUser));
         
         this.getSession().setAttribute("hasProgramStatusConfigured", 
-        		new Boolean( hasProgramStatusConfig().booleanValue() && adminUser));
+        		new Boolean( hasProgramStatusConfig(customerConfigs).booleanValue() && adminUser));
         
         this.getSession().setAttribute("hasScoringConfigured", 
         		new Boolean( customerHasScoring(customerConfigs).booleanValue() && adminUser));
@@ -2682,16 +2682,21 @@ public class SessionOperationController extends PageFlowController {
         return hasUploadDownloadConfig;
     }
 
-    private Boolean hasProgramStatusConfig()
-    {	
-        Boolean hasProgramStatusConfig = Boolean.FALSE;
-        try {   
-            hasProgramStatusConfig = this.testSessionStatus.hasProgramStatusConfig(this.userName);
-        } 
-        catch (CTBBusinessException be) {
-            be.printStackTrace();
-        }
-        return hasProgramStatusConfig;
+    private Boolean hasProgramStatusConfig(CustomerConfiguration[] customerConfigurations)
+    {	    	
+    	Boolean hasProgramStatusConfig = Boolean.FALSE;
+    	if( customerConfigurations != null ) {
+			for (int i=0; i < customerConfigurations.length; i++) {
+
+				CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
+				if (cc.getCustomerConfigurationName().equalsIgnoreCase("Allow_Subtest_Invalidation") && 
+						cc.getDefaultValue().equals("T")) {
+					hasProgramStatusConfig = true; 
+					break;
+				}
+			}
+		}
+		return new Boolean(hasProgramStatusConfig);   
     }
     
     @SuppressWarnings("unused")
