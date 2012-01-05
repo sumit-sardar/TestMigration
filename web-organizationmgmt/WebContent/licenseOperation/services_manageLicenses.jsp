@@ -24,21 +24,18 @@
 
 <netui:form action="services_manageLicenses">
 
-
-<table width="100%" border="0">
-<tr>
-<td>
-    <h1><netui:content value="Services: Manage Licenses"/></h1>
-</td>
-</tr>
-<tr height="400" align="center">
-<td>
-    <p align="center"><netui:content value="Content goes here"/></p>
-</td>    
-</tr>
+<table width="100%" border="0"> 
+	<tr>
+		<td style="padding-left:5px;">
+    		<h1><lb:label key="services.license.title" /></h1>
+		</td>
+	</tr>
+	<tr height="400" align="center"> 
+		<td>
+			 <p align="center"><netui:content value="Content goes here"/></p>
+		</td>	
+	</tr>
 </table>
-
-
 </netui:form>
 
 <script type="text/javascript">
