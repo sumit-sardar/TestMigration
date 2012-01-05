@@ -128,7 +128,10 @@ function populateSessionListGrid(homePageLoad) {
 			height: 370,  
 			editurl: 'getSessionForUserHomeGrid.do',
 			caption:"Session List",
-			ondblClickRow: function(rowid) {setSelectedTestAdminId(rowid);console.log("double click" + rowid);editTestSession();},
+			ondblClickRow: function(rowid) {
+				setSelectedTestAdminId(rowid);
+				editTestSession();
+			},
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
