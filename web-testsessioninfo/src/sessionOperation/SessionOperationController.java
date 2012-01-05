@@ -1,7 +1,6 @@
 package sessionOperation;
 
 import java.io.IOException;
-import java.io.ObjectOutput;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 import java.util.Vector;
  
 import javax.servlet.http.HttpServletRequest;
@@ -56,7 +54,6 @@ import com.ctb.bean.testAdmin.UserNode;
 import com.ctb.bean.testAdmin.UserNodeData;
 import com.ctb.exception.CTBBusinessException;
 import com.ctb.exception.testAdmin.InsufficientLicenseQuantityException;
-import com.ctb.exception.testAdmin.SessionCreationException;
 import com.ctb.exception.testAdmin.TransactionTimeoutException;
 
 import com.ctb.exception.validation.ValidationException;
@@ -75,7 +72,6 @@ import com.ctb.testSessionInfo.utils.FilterSortPageUtils;
 import com.ctb.testSessionInfo.utils.Organization;
 import com.ctb.testSessionInfo.utils.OrgnizationComparator;
 import com.ctb.testSessionInfo.utils.PermissionsUtils;
-import com.ctb.testSessionInfo.utils.Row;
 import com.ctb.testSessionInfo.utils.ScheduledSavedTestVo;
 import com.ctb.testSessionInfo.utils.ScheduleTestVo;
 import com.ctb.testSessionInfo.utils.TestSessionUtils;
@@ -120,20 +116,18 @@ public class SessionOperationController extends PageFlowController {
 	private String userName = null;
 	private Integer customerId = null;
     private User user = null;
-    private List sessionListCUFU = new ArrayList(); 
-    private List sessionListPA = new ArrayList(); 
+    private List<TestSessionVO> sessionListCUFU = new ArrayList<TestSessionVO>(); 
+    private List<TestSessionVO> sessionListPA = new ArrayList<TestSessionVO>(); 
     private boolean hasLicenseConfig = false; 
     //private List productNameList = null;
     //private Hashtable productNameToIndexHash = null;
     public static String CONTENT_TYPE_JSON = "application/json";
 
-    public LinkedHashMap hintQuestionOptions = null;
+    public LinkedHashMap<String, String> hintQuestionOptions = null;
     public UserProfileInformation userProfile = null; 
 	private TestProductData testProductData = null;  
 	private TestProduct [] tps;
-	//private String productType = TestSessionUtils.GENERIC_PRODUCT_TYPE;
 	private static final String ACTION_INIT = "init";
-	//private static final int RETURN_TYPE_INT = 1;
 	boolean isPopulatedSuccessfully = false;
 	boolean isPopulatedSuccessfully1 = false;
 	ScheduleTestVo vo = new ScheduleTestVo();
@@ -143,9 +137,8 @@ public class SessionOperationController extends PageFlowController {
 	
 	Map<Integer, String> topNodesMap = new LinkedHashMap<Integer, String>();
 	Map<Integer, TestVO> idToTestMap = new LinkedHashMap<Integer, TestVO>();
-	//Map<String, SessionStudent> idToStudentMap = new TreeMap<String, SessionStudent>();
 	
-	private List studentGradesForCustomer;
+	private List<String> studentGradesForCustomer;
     
 	/**
 	 * @return the userName
@@ -410,7 +403,6 @@ public class SessionOperationController extends PageFlowController {
     	HttpServletResponse resp = getResponse();
     	resp.setCharacterEncoding("UTF-8"); 
     	OutputStream stream = null;
-        String productName = "";
         String currentAction = this.getRequest().getParameter("currentAction");
         String selectedProductId =  this.getRequest().getParameter("productId");
         if(currentAction==null)
@@ -441,7 +433,6 @@ public class SessionOperationController extends PageFlowController {
             {
                 if (tps.length > 0 && tps[0] != null)
                 {
-                     productName = tps[0].getProductName();
                      selectedProductId = tps[0].getProductId().toString();
                      vo.populateAccessCode(scheduleTest);
                      vo.populateDefaultDateAndTime(this.user.getTimeZone(), this.idToTestMap);
@@ -487,7 +478,7 @@ public class SessionOperationController extends PageFlowController {
     		} 
     	
         } catch (Exception e) {
-        	resp.setStatus(resp.SC_INTERNAL_SERVER_ERROR );
+        	resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR );
         	try {
 				resp.flushBuffer();
 			} catch (Exception e1) {
@@ -1640,16 +1631,11 @@ public class SessionOperationController extends PageFlowController {
 	})
     protected Forward getSessionForUserHomeGrid(SessionOperationForm form){
 
-		String jsonTree = "";
-		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
-		String contentType = CONTENT_TYPE_JSON;
-		String studentArray = "";
 		String json = "";
-		ObjectOutput output = null;
 		try {
-			System.out.println ("db process time Start:"+new Date());
+			//System.out.println ("db process time Start:"+new Date());
 			
 			// get licenses
 			CustomerLicense[] customerLicenses =  null;
@@ -1674,27 +1660,26 @@ public class SessionOperationController extends PageFlowController {
 	        SortParams sessionSort = null;
 	        sessionSort = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.TESTSESSION_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
 	        TestSessionData tsd = getTestSessionsForUserHome(sessionFilter, sessionPage, sessionSort);
-	        System.out.println ("db process time End:"+new Date());
+	        //System.out.println ("db process time End:"+new Date());
 	        Base base = new Base();
 			base.setPage("1");
 			base.setRecords("10");
 			base.setTotal("2");
-			List <Row> rows = new ArrayList<Row>();
 			if ((tsd != null) && (tsd.getFilteredCount().intValue() > 0))
 			{
 				System.out.println ("List process time Start:"+new Date());
 				base = buildTestSessionList(customerLicenses, tsd, base); 
 				System.out.println ("List process time End:"+new Date());
 			} else {
-				this.setSessionListCUFU(new ArrayList());
-		        this.setSessionListPA(new ArrayList());
+				this.setSessionListCUFU(new ArrayList<TestSessionVO>());
+		        this.setSessionListPA(new ArrayList<TestSessionVO>());
 		        base.setTestSessionCUFU(sessionListCUFU);
 		        base.setTestSessionPA(sessionListPA);
 			}
 			base.setOrgNodeCategory(orgNodeCategory);
 			
 			
-			System.out.println("just b4 gson");	
+			//System.out.println("just b4 gson");	
 			Gson gson = new Gson();
 			System.out.println ("Json process time Start:"+new Date());
 			
@@ -1734,21 +1719,14 @@ public class SessionOperationController extends PageFlowController {
 	})
     protected Forward getCompletedSessionForGrid(SessionOperationForm form){
     	System.out.println("completed");
-		String jsonTree = "";
-		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
-		String contentType = CONTENT_TYPE_JSON;
-		List sessionList = new ArrayList(0);
-		String studentArray = "";
 		String json = "";
-		ObjectOutput output = null;
 		try {
 			Base base = new Base();
 			base.setPage("1");
 			base.setRecords("10");
 			base.setTotal("2");
-			List <Row> rows = new ArrayList<Row>();
 			base.setTestSessionCUFU(this.sessionListCUFU);
 			base.setTestSessionPA(this.sessionListPA);
 			Gson gson = new Gson();
@@ -1782,15 +1760,9 @@ public class SessionOperationController extends PageFlowController {
 	})
     protected Forward getStudentForList(SessionOperationForm form){
     	
-		String jsonTree = "";
-		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
-		String contentType = CONTENT_TYPE_JSON;
-		List sessionList = new ArrayList(0);
-		String studentArray = "";
 		String json = "";
-		ObjectOutput output = null;
 		
 		String testId = getRequest().getParameter("selectedTestId");
 		String treeOrgNodeId = getRequest().getParameter("stuForOrgNodeId");
@@ -1813,12 +1785,11 @@ public class SessionOperationController extends PageFlowController {
 	        studentSort = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.STUDENT_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
 	        // get students - getSessionStudents
 	        SessionStudentData ssd = getSessionStudents(selectedOrgNodeId, testAdminId, selectedTestId, studentFilter, studentPage, studentSort);
-	        List studentNodes = buildStudentList(ssd);
+	        List<SessionStudent> studentNodes = buildStudentList(ssd);
 			Base base = new Base();
 			base.setPage("1");
 			base.setRecords("10");
 			base.setTotal("2");
-			List <Row> rows = new ArrayList<Row>();
 			base.setStudentNode(studentNodes);
 			base.setGradeList(this.studentGradesForCustomer);
 			
@@ -1853,10 +1824,9 @@ public class SessionOperationController extends PageFlowController {
 	protected Forward userOrgNodeHierarchyList(SessionOperationForm form){
 
 		String jsonTree = "";
-		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
-		String contentType = CONTENT_TYPE_JSON;
+		//String contentType = CONTENT_TYPE_JSON;
 		try {
 			BaseTree baseTree = new BaseTree ();
 
@@ -1916,7 +1886,7 @@ public class SessionOperationController extends PageFlowController {
 			//System.out.println(jsonTree);
 			try {
 
-				resp.setContentType(contentType);
+				resp.setContentType(CONTENT_TYPE_JSON);
 				resp.flushBuffer();
 				stream = resp.getOutputStream();
 				stream.write(jsonTree.getBytes("UTF-8"));
@@ -1942,10 +1912,9 @@ public class SessionOperationController extends PageFlowController {
 	protected Forward userTreeOrgNodeHierarchyList(SessionOperationForm form){
 
 		String jsonTree = "";
-		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
-		String contentType = CONTENT_TYPE_JSON;
+		//String contentType = CONTENT_TYPE_JSON;
 		Integer testAdminId = Integer.valueOf(this.getRequest().getParameter("testAdminId"));
 		Integer orgNodeId = Integer.valueOf(this.getRequest().getParameter("orgNodeId"));
 		
@@ -1961,7 +1930,7 @@ public class SessionOperationController extends PageFlowController {
 				ArrayList <Integer> orgIDList = new ArrayList <Integer>();
 				
 				StudentNodeData snd = this.scheduleTest.getTestTicketNodesForParent(this.userName, orgNodeId, testAdminId, null, null, null);
-				ArrayList selectedList = new ArrayList();
+				ArrayList<Organization> selectedList = new ArrayList<Organization>();
 
 				ArrayList<Organization> orgNodesList = UserOrgHierarchyUtils.buildOrgNodeAncestorHierarchyList(snd, orgIDList,completeOrgNodeList);	
 	
@@ -1988,7 +1957,7 @@ public class SessionOperationController extends PageFlowController {
 			//System.out.println(jsonTree);
 			try {
 
-				resp.setContentType(contentType);
+				resp.setContentType(CONTENT_TYPE_JSON);
 				resp.flushBuffer();
 				stream = resp.getOutputStream();
 				stream.write(jsonTree.getBytes("UTF-8"));
@@ -2013,19 +1982,13 @@ public class SessionOperationController extends PageFlowController {
 	})
     protected Forward getSessionForSelectedOrgNodeGrid(SessionOperationForm form){
     	System.out.println("selected");
-		String jsonTree = "";
-		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
 		String treeOrgNodeId = getRequest().getParameter("treeOrgNodeId");
 		Integer selectedOrgNodeId = null;
 		if(treeOrgNodeId != null)
 			selectedOrgNodeId = Integer.parseInt(treeOrgNodeId);
-		String contentType = CONTENT_TYPE_JSON;
-		List sessionList = new ArrayList(0);
-		String studentArray = "";
 		String json = "";
-		ObjectOutput output = null;
 		try {
 			System.out.println ("db process time Start:"+new Date());
 			CustomerLicense[] customerLicenses =  null;
@@ -2045,22 +2008,21 @@ public class SessionOperationController extends PageFlowController {
 			base.setPage("1");
 			base.setRecords("10");
 			base.setTotal("2");
-			List <Row> rows = new ArrayList<Row>();
 			if ((tsd != null) && (tsd.getFilteredCount().intValue() > 0))
 			{
 				System.out.println ("List process time Start:"+new Date());
 				base = buildTestSessionList(customerLicenses, tsd, base); 
-				String userOrgCategoryName = getTestSessionOrgCategoryName(sessionList);
+				//String userOrgCategoryName = getTestSessionOrgCategoryName(sessionList);
 				System.out.println ("List process time End:"+new Date());
 			} else {
-				this.setSessionListCUFU(new ArrayList());
-		        this.setSessionListPA(new ArrayList());
+				this.setSessionListCUFU(new ArrayList<TestSessionVO>());
+		        this.setSessionListPA(new ArrayList<TestSessionVO>());
 		        base.setTestSessionCUFU(sessionListCUFU);
 		        base.setTestSessionPA(sessionListPA);
 			}
 			
 			
-			System.out.println("just b4 gson");	
+			//System.out.println("just b4 gson");	
 			Gson gson = new Gson();
 			System.out.println ("Json process time Start:"+new Date());
 			
@@ -2369,7 +2331,7 @@ public class SessionOperationController extends PageFlowController {
     private void getUserDetails()
     {
         Boolean supportAccommodations = Boolean.TRUE;
-        String userTimeZone = "GMT";
+        //String userTimeZone = "GMT";
              	
         try
         {
@@ -2389,7 +2351,7 @@ public class SessionOperationController extends PageFlowController {
 	        getSession().setAttribute("schedulerLastName", this.user.getLastName());
 	        getSession().setAttribute("schedulerUserId", this.user.getUserId().toString());
 	        getSession().setAttribute("schedulerUserName", this.user.getUserName());
-	        System.out.println("supportAccommodations==>"+supportAccommodations);
+	        //System.out.println("supportAccommodations==>"+supportAccommodations);
         }
         catch (CTBBusinessException be)
         {
@@ -2400,7 +2362,8 @@ public class SessionOperationController extends PageFlowController {
     /**
      * getCustomerLicenses
      */
-    private CustomerLicense[] getCustomerLicenses()
+    @SuppressWarnings("unused")
+	private CustomerLicense[] getCustomerLicenses()
     {
         CustomerLicense[] cls = null;
 
@@ -2420,7 +2383,7 @@ public class SessionOperationController extends PageFlowController {
 	private void setupUserPermission(CustomerConfiguration [] customerConfigs)
 	{
         boolean adminUser = isAdminUser();
-        boolean TABECustomer = isTABECustomer(customerConfigs);
+        //boolean TABECustomer = isTABECustomer(customerConfigs);
         boolean laslinkCustomer = isLaslinkCustomer(customerConfigs);
         
         this.getSession().setAttribute("showReportTab", 
@@ -2457,7 +2420,7 @@ public class SessionOperationController extends PageFlowController {
 	
 	private void getConfigStudentLabel(CustomerConfiguration[] customerConfigurations) 
 	{     
-		boolean isStudentIdConfigurable = false;
+		//boolean isStudentIdConfigurable = false;
 		Integer configId=0;
 		String []valueForStudentId = new String[8] ;
 		valueForStudentId[0] = "Student ID";
@@ -2466,7 +2429,7 @@ public class SessionOperationController extends PageFlowController {
 			CustomerConfiguration cc = (CustomerConfiguration)customerConfigurations[i];
 			if (cc.getCustomerConfigurationName().equalsIgnoreCase("Configurable_Student_ID") && cc.getDefaultValue().equalsIgnoreCase("T"))
 			{
-				isStudentIdConfigurable = true; 
+				//isStudentIdConfigurable = true; 
 				configId = cc.getId();
 				CustomerConfigurationValue[] customerConfigurationsValue = customerConfigurationValues(configId);
 				//By default there should be 3 entries for customer configurations
@@ -2549,7 +2512,8 @@ public class SessionOperationController extends PageFlowController {
         return roleName.equalsIgnoreCase(PermissionsUtils.ROLE_NAME_ADMINISTRATOR); 
     }
     
-    private Boolean canRegisterStudent(CustomerConfiguration [] customerConfigs) 
+    @SuppressWarnings("unused")
+	private Boolean canRegisterStudent(CustomerConfiguration [] customerConfigs) 
     {               
         String roleName = this.user.getRole().getRoleName();        
         boolean validCustomer = false; 
@@ -2588,7 +2552,7 @@ public class SessionOperationController extends PageFlowController {
     
     private Boolean customerHasScoring(CustomerConfiguration [] customerConfigs)
     {               
-        Integer customerId = this.user.getCustomer().getCustomerId();
+        //Integer customerId = this.user.getCustomer().getCustomerId();
         boolean hasScoringConfigurable = false;
         
         for (int i=0; i < customerConfigs.length; i++)
@@ -2617,7 +2581,8 @@ public class SessionOperationController extends PageFlowController {
         return laslinkCustomer;
     }
 
-    private boolean isTABECustomer(CustomerConfiguration [] customerConfigs)
+    @SuppressWarnings("unused")
+	private boolean isTABECustomer(CustomerConfiguration [] customerConfigs)
     {               
         boolean TABECustomer = false;
         
@@ -2727,7 +2692,8 @@ public class SessionOperationController extends PageFlowController {
         return hasProgramStatusConfig;
     }
     
-    private TestSessionData getTestSessionsForUser(FilterParams filter, PageParams page, SortParams sort) 
+    @SuppressWarnings("unused")
+	private TestSessionData getTestSessionsForUser(FilterParams filter, PageParams page, SortParams sort) 
     {
         TestSessionData tsd = new TestSessionData();                
         try
@@ -2769,8 +2735,8 @@ public class SessionOperationController extends PageFlowController {
 
     private Base buildTestSessionList(CustomerLicense[] customerLicenses, TestSessionData tsd, Base base) 
     {
-        List sessionListCUFU = new ArrayList(); 
-        List sessionListPA = new ArrayList();        
+        List<TestSessionVO> sessionListCUFU = new ArrayList<TestSessionVO>(); 
+        List<TestSessionVO> sessionListPA = new ArrayList<TestSessionVO>();        
         TestSession[] testsessions = tsd.getTestSessions();            
         for (int i=0; i < testsessions.length; i++)
         {
@@ -2797,7 +2763,8 @@ public class SessionOperationController extends PageFlowController {
     }
     
     
-    private String getTestSessionOrgCategoryName(List testSessionList)
+    @SuppressWarnings("unused")
+	private String getTestSessionOrgCategoryName(List<TestSessionVO> testSessionList)
     {
         String categoryName = "Organization";        
         if (testSessionList.size() > 0)
@@ -2914,7 +2881,7 @@ public class SessionOperationController extends PageFlowController {
             PasswordHintQuestion[] options = 
                     this.userManagement.getHintQuestions();
             
-            this.hintQuestionOptions = new LinkedHashMap();
+            this.hintQuestionOptions = new LinkedHashMap<String, String>();
             
             this.hintQuestionOptions.put("", "Select a hint question");
             
@@ -2933,9 +2900,9 @@ public class SessionOperationController extends PageFlowController {
         }
     }
     
-    private List buildStudentList(SessionStudentData ssd) 
+    private List<SessionStudent> buildStudentList(SessionStudentData ssd) 
     {
-        List studentList = new ArrayList();
+        List<SessionStudent> studentList = new ArrayList<SessionStudent>();
         SessionStudent [] sessionStudents = ssd.getSessionStudents();
         for (int i=0 ; i<sessionStudents.length; i++) {
             SessionStudent ss = (SessionStudent)sessionStudents[i];
@@ -3085,36 +3052,36 @@ public class SessionOperationController extends PageFlowController {
 	/**
 	 * @return the sessionListCUFU
 	 */
-	public List getSessionListCUFU() {
+	public List<TestSessionVO> getSessionListCUFU() {
 		return sessionListCUFU;
 	}
 
 	/**
 	 * @param sessionListCUFU the sessionListCUFU to set
 	 */
-	public void setSessionListCUFU(List sessionListCUFU) {
+	public void setSessionListCUFU(List<TestSessionVO> sessionListCUFU) {
 		this.sessionListCUFU = sessionListCUFU;
 	}
 
 	/**
 	 * @return the sessionListPA
 	 */
-	public List getSessionListPA() {
+	public List<TestSessionVO> getSessionListPA() {
 		return sessionListPA;
 	}
 
 	/**
 	 * @param sessionListPA the sessionListPA to set
 	 */
-	public void setSessionListPA(List sessionListPA) {
+	public void setSessionListPA(List<TestSessionVO> sessionListPA) {
 		this.sessionListPA = sessionListPA;
 	}
 
-	public LinkedHashMap getHintQuestionOptions() {
+	public LinkedHashMap<String, String> getHintQuestionOptions() {
 		return hintQuestionOptions;
 	}
 
-	public void setHintQuestionOptions(LinkedHashMap hintQuestionOptions) {
+	public void setHintQuestionOptions(LinkedHashMap<String, String> hintQuestionOptions) {
 		this.hintQuestionOptions = hintQuestionOptions;
 	}
 
@@ -3134,25 +3101,16 @@ public class SessionOperationController extends PageFlowController {
 	})
     protected Forward getProctorList(SessionOperationForm form){
     	
-		String jsonTree = "";
-		HttpServletRequest req = getRequest();
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
-		String contentType = CONTENT_TYPE_JSON;
 		final String PROCTOR_DEFAULT_SORT = "LastName";
-		User testScheduler = null;
 		
 		
-		List sessionList = new ArrayList(0);
-		String studentArray = "";
 		String json = "";
-		ObjectOutput output = null;
 		
 		//String testId = getRequest().getParameter("selectedTestId");
 		String proctorOrgNodeId = getRequest().getParameter("proctorOrgNodeId");
 		Integer selectedOrgNodeId = null;
-		Integer selectedTestId = null;
-		Integer testAdminId = null;
 		if(proctorOrgNodeId != null)
 			selectedOrgNodeId = Integer.parseInt(proctorOrgNodeId);
 		//if(testId != null)
@@ -3161,8 +3119,7 @@ public class SessionOperationController extends PageFlowController {
 			FilterParams proctorFilter = null;
 	        PageParams proctorPage = null;
 	        SortParams proctorSort = FilterSortPageUtils.buildSortParams(PROCTOR_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
-	        FilterParams filter = null;
-	        List proctorNodes = null;
+	        List<UserProfileInformation> proctorNodes = null;
 
 	        // Get the list of proctors
 	        UserData ud = getProctors(selectedOrgNodeId, proctorFilter, proctorPage, proctorSort);
@@ -3212,8 +3169,8 @@ public class SessionOperationController extends PageFlowController {
     }
 
 	
-	public List buildProctorList(UserData uData) {
-        ArrayList userList = new ArrayList();
+	public List<UserProfileInformation> buildProctorList(UserData uData) {
+        ArrayList<UserProfileInformation> userList = new ArrayList<UserProfileInformation>();
         if (uData != null) {
             User[] users = uData.getUsers();
             if(users != null){
@@ -3236,9 +3193,9 @@ public class SessionOperationController extends PageFlowController {
     }
     
     // Added for Proctor : End
-	 private String getTACsInString(Vector vec) 
+	 private String getTACsInString(Vector<String> vec) 
 	    {
-	        Iterator it = vec.iterator();
+	        Iterator<String> it = vec.iterator();
 	        StringBuffer buf = new StringBuffer();
 	        while (it.hasNext()) {
 	            buf.append((String)it.next());
@@ -3251,27 +3208,7 @@ public class SessionOperationController extends PageFlowController {
 	 private String getMessageResourceBundle(CTBBusinessException e, String msgId) 
 	    {
 	        String errorMessage = "";
-	        /*if (e instanceof ValidationException) {
-	            String msgException = e.getMessage();
-	            if (msgException != null) {
-	                if (msgException.equals("SelectSettings.TestSessionName.InvalidCharacters") ||
-	                    msgException.equals("SelectSettings.TestLocation.InvalidCharacters")) {
-	                    errorMessage = MessageResourceBundle.getMessage(msgException);
-	                }
-	                else {
-	                    msgId += ".ValidationException";
-	                    errorMessage = MessageResourceBundle.getMessage(msgId);
-	                }            
-	            }
-	            else {
-	                msgId += ".ValidationException";
-	                errorMessage = MessageResourceBundle.getMessage(msgId);
-	            }
-	        }*/
-	        /*else {*/
-	            errorMessage = MessageResourceBundle.getMessage(msgId, e.getMessage());
-	        /*}*/
-	            
+            errorMessage = MessageResourceBundle.getMessage(msgId, e.getMessage());
 	        return errorMessage; 
 	    }
 	 
@@ -3282,7 +3219,7 @@ public class SessionOperationController extends PageFlowController {
 		String [] arg = new String[1];
 		arg[0] = selectedLevel;
 		studentFilter = new FilterParams();
-		ArrayList filters = new ArrayList();
+		ArrayList<FilterParam> filters = new ArrayList<FilterParam>();
 		if(selectedLevel.contains("-")) {
 			String [] grades = selectedLevel.split("-");
 			int initVal = Integer.parseInt(grades[0]);
@@ -3344,7 +3281,7 @@ public class SessionOperationController extends PageFlowController {
 	        {
 	            e.printStackTrace();
 	            String errorMessage =MessageResourceBundle.getMessage("SelectSettings.FailedToSaveTestSessionTransactionTimeOut"); 
-	            System.out.println("errorMessage in TransactionTimeoutException");
+	            //System.out.println("errorMessage in TransactionTimeoutException");
 	            this.getRequest().setAttribute("errorMessage", errorMessage); 
 	            return 0;            
 	        } 
