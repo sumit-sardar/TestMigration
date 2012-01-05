@@ -593,4 +593,8 @@ public interface ScheduleTest
     com.ctb.bean.testAdmin.ScheduledSession getScheduledStudentsMinimalInfoDetails(String userName, Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
     
     com.ctb.bean.testAdmin.ScheduledSession getScheduledProctorsMinimalInfoDetails(String userName, Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+    
+    com.ctb.bean.testAdmin.SessionStudentData getSessionStudentsMinimalInfoForOrgNode(java.lang.String userName, java.lang.Integer orgNodeId, java.lang.Integer testAdminId, java.lang.Integer testItemSetId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
+    
+    com.ctb.bean.testAdmin.UserData getUsersMinimalInfoForOrgNode(java.lang.String userName, java.lang.Integer orgNodeId, com.ctb.bean.request.FilterParams filter, com.ctb.bean.request.PageParams page, com.ctb.bean.request.SortParams sort) throws com.ctb.exception.CTBBusinessException;
 } 

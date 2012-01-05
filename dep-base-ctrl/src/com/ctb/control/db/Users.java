@@ -918,6 +918,10 @@ public interface Users extends JdbcControl
     @JdbcControl.SQL(statement = "select  users.user_id as userId,  users.user_name as userName,   users.first_name as firstName,  users.middle_name as middleName,  users.last_name as lastName from  test_admin_user_role taur,  users where  taur.user_id = users.user_id  and taur.test_admin_id = {testAdminId}  and users.activation_status = 'AC' ",
             arrayMaxLength = 100000)
     User [] getProctorUsersMinimalInfoForAdmin(Integer testAdminId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select distinct  users.user_id as userId,  users.user_name as userName, users.first_name as firstName,  users.middle_name as middleName,  users.last_name as lastName from  user_role urole,  users where  urole.user_id = users.user_id  and urole.org_node_id = {orgNodeId}  and users.activation_status = 'AC'  and urole.activation_status = 'AC'",
+            arrayMaxLength = 0, fetchSize=500)
+    User [] getUsersMinimalInfoForOrgNode(Integer orgNodeId) throws SQLException;
 
 
 }

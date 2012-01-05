@@ -1784,7 +1784,7 @@ public class SessionOperationController extends PageFlowController {
 			}
 	        PageParams studentPage = null;
 	        SortParams studentSort = null;
-	        studentSort = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.STUDENT_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
+	        //studentSort = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.STUDENT_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
 	        // get students - getSessionStudents
 	        SessionStudentData ssd = getSessionStudents(selectedOrgNodeId, testAdminId, selectedTestId, studentFilter, studentPage, studentSort);
 	        List<SessionStudent> studentNodes = buildStudentList(ssd.getSessionStudents());
@@ -2732,7 +2732,7 @@ public class SessionOperationController extends PageFlowController {
     {    
         SessionStudentData sd = null;
         try {      
-            sd = this.scheduleTest.getSessionStudentsForOrgNode(this.userName, orgNodeId, testAdminId, selectedTestId, filter, page, sort);
+            sd = this.scheduleTest.getSessionStudentsMinimalInfoForOrgNode(this.userName, orgNodeId, testAdminId, selectedTestId, filter, page, sort);
         }
         catch (CTBBusinessException be) {
             be.printStackTrace();
@@ -3109,7 +3109,7 @@ public class SessionOperationController extends PageFlowController {
     	
 		HttpServletResponse resp = getResponse();
 		OutputStream stream = null;
-		final String PROCTOR_DEFAULT_SORT = "LastName";
+		//final String PROCTOR_DEFAULT_SORT = "LastName";
 		
 		
 		String json = "";
@@ -3124,7 +3124,8 @@ public class SessionOperationController extends PageFlowController {
 		try {
 			FilterParams proctorFilter = null;
 	        PageParams proctorPage = null;
-	        SortParams proctorSort = FilterSortPageUtils.buildSortParams(PROCTOR_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
+	        SortParams proctorSort = null;
+	        // proctorSort = FilterSortPageUtils.buildSortParams(PROCTOR_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
 	        List<UserProfileInformation> proctorNodes = null;
 
 	        // Get the list of proctors
@@ -3166,7 +3167,7 @@ public class SessionOperationController extends PageFlowController {
 	private UserData getProctors(Integer orgNodeId, FilterParams filter, PageParams page, SortParams sort) {    
         UserData ud = null;
         try {      
-            ud = this.scheduleTest.getUsersForOrgNode(this.userName, orgNodeId, filter, page, sort);
+            ud = this.scheduleTest.getUsersMinimalInfoForOrgNode(this.userName, orgNodeId, filter, page, sort);
         }
         catch (CTBBusinessException be) {
             be.printStackTrace();

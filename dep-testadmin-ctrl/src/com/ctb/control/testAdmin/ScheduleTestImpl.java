@@ -3531,4 +3531,114 @@ public class ScheduleTestImpl implements ScheduleTest
         }  
     }
     
+    
+    public SessionStudentData getSessionStudentsMinimalInfoForOrgNode(String userName, Integer orgNodeId, Integer testAdminId, Integer testItemSetId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+        validator.validateNode(userName, orgNodeId, "testAdmin.getSessionStudentsForOrgNode");
+        String searchOrder = " ";
+        String searchFilter = " ";
+               
+        
+        searchOrder = getOrderString(sort);
+        if(filter!=null){
+        	searchFilter = getFilterString(filter);
+        }
+        searchOrder = " main "+ searchFilter +  searchOrder;
+        System.out.println("Final String:"+searchOrder);
+        try {
+            SessionStudentData std = new SessionStudentData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            SessionStudent [] sstudents = null;
+            if(testAdminId == null) testAdminId = new Integer(-1);
+            //String cacheKey = String.valueOf(orgNodeId) + "|" + String.valueOf(testItemSetId) + "|" + String.valueOf(testAdminId);
+            //SchedulingStudentCacheObject cacheObj = (SchedulingStudentCacheObject) SimpleCache.checkCache5min("SESSION_STUDENTS", cacheKey);
+            //if(cacheObj == null) {
+            //    cacheObj = new SchedulingStudentCacheObject();
+            //    cacheObj.scstudents = students.getSchedulingStudentsForOrgNode(orgNodeId, userName, testItemSetId, testAdminId);
+            //    SimpleCache.cacheResult("SESSION_STUDENTS", cacheKey, cacheObj);
+            //}
+            //SchedulingStudent [] scstudents = cacheObj.scstudents;
+            SessionStudent [] scstudents = students.getSchedulingStudentsMinimalInfoForOrgNodeByOrder(orgNodeId, userName, testItemSetId, testAdminId, searchOrder);
+            sstudents = new SessionStudent[scstudents.length];
+            for(int i=0;i<scstudents.length;i++) {
+                sstudents[i] = scstudents[i];
+                // if this is a restricted test, student can only be added
+                // if they haven't tested before
+                Integer restrictedAdmin = scstudents[i].getPriorAdmin();
+                EditCopyStatus status = scstudents[i].getStatus();
+                status.setEditable("T");
+                status.setCopyable("T");
+                if (restrictedAdmin != null && !new Integer(-1).equals(restrictedAdmin)) {
+                    status.setEditable("F");
+                    status.setCopyable("F");
+                    status.setCode(EditCopyStatus.StatusCode.PREVIOUSLY_SCHEDULED);
+                    status.setPriorSession(admins.getTestAdminDetails(restrictedAdmin));
+                }
+                if(testAdminId != null && testAdminId.intValue() != -1) {
+                    boolean editable = students.isStudentEditableByUserForAdminAndOrg(userName, sstudents[i].getStudentId(), testAdminId, orgNodeId).intValue() > 0 ? true : false;
+                    if(!editable) {
+                        status.setEditable("F");
+                        status.setCopyable("F");
+                        status.setCode(EditCopyStatus.StatusCode.OUTSIDE_VISIBLE_ORG);
+                    }
+                    RosterElement existingRoster = rosters.getRosterElementForStudentAndAdmin(sstudents[i].getStudentId(), testAdminId);
+                    if(existingRoster != null) {
+                        boolean oldEditable = students.isStudentEditableByUserForAdminAndOrg(userName, sstudents[i].getStudentId(), testAdminId, existingRoster.getOrgNodeId()).intValue() > 0 ? true : false;
+                        if(!oldEditable) {
+                            status.setEditable("F");
+                            status.setCopyable("F");
+                            status.setCode(EditCopyStatus.StatusCode.OUTSIDE_VISIBLE_ORG);
+                            if("CO".equals(existingRoster.getTestCompletionStatus())) {
+                                status.setCode(EditCopyStatus.StatusCode.SESSION_COMPLETED);
+                            } else if(!"SC".equals(existingRoster.getTestCompletionStatus()) &&
+                                        !"NA".equals(existingRoster.getTestCompletionStatus()) ) {
+                                status.setCode(EditCopyStatus.StatusCode.SESSION_IN_PROGRESS);
+                            }                        
+                        }
+                    }
+                }
+            }
+            std.setSessionStudents(sstudents, pageSize);
+            if(page != null) std.applyPaging(page);
+            return std;
+        } catch (SQLException se) {
+            StudentDataNotFoundException tee = new StudentDataNotFoundException("ScheduleTestImpl: getSessionStudentsForOrgNode: " + se.getMessage());
+            tee.setStackTrace(se.getStackTrace());
+            throw tee;
+        }
+    }
+    
+    public UserData getUsersMinimalInfoForOrgNode(String userName, Integer orgNodeId, FilterParams filter, PageParams page, SortParams sort) throws CTBBusinessException
+    {
+        validator.validateNode(userName, orgNodeId, "testAdmin.getUsersForOrgNode");
+        try {
+            UserData usd = new UserData();
+            Integer pageSize = null;
+            if(page != null) {
+                pageSize = new Integer(page.getPageSize());
+            }
+            User [] proctors = users.getUsersMinimalInfoForOrgNode(orgNodeId);
+            
+            /*for(int i=0;i<proctors.length;i++) {
+                boolean editable = users.isUserEditableByUserForAdmin(userName, proctors[i].getUserId(), testAdminId).intValue() > 0;
+                proctors[i].setCopyable(editable ? "T" : "F");
+                editable = editable && !proctors[i].getUserName().equals(userName);
+                proctors[i].setEditable(editable ? "T" : "F");
+            }*/
+            usd.setUsers(proctors, pageSize);
+            if(filter != null) usd.applyFiltering(filter);
+            if(sort != null) usd.applySorting(sort);
+            if(page != null) usd.applyPaging(page);
+            return usd;
+        } catch (SQLException se) {
+            UserDataNotFoundException tee = new UserDataNotFoundException("ScheduleTestImpl: getUsersForOrgNode: " + se.getMessage());
+            tee.setStackTrace(se.getStackTrace());
+            throw tee;
+        }
+    }
+    
+    
 } 
