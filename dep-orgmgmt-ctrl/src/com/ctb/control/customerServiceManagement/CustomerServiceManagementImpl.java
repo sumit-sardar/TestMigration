@@ -288,7 +288,11 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 					scheduleElementData.setScheduleElements(scheduleElements, null);
 			} catch (ValidationException ve) {
 	        	
-				throw ve;
+				StudentDataNotFoundException studentDataNotFoundException = 
+					new StudentDataNotFoundException
+					("FindStudentforTestSession.Failed");
+				studentDataNotFoundException.setStackTrace(ve.getStackTrace());
+				throw studentDataNotFoundException;
 	        }
 	    }
 					
