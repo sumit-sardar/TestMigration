@@ -125,13 +125,13 @@ public class SessionOperationController extends PageFlowController {
 
     public LinkedHashMap<String, String> hintQuestionOptions = null;
     public UserProfileInformation userProfile = null; 
-	private TestProductData testProductData = null;  
+	//private TestProductData testProductData = null;  
 	private TestProduct [] tps;
 	private static final String ACTION_INIT = "init";
 	boolean isPopulatedSuccessfully = false;
-	boolean isPopulatedSuccessfully1 = false;
+	//boolean isPopulatedSuccessfully1 = false;
 	ScheduleTestVo vo = new ScheduleTestVo();
-	ScheduleTestVo userProductsDetails = new ScheduleTestVo();
+	//ScheduleTestVo userProductsDetails = new ScheduleTestVo();
 
 	//public Condition condition = new Condition();
 	
@@ -412,21 +412,15 @@ public class SessionOperationController extends PageFlowController {
         
           try
         {
-            if (this.testProductData == null)
-            { // first time here 
-                this.testProductData = this.getTestProductDataForUser();
-                 tps = this.testProductData.getTestProducts();//changes for performance tuning
-                 if( tps!=null ) {
-                	 vo.populate(userName,tps, itemSet, scheduleTest);
-                	 vo.populateTopOrgnode(this.topNodesMap);
-                	 vo.populateTestIdToTestMap(idToTestMap);
-                	 
-                 }
-                 isPopulatedSuccessfully = true;
-            } else if (!isPopulatedSuccessfully){
-            	vo.populate(userName, tps, itemSet, scheduleTest);
-            	vo.populateTopOrgnode(this.topNodesMap);
-            	vo.populateTestIdToTestMap(idToTestMap);
+            if (!isPopulatedSuccessfully){
+            	TestProductData testProductData  = this.getTestProductDataForUser();
+            	tps = testProductData.getTestProducts();
+            	 if( tps!=null ) {
+            		vo.populate(userName, tps, itemSet, scheduleTest);
+                 	vo.populateTopOrgnode(this.topNodesMap);
+                 	vo.populateTestIdToTestMap(idToTestMap); 
+            	 }
+            	 isPopulatedSuccessfully = true;
             }
         	           
             if(selectedProductId== null || selectedProductId.trim().length()==0)
@@ -644,21 +638,15 @@ public class SessionOperationController extends PageFlowController {
     	    
     	    try {
 
-                if (this.testProductData == null)
-                { // first time here 
-                    this.testProductData = this.getTestProductDataForUser();
-                     tps = this.testProductData.getTestProducts();//changes for performance tuning
-                     if( tps!=null ) {
-                    	 userProductsDetails.populate(userName,tps, itemSet, scheduleTest);
-                    	 userProductsDetails.populateTopOrgnode(this.topNodesMap);
-                    	 userProductsDetails.populateTestIdToTestMap(idToTestMap);
-                    	 
-                     }
-                     isPopulatedSuccessfully1 = true;
-                } else if (!isPopulatedSuccessfully1){
-                	userProductsDetails.populate(userName, tps, itemSet, scheduleTest);
-                	userProductsDetails.populateTopOrgnode(this.topNodesMap);
-                	userProductsDetails.populateTestIdToTestMap(idToTestMap);
+    	    	if (!isPopulatedSuccessfully){
+                	TestProductData testProductData  = this.getTestProductDataForUser();
+                	tps = testProductData.getTestProducts();
+                	 if( tps!=null ) {
+                		 this.vo.populate(userName, tps, itemSet, scheduleTest);
+                		 this.vo.populateTopOrgnode(this.topNodesMap);
+                		 this.vo.populateTestIdToTestMap(idToTestMap); 
+                	 }
+                	 isPopulatedSuccessfully = true;
                 }
             	           
               
@@ -666,17 +654,17 @@ public class SessionOperationController extends PageFlowController {
                   {
                 	 //productName = tps[0].getProductName();
                      selectedProductId = tps[0].getProductId().toString();
-                     userProductsDetails.populateAccessCode(scheduleTest);
-                     userProductsDetails.populateDefaultDateAndTime(this.user.getTimeZone(), this.idToTestMap);
+                     this.vo.populateAccessCode(scheduleTest);
+                     this.vo.populateDefaultDateAndTime(this.user.getTimeZone(), this.idToTestMap);
                     }
            
                 if(tps.length<=0) {
                 	
-                	userProductsDetails.setNoTestExists(true);
+                	this.vo.setNoTestExists(true);
                 }else {
-                	 userProductsDetails.setNoTestExists(false);
-                	 userProductsDetails.setSelectedProductId(selectedProductId);
-                     userProductsDetails.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
+                	this.vo.setNoTestExists(false);
+                	this.vo.setSelectedProductId(selectedProductId);
+                	this.vo.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
                      
                      int selectedProductIndex = getProductIndexByID(selectedProductId);
                     String acknowledgmentsURL =  tps[selectedProductIndex].getAcknowledgmentsURL();
@@ -689,7 +677,7 @@ public class SessionOperationController extends PageFlowController {
                 	
                 }
                 
-                vo.setUserProductsDetails(userProductsDetails);
+                vo.setUserProductsDetails(this.vo);
 
     	    } catch(CTBBusinessException e){
     	    	 e.printStackTrace(); 
@@ -1039,7 +1027,7 @@ public class SessionOperationController extends PageFlowController {
 				proctorCount = proctorsData.split(",").length;
 			}
 			if (proctorCount > 0) {
-				ArrayList<User> proctorList = new ArrayList<User>();
+				ArrayList<User> proctorList = new ArrayList<User>(proctorCount);
 				String[] procs = proctorsData.split(",");
 				for (String procrec : procs) {
 					StringTokenizer st = new StringTokenizer(procrec, ":");
@@ -1096,7 +1084,7 @@ public class SessionOperationController extends PageFlowController {
 				studentCountBeforeSave = studentsBeforeSave.split(",").length;
 			}
 			if (studentCountBeforeSave > 0) {
-				ArrayList<SessionStudent> sessionStudents = new ArrayList<SessionStudent>();
+				ArrayList<SessionStudent> sessionStudents = new ArrayList<SessionStudent>(studentCountBeforeSave);
 				String[] studs = studentsBeforeSave.split(",");
 				for (String std : studs) {
 					StringTokenizer st = new StringTokenizer(std, ":");
