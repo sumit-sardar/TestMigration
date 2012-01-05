@@ -335,7 +335,18 @@ function populateSelectStudentGrid() {
 			onSortCol : function(index, columnIndex, sortOrder) { 
 				isSortingEvent = true;
 			}, 
-			gridComplete: function() { 
+			gridComplete: function() {
+				if(state=="EDIT"){
+					var allRowsInGridPresent = $('#selectStudent').jqGrid('getDataIDs');
+					for(var k = 0; k < allRowsInGridPresent.length; k++) {
+						var selectedRowData = $("#selectStudent").getRowData(allRowsInGridPresent[k]);
+						if(editDataMrkStds.get(selectedRowData.studentId) == selectedRowData.studentId){
+							$("#"+selectedRowData.studentId+" td input","#selectStudent").attr("disabled", true);
+				 			$("#"+selectedRowData.studentId, "#selectStudent").addClass('ui-state-disabled');
+						}				
+					}				
+				} 
+			
 			// For repopulating filtered data
 			if(isNodeChanged) {
 			 	setDefaultGridFilter();
