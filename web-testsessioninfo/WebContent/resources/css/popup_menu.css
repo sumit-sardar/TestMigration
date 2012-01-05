@@ -38,7 +38,6 @@ ul.dropdown li.simpleMenu:hover, ul.dropdown li.simpleMenu:hover div:first-child
 }
 
 
-
 /* 
 	LEVEL TWO
 */
@@ -85,3 +84,11 @@ ul.dropdown li li li a{
 	font-size:12px !important;
 }
 
+a.tab {
+    color: #919191;
+}
+ 
+a.tab_selected {
+    color: blue;
+}
+  

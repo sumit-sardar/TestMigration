@@ -1,5 +1,5 @@
 
- 
+
 var serviceMenuOpenned = false;
 
 $(document).ready(function(){
@@ -159,6 +159,7 @@ function setMenuActive(topMenuId, menuId)
 	
 	var topMenu = document.getElementById(topMenuId);
 	topMenu.className = "simpleMenu active";
+	$("#"+topMenuId+" a").addClass("tab_selected");
 	$('.simpleMenu').corners('top');
 }
 

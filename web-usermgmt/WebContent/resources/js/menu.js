@@ -159,8 +159,8 @@ function setMenuActive(topMenuId, menuId)
 	
 	var topMenu = document.getElementById(topMenuId);
 	topMenu.className = "simpleMenu active";
-	
-	$('.simpleMenu').corners('top'); 
+	$("#"+topMenuId+" a").addClass("tab_selected");
+	$('.simpleMenu').corners('top');
 }
 
 

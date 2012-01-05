@@ -31,7 +31,7 @@ $(document).ready(function(){
 	   serviceMenuOpenned = false;
 	   
 	   });
-   
+
 });
  
   
@@ -162,6 +162,7 @@ function setMenuActive(topMenuId, menuId)
 	if($.browser.mozilla || $.browser.safari || ($.browser.msie && getInternetExplorerVersion() > 7)){
 		$("#bodySection").css('margin-top','-18px');
 	}
+	$("#"+topMenuId+" a").addClass("tab_selected");
 	$('.simpleMenu').corners('top'); 
     
 }

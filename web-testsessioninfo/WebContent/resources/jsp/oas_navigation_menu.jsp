@@ -6,7 +6,7 @@
 
 	<div id="page-wrap">
         <ul class="dropdown">
-        	<li id="assessments" class="simpleMenu"><a href="#"><lb:label key="session.menu.assessments" /></a>
+        	<li id="assessments" class="simpleMenu"><a class="tab" href="#"><lb:label key="session.menu.assessments" /></a>
         		<ul class="sub_menu">
         			 <li>   			 	
         			 	<a href="#" id="sessionsLink" onClick="gotoMenuAction('assessments.do', 'sessionsLink');"><lb:label key="session.menu.sessions" /></a>
@@ -25,7 +25,7 @@
         			 </c:if>
         		</ul>
         	</li>
-        	<li id="organizations" class="simpleMenu"><a href="#"><lb:label key="session.menu.orgs" /></a>        	
+        	<li id="organizations" class="simpleMenu"><a class="tab" href="#"><lb:label key="session.menu.orgs" /></a>        	
         		<ul class="sub_menu">
         			 <li>   			
         			 	<a href="#" style="float:left;"><lb:label key="session.menu.students" /></a><span class='ui-menuicon ui-icon-triangle-1-e' style="float:right;"></span>
@@ -55,10 +55,10 @@
         		</ul>
         	</li>
         	<c:if test="${sessionScope.showReportTab}">
-        	<li id="reports" class="simpleMenu"><a href="#"  id="reportsLink" onClick="gotoMenuAction('reports.do', 'reportsLink');"><lb:label key="session.menu.reports" /></a>
+        	<li id="reports" class="simpleMenu"><a class="tab" href="#"  id="reportsLink" onClick="gotoMenuAction('reports.do', 'reportsLink');"><lb:label key="session.menu.reports" /></a>
         	</li>
         	</c:if>		
-        	<li id="services" class="simpleMenu"><a href="#"><lb:label key="session.menu.services" /></a>
+        	<li id="services" class="simpleMenu"><a class="tab" href="#"><lb:label key="session.menu.services" /></a>
         		<ul class="sub_menu">
         			 <li>
         			 	<a href="#" style="float:left;"><lb:label key="session.menu.workstationSetup" /></a><span class='ui-menuicon ui-icon-triangle-1-e' style="float:right;"></span>
