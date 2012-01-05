@@ -866,7 +866,7 @@ public class SessionOperationController extends PageFlowController {
 	    OperationStatus status = new OperationStatus();
 	    try {
 	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
-	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledProctorsDetails(this.userName, testAdminId);
+	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledProctorsMinimalInfoDetails(this.userName, testAdminId);
 	    	vo.setSavedProctorsDetails(scheduledSession);
             status.setSuccess(true);
             vo.setOperationStatus(status) ;

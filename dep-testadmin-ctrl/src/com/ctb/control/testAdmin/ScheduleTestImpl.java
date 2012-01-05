@@ -3428,7 +3428,7 @@ public class ScheduleTestImpl implements ScheduleTest
     
     
     
-    @Override
+    @Deprecated 
     public ScheduledSession getScheduledProctorsDetails(String userName, Integer testAdminId) throws CTBBusinessException {
         validator.validateAdmin(userName, testAdminId, "testAdmin.getScheduledProctorsDetails");
         try {
@@ -3442,6 +3442,31 @@ public class ScheduleTestImpl implements ScheduleTest
             }
             session.setProctors(proctors);
             session.setCopyable(admins.checkCopyable(userName, testAdminId));
+            return session;
+        } catch (SQLException se) {
+            CTBBusinessException cbe = new UserDataNotFoundException("ScheduleTestImpl: getScheduledProctorsDetails: " + se.getMessage());
+            cbe.setStackTrace(se.getStackTrace());
+            throw cbe;
+        }  
+    }
+    
+
+
+    @Override
+    public ScheduledSession getScheduledProctorsMinimalInfoDetails(String userName, Integer testAdminId) throws CTBBusinessException {
+        validator.validateAdmin(userName, testAdminId, "testAdmin.getScheduledProctorsDetails");
+        try {
+            ScheduledSession session = new ScheduledSession();
+            //User [] proctors = users.getProctorUsersForAdmin(testAdminId);
+            User [] proctors = users.getProctorUsersMinimalInfoForAdmin(testAdminId);
+            for(int i=0;i<proctors.length;i++) {
+                boolean editable = users.isUserEditableByUserForAdmin(userName, proctors[i].getUserId(), testAdminId).intValue() > 0;
+                proctors[i].setCopyable(editable ? "T" : "F");
+                editable = editable && !proctors[i].getUserName().equals(userName);
+                proctors[i].setEditable(editable ? "T" : "F");
+            }
+            session.setProctors(proctors);
+            //session.setCopyable(admins.checkCopyable(userName, testAdminId));
             return session;
         } catch (SQLException se) {
             CTBBusinessException cbe = new UserDataNotFoundException("ScheduleTestImpl: getScheduledProctorsDetails: " + se.getMessage());

@@ -914,6 +914,10 @@ public interface Users extends JdbcControl
     //Added by TCS for update User
     @JdbcControl.SQL(statement = "SELECT u.address_id FROM users u WHERE u.user_id = {userId}")
     String getAddressIdFromUserId(int userId) throws SQLException;
+    
+    @JdbcControl.SQL(statement = "select  users.user_id as userId,  users.user_name as userName,   users.first_name as firstName,  users.middle_name as middleName,  users.last_name as lastName from  test_admin_user_role taur,  users where  taur.user_id = users.user_id  and taur.test_admin_id = {testAdminId}  and users.activation_status = 'AC' ",
+            arrayMaxLength = 100000)
+    User [] getProctorUsersMinimalInfoForAdmin(Integer testAdminId) throws SQLException;
 
 
 }

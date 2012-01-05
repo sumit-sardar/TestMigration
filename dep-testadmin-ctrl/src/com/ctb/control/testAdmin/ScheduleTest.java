@@ -592,5 +592,5 @@ public interface ScheduleTest
     
     com.ctb.bean.testAdmin.ScheduledSession getScheduledStudentsDetails(String userName, Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
     
-    com.ctb.bean.testAdmin.ScheduledSession getScheduledProctorsDetails(String userName, Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+    com.ctb.bean.testAdmin.ScheduledSession getScheduledProctorsMinimalInfoDetails(String userName, Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
 } 
