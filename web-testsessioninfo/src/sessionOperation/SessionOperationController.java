@@ -76,6 +76,7 @@ import com.ctb.testSessionInfo.utils.Organization;
 import com.ctb.testSessionInfo.utils.OrgnizationComparator;
 import com.ctb.testSessionInfo.utils.PermissionsUtils;
 import com.ctb.testSessionInfo.utils.Row;
+import com.ctb.testSessionInfo.utils.ScheduledSavedTestVo;
 import com.ctb.testSessionInfo.utils.ScheduleTestVo;
 import com.ctb.testSessionInfo.utils.TestSessionUtils;
 import com.ctb.testSessionInfo.utils.TreeData;
@@ -134,7 +135,9 @@ public class SessionOperationController extends PageFlowController {
 	private static final String ACTION_INIT = "init";
 	//private static final int RETURN_TYPE_INT = 1;
 	boolean isPopulatedSuccessfully = false;
+	boolean isPopulatedSuccessfully1 = false;
 	ScheduleTestVo vo = new ScheduleTestVo();
+	ScheduleTestVo userProductsDetails = new ScheduleTestVo();
 
 	//public Condition condition = new Condition();
 	
@@ -636,7 +639,278 @@ public class SessionOperationController extends PageFlowController {
            // return new Forward("success", form);
         }
     
-    
+    	@Jpf.Action()
+        protected Forward getUserProductsDetails(SessionOperationForm form) {
+    		
+    		String jsonData = "";
+    		OutputStream stream = null;
+    		String selectedProductId = "";
+    		HttpServletResponse resp = getResponse();
+    	    resp.setCharacterEncoding("UTF-8"); 
+    	    //String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
+    	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
+    	    OperationStatus status = new OperationStatus();
+    	    
+    	    try {
+
+                if (this.testProductData == null)
+                { // first time here 
+                    this.testProductData = this.getTestProductDataForUser();
+                     tps = this.testProductData.getTestProducts();//changes for performance tuning
+                     if( tps!=null ) {
+                    	 userProductsDetails.populate(userName,tps, itemSet, scheduleTest);
+                    	 userProductsDetails.populateTopOrgnode(this.topNodesMap);
+                    	 userProductsDetails.populateTestIdToTestMap(idToTestMap);
+                    	 
+                     }
+                     isPopulatedSuccessfully1 = true;
+                } else if (!isPopulatedSuccessfully1){
+                	userProductsDetails.populate(userName, tps, itemSet, scheduleTest);
+                	userProductsDetails.populateTopOrgnode(this.topNodesMap);
+                	userProductsDetails.populateTestIdToTestMap(idToTestMap);
+                }
+            	           
+              
+                 if (tps.length > 0 && tps[0] != null)
+                  {
+                	 //productName = tps[0].getProductName();
+                     selectedProductId = tps[0].getProductId().toString();
+                     userProductsDetails.populateAccessCode(scheduleTest);
+                     userProductsDetails.populateDefaultDateAndTime(this.user.getTimeZone(), this.idToTestMap);
+                    }
+           
+                if(tps.length<=0) {
+                	
+                	userProductsDetails.setNoTestExists(true);
+                }else {
+                	 userProductsDetails.setNoTestExists(false);
+                	 userProductsDetails.setSelectedProductId(selectedProductId);
+                     userProductsDetails.setUserTimeZone(DateUtils.getUITimeZone(this.user.getTimeZone()));
+                     
+                     int selectedProductIndex = getProductIndexByID(selectedProductId);
+                    String acknowledgmentsURL =  tps[selectedProductIndex].getAcknowledgmentsURL();
+                     if (acknowledgmentsURL != null)
+                     {
+                         acknowledgmentsURL = acknowledgmentsURL.trim();
+                         if (!"".equals(acknowledgmentsURL))
+                             this.getRequest().setAttribute("acknowledgmentsURL", acknowledgmentsURL);
+                     }
+                	
+                }
+                
+                vo.setUserProductsDetails(userProductsDetails);
+
+    	    } catch(CTBBusinessException e){
+    	    	 e.printStackTrace(); 
+    	    	 status.setSystemError(true);
+    	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+    	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SelectSettings.FailedToLoadTestSession"));
+    	    	 if(e.getMessage()!=null && e.getMessage().length()>0){
+    	    		 validationFailedInfo.updateMessage(e.getMessage()); 
+    	    	 }
+    			 status.setValidationFailedInfo(validationFailedInfo);
+    	    	
+    	    } catch(Exception e) {
+    	    	status.setSystemError(true);
+    	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+    	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
+    			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
+    			 status.setValidationFailedInfo(validationFailedInfo);
+    	    }
+    		
+			Gson gson = new Gson();
+	
+			jsonData = gson.toJson(vo);
+			System.out.println(jsonData);
+			try {
+				resp.setContentType(CONTENT_TYPE_JSON);
+				stream = resp.getOutputStream();
+				stream.write(jsonData.getBytes("UTF-8"));
+				resp.flushBuffer();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			return null;
+	   }
+    	
+    	@Jpf.Action()
+        protected Forward getTestDetails(SessionOperationForm form) {
+    		
+    		String jsonData = "";
+    		OutputStream stream = null;
+    		HttpServletResponse resp = getResponse();
+    	    resp.setCharacterEncoding("UTF-8"); 
+    	    String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
+    	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
+    	    OperationStatus status = new OperationStatus();
+    	    try {
+    	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
+    	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledSessionDetails(this.userName, testAdminId);
+    	    	vo.setSavedTestDetails(scheduledSession);
+
+    	    	if (this.user == null || topNodesMap.size() ==0 ){
+    	    		initialize();
+    	    	}
+    	    	vo.setUserRole(this.user.getRole().getRoleName());
+    	    	TestSession testSession = scheduledSession.getTestSession();
+    	    	//String schedulerName = testSession.getCreatedBy();
+                //User scheduler = this.scheduleTest.getUserDetails(this.userName, schedulerName);
+                
+                
+                if( testSession.getTestAdminStatus().equals("PA")){
+                	vo.setTestSessionExpired(Boolean.TRUE);
+                } else {
+                	vo.setTestSessionExpired(Boolean.FALSE);
+                }
+                vo.populateTopOrgnode(topNodesMap);
+                vo.populateTimeZone();
+                
+                status.setSuccess(true);
+                vo.setOperationStatus(status) ;
+                String timeZone = testSession.getTimeZone();
+                testSession.setTimeZone(DateUtils.getUITimeZone(timeZone));
+                testSession.setLoginStartDateString(DateUtils.formatDateToDateString(testSession.getLoginStartDate()));
+                testSession.setLoginEndDateString(DateUtils.formatDateToDateString(testSession.getLoginEndDate()));
+                testSession.setDailyLoginStartTimeString(DateUtils.formatDateToTimeString(testSession.getDailyLoginStartTime()));
+                testSession.setDailyLoginEndTimeString(DateUtils.formatDateToTimeString(testSession.getDailyLoginEndTime()));
+                
+    	    	
+    	    } catch(CTBBusinessException e){
+    	    	 e.printStackTrace(); 
+    	    	 status.setSystemError(true);
+    	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+    	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SelectSettings.FailedToLoadTestSession"));
+    	    	 if(e.getMessage()!=null && e.getMessage().length()>0){
+    	    		 validationFailedInfo.updateMessage(e.getMessage()); 
+    	    	 }
+    			 status.setValidationFailedInfo(validationFailedInfo);
+    	    	
+    	    } catch(Exception e) {
+    	    	status.setSystemError(true);
+    	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+    	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
+    			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
+    			 status.setValidationFailedInfo(validationFailedInfo);
+    	    }
+    		
+			Gson gson = new Gson();
+	
+			jsonData = gson.toJson(vo);
+			System.out.println(jsonData);
+			try {
+				resp.setContentType(CONTENT_TYPE_JSON);
+				stream = resp.getOutputStream();
+				stream.write(jsonData.getBytes("UTF-8"));
+				resp.flushBuffer();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			return null;
+	   }
+    	
+    	@Jpf.Action()
+        protected Forward getScheduledStudents(SessionOperationForm form) {
+    		
+    		String jsonData = "";
+    		OutputStream stream = null;
+    		HttpServletResponse resp = getResponse();
+    	    resp.setCharacterEncoding("UTF-8"); 
+    	    String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
+    	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
+    	    OperationStatus status = new OperationStatus();
+    	    try {
+    	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
+    	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledStudentsDetails(this.userName, testAdminId);
+    	    	vo.setSavedStudentsDetails(scheduledSession);
+                status.setSuccess(true);
+                vo.setOperationStatus(status) ;
+                
+    	    	
+    	    } catch(CTBBusinessException e){
+    	    	 e.printStackTrace(); 
+    	    	 status.setSystemError(true);
+    	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+    	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SelectSettings.FailedToLoadTestSession"));
+    	    	 if(e.getMessage()!=null && e.getMessage().length()>0){
+    	    		 validationFailedInfo.updateMessage(e.getMessage()); 
+    	    	 }
+    			 status.setValidationFailedInfo(validationFailedInfo);
+    	    	
+    	    } catch(Exception e) {
+    	    	status.setSystemError(true);
+    	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+    	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
+    			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
+    			 status.setValidationFailedInfo(validationFailedInfo);
+    	    }
+    		
+			Gson gson = new Gson();
+			jsonData = gson.toJson(vo);
+			System.out.println(jsonData);
+			try {
+				resp.setContentType(CONTENT_TYPE_JSON);
+				stream = resp.getOutputStream();
+				stream.write(jsonData.getBytes("UTF-8"));
+				resp.flushBuffer();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			return null;
+	  }
+    	
+    @Jpf.Action()
+    protected Forward getScheduleProctor(SessionOperationForm form) {
+		
+		String jsonData = "";
+		OutputStream stream = null;
+		HttpServletResponse resp = getResponse();
+	    resp.setCharacterEncoding("UTF-8"); 
+	    String testAdminIdString = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null);
+	    ScheduledSavedTestVo vo = new ScheduledSavedTestVo();
+	    OperationStatus status = new OperationStatus();
+	    try {
+	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
+	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledProctorsDetails(this.userName, testAdminId);
+	    	vo.setSavedProctorsDetails(scheduledSession);
+            status.setSuccess(true);
+            vo.setOperationStatus(status) ;
+            
+	    	
+	    } catch(CTBBusinessException e){
+	    	 e.printStackTrace(); 
+	    	 status.setSystemError(true);
+	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("SelectSettings.FailedToLoadTestSession"));
+	    	 if(e.getMessage()!=null && e.getMessage().length()>0){
+	    		 validationFailedInfo.updateMessage(e.getMessage()); 
+	    	 }
+			 status.setValidationFailedInfo(validationFailedInfo);
+	    	
+	    } catch(Exception e) {
+	    	status.setSystemError(true);
+	    	 ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
+	    	 validationFailedInfo.setMessageHeader(MessageResourceBundle.getMessage("System.Exception.Header"));
+			 validationFailedInfo.updateMessage(MessageResourceBundle.getMessage("System.Exception.Body"));
+			 status.setValidationFailedInfo(validationFailedInfo);
+	    }
+		
+		Gson gson = new Gson();
+		jsonData = gson.toJson(vo);
+		System.out.println(jsonData);
+		try {
+			resp.setContentType(CONTENT_TYPE_JSON);
+			stream = resp.getOutputStream();
+			stream.write(jsonData.getBytes("UTF-8"));
+			resp.flushBuffer();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+  }
     	
    
     	 private Integer createSaveTest(HttpServletRequest httpServletRequest, ValidationFailedInfo validationFailedInfo) throws CTBBusinessException
