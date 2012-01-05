@@ -178,7 +178,7 @@
 			success:	function(data, textStatus, XMLHttpRequest){
 							
 							if (data.status.isSuccess){			
-								AddStudentLocaldata = data.savedStudentsDetails.students;
+								AddStudentLocaldata = data.savedStudentsDetails;
 								studentMap = new Map();
 								
 								for(var i =0,j = AddStudentLocaldata.length ; i< j; i++ ) {

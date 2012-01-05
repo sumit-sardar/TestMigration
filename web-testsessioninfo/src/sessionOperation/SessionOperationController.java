@@ -814,7 +814,9 @@ public class SessionOperationController extends PageFlowController {
     	    try {
     	    	Integer testAdminId = Integer.valueOf(testAdminIdString);
     	    	ScheduledSession scheduledSession = this.scheduleTest.getScheduledStudentsDetails(this.userName, testAdminId);
-    	    	vo.setSavedStudentsDetails(scheduledSession);
+    	    	SessionStudent[] students =  scheduledSession.getStudents();
+    	    	List<SessionStudent> studentsList = buildStudentList(students);
+    	    	vo.setSavedStudentsDetails(studentsList);
                 status.setSuccess(true);
                 vo.setOperationStatus(status) ;
                 
@@ -1785,7 +1787,7 @@ public class SessionOperationController extends PageFlowController {
 	        studentSort = FilterSortPageUtils.buildSortParams(FilterSortPageUtils.STUDENT_DEFAULT_SORT, FilterSortPageUtils.ASCENDING);
 	        // get students - getSessionStudents
 	        SessionStudentData ssd = getSessionStudents(selectedOrgNodeId, testAdminId, selectedTestId, studentFilter, studentPage, studentSort);
-	        List<SessionStudent> studentNodes = buildStudentList(ssd);
+	        List<SessionStudent> studentNodes = buildStudentList(ssd.getSessionStudents());
 			Base base = new Base();
 			base.setPage("1");
 			base.setRecords("10");
@@ -2900,10 +2902,9 @@ public class SessionOperationController extends PageFlowController {
         }
     }
     
-    private List<SessionStudent> buildStudentList(SessionStudentData ssd) 
+    private List<SessionStudent> buildStudentList(SessionStudent [] sessionStudents) 
     {
         List<SessionStudent> studentList = new ArrayList<SessionStudent>();
-        SessionStudent [] sessionStudents = ssd.getSessionStudents();
         for (int i=0 ; i<sessionStudents.length; i++) {
             SessionStudent ss = (SessionStudent)sessionStudents[i];
             if (ss != null) {                

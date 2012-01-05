@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.ctb.bean.testAdmin.ScheduledSession;
+import com.ctb.bean.testAdmin.SessionStudent;
 import com.ctb.util.OperationStatus;
 
 @SuppressWarnings("all")
 public class ScheduledSavedTestVo implements Serializable {
 
 	private ScheduledSession savedTestDetails = null;
-	private ScheduledSession savedStudentsDetails = null;
+	private List<SessionStudent> savedStudentsDetails = null;
 	private ScheduledSession savedProctorsDetails = null;
 	private ScheduleTestVo productsDetails = null;
 	private boolean testSessionExpired  = false;
@@ -42,7 +43,7 @@ public class ScheduledSavedTestVo implements Serializable {
 		
 	}
 
-	public void setSavedStudentsDetails(ScheduledSession savedStudentsDetails) {
+	public void setSavedStudentsDetails(List<SessionStudent> savedStudentsDetails) {
 		this.savedStudentsDetails = savedStudentsDetails;
 		
 	}
