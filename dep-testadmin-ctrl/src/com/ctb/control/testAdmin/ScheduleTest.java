@@ -587,4 +587,10 @@ public interface ScheduleTest
 
 	
     java.lang.String isTestAdminExists(java.lang.Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+    
+    com.ctb.bean.testAdmin.ScheduledSession getScheduledSessionDetails(String userName, Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+    
+    com.ctb.bean.testAdmin.ScheduledSession getScheduledStudentsDetails(String userName, Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
+    
+    com.ctb.bean.testAdmin.ScheduledSession getScheduledProctorsDetails(String userName, Integer testAdminId) throws com.ctb.exception.CTBBusinessException;
 } 
