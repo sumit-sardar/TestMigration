@@ -290,7 +290,7 @@ public class CustomerServiceManagementImpl implements CustomerServiceManagement 
 	        	
 				StudentDataNotFoundException studentDataNotFoundException = 
 					new StudentDataNotFoundException
-					("FindStudentforTestSession.Failed");
+					("AccessCodeValidation.Failed");
 				studentDataNotFoundException.setStackTrace(ve.getStackTrace());
 				throw studentDataNotFoundException;
 	        }
