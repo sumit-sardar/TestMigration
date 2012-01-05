@@ -5,7 +5,12 @@
     var state = null;
     var stdsLogIn = false;
     var selectedTestSession;
-    function editTestSession(){  
+    var editDataCache = new Map();
+    var editDataMrkStds = new Map();
+    var isStdDetClicked = false;
+    var isProcDetClicked = false;
+  
+  function editTestSession(){  
     
  	$.ajax({
 		async:		true,
@@ -30,6 +35,9 @@
 							
 							if (data.savedTestDetails.studentsLoggedIn > 0){
 								stdsLogIn = true;
+								disableInEdit();
+							} else {
+								removeDisableInEdit();
 							}
 							if(!noTestExist){
 								
@@ -50,7 +58,9 @@
 							width: '1024px',
 							modal: true,
 							closeOnEscape: false,
-							open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+							open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); },
+							 beforeClose: function(event, ui) { resetEditTestSession();
+							 }
 							});	
 						setPopupPosition();
 							$('#ssAccordion').accordion('activate', 1 );	
@@ -91,137 +101,221 @@
 		var sliderLeft =  calculateTimeInMin(data.savedTestDetails.testSession.dailyLoginStartTimeString);
 		var sliderRight = calculateTimeInMin( data.savedTestDetails.testSession.dailyLoginEndTimeString);
 		$("#slider-range").slider("option", "values", [sliderLeft, sliderRight]);
-		$("#selectedTestId").val(data.savedTestDetails.testSession.testCatalogId);
+		$("#selectedTestId").val(data.savedTestDetails.testSession.itemSetId);
   	}
-    
-    //Ajax Call
+
     
     function populateSelectTestGrid(wizard,index){
+    
     	var testSessionList ={};
-	 	$.ajax({
-			async:		true,
-			beforeSend:	function(){
-							UIBlock();
-						},
-			url:		'getUserProductsDetails.do?testAdminId=' +selectedTestAdminId ,
-			type:		'POST',
-			dataType:	'json',
-			success:	function(data, textStatus, XMLHttpRequest){
-							
-							ProductData = data.productsDetails;
-							 var selectedProdIndex = fillProductGradeLevelDropDown('testGroupList', data.productsDetails.product,selectedTestSession.testSession.productId);
-												 
-							//$('#testList').GridUnload();				
-							reloadGrids(ProductData.product[selectedProdIndex].testSessionList, ProductData.product[selectedProdIndex].showLevelOrGrade);
-							$("#"+selectedTestSession.testSession.itemSetId).trigger('click');
-							if(selectedTestSession.testSession.isRandomize == 'Y'){
-								$("#randomDis").show();	
-								$("#randDisLbl").show();		
-								$("#randomDis").val("Y");
-								$('#randomDis').attr('checked','checked')							
-							}else if(selectedTestSession.testSession.isRandomize == 'N') {
-								$("#randomDis").show();	
-								$("#randDisLbl").show();		
-								$("#randomDis").val("N");
-								$('#randomDis').removeAttr('checked');		
-							}else {							
-								$("#randomDis").hide();	
-								$("#randDisLbl").hide();		
-								$("#randomDis").val("");
-							}
-							var subtest = getSubtestTestSession(ProductData.product[selectedProdIndex].testSessionList,selectedTestSession.testSession.itemSetId);
-							if(subtest.length>1){
-								document.getElementById("testBreak").disabled=false;
-								if( selectedTestSession.testSession.enforceBreak == 'T'){
-									//$('#testBreak').attr('checked','checked');
-									$("#testBreak").attr("checked", true);
-				 					$("#testBreak").trigger('click');
-				 					$("#testBreak").attr("checked", true);
-				 					fillAccessCode(selectedTestSession);
-								} else {
-									$('#testBreak').removeAttr('checked');
-									$('#aCode').val(selectedTestSession.testSession.accessCode);
-									
-								}
+    	
+    if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){   
+    	  if(stdsLogIn){
+    	  	disableSelectTest(); 
+    	  }else{
+    	  removeDisableInEdit();    	  
+    	  }
+  		  wizard.accordion("activate", index);		
+    }else{
+		 	$.ajax({
+				async:		true,
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'getUserProductsDetails.do?testAdminId=' +selectedTestAdminId ,
+				type:		'POST',
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){
+								editDataCache.put(index,"selectTestGrid");
+								ProductData = data.productsDetails;
 								
-							} else {
-								$('#aCode').val(selectedTestSession.testSession.accessCode);	
-								document.getElementById("testBreak").disabled=true;	
-							}
-													
-												
-					
-							wizard.accordion("activate", index);					
-							$.unblockUI(); 
+								 var selectedProdIndex = fillProductGradeLevelDropDown('testGroupList', data.productsDetails.product,selectedTestSession.testSession.productId);
+													 
+								//$('#testList').GridUnload();				
+								reloadGrids(ProductData.product[selectedProdIndex].testSessionList, ProductData.product[selectedProdIndex].showLevelOrGrade);
+								$("#"+selectedTestSession.testSession.itemSetId).trigger('click');
+								if(selectedTestSession.testSession.isRandomize == 'Y'){
+									$("#randomDis").show();	
+									$("#randDisLbl").show();		
+									$("#randomDis").val("Y");
+									$('#randomDis').attr('checked','checked')							
+								}else if(selectedTestSession.testSession.isRandomize == 'N') {
+									$("#randomDis").show();	
+									$("#randDisLbl").show();		
+									$("#randomDis").val("N");
+									$('#randomDis').removeAttr('checked');		
+								}else {							
+									$("#randomDis").hide();	
+									$("#randDisLbl").hide();		
+									$("#randomDis").val("");
+								}
+								var subtest = getSubtestTestSession(ProductData.product[selectedProdIndex].testSessionList,selectedTestSession.testSession.itemSetId);
+								if(subtest.length>1){
+									document.getElementById("testBreak").disabled=false;
+									if( selectedTestSession.testSession.enforceBreak == 'T'){
+										//$('#testBreak').attr('checked','checked');
+										$("#testBreak").attr("checked", true);
+					 					$("#testBreak").trigger('click');
+					 					$("#testBreak").attr("checked", true);
+					 					fillAccessCode(selectedTestSession);
+									} else {
+										$('#testBreak').removeAttr('checked');
+										$('#aCode').val(selectedTestSession.testSession.accessCode);
 										
-						},
-			error  :    function(XMLHttpRequest, textStatus, errorThrown){
-							$.unblockUI();
-							window.location.href="/SessionWeb/logout.do";
-							
-						},
-			complete :  function(){
-							 $.unblockUI(); 
-						}
-		}); 
+									}
+									
+								} else {
+									$('#aCode').val(selectedTestSession.testSession.accessCode);	
+									document.getElementById("testBreak").disabled=true;	
+								}
+														
+								if(stdsLogIn){					
+								disableSelectTest();
+								}else{
+								removeDisableInEdit();
+								}
+								wizard.accordion("activate", index);					
+								$.unblockUI(); 
+											
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();
+								window.location.href="/SessionWeb/logout.do";
+								
+							},
+				complete :  function(){
+								 $.unblockUI(); 
+							}
+			}); 
+		}
     }
     
     function populateStudentGrid(wizard,index){
-	    $.ajax({
-			async:		true,
-			beforeSend:	function(){
-							UIBlock();
-						},
-			url:		'getScheduledStudents.do?testAdminId=' +selectedTestAdminId ,
-			type:		'POST',
-			dataType:	'json',
-			success:	function(data, textStatus, XMLHttpRequest){
-							
-							if (data.status.isSuccess){			
-								AddStudentLocaldata = data.savedStudentsDetails;
-								studentMap = new Map();
-								
-								for(var i =0,j = AddStudentLocaldata.length ; i< j; i++ ) {
-									studentMap.put(AddStudentLocaldata[i].studentId, AddStudentLocaldata[i]);
+    
+	  if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){
+	  	 	//processStudentAccordion();	   
+	  	 	wizard.accordion("activate", index);					
+	  }else{
+	   	  $.ajax({
+				async:		true,
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'getScheduledStudents.do?testAdminId=' +selectedTestAdminId ,
+				type:		'POST',
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){
+								var stAccom = 0;
+								if (data.status.isSuccess){
+									editDataCache.put(index,data.savedStudentsDetails);	
+									AddStudentLocaldata = data.savedStudentsDetails;
+									studentMap = new Map();
+									for(var i =0,j = AddStudentLocaldata.length ; i< j; i++ ) {									
+										studentMap.put(AddStudentLocaldata[i].studentId, AddStudentLocaldata[i]);
+										var hasAccom = AddStudentLocaldata[i].hasAccommodations;
+										if(hasAccom == 'Yes') {										
+								 	 		stAccom++;
+								 	 	}
+																				
+									}
+									
+								    $('#stuWithAcc').text(stAccom);
+									$('#totalStudent').text(AddStudentLocaldata.length);	
+									processStudentAccordion();   				
 								}
-								//console.log("Before" + studentTempMap.count);
-								processStudentAccordion();
-								//console.log("After" + studentTempMap.count);
+								wizard.accordion("activate", index);					
+								$.unblockUI(); 
+											
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();
+								window.location.href="/SessionWeb/logout.do";
+								
+							},
+				complete :  function(){
+								 $.unblockUI(); 
 							}
-							wizard.accordion("activate", index);					
-							$.unblockUI(); 
-										
-						},
-			error  :    function(XMLHttpRequest, textStatus, errorThrown){
-							$.unblockUI();
-							window.location.href="/SessionWeb/logout.do";
-							
-						},
-			complete :  function(){
-							 $.unblockUI(); 
-						}
-		}); 
+			}); 
+	   
+	   }
+    
+	  
 	        
     }
     
     function populateProctorGrid(wizard,index){
+        
+	    if(editDataCache.get(index)!= null || editDataCache.get(index)!= undefined){
+	    		//processProctorAccordion();
+	    		wizard.accordion("activate", index);					
+	    }else{
+			    $.ajax({
+					async:		true,
+					beforeSend:	function(){
+									UIBlock();
+								},
+					url:		'getScheduleProctor.do?testAdminId=' +selectedTestAdminId ,
+					type:		'POST',
+					dataType:	'json',
+					success:	function(data, textStatus, XMLHttpRequest){
+									
+									if (data.status.isSuccess){	
+										editDataCache.put(index,data.savedProctorsDetails.proctors);	
+										addProctorLocaldata = data.savedProctorsDetails.proctors;		
+										processProctorAccordion();
+									}
+									wizard.accordion("activate", index);					
+									$.unblockUI(); 
+												
+								},
+					error  :    function(XMLHttpRequest, textStatus, errorThrown){
+									$.unblockUI();
+									window.location.href="/SessionWeb/logout.do";
+									
+								},
+					complete :  function(){
+									 $.unblockUI(); 
+								}
+				}); 
+			}    
+    }
+    
+ 
+    function saveEditTestData(){   
+    
+    	var param;
+		var param1 =$("#testDiv *").serialize(); 
+	    var param2 = $("#Test_Detail *").serialize();
+	    var time = document.getElementById("time").innerHTML;
+	    var timeArray = time.split("-");
+	    param = param1+"&"+param2+"&startTime="+$.trim(timeArray[0])+"&endTime="+$.trim(timeArray[1]);
+	    
+	    
+	    var selectedstudent = getStudentListArray(AddStudentLocaldata);
+	    param = param+"&students="+selectedstudent.toString();
+	    
+	    var selectedProctors =getProctorListArray(addProctorLocaldata);
+	    param = param+"&proctors="+selectedProctors.toString();
+	    
+	    
+	    
 	    $.ajax({
 			async:		true,
 			beforeSend:	function(){
 							UIBlock();
 						},
-			url:		'getScheduleProctor.do?testAdminId=' +selectedTestAdminId ,
+			url:		'saveTest.do',
 			type:		'POST',
+			data:		 param,
 			dataType:	'json',
-			success:	function(data, textStatus, XMLHttpRequest){
-							
-							if (data.status.isSuccess){			
-								addProctorLocaldata = data.savedProctorsDetails.proctors;
-								processProctorAccordion();
-							}
-							wizard.accordion("activate", index);					
-							$.unblockUI(); 
-										
+			success:	function(data, textStatus, XMLHttpRequest){						   
+						   
+					
+								$.unblockUI();
+						
+							  	closePopUp("scheduleSession");
+					
+							 						
 						},
 			error  :    function(XMLHttpRequest, textStatus, errorThrown){
 							$.unblockUI();
@@ -231,19 +325,25 @@
 			complete :  function(){
 							 $.unblockUI(); 
 						}
-		});     
+		});    	
+    	
     }
-    
- 
-       
     
     function setSelectedTestAdminId(id){    
    	 selectedTestAdminId = id;
     }
     
-  	function resetEditPopUp(){
-  	$('#displayMessage').hide();
-  	$('#ssAccordion').accordion('activate', 1 );
+  	function resetEditTestSession(){
+	  	$('#ssAccordion').accordion('activate', 1 );
+	  	selectedTestAdminId = null;
+	    state = null;
+	    stdsLogIn = false;
+	    studentMap = new Map();
+	    selectedTestSession = null;
+	    addProctorLocaldata = [];
+	    AddStudentLocaldata = {};
+	    ProductData = null;
+		editDataCache = new Map();
   	}
   	
   	function calculateTimeInMin(val){
@@ -251,8 +351,8 @@
 	  	var afterOrPost = time[1];
 	  	var timeValue = time[0]
 	  	var timeVal = timeValue.split(":");
-	  	var hour = parseInt(timeVal[0]);
-	  	var minutes = parseInt(timeVal[1]);
+	  	var hour = eval(timeVal[0]);
+	  	var minutes = eval(timeVal[1]);
 	  	var calculatedValue = 0;
 	  	if (afterOrPost == "AM" ){
 	  		if(hour == 12) {
@@ -282,9 +382,63 @@
   		}
   	
 
+  	function disableInEdit() {
+  		disableTestDetails();
+  		//disableSelectTest();
+  	}
   	
+  	function disableSelectTest() {
+  		$('#testGroupList').attr("disabled",true);
+  		$('#level').attr("disabled",true);
+  		$('#testBreak').attr("disabled",true);
+  		if($('#aCode') != undefined && $('#aCode') != null) {
+  			$('#aCode').attr("disabled",true);
+  		}
+  		if($('#randomDis') != undefined && $('#randomDis') != null) {
+  			$('#randomDis').attr("disabled",true);
+  		}
+  		if($('#testBreak') != undefined && $('#testBreak') != null) {
+  			$('#testBreak').attr("disabled",true);
+  		}
+  		var allRows = $('#testList').jqGrid('getDataIDs');
+  		for(var i = 0; i < allRows.length; i++) {
+  			$('#'+allRows[i]).addClass("ui-state-disabled");
+  		}
+  		$($("#testPager input")[0]).attr("disabled",true);
+  		if($("#subtestGrid") != undefined)
+  			$("#subtestGrid").addClass("ui-state-disabled");
+  		if($("#noSubtest") != undefined)
+  			$("#noSubtest").addClass("ui-state-disabled");
+  	}
   	
-  	
+  	function disableTestDetails() {
+  		$('#testSessionName').attr("disabled",true);
+  		$('#startDate').attr("disabled",true);
+  	}
   
-  
-    
+	function removeDisableInEdit() {
+		$('#testGroupList').removeAttr("disabled");
+		$('#level').removeAttr("disabled");
+		$('#testBreak').removeAttr("disabled");
+		$('#aCode').removeAttr("disabled");
+		$('#testSessionName').removeAttr("disabled");
+		$('#startDate').removeAttr("disabled");
+		if($('#aCode') != undefined && $('#aCode') != null) {
+  			$('#aCode').removeAttr("disabled");
+  		}
+  		if($('#randomDis') != undefined && $('#randomDis') != null) {
+  			$('#randomDis').removeAttr("disabled");
+  		}
+  		if($('#testBreak') != undefined && $('#testBreak') != null) {
+  			$('#testBreak').removeAttr("disabled");
+  		}
+  		var allRows = $('#testList').jqGrid('getDataIDs');
+  		for(var i = 0; i < allRows.length; i++) {
+  			$('#'+allRows[i]).removeClass("ui-state-disabled");
+  		}
+  		$($("#testPager input")[0]).removeAttr("disabled");
+  		if($("#subtestGrid") != undefined)
+  			$("#subtestGrid").removeClass("ui-state-disabled");
+  		if($("#noSubtest") != undefined)
+  			$("#noSubtest").removeClass("ui-state-disabled");
+	}
