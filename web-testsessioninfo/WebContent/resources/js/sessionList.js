@@ -128,7 +128,7 @@ function populateSessionListGrid(homePageLoad) {
 			height: 370,  
 			editurl: 'getSessionForUserHomeGrid.do',
 			caption:"Session List",
-		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
+			ondblClickRow: function(rowid) {setSelectedTestAdminId(rowid);console.log("double click" + rowid);editTestSession();},
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list2').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager2').text());
@@ -147,6 +147,7 @@ function populateSessionListGrid(homePageLoad) {
 				setAnchorButtonState('printTicketButton', true);
 			},
 			onSelectRow: function (rowId) {
+				setSelectedTestAdminId(rowId);
 					testTicketPopupValues(rowId,'list2');					
 					$('#showSaveTestMessage').hide();
 					if($("#canRegisterStudent").val() == 'true'){
@@ -198,6 +199,9 @@ function populateSessionListGrid(homePageLoad) {
 	 jQuery("#list2").navGrid('#pager2', {
 				addfunc: function() {
 					scheduleNewSession();
+		    	},
+		    	editfunc: function() {
+		    		 editTestSession();
 		    	}	    	
 			}); 
 }
@@ -236,7 +240,7 @@ function populateCompletedSessionListGrid() {
 			sortorder: "asc",
 			height: 370,  
 			caption:"Session List",
-		//	ondblClickRow: function(rowid) {viewEditStudentPopup();},
+			ondblClickRow: function(rowid) {setSelectedTestAdminId(rowid);editTestSession();},
 			onPaging: function() {
 				var reqestedPage = parseInt($('#list3').getGridParam("page"));
 				var maxPageSize = parseInt($('#sp_1_pager3').text());
@@ -255,6 +259,7 @@ function populateCompletedSessionListGrid() {
 				setAnchorButtonState('printTicketButton', true);
 			},
 			onSelectRow: function (rowId) {
+					setSelectedTestAdminId(rowId);
 					testTicketPopupValues(rowId,'list3');					
 					$('#showSaveTestMessage').hide();
 					if($("#canRegisterStudent").val() == 'true'){
@@ -391,7 +396,6 @@ function populateCompletedSessionListGrid() {
 	
 	
 	function populateTree() {
-	
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -769,6 +773,7 @@ function registerDelegate(tree){
 			resetOnSelectTestSessionData();
 			resetProctor();
 			$('#studentAddDeleteInfo').hide();
+			stdsLogIn = false;
 
 		}
 		$("#"+dailogId).dialog("close");
@@ -1070,6 +1075,7 @@ function registerDelegate(tree){
 	
 	function scheduleNewSession() {
 	$('#showSaveTestMessage').hide();
+	state = "ADD";
 	$.ajax({
 		async:		true,
 		beforeSend:	function(){
@@ -1142,6 +1148,7 @@ function registerDelegate(tree){
 	function fillProductGradeLevelDropDown( elementId, optionList, selectedProductId) {
 		var ddl = document.getElementById(elementId);
 		var optionHtml = "" ;
+		var selectProductIndex;
 		//var optionList = data.product;
 		if(optionList.length < 1) {
 			optionHtml += "<option  value='Select a product'>Show All</option>";
@@ -1189,6 +1196,7 @@ function registerDelegate(tree){
 						document.getElementById("levelDiv").style.display ="none";
 						document.getElementById("level").style.visibility ="hidden";
 					}
+					selectProductIndex = i;
 					
 				} else {
 					optionHtml += "<option  value='"+ optionList[i].productId+"'>"+ optionList[i].productName+"&nbsp;&nbsp;</option>";
@@ -1197,6 +1205,7 @@ function registerDelegate(tree){
 			}
 		}
 		$(ddl).html(optionHtml);
+		return selectProductIndex;
 	}
 	
 
@@ -1643,7 +1652,7 @@ function registerDelegate(tree){
 					tr +='<div align="left" id="sName'+i+'">'+subtestArr[i].subtestName+'</div>';
 					tr +='</td>';
 					tr +='<td height="23" width="130" align="center" bgcolor="#FFFFFF">';
-					tr +='<div align="center" id="aCodeDiv'+i+'">';
+					tr +='<div align="center" id="'+subtestArr[i].id+'">';
 					tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
 					tr +='</td>';
 				}else{
