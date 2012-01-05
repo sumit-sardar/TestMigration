@@ -75,7 +75,10 @@ public class TestSession extends CTBBean
 	private Boolean isStudentInTestSession = false;
     //END - TABE BAUM 020 Form Recommendation 
 	private String AssignedRole;
-	
+    private String loginStartDateString;
+    private String loginEndDateString;
+    private String dailyLoginStartTimeString;
+    private String dailyLoginEndTimeString;
    
    
     /**
@@ -600,5 +603,33 @@ public class TestSession extends CTBBean
 	 */
 	public void setAssignedRole(String assignedRole) {
 		AssignedRole = assignedRole;
+	}
+
+	/**
+	 * @param loginStartDateString the loginStartDateString to set
+	 */
+	public void setLoginStartDateString(String loginStartDateString) {
+		this.loginStartDateString = loginStartDateString;
+	}
+
+	/**
+	 * @param loginEndDateString the loginEndDateString to set
+	 */
+	public void setLoginEndDateString(String loginEndDateString) {
+		this.loginEndDateString = loginEndDateString;
+	}
+
+	/**
+	 * @param dailyLoginStartTimeString the dailyLoginStartTimeString to set
+	 */
+	public void setDailyLoginStartTimeString(String dailyLoginStartTimeString) {
+		this.dailyLoginStartTimeString = dailyLoginStartTimeString;
+	}
+
+	/**
+	 * @param dailyLoginEndTimeString the dailyLoginEndTimeString to set
+	 */
+	public void setDailyLoginEndTimeString(String dailyLoginEndTimeString) {
+		this.dailyLoginEndTimeString = dailyLoginEndTimeString;
 	}
 } 
