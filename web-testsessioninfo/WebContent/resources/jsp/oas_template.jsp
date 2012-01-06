@@ -61,18 +61,17 @@
 		
 			$(function(){
 				// Accordion
-				$("#accordion").accordion({ header: "h3" });
 				var wizardAcc = $("#accordion").accordion({ header: "h3",event:false});				
+			
 				$("h3", wizardAcc).each(function(index) {			
 					$(this).click(function(e){
 						wizardAcc.accordion("activate", index);
-						//alert("hi3");
 						setAnchorButtonState('printTicketButton', true);
 						var rId = document.getElementById('selectedTestSessionId').value;
 						$("#list2 #"+rId).removeClass("ui-state-highlight");
 						$("#list3 #"+rId).removeClass("ui-state-highlight");
 					});
-				});
+				}); 
 				
 				
 				var wizard = $("#ssAccordion").accordion({ header: "h3",event:false});
@@ -206,9 +205,8 @@
 				
 			});
 
-			$(function(){
-				var wizard = $("#sessionGrid").accordion({ header: "h3",event:false});
-				$("h3", wizard).each(function(index) { 				
+			$(function(){				
+				$("h3", "#sessionGrid").each(function(index) { 				
 					$(this).click(function(e){
 						$('#showSaveTestMessage').hide();
 					});
