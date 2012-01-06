@@ -631,7 +631,6 @@ clear: both;
 	position:relative;
 	z-index:100;
 }
-
 .rosterSubtestTable {
 	font-family: Lucida Grande,Lucida Sans,Arial,sans-serif;
 	font-size: 1em;
@@ -644,3 +643,6 @@ clear: both;
     font-weight: bold;
 }
 
+input[type="button"] {
+	cursor: pointer;
+}
