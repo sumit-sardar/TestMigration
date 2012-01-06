@@ -26,4 +26,16 @@ public interface RequestParam {
 	String ACCESS_CODE				= "aCode";
 	String ACCESS_CODEB 			= "aCodeB";
 	String TEST_ADMIN_ID 			= "testAdminId";
+	
+	String ACTION 					= "action";
+	String STUDENTS 				= "students";
+	String IS_STUDENT_LIST_UPDATED	= "isStudentUpdated";
+	String IS_PROCTOR_LIST_UPDATED	= "isProctorUpdated";
+	String IS_TEST_UPDATED			= "isTestUpdated";
+	
+	String TEST_ITEM_SET_ID_TD		= "itemSetIdTD";
+	String TEST_ITEM_IND_ACCESS_CODE= "aCodeB";
+	String TEST_ITEM_SET_FORM		= "itemSetForm";
+	String TEST_ITEM_IS_SESSION_DEFAULT	= "sessionDefault";
+	
 }

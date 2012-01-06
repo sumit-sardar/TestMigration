@@ -1653,6 +1653,19 @@ function registerDelegate(tree){
 				tr +='<tr>';
 				tr +='<td height="23" width="24" bgcolor="#FFFFFF">';
 				tr +='<div align="center" id="num'+i+'">'+parseInt(i+1)+'<input type="hidden" id="actionTaken'+i+'" value="1"/></div>';
+				tr +='<input type = "hidden" name ="itemSetIdTD" value ="'+subtestArr[i].id+'" />';
+				if(subtestArr[i].level != undefined){
+					tr +='<input type = "hidden" name ="itemSetForm" value ="'+subtestArr[i].level+'" />';
+				} else {
+					tr +='<input type = "hidden" name ="itemSetForm" value ="" />';
+				}
+				
+				if(subtestArr[i].sessionDefault != undefined){
+					tr +='<input type = "hidden" name ="sessionDefault" value ="'+subtestArr[i].sessionDefault+'" />';
+				} else {
+					tr +='<input type = "hidden" name ="sessionDefault" value ="" />';
+				}
+				
 				tr +='</td>';
 				if(isTestBreak){
 					tr +='<td height="23" width="289" bgcolor="#FFFFFF" style="padding-left:5px;">';
@@ -1660,7 +1673,7 @@ function registerDelegate(tree){
 					tr +='</td>';
 					tr +='<td height="23" width="130" align="center" bgcolor="#FFFFFF">';
 					tr +='<div align="center" id="'+subtestArr[i].id+'">';
-					tr +='<input name="aCodeB'+i+'" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
+					tr +='<input name="aCodeB" type="text" size="13" id="aCodeB'+i+'" value="'+ProductData.accessCodeList[i]+'" onblur="javascript:trimTextValue(this); return false;" style="padding-left:2px;" maxlength="32" /></div>';
 					tr +='</td>';
 				}else{
 					tr +='<td height="23" width="419" bgcolor="#FFFFFF" style="padding-left:5px;">';
@@ -2535,10 +2548,12 @@ function registerDelegate(tree){
     }
     
     function saveTest() {
-   	 if(state != "EDIT"){
-	    $('#displayMessage').hide();
+        
+        $('#displayMessage').hide();
 	    $('#showSaveTestMessage').hide();
-		var param;
+	    var param;
+   	 if(state != "EDIT"){
+		
 		var param1 =$("#testDiv *").serialize(); 
 	    var param2 = $("#Test_Detail *").serialize();
 	    var time = document.getElementById("time").innerHTML;
@@ -2546,10 +2561,28 @@ function registerDelegate(tree){
 	    param = param1+"&"+param2+"&startTime="+$.trim(timeArray[0])+"&endTime="+$.trim(timeArray[1]);
 	    var selectedstudent = getStudentListArray(AddStudentLocaldata);
 	    param = param+"&students="+selectedstudent.toString();
-	    
+
 	    var selectedProctors =getProctorListArray(addProctorLocaldata);
 	    param = param+"&proctors="+selectedProctors.toString();
+	    param = param+"&action='ADD'";
+	 } else {
+		    var param1 =$("#testDiv *").serialize(); 
+		    var param2 = $("#Test_Detail *").serialize();
+		    var time = document.getElementById("time").innerHTML;
+		    var timeArray = time.split("-");
+		    param = param1+"&"+param2+"&startTime="+$.trim(timeArray[0])+"&endTime="+$.trim(timeArray[1]);
+		    var selectedstudent = getStudentListArray(AddStudentLocaldata);
+		    param = param+"&students="+selectedstudent.toString();
+		    
+		    var selectedProctors =getProctorListArray(addProctorLocaldata);
+		    param = param+"&proctors="+selectedProctors.toString() ;
+		    param = param+"&action='EDIT'";
+		   	param = param+"&isStudentUpdated="+isStdDetClicked;
+		   	param = param+"&isProctorUpdated="+isProcDetClicked ;
+		   	param = param+"&testAdminId=" +selectedTestAdminId;
+		    
 	    
+	 }
 		$.ajax({
 			async:		true,
 			beforeSend:	function(){
@@ -2638,10 +2671,10 @@ function registerDelegate(tree){
 							 $.unblockUI(); 
 						}
 		});
-		}
-		else{
-			saveEditTestData();
-		}
+		//}
+		//else{
+		//	saveEditTestData();
+		//}
 	}
 	function toggleRandomDisVal() {
 			var randomDisVal = document.getElementById("randomDis");

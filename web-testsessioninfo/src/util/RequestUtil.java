@@ -21,9 +21,12 @@ public class RequestUtil implements RequestParam{
 	}
 
 	public static String[] getValuesFromRequest(HttpServletRequest request,
-			String name) {
-		return request.getParameterValues(name);
-
+			String name,  boolean isRequiredDefault, String[] defaultValue) {
+		String[] val = request.getParameterValues(name);
+		if(val == null && isRequiredDefault){
+			val = defaultValue;
+		}
+     return val;
 	}
 	
 	public static Object getTypedValueFromRequest(HttpServletRequest request,

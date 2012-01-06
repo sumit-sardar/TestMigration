@@ -172,17 +172,17 @@ public class SessionOperationController extends PageFlowController {
     private boolean hasLicenseConfig = false; 
     //private List productNameList = null;
     //private Hashtable productNameToIndexHash = null;
-    public static String CONTENT_TYPE_JSON = "application/json";
+    public static final String CONTENT_TYPE_JSON = "application/json";
 
     public LinkedHashMap<String, String> hintQuestionOptions = null;
     public UserProfileInformation userProfile = null; 
-	private TestProductData testProductData = null;  
+	//private TestProductData testProductData = null;  
 	private TestProduct [] tps;
 	private static final String ACTION_INIT = "init";
 	boolean isPopulatedSuccessfully = false;
-	boolean isPopulatedSuccessfully1 = false;
+	//boolean isPopulatedSuccessfully1 = false;
 	ScheduleTestVo vo = new ScheduleTestVo();
-	ScheduleTestVo userProductsDetails = new ScheduleTestVo();
+	//ScheduleTestVo userProductsDetails = new ScheduleTestVo();
 
 	//public Condition condition = new Condition();
 	
@@ -554,7 +554,7 @@ public class SessionOperationController extends PageFlowController {
     		Integer testAdminId =null;
     		ValidationFailedInfo validationFailedInfo = new ValidationFailedInfo();
     		SuccessInfo successInfo = new SuccessInfo();
-            String studentsBeforeSave =  RequestUtil.getValueFromRequest(this.getRequest(), "students", true, "");
+            boolean isAddOperation = true;
             int studentCountBeforeSave =0;
             boolean isValidationFailed = false;
             String jsonData = "";
@@ -562,10 +562,33 @@ public class SessionOperationController extends PageFlowController {
             HttpServletResponse resp = getResponse();
         	resp.setCharacterEncoding("UTF-8"); 
         	OutputStream stream = null;
+        	String testAdminIdString = (RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.TEST_ADMIN_ID, false, null));
+        	String currentAction = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.ACTION, true, "");
+        	String isStudentListUpdated = RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.IS_STUDENT_LIST_UPDATED, true, "T");
         	
+        	if(currentAction.equalsIgnoreCase("EDIT")){
+        		isAddOperation = false;
+        	} else if (currentAction.equalsIgnoreCase("ADD")){
+        		isAddOperation = true;
+        	} else if (testAdminIdString == null) {
+        		isAddOperation = false;
+        	} else {
+        		try{
+        			testAdminId = Integer.valueOf(testAdminIdString.trim());
+        			isAddOperation = true;
+        		} catch (Exception ne){
+        			isAddOperation = false;
+        		}
+        	}
         	
-            if (studentsBeforeSave!=null && studentsBeforeSave.trim().length()>1)
-                studentCountBeforeSave = studentsBeforeSave.split(",").length;
+        	if(isAddOperation || isStudentListUpdated.equalsIgnoreCase("T")){
+        		String studentsBeforeSave =  RequestUtil.getValueFromRequest(this.getRequest(), RequestUtil.STUDENTS, true, "");
+        		if (studentsBeforeSave!=null && studentsBeforeSave.trim().length()>1)
+                    studentCountBeforeSave = studentsBeforeSave.trim().split(",").length;
+        	} else {
+        		
+        	}
+        	
             try
             {
                 testAdminId = createSaveTest(this.getRequest(), validationFailedInfo);
@@ -977,9 +1000,25 @@ public class SessionOperationController extends PageFlowController {
         	 String hasBreakValue     		= RequestUtil.getValueFromRequest(request, RequestUtil.SESSION_HAS_BREAK, false, null);
         	 String hasBreak          		= (hasBreakValue == null || !(hasBreakValue.trim().equals("T") || hasBreakValue.trim().equals("F"))) ? "F" :  hasBreakValue.trim();
         	 boolean hasBreakBoolean        = (hasBreak.equals("T")) ? true : false;
+        	 String[] itemSetIdTDs          = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_SET_ID_TD, true ,  new String [0]);
+        	 String[] accesscodes           = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IND_ACCESS_CODE, true ,  new String [itemSetIdTDs.length]);
+        	 String[] itemSetForms          = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_SET_FORM, true ,  new String [itemSetIdTDs.length]);
+        	 String[] itemSetisDefault      = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IS_SESSION_DEFAULT, true ,  new String [itemSetIdTDs.length]);
         	 
         	 
-        	 List<SubtestVO>  subtestList   = idToTestMap.get(itemSetId).getSubtests();
+        	 //List<SubtestVO>  subtestList   = idToTestMap.get(itemSetId).getSubtests();
+        	 List<SubtestVO>  subtestList   = new ArrayList<SubtestVO>();
+        	 for(int ii =0, jj =itemSetIdTDs.length; ii<jj; ii++ ){
+        		 SubtestVO subtest = new SubtestVO();
+        		 subtest.setId(Integer.valueOf(itemSetIdTDs[ii].trim()));
+        		 subtest.setTestAccessCode(accesscodes[ii]);
+        		 subtest.setSessionDefault(itemSetisDefault[ii]);
+        		 if(itemSetForms[ii] != null && itemSetForms[ii].trim().length()>0){
+        			 subtest.setLevel(itemSetForms[ii]);
+        		 }
+        		 subtestList.add(subtest);
+        		 
+        	 }
         	                     
     	        if (productType!=null && TestSessionUtils.isTabeProduct(productType).booleanValue())
     	        {
@@ -1026,8 +1065,8 @@ public class SessionOperationController extends PageFlowController {
     	            
     	            if (TestSessionUtils.isTabeProduct(productType).booleanValue())
     	            {                
-    	                /*String level = subVO.getLevel();
-    	                te.setItemSetForm(level);*/
+    	                String level = subVO.getLevel();
+    	                te.setItemSetForm(level);
     	            }
     	            
     	            if (!hasBreakBoolean ) {
@@ -1035,8 +1074,9 @@ public class SessionOperationController extends PageFlowController {
     	            	String accessCode = scheduledSession.getTestSession().getAccessCode();
     	            	te.setAccessCode(accessCode);
     	            } else {
-    	            	String accessCode = RequestUtil.getValueFromRequest(request, RequestUtil.ACCESS_CODEB+i, true, "");
-    	            	te.setAccessCode(accessCode);
+    	            	//String accessCode = RequestUtil.getValueFromRequest(request, RequestUtil.ACCESS_CODEB+i, true, "");
+    	            	//te.setAccessCode(accessCode);
+    	            	te.setAccessCode(subVO.getTestAccessCode());
     	            }
     	               
     	            
@@ -1274,7 +1314,7 @@ public class SessionOperationController extends PageFlowController {
 
 	         if (hasBreakBoolean)
 	         {
-	        	String accessCode = RequestUtil.getValueFromRequest(request, RequestUtil.ACCESS_CODEB+0, true, "");
+	        	String accessCode = RequestUtil.getValuesFromRequest(request, RequestUtil.TEST_ITEM_IND_ACCESS_CODE, true, new String [0])[0];
 	         	testSession.setAccessCode(accessCode);    
 	         }
 	         else
