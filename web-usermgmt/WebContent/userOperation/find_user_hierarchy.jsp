@@ -51,25 +51,9 @@
 </table>
 <table class="transparent">
     <tr class="transparent">
-        <td style="border-color : #2E6E9E;">
-        
-      	<!-- <div id="displayMessageMain" style="display:none; width:99.5%; height:55px; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 0px solid #A6C9E2;">
-			<font style="color: red; font-size:12px; font-weight:bold"><div id="titleMain"></div></font>
-			<div id= "contentMain">	</div>
-			<div id= "messageMain">	</div>
-		</div>  -->
+        <td style="border-color : #2E6E9E;padding-left:5px;">        
 		<table> 
-		<!-- 
-		   	<tr width="100%" >
-		       <td align="right" colspan="12">
-	     	    <div id="changePW" style="display:none">
-	     	        	<input id="changePWDBtn" style="padding: 2px; background: url(&quot;images/ui-bg_glass_85_dfeffc_1x400.png&quot;) repeat-x scroll 50% 50% rgb(223, 239, 252);" class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" onclick="javascript:changePwdForUser(); return false;" value=" Change Password " type="button">
-	     	        </div>
-	     	   </td>
-		   	</tr>
-		 -->
-		  
-		   	<tr width="100%" >
+		<tr width="100%" >
 		       <td align="right" colspan="12" style="padding: 0 0 0px 8px; clear:both;min-height:25px; height: 25px; ">
 		       <div id="displayMessageMain" style="display:none; width:50%; float:left; text-align:left; background-color: #FFFFFF; font-family: Arial, Verdana, Sans Serif; font-size: 12px; font-style: normal; font-weight: bold; border: 0px solid #A6C9E2;">
 					<div id= "contentMain" style="padding-top: 5px;">	</div>
@@ -83,14 +67,14 @@
 		   	</tr>
 		  
 	      <tr class="transparent">
-	        <td class="transparent" valign="middle">
+	        <td style="verticle-align:top;">
 		      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<lb:label key="user.label.usersearch" /></div>
 		    	  <script>populateTree();</script>
 		    	  <div id = "orgNodeHierarchy"  class="treeCtrl">
 				</div> 
 		    </td>
 		    
-		 	<td class="transparent" width="8px">&nbsp;</td>
+		 	<td class="transparent" width="5px">&nbsp;</td>
 		 	 
 		 	<td >	      
 		    	<table id="list2" class="gridTable"></table>
@@ -98,11 +82,6 @@
 			</td>
 			
 	      </tr>
-	      <!-- 
-	      <tr class="transparent">
-	        <td  colspan="12" style="height:5px; color: #336699; font-family: Arial,Verdana,Sans Serif; font-size: 13px;  font-style: normal;  font-weight: bold;">&nbsp;</td>
-   	 	  </tr>
-   	 	   -->
 	    </table>
         </td>
     </tr>
