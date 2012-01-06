@@ -27,44 +27,43 @@
 <table class="transparent">
 
     <tr class="transparent">
-        <td style="border-color : #2E6E9E">
+        <td style="border-color : #2E6E9E;padding-left:5px;">
     	
 		<table style="clear:both;float:left" width= "100%"> 
 		   	<tr >
 		   		<td >
-	       			<div id="ShowButtons" style="width:1225px; min-height:25px; float:left; height: 25px;">
-	       				<div  style="float:left;width:800px;white-space: nowrap;" class="transparent">
-							<div id="displayBulkMessageMain" class="roundedMessage" style="display:none;"> 
-								<table>
-									<tr>
-										<td rowspan="3" valign="top">
-					                   	<img  id="errorImg"  style="display:none;" src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
-										</td>
-										<td>
-											<table>
-												<tr><td><font style="color: red; font-size:12px; font-weight:bold"><div id="titleBulkMain"></div></font></td></tr>
-												<tr><td><font style="font-size: 12px; font-weight: bold;"><div id= "contentBulkMain">	</div></font></td></tr>
-												<tr><td><div id= "messageBulkMain">	</div></td></tr>
-											</table>
-										</td>
-									</tr>
-								</table>
-							</div>
+	       			<div id="ShowButtons" style="width:1196px; min-height:25px;height: 25px;">
+			    	<div  style="float:left;width:800px;white-space: nowrap;" class="transparent">
+						<div id="displayBulkMessageMain" class="roundedMessage" style="display:none;"> 
+							<table>
+								<tr>
+									<td rowspan="3" valign="top">
+				                   	<img  id="errorImg"  style="display:none;" src="<%=request.getContextPath()%>/resources/images/messaging/icon_error.gif" border="0" width="16" height="16">&nbsp;&nbsp;
+									</td>
+									<td>
+										<table>
+											<tr><td><font style="color: red; font-size:12px; font-weight:bold"><div id="titleBulkMain"></div></font></td></tr>
+											<tr><td><font style="font-size: 12px; font-weight: bold;"><div id= "contentBulkMain">	</div></font></td></tr>
+											<tr><td><div id= "messageBulkMain">	</div></td></tr>
+										</table>
+									</td>
+								</tr>
+							</table>
 						</div>
-						<div id="viewStatus" style="float:right;padding-left:5px;display:none;">
-							<a href="#" id="bulkMoveButton" onclick="javascript:openBulkMovePopup(this); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['student.bulkMove.moveStudent.Button']}"/></a>
-						</div> 
+					</div>
+					<div id="viewStatus" style="float:right;padding-left:5px;display:none;">
+						<a href="#" id="bulkMoveButton" onclick="javascript:openBulkMovePopup(this); return false;" class="rounded {transparent} button"><netui:content value="${bundle.web['student.bulkMove.moveStudent.Button']}"/></a>
 					</div> 
+					<div style="clear:both;">
+					</div>
+				</div> 
 				</td>
 		   	</tr>
-		   	<tr>
-		   		
-	 </tr>
 	</table>
 		
 	 <table class="transparent">
 	    <tr class="transparent">
-	        <td class="transparent"  valign="bottom" style="vertical-align: bottom !important;">
+	        <td style="vertical-align:top;">
 	      	<div  id= "searchheader" class="ui-corner-tl ui-corner-tr ui-widget-header treeCtrlHeader">&nbsp;<netui:content value="${bundle.web['student.assignAccommodation.StudentSearch']}"/></div>
 	    	<script>populateBulkMoveTree();</script>
 	    	<div id = "bulkStudentMoveOrgNode" class="treeCtrl" style="height:512px !important">
@@ -73,7 +72,7 @@
 			
 		 	</td>
 	 		<td class="transparent" width="5px">&nbsp;</td>
-		 	<td >
+		 	<td style="vertical-align:top;">
 	      		<table id="studentBulkMoveGrid" class="gridTable"></table>
 				<div id="studentBulkMovePager" class="gridTable"></div>			
 		 </td>

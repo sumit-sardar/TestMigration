@@ -132,7 +132,7 @@ function populateBulkMoveStudentGrid() {
 		   		{name:'hasAccommodations',index:'hasAccommodations', width:125, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'userName',index:'userName',editable: true, width:150, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
 		   		{name:'studentNumber',index:'studentNumber',editable: true, width:100, align:"left", sortable:true,cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
-		   		{name:'orgNodeId',index:'orgNodeId', width:110, hidden: true, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   		{name:'orgNodeId',index:'orgNodeId', width:0, hidden: true, editable: true, align:"left", sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
 		   		
 		   	],
 		   		jsonReader: { repeatitems : false, root:"studentProfileInformation", id:"studentId",
@@ -147,7 +147,8 @@ function populateBulkMoveStudentGrid() {
 			sortname: 'lastName', 
 			viewrecords: true, 
 			sortorder: "asc",
-			height: 390,  
+			height: 390, 
+			width:980, 
 			caption:"Student List",
 			onPaging: function() {
 				$("#displayBulkMessageMain").hide();
