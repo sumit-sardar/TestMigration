@@ -81,6 +81,9 @@ var type;
 var asyncOver = 0;
 var leafParentOrgNodeId = "";
 
+var selectedTestAdminId = "";
+var selectedTestRosterId = "";
+
 
 function UIBlock(){
 	$.blockUI({ message: '<img src="/SessionWeb/resources/images/loading.gif" />',css: {border: '0px',backgroundColor: '#aaaaaa', opacity:  0.5, width:'45px',  top:  ($(window).height() - 45) /2 + 'px', left: ($(window).width() - 45) /2 + 'px' 
@@ -150,8 +153,9 @@ function populateSessionListGrid(homePageLoad) {
 				setAnchorButtonState('printTicketButton', true);
 			},
 			onSelectRow: function (rowId) {
-				setSelectedTestAdminId(rowId);
-					testTicketPopupValues(rowId,'list2');					
+					setSelectedTestAdminId(rowId);
+					testTicketPopupValues(rowId,'list2');	
+					selectedTestAdminId = rowId;						
 					$('#showSaveTestMessage').hide();
 					if($("#canRegisterStudent").val() == 'true'){
 						var selectedTestSessionId = $("#list2").jqGrid('getGridParam', 'selrow');
@@ -2869,5 +2873,463 @@ function registerDelegate(tree){
 				callback(array);
 			}
 		}, 25);    
-	
 	}
+	
+	// Added for TAS View-Montitor Student Test Status user story: Start
+    function viewTestStatus() {
+    	if(selectedTestAdminId != "") {
+			$('#displayMessageViewTestSession').hide();
+			$("#displayMessageViewTestRoster").hide();
+			$("#displayMessageViewTestSubtest").hide();
+			$("#viewTestSessionAccordion").accordion({ header: "h3", active: 0, change: function(event, ui) {
+				$("#displayMessageViewTestRoster").hide();
+				$("#displayMessageViewTestSubtest").hide();
+				if(ui.newHeader.parent().attr("id") == 'subtestDetailsSectionId') {
+					$("#loginName").text("");
+					$("#password").text("");
+					$("#testAdminName").text("");
+					$("#subTestName").text("");
+					$("#testStatus").text("");
+					$("#subtestList").html("");
+					viewSubtestDetails();
+				}
+			}});
+			$("#viewTestSessionId").dialog({  
+				title:"View Status",  
+				resizable:false,
+				autoOpen: true,
+				width: '1024px',
+				modal: true,
+				closeOnEscape: false,
+				open: function(event, ui) {$(".ui-dialog-titlebar-close").hide(); }
+			});		
+			populateRosterList();
+			setPopupPositionViewStatus();
+		}
+	}
+	
+	function refreshRosterList() {
+		$("#displayMessageViewTestRoster").hide();
+		$('#rosterList').GridUnload();
+    	if(selectedTestAdminId != "") {
+			$('#displayMessageViewTestSession').hide();
+			populateRosterList();
+			isForRefreshRoster = true;
+		}
+	}
+	
+	function setPopupPositionViewStatus(){
+		$("#View_Roster").css("height",'400px');
+		$("#View_Subtest").css("height",'400px');
+		var toppos = ($(window).height() - 650) /2 + 'px';
+		var leftpos = ($(window).width() - 1024) /2 + 'px';
+		$("#viewTestSessionId").parent().css("top",toppos);
+		$("#viewTestSessionId").parent().css("left",leftpos);	
+	}
+	
+	function closeViewStatusPopup() {
+		closePopUp('viewTestSessionId');
+		$("#testName").text('');
+		$("#testAccessCode").text('');
+		$("#totalStudents").text('');
+		$('#rosterList').GridUnload();
+		$("#viewTestSessionAccordion").accordion("destroy");	
+	}
+	
+	function populateRosterList() {
+ 	   
+ 	   UIBlock();
+       $("#rosterList").jqGrid({   
+       	  url:	  'getRosterDetails.do?testAdminId='+selectedTestAdminId,   
+          type:   "POST",
+		  datatype: "json",          
+          colNames:[ 'Last Name','First Name','Student ID','Login ID',"Password","Validation Status","Online Test Status"],
+		   	colModel:[
+		   		{name:'lastName',index:'lastName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'firstName',index:'firstName', width:90, editable: true, align:"left",sorttype:'text',search: false, sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'studentNumber',index:'studentNumber', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'loginName',index:'loginName', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'password',index:'password', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'validationStatus',index:'validationStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } },
+		   		{name:'testStatus',index:'testStatus', width:130, editable: false, align:"left",sorttype:'text',sortable:true, cellattr: function (rowId, tv, rawObject, cm, rdata) { return 'style="white-space: normal;' } }
+		   	],
+
+		   	jsonReader: { repeatitems : false, root:"rosterElement", id:"testRosterId", records: function(obj) {
+		   		 var subtestValAllowed = JSON.stringify(obj.subtestValidationAllowed);
+		   		 if(subtestValAllowed == 'false') {
+					$("#toggleValidation").show();
+				} else {
+					$("#toggleValidation").hide();
+				}
+				$("#testName").text(obj.testSession.testName);
+				$("#testAccessCode").text(obj.testSession.accessCode);
+		   	}},
+		   	loadui: "disable",
+			rowNum:10,
+			loadonce:true, 
+			//multiselect:true,
+			pager: '#rosterPager', 
+			sortname: 'lastName', 
+			viewrecords: true, 
+			sortorder: "asc",
+			height: 162,  
+			caption:"Student Test Roster",
+			onPaging: function() {
+				var reqestedPage = parseInt($('#rosterList').getGridParam("page"));
+				var maxPageSize = parseInt($('#sp_1_rosterPager').text());
+				var minPageSize = 1;
+				if(reqestedPage > maxPageSize){
+					$('#rosterList').setGridParam({"page": maxPageSize});
+				}
+				if(reqestedPage <= minPageSize){
+					$('#rosterList').setGridParam({"page": minPageSize});
+				}
+			},
+			gridComplete: function() {
+				
+       		},
+			onSelectAll: function (rowIds, status) {
+						
+			},
+			onSelectRow: function (rowid) {
+				selectedTestRosterId = rowid;
+				$("#displayMessageViewTestRoster").hide();
+				var cellData = $('#rosterList').getCell(selectedTestRosterId, '5');
+				if($.trim($(cellData).text()) != 'Partially Invalid') {
+					setAnchorButtonState('toggleValidationButton', false);
+					$("#toggleValidationButton").attr("disabled", false);
+				} else {
+					setAnchorButtonState('toggleValidationButton', true);
+					$("#toggleValidationButton").attr("disabled", true);
+				}
+			},
+			loadComplete: function () {
+			
+				if ($('#rosterList').getGridParam('records') === 0) {
+					isPAGridEmpty = true;
+            		$('#sp_1_rosterPager').text("1");
+            		$('#next_rosterPager').addClass('ui-state-disabled');
+            	 	$('#last_rosterPager').addClass('ui-state-disabled');
+            	} else {
+            		isPAGridEmpty = false;
+            	}
+            	$("#totalStudents").text($('#rosterList').getGridParam('records'));
+				var topRowid = $('#rosterList tr:nth-child(2)').attr('id');
+            	$("#rosterList").setSelection(topRowid, true);
+            	selectedTestRosterId = topRowid;
+            	
+            	var status = $('#rosterList').getCell(selectedTestRosterId, '5');
+				if($.trim($(status).text()) != 'Partially Invalid') {
+					setAnchorButtonState('toggleValidationButton', false);
+					$("#toggleValidationButton").attr("disabled", false);
+				} else {
+					setAnchorButtonState('toggleValidationButton', true);
+					$("#toggleValidationButton").attr("disabled", true);
+				}
+				
+	           	$("#rosterList").setGridParam({datatype:'local'});
+            	var tdList = ("#rosterPager_left table.ui-pg-table  td");
+				for(var i=0; i < tdList.length; i++){
+					$(tdList).eq(i).attr("tabIndex", i+1);
+				}
+				var gridIds = $("#rosterList").getDataIDs();
+				for(var i=0; i<gridIds.length; i++) {
+					var cellData = $('#rosterList').getCell(gridIds[i], '5');
+					if(cellData == 'VA') {
+						$("#rosterList").setCell(gridIds[i], '5', 'Valid', "", "", true);
+					} else if(cellData == 'IN') {
+						$("#rosterList").setCell(gridIds[i], '5', '<font color="red">Invalid</font>', "", "", true);
+					} else if(cellData == 'PI') {
+						$("#rosterList").setCell(gridIds[i], '5', '<font color="red">Partially Invalid</font>', "", "", true);
+					}
+					cellData = $('#rosterList').getCell(gridIds[i], '6');
+					if(cellData == 'SC') {
+						$("#rosterList").setCell(gridIds[i], '6', 'Scheduled', "", "", true);
+					} else if(cellData == 'CO') {
+						$("#rosterList").setCell(gridIds[i], '6', 'Completed', "", "", true);
+					} else if(cellData == 'IN') {
+						$("#rosterList").setCell(gridIds[i], '6', 'System stop', "", "", true);
+					} else if(cellData == 'NT') {
+						$("#rosterList").setCell(gridIds[i], '6', 'Not taken', "", "", true);
+					} else if(cellData == 'IP') {
+						$("#rosterList").setCell(gridIds[i], '6', 'In progress', "", "", true);
+					} else if(cellData == 'IC') {
+						$("#rosterList").setCell(gridIds[i], '6', 'Incomplete', "", "", true);
+					} else if(cellData == 'IS') {
+						$("#rosterList").setCell(gridIds[i], '6', 'Student stop', "", "", true);
+					} else if(cellData == 'CL') {
+						$("#rosterList").setCell(gridIds[i], '6', 'Test locked', "", "", true);
+					} else if(cellData == 'OC') {
+						$("#rosterList").setCell(gridIds[i], '6', 'Completed', "", "", true);
+					} else if(cellData == 'AB') {
+						$("#rosterList").setCell(gridIds[i], '6', 'Session abandoned', "", "", true);
+					} else if(cellData == 'SP') {
+						$("#rosterList").setCell(gridIds[i], '6', 'Student pause', "", "", true);
+					}
+				}
+				$.unblockUI();
+				//jQuery("#rosterList").setGridWidth(width);
+			},
+			loadError: function(XMLHttpRequest, textStatus, errorThrown){
+				$.unblockUI();  
+				//window.location.href="/SessionWeb/logout.do";
+			}
+	 });
+	  jQuery("#rosterList").jqGrid('navGrid','#rosterPager',{edit:false,add:false,del:false,search:false,refresh:false});
+}
+	
+	function viewSubtestDetails() {
+		
+		$.ajax({
+			async:		true,
+			beforeSend:	function(){
+							UIBlock();
+						},
+			url:		'getSubtestDetails.do?testRosterId='+selectedTestRosterId,
+			type:		'POST',
+			dataType:	'json',
+			success:	function(data, textStatus, XMLHttpRequest){
+							$("#loginName").text(data.loginName);
+							$("#password").text(data.password);
+							$("#testAdminName").text(data.testSession.testAdminName);
+							$("#subTestName").text(data.testSession.testName);
+							$("#testStatus").text(data.testStatus);
+							
+							var html = '<tr class="rosterSubtestHeader">';
+							if(data.subtestValidationAllowed) {
+								html += '<th class="alignCenter rosterSubtestHeader"><span>'+$("#itemsSelectLbl").val()+'</span></th>';
+							}
+           					html += '<th class="alignLeft rosterSubtestHeader" height="25" width="*">';
+               				html += '&nbsp;&nbsp;<span>'+$("#subtestNameLbl").val()+'</span>';
+           					html += '</th>';
+           					if(data.isTabeSession) {
+            					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="6%">';
+                				html += '&nbsp;&nbsp;<span>'+$("#subtestLevelLbl").val()+'</span>';
+            					html += '</th>';
+           					}
+           					if(data.subtestValidationAllowed) {
+           						html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+               					html += '&nbsp;&nbsp;<span>'+$("#validationStatusLbl").val()+'</span>';
+           						html += '</th>';
+           					}
+           					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+               				html += '&nbsp;&nbsp;<span>'+$("#subtestStatusLbl").val()+'</span>';
+           					html += '</th>';
+           					
+           					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+               				html += '&nbsp;&nbsp;<span>'+$("#startDateLbl").val()+'</span>';
+           					html += '</th>';
+           					
+           					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+               				html += '&nbsp;&nbsp;<span>'+$("#completionDateLbl").val()+'</span>';
+           					html += '</th>';
+           					if(data.isShowScores) {
+            					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+                				html += '&nbsp;&nbsp;<span>'+$("#totalItemsLbl").val()+'</span>';
+            					html += '</th>';
+            					
+            					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+                				html += '&nbsp;&nbsp;<span>'+$("#itemsCorrectLbl").val()+'</span>';
+            					html += '</th>';
+            					
+            					html += '<th class="alignCenter rosterSubtestHeader" height="25" width="10%">';
+                				html += '&nbsp;&nbsp;<span>'+$("#itemsScoredLbl").val()+'</span>';
+            					html += '</th>';
+           					}
+           					html += '</tr>';
+            				var row = "";
+							for(var i=0; i<data.testElement.length; i++) {
+								row = data.testElement[i];
+								html += '<tr class="sortable" id="'+row.itemSetId+'">';
+								if(row.itemSetType == 'TS') {
+									if(data.subtestValidationAllowed) {
+										html += '<td class="sortable alignCenter">&nbsp;</td>';
+									}
+									html += '<td class="sortable alignLeft" colspan="'+data.numberColumn+'">';
+									html += '<span>'+row.subtestName+'</span>&nbsp;&nbsp; <span>(test access code: '+row.accessCode+')</span></td>';
+								} else {
+									if(data.subtestValidationAllowed) {
+										html += '<td class="sortable alignCenter"><input type="checkbox" name="toggleSubtest" class="toggleSubtest" onclick="changeToggleButton()" value="'+row.itemSetId+'"/></td>';
+									}
+									html += '<td class="sortable alignLeft"> <span>'+row.subtestName+'</span></td>';
+									if(data.isTabeSession) {
+										if(row.level != null && row.level != "") {
+											html += '<td class="sortable alignCenter"> <span>'+row.level+'</span></td>';
+										} else {
+											html += '<td class="sortable alignCenter"> <span>--</span></td>';
+										}
+									}
+									if(data.subtestValidationAllowed) {
+										if(row.validationStatus != 'Invalid') {
+											html += '<td class="sortable alignCenter"> <span>'+row.validationStatus+'</span></td>';
+										} else{
+											html += '<td class="sortable alignCenter"> <span><font color="red">'+row.validationStatus+'</font></span></td>';
+										}
+									}
+									html += '<td class="sortable alignCenter"> <span>'+row.completionStatus+'</span></td>';
+									if(row.startDate != null && row.startDate != "") {
+										html += '<td class="sortable alignCenter"> <span>'+row.startDate+'</span></td>';
+									} else {
+										html += '<td class="sortable alignCenter"> <span>--</span></td>';
+									}
+									if(row.endDate != null && row.endDate != "") {
+										html += '<td class="sortable alignCenter"> <span>'+row.endDate+'</span></td>';
+									} else {
+										html += '<td class="sortable alignCenter"> <span>--</span></td>';
+									}
+									if(data.isShowScores) {
+										if(row.maxScore == null || row.maxScore == "") {
+											html += '<td class="sortable alignCenter"> <span>--</span></td>';
+										} else {
+											html += '<td class="sortable alignCenter"> <span>'+row.maxScore+'</span></td>';
+										}
+										if(row.rawScore == null || row.rawScore == "") {
+											html += '<td class="sortable alignCenter"> <span>--</span></td>';
+										} else {
+											html += '<td class="sortable alignCenter"> <span>'+row.rawScore+'</span></td>';
+										}
+										if(row.unScored == null || row.unScored == "") {
+											html += '<td class="sortable alignCenter"> <span>--</span></td>';
+										} else {
+											html += '<td class="sortable alignCenter"> <span>'+row.unScored+'</span></td>';
+										}
+									}
+								}
+								html += '</tr>';
+							}
+							$("#subtestList").html(html);
+							if(data.subtestValidationAllowed) {
+								$("#toggleValidationSubTest").show();
+								setAnchorButtonState('toggleValidationSubtestButton', true);
+								$("#toggleValidationSubtestButton").attr("disabled", true);
+							} else {
+								$("#toggleValidationSubTest").hide();
+							}
+						},
+			error  :    function(XMLHttpRequest, textStatus, errorThrown){
+							$.unblockUI();
+							//window.location.href="/SessionWeb/logout.do";
+						},
+			complete :  function(){
+							$.unblockUI(); 
+						}
+		});
+	
+		setPopupPositionViewStatus();
+	}
+	
+	function toggleValidationStatus(){
+		$("#displayMessageViewTestRoster").hide();
+	 	selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
+	 	var cellData = $('#rosterList').getCell(selectedTestRosterId, '5');
+	 	if($.trim($(cellData).text()) != 'Partially Invalid') {
+	 		$.ajax({
+				async:		true,
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'toggleValidationStatus.do?testRosterId='+selectedTestRosterId,
+				type:		'POST',
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest) {	
+								var validationStatus = $('#rosterList').jqGrid('getCell',selectedTestRosterId,'5');
+								if($.trim(validationStatus) == 'Valid'){
+									$('#rosterList').jqGrid('setCell',selectedTestRosterId,'5','<font color="red">Invalid</font>');
+								} else {
+									$('#rosterList').jqGrid('setCell',selectedTestRosterId,'5','Valid');
+								}
+								$("#displayMessageViewTestRoster").show();
+								$("#rosterMessage").html("Session Validation has been updated successfully");
+								$.unblockUI(); 						
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();
+							},
+				complete :  function(){
+								 $.unblockUI(); 
+							}
+			});
+		}
+	}
+	
+	function toggleSubtestValidationStatus(){
+		$("#displayMessageViewTestSubtest").hide();
+		var invalidCount = 0;
+		var subTestCount = 0;
+		selectedTestRosterId = $("#rosterList").jqGrid('getGridParam', 'selrow');
+		var itemSetIds = "";
+		$("input[name=toggleSubtest]").each(function(idx) {
+			if($(this).attr("checked")) {
+				itemSetIds += $(this).val() + "|";
+			}
+        });
+		if(itemSetIds.length > 1) {
+			itemSetIds = itemSetIds.substr(0, itemSetIds.length - 1);
+			$.ajax({
+				async:		true,
+				beforeSend:	function(){
+								UIBlock();
+							},
+				url:		'toggleSubtestValidationStatus.do?testRosterId='+selectedTestRosterId+'&itemSetIds='+itemSetIds,
+				type:		'POST',
+				dataType:	'json',
+				success:	function(data, textStatus, XMLHttpRequest){	
+								var itemSetIds = "";
+								$("input[name=toggleSubtest]").each(function(idx) {
+									var rowId = $(this).val();
+									var cell = null;
+									if(data.isTabeSession) {
+										cell = $("#" + rowId).children('td').eq(3);
+									} else {
+										cell = $("#" + rowId).children('td').eq(2);
+									}
+									if(this.checked) {
+										if($.trim($(cell).text()) == 'Valid') {
+											$(cell).html('<font color="red">Invalid</font>');
+										} else if ($.trim($(cell).text()) == 'Invalid') {
+											$(cell).html('Valid');
+										}
+									}
+									if($(cell).text() == 'Invalid') {
+										invalidCount++;
+									}
+									subTestCount++;
+								});
+								if(invalidCount == 0) {
+									$("#rosterList").setCell(selectedTestRosterId, '5', 'Valid', "", "", true);
+								} else if(invalidCount < subTestCount) {
+									$("#rosterList").setCell(selectedTestRosterId, '5', '<font color="red">Partially Invalid</font>', "", "", true);
+								} else if(invalidCount == subTestCount) {
+									$("#rosterList").setCell(selectedTestRosterId, '5', '<font color="red">Invalid</font>', "", "", true);
+								}
+								$("#displayMessageViewTestSubtest").show();
+								$("#subtestMessage").html("Session Validation has been updated successfully");
+								$.unblockUI(); 						
+							},
+				error  :    function(XMLHttpRequest, textStatus, errorThrown){
+								$.unblockUI();
+								
+							},
+				complete :  function(){
+								 $.unblockUI(); 
+							}
+			});
+		}
+	}
+	
+	function changeToggleButton() {
+		var statusFlag = false;
+		$("input[name=toggleSubtest]").each(function(idx) {
+			if(this.checked) {
+				statusFlag = true;
+			}
+		});
+		if(statusFlag) {
+			setAnchorButtonState('toggleValidationSubtestButton', false);
+			$("#toggleValidationSubtestButton").attr("disabled", false);
+		} else {
+			setAnchorButtonState('toggleValidationSubtestButton', true);
+			$("#toggleValidationSubtestButton").attr("disabled", true);
+		}
+	}
+	// Added for TAS View-Montitor Student Test Status user story: End

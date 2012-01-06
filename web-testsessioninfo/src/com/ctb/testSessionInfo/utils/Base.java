@@ -20,6 +20,134 @@ public class Base {
 	private OrgNodeCategory orgNodeCategory;
 	private List<com.ctb.testSessionInfo.dto.UserProfileInformation> userProfileInformation;
 	private List gradeList;
+	private List rosterElement;
+	private List testElement;
+	private String hasBreak;
+	private TestSessionVO testSession;
+	private String loginName;
+	private String studentName;
+	private String password;
+	private String testSessionName;
+	private String testName;
+	private String testStatus;
+	private String testGrade;
+	private String testLevel;
+	private String response;
+	private boolean isShowScores;
+	private boolean isTabeSession;
+	private int numberColumn;
+	private boolean subtestValidationAllowed;
+	private boolean isLaslinkSession;
+	
+	
+	public String getResponse() {
+		return response;
+	}
+	public void setResponse(String response) {
+		this.response = response;
+	}
+	public List getRosterElement() {
+		return rosterElement;
+	}
+	public void setRosterElement(List rosterElement) {
+		this.rosterElement = rosterElement;
+	}
+	public List getTestElement() {
+		return testElement;
+	}
+	public void setTestElement(List testElement) {
+		this.testElement = testElement;
+	}
+	public String getHasBreak() {
+		return hasBreak;
+	}
+	public void setHasBreak(String hasBreak) {
+		this.hasBreak = hasBreak;
+	}
+	public TestSessionVO getTestSession() {
+		return testSession;
+	}
+	public void setTestSession(TestSessionVO testSession) {
+		this.testSession = testSession;
+	}
+	public String getLoginName() {
+		return loginName;
+	}
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
+	public String getStudentName() {
+		return studentName;
+	}
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getTestSessionName() {
+		return testSessionName;
+	}
+	public void setTestSessionName(String testSessionName) {
+		this.testSessionName = testSessionName;
+	}
+	public String getTestName() {
+		return testName;
+	}
+	public void setTestName(String testName) {
+		this.testName = testName;
+	}
+	public String getTestStatus() {
+		return testStatus;
+	}
+	public void setTestStatus(String testStatus) {
+		this.testStatus = testStatus;
+	}
+	public String getTestGrade() {
+		return testGrade;
+	}
+	public void setTestGrade(String testGrade) {
+		this.testGrade = testGrade;
+	}
+	public String getTestLevel() {
+		return testLevel;
+	}
+	public void setTestLevel(String testLevel) {
+		this.testLevel = testLevel;
+	}
+	public boolean isShowScores() {
+		return isShowScores;
+	}
+	public void setShowScores(boolean isShowScores) {
+		this.isShowScores = isShowScores;
+	}
+	public boolean isTabeSession() {
+		return isTabeSession;
+	}
+	public void setTabeSession(boolean isTabeSession) {
+		this.isTabeSession = isTabeSession;
+	}
+	public int getNumberColumn() {
+		return numberColumn;
+	}
+	public void setNumberColumn(int numberColumn) {
+		this.numberColumn = numberColumn;
+	}
+	public boolean isSubtestValidationAllowed() {
+		return subtestValidationAllowed;
+	}
+	public void setSubtestValidationAllowed(boolean subtestValidationAllowed) {
+		this.subtestValidationAllowed = subtestValidationAllowed;
+	}
+	public boolean isLaslinkSession() {
+		return isLaslinkSession;
+	}
+	public void setLaslinkSession(boolean isLaslinkSession) {
+		this.isLaslinkSession = isLaslinkSession;
+	}
 	/**
 	 * @return the orgNodeCategory
 	 */
