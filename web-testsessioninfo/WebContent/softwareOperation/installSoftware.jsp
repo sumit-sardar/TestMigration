@@ -132,18 +132,19 @@
         </td>
         <td class="transparent-top">
             
-            <table border=0 width="100%">
-                <tr>
-                    <td width="55%">
+            <table class="transparent">
+
+                <tr class="transparent">
+                    <td class="transparent-top" width="5%">&nbsp;</td>
+                    <td class="transparent" width="40%">
                     	<h2><netui:content value="${bundle.web['installClient.standardInstall.header']}"/></h2>
                     </td>
-                    <td>
+                    <td class="transparent-top" width="10%">&nbsp;</td>
+                    <td class="transparent-top" width="5%">&nbsp;</td>
+                    <td class="transparent" width="40%">
                     	<h2><netui:content value="${bundle.web['installClient.customInstall.header']}"/></h2>
                     </td>
                 </tr>
-			</table>
-			
-            <table class="transparent">
             
             	<%-- PC --%>
                 <tr id="installPCClientRow" class="transparent">
