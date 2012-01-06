@@ -32,6 +32,8 @@ public class TestSessionVO implements java.io.Serializable
      //END - form recommendation
     private String AssignedRole;
     private Integer creatorOrgNodeId;
+    //For completed Tests
+    private String isTestSessionDataExported ;
     
     /**
 	 * @return the assignedRole
@@ -243,6 +245,18 @@ public class TestSessionVO implements java.io.Serializable
 	 */
 	public void setCreatorOrgNodeId(Integer creatorOrgNodeId) {
 		this.creatorOrgNodeId = creatorOrgNodeId;
+	}
+	/**
+	 * @return the isTestSessionDataExported
+	 */
+	public String getIsTestSessionDataExported() {
+		return isTestSessionDataExported;
+	}
+	/**
+	 * @param isTestSessionDataExported the isTestSessionDataExported to set
+	 */
+	public void setIsTestSessionDataExported(String isTestSessionDataExported) {
+		this.isTestSessionDataExported = isTestSessionDataExported;
 	}
    
                
